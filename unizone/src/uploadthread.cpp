@@ -15,7 +15,7 @@
 #include <qapplication.h>
 
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
-	: QMessageTransceiverThread(owner), fOwner(owner), fShutdownFlag(optShutdownFlag) 
+	: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag) 
 { 
 	PRINT("WUploadThread ctor\n");
 	setName( "WUploadThread" );
@@ -64,6 +64,34 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 
 	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
 
+	// QMessageTransceiverThread
+
+	qmtt = new QMessageTransceiverThread(this);
+	CHECK_PTR(qmtt);
+
+	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
+			this, SLOT(MessageReceived(MessageRef, const String &)));
+
+	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
+			this, SLOT(OutputQueuesDrained(MessageRef)));
+	
+	connect(qmtt, SIGNAL(SessionConnected(const String &)),
+			this, SLOT(SessionConnected(const String &)));
+
+	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
+			this, SLOT(SessionDisconnected(const String &)));
+
+	connect(qmtt, SIGNAL(SessionAttached(const String &)),
+			this, SLOT(SessionAttached(const String &)));
+    
+	connect(qmtt, SIGNAL(SessionDetached(const String &)),
+			this, SLOT(SessionDetached(const String &)));
+
+	connect(qmtt, SIGNAL(ServerExited()),
+			this, SLOT(ServerExited()));
+
+	// End of QMessageTransceiverThread
+
 	PRINT("WUploadThread ctor OK\n");
 }
 
@@ -90,7 +118,7 @@ WUploadThread::~WUploadThread()
 		fFile = NULL;
 	}
 
-	ShutdownInternalThread();
+	qmtt->ShutdownInternalThread();
 
 	PRINT("WUploadThread dtor OK\n");
 }
@@ -151,7 +179,7 @@ WUploadThread::InitSession()
 
 	if (!fAccept)
 	{
-		if (AddNewSession(fSocket, limit) == B_OK && StartInternalThread() == B_OK)
+		if (qmtt->AddNewSession(fSocket, limit) == B_OK && qmtt->StartInternalThread() == B_OK)
 		{
 			MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
 			if (mref())
@@ -174,7 +202,7 @@ WUploadThread::InitSession()
 	else
 	{
 		const String sRemoteIP = (const char *) fStrRemoteIP.utf8(); // <postmaster@raasu.org> 20021026
-		if (AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && StartInternalThread() == B_OK)
+		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && qmtt->StartInternalThread() == B_OK)
 		{
 			MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
 			if (mref())
@@ -459,7 +487,7 @@ WUploadThread::MessageReceived(MessageRef msg, const String &sessionID)
 			
 			if (msg()->FindBool("unishare:supports_compression", &c) == B_OK)
 			{
-				SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
+				qmtt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
 			}
 			break;
 		}
@@ -698,7 +726,7 @@ WUploadThread::DoUpload()
 					fCurrentOffset += numBytes;
 					MessageRef drain(GetMessageFromPool());
 					if (drain())
-						RequestOutputQueuesDrainedNotification(drain);
+						qmtt->RequestOutputQueuesDrainedNotification(drain);
 
 					MessageRef update(GetMessageFromPool(WUploadEvent::FileDataSent));	
 					if (update())
@@ -824,7 +852,7 @@ WUploadThread::DoUpload()
 				SetFinished(true);
 				MessageRef drain(GetMessageFromPool());
 				if (drain())
-					RequestOutputQueuesDrainedNotification(drain);
+					qmtt->RequestOutputQueuesDrainedNotification(drain);
 				break;
 			}
 		}
@@ -849,9 +877,9 @@ WUploadThread::SetRate(int rate)
 {
 	fTXRate = rate;
 	if (rate != 0)
-		SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		qmtt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
-		SetNewOutputPolicy(PolicyRef(NULL, NULL));
+		qmtt->SetNewOutputPolicy(PolicyRef(NULL, NULL));
 }
 
 void
@@ -930,7 +958,7 @@ WUploadThread::event(QEvent *e)
 		}
 	default:
 		{
-			return QMessageTransceiverThread::event(e);
+			return QObject::event(e);
 		}
 	}
 }
@@ -1143,7 +1171,7 @@ WUploadThread::Reset()
 {
 	PRINT("WUploadThread::Reset()\n");
 	SetFinished(true);
-	QMessageTransceiverThread::Reset();
+	qmtt->Reset();
 	PRINT("WUploadThread::Reset() OK\n");
 }
 
@@ -1307,13 +1335,13 @@ WUploadThread::GetUserName(const QString & sid) const
 status_t
 WUploadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
 {
-	return QMessageTransceiverThread::SendMessageToSessions(msgRef, optDistPath);
+	return qmtt->SendMessageToSessions(msgRef, optDistPath);
 }
 
 bool 
 WUploadThread::IsInternalThreadRunning()
 {
-	return QMessageTransceiverThread::IsInternalThreadRunning();
+	return qmtt->IsInternalThreadRunning();
 }
 
 uint32

@@ -16,7 +16,7 @@
 using namespace muscle;
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
-: QMessageTransceiverThread(owner), fOwner(owner), fShutdownFlag(optShutdownFlag), fLockFile(true) 
+: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag), fLockFile(true) 
 {
 	setName( "WDownloadThread" );
 
@@ -59,6 +59,30 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	CHECK_PTR(fBlockTimer);
 
 	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
+
+	// QMessageTransceiverThread
+
+	qmtt = new QMessageTransceiverThread(this);
+	CHECK_PTR(qmtt);
+
+	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
+			this, SLOT(MessageReceived(MessageRef, const String &)));
+
+	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
+			this, SLOT(SessionAccepted(const String &, uint16)));
+
+	connect(qmtt, SIGNAL(SessionDetached(const String &)),
+			this, SLOT(SessionDetached(const String &)));
+
+	connect(qmtt, SIGNAL(SessionConnected(const String &)),
+			this, SLOT(SessionConnected(const String &)));
+
+	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
+			this, SLOT(SessionDisconnected(const String &)));
+
+	connect(qmtt, SIGNAL(ServerExited()),
+			this, SLOT(ServerExited()));
+
 }
 
 WDownloadThread::~WDownloadThread()
@@ -96,7 +120,7 @@ WDownloadThread::~WDownloadThread()
 
 //	qApp->sendPostedEvents( fOwner, WDownloadEvent::Type );
 
-	ShutdownInternalThread();
+	qmtt->ShutdownInternalThread();
 
 	PRINT("WDownloadThread dtor OK\n");
 }
@@ -223,7 +247,7 @@ WDownloadThread::InitSession()
 	
 	if (!fFirewalled)	// the remote user is not firewalled?
 	{
-		if (StartInternalThread() == B_OK)
+		if (qmtt->StartInternalThread() == B_OK)
 		{
 			AbstractReflectSessionRef connectRef;
 			
@@ -245,7 +269,7 @@ WDownloadThread::InitSession()
 			}
 			
 			String sIP = (const char *) fIP.utf8(); // <postmaster@raasu.org> 20021026
-			if (AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
+			if (qmtt->AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
 			{
 				fCurrentOffset = fFileSize = 0;
 				fFile = NULL;
@@ -301,10 +325,10 @@ WDownloadThread::InitSession()
 
 		for (unsigned int i = pStart; i <= pEnd; i++)
 		{
-			if ((ret = PutAcceptFactory(i, factoryRef)) == B_OK)
+			if ((ret = qmtt->PutAcceptFactory(i, factoryRef)) == B_OK)
 			{
 				fAcceptingOn = factoryRef()->GetPort();
-				ret = StartInternalThread();
+				ret = qmtt->StartInternalThread();
 				break;
 			}
 		}
@@ -681,7 +705,7 @@ void
 WDownloadThread::SessionAccepted(const String &sessionID, uint16 port)
 {
 	// no need to accept anymore
-	RemoveAcceptFactory(0);		
+	qmtt->RemoveAcceptFactory(0);		
 	SessionConnected(sessionID);
 }
 
@@ -908,9 +932,9 @@ WDownloadThread::SetRate(int rate)
 {
 	fTXRate = rate;
 	if (rate != 0)
-		SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		qmtt->SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
-		SetNewInputPolicy(PolicyRef(NULL, NULL));
+		qmtt->SetNewInputPolicy(PolicyRef(NULL, NULL));
 }
 
 void
@@ -1067,7 +1091,7 @@ WDownloadThread::Reset()
 	PRINT("WDownloadThread::Reset()\n");
 	if (!fManuallyQueued)
 		SetFinished(true);
-	QMessageTransceiverThread::Reset();
+	qmtt->Reset();
 	PRINT("WDownloadThread::Reset() OK\n");
 }
 
@@ -1224,13 +1248,13 @@ WDownloadThread::GetUserName(const QString & sid) const
 status_t
 WDownloadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
 {
-	return QMessageTransceiverThread::SendMessageToSessions(msgRef, optDistPath);
+	return qmtt->SendMessageToSessions(msgRef, optDistPath);
 }
 
 bool 
 WDownloadThread::IsInternalThreadRunning()
 {
-	return QMessageTransceiverThread::IsInternalThreadRunning();
+	return qmtt->IsInternalThreadRunning();
 }
 
 uint32

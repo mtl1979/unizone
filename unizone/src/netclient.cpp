@@ -14,7 +14,7 @@
 #include "zlib/ZLibUtilityFunctions.h"
 
 NetClient::NetClient(QObject * owner)
-: QMessageTransceiverThread(owner), fChannelLock(true)
+: QObject(owner), fChannelLock(true)
 {
 	setName( "NetClient" );
 
@@ -29,6 +29,47 @@ NetClient::NetClient(QObject * owner)
 	fChannelLock.lock();
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
+
+	// QMessageTransceiverThread
+
+	qmtt = new QMessageTransceiverThread(this);
+	CHECK_PTR(qmtt);
+
+	connect(qmtt, SIGNAL(BeginMessageBatch()),
+			this, SLOT(BeginMessageBatch()));
+	
+	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
+			this, SLOT(MessageReceived(MessageRef, const String &)));
+
+	connect(qmtt, SIGNAL(EndMessageBatch()),
+			this, SLOT(EndMessageBatch()));
+
+	connect(qmtt, SIGNAL(SessionAttached(const String &)),
+			this, SLOT(SessionAttached(const String &)));
+	
+	connect(qmtt, SIGNAL(SessionDetached(const String &)),
+			this, SLOT(SessionDetached(const String &)));
+   
+	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
+			this, SLOT(SessionAccepted(const String &, uint16)));
+
+	connect(qmtt, SIGNAL(SessionConnected(const String &)),
+			this, SLOT(SessionConnected(const String &)));
+
+	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
+			this, SLOT(SessionDisconnected(const String &)));
+
+	connect(qmtt, SIGNAL(FactoryAttached(uint16)),
+			this, SLOT(FactoryAttached(uint16)));
+	
+	connect(qmtt, SIGNAL(FactoryDetached(uint16)),
+			this, SLOT(FactoryDetached(uint16)));
+
+	connect(qmtt, SIGNAL(ServerExited()),
+			this, SLOT(ServerExited()));
+
+	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
+			this, SLOT(OutputQueuesDrained(MessageRef)));
 }
 
 NetClient::~NetClient()
@@ -60,7 +101,7 @@ NetClient::Connect(const QString & server, uint16 port)
 	Disconnect();
 
 	PRINT("Starting thread\n");
-	if (StartInternalThread() != B_NO_ERROR)
+	if (qmtt->StartInternalThread() != B_NO_ERROR)
 	{
 		return B_ERROR;
 	}
@@ -70,7 +111,7 @@ NetClient::Connect(const QString & server, uint16 port)
 
 	if (gWin->fSettings->GetChatLimit() == WSettings::LimitNone)
 	{
-		if (AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
+		if (qmtt->AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
 		{
 			return B_ERROR;
 		}
@@ -83,7 +124,7 @@ NetClient::Connect(const QString & server, uint16 port)
 								gWin->fSettings->GetChatLimit())), NULL));
 		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
 								gWin->fSettings->GetChatLimit())), NULL));
-		if (AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
+		if (qmtt->AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
 		{
 			return B_ERROR;
 		}
@@ -100,9 +141,11 @@ NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
 	gWin->setCaption("Unizone");
-	if (IsInternalThreadRunning()) 
+	if (qmtt->IsInternalThreadRunning()) 
 	{
-		ShutdownInternalThread();
+		// Reset() implies ShutdownInternalThread();
+		//
+		// qmtt->ShutdownInternalThread();
 		Reset(); 
 		emit DisconnectedFromServer();
 		PRINT("DELETING\n");
@@ -664,7 +707,7 @@ NetClient::HandleParameters(MessageRef & next)
 void
 NetClient::SendChatText(const QString & target, const QString & text)
 {
-	if (IsInternalThreadRunning())
+	if (qmtt->IsInternalThreadRunning())
 	{
 		MessageRef chat(GetMessageFromPool(NEW_CHAT_TEXT));
 		if (chat())
@@ -685,7 +728,7 @@ NetClient::SendChatText(const QString & target, const QString & text)
 void
 NetClient::SendPing(const QString & target)
 {
-	if (IsInternalThreadRunning())
+	if (qmtt->IsInternalThreadRunning())
 	{
 		MessageRef ping(GetMessageFromPool(PING));
 		if (ping())
@@ -1000,31 +1043,31 @@ NetClient::EndMessageBatch()
 bool
 NetClient::IsConnected() const
 { 
-	return IsInternalThreadRunning();
+	return qmtt->IsInternalThreadRunning();
 }
 
 void
 NetClient::Reset()
 {
-	QMessageTransceiverThread::Reset();
+	qmtt->Reset();
 }
 
 status_t 
 NetClient::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
 {
-	return QMessageTransceiverThread::SendMessageToSessions(msgRef, optDistPath);
+	return qmtt->SendMessageToSessions(msgRef, optDistPath);
 }
 
 status_t 
 NetClient::SetOutgoingMessageEncoding(int32 encoding, const char * optDistPath)
 {
-	return QMessageTransceiverThread::SetOutgoingMessageEncoding(encoding, optDistPath);
+	return qmtt->SetOutgoingMessageEncoding(encoding, optDistPath);
 }
 
 status_t 
 NetClient::WaitForInternalThreadToExit()
 {
-	return QMessageTransceiverThread::WaitForInternalThreadToExit();
+	return qmtt->WaitForInternalThreadToExit();
 }
 
 void

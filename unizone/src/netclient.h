@@ -12,7 +12,7 @@ using namespace muscle;
 #include <qobject.h>
 
 #include "user.h"
-class NetClient : public QMessageTransceiverThread 
+class NetClient : public QObject 
 {
 	Q_OBJECT
 public:
@@ -180,10 +180,9 @@ private:
 
 	int timerID;
 
-protected:
-	virtual void timerEvent(QTimerEvent *);
+	QMessageTransceiverThread *qmtt;
 
-	// --------------------------------------------------------------------------------------------
+private slots:
 
 	void BeginMessageBatch();
 	void MessageReceived(MessageRef msg, const String & sessionID);
@@ -204,6 +203,9 @@ protected:
 
 	void OutputQueuesDrained(MessageRef ref);
 
+protected:
+
+	virtual void timerEvent(QTimerEvent *);
 };
 
 

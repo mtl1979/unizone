@@ -38,59 +38,59 @@ public:
     */
    virtual ~QMessageTransceiverThread();
 
-protected:
+signals:
    /** Emitted when MessageReceived() is about to be emitted one or more times. */
-   virtual void BeginMessageBatch() {}
+   void BeginMessageBatch();
 
    /** Emitted when a new Message has been received by one of the sessions being operated by our internal thread.
      * @param msg Reference to the Message that was received.
      * @param sessionID Session ID string of the session that received the message
      */
-   virtual void MessageReceived(MessageRef msg, const String & sessionID) {}
+   void MessageReceived(MessageRef msg, const String & sessionID);
 
    /** Emitted when we are done emitting MessageReceived, for the time being. */
-   virtual void EndMessageBatch() {}
+   void EndMessageBatch();
 
    /** Emitted when a new Session object is accepted by one of the factories being operated by our internal thread
      * @param sessionID Session ID string of the newly accepted Session object.
      * @param port Port number that the accepting factory was listening to
      */ 
-   virtual void SessionAccepted(const String & sessionID, uint16 port) {}
+   void SessionAccepted(const String & sessionID, uint16 port);
 
    /** Emitted when a session object is attached to the internal thread's ReflectServer */
-   virtual void SessionAttached(const String & sessionID) {}
+   void SessionAttached(const String & sessionID);
 
    /** Emitted when a session object connects to its remote peer (only used by sessions that were
      * created using AddNewConnectSession())
      * @param sessionID Session ID string of the newly connected Session object.
      */
-   virtual void SessionConnected(const String & sessionID) {}
+   void SessionConnected(const String & sessionID);
 
    /** Emitted when a session object is disconnected from its remote peer
      * @param sessionID Session ID string of the newly disconnected Session object.
      */
-   virtual void SessionDisconnected(const String & sessionID) {}
+   void SessionDisconnected(const String & sessionID);
 
    /** Emitted when a session object is removed from the internal thread's ReflectServer 
      * @param sessionID Session ID string of the newly disconnected Session object.
      */
-   virtual void SessionDetached(const String & sessionID) {}
+   void SessionDetached(const String & sessionID);
 
    /** Emitted when a factory object is attached to the internal thread's ReflectServer.
      * @param port Port ID that the factory object is attached on.
      */
-   virtual void FactoryAttached(uint16 port) {}
+   void FactoryAttached(uint16 port);
 
    /** Emitted when a factory object is removed from the internal thread's ReflectServer.
      * @param port Port ID that the factory object was removed from.
      */
-   virtual void FactoryDetached(uint16 port) {}
+   void FactoryDetached(uint16 port);
 
    /** Emitted when the thread's internal ReflectServer object exits. */
-   virtual void ServerExited() {}
+   void ServerExited();
 
    /** Signal emitted when a TCP connection is completed.  */
-   virtual void SessionConnected() {}
+   void SessionConnected();
 
    /** Emitted when the output-queues of the sessions specified in a previous call to 
      * RequestOutputQueuesDrainedNotification() have drained.  Note that this signal only 
@@ -98,7 +98,7 @@ protected:
      * it is not emitted spontaneously.
      * @param ref MessageRef that you previously specified in RequestOutputQueuesDrainedNotification().
      */
-   virtual void OutputQueuesDrained(MessageRef ref) {}
+   void OutputQueuesDrained(MessageRef ref);
 
    /** This signal is called for all events send by the internal thread.  You can use this
      * to catch custom events that don't have their own signal defined above, or if you want to
@@ -108,11 +108,12 @@ protected:
      * @param optFromSession If a session ID is relevant, this is the session ID; else it will be "".
      * @param optFromFactory If a factory is relevant, this will be the factory's port number; else it will be zero.
      */
-   virtual void InternalThreadEvent(uint32 code, MessageRef optMsg, const String & optFromSession, uint16 optFromfactory) {}
+   void InternalThreadEvent(uint32 code, MessageRef optMsg, const String & optFromSession, uint16 optFromfactory);
 
-public:
+public slots:
    /**
     * This method is the same as the MessageTransceiverThread::SendMessageToSessions();
+    * it's reimplemented here as a pass-through merely so it can be a slot.
     * Enqueues the given message for output by one or more of our attached sessions.
     * @param msgRef a reference to the Message to send out.
     * @return B_NO_ERROR on success, B_ERROR if out of memory.
@@ -123,6 +124,7 @@ protected:
    /** Overridden to send a QEvent */
    virtual void SignalOwner();
 
+private slots:
    virtual bool event(QEvent * event);
 };
 

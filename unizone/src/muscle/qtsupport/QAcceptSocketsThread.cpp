@@ -1,8 +1,7 @@
 /* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
-#include "qtsupport/QAcceptSocketsThread.h"
-
 #include <qapplication.h>
+#include "qtsupport/QAcceptSocketsThread.h"
 
 namespace muscle {
 
@@ -10,7 +9,7 @@ static const uint32 QMTT_SIGNAL_EVENT = 8360446;  // why yes, this is a complete
 
 QAcceptSocketsThread :: QAcceptSocketsThread(QObject * parent, const char * name) : QObject(parent, name)
 {
-   if (!name) setName( "QAcceptSocketsThread" );
+   // empty
 }
 
 QAcceptSocketsThread :: ~QAcceptSocketsThread()

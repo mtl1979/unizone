@@ -9,7 +9,7 @@
 
 using namespace muscle;
 
-class UpdateClient : public QMessageTransceiverThread
+class UpdateClient : public QObject
 {
 	Q_OBJECT
 public:
@@ -20,22 +20,12 @@ public:
 
 	// forwarders
 
-	status_t StartInternalThread() 
-	{
-		return QMessageTransceiverThread::StartInternalThread(); 
-	}
-	
-	status_t AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
-	{
-		return QMessageTransceiverThread::AddNewConnectSession(targetHostName, port, optSessionRef);
-	}
+	status_t StartInternalThread(); 
+	status_t AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef);
 
-	void Reset()
-	{
-		QMessageTransceiverThread::Reset();
-	}
+	void Reset();
 
-protected:
+private slots:
 
 	void MessageReceived(MessageRef msg, const String & sessionID);
 
@@ -45,6 +35,8 @@ protected:
 private:
 
 	bool CheckVersion(const char *, QString * = NULL);
+
+	QMessageTransceiverThread *qmtt;
 };
 
 #endif

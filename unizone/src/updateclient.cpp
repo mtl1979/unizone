@@ -6,14 +6,28 @@
 #include "iogateway/PlainTextMessageIOGateway.h"
 
 UpdateClient::UpdateClient(QObject *owner)
-: QMessageTransceiverThread(owner)
+: QObject(owner)
 {
 	setName( "UpdateClient" );
+
+	// QMessageTransceiverThread
+
+	qmtt = new QMessageTransceiverThread(this);
+	CHECK_PTR(qmtt);
+
+	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
+			this, SLOT(MessageReceived(MessageRef, const String &)));
+
+	connect(qmtt, SIGNAL(SessionConnected(const String &)),
+			this, SLOT(SessionConnected(const String &)));
+
+	connect(qmtt, SIGNAL(SessionDetached(const String &)),
+			this, SLOT(SessionDetached(const String &)));
 }
 
 UpdateClient::~UpdateClient()
 {
-	ShutdownInternalThread();
+	qmtt->ShutdownInternalThread();
 }
 
 void
@@ -38,7 +52,7 @@ UpdateClient::SessionConnected(const String &sessionID)
 	if (ref())
 	{
 		ref()->AddString(PR_NAME_TEXT_LINE, "GET " UPDATE_FILE " HTTP/1.1\nUser-Agent: Unizone/1.2\nHost: " UPDATE_SERVER "\n\n");
-		SendMessageToSessions(ref);
+		qmtt->SendMessageToSessions(ref);
 	}
 }
 
@@ -53,9 +67,9 @@ void
 UpdateClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
-	if (IsInternalThreadRunning()) 
+	if (qmtt->IsInternalThreadRunning()) 
 	{
-		ShutdownInternalThread();
+		// qmtt->ShutdownInternalThread();
 		Reset(); 
 	}
 }
@@ -98,3 +112,22 @@ UpdateClient::CheckVersion(const char * buf, QString * version)
 	}
 	return false;
 }
+
+status_t 
+UpdateClient::StartInternalThread() 
+{
+	return qmtt->StartInternalThread(); 
+}
+	
+status_t 
+UpdateClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
+{
+	return qmtt->AddNewConnectSession(targetHostName, port, optSessionRef);
+}
+
+void 
+UpdateClient::Reset()
+{
+	qmtt->Reset();
+}
+

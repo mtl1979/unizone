@@ -10,7 +10,7 @@
 
 using namespace muscle;
 
-class ServerClient : public QMessageTransceiverThread
+class ServerClient : public QObject
 {
 	Q_OBJECT
 public:
@@ -25,7 +25,11 @@ public:
 	status_t AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef);
 	void Reset();
 
-protected:
+private:
+
+	QMessageTransceiverThread *qmtt;
+
+private slots:
 
 	void MessageReceived(MessageRef msg, const String & sessionID);
 

@@ -27,7 +27,7 @@ using namespace muscle;
 #define PARTIAL_RESUME_SIZE (64 * 1024)
 
 
-class WDownloadThread : public QMessageTransceiverThread
+class WDownloadThread : public QObject
 {
 	Q_OBJECT
 public:
@@ -103,7 +103,6 @@ private slots:
 	void ConnectTimer(); // Connection timed out?
 	void BlockedTimer(); // Blocking timed out?
 
-protected:
 	void MessageReceived(MessageRef msg, const String & sessionID);
 
 	void SessionAccepted(const String &sessionID, uint16 port);
@@ -114,6 +113,8 @@ protected:
 	void ServerExited();
 
 	// --------------------------------------------------------------------------------------------
+
+protected:
 
 	mutable QMutex fLockFile;
 	QFile * fFile;			// file on the HD
@@ -172,6 +173,8 @@ private:
 	String _sessionID;
 
 	int timerID;
+
+	QMessageTransceiverThread *qmtt;
 
 	void InitTransferRate();
 	void InitTransferETA();

@@ -9,14 +9,28 @@
 using namespace muscle;
 
 ServerClient::ServerClient(QObject *owner)
-: QMessageTransceiverThread(owner)
+: QObject(owner)
 {
 	setName( "ServerClient" );
+
+	// QMessageTransceiverThread
+
+	qmtt = new QMessageTransceiverThread(this);
+	CHECK_PTR(qmtt);
+
+	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
+			this, SLOT(MessageReceived(MessageRef, const String &)));
+
+	connect(qmtt, SIGNAL(SessionConnected(const String &)),
+			this, SLOT(SessionConnected(const String &)));
+
+	connect(qmtt, SIGNAL(SessionDetached(const String &)),
+			this, SLOT(SessionDetached(const String &)));
 }
 
 ServerClient::~ServerClient()
 {
-	ShutdownInternalThread();
+	qmtt->ShutdownInternalThread();
 }
 
 void
@@ -53,7 +67,7 @@ ServerClient::SessionConnected(const String &sessionID)
 	if (msgref())
 	{
 		msgref()->AddString(PR_NAME_TEXT_LINE, "GET /servers.txt HTTP/1.1\nUser-Agent: Unizone/1.2\nHost: beshare.tycomsystems.com\n\n");
-		SendMessageToSessions(msgref);
+		qmtt->SendMessageToSessions(msgref);
 	}
 }
 
@@ -67,9 +81,9 @@ void
 ServerClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
-	if (IsInternalThreadRunning()) 
+	if (qmtt->IsInternalThreadRunning()) 
 	{
-		ShutdownInternalThread();
+		// qmtt->ShutdownInternalThread();
 		Reset(); 
 	}
 }
@@ -77,17 +91,17 @@ ServerClient::Disconnect()
 status_t 
 ServerClient::StartInternalThread() 
 {
-	return QMessageTransceiverThread::StartInternalThread(); 
+	return qmtt->StartInternalThread(); 
 }
 
 status_t 
 ServerClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
 {
-	return QMessageTransceiverThread::AddNewConnectSession(targetHostName, port, optSessionRef);
+	return qmtt->AddNewConnectSession(targetHostName, port, optSessionRef);
 }
 
 void 
 ServerClient::Reset()
 {
-	QMessageTransceiverThread::Reset();
+	qmtt->Reset();
 }

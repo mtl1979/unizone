@@ -48,7 +48,7 @@ protected:
    /** Overridden to send a QEvent */
    virtual void SignalOwner();
 
-private:
+private slots:
    virtual bool event(QEvent * event);
 };
 

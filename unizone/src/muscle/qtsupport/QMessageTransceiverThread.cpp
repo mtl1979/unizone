@@ -1,8 +1,7 @@
 /* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
-#include "qtsupport/QMessageTransceiverThread.h"
-
 #include <qapplication.h>
+#include "qtsupport/QMessageTransceiverThread.h"
 
 namespace muscle {
 
@@ -10,7 +9,7 @@ static const uint32 QMTT_SIGNAL_EVENT = 8360447;  // why yes, this is a complete
 
 QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const char * name) : QObject(parent, name)
 {
-   if (!name) setName( "QMessageTransceiverThread" );
+   // empty
 }
 
 QMessageTransceiverThread :: ~QMessageTransceiverThread()
@@ -49,23 +48,23 @@ bool QMessageTransceiverThread :: event(QEvent * event)
                if (seenIncomingMessage == false)
                {
                   seenIncomingMessage = true;
-                  BeginMessageBatch();
+                  emit BeginMessageBatch();
                }
-               MessageReceived(next, sessionID); 
+               emit MessageReceived(next, sessionID); 
             break;
-            case MTT_EVENT_SESSION_ACCEPTED:      SessionAccepted(sessionID, port); break;
-            case MTT_EVENT_SESSION_ATTACHED:      SessionAttached(sessionID);       break;
-            case MTT_EVENT_SESSION_CONNECTED:     SessionConnected(sessionID);      break;
-            case MTT_EVENT_SESSION_DISCONNECTED:  SessionDisconnected(sessionID);   break;
-            case MTT_EVENT_SESSION_DETACHED:      SessionDetached(sessionID);       break;
-            case MTT_EVENT_FACTORY_ATTACHED:      FactoryAttached(port);            break;
-            case MTT_EVENT_FACTORY_DETACHED:      FactoryDetached(port);            break;
-            case MTT_EVENT_OUTPUT_QUEUES_DRAINED: OutputQueuesDrained(next);        break;
-            case MTT_EVENT_SERVER_EXITED:         ServerExited();                   break;
+            case MTT_EVENT_SESSION_ACCEPTED:      emit SessionAccepted(sessionID, port); break;
+            case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached(sessionID);       break;
+            case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(sessionID);      break;
+            case MTT_EVENT_SESSION_DISCONNECTED:  emit SessionDisconnected(sessionID);   break;
+            case MTT_EVENT_SESSION_DETACHED:      emit SessionDetached(sessionID);       break;
+            case MTT_EVENT_FACTORY_ATTACHED:      emit FactoryAttached(port);            break;
+            case MTT_EVENT_FACTORY_DETACHED:      emit FactoryDetached(port);            break;
+            case MTT_EVENT_OUTPUT_QUEUES_DRAINED: emit OutputQueuesDrained(next);        break;
+            case MTT_EVENT_SERVER_EXITED:         emit ServerExited();                   break;
          }
-         InternalThreadEvent(code, next, sessionID, port);  // these get emitted for any event
+         emit InternalThreadEvent(code, next, sessionID, port);  // these get emitted for any event
       }
-      if (seenIncomingMessage) EndMessageBatch();
+      if (seenIncomingMessage) emit EndMessageBatch();
       return true;
    }
    else return QObject::event(event);
