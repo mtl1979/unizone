@@ -4,4 +4,4 @@ shared
 logs
 downloads
 unizone.lng
-.depends .depends1 .depends2 .depends3
+.depends*
