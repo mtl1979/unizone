@@ -2258,7 +2258,6 @@ WinShareWindow::Disconnect2()
 	if (fNetClient && fNetClient->IsConnected()	/* this is to stop a forever loop involving the DisconnectedFromServer() signal */)
 	{
 		fNetClient->Disconnect();
-		fNetClient->WaitForInternalThreadToExit(); // Helps server change?
 	}
 	fUpdateThread->Disconnect();
 	// just in case..

@@ -159,7 +159,7 @@ NetClient::Disconnect()
 	{
 		// Reset() implies ShutdownInternalThread();
 		//
-		// qmtt->ShutdownInternalThread();
+		PRINT("RESETING\n");
 		Reset(); 
 		emit DisconnectedFromServer();
 		PRINT("DELETING\n");
@@ -1180,6 +1180,7 @@ void
 NetClient::Reset()
 {
 	qmtt->Reset();
+	qmtt->WaitForInternalThreadToExit();
 }
 
 status_t 

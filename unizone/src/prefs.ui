@@ -680,6 +680,12 @@
                                         <item>
                                             <property>
                                                 <name>text</name>
+                                                <string>DSL-1M</string>
+                                            </property>
+                                        </item>
+                                        <item>
+                                            <property>
+                                                <name>text</name>
                                                 <string>T1</string>
                                             </property>
                                         </item>

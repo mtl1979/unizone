@@ -677,6 +677,10 @@ BandwidthToBytes(const QString & connection)
 	{
 		bps = 768000;
 	}
+	else if ( ( connection == "DSL-1M" ) || (connection == QObject::tr( "DSL-1M" ) ) )
+	{
+		bps = 1000000;
+	}
 	else if ( ( connection == "T1" ) || ( connection == QObject::tr( "T1" ) ) )
 	{
 		bps = 1500000;
@@ -713,6 +717,7 @@ BandwidthToString(uint32 bps)
 	case 384000:		return "DSL-384k";
 	case 512000:		return "DSL-512k";
 	case 768000:		return "Cable";
+	case 1000000:		return "DSL-1M";
 	case 1500000:		return "T1";
 	case 4500000:		return "T3";
 	case 3 * 51840000:	return "OC-3";
