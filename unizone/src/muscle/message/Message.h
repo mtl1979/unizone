@@ -230,7 +230,7 @@ public:
     *  Convert the given byte buffer back into a Message.  Any previous contents of
     *  this Message will be erased, and replaced with the data specified in the byte buffer.
     *  @param buf Pointer to a byte buffer containing a flattened Message to restore.
-    *  @size The number of bytes in the flattened byte buffer.
+    *  @param size The number of bytes in the flattened byte buffer.
     *  @return B_NO_ERROR if the buffer was successfully Unflattened, or B_ERROR if there
     *          was an error (usually meaning the buffer was corrupt, or out-of-memory)
     */
@@ -353,7 +353,7 @@ public:
     *  to the local program, but note that they are not persistent--they won't get 
     *  Flatten()'d with the rest of the contents of the Message!
     *  @param name Name of the field to add (or add to)
-    *  @param objRef Reference to the tag object to add.
+    *  @param tagRef Reference to the tag object to add.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
    status_t AddTag(const String & name, GenericRef tagRef);
@@ -487,14 +487,14 @@ public:
     *  @param flatRef FlatCountable reference to prepend
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t PrependFlat(const String & name, FlatCountableRef ref);
+   status_t PrependFlat(const String & name, FlatCountableRef flatRef);
 
    /** Prepends a new ephemeral-tag-item to this Message.  Tags are references to arbitrary 
     *  ref-countable C++ objects;  They can be added to a Message as a matter of convenience 
     *  to the local program, but note that they are not persistent--they won't get 
     *  Flatten()'d with the rest of the contents of the Message!
     *  @param name Name of the field to add (or prepend to)
-    *  @param objRef Reference to the tag object to add or prepend.
+    *  @param tagRef Reference to the tag object to add or prepend.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
    status_t PrependTag(const String & name, GenericRef tagRef);
@@ -731,6 +731,7 @@ public:
    /** Retrieve a pointer to the raw data bytes of a stored message field of any type.
     *  @param name The field name to retrieve the pointer to
     *  @param type The type code of the field you are interested, or B_ANY_TYPE if any type is acceptable.
+    *  @param index Index of the data item to look for (within the field)
     *  @param data On success, a pointer to the data bytes will be written into this object.
     *  Note:  If you are retrieving B_MESSAGE_TYPE, then (data) will be set to point to a MessageRef
     *         object, and NOT a Message object, or flattened-Message-buffer!

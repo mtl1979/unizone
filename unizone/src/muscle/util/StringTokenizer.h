@@ -44,12 +44,12 @@ public:
    /** This Constructor is the same as above, only with this one you allow
     *  the StringTokenizer to operator directly on (tokenizeMe) rather
     *  than making it allocate a copy first.  (it's a bit more efficient)
-    *  @param okay Ignored; it's only here to disambiguate the two constructors.
+    *  @param junk Ignored; it's only here to disambiguate the two constructors.
     *  @param tokenizeMe The string to tokenize.  This string will get munged!
     *  @param separators ASCII string representing a list of characters to interpret a word separators.
     *                    Defaults to ", \t" (where \t is of course the tab character)
     */
-   StringTokenizer(bool /*okay*/, char * tokenizeMe, const char * separators = ", \t")
+   StringTokenizer(bool /*junk*/, char * tokenizeMe, const char * separators = ", \t")
    {
       _next = tokenizeMe;
       _seps = separators;

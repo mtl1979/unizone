@@ -23,14 +23,14 @@ public:
      *                 Any process that uses the same key will use the same shared memory limit.
      * @param memberID Our member ID in the group.  This number should be between zero and (groupSize-1) inclusive,
      *                 and should be different for each process in the process group.  It is used to keep track
-     *                 of how much memory each daemon in the group is using.  If the memberID is less than zero,
+     *                 of how much memory each process in the group is using.  If the memberID is less than zero,
      *                 this allocator will not track memory used by this process, and is then useful only to
      *                 watch memory used by other processes.
-     * @param groupSize The maximum number of daemons that may be in the group.  
-     *                  This value should be the same for all daemons in a given group.
+     * @param groupSize The maximum number of process that may be in the group.  
+     *                  This value should be the same for all process in a given group.
      * @param slaveRef Reference to a sub-MemoryAllocator whose methods we will call through to.
-     * @param maxBytes The maximum number of bytes that may be allocated, in aggregate, by all the daemons
-     *                 in the group.  This value should be the same for all daemons in a given group.
+     * @param maxBytes The maximum number of bytes that may be allocated, in aggregate, by all the process
+     *                 in the group.  This value should be the same for all process in a given group.
      */
    SharedUsageLimitProxyMemoryAllocator(const char * groupKey, int32 memberID, uint32 groupSize, MemoryAllocatorRef slaveRef, size_t maxBytes);
 
@@ -54,6 +54,9 @@ public:
 
    /** Returns our own process's member ID value, as passed in to the constructor */
    int32 GetMemberID() const {return _memberID;}
+
+   /** Returns the number of processes in our process group, as specified in the constructor. */
+   uint32 GetGroupSize() const {return _groupSize;}
 
    /** Returns the current memory used, in bytes, for each member of our group.
     *  @param retCounts on success, the bytes used by each member of our group will

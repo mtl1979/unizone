@@ -56,7 +56,7 @@ protected:
     *  @param msg MessageRef containing the Message that was just passed to MessageReceivedFromGateway()
     *  @param userData userData value that was just passed to MessageReceivedFromGateway()
     */
-   virtual void AfterMessageReceivedFromGateway(MessageRef, void *) {/* empty */}
+   virtual void AfterMessageReceivedFromGateway(MessageRef, void * /*userData*/) {/* empty */}
 
    /** This method will be called just before MessageReceivedFromGateway() and AfterMessageReceivedFromGateway()
     *  are called one or more times.  Default implementation is a no-op.
@@ -97,7 +97,7 @@ public:
    QueueGatewayMessageReceiver() {/* empty */}
 
 protected:
-   virtual void MessageReceivedFromGateway(MessageRef msg, void *) {(void) AddTail(msg);}
+   virtual void MessageReceivedFromGateway(MessageRef msg, void * /*userData*/) {(void) AddTail(msg);}
 };
 
 /**

@@ -223,6 +223,7 @@ public:
      *  </ol>
      * May return some other code if the ThreadSupervisorSession or ThreadWorkerSessions have
      * been customized to return other message types.
+     * @param retEventCode On successful return, the MTT_EVENT_* code for this event will be written here.
      * @param optRetMsgRef If non-NULL, on success the MessageRef this argument points to is written into so that
      *                     it references a Message associated with the event.  This is mainly used with the 
      *                     MTT_EVENT_INCOMING_MESSAGE event code.
@@ -232,7 +233,7 @@ public:
      *                    relevant factory written into it.
      * @returns The number of events left in the event queue (after our having removed one) on success, or -1 on failure.
      */
-   int32 GetNextEventFromInternalThread(uint32 & retEventCode, MessageRef * optRefMsgRef = NULL, String * optFromSession = NULL, uint16 * optFromFactory = NULL);
+   int32 GetNextEventFromInternalThread(uint32 & retEventCode, MessageRef * optRetMsgRef = NULL, String * optFromSession = NULL, uint16 * optFromPort = NULL);
 
    /**
      * Requests that the MessageTranceiverThread object send us a MTT_EVENT_OUTPUT_QUEUES_DRAINED event

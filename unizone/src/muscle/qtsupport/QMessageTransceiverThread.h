@@ -110,7 +110,7 @@ signals:
      * @param optFromSession If a session ID is relevant, this is the session ID; else it will be "".
      * @param optFromFactory If a factory is relevant, this will be the factory's port number; else it will be zero.
      */
-   void InternalThreadEvent(uint32 code, MessageRef optMsg, const String & optFromSession, uint16 optFromfactory);
+   void InternalThreadEvent(uint32 code, MessageRef optMsg, const String & optFromSession, uint16 optFromFactory);
 
 public slots:
    /**
@@ -118,6 +118,8 @@ public slots:
     * it's reimplemented here as a pass-through merely so it can be a slot.
     * Enqueues the given message for output by one or more of our attached sessions.
     * @param msgRef a reference to the Message to send out.
+    * @param optDistPath if non-NULL, then only sessions that contain at least one node that matches this
+    *                    path will receive the Message.  Otherwise all sessions will receive the Message.
     * @return B_NO_ERROR on success, B_ERROR if out of memory.
     */
    status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);

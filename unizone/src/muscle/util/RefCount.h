@@ -83,7 +83,7 @@ public:
      * @param ref The generic reference to set ourselves from.
      * @param junk This parameter is ignored (it's only here to disambiguate constructors)
      */
-   Ref(const GenericRef & ref, bool) : _item(NULL), _recycler(NULL), _doRefCount(true) {(void) SetFromGeneric(ref);}
+   Ref(const GenericRef & ref, bool /*junk*/) : _item(NULL), _recycler(NULL), _doRefCount(true) {(void) SetFromGeneric(ref);}
 
    /** Unreferences the held data item.  If this is the last Ref that
     *  references the held data item, the data item will be deleted or recycled at this time.

@@ -133,47 +133,48 @@ public:
 
    /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
      * @param setKey on success, this parameter will contain the next key in the iteration.
-     * @param setKey on success, this parameter will contain the next value in the iteration.
+     * @param setValue on success, this parameter will contain the next value in the iteration.
      * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
      */
    status_t GetNextKeyAndValue(KeyType & setKey, ValueType & setValue);
 
    /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
      * @param setKey on success, this parameter will contain the next key in the iteration.
-     * @param setKey on success, this pointer will point to the next value in the iteration.
+     * @param setValuePtr on success, this pointer will point to the next value in the iteration.
      * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
      */
    status_t GetNextKeyAndValue(KeyType & setKey, ValueType * & setValuePtr);
 
    /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
      * @param setKey on success, this parameter will contain the next key in the iteration.
-     * @param setKey on success, this pointer will point to the next value in the iteration.
+     * @param setValuePtr on success, this pointer will point to the next value in the iteration.
      * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
      */
    status_t GetNextKeyAndValue(KeyType & setKey, const ValueType * & setValuePtr);
 
    /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
-     * @param setKey on success, this pointer will point to the next key in the iteration.
-     * @param setKey on success, this parameter will contain the next value in the iteration.
+     * @param setKeyPtr on success, this pointer will point to the next key in the iteration.
+     * @param setValue on success, this parameter will contain the next value in the iteration.
      * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
      */
    status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, ValueType & setValue);
 
    /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
-     * @param setKey on success, this pointer will point to the next key in the iteration.
-     * @param setKey on success, this pointer will point to the next value in the iteration.
+     * @param setKeyPtr on success, this pointer will point to the next key in the iteration.
+     * @param setValuePtr on success, this pointer will point to the next value in the iteration.
      * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
      */
    status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, ValueType * & setValuePtr);
 
    /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
-     * @param setKey on success, this pointer will point to the next key in the iteration.
-     * @param setKey on success, this pointer will point to the next value in the iteration.
+     * @param setKeyPtr on success, this pointer will point to the next key in the iteration.
+     * @param setValuePtr on success, this pointer will point to the next value in the iteration.
      * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
      */
    status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, const ValueType * & setValuePtr);
 
 private:
+   /** The Hashtable class needs access to our internals to do the iteration operation */
    friend class Hashtable<KeyType, ValueType, HashFunctorType>;
 
    HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & owner, void * startCookie, bool backwards);
@@ -296,7 +297,7 @@ public:
     *  @param lookupKey The key used to look up the key object
     *  @return A pointer to an internally held key object on success, or NULL on failure.
     */
-   const KeyType * GetKey(const KeyType & lookupkey) const;
+   const KeyType * GetKey(const KeyType & lookupKey) const;
 
    /** Get an iterator for use with this table.
      * @param backwards Set this to true if you want to iterate through the item list backwards.  Defaults to false.
@@ -324,7 +325,7 @@ public:
     *  (This Hashtable class keeps its entries in a well-defined order)
     *  Note that this method is an O(N) operation, so for iteration, always use GetIterator() instead.
     *  @param index Index of the key to return a pointer to.  Should be in the range [0, GetNumItems()-1].
-    *  @retKey On success, the contents of the (index)'th key will be written into this object.
+    *  @param retKey On success, the contents of the (index)'th key will be written into this object.
     *  @return B_NO_ERROR on success, or B_ERROR on failure.
     */
    status_t GetKeyAt(uint32 index, KeyType & retKey) const;
@@ -537,6 +538,7 @@ public:
    uint32 GetNumAllocatedSlots() const {return _tableSize;}
 
 private:
+   /** Our hashtable iterator class needs access to our internals to register itself with us. */
    friend class HashtableIterator<KeyType, ValueType, HashFunctorType>;
 
    class HashtableEntry

@@ -19,7 +19,7 @@ class FilterSessionFactory : public ReflectSessionFactory
 {
 public:
    /** Constructor.
-     * @param slaveReference to the slave factory that will do the actual creation for us.
+     * @param slaveRef Reference to the slave factory that will do the actual creation for us.
      * @param maxSessionsPerHost If set, this is the maximum number of simultaneous connections
      *                           we will allow to be in existence from any one host at a time.
      * @param totalMaxSessions If set, this is the maximum number of simultaneous connections
@@ -49,7 +49,7 @@ public:
      * @param requirePattern Pattern to match against (e.g. "192.168.0.*")
      * @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
      */
-   status_t PutRequirePattern(const char * banPattern);
+   status_t PutRequirePattern(const char * requirePattern);
 
    /** Remove the first matching instance of (banPattern) from our set of ban patterns.
      * Note that we don't do any pattern matching here, we will remove exactly one ban
@@ -57,7 +57,7 @@ public:
      * @param requirePattern Pattern to remove from the set of ban patterns
      * @return B_NO_ERROR on success, or B_ERROR if the given pattern wasn't found in the set.
      */
-   status_t RemoveBanPattern(const char * banPattern);
+   status_t RemoveBanPattern(const char * requirePattern);
 
    /** Remove the first matching instance of (requirePattern) from our set of require patterns.
      * Note that we don't do any pattern matching here, we will remove exactly one require

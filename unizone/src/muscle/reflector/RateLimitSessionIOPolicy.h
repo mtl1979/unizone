@@ -29,17 +29,17 @@ public:
    /** Destructor. */
    virtual ~RateLimitSessionIOPolicy();
 
-   virtual void PolicyHolderAdded(const PolicyHolder & ph);
-   virtual void PolicyHolderRemoved(const PolicyHolder & ph);
+   virtual void PolicyHolderAdded(const PolicyHolder & holder);
+   virtual void PolicyHolderRemoved(const PolicyHolder & holder);
 
    virtual void BeginIO(uint64 now);
-   virtual bool OkayToTransfer(const PolicyHolder & ph);
-   virtual uint32 GetMaxTransferChunkSize(const PolicyHolder & ph);
-   virtual void BytesTransferred(const PolicyHolder & ph, uint32 numBytes);
+   virtual bool OkayToTransfer(const PolicyHolder & holder);
+   virtual uint32 GetMaxTransferChunkSize(const PolicyHolder & holder);
+   virtual void BytesTransferred(const PolicyHolder & holder, uint32 numBytes);
    virtual void EndIO(uint64 now);
 
    virtual uint64 GetPulseTime(uint64 now, uint64 prevResult);
-   virtual void Pulse(uint64 now, uint64 schedTime);
+   virtual void Pulse(uint64 now, uint64 scheduledTime);
 
 private:
    void UpdateTransferTally(uint64 now);

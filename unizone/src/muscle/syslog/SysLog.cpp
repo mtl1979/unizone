@@ -9,6 +9,8 @@
 
 #ifdef __linux__
 # include <execinfo.h>
+#elif defined(WIN32) && !defined(vsnprintf)
+# define vsnprintf _vsnprintf
 #endif
 
 BEGIN_NAMESPACE(muscle);
@@ -106,6 +108,7 @@ public:
 LogLineCallback :: LogLineCallback() : _writeTo(_buf)
 {
    _buf[0] = '\0';
+   _buf[sizeof(_buf)-1] = '\0';  // just in case vsnsprintf() has to truncate
 }
 
 LogLineCallback :: ~LogLineCallback() 
@@ -116,35 +119,44 @@ LogLineCallback :: ~LogLineCallback()
 void LogLineCallback :: Log(time_t when, int logLevel, const char * format, va_list argList)
 {
    // Generate the new text
-   vsprintf(_writeTo, format, argList);
-   _writeTo = strchr(_writeTo, '\0');
-   if (_writeTo >= _buf+sizeof(_buf))
-   { 
-      printf("LogLineCallback: buffer overflow detected!!!");
-      exit(10);
-   }
+   int bytesAttempted = vsnprintf(_writeTo, (sizeof(_buf)-1)-(_writeTo-_buf), format, argList);  // the -1 is for the guaranteed NUL terminator
+   bool wasTruncated = (bytesAttempted != (int)strlen(_writeTo));  // do not combine with above line!
 
    // Log any newly completed lines
-   char * startAt = _buf;
+   char * logFrom  = _buf;
+   char * searchAt = _writeTo;
    while(true)
    {
-      char * nextReturn = strchr(startAt, '\n');
+      char * nextReturn = strchr(searchAt, '\n');
       if (nextReturn)
       {
          *nextReturn = '\0';  // terminate the string
-         LogLine(when, logLevel, startAt);
-         startAt = nextReturn+1;
+         LogLine(when, logLevel, logFrom);
+         searchAt = logFrom = nextReturn+1;
       }
-      else break;
+      else 
+      {
+         // If we ran out of buffer space and no carriage returns were detected,
+         // then we need to just dump what we have and move on, there's nothing else we can do
+         if (wasTruncated)
+         {
+            LogLine(when, logLevel, logFrom);
+            _buf[0] = '\0';
+            _writeTo = searchAt = logFrom = _buf;
+         }
+         break;
+      }
    }
-   
-   // And finally, move any partial lines back to the beginning of the array
-   if (startAt > _buf) 
+
+   // And finally, move any remaining incomplete lines back to the beginning of the array, for next time
+   if (logFrom > _buf) 
    {
-      memmove(_buf, startAt, strlen(startAt)+1);
-      _writeTo = strchr(_buf, '\0');
+      int slen = strlen(logFrom);
+      memmove(_buf, logFrom, slen+1);  // include NUL byte
+      _writeTo = &_buf[slen];          // point to our just-moved NUL byte
    }
-   
+   else _writeTo = strchr(searchAt, '\0');
+
    _lastLogWhen = when;
    _lastLogLevel = logLevel;
 }

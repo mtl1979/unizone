@@ -23,12 +23,7 @@ BEGIN_NAMESPACE(muscle);
 
 status_t ParseArg(const String & a, Message & addTo)
 {
-   String argName = a;
-
-   // Remove any commenting after the hash mark
-   int32 hashIdx = argName.IndexOf("#");
-   if (hashIdx >= 0) argName = argName.Substring(0, hashIdx);
-   argName = argName.Trim();
+   String argName = a.Substring("#").Trim();
 
    // Remove any initial dashes
    while(argName.StartsWith("-")) argName = argName.Substring(1);
@@ -41,6 +36,36 @@ status_t ParseArg(const String & a, Message & addTo)
       argName  = argName.Substring(0, equalsAt).Trim();
    }
    return (argName.Length() > 0) ? addTo.AddString(argName.ToLowerCase()(), argValue) : B_NO_ERROR;
+}
+
+status_t ParseArgs(const String & line, Message & addTo)
+{
+   const String trimmed = line.Substring("#").Trim();
+   uint32 len = trimmed.Length();
+
+   // First, we'll pre-process the string into a StringTokenizer-friendly
+   // form, by replacing all quoted spaces with gunk and removing the quotes
+   String tokenizeThis; 
+   if (tokenizeThis.Prealloc(len) != B_NO_ERROR) return B_ERROR;
+   const char GUNK_CHAR      = (char) 0x01;
+   bool lastCharWasBackslash = false;
+   bool inQuotes = false;
+   for (uint32 i=0; i<len; i++)
+   {
+      char c = trimmed[i];
+      if ((lastCharWasBackslash == false)&&(c == '\"')) inQuotes = !inQuotes;
+                                                   else tokenizeThis += ((inQuotes)&&(c == ' ')) ? GUNK_CHAR : c;
+      lastCharWasBackslash = (c == '\\');
+   }
+   StringTokenizer tok(tokenizeThis());
+   const char * next;
+   while((next = tok()) != NULL)
+   {
+      String n(next);
+      n.Replace(GUNK_CHAR, ' ');
+      if (ParseArg(n, addTo) != B_NO_ERROR) return B_ERROR;
+   }
+   return B_NO_ERROR;
 }
 
 status_t ParseArgs(int argc, char ** argv, Message & addTo)
@@ -58,7 +83,7 @@ status_t ParseFile(FILE * fpIn, Message & addTo)
       status_t ret = B_NO_ERROR;
       while(fgets(buf, bufSize, fpIn))
       {
-         if (ParseArg(String(buf), addTo) != B_NO_ERROR)
+         if (ParseArgs(buf, addTo) != B_NO_ERROR)
          {
             ret = B_ERROR;
             break;
@@ -72,6 +97,37 @@ status_t ParseFile(FILE * fpIn, Message & addTo)
       WARN_OUT_OF_MEMORY;
       return B_ERROR;
    }
+}
+
+status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort)
+{
+   if (args.FindString(fn, retHost) == B_NO_ERROR)
+   {
+      int32 colIdx = retHost.IndexOf(':');
+      if (colIdx >= 0)
+      {
+         uint16 p = atoi(retHost()+colIdx+1);
+         if (p > 0) retPort = p;
+         retHost = retHost.Substring(0, colIdx);
+      }
+      return B_NO_ERROR;
+   }
+   return B_ERROR;
+}
+
+status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
+{
+   const char * v;
+   if (args.FindString(fn, &v) == B_NO_ERROR)
+   {
+      uint16 r = atoi(v);
+      if (r > 0)
+      {
+         retPort = r;
+         return B_NO_ERROR;
+      }
+   }
+   return B_ERROR;
 }
 
 void HandleStandardDaemonArgs(const Message & args)

@@ -72,8 +72,8 @@ public:
     */      
    ObjectPool(uint32 maxPoolSize=100, 
               ObjectCallback recycleCallback = NULL, void * recycleData = NULL,
-              ObjectCallback initCallback = NULL, void * initData = NULL) : 
-      _initObjectFunc(initCallback), _initObjectUserData(initData),
+              ObjectCallback initCallback = NULL, void * initCallbackData = NULL) : 
+      _initObjectFunc(initCallback), _initObjectUserData(initCallbackData),
       _recycleObjectFunc(recycleCallback), _recycleObjectUserData(recycleData),
       _maxPoolSize(maxPoolSize)
    {

@@ -5,16 +5,18 @@
 
 #if defined(MUSCLE_USE_PTHREADS)
 # include <pthread.h>
-#elif defined(QT_THREAD_SUPPORT)
-# include <qthread.h>
-#elif defined(__BEOS__)
-# include <kernel/OS.h>
 #elif defined(WIN32)
 # include <windows.h>
+#elif defined(QT_THREAD_SUPPORT)
+# include <qthread.h>
+# include <qmutex.h>
+# include <qwaitcondition.h>
+#elif defined(__BEOS__)
+# include <kernel/OS.h>
 #elif defined(__ATHEOS__)
 # include <atheos/threads.h>
 #else
-# error "Thread:  threading support not implemented for this platform.  You'll need to add support for your platform to the MUSCLE Lock and Thread classes for your OS before you can use the Thread class here."
+# error "Thread:  threading support not implemented for this platform.  You'll need to add support for your platform to the MUSCLE Lock and Thread classes for your OS before you can use the Thread class here (or define MUSCLE_USE_PTHREADS or QT_THREAD_SUPPORT to use those threading APIs, respectively)."
 #endif
 
 #include "system/Mutex.h"
@@ -55,6 +57,9 @@ public:
      */
    bool IsInternalThreadRunning() const {return _threadRunning;}
 
+   /** Returns true iff the calling thread is the internal thread, or false if the caller is any other thread. */
+   bool IsCallerInternalThread() const;
+
    /** Tells the internal thread to quit by sending it a NULL MessageRef, and then optionally 
      * waits for it to go away by calling WaitForInternalThreadToExit().  
      * If the internal thread isn't running, this method is a no-op.
@@ -92,6 +97,7 @@ public:
      *                   non-blocking poll of the reply queue.
      *                   If (wakeuptime) is set to MUSCLE_TIME_NEVER, then this method 
      *                   will block indefinitely, until a new reply is ready.
+     * @see GetOwnerSocketSet() for advanced control of this method's behaviour
      * @returns The number of Messages left in the reply queue on success, or -1 on failure
      *          (The call timed out without any replies ever showing up)
      */
@@ -143,6 +149,48 @@ public:
      */
    void SetOkayToCloseOwnerWakeupSocket(bool okayToClose);
 
+   /** Enumeration of the socket sets that are available for blocking on; used in GetOwnerSocketSet()
+    *  and GetInternalSocketSet() calls.
+    */
+   enum {
+      SOCKET_SET_READ = 0,  // set of sockets to watch for ready-to-read (i.e. incoming data available)
+      SOCKET_SET_WRITE,     // set of sockets to watch for ready-to-write (i.e. outgoing buffer space available)
+      SOCKET_SET_EXCEPTION, // set of sockets to watch for exceptional conditions (implementation defined)
+      NUM_SOCKET_SETS
+   };
+
+   /** This function returns a reference to one of the three socket-sets that
+    *  GetNextReplyFromInternalThread() will optionally use to determine whether 
+    *  to return early.  By default, all of the socket-sets are empty, and 
+    *  GetNextReplyFromInternalThread() will return only when a new Message
+    *  has arrived from the internal thread, or when the timeout period has elapsed.
+    *
+    *  However, in some cases it is useful to have GetNextReplyFromInternalThread()
+    *  return under other conditions as well, such as when a specified socket becomes 
+    *  ready-to-read-from or ready-to-write-to.  You can specify that a socket should be 
+    *  watched in this manner, by adding that socket to the appropriate socket set(s).  
+    *  For example, to tell GetNextReplyFromInternalThread() to always return when 
+    *  mySocket is ready to be written to, you would add mySocket to the SOCKET_SET_WRITE 
+    *  set, like this:
+    *     
+    *     _thread.GetOwnerSocketSet(SOCKET_SET_WRITE).Put(mySocket, false);
+    *
+    *  (This only needs to be done once)  After GetNextReplyFromInternalThread() 
+    *  returns, you can determine whether your socket is ready-to-write-to by checking 
+    *  its associated value in the table, like this:
+    *
+    *     bool canWrite = false;
+    *     _thread.GetOwnerSocketSet(SOCKET_SET_WRITE).Get(mySocket, canWrite);
+    *     if (canWrite) printf("Socket is ready to be written to!\n");
+    *
+    *  @param socketSet SOCKET_SET_* indicating which socket-set to return a reference to.
+    *  @note This method should only be called from the main thread!
+    */
+   Hashtable<int, bool> & GetOwnerSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_OWNER]._socketSets[socketSet];}
+
+   /** As above, but returns a read-only reference. */
+   const Hashtable<int, bool> & GetOwnerSocketSet(uint32 socketSet) const;
+
 protected:
    /** If you are using the default implementation of InternalThreadEntry(), then this
      * method will be called whenever a new MessageRef is received by the internal thread.
@@ -180,8 +228,10 @@ protected:
      *                   then this method does a non-blocking poll of the queue.
      *                   If (wakeuptime) is set to MUSCLE_TIME_NEVER (the default value),
      *                   then this method will block indefinitely, until a Message is ready.
-     * @returns The number of Messages left in the message queue on success, or -1 on failure
-     *          (call timed out with no Messages ever showing up)
+     * @returns The number of Messages still remaining in the message queue on success, or 
+     *          -1 on failure (i.e. the call was aborted before any Messages ever showing up,
+     *          and (ref) was not written to)
+     * @see GetInternalSocketSet() for advanced control of this method's behaviour
      */
    virtual int32 WaitForNextMessageFromOwner(MessageRef & ref, uint64 wakeupTime = MUSCLE_TIME_NEVER);
 
@@ -230,10 +280,57 @@ protected:
      */
    void CloseSockets();
 
+   /** This function returns a reference to one of the three socket-sets that
+    *  WaitForNextMessageFromOwner() will optionally use to determine whether 
+    *  to return early.  By default, all of the socket-sets are empty, and 
+    *  WaitForNextMessageFromOwner() will return only when a new Message
+    *  has arrived from the owner thread, or when the timeout period has elapsed.
+    *
+    *  However, in some cases it is useful to have WaitForNextMessageFromOwner()
+    *  return under other conditions as well, such as when a specified socket becomes 
+    *  ready-to-read-from or ready-to-write-to.  You can specify that a socket should be 
+    *  watched in this manner, by adding that socket to the appropriate socket set(s).  
+    *  For example, to tell WaitForNextMessageFromOwner() to always return when 
+    *  mySocket is ready to be written to, you would add mySocket to the SOCKET_SET_WRITE 
+    *  set, like this:
+    *     
+    *     _thread.GetInternalSocketSet(SOCKET_SET_WRITE).Put(mySocket, false);
+    *
+    *  (This only needs to be done once)  After WaitForNextMessageFromOwner() 
+    *  returns, you can determine whether your socket is ready-to-write-to by checking 
+    *  its associated value in the table, like this:
+    *
+    *     bool canWrite = false;
+    *     _thread.GetInternalSocketSet(SOCKET_SET_WRITE).Get(mySocket, canWrite);
+    *     if (canWrite) printf("Socket is ready to be written to!\n");
+    *
+    *  @param socketSet SOCKET_SET_* indicating which socket-set to return a reference to.
+    *  @note This method should only be called from the internal thread!
+    */
+   Hashtable<int, bool> & GetInternalSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_INTERNAL]._socketSets[socketSet];}
+
+   /** As above, but returns a read-only reference. */
+   const Hashtable<int, bool> & GetInternalSocketSet(uint32 socketSet) const;
+
 private:
+   /** This class encapsulates data that is used by one of our two threads (internal or owner).
+    *  It's put in a class like this so that I can easily access two copies of everything.
+    */
+   class ThreadSpecificData 
+   {
+   public:
+      ThreadSpecificData() : _messageSocket(-1), _closeMessageSocket(true) {/* empty */}
+
+      Mutex _queueLock;
+      int _messageSocket;
+      bool _closeMessageSocket;
+      Queue<MessageRef> _messages;
+      Hashtable<int, bool> _socketSets[NUM_SOCKET_SETS];
+   };
+
    status_t StartInternalThreadAux();
-   int GetThreadWakeupSocketAux(int whichSocket);
-   int32 WaitForNextMessageAux(int whichQueue, MessageRef & ref, uint64 wakeupTime = MUSCLE_TIME_NEVER);
+   int GetThreadWakeupSocketAux(ThreadSpecificData & tsd);
+   int32 WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref, uint64 wakeupTime = MUSCLE_TIME_NEVER);
    status_t SendMessageAux(int whichQueue, MessageRef ref);
    void SignalAux(int whichSocket);
    void InternalThreadEntryAux();
@@ -245,34 +342,47 @@ private:
    };
 
    bool _messageSocketsAllocated;
-   Mutex _queueLocks[NUM_MESSAGE_THREADS];
-   int _messageSockets[NUM_MESSAGE_THREADS];
-   bool _closeMessageSockets[NUM_MESSAGE_THREADS];
-   Queue<MessageRef> _messages[NUM_MESSAGE_THREADS];
+
+   ThreadSpecificData _threadData[NUM_MESSAGE_THREADS];
+
    bool _threadRunning;
    Mutex _signalLock;
 
 #if defined(MUSCLE_USE_PTHREADS)
    pthread_t _thread;
    static void * InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return NULL;}
+#elif defined(WIN32)
+   HANDLE _thread;
+   DWORD _threadID;
+   static DWORD WINAPI InternalThreadEntryFunc(LPVOID This) {((Thread*)This)->InternalThreadEntryAux(); return 0;}
 #elif defined(QT_THREAD_SUPPORT)
    class MuscleQThread : public QThread
    {
    public:
       MuscleQThread() : _owner(NULL) {/* empty */}  // _owner not set here, for VC++6 compatibility
-      virtual void run() {_owner->InternalThreadEntryAux();}
+
+      virtual void run() 
+      {
+         _owner->_internalThreadHandle = QThread::currentThread(); // for use by IsCallerInternalThread()
+         _owner->_waitForHandleMutex->lock();   // won't return until owner is inside wait()
+         _owner->_waitForHandleSet->wakeOne();  // let main thread know we have set the _internalThreadHandle
+         _owner->_waitForHandleMutex->unlock(); // clean up
+         _owner->InternalThreadEntryAux();      // and go on to do our thing
+      }
+
       void SetOwner(Thread * owner) {_owner = owner;}
+
    private:
       Thread * _owner;
    };
    MuscleQThread _thread;
+   Qt::HANDLE _internalThreadHandle;
+   QWaitCondition * _waitForHandleSet;  // only valid during thread startup!
+   QMutex * _waitForHandleMutex;
    friend class MuscleQThread;
 #elif defined(__BEOS__)
    thread_id _thread;
    static int32 InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return 0;}
-#elif defined(WIN32)
-   HANDLE _thread;
-   static DWORD WINAPI InternalThreadEntryFunc(LPVOID This) {((Thread*)This)->InternalThreadEntryAux(); return 0;}
 #elif defined(__ATHEOS__)
    thread_id _thread;
    static void InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux();}

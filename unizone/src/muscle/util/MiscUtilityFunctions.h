@@ -39,6 +39,34 @@ status_t ParseFile(FILE * file, Message & addTo);
  */
 status_t ParseArg(const String & arg, Message & addTo);
 
+/** Scans a line for multiple arguments and calls ParseArg() on each one found.
+ *  Quotation marks will be used to group tokens if necessary.
+ *  @param arg A line of text, e.g.  arg1=blah arg2=borf arg3="quoted borf"
+ *  @param addTo Message to add the argument results to.
+ *  @return B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t ParseArgs(const String & arg, Message & addTo);
+
+/** Convenience method:  Looks for a given hostname or hostname:port string in 
+ *  the given field of the args Message, and returns the appropriate parsed
+ *  values if it is found.
+ *  @param args the Message that was returned by ParseArg().
+ *  @param fn the field name to look for in (args)
+ *  @param retHost On successful return, the hostname or IP address to connect to will be written here.
+ *  @param retPort On successful return, if a port number was parsed it will be written here.
+ *  @returns B_NO_ERROR if an argument was parsed, or B_ERROR if it wasn't.
+ */
+status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort);
+
+/** Convenience method:  Looks for a port number in the given field of the Message,
+ *  and sets (retPort) if it finds one.
+ *  @param args the Message that was returned by ParseArg().
+ *  @param fn the field name to look for in (args)
+ *  @param retPort On successful return, if a port number was parsed it will be written here.
+ *  @returns B_NO_ERROR if an argument was parsed, or B_ERROR if it wasn't.
+ */
+status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort);
+
 /** Looks for some globally useful startup arguments in the (args)
  *  Message and handles them by calling the appropriate setup routines.  
  *  Recognized arguments currently include the following:

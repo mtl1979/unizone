@@ -8,7 +8,7 @@
 BEGIN_NAMESPACE(muscle);
 
 /**
- *  Data I/O equivalent for reading from/writing in-memory arrays
+ *  Data I/O class to allow reading from/writing to in-memory arrays (as if they were I/O devices)
  */
 class MemoryBufferDataIO : public DataIO
 {
@@ -33,10 +33,10 @@ public:
    virtual int32 Read(void * buffer, uint32 size)  
    {
       int32 readBytesAvailable = _readBuf ? (_readBufSize - _readBufOffset) : -1;
-      int32 copyBytes = (size < readBytesAvailable) ? size : readBytesAvailable;
+      int32 copyBytes = muscleMin((int32)size, readBytesAvailable);
       if (copyBytes > 0) 
       {
-         if ((_maxReadChunk >= 0)&&(copyBytes > _maxReadChunk)) copyBytes = _maxReadChunk;
+         if (_maxReadChunk >= 0) copyBytes = muscleMin(copyBytes, _maxReadChunk);
          memcpy(buffer, &_readBuf[_readBufOffset], copyBytes);
          _readBufOffset += copyBytes;
          return copyBytes;
@@ -53,10 +53,10 @@ public:
    virtual int32 Write(const void * buffer, uint32 size) 
    {
       int32 writeBytesAvailable = _writeBuf ? (_writeBufSize - _writeBufOffset) : -1;
-      int32 copyBytes = (size < writeBytesAvailable) ? size : writeBytesAvailable;
+      int32 copyBytes = muscleMin((int32)size, writeBytesAvailable);
       if (copyBytes > 0) 
       {
-         if ((_maxWriteChunk >= 0)&&(copyBytes > _maxWriteChunk)) copyBytes = _maxWriteChunk;
+         if (_maxWriteChunk >= 0) copyBytes = muscleMin(copyBytes, _maxWriteChunk);
          memcpy(&_writeBuf[_writeBufOffset], buffer, copyBytes);
          _writeBufOffset += copyBytes;
          return copyBytes;

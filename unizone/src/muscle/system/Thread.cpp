@@ -18,15 +18,11 @@ Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
 {
 #if defined(MUSCLE_USE_PTHREADS)
    // do nothing
+#elif defined(WIN32)
+   // do nothing
 #elif defined(QT_THREAD_SUPPORT)
    _thread.SetOwner(this);
 #endif
-
-   for (uint32 i=0; i<NUM_MESSAGE_THREADS; i++) 
-   {
-      _messageSockets[i]      = -1;
-      _closeMessageSockets[i] = true;
-   }
 }
 
 Thread :: ~Thread()
@@ -37,29 +33,30 @@ Thread :: ~Thread()
 
 int Thread :: GetInternalThreadWakeupSocket()
 {
-   return GetThreadWakeupSocketAux(MESSAGE_THREAD_INTERNAL);
+   return GetThreadWakeupSocketAux(_threadData[MESSAGE_THREAD_INTERNAL]);
 }
 
 int Thread :: GetOwnerWakeupSocket()
 {
-   return GetThreadWakeupSocketAux(MESSAGE_THREAD_OWNER);
+   return GetThreadWakeupSocketAux(_threadData[MESSAGE_THREAD_OWNER]);
 }
 
-int Thread :: GetThreadWakeupSocketAux(int whichSocket)
+int Thread :: GetThreadWakeupSocketAux(ThreadSpecificData & tsd)
 {
-   if ((_messageSocketsAllocated == false)&&(CreateConnectedSocketPair(_messageSockets[MESSAGE_THREAD_INTERNAL], _messageSockets[MESSAGE_THREAD_OWNER]) != B_NO_ERROR)) return -1;  
+   if ((_messageSocketsAllocated == false)&&(CreateConnectedSocketPair(_threadData[MESSAGE_THREAD_INTERNAL]._messageSocket, _threadData[MESSAGE_THREAD_OWNER]._messageSocket) != B_NO_ERROR)) return -1;  
 
    _messageSocketsAllocated = true;
-   return _messageSockets[whichSocket];
+   return tsd._messageSocket;
 }
 
 void Thread :: CloseSockets()
 {
    for (uint32 i=0; i<NUM_MESSAGE_THREADS; i++) 
    {
-      if (_closeMessageSockets[i]) CloseSocket(_messageSockets[i]); 
-      _messageSockets[i]      = -1;
-      _closeMessageSockets[i] = true;
+      ThreadSpecificData & tsd = _threadData[i];
+      if (tsd._closeMessageSocket) CloseSocket(tsd._messageSocket); 
+      tsd._messageSocket      = -1;
+      tsd._closeMessageSocket = true;
    }
    _messageSocketsAllocated = false;
 }
@@ -68,7 +65,7 @@ status_t Thread :: StartInternalThread()
 {
    if (IsInternalThreadRunning() == false)
    {
-      bool needsInitialSignal = (_messages[MESSAGE_THREAD_INTERNAL].GetNumItems() > 0);
+      bool needsInitialSignal = (_threadData[MESSAGE_THREAD_INTERNAL]._messages.GetNumItems() > 0);
       status_t ret = StartInternalThreadAux();
       if (ret == B_NO_ERROR)
       {
@@ -87,8 +84,17 @@ status_t Thread :: StartInternalThreadAux()
 
 #if defined(MUSCLE_USE_PTHREADS)
       if (pthread_create(&_thread, NULL, InternalThreadEntryFunc, this) == 0) return B_NO_ERROR;
+#elif defined(WIN32)
+      typedef unsigned (__stdcall *PTHREAD_START) (void *);
+      if ((_thread = (HANDLE)_beginthreadex(NULL, 0, (PTHREAD_START)InternalThreadEntryFunc, this, 0, (unsigned *)&_threadID)) != NULL) return B_NO_ERROR;
 #elif defined(QT_THREAD_SUPPORT)
+      QWaitCondition waitCondition;
+      QMutex mutex; mutex.lock();
+      _waitForHandleSet = &waitCondition;  // used as a temporary parameter only
+      _waitForHandleMutex = &mutex;  // used as a temporary parameter only
       _thread.start();
+      waitCondition.wait(&mutex);  // wait until the internal thread signal us that it's okay to continue
+      mutex.unlock();
       return B_NO_ERROR;
 #elif defined(__BEOS__)
       if ((_thread = spawn_thread(InternalThreadEntryFunc, "MUSCLE Thread", B_NORMAL_PRIORITY, this)) >= 0)
@@ -96,10 +102,6 @@ status_t Thread :: StartInternalThreadAux()
          if (resume_thread(_thread) == B_NO_ERROR) return B_NO_ERROR;
                                               else kill_thread(_thread);
       }
-#elif defined(WIN32)
-      DWORD junkThreadID;
-      typedef unsigned (__stdcall *PTHREAD_START) (void *);
-      if ((_thread = (HANDLE)_beginthreadex(NULL, 0, (PTHREAD_START)InternalThreadEntryFunc, this, 0, (unsigned *)&junkThreadID)) != NULL) return B_NO_ERROR;
 #elif defined(__ATHEOS__)
       if ((_thread = spawn_thread("MUSCLE Thread", InternalThreadEntryFunc, NORMAL_PRIORITY, 32767, this)) >= 0)
       {
@@ -110,6 +112,25 @@ status_t Thread :: StartInternalThreadAux()
       _threadRunning = false;  // oops, nevermind, thread spawn failed
    }
    return B_ERROR;
+}
+
+bool Thread :: IsCallerInternalThread() const
+{
+   if (IsInternalThreadRunning() == false) return false;  // we can't be him if he doesn't exist!
+
+#if defined(MUSCLE_USE_PTHREADS)
+   return pthread_equal(pthread_self(), _thread);
+#elif defined(WIN32)
+   return (_threadID == GetCurrentThreadId());
+#elif defined(QT_THREAD_SUPPORT)
+   return (QThread::currentThread() == _internalThreadHandle);
+#elif defined(__BEOS__)
+   return (_thread == find_thread(NULL));
+#elif defined(__ATHEOS__)
+   return (_thread == find_thread(NULL));
+#else
+   return false;  // should never get here, but just in case
+#endif
 }
 
 void Thread :: ShutdownInternalThread(bool waitForThread)
@@ -134,11 +155,12 @@ status_t Thread :: SendMessageToOwner(MessageRef ref)
 status_t Thread :: SendMessageAux(int whichQueue, MessageRef replyRef)
 {
    status_t ret = B_ERROR;
-   if (_queueLocks[whichQueue].Lock() == B_NO_ERROR)
+   ThreadSpecificData & tsd = _threadData[whichQueue];
+   if (tsd._queueLock.Lock() == B_NO_ERROR)
    {
-      if (_messages[whichQueue].AddTail(replyRef) == B_NO_ERROR) ret = B_NO_ERROR;
-      bool sendNotification = (_messages[whichQueue].GetNumItems() == 1);
-      (void) _queueLocks[whichQueue].Unlock();
+      if (tsd._messages.AddTail(replyRef) == B_NO_ERROR) ret = B_NO_ERROR;
+      bool sendNotification = (tsd._messages.GetNumItems() == 1);
+      (void) tsd._queueLock.Unlock();
       if ((sendNotification)&&(_signalLock.Lock() == B_NO_ERROR))
       {
          switch(whichQueue)
@@ -166,7 +188,7 @@ void Thread :: SignalAux(int whichSocket)
 {
    if (_messageSocketsAllocated)
    {
-      int fd = _messageSockets[whichSocket];
+      int fd = _threadData[whichSocket]._messageSocket;
       if (fd >= 0) 
       {
          char junk = 'S';
@@ -177,40 +199,79 @@ void Thread :: SignalAux(int whichSocket)
 
 int32 Thread :: GetNextReplyFromInternalThread(MessageRef & ref, uint64 wakeupTime)
 {
-   return WaitForNextMessageAux(MESSAGE_THREAD_OWNER, ref, wakeupTime);
+   return WaitForNextMessageAux(_threadData[MESSAGE_THREAD_OWNER], ref, wakeupTime);
 }
 
 int32 Thread :: WaitForNextMessageFromOwner(MessageRef & ref, uint64 wakeupTime)
 {
-   return WaitForNextMessageAux(MESSAGE_THREAD_INTERNAL, ref, wakeupTime);
+   return WaitForNextMessageAux(_threadData[MESSAGE_THREAD_INTERNAL], ref, wakeupTime);
 }
 
-int32 Thread :: WaitForNextMessageAux(int whichThread, MessageRef & ref, uint64 wakeupTime)
+int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref, uint64 wakeupTime)
 {
    int32 ret = -1;  // pessimistic default
-   if (_queueLocks[whichThread].Lock() == B_NO_ERROR)
+   if (tsd._queueLock.Lock() == B_NO_ERROR)
    {
-      if (_messages[whichThread].RemoveHead(ref) == B_NO_ERROR) ret = _messages[whichThread].GetNumItems();
-      (void) _queueLocks[whichThread].Unlock();
-      if (ret < 0)
+      if (tsd._messages.RemoveHead(ref) == B_NO_ERROR) ret = tsd._messages.GetNumItems();
+      (void) tsd._queueLock.Unlock();
+
+      if ((ret < 0)&&(tsd._messageSocket >= 0))  // no Message available?  then we'll have to wait until there is one!
       {
-         int fd = _messageSockets[whichThread];
-         if (fd >= 0)
+         uint64 now = GetRunTime64();
+         if (wakeupTime > now)
          {
-            uint64 now = GetRunTime64();
-            if (wakeupTime > now)
+            // block until either 
+            //   (a) a new-message-signal-byte wakes us, or 
+            //   (b) we reach our wakeup/timeout time, or 
+            //   (c) a user-specified socket in the socket set selects as ready-for-something
+            struct timeval timeout;
+            if (wakeupTime != MUSCLE_TIME_NEVER) Convert64ToTimeVal(wakeupTime-now, timeout);
+
+            fd_set sets[NUM_SOCKET_SETS];
+            fd_set * psets[NUM_SOCKET_SETS] = {NULL, NULL, NULL};
+            int maxfd = tsd._messageSocket;
             {
-               // block until either a new-message-signal-byte wakes us, or we reach our wakeup time
-               struct timeval timeout;
-               if (wakeupTime != MUSCLE_TIME_NEVER) Convert64ToTimeVal(wakeupTime-now, timeout);
-               fd_set readSet;
-               FD_ZERO(&readSet);
-               FD_SET(fd, &readSet);
-               if ((select(fd+1, &readSet, NULL, NULL, (wakeupTime == MUSCLE_TIME_NEVER)?NULL:&timeout) >= 0)&&(FD_ISSET(fd, &readSet)))
+               for (uint32 i=0; i<ARRAYITEMS(sets); i++)
+               {
+                  const Hashtable<int, bool> & t = tsd._socketSets[i];
+                  if ((i == SOCKET_SET_READ)||(t.GetNumItems() > 0))
+                  {
+                     psets[i] = &sets[i];
+                     FD_ZERO(psets[i]);
+                     if (t.GetNumItems() > 0)
+                     {
+                        HashtableIterator<int, bool> iter = t.GetIterator();
+                        int nextSocket;
+                        while(iter.GetNextKey(nextSocket) == B_NO_ERROR) 
+                        {
+                           FD_SET(nextSocket, psets[i]);
+                           maxfd = muscleMax(maxfd, nextSocket);
+                        }
+                     }
+                  }
+               }
+            }
+            FD_SET(tsd._messageSocket, psets[SOCKET_SET_READ]);  // this pset is guaranteed to be non-NULL at this point
+
+            if (select(maxfd+1, psets[SOCKET_SET_READ], psets[SOCKET_SET_WRITE], psets[SOCKET_SET_EXCEPTION], (wakeupTime == MUSCLE_TIME_NEVER)?NULL:&timeout) >= 0)
+            {
+               for (uint32 j=0; j<ARRAYITEMS(psets); j++)
+               {
+                  Hashtable<int, bool> & t = tsd._socketSets[j];
+                  if ((psets[j])&&(t.GetNumItems() > 0))
+                  {
+                     int nextSocket;
+                     bool * nextValue;
+                     HashtableIterator<int, bool> iter = t.GetIterator();
+                     while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket, psets[j]);
+                  }
+               }
+
+               if (FD_ISSET(tsd._messageSocket, psets[SOCKET_SET_READ]))  // any signals from the other thread?
                {
                   uint8 bytes[256];
-                  (void) recv(fd, (char *)bytes, sizeof(bytes), 0);  // just clear them all out, we only need to wake up once...
-                  ret = WaitForNextMessageAux(whichThread, ref, wakeupTime); // recurse to get the message
+                  (void) recv(tsd._messageSocket, (char *)bytes, sizeof(bytes), 0);  // just clear them all out, we only need to wake up once...
+                  ret = WaitForNextMessageAux(tsd, ref, wakeupTime); // then recurse to get the message
                }
             }
          }
@@ -240,13 +301,13 @@ status_t Thread :: WaitForInternalThreadToExit()
    {
 #if defined(MUSCLE_USE_PTHREADS)
       (void) pthread_join(_thread, NULL);
+#elif defined(WIN32)
+      (void) WaitForSingleObject(_thread, INFINITE);
 #elif defined(QT_THREAD_SUPPORT)
       (void) _thread.wait();
 #elif defined(__BEOS__)
       status_t junk;
       (void) wait_for_thread(_thread, &junk);
-#elif defined(WIN32)
-      (void) WaitForSingleObject(_thread, INFINITE);
 #elif defined(__ATHEOS__)
       (void) wait_for_thread(_thread);
 #endif
@@ -259,40 +320,41 @@ status_t Thread :: WaitForInternalThreadToExit()
 
 Queue<MessageRef> * Thread :: LockAndReturnMessageQueue()
 {
-   return (_queueLocks[MESSAGE_THREAD_INTERNAL].Lock() == B_NO_ERROR) ? &_messages[MESSAGE_THREAD_INTERNAL] : NULL;
+   ThreadSpecificData & tsd = _threadData[MESSAGE_THREAD_INTERNAL];
+   return (tsd._queueLock.Lock() == B_NO_ERROR) ? &tsd._messages : NULL;
 }
 
 status_t Thread :: UnlockMessageQueue()
 {
-   return _queueLocks[MESSAGE_THREAD_INTERNAL].Unlock();
+   return _threadData[MESSAGE_THREAD_INTERNAL]._queueLock.Unlock();
 }
 
 Queue<MessageRef> * Thread :: LockAndReturnReplyQueue()
 {
-   return (_queueLocks[MESSAGE_THREAD_OWNER].Lock() == B_NO_ERROR) ? &_messages[MESSAGE_THREAD_OWNER] : NULL;
+   ThreadSpecificData & tsd = _threadData[MESSAGE_THREAD_OWNER];
+   return (tsd._queueLock.Lock() == B_NO_ERROR) ? &tsd._messages : NULL;
 }
 
 status_t Thread :: UnlockReplyQueue()
 {
-   return _queueLocks[MESSAGE_THREAD_OWNER].Unlock();
+   return _threadData[MESSAGE_THREAD_OWNER]._queueLock.Unlock();
 }
 
 // This method is here to 'wrap' the internal thread's virtual method call with some standard setup/tear-down code of our own
 void Thread::InternalThreadEntryAux()
 {
-   if (_messages[MESSAGE_THREAD_OWNER].GetNumItems() > 0) SignalOwner();
+   if (_threadData[MESSAGE_THREAD_OWNER]._messages.GetNumItems() > 0) SignalOwner();
    InternalThreadEntry();
 }
 
 void Thread :: SetOkayToCloseOwnerWakeupSocket(bool okayToClose) 
 {
-   _closeMessageSockets[MESSAGE_THREAD_OWNER] = okayToClose;
+   _threadData[MESSAGE_THREAD_OWNER]._closeMessageSocket = okayToClose;
 }
 
 void Thread :: SetOkayToCloseInternalThreadWakeupSocket(bool okayToClose)
 {
-   _closeMessageSockets[MESSAGE_THREAD_INTERNAL] = okayToClose;
+   _threadData[MESSAGE_THREAD_INTERNAL]._closeMessageSocket = okayToClose;
 }
-
 
 END_NAMESPACE(muscle);

@@ -132,8 +132,8 @@ public:
 
    /**  
     * Set a new input I/O policy for this session.
-    * @param policy Reference to the new policy to use to control the incoming byte stream
-    *               for this session.  May be a NULL reference if you just want to remove the existing policy.
+    * @param newPolicy Reference to the new policy to use to control the incoming byte stream
+    *                  for this session.  May be a NULL reference if you just want to remove the existing policy.
     */
    void SetInputPolicy(PolicyRef newPolicy);
    
@@ -144,8 +144,8 @@ public:
 
    /**
     * Set a new output I/O policy for this session.
-    * @param policy Reference to the new policy to use to control the outgoing byte stream
-    *               for this session.  May be a NULL reference if you just want to remove the existing policy.
+    * @param newPolicy Reference to the new policy to use to control the outgoing byte stream
+    *                 for this session.  May be a NULL reference if you just want to remove the existing policy.
     */
    void SetOutputPolicy(PolicyRef newPolicy);
    

@@ -316,17 +316,18 @@ public:
 
    /** Unflattens a String from (buf).
     *  @param buf an array of (size) bytes.
-    *  @size the number of bytes in (buf).
+    *  @param size the number of bytes in (buf).
     *  @return B_NO_ERROR (never fails!)
     */
    virtual status_t Unflatten(const uint8 *buf, uint32 size);
 
-   /** Makes sure that we have pre-allocated enough space for a string at least (numChars)
-    *  ASCII characters long.  If not, this method will try to allocate the space.
+   /** Makes sure that we have pre-allocated enough space for a NUL-terminated string 
+    *  at least (numChars) bytes long (not including the NUL byte).
+    *  If not, this method will try to allocate the space.  
     *  @param numChars How much space to pre-allocate, in ASCII characters.
     *  @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory).
     */ 
-   status_t Prealloc(uint32 newBufLen) {return EnsureBufferSize(newBufLen+1, true);}
+   status_t Prealloc(uint32 numChars) {return EnsureBufferSize(numChars+1, true);}
 
    /** Returns a string like this string, but with the appropriate %# tokens
      * replaced with a textual representation of the values passed in as (value).

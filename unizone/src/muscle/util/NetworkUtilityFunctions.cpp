@@ -246,7 +246,12 @@ int Accept(int sock)
 int Connect(const char * hostName, uint16 port, const char * debugTitle, bool errorsOnly) 
 {
    uint32 hostIP = GetHostByName(hostName);
-   return (hostIP) ? Connect(hostIP, port, hostName, debugTitle, errorsOnly) : -1;
+   if (hostIP > 0) return Connect(hostIP, port, hostName, debugTitle, errorsOnly);
+   else 
+   {
+      if (debugTitle) LogTime(MUSCLE_LOG_INFO, "%s: hostname lookup for [%s] failed!\n", debugTitle, hostName);
+      return -1;
+   }
 }
 
 int Connect(uint32 hostIP, uint16 port, const char * optDebugHostName, const char * debugTitle, bool errorsOnly)

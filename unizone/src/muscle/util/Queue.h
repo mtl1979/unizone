@@ -56,7 +56,7 @@ public:
     *    Queue a;   // contains 1, 2, 3, 4
     *    Queue b;   // contains 5, 6, 7, 8
     *    a.AddTail(b);      // a now contains 1, 2, 3, 4, 5, 6, 7, 8
-    *  @param item The queue to append to our queue.
+    *  @param queue The queue to append to our queue.
     *  @param startIndex Index in (queue) to start adding at.  Default to zero.
     *  @param numItems Number of items to add.  If this number is too large, it will be capped appropriately.  Default is to add all items.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
@@ -89,7 +89,7 @@ public:
     *    Queue a;      // contains 1, 2, 3, 4
     *    Queue b;      // contains 5, 6, 7, 8
     *    a.AddHead(b); // a now contains 5, 6, 7, 8, 1, 2, 3, 4
-    *  @param item The queue to prepend to our queue.
+    *  @param queue The queue to prepend to our queue.
     *  @param startIndex Index in (queue) to start adding at.  Default to zero.
     *  @param numItems Number of items to add.  If this number is too large, it will be capped appropriately.  Default is to add all items.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
@@ -265,8 +265,8 @@ public:
    /**
     *  Swaps the values of the two items at the given indices.  This operation
     *  will involve three copies of the held items.
-    *  @param fromIndex First index.   0 < fromIndex < GetNumItems().
-    *  @param toIndex.  Second index.  0 < toIndex   < GetNumItems().
+    *  @param fromIndex First index to swap.
+    *  @param toIndex   Second index to swap.
     */
    void Swap(uint32 fromIndex, uint32 toIndex);
 

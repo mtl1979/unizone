@@ -21,7 +21,7 @@ public:
    /**
     *  Constructor.
     *  @param fd The file descriptor to use.  Becomes property of this FileDescriptorDataIO object.
-    *  @param blockingIO determines whether to use blocking or non-blocking I/O.
+    *  @param blocking determines whether to use blocking or non-blocking I/O.
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */

@@ -23,9 +23,9 @@ public:
 
    /** Sets the maximum-bytes-per-incoming-message limit that we will set on the StorageReflectSession
      * objects that we create.
-     * @param maxIncomingMessageSize The maximum byte size of incoming flattened messages to allow.
+     * @param maxIncomingMessageBytes The maximum byte size of incoming flattened messages to allow.
      */
-   void SetMaxIncomingMessageSize(uint32 maxBytes) {_maxIncomingMessageSize = maxBytes;}
+   void SetMaxIncomingMessageSize(uint32 maxIncomingMessageBytes) {_maxIncomingMessageSize = maxIncomingMessageBytes;}
 
    /** Returns our current setting for the maximum incoming message size for sessions we produce. */
    uint32 GetMaxIncomingMessageSize() const {return _maxIncomingMessageSize;}
@@ -175,7 +175,7 @@ protected:
       const char * GetPathClause(uint32 depth) const;
 
       /** Replaces this node's payload message with that of (data).
-       *  @data the new Message to associate with this node.
+       *  @param data the new Message to associate with this node.
        *  @param optNotifyWith if non-NULL, this StorageReflectSession will be used to notify subscribers that this node's data has changed.
        *  @param isBeingCreated Should be set true only if this is the first time SetData() was called on this node after its creation.
        *                        Which is to say, this should almost always be false.
@@ -299,7 +299,7 @@ protected:
      * Create and insert a new node into one or more ordered child indices in the node tree.
      * This method is similar to calling MessageReceivedFromGateway() with a PR_COMMAND_INSERTORDEREDDATA 
      * Message, only it gives more information back about what happened.
-     * @param inserMsg a PR_COMMAND_INSERTORDEREDDATA Message specifying what insertions should be done.
+     * @param insertMsg a PR_COMMAND_INSERTORDEREDDATA Message specifying what insertions should be done.
      * @param optRetNewNodes If non-NULL, any newly-created DataNodes will be adde to this table for your inspection.
      * @returns B_NO_ERROR on success, or B_ERROR on failure.
      */
@@ -340,6 +340,7 @@ protected:
        * Does a depth-first traversal of the node tree, starting with (node) as the root.
        * @param cb The callback function to call whenever a node is encountered in the traversal
        *           that matches at least one of our path strings.
+       * @param This pointer to our owner StorageReflectSession object.
        * @param node The node to begin the traversal at.
        * @param useFilters If true, we will only call (cb) on nodes whose Messages match our filter; otherwise
        *                   we'll call (cb) on any node whose path matches, regardless of filtering status.
@@ -352,7 +353,7 @@ protected:
        * Note this is a bit more expensive than MatchesNode(), as we can't use short-circuit boolean logic here!
        * @param node A node to check against our set of path-matcher strings.
        * @param optData If non-NULL, any QueryFilters will use this Message to filter against.
-       * @param rootDepth the depth at which the traversal started (i.e. 0 if started at root)
+       * @param nodeDepth the depth at which the traversal started (i.e. 0 if started at root)
        */
       uint32 GetMatchCount(DataNode & node, const Message * optData, int nodeDepth) const;
 
@@ -665,6 +666,7 @@ private:
    /** The maximum number of database nodes we are allowed to create */
    uint32 _maxNodeCount;                  
 
+   /** Our node class needs access to our internals too */
    friend class StorageReflectSession :: NodePathMatcher;
 };
 

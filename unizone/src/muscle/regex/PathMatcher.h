@@ -92,7 +92,7 @@ public:
     *  Note that the search strings are always treated as relative paths -- if you pass in a search string with
     *  a leading slash, then it will be interpeted as a relative query with the first level of the query looking
     *  for nodes with name "".
-    *  @param wildpath a string of form "x/y/z/...", representing a pattern-matching function.
+    *  @param path a string of form "x/y/z/...", representing a pattern-matching function.
     *  @param filter Reference to a QueryFilter object to use to filter Messages that match our path.  If the 
     *                reference is a NULL reference, then no filtering will be done.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory.

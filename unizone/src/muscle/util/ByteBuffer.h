@@ -60,7 +60,7 @@ public:
      * @param numBytes Number of bytes to copy in (or just to allocate, if (optBuffer) is NULL).  Defaults to zero bytes (i.e., don't allocate a buffer)
      * @param optBuffer May be set to point to an array of bytes to copy into our internal buffer.
      *                  If NULL, this ByteBuffer will contain (numBytess) uninitialized bytes.  Defaults to NULL.
-     * @param B_NO_ERROR on success, or B_ERROR on failure (out of memory--there are no side effects if this occurs)
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory--there are no side effects if this occurs)
      */ 
    status_t SetBuffer(uint32 numBytes = 0, const uint8 * optBuffer = NULL);
 
@@ -97,7 +97,7 @@ public:
    virtual uint32 TypeCode() const {return B_RAW_TYPE;}
    virtual uint32 FlattenedSize() const {return _numValidBytes;}
    virtual void Flatten(uint8 *buffer) const {memcpy(buffer, _buffer, _numValidBytes);}
-   virtual bool AllowsTypeCode(uint32) const {return true;}
+   virtual bool AllowsTypeCode(uint32 /*code*/) const {return true;}
    virtual status_t Unflatten(const uint8 *buf, uint32 size) {return SetBuffer(size, buf);}
 
 protected:

@@ -32,7 +32,7 @@ public:
     *  @param currentlyAllocatedBytes How many bytes the system has allocated currently
     *  @param freeBytes How many bytes the system is about to free.
     */
-   virtual void AboutToFree(size_t currentlyAllocatedBytes, size_t freeSize) = 0;
+   virtual void AboutToFree(size_t currentlyAllocatedBytes, size_t freeBytes) = 0;
 
    /** Called if an allocation fails (either because AboutToAllocate() returned other than B_NO_ERROR, or
     *  because malloc() returned NULL).   This method does not need to call SetMallocHasFailed(),
@@ -84,7 +84,7 @@ public:
    virtual ~ProxyMemoryAllocator() {/* empty */}
 
    virtual status_t AboutToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
-   virtual void AboutToFree(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
+   virtual void AboutToFree(size_t currentlyAllocatedBytes, size_t freeBytes);
    virtual void AllocationFailed(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
    virtual void SetAllocationHasFailed(bool hasFailed);
    virtual size_t GetMaxNumBytes() const;

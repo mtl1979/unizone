@@ -71,8 +71,8 @@ public:
    status_t PutPulseChild(PulseNode * child);
 
    /** Attempts to remove the given child from our set of child PulseNodes.
-    *  @param cihld The child to remove
-    *  @param B_NO_ERROR on success, or B_ERROR on failure (child wasn't in our set)
+    *  @param child The child to remove
+    *  @returns B_NO_ERROR on success, or B_ERROR on failure (child wasn't in our set)
     */
    status_t RemovePulseChild(PulseNode * child);
 

@@ -19,7 +19,7 @@ public:
    /**
     *  Constructor.
     *  @param sockfd The socket to use.  Becomes property of this UDPSocketDataIO object.
-    *  @param blockingIO determines whether to use blocking or non-blocking socket I/O.
+    *  @param blocking specifies whether to use blocking or non-blocking socket I/O.
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
