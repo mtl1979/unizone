@@ -224,7 +224,7 @@ Version %1</translation>
     </message>
     <message>
         <source>List of channel admins:</source>
-        <translation type='unfinished'></translation>
+        <translation>List of channel admins:</translation>
     </message>
     <message>
         <source>%1 - %2</source>
@@ -232,66 +232,66 @@ Version %1</translation>
     </message>
     <message>
         <source>You got kicked off from this channel!</source>
-        <translation type='unfinished'></translation>
+        <translation>You got kicked off from this channel!</translation>
     </message>
     <message>
         <source>Channel command reference:</source>
-        <translation type='unfinished'></translation>
+        <translation>Channel command reference:</translation>
     </message>
     <message>
         <source>/action [action] - do something</source>
-        <translation type='unfinished'></translation>
+        <translation>/action [action] - do something</translation>
     </message>
     <message>
         <source>/clear - clear channel window</source>
-        <translation type='unfinished'></translation>
+        <translation>/clear - clear channel window</translation>
     </message>
     <message>
         <source>/deop [name or session id] - take admin status from other user</source>
-        <translation type='unfinished'></translation>
+        <translation>/deop [name or session id] - take admin status from other user</translation>
     </message>
     <message>
         <source>/help - show command reference</source>
-        <translation type='unfinished'></translation>
+        <translation>/help - show command reference</translation>
     </message>
     <message>
         <source>/invite [name or session id] - invite user to channel</source>
-        <translation type='unfinished'></translation>
+        <translation>/invite [name or session id] - invite user to channel</translation>
     </message>
     <message>
         <source>/kick [name or session id] - kick user off the channel</source>
-        <translation type='unfinished'></translation>
+        <translation>/kick [name or session id] - kick user off the channel</translation>
     </message>
     <message>
         <source>/listadmins - show channel admins</source>
-        <translation type='unfinished'></translation>
+        <translation>/listadmins - show channel admins</translation>
     </message>
     <message>
         <source>/me [action] - same as /action</source>
-        <translation type='unfinished'></translation>
+        <translation>/me [action] - same as /action</translation>
     </message>
     <message>
         <source>/op [name or session id] - give admin status to other user</source>
-        <translation type='unfinished'></translation>
+        <translation>/op [name or session id] - give admin status to other user</translation>
     </message>
     <message>
         <source>/private - set channel to private mode</source>
-        <translation type='unfinished'></translation>
+        <translation>/private - set channel to private mode</translation>
     </message>
     <message>
         <source>/public - set channel to public mode</source>
-        <translation type='unfinished'></translation>
+        <translation>/public - set channel to public mode</translation>
     </message>
     <message>
         <source>/topic [topic] - change the channel topic</source>
-        <translation type='unfinished'></translation>
+        <translation>/topic [topic] - change the channel topic</translation>
     </message>
 </context>
 <context>
     <name>ChannelBase</name>
     <message>
         <source>Channel Window</source>
-        <translation type='unfinished'>Channel Window</translation>
+        <translation>Channel Window</translation>
     </message>
 </context>
 <context>
@@ -368,79 +368,79 @@ Version %1</translation>
     <name>Date</name>
     <message>
         <source>Jan</source>
-        <translation type='unfinished'></translation>
+        <translation>Jan</translation>
     </message>
     <message>
         <source>Feb</source>
-        <translation type='unfinished'></translation>
+        <translation>Feb</translation>
     </message>
     <message>
         <source>Mar</source>
-        <translation type='unfinished'></translation>
+        <translation>Mar</translation>
     </message>
     <message>
         <source>Apr</source>
-        <translation type='unfinished'></translation>
+        <translation>Apr</translation>
     </message>
     <message>
         <source>May</source>
-        <translation type='unfinished'></translation>
+        <translation>May</translation>
     </message>
     <message>
         <source>Jun</source>
-        <translation type='unfinished'></translation>
+        <translation>Jun</translation>
     </message>
     <message>
         <source>Jul</source>
-        <translation type='unfinished'></translation>
+        <translation>Jul</translation>
     </message>
     <message>
         <source>Aug</source>
-        <translation type='unfinished'></translation>
+        <translation>Aug</translation>
     </message>
     <message>
         <source>Sep</source>
-        <translation type='unfinished'></translation>
+        <translation>Sep</translation>
     </message>
     <message>
         <source>Oct</source>
-        <translation type='unfinished'></translation>
+        <translation>Oct</translation>
     </message>
     <message>
         <source>Nov</source>
-        <translation type='unfinished'></translation>
+        <translation>Nov</translation>
     </message>
     <message>
         <source>Dec</source>
-        <translation type='unfinished'></translation>
+        <translation>Dec</translation>
     </message>
     <message>
         <source>Mon</source>
-        <translation type='unfinished'></translation>
+        <translation>Mon</translation>
     </message>
     <message>
         <source>Tue</source>
-        <translation type='unfinished'></translation>
+        <translation>Tue</translation>
     </message>
     <message>
         <source>Wed</source>
-        <translation type='unfinished'></translation>
+        <translation>Wed</translation>
     </message>
     <message>
         <source>Thu</source>
-        <translation type='unfinished'></translation>
+        <translation>Thu</translation>
     </message>
     <message>
         <source>Fri</source>
-        <translation type='unfinished'></translation>
+        <translation>Fri</translation>
     </message>
     <message>
         <source>Sat</source>
-        <translation type='unfinished'></translation>
+        <translation>Sat</translation>
     </message>
     <message>
         <source>Sun</source>
-        <translation type='unfinished'></translation>
+        <translation>Sun</translation>
     </message>
 </context>
 <context>
@@ -574,43 +574,43 @@ Version %1</translation>
     </message>
     <message>
         <source>Access Denied!!!</source>
-        <translation type='unfinished'>Access Denied!!!</translation>
+        <translation>Access Denied!!!</translation>
     </message>
     <message>
         <source>do that to</source>
-        <translation type='unfinished'>do that to</translation>
+        <translation>do that to</translation>
     </message>
     <message>
         <source>kick</source>
-        <translation type='unfinished'>kick</translation>
+        <translation>kick</translation>
     </message>
     <message>
         <source>ban</source>
-        <translation type='unfinished'>ban</translation>
+        <translation>ban</translation>
     </message>
     <message>
         <source>unban</source>
-        <translation type='unfinished'>unban</translation>
+        <translation>unban</translation>
     </message>
     <message>
         <source>require</source>
-        <translation type='unfinished'>require</translation>
+        <translation>require</translation>
     </message>
     <message>
         <source>unrequire</source>
-        <translation type='unfinished'>unrequire</translation>
+        <translation>unrequire</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
-        <translation type='unfinished'>You are not allowed to %1 [%2]</translation>
+        <translation>You are not allowed to %1 [%2]</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation type='unfinished'></translation>
+        <translation>You must change your nickname before connecting!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation type='unfinished'></translation>
+        <translation>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
     </message>
 </context>
 <context>
@@ -766,39 +766,39 @@ Date: %4</translation>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation type='unfinished'></translation>
+        <translation>Date:</translation>
     </message>
     <message>
         <source>B</source>
-        <translation type='unfinished'></translation>
+        <translation>B</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation type='unfinished'></translation>
+        <translation>kB</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation type='unfinished'></translation>
+        <translation>MB</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation type='unfinished'></translation>
+        <translation>GB</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation type='unfinished'></translation>
+        <translation>B/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation type='unfinished'></translation>
+        <translation>kB/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation type='unfinished'></translation>
+        <translation>MB/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation type='unfinished'></translation>
+        <translation>GB/s</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
@@ -806,66 +806,66 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type='unfinished'></translation>
+        <translation>User #%1 has disconnected.</translation>
     </message>
     <message>
         <source>User #%1 is now nameless.</source>
-        <translation type='unfinished'></translation>
+        <translation>User #%1 is now nameless.</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation type='unfinished'>La direcciín IP de &lt;font color="%3"&gt;%1&lt;/font&gt; es %2.</translation>
+        <translation>La direcciín IP de &lt;font color="%3"&gt;%1&lt;/font&gt; es %2.</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='unfinished'></translation>
+        <translation>User #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
-        <translation type='unfinished'></translation>
+        <translation>Reading directory...</translation>
     </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
-        <translation type='unfinished'></translation>
+        <translation>Scan Progress</translation>
     </message>
     <message>
         <source>Current directory:</source>
-        <translation type='unfinished'></translation>
+        <translation>Current directory:</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type='unfinished'></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>Current file:</source>
-        <translation type='unfinished'></translation>
+        <translation>Current file:</translation>
     </message>
     <message>
         <source>Files scanned:</source>
-        <translation type='unfinished'></translation>
+        <translation>Files scanned:</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type='unfinished'>0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Directories scanned:</source>
-        <translation type='unfinished'></translation>
+        <translation>Directories scanned:</translation>
     </message>
     <message>
         <source>Directories left:</source>
-        <translation type='unfinished'></translation>
+        <translation>Directories left:</translation>
     </message>
 </context>
 <context>
     <name>UpdateClient</name>
     <message>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
-        <translation type='unfinished'>Unizone (Español) %1 iestá disponible en http://www.raasu.org/tools/windows/.</translation>
+        <translation>Unizone (Español) %1 iestá disponible en http://www.raasu.org/tools/windows/.</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
@@ -1204,7 +1204,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Packet Size</source>
-        <translation type='unfinished'></translation>
+        <translation>Packet Size</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
@@ -1212,7 +1212,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Elapsed</source>
-        <translation type='unfinished'></translation>
+        <translation>Elapsed</translation>
     </message>
 </context>
 <context>
@@ -1223,47 +1223,47 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1%2 %3</source>
-        <translation type='unfinished'>%1%2 %3</translation>
+        <translation>%1%2 %3</translation>
     </message>
     <message>
         <source>Could not add new connect session!</source>
-        <translation type='unfinished'></translation>
+        <translation>Could not add new connect session!</translation>
     </message>
     <message>
         <source>Failed to start internal thread!</source>
-        <translation type='unfinished'></translation>
+        <translation>Failed to start internal thread!</translation>
     </message>
     <message>
         <source>Critical error: Could not create file!</source>
-        <translation type='unfinished'></translation>
+        <translation>Critical error: Could not create file!</translation>
     </message>
     <message>
         <source>Could not read file info!</source>
-        <translation type='unfinished'></translation>
+        <translation>Could not read file info!</translation>
     </message>
     <message>
         <source>Couldn&apos;t write file data!</source>
-        <translation type='unfinished'></translation>
+        <translation>Couldn&apos;t write file data!</translation>
     </message>
     <message>
         <source>MD5 hashing failed! Can&apos;t resume.</source>
-        <translation type='unfinished'></translation>
+        <translation>MD5 hashing failed! Can&apos;t resume.</translation>
     </message>
     <message>
         <source>Connection timed out!</source>
-        <translation type='unfinished'></translation>
+        <translation>Connection timed out!</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
-        <translation type='unfinished'></translation>
+        <translation>Downloading %1 from %2.</translation>
     </message>
     <message>
         <source>Finished downloading %2 from %1.</source>
-        <translation type='unfinished'>Descarga finalizada %2 de %1.</translation>
+        <translation>Descarga finalizada %2 de %1.</translation>
     </message>
     <message>
         <source>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)</source>
-        <translation type='unfinished'></translation>
+        <translation>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)</translation>
     </message>
 </context>
 <context>
@@ -1852,7 +1852,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Default launcher:</source>
-        <translation type='unfinished'></translation>
+        <translation>Default launcher:</translation>
     </message>
     <message>
         <source>Upload Packet Size</source>
@@ -1860,15 +1860,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Upload Packet Size:</source>
-        <translation type='unfinished'></translation>
+        <translation>Upload Packet Size:</translation>
     </message>
     <message>
         <source>Enable Sound Effects</source>
-        <translation type='unfinished'></translation>
+        <translation>Enable Sound Effects</translation>
     </message>
     <message>
         <source>Downloads</source>
-        <translation type='unfinished'></translation>
+        <translation>Downloads</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue</source>
@@ -1900,11 +1900,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Base Port:</source>
-        <translation type='unfinished'></translation>
+        <translation>Base Port:</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue:</source>
-        <translation type='unfinished'></translation>
+        <translation>Minimum File Size to Queue:</translation>
     </message>
     <message>
         <source>200 kB</source>
@@ -1920,27 +1920,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>IP Addresses</source>
-        <translation type='unfinished'></translation>
+        <translation>IP Addresses</translation>
     </message>
     <message>
         <source>Number of Ports:</source>
-        <translation type='unfinished'></translation>
+        <translation>Number of Ports:</translation>
     </message>
     <message>
         <source>Empty Windows:</source>
-        <translation type='unfinished'></translation>
+        <translation>Empty Windows:</translation>
     </message>
     <message>
         <source>Do Nothing</source>
-        <translation type='unfinished'></translation>
+        <translation>Do Nothing</translation>
     </message>
     <message>
         <source>Prompt</source>
-        <translation type='unfinished'></translation>
+        <translation>Prompt</translation>
     </message>
     <message>
         <source>Automatically Close</source>
-        <translation type='unfinished'></translation>
+        <translation>Automatically Close</translation>
     </message>
 </context>
 <context>
@@ -2134,15 +2134,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1</source>
-        <translation type='unfinished'></translation>
+        <translation>User #%1</translation>
     </message>
     <message>
         <source>Could not init session!</source>
-        <translation type='unfinished'></translation>
+        <translation>Could not init session!</translation>
     </message>
     <message>
         <source>Couldn&apos;t create new connect session!</source>
-        <translation type='unfinished'></translation>
+        <translation>Couldn&apos;t create new connect session!</translation>
     </message>
     <message>
         <source>Connection reset by peer!</source>
@@ -2150,19 +2150,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Connection timed out!</source>
-        <translation type='unfinished'></translation>
+        <translation>Connection timed out!</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
-        <translation type='unfinished'>%1 ha acabado de descargar %2.</translation>
+        <translation>%1 ha acabado de descargar %2.</translation>
     </message>
     <message>
         <source>%1 is downloading %2.</source>
-        <translation type='unfinished'>%1 está descargando %2.</translation>
+        <translation>%1 está descargando %2.</translation>
     </message>
     <message>
         <source>Could not start internal thread!</source>
-        <translation type='unfinished'></translation>
+        <translation>Could not start internal thread!</translation>
     </message>
 </context>
 <context>
@@ -2573,7 +2573,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation>%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
         <source>Waiting for file scan thread to finish...</source>
@@ -2809,267 +2809,267 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone Command Reference</source>
-        <translation type='unfinished'></translation>
+        <translation>Unizone Command Reference</translation>
     </message>
     <message>
         <source>/action [action] - do something</source>
-        <translation type='unfinished'></translation>
+        <translation>/action [action] - do something</translation>
     </message>
     <message>
         <source>/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)</source>
-        <translation type='unfinished'></translation>
+        <translation>/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)</translation>
     </message>
     <message>
         <source>/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)</source>
-        <translation type='unfinished'></translation>
+        <translation>/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)</translation>
     </message>
     <message>
         <source>/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)</source>
-        <translation type='unfinished'></translation>
+        <translation>/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)</translation>
     </message>
     <message>
         <source>/adduser [name or session ids] - add users to a private chat window (works in private windows only!)</source>
-        <translation type='unfinished'></translation>
+        <translation>/adduser [name or session ids] - add users to a private chat window (works in private windows only!)</translation>
     </message>
     <message>
         <source>/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)</source>
-        <translation type='unfinished'></translation>
+        <translation>/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)</translation>
     </message>
     <message>
         <source>/away - set away state (same as selecting away from the list)</source>
-        <translation type='unfinished'></translation>
+        <translation>/away - set away state (same as selecting away from the list)</translation>
     </message>
     <message>
         <source>/awaymsg - away message for away state (when /away is invoked)</source>
-        <translation type='unfinished'></translation>
+        <translation>/awaymsg - away message for away state (when /away is invoked)</translation>
     </message>
     <message>
         <source>/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)</source>
-        <translation type='unfinished'></translation>
+        <translation>/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)</translation>
     </message>
     <message>
         <source>/btime [gmt] - Broadcast and show local (or GMT) time</source>
-        <translation type='unfinished'></translation>
+        <translation>/btime [gmt] - Broadcast and show local (or GMT) time</translation>
     </message>
     <message>
         <source>/buptime - Broadcast and show uptime</source>
-        <translation type='unfinished'></translation>
+        <translation>/buptime - Broadcast and show uptime</translation>
     </message>
     <message>
         <source>/chkserver [index] - check server string</source>
-        <translation type='unfinished'></translation>
+        <translation>/chkserver [index] - check server string</translation>
     </message>
     <message>
         <source>/chkstatus [index] - check status string</source>
-        <translation type='unfinished'></translation>
+        <translation>/chkstatus [index] - check status string</translation>
     </message>
     <message>
         <source>/chkuser [index] - check nick string</source>
-        <translation type='unfinished'></translation>
+        <translation>/chkuser [index] - check nick string</translation>
     </message>
     <message>
         <source>/clear - clear the text in the chat view</source>
-        <translation type='unfinished'></translation>
+        <translation>/clear - clear the text in the chat view</translation>
     </message>
     <message>
         <source>/clearline - clear all the line buffers</source>
-        <translation type='unfinished'></translation>
+        <translation>/clearline - clear all the line buffers</translation>
     </message>
     <message>
         <source>/clearstats - clear transfer statistics</source>
-        <translation type='unfinished'></translation>
+        <translation>/clearstats - clear transfer statistics</translation>
     </message>
     <message>
         <source>/connect - connect to the currently selected server</source>
-        <translation type='unfinished'></translation>
+        <translation>/connect - connect to the currently selected server</translation>
     </message>
     <message>
         <source>/disconnect - disconnect from server</source>
-        <translation type='unfinished'></translation>
+        <translation>/disconnect - disconnect from server</translation>
     </message>
     <message>
         <source>/dns [user|host] - give information about host</source>
-        <translation type='unfinished'></translation>
+        <translation>/dns [user|host] - give information about host</translation>
     </message>
     <message>
         <source>/help [command] - show help for command (no &apos;/&apos; in front of command) or show this help text if no command given.</source>
-        <translation type='unfinished'></translation>
+        <translation>/help [command] - show help for command (no &apos;/&apos; in front of command) or show this help text if no command given.</translation>
     </message>
     <message>
         <source>/heremsg - message for here state</source>
-        <translation type='unfinished'></translation>
+        <translation>/heremsg - message for here state</translation>
     </message>
     <message>
         <source>/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)</source>
-        <translation type='unfinished'></translation>
+        <translation>/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)</translation>
     </message>
     <message>
         <source>/logged - show the time you have been logged in to a server</source>
-        <translation type='unfinished'></translation>
+        <translation>/logged - show the time you have been logged in to a server</translation>
     </message>
     <message>
         <source>/me [action] - /action synonym</source>
-        <translation type='unfinished'></translation>
+        <translation>/me [action] - /action synonym</translation>
     </message>
     <message>
         <source>/msg [name] [message] - send a private message</source>
-        <translation type='unfinished'></translation>
+        <translation>/msg [name] [message] - send a private message</translation>
     </message>
     <message>
         <source>/nick [name] - change your user name</source>
-        <translation type='unfinished'></translation>
+        <translation>/nick [name] - change your user name</translation>
     </message>
     <message>
         <source>/onconnect [command] - set or clear command to perform on successful connect</source>
-        <translation type='unfinished'></translation>
+        <translation>/onconnect [command] - set or clear command to perform on successful connect</translation>
     </message>
     <message>
         <source>/ping [name or session ids] - ping other clients</source>
-        <translation type='unfinished'></translation>
+        <translation>/ping [name or session ids] - ping other clients</translation>
     </message>
     <message>
         <source>/priv [name or session ids] - open private chat with these users added</source>
-        <translation type='unfinished'></translation>
+        <translation>/priv [name or session ids] - open private chat with these users added</translation>
     </message>
     <message>
         <source>/quit - quit Unizone</source>
-        <translation type='unfinished'></translation>
+        <translation>/quit - quit Unizone</translation>
     </message>
     <message>
         <source>/remote [password] - set &amp; view remote password</source>
-        <translation type='unfinished'></translation>
+        <translation>/remote [password] - set &amp; view remote password</translation>
     </message>
     <message>
         <source>/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)</source>
-        <translation type='unfinished'></translation>
+        <translation>/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)</translation>
     </message>
     <message>
         <source>/remserver [index] - remove server from server list</source>
-        <translation type='unfinished'></translation>
+        <translation>/remserver [index] - remove server from server list</translation>
     </message>
     <message>
         <source>/remstatus [index] - remove status from status list</source>
-        <translation type='unfinished'></translation>
+        <translation>/remstatus [index] - remove status from status list</translation>
     </message>
     <message>
         <source>/remuser [index] - remove nick from nick list</source>
-        <translation type='unfinished'></translation>
+        <translation>/remuser [index] - remove nick from nick list</translation>
     </message>
     <message>
         <source>/resumes - list files waiting to be resumed</source>
-        <translation type='unfinished'></translation>
+        <translation>/resumes - list files waiting to be resumed</translation>
     </message>
     <message>
         <source>/save - saves settings (might be necessary after editing drop-down lists)</source>
-        <translation type='unfinished'></translation>
+        <translation>/save - saves settings (might be necessary after editing drop-down lists)</translation>
     </message>
     <message>
         <source>/scan - rescan shared directory</source>
-        <translation type='unfinished'></translation>
+        <translation>/scan - rescan shared directory</translation>
     </message>
     <message>
         <source>/search [pattern] - open search window</source>
-        <translation type='unfinished'></translation>
+        <translation>/search [pattern] - open search window</translation>
     </message>
     <message>
         <source>/server [server] - set the current server</source>
-        <translation type='unfinished'></translation>
+        <translation>/server [server] - set the current server</translation>
     </message>
     <message>
         <source>/serverinfo - check status of server</source>
-        <translation type='unfinished'></translation>
+        <translation>/serverinfo - check status of server</translation>
     </message>
     <message>
         <source>/shell [command] - execute command</source>
-        <translation type='unfinished'></translation>
+        <translation>/shell [command] - execute command</translation>
     </message>
     <message>
         <source>/showpatterns - show auto-private, blacklist, ignore and watch patterns</source>
-        <translation type='unfinished'></translation>
+        <translation>/showpatterns - show auto-private, blacklist, ignore and watch patterns</translation>
     </message>
     <message>
         <source>/showstats - show transfer statistics</source>
-        <translation type='unfinished'></translation>
+        <translation>/showstats - show transfer statistics</translation>
     </message>
     <message>
         <source>/status [status] - set status string</source>
-        <translation type='unfinished'></translation>
+        <translation>/status [status] - set status string</translation>
     </message>
     <message>
         <source>/time [gmt] - show local (or GMT) time</source>
-        <translation type='unfinished'></translation>
+        <translation>/time [gmt] - show local (or GMT) time</translation>
     </message>
     <message>
         <source>/unautopriv [name] - remove name from auto-private list</source>
-        <translation type='unfinished'></translation>
+        <translation>/unautopriv [name] - remove name from auto-private list</translation>
     </message>
     <message>
         <source>/unblacklist [name] - remove name from blacklist</source>
-        <translation type='unfinished'></translation>
+        <translation>/unblacklist [name] - remove name from blacklist</translation>
     </message>
     <message>
         <source>/unignore [name] - remove name from ignore list</source>
-        <translation type='unfinished'></translation>
+        <translation>/unignore [name] - remove name from ignore list</translation>
     </message>
     <message>
         <source>/uptime - show system uptime</source>
-        <translation type='unfinished'></translation>
+        <translation>/uptime - show system uptime</translation>
     </message>
     <message>
         <source>/users - show number of users connected</source>
-        <translation type='unfinished'></translation>
+        <translation>/users - show number of users connected</translation>
     </message>
     <message>
         <source>/version - show client version strings</source>
-        <translation type='unfinished'></translation>
+        <translation>/version - show client version strings</translation>
     </message>
     <message>
         <source>/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)</source>
-        <translation type='unfinished'></translation>
+        <translation>/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)</translation>
     </message>
     <message>
         <source>Admin Command Reference</source>
-        <translation type='unfinished'></translation>
+        <translation>Admin Command Reference</translation>
     </message>
     <message>
         <source>/addbans [users] - add bans by user names or session ids</source>
-        <translation type='unfinished'></translation>
+        <translation>/addbans [users] - add bans by user names or session ids</translation>
     </message>
     <message>
         <source>/addipbans [ips] - add bans by ip addresses</source>
-        <translation type='unfinished'></translation>
+        <translation>/addipbans [ips] - add bans by ip addresses</translation>
     </message>
     <message>
         <source>/kick [users] - kick by user names or session ids</source>
-        <translation type='unfinished'></translation>
+        <translation>/kick [users] - kick by user names or session ids</translation>
     </message>
     <message>
         <source>/kickips [ips] - kick by ip addresses</source>
-        <translation type='unfinished'></translation>
+        <translation>/kickips [ips] - kick by ip addresses</translation>
     </message>
     <message>
         <source>/rembans [users] - remove bans by user names</source>
-        <translation type='unfinished'></translation>
+        <translation>/rembans [users] - remove bans by user names</translation>
     </message>
     <message>
         <source>/remipbans [ips] - remove bans by ip addresses</source>
-        <translation type='unfinished'></translation>
+        <translation>/remipbans [ips] - remove bans by ip addresses</translation>
     </message>
     <message>
         <source>/require [ips] - add require mask</source>
-        <translation type='unfinished'></translation>
+        <translation>/require [ips] - add require mask</translation>
     </message>
     <message>
         <source>/unrequire [ips] - remove require mask</source>
-        <translation type='unfinished'></translation>
+        <translation>/unrequire [ips] - remove require mask</translation>
     </message>
     <message>
         <source>The list of commands is being worked on. More will be added</source>
-        <translation type='unfinished'></translation>
+        <translation>The list of commands is being worked on. More will be added</translation>
     </message>
     <message>
         <source>as time goes on.</source>
-        <translation type='unfinished'></translation>
+        <translation>as time goes on.</translation>
     </message>
     <message>
         <source>Auto-private pattern : %1</source>
@@ -3097,171 +3097,171 @@ Date: %4</translation>
     </message>
     <message>
         <source>Help for %1:</source>
-        <translation type='unfinished'></translation>
+        <translation>Help for %1:</translation>
     </message>
     <message>
         <source>Reconnecting in 1 minute!</source>
-        <translation type='unfinished'></translation>
+        <translation>Reconnecting in 1 minute!</translation>
     </message>
     <message>
         <source>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
-        <translation type='unfinished'></translation>
+        <translation>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
         <source>/time [nick] [gmt] - request time stamp from other user</source>
-        <translation type='unfinished'></translation>
+        <translation>/time [nick] [gmt] - request time stamp from other user</translation>
     </message>
     <message>
         <source>Invalid compression!</source>
-        <translation type='unfinished'></translation>
+        <translation>Invalid compression!</translation>
     </message>
     <message>
         <source>Compression level for server %1 at port %2 set to %3.</source>
-        <translation type='unfinished'></translation>
+        <translation>Compression level for server %1 at port %2 set to %3.</translation>
     </message>
     <message>
         <source>Current compression: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Current compression: %1</translation>
     </message>
     <message>
         <source>/compression [level] - set or view message compression level</source>
-        <translation type='unfinished'></translation>
+        <translation>/compression [level] - set or view message compression level</translation>
     </message>
     <message>
         <source>Running: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Running: %1</translation>
     </message>
     <message>
         <source>/running - show time elapsed since you started Unizone</source>
-        <translation type='unfinished'></translation>
+        <translation>/running - show time elapsed since you started Unizone</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='unfinished'>Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='unfinished'>Tamaño</translation>
+        <translation>Tamaño</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='unfinished'>Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='unfinished'>Modificado</translation>
+        <translation>Modificado</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='unfinished'>Directorio</translation>
+        <translation>Directorio</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='unfinished'>Usuario</translation>
+        <translation>Usuario</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='unfinished'>Buscar:</translation>
+        <translation>Buscar:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='unfinished'>Descarga</translation>
+        <translation>Descarga</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='unfinished'>Limpiar</translation>
+        <translation>Limpiar</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='unfinished'>Detener</translation>
+        <translation>Detener</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='unfinished'>Idle.</translation>
+        <translation>Idle.</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type='unfinished'>Topic</translation>
+        <translation>Topic</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type='unfinished'>Usuarios</translation>
+        <translation>Usuarios</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type='unfinished'>Admins</translation>
+        <translation>Admins</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type='unfinished'>Public</translation>
+        <translation>Public</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type='unfinished'>&amp;Create</translation>
+        <translation>&amp;Create</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type='unfinished'>&amp;Join</translation>
+        <translation>&amp;Join</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation type='unfinished'>Chat</translation>
+        <translation>Chat</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type='unfinished'>Buscar</translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='unfinished'>Channels</translation>
+        <translation>Channels</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation type='unfinished'>Buscando: "%1".</translation>
+        <translation>Buscando: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='unfinished'>Resultados: %1</translation>
+        <translation>Resultados: %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='unfinished'>Create Channel</translation>
+        <translation>Create Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='unfinished'>Please enter channel name</translation>
+        <translation>Please enter channel name</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='unfinished'>User #%1 invited you to channel %2. Do you accept?</translation>
+        <translation>User #%1 invited you to channel %2. Do you accept?</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='unfinished'>User #%1 requested invite to channel %2. Do you?</translation>
+        <translation>User #%1 requested invite to channel %2. Do you?</translation>
     </message>
     <message>
         <source>Server version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Server version: %1</translation>
     </message>
     <message>
         <source>Server uptime: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Server uptime: %1</translation>
     </message>
     <message>
         <source>Session root: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Session root: %1</translation>
     </message>
     <message>
         <source>Memory usage: %1 MB of %2 MB used</source>
-        <translation type='unfinished'></translation>
+        <translation>Memory usage: %1 MB of %2 MB used</translation>
     </message>
     <message>
         <source>Watch pattern cleared.</source>
-        <translation type='unfinished'></translation>
+        <translation>Watch pattern cleared.</translation>
     </message>
     <message>
         <source>Watch pattern set to %1.</source>
-        <translation type='unfinished'></translation>
+        <translation>Watch pattern set to %1.</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
@@ -3273,35 +3273,35 @@ Date: %4</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation type='unfinished'></translation>
+        <translation>passive</translation>
     </message>
     <message>
         <source>active</source>
-        <translation type='unfinished'></translation>
+        <translation>active</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation type='unfinished'></translation>
+        <translation>Clear History</translation>
     </message>
     <message>
         <source>- Local File: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>- Local File: %1</translation>
     </message>
     <message>
         <source>Menubar</source>
-        <translation type='unfinished'></translation>
+        <translation>Menubar</translation>
     </message>
     <message>
         <source>Server bar</source>
-        <translation type='unfinished'></translation>
+        <translation>Server bar</translation>
     </message>
     <message>
         <source>Nickbar</source>
-        <translation type='unfinished'></translation>
+        <translation>Nickbar</translation>
     </message>
     <message>
         <source>Statusbar</source>
-        <translation type='unfinished'></translation>
+        <translation>Statusbar</translation>
     </message>
     <message>
         <source>Unizone version: %1</source>
@@ -3313,15 +3313,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation type='unfinished'></translation>
+        <translation>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
-        <translation type='unfinished'></translation>
+        <translation>/clearresumes - clear all pending resumes</translation>
     </message>
     <message>
         <source>Cleared resume list.</source>
-        <translation type='unfinished'></translation>
+        <translation>Cleared resume list.</translation>
     </message>
     <message>
         <source>On connect:</source>
@@ -3329,55 +3329,55 @@ Date: %4</translation>
     </message>
     <message>
         <source>1. %1</source>
-        <translation type='unfinished'></translation>
+        <translation>1. %1</translation>
     </message>
     <message>
         <source>2. %1</source>
-        <translation type='unfinished'></translation>
+        <translation>2. %1</translation>
     </message>
     <message>
         <source>On Connect:</source>
-        <translation type='unfinished'></translation>
+        <translation>On Connect:</translation>
     </message>
     <message>
         <source>Queued file %1 from user #%2.</source>
-        <translation type='unfinished'></translation>
+        <translation>Queued file %1 from user #%2.</translation>
     </message>
     <message>
         <source>Downloading file %1 from user #%2.</source>
-        <translation type='unfinished'></translation>
+        <translation>Downloading file %1 from user #%2.</translation>
     </message>
     <message>
         <source>Address info for user #%1:</source>
-        <translation type='unfinished'></translation>
+        <translation>Address info for user #%1:</translation>
     </message>
     <message>
         <source>User Name: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>User Name: %1</translation>
     </message>
     <message>
         <source>/reverse [text] - say text in reverse</source>
-        <translation type='unfinished'></translation>
+        <translation>/reverse [text] - say text in reverse</translation>
     </message>
     <message>
         <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
-        <translation type='unfinished'></translation>
+        <translation>/revsay [nick]: [text] - say text reversed but prefix with nick</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type='unfinished'></translation>
+        <translation>Initializing...</translation>
     </message>
     <message>
         <source>On Connect: Do Nothing ;)</source>
-        <translation type='unfinished'></translation>
+        <translation>On Connect: Do Nothing ;)</translation>
     </message>
     <message>
         <source>&amp;lt;None&amp;gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&amp;lt;None&amp;gt;</translation>
     </message>
     <message>
         <source>/ip [user|host] - give information about host</source>
-        <translation type='unfinished'></translation>
+        <translation>/ip [user|host] - give information about host</translation>
     </message>
 </context>
 </TS>

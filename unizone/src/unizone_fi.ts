@@ -2694,7 +2694,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation>%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
         <source>Waiting for file scan thread to finish...</source>
