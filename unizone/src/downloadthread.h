@@ -35,6 +35,12 @@ public:
 	// this will also send a message to show the dialog, so do not do it yourself
 	bool InitSession();
 
+	void SetRate(int rate);
+	void SetRate(int rate, AbstractReflectSessionRef ref);
+
+
+
+
 protected:
 	QMutex fLockFile;
 	QFile * fFile;		// file on the HD

@@ -385,6 +385,16 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					fReconnectTimer->stop();
 				}
 
+				if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
+					ExecCommand(fOnConnect);
+
+				if ((fOnConnect2 != QString::null) && fOnConnect2.length() > 2)
+				{
+					fOnConnect = fOnConnect2;
+					fOnConnect2 = QString::null;
+					ExecCommand(fOnConnect);
+				}
+
 				fDisconnect = false;
 				fDisconnectCount = 0;
 				return;
@@ -404,9 +414,21 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			}
 			
 		case WTextEvent::ComboType:
-			HandleComboEvent(dynamic_cast<WTextEvent *>(event));
-			return;
-			
+			{
+				HandleComboEvent(dynamic_cast<WTextEvent *>(event));
+				return;
+			}
+
+		case WTextEvent::ResumeType:
+			{
+				WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
+				if (wte)
+				{
+					if ( IsConnected( wte->Text() ) )
+						CheckResumes( wte->Text() );
+				}
+				return;
+			}
 		case WPWEvent::TextEvent:
 			{
 				WPWEvent * wpe = dynamic_cast<WPWEvent *>(event);
@@ -1159,6 +1181,9 @@ WinShareWindow::LoadSettings()
 		fBlackList = fSettings->GetBlackListPattern();
 		fAutoPriv = fSettings->GetAutoPrivatePattern();
 
+		fOnConnect = fSettings->GetOnConnect();
+		fOnConnect2 = fSettings->GetOnConnect2();
+
 		tx = fSettings->GetTransmitStats(); tx2 = tx;
 		rx = fSettings->GetReceiveStats(); rx2 = rx;
 		
@@ -1195,6 +1220,8 @@ WinShareWindow::LoadSettings()
 		fIgnore = "";
 		fBlackList = "";
 		fAutoPriv = "";
+		fOnConnect = "";
+		fOnConnect2 = "";
 		tx = 0;
 		rx = 0;
 		tx2 = 0;
@@ -1265,6 +1292,11 @@ WinShareWindow::SaveSettings()
 	fSettings->SetIgnorePattern(fIgnore);
 	fSettings->SetBlackListPattern(fBlackList);
 	fSettings->SetAutoPrivatePattern(fAutoPriv);
+
+	// on connect
+
+	fSettings->SetOnConnect(fOnConnect);
+	fSettings->SetOnConnect2(fOnConnect2);
 
 	// transfer stats
 
@@ -1389,6 +1421,18 @@ WinShareWindow::WaitOnFileThread()
 void
 WinShareWindow::LaunchSearch(const QString & pattern)
 {
+	// (be)share://server/pattern
+	if (pattern.find("//") == 0)	
+	{
+		// Strip server name in front of search pattern
+		QString qServer = pattern.mid(2);						// remove //
+		QString qPattern = qServer.mid(qServer.find("/") + 1);	// get everything after /
+		qServer = qServer.left(qServer.find("/"));				// get everything before /
+		gWin->SetDelayedSearchPattern(qPattern);
+		gWin->Connect(qServer);
+		return;
+	}
+	// (be)share:pattern
 	if (!gWin->fSearchWindow)
 	{
 		gWin->fSearchWindow = new WSearch(gWin->fNetClient);
@@ -1604,5 +1648,17 @@ WinShareWindow::OpenDownload()
 		return;
 	fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
 	connect(fDLWindow, SIGNAL(FileFailed(QString, QString)), this, SLOT(FileFailed(QString, QString)));
+	connect(fDLWindow, SIGNAL(FileInterrupted(QString, QString)), this, SLOT(FileInterrupted(QString, QString)));
 	fDLWindow->show();
+}
+
+void
+WinShareWindow::SetDelayedSearchPattern(QString pattern)
+{
+	if ((fOnConnect != QString::null) && (fOnConnect.length() > 2))
+	{
+		fOnConnect2 = fOnConnect;
+	}
+		
+	fOnConnect = tr("/search %1").arg(pattern);
 }

@@ -31,9 +31,18 @@ public:
 	virtual ~WGenericThread();
 
 	QTime fLastData;		// public time to keep control of the last time we got some data
-
+/*
 	bool IsQueued() const;
 	virtual void SetQueued(bool b);
+*/
+	bool IsManuallyQueued() const;
+	virtual void SetManuallyQueued(bool b);
+
+	bool IsLocallyQueued() const;
+	virtual void SetLocallyQueued(bool b);
+
+	bool IsRemotelyQueued() const;
+	virtual void SetRemotelyQueued(bool b);
 
 	// The active state signifies whether the download is active.
 	// IE: It has not been canceled, and is still in downloading, etc.
@@ -62,13 +71,20 @@ public:
 	virtual bool IsLastFile() { return ((GetCurrentNum() + 1) == GetNumFiles()); }
 	virtual QString GetFileName(int i) { return QString::null; }
 
+	int GetRate() { return fTXRate; }
+	virtual void SetRate(int rate, AbstractReflectSessionRef & ref) { fTXRate = rate; }
+	virtual void SetRate(int rate) { fTXRate = rate; }
+
 public slots:
 	void ConnectTimer(); // Connection timed out?
 
 protected:
 	QObject * fOwner;
 	bool * fShutdownFlag;
-	bool fQueued;
+	//bool fQueued;
+	bool fManuallyQueued;
+	bool fLocallyQueued;
+	bool fRemotelyQueued;			// only usable in downloads
 	bool fActive;
 	bool fBlocked;
 	double fRate[MAX_RATE_COUNT];	// last 20 rates
@@ -84,6 +100,7 @@ protected:
 	virtual void SendReply(Message * m);
 	QString GetUserName(QString sid);
 
+	int fTXRate; // Current transfer throttling rate
 };
 
 #endif

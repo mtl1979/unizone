@@ -13,65 +13,68 @@ using namespace muscle;
 
 #include <qvaluelist.h>
 
-#define SERVER_LIST "serverlist"
-#define SERVER_ITEM "serveritem"
-#define USER_LIST "userlist"
-#define USER_ITEM "useritem"
-#define STATUS_LIST "statuslist"
-#define STATUS_ITEM "statusitem"
-#define STYLE "style"
-#define COLUMN_LIST "columnlist"
-#define WINDOW_WIDTH "windowwidth"
-#define WINDOW_HEIGHT "windowheight"
-#define WINDOW_X "windowx"
-#define WINDOW_Y "windowy"
-#define CHAT_SIZES "chatsizes"
-#define USER_SIZES "usersizes"		// the splitter between the user list and the chat stuff
-#define AWAY_MSG "awaymsg"
-#define HERE_MSG "heremsg"
-#define COLORS "colors"
+#define SERVER_LIST		"serverlist"
+#define SERVER_ITEM		"serveritem"
+#define USER_LIST		"userlist"
+#define USER_ITEM		"useritem"
+#define STATUS_LIST		"statuslist"
+#define STATUS_ITEM		"statusitem"
+#define STYLE			"style"
+#define COLUMN_LIST		"columnlist"
+#define WINDOW_WIDTH	"windowwidth"
+#define WINDOW_HEIGHT	"windowheight"
+#define WINDOW_X		"windowx"
+#define WINDOW_Y		"windowy"
+#define CHAT_SIZES		"chatsizes"
+#define USER_SIZES		"usersizes"		// the splitter between the user list and the chat stuff
+#define AWAY_MSG		"awaymsg"
+#define HERE_MSG		"heremsg"
+#define COLORS			"colors"
 
-#define AUTO_UPDATE "autoupdateservers"
-#define CHECK_VERSION "checknewversion"
-#define LOGIN_STARTUP "loginonstartup"
-#define FIREWALLED "firewalled"
-#define BINKYNUKE "binkynuke"
-#define BLOCKDISCONNECTED "blockdisconnected"
-#define MULTICOLOR "multicolor"
-#define CONNECTION "connection"
-#define TIME_STAMPS "timestamps"
-#define USER_EVENTS "userevents"
-#define UPLOADS "uploads"
-#define CHAT "chat"
-#define PRIVATE "private"
-#define INFO "info"
-#define WARNING "warning"
-#define ERRORS "errorS"
+#define AUTO_UPDATE			"autoupdateservers"
+#define CHECK_VERSION		"checknewversion"
+#define LOGIN_STARTUP		"loginonstartup"
+#define FIREWALLED			"firewalled"
+#define BINKYNUKE			"binkynuke"
+#define BLOCKDISCONNECTED	"blockdisconnected"
+#define MULTICOLOR			"multicolor"
+#define CONNECTION			"connection"
+#define TIME_STAMPS			"timestamps"
+#define USER_EVENTS			"userevents"
+#define UPLOADS				"uploads"
+#define CHAT				"chat"
+#define PRIVATE				"private"
+#define INFO				"info"
+#define WARNING				"warning"
+#define ERRORS				"errorS"
 
-#define AUTO_AWAY "autoaway"
-#define FLASH "flash"
+#define AUTO_AWAY		"autoaway"
+#define FLASH			"flash"
 #define SHARING_ENABLED "sharingenabled"
-#define MAX_UPLOADS "maxuploads"
-#define MAX_DOWNLOADS "maxdownloads"
-#define FONT_SIZE "fontsize"
-#define WATCH_PATTERN "watchpattern"
-#define IGNORE_PATTERN "ignorepattern"
-#define BLACKLIST "blacklist"
-#define AUTOPRIV "autopriv"
+#define MAX_UPLOADS		"maxuploads"
+#define MAX_DOWNLOADS	"maxdownloads"
+#define FONT_SIZE		"fontsize"
+#define WATCH_PATTERN	"watchpattern"
+#define IGNORE_PATTERN	"ignorepattern"
+#define BLACKLIST		"blacklist"
+#define AUTOPRIV		"autopriv"
+
+#define ONCONN		"onconnect1"
+#define ONCONN2		"onconnect2"
 
 #ifdef __linux__	/* Linux is our only configurable URL launcher */
-# define MAILTO_LAUNCHER "mailtolauncher"
-# define HTTP_LAUNCHER "httplauncher"
-# define FTP_LAUNCHER "ftplauncher"
+# define MAILTO_LAUNCHER	"mailtolauncher"
+# define HTTP_LAUNCHER		"httplauncher"
+# define FTP_LAUNCHER		"ftplauncher"
 #endif
 
-#define UL_LIMIT "ullimit"
-#define DL_LIMIT "dllimit"
-#define BL_LIMIT "bllimit"
-#define CHAT_LIMIT "chatlimit"
+#define UL_LIMIT	"ullimit"
+#define DL_LIMIT	"dllimit"
+#define BL_LIMIT	"bllimit"
+#define CHAT_LIMIT	"chatlimit"
 
-#define MAXIMIZED "maximized"
-#define LOGGING "logging"
+#define MAXIMIZED	"maximized"
+#define LOGGING		"logging"
 
 #define TX_STATS "txstats"
 #define RX_STATS "rxstats"
@@ -169,6 +172,12 @@ public:
 	QString GetAwayMsg();
 	void SetHereMsg(QString here);
 	QString GetHereMsg();
+
+	// On Connect
+	void SetOnConnect(QString s);
+	QString GetOnConnect();
+	void SetOnConnect2(QString s);
+	QString GetOnConnect2();
 
 	// colors
 	void AddColorItem(QString c);

@@ -91,7 +91,9 @@ WinShareWindow::UserNameChanged(QString sid, QString old, QString newname)
 			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserNameChangedNoOld().arg(sid).arg(FixStringStr(newname)).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112
 		PrintText(system);
 	}
-	CheckResumes(newname);
+	WTextEvent * wte = new WTextEvent(newname, WTextEvent::ResumeType);
+	if (wte)
+		QApplication::postEvent(this, wte);
 }
 
 void
@@ -399,13 +401,23 @@ WinShareWindow::SearchWindowClosed()
 void
 WinShareWindow::FileFailed(QString file, QString user)
 {
+	FileInterrupted(file, user);
+
+	WTextEvent * wte = new WTextEvent(user, WTextEvent::ResumeType);
+	if (wte)
+		QApplication::postEvent(this, wte);
+}
+
+// Insert interrupted download to resume list
+//
+
+void
+WinShareWindow::FileInterrupted(QString file, QString user)
+{
 	rLock.lock();
 	WResumePair wrp = MakePair(file, user);
 	fResumeMap.insert(wrp);
 	rLock.unlock();
-
-	if (IsConnected(user)) // Is still connected?
-		CheckResumes(user); // try to resume immediately
 }
 
 // Check username against resume list

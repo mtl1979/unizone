@@ -72,7 +72,7 @@ WUser::InitName(const Message * msg)
 
 	if ((msg->FindString("version_name", &vname) == B_OK) && (msg->FindString("version_num", &vnum) == B_OK))
 	{
-		fClient = vname;
+		fClient = QString::fromUtf8(vname);
 		fClient += " ";
 		fClient += vnum;
 		fNeedPing = false;

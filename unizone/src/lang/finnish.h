@@ -268,6 +268,10 @@
 #define MSG_TX_ETA				"Jäljellä"
 #define MSG_TX_USER				"Käyttäjä"
 #define MSG_TX_SENT				"Lähetetty"
+#define MSG_TX_QUEUE			"Jonossa"
+#define MSG_TX_THROTTLE			"Rajoita"
+#define MSG_TX_MOVEUP			"Siirrä Ylös"
+#define MSG_TX_MOVEDOWN			"Siirrä Alas"
 #define MSG_TX_CAPTION			"Tiedostonsiirto"
 
 #define MSG_TX_ISDOWNLOADING	"%1 imuroi tiedostoa %2."

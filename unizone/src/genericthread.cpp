@@ -10,10 +10,13 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	int i;
 	// Default status
 	fActive = true;
-	fQueued = false;
+	fManuallyQueued = false;
+	fLocallyQueued = false;
+	fRemotelyQueued = false;
 	fRateCount = 0;
 	fETACount = 0;
 	fPackets = 0;
+	fTXRate = 0;
 	for (i = 0; i < MAX_RATE_COUNT; i++)
 		fRate[i] = 0.0f;
 	for (i = 0; i < MAX_ETA_COUNT; i++)
@@ -28,7 +31,7 @@ WGenericThread::~WGenericThread()
 		WaitForInternalThreadToExit();
 	}
 }
-
+/*
 bool
 WGenericThread::IsQueued() const
 {
@@ -39,6 +42,42 @@ void
 WGenericThread::SetQueued(bool b)
 {
 	fQueued = b;
+}
+*/
+bool
+WGenericThread::IsManuallyQueued() const
+{
+	return fManuallyQueued;
+}
+
+void
+WGenericThread::SetManuallyQueued(bool b)
+{
+	fManuallyQueued = b;	
+}
+
+bool
+WGenericThread::IsLocallyQueued() const
+{
+	return fLocallyQueued;
+}
+
+void
+WGenericThread::SetLocallyQueued(bool b)
+{
+	fLocallyQueued = b;
+}
+
+bool
+WGenericThread::IsRemotelyQueued() const
+{
+	return fRemotelyQueued;
+}
+
+void
+WGenericThread::SetRemotelyQueued(bool b)
+{
+	fRemotelyQueued = b;
 }
 
 void

@@ -177,44 +177,44 @@ WSearch::AddFile(const QString sid, const QString filename, bool firewalled, Mes
 		PRINT("ADDFILE: file Regex ok\n");
 		if (fUserRegExp.Match((const char *) sid.utf8()))
 		{
-		// yes!
-		WUserIter uit = fNet->Users().find(sid);
-		if (uit != fNet->Users().end())	// found our user
-		{
-			WUserRef user = (*uit).second;
-
-			WFileInfo * info = new WFileInfo;
-			info->fiUser = user;
-			info->fiFilename = filename;
-			info->fiRef = file;
-			info->fiFirewalled = firewalled;
-
-			String path, kind;
-			int64 size = 0;
-			int32 mod = 0;
-
-			file()->FindString("beshare:Kind", kind);
-			file()->FindString("beshare:Path", path);
-			file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
-			file()->FindInt64("beshare:File Size", (int64 *)&size);
-
-			// name, size, type, modified, path, user
-			QString qkind = QString::fromUtf8(kind.Cstr());
-			QString qsize = tr("%1").arg((int)size); 
-			QString qmod = tr("%1").arg(mod); // <postmaster@raasu.org> 20021126
-			QString qpath = QString::fromUtf8(path.Cstr());
-			QString quser = user()->GetUserName();
-
-			info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
-			PRINT("Setting key to %d\n", (long)size);
-
-			// The map is based on _filename's_, not session ID's.
-			// And as filename's can be duplicate, we use a multimap
-			WFIPair pair = MakePair(filename, info);
-			fFileList.insert(fFileList.end(), pair);
+			// yes!
+			WUserIter uit = fNet->Users().find(sid);
+			if (uit != fNet->Users().end())	// found our user
+			{
+				WUserRef user = (*uit).second;
+				
+				WFileInfo * info = new WFileInfo;
+				info->fiUser = user;
+				info->fiFilename = filename;
+				info->fiRef = file;
+				info->fiFirewalled = firewalled;
+				
+				String path, kind;
+				int64 size = 0;
+				int32 mod = 0;
+				
+				file()->FindString("beshare:Kind", kind);
+				file()->FindString("beshare:Path", path);
+				file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
+				file()->FindInt64("beshare:File Size", (int64 *)&size);
+				
+				// name, size, type, modified, path, user
+				QString qkind = QString::fromUtf8(kind.Cstr());
+				QString qsize = tr("%1").arg((int)size); 
+				QString qmod = tr("%1").arg(mod); // <postmaster@raasu.org> 20021126
+				QString qpath = QString::fromUtf8(path.Cstr());
+				QString quser = user()->GetUserName();
+				
+				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
+				PRINT("Setting key to %d\n", (long)size);
+				
+				// The map is based on _filename's_, not session ID's.
+				// And as filename's can be duplicate, we use a multimap
+				WFIPair pair = MakePair(filename, info);
+				fFileList.insert(fFileList.end(), pair);
+			}
 		}
-	}
-
+		
 	}
 	Unlock();
 	SetResultsMessage();

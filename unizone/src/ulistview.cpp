@@ -7,7 +7,7 @@
 WUniListItem::WUniListItem(
 						   QListView * parent, 
 						   QString a, QString b, QString c, QString d,
-						   QString e, QString f, QString g, QString h 
+						   QString e, QString f, QString g, QString h, QString i 
 						   ) 
 						   : QListViewItem(parent, a, b, c, d, e, f, g, h)
 {
@@ -23,6 +23,7 @@ WUniListItem::WUniListItem(
 	setText(5,f);
 	setText(6,g);
 	setText(7,h);
+	setText(8,i);
 	
 	// Set default column types to 'Generic'
 	
@@ -34,6 +35,7 @@ WUniListItem::WUniListItem(
 	setColumnType(5, ColumnType::Generic);
 	setColumnType(6, ColumnType::Generic);
 	setColumnType(7, ColumnType::Generic);
+	setColumnType(8, ColumnType::Generic);
 }
 
 // if more constructors are needed, they will be added later

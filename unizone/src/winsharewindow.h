@@ -149,6 +149,7 @@ public slots:
 	void SearchWindowClosed();
 
 	void FileFailed(QString, QString); // from WDownload
+	void FileInterrupted(QString, QString);
 
 protected:
 	virtual void customEvent(QCustomEvent * event);
@@ -208,6 +209,8 @@ private:
 	QString fIgnore;	// ignore pattern
 	QString fBlackList; // blacklist pattern
 	QString fAutoPriv;	// Auto-private pattern
+	QString fOnConnect;	// On connect perform this command
+	QString fOnConnect2; // On connect perform this too ;)
 
 	// transmit/receive statistics
 
@@ -233,6 +236,7 @@ private:
 
 	bool Remote(String session, QString text);  // handle remote commands
 	QString fRemote;							// remote password
+	void ExecCommand(QString command);			// execute specified command
 
 	bool NameSaid2(String sname, QString & msg, unsigned long index = 0); // Private version for recursing
 
@@ -350,6 +354,11 @@ public:
 	bool IsBlackListed(QString & user);
 	bool IsAutoPrivate(QString & user);
 	bool IsConnected(QString & user);
+
+	// To use delayed search, first set the pattern using SetDelayedSearchPattern(QString) and
+	// then call Connect(QString)
+	void Connect(QString server);
+	void SetDelayedSearchPattern(QString pattern);
 	
 	void TranslateStatus(QString & s);
 	

@@ -806,6 +806,36 @@ WSettings::SetBlackListPattern(QString p)
 	fSet->AddString(BLACKLIST, (const char *) p.utf8());
 }
 
+QString
+WSettings::GetOnConnect()
+{
+	String i = "";
+	fSet->FindString(ONCONN, i);
+	return QString::fromUtf8(i.Cstr());
+}
+
+void
+WSettings::SetOnConnect(QString s)
+{
+	fSet->RemoveName(ONCONN);
+	fSet->AddString(ONCONN, (const char *) s.utf8());
+}
+
+QString
+WSettings::GetOnConnect2()
+{
+	String i = "";
+	fSet->FindString(ONCONN2, i);
+	return QString::fromUtf8(i.Cstr());
+}
+
+void
+WSettings::SetOnConnect2(QString s)
+{
+	fSet->RemoveName(ONCONN2);
+	fSet->AddString(ONCONN2, (const char *) s.utf8());
+}
+
 #ifdef __linux__
 void
 WSettings::SetFTPLauncher(QString l)

@@ -269,6 +269,10 @@
 #define MSG_TX_ETA				"ETA"
 #define MSG_TX_USER				"Usuário"
 #define MSG_TX_SENT				"Enviado"
+#define MSG_TX_QUEUE			"Queue"
+#define MSG_TX_THROTTLE			"Throttle"
+#define MSG_TX_MOVEUP			"Move Up"
+#define MSG_TX_MOVEDOWN			"Move Down"
 #define MSG_TX_CAPTION			"Transferências de arquivo"
 
 #define MSG_TX_ISDOWNLOADING	"%1 is downloading %2."

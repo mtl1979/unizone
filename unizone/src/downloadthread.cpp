@@ -99,8 +99,7 @@ WDownloadThread::InitSession()
 			{
 				AbstractReflectSessionRef ref(new ThreadWorkerSession(), NULL);
 				ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
-				ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
-										gWin->fSettings->GetDLLimit())), NULL));
+				SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetDLLimit()), ref);
 
 				connectRef = ref;
 			}
@@ -170,8 +169,11 @@ WDownloadThread::InitSession()
 void 
 WDownloadThread::SendReply(Message * m)
 {
-	m->AddBool("download", true);	// the value doesn't matter
-	WGenericThread::SendReply(m);
+	if (m)
+	{
+		m->AddBool("download", true);	// the value doesn't matter
+		WGenericThread::SendReply(m);
+	}
 }
 
 void 
@@ -197,12 +199,26 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					{
 						Message * q = new Message(WGenericEvent::FileQueued);
 						SendReply(q);
+						SetRemotelyQueued(true);
 						CTimer->start(60000, true);
 						break;
 					}
 
+					case WDownload::TransferNotifyRejected:
+						{
+							Message * q = new Message(WGenericEvent::FileBlocked);
+							SendReply(q);
+							SetBlocked(true);
+						}
+
 					case WDownload::TransferFileHeader:
 					{
+						if (IsRemotelyQueued())
+							SetRemotelyQueued(false);
+
+						if (IsBlocked())
+							SetBlocked(false);
+
 						if (fDownloading)	// this shouldn't happen yet... we only request a single file at a time
 						{
 							fDownloading = false;
@@ -313,6 +329,12 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 
 					case WDownload::TransferFileData:
 					{
+						if (IsRemotelyQueued())
+							SetRemotelyQueued(false);
+
+						if (IsBlocked())
+							SetBlocked(false);
+
 						if (fDownloading)
 						{
 							uint8 * data;
@@ -511,5 +533,25 @@ WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
 							fLimit)), NULL));
 	}
 	return ref;
+}
+
+void
+WDownloadThread::SetRate(int rate)
+{
+	WGenericThread::SetRate(rate);
+	if (rate != 0)
+		SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+	else
+		SetNewInputPolicy(PolicyRef(NULL, NULL));
+}
+
+void
+WDownloadThread::SetRate(int rate, AbstractReflectSessionRef ref)
+{
+	WGenericThread::SetRate(rate, ref);
+	if (rate != 0)
+		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+	else
+		ref()->SetInputPolicy(PolicyRef(NULL, NULL));
 }
 

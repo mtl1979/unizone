@@ -269,6 +269,10 @@
 #define MSG_TX_ETA				"ETA"
 #define MSG_TX_USER				"Användare"
 #define MSG_TX_SENT				"Sänt"
+#define MSG_TX_QUEUE			"Queue"
+#define MSG_TX_THROTTLE			"Throttle"
+#define MSG_TX_MOVEUP			"Move Up"
+#define MSG_TX_MOVEDOWN			"Move Down"
 #define MSG_TX_CAPTION			"Filladdnings"
 
 #define MSG_TX_ISDOWNLOADING	"%1 laddar ner %2."

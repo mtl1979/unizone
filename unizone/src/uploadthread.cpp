@@ -68,10 +68,7 @@ WUploadThread::InitSession()
 	{
 		AbstractReflectSessionRef ref(new ThreadWorkerSession, NULL);
 		ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
-		ref()->SetOutputPolicy(
-			PolicyRef(
-				new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(gWin->fSettings->GetBLLimit())), NULL)
-				);
+		SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetBLLimit()), ref);
 
 		limit = ref;
 	}
@@ -79,11 +76,7 @@ WUploadThread::InitSession()
 	{
 		AbstractReflectSessionRef ref(new ThreadWorkerSession, NULL);
 		ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
-		ref()->SetOutputPolicy(
-			PolicyRef(
-				new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(gWin->fSettings->GetULLimit())), NULL)
-				);
-
+		SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetULLimit()), ref);
 		limit = ref;
 	}
 
@@ -119,9 +112,9 @@ WUploadThread::InitSession()
 }
 
 void
-WUploadThread::SetQueued(bool b)
+WUploadThread::SetLocallyQueued(bool b)
 {
-	WGenericThread::SetQueued(b);
+	WGenericThread::SetLocallyQueued(b);
 	if (!b && IsInternalThreadRunning())
 		DoUpload();		// we can start now!
 }
@@ -130,15 +123,32 @@ void
 WUploadThread::SetBlocked(bool b)
 {
 	WGenericThread::SetBlocked(b);
-	if (!b && IsInternalThreadRunning())
-		DoUpload();		// we can start now!
+	if (IsInternalThreadRunning())
+	{
+		if (b)
+			SendRejectedNotification();
+		else
+			DoUpload();		// we can start now!
+	}
 }
+
+void
+WUploadThread::SetManuallyQueued(bool b)
+{
+	WGenericThread::SetManuallyQueued(b);
+	if (IsInternalThreadRunning() && b)
+		SendQueuedNotification();
+}
+
 
 void 
 WUploadThread::SendReply(Message * m)
 {
-	m->AddBool("upload", true);
-	WGenericThread::SendReply(m);
+	if (m)
+	{
+		m->AddBool("upload", true);
+		WGenericThread::SendReply(m);
+	}
 }
 
 void
@@ -282,7 +292,7 @@ WUploadThread::SignalOwner()
 							fNumFiles = i;
 							fFileThread->Unlock();
 							fWaitingForUploadToFinish = false;
-							if (!fQueued)	// we're not queued?
+							if (!IsLocallyQueued())	// we're not queued?
 							{
 								DoUpload();
 							}
@@ -352,10 +362,18 @@ WUploadThread::SendQueuedNotification()
 	SendReply(new Message(WGenericEvent::FileQueued));
 }
 
+void
+WUploadThread::SendRejectedNotification()
+{
+	MessageRef q(new Message(WDownload::TransferNotifyRejected), NULL);
+	SendMessageToSessions(q);
+	SendReply(new Message(WGenericEvent::FileBlocked));
+}
+
 void 
 WUploadThread::DoUpload()
 {
-	if (fQueued)		// not yet
+	if (IsLocallyQueued())		// not yet
 	{
 		SendReply(new Message(WGenericEvent::FileQueued));
 		return;
@@ -518,4 +536,24 @@ WUploadThread::GetFileName(int i)
 		n++;
 	}
 	return (*iter);
+}
+
+void
+WUploadThread::SetRate(int rate)
+{
+	WGenericThread::SetRate(rate);
+	if (rate != 0)
+		SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+	else
+		SetNewOutputPolicy(PolicyRef(NULL, NULL));
+}
+
+void
+WUploadThread::SetRate(int rate, AbstractReflectSessionRef ref)
+{
+	WGenericThread::SetRate(rate);
+	if (rate != 0)
+		ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+	else
+		ref()->SetOutputPolicy(PolicyRef(NULL, NULL));
 }

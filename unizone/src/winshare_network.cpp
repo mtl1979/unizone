@@ -702,6 +702,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			PrintSystem( tr("Blacklist pattern: %1").arg(fBlackList) );
 			PrintSystem( tr("Ignore pattern: %1").arg(fIgnore) );
 			PrintSystem( tr("Watch pattern: %1").arg(fWatch) );
+			PrintSystem( tr("On connect: %1").arg(fOnConnect) );
+			PrintSystem( tr("On connect 2: %1").arg(fOnConnect2) ); 
 		}
 		else if (CompareCommand(sendText, "/clearstats"))
 		{
@@ -730,6 +732,15 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			PrintSystem(tr("Unizone version: %1.%2.%3 build %4").arg(kMajor).arg(kMinor).arg(kPatch).arg(kBuild), true);
 			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING), true);
 			END_OUTPUT();
+		}
+		else if (CompareCommand(sendText, "/onconnect"))
+		{
+			fOnConnect = GetParameterString(sendText);
+			PrintSystem(tr("On connect do: %1").arg(fOnConnect), false);
+		}
+		else if (CompareCommand(sendText, "/search"))
+		{
+			LaunchSearch(GetParameterString(sendText));
 		}
 		// add more commands BEFORE this one
 
@@ -1500,6 +1511,13 @@ WinShareWindow::Connect()
 }
 
 void
+WinShareWindow::Connect(QString server)
+{
+	fServer = server;
+	Connect();
+}
+
+void
 WinShareWindow::Disconnect()
 {
 	if (fReconnectTimer->isActive())
@@ -1563,6 +1581,7 @@ WinShareWindow::ShowHelp(QString command)
 							"\n\t\t\t\t/me [action] - /action synonym"
 							"\n\t\t\t\t/msg [name] [message] - send a private message"
 							"\n\t\t\t\t/nick [name] - change your user name"
+							"\n\t\t\t\t/onconnect [command] - set or clear command to perform on successful connect"
 							"\n\t\t\t\t/ping [name or session ids] - ping other clients"
 							"\n\t\t\t\t/priv [name or session ids] - open private chat with these users added"
 							"\n\t\t\t\t/quit - quit " NAME
@@ -1574,6 +1593,7 @@ WinShareWindow::ShowHelp(QString command)
 							"\n\t\t\t\t/resumes - list files waiting to be resumed"
 							"\n\t\t\t\t/save - saves settings (might be necessary after editing drop-down lists)"
 							"\n\t\t\t\t/scan - rescan shared directory"
+							"\n\t\t\t\t/search [pattern] - open search window"
 							"\n\t\t\t\t/server [server] - set the current server"
 							"\n\t\t\t\t/serverinfo - check status of server"
 #ifdef WIN32
@@ -1609,7 +1629,9 @@ WinShareWindow::ShowHelp(QString command)
 							"\nAuto-private pattern : " + fAutoPriv +
 							"\nBlacklist pattern : " + fBlackList +
 							"\nIgnore pattern : " + fIgnore +
-							"\nWatch pattern : " + fWatch;
+							"\nWatch pattern : " + fWatch +
+							"\nOn Connect : " + fOnConnect +
+							"\nOn Connect 2: " + fOnConnect2;
 
 	QString str;
 	if ((command != QString::null) && (command != ""))
@@ -2118,12 +2140,7 @@ WinShareWindow::Remote(String session, QString text)
 	{
 		if (!qItem.lower().startsWith("/shell"))
 		{
-			WTextEvent * wte = new WTextEvent(qItem);
-			if (wte)
-			{
-				SendChatText(wte, false);
-				delete wte;
-			}
+			ExecCommand(qItem);
 		}
 	}
 	return true;
@@ -2223,5 +2240,16 @@ WinShareWindow::GetAddressInfo(QString user)
 			PrintError(tr("No address info for %1 or %2").arg(user).arg(addr));
 		else
 			PrintError(tr("No address info for %1").arg(user));
+	}
+}
+
+void
+WinShareWindow::ExecCommand(QString command)
+{
+	WTextEvent * wte = new WTextEvent(command);
+	if (wte)
+	{
+		SendChatText(wte, false);
+		delete wte;
 	}
 }

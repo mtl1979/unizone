@@ -35,21 +35,27 @@ public:
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
 
-	virtual void SetQueued(bool b);
 	virtual void SetBlocked(bool b);
+	virtual void SetLocallyQueued(bool b);
+	virtual void SetManuallyQueued(bool b);
+
+	void SetRate(int rate);
+	void SetRate(int rate, AbstractReflectSessionRef ref);
+
 
 protected:
 	virtual void SendReply(Message * m);
 	virtual void SignalOwner();
 	void SendQueuedNotification();
+	void SendRejectedNotification();
 
 private:
 	WMsgList fUploads;
 	WStrList fNames;
 	QFile * fFile;
 	uint32 fRemoteIP;
-	QString fStrRemoteIP;	// the accept version gets a string IP
-	uint32 fPort;		// port for accept version
+	QString fStrRemoteIP;				// the accept version gets a string IP
+	uint32 fPort;						// port for accept version
 	int fSocket;
 	uint64 fFileSize;
 	uint64 fCurrentOffset;
@@ -60,11 +66,11 @@ private:
 	WFileThread * fFileThread;
 	MessageRef fCurrentRef;
 	bool fWaitingForUploadToFinish;
-	bool fAccept;		// is this the accept version?
+	bool fAccept;						// is this the accept version?
 
 	int32 fCurFile, fNumFiles;
 
-	QTimer * CTimer; // Connect timer
+	QTimer * CTimer;					// Connect timer
 
 	void DoUpload();
 };

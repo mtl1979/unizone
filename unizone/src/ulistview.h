@@ -56,10 +56,11 @@ public:
 		// empty
 	}
 
-	WUniListItem(QListView * parent, QString a, QString b = QString::null,
-		QString c = QString::null, QString d = QString::null,
-		QString e = QString::null, QString f = QString::null,
-		QString g = QString::null, QString h = QString::null );
+	WUniListItem(QListView * parent, QString a, 
+		QString b = QString::null, QString c = QString::null, 
+		QString d = QString::null, QString e = QString::null, 
+		QString f = QString::null, QString g = QString::null, 
+		QString h = QString::null, QString i = QString::null);
 	
 	// if more constructors are needed, they will be added later
 	
@@ -84,8 +85,8 @@ public:
 	virtual WUniListItem::ColumnType columnType(int c);
 	
 private:
-	QString fKey[8];
-	WUniListItem::ColumnType UColumnType[8];
+	QString fKey[9];
+	WUniListItem::ColumnType UColumnType[9];
 	QColor RowBaseColor[NUM_ROW_COLORS];
 	QColor RowTextColor[NUM_ROW_COLORS];
 
@@ -97,7 +98,8 @@ public:
 	WUniListView( QWidget * parent, const char * name, WFlags f ) 
 		: QListView( parent, name, f )
 	{
-		// empty
+		if (!name)
+			setName("WUniListView");
 	}
 	
 	WUniListView( QWidget * parent = 0, const char * name = 0 ) 

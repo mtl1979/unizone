@@ -60,11 +60,13 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	fDownloads->addColumn(tr(MSG_TX_ETA));
 	fDownloads->addColumn(tr(MSG_TX_USER));
 	fDownloads->addColumn(tr("Index"));
+	fDownloads->addColumn(tr("QR"));
 	
-	fDownloads->setColumnAlignment(2, AlignRight); // <postmaster@raasu.org> 20021213
-	fDownloads->setColumnAlignment(3, AlignRight); // 
-	fDownloads->setColumnAlignment(4, AlignRight); // 
-	fDownloads->setColumnAlignment(5, AlignRight); // 
+	fDownloads->setColumnAlignment(WTransferItem::Received, AlignRight);	// <postmaster@raasu.org> 20021213
+	fDownloads->setColumnAlignment(WTransferItem::Total, AlignRight);		// 
+	fDownloads->setColumnAlignment(WTransferItem::Rate, AlignRight);		// 
+	fDownloads->setColumnAlignment(WTransferItem::ETA, AlignRight);			// 
+	fDownloads->setColumnAlignment(WTransferItem::QR, AlignRight);			// 20030310
 	
 	fDownloads->setAllColumnsShowFocus(true);
 	
@@ -86,11 +88,13 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	fUploads->addColumn(tr(MSG_TX_ETA));
 	fUploads->addColumn(tr(MSG_TX_USER));
 	fUploads->addColumn(tr("Index"));
+	fUploads->addColumn(tr("QR"));
 	
 	fUploads->setColumnAlignment(WTransferItem::Received, AlignRight);	// <postmaster@raasu.org> 20021213
 	fUploads->setColumnAlignment(WTransferItem::Total, AlignRight);		// 
 	fUploads->setColumnAlignment(WTransferItem::Rate, AlignRight);		// 
-	fUploads->setColumnAlignment(WTransferItem::ETA, AlignRight);		// 
+	fUploads->setColumnAlignment(WTransferItem::ETA, AlignRight);		//
+	fUploads->SetColumnAlignment(WTransferItem::QR, AlignRight);		// 20030310
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
@@ -113,6 +117,97 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	
 	setCaption(tr(MSG_TX_CAPTION));
 	fNumUploads = fNumDownloads = 0;
+
+	fDLPopup = new QPopupMenu(this, "Download Popup");
+	CHECK_PTR(fDLPopup);
+
+	// Create the download popup menu
+	fDLQueueID = fDLPopup->insertItem(tr(MSG_TX_QUEUE), ID_QUEUE);
+	
+	// Create throttle sub menu
+	fDLThrottleMenu = new QPopupMenu(this, "Throttle Popup");
+	CHECK_PTR(fDLThrottleMenu);
+	
+	fDLThNone = fDLThrottleMenu->insertItem(tr( MSG_NO_LIMIT ), ID_NO_LIMIT);
+	
+	// Set initial throttle to none
+	fDLThrottleMenu->setItemChecked(fDLThNone, true);
+	fDLThrottle = fDLThNone;
+
+	fDLTh128  = fDLThrottleMenu->insertItem(tr( "128 " MSG_BYTES ), ID_128);
+	fDLTh256  = fDLThrottleMenu->insertItem(tr( "256 " MSG_BYTES ), ID_256);
+	fDLTh512  = fDLThrottleMenu->insertItem(tr( "512 " MSG_BYTES ), ID_512);
+	fDLTh1K   = fDLThrottleMenu->insertItem(tr( "1 kB" ), ID_1KB);
+	fDLTh2K   = fDLThrottleMenu->insertItem(tr( "2 kB" ), ID_2KB);
+	fDLTh4K   = fDLThrottleMenu->insertItem(tr( "4 kB" ), ID_4KB);
+	fDLTh8K   = fDLThrottleMenu->insertItem(tr( "8 kB" ), ID_8KB);
+	fDLTh16K  = fDLThrottleMenu->insertItem(tr( "16 kB" ), ID_16KB);
+	fDLTh32K  = fDLThrottleMenu->insertItem(tr( "32 kB" ), ID_32KB);
+	fDLTh64K  = fDLThrottleMenu->insertItem(tr( "64 kB" ), ID_64KB);
+	fDLTh128K = fDLThrottleMenu->insertItem(tr( "128 kB" ), ID_128KB);
+	fDLTh256K = fDLThrottleMenu->insertItem(tr( "256 kB" ), ID_256KB);
+	fDLTh512K = fDLThrottleMenu->insertItem(tr( "512 kB" ), ID_512KB);
+	fDLTh1M   = fDLThrottleMenu->insertItem(tr( "1 MB" ), ID_1MB);
+	fDLTh2M   = fDLThrottleMenu->insertItem(tr( "2 MB" ), ID_2MB);
+	fDLTh4M   = fDLThrottleMenu->insertItem(tr( "4 MB" ), ID_4MB);
+	fDLTh8M   = fDLThrottleMenu->insertItem(tr( "8 MB" ), ID_8MB);
+	fDLTh16M  = fDLThrottleMenu->insertItem(tr( "16 MB" ), ID_16MB);
+	fDLTh32M  = fDLThrottleMenu->insertItem(tr( "32 MB" ), ID_32MB);
+
+	fDLPopup->insertItem(tr(MSG_TX_THROTTLE), fDLThrottleMenu);
+	fDLPopup->insertItem(tr(MSG_TX_MOVEUP), ID_MOVEUP);
+	fDLPopup->insertItem(tr(MSG_TX_MOVEDOWN), ID_MOVEDOWN);
+
+	connect(fDLPopup, SIGNAL(activated(int)), this, SLOT(DLPopupActivated(int)));
+	connect(fDLThrottleMenu, SIGNAL(activated(int)), this, SLOT(DLPopupActivated(int)));
+	connect(fDownloads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
+			this, SLOT(DLRightClicked(QListViewItem *, const QPoint &, int)));
+
+	fULPopup = new QPopupMenu(this, "Upload Popup");
+	CHECK_PTR(fULPopup);
+
+	// Create the download popup menu
+	fULQueueID = fULPopup->insertItem(tr(MSG_TX_QUEUE), ID_QUEUE);
+	
+	// Create throttle sub menu
+	fULThrottleMenu = new QPopupMenu(this, "Throttle Popup");
+	CHECK_PTR(fULThrottleMenu);
+	
+	fULThNone = fULThrottleMenu->insertItem(tr( MSG_NO_LIMIT ), ID_NO_LIMIT);
+	
+	// Set initial throttle to none
+	fULThrottleMenu->setItemChecked(fULThNone, true);
+	fULThrottle = fULThNone;
+
+	fULTh128  = fULThrottleMenu->insertItem(tr( "128 " MSG_BYTES ), ID_128);
+	fULTh256  = fULThrottleMenu->insertItem(tr( "256 " MSG_BYTES ), ID_256);
+	fULTh512  = fULThrottleMenu->insertItem(tr( "512 " MSG_BYTES ), ID_512);
+	fULTh1K   = fULThrottleMenu->insertItem(tr( "1 kB" ), ID_1KB);
+	fULTh2K   = fULThrottleMenu->insertItem(tr( "2 kB" ), ID_2KB);
+	fULTh4K   = fULThrottleMenu->insertItem(tr( "4 kB" ), ID_4KB);
+	fULTh8K   = fULThrottleMenu->insertItem(tr( "8 kB" ), ID_8KB);
+	fULTh16K  = fULThrottleMenu->insertItem(tr( "16 kB" ), ID_16KB);
+	fULTh32K  = fULThrottleMenu->insertItem(tr( "32 kB" ), ID_32KB);
+	fULTh64K  = fULThrottleMenu->insertItem(tr( "64 kB" ), ID_64KB);
+	fULTh128K = fULThrottleMenu->insertItem(tr( "128 kB" ), ID_128KB);
+	fULTh256K = fULThrottleMenu->insertItem(tr( "256 kB" ), ID_256KB);
+	fULTh512K = fULThrottleMenu->insertItem(tr( "512 kB" ), ID_512KB);
+	fULTh1M   = fULThrottleMenu->insertItem(tr( "1 MB" ), ID_1MB);
+	fULTh2M   = fULThrottleMenu->insertItem(tr( "2 MB" ), ID_2MB);
+	fULTh4M   = fULThrottleMenu->insertItem(tr( "4 MB" ), ID_4MB);
+	fULTh8M   = fULThrottleMenu->insertItem(tr( "8 MB" ), ID_8MB);
+	fULTh16M  = fULThrottleMenu->insertItem(tr( "16 MB" ), ID_16MB);
+	fULTh32M  = fULThrottleMenu->insertItem(tr( "32 MB" ), ID_32MB);
+
+	fULPopup->insertItem(tr(MSG_TX_THROTTLE), fULThrottleMenu);
+	fULPopup->insertItem(tr(MSG_TX_MOVEUP), ID_MOVEUP);
+	fULPopup->insertItem(tr(MSG_TX_MOVEDOWN), ID_MOVEDOWN);
+
+	connect(fULPopup, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
+	connect(fULThrottleMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
+	connect(fUploads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
+			this, SLOT(ULRightClicked(QListViewItem *, const QPoint &, int)));
+
 }
 
 WDownload::~WDownload()
@@ -121,8 +216,19 @@ WDownload::~WDownload()
 	WTIter it = fDownloadList.begin();
 	while (it != fDownloadList.end())
 	{
+		// Put all files in resume list
 		if ((*it).first)
 		{
+			int n = (*it).first->GetCurrentNum();
+
+			if (n == -1) // Not even started?
+				n = 0;
+
+			for (int i = n; i < (*it).first->GetNumFiles(); i++)
+			{
+				emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetRemoteUser());
+			}
+			
 			(*it).first->Reset();
 			delete (*it).first;
 		}
@@ -160,7 +266,7 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 	
 	WTPair p;
 	p.first = nt;
-	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "");
+	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "");
 
 	int x;
 
@@ -186,11 +292,11 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 	{
 		PRINT("DLS (%d, %d)\n", fNumDownloads, gWin->fSettings->GetMaxDownloads());
 		nt->InitSession();
-		nt->SetQueued(false);
+		nt->SetLocallyQueued(false);
 	}
 	else
 	{
-		nt->SetQueued(true);
+		nt->SetLocallyQueued(true);
 		p.second->setText(WTransferItem::Status, "Locally Queued.");
 	}
 	fNumDownloads++;
@@ -198,6 +304,7 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 	fLock.lock();
 	fDownloadList.insert(fDownloadList.end(), p);
 	fLock.unlock();
+	UpdateDLRatings();
 }
 
 void
@@ -224,12 +331,12 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 	if (fNumUploads < gWin->fSettings->GetMaxUploads())
 	{
 		PRINT("Not queued\n");
-		ut->SetQueued(false);
+		ut->SetLocallyQueued(false);
 	}
 	else
 	{
 		PRINT("Queued\n");
-		ut->SetQueued(true);
+		ut->SetLocallyQueued(true);
 	}
 	fNumUploads++;
 	WASSERT(fNumUploads >= 0, "Upload count is negative!");
@@ -237,8 +344,8 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 	ut->InitSession();
 	WTPair p;
 	p.first = ut;
-	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "");
-	if (ut->IsQueued())
+	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "");
+	if (ut->IsLocallyQueued())
 	{
 		PRINT("IsQueued\n");
 		p.second->setText(WTransferItem::Status, "Queued.");
@@ -248,6 +355,7 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 	fUploadList.insert(fUploadList.end(), p);
 	fLock.unlock();
 	UpdateLoad();
+	UpdateULRatings();
 }
 
 void
@@ -257,21 +365,22 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 	ut->SetUpload(socket, remoteIP, fSharedFiles);
 	
 	if (fNumUploads < gWin->fSettings->GetMaxUploads())
-		ut->SetQueued(false);
+		ut->SetLocallyQueued(false);
 	else
-		ut->SetQueued(true);
+		ut->SetLocallyQueued(true);
 	fNumUploads++;
 	WASSERT(fNumUploads >= 0, "Upload count is negative!");
 	ut->InitSession();
 	WTPair p;
 	p.first = ut;
-	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "");
-	if (ut->IsQueued())
+	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "");
+	if (ut->IsLocallyQueued())
 		p.second->setText(WTransferItem::Status, "Queued.");
 	fLock.lock();
 	fUploadList.insert(fUploadList.end(), p);
 	fLock.unlock();
 	UpdateLoad();
+	UpdateULRatings();
 }
 
 void
@@ -283,11 +392,13 @@ WDownload::DequeueSessions()
 	int numNotQueued = 0;
 	WTIter it;
 	
+	int qr = 0;
 	fLock.lock();
 	for (it = fUploadList.begin(); it != fUploadList.end(); it++)
 	{
-		if (((*it).first->IsQueued() == false) && ((*it).first->IsBlocked() == false))
+		if (((*it).first->IsLocallyQueued() == false) && ((*it).first->IsBlocked() == false))
 			numNotQueued++;
+		(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
 	}
 	fLock.unlock();
 
@@ -297,10 +408,10 @@ WDownload::DequeueSessions()
 		fLock.lock();
 		for (it = fUploadList.begin(); it != fUploadList.end() && numNotQueued < gWin->fSettings->GetMaxUploads(); it++)
 		{
-			if ((*it).first->IsQueued() == true)
+			if (((*it).first->IsLocallyQueued() == true) && ((*it).first->IsManuallyQueued() == false))
 			{
 				found = true;
-				(*it).first->SetQueued(false);
+				(*it).first->SetLocallyQueued(false);
 				numNotQueued++;
 			}
 		}
@@ -317,11 +428,13 @@ WDownload::DequeueSessions()
 	* than the allowed downloads, find a queued download, and unqueue it :)
 	*/
 	numNotQueued = 0;
+	qr = 0;
 	fLock.lock();
 	for (it = fDownloadList.begin(); it != fDownloadList.end(); it++)
 	{
-		if ((*it).first->IsQueued() == false)	// not queued?
+		if ((*it).first->IsLocallyQueued() == false)	// not queued?
 			numNotQueued++;
+		(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
 	}
 	fLock.unlock();
 	// check the queued amount, vs the amount allowed
@@ -332,10 +445,10 @@ WDownload::DequeueSessions()
 		for (it = fDownloadList.begin(); 
 		it != fDownloadList.end() && numNotQueued < gWin->fSettings->GetMaxDownloads(); it++)
 		{
-			if ((*it).first->IsQueued() == true)
+			if (((*it).first->IsLocallyQueued() == true) && ((*it).first->IsManuallyQueued() == false))
 			{
 				found = true;
-				(*it).first->SetQueued(false);
+				(*it).first->SetLocallyQueued(false);
 				((WDownloadThread *)((*it).first))->InitSession();
 				numNotQueued++;
 			}
@@ -850,8 +963,19 @@ WDownload::KillLocalQueues()
 	WTIter it = fDownloadList.begin();
 	while (it != fDownloadList.end())
 	{
-		if ((*it).first->IsQueued())	// found queued item?
+		if ((*it).first->IsLocallyQueued())	// found queued item?
 		{
+			// Put all files in resume list
+			int n = (*it).first->GetCurrentNum();
+
+			if (n == -1) // Not even started?
+				n = 0;
+
+			for (int i = n; i < (*it).first->GetNumFiles(); i++)
+			{
+				emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetRemoteUser());
+			}
+
 			// free it
 			delete (*it).second;
 			DecreaseCount((*it).first, fNumDownloads);
@@ -938,4 +1062,610 @@ QString
 WDownload::FormatIndex(int32 cur, int32 num)
 {
 	return QObject::tr("%1 of %2").arg(cur+1).arg(num);
+}
+
+void
+WDownload::DLPopupActivated(int id)
+{
+	fLock.lock();
+	WTIter i;
+	WGenericThread * gt = NULL;
+	bool findRet;
+	//int junk = 0;
+
+	findRet = FindItem(fDownloadList, i, fDLPopupItem);
+
+	if (!findRet)
+	{
+		fLock.unlock();
+		return;
+	}
+
+	gt = (*i).first;
+	WASSERT(gt != NULL, "Generic Thread is invalid!");
+
+	switch (id)
+	{
+		case ID_QUEUE:
+		{
+				if (!gt->IsLocallyQueued())
+				{
+					gt->SetLocallyQueued(true);
+					gt->SetManuallyQueued(true);
+					gt->Reset();
+					// download count will be decremented
+					// when the disconnect message is received
+				}
+				else
+				{
+					gt->SetLocallyQueued(false);
+					gt->SetManuallyQueued(false);
+					((WDownloadThread *)gt)->InitSession();
+					// and we need to increase the dl count
+					fNumDownloads++;
+				}
+			break;
+		}
+
+		case ID_MOVEUP:
+			{
+				if (gt->IsLocallyQueued() || gt->IsRemotelyQueued())
+					MoveUp(fDownloadList, i);
+				break;
+			}
+
+		case ID_MOVEDOWN:
+			{
+				if (gt->IsLocallyQueued() || gt->IsRemotelyQueued())
+					MoveDown(fDownloadList, i);
+				break;
+			}
+
+		case ID_NO_LIMIT:
+			gt->SetRate(0);
+			break;
+
+		case ID_128:
+			gt->SetRate(128);
+			break;
+
+		case ID_256:
+			gt->SetRate(256);
+			break;
+
+		case ID_512:
+			gt->SetRate(512);
+			break;
+			
+		case ID_1KB:
+			gt->SetRate(1024);
+			break;
+
+		case ID_2KB:
+			gt->SetRate(2 * 1024);
+			break;
+
+		case ID_4KB:
+			gt->SetRate(4 * 1024);
+			break;
+
+		case ID_8KB:
+			gt->SetRate(8 * 1024);
+			break;
+
+		case ID_16KB:
+			gt->SetRate(16 * 1024);
+			break;
+
+		case ID_32KB:
+			gt->SetRate(32 * 1024);
+			break;
+
+		case ID_64KB:
+			gt->SetRate(64 * 1024);
+			break;
+
+		case ID_128KB:
+			gt->SetRate(128 * 1024);
+			break;
+
+		case ID_256KB:
+			gt->SetRate(256 * 1024);
+			break;
+
+		case ID_512KB:
+			gt->SetRate(512 * 1024);
+			break;
+
+		case ID_1MB:
+			gt->SetRate(1024 * 1024);
+			break;
+
+		case ID_2MB:
+			gt->SetRate(2 * 1024 * 1024);
+			break;
+
+		case ID_4MB:
+			gt->SetRate(4 * 1024 * 1024);
+			break;
+
+		case ID_8MB:
+			gt->SetRate(8 * 1024 * 1024);
+			break;
+
+		case ID_16MB:
+			gt->SetRate(16 * 1024 * 1024);
+			break;
+
+		case ID_32MB:
+			gt->SetRate(32 * 1024 * 1024);
+			break;
+	}
+	fLock.unlock();
+	UpdateDLRatings();
+}
+
+void
+WDownload::ULPopupActivated(int id)
+{
+	fLock.lock();
+	WTIter i;
+	WGenericThread * gt = NULL;
+	bool findRet;
+	
+	findRet = FindItem(fUploadList, i, fULPopupItem);
+	
+	if (!findRet)
+	{
+		fLock.lock();
+		return;
+	}
+	
+	gt = (*i).first;
+	WASSERT(gt != NULL, "Generic Thread is invalid!");
+	
+	switch (id)
+	{
+	case ID_QUEUE:
+		{
+			if (!gt->IsLocallyQueued())
+			{
+				gt->SetLocallyQueued(true);
+				gt->SetManuallyQueued(true);
+			}
+			else
+			{
+				gt->SetLocallyQueued(false);
+				gt->SetManuallyQueued(false);
+			}
+			break;
+		}
+
+		case ID_MOVEUP:
+			{
+				if (gt->IsLocallyQueued())
+					MoveUp(fUploadList, i);
+				break;
+			}
+
+		case ID_MOVEDOWN:
+			{
+				if (gt->IsLocallyQueued())
+					MoveDown(fUploadList, i);
+				break;
+			}
+
+		
+	case ID_NO_LIMIT:
+		gt->SetRate(0);
+		break;
+		
+	case ID_128:
+		gt->SetRate(128);
+		break;
+		
+	case ID_256:
+		gt->SetRate(256);
+		break;
+		
+	case ID_512:
+		gt->SetRate(512);
+		break;
+		
+	case ID_1KB:
+		gt->SetRate(1024);
+		break;
+		
+	case ID_2KB:
+		gt->SetRate(2 * 1024);
+		break;
+		
+	case ID_4KB:
+		gt->SetRate(4 * 1024);
+		break;
+		
+	case ID_8KB:
+		gt->SetRate(8 * 1024);
+		break;
+		
+	case ID_16KB:
+		gt->SetRate(16 * 1024);
+		break;
+		
+	case ID_32KB:
+		gt->SetRate(32 * 1024);
+		break;
+		
+	case ID_64KB:
+		gt->SetRate(64 * 1024);
+		break;
+		
+	case ID_128KB:
+		gt->SetRate(128 * 1024);
+		break;
+		
+	case ID_256KB:
+		gt->SetRate(256 * 1024);
+		break;
+		
+	case ID_512KB:
+		gt->SetRate(512 * 1024);
+		break;
+		
+	case ID_1MB:
+		gt->SetRate(1024 * 1024);
+		break;
+		
+	case ID_2MB:
+		gt->SetRate(2 * 1024 * 1024);
+		break;
+		
+	case ID_4MB:
+		gt->SetRate(4 * 1024 * 1024);
+		break;
+		
+	case ID_8MB:
+		gt->SetRate(8 * 1024 * 1024);
+		break;
+		
+	case ID_16MB:
+		gt->SetRate(16 * 1024 * 1024);
+		break;
+		
+	case ID_32MB:
+		gt->SetRate(32 * 1024 * 1024);
+		break;
+	}
+	fLock.unlock();
+	UpdateULRatings();
+}
+
+
+void
+WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
+{
+	if (item)
+	{
+		fULPopupItem = item;
+
+		fLock.lock();
+		WTIter iter;
+		if (FindItem(fUploadList, iter, item))
+		{
+			fULPopup->setItemChecked(fULQueueID, (*iter).first->IsLocallyQueued());
+			int fNewRate = (*iter).first->GetRate();
+			fULThrottleMenu->setItemChecked(fULThrottle, false);
+			switch (fNewRate)
+			{
+			case 0: 	
+				{
+					fULThrottle = fULThNone;	
+					break;
+				}
+			case 128:	
+				{
+					fULThrottle = fULTh128;		
+					break;
+				}
+			case 256:	
+				{
+					fULThrottle = fULTh256;		
+					break;
+				}
+			case 512:	
+				{
+					fULThrottle = fULTh512;		
+					break;
+				}
+			case 1024:	
+				{
+					fULThrottle = fULTh1K;		
+					break;
+				}
+			case 2 * 1024:	
+				{
+					fULThrottle = fULTh2K;	
+					break;
+				}
+			case 4 * 1024:	
+				{
+					fULThrottle = fULTh4K;	
+					break;
+				}
+			case 8 * 1024:	
+				{
+					fULThrottle = fULTh8K;	
+					break;
+				}
+			case 16 * 1024:	
+				{
+					fULThrottle = fULTh16K; 
+					break;
+				}
+			case 32 * 1024: 
+				{
+					fULThrottle = fULTh32K;	
+					break;
+				}
+			case 64 * 1024:	
+				{
+					fULThrottle = fULTh64K;	
+					break;
+				}
+			case 128 * 1024:	
+				{
+					fULThrottle = fULTh128K; 
+					break;
+				}
+			case 256 * 1024:	
+				{
+					fULThrottle = fULTh256K; 
+					break;
+				}
+			case 512 * 1024:	
+				{
+					fULThrottle = fULTh512K;	
+					break;
+				}
+			case 1048576:		
+				{
+					fULThrottle = fULTh1M;	
+					break;
+				}
+			case 2 * 1048576:	
+				{
+					fULThrottle = fULTh2M;	
+					break;
+				}
+			case 4 * 1048576:	
+				{
+					fULThrottle = fULTh4M;	
+					break;
+				}
+			case 8 * 1048576:	
+				{
+					fULThrottle = fULTh8M;	
+					break;
+				}
+			case 16 * 1048576:	
+				{
+					fULThrottle = fULTh16M;	
+					break;
+				}
+			case 32 * 1048576:	
+				{
+					fULThrottle = fULTh32M; 
+					break;
+				}
+			}
+			fULThrottleMenu->setItemChecked(fULThrottle, true);
+			fULPopup->popup(p);
+		}
+		fLock.unlock();
+	}
+}
+
+void
+WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
+{
+	if (item)
+	{
+		fDLPopupItem = item;
+
+		fLock.lock();
+		WTIter iter;
+		if (FindItem(fDownloadList, iter, item))
+		{
+			fDLPopup->setItemChecked(fDLQueueID, (*iter).first->IsLocallyQueued());
+			int fNewRate = (*iter).first->GetRate();
+			fDLThrottleMenu->setItemChecked(fDLThrottle, false);
+			switch (fNewRate)
+			{
+			case 0: 	
+				{
+					fDLThrottle = fDLThNone;	
+					break;
+				}
+			case 128:	
+				{
+					fDLThrottle = fDLTh128;		
+					break;
+				}
+			case 256:	
+				{
+					fDLThrottle = fDLTh256;		
+					break;
+				}
+			case 512:	
+				{
+					fDLThrottle = fDLTh512;		
+					break;
+				}
+			case 1024:	
+				{
+					fDLThrottle = fDLTh1K;		
+					break;
+				}
+			case 2 * 1024:	
+				{
+					fDLThrottle = fDLTh2K;	
+					break;
+				}
+			case 4 * 1024:	
+				{
+					fDLThrottle = fDLTh4K;	
+					break;
+				}
+			case 8 * 1024:	
+				{
+					fDLThrottle = fDLTh8K;	
+					break;
+				}
+			case 16 * 1024:	
+				{
+					fDLThrottle = fDLTh16K; 
+					break;
+				}
+			case 32 * 1024: 
+				{
+					fDLThrottle = fDLTh32K;	
+					break;
+				}
+			case 64 * 1024:	
+				{
+					fDLThrottle = fDLTh64K;	
+					break;
+				}
+			case 128 * 1024:	
+				{
+					fDLThrottle = fDLTh128K; 
+					break;
+				}
+			case 256 * 1024:	
+				{
+					fDLThrottle = fDLTh256K; 
+					break;
+				}
+			case 512 * 1024:	
+				{
+					fDLThrottle = fDLTh512K;	
+					break;
+				}
+			case 1048576:		
+				{
+					fDLThrottle = fDLTh1M;	
+					break;
+				}
+			case 2 * 1048576:	
+				{
+					fDLThrottle = fDLTh2M;	
+					break;
+				}
+			case 4 * 1048576:	
+				{
+					fDLThrottle = fDLTh4M;	
+					break;
+				}
+			case 8 * 1048576:	
+				{
+					fDLThrottle = fDLTh8M;	
+					break;
+				}
+			case 16 * 1048576:	
+				{
+					fDLThrottle = fDLTh16M;	
+					break;
+				}
+			case 32 * 1048576:	
+				{
+					fDLThrottle = fDLTh32M; 
+					break;
+				}
+			}
+			fDLThrottleMenu->setItemChecked(fDLThrottle, true);
+			fDLPopup->popup(p);
+		}
+		fLock.unlock();
+	}
+}
+
+bool
+WDownload::FindItem(WTList & lst, WTIter & ret, QListViewItem * s)
+{
+	bool success = false;
+	WTIter it = lst.begin();
+
+	while (it != lst.end())
+	{
+		if ((*it).second == s)
+		{
+			ret = it;
+			success = true;
+			break;
+		}
+		it++;
+	}
+	return success;
+}
+
+void
+WDownload::MoveUp(WTList & lst, WTIter iter)
+{
+	if (iter == lst.begin())
+		return;
+	WTIter iter2 = iter;
+	while (1) 
+	{
+		iter2--;
+		if ((*iter2).first->IsLocallyQueued())
+			break;
+		if (iter2 == lst.begin())
+			break;
+	}
+	WTPair wp = (*iter);
+	lst.erase(iter);
+	lst.insert(iter2, wp);
+}
+
+void
+WDownload::MoveDown(WTList & lst, WTIter iter)
+{
+	if (iter == lst.end())
+		return;
+	WTIter iter2 = iter;
+	while (1)
+	{
+		iter2++;
+		if ((*iter2).first->IsLocallyQueued())
+			break;
+		if (iter2 == lst.end())
+			break;
+	}
+	WTPair wp = (*iter);
+	lst.erase(iter);
+	lst.insert(iter2, wp);
+}
+
+void
+WDownload::UpdateULRatings()
+{
+	int qr = 0;
+	fLock.lock();
+	for (WTIter it = fUploadList.begin(); it != fUploadList.end(); it++)
+	{
+		(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+	}
+	fLock.unlock();
+}
+
+void
+WDownload::UpdateDLRatings()
+{
+	int qr = 0;
+	fLock.lock();
+	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
+	{
+		(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+	}
+	fLock.unlock();
 }

@@ -19,6 +19,7 @@ using std::iterator;
 #include <qsplitter.h>
 #include <qpushbutton.h>
 #include <qvbox.h>
+#include <qpopupmenu.h>
 
 #include "filethread.h"
 #include "transferitem.h"
@@ -57,7 +58,8 @@ public:
 		TransferNotifyQueued,
 		TransferMD5SendReadDone,			// these are sent by the MD5 looper...
 		TransferMD5RecvReadDone,
-		TransferCommandPeerID
+		TransferCommandPeerID,
+		TransferNotifyRejected = 'utrj'		// UniShare specific ;)
 	};
 
 	void AddDownload(QString * files, int32 numFiles, QString remoteSessionID, uint32 remotePort,
@@ -95,6 +97,36 @@ private:
 	QPushButton * fCancelD;
 	QVBox * fBoxU, * fBoxD;
 	QHBox * fButtonsU;
+	QPopupMenu * fDLPopup, *fULPopup;
+	QPopupMenu * fDLThrottleMenu, * fULThrottleMenu;
+
+	int fDLQueueID, fULQueueID;
+	int fULBlockedID;
+
+	int fDLThrottle, fULThrottle;
+	int fDLThNone, fULThNone;
+	int fDLTh128, fULTh128;
+	int fDLTh256, fULTh256;
+	int fDLTh512, fULTh512;
+	int fDLTh1K, fULTh1K;
+	int fDLTh2K, fULTh2K;
+	int fDLTh4K, fULTh4K;
+	int fDLTh8K, fULTh8K;
+	int fDLTh16K, fULTh16K;
+	int fDLTh32K, fULTh32K;
+	int fDLTh64K, fULTh64K;
+	int fDLTh128K, fULTh128K;
+	int fDLTh256K, fULTh256K;
+	int fDLTh512K, fULTh512K;
+	int fDLTh1M, fULTh1M;
+	int fDLTh2M, fULTh2M;
+	int fDLTh4M, fULTh4M;
+	int fDLTh8M, fULTh8M;
+	int fDLTh16M, fULTh16M;
+	int fDLTh32M, fULTh32M;
+
+	QListViewItem * fDLPopupItem;	// download item that was right clicked
+	QListViewItem * fULPopupItem;	// upload item that was right clicked
 
 	QString fLocalSID;
 	WFileThread * fSharedFiles;
@@ -108,6 +140,46 @@ private:
 	int DecreaseCount(WGenericThread *, int &, bool = true);
 	void UpdateLoad();
 
+		// Popup menu id's
+	enum
+	{
+		ID_QUEUE,
+		ID_NO_LIMIT,
+		ID_128,
+		ID_256,
+		ID_512,
+		ID_1KB,
+		ID_2KB,
+		ID_4KB,
+		ID_8KB,
+		ID_16KB,
+		ID_32KB,
+		ID_64KB,
+		ID_128KB,
+		ID_256KB,
+		ID_512KB,
+		ID_1MB,
+		ID_2MB,
+		ID_4MB,
+		ID_8MB,
+		ID_16MB,
+		ID_32MB,
+		ID_MOVEUP,
+		ID_MOVEDOWN
+	};
+
+	// Find an item in the list that matches the list view item
+	// and return the WTIter
+	bool FindItem(WTList &, WTIter &, QListViewItem *);
+
+	// Reorganize transfer queue
+	void MoveUp(WTList & lst, WTIter iter);
+	void MoveDown(WTList & lst, WTIter iter);
+
+	// Update Queue Ratings
+	void UpdateDLRatings();
+	void UpdateULRatings();
+
 	QMutex fLock;
 
 private slots:
@@ -115,11 +187,18 @@ private slots:
 	void CancelUL();
 	void UnblockUL();
 
+	void DLPopupActivated(int);
+	void ULPopupActivated(int);
+
+	void DLRightClicked(QListViewItem *, const QPoint &, int);
+	void ULRightClicked(QListViewItem *, const QPoint &, int);
+
 public slots:
 	void UserDisconnected(QString, QString);
 
 signals:
 	void FileFailed(QString, QString); // Parameter 1 = File Name, Parameter 2 = User Name
+	void FileInterrupted(QString, QString);
 
 };
 
