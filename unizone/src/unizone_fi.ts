@@ -1822,6 +1822,18 @@ Päiväys: %4</translation>
         <source>Minimum File Size to Queue:</source>
         <translation>Minimikoko Tiedostolle Jonossa:</translation>
     </message>
+    <message>
+        <source>200 kB</source>
+        <translation>200 kt</translation>
+    </message>
+    <message>
+        <source>250 kB</source>
+        <translation>250 kt</translation>
+    </message>
+    <message>
+        <source>500 kB</source>
+        <translation>500 kt</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>

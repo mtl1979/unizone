@@ -1701,6 +1701,18 @@ Date: %4</translation>
         <source>Minimum File Size to Queue:</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>200 kB</source>
+        <translation>200 ko</translation>
+    </message>
+    <message>
+        <source>250 kB</source>
+        <translation>250 ko</translation>
+    </message>
+    <message>
+        <source>500 kB</source>
+        <translation>500 ko</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
