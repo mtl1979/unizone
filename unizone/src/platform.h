@@ -97,4 +97,7 @@ void Reverse(QString &text);
 // Convert file name to node path equivalent
 void MakeNodePath(String &file);
 
+// Return full filepath from 'dir' and 'file'
+String MakePath(const String &dir, const String &file);
+
 #endif // PLATFORM_H

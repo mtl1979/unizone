@@ -570,3 +570,13 @@ void MakeNodePath(String &file)
 	}
 }
 
+String MakePath(const String &dir, const String &file)
+{
+	String ret(dir);
+	if (!ret.EndsWith("/"))
+		ret += "/";
+				
+	ret += file;
+	
+	return ret; 
+}

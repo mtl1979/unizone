@@ -11,6 +11,7 @@
 #include "wstring.h"
 #include "filethread.h"
 #include "debugimpl.h"
+#include "platform.h"
 
 #include <qapplication.h>
 
@@ -773,18 +774,17 @@ WUploadThread::DoUpload()
 			{
 				// grab the ref and remove it from the list
 				fUploads.RemoveHead(fCurrentRef);
-				Message * m = fCurrentRef();
-				String path, filename;
-				m->FindString("beshare:Path", path);
-				m->FindString("beshare:File Name", filename);
-				String filePath = path;
-
-				if (!filePath.EndsWith("/"))
-					filePath += "/";
+				String file;
 				
-				filePath += filename;
+				{
+					String path, filename;
+					fCurrentRef()->FindString("beshare:Path", path);
+					fCurrentRef()->FindString("beshare:File Name", filename);
 
-				fFileUl = QString::fromUtf8(filePath.Cstr());
+					file = MakePath(path, filename);
+				}
+
+				fFileUl = QString::fromUtf8(file.Cstr());
 
 				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
 				WString wFileUl = fFileUl; 
@@ -829,7 +829,7 @@ WUploadThread::DoUpload()
 				MessageRef mref(GetMessageFromPool(WUploadEvent::FileStarted));
 				if (mref())
 				{
-					mref()->AddString("file", filePath.Cstr());
+					mref()->AddString("file", file.Cstr());
 					mref()->AddInt64("start", fCurrentOffset);
 					mref()->AddInt64("size", fFileSize);
 					mref()->AddString("user", (const char *) fRemoteSessionID.utf8());
@@ -1048,29 +1048,32 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 						}
 						
 						// figure the path to our requested file
-						String path, filename;
-						fileRef()->FindString("beshare:Path", path);
-						fileRef()->FindString("beshare:File Name", filename);
+						String file;
+
+						{
+							String path, filename;
+							fileRef()->FindString("beshare:Path", path);
+							fileRef()->FindString("beshare:File Name", filename);
 						
-						String filePath = path;
-						if (!filePath.EndsWith("/"))
-							filePath += "/";
-						
-						filePath += filename;
+							file = MakePath(path, filename);
+
+						}
 						
 						// Notify window of our hashing
 						MessageRef m(GetMessageFromPool(WUploadEvent::FileHashing));
 						if (m())
 						{
-							m()->AddString("file", filePath);
+							m()->AddString("file", file);
 							SendReply(m);
 						}
 						
 						// Hash
 						uint64 retBytesHashed = 0;
 						
-						if (HashFileMD5(QString::fromUtf8(filePath.Cstr()), offset, readLen, retBytesHashed, myDigest, 
-							fShutdownFlag) == B_OK && memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
+						QString qFile = QString::fromUtf8(file.Cstr());
+						
+						if (HashFileMD5(qFile, offset, readLen, retBytesHashed, myDigest, fShutdownFlag) == B_OK && 
+							memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
 						{
 							// put this into our message ref
 							fileRef()->AddInt64("secret:offset", onSuccessOffset);
@@ -1097,32 +1100,42 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 			return;
 		}
 		
-		const char * path, * filename;
-		uint64 filesize;
 		MessageRef fref;
 		fUploads.GetItemAt(0, fref);
-		if (fref()->FindString("beshare:Path", &path) == B_OK &&
-			fref()->FindString("beshare:File Name", &filename) == B_OK &&
-			fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
+		if (fref())
 		{
-			if (filesize < gWin->fSettings->GetMinQueuedSize() || !IsLocallyQueued())
+			String path, filename;
+			
+			if (fref()->FindString("beshare:Path", path) == B_OK &&
+				fref()->FindString("beshare:File Name", filename) == B_OK)
 			{
-				SignalUpload();
-				return;
-			}
-			
-			String firstFile = path;
-			
-			if (!firstFile.EndsWith("/"))
-				firstFile += "/";
-			
-			firstFile += filename;
-			MessageRef initmsg(GetMessageFromPool(WUploadEvent::Init));
-			if (initmsg())
-			{
-				initmsg()->AddString("file", firstFile);
-				initmsg()->AddString("user", (const char *) fRemoteSessionID.utf8());
-				SendReply(initmsg);
+				if (!IsLocallyQueued())
+				{
+					SignalUpload();
+					return;
+				}
+				else
+				{
+					uint64 filesize;
+					if (fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
+					{
+						if (filesize < gWin->fSettings->GetMinQueuedSize())
+						{
+							SignalUpload();
+							return;
+						}
+					}
+				}
+				
+				String firstFile = MakePath(path, filename);
+				
+				MessageRef initmsg(GetMessageFromPool(WUploadEvent::Init));
+				if (initmsg())
+				{
+					initmsg()->AddString("file", firstFile);
+					initmsg()->AddString("user", (const char *) fRemoteSessionID.utf8());
+					SendReply(initmsg);
+				}
 			}
 		}
 	}
