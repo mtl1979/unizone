@@ -89,26 +89,42 @@ QString
 ParseForShown(const QString & txt)
 {
 	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
-	QString temp = txt;
+	QString out;
 #ifdef DEBUG
+	QString temp = txt;
 	temp.replace(QRegExp("<br>"), "\t");		// Resplit lines, so debugging is easier ;)
-#endif
 	QStringTokenizer tk(temp, "\t");
 	QString next;
-	QString out;
 	QString line;
 	while ((next = tk.GetNextToken()) != QString::null)
 	{
 		if (!next.isEmpty())
+		{
 			line = next;
+			line += "<br>";	// replace our TAB
+		}
 		else
-			line = "";
-		line += "<br>";	// replace our TAB
-#ifdef DEBUG
+		{
+			line = "<br>"; // replace our TAB
+		}
 		qDebug("ParseForShown: %s", line.latin1());	// We need to use qDebug for UniView compatibility
-#endif
 		out += line;
 	}
+#else
+	out = txt;
+	out.replace(QRegExp("\t"), "<br>");
+
+	// Remove any extra line breaks in start of buffer
+	//
+	if (out.length() > 4)
+	{
+		while (out.left(4) == "<br>")
+		{
+			out = out.mid(4);
+			if (out.length() < 4) break;	// Just to be safe ;)
+		}
+	}
+#endif
 
 	// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
 	if (out.right(4) == "<br>")
