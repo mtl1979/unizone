@@ -448,42 +448,44 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					if (refScan())
 					{
 						MessageRef mref;
-						for (int n = 0; n < fFileScanThread->GetNumFiles(); n++)
+						HashtableIterator<String, MessageRef> filesIter = fFileScanThread->GetSharedFiles().GetIterator();
+						while (filesIter.HasMoreKeys())
 						{
 							// stop iterating if we are waiting for file scan thread to finish
 							if (fFileShutdownFlag)
 								break;
+
 							qApp->processEvents(300);
-							fFileScanThread->GetSharedFile(n, mref); 
+
+							String s;
+							MessageRef mref;
+							filesIter.GetNextKey(s);
+							filesIter.GetNextValue(mref);
 							
 							if (mref())
 							{
-								String s;
-								if (mref()->FindString("beshare:File Name", s) == B_OK)
+								MakeNodePath(s);
+								uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
+								// Use encoded file attributes?
+								if (enc != 0)
 								{
-									MakeNodePath(s);
-									uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
-									// Use encoded file attributes?
-									if (enc != 0)
+									MessageRef packed = DeflateMessage(mref, enc, true);
+									if (packed())
 									{
-										MessageRef packed = DeflateMessage(mref, enc, true);
-										if (packed())
-										{
-											refScan()->AddMessage(s.Cstr(), packed);
-											m++;
-										}
-										else	
-										{
-											// Failed to pack the message?
-											refScan()->AddMessage(s.Cstr(), mref);
-											m++;
-										}
+										refScan()->AddMessage(s.Cstr(), packed);
+										m++;
 									}
-									else
+									else	
 									{
+										// Failed to pack the message?
 										refScan()->AddMessage(s.Cstr(), mref);
 										m++;
 									}
+								}
+								else
+								{
+									refScan()->AddMessage(s.Cstr(), mref);
+									m++;
 								}
 								if (m == 20)
 								{

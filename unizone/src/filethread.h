@@ -34,7 +34,7 @@ public:
 //	void SetFirewalled(bool f) { fFired = f; }
 	int GetNumFiles() const;
 
-	Queue<MessageRef> & GetSharedFiles() { return fFiles; }
+	Hashtable<String, MessageRef> & GetSharedFiles() { return fFiles; }
 	void GetSharedFile(int n, MessageRef & mref);
 	bool FindFile(const QString & file, MessageRef & ref);
 	void EmptyList();
@@ -56,7 +56,7 @@ private:
 	QObject * fOwner;
 	bool * fShutdownFlag;
 	Queue<QString> fPaths;
-	Queue<MessageRef> fFiles;
+	Hashtable<String, MessageRef> fFiles;
 	Queue<QString> fScannedDirs;
 	Queue<QString> files;
 

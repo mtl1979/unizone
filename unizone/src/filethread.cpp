@@ -288,6 +288,7 @@ WFileThread::AddFile(const QString & filePath)
 			int64 size = ufi.getSize();
 			if (size > 0)
 			{
+				String file = (const char *) ufi.getName().utf8();
 				ref()->AddInt32("beshare:Modification Time", ufi.getModificationTime());
 				ref()->AddString("beshare:Kind", (const char *) ufi.getMIMEType().utf8()); // give BeSharer's some relief
 				ref()->AddString("beshare:Path", (const char *) qcPath);
@@ -295,10 +296,10 @@ WFileThread::AddFile(const QString & filePath)
 				// ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
 				ref()->AddInt64("beshare:File Size", size);
 				ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
-				ref()->AddString("beshare:File Name", (const char *) ufi.getName().utf8());
+				ref()->AddString("beshare:File Name", file);
 				
 				Lock(); 
-				fFiles.AddTail(ref);
+				fFiles.Put(file, ref);
 				Unlock(); 
 				int n = fFiles.GetNumItems();
 
@@ -455,60 +456,41 @@ bool
 WFileThread::CheckFile(const QString & file)
 {
 	Lock(); 
-	for (int i = 0; i < fFiles.GetNumItems(); i++)
+
+	bool ret = false;
+
+	String key = (const char *) file.utf8();
+	MessageRef mref;
+
+	if (fFiles.Get(key, mref) == B_NO_ERROR)
 	{
-		String sn;
-		QString name;
-		MessageRef mref;
-		fFiles.GetItemAt(i, mref);
-		if ( mref() )
-		{
-			if (mref()->FindString("beshare:File Name", sn) == B_OK)
-			{
-				name = QString::fromUtf8(sn.Cstr());
-				if (file == name)
-				{
-					Unlock(); 
-					return true;
-				}
-			}
-		}
+		ret = true;
 	}
 	Unlock(); 
-	return false;
+	return ret;
 }
 
 bool
 WFileThread::FindFile(const QString & file, MessageRef & ref)
 {
 	Lock();
-	for (int i = 0; i < fFiles.GetNumItems(); i++)
+	bool ret = false;
+
+	String key = (const char *) file.utf8();
+	MessageRef mref;
+
+	if (fFiles.Get(key, mref) == B_NO_ERROR)
 	{
-		if (fShutdownFlag && *fShutdownFlag)
-		{
-			Unlock();
-			return true;	// tell our caller that the file exists so that we can quit
-		}
-		String sn;
-		QString name;
-		MessageRef mref;
-		fFiles.GetItemAt(i, mref);
 		if ( mref() )
 		{
-			mref()->FindString("beshare:File Name", sn);
-			name = QString::fromUtf8(sn.Cstr());
-			if (file == name)
-			{
-				Message *msg = mref();
-				ref = GetMessageFromPool(*msg); // copy the message, don't pass a ref ;)
-				Unlock();
-				return true;
-			}
+			Message *msg = mref();
+			ref = GetMessageFromPool(*msg); // copy the message, don't pass a ref ;)
+			ret = true;
 		}
 	}
 
 	Unlock();
-	return false;
+	return ret;
 }
 
 int
@@ -531,7 +513,9 @@ WFileThread::GetSharedFile(int n, MessageRef & mref)
 	Lock();
 	if (n >= 0 && n < fFiles.GetNumItems())
 	{
-		fFiles.GetItemAt(n, mref);
+		String key;
+		fFiles.GetKeyAt(n, key);
+		fFiles.Get(key, mref);
 	}
 	Unlock();
 }
