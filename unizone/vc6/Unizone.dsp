@@ -333,6 +333,10 @@ SOURCE=..\src\downloadthread.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\fileinfo.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\filethread.cpp
 # End Source File
 # Begin Source File
@@ -1120,6 +1124,10 @@ SOURCE=..\src\downloadthread.h
 # Begin Source File
 
 SOURCE=..\src\lang\english.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\fileinfo.h
 # End Source File
 # Begin Source File
 
