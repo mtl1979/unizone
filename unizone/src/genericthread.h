@@ -64,6 +64,7 @@ public:
 
 	virtual QString GetRemoteID() { return QString::null; }
 	virtual QString GetRemoteUser() { return QString::null; }
+	virtual QString GetRemoteIP() { return QString::null; }
 	virtual QString GetCurrentFile() { return QString::null; }
 
 	virtual long GetCurrentNum() { return -1; }

@@ -30,6 +30,7 @@ public:
 
 	QString GetRemoteID() { return fFromSession; }
 	QString GetRemoteUser() { return fFromUser; }
+	QString GetRemoteIP() { return fIP; }
 
 	// call this after setting the file to init the download
 	// this will also send a message to show the dialog, so do not do it yourself

@@ -29,6 +29,7 @@ public:
 
 	QString GetRemoteID() {return fRemoteSessionID;}
 	QString GetRemoteUser() {return fRemoteUser;}
+	QString GetRemoteIP() {return fStrRemoteIP;}
 	QString GetCurrentFile() {return fFileUl;}
 	QString GetFileName(int i);
 
@@ -47,7 +48,7 @@ protected:
 	virtual void SendReply(Message * m);
 	virtual void SignalOwner();
 	void SendQueuedNotification();
-	void SendRejectedNotification();
+	void SendRejectedNotification(bool);
 
 private:
 	WMsgList fUploads;

@@ -44,6 +44,9 @@ WUploadThread::SetUpload(int socket, uint32 remoteIP, WFileThread * ft)
 	fRemoteIP = remoteIP;
 	fSocket = socket;
 	fFileThread = ft;
+	// Set string ip too
+	uint32 _ip = GetPeerIPAddress(fSocket);
+	fStrRemoteIP = Inet_NtoA(_ip).Cstr();
 }
 
 void 
@@ -60,12 +63,12 @@ WUploadThread::InitSession()
 {
 	AbstractReflectSessionRef limit;
 
-	// First check if IP is blacklisted
+	// First check if IP is blacklisted or ignored
 	//
-	if (fStrRemoteIP == QString::null)
+
+	if (gWin->IsIgnoredIP(fStrRemoteIP))
 	{
-		uint32 _ip = GetPeerIPAddress(fSocket);
-		fStrRemoteIP = Inet_NtoA(_ip).Cstr();
+		SetBlocked(true);
 	}
 
 	if (gWin->IsBlackListedIP(fStrRemoteIP) && (gWin->fSettings->GetBLLimit() != WSettings::LimitNone))
@@ -142,10 +145,23 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 	{
 		if (b)
 		{
-			SendRejectedNotification();
+			SendRejectedNotification(true);
 		}
 		else
+		{
 			DoUpload();		// we can start now!
+		}
+	}
+	else
+	{
+		if (b)
+		{
+			SendRejectedNotification(false);
+		}
+		else
+		{
+			InitSession();
+		}
 	}
 }
 
@@ -380,12 +396,25 @@ WUploadThread::SendQueuedNotification()
 }
 
 void
-WUploadThread::SendRejectedNotification()
+WUploadThread::SendRejectedNotification(bool direct)
 {
 	MessageRef q(new Message(WDownload::TransferNotifyRejected), NULL);
 	if (fTimeLeft != -1)
 		q()->AddInt64("timeleft", fTimeLeft);
-	SendMessageToSessions(q);
+	if (direct)
+		SendMessageToSessions(q);
+	else
+	{
+		String node("/*/");
+		node += (const char *) fRemoteSessionID.latin1();
+		if (
+            (q()->AddString(PR_NAME_SESSION, "") == B_NO_ERROR) &&
+            (q()->AddString(PR_NAME_KEYS, node) == B_NO_ERROR)
+			) 
+		{
+				gWin->SendRejectedNotification(q);
+		}
+	}
 	Message * b = new Message(WGenericEvent::FileBlocked);
 	if (b)
 	{

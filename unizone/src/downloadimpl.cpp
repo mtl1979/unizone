@@ -221,6 +221,7 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	fULPopup->insertItem(tr("Block"), fULBanMenu);
 	fULPopup->insertItem(tr(MSG_TX_MOVEUP), ID_MOVEUP);
 	fULPopup->insertItem(tr(MSG_TX_MOVEDOWN), ID_MOVEDOWN);
+	fULIgnoredID = fULPopup->insertItem(tr("Ban IP"), ID_IGNORE);
 
 	connect(fULPopup, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fULThrottleMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
@@ -1453,6 +1454,23 @@ WDownload::ULPopupActivated(int id)
 			gt->SetBlocked(true, -1);
 			break;
 		}
+
+	case ID_IGNORE:
+		{
+			if ( gWin->IsIgnoredIP( gt->GetRemoteIP() ) )
+			{
+				gWin->RemoveIPIgnore(gt->GetRemoteIP());
+				if (gt->IsBlocked())
+					gt->SetBlocked(false, -1);
+			}
+			else
+			{
+				gWin->AddIPIgnore(gt->GetRemoteIP());
+				if (!gt->IsBlocked())
+					gt->SetBlocked(true, -1);
+			}
+			break;
+		}
 	}
 	fLock.unlock();
 	UpdateULRatings();
@@ -1471,7 +1489,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 		if (FindItem(fUploadList, iter, item))
 		{
 			fULPopup->setItemChecked(fULQueueID, (*iter).first->IsLocallyQueued());
-			
+			fULPopup->setItemChecked(fULIgnoredID, gWin->IsIgnoredIP( (*iter).first->GetRemoteIP() ));
 			int fNewRate = (*iter).first->GetRate();
 			fULThrottleMenu->setItemChecked(fULThrottle, false);
 			

@@ -48,16 +48,17 @@ using namespace muscle;
 #define WARNING				"warning"
 #define ERRORS				"errorS"
 
-#define AUTO_AWAY		"autoaway"
-#define FLASH			"flash"
-#define SHARING_ENABLED "sharingenabled"
-#define MAX_UPLOADS		"maxuploads"
-#define MAX_DOWNLOADS	"maxdownloads"
-#define FONT_SIZE		"fontsize"
-#define WATCH_PATTERN	"watchpattern"
-#define IGNORE_PATTERN	"ignorepattern"
-#define BLACKLIST		"blacklist"
-#define AUTOPRIV		"autopriv"
+#define AUTO_AWAY			"autoaway"
+#define FLASH				"flash"
+#define SHARING_ENABLED		"sharingenabled"
+#define MAX_UPLOADS			"maxuploads"
+#define MAX_DOWNLOADS		"maxdownloads"
+#define FONT_SIZE			"fontsize"
+#define WATCH_PATTERN		"watchpattern"
+#define IGNORE_PATTERN		"ignorepattern"
+#define IPIGNORE_PATTERN	"ipignorepattern"
+#define BLACKLIST			"blacklist"
+#define AUTOPRIV			"autopriv"
 
 #define ONCONN		"onconnect1"
 #define ONCONN2		"onconnect2"
@@ -276,6 +277,10 @@ public:
 	// ignore pattern
 	QString GetIgnorePattern();
 	void SetIgnorePattern(QString p);
+
+	// ip ignore pattern
+	QString GetIPIgnorePattern();
+	void SetIPIgnorePattern(QString p);
 
 	// blacklist pattern
 	QString GetBlackListPattern();

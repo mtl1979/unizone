@@ -385,16 +385,6 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					fReconnectTimer->stop();
 				}
 
-				if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
-					ExecCommand(fOnConnect);
-
-				if ((fOnConnect2 != QString::null) && fOnConnect2.length() > 2)
-				{
-					fOnConnect = fOnConnect2;
-					fOnConnect2 = QString::null;
-					ExecCommand(fOnConnect);
-				}
-
 				fDisconnect = false;
 				fDisconnectCount = 0;
 				return;
@@ -1178,6 +1168,7 @@ WinShareWindow::LoadSettings()
 
 		fWatch = fSettings->GetWatchPattern();
 		fIgnore = fSettings->GetIgnorePattern();
+		fIgnoreIP = fSettings->GetIPIgnorePattern();
 		fBlackList = fSettings->GetBlackListPattern();
 		fAutoPriv = fSettings->GetAutoPrivatePattern();
 
@@ -1218,6 +1209,7 @@ WinShareWindow::LoadSettings()
 		fHereMsg = "here";
 		fWatch = "";
 		fIgnore = "";
+		fIgnoreIP = "";
 		fBlackList = "";
 		fAutoPriv = "";
 		fOnConnect = "";
@@ -1290,6 +1282,7 @@ WinShareWindow::SaveSettings()
 	// watch, ignore, blacklist & auto-private patterns
 	fSettings->SetWatchPattern(fWatch);
 	fSettings->SetIgnorePattern(fIgnore);
+	fSettings->SetIPIgnorePattern(fIgnoreIP);
 	fSettings->SetBlackListPattern(fBlackList);
 	fSettings->SetAutoPrivatePattern(fAutoPriv);
 

@@ -207,6 +207,7 @@ private:
 	QString fHereMsg;
 	QString fWatch;		// watch pattern
 	QString fIgnore;	// ignore pattern
+	QString fIgnoreIP;	// ip ignore pattern
 	QString fBlackList; // blacklist pattern
 	QString fAutoPriv;	// Auto-private pattern
 	QString fOnConnect;	// On connect perform this command
@@ -353,10 +354,18 @@ public:
 
 	bool IsIgnored(QString & user, bool bTransfer = false);
 	bool IsIgnored(QString & user, bool bTransfer, bool bDisconnected);
+	bool IsIgnoredIP(QString & ip);
+	bool AddIPIgnore(QString & ip);
+	bool RemoveIPIgnore(QString & ip);
+
 	bool IsBlackListedIP(QString & ip);
 	bool IsBlackListed(QString & user);
+
 	bool IsAutoPrivate(QString & user);
 	bool IsConnected(QString & user);
+
+	void SendRejectedNotification(MessageRef rej);
+
 
 	// To use delayed search, first set the pattern using SetDelayedSearchPattern(QString) and
 	// then call Connect(QString)

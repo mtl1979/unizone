@@ -1206,6 +1206,18 @@ WinShareWindow::HandleMessage(Message * msg)
 		// shares are scanned on startup (during connect to server)
 	case PR_RESULT_PONG:
 		{
+			// Execute OnConnect commands here, when all user information should be available
+
+			if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
+				ExecCommand(fOnConnect);
+
+			if ((fOnConnect2 != QString::null) && fOnConnect2.length() > 2)
+			{
+				fOnConnect = fOnConnect2;
+				fOnConnect2 = QString::null;
+				ExecCommand(fOnConnect);
+			}
+
 			// run the scan now (if needed)
 			// begin the file scan thread
 			PRINT("Checking...\n");
@@ -1671,6 +1683,76 @@ WinShareWindow::ShowHelp(QString command)
 	}
 	str = ParseStringStr(helpText);
 	PrintSystem(str);
+}
+
+bool
+WinShareWindow::IsIgnoredIP(QString & ip)
+{
+	return MatchFilter(ip, (const char *) fIgnoreIP.utf8());
+}
+
+bool
+WinShareWindow::AddIPIgnore(QString & ip)
+{
+	if ( IsIgnoredIP(ip) )
+		return false;
+
+	// Append to ignore list
+	//
+	if (fIgnoreIP == "")
+		fIgnoreIP = ip;
+	else
+		fIgnoreIP += ip.prepend(",");
+	return true;
+
+}
+
+bool
+WinShareWindow::RemoveIPIgnore(QString & ip)
+{
+	if ( !IsIgnoredIP(ip) )
+		return false;
+
+	// First in list?
+
+	int pos = fIgnoreIP.startsWith(ip + ",") ? 0 : -1 ; 
+
+	// Second or later in the list?
+
+	if (pos == -1)
+		pos = fIgnoreIP.find("," + ip + ",", 0, false); 
+	
+	// You need to add 1 to the length to strip extra comma too
+	
+	int len = ip.length() + 1;
+	
+	// last in the list?
+
+	if (pos == -1)
+	{
+		if (fIgnoreIP.right(len) == ("," + ip))
+		{
+			// Find last occurance (there is no endsWith in QString class)
+			pos = fIgnoreIP.findRev("," + ip, -1, false);
+		}
+	}
+
+	if (pos == -1)	
+	{
+		// Not ignored!
+		return false;
+	}
+
+	if (pos == 0)
+	{
+		fIgnoreIP = fIgnoreIP.mid(len);
+	}
+	else
+	{
+		fIgnoreIP = fIgnoreIP.left(pos)+fIgnoreIP.mid(len+pos);
+	}
+
+	return true;
 }
 
 bool
@@ -2272,4 +2354,10 @@ WinShareWindow::TransferCallbackRejected(QString qFrom, int64 timeLeft)
 	if (!fDLWindow)
 		return;
 	fDLWindow->TransferCallBackRejected(qFrom, timeLeft);
+}
+
+void
+WinShareWindow::SendRejectedNotification(MessageRef rej)
+{
+	fNetClient->SendMessageToSessions(rej);
 }

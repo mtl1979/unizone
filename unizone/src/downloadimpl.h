@@ -105,6 +105,7 @@ private:
 
 	int fDLQueueID, fULQueueID;
 	int fULBlockedID;
+	int fULIgnoredID;
 
 	int fDLThrottle, fULThrottle;
 	int fDLThNone, fULThNone;
@@ -181,7 +182,8 @@ private:
 		ID_BAN1H,
 		ID_BANINF,
 		ID_MOVEUP,
-		ID_MOVEDOWN
+		ID_MOVEDOWN,
+		ID_IGNORE
 	};
 
 	// Find an item in the list that matches the list view item

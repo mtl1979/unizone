@@ -777,6 +777,21 @@ WSettings::SetIgnorePattern(QString p)
 }
 
 QString
+WSettings::GetIPIgnorePattern()
+{
+	String i = "";
+	fSet->FindString(IPIGNORE_PATTERN, i);
+	return QString::fromUtf8(i.Cstr());
+}
+
+void
+WSettings::SetIPIgnorePattern(QString p)
+{
+	fSet->RemoveName(IPIGNORE_PATTERN);
+	fSet->AddString(IPIGNORE_PATTERN, (const char *) p.utf8());
+}
+
+QString
 WSettings::GetBlackListPattern()
 {
 	String i = "";
