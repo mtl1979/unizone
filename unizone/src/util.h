@@ -118,9 +118,9 @@ void CloseFile(QFile * & file);
 
 uint64 toULongLong(const QString &, bool * = NULL);
 QString fromULongLong(const uint64 &);
-QString hexFromULongLong(const uint64 &, int);
+QString hexFromULongLong(const uint64 &, unsigned int);
 
 int64 toLongLong(const QString &, bool * = NULL);
 QString fromLongLong(const int64 &);
-QString hexFromLongLong(const int64 &, int);
+QString hexFromLongLong(const int64 &, unsigned int);
 #endif

@@ -47,7 +47,11 @@ QByteArray
 TTPDecode(const QString &orig, unsigned long * len)
 {
 	if ((orig.length() % 2) != 0)
-		return NULL;
+	{
+		if (len)
+			*len = 0;
+		return QByteArray();
+	}
 	QByteArray temp(orig.length());
 	int n = 0;
 	for (unsigned int x = 0; x < orig.length(); x += 2)

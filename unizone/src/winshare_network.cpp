@@ -1085,7 +1085,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/hexdecode"))
 		{
 			QString qtext = GetParameterString(sendText);
-			const char * in = (const char *) qtext.utf8();
 			QString out = TTPDecode(qtext);
 			if (out.length() > 0)
 				PrintSystem(tr("Decoded: %1").arg(out));
@@ -1093,7 +1092,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/hexencode"))
 		{
 			QString qtext = GetParameterString(sendText);
-			const char * in = (const char *) qtext.utf8();
 			QString out = TTPEncode(qtext);
 			PrintSystem(tr("Encoded: %1").arg(out));
 		}

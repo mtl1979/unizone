@@ -1168,7 +1168,7 @@ fromULongLong(const uint64 &in)
 }
 
 QString
-hexFromULongLong(const uint64 &in, int length)
+hexFromULongLong(const uint64 &in, unsigned int length)
 {
 	uint64 tmp;
 	int n;
@@ -1249,7 +1249,7 @@ QString fromLongLong(const int64 &in)
 	return out;
 }
 
-QString hexFromLongLong(const int64 &in, int length)
+QString hexFromLongLong(const int64 &in, unsigned int length)
 {
 	if (in == -1)
 		return hexFromULongLong(UINT64_MAX, length);
