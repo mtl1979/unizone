@@ -447,44 +447,18 @@ WPrivateWindow::resizeEvent(QResizeEvent * e)
 {
 	fSplit->resize(e->size().width(), e->size().height());
 }
-/*
-void
-WPrivateWindow::PrintError(const QString & error)
-{
-	if (gWin->fSettings->GetError())
-	{
-		QString e = WFormat::Error().arg(WColors::Error).arg(gWin->fSettings->GetFontSize());
-		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(gWin->fSettings->GetFontSize()).arg(error);
-		PrintText(e);
-	}
-}
-*/
+
 void
 WPrivateWindow::BeforeShown()
 {
 	ChatWindow::BeforeShown();
 }
 
-
 void
 WPrivateWindow::GotShown(const QString & txt)
 {
 	ChatWindow::GotShown(txt);
 }
-
-/*
-void
-WPrivateWindow::CheckScrollState()
-{
-	QScrollBar * scroll = fChatText->verticalScrollBar();
-	fScrollX = fChatText->contentsX();
-	fScrollY = fChatText->contentsY();
-	if (scroll->value() >= scroll->maxValue())
-		fScrollDown = true;
-	else
-		fScrollDown = false;
-}
-*/
 
 void
 WPrivateWindow::StartLogging()
@@ -591,6 +565,7 @@ WPrivateWindow::CheckEmpty()
 				{
 					done(QDialog::Accepted);
 				}
+				break;
 			}
 		case 2:
 			{
