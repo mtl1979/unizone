@@ -59,7 +59,7 @@ WUniListItem::setText(int col, const QString & text)
 QString 
 WUniListItem::key(int c, bool /* asc */) const
 {
-	int n, m;
+	int64 n, m;
 	int32 bw;
 	QString result, q1, q2;
 #ifdef _DEBUG
@@ -80,11 +80,11 @@ WUniListItem::key(int c, bool /* asc */) const
 #endif
 
 			bool ok;
-			n = result.toLong(&ok);
+			n = toLongLong(result, &ok);
 			if (ok)
 			{
 				// convert our number to hexadecimal! what a thought, huh?
-				result.sprintf("0x%08x", n);
+				result = hexFromLongLong(n, 16);
 #ifdef _DEBUG
 				wResult = result;
 				PRINT("\tRESULT IS %S\n", wResult.getBuffer());
@@ -101,11 +101,11 @@ WUniListItem::key(int c, bool /* asc */) const
 #endif
 
 			bool ok;
-			n = (long) result.toDouble(&ok); // We need to convert from double to long
+			n = (uint64) result.toDouble(&ok); // We need to convert from double to long long
 			if (ok)
 			{
 				// convert our number to hexadecimal! what a thought, huh?
-				result.sprintf("0x%08x", n);
+				result = hexFromLongLong(n, 16);
 #ifdef _DEBUG
 				wResult = result;
 				PRINT("\tRESULT IS %S\n", wResult.getBuffer());
@@ -118,8 +118,8 @@ WUniListItem::key(int c, bool /* asc */) const
 			q1 = fKey[c].left(fKey[c].find(","));
 			q2 = fKey[c].mid(fKey[c].find(",")+1);
 			bool ok1,ok2;
-			n = q1.toInt(&ok1);
-			m = q2.toInt(&ok2);
+			n = toLongLong(q1, &ok1);
+			m = toLongLong(q2, &ok2);
 			if (ok1 && ok2)
 			{
 				int o = 0;
@@ -191,7 +191,7 @@ WUniListItem::key(int c, bool /* asc */) const
 long
 WUniListItem::item(int c)
 {
-	long n, m, o;
+	int64 n, m, o;
 	int32 bw;
 	QString q1, q2;
 	switch (UColumnType[c])
@@ -202,12 +202,12 @@ WUniListItem::item(int c)
 	case Time:
 	case Size:
 		{
-		n = fKey[c].toULong();
+		n = toLongLong(fKey[c]);
 		return n;
 		}
 	case TransferSpeed:
 		{
-		n = (long) fKey[c].toDouble();
+		n = (int64) fKey[c].toDouble();
 		return n;
 		}
 	case TransferLoad:
@@ -215,8 +215,8 @@ WUniListItem::item(int c)
 		q1 = fKey[c].left(fKey[c].find(","));
 		q2 = fKey[c].mid(fKey[c].find(",")+1);
 		bool ok1,ok2;
-		n = q1.toInt(&ok1);
-		m = q2.toInt(&ok2);
+		n = toLongLong(q1, &ok1);
+		m = toLongLong(q2, &ok2);
 		if (ok1 && ok2)
 		{
 			o = 0;
@@ -281,7 +281,7 @@ WUniListItem::text(int c) const
 	QString postFix, result, q1, q2;
 	double n;
 	double o;
-	int p, q;
+	int64 p, q;
 	long lMod;
 	uint32 secs, min, hours;
 	bool ok;
@@ -306,20 +306,31 @@ WUniListItem::text(int c) const
 			if (n >= 1024.0f)	// > 1 kB?
 			{
 				n /= 1024.0f;
-				postFix = QObject::tr( "kB" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
 				
 				if (n >= 1024.0f)	// > 1 MB?
 				{
 					n /= 1024.0f;
-					postFix = QObject::tr( "MB" );
 					
 					if (n >= 1024.0f)	// > 1 GB?
 					{
 						n /= 1024.0f;
-						postFix = QObject::tr( "GB" );
+
+						if (n >= 1024.0f) // > 1 TB?
+						{
+							n /= 1024.f;
+							postFix = QObject::tr( "TB" );
+						}
+						else
+							postFix = QObject::tr( "GB" );
 					}
+					else
+						postFix = QObject::tr( "MB" );
 				}
+				else
+					postFix = QObject::tr( "kB" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
+
 			}
+
 		}
 		else
 			n = 0.0f;
@@ -350,19 +361,29 @@ WUniListItem::text(int c) const
 			if (n >= 1024.0f)	// > 1 kB?
 			{
 				n /= 1024.0f;
-				postFix = QObject::tr( "kB/s" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
 				
 				if (n >= 1024.0f)	// > 1 MB?
 				{
 					n /= 1024.0f;
-					postFix = QObject::tr( "MB/s" );
 					
 					if (n >= 1024.0f)	// > 1 GB?
 					{
 						n /= 1024.0f;
-						postFix = QObject::tr( "GB/s" );
+
+						if (n >= 1024.0f) // > 1 TB?
+						{
+							n /= 1024.0f;
+							postFix = QObject::tr( "TB/s" );
+						}
+						else
+							postFix = QObject::tr( "GB/s" );
 					}
+					else
+					postFix = QObject::tr( "MB/s" );
 				}
+				else
+					postFix = QObject::tr( "kB/s" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
+
 			}
 		}
 		else
@@ -386,14 +407,15 @@ WUniListItem::text(int c) const
 		q1 = fKey[c].left(fKey[c].find(","));
 		q2 = fKey[c].mid(fKey[c].find(",")+1);
 		bool ok1,ok2;
-		p = q1.toInt(&ok1);
-		q = q2.toInt(&ok2);
+		p = toLongLong(q1, &ok1);
+		q = toLongLong(q2, &ok2);
 		if (ok1 && ok2)
 		{
 			o = 0.0f;
 			if (q == WSettings::Unlimited)
 			{
-				result.sprintf("(%d/-)",p);
+				QString tmp = fromLongLong(p);
+				result = "(" + tmp + "/-)";
 				return result;
 			}
 			if (q == 0)
@@ -402,7 +424,10 @@ WUniListItem::text(int c) const
 				o = 0.0f;
 			else
 				o = (double) ( (double) p / (double) q * 100.0f );
-			result.sprintf("(%d/%d) %3.2f %%", p, q, o);
+			QString qp = fromLongLong(p);
+			QString qq = fromLongLong(p);
+			QString qo; qo.sprintf("%3.2f %%", o);
+			result = "(" + qp + "/" + qq +") " + qo;
 		}
 		return result;
 		}

@@ -21,9 +21,20 @@ using namespace muscle;
 #include <qregexp.h>
 #endif
 
-//#include <qdatetime.h>
 #include <qdns.h>
 #include <qfile.h>
+
+#include <limits.h>
+
+#if !defined(UINT64_MAX)
+# if defined(_UI64_MAX)
+#  define UINT64_MAX _UI64_MAX
+# elif defined(ULLONG_MAX)
+#  define UINT64_MAX ULLONG_MAX
+# else
+#  define UINT64_MAX 18446744073709551615ULL
+# endif
+#endif
 
 QString
 ParseChatText(const QString & str)
@@ -1115,3 +1126,135 @@ void CloseFile(QFile * & file)
 	}
 }
 
+uint64 
+toULongLong(const QString &in, bool *ok)
+{
+	uint64 out = 0;
+	bool o = true;
+	for (unsigned int x = 0; x < in.length(); x++)
+	{
+		QChar c = in.at(x);
+		if ((c.unicode() < '0') || (c.unicode() > '9'))
+		{
+			o = false;
+			break;
+		}
+		out *= 10;
+		out += c - '0';
+	}
+	if (ok)
+		*ok = o;
+	return out;
+}
+
+QString 
+fromULongLong(const uint64 &in)
+{
+	uint64 tmp;
+	int n;
+	QString out;
+
+	if (in < 10)
+		return QString(QChar(((int) in) + '0'));
+	
+	tmp = in;
+	while (tmp > 0)
+	{
+		n = tmp % 10;
+		out = out.prepend(QChar(n + '0'));
+		tmp /= 10;
+	}
+	return out;
+}
+
+QString
+hexFromULongLong(const uint64 &in, int length)
+{
+	uint64 tmp;
+	int n;
+	QString out;
+
+	if (in < 10)
+		return QString(QChar(((int) in) + '0'));
+	if (in < 16)
+		return QString(QChar(((int) in) + 55));
+	
+	tmp = in;
+	while (tmp > 0)
+	{
+		n = tmp % 16;
+		out = out.prepend(QChar(n + ((n < 10) ? '0' : 55)));
+		tmp /= 16;
+	}
+	while (out.length() < length) 
+		out = out.prepend("0");
+	return out;
+}
+
+int64 toLongLong(const QString &in, bool *ok)
+{
+	int64 out = 0;
+	bool o = true;
+	bool negate = false;
+
+	for (unsigned int x = 0; x < in.length(); x++)
+	{
+		QChar c = in.at(x);
+		if ((x == 0) && (c.unicode() == '-'))
+			negate = true;
+		else if ((c.unicode() < '0') || (c.unicode() > '9'))
+		{
+			o = false;
+			break;
+		}
+		out *= 10;
+		out += c - '0';
+	}
+
+	if (negate)
+		out = -out;
+
+	if (ok)
+		*ok = o;
+	return out;
+}
+
+QString fromLongLong(const int64 &in)
+{
+	uint64 tmp;
+	int n;
+	bool negate = false;
+	QString out;
+
+	if (in < 0)
+	{
+		tmp = -in;
+		negate = true;
+	}
+	else if (in < 10)
+		return QString(QChar(((int) in) + '0'));
+	else
+		tmp = in;
+
+	while (tmp > 0)
+	{
+		n = tmp % 10;
+		out = out.prepend(QChar(n + '0'));
+		tmp /= 10;
+	}
+	
+	if (negate)
+		out = out.prepend("-");
+
+	return out;
+}
+
+QString hexFromLongLong(const int64 &in, int length)
+{
+	if (in == -1)
+		return hexFromULongLong(UINT64_MAX, length);
+	else if ( in < -1)
+		return hexFromULongLong(UINT64_MAX + (in + 1), length);
+	else
+		return hexFromULongLong((uint64) in, length);
+}

@@ -50,7 +50,7 @@ WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewa
 					// delete command.
 					
 					String path, kind;
-					int64 size = 0;
+					uint64 size = 0;
 					int32 mod = 0;
 					
 					file()->FindString("beshare:Kind", kind);
@@ -67,7 +67,7 @@ WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewa
 					
 					// name, size, type, modified, path, user
 					QString qkind	= QString::fromUtf8(kind.Cstr());
-					QString qsize	= QString::number((int)size); 
+					QString qsize	= fromULongLong(size); 
 					QString qmod	= QString::number(mod); // <postmaster@raasu.org> 20021126
 					QString qpath	= QString::fromUtf8(path.Cstr());
 					QString quser	= user()->GetUserName();

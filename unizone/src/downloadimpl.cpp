@@ -1190,8 +1190,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
 				item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
 				// rec, total, rate
-				item->setText(WTransferItem::Received, QString::number((int) start));
-				item->setText(WTransferItem::Total, QString::number((int) size));
+				item->setText(WTransferItem::Received, fromULongLong(start));
+				item->setText(WTransferItem::Total, fromULongLong(size));
 				item->setText(WTransferItem::Rate, "0.0");
 				item->setText(WTransferItem::ETA, "");
 				item->setText(WTransferItem::User, uname);
@@ -1274,7 +1274,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				}
 				
 				item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(ComputePercentString(offset, size)));
-				item->setText(WTransferItem::Received, QString::number((int) offset));
+				item->setText(WTransferItem::Received, fromULongLong(offset));
 				// <postmaster@raasu.org> 20021104, 20030217, 20030622
 				// elapsed time >= 1 s?
 				if (secs >= 1.0f)
@@ -1298,7 +1298,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 						uint64 _elapsed = _now - _fileStarted;
 						if (_elapsed > 0) 
 							_elapsed /= 1000000;	// convert microseconds to seconds
-						item->setText(WTransferItem::Elapsed, QString::number((ulong) _elapsed));
+						item->setText(WTransferItem::Elapsed, fromULongLong(_elapsed));
 					}
 				}
 				
@@ -1530,8 +1530,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
 				item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
 				// rec, total, rate
-				item->setText(WTransferItem::Received, QString::number((int) start));
-				item->setText(WTransferItem::Total, QString::number((int) size));
+				item->setText(WTransferItem::Received, fromULongLong(start));
+				item->setText(WTransferItem::Total, fromULongLong(size));
 				item->setText(WTransferItem::Rate, "0.0");
 				item->setText(WTransferItem::ETA, "");
 				item->setText(WTransferItem::User, uname);
@@ -1614,7 +1614,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 				}
 				
 				item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(ComputePercentString(offset, size)));
-				item->setText(WTransferItem::Received, QString::number((int) offset));
+				item->setText(WTransferItem::Received, fromULongLong(offset));
 				// <postmaster@raasu.org> 20021104, 20030217, 20030622
 				// elapsed time >= 1 s?
 				if (secs >= 1.0f) 
@@ -1639,7 +1639,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 						uint64 _elapsed = _now - _fileStarted;
 						if (_elapsed > 0)
 							_elapsed /= 1000000;	// convert microseconds to seconds
-						item->setText(WTransferItem::Elapsed, QString::number((ulong) _elapsed));
+						item->setText(WTransferItem::Elapsed, fromULongLong(_elapsed));
 					}
 				}
 				
