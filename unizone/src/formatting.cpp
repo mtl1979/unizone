@@ -326,7 +326,7 @@ ParseString(QString & str)
 	for (int i = 0; i < (int)str.length(); i++)
 	{
 		// go through the string and change newlines to <br> (html)
-		if (str[i] == '\n')
+		if (str[i] == '\n')	
 			str.replace(i, 1, "<br>");
 		else if (str[i] == ' ')
 		{
@@ -351,7 +351,12 @@ ParseString(QString & str)
 		{
 			if (space)
 			{
-				str.replace(i, 1, "&nbsp; &nbsp; ");
+				// <postmaster@raasu.org> 20030623 -- follow 'first' used in spaces here too...
+				if (first)
+					str.replace(i, 1, " &nbsp; &nbsp;");
+				else
+					str.replace(i, 1, "&nbsp; &nbsp; ");
+
 				i += 12;
 			}
 		}
