@@ -36,7 +36,7 @@ Preview::ShowImage(QImage *img)
 }
 
 template <typename T> 
-bool clamp(T a, const T b, const T c)
+bool clamp(T & a, const T b, const T c)
 {
 	bool ret = false;
 	if (a < b) 
