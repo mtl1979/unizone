@@ -330,8 +330,11 @@ WDownload::EmptyUploads()
 }
 
 void
-WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QString remoteSessionID,
-					   uint32 remotePort, const QString & remoteIP, uint64 remoteInstallID, bool firewalled, bool partial)
+WDownload::AddDownload(QString * files, QString * lfiles, 
+			int32 filecount, QString remoteSessionID, 
+			uint32 remotePort, const QString & remoteIP, 
+			uint64 /* remoteInstallID */, bool firewalled, 
+			bool partial)
 {
 	WDownloadThread * nt = new WDownloadThread(this);
 	CHECK_PTR(nt);
@@ -465,7 +468,7 @@ WDownload::AddUpload(const QString & remoteIP, uint32 port)
 }
 
 void
-WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
+WDownload::AddUpload(int socket, uint32 remoteIP, bool /* queued */)
 {
 	PRINT("WDownload::AddUpload(int, uint32, bool)\n");
 	WUploadThread * ut = new WUploadThread(this);
@@ -518,7 +521,7 @@ WDownload::DequeueULSessions()
 	
 	
 	Lock();
-	for (int i = 0; i < fUploadList.GetNumItems(); i++)
+	for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
 	{
 		ULPair pair;
 		fUploadList.GetItemAt(i, pair);
@@ -544,7 +547,7 @@ WDownload::DequeueULSessions()
 	{
 		found = false;
 		Lock();
-		for (int i = 0; i < fUploadList.GetNumItems(); i++)
+		for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(i, pair);
@@ -592,7 +595,7 @@ WDownload::DequeueDLSessions()
 	
 	
 	Lock();
-	for (int i = 0; i < fDownloadList.GetNumItems(); i++)
+	for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
 	{
 		DLPair pair;
 		fDownloadList.GetItemAt(i, pair);
@@ -620,7 +623,7 @@ WDownload::DequeueDLSessions()
 	{
 		found = false;
 		Lock();
-		for (int i = 0; i < fDownloadList.GetNumItems(); i++)
+		for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
 		{
 			DLPair pair;
 			fDownloadList.GetItemAt(i, pair);
@@ -728,7 +731,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 		return;
 	
 	Lock();
-	for (int i = 0; i < fDownloadList.GetNumItems(); i++)
+	for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
 	{
 		fDownloadList.GetItemAt(i, foundIt);
 		if (foundIt.first == dt)
@@ -781,7 +784,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			PRINT("\tWDownloadEvent::FileBlocked\n");
 			uint64 timeLeft = (uint64) -1;
 			(void) msg()->FindInt64("timeleft", (int64 *) &timeLeft);
-			if (timeLeft == -1)
+			if (timeLeft == (uint64) -1)
 			{
 				item->setText(WTransferItem::Status, tr("Blocked."));
 			}
@@ -1148,7 +1151,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 		return;
 	
 	Lock();
-	for (int i = 0; i < fUploadList.GetNumItems(); i++)
+	for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
 	{
 		fUploadList.GetItemAt(i, foundIt);
 		if (foundIt.first == ut)
@@ -1201,7 +1204,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 			PRINT("\tWUploadEvent::FileBlocked\n");
 			uint64 timeLeft = (uint64) -1;
 			(void) msg()->FindInt64("timeleft", (int64 *) &timeLeft);
-			if (timeLeft == -1)
+			if (timeLeft == (uint64) -1)
 			{
 				item->setText(WTransferItem::Status, tr("Blocked."));
 			}
@@ -1474,7 +1477,7 @@ void
 WDownload::KillLocalQueues()
 {
 	Lock();
-	int j = 0;
+	unsigned int j = 0;
 	while (j < fDownloadList.GetNumItems())
 	{
 		DLPair pair;
@@ -1552,12 +1555,12 @@ WDownload::UpdateLoad()
 *
 */
 void
-WDownload::UserDisconnected(const QString &sid, const QString &name)
+WDownload::UserDisconnected(const QString &sid, const QString & /* name */)
 {
 	if (gWin->fSettings->GetBlockDisconnected())
 	{
 		Lock();
-		for (int i = 0; i < fUploadList.GetNumItems(); i++)
+		for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(i, pair);
@@ -1591,7 +1594,7 @@ void
 WDownload::DLPopupActivated(int id)
 {
 	DLPair pair;
-	int index;
+	unsigned int index;
 	WDownloadThread * dt = NULL;
 	bool findRet;
 	
@@ -1835,7 +1838,7 @@ void
 WDownload::ULPopupActivated(int id)
 {
 	ULPair pair;
-	int index;
+	unsigned int index;
 	WUploadThread * ut = NULL;
 	bool findRet;
 	
@@ -2180,7 +2183,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 	{
 		fULPopupItem = item;
 		
-		int index;
+		unsigned int index;
 		if (FindULItem(index, item))
 		{
 			ULPair pair;
@@ -2488,7 +2491,7 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 	{
 		fDLPopupItem = item;
 		
-		int index;
+		unsigned int index;
 		if (FindDLItem(index, item))
 		{
 			DLPair pair;
@@ -2703,14 +2706,14 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 }
 
 bool
-WDownload::FindDLItem(int & index, QListViewItem * s)
+WDownload::FindDLItem(unsigned int & index, QListViewItem * s)
 {
 	PRINT("WDownload::FindDLItem()\n");
 	bool success = false;
 	
 	Lock();
 	
-	for (int i = 0; i < fDownloadList.GetNumItems(); i++)
+	for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
 	{
 		DLPair p;
 		fDownloadList.GetItemAt(i, p);
@@ -2732,14 +2735,14 @@ WDownload::FindDLItem(int & index, QListViewItem * s)
 }
 
 bool
-WDownload::FindULItem(int & index, QListViewItem * s)
+WDownload::FindULItem(unsigned int & index, QListViewItem * s)
 {
 	PRINT("WDownload::FindULItem()\n");
 	bool success = false;
 	
 	Lock();
 	
-	for (int i = 0; i < fUploadList.GetNumItems(); i++)
+	for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
 	{
 		ULPair p;
 		fUploadList.GetItemAt(i, p);
@@ -2761,7 +2764,7 @@ WDownload::FindULItem(int & index, QListViewItem * s)
 }
 
 void
-WDownload::DLMoveUp(int index)
+WDownload::DLMoveUp(unsigned int index)
 {
 	if (index == 0)
 		return;
@@ -2770,7 +2773,7 @@ WDownload::DLMoveUp(int index)
 	
 	Lock();
 	
-	int index2 = index;
+	unsigned int index2 = index;
 	fDownloadList.RemoveItemAt(index, wp);
 	Unlock();
 	
@@ -2789,7 +2792,7 @@ WDownload::DLMoveUp(int index)
 }
 
 void
-WDownload::ULMoveUp(int index)
+WDownload::ULMoveUp(unsigned int index)
 {
 	if (index == 0)
 		return;
@@ -2798,7 +2801,7 @@ WDownload::ULMoveUp(int index)
 	
 	Lock();
 	
-	int index2 = index;
+	unsigned int index2 = index;
 	fUploadList.RemoveItemAt(index, wp);
 	Unlock();
 	
@@ -2817,7 +2820,7 @@ WDownload::ULMoveUp(int index)
 }
 
 void
-WDownload::DLMoveDown(int index)
+WDownload::DLMoveDown(unsigned int index)
 {
 	if (index == fDownloadList.GetNumItems() - 1)
 		return;
@@ -2826,7 +2829,7 @@ WDownload::DLMoveDown(int index)
 	
 	Lock();
 	
-	int index2 = index;
+	unsigned int index2 = index;
 	fDownloadList.RemoveItemAt(index, wp);
 	Unlock();
 	
@@ -2848,7 +2851,7 @@ WDownload::DLMoveDown(int index)
 }
 
 void
-WDownload::ULMoveDown(int index)
+WDownload::ULMoveDown(unsigned int index)
 {
 	if (index == fUploadList.GetNumItems() - 1)
 		return;
@@ -2857,7 +2860,7 @@ WDownload::ULMoveDown(int index)
 	
 	Lock();
 	
-	int index2 = index;
+	unsigned int index2 = index;
 	fUploadList.RemoveItemAt(index, wp);
 	Unlock();
 	
@@ -2890,7 +2893,7 @@ WDownload::UpdateULRatings()
 	
 	Lock();
 	
-	for (int i = 0; i < fUploadList.GetNumItems(); i++)
+	for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
 	{
 		ULPair pair;
 		fUploadList.GetItemAt(i, pair);
@@ -2923,7 +2926,7 @@ WDownload::UpdateDLRatings()
 	}
 	
 	Lock();
-	for (int i = 0; i < fDownloadList.GetNumItems(); i++)
+	for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
 	{
 		DLPair pair;
 		fDownloadList.GetItemAt(i, pair);
@@ -2943,7 +2946,7 @@ void
 WDownload::TransferCallBackRejected(const QString &qFrom, int64 timeLeft, uint32 port)
 {
 	Lock();
-	for (int i = 0; i < fDownloadList.GetNumItems(); i++)
+	for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
 	{
 		DLPair pair;
 		fDownloadList.GetItemAt(i, pair);
@@ -2972,7 +2975,7 @@ WDownload::ClearFinishedDL()
 	if (fDownloadList.GetNumItems() > 0)
 	{
 		Lock();
-		int i = 0;
+		unsigned int i = 0;
 		while (i < fDownloadList.GetNumItems())
 		{
 			DLPair pair;
@@ -3009,7 +3012,7 @@ WDownload::ClearFinishedUL()
 	if (fUploadList.GetNumItems() > 0)
 	{
 		Lock();
-		int i = 0;
+		unsigned int i = 0;
 		while (i < fUploadList.GetNumItems())
 		{
 			ULPair pair;
@@ -3044,7 +3047,7 @@ WDownload::GetNumDownloads()
 	if ( fDownloadList.GetNumItems() > 0)
 	{
 		Lock();
-		for (int i = 0; i < fDownloadList.GetNumItems(); i++)
+		for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
 		{
 			DLPair pair;
 			fDownloadList.GetItemAt(i, pair);
@@ -3074,7 +3077,7 @@ WDownload::GetNumUploads()
 	if ( fUploadList.GetNumItems() > 0)
 	{
 		Lock();
-		for (int i = 0; i < fUploadList.GetNumItems(); i++)
+		for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(i, pair);
@@ -3103,7 +3106,7 @@ WDownload::GetUploadQueue()
 	if ( fUploadList.GetNumItems() > 0)
 	{
 		Lock();
-		for (int i = 0; i < fUploadList.GetNumItems(); i++)
+		for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(i, pair);

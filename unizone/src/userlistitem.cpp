@@ -52,12 +52,7 @@ WUserListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w
 			
 			if ((column == 0) || (column == 5))
 			{
-				if (tx > 0xFFFEFFFF && tx != -1)
-				{
-					_cg.setColor(QColorGroup::Base, rowBaseColor(6));	// Infinite slots 
-					_cg.setColor(QColorGroup::Text, rowTextColor(6));	//  
-				}
-				else if (tx > 999999 && tx < 0xFFFF0000)
+				if (tx > 999999)
 				{
 					_cg.setColor(QColorGroup::Base, rowBaseColor(5));	// Full
 					_cg.setColor(QColorGroup::Text, rowTextColor(5));	// 
@@ -82,11 +77,17 @@ WUserListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w
 					_cg.setColor(QColorGroup::Base, rowBaseColor(1));	// Empty	- 1/4 Full
 					_cg.setColor(QColorGroup::Text, rowTextColor(1));	// 
 				}
-				else
+				else if (tx == -1)
 				{
 					_cg.setColor(QColorGroup::Base, rowBaseColor(0));	// default
 					_cg.setColor(QColorGroup::Text, rowTextColor(0));	// 
 				}
+				else // tx < -1
+				{
+					_cg.setColor(QColorGroup::Base, rowBaseColor(6));	// Infinite slots 
+					_cg.setColor(QColorGroup::Text, rowTextColor(6));	//  
+				}
+
 			}
 			else if (column == 3)
 			{

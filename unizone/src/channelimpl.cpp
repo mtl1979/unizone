@@ -14,7 +14,7 @@
 
 #include "reflector/StorageReflectConstants.h"
 
-Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags fl)
+Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags /* fl */)
 : ChannelBase(/* parent */ NULL, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
 			  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu /* flags */)
 {
@@ -245,7 +245,7 @@ Channel::Kick(const QString & user)
 }
 
 void
-Channel::TabPressed(const QString &str)
+Channel::TabPressed(const QString & /* str */)
 {
 	PRINT("Channel::Tab\n");
 	WPWEvent *e = new WPWEvent(WPWEvent::TabComplete, fInputText->text());
@@ -333,7 +333,7 @@ void
 Channel::customEvent(QCustomEvent * event)
 {
 	PRINT("Channel::customEvent\n");
-	switch (event->type())
+	switch ((int) event->type())
 	{
 		case WPWEvent::TabCompleted:
 		{
@@ -722,7 +722,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 }
 
 void
-Channel::Action(const QString & name, const QString & msg, bool batch)
+Channel::Action(const QString & name, const QString & msg, bool /* batch */)
 {
 	QString nameText = FixStringStr(msg);
 	if (gWin->NameSaid(nameText) && gWin->fSettings->GetSounds())

@@ -214,15 +214,15 @@ private:
 
 	// Find an item in the list that matches the list view item
 	// and return the index
-	bool FindDLItem(int &, QListViewItem *);
-	bool FindULItem(int &, QListViewItem *);
+	bool FindDLItem(unsigned int &, QListViewItem *);
+	bool FindULItem(unsigned int &, QListViewItem *);
 
 	// Reorganize transfer queue
-	void DLMoveUp(int index);
-	void DLMoveDown(int index);
+	void DLMoveUp(unsigned int index);
+	void DLMoveDown(unsigned int index);
 
-	void ULMoveUp(int index);
-	void ULMoveDown(int index);
+	void ULMoveUp(unsigned int index);
+	void ULMoveDown(unsigned int index);
 
 	// Update Queue Ratings
 	void UpdateDLRatings();

@@ -849,7 +849,7 @@ NetClient::GetServerIP()
 // ----
 
 void
-NetClient::MessageReceived(MessageRef msg, const String &sessionID)
+NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 {
 #ifdef DEBUG2
 	PRINT("MTT_EVENT_INCOMING_MESSAGE\n");
@@ -956,20 +956,20 @@ NetClient::MessageReceived(MessageRef msg, const String &sessionID)
 }
 
 void
-NetClient::SessionAccepted(const String &sessionID, uint16 port)
+NetClient::SessionAccepted(const String & /* sessionID */, uint16 /* port */)
 {
 	PRINT("MTT_EVENT_SESSION_ACCEPTED\n");
 }
 
 void
-NetClient::SessionAttached(const String &sessionID)
+NetClient::SessionAttached(const String & /* sessionID */)
 {
 	PRINT("MTT_EVENT_SESSION_ATTACHED\n");
 	SendSignal(NetClient::SESSION_ATTACHED);
 }
 
 void
-NetClient::SessionConnected(const String &sessionID)
+NetClient::SessionConnected(const String & /* sessionID */)
 {
 	PRINT("MTT_EVENT_SESSION_CONNECTED\n");
 
@@ -980,7 +980,7 @@ NetClient::SessionConnected(const String &sessionID)
 }
 
 void
-NetClient::SessionDisconnected(const String &sessionID)
+NetClient::SessionDisconnected(const String & /* sessionID */)
 {
 	PRINT("MTT_EVENT_SESSION_DISCONNECTED\n");
 
@@ -994,7 +994,7 @@ NetClient::SessionDisconnected(const String &sessionID)
 }
 
 void
-NetClient::SessionDetached(const String &sessionID)
+NetClient::SessionDetached(const String & /* sessionID */)
 {
 	PRINT("MTT_EVENT_SESSION_DETACHED\n");
 
@@ -1008,19 +1008,19 @@ NetClient::SessionDetached(const String &sessionID)
 }
 
 void
-NetClient::FactoryAttached(uint16 port)
+NetClient::FactoryAttached(uint16 /* port */)
 {
 	PRINT("MTT_EVENT_FACTORY_ATTACHED\n");
 }
 
 void
-NetClient::FactoryDetached(uint16 port)
+NetClient::FactoryDetached(uint16 /* port */)
 {
 	PRINT("MTT_EVENT_FACTORY_DETACHED\n");
 }
 
 void
-NetClient::OutputQueuesDrained(MessageRef ref)
+NetClient::OutputQueuesDrained(MessageRef /* ref */)
 {
  	PRINT("MTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
 }
@@ -1079,7 +1079,7 @@ NetClient::SendSignal(int signal)
 }
 
 void
-NetClient::timerEvent(QTimerEvent *e)
+NetClient::timerEvent(QTimerEvent * /* e */)
 {
 	if (IsConnected())
 	{

@@ -509,7 +509,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					if (rpos >= 0)
 					{
 						tuser = command.mid(1,rpos-1);
-						if (command.length() > (rpos + 3))
+						if ((int) command.length() > (rpos + 3))
 							command = command.mid(rpos + 2);
 						else
 							command = QString::null;
@@ -2684,7 +2684,7 @@ WinShareWindow::FindUserByIPandPort(const QString & ip, uint32 port)
 
 
 bool
-WinShareWindow::Remote(const String & session, const QString &text)
+WinShareWindow::Remote(const String & /* session */, const QString &text)
 {
 	QString qItem;
 	if (!text.startsWith("!remote"))	// Is a remote request?

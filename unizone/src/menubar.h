@@ -1,8 +1,6 @@
 #ifndef MENUBAR_H
 #define MENUBAR_H
 
-#pragma warning(disable: 4786)
-
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 

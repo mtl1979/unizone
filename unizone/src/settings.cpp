@@ -320,7 +320,7 @@ void
 WSettings::SetChatSizes(QValueList<int> & sizes)
 {
 	fSet()->RemoveName(CHAT_SIZES);
-	for (int i = 0; i < sizes.count(); i++)
+	for (unsigned int i = 0; i < sizes.count(); i++)
 		fSet()->AddInt32(CHAT_SIZES, (int32)sizes[i]);
 }
 
@@ -338,7 +338,7 @@ void
 WSettings::SetMainSizes(QValueList<int> & sizes)
 {
 	fSet()->RemoveName(USER_SIZES);
-	for (int i = 0; i < sizes.count(); i++)
+	for (unsigned int i = 0; i < sizes.count(); i++)
 		fSet()->AddInt32(USER_SIZES, (int32)sizes[i]);
 }
 
@@ -418,7 +418,7 @@ WSettings::Load()
 		uint8 * buffer = new uint8[file.size()];
 		if (buffer)
 		{
-			if (file.readBlock((char *)buffer, file.size()) < file.size())
+			if (file.readBlock((char *)buffer, file.size()) < (long) file.size())
 			{
 				QMessageBox::warning(NULL, QObject::tr( "Read Error" ), QObject::tr( "Unable to read data from file!" ), QObject::tr( "Bummer" ));
 			}

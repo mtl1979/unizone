@@ -251,7 +251,7 @@ WinShareWindow::DoubleClicked(QListViewItem * i)
 }
 
 void
-WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int c)
+WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c */)
 {
 	// empty menu
 	while (fPrivate->count() > 0)

@@ -251,7 +251,7 @@ WinShareWindow::NameSaid2(const String &sname, QString & msg, unsigned long inde
 	}
 	if (sred >= 0)
 	{
-		int rlen = sname.Length();
+		unsigned int rlen = sname.Length();
 
 		String temp = (const char *) GetUserName().utf8(); // <postmaster@raasu.org> 20021005 -- don't use latin1 ()
 		temp = temp.ToUpperCase();

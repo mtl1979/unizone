@@ -35,7 +35,7 @@ public:
 	int GetNumFiles() const;
 
 	Hashtable<String, QString> & GetSharedFiles() { return fFiles; }
-	void GetSharedFile(int n, MessageRef & mref);
+	void GetSharedFile(unsigned int n, MessageRef & mref);
 	bool FindFile(const String & file, MessageRef & ref);
 	void EmptyList();
 

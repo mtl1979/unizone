@@ -20,7 +20,7 @@ WComboBox::~WComboBox()
 }
 
 void
-WComboBox::focusInEvent(QFocusEvent * e)
+WComboBox::focusInEvent(QFocusEvent * /* e */)
 {
 	PRINT("Focused!\n");
 }

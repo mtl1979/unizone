@@ -28,8 +28,11 @@
  *  TRUE to construct a modal dialog.
  */
 WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent,  const char* name, bool modal, WFlags fl)
-    : WPrivateWindowBase(parent, name, modal, fl), fOwner(owner), fNet(net), fLock(true)
+    : WPrivateWindowBase(parent, name, modal, fl), fLock(true)
 {
+	fOwner = owner;
+	fNet = net;
+
 	if ( !name ) 
 		setName( "WPrivateWindow" );
 	// start GUI
@@ -321,7 +324,7 @@ WPrivateWindow::RemUser(const WUserRef & user)
 }
 
 void
-WPrivateWindow::TabPressed(const QString &str)
+WPrivateWindow::TabPressed(const QString & /* str */)
 {
 	PRINT("WPrivateWindow::Tab\n");
 	WPWEvent *e = new WPWEvent(WPWEvent::TabComplete, fInputText->text());
@@ -336,7 +339,7 @@ void
 WPrivateWindow::customEvent(QCustomEvent * event)
 {
 	PRINT("WPrivateWindow::customEvent\n");
-	switch (event->type())
+	switch ((int) event->type())
 	{
 		case WPWEvent::TabCompleted:
 		{
@@ -495,7 +498,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 			}
 			return;
 		}
-
+		
 	}		
 }
 
@@ -559,7 +562,7 @@ WPrivateWindow::StopLogging()
 }
 
 void
-WPrivateWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int c)
+WPrivateWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c */)
 {
 	// empty menu
 	while (fPopup->count() > 0)

@@ -82,7 +82,7 @@ public:
 	QString GetRemoteIP() const {return fStrRemoteIP;}
 	uint32 GetRemotePort() const {return fPort;}
 	QString GetCurrentFile() const {return fFileUl;}
-	QString GetFileName(int i) const;
+	QString GetFileName(unsigned int i) const;
 
 	int32 GetCurrentNum() const { return fCurFile; }
 	int32 GetNumFiles() const { return fNumFiles; }

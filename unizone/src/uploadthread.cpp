@@ -406,7 +406,7 @@ WUploadThread::ServerExited()
 }
 
 void
-WUploadThread::SessionDisconnected(const String &sessionID)
+WUploadThread::SessionDisconnected(const String & /* sessionID */)
 {
 	PRINT("WUploadThread::SessionDisconnected\n");
 
@@ -452,7 +452,7 @@ WUploadThread::SessionDisconnected(const String &sessionID)
 }
 
 void
-WUploadThread::MessageReceived(MessageRef msg, const String &sessionID)
+WUploadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 {
 	PRINT("WUploadThread::MessageReceived\n");
 	switch (msg()->what)
@@ -519,7 +519,7 @@ WUploadThread::MessageReceived(MessageRef msg, const String &sessionID)
 }
 
 void
-WUploadThread::OutputQueuesDrained(MessageRef msg)
+WUploadThread::OutputQueuesDrained(MessageRef /* msg */)
 {
 #ifdef DEBUG2
 	PRINT("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
@@ -884,9 +884,9 @@ WUploadThread::DoUpload()
 }
 
 QString
-WUploadThread::GetFileName(int i) const
+WUploadThread::GetFileName(unsigned int i) const
 {
-	if (i >= 0 && i < fNames.GetNumItems())
+	if (i < fNames.GetNumItems())
 	{
 		QString file = QString::fromUtf8(fNames[i].Cstr());
 		return file;
@@ -927,7 +927,7 @@ WUploadThread::GetRemoteUser() const
 }
 
 void
-WUploadThread::timerEvent(QTimerEvent *e)
+WUploadThread::timerEvent(QTimerEvent * /* e */)
 {
 	if (IsInternalThreadRunning())
 	{

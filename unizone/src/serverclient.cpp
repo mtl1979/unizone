@@ -34,7 +34,7 @@ ServerClient::~ServerClient()
 }
 
 void
-ServerClient::MessageReceived(MessageRef msg, const String &sessionID)
+ServerClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 {
 	if (msg())
 	{
@@ -61,7 +61,7 @@ ServerClient::MessageReceived(MessageRef msg, const String &sessionID)
 }
 
 void
-ServerClient::SessionConnected(const String &sessionID)
+ServerClient::SessionConnected(const String & /* sessionID */)
 {
 	MessageRef msgref(new Message, NULL);
 	if (msgref())
@@ -72,7 +72,7 @@ ServerClient::SessionConnected(const String &sessionID)
 }
 
 void
-ServerClient::SessionDetached(const String &sessionID)
+ServerClient::SessionDetached(const String & /* sessionID */)
 {
 	Reset();
 }

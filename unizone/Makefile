@@ -1,40 +1,62 @@
-INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/muscle
-GCCOPTFLAGS = $(INCLUDES) -DMUSCLE_USE_PTHREADS -DQT_THREAD_SUPPORT \
+INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/muscle \
+	-Isrc/muscle/message -Isrc/muscle/besupport \
+	-Isrc/muscle/iogateway -Isrc/muscle/reflector \
+	-Isrc/muscle/regex -Isrc/muscle/util \
+	-Isrc/muscle/syslog -Isrc/muscle/system
+GCCOPTFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT \
 	-DNDEBUG -DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
+CXXFLAGS = -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
-OBJFILES = aboutdlg.o aboutdlgimpl.o botitem.o chattext.o \
-colors.o combo.o downloadimpl.o downloadthread.o downloadworker.o \
-fileinfo.o filethread.o formatting.o gotourl.o main.o md5.o \
-menubar.o moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
-moc_downloadimpl.o moc_downloadthread.o moc_htmlview.o moc_netclient.o \
-moc_prefs.o moc_prefsimpl.o moc_privatewindow.o moc_privatewindowimpl.o \
-moc_winsharewindow.o moc_uploadthread.o netclient.o nicklist.o platform.o \
-prefs.o prefsimpl.o privatewindow.o privatewindowimpl.o \
-searchitem.o settings.o textevent.o transferitem.o ulistview.o \
-uploadthread.o user.o userlistitem.o winshare_network.o \
-winshare_parsing.o winshare_slots.o winsharewindow.o Log.o \
-htmlview.o channel.o channelinfo.o channelimpl.o \
-moc_channel.o wpwevent.o wstring.o \
-moc_channelimpl.o moc_menubar.o moc_ulistview.o \
-wstatusbar.o winshare_channels.o winshare_search.o \
-updateclient.o serverclient.o titanic.o \
-moc_updateclient.o moc_serverclient.o \
-moc_scanprogress.o scanprogress.o scanprogressimpl.o
+OBJFILES = \
+	aboutdlg.o aboutdlgimpl.o botitem.o chattext.o colors.o combo.o \
+	downloadimpl.o downloadthread.o downloadworker.o fileinfo.o \
+	filethread.o formatting.o gotourl.o main.o md5.o menubar.o \
+	netclient.o nicklist.o platform.o prefs.o prefsimpl.o \
+	privatewindow.o privatewindowimpl.o searchitem.o settings.o \
+	textevent.o transferitem.o ulistview.o uploadthread.o user.o \
+	userlistitem.o winshare_network.o winshare_parsing.o \
+	winshare_slots.o winsharewindow.o Log.o htmlview.o channel.o \
+	channelinfo.o channelimpl.o wpwevent.o wstring.o wstatusbar.o \
+	winshare_channels.o winshare_search.o updateclient.o \
+	serverclient.o titanic.o scanprogress.o scanprogressimpl.o \
+	QMessageTransceiverThread.o QAcceptSocketsThread.o
 
-QT_OBJFILES = moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o \
-QMessageTransceiverThread.o QAcceptSocketsThread.o
-VPATH = src
-QT_VPATH = src/muscle/qtsupport
-SRCFILES=$(addprefix $(VPATH)/,$(addsuffix .cpp,$(basename $(OBJFILES))))
-QT_SRCFILES=$(addprefix $(QT_VPATH)/,$(addsuffix .cpp,$(basename $(QT_OBJFILES))))
-CXXFLAGS = -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
+MOC_OBJFILES = \
+	moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
+	moc_downloadimpl.o moc_downloadthread.o moc_htmlview.o \
+	moc_netclient.o moc_prefs.o moc_prefsimpl.o moc_privatewindow.o \
+	moc_privatewindowimpl.o moc_winsharewindow.o moc_uploadthread.o \
+	moc_channel.o moc_channelimpl.o moc_menubar.o moc_ulistview.o \
+	moc_updateclient.o moc_serverclient.o moc_scanprogress.o \
+	moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o 
+
+MUSCLE_OBJFILES = \
+	AbstractMessageIOGateway.o MessageIOGateway.o \
+	PlainTextMessageIOGateway.o RawDataMessageIOGateway.o \
+	Message.o AbstractReflectSession.o DumbReflectSession.o \
+	FilterSessionFactory.o RateLimitSessionIOPolicy.o \
+	ReflectServer.o ServerComponent.o StorageReflectSession.o \
+	PathMatcher.o StringMatcher.o SysLog.o AcceptSocketsThread.o \
+	GlobalMemoryAllocator.o MessageTransceiverThread.o SetupSystem.o \
+	Thread.o MemoryAllocator.o MiscUtilityFunctions.o \
+	NetworkUtilityFunctions.o PulseNode.o String.o ByteBuffer.o \
+	QueryFilter.o ZLibCodec.o ZLibUtilityFunctions.o
+
+VPATH = src src/muscle/qtsupport \
+ 	src/muscle/message src/muscle/besupport \
+	src/muscle/iogateway src/muscle/reflector \
+	src/muscle/regex src/muscle/util src/muscle/syslog \
+	src/muscle/system src/muscle/zlib
+SRCFILES =		$(addsuffix .cpp,$(basename $(OBJFILES)))
+MOC_SRCFILES =		$(addsuffix .cpp,$(basename $(MOC_OBJFILES)))
+MUSCLE_SRCFILES = 	$(addsuffix .cpp,$(basename $(MUSCLE_OBJFILES)))
 
 all : depends $(EXECUTABLES) translations
 
-Unizone : muscle.a $(OBJFILES) $(QT_OBJFILES)
-	$(CXX) $(LFLAGS) $(LIBS) -o $@ $(OBJFILES) $(QT_OBJFILES) muscle.a
+Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES)
+	$(CXX) $(LFLAGS) $(LIBS) -o $@ $^
 
 moc_QMessageTransceiverThread.o : src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -48,27 +70,24 @@ moc_QAcceptSocketsThread.o : src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp
 QAcceptSocketsThread.o : src/muscle/qtsupport/QAcceptSocketsThread.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-linux/muscle.a : linux/Makefile
-	$(MAKE) -C linux -f Makefile
-
-muscle.a : linux/muscle.a
-	mv -f linux/muscle.a muscle.a
-
 translations : src/Makefile
 	$(MAKE) -C src -f Makefile
 
 depends: .depends
 
-.depends: .depends1 .depends2
+.depends: .depends1 .depends2 .depends3
 	cat .depends1 > .depends
 	cat .depends2 >> .depends
-	rm -f linux/muscle.a
+	cat .depends3 >> .depends
  
 .depends1: $(SRCFILES)
-	$(CXX) $(CXXFLAGS) -MM $(SRCFILES) > .depends1
+	$(CXX) $(CXXFLAGS) -MM $^ > .depends1
 
-.depends2: $(QT_SRCFILES)
-	$(CXX) $(CXXFLAGS) -MM $(QT_SRCFILES) > .depends2
+.depends2: $(MOC_SRCFILES)
+	$(CXX) $(CXXFLAGS) -MM $^ > .depends2
+
+.depends3: $(MUSCLE_SRCFILES)
+	$(CXX) $(CXXFLAGS) -MM $^ > .depends3
 
 .PHONY=translations depends
 
@@ -183,11 +202,10 @@ clean :
 	rm -f src/prefs.h src/prefs.cpp
 	rm -f src/privatewindow.h src/privatewindow.cpp
 	$(MAKE) -C src -f Makefile clean
-	$(MAKE) -C linux -f Makefile clean
 
 distclean : clean
-	rm -f .depends .depends1 .depends2
+	rm -f .depends .depends1 .depends2 .depends3
 
 # DO NOT DELETE
 
-include .depends
+-include .depends

@@ -420,7 +420,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 	PRINT("\tWinShareWindow::customEvent\n");
 	if (fNetClient)		// do this to avoid bad crash
 	{
-		switch (event->type())
+		switch ((int) event->type())
 		{
 		case WinShareWindow::ConnectRetry:
 			{
@@ -2107,7 +2107,7 @@ WinShareWindow::MapIPsToNodes(const QString & pattern)
 {
 	QString qResult("");
 	QString qItem;
-	QStringTokenizer qTok(qResult, ",");
+	QStringTokenizer qTok(pattern, ",");
 	while ((qItem = qTok.GetNextToken()) != QString::null)
 	{
 		qResult += "/" + qItem + "/*,";
@@ -2143,7 +2143,7 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 
 			if (qItem.find("*") > 0) // Space in username? (replaced with '*' for BeShare compatibility)
 			{
-				for (int i = 0; i < qItem.length(); i++)
+				for (unsigned int i = 0; i < qItem.length(); i++)
 				{
 					if (qItem[i] == '*')
 						qItem.replace(i,1," ");
@@ -2195,7 +2195,7 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 	{
 		if (qItem.find("*") > 0) // Space in username? (replaced with '*' for BeShare compatibility)
 		{
-			for (int i = 0; i < qItem.length(); i++)
+			for (unsigned int i = 0; i < qItem.length(); i++)
 			{
 				if (qItem[i] == '*')
 					qItem.replace(i,1," ");
@@ -2260,7 +2260,7 @@ WinShareWindow::StartQueue(const QString &session)
 		if (user() == NULL)
 			return;
 
-		int i = 0;
+		unsigned int i = 0;
 		fSearchLock.lock();
 		while (_ttpFiles.GetNumItems() > 0)
 		{

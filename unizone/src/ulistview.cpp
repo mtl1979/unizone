@@ -57,7 +57,7 @@ WUniListItem::setText(int col, const QString & text)
 // Returns sort key by converting to hexadecimal numeric value or ten spaces
 
 QString 
-WUniListItem::key(int c, bool asc) const
+WUniListItem::key(int c, bool /* asc */) const
 {
 	int n, m;
 	int32 bw;
@@ -412,7 +412,7 @@ WUniListItem::text(int c) const
 		
 		if (lMod > 0)
 		{
-			result.sprintf("%d:%.2d:%.2d", hours, min, secs);
+			result.sprintf("%lu:%.2lu:%.2lu", hours, min, secs);
 		}
 		else
 		{

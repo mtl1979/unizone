@@ -18,8 +18,11 @@
 using namespace muscle;
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
-: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag), fLockFile(true) 
+: QObject(owner), fLockFile(true) 
 {
+	fOwner = owner;
+	fShutdownFlag = optShutdownFlag;
+
 	setName( "WDownloadThread" );
 
 	// Default status
@@ -337,7 +340,7 @@ WDownloadThread::SendReply(MessageRef &m)
 }
 
 void 
-WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
+WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 {
 	fIdles = 0;
 
@@ -361,7 +364,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 			(void) msg()->FindInt64("timeleft", (int64 *) &timeleft);
 			if (q())
 			{
-				if (timeleft != -1)
+				if (timeleft != (uint64) -1)
 				{
 					q()->AddInt64("timeleft", timeleft);
 				}
@@ -698,7 +701,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 }
 
 void 
-WDownloadThread::SessionAccepted(const String &sessionID, uint16 port)
+WDownloadThread::SessionAccepted(const String &sessionID, uint16 /* port */)
 {
 	// no need to accept anymore
 	qmtt->RemoveAcceptFactory(0);		
@@ -810,7 +813,7 @@ WDownloadThread::ServerExited()
 }
 
 void
-WDownloadThread::SessionDisconnected(const String &sessionID)
+WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 {
 	*fShutdownFlag = true;
 
@@ -1009,7 +1012,7 @@ WDownloadThread::GetLocalFileName(int i) const
 }
 
 void
-WDownloadThread::timerEvent(QTimerEvent *e)
+WDownloadThread::timerEvent(QTimerEvent * /* e */)
 {
 	if (IsInternalThreadRunning())
 	{

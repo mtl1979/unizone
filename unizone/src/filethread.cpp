@@ -564,10 +564,10 @@ WFileThread::EmptyList()
 }
 
 void
-WFileThread::GetSharedFile(int n, MessageRef & mref)
+WFileThread::GetSharedFile(unsigned int n, MessageRef & mref)
 {
 	Lock();
-	if (n >= 0 && n < fFiles.GetNumItems())
+	if (n < fFiles.GetNumItems())
 	{
 		String key;
 		QString qFile;

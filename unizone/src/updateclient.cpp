@@ -31,7 +31,7 @@ UpdateClient::~UpdateClient()
 }
 
 void
-UpdateClient::MessageReceived(MessageRef msg, const String &sessionID)
+UpdateClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 {
 	PRINT("Update thread received a message\n");
 	String str;
@@ -45,7 +45,7 @@ UpdateClient::MessageReceived(MessageRef msg, const String &sessionID)
 }
 
 void
-UpdateClient::SessionConnected(const String &sessionID)
+UpdateClient::SessionConnected(const String & /* sessionID */)
 {
 	PRINT("Update thread connected\n");
 	MessageRef ref(new Message, NULL);
@@ -57,7 +57,7 @@ UpdateClient::SessionConnected(const String &sessionID)
 }
 
 void
-UpdateClient::SessionDetached(const String &sessionID)
+UpdateClient::SessionDetached(const String & /* sessionID */)
 {
 	PRINT("Update thread disconnected\n");
 	Reset();

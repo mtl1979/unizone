@@ -55,7 +55,7 @@ WHTMLView::viewportMouseMoveEvent(QMouseEvent * e)
 }
 
 void 
-WHTMLView::showEvent(QShowEvent * event)
+WHTMLView::showEvent(QShowEvent * /* event */)
 {
 #if (QT_VERSION < 0x030000)
 	emit BeforeShown();
