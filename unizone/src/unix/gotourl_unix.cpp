@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "wlaunchthread_unix.h"
 #include "gotourl.h"
 #include "wstring.h"
 #include "debugimpl.h"
