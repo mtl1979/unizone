@@ -599,35 +599,35 @@ Version %1</translation>
     </message>
     <message>
         <source>Access Denied!!!</source>
-        <translation type='unfinished'>Damn, noob! Thats Forbidden!!!</translation>
+        <translation>Damn, noob! Thats Forbidden!!!</translation>
     </message>
     <message>
         <source>do that to</source>
-        <translation type='unfinished'>do that to</translation>
+        <translation>do that to</translation>
     </message>
     <message>
         <source>kick</source>
-        <translation type='unfinished'>kick</translation>
+        <translation>kick</translation>
     </message>
     <message>
         <source>ban</source>
-        <translation type='unfinished'>ban</translation>
+        <translation>ban</translation>
     </message>
     <message>
         <source>unban</source>
-        <translation type='unfinished'>unban</translation>
+        <translation>unban</translation>
     </message>
     <message>
         <source>require</source>
-        <translation type='unfinished'>require</translation>
+        <translation>require</translation>
     </message>
     <message>
         <source>unrequire</source>
-        <translation type='unfinished'>unrequire</translation>
+        <translation>unrequire</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
-        <translation type='unfinished'>n00b, you cannot do %1 [%2]</translation>
+        <translation>n00b, you cannot do %1 [%2]</translation>
     </message>
 </context>
 <context>
@@ -791,101 +791,101 @@ Date: %4</translation>
     </message>
     <message>
         <source>B</source>
-        <translation type='unfinished'></translation>
+        <translation>B</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation type='unfinished'></translation>
+        <translation>kB</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation type='unfinished'></translation>
+        <translation>MB</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation type='unfinished'></translation>
+        <translation>GB</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation type='unfinished'></translation>
+        <translation>B/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation type='unfinished'></translation>
+        <translation>kB/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation type='unfinished'></translation>
+        <translation>MB/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation type='unfinished'></translation>
+        <translation>GB/s</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='unfinished'>%1.%2.%3 build %4</translation>
+        <translation>%1.%2.%3 build %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type='unfinished'></translation>
+        <translation>Loser #%1 has closed the pipe.</translation>
     </message>
     <message>
         <source>User #%1 is now nameless.</source>
-        <translation type='unfinished'></translation>
+        <translation>Loser #%1 went in tha closet.</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation type='unfinished'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='unfinished'></translation>
+        <translation>Loser #%1&apos;s IP address is %2.</translation>
     </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
-        <translation type='unfinished'></translation>
+        <translation>Scan Progress</translation>
     </message>
     <message>
         <source>Current directory:</source>
-        <translation type='unfinished'></translation>
+        <translation>Current directory:</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type='unfinished'></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>Current file:</source>
-        <translation type='unfinished'></translation>
+        <translation>Current file:</translation>
     </message>
     <message>
         <source>Files scanned:</source>
-        <translation type='unfinished'></translation>
+        <translation>Filez scanned:</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type='unfinished'>0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Directories scanned:</source>
-        <translation type='unfinished'></translation>
+        <translation>Directoriez scanned:</translation>
     </message>
     <message>
         <source>Directories left:</source>
-        <translation type='unfinished'></translation>
+        <translation>Directoriez left:</translation>
     </message>
 </context>
 <context>
     <name>UpdateClient</name>
     <message>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
-        <translation type='unfinished'>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</translation>
+        <translation>Unizone (31337) %1 is available at http://www.raasu.org/tools/windows/.</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='unfinished'>%1.%2.%3 build %4</translation>
+        <translation>%1.%2.%3 build %4</translation>
     </message>
 </context>
 <context>
@@ -1243,31 +1243,31 @@ Date: %4</translation>
     </message>
     <message>
         <source>Could not add new connect session!</source>
-        <translation type='unfinished'></translation>
+        <translation>Damn, ya ran out of pipes!</translation>
     </message>
     <message>
         <source>Failed to start internal thread!</source>
-        <translation type='unfinished'></translation>
+        <translation>Fscking internal thread didn&apos;t start!</translation>
     </message>
     <message>
         <source>Critical error: Could not create file!</source>
-        <translation type='unfinished'></translation>
+        <translation>N00b Alert: Couldn&apos;t create damn file!</translation>
     </message>
     <message>
         <source>Could not read file info!</source>
-        <translation type='unfinished'></translation>
+        <translation>Couldn&apos;t fsking read file info!</translation>
     </message>
     <message>
         <source>Couldn&apos;t write file data!</source>
-        <translation type='unfinished'></translation>
+        <translation>Couldn&apos;t fscking write file data!</translation>
     </message>
     <message>
         <source>MD5 hashing failed! Can&apos;t resume.</source>
-        <translation type='unfinished'></translation>
+        <translation>MD5 hashing fscking crapped! Can&apos;t resume.</translation>
     </message>
     <message>
         <source>Connection timed out!</source>
-        <translation type='unfinished'></translation>
+        <translation>Connecting fscking timed out!</translation>
     </message>
 </context>
 <context>
@@ -1924,11 +1924,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>IP Addresses</source>
-        <translation type='unfinished'></translation>
+        <translation>IP Addresses</translation>
     </message>
     <message>
         <source>Number of Ports:</source>
-        <translation type='unfinished'></translation>
+        <translation>Number of Ports:</translation>
     </message>
 </context>
 <context>
@@ -2126,19 +2126,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Could not init session!</source>
-        <translation type='unfinished'></translation>
+        <translation>Couldn&apos;t fscking init session!</translation>
     </message>
     <message>
         <source>Couldn&apos;t create new connect session!</source>
-        <translation type='unfinished'></translation>
+        <translation>Couldn&apos;t fscking create new session!</translation>
     </message>
     <message>
         <source>Connection reset by peer!</source>
-        <translation type='unfinished'></translation>
+        <translation>Tha connection barfed!</translation>
     </message>
     <message>
         <source>Connection timed out!</source>
-        <translation type='unfinished'></translation>
+        <translation>Connection fscking timed out!</translation>
     </message>
 </context>
 <context>
@@ -2345,7 +2345,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Address info for user #%1 (%2):</source>
-        <translation>Address info for loser #%1 (%2):</translation>
+        <translation type='obsolete'>Address info for loser #%1 (%2):</translation>
     </message>
     <message>
         <source>Address info for %1:</source>
@@ -2373,7 +2373,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>No address info for %1 or %2</source>
-        <translation>No address info for %1 or %2</translation>
+        <translation type='obsolete'>No address info for %1 or %2</translation>
     </message>
     <message>
         <source>No address info for %1</source>
@@ -3293,11 +3293,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
-        <translation type='unfinished'></translation>
+        <translation>/clearresumes - clear all pending resumez</translation>
     </message>
     <message>
         <source>Cleared resume list.</source>
-        <translation type='unfinished'></translation>
+        <translation>Cleared resume list.</translation>
     </message>
     <message>
         <source>On connect:</source>
@@ -3305,23 +3305,31 @@ Date: %4</translation>
     </message>
     <message>
         <source>1. %1</source>
-        <translation type='unfinished'></translation>
+        <translation>1. %1</translation>
     </message>
     <message>
         <source>2. %1</source>
-        <translation type='unfinished'></translation>
+        <translation>2. %1</translation>
     </message>
     <message>
         <source>On Connect:</source>
-        <translation type='unfinished'></translation>
+        <translation>On Connect:</translation>
     </message>
     <message>
         <source>Queued file %1 from user #%2.</source>
-        <translation type='unfinished'></translation>
+        <translation>Queued file %1 from loser #%2.</translation>
     </message>
     <message>
         <source>Downloading file %1 from user #%2.</source>
-        <translation type='unfinished'></translation>
+        <translation>Leeching file %1 from loser #%2.</translation>
+    </message>
+    <message>
+        <source>Address info for user #%1:</source>
+        <translation>Address info for loser #%1:</translation>
+    </message>
+    <message>
+        <source>User Name: %1</source>
+        <translation>Loser Name: %1</translation>
     </message>
 </context>
 </TS>

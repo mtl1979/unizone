@@ -13,6 +13,7 @@ UpdateClient::UpdateClient(QObject *owner)
 
 UpdateClient::~UpdateClient()
 {
+	ShutdownInternalThread();
 }
 
 void

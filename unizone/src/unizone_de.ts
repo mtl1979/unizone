@@ -2312,7 +2312,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Address info for user #%1 (%2):</source>
-        <translation>Adresse Info für Benutzer #%1 (%2):</translation>
+        <translation type='obsolete'>Adresse Info für Benutzer #%1 (%2):</translation>
     </message>
     <message>
         <source>Address info for %1:</source>
@@ -2340,7 +2340,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>No address info for %1 or %2</source>
-        <translation>Keine Adresse Info für %1 or %2</translation>
+        <translation type='obsolete'>Keine Adresse Info für %1 or %2</translation>
     </message>
     <message>
         <source>No address info for %1</source>
@@ -3288,6 +3288,14 @@ Date: %4</translation>
     </message>
     <message>
         <source>Downloading file %1 from user #%2.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Address info for user #%1:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User Name: %1</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

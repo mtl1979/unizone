@@ -94,7 +94,7 @@ WDownloadThread::~WDownloadThread()
 
 //	qApp->sendPostedEvents( fOwner, WDownloadEvent::Type );
 
-	// Reset();
+	ShutdownInternalThread();
 
 	PRINT("WDownloadThread dtor OK\n");
 }

@@ -418,3 +418,24 @@ WinShareWindow::MatchFilter(const QString user, const char * filter)
 	}
 	return false;
 }
+
+int
+WinShareWindow::FillUserMap(const QString & filter, WUserMap & wmap)
+{
+	int matchCount = 0;
+	WUserIter iter = fNetClient->Users().begin();
+	WUserRef user;
+
+	while (iter != fNetClient->Users().end())
+	{
+		user = (*iter).second;
+		if ( MatchUserFilter(user(), (const char *) filter.utf8()) )
+		{
+			WUserPair wpair = MakePair(user()->GetUserID(), user);
+			wmap.insert(wmap.end(), wpair);
+			matchCount++;
+		}
+		iter++;
+	}
+	return matchCount;
+}

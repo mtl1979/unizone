@@ -2433,7 +2433,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Address info for user #%1 (%2):</source>
-        <translation>Osoitetiedot käyttäjälle #%1 (%2):</translation>
+        <translation type='obsolete'>Osoitetiedot käyttäjälle #%1 (%2):</translation>
     </message>
     <message>
         <source>Address info for %1:</source>
@@ -2461,7 +2461,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>No address info for %1 or %2</source>
-        <translation>Ei löytynyt osoitetietoa %1 tai %2</translation>
+        <translation type='obsolete'>Ei löytynyt osoitetietoa %1 tai %2</translation>
     </message>
     <message>
         <source>No address info for %1</source>
@@ -3410,6 +3410,14 @@ Päiväys: %4</translation>
     <message>
         <source>Downloading file %1 from user #%2.</source>
         <translation>Ladataan tiedostoa %1 käyttäjältä #%2.</translation>
+    </message>
+    <message>
+        <source>Address info for user #%1:</source>
+        <translation>Osoitetiedot käyttäjälle #%1:</translation>
+    </message>
+    <message>
+        <source>User Name: %1</source>
+        <translation>Käyttäjän Nimi: %1</translation>
     </message>
 </context>
 </TS>

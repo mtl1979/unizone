@@ -89,6 +89,8 @@ WUploadThread::~WUploadThread()
 		fFile = NULL;
 	}
 
+	ShutdownInternalThread();
+
 	PRINT("WUploadThread dtor OK\n");
 }
 

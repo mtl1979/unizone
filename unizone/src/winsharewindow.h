@@ -193,6 +193,7 @@ public:
 	
 	WUserRef FindUser(QString user);
 	WUserRef FindUserByIPandPort(QString ip, uint32 port);
+	int FillUserMap(const QString & filter, WUserMap & wmap);
 
 	bool IsScanning() { return fScanning; }
 
@@ -438,7 +439,9 @@ private:
 	static bool ParseUserTargets(QString text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
 	void Action(const QString & name, const QString & msg, bool batch = false);
-	void GetAddressInfo(QString user);
+	void GetAddressInfo(const QString & user);
+	void PrintAddressInfo(WUserRef user);
+	bool PrintAddressInfo(uint32 address);
 	
 	void ShowHelp(QString command = QString::null);
 

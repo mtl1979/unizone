@@ -2241,7 +2241,7 @@ Date: %4</source>
     </message>
     <message>
         <source>No address info for %1 or %2</source>
-        <translation>%1 또는 %2 의 주소 정보가 없습니다</translation>
+        <translation type='obsolete'>%1 또는 %2 의 주소 정보가 없습니다</translation>
     </message>
     <message>
         <source>No address info for %1</source>
@@ -2853,7 +2853,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Address info for user #%1 (%2):</source>
-        <translation>사용자 #%1 (%2) 의 주소 정보:</translation>
+        <translation type='obsolete'>사용자 #%1 (%2) 의 주소 정보:</translation>
     </message>
     <message>
         <source>Idle.</source>
@@ -3017,6 +3017,14 @@ Date: %4</source>
     </message>
     <message>
         <source>Downloading file %1 from user #%2.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Address info for user #%1:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User Name: %1</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

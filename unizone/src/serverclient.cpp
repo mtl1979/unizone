@@ -16,6 +16,7 @@ ServerClient::ServerClient(QObject *owner)
 
 ServerClient::~ServerClient()
 {
+	ShutdownInternalThread();
 }
 
 void
