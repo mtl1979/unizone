@@ -417,7 +417,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 				else if (CompareCommand(stxt, "/encryption"))
 				{
 					QString qtext = GetParameterString(stxt);
-					if (stxt == "on")
+					if (qtext == "on")
 					{
 						PrintSystem(tr("Encryption enabled."));
 						fEncrypted = true;

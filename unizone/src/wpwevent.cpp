@@ -8,6 +8,7 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 		: QCustomEvent(type)
 {
 	fWant = false;
+	fEncrypted = encrypted;
 	if (type == WPWEvent::TextEvent)
 	{
 		fWant = true;	// this way we'll get an error string in the private window if
@@ -23,7 +24,7 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 			QString smsg = msg;
 			if (smsg.startsWith("//"))
 				smsg.replace(0, 2, "/");
-			if (encrypted)
+			if (fEncrypted)
 				fMsg = "/emsg ";
 			else
 				fMsg = "/msg ";
@@ -51,5 +52,6 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 WPWEvent::WPWEvent(int type, const QString & msg)
 		: QCustomEvent(type)
 {
+	fEncrypted = false;
 	fMsg = msg;
 }
