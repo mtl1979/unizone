@@ -2479,6 +2479,13 @@ WinShareWindow::keyPressEvent(QKeyEvent *event)
 		if (c > 2) c = 0;
 		fTabs->setCurrentPage(c);
 	}
+	else if (event->key() == Key_F11 && event->state() & ControlButton)
+	{
+		int c = fTabs->currentPageIndex();
+		c--;
+		if (c < 0) c = 2;
+		fTabs->setCurrentPage(c);
+	}
 	else
 		QMainWindow::keyPressEvent(event);
 }
