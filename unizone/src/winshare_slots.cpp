@@ -156,8 +156,8 @@ WinShareWindow::DisconnectedFromServer()
 	StopSearch();
 	fDisconnectCount++;
 
-	fStatusBar->setText(tr( "Not connected." ), 0);
-	fStatusBar->setText( "", 1);
+	setStatus(tr( "Not connected." ), 0);
+	setStatus( "", 1);
 	
 	if ((fDisconnectCount == 1) && (!fDisconnectFlag))
 	{

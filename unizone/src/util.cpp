@@ -836,22 +836,37 @@ QString TranslateDay(const QString & d)
 }
 
 QString
-GetTimeStamp()
+InitTimeStamp()
 {
-	static QString _day = "";
+	time_t currentTime = time(NULL);
+	return QString::fromLocal8Bit(asctime(localtime(&currentTime)));
+}
+
+QString
+GetTimeStampAux(const QString &stamp)
+{
 	QString qCurTime;
 
-	time_t currentTime = time(NULL);
-	qCurTime = QString::fromLocal8Bit(asctime(localtime(&currentTime)));
+	qCurTime = stamp;
+	qCurTime = qCurTime.left(qCurTime.findRev(" ", -1));
+	qCurTime = qCurTime.mid(qCurTime.findRev(" ", -1) + 1);
+	
+	return qCurTime;
+}
+
+QString
+GetDateStampAux(const QString &stamp)
+{
+	QString qCurTime = stamp;
 
 	// Strip off year
 	QString qYear = qCurTime.mid(qCurTime.findRev(" ") + 1);
+	qYear.truncate(4);
 	qCurTime.truncate(qCurTime.findRev(" "));			
 	
 	// ... and day of week
 	QString qDOW = qCurTime.left(qCurTime.find(" "));
 	qDOW = TranslateDay(qDOW);
-
 	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);	
 	
 	// Strip Month and translate it
@@ -862,13 +877,27 @@ GetTimeStamp()
 
 	// Strip Day
 	QString qDay = qCurTime.left(qCurTime.find(" "));
-	
-	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);
+	return qDOW + " " + qMonth + " " + qDay + " " + qYear;
+}
+
+QString
+GetTimeStamp2()
+{
+	QString stamp = InitTimeStamp();
+	return GetDateStampAux(stamp) + " " + GetTimeStampAux(stamp);
+}
+
+QString
+GetTimeStamp()
+{
+	static QString _day = "";
 	
 	QString ret = "";
+	QString qCurTime;
 	// Is this first time today?
 
-	QString qDate = qDOW + " " + qMonth + " " + qDay + " " + qYear;
+	QString stamp = InitTimeStamp();
+	QString qDate = GetDateStampAux(stamp);
 	if (qDate != _day)
 	{
 		_day = qDate;
@@ -878,13 +907,13 @@ GetTimeStamp()
 		ret += "<br>";
 	}
 	
+	qCurTime = GetTimeStampAux(stamp);
 	qCurTime.prepend("[");
 	qCurTime.append("] ");
 
 	ret += WFormat::TimeStamp(qCurTime);
 	return ret;
 }
-
 
 QString
 ComputePercentString(int64 cur, int64 max)
@@ -1029,16 +1058,7 @@ CalculateChecksum(const uint8 * data, size_t bufSize)
 uint32
 GetHostByName(const QString &name)
 {
-	QDns query(name);
-	QValueList<QHostAddress> ips = query.addresses();
-	QValueList<QHostAddress>::ConstIterator ipiter = ips.begin();
-	while (ipiter != ips.end())
-	{
-		if ((*ipiter).isIp4Addr())
-			return (*ipiter).ip4Addr();
-		ipiter++;
-	}
-	return 0;
+	return GetHostByName((const char *) name.local8Bit());
 }
 
 QString

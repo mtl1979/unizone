@@ -251,6 +251,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 	fFileShutdownFlag = false;
 //	fScrollDown = true;
+	startTimer(1000);
 
 	if (fSettings->GetSharingEnabled())
 		ScanShares();
@@ -1125,12 +1126,12 @@ WinShareWindow::InitGUI()
 
 	// Main Status Bar
 
-	fStatusBar = new WStatusBar(fMainWidget);
+	fStatusBar = new WStatusBar(fMainWidget, "fStatusBar", 4);
 	CHECK_PTR(fStatusBar);
 	fStatusBar->setSizeGripEnabled(false);
 	fMainTab->addMultiCellWidget(fStatusBar, 13, 13, 0, 9);
 
-	fStatusBar->setText(tr( "Not connected." ), 0);
+	setStatus(tr( "Not connected." ), 0);
 
 	// setup some defaults
 	// <postmaster@raasu.org> 20020924
@@ -1944,6 +1945,12 @@ WinShareWindow::SetStatus(const QString & s)
 }
 
 void
+WinShareWindow::setStatus(const QString &s, unsigned int i)
+{
+	fStatusBar->setText(s, i);
+}
+
+void
 WinShareWindow::SetAutoAwayTimer()
 {
 	switch (fSettings->GetAutoAway())
@@ -2544,4 +2551,10 @@ WinShareWindow::UpdateShares()
 		}
 		PRINT("Done\n");
 	}				
+}
+
+void
+WinShareWindow::timerEvent(QTimerEvent *)
+{
+	setStatus(GetTimeStamp2(), 3);
 }

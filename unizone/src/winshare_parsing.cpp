@@ -39,7 +39,7 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 
 			if (matchCount == 1)
 			{
-				result = StripURL(user()->GetUserName());
+				result = StripURL(user()->GetUserName().stripWhiteSpace());
 			}
 			else
 			{

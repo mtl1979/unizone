@@ -119,6 +119,9 @@ NetClient::Connect(const QString & server, uint16 port)
 
 	PRINT("Adding new session\n");
 
+	fServer = server;
+	fServerPort = port;
+
 	WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
 	if (win)
 	{
@@ -145,8 +148,6 @@ NetClient::Connect(const QString & server, uint16 port)
 	}
 
 	PRINT("New session added\n");
-	fServer = server;
-	fServerPort = port;
 	return B_NO_ERROR;
 }
 
@@ -696,12 +697,12 @@ NetClient::HandleParameters(MessageRef & next)
 	{
 		// returns something like
 		// "ip.ip.ip.ip/number" (eg: "/127.172.172.172/1234")
-		const char * id = strrchr(sessionRoot, '/');	// get last slash
-		if (id)
+		String myip = GetPathClauseString(1, sessionRoot);
+		String id = GetPathClauseString(2, sessionRoot);
+		if (id.Length() > 0)
 		{
-			id++; // Skip '/'
 			fOldID = fSessionID;
-			fSessionID = id;
+			fSessionID = id.Cstr();
 
 			WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
 			if (win)
@@ -739,7 +740,13 @@ NetClient::HandleParameters(MessageRef & next)
 #endif
 
 			if (win)
+			{
+				QString temp(myip.Cstr());
+				temp += " : ";
+				temp += GetServerIP();
 				win->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
+				win->setStatus( temp , 2);
+			}
 		}
 	}
 }

@@ -78,6 +78,9 @@ QString TranslateMonth(const QString & m);
 
 // Get nice time stamp ;)
 QString GetTimeStamp();
+QString GetTimeStamp2();
+QString GetTimeStampAux(const QString & stamp);
+QString GetDateStampAux(const QString & stamp);
 
 // Calculate percentage and return string representation
 QString ComputePercentString(int64 cur, int64 max);

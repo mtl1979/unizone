@@ -274,7 +274,7 @@ protected:
 	virtual void customEvent(QCustomEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
 	virtual void keyPressEvent(QKeyEvent *event);
-
+	virtual void timerEvent(QTimerEvent *event);
 
 private slots:
 	void GoSearch();
@@ -447,6 +447,7 @@ private:
 	void StatusChanged(const QString & newStatus);
 	void ServerChanged(const QString & newServer);
 	void SetStatus(const QString & s);
+	void setStatus(const QString & s, unsigned int i = 0);
 
 	// stolen from BeShare :) thanx Jeremy
 	static bool ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);

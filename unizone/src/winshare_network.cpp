@@ -272,7 +272,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				_en = enc.toULong(&b);
 				if (b)
 				{
-					fStatusBar->setText(tr( "Current compression: %1" ).arg(_en), 1);
+					setStatus(tr( "Current compression: %1" ).arg(_en), 1);
 
 					int _en2 = _en + MUSCLE_MESSAGE_ENCODING_DEFAULT;
 					if (_en2 >= MUSCLE_MESSAGE_ENCODING_END_MARKER)
@@ -2923,10 +2923,10 @@ WinShareWindow::UpdateUserCount()
 	if (fNetClient->IsConnected())
 	{
 		int n = fUsers->childCount() + 1;
-		fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
+		setStatus(tr( "Number of users logged in: %1" ).arg(n), 0);
 	}
 	else
-		fStatusBar->setText(tr( "Not connected." ), 0);
+		setStatus(tr( "Not connected." ), 0);
 }
 
 void
@@ -2935,7 +2935,7 @@ WinShareWindow::GotParams(MessageRef &msg)
 	int32 enc;
 	fGotParams = true;
 	if (msg()->FindInt32(PR_NAME_REPLY_ENCODING, &enc) == B_NO_ERROR)
-		fStatusBar->setText(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
+		setStatus(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
 	
 	// get a list of users
 	static String subscriptionList[] = {
