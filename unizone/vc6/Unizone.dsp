@@ -426,10 +426,6 @@ SOURCE=..\src\botitem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\build.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\channel.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
