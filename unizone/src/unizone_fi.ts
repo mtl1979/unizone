@@ -446,6 +446,81 @@ Versio %1</translation>
     </message>
 </context>
 <context>
+    <name>Connection</name>
+    <message>
+        <source>300 baud</source>
+        <translation>300 baudia</translation>
+    </message>
+    <message>
+        <source>14.4 kbps</source>
+        <translation>14.4 kt/s</translation>
+    </message>
+    <message>
+        <source>28.8 kbps</source>
+        <translation>28.8 kt/s</translation>
+    </message>
+    <message>
+        <source>33.6 kbps</source>
+        <translation>33.6 kt/s</translation>
+    </message>
+    <message>
+        <source>36.6 kbps</source>
+        <translation>36.6 kt/s</translation>
+    </message>
+    <message>
+        <source>57.6 kbps</source>
+        <translation>57.6 kt/s</translation>
+    </message>
+    <message>
+        <source>ISDN-64k</source>
+        <translation>ISDN-64k</translation>
+    </message>
+    <message>
+        <source>ISDN-128k</source>
+        <translation>ISDN-128k</translation>
+    </message>
+    <message>
+        <source>DSL-256k</source>
+        <translation>DSL-256k</translation>
+    </message>
+    <message>
+        <source>DSL</source>
+        <translation>DSL</translation>
+    </message>
+    <message>
+        <source>DSL-384k</source>
+        <translation>DSL-384k</translation>
+    </message>
+    <message>
+        <source>DSL-512k</source>
+        <translation>DSL-512k</translation>
+    </message>
+    <message>
+        <source>Cable</source>
+        <translation>Kaapeli</translation>
+    </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation>DSL-1M</translation>
+    </message>
+    <message>
+        <source>T1</source>
+        <translation>T1</translation>
+    </message>
+    <message>
+        <source>T3</source>
+        <translation>T3</translation>
+    </message>
+    <message>
+        <source>OC-3</source>
+        <translation>OC-3</translation>
+    </message>
+    <message>
+        <source>OC-12</source>
+        <translation>OC-12</translation>
+    </message>
+</context>
+<context>
     <name>Date</name>
     <message>
         <source>Jan</source>
@@ -834,71 +909,71 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation>14.4 kt/s</translation>
+        <translation type='obsolete'>14.4 kt/s</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation>28.8 kt/s</translation>
+        <translation type='obsolete'>28.8 kt/s</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation>33.6 kt/s</translation>
+        <translation type='obsolete'>33.6 kt/s</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation>36.6 kt/s</translation>
+        <translation type='obsolete'>36.6 kt/s</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation>57.6 kt/s</translation>
+        <translation type='obsolete'>57.6 kt/s</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation>ISDN-64k</translation>
+        <translation type='obsolete'>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation>ISDN-128k</translation>
+        <translation type='obsolete'>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation>DSL</translation>
+        <translation type='obsolete'>DSL</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation>Kaapeli</translation>
+        <translation type='obsolete'>Kaapeli</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation>T1</translation>
+        <translation type='obsolete'>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation>T3</translation>
+        <translation type='obsolete'>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation>OC-3</translation>
+        <translation type='obsolete'>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation>OC-12</translation>
+        <translation type='obsolete'>OC-12</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation>300 baudia</translation>
+        <translation type='obsolete'>300 baudia</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation>DSL-256k</translation>
+        <translation type='obsolete'>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation>DSL-384k</translation>
+        <translation type='obsolete'>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation>DSL-512k</translation>
+        <translation type='obsolete'>DSL-512k</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
@@ -972,7 +1047,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation>DSL-1M</translation>
+        <translation type='obsolete'>DSL-1M</translation>
     </message>
     <message>
         <source>TB</source>

@@ -264,6 +264,81 @@ Version %1</source>
     </message>
 </context>
 <context>
+    <name>Connection</name>
+    <message>
+        <source>300 baud</source>
+        <translation type='unfinished'>300 baud</translation>
+    </message>
+    <message>
+        <source>14.4 kbps</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>28.8 kbps</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>33.6 kbps</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>36.6 kbps</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>57.6 kbps</source>
+        <translation type='unfinished'>57.6 kbps</translation>
+    </message>
+    <message>
+        <source>ISDN-64k</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>ISDN-128k</source>
+        <translation type='unfinished'>ISDN-128k</translation>
+    </message>
+    <message>
+        <source>DSL-256k</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>DSL</source>
+        <translation type='unfinished'>DSL</translation>
+    </message>
+    <message>
+        <source>DSL-384k</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>DSL-512k</source>
+        <translation type='unfinished'>DSL-512k</translation>
+    </message>
+    <message>
+        <source>Cable</source>
+        <translation type='unfinished'>Cable</translation>
+    </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation type='unfinished'>DSL-1M</translation>
+    </message>
+    <message>
+        <source>T1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>T3</source>
+        <translation type='unfinished'>T3</translation>
+    </message>
+    <message>
+        <source>OC-3</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>OC-12</source>
+        <translation type='unfinished'>OC-12</translation>
+    </message>
+</context>
+<context>
     <name>Date</name>
     <message>
         <source>Jan</source>
@@ -592,67 +667,67 @@ Date: %4</source>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation>14.4 kbps</translation>
+        <translation type='obsolete'>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation>28.8 kbps</translation>
+        <translation type='obsolete'>28.8 kbps</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation>33.6 kbps</translation>
+        <translation type='obsolete'>33.6 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation>36.6 kbps</translation>
+        <translation type='obsolete'>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation>57.6 kbps</translation>
+        <translation type='obsolete'>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation>ISDN-64k</translation>
+        <translation type='obsolete'>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation>ISDN-128k</translation>
+        <translation type='obsolete'>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation>DSL-256k</translation>
+        <translation type='obsolete'>DSL-256k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation>DSL</translation>
+        <translation type='obsolete'>DSL</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation>DSL-384k</translation>
+        <translation type='obsolete'>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation>DSL-512k</translation>
+        <translation type='obsolete'>DSL-512k</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation>Cable</translation>
+        <translation type='obsolete'>Cable</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation>T1</translation>
+        <translation type='obsolete'>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation>T3</translation>
+        <translation type='obsolete'>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation>OC-3</translation>
+        <translation type='obsolete'>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation>OC-12</translation>
+        <translation type='obsolete'>OC-12</translation>
     </message>
     <message>
         <source>Date:</source>
@@ -722,11 +797,11 @@ Date: %4</source>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation>DSL-1M</translation>
+        <translation type='obsolete'>DSL-1M</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation>300 baud</translation>
+        <translation type='obsolete'>300 baud</translation>
     </message>
     <message>
         <source>TB</source>
