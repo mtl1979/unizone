@@ -8,6 +8,7 @@
 #include <qlabel.h>
 
 #include "uniwindow.h"
+#include "debugimpl.h"
 #include "../src/combo.h"
 #include "../src/textevent.h"
 
@@ -88,6 +89,7 @@ UniWindow::UniWindow( QWidget* parent, const char* name, WFlags f)
 
 UniWindow::~UniWindow()
 {
+	CleanupDebug();
 }
 
 void
@@ -129,7 +131,7 @@ UniWindow::forwardAvailable( bool available )
 void 
 UniWindow::linkClicked(const QString & link)
 {
-	qDebug("linkClicked: %s", link.latin1());
+	PRINT("linkClicked: %s", link.latin1());
 	if (cmbURL->currentText() != link) 
 		cmbURL->setEditText(link);
 }
@@ -143,7 +145,7 @@ UniWindow::customEvent(QCustomEvent * event)
 		{
 			WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
 			if (wte)
-				qDebug("Source: %s ", wte->Text().latin1());
+				PRINT("Source: %s ", wte->Text().latin1());
 			fView->setSource(wte->Text());
 		}
 	}

@@ -8,11 +8,15 @@
 
 #include <qapplication.h>
 
+#include "debugimpl.h"
+
 #include "uniwindow.h"
 
 int main(int argc, char* argv[])
 {
 	QApplication app( argc, argv );
+
+	RedirectDebugOutput();
 
 #ifndef WIN32
 	const char * wdir = strrchr(argv[0], '/');
@@ -24,7 +28,7 @@ int main(int argc, char* argv[])
 		{
 			strncpy(chd, argv[0], wdir - argv[0]);
 			chd[wdir - argv[0]] = 0;
-			printf("Setting working directory to: %s\n", chd);
+			PRINT("Setting working directory to: %s\n", chd);
 			chdir(chd);
 			delete [] chd;
 		}
@@ -41,9 +45,9 @@ int main(int argc, char* argv[])
 						) 
 						!= 0)
 	{
-		qDebug("Module filename: %S\n", name);
+		PRINT("Module filename: %S\n", name);
 		PathRemoveFileSpec(name);
-		qDebug("Setting working directory to: %S\n", name);
+		PRINT("Setting working directory to: %S\n", name);
 		SetCurrentDirectory(name);
 	}
 	delete [] name;
