@@ -15,7 +15,8 @@ WAcceptThread::SignalOwner()
 				GenericRef tag;
 				if (next()->FindTag(AST_NAME_SOCKET, tag) == B_OK)
 				{
-					SocketHolderRef sref(tag, NULL);
+					SocketHolderRef sref;
+					sref.SetFromGeneric(tag);
 					if (sref())
 					{
 						WAcceptThreadEvent *e = new WAcceptThreadEvent(sref);

@@ -220,6 +220,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fMailtoLauncher->setText(gWin->fSettings->GetMailLauncher());
 	fHTTPLauncher->setText(gWin->fSettings->GetHTTPLauncher());
 	fFTPLauncher->setText(gWin->fSettings->GetFTPLauncher());
+	fDefaultLauncher->setText(gWin->fSettings->GetDefaultLauncher());
 #endif
 
 	fChatLimit->setCurrentItem(gWin->fSettings->GetChatLimit());
@@ -335,6 +336,7 @@ WPrefs::OK()
 	gWin->fSettings->SetMailLauncher(fMailtoLauncher->text());
 	gWin->fSettings->SetHTTPLauncher(fHTTPLauncher->text());
 	gWin->fSettings->SetFTPLauncher(fFTPLauncher->text());
+	gWin->fSettings->SetDefaultLauncher(fDefaultLauncher->test());
 #endif
 	
 	gWin->fSettings->SetULLimit(fULLimit->currentItem());

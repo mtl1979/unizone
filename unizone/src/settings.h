@@ -70,6 +70,7 @@ using namespace muscle;
 # define MAILTO_LAUNCHER	"mailtolauncher"
 # define HTTP_LAUNCHER		"httplauncher"
 # define FTP_LAUNCHER		"ftplauncher"
+# define DEFAULT_LAUNCHER	"defaultlauncher"
 #endif
 
 #define UL_LIMIT	"ullimit"
@@ -308,6 +309,9 @@ public:
 
 	QString GetMailLauncher();
 	void SetMailLauncher(QString l);
+
+	QString GetDefaultLauncher();
+	void SetDefaultLauncher(QString l);
 #endif
 
 	enum	// throttling constants

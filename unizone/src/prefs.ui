@@ -1451,6 +1451,42 @@
                 <string>URL Launching</string>
             </attribute>
             <widget>
+                <class>QLineEdit</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>fMailtoLauncher</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>140</x>
+                        <y>11</y>
+                        <width>180</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget>
+                <class>QLabel</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>TextLabel1_2</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>5</x>
+                        <y>7</y>
+                        <width>120</width>
+                        <height>30</height>
+                    </rect>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Mailto: launcher:</string>
+                </property>
+            </widget>
+            <widget>
                 <class>QLabel</class>
                 <property stdset="1">
                     <name>name</name>
@@ -1468,42 +1504,6 @@
                 <property stdset="1">
                     <name>text</name>
                     <string>HTTP launcher:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_2_2</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>5</x>
-                        <y>67</y>
-                        <width>120</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>FTP launcher:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLineEdit</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fMailtoLauncher</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>140</x>
-                        <y>11</y>
-                        <width>180</width>
-                        <height>22</height>
-                    </rect>
                 </property>
             </widget>
             <widget>
@@ -1539,23 +1539,59 @@
                 </property>
             </widget>
             <widget>
+                <class>QLineEdit</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>fDefaultLauncher</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>140</x>
+                        <y>101</y>
+                        <width>180</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget>
                 <class>QLabel</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>TextLabel1_2</cstring>
+                    <cstring>TextLabel1_2_2_2</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
                         <x>5</x>
-                        <y>7</y>
-                        <width>120</width>
-                        <height>30</height>
+                        <y>67</y>
+                        <width>95</width>
+                        <height>23</height>
                     </rect>
                 </property>
                 <property stdset="1">
                     <name>text</name>
-                    <string>Mailto: launcher:</string>
+                    <string>FTP launcher:</string>
+                </property>
+            </widget>
+            <widget>
+                <class>QLabel</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>TextLabel1_3</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>5</x>
+                        <y>97</y>
+                        <width>116</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Default launcher:</string>
                 </property>
             </widget>
         </widget>

@@ -901,6 +901,13 @@ WSettings::SetHTTPLauncher(QString l)
 	fSet->AddString(HTTP_LAUNCHER, (const char *) l.utf8());
 }
 
+void
+WSettings::SetDefaultLauncher(QString l)
+{
+	fSet->RemoveName(DEFAULT_LAUNCHER);
+	fSet->AddString(DEFAULT_LAUNCHER, (const char *) l.utf8());
+}
+
 QString
 WSettings::GetFTPLauncher()
 {
@@ -922,6 +929,14 @@ WSettings::GetHTTPLauncher()
 {
 	String s = "konqueror";
 	fSet->FindString(HTTP_LAUNCHER, s);
+	return QString::fromUtf8(s.Cstr());
+}
+
+QString
+WSettings::GetDefaultLauncher()
+{
+	String s = "konqueror";
+	fSet->FindString(DEFAULT_LAUNCHER, s);
 	return QString::fromUtf8(s.Cstr());
 }
 #endif
