@@ -941,7 +941,7 @@ WDownload::customEvent(QCustomEvent * e)
 					{
 						if (gWin->fSettings->GetDownloads())
 						{
-							gWin->PrintSystem( tr("Downloading %1 from %2.").arg( QString::fromUtf8( file.Cstr() ) ).arg(uname) );
+							gWin->PrintSystem( tr("Downloading %1 from %2.").arg( gt->GetCurrentFile() ).arg(uname) );
 						}
 					}
 				}

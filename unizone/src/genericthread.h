@@ -70,6 +70,7 @@ public:
 	virtual QString GetRemoteIP() { return QString::null; }
 	virtual uint32 GetRemotePort() { return 0; }
 	virtual QString GetCurrentFile() { return QString::null; }
+	virtual QString GetCurrentLocalFile() { return QString::null; }
 
 	virtual long GetCurrentNum() { return -1; }
 	virtual long GetNumFiles() { return 0; }

@@ -24,6 +24,7 @@ public:
 
 	QFile * GetFile() const { return fFile; }
 	QString GetCurrentFile() { return fFileDl[fCurFile]; }
+	QString GetCurrentLocalFile() { return fLocalFileDl[fCurFile]; }
 	QString GetFileName(int i) { return fFileDl[i]; }
 	QString GetLocalFileName(int i) { return fLocalFileDl[i]; }
 

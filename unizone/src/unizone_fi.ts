@@ -2945,5 +2945,33 @@ Päiväys: %4</translation>
         <source>User #%1 requested invite to channel %2. Do you?</source>
         <translation>Käyttäjä #%1 pyysi kutsua kanavalle %2. Haluatko antaa?</translation>
     </message>
+    <message>
+        <source>Server version: %1</source>
+        <translation>Palvelimen versio: %1</translation>
+    </message>
+    <message>
+        <source>Server uptime: %1</source>
+        <translation>Palvelin käynnissä: %1</translation>
+    </message>
+    <message>
+        <source>Session root: %1</source>
+        <translation>Palvelimen juuri: %1</translation>
+    </message>
+    <message>
+        <source>Memory usage: %1 MB of %2 MB used</source>
+        <translation>Muistin kulutus: %1 Mt / %2 Mt käytetty</translation>
+    </message>
+    <message>
+        <source>Watch pattern cleared.</source>
+        <translation>Seurannan kaava tyhjennetty.</translation>
+    </message>
+    <message>
+        <source>Watch pattern set to %1.</source>
+        <translation>Seurannan kaavaksi asetettu %1.</translation>
+    </message>
+    <message>
+        <source>%1.%2.%3 build %4</source>
+        <translation>%1.%2.%3 luonti %4</translation>
+    </message>
 </context>
 </TS>

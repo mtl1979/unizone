@@ -14,6 +14,7 @@ SOURCES =		aboutdlg.cpp \
 				privatewindow.cpp \
 				privatewindowimpl.cpp \
 				ulistview.cpp \
+				winshare_parsing.cpp \
 				winshare_network.cpp \
 				winshare_slots.cpp \
                 winsharewindow.cpp

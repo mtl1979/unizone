@@ -2824,5 +2824,33 @@ Date: %4</translation>
         <source>User #%1 requested invite to channel %2. Do you?</source>
         <translation type='unfinished'>User #%1 requested invite to channel %2. Do you?</translation>
     </message>
+    <message>
+        <source>Server version: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Server uptime: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Session root: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Memory usage: %1 MB of %2 MB used</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Watch pattern cleared.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Watch pattern set to %1.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1.%2.%3 build %4</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>
