@@ -18,7 +18,7 @@ htmlview.o channel.o channelinfo.o channelimpl.o \
 moc_channel.o wpwevent.o wstring.o \
 moc_channelimpl.o moc_menubar.o moc_ulistview.o \
 wstatusbar.o winshare_channels.o winshare_search.o \
-updateclient.o serverclient.o \
+updateclient.o serverclient.o titanic.o \
 moc_updateclient.o moc_serverclient.o \
 moc_scanprogress.o scanprogress.o scanprogressimpl.o
 
