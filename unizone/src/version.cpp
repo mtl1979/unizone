@@ -6,7 +6,7 @@ const char uzYears[] = "2003-2004";
 const int kMajor = 1;
 const int kMinor = 2;
 const int kPatch = 2;
-const int kBuild = 3;
+const int kBuild = 4;
 
 
 QString

@@ -151,7 +151,7 @@ Channel::SetOwner(const QString & owner)
 		{
 			QString to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString("session", (const char *) fNet->LocalSessionID().utf8());
+			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) fName.utf8());
 			fNet->SendMessageToSessions(cc);
@@ -171,7 +171,7 @@ Channel::SetTopic(const QString & topic)
 		{
 			QString to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString("session", (const char *) fNet->LocalSessionID().utf8());
+			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) fName.utf8());
 			cc()->AddString("topic", (const char *) topic.utf8());
@@ -196,7 +196,7 @@ Channel::SetPublic(bool p)
 		{
 			QString to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString("session", (const char *) fNet->LocalSessionID().utf8());
+			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) fName.utf8());
 			cc()->AddBool("public", p);
@@ -218,7 +218,7 @@ Channel::Invite(const QString & user)
 		to += user;
 		to += "/unishare";
 		cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-		cc()->AddString("session", (const char *) fNet->LocalSessionID().utf8());
+		cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 		cc()->AddInt64("when", GetCurrentTime64());
 		cc()->AddString("channel", (const char *) fName.utf8());
 		fNet->SendMessageToSessions(cc);
@@ -235,7 +235,7 @@ Channel::Kick(const QString & user)
 		to += user;
 		to += "/unishare";
 		cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-		cc()->AddString("session", (const char *) fNet->LocalSessionID().utf8());
+		cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 		cc()->AddInt64("when", GetCurrentTime64());
 		cc()->AddString("channel", (const char *) fName.utf8());
 		fNet->SendMessageToSessions(cc);
@@ -613,7 +613,7 @@ Channel::SendChannelText(const QString & message)
 		{
 			QString tostr = "/*/*/unishare";
 			chat()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
-			chat()->AddString("session", (const char *) fNet->LocalSessionID().utf8());
+			chat()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 			chat()->AddString("channel", (const char *) fName.utf8());
 			chat()->AddString("text", (const char *) message.utf8());
 			fNet->SendMessageToSessions(chat);

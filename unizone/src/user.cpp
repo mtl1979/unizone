@@ -89,7 +89,8 @@ WUser::InitName(const MessageRef msg)
 			gWin->fNetClient->SendPing(fUserID);
 	}
 
-	msg()->FindBool("supports_partial_hashing", &fPartial);   // NEW 11/7/2002 partial resumes
+	msg()->FindBool("supports_partial_hashing", &fPartial);			// NEW 11/7/2002 partial resumes
+	msg()->FindBool("supports_transfer_tunneling", &fTunneling);	// NEW 8th Aug 2004 
 
 	// <postmaster@raasu.org> 20020213 -- Fix for download troubles when no files shared
 	//

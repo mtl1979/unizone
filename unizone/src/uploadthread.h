@@ -45,6 +45,7 @@ public:
 
 	void SetUpload(int socket, uint32 remoteIP, WFileThread * ft);
 	void SetUpload(const QString & remoteIP, uint32 remotePort, WFileThread * ft);
+	void SetUpload(const QString & userID, int32 hisID, WFileThread * ft); // Tunneled
 
 	bool InitSession();
 
@@ -87,6 +88,7 @@ public:
 	int32 GetCurrentNum() const { return fCurFile; }
 	int32 GetNumFiles() const { return fNumFiles; }
 	bool IsLastFile(); 
+	bool IsTunneled() const { return fTunneled; }
 
 	int GetRate() { return fTXRate; }
 	virtual void SetRate(int rate, AbstractReflectSessionRef & ref); 
@@ -125,6 +127,10 @@ private slots:
 	void ServerExited();
 
 protected:
+
+	friend class WDownload;
+
+	void MessageReceived(MessageRef msg) { MessageReceived(msg, _sessionID); }
 
 	void SendReply(MessageRef &m);
 	void SendQueuedNotification();
@@ -191,6 +197,9 @@ private:
 	String _sessionID;
 
 	QMessageTransceiverThread *qmtt;
+
+	int32 hisID;
+	bool fTunneled;
 
 	void DoUpload();
 	void TransferFileList(const MessageRef &);

@@ -15,8 +15,6 @@ void
 WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewalled, MessageRef file)
 {
 	PRINT("ADDFILE called\n");
-	if (firewalled && fSettings->GetFirewalled())
-		return;	// we don't need to show this file if we are firewalled
 	
 #ifdef _DEBUG
 	WString wFileName(filename);
@@ -42,45 +40,52 @@ WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewa
 			{
 				WUserRef user = (*uit).second;
 
-				// We need to check file properties before allocating new WFileInfo, saves time and one unnecessary
-				// delete command.
-
-				String path, kind;
-				int64 size = 0;
-				int32 mod = 0;
-				
-				file()->FindString("beshare:Kind", kind);
-				file()->FindString("beshare:Path", path);
-				file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
-				file()->FindInt64("beshare:File Size", (int64 *)&size);
-
-				WFileInfo * info = new WFileInfo;
-				CHECK_PTR(info);
-				info->fiUser = user;
-				info->fiFilename = filename;
-				info->fiRef = file;
-				info->fiFirewalled = firewalled;
-								
-				// name, size, type, modified, path, user
-				QString qkind	= QString::fromUtf8(kind.Cstr());
-				QString qsize	= QString::number((int)size); 
-				QString qmod	= QString::number(mod); // <postmaster@raasu.org> 20021126
-				QString qpath	= QString::fromUtf8(path.Cstr());
-				QString quser	= user()->GetUserName();
-				
-				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
-				CHECK_PTR(info->fiListItem);
-
+				// Both aren't firewalled or
+				// Only one is firewalled or
+				// Both are firewalled but other party supports tunneling
+				if (!firewalled || !fSettings->GetFirewalled() || user()->GetTunneling())
+				{
+					
+					// We need to check file properties before allocating new WFileInfo, saves time and one unnecessary
+					// delete command.
+					
+					String path, kind;
+					int64 size = 0;
+					int32 mod = 0;
+					
+					file()->FindString("beshare:Kind", kind);
+					file()->FindString("beshare:Path", path);
+					file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
+					file()->FindInt64("beshare:File Size", (int64 *)&size);
+					
+					WFileInfo * info = new WFileInfo;
+					CHECK_PTR(info);
+					info->fiUser = user;
+					info->fiFilename = filename;
+					info->fiRef = file;
+					info->fiFirewalled = firewalled;
+					
+					// name, size, type, modified, path, user
+					QString qkind	= QString::fromUtf8(kind.Cstr());
+					QString qsize	= QString::number((int)size); 
+					QString qmod	= QString::number(mod); // <postmaster@raasu.org> 20021126
+					QString qpath	= QString::fromUtf8(path.Cstr());
+					QString quser	= user()->GetUserName();
+					
+					info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
+					CHECK_PTR(info->fiListItem);
+					
 #ifdef WIN32
-				PRINT("Setting key to %I64i\n", size);
+					PRINT("Setting key to %I64i\n", size);
 #else
-				PRINT("Setting key to %lli\n", size);
+					PRINT("Setting key to %lli\n", size);
 #endif
-				
-				// The map is based on _filename's_, not session ID's.
-				// And as filename's can be duplicate, we use a multimap
-				WFIPair pair = MakePair(filename, info);
-				fFileList.insert(fFileList.end(), pair);
+					
+					// The map is based on _filename's_, not session ID's.
+					// And as filename's can be duplicate, we use a multimap
+					WFIPair pair = MakePair(filename, info);
+					fFileList.insert(fFileList.end(), pair);
+				}
 			}
 		}
 		
@@ -355,8 +360,8 @@ WinShareWindow::StartQuery(const QString & sidRegExp, const QString & fileRegExp
 	fSearchLock.lock();
 	QString tmp = "SUBSCRIBE:/*/";
 	tmp += sidRegExp;
-	tmp += "/beshare/";
-	tmp += fSettings->GetFirewalled() ? "files/" : "fi*/";		// if we're firewalled, we can only get files from non-firewalled users
+	tmp += "/beshare/fi?es/";
+//	tmp += fSettings->GetFirewalled() ? "files/" : "fi*/";		// if we're firewalled, we can only get files from non-firewalled users
 	tmp += fileRegExp;
 	fCurrentSearchPattern = tmp;
 	// <postmaster@raasu.org> 20021023 -- Fixed typo
@@ -495,7 +500,10 @@ WinShareWindow::EmptyQueues()
 				files[i] = QString::fromUtf8(mFile.Cstr());
 			}
 			OpenDownload();
-			fDLWindow->AddDownload(files, NULL, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
+			if (u()->GetFirewalled() && u()->GetTunneling() && fSettings->GetFirewalled())
+				fDLWindow->CreateTunnel(files, NULL, numItems, u);
+			else
+				fDLWindow->AddDownload(files, NULL, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
 		}
 	}
 	fQueue()->Clear();

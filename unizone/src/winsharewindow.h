@@ -278,6 +278,7 @@ protected:
 	virtual void resizeEvent(QResizeEvent * event);
 	virtual void keyPressEvent(QKeyEvent *event);
 
+
 private slots:
 	void GoSearch();
 	void StopSearch();
@@ -299,6 +300,8 @@ private slots:
 	void ConnectionAccepted(SocketHolderRef socketRef);
 
 private:
+	friend class WDownload;
+
 	mutable NetClient * fNetClient;
 	mutable ServerClient * fServerThread;	// used to get latest servers from beshare.tycomsystems.com
 	mutable UpdateClient * fUpdateThread;	// used to get latest version information from www.raasu.org
@@ -478,7 +481,7 @@ private:
 	void SaveSettings();
 	void EmptyUsers();
 	void SetAutoAwayTimer();
-	void WaitOnFileThread();
+	void WaitOnFileThread(bool);
 	void CheckScrollState();
 
 	void StartLogging();
@@ -500,7 +503,6 @@ private:
 	friend class Channel;
 	friend class WUser;
 	friend class WSearch;
-	friend class WDownload;
 	friend class NetClient;
 
 	WResumeMap fResumeMap;

@@ -5,6 +5,7 @@
 #include "downloadthread.h"
 // #include "uploadthread.h"
 #include "qtsupport/QMessageTransceiverThread.h"
+#include "user.h"
 
 #include <qfile.h>
 #include <qstring.h>
@@ -61,6 +62,11 @@ public:
 
 	bool IsConnecting() const;
 
+	bool IsTunneled() const { return fTunneled; }
+
+	void Accepted(int32 hisID);
+	void Rejected();
+
 	double GetCalculatedRate() const;
 	void SetMostRecentRate(double rate);
 	void SetPacketCount(double bytes);
@@ -70,6 +76,7 @@ public:
 
 	void SetFile(QString * files, QString * lfiles, int32 numFiles, const QString & fromIP, const QString & fromSession,
 					const QString & localSession, uint32 remotePort, bool firewalled, bool partial);
+	void SetFile(QString * files, QString * lfiles, int32 numFiles, const WUserRef & fromUser); // Tunneled
 	void NextFile();
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
@@ -116,6 +123,10 @@ private slots:
 
 protected:
 
+	friend class WDownload;
+
+	void MessageReceived(MessageRef msg) { MessageReceived(msg, _sessionID); }
+
 	mutable QMutex fLockFile;
 	QFile * fFile;			// file on the HD
 	QString * fFileDl;		// file to dl
@@ -149,6 +160,7 @@ protected:
 	bool fFinished;
 	bool fNegotiating;
 	bool fConnecting;
+	bool fTunneled;
 	volatile bool fDisconnected;
 	double fRate[MAX_RATE_COUNT];	// last 20 rates
 	int fRateCount;					// amount we have, 20 max
@@ -171,6 +183,8 @@ protected:
 
 private:
 	String _sessionID;
+
+	int32 hisID;
 
 	int timerID;
 

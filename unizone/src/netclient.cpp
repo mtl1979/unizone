@@ -371,8 +371,6 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 		MessageRef tmpRef;
 		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
 		{
-			const Message * pmsg = tmpRef.GetItemPointer();
-			
 			QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
 			sid = sid.left( sid.find('/') );
 			
@@ -386,11 +384,11 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 					{
 						int64 rtime;
 						String user, newid, oldid;
-						pmsg->FindInt64("registertime", &rtime);
-						pmsg->FindString("user", user);
-						pmsg->FindString("session", newid);
+						tmpRef()->FindInt64("registertime", &rtime);
+						tmpRef()->FindString("user", user);
+						tmpRef()->FindString(PR_NAME_SESSION, newid);
 						QString qUser = QString::fromUtf8(user.Cstr());
-						if (pmsg->FindString("oldid", oldid) == B_OK)
+						if (tmpRef()->FindString("oldid", oldid) == B_OK)
 						{
 							QString nid = QString::fromUtf8(newid.Cstr());
 							QString oid = QString::fromUtf8(oldid.Cstr());
@@ -439,13 +437,13 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 							AddChannel(sid, channel);
 							String topic, owner, admins;
 							bool pub;
-							if (pmsg->FindString("owner", owner) == B_OK)
+							if (tmpRef()->FindString("owner", owner) == B_OK)
 								emit ChannelOwner(channel, sid, QString::fromUtf8(owner.Cstr()));
-							if (pmsg->FindString("admins", admins) == B_OK)
+							if (tmpRef()->FindString("admins", admins) == B_OK)
 								emit ChannelAdmins(channel, sid, QString::fromUtf8(admins.Cstr()));
-							if (pmsg->FindString("topic", topic) == B_OK)
+							if (tmpRef()->FindString("topic", topic) == B_OK)
 								emit ChannelTopic(channel, sid, QString::fromUtf8(topic.Cstr()));
-							if (pmsg->FindBool("public", &pub) == B_OK)
+							if (tmpRef()->FindBool("public", &pub) == B_OK)
 								emit ChannelPublic(channel, sid, pub);
 						}
 					}
@@ -569,7 +567,6 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 		MessageRef tmpRef;
 		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
 		{
-			//const Message * pmsg = tmpRef.GetItemPointer();
 			QString sid = GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr());
 			sid = sid.left(sid.find('/'));
 			switch (pd)
@@ -711,7 +708,7 @@ NetClient::HandleParameters(MessageRef & next)
 				if (uc())
 				{
 					uc()->AddInt64("registertime", win->GetRegisterTime(fUserName));
-					uc()->AddString("session", (const char *) fSessionID.utf8());
+					uc()->AddString(PR_NAME_SESSION, (const char *) fSessionID.utf8());
 					if ((fOldID != QString::null) && (fOldID != fSessionID))
 					{
 						uc()->AddString("oldid", (const char *) fOldID.utf8());
@@ -751,7 +748,7 @@ NetClient::SendChatText(const QString & target, const QString & text)
 			tostr += target;
 			tostr += "/beshare";
 			chat()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
-			chat()->AddString("session", (const char *) fSessionID.utf8());
+			chat()->AddString(PR_NAME_SESSION, (const char *) fSessionID.utf8());
 			chat()->AddString("text", (const char *) text.utf8());
 			if (target != "*")
 				chat()->AddBool("private", true);
@@ -772,7 +769,7 @@ NetClient::SendPicture(const QString & target, const ByteBufferRef &buffer, cons
 			tostr += target;
 			tostr += "/beshare";
 			pic()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
-			pic()->AddString("session", (const char *) fSessionID.utf8());
+			pic()->AddString(PR_NAME_SESSION, (const char *) fSessionID.utf8());
 			pic()->AddData("picture", B_RAW_TYPE, buffer()->GetBuffer(), buffer()->GetNumBytes());
 			pic()->AddInt32("chk", CalculateChecksum(buffer()->GetBuffer(), buffer()->GetNumBytes()));
 			pic()->AddString("name", (const char *) name.utf8());
@@ -795,7 +792,7 @@ NetClient::SendPing(const QString & target)
 			to += target;
 			to += "/beshare";
 			ping()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			ping()->AddString("session", (const char *) LocalSessionID().utf8());
+			ping()->AddString(PR_NAME_SESSION, (const char *) LocalSessionID().utf8());
 			ping()->AddInt64("when", GetCurrentTime64());
 			SendMessageToSessions(ping);
 		}
@@ -823,6 +820,7 @@ NetClient::SetUserName(const QString & user)
 				ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
 				ref()->AddString("version_num", (const char *) vstring);
 				ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes
+				ref()->AddBool("supports_transfer_tunneling", true);
 				ref()->AddBool("firewalled", win->fSettings->GetFirewalled()); // is firewalled user, needed if no files shared
 				
 				SetNodeValue("beshare/name", ref);

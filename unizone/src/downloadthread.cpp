@@ -1,6 +1,7 @@
 #include "downloadthread.h"
 #include "downloadworker.h"
 #include "downloadimpl.h"
+#include "netclient.h"
 #include "wdownloadevent.h"
 #include "wsystemevent.h"
 #include "md5.h"
@@ -38,7 +39,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fFileDl = NULL;
 	fLocalFileDl = NULL;
 	fNumFiles = -1;
-	fCurFile = -1;
+	fCurFile = -2;
 	timerID = 0;
 	fActive = true;
 	fBlocked = false;
@@ -49,6 +50,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fDisconnected = false;
 	fNegotiating = false;
 	fConnecting = false;
+	fTunneled = false;
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fStartTime = 0;
@@ -127,7 +129,8 @@ WDownloadThread::~WDownloadThread()
 
 //	qApp->sendPostedEvents( fOwner, WDownloadEvent::Type );
 
-	qmtt->ShutdownInternalThread();
+	if (!fTunneled)
+		qmtt->ShutdownInternalThread();
 
 	PRINT("WDownloadThread dtor OK\n");
 }
@@ -183,6 +186,57 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, cons
 		msg()->AddString("user", (const char *) fromSession.utf8());
 		SendReply(msg);	// send the init message to our owner
 	}
+}
+
+void
+WDownloadThread::SetFile(QString *files, QString *lfiles, int32 numFiles, const WUserRef &user)
+{
+	fTunneled = true;
+	fFileDl = files;
+	if (lfiles)
+	{
+		fLocalFileDl = lfiles;
+	}
+	else
+	{
+		fLocalFileDl = new QString[numFiles];
+		CHECK_PTR(fLocalFileDl);
+		for (int l = 0; l < numFiles; l++)
+		{
+			fLocalFileDl[l] = QString::null;
+		}
+	}
+	fNumFiles = numFiles;
+	fCurFile = 0;
+	fIP = user()->GetUserHostName();
+	fFromSession = user()->GetUserID();
+	
+	fFromUser = user()->GetUserName();
+
+	fLocalSession = gWin->GetUserID();
+
+	fPort = user()->GetPort();
+	fFirewalled = user()->GetFirewalled();
+	fPartial = user()->GetPartial();
+	
+	MessageRef msg(GetMessageFromPool(WDownloadEvent::Init));
+	if (msg())
+	{
+		QString dlFile;
+		if (fLocalFileDl[0] == QString::null)
+		{
+			dlFile =  "downloads/";
+			dlFile += fFileDl[0];
+		}
+		else
+		{
+			dlFile = fLocalFileDl[0];
+		}
+		msg()->AddString("file", (const char *) dlFile.utf8());
+		msg()->AddString("user", (const char *) fFromSession.utf8());
+		SendReply(msg);	// send the init message to our owner
+	}
+
 }
 
 bool
@@ -275,6 +329,21 @@ WDownloadThread::InitSession()
 			}
 		}
 	}
+	else if (fTunneled)
+	{
+		InitSessionAux();
+
+		MessageRef msg(GetMessageFromPool(WDownloadEvent::ConnectInProgress));
+		if (msg())
+			SendReply(msg);
+
+		PRINT("Requesting tunnel...\n");
+		MessageRef req = GetMessageFromPool(NetClient::REQUEST_TUNNEL);
+		if (req())
+			SendMessageToSessions(req);
+
+		return true;
+	}
 	else	// he is firewalled?
 	{
 		ReflectSessionFactoryRef factoryRef;
@@ -312,7 +381,7 @@ WDownloadThread::InitSession()
 			MessageRef cnt(GetMessageFromPool(WDownloadEvent::ConnectBackRequest));
 			if (cnt())
 			{
-				cnt()->AddString("session", (const char *) fFromSession.utf8());
+				cnt()->AddString(PR_NAME_SESSION, (const char *) fFromSession.utf8());
 				cnt()->AddInt32("port", fAcceptingOn);
 				SendReply(cnt);
 			}
@@ -715,6 +784,20 @@ WDownloadThread::SessionAccepted(const String &sessionID, uint16 /* port */)
 }
 
 void
+WDownloadThread::Accepted(int32 id)
+{
+	hisID = id;
+	SessionConnected((const char *) fFromSession.utf8());
+}
+
+void
+WDownloadThread::Rejected()
+{
+	MessageRef rej = GetMessageFromPool(WDownload::TransferNotifyRejected);
+	MessageReceived(rej, _sessionID);
+}
+
+void
 WDownloadThread::SessionConnected(const String &sessionID)
 {
 	fConnecting = false;
@@ -859,7 +942,7 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 					if (dis())
 					{
 						dis()->AddBool("done", true);		
-						dis()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
+						dis()->AddString("file", (const char *) fFileDl[fNumFiles - 1].utf8());
 						SendReply(dis);
 					}
 				}
@@ -903,7 +986,11 @@ void WDownloadThread::NextFile()
 	fFileSize = 0;
 	fCurFile++;
 	if (fCurFile == fNumFiles)
+	{
 		fCurFile = -1;
+		if (fTunneled)
+			SessionDisconnected(_sessionID);
+	}
 	fDownloading = false;
 }
 
@@ -1081,7 +1168,11 @@ WDownloadThread::Reset()
 	PRINT("WDownloadThread::Reset()\n");
 	if (!fManuallyQueued)
 		SetFinished(true);
-	qmtt->Reset();
+
+	if (fTunneled)
+		SessionDisconnected(_sessionID);
+	else
+		qmtt->Reset();
 	
 	// Make sure we close the file if user queues the transfer manually
 	if (fFile)
@@ -1208,7 +1299,7 @@ WDownloadThread::IsLastFile()
 { 
 	int c = GetCurrentNum() + 1;
 	int n = GetNumFiles();
-	return (c >= n); 
+	return ((c == 0) || (c >= n)); 
 }
 
 void
@@ -1260,13 +1351,50 @@ WDownloadThread::GetUserName(const QString & sid) const
 status_t
 WDownloadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
 {
-	return qmtt->SendMessageToSessions(msgRef, optDistPath);
+	if (fTunneled)
+	{
+		if (msgRef()->what == NetClient::REQUEST_TUNNEL)
+		{
+			// Send directly...
+			QString to("/*/");
+			to += fFromSession;
+			to += "/beshare";
+			msgRef()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			msgRef()->AddString(PR_NAME_SESSION, "");
+			PRINT("Sending message to %s...\n", (const char *) to.utf8());
+			msgRef()->AddInt32("my_id", (int32) this);
+			return static_cast<WDownload *>(fOwner)->NetClient()->SendMessageToSessions(msgRef);
+		}
+		else
+		{
+			MessageRef down = GetMessageFromPool(NetClient::TUNNEL_MESSAGE);
+			if (down())
+			{
+				QString to("/*/");
+				to += fFromSession;
+				to += "/beshare";
+				down()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+				down()->AddString(PR_NAME_SESSION, "");
+				// down()->AddInt32("my_id", (int32) this);
+				down()->AddMessage("message", msgRef);
+				down()->AddInt32("tunnel_id", (int32) hisID);
+				return static_cast<WDownload *>(fOwner)->NetClient()->SendMessageToSessions(down);
+			}
+			else
+				return B_ERROR;
+		}
+	}
+	else
+		return qmtt->SendMessageToSessions(msgRef, optDistPath);
 }
 
 bool 
 WDownloadThread::IsInternalThreadRunning()
 {
-	return qmtt->IsInternalThreadRunning();
+	if (fTunneled)
+		return gWin->IsConnected(fFromSession);
+	else
+		return qmtt->IsInternalThreadRunning();
 }
 
 uint32

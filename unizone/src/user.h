@@ -56,6 +56,7 @@ public:
 	int32 GetFileCount() const { return fFileCount; }
 	bool GetFirewalled() const { return fFirewalled; }
 	bool GetPartial() const { return fPartial; }
+	bool GetTunneling() const { return fTunneling; }
 
 	QString GetClient() const { return fClient; }
 
@@ -94,6 +95,7 @@ private:
 	int32 fFileCount;
 	bool fFirewalled;
 	bool fPartial;
+	bool fTunneling;
 
 	QString fClient;
 

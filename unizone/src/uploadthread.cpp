@@ -8,6 +8,7 @@
 #include "global.h"
 #include "downloadimpl.h"
 #include "settings.h"
+#include "netclient.h"
 #include "md5.h"
 #include "wstring.h"
 #include "filethread.h"
@@ -47,6 +48,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fRemotelyQueued = false;
 	fDisconnected = false;
 	fConnecting = true;
+	fTunneled = false;
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fStartTime = 0;
@@ -120,7 +122,8 @@ WUploadThread::~WUploadThread()
 		fFile = NULL;
 	}
 
-	qmtt->ShutdownInternalThread();
+	if (!fTunneled)
+		qmtt->ShutdownInternalThread();
 
 	PRINT("WUploadThread dtor OK\n");
 }
@@ -146,6 +149,16 @@ WUploadThread::SetUpload(const QString & remoteIP, uint32 remotePort, WFileThrea
 	fAccept = true;
 	fStrRemoteIP = remoteIP;
 	fPort = remotePort;
+}
+
+void
+WUploadThread::SetUpload(const QString & userID, int32 remoteID, WFileThread * ft)
+{
+	fTunneled = true;
+	fFileThread = ft;
+	fAccept = false;
+	fRemoteSessionID = userID;
+	hisID = remoteID;
 }
 
 bool 
@@ -179,7 +192,17 @@ WUploadThread::InitSession()
 		limit = ref;
 	}
 
-	if (fAccept)
+	if (fTunneled)
+	{
+		MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
+		if (mref())
+		{
+			SendReply(mref);
+		}
+
+		return true;
+	}
+	else if (fAccept)
 	{
 		// <postmaster@raasu.org> 20021026
 		const String sRemoteIP = (const char *) fStrRemoteIP.utf8(); 
@@ -499,7 +522,7 @@ WUploadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 
 			bool c = false;
 			
-			if (msg()->FindBool("unishare:supports_compression", &c) == B_OK)
+			if (!fTunneled && msg()->FindBool("unishare:supports_compression", &c) == B_OK)
 			{
 				qmtt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
 			}
@@ -754,9 +777,16 @@ WUploadThread::DoUpload()
 					// NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before
 					//       calling it!
 					fCurrentOffset += numBytes;
-					MessageRef drain(GetMessageFromPool());
-					if (drain())
-						qmtt->RequestOutputQueuesDrainedNotification(drain);
+					if (fTunneled)
+					{
+						SignalUpload();
+					}
+					else
+					{
+						MessageRef drain(GetMessageFromPool());
+						if (drain())
+							qmtt->RequestOutputQueuesDrainedNotification(drain);
+					}
 
 					MessageRef update(GetMessageFromPool(WUploadEvent::FileDataSent));	
 					if (update())
@@ -881,9 +911,18 @@ WUploadThread::DoUpload()
 				PRINT("No more files!\n");
 				fWaitingForUploadToFinish = true;
 				SetFinished(true);
-				MessageRef drain(GetMessageFromPool());
-				if (drain())
-					qmtt->RequestOutputQueuesDrainedNotification(drain);
+				if (fTunneled)
+				{
+					MessageRef drain(GetMessageFromPool());
+					if (drain())
+						OutputQueuesDrained(drain);
+				}
+				else
+				{
+					MessageRef drain(GetMessageFromPool());
+					if (drain())
+						qmtt->RequestOutputQueuesDrainedNotification(drain);
+				}
 				break;
 			}
 		}
@@ -908,10 +947,13 @@ void
 WUploadThread::SetRate(int rate)
 {
 	fTXRate = rate;
-	if (rate != 0)
-		qmtt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
-	else
-		qmtt->SetNewOutputPolicy(PolicyRef(NULL, NULL));
+	if (!fTunneled)
+	{
+		if (rate != 0)
+			qmtt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		else
+			qmtt->SetNewOutputPolicy(PolicyRef(NULL, NULL));
+	}
 }
 
 void
@@ -1213,7 +1255,10 @@ WUploadThread::Reset()
 {
 	PRINT("WUploadThread::Reset()\n");
 	SetFinished(true);
-	qmtt->Reset();
+	if (fTunneled)
+		SessionDisconnected(_sessionID);
+	else
+		qmtt->Reset();
 	PRINT("WUploadThread::Reset() OK\n");
 }
 
@@ -1381,13 +1426,54 @@ WUploadThread::GetUserName(const QString & sid) const
 status_t
 WUploadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
 {
-	return qmtt->SendMessageToSessions(msgRef, optDistPath);
+	if (fTunneled)
+	{
+		if (
+			(msgRef()->what == NetClient::ACCEPT_TUNNEL) ||
+			(msgRef()->what == NetClient::REJECT_TUNNEL)
+			)
+		{
+			// Send directly...
+			QString to("/*/");
+			to += fRemoteSessionID;
+			to += "/beshare";
+			msgRef()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			msgRef()->AddString(PR_NAME_SESSION, "");
+			// msgRef()->AddInt32("my_id", (int32) this);
+			msgRef()->AddBool("upload", true);
+			return static_cast<WDownload *>(fOwner)->NetClient()->SendMessageToSessions(msgRef);
+		}
+		else
+		{		
+			MessageRef up = GetMessageFromPool(NetClient::TUNNEL_MESSAGE);
+			if (up())
+			{
+				QString to("/*/");
+				to += fRemoteSessionID;
+				to += "/beshare";
+				up()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+				up()->AddString(PR_NAME_SESSION, "");
+				// up()->AddInt32("my_id", (int32) this);
+				up()->AddMessage("message", msgRef);
+				up()->AddBool("upload", true);
+				up()->AddInt32("tunnel_id", hisID);
+				return static_cast<WDownload *>(fOwner)->NetClient()->SendMessageToSessions(up);
+			}
+			else
+				return B_ERROR;
+		}
+	}
+	else
+		return qmtt->SendMessageToSessions(msgRef, optDistPath);
 }
 
 bool 
 WUploadThread::IsInternalThreadRunning()
 {
-	return qmtt->IsInternalThreadRunning();
+	if (fTunneled)
+		return gWin->IsConnected(fRemoteSessionID);
+	else
+		return qmtt->IsInternalThreadRunning();
 }
 
 uint32

@@ -101,7 +101,7 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
-	connect(gWin->fNetClient, SIGNAL(UserDisconnected(const QString &, const QString &)), 
+	connect(NetClient(), SIGNAL(UserDisconnected(const QString &, const QString &)), 
 			this, SLOT(UserDisconnected(const QString &, const QString &)));
 	
 	
@@ -350,7 +350,7 @@ WDownload::AddDownload(QString * files, QString * lfiles,
 		
 		if (remoteIP == "127.0.0.1")	
 		{
-			ip = gWin->fNetClient->GetServerIP();
+			ip = NetClient()->GetServerIP();
 			if (ip != "127.0.0.1")
 			{
 				for (x = 0; x < filecount; x++)
@@ -432,7 +432,180 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, co
 		
 		n++;
 	}
-	AddDownload(qFiles, qLFiles, n, user()->GetUserID(), user()->GetPort(), user()->GetUserHostName(), user()->GetInstallID(), user()->GetFirewalled(), user()->GetPartial());
+	if (gWin->fSettings->GetFirewalled() && user()->GetFirewalled() && user()->GetTunneling())
+		CreateTunnel(qFiles, qLFiles, n, user);
+	else
+		AddDownload(qFiles, qLFiles, n, user()->GetUserID(), user()->GetPort(), user()->GetUserHostName(), user()->GetInstallID(), user()->GetFirewalled(), user()->GetPartial());
+}
+
+bool
+WDownload::CreateTunnel(const QString & userID, int32 hisID, void * & myID)
+{
+	PRINT("WDownload::CreateTunnel(QString, void *, void * &)\n");
+	WUploadThread * ut = new WUploadThread(this);
+	CHECK_PTR(ut);
+
+	myID = ut;
+	
+	PRINT("Setting upload\n");
+	ut->SetPacketSize(gWin->fSettings->GetPacketSize());
+	ut->SetUpload(userID, hisID, fSharedFiles);
+	
+	if (GetNumUploads() < gWin->fSettings->GetMaxUploads())
+	{
+		PRINT("Not queued\n");
+		ut->SetLocallyQueued(false);
+	}
+	else
+	{
+		PRINT("Queued\n");
+		ut->SetLocallyQueued(true);
+	}
+	
+	PRINT("Init session\n");
+	ut->InitSession();
+	ULPair p;
+	p.first = ut;
+	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.second);
+	
+	if (ut->IsLocallyQueued())
+	{
+		PRINT("IsQueued\n");
+		p.second->setText(WTransferItem::Status, tr("Queued."));
+	}
+	PRINT("Inserting\n");
+	Lock();
+	fUploadList.AddTail(p);
+	Unlock();
+	SendSignal(UpLoad);
+	SendSignal(ULRatings);
+	return true;
+}
+
+bool
+WDownload::CreateTunnel(QString *files, QString *lfiles, int32 numFiles, const WUserRef &user)
+{
+	WDownloadThread * nt = new WDownloadThread(this);
+	CHECK_PTR(nt);
+
+	nt->SetFile(files, lfiles, numFiles, user);
+	
+	DLPair p;
+	p.first = nt;
+	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.second);
+		
+	if (GetNumDownloads() < gWin->fSettings->GetMaxDownloads())
+	{
+		nt->InitSession();
+		nt->SetLocallyQueued(false);
+	}
+	else
+	{
+		nt->SetLocallyQueued(true);
+		p.second->setText(WTransferItem::Status, tr("Locally Queued."));
+	}
+	Lock();
+	fDownloadList.AddTail(p);
+	Unlock();
+	SendSignal(DLRatings);
+	return true;
+}
+
+void
+WDownload::TunnelAccepted(int32 myID, int32 hisID)
+{
+	bool success = false;
+	
+	Lock();
+	
+	for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
+	{
+		DLPair p;
+		fDownloadList.GetItemAt(i, p);
+		if ((int32) p.first == myID)
+		{
+			p.first->Accepted(hisID);
+			success = true;
+			break;
+		}
+	}
+	
+	Unlock();
+	
+	if (!success)
+	{
+		PRINT("WDownload::TunnelAccepted() : Item not found!\n");
+	}
+}
+
+void
+WDownload::TunnelRejected(int32 myID)
+{
+	bool success = false;
+	
+	Lock();
+	
+	for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
+	{
+		DLPair p;
+		fDownloadList.GetItemAt(i, p);
+		if ((int32) p.first == myID)
+		{
+			p.first->Rejected();
+			success = true;
+			break;
+		}
+	}
+	
+	Unlock();
+	
+	if (!success)
+	{
+		PRINT("WDownload::TunnelRejected() : Item not found!\n");
+	}
+}
+
+void 
+WDownload::TunnelMessage(int32 myID, const MessageRef & tmsg, bool download)
+{
+	if (download)
+	{
+		Lock();
+		
+		unsigned int n = fDownloadList.GetNumItems();
+		for (unsigned int i = 0; i < n; i++)
+		{
+			DLPair p;
+			fDownloadList.GetItemAt(i, p);
+			if ((int32) p.first == myID)
+			{
+				p.first->MessageReceived(tmsg);
+				break;
+			}
+		}
+		
+		Unlock();
+	}
+	else
+	{
+		Lock();
+		
+		unsigned int n = fUploadList.GetNumItems();
+		for (unsigned int i = 0; i < n; i++)
+		{
+			ULPair p;
+			fUploadList.GetItemAt(i, p);
+			if ((int32) p.first == myID)
+			{
+				p.first->MessageReceived(tmsg);
+				break;
+			}
+		}
+		
+		Unlock();
+	}
 }
 
 void
@@ -819,7 +992,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				int32 port;
 				if (
 					(msg()->FindInt32("port", &port) == B_OK) && 
-					(msg()->FindString("session", session) == B_OK)
+					(msg()->FindString(PR_NAME_SESSION, session) == B_OK)
 					)
 				{
 					item->setText(WTransferItem::Status, tr("Waiting for incoming connection..."));
@@ -827,9 +1000,9 @@ WDownload::downloadEvent(WDownloadEvent * d)
 					tostr += session.Cstr();
 					tostr += "/beshare";
 					cb()->AddString(PR_NAME_KEYS, tostr);
-					cb()->AddString("session", session);
+					cb()->AddString(PR_NAME_SESSION, "");
 					cb()->AddInt32("port", port);
-					gWin->fNetClient->SendMessageToSessions(cb);
+					NetClient()->SendMessageToSessions(cb);
 					break;
 				}
 			}
@@ -939,6 +1112,13 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				if (dt->IsLastFile())
 				{
 					dt->Reset();
+					if (dt->IsTunneled())
+					{
+						if (gWin->fSettings->GetAutoClear())
+						{
+							SendSignal(ClearDownloads);
+						}
+					}
 				}
 				item->setText(WTransferItem::Status, tr("Finished."));
 				item->setText(WTransferItem::ETA, "");
@@ -1545,14 +1725,14 @@ void
 WDownload::UpdateLoad()
 {
 	PRINT("WDownload::UpdateLoad\n");
-	if (gWin->fNetClient)
+	if (NetClient())
 	{
 		int mu = 0;
 		if (gWin->fSettings)
 		{
 			mu = gWin->fSettings->GetMaxUploads();
 		}
-		gWin->fNetClient->SetLoad(GetUploadQueue(), gWin->fSettings->GetMaxUploads());
+		NetClient()->SetLoad(GetUploadQueue(), gWin->fSettings->GetMaxUploads());
 	}
 	PRINT("WDownload::UpdateLoad OK\n");
 }
@@ -1565,16 +1745,17 @@ WDownload::UpdateLoad()
 void
 WDownload::UserDisconnected(const QString &sid, const QString & /* name */)
 {
-	if (gWin->fSettings->GetBlockDisconnected())
+	unsigned int i;
+	Lock();
+	for (i = 0; i < fUploadList.GetNumItems(); i++)
 	{
-		Lock();
-		for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
+		ULPair pair;
+		fUploadList.GetItemAt(i, pair);
+		if (pair.first)
 		{
-			ULPair pair;
-			fUploadList.GetItemAt(i, pair);
-			if (pair.first)
+			if (pair.first->GetRemoteID() == sid)
 			{
-				if (pair.first->GetRemoteID() == sid)
+				if (gWin->fSettings->GetBlockDisconnected())
 				{
 					// Only block transfers that are active
 					if (
@@ -1586,10 +1767,27 @@ WDownload::UserDisconnected(const QString &sid, const QString & /* name */)
 						pair.first->Reset();
 					}
 				}
+				if (pair.first->IsTunneled())
+					pair.first->Reset();
 			}
 		}
-		Unlock();
 	}
+	Unlock();
+	Lock();
+	for (i = 0; i < fDownloadList.GetNumItems(); i++)
+	{
+		DLPair pair;
+		fDownloadList.GetItemAt(i, pair);
+		if (pair.first)
+		{
+			if (pair.first->GetRemoteID() == sid)
+			{
+				if (pair.first->IsTunneled())
+					pair.first->Reset();
+			}
+		}
+	}
+	Unlock();
 }
 
 QString
@@ -2231,7 +2429,10 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			{
 				fULPopup->setItemEnabled(ID_QUEUE, true);
 				fULPopup->setItemEnabled(ID_BLOCK, true);
-				fULPopup->setItemEnabled(ID_THROTTLE, true);
+				if (pair.first->IsTunneled() == false)
+					fULPopup->setItemEnabled(ID_THROTTLE, true);
+				else
+					fULPopup->setItemEnabled(ID_THROTTLE, false);
 				fULPopup->setItemEnabled(ID_SETPACKET, true);
 				fULPopup->setItemEnabled(ID_CANCEL, true);
 			}
@@ -2536,7 +2737,10 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 			}
 			else
 			{
-				fDLPopup->setItemEnabled(ID_THROTTLE, true);
+				if (pair.first->IsTunneled() == false)
+					fDLPopup->setItemEnabled(ID_THROTTLE, true);
+				else
+					fDLPopup->setItemEnabled(ID_THROTTLE, false);
 				fDLPopup->setItemEnabled(ID_RUN, false);
 				fDLPopup->setItemEnabled(ID_CANCEL, true);
 
@@ -3157,3 +3361,9 @@ WDownload::SendSignal(int signal)
 		QApplication::postEvent(this, qce);
 }
 
+
+NetClient *
+WDownload::NetClient()
+{
+	return gWin->fNetClient;
+}

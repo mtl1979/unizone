@@ -36,6 +36,7 @@ class WUploadThread;
 class WFileThread;
 class WUser;
 class WTransferItem;
+class NetClient;
 
 typedef Ref<WUser> WUserRef;
 
@@ -90,6 +91,15 @@ public:
 	void AddUpload(int socket, uint32 remoteIP, bool queued);
 	void AddUpload(const QString & remoteIP, uint32 port);
 
+	// Upload tunnel
+	bool CreateTunnel(const QString & userID, int32 hisID, void * &myID);
+	// Download tunnel
+	bool CreateTunnel(QString * files, QString * lfiles, int32 numFiles, const WUserRef & remoteUser);
+	void TunnelAccepted(int32 myID, int32 hisID);
+	void TunnelRejected(int32 myID);
+
+	void TunnelMessage(int32 myID, const MessageRef & tmsg, bool download);
+
 	void DequeueDLSessions();
 	void DequeueULSessions();
 	void KillLocalQueues();
@@ -100,6 +110,7 @@ public:
 
 	void EmptyLists();
 
+	NetClient * NetClient();
 
 protected:
 	virtual void customEvent(QCustomEvent *);

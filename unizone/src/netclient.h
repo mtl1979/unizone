@@ -79,7 +79,11 @@ public:
 			PING,
 			PONG,
 			SCAN_THREAD_REPORT,
-			NEW_PICTURE
+			NEW_PICTURE,
+			REQUEST_TUNNEL,
+			ACCEPT_TUNNEL,
+			REJECT_TUNNEL,
+			TUNNEL_MESSAGE
 	}; 
 	
 	// path matching -- BeShare

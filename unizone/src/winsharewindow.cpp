@@ -406,7 +406,7 @@ WinShareWindow::Cleanup()
 
 	if (fFileScanThread)
 	{
-		WaitOnFileThread();
+		WaitOnFileThread(true);
 		delete fFileScanThread;
 		fFileScanThread = NULL; // <postmaster@raasu.org> 20021027
 	}
@@ -483,6 +483,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				}
 
 				fDisconnect = false;
+				fDisconnectFlag = false;
 				fDisconnectCount = 0;
 
 				// Set Outgoing Message Encoding
@@ -1988,11 +1989,14 @@ WinShareWindow::SetAutoAwayTimer()
 }
 
 void
-WinShareWindow::WaitOnFileThread()
+WinShareWindow::WaitOnFileThread(bool abort)
 {
-	fFileShutdownFlag = true;
+	fFileShutdownFlag = abort;
 	if (fFileScanThread->running())
 	{
+		if (abort) 
+			fFilesScanned = false;
+
 		PrintSystem(tr("Waiting for file scan thread to finish..."));
 		while (fFileScanThread->running()) 
 		{
@@ -2377,7 +2381,7 @@ WinShareWindow::ScanShares(bool rescan)
 		return;
 	}
 
-	WaitOnFileThread();
+	WaitOnFileThread(rescan);
 
 	// already running?
 	if (fFileScanThread->running())
@@ -2467,9 +2471,10 @@ WinShareWindow::UpdateShares()
 		CancelShares();
 
 		fFileScanThread->Lock();
+		int numShares = fFileScanThread->GetNumFiles();
 		if (fSettings->GetInfo())
-			PrintSystem(tr("Sharing %1 file(s).").arg(fFileScanThread->GetNumFiles()));
-		fNetClient->SetFileCount(fFileScanThread->GetNumFiles());
+			PrintSystem(tr("Sharing %1 file(s).").arg(numShares));
+		fNetClient->SetFileCount(numShares);
 		PRINT("Doing a scan of the returned files for uploading.\n");
 		int m = 0;
 		MessageRef refScan(GetMessageFromPool(PR_COMMAND_SETDATA));

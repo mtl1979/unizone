@@ -579,7 +579,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					if (tire())
 					{
 						tire()->AddString(PR_NAME_KEYS, to);
-						tire()->AddString("session", (const char *) GetUserID().utf8());
+						tire()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 						if (command == "gmt")
 						{
 							tire()->AddBool("gmt", true);
@@ -1389,7 +1389,11 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				if (fSettings->GetSharingEnabled())
 				{
 					StartAcceptThread();
-					if (!fFilesScanned)
+					WaitOnFileThread(false);
+					fFileScanThread->Lock();
+					int numShares = fFileScanThread->GetNumFiles();
+					fFileScanThread->Unlock();
+					if (!fFilesScanned || (numShares == 0))
 						ScanShares();
 					else
 						UpdateShares();
@@ -1410,7 +1414,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			
 			const char * session;
 			int32 port;
-			if ((msg()->FindString("session", &session) == B_OK) && (msg()->FindInt32("port", &port) == B_OK))
+			if ((msg()->FindString(PR_NAME_SESSION, &session) == B_OK) && (msg()->FindInt32("port", &port) == B_OK))
 			{
 				WUserRef user = fNetClient->FindUser(session);
 				if (user())
@@ -1424,6 +1428,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		
 	case NetClient::NEW_PICTURE:
 		{
+			PRINT("\tNEW_PICTURE\n");
 			// QString userName = tr("Unknown");
 			QString userID;
 			QString file;
@@ -1431,7 +1436,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				const char * session;		// from user (their session id)
 
-				if (msg()->FindString("session", &session) == B_OK)
+				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
 					userID = QString(session);
 			}
 
@@ -1476,6 +1481,166 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				
 			break;
 		}
+	/* Tunneled transfers:
+	//
+	// my_id     = message sender's tunnel id
+	// tunnel_id = message recipient's tunnel id
+	// upload    = true, if sender thinks it's his/her upload...
+	*/
+	case NetClient::REQUEST_TUNNEL:
+		{
+			PRINT("\tREQUEST_TUNNEL\n");
+
+			// QString userName = tr("Unknown");
+			QString userID;
+			int32 hisID;
+			
+			{
+				const char * session;		// from user (their session id)
+
+				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
+					userID = QString(session);
+			}
+
+			msg()->FindInt32("my_id", &hisID);
+
+			WUserRef uref = FindUser(userID);
+
+			if (uref())
+			{
+				if (IsIgnored(uref()->GetUserID(), true))
+				{
+					MessageRef rej = GetMessageFromPool(NetClient::REJECT_TUNNEL);
+					if (rej())
+					{
+						QString to("/*/");
+						to += userID;
+						to += "/beshare";
+						rej()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+						rej()->AddString(PR_NAME_SESSION, (const char *) fNetClient->LocalSessionID().utf8());
+						rej()->AddInt32("tunnel_id", (int32) hisID);
+						fNetClient->SendMessageToSessions(rej);
+					}
+				}
+				else
+				{
+					MessageRef acc = GetMessageFromPool(NetClient::ACCEPT_TUNNEL);
+					if (acc())
+					{
+						QString to("/*/");
+						to += userID;
+						to += "/beshare";
+						acc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+						acc()->AddString(PR_NAME_SESSION, (const char *) fNetClient->LocalSessionID().utf8());
+						void * tunnelID = NULL;
+						OpenDownload();
+						if (fDLWindow->CreateTunnel(userID, hisID, tunnelID))
+						{
+							acc()->AddInt32("tunnel_id", (int32) hisID);
+							acc()->AddInt32("my_id", (int32) tunnelID);
+							fNetClient->SendMessageToSessions(acc);
+						}
+					}
+				}
+			}
+
+			break;
+		}
+	case NetClient::ACCEPT_TUNNEL:
+		{
+			PRINT("\tACCEPT_TUNNEL\n");
+
+			// QString userName = tr("Unknown");
+			QString userID;
+			int32 hisID;
+			int32 myID;
+			
+			{
+				const char * session;		// from user (their session id)
+
+				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
+					userID = QString(session);
+			}
+
+			msg()->FindInt32("my_id", &hisID);
+			msg()->FindInt32("tunnel_id", &myID);
+
+			WUserRef uref = FindUser(userID);
+
+			if (uref())
+			{
+				if (IsIgnored(uref()->GetUserID(), true))
+					return;
+
+				OpenDownload();
+				fDLWindow->TunnelAccepted(myID, hisID);
+			}
+			break;
+		}
+	case NetClient::REJECT_TUNNEL:
+		{
+			PRINT("\tREJECT_TUNNEL\n");
+
+			// QString userName = tr("Unknown");
+			QString userID;
+			int32 myID;
+			
+			{
+				const char * session;		// from user (their session id)
+
+				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
+					userID = QString(session);
+			}
+
+			msg()->FindInt32("tunnel_id", &myID);
+
+			WUserRef uref = FindUser(userID);
+
+			if (uref())
+			{
+				if (IsIgnored(uref()->GetUserID(), true))
+					return;
+
+				if (fDLWindow)
+					fDLWindow->TunnelRejected(myID);
+			}
+			break;
+		}
+	case NetClient::TUNNEL_MESSAGE:
+		{
+			PRINT("\tTUNNEL_MESSAGE\n");
+
+			// QString userName = tr("Unknown");
+			QString userID;
+			int32 myID;
+			bool upload = false;
+			MessageRef tmsg;
+			
+			{
+				const char * session;		// from user (their session id)
+
+				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
+					userID = QString(session);
+			}
+
+			msg()->FindInt32("tunnel_id", &myID);
+
+			msg()->FindBool("upload", &upload);
+			msg()->FindMessage("message", tmsg);
+
+			WUserRef uref = FindUser(userID);
+
+			if (uref())
+			{
+				if (IsIgnored(uref()->GetUserID(), true))
+					return;
+
+				OpenDownload();
+				fDLWindow->TunnelMessage(myID, tmsg, upload); // His/her upload is our download
+			}
+
+			break;
+		}
 	case NetClient::NEW_CHAT_TEXT:
 		{
 			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
@@ -1485,7 +1650,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				const char * session;		// from user (their session id)
 
-				if (msg()->FindString("session", &session) == B_OK)
+				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
 					userID = QString(session);
 			}
 
@@ -1668,7 +1833,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					const char * strTemp;
 					const char * strChannel;
 			
-					msg()->FindString("session", &session);
+					msg()->FindString(PR_NAME_SESSION, &session);
 					msg()->FindString("text", &strTemp);
 					msg()->FindString("channel", &strChannel);
 			
@@ -1698,7 +1863,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				String repname;
 				int64 rtime;
 				if (
-					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
 					(msg()->FindInt64("registertime", &rtime) == B_OK) &&
 					(msg()->FindString("name", repname) == B_OK)
 					)
@@ -1711,7 +1876,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						to += "/unishare";
 						col()->AddString(PR_NAME_KEYS, to);
 						col()->AddString("name", (const char *) GetUserName().utf8() );
-						col()->AddString("session", (const char *) GetUserID().utf8());
+						col()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 						col()->AddInt64("registertime", GetRegisterTime() );
 						
 						fNetClient->SendMessageToSessions(col);
@@ -1725,7 +1890,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				String repto;
 				int64 rtime;
 				if (
-					(msg()->FindString("session", repto) == B_OK) && 
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) && 
 					(msg()->FindInt64("registertime", &rtime) == B_OK)
 					)
 				{
@@ -1741,7 +1906,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				String channel, repto;
 				int64 rtime;
 				if (
-					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
 					(msg()->FindString("channel", channel) == B_OK) &&
 					(msg()->FindInt64("when", &rtime) == B_OK)
 					)
@@ -1757,7 +1922,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				String channel, repto;
 				if (
-					(msg()->FindString("session", repto) == B_OK) && 
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) && 
 					(msg()->FindString("channel", channel) == B_OK)
 					)
 				{
@@ -1771,7 +1936,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				String channel, repto;
 				if (
-					(msg()->FindString("session", repto) == B_OK) && 
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) && 
 					(msg()->FindString("channel", channel) == B_OK)
 					)
 				{
@@ -1785,7 +1950,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				String channel, repto, who;
 				if (
-					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
 					(msg()->FindString("who", who) == B_OK) &&
 					(msg()->FindString("channel", channel) == B_OK)
 					)
@@ -1801,7 +1966,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				String channel, repto, who;
 				if (
-					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
 					(msg()->FindString("who", who) == B_OK) &&
 					(msg()->FindString("channel", channel) == B_OK)
 					)
@@ -1817,7 +1982,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				String channel, repto, topic;
 				if (
-					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
 					(msg()->FindString("topic", topic) == B_OK) && 
 					(msg()->FindString("channel", channel) == B_OK)
 					)
@@ -1834,7 +1999,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				String channel, repto;
 				bool pub;
 				if (
-					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
 					(msg()->FindBool("public", &pub) == B_OK) &&
 					(msg()->FindString("channel", channel) == B_OK)
 					)
@@ -1848,7 +2013,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		case NetClient::PING:
 			{
 				String repto;
-				if (msg()->FindString("session", repto) == B_OK)
+				if (msg()->FindString(PR_NAME_SESSION, repto) == B_OK)
 				{
 					WUserIter uit = fNetClient->Users().find(QString::fromUtf8(repto.Cstr()));
 					if (uit != fNetClient->Users().end())
@@ -1869,8 +2034,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					
 					msg()->RemoveName(PR_NAME_KEYS);
 					msg()->AddString(PR_NAME_KEYS, tostr);
-					msg()->RemoveName("session");
-					msg()->AddString("session", (const char *) GetUserID().utf8());
+					msg()->RemoveName(PR_NAME_SESSION);
+					msg()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 					msg()->RemoveName("version");
 					
 					QString version = tr("Unizone (English)");
@@ -1906,7 +2071,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				if (!fSettings->GetInfo())
 					return;
 				
-				if ((msg()->FindString("session", &session) == B_OK) && (msg()->FindInt64("when", &when) == B_OK))
+				if ((msg()->FindString(PR_NAME_SESSION, &session) == B_OK) && (msg()->FindInt64("when", &when) == B_OK))
 				{
 					WUserRef user = fNetClient->FindUser(session);
 					if (user())
@@ -1939,7 +2104,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		case TimeRequest:
 			{
 				String lt, session;
-				if (msg()->FindString("session", session) == B_OK)
+				if (msg()->FindString(PR_NAME_SESSION, session) == B_OK)
 				{
 					String tostr("/*/");
 					tostr += session;
@@ -1971,7 +2136,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					if (tire())
 					{
 						tire()->AddString(PR_NAME_KEYS, tostr);
-						tire()->AddString("session", (const char *) GetUserID().utf8());
+						tire()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 						tire()->AddString("time", lt);
 						tire()->AddString("zone", zone);
 						fNetClient->SendMessageToSessions(tire);
@@ -1983,7 +2148,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				String sTime, sZone;
 				const char * session;
-				if (msg()->FindString("session", &session) == B_OK)
+				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
 				{
 					WUserRef user = fNetClient->FindUser(session);
 					if (user())
@@ -2008,7 +2173,7 @@ WinShareWindow::Connect()
 	fGotResults = true;
 	if (fNetClient)
 	{
-		WaitOnFileThread();	// make sure our scan thread is dead
+		WaitOnFileThread(false);	// make sure our scan thread is dead
 		Disconnect();
 		fNetClient->SetUserName(GetUserName()); // We need this for binkies
 
@@ -2067,7 +2232,7 @@ WinShareWindow::Disconnect2()
 	if (fConnectTimer->isActive())
 		fConnectTimer->stop();
 
-	WaitOnFileThread();
+	WaitOnFileThread(false);
 
 	if (fNetClient && fNetClient->IsConnected()	/* this is to stop a forever loop involving the DisconnectedFromServer() signal */)
 	{

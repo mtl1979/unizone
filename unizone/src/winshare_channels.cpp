@@ -177,7 +177,7 @@ WinShareWindow::CreateChannel()
 			{
 				QString to("/*/*/unishare");
 				cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-				cc()->AddString("session", (const char *) GetUserID().utf8());
+				cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 				cc()->AddInt64("when", GetCurrentTime64());
 				cc()->AddString("channel", (const char *) text.utf8());
 				fNetClient->SendMessageToSessions(cc);
@@ -254,7 +254,7 @@ WinShareWindow::JoinChannel(const QString & channel)
 		{
 			QString to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString("session", (const char *) GetUserID().utf8());
+			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 			cc()->AddString("who", (const char *) GetUserID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) channel.utf8());
@@ -293,8 +293,8 @@ WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, i
 			QString to("/*/");
 			to += owner;
 			to += "/unishare";
-				cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString("session", (const char *) GetUserID().utf8());
+			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 			cc()->AddInt64("when", (*it).second->GetCreated());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
@@ -339,7 +339,7 @@ WinShareWindow::PartChannel(const QString & channel, const QString & user)
 		{
 			QString to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString("session", (const char *) GetUserID().utf8());
+			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
