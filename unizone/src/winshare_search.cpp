@@ -204,16 +204,25 @@ WinShareWindow::SplitQuery(const String &fileExp)
 		// User ID?
 		user = (const char *) (*it).first.latin1();
 		user = user.Prepend("@");
-		if (fileExp.EndsWithIgnoreCase(user))
+		if (fileExp.EndsWith(user))
 		{
 			return fileExp.LastIndexOf(user);
 		}
 		// User Name?
-		user = (const char *) (*it).second()->GetUserName().lower().utf8();
-		user = user.Prepend("@");
-		if (fileExp.EndsWithIgnoreCase(user))
+		QString name = (*it).second()->GetUserName().lower();
+		name = StripURL(name);
+
+		// Convert fileExp to Unicode and try to compare end of it against stripped user name
+		
+		QString temp = QString::fromUtf8(fileExp.Cstr());
+		if (temp.right(name.length()).lower() == name)
 		{
-			return fileExp.LastIndexOf(user);
+			temp.truncate(temp.length() - name.length());
+			if (temp.right(1) == "@")
+			{
+				String tmp = (const char *) temp.utf8();
+				return tmp.Length() - 1;
+			}
 		}
 		it++;
 	}
