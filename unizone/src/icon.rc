@@ -102,7 +102,7 @@ BEGIN
             VALUE "FileDescription", "Unizone\0"
             VALUE "FileVersion", "1, 21, 9, 0\0"
             VALUE "InternalName", "Unizone\0"
-            VALUE "LegalCopyright", "Copyright © 2002-2003 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
+            VALUE "LegalCopyright", "Copyright © 2002-2004 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
             VALUE "LegalTrademarks", "Unizone on Mika T. Lindqvistin tavaramerkki, Ozone on Vitaliy Mikitchenkon tavaramerkki\0"
             VALUE "OriginalFilename", "Unizone.exe\0"
             VALUE "PrivateBuild", "\0"
