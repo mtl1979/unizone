@@ -73,8 +73,6 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fDLWindow = NULL;
 	fAccept = NULL;
 	
-	RedirectDebugOutput();
-
 	fUpdateThread = new NetClient(this);
 	CHECK_PTR(fUpdateThread);
 
@@ -1141,8 +1139,10 @@ void
 WinShareWindow::UpdateTextView()
 {
 	// <postmaster@raasu.org> 20021021 -- Fixed too long line in debug output
+#ifdef DEBUG2
 	PRINT("UPDATETEXTVIEW: ContentsX = %d, ContentsY = %d\n", fChatText->contentsX(),		fChatText->contentsY());
 	PRINT("              : ContentsW = %d, ContentsH = %d\n", fChatText->contentsWidth(),	fChatText->contentsHeight());
+#endif
 	if (fScrollDown)
 		fChatText->setContentsPos(0, fChatText->contentsHeight());
 #ifndef WIN32	// linux only...
@@ -1155,10 +1155,17 @@ WinShareWindow::UpdateTextView()
 void
 WinShareWindow::UpdateUserList()
 {
-	WUserMap & users = fNetClient->Users();
+	WUserMap/* & */users = fNetClient->Users();
 
-	for (WUserIter it = users.begin(); it != users.end(); it++)
-		(*it).second()->AddToListView(fUsers);
+	WUserIter it = users.begin();
+	while (it != users.end())
+	{
+		if ((*it).second())
+		{
+			(*it).second()->AddToListView(fUsers);
+		}
+		it++;
+	}
 }
 
 QString
@@ -1315,7 +1322,9 @@ void
 WinShareWindow::CheckScrollState()
 {
 	QScrollBar * scroll = fChatText->verticalScrollBar();
+#ifdef DEBUG2
 	PRINT("CHECKSCROLLSTATE: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
+#endif
 	if (scroll->value() >= scroll->maxValue())
 		fScrollDown = true;
 	else

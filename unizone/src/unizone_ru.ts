@@ -190,7 +190,7 @@ Version %1</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation>%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
         <source>Not allowed!
@@ -219,7 +219,7 @@ Version %1</translation>
     </message>
     <message>
         <source>%1 - %2</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>You got kicked off from this channel!</source>
@@ -403,6 +403,34 @@ Version %1</translation>
     </message>
     <message>
         <source>Dec</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Mon</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Tue</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Wed</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Thu</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Fri</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Sat</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Sun</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -685,6 +713,11 @@ Date: %4</translation>
     <message>
         <source>Unizone (English)</source>
         <translation>Unizone (Русский)</translation>
+    </message>
+    <message>
+        <source>Date:</source>
+        <comment>Date</comment>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

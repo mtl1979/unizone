@@ -164,7 +164,9 @@ WUser::AddToListView(QListView * view)
 	WListIter it = fLists.find(view);
 
 	QString qUpload;
-	qUpload = QObject::tr("%1,%2").arg(fCurUploads).arg(fMaxUploads);
+	qUpload = fCurUploads;
+	qUpload += ",";
+	qUpload += fMaxUploads;
 	//
 	char strFileCount[10];
 	sprintf(strFileCount,"%6lu",fFileCount);

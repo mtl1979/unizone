@@ -372,7 +372,7 @@ Channel::customEvent(QCustomEvent * event)
 					{
 						if ( gWin->IsAdmin(fName, (*iter).second()->GetUserID()) )
 						{
-							PrintSystem( tr("%1 - %2").arg((*iter).second()->GetUserID()).arg((*iter).second()->GetUserName()) );
+							PrintSystem( (*iter).second()->GetUserID() + " - " + (*iter).second()->GetUserName() );
 						}
 					}
 
@@ -706,7 +706,7 @@ Channel::Action(const QString & name, const QString & msg, bool batch)
 		QApplication::beep();
 
 	QString chat = WFormat::Action().arg(WColors::Action).arg(gWin->fSettings->GetFontSize());
-	chat += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(tr("%1 %2").arg(FixStringStr(name)).arg(nameText));
+	chat += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(FixStringStr(name) + " " + nameText);
 	CheckScrollState();
 	PrintText(chat);
 }

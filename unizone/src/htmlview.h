@@ -2,7 +2,7 @@
 #define HTMLVIEW_H
 
 #ifdef UNIVIEW
-#define PRINT qDebug
+#include "../UniView/debugimpl.h"
 #else
 #include "debugimpl.h"
 #endif

@@ -6,7 +6,7 @@
 #endif
 
 #ifdef UNIVIEW
-#  define PRINT qDebug
+#  include "../UniView/debugimpl.h"
 #else
 #  include "debugimpl.h"
 #endif
@@ -26,14 +26,18 @@ void
 WHTMLView::viewportMousePressEvent(QMouseEvent * e)
 {
 	QTextBrowser::viewportMousePressEvent(e);
+#ifdef DEBUG2
 	PRINT("WHTMLView: Press\n");
+#endif
 }
 
 void
 WHTMLView::viewportMouseReleaseEvent(QMouseEvent * e)
 {
 	QTextBrowser::viewportMouseReleaseEvent(e);
+#ifdef DEBUG2
 	PRINT("WHTMLView: Release\n");
+#endif
 }
 
 void
@@ -47,7 +51,9 @@ WHTMLView::viewportMouseMoveEvent(QMouseEvent * e)
 			QToolTip::add(this, fURL);
 	}
 	QTextBrowser::viewportMouseMoveEvent(e);
+#ifdef DEBUG2
 	PRINT("WHTMLView: Move\n");
+#endif
 }
 
 void 
@@ -96,7 +102,7 @@ ParseForShown(const QString & txt)
 {
 	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
 	QString out;
-#ifdef DEBUG
+#ifdef DEBUG2									// Makes huge debug logs, so use only if really necessary
 	QString temp = txt;
 	temp.replace(QRegExp("<br>"), "\t");		// Resplit lines, so debugging is easier ;)
 	QStringTokenizer tk(temp, "\t");
@@ -111,7 +117,7 @@ ParseForShown(const QString & txt)
 		}
 		else
 		{
-			line = "<br>"; // replace our TAB
+			line = "<br>";	// replace our TAB
 		}
 		WString wLine = line;
 		PRINT("ParseForShown: %S", wLine.getBuffer());	
@@ -119,7 +125,7 @@ ParseForShown(const QString & txt)
 	}
 #else
 	out = txt;
-	out.replace(QRegExp("\t"), "<br>");
+	out.replace(QRegExp("\t"), "<br>");		// replace our TAB
 
 	// Remove any extra line breaks in start of buffer
 	//

@@ -219,7 +219,7 @@ Version %1</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation>%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
         <source>Not allowed!
@@ -253,7 +253,7 @@ Version %1</translation>
     </message>
     <message>
         <source>%1 - %2</source>
-        <translation>%1 - %2</translation>
+        <translation type='obsolete'>%1 - %2</translation>
     </message>
     <message>
         <source>You got kicked off from this channel!</source>
@@ -438,6 +438,34 @@ Version %1</translation>
     <message>
         <source>Dec</source>
         <translation>Dec</translation>
+    </message>
+    <message>
+        <source>Mon</source>
+        <translation>Mon</translation>
+    </message>
+    <message>
+        <source>Tue</source>
+        <translation>Tue</translation>
+    </message>
+    <message>
+        <source>Wed</source>
+        <translation>Wed</translation>
+    </message>
+    <message>
+        <source>Thu</source>
+        <translation>Thu</translation>
+    </message>
+    <message>
+        <source>Fri</source>
+        <translation>Fri</translation>
+    </message>
+    <message>
+        <source>Sat</source>
+        <translation>Sat</translation>
+    </message>
+    <message>
+        <source>Sun</source>
+        <translation>Sun</translation>
     </message>
 </context>
 <context>
@@ -719,6 +747,11 @@ Date: %4</translation>
     <message>
         <source>Unizone (English)</source>
         <translation>Unizone (English)</translation>
+    </message>
+    <message>
+        <source>Date:</source>
+        <comment>Date</comment>
+        <translation>Date:</translation>
     </message>
 </context>
 <context>

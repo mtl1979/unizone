@@ -179,23 +179,26 @@ WFileThread::ScanFiles(QString directory)
 void
 WFileThread::AddFile(const QString & filePath)
 {
+#ifdef DEBUG2
 	WString wFilePath = filePath;
 	PRINT("Setting to filePath: %S\n", wFilePath.getBuffer());
+#endif
 	
 	QFileInfo * finfo = new QFileInfo(filePath);
 	CHECK_PTR(finfo);
 				
+#ifdef DEBUG2
 	PRINT("Set\n");
+#endif
 				
 	if (finfo->exists())
 	{
+#ifdef DEBUG2
 		PRINT("Exists\n");
+#endif
 					
 		// resolve symlink
 		QString ret = ResolveLink(finfo->filePath());
-
-		WString wRet = ret;
-		PRINT("Resolved to: %S\n", wRet.getBuffer());
 
 		finfo->setFile(ret);
 					
@@ -253,8 +256,13 @@ WFileThread::ResolveLink(const QString & lnk)
 {
 #ifdef WIN32
 	QString ret = lnk;
-	WString wRet = ret;
-	PRINT("\tResolving %S\n", wRet.getBuffer);
+
+#ifdef DEBUG2
+	{
+		WString wRet = ret;
+		PRINT("\tResolving %S\n", wRet.getBuffer());
+	}
+#endif
 
 	if (ret.right(4) == ".lnk")
 	{
@@ -304,6 +312,11 @@ WFileThread::ResolveLink(const QString & lnk)
 			// Fallback to ANSI
 			ret = ResolveLinkA(lnk);
 		}
+	}
+
+	{
+		WString wRet = ret;
+		PRINT("Resolved to: %S\n", wRet.getBuffer());
 	}
 
 	return ret;

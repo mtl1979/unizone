@@ -35,6 +35,8 @@ main( int argc, char** argv )
 	fStartTime = GetCurrentTime64();
 	QApplication app( argc, argv );
 
+	RedirectDebugOutput();
+
 	// Set alternative codec if translation requires it
 
 #ifdef ALTCHARSET

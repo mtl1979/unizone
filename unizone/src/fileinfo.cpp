@@ -42,7 +42,9 @@ UFileInfo::InitMIMEType()
 		// <postmaster@raasu.org> -- Don't use Unicode (wide-char) functions for char[] and char *
 		if ((ret = RegQueryValueExA(hkey, "Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
 		{
+#ifdef DEBUG2
 			PRINT("Read key: %s\n", key);
+#endif
 			mt = key;
 		}
 		else
@@ -82,7 +84,9 @@ UFileInfo::InitModificationTime()
 
 		if (fileHandle)
 		{
+#ifdef DEBUG2
 			PRINT("File opened!\n");
+#endif
 			if (GetFileTime(fileHandle, NULL, NULL, &ftime))
 			{
 				ftTime = (uint64)
@@ -185,12 +189,5 @@ UFileInfo::getSize()
 bool
 UFileInfo::isValid()
 {
-	if (exists())	// non-existent file
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return exists();	// non-existent file?
 }

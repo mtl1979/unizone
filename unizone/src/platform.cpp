@@ -91,9 +91,11 @@ bool
 CompareCommand(QString qCommand, const char * cCommand)
 {
 	QString com = GetCommandString(qCommand);
+#ifdef DEBUG2
 	WString wCommand = com;
 	PRINT("Compare String: qCommand=\'%S\'\n", wCommand.getBuffer());
 	PRINT("                cCommand=\'%s\'\n", cCommand);
+#endif
 	return (strcmp(com.latin1(), cCommand) ? false : true);
 }
 
@@ -421,18 +423,18 @@ void ConvertToRegex(String & s)
 }
 
 const char * MonthNames[12] = {
-								QT_TRANSLATE_NOOP( "Date", "Jan"),
-								QT_TRANSLATE_NOOP( "Date", "Feb"),
-								QT_TRANSLATE_NOOP( "Date", "Mar"),
-								QT_TRANSLATE_NOOP( "Date", "Apr"),
-								QT_TRANSLATE_NOOP( "Date", "May"),
-								QT_TRANSLATE_NOOP( "Date", "Jun"),
-								QT_TRANSLATE_NOOP( "Date", "Jul"),
-								QT_TRANSLATE_NOOP( "Date", "Aug"),
-								QT_TRANSLATE_NOOP( "Date", "Sep"),
-								QT_TRANSLATE_NOOP( "Date", "Oct"),
-								QT_TRANSLATE_NOOP( "Date", "Nov"),
-								QT_TRANSLATE_NOOP( "Date", "Dec")
+								QT_TRANSLATE_NOOP( "Date", "Jan" ),
+								QT_TRANSLATE_NOOP( "Date", "Feb" ),
+								QT_TRANSLATE_NOOP( "Date", "Mar" ),
+								QT_TRANSLATE_NOOP( "Date", "Apr" ),
+								QT_TRANSLATE_NOOP( "Date", "May" ),
+								QT_TRANSLATE_NOOP( "Date", "Jun" ),
+								QT_TRANSLATE_NOOP( "Date", "Jul" ),
+								QT_TRANSLATE_NOOP( "Date", "Aug" ),
+								QT_TRANSLATE_NOOP( "Date", "Sep" ),
+								QT_TRANSLATE_NOOP( "Date", "Oct" ),
+								QT_TRANSLATE_NOOP( "Date", "Nov" ),
+								QT_TRANSLATE_NOOP( "Date", "Dec" )
 };
 
 QString TranslateMonth(QString m)
@@ -440,30 +442,73 @@ QString TranslateMonth(QString m)
 	return QObject::tr(m.latin1());
 }
 
+const char * DayNames[7] = {
+								QT_TRANSLATE_NOOP( "Date", "Mon" ),
+								QT_TRANSLATE_NOOP( "Date", "Tue" ),
+								QT_TRANSLATE_NOOP( "Date", "Wed" ),
+								QT_TRANSLATE_NOOP( "Date", "Thu" ),
+								QT_TRANSLATE_NOOP( "Date", "Fri" ),
+								QT_TRANSLATE_NOOP( "Date", "Sat" ),
+								QT_TRANSLATE_NOOP( "Date", "Sun" )
+};
+
+QString TranslateDay(QString d)
+{
+	return QObject::tr(d.latin1());
+}
+
 QString
 GetTimeStamp()
 {
+	static QString _day = "";
 	QString qCurTime;
 
 	qCurTime = QDateTime::currentDateTime().toString();
-	qCurTime.truncate(qCurTime.findRev(" "));			// Strip off year
-	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);	// ... and day of week
+
+	// Strip off year
+	QString qYear = qCurTime.mid(qCurTime.findRev(" ") + 1);
+	qCurTime.truncate(qCurTime.findRev(" "));			
+	
+	// ... and day of week
+	QString qDOW = qCurTime.left(qCurTime.find(" "));
+	qDOW = TranslateDay(qDOW);
+
+	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);	
 	
 	// Linux ;)
 	QChar q(160,0);
 	qCurTime.replace(QRegExp(q), "");
 	//
-	QString qMonth = qCurTime.left(3);
+
+	// Strip Month and translate it
+	QString qMonth = qCurTime.left(qCurTime.find(" "));
 	qMonth = TranslateMonth(qMonth);
 	
-	qCurTime = qCurTime.mid(3);
+	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);
+
+	// Strip Day
+	QString qDay = qCurTime.left(qCurTime.find(" "));
 	
-	 qCurTime = qCurTime.prepend(qMonth);
+	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);
+	
+	QString ret = "";
+	// Is this first time today?
+
+	QString qDate = qDOW + " " + qMonth + " " + qDay + " " + qYear;
+	if (qDate != _day)
+	{
+		_day = qDate;
+		qDate.prepend(" ");
+		qDate.prepend(QObject::tr("Date:", "Date"));
+		ret = WFormat::TimeStamp.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(qDate);
+		ret += "<br>";
+	}
+	
+	//qCurTime = qCurTime.prepend(qMonth);
 	qCurTime = qCurTime.prepend("[");
 	qCurTime = qCurTime.append("] ");
 
-	QString cl = WColors::Text;
-	QString ret = WFormat::TimeStamp.arg(cl).arg(gWin->fSettings->GetFontSize()).arg(qCurTime);
+	ret += WFormat::TimeStamp.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(qCurTime);
 	return ret;
 }
 

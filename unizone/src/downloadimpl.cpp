@@ -1013,9 +1013,11 @@ WDownload::customEvent(QCustomEvent * e)
 				{
 					if (msg()->FindInt32("got", (int32 *)&got) == B_OK)	// a download ("got")
 					{
+#ifdef DEBUG2
 						PRINT("\tOffset: %d\n", offset);
 						PRINT("\tSize  : %d\n", size);
 						PRINT("\tGot   : %d\n", got);
+#endif
 						gWin->UpdateReceiveStats(got);
 						
 						double secs = 0.0f;
@@ -1076,9 +1078,11 @@ WDownload::customEvent(QCustomEvent * e)
 					}
 					else if (msg()->FindInt32("sent", (int32 *)&got) == B_OK)	// an upload ("sent")
 					{
+#ifdef DEBUG2
 						PRINT("\tOffset: %d\n", offset);
 						PRINT("\tSize  : %d\n", size);
 						PRINT("\tSent  : %d\n", got);
+#endif
 						gWin->UpdateTransmitStats(got);
 						
 						double secs = 0.0f;
