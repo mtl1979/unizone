@@ -1,8 +1,10 @@
 #include "channelsimpl.h"
 #include "tokenizer.h"
 #include "global.h"
+#include "debugimpl.h"
 
 #include <qinputdialog.h>
+#include <qmessagebox.h>
 
 Channels::Channels(QWidget* parent, NetClient * net, const char* name, bool modal, WFlags fl)
 : ChannelsBase(parent, name, modal, /* QDialog::WDestructiveClose |*/ QWidget::WStyle_Minimize | 

@@ -8,6 +8,8 @@
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "platform.h"	// <postmaster@raasu.org> 20021114
+#include "debugimpl.h"
+
 #include <qdir.h>
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)

@@ -3,6 +3,7 @@
 
 #include "ulistview.h"
 #include "settings.h"
+#include "debugimpl.h"
 
 WUniListItem::WUniListItem(
 						   QListView * parent, 

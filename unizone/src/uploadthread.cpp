@@ -9,6 +9,7 @@
 #include "settings.h"
 #include "md5.h"
 #include "platform.h"		// <postmaster@raasu.org> 20021114
+#include "debugimpl.h"
 
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	: WGenericThread(owner, optShutdownFlag) 
