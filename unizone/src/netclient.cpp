@@ -823,7 +823,9 @@ NetClient::SetUserName(const QString & user)
 				ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
 				ref()->AddString("version_num", (const char *) vstring);
 				ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes
+#ifndef DISABLE_TUNNELING
 				ref()->AddBool("supports_transfer_tunneling", true);
+#endif
 				ref()->AddBool("firewalled", win->fSettings->GetFirewalled()); // is firewalled user, needed if no files shared
 				
 				SetNodeValue("beshare/name", ref);
@@ -835,60 +837,75 @@ NetClient::SetUserName(const QString & user)
 void
 NetClient::SetUserStatus(const QString & status)
 {
-	MessageRef ref(GetMessageFromPool());
-	if (ref())
+	if (qmtt->IsInternalThreadRunning())
 	{
-		ref()->AddString("userstatus", (const char *) status.utf8()); // <postmaster@raasu.org> 20021001
-		SetNodeValue("beshare/userstatus", ref);
+		MessageRef ref(GetMessageFromPool());
+		if (ref())
+		{
+			ref()->AddString("userstatus", (const char *) status.utf8()); // <postmaster@raasu.org> 20021001
+			SetNodeValue("beshare/userstatus", ref);
+		}
 	}
 }
 
 void
 NetClient::SetConnection(const QString & connection)
 {
-	MessageRef ref(GetMessageFromPool());
-	if (ref())
+	if (qmtt->IsInternalThreadRunning())
 	{
-		int32 bps = BandwidthToBytes(connection);
-
-		ref()->AddString("label", (const char *) connection.utf8());
-		ref()->AddInt32("bps", bps);
-
-		SetNodeValue("beshare/bandwidth", ref);
+		MessageRef ref(GetMessageFromPool());
+		if (ref())
+		{
+			int32 bps = BandwidthToBytes(connection);
+			
+			ref()->AddString("label", (const char *) connection.utf8());
+			ref()->AddInt32("bps", bps);
+			
+			SetNodeValue("beshare/bandwidth", ref);
+		}
 	}
 }
 
 void
 NetClient::SetNodeValue(const char * node, MessageRef & val, int priority)
 {
-	MessageRef ref(GetMessageFromPool(PR_COMMAND_SETDATA));
-	if (ref())
+	if (qmtt->IsInternalThreadRunning())
 	{
-		ref()->AddMessage(node, val);
-		SendMessageToSessions(ref, priority);
+		MessageRef ref(GetMessageFromPool(PR_COMMAND_SETDATA));
+		if (ref())
+		{
+			ref()->AddMessage(node, val);
+			SendMessageToSessions(ref, priority);
+		}
 	}
 }
 
 void
 NetClient::SetFileCount(int32 count)
 {
-	MessageRef fc(GetMessageFromPool());
-	if (fc())
+	if (qmtt->IsInternalThreadRunning())
 	{
-		fc()->AddInt32("filecount", count);
-		SetNodeValue("beshare/filecount", fc);
+		MessageRef fc(GetMessageFromPool());
+		if (fc())
+		{
+			fc()->AddInt32("filecount", count);
+			SetNodeValue("beshare/filecount", fc);
+		}
 	}
 }
 
 void
 NetClient::SetLoad(int32 num, int32 max)
 {
-	MessageRef load(GetMessageFromPool());
-	if (load())
+	if (qmtt->IsInternalThreadRunning())
 	{
-		load()->AddInt32("cur", num);
-		load()->AddInt32("max", max);
-		SetNodeValue("beshare/uploadstats", load);
+		MessageRef load(GetMessageFromPool());
+		if (load())
+		{
+			load()->AddInt32("cur", num);
+			load()->AddInt32("max", max);
+			SetNodeValue("beshare/uploadstats", load);
+		}
 	}
 }
 
