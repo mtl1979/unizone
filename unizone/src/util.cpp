@@ -1392,8 +1392,6 @@ void BINClean(QString &in)
 				part = "0" + part;
 			tmp += part;
 		}
-//		if ((in[s] != '0') && (in[s] != '1')) 
-//			s++;
 	}
 	in = tmp;
 }
@@ -1425,7 +1423,7 @@ QString BINEncode(const QString &in)
 	QString out, part;
 	for (unsigned int x = 0; x < temp.length(); x++)
 	{
-		char c = temp[x];
+		char c = temp.at(x);
 		part = "";
 		for (int xx = 0; xx < 8; xx++)
 		{
