@@ -4,8 +4,13 @@ To add a new language:
 2. Run 'lupdate unizone.pro'
 3. Run 'linguist unizone_xx.ts', where xx is the two letter language code
 
+NOTE:   You need to check "Finished" in each entry that you want Unizone to use and 
+        remember to select "File - Release" too so it writes the final translation file.
+
 NOTE:	You need to use special version of lupdate/linguist included in the package. 
 	Standard versions use different character encoding with temporary (*.ts) files.
+
+---
 
 Current translation maintainers:
 
@@ -16,6 +21,7 @@ German:		leprOSy <leprosy@freenet.de>
 French:		LoLL <beosland@free.fr>
 Russian:	Sauron_RU <wblaze@yandex.ru>
 Swedish:	Monni <postmaster@raasu.org>
+Korean:		tarjan <bekrage@kornet.net>
 
 
 Language support Team Leader: Monni <postmaster@raasu.org>
