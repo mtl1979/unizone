@@ -466,6 +466,10 @@ SOURCE=..\src\werrorevent.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\wfile.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\winshare_channels.cpp
 # End Source File
 # Begin Source File
@@ -2168,6 +2172,10 @@ SOURCE=..\src\werrorevent.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\wfile.h
+# End Source File
+# Begin Source File
+
 SOURCE="..\src\winshare-private.h"
 # End Source File
 # Begin Source File
@@ -3287,6 +3295,25 @@ SOURCE=..\src\windows\ansi\gotourl_win.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\windows\ansi\wfile_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\windows\ansi\wlaunchthread_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
@@ -3371,6 +3398,25 @@ SOURCE=..\src\windows\unicode\gotourl_win.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\windows\unicode\wfile_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\windows\unicode\wlaunchthread_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
@@ -3387,118 +3433,6 @@ SOURCE=..\src\windows\unicode\wlaunchthread_win.cpp
 
 !ENDIF 
 
-# End Source File
-# End Group
-# Begin Group "Unix"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\src\unix\fileinfo_unix.cpp
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\unix\filethread_unix.cpp
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\unix\gotourl_unix.cpp
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\unix\wlaunchthread_unix.cpp
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# End Group
-# Begin Group "Unix Headers"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\src\unix\wlaunchthread_unix.h
 # End Source File
 # End Group
 # End Target

@@ -1,7 +1,8 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include <qfile.h>
+#include <qstring.h>
+class WFile;
 
 class WLog
 {
@@ -27,7 +28,7 @@ public:
 	bool InitCheck() const;
 
 private:
-	QFile * fFile;
+	WFile * fFile;
 };
 
 #endif

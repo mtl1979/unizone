@@ -1,11 +1,13 @@
 #include "Log.h"
 #include "util.h"
 #include "debugimpl.h"
+#include "wfile.h"
 
 #include <time.h>
 #include <string.h>
 
-#include <util/String.h>
+#include "util/String.h"
+
 using muscle::String;
 
 #include <qregexp.h>
@@ -27,7 +29,7 @@ WLog::Close()
 	String logClose = "</BODY></HTML>";
 	if (fFile)
 	{
-		fFile->writeBlock(logClose.Cstr(), logClose.Length());
+		fFile->WriteBlock(logClose.Cstr(), logClose.Length());
 		CloseFile(fFile);
 	}
 }
@@ -76,23 +78,22 @@ WLog::Create(LogType type, const QString &name)
 		Close();
 
 	// create a new one
-	fFile = new QFile(fullPath);
-	CHECK_PTR(fFile);
-	while (fFile->exists())	// to avoid name conflicts (very possible!)
+	while (WFile::Exists(fullPath))	// to avoid name conflicts (very possible!)
 	{
 		counter++;
 		fullPath = lt + "_";
 		fullPath += QString::number(counter);
 		fullPath += ".html";
-		fFile->setName(fullPath);
 	}
+	if (!fFile)
+		fFile = new WFile();
 	if (fFile)
 	{
-		if (fFile->open(IO_WriteOnly))
+		if (fFile->Open(fullPath, IO_WriteOnly))
 		{
 			QCString out = prepend.utf8();
-			fFile->writeBlock(out, out.length());
-			fFile->flush();
+			fFile->WriteBlock(out, out.length());
+			fFile->Flush();
 		}
 		else
 		{
@@ -115,8 +116,8 @@ WLog::LogString(const char * txt)
 	text += "<br>";
 	if (InitCheck())
 	{
-		fFile->writeBlock(text.Cstr(), text.Length());
-		fFile->flush();
+		fFile->WriteBlock(text.Cstr(), text.Length());
+		fFile->Flush();
 	}
 }
 
@@ -128,7 +129,7 @@ WLog::LogString(const QString & txt)
 	QCString ctxt = out.utf8();
 	if (InitCheck())
 	{
-		fFile->writeBlock(ctxt, ctxt.length());
-		fFile->flush();
+		fFile->WriteBlock(ctxt, ctxt.length());
+		fFile->Flush();
 	}
 }

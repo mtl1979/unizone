@@ -730,7 +730,7 @@ WUploadThread::DoUpload()
 			if (uref()->AddData("data", B_RAW_TYPE, NULL, bufferSize) == B_OK &&
 				uref()->FindDataPointer("data", B_RAW_TYPE, (void **)&scratchBuffer, NULL) == B_OK)
 			{
-				numBytes = fFile->readBlock((char *)scratchBuffer, bufferSize);
+				numBytes = fFile->ReadBlock((char *)scratchBuffer, bufferSize);
 				if (numBytes > 0)
 				{
 					// munge mode
@@ -840,9 +840,9 @@ WUploadThread::DoUpload()
 				PRINT("WUploadThread::DoUpload: filePath = %S\n", wFileUl.getBuffer()); 
 #endif
 				
-				fFile = new QFile(fFileUl);
+				fFile = new WFile();
 				CHECK_PTR(fFile);
-				if (!fFile->open(IO_ReadOnly))	// probably doesn't exist
+				if (!fFile->Open(fFileUl, IO_ReadOnly))	// probably doesn't exist
 				{
 					delete fFile;
 					fFile = NULL;
@@ -850,13 +850,13 @@ WUploadThread::DoUpload()
 					continue;	// onward
 				}
 				// got our file!
-				fFileSize = fFile->size();
+				fFileSize = fFile->Size();
 				fCurrentOffset = 0;	// from the start
 				if (fCurrentRef()->FindInt64("secret:offset", (int64 *)&fCurrentOffset) == B_OK)
 				{
-					if (!fFile->at((int)fCurrentOffset)) // <postmaster@raasu.org> 20021026
+					if (!fFile->At(fCurrentOffset)) // <postmaster@raasu.org> 20021026
 					{
-						fFile->at(0);	// this can't fail :) (I hope)
+						fFile->Seek(0);	// this can't fail :) (I hope)
 						fCurrentOffset = 0;
 					}
 				}

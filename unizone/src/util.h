@@ -8,7 +8,7 @@
  */
 
 class QString;
-class QFile;
+class WFile;
 
 #include "util/String.h"
 #include "util/ByteBuffer.h"
@@ -114,7 +114,7 @@ QString UniqueName(const QString & file, int index); // build up unique name usi
 void SavePicture(QString & file, const ByteBufferRef & buf);
 
 // Close file if necessary and delete the object
-void CloseFile(QFile * & file);
+void CloseFile(WFile * & file);
 
 uint64 toULongLong(const QString &, bool * = NULL);
 QString fromULongLong(const uint64 &);

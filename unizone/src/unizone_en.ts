@@ -870,6 +870,14 @@ Date: %4</translation>
         <source>DSL-1M</source>
         <translation>DSL-1M</translation>
     </message>
+    <message>
+        <source>TB</source>
+        <translation>TB</translation>
+    </message>
+    <message>
+        <source>TB/s</source>
+        <translation>TB/s</translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -2371,6 +2379,10 @@ Date: %4</translation>
         <source>Encryption disabled.</source>
         <translation>Encryption disabled.</translation>
     </message>
+    <message>
+        <source>Encryption is %1.</source>
+        <translation>Encryption is %1.</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindowBase</name>
@@ -3826,6 +3838,46 @@ Date: %4</translation>
     <message>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
         <translation>/temp [temperature] [C|F|K] - convert between temperature units</translation>
+    </message>
+    <message>
+        <source>Encrypted: %1</source>
+        <translation>Encrypted: %1</translation>
+    </message>
+    <message>
+        <source>Decrypted: %1</source>
+        <translation>Decrypted: %1</translation>
+    </message>
+    <message>
+        <source>Decoded: %1</source>
+        <translation>Decoded: %1</translation>
+    </message>
+    <message>
+        <source>Encoded: %1</source>
+        <translation>Encoded: %1</translation>
+    </message>
+    <message>
+        <source>/crypt - encrypt text and display it as hexadecimal data</source>
+        <translation>/crypt - encrypt text and display it as hexadecimal data</translation>
+    </message>
+    <message>
+        <source>/decrypt - decrypt text and display it</source>
+        <translation>/decrypt - decrypt text and display it</translation>
+    </message>
+    <message>
+        <source>/emsg [name] [message] - send an encrypted private message</source>
+        <translation>/emsg [name] [message] - send an encrypted private message</translation>
+    </message>
+    <message>
+        <source>/encryption [on|off] - toggle encryption in private windows</source>
+        <translation>/encryption [on|off] - toggle encryption in private windows</translation>
+    </message>
+    <message>
+        <source>/hexdecode - decode hexadecimal data and display it</source>
+        <translation>/hexdecode - decode hexadecimal data and display it</translation>
+    </message>
+    <message>
+        <source>/hexencode - encode as hexadecimal data and display it</source>
+        <translation>/hexencode - encode as hexadecimal data and display it</translation>
     </message>
 </context>
 </TS>

@@ -8,6 +8,7 @@
 #include "global.h"
 #include "winsharewindow.h"
 #include "settings.h"
+#include "wfile.h"
 
 #ifdef DEBUG2
 #include "wstring.h"
@@ -22,7 +23,7 @@ using namespace muscle;
 #endif
 
 #include <qdns.h>
-#include <qfile.h>
+// #include <qfile.h>
 
 #include <limits.h>
 
@@ -1116,11 +1117,11 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 	file = QString::null;
 }
 
-void CloseFile(QFile * & file)
+void CloseFile(WFile * & file)
 {
 	if (file)
 	{
-		file->close();
+		file->Close();
 		delete file;
 		file = NULL;
 	}

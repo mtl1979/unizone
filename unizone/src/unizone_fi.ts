@@ -974,6 +974,14 @@ Päiväys: %4</translation>
         <source>DSL-1M</source>
         <translation>DSL-1M</translation>
     </message>
+    <message>
+        <source>TB</source>
+        <translation>Tt</translation>
+    </message>
+    <message>
+        <source>TB/s</source>
+        <translation>Tt/s</translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -2503,6 +2511,10 @@ Päiväys: %4</translation>
         <source>Encryption disabled.</source>
         <translation>Salakirjoitus pois päältä.</translation>
     </message>
+    <message>
+        <source>Encryption is %1.</source>
+        <translation>Salakirjoitus on %1.</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindowBase</name>
@@ -3962,6 +3974,46 @@ Päiväys: %4</translation>
     <message>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
         <translation>/temp [lämpötila] [C|F|K] - muunna lämpötila-asteikoiden välillä</translation>
+    </message>
+    <message>
+        <source>Encrypted: %1</source>
+        <translation>Salakirjoitettu: %1</translation>
+    </message>
+    <message>
+        <source>Decrypted: %1</source>
+        <translation>Purettu: %1</translation>
+    </message>
+    <message>
+        <source>Decoded: %1</source>
+        <translation>Dekoodattu: %1</translation>
+    </message>
+    <message>
+        <source>Encoded: %1</source>
+        <translation>Enkoodattu: %1</translation>
+    </message>
+    <message>
+        <source>/crypt - encrypt text and display it as hexadecimal data</source>
+        <translation>/crypt - salakirjoita teksti ja näytä se heksadesimaalisena</translation>
+    </message>
+    <message>
+        <source>/decrypt - decrypt text and display it</source>
+        <translation>/decrypt - pura salakirjoitettu teksti ja näytä se</translation>
+    </message>
+    <message>
+        <source>/emsg [name] [message] - send an encrypted private message</source>
+        <translation>/emsg [nimi] [viesti] - lähetä salakirjoitettu yksityisviesti</translation>
+    </message>
+    <message>
+        <source>/encryption [on|off] - toggle encryption in private windows</source>
+        <translation>/encryption [on|off] - vaihda salakirjoituksen tila yksityisikkunoissa</translation>
+    </message>
+    <message>
+        <source>/hexdecode - decode hexadecimal data and display it</source>
+        <translation>/hexdecode - muunna heksadesimaalinen tieto näytettävään muotoon</translation>
+    </message>
+    <message>
+        <source>/hexencode - encode as hexadecimal data and display it</source>
+        <translation>/hexencode - muunna teksti heksadesimaalimuotoon ja näytä se</translation>
     </message>
 </context>
 </TS>

@@ -43,6 +43,7 @@ public:
 	WString reverse() const;
 #endif
 
+	void replace(wchar_t, wchar_t);
 	operator wchar_t *() const { return buffer; };
 	operator const char *() const;
 	wchar_t *getBuffer() const { return buffer; };

@@ -728,6 +728,14 @@ Date: %4</source>
         <source>300 baud</source>
         <translation>300 baud</translation>
     </message>
+    <message>
+        <source>TB</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>TB/s</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -2132,6 +2140,10 @@ Date: %4</source>
         <source>Encryption disabled.</source>
         <translation>Encryption disabled.</translation>
     </message>
+    <message>
+        <source>Encryption is %1.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindowBase</name>
@@ -3483,6 +3495,46 @@ Date: %4</source>
     <message>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
         <translation>/temp [temperature] [C|F|K] - convert between temperature units</translation>
+    </message>
+    <message>
+        <source>Encrypted: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Decrypted: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Decoded: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Encoded: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/crypt - encrypt text and display it as hexadecimal data</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/decrypt - decrypt text and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/emsg [name] [message] - send an encrypted private message</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/encryption [on|off] - toggle encryption in private windows</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/hexdecode - decode hexadecimal data and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/hexencode - encode as hexadecimal data and display it</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>

@@ -1,11 +1,10 @@
 #ifndef DOWNLOADTHREAD_H
 #define DOWNLOADTHREAD_H
 
-// #include "genericthread.h"
 #include "downloadthread.h"
-// #include "uploadthread.h"
 #include "qtsupport/QMessageTransceiverThread.h"
 #include "user.h"
+#include "wfile.h"
 
 #include <qfile.h>
 #include <qstring.h>
@@ -81,7 +80,7 @@ public:
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
 
-	QFile * GetFile() const { return fFile; }
+	WFile * GetFile() const { return fFile; }
 	QString GetCurrentFile() const;
 	QString GetCurrentLocalFile() const;
 	QString GetFileName(int i) const;
@@ -128,7 +127,7 @@ protected:
 	void MessageReceived(MessageRef msg) { MessageReceived(msg, _sessionID); }
 
 	mutable QMutex fLockFile;
-	QFile * fFile;			// file on the HD
+	WFile * fFile;			// file on the HD
 	QString * fFileDl;		// file to dl
 	QString * fLocalFileDl; // local filenames for downloaded files
 	QString fIP;			// ip address of remote client

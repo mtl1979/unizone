@@ -300,6 +300,21 @@ WString::length() const
 		return -1;
 }
 
+void
+WString::replace(wchar_t in, wchar_t out)
+{
+	if (buffer)
+	{
+		wchar_t *b = buffer;
+		do
+		{
+			if (*b == in)
+				*b = out;
+			b++;
+		} while (*b != 0);
+	}
+}
+
 /*
  *
  *  Conversion functions

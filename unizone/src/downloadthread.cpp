@@ -513,12 +513,12 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 				{
 					if (fCurrentOffset > 0)
 					{
-						fFile = new QFile(fixed);
+						fFile = new WFile();
 						CHECK_PTR(fFile);
 
-						if (fFile->open(IO_ReadOnly))
+						if (fFile->Open(fixed, IO_ReadOnly))
 						{
-							if (fFile->size() == fCurrentOffset)	// sizes match up?
+							if (fFile->Size() == fCurrentOffset)	// sizes match up?
 								append = true;
 							CloseFile(fFile);
 						}
@@ -537,11 +537,11 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 					while (QFile::exists(nf))
 					{
 						// Check file size again, because it might have changed
-						QFile* fFile2 = new QFile(nf);
+						WFile* fFile2 = new WFile();
 						CHECK_PTR(fFile2);
-						if (fFile2->open(IO_ReadOnly))
+						if (fFile2->Open(nf, IO_ReadOnly))
 						{
-							if (fFile2->size() == fCurrentOffset)	// sizes match up?
+							if (fFile2->Size() == fCurrentOffset)	// sizes match up?
 							{
 								append = true;
 								CloseFile(fFile2);
@@ -566,10 +566,10 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 				fLocalFileDl[fCurFile] = fixed;
 				MessageRef status;
 
-				fFile = new QFile(fixed);	// fixed filename again
+				fFile = new WFile();	// fixed filename again
 				CHECK_PTR(fFile);
 
-				if (fFile->open((append ? IO_Append | IO_WriteOnly : IO_WriteOnly)))
+				if (fFile->Open(fixed, (append ? IO_Append | IO_WriteOnly : IO_WriteOnly)))
 				{
 					if (fFileSize != 0)
 					{
@@ -695,8 +695,9 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 
 
 					// check munge-mode here... not yet
-					if (fFile->writeBlock((const char *)data, (uint)numBytes) == (int)numBytes)
+					if (fFile->WriteBlock((const char *)data, (uint)numBytes) == (int)numBytes)
 					{
+						fFile->Flush();
 						fCurrentOffset += numBytes;
 
 						MessageRef update(GetMessageFromPool(WDownloadEvent::FileDataReceived));

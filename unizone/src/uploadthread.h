@@ -5,8 +5,8 @@
 #pragma warning(disable: 4786)
 #endif
 
-// #include "genericthread.h"
-// #include "filethread.h"
+#include "wfile.h"
+
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "message/Message.h"
@@ -170,7 +170,7 @@ protected:
 private:
 	Queue<MessageRef> fUploads;
 	Queue<String> fNames;
-	QFile * fFile;
+	WFile * fFile;
 	uint32 fRemoteIP;
 	QString fStrRemoteIP;				// the accept version gets a string IP
 	uint32 fPort;						// port for accept version
