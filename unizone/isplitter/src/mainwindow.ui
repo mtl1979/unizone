@@ -1192,4 +1192,20 @@
         </property>
     </widget>
 </widget>
+<tabstops>
+    <tabstop>TabWidget2</tabstop>
+    <tabstop>CollageSizeX</tabstop>
+    <tabstop>CollageSizeY</tabstop>
+    <tabstop>CollageOffsetTopX</tabstop>
+    <tabstop>CollageOffsetTopY</tabstop>
+    <tabstop>CollageOffsetBottomX</tabstop>
+    <tabstop>CollageOffsetBottomY</tabstop>
+    <tabstop>OffsetIndexX</tabstop>
+    <tabstop>OffsetIndexY</tabstop>
+    <tabstop>ImageOffsetTopX</tabstop>
+    <tabstop>ImageOffsetTopY</tabstop>
+    <tabstop>ImageOffsetBottomX</tabstop>
+    <tabstop>ImageOffsetBottomY</tabstop>
+    <tabstop>ImageRotate</tabstop>
+</tabstops>
 </UI>

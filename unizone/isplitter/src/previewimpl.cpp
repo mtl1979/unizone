@@ -10,8 +10,83 @@
 #include <qwmatrix.h>
 
 Preview::Preview(QWidget* parent, const char* name, WFlags fl)
-:PreviewWindow(parent, name, fl)
+:QWidget(parent, name, fl)
 {
+    if ( !name )
+	setName( "PreviewBase" );
+    resize( 596, 480 ); 
+    setCaption( tr( "Preview" ) );
+
+    GridLayout = new QGridLayout( this ); 
+    GridLayout->setGeometry( QRect( 0, 0, 596, 480 ) ); 
+    GridLayout->setSpacing( 0 );
+    GridLayout->setMargin( 0 );
+
+    SaveButton = new QPushButton( this, "SaveButton" );
+    SaveButton->setText( tr( "Save" ) );
+
+    GridLayout->addWidget( SaveButton, 0, 2 );
+
+    pxlPreview = new QLabel( this, "pxlPreview" );
+    pxlPreview->setMinimumSize( QSize( 32, 32 ) );
+    QPalette pal;
+    QColorGroup cg;
+    cg.setColor( QColorGroup::Foreground, black );
+    cg.setColor( QColorGroup::Button, QColor( 236, 233, 216) );
+    cg.setColor( QColorGroup::Light, white );
+    cg.setColor( QColorGroup::Midlight, QColor( 245, 244, 235) );
+    cg.setColor( QColorGroup::Dark, QColor( 118, 116, 108) );
+    cg.setColor( QColorGroup::Mid, QColor( 157, 155, 143) );
+    cg.setColor( QColorGroup::Text, black );
+    cg.setColor( QColorGroup::BrightText, white );
+    cg.setColor( QColorGroup::ButtonText, black );
+    cg.setColor( QColorGroup::Base, white );
+    cg.setColor( QColorGroup::Background, white );
+    cg.setColor( QColorGroup::Shadow, black );
+    cg.setColor( QColorGroup::Highlight, QColor( 49, 106, 197) );
+    cg.setColor( QColorGroup::HighlightedText, white );
+    pal.setActive( cg );
+    cg.setColor( QColorGroup::Foreground, black );
+    cg.setColor( QColorGroup::Button, QColor( 236, 233, 216) );
+    cg.setColor( QColorGroup::Light, white );
+    cg.setColor( QColorGroup::Midlight, QColor( 255, 254, 249) );
+    cg.setColor( QColorGroup::Dark, QColor( 118, 116, 108) );
+    cg.setColor( QColorGroup::Mid, QColor( 157, 155, 143) );
+    cg.setColor( QColorGroup::Text, black );
+    cg.setColor( QColorGroup::BrightText, white );
+    cg.setColor( QColorGroup::ButtonText, black );
+    cg.setColor( QColorGroup::Base, white );
+    cg.setColor( QColorGroup::Background, white );
+    cg.setColor( QColorGroup::Shadow, black );
+    cg.setColor( QColorGroup::Highlight, QColor( 49, 106, 197) );
+    cg.setColor( QColorGroup::HighlightedText, white );
+    pal.setInactive( cg );
+    cg.setColor( QColorGroup::Foreground, QColor( 128, 128, 128) );
+    cg.setColor( QColorGroup::Button, QColor( 236, 233, 216) );
+    cg.setColor( QColorGroup::Light, white );
+    cg.setColor( QColorGroup::Midlight, QColor( 255, 254, 249) );
+    cg.setColor( QColorGroup::Dark, QColor( 118, 116, 108) );
+    cg.setColor( QColorGroup::Mid, QColor( 157, 155, 143) );
+    cg.setColor( QColorGroup::Text, black );
+    cg.setColor( QColorGroup::BrightText, white );
+    cg.setColor( QColorGroup::ButtonText, QColor( 128, 128, 128) );
+    cg.setColor( QColorGroup::Base, white );
+    cg.setColor( QColorGroup::Background, white );
+    cg.setColor( QColorGroup::Shadow, black );
+    cg.setColor( QColorGroup::Highlight, QColor( 49, 106, 197) );
+    cg.setColor( QColorGroup::HighlightedText, white );
+    pal.setDisabled( cg );
+    pxlPreview->setPalette( pal );
+    pxlPreview->setFrameShape( QLabel::Box );
+    pxlPreview->setMargin( 1 );
+    pxlPreview->setScaledContents( TRUE );
+
+    GridLayout->addMultiCellWidget( pxlPreview, 1, 1, 0, 2 );
+
+    PreviewButton = new QPushButton( this, "PreviewButton" );
+    PreviewButton->setText( tr( "Preview" ) );
+
+    GridLayout->addWidget( PreviewButton, 0, 0 );
 	connect(PreviewButton, SIGNAL(clicked()), this, SLOT(PreviewImage()));
 	connect(SaveButton, SIGNAL(clicked()), this, SLOT(Save()));
 	Splitter = NULL;
@@ -250,6 +325,8 @@ void
 Preview::resizeEvent(QResizeEvent *e)
 {
 	QSize s = e->size();
+	GridLayout->setGeometry(QRect(0, 0, s.width(), s.height()));
+	/*
 	QWidget * lwidget = dynamic_cast<QWidget *>(Layout23->parent());
 	if (lwidget)
 	{
@@ -263,5 +340,6 @@ Preview::resizeEvent(QResizeEvent *e)
 		}
 		lwidget->resize(s);
 	}
-	PreviewWindow::resizeEvent(e);
+	*/
+	QWidget::resizeEvent(e);
 }

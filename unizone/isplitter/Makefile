@@ -4,14 +4,11 @@ translations: src/isplitter.pro
 	make -C src
 
 UICFILES = \
-	src/mainwindow.ui \
-	src/preview.ui
+	src/mainwindow.ui
 UIC_SRCFILES = \
-	src/mainwindow.cpp \
-	src/preview.cpp
+	src/mainwindow.cpp
 UIC_HEADERS = \
-	src/mainwindow.h \
-	src/preview.h
+	src/mainwindow.h
 SRCFILES = \
 	src/main.cpp \
 	src/mainwindowimpl.cpp \
@@ -22,7 +19,6 @@ MOC_SRCFILES = \
 	src/moc_mainwindow.cpp \
 	src/moc_mainwindowimpl.cpp \
 	src/moc_menubar.cpp \
-	src/moc_preview.cpp \
 	src/moc_previewimpl.cpp
 
 LIBS = -L$(QTDIR)/lib -lqt-mt
@@ -49,9 +45,6 @@ src/moc_mainwindowimpl.cpp : src/mainwindowimpl.h
 src/moc_menubar.cpp : src/menubar.h
 	$(MOC) $< -o $@
 
-src/moc_preview.cpp : src/preview.h
-	$(MOC) $< -o $@
-
 src/moc_previewimpl.cpp : src/previewimpl.h
 	$(MOC) $< -o $@
 
@@ -60,12 +53,6 @@ src/mainwindow.h : src/mainwindow.ui
 
 src/mainwindow.cpp : src/mainwindow.h src/mainwindow.ui	
 	$(UIC) -impl src/mainwindow.h src/mainwindow.ui -o src/mainwindow.cpp
-
-src/preview.h : src/preview.ui
-	$(UIC) src/preview.ui -o src/preview.h
-
-src/preview.cpp : src/preview.h src/preview.ui
-	$(UIC) -impl src/preview.h src/preview.ui -o src/preview.cpp
 
 depends: .depends
 
