@@ -1513,7 +1513,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							PRINT("Name said\n");
 							if (NameSaid(nameText) && fSettings->GetSounds())
 								QApplication::beep();
-							if (MatchUserFilter(user, (const char *) fWatch.utf8()))
+							if (MatchUserFilter(user, fWatch))
 								chat += WFormat::RemoteWatch(userID, FixStringStr(userName), nameText);
 							else
 								chat += WFormat::RemoteText(userID, FixStringStr(userName), nameText);
@@ -2247,7 +2247,7 @@ WinShareWindow::FindUser(const QString & user)
 	WUserMap & umap = fNetClient->Users();
 	for (WUserIter iter = umap.begin(); iter != umap.end(); iter++)
 	{
-		if (MatchUserFilter((*iter).second, (const char*) user.utf8()))
+		if (MatchUserFilter((*iter).second, user))
 		{
 			return (*iter).second;
 		}

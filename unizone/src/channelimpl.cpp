@@ -752,7 +752,7 @@ Channel::FindUser(const QString & user)
 {
 	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
 	{
-		if (gWin->MatchUserFilter((*iter).second, (const char*) user.utf8()))
+		if (gWin->MatchUserFilter((*iter).second, user))
 		{
 			return (*iter).second;
 		}

@@ -427,9 +427,57 @@ StripURL(const String & strip)
 QString
 StripURL(const QString & u)
 {
-	QCString qu = u.utf8();
-	const char * cu = (const char *) qu;
-	return QString::fromUtf8(StripURL(cu).Cstr());
+	int sp;
+	if (IsURL(u))
+	{
+		sp = u.find(" ");
+		if (sp > 0)
+		{
+			int left = u.find('[');	// see if it contains a label..
+			if (left == (sp + 1))
+			{
+				left++;
+				int right = u.find(']');
+				if (right > left)	// make sure right is than greater left :D
+				{
+					QString label = u.mid(left, (right - left)).stripWhiteSpace();
+					if ((right + 1) < (int) u.length())
+					{
+						QString rest = u.mid(right + 1);
+						if (rest.startsWith(" "))
+						{
+							label += " ";
+							rest = rest.mid(1);
+						}
+						return label + StripURL(rest);
+					}
+					else
+						return label;
+				}
+				else if (right == -1) // ']' is missing?
+				{
+					QString label = u.mid(left).stripWhiteSpace();
+					return label;
+				}
+			}
+		}
+	}
+	// Recurse ;)
+	sp = u.find(" ");
+	if (sp > 0)
+	{
+		QString s1 = u.left(sp+1); // include space in s1 ;)
+		QString s2;
+		if ((sp + 1) < (int) u.length())
+		{
+			s2 = StripURL(u.mid(sp+1));
+			return s1 + s2;
+		}
+		else
+			return s1;
+	}
+	else
+		return u;	// not a url
 }
 
 String 
@@ -439,13 +487,38 @@ StripURL(const char * c)
 	return StripURL(s);
 }
 
+// URL Prefixes
+
+const char * urlPrefix[] = {
+	"file://",
+	"http://",
+	"https://",
+	"mailto:",
+	"ftp://",
+	"audio://",
+	"mms://",
+	"h323://",
+	"callto://",
+	"beshare:",		// BeShare Search
+	"share:",		//    ----"----
+	"server://",	// BeShare Server
+	"priv:",		// BeShare Private Chat
+	"irc://",		// Internet Relay Chat
+	"ttp://",		// Titanic Transfer Protocol
+	"ed2k:",		// eDonkey2000
+	"magnet:",		// Magnet
+	"gnutella:",	// Gnutella
+	"mp2p:",		// Piolet
+	NULL
+};
+
 bool
 IsURL(const String & url)
 {
 	String u = url.ToLowerCase();
-
+	
 	// Add default protocol prefixes
-
+	
 	if (u.StartsWith("www."))		
 		u = u.Prepend("http://");
 	if (u.StartsWith("ftp."))		
@@ -454,35 +527,19 @@ IsURL(const String & url)
 		u = u.Prepend("server://");
 	if (u.StartsWith("irc."))		
 		u = u.Prepend("irc://");
-
-	if (
-		(u.StartsWith("file://")) || 
-		(u.StartsWith("http://")) || 
-		(u.StartsWith("https://")) ||
-		(u.StartsWith("mailto:")) ||
-		(u.StartsWith("ftp://")) ||
-		(u.StartsWith("audio://")) ||
-		(u.StartsWith("mms://")) || 
-		(u.StartsWith("h323://")) ||
-		(u.StartsWith("callto://")) ||
-		(u.StartsWith("beshare:")) ||		// BeShare Search
-		(u.StartsWith("share:")) ||			//    ----"----
-		(u.StartsWith("server://")) ||		// BeShare Server
-		(u.StartsWith("priv:")) ||			// BeShare Private Chat
-		(u.StartsWith("irc://")) ||			// Internet Relay Chat
-		(u.StartsWith("ttp://")) ||			// Titanic Transfer Protocol
-		(u.StartsWith("ed2k:")) ||			// eDonkey2000
-		(u.StartsWith("magnet:")) ||		// Magnet
-		(u.StartsWith("gnutella:")) ||		// Gnutella
-		(u.StartsWith("mp2p:"))				// Piolet
-		)
+	
+	if (u.Length() > 9)
 	{
-		if (
-			!u.EndsWith("://") &&
-			(u.Length() > 9)
-			)
+		const char *prefix;
+		for (unsigned int i = 0; (prefix = urlPrefix[i]) != NULL; i++)
 		{
-			return true;
+			if (u.StartsWith(prefix))
+			{
+				if (!u.EndsWith("://"))
+				{
+					return true;
+				}
+			}
 		}
 	}
 	return false;
@@ -498,9 +555,34 @@ IsURL(const char * url)
 bool
 IsURL(const QString & url)
 {
-	QCString ur = url.utf8();
-	const char * u = (const char *) ur;
-	return IsURL( u );
+	QString u = url.lower();
+
+	// Add default protocol prefixes
+
+	if (u.startsWith("www."))		
+		u = u.prepend("http://");
+	if (u.startsWith("ftp."))		
+		u = u.prepend("ftp://");
+	if (u.startsWith("beshare.") && u.length() > 12)	
+		u = u.prepend("server://");
+	if (u.startsWith("irc."))		
+		u = u.prepend("irc://");
+
+	if (u.length() > 9)
+	{
+		const char *prefix;
+		for (unsigned int i = 0; (prefix = urlPrefix[i]) != NULL; i++)
+		{
+			if (u.startsWith(prefix))
+			{
+				if (u.right(3) != "://")
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 QString 

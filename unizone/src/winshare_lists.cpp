@@ -56,7 +56,7 @@ WinShareWindow::IsIgnoredIP(const QString & ip)
 	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
 #endif
 
-	return MatchFilter(ip, (const char *) fIgnoreIP.utf8());
+	return MatchFilter(ip, fIgnoreIP);
 }
 
 bool
@@ -141,7 +141,7 @@ WinShareWindow::IsBlackListed(const WUserRef & user)
 	if (fBlackList.isEmpty()) // No users in blacklist?
 		return false;
 
-	return MatchUserFilter(user, (const char *) fBlackList.utf8());
+	return MatchUserFilter(user, fBlackList);
 }
 
 bool
@@ -167,7 +167,7 @@ WinShareWindow::IsBlackListed(const QString & user)
 	{
 		// Invalid reference!
 
-		return MatchFilter(user, (const char *) fBlackList.utf8());
+		return MatchFilter(user, fBlackList);
 	}
 }
 
@@ -180,7 +180,7 @@ WinShareWindow::IsWhiteListed(const WUserRef & user)
 	if (fWhiteList.isEmpty()) // No users in whitelist?
 		return false;
 
-	return MatchUserFilter(user, (const char *) fWhiteList.utf8());
+	return MatchUserFilter(user, fWhiteList);
 }
 
 bool
@@ -206,7 +206,7 @@ WinShareWindow::IsWhiteListed(const QString & user)
 	{
 		// Invalid reference!
 
-		return MatchFilter(user, (const char *) fWhiteList.utf8());
+		return MatchFilter(user, fWhiteList);
 	}
 }
 
@@ -257,7 +257,7 @@ WinShareWindow::IsAutoPrivate(const QString & user)
 	{
 		// Invalid reference!
 
-		return MatchFilter(user, (const char *) fAutoPriv.utf8());
+		return MatchFilter(user, fAutoPriv);
 	}
 }
 
@@ -270,7 +270,7 @@ WinShareWindow::IsIgnored(const WUserRef & user)
 	if (fIgnore.isEmpty()) // No users in ignore list?
 		return false;
 
-	return MatchUserFilter(user, (const char *) fIgnore.utf8());
+	return MatchUserFilter(user, fIgnore);
 }
 
 bool
@@ -321,7 +321,7 @@ WinShareWindow::IsIgnored(const QString & user, bool bTransfer, bool bDisconnect
 		if (fSettings->GetBlockDisconnected() && bTransfer && bDisconnected)
 			return true;
 		else
-			return MatchFilter(user, (const char *) fIgnore.utf8());
+			return MatchFilter(user, fIgnore);
 	}
 }
 
@@ -495,7 +495,7 @@ WinShareWindow::IsAutoPrivate(const WUserRef & user)
 	if (fAutoPriv.isEmpty()) // No users in auto-private list?
 		return false;
 
-	return MatchUserFilter(user, (const char *) fAutoPriv.utf8());
+	return MatchUserFilter(user, fAutoPriv);
 }
 
 // Append to auto-private list

@@ -59,15 +59,15 @@
     </message>
     <message>
         <source>Username</source>
-        <translation type='obsolete'>Username</translation>
+        <translation type='obsolete'>Benutzer</translation>
     </message>
     <message>
         <source>Remote User</source>
-        <translation type='obsolete'>Remote User</translation>
+        <translation type='obsolete'>Remote Benutzer</translation>
     </message>
     <message>
         <source>Sample text</source>
-        <translation type='obsolete'>Sample text</translation>
+        <translation type='obsolete'>Beispieltext</translation>
     </message>
     <message>
         <source>&lt;b&gt;System&lt;/b&gt; </source>
@@ -75,15 +75,15 @@
     </message>
     <message>
         <source>&lt;b&gt;Error&lt;/b&gt;</source>
-        <translation type='obsolete'>&lt;b&gt;Error&lt;/b&gt;</translation>
+        <translation type='obsolete'>&lt;b&gt;Fehler&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Error text</source>
-        <translation type='obsolete'>Error text</translation>
+        <translation type='obsolete'>Fehlertext</translation>
     </message>
     <message>
         <source>Private text</source>
-        <translation type='obsolete'>Private text</translation>
+        <translation type='obsolete'>Privater Text</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action&lt;/b&gt;</source>
@@ -95,19 +95,19 @@
     </message>
     <message>
         <source>User #%1 (a.k.a.</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Benutzer #%1 (a.k.a.</translation>
     </message>
     <message>
         <source>&lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;Textfarbe="%1"&gt;</translation>
     </message>
     <message>
         <source>) is now </source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>) ist jetzt </translation>
     </message>
     <message>
         <source>User #%1 is now </source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Benutzer #%1 ist jetzt </translation>
     </message>
     <message>
         <source>&apos;s IP address is %1.</source>
@@ -115,55 +115,55 @@
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
+        <translation type='obsolete'>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;</translation>
     </message>
     <message>
         <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Ping zurück in %3 Millisekunden</translation>
     </message>
     <message>
         <source>Uptime: %1, Logged on for %2)</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'> %1, Eingeloggt seit %2)</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;b&gt;Fehler:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;b&gt;Warnung:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>You are now </source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Sie sind jetzt</translation>
     </message>
     <message>
         <source>Name changed to &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Name geändert zu &lt;font color="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;font size="%1"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;Schrifgröße="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;b&gt;-%1-&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;b&gt;Aktion:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>) pinged you.</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>) pingte Sie an.</translation>
     </message>
 </context>
 <context>
@@ -199,7 +199,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Based upon the Windows MUSCLE client Ozone</source>
-        <translation>Basiert auf dem  Windows MUSCLE Klient Ozone,</translation>
+        <translation>Basiert auf dem  Windows MUSCLE Client Ozone,</translation>
     </message>
     <message>
         <source>Which was written by Vitaliy Mikitchenko</source>
@@ -271,7 +271,7 @@ Version %1</translation>
     <message>
         <source>Not allowed!
 </source>
-        <translation type='obsolete'>Not allowed!</translation>
+        <translation type='obsolete'>Nicht gestattet!</translation>
     </message>
     <message>
         <source>User(s) not found!
@@ -374,38 +374,38 @@ Version %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='obsolete'>Create Channel</translation>
+        <translation type='obsolete'>Erstelle Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='obsolete'>Please enter channel name</translation>
+        <translation type='obsolete'>Bitte Channelnamen eingeben</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type='obsolete'>Yes</translation>
+        <translation type='obsolete'>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type='obsolete'>No</translation>
+        <translation type='obsolete'>Nein</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='obsolete'>Channels</translation>
+        <translation type='obsolete'>Channel</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='obsolete'>User #%1 requested invite to channel %2. Do you?</translation>
+        <translation type='obsolete'>Benutzer #%1 erbittet Zugang zum Channel %2. Geben Sie?</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='obsolete'>User #%1 invited you to channel %2. Do you accept?</translation>
+        <translation type='obsolete'>Benutzer #%1 lädt Sie in den Channel %2 ein. Akzeptieren?</translation>
     </message>
 </context>
 <context>
     <name>ChannelsBase</name>
     <message>
         <source>Channels</source>
-        <translation type='obsolete'>Channels</translation>
+        <translation type='obsolete'>Channel</translation>
     </message>
     <message>
         <source>Name</source>
@@ -476,7 +476,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Oct</source>
-        <translation type='obsolete'>Oct</translation>
+        <translation type='obsolete'>Okt</translation>
     </message>
     <message>
         <source>Nov</source>
@@ -484,7 +484,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Dec</source>
-        <translation type='obsolete'>Dec</translation>
+        <translation type='obsolete'>Dez</translation>
     </message>
     <message>
         <source>Mon</source>
@@ -492,27 +492,27 @@ Version %1</translation>
     </message>
     <message>
         <source>Tue</source>
-        <translation type='obsolete'>Tue</translation>
+        <translation type='obsolete'>Di</translation>
     </message>
     <message>
         <source>Wed</source>
-        <translation type='obsolete'>Wed</translation>
+        <translation type='obsolete'>Mi</translation>
     </message>
     <message>
         <source>Thu</source>
-        <translation type='obsolete'>Thu</translation>
+        <translation type='obsolete'>Do</translation>
     </message>
     <message>
         <source>Fri</source>
-        <translation type='obsolete'>Fri</translation>
+        <translation type='obsolete'>Fr</translation>
     </message>
     <message>
         <source>Sat</source>
-        <translation type='obsolete'>Sat</translation>
+        <translation type='obsolete'>Sa</translation>
     </message>
     <message>
         <source>Sun</source>
-        <translation type='obsolete'>Sun</translation>
+        <translation type='obsolete'>So</translation>
     </message>
 </context>
 <context>
@@ -547,7 +547,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Open C&amp;hannels Window</source>
-        <translation type='obsolete'>Open C&amp;hannels Window</translation>
+        <translation type='obsolete'>Öffne C&amp;hannel Fenster</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
@@ -575,31 +575,31 @@ Version %1</translation>
     </message>
     <message>
         <source>CTRL+SHIFT+C</source>
-        <translation>CTRL+SHIFT+V</translation>
+        <translation>STRG+SHIFT+V</translation>
     </message>
     <message>
         <source>CTRL+SHIFT+D</source>
-        <translation>CTRL+SHIFT+T</translation>
+        <translation>STRG+SHIFT+T</translation>
     </message>
     <message>
         <source>CTRL+S</source>
-        <translation>CTRL+S</translation>
+        <translation>STRG+S</translation>
     </message>
     <message>
         <source>CTRL+D</source>
-        <translation>CTRL+D</translation>
+        <translation>STRG+D</translation>
     </message>
     <message>
         <source>CTRL+L</source>
-        <translation>CTRL+L</translation>
+        <translation>STRG+L</translation>
     </message>
     <message>
         <source>CTRL+E</source>
-        <translation>CTRL+E</translation>
+        <translation>STRG+E</translation>
     </message>
     <message>
         <source>ALT+S</source>
-        <translation type='obsolete'>CTRL+ALT+S</translation>
+        <translation type='obsolete'>STRG+ALT+S</translation>
     </message>
     <message>
         <source>F11</source>
@@ -607,11 +607,11 @@ Version %1</translation>
     </message>
     <message>
         <source>ALT+X</source>
-        <translation>CTRL+B</translation>
+        <translation>STRG+B</translation>
     </message>
     <message>
         <source>CTRL+P</source>
-        <translation>CTRL+SHIFT+E</translation>
+        <translation>STRG+SHIFT+E</translation>
     </message>
     <message>
         <source>F12</source>
@@ -619,7 +619,7 @@ Version %1</translation>
     </message>
     <message>
         <source>C&amp;hannels</source>
-        <translation type='obsolete'>C&amp;hannels</translation>
+        <translation type='obsolete'>C&amp;hannel</translation>
     </message>
     <message>
         <source>F10</source>
@@ -654,7 +654,7 @@ Version %1</translation>
     </message>
     <message>
         <source>kick</source>
-        <translation>treten</translation>
+        <translation>kicken</translation>
     </message>
     <message>
         <source>ban</source>
@@ -678,11 +678,11 @@ Version %1</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation>You must change your nickname before connecting!</translation>
+        <translation>Sie müssen Ihren Nickname vor dem Verbinden ändern!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
+        <translation>Keiner der Nicknames sollte &apos;binky&apos; enthalten.</translation>
     </message>
 </context>
 <context>
@@ -741,11 +741,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</source>
-        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;"</translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt; (Laufzeit: %3, Eingeloggt seit %4)&lt;/font&gt;"</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Error:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation type='obsolete'>&lt;font color="%1" Size="%2"&gt;&lt;b&gt;Fehler:&lt;/b&gt; &lt;/font&gt;</translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Fehler:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Warning:&lt;/b&gt;&lt;/font&gt; </source>
@@ -838,7 +838,7 @@ Date: %4</translation>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation type='obsolete'>Date:</translation>
+        <translation type='obsolete'>Datum:</translation>
     </message>
     <message>
         <source>B</source>
@@ -878,11 +878,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type='obsolete'>User #%1 has disconnected.</translation>
+        <translation type='obsolete'>Benutzer #%1 hat die Verbindung getrennt.</translation>
     </message>
     <message>
         <source>User #%1 is now nameless.</source>
-        <translation type='obsolete'>User #%1 is now nameless.</translation>
+        <translation type='obsolete'>Benutzer #%1 ist jetzt namenslos.</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
@@ -890,12 +890,12 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
+        <translation type='obsolete'>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
-        <translation>Reading directory...</translation>
+        <translation>Lese Verzeichnis...</translation>
     </message>
     <message>
         <source>%1 %2</source>
@@ -906,11 +906,11 @@ Date: %4</translation>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
-        <translation>Scan Progress</translation>
+        <translation>Scan Fortschritt</translation>
     </message>
     <message>
         <source>Current directory:</source>
-        <translation>Current directory:</translation>
+        <translation>Aktuelles Verzeichnis:</translation>
     </message>
     <message>
         <source>-</source>
@@ -918,11 +918,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Current file:</source>
-        <translation>Current file:</translation>
+        <translation>Aktuelle Datei:</translation>
     </message>
     <message>
         <source>Files scanned:</source>
-        <translation>Files scanned:</translation>
+        <translation>Dateien gescannt:</translation>
     </message>
     <message>
         <source>0</source>
@@ -930,11 +930,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Directories scanned:</source>
-        <translation>Directories scanned:</translation>
+        <translation>Verzeichnisse gescannt:</translation>
     </message>
     <message>
         <source>Directories left:</source>
-        <translation>Directories left:</translation>
+        <translation>Verzeichnisse left:</translation>
     </message>
 </context>
 <context>
@@ -1116,7 +1116,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Clear Finished</source>
-        <translation>Beendete löschen</translation>
+        <translation>Beendete Löschen</translation>
     </message>
     <message>
         <source>256 bytes</source>
@@ -1172,7 +1172,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Download port for file %1 might be out of range, it might fail!</source>
-        <translation>Download port für Datei %1 außerhalb des Bereiches, es wird möglicherweise fehlschlagen!</translation>
+        <translation>Download Port für Datei %1 außerhalb des Bereiches, es wird möglicherweise fehlschlagen!</translation>
     </message>
     <message>
         <source>%1</source>
@@ -1303,35 +1303,35 @@ Date: %4</translation>
     </message>
     <message>
         <source>Could not add new connect session!</source>
-        <translation>Could not add new connect session!</translation>
+        <translation>Kann keine neue Verbindung hinzufügen!</translation>
     </message>
     <message>
         <source>Failed to start internal thread!</source>
-        <translation>Failed to start internal thread!</translation>
+        <translation>Start Interner Thread fehlgesclagen!</translation>
     </message>
     <message>
         <source>Critical error: Could not create file!</source>
-        <translation>Critical error: Could not create file!</translation>
+        <translation>Schwerer Fehler: Datei konnte nicht erstellt werden!</translation>
     </message>
     <message>
         <source>Could not read file info!</source>
-        <translation>Could not read file info!</translation>
+        <translation>Konnte Datei info nicht lesen!</translation>
     </message>
     <message>
         <source>Couldn&apos;t write file data!</source>
-        <translation>Couldn&apos;t write file data!</translation>
+        <translation>Konnt&apos;e Daten nicht schreiben!</translation>
     </message>
     <message>
         <source>MD5 hashing failed! Can&apos;t resume.</source>
-        <translation>MD5 hashing failed! Can&apos;t resume.</translation>
+        <translation>MD5 hashing fehlgeschlagen! Can&apos;t resume.</translation>
     </message>
     <message>
         <source>Connection timed out!</source>
-        <translation>Connection timed out!</translation>
+        <translation>Verbindung timed out!</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
-        <translation>Downloading %1 from %2.</translation>
+        <translation>Downloade %1 from %2.</translation>
     </message>
     <message>
         <source>Finished downloading %2 from %1.</source>
@@ -1339,190 +1339,190 @@ Date: %4</translation>
     </message>
     <message>
         <source>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)</source>
-        <translation>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)</translation>
+        <translation>Datei Checksumme paßt nicht zu Datei [%1] (mine=%2, his=%3, %4 bytes)</translation>
     </message>
 </context>
 <context>
     <name>WFormat</name>
     <message>
         <source>&lt;font size="%1"&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;font size="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1"&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;font color="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt; </source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;System:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>User #%1 is now connected.</source>
-        <translation type='unfinished'>Benutzer #%1 ist jetzt verbunden.</translation>
+        <translation>Benutzer #%1 ist jetzt verbunden.</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. &lt;font color="%2"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Benutzer #%1 (a.k.a. &lt;font color="%2"&gt;</translation>
     </message>
     <message>
         <source>) has disconnected.</source>
-        <translation type='unfinished'></translation>
+        <translation>) hat die Verbindung getrennt.</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type='unfinished'>User #%1 has disconnected.</translation>
+        <translation>Benutzer #%1 hat die Verbindung getrennt.</translation>
     </message>
     <message>
         <source>User #%1 is now known as</source>
-        <translation type='unfinished'></translation>
+        <translation>Benutzer #%1 heißt jetzt</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
-        <translation type='unfinished'></translation>
+        <translation>Benutzer #%1 ist jetzt</translation>
     </message>
     <message>
         <source>nameless</source>
-        <translation type='unfinished'></translation>
+        <translation>namenlos</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a.</source>
-        <translation type='unfinished'></translation>
+        <translation>Benutzer #%1 (a.k.a.</translation>
     </message>
     <message>
         <source>) is now known as &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>) heißt jetzt &lt;font color="%1"&gt;</translation>
     </message>
     <message>
         <source>) is now </source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>ist jetzt</translation>
     </message>
     <message>
         <source>User #%1 is now </source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Benutzer #%1 ist jetzt </translation>
     </message>
     <message>
         <source>&apos;s IP address is %1.</source>
-        <translation type='unfinished'></translation>
+        <translation>&apos;s IP Addresse ist %1.</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='unfinished'>User #%1&apos;s IP address is %2.</translation>
+        <translation>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
         <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Ping zurück in %3 Millisekunden</translation>
     </message>
     <message>
         <source>Uptime: %1, Logged on for %2)</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Uptime: %1, eingeloggt seit %2)</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;Fehler:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;Warnung:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>You are now </source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Sie sind jetzt</translation>
     </message>
     <message>
         <source>Name changed to &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Name geändert zu &lt;font color="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;b&gt;-%1-&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;Action:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. </source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Benutzer #%1 (a.k.a. </translation>
     </message>
     <message>
         <source>) pinged you.</source>
-        <translation type='unfinished'></translation>
+        <translation>) hat Sie gepingt.</translation>
     </message>
     <message>
         <source>) is now known as</source>
-        <translation type='unfinished'></translation>
+        <translation>) heißt jetzt</translation>
     </message>
     <message>
         <source>Ping returned in %1 milliseconds</source>
-        <translation type='unfinished'></translation>
+        <translation>Ping zurück in %1 Milliseconden</translation>
     </message>
     <message>
         <source>Uptime: %1, Logged on for %2</source>
-        <translation type='unfinished'></translation>
+        <translation>Uptime: %1, eingeloggt seit %2</translation>
     </message>
     <message>
         <source>You are now</source>
-        <translation type='unfinished'></translation>
+        <translation>Sie sind jetzt</translation>
     </message>
     <message>
         <source>Name changed to</source>
-        <translation type='unfinished'></translation>
+        <translation>Name geändert zu</translation>
     </message>
     <message>
         <source>) is now</source>
-        <translation type='unfinished'></translation>
+        <translation>ist jetzt</translation>
     </message>
     <message>
         <source>Time request sent to</source>
-        <translation type='unfinished'></translation>
+        <translation>Zeit Nachfrage gesendet an</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now known as&apos; suffix</comment>
-        <translation type='unfinished'></translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now nameless&apos; suffix</comment>
-        <translation type='unfinished'></translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now&apos; suffix</comment>
-        <translation type='unfinished'></translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;You are now&apos; suffix</comment>
-        <translation type='unfinished'></translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
-        <translation type='unfinished'></translation>
+        <translation>.</translation>
     </message>
 </context>
 <context>
     <name>WGenericThread</name>
     <message>
         <source>Connection timed out!</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Verbindung timed out</translation>
     </message>
 </context>
 <context>
@@ -1613,19 +1613,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>This is the color of "Warning".</source>
-        <translation type='unfinished'></translation>
+        <translation>Das ist die Farbe für "Warnung".</translation>
     </message>
     <message>
         <source>This is the color of the text in warning messages.</source>
-        <translation type='unfinished'></translation>
+        <translation>Das ist die Textfarbe einer Warnungsmeldung.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Warning&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;Warning&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Warning text</source>
-        <translation type='unfinished'></translation>
+        <translation>Warnung Text</translation>
     </message>
 </context>
 <context>
@@ -1704,7 +1704,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>General</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <source>Upload Bandwidth:</source>
@@ -1972,7 +1972,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>File Sharing</source>
-        <translation>Datei- Tausch</translation>
+        <translation>Datei-Tausch</translation>
     </message>
     <message>
         <source>HTTP launcher:</source>
@@ -2180,7 +2180,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>250 kB</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>250 kB</translation>
     </message>
     <message>
         <source>500 kB</source>
@@ -2188,19 +2188,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>IP Addresses</source>
-        <translation>IP Addresses</translation>
+        <translation>IP Addressen</translation>
     </message>
     <message>
         <source>Number of Ports:</source>
-        <translation>Number of Ports:</translation>
+        <translation>Anzahl der Ports:</translation>
     </message>
     <message>
         <source>Empty Windows:</source>
-        <translation>Empty Windows:</translation>
+        <translation>Leere Fenster:</translation>
     </message>
     <message>
         <source>Do Nothing</source>
-        <translation>Do Nothing</translation>
+        <translation>Nichts tun</translation>
     </message>
     <message>
         <source>Prompt</source>
@@ -2208,15 +2208,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Automatically Close</source>
-        <translation>Automatically Close</translation>
+        <translation>Automatisch Schließen</translation>
     </message>
     <message>
         <source>Warning Text</source>
-        <translation type='unfinished'></translation>
+        <translation>Warnmeldung</translation>
     </message>
     <message>
         <source>Warning Message Text</source>
-        <translation type='unfinished'></translation>
+        <translation>Warnmeldung Text</translation>
     </message>
 </context>
 <context>
@@ -2256,7 +2256,7 @@ Date: %4</translation>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!
 </source>
-        <translation type='obsolete'>User #%1 (a.k.a. %2) is a bot!</translation>
+        <translation type='obsolete'>Benutzer #%1 (a.k.a. %2) ist ein Bot!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is already in this private window!</source>
@@ -2406,7 +2406,7 @@ Date: %4</translation>
     <name>WUploadThread</name>
     <message>
         <source>Your download has been blocked for %1 minute(s)!</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Ihr Download wurde für %1 Minute(n) geblockt!</translation>
     </message>
     <message>
         <source>User #%1</source>
@@ -2414,19 +2414,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Could not init session!</source>
-        <translation>Could not init session!</translation>
+        <translation>Kann Sitzung nicht initiieren!</translation>
     </message>
     <message>
         <source>Couldn&apos;t create new connect session!</source>
-        <translation>Couldn&apos;t create new connect session!</translation>
+        <translation>Kan&apos;n keine neue Verbindung erstellen!</translation>
     </message>
     <message>
         <source>Connection reset by peer!</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Verbindung wurde zurückgesetzt!</translation>
     </message>
     <message>
         <source>Connection timed out!</source>
-        <translation>Connection timed out!</translation>
+        <translation>Verbindung timed out!</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
@@ -2438,14 +2438,14 @@ Date: %4</translation>
     </message>
     <message>
         <source>Could not start internal thread!</source>
-        <translation>Could not start internal thread!</translation>
+        <translation>Kann internen Thread nicht starten!</translation>
     </message>
 </context>
 <context>
     <name>WinShare</name>
     <message>
         <source>%d.%d.%d build %d</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>%d.%d.%d build %d</translation>
     </message>
 </context>
 <context>
@@ -2833,19 +2833,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 minutes, </source>
-        <translation type='obsolete'>%1 minutes,</translation>
+        <translation type='obsolete'>%1 Minuten,</translation>
     </message>
     <message>
         <source>1 second, </source>
-        <translation type='obsolete'>1 second,</translation>
+        <translation type='obsolete'>1 Sekunde,</translation>
     </message>
     <message>
         <source>%1 seconds, </source>
-        <translation type='obsolete'>%1 seconds,</translation>
+        <translation type='obsolete'>%1 Sekunden,</translation>
     </message>
     <message>
         <source> and </source>
-        <translation type='obsolete'>and</translation>
+        <translation type='obsolete'>und</translation>
     </message>
     <message>
         <source>%1 %2</source>
@@ -2965,7 +2965,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>kick</source>
-        <translation type='obsolete'>treten</translation>
+        <translation type='obsolete'>kicken</translation>
     </message>
     <message>
         <source>ban</source>
@@ -2989,7 +2989,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Connected users: </source>
-        <translation type='obsolete'>Connected users:</translation>
+        <translation type='obsolete'>Verbundene Benutzer:</translation>
     </message>
     <message>
         <source>Logging disabled.</source>
@@ -3517,11 +3517,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Server version: %1</source>
-        <translation>Server version: %1</translation>
+        <translation>Server Version: %1</translation>
     </message>
     <message>
         <source>Server uptime: %1</source>
-        <translation>Server uptime: %1</translation>
+        <translation>Server Uptime: %1</translation>
     </message>
     <message>
         <source>Session root: %1</source>
@@ -3529,19 +3529,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Memory usage: %1 MB of %2 MB used</source>
-        <translation>Memory usage: %1 MB of %2 MB used</translation>
+        <translation>Speicherverbrauch: %1 MB of %2 MB benutzt</translation>
     </message>
     <message>
         <source>Watch pattern cleared.</source>
-        <translation>Watch pattern cleared.</translation>
+        <translation>Beobachtungsmuster gelöscht.</translation>
     </message>
     <message>
         <source>Watch pattern set to %1.</source>
-        <translation>Watch pattern set to %1.</translation>
+        <translation>Beobachtungsmuster gesetzt zu %1.</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>%1.%2.%3 build %4</translation>
     </message>
     <message>
         <source>On Connect: %1</source>
@@ -3549,39 +3549,39 @@ Date: %4</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation>passive</translation>
+        <translation>passiv</translation>
     </message>
     <message>
         <source>active</source>
-        <translation>active</translation>
+        <translation>activ</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation>Clear History</translation>
+        <translation>Historie löschen</translation>
     </message>
     <message>
         <source>- Local File: %1</source>
-        <translation>- Local File: %1</translation>
+        <translation>- Lokale Datei: %1</translation>
     </message>
     <message>
         <source>Menubar</source>
-        <translation>Menubar</translation>
+        <translation>Menüleiste</translation>
     </message>
     <message>
         <source>Server bar</source>
-        <translation>Server bar</translation>
+        <translation>Serverleiste</translation>
     </message>
     <message>
         <source>Nickbar</source>
-        <translation>Nickbar</translation>
+        <translation>Nick Leiste</translation>
     </message>
     <message>
         <source>Statusbar</source>
-        <translation>Statusbar</translation>
+        <translation>Statusleiste</translation>
     </message>
     <message>
         <source>Unizone version: %1</source>
-        <translation>Unizone version: %1</translation>
+        <translation>Unizone Version: %1</translation>
     </message>
     <message>
         <source>Unizone</source>
@@ -3589,19 +3589,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
+        <translation>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für FreeBSD!</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
-        <translation>/clearresumes - clear all pending resumes</translation>
+        <translation>/clearresumes - lösche alle laufenden Resumes</translation>
     </message>
     <message>
         <source>Cleared resume list.</source>
-        <translation>Cleared resume list.</translation>
+        <translation>Resume Liste gelöscht.</translation>
     </message>
     <message>
         <source>On connect:</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Verbunden:</translation>
     </message>
     <message>
         <source>1. %1</source>
@@ -3613,39 +3613,39 @@ Date: %4</translation>
     </message>
     <message>
         <source>On Connect:</source>
-        <translation>On Connect:</translation>
+        <translation>Verbunden:</translation>
     </message>
     <message>
         <source>Queued file %1 from user #%2.</source>
-        <translation>Queued file %1 from user #%2.</translation>
+        <translation>Datei %1 von User #%2 beendet.</translation>
     </message>
     <message>
         <source>Downloading file %1 from user #%2.</source>
-        <translation>Downloading file %1 from user #%2.</translation>
+        <translation>Lade Datei %1 von User #%2 herunter.</translation>
     </message>
     <message>
         <source>Address info for user #%1:</source>
-        <translation>Address info for user #%1:</translation>
+        <translation>Addressen Info for user #%1:</translation>
     </message>
     <message>
         <source>User Name: %1</source>
-        <translation>User Name: %1</translation>
+        <translation>Benutzer Name: %1</translation>
     </message>
     <message>
         <source>/reverse [text] - say text in reverse</source>
-        <translation>/reverse [text] - say text in reverse</translation>
+        <translation>/reverse [text] - sage den Text umgekehrt</translation>
     </message>
     <message>
         <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
-        <translation>/revsay [nick]: [text] - say text reversed but prefix with nick</translation>
+        <translation>/revsay [nick]: [text] - sage den Text umgekehrt, aber Präfix mit Nick</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation>Initializing...</translation>
+        <translation>Initialisieren...</translation>
     </message>
     <message>
         <source>On Connect: Do Nothing ;)</source>
-        <translation>On Connect: Do Nothing ;)</translation>
+        <translation>Beim Verbinden: Nichts tun ;)</translation>
     </message>
     <message>
         <source>&amp;lt;None&amp;gt;</source>
@@ -3657,79 +3657,79 @@ Date: %4</translation>
     </message>
     <message>
         <source>Whitelist pattern cleared.</source>
-        <translation type='unfinished'></translation>
+        <translation>Weiße Liste Muster gelöscht.</translation>
     </message>
     <message>
         <source>Whitelist pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Weiße Liste Muster gesetzt zu: %1</translation>
     </message>
     <message>
         <source>Filter list pattern cleared.</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter Liste Muster gelöscht.</translation>
     </message>
     <message>
         <source>Filter list pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter Liste Muster gesetzt zu: %1</translation>
     </message>
     <message>
         <source>Whitelist pattern updated.</source>
-        <translation type='unfinished'></translation>
+        <translation>Weiße Liste Muster upgedated.</translation>
     </message>
     <message>
         <source>Error updating whitelist pattern!</source>
-        <translation type='unfinished'></translation>
+        <translation>Fehler beim updaten des Weiße Liste Musters!</translation>
     </message>
     <message>
         <source>Filter list pattern updated.</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter Liste Muster upgedated.</translation>
     </message>
     <message>
         <source>Error updating filter list pattern!</source>
-        <translation type='unfinished'></translation>
+        <translation>Fehler beim updaten der Muster Liste!</translation>
     </message>
     <message>
         <source>Filter list pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter Liste Muster: %1</translation>
     </message>
     <message>
         <source>Whitelist pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Weiße Liste Muster: %1</translation>
     </message>
     <message>
         <source>/addfilter [pattern] - update the word filter pattern</source>
-        <translation type='unfinished'></translation>
+        <translation>/addfilter [pattern] - updated das Wort Filter Muster</translation>
     </message>
     <message>
         <source>/addwhitelist [pattern] - update the whitelist pattern (can be a user name, or several names, or regular expression)</source>
-        <translation type='unfinished'></translation>
+        <translation>addwhitelist [pattern] - updated das Weiße Liste Muster (kann ein Benutzername sein,verschiedene Namen, oder einfache Ausdrücke)</translation>
     </message>
     <message>
         <source>/filter [pattern] - set the word filter pattern</source>
-        <translation type='unfinished'></translation>
+        <translation>/filter [pattern] - setze Wortfiltermuster</translation>
     </message>
     <message>
         <source>/unfilter [pattern] - remove pattern from word filters</source>
-        <translation type='unfinished'></translation>
+        <translation>/unfilter [pattern] - entferne Muster vom Wortfilter</translation>
     </message>
     <message>
         <source>/unwhitelist [name] - remove name from whitelist</source>
-        <translation type='unfinished'></translation>
+        <translation>/unwhitelist [name] - entfernt Name von der Weißen Liste</translation>
     </message>
     <message>
         <source>/whitelist - set the whitelist pattern</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>/whitelist [pattern] - setze das Weiße Liste Muster</translation>
     </message>
     <message>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
-        <translation type='unfinished'></translation>
+        <translation>/whitelist [pattern] - setzt das Weiße Liste Muster</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation type='unfinished'></translation>
+        <translation>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für QNX Neutrino!</translation>
     </message>
     <message>
         <source>wandering</source>
-        <translation type='unfinished'></translation>
+        <translation>wandering</translation>
     </message>
 </context>
 </TS>

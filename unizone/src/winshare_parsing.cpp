@@ -65,50 +65,59 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 }
 
 bool
+WinShareWindow::MatchUserFilter(const WUserRef & user, const QString & filter)
+{
+	return MatchUserFilter(user, (const char *) filter.lower().utf8());
+}
+
+bool
 WinShareWindow::MatchUserFilter(const WUserRef & user, const char * filter)
 {
-	if (user() == NULL) 
-		return false;
-
-	StringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
-	const char * n;
-	while((n = idTok.GetNextToken()) != NULL)
+	if (filter && user())
 	{
-		String next = StripURL(n);
-		next = next.Trim();
-
-		PRINT("MatchUserFilter: UserID = %s\n", (const char *) user()->GetUserID().utf8());
-		PRINT("MatchUserFilter: next   = %s\n", next.Cstr());
-		String userID = (const char *) user()->GetUserID().utf8();
-		if (userID.Length() > 0)
+		StringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
+		const char * n;
+		while((n = idTok.GetNextToken()) != NULL)
 		{
-			// Is this item our user's session ID?
-			if (userID == next)
+			String next = StripURL(n);
+			next = next.Trim();
+			
+			String userID = (const char *) user()->GetUserID().utf8();
+			PRINT("MatchUserFilter: UserID = %s\n", userID.Cstr());
+			PRINT("MatchUserFilter: next   = %s\n", next.Cstr());
+			
+			if (userID.Length() > 0)
 			{
-				return true;
-			}
-		}
-
-		String userName = StripURL((const char *) user()->GetUserName().utf8());
-		userName = userName.Trim();
-
-		if (userName.Length() > 0)
-		{
-			if (userName == next)	// Is this item our user's name?
-			{
-				return true;
-			}
-			else 
-			{
-				// Does this item (interpreted as a regex) match our user's name?
-				ConvertToRegex(next);
-				MakeRegexCaseInsensitive(next);
-				StringMatcher sm(next.Cstr());
-				PRINT("MatchUserFilter: UserName = %s\n", userName.Cstr());
-				PRINT("MatchUserFilter: next = %s\n", next.Cstr());
-				if (sm.Match(userName.Cstr()))
+				// Is this item our user's session ID?
+				if (userID == next)
 				{
 					return true;
+				}
+			}
+			
+			QString qUser = user()->GetUserName().lower();
+			qUser = StripURL(qUser);
+			String userName = (const char *) qUser.utf8();
+			userName = userName.Trim();
+			
+			if (userName.Length() > 0)
+			{
+				if (userName == next)	// Is this item our user's name?
+				{
+					return true;
+				}
+				else 
+				{
+					// Does this item (interpreted as a regex) match our user's name?
+					ConvertToRegex(next);
+					MakeRegexCaseInsensitive(next);
+					StringMatcher sm(next.Cstr());
+					PRINT("MatchUserFilter: UserName = %s\n", userName.Cstr());
+					PRINT("MatchUserFilter: next = %s\n", next.Cstr());
+					if (sm.Match(userName.Cstr()))
+					{
+						return true;
+					}
 				}
 			}
 		}
@@ -279,25 +288,32 @@ WinShareWindow::SetWatchPattern(const QString &pattern)
 }
 
 bool
+WinShareWindow::MatchFilter(const QString & user, const QString & filter)
+{
+	return MatchFilter(user, (const char *) filter.lower().utf8());
+}
+
+bool
 WinShareWindow::MatchFilter(const QString & user, const char * filter)
 {
-	if (user == NULL) 
-		return false;
-	StringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
-	const char * n;
-	while((n = idTok.GetNextToken()) != NULL)
+	if (filter && (user.length() > 0))
 	{
-		String next(n);
-		next = next.Trim();
-		
-		// Does this item (interpreted as a regex) match our user's name?
-		ConvertToRegex(next);
-		MakeRegexCaseInsensitive(next);
-		StringMatcher sm(next.Cstr());
-		String userName = String((const char *) user.utf8()).Trim();
-		if ((userName.Length() > 0) && sm.Match(userName.Cstr()))
+		StringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
+		const char * n;
+		while((n = idTok.GetNextToken()) != NULL)
 		{
-			return true;
+			String next(n);
+			next = next.Trim();
+			
+			// Does this item (interpreted as a regex) match our user's name?
+			ConvertToRegex(next);
+			MakeRegexCaseInsensitive(next);
+			StringMatcher sm(next.Cstr());
+			String userName = String((const char *) user.lower().utf8()).Trim();
+			if ((userName.Length() > 0) && sm.Match(userName.Cstr()))
+			{
+				return true;
+			}
 		}
 	}
 	return false;
@@ -313,7 +329,7 @@ WinShareWindow::FillUserMap(const QString & filter, WUserMap & wmap)
 	while (iter != fNetClient->Users().end())
 	{
 		user = (*iter).second;
-		if ( MatchUserFilter(user, (const char *) filter.utf8()) )
+		if ( MatchUserFilter(user, filter) )
 		{
 			WUserPair wpair = MakePair(user()->GetUserID(), user);
 			wmap.insert(wmap.end(), wpair);

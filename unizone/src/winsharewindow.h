@@ -456,7 +456,9 @@ private:
 
 	// parsing stuff...
 	bool MatchUserFilter(const WUserRef & user, const char * filter);
+	bool MatchUserFilter(const WUserRef & user, const QString & filter);
 	bool MatchFilter(const QString & user, const char * filter);
+	bool MatchFilter(const QString & user, const QString & filter);
 
 	int MatchUserName(const QString & un, QString & result, const char * filter);
 	bool DoTabCompletion(const QString & origText, QString & result, const char * filter);
