@@ -397,7 +397,8 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 					fFile = NULL;
 				}
 
-				if (IsLastFile()) fFinished = true;
+				if (IsLastFile()) 
+					SetFinished(true);
 
 				MessageRef done(GetMessageFromPool(WDownloadEvent::FileDone));
 				if (done())
@@ -526,7 +527,8 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 							delete fFile;
 							fFile = NULL;
 
-							if (IsLastFile()) fFinished = true;
+							if (IsLastFile()) 
+								SetFinished(true);
 
 							status = GetMessageFromPool(WDownloadEvent::FileDone);
 							if (status())
@@ -788,7 +790,7 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 			{
 				if (IsLastFile())
 				{
-					// fFinished = true;
+					// SetFinished(true);
 					dis = GetMessageFromPool(WDownloadEvent::FileDone);
 					if (dis())
 					{
@@ -832,7 +834,8 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 		}
 		fDownloading = false;
 		fDisconnected = true;
-		fFinished = true;
+		if (!fManuallyQueued)
+			SetFinished(true);
 	}
 }
 
@@ -962,7 +965,7 @@ WDownloadThread::timerEvent(QTimerEvent *e)
 	}
 	else
 	{
-		fFinished = true;
+		// SetFinished(true);
 		Reset();
 	}
 }
@@ -1009,7 +1012,8 @@ void
 WDownloadThread::Reset()
 {
 	PRINT("WDownloadThread::Reset()\n");
-	SetFinished(true);
+	if (!fManuallyQueued)
+		SetFinished(true);
 	// SetLocallyQueued(false);
 	QMessageTransceiverThread::Reset();
 	PRINT("WDownloadThread::Reset() OK\n");
