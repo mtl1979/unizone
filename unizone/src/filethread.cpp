@@ -224,6 +224,37 @@ WFileThread::ScanFiles(const QString & directory)
 						continue;
 					}
 				}
+#ifdef WIN32
+				// Skip Windows GUI files
+				//
+
+				if (ndata == "Thumbs.db")
+				{
+					i++;
+					continue;
+				}
+
+				if (ndata == "desktop.ini")
+				{
+					i++;
+					continue;
+				}
+
+				if (ndata == "Folder.jpg")
+				{
+					i++;
+					continue;
+				}
+
+				if (ndata.length() > 12)
+				{
+					if (ndata.left(8) == "AlbumArt" && ndata.right(4) == ".jpg")
+					{
+						i++;
+						continue;
+					}
+				}
+#endif
 
 				{
 					QString qfile = dir->absFilePath(ndata); 
