@@ -177,7 +177,6 @@ clean :
 	rm -f *.o *.a $(EXECUTABLES)
 	rm -f src/moc_*.cpp
 	rm -f src/muscle/qtsupport/moc_*.cpp
-	rm -f src/muscle/qtsupport/*.o
 	rm -f src/aboutdlg.h src/aboutdlg.cpp
 	rm -f src/channel.h src/channel.cpp
 	rm -f src/prefs.h src/prefs.cpp
