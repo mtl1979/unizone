@@ -94,7 +94,7 @@ public:
 	void TunnelAccepted(int32 myID, int32 hisID);
 	void TunnelRejected(int32 myID);
 
-	void TunnelMessage(int32 myID, const MessageRef & tmsg, bool download);
+	void TunnelMessage(int32 myID, MessageRef tmsg, bool download);
 
 	void DequeueDLSessions();
 	void DequeueULSessions();

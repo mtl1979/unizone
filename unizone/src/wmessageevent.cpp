@@ -7,7 +7,7 @@ WMessageEvent::WMessageEvent(int mt, const String &from)
 	sender = from;
 }
 
-WMessageEvent::WMessageEvent(int mt, const String &from, const MessageRef& msg)
+WMessageEvent::WMessageEvent(int mt, const String &from, MessageRef msg)
 : QCustomEvent(MessageEventType)
 {
 	msgtype = mt;
@@ -15,11 +15,17 @@ WMessageEvent::WMessageEvent(int mt, const String &from, const MessageRef& msg)
 	message = msg;
 }
 
-WMessageEvent::WMessageEvent(int mt, const MessageRef& msg)
+WMessageEvent::WMessageEvent(int mt, MessageRef msg)
 : QCustomEvent(MessageEventType)
 {
 	msgtype = mt;
 	message = msg;
+}
+
+WMessageEvent::WMessageEvent(int mt)
+: QCustomEvent(MessageEventType)
+{
+	msgtype = mt;
 }
 
 WMessageEvent::~WMessageEvent()

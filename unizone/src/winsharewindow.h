@@ -149,7 +149,7 @@ public:
 	void SendChatText(const QString & sid, const QString & txt);
 	void SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply, bool enc);
 
-	static QString GetRemoteVersionString(const MessageRef);
+	static QString GetRemoteVersionString(MessageRef);
 	// launches a search
 	static void LaunchSearch(const QString & pattern);	
 	// launches a private window with multiple users in it
@@ -484,7 +484,7 @@ private:
 
 	void SetWatchPattern(const QString & pattern);
 
-	void ServerParametersReceived(const MessageRef msg);
+	void ServerParametersReceived(MessageRef msg);
 
 	void LoadSettings();
 	void SaveSettings();

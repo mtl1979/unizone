@@ -211,8 +211,8 @@ WString::operator const char *() const
 		utfbuf = new char[len + 1];
 		utflen = len;
 	}
-	(void) wcstombs(utfbuf, buffer, utflen);
-	utfbuf[utflen] = 0;
+	len = wcstombs(utfbuf, buffer, utflen);
+	utfbuf[len] = 0;
 	return utfbuf;
 }
 

@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -56,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
@@ -73,7 +73,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"Debug/Unizoned.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
@@ -103,7 +103,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
 # SUBTRACT BASE CPP /X /YX
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -115,7 +115,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug"
 # SUBTRACT BASE LINK32 /incremental:no
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib musclead.lib zlibad.lib regexad.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegad.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug_ANSI" /libpath:"muscle___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegad.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug_ANSI" /libpath:"muscle___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
@@ -134,7 +134,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
 # SUBTRACT BASE CPP /X
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -146,7 +146,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 muscle.lib zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release"
 # SUBTRACT BASE LINK32 /pdb:none /incremental:yes
-# ADD LINK32 musclea.lib zliba.lib regexa.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpega.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizonea.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release_ANSI" /libpath:"muscle___Win32_Release_ANSI" /libpath:"regex___Win32_Release_ANSI" /libpath:"zlib___Win32_Release_ANSI"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpega.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizonea.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release_ANSI" /libpath:"muscle___Win32_Release_ANSI" /libpath:"regex___Win32_Release_ANSI" /libpath:"zlib___Win32_Release_ANSI"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ENDIF 
@@ -2875,268 +2875,6 @@ InputName=qjpegd
 !ENDIF 
 
 # End Source File
-# Begin Source File
-
-SOURCE=.\regex___Win32_Release\regex.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=.\regex___Win32_Release
-TargetDir=\build\unizone\vc6
-InputPath=.\regex___Win32_Release\regex.dll
-InputName=regex
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\regex___Win32_Release_ANSI\regexa.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=.\regex___Win32_Release_ANSI
-TargetDir=\build\unizone\vc6
-InputPath=.\regex___Win32_Release_ANSI\regexa.dll
-InputName=regexa
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\regex___Win32_Debug_ANSI\regexad.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=.\regex___Win32_Debug_ANSI
-TargetDir=\build\unizone\vc6
-InputPath=.\regex___Win32_Debug_ANSI\regexad.dll
-InputName=regexad
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\regex___Win32_Debug\regexd.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=.\regex___Win32_Debug
-TargetDir=\build\unizone\vc6
-InputPath=.\regex___Win32_Debug\regexd.dll
-InputName=regexd
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\zlib___Win32_Release\zlib.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=.\zlib___Win32_Release
-TargetDir=\build\unizone\vc6
-InputPath=.\zlib___Win32_Release\zlib.dll
-InputName=zlib
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\zlib___Win32_Release_ANSI\zliba.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=.\zlib___Win32_Release_ANSI
-TargetDir=\build\unizone\vc6
-InputPath=.\zlib___Win32_Release_ANSI\zliba.dll
-InputName=zliba
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\zlib___Win32_Debug_ANSI\zlibad.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=.\zlib___Win32_Debug_ANSI
-TargetDir=\build\unizone\vc6
-InputPath=.\zlib___Win32_Debug_ANSI\zlibad.dll
-InputName=zlibad
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\zlib___Win32_Debug\zlibd.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=.\zlib___Win32_Debug
-TargetDir=\build\unizone\vc6
-InputPath=.\zlib___Win32_Debug\zlibd.dll
-InputName=zlibd
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-!ENDIF 
-
-# End Source File
 # End Group
 # Begin Group "ANSI"
 
@@ -3838,6 +3576,146 @@ SOURCE=..\src\muscle\qtsupport\moc_QAcceptSocketsThread.cpp
 # Begin Source File
 
 SOURCE=..\src\muscle\qtsupport\moc_QMessageTransceiverThread.cpp
+# End Source File
+# End Group
+# Begin Group "regex Sources"
+
+# PROP Default_Filter ".c"
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\debug.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regcomp.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regerror.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regexec.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regfree.c
+# End Source File
+# End Group
+# Begin Group "regex Headers"
+
+# PROP Default_Filter ".h"
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regex.h
+# End Source File
+# End Group
+# Begin Group "zlib Sources"
+
+# PROP Default_Filter ".c"
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\adler32.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\compress.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\crc32.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\deflate.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\gzio.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\infblock.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\infcodes.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inffast.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inflate.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inftrees.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\infutil.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\trees.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\uncompr.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\zutil.c
+# End Source File
+# End Group
+# Begin Group "zlib Headers"
+
+# PROP Default_Filter ".h"
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\deflate.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\infblock.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\infcodes.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inffast.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inffixed.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inftrees.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\infutil.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\trees.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\zconf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\zlib.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\zutil.h
 # End Source File
 # End Group
 # End Target

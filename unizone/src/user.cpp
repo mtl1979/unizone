@@ -42,7 +42,7 @@ WUser::~WUser()
 }
 
 void
-WUser::InitName(const MessageRef msg)
+WUser::InitName(MessageRef msg)
 {
 	uint32 port;
 	const char * name;
@@ -128,7 +128,7 @@ WUser::InitName(const MessageRef msg)
 }
 
 void
-WUser::InitStatus(const MessageRef msg)
+WUser::InitStatus(MessageRef msg)
 {
 	const char * status;
 	if (msg()->FindString("userstatus", &status) == B_OK)
@@ -142,7 +142,7 @@ WUser::InitStatus(const MessageRef msg)
 }
 
 void
-WUser::InitUploadStats(const MessageRef msg)
+WUser::InitUploadStats(MessageRef msg)
 {
 	int32 c, m;
 	if (msg()->FindInt32("cur", (int32 *)&c) == B_OK)
@@ -156,7 +156,7 @@ WUser::InitUploadStats(const MessageRef msg)
 }
 
 void
-WUser::InitBandwidth(const MessageRef msg)
+WUser::InitBandwidth(MessageRef msg)
 {
 	const char * l;
 	uint32 bps = 0;
@@ -194,7 +194,7 @@ WUser::InitBandwidth(const MessageRef msg)
 }
 
 void
-WUser::InitFileCount(const MessageRef msg)
+WUser::InitFileCount(MessageRef msg)
 {
 	int32 fc;
 	if (msg()->FindInt32("filecount", &fc) == B_OK)
@@ -334,7 +334,7 @@ WUser::RemoveFromListView(QListView * view)
 }
 
 void
-WUser::PingResponse(const MessageRef msg)
+WUser::PingResponse(MessageRef msg)
 {
 	fNeedPing = false;
 	SetClient(WinShareWindow::GetRemoteVersionString(msg));

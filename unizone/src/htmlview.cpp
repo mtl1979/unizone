@@ -3,7 +3,9 @@
 #include "wstring.h"
 #include "debugimpl.h"
 #include "parser.h"
+#include "wmessageevent.h"
 
+#include <qapplication.h>
 #include <qtooltip.h>
 
 #if (QT_VERSION >= 0x030000)
@@ -96,7 +98,7 @@ WHTMLView::setSource( const QString & name )
 	fContext = name;
 	if (name.at(0) == "#")
 	{
-		if (_URL.find("#") >= 0)
+		if (_URL.find("#") > 0)
 		{
 			fContext = _URL.left(_URL.find("#"));
 			fContext += name;
@@ -171,17 +173,31 @@ WHTMLView::appendText(const QString &newtext)
 	// fall through here...
 	{
 		PRINT("appendText: Calling CheckScrollState()\n");
-		CheckScrollState();	
+		sendMessage(CheckMessage);
+//		CheckScrollState();	
 		PRINT("appendText: Calling append(fBuffer)\n");
 		if (fBuffer.length() > 0)
 		{
-			append(fBuffer);
+			MessageRef mref = GetMessageFromPool();
+			if (mref())
+			{
+				mref()->AddString("text", (const char *) fBuffer.utf8());
+				sendMessage(AppendMessage, mref);
+			}
+//			append(fBuffer);
 			fBuffer = "";
 		}
 		PRINT("appendText: Calling append(newtext)\n");
-		append(newtext);
+		MessageRef mref = GetMessageFromPool();
+		if (mref())
+		{
+			mref()->AddString("text", (const char *) newtext.utf8());
+			sendMessage(AppendMessage, mref);
+		}
+//		append(newtext);
 		PRINT("appendText: Calling UpdateScrollState()\n");
-		UpdateScrollState();
+		sendMessage(ScrollMessage);
+//		UpdateScrollState();
 	}
 	PRINT("appendText OK\n");
 }
@@ -221,6 +237,22 @@ WHTMLView::CheckScrollState()
 }
 
 void
+WHTMLView::sendMessage(int type, MessageRef msg)
+{
+	WMessageEvent *wme = new WMessageEvent(type, msg);
+	if (wme)
+		QApplication::postEvent(this, wme);
+}
+
+void
+WHTMLView::sendMessage(int type)
+{
+	WMessageEvent *wme = new WMessageEvent(type);
+	if (wme)
+		QApplication::postEvent(this, wme);
+}
+
+void
 WHTMLView::UpdateScrollState()
 {
 	// if we don't have previous state saved, let's scroll to bottom
@@ -231,7 +263,7 @@ WHTMLView::UpdateScrollState()
 	if (fScrollDown)
 		fScrollY = contentsHeight();
 
-	if (fScrollX != contentsX() || fScrollY != contentsY())
+	if (fScrollX > contentsX() || fScrollY > contentsY())
 	{
 		setContentsPos(fScrollX, QMIN(fScrollY, contentsHeight()));
 #ifndef WIN32	// linux only... (FreeBSD, QNX???)
@@ -243,4 +275,36 @@ WHTMLView::UpdateScrollState()
 		if (fScrollY <= contentsHeight())
 			fScrollY = -1;
 	}
+}
+
+bool
+WHTMLView::event(QEvent *event)
+{
+	if (event->type() == WMessageEvent::MessageEventType)
+	{
+		WMessageEvent *wme = dynamic_cast<WMessageEvent *>(event);
+		if (wme)
+		{
+			if (wme->MessageType() == CheckMessage)
+			{
+				CheckScrollState();
+				return true;
+			}
+			else if (wme->MessageType() == AppendMessage)
+			{
+				const char *text;
+				MessageRef mref = wme->Message();
+				mref()->FindString("text", &text);
+				QString qtext = QString::fromUtf8(text);
+				append(qtext);
+				return true;
+			}
+			else if (wme->MessageType() == ScrollMessage)
+			{
+				UpdateScrollState();
+				return true;
+			}
+		}
+	}
+	return QTextBrowser::event(event);
 }

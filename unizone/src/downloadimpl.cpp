@@ -564,7 +564,7 @@ WDownload::TunnelRejected(int32 myID)
 }
 
 void 
-WDownload::TunnelMessage(int32 myID, const MessageRef & tmsg, bool download)
+WDownload::TunnelMessage(int32 myID, MessageRef tmsg, bool download)
 {
 	if (download)
 	{

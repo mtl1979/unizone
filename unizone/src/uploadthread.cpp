@@ -1025,7 +1025,7 @@ WUploadThread::event(QEvent *e)
 }
 
 void
-WUploadThread::TransferFileList(const MessageRef & msg)
+WUploadThread::TransferFileList(MessageRef msg)
 {
 	PRINT("WUploadThread::TransferFileList\n");
 	

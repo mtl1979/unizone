@@ -25,8 +25,9 @@ public:
 	};
 
 	WMessageEvent(int, const String &);
-	WMessageEvent(int, const String &, const MessageRef &);
-	WMessageEvent(int, const MessageRef &);
+	WMessageEvent(int, const String &, MessageRef);
+	WMessageEvent(int, MessageRef);
+	WMessageEvent(int);
 	~WMessageEvent();
 
 	int MessageType() const;

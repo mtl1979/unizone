@@ -243,7 +243,7 @@ WinShareWindow::GotUpdateCmd(const QString & key, const QString & value)
 }
 
 void
-WinShareWindow::ServerParametersReceived(const MessageRef msg)
+WinShareWindow::ServerParametersReceived(MessageRef msg)
 {
 	if (fSettings->GetInfo())
 	{

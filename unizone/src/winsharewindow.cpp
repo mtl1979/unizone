@@ -1481,7 +1481,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 }
 
 QString
-WinShareWindow::GetRemoteVersionString(const MessageRef msg)
+WinShareWindow::GetRemoteVersionString(MessageRef msg)
 {
 	QString versionString("?");
 	const char * version;

@@ -70,13 +70,13 @@ public:
 	uint32 GetPort() const { return fPort; }
 	uint64 GetInstallID() const { return fInstallID; }
 
-	void InitName(const MessageRef msg);
-	void InitStatus(const MessageRef msg);
-	void InitUploadStats(const MessageRef msg);
-	void InitBandwidth(const MessageRef msg);
-	void InitFileCount(const MessageRef msg);
+	void InitName(MessageRef msg);
+	void InitStatus(MessageRef msg);
+	void InitUploadStats(MessageRef msg);
+	void InitBandwidth(MessageRef msg);
+	void InitFileCount(MessageRef msg);
 	
-	void PingResponse(const MessageRef msg);
+	void PingResponse(MessageRef msg);
 	void AddToListView(QListView * view);
 	void RemoveFromListView(QListView * view = NULL);	// if NULL, remove from all list views
 

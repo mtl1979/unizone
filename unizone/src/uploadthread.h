@@ -202,7 +202,7 @@ private:
 	bool fTunneled;
 
 	void DoUpload();
-	void TransferFileList(const MessageRef &);
+	void TransferFileList(MessageRef);
 	void NextFile();
 	void SignalUpload();
 

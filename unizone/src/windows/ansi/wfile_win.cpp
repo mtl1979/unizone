@@ -2,6 +2,15 @@
 #include "wstring.h"
 
 #include <io.h>
+#include <windows.h>
+
+void ConvertFileName(wchar_t *in, int ilen, char * out, int olen)
+{
+	if (AreFileApisANSI())
+		WideCharToMultiByte(CP_ACP, 0, in, ilen, out, olen, NULL, NULL);
+	else
+		WideCharToMultiByte(CP_OEMCP, 0, in, ilen, out, olen, NULL, NULL);
+}
 
 WFile::WFile()
 {
@@ -17,7 +26,9 @@ WFile::~WFile()
 bool
 WFile::Open(const WString &name, int mode)
 {
-	file = _open((const char *) name, mode);
+	char cname[MAX_PATH];
+	ConvertFileName(name, wcslen(name), cname, MAX_PATH - 1);
+	file = _open(cname, mode);
 	return (file != -1);
 }
 
@@ -48,7 +59,9 @@ WFile::Exists(const QString &name)
 bool
 WFile::Exists(const WString &name)
 {
-	FILE * f = fopen((const char *) name, "r");
+	char cname[MAX_PATH];
+	ConvertFileName(name, wcslen(name), cname, MAX_PATH - 1);
+	FILE * f = fopen(cname, "r");
 	bool ret = false;
 	if (f)
 	{

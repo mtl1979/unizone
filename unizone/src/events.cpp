@@ -56,7 +56,7 @@ SendEvent(QObject *target, int type, const String &from)
 }
 
 void 
-SendEvent(QObject *target, int type, const String &from, const MessageRef &msg)
+SendEvent(QObject *target, int type, const String &from, MessageRef msg)
 {
 	WMessageEvent *wme = new WMessageEvent(type, from, msg);
 	if (wme)
@@ -64,7 +64,7 @@ SendEvent(QObject *target, int type, const String &from, const MessageRef &msg)
 }
 
 void 
-SendEvent(QObject *target, int type, const MessageRef &msg)
+SendEvent(QObject *target, int type, MessageRef msg)
 {
 	WMessageEvent *wme = new WMessageEvent(type, msg);
 	if (wme)

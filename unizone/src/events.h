@@ -13,8 +13,8 @@ void ErrorEvent(QObject *target, const QString &text);
 void WarningEvent(QObject *target, const QString &text);
 
 // from NetClient
-void SendEvent(QObject *target, int type, const String &from, const MessageRef &msg);
+void SendEvent(QObject *target, int type, const String &from,  MessageRef msg);
 void SendEvent(QObject *target, int type, const String &from);
-void SendEvent(QObject *target, int type, const MessageRef &msg);
+void SendEvent(QObject *target, int type, MessageRef msg);
 
 #endif
