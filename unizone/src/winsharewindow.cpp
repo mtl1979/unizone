@@ -1294,7 +1294,9 @@ WinShareWindow::MakeHumanDiffTime(int64 time)
 
 	QString s;
 
-	s.sprintf(INT64_FORMAT_SPEC ":%02i:%02i", hours, (int) minutes, (int) seconds);
+	char buf[25];
+	sprintf(buf, INT64_FORMAT_SPEC ":%02i:%02i", hours, (int) minutes, (int) seconds);
+	s = buf;
 	
 	return s;
 }
