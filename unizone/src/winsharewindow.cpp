@@ -457,6 +457,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					PrintSystem(tr("Finished scanning shares."));
 				if (fGotParams)
 					UpdateShares();
+				fFileScanThread->ShutdownInternalThread();
 				return;
 			}
 		case NetClient::SESSION_ATTACHED:
