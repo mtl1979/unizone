@@ -124,6 +124,10 @@ SOURCE=..\src\chattext.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\chatwindow.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\colors.cpp
 # End Source File
 # Begin Source File
@@ -570,6 +574,10 @@ InputName=chattext
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\chatwindow.h
 # End Source File
 # Begin Source File
 

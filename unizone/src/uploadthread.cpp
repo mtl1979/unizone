@@ -1079,7 +1079,6 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 							fileRef()->FindString("beshare:File Name", filename);
 						
 							file = MakePath(path, filename);
-
 						}
 						
 						// Notify window of our hashing

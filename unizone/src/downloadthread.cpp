@@ -759,14 +759,14 @@ WDownloadThread::SessionConnected(const String &sessionID)
 
 			outFile += fFileDl[c];
 							
+			// get an MD5 hash code out of it
+			uint8 digest[MD5_DIGEST_SIZE];
+			uint64 fileOffset = 0;	// autodetect file size for offset
+			uint64 retBytesHashed = 0;
+			uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
+
 			if (QFile::exists(fixed))
-			{
-				// get an MD5 hash code out of it
-				uint8 digest[MD5_DIGEST_SIZE];
-				uint64 fileOffset = 0;	// autodetect file size for offset
-				uint64 retBytesHashed = 0;
-				uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
-								
+			{								
 				MessageRef hashMsg(GetMessageFromPool(WDownloadEvent::FileHashing));
 				if (hashMsg())
 				{
@@ -791,17 +791,13 @@ WDownloadThread::SessionConnected(const String &sessionID)
 						}
 					}
 				}
-				else
-				{
-					// aha! succeeded!
-					neg()->AddInt64("offsets", fileOffset);
-								
-					if (bytesFromBack > 0)
-						neg()->AddInt64("numbytes", retBytesHashed);
-									
-					neg()->AddData("md5", B_RAW_TYPE, digest, (fileOffset > 0) ? sizeof(digest) : 1);
-				}
 			}
+			neg()->AddInt64("offsets", fileOffset);
+								
+			if (bytesFromBack > 0)
+				neg()->AddInt64("numbytes", retBytesHashed);
+									
+			neg()->AddData("md5", B_RAW_TYPE, digest, (fileOffset > 0) ? sizeof(digest) : 1);
 			neg()->AddString("files", (const char *) fFileDl[c].utf8());
 		}
 		neg()->AddString("beshare:FromSession", (const char *) fLocalSession.utf8());
