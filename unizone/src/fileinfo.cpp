@@ -10,14 +10,16 @@
 #include "platform.h"
 #include "debugimpl.h"
 
-UFileInfo::UFileInfo(QFileInfo & info)
+UFileInfo::UFileInfo(QFileInfo info)
 {
 	fInfo = new QFileInfo(info);
+	CHECK_PTR(fInfo);
 }
 
 UFileInfo::UFileInfo(QString file)
 {
 	fInfo = new QFileInfo(file);
+	CHECK_PTR(fInfo);
 }
 
 UFileInfo::~UFileInfo()
@@ -27,7 +29,7 @@ UFileInfo::~UFileInfo()
 }
 
 QString
-UFileInfo::getMIMEType()
+UFileInfo::getMIMEType() const
 {
 	if (!fInfo)
 		return QString::null;
@@ -118,7 +120,7 @@ UFileInfo::getModificationTime()
 }
 
 QString
-UFileInfo::getPath()
+UFileInfo::getPath() const
 {
 	if (!fInfo)
 		return QString::null;
@@ -126,7 +128,7 @@ UFileInfo::getPath()
 }
 
 QString
-UFileInfo::getName()
+UFileInfo::getName() const
 {
 	if (!fInfo)
 		return QString::null;

@@ -9,10 +9,16 @@ class WHTMLView : public QTextBrowser
 {
 	Q_OBJECT
 public:
-	WHTMLView(QWidget * parent = NULL) 
-		: QTextBrowser(parent)
-	{}
+	WHTMLView(QWidget * parent = NULL, const char * name = NULL) 
+		: QTextBrowser(parent, name)
+	{
+		if (!name)
+			setName( "WHTMLView" );
+	}
+
 	virtual ~WHTMLView() {}
+
+	virtual void setSource( const QString & name )	{}
 
 signals:
 	void URLClicked();
@@ -22,12 +28,12 @@ protected:
 	virtual void viewportMousePressEvent(QMouseEvent * e)
 	{
 		emit URLClicked();
-		QTextView::viewportMousePressEvent(e);
+		QTextBrowser::viewportMousePressEvent(e);
 		PRINT("WHTMLView: Press\n");
 	}
 	virtual void viewportMouseReleaseEvent(QMouseEvent * e)
 	{
-		QTextView::viewportMouseReleaseEvent(e);
+		QTextBrowser::viewportMouseReleaseEvent(e);
 		PRINT("WHTMLView: Release\n");
 	}
 	

@@ -52,6 +52,7 @@ void
 WinShareWindow::AboutWinShare()
 {
 	AboutDlg * win = new AboutDlg;
+	CHECK_PTR(win);
 	win->show();
 }
 
@@ -170,7 +171,7 @@ WinShareWindow::TabPressed(QString str)
 		fInputText->setCursorPosition(9999, 9999);
 		PRINT("Returned true\n");
 	}
-	PRINT("Tab completion result: %s\n", result.latin1());
+	PRINT("Tab completion result: %S\n", qStringToWideChar(result));
 }
 
 void
@@ -202,7 +203,7 @@ WinShareWindow::URLClicked()
 void
 WinShareWindow::URLSelected(const QString & href)
 {
-	PRINT("URL Selected %s\n", href.latin1());
+	PRINT("URL Selected %S\n", qStringToWideChar(href));
 	fCurURL = href;
 }
 
@@ -222,7 +223,7 @@ WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int c)
 			{
 				// found user...
 				// <postmaster@raasu.org> 20020927 -- Added internationalization
-				QString txt = tr(MSG_NL_PRIVATECHAT).arg((*it).second()->GetUserName());
+				QString txt = tr(MSG_NL_PRIVATECHAT).arg(StripURL((*it).second()->GetUserName()));
 				// <postmaster@raasu.org> 20020924 -- Added ',1'
 				fPrivate->insertItem(txt, 1);
 				// <postmaster@raasu.org> 20020924 -- Added id 2
@@ -234,7 +235,7 @@ WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int c)
 				// <postmaster@raasu.org> 20030307 -- Inserted new item as id 4, moved old as id 5
 				txt = tr(MSG_NL_GETADDRINFO);
 				fPrivate->insertItem(txt, 4);
-				txt = tr("Ping %1").arg((*it).second()->GetUserName());
+				txt = tr("Ping %1").arg(StripURL((*it).second()->GetUserName()));
 				fPrivate->insertItem(txt, 5);
 
 				fPopupUser = uid;
@@ -254,6 +255,7 @@ WinShareWindow::PopupActivated(int id)
 	{
 		if (id == 1) {
 			WPrivateWindow * window = new WPrivateWindow(this, fNetClient);
+			CHECK_PTR(window);
 			window->AddUser((*it).second);
 			window->show();
 			// it's a map... but so far, there is no need for a key
@@ -291,6 +293,7 @@ void
 WinShareWindow::Preferences()
 {
 	WPrefs * prefs = new WPrefs(NULL, NULL, true);
+	CHECK_PTR(prefs);
 	bool oldSharing = fSettings->GetSharingEnabled();
 	bool oldLogging = fSettings->GetLogging();
 
@@ -315,17 +318,17 @@ WinShareWindow::Preferences()
 			{
 				if (QMessageBox::information(this, "File Scan", "Scan your shared files now?", "Yes", "No") == 0)
 				{
-					CancelShares();
-					//fFileScanThread->SetList(fSettings->GetSharedDirs());
-					fFileScanThread->SetFirewalled(fSettings->GetFirewalled());
-					fFileScanThread->start();
+					ScanShares();
 					if (!fAccept)	// accept thread not running yet?
 						StartAcceptThread();
 				}
 				fNetClient->SetLoad(0, fSettings->GetMaxUploads());
 			}
 			if (fDLWindow)
-				fDLWindow->DequeueSessions();
+			{
+				fDLWindow->DequeueDLSessions();
+				fDLWindow->DequeueULSessions();
+			}
 
 			
 		}
@@ -376,8 +379,10 @@ WinShareWindow::SearchDialog()
 void
 WinShareWindow::GotShown(const QString & txt)
 {
+#ifndef WIN32
 	fChatText->setText(ParseForShown(txt));
 	UpdateTextView();
+#endif
 }
 
 void
@@ -393,6 +398,13 @@ WinShareWindow::SearchWindowClosed()
 {
 	PRINT("Search window closed!\n");
 	fSearchWindow = NULL;
+}
+
+void
+WinShareWindow::DownloadWindowClosed()
+{
+	PRINT("Download window closed!\n");
+	fDLWindow = NULL;
 }
 
 // Insert failed download to resume list
@@ -414,8 +426,23 @@ WinShareWindow::FileFailed(QString file, QString user)
 void
 WinShareWindow::FileInterrupted(QString file, QString user)
 {
-	rLock.lock();
 	WResumePair wrp = MakePair(file, user);
+	rLock.lock();
+	if (!fResumeMap.empty())
+	{
+		// Check if file is already in the resume list
+		for (WResumeIter iter = fResumeMap.begin(); iter != fResumeMap.end(); iter++)
+		{
+			if (
+				((*iter).first == file) &&
+				((*iter).second == user)
+				)
+			{
+				rLock.unlock();
+				return;
+			}
+		}
+	}
 	fResumeMap.insert(wrp);
 	rLock.unlock();
 }
@@ -447,11 +474,6 @@ WinShareWindow::CheckResumes(QString user)
 		{
 			// User name matches
 
-			// Make sure File Transfers window is open
-
-			if (!fDLWindow)
-				OpenDownload(); 
-
 			PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).first).arg(user), false);
 			fFiles.AddTail((*it).first);
 			fResumeMap.erase(it);
@@ -462,6 +484,11 @@ WinShareWindow::CheckResumes(QString user)
 	}
 	rLock.unlock();
 	if (fFiles.GetNumItems() > 0)
-		fDLWindow->AddDownloadList(fFiles, u());
+	{
+		// Make sure File Transfers window is open
 
+		OpenDownload(); 
+
+		fDLWindow->AddDownloadList(fFiles, u());
+	}
 }

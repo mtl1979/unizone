@@ -56,18 +56,21 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fSearchList->addColumn(tr(MSG_SW_PATH));
 	fSearchList->addColumn(tr(MSG_SW_USER));
 
-	fSearchList->setColumnAlignment(1, AlignRight); // <postmaster@raasu.org> 20021103
+	fSearchList->setColumnAlignment(WSearchListItem::FileSize, AlignRight); // <postmaster@raasu.org> 20021103
+	fSearchList->setColumnAlignment(WSearchListItem::Modified, AlignRight);
 
 	fSearchList->setShowSortIndicator(true);
 	fSearchList->setAllColumnsShowFocus(true);
 
-	for (int i = 0; i < 6; i++)
+	int i;
+
+	for (i = 0; i < 6; i++)
 	{
 		fSearchList->setColumnWidthMode(i, QListView::Manual);
 		fSearchList->setColumnWidth(i, kListSizes[i]);
 	}
 
-	fSearchList->setSelectionMode(QListView::SelectionMode::Extended);
+	fSearchList->setSelectionMode(QListView::Extended);
 
 	fSearchLabel = new QLabel(fEntryBox);
 	CHECK_PTR(fSearchLabel);
@@ -121,6 +124,7 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	connect(fNet, SIGNAL(DisconnectedFromServer()), this, SLOT(DisconnectedFromServer()));
 
 	fQueue = new Message();
+	CHECK_PTR(fQueue);
 
 	SetStatus(tr(MSG_IDLE));
 
@@ -139,7 +143,7 @@ WSearch::~WSearch()
 	for (i = 0; i < fSearchEdit->count(); i++)
 	{
 		gWin->fSettings->AddQueryItem(fSearchEdit->text(i));
-		PRINT("Saved query %s\n", fSearchEdit->text(i).latin1());
+		PRINT("Saved query %S\n", qStringToWideChar(fSearchEdit->text(i)));
 	}
 
 	fIsRunning = false;
@@ -168,7 +172,7 @@ WSearch::AddFile(const QString sid, const QString filename, bool firewalled, Mes
 	PRINT("ADDFILE called\n");
 	if (firewalled && gWin->fSettings->GetFirewalled())
 		return;	// we don't need to show this file if we are firewalled
-	PRINT("ADDFILE: filename=%s (%s) [%s]\n", filename.latin1(), firewalled ? "firewalled" : "hackable", sid.latin1());
+	PRINT("ADDFILE: filename=%S (%s) [%S]\n", qStringToWideChar(filename), firewalled ? "firewalled" : "hackable", qStringToWideChar(sid));
 	Lock();
 	// see if the filename matches our file regex
 	// AND that the session ID matches our session ID regex
@@ -184,6 +188,7 @@ WSearch::AddFile(const QString sid, const QString filename, bool firewalled, Mes
 				WUserRef user = (*uit).second;
 				
 				WFileInfo * info = new WFileInfo;
+				CHECK_PTR(info);
 				info->fiUser = user;
 				info->fiFilename = filename;
 				info->fiRef = file;
@@ -206,6 +211,8 @@ WSearch::AddFile(const QString sid, const QString filename, bool firewalled, Mes
 				QString quser = user()->GetUserName();
 				
 				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
+				CHECK_PTR(info->fiListItem);
+
 				PRINT("Setting key to %d\n", (long)size);
 				
 				// The map is based on _filename's_, not session ID's.
@@ -229,7 +236,7 @@ WSearch::RemoveFile(const QString sid, const QString filename)
 	WFIIter iter = fFileList.begin();
 	WFileInfo * info;
 
-	PRINT("Sid = %s, filename = %s\n", sid.latin1(), filename.latin1());
+	PRINT("Sid = %S, filename = %S\n", qStringToWideChar(sid), qStringToWideChar(filename));
 
 	while (iter != fFileList.end())
 	{
@@ -402,7 +409,7 @@ WSearch::StartQuery(QString sidRegExp, QString fileRegExp)
 	tmp += fileRegExp;
 	fCurrentSearchPattern = tmp;
 	// <postmaster@raasu.org> 20021023 -- Fixed typo
-	PRINT("Current Search Pattern = %s, fUserRegExp = %s, fFileRegExp = %s\n", fCurrentSearchPattern.latin1(), sidRegExp, fileRegExp);
+	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", qStringToWideChar(fCurrentSearchPattern), qStringToWideChar(sidRegExp), qStringToWideChar(fileRegExp));
 	fUserRegExp.SetPattern((const char *) sidRegExp.utf8());
 	fUserRegExpStr = sidRegExp;
 	fFileRegExp.SetPattern((const char *) fileRegExp.utf8());
@@ -424,7 +431,7 @@ WSearch::Download()
 		while (it != fFileList.end())
 		{
 			WFileInfo * fi = (*it).second;
-			PRINT("Checking: %s, %s\n", fi->fiListItem->text(0).latin1(), fi->fiListItem->text(5).latin1());
+			PRINT("Checking: %S, %S\n", qStringToWideChar(fi->fiListItem->text(0)), qStringToWideChar(fi->fiListItem->text(5)));
 			if (fi->fiListItem->isSelected())
 			{
 				PRINT("DOWNLOAD: Found item\n");
@@ -531,6 +538,7 @@ WSearch::EmptyQueues()
 		{
 			fQueue->FindInt32(mUser, &numItems);
 			files = new QString[numItems];
+			CHECK_PTR(files);
 			mUser = mUser.Prepend("_");
 			for (int32 i = 0; i < numItems; i++)
 			{
@@ -543,6 +551,7 @@ WSearch::EmptyQueues()
 	}
 	delete fQueue;
 	fQueue = new Message();
+	CHECK_PTR(fQueue);
 }
 
 

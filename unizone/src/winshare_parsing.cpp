@@ -45,7 +45,7 @@ WinShareWindow::MatchUserName(QString un, QString & result, const char * filter)
 				{
 					if (temp.at(i) != userName.at(i))
 					{
-						res = temp.left(i/*+1*/);
+						res = temp.left(i);
 						break;
 					}
 				}
@@ -53,7 +53,7 @@ WinShareWindow::MatchUserName(QString un, QString & result, const char * filter)
 		}
 		iter++;
 	}
-	PRINT("WinShareWindow::MatchUserName: Result %s\n", res.latin1());
+	PRINT("WinShareWindow::MatchUserName: Result %S\n", qStringToWideChar(res));
 	result = res;
 	return matchCount;
 }
@@ -127,14 +127,14 @@ WinShareWindow::DoTabCompletion(QString origText, QString & result, const char *
 		PRINT("Match complete\n");
 		if (numMatches == 1)
 		{
-			PRINT("Found match %s\n", qres.latin1());
+			PRINT("Found match %S\n", qStringToWideChar(qres));
 			matchString = (const char *) qres.utf8();  // found a unique match!  We're done!
 			startAt = matchAt;
 			break;
 		}
 		else if (numMatches > 1)
 		{
-			PRINT("Found multiple matches %s\n", qres.latin1());
+			PRINT("Found multiple matches %S\n", qStringToWideChar(qres));
 			backupMatchString = (const char *) qres.utf8();  // found several matches; keep trying for a single
 			backupStartAt = matchAt;         // but we'll use this if nothing else
 		}
@@ -260,7 +260,7 @@ WinShareWindow::NameSaid2(String sname, QString & msg, unsigned long index)
 		smsg += output;
 		smsg += "</font>";
 		smsg += QString::fromUtf8(itxt2.Cstr()); // <postmaster@raasu.org> 20021005
-		PRINT("Name said string: %s\n", smsg.latin1());
+		PRINT("Name said string: %S\n", qStringToWideChar(smsg));
 		msg = smsg;
 		return true;
 	}

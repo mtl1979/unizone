@@ -28,7 +28,8 @@ SetSettingsFile(const char * sf)
 WSettings::WSettings()
 {
 	fColor = fColumn = fStatus = fUser = fServer = 0;
-	fSet = new Message;
+	fSet = new Message();
+	CHECK_PTR(fSet);
 }
 
 WSettings::~WSettings()
@@ -863,7 +864,7 @@ void
 WSettings::SetMailLauncher(QString l)
 {
 	fSet->RemoveName(MAILTO_LAUNCHER);
-	fSet->AddString(MAILTO_LAUNCHER, l);
+	fSet->AddString(MAILTO_LAUNCHER, (const char *) l.utf8());
 }
 
 void
@@ -894,7 +895,7 @@ WSettings::GetHTTPLauncher()
 {
 	String s = "konqueror";
 	fSet->FindString(HTTP_LAUNCHER, s);
-	return QString:.fromUtf8(s.Cstr());
+	return QString::fromUtf8(s.Cstr());
 }
 #endif
 

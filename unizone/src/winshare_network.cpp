@@ -3,6 +3,13 @@
 
 #ifdef WIN32
 #pragma warning(disable: 4786)
+#else
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+typedef hostent *LPHOSTENT;
 #endif
 
 #include "winsharewindow.h"
@@ -44,12 +51,15 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				if (fNetClient->IsInternalThreadRunning())	// are we connected?
 				{
-					if (fSettings->GetInfo())
-						PrintSystem(tr(MSG_RESCAN));
 					if (!fFileScanThread->IsRunning())
-						fFileScanThread->start();
+					{
+						ScanShares(true);
+					}
 					else
-						PrintError(tr(MSG_SCAN_ERR1), false);
+					{
+						if (fSettings->GetError())
+							PrintError(tr(MSG_SCAN_ERR1), false);
+					}
 				}
 				else
 				{
@@ -404,17 +414,15 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			}
 		}
 		// <postmaster@raasu.org> 20021116
-#if defined(WIN32)
 		else if (CompareCommand(sendText, "/shell"))
 		{
 			QString command = GetParameterString(sendText);
 
 			if (command.length() > 0)
 			{
-				GotoURL(command);
+				RunCommand(command);
 			}
 		}
-#endif
 		else if (CompareCommand(sendText, "/time"))
 		{
 			QString command = GetParameterString(sendText).lower();
@@ -857,7 +865,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 			QString qsendtext;
 			while (iter != sendTo.end())
 			{
-				PRINT("Found user %s and rest of text %s\n", (*iter).second.user()->GetUserName().latin1(), (*iter).second.text.latin1());
+				PRINT("Found user %S and rest of text %S\n", qStringToWideChar((*iter).second.user()->GetUserName()), qStringToWideChar((*iter).second.text));
 				user = (*iter).second.user;
 
 				QString sid = user()->GetUserID();
@@ -1039,7 +1047,8 @@ WinShareWindow::HandleSignal()
 			{
 				PRINT("MTT_EVENT_SESSION_DETACHED\n");
 				QCustomEvent *e = new QCustomEvent(NetClient::Disconnected);
-				QApplication::postEvent(this, e);
+				if (e)
+					QApplication::postEvent(this, e);
 				break;
 			}
             case MTT_EVENT_FACTORY_ATTACHED:
@@ -1227,12 +1236,7 @@ WinShareWindow::HandleMessage(Message * msg)
 			PRINT("Checking...\n");
 			if (fSettings->GetSharingEnabled())
 			{
-				PrintSystem(tr(MSG_SCANSHARES));
-				//PRINT("Setting list...\n");
-				//fFileScanThread->SetList(fSettings->GetSharedDirs());
-				fFileScanThread->SetFirewalled(fSettings->GetFirewalled());
-				PRINT("Starting...\n");
-				fFileScanThread->start();
+				ScanShares();
 			}
 			break;
 		}
@@ -1241,19 +1245,18 @@ WinShareWindow::HandleMessage(Message * msg)
 	case NetClient::CONNECT_BACK_REQUEST:
 		{
 			PRINT("\tCONNECTBACKREQUEST\n");
-			if (!fDLWindow)
-			{
-				// fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
-				OpenDownload();
-				fDLWindow->show();
-			}
+			
+
 			const char * session;
 			int32 port;
 			if ((msg->FindString("session", &session) == B_OK) && (msg->FindInt32("port", &port) == B_OK))
 			{
 				WUserRef user = fNetClient->FindUser(session);
 				if (user())
+				{
+					OpenDownload();
 					fDLWindow->AddUpload(user()->GetUserHostName(), port);
+				}
 			}
 			break;
 		}
@@ -1554,6 +1557,7 @@ WinShareWindow::Disconnect()
 		fReconnectTimer->stop();
 	}
 	fDisconnectFlag = true; // User disconnection
+
 	Disconnect2();
 }
 
@@ -1566,7 +1570,19 @@ WinShareWindow::Disconnect2()
 		fDisconnectFlag = true; // User disconnection
 	}
 	*/
+
 	WaitOnFileThread();
+
+	// Clear old shared files list to save memory
+	
+	if (fSettings->GetSharingEnabled())
+	{
+		if (fFileScanThread->GetNumFiles() > 0)
+		{
+				fFileScanThread->EmptyList();
+		}
+	}
+
 	if (fNetClient && fNetClient->IsInternalThreadRunning()	/* this is to stop a forever loop involving the DisconnectedFromServer() signal */)
 	{
 		fNetClient->Disconnect();
@@ -1690,14 +1706,17 @@ WinShareWindow::ShowHelp(QString command)
 }
 
 bool
-WinShareWindow::IsIgnoredIP(QString & ip)
+WinShareWindow::IsIgnoredIP(QString ip)
 {
+	PRINT("IsIgnoredIP(%S)\n", qStringToWideChar(ip));
+	PRINT("IP IGNORE MASK: %S\n", qStringToWideChar(fIgnoreIP));
 	return MatchFilter(ip, (const char *) fIgnoreIP.utf8());
 }
 
 bool
-WinShareWindow::AddIPIgnore(QString & ip)
+WinShareWindow::AddIPIgnore(QString ip)
 {
+	PRINT("AddIPIgnore(%S)\n", qStringToWideChar(ip));
 	if ( IsIgnoredIP(ip) )
 		return false;
 
@@ -1707,16 +1726,24 @@ WinShareWindow::AddIPIgnore(QString & ip)
 		fIgnoreIP = ip;
 	else
 		fIgnoreIP += ip.prepend(",");
+	PRINT("IP IGNORE MASK: %S\n", qStringToWideChar(fIgnoreIP));
 	return true;
 
 }
 
 bool
-WinShareWindow::RemoveIPIgnore(QString & ip)
+WinShareWindow::RemoveIPIgnore(QString ip)
 {
+	PRINT("RemoveIPIgnore(%S)\n", qStringToWideChar(ip));
 	if ( !IsIgnoredIP(ip) )
 		return false;
 
+	if (fIgnoreIP == ip) // First and only?
+	{
+		fIgnoreIP = "";
+		PRINT("IP IGNORE MASK: %S\n", qStringToWideChar(fIgnoreIP));
+		return true;
+	}
 	// First in list?
 
 	int pos = fIgnoreIP.startsWith(ip + ",") ? 0 : -1 ; 
@@ -1756,6 +1783,7 @@ WinShareWindow::RemoveIPIgnore(QString & ip)
 		fIgnoreIP = fIgnoreIP.left(pos)+fIgnoreIP.mid(len+pos);
 	}
 
+	PRINT("IP IGNORE MASK: %S\n", qStringToWideChar(fIgnoreIP));
 	return true;
 }
 
@@ -1816,7 +1844,7 @@ WinShareWindow::IsBlackListed(QString & user)
 }
 
 bool
-WinShareWindow::IsAutoPrivate(QString & user)
+WinShareWindow::IsAutoPrivate(QString user)
 {
 	// Find the user record
 	//
@@ -1843,7 +1871,7 @@ WinShareWindow::IsAutoPrivate(QString & user)
 }
 
 bool
-WinShareWindow::IsConnected(QString & user)
+WinShareWindow::IsConnected(QString user)
 {
 	// Find the user record
 	//

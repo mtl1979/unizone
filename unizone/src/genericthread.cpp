@@ -10,6 +10,8 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	int i;
 	// Default status
 	fActive = true;
+	fBlocked = false;
+	fFinished = false;
 	fManuallyQueued = false;
 	fLocallyQueued = false;
 	fRemotelyQueued = false;
@@ -45,6 +47,7 @@ WGenericThread::SetQueued(bool b)
 	fQueued = b;
 }
 */
+
 bool
 WGenericThread::IsManuallyQueued() const
 {
@@ -67,6 +70,10 @@ void
 WGenericThread::SetLocallyQueued(bool b)
 {
 	fLocallyQueued = b;
+	if (!b)
+	{
+		fLastData.restart();
+	}
 }
 
 bool
@@ -79,6 +86,10 @@ void
 WGenericThread::SetRemotelyQueued(bool b)
 {
 	fRemotelyQueued = b;
+	if (!b)
+	{
+		fLastData.restart();
+	}
 }
 
 void
@@ -94,13 +105,30 @@ WGenericThread::IsActive() const
 }
 
 void
+WGenericThread::SetFinished(bool b)
+{
+	fFinished = b;
+}
+
+bool
+WGenericThread::IsFinished() const
+{
+	return fFinished;
+}
+
+void
 WGenericThread::SetBlocked(bool b, int64 timeLeft)
 {
 	fBlocked = b;
 	if (b)
+	{
 		fTimeLeft = timeLeft;
+	}
 	else
+	{
 		fTimeLeft = 0;
+		fLastData.restart();
+	}
 }
 
 bool
@@ -110,16 +138,19 @@ WGenericThread::IsBlocked() const
 }
 
 void 
-WGenericThread::SendReply(Message * m)
+WGenericThread::SendReply(MessageRef m)
 {
 	// since we're just reading, we don't need to do any locking, etc
-	if (!gWin->fDLWindow)	// doesn't exist anymore??
+	if (fOwner != gWin->fDLWindow)	// doesn't exist anymore??
 	{
-		delete m;
-		m = NULL; // <postmaster@raasu.org> 20021027
+		PRINT("WGenericThread::SendReply() : Invalid fOwner\n");
+		if (IsInternalThreadRunning())
+		{
+			Reset();
+		}
 		return;
 	}
-	m->AddPointer("sender", this);
+	m()->AddPointer("sender", this);
 	WGenericEvent * wge = new WGenericEvent(m);
 	if (wge)
 		QThread::postEvent(fOwner, wge); // Don't use QApplication::postEvent() here ;)
@@ -154,11 +185,17 @@ double
 WGenericThread::GetCalculatedRate() const
 {
 	double added = 0.0f;
+	double rate = 0.0f;
+
 	for (int i = 0; i < fRateCount; i++)
 		added += fRate[i];
 
 	// <postmaster@raasu.org> 20021024,20021026,20021101 -- Don't try to divide zero or by zero
-	return (((added != 0.0f) && (fRateCount != 0)) ? (added / (double)fRateCount) : 0.0f);
+
+	if ( (added > 0.0f) && (fRateCount > 0) )
+		rate = added / (double)fRateCount;
+
+	return rate;
 }
 
 /*
@@ -236,16 +273,30 @@ uint32
 WGenericThread::ComputeETA() const
 {
 	uint32 added = 0;
+	uint32 eta = 0;
 	for (int i = 0; i < fETACount; i++)
 		added += fETA[i];
-	return added / fETACount;
+
+	if ( (added > 0) && (fETACount > 0 ) )
+	{
+		eta = added / fETACount;
+	}
+
+	return eta;
 }
 
 QString
 WGenericThread::ComputePercentString(int64 cur, int64 max)
 {
 	QString ret;
-	ret.sprintf("%.2f", (double)((double)cur / (double)max) * 100.0);
+	double p = 0.0f;
+	
+	if ( (cur > 0) && (max > 0) )
+	{
+		p = ((double)cur / (double)max) * 100.0f;
+	}
+	
+	ret.sprintf("%.2f", p);
 	return ret;
 }
 
@@ -263,10 +314,9 @@ void
 WGenericThread::ConnectTimer()
 {
 	Reset();
-	Message * msg = new Message(WGenericEvent::ConnectFailed);
-	msg->AddString("why", "Connection timed out!");
-	//msg->AddString("file", (const char *) GetCurrentFile().utf8());
-	msg->AddBool("retry", true);
+	MessageRef msg(new Message(WGenericEvent::ConnectFailed), NULL);
+	msg()->AddString("why", "Connection timed out!");
+	// msg()->AddBool("retry", true);
 	SendReply(msg);
 }
 

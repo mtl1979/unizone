@@ -241,6 +241,7 @@ HashFileMD5(QString entry, uint64 & len, uint64 offset, uint64 & retBytesHashed,
 	const uint32 bufSize = 256 * 1024;
 	struct MD5Context ctx;
 	unsigned char * buf = new unsigned char[bufSize];
+	CHECK_PTR(buf);
 	uint64 bytesLeft = (len > 0) ? len : size;
 
 	if (offset > 0)

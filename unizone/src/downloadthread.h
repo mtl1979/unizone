@@ -25,6 +25,8 @@ public:
 	QFile * GetFile() const { return fFile; }
 	QString GetCurrentFile() { return fFileDl[fCurFile]; }
 	QString GetFileName(int i) { return fFileDl[i]; }
+	QString GetLocalFileName(int i) { return fLocalFileDl[i]; }
+
 
 	static QString FixFileName(const QString & fixMe);
 
@@ -44,14 +46,15 @@ public:
 
 protected:
 	QMutex fLockFile;
-	QFile * fFile;		// file on the HD
-	QString * fFileDl;	// file to dl
-	QString fIP;		// ip address of remote client
+	QFile * fFile;			// file on the HD
+	QString * fFileDl;		// file to dl
+	QString * fLocalFileDl; // local filenames for downloaded files
+	QString fIP;			// ip address of remote client
 	QString fFromSession;	// session ID of remote client
 	QString fFromUser;		// user name of remote client
 	QString fLocalSession;	// our session ID
-	uint32 fPort;		// port of the remote client (the one it's listening on)
-	int32 fAcceptingOn;	// port we're accepting on in case the user is firewalled
+	uint32 fPort;			// port of the remote client (the one it's listening on)
+	int32 fAcceptingOn;		// port we're accepting on in case the user is firewalled
 	uint64 fCurrentOffset;	// current offset in the file
 	uint64 fFileSize;		// the file size
 	time_t fCurrentFileStartTime;
@@ -60,7 +63,7 @@ protected:
 	bool fPartial;
 	int32 fNumFiles, fCurFile;
 
-	virtual void SendReply(Message * m);
+	virtual void SendReply(MessageRef m);
 
 	virtual void SignalOwner();
 private:

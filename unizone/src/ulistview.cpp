@@ -27,15 +27,15 @@ WUniListItem::WUniListItem(
 	
 	// Set default column types to 'Generic'
 	
-	setColumnType(0, ColumnType::Generic);
-	setColumnType(1, ColumnType::Generic);
-	setColumnType(2, ColumnType::Generic);
-	setColumnType(3, ColumnType::Generic);
-	setColumnType(4, ColumnType::Generic);
-	setColumnType(5, ColumnType::Generic);
-	setColumnType(6, ColumnType::Generic);
-	setColumnType(7, ColumnType::Generic);
-	setColumnType(8, ColumnType::Generic);
+	setColumnType(0, Generic);
+	setColumnType(1, Generic);
+	setColumnType(2, Generic);
+	setColumnType(3, Generic);
+	setColumnType(4, Generic);
+	setColumnType(5, Generic);
+	setColumnType(6, Generic);
+	setColumnType(7, Generic);
+	setColumnType(8, Generic);
 }
 
 // if more constructors are needed, they will be added later
@@ -65,14 +65,14 @@ WUniListItem::key(int c, bool asc) const
 	case Time:
 	case TransferSpeed:
 		result = fKey[c];
-		PRINT("\tRESULT STARTS AS\t %s\n", result.latin1());
+		PRINT("\tRESULT STARTS AS\t %S\n", qStringToWideChar(result));
 		bool ok;
 		n = result.toLong(&ok);
 		if (ok)
 		{
 			// convert our number to hexadecimal! what a thought, huh?
 			result.sprintf("0x%08x", n);
-			PRINT("\tRESULT IS %s\n", result.latin1());
+			PRINT("\tRESULT IS %S\n", qStringToWideChar(result));
 		}
 		return result;
 	case TransferLoad:
@@ -267,7 +267,17 @@ WUniListItem::text(int c) const
 		}
 		else
 			n = 0.0f;
-		result.sprintf("%.2f %s", n, postFix.latin1());
+		
+		if (n != 0.0f)
+		{
+			result.sprintf("%.2f ", n);
+			result += postFix;
+		}
+		else
+		{
+			result = "";
+		}
+		
 		return result;
 		
 	case TransferSpeed:
@@ -296,7 +306,17 @@ WUniListItem::text(int c) const
 		}
 		else
 			n = 0.0f;
-		result.sprintf("%.2f %s", n, postFix.latin1());
+		
+		if (n != 0.0f)
+		{
+			result.sprintf("%.2f ", n);
+			result += postFix;
+		}
+		else
+		{
+			result = "";
+		}
+
 		return result;
 		
 		
@@ -337,7 +357,16 @@ WUniListItem::text(int c) const
 		min = secs / 60; secs = secs % 60;
 		hours = min / 60; min = min % 60;
 		
-		result.sprintf("%d:%.2d:%.2d", hours, min, secs);
+		if (lMod > 0)
+		{
+			result.sprintf("%d:%.2d:%.2d", hours, min, secs);
+		}
+		else
+		{
+			// Don't show 0:00:00
+			result = "";
+		}
+
 		return result;
 		
 	default:
@@ -359,7 +388,7 @@ WUniListItem::columnType(int c)
 
 // set/get user colors
 void 
-WUniListItem::setRowBaseColor(int i, QColor & color) 
+WUniListItem::setRowBaseColor(int i, QColor color) 
 {
 	RowBaseColor[i] = color;
 }
@@ -371,7 +400,7 @@ WUniListItem::rowBaseColor(int i)
 }
 
 void
-WUniListItem::setRowTextColor(int i, QColor & color)
+WUniListItem::setRowTextColor(int i, QColor color)
 {
 	RowTextColor[i] = color;
 }

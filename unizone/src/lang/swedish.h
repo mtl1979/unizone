@@ -85,18 +85,15 @@
 // Menu bar
 
 #define MSG_FILE			"&Arkiv"
-#define MSG_AFILE			CTRL+Key_A
+//#define MSG_AFILE			CTRL+Key_A
 #define MSG_EDIT			"Ä&ndra"
-#define MSG_AEDIT			CTRL+Key_N
-#define MSG_OPTIONS			"&Preferenser"
-#define MSG_AOPTIONS		CTRL+Key_P
+//#define MSG_AEDIT			CTRL+Key_N
+//#define MSG_OPTIONS		"&Preferenser"
+//#define MSG_AOPTIONS		CTRL+Key_P
 #define MSG_HELP			"&Hjälp"
-#define MSG_AHELP			CTRL+Key_H
+//#define MSG_AHELP			CTRL+Key_H
 
 // File menu
-
-#define MSG_ABOUT			"&Om "
-#define MSG_AABOUT			CTRL+Key_O
 
 #define MSG_CONNECT			"&Anslut"
 #define MSG_ACONNECT		CTRL+SHIFT+Key_A
@@ -119,6 +116,8 @@
 
 #define MSG_PREFERENCES		"&Inställningar"
 #define MSG_APREFERENCES	CTRL+Key_I
+
+// Help menu
 
 // Preferences window
 //

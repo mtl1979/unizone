@@ -90,18 +90,15 @@
 // Menu bar
 
 #define MSG_FILE                "&Datei"
-#define MSG_AFILE               CTRL+Key_F
+//#define MSG_AFILE               CTRL+Key_F
 #define MSG_EDIT                "&Bearbeiten"
-#define MSG_AEDIT               CTRL+Key_B
-#define MSG_OPTIONS             "&Optionen"
-#define MSG_AOPTIONS            CTRL+Key_O
+//#define MSG_AEDIT               CTRL+Key_B
+//#define MSG_OPTIONS             "&Optionen"
+//#define MSG_AOPTIONS            CTRL+Key_O
 #define MSG_HELP                "&Hilfe"
-#define MSG_AHELP               CTRL+Key_H
+//#define MSG_AHELP               CTRL+Key_H
 
 // File menu
-
-#define MSG_ABOUT               "&Über "
-#define MSG_AABOUT              CTRL+Key_U
 
 #define MSG_CONNECT             "&Verbinden"
 #define MSG_ACONNECT            CTRL+SHIFT+Key_V
@@ -124,6 +121,11 @@
 
 #define MSG_PREFERENCES         "&Einstellungen"
 #define MSG_APREFERENCES        CTRL+Shift+Key_E
+
+// Help menu
+
+#define MSG_ABOUT               "&Über "
+#define MSG_AABOUT              CTRL+Key_U
 
 // Preferences window
 //

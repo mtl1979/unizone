@@ -46,8 +46,6 @@ public:
 
 	virtual void paintCell(QPainter *, const QColorGroup & cg, int column, int w, 
 							int alignment);
-private:
-	QColorGroup _cg;
 };
 
 #endif	// BOTITEM_H

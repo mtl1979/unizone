@@ -99,7 +99,7 @@ WUser::InitName(const Message * msg)
 
 	//
 
-	PRINT("WUser: %s is a %s with installid %d on port %d\n", fUserName.latin1(), (fBot ? "bot" : "user"), 
+	PRINT("WUser: %S is a %s with installid %d on port %d\n", qStringToWideChar(fUserName), (fBot ? "bot" : "user"), 
 																fInstallID, fPort);
 }
 
@@ -111,7 +111,7 @@ WUser::InitStatus(const Message * msg)
 		fUserStatus = QString::fromUtf8(status);
 	else
 		fUserStatus = "?";
-	PRINT("WUser: %s with status %s\n", fUserName.latin1(), fUserStatus.latin1());
+	PRINT("WUser: %S with status %S\n", qStringToWideChar(fUserName), qStringToWideChar(fUserStatus));
 }
 
 void
@@ -122,7 +122,7 @@ WUser::InitUploadStats(const Message * msg)
 		fCurUploads = c;
 	if (msg->FindInt32("max", (int32 *)&m) == B_OK)
 		fMaxUploads = m;
-	PRINT("WUser: %s with %d of %d uploads going\n", fUserName.latin1(), fCurUploads, fMaxUploads);
+	PRINT("WUser: %S with %d of %d uploads going\n", qStringToWideChar(fUserName), fCurUploads, fMaxUploads);
 }
 
 void
@@ -135,7 +135,7 @@ WUser::InitBandwidth(const Message * msg)
 		fBandwidthLabel = l;
 	if (msg->FindInt32("bps", (int32 *)&bps) == B_OK)
 		fBandwidthBPS = bps;
-	PRINT("WUser: %s with label %s and bps %d\n", fUserName.latin1(), fBandwidthLabel.latin1(), fBandwidthBPS);
+	PRINT("WUser: %S with label %S and bps %d\n", qStringToWideChar(fUserName), qStringToWideChar(fBandwidthLabel), fBandwidthBPS);
 }
 
 void
@@ -144,7 +144,7 @@ WUser::InitFileCount(const Message * msg)
 	int32 fc;
 	if (msg->FindInt32("filecount", &fc) == B_OK)
 		fFileCount = fc;
-	PRINT("WUser: %s with filecount %d\n", fUserName.latin1(), fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
+	PRINT("WUser: %S with filecount %d\n", qStringToWideChar(fUserName), fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
 }
 
 void
@@ -160,16 +160,21 @@ WUser::AddToListView(QListView * view)
 	if (it == fLists.end())	// not found? create a new item
 	{
 		WListPair pair;
+		QListViewItem *item;
 		if (!fBot)
 		{
-			pair = MakeListPair(view, new WUserListItem(view, fUserName, fUserID, fUserStatus, QObject::tr("%1").arg(strFileCount), 
-								fBandwidthLabel, qUpload, fClient));
+			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, QObject::tr("%1").arg(strFileCount), 
+								fBandwidthLabel, qUpload, fClient);
+			CHECK_PTR(item);
+			pair = MakeListPair(view, item);
 			((WUserListItem *)(pair.second))->SetFirewalled(fFirewalled);
 		}
 		else
 		{
-			pair = MakeListPair(view, new WBotItem(view, fUserName, fUserID, fUserStatus, QObject::tr("%1").arg(strFileCount), 
-								fBandwidthLabel, qUpload, fClient));
+			item = new WBotItem(view, fUserName, fUserID, fUserStatus, QObject::tr("%1").arg(strFileCount), 
+								fBandwidthLabel, qUpload, fClient);
+			CHECK_PTR(item);
+			pair = MakeListPair(view, item);
 		}
 		fLists.insert(pair);
 	}
@@ -177,27 +182,42 @@ WUser::AddToListView(QListView * view)
 	{
 		QListViewItem * item = (*it).second;
 		// if we've been created... then we should update our list item if needed
-		if (item->text(0) != fUserName)
-			item->setText(0, fUserName);
-		if (item->text(1) != fUserID)
+		if (item->text(WNickListItem::Name) != fUserName)
 		{
-			item->setText(1, fUserID);
+			item->setText(WNickListItem::Name, fUserName);
 		}
-		if (item->text(2) != fUserStatus)
-			item->setText(2, fUserStatus);
+
+		if (item->text(WNickListItem::ID) != fUserID)
+		{
+			item->setText(WNickListItem::ID, fUserID);
+		}
+
+		if (item->text(WNickListItem::Status) != fUserStatus)
+		{
+			item->setText(WNickListItem::Status, fUserStatus);
+		}
 
 		QString chk = QObject::tr("%1").arg(strFileCount);
 
-		if (item->text(3) != chk)
-			item->setText(3, chk);
-		if (item->text(4) != fBandwidthLabel)
-			item->setText(4, fBandwidthLabel);
+		if (item->text(WNickListItem::Files) != chk)
+		{
+			item->setText(WNickListItem::Files, chk);
+		}
+
+		if (item->text(WNickListItem::Connection) != fBandwidthLabel)
+		{
+			item->setText(WNickListItem::Connection, fBandwidthLabel);
+		}
 		
-		chk = qUpload;
-		if (item->text(5) != chk)
-			item->setText(5, chk);
-		if (item->text(6) != fClient)
-			item->setText(6, fClient);
+		if (item->text(WNickListItem::Load) != qUpload)
+		{
+			item->setText(WNickListItem::Load, qUpload);
+		}
+
+		if (item->text(WNickListItem::Client) != fClient)
+		{
+			item->setText(WNickListItem::Client, fClient);
+		}
 	}
 }
 
@@ -240,8 +260,10 @@ WUser::PingResponse(const Message * msg)
 	for (WListIter it = fLists.begin(); it != fLists.end(); it++)
 	{
 		QListViewItem * item = (*it).second;
-		if (item->text(6) != fClient)
-			item->setText(6, fClient);
+		if (item->text(WNickListItem::Client) != fClient)
+		{
+			item->setText(WNickListItem::Client, fClient);
+		}
 	}
 }
 

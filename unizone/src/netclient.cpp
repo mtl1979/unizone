@@ -100,7 +100,7 @@ NetClient::SignalOwner()
 {
 	QCustomEvent *e = new QCustomEvent(NetClient::SignalEvent);
 	if (e)
-		QApplication::postEvent(fOwner, e);
+		QThread::postEvent(fOwner, e);
 }
 
 QString
@@ -328,7 +328,7 @@ NetClient::HandleParameters(MessageRef & next)
 		if (id)
 		{
 			fSessionID = id + 1;
-			PRINT("My ID is: %s\n", fSessionID.latin1());
+			PRINT("My ID is: %S\n", qStringToWideChar(fSessionID));
 			gWin->setCaption( QObject::tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
 		}
 	}

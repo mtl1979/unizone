@@ -42,7 +42,7 @@
 #endif
 
 //
-// Portuguese Strings
+// Portuguese Strings -- Francois(BR) (fvincent@freeshell.org)
 //
 
 #if (MSG_LANG == 351)
@@ -52,7 +52,7 @@
 #endif
 
 //
-// German Strings
+// German Strings -- leprOSy (leprosy@freenet.de)
 //
 
 #if (MSG_LANG == 49)
@@ -62,7 +62,7 @@
 #endif
 
 //
-// French Strings  -- LoLL Addon --
+// French Strings  -- LoLL Addon -- (beosland@free.fr)
 //
 
 #if (MSG_LANG == 33)
@@ -72,7 +72,7 @@
 #endif
 
 //
-// Russian Strings -- Sauron_RU
+// Russian Strings -- Sauron_RU (wblaze@yandex.ru)
 //
 
 #if (MSG_LANG == 7)
@@ -88,6 +88,15 @@
 #if (MSG_LANG == 46)
 
 #include "lang/swedish.h"
+
+#endif
+
+//
+// Spanish Strings -- bencer (bencer@e-milio.com)
+
+#if (MSG_LANG == 34)
+
+#include "lang/spanish.h"
 
 #endif
 

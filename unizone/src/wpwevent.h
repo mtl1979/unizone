@@ -38,7 +38,7 @@ public:
 				fMsg.truncate(fMsg.length() - 1);
 				fMsg += " ";
 				fMsg += smsg;
-				PRINT("Sending text: %s\n", fMsg.latin1());
+				PRINT("Sending text: %S\n", qStringToWideChar(fMsg));
 			}
 		}
 		else

@@ -21,7 +21,5 @@ WBotItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w, int
 	font.setItalic(true);
 	p->setFont(font);
 
-	p->fillRect( 0, 0, w, height(), cg.base() );
-
 	WNickListItem::paintCell(p, cg, column, w, alignment);
 }

@@ -15,19 +15,13 @@ class WGenericEvent : public QCustomEvent
 public:
 	enum { Type = 'wGeE' };
 
-	// This event stores a Message. Once this message is passed to it, it owns it.
-	// The message will be deleted when the event is freed
-	WGenericEvent(Message * msg = NULL) 
+	// This event stores a MessageRef
+	WGenericEvent(MessageRef msg) 
 		: QCustomEvent(Type) { fMsg = msg; }
-	virtual ~WGenericEvent() 
-							{ 
-								delete fMsg; 
-								fMsg = NULL; // <postmaster@raasu.org> 20021027
-							}
+	virtual ~WGenericEvent() { }
 
-	Message * Msg() const { return fMsg; }
-	// frees the old message and takes possesion of the new message
-	void SetMsg(Message * m) { if (fMsg) delete fMsg; fMsg = m; }
+	MessageRef Msg() const { return fMsg; }
+	void SetMsg(MessageRef m) { fMsg = m; }
 
 	enum
 	{
@@ -49,7 +43,7 @@ public:
 	};
 
 private:
-	Message * fMsg;
+	MessageRef fMsg;
 };
 
 #endif

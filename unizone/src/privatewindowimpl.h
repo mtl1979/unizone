@@ -57,8 +57,11 @@ private slots:
 	void UserDisconnected(QString sid, QString name);	// we need to remove user from internal list
 	void DisconnectedFromServer();
 	void TabPressed(QString str);
+
+	// this won't be emitted under Windows
 	void GotShown(const QString &);
-		// popup menu
+
+	// popup menu
 	void RightButtonClicked(QListViewItem *, const QPoint &, int);
 	void PopupActivated(int);
 

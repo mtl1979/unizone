@@ -16,29 +16,26 @@
 #include <windows.h>
 #include <shlwapi.h>
 #endif
-#undef POPUP
-#define POPUP(X) \
-{ \
-	QMessageBox box(tr(NAME), X, QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
-					QMessageBox::NoButton, QMessageBox::NoButton); \
-	box.exec(); \
-}
 
 int 
 main( int argc, char** argv )
 {
 	QApplication app( argc, argv );
 
+	// Set alternative codec if translation requires it
+
 #ifdef ALTCHARSET
 	app.setDefaultCodec( QTextCodec::codecForName(ALTCHARSET) );
 #endif
 
-	// first set our working directory (linux only... Windows already does it for us :))
+	// Set alternative settings file if requested
 
 	if (argc > 1)
 	{
 		SetSettingsFile(argv[1]);
 	}
+
+	// Set our working directory
 
 #ifndef WIN32
 	const char * wdir = strrchr(argv[0], '/');
@@ -59,6 +56,7 @@ main( int argc, char** argv )
 	// we have to use some windows api to get our path...
 	// <postmaster@raasu.org> 20021022 -- use wchar_t instead of TCHAR to follow common typedef across source files
 	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
+	CHECK_PTR(name);
 	if (GetModuleFileName(NULL,				/* current apps module */
 							name,			/* buffer */
 							MAX_PATH		/* buffer length */
@@ -75,6 +73,8 @@ main( int argc, char** argv )
 	app.setStyle(new QPlatinumStyle);
 
 	WinShareWindow * window = new WinShareWindow(NULL);
+	CHECK_PTR(window);
+
 	app.setMainWidget(window);
 
 	window->show();

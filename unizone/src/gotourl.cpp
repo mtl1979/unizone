@@ -73,12 +73,17 @@ bool GotoURL(QString url, int showcmd)
 bool
 GotoURL(QString url, QString browser)
 {
-	QString launch(browser);
+	QString launch;
 
-	launch += " \"";
+	if (browser != QString::null)
+	{
+		launch = browser;
+		launch += " ";
+	}
+	launch += "\"";
 	launch += url;
 	launch += "\"";
-	PRINT("Launching %s\n", launch.latin1());
+	PRINT("Launching %S\n", qStringToWideChar(launch));
 	system(launch);
 	return true;
 }
@@ -97,6 +102,7 @@ GotoURL(QString url)
 	}
 #endif
 	WLaunchThread * t = new WLaunchThread(url);
+	CHECK_PTR(t);
 #ifdef __linux__
 
 	if (u.startsWith("http"))	// also includes 'https'
@@ -116,6 +122,18 @@ GotoURL(QString url)
 	{
 		t->fLauncher = gWin->fSettings->GetHTTPLauncher();	// unknown? use HTTP launcher...
 	}
+#endif
+	t->start();
+}
+
+void
+RunCommand(QString command)
+{
+	PRINT("RunCommand() called\n");
+	WLaunchThread * t = new WLaunchThread(command);
+	CHECK_PTR(t);
+#ifdef __linux__
+	t->fLauncher = QString::null;
 #endif
 	t->start();
 }

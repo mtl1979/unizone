@@ -33,6 +33,7 @@ using std::iterator;
 #include "lang.h"		// <postmaster@raasu.org> 20020924
 #include "platform.h"	// <postmaster@raasu.org> 20021114
 #include "transferitem.h"
+#include "gotourl.h"
 
 // ----------------------------------------------------------------------------------------------
 
@@ -98,20 +99,11 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
-	//fButtonsU = new QHBox(fBoxU);
-	//CHECK_PTR(fButtonsU);
-
 	fCancelU = new QPushButton(fBoxU);
 	CHECK_PTR(fCancelU);
 	fCancelU->setText(tr(MSG_CANCEL));
 	connect(fCancelU, SIGNAL(clicked()), this, SLOT(CancelUL()));
 
-	/*
-	fUnblockU = new QPushButton(fButtonsU);
-	CHECK_PTR(fUnblockU);
-	fUnblockU->setText(tr(MSG_TOGGLE_BLOCK));
-	connect(fUnblockU, SIGNAL(clicked()), this, SLOT(UnblockUL()));
-	*/
 	connect(gWin->fNetClient, SIGNAL(UserDisconnected(QString, QString)), this,
 			SLOT(UserDisconnected(QString, QString)));
 
@@ -123,108 +115,128 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	CHECK_PTR(fDLPopup);
 
 	// Create the download popup menu
-	fDLQueueID = fDLPopup->insertItem(tr(MSG_TX_QUEUE), ID_QUEUE);
+	fDLPopup->insertItem(tr(MSG_TX_QUEUE), ID_QUEUE);
 	
 	// Create throttle sub menu
-	fDLThrottleMenu = new QPopupMenu(this, "Throttle Popup");
+	fDLThrottleMenu = new QPopupMenu(fDLPopup, "Throttle Popup");
 	CHECK_PTR(fDLThrottleMenu);
 	
-	fDLThNone = fDLThrottleMenu->insertItem(tr( MSG_NO_LIMIT ), ID_NO_LIMIT);
+	fDLThrottleMenu->insertItem(tr( MSG_NO_LIMIT ), ID_NO_LIMIT);
 	
 	// Set initial throttle to none
-	fDLThrottleMenu->setItemChecked(fDLThNone, true);
-	fDLThrottle = fDLThNone;
+	fDLThrottleMenu->setItemChecked(ID_NO_LIMIT, true);
+	fDLThrottle = ID_NO_LIMIT;
 
-	fDLTh128  = fDLThrottleMenu->insertItem(tr( "128 " MSG_BYTES ), ID_128);
-	fDLTh256  = fDLThrottleMenu->insertItem(tr( "256 " MSG_BYTES ), ID_256);
-	fDLTh512  = fDLThrottleMenu->insertItem(tr( "512 " MSG_BYTES ), ID_512);
-	fDLTh1K   = fDLThrottleMenu->insertItem(tr( "1 kB" ), ID_1KB);
-	fDLTh2K   = fDLThrottleMenu->insertItem(tr( "2 kB" ), ID_2KB);
-	fDLTh4K   = fDLThrottleMenu->insertItem(tr( "4 kB" ), ID_4KB);
-	fDLTh8K   = fDLThrottleMenu->insertItem(tr( "8 kB" ), ID_8KB);
-	fDLTh16K  = fDLThrottleMenu->insertItem(tr( "16 kB" ), ID_16KB);
-	fDLTh32K  = fDLThrottleMenu->insertItem(tr( "32 kB" ), ID_32KB);
-	fDLTh64K  = fDLThrottleMenu->insertItem(tr( "64 kB" ), ID_64KB);
-	fDLTh128K = fDLThrottleMenu->insertItem(tr( "128 kB" ), ID_128KB);
-	fDLTh256K = fDLThrottleMenu->insertItem(tr( "256 kB" ), ID_256KB);
-	fDLTh512K = fDLThrottleMenu->insertItem(tr( "512 kB" ), ID_512KB);
-	fDLTh1M   = fDLThrottleMenu->insertItem(tr( "1 MB" ), ID_1MB);
-	fDLTh2M   = fDLThrottleMenu->insertItem(tr( "2 MB" ), ID_2MB);
-	fDLTh4M   = fDLThrottleMenu->insertItem(tr( "4 MB" ), ID_4MB);
-	fDLTh8M   = fDLThrottleMenu->insertItem(tr( "8 MB" ), ID_8MB);
-	fDLTh16M  = fDLThrottleMenu->insertItem(tr( "16 MB" ), ID_16MB);
-	fDLTh32M  = fDLThrottleMenu->insertItem(tr( "32 MB" ), ID_32MB);
+	fDLThrottleMenu->insertItem(tr( "64 " MSG_BYTES ), ID_64);
+	fDLThrottleMenu->insertItem(tr( "128 " MSG_BYTES ), ID_128);
+	fDLThrottleMenu->insertItem(tr( "256 " MSG_BYTES ), ID_256);
+	fDLThrottleMenu->insertItem(tr( "512 " MSG_BYTES ), ID_512);
+	fDLThrottleMenu->insertItem(tr( "1 kB" ), ID_1KB);
+	fDLThrottleMenu->insertItem(tr( "2 kB" ), ID_2KB);
+	fDLThrottleMenu->insertItem(tr( "4 kB" ), ID_4KB);
+	fDLThrottleMenu->insertItem(tr( "6 kB" ), ID_6KB);
+	fDLThrottleMenu->insertItem(tr( "8 kB" ), ID_8KB);
+	fDLThrottleMenu->insertItem(tr( "10 kB" ), ID_10KB);
+	fDLThrottleMenu->insertItem(tr( "12 kB" ), ID_12KB);
+	fDLThrottleMenu->insertItem(tr( "14 kB" ), ID_14KB);
+	fDLThrottleMenu->insertItem(tr( "16 kB" ), ID_16KB);
+	fDLThrottleMenu->insertItem(tr( "32 kB" ), ID_32KB);
+	fDLThrottleMenu->insertItem(tr( "64 kB" ), ID_64KB);
+	fDLThrottleMenu->insertItem(tr( "128 kB" ), ID_128KB);
+	fDLThrottleMenu->insertItem(tr( "256 kB" ), ID_256KB);
+	fDLThrottleMenu->insertItem(tr( "512 kB" ), ID_512KB);
+	fDLThrottleMenu->insertItem(tr( "1 MB" ), ID_1MB);
+	fDLThrottleMenu->insertItem(tr( "2 MB" ), ID_2MB);
+	fDLThrottleMenu->insertItem(tr( "4 MB" ), ID_4MB);
+	fDLThrottleMenu->insertItem(tr( "8 MB" ), ID_8MB);
+	fDLThrottleMenu->insertItem(tr( "16 MB" ), ID_16MB);
+	fDLThrottleMenu->insertItem(tr( "32 MB" ), ID_32MB);
 
-	fDLPopup->insertItem(tr(MSG_TX_THROTTLE), fDLThrottleMenu);
+	fDLRunMenu = new QPopupMenu(fDLPopup, "Run Popup");
+	CHECK_PTR(fDLRunMenu);
+
+	fDLPopup->insertItem(tr(MSG_TX_THROTTLE), fDLThrottleMenu, ID_THROTTLE);
+	fDLPopup->insertItem(tr("Run..."), fDLRunMenu, ID_RUN);
+
 	fDLPopup->insertItem(tr(MSG_TX_MOVEUP), ID_MOVEUP);
 	fDLPopup->insertItem(tr(MSG_TX_MOVEDOWN), ID_MOVEDOWN);
 
+	fDLPopup->insertItem(tr("Clear Finished"), ID_CLEAR);
+
 	connect(fDLPopup, SIGNAL(activated(int)), this, SLOT(DLPopupActivated(int)));
 	connect(fDLThrottleMenu, SIGNAL(activated(int)), this, SLOT(DLPopupActivated(int)));
+	connect(fDLRunMenu, SIGNAL(activated(int)), this, SLOT(DLPopupActivated(int)));
 	connect(fDownloads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 			this, SLOT(DLRightClicked(QListViewItem *, const QPoint &, int)));
 
 	fULPopup = new QPopupMenu(this, "Upload Popup");
 	CHECK_PTR(fULPopup);
 
-	// Create the download popup menu
-	fULQueueID = fULPopup->insertItem(tr(MSG_TX_QUEUE), ID_QUEUE);
+	// Create the upload popup menu
+	fULPopup->insertItem(tr(MSG_TX_QUEUE), ID_QUEUE);
 	
 	// Create throttle sub menu
-	fULThrottleMenu = new QPopupMenu(this, "Throttle Popup");
+	fULThrottleMenu = new QPopupMenu(fULPopup, "Throttle Popup");
 	CHECK_PTR(fULThrottleMenu);
 	
-	fULThNone = fULThrottleMenu->insertItem(tr( MSG_NO_LIMIT ), ID_NO_LIMIT);
+	fULThrottleMenu->insertItem(tr( MSG_NO_LIMIT ), ID_NO_LIMIT);
 	
 	// Set initial throttle to none
-	fULThrottleMenu->setItemChecked(fULThNone, true);
-	fULThrottle = fULThNone;
+	fULThrottleMenu->setItemChecked(ID_NO_LIMIT, true);
+	fULThrottle = ID_NO_LIMIT;
 
-	fULTh128  = fULThrottleMenu->insertItem(tr( "128 " MSG_BYTES ), ID_128);
-	fULTh256  = fULThrottleMenu->insertItem(tr( "256 " MSG_BYTES ), ID_256);
-	fULTh512  = fULThrottleMenu->insertItem(tr( "512 " MSG_BYTES ), ID_512);
-	fULTh1K   = fULThrottleMenu->insertItem(tr( "1 kB" ), ID_1KB);
-	fULTh2K   = fULThrottleMenu->insertItem(tr( "2 kB" ), ID_2KB);
-	fULTh4K   = fULThrottleMenu->insertItem(tr( "4 kB" ), ID_4KB);
-	fULTh8K   = fULThrottleMenu->insertItem(tr( "8 kB" ), ID_8KB);
-	fULTh16K  = fULThrottleMenu->insertItem(tr( "16 kB" ), ID_16KB);
-	fULTh32K  = fULThrottleMenu->insertItem(tr( "32 kB" ), ID_32KB);
-	fULTh64K  = fULThrottleMenu->insertItem(tr( "64 kB" ), ID_64KB);
-	fULTh128K = fULThrottleMenu->insertItem(tr( "128 kB" ), ID_128KB);
-	fULTh256K = fULThrottleMenu->insertItem(tr( "256 kB" ), ID_256KB);
-	fULTh512K = fULThrottleMenu->insertItem(tr( "512 kB" ), ID_512KB);
-	fULTh1M   = fULThrottleMenu->insertItem(tr( "1 MB" ), ID_1MB);
-	fULTh2M   = fULThrottleMenu->insertItem(tr( "2 MB" ), ID_2MB);
-	fULTh4M   = fULThrottleMenu->insertItem(tr( "4 MB" ), ID_4MB);
-	fULTh8M   = fULThrottleMenu->insertItem(tr( "8 MB" ), ID_8MB);
-	fULTh16M  = fULThrottleMenu->insertItem(tr( "16 MB" ), ID_16MB);
-	fULTh32M  = fULThrottleMenu->insertItem(tr( "32 MB" ), ID_32MB);
+	fULThrottleMenu->insertItem(tr( "64 " MSG_BYTES ), ID_64);
+	fULThrottleMenu->insertItem(tr( "128 " MSG_BYTES ), ID_128);
+	fULThrottleMenu->insertItem(tr( "256 " MSG_BYTES ), ID_256);
+	fULThrottleMenu->insertItem(tr( "512 " MSG_BYTES ), ID_512);
+	fULThrottleMenu->insertItem(tr( "1 kB" ), ID_1KB);
+	fULThrottleMenu->insertItem(tr( "2 kB" ), ID_2KB);
+	fULThrottleMenu->insertItem(tr( "4 kB" ), ID_4KB);
+	fULThrottleMenu->insertItem(tr( "6 kB" ), ID_6KB);
+	fULThrottleMenu->insertItem(tr( "8 kB" ), ID_8KB);
+	fULThrottleMenu->insertItem(tr( "10 kB" ), ID_10KB);
+	fULThrottleMenu->insertItem(tr( "12 kB" ), ID_12KB);
+	fULThrottleMenu->insertItem(tr( "14 kB" ), ID_14KB);
+	fULThrottleMenu->insertItem(tr( "16 kB" ), ID_16KB);
+	fULThrottleMenu->insertItem(tr( "32 kB" ), ID_32KB);
+	fULThrottleMenu->insertItem(tr( "64 kB" ), ID_64KB);
+	fULThrottleMenu->insertItem(tr( "128 kB" ), ID_128KB);
+	fULThrottleMenu->insertItem(tr( "256 kB" ), ID_256KB);
+	fULThrottleMenu->insertItem(tr( "512 kB" ), ID_512KB);
+	fULThrottleMenu->insertItem(tr( "1 MB" ), ID_1MB);
+	fULThrottleMenu->insertItem(tr( "2 MB" ), ID_2MB);
+	fULThrottleMenu->insertItem(tr( "4 MB" ), ID_4MB);
+	fULThrottleMenu->insertItem(tr( "8 MB" ), ID_8MB);
+	fULThrottleMenu->insertItem(tr( "16 MB" ), ID_16MB);
+	fULThrottleMenu->insertItem(tr( "32 MB" ), ID_32MB);
 
-	fULPopup->insertItem(tr(MSG_TX_THROTTLE), fULThrottleMenu);
-
-	fULBanMenu = new QPopupMenu(this, "Ban Popup");
+	fULBanMenu = new QPopupMenu(fULPopup, "Ban Popup");
 	CHECK_PTR(fULBanMenu);
 
-	fULBanNone = fULBanMenu->insertItem(tr("Unbanned"), ID_UNBAN);
-	fULBanMenu->setItemChecked(fULBanNone, true);
-	fULBan = fULBanNone;
+	fULBanMenu->insertItem(tr("Unbanned"), ID_UNBAN);
+	fULBanMenu->setItemChecked(ID_UNBAN, true);
+	fULBan = ID_UNBAN;
 
-	fULBan1 = fULBanMenu->insertItem(tr("1 minute"), ID_BAN1);
-	fULBan2 = fULBanMenu->insertItem(tr("2 minutes"), ID_BAN2);
-	fULBan5 = fULBanMenu->insertItem(tr("5 minutes"), ID_BAN5);
-	fULBan10 = fULBanMenu->insertItem(tr("10 minutes"), ID_BAN10);
-	fULBan15 = fULBanMenu->insertItem(tr("15 minutes"), ID_BAN15);
-	fULBan30 = fULBanMenu->insertItem(tr("30 minutes"), ID_BAN30);
-	fULBan1H = fULBanMenu->insertItem(tr("1 hour"), ID_BAN1H);
-	fULBanInf = fULBanMenu->insertItem(tr("Infinite"), ID_BANINF);
+	fULBanMenu->insertItem(tr("1 " MSG_MINUTE), ID_BAN1);
+	fULBanMenu->insertItem(tr("2 " MSG_MINUTES), ID_BAN2);
+	fULBanMenu->insertItem(tr("5 " MSG_MINUTES), ID_BAN5);
+	fULBanMenu->insertItem(tr("10 " MSG_MINUTES), ID_BAN10);
+	fULBanMenu->insertItem(tr("15 " MSG_MINUTES), ID_BAN15);
+	fULBanMenu->insertItem(tr("30 " MSG_MINUTES), ID_BAN30);
+	fULBanMenu->insertItem(tr("1 " MSG_HOUR), ID_BAN1H);
+	fULBanMenu->insertItem(tr("Infinite"), ID_BANINF);
 
-	fULPopup->insertItem(tr("Block"), fULBanMenu);
 	fULPopup->insertItem(tr(MSG_TX_MOVEUP), ID_MOVEUP);
 	fULPopup->insertItem(tr(MSG_TX_MOVEDOWN), ID_MOVEDOWN);
-	fULIgnoredID = fULPopup->insertItem(tr("Ban IP"), ID_IGNORE);
+	fULPopup->insertItem(tr("Ban IP"), ID_IGNORE);
+	fULPopup->insertItem(tr("Clear Finished"), ID_CLEAR);
+
+	fULPopup->insertItem(tr(MSG_TX_THROTTLE), fULThrottleMenu, ID_THROTTLE);
+	fULPopup->insertItem(tr("Block"), fULBanMenu, ID_BLOCK);
 
 	connect(fULPopup, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fULThrottleMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
+	connect(fULBanMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fUploads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 			this, SLOT(ULRightClicked(QListViewItem *, const QPoint &, int)));
 
@@ -233,6 +245,7 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 WDownload::~WDownload()
 {
 	fLock.lock();
+	PRINT("Number of downloads: %d\n", fDownloadList.size());
 	WTIter it = fDownloadList.begin();
 	while (it != fDownloadList.end())
 	{
@@ -241,21 +254,27 @@ WDownload::~WDownload()
 		{
 			int n = (*it).first->GetCurrentNum();
 
-			if (n == -1) // Not even started?
-				n = 0;
-
-			for (int i = n; i < (*it).first->GetNumFiles(); i++)
+			if (n > -1) 
 			{
-				emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetRemoteUser());
+				for (int i = n; i < (*it).first->GetNumFiles(); i++)
+				{
+					emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetRemoteUser());
+				}
 			}
-			
+			PRINT("Reseting download\n");
 			(*it).first->Reset();
+			PRINT("Deleting download\n");
 			delete (*it).first;
 		}
+		PRINT("Deleting item\n");
 		delete (*it).second;
+		PRINT("Erasing pair\n");
 		fDownloadList.erase(it);
 		it = fDownloadList.begin();
 	}
+	fLock.unlock();
+	fLock.lock();
+	PRINT("Number of uploads: %d\n", fUploadList.size());
 	it = fUploadList.begin();
 	while (it != fUploadList.end())
 	{
@@ -268,13 +287,13 @@ WDownload::~WDownload()
 		}
 		PRINT("Deleting item\n");
 		delete (*it).second;
-		PRINT("Erasing item\n");
+		PRINT("Erasing pair\n");
 		fUploadList.erase(it);
 		it = fUploadList.begin();
 	}
 	fLock.unlock();
 	UpdateLoad();	// do this to set a load of 0
-	gWin->fDLWindow = NULL; // Don't set this to NULL if there is still threads running
+	emit Closed();
 }
 
 void
@@ -282,11 +301,13 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 					   uint32 remotePort, QString remoteIP, uint64 remoteInstallID, bool firewalled, bool partial)
 {
 	WDownloadThread * nt = new WDownloadThread(this);
+	CHECK_PTR(nt);
 	nt->SetFile(files, filecount, remoteIP, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
 	
 	WTPair p;
 	p.first = nt;
 	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.second);
 
 	int x;
 
@@ -308,7 +329,7 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 			gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]), false);
 	}
 
-	if (fNumDownloads < gWin->fSettings->GetMaxDownloads())
+	if (GetNumDownloads() < gWin->fSettings->GetMaxDownloads())
 	{
 		PRINT("DLS (%d, %d)\n", fNumDownloads, gWin->fSettings->GetMaxDownloads());
 		nt->InitSession();
@@ -332,12 +353,21 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, WUser * user)
 {
 	int32 nFiles = fQueue.GetNumItems();
 	QString * qFiles = new QString[nFiles];
+	CHECK_PTR(qFiles);
+	QString tmp;
 	int n = 0;
 	while (!fQueue.IsEmpty())
 	{
-		qFiles[n++] = fQueue.RemoveHead();
+		fQueue.RemoveHead(tmp);
+		if (
+			(tmp != QString::null) && 
+			(tmp != "")
+			) 
+		{
+			qFiles[n++] = tmp;
+		}
 	}
-	AddDownload(qFiles, nFiles, user->GetUserID(), user->GetPort(), user->GetUserHostName(), user->GetInstallID(), user->GetFirewalled(), user->GetPartial());
+	AddDownload(qFiles, n, user->GetUserID(), user->GetPort(), user->GetUserHostName(), user->GetInstallID(), user->GetFirewalled(), user->GetPartial());
 }
 
 void
@@ -345,10 +375,12 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 {
 	PRINT("WDownload::AddUpload(QString, uint32)\n");
 	WUploadThread * ut = new WUploadThread(this);
+	CHECK_PTR(ut);
+
 	PRINT("Setting upload\n");
 	ut->SetUpload(remoteIP, port, fSharedFiles);
 	
-	if (fNumUploads < gWin->fSettings->GetMaxUploads())
+	if (GetNumUploads() < gWin->fSettings->GetMaxUploads())
 	{
 		PRINT("Not queued\n");
 		ut->SetLocallyQueued(false);
@@ -365,6 +397,8 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 	WTPair p;
 	p.first = ut;
 	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.second);
+	
 	if (ut->IsLocallyQueued())
 	{
 		PRINT("IsQueued\n");
@@ -382,18 +416,28 @@ void
 WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 {
 	WUploadThread * ut = new WUploadThread(this);
+	CHECK_PTR(ut);
 	ut->SetUpload(socket, remoteIP, fSharedFiles);
 	
-	if (fNumUploads < gWin->fSettings->GetMaxUploads())
+	if (GetNumUploads() < gWin->fSettings->GetMaxUploads())
+	{
+		PRINT("Not queued\n");
 		ut->SetLocallyQueued(false);
+	}
 	else
+	{
+		PRINT("Queued\n");
 		ut->SetLocallyQueued(true);
+	}
 	fNumUploads++;
 	WASSERT(fNumUploads >= 0, "Upload count is negative!");
 	ut->InitSession();
+
 	WTPair p;
 	p.first = ut;
 	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.second);
+
 	if (ut->IsLocallyQueued())
 		p.second->setText(WTransferItem::Status, "Queued.");
 	fLock.lock();
@@ -404,21 +448,33 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 }
 
 void
-WDownload::DequeueSessions()
+WDownload::DequeueULSessions()
 {
 	bool found = true;
 	
-	WASSERT(fNumUploads >= 0, "Upload count is negative!");
 	int numNotQueued = 0;
+	int qr = 0;
+
 	WTIter it;
 	
-	int qr = 0;
 	fLock.lock();
 	for (it = fUploadList.begin(); it != fUploadList.end(); it++)
 	{
-		if (((*it).first->IsLocallyQueued() == false) && ((*it).first->IsBlocked() == false))
-			numNotQueued++;
-		(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+		if ((*it).first)
+		{
+			if (
+				((*it).first->IsLocallyQueued() == false) && 
+				((*it).first->IsBlocked() == false) && 
+				((*it).first->IsActive() == true) &&
+				((*it).first->IsFinished() == false)
+				)
+				numNotQueued++;
+		}
+
+		if ((*it).second)
+		{
+			(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+		}
 	}
 	fLock.unlock();
 
@@ -428,11 +484,17 @@ WDownload::DequeueSessions()
 		fLock.lock();
 		for (it = fUploadList.begin(); it != fUploadList.end() && numNotQueued < gWin->fSettings->GetMaxUploads(); it++)
 		{
-			if (((*it).first->IsLocallyQueued() == true) && ((*it).first->IsManuallyQueued() == false))
+			if ((*it).first)
 			{
-				found = true;
-				(*it).first->SetLocallyQueued(false);
-				numNotQueued++;
+				if (
+					((*it).first->IsLocallyQueued() == true) && 
+					((*it).first->IsManuallyQueued() == false)
+					)
+				{
+					found = true;
+					(*it).first->SetLocallyQueued(false);
+					numNotQueued++;
+				}
 			}
 		}
 		fLock.unlock();
@@ -440,21 +502,45 @@ WDownload::DequeueSessions()
 		if (!found)
 			break;
 	}
-	WASSERT(fNumDownloads >= 0, "Download count is negative!");
-	/** OK, this is how I do queuing for downloads. Since the download count
-	* WILL be greater than the amount of downloads allowed, we can't
-	* dequeue based on this, right? So, run through the download list
-	* and count the amount of downloads NOT queued. If this amount is less
-	* than the allowed downloads, find a queued download, and unqueue it :)
+	UpdateLoad();
+}
+
+void
+WDownload::DequeueDLSessions()
+{
+	bool found = true;
+	
+	/*
+	** OK, this is how I do queuing for downloads. Since the download count
+	** WILL be greater than the amount of downloads allowed, we can't
+	** dequeue based on this, right? So, run through the download list
+	** and count the amount of downloads NOT queued. If this amount is less
+	** than the allowed downloads, find a queued download, and unqueue it :)
 	*/
-	numNotQueued = 0;
-	qr = 0;
+	int numNotQueued = 0;
+	int qr = 0;
+
+	WTIter it;
+	
 	fLock.lock();
 	for (it = fDownloadList.begin(); it != fDownloadList.end(); it++)
 	{
-		if ((*it).first->IsLocallyQueued() == false)	// not queued?
-			numNotQueued++;
-		(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+		if ((*it).first)
+		{
+			if (
+				((*it).first->IsLocallyQueued() == false) && 
+				((*it).first->IsActive() == true)
+				)
+			{
+				// not queued, not finished?
+				numNotQueued++;
+			}
+		}
+
+		if ((*it).second)
+		{
+			(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+		}
 	}
 	fLock.unlock();
 	// check the queued amount, vs the amount allowed
@@ -465,19 +551,24 @@ WDownload::DequeueSessions()
 		for (it = fDownloadList.begin(); 
 		it != fDownloadList.end() && numNotQueued < gWin->fSettings->GetMaxDownloads(); it++)
 		{
-			if (((*it).first->IsLocallyQueued() == true) && ((*it).first->IsManuallyQueued() == false))
+			if ((*it).first)
 			{
-				found = true;
-				(*it).first->SetLocallyQueued(false);
-				((WDownloadThread *)((*it).first))->InitSession();
-				numNotQueued++;
+				if (
+					((*it).first->IsLocallyQueued() == true) && 
+					((*it).first->IsManuallyQueued() == false)
+					)
+				{
+					found = true;
+					(*it).first->SetLocallyQueued(false);
+					((WDownloadThread *)((*it).first))->InitSession();
+					numNotQueued++;
+				}
 			}
 		}
 		fLock.unlock();
 		if (!found)
 			break;
 	}
-	UpdateLoad();
 }
 
 void
@@ -488,18 +579,26 @@ WDownload::customEvent(QCustomEvent * e)
 	{
 		g = dynamic_cast<WGenericEvent *>(e);
 	}
+
 	if (g)
 	{
-		Message * msg = g->Msg();
+		MessageRef msg = g->Msg();
 		WGenericThread * gt = NULL;
 		bool b;
 		bool upload = false;
 		WTransferItem * item = NULL;
 		WTIter foundIt;
 		
-		if (msg->FindPointer("sender", (void **)&gt) != B_OK)
+		if (!msg())
+			return; // Invalid MessageRef!
+
+		if (msg()->FindPointer("sender", (void **)&gt) != B_OK)
 			return;	// failed! ouch!
-		if (msg->FindBool("download", &b) == B_OK)
+
+		if (!gt)
+			return;
+
+		if (msg()->FindBool("download", &b) == B_OK)
 		{
 			// a download
 			fLock.lock();
@@ -515,7 +614,7 @@ WDownload::customEvent(QCustomEvent * e)
 			}
 			fLock.unlock();
 		}
-		else if (msg->FindBool("upload", &b) == B_OK)
+		else if (msg()->FindBool("upload", &b) == B_OK)
 		{
 			fLock.lock();
 			for (foundIt = fUploadList.begin(); foundIt != fUploadList.end(); foundIt++)
@@ -537,12 +636,16 @@ WDownload::customEvent(QCustomEvent * e)
 			PRINT("\t\tFailed to find file!!!\n");
 			return;	// failed to find a item
 		}
-		switch (msg->what)
+		switch (msg()->what)
 		{
 		case WGenericEvent::Init:
 			{
+				PRINT("\tWGenericEvent::Init\n");
 				const char * filename, * user;
-				if (msg->FindString("file", &filename) == B_OK && msg->FindString("user", &user) == B_OK)
+				if (
+					(msg()->FindString("file", &filename) == B_OK) && 
+					(msg()->FindString("user", &user) == B_OK)
+					)
 				{
 					item->setText(WTransferItem::Filename, QString::fromUtf8(filename));
 					item->setText(WTransferItem::User, GetUserName(user));
@@ -553,6 +656,7 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::FileQueued:
 			{
+				PRINT("\tWGenericEvent::FileQueued\n");
 				if (upload)
 				{
 					item->setText(WTransferItem::Status, "Queued.");
@@ -566,8 +670,9 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::FileBlocked:
 			{
+				PRINT("\tWGenericEvent::FileBlocked\n");
 				uint64 timeLeft = (uint64) -1;
-				(void) msg->FindInt64("timeleft", (int64 *) &timeLeft);
+				(void) msg()->FindInt64("timeleft", (int64 *) &timeLeft);
 				if (timeLeft == -1)
 					item->setText(WTransferItem::Status, "Blocked.");
 				else
@@ -577,12 +682,16 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::ConnectBackRequest:
 			{
+				PRINT("\tWGenericEvent::ConnectBackRequest\n");
 				MessageRef cb(new Message(NetClient::CONNECT_BACK_REQUEST), NULL);
 				if (cb())
 				{
 					String session;
 					int32 port;
-					if (msg->FindInt32("port", &port) == B_OK && msg->FindString("session", session) == B_OK)
+					if (
+						(msg()->FindInt32("port", &port) == B_OK) && 
+						(msg()->FindString("session", session) == B_OK)
+						)
 					{
 						item->setText(WTransferItem::Status, "Waiting for incoming connection...");
 						QString tostr = "/*/";
@@ -601,21 +710,24 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::FileHashing:
 			{
+				PRINT("\tWGenericEvent::FileHashing\n");
 				item->setText(WTransferItem::Status, "Examining for resume...");
 				break;
 			}
 			
 		case WGenericEvent::ConnectInProgress:
 			{
+				PRINT("\tWGenericEvent::ConnectInProgress\n");
 				item->setText(WTransferItem::Status, "Connecting...");
 				break;
 			}
 			
 		case WGenericEvent::ConnectFailed:
 			{
+				PRINT("\tWGenericEvent::ConnectFailed\n");
 				String why, mFile;
-				bool b;
-				msg->FindString("why", why);
+				//bool b;
+				msg()->FindString("why", why);
 				item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(why.Cstr()));
 				delete (*foundIt).second;
 				if (upload)
@@ -625,38 +737,28 @@ WDownload::customEvent(QCustomEvent * e)
 					fUploadList.erase(foundIt);
 					fLock.unlock();
 					WASSERT(fNumUploads >= 0, "Upload count is negative!");
+					delete gt;
+					gt = NULL; // <postmaster@raasu.org> 20021027
+					DequeueULSessions();
+
 				}
 				else
 				{
-					if (msg->FindBool("retry", &b) == B_OK)
-					{
-						if (b)
-						{
-							int nFiles = gt->GetNumFiles();
-							int n = gt->GetCurrentNum();
-							if (n == -1) // Test!!!
-								n = 0;
-							while (n < nFiles)
-							{
-								QString qFile = gt->GetFileName(n++);
-								emit FileFailed(qFile, gt->GetRemoteUser());
-							}
-						}
-					}
 					DecreaseCount(gt, fNumDownloads, false);
 					fLock.lock();
 					fDownloadList.erase(foundIt);
 					fLock.unlock();
 					WASSERT(fNumDownloads >= 0, "Download count is negative!");
+					delete gt;
+					gt = NULL; // <postmaster@raasu.org> 20021027
+					DequeueDLSessions();
 				}
-				delete gt;
-				gt = NULL; // <postmaster@raasu.org> 20021027
-				DequeueSessions();
 				break;
 			}
 			
 		case WGenericEvent::Connected:
 			{
+				PRINT("\tWGenericEvent::Connected\n");
 				item->setText(WTransferItem::Status, "Negotiating...");
 				break;
 			}
@@ -666,66 +768,97 @@ WDownload::customEvent(QCustomEvent * e)
 				PRINT("\tWGenericEvent::Disconnected\n");
 				if (item->text(0) != QString("Finished."))
 					item->setText(WTransferItem::Status, "Disconnected.");
-				delete (*foundIt).second;
 				if (upload)
 				{
+					bool f;
+					if (msg()->FindBool("failed", &f) == B_OK)
+					{
+						// "failed" == true only, if the transfer has failed
+						if (!f)
+						{
+							item->setText(WTransferItem::Status, "Finished.");
+							item->setText(WTransferItem::ETA, "");
+						}
+					}
+					//delete (*foundIt).second;
+					gt->SetFinished(true);
 					DecreaseCount(gt, fNumUploads);
 					WASSERT(fNumUploads >= 0, "Upload count is negative!");
-					fLock.lock();
-					fUploadList.erase(foundIt);
-					fLock.unlock();
+					//fLock.lock();
+					//fUploadList.erase(foundIt);
+					//fLock.unlock();
+					//delete gt;
+					//gt = NULL; // <postmaster@raasu.org> 20030317
+					DequeueULSessions();
 				}
 				else
 				{
-					// emit FileFailed signal, so we can record the filename and remote username for resuming later
-					String mFile;
-					if (msg->FindBool("failed", &b) == B_OK)
+					// delete (*foundIt).second;
+					if (gt->IsManuallyQueued())
+						item->setText(WTransferItem::Status, "Manually Queued.");
+					else
 					{
-						// "failed" == true only, if the transfer has failed
-						if (b)
+						gt->SetFinished(true);
+						// emit FileFailed signal, so we can record the filename and remote username for resuming later
+						//String mFile;
+						bool f;
+						if (msg()->FindBool("failed", &f) == B_OK)
 						{
-							for (int n = gt->GetCurrentNum(); n < gt->GetNumFiles(); n++)
+							// "failed" == true only, if the transfer has failed
+							if (f)
 							{
-								QString qFile = gt->GetFileName(n);
-								emit FileFailed(qFile, gt->GetRemoteUser());
+								for (int n = gt->GetCurrentNum(); n < gt->GetNumFiles(); n++)
+								{
+									QString qFile = gt->GetFileName(n);
+									emit FileFailed(qFile, gt->GetRemoteUser());
+								}
+							}
+							else
+							{
+								item->setText(WTransferItem::Status, "Finished.");
+								item->setText(WTransferItem::ETA, "");
 							}
 						}
 					}
 					DecreaseCount(gt, fNumDownloads);
 					WASSERT(fNumDownloads >= 0, "Download count is negative!");
+					/*
 					fLock.lock();
 					fDownloadList.erase(foundIt);
 					fLock.unlock();
+					delete gt;
+					gt = NULL; // <postmaster@raasu.org> 20030317
+					*/
+					DequeueDLSessions();
 				}
-				delete gt;
-				gt = NULL; // <postmaster@raasu.org> 20021027
-				DequeueSessions();
 				break;
 			}
 			
 		case WGenericEvent::FileDone:
 			{
-				bool b;
 				PRINT("\tWGenericEvent::FileDone\n");
-				if (msg->FindBool("done", &b) == B_OK)
+				bool d;
+				if (msg()->FindBool("done", &d) == B_OK)
 				{
 					PRINT("\tFound done\n");
-					if (upload)
-					{
-						PRINT("\tIs upload\n");
-						if (gt->IsLastFile())
-							DecreaseCount(gt, fNumUploads);
-						WASSERT(fNumUploads >= 0, "Upload count is negative!");
-					}
-					else
+					if (!upload)
 					{
 						PRINT("\tIs download\n");
 						if (gt->IsLastFile())
 							DecreaseCount(gt, fNumDownloads, false);
 						WASSERT(fNumDownloads >= 0, "Download count is negative!");
+						DequeueDLSessions();
 					}
-					DequeueSessions();
+					else // Is this really used???
+					{
+						PRINT("\tIs upload\n");
+						if (gt->IsLastFile())
+							DecreaseCount(gt, fNumUploads);
+						WASSERT(fNumUploads >= 0, "Upload count is negative!");
+						DequeueULSessions();
+					}
 					item->setText(WTransferItem::Status, "Finished.");
+					item->setText(WTransferItem::ETA, "");
 				}
 				else
 				{
@@ -739,9 +872,10 @@ WDownload::customEvent(QCustomEvent * e)
 						item->setText(WTransferItem::ETA, "");
 						//item->setText(WTransferItem::User, "");	<- don't erase the user name
 					}
-					else
+					else // Is this really used???
 					{
 						item->setText(WTransferItem::Status, "Finished.");
+						item->setText(WTransferItem::ETA, "");
 					}
 				}
 				break;
@@ -749,20 +883,33 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::FileFailed:
 			{
+				PRINT("\tWGenericEvent::FileFailed\n");
 				// not used...
 				break;
 			}
 			
 		case WGenericEvent::FileStarted:
 			{
+				PRINT("\tWGenericEvent::FileStarted\n");
 				String file;
 				uint64 start;
 				uint64 size;
 				String user;
 				
-				if (msg->FindString("file", file) == B_OK && msg->FindInt64("start", (int64 *)&start) == B_OK &&
-					msg->FindInt64("size", (int64 *)&size) == B_OK && msg->FindString("user", user) == B_OK)
+				if (
+					(msg()->FindString("file", file) == B_OK) && 
+					(msg()->FindInt64("start", (int64 *)&start) == B_OK) &&
+					(msg()->FindInt64("size", (int64 *)&size) == B_OK) && 
+					(msg()->FindString("user", user) == B_OK)
+					)
 				{
+					QString uname = GetUserName(QString::fromUtf8(user.Cstr()));
+					PRINT("USER ID  : %s\n", user.Cstr());
+					PRINT("USER NAME: %S\n", qStringToWideChar(uname));
+					if (strcmp(uname.latin1(), user.Cstr()) == 0) // No user name?
+					{
+						uname = gt->GetRemoteIP();
+					}
 					item->setText(WTransferItem::Status, "Waiting for stream...");
 					item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
 					// rec, total, rate
@@ -770,13 +917,15 @@ WDownload::customEvent(QCustomEvent * e)
 					item->setText(WTransferItem::Total, tr("%1").arg((int) size));
 					item->setText(WTransferItem::Rate, "0.0");
 					item->setText(WTransferItem::ETA, "");
-					item->setText(WTransferItem::User, GetUserName( QString::fromUtf8( user.Cstr() ) ));
+					item->setText(WTransferItem::User, uname);
 					item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
-
+					
 					if (upload)
 					{
 						if (gWin->fSettings->GetUploads())
-							gWin->PrintSystem(tr(MSG_TX_ISDOWNLOADING).arg(GetUserName(QString::fromUtf8(user.Cstr()))).arg(QString::fromUtf8(file.Cstr())));
+						{
+							gWin->PrintSystem(tr(MSG_TX_ISDOWNLOADING).arg(uname).arg(QString::fromUtf8(file.Cstr())));
+						}
 					}
 				}
 				gt->fLastData.start();
@@ -785,8 +934,9 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::UpdateUI:
 			{
+				PRINT("\tWGenericEvent::UpdateUI\n");
 				const char * id;
-				if (msg->FindString("id", &id) == B_OK)
+				if (msg()->FindString("id", &id) == B_OK)
 				{
 					item->setText(WTransferItem::User, GetUserName(id));
 				}
@@ -795,10 +945,11 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::FileError:
 			{
+				PRINT("\tWGenericEvent::FileError\n");
 				String why;
 				String file;
-				msg->FindString("why", why);
-				if (msg->FindString("file", file) == B_OK)
+				msg()->FindString("why", why);
+				if (msg()->FindString("file", file) == B_OK)
 					item->setText(WTransferItem::Filename, QString::fromUtf8(file.Cstr()) );
 				item->setText(WTransferItem::Status, tr("Error: %1").arg(why.Cstr()));
 				item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
@@ -808,21 +959,44 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::FileDataReceived:
 			{
+				PRINT("\tWGenericEvent::FileDataReceived\n");
 				uint64 offset, size;
 				bool done;
 				String mFile;
 				uint32 got;
 				
-				if ((msg->FindInt64("offset", (int64 *)&offset) == B_OK) && 
-					(msg->FindInt64("size", (int64 *)&size) == B_OK))
+				if (
+					(msg()->FindInt64("offset", (int64 *)&offset) == B_OK) && 
+					(msg()->FindInt64("size", (int64 *)&size) == B_OK)
+					)
 				{
-					if (msg->FindInt32("got", (int32 *)&got) == B_OK)	// a download ("got")
+					if (msg()->FindInt32("got", (int32 *)&got) == B_OK)	// a download ("got")
 					{
+						PRINT("\tOffset: %d\n", offset);
+						PRINT("\tSize  : %d\n", size);
+						PRINT("\tGot   : %d\n", got);
 						gWin->UpdateReceiveStats(got);
 						
-						double secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
-						double gotk = (double)((double)got / 1024.0f);
-						double kps = gotk / secs;
+						double secs = 0.0f;
+						
+						if (gt->fLastData.elapsed() > 0)
+						{
+							secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
+						}
+
+						double gotk = 0.0f;
+						
+						if (got > 0)
+						{
+							gotk = (double)((double)got / 1024.0f);
+						}
+
+						double kps = 0.0f;
+						
+						if ( (gotk > 0) && (secs > 0) )
+						{
+							kps = gotk / secs;
+						}
 						
 						item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(gt->ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, tr("%1").arg((int) offset));
@@ -836,30 +1010,53 @@ WDownload::customEvent(QCustomEvent * e)
 						{
 							gt->SetPacketCount(gotk);
 						}
-						
 						// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
 						double gcr = gt->GetCalculatedRate();
 						
 						item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
 						
 						item->setText(WTransferItem::Rate, tr("%1").arg(gcr*1024.0f));
-						
-						if (msg->FindBool("done", &done) == B_OK)
+
+						if (msg()->FindBool("done", &done) == B_OK)
 						{
-							item->setText(WTransferItem::Status, "Finished.");
-							if (msg->FindString("file", mFile) == B_OK)
+ 							item->setText(WTransferItem::Status, "File finished.");
+							item->setText(WTransferItem::ETA, "");
+
+							if (msg()->FindString("file", mFile) == B_OK)
 								gWin->PrintSystem( tr(MSG_TX_FINISHED).arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
 							DecreaseCount(gt, fNumDownloads, false);
+							WASSERT(fNumDownloads >= 0, "Download count is negative!");
 						}
+						PRINT("\tWGenericEvent::FileDataReceived OK\n");
 					}
-					else if (msg->FindInt32("sent", (int32 *)&got) == B_OK)	// an upload ("sent")
+					else if (msg()->FindInt32("sent", (int32 *)&got) == B_OK)	// an upload ("sent")
 					{
+						PRINT("\tOffset: %d\n", offset);
+						PRINT("\tSize  : %d\n", size);
+						PRINT("\tSent  : %d\n", got);
 						gWin->UpdateTransmitStats(got);
 						
-						double secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
-						double gotk = (double)((double)got / 1024.0f);
-						double kps = gotk / secs;
+						double secs = 0.0f;
 						
+						if (gt->fLastData.elapsed() > 0)
+						{
+							secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
+						}
+
+						double gotk = 0.0f;
+						
+						if (got > 0)
+						{
+							gotk = (double)((double)got / 1024.0f);
+						}
+
+						double kps = 0.0f;
+						
+						if ( (gotk > 0) && (secs > 0) )
+						{
+							kps = gotk / secs;
+						}
+												
 						item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(gt->ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, tr("%1").arg((int) offset));
 						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 50 ms?
@@ -880,10 +1077,12 @@ WDownload::customEvent(QCustomEvent * e)
 						
 						item->setText(WTransferItem::Rate, tr("%1").arg(gcr*1024.0f));
 						
-						if (msg->FindBool("done", &done) == B_OK)
+						if (msg()->FindBool("done", &done) == B_OK)
 						{
 							item->setText(WTransferItem::Status, "Finished.");
-							if (msg->FindString("file", mFile) == B_OK)
+							item->setText(WTransferItem::ETA, "");
+
+							if (msg()->FindString("file", mFile) == B_OK)
 								gWin->PrintSystem( tr(MSG_TX_HASFINISHED).arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
 						}
 						
@@ -921,7 +1120,7 @@ WDownload::CancelDL()
 		}
 		fLock.unlock();
 	}
-	DequeueSessions();
+	DequeueDLSessions();
 }
 
 void
@@ -948,7 +1147,7 @@ WDownload::CancelUL()
 		}
 		fLock.unlock();
 	}
-	DequeueSessions();
+	DequeueULSessions();
 }
 
 void
@@ -986,31 +1185,34 @@ WDownload::KillLocalQueues()
 	WTIter it = fDownloadList.begin();
 	while (it != fDownloadList.end())
 	{
-		if ((*it).first->IsLocallyQueued())	// found queued item?
+		if ((*it).first)
 		{
-			// Put all files in resume list
-			int n = (*it).first->GetCurrentNum();
-
-			if (n == -1) // Not even started?
-				n = 0;
-
-			for (int i = n; i < (*it).first->GetNumFiles(); i++)
+			if ((*it).first->IsLocallyQueued())	// found queued item?
 			{
-				emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetRemoteUser());
+				// Put all files in resume list
+				int n = (*it).first->GetCurrentNum();
+				
+				if (n > -1) 
+				{
+					for (int i = n; i < (*it).first->GetNumFiles(); i++)
+					{
+						emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetRemoteUser());
+					}
+				}
+				
+				// free it
+				delete (*it).second;
+				DecreaseCount((*it).first, fNumDownloads);
+				delete (*it).first;
+				WASSERT(fNumDownloads >= 0, "Download count is negative!");
+				WTIter nextIt = it;
+				nextIt++;
+				fDownloadList.erase(it);
+				it = nextIt;
 			}
-
-			// free it
-			delete (*it).second;
-			DecreaseCount((*it).first, fNumDownloads);
-			delete (*it).first;
-			WASSERT(fNumDownloads >= 0, "Download count is negative!");
-			WTIter nextIt = it;
-			nextIt++;
-			fDownloadList.erase(it);
-			it = nextIt;
+			else
+				it++;
 		}
-		else
-			it++;
 	}
 	fLock.unlock();
 }
@@ -1068,11 +1270,18 @@ WDownload::UserDisconnected(QString sid, QString name)
 		WTIter it = fUploadList.begin();
 		while (it != fUploadList.end())
 		{
-			if ((*it).first->GetRemoteID() == sid)
+			if ((*it).first)
 			{
-				if ((*it).first->IsBlocked() == false)
+				if ((*it).first->GetRemoteID() == sid)
 				{
-					(*it).first->SetBlocked(true);
+					// Only block transfers that are active
+					if (
+						((*it).first->IsBlocked() == false) &&
+						((*it).first->IsActive() == true)
+						)
+					{
+						(*it).first->SetBlocked(true);
+					}
 				}
 			}
 			it++;
@@ -1090,147 +1299,231 @@ WDownload::FormatIndex(int32 cur, int32 num)
 void
 WDownload::DLPopupActivated(int id)
 {
-	fLock.lock();
 	WTIter i;
 	WGenericThread * gt = NULL;
 	bool findRet;
-
+	
 	findRet = FindItem(fDownloadList, i, fDLPopupItem);
-
+	
 	if (!findRet)
 	{
-		fLock.unlock();
+		PRINT("Download item not found!");
 		return;
 	}
-
+	
 	gt = (*i).first;
 	WASSERT(gt != NULL, "Generic Thread is invalid!");
-
+	
 	switch (id)
 	{
-		case ID_QUEUE:
+	case ID_QUEUE:
 		{
-				if (!gt->IsLocallyQueued())
-				{
-					gt->SetLocallyQueued(true);
-					gt->SetManuallyQueued(true);
-					gt->Reset();
-					// download count will be decremented
-					// when the disconnect message is received
-				}
-				else
-				{
-					gt->SetLocallyQueued(false);
-					gt->SetManuallyQueued(false);
-					((WDownloadThread *)gt)->InitSession();
-					// and we need to increase the dl count
-					fNumDownloads++;
-				}
+			if (!gt->IsLocallyQueued())
+			{
+				gt->SetLocallyQueued(true);
+				gt->SetManuallyQueued(true);
+				gt->Reset();
+				// download count will be decremented
+				// when the disconnect message is received
+			}
+			else
+			{
+				gt->SetLocallyQueued(false);
+				gt->SetManuallyQueued(false);
+				((WDownloadThread *)gt)->InitSession();
+				// and we need to increase the dl count
+				fNumDownloads++;
+			}
+			break;
+		}
+		
+	case ID_MOVEUP:
+		{
+			if (gt->IsLocallyQueued() || gt->IsRemotelyQueued())
+				MoveUp(fDownloadList, i);
+			break;
+		}
+		
+	case ID_MOVEDOWN:
+		{
+			if (gt->IsLocallyQueued() || gt->IsRemotelyQueued())
+				MoveDown(fDownloadList, i);
+			break;
+		}
+		
+	case ID_CLEAR:
+		{
+			ClearFinishedDL();
+			break;
+		}	
+		
+	case ID_NO_LIMIT:
+		{
+			gt->SetRate(0);
+			break;
+		}
+		
+	case ID_64:
+		{
+			gt->SetRate(64);
 			break;
 		}
 
-		case ID_MOVEUP:
-			{
-				if (gt->IsLocallyQueued() || gt->IsRemotelyQueued())
-					MoveUp(fDownloadList, i);
-				break;
-			}
-
-		case ID_MOVEDOWN:
-			{
-				if (gt->IsLocallyQueued() || gt->IsRemotelyQueued())
-					MoveDown(fDownloadList, i);
-				break;
-			}
-
-		case ID_NO_LIMIT:
-			gt->SetRate(0);
-			break;
-
-		case ID_128:
+	case ID_128:
+		{
 			gt->SetRate(128);
 			break;
-
-		case ID_256:
+		}
+		
+	case ID_256:
+		{
 			gt->SetRate(256);
 			break;
-
-		case ID_512:
+		}
+		
+	case ID_512:
+		{
 			gt->SetRate(512);
 			break;
-			
-		case ID_1KB:
+		}
+		
+	case ID_1KB:
+		{
 			gt->SetRate(1024);
 			break;
-
-		case ID_2KB:
+		}
+		
+	case ID_2KB:
+		{
 			gt->SetRate(2 * 1024);
 			break;
-
-		case ID_4KB:
+		}
+		
+	case ID_4KB:
+		{
 			gt->SetRate(4 * 1024);
 			break;
+		}
+		
+	case ID_6KB:
+		{
+			gt->SetRate(6 * 1024);
+			break;
+		}
 
-		case ID_8KB:
+	case ID_8KB:
+		{
 			gt->SetRate(8 * 1024);
 			break;
+		}
 
-		case ID_16KB:
+	case ID_10KB:
+		{
+			gt->SetRate(10 * 1024);
+			break;
+		}
+
+	case ID_12KB:
+		{
+			gt->SetRate(12 * 1024);
+			break;
+		}
+
+	case ID_14KB:
+		{
+			gt->SetRate(14 * 1024);
+			break;
+		}
+		
+	case ID_16KB:
+		{
 			gt->SetRate(16 * 1024);
 			break;
-
-		case ID_32KB:
+		}
+		
+	case ID_32KB:
+		{
 			gt->SetRate(32 * 1024);
 			break;
-
-		case ID_64KB:
+		}
+		
+	case ID_64KB:
+		{
 			gt->SetRate(64 * 1024);
 			break;
-
-		case ID_128KB:
+		}
+		
+	case ID_128KB:
+		{
 			gt->SetRate(128 * 1024);
 			break;
-
-		case ID_256KB:
+		}
+		
+	case ID_256KB:
+		{
 			gt->SetRate(256 * 1024);
 			break;
-
-		case ID_512KB:
+		}
+		
+	case ID_512KB:
+		{
 			gt->SetRate(512 * 1024);
 			break;
-
-		case ID_1MB:
+		}
+		
+	case ID_1MB:
+		{
 			gt->SetRate(1024 * 1024);
 			break;
-
-		case ID_2MB:
+		}
+		
+	case ID_2MB:
+		{
 			gt->SetRate(2 * 1024 * 1024);
 			break;
-
-		case ID_4MB:
+		}
+		
+	case ID_4MB:
+		{
 			gt->SetRate(4 * 1024 * 1024);
 			break;
-
-		case ID_8MB:
+		}
+		
+	case ID_8MB:
+		{
 			gt->SetRate(8 * 1024 * 1024);
 			break;
-
-		case ID_16MB:
+		}
+		
+	case ID_16MB:
+		{
 			gt->SetRate(16 * 1024 * 1024);
 			break;
-
-		case ID_32MB:
+		}
+		
+	case ID_32MB:
+		{
 			gt->SetRate(32 * 1024 * 1024);
 			break;
+		}
+	default:
+		{
+			// Handle "Run..." items here...
+
+			if (id & ID_RUN)
+			{
+				int n = id - ID_RUN - 1;
+				RunCommand(gt->GetLocalFileName(n));
+			}
+		}
+			
 	}
-	fLock.unlock();
 	UpdateDLRatings();
 }
 
 void
 WDownload::ULPopupActivated(int id)
 {
-	fLock.lock();
 	WTIter i;
 	WGenericThread * gt = NULL;
 	bool findRet;
@@ -1239,7 +1532,7 @@ WDownload::ULPopupActivated(int id)
 	
 	if (!findRet)
 	{
-		fLock.lock();
+		PRINT("Upload item not found!");
 		return;
 	}
 	
@@ -1277,13 +1570,24 @@ WDownload::ULPopupActivated(int id)
 			break;
 		}
 		
-		
+	case ID_CLEAR:
+		{
+			ClearFinishedUL();
+			break;
+		}	
+				
 	case ID_NO_LIMIT:
 		{
 			gt->SetRate(0);
 			break;
 		}
 		
+	case ID_64:
+		{
+			gt->SetRate(64);
+			break;
+		}
+
 	case ID_128:
 		{
 			gt->SetRate(128);
@@ -1320,12 +1624,36 @@ WDownload::ULPopupActivated(int id)
 			break;
 		}
 		
+	case ID_6KB:
+		{
+			gt->SetRate(6 * 1024);
+			break;
+		}
+
 	case ID_8KB:
 		{
 			gt->SetRate(8 * 1024);
 			break;
 		}
 		
+	case ID_10KB:
+		{
+			gt->SetRate(10 * 1024);
+			break;
+		}
+
+	case ID_12KB:
+		{
+			gt->SetRate(12 * 1024);
+			break;
+		}
+
+	case ID_14KB:
+		{
+			gt->SetRate(14 * 1024);
+			break;
+		}
+
 	case ID_16KB:
 		{
 			gt->SetRate(16 * 1024);
@@ -1469,7 +1797,6 @@ WDownload::ULPopupActivated(int id)
 			break;
 		}
 	}
-	fLock.unlock();
 	UpdateULRatings();
 }
 
@@ -1481,115 +1808,200 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 	{
 		fULPopupItem = item;
 
-		fLock.lock();
+		//fLock.lock();
 		WTIter iter;
 		if (FindItem(fUploadList, iter, item))
 		{
-			fULPopup->setItemChecked(fULQueueID, (*iter).first->IsLocallyQueued());
-			fULPopup->setItemChecked(fULIgnoredID, gWin->IsIgnoredIP( (*iter).first->GetRemoteIP() ));
+			if ( !(*iter).first )
+			{
+				PRINT("Generic Thread is invalid!");
+				return;
+			}
+
+			// Disable items not applicable to current thread state
+
+			// Not Locally Queued
+
+			if ((*iter).first->IsLocallyQueued() == false)
+			{
+				fULPopup->setItemEnabled(ID_MOVEUP, false);
+				fULPopup->setItemEnabled(ID_MOVEDOWN, false);
+			}
+			else
+			{
+				fULPopup->setItemEnabled(ID_MOVEUP, true);
+				fULPopup->setItemEnabled(ID_MOVEDOWN, true);
+			}
+
+			// Already finished
+
+			if ((*iter).first->IsFinished() == true)
+			{
+				fULPopup->setItemEnabled(ID_QUEUE, false);
+				fULPopup->setItemEnabled(ID_BLOCK, false);
+				fULPopup->setItemEnabled(ID_THROTTLE, false);
+			}
+			else
+			{
+				fULPopup->setItemEnabled(ID_QUEUE, true);
+				fULPopup->setItemEnabled(ID_BLOCK, true);
+				fULPopup->setItemEnabled(ID_THROTTLE, true);
+			}
+
+			fULPopup->setItemChecked(ID_QUEUE, (*iter).first->IsLocallyQueued());
+			fULPopup->setItemChecked(ID_IGNORE, gWin->IsIgnoredIP( (*iter).first->GetRemoteIP() ));
 			int fNewRate = (*iter).first->GetRate();
-			fULThrottleMenu->setItemChecked(fULThrottle, false);
+			fULThrottleMenu->setItemChecked(ID_THROTTLE, false);
 			
 			switch (fNewRate)
 			{
 			case 0: 	
 				{
-					fULThrottle = fULThNone;	
+					fULThrottle = ID_NO_LIMIT;	
 					break;
 				}
+
+			case 64:
+				{
+					fULThrottle = ID_64;
+					break;
+				}
+
 			case 128:	
 				{
-					fULThrottle = fULTh128;		
+					fULThrottle = ID_128;		
 					break;
 				}
+
 			case 256:	
 				{
-					fULThrottle = fULTh256;		
+					fULThrottle = ID_256;		
 					break;
 				}
+
 			case 512:	
 				{
-					fULThrottle = fULTh512;		
+					fULThrottle = ID_512;		
 					break;
 				}
+
 			case 1024:	
 				{
-					fULThrottle = fULTh1K;		
+					fULThrottle = ID_1KB;		
 					break;
 				}
+
 			case 2 * 1024:	
 				{
-					fULThrottle = fULTh2K;	
+					fULThrottle = ID_2KB;	
 					break;
 				}
+
 			case 4 * 1024:	
 				{
-					fULThrottle = fULTh4K;	
+					fULThrottle = ID_4KB;	
 					break;
 				}
+
+			case 6 * 1024:
+				{
+					fULThrottle = ID_6KB;
+					break;
+				}
+
 			case 8 * 1024:	
 				{
-					fULThrottle = fULTh8K;	
+					fULThrottle = ID_8KB;	
 					break;
 				}
+
+			case 10 * 1024:
+				{
+					fULThrottle = ID_10KB;
+					break;
+				}
+
+			case 12 * 1024:
+				{
+					fULThrottle = ID_12KB;
+					break;
+				}
+
+			case 14 * 1024:
+				{
+					fULThrottle = ID_14KB;
+					break;
+				}
+
 			case 16 * 1024:	
 				{
-					fULThrottle = fULTh16K; 
+					fULThrottle = ID_16KB; 
 					break;
 				}
+
 			case 32 * 1024: 
 				{
-					fULThrottle = fULTh32K;	
+					fULThrottle = ID_32KB;	
 					break;
 				}
+
 			case 64 * 1024:	
 				{
-					fULThrottle = fULTh64K;	
+					fULThrottle = ID_64KB;	
 					break;
 				}
+
 			case 128 * 1024:	
 				{
-					fULThrottle = fULTh128K; 
+					fULThrottle = ID_128KB; 
 					break;
 				}
+
 			case 256 * 1024:	
 				{
-					fULThrottle = fULTh256K; 
+					fULThrottle = ID_256KB; 
 					break;
 				}
+
 			case 512 * 1024:	
 				{
-					fULThrottle = fULTh512K;	
+					fULThrottle = ID_512KB;	
 					break;
 				}
+
 			case 1048576:		
 				{
-					fULThrottle = fULTh1M;	
+					fULThrottle = ID_1MB;	
 					break;
 				}
+
 			case 2 * 1048576:	
 				{
-					fULThrottle = fULTh2M;	
+					fULThrottle = ID_2MB;	
 					break;
 				}
+
 			case 4 * 1048576:	
 				{
-					fULThrottle = fULTh4M;	
+					fULThrottle = ID_4MB;	
 					break;
 				}
+
 			case 8 * 1048576:	
 				{
-					fULThrottle = fULTh8M;	
+					fULThrottle = ID_8MB;	
 					break;
 				}
+
 			case 16 * 1048576:	
 				{
-					fULThrottle = fULTh16M;	
+					fULThrottle = ID_16MB;	
 					break;
 				}
+
 			case 32 * 1048576:	
 				{
-					fULThrottle = fULTh32M; 
+					fULThrottle = ID_32MB; 
 					break;
 				}
 			}
@@ -1597,60 +2009,60 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			fULThrottleMenu->setItemChecked(fULThrottle, true);
 			
 			int fNewBan = (*iter).first->GetBanTime();
-			fULThrottleMenu->setItemChecked(fULBan, false);
+			fULBanMenu->setItemChecked(fULBan, false);
 			
 			switch (fNewBan)
 			{
 			case -1:
 				{
-					fULBan = fULBanInf;
+					fULBan = ID_BANINF;
 					break;
 				}
 			case 0:
 				{
-					fULBan = fULBanNone;
+					fULBan = ID_UNBAN;
 					break;
 				}
 			case 1:
 				{
-					fULBan = fULBan1;
+					fULBan = ID_BAN1;
 					break;
 				}
 			case 2:
 				{
-					fULBan = fULBan2;
+					fULBan = ID_BAN2;
 					break;
 				}
 			case 5:
 				{
-					fULBan = fULBan5;
+					fULBan = ID_BAN5;
 					break;
 				}
 			case 10:
 				{
-					fULBan = fULBan10;
+					fULBan = ID_BAN10;
 					break;
 				}
 			case 15:
 				{
-					fULBan = fULBan15;
+					fULBan = ID_BAN15;
 					break;
 				}
 			case 30:
 				{
-					fULBan = fULBan30;
+					fULBan = ID_BAN30;
 					break;
 				}
 			case 60:
 				{
-					fULBan = fULBan1H;
+					fULBan = ID_BAN1H;
 					break;
 				}
 			}
-			fULThrottleMenu->setItemChecked(fULThrottle, true);
+			fULBanMenu->setItemChecked(fULBan, true);
 			fULPopup->popup(p);
 		}
-		fLock.unlock();
+		//fLock.unlock();
 	}
 }
 
@@ -1661,120 +2073,215 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 	{
 		fDLPopupItem = item;
 
-		fLock.lock();
+		//fLock.lock();
 		WTIter iter;
 		if (FindItem(fDownloadList, iter, item))
 		{
-			fDLPopup->setItemChecked(fDLQueueID, (*iter).first->IsLocallyQueued());
+			if ( !(*iter).first )
+			{
+				PRINT("Generic Thread is invalid!");
+				return;
+			}
+
+			// Disable items not applicable to current thread state
+
+			// Not Locally Queued
+
+			if ((*iter).first->IsLocallyQueued() == false)
+			{
+				fDLPopup->setItemEnabled(ID_MOVEUP, false);
+				fDLPopup->setItemEnabled(ID_MOVEDOWN, false);
+			}
+			else
+			{
+				fDLPopup->setItemEnabled(ID_MOVEUP, true);
+				fDLPopup->setItemEnabled(ID_MOVEDOWN, true);
+			}
+
+			// Already finished
+
+			if ((*iter).first->IsFinished() == true)
+			{
+				fDLPopup->setItemEnabled(ID_THROTTLE, false);
+				fDLPopup->setItemEnabled(ID_QUEUE, false);
+				fDLPopup->setItemEnabled(ID_RUN, true);
+			}
+			else
+			{
+				fDLPopup->setItemEnabled(ID_THROTTLE, true);
+				fDLPopup->setItemEnabled(ID_QUEUE, true);
+				fDLPopup->setItemEnabled(ID_RUN, false);
+			}
+
+			fDLPopup->setItemChecked(ID_QUEUE, (*iter).first->IsLocallyQueued());
 			int fNewRate = (*iter).first->GetRate();
 			fDLThrottleMenu->setItemChecked(fDLThrottle, false);
 			switch (fNewRate)
 			{
 			case 0: 	
 				{
-					fDLThrottle = fDLThNone;	
+					fDLThrottle = ID_NO_LIMIT;	
 					break;
 				}
+
+			case 64:
+				{
+					fDLThrottle = ID_64;
+					break;
+				}
+
 			case 128:	
 				{
-					fDLThrottle = fDLTh128;		
+					fDLThrottle = ID_128;		
 					break;
 				}
+
 			case 256:	
 				{
-					fDLThrottle = fDLTh256;		
+					fDLThrottle = ID_256;		
 					break;
 				}
+
 			case 512:	
 				{
-					fDLThrottle = fDLTh512;		
+					fDLThrottle = ID_512;		
 					break;
 				}
+
 			case 1024:	
 				{
-					fDLThrottle = fDLTh1K;		
+					fDLThrottle = ID_1KB;		
 					break;
 				}
+
 			case 2 * 1024:	
 				{
-					fDLThrottle = fDLTh2K;	
+					fDLThrottle = ID_2KB;	
 					break;
 				}
+
 			case 4 * 1024:	
 				{
-					fDLThrottle = fDLTh4K;	
+					fDLThrottle = ID_4KB;	
 					break;
 				}
+
+			case 6 * 1024:
+				{
+					fDLThrottle = ID_6KB;
+					break;
+				}
+
 			case 8 * 1024:	
 				{
-					fDLThrottle = fDLTh8K;	
+					fDLThrottle = ID_8KB;	
 					break;
 				}
+
+			case 10 * 1024:
+				{
+					fDLThrottle = ID_10KB;
+					break;
+				}
+
+			case 12 * 1024:
+				{
+					fDLThrottle = ID_12KB;
+					break;
+				}
+
+			case 14 * 1024:
+				{
+					fDLThrottle = ID_14KB;
+					break;
+				}
+
 			case 16 * 1024:	
 				{
-					fDLThrottle = fDLTh16K; 
+					fDLThrottle = ID_16KB; 
 					break;
 				}
+
 			case 32 * 1024: 
 				{
-					fDLThrottle = fDLTh32K;	
+					fDLThrottle = ID_32KB;	
 					break;
 				}
+
 			case 64 * 1024:	
 				{
-					fDLThrottle = fDLTh64K;	
+					fDLThrottle = ID_64KB;	
 					break;
 				}
+
 			case 128 * 1024:	
 				{
-					fDLThrottle = fDLTh128K; 
+					fDLThrottle = ID_128KB; 
 					break;
 				}
+
 			case 256 * 1024:	
 				{
-					fDLThrottle = fDLTh256K; 
+					fDLThrottle = ID_256KB; 
 					break;
 				}
+
 			case 512 * 1024:	
 				{
-					fDLThrottle = fDLTh512K;	
+					fDLThrottle = ID_512KB;	
 					break;
 				}
+
 			case 1048576:		
 				{
-					fDLThrottle = fDLTh1M;	
+					fDLThrottle = ID_1MB;	
 					break;
 				}
+
 			case 2 * 1048576:	
 				{
-					fDLThrottle = fDLTh2M;	
+					fDLThrottle = ID_2MB;	
 					break;
 				}
+
 			case 4 * 1048576:	
 				{
-					fDLThrottle = fDLTh4M;	
+					fDLThrottle = ID_4MB;	
 					break;
 				}
+
 			case 8 * 1048576:	
 				{
-					fDLThrottle = fDLTh8M;	
+					fDLThrottle = ID_8MB;	
 					break;
 				}
+
 			case 16 * 1048576:	
 				{
-					fDLThrottle = fDLTh16M;	
+					fDLThrottle = ID_16MB;	
 					break;
 				}
+
 			case 32 * 1048576:	
 				{
-					fDLThrottle = fDLTh32M; 
+					fDLThrottle = ID_32MB; 
 					break;
 				}
 			}
 			fDLThrottleMenu->setItemChecked(fDLThrottle, true);
+
+			// Add "Run..." items...
+
+			fDLRunMenu->clear();
+			int n = (*iter).first->GetNumFiles();
+			for (int r = 0; r < n; r++)
+			{
+				if ((*iter).first->GetLocalFileName(r) != QString::null)
+					fDLRunMenu->insertItem((*iter).first->GetLocalFileName(r), ID_RUN+1+r);
+			}
 			fDLPopup->popup(p);
 		}
-		fLock.unlock();
+		//fLock.unlock();
 	}
 }
 
@@ -1782,6 +2289,7 @@ bool
 WDownload::FindItem(WTList & lst, WTIter & ret, QListViewItem * s)
 {
 	bool success = false;
+	fLock.lock();
 	WTIter it = lst.begin();
 
 	while (it != lst.end())
@@ -1794,15 +2302,26 @@ WDownload::FindItem(WTList & lst, WTIter & ret, QListViewItem * s)
 		}
 		it++;
 	}
+	fLock.unlock();
+	if (!success)
+	{
+		PRINT("WDownload::FindItem() : Item not found!");
+	}
 	return success;
 }
 
 void
-WDownload::MoveUp(WTList & lst, WTIter iter)
+WDownload::MoveUp(WTList & lst, WTIter & iter)
 {
+	fLock.lock();
+	WTIter iter2 = iter;
+	WTPair wp = (*iter);
+	fLock.unlock();
+
 	if (iter == lst.begin())
 		return;
-	WTIter iter2 = iter;
+
+	fLock.lock();
 	while (1) 
 	{
 		iter2--;
@@ -1811,51 +2330,80 @@ WDownload::MoveUp(WTList & lst, WTIter iter)
 		if (iter2 == lst.begin())
 			break;
 	}
-	WTPair wp = (*iter);
+	WTPair wp2 = (*iter2);
 	lst.erase(iter);
-	lst.insert(iter2, wp);
+	iter = lst.insert(iter2, wp);
+	fLock.unlock();
 }
 
 void
-WDownload::MoveDown(WTList & lst, WTIter iter)
+WDownload::MoveDown(WTList & lst, WTIter & iter)
 {
+	fLock.lock();
+	WTIter iter2 = iter;
+	WTPair wp = (*iter);
+	fLock.unlock();
+
 	if (iter == lst.end())
 		return;
-	WTIter iter2 = iter;
+
+	fLock.lock();
 	while (1)
 	{
 		iter2++;
-		if ((*iter2).first->IsLocallyQueued())
-			break;
 		if (iter2 == lst.end())
 			break;
+		if ((*iter2).first->IsLocallyQueued())
+			break;
 	}
-	WTPair wp = (*iter);
+
+	if (iter2 != lst.end())
+		iter2++;
+
+	WTPair wp2 = (*iter2);
 	lst.erase(iter);
-	lst.insert(iter2, wp);
+	iter = lst.insert(iter2, wp);
+	fLock.unlock();
 }
 
 void
 WDownload::UpdateULRatings()
 {
+	PRINT("\tWDownload::UpdateULRatings\n");
+	if ( fUploadList.empty() )
+		return;
+
 	int qr = 0;
 	fLock.lock();
 	for (WTIter it = fUploadList.begin(); it != fUploadList.end(); it++)
 	{
-		(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+		if ((*it).second)
+		{
+			PRINT("Item %d: %S\n", qr, qStringToWideChar( (*it).second->text(WTransferItem::Filename) ) );
+			(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+		}
 	}
+	fUploads->triggerUpdate();
 	fLock.unlock();
 }
 
 void
 WDownload::UpdateDLRatings()
 {
+	PRINT("\tWDownload::UpdateDLRatings\n");
+	if ( fDownloadList.empty() )
+		return;
+
 	int qr = 0;
 	fLock.lock();
 	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
 	{
-		(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+		if ((*it).second)
+		{
+			(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+		}
 	}
+	fDownloads->triggerUpdate();
 	fLock.unlock();
 }
 
@@ -1865,14 +2413,132 @@ WDownload::TransferCallBackRejected(QString qFrom, int64 timeLeft, uint32 port)
 	fLock.lock();
 	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
 	{
-		if (((*it).first->GetRemoteUser() == qFrom) && 
-			((*it).first->IsActive() == false) &&
-			((*it).first->GetRemotePort() == port)
-			)
+		if ((*it).first)
 		{
-			(*it).first->SetBlocked(true, timeLeft);
-			break;
+			if (((*it).first->IsActive() == false) &&
+				((*it).first->GetRemoteUser() == qFrom) && 
+				((*it).first->GetRemotePort() == port)
+				)
+			{
+				(*it).first->SetBlocked(true, timeLeft);
+				break;
+			}
 		}
 	}
 	fLock.unlock();
+}
+
+// Clear all finished downloads from listview
+void
+WDownload::ClearFinishedDL()
+{
+	fLock.lock();
+	WTIter it = fDownloadList.begin();
+	while (it != fDownloadList.end())
+	{
+		if (
+			((*it).second->text(0) == "Finished.") ||
+			((*it).second->text(0) == "Disconnected.")
+			)
+		{
+			// found finished item, erase it
+			if ((*it).first)
+				(*it).first->Reset();
+			delete (*it).first;
+			delete (*it).second;
+			fDownloadList.erase(it);
+			// start from beginning
+			it = fDownloadList.begin();
+		}
+		else
+		{
+			it++;
+		}
+	}
+	fLock.unlock();
+}
+
+// Clear all finished uploads from listview
+void
+WDownload::ClearFinishedUL()
+{
+	fLock.lock();
+	WTIter it = fUploadList.begin();
+	while (it != fUploadList.end())
+	{
+		if (
+			((*it).second->text(0) == "Finished.") ||
+			((*it).second->text(0) == "Disconnected.")
+			)
+		{
+			// found finished item, erase it
+			if ((*it).first)
+				(*it).first->Reset();
+			delete (*it).first;
+			delete (*it).second;
+			fUploadList.erase(it);
+			// start from beginning
+			it = fUploadList.begin();
+		}
+		else
+		{
+			it++;
+		}
+	}
+	fLock.unlock();
+}
+
+int
+WDownload::GetNumDownloads()
+{
+	PRINT("\tWDownload::GetNumDownloads\n");
+	int n = 0;
+	if ( fDownloadList.empty() )
+		return n;
+
+	fLock.lock();
+	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
+	{
+		if ((*it).first)
+		{
+			if (
+				((*it).first->IsLocallyQueued() == false) &&
+				((*it).first->IsRemotelyQueued() == false) &&
+				((*it).first->IsBlocked() == false) &&
+				((*it).first->IsFinished() == false)
+				)
+			{
+				n++;
+			}
+		}
+	}
+	fLock.unlock();
+	return n;
+}
+
+int
+WDownload::GetNumUploads()
+{
+	PRINT("\tWDownload::GetNumUploads\n");
+	int n = 0;
+	if ( fDownloadList.empty() )
+		return n;
+
+	fLock.lock();
+	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
+	{
+		if ((*it).first)
+		{
+			if (
+				((*it).first->IsLocallyQueued() == false) &&
+				((*it).first->IsBlocked() == false) &&
+				((*it).first->IsFinished() == false)
+				)
+			{
+				n++;
+			}
+		}
+	}
+	fLock.unlock();
+	return n;
 }

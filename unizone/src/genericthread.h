@@ -52,6 +52,9 @@ public:
 	bool IsBlocked() const;
 	virtual void SetBlocked(bool b, int64 timeLeft = -1);
 
+	bool IsFinished() const;
+	virtual void SetFinished(bool b);
+
 	double GetCalculatedRate() const;
 	void SetMostRecentRate(double rate);
 	void SetPacketCount(double bytes);
@@ -72,10 +75,13 @@ public:
 	virtual long GetNumFiles() { return 0; }
 	virtual bool IsLastFile() { return ((GetCurrentNum() + 1) == GetNumFiles()); }
 	virtual QString GetFileName(int i) { return QString::null; }
+	virtual QString GetLocalFileName(int i) { return GetFileName(i); }
 
 	int GetRate() { return fTXRate; }
 	virtual void SetRate(int rate, AbstractReflectSessionRef & ref) { fTXRate = rate; }
 	virtual void SetRate(int rate) { fTXRate = rate; }
+	virtual void ResetRate() { SetRate(fTXRate); }
+	virtual void ResetRate(AbstractReflectSessionRef & ref) { SetRate(fTXRate, ref); }
 
 	int GetBanTime();
 
@@ -92,6 +98,7 @@ protected:
 	bool fRemotelyQueued;			// only usable in downloads
 	bool fActive;
 	bool fBlocked;
+	bool fFinished;
 	double fRate[MAX_RATE_COUNT];	// last 20 rates
 	int fRateCount;					// amount we have, 20 max
 	uint32 fETA[MAX_ETA_COUNT];		// last 5 ETA's
@@ -103,7 +110,7 @@ protected:
 	uint32 ComputeETA() const;
 
 	virtual void SignalOwner() = 0;
-	virtual void SendReply(Message * m);
+	virtual void SendReply(MessageRef m);
 	QString GetUserName(QString sid);
 
 	int fTXRate; // Current transfer throttling rate

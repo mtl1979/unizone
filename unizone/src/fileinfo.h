@@ -13,14 +13,14 @@
 class UFileInfo
 {
 public:
-	UFileInfo(QFileInfo & info);
+	UFileInfo(QFileInfo info);
 	UFileInfo(QString file);
 	virtual ~UFileInfo();
 	
 	uint32 getModificationTime();
-	QString getMIMEType();
-	QString getPath();
-	QString getName();
+	QString getMIMEType() const;
+	QString getPath() const;
+	QString getName() const;
 	uint64 getSize();
 
 	bool isValid();

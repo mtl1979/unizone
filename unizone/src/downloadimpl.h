@@ -69,7 +69,8 @@ public:
 	void AddUpload(int socket, uint32 remoteIP, bool queued);
 	void AddUpload(QString remoteIP, uint32 port);
 
-	void DequeueSessions();
+	void DequeueDLSessions();
+	void DequeueULSessions();
 	void KillLocalQueues();
 
 	void TransferCallBackRejected(QString qFrom, int64 timeLeft, uint32 port);
@@ -85,8 +86,9 @@ private:
 	typedef map<MD5Thread *, bool> MD5List;
 	typedef pair<MD5Thread *, bool> MD5Pair;
 	typedef MD5List::iterator MD5Iter;
-	typedef map<WGenericThread *, WTransferItem *> WTList;
+	//typedef map<WGenericThread *, WTransferItem *> WTList;
 	typedef pair<WGenericThread *, WTransferItem *> WTPair;
+	typedef list<WTPair> WTList;
 	typedef WTList::iterator WTIter;
 
 	WTList fDownloadList;
@@ -95,46 +97,18 @@ private:
 	QSplitter * fMainSplit;
 	QListView * fUploads, * fDownloads;
 	QPushButton * fCancelU;
-	//QPushButton * fUnblockU;
 	QPushButton * fCancelD;
 	QVBox * fBoxU, * fBoxD;
-	//QHBox * fButtonsU;
 	QPopupMenu * fDLPopup, *fULPopup;
 	QPopupMenu * fDLThrottleMenu, * fULThrottleMenu;
+	QPopupMenu * fDLRunMenu;
 	QPopupMenu * fULBanMenu;
 
-	int fDLQueueID, fULQueueID;
-	int fULBlockedID;
-	int fULIgnoredID;
-
-	int fDLThrottle, fULThrottle;
-	int fDLThNone, fULThNone;
-	int fDLTh128, fULTh128;
-	int fDLTh256, fULTh256;
-	int fDLTh512, fULTh512;
-	int fDLTh1K, fULTh1K;
-	int fDLTh2K, fULTh2K;
-	int fDLTh4K, fULTh4K;
-	int fDLTh8K, fULTh8K;
-	int fDLTh16K, fULTh16K;
-	int fDLTh32K, fULTh32K;
-	int fDLTh64K, fULTh64K;
-	int fDLTh128K, fULTh128K;
-	int fDLTh256K, fULTh256K;
-	int fDLTh512K, fULTh512K;
-	int fDLTh1M, fULTh1M;
-	int fDLTh2M, fULTh2M;
-	int fDLTh4M, fULTh4M;
-	int fDLTh8M, fULTh8M;
-	int fDLTh16M, fULTh16M;
-	int fDLTh32M, fULTh32M;
-
-	int fULBan, fULBanNone, fULBanInf;
-	int fULBan1, fULBan2, fULBan5, fULBan10, fULBan15, fULBan30;
-	int fULBan1H;
+	int fDLThrottle, fULThrottle;	// Current throttle selections
+	int fULBan;						// current ban selection
 
 	QListViewItem * fDLPopupItem;	// download item that was right clicked
-	QListViewItem * fULPopupItem;	// upload item that was right clicked
+	QListViewItem * fULPopupItem;	//   upload item that was right clicked
 
 	QString fLocalSID;
 	WFileThread * fSharedFiles;
@@ -142,24 +116,30 @@ private:
 
 	QString GetUserName(QString);
 	QString FormatIndex(long cur, long num);
+
 	// Simple method that is used to decrease the download/upload count
 	// when one is canceled or finished. Returns the count after everything
 	// has been done.
 	int DecreaseCount(WGenericThread *, int &, bool = true);
 	void UpdateLoad();
 
-		// Popup menu id's
+	// Popup menu id's
 	enum
 	{
 		ID_QUEUE,
 		ID_NO_LIMIT,
+		ID_64,
 		ID_128,
 		ID_256,
 		ID_512,
 		ID_1KB,
 		ID_2KB,
 		ID_4KB,
+		ID_6KB,
 		ID_8KB,
+		ID_10KB,
+		ID_12KB,
+		ID_14KB,
 		ID_16KB,
 		ID_32KB,
 		ID_64KB,
@@ -183,7 +163,15 @@ private:
 		ID_BANINF,
 		ID_MOVEUP,
 		ID_MOVEDOWN,
-		ID_IGNORE
+		ID_IGNORE,
+		ID_CLEAR,
+		ID_THROTTLE,
+		ID_BLOCK
+	};
+
+	enum
+	{
+		ID_RUN = 1024
 	};
 
 	// Find an item in the list that matches the list view item
@@ -191,12 +179,22 @@ private:
 	bool FindItem(WTList &, WTIter &, QListViewItem *);
 
 	// Reorganize transfer queue
-	void MoveUp(WTList & lst, WTIter iter);
-	void MoveDown(WTList & lst, WTIter iter);
+	void MoveUp(WTList & lst, WTIter & iter);
+	void MoveDown(WTList & lst, WTIter & iter);
 
 	// Update Queue Ratings
 	void UpdateDLRatings();
 	void UpdateULRatings();
+
+	// Clear finished downloads from listview
+	void ClearFinishedDL();
+
+	// Clear finished uploads from listview
+	void ClearFinishedUL();
+
+	// Get number of active transfers
+	int GetNumDownloads();
+	int GetNumUploads();
 
 	QMutex fLock;
 
@@ -217,6 +215,7 @@ public slots:
 signals:
 	void FileFailed(QString, QString); // Parameter 1 = File Name, Parameter 2 = User Name
 	void FileInterrupted(QString, QString);
+	void Closed();		// the download window has been closed
 
 };
 

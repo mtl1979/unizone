@@ -1,6 +1,8 @@
 // Universal List View class (C) 2002 FieldNet Association / Team UniShare
 // Released under Lesser GPL as in LGPL.TXT in source root folder
 
+#include <qpainter.h>
+
 #include "userlistitem.h"
 #include "global.h"			// defines gWin
 #include "settings.h"		// defines WSettings and gWin->fSettings's type
@@ -37,7 +39,7 @@ void
 WUserListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w, int alignment)
 {
 	
-	_cg = cg;
+	QColorGroup _cg = cg;
 	
 	if (gWin->fSettings->GetMultiColor() == true)
 	{
@@ -47,44 +49,44 @@ WUserListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w
 		{
 			if (tx > 0xFFFEFFFF && tx != -1)
 			{
-				_cg.setColor(QColorGroup::ColorRole::Base, rowBaseColor(6));	// Infinite slots 
-				_cg.setColor(QColorGroup::ColorRole::Text, rowTextColor(6));	//  
+				_cg.setColor(QColorGroup::Base, rowBaseColor(6));	// Infinite slots 
+				_cg.setColor(QColorGroup::Text, rowTextColor(6));	//  
 			}
 			else if (tx > 999999 && tx < 0xFFFF0000)
 			{
-				_cg.setColor(QColorGroup::ColorRole::Base, rowBaseColor(5));	// Full
-				_cg.setColor(QColorGroup::ColorRole::Text, rowTextColor(5));	// 
+				_cg.setColor(QColorGroup::Base, rowBaseColor(5));	// Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(5));	// 
 			}
 			else if (tx > 749999 && tx < 1000000)
 			{
-				_cg.setColor(QColorGroup::ColorRole::Base, rowBaseColor(4));	// 3/4		- Full
-				_cg.setColor(QColorGroup::ColorRole::Text, rowTextColor(4));	// 
+				_cg.setColor(QColorGroup::Base, rowBaseColor(4));	// 3/4		- Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(4));	// 
 			}
 			else if (tx > 499999 && tx < 750000)
 			{
-				_cg.setColor(QColorGroup::ColorRole::Base, rowBaseColor(3));	// 1/2		- 3/4 Full
-				_cg.setColor(QColorGroup::ColorRole::Text, rowTextColor(3));	// 
+				_cg.setColor(QColorGroup::Base, rowBaseColor(3));	// 1/2		- 3/4 Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(3));	// 
 			}
 			else if (tx > 249999 && tx < 500000)
 			{
-				_cg.setColor(QColorGroup::ColorRole::Base, rowBaseColor(2));	// 1/4		- 1/2 Full
-				_cg.setColor(QColorGroup::ColorRole::Text, rowTextColor(2));	// 
+				_cg.setColor(QColorGroup::Base, rowBaseColor(2));	// 1/4		- 1/2 Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(2));	// 
 			}
 			else if (tx > -1 && tx < 250000)
 			{
-				_cg.setColor(QColorGroup::ColorRole::Base, rowBaseColor(1));	// Empty	- 1/4 Full
-				_cg.setColor(QColorGroup::ColorRole::Text, rowTextColor(1));	// 
+				_cg.setColor(QColorGroup::Base, rowBaseColor(1));	// Empty	- 1/4 Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(1));	// 
 			}
 			else
 			{
-				_cg.setColor(QColorGroup::ColorRole::Base, rowBaseColor(0));	// default
-				_cg.setColor(QColorGroup::ColorRole::Text, rowTextColor(0));	// 
+				_cg.setColor(QColorGroup::Base, rowBaseColor(0));	// default
+				_cg.setColor(QColorGroup::Text, rowTextColor(0));	// 
 			}
 		}
 		else if (column == 3)
 		{
 			if (fFire)															// Firewalled?
-				_cg.setColor(QColorGroup::ColorRole::Text, rowBaseColor(4));
+				_cg.setColor(QColorGroup::Text, rowBaseColor(4));
 		}
 	}
 	else
@@ -96,8 +98,6 @@ WUserListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w
 			p->setFont(font);
 		}
 	}
-	
-	p->fillRect( 0, 0, w, height(), _cg.base() );
 	
 	WNickListItem::paintCell(p, _cg, column, w, alignment);
 }

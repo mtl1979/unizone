@@ -7,11 +7,19 @@
 #include <qmultilineedit.h>
 #include <qthread.h>
 #include <qapp.h>
+#include <qmessagebox.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #define PRINT printf
+
+#define POPUP(X) \
+{ \
+	QMessageBox box(tr(NAME), tr(X), QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
+					QMessageBox::NoButton, QMessageBox::NoButton); \
+	box.exec(); \
+}
 
 # ifdef WIN32
 inline void
@@ -51,6 +59,7 @@ inline void PRINT(const char *, ...)
 }
 # define RedirectDebugOutput()
 # define CleanupDebug()
+# define POPUP(X)
 
 #endif
 
@@ -62,14 +71,14 @@ inline void PRINT(const char *, ...)
 		if (!(X)) \
 		{ \
 			QString out = QObject::tr("Send this message to postmaster@raasu.org! This message has also been dumped to 'assert.txt'." \
-										"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(Y).arg(__LINE__).arg(__FILE__).arg(__DATE__); \
+										"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(tr(Y)).arg(__LINE__).arg(__FILE__).arg(__DATE__); \
 			QFile f("assert.txt"); \
 			if (f.open(IO_WriteOnly)) \
 			{ \
 				f.writeBlock(out.latin1(), out.length()); \
 				f.close(); \
 			} \
-			QMessageBox box(tr(NAME), out.latin1(),QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
+			QMessageBox box(tr(NAME), out,QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
 					QMessageBox::NoButton, QMessageBox::NoButton); \
 			box.exec(); \
 		}

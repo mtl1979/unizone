@@ -69,6 +69,7 @@ private:
 
 	void ParseDir(const QString & d);
 	QString ResolveLink(const QString & lnk);
+	QString ResolveLinkA(const QString & lnk);	// Windows only
 	void ScanFiles(QString directory);
 
 	QMutex fLocker;

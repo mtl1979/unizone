@@ -21,6 +21,7 @@
 #include "lang.h"									// <postmaster@raasu.org> 20020924
 #include "tokenizer.h"								// <postmaster@raasu.org> 20021114
 #include "platform.h"
+#include "nicklist.h"
 
 #include <qapplication.h>
 #include <qstylesheet.h>
@@ -64,20 +65,28 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	RedirectDebugOutput();
 
 	fUpdateThread = new NetClient(this);
+	CHECK_PTR(fUpdateThread);
+
 	fPrintOutput = false;
 
 	fDisconnectCount = 0;	// Initialize disconnection count
 	fDisconnect = false;	// No premature disconnection yet
 	
 	fNetClient = new NetClient(this);
+	CHECK_PTR(fNetClient);
+
 	fServerThread = new NetClient(this);
+	CHECK_PTR(fServerThread);
 
 	fSettings = new WSettings;
+	CHECK_PTR(fSettings);
 
 //	IncrementBuild();
 	setCaption("Unizone");
 
 	fMenus = new MenuBar(this);
+	CHECK_PTR(fMenus);
+
 	InitGUI();
 	resize(800, 600);
 
@@ -160,7 +169,11 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	if (fSettings->GetInfo())
 	{
 		START_OUTPUT();
+#ifdef WIN32
 		PrintSystem(tr("Welcome to " NAME "! <b>THE</b> MUSCLE client for Windows!"), true);
+#else
+		PrintSystem(tr("Welcome to " NAME "! <b>THE</b> MUSCLE client for Linux!"), true);
+#endif
 		// <postmaster@raasu.org> 20030225
 		PrintSystem("Copyright (C) 2002-2003 Mika T. Lindqvist.", true);
 		PrintSystem("Original idea by Vitaliy Mikitchenko.", true);
@@ -190,6 +203,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	if (fSettings->GetMaximized())
 		showMaximized();
 	fFileScanThread = new WFileThread(fNetClient, this, &fFileShutdownFlag);
+	CHECK_PTR(fFileScanThread);
+
 	fFileShutdownFlag = false;
 	fScrollDown = true;
 
@@ -224,15 +239,18 @@ WinShareWindow::StartAcceptThread()
 				return true;
 			}
 			else
+			{
+				START_OUTPUT();
+				PrintError(tr("Failed to start accept thread!"), true);
+				END_OUTPUT();
 				PRINT("Failed to start accept thread\n");
+				fSettings->SetSharingEnabled(false);
+			}
 		}
 		else
 			PRINT("Failed on port %d\n", i);
 	}
-	fAccept->ShutdownInternalThread();
-	fAccept->WaitForInternalThreadToExit();
-	delete fAccept;
-	fAccept = NULL;
+	StopAcceptThread();
 	return false;
 }
 
@@ -240,6 +258,7 @@ void
 WinShareWindow::StopAcceptThread()
 {
 	fAccept->ShutdownInternalThread();
+	fAccept->WaitForInternalThreadToExit();
 	delete fAccept;
 	fAccept = NULL;
 }
@@ -279,6 +298,7 @@ WinShareWindow::~WinShareWindow()
 void
 WinShareWindow::customEvent(QCustomEvent * event)
 {
+	PRINT("\tWinShareWindow::customEvent\n");
 	if (!fNetClient)		// do this to avoid bad crash
 	{
 		return;
@@ -289,7 +309,8 @@ WinShareWindow::customEvent(QCustomEvent * event)
 		{
 		case WinShareWindow::ConnectRetry:
 			{
-				if (!fNetClient->IsInternalThreadRunning())
+				PRINT("\tWinShareWindow::ConnectRetry\n");
+				if (!fNetClient->IsInternalThreadRunning() && !fReconnectTimer->isActive())
 				{
 					// Connect();
 					PrintSystem("Reconnecting in 1 minute!");
@@ -299,32 +320,41 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			}
 		case WinShareWindow::UpdatePrivateUsers:
 			{
+				PRINT("\tWinShareWindow::UpdatePrivateUsers\n");
 				emit UpdatePrivateUserLists();
 				break;
 			}
 		case WFileThread::ScanDone:
 			{
+				PRINT("\tWinShareWindow::ScanDone\n");
 				CancelShares();
-				fFileScanThread->Lock();
-				if (fSettings->GetInfo())
-					PrintSystem(tr(MSG_SHARECOUNT).arg(fFileScanThread->GetSharedFiles().size()));
-				fNetClient->SetFileCount(fFileScanThread->GetSharedFiles().size());
-				PRINT("Doing a scan of the returned files for uploading.\n");
-				for (WMsgListIter it = fFileScanThread->GetSharedFiles().begin(); it != fFileScanThread->GetSharedFiles().end(); it++)
+				if (fSettings->GetSharingEnabled()) // Make sure sharing is enabled and fully functional
 				{
-					qApp->processEvents(300);
-					MessageRef mref = (*it); 
-					String s;
-					if (mref()->FindString("secret:NodePath", s) == B_OK)
-						fNetClient->SetNodeValue(s.Cstr(), mref);
+					fFileScanThread->Lock();
+					if (fSettings->GetInfo())
+						PrintSystem(tr(MSG_SHARECOUNT).arg(fFileScanThread->GetSharedFiles().size()));
+					fNetClient->SetFileCount(fFileScanThread->GetSharedFiles().size());
+					PRINT("Doing a scan of the returned files for uploading.\n");
+					for (WMsgListIter it = fFileScanThread->GetSharedFiles().begin(); it != fFileScanThread->GetSharedFiles().end(); it++)
+					{
+						// stop iterating if we are waiting for file scan thread to finish
+						if (fFileShutdownFlag)
+							break;
+						qApp->processEvents(300);
+						MessageRef mref = (*it); 
+						String s;
+						if (mref()->FindString("secret:NodePath", s) == B_OK)
+							fNetClient->SetNodeValue(s.Cstr(), mref);
+					}
+					fFileScanThread->Unlock();
+					PRINT("Done\n");
 				}
-				fFileScanThread->Unlock();
-				PRINT("Done\n");
 				return;
 			}
 			
 		case WAcceptThreadEvent::Type:
 			{
+				PRINT("\tWAcceptThreadEvent::Type\n");
 				WAcceptThreadEvent * te = dynamic_cast<WAcceptThreadEvent *>(event);
 				if (te)
 				{
@@ -333,13 +363,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					uint32 ip;
 					if (socket >= 0 && (ip = GetPeerIPAddress(socket)) > 0)
 					{
-						if (!fDLWindow)
-						{
-							PRINT("New DL Window\n");
-							// fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
-							OpenDownload();
-							fDLWindow->show();
-						}
+						OpenDownload();
 						fDLWindow->AddUpload(socket, ip, false);
 					}
 				}
@@ -393,12 +417,14 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			
 		case NetClient::Disconnected:
 			{
+				PRINT("\tNetClient::Disconnected\n");
 				DisconnectedFromServer();
 				return;
 			}
 			
 		case WTextEvent::TextType:
 			{
+				PRINT("\tWTextEvent::TextType\n");
 				// a message is being sent... no longer away
 				SendChatText(dynamic_cast<WTextEvent *>(event));
 				return;
@@ -406,12 +432,14 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			
 		case WTextEvent::ComboType:
 			{
+				PRINT("\tWTextEvent::ComboType\n");
 				HandleComboEvent(dynamic_cast<WTextEvent *>(event));
 				return;
 			}
 
 		case WTextEvent::ResumeType:
 			{
+				PRINT("\tWTextEvent::ResumeType\n");
 				WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
 				if (wte)
 				{
@@ -422,16 +450,17 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			}
 		case WPWEvent::TextEvent:
 			{
+				PRINT("\tWPWEvent::TextEvent\n");
 				WPWEvent * wpe = dynamic_cast<WPWEvent *>(event);
 				if (wpe)
 				{
 					WTextEvent te("");
-					PRINT("wpe->GetText() %s\n", wpe->GetText().latin1());
+					PRINT("wpe->GetText() %S\n", qStringToWideChar(wpe->GetText()));
 					te.SetText(wpe->GetText());
 					if (wpe->GetWantReply())	// reply wanted... do the following...
 					{
 						bool rep = false;
-						PRINT("Sending the following text to SendChatText %s\n", te.Text().latin1());
+						PRINT("Sending the following text to SendChatText %S\n", qStringToWideChar(te.Text()));
 						SendChatText(&te, &rep);
 						if (rep)	// does this event WANT a reply
 						{
@@ -451,6 +480,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			
 		case WPWEvent::TabComplete:
 			{
+				PRINT("\tWPWEvent::TabComplete\n");
 				WPWEvent * wpe = dynamic_cast<WPWEvent *>(event);
 				if (wpe)
 				{
@@ -579,7 +609,7 @@ WinShareWindow::InitGUI()
 	splitList.append(1);
 
 	// setup the info box
-	fInfoPane = new QHGroupBox(/* fLeftPane*/ this);
+	fInfoPane = new QHGroupBox(this);
 	CHECK_PTR(fInfoPane);
 
 	fInfoPane->move(0, fMenus->Bar()->height() + 4);
@@ -615,7 +645,7 @@ WinShareWindow::InitGUI()
 	fMainSplitter->move(0, fMenus->Bar()->height() + fInfoPane->height() + 4);
 
 	// user list
-	fUsersBox = new QHGroupBox(/* this */fMainSplitter);
+	fUsersBox = new QHGroupBox(fMainSplitter);
 	CHECK_PTR(fUsersBox);
 	fUsersBox->move(0, fMenus->Bar()->height() + fInfoPane->height() + 4);
 	fUsers = new WUniListView(fUsersBox);
@@ -630,9 +660,9 @@ WinShareWindow::InitGUI()
 	fUsers->addColumn(tr(MSG_NL_CLIENT));		// as of now... WinShare specific, WinShare pings all the users and parses the string for client info
 	
 
-	fUsers->setColumnAlignment(1, AlignRight); // <postmaster@raasu.org> 20021005
-	fUsers->setColumnAlignment(3, AlignRight); // <postmaster@raasu.org> 20021005
-	fUsers->setColumnAlignment(5, AlignRight); // <postmaster@raasu.org> 20021005
+	fUsers->setColumnAlignment(WNickListItem::ID, AlignRight); // <postmaster@raasu.org> 20021005
+	fUsers->setColumnAlignment(WNickListItem::Files, AlignRight); // <postmaster@raasu.org> 20021005
+	fUsers->setColumnAlignment(WNickListItem::Load, AlignRight); // <postmaster@raasu.org> 20021005
 
 	for (int column = 0; column < 6; column++)
 		fUsers->setColumnWidthMode(column, QListView::Manual);
@@ -856,7 +886,7 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 			{
 				CheckScrollState();
 				fChatText->append(output);
-				fMainLog.LogString(output.latin1());
+				fMainLog.LogString(output);
 				UpdateTextView();
 			}
 		}
@@ -878,7 +908,7 @@ WinShareWindow::PrintText(const QString & str)
 #endif
 						out
 	);
-	fMainLog.LogString(out.latin1());
+	fMainLog.LogString(out);
 	UpdateTextView();
 }
 
@@ -1158,7 +1188,7 @@ WinShareWindow::LoadSettings()
 
 		// status messages
 		fAwayMsg = fSettings->GetAwayMsg();
-		PRINT("Away Msg: %s\n", fAwayMsg.latin1());
+		PRINT("Away Msg: %S\n", qStringToWideChar(fAwayMsg));
 		fHereMsg = fSettings->GetHereMsg();
 
 		// load colors
@@ -1256,7 +1286,7 @@ WinShareWindow::SaveSettings()
 	for (i = 0; i < fServerList->count(); i++)
 	{
 		fSettings->AddServerItem(fServerList->text(i));
-		PRINT("Saved server %s\n", fServerList->text(i).latin1());
+		PRINT("Saved server %S\n", qStringToWideChar(fServerList->text(i)));
 	}
 	fSettings->SetCurrentServerItem(fServerList->currentItem());
 	
@@ -1264,7 +1294,7 @@ WinShareWindow::SaveSettings()
 	for (i = 0; i < fUserList->count(); i++)
 	{
 		fSettings->AddUserItem(fUserList->text(i));
-		PRINT("Saved user %s\n", fUserList->text(i).latin1());
+		PRINT("Saved user %S\n", qStringToWideChar(fUserList->text(i)));
 	}
 	fSettings->SetCurrentUserItem(fUserList->currentItem());
 	
@@ -1272,7 +1302,7 @@ WinShareWindow::SaveSettings()
 	for (i = 0; i < fStatusList->count(); i++)
 	{
 		fSettings->AddStatusItem(fStatusList->text(i));
-		PRINT("Saved status %s\n", fStatusList->text(i).latin1());
+		PRINT("Saved status %S\n", qStringToWideChar(fStatusList->text(i)));
 	}
 	fSettings->SetCurrentStatusItem(fStatusList->currentItem());
 	// don't worry about style, Prefs does it for us
@@ -1497,7 +1527,7 @@ QString WinShareWindow::MapUsersToIDs(const QString & pattern)
 	{
 		qResult = qResult.left(qResult.length()-1);
 	}
-	PRINT("MapUsersToIDs: %s\n",qResult.latin1());
+	PRINT("MapUsersToIDs: %S\n", qStringToWideChar(qResult));
 	return qResult;
 }
 
@@ -1658,9 +1688,14 @@ WinShareWindow::OpenDownload()
 {
 	if (fDLWindow)
 		return;
+	PRINT("New DL Window\n");
 	fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
+	CHECK_PTR(fDLWindow);
+
 	connect(fDLWindow, SIGNAL(FileFailed(QString, QString)), this, SLOT(FileFailed(QString, QString)));
 	connect(fDLWindow, SIGNAL(FileInterrupted(QString, QString)), this, SLOT(FileInterrupted(QString, QString)));
+	connect(fDLWindow, SIGNAL(Closed()), this, SLOT(DownloadWindowClosed()));
+
 	fDLWindow->show();
 }
 
@@ -1673,4 +1708,54 @@ WinShareWindow::SetDelayedSearchPattern(QString pattern)
 	}
 		
 	fOnConnect = tr("/search %1").arg(pattern);
+}
+
+void
+WinShareWindow::ScanShares(bool rescan)
+{
+	// are we connected?
+	if (!fNetClient->IsInternalThreadRunning())	
+	{
+		if (fSettings->GetError())
+		{
+			PrintError(tr(MSG_NOTCONNECTED), false);
+		}
+		return;
+	}
+
+	// is sharing enabled?
+	if (!fSettings->GetSharingEnabled()) 
+	{
+		if (fSettings->GetError())
+		{
+			PrintError(tr(MSG_NOTSHARING), false);
+		}
+		return;
+	}
+
+	// already running?
+	if (fFileScanThread->IsRunning())
+	{
+		if (fSettings->GetError())
+		{
+			PrintError(tr(MSG_SCAN_ERR1), false);
+		}
+		return;
+	}
+
+	if (fSettings->GetInfo())
+	{
+		if (rescan)
+		{
+			PrintSystem(tr(MSG_RESCAN));
+		}
+		else
+		{
+			PrintSystem(tr(MSG_SCANSHARES));
+		}
+	}
+
+	fFileScanThread->SetFirewalled(fSettings->GetFirewalled());
+	PRINT("Starting...\n");
+	fFileScanThread->start();
 }

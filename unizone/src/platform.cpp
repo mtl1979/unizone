@@ -1,8 +1,8 @@
-#ifdef WIN32
-#include <windows.h>
 #include <qstring.h>
 #include "platform.h"
 #include "debugimpl.h"
+#ifdef WIN32
+#include <windows.h>
 
 QString 
 wideCharToQString(const wchar_t *wide)
@@ -23,7 +23,7 @@ qStringToWideChar(const QString &str)
 		for (unsigned int i = 0; i < str.length(); ++i)
 			result[i] = str.at(i).unicode();
 		result[str.length()] = 0;
-		PRINT("qStringToWideChar: result = %S\n",result);
+//		PRINT("qStringToWideChar: result = %S\n", result);
 		return result;
 	}
 	else
@@ -103,8 +103,8 @@ GetCommandString(QString qCommand)
 bool 
 CompareCommand(QString qCommand, const char * cCommand)
 {
-	PRINT("Compare String: qCommand=\'%s\'\n",GetCommandString(qCommand).latin1());
-	PRINT("                cCommand=\'%s\'\n",cCommand);
+	PRINT("Compare String: qCommand=\'%S\'\n", qStringToWideChar(GetCommandString(qCommand)));
+	PRINT("                cCommand=\'%s\'\n", cCommand);
 	return (strcmp(GetCommandString(qCommand).latin1(),cCommand) ? false : true);
 }
 
@@ -124,7 +124,7 @@ StripURL(const String & strip)
 				int right = strip.IndexOf(']');
 				if (right > left)	// make sure right is than greater left :D
 				{
-					String label = strip.Substring(left, right).Trim();
+					String label = strip.Substring(left, right);
 					if ((right + 1) < (int) strip.Length())
 					{
 						String rest = strip.Substring(right + 1);
@@ -137,6 +137,11 @@ StripURL(const String & strip)
 					}
 					else
 						return label;
+				}
+				else if (right == -1) // ']' is missing?
+				{
+					String label = strip.Substring(left);
+					return label;
 				}
 			}
 		}
@@ -215,6 +220,7 @@ MakeSizeString(uint64 s)
 			}
 		}
 	}
-	result.sprintf("%.2f %s", n, postFix.latin1());
+	result.sprintf("%.2f ", n);
+	result += postFix;
 	return result;	
 }

@@ -13,6 +13,7 @@
 #include "lang.h"				// <postmaster@raasu.org> 20020924
 #include "platform.h"
 #include "wpwevent.h"
+#include "nicklist.h"
 
 #include <qapplication.h>
 #include <qmessagebox.h>
@@ -43,10 +44,12 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	// we still want to autocomplete ALL names, not just
 	// the one's with the ppl we talk to
 	fChat = new WChatText(this, fSplitChat);
-	CHECK_PTR(fText);
+	CHECK_PTR(fChat);
 
 	// user list
 	fPrivateUsers = new QListView(fSplit);
+	CHECK_PTR(fPrivateUsers);
+
 	fPrivateUsers->addColumn(tr(MSG_NL_NAME));
 	fPrivateUsers->addColumn(tr("ID"));
 	fPrivateUsers->addColumn(tr(MSG_NL_STATUS));
@@ -55,9 +58,9 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	fPrivateUsers->addColumn(tr(MSG_NL_LOAD));
 	fPrivateUsers->addColumn(tr(MSG_NL_CLIENT));		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
 
-	fPrivateUsers->setColumnAlignment(1, AlignRight); // <postmaster@raasu.org> 20021005
-	fPrivateUsers->setColumnAlignment(3, AlignRight); // <postmaster@raasu.org> 20021005
-	fPrivateUsers->setColumnAlignment(5, AlignRight); // <postmaster@raasu.org> 20021005
+	fPrivateUsers->setColumnAlignment(WNickListItem::ID, AlignRight); // <postmaster@raasu.org> 20021005
+	fPrivateUsers->setColumnAlignment(WNickListItem::Files, AlignRight); // <postmaster@raasu.org> 20021005
+	fPrivateUsers->setColumnAlignment(WNickListItem::Load, AlignRight); // <postmaster@raasu.org> 20021005
 
 	for (int column = 0; column < 6; column++)
 		fPrivateUsers->setColumnWidthMode(column, QListView::Manual);
@@ -78,6 +81,7 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	// create popup menu
 	fPopup = new QPopupMenu(this);	// have it deleted on destruction of window
 	CHECK_PTR(fPopup);
+
 	connect(fPopup, SIGNAL(activated(int)), this, SLOT(PopupActivated(int)));
 	connect(fPrivateUsers, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 			this, SLOT(RightButtonClicked(QListViewItem *, const QPoint &, int)));
@@ -207,7 +211,7 @@ WPrivateWindow::PrintText(const QString & str)
 	output += str;
 
 	if (gWin->fSettings->GetLogging())
-		fLog.LogString(output.latin1());
+		fLog.LogString(output);
 	CheckScrollState();
 	fText->append(output);
 	UpdateView();
@@ -412,7 +416,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					QString message = gWin->GetUserName();
 					message += "'s ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
-					PRINT("\t\t%s\n", message.latin1());
+					PRINT("\t\t%S\n", qStringToWideChar(message));
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
 					if (e)
 					{
@@ -427,7 +431,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					QString message = gWin->GetUserName();
 					message += " ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
-					PRINT("\t\t%s\n", message.latin1());
+					PRINT("\t\t%S\n", qStringToWideChar(message));
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
 					if (e)
 					{
@@ -487,7 +491,9 @@ WPrivateWindow::PrintError(const QString & error)
 void
 WPrivateWindow::GotShown(const QString & txt)
 {
+#ifndef WIN32
 	fText->setText(WinShareWindow::ParseForShown(txt));
+#endif
 }
 
 void

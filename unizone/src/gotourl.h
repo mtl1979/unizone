@@ -4,6 +4,7 @@
 #include <qstring.h>
 
 void GotoURL(QString url);		// async launch
+void RunCommand(QString command);
 
 #ifdef WIN32
 bool GotoURL(QString url, int showcmd );	// sync launch, used internally by the asnyc version

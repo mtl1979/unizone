@@ -5,19 +5,6 @@
 #pragma warning(disable: 4786)
 #endif
 
-#ifdef _DEBUG
-#include <qmessagebox.h>
-
-#define POPUP(X) \
-{ \
-	QMessageBox box(NAME, X, QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
-					QMessageBox::NoButton, QMessageBox::NoButton); \
-	box.exec(); \
-}
-#else
-#define POPUP(X)
-#endif
-
 #include <qmainwindow.h>
 #include <qvbox.h>
 #include <qmenubar.h>
@@ -145,8 +132,10 @@ public slots:
 
 	// this won't be emitted under Windows
 	void GotShown(const QString &);
+
 	void AboutToQuit();
 	void SearchWindowClosed();
+	void DownloadWindowClosed();
 
 	void FileFailed(QString, QString); // from WDownload
 	void FileInterrupted(QString, QString);
@@ -312,6 +301,7 @@ private:
 	void StartLogging();
 	void StopLogging();
 	void CancelShares();
+	void ScanShares(bool rescan = false);
 	void CreateDirectories();
 	bool CheckVersion(const char *, QString * = NULL);
 
@@ -353,15 +343,15 @@ public:
 
 	bool IsIgnored(QString & user, bool bTransfer = false);
 	bool IsIgnored(QString & user, bool bTransfer, bool bDisconnected);
-	bool IsIgnoredIP(QString & ip);
-	bool AddIPIgnore(QString & ip);
-	bool RemoveIPIgnore(QString & ip);
+	bool IsIgnoredIP(QString ip);
+	bool AddIPIgnore(QString ip);
+	bool RemoveIPIgnore(QString ip);
 
 	bool IsBlackListedIP(QString & ip);
 	bool IsBlackListed(QString & user);
 
-	bool IsAutoPrivate(QString & user);
-	bool IsConnected(QString & user);
+	bool IsAutoPrivate(QString user);
+	bool IsConnected(QString user);
 
 	void SendRejectedNotification(MessageRef rej);
 

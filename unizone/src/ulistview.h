@@ -75,8 +75,8 @@ public:
 	virtual long item(int c);
 
 	// set/get user colors
-	virtual void setRowBaseColor(int i, QColor & color); 
-	virtual void setRowTextColor(int i, QColor & color); 
+	virtual void setRowBaseColor(int i, QColor color); 
+	virtual void setRowTextColor(int i, QColor color); 
 	virtual QColor rowBaseColor(int i);
 	virtual QColor rowTextColor(int i);
 		

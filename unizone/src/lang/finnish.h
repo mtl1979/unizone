@@ -88,13 +88,13 @@
 // Menu bar
 
 #define MSG_FILE			"&Tiedosto"
-#define MSG_AFILE			CTRL+Key_T
+//#define MSG_AFILE			CTRL+Key_T
 #define MSG_EDIT			"&Muokkaa"
-#define MSG_AEDIT			CTRL+Key_M
-#define MSG_OPTIONS			"&Ominaisuudet"
-#define MSG_AOPTIONS		CTRL+Key_O
+//#define MSG_AEDIT			CTRL+Key_M
+//#define MSG_OPTIONS			"&Ominaisuudet"
+//#define MSG_AOPTIONS		CTRL+Key_O
 #define MSG_HELP			"&Ohje"
-#define MSG_AHELP			CTRL+Key_O
+//#define MSG_AHELP			CTRL+Key_O
 
 // File menu
 
@@ -112,8 +112,6 @@
 #define MSG_ACLEAR_CHATLOG	CTRL+Key_K
 #define MSG_SEARCH			"Etsi"
 #define MSG_ASEARCH			CTRL+ALT+Key_S
-#define MSG_ABOUT			"&Tietoja "
-#define MSG_AABOUT			CTRL+Key_T
 #define MSG_EXIT			"&Poistu"
 #define MSG_AEXIT			CTRL+Key_P
 
@@ -122,6 +120,10 @@
 #define MSG_PREFERENCES		"A&setukset"
 #define MSG_APREFERENCES	CTRL+Key_S
 
+// Help menu
+
+#define MSG_ABOUT			"&Tietoja "
+#define MSG_AABOUT			CTRL+Key_T
 
 //
 // Preferences

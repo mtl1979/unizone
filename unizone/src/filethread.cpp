@@ -31,7 +31,6 @@
 void
 WFileThread::run()
 {
-	// Lock();
 	// reset our shutdown flag
 	fRunning = true;
 	if (fShutdownFlag)
@@ -48,7 +47,6 @@ WFileThread::run()
 	CoInitialize(NULL);
 #endif
 
-	/** 20020616: Re-coded the file parsing mechanism */
 	fPaths.AddTail("shared");
 	QString path;
 	while (!fPaths.IsEmpty())
@@ -56,6 +54,12 @@ WFileThread::run()
 		Lock();
 		fPaths.RemoveHead(path);
 		Unlock();
+		if (fShutdownFlag && *fShutdownFlag)
+		{
+			// Make sure list is empty next time started!
+			fPaths.Clear();
+			break;
+		}
 		ParseDir(path);
 	} 
 #ifdef WIN32
@@ -69,9 +73,7 @@ WFileThread::run()
 	fRunning = false;
 	QCustomEvent *qce = new QCustomEvent(ScanDone);
 	if (qce)
-		QApplication::postEvent(fOwner, qce);
-	// Unlock();
-	// exit();
+		QThread::postEvent(fOwner, qce);
 }
 
 void
@@ -79,7 +81,8 @@ WFileThread::ParseDir(const QString & d)
 {
 	QFileInfo * info = new QFileInfo(d);
 	CHECK_PTR(info);
-	PRINT("Parsing directory %s\n", d.latin1());
+	PRINT("Parsing directory %S\n", qStringToWideChar(d));
+
 	// Directory doesn't exist?
 	if (!info->exists())
 	{
@@ -88,6 +91,7 @@ WFileThread::ParseDir(const QString & d)
 	}
 
 	PRINT("Exists\n");
+
 	// Read the symlink
 	while (info->isSymLink())
 		info->setFile(info->readLink());
@@ -98,6 +102,7 @@ WFileThread::ParseDir(const QString & d)
 		delete info;
 		return;	// not a directory?
 	}
+
 	for (WStrListIter it = fScannedDirs.begin(); it != fScannedDirs.end(); it++)
 	{
 		if ((*it) == info->absFilePath())
@@ -117,12 +122,6 @@ WFileThread::ParseDir(const QString & d)
 void
 WFileThread::ScanFiles(QString directory)
 {
-	QString rpath;
-	if (fFired)
-		rpath = "beshare/fires/";
-	else
-		rpath = "beshare/files/";
-
 	PRINT("Checking for directory existance\n");
 	QDir * dir = new QDir(directory);
 	CHECK_PTR(dir);
@@ -134,21 +133,31 @@ WFileThread::ScanFiles(QString directory)
 			// not empty?
 			for (QStringList::Iterator i = list.begin(); i!= list.end(); i++)
 			{
+				if (fShutdownFlag && *fShutdownFlag)
+				{
+					delete dir;
+					return;
+				}
+
 				if (((*i) == ".") || ((*i) == "..") || ((*i).right(4) == ".md5"))
 					continue;
-				PRINT("\tChecking file %s\n", i.node->data.latin1());
+
+				PRINT("\tChecking file %S\n", qStringToWideChar(i.node->data));
 				QString filePath = dir->absFilePath(i.node->data);
-				PRINT("Setting to filePath: %s\n", filePath.latin1());
+				PRINT("Setting to filePath: %S\n", qStringToWideChar(filePath));
 
 				QFileInfo * finfo = new QFileInfo(filePath);
 				CHECK_PTR(finfo);
+
 				PRINT("Set\n");
+				
 				if (finfo->exists())
 				{
 					PRINT("Exists\n");
+
 					// resolve symlink
 					QString ret = ResolveLink(finfo->filePath());
-					PRINT("Resolved to: %s\n", ret.latin1());
+					PRINT("Resolved to: %S\n", qStringToWideChar(ret));
 					finfo->setFile(ret);
 
 					// is this a directory?
@@ -161,7 +170,8 @@ WFileThread::ScanFiles(QString directory)
 					else
 					{
 						UFileInfo * ufi = new UFileInfo(ret);
-						if (ufi && ufi->isValid())
+						CHECK_PTR(ufi);
+						if (ufi->isValid())
 						{
 							MessageRef ref(new Message(), NULL);
 							QCString qcPath = ufi->getPath().utf8();
@@ -173,7 +183,12 @@ WFileThread::ScanFiles(QString directory)
 							ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
 							ref()->AddString("beshare:File Name", (const char *) ufi->getName().utf8());
 							
-							QString nodePath = rpath;
+							QString nodePath;
+							if (fFired)
+								nodePath = "beshare/fires/";
+							else
+								nodePath = "beshare/files/";
+
 							nodePath += ufi->getName();
 							
 							ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
@@ -181,7 +196,6 @@ WFileThread::ScanFiles(QString directory)
 							fFiles.insert(fFiles.end(), ref);
 							Unlock(); // test
 						}
-
 						delete ufi;
 						ufi = NULL;
 					}
@@ -192,20 +206,22 @@ WFileThread::ScanFiles(QString directory)
 		}
 	}
 	delete dir;
+	dir = NULL;
 }
+
 QString
 WFileThread::ResolveLink(const QString & lnk)
 {
 #ifdef WIN32
 	QString ret = lnk;
-	PRINT("\tResolving %s\n", lnk.latin1());
+	PRINT("\tResolving %S\n", qStringToWideChar(lnk));
 	if (lnk.contains(".lnk") > 0)
 	{
 		PRINT("Is Link\n");
 		// we've got a link...
 		HRESULT hres;
+		// Unicode
 		IShellLink * psl;
-		// wchar_t szDescription[MAX_PATH];
 		wchar_t * wsz = NULL;
 		wchar_t szFile[MAX_PATH];
 		WIN32_FIND_DATA wfd;
@@ -213,6 +229,7 @@ WFileThread::ResolveLink(const QString & lnk)
 		hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *)&psl);
 		if (SUCCEEDED(hres))
 		{
+			// Unicode version
 			PRINT("Created instance\n");
 			IPersistFile * ppf;
 
@@ -229,17 +246,10 @@ WFileThread::ResolveLink(const QString & lnk)
 					if (SUCCEEDED(hres))
 					{
 						PRINT("Resolved\n");
-						// <postmaster@raasu.org> -- Use own variable for GetPath(), don't reuse 'wsz'
 						hres = psl->GetPath(szFile, MAX_PATH, (WIN32_FIND_DATA *)&wfd, SLGP_UNCPRIORITY);
 						PRINT("GetPath() = %S\n",szFile);
 						if (!SUCCEEDED(hres))
-							MessageBox(gWin->GetHandle(), L"GetPath() failed!", L"Error", MB_OK);
-						/*
-						hres = psl->GetDescription(szDescription, MAX_PATH);
-						PRINT("GetDescription() = %S\n",szDescription);
-						if (!SUCCEEDED(hres))
-							MessageBox(gWin->GetHandle(), L"GetDescription() failed!", L"Error", MB_OK);
-						*/
+							MessageBoxA(gWin->GetHandle(), "GetPath() failed!", "Error", MB_OK);
 						ret = wideCharToQString(szFile);
 					}
 				}
@@ -249,6 +259,11 @@ WFileThread::ResolveLink(const QString & lnk)
 				ppf->Release();
 			}
 			psl->Release();
+		}
+		else
+		{
+			// Fallback to ANSI
+			ret = ResolveLinkA(lnk);
 		}
 	}
 
@@ -262,12 +277,67 @@ WFileThread::ResolveLink(const QString & lnk)
 #endif
 }
 
+// ANSI version of ResolveLink for Windows 95 & 98 and Microsoft Unicode Layer
+// IShellLinkW is not supported on Windows 95 or 98
+QString
+WFileThread::ResolveLinkA(const QString & lnk)
+{
+	QString ret = lnk;
+
+	HRESULT hres;
+	
+	// Unicode
+	wchar_t * wsz = NULL;
+	
+	// Ansi
+	IShellLinkA * psl;
+	char szFile[MAX_PATH];
+	WIN32_FIND_DATAA wfd;
+	
+	hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLinkA, (LPVOID *)&psl);
+	if (SUCCEEDED(hres))
+	{
+		PRINT("Created instance\n");
+		IPersistFile * ppf;
+					
+		// IPersistFile is all UNICODE
+		hres = psl->QueryInterface(IID_IPersistFile, (void **)&ppf);
+		if (SUCCEEDED(hres))
+		{
+			PRINT("Got persistfile\n");
+			// <postmaster@raasu.org> -- Move type definition to start of function
+			wsz = qStringToWideChar(lnk);		
+			hres = ppf->Load(wsz, STGM_READ);
+			if (SUCCEEDED(hres))
+			{
+				PRINT("Loaded\n");
+				hres = psl->Resolve(gWin->GetHandle(), SLR_ANY_MATCH);
+				if (SUCCEEDED(hres))
+				{
+					PRINT("Resolved\n");
+					hres = psl->GetPath(szFile, MAX_PATH, (WIN32_FIND_DATAA *)&wfd, SLGP_UNCPRIORITY);
+					PRINT("GetPath() = %s\n",szFile);
+					if (!SUCCEEDED(hres))
+						MessageBoxA(gWin->GetHandle(), "GetPath() failed!", "Error", MB_OK);
+					ret = szFile;
+				}
+			}
+			delete [] wsz;
+			wsz = NULL; // <postmaster@raasu.org> 20021027
+						
+			ppf->Release();
+		}
+		psl->Release();
+	}
+	return ret;
+}
+
 // TODO: FIX THIS METHOD, make it MUCH faster! The current implementation is
 // VERY slow!
 bool
 WFileThread::CheckFile(const QString & file)
 {
-	Lock(); // test
+	Lock(); 
 	for (WMsgListIter i = fFiles.begin(); i != fFiles.end(); i++)
 	{
 		String sn;
@@ -276,21 +346,25 @@ WFileThread::CheckFile(const QString & file)
 		name = QString::fromUtf8(sn.Cstr());
 		if (file == name)
 		{
-			Unlock(); // test
+			Unlock(); 
 			return true;
 		}
 	}
-	Unlock(); // test
+	Unlock(); 
 	return false;
 }
 
 bool
 WFileThread::FindFile(const QString & file, MessageRef * ref)
 {
+	Lock();
 	for (WMsgListIter i = fFiles.begin(); i != fFiles.end(); i++)
 	{
 		if (fShutdownFlag && *fShutdownFlag)
+		{
+			Unlock();
 			return true;	// tell our caller that the file exists so that we can quit
+		}
 		String sn;
 		QString name;
 		(*i)()->FindString("beshare:File Name", sn);
@@ -298,10 +372,12 @@ WFileThread::FindFile(const QString & file, MessageRef * ref)
 		if (file == name)
 		{
 			*ref = (*i);
+			Unlock();
 			return true;
 		}
 	}
 
+	Unlock();
 	return false;
 }
 
@@ -318,6 +394,7 @@ WFileThread::EmptyList()
 	fFiles.clear();
 	Unlock(); // test
 }
+
 /*
 bool
 WFileThread::GetFileInfo(QFileInfo * file, FileInfo * info)

@@ -15,6 +15,7 @@ public:
 	void Close();
 
 	void LogString(const char *);
+	void LogString(QString);
 
 	// Returns true if the log is open and ready for use
 	bool InitCheck() const;

@@ -24,7 +24,6 @@ WLog::Close()
 	String logClose = "</BODY></HTML>";
 	if (fFile)
 	{
-
 		fFile->writeBlock(logClose.Cstr(), logClose.Length());
 		fFile->close();
 		delete fFile;
@@ -60,6 +59,7 @@ WLog::Create(bool priv)
 
 	// create a new one
 	fFile = new QFile(fullPath.Cstr());
+	CHECK_PTR(fFile);
 	while (fFile->exists())	// to avoid name conflicts (very possible!)
 	{
 		counter++;
@@ -97,6 +97,17 @@ WLog::LogString(const char * txt)
 	if (InitCheck())
 	{
 		fFile->writeBlock(text.Cstr(), text.Length());
+		fFile->flush();
+	}
+}
+
+void
+WLog::LogString(QString txt)
+{
+	txt += "<br>";
+	if (InitCheck())
+	{
+		fFile->writeBlock(txt.latin1(), txt.length());
 		fFile->flush();
 	}
 }
