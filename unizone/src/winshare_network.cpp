@@ -2614,24 +2614,30 @@ WinShareWindow::Remote(const String & session, const QString &text)
 void 
 WinShareWindow::ListResumes()
 {
+	QString out;
+
 	rLock.lock();
 	WResumeIter it = fResumeMap.begin();
-	BeginMessageBatch();
-	PrintSystem(tr("Resume list:"), true);
+	out = "\n" + tr("Resume list:");
 	int i = 0;
 	while (it != fResumeMap.end())
 	{
 		if ((*it).first != QString::null)
 		{
-			PrintSystem(tr("File %1: (%2) from %3").arg(i).arg((*it).second.fRemoteName).arg((*it).first), true);
-			PrintSystem(tr("- Local File: %1").arg((*it).second.fLocalName), true);
+			out += "\n" + tr("File %1: (%2) from %3").arg(i).arg((*it).second.fRemoteName).arg((*it).first);
+			if ((*it).second.fLocalName != QString::null)
+			{
+				out += "\n" + tr("- Local File: %1").arg((*it).second.fLocalName);
+			}
 			i++;
 		}
 		it++;
 	}
-	PrintSystem(tr("Total: %1 files").arg(i), true);
-	EndMessageBatch();
+	out += "\n" + tr("Total: %1 files").arg(i);
+	FixString(out);
 	rLock.unlock();
+
+	PrintSystem(out);
 }
 
 void
@@ -2819,6 +2825,6 @@ WinShareWindow::UserHostName(const QString &sid, const QString &host)
 	{
 		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserIPAddress2().arg(sid).arg(host));
-		PrintText(system);
+		PrintText(system, true);
 	}
 }

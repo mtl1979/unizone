@@ -346,7 +346,7 @@ private:
 	bool fGotResults;			// see if we got initial Search Results
 	bool fGotParams;			// see if the initial "Get Params" message was sent
 	bool fAway;
-	// bool fPrintOutput;
+	bool fInBatch;				// are we inside message batch?
 	QString fOutput;
 	bool fScrollDown;			// do we need to scroll the view down after an insertion?
 	int fScrollX, fScrollY;

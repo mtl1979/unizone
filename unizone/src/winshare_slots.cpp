@@ -70,9 +70,8 @@ WinShareWindow::UserConnected(const QString &sid)
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
-		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserConnected().arg(sid));
-		PrintText(system);
+		QString system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserConnected().arg(sid));
+		PrintSystem(system, true);
 	}
 	int n = fUsers->childCount() + 1;
 	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
@@ -95,7 +94,7 @@ WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 			msg = WFormat::UserDisconnected().arg(sid).arg(uname).arg(WColors::RemoteName); 
 		}
 		QString parse = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(msg);
-		PrintSystem(parse);
+		PrintSystem(parse, true);
 	}
 	int n = fUsers->childCount() + 1;
 	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
@@ -106,7 +105,7 @@ WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QS
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
+		QString system;
 
 		// <postmaster@raasu.org> 20030622
 		QString nameformat;
@@ -125,8 +124,8 @@ WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QS
 			// <postmaster@raasu.org> 20021112, 20030622
 			nameformat = WFormat::UserNameChangedNoOld().arg(sid).arg(FixStringStr(newname)).arg(WColors::RemoteName); 
 		}
-		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameformat);
-		PrintText(system);
+		system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameformat);
+		PrintSystem(system, true);
 	}
 	WTextEvent * wte = new WTextEvent(newname, WTextEvent::ResumeType);
 	if (wte)
@@ -176,7 +175,8 @@ WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QSt
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
+		QString system;
+		QString nameformat;
 
 		// <postmaster@raasu.org> 20020929,20030211,20030214
 
@@ -186,18 +186,15 @@ WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QSt
 		if ((n == "?") || (n.isEmpty())) // Invalid user name?
 		{
 			// <postmaster@raasu.org> 20030214
-			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
-				WFormat::UserStatusChanged2().arg(id).arg(FixStringStr(status)) 
-				);	
+			nameformat = WFormat::UserStatusChanged2().arg(id).arg(FixStringStr(status)); 
 		}
 		else
 		{
 			// <postmaster@raasu.org> 20021112
-			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
-				WFormat::UserStatusChanged().arg(id).arg(FixStringStr(n)).arg(FixStringStr(status)).arg(WColors::RemoteName) 
-				); 
+			nameformat = WFormat::UserStatusChanged().arg(id).arg(FixStringStr(n)).arg(FixStringStr(status)).arg(WColors::RemoteName); 
 		}
-		PrintText(system);
+		system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameformat);
+		PrintSystem(system, true);
 	}
 }
 

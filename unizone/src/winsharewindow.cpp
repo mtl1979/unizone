@@ -83,11 +83,12 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	gWin = this;
 	fDLWindow = NULL;
 	fAccept = NULL;
+	fFileScanThread = NULL;
 	
 	fUpdateThread = new UpdateClient(this);
 	CHECK_PTR(fUpdateThread);
 
-	// fPrintOutput = false;
+	fInBatch = false;
 
 	fDisconnectCount = 0;	// Initialize disconnection count
 	fDisconnect = false;	// No premature disconnection yet
@@ -1362,12 +1363,20 @@ WinShareWindow::MakeHumanTime(int64 time)
 void
 WinShareWindow::BeginMessageBatch()
 {
+	if (fInBatch)
+	{
+		EndMessageBatch();
+	}
+
 	fOutput = "";
+	fInBatch = true;
 }
 
 void
 WinShareWindow::EndMessageBatch()
 {
+	WASSERT(fInBatch, "EndMessageBatch() called before BeginMessageBatch()!");
+
 	if (!fOutput.isEmpty())
 	{
 		if (fOutput.right(4) == "<br>")
@@ -1387,12 +1396,16 @@ WinShareWindow::EndMessageBatch()
 
 		fMainLog.LogString(fOutput);
 		UpdateTextView();
+
+		fOutput = "";
 	}
 }
 
 void
 WinShareWindow::PrintText(const QString & str, bool)
 {
+	WASSERT(fInBatch, "PrintText(const QString &, bool) called before BeginMessageBatch()!");
+
 	if (fSettings->GetTimeStamps())
 		fOutput += GetTimeStamp();
 
