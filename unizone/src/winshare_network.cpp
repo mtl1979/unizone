@@ -660,6 +660,28 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					PrintSystem(tr("Blacklist pattern set to: %1").arg(fBlackList));
 			}
 		}
+		else if (CompareCommand(sendText, "/whitelist"))
+		{
+			fWhiteList = GetParameterString(sendText);
+			if (fSettings->GetInfo())
+			{
+				if (fWhiteList.isEmpty())
+					PrintSystem(tr("Whitelist pattern cleared."));
+				else
+					PrintSystem(tr("Whitelist pattern set to: %1").arg(fBlackList));
+			}
+		}
+		else if (CompareCommand(sendText, "/filter"))
+		{
+			fFilterList = GetParameterString(sendText);
+			if (fSettings->GetInfo())
+			{
+				if (fFilterList.isEmpty())
+					PrintSystem(tr("Filter list pattern cleared."));
+				else
+					PrintSystem(tr("Filter list pattern set to: %1").arg(fFilterList));
+			}
+		}
 		else if (CompareCommand(sendText, "/addblacklist"))
 		{
 			bool bSuccess;
@@ -672,6 +694,30 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else if (fSettings->GetError())
 				PrintError( tr( "Error updating blacklist pattern!" ) );
 		}
+		else if (CompareCommand(sendText, "/addwhitelist"))
+		{
+			bool bSuccess;
+			QString user = GetParameterString(sendText);
+
+			bSuccess = WhiteList(user);
+
+			if (bSuccess)
+				PrintSystem(tr("Whitelist pattern updated."));
+			else if (fSettings->GetError())
+				PrintError( tr( "Error updating whitelist pattern!" ) );
+		}
+		else if (CompareCommand(sendText, "/addfilter"))
+		{
+			bool bSuccess;
+			QString pattern = GetParameterString(sendText);
+
+			bSuccess = FilterList(pattern);
+
+			if (bSuccess)
+				PrintSystem(tr("Filter list pattern updated."));
+			else if (fSettings->GetError())
+				PrintError( tr( "Error updating filter list pattern!" ) );
+		}		
 		else if (CompareCommand(sendText, "/unblacklist"))
 		{
 			bool bSuccess;
@@ -683,6 +729,30 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				PrintSystem(tr("Blacklist pattern updated."));
 			else if (fSettings->GetError())
 				PrintError( tr( "Error updating blacklist pattern!" ) );
+		}
+		else if (CompareCommand(sendText, "/unwhitelist"))
+		{
+			bool bSuccess;
+			QString user = GetParameterString(sendText);
+
+			bSuccess = UnWhiteList(user);
+
+			if (bSuccess)
+				PrintSystem(tr("Whitelist pattern updated."));
+			else if (fSettings->GetError())
+				PrintError( tr( "Error updating whitelist pattern!" ) );
+		}
+		else if (CompareCommand(sendText, "/unfilter"))
+		{
+			bool bSuccess;
+			QString pattern = GetParameterString(sendText);
+
+			bSuccess = UnFilterList(pattern);
+
+			if (bSuccess)
+				PrintSystem(tr("Filter list pattern updated."));
+			else if (fSettings->GetError())
+				PrintError( tr( "Error updating filter list pattern!" ) );
 		}
 		else if (CompareCommand(sendText, "/autopriv"))
 		{
@@ -862,6 +932,11 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			PrintSystem( tr("Blacklist pattern: %1").arg(temp) );
 
+			// Filter List
+			temp = CheckIfEmpty(fFilterList, qNone);
+
+			PrintSystem( tr("Filter list pattern: %1").arg(temp) );
+
 			// Ignore
 			//
 			temp = CheckIfEmpty(fIgnore, qNone);
@@ -873,6 +948,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			temp = CheckIfEmpty(fWatch, qNone);
 
 			PrintSystem( tr("Watch pattern: %1").arg(temp) );
+
+			// White List
+
+			temp = CheckIfEmpty(fWhiteList, qNone);
+
+			PrintSystem( tr("Whitelist pattern: %1").arg(temp) );
 
 			// On Connect
 			//
@@ -1278,7 +1359,11 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			// get user info first
 			WUserRef user = fNetClient->FindUser(session);
 			if (user())
+			{
 				userName = user()->GetUserName();
+				if (!IsWhiteListed(user) && IsFilterListed(text))
+					return;
+			}
 			
 			// check for / commands
 			if ( text.lower().left(6) == "/me's " )
@@ -1869,6 +1954,10 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=  tr("/addfilter [pattern] - update the word filter pattern");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=  tr("/addwhitelist [pattern] - update the whitelist pattern (can be a user name, or several names, or regular expression)");
+	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/adduser [name or session ids] - add users to a private chat window (works in private windows only!)");
@@ -1906,6 +1995,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/disconnect - disconnect from server");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/dns [user|host] - give information about host");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=  tr("/filter [pattern] - set the word filter pattern");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/help [command] - show help for command (no '/' in front of command) or show this help text if no command given.");
 	helpText			+=	"\n\t\t\t\t"; 
@@ -1975,7 +2066,11 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/unblacklist [name] - remove name from blacklist");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=  tr("/unfilter [pattern] - remove pattern from word filters");
+	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/unignore [name] - remove name from ignore list");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/unwhitelist [name] - remove name from whitelist");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/uptime - show system uptime");
 	helpText			+=	"\n\t\t\t\t"; 
@@ -1984,6 +2079,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/version - show client version strings");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=  tr("/whitelist [pattern] - set the whitelist pattern");
 	helpText			+=	"\n\n";
 	helpText			+=	tr("Admin Command Reference");
 	helpText			+=	"\n";
@@ -2262,6 +2359,62 @@ WinShareWindow::IsBlackListed(const QString & user)
 }
 
 bool
+WinShareWindow::IsWhiteListed(const WUserRef & user)
+{
+	if (user() == NULL) // Is the user still connected?
+		return false;
+
+	if (fWhiteList.isEmpty()) // No users in whitelist?
+		return false;
+
+	return MatchUserFilter(user, (const char *) fWhiteList.utf8());
+}
+
+bool
+WinShareWindow::IsWhiteListed(const QString & user)
+{
+	// Find the user record
+	//
+
+	WUserRef uref = fNetClient->FindUser(user);
+
+	// Valid user reference?
+	//
+
+	if (uref() != NULL)	
+	{
+		// Valid reference!
+	
+		// Check user reference against whitelist
+		
+		return IsWhiteListed(uref);
+	}
+	else
+	{
+		// Invalid reference!
+
+		return MatchFilter(user, (const char *) fWhiteList.utf8());
+	}
+}
+
+bool
+WinShareWindow::IsFilterListed(const QString & pattern)
+{
+	if (fFilterList.isEmpty())	// empty?
+		return false;
+	
+	QStringTokenizer tok(fFilterList);
+	QString t;
+	while ((t = tok.GetNextToken()) != QString::null)
+	{
+		QRegExp qr(t);
+		if ((pattern.find(qr) >= 0) || (t == pattern))
+			return true;
+	}
+	return false;
+}
+
+bool
 WinShareWindow::IsAutoPrivate(const QString & user)
 {
 	// Find the user record
@@ -2405,6 +2558,56 @@ WinShareWindow::BlackList(const QString & user)
 	return true;
 }
 
+bool
+WinShareWindow::WhiteList(const QString & user)
+{
+	// Is user specified?
+	//
+	if (user.isEmpty())
+		return false;
+
+	// Already whitelisted?
+	//
+	if (IsWhiteListed(user))
+		return false;
+
+	// Append to whitelist
+	//
+	if (fWhiteList.isEmpty())
+		fWhiteList = user;
+	else
+	{
+		fWhiteList += ",";
+		fWhiteList += user;
+	}
+	return true;
+}
+
+bool
+WinShareWindow::FilterList(const QString & pattern)
+{
+	// Is pattern specified?
+	//
+	if (pattern.isEmpty())
+		return false;
+
+	// Already in filter list?
+	//
+	if (IsFilterListed(pattern))
+		return false;
+
+	// Append to filter list
+	//
+	if (fFilterList.isEmpty())
+		fFilterList = pattern;
+	else
+	{
+		fFilterList += ",";
+		fFilterList += pattern;
+	}
+	return true;
+}
+
 // Remove from blacklist
 //
 
@@ -2465,7 +2668,124 @@ WinShareWindow::UnBlackList(const QString & user)
 		fBlackList = fBlackList.left(pos)+fBlackList.mid(len+pos);
 	}
 	return true;
+}
 
+bool
+WinShareWindow::UnWhiteList(const QString & user)
+{
+	// Is user specified?
+	//
+	if (user.isEmpty())
+		return false;
+
+	// Is really whitelisted?
+	//
+	if (fWhiteList == user) // First and only?
+	{
+		fWhiteList = "";
+		return true;
+	}
+
+	// First in list?
+
+	int pos = fWhiteList.lower().startsWith(user.lower() + ",") ? 0 : -1 ; 
+
+	// Second or later in the list?
+
+	if (pos == -1)
+		pos = fWhiteList.find("," + user + ",", 0, false); 
+	
+	// You need to add 1 to the length to strip extra comma too
+	
+	int len = user.length() + 1;
+	
+	// last in the list?
+
+	if (pos == -1)
+	{
+		if (fWhiteList.lower().right(len) == ("," + user.lower()))
+		{
+			// Find last occurance (there is no endsWith in QString class)
+
+			pos = fWhiteList.findRev("," + user, -1, false);
+		}
+	}
+
+	if (pos == -1)	
+	{
+		// Not whitelisted!
+
+		return false;
+	}
+
+	if (pos == 0)
+	{
+		fWhiteList = fWhiteList.mid(len);
+	}
+	else
+	{
+		fWhiteList = fWhiteList.left(pos)+fWhiteList.mid(len+pos);
+	}
+	return true;
+}
+
+bool
+WinShareWindow::UnFilterList(const QString & pattern)
+{
+	// Is pattern specified?
+	//
+	if (pattern.isEmpty())
+		return false;
+
+	// Is really in filter list?
+	//
+	if (fFilterList == pattern) // First and only?
+	{
+		fFilterList = "";
+		return true;
+	}
+
+	// First in list?
+
+	int pos = fFilterList.lower().startsWith(pattern.lower() + ",") ? 0 : -1 ; 
+
+	// Second or later in the list?
+
+	if (pos == -1)
+		pos = fFilterList.find("," + pattern + ",", 0, false); 
+	
+	// You need to add 1 to the length to strip extra comma too
+	
+	int len = pattern.length() + 1;
+	
+	// last in the list?
+
+	if (pos == -1)
+	{
+		if (fFilterList.lower().right(len) == ("," + pattern.lower()))
+		{
+			// Find last occurance (there is no endsWith in QString class)
+
+			pos = fFilterList.findRev("," + pattern, -1, false);
+		}
+	}
+
+	if (pos == -1)	
+	{
+		// Not in filter list!
+
+		return false;
+	}
+
+	if (pos == 0)
+	{
+		fFilterList = fFilterList.mid(len);
+	}
+	else
+	{
+		fFilterList = fFilterList.left(pos)+fFilterList.mid(len+pos);
+	}
+	return true;
 }
 
 // Append to ignore list

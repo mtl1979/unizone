@@ -66,6 +66,8 @@ using namespace muscle;
 #define IGNORE_PATTERN		"ignorepattern"
 #define IPIGNORE_PATTERN	"ipignorepattern"
 #define BLACKLIST			"blacklist"
+#define WHITELIST			"whitelist"
+#define FILTERLIST			"filterlist"
 #define AUTOPRIV			"autopriv"
 
 #define ONCONN		"onconnect1"
@@ -334,6 +336,14 @@ public:
 	// blacklist pattern
 	QString GetBlackListPattern();
 	void SetBlackListPattern(const QString & p);
+
+	// whitelist pattern
+	QString GetWhiteListPattern();
+	void SetWhiteListPattern(const QString & p);
+
+	// filter list pattern
+	QString GetFilterListPattern();
+	void SetFilterListPattern(const QString & p);
 
 	// auto-private pattern
 	QString GetAutoPrivatePattern();

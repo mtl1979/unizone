@@ -705,6 +705,10 @@ Date: %4</source>
         <comment>WFileThread</comment>
         <translation>Reading directory...</translation>
     </message>
+    <message>
+        <source>%1 %2</source>
+        <translation type='unfinished'>%1 %2</translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -3107,6 +3111,74 @@ Date: %4</source>
     <message>
         <source>/ip [user|host] - give information about host</source>
         <translation>/ip [user|host] - give information about host</translation>
+    </message>
+    <message>
+        <source>Whitelist pattern cleared.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Whitelist pattern set to: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Filter list pattern cleared.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Filter list pattern set to: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Whitelist pattern updated.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Error updating whitelist pattern!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Filter list pattern updated.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Error updating filter list pattern!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Filter list pattern: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Whitelist pattern: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/addfilter [pattern] - update the word filter pattern</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/addwhitelist [pattern] - update the whitelist pattern (can be a user name, or several names, or regular expression)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/filter [pattern] - set the word filter pattern</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/unfilter [pattern] - remove pattern from word filters</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/unwhitelist [name] - remove name from whitelist</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/whitelist - set the whitelist pattern</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>/whitelist [pattern] - set the whitelist pattern</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>

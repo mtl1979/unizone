@@ -942,6 +942,10 @@ Päiväys: %4</translation>
         <comment>WFileThread</comment>
         <translation>Luetaan hakemistoa...</translation>
     </message>
+    <message>
+        <source>%1 %2</source>
+        <translation>%1 %2</translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -3499,6 +3503,70 @@ Päiväys: %4</translation>
     <message>
         <source>/ip [user|host] - give information about host</source>
         <translation>/ip [käyttäjä|osoite] - anna tiedot osoitteesta</translation>
+    </message>
+    <message>
+        <source>Whitelist pattern cleared.</source>
+        <translation>Valkoisen listan kaava tyhjennetty.</translation>
+    </message>
+    <message>
+        <source>Whitelist pattern set to: %1</source>
+        <translation>Valkoisen listan kaavaksi asetettu: %1</translation>
+    </message>
+    <message>
+        <source>Filter list pattern cleared.</source>
+        <translation>Suodatuslistan kaava tyhjennetty.</translation>
+    </message>
+    <message>
+        <source>Filter list pattern set to: %1</source>
+        <translation>Suodatuslistan kaavaksi asetettu: %1</translation>
+    </message>
+    <message>
+        <source>Whitelist pattern updated.</source>
+        <translation>Valkoisen listan kaava päivitetty.</translation>
+    </message>
+    <message>
+        <source>Error updating whitelist pattern!</source>
+        <translation>Virhe päivitettäessä valkoista listaa!</translation>
+    </message>
+    <message>
+        <source>Filter list pattern updated.</source>
+        <translation>Suodatuslista päivitetty.</translation>
+    </message>
+    <message>
+        <source>Error updating filter list pattern!</source>
+        <translation>Virhe päivitettäessä suodatuslistaa!</translation>
+    </message>
+    <message>
+        <source>Filter list pattern: %1</source>
+        <translation>Suodatuslistan kaava: %1</translation>
+    </message>
+    <message>
+        <source>Whitelist pattern: %1</source>
+        <translation>Valkoisen listan kaava: %1</translation>
+    </message>
+    <message>
+        <source>/addfilter [pattern] - update the word filter pattern</source>
+        <translation>/addfilter [kaava] - päivitä suodatuslistan kaava</translation>
+    </message>
+    <message>
+        <source>/addwhitelist [pattern] - update the whitelist pattern (can be a user name, or several names, or regular expression)</source>
+        <translation>/addwhitelist [kaava] - päivitä suodatuslistan kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
+    </message>
+    <message>
+        <source>/filter [pattern] - set the word filter pattern</source>
+        <translation>/filter [kaava] - aseta suodatuslistan kaava</translation>
+    </message>
+    <message>
+        <source>/unfilter [pattern] - remove pattern from word filters</source>
+        <translation>/unfilter [kaava] - poista kaava suodatuslistalta</translation>
+    </message>
+    <message>
+        <source>/unwhitelist [name] - remove name from whitelist</source>
+        <translation>/unwhitelist [nimi] - poista nimi valkoiselta listalta</translation>
+    </message>
+    <message>
+        <source>/whitelist [pattern] - set the whitelist pattern</source>
+        <translation>/whitelist [kaava] - aseta valkoisen listan kaava</translation>
     </message>
 </context>
 </TS>

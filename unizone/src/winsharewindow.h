@@ -176,6 +176,8 @@ public:
 	bool IsBlackListedIP(const QString & ip);
 	bool IsBlackListed(const QString & user);
 
+	bool IsWhiteListed(const QString & user);
+
 	bool IsAutoPrivate(const QString & user);
 	bool IsConnected(const QString & user);
 
@@ -368,6 +370,8 @@ private:
 	QString fIgnore;			// ignore pattern
 	QString fIgnoreIP;			// ip ignore pattern
 	QString fBlackList;			// blacklist pattern
+	QString fWhiteList;			// whilelist pattern
+	QString fFilterList;		// wordfilter pattern
 	QString fAutoPriv;			// Auto-private pattern
 	QString fOnConnect;			// On connect perform this command
 	QString fOnConnect2;		// On connect perform this too ;)
@@ -392,6 +396,14 @@ private:
 	bool IsBlackListed(const WUserRef & user);
 	bool BlackList(const QString & user);
 	bool UnBlackList(const QString & user);
+
+	bool IsWhiteListed(const WUserRef & user);
+	bool WhiteList(const QString & user);
+	bool UnWhiteList(const QString & user);
+
+	bool IsFilterListed(const QString & pattern);
+	bool FilterList(const QString & pattern);
+	bool UnFilterList(const QString & pattern);
 
 	bool IsAutoPrivate(const WUserRef & user);
 	bool AutoPrivate(const QString & user);

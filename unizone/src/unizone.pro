@@ -4,6 +4,7 @@ SOURCES =		aboutdlg.cpp \
 				aboutdlgimpl.cpp \
 				channel.cpp \
 				channelimpl.cpp \
+				chatwindow.cpp \
 				downloadimpl.cpp \
 				downloadthread.cpp \
 				filethread.cpp \

@@ -948,6 +948,22 @@ WSettings::GetBlackListPattern()
 	return QString::fromUtf8(i.Cstr());
 }
 
+QString
+WSettings::GetWhiteListPattern()
+{
+	String i = "";
+	fSet()->FindString(WHITELIST, i);
+	return QString::fromUtf8(i.Cstr());
+}
+
+QString
+WSettings::GetFilterListPattern()
+{
+	String i = "";
+	fSet()->FindString(FILTERLIST, i);
+	return QString::fromUtf8(i.Cstr());
+}
+
 void
 WSettings::SetAutoPrivatePattern(const QString & p)
 {
@@ -968,6 +984,20 @@ WSettings::SetBlackListPattern(const QString & p)
 {
 	fSet()->RemoveName(BLACKLIST);
 	fSet()->AddString(BLACKLIST, (const char *) p.utf8());
+}
+
+void
+WSettings::SetWhiteListPattern(const QString & p)
+{
+	fSet()->RemoveName(WHITELIST);
+	fSet()->AddString(WHITELIST, (const char *) p.utf8());
+}
+
+void
+WSettings::SetFilterListPattern(const QString & p)
+{
+	fSet()->RemoveName(FILTERLIST);
+	fSet()->AddString(FILTERLIST, (const char *) p.utf8());
 }
 
 QString

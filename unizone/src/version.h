@@ -3,7 +3,7 @@
 
 const int kMajor = 1;
 const int kMinor = 2;
-const int kPatch = 1;
-const int kBuild = 9;
+const int kPatch = 2;
+const int kBuild = 1;
 
 #endif

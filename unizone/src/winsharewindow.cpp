@@ -1672,6 +1672,8 @@ WinShareWindow::LoadSettings()
 		fIgnore = fSettings->GetIgnorePattern();
 		fIgnoreIP = fSettings->GetIPIgnorePattern();
 		fBlackList = fSettings->GetBlackListPattern();
+		fWhiteList = fSettings->GetWhiteListPattern();
+		fFilterList = fSettings->GetFilterListPattern();
 		fAutoPriv = fSettings->GetAutoPrivatePattern();
 
 		fOnConnect = fSettings->GetOnConnect();
@@ -1718,6 +1720,8 @@ WinShareWindow::LoadSettings()
 		fIgnore = "";
 		fIgnoreIP = "";
 		fBlackList = "";
+		fWhiteList = "Atrus, Bubbles";
+		fFilterList = "";
 		fAutoPriv = "";
 		fOnConnect = "";
 		fOnConnect2 = "";
@@ -1862,6 +1866,8 @@ WinShareWindow::SaveSettings()
 	fSettings->SetIgnorePattern(fIgnore);
 	fSettings->SetIPIgnorePattern(fIgnoreIP);
 	fSettings->SetBlackListPattern(fBlackList);
+	fSettings->SetWhiteListPattern(fWhiteList);
+	fSettings->SetFilterListPattern(fFilterList);
 	fSettings->SetAutoPrivatePattern(fAutoPriv);
 
 	// on connect
