@@ -369,13 +369,11 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								if (!user.isEmpty())
 									fFromUser = user; 
 							}
-							// QString outFile = "downloads/";
 							QString fixed;
 							
 							if (fLocalFileDl[fCurFile] == QString::null)
 							{
 								fixed = "downloads/";
-								// PRINT( "WDownloadThread::SignalOwner: %s\n",fname.Cstr() );
 								// we have a "fixed" filename that eliminates characters Windows does not support
 								fixed += FixFileName(QString::fromUtf8(fname.Cstr()));
 							}
@@ -384,7 +382,6 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								fixed = fLocalFileDl[fCurFile];
 							}
 							
-							// outFile += QString::fromUtf8(fname.Cstr());
 							bool append = false;
 							
 							if (next()->FindInt64("beshare:StartOffset", (int64 *)&fCurrentOffset) == B_OK)
@@ -403,12 +400,6 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 									fFile = NULL;
 								}
 							}
-//							else
-//							{
-//								QDir cd(".");
-//								if (!cd.exists("downloads"))
-//									cd.mkdir("downloads");
-//							}
 							
 							if (QFile::exists(fixed) && !append)	// create a new file name
 							{
