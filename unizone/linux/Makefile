@@ -13,4 +13,3 @@ muscle.a : $(OBJFILES)
 
 clean:
 	rm -f *.o muscle.a
-file:/usr/share/doc/HTML/index.html
