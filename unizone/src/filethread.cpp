@@ -172,6 +172,13 @@ WFileThread::ScanFiles(const QString & directory)
 	CHECK_PTR(dir);
 	if (dir->exists())	// double check
 	{
+		QString s = QObject::tr("Reading directory...", "WFileThread");
+#ifdef WIN32
+				SendString(ScanEvent::Type::ScanFile, s);
+#else
+				SendString(ScanEvent::ScanFile, s);
+#endif
+
 		QStringList list = dir->entryList("*", (QDir::Dirs | QDir::Files) , QDir::DirsFirst);
 		if (!list.isEmpty())
 		{

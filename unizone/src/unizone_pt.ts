@@ -808,6 +808,11 @@ Date: %4</translation>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Reading directory...</source>
+        <comment>WFileThread</comment>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -2109,7 +2114,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Connection reset by peer!</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Connection timed out!</source>

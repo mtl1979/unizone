@@ -925,6 +925,11 @@ Päiväys: %4</translation>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation>Käyttäjän #%1 IP-osoite on %2.</translation>
     </message>
+    <message>
+        <source>Reading directory...</source>
+        <comment>WFileThread</comment>
+        <translation>Luetaan hakemistoa...</translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -2230,7 +2235,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Connection reset by peer!</source>
-        <translation>Yhteys katkesi ennenaikaisesti!</translation>
+        <translation type='obsolete'>Yhteys katkesi ennenaikaisesti!</translation>
     </message>
     <message>
         <source>Connection timed out!</source>

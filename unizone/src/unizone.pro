@@ -6,6 +6,7 @@ SOURCES =		aboutdlg.cpp \
 				channelimpl.cpp \
 				downloadimpl.cpp \
 				downloadthread.cpp \
+				filethread.cpp \
 				formatting.cpp \
 				main.cpp \
 				menubar.cpp \

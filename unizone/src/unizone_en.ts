@@ -837,6 +837,11 @@ Date: %4</translation>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation>User #%1&apos;s IP address is %2.</translation>
     </message>
+    <message>
+        <source>Reading directory...</source>
+        <comment>WFileThread</comment>
+        <translation>Reading directory...</translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -1267,11 +1272,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
-        <translation type='unfinished'>Downloading %1 from %2.</translation>
+        <translation>Downloading %1 from %2.</translation>
     </message>
     <message>
         <source>Finished downloading %2 from %1.</source>
-        <translation type='unfinished'>Finished downloading %2 from %1.</translation>
+        <translation>Finished downloading %2 from %1.</translation>
     </message>
 </context>
 <context>
@@ -2138,7 +2143,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Connection reset by peer!</source>
-        <translation>Connection reset by peer!</translation>
+        <translation type='obsolete'>Connection reset by peer!</translation>
     </message>
     <message>
         <source>Connection timed out!</source>
@@ -2146,11 +2151,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
-        <translation type='unfinished'>%1 has finished downloading %2.</translation>
+        <translation>%1 has finished downloading %2.</translation>
     </message>
     <message>
         <source>%1 is downloading %2.</source>
-        <translation type='unfinished'>%1 is downloading %2.</translation>
+        <translation>%1 is downloading %2.</translation>
     </message>
 </context>
 <context>
