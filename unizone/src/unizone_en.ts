@@ -1004,6 +1004,10 @@ Date: %4</translation>
         <source>Packet Size</source>
         <translation>Packet Size</translation>
     </message>
+    <message>
+        <source>Downloading %1 from %2.</source>
+        <translation>Downloading %1 from %2.</translation>
+    </message>
 </context>
 <context>
     <name>WPrefs</name>
@@ -1597,6 +1601,10 @@ Date: %4</translation>
     <message>
         <source>Enable Sound Effects</source>
         <translation>Enable Sound Effects</translation>
+    </message>
+    <message>
+        <source>Downloads</source>
+        <translation>Downloads</translation>
     </message>
 </context>
 <context>

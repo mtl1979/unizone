@@ -1096,6 +1096,10 @@ Päiväys: %4</translation>
         <source>Packet Size</source>
         <translation>Pakettikoko</translation>
     </message>
+    <message>
+        <source>Downloading %1 from %2.</source>
+        <translation>Ladataan tiedostoa %1 käyttäjältä %2.</translation>
+    </message>
 </context>
 <context>
     <name>WPrefs</name>
@@ -1689,6 +1693,10 @@ Päiväys: %4</translation>
     <message>
         <source>Enable Sound Effects</source>
         <translation>Ääniefektit Päällä</translation>
+    </message>
+    <message>
+        <source>Downloads</source>
+        <translation>Lataukset</translation>
     </message>
 </context>
 <context>

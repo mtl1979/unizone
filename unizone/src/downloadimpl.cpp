@@ -934,7 +934,14 @@ WDownload::customEvent(QCustomEvent * e)
 					{
 						if (gWin->fSettings->GetUploads())
 						{
-							gWin->PrintSystem(tr("%1 is downloading %2.").arg(uname).arg(QString::fromUtf8(file.Cstr())));
+							gWin->PrintSystem( tr("%1 is downloading %2.").arg(uname).arg(QString::fromUtf8(file.Cstr())) );
+						}
+					}
+					else
+					{
+						if (gWin->fSettings->GetDownloads())
+						{
+							gWin->PrintSystem( tr("Downloading %1 from %2.").arg( QString::fromUtf8( file.Cstr() ) ).arg(uname) );
 						}
 					}
 				}
@@ -1033,8 +1040,13 @@ WDownload::customEvent(QCustomEvent * e)
  							item->setText(WTransferItem::Status, tr("File finished."));
 							item->setText(WTransferItem::ETA, "");
 
-							if (msg()->FindString("file", mFile) == B_OK)
+							if (
+								(msg()->FindString("file", mFile) == B_OK) &&
+								gWin->fSettings->GetDownloads()
+								)
+							{
 								gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
+							}
 						}
 						PRINT("\tWGenericEvent::FileDataReceived OK\n");
 					}
@@ -1096,7 +1108,9 @@ WDownload::customEvent(QCustomEvent * e)
 								(msg()->FindString("file", mFile) == B_OK) &&
 								gWin->fSettings->GetUploads()
 								)
+							{
 								gWin->PrintSystem( tr("%1 has finished downloading %2.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
+							}
 						}
 						
 					}

@@ -6,6 +6,7 @@
 #include "userlistitem.h"
 #include "regex/PathMatcher.h"
 #include "platform.h"			// <postmaster@raasu.org> 20021114
+#include "winsharewindow.h"
 
 #include <qlistview.h>
 #include <qstring.h>

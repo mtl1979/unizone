@@ -176,8 +176,9 @@ StripURL(const String & strip)
 QString
 StripURL(const QString & u)
 {
-	String s((const char *) u.utf8());
-	return QString::fromUtf8(StripURL(s).Cstr());
+	QCString qu = u.utf8();
+	const char * cu = (const char *) qu;
+	return QString::fromUtf8(StripURL(cu).Cstr());
 }
 
 String 

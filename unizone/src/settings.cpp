@@ -632,6 +632,18 @@ WSettings::GetUploads()
 }
 
 void
+WSettings::SetDownloads(bool b)
+{
+	SET_BOOL(DOWNLOADS, b);
+}
+
+bool
+WSettings::GetDownloads()
+{
+	GET_BOOL(DOWNLOADS, true);
+}
+
+void
 WSettings::SetChat(bool b)
 {
 	SET_BOOL(CHAT, b);
@@ -725,11 +737,32 @@ WSettings::SetRegisterTime(int64 i)
 	fSet->AddInt64(REGISTERTIME, i);
 }
 
+void
+WSettings::SetRegisterTime(QString nick, int64 i)
+{
+	String ni = String(REGISTERTIME);
+	ni += "_";
+	ni += (const char *) nick.utf8();
+	fSet->RemoveName(ni);
+	fSet->AddInt64(ni, i);
+};
+
 int64
 WSettings::GetRegisterTime()
 {
 	int64 i = GetCurrentTime64();
 	fSet->FindInt64(REGISTERTIME, &i);
+	return i;
+}
+
+int64
+WSettings::GetRegisterTime(QString nick)
+{
+	String ni = String(REGISTERTIME);
+	ni += "_";
+	ni += (const char *) nick.utf8();
+	int64 i = GetCurrentTime64();
+	fSet->FindInt64(ni, &i);
 	return i;
 }
 

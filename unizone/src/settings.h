@@ -43,6 +43,7 @@ using namespace muscle;
 #define TIME_STAMPS			"timestamps"
 #define USER_EVENTS			"userevents"
 #define UPLOADS				"uploads"
+#define DOWNLOADS			"downloads"
 #define CHAT				"chat"
 #define PRIVATE				"private"
 #define INFO				"info"
@@ -220,6 +221,7 @@ public:
 	void SetTimeStamps(bool b);
 	void SetUserEvents(bool b);
 	void SetUploads(bool b);
+	void SetDownloads(bool b);
 	void SetChat(bool b);
 	void SetPrivate(bool b);
 	void SetInfo(bool b);
@@ -230,6 +232,7 @@ public:
 	bool GetTimeStamps();
 	bool GetUserEvents();
 	bool GetUploads();
+	bool GetDownloads();
 	bool GetChat();
 	bool GetPrivate();
 	bool GetInfo();
@@ -243,7 +246,9 @@ public:
 
 	// UniShare
 	void SetRegisterTime(int64 i); // Nick Registration Time
+	void SetRegisterTime(QString nick, int64 i);
 	int64 GetRegisterTime();
+	int64 GetRegisterTime(QString nick);
 
 	// window flashing
 	enum

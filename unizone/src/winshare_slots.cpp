@@ -488,7 +488,10 @@ WinShareWindow::CheckResumes(QString user)
 		{
 			// User name matches
 
-			PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).first).arg(user), false);
+			if (fSettings->GetDownloads())
+			{
+				PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).first).arg(user), false);
+			}
 			fFiles.AddTail((*it).first);
 			fResumeMap.erase(it);
 			it = fResumeMap.begin(); // start from beginning

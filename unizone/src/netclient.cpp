@@ -315,6 +315,7 @@ NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
 						pmsg->FindInt64("registertime", &rtime);
 						pmsg->FindString("user", user);
 						pmsg->FindString("session", newid);
+						QString qUser = QString::fromUtf8(user.Cstr());
 						if (pmsg->FindString("oldid", oldid) == B_OK)
 						{
 							QString nid = QString::fromUtf8(newid.Cstr());
@@ -322,8 +323,8 @@ NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
 							emit UserIDChanged(oid, nid);
 						}
 						if (
-							( gWin->GetUserName() == QString::fromUtf8(user.Cstr()) ) &&
-							( gWin->GetRegisterTime() <= rtime )
+							( gWin->GetUserName() == qUser ) &&
+							( gWin->GetRegisterTime(qUser) <= rtime )
 						)
 						{
 							// Collide nick
@@ -335,7 +336,7 @@ NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
 								to += "/unishare";
 								col()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 								col()->AddString("name", (const char *) gWin->GetUserName().utf8() );
-								col()->AddInt64("registertime", gWin->GetRegisterTime() );
+								col()->AddInt64("registertime", gWin->GetRegisterTime( gWin->GetUserName() ) );
 								SendMessageToSessions(col);
 							}
 						}
@@ -608,8 +609,9 @@ NetClient::HandleParameters(MessageRef & next)
 		const char * id = strrchr(sessionRoot, '/');	// get last slash
 		if (id)
 		{
+			id++; // Skip '/'
 			fOldID = fSessionID;
-			fSessionID = id + 1;
+			fSessionID = id;
 
 			if (gWin->fDLWindow)
 			{
@@ -620,7 +622,7 @@ NetClient::HandleParameters(MessageRef & next)
 			MessageRef uc(GetMessageFromPool());
 			if (uc())
 			{
-				uc()->AddInt64("registertime", gWin->GetRegisterTime());
+				uc()->AddInt64("registertime", gWin->GetRegisterTime(fUserName));
 				uc()->AddString("session", (const char *) fSessionID.utf8());
 				if ((fOldID != QString::null) && (fOldID != fSessionID))
 				{

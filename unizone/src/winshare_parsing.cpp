@@ -66,6 +66,7 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 {
 	if (user == NULL) 
 		return false;
+
 	StringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
 	const char * n;
 	while((n = idTok.GetNextToken()) != NULL)
@@ -73,24 +74,39 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 		String next = StripURL(n);
 		next = next.Trim();
 
-		// Is this item our user's session ID?
 		PRINT("MatchUserFilter: UserID = %s\n", (const char *) user->GetUserID().utf8());
 		PRINT("MatchUserFilter: next   = %s\n", next.Cstr());
-		PRINT("MatchUserFilter: strcmp = %d\n", strcmp((const char *) user->GetUserID().utf8(), next.Cstr()));
-		if (strcmp((const char *) user->GetUserID().utf8(), next.Cstr()) == 0)
-			return true;
-		else
+		String userID = user->GetUserID().latin1();
+		if (userID.Length() > 0)
 		{
-			 // Does this item (interpreted as a regex) match our user's name?
-			 MakeRegexCaseInsensitive(next);
-			 StringMatcher sm(next.Cstr());
-			 String userName = String(StripURL((const char *) user->GetUserName().utf8())).Trim();
-			 PRINT("MatchUserFilter: username = %s\n", userName.Cstr());
-			 PRINT("MatchUserFilter: regex = %s\n", next.Cstr());
-			 if ((userName.Length() > 0) && sm.Match(userName.Cstr()))
-			 {
-				 return true;
-			 }
+			// Is this item our user's session ID?
+			if (userID == next)
+			{
+				return true;
+			}
+		}
+
+		String userName = StripURL((const char *) user->GetUserName().utf8());
+		userName = userName.Trim();
+
+		if (userName.Length() > 0)
+		{
+			if (userName == next)	// Is this item our user's name?
+			{
+				return true;
+			}
+			else 
+			{
+				// Does this item (interpreted as a regex) match our user's name?
+				MakeRegexCaseInsensitive(next);
+				StringMatcher sm(next.Cstr());
+				PRINT("MatchUserFilter: UserName = %s\n", userName.Cstr());
+				PRINT("MatchUserFilter: next = %s\n", next.Cstr());
+				if (sm.Match(userName.Cstr()))
+				{
+					return true;
+				}
+			}
 		}
 	}
 	return false;

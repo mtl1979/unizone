@@ -110,6 +110,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fTimeStamps->setChecked(gWin->fSettings->GetTimeStamps());
 	fUserEvents->setChecked(gWin->fSettings->GetUserEvents());
 	fUploads->setChecked(gWin->fSettings->GetUploads());
+	fDownloads->setChecked(gWin->fSettings->GetDownloads());
 	fChat->setChecked(gWin->fSettings->GetChat());
 	fPrivate->setChecked(gWin->fSettings->GetPrivate());
 	fInfo->setChecked(gWin->fSettings->GetInfo());
@@ -290,6 +291,7 @@ WPrefs::OK()
 	gWin->fSettings->SetTimeStamps(fTimeStamps->isChecked());
 	gWin->fSettings->SetUserEvents(fUserEvents->isChecked());
 	gWin->fSettings->SetUploads(fUploads->isChecked());
+	gWin->fSettings->SetDownloads(fDownloads->isChecked());
 	gWin->fSettings->SetChat(fChat->isChecked());
 	gWin->fSettings->SetPrivate(fPrivate->isChecked());
 	gWin->fSettings->SetInfo(fInfo->isChecked());

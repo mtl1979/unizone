@@ -279,7 +279,7 @@ private:
 	uint64 tx2,rx2;		// in the beginning of session
 
 	// UniShare
-	int64 fRegistered;
+	//int64 fRegistered;
 
 	void TransferCallbackRejected(QString qFrom, int64 timeLeft, uint32 port);
 
@@ -450,6 +450,10 @@ private:
 
 	QMutex fSearchLock;		// to lock the list so only one method can be using it at a time
 
+	// UniShare
+
+	int64 GetRegisterTime() { return GetRegisterTime( GetUserName() ); }
+
 	// Channels
 
 	void ChannelCreated(const QString, const QString, int64);
@@ -525,7 +529,7 @@ public:
 	WDownload * fDLWindow;
 
 	// UniShare
-	int64 GetRegisterTime() { return fRegistered; }
+	int64 GetRegisterTime(QString nick); 
 
 signals:
 	void UpdatePrivateUserLists();

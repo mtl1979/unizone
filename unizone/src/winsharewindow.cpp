@@ -399,19 +399,22 @@ WinShareWindow::customEvent(QCustomEvent * event)
 						qApp->processEvents(300);
 						MessageRef mref = fFileScanThread->GetSharedFile(n); 
 						String s;
-						if (mref()->FindString("secret:NodePath", s) == B_OK)
+						if (mref())
 						{
-							uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
-							// Use encoded file attributes?
-							if (enc != 0)
+							if (mref()->FindString("secret:NodePath", s) == B_OK)
 							{
-								MessageRef packed = DeflateMessage(mref, enc, true);
-								if (packed())
-									fNetClient->SetNodeValue(s.Cstr(), packed);
-							}
-							else
-							{
-								fNetClient->SetNodeValue(s.Cstr(), mref);
+								uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
+								// Use encoded file attributes?
+								if (enc != 0)
+								{
+									MessageRef packed = DeflateMessage(mref, enc, true);
+									if (packed())
+										fNetClient->SetNodeValue(s.Cstr(), packed);
+								}
+								else
+								{
+									fNetClient->SetNodeValue(s.Cstr(), mref);
+								}
 							}
 						}
 					}
@@ -530,7 +533,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
 				if (wte)
 				{
-					if ( IsConnected( wte->Text() ) )
+//					if ( IsConnected( wte->Text() ) )
 						CheckResumes( wte->Text() );
 				}
 				return;
@@ -677,12 +680,25 @@ WinShareWindow::ServerChanged(const QString & newServer)
 void
 WinShareWindow::NameChanged(const QString & newName)
 {
+	int64 nr;
+	// Make sure old user name has register time
+	if (fUserName != QString::null)
+	{
+		nr = fSettings->GetRegisterTime(fUserName);
+		fSettings->SetRegisterTime(fUserName, nr);
+	}
 	fNetClient->SetUserName(newName); // <postmaster@raasu.org> 20021011
 	QString nameChanged = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 	nameChanged += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(tr("Name changed to <font color=\"%2\">%1</font>.").
 		arg(FixStringStr(newName)).arg(WColors::LocalName)); // <postmaster@raasu.org> 20021001
 	PrintText(nameChanged);
 	fUserName = newName;
+	// Make sure new user name has register time
+	if (fUserName != QString::null)
+	{
+		nr = fSettings->GetRegisterTime(fUserName);
+		fSettings->SetRegisterTime(fUserName, nr);
+	}
 }
 
 void
@@ -846,15 +862,15 @@ WinShareWindow::InitGUI()
 
 	fSearchTab->addMultiCellWidget(fDownload, 8, 8, 0, 2);
 
-	fClear = new QPushButton(tr("Clear"), fSearchWidget);
-	CHECK_PTR(fClear);
-
-	fSearchTab->addMultiCellWidget(fClear, 8, 8, 4, 6);
-
 	fStop = new QPushButton(tr("Stop"), fSearchWidget);
 	CHECK_PTR(fStop);
 
-	fSearchTab->addMultiCellWidget(fStop, 8, 8, 8, 10);
+	fSearchTab->addMultiCellWidget(fStop, 8, 8, 4, 6);
+
+	fClear = new QPushButton(tr("Clear"), fSearchWidget);
+	CHECK_PTR(fClear);
+
+	fSearchTab->addMultiCellWidget(fClear, 8, 8, 8, 10);
 
 	// load query history
 	QString str;
@@ -1573,7 +1589,7 @@ WinShareWindow::LoadSettings()
 
 		// UniShare
 
-		fRegistered = fSettings->GetRegisterTime();
+		// fRegistered = fSettings->GetRegisterTime();
 	}
 	else	// file doesn't exist, or error
 	{
@@ -1594,7 +1610,11 @@ WinShareWindow::LoadSettings()
 		fAutoPriv = "";
 		fOnConnect = "";
 		fOnConnect2 = "";
-		fRegistered = GetCurrentTime64();
+		if (fUserName != QString::null)
+		{
+			int64 rn = fSettings->GetRegisterTime(fUserName);
+			fSettings->SetRegisterTime(fUserName, rn);
+		}
 		tx = 0;
 		rx = 0;
 		tx2 = 0;
@@ -1720,7 +1740,11 @@ WinShareWindow::SaveSettings()
 
 	// UniShare
 
-	fSettings->SetRegisterTime(fRegistered);
+	if (fUserName != QString::null)
+	{
+		int64 rn = fSettings->GetRegisterTime(fUserName);
+		fSettings->SetRegisterTime(fUserName, rn);
+	}
 
 	fSettings->Save();
 }
@@ -2153,6 +2177,10 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 	delete [] wFileName;
 	delete [] wSID;
 
+	// Workaround for StringMatcher bug (for now!)
+	if (fCurrentSearchPattern == "")
+		return;
+
 	Lock();
 	// see if the filename matches our file regex
 	// AND that the session ID matches our session ID regex
@@ -2343,7 +2371,6 @@ WinShareWindow::GoSearch()
 				if (nonNumericFound)
 					userExp = userExp.Prepend("*").Append("*");
 			}
-
 			MakeRegexCaseInsensitive(userExp);
 			StringMatcher match(userExp.Cstr());
 			WUserMap & users = fNetClient->Users();
@@ -3102,4 +3129,10 @@ WinShareWindow::UserIDChanged(QString oldid, QString newid)
 			}
 		}
 	}
+}
+
+int64
+WinShareWindow::GetRegisterTime(QString nick)
+{ 
+	return fSettings->GetRegisterTime(nick); 
 }

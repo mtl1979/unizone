@@ -1,3 +1,6 @@
+#include "winsharewindow.h"
+#include "util/TimeUtilityFunctions.h"
+
 #include <qapplication.h>
 #include <qplatinumstyle.h>
 #include <qfile.h>

@@ -106,16 +106,18 @@ WFileThread::ParseDir(const QString & d)
 		return;	// not a directory?
 	}
 
+	Lock();
 	for ( int n = 0; n < fScannedDirs.GetNumItems(); n++ )
 	{
 		if (fScannedDirs[n] == info->absFilePath())
 		{
+			Unlock();
 			delete info;
 			return; // Already scanned!!!
 		}
 	}
 
-	Lock(); // test
+	//Lock(); // test
 	fScannedDirs.AddTail(info->absFilePath()); // Add to checked dirs
 	Unlock(); // test
 
@@ -259,8 +261,9 @@ WFileThread::ResolveLink(const QString & lnk)
 	wchar_t * wRet = qStringToWideChar(ret);
 	PRINT("\tResolving %S\n", wRet);
 	delete [] wRet;
+	wRet = NULL;
 
-	if (ret.contains(".lnk") > 0)
+	if (ret.right(4) == ".lnk")
 	{
 		PRINT("Is Link\n");
 		// we've got a link...
