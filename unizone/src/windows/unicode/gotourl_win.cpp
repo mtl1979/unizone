@@ -62,6 +62,7 @@ InitLaunchThread()
 void
 DeinitLaunchThread()
 {
-	fLaunchThread->wait();
-	delete fLaunchThread;
+	if (fLaunchThread->running())
+		fLaunchThread->wait();
+	// delete fLaunchThread;
 }
