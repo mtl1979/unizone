@@ -94,7 +94,7 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	fUploads->setColumnAlignment(WTransferItem::Total, AlignRight);		// 
 	fUploads->setColumnAlignment(WTransferItem::Rate, AlignRight);		// 
 	fUploads->setColumnAlignment(WTransferItem::ETA, AlignRight);		//
-	fUploads->SetColumnAlignment(WTransferItem::QR, AlignRight);		// 20030310
+	fUploads->setColumnAlignment(WTransferItem::QR, AlignRight);		// 20030310
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
