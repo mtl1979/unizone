@@ -159,7 +159,13 @@ WDownload::AddDownload(QString file, QString remoteSessionID,
 	WTPair p;
 	p.first = nt;
 	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "");
-	
+
+	if (remoteIP == "127.0.0.1")	// Can't use localhost to download!!!
+	{
+		remoteIP = gWin->fNetClient->GetServerIP();
+		if (remoteIP != "127.0.0.1")
+			gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(file).arg(remoteIP), false);
+	}
 	if (fNumDownloads < gWin->fSettings->GetMaxDownloads())
 	{
 		PRINT("DLS (%d, %d)\n", fNumDownloads, gWin->fSettings->GetMaxDownloads());

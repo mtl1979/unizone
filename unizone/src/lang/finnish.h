@@ -248,6 +248,7 @@
 #define MSG_WF_PINGTEXT         "<font color=\"%1\" size=\"%2\">Ping tuli takaisin %3 millisekunnissa (%4)</font>"
 #define MSG_WF_PINGUPTIME       "<font color=\"%1\" size=\"%2\"> (Käynnissä: %3, Kirjautuneena %4)</font>"
 #define MSG_WF_ERROR			"<font color=\"%1\" size=\"%2\"><b>Virhe:</b></font> "
+#define MSG_WF_WARNING			"<font color=\"%1\" size=\"%2\"><b>Varoitus:</b></font> "
 #define MSG_WF_ACTION			"<font color=\"%1\" size=\"%2\"><b>Toiminta:</b></font> "
 #define MSG_WF_GOTPINGED		"<font color=\"%1\" size=\"%2\">Käyttäjä #%3, eli <font color=\"%5\">%4</font>, pingasi sinua.</font>"
 

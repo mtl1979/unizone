@@ -44,6 +44,9 @@ QString WFormat::Error = MSG_WF_ERROR;
 // error text color (just regular text)
 QString WFormat::ErrorMsg = "<font color=\"%1\" size=\"%2\">%3</font>";
 
+// warning format
+QString WFormat::Warning = MSG_WF_WARNING;
+
 QString WFormat::StatusChanged = MSG_WF_STATUSCHANGED;
 
 // priv messages

@@ -448,4 +448,18 @@ NetClient::SetLoad(int32 num, int32 max)
 	}
 }
 
+QString
+NetClient::GetServerIP()
+{
+	QString ip = "0.0.0.0";
+	uint32 address;
+	String host;
+	address = GetHostByName(fServer.latin1());
+	if (address > 0)
+	{
+		host = Inet_NtoA(address);
+		ip = host.Cstr();
+	}
+	return ip;
+}
 

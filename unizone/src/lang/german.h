@@ -255,6 +255,7 @@
 #define MSG_WF_PINGTEXT         "<font color=\"%1\" size=\"%2\">Ping zurück in %3 millisekunden (%4)</font>"
 #define MSG_WF_PINGUPTIME       "<font color=\"%1\" size=\"%2\"> (Uptime: %3, Logged on for %4)</font>"
 #define MSG_WF_ERROR            "<font color=\"%1\" size=\"%2\"><b>Fehler:</b></font> "
+#define MSG_WF_WARNING			"<font color=\"%1\" size=\"%2\"><b>Warning:</b></font> "
 #define MSG_WF_ACTION           "<font color=\"%1\" size=\"%2\"><b>Aktion:</b></font> "
 #define MSG_WF_GOTPINGED        "<font color=\"%1\" size=\"%2\">Benutzer #%3 (alias <font color=\"%5\">%4</font>) hat dich gepingt.</font>"
 

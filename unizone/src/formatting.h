@@ -42,6 +42,9 @@ public:
 	// error text color (just regular text)
 	static QString ErrorMsg;
 
+	// warning format
+	static QString Warning;
+
 	// local stuff
 	static QString StatusChanged;
 

@@ -995,6 +995,25 @@ WinShareWindow::PrintError(const QString & error, bool batch)
 }
 
 void
+WinShareWindow::PrintWarning(const QString & warning, bool batch)
+{
+	if (fSettings->GetError())
+	{
+		QString e = WFormat::Warning.arg(WColors::Error).arg(fSettings->GetFontSize());
+		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(warning);
+		if (batch)
+		{
+			PrintText(e, false);
+		}
+		else
+		{
+			CheckScrollState();
+			PrintText(e);
+		}
+	}
+}
+
+void
 WinShareWindow::PrintSystem(const QString & msg, bool batch)
 {
 	QString s = WFormat::SystemText.arg(WColors::System).arg(fSettings->GetFontSize());

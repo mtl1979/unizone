@@ -20,7 +20,7 @@ public:
 	status_t Connect(QString server);
 	void Disconnect();
 	QString GetServer() { return fServer; } // Get current server hostname or ip address if hostname isn't available
-
+	QString GetServerIP();					// Get current server IP address
 
 	bool IsConnected() const { return IsInternalThreadRunning(); }
 
