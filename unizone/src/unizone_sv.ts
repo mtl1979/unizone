@@ -218,6 +218,18 @@ Version %1</translation>
         <source>No users passed.</source>
         <translation>Ingen användaren avgiven.</translation>
     </message>
+    <message>
+        <source>List of channel admins:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 - %2</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>You got kicked off from this channel!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>ChannelBase</name>

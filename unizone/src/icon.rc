@@ -66,7 +66,7 @@ LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,20,3,0
+ FILEVERSION 1,20,4,0
  PRODUCTVERSION 1,20,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -85,7 +85,7 @@ BEGIN
             VALUE "Comments", "Based on BeShare Client Ozone made by Vitaliy Mikitchenko\0"
             VALUE "CompanyName", "Suomen Raasuyhteisö\0"
             VALUE "FileDescription", "Unizone\0"
-            VALUE "FileVersion", "1, 20, 3, 0\0"
+            VALUE "FileVersion", "1, 20, 4, 0\0"
             VALUE "InternalName", "Unizone\0"
             VALUE "LegalCopyright", "Copyright © 2002-2003 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
             VALUE "LegalTrademarks", "Unizone is a trademark of Mika T. Lindqvist, Ozone is a trademark of Vitaliy Mikitchenko\0"
@@ -100,9 +100,9 @@ BEGIN
             VALUE "Comments", "Perustuu BeShare-asiakasohjelmaan Ozone, jonka on tehnyt Vitaliy Mikitchenko\0"
             VALUE "CompanyName", "Suomen Raasuyhteisö\0"
             VALUE "FileDescription", "Unizone\0"
-            VALUE "FileVersion", "1, 20, 3, 0\0"
+            VALUE "FileVersion", "1, 20, 4, 0\0"
             VALUE "InternalName", "Unizone\0"
-            VALUE "LegalCopyright", "Copyright © 2002 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
+            VALUE "LegalCopyright", "Copyright © 2002-2003 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
             VALUE "LegalTrademarks", "Unizone on Mika T. Lindqvistin tavaramerkki, Ozone on Vitaliy Mikitchenkon tavaramerkki\0"
             VALUE "OriginalFilename", "Unizone.exe\0"
             VALUE "PrivateBuild", "\0"

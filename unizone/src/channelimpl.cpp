@@ -341,8 +341,38 @@ Channel::customEvent(QCustomEvent * event)
 			WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
 			if (wte)
 			{
+				// Give a list of available commands
+				if (wte->Text().lower().startsWith("/help"))
+				{
+					PrintSystem(tr( "Channel command reference:" ));
+					PrintSystem(tr( "/action [text] - Do something" ));
+					PrintSystem(tr( "/clear - Clear channel window" ));
+					PrintSystem(tr( "/deop [name or session id] - Take admin status from other user" ));
+					PrintSystem(tr( "/help - Show command reference" ));
+					PrintSystem(tr( "/invite [name or session id] - Invite user to channel" ));
+					PrintSystem(tr( "/kick [name or session id] - Kick user off the channel" ));
+					PrintSystem(tr( "/listadmins - Show channel admins" ));
+					PrintSystem(tr( "/me [text] - Same as /action" ));
+					PrintSystem(tr( "/op [name or session id] - Give admin status to other user" ));
+					PrintSystem(tr( "/private - Set channel to private mode" ));
+					PrintSystem(tr( "/public - Set channel to public mode" ));
+					PrintSystem(tr( "/topic [topic] - Change the channel topic" ));
+				}
+				// Give a list of channel admins
+				else if (wte->Text().lower().startsWith("/listadmins"))
+				{
+					PrintSystem(tr( "List of channel admins:" ));
+					for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
+					{
+						if ( ((Channels *) fParent)->IsAdmin(fName, (*iter).second()->GetUserID()) )
+						{
+							PrintSystem( tr("%1 - %2").arg((*iter).second()->GetUserID()).arg((*iter).second()->GetUserName()) );
+						}
+					}
+
+				}
 				// Change channel topic
-				if (wte->Text().lower().startsWith("/topic "))
+				else if (wte->Text().lower().startsWith("/topic "))
 				{
 					if ( !((Channels *) fParent)->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
@@ -443,21 +473,30 @@ Channel::customEvent(QCustomEvent * event)
 					{
 						// see if the user is already in the list
 						bool talking = false;
-						WUserRef uref = gWin->FindUser(qTemp);
-						for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
+						WUserRef uref = FindUser(qTemp);
+						if (uref())
 						{
-							WUserRef found = (*uit).second;
-							if (found() == uref())
+							for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
 							{
-								if (gWin->fSettings->GetUserEvents())
-									PrintError(tr("User #%1 (a.k.a %2) is already in this channel window!").arg(uref()->GetUserID()).arg(uref()->GetUserName()));
-								
-								talking = true;
-								break;	// done...
+								WUserRef found = (*uit).second;
+								if (found() == uref())
+								{
+									if (gWin->fSettings->GetUserEvents())
+										PrintError(tr("User #%1 (a.k.a %2) is already in this channel window!").arg(uref()->GetUserID()).arg(uref()->GetUserName()));
+									
+									talking = true;
+									break;	// done...
+								}
 							}
 						}
-						if (!talking)	// user not yet in list? add
+						if (!uref())
+						{
+							uref = gWin->FindUser(qTemp);
+						}
+						if (!talking && uref())	// user not yet in list? add
+						{
 							Invite(uref()->GetUserID());	// the EASY way :)
+						}
 					}
 					else if (gWin->fSettings->GetError())
 						PrintError(tr("No users passed."));			
@@ -476,16 +515,21 @@ Channel::customEvent(QCustomEvent * event)
 					{
 						// see if the user is already in the list
 						bool f = false;
-						WUserRef uref = gWin->FindUser(qTemp);
-						for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
+						WUserRef uref = FindUser(qTemp);
+						if (uref())
 						{
-							WUserRef found = (*uit).second;
-							if (found() == uref())
+							for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
 							{
-								Kick(uref()->GetUserID());
-								
-								f = true;
-								break;	// done...
+								WUserRef found = (*uit).second;
+								PRINT("found - UserID = %S\n", qStringToWideChar(found()->GetUserID()));
+								PRINT("uref  - UserID = %S\n", qStringToWideChar(uref()->GetUserID()));
+								if (found()->GetUserID() == uref()->GetUserID())
+								{
+									Kick(uref()->GetUserID());
+									
+									f = true;
+									break;	// done...
+								}
 							}
 						}
 						if (!f)
@@ -617,14 +661,17 @@ Channel::NewChannelText(const QString channel, const QString user, const QString
 	}
 	else
 	{
-		WUserRef uref = gWin->FindUser(user);
-		QString name = uref()->GetUserName();
-		name = FixStringStr(name);
-		QString message = FixStringStr(text);
-		QString fmt;
-		fmt = WFormat::LocalName.arg(WColors::RemoteName).arg(gWin->fSettings->GetFontSize()).arg(user).arg(name);
-		fmt += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(message);
-		PrintText(fmt);
+		WUserRef uref = FindUser(user);
+		if (uref())
+		{
+			QString name = uref()->GetUserName();
+			name = FixStringStr(name);
+			QString message = FixStringStr(text);
+			QString fmt;
+			fmt = WFormat::LocalName.arg(WColors::RemoteName).arg(gWin->fSettings->GetFontSize()).arg(user).arg(name);
+			fmt += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(message);
+			PrintText(fmt);
+		}
 	}
 }
 
@@ -676,6 +723,10 @@ Channel::UpdateTopic()
 void
 Channel::SetActive(bool a)
 {
+	if ((fActive) && (!a))
+	{
+		PrintError(tr( "You got kicked off from this channel!" ));
+	}
 	fActive = a;
 }
 
@@ -728,4 +779,17 @@ Channel::UserDisconnected(QString sid, QString name)
 		(*iter).second()->RemoveFromListView(fChannelUsers);
 		fUsers.erase(iter);
 	}
+}
+
+WUserRef
+Channel::FindUser(QString user)
+{
+	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
+	{
+		if (gWin->MatchUserFilter((*iter).second(), (const char*) user.utf8()))
+		{
+			return (*iter).second;
+		}
+	}
+	return WUserRef(NULL, NULL);
 }

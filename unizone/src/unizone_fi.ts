@@ -275,6 +275,18 @@ Versio %1</translation>
         <source>No users passed.</source>
         <translation>Käyttäjiä ei annettu.</translation>
     </message>
+    <message>
+        <source>List of channel admins:</source>
+        <translation>Kanavan valvojat:</translation>
+    </message>
+    <message>
+        <source>%1 - %2</source>
+        <translation>%1 - %2</translation>
+    </message>
+    <message>
+        <source>You got kicked off from this channel!</source>
+        <translation>Sinut potkaistiin ulos kanavalta!</translation>
+    </message>
 </context>
 <context>
     <name>ChannelBase</name>

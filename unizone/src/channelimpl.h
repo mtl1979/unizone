@@ -64,6 +64,9 @@ private:
 
 	void UpdateNode();
 
+	WUserRef FindUser(QString user);
+
+
 
 public slots:
 	void TabPressed(QString str);
