@@ -263,7 +263,7 @@ WDownload::~WDownload()
 			{
 				for (int i = n; i < (*it).first->GetNumFiles(); i++)
 				{
-					emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetRemoteUser());
+					emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetLocalFileName(i), (*it).first->GetRemoteUser());
 				}
 			}
 			PRINT("Reseting download\n");
@@ -303,12 +303,12 @@ WDownload::~WDownload()
 }
 
 void
-WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID,
+WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QString remoteSessionID,
 					   uint32 remotePort, QString remoteIP, uint64 remoteInstallID, bool firewalled, bool partial)
 {
 	WDownloadThread * nt = new WDownloadThread(this);
 	CHECK_PTR(nt);
-	nt->SetFile(files, filecount, remoteIP, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
+	nt->SetFile(files, lfiles, filecount, remoteIP, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
 	
 	WTPair p;
 	p.first = nt;
@@ -359,25 +359,40 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 }
 
 void
-WDownload::AddDownloadList(Queue<QString> & fQueue, WUser * user)
+WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, WUser * user)
 {
 	int32 nFiles = fQueue.GetNumItems();
 	QString * qFiles = new QString[nFiles];
 	CHECK_PTR(qFiles);
-	QString tmp;
+	
+	QString * qLFiles = new QString[nFiles];
+	QString tmp, tmp2;
 	int n = 0;
 	while (!fQueue.IsEmpty())
 	{
 		fQueue.RemoveHead(tmp);
-		if (
-			(tmp != QString::null) && 
-			(tmp != "")
-			) 
+		if (!tmp.isEmpty()) 
 		{
-			qFiles[n++] = tmp;
+			qFiles[n] = tmp;
 		}
+		else
+		{
+			qFiles[n] = QString::null;
+		}
+
+		fLQueue.RemoveHead(tmp);
+		if (!tmp.isEmpty())
+		{
+			qLFiles[n] = tmp;
+		}
+		else
+		{
+			qLFiles[n] = QString::null;
+		}
+
+		n++;
 	}
-	AddDownload(qFiles, n, user->GetUserID(), user->GetPort(), user->GetUserHostName(), user->GetInstallID(), user->GetFirewalled(), user->GetPartial());
+	AddDownload(qFiles, qLFiles, n, user->GetUserID(), user->GetPort(), user->GetUserHostName(), user->GetInstallID(), user->GetFirewalled(), user->GetPartial());
 }
 
 void
@@ -781,7 +796,8 @@ WDownload::customEvent(QCustomEvent * e)
 					for (int n = gt->GetCurrentNum(); n < gt->GetNumFiles(); n++)
 					{
 						QString qFile = gt->GetFileName(n);
-						emit FileFailed(qFile, gt->GetRemoteUser());
+						QString qLFile = gt->GetLocalFileName(n);
+						emit FileFailed(qFile, qLFile, gt->GetRemoteUser());
 					}
 
 					DequeueDLSessions();
@@ -840,7 +856,8 @@ WDownload::customEvent(QCustomEvent * e)
 								for (int n = gt->GetCurrentNum(); n < gt->GetNumFiles(); n++)
 								{
 									QString qFile = gt->GetFileName(n);
-									emit FileFailed(qFile, gt->GetRemoteUser());
+									QString qLFile = gt->GetLocalFileName(n);
+									emit FileFailed(qFile, qLFile, gt->GetRemoteUser());
 								}
 							}
 							else
@@ -1140,7 +1157,7 @@ WDownload::KillLocalQueues()
 				{
 					for (int i = n; i < (*it).first->GetNumFiles(); i++)
 					{
-						emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetRemoteUser());
+						emit FileInterrupted((*it).first->GetFileName(i), (*it).first->GetLocalFileName(i), (*it).first->GetRemoteUser());
 					}
 				}
 				

@@ -62,9 +62,9 @@ public:
 		TransferNotifyRejected
 	};
 
-	void AddDownload(QString * files, int32 numFiles, QString remoteSessionID, uint32 remotePort,
+	void AddDownload(QString * files, QString * lfiles, int32 numFiles, QString remoteSessionID, uint32 remotePort,
 						QString remoteIP, uint64 remoteInstallID, bool firewalled, bool partial);
-	void AddDownloadList(Queue<QString> & fQueue, WUser * user);
+	void AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, WUser * user);
 
 	void AddUpload(int socket, uint32 remoteIP, bool queued);
 	void AddUpload(QString remoteIP, uint32 port);
@@ -229,8 +229,9 @@ public slots:
 	void UserDisconnected(QString, QString);
 
 signals:
-	void FileFailed(QString, QString); // Parameter 1 = File Name, Parameter 2 = User Name
-	void FileInterrupted(QString, QString);
+	// Parameter 1 = Remote File Name, Parameter 2 = Local File Name, Parameter 3 = User Name
+	void FileFailed(QString, QString, QString); 
+	void FileInterrupted(QString, QString, QString);
 	void Closed();		// the download window has been closed
 
 };

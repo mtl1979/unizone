@@ -416,9 +416,9 @@ WinShareWindow::DownloadWindowClosed()
 //
 
 void
-WinShareWindow::FileFailed(QString file, QString user)
+WinShareWindow::FileFailed(QString file, QString lfile, QString user)
 {
-	FileInterrupted(file, user);
+	FileInterrupted(file, lfile, user);
 
 	WTextEvent * wte = new WTextEvent(user, WTextEvent::ResumeType);
 	if (wte)
@@ -431,9 +431,13 @@ WinShareWindow::FileFailed(QString file, QString user)
 //
 
 void
-WinShareWindow::FileInterrupted(QString file, QString user)
+WinShareWindow::FileInterrupted(QString file, QString lfile, QString user)
 {
-	WResumePair wrp = MakePair(file, user);
+	WResumeInfo wri;
+	wri.fRemoteName = file;
+	wri.fLocalName = lfile;
+
+	WResumePair wrp = MakePair(user, wri);
 	rLock.lock();
 	if (!fResumeMap.empty())
 	{
@@ -441,8 +445,9 @@ WinShareWindow::FileInterrupted(QString file, QString user)
 		for (WResumeIter iter = fResumeMap.begin(); iter != fResumeMap.end(); iter++)
 		{
 			if (
-				((*iter).first == file) &&
-				((*iter).second == user)
+				((*iter).second.fRemoteName == file) &&
+				((*iter).second.fLocalName == lfile) &&
+				((*iter).first == user)
 				)
 			{
 				rLock.unlock();
@@ -476,23 +481,25 @@ WinShareWindow::CheckResumes(QString user)
 	rLock.lock();
 
 	Queue<QString> fFiles;
+	Queue<QString> fLFiles;
 	
 	WResumeIter it = fResumeMap.begin();
 	while (it != fResumeMap.end())
 	{
-		wchar_t * wSecond = qStringToWideChar( StripURL((*it).second) );
-		PRINT("CheckResumes: second = %S\n", wSecond);
+		wchar_t * wSecond = qStringToWideChar( StripURL((*it).first) );
+		PRINT("CheckResumes: user = %S\n", wSecond);
 		delete [] wSecond;
 
-		if (StripURL((*it).second) == StripURL(user))
+		if (StripURL((*it).first) == StripURL(user))
 		{
 			// User name matches
 
 			if (fSettings->GetDownloads())
 			{
-				PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).first).arg(user), false);
+				PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).second.fRemoteName).arg(user), false);
 			}
-			fFiles.AddTail((*it).first);
+			fFiles.AddTail((*it).second.fRemoteName);
+			fLFiles.AddTail((*it).second.fLocalName);
 			fResumeMap.erase(it);
 			it = fResumeMap.begin(); // start from beginning
 		}
@@ -506,6 +513,6 @@ WinShareWindow::CheckResumes(QString user)
 
 		OpenDownload(); 
 
-		fDLWindow->AddDownloadList(fFiles, u());
+		fDLWindow->AddDownloadList(fFiles, fLFiles, u());
 	}
 }

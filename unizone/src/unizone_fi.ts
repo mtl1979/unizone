@@ -3017,5 +3017,9 @@ Päiväys: %4</translation>
         <source>Clear History</source>
         <translation>Tyhjennä Historia</translation>
     </message>
+    <message>
+        <source>- Local File: %1</source>
+        <translation>- Paikallinen Tiedosto: %1</translation>
+    </message>
 </context>
 </TS>

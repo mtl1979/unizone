@@ -131,10 +131,9 @@ WFileThread::ScanFiles(QString directory)
 	PRINT("Checking for directory existance\n");
 	QDir * dir = new QDir(directory);
 	CHECK_PTR(dir);
-	QStringList list;
 	if (dir->exists())	// double check
 	{
-		list = dir->entryList("*", (QDir::Dirs | QDir::Files) , QDir::DirsFirst);
+		QStringList list = dir->entryList("*", (QDir::Dirs | QDir::Files) , QDir::DirsFirst);
 		if (!list.isEmpty())
 		{
 			// not empty?

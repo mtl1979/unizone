@@ -42,6 +42,7 @@
 #include <qtextcodec.h>
 #include <qdir.h>
 #include <qinputdialog.h>
+#include <qtoolbar.h>
 
 #ifdef WIN32
 #include <objbase.h>
@@ -91,8 +92,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 //	IncrementBuild();
 	setCaption("Unizone");
 
-	InitGUI();
 	resize(800, 600);
+	InitGUI();
 
 	connect(fNetClient, SIGNAL(UserDisconnected(QString, QString)), this,
 			SLOT(UserDisconnected(QString, QString)));
@@ -703,9 +704,6 @@ WinShareWindow::NameChanged(const QString & newName)
 void
 WinShareWindow::resizeEvent(QResizeEvent * event)
 {
-	//QPoint qp(0, 0);
-	//QSize qs(event->size().width(), event->size().height());
-	//fMainBox->setGeometry(QRect(qp, qs));
 }
 
 void
@@ -716,75 +714,71 @@ WinShareWindow::InitGUI()
 	splitList.append(4);
 	splitList.append(1);
 
-	fMenus = new MenuBar(this);
+
+	QToolBar *tb = new QToolBar( this );
+	addToolBar( tb, tr( "Menubar" ), Top, FALSE );
+
+	fMenus = new MenuBar(this, tb);
 	CHECK_PTR(fMenus);
-
-	fMainBox = new QGridLayout(this, 5, 12, 0, -1, "Main Box");
-	CHECK_PTR(fMainBox);
-
-	fMainBox->addColSpacing(0, 20);
-	fMainBox->addColSpacing(2, 20);
-	fMainBox->addColSpacing(4, 20);
-	fMainBox->addColSpacing(6, 20);
-	fMainBox->addColSpacing(8, 20);
-	fMainBox->addColSpacing(10, 20);
-
-	fMainBox->addRowSpacing(0, fMenus->height()); // This will be behind menu bar 
-	fMainBox->addRowSpacing(1, 10);
-	fMainBox->addRowSpacing(3, 10);
-
-	// setup the info box
-	// fInfoPane = new QHGroupBox(this);
-	// CHECK_PTR(fInfoPane);
-
-	// fInfoPane->move(0, fMenus->height() + 4);
-	// fInfoPane->resize(this->frameSize().width(), 48);
-
 
 
 	// setup combo/labels
 	// we define the combos as QComboBox, but use WComboBox for 
 	// messaging purposes :)
 
-	fServerLabel = new QLabel(tr("Server:"), this);
+	// Server
+	//
+	
+	QToolBar *tb2 = new QToolBar( this );
+	addToolBar( tb2, tr( "Server bar" ), Top, TRUE );
+
+	fServerLabel = new QLabel(tr("Server:"), tb2);
 	CHECK_PTR(fServerLabel);
+	fServerLabel->setMinimumWidth(75);
 
-	fMainBox->addWidget(fServerLabel, 2, 1);
-
-	fServerList = new WComboBox(this, this, "fServerList");
+	fServerList = new WComboBox(this, tb2, "fServerList");
 	CHECK_PTR(fServerList);
 	fServerList->setEditable(true);
 	fServerLabel->setBuddy(fServerList);
 
-	fMainBox->addWidget(fServerList, 2, 3);
+	// Nick
+	//
 
-	fUserLabel = new QLabel(tr("Nick:"), this);
+	QToolBar *tb3 = new QToolBar( this );
+	addToolBar( tb3, tr( "Nickbar" ), Top, FALSE );
+
+	fUserLabel = new QLabel(tr("Nick:"), tb3);
 	CHECK_PTR(fUserLabel);
+	fUserLabel->setMinimumWidth(75);
 
-	fMainBox->addWidget(fUserLabel, 2, 5);
-
-	fUserList = new WComboBox(this, this, "fUserList");
+	fUserList = new WComboBox(this, tb3, "fUserList");
 	CHECK_PTR(fUserList);
 	fUserList->setEditable(true);
 	fUserLabel->setBuddy(fUserList);
 
-	fMainBox->addWidget(fUserList, 2, 7);
-	fStatusLabel = new QLabel(tr("Status:"), this);
+	// Status
+	//
+
+	QToolBar *tb4 = new QToolBar( this );
+	addToolBar( tb4, tr( "Statusbar" ), Top, FALSE );
+
+	fStatusLabel = new QLabel(tr("Status:"), tb4);
 	CHECK_PTR(fStatusLabel);
+	fStatusLabel->setMinimumWidth(75);
 
-	fMainBox->addWidget(fStatusLabel, 2, 9);
-
-	fStatusList = new WComboBox(this, this, "fStatusList");
+	fStatusList = new WComboBox(this, tb4, "fStatusList");
 	CHECK_PTR(fStatusList);
 	fStatusList->setEditable(true);
 	fStatusLabel->setBuddy(fStatusList);
 
-	fMainBox->addWidget(fStatusList, 2, 11);
-
+	//
+	
 	fTabs = new QTabWidget(this);
 	CHECK_PTR(fTabs);
 
-	fMainBox->addMultiCellWidget(fTabs, 4, 4, 0, 11);
+	setCentralWidget(fTabs);
+
+	// fMainBox->addMultiCellWidget(fTabs, 4, 4, 0, 11);
 
 	// Initialize variables for Search Pane
 
@@ -793,7 +787,7 @@ WinShareWindow::InitGUI()
 	
 	// Create the Search Pane
 	
-	fSearchWidget = new QWidget(fTabs);
+	fSearchWidget = new QWidget(fTabs, "Search Widget");
 	CHECK_PTR(fSearchWidget);
 
 	fSearchTab = new QGridLayout(fSearchWidget, 14, 10, 0, -1, "Search Tab");
@@ -935,7 +929,7 @@ WinShareWindow::InitGUI()
 
 	// Create the Channels Pane
 
-	fChannelsWidget = new QWidget(fTabs);
+	fChannelsWidget = new QWidget(fTabs, "Channels Widget");
 	CHECK_PTR(fChannelsWidget);
 
 	QGridLayout * fChannelsTab = new QGridLayout(fChannelsWidget, 7, 5, 0, -1, "Channels Tab");
@@ -2160,8 +2154,8 @@ WinShareWindow::OpenDownload()
 		fDLWindow = new WDownload(NULL, fNetClient->LocalSessionID(), fFileScanThread);
 		CHECK_PTR(fDLWindow);
 		
-		connect(fDLWindow, SIGNAL(FileFailed(QString, QString)), this, SLOT(FileFailed(QString, QString)));
-		connect(fDLWindow, SIGNAL(FileInterrupted(QString, QString)), this, SLOT(FileInterrupted(QString, QString)));
+		connect(fDLWindow, SIGNAL(FileFailed(QString, QString, QString)), this, SLOT(FileFailed(QString, QString, QString)));
+		connect(fDLWindow, SIGNAL(FileInterrupted(QString, QString, QString)), this, SLOT(FileInterrupted(QString, QString, QString)));
 		connect(fDLWindow, SIGNAL(Closed()), this, SLOT(DownloadWindowClosed()));
 	}
 	fDLWindow->show();

@@ -524,6 +524,14 @@ WUploadThread::DoUpload()
 		fForced = true;		// Set this here to avoid duplicate call to DoUpload()
 	}
 
+	// Recheck if IP is ignored or not
+	//
+
+	if (gWin->IsIgnoredIP(fStrRemoteIP) && !IsBlocked())
+	{
+		SetBlocked(true);
+	}
+
 	if (IsBlocked())
 	{
 		MessageRef msg(GetMessageFromPool(WGenericEvent::FileBlocked));

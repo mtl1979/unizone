@@ -39,15 +39,22 @@ WDownloadThread::~WDownloadThread()
 }
 
 void 
-WDownloadThread::SetFile(QString * files, int32 numFiles, QString fromIP, QString fromSession,
+WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, QString fromIP, QString fromSession,
 						 QString localSession, uint32 remotePort, bool firewalled, bool partial)
 {
 	fFileDl = files;
-	fLocalFileDl = new QString[numFiles];
-	CHECK_PTR(fLocalFileDl);
-	for (int l = 0; l < numFiles; l++)
+	if (lfiles)
 	{
-		fLocalFileDl[l] = QString::null;
+		fLocalFileDl = lfiles;
+	}
+	else
+	{
+		fLocalFileDl = new QString[numFiles];
+		CHECK_PTR(fLocalFileDl);
+		for (int l = 0; l < numFiles; l++)
+		{
+			fLocalFileDl[l] = QString::null;
+		}
 	}
 	fNumFiles = numFiles;
 	fCurFile = 0;
@@ -62,9 +69,16 @@ WDownloadThread::SetFile(QString * files, int32 numFiles, QString fromIP, QStrin
 	MessageRef msg(GetMessageFromPool(WGenericEvent::Init));
 	if (msg())
 	{
-		QString dlFile = "downloads";
-		dlFile += "/";
-		dlFile += fFileDl[0];
+		QString dlFile;
+		if (fLocalFileDl[0] == QString::null)
+		{
+			dlFile =  "downloads/";
+			dlFile += fFileDl[0];
+		}
+		else
+		{
+			dlFile = fLocalFileDl[0];
+		}
 		msg()->AddString("file", (const char *) dlFile.utf8());
 		msg()->AddString("user", (const char *) fromSession.utf8());
 		SendReply(msg);	// send the init message to our owner
@@ -342,36 +356,46 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								fFromSession = QString::fromUtf8(session.Cstr());
 								fFromUser = GetUserName(fFromSession);
 							}
-							QString outFile = "downloads/";
+							// QString outFile = "downloads/";
 							QString fixed;
-							fixed = outFile;
-							outFile += QString::fromUtf8(fname.Cstr());
-							PRINT( "WDownloadThread::SignalOwner: %s\n",fname.Cstr() );
-							// we have a "fixed" filename that eliminates characters Windows does not support
-							fixed += FixFileName(QString::fromUtf8(fname.Cstr()));	
 							
-							bool append = false;
-							
-							if (next()->FindInt64("beshare:StartOffset", (int64 *)&fCurrentOffset) == B_OK &&
-								fCurrentOffset > 0)
+							if (fLocalFileDl[fCurFile] == QString::null)
 							{
-								fFile = new QFile(fixed);
-								CHECK_PTR(fFile);
-								if (fFile->open(IO_ReadOnly))
-								{
-									if (fFile->size() == fCurrentOffset)	// sizes match up?
-										append = true;
-									fFile->close();
-								}
-								delete fFile;
-								fFile = NULL;
+								fixed = "downloads/";
+								// PRINT( "WDownloadThread::SignalOwner: %s\n",fname.Cstr() );
+								// we have a "fixed" filename that eliminates characters Windows does not support
+								fixed += FixFileName(QString::fromUtf8(fname.Cstr()));
 							}
 							else
 							{
-								QDir cd(".");
-								if (!cd.exists("downloads"))
-									cd.mkdir("downloads");
+								fixed = fLocalFileDl[fCurFile];
 							}
+							
+							// outFile += QString::fromUtf8(fname.Cstr());
+							bool append = false;
+							
+							if (next()->FindInt64("beshare:StartOffset", (int64 *)&fCurrentOffset) == B_OK)
+							{
+								if (fCurrentOffset > 0)
+								{
+									fFile = new QFile(fixed);
+									CHECK_PTR(fFile);
+									if (fFile->open(IO_ReadOnly))
+									{
+										if (fFile->size() == fCurrentOffset)	// sizes match up?
+											append = true;
+										fFile->close();
+									}
+									delete fFile;
+									fFile = NULL;
+								}
+							}
+//							else
+//							{
+//								QDir cd(".");
+//								if (!cd.exists("downloads"))
+//									cd.mkdir("downloads");
+//							}
 							
 							if (QFile::exists(fixed) && !append)	// create a new file name
 							{
@@ -430,7 +454,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								msg = GetMessageFromPool(WGenericEvent::FileError);
 								if (msg())
 								{
-									msg()->AddString("file", (const char *) outFile.utf8());
+									msg()->AddString("file", (const char *) fixed.utf8());
 									msg()->AddString("why", "Critical error: Could not create file!");
 									SendReply(msg);
 								}
@@ -554,9 +578,18 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							QString outFile("downloads");
 							if (!(outFile.right(1) == "/"))
 								outFile += "/";
-							QString fixed = outFile;
+							QString fixed;
+							if (fLocalFileDl[c] == QString:: null)
+							{
+								fixed = outFile;							
+								fixed += FixFileName(fFileDl[c]);
+							}
+							else
+							{
+								fixed = fLocalFileDl[c];
+							}
+
 							outFile += fFileDl[c];
-							fixed += FixFileName(fFileDl[c]);
 							
 							if (QFile::exists(fixed))
 							{

@@ -398,7 +398,7 @@ WinShareWindow::EmptyQueues()
 				files[i] = QString::fromUtf8(mFile.Cstr());
 			}
 			OpenDownload();
-			fDLWindow->AddDownload(files, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
+			fDLWindow->AddDownload(files, NULL, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
 		}
 	}
 	delete fQueue;

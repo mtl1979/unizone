@@ -100,6 +100,7 @@ using namespace muscle;
 
 #define RESUMELIST "resumelist"
 #define RESUMEFILE "resumefile"
+#define RESUMEFIL2 "resumefile2"
 #define RESUMEUSER "resumeuser"
 
 #define SOUNDS     "sounds"

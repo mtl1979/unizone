@@ -16,7 +16,7 @@ public:
 	WDownloadThread(QObject * owner, bool * optShutdownFlag = NULL);
 	virtual ~WDownloadThread();
 
-	void SetFile(QString * files, int32 numFiles, QString fromIP, QString fromSession,
+	void SetFile(QString * files, QString * lfiles, int32 numFiles, QString fromIP, QString fromSession,
 					QString localSession, uint32 remotePort, bool firewalled, bool partial);
 	void NextFile();
 	int32 GetCurrentNum() { return fCurFile; }

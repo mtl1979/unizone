@@ -2925,5 +2925,9 @@ Date: %4</translation>
         <source>Clear History</source>
         <translation>Clear History</translation>
     </message>
+    <message>
+        <source>- Local File: %1</source>
+        <translation>- Local File: %1</translation>
+    </message>
 </context>
 </TS>

@@ -62,8 +62,14 @@ struct WFileInfo
 	WSearchListItem * fiListItem;	// the list view item this file is tied to
 };
 
-typedef pair<QString, QString> WResumePair;
-typedef multimap<QString, QString> WResumeMap;
+struct WResumeInfo
+{
+	QString fRemoteName;
+	QString fLocalName;
+};
+
+typedef pair<QString, WResumeInfo> WResumePair;
+typedef multimap<QString, WResumeInfo> WResumeMap;
 typedef WResumeMap::iterator WResumeIter;
 
 typedef multimap<QString, WFileInfo *> WFIMap;
@@ -76,7 +82,7 @@ typedef WChannelMap::iterator WChannelIter;
 
 inline 
 WResumePair
-MakePair(QString f, QString u)
+MakePair(QString f, WResumeInfo u)
 {
 	WResumePair p;
 	p.first = f;
@@ -190,8 +196,8 @@ public slots:
 	void DownloadWindowClosed();
 	// void ChannelsWindowClosed();
 
-	void FileFailed(QString, QString); // from WDownload
-	void FileInterrupted(QString, QString);
+	void FileFailed(QString, QString, QString); // from WDownload
+	void FileInterrupted(QString, QString, QString);
 
 	// Channels
 	void ChannelAdded(const QString, const QString, int64);

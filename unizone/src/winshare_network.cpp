@@ -2810,7 +2810,8 @@ WinShareWindow::ListResumes()
 	{
 		if ((*it).first != QString::null)
 		{
-			PrintSystem(tr("File %1: (%2) from %3").arg(i).arg((*it).first).arg((*it).second), true);
+			PrintSystem(tr("File %1: (%2) from %3").arg(i).arg((*it).second.fRemoteName).arg((*it).first), true);
+			PrintSystem(tr("- Local File: %1").arg((*it).second.fLocalName), true);
 			i++;
 		}
 		it++;

@@ -2886,5 +2886,9 @@ Date: %4</translation>
         <source>Clear History</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>- Local File: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>
