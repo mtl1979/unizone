@@ -118,7 +118,7 @@ src/moc_updateclient.cpp: src/updateclient.h
 	moc $< -o $@
 
 src/moc_winsharewindow.cpp: src/winsharewindow.h
-	mo$< -o $@cpp
+	moc $< -o $@
 
 src/moc_channel.cpp: src/channel.h
 	moc $< -o $@
