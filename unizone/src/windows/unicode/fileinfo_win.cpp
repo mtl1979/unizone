@@ -50,7 +50,12 @@ UFileInfo::InitModificationTime()
 		
 		struct _stat fst;
 		
-		int ret = _wstat(tFilePath.getBuffer(), &fst);
+		int ret = -1;
+		wchar_t * wFilePath = tFilePath.getBuffer();
+
+		if (wFilePath)
+			ret = _wstat(wFilePath, &fst);
+		
 		if (ret == 0)
 		{
 			fModificationTime = fst.st_mtime;
