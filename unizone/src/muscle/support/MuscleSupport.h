@@ -267,7 +267,7 @@ inline int muscleRintf(float f) {return (f>=0.0f) ? ((int)(f+0.5f)) : -((int)((-
 template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((arg>0)?1:0);}
 
 #ifndef __BEOS__
-# if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) // Cygwin is for Windows on x86, hence little endian
+# if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) || defined(__LITTLEENDIAN__) // Cygwin is for Windows on x86, hence little endian
 #  define LITTLE_ENDIAN 1234
 #  define BIG_ENDIAN    4321
 #  define BYTE_ORDER LITTLE_ENDIAN  

@@ -28,7 +28,7 @@ public:
 	WLaunchThread(const QString & url) : QThread(), fURL(url) {}
 
 // set the launcher (Linux and FreeBSD only)
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	|| defined(__QNX__)
 	QString fLauncher;
 #endif
 	void SetURL(const QString & url) { fURL = url; }
@@ -133,7 +133,7 @@ GotoURL(const QString & url)
 
 	WLaunchThread * t = new WLaunchThread(address);
 	CHECK_PTR(t);
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	|| defined(__QNX__)
 
 	if (u.startsWith("http"))	// also includes 'https'
 	{
@@ -162,7 +162,7 @@ RunCommand(const QString & command)
 	PRINT("RunCommand() called\n");
 	WLaunchThread * t = new WLaunchThread(command);
 	CHECK_PTR(t);
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	|| defined(__QNX__)
 	t->fLauncher = QString::null;
 #endif
 	t->start();

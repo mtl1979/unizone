@@ -6,7 +6,7 @@
 #endif
 
 #include <qstring.h>
-#include "string.h"
+#include "wstring.h"
 #include "util/String.h"
 
 using muscle::String;

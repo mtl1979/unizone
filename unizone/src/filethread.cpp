@@ -10,7 +10,9 @@
 #include "debugimpl.h"
 #include "util/String.h"
 #include "wstring.h"
+#ifdef WIN32
 #include "scanprogressimpl.h"
+#endif
 #include "scanevent.h"
 #include "netclient.h"
 
@@ -36,8 +38,10 @@ WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 	fOwner = owner;
 	fShutdownFlag = optShutdownFlag;
 
+#ifdef WIN32
 	fScanProgress = new ScanProgress(dynamic_cast<QWidget *>(owner));
 	CHECK_PTR(fScanProgress);
+#endif
 }
 
 WFileThread::~WFileThread()
@@ -59,10 +63,10 @@ WFileThread::run()
 	Unlock(); 
 	int iScannedDirs = 0;
 
-	fScanProgress->show();
-	SendReset(); 
-
 #ifdef WIN32
+	fScanProgress->show();
+	SendReset();
+
 	CoInitialize(NULL);
 #endif
 
@@ -73,8 +77,6 @@ WFileThread::run()
 		Lock();
 #ifdef WIN32
 		SendInt(ScanEvent::Type::DirsLeft, fPaths.GetNumItems());
-#else
-		SendInt(ScanEvent::DirsLeft, fPaths.GetNumItems());
 #endif
 		Unlock();
 		if (fShutdownFlag && *fShutdownFlag)
@@ -88,15 +90,13 @@ WFileThread::run()
 		iScannedDirs++;
 #ifdef WIN32
 		SendInt(ScanEvent::Type::ScannedDirs, iScannedDirs);
-#else
-		SendInt(ScanEvent::ScannedDirs, iScannedDirs);
 #endif
 	} 
 #ifdef WIN32
 	CoUninitialize();
-#endif
 
 	fScanProgress->hide();
+#endif
 
 	Lock();
 	fScannedDirs.Clear(true);
@@ -118,8 +118,6 @@ WFileThread::ParseDir(const QString & d)
 
 #ifdef WIN32
 	SendString(ScanEvent::Type::ScanDirectory, d);
-#else
-	SendString(ScanEvent::ScanDirectory, d);
 #endif
 
 	QString dir(d);
@@ -195,11 +193,9 @@ WFileThread::ScanFiles(const QString & directory)
 	CHECK_PTR(dir);
 	if (dir->exists())	// double check
 	{
-		QString s = QObject::tr("Reading directory...", "WFileThread");
 #ifdef WIN32
+		QString s = QObject::tr("Reading directory...", "WFileThread");
 		SendString(ScanEvent::Type::ScanFile, s);
-#else
-		SendString(ScanEvent::ScanFile, s);
 #endif
 
 		QStringList list = dir->entryList("*", (QDir::Dirs | QDir::Files) , QDir::DirsFirst);
@@ -361,8 +357,10 @@ WFileThread::AddFile(const QString & filePath)
 						fFiles.Put(file, filePath);
 						Unlock(); 
 
+#ifdef WIN32
 						UpdateFileCount();
 						UpdateFileName(name);
+#endif
 					}
 				}
 			}
@@ -587,14 +585,12 @@ WFileThread::GetSharedFile(unsigned int n, MessageRef & mref)
 // NOTE: Doesn't seem to work with QApplication::postEvent() under Qt 2.3, so we continue using deprecated version
 //       QThread::postEvent()
 
+#ifdef WIN32
 void
 WFileThread::SendReset()
 {
-#ifdef WIN32
 	ScanEvent *se = new ScanEvent(ScanEvent::Type::Reset);
-#else
-	ScanEvent *se = new ScanEvent(ScanEvent::Reset);
-#endif
+
 	if (se)
 #if (QT_VERSION < 0x030000)
 		QThread::postEvent(fScanProgress, se);
@@ -626,6 +622,7 @@ WFileThread::SendInt(ScanEvent::Type t, int i)
 		QApplication::postEvent(fScanProgress, se);
 #endif
 }
+#endif
 
 bool
 WFileThread::GetInfo(const QString &file, MessageRef &mref)
@@ -653,14 +650,11 @@ WFileThread::GetInfo(const QString &file, MessageRef &mref)
 	return ret;
 }
 
+#ifdef WIN32
 void
 WFileThread::UpdateFileName(const QString &file)
 {
-#ifdef WIN32
 	SendString(ScanEvent::Type::ScanFile, file);
-#else
-	SendString(ScanEvent::ScanFile, file);
-#endif
 }
 
 void
@@ -668,9 +662,6 @@ WFileThread::UpdateFileCount()
 {
 	int n = fFiles.GetNumItems();
 	
-#ifdef WIN32
 	SendInt(ScanEvent::Type::ScannedFiles, n);
-#else
-	SendInt(ScanEvent::ScannedFiles, n);
-#endif
 }
+#endif

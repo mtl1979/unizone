@@ -75,7 +75,7 @@
 
 #if defined(__LINUX__) || defined(linux) 
 #include <sys/sysinfo.h>
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__QNX__)
 #include <sys/time.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>
@@ -214,12 +214,14 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 	if (fSettings->GetInfo())
 	{
-#ifdef WIN32
+#if defined(WIN32)
 		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Windows!"));
 #elif defined(__LINUX__) || defined(linux)
 		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Linux!"));
 #elif defined(__FreeBSD__)
 		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for FreeBSD!"));
+#elif defined(__QNX__)
+		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for QNX Neutrino!"));
 #endif
 		// <postmaster@raasu.org> 20030225
 		PrintSystem(tr("Copyright (C) 2002-2003 Mika T. Lindqvist."));
@@ -2315,8 +2317,11 @@ void
 WinShareWindow::CancelShares()
 {
 	MessageRef delData(GetMessageFromPool(PR_COMMAND_REMOVEDATA));
-	delData()->AddString(PR_NAME_KEYS, "beshare/fi*");
-	fNetClient->SendMessageToSessions(delData);
+	if (delData())
+	{
+		delData()->AddString(PR_NAME_KEYS, "beshare/fi*");
+		fNetClient->SendMessageToSessions(delData);
+	}
 }
 
 // Create our most important directories
@@ -2346,7 +2351,7 @@ WinShareWindow::GetUptime()
 	int64 uptime = sinfo.uptime;
 	uptime *= 1000000L;
 	return uptime;
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__QNX__)
 	int64 uptime = 0;
 	struct timeval boottime;
 	time_t now;

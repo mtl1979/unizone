@@ -78,8 +78,8 @@ using namespace muscle;
 #define INSTALLID "installid"
 
 /* Linux was our only configurable URL launcher */
-/* Now let's try it with FreeBSD too            */
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
+/* Now let's try it with FreeBSD and QNX too        */
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__) || defined(__QNX__)	
 # define MAILTO_LAUNCHER	"mailtolauncher"
 # define HTTP_LAUNCHER		"httplauncher"
 # define FTP_LAUNCHER		"ftplauncher"
@@ -349,7 +349,7 @@ public:
 	QString GetAutoPrivatePattern();
 	void SetAutoPrivatePattern(const QString & p);
 
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__) || defined(__QNX__)
 	QString GetFTPLauncher();
 	void SetFTPLauncher(const QString & l);
 

@@ -34,7 +34,7 @@
 
 // On some OS's, calls like accept() take an int* rather than a uint32*
 // So I define net_length_t to avoid having to #ifdef all my code
-#if __BEOS__ || __APPLE__ || __CYGWIN__ || WIN32
+#if __BEOS__ || __APPLE__ || __CYGWIN__ || WIN32 || __QNX__
 typedef int net_length_t;
 #else
 typedef size_t net_length_t;

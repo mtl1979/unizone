@@ -19,7 +19,9 @@ using namespace muscle;
 #include "scanevent.h"
 #include "debugimpl.h"
 
+#ifdef WIN32
 class ScanProgress;
+#endif
 class NetClient;
 
 // This class runs through a list of paths and parses each
@@ -71,6 +73,7 @@ private:
 	void ScanFiles(const QString & directory);
 	bool GetInfo(const QString & file, MessageRef & mref);
 
+#ifdef WIN32
 	void SendReset();
 	void SendString(ScanEvent::Type, const QString &);
 	void SendInt(ScanEvent::Type, int);
@@ -79,6 +82,7 @@ private:
 	void UpdateFileName(const QString &);
 
 	ScanProgress * fScanProgress;
+#endif
 
 	mutable QMutex fLocker;
 };

@@ -1,3 +1,6 @@
+#ifndef WSTRING_H
+#define WSTRING_H
+
 // Wrapper class to allocate/deallocate wide string buffers on demand
 
 #ifdef WIN32
@@ -15,7 +18,7 @@ class QString;
 #endif
 
 // For Unicode support on Linux or FreeBSD???
-#if defined(__LINUX__) || defined(__FreeBSD__)
+#if defined(__LINUX__) || defined(__FreeBSD__) || defined(__QNX__)
 #include <wchar.h>
 #endif
 
@@ -68,3 +71,4 @@ private:
 	void free();						// Free internal buffer
 };
 
+#endif
