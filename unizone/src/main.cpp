@@ -19,7 +19,7 @@
 #undef POPUP
 #define POPUP(X) \
 { \
-	QMessageBox box(NAME, X, QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
+	QMessageBox box(tr(NAME), X, QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
 					QMessageBox::NoButton, QMessageBox::NoButton); \
 	box.exec(); \
 }
@@ -74,7 +74,7 @@ main( int argc, char** argv )
 #endif
 	app.setStyle(new QPlatinumStyle);
 
-	WinShareWindow * window = new WinShareWindow(NULL, NAME);
+	WinShareWindow * window = new WinShareWindow(NULL, "Unizone");
 	app.setMainWidget(window);
 
 	window->show();

@@ -69,7 +69,7 @@ inline void PRINT(const char *, ...)
 				f.writeBlock(out.latin1(), out.length()); \
 				f.close(); \
 			} \
-			QMessageBox box(NAME, out.latin1(),QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
+			QMessageBox box(tr(NAME), out.latin1(),QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
 					QMessageBox::NoButton, QMessageBox::NoButton); \
 			box.exec(); \
 		}

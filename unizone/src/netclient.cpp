@@ -381,10 +381,11 @@ NetClient::SetUserName(QString user)
 	MessageRef ref(new Message(), NULL);
 	if (ref())
 	{
+		QString version = tr(NAME);
 		ref()->AddString("name", (const char *) user.utf8()); // <postmaster@raasu.org> 20021001
 		ref()->AddInt32("port", fPort);
 		ref()->AddInt64("installid", 0);
-		ref()->AddString("version_name", NAME);	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
+		ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
 		ref()->AddString("version_num", WinShareVersionString());
 		ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes
 		ref()->AddBool("firewalled", gWin->fSettings->GetFirewalled()); // is firewalled user, needed if no files shared

@@ -658,7 +658,7 @@ WinShareWindow::InitGUI()
 	fUserList->insertItem("Unizone Binky");
 	fServerList->insertItem("beshare.tycomsystems.com");
 #ifdef BETA
-	QString status = "Testing " NAME " ";
+	QString status = tr("Testing " NAME " ");
 	status += WinShareVersionString();
 	fStatusList->insertItem(status);
 #endif

@@ -1602,7 +1602,8 @@ WinShareWindow::Disconnect2()
 void
 WinShareWindow::ShowHelp(QString command)
 {
-	QString helpText	=	"\n" NAME " Command Reference\n"
+	QString helpText	=	tr(
+							"\n" NAME " Command Reference\n"
 							"\n\t\t\t\t/action [action] - do something"
 							"\n\t\t\t\t/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)"
 							"\n\t\t\t\t/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)"
@@ -1671,7 +1672,7 @@ WinShareWindow::ShowHelp(QString command)
 							"\n\t\t\t\tThe list of commands is being worked on. More will be added"
 							"\n\t\t\t\tas time goes on."
 #endif
-							"\n"
+							"\n") +
 							"\nAuto-private pattern : " + fAutoPriv +
 							"\nBlacklist pattern : " + fBlackList +
 							"\nIgnore pattern : " + fIgnore +
