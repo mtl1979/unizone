@@ -29,6 +29,9 @@ public:
 
 	bool isValid();
 	bool isDir();
+
+protected:
+
 	void Init();
 
 private:

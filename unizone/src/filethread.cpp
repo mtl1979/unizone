@@ -303,7 +303,6 @@ WFileThread::AddFile(const QString & filePath)
 				
 	if (ufi.isValid())
 	{
-		ufi.Init();
 #ifdef DEBUG2
 		PRINT("Exists\n");
 #endif
@@ -323,7 +322,6 @@ WFileThread::AddFile(const QString & filePath)
 		return;
 	}
 
-	ufi.Init();
 	// is this a directory?
 	if (ufi.isDir())
 	{

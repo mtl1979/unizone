@@ -21,15 +21,13 @@
 UFileInfo::UFileInfo(const QFileInfo & info)
 {
 	fFileInfo = new QFileInfo(info);
-	fModificationTime = time(NULL);
-	fSize = 0;
+	Init();
 }
 
 UFileInfo::UFileInfo(const QString & file)
 {
 	fFileInfo = new QFileInfo(file);
-	fModificationTime = time(NULL);
-	fSize = 0;
+	Init();
 }
 
 UFileInfo::~UFileInfo()
@@ -249,7 +247,7 @@ UFileInfo::setName(const QString & n)
 
 	fFileInfo = new QFileInfo(n);
 
-//	Init();
+	Init();
 }
 
 bool
