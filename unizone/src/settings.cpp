@@ -1253,6 +1253,34 @@ WSettings::SetNickListSortAscending(bool a)
 {
 	SET_BOOL(NL_SORTASC, a);
 }
+
+void
+WSettings::SetSearchListSortColumn(int c)
+{
+	fSet->RemoveName(SL_SORTCOL);
+	fSet->AddInt32(SL_SORTCOL, (int32)c);
+}
+
+int
+WSettings::GetSearchListSortColumn()
+{
+	int i = 0;
+	fSet->FindInt32(SL_SORTCOL, (int32 *)&i);
+	return i;
+}
+
+bool
+WSettings::GetSearchListSortAscending() const
+{
+	GET_BOOL(SL_SORTASC, true);
+}
+
+void
+WSettings::SetSearchListSortAscending(bool a)
+{
+	SET_BOOL(SL_SORTASC, a);
+}
+
 void
 WSettings::SetRemotePassword(QString pw)
 {

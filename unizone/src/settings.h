@@ -87,8 +87,11 @@ using namespace muscle;
 #define TX_STATS "txstats"
 #define RX_STATS "rxstats"
 
-#define NL_SORTCOL "nlsortcol"
-#define NL_SORTASC "nlsortasc"
+#define NL_SORTCOL "nlsortcol" // Nick List Sort Column
+#define NL_SORTASC "nlsortasc" //           Sort Ascending
+
+#define SL_SORTCOL "slsortcol" // Search Query List Sort Column
+#define SL_SORTASC "slsortasc" //                   Sort Ascending
 
 #define REMOTEPASSWORD "remotepassword"
 
@@ -393,6 +396,14 @@ public:
 
 	bool GetNickListSortAscending() const;
 	void SetNickListSortAscending(bool a);
+
+	// Search Query List Sorting
+
+	int GetSearchListSortColumn();
+	void SetSearchListSortColumn(int c);
+
+	bool GetSearchListSortAscending() const;
+	void SetSearchListSortAscending(bool a);
 
 	// remote control
 	QString GetRemotePassword();

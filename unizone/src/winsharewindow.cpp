@@ -826,7 +826,7 @@ WinShareWindow::InitGUI()
 
 	// Results ListView
 	
-	fSearchList = new QListView(fSearchWidget);
+	fSearchList = new WUniListView(fSearchWidget);
 	CHECK_PTR(fSearchList);
 
 	fSearchList->addColumn(tr("File Name"));
@@ -876,6 +876,9 @@ WinShareWindow::InitGUI()
 
 	fSearchEdit->setEditable(true);
 	fSearchEdit->setMinimumWidth((int) (this->width()*0.75));
+	fSearchEdit->setDuplicatesEnabled(false);
+	fSearchEdit->setAutoCompletion(true);
+
 	fSearchLabel->setBuddy(fSearchEdit);
 	fSearchLabel->setText(tr("Search:"));
 
@@ -1620,6 +1623,7 @@ WinShareWindow::LoadSettings()
 		rx = fSettings->GetReceiveStats(); rx2 = rx;
 		
 		fUsers->setSorting(fSettings->GetNickListSortColumn(), fSettings->GetNickListSortAscending());
+		fSearchList->setSorting(fSettings->GetSearchListSortColumn(), fSettings->GetSearchListSortAscending());
 
 		fRemote = fSettings->GetRemotePassword();
 
@@ -1772,6 +1776,11 @@ WinShareWindow::SaveSettings()
 
 	fSettings->SetNickListSortColumn(fUsers->sortColumn());
 	fSettings->SetNickListSortAscending(fUsers->sortAscending());
+
+	// search query list sort settings
+
+	fSettings->SetSearchListSortColumn(fSearchList->sortColumn());
+	fSettings->SetSearchListSortAscending(fSearchList->sortAscending());
 
 	// remote control
 

@@ -425,7 +425,7 @@ private:
 	QLabel * fSearchLabel;
 	// QLineEdit * fSearchEdit;
 	WComboBox * fSearchEdit;
-	QListView * fSearchList;
+	WUniListView * fSearchList;
 	QPushButton * fDownload;
 	// QPushButton * fClose;
 	QPushButton * fClear;
