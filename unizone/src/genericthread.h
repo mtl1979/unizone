@@ -118,6 +118,10 @@ protected:
 	QString GetUserName(QString sid);
 
 	int fTXRate; // Current transfer throttling rate
+
+private:
+	void InitTransferRate();
+	void InitTransferETA();
 };
 
 #endif

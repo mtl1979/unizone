@@ -4,7 +4,6 @@ SOURCES =		aboutdlg.cpp \
 				channel.cpp \
 				channelimpl.cpp \
 				channels.cpp \
-				channelsimpl.cpp \
 				downloadimpl.cpp \
 				formatting.cpp \
 				menubar.cpp \
@@ -14,7 +13,6 @@ SOURCES =		aboutdlg.cpp \
 				prefsimpl.cpp \
 				privatewindow.cpp \
 				privatewindowimpl.cpp \
-				search.cpp \
 				ulistview.cpp \
 				winshare_network.cpp \
 				winshare_slots.cpp \
@@ -22,7 +20,6 @@ SOURCES =		aboutdlg.cpp \
 
 INTERFACES = 	aboutdlg.ui \
 				channel.ui \
-				channels.ui \
 				prefs.ui \
 				privatewindow.ui
 

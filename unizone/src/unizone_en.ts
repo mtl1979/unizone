@@ -327,31 +327,31 @@ Version %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation>Create Channel</translation>
+        <translation type='obsolete'>Create Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation>Please enter channel name</translation>
+        <translation type='obsolete'>Please enter channel name</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation>Yes</translation>
+        <translation type='obsolete'>Yes</translation>
     </message>
     <message>
         <source>No</source>
-        <translation>No</translation>
+        <translation type='obsolete'>No</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation>Channels</translation>
+        <translation type='obsolete'>Channels</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation>User #%1 requested invite to channel %2. Do you?</translation>
+        <translation type='obsolete'>User #%1 requested invite to channel %2. Do you?</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation>User #%1 invited you to channel %2. Do you accept?</translation>
+        <translation type='obsolete'>User #%1 invited you to channel %2. Do you accept?</translation>
     </message>
 </context>
 <context>
@@ -417,7 +417,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation>Search</translation>
+        <translation type='obsolete'>Search</translation>
     </message>
     <message>
         <source>Open C&amp;hannels Window</source>
@@ -473,7 +473,7 @@ Version %1</translation>
     </message>
     <message>
         <source>ALT+S</source>
-        <translation>ALT+S</translation>
+        <translation type='obsolete'>ALT+S</translation>
     </message>
     <message>
         <source>F11</source>
@@ -493,11 +493,11 @@ Version %1</translation>
     </message>
     <message>
         <source>C&amp;hannels</source>
-        <translation>C&amp;hannels</translation>
+        <translation type='obsolete'>C&amp;hannels</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation>F10</translation>
+        <translation type='obsolete'>F10</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
@@ -1594,6 +1594,10 @@ Date: %4</translation>
         <source>Upload Packet Size:</source>
         <translation>Upload Packet Size:</translation>
     </message>
+    <message>
+        <source>Enable Sound Effects</source>
+        <translation>Enable Sound Effects</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -1707,55 +1711,55 @@ Date: %4</translation>
     <name>WSearch</name>
     <message>
         <source>Search</source>
-        <translation>Search</translation>
+        <translation type='obsolete'>Search</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation>File Name</translation>
+        <translation type='obsolete'>File Name</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation>File Size</translation>
+        <translation type='obsolete'>File Size</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation>File Type</translation>
+        <translation type='obsolete'>File Type</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation>Modified</translation>
+        <translation type='obsolete'>Modified</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation>Path</translation>
+        <translation type='obsolete'>Path</translation>
     </message>
     <message>
         <source>User</source>
-        <translation>User</translation>
+        <translation type='obsolete'>User</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation>Search:</translation>
+        <translation type='obsolete'>Search:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation>Download</translation>
+        <translation type='obsolete'>Download</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Close</translation>
+        <translation type='obsolete'>Close</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation>Clear</translation>
+        <translation type='obsolete'>Clear</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation>Stop</translation>
+        <translation type='obsolete'>Stop</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation>Idle.</translation>
+        <translation type='obsolete'>Idle.</translation>
     </message>
     <message>
         <source>%1</source>
@@ -1763,15 +1767,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Not connected.</source>
-        <translation>Not connected.</translation>
+        <translation type='obsolete'>Not connected.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation>Searching for: "%1".</translation>
+        <translation type='obsolete'>Searching for: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation>Results: %1</translation>
+        <translation type='obsolete'>Results: %1</translation>
     </message>
 </context>
 <context>
@@ -2736,6 +2740,110 @@ Date: %4</translation>
     <message>
         <source>/running - show time elapsed since you started Unizone</source>
         <translation>/running - show time elapsed since you started Unizone</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation>File Name</translation>
+    </message>
+    <message>
+        <source>File Size</source>
+        <translation>File Size</translation>
+    </message>
+    <message>
+        <source>File Type</source>
+        <translation>File Type</translation>
+    </message>
+    <message>
+        <source>Modified</source>
+        <translation>Modified</translation>
+    </message>
+    <message>
+        <source>Path</source>
+        <translation>Path</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>User</translation>
+    </message>
+    <message>
+        <source>Search:</source>
+        <translation>Search:</translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation>Download</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Clear</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Stop</translation>
+    </message>
+    <message>
+        <source>Idle.</source>
+        <translation>Idle.</translation>
+    </message>
+    <message>
+        <source>Topic</source>
+        <translation>Topic</translation>
+    </message>
+    <message>
+        <source>Users</source>
+        <translation>Users</translation>
+    </message>
+    <message>
+        <source>Admins</source>
+        <translation>Admins</translation>
+    </message>
+    <message>
+        <source>Public</source>
+        <translation>Public</translation>
+    </message>
+    <message>
+        <source>&amp;Create</source>
+        <translation>&amp;Create</translation>
+    </message>
+    <message>
+        <source>&amp;Join</source>
+        <translation>&amp;Join</translation>
+    </message>
+    <message>
+        <source>Chat</source>
+        <translation>Chat</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Search</translation>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation>Channels</translation>
+    </message>
+    <message>
+        <source>Searching for: "%1".</source>
+        <translation>Searching for: "%1".</translation>
+    </message>
+    <message>
+        <source>Results: %1</source>
+        <translation>Results: %1</translation>
+    </message>
+    <message>
+        <source>Create Channel</source>
+        <translation>Create Channel</translation>
+    </message>
+    <message>
+        <source>Please enter channel name</source>
+        <translation>Please enter channel name</translation>
+    </message>
+    <message>
+        <source>User #%1 invited you to channel %2. Do you accept?</source>
+        <translation>User #%1 invited you to channel %2. Do you accept?</translation>
+    </message>
+    <message>
+        <source>User #%1 requested invite to channel %2. Do you?</source>
+        <translation>User #%1 requested invite to channel %2. Do you?</translation>
     </message>
 </context>
 </TS>

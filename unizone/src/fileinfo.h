@@ -10,7 +10,7 @@
 
 #include "support/MuscleSupport.h"
 
-class UFileInfo
+class UFileInfo : private QFileInfo
 {
 public:
 	UFileInfo(QFileInfo info);
@@ -21,14 +21,15 @@ public:
 	QString getMIMEType() const;
 	QString getPath() const;
 	QString getName() const;
+	QString getExtension() const;
 	uint64 getSize();
 
 	bool isValid();
 	void Init();
 
 private:
-	QFileInfo *fInfo;				// Object initialized from?
 	QString fFileName;
+	QString fExtension;
 	QString fFilePath;
 	QString fMIMEType;
 	uint32 fModificationTime;
@@ -37,6 +38,7 @@ private:
 	void InitMIMEType();
 	void InitPath();
 	void InitName();
+	void InitExtension();
 	void InitSize();
 	void InitModificationTime();
 };

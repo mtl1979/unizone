@@ -355,31 +355,31 @@ Versio %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation>Luo Kanava</translation>
+        <translation type='obsolete'>Luo Kanava</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation>Anna kanavan nimi</translation>
+        <translation type='obsolete'>Anna kanavan nimi</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation>Kyllä</translation>
+        <translation type='obsolete'>Kyllä</translation>
     </message>
     <message>
         <source>No</source>
-        <translation>Ei</translation>
+        <translation type='obsolete'>Ei</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation>Kanavat</translation>
+        <translation type='obsolete'>Kanavat</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation>Käyttäjä #%1 pyysi kutsua kanavalle %2. Haluatko antaa?</translation>
+        <translation type='obsolete'>Käyttäjä #%1 pyysi kutsua kanavalle %2. Haluatko antaa?</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation>Käyttäjä #%1 kutsui sinut kanavalle %2. Otatko kutsun vastaan?</translation>
+        <translation type='obsolete'>Käyttäjä #%1 kutsui sinut kanavalle %2. Otatko kutsun vastaan?</translation>
     </message>
 </context>
 <context>
@@ -445,7 +445,7 @@ Versio %1</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation>Etsi</translation>
+        <translation type='obsolete'>Etsi</translation>
     </message>
     <message>
         <source>Open C&amp;hannels Window</source>
@@ -501,7 +501,7 @@ Versio %1</translation>
     </message>
     <message>
         <source>ALT+S</source>
-        <translation>ALT+S</translation>
+        <translation type='obsolete'>ALT+S</translation>
     </message>
     <message>
         <source>F11</source>
@@ -521,11 +521,11 @@ Versio %1</translation>
     </message>
     <message>
         <source>C&amp;hannels</source>
-        <translation>&amp;Kanavat</translation>
+        <translation type='obsolete'>&amp;Kanavat</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation>F10</translation>
+        <translation type='obsolete'>F10</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
@@ -1686,6 +1686,10 @@ Päiväys: %4</translation>
         <source>Upload Packet Size:</source>
         <translation>Lähetyksen Pakettikoko:</translation>
     </message>
+    <message>
+        <source>Enable Sound Effects</source>
+        <translation>Ääniefektit Päällä</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -1799,55 +1803,55 @@ Päiväys: %4</translation>
     <name>WSearch</name>
     <message>
         <source>Search</source>
-        <translation>Etsi</translation>
+        <translation type='obsolete'>Etsi</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation>Nimi</translation>
+        <translation type='obsolete'>Nimi</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation>Koko</translation>
+        <translation type='obsolete'>Koko</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation>Tyyppi</translation>
+        <translation type='obsolete'>Tyyppi</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation>Muokattu</translation>
+        <translation type='obsolete'>Muokattu</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation>Polku</translation>
+        <translation type='obsolete'>Polku</translation>
     </message>
     <message>
         <source>User</source>
-        <translation>Käyttäjä</translation>
+        <translation type='obsolete'>Käyttäjä</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation>Etsi:</translation>
+        <translation type='obsolete'>Etsi:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation>Lataa</translation>
+        <translation type='obsolete'>Lataa</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Sulje</translation>
+        <translation type='obsolete'>Sulje</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation>Tyhjennä</translation>
+        <translation type='obsolete'>Tyhjennä</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation>Pysäytä</translation>
+        <translation type='obsolete'>Pysäytä</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation>Vapaa.</translation>
+        <translation type='obsolete'>Vapaa.</translation>
     </message>
     <message>
         <source>%1</source>
@@ -1855,15 +1859,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Not connected.</source>
-        <translation>Ei yhdistetty.</translation>
+        <translation type='obsolete'>Ei yhdistetty.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation>Etsitään: "%1".</translation>
+        <translation type='obsolete'>Etsitään: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation>Tuloksia: %1</translation>
+        <translation type='obsolete'>Tuloksia: %1</translation>
     </message>
 </context>
 <context>
@@ -2828,6 +2832,110 @@ Päiväys: %4</translation>
     <message>
         <source>/running - show time elapsed since you started Unizone</source>
         <translation>/running - näyttää ajan, kuinka kauan Unizone on ollut käynnissä</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation>Nimi</translation>
+    </message>
+    <message>
+        <source>File Size</source>
+        <translation>Koko</translation>
+    </message>
+    <message>
+        <source>File Type</source>
+        <translation>Tyyppi</translation>
+    </message>
+    <message>
+        <source>Modified</source>
+        <translation>Muokattu</translation>
+    </message>
+    <message>
+        <source>Path</source>
+        <translation>Polku</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Käyttäjä</translation>
+    </message>
+    <message>
+        <source>Search:</source>
+        <translation>Etsi:</translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation>Lataa</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Tyhjennä</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Pysäytä</translation>
+    </message>
+    <message>
+        <source>Idle.</source>
+        <translation>Vapaa.</translation>
+    </message>
+    <message>
+        <source>Topic</source>
+        <translation>Aihe</translation>
+    </message>
+    <message>
+        <source>Users</source>
+        <translation>Käyttäjiä</translation>
+    </message>
+    <message>
+        <source>Admins</source>
+        <translation>Valvojia</translation>
+    </message>
+    <message>
+        <source>Public</source>
+        <translation>Yleinen</translation>
+    </message>
+    <message>
+        <source>&amp;Create</source>
+        <translation>&amp;Luo</translation>
+    </message>
+    <message>
+        <source>&amp;Join</source>
+        <translation>Lii&amp;ty</translation>
+    </message>
+    <message>
+        <source>Chat</source>
+        <translation>Keskustelu</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Etsi</translation>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation>Kanavat</translation>
+    </message>
+    <message>
+        <source>Searching for: "%1".</source>
+        <translation>Etsitään: "%1".</translation>
+    </message>
+    <message>
+        <source>Results: %1</source>
+        <translation>Tuloksia: %1</translation>
+    </message>
+    <message>
+        <source>Create Channel</source>
+        <translation>Luo Kanava</translation>
+    </message>
+    <message>
+        <source>Please enter channel name</source>
+        <translation>Anna kanavan nimi</translation>
+    </message>
+    <message>
+        <source>User #%1 invited you to channel %2. Do you accept?</source>
+        <translation>Käyttäjä #%1 kutsui sinut kanavalle %2. Otatko kutsun vastaan?</translation>
+    </message>
+    <message>
+        <source>User #%1 requested invite to channel %2. Do you?</source>
+        <translation>Käyttäjä #%1 pyysi kutsua kanavalle %2. Haluatko antaa?</translation>
     </message>
 </context>
 </TS>

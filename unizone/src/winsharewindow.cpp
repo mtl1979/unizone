@@ -66,8 +66,6 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	CreateDirectories();
 	gWin = this;
 	fDLWindow = NULL;
-//	fSearchWindow = NULL;
-//	fChannels = NULL;
 	fAccept = NULL;
 	
 	RedirectDebugOutput();
@@ -318,12 +316,14 @@ WinShareWindow::~WinShareWindow()
 	// since they are QObject's
 
 	fUpdateThread->Reset();
+	fUpdateThread = NULL;
+
 	fServerThread->Reset();
+	fServerThread = NULL;
+
 	fNetClient->Reset();
 	fNetClient = NULL;
 
-	fServerThread = NULL;
-	fUpdateThread = NULL;
 
 	delete fMenus;
 	fMenus = NULL;
@@ -336,6 +336,11 @@ WinShareWindow::~WinShareWindow()
 	WaitOnFileThread();
 	delete fFileScanThread;
 	fFileScanThread = NULL; // <postmaster@raasu.org> 20021027
+
+	if (fAccept)
+	{
+		StopAcceptThread();
+	}
 
 	CleanupDebug();
 
@@ -660,22 +665,6 @@ WinShareWindow::resizeEvent(QResizeEvent * event)
 	QPoint qp(0, 0);
 	QSize qs(event->size().width(), event->size().height());
 	fMainBox->setGeometry(QRect(qp, qs));
-	/*
-		if (fInfoPane)
-		{
-			fInfoPane->resize(event->size().width(), 48);
-			h -= fInfoPane->height() - 4;
-		}
-		if (fSearchPane)
-		{
-			int t = event->size().height() - h + 4;
-			QPoint qp = QPoint(0, t);
-			QSize qs = QSize(event->size().width(), 300);
-			fSearchPane->setGeometry(QRect(qp, qs));
-			h -= 300 - 4;
-		}
-	fMainSplitter->resize(event->size().width(), h);
-	*/
 }
 
 void
@@ -848,8 +837,6 @@ WinShareWindow::InitGUI()
 
 
 	// connect up slots
-	// connect(fClose, SIGNAL(clicked()), this, SLOT(Close()));
-	// connect(fSearchEdit, SIGNAL(returnPressed()), this, SLOT(GoSearch()));
 	connect(fNetClient, SIGNAL(AddFile(const QString, const QString, bool, MessageRef)), this,
 			SLOT(AddFile(const QString, const QString, bool, MessageRef)));
 	connect(fNetClient, SIGNAL(RemoveFile(const QString, const QString)), this, 
@@ -857,7 +844,6 @@ WinShareWindow::InitGUI()
 	connect(fClear, SIGNAL(clicked()), this, SLOT(ClearList()));
 	connect(fStop, SIGNAL(clicked()), this, SLOT(StopSearch()));
 	connect(fDownload, SIGNAL(clicked()), this, SLOT(Download()));
-	//connect(fNet, SIGNAL(DisconnectedFromServer()), this, SLOT(DisconnectedFromServer()));
 
 	fQueue = new Message();
 	CHECK_PTR(fQueue);
@@ -890,7 +876,6 @@ WinShareWindow::InitGUI()
     ChannelList->addColumn( tr( "Public" ) );
 
 	fChannelsTab->addMultiCellWidget(ChannelList, 0, 4, 0, 4);
-    //ChannelList->setGeometry( QRect( 1, 1, 508, 244 ) ); 
 	
     Create = new QPushButton( tr( "&Create" ), fChannelsWidget, "Create" );
 
@@ -924,37 +909,7 @@ WinShareWindow::InitGUI()
 		fNetClient, SIGNAL(UserIDChanged(QString, QString)),
 		this, SLOT(UserIDChanged(QString, QString))
 		);
-/*
-	// Remote event signals
-	connect(
-		parent, SIGNAL(ChannelCreated(const QString, const QString, int64)),
-		this, SLOT(ChannelCreated(const QString, const QString, int64))
-		);
-	connect(
-		parent, SIGNAL(ChannelJoin(const QString, const QString)),
-		this, SLOT(ChannelJoin(const QString, const QString))
-		);
-	connect(
-		parent, SIGNAL(ChannelPart(const QString, const QString)),
-		this, SLOT(ChannelPart(const QString, const QString))
-		);
-	connect(
-		parent, SIGNAL(ChannelInvite(const QString, const QString, const QString)),
-		this, SLOT(ChannelInvite(const QString, const QString, const QString))
-		);
-	connect(
-		parent, SIGNAL(ChannelKick(const QString, const QString, const QString)),
-		this, SLOT(ChannelKick(const QString, const QString, const QString))
-		);
-	connect(
-		parent, SIGNAL(ChannelTopic(const QString, const QString, const QString)),
-		this, SLOT(ChannelTopic(const QString, const QString, const QString))
-		);
-	connect(
-		parent, SIGNAL(ChannelPublic(const QString, const QString, bool)),
-		this, SLOT(ChannelPublic(const QString, const QString, bool))
-		);
-*/
+
 	// Window widget events
 	connect(Create, SIGNAL(clicked()), this, SLOT(CreateChannel()));
 	connect(Join, SIGNAL(clicked()), this, SLOT(JoinChannel()));
@@ -967,12 +922,11 @@ WinShareWindow::InitGUI()
 	fMainSplitter = new QSplitter(fTabs);
 	CHECK_PTR(fMainSplitter);
 	fMainSplitter->move(0, 200);
-//	fMainLayout->addMultiCellWidget(fMainSplitter, 14, 14, 0, 10);
 
 	// user list
 	fUsersBox = new QHGroupBox(fMainSplitter);
 	CHECK_PTR(fUsersBox);
-	// fUsersBox->move(0, fMenus->height() + fInfoPane->height() + 300 + 8);
+
 	fUsers = new WUniListView(fUsersBox);
 	CHECK_PTR(fUsers);
 	// initialize the list view
@@ -1817,9 +1771,6 @@ WinShareWindow::WaitOnFileThread()
 		PrintSystem(tr("Waiting for file scan thread to finish..."),false);
 		while (fFileScanThread->IsRunning()) 
 		{
-			//fFileScanThread->Lock();
-			//fFileScanThread->wait();
-			//fFileScanThread->Unlock();
 			qApp->processEvents(300);
 		}
 	}
@@ -1971,7 +1922,7 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 	}
 	window->show();
 	// it's a map... but so far, there is no need for a key
-	// as i just iterate through the list
+	// as I just iterate through the list
 	WPrivPair p = MakePair(window);
 	pLock.lock();
 	gWin->fPrivateWindows.insert(p);
@@ -2100,20 +2051,7 @@ WinShareWindow::OpenDownloads()
 	OpenDownload();
 	fDLWindow->show();
 }
-/*
-void
-WinShareWindow::OpenChannels()
-{
-	if (!fChannels)
-	{
-		fChannels = new Channels(this, fNetClient);
-		CHECK_PTR(fChannels);
 
-		connect(fChannels, SIGNAL(Closed()), gWin, SLOT(ChannelsWindowClosed()));
-	}
-	fChannels->show();
-}
-*/
 void
 WinShareWindow::SetDelayedSearchPattern(QString pattern)
 {
@@ -2337,7 +2275,6 @@ WinShareWindow::GoSearch()
 	StopSearch();	// these methods lock
 	ClearList();
 
-
 	// here we go with the new search pattern
 	if (fSearchEdit->currentText().stripWhiteSpace() == "")	// no search string
 		return;
@@ -2495,7 +2432,6 @@ WinShareWindow::SetSearchStatus(const QString & status)
 void
 WinShareWindow::SetSearch(QString pattern)
 {
-	//fSearchEdit->setText(pattern);
 	// Is already on history?
 	for (int i = 0; i < fSearchEdit->count(); i++)
 	{
@@ -2617,11 +2553,6 @@ WinShareWindow::ChannelAdded(const QString channel, const QString sid, int64 tim
 		// Create ListView Item
 		QListViewItem * item = new QListViewItem(ChannelList, channel, "", "", "", "");
 		wcp.second->SetItem(item);
-		// Create Window item
-		//Channel * win = new Channel(this, fNet, channel);
-		//win->SetOwner(sid);
-		//win->show();
-		//wcp.second->SetWindow(win);
 		wcp.second->SetCreated(timecreated);
 	}
 	(*iter).second->AddUser(sid);
@@ -2748,11 +2679,7 @@ WinShareWindow::JoinChannel()
 	if (!item)
 		return;
 	QString text = item->text(0); // Get Channel name
-	//WChannelIter it = fChannels.find(text);
-	//if (it != fChannels.end())
-	//{
-		JoinChannel(text);
-	//}
+	JoinChannel(text);
 }
 
 void
@@ -2831,12 +2758,6 @@ WinShareWindow::ChannelCreated(const QString channel, const QString owner, int64
 		// Create ListView item
 		QListViewItem * item = new QListViewItem(ChannelList, channel, "", "", "", "");
 		wcp.second->SetItem(item);
-		// Create Window item
-		//Channel * win = new Channel(this, fNet, channel);
-		//wcp.second->SetWindow(win);
-		//wcp.second->SetCreated(timecreated);
-		//win->SetOwner(fNet->LocalSessionID());
-		//win->show();
 		ChannelAdmins(owner, channel, owner);
 		ChannelJoin(channel, owner);
 		UpdatePublic(it);

@@ -589,8 +589,11 @@ WUploadThread::DoUpload()
 					uref()->Rename("temp", "data");
 				}
 				SendMessageToSessions(uref);
-				RequestOutputQueuesDrainedNotification(MessageRef());
+				// NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before calling it!
 				fCurrentOffset += numBytes;
+				MessageRef drain(GetMessageFromPool());
+				if (drain())
+					RequestOutputQueuesDrainedNotification(drain);
 				MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));	// we'll use this event for sending as well
 				if (update())
 				{
@@ -684,7 +687,9 @@ WUploadThread::DoUpload()
 				PRINT("No more files!\n");
 #endif
 				fWaitingForUploadToFinish = true;
-				RequestOutputQueuesDrainedNotification(MessageRef());
+				MessageRef drain(GetMessageFromPool());
+				if (drain())
+					RequestOutputQueuesDrainedNotification(drain);
 				break;
 			}
 		}

@@ -10,35 +10,21 @@
 #include "platform.h"
 #include "debugimpl.h"
 
-UFileInfo::UFileInfo(QFileInfo info)
+UFileInfo::UFileInfo(QFileInfo info) : QFileInfo(info)
 {
-	fInfo = new QFileInfo(info);
-	CHECK_PTR(fInfo);
-//	Init();
 }
 
-UFileInfo::UFileInfo(QString file)
+UFileInfo::UFileInfo(QString file) : QFileInfo(file)
 {
-	fInfo = new QFileInfo(file);
-	CHECK_PTR(fInfo);
-//	Init();
 }
 
 UFileInfo::~UFileInfo()
 {
-	if (fInfo)
-		delete fInfo;
 }
 
 void
 UFileInfo::InitMIMEType()
 {
-	if (!fInfo)
-	{
-		fMIMEType = QString::null;
-		return;
-	}
-
 #ifdef WIN32
 	// Read the mime-type
 	HKEY hkey;
@@ -48,7 +34,7 @@ UFileInfo::InitMIMEType()
 	QString mt = QString::null;
 
 	QString ext = ".";
-	ext += fInfo->extension();
+	ext += getExtension();
 	wchar_t * tExt = qStringToWideChar(ext);
 	if (RegOpenKey(HKEY_CLASSES_ROOT, tExt, &hkey) == ERROR_SUCCESS)
 	{
@@ -85,21 +71,15 @@ UFileInfo::getMIMEType() const
 void
 UFileInfo::InitModificationTime()
 {
-	if (!fInfo)
-	{
-		fModificationTime = time(NULL);
-		return;
-	}
-
 #ifdef WIN32
-			// Read the modification time
+		// Read the modification time
 		// The FILETIME structure is a 64-bit value representing the number of 100-nanosecond intervals since January 1, 1601 (UTC).
 		FILETIME ftime;
 		// The time functions included in the C run-time use the time_t type to represent the number of seconds elapsed since midnight, January 1, 1970.
 		uint32 mtTime; // <postmaster@raasu.org> 20021230
 		uint64 ftTime; // 
 		HANDLE fileHandle;
-		wchar_t * tFilePath = qStringToWideChar( fInfo->filePath() );
+		wchar_t * tFilePath = qStringToWideChar( fFileName );
 		fileHandle = CreateFile(tFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		delete [] tFilePath;
 		tFilePath = NULL; // <postmaster@raasu.org> 20021027
@@ -151,6 +131,7 @@ UFileInfo::Init()
 {
 	InitPath();
 	InitName();
+	InitExtension();
 	InitMIMEType();
 	InitSize();
 	InitModificationTime();
@@ -159,15 +140,7 @@ UFileInfo::Init()
 void
 UFileInfo::InitPath()
 {
-	if (!fInfo)
-	{
-		fFilePath = QString::null;
-	}
-	else
-	{
-		fFilePath = fInfo->dirPath(true);
-	}
-	return;
+	fFilePath = dirPath(true);
 }
 
 QString
@@ -179,15 +152,7 @@ UFileInfo::getPath() const
 void
 UFileInfo::InitName()
 {
-	if (!fInfo)
-	{
-		fFileName = QString::null;
-	}
-	else
-	{
-		fFileName = fInfo->fileName();
-	}
-	return;
+	fFileName = fileName();
 }
 
 QString
@@ -197,17 +162,21 @@ UFileInfo::getName() const
 }
 
 void
+UFileInfo::InitExtension()
+{
+	fExtension = extension( false );
+}
+
+QString
+UFileInfo::getExtension() const
+{
+	return fExtension;
+}
+
+void
 UFileInfo::InitSize()
 {
-	if (!fInfo)
-	{
-		fSize = 0;
-	}
-	else
-	{
-		fSize = fInfo->size();
-	}
-	return;
+	fSize = size();
 }
 
 uint64
@@ -219,14 +188,12 @@ UFileInfo::getSize()
 bool
 UFileInfo::isValid()
 {
-	if (!fInfo)				// no valid object
+	if (exists())	// non-existent file
+	{
+		return true;
+	}
+	else
 	{
 		return false;
 	}
-
-	if (!fInfo->exists())	// non-existent file
-	{
-		return false;
-	}
-	return true;
 }

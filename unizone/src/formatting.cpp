@@ -96,7 +96,7 @@ QString WFormat::StatusChanged()
 // priv messages
 
 // <postmaster@raasu.org> 20020930,20030127 
-// Change that ID is always black, uid in --
+// Changed that ID is always black, uid in --
 
 QString WFormat::SendPrivMsg	= "<font size=\"%2\"><b>-%3-</b> <font color=\"%1\"><b>%4 -> (%5)</b></font>: </font>";	
 QString WFormat::ReceivePrivMsg = "<font size=\"%2\"><b>-%3-</b> <font color=\"%1\"><b>%4</b></font>: </font><font color=\"%5\" size=\"%6\">%7</font>";
@@ -332,7 +332,7 @@ ParseString(QString & str)
 		{
 			if (space)
 			{
-				// alternate inserting nbsp and real space
+				// alternate inserting non-breaking space and real space
 				if (first)
 					first = false;
 				else 

@@ -15,6 +15,7 @@
 #include "search.h"
 #include "gotourl.h"
 #include "util/StringTokenizer.h"
+#include "textevent.h"
 
 #include <qapplication.h>
 
@@ -85,10 +86,19 @@ WinShareWindow::UserNameChanged(QString sid, QString old, QString newname)
 	{
 		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 
+		// <postmaster@raasu.org> 20030622
+		QString nameformat;
 		if (old != "?" && old.length() > 0)
-			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserNameChanged().arg(sid).arg(FixStringStr(old)).arg(FixStringStr(newname)).arg(WColors::RemoteName).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112 
+		{
+			// <postmaster@raasu.org> 20021112, 20030622
+			nameformat = WFormat::UserNameChanged().arg(sid).arg(FixStringStr(old)).arg(FixStringStr(newname)).arg(WColors::RemoteName).arg(WColors::RemoteName);  
+		}
 		else
-			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserNameChangedNoOld().arg(sid).arg(FixStringStr(newname)).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112
+		{
+			// <postmaster@raasu.org> 20021112, 20030622
+			nameformat = WFormat::UserNameChangedNoOld().arg(sid).arg(FixStringStr(newname)).arg(WColors::RemoteName); 
+		}
+		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameformat);
 		PrintText(system);
 	}
 	WTextEvent * wte = new WTextEvent(newname, WTextEvent::ResumeType);
@@ -378,15 +388,6 @@ WinShareWindow::ReconnectTimer()
 	Connect();
 }
 
-/*
-void
-WinShareWindow::SearchDialog()
-{
-	QString pattern = "";
-	LaunchSearch(pattern);
-}
-*/
-
 void
 WinShareWindow::GotShown(const QString & txt)
 {
@@ -403,22 +404,6 @@ WinShareWindow::AboutToQuit()
 	SaveSettings();
 	QApplication::exit(0);
 }
-
-/*
-void
-WinShareWindow::SearchWindowClosed()
-{
-	PRINT("Search window closed!\n");
-	fSearchWindow = NULL;
-}
-
-void
-WinShareWindow::ChannelsWindowClosed()
-{
-	PRINT("Channels window closed!\n");
-	fChannels = NULL;
-}
-*/
 
 void
 WinShareWindow::DownloadWindowClosed()

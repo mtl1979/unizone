@@ -9,7 +9,6 @@
 WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	: MessageTransceiverThread(), fOwner(owner), fShutdownFlag(optShutdownFlag)
 {
-	int i;
 	// Default status
 	fActive = true;
 	fBlocked = false;
@@ -17,16 +16,12 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	fManuallyQueued = false;
 	fLocallyQueued = false;
 	fRemotelyQueued = false;
-	fRateCount = 0;
-	fETACount = 0;
 	fPackets = 0;
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fPacket = 8;
-	for (i = 0; i < MAX_RATE_COUNT; i++)
-		fRate[i] = 0.0f;
-	for (i = 0; i < MAX_ETA_COUNT; i++)
-		fETA[i] = 0;
+	InitTransferRate();
+	InitTransferETA();
 }
 
 WGenericThread::~WGenericThread()
@@ -297,6 +292,12 @@ WGenericThread::GetBanTime()
 void
 WGenericThread::SetPacketSize(int s)
 {
+	// Clear Rate and ETA counts because changing the Packet Size between two estimate recalculations causes miscalculation
+	if (fPacket != s)
+	{
+		fRateCount = 0;
+		fETACount = 0;
+	}
 	fPacket = s;
 }
 
@@ -304,4 +305,26 @@ int
 WGenericThread::GetPacketSize()
 {
 	return fPacket;
+}
+
+void
+WGenericThread::InitTransferRate()
+{
+	for (int i = 0; i < MAX_RATE_COUNT; i++)
+	{
+		fRate[i] = 0.0f;
+	}
+
+	fRateCount = 0;
+}
+
+void
+WGenericThread::InitTransferETA()
+{
+	for (int i = 0; i < MAX_ETA_COUNT; i++)
+	{
+		fETA[i] = 0;
+	}
+
+	fETACount = 0;
 }

@@ -36,6 +36,7 @@ NetClient::~NetClient()
 	}
 	fChannelLock.unlock();
 	Disconnect();
+	WaitForInternalThreadToExit();
 }
 
 // <postmaster@raasu.org> -- Add support for port numbers

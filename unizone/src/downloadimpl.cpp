@@ -1010,8 +1010,9 @@ WDownload::customEvent(QCustomEvent * e)
 						
 						item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(gt->ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, QString::number((int) offset));
-						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 100 ms?
-						if (secs > 0.1f)
+						// <postmaster@raasu.org> 20021104, 20030217, 20030622
+						// elapsed time >= 1 s?
+						if (secs >= 1.0f)
 						{
 							gt->SetMostRecentRate(kps);
 							gt->fLastData.restart();
@@ -1067,8 +1068,9 @@ WDownload::customEvent(QCustomEvent * e)
 												
 						item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(gt->ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, QString::number((int) offset));
-						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 100 ms?
-						if (secs > 0.1f) 
+						// <postmaster@raasu.org> 20021104, 20030217, 20030622
+						// elapsed time >= 1 s?
+						if (secs >= 1.0f) 
 						{
 							gt->SetMostRecentRate(kps);
 							gt->fLastData.restart();
