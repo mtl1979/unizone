@@ -1,5 +1,4 @@
 #include "menubar.h"
-#include "version.h"
 
 #include <qapplication.h>
 #include <qaccel.h>

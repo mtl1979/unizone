@@ -1,7 +1,9 @@
 #include "mainwindowimpl.h"
 #include "previewimpl.h"
 #include "menubar.h"
+#ifdef WIN32
 #include "jpegio.h"
+#endif
 
 #include <qimage.h>
 #include <qlineedit.h>
@@ -102,7 +104,7 @@ void
 ImageSplitter::resizeEvent(QResizeEvent *e)
 {
 	QSize s = e->size();
-	QWidget * lwidget = dynamic_cast<QWidget *>(Layout14->parent());
+	QWidget * lwidget = dynamic_cast<QWidget *>(Layout27->parent());
 	if (lwidget)
 	{
 		QRect r = lwidget->geometry();
