@@ -1,0 +1,66 @@
+/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+
+#ifndef MuscleDumbReflectSession_h
+#define MuscleDumbReflectSession_h
+
+#include "reflector/AbstractReflectSession.h"
+
+namespace muscle {
+
+/**
+ *  This is a factory class that returns new DumbReflectSession objects.
+ */
+class DumbReflectSessionFactory : public ReflectSessionFactory
+{
+public:
+   virtual AbstractReflectSession * CreateSession(const String &);
+};
+
+/** This class represents a single TCP connection between a muscled server and a client program.  
+ * This class implements a simple "reflect-all-messages-to-all-clients"
+ * message forwarding strategy, but may be subclassed to perform more complex message routing
+ * logic.
+ */
+class DumbReflectSession : public AbstractReflectSession
+{
+public:
+   /** Default constructor. */
+   DumbReflectSession();
+
+   /** Destructor. */
+   virtual ~DumbReflectSession();
+
+   /** Called when a new message is received from our IO gateway.
+    *  @param msg Reference to the Message that was received.
+    */
+   virtual void MessageReceivedFromGateway(MessageRef msg);
+
+   /** Called when a message is sent to us by another session (possibly this one).  
+    *  @param from The session that is sending us the message.
+    *  @param msg Reference to the message that we are receiving.
+    *  @param userData This is a user value whose semantics are defined by the subclass.
+    */
+   virtual void MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msg, void * userData);
+
+   /**
+    * Set this true to enable self-reflection:  if true, messages
+    * sent by a given client will be reflected back to that client.
+    * Default state is false (i.e. messages only go to everyone else)
+    * @param reflectToSelf Whether or not our client's own messages should be bounced back to him.
+    */
+   void SetReflectToSelf(bool reflectToSelf);
+
+   /** Returns true iff our client's own messages will be bounced back to him.  */
+   bool GetReflectToSelf() const;
+
+protected:
+   /** Returns a human-readable label for our session type:  "Dumb Session" */
+   virtual const char * GetTypeName() const {return "Dumb Session";}
+
+private:
+   bool _reflectToSelf;
+};
+
+};  // end namespace muscle
+
+#endif

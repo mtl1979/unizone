@@ -1,0 +1,1452 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="Unizone"
+	SccProjectName=""
+	SccLocalPath="">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Debug"
+			IntermediateDirectory=".\Debug"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(QTDIR)\include,..\src,..\src\muscle"
+				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,QT_THREAD_SUPPORT,QT_DLL,QT_NO_ASCII_CAST,BETA,UNICODE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug/Unizone.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="unicows.lib shlwapi.lib odbc32.lib odbccp32.lib wsock32.lib qt-mt230nc.lib qtmain.lib muscled.lib"
+				OutputFile="Unizoned.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				IgnoreDefaultLibraryNames="msvcrt"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug/Unizoned.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/Unizone.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="German|Win32"
+			OutputDirectory=".\Unizone___Win32_German"
+			IntermediateDirectory=".\Unizone___Win32_German"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(QTDIR)\include,..\src,..\src\muscle"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,QT_THREAD_SUPPORT,QT_DLL,BETA,MSG_LANG=49,QT_NO_ASCII_CAST,UNICODE"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Unizone___Win32_German/Unizone.pch"
+				AssemblerListingLocation=".\Unizone___Win32_German/"
+				ObjectFile=".\Unizone___Win32_German/"
+				ProgramDataBaseFileName=".\Unizone___Win32_German/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="unicows.lib shlwapi.lib wsock32.lib qt-mt230nc.lib qtmain.lib muscle.lib"
+				OutputFile="Unizone_de.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				IgnoreDefaultLibraryNames="libc,libcd"
+				ProgramDatabaseFile=".\Unizone___Win32_German/Unizone_de.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Unizone___Win32_German/Unizone.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="English|Win32"
+			OutputDirectory=".\Unizone___Win32_English"
+			IntermediateDirectory=".\Unizone___Win32_English"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(QTDIR)\include,..\src,..\src\muscle"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,QT_THREAD_SUPPORT,QT_DLL,BETA,MSG_LANG=1,QT_NO_ASCII_CAST,UNICODE"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Unizone___Win32_English/Unizone.pch"
+				AssemblerListingLocation=".\Unizone___Win32_English/"
+				ObjectFile=".\Unizone___Win32_English/"
+				ProgramDataBaseFileName=".\Unizone___Win32_English/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="unicows.lib shlwapi.lib wsock32.lib qt-mt230nc.lib qtmain.lib muscle.lib"
+				OutputFile="Unizone_en.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				IgnoreDefaultLibraryNames="libc,libcd"
+				ProgramDatabaseFile=".\Unizone___Win32_English/Unizone_en.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Unizone___Win32_English/Unizone.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Portuguese|Win32"
+			OutputDirectory=".\Unizone___Win32_Portuguese"
+			IntermediateDirectory=".\Unizone___Win32_Portuguese"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(QTDIR)\include,..\src,..\src\muscle"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,QT_THREAD_SUPPORT,QT_DLL,BETA,MSG_LANG=351,QT_NO_ASCII_CAST,UNICODE"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Unizone___Win32_Portuguese/Unizone.pch"
+				AssemblerListingLocation=".\Unizone___Win32_Portuguese/"
+				ObjectFile=".\Unizone___Win32_Portuguese/"
+				ProgramDataBaseFileName=".\Unizone___Win32_Portuguese/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="unicows.lib shlwapi.lib wsock32.lib qt-mt230nc.lib qtmain.lib muscle.lib"
+				OutputFile="Unizone_pt.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				IgnoreDefaultLibraryNames="libc,libcd"
+				ProgramDatabaseFile=".\Unizone___Win32_Portuguese/Unizone_pt.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Unizone___Win32_Portuguese/Unizone.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\Release"
+			IntermediateDirectory=".\Release"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(QTDIR)\include,..\src,..\src\muscle"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,QT_THREAD_SUPPORT,QT_DLL,BETA,QT_NO_ASCII_CAST,UNICODE"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Release/Unizone.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="unicows.lib shlwapi.lib wsock32.lib qt-mt230nc.lib qtmain.lib muscle.lib"
+				OutputFile="Unizone.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				IgnoreDefaultLibraryNames="libc,libcd"
+				ProgramDatabaseFile=".\Release/Unizone.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Release/Unizone.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\src\Log.cpp">
+			</File>
+			<File
+				RelativePath="..\src\aboutdlg.cpp">
+			</File>
+			<File
+				RelativePath="..\src\aboutdlgimpl.cpp">
+			</File>
+			<File
+				RelativePath="..\src\accept.cpp">
+			</File>
+			<File
+				RelativePath="..\src\botitem.cpp">
+			</File>
+			<File
+				RelativePath="..\src\chattext.cpp">
+			</File>
+			<File
+				RelativePath="..\src\checkgroup.cpp">
+			</File>
+			<File
+				RelativePath="..\src\colors.cpp">
+			</File>
+			<File
+				RelativePath="..\src\combo.cpp">
+			</File>
+			<File
+				RelativePath="..\src\downloadimpl.cpp">
+			</File>
+			<File
+				RelativePath="..\src\downloadthread.cpp">
+			</File>
+			<File
+				RelativePath="..\src\filethread.cpp">
+			</File>
+			<File
+				RelativePath="..\src\formatting.cpp">
+			</File>
+			<File
+				RelativePath="..\src\genericthread.cpp">
+			</File>
+			<File
+				RelativePath="..\src\gotourl.cpp">
+			</File>
+			<File
+				RelativePath="..\src\icon.rc">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="\build\Unizone\src;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="\build\Unizone\src;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="\build\Unizone\src;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="\build\Unizone\src;$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="\build\Unizone\src;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\looper.cpp">
+			</File>
+			<File
+				RelativePath="..\src\main.cpp">
+			</File>
+			<File
+				RelativePath="..\src\md5.cpp">
+			</File>
+			<File
+				RelativePath="..\src\menubar.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_aboutdlg.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_aboutdlgimpl.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_chattext.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_combo.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_downloadimpl.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_genericthread.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_htmlview.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_netclient.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_prefs.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_prefsimpl.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_privatewindow.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_privatewindowimpl.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_search.cpp">
+			</File>
+			<File
+				RelativePath="..\src\moc_winsharewindow.cpp">
+			</File>
+			<File
+				RelativePath="..\src\netclient.cpp">
+			</File>
+			<File
+				RelativePath="..\src\nicklist.cpp">
+			</File>
+			<File
+				RelativePath="..\src\platform.cpp">
+			</File>
+			<File
+				RelativePath="..\src\prefs.cpp">
+			</File>
+			<File
+				RelativePath="..\src\prefsimpl.cpp">
+			</File>
+			<File
+				RelativePath="..\src\privatewindow.cpp">
+			</File>
+			<File
+				RelativePath="..\src\privatewindowimpl.cpp">
+			</File>
+			<File
+				RelativePath="..\src\search.cpp">
+			</File>
+			<File
+				RelativePath="..\src\searchitem.cpp">
+			</File>
+			<File
+				RelativePath="..\src\settings.cpp">
+			</File>
+			<File
+				RelativePath="..\src\textevent.cpp">
+			</File>
+			<File
+				RelativePath="..\src\transferitem.cpp">
+			</File>
+			<File
+				RelativePath="..\src\ulistview.cpp">
+			</File>
+			<File
+				RelativePath="..\src\uploadthread.cpp">
+			</File>
+			<File
+				RelativePath="..\src\user.cpp">
+			</File>
+			<File
+				RelativePath="..\src\userlistitem.cpp">
+			</File>
+			<File
+				RelativePath="..\src\winshare_network.cpp">
+			</File>
+			<File
+				RelativePath="..\src\winshare_parsing.cpp">
+			</File>
+			<File
+				RelativePath="..\src\winshare_slots.cpp">
+			</File>
+			<File
+				RelativePath="..\src\winsharewindow.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\src\Log.h">
+			</File>
+			<File
+				RelativePath="..\src\aboutdlg.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\aboutdlgimpl.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\accept.h">
+			</File>
+			<File
+				RelativePath="..\src\botitem.h">
+			</File>
+			<File
+				RelativePath="..\src\build.h">
+			</File>
+			<File
+				RelativePath="..\src\chattext.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\checkgroup.h">
+			</File>
+			<File
+				RelativePath="..\src\colors.h">
+			</File>
+			<File
+				RelativePath="..\src\combo.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\debugimpl.h">
+			</File>
+			<File
+				RelativePath="..\src\downloadimpl.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\downloadthread.h">
+			</File>
+			<File
+				RelativePath="..\src\filethread.h">
+			</File>
+			<File
+				RelativePath="..\src\formatting.h">
+			</File>
+			<File
+				RelativePath="..\src\genericthread.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\global.h">
+			</File>
+			<File
+				RelativePath="..\src\gotourl.h">
+			</File>
+			<File
+				RelativePath="..\src\htmlview.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\lang.h">
+			</File>
+			<File
+				RelativePath="..\src\looper.h">
+			</File>
+			<File
+				RelativePath="..\src\md5.h">
+			</File>
+			<File
+				RelativePath="..\src\menubar.h">
+			</File>
+			<File
+				RelativePath="..\src\netclient.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\nicklist.h">
+			</File>
+			<File
+				RelativePath="..\src\platform.h">
+			</File>
+			<File
+				RelativePath="..\src\prefs.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\prefsimpl.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\privatewindow.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\privatewindowimpl.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\resource.h">
+			</File>
+			<File
+				RelativePath="..\src\search.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\searchitem.h">
+			</File>
+			<File
+				RelativePath="..\src\settings.h">
+			</File>
+			<File
+				RelativePath="..\src\textevent.h">
+			</File>
+			<File
+				RelativePath="..\src\transferitem.h">
+			</File>
+			<File
+				RelativePath="..\src\ulistview.h">
+			</File>
+			<File
+				RelativePath="..\src\uploadthread.h">
+			</File>
+			<File
+				RelativePath="..\src\user.h">
+			</File>
+			<File
+				RelativePath="..\src\userlistitem.h">
+			</File>
+			<File
+				RelativePath="..\src\version.h">
+			</File>
+			<File
+				RelativePath="..\src\wgenericevent.h">
+			</File>
+			<File
+				RelativePath="..\src\winsharewindow.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\wpwevent.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath="..\src\Unizone_icon.ico">
+			</File>
+		</Filter>
+		<Filter
+			Name="UI files"
+			Filter="ui">
+			<File
+				RelativePath="..\src\aboutdlg.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\prefs.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\privatewindow.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="German|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="English|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Portuguese|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

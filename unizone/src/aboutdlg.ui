@@ -1,0 +1,225 @@
+<!DOCTYPE UI><UI>
+<class>AboutDlgBase</class>
+<widget>
+    <class>QDialog</class>
+    <property stdset="1">
+        <name>name</name>
+        <cstring>AboutDlgBase</cstring>
+    </property>
+    <property stdset="1">
+        <name>geometry</name>
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>400</width>
+            <height>200</height>
+        </rect>
+    </property>
+    <property stdset="1">
+        <name>sizePolicy</name>
+        <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
+        </sizepolicy>
+    </property>
+    <property stdset="1">
+        <name>minimumSize</name>
+        <size>
+            <width>400</width>
+            <height>200</height>
+        </size>
+    </property>
+    <property stdset="1">
+        <name>maximumSize</name>
+        <size>
+            <width>400</width>
+            <height>200</height>
+        </size>
+    </property>
+    <property stdset="1">
+        <name>caption</name>
+        <string>About Unizone</string>
+    </property>
+    <property stdset="1">
+        <name>sizeGripEnabled</name>
+        <bool>false</bool>
+    </property>
+    <widget>
+        <class>QPushButton</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>buttonOk</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>330</x>
+                <y>160</y>
+                <width>60</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>caption</name>
+            <string></string>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>&amp;OK</string>
+        </property>
+        <property stdset="1">
+            <name>autoDefault</name>
+            <bool>true</bool>
+        </property>
+        <property stdset="1">
+            <name>default</name>
+            <bool>true</bool>
+        </property>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>TextLabel2</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>50</x>
+                <y>60</y>
+                <width>300</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Written by Mika T. Lindqvist</string>
+        </property>
+        <property stdset="1">
+            <name>alignment</name>
+            <set>AlignCenter</set>
+        </property>
+        <property>
+            <name>hAlign</name>
+        </property>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>TextLabel2_2</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>50</x>
+                <y>80</y>
+                <width>300</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Based upon the Windows MUSCLE client Ozone</string>
+        </property>
+        <property stdset="1">
+            <name>alignment</name>
+            <set>AlignCenter</set>
+        </property>
+        <property>
+            <name>hAlign</name>
+        </property>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>TextLabel2_3</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>50</x>
+                <y>100</y>
+                <width>300</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Which was written by Vitaliy Mikitchenko</string>
+        </property>
+        <property stdset="1">
+            <name>alignment</name>
+            <set>AlignCenter</set>
+        </property>
+        <property>
+            <name>hAlign</name>
+        </property>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>TextLabel2_3_2</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>30</x>
+                <y>130</y>
+                <width>340</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</string>
+        </property>
+        <property stdset="1">
+            <name>alignment</name>
+            <set>AlignCenter</set>
+        </property>
+        <property>
+            <name>hAlign</name>
+        </property>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>titleLabel</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>30</x>
+                <y>0</y>
+                <width>340</width>
+                <height>60</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>font</name>
+            <font>
+                <pointsize>16</pointsize>
+                <bold>1</bold>
+            </font>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string></string>
+        </property>
+        <property stdset="1">
+            <name>alignment</name>
+            <set>WordBreak|AlignCenter</set>
+        </property>
+        <property>
+            <name>hAlign</name>
+        </property>
+        <property>
+            <name>wordwrap</name>
+        </property>
+    </widget>
+</widget>
+</UI>
