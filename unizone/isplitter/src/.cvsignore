@@ -1,0 +1,10 @@
+moc_mainwindow.cpp
+moc_mainwindowimpl.cpp
+moc_menubar.cpp
+isplitter_en.qm
+isplitter_fi.qm
+mainwindow.cpp
+mainwindow.h
+Image\ Splitter.plg
+Debug
+Release
