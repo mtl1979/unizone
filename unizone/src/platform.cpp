@@ -406,12 +406,12 @@ GetServerPort(QString server)
 	}
 }
 
-// Is reserved regex token, but isn't wildcard token (* or ?)
+// Is reserved regex token, but isn't wildcard token (* or ? or ,)
 bool IsRegexToken2(char c, bool isFirstCharInString)
 {
    switch(c)
    {
-     case '[': case ']': case '\\': case ',': case '|': case '(': case ')':
+     case '[': case ']': case '\\': case '|': case '(': case ')':
         return true;
 
      case '<': case '~':   // these chars are only special if they are the first character in the string

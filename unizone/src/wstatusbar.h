@@ -11,7 +11,12 @@ public:
 
 	void setText(QString text, unsigned int index);
 	QString text(unsigned int index);
+protected:
+	virtual void resizeEvent(QResizeEvent * e);
 private:
 	QLabel ** fText;
+	QString * fLabels;
 	unsigned int fColumns;
+
+	QString checkText(const QString & text, unsigned int index);
 };
