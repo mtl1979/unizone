@@ -5,7 +5,7 @@
 #include <qinputdialog.h>
 
 Channels::Channels(QWidget* parent, NetClient * net, const char* name, bool modal, WFlags fl)
-: ChannelsBase(parent, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
+: ChannelsBase(parent, name, modal, /* QDialog::WDestructiveClose |*/ QWidget::WStyle_Minimize | 
 			  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu /* flags */)
 {
 	if ( !name )
@@ -258,7 +258,7 @@ Channels::CreateChannel()
 			win->SetOwner(fNet->LocalSessionID());
 			win->show();
 
-			wcp.second->AddAdmin(fNet->LocalSessionID());
+			//wcp.second->AddAdmin(fNet->LocalSessionID());
 			ChannelAdmins(text, fNet->LocalSessionID(), fNet->LocalSessionID());
 			UpdateUsers(it);
 			UpdatePublic(it);

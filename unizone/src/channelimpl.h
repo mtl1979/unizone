@@ -37,7 +37,7 @@ protected:
 
 private:
 	NetClient * fNet;
-	QString fTopic, fOwner, fName, fURL;
+	QString fTopic, fOwner, fName, fURL, fStrAdmins;
 	QSplitter * fSplit;
 	QSplitter * fSplitBottom;
 	QSplitter * fSplitChat;
@@ -74,6 +74,8 @@ public slots:
 	void UpdateTopic();
 	void NewChannelText(const QString, const QString, const QString);
 	void ChannelAdminsChanged(const QString, const QString);
+	void UserDisconnected(QString sid, QString name);
+
 };
 
 #endif // CHANNELIMPL_H

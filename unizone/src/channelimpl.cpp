@@ -9,7 +9,7 @@
 #include "nicklist.h"
 
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags fl)
-: ChannelBase(parent, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
+: ChannelBase(/* parent */ NULL, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
 			  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu /* flags */)
 {
 	if (!name)
@@ -19,6 +19,7 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fNet = net;
 	fName = cname;
 	fActive = false;
+	fStrAdmins = QString::null;
 	fParent = parent;
 	if (fName != QString::null)
 	{
@@ -110,6 +111,9 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	connect(gWin, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 	connect(gWin, SIGNAL(NewChannelText(const QString, const QString, const QString)),
 			this, SLOT(NewChannelText(const QString, const QString, const QString)));
+	connect(fNet, SIGNAL(UserDisconnected(QString, QString)), this,
+			SLOT(UserDisconnected(QString, QString)));
+
 	UpdateNode();
 }
 
@@ -121,25 +125,27 @@ Channel::~Channel()
 void
 Channel::SetOwner(QString owner)
 {
-	fOwner = owner;
-	MessageRef cc;
-	UpdateNode();
-	if (fOwner == fNet->LocalSessionID()) // We did create this channel
+	if (fOwner != owner)
 	{
-		cc = GetMessageFromPool(NetClient::ChannelCreated);
-	}
-	else
-	{
-		cc = GetMessageFromPool(NetClient::ChannelJoin);
-	}
-	if (cc())
-	{
-		QString to("/*/*/unishare");
-		cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-		cc()->AddString("session", (const char *) fNet->LocalSessionID().utf8());
-		cc()->AddInt64("when", GetCurrentTime64());
-		cc()->AddString("channel", (const char *) fName.utf8());
-		fNet->SendMessageToSessions(cc);
+		fOwner = owner;
+		MessageRef cc;
+		if (fOwner == fNet->LocalSessionID()) // We did create this channel
+		{
+			cc = GetMessageFromPool(NetClient::ChannelCreated);
+		}
+		else
+		{
+			cc = GetMessageFromPool(NetClient::ChannelJoin);
+		}
+		if (cc())
+		{
+			QString to("/*/*/unishare");
+			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			cc()->AddString("session", (const char *) fNet->LocalSessionID().utf8());
+			cc()->AddInt64("when", GetCurrentTime64());
+			cc()->AddString("channel", (const char *) fName.utf8());
+			fNet->SendMessageToSessions(cc);
+		}
 		UpdateNode();
 	}
 }
@@ -699,6 +705,27 @@ Channel::UpdateNode()
 void
 Channel::ChannelAdminsChanged(const QString channel, const QString admins)
 {
-	if (channel == fName)
+	if ((channel == fName) && (fStrAdmins != admins))
+	{
 		UpdateNode();
+		fStrAdmins = admins;
+	}
+}
+
+void
+Channel::UserDisconnected(QString sid, QString name)
+{
+	WUserIter iter = fUsers.find(sid);
+	if (iter != fUsers.end())
+	{
+		if (gWin->fSettings->GetUserEvents())
+		{
+			QString parse = WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg( 
+				WFormat::UserDisconnected().arg(sid).arg(FixStringStr(name)).arg(WColors::RemoteName) 
+				); // <postmaster@raasu.org> 20021112
+			PrintSystem(parse);
+		}
+		(*iter).second()->RemoveFromListView(fChannelUsers);
+		fUsers.erase(iter);
+	}
 }

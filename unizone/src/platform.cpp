@@ -325,7 +325,8 @@ BandwidthToString(int32 bps)
 {
 	switch (bps)
 	{
-	case 300:			return "300 baud";
+	case 75:			return "300 baud";
+//	case 300:			return "300 baud";
 	case 14400: 		return "14.4 kbps";
 	case 28800: 		return "28.8 kbps";
 	case 33600: 		return "33.6 kbps";
