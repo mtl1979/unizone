@@ -230,6 +230,58 @@ Version %1</translation>
         <source>You got kicked off from this channel!</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Channel command reference:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/action [action] - do something</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/clear - clear channel window</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/deop [name or session id] - take admin status from other user</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/help - show command reference</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/invite [name or session id] - invite user to channel</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/kick [name or session id] - kick user off the channel</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/listadmins - show channel admins</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/me [action] - same as /action</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/op [name or session id] - give admin status to other user</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/private - set channel to private mode</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/public - set channel to public mode</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/topic [topic] - change the channel topic</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>ChannelBase</name>
@@ -2311,6 +2363,302 @@ Date: %4</translation>
     <message>
         <source>No</source>
         <translation>No</translation>
+    </message>
+    <message>
+        <source>Unizone Command Reference</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/action [action] - do something</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/adduser [name or session ids] - add users to a private chat window (works in private windows only!)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/away - set away state (same as selecting away from the list)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/awaymsg - away message for away state (when /away is invoked)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/btime [gmt] - Broadcast and show local (or GMT) time</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/buptime - Broadcast and show uptime</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/chkserver [index] - check server string</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/chkstatus [index] - check status string</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/chkuser [index] - check nick string</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/clear - clear the text in the chat view</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/clearline - clear all the line buffers</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/clearstats - clear transfer statistics</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/connect - connect to the currently selected server</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/disconnect - disconnect from server</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/dns [user|host] - give information about host</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/help [command] - show help for command (no &apos;/&apos; in front of command) or show this help text if no command given.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/heremsg - message for here state</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/logged - show the time you have been logged in to a server</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/me [action] - /action synonym</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/msg [name] [message] - send a private message</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/nick [name] - change your user name</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/onconnect [command] - set or clear command to perform on successful connect</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/ping [name or session ids] - ping other clients</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/priv [name or session ids] - open private chat with these users added</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/quit - quit Unizone</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/remote [password] - set &amp; view remote password</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/remserver [index] - remove server from server list</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/remstatus [index] - remove status from status list</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/remuser [index] - remove nick from nick list</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/resumes - list files waiting to be resumed</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/save - saves settings (might be necessary after editing drop-down lists)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/scan - rescan shared directory</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/search [pattern] - open search window</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/server [server] - set the current server</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/serverinfo - check status of server</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/shell [command] - execute command</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/showpatterns - show auto-private, blacklist, ignore and watch patterns</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/showstats - show transfer statistics</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/status [status] - set status string</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/time [gmt] - show local (or GMT) time</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/unautopriv [name] - remove name from auto-private list</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/unblacklist [name] - remove name from blacklist</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/unignore [name] - remove name from ignore list</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/uptime - show system uptime</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/users - show number of users connected</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/version - show client version strings</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Admin Command Reference</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/addbans [users] - add bans by user names or session ids</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/addipbans [ips] - add bans by ip addresses</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/kick [users] - kick by user names or session ids</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/kickips [ips] - kick by ip addresses</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/rembans [users] - remove bans by user names</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/remipbans [ips] - remove bans by ip addresses</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/require [ips] - add require mask</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/unrequire [ips] - remove require mask</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>The list of commands is being worked on. More will be added</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>as time goes on.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Auto-private pattern : %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Blacklist pattern : %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Ignore pattern : %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Watch pattern : %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>On Connect : %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>On Connect 2: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Help for %1:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Reconnecting in 1 minute!</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>

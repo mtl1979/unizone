@@ -1816,84 +1816,155 @@ WinShareWindow::Disconnect2()
 void
 WinShareWindow::ShowHelp(QString command)
 {
-	QString helpText	=	tr(
-							"\nUnizone Command Reference\n"
-							"\n\t\t\t\t/action [action] - do something"
-							"\n\t\t\t\t/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)"
-							"\n\t\t\t\t/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)"
-							"\n\t\t\t\t/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)"
-							"\n\t\t\t\t/adduser [name or session ids] - add users to a private chat window (works in private windows only!)"
-							"\n\t\t\t\t/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)"
-							"\n\t\t\t\t/away - set away state (same as selecting away from the list)"
-							"\n\t\t\t\t/awaymsg - away message for away state (when /away is invoked)"
-							"\n\t\t\t\t/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)"
-							"\n\t\t\t\t/btime [gmt] - Broadcast and show local (or GMT) time"
-							"\n\t\t\t\t/buptime - Broadcast and show uptime"
-							"\n\t\t\t\t/chkserver [index] - check server string"
-							"\n\t\t\t\t/chkstatus [index] - check status string"
-							"\n\t\t\t\t/chkuser [index] - check nick string"
-							"\n\t\t\t\t/clear - clear the text in the chat view"
-							"\n\t\t\t\t/clearline - clear all the line buffers"
-							"\n\t\t\t\t/clearstats - clear transfer statistics"
-							"\n\t\t\t\t/connect - connect to the currently selected server"
-							"\n\t\t\t\t/disconnect - disconnect from server"
-							"\n\t\t\t\t/dns [user|host] - give information about host"
-							"\n\t\t\t\t/help [command] - show help for command (no '/' in front of command) or show this help text if no command given."
-							"\n\t\t\t\t/heremsg - message for here state"
-							"\n\t\t\t\t/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)"
-							"\n\t\t\t\t/logged - show the time you have been logged in to a server"
-							"\n\t\t\t\t/me [action] - /action synonym"
-							"\n\t\t\t\t/msg [name] [message] - send a private message"
-							"\n\t\t\t\t/nick [name] - change your user name"
-							"\n\t\t\t\t/onconnect [command] - set or clear command to perform on successful connect"
-							"\n\t\t\t\t/ping [name or session ids] - ping other clients"
-							"\n\t\t\t\t/priv [name or session ids] - open private chat with these users added"
-							"\n\t\t\t\t/quit - quit Unizone"
-							"\n\t\t\t\t/remote [password] - set & view remote password"
-							"\n\t\t\t\t/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)"
-							"\n\t\t\t\t/remserver [index] - remove server from server list"
-							"\n\t\t\t\t/remstatus [index] - remove status from status list"
-							"\n\t\t\t\t/remuser [index] - remove nick from nick list"
-							"\n\t\t\t\t/resumes - list files waiting to be resumed"
-							"\n\t\t\t\t/save - saves settings (might be necessary after editing drop-down lists)"
-							"\n\t\t\t\t/scan - rescan shared directory"
-							"\n\t\t\t\t/search [pattern] - open search window"
-							"\n\t\t\t\t/server [server] - set the current server"
-							"\n\t\t\t\t/serverinfo - check status of server"
-							"\n\t\t\t\t/shell [command] - execute command"
-							"\n\t\t\t\t/showpatterns - show auto-private, blacklist, ignore and watch patterns"
-							"\n\t\t\t\t/showstats - show transfer statistics"
-							"\n\t\t\t\t/status [status] - set status string"
-							"\n\t\t\t\t/time [gmt] - show local (or GMT) time"
-							"\n\t\t\t\t/unautopriv [name] - remove name from auto-private list"
-							"\n\t\t\t\t/unblacklist [name] - remove name from blacklist"
-							"\n\t\t\t\t/unignore [name] - remove name from ignore list"
-							"\n\t\t\t\t/uptime - show system uptime"
-							"\n\t\t\t\t/users - show number of users connected"
-							"\n\t\t\t\t/version - show client version strings"
-							"\n\t\t\t\t/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)"
-							"\n"
-							"\nAdmin Command Reference\n"
-							"\n\t\t\t\t/addbans [users] - add bans by user names or session ids"
-							"\n\t\t\t\t/addipbans [ips] - add bans by ip addresses"
-							"\n\t\t\t\t/kick [users] - kick by user names or session ids"
-							"\n\t\t\t\t/kickips [ips] - kick by ip addresses"
-							"\n\t\t\t\t/rembans [users] - remove bans by user names"
-							"\n\t\t\t\t/remipbans [ips] - remove bans by ip addresses"
-							"\n\t\t\t\t/require [ips] - add require mask"
-							"\n\t\t\t\t/unrequire [ips] - remove require mask"
+	QString helpText	=	"\n";
+	helpText			+=	tr("Unizone Command Reference");
+	helpText			+=	"\n";
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/action [action] - do something");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/adduser [name or session ids] - add users to a private chat window (works in private windows only!)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/away - set away state (same as selecting away from the list)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/awaymsg - away message for away state (when /away is invoked)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/btime [gmt] - Broadcast and show local (or GMT) time");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/buptime - Broadcast and show uptime");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/chkserver [index] - check server string");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/chkstatus [index] - check status string");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/chkuser [index] - check nick string");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/clear - clear the text in the chat view");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/clearline - clear all the line buffers");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/clearstats - clear transfer statistics");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/connect - connect to the currently selected server");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/disconnect - disconnect from server");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/dns [user|host] - give information about host");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/help [command] - show help for command (no '/' in front of command) or show this help text if no command given.");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/heremsg - message for here state");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/logged - show the time you have been logged in to a server");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/me [action] - /action synonym");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/msg [name] [message] - send a private message");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/nick [name] - change your user name");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/onconnect [command] - set or clear command to perform on successful connect");
+	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/ping [name or session ids] - ping other clients");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/priv [name or session ids] - open private chat with these users added");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/quit - quit Unizone");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/remote [password] - set & view remote password");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/remserver [index] - remove server from server list");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/remstatus [index] - remove status from status list");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/remuser [index] - remove nick from nick list");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/resumes - list files waiting to be resumed");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/save - saves settings (might be necessary after editing drop-down lists)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/scan - rescan shared directory");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/search [pattern] - open search window");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/server [server] - set the current server");
+	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/serverinfo - check status of server");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/shell [command] - execute command");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/showpatterns - show auto-private, blacklist, ignore and watch patterns");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/showstats - show transfer statistics");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/status [status] - set status string");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/time [gmt] - show local (or GMT) time");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/unautopriv [name] - remove name from auto-private list");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/unblacklist [name] - remove name from blacklist");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/unignore [name] - remove name from ignore list");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/uptime - show system uptime");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/users - show number of users connected");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/version - show client version strings");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)");
+	helpText			+=	"\n\n";
+	helpText			+=	tr("Admin Command Reference");
+	helpText			+=	"\n";
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/addbans [users] - add bans by user names or session ids");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/addipbans [ips] - add bans by ip addresses");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/kick [users] - kick by user names or session ids");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/kickips [ips] - kick by ip addresses");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/rembans [users] - remove bans by user names");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/remipbans [ips] - remove bans by ip addresses");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/require [ips] - add require mask");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/unrequire [ips] - remove require mask");
 #if defined(BETA) || defined(_DEBUG)
-							"\n"
-							"\n\t\t\t\tThe list of commands is being worked on. More will be added"
-							"\n\t\t\t\tas time goes on."
+	helpText			+=	"\n\n\t\t\t\t"; 
+	helpText			+=	tr("The list of commands is being worked on. More will be added");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("as time goes on.");
 #endif
-							"\n") +
-							"\nAuto-private pattern : " + fAutoPriv +
-							"\nBlacklist pattern : " + fBlackList +
-							"\nIgnore pattern : " + fIgnore +
-							"\nWatch pattern : " + fWatch +
-							"\nOn Connect : " + fOnConnect +
-							"\nOn Connect 2: " + fOnConnect2;
+	helpText			+=	"\n";
+	helpText			+=	"\n"; 
+	helpText			+=	tr("Auto-private pattern : %1").arg(fAutoPriv);
+	helpText			+=	"\n"; 
+	helpText			+=	tr("Blacklist pattern : %1").arg(fBlackList);
+	helpText			+=	"\n"; 
+	helpText			+=	tr("Ignore pattern : %1").arg(fIgnore);
+	helpText			+=	"\n"; 
+	helpText			+=	tr("Watch pattern : %1").arg(fWatch);
+	helpText			+=	"\n"; 
+	helpText			+=	tr("On Connect : %1").arg(fOnConnect);
+	helpText			+=	"\n"; 
+	helpText			+=	tr("On Connect 2: %1").arg(fOnConnect2);
 
 	QString str;
 	if ((command != QString::null) && (command != ""))
@@ -1908,7 +1979,12 @@ WinShareWindow::ShowHelp(QString command)
 			if (j >= 0)
 			{
 				chelp = chelp.left(j);
-				str = "\nHelp for " + command + ":\n\n" + chelp;
+				
+				str = "\n"; 
+				str += tr("Help for %1:").arg(command);
+				str += "\n\n";
+				str += chelp;
+				
 				ParseString(str);
 				PrintSystem(str);
 				return;

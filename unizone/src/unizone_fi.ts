@@ -287,6 +287,58 @@ Versio %1</translation>
         <source>You got kicked off from this channel!</source>
         <translation>Sinut potkaistiin ulos kanavalta!</translation>
     </message>
+    <message>
+        <source>Channel command reference:</source>
+        <translation>Kanavien komentoluettelo:</translation>
+    </message>
+    <message>
+        <source>/action [action] - do something</source>
+        <translation>/action [toiminta] - tee jotain</translation>
+    </message>
+    <message>
+        <source>/clear - clear channel window</source>
+        <translation>/clear - tyhjennä kanavaikkuna</translation>
+    </message>
+    <message>
+        <source>/deop [name or session id] - take admin status from other user</source>
+        <translation>/deop [nimi tai session id] - poista käyttäjä valvojista</translation>
+    </message>
+    <message>
+        <source>/help - show command reference</source>
+        <translation>/help - näytä komentoluettelo</translation>
+    </message>
+    <message>
+        <source>/invite [name or session id] - invite user to channel</source>
+        <translation>/invite [nimi tai session id] - kutsu käyttäjä kanavalle</translation>
+    </message>
+    <message>
+        <source>/kick [name or session id] - kick user off the channel</source>
+        <translation>/kick [nimi tai session id] - potkaise käyttäjä ulos kanavalta</translation>
+    </message>
+    <message>
+        <source>/listadmins - show channel admins</source>
+        <translation>/listadmins - näytä kanavan valvojat</translation>
+    </message>
+    <message>
+        <source>/me [action] - same as /action</source>
+        <translation>/me [toiminta] - sama kuin /action</translation>
+    </message>
+    <message>
+        <source>/op [name or session id] - give admin status to other user</source>
+        <translation>/op [nimi tai session id] - lisää käyttäjä valvojiin</translation>
+    </message>
+    <message>
+        <source>/private - set channel to private mode</source>
+        <translation>/private - aseta kanava yksityiseksi</translation>
+    </message>
+    <message>
+        <source>/public - set channel to public mode</source>
+        <translation>/public - aseta kanava julkiseksi</translation>
+    </message>
+    <message>
+        <source>/topic [topic] - change the channel topic</source>
+        <translation>/topic [aihe] - muuta kanavan keskustelun aihe</translation>
+    </message>
 </context>
 <context>
     <name>ChannelBase</name>
@@ -2432,6 +2484,302 @@ Päiväys: %4</translation>
     <message>
         <source>No</source>
         <translation>Ei</translation>
+    </message>
+    <message>
+        <source>Unizone Command Reference</source>
+        <translation>Unizone Komennot</translation>
+    </message>
+    <message>
+        <source>/action [action] - do something</source>
+        <translation>/action [toiminta] - tee jotain</translation>
+    </message>
+    <message>
+        <source>/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)</source>
+        <translation>/addautopriv [kaava] - päivitä automaattisen keskustelun kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
+    </message>
+    <message>
+        <source>/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)</source>
+        <translation>/addblacklist [kaava] - päivitä mustan listan kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
+    </message>
+    <message>
+        <source>/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)</source>
+        <translation>/addignore [kaava] - päivitä ignore-kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
+    </message>
+    <message>
+        <source>/adduser [name or session ids] - add users to a private chat window (works in private windows only!)</source>
+        <translation>/adduser [nimiä tai session id:t] - lisää käyttäjiä yksityiseen keskusteluikkunaan (toimii vain yksityisissä keskusteluikkunoissa!)</translation>
+    </message>
+    <message>
+        <source>/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)</source>
+        <translation>/autopriv [kaava] - aseta automaattisen keskustelun kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
+    </message>
+    <message>
+        <source>/away - set away state (same as selecting away from the list)</source>
+        <translation>/away - aseta poissa-tila (sama kuin valitsisi &apos;away&apos; luettelosta)</translation>
+    </message>
+    <message>
+        <source>/awaymsg - away message for away state (when /away is invoked)</source>
+        <translation>/awaymsg - poissa-viesti, kun olet poissa-tilassa (kun kutsut /away)</translation>
+    </message>
+    <message>
+        <source>/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)</source>
+        <translation>/blacklist [kaava] - aseta mustan listan kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
+    </message>
+    <message>
+        <source>/btime [gmt] - Broadcast and show local (or GMT) time</source>
+        <translation>/btime [gmt] - Lähetä ja näytä paikallinen (tai GMT) aika</translation>
+    </message>
+    <message>
+        <source>/buptime - Broadcast and show uptime</source>
+        <translation>/buptime - Lähetä ja näytä aika, kun kone on ollut käynnissä</translation>
+    </message>
+    <message>
+        <source>/chkserver [index] - check server string</source>
+        <translation>/chkserver [indeksi] - tarkista merkkijono palvelinluettelosta</translation>
+    </message>
+    <message>
+        <source>/chkstatus [index] - check status string</source>
+        <translation>/chkstatus [indeksi] - tarkista merkkijono tilaluettelosta</translation>
+    </message>
+    <message>
+        <source>/chkuser [index] - check nick string</source>
+        <translation>/chkuser [indeksi] - tarkista merkkijono nimiluettelosta</translation>
+    </message>
+    <message>
+        <source>/clear - clear the text in the chat view</source>
+        <translation>/clear - tyhjennä teksti keskustelusta</translation>
+    </message>
+    <message>
+        <source>/clearline - clear all the line buffers</source>
+        <translation>/clearline - tyhjennä kaikki rivipuskurit</translation>
+    </message>
+    <message>
+        <source>/clearstats - clear transfer statistics</source>
+        <translation>/clearstats - nollaa tiedonsiirtotilastot</translation>
+    </message>
+    <message>
+        <source>/connect - connect to the currently selected server</source>
+        <translation>/connect - yhdistä nyt valittuna olevaan palvelimeen.</translation>
+    </message>
+    <message>
+        <source>/disconnect - disconnect from server</source>
+        <translation>/disconnect - katkaise yhteys palvelimeen</translation>
+    </message>
+    <message>
+        <source>/dns [user|host] - give information about host</source>
+        <translation>/dns [käyttäjä|osoite] - anna tiedot osoitteesta</translation>
+    </message>
+    <message>
+        <source>/help [command] - show help for command (no &apos;/&apos; in front of command) or show this help text if no command given.</source>
+        <translation>/help [komento] - näyttää ohjeen komennolle (ilman &apos;/&apos; merkkiä komennon edessä) tai näyttää koko komentoluettelon, jos ei anneta komentoa.</translation>
+    </message>
+    <message>
+        <source>/heremsg - message for here state</source>
+        <translation>/heremsg - viesti täällä-tilalle</translation>
+    </message>
+    <message>
+        <source>/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)</source>
+        <translation>/ignore [kaava] - aseta ignore-kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
+    </message>
+    <message>
+        <source>/logged - show the time you have been logged in to a server</source>
+        <translation>/logged - näyttää ajan, kun olet ollut kirjautuneena palvelimeen</translation>
+    </message>
+    <message>
+        <source>/me [action] - /action synonym</source>
+        <translation>/me [toiminta] - synonyymi komennolle /action</translation>
+    </message>
+    <message>
+        <source>/msg [name] [message] - send a private message</source>
+        <translation>/msg [nimi] [viesti] - lähetä yksityinen viesti</translation>
+    </message>
+    <message>
+        <source>/nick [name] - change your user name</source>
+        <translation>/nick [nimi] - vaihda käyttäjänimesi</translation>
+    </message>
+    <message>
+        <source>/onconnect [command] - set or clear command to perform on successful connect</source>
+        <translation>/onconnect [komento] - asettaa tai tyhjentää komennon, joka suoritetaan onnistuneen palvelimelle kirjautumisen jälkeen</translation>
+    </message>
+    <message>
+        <source>/ping [name or session ids] - ping other clients</source>
+        <translation>/ping [nimi tai session id:t] - pingaa toisia ohjelmia</translation>
+    </message>
+    <message>
+        <source>/priv [name or session ids] - open private chat with these users added</source>
+        <translation>/priv [nimi tai session id:t] - avaa keskusteluikkuna ja lisää nämä käyttäjät ikkunaan</translation>
+    </message>
+    <message>
+        <source>/quit - quit Unizone</source>
+        <translation>/quit - lopeta Unizone</translation>
+    </message>
+    <message>
+        <source>/remote [password] - set &amp; view remote password</source>
+        <translation>/remote [salasana] - aseta &amp; näytä kaukokohjauksen salasana</translation>
+    </message>
+    <message>
+        <source>/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)</source>
+        <translation>/removeuser [nimi tai session id:t] - poista käyttäjät yksityisestä keskusteluikkunasta (toimii vain yksityisessä keskusteluikkunassa!)</translation>
+    </message>
+    <message>
+        <source>/remserver [index] - remove server from server list</source>
+        <translation>/remserver [indeksi] - poista palvelin luettelosta</translation>
+    </message>
+    <message>
+        <source>/remstatus [index] - remove status from status list</source>
+        <translation>/remstatus [indeksi] - poista tila luettelosta</translation>
+    </message>
+    <message>
+        <source>/remuser [index] - remove nick from nick list</source>
+        <translation>/remuser [indeksi] - poista käyttäjänimi luettelosta</translation>
+    </message>
+    <message>
+        <source>/resumes - list files waiting to be resumed</source>
+        <translation>/resumes - näyttää tiedostot, jotka odottavat jatkamista</translation>
+    </message>
+    <message>
+        <source>/save - saves settings (might be necessary after editing drop-down lists)</source>
+        <translation>/save - tallenna asetukset (voi olla tarpeellista jos muokkaat alasvedettäviä valintaluetteloja)</translation>
+    </message>
+    <message>
+        <source>/scan - rescan shared directory</source>
+        <translation>/scan - tarkista uudelleen tiedostot jakokansiosta</translation>
+    </message>
+    <message>
+        <source>/search [pattern] - open search window</source>
+        <translation>/search [kaava] - avaa ikkuna ja etsi tiedostoja</translation>
+    </message>
+    <message>
+        <source>/server [server] - set the current server</source>
+        <translation>/server [palvelin] - aseta nykyinen palvelin</translation>
+    </message>
+    <message>
+        <source>/serverinfo - check status of server</source>
+        <translation>/serverinfo - tarkista palvelimen tila</translation>
+    </message>
+    <message>
+        <source>/shell [command] - execute command</source>
+        <translation>/shell [komento] - suorita komento</translation>
+    </message>
+    <message>
+        <source>/showpatterns - show auto-private, blacklist, ignore and watch patterns</source>
+        <translation>/showpatterns - näytä automaattisen keskustelun, mustan listan, ignore- ja seurantakaavat</translation>
+    </message>
+    <message>
+        <source>/showstats - show transfer statistics</source>
+        <translation>/showstats - näytä tiedonsiirtotilastot</translation>
+    </message>
+    <message>
+        <source>/status [status] - set status string</source>
+        <translation>/status [tila] - aseta tilamerkkijono</translation>
+    </message>
+    <message>
+        <source>/time [gmt] - show local (or GMT) time</source>
+        <translation>/time [gmt] - näytä paikallinen (tai GMT) aika</translation>
+    </message>
+    <message>
+        <source>/unautopriv [name] - remove name from auto-private list</source>
+        <translation>/unautopriv [nimi] - poista nimi automaattisen keskustelun luettelosta</translation>
+    </message>
+    <message>
+        <source>/unblacklist [name] - remove name from blacklist</source>
+        <translation>/unblacklist [nimi] - poista nimi mustalta listalta</translation>
+    </message>
+    <message>
+        <source>/unignore [name] - remove name from ignore list</source>
+        <translation>/unignore [nimi] - poista nimi ignore-listalta</translation>
+    </message>
+    <message>
+        <source>/uptime - show system uptime</source>
+        <translation>/uptime - näytä järjestelmän käynnissäoloaika</translation>
+    </message>
+    <message>
+        <source>/users - show number of users connected</source>
+        <translation>/users - näyttää palvelimelle kirjautuneiden käyttäjien määrä</translation>
+    </message>
+    <message>
+        <source>/version - show client version strings</source>
+        <translation>/version - näyttää ohjelman versiomerkkijonot</translation>
+    </message>
+    <message>
+        <source>/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)</source>
+        <translation>/watch [kaava] - aseta seurantakaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
+    </message>
+    <message>
+        <source>Admin Command Reference</source>
+        <translation>Valvojien Komennot</translation>
+    </message>
+    <message>
+        <source>/addbans [users] - add bans by user names or session ids</source>
+        <translation>/addbans [käyttäjiä] - lisää estoja käyttäjänimille tai session id:ille</translation>
+    </message>
+    <message>
+        <source>/addipbans [ips] - add bans by ip addresses</source>
+        <translation>/addipbans [ip:itä] - aseta estoja ip-osoitteille</translation>
+    </message>
+    <message>
+        <source>/kick [users] - kick by user names or session ids</source>
+        <translation>/kick [käyttäjiä] - potkaise pihalle käyttäjänimet tai session id:t</translation>
+    </message>
+    <message>
+        <source>/kickips [ips] - kick by ip addresses</source>
+        <translation>/kickips [ip:t] - potkaise pihalle ip-osoitteet</translation>
+    </message>
+    <message>
+        <source>/rembans [users] - remove bans by user names</source>
+        <translation>/rembans [käyttäjiä] - poista estot käyttäjänimiltä</translation>
+    </message>
+    <message>
+        <source>/remipbans [ips] - remove bans by ip addresses</source>
+        <translation>/remipbans [ip:t] - poista estot ip-osoitteilta</translation>
+    </message>
+    <message>
+        <source>/require [ips] - add require mask</source>
+        <translation>/require [ip:t] - lisää vaatimus</translation>
+    </message>
+    <message>
+        <source>/unrequire [ips] - remove require mask</source>
+        <translation>/unrequire [ip:t] - poista vaatimus</translation>
+    </message>
+    <message>
+        <source>The list of commands is being worked on. More will be added</source>
+        <translation>Luettelo komennoista on työn alla. Lisää tulee</translation>
+    </message>
+    <message>
+        <source>as time goes on.</source>
+        <translation>ajan myötä.</translation>
+    </message>
+    <message>
+        <source>Auto-private pattern : %1</source>
+        <translation>Automaattisen keskustelun kaava : %1</translation>
+    </message>
+    <message>
+        <source>Blacklist pattern : %1</source>
+        <translation>Mustan listan kaava : %1</translation>
+    </message>
+    <message>
+        <source>Ignore pattern : %1</source>
+        <translation>Ignore-kaava : %1</translation>
+    </message>
+    <message>
+        <source>Watch pattern : %1</source>
+        <translation>Seurantakaava : %1</translation>
+    </message>
+    <message>
+        <source>On Connect : %1</source>
+        <translation>Yhdistäessä tee : %1</translation>
+    </message>
+    <message>
+        <source>On Connect 2: %1</source>
+        <translation>Yhdistäessä tee myös: %1</translation>
+    </message>
+    <message>
+        <source>Help for %1:</source>
+        <translation>Ohje komennolle %1:</translation>
+    </message>
+    <message>
+        <source>Reconnecting in 1 minute!</source>
+        <translation>Yhdistetään uudelleen 1 minuutin kuluttua!</translation>
     </message>
 </context>
 </TS>

@@ -344,21 +344,32 @@ Channel::customEvent(QCustomEvent * event)
 				// Give a list of available commands
 				if (wte->Text().lower().startsWith("/help"))
 				{
-					QString help = tr(
-						"\nChannel command reference:\n" 
-						"\n\t\t\t\t/action [text] - Do something"
-						"\n\t\t\t\t/clear - Clear channel window"
-						"\n\t\t\t\t/deop [name or session id] - Take admin status from other user"
-						"\n\t\t\t\t/help - Show command reference"
-						"\n\t\t\t\t/invite [name or session id] - Invite user to channel"
-						"\n\t\t\t\t/kick [name or session id] - Kick user off the channel"
-						"\n\t\t\t\t/listadmins - Show channel admins"
-						"\n\t\t\t\t/me [text] - Same as /action"
-						"\n\t\t\t\t/op [name or session id] - Give admin status to other user"
-						"\n\t\t\t\t/private - Set channel to private mode"
-						"\n\t\t\t\t/public - Set channel to public mode"
-						"\n\t\t\t\t/topic [topic] - Change the channel topic" 
-						);
+					QString help =	"\n";
+					help		+=	tr("Channel command reference:");
+					help		+=	"\n\n\t\t\t\t";
+					help		+=	tr("/action [action] - do something");
+					help		+=	"\n\t\t\t\t";
+					help		+=	tr("/clear - clear channel window");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/deop [name or session id] - take admin status from other user");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/help - show command reference");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/invite [name or session id] - invite user to channel");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/kick [name or session id] - kick user off the channel");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/listadmins - show channel admins");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/me [action] - same as /action");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/op [name or session id] - give admin status to other user");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/private - set channel to private mode");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/public - set channel to public mode");
+					help		+=	"\n\t\t\t\t"; 
+					help		+=	tr("/topic [topic] - change the channel topic");
 					ParseString(help);
 					PrintSystem(help);
 				}
