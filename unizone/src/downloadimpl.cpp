@@ -948,7 +948,24 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::FileFailed:
 		{
 			PRINT("\tWDownloadEvent::FileFailed\n");
-			// not used...
+			dt->SetFinished(true);
+			if (dt->GetCurrentNum() != -1)
+			{
+				for (int n = dt->GetCurrentNum(); n < dt->GetNumFiles(); n++)
+				{
+					QString qFile = dt->GetFileName(n);
+					QString qLFile = dt->GetLocalFileName(n);
+					emit FileFailed(qFile, qLFile, dt->GetRemoteUser());
+				}
+			}
+			dt->Reset();
+			if (gWin->fSettings->GetAutoClear())
+			{
+				SendSignal(ClearDownloads);
+			}
+			
+			SendSignal(DequeueDownloads);
+
 			break;
 		}
 		
@@ -1162,6 +1179,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 		PRINT("\t\tFailed to find file!!!\n");
 		return;	// failed to find a item
 	}
+
 	switch (msg()->what)
 	{
 	case WUploadEvent::Init:
@@ -1237,6 +1255,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 			String why, mFile;
 			msg()->FindString("why", why);
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
+
 			ut->SetFinished(true);
 			ut->Reset();
 			
@@ -1303,13 +1322,6 @@ WDownload::uploadEvent(WUploadEvent *u)
 				item->setText(WTransferItem::ETA, "");
 			}
 			PRINT("\tWUploadEvent::FileDone OK\n");
-			break;
-		}
-		
-	case WUploadEvent::FileFailed:
-		{
-			PRINT("\tWUploadEvent::FileFailed\n");
-			// not used...
 			break;
 		}
 		

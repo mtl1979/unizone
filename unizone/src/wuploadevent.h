@@ -30,7 +30,7 @@ public:
 		Connected,				// session was connected, negotiating the connection with the remote client
 		Disconnected,			// we got disconnected from the peer before the file was completed
 		FileDone,				// file completed
-		FileFailed,				// file dl failed due to an error (not a disconnection)
+//		FileFailed,				// file dl failed due to an error (not a disconnection)
 		FileStarted,			// started new file dl
         FileError,				// critical error, file system error
 		FileDataSent,			// sent some data

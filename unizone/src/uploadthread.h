@@ -167,6 +167,7 @@ private:
 	uint32 fRemoteIP;
 	QString fStrRemoteIP;				// the accept version gets a string IP
 	uint32 fPort;						// port for accept version
+	uint32 fIdles;						// idle packets sent between real packets
 	int fSocket;
 	uint64 fFileSize;
 	uint64 fCurrentOffset;
@@ -183,7 +184,8 @@ private:
 
 	int timerID;
 
-	int32 fCurFile, fNumFiles;
+	int32 fCurFile;
+	uint32 fNumFiles;
 
 	String _sessionID;
 

@@ -30,7 +30,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	}
 
 	fCurFile = -1;
-	fNumFiles = -1;
+	fNumFiles = 0;
 	fPort = 0;
 	fSocket = 0;
 	fForced = false;
@@ -48,6 +48,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fTimeLeft = 0;
 	fStartTime = 0;
 	fPacket = 8;
+	fIdles = 0;
 
 	InitTransferRate();
 	InitTransferETA();
@@ -245,8 +246,10 @@ WUploadThread::SetLocallyQueued(bool b)
 				SendReply(con);
 			}
 		}
-		else /* if (fActive) */		// !fFinished
+		else
 		{
+			// fActive   == true
+			// fFinished == false
 			Reset();
 			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 			if (fail())
@@ -371,13 +374,16 @@ WUploadThread::SessionDisconnected(const String &sessionID)
 	}
 
 	*fShutdownFlag = true;
+
 	fDisconnected = true;
 	fFinished = true;
+	fLocallyQueued = false;
 
-	if (fActive || fConnecting) // Do it only once...
+	if (fActive || fConnecting || fBlocked) // Do it only once...
 	{
 		fActive = false;
 		fConnecting = false;
+		fBlocked = false;
 
 		if (fFile)
 		{
@@ -474,6 +480,7 @@ WUploadThread::OutputQueuesDrained(MessageRef msg)
 {
 	PRINT("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
 
+	fIdles = 0;
 	if (fWaitingForUploadToFinish)
 	{
 		PRINT("\tfWaitingForUploadToFinish\n");
@@ -703,7 +710,6 @@ WUploadThread::DoUpload()
 					if (drain())
 						RequestOutputQueuesDrainedNotification(drain);
 
-					// we'll use this event for sending as well
 					MessageRef update(GetMessageFromPool(WUploadEvent::FileDataSent));	
 					if (update())
 					{
@@ -809,7 +815,6 @@ WUploadThread::DoUpload()
 				PRINT("No more files!\n");
 				fWaitingForUploadToFinish = true;
 				SetFinished(true);
-				SetLocallyQueued(false);
 				MessageRef drain(GetMessageFromPool());
 				if (drain())
 					RequestOutputQueuesDrainedNotification(drain);
@@ -866,16 +871,34 @@ WUploadThread::timerEvent(QTimerEvent *e)
 {
 	if (IsInternalThreadRunning())
 	{
-		MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
-		if ( nop() )
+		if (fLocallyQueued || fBlocked)	
 		{
-			SendMessageToSessions(nop);
+			// Locally queued (or forced) or blocked transfer don't need idle check restricting
+			MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
+			if ( nop() )
+			{
+				SendMessageToSessions(nop);
+			}
+			return;
+		}
+		else if (fIdles < 4) 		
+		{
+			// 1 minute maximum
+			fIdles++;
+			if (fIdles < 2)
+			{
+				// 30 seconds to avoid postponing OutputQueuesDrained() message too far
+				MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
+				if ( nop() )
+				{
+					SendMessageToSessions(nop);
+				}
+			}
+			return;
 		}
 	}
-	else
-	{
-		Reset();
-	}
+	// fall through
+	Reset();
 }
 
 bool
@@ -910,168 +933,163 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 {
 	PRINT("WUploadThread::TransferFileList\n");
 	
-	if (fShutdownFlag && *fShutdownFlag)	// do we need to abort?
-	{
-		Reset();
-		return;
-	}
-	
-	if (gWin->IsScanning())
-	{
-		fSavedFileList = msg;
-		if (!fBlocked)
-		{
-			SetLocallyQueued(true);
-			SendQueuedNotification();
-		}
-		return;
-	}
-	
 	if (msg())
 	{
-		const char * file;
-		if (msg()->FindString("files", &file) == B_OK)
+		
+		if (fShutdownFlag && *fShutdownFlag)	// do we need to abort?
 		{
-			String sid, name;
-			int32 mm;
-			if (msg()->FindInt32("mm", &mm) == B_OK)
-				fMungeMode = mm;
-			else
-				fMungeMode = WDownload::MungeModeNone;
-			
-			if (msg()->FindString("beshare:FromSession", sid) == B_OK)
-				fRemoteSessionID = QString::fromUtf8(sid.Cstr());
-			
-			if (msg()->FindString("beshare:FromUserName", name) ==  B_OK)
+			Reset();
+			return;
+		}
+		
+		if (gWin->IsScanning())
+		{
+			fSavedFileList = msg;
+			if (!fBlocked)
 			{
-				QString user = QString::fromUtf8(name.Cstr());
-				if (!user.isEmpty())
-					fRemoteUser = user;
+				SetLocallyQueued(true);
+				SendQueuedNotification();
 			}
-			else
-			{
-				fRemoteUser = GetUserName(fRemoteSessionID);
-			}
+			return;
+		}
+		
+		String sid, name;
+		int32 mm;
+		if (msg()->FindInt32("mm", &mm) == B_OK)
+			fMungeMode = mm;
+		else
+			fMungeMode = WDownload::MungeModeNone;
+		
+		if (msg()->FindString("beshare:FromSession", sid) == B_OK)
+			fRemoteSessionID = QString::fromUtf8(sid.Cstr());
+		
+		if (msg()->FindString("beshare:FromUserName", name) ==  B_OK)
+		{
+			QString user = QString::fromUtf8(name.Cstr());
+			if (!user.isEmpty())
+				fRemoteUser = user;
+		}
+		else
+		{
+			fRemoteUser = GetUserName(fRemoteSessionID);
+		}
+		
+		const char * file;
+		
+		for (int i = 0; (msg()->FindString("files", i, &file) == B_OK); i++)
+		{
+			QString qFile = QString::fromUtf8(file);
+
+			MessageRef fileRef;
 			
-			int i;
-			
-			for (i = 0; (msg()->FindString("files", i, &file) == B_OK); i++)
+			if (fFileThread->FindFile(qFile, fileRef))
 			{
-				
-				MessageRef fileRef;
-				
-				if (fFileThread->FindFile(QString::fromUtf8(file), fileRef))
+				if (fileRef()) // <postmaster@raasu.org> 20021023
 				{
-					if (fileRef()) // <postmaster@raasu.org> 20021023
+					// remove any previous offsets
+					fileRef()->RemoveName("secret:offset");
+					
+					// see if we need to add them
+					uint64 offset = 0L;
+					const uint8 * hisDigest = NULL;
+					uint32 numBytes = 0L;
+					if (msg()->FindInt64("offsets", i, (int64 *)&offset) == B_OK &&
+						msg()->FindData("md5", B_RAW_TYPE, i, (const void **)&hisDigest, (uint32 *)&numBytes) == B_OK && 
+						numBytes == MD5_DIGEST_SIZE)
 					{
-						// remove any previous offsets
-						fileRef()->RemoveName("secret:offset");
+						uint8 myDigest[MD5_DIGEST_SIZE];
+						uint64 readLen = 0;
+						uint64 onSuccessOffset = offset;
 						
-						// see if we need to add them
-						uint64 offset = 0L;
-						const uint8 * hisDigest = NULL;
-						uint32 numBytes = 0L;
-						if (msg()->FindInt64("offsets", i, (int64 *)&offset) == B_OK &&
-							msg()->FindData("md5", B_RAW_TYPE, i, (const void **)&hisDigest, (uint32 *)&numBytes) == B_OK && 
-							numBytes == MD5_DIGEST_SIZE)
+						for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
+							myDigest[j] = 'x';
+						
+						if (msg()->FindInt64("numbytes", (int64 *)&readLen) == B_OK)
 						{
-							uint8 myDigest[MD5_DIGEST_SIZE];
-							uint64 readLen = 0;
-							uint64 onSuccessOffset = offset;
-							
-							for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
-								myDigest[j] = 'x';
-							
-							if (msg()->FindInt64("numbytes", (int64 *)&readLen) == B_OK)
-							{
-								PRINT("\t\tULT: peer requested partial resume\n");
-								uint64 temp = readLen;
-								readLen = offset - readLen; // readLen is now the seekTo value
-								offset = temp;				// offset is now the numBytes value
-							}
-							
-							// figure the path to our requested file
-							String path, filename;
-							fileRef()->FindString("winshare:Path", path);
-							fileRef()->FindString("beshare:File Name", filename);
-							
-							String filePath = path;
-							if (!filePath.EndsWith("/"))
-								filePath += "/";
-							
-							filePath += filename;
-							
-							// Notify window of our hashing
-							MessageRef m(GetMessageFromPool(WUploadEvent::FileHashing));
-							if (m())
-							{
-								m()->AddString("file", filePath);
-								SendReply(m);
-							}
-							
-							// Hash
-							uint64 retBytesHashed = 0;
-							
-							if (HashFileMD5(QString::fromUtf8(filePath.Cstr()), offset, readLen, retBytesHashed, myDigest, 
-								fShutdownFlag) == B_OK && memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
-							{
-								// put this into our message ref
-								fileRef()->AddInt64("secret:offset", onSuccessOffset);
-							}
+							PRINT("\t\tULT: peer requested partial resume\n");
+							uint64 temp = readLen;
+							readLen = offset - readLen; // readLen is now the seekTo value
+							offset = temp;				// offset is now the numBytes value
 						}
 						
-						fUploads.AddTail(fileRef);
-						fNames.AddTail(QString::fromUtf8(file));
-					}
-				}
-			}
-			
-			fNumFiles = i;
-			
-			fWaitingForUploadToFinish = false;
-			SendQueuedNotification();
-			
-			// also send a message along to our GUI telling it what the first file is
-			
-			if (fUploads.GetNumItems() == 0)
-			{
-				PRINT("WUploadThread: No Files!!!\n");
-				Reset();
-			}
-			else
-			{
-				String firstFile;
-				const char * path, * filename;
-				uint64 filesize;
-				MessageRef fref;
-				fUploads.GetItemAt(0, fref);
-				if (fref()->FindString("winshare:Path", &path) == B_OK &&
-					fref()->FindString("beshare:File Name", &filename) == B_OK &&
-					fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
-				{
-					if (filesize < gWin->fSettings->GetMinQueuedSize() || !IsLocallyQueued())
-					{
-						DoUpload();
-					}
-					else
-					{
-						firstFile = path;
+						// figure the path to our requested file
+						String path, filename;
+						fileRef()->FindString("winshare:Path", path);
+						fileRef()->FindString("beshare:File Name", filename);
 						
-						if (!firstFile.EndsWith("/"))
-							firstFile += "/";
+						String filePath = path;
+						if (!filePath.EndsWith("/"))
+							filePath += "/";
 						
-						firstFile += filename;
-						MessageRef initmsg(GetMessageFromPool(WUploadEvent::Init));
-						if (initmsg())
+						filePath += filename;
+						
+						// Notify window of our hashing
+						MessageRef m(GetMessageFromPool(WUploadEvent::FileHashing));
+						if (m())
 						{
-							initmsg()->AddString("file", firstFile);
-							initmsg()->AddString("user", (const char *) fRemoteSessionID.utf8());
-							SendReply(initmsg);
+							m()->AddString("file", filePath);
+							SendReply(m);
+						}
+						
+						// Hash
+						uint64 retBytesHashed = 0;
+						
+						if (HashFileMD5(QString::fromUtf8(filePath.Cstr()), offset, readLen, retBytesHashed, myDigest, 
+							fShutdownFlag) == B_OK && memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
+						{
+							// put this into our message ref
+							fileRef()->AddInt64("secret:offset", onSuccessOffset);
 						}
 					}
+					
+					fUploads.AddTail(fileRef);
+					fNames.AddTail(qFile);
 				}
 			}
-	}
+		}
+		
+		msg()->GetInfo("files", NULL, &fNumFiles);
+		
+		fWaitingForUploadToFinish = false;
+		SendQueuedNotification();
+		
+		// also send a message along to our GUI telling it what the first file is
+		
+		if (fUploads.GetNumItems() == 0)
+		{
+			PRINT("WUploadThread: No Files!!!\n");
+			Reset();
+			return;
+		}
+		
+		const char * path, * filename;
+		uint64 filesize;
+		MessageRef fref;
+		fUploads.GetItemAt(0, fref);
+		if (fref()->FindString("winshare:Path", &path) == B_OK &&
+			fref()->FindString("beshare:File Name", &filename) == B_OK &&
+			fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
+		{
+			if (filesize < gWin->fSettings->GetMinQueuedSize() || !IsLocallyQueued())
+			{
+				DoUpload();
+				return;
+			}
+			
+			String firstFile = path;
+			
+			if (!firstFile.EndsWith("/"))
+				firstFile += "/";
+			
+			firstFile += filename;
+			MessageRef initmsg(GetMessageFromPool(WUploadEvent::Init));
+			if (initmsg())
+			{
+				initmsg()->AddString("file", firstFile);
+				initmsg()->AddString("user", (const char *) fRemoteSessionID.utf8());
+				SendReply(initmsg);
+			}
+		}
 	}
 }
 
