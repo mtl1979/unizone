@@ -644,15 +644,17 @@ Channel::PrintText(const QString & str)
 		output = GetTimeStamp();
 	output += str;
 
-	CheckScrollState();
 	if (fText->text().isEmpty())
 		fText->setText(output);
 	else
+	{
+		CheckScrollState();
 		fText->append(
 #if (QT_VERSION < 0x030000)
 				"\t" + 
 #endif
 				output);
+	}
 	UpdateView();
 }
 
@@ -725,7 +727,7 @@ Channel::Action(const QString & name, const QString & msg, bool batch)
 
 	QString chat = WFormat::Action().arg(WColors::Action).arg(gWin->fSettings->GetFontSize());
 	chat += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(FixStringStr(name) + " " + nameText);
-	CheckScrollState();
+	// CheckScrollState();
 	PrintText(chat);
 }
 

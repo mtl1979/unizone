@@ -229,15 +229,17 @@ WPrivateWindow::PrintText(const QString & str)
 
 	if (gWin->fSettings->GetLogging())
 		fLog.LogString(output);
-	CheckScrollState();
 	if (fText->text().isEmpty())
 		fText->setText(output);
 	else
+	{
+		CheckScrollState();
 		fText->append(
 #if (QT_VERSION < 0x030000)
 				"\t" + 
 #endif
 				output);
+	}
 	UpdateView();
 }
 

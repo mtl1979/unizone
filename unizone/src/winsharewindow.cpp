@@ -1344,11 +1344,14 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 			{
 				if (output.right(4) == "<br>")
 					output.truncate(output.length() - 4);
-				CheckScrollState();
 				if (fChatText->text().isEmpty())
 					fChatText->setText(output);
 				else
+				{
+					CheckScrollState();
 					fChatText->append(output);
+				}
+
 				fMainLog.LogString(output);
 				UpdateTextView();
 			}
@@ -1360,7 +1363,6 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 void
 WinShareWindow::PrintText(const QString & str)
 {
-	CheckScrollState();
 	QString out("");
 	if (fSettings->GetTimeStamps())
 		out = GetTimeStamp();
@@ -1368,11 +1370,14 @@ WinShareWindow::PrintText(const QString & str)
 	if (fChatText->text().isEmpty())
 		fChatText->setText(out);
 	else
+	{
+		CheckScrollState();
 		fChatText->append(
 #if (QT_VERSION < 0x030000)
 					"\t" +
 #endif
  					out);
+	}
 	fMainLog.LogString(out);
 	UpdateTextView();
 }
@@ -1500,7 +1505,7 @@ WinShareWindow::Action(const QString & name, const QString & msg, bool batch)
 	}
 	else
 	{
-		CheckScrollState();
+		// CheckScrollState();
 		PrintText(chat);
 	}
 }
@@ -1518,7 +1523,7 @@ WinShareWindow::PrintError(const QString & error, bool batch)
 		}
 		else
 		{
-			CheckScrollState();
+			// CheckScrollState();
 			PrintText(e);
 		}
 	}
@@ -1537,7 +1542,7 @@ WinShareWindow::PrintWarning(const QString & warning, bool batch)
 		}
 		else
 		{
-			CheckScrollState();
+			// CheckScrollState();
 			PrintText(e);
 		}
 	}
