@@ -16,6 +16,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	setName( "WUploadThread" );
 	fFile = NULL; 
 	fFileUl = QString::null;
+	fRemoteSessionID = QString::null;
 	fCurFile = -1;
 	fNumFiles = -1;
 	fActive = true;
@@ -405,8 +406,19 @@ WUploadThread::SendRejectedNotification(bool direct)
 		SendMessageToSessions(q);
 	else
 	{
-		String node("/*/");
-		node += (const char *) fRemoteSessionID.latin1();
+		String node;
+		if (fRemoteSessionID != QString::null)
+		{
+			node = "/*/";
+			node += (const char *) fRemoteSessionID.latin1();
+		}
+		else
+		{
+			// use /<ip>/* instead of /*/<sessionid>, because session id isn't yet known at this point
+			node = "/";
+			node += (const char *) fStrRemoteIP.latin1();
+			node += "/*";
+		}
 		if (
             (q()->AddString(PR_NAME_SESSION, "") == B_NO_ERROR) &&
             (q()->AddString(PR_NAME_KEYS, node) == B_NO_ERROR)
