@@ -286,25 +286,25 @@ WUniListItem::text(int c) const
 		}
 	case Size:
 		{
-		result = QListViewItem::text(c);
+		result = fKey[c];
 		n = result.toDouble(&ok);
-		postFix = "B";
+		postFix = QObject::tr( "B" );
 		if (ok)
 		{
 			if (n >= 1024.0f)	// > 1 kB?
 			{
 				n /= 1024.0f;
-				postFix = "kB";	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
+				postFix = QObject::tr( "kB" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
 				
 				if (n >= 1024.0f)	// > 1 MB?
 				{
 					n /= 1024.0f;
-					postFix = "MB";
+					postFix = QObject::tr( "MB" );
 					
 					if (n >= 1024.0f)	// > 1 GB?
 					{
 						n /= 1024.0f;
-						postFix = "GB";
+						postFix = QObject::tr( "GB" );
 					}
 				}
 			}
@@ -316,6 +316,8 @@ WUniListItem::text(int c) const
 		{
 			result.sprintf("%.2f ", n);
 			result += postFix;
+			WString res = result;
+			PRINT("UListView::text : %S\n", res.getBuffer());
 		}
 		else
 		{
@@ -328,23 +330,23 @@ WUniListItem::text(int c) const
 		{
 		result = QListViewItem::text(c);
 		n = result.toDouble(&ok);
-		postFix = "B/s";
+		postFix = QObject::tr( "B/s" );
 		if (ok)
 		{
 			if (n >= 1024.0f)	// > 1 kB?
 			{
 				n /= 1024.0f;
-				postFix = "kB/s";	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
+				postFix = QObject::tr( "kB/s" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
 				
 				if (n >= 1024.0f)	// > 1 MB?
 				{
 					n /= 1024.0f;
-					postFix = "MB/s";
+					postFix = QObject::tr( "MB/s" );
 					
 					if (n >= 1024.0f)	// > 1 GB?
 					{
 						n /= 1024.0f;
-						postFix = "GB/s";
+						postFix = QObject::tr( "GB/s" );
 					}
 				}
 			}
