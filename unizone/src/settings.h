@@ -54,6 +54,7 @@ using namespace muscle;
 #define SHARING_ENABLED		"sharingenabled"
 #define MAX_UPLOADS			"maxuploads"
 #define MAX_DOWNLOADS		"maxdownloads"
+#define PACKET_SIZE			"packetsize"
 #define FONT_SIZE			"fontsize"
 #define WATCH_PATTERN		"watchpattern"
 #define IGNORE_PATTERN		"ignorepattern"
@@ -348,6 +349,8 @@ public:
 	void SetDLLimit(int);
 	int GetBLLimit();
 	void SetBLLimit(int);
+	int GetPacketSize();
+	void SetPacketSize(int);
 	
 	static int ConvertToBytes(int);	// converts a limit constant into bytes
 	

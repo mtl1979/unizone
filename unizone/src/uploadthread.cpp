@@ -551,7 +551,7 @@ WUploadThread::DoUpload()
 	if (fFile)
 	{
 		MessageRef uref(GetMessageFromPool(WDownload::TransferFileData));
-		const uint32 bufferSize = 8 * 1024;	// think about doing this in a dynamic way (depending on connection)
+		const uint32 bufferSize = GetPacketSize() * 1024;	// think about doing this in a dynamic way (depending on connection)
 		uint8 * scratchBuffer;
 		if (uref() && uref()->AddData("data", B_RAW_TYPE, NULL, bufferSize) == B_OK &&
 			uref()->FindDataPointer("data", B_RAW_TYPE, (void **)&scratchBuffer, NULL) == B_OK)

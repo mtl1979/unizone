@@ -1000,6 +1000,10 @@ Date: %4</translation>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
     </message>
+    <message>
+        <source>Packet Size</source>
+        <translation>Packet Size</translation>
+    </message>
 </context>
 <context>
     <name>WPrefs</name>
@@ -1581,6 +1585,14 @@ Date: %4</translation>
     <message>
         <source>Default launcher:</source>
         <translation>Default launcher:</translation>
+    </message>
+    <message>
+        <source>Upload Packet Size</source>
+        <translation type='obsolete'>Upload Packet Size</translation>
+    </message>
+    <message>
+        <source>Upload Packet Size:</source>
+        <translation>Upload Packet Size:</translation>
     </message>
 </context>
 <context>

@@ -215,6 +215,17 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fULBanMenu->insertItem(tr("1 hour"), ID_BAN1H);
 	fULBanMenu->insertItem(tr("Infinite"), ID_BANINF);
 
+	fULPacketMenu = new QPopupMenu(fULPopup, "Packet Size Menu");
+	CHECK_PTR(fULPacketMenu);
+
+	fULPacketMenu->setItemChecked(ID_PACKET8K, true);
+	fULPacket = ID_PACKET8K;
+
+	fULPacketMenu->insertItem(tr("4 kB"), ID_PACKET4K);
+	fULPacketMenu->insertItem(tr("8 kB"), ID_PACKET8K);
+	fULPacketMenu->insertItem(tr("16 kB"), ID_PACKET16K);
+	fULPacketMenu->insertItem(tr("32 kB"), ID_PACKET32K);
+
 	fULPopup->insertItem(tr("Move Up"), ID_MOVEUP);
 	fULPopup->insertItem(tr("Move Down"), ID_MOVEDOWN);
 	fULPopup->insertItem(tr("Ban IP"), ID_IGNORE);
@@ -223,10 +234,12 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 
 	fULPopup->insertItem(tr("Throttle"), fULThrottleMenu, ID_THROTTLE);
 	fULPopup->insertItem(tr("Block"), fULBanMenu, ID_BLOCK);
+	fULPopup->insertItem(tr("Packet Size"), fULPacketMenu, ID_SETPACKET);
 
 	connect(fULPopup, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fULThrottleMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fULBanMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
+	connect(fULPacketMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fUploads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 			this, SLOT(ULRightClicked(QListViewItem *, const QPoint &, int)));
 
@@ -373,6 +386,7 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 	CHECK_PTR(ut);
 
 	PRINT("Setting upload\n");
+	ut->SetPacketSize(gWin->fSettings->GetPacketSize());
 	ut->SetUpload(remoteIP, port, fSharedFiles);
 	
 	if (GetNumUploads() < gWin->fSettings->GetMaxUploads())
@@ -414,6 +428,7 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 	CHECK_PTR(ut);
 
 	PRINT("Setting upload\n");
+	ut->SetPacketSize(gWin->fSettings->GetPacketSize());
 	ut->SetUpload(socket, remoteIP, fSharedFiles);
 	
 	if (GetNumUploads() < gWin->fSettings->GetMaxUploads())
@@ -1690,6 +1705,30 @@ WDownload::ULPopupActivated(int id)
 			break;
 		}
 
+	case ID_PACKET4K:
+		{
+			gt->SetPacketSize(4);
+			break;
+		}
+
+	case ID_PACKET8K:
+		{
+			gt->SetPacketSize(8);
+			break;
+		}
+
+	case ID_PACKET16K:
+		{
+			gt->SetPacketSize(16);
+			break;
+		}
+
+	case ID_PACKET32K:
+		{
+			gt->SetPacketSize(32);
+			break;
+		}
+
 	case ID_IGNORE:
 		{
 			if ( gWin->IsIgnoredIP( gt->GetRemoteIP() ) )
@@ -1748,12 +1787,14 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 				fULPopup->setItemEnabled(ID_QUEUE, false);
 				fULPopup->setItemEnabled(ID_BLOCK, false);
 				fULPopup->setItemEnabled(ID_THROTTLE, false);
+				fULPopup->setItemEnabled(ID_SETPACKET, false);
 			}
 			else
 			{
 				fULPopup->setItemEnabled(ID_QUEUE, true);
 				fULPopup->setItemEnabled(ID_BLOCK, true);
 				fULPopup->setItemEnabled(ID_THROTTLE, true);
+				fULPopup->setItemEnabled(ID_SETPACKET, true);
 			}
 
 			fULPopup->setItemChecked(ID_QUEUE, (*iter).first->IsLocallyQueued());
@@ -1968,6 +2009,35 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 				}
 			}
 			fULBanMenu->setItemChecked(fULBan, true);
+
+			int fNewPacket = (*iter).first->GetPacketSize();
+			fULPacketMenu->setItemChecked(fULPacket, false);
+			
+			switch (fNewPacket)
+			{
+			case 4:
+				{
+					fULPacket = ID_PACKET4K;
+					break;
+				}
+			case 8:
+				{
+					fULPacket = ID_PACKET8K;
+					break;
+				}
+			case 16:
+				{
+					fULPacket = ID_PACKET16K;
+					break;
+				}
+			case 32:
+				{
+					fULPacket = ID_PACKET32K;
+					break;
+				}
+			}
+			fULPacketMenu->setItemChecked(fULPacket, true);
+
 			fULPopup->popup(p);
 		}
 	}

@@ -106,9 +106,11 @@ private:
 	QPopupMenu * fDLThrottleMenu, * fULThrottleMenu;
 	QPopupMenu * fDLRunMenu;
 	QPopupMenu * fULBanMenu;
+	QPopupMenu * fULPacketMenu;
 
 	int fDLThrottle, fULThrottle;	// Current throttle selections
-	int fULBan;						// current ban selection
+	int fULBan;						// Current ban selection
+	int fULPacket;					// Current packet size selection
 
 	QListViewItem * fDLPopupItem;	// download item that was right clicked
 	QListViewItem * fULPopupItem;	//   upload item that was right clicked
@@ -164,6 +166,11 @@ private:
 		ID_BAN30,
 		ID_BAN1H,
 		ID_BANINF,
+		ID_SETPACKET,
+		ID_PACKET4K,
+		ID_PACKET8K,
+		ID_PACKET16K,
+		ID_PACKET32K,
 		ID_MOVEUP,
 		ID_MOVEDOWN,
 		ID_IGNORE,

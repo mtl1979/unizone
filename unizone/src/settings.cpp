@@ -1020,6 +1020,21 @@ WSettings::SetDLLimit(int l)
 	fSet->AddInt32(DL_LIMIT, l);
 }
 
+int
+WSettings::GetPacketSize()
+{
+	int i = 8;
+	fSet->FindInt32(PACKET_SIZE, (int32 *)&i);
+	return i;
+}
+
+void
+WSettings::SetPacketSize(int l)
+{
+	fSet->RemoveName(PACKET_SIZE);
+	fSet->AddInt32(PACKET_SIZE, l);
+}
+
 uint64
 WSettings::GetTransmitStats()
 {

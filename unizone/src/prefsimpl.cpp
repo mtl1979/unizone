@@ -228,6 +228,18 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fDLLimit->setCurrentItem(gWin->fSettings->GetDLLimit());
 	fBLLimit->setCurrentItem(gWin->fSettings->GetBLLimit());
 
+	switch (gWin->fSettings->GetPacketSize())
+	{
+		case 4:
+			fPacketSize->setCurrentItem(0); break;
+		case 8:
+			fPacketSize->setCurrentItem(1); break;
+		case 16:
+			fPacketSize->setCurrentItem(2); break;
+		case 32:
+			fPacketSize->setCurrentItem(3); break;
+	}	
+	
 	fLogging->setChecked(gWin->fSettings->GetLogging());
 }
 
@@ -343,6 +355,18 @@ WPrefs::OK()
 	gWin->fSettings->SetDLLimit(fDLLimit->currentItem());
 	gWin->fSettings->SetBLLimit(fBLLimit->currentItem());
 	gWin->fSettings->SetChatLimit(fChatLimit->currentItem());
+
+	switch (fPacketSize->currentItem())
+	{
+		case 0:
+			gWin->fSettings->SetPacketSize(4); break;
+		case 1:
+			gWin->fSettings->SetPacketSize(8); break;
+		case 2:
+			gWin->fSettings->SetPacketSize(16); break;
+		case 3:
+			gWin->fSettings->SetPacketSize(32); break;
+	}
 	
 	gWin->fSettings->SetLogging(fLogging->isChecked());
 	// ok

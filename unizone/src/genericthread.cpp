@@ -22,6 +22,7 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	fPackets = 0;
 	fTXRate = 0;
 	fTimeLeft = 0;
+	fPacket = 8;
 	for (i = 0; i < MAX_RATE_COUNT; i++)
 		fRate[i] = 0.0f;
 	for (i = 0; i < MAX_ETA_COUNT; i++)
@@ -148,7 +149,7 @@ WGenericThread::SendReply(MessageRef &m)
 void 
 WGenericThread::SetPacketCount(double bytes)
 {
-	fPackets += bytes / 8.0f ;
+	fPackets += bytes / ((double) fPacket) ;
 }
 
 void
@@ -293,3 +294,14 @@ WGenericThread::GetBanTime()
 		return (fTimeLeft / 60000000);
 }
 
+void
+WGenericThread::SetPacketSize(int s)
+{
+	fPacket = s;
+}
+
+int
+WGenericThread::GetPacketSize()
+{
+	return fPacket;
+}

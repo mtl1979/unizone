@@ -83,6 +83,9 @@ public:
 	virtual void ResetRate() { SetRate(fTXRate); }
 	virtual void ResetRate(AbstractReflectSessionRef & ref) { SetRate(fTXRate, ref); }
 
+	virtual void SetPacketSize(int s);		// Set/get packet size in kB
+	virtual int GetPacketSize();
+
 	int GetBanTime();
 
 public slots:
@@ -105,6 +108,7 @@ protected:
 	int fETACount;					// amount we have, 5 max
 	double fPackets;				// amount of ultrafast 8 kB packets transfered
 	int64 fTimeLeft;
+	int fPacket;
 
 	void SetMostRecentETA(uint32 eta);
 	uint32 ComputeETA() const;

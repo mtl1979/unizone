@@ -1092,6 +1092,10 @@ Päiväys: %4</translation>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
     </message>
+    <message>
+        <source>Packet Size</source>
+        <translation>Pakettikoko</translation>
+    </message>
 </context>
 <context>
     <name>WPrefs</name>
@@ -1673,6 +1677,14 @@ Päiväys: %4</translation>
     <message>
         <source>Default launcher:</source>
         <translation>Oletusaukaisija:</translation>
+    </message>
+    <message>
+        <source>Upload Packet Size</source>
+        <translation type='obsolete'>Lähetyksen pakettikoko</translation>
+    </message>
+    <message>
+        <source>Upload Packet Size:</source>
+        <translation>Lähetyksen Pakettikoko:</translation>
     </message>
 </context>
 <context>
