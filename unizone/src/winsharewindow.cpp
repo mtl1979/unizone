@@ -143,10 +143,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
 			this, SLOT(URLClicked(const QString &)));
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(AboutToQuit()));
-#if (QT_VERSION < 0x030000)
 	connect(fChatText, SIGNAL(BeforeShown()), this, SLOT(BeforeShown()));
 	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
-#endif
+
 	// create popup menu
 	fPrivate = new QPopupMenu(this);	// have it deleted on destruction of window
 	CHECK_PTR(fPrivate);
@@ -631,6 +630,15 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (wte)
 				{
 					CheckResumes( wte->Text() );
+				}
+				return;
+			}
+		case WTextEvent::ChatTextEvent:
+			{
+				WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
+				if (wte)
+				{
+					PrintText( wte->Text() );
 				}
 				return;
 			}
@@ -1403,35 +1411,6 @@ WinShareWindow::MakeHumanTime(int64 time)
 	}
 }
 
-/*
-void
-WinShareWindow::PrintText(const QString & str)
-{
-	QString out("");
-	if (fSettings->GetTimeStamps())
-		out = GetTimeStamp();
-
-	if (!str.isEmpty())
-		out += str;
-
-#if (QT_VERSION < 0x030000)
-	if (fChatText->text().isEmpty())
-		fChatText->setText(out);
-	else
-#endif
-	{
-		CheckScrollState();
-		fChatText->append(
-#if (QT_VERSION < 0x030000)
-					"\t" +
-#endif
- 					out);
-	}
-	if (fSettings->GetLogging())
-		fMainLog.LogString(out);
-	UpdateTextView();
-}
-*/
 void
 WinShareWindow::CheckScrollState()
 {

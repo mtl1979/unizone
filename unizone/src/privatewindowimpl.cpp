@@ -100,10 +100,8 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 			this, SLOT(URLClicked(const QString &)));
 	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
-#if (QT_VERSION < 0x030000)
 	connect(fChatText, SIGNAL(BeforeShown()), this, SLOT(BeforeShown()));
 	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
-#endif
 	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 
 #ifdef WIN32
@@ -192,61 +190,7 @@ WPrivateWindow::URLClicked(const QString & url)
 			GotoURL(url);
 	}
 }
-/*
-void
-WPrivateWindow::UpdateTextView()
-{
-	if (fScrollDown)
-	{
-		fScrollY = fChatText->contentsHeight();
-	}
-	if (fScrollX != fChatText->contentsX() || fScrollY != fChatText->contentsY())
-	{
-		fChatText->setContentsPos(fScrollX, fScrollY);
-#ifndef WIN32 // for Linux (does FreeBSD need this too???)
-		fChatText->repaintContents(
-								fChatText->contentsX(), fChatText->contentsY(),
-								fChatText->contentsWidth(), fChatText->contentsHeight(),
-								false);
-#endif
-	}
-}
-void
-WPrivateWindow::PrintText(const QString & str)
-{
-	QString output("");
 
-	// Check for timestamp
-	if (gWin->fSettings->GetTimeStamps())
-		output = GetTimeStamp();
-	output += str;
-
-	if (gWin->fSettings->GetLogging())
-		fLog.LogString(output);
-#if (QT_VERSION < 0x030000)
-	if (fChatText->text().isEmpty())
-		fChatText->setText(output);
-	else
-#endif
-	{
-		CheckScrollState();
-		fChatText->append(
-#if (QT_VERSION < 0x030000)
-				"\t" + 
-#endif
-				output);
-	}
-	UpdateTextView();
-}
-
-void
-WPrivateWindow::PrintSystem(const QString & msg)
-{
-	QString s = WFormat::SystemText().arg(WColors::System).arg(gWin->fSettings->GetFontSize()); // <postmaster@raasu.org> 20021127 -- Wrong order!!
-	s += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(ParseChatText((QString &)msg));
-	PrintText(s);
-}
-*/
 void
 WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 {

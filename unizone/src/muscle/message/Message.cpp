@@ -235,29 +235,29 @@ public:
 
    virtual void Flatten(uint8 *buffer) const
    {
-      uint32 numItems = _data.GetNumItems(); 
+      uint32 numItems = this->_data.GetNumItems(); 
       for (uint32 i=0; i<numItems; i++) 
       {
-         _data.GetItemAt(i)->Flatten(buffer);
+         this->_data.GetItemAt(i)->Flatten(buffer);
          buffer += _flatItemSize;
       }
    }
 
    // Flattenable interface
-   virtual uint32 FlattenedSize() const {return _data.GetNumItems() * _flatItemSize;}
+   virtual uint32 FlattenedSize() const {return this->_data.GetNumItems() * _flatItemSize;}
 
    virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
    {
-      _data.Clear();
+      this->_data.Clear();
       if (numBytes % _flatItemSize) return B_ERROR;  // length must be an even multiple of item size, or something's wrong!
 
       DataType temp;
       uint32 numItems = numBytes / _flatItemSize;
-      if (_data.EnsureSize(numItems) == B_NO_ERROR)
+      if (this->_data.EnsureSize(numItems) == B_NO_ERROR)
       {
          for (uint32 i=0; i<numItems; i++)
          {
-            if ((temp.Unflatten(buffer, _flatItemSize) != B_NO_ERROR)||(_data.AddTail(temp) != B_NO_ERROR)) return B_ERROR;
+            if ((temp.Unflatten(buffer, _flatItemSize) != B_NO_ERROR)||(this->_data.AddTail(temp) != B_NO_ERROR)) return B_ERROR;
             buffer += _flatItemSize;
          }
          return B_NO_ERROR;
@@ -270,14 +270,14 @@ public:
 protected:
    virtual void AddToString(String & s, bool, int indent) const
    {
-      uint32 numItems = GetNumItems();
+      uint32 numItems = this->GetNumItems();
       for (uint32 i=0; i<numItems; i++) 
       {
          DoIndents(indent,s); 
          char buf[64]; 
          sprintf(buf, "    %lu. ", i);  
          s += buf;
-         AddItemToString(s, _data[i]);
+         AddItemToString(s, this->_data[i]);
       }
    }
 
@@ -298,24 +298,24 @@ public:
    virtual void Flatten(uint8 *buffer) const
    {
       DataType * dBuf = (DataType *) buffer;
-      uint32 numItems = _data.GetNumItems(); 
-      for (uint32 i=0; i<numItems; i++) ConvertToNetworkByteOrder(&dBuf[i], _data.GetItemAt(i));
+      uint32 numItems = this->_data.GetNumItems(); 
+      for (uint32 i=0; i<numItems; i++) ConvertToNetworkByteOrder(&dBuf[i], this->_data.GetItemAt(i));
    }
 
    virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
    {
-      _data.Clear();
+      this->_data.Clear();
       if (numBytes % sizeof(DataType)) return B_ERROR;  // length must be an even multiple of item size, or something's wrong!
 
       uint32 numItems = numBytes / sizeof(DataType);
-      if (_data.EnsureSize(numItems) == B_NO_ERROR)
+      if (this->_data.EnsureSize(numItems) == B_NO_ERROR)
       {
          DataType * dBuf = (DataType *) buffer;
          for (uint32 i=0; i<numItems; i++)
          {
             DataType next;
             ConvertFromNetworkByteOrder(&next, &dBuf[i]);
-            if (_data.AddTail(next) != B_NO_ERROR) return B_ERROR;
+            if (this->_data.AddTail(next) != B_NO_ERROR) return B_ERROR;
          }
          return B_NO_ERROR;
       }
@@ -323,7 +323,7 @@ public:
    }
 
    // Flattenable interface
-   virtual uint32 FlattenedSize() const {return _data.GetNumItems() * sizeof(DataType);}
+   virtual uint32 FlattenedSize() const {return this->_data.GetNumItems() * sizeof(DataType);}
 
 protected:
    virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere) const = 0;
@@ -333,11 +333,11 @@ protected:
 
    virtual void AddToString(String & s, bool, int indent) const
    {
-      uint32 numItems = GetNumItems();
+      uint32 numItems = this->GetNumItems();
       for (uint32 i=0; i<numItems; i++) 
       {
          DoIndents(indent,s); 
-         char temp1[100]; sprintf(temp1, GetFormatString(), ItemAt(i));
+         char temp1[100]; sprintf(temp1, GetFormatString(), this->ItemAt(i));
          char temp2[150]; sprintf(temp2, "    %lu. [%s]\n", i, temp1);  s += temp2;
       }
    }
@@ -634,7 +634,7 @@ public:
 
    virtual uint32 GetItemSize(uint32 index) const 
    {
-      const FlatCountable * msg = ItemAt(index)();
+      const FlatCountable * msg = this->ItemAt(index)();
       return msg ? msg->FlattenedSize() : 0;
    }
 
@@ -651,23 +651,23 @@ public:
    virtual void Flatten(uint8 *buffer) const
    {
       uint32 writeOffset = 0;
-      uint32 numItems = _data.GetNumItems(); 
+      uint32 numItems = this->_data.GetNumItems(); 
 
       // Conditional to allow maintaining backwards compatibility with old versions of muscle's MessageDataArrays (sigh)
       if (ShouldWriteNumItems()) 
       {
          uint32 writeNumElements = B_HOST_TO_LENDIAN_INT32(numItems);
-         WriteData(buffer, &writeOffset, &writeNumElements, sizeof(writeNumElements));
+         this->WriteData(buffer, &writeOffset, &writeNumElements, sizeof(writeNumElements));
       }
 
       for (uint32 i=0; i<numItems; i++) 
       {
-         const FlatCountable * next = ItemAt(i).GetItemPointer();
+         const FlatCountable * next = this->ItemAt(i).GetItemPointer();
          if (next)
          {
             uint32 fs = next->FlattenedSize();
             uint32 writeFs = B_HOST_TO_LENDIAN_INT32(fs);
-            WriteData(buffer, &writeOffset, &writeFs, sizeof(writeFs));
+            this->WriteData(buffer, &writeOffset, &writeFs, sizeof(writeFs));
             next->Flatten(&buffer[writeOffset]);
             writeOffset += fs;
          }
@@ -677,7 +677,7 @@ public:
    // Flattenable interface
    virtual uint32 FlattenedSize() const 
    {
-      uint32 numItems = GetNumItems();
+      uint32 numItems = this->GetNumItems();
       uint32 count = (numItems+(ShouldWriteNumItems()?1:0))*sizeof(uint32);
       for (uint32 i=0; i<numItems; i++) count += GetItemSize(i);
       return count;
@@ -875,7 +875,7 @@ public:
    VariableSizeFlatObjectArray() {/* empty */}
    virtual ~VariableSizeFlatObjectArray() {/* empty */}
 
-   virtual uint32 GetItemSize(uint32 index) const {return ItemAt(index).FlattenedSize();}
+   virtual uint32 GetItemSize(uint32 index) const {return this->ItemAt(index).FlattenedSize();}
    virtual bool ElementsAreFixedSize() const {return false;}
 
    virtual void Flatten(uint8 *buffer) const
@@ -884,19 +884,19 @@ public:
       //          1. entry size in bytes (4 bytes)
       //          2. entry data (n bytes)
       //          (repeat 1. and 2. as necessary)
-      uint32 numElements = GetNumItems();
+      uint32 numElements = this->GetNumItems();
       uint32 networkByteOrder = B_HOST_TO_LENDIAN_INT32(numElements);
       uint32 writeOffset = 0;
 
-      WriteData(buffer, &writeOffset, &networkByteOrder, sizeof(networkByteOrder));
+      this->WriteData(buffer, &writeOffset, &networkByteOrder, sizeof(networkByteOrder));
 
       for (uint32 i=0; i<numElements; i++)
       {
          // write element size
-         const Flattenable & s = ItemAt(i);
+         const Flattenable & s = this->ItemAt(i);
          uint32 nextElementBytes = s.FlattenedSize();
          networkByteOrder = B_HOST_TO_LENDIAN_INT32(nextElementBytes);
-         WriteData(buffer, &writeOffset, &networkByteOrder, sizeof(networkByteOrder));
+         this->WriteData(buffer, &writeOffset, &networkByteOrder, sizeof(networkByteOrder));
 
          // write element data
          s.Flatten(&buffer[writeOffset]);
@@ -906,30 +906,30 @@ public:
 
    virtual uint32 FlattenedSize() const 
    {
-      uint32 num = GetNumItems();
+      uint32 num = this->GetNumItems();
       uint32 sum = (num+1)*sizeof(uint32);  // 1 uint32 for the count, plus 1 per entry for entry-size
-      for (uint32 i=0; i<num; i++) sum += ItemAt(i).FlattenedSize();
+      for (uint32 i=0; i<num; i++) sum += this->ItemAt(i).FlattenedSize();
       return sum;
    }
 
    virtual status_t Unflatten(const uint8 *buffer, uint32 inputBufferBytes)
    {
-      Clear(false);
+      this->Clear(false);
 
       uint32 networkByteOrder;
       uint32 readOffset = 0;
 
-      if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+      if (this->ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
       uint32 numElements = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
-      if (_data.EnsureSize(numElements) != B_NO_ERROR) return B_ERROR;
+      if (this->_data.EnsureSize(numElements) != B_NO_ERROR) return B_ERROR;
       for (uint32 i=0; i<numElements; i++)
       {
-         if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+         if (this->ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
          uint32 elementSize = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
          if (elementSize == 0) return B_ERROR;  // it should always have at least the trailing NUL byte!
 
          // read element data
-         if ((readOffset + elementSize > inputBufferBytes)||(_data.AddTail() != B_NO_ERROR)||(_data.TailPointer()->Unflatten(&buffer[readOffset], elementSize) != B_NO_ERROR)) return B_ERROR;
+         if ((readOffset + elementSize > inputBufferBytes)||(this->_data.AddTail() != B_NO_ERROR)||(this->_data.TailPointer()->Unflatten(&buffer[readOffset], elementSize) != B_NO_ERROR)) return B_ERROR;
          readOffset += elementSize;
       }
       return B_NO_ERROR;

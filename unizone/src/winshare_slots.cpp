@@ -24,6 +24,25 @@
 #include "filethread.h"
 #include "netclient.h"
 #include "wstatusbar.h"
+#include "wsystemevent.h"
+#include "textevent.h"
+
+
+void
+SystemEvent(QObject *target, const QString &text)
+{
+	WSystemEvent *wse = new WSystemEvent(text);
+	if (wse)
+		QApplication::postEvent(target, wse);
+}
+
+void
+TextEvent(QObject *target, const QString &text, WTextEvent::Type t)
+{
+	WTextEvent *wte = new WTextEvent(text, t);
+	if (wte)
+		QApplication::postEvent(target, wte);
+}
 
 void
 WinShareWindow::Exit()
@@ -72,7 +91,9 @@ WinShareWindow::UserConnected(const QString &sid)
 	{
 		QString text = WFormat::UserConnected(sid);
 		QString system = WFormat::Text(text);
-		PrintSystem(system);
+		WSystemEvent *wse = new WSystemEvent(system);
+		if (wse)
+			QApplication::postEvent(this, wse);
 	}
 	UpdateUserCount();
 }
@@ -94,7 +115,7 @@ WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 			msg = WFormat::UserDisconnected(sid, uname); 
 		}
 		QString parse = WFormat::Text(msg);
-		PrintSystem(parse);
+		SystemEvent(this, parse);
 	}
 	UpdateUserCount();
 }
@@ -124,11 +145,9 @@ WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QS
 			nameformat = WFormat::UserNameChangedNoOld(sid, FixStringStr(newname)); 
 		}
 		system = WFormat::Text(nameformat);
-		PrintSystem(system);
+		SystemEvent(this, system);
 	}
-	WTextEvent * wte = new WTextEvent(newname, WTextEvent::ResumeType);
-	if (wte)
-		QApplication::postEvent(this, wte);
+	TextEvent(this, newname, WTextEvent::ResumeType);
 }
 
 void
@@ -196,7 +215,17 @@ WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QSt
 			nameformat = WFormat::UserStatusChanged(id, FixStringStr(n), FixStringStr(status)); 
 		}
 		system = WFormat::Text(nameformat);
-		PrintSystem(system);
+		SystemEvent(this, system);
+	}
+}
+
+void
+WinShareWindow::UserHostName(const QString &sid, const QString &host)
+{
+	if (fSettings->GetIPAddresses())
+	{
+		QString ip = WFormat::UserIPAddress2(sid, host);
+		SystemEvent(this, ip);
 	}
 }
 
@@ -319,7 +348,7 @@ WinShareWindow::PopupActivated(int id)
 		else if (id == 3) 
 		{
 			QString qTemp = WFormat::UserIPAddress(FixStringStr((*it).second()->GetUserName()), (*it).second()->GetUserHostName()); // <postmaster@raasu.org> 20021112
-			PrintSystem(qTemp);
+			SystemEvent(this, qTemp);
 		}
 		else if (id == 4)
 		{
@@ -397,7 +426,7 @@ WinShareWindow::Preferences()
 		if (oldLogging && !fSettings->GetLogging())
 		{
 			if (fSettings->GetInfo())
-				PrintSystem(tr("Logging disabled."));
+				SystemEvent(this, tr("Logging disabled."));
 			StopLogging();
 
 			pLock.lock();
@@ -408,7 +437,7 @@ WinShareWindow::Preferences()
 		else if (!oldLogging && fSettings->GetLogging())
 		{
 			if (fSettings->GetInfo())
-				PrintSystem(tr("Logging enabled."));
+				SystemEvent(this, tr("Logging enabled."));
 			StartLogging();
 			pLock.lock();
 			for (WPrivIter privIter = fPrivateWindows.begin(); privIter != fPrivateWindows.end(); privIter++)
@@ -438,7 +467,7 @@ WinShareWindow::ConnectTimer()
 	PRINT("WinShareWindow::ConnectTimer()\n");
 
 	if (fSettings->GetInfo())
-		PrintSystem(tr("Connection to server failed!"));
+		SystemEvent(this, tr("Connection to server failed!"));
 
 	// Schedule reconnect attempt
 	QCustomEvent * recon = new QCustomEvent(WinShareWindow::ConnectRetry);
@@ -486,11 +515,7 @@ WinShareWindow::FileFailed(const QString &file, const QString &lfile, const QStr
 {
 	FileInterrupted(file, lfile, user);
 
-	WTextEvent * wte = new WTextEvent(user, WTextEvent::ResumeType);
-	if (wte)
-	{
-		QApplication::postEvent(this, wte);
-	}
+	TextEvent(this, user, WTextEvent::ResumeType);
 }
 
 // Insert interrupted download to resume list
@@ -579,7 +604,7 @@ WinShareWindow::CheckResumes(const QString &user)
 	if (fFiles.GetNumItems() > 0)
 	{
 		FixString(out);
-		PrintSystem(out);
+		SystemEvent(this, out);
 		// Make sure File Transfers window is open
 
 		OpenDownload(); 

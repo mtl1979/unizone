@@ -36,12 +36,15 @@ typedef hostent *LPHOSTENT;
 #include "serverclient.h"
 #include "updateclient.h"
 #include "wstatusbar.h"
+#include "textevent.h"
 
 #include <qapplication.h>
 
 #if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
 #endif
+
+void TextEvent(QObject *target, const QString &text, WTextEvent::Type t);
 
 void
 WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
@@ -1037,11 +1040,11 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			int cp = qtext.find(": ");
 			if (cp >= 0)
 			{
-				QString who = qtext.left(cp);
-				qtext = qtext.mid(cp + 2);
-				Reverse(qtext);
-				qtext.prepend(": ");
-				qtext.prepend(who);
+				QString who = qtext.left(cp + 2);
+				QString rtext = qtext.mid(cp + 2);
+				Reverse(rtext);
+				qtext = who;
+				qtext += rtext;
 			}
 			else
 			{
@@ -1498,7 +1501,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							}
 #endif // WIN32
 							
-							PrintText(chat); 
+							TextEvent(this, chat, WTextEvent::ChatTextEvent); 
 						}
 					}
 				}
@@ -1517,7 +1520,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 								chat += WFormat::RemoteWatch(userID, FixStringStr(userName), nameText);
 							else
 								chat += WFormat::RemoteText(userID, FixStringStr(userName), nameText);
-							PrintText(chat); 
+							TextEvent(this, chat, WTextEvent::ChatTextEvent); 
 						}
 					}
 				}
@@ -2530,17 +2533,6 @@ WinShareWindow::GetUserID() const
 			return fNetClient->LocalSessionID();
 	}
 	return QString::null;
-}
-
-void
-WinShareWindow::UserHostName(const QString &sid, const QString &host)
-{
-	if (fSettings->GetIPAddresses())
-	{
-		QString ip = WFormat::UserIPAddress2(sid, host);
-		QString system = WFormat::SystemText(ip);
-		PrintText(system);
-	}
 }
 
 void

@@ -24,14 +24,21 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 	QString res = result;
 	//QString qUn = QString::fromUtf8(un);
 
+	QString oldName("");
 	while (iter != fNetClient->Users().end())
 	{
 		user = (*iter).second;
 		QString userName = StripURL(user()->GetUserName().lower().stripWhiteSpace());
 		if (((filter == NULL) || (MatchUserFilter(user, filter))) &&
-			((userName.startsWith(un)) || (userName.contains(" ["+un) > 0)))
+			(userName.startsWith(un)))
 		{
-			matchCount++;
+			// Only count different nicks
+			if (oldName != userName)
+				matchCount++;
+
+			if (oldName == "")
+				oldName = userName;
+
 			if (matchCount == 1)
 			{
 				res = StripURL(user()->GetUserName());
@@ -129,38 +136,38 @@ bool
 WinShareWindow::DoTabCompletion(const QString & origText, QString & result, const char * filter)
 {
 	// Do it all in lower case, for case insensitivity
-	String text((const char *) origText.lower().utf8());
+	QString text(origText.lower());
 
 	// Compile a list of pointers to beginnings-of-words in the user's chat string
-	Queue<const char *> words;
+	Queue<int> words;
 	bool inSpace = true;
-	const char * next = text.Cstr();
-	while(*next)
+	int next = 0;
+	while(next < text.length() )
 	{
 		if (inSpace)
 		{
-		 if ((*next != ' ')&&(*next != '\t'))
+		 if ((text.at(next) != ' ')&&(text.at(next) != '\t'))
 		 {
 			words.AddTail(next);
 			inSpace = false;
 		 }
 		}
-		else if ((*next == ' ')||(*next == '\t')) inSpace = true;
+		else if ((text.at(next) == ' ')||(text.at(next) == '\t')) inSpace = true;
 
 		next++;
 	}
 
 	// Now try matching, starting with the last word.
 	// If no match is found, try the last two words, and so on.
-	const char * startAt = NULL, * backupStartAt = NULL;
-	String matchString, backupMatchString;
+	int startAt = -1, backupStartAt = -1;
+	QString matchString, backupMatchString;
 	for (int i=words.GetNumItems()-1; i>=0; i--)
 	{
-		const char * matchAt = words[i];
+		int matchAt = words[i];
 		QString qres;
 
 		PRINT("Matching\n");
-		int numMatches = MatchUserName(QString::fromUtf8(words[i]), qres, filter);
+		int numMatches = MatchUserName(text.mid(words[i]), qres, filter);
 		PRINT("Match complete\n");
 		if (numMatches == 1)
 		{
@@ -169,7 +176,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 			PRINT("Found match %S\n", wResult.getBuffer());
 #endif
 
-			matchString = (const char *) qres.utf8();  // found a unique match!  We're done!
+			matchString = qres;  // found a unique match!  We're done!
 			startAt = matchAt;
 			break;
 		}
@@ -180,25 +187,24 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 			PRINT("Found multiple matches %S\n", wResult.getBuffer());
 #endif
 
-			backupMatchString = (const char *) qres.utf8();  // found several matches; keep trying for a single
-			backupStartAt = matchAt;         // but we'll use this if nothing else
+			backupMatchString = qres;		// found several matches; keep trying for a single
+			backupStartAt = matchAt;        // but we'll use this if nothing else
 		}
-		matchString.Prepend(" ");
+		matchString = matchString.prepend(" ");
 	}
 
-	if (startAt == NULL)
+	if (startAt == -1)
 	{
 		startAt = backupStartAt;
 		matchString = backupMatchString;
 		if (fSettings->GetSounds())
 			QApplication::beep();
 	}
-	if (startAt)
+	if (startAt != -1)
 	{
-		String returnCompletedText = (const char *) origText.utf8();
-		returnCompletedText = returnCompletedText.Substring(0, startAt-text.Cstr());
+		QString returnCompletedText(origText.left(startAt));
 		returnCompletedText += matchString;
-		result = QString::fromUtf8(returnCompletedText.Cstr());
+		result = returnCompletedText;
 		return true;
 	}
 	return false;

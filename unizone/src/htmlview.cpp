@@ -100,32 +100,7 @@ ParseForShown(const QString & txt)
 {
 	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
 	QString out;
-#ifdef DEBUG2									// Makes huge debug logs, so use only if really necessary
-	QString temp = txt;
-	temp.replace(QRegExp("<br>"), "\t");		// Resplit lines, so debugging is easier ;)
-	QStringTokenizer tk(temp, "\t");
-	QString next;
-	QString line;
-	while ((next = tk.GetNextToken()) != QString::null)
-	{
-		if (!next.isEmpty())
-		{
-			line = next;
-			line += "<br>";	// replace our TAB
-		}
-		else
-		{
-			line = "<br>";	// replace our TAB
-		}
-#ifdef _DEBUG
-		WString wLine(line);
-		PRINT("ParseForShown: %S", wLine.getBuffer());
-#endif
-		out += line;
-	}
-#else
 	out = ParseForShownAux(txt);
-#endif 
 
 	// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
 	if (out.right(4) == "<br>")
@@ -136,7 +111,6 @@ ParseForShown(const QString & txt)
 QString
 ParseForShownAux(const QString &txt)
 {
-	QString out = "";	// Text after processing linefeeds and TABs
 	int n = 0;			// Position of next TAB before text to be included
 	int n2 = 0;			// Start of actual text
 	int m = 0;			// Position of next TAB after text to be included
@@ -174,7 +148,7 @@ ParseForShownAux(const QString &txt)
 	{
 		if (txt.mid(n2, 4) == "<br>")
 		{
-			n2 = n2 + 4;
+			n2 += 4;
 		}
 		else if (txt.mid(n2, 1) == "\t")
 		{
@@ -190,8 +164,10 @@ ParseForShownAux(const QString &txt)
 
 	if (n > n2)
 	{
+		QString out;	// Text after processing linefeeds and TABs
+
 		// copy everything before first TAB (after any extra line breaks stripped from the beginning)
-		out += txt.mid(n2, n - n2);
+		out = txt.mid(n2, n - n2);
 		out += "<br>";
 
 		// skip the TAB ;)
@@ -210,13 +186,51 @@ ParseForShownAux(const QString &txt)
 			{
 				// no more TAB characters
 				out += txt.mid(n);
-				n = txt.length();
+				break;
 			}
 		}
+		return out;
 	}
 	else
 	{
-		out = txt.mid(n2);
+		return txt.mid(n2);
 	}
-	return out;
+	return txt;
+}
+
+void
+WHTMLView::appendText(const QString &newtext)
+{
+	PRINT("appendText\n");
+	QWidget *widget = topLevelWidget();
+	if (widget)
+	{
+		if (!widget->isVisible())
+		{
+			int newlen = text().length() + newtext.length();
+//			if (newlen >= MAX_BUFFER_SIZE)
+//			{
+				PRINT("appendText 1\n");
+				emit BeforeShown();
+				PRINT("appendText 2\n");
+				QString temp = text();
+				PRINT("appendText 3\n");
+				setText("");
+				PRINT("appendText 4\n");
+				temp += newtext;
+#if (QT_VERSION >= 0x030000)
+				PRINT("appendText 5\n");
+				setText(ParseForShown(temp));
+				PRINT("appendText 6\n");
+#else
+				PRINT("appendText 5\n");
+#endif
+				emit GotShown(temp);
+				PRINT("appendText OK\n");
+				return;
+//			}
+		}
+	}
+	append(newtext);
+	PRINT("appendText OK\n");
 }

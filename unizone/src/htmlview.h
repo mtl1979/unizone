@@ -13,6 +13,7 @@ public:
 	virtual ~WHTMLView() {}
 
 	virtual void setSource( const QString & name );	
+	virtual void appendText( const QString & text);
 
 	virtual QString context() { return fContext; }
 

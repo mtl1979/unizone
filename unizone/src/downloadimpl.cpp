@@ -275,7 +275,7 @@ void
 WDownload::EmptyDownloads()
 {
 	Lock();
-	PRINT("Number of downloads: %d\n", fDownloadList.GetNumItems());
+	PRINT("Number of downloads: %lu\n", fDownloadList.GetNumItems());
 	DLPair pair;
 	while (fDownloadList.RemoveHead(pair) == B_NO_ERROR)
 	{
@@ -309,7 +309,7 @@ void
 WDownload::EmptyUploads()
 {
 	Lock();
-	PRINT("Number of uploads: %d\n", fUploadList.GetNumItems());
+	PRINT("Number of uploads: %lu\n", fUploadList.GetNumItems());
 	ULPair pair;
 	while (fUploadList.RemoveHead(pair) == B_NO_ERROR)
 	{

@@ -77,28 +77,25 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 	// <postmaster@raasu.org> -- Don't use latin1 ()
 	QString itxt = msg.upper(); 
 
-	int sred;
+	int sred = -1;
 	
 	// Check only on first iteration to avoid infinite loop, when sred = -1 and recursive call adds +1 
 	// --> (-1) + 1 = 0 
 
-	if (index == 0)
-		sred = (itxt.startsWith(sname)) ? 0 : -1;
+	if ((index == 0) && (itxt.startsWith(sname)))
+		sred = 0;
 	else
-		sred = -1;
-	
-	if (sred < 0)
 	{
 		sred = itxt.find(" " + sname, index);
 		if (sred >= 0)
 			sred++;
-	}
-	// Check for double quoted nick
-	if (sred < 0)
-	{
-		sred = itxt.find("\"" + sname, index);
-		if (sred >= 0)
-			sred++;
+		else
+		{
+			// Check for double quoted nick
+			sred = itxt.find("\"" + sname, index);
+			if (sred >= 0)
+				sred++;
+		}
 	}	
 
 	if (sred >= 0)
@@ -214,11 +211,13 @@ ChatWindow::PrintText(const QString & str)
 #endif
 	{
 		CheckScrollState();
-		fChatText->append(
 #if (QT_VERSION < 0x030000)
-					"\t" +
+		QString tmp("\t");
+		tmp += out;
+		fChatText->appendText(tmp);
+#else
+		fChatText->appendText(out);
 #endif
- 					out);
 	}
 	if (Settings()->GetLogging())
 		LogString(out);
@@ -278,6 +277,12 @@ ChatWindow::UpdateTextView()
 	PRINT("UPDATETEXTVIEW: ContentsX = %d, ContentsY = %d\n", fChatText->contentsX(),		fChatText->contentsY());
 	PRINT("              : ContentsW = %d, ContentsH = %d\n", fChatText->contentsWidth(),	fChatText->contentsHeight());
 #endif
+	UpdateScrollState();
+}
+
+void
+ChatWindow::UpdateScrollState()
+{
 	if (fScrollDown)
 	{
 		fScrollY = fChatText->contentsHeight();
@@ -301,9 +306,15 @@ ChatWindow::BeforeShown()
 }
 
 void
+#if (QT_VERSION < 0x030000)
 ChatWindow::GotShown(const QString & txt)
+#else
+ChatWindow::GotShown(const QString &)
+#endif
 {
+#if (QT_VERSION < 0x030000)
 	fChatText->setText(ParseForShown(txt));
+#endif
 	UpdateTextView();
 }
 

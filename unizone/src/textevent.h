@@ -12,11 +12,12 @@
 class WTextEvent : public QCustomEvent
 {
 public:
-	enum 
+	enum Type
 	{
 		TextType = User + 5000,		// user sent text
 		ComboType,					// combo box alert that the text HAS changed
-		ResumeType					// check if user has resumable files
+		ResumeType,					// check if user has resumable files
+		ChatTextEvent				// printable text
 	};
 
 	WTextEvent(const QString & text, int type = TextType);

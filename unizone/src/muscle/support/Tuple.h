@@ -161,7 +161,7 @@ public:
       {
          if (_items[i] == replaceMe) 
          {
-            items[i] = withMe;
+            _items[i] = withMe;
             count++;
          }
       }
