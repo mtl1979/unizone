@@ -10,3 +10,4 @@ scanprogress.h
 scanprogress.cpp
 picviewer.cpp
 picviewer.h
+unizone_unix.pro

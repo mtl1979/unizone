@@ -5,14 +5,15 @@ LUPDATE=$(QTDIR)/bin/lupdate
 LRELEASE=$(QTDIR)/bin/lrelease
 all : translations
 
-include unizone.pro
+-include unizone_unix.pro
 
 QMFILES = $(addsuffix .qm,$(basename $(TRANSLATIONS)))
 
-unizone.pro : $(SOURCES) $(HEADERS)
+unizone_unix.pro : unizone.pro $(SOURCES) $(HEADERS)
+	sed 's/scanprogress.cpp//' < unizone.pro > $@
 	$(LUPDATE) $@	
 
-%.ts : unizone.pro
+%.ts : unizone_unix.pro
  
 translations : $(QMFILES)
 
@@ -20,6 +21,7 @@ translations : $(QMFILES)
 	$(LRELEASE) $<
 
 clean : 
-	rm -rf *.qm
+	rm -f unizone_unix.pro 
+	rm -f *.qm
 
 .PHONY=translations clean
