@@ -926,7 +926,7 @@ CalculateChecksum(const uint8 * data, size_t bufSize)
 uint32
 GetHostByName(const QString &name)
 {
-	QDns query = QDns(name);
+	QDns query(name);
 	QValueList<QHostAddress> ips = query.addresses();
 	QValueList<QHostAddress>::ConstIterator ipiter = ips.begin();
 	while (ipiter != ips.end())

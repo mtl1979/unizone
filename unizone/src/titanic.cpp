@@ -26,7 +26,7 @@ TTPDecode(const String &orig)
 	return temp;
 }
 
-#ifdef QT_DLL
+#if !defined(__BEOS__)
 QString
 TTPDecode(const QString &orig)
 {
@@ -60,14 +60,14 @@ hextochar(const String &orig)
 	return (char) (l & 0xFF);
 }
 
-#ifdef QT_DLL
+#if !defined(__BEOS__)
 QChar
 hextochar(const QString &orig)
 {
 	if (orig.length() != 2) 
 		return (QChar) 0;
 	const char *buf = orig.local8Bit();
-	long l = strtol(buf, NULL, 16);
+	unsigned int l = strtol(buf, NULL, 16);
 	return (QChar) (l & 0xFF);
 }
 #endif
