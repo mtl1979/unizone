@@ -6,6 +6,7 @@
 #include "util.h"
 #include "wstring.h"
 #include "werrorevent.h"
+#include "wmessageevent.h"
 #include "wcrypt.h"
 
 #include <qapplication.h>
@@ -662,11 +663,13 @@ NetClient::HandleResultMessage(MessageRef & ref)
 		String prot = GetPathClauseString(BESHARE_HOME_DEPTH, nodePath.Cstr());
 		if (prot == "beshare")
 		{
-			HandleBeRemoveMessage(nodePath);
+//			HandleBeRemoveMessage(nodePath);
+			SendEvent(this, WMessageEvent::BeRemoveMessage, nodePath);
 		}
 		else if (prot == "unishare")
 		{
-			HandleUniRemoveMessage(nodePath);
+//			HandleUniRemoveMessage(nodePath);
+			SendEvent(this, WMessageEvent::UniRemoveMessage, nodePath);
 		}
 	}
 
@@ -677,11 +680,13 @@ NetClient::HandleResultMessage(MessageRef & ref)
 		String prot = GetPathClauseString(BESHARE_HOME_DEPTH, nodePath.Cstr());
 		if (prot == "beshare")
 		{
-			HandleBeAddMessage(nodePath, ref);
+//			HandleBeAddMessage(nodePath, ref);
+			SendEvent(this, WMessageEvent::BeAddMessage, nodePath, ref);
 		}
 		else if (prot == "unishare")
 		{
-			HandleUniAddMessage(nodePath, ref);
+//			HandleUniAddMessage(nodePath, ref);
+			SendEvent(this, WMessageEvent::UniAddMessage, nodePath, ref);
 		}
 	}
 }
@@ -742,11 +747,14 @@ NetClient::HandleParameters(MessageRef & next)
 
 			if (win)
 			{
-				QString temp(myip.Cstr());
-				temp += " : ";
-				temp += GetServerIP();
+				if (win->fSettings->GetIPAddresses())
+				{
+					QString temp(myip.Cstr());
+					temp += " : ";
+					temp += GetServerIP();
+					win->setStatus( temp , 2);
+				}
 				win->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
-				win->setStatus( temp , 2);
 			}
 		}
 	}
@@ -967,7 +975,8 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 					}
 					else	// a /serverinfo was sent
 					{
-						win->ServerParametersReceived(msg);
+//						win->ServerParametersReceived(msg);
+						SendEvent(fOwner, WMessageEvent::ServerParametersMessage, msg);
 					}
 				}
 				break;
@@ -981,11 +990,12 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 				HandleResultMessage(msg);
 				
 				// update all the users to the list view (if not there yet...)
-				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
-				if (win)
-					win->UpdateUserList();
+//				SendSignal(WinShareWindow::UpdateMainUsers);
+//				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+//				if (win)
+//					win->UpdateUserList();
 
-				SendSignal(WinShareWindow::UpdatePrivateUsers);
+//				SendSignal(WinShareWindow::UpdatePrivateUsers);
 
 				break;
 			}
@@ -1055,9 +1065,10 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 #ifdef DEBUG2
 				PRINT("Handling message\n");
 #endif
-				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
-				if (win)
-					win->HandleMessage(msg);
+//				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+//				if (win)
+//					win->HandleMessage(msg);
+				SendEvent(fOwner, WMessageEvent::HandleMessage, msg);
 				break;
 			}
 		}
@@ -1297,6 +1308,60 @@ NetClient::event(QEvent * e)
 			delete (QMessageTransceiverThread *) qce->data();
 		return true;
 	}
+	else if (e->type() == (QEvent::Type) WMessageEvent::MessageEventType)
+	{
+		bool ret = false;
+		WMessageEvent *wme = dynamic_cast<WMessageEvent *>(e);
+		if (wme)
+		{
+			switch (wme->MessageType())
+			{
+			case WMessageEvent::BeRemoveMessage:
+				HandleBeRemoveMessage(wme->Sender());
+				ret = true;
+				break;
+			case WMessageEvent::UniRemoveMessage:
+				HandleUniRemoveMessage(wme->Sender());
+				ret = true;
+				break;
+			case WMessageEvent::BeAddMessage:
+				HandleBeAddMessage(wme->Sender(), wme->Message());
+				ret = true;
+				break;
+			case WMessageEvent::UniAddMessage:
+				HandleUniAddMessage(wme->Sender(), wme->Message());
+				ret = true;
+				break;
+			}
+			SendSignal(WinShareWindow::UpdateMainUsers);
+			SendSignal(WinShareWindow::UpdatePrivateUsers);
+		}
+		return ret;
+	}
 	else
 		return QObject::event(e);
+}
+
+void 
+NetClient::SendEvent(QObject * target, int type, const String &from)
+{
+	WMessageEvent *wme = new WMessageEvent(type, from);
+	if (wme)
+		QApplication::postEvent(target, wme);
+}
+
+void 
+NetClient::SendEvent(QObject * target, int type, const String &from, const MessageRef &msg)
+{
+	WMessageEvent *wme = new WMessageEvent(type, from, msg);
+	if (wme)
+		QApplication::postEvent(target, wme);
+}
+
+void 
+NetClient::SendEvent(QObject * target, int type,const MessageRef &msg)
+{
+	WMessageEvent *wme = new WMessageEvent(type, msg);
+	if (wme)
+		QApplication::postEvent(target, wme);
 }

@@ -11,7 +11,7 @@ class QString;
 
 // RedHat Linux 8.x doesn't seem to define __LINUX__
 
-#if defined(linux)
+#if defined(linux) || defined(LINUX)
 #  if !defined(__LINUX__)
 #    define __LINUX__
 #  endif

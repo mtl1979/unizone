@@ -61,6 +61,7 @@ SRCFILES = \
 	src/winshare_search.cpp \
 	src/winshare_slots.cpp \
 	src/winsharewindow.cpp \
+	src/wmessageevent.cpp \
 	src/wpwevent.cpp \
 	src/wstatusbar.cpp \
 	src/wstring.cpp \
@@ -127,12 +128,12 @@ MUSCLE_SRCFILES = \
 	src/muscle/system/MessageTransceiverThread.cpp \
 	src/muscle/system/SetupSystem.cpp \
 	src/muscle/system/Thread.cpp \
+	src/muscle/util/ByteBuffer.cpp \
 	src/muscle/util/MemoryAllocator.cpp \
 	src/muscle/util/MiscUtilityFunctions.cpp \
 	src/muscle/util/NetworkUtilityFunctions.cpp \
 	src/muscle/util/PulseNode.cpp \
 	src/muscle/util/String.cpp \
-	src/muscle/util/ByteBuffer.cpp \
 	src/muscle/zlib/ZLibCodec.cpp \
 	src/muscle/zlib/ZLibUtilityFunctions.cpp
 

@@ -1442,13 +1442,6 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 void
 WinShareWindow::HandleMessage(MessageRef msg)
 {
-/* 
-* The batch version of all the printing methods are used here because
-* this HandleMessage() is called by HandleSignal() only, and nobody else
-* should call it directly. HandleSignal() starts the batch for us if
-* an MTT_EVENT_INCOMING_MESSAGE is received, and then closes the batch, which
-* flushes the buffer.
-*/
 	switch (msg()->what)
 	{
 	case TTP_START_QUEUE:
@@ -2157,38 +2150,41 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							PrintSystem(system);
 						}
 					}
-					msg()->what = NetClient::PONG;
+					MessageRef rep(GetMessageFromPool(NetClient::PONG));
+					if (rep())
+					{
+						String tostr("/*/");
+						tostr += repto;
+						tostr += "/beshare";
 					
-					String tostr("/*/");
-					tostr += repto;
-					tostr += "/beshare";
+						rep()->AddString(PR_NAME_KEYS, tostr);
+						rep()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 					
-					msg()->RemoveName(PR_NAME_KEYS);
-					msg()->AddString(PR_NAME_KEYS, tostr);
-					msg()->RemoveName(PR_NAME_SESSION);
-					msg()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
-					msg()->RemoveName("version");
-					
-					QString version = tr("Unizone (English)");
-					version += " ";
-#if defined(__LINUX__) || defined(linux)
-					version += "(Linux) ";
+						QString version = tr("Unizone (English)");
+						version += " ";
+#if defined(WIN32)
+						version += "(Windows) ";
+#elif defined(__LINUX__) || defined(linux)
+						version += "(Linux) ";
 #elif defined(__FreeBSD__)
-					version += "(FreeBSD) ";
+						version += "(FreeBSD) ";
+#elif defined(__QNX__)
+						version += "(QNX) ";
+#else
+#error "Oops! Damn developer forgot to implement this correctly!"
 #endif
-					version += WinShareVersionString();
+						version += WinShareVersionString();
 					
-					// <postmaster@raasu.org> 20021025 -- Added uptime calculating for Windows
-					// <postmaster@raasu.org> 20021231 -- and for Linux ;)
-					int64 fUptime = GetUptime();
-					int64 fOnlineTime = GetCurrentTime64() - fLoginTime;
-					msg()->AddString("version", (const char *) version.utf8());
-					msg()->RemoveName("uptime");
-					msg()->AddInt64("uptime", fUptime);
-					msg()->RemoveName("onlinetime");
-					msg()->AddInt64("onlinetime", fOnlineTime);
+						// <postmaster@raasu.org> 20021025 -- Added uptime calculating for Windows
+						// <postmaster@raasu.org> 20021231 -- and for Linux ;)
+						int64 fUptime = GetUptime();
+						int64 fOnlineTime = GetCurrentTime64() - fLoginTime;
+						rep()->AddString("version", (const char *) version.utf8());
+						rep()->AddInt64("uptime", fUptime);
+						rep()->AddInt64("onlinetime", fOnlineTime);
 					
-					fNetClient->SendMessageToSessions(msg);
+						fNetClient->SendMessageToSessions(rep);
+					}
 				}
 				break;
 			}

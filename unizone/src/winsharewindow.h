@@ -129,6 +129,7 @@ public:
 	enum
 	{
 		ConnectRetry = QEvent::User + 8000,
+		UpdateMainUsers,
 		UpdatePrivateUsers
 	};
 
@@ -433,7 +434,7 @@ private:
 
 	void Cleanup();
 
-	void HandleSignal();
+//	void HandleSignal();
 	void SendChatText(WTextEvent *, bool * reply = NULL);
 
 	void HandleMessage(MessageRef);

@@ -191,6 +191,9 @@ private:
 	void RemoveChannel(const QString &sid, const QString &channel);
 
 	void SendSignal(int signal);
+	void SendEvent(QObject *target, int type, const String &from, const MessageRef &msg);
+	void SendEvent(QObject *target, int type, const String &from);
+	void SendEvent(QObject *target, int type, const MessageRef &msg);
 	
 	mutable QMutex fChannelLock;
 

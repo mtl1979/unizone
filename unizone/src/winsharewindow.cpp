@@ -13,6 +13,7 @@
 #include "htmlview.h"
 #include "privatewindowimpl.h"
 #include "picviewerimpl.h"
+#include "wmessageevent.h"
 #include "wpwevent.h"
 #include "wsystemevent.h"
 #include "wwarningevent.h"
@@ -227,6 +228,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for FreeBSD!"));
 #elif defined(__QNX__)
 		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for QNX Neutrino!"));
+#else
+#error "Oops! Damn developer forgot to implement this correctly!"
 #endif
 		// <postmaster@raasu.org> 20030225
 		PrintSystem(tr("Copyright (C) %1 Mika T. Lindqvist.").arg(GetUnizoneYears()));
@@ -434,6 +437,25 @@ WinShareWindow::customEvent(QCustomEvent * event)
 	{
 		switch ((int) event->type())
 		{
+		case WMessageEvent::HandleMessage:
+			{
+				WMessageEvent *wme = dynamic_cast<WMessageEvent *>(event);
+				if (wme)
+				{
+					HandleMessage(wme->Message());
+				}
+				return;
+			}
+		case WMessageEvent::ServerParametersMessage:
+			{
+				WMessageEvent *wme = dynamic_cast<WMessageEvent *>(event);
+				if (wme)
+				{
+					ServerParametersReceived(wme->Message());
+				}
+				return;
+			}
+
 		case WinShareWindow::ConnectRetry:
 			{
 				PRINT("\tWinShareWindow::ConnectRetry\n");
@@ -443,6 +465,11 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					PrintSystem(tr( "Reconnecting in 1 minute!" ));
 					fReconnectTimer->start(60000, true); // 1 minute
 				}
+				return;
+			}
+		case WinShareWindow::UpdateMainUsers:
+			{
+				UpdateUserList();
 				return;
 			}
 		case WinShareWindow::UpdatePrivateUsers:

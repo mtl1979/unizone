@@ -498,6 +498,10 @@ SOURCE=..\src\winsharewindow.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\wmessageevent.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\wpwevent.cpp
 # End Source File
 # Begin Source File
@@ -2242,6 +2246,10 @@ InputName=winsharewindow
 # Begin Source File
 
 SOURCE=..\src\windows\wlaunchthread_win.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wmessageevent.h
 # End Source File
 # Begin Source File
 
