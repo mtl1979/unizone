@@ -234,3 +234,101 @@ Trim(String orig)
    int32 endIdx;   for (endIdx   = len-1; endIdx>startIdx; endIdx--)   if (s[endIdx] != ' ')   break; 
    return orig.Substring((uint32)startIdx, (uint32)(endIdx+1)); 
 }
+
+
+int32
+BandwidthToBytes(QString connection)
+{
+	int32 bps = 0;
+	if (connection == "300 baud")
+	{
+		bps = 75;
+	}
+	else if ( ( connection == "14.4 kbps" ) || ( connection == QObject::tr( "14.4 kbps" ) ) )
+	{
+		bps = 14400;
+	}
+	else if ( ( connection == "28.8 kbps" ) || ( connection == QObject::tr( "28.8 kbps" ) ) ) 
+	{
+		bps = 28800;
+	}
+	else if (
+		( connection == "33.6 kbps" ) || ( connection == QObject::tr( "33.6 kbps" ) ) ||
+		( connection == "36.6 kbps" ) || ( connection == QObject::tr( "36.6 kbps" ) )
+		)
+	{
+		bps = 33600;
+	}
+	else if ( ( connection == "57.6 kbps" ) || ( connection == QObject::tr( "57.6 kbps" ) ) )
+	{
+		bps = 57600;
+	}
+	else if ( ( connection == "ISDN-64k" ) || ( connection == QObject::tr( "ISDN-64k" ) ) )
+	{
+		bps = 64000;
+	}
+	else if ( ( connection == "ISDN-128k" ) || ( connection == QObject::tr( "ISDN-128k" ) ) )
+	{
+		bps = 128000;
+	}
+	else if ( ( connection == "DSL-256k" ) || ( connection == QObject::tr( "DSL-256k" ) ) )
+	{
+		bps = 256000;
+	}
+	else if ( 
+		( connection == "DSL" ) || ( connection == QObject::tr( "DSL" ) ) ||
+		( connection == "DSL-384k" ) || (connection == QObject::tr( "DSL-384k" ) ) 
+		)
+	{
+		bps = 384000;
+	}
+	else if ( ( connection == "DSL-512k" ) || ( connection == QObject::tr( "DSL-512k" ) ) )
+	{
+		bps = 512000;
+	}
+	else if ( ( connection == "Cable" ) || ( connection == QObject::tr( "Cable" ) ) )
+	{
+		bps = 768000;
+	}
+	else if ( ( connection == "T1" ) || ( connection == QObject::tr( "T1" ) ) )
+	{
+		bps = 1500000;
+	}
+	else if ( ( connection == "T3" ) || ( connection == QObject::tr( "T3" ) ) )
+	{
+		bps = 4500000;
+	}
+	else if ( ( connection == "OC-3" ) || ( connection == QObject::tr( "OC-3" ) ) )
+	{
+		bps = 3 * 51840000;
+	}
+	else if ( ( connection == "OC-12" ) || ( connection == QObject::tr( "OC-12" ) ) )
+	{
+		bps = 12 * 51840000;
+	}
+	return bps;
+}
+
+QString
+BandwidthToString(int32 bps)
+{
+	switch (bps)
+	{
+	case 300:			return "300 baud";
+	case 14400: 		return "14.4 kbps";
+	case 28800: 		return "28.8 kbps";
+	case 33600: 		return "33.6 kbps";
+	case 57600: 		return "57.6 kbps";
+	case 64000: 		return "ISDN-64k";
+	case 128000:		return "ISDN-128k";
+	case 256000:		return "DSL-256k";
+	case 384000:		return "DSL-384k";
+	case 512000:		return "DSL-512k";
+	case 768000:		return "Cable";
+	case 1500000:		return "T1";
+	case 4500000:		return "T3";
+	case 3 * 51840000:	return "OC-3";
+	case 12 * 51840000: return "OC-12";
+	default:			return "Unknown";
+	}
+}

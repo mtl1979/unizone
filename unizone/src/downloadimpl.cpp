@@ -36,7 +36,7 @@ using std::iterator;
 // ----------------------------------------------------------------------------------------------
 
 WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
-: QDialog(parent, "WDownload", false, QWidget::WDestructiveClose | QWidget::WStyle_Minimize |
+: QDialog(parent, "WDownload", false, /* QWidget::WDestructiveClose |*/ QWidget::WStyle_Minimize |
 		  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu)
 {
 	resize(450, 265); // <postmaster@raasu.org> 20020927 Changed from 250 to 265
@@ -69,10 +69,10 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	
 	fDownloads->setAllColumnsShowFocus(true);
 	
-	fCancelD = new QPushButton(fBoxD);
-	CHECK_PTR(fCancelD);
-	fCancelD->setText(tr("Cancel"));
-	connect(fCancelD, SIGNAL(clicked()), this, SLOT(CancelDL()));
+	//fCancelD = new QPushButton(fBoxD);
+	//CHECK_PTR(fCancelD);
+	//fCancelD->setText(tr("Cancel"));
+	//connect(fCancelD, SIGNAL(clicked()), this, SLOT(CancelDL()));
 	
 	fBoxU = new QVBox(fMainSplit);
 	CHECK_PTR(fBoxU);
@@ -97,10 +97,10 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
-	fCancelU = new QPushButton(fBoxU);
-	CHECK_PTR(fCancelU);
-	fCancelU->setText(tr("Cancel"));
-	connect(fCancelU, SIGNAL(clicked()), this, SLOT(CancelUL()));
+	//fCancelU = new QPushButton(fBoxU);
+	//CHECK_PTR(fCancelU);
+	//fCancelU->setText(tr("Cancel"));
+	//connect(fCancelU, SIGNAL(clicked()), this, SLOT(CancelUL()));
 
 	connect(gWin->fNetClient, SIGNAL(UserDisconnected(QString, QString)), this,
 			SLOT(UserDisconnected(QString, QString)));
@@ -160,6 +160,7 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fDLPopup->insertItem(tr("Move Down"), ID_MOVEDOWN);
 
 	fDLPopup->insertItem(tr("Clear Finished"), ID_CLEAR);
+	fDLPopup->insertItem(tr("Cancel"), ID_CANCEL);
 
 	connect(fDLPopup, SIGNAL(activated(int)), this, SLOT(DLPopupActivated(int)));
 	connect(fDLThrottleMenu, SIGNAL(activated(int)), this, SLOT(DLPopupActivated(int)));
@@ -228,6 +229,7 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fULPopup->insertItem(tr("Move Down"), ID_MOVEDOWN);
 	fULPopup->insertItem(tr("Ban IP"), ID_IGNORE);
 	fULPopup->insertItem(tr("Clear Finished"), ID_CLEAR);
+	fULPopup->insertItem(tr("Cancel"), ID_CANCEL);
 
 	fULPopup->insertItem(tr("Throttle"), fULThrottleMenu, ID_THROTTLE);
 	fULPopup->insertItem(tr("Block"), fULBanMenu, ID_BLOCK);
@@ -1102,7 +1104,7 @@ WDownload::customEvent(QCustomEvent * e)
 		return;
 	}
 }
-
+/*
 void
 WDownload::CancelDL()
 {
@@ -1185,7 +1187,7 @@ WDownload::UnblockUL()
 		fLock.unlock();
 	}
 }
-
+*/
 void
 WDownload::KillLocalQueues()
 {
@@ -1363,7 +1365,22 @@ WDownload::DLPopupActivated(int id)
 		{
 			ClearFinishedDL();
 			break;
-		}	
+		}
+		
+	case ID_CANCEL:
+		{
+			fLock.lock();
+			// found our item, stop it
+			(*i).second->setText(WTransferItem::Status, tr("Canceled."));
+			DecreaseCount(gt, fNumDownloads);
+			WASSERT(fNumDownloads >= 0, "Download count is negative!");
+			delete gt;
+			delete (*i).second;
+			fDownloadList.erase(i);
+			fLock.unlock();
+			DequeueDLSessions();
+			break;
+		}
 		
 	case ID_NO_LIMIT:
 		{
@@ -1583,6 +1600,21 @@ WDownload::ULPopupActivated(int id)
 			ClearFinishedUL();
 			break;
 		}	
+
+	case ID_CANCEL:
+		{
+			fLock.lock();
+			// found our item, stop it
+			(*i).second->setText(WTransferItem::Status, tr("Canceled."));
+			DecreaseCount(gt, fNumUploads);
+			WASSERT(fNumUploads >= 0, "Upload count is negative!");
+			delete gt;
+			delete (*i).second;
+			fUploadList.erase(i);
+			fLock.unlock();
+			DequeueULSessions();
+			break;
+		}
 				
 	case ID_NO_LIMIT:
 		{
@@ -1807,7 +1839,6 @@ WDownload::ULPopupActivated(int id)
 	}
 	UpdateULRatings();
 }
-
 
 void
 WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)

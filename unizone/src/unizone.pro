@@ -9,6 +9,7 @@ SOURCES =	aboutdlg.cpp \
 		formatting.cpp \
 		menubar.cpp \
 		netclient.cpp \
+		platform.cpp \
 		prefs.cpp \
 		prefsimpl.cpp \
 		privatewindow.cpp \

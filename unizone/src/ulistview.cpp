@@ -55,6 +55,7 @@ QString
 WUniListItem::key(int c, bool asc) const
 {
 	int n, m;
+	int32 bw;
 	QString result, q1, q2;
 	switch (UColumnType[c])
 	{
@@ -120,98 +121,25 @@ WUniListItem::key(int c, bool asc) const
 		}
 	case ConnectionSpeed:
 		{
-			q1 = QListViewItem::text(c);
-			if (q1 == "300 baud")
+			bw = BandwidthToBytes(QListViewItem::text(c));
+			switch (bw)
 			{
-				return "0x01";
-			}
-			else if (
-				( q1 == "14.4 kbps" ) || 
-				( q1 == QObject::tr( "14.4 kbps" ) )
-				)
-			{
-				return "0x02";
-			}
-			else if (
-				( q1 == "28.8 kbps" ) || 
-				( q1 == QObject::tr( "28.8 kbps" ) )
-				) 
-				return "0x03";
-			else if (
-				( q1 == "33.6 kbps" ) || 
-				( q1 == QObject::tr( "33.6 kbps" ) ) ||
-				( q1 == "36.6 kbps" ) || 
-				( q1 == QObject::tr( "36.6 kbps" ) )
-				)
-			{
-				return "0x04";
-			}
-			else if (
-				( q1 == "57.6 kbps" ) || 
-				( q1 == QObject::tr( "57.6 kbps" ) )
-				)
-			{
-				return "0x05";
-			}
-			else if (
-				( q1 == "ISDN-64k" ) || 
-				( q1 == QObject::tr( "ISDN-64k" ) )
-				)
-			{
-				return "0x06";
-			}
-			else if (
-				( q1 == "ISDN-128k" ) || 
-				( q1 == QObject::tr( "ISDN-128k" ) )
-				)
-			{
-				return "0x07";
-			}
-			else if (
-				( q1 == "DSL" ) || 
-				( q1 == QObject::tr( "DSL" ) )
-				)
-			{
-				return "0x08";
-			}
-			else if (
-				( q1 == "Cable" ) || 
-				( q1 == QObject::tr( "Cable" ) )
-				)
-			{
-				return "0x09";
-			}
-			else if (
-				( q1 == "T1" ) || 
-				( q1 == QObject::tr( "T1" ) )
-				)
-			{
-				return "0x0A";
-			}
-			else if (
-				( q1 == "T3" ) || 
-				( q1 == QObject::tr( "T3" ) )
-				)
-			{
-				return "0x0B";
-			}
-			else if (
-				( q1 == "OC-3" ) || 
-				( q1 == QObject::tr( "OC-3" ) )
-				)
-			{
-				return "0x0C";
-			}
-			else if (
-				( q1 == "OC-12" ) || 
-				( q1 == QObject::tr( "OC-12" ) )
-				)
-			{
-				return "0x0D";
-			}
-			else
-			{
-				return "0x00";
+			case 300:			return "0x01";
+			case 14400: 		return "0x02";
+			case 28800: 		return "0x03";
+			case 33600: 		return "0x04";
+			case 57600: 		return "0x05";
+			case 64000: 		return "0x06";
+			case 128000:		return "0x07";
+			case 256000:		return "0x08";
+			case 384000:		return "0x09";
+			case 512000:		return "0x0A";
+			case 768000:		return "0x0B";
+			case 1500000:		return "0x0C";
+			case 4500000:		return "0x0D";
+			case 3 * 51840000:	return "0x0E";
+			case 12 * 51840000: return "0x0F";
+			default:			return "0x00";
 			}
 		}
 	default:
@@ -228,6 +156,7 @@ long
 WUniListItem::item(int c)
 {
 	long n, m, o;
+	int32 bw;
 	QString q1, q2;
 	switch (UColumnType[c])
 	{
@@ -280,107 +209,31 @@ WUniListItem::item(int c)
 		}
 		}
 	case ConnectionSpeed:
-		q1 = QListViewItem::text(c);
-		if (
-			(q1 == "300 baud") ||
-			(q1 == QObject::tr( "300 baud" ) )
-			)
 		{
-			return 1;
-		}
-		else if (
-			(q1 == "14.4 kbps") ||
-			(q1 == QObject::tr( "14.4 kbps") )
-			)
-		{
-			return 2;
-		}
-		else if (
-			(q1 == "28.8 kbps") ||
-			(q1 == QObject::tr( "28.8 kbps" ) )
-			)
-		{
-			return 3;
-		}
-		else if (
-			(q1 == "33.6 kbps") ||
-			(q1 == QObject::tr( "33.6 kbps" ) ) ||
-			(q1 == "36.6 kbps") ||
-			(q1 == QObject::tr( "36.6 kbps" ) )
-			)
-		{
-			return 4;
-		}
-		else if (
-			(q1 == "57.6 kbps") ||
-			(q1 == QObject::tr( "57.6 kbps" ) )
-			)
-		{
-			return 5;
-		}
-		else if (
-			(q1 == "ISDN-64k") ||
-			(q1 == QObject::tr( "ISDN-64k") )
-			)
-		{
-			return 6;
-		}
-		else if (
-			(q1 == "ISDN-128k") ||
-			(q1 == QObject::tr( "ISDN-128k") )
-			)
-		{
-			return 7;
-		}
-		else if (
-			(q1 == "DSL") ||
-			(q1 == QObject::tr( "DSL" ) )
-			)
-		{
-			return 8;
-		}
-		else if (
-			(q1 == "Cable") ||
-			(q1 == QObject::tr( "Cable" ) )
-			)
-		{
-			return 9;
-		}
-		else if (
-			(q1 == "T1") ||
-			(q1 == QObject::tr( "T1" ) )
-			)
-		{
-			return 10;
-		}
-		else if (
-			(q1 == "T3") ||
-			(q1 == QObject::tr( "T3" ) )
-			)
-		{
-			return 11;
-		}
-		else if (
-			(q1 == "OC-3") ||
-			(q1 == QObject::tr( "OC-3" ) )
-			)
-		{
-			return 12;
-		}
-		else if (
-			(q1 == "OC-12") ||
-			(q1 == QObject::tr( "OC-12" ) )
-			)
-		{
-			return 13;
-		}
-		else
-		{
-			return 0;
+			bw = BandwidthToBytes(QListViewItem::text(c));
+			switch (bw)
+			{
+			case 300:			return 1;
+			case 14400: 		return 2;
+			case 28800: 		return 3;
+			case 33600: 		return 4;
+			case 57600: 		return 5;
+			case 64000: 		return 6;
+			case 128000:		return 7;
+			case 256000:		return 8;
+			case 384000:		return 9;
+			case 512000:		return 10;
+			case 768000:		return 11;
+			case 1500000:		return 12;
+			case 4500000:		return 13;
+			case 3 * 51840000:	return 14;
+			case 12 * 51840000: return 15;
+			default:			return 0;
+			}
 		}
 	default:
 		{
-		return -1;
+			return -1;
 		}
 	}
 }

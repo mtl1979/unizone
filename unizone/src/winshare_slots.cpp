@@ -250,7 +250,7 @@ WinShareWindow::PopupActivated(int id)
 	if (it != fNetClient->Users().end())
 	{
 		if (id == 1) {
-			WPrivateWindow * window = new WPrivateWindow(this, fNetClient);
+			WPrivateWindow * window = new WPrivateWindow(this, fNetClient, this);
 			CHECK_PTR(window);
 			window->AddUser((*it).second);
 			window->show();

@@ -129,12 +129,14 @@ void
 WUser::InitBandwidth(const Message * msg)
 {
 	const char * l;
-	int32 bps;
+	int32 bps = 0;
 
-	if (msg->FindString("label", &l) == B_OK)
-		fBandwidthLabel = l;
 	if (msg->FindInt32("bps", (int32 *)&bps) == B_OK)
 		fBandwidthBPS = bps;
+	if (bps != 0)
+		fBandwidthLabel = BandwidthToString(bps);
+	else if (msg->FindString("label", &l) == B_OK)
+		fBandwidthLabel = QString::fromUtf8(l);
 	PRINT("WUser: %S with label %S and bps %d\n", qStringToWideChar(fUserName), qStringToWideChar(fBandwidthLabel), fBandwidthBPS);
 }
 

@@ -504,7 +504,19 @@
                         <item>
                             <property>
                                 <name>text</name>
-                                <string>DSL</string>
+                                <string>DSL-256k</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>DSL-384k</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>DSL-512k</string>
                             </property>
                         </item>
                         <item>

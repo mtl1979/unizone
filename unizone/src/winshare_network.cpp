@@ -1387,7 +1387,7 @@ WinShareWindow::HandleMessage(Message * msg)
 							else if ( IsAutoPrivate( QString(session) ) )
 							{
 								// Create new Private Window
-								WPrivateWindow * win = new WPrivateWindow(this, fNetClient);
+								WPrivateWindow * win = new WPrivateWindow(this, fNetClient, this);
 								if (win)
 								{
 									WUserRef pu = FindUser(session);

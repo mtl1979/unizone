@@ -98,7 +98,6 @@ public slots:
 	void OpenLogsFolder();
 		/* Sep */
 	void ClearChatLog();
-	void OpenChannels();
 		/* Sep */
 	void AboutWinShare();
 		/* Sep */
@@ -135,6 +134,10 @@ public slots:
 
 	// this won't be emitted under Windows
 	void GotShown(const QString &);
+
+	/*** Windows Menu ***/
+	void OpenChannels();
+	void OpenDownloads();
 
 	void AboutToQuit();
 	void SearchWindowClosed();

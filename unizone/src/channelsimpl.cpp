@@ -105,8 +105,8 @@ Channels::ChannelAdmins(const QString channel, const QString sid, const QString 
 	{
 		if ( (*iter).second->IsAdmin(sid) )
 		{
-			(*iter).second->SetAdmins(admins);
-			UpdateAdmins(iter);
+			if ( (*iter).second->SetAdmins(admins) )
+				UpdateAdmins(iter);
 		}
 	}
 }

@@ -20,6 +20,7 @@ public:
 		fName = name;
 		fOwner = owner;
 		fTopic = QString::null;
+		fStrAdmins = QString::null;
 		fPublic = true;
 		fItem = NULL;
 		fWindow = NULL;
@@ -27,7 +28,7 @@ public:
 
 	~ChannelInfo();
 
-	void SetAdmins(QString);
+	bool SetAdmins(QString);
 	int NumAdmins() 
 	{ 
 		return fAdmins.GetNumItems(); 
@@ -69,6 +70,7 @@ private:
 	QListViewItem * fItem;
 	Channel * fWindow;
 	QString fTopic;
+	QString fStrAdmins;
 	bool fPublic;
 	int64 fCreated;
 };

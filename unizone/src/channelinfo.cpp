@@ -21,9 +21,12 @@ ChannelInfo::IsAdmin(QString sid)
 		return false;
 }
 
-void
+bool
 ChannelInfo::SetAdmins(QString admins)
 {
+	if (fStrAdmins == admins)
+		return false;
+
 	QStringTokenizer tok(admins, ",");
 	QString next;
 	fAdmins.Clear();
@@ -34,6 +37,8 @@ ChannelInfo::SetAdmins(QString admins)
 			fAdmins.AddTail(next);
 		}
 	}
+	fStrAdmins = admins;
+	return true;
 }
 
 ChannelInfo::~ChannelInfo()
@@ -86,6 +91,7 @@ ChannelInfo::AddAdmin(QString user)
 	{
 		fAdmins.AddTail(user);
 	}
+	fStrAdmins = GetAdmins();
 }
 
 void
@@ -96,6 +102,7 @@ ChannelInfo::RemoveAdmin(QString user)
 	{
 		fAdmins.RemoveItemAt(i);
 	}
+	fStrAdmins = GetAdmins();
 }
 
 QString

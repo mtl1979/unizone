@@ -946,7 +946,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Waiting for incoming connection...</source>
-        <translation>Odottaa tulevaa yhteyttä.</translation>
+        <translation>Odottaa tulevaa yhteyttä...</translation>
     </message>
     <message>
         <source>Examining for resume...</source>
@@ -991,6 +991,10 @@ Päiväys: %4</translation>
     <message>
         <source>Canceled.</source>
         <translation>Peruutettu.</translation>
+    </message>
+    <message>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -2062,47 +2066,47 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>1 week, </source>
-        <translation>1 viikko,</translation>
+        <translation type='obsolete'>1 viikko,</translation>
     </message>
     <message>
         <source>%1 weeks, </source>
-        <translation>%1 viikkoa,</translation>
+        <translation type='obsolete'>%1 viikkoa,</translation>
     </message>
     <message>
         <source>1 day, </source>
-        <translation>1 päivä,</translation>
+        <translation type='obsolete'>1 päivä,</translation>
     </message>
     <message>
         <source>%1 days, </source>
-        <translation>%1 päivää,</translation>
+        <translation type='obsolete'>%1 päivää,</translation>
     </message>
     <message>
         <source>1 hour, </source>
-        <translation>1 tunti,</translation>
+        <translation type='obsolete'>1 tunti,</translation>
     </message>
     <message>
         <source>%1 hours, </source>
-        <translation>%1 tuntia,</translation>
+        <translation type='obsolete'>%1 tuntia,</translation>
     </message>
     <message>
         <source>1 minute, </source>
-        <translation>1 minuutti,</translation>
+        <translation type='obsolete'>1 minuutti,</translation>
     </message>
     <message>
         <source>%1 minutes, </source>
-        <translation>%1 minuuttia,</translation>
+        <translation type='obsolete'>%1 minuuttia,</translation>
     </message>
     <message>
         <source>1 second, </source>
-        <translation>1 sekunti,</translation>
+        <translation type='obsolete'>1 sekunti,</translation>
     </message>
     <message>
         <source>%1 seconds, </source>
-        <translation>%1 sekuntia,</translation>
+        <translation type='obsolete'>%1 sekuntia,</translation>
     </message>
     <message>
         <source> and </source>
-        <translation>ja</translation>
+        <translation type='obsolete'>ja</translation>
     </message>
     <message>
         <source>%1 %2</source>
@@ -2154,7 +2158,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Scanning shares...</source>
-        <translation>Tutkitaan jaot.</translation>
+        <translation>Tutkitaan jaot...</translation>
     </message>
     <message>
         <source>Nick collision with user #%1</source>
@@ -2174,7 +2178,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Error updating ignore pattern!</source>
-        <translation>Virhe päivitettäessä Ignore-kaavaa.</translation>
+        <translation>Virhe päivitettäessä Ignore-kaavaa!</translation>
     </message>
     <message>
         <source>Blacklist pattern cleared.</source>
@@ -2186,7 +2190,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Error updating blacklist pattern!</source>
-        <translation>Virhe päivitettäessä mustaa listaa.</translation>
+        <translation>Virhe päivitettäessä mustaa listaa!</translation>
     </message>
     <message>
         <source>Auto-private pattern cleared.</source>
@@ -2267,6 +2271,50 @@ Päiväys: %4</translation>
     <message>
         <source>User doesn&apos;t exist!</source>
         <translation>Käyttäjää ei ole olemassa!</translation>
+    </message>
+    <message>
+        <source>1 week</source>
+        <translation>1 viikko</translation>
+    </message>
+    <message>
+        <source>%1 weeks</source>
+        <translation>%1 viikkoa</translation>
+    </message>
+    <message>
+        <source>1 day</source>
+        <translation>1 päivä</translation>
+    </message>
+    <message>
+        <source>%1 days</source>
+        <translation>%1 päivää</translation>
+    </message>
+    <message>
+        <source>1 hour</source>
+        <translation>1 tunti</translation>
+    </message>
+    <message>
+        <source>%1 hours</source>
+        <translation>%1 tuntia</translation>
+    </message>
+    <message>
+        <source>1 minute</source>
+        <translation>1 minuutti</translation>
+    </message>
+    <message>
+        <source>%1 minutes</source>
+        <translation>%1 minuuttia</translation>
+    </message>
+    <message>
+        <source>1 second</source>
+        <translation>1 sekunti</translation>
+    </message>
+    <message>
+        <source>%1 seconds</source>
+        <translation>%1 sekuntia</translation>
+    </message>
+    <message>
+        <source>and</source>
+        <translation>ja</translation>
     </message>
 </context>
 </TS>

@@ -696,11 +696,14 @@ NetClient::SetUserStatus(QString status)
 void
 NetClient::SetConnection(QString connection)
 {
+	int32 bps;
 	MessageRef ref(GetMessageFromPool());
 	if (ref())
 	{
+		bps = BandwidthToBytes(connection);
+
 		ref()->AddString("label", (const char *) connection.utf8());
-		ref()->AddInt32("bps", 0);
+		ref()->AddInt32("bps", bps);
 
 		SetNodeValue("beshare/bandwidth", ref);
 	}

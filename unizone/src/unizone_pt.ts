@@ -992,6 +992,10 @@ Date: %4</translation>
         <source>Canceled.</source>
         <translation>Canceled.</translation>
     </message>
+    <message>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
 </context>
 <context>
     <name>WPrefs</name>
@@ -2062,47 +2066,47 @@ Date: %4</translation>
     </message>
     <message>
         <source>1 week, </source>
-        <translation>1 week,</translation>
+        <translation type='obsolete'>1 week,</translation>
     </message>
     <message>
         <source>%1 weeks, </source>
-        <translation>%1 weeks,</translation>
+        <translation type='obsolete'>%1 weeks,</translation>
     </message>
     <message>
         <source>1 day, </source>
-        <translation>1 day,</translation>
+        <translation type='obsolete'>1 day,</translation>
     </message>
     <message>
         <source>%1 days, </source>
-        <translation>%1 days,</translation>
+        <translation type='obsolete'>%1 days,</translation>
     </message>
     <message>
         <source>1 hour, </source>
-        <translation>1 hour,</translation>
+        <translation type='obsolete'>1 hour,</translation>
     </message>
     <message>
         <source>%1 hours, </source>
-        <translation>%1 hours,</translation>
+        <translation type='obsolete'>%1 hours,</translation>
     </message>
     <message>
         <source>1 minute, </source>
-        <translation>1 minute,</translation>
+        <translation type='obsolete'>1 minute,</translation>
     </message>
     <message>
         <source>%1 minutes, </source>
-        <translation>%1 minutes,</translation>
+        <translation type='obsolete'>%1 minutes,</translation>
     </message>
     <message>
         <source>1 second, </source>
-        <translation>1 second,</translation>
+        <translation type='obsolete'>1 second,</translation>
     </message>
     <message>
         <source>%1 seconds, </source>
-        <translation>%1 seconds,</translation>
+        <translation type='obsolete'>%1 seconds,</translation>
     </message>
     <message>
         <source> and </source>
-        <translation>and</translation>
+        <translation type='obsolete'>and</translation>
     </message>
     <message>
         <source>%1 %2</source>
@@ -2267,6 +2271,50 @@ Date: %4</translation>
     <message>
         <source>User doesn&apos;t exist!</source>
         <translation>User doesn&apos;t exist!</translation>
+    </message>
+    <message>
+        <source>1 week</source>
+        <translation>1 week</translation>
+    </message>
+    <message>
+        <source>%1 weeks</source>
+        <translation>%1 weeks</translation>
+    </message>
+    <message>
+        <source>1 day</source>
+        <translation>1 day</translation>
+    </message>
+    <message>
+        <source>%1 days</source>
+        <translation>%1 days</translation>
+    </message>
+    <message>
+        <source>1 hour</source>
+        <translation>1 hour</translation>
+    </message>
+    <message>
+        <source>%1 hours</source>
+        <translation>%1 hours</translation>
+    </message>
+    <message>
+        <source>1 minute</source>
+        <translation>1 minute</translation>
+    </message>
+    <message>
+        <source>%1 minutes</source>
+        <translation>%1 minutes</translation>
+    </message>
+    <message>
+        <source>1 second</source>
+        <translation>1 second</translation>
+    </message>
+    <message>
+        <source>%1 seconds</source>
+        <translation>%1 seconds</translation>
+    </message>
+    <message>
+        <source>and</source>
+        <translation>ban</translation>
     </message>
 </context>
 </TS>

@@ -168,6 +168,7 @@ private:
 		ID_MOVEDOWN,
 		ID_IGNORE,
 		ID_CLEAR,
+		ID_CANCEL,
 		ID_THROTTLE,
 		ID_BLOCK
 	};
@@ -202,9 +203,9 @@ private:
 	QMutex fLock;
 
 private slots:
-	void CancelDL();
-	void CancelUL();
-	void UnblockUL();
+	//void CancelDL();
+	//void CancelUL();
+	//void UnblockUL();
 
 	void DLPopupActivated(int);
 	void ULPopupActivated(int);

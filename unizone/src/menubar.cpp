@@ -22,7 +22,6 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent)
 	fFile->insertItem(tr("Cl&ear Chat Log"), parent, SLOT(ClearChatLog()), QAccel::stringToKey(tr("CTRL+E")));
 	fFile->insertSeparator();
 	fFile->insertItem(tr("Search"), parent, SLOT(SearchDialog()), QAccel::stringToKey(tr("ALT+S")));
-	fFile->insertItem(tr("Open C&hannels Window"), parent, SLOT(OpenChannels()), QAccel::stringToKey(tr("F11")));
 	fFile->insertSeparator();
 
 	fFile->insertItem(tr("E&xit"), parent, SLOT(Exit()), QAccel::stringToKey(tr("ALT+X")));
@@ -32,6 +31,15 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent)
 	CHECK_PTR(fEdit);
 
 	fEdit->insertItem(tr("&Preferences"), parent, SLOT(Preferences()), QAccel::stringToKey(tr("CTRL+P")));
+
+
+	// windows menu
+
+	fWindows = new QPopupMenu(this);
+	CHECK_PTR(fWindows);
+
+	fWindows->insertItem(tr("C&hannels"), parent, SLOT(OpenChannels()), QAccel::stringToKey(tr("F10")));
+	fWindows->insertItem(tr("&Downloads"), parent, SLOT(OpenDownloads()), QAccel::stringToKey(tr("F11")));
 
 	// help menu
 	fHelp = new QPopupMenu(this);
@@ -44,6 +52,7 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent)
 	/* Insert into menubar */
 	insertItem(tr("&File"), fFile);
 	insertItem(tr("&Edit"), fEdit);
+	insertItem(tr("&Window"), fWindows);
 	insertItem(tr("&Help"), fHelp);
 }
 

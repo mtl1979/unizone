@@ -992,6 +992,10 @@ Date: %4</translation>
         <source>Canceled.</source>
         <translation>Canceled.</translation>
     </message>
+    <message>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
 </context>
 <context>
     <name>WPrefs</name>
@@ -2062,47 +2066,47 @@ Date: %4</translation>
     </message>
     <message>
         <source>1 week, </source>
-        <translation>1 vecka,</translation>
+        <translation type='obsolete'>1 vecka,</translation>
     </message>
     <message>
         <source>%1 weeks, </source>
-        <translation>%1 veckor,</translation>
+        <translation type='obsolete'>%1 veckor,</translation>
     </message>
     <message>
         <source>1 day, </source>
-        <translation>1 dag,</translation>
+        <translation type='obsolete'>1 dag,</translation>
     </message>
     <message>
         <source>%1 days, </source>
-        <translation>%1 dagar,</translation>
+        <translation type='obsolete'>%1 dagar,</translation>
     </message>
     <message>
         <source>1 hour, </source>
-        <translation>1 timme,</translation>
+        <translation type='obsolete'>1 timme,</translation>
     </message>
     <message>
         <source>%1 hours, </source>
-        <translation>%1 timmar;</translation>
+        <translation type='obsolete'>%1 timmar;</translation>
     </message>
     <message>
         <source>1 minute, </source>
-        <translation>1 minut,</translation>
+        <translation type='obsolete'>1 minut,</translation>
     </message>
     <message>
         <source>%1 minutes, </source>
-        <translation>%1 minuter,</translation>
+        <translation type='obsolete'>%1 minuter,</translation>
     </message>
     <message>
         <source>1 second, </source>
-        <translation>1 sekund,</translation>
+        <translation type='obsolete'>1 sekund,</translation>
     </message>
     <message>
         <source>%1 seconds, </source>
-        <translation>%1 sekunder,</translation>
+        <translation type='obsolete'>%1 sekunder,</translation>
     </message>
     <message>
         <source> and </source>
-        <translation>och</translation>
+        <translation type='obsolete'>och</translation>
     </message>
     <message>
         <source>%1 %2</source>
@@ -2267,6 +2271,50 @@ Date: %4</translation>
     <message>
         <source>User doesn&apos;t exist!</source>
         <translation>User doesn&apos;t exist!</translation>
+    </message>
+    <message>
+        <source>1 week</source>
+        <translation>1 vecka</translation>
+    </message>
+    <message>
+        <source>%1 weeks</source>
+        <translation>%1 veckor</translation>
+    </message>
+    <message>
+        <source>1 day</source>
+        <translation>1 dag</translation>
+    </message>
+    <message>
+        <source>%1 days</source>
+        <translation>%1 dagar</translation>
+    </message>
+    <message>
+        <source>1 hour</source>
+        <translation>1 timme</translation>
+    </message>
+    <message>
+        <source>%1 hours</source>
+        <translation>%1 timmar</translation>
+    </message>
+    <message>
+        <source>1 minute</source>
+        <translation>1 minut</translation>
+    </message>
+    <message>
+        <source>%1 minutes</source>
+        <translation>%1 minuter</translation>
+    </message>
+    <message>
+        <source>1 second</source>
+        <translation>1 sekund</translation>
+    </message>
+    <message>
+        <source>%1 seconds</source>
+        <translation>%1 sekunder</translation>
+    </message>
+    <message>
+        <source>and</source>
+        <translation>och</translation>
     </message>
 </context>
 </TS>

@@ -792,59 +792,73 @@ WinShareWindow::MakeHumanTime(int64 time)
 	int64 weeks   = days    /  7;  days    = days    % 7;
 
 	QString s, qTime;
+
 	if (weeks == 1)
 	{
-		s = tr("1 week, ");
+		s = tr("1 week");
+		s += ", ";
 	}
 	else if (weeks > 1)
 	{
-		s = tr("%1 weeks, ").arg((long)weeks);
+		s = tr("%1 weeks").arg((long)weeks);
+		s += ", ";
 	}
 
 	if (days == 1)
 	{
-		s += tr("1 day, ");
+		s += tr("1 day");
+		s += ", ";
 	}
 	else if (days > 1)
 	{
-		s += tr("%1 days, ").arg((long)days);
+		s += tr("%1 days").arg((long)days);
+		s += ", ";
 	}
 
 	if (hours == 1)
 	{
-		s += tr("1 hour, ");
+		s += tr("1 hour");
+		s += ", ";
 	}
 	else if (hours > 1)
 	{
-		s += tr("%1 hours, ").arg((long)hours);
+		s += tr("%1 hours").arg((long)hours);
+		s += ", ";
 	}
 
 	if (minutes == 1)
 	{
-		s += tr("1 minute, ");
+		s += tr("1 minute");
+		s += ", ";
 	}
 	else if (minutes > 1)
 	{
-		s += tr("%1 minutes, ").arg((long)minutes);
+		s += tr("%1 minutes").arg((long)minutes);
+		s += ", ";
 	}
 
 	if (seconds == 1)
 	{
-		s += tr("1 second, ");
+		s += tr("1 second");
+		s += ", ";
 	}
 	else if (seconds > 1)
 	{
-		s += tr("%1 seconds, ").arg((long)seconds);
+		s += tr("%1 seconds").arg((long)seconds);
+		s += ", ";
 	}
 	
 	if ((s.length() > 2) && (s.right(2) == ", "))
+	{
 		s = s.left(s.length()-2);
+		s += ".";
+	}
 
 	int cp = s.findRev(", ");
 
 	if (cp >= 0)
 	{
-		return s.left(cp)+tr(" and ")+s.mid(cp+2);
+		return s.left(cp)+" "+tr("and")+" "+s.mid(cp+2);
 	}
 	else
 	{
@@ -1551,7 +1565,7 @@ void
 WinShareWindow::LaunchPrivate(const QString & pattern)
 {
 	int iUsers = 0;
-	WPrivateWindow * window = new WPrivateWindow(this, fNetClient);
+	WPrivateWindow * window = new WPrivateWindow(this, fNetClient, this);
 	if (!window) 
 		return;
 	QString qItem;
@@ -1699,16 +1713,22 @@ WinShareWindow::TranslateStatus(QString & s)
 void 
 WinShareWindow::OpenDownload()
 {
-	if (fDLWindow)
-		return;
-	PRINT("New DL Window\n");
-	fDLWindow = new WDownload(this, fNetClient->LocalSessionID(), fFileScanThread);
-	CHECK_PTR(fDLWindow);
+	if (!fDLWindow)
+	{
+		PRINT("New DL Window\n");
+		fDLWindow = new WDownload(this, fNetClient->LocalSessionID(), fFileScanThread);
+		CHECK_PTR(fDLWindow);
+		
+		connect(fDLWindow, SIGNAL(FileFailed(QString, QString)), this, SLOT(FileFailed(QString, QString)));
+		connect(fDLWindow, SIGNAL(FileInterrupted(QString, QString)), this, SLOT(FileInterrupted(QString, QString)));
+		connect(fDLWindow, SIGNAL(Closed()), this, SLOT(DownloadWindowClosed()));
+	}
+}
 
-	connect(fDLWindow, SIGNAL(FileFailed(QString, QString)), this, SLOT(FileFailed(QString, QString)));
-	connect(fDLWindow, SIGNAL(FileInterrupted(QString, QString)), this, SLOT(FileInterrupted(QString, QString)));
-	connect(fDLWindow, SIGNAL(Closed()), this, SLOT(DownloadWindowClosed()));
-
+void
+WinShareWindow::OpenDownloads()
+{
+	OpenDownload();
 	fDLWindow->show();
 }
 
@@ -1718,6 +1738,8 @@ WinShareWindow::OpenChannels()
 	if (!fChannels)
 	{
 		fChannels = new Channels(this, fNetClient);
+		CHECK_PTR(fChannels);
+
 		connect(fChannels, SIGNAL(Closed()), gWin, SLOT(ChannelsWindowClosed()));
 	}
 	fChannels->show();
