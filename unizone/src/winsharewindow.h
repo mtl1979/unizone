@@ -537,15 +537,15 @@ private:
 	WStatusBar * fStatus;
 	MessageRef fQueue;
 
-	QString fCurrentSearchPattern;
+	String fCurrentSearchPattern;
 	StringMatcher fFileRegExp, fUserRegExp;
-	QString fFileRegExpStr, fUserRegExpStr;
+	String fFileRegExpStr, fUserRegExpStr;
 
 	bool fIsRunning;
 
 	WFIMap fFileList;
 
-	void StartQuery(const QString & sidRegExp, const QString & fileRegExp);
+	void StartQuery(const String & sidRegExp, const String & fileRegExp);
 	int SplitQuery(const String &fileExp);
 	void SetResultsMessage();
 	void SetSearchStatus(const QString & status, int index = 0);

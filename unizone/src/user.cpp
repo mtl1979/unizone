@@ -101,13 +101,22 @@ WUser::InitName(const MessageRef msg)
 		PRINT("WUser: %s firewalled\n", (b ? "Is" : "Isn't"));
 		SetFirewalled(b);
 	}
+	else if (port > 32767)
+	{
+		PRINT("WUser: invalid port (%lu), assuming firewalled!\n", port);
+		SetFirewalled(true);
+	}
 
 	//
 
 #ifdef _DEBUG
 	WString wUser(fUserName);
-	PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC " on port %lu\n",
-		wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID, fPort);
+	if (GetFirewalled())
+		PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC "\n",
+			wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID);
+	else
+		PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC " on port %lu\n",
+			wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID, fPort);
 #endif
 }
 

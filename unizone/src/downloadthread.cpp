@@ -108,12 +108,7 @@ WDownloadThread::~WDownloadThread()
 		*fShutdownFlag = true;
 	}
 
-	if (fFile)
-	{
-		fFile->close();
-		delete fFile;
-		fFile = NULL;
-	}
+	CloseFile(fFile);
 	
 	if (fFileDl)
 	{
@@ -459,13 +454,8 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 						
 			if (fDownloading)	// this shouldn't happen yet... we only request a single file at a time
 			{
-				//fDownloading = false;
-				if (fFile)	// in case it was not closed when it was received
-				{
-					fFile->close();
-					delete fFile;
-					fFile = NULL;
-				}
+				// in case it was not closed when it was received
+				CloseFile(fFile);
 
 				if (IsLastFile()) 
 					SetFinished(true);
@@ -530,10 +520,13 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 						{
 							if (fFile->size() == fCurrentOffset)	// sizes match up?
 								append = true;
-							fFile->close();
+							CloseFile(fFile);
 						}
-						delete fFile;
-						fFile = NULL;
+						else
+						{
+							delete fFile;
+							fFile = NULL;
+						}
 					}
 				}
 							
@@ -551,19 +544,20 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 							if (fFile2->size() == fCurrentOffset)	// sizes match up?
 							{
 								append = true;
-								fFile2->close();
-								delete fFile2;
-								fFile2 = NULL;
+								CloseFile(fFile2);
 								break; // Get out of loop
 							}
 							else
 							{
-								fFile2->close();
+								CloseFile(fFile2);
 							}
 						}
-
-						delete fFile2;
-						fFile2 = NULL;
+						else
+						{
+							// Failed to open!
+							delete fFile2;
+							fFile2 = NULL;
+						}
 						nf = UniqueName(fixed, i++);
 					}
 					fixed = nf;
@@ -606,9 +600,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 						}
 						else
 						{
-							fFile->close();
-							delete fFile;
-							fFile = NULL;
+							CloseFile(fFile);
 
 							if (IsLastFile()) 
 								SetFinished(true);
@@ -694,9 +686,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 								SendReply(error);
 							}
 							
-							fFile->close();
-							delete fFile; 
-							fFile = NULL;
+							CloseFile(fFile);
 							
 							Reset();
 							return;
@@ -735,10 +725,8 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 									QApplication::postEvent(gWin, wse);
 							}
 
-							fFile->close();
-							delete fFile; 
-							fFile = NULL;
-							//fDownloading = false;
+							CloseFile(fFile);
+
 							NextFile();
 						}
 						
@@ -761,9 +749,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 							SendReply(error);
 						}
 
-						fFile->close();
-						delete fFile; 
-						fFile = NULL;
+						CloseFile(fFile);
 							
 						Reset();
 						NextFile();
@@ -830,23 +816,12 @@ WDownloadThread::SessionConnected(const String &sessionID)
 		for (int c = 0; c < fNumFiles; c++)
 		{
 			// check to see wether the file exists
-			QString outFile("downloads");
-			if (!(outFile.right(1) == "/"))
-				outFile += "/";
-
-			QString fixed;
 			if (fLocalFileDl[c] == QString:: null)
 			{
-				fixed = outFile;							
-				fixed += FixFileName(fFileDl[c]);
-				fLocalFileDl[c] = fixed;
-			}
-			else
-			{
-				fixed = fLocalFileDl[c];
+				fLocalFileDl[c] = MakePath("downloads", FixFileName(fFileDl[c]));
 			}
 
-			outFile += fFileDl[c];
+			QString outFile(MakePath("downloads", fFileDl[c]));
 							
 			// get an MD5 hash code out of it
 			uint8 digest[MD5_DIGEST_SIZE];
@@ -854,16 +829,16 @@ WDownloadThread::SessionConnected(const String &sessionID)
 			uint64 retBytesHashed = 0;
 			uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
 
-			if (QFile::exists(fixed))
+			if (QFile::exists(fLocalFileDl[c]))
 			{								
 				MessageRef hashMsg(GetMessageFromPool(WDownloadEvent::FileHashing));
 				if (hashMsg())
 				{
-					hashMsg()->AddString("file", (const char *)fixed.utf8());
+					hashMsg()->AddString("file", (const char *)fLocalFileDl[c].utf8());
 					SendReply(hashMsg);
 				}
 								
-				if (HashFileMD5(fixed, fileOffset, bytesFromBack, retBytesHashed, digest, fShutdownFlag) == B_ERROR)
+				if (HashFileMD5(fLocalFileDl[c], fileOffset, bytesFromBack, retBytesHashed, digest, fShutdownFlag) == B_ERROR)
 				{
 					if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
 					{
@@ -905,12 +880,7 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 {
 	*fShutdownFlag = true;
 
-	if (fFile)
-	{
-		fFile->close();
-		delete fFile; 
-		fFile = NULL;
-	}
+	CloseFile(fFile);
 
 	if (timerID != 0) 
 	{
@@ -1176,12 +1146,7 @@ WDownloadThread::Reset()
 		qmtt->Reset();
 	
 	// Make sure we close the file if user queues the transfer manually
-	if (fFile)
-	{
-		fFile->close();
-		delete fFile;
-		fFile = NULL;
-	}
+	CloseFile(fFile);
 
 	PRINT("WDownloadThread::Reset() OK\n");
 }

@@ -23,7 +23,7 @@ WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewa
 #endif
 
 	// Workaround for StringMatcher bug (for now!)
-	if (fCurrentSearchPattern.isEmpty())
+	if (fCurrentSearchPattern.Length() == 0)
 		return;
 
 	fSearchLock.lock();
@@ -145,8 +145,7 @@ WinShareWindow::StopSearch()
 			// pattern, if I grab the third '/' and add one, that is my
 			// cancel PR_NAME_KEYS
 			// <postmaster@raasu.org> 20021023 -- Use temporary variable to help debugging
-			String CurrentSearchPattern = (const char *) fCurrentSearchPattern.utf8();
-			const char * cancelStr = strchr(CurrentSearchPattern.Cstr(), '/') + 1;
+			const char * cancelStr = strchr(fCurrentSearchPattern.Cstr(), '/') + 1;
 			cancelStr = strchr(cancelStr, '/') + 1;
 			cancelStr = strchr(cancelStr, '/') + 1;
 			cancel()->AddString(PR_NAME_KEYS, cancelStr);
@@ -356,31 +355,30 @@ WinShareWindow::GoSearch()
 	
 	fSearchLock.unlock();	// unlock before StartQuery();
 
-	StartQuery(userExp.Length() > 0 ? QString::fromUtf8(userExp.Cstr()) : "*", QString::fromUtf8(fileExp.Cstr()));
+	StartQuery(userExp.Length() > 0 ? userExp.Cstr() : "*", fileExp);
 }
 
 void
-WinShareWindow::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
+WinShareWindow::StartQuery(const String & sidRegExp, const String & fileRegExp)
 {
 	fSearchLock.lock();
-	QString tmp = "SUBSCRIBE:/*/";
+	String tmp("SUBSCRIBE:/*/");
 	tmp += sidRegExp;
 	tmp += "/beshare/fi?es/";
-//	tmp += fSettings->GetFirewalled() ? "files/" : "fi*/";		// if we're firewalled, we can only get files from non-firewalled users
 	tmp += fileRegExp;
 	fCurrentSearchPattern = tmp;
 	// <postmaster@raasu.org> 20021023 -- Fixed typo
 
 #ifdef _DEBUG
-	WString wCurrentSearchPattern(fCurrentSearchPattern);
-	WString wSIDRegExp(sidRegExp);
-	WString wFileRegExp(fileRegExp);
+	WString wCurrentSearchPattern(fCurrentSearchPattern.Cstr());
+	WString wSIDRegExp(sidRegExp.Cstr());
+	WString wFileRegExp(fileRegExp.Cstr());
 	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", wCurrentSearchPattern.getBuffer(), wSIDRegExp.getBuffer(), wFileRegExp.getBuffer());
 #endif
 
-	fUserRegExp.SetPattern((const char *) sidRegExp.utf8());
+	fUserRegExp.SetPattern(sidRegExp);
 	fUserRegExpStr = sidRegExp;
-	fFileRegExp.SetPattern((const char *) fileRegExp.utf8());
+	fFileRegExp.SetPattern(fileRegExp);
 	fFileRegExpStr = fileRegExp;
 
 	if (!fGotResults)
@@ -400,7 +398,7 @@ WinShareWindow::StartQuery(const QString & sidRegExp, const QString & fileRegExp
 
 	fSearchLock.unlock();
 
-	SetSearchStatus(tr("Searching for: \"%1\".").arg(fileRegExp));
+	SetSearchStatus(tr("Searching for: \"%1\".").arg(QString::fromUtf8(fileRegExp.Cstr())));
 	SetSearchStatus(tr("active"), 2);
 }
 

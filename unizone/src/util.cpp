@@ -23,6 +23,7 @@ using namespace muscle;
 
 #include <qdatetime.h>
 #include <qdns.h>
+#include <qfile.h>
 
 QString
 ParseChatText(const QString & str)
@@ -944,6 +945,17 @@ String MakePath(const String &dir, const String &file)
 	return ret; 
 }
 
+QString MakePath(const QString &dir, const QString &file)
+{
+	QString ret(dir);
+	if (!(ret.right(1) == "/"))
+		ret += "/";
+
+	ret += file;
+
+	return ret;
+}
+
 /*
  * Is received text action text or normal text
  *
@@ -1073,3 +1085,14 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 	}
 	file = QString::null;
 }
+
+void CloseFile(QFile * & file)
+{
+	if (file)
+	{
+		file->close();
+		delete file;
+		file = NULL;
+	}
+}
+

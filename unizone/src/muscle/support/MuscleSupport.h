@@ -95,16 +95,27 @@ using std::set_new_handler;
 
 // Unfortunately, the 64-bit printf() format specifier is different for different compilers :^P
 #if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || defined(__BEOS__)
-# define  INT64_FORMAT_SPEC "%Li"
-# define UINT64_FORMAT_SPEC "%Lu"
+# if (_MSC_VER == 1200)
+#  define  INT64_FORMAT_SPEC "%I64i"
+#  define UINT64_FORMAT_SPEC "%I64u"
+# else
+#  define  INT64_FORMAT_SPEC "%Li"
+#  define UINT64_FORMAT_SPEC "%Lu"
+# endif
 #else
-# define  INT64_FORMAT_SPEC "%lli"
-# define UINT64_FORMAT_SPEC "%llu"
+#  define  INT64_FORMAT_SPEC "%lli"
+#  define UINT64_FORMAT_SPEC "%llu"
 #endif
 
 #ifdef __BEOS__
 # include <kernel/debugger.h>
 # define MCRASH_IMPL debugger("muscle assertion failure")
+#elif defined(WIN32)
+# if defined(UNICODE)
+#  define MCRASH_IMPL FatalAppExit(0, L"muscle assertion failure")
+# else
+#  define MCRASH_IMPL FatalAppExit(0, "muscle assertion failure")
+# endif
 #else
 # define MCRASH_IMPL *((uint32*)NULL) = 0x666
 #endif

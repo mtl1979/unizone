@@ -114,13 +114,8 @@ WUploadThread::~WUploadThread()
 		*fShutdownFlag = true;
 	}
 
-	if (fFile)
-	{
-		PRINT("\tCleaning up files...\n");
-		fFile->close();
-		delete fFile;
-		fFile = NULL;
-	}
+	PRINT("\tCleaning up files...\n");
+	CloseFile(fFile);
 
 	if (!fTunneled)
 		qmtt->ShutdownInternalThread();
@@ -442,12 +437,7 @@ WUploadThread::SessionDisconnected(const String & /* sessionID */)
 
 	*fShutdownFlag = true;
 
-	if (fFile)
-	{
-		fFile->close();
-		delete fFile; 
-		fFile = NULL;
-	}
+	CloseFile(fFile);
 
 	fDisconnected = true;
 	fFinished = true;
@@ -736,10 +726,11 @@ WUploadThread::DoUpload()
 			// think about doing this in a dynamic way (depending on connection)
 			uint32 bufferSize = GetPacketSize() * 1024;	
 			uint8 * scratchBuffer;
+			int32 numBytes;
 			if (uref()->AddData("data", B_RAW_TYPE, NULL, bufferSize) == B_OK &&
 				uref()->FindDataPointer("data", B_RAW_TYPE, (void **)&scratchBuffer, NULL) == B_OK)
 			{
-				int32 numBytes = fFile->readBlock((char *)scratchBuffer, bufferSize);
+				numBytes = fFile->readBlock((char *)scratchBuffer, bufferSize);
 				if (numBytes > 0)
 				{
 					// munge mode
@@ -1531,11 +1522,6 @@ void
 WUploadThread::NextFile()
 {
 	// next file
-	if (fFile)
-	{
-		fFile->close();
-		delete fFile; 
-		fFile = NULL;
-	}
+	CloseFile(fFile);
 	fCurrentOffset = fFileSize = 0;
 }

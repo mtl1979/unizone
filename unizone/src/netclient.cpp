@@ -180,12 +180,12 @@ NetClient::LocalSessionID() const
 }
 
 void
-NetClient::AddSubscription(const QString & str, bool q)
+NetClient::AddSubscription(const String & str, bool q)
 {
 	MessageRef ref(GetMessageFromPool(PR_COMMAND_SETPARAMETERS));
 	if (ref())
 	{
-		ref()->AddBool((const char *) str.utf8(), true);		// true doesn't mean anything
+		ref()->AddBool(str, true);		// true doesn't mean anything
 		if (q)
 			ref()->AddBool(PR_NAME_SUBSCRIBE_QUIETLY, true);		// no initial response
 		SendMessageToSessions(ref);
@@ -193,12 +193,27 @@ NetClient::AddSubscription(const QString & str, bool q)
 }
 
 void
-NetClient::RemoveSubscription(const QString & str)
+NetClient::AddSubscriptionList(const String * slist, bool q)
+{
+	MessageRef ref(GetMessageFromPool(PR_COMMAND_SETPARAMETERS));
+	if (ref())
+	{
+		int n = 0;
+		while (slist[n] != NULL)
+			ref()->AddBool(slist[n++], true);		// true doesn't mean anything
+		if (q)
+			ref()->AddBool(PR_NAME_SUBSCRIBE_QUIETLY, true);		// no initial response
+		SendMessageToSessions(ref);
+	}
+}
+
+void
+NetClient::RemoveSubscription(const String & str)
 {
 	MessageRef ref(GetMessageFromPool(PR_COMMAND_REMOVEPARAMETERS));
 	if (ref())
 	{
-		ref()->AddString(PR_NAME_KEYS, (const char *) str.utf8());
+		ref()->AddString(PR_NAME_KEYS, str);
 		SendMessageToSessions(ref);
 	}
 }

@@ -14,6 +14,7 @@
 #ifdef WIN32
 #include <windows.h>
 #include <shlwapi.h>
+#include <tchar.h>
 #endif
 
 #include "global.h"
@@ -78,7 +79,6 @@ main( int argc, char** argv )
 
 	fStartTime = GetCurrentTime64();
 	QApplication app( argc, argv );
-
 
 	// Set alternative settings file if requested
 

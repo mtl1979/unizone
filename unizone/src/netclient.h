@@ -36,8 +36,9 @@ public:
 	
 	bool IsConnected() const;
 	
-	void AddSubscription(const QString & str, bool q = false);	// if "q" is true, u won't get an initial response
-	void RemoveSubscription(const QString & str);
+	void AddSubscription(const String & str, bool q = false);	// if "q" is true, u won't get an initial response
+	void AddSubscriptionList(const String * str, bool q = false);
+	void RemoveSubscription(const String & str);
 	
 	void SendChatText(const QString &target, const QString &text);
 	void SendPing(const QString &target);

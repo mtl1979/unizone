@@ -13,6 +13,7 @@ using namespace muscle;
 using std::map;
 using std::pair;
 using std::iterator;
+
 #include <qfile.h>
 #include <qdialog.h>
 #include <qlistview.h>
@@ -24,8 +25,6 @@ using std::iterator;
 #include "transferlist.h"
 #include "debugimpl.h"
 
-class MD5Thread;
-class MD5Looper;
 class WDownloadEvent;
 class WDownloadThread;
 class WUploadEvent;
@@ -103,7 +102,7 @@ public:
 
 	void TransferCallBackRejected(const QString &qFrom, int64 timeLeft, uint32 port);
 
-	void SetLocalID(QString sid);
+	void SetLocalID(const QString &sid);
 
 	void EmptyLists();
 
@@ -115,23 +114,15 @@ protected:
 	virtual void downloadEvent(WDownloadEvent *);
 	virtual void uploadEvent(WUploadEvent *);
 
-	virtual void resizeEvent(QResizeEvent * e)
-	{
-		fMainSplit->resize(e->size());
-	}
+	virtual void resizeEvent(QResizeEvent * e);
 
 private:
-	typedef map<MD5Thread *, bool> MD5List;
-	typedef pair<MD5Thread *, bool> MD5Pair;
-	typedef MD5List::iterator MD5Iter;
-
+		
 	DLList fDownloadList;
 	ULList fUploadList;
 
 	QSplitter * fMainSplit;
 	QListView * fUploads, * fDownloads;
-//	QPushButton * fCancelU;
-//	QPushButton * fCancelD;
 	QVBox * fBoxU, * fBoxD;
 	QPopupMenu * fDLPopup, *fULPopup;
 	QPopupMenu * fDLThrottleMenu, * fULThrottleMenu;
@@ -252,11 +243,8 @@ private:
 	void SendSignal(int signal);
 
 	mutable QMutex fLock;
-	void Lock() 
-	{ 
-		fLock.lock(); 
-	}
-	void Unlock() { fLock.unlock(); }
+	void Lock(); 
+	void Unlock();
 
 private slots:
 

@@ -1,4 +1,5 @@
 #include "Log.h"
+#include "util.h"
 #include "debugimpl.h"
 
 #include <time.h>
@@ -25,9 +26,7 @@ WLog::Close()
 	if (fFile)
 	{
 		fFile->writeBlock(logClose.Cstr(), logClose.Length());
-		fFile->close();
-		delete fFile;
-		fFile = NULL;
+		CloseFile(fFile);
 	}
 }
 

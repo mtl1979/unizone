@@ -496,7 +496,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (setref())
 				{
 					// Set maximum number of update message items
-					setref()->AddInt32(PR_NAME_MAX_UPDATE_MESSAGE_ITEMS, 20);
+					setref()->AddInt32(PR_NAME_MAX_UPDATE_MESSAGE_ITEMS, 15);
 					
 					// Set Incoming Message Encoding
 					if (enc != 0)
@@ -516,10 +516,14 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				MessageRef askref(GetMessageFromPool(PR_COMMAND_GETPARAMETERS));
 				fNetClient->SendMessageToSessions(askref);
 				// get a list of users as well
-				fNetClient->AddSubscription("SUBSCRIBE:beshare"); // base BeShare node
-				fNetClient->AddSubscription("SUBSCRIBE:beshare/*"); // all user info :)
-				fNetClient->AddSubscription("SUBSCRIBE:unishare/*"); // all unishare-specific user data
-				fNetClient->AddSubscription("SUBSCRIBE:unishare/channeldata/*"); // all unishare-specific channel data
+				static String subscriptionList[] = {
+					"SUBSCRIBE:beshare",		// base BeShare node
+					"SUBSCRIBE:beshare/*",		// all user info :)
+					"SUBSCRIBE:unishare/*",		// all unishare-specific user data
+					"SUBSCRIBE:unishare/channeldata/*", // all unishare-specific channel data
+					NULL
+				};
+				fNetClient->AddSubscriptionList(subscriptionList); 
 				fNetClient->SetUserName(GetUserName());
 				fNetClient->SetUserStatus(GetStatus());
 				fNetClient->SetConnection(fSettings->GetConnection());

@@ -2,6 +2,9 @@
 
 #include "wstring.h"
 
+char * utfbuf = NULL;
+int utflen = 0;
+
 WString::WString()
 {
 	buffer = NULL;
@@ -18,6 +21,19 @@ WString::WString(const wchar_t *str)
 WString::WString(const QString &str)
 {
 	buffer = qStringToWideChar(str);
+}
+
+WString::WString(const char * str)
+{
+#if defined(WIN32)
+	int len = MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), NULL, 0);
+	buffer = new wchar_t[len+1];
+	(void) MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), buffer, len);
+#else
+	int len = mbstowcs(NULL, str, strlen(str));
+	buffer = new wchar_t[len+1];
+	(void) mbstowcs(buffer, str, len);
+#endif
 }
 
 WString::~WString()
@@ -182,10 +198,21 @@ WString::operator==(const QString &str)
 	return b;
 }
 
-
 WString::operator const char *() const
 {
-	return toQString().local8Bit();
+	int len = wcstombs(NULL, buffer, 0);
+	if (utfbuf && (len > utflen))
+	{
+		delete utfbuf;
+		utfbuf = NULL;
+	}
+	if (!utfbuf)
+	{
+		utfbuf = new char[len + 1];
+		utflen = len;
+	}
+	(void) wcstombs(utfbuf, buffer, utflen);
+	return utfbuf;
 }
 
 void
@@ -195,6 +222,12 @@ WString::free()
 	{
 		delete [] buffer;
 		buffer = NULL;
+	}
+	if (utfbuf)
+	{
+		delete [] utfbuf;
+		utfbuf = NULL;
+		utflen = 0;
 	}
 }
 

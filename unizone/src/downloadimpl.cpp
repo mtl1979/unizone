@@ -3358,7 +3358,7 @@ WDownload::GetUploadQueue()
 }
 
 void
-WDownload::SetLocalID(QString sid)
+WDownload::SetLocalID(const QString &sid)
 {
 	fLocalSID = sid;
 }
@@ -3377,3 +3377,22 @@ WDownload::netClient()
 {
 	return gWin->fNetClient;
 }
+
+void 
+WDownload::resizeEvent(QResizeEvent * e)
+{
+	fMainSplit->resize(e->size());
+}
+
+void 
+WDownload::Lock() 
+{ 
+	fLock.lock(); 
+}
+
+void 
+WDownload::Unlock() 
+{ 
+	fLock.unlock(); 
+}
+

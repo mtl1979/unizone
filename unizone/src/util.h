@@ -7,7 +7,9 @@
  *
  */
 
-#include <qstring.h>
+class QString;
+class QFile;
+
 #include "util/String.h"
 #include "util/ByteBuffer.h"
 
@@ -88,6 +90,7 @@ void MakeNodePath(String &file);
 
 // Return full filepath from 'dir' and 'file'
 String MakePath(const String &dir, const String &file);
+QString MakePath(const QString &dir, const QString &file);
 
 // Return filename that has no invalid characters (Windows only)
 QString FixFileName(const QString & fixMe);
@@ -106,5 +109,8 @@ QString UniqueName(const QString & file, int index); // build up unique name usi
 
 // Save picture to file, makes sure file doesn't exist before writing...
 void SavePicture(QString & file, const ByteBufferRef & buf);
+
+// Close file if necessary and delete the object
+void CloseFile(QFile * & file);
 
 #endif

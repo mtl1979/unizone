@@ -34,6 +34,7 @@ public:
 	WString();
 	WString(const wchar_t *);
 	WString(const QString &);
+	WString(const char *); // UTF-8
 	~WString();
 
 #ifdef WIN32
