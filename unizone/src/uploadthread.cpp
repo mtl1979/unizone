@@ -884,7 +884,8 @@ WUploadThread::GetFileName(int i) const
 {
 	if (i >= 0 && i < fNames.GetNumItems())
 	{
-		return fNames[i];
+		QString file = QString::fromUtf8(fNames[i].Cstr());
+		return file;
 	}
 	else
 	{
@@ -1033,11 +1034,9 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 		
 		for (int i = 0; (msg()->FindString("files", i, &file) == B_OK); i++)
 		{
-			QString qFile = QString::fromUtf8(file);
-
 			MessageRef fileRef;
 			
-			if (fFileThread->FindFile(qFile, fileRef))
+			if (fFileThread->FindFile(file, fileRef))
 			{
 				if (fileRef()) // <postmaster@raasu.org> 20021023
 				{
@@ -1101,7 +1100,7 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 					}
 					
 					fUploads.AddTail(fileRef);
-					fNames.AddTail(qFile);
+					fNames.AddTail(file);
 				}
 			}
 		}

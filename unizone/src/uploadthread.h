@@ -163,7 +163,7 @@ protected:
 
 private:
 	Queue<MessageRef> fUploads;
-	Queue<QString> fNames;
+	Queue<String> fNames;
 	QFile * fFile;
 	uint32 fRemoteIP;
 	QString fStrRemoteIP;				// the accept version gets a string IP
