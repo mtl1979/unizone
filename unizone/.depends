@@ -57,63 +57,13 @@ aboutdlgimpl.o: src/aboutdlgimpl.cpp src/aboutdlgimpl.h src/aboutdlg.h \
   /usr/lib/qt-3.1/include/qbrush.h /usr/lib/qt-3.1/include/qfont.h \
   /usr/lib/qt-3.1/include/qfontmetrics.h \
   /usr/lib/qt-3.1/include/qfontinfo.h \
-  /usr/lib/qt-3.1/include/qsizepolicy.h src/version.h \
-  /usr/lib/qt-3.1/include/qlabel.h /usr/lib/qt-3.1/include/qframe.h \
-  /usr/lib/qt-3.1/include/qpushbutton.h /usr/lib/qt-3.1/include/qbutton.h \
+  /usr/lib/qt-3.1/include/qsizepolicy.h src/global.h \
+  src/muscle/support/MuscleSupport.h src/muscle/syslog/SysLog.h \
+  src/muscle/util/TimeUtilityFunctions.h /usr/lib/qt-3.1/include/qlabel.h \
+  /usr/lib/qt-3.1/include/qframe.h /usr/lib/qt-3.1/include/qpushbutton.h \
+  /usr/lib/qt-3.1/include/qbutton.h \
   /usr/lib/qt-3.1/include/qkeysequence.h \
   /usr/lib/qt-3.1/include/qiconset.h /usr/lib/qt-3.1/include/qpixmap.h
-accept.o: src/accept.cpp /usr/lib/qt-3.1/include/qapplication.h \
-  /usr/lib/qt-3.1/include/qdesktopwidget.h \
-  /usr/lib/qt-3.1/include/qwidget.h /usr/lib/qt-3.1/include/qwindowdefs.h \
-  /usr/lib/qt-3.1/include/qobjectdefs.h /usr/lib/qt-3.1/include/qglobal.h \
-  /usr/lib/qt-3.1/include/qconfig.h /usr/lib/qt-3.1/include/qmodules.h \
-  /usr/lib/qt-3.1/include/qfeatures.h /usr/lib/qt-3.1/include/qstring.h \
-  /usr/lib/qt-3.1/include/qcstring.h /usr/lib/qt-3.1/include/qmemarray.h \
-  /usr/lib/qt-3.1/include/qgarray.h /usr/lib/qt-3.1/include/qshared.h \
-  /usr/lib/qt-3.1/include/qnamespace.h /usr/lib/qt-3.1/include/qobject.h \
-  /usr/lib/qt-3.1/include/qevent.h /usr/lib/qt-3.1/include/qregion.h \
-  /usr/lib/qt-3.1/include/qrect.h /usr/lib/qt-3.1/include/qsize.h \
-  /usr/lib/qt-3.1/include/qpoint.h /usr/lib/qt-3.1/include/qmime.h \
-  /usr/lib/qt-3.1/include/qmap.h /usr/lib/qt-3.1/include/qdatastream.h \
-  /usr/lib/qt-3.1/include/qiodevice.h /usr/lib/qt-3.1/include/qpair.h \
-  /usr/lib/qt-3.1/include/qvaluelist.h /usr/lib/qt-3.1/include/qtl.h \
-  /usr/lib/qt-3.1/include/qtextstream.h \
-  /usr/lib/qt-3.1/include/qpaintdevice.h \
-  /usr/lib/qt-3.1/include/qpalette.h /usr/lib/qt-3.1/include/qcolor.h \
-  /usr/lib/qt-3.1/include/qbrush.h /usr/lib/qt-3.1/include/qfont.h \
-  /usr/lib/qt-3.1/include/qfontmetrics.h \
-  /usr/lib/qt-3.1/include/qfontinfo.h \
-  /usr/lib/qt-3.1/include/qsizepolicy.h \
-  /usr/lib/qt-3.1/include/qasciidict.h /usr/lib/qt-3.1/include/qgdict.h \
-  /usr/lib/qt-3.1/include/qptrcollection.h \
-  /usr/lib/qt-3.1/include/qtranslator.h \
-  /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
-  /usr/lib/qt-3.1/include/qglist.h /usr/lib/qt-3.1/include/qstringlist.h \
-  src/accept.h src/muscle/system/AcceptSocketsThread.h \
-  src/muscle/system/Thread.h /usr/lib/qt-3.1/include/qthread.h \
-  /usr/lib/qt-3.1/include/qmutex.h /usr/lib/qt-3.1/include/qsemaphore.h \
-  /usr/lib/qt-3.1/include/qwaitcondition.h src/muscle/system/Mutex.h \
-  src/muscle/support/MuscleSupport.h src/muscle/syslog/SysLog.h \
-  src/muscle/util/TimeUtilityFunctions.h src/muscle/message/Message.h \
-  src/muscle/support/Point.h src/muscle/support/Flattenable.h \
-  src/muscle/support/Tuple.h src/muscle/support/Rect.h \
-  src/muscle/util/String.h src/muscle/util/Hashtable.h \
-  src/muscle/util/FlatCountable.h src/muscle/util/RefCount.h \
-  src/muscle/util/ObjectPool.h src/muscle/util/Queue.h \
-  src/muscle/system/AtomicCounter.h src/muscle/util/SocketHolder.h \
-  src/muscle/util/NetworkUtilityFunctions.h src/messenger.h \
-  src/muscle/system/MessageTransceiverThread.h \
-  src/muscle/reflector/StorageReflectSession.h \
-  src/muscle/reflector/DumbReflectSession.h \
-  src/muscle/reflector/AbstractReflectSession.h \
-  src/muscle/dataio/TCPSocketDataIO.h src/muscle/dataio/DataIO.h \
-  src/muscle/iogateway/AbstractMessageIOGateway.h \
-  src/muscle/util/PulseNode.h \
-  src/muscle/reflector/AbstractSessionIOPolicy.h \
-  src/muscle/reflector/ServerComponent.h \
-  src/muscle/reflector/StorageReflectConstants.h \
-  src/muscle/regex/PathMatcher.h src/muscle/regex/QueryFilter.h \
-  src/muscle/util/ByteBuffer.h src/muscle/regex/StringMatcher.h
 botitem.o: src/botitem.cpp src/botitem.h src/ulistview.h \
   /usr/lib/qt-3.1/include/qlistview.h \
   /usr/lib/qt-3.1/include/qscrollview.h /usr/lib/qt-3.1/include/qframe.h \
@@ -285,11 +235,12 @@ downloadimpl.o: src/downloadimpl.cpp /usr/lib/qt-3.1/include/qthread.h \
   /usr/lib/qt-3.1/include/qsplitter.h /usr/lib/qt-3.1/include/qvbox.h \
   /usr/lib/qt-3.1/include/qhbox.h /usr/lib/qt-3.1/include/qpopupmenu.h \
   /usr/lib/qt-3.1/include/qmenudata.h /usr/lib/qt-3.1/include/qsignal.h \
-  /usr/lib/qt-3.1/include/qvariant.h src/filethread.h src/netclient.h \
-  src/muscle/qtsupport/QMessageTransceiverThread.h src/user.h \
+  /usr/lib/qt-3.1/include/qvariant.h src/transferlist.h \
+  src/genericthread.h src/muscle/qtsupport/QMessageTransceiverThread.h \
   src/transferitem.h src/ulistview.h src/md5.h src/debugimpl.h \
-  /usr/lib/qt-3.1/include/qmessagebox.h src/global.h src/settings.h \
-  src/winsharewindow.h /usr/lib/qt-3.1/include/qmainwindow.h \
+  /usr/lib/qt-3.1/include/qmessagebox.h src/global.h src/filethread.h \
+  src/netclient.h src/user.h src/settings.h src/winsharewindow.h \
+  /usr/lib/qt-3.1/include/qmainwindow.h \
   /usr/lib/qt-3.1/include/qtoolbar.h \
   /usr/lib/qt-3.1/include/qdockwindow.h \
   /usr/lib/qt-3.1/include/qmenubar.h \
@@ -309,7 +260,7 @@ downloadimpl.o: src/downloadimpl.cpp /usr/lib/qt-3.1/include/qthread.h \
   src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/downloadthread.h src/genericthread.h src/uploadthread.h \
+  src/downloadthread.h src/uploadthread.h \
   src/muscle/iogateway/MessageIOGateway.h src/muscle/zlib/ZLibCodec.h \
   src/muscle/zlib/zlib/zlib.h src/muscle/zlib/zlib/zconf.h \
   src/muscle/reflector/RateLimitSessionIOPolicy.h src/wgenericevent.h \
@@ -378,10 +329,10 @@ downloadthread.o: src/downloadthread.cpp src/downloadthread.h \
   /usr/lib/qt-3.1/include/qstringlist.h \
   /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
   /usr/lib/qt-3.1/include/qglist.h \
-  /usr/lib/qt-3.1/include/qptrcollection.h src/filethread.h \
-  src/netclient.h src/user.h src/transferitem.h src/ulistview.h \
-  src/wgenericevent.h src/md5.h src/global.h src/settings.h \
-  src/winsharewindow.h /usr/lib/qt-3.1/include/qmainwindow.h \
+  /usr/lib/qt-3.1/include/qptrcollection.h src/transferlist.h \
+  src/transferitem.h src/ulistview.h src/wgenericevent.h src/md5.h \
+  src/global.h src/settings.h src/winsharewindow.h \
+  /usr/lib/qt-3.1/include/qmainwindow.h \
   /usr/lib/qt-3.1/include/qtoolbar.h \
   /usr/lib/qt-3.1/include/qdockwindow.h \
   /usr/lib/qt-3.1/include/qmenubar.h \
@@ -397,10 +348,10 @@ downloadthread.o: src/downloadthread.cpp src/downloadthread.h \
   /usr/lib/qt-3.1/include/qvgroupbox.h \
   /usr/lib/qt-3.1/include/qtextbrowser.h \
   /usr/lib/qt-3.1/include/qlayout.h /usr/lib/qt-3.1/include/qtabwidget.h \
-  src/serverclient.h src/updateclient.h src/privatewindowimpl.h \
-  src/privatewindow.h src/chattext.h src/htmlview.h src/debugimpl.h \
-  /usr/lib/qt-3.1/include/qmessagebox.h src/Log.h \
-  src/muscle/system/SetupSystem.h \
+  src/netclient.h src/user.h src/serverclient.h src/updateclient.h \
+  src/privatewindowimpl.h src/privatewindow.h src/chattext.h \
+  src/htmlview.h src/debugimpl.h /usr/lib/qt-3.1/include/qmessagebox.h \
+  src/Log.h src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
   src/muscle/iogateway/MessageIOGateway.h src/muscle/zlib/ZLibCodec.h \
@@ -516,8 +467,8 @@ filethread.o: src/filethread.cpp src/filethread.h \
   src/Log.h src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/wstring.h /usr/lib/qt-3.1/include/qdir.h \
-  /usr/lib/qt-3.1/include/qapplication.h \
+  src/wstring.h src/scanprogressimpl.h src/scanprogress.h \
+  /usr/lib/qt-3.1/include/qdir.h /usr/lib/qt-3.1/include/qapplication.h \
   /usr/lib/qt-3.1/include/qdesktopwidget.h \
   /usr/lib/qt-3.1/include/qasciidict.h \
   /usr/lib/qt-3.1/include/qtranslator.h
@@ -606,7 +557,7 @@ formatting.o: src/formatting.cpp src/formatting.h \
   /usr/lib/qt-3.1/include/qfile.h src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/filethread.h src/global.h
+  src/global.h
 genericthread.o: src/genericthread.cpp src/genericthread.h \
   /usr/lib/qt-3.1/include/qevent.h /usr/lib/qt-3.1/include/qwindowdefs.h \
   /usr/lib/qt-3.1/include/qobjectdefs.h /usr/lib/qt-3.1/include/qglobal.h \
@@ -775,7 +726,7 @@ gotourl.o: src/gotourl.cpp src/gotourl.h \
   /usr/lib/qt-3.1/include/qfile.h src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/settings.h src/filethread.h src/wstring.h src/global.h
+  src/settings.h src/wstring.h src/global.h
 main.o: src/main.cpp src/winsharewindow.h \
   /usr/lib/qt-3.1/include/qmainwindow.h /usr/lib/qt-3.1/include/qwidget.h \
   /usr/lib/qt-3.1/include/qwindowdefs.h \
@@ -870,7 +821,7 @@ main.o: src/main.cpp src/winsharewindow.h \
   /usr/lib/qt-3.1/include/qfileinfo.h /usr/lib/qt-3.1/include/qdatetime.h \
   /usr/lib/qt-3.1/include/qurloperator.h /usr/lib/qt-3.1/include/qurl.h \
   /usr/lib/qt-3.1/include/qnetworkprotocol.h \
-  /usr/lib/qt-3.1/include/qurlinfo.h src/global.h
+  /usr/lib/qt-3.1/include/qurlinfo.h src/global.h src/version.h
 md5.o: src/md5.cpp src/md5.h /usr/lib/qt-3.1/include/qfile.h \
   /usr/lib/qt-3.1/include/qiodevice.h /usr/lib/qt-3.1/include/qglobal.h \
   /usr/lib/qt-3.1/include/qconfig.h /usr/lib/qt-3.1/include/qmodules.h \
@@ -909,7 +860,9 @@ menubar.o: src/menubar.cpp src/menubar.h \
   /usr/lib/qt-3.1/include/qstringlist.h \
   /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
   /usr/lib/qt-3.1/include/qglist.h \
-  /usr/lib/qt-3.1/include/qptrcollection.h src/version.h \
+  /usr/lib/qt-3.1/include/qptrcollection.h src/global.h \
+  src/muscle/support/MuscleSupport.h src/muscle/syslog/SysLog.h \
+  src/muscle/util/TimeUtilityFunctions.h \
   /usr/lib/qt-3.1/include/qapplication.h \
   /usr/lib/qt-3.1/include/qdesktopwidget.h \
   /usr/lib/qt-3.1/include/qasciidict.h /usr/lib/qt-3.1/include/qgdict.h \
@@ -1127,10 +1080,10 @@ moc_downloadimpl.o: src/moc_downloadimpl.cpp src/downloadimpl.h \
   /usr/lib/qt-3.1/include/qstringlist.h \
   /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
   /usr/lib/qt-3.1/include/qglist.h \
-  /usr/lib/qt-3.1/include/qptrcollection.h src/filethread.h \
-  src/netclient.h src/muscle/qtsupport/QMessageTransceiverThread.h \
-  src/user.h src/transferitem.h src/ulistview.h \
-  /usr/lib/qt-3.1/include/qmetaobject.h \
+  /usr/lib/qt-3.1/include/qptrcollection.h src/transferlist.h \
+  src/genericthread.h /usr/lib/qt-3.1/include/qdatetime.h \
+  src/muscle/qtsupport/QMessageTransceiverThread.h src/transferitem.h \
+  src/ulistview.h /usr/lib/qt-3.1/include/qmetaobject.h \
   /usr/lib/qt-3.1/include/qconnection.h \
   /usr/lib/qt-3.1/include/qapplication.h \
   /usr/lib/qt-3.1/include/qdesktopwidget.h \
@@ -1646,9 +1599,10 @@ netclient.o: src/netclient.cpp src/netclient.h \
   /usr/lib/qt-3.1/include/qstringlist.h \
   /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
   /usr/lib/qt-3.1/include/qglist.h \
-  /usr/lib/qt-3.1/include/qptrcollection.h src/filethread.h \
+  /usr/lib/qt-3.1/include/qptrcollection.h src/transferlist.h \
+  src/genericthread.h /usr/lib/qt-3.1/include/qdatetime.h \
   src/transferitem.h src/ulistview.h src/global.h src/debugimpl.h \
-  /usr/lib/qt-3.1/include/qmessagebox.h src/version.h src/settings.h \
+  /usr/lib/qt-3.1/include/qmessagebox.h src/settings.h \
   src/winsharewindow.h /usr/lib/qt-3.1/include/qmainwindow.h \
   /usr/lib/qt-3.1/include/qtoolbar.h \
   /usr/lib/qt-3.1/include/qdockwindow.h \
@@ -1787,7 +1741,7 @@ platform.o: src/platform.cpp src/platform.h \
   /usr/lib/qt-3.1/include/qfile.h src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/settings.h src/filethread.h /usr/lib/qt-3.1/include/qdatetime.h \
+  src/settings.h /usr/lib/qt-3.1/include/qdatetime.h \
   /usr/lib/qt-3.1/include/qregexp.h
 prefs.o: src/prefs.cpp src/prefs.h /usr/lib/qt-3.1/include/qvariant.h \
   /usr/lib/qt-3.1/include/qstring.h /usr/lib/qt-3.1/include/qcstring.h \
@@ -1914,7 +1868,7 @@ prefsimpl.o: src/prefsimpl.cpp src/prefsimpl.h src/prefs.h \
   /usr/lib/qt-3.1/include/qfile.h src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/filethread.h src/colors.h /usr/lib/qt-3.1/include/qmotifstyle.h \
+  src/colors.h /usr/lib/qt-3.1/include/qmotifstyle.h \
   /usr/lib/qt-3.1/include/qcommonstyle.h /usr/lib/qt-3.1/include/qstyle.h \
   /usr/lib/qt-3.1/include/qwindowsstyle.h \
   /usr/lib/qt-3.1/include/qplatinumstyle.h \
@@ -2048,8 +2002,8 @@ privatewindowimpl.o: src/privatewindowimpl.cpp src/privatewindowimpl.h \
   src/serverclient.h src/updateclient.h src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/filethread.h src/platform.h src/wstring.h src/wpwevent.h \
-  src/nicklist.h src/ulistview.h /usr/lib/qt-3.1/include/qapplication.h \
+  src/platform.h src/wstring.h src/wpwevent.h src/nicklist.h \
+  src/ulistview.h /usr/lib/qt-3.1/include/qapplication.h \
   /usr/lib/qt-3.1/include/qdesktopwidget.h \
   /usr/lib/qt-3.1/include/qasciidict.h \
   /usr/lib/qt-3.1/include/qtranslator.h
@@ -2161,7 +2115,7 @@ settings.o: src/settings.cpp src/settings.h src/winsharewindow.h \
   src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/filethread.h src/global.h src/muscle/iogateway/MessageIOGateway.h \
+  src/global.h src/muscle/iogateway/MessageIOGateway.h \
   src/muscle/zlib/ZLibCodec.h src/muscle/zlib/zlib/zlib.h \
   src/muscle/zlib/zlib/zconf.h
 textevent.o: src/textevent.cpp src/textevent.h \
@@ -2286,7 +2240,7 @@ ulistview.o: src/ulistview.cpp src/ulistview.h \
   src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/filethread.h src/platform.h src/wstring.h
+  src/platform.h src/wstring.h
 uploadthread.o: src/uploadthread.cpp src/uploadthread.h \
   src/genericthread.h /usr/lib/qt-3.1/include/qevent.h \
   /usr/lib/qt-3.1/include/qwindowdefs.h \
@@ -2326,10 +2280,9 @@ uploadthread.o: src/uploadthread.cpp src/uploadthread.h \
   src/muscle/reflector/StorageReflectConstants.h \
   src/muscle/regex/PathMatcher.h src/muscle/regex/QueryFilter.h \
   src/muscle/util/ByteBuffer.h src/muscle/regex/StringMatcher.h \
-  src/muscle/qtsupport/QMessageTransceiverThread.h src/filethread.h \
-  src/netclient.h src/user.h src/muscle/iogateway/MessageIOGateway.h \
-  src/muscle/zlib/ZLibCodec.h src/muscle/zlib/zlib/zlib.h \
-  src/muscle/zlib/zlib/zconf.h \
+  src/muscle/qtsupport/QMessageTransceiverThread.h \
+  src/muscle/iogateway/MessageIOGateway.h src/muscle/zlib/ZLibCodec.h \
+  src/muscle/zlib/zlib/zlib.h src/muscle/zlib/zlib/zconf.h \
   src/muscle/reflector/RateLimitSessionIOPolicy.h \
   /usr/lib/qt-3.1/include/qfile.h src/wgenericevent.h src/global.h \
   src/downloadimpl.h /usr/lib/qt-3.1/include/qdialog.h \
@@ -2355,8 +2308,8 @@ uploadthread.o: src/uploadthread.cpp src/uploadthread.h \
   /usr/lib/qt-3.1/include/qstringlist.h \
   /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
   /usr/lib/qt-3.1/include/qglist.h \
-  /usr/lib/qt-3.1/include/qptrcollection.h src/transferitem.h \
-  src/ulistview.h src/settings.h src/winsharewindow.h \
+  /usr/lib/qt-3.1/include/qptrcollection.h src/transferlist.h \
+  src/transferitem.h src/ulistview.h src/settings.h src/winsharewindow.h \
   /usr/lib/qt-3.1/include/qmainwindow.h \
   /usr/lib/qt-3.1/include/qtoolbar.h \
   /usr/lib/qt-3.1/include/qdockwindow.h \
@@ -2373,13 +2326,13 @@ uploadthread.o: src/uploadthread.cpp src/uploadthread.h \
   /usr/lib/qt-3.1/include/qvgroupbox.h \
   /usr/lib/qt-3.1/include/qtextbrowser.h /usr/lib/qt-3.1/include/qtimer.h \
   /usr/lib/qt-3.1/include/qlayout.h /usr/lib/qt-3.1/include/qtabwidget.h \
-  src/serverclient.h src/updateclient.h src/privatewindowimpl.h \
-  src/privatewindow.h src/chattext.h src/htmlview.h src/debugimpl.h \
-  /usr/lib/qt-3.1/include/qmessagebox.h src/Log.h \
-  src/muscle/system/SetupSystem.h \
+  src/netclient.h src/user.h src/serverclient.h src/updateclient.h \
+  src/privatewindowimpl.h src/privatewindow.h src/chattext.h \
+  src/htmlview.h src/debugimpl.h /usr/lib/qt-3.1/include/qmessagebox.h \
+  src/Log.h src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/md5.h src/wstring.h
+  src/md5.h src/wstring.h src/filethread.h
 user.o: src/user.cpp src/user.h src/muscle/message/Message.h \
   src/muscle/support/Point.h src/muscle/support/Flattenable.h \
   src/muscle/support/MuscleSupport.h src/muscle/syslog/SysLog.h \
@@ -2551,8 +2504,7 @@ userlistitem.o: src/userlistitem.cpp /usr/lib/qt-3.1/include/qpainter.h \
   src/Log.h /usr/lib/qt-3.1/include/qfile.h \
   src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
-  src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/filethread.h
+  src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h
 winshare_network.o: src/winshare_network.cpp src/winsharewindow.h \
   /usr/lib/qt-3.1/include/qmainwindow.h /usr/lib/qt-3.1/include/qwidget.h \
   /usr/lib/qt-3.1/include/qwindowdefs.h \
@@ -2636,15 +2588,16 @@ winshare_network.o: src/winshare_network.cpp src/winsharewindow.h \
   src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/global.h src/settings.h src/filethread.h src/formatting.h \
-  src/colors.h src/textevent.h src/version.h src/platform.h src/wstring.h \
-  src/gotourl.h src/tokenizer.h \
-  src/muscle/iogateway/PlainTextMessageIOGateway.h \
+  src/global.h src/settings.h src/formatting.h src/colors.h \
+  src/textevent.h src/platform.h src/wstring.h src/gotourl.h \
+  src/tokenizer.h src/muscle/iogateway/PlainTextMessageIOGateway.h \
   src/muscle/iogateway/MessageIOGateway.h src/muscle/zlib/ZLibCodec.h \
   src/muscle/zlib/zlib/zlib.h src/muscle/zlib/zlib/zconf.h \
   src/muscle/util/StringTokenizer.h src/ulistview.h src/downloadimpl.h \
   /usr/lib/qt-3.1/include/qpushbutton.h /usr/lib/qt-3.1/include/qbutton.h \
-  src/transferitem.h /usr/lib/qt-3.1/include/qapplication.h \
+  src/transferlist.h src/genericthread.h \
+  /usr/lib/qt-3.1/include/qdatetime.h src/transferitem.h src/filethread.h \
+  /usr/lib/qt-3.1/include/qapplication.h \
   /usr/lib/qt-3.1/include/qdesktopwidget.h \
   /usr/lib/qt-3.1/include/qasciidict.h \
   /usr/lib/qt-3.1/include/qtranslator.h
@@ -2732,9 +2685,8 @@ winshare_parsing.o: src/winshare_parsing.cpp src/winsharewindow.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
   src/global.h src/muscle/util/StringTokenizer.h src/settings.h \
-  src/filethread.h src/formatting.h src/colors.h src/version.h \
-  src/platform.h src/wstring.h src/tokenizer.h \
-  /usr/lib/qt-3.1/include/qapplication.h \
+  src/formatting.h src/colors.h src/platform.h src/wstring.h \
+  src/tokenizer.h /usr/lib/qt-3.1/include/qapplication.h \
   /usr/lib/qt-3.1/include/qdesktopwidget.h \
   /usr/lib/qt-3.1/include/qasciidict.h \
   /usr/lib/qt-3.1/include/qtranslator.h
@@ -2825,11 +2777,12 @@ winshare_slots.o: src/winshare_slots.cpp \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
   src/aboutdlgimpl.h src/aboutdlg.h src/formatting.h src/colors.h \
-  src/prefsimpl.h src/prefs.h src/settings.h src/filethread.h \
-  src/gotourl.h src/muscle/util/StringTokenizer.h src/textevent.h \
-  src/downloadimpl.h /usr/lib/qt-3.1/include/qpushbutton.h \
-  /usr/lib/qt-3.1/include/qbutton.h src/transferitem.h src/ulistview.h \
-  src/platform.h src/wstring.h
+  src/prefsimpl.h src/prefs.h src/settings.h src/gotourl.h \
+  src/muscle/util/StringTokenizer.h src/textevent.h src/downloadimpl.h \
+  /usr/lib/qt-3.1/include/qpushbutton.h /usr/lib/qt-3.1/include/qbutton.h \
+  src/transferlist.h src/genericthread.h \
+  /usr/lib/qt-3.1/include/qdatetime.h src/transferitem.h src/ulistview.h \
+  src/platform.h src/wstring.h src/filethread.h
 winsharewindow.o: src/winsharewindow.cpp src/aboutdlgimpl.h \
   src/aboutdlg.h /usr/lib/qt-3.1/include/qvariant.h \
   /usr/lib/qt-3.1/include/qstring.h /usr/lib/qt-3.1/include/qcstring.h \
@@ -2893,9 +2846,10 @@ winsharewindow.o: src/winsharewindow.cpp src/aboutdlgimpl.h \
   /usr/lib/qt-3.1/include/qvbox.h /usr/lib/qt-3.1/include/qhbox.h \
   /usr/lib/qt-3.1/include/qpopupmenu.h \
   /usr/lib/qt-3.1/include/qmenudata.h /usr/lib/qt-3.1/include/qsignal.h \
-  src/filethread.h src/netclient.h \
-  src/muscle/qtsupport/QMessageTransceiverThread.h src/user.h \
-  src/transferitem.h src/ulistview.h src/winsharewindow.h \
+  src/transferlist.h src/genericthread.h \
+  /usr/lib/qt-3.1/include/qdatetime.h \
+  src/muscle/qtsupport/QMessageTransceiverThread.h src/transferitem.h \
+  src/ulistview.h src/winsharewindow.h \
   /usr/lib/qt-3.1/include/qmainwindow.h \
   /usr/lib/qt-3.1/include/qtoolbar.h \
   /usr/lib/qt-3.1/include/qdockwindow.h \
@@ -2912,19 +2866,19 @@ winsharewindow.o: src/winsharewindow.cpp src/aboutdlgimpl.h \
   /usr/lib/qt-3.1/include/qvgroupbox.h \
   /usr/lib/qt-3.1/include/qtextbrowser.h /usr/lib/qt-3.1/include/qtimer.h \
   /usr/lib/qt-3.1/include/qlayout.h /usr/lib/qt-3.1/include/qtabwidget.h \
-  src/serverclient.h src/updateclient.h src/privatewindowimpl.h \
-  src/privatewindow.h src/chattext.h src/htmlview.h src/debugimpl.h \
-  /usr/lib/qt-3.1/include/qmessagebox.h src/Log.h \
-  src/muscle/system/SetupSystem.h \
+  src/netclient.h src/user.h src/serverclient.h src/updateclient.h \
+  src/privatewindowimpl.h src/privatewindow.h src/chattext.h \
+  src/htmlview.h src/debugimpl.h /usr/lib/qt-3.1/include/qmessagebox.h \
+  src/Log.h src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/version.h src/formatting.h src/colors.h src/textevent.h \
+  src/global.h src/formatting.h src/colors.h src/textevent.h \
   src/wpwevent.h src/combo.h src/menubar.h \
   src/muscle/util/StringTokenizer.h \
   src/muscle/iogateway/PlainTextMessageIOGateway.h \
-  src/muscle/zlib/ZLibUtilityFunctions.h src/settings.h src/tokenizer.h \
-  src/platform.h src/wstring.h src/nicklist.h src/searchitem.h \
-  src/wstatusbar.h /usr/lib/qt-3.1/include/qstatusbar.h \
+  src/muscle/zlib/ZLibUtilityFunctions.h src/settings.h src/filethread.h \
+  src/tokenizer.h src/platform.h src/wstring.h src/nicklist.h \
+  src/searchitem.h src/wstatusbar.h /usr/lib/qt-3.1/include/qstatusbar.h \
   /usr/lib/qt-3.1/include/qapplication.h \
   /usr/lib/qt-3.1/include/qdesktopwidget.h \
   /usr/lib/qt-3.1/include/qasciidict.h \
@@ -2939,7 +2893,7 @@ winsharewindow.o: src/winsharewindow.cpp src/aboutdlgimpl.h \
   /usr/lib/qt-3.1/include/qsgistyle.h \
   /usr/lib/qt-3.1/include/qguardedptr.h \
   /usr/lib/qt-3.1/include/qtextcodec.h /usr/lib/qt-3.1/include/qdir.h \
-  /usr/lib/qt-3.1/include/qfileinfo.h /usr/lib/qt-3.1/include/qdatetime.h \
+  /usr/lib/qt-3.1/include/qfileinfo.h \
   /usr/lib/qt-3.1/include/qinputdialog.h \
   /usr/lib/qt-3.1/include/qlineedit.h
 Log.o: src/Log.cpp src/Log.h /usr/lib/qt-3.1/include/qfile.h \
@@ -3184,8 +3138,8 @@ channelimpl.o: src/channelimpl.cpp /usr/lib/qt-3.1/include/qapplication.h \
   src/muscle/system/SetupSystem.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
-  src/filethread.h src/formatting.h src/colors.h src/nicklist.h \
-  src/ulistview.h src/textevent.h src/platform.h src/wstring.h
+  src/formatting.h src/colors.h src/nicklist.h src/ulistview.h \
+  src/textevent.h src/platform.h src/wstring.h
 moc_channel.o: src/moc_channel.cpp src/channel.h \
   /usr/lib/qt-3.1/include/qvariant.h /usr/lib/qt-3.1/include/qstring.h \
   /usr/lib/qt-3.1/include/qcstring.h /usr/lib/qt-3.1/include/qmemarray.h \
@@ -3296,65 +3250,6 @@ wstring.o: src/wstring.cpp /usr/lib/qt-3.1/include/qstring.h \
   /usr/lib/qt-3.1/include/qglobal.h /usr/lib/qt-3.1/include/qconfig.h \
   /usr/lib/qt-3.1/include/qmodules.h /usr/lib/qt-3.1/include/qfeatures.h \
   src/wstring.h
-moc_messenger.o: src/moc_messenger.cpp src/messenger.h \
-  /usr/lib/qt-3.1/include/qobject.h /usr/lib/qt-3.1/include/qobjectdefs.h \
-  /usr/lib/qt-3.1/include/qglobal.h /usr/lib/qt-3.1/include/qconfig.h \
-  /usr/lib/qt-3.1/include/qmodules.h /usr/lib/qt-3.1/include/qfeatures.h \
-  /usr/lib/qt-3.1/include/qwindowdefs.h /usr/lib/qt-3.1/include/qstring.h \
-  /usr/lib/qt-3.1/include/qcstring.h /usr/lib/qt-3.1/include/qmemarray.h \
-  /usr/lib/qt-3.1/include/qgarray.h /usr/lib/qt-3.1/include/qshared.h \
-  /usr/lib/qt-3.1/include/qnamespace.h /usr/lib/qt-3.1/include/qevent.h \
-  /usr/lib/qt-3.1/include/qregion.h /usr/lib/qt-3.1/include/qrect.h \
-  /usr/lib/qt-3.1/include/qsize.h /usr/lib/qt-3.1/include/qpoint.h \
-  /usr/lib/qt-3.1/include/qmime.h /usr/lib/qt-3.1/include/qmap.h \
-  /usr/lib/qt-3.1/include/qdatastream.h \
-  /usr/lib/qt-3.1/include/qiodevice.h /usr/lib/qt-3.1/include/qpair.h \
-  /usr/lib/qt-3.1/include/qvaluelist.h /usr/lib/qt-3.1/include/qtl.h \
-  /usr/lib/qt-3.1/include/qtextstream.h \
-  src/muscle/system/MessageTransceiverThread.h src/muscle/system/Thread.h \
-  /usr/lib/qt-3.1/include/qthread.h /usr/lib/qt-3.1/include/qmutex.h \
-  /usr/lib/qt-3.1/include/qsemaphore.h \
-  /usr/lib/qt-3.1/include/qwaitcondition.h src/muscle/system/Mutex.h \
-  src/muscle/support/MuscleSupport.h src/muscle/syslog/SysLog.h \
-  src/muscle/util/TimeUtilityFunctions.h src/muscle/message/Message.h \
-  src/muscle/support/Point.h src/muscle/support/Flattenable.h \
-  src/muscle/support/Tuple.h src/muscle/support/Rect.h \
-  src/muscle/util/String.h src/muscle/util/Hashtable.h \
-  src/muscle/util/FlatCountable.h src/muscle/util/RefCount.h \
-  src/muscle/util/ObjectPool.h src/muscle/util/Queue.h \
-  src/muscle/system/AtomicCounter.h \
-  src/muscle/reflector/StorageReflectSession.h \
-  src/muscle/reflector/DumbReflectSession.h \
-  src/muscle/reflector/AbstractReflectSession.h \
-  src/muscle/dataio/TCPSocketDataIO.h src/muscle/dataio/DataIO.h \
-  src/muscle/util/NetworkUtilityFunctions.h \
-  src/muscle/iogateway/AbstractMessageIOGateway.h \
-  src/muscle/util/PulseNode.h \
-  src/muscle/reflector/AbstractSessionIOPolicy.h \
-  src/muscle/reflector/ServerComponent.h \
-  src/muscle/reflector/StorageReflectConstants.h \
-  src/muscle/regex/PathMatcher.h src/muscle/regex/QueryFilter.h \
-  src/muscle/util/ByteBuffer.h src/muscle/regex/StringMatcher.h \
-  /usr/lib/qt-3.1/include/qmetaobject.h \
-  /usr/lib/qt-3.1/include/qconnection.h \
-  /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
-  /usr/lib/qt-3.1/include/qglist.h \
-  /usr/lib/qt-3.1/include/qptrcollection.h \
-  /usr/lib/qt-3.1/include/qapplication.h \
-  /usr/lib/qt-3.1/include/qdesktopwidget.h \
-  /usr/lib/qt-3.1/include/qwidget.h \
-  /usr/lib/qt-3.1/include/qpaintdevice.h \
-  /usr/lib/qt-3.1/include/qpalette.h /usr/lib/qt-3.1/include/qcolor.h \
-  /usr/lib/qt-3.1/include/qbrush.h /usr/lib/qt-3.1/include/qfont.h \
-  /usr/lib/qt-3.1/include/qfontmetrics.h \
-  /usr/lib/qt-3.1/include/qfontinfo.h \
-  /usr/lib/qt-3.1/include/qsizepolicy.h \
-  /usr/lib/qt-3.1/include/qasciidict.h /usr/lib/qt-3.1/include/qgdict.h \
-  /usr/lib/qt-3.1/include/qtranslator.h \
-  /usr/lib/qt-3.1/include/qstringlist.h \
-  /usr/lib/qt-3.1/include/private/qucomextra_p.h \
-  /usr/lib/qt-3.1/include/private/qucom_p.h \
-  /usr/lib/qt-3.1/include/quuid.h
 moc_channelimpl.o: src/moc_channelimpl.cpp src/channelimpl.h \
   /usr/lib/qt-3.1/include/qsplitter.h /usr/lib/qt-3.1/include/qframe.h \
   /usr/lib/qt-3.1/include/qwidget.h /usr/lib/qt-3.1/include/qwindowdefs.h \
@@ -3701,8 +3596,9 @@ winshare_search.o: src/winshare_search.cpp src/winsharewindow.h \
   src/muscle/qtsupport/QAcceptSocketsThread.h \
   src/muscle/system/AcceptSocketsThread.h src/muscle/util/SocketHolder.h \
   src/combo.h src/downloadimpl.h /usr/lib/qt-3.1/include/qpushbutton.h \
-  /usr/lib/qt-3.1/include/qbutton.h src/filethread.h src/transferitem.h \
-  src/ulistview.h src/settings.h src/wstatusbar.h \
+  /usr/lib/qt-3.1/include/qbutton.h src/transferlist.h \
+  src/genericthread.h /usr/lib/qt-3.1/include/qdatetime.h \
+  src/transferitem.h src/ulistview.h src/settings.h src/wstatusbar.h \
   /usr/lib/qt-3.1/include/qstatusbar.h src/platform.h src/wstring.h \
   src/searchitem.h
 updateclient.o: src/updateclient.cpp src/updateclient.h \
@@ -3992,6 +3888,103 @@ moc_serverclient.o: src/moc_serverclient.cpp src/serverclient.h \
   /usr/lib/qt-3.1/include/private/qucomextra_p.h \
   /usr/lib/qt-3.1/include/private/qucom_p.h \
   /usr/lib/qt-3.1/include/quuid.h
+moc_scanprogress.o: src/moc_scanprogress.cpp src/scanprogress.h \
+  /usr/lib/qt-3.1/include/qvariant.h /usr/lib/qt-3.1/include/qstring.h \
+  /usr/lib/qt-3.1/include/qcstring.h /usr/lib/qt-3.1/include/qmemarray.h \
+  /usr/lib/qt-3.1/include/qgarray.h /usr/lib/qt-3.1/include/qshared.h \
+  /usr/lib/qt-3.1/include/qglobal.h /usr/lib/qt-3.1/include/qconfig.h \
+  /usr/lib/qt-3.1/include/qmodules.h /usr/lib/qt-3.1/include/qfeatures.h \
+  /usr/lib/qt-3.1/include/qvaluelist.h /usr/lib/qt-3.1/include/qtl.h \
+  /usr/lib/qt-3.1/include/qtextstream.h \
+  /usr/lib/qt-3.1/include/qiodevice.h \
+  /usr/lib/qt-3.1/include/qdatastream.h \
+  /usr/lib/qt-3.1/include/qstringlist.h \
+  /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
+  /usr/lib/qt-3.1/include/qglist.h \
+  /usr/lib/qt-3.1/include/qptrcollection.h /usr/lib/qt-3.1/include/qmap.h \
+  /usr/lib/qt-3.1/include/qpair.h /usr/lib/qt-3.1/include/qdialog.h \
+  /usr/lib/qt-3.1/include/qwidget.h /usr/lib/qt-3.1/include/qwindowdefs.h \
+  /usr/lib/qt-3.1/include/qobjectdefs.h \
+  /usr/lib/qt-3.1/include/qnamespace.h /usr/lib/qt-3.1/include/qobject.h \
+  /usr/lib/qt-3.1/include/qevent.h /usr/lib/qt-3.1/include/qregion.h \
+  /usr/lib/qt-3.1/include/qrect.h /usr/lib/qt-3.1/include/qsize.h \
+  /usr/lib/qt-3.1/include/qpoint.h /usr/lib/qt-3.1/include/qmime.h \
+  /usr/lib/qt-3.1/include/qpaintdevice.h \
+  /usr/lib/qt-3.1/include/qpalette.h /usr/lib/qt-3.1/include/qcolor.h \
+  /usr/lib/qt-3.1/include/qbrush.h /usr/lib/qt-3.1/include/qfont.h \
+  /usr/lib/qt-3.1/include/qfontmetrics.h \
+  /usr/lib/qt-3.1/include/qfontinfo.h \
+  /usr/lib/qt-3.1/include/qsizepolicy.h \
+  /usr/lib/qt-3.1/include/qmetaobject.h \
+  /usr/lib/qt-3.1/include/qconnection.h \
+  /usr/lib/qt-3.1/include/qapplication.h \
+  /usr/lib/qt-3.1/include/qdesktopwidget.h \
+  /usr/lib/qt-3.1/include/qasciidict.h /usr/lib/qt-3.1/include/qgdict.h \
+  /usr/lib/qt-3.1/include/qtranslator.h \
+  /usr/lib/qt-3.1/include/private/qucomextra_p.h \
+  /usr/lib/qt-3.1/include/private/qucom_p.h \
+  /usr/lib/qt-3.1/include/quuid.h
+scanprogress.o: src/scanprogress.cpp src/scanprogress.h \
+  /usr/lib/qt-3.1/include/qvariant.h /usr/lib/qt-3.1/include/qstring.h \
+  /usr/lib/qt-3.1/include/qcstring.h /usr/lib/qt-3.1/include/qmemarray.h \
+  /usr/lib/qt-3.1/include/qgarray.h /usr/lib/qt-3.1/include/qshared.h \
+  /usr/lib/qt-3.1/include/qglobal.h /usr/lib/qt-3.1/include/qconfig.h \
+  /usr/lib/qt-3.1/include/qmodules.h /usr/lib/qt-3.1/include/qfeatures.h \
+  /usr/lib/qt-3.1/include/qvaluelist.h /usr/lib/qt-3.1/include/qtl.h \
+  /usr/lib/qt-3.1/include/qtextstream.h \
+  /usr/lib/qt-3.1/include/qiodevice.h \
+  /usr/lib/qt-3.1/include/qdatastream.h \
+  /usr/lib/qt-3.1/include/qstringlist.h \
+  /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
+  /usr/lib/qt-3.1/include/qglist.h \
+  /usr/lib/qt-3.1/include/qptrcollection.h /usr/lib/qt-3.1/include/qmap.h \
+  /usr/lib/qt-3.1/include/qpair.h /usr/lib/qt-3.1/include/qdialog.h \
+  /usr/lib/qt-3.1/include/qwidget.h /usr/lib/qt-3.1/include/qwindowdefs.h \
+  /usr/lib/qt-3.1/include/qobjectdefs.h \
+  /usr/lib/qt-3.1/include/qnamespace.h /usr/lib/qt-3.1/include/qobject.h \
+  /usr/lib/qt-3.1/include/qevent.h /usr/lib/qt-3.1/include/qregion.h \
+  /usr/lib/qt-3.1/include/qrect.h /usr/lib/qt-3.1/include/qsize.h \
+  /usr/lib/qt-3.1/include/qpoint.h /usr/lib/qt-3.1/include/qmime.h \
+  /usr/lib/qt-3.1/include/qpaintdevice.h \
+  /usr/lib/qt-3.1/include/qpalette.h /usr/lib/qt-3.1/include/qcolor.h \
+  /usr/lib/qt-3.1/include/qbrush.h /usr/lib/qt-3.1/include/qfont.h \
+  /usr/lib/qt-3.1/include/qfontmetrics.h \
+  /usr/lib/qt-3.1/include/qfontinfo.h \
+  /usr/lib/qt-3.1/include/qsizepolicy.h \
+  /usr/lib/qt-3.1/include/qpushbutton.h /usr/lib/qt-3.1/include/qbutton.h \
+  /usr/lib/qt-3.1/include/qkeysequence.h \
+  /usr/lib/qt-3.1/include/qiconset.h /usr/lib/qt-3.1/include/qpixmap.h \
+  /usr/lib/qt-3.1/include/qlabel.h /usr/lib/qt-3.1/include/qframe.h \
+  /usr/lib/qt-3.1/include/qlayout.h /usr/lib/qt-3.1/include/qtooltip.h \
+  /usr/lib/qt-3.1/include/qwhatsthis.h /usr/lib/qt-3.1/include/qcursor.h
+scanprogressimpl.o: src/scanprogressimpl.cpp \
+  /usr/lib/qt-3.1/include/qlabel.h /usr/lib/qt-3.1/include/qframe.h \
+  /usr/lib/qt-3.1/include/qwidget.h /usr/lib/qt-3.1/include/qwindowdefs.h \
+  /usr/lib/qt-3.1/include/qobjectdefs.h /usr/lib/qt-3.1/include/qglobal.h \
+  /usr/lib/qt-3.1/include/qconfig.h /usr/lib/qt-3.1/include/qmodules.h \
+  /usr/lib/qt-3.1/include/qfeatures.h /usr/lib/qt-3.1/include/qstring.h \
+  /usr/lib/qt-3.1/include/qcstring.h /usr/lib/qt-3.1/include/qmemarray.h \
+  /usr/lib/qt-3.1/include/qgarray.h /usr/lib/qt-3.1/include/qshared.h \
+  /usr/lib/qt-3.1/include/qnamespace.h /usr/lib/qt-3.1/include/qobject.h \
+  /usr/lib/qt-3.1/include/qevent.h /usr/lib/qt-3.1/include/qregion.h \
+  /usr/lib/qt-3.1/include/qrect.h /usr/lib/qt-3.1/include/qsize.h \
+  /usr/lib/qt-3.1/include/qpoint.h /usr/lib/qt-3.1/include/qmime.h \
+  /usr/lib/qt-3.1/include/qmap.h /usr/lib/qt-3.1/include/qdatastream.h \
+  /usr/lib/qt-3.1/include/qiodevice.h /usr/lib/qt-3.1/include/qpair.h \
+  /usr/lib/qt-3.1/include/qvaluelist.h /usr/lib/qt-3.1/include/qtl.h \
+  /usr/lib/qt-3.1/include/qtextstream.h \
+  /usr/lib/qt-3.1/include/qpaintdevice.h \
+  /usr/lib/qt-3.1/include/qpalette.h /usr/lib/qt-3.1/include/qcolor.h \
+  /usr/lib/qt-3.1/include/qbrush.h /usr/lib/qt-3.1/include/qfont.h \
+  /usr/lib/qt-3.1/include/qfontmetrics.h \
+  /usr/lib/qt-3.1/include/qfontinfo.h \
+  /usr/lib/qt-3.1/include/qsizepolicy.h src/scanprogressimpl.h \
+  src/scanprogress.h /usr/lib/qt-3.1/include/qvariant.h \
+  /usr/lib/qt-3.1/include/qstringlist.h \
+  /usr/lib/qt-3.1/include/qstrlist.h /usr/lib/qt-3.1/include/qptrlist.h \
+  /usr/lib/qt-3.1/include/qglist.h \
+  /usr/lib/qt-3.1/include/qptrcollection.h \
+  /usr/lib/qt-3.1/include/qdialog.h
 moc_QMessageTransceiverThread.o:  \
  src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp \
   src/muscle/qtsupport/QMessageTransceiverThread.h \

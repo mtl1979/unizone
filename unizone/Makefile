@@ -18,7 +18,8 @@ moc_channel.o wpwevent.o wstring.o \
 moc_channelimpl.o moc_menubar.o moc_ulistview.o \
 wstatusbar.o winshare_channels.o winshare_search.o \
 updateclient.o serverclient.o \
-moc_updateclient.o moc_serverclient.o
+moc_updateclient.o moc_serverclient.o \
+moc_scanprogress.o scanprogress.o scanprogressimpl.o
 
 QT_OBJFILES = moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o \
 QMessageTransceiverThread.o QAcceptSocketsThread.o
@@ -103,6 +104,9 @@ src/moc_privatewindow.cpp: src/privatewindow.h
 src/moc_privatewindowimpl.cpp: src/privatewindowimpl.h
 	moc $< -o $@
 
+src/moc_scanprogress.cpp: src/scanprogress.h
+	moc $< -o $@
+
 src/moc_serverclient.cpp: src/serverclient.h
 	moc $< -o $@
 
@@ -154,6 +158,12 @@ src/channel.h: src/channel.ui
 
 src/channel.cpp: src/channel.h src/channel.ui
 	uic -impl channel.h src/channel.ui -o src/channel.cpp
+
+src/scanprogress.h: src/scanprogress.ui
+	uic src/scanprogress.ui -o src/scanprogress.h
+
+src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
+	uic -impl scanprogress.h src/scanprogress.ui -o src/scanprogress.cpp
 
 clean :
 	rm -f *.o $(EXECUTABLES)
