@@ -790,7 +790,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='unfinished'></translation>
+        <translation>%1.%2.%3 build %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
@@ -857,7 +857,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='unfinished'></translation>
+        <translation>%1.%2.%3 build %4</translation>
     </message>
 </context>
 <context>
