@@ -376,52 +376,53 @@ WinShareWindow::Preferences()
 	if (prefs->exec() == QDialog::Accepted)	// only do the below code if the dialog was ACCEPTED!
 	{
 		SaveSettings();	// in case we crash :)
+
 		if (fNetClient->IsConnected())
 			fNetClient->SetConnection(fSettings->GetConnection());
+
 		SetAutoAwayTimer();
 
-		if (fNetClient->IsConnected())	// are we still connected?
+		if (oldSharing && !fSettings->GetSharingEnabled())	// if we were previously sharing and are not now.. remove old data
 		{
-			if (oldSharing && !fSettings->GetSharingEnabled())	// if we were previously sharing and are not now.. remove old data
+			fFileScanThread->EmptyList();
+			fFilesScanned = false;
+			StopAcceptThread();
+			if (fNetClient->IsConnected())
 			{
 				CancelShares();
 				fNetClient->SetFileCount(0);
-				fFileScanThread->EmptyList();
-				StopAcceptThread();
 				fNetClient->SetLoad(0, 0);
-				fScanning = false;
 			}
-			// this will also handle changes in firewall settings
-			if (fSettings->GetSharingEnabled())		
-			{
-				if ((oldSharing == false) || (oldFirewalled != fSettings->GetFirewalled()))
-				{
-					if (QMessageBox::information(this, tr( "File Scan" ), tr( "Scan your shared files now?" ), tr( "Yes" ), tr( "No" )) == 0)
-					{
-						StartAcceptThread();
-						ScanShares();
-					}
-				}
-				fNetClient->SetLoad(0, fSettings->GetMaxUploads());
-			}
-			if (fDLWindow)
-			{
-				SignalDownload(WDownload::DequeueDownloads);
-				SignalDownload(WDownload::DequeueUploads);
-			}			
+			fScanning = false;
 		}
-		else
+
+		// this will also handle changes in firewall settings
+		if (fSettings->GetSharingEnabled())		
 		{
-			if (oldSharing && !fSettings->GetSharingEnabled())	// if we were previously sharing and are not now.. remove old data
+			if (oldFirewalled != fSettings->GetFirewalled())
 			{
-				StopAcceptThread();
-				fScanning = false;
-			}
-			if (!oldSharing && fSettings->GetSharingEnabled())
+
+			if ((oldSharing == false) || (oldFirewalled != fSettings->GetFirewalled()))
 			{
-				StartAcceptThread();
+					StartAcceptThread();
+					if (!fFilesScanned)
+					{
+						if (QMessageBox::information(this, tr( "File Scan" ), tr( "Scan your shared files now?" ), tr( "Yes" ), tr( "No" )) == 0)
+							ScanShares();
+					}
+					else if (fNetClient->IsConnected())
+						UpdateShares();
+				}
 			}
+			if (fNetClient->IsConnected())
+				fNetClient->SetLoad(0, fSettings->GetMaxUploads());
 		}
+
+		if (fDLWindow)
+		{
+			SignalDownload(WDownload::DequeueDownloads);
+			SignalDownload(WDownload::DequeueUploads);
+		}			
 
 		if (oldLogging && !fSettings->GetLogging())
 		{
@@ -465,6 +466,8 @@ void
 WinShareWindow::ConnectTimer()
 {
 	PRINT("WinShareWindow::ConnectTimer()\n");
+
+	fNetClient->Disconnect();
 
 	if (fSettings->GetInfo())
 		SystemEvent(this, tr("Connection to server failed!"));

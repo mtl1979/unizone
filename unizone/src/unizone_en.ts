@@ -3807,5 +3807,9 @@ Date: %4</translation>
         <source>Failed to create log file.</source>
         <translation>Failed to create log file.</translation>
     </message>
+    <message>
+        <source>Finished scanning shares.</source>
+        <translation>Finished scanning shares.</translation>
+    </message>
 </context>
 </TS>

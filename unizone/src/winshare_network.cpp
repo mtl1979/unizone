@@ -1389,7 +1389,10 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				if (fSettings->GetSharingEnabled())
 				{
 					StartAcceptThread();
-					ScanShares();
+					if (!fFilesScanned)
+						ScanShares();
+					else
+						UpdateShares();
 				}
 			}
 			else
@@ -2006,7 +2009,7 @@ WinShareWindow::Connect()
 	if (fNetClient)
 	{
 		WaitOnFileThread();	// make sure our scan thread is dead
-		fNetClient->Disconnect();
+		Disconnect();
 		fNetClient->SetUserName(GetUserName()); // We need this for binkies
 
 		fConnectTimer->start(60000, true); // 1 minute
@@ -2065,16 +2068,6 @@ WinShareWindow::Disconnect2()
 		fConnectTimer->stop();
 
 	WaitOnFileThread();
-
-	// Clear old shared files list to save memory
-	
-	if (fSettings->GetSharingEnabled())
-	{
-		if (fFileScanThread->GetNumFiles() > 0)
-		{
-				fFileScanThread->EmptyList();
-		}
-	}
 
 	if (fNetClient && fNetClient->IsConnected()	/* this is to stop a forever loop involving the DisconnectedFromServer() signal */)
 	{
@@ -2669,7 +2662,12 @@ WinShareWindow::GetUserID() const
 void
 WinShareWindow::UpdateUserCount()
 {
-	int n = fUsers->childCount() + 1;
-	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
+	if (fNetClient->IsConnected())
+	{
+		int n = fUsers->childCount() + 1;
+		fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
+	}
+	else
+		fStatusBar->setText(tr( "Not connected." ), 0);
 }
 

@@ -3768,5 +3768,9 @@ Date: %4</translation>
         <source>Failed to create log file.</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Finished scanning shares.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

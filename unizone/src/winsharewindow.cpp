@@ -106,6 +106,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fDLWindow = NULL;
 	fAccept = NULL;
 	fFileScanThread = NULL;
+	fFilesScanned = false;
 	fPicViewer = new WPicViewer(this);
 	CHECK_PTR(fPicViewer);
 	
@@ -252,6 +253,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 	fFileShutdownFlag = false;
 	fScrollDown = true;
+
+	if (fSettings->GetSharingEnabled())
+		ScanShares();
 
 	if (fSettings->GetLoginOnStartup())
 		Connect();	// this is the LAST thing to do
@@ -450,86 +454,11 @@ WinShareWindow::customEvent(QCustomEvent * event)
 		case WFileThread::ScanDone:
 			{
 				PRINT("\tWinShareWindow::ScanDone\n");
-				CancelShares();
-				if (fSettings->GetSharingEnabled()) // Make sure sharing is enabled and fully functional
-				{
-					fFileScanThread->Lock();
-					if (fSettings->GetInfo())
-						PrintSystem(tr("Sharing %1 file(s).").arg(fFileScanThread->GetNumFiles()));
-					fNetClient->SetFileCount(fFileScanThread->GetNumFiles());
-					PRINT("Doing a scan of the returned files for uploading.\n");
-					int m = 0;
-					MessageRef refScan(GetMessageFromPool(PR_COMMAND_SETDATA));
-
-					if (refScan())
-					{
-						MessageRef mref;
-						HashtableIterator<String, QString> filesIter = fFileScanThread->GetSharedFiles().GetIterator();
-						while (filesIter.HasMoreKeys())
-						{
-							// stop iterating if we are waiting for file scan thread to finish
-							if (fFileShutdownFlag)
-								break;
-
-							qApp->processEvents(300);
-
-							String s;
-							// QString qFile;
-							MessageRef mref;
-							filesIter.GetNextKey(s);
-							// filesIter.GetNextValue(qFile);
-							
-							if (fFileScanThread->FindFile(s, mref))
-							{
-								MakeNodePath(s);
-								uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
-								// Use encoded file attributes?
-								if (enc != 0)
-								{
-									MessageRef packed = DeflateMessage(mref, enc, true);
-									if (packed())
-									{
-										refScan()->AddMessage(s.Cstr(), packed);
-										m++;
-									}
-									else	
-									{
-										// Failed to pack the message?
-										refScan()->AddMessage(s.Cstr(), mref);
-										m++;
-									}
-								}
-								else
-								{
-									refScan()->AddMessage(s.Cstr(), mref);
-									m++;
-								}
-								if (m == 20)
-								{
-									m = 0;
-									fNetClient->SendMessageToSessions(refScan, 0);
-									refScan = GetMessageFromPool(PR_COMMAND_SETDATA);
-								}
-							}
-						}
-						if (refScan())
-						{
-							if (!refScan()->IsEmpty())
-							{
-								fNetClient->SendMessageToSessions(refScan, 0);
-								refScan.Reset();
-							}
-						}
-					}
-
-					fFileScanThread->Unlock();
-					fScanning = false;
-					if (fDLWindow)
-					{
-						SignalDownload(WDownload::DequeueUploads);
-					}
-					PRINT("Done\n");
-				}
+				fFilesScanned = true;
+				if (fSettings->GetInfo())
+					PrintSystem(tr("Finished scanning shares."));
+				if (fGotParams)
+					UpdateShares();
 				return;
 			}
 		case NetClient::SESSION_ATTACHED:
@@ -2438,16 +2367,6 @@ WinShareWindow::SetDelayedSearchPattern(const QString & pattern)
 void
 WinShareWindow::ScanShares(bool rescan)
 {
-	// are we connected?
-	if (!fNetClient->IsConnected())	
-	{
-		if (fSettings->GetError())
-		{
-			PrintError(tr("Not connected."));
-		}
-		return;
-	}
-
 	// is sharing enabled?
 	if (!fSettings->GetSharingEnabled()) 
 	{
@@ -2477,6 +2396,7 @@ WinShareWindow::ScanShares(bool rescan)
 		if (rescan)
 		{
 			PrintSystem(tr("Rescanning shared files..."));
+			fFilesScanned = false;
 		}
 		else
 		{
@@ -2537,4 +2457,88 @@ void
 WinShareWindow::LogString(const char *text)
 {
 	fMainLog.LogString(text);
+}
+
+void
+WinShareWindow::UpdateShares()
+{
+	if (fSettings->GetSharingEnabled()) // Make sure sharing is enabled and fully functional
+	{
+		CancelShares();
+
+		fFileScanThread->Lock();
+		if (fSettings->GetInfo())
+			PrintSystem(tr("Sharing %1 file(s).").arg(fFileScanThread->GetNumFiles()));
+		fNetClient->SetFileCount(fFileScanThread->GetNumFiles());
+		PRINT("Doing a scan of the returned files for uploading.\n");
+		int m = 0;
+		MessageRef refScan(GetMessageFromPool(PR_COMMAND_SETDATA));
+		
+		if (refScan())
+		{
+			MessageRef mref;
+			HashtableIterator<String, QString> filesIter = fFileScanThread->GetSharedFiles().GetIterator();
+			while (filesIter.HasMoreKeys())
+			{
+				// stop iterating if we are waiting for file scan thread to finish
+				if (fFileShutdownFlag)
+					break;
+				
+				qApp->processEvents(300);
+				
+				String s;
+				MessageRef mref;
+				filesIter.GetNextKey(s);
+				
+				if (fFileScanThread->FindFile(s, mref))
+				{
+					MakeNodePath(s);
+					uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
+					// Use encoded file attributes?
+					if (enc != 0)
+					{
+						MessageRef packed = DeflateMessage(mref, enc, true);
+						if (packed())
+						{
+							refScan()->AddMessage(s.Cstr(), packed);
+							m++;
+						}
+						else	
+						{
+							// Failed to pack the message?
+							refScan()->AddMessage(s.Cstr(), mref);
+							m++;
+						}
+					}
+					else
+					{
+						refScan()->AddMessage(s.Cstr(), mref);
+						m++;
+					}
+					if (m == 20)
+					{
+						m = 0;
+						fNetClient->SendMessageToSessions(refScan, 0);
+						refScan = GetMessageFromPool(PR_COMMAND_SETDATA);
+					}
+				}
+			}
+			if (refScan())
+			{
+				if (!refScan()->IsEmpty())
+				{
+					fNetClient->SendMessageToSessions(refScan, 0);
+					refScan.Reset();
+				}
+			}
+		}
+		
+		fFileScanThread->Unlock();
+		fScanning = false;
+		if (fDLWindow)
+		{
+			SignalDownload(WDownload::DequeueUploads);
+		}
+		PRINT("Done\n");
+	}				
 }

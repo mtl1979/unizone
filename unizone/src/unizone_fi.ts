@@ -3895,5 +3895,9 @@ Päiväys: %4</translation>
         <source>Failed to create log file.</source>
         <translation>Lokitiedoston luominen epäonnistui.</translation>
     </message>
+    <message>
+        <source>Finished scanning shares.</source>
+        <translation>Jakojen tutkinta valmis.</translation>
+    </message>
 </context>
 </TS>

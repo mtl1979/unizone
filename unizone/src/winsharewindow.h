@@ -305,6 +305,7 @@ private:
 
 	mutable QAcceptSocketsThread * fAccept;
 	WFileThread * fFileScanThread;
+	bool fFilesScanned;
 	bool fFileShutdownFlag;
 
 	MenuBar * fMenus;
@@ -482,6 +483,7 @@ private:
 
 	void StartLogging();
 	void StopLogging();
+	void UpdateShares();
 	void CancelShares();
 	void ScanShares(bool rescan = false);
 	void CreateDirectories();
