@@ -717,11 +717,15 @@ WinShareWindow::InitGUI()
 	splitList.append(1);
 
 
-	QToolBar *tb = new QToolBar( this );
-	addToolBar( tb, tr( "Menubar" ), Top, FALSE );
+	fTBMenu = new QToolBar( this );
+	addToolBar( fTBMenu, tr( "Menubar" ), Top, FALSE );
 
-	fMenus = new MenuBar(this, tb);
+	fMenus = new MenuBar(this, fTBMenu);
 	CHECK_PTR(fMenus);
+
+	fTBMenu->setStretchableWidget( fMenus );
+	setDockEnabled( fTBMenu, Left, FALSE );
+	setDockEnabled( fTBMenu, Right, FALSE );
 
 
 	// setup combo/labels
@@ -731,14 +735,14 @@ WinShareWindow::InitGUI()
 	// Server
 	//
 	
-	QToolBar *tb2 = new QToolBar( this );
-	addToolBar( tb2, tr( "Server bar" ), Top, TRUE );
+	fTBServer = new QToolBar( this );
+	addToolBar( fTBServer, tr( "Server bar" ), Top, TRUE );
 
-	fServerLabel = new QLabel(tr("Server:"), tb2);
+	fServerLabel = new QLabel(tr("Server:"), fTBServer);
 	CHECK_PTR(fServerLabel);
 	fServerLabel->setMinimumWidth(75);
 
-	fServerList = new WComboBox(this, tb2, "fServerList");
+	fServerList = new WComboBox(this, fTBServer, "fServerList");
 	CHECK_PTR(fServerList);
 	fServerList->setEditable(true);
 	fServerLabel->setBuddy(fServerList);
@@ -746,14 +750,14 @@ WinShareWindow::InitGUI()
 	// Nick
 	//
 
-	QToolBar *tb3 = new QToolBar( this );
-	addToolBar( tb3, tr( "Nickbar" ), Top, FALSE );
+	fTBNick = new QToolBar( this );
+	addToolBar( fTBNick, tr( "Nickbar" ), Top, FALSE );
 
-	fUserLabel = new QLabel(tr("Nick:"), tb3);
+	fUserLabel = new QLabel(tr("Nick:"), fTBNick);
 	CHECK_PTR(fUserLabel);
 	fUserLabel->setMinimumWidth(75);
 
-	fUserList = new WComboBox(this, tb3, "fUserList");
+	fUserList = new WComboBox(this, fTBNick, "fUserList");
 	CHECK_PTR(fUserList);
 	fUserList->setEditable(true);
 	fUserLabel->setBuddy(fUserList);
@@ -761,14 +765,14 @@ WinShareWindow::InitGUI()
 	// Status
 	//
 
-	QToolBar *tb4 = new QToolBar( this );
-	addToolBar( tb4, tr( "Statusbar" ), Top, FALSE );
+	fTBStatus = new QToolBar( this );
+	addToolBar( fTBStatus, tr( "Statusbar" ), Top, FALSE );
 
-	fStatusLabel = new QLabel(tr("Status:"), tb4);
+	fStatusLabel = new QLabel(tr("Status:"), fTBStatus);
 	CHECK_PTR(fStatusLabel);
 	fStatusLabel->setMinimumWidth(75);
 
-	fStatusList = new WComboBox(this, tb4, "fStatusList");
+	fStatusList = new WComboBox(this, fTBStatus, "fStatusList");
 	CHECK_PTR(fStatusList);
 	fStatusList->setEditable(true);
 	fStatusLabel->setBuddy(fStatusList);
@@ -1669,6 +1673,45 @@ WinShareWindow::LoadSettings()
 		tx2 = 0;
 		rx2 = 0;
 	}
+
+	// Toolbar Layout
+
+	{
+		int i;
+		int _dock[4];
+		int _index[4];
+		bool _nl[4];
+		int _extra[4];
+		
+		for (i = 0; i < 4; i++)
+			fSettings->GetToolBarLayout(i, _dock[i], _index[i], _nl[i], _extra[i]); 
+		
+		// Start from dock position 0
+		// Start moving toolbars from index value of 0
+
+		for (int d1 = 0; d1 < 7; d1++)			// dock position
+		{
+			for (int ip = 0; ip < 4; ip++)		// index position
+			{
+				for (int i1 = 0; i1 < 4; i1++)	// layout index
+				{
+					if ((_dock[i1] == d1) && (_index[i1] == ip))
+					{
+						QToolBar * tb;
+						switch (i1)
+						{
+						case 0: tb = fTBMenu;
+						case 1: tb = fTBServer;
+						case 2: tb = fTBNick;
+						case 3: tb = fTBStatus;
+						}
+						moveToolBar(tb, (QMainWindow::ToolBarDock) _dock[i1], _nl[i1], 3, _extra[i1]);
+					}
+				}
+			}
+		}
+	}
+	
 }
 
 
@@ -1812,6 +1855,23 @@ WinShareWindow::SaveSettings()
 		int64 rn = fSettings->GetRegisterTime(fUserName);
 		fSettings->SetRegisterTime(fUserName, rn);
 	}
+
+	// Toolbar Layout
+
+	int _dock, _index, _extra;
+	bool _nl;
+
+	getLocation(fTBMenu, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
+	fSettings->SetToolBarLayout(0, _dock, _index, _nl, _extra);
+
+	getLocation(fTBServer, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
+	fSettings->SetToolBarLayout(1, _dock, _index, _nl, _extra);
+
+	getLocation(fTBNick, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
+	fSettings->SetToolBarLayout(2, _dock, _index, _nl, _extra);
+
+	getLocation(fTBStatus, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
+	fSettings->SetToolBarLayout(3, _dock, _index, _nl, _extra);
 
 	fSettings->Save();
 }

@@ -1387,3 +1387,49 @@ WSettings::EmptyResumeList()
 	fSet->RemoveName(RESUMEFILE);
 	fSet->RemoveName(RESUMEUSER);
 }
+
+void 
+WSettings::GetToolBarLayout(int toolbar, int & dock, int & index, bool & nl, int & extra)
+{
+	dock = 2;
+	index = toolbar;
+
+	if (toolbar == 1)
+		nl = true;
+	else
+		nl = false;
+
+	extra = -1;
+
+	String sToolBar = "toolbar";
+	sToolBar += toolbar;
+
+	MessageRef mref;
+	if (fSet->FindMessage(sToolBar, mref) == B_OK)
+	{
+		mref()->FindInt32("dock", (int32 *) &dock);
+		mref()->FindInt32("index", (int32 *) &index);
+		mref()->FindBool("nl", &nl);
+		mref()->FindInt32("extra", (int32 *) &extra);
+	}
+}
+
+void 
+WSettings::SetToolBarLayout(int toolbar, int dock, int index, bool nl, int extra)
+{
+	String sToolBar = "toolbar";
+	sToolBar += toolbar;
+
+	fSet->RemoveName(sToolBar);
+	
+	MessageRef mref = GetMessageFromPool();
+	if (mref())
+	{
+		mref()->AddInt32("dock", dock);
+		mref()->AddInt32("index", index);
+		mref()->AddBool("nl", nl);
+		mref()->AddInt32("extra", extra);
+
+		fSet->AddMessage(sToolBar, mref);
+	}
+}

@@ -819,8 +819,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			PrintSystem(tr("Saving configuration..."));
 			SaveSettings();
 			PrintSystem(tr("Configuration saved."));
-		}
-		
+		}		
 		else if (CompareCommand(sendText, "/dns"))
 		{
 			QString user = GetParameterString(sendText);

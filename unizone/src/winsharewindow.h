@@ -236,6 +236,13 @@ private:
 	// gui
 	QSplitter * fMainSplitter;	// splits user list and the rest of the window
 
+	// Toolbars
+
+	QToolBar * fTBMenu;
+	QToolBar * fTBNick;
+	QToolBar * fTBServer;
+	QToolBar * fTBStatus;
+
 	QHGroupBox * fUsersBox;		// frame around fUsers
 	WUniListView * fUsers;
 

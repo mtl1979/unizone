@@ -410,6 +410,10 @@ public:
 	QString GetRemotePassword();
 	void SetRemotePassword(QString pw);
 
+	// toolbar layout
+	void GetToolBarLayout(int toolbar, int & dock, int & index, bool & nl, int & extra);
+	void SetToolBarLayout(int toolbar, int dock, int index, bool nl, int extra);
+
 private:
 	Message * fSet;
 	int fColor, fColumn, fStatus, fUser, fServer;	// iterators

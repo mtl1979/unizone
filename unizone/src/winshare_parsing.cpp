@@ -234,7 +234,16 @@ WinShareWindow::NameSaid2(String sname, QString & msg, unsigned long index)
 	String itxt((const char *) msg.utf8()); // <postmaster@raasu.org> -- Don't use latin1 ()
 	itxt = itxt.ToUpperCase();
 
-	int sred = (itxt.StartsWith(sname)) ? 0 : -1;
+	int sred;
+	
+	// Check only on first iteration to avoid infinite loop, when sred = -1 and recursive call adds +1 
+	// --> (-1) + 1 = 0 
+
+	if (index == 0)
+		sred = (itxt.StartsWith(sname)) ? 0 : -1;
+	else
+		sred = -1;
+	
 	if (sred < 0)
 	{
 		sred = itxt.IndexOf(sname.Prepend(" "), index);
