@@ -117,6 +117,14 @@ WUploadThread::SetQueued(bool b)
 		DoUpload();		// we can start now!
 }
 
+void
+WUploadThread::SetBlocked(bool b)
+{
+	WGenericThread::SetBlocked(b);
+	if (!b && IsInternalThreadRunning())
+		DoUpload();		// we can start now!
+}
+
 void 
 WUploadThread::SendReply(Message * m)
 {
@@ -172,6 +180,10 @@ WUploadThread::SignalOwner()
 							ui->AddString("name", name);
 							ui->AddString("id", id);
 							fRemoteSessionID = QString::fromUtf8(id);
+							if (gWin->IsIgnored(fRemoteSessionID, true))
+							{
+								SetBlocked(true);
+							}
 							SendReply(ui);
 						}
 						break;
@@ -334,12 +346,11 @@ WUploadThread::DoUpload()
 		return;
 	}
 
-	if (gWin->IsIgnored(fRemoteSessionID, true))
+	if (IsBlocked())
 	{
-		SetBlocked(true);
 		SendReply(new Message(WGenericEvent::FileBlocked));
 		if (gWin->IsConnected(fRemoteSessionID))
-			gWin->SendChatText(fRemoteSessionID, "Your download has been blocked due ignored nick.");
+			gWin->SendChatText(fRemoteSessionID, "Your download has been blocked!");
 		return;
 	}
 

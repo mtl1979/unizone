@@ -89,8 +89,10 @@ private:
 	QSplitter * fMainSplit;
 	QListView * fUploads, * fDownloads;
 	QPushButton * fCancelU;
+	QPushButton * fUnblockU;
 	QPushButton * fCancelD;
 	QVBox * fBoxU, * fBoxD;
+	QHBox * fButtonsU;
 
 	QString fLocalSID;
 	WFileThread * fSharedFiles;
@@ -108,6 +110,7 @@ private:
 private slots:
 	void CancelDL();
 	void CancelUL();
+	void UnblockUL();
 
 };
 

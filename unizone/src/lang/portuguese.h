@@ -147,6 +147,7 @@
 
 #define MSG_OK				"OK"
 #define MSG_CANCEL			"Cancelar"
+#define MSG_TOGGLE_BLOCK	"(Un)block"
 
 // Connection
 

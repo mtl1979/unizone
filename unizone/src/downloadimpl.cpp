@@ -92,10 +92,18 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
-	fCancelU = new QPushButton(fBoxU);
+	fButtonsU = new QHBox(fBoxU);
+	CHECK_PTR(fButtonsU);
+
+	fCancelU = new QPushButton(fButtonsU);
 	CHECK_PTR(fCancelU);
 	fCancelU->setText(MSG_CANCEL);
 	connect(fCancelU, SIGNAL(clicked()), this, SLOT(CancelUL()));
+
+	fUnblockU = new QPushButton(fButtonsU);
+	CHECK_PTR(fUnblockU);
+	fUnblockU->setText(MSG_TOGGLE_BLOCK);
+	connect(fUnblockU, SIGNAL(clicked()), this, SLOT(UnblockUL()));
 	
 	setCaption(MSG_TX_CAPTION);
 	fNumUploads = fNumDownloads = 0;
@@ -719,6 +727,34 @@ WDownload::CancelUL()
 		fLock.unlock();
 	}
 	DequeueSessions();
+}
+
+void
+WDownload::UnblockUL()
+{
+	QListViewItem * s = fUploads->selectedItem();
+	if (s)
+	{
+		fLock.lock();
+		WTIter it = fUploadList.begin();
+		while (it != fUploadList.end())
+		{
+			if ((*it).second == s)
+			{
+				if ((*it).first->IsBlocked() == true)
+				{
+					(*it).first->SetBlocked(false);
+				}
+				else
+				{
+					(*it).first->SetBlocked(true);
+				}
+				break;
+			}
+			it++;
+		}
+		fLock.unlock();
+	}
 }
 
 void

@@ -150,6 +150,7 @@
 
 #define MSG_OK				"OK"
 #define MSG_CANCEL			"Peruuta"
+#define MSG_TOGGLE_BLOCK	"(Älä) estä"
 
 // Connection
 

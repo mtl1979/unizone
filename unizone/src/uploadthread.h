@@ -28,6 +28,7 @@ public:
 	void InitSession();
 
 	virtual void SetQueued(bool b);
+	virtual void SetBlocked(bool b);
 
 protected:
 	virtual void SendReply(Message * m);
