@@ -25,12 +25,12 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fPort = 0;
 	fSocket = 0;
 	fActive = false;
-	fInit = false;
+//	fInit = false;
 	fBlocked = false;
 	fTimeLeft = 0;
 	fForced = false;
 
-	qmtt = new QMessageTransceiverThread();
+	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
@@ -95,12 +95,13 @@ bool
 WUploadThread::InitSessionAux()
 {
 	PRINT("WUploadThread::InitSession\n");
+/*
 	if (gWin->IsScanning())
 	{
 		fInit = true;
 		return false;
 	}
-
+*/
 	AbstractReflectSessionRef limit;
 
 	// First check if IP is blacklisted or ignored
@@ -187,11 +188,13 @@ WUploadThread::SetLocallyQueued(bool b)
 			if (!fForced)
 				DoUpload();		// we can start now!
 		}
+/*
 		else if (fInit)
 		{
 			fInit = false;
 			InitSession();
 		}
+*/
 		else if (fActive)
 		{
 			qmtt->Reset();

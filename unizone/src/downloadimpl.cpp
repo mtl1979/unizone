@@ -1108,9 +1108,14 @@ WDownload::genericEvent(WGenericEvent * g)
 				{
 					PRINT("\tWGenericEvent::FileDataReceived\n");
 #ifdef DEBUG2
-					PRINT("\tOffset: %d\n", offset);
-					PRINT("\tSize  : %d\n", size);
-					PRINT("\tGot   : %d\n", got);
+# ifdef WIN32
+					PRINT("\tOffset: %I64u\n", offset);
+					PRINT("\tSize  : %I64u\n", size);
+# else
+					PRINT("\tOffset: %llu\n", offset);
+					PRINT("\tSize  : %llu\n", size);
+# endif
+					PRINT("\tGot   : %lu\n", got);
 #endif
 					gWin->UpdateReceiveStats(got);
 					
@@ -1191,9 +1196,14 @@ WDownload::genericEvent(WGenericEvent * g)
 				{
 					PRINT("\tWGenericEvent::FileDataSent\n");
 #ifdef DEBUG2
-					PRINT("\tOffset: %d\n", offset);
-					PRINT("\tSize  : %d\n", size);
-					PRINT("\tSent  : %d\n", got);
+# ifdef WIN32
+					PRINT("\tOffset: %I64u\n", offset);
+					PRINT("\tSize  : %I64u\n", size);
+# else
+					PRINT("\tOffset: %llu\n", offset);
+					PRINT("\tSize  : %llu\n", size);
+# endif
+					PRINT("\tSent  : %lu\n", got);
 #endif
 					gWin->UpdateTransmitStats(got);
 					
@@ -1318,10 +1328,7 @@ WDownload::GetUserName(WGenericThread *gt)
 	QString sid = gt->GetRemoteID();
 	QString name = gt->GetRemoteUser();
 	QString ret;
-	if (sid != name)
-		ret = tr("%1 (%2)").arg(name).arg(sid);
-	else
-		ret = gt->GetRemoteIP();
+	ret = tr("%1 (%2)").arg(name).arg(sid);
 	return ret;
 }
 
@@ -2557,7 +2564,10 @@ WDownload::UpdateULRatings()
 {
 	PRINT("\tWDownload::UpdateULRatings\n");
 	if ( fUploadList.IsEmpty() )
+	{
+		PRINT("\tUpload list is empty!\n");
 		return;
+	}
 
 	fLock.lock();
 	for (int i = 0; i < fUploadList.GetNumItems(); i++)
@@ -2573,6 +2583,7 @@ WDownload::UpdateULRatings()
 	}
 	fUploads->triggerUpdate();
 	fLock.unlock();
+	PRINT("\tWDownload::UpdateULRatings OK\n");
 }
 
 void
@@ -2580,7 +2591,10 @@ WDownload::UpdateDLRatings()
 {
 	PRINT("\tWDownload::UpdateDLRatings\n");
 	if ( fDownloadList.IsEmpty() )
+	{
+		PRINT("\tDownload list is empty!\n");
 		return;
+	}
 
 	fLock.lock();
 	for (int i = 0; i < fDownloadList.GetNumItems(); i++)

@@ -23,7 +23,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fNumFiles = -1;
 	fCurFile = -1;
 
-	qmtt = new QMessageTransceiverThread();
+	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
@@ -280,8 +280,6 @@ WDownloadThread::InitSessionAux()
 			return true;
 		}
 	}
-	delete qmtt;
-	qmtt = NULL;
 	return false;
 }
 

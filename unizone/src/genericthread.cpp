@@ -39,7 +39,7 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	CTimer = new QTimer(this, "Connect Timer");
 	CHECK_PTR(CTimer);
 
-	connect( CTimer , SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
+	connect( CTimer, SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
 	
 	fBlockTimer = new QTimer(this, "Blocked Timer");
 	CHECK_PTR(fBlockTimer);
@@ -58,8 +58,8 @@ WGenericThread::~WGenericThread()
 		{
 			qmtt->ShutdownInternalThread();
 		}
-		delete qmtt;
-		qmtt = NULL;
+//		delete qmtt;
+//		qmtt = NULL;
 	}
 	PRINT("WGenericThread dtor OK\n");
 }
@@ -390,4 +390,10 @@ WGenericThread::RemoveSessions(const char * optDistPath)
 		return qmtt->RemoveSessions(optDistPath);
 	else
 		return B_ERROR;
+}
+
+bool
+WGenericThread::IsLastFile()
+{ 
+	return ((GetCurrentNum() + 1) >= GetNumFiles()); 
 }

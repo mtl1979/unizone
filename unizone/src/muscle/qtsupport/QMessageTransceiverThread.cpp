@@ -6,7 +6,8 @@ namespace muscle {
 
 static const uint32 QMTT_SIGNAL_EVENT = QEvent::MaxUser;
 
-QMessageTransceiverThread :: QMessageTransceiverThread()
+QMessageTransceiverThread :: QMessageTransceiverThread(QObject *parent)
+	: QObject(parent)
 {
    // empty
 }

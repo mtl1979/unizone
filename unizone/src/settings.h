@@ -71,6 +71,8 @@ using namespace muscle;
 
 #define REGISTERTIME "registertime"
 
+#define INSTALLID "installid"
+
 /* Linux was our only configurable URL launcher */
 /* Now let's try it with FreeBSD too            */
 #if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
@@ -423,6 +425,9 @@ public:
 	void GetToolBarLayout(int toolbar, int & dock, int & index, bool & nl, int & extra);
 	void SetToolBarLayout(int toolbar, int dock, int index, bool nl, int extra);
 
+	// Install ID
+	int64 GetInstallID();
+	void SetInstallID(int64 iid);
 private:
 	MessageRef fSet;
 	int fColor, fColumn, fStatus, fUser, fServer;	// iterators

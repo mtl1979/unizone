@@ -72,7 +72,7 @@ public:
 
 	virtual long GetCurrentNum() { return -1; }
 	virtual long GetNumFiles() { return 0; }
-	virtual bool IsLastFile() { return ((GetCurrentNum() + 1) == GetNumFiles()); }
+	virtual bool IsLastFile(); 
 	virtual QString GetFileName(int i) { return QString::null; }
 	virtual QString GetLocalFileName(int i) { return GetFileName(i); }
 

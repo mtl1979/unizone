@@ -316,8 +316,10 @@ WUniListItem::text(int c) const
 		{
 			result.sprintf("%.2f ", n);
 			result += postFix;
+#ifdef DEBUG2
 			WString res = result;
 			PRINT("UListView::text : %S\n", res.getBuffer());
+#endif
 		}
 		else
 		{

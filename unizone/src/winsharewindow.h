@@ -365,6 +365,10 @@ private:
 	uint64 tx,rx;		// cumulative
 	uint64 tx2,rx2;		// in the beginning of session
 
+	// Install ID
+
+	int64 fInstallID;
+
 	// UniShare
 
 	void TransferCallbackRejected(QString qFrom, int64 timeLeft, uint32 port);

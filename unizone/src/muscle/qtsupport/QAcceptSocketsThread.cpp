@@ -6,7 +6,8 @@ namespace muscle {
 
 static const uint32 QMTT_SIGNAL_EVENT = 8360446;  // why yes, this is a completely arbitrary number
 
-QAcceptSocketsThread :: QAcceptSocketsThread()
+QAcceptSocketsThread :: QAcceptSocketsThread(QObject *parent)
+	: QObject(parent)
 {
    // empty
 }

@@ -254,7 +254,7 @@ WinShareWindow::StartAcceptThread()
 	}
 
 	// setup accept thread
-	fAccept = new QAcceptSocketsThread();
+	fAccept = new QAcceptSocketsThread(this);
 	CHECK_PTR(fAccept);
 
 	connect(fAccept, SIGNAL(ConnectionAccepted(SocketHolderRef)), 
@@ -1697,6 +1697,7 @@ WinShareWindow::LoadSettings()
 		}
 		rLock.unlock();
 
+		fInstallID = fSettings->GetInstallID();
 	}
 	else	// file doesn't exist, or error
 	{
@@ -1726,6 +1727,8 @@ WinShareWindow::LoadSettings()
 		rx = 0;
 		tx2 = 0;
 		rx2 = 0;
+		srand(time(NULL));
+		fInstallID = (rand()*(ULONG_MAX/RAND_MAX)<<32)+(rand()*(ULONG_MAX/RAND_MAX));
 	}
 
 	// Toolbar Layout
@@ -1923,6 +1926,8 @@ WinShareWindow::SaveSettings()
 
 	getLocation(fTBStatus, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
 	fSettings->SetToolBarLayout(3, _dock, _index, _nl, _extra);
+
+	fSettings->SetInstallID(fInstallID);
 
 	fSettings->Save();
 }

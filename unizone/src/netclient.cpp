@@ -29,7 +29,7 @@ NetClient::NetClient(QObject * owner)
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
 
-	qmtt = new QMessageTransceiverThread();
+	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(BeginMessageBatch()),
@@ -64,8 +64,8 @@ NetClient::~NetClient()
 	if (qmtt)
 	{
 		qmtt->WaitForInternalThreadToExit();
-		delete qmtt;
-		qmtt = NULL;
+//		delete qmtt;
+//		qmtt = NULL;
 	}
 }
 
@@ -746,7 +746,7 @@ NetClient::SetUserName(QString user)
 		QCString vstring = WinShareVersionString().utf8();
 		ref()->AddString("name", (const char *) user.utf8()); // <postmaster@raasu.org> 20021001
 		ref()->AddInt32("port", fPort);
-		ref()->AddInt64("installid", 0);
+		ref()->AddInt64("installid", gWin->fSettings->GetInstallID());
 		ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
 		ref()->AddString("version_num", (const char *) vstring);
 		ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes

@@ -85,9 +85,9 @@ WString::operator!=(const WString &str)
 bool 
 WString::operator!=(const QString &str)
 {
-	WString buf2 = str;
+	WString s2 = str;
+	wchar_t *buf2 = s2;
 	bool b = (wcscmp(buffer, buf2) != 0);
-	delete [] buf2;
 	return b;
 }
 
@@ -107,7 +107,8 @@ WString::operator==(const WString &str)
 bool 
 WString::operator==(const QString &str)
 {
-	WString buf2 = str;
+	WString s2 = str;
+	wchar_t *buf2 = s2;
 	bool b = (wcscmp(buffer, buf2) == 0);
 	return b;
 }
@@ -116,8 +117,10 @@ void
 WString::free()
 {
 	if (buffer)
+	{
 		delete [] buffer;
-	buffer = NULL;
+		buffer = NULL;
+	}
 }
 
 QString 
@@ -136,7 +139,9 @@ wchar_t *
 qStringToWideChar(const QString &str)
 {
    	if (str.isNull())
+	{
        	return NULL;
+	}
 
 	wchar_t *result = new wchar_t[str.length() + 1];
 	if (result)
@@ -144,9 +149,10 @@ qStringToWideChar(const QString &str)
 		for (unsigned int i = 0; i < str.length(); ++i)
 			result[i] = str.at(i).unicode();
 		result[str.length()] = 0;
-//		PRINT("qStringToWideChar: result = %S\n", result);
 		return result;
 	}
 	else
+	{
 		return NULL;
+	}
 }

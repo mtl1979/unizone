@@ -22,7 +22,7 @@ class QAcceptSocketsThread : public QObject, public AcceptSocketsThread
 
 public:
    /** Constructor. */
-   QAcceptSocketsThread();
+   QAcceptSocketsThread(QObject *parent);
 
    /** 
     *  Destructor.  You will generally want to call ShutdownInternalThread()

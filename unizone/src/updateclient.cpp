@@ -8,7 +8,7 @@
 UpdateClient::UpdateClient(QObject *owner)
 {
 	setName( "UpdateClient" );
-	qmtt = new QMessageTransceiverThread();
+	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),

@@ -1481,3 +1481,19 @@ WSettings::SetToolBarLayout(int toolbar, int dock, int index, bool nl, int extra
 		fSet()->AddMessage(sToolBar, mref);
 	}
 }
+
+int64
+WSettings::GetInstallID()
+{
+	srand(time(NULL));
+	int64 iid = (rand()*(ULONG_MAX/RAND_MAX)<<32)+(rand()*(ULONG_MAX/RAND_MAX));
+	fSet()->FindInt64(INSTALLID, &iid);
+	return iid;
+}
+
+void
+WSettings::SetInstallID(int64 iid)
+{
+	fSet()->RemoveName(INSTALLID);
+	fSet()->AddInt64(INSTALLID, iid);
+}

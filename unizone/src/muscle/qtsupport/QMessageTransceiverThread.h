@@ -23,7 +23,7 @@ class QMessageTransceiverThread : public QObject, public MessageTransceiverThrea
 
 public:
    /** Constructor. */
-   QMessageTransceiverThread();
+   QMessageTransceiverThread(QObject *parent);
 
    /** 
     *  Destructor.  You will generally want to call ShutdownInternalThread()

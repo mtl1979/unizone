@@ -16,9 +16,12 @@
 
 class WFileThread;
 
-/** This is my wonderful file upload thread. It handles starting the
-  *	connection remote peer and transfering a file to him.
-  */
+/*
+ *
+ *  This is my wonderful file upload thread. It handles starting the
+ *	connection remote peer and transfering a file(s) to him/her.
+ *
+ */
 class WUploadThread : public WGenericThread
 {
 public:
@@ -78,7 +81,7 @@ private:
 	bool fWaitingForUploadToFinish;
 	bool fAccept;						// is this the accept version?
 	bool fForced;						// did this transfer bypass queue?
-	bool fInit;							// has InitSession() been postponed due file scan in progress
+//	bool fInit;							// has InitSession() been postponed due file scan in progress
 
 	int32 fCurFile, fNumFiles;
 

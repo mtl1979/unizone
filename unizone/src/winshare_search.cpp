@@ -73,7 +73,11 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
 				CHECK_PTR(info->fiListItem);
 
-				PRINT("Setting key to %d\n", (long)size);
+#ifdef WIN32
+				PRINT("Setting key to %I64i\n", size);
+#else
+				PRINT("Setting key to %lli\n", size);
+#endif
 				
 				// The map is based on _filename's_, not session ID's.
 				// And as filename's can be duplicate, we use a multimap

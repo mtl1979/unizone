@@ -11,7 +11,7 @@ using namespace muscle;
 ServerClient::ServerClient(QObject *owner)
 {
 	setName( "ServerClient" );
-	qmtt = new QMessageTransceiverThread();
+	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),

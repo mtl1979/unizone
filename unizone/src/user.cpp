@@ -41,7 +41,7 @@ WUser::~WUser()
 void
 WUser::InitName(const MessageRef msg)
 {
-	int32 port;
+	uint32 port;
 	const char * name;
 	const char * vname, * vnum;	// version
 	bool isbot;
@@ -68,7 +68,7 @@ WUser::InitName(const MessageRef msg)
 	else
 		fUserName = "?";
 
-	if (msg()->FindInt32("port", &port) == B_OK)
+	if (msg()->FindInt32("port", (int32 *) &port) == B_OK)
 		fPort = port;
 	else
 		fPort = 0;
@@ -96,14 +96,19 @@ WUser::InitName(const MessageRef msg)
 
 	if (msg()->FindBool("firewalled", &b) == B_OK)
 	{
-		PRINT("WUser: %s firewalled", (b ? "Is" : "Isn't"));
+		PRINT("WUser: %s firewalled\n", (b ? "Is" : "Isn't"));
 		SetFirewalled(b);
 	}
 
 	//
 
 	WString wUser = fUserName;
-	PRINT("WUser: %S is a %s with installid %d on port %d\n", 
+	PRINT(
+#ifdef WIN32
+		"WUser: %S is a %s with installid %I64u on port %lu\n",
+#else
+		"WUser: %S is a %s with installid %llu on port %lu\n", 
+#endif
 		wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID, fPort);
 }
 

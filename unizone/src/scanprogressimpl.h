@@ -1,6 +1,8 @@
 #ifndef SCANPROGRESS_H
 #define SCANPROGRESS_H
 
+#include <qthread.h>
+
 #include "scanprogress.h"
 
 class ScanProgress : public ScanProgressBase
@@ -16,5 +18,7 @@ public:
 	void SetScannedDirs(int sd);
 	void SetScannedFiles(int sf);
 	void SetDirsLeft(int dl);
+private:
+	QMutex fLock;
 };
 #endif

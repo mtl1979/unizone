@@ -34,7 +34,6 @@ WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 	fNet = net;
 	fOwner = owner;
 	fShutdownFlag = optShutdownFlag;
-//	fRunning = false;
 	fScanProgress = new ScanProgress();
 	CHECK_PTR(fScanProgress);
 }
@@ -48,17 +47,15 @@ void
 WFileThread::run()
 {
 	// reset our shutdown flag
-//	fRunning = true;
 	if (fShutdownFlag)
 		*fShutdownFlag = false;
 
 	PRINT("Clearing list\n");
 	EmptyList();
-	Lock(); // test
-//	fFiles.Clear();
+	Lock(); 
 	fScannedDirs.Clear();
 	fPaths.Clear();
-	Unlock(); // test
+	Unlock(); 
 	int iScannedDirs = 0;
 
 	fScanProgress->show();
@@ -94,7 +91,6 @@ WFileThread::run()
 	fScannedDirs.Clear();
 	Unlock();
 
-//	fRunning = false;
 	QCustomEvent *qce = new QCustomEvent(ScanDone);
 	if (qce)
 		postEvent(fOwner, qce);
@@ -134,7 +130,9 @@ WFileThread::ParseDir(const QString & d)
 	Lock();
 	for ( int n = 0; n < fScannedDirs.GetNumItems(); n++ )
 	{
-		if (fScannedDirs[n] == info->absFilePath())
+		QString path;
+		fScannedDirs.GetItemAt(n, path);
+		if (path == info->absFilePath())
 		{
 			Unlock();
 			delete info;
@@ -142,9 +140,8 @@ WFileThread::ParseDir(const QString & d)
 		}
 	}
 
-	//Lock(); // test
 	fScannedDirs.AddTail(info->absFilePath()); // Add to checked dirs
-	Unlock(); // test
+	Unlock();
 
 	ScanFiles(info->absFilePath());
 	delete info;
@@ -271,10 +268,10 @@ WFileThread::AddFile(const QString & filePath)
 						nodePath += ufi->getName();
 						
 						ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
-						Lock(); // test
+						Lock(); 
 						fFiles.AddTail(ref);
 						fScanProgress->SetScannedFiles(fFiles.GetNumItems());
-						Unlock(); // test
+						Unlock(); 
 					}
 				}
 			}
@@ -362,7 +359,8 @@ WFileThread::ResolveLink(const QString & lnk)
 	QFileInfo inf(lnk);
 	if (inf.isSymLink())
 		return inf.readLink();
-	return lnk; 	// oops
+	else
+		return lnk; 	// oops
 #endif
 }
 
@@ -430,12 +428,19 @@ WFileThread::CheckFile(const QString & file)
 	{
 		String sn;
 		QString name;
-		fFiles[i]()->FindString("beshare:File Name", sn);
-		name = QString::fromUtf8(sn.Cstr());
-		if (file == name)
+		MessageRef mref;
+		fFiles.GetItemAt(i, mref);
+		if ( mref() )
 		{
-			Unlock(); 
-			return true;
+			if (mref()->FindString("beshare:File Name", sn) == B_OK)
+			{
+				name = QString::fromUtf8(sn.Cstr());
+				if (file == name)
+				{
+					Unlock(); 
+					return true;
+				}
+			}
 		}
 	}
 	Unlock(); 
@@ -445,6 +450,11 @@ WFileThread::CheckFile(const QString & file)
 bool
 WFileThread::FindFile(const QString & file, MessageRef & ref)
 {
+	while (gWin->IsScanning())
+	{
+		qApp->processEvents(300);
+	}
+
 	Lock();
 	for (int i = 0; i < fFiles.GetNumItems(); i++)
 	{
@@ -455,13 +465,18 @@ WFileThread::FindFile(const QString & file, MessageRef & ref)
 		}
 		String sn;
 		QString name;
-		fFiles[i]()->FindString("beshare:File Name", sn);
-		name = QString::fromUtf8(sn.Cstr());
-		if (file == name)
+		MessageRef mref;
+		fFiles.GetItemAt(i, mref);
+		if ( mref() )
 		{
-			ref = fFiles[i];
-			Unlock();
-			return true;
+			mref()->FindString("beshare:File Name", sn);
+			name = QString::fromUtf8(sn.Cstr());
+			if (file == name)
+			{
+				ref = mref;
+				Unlock();
+				return true;
+			}
 		}
 	}
 
@@ -478,29 +493,18 @@ WFileThread::GetNumFiles() const
 void
 WFileThread::EmptyList()
 {
-	Lock(); // test
-	while (fFiles.GetNumItems() != 0)
-	{
-		MessageRef mref;
-		fFiles.RemoveHead(mref);
-		mref.Reset();
-	}
-	Unlock(); // test
+	Lock(); 
+	fFiles.Clear();
+	Unlock(); 
 }
-
-/*
-bool
-WFileThread::IsRunning()
-{
-	return fRunning;
-}
-*/
 
 MessageRef
 WFileThread::GetSharedFile(int n)
 {
 	MessageRef mref;
 	if (n >= 0 && n < fFiles.GetNumItems())
-		mref = fFiles[n];
+	{
+		fFiles.GetItemAt(n, mref);
+	}
 	return mref;
 }
