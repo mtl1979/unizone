@@ -1851,7 +1851,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			fULPopup->setItemChecked(ID_QUEUE, (*iter).first->IsLocallyQueued());
 			fULPopup->setItemChecked(ID_IGNORE, gWin->IsIgnoredIP( (*iter).first->GetRemoteIP() ));
 			int fNewRate = (*iter).first->GetRate();
-			fULThrottleMenu->setItemChecked(ID_THROTTLE, false);
+			fULThrottleMenu->setItemChecked(fULThrottle, false);
 			
 			switch (fNewRate)
 			{
