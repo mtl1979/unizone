@@ -17,6 +17,7 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	fETACount = 0;
 	fPackets = 0;
 	fTXRate = 0;
+	fTimeLeft = 0;
 	for (i = 0; i < MAX_RATE_COUNT; i++)
 		fRate[i] = 0.0f;
 	for (i = 0; i < MAX_ETA_COUNT; i++)
@@ -93,9 +94,13 @@ WGenericThread::IsActive() const
 }
 
 void
-WGenericThread::SetBlocked(bool b)
+WGenericThread::SetBlocked(bool b, int64 timeLeft)
 {
 	fBlocked = b;
+	if (b)
+		fTimeLeft = timeLeft;
+	else
+		fTimeLeft = 0;
 }
 
 bool
@@ -263,4 +268,22 @@ WGenericThread::ConnectTimer()
 	//msg->AddString("file", (const char *) GetCurrentFile().utf8());
 	msg->AddBool("retry", true);
 	SendReply(msg);
+}
+
+void
+WGenericThread::BlockedTimer()
+{
+	SetBlocked(false);
+	fTimeLeft = 0;
+}
+
+int
+WGenericThread::GetBanTime()
+{
+	if (fTimeLeft == 0)
+		return 0;
+	else if (fTimeLeft == -1)
+		return -1;
+	else
+		return (fTimeLeft / 1000000);
 }

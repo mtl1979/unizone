@@ -1190,6 +1190,18 @@ WinShareWindow::HandleMessage(Message * msg)
 */
 	switch (msg->what)
 	{
+	case WDownload::TransferNotifyRejected:
+		{
+			const char * from;
+			if (msg->FindString(PR_NAME_SESSION, &from) == B_NO_ERROR)
+			{
+				QString qFrom = QString::fromUtf8(from);
+				uint64 timeLeft = (uint64) -1;
+				(void) msg->FindInt64("timeleft", (int64 *)&timeLeft);
+				TransferCallbackRejected(qFrom, timeLeft);
+			}
+			break;
+		}
 		// Putting the scan here seems to fix the crash when 
 		// shares are scanned on startup (during connect to server)
 	case PR_RESULT_PONG:
@@ -2252,4 +2264,12 @@ WinShareWindow::ExecCommand(QString command)
 		SendChatText(wte, false);
 		delete wte;
 	}
+}
+
+void
+WinShareWindow::TransferCallbackRejected(QString qFrom, int64 timeLeft)
+{
+	if (!fDLWindow)
+		return;
+	fDLWindow->TransferCallBackRejected(qFrom, timeLeft);
 }

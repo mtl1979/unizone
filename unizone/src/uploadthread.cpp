@@ -20,9 +20,13 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fNumFiles = -1;
 	fActive = true;
 	fBlocked = false;
+	fTimeLeft = -1;
 
 	CTimer = new QTimer(this, "Connect Timer");
 	connect( CTimer , SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
+
+	fBlockTimer = new QTimer(this, "Blocked Timer");
+	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
 }
 
 WUploadThread::~WUploadThread()
@@ -120,13 +124,26 @@ WUploadThread::SetLocallyQueued(bool b)
 }
 
 void
-WUploadThread::SetBlocked(bool b)
+WUploadThread::SetBlocked(bool b, int64 timeLeft)
 {
-	WGenericThread::SetBlocked(b);
+	SetActive(!b);
+	if (b)
+	{
+		if (timeLeft != -1)
+			fBlockTimer->start(timeLeft/1000, true);
+	}
+	else if (!b && fBlockTimer->isActive())
+	{
+		fBlockTimer->stop();
+	}
+
+	WGenericThread::SetBlocked(b, timeLeft);
 	if (IsInternalThreadRunning())
 	{
 		if (b)
+		{
 			SendRejectedNotification();
+		}
 		else
 			DoUpload();		// we can start now!
 	}
@@ -366,8 +383,16 @@ void
 WUploadThread::SendRejectedNotification()
 {
 	MessageRef q(new Message(WDownload::TransferNotifyRejected), NULL);
+	if (fTimeLeft != -1)
+		q()->AddInt64("timeleft", fTimeLeft);
 	SendMessageToSessions(q);
-	SendReply(new Message(WGenericEvent::FileBlocked));
+	Message * b = new Message(WGenericEvent::FileBlocked);
+	if (b)
+	{
+		if (fTimeLeft != -1)
+			b->AddInt64("timeleft", fTimeLeft);
+		SendReply(b);
+	}
 }
 
 void 
@@ -381,7 +406,13 @@ WUploadThread::DoUpload()
 
 	if (IsBlocked())
 	{
-		SendReply(new Message(WGenericEvent::FileBlocked));
+		Message * msg = new Message(WGenericEvent::FileBlocked);
+		if (msg)
+		{
+			if (fTimeLeft != -1)
+				msg->AddInt64("timeleft", fTimeLeft);
+			SendReply(msg);
+		}
 		if (gWin->IsConnected(fRemoteSessionID))
 			gWin->SendChatText(fRemoteSessionID, "Your download has been blocked!");
 		return;

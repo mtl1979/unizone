@@ -98,19 +98,20 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
-	fButtonsU = new QHBox(fBoxU);
-	CHECK_PTR(fButtonsU);
+	//fButtonsU = new QHBox(fBoxU);
+	//CHECK_PTR(fButtonsU);
 
-	fCancelU = new QPushButton(fButtonsU);
+	fCancelU = new QPushButton(fBoxU);
 	CHECK_PTR(fCancelU);
 	fCancelU->setText(tr(MSG_CANCEL));
 	connect(fCancelU, SIGNAL(clicked()), this, SLOT(CancelUL()));
 
+	/*
 	fUnblockU = new QPushButton(fButtonsU);
 	CHECK_PTR(fUnblockU);
 	fUnblockU->setText(tr(MSG_TOGGLE_BLOCK));
 	connect(fUnblockU, SIGNAL(clicked()), this, SLOT(UnblockUL()));
-
+	*/
 	connect(gWin->fNetClient, SIGNAL(UserDisconnected(QString, QString)), this,
 			SLOT(UserDisconnected(QString, QString)));
 
@@ -200,6 +201,24 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	fULTh32M  = fULThrottleMenu->insertItem(tr( "32 MB" ), ID_32MB);
 
 	fULPopup->insertItem(tr(MSG_TX_THROTTLE), fULThrottleMenu);
+
+	fULBanMenu = new QPopupMenu(this, "Ban Popup");
+	CHECK_PTR(fULBanMenu);
+
+	fULBanNone = fULBanMenu->insertItem(tr("Unbanned"), ID_UNBAN);
+	fULBanMenu->setItemChecked(fULBanNone, true);
+	fULBan = fULBanNone;
+
+	fULBan1 = fULBanMenu->insertItem(tr("1 minute"), ID_BAN1);
+	fULBan2 = fULBanMenu->insertItem(tr("2 minutes"), ID_BAN2);
+	fULBan5 = fULBanMenu->insertItem(tr("5 minutes"), ID_BAN5);
+	fULBan10 = fULBanMenu->insertItem(tr("10 minutes"), ID_BAN10);
+	fULBan15 = fULBanMenu->insertItem(tr("15 minutes"), ID_BAN15);
+	fULBan30 = fULBanMenu->insertItem(tr("30 minutes"), ID_BAN30);
+	fULBan1H = fULBanMenu->insertItem(tr("1 hour"), ID_BAN1H);
+	fULBanInf = fULBanMenu->insertItem(tr("Infinite"), ID_BANINF);
+
+	fULPopup->insertItem(tr("Block"), fULBanMenu);
 	fULPopup->insertItem(tr(MSG_TX_MOVEUP), ID_MOVEUP);
 	fULPopup->insertItem(tr(MSG_TX_MOVEDOWN), ID_MOVEDOWN);
 
@@ -546,7 +565,12 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::FileBlocked:
 			{
-				item->setText(WTransferItem::Status, "Blocked.");
+				uint64 timeLeft = (uint64) -1;
+				(void) msg->FindInt64("timeleft", (int64 *) &timeLeft);
+				if (timeLeft == -1)
+					item->setText(WTransferItem::Status, "Blocked.");
+				else
+					item->setText(WTransferItem::Status, tr("Blocked for %1 minutes.").arg((int) (timeLeft/1000000)));
 				break;
 			}
 			
@@ -1240,101 +1264,195 @@ WDownload::ULPopupActivated(int id)
 			}
 			break;
 		}
-
-		case ID_MOVEUP:
-			{
-				if (gt->IsLocallyQueued())
-					MoveUp(fUploadList, i);
-				break;
-			}
-
-		case ID_MOVEDOWN:
-			{
-				if (gt->IsLocallyQueued())
-					MoveDown(fUploadList, i);
-				break;
-			}
-
+		
+	case ID_MOVEUP:
+		{
+			if (gt->IsLocallyQueued())
+				MoveUp(fUploadList, i);
+			break;
+		}
+		
+	case ID_MOVEDOWN:
+		{
+			if (gt->IsLocallyQueued())
+				MoveDown(fUploadList, i);
+			break;
+		}
+		
 		
 	case ID_NO_LIMIT:
-		gt->SetRate(0);
-		break;
+		{
+			gt->SetRate(0);
+			break;
+		}
 		
 	case ID_128:
-		gt->SetRate(128);
-		break;
+		{
+			gt->SetRate(128);
+			break;
+		}
 		
 	case ID_256:
-		gt->SetRate(256);
-		break;
+		{
+			gt->SetRate(256);
+			break;
+		}
 		
 	case ID_512:
-		gt->SetRate(512);
-		break;
+		{
+			gt->SetRate(512);
+			break;
+		}
 		
 	case ID_1KB:
-		gt->SetRate(1024);
-		break;
+		{
+			gt->SetRate(1024);
+			break;
+		}
 		
 	case ID_2KB:
-		gt->SetRate(2 * 1024);
-		break;
+		{
+			gt->SetRate(2 * 1024);
+			break;
+		}
 		
 	case ID_4KB:
-		gt->SetRate(4 * 1024);
-		break;
+		{
+			gt->SetRate(4 * 1024);
+			break;
+		}
 		
 	case ID_8KB:
-		gt->SetRate(8 * 1024);
-		break;
+		{
+			gt->SetRate(8 * 1024);
+			break;
+		}
 		
 	case ID_16KB:
-		gt->SetRate(16 * 1024);
-		break;
+		{
+			gt->SetRate(16 * 1024);
+			break;
+		}
 		
 	case ID_32KB:
-		gt->SetRate(32 * 1024);
-		break;
+		{
+			gt->SetRate(32 * 1024);
+			break;
+		}
 		
 	case ID_64KB:
-		gt->SetRate(64 * 1024);
-		break;
+		{
+			gt->SetRate(64 * 1024);
+			break;
+		}
 		
 	case ID_128KB:
-		gt->SetRate(128 * 1024);
-		break;
+		{
+			gt->SetRate(128 * 1024);
+			break;
+		}
 		
 	case ID_256KB:
-		gt->SetRate(256 * 1024);
-		break;
+		{
+			gt->SetRate(256 * 1024);
+			break;
+		}
 		
 	case ID_512KB:
-		gt->SetRate(512 * 1024);
-		break;
+		{
+			gt->SetRate(512 * 1024);
+			break;
+		}
 		
 	case ID_1MB:
-		gt->SetRate(1024 * 1024);
-		break;
+		{
+			gt->SetRate(1024 * 1024);
+			break;
+		}
 		
 	case ID_2MB:
-		gt->SetRate(2 * 1024 * 1024);
-		break;
+		{
+			gt->SetRate(2 * 1024 * 1024);
+			break;
+		}
 		
 	case ID_4MB:
-		gt->SetRate(4 * 1024 * 1024);
-		break;
+		{
+			gt->SetRate(4 * 1024 * 1024);
+			break;
+		}
 		
 	case ID_8MB:
-		gt->SetRate(8 * 1024 * 1024);
-		break;
+		{
+			gt->SetRate(8 * 1024 * 1024);
+			break;
+		}
 		
 	case ID_16MB:
-		gt->SetRate(16 * 1024 * 1024);
-		break;
+		{
+			gt->SetRate(16 * 1024 * 1024);
+			break;
+		}
 		
 	case ID_32MB:
-		gt->SetRate(32 * 1024 * 1024);
-		break;
+		{
+			gt->SetRate(32 * 1024 * 1024);
+			break;
+		}
+		
+	case ID_UNBAN:
+		{
+			gt->SetBlocked(false);
+			break;
+		}
+		
+	case ID_BAN1:
+		{
+			gt->SetBlocked(true, 1000000);
+			break;
+		}
+		
+	case ID_BAN2:
+		{
+			gt->SetBlocked(true, 2000000);
+			break;
+		}
+		
+	case ID_BAN5:
+		{
+			gt->SetBlocked(true, 5000000);
+			break;
+		}
+		
+	case ID_BAN10:
+		{
+			gt->SetBlocked(true, 10000000);
+			break;
+		}
+		
+	case ID_BAN15:
+		{
+			gt->SetBlocked(true, 15000000);
+			break;
+		}
+		
+	case ID_BAN30:
+		{
+			gt->SetBlocked(true, 30000000);
+			break;
+		}
+		
+	case ID_BAN1H:
+		{
+			gt->SetBlocked(true, 60000000);
+			break;
+		}
+
+	case ID_BANINF:
+		{
+			gt->SetBlocked(true, -1);
+			break;
+		}
 	}
 	fLock.unlock();
 	UpdateULRatings();
@@ -1353,8 +1471,10 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 		if (FindItem(fUploadList, iter, item))
 		{
 			fULPopup->setItemChecked(fULQueueID, (*iter).first->IsLocallyQueued());
+			
 			int fNewRate = (*iter).first->GetRate();
 			fULThrottleMenu->setItemChecked(fULThrottle, false);
+			
 			switch (fNewRate)
 			{
 			case 0: 	
@@ -1455,6 +1575,60 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			case 32 * 1048576:	
 				{
 					fULThrottle = fULTh32M; 
+					break;
+				}
+			}
+			
+			fULThrottleMenu->setItemChecked(fULThrottle, true);
+			
+			int fNewBan = (*iter).first->GetBanTime();
+			fULThrottleMenu->setItemChecked(fULBan, false);
+			
+			switch (fNewBan)
+			{
+			case -1:
+				{
+					fULBan = fULBanInf;
+					break;
+				}
+			case 0:
+				{
+					fULBan = fULBanNone;
+					break;
+				}
+			case 1:
+				{
+					fULBan = fULBan1;
+					break;
+				}
+			case 2:
+				{
+					fULBan = fULBan2;
+					break;
+				}
+			case 5:
+				{
+					fULBan = fULBan5;
+					break;
+				}
+			case 10:
+				{
+					fULBan = fULBan10;
+					break;
+				}
+			case 15:
+				{
+					fULBan = fULBan15;
+					break;
+				}
+			case 30:
+				{
+					fULBan = fULBan30;
+					break;
+				}
+			case 60:
+				{
+					fULBan = fULBan1H;
 					break;
 				}
 			}
@@ -1666,6 +1840,21 @@ WDownload::UpdateDLRatings()
 	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
 	{
 		(*it).second->setText(WTransferItem::QR, tr("%1").arg(qr++));
+	}
+	fLock.unlock();
+}
+
+void
+WDownload::TransferCallBackRejected(QString qFrom, int64 timeLeft)
+{
+	fLock.lock();
+	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
+	{
+		if (((*it).first->GetRemoteUser() == qFrom) && ((*it).first->IsActive() == false))
+		{
+			(*it).first->SetBlocked(true, timeLeft);
+			break;
+		}
 	}
 	fLock.unlock();
 }

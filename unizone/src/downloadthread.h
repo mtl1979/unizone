@@ -38,8 +38,7 @@ public:
 	void SetRate(int rate);
 	void SetRate(int rate, AbstractReflectSessionRef ref);
 
-
-
+	void SetBlocked(bool b, int64 timeLeft = -1);
 
 protected:
 	QMutex fLockFile;

@@ -50,7 +50,7 @@ public:
 	virtual void SetActive(bool b);
 
 	bool IsBlocked() const;
-	virtual void SetBlocked(bool b);
+	virtual void SetBlocked(bool b, int64 timeLeft = -1);
 
 	double GetCalculatedRate() const;
 	void SetMostRecentRate(double rate);
@@ -75,8 +75,11 @@ public:
 	virtual void SetRate(int rate, AbstractReflectSessionRef & ref) { fTXRate = rate; }
 	virtual void SetRate(int rate) { fTXRate = rate; }
 
+	int GetBanTime();
+
 public slots:
 	void ConnectTimer(); // Connection timed out?
+	void BlockedTimer(); // blocking timed out?
 
 protected:
 	QObject * fOwner;
@@ -92,6 +95,7 @@ protected:
 	uint32 fETA[MAX_ETA_COUNT];		// last 5 ETA's
 	int fETACount;					// amount we have, 5 max
 	double fPackets;				// amount of ultrafast 8 kB packets transfered
+	int64 fTimeLeft;
 
 	void SetMostRecentETA(uint32 eta);
 	uint32 ComputeETA() const;

@@ -59,7 +59,7 @@ public:
 		TransferMD5SendReadDone,			// these are sent by the MD5 looper...
 		TransferMD5RecvReadDone,
 		TransferCommandPeerID,
-		TransferNotifyRejected = 'utrj'		// UniShare specific ;)
+		TransferNotifyRejected
 	};
 
 	void AddDownload(QString * files, int32 numFiles, QString remoteSessionID, uint32 remotePort,
@@ -71,7 +71,9 @@ public:
 
 	void DequeueSessions();
 	void KillLocalQueues();
-	
+
+	void TransferCallBackRejected(QString qFrom, int64 timeLeft);
+
 protected:
 	virtual void customEvent(QCustomEvent *);
 	virtual void resizeEvent(QResizeEvent * e)
@@ -93,12 +95,13 @@ private:
 	QSplitter * fMainSplit;
 	QListView * fUploads, * fDownloads;
 	QPushButton * fCancelU;
-	QPushButton * fUnblockU;
+	//QPushButton * fUnblockU;
 	QPushButton * fCancelD;
 	QVBox * fBoxU, * fBoxD;
-	QHBox * fButtonsU;
+	//QHBox * fButtonsU;
 	QPopupMenu * fDLPopup, *fULPopup;
 	QPopupMenu * fDLThrottleMenu, * fULThrottleMenu;
+	QPopupMenu * fULBanMenu;
 
 	int fDLQueueID, fULQueueID;
 	int fULBlockedID;
@@ -124,6 +127,10 @@ private:
 	int fDLTh8M, fULTh8M;
 	int fDLTh16M, fULTh16M;
 	int fDLTh32M, fULTh32M;
+
+	int fULBan, fULBanNone, fULBanInf;
+	int fULBan1, fULBan2, fULBan5, fULBan10, fULBan15, fULBan30;
+	int fULBan1H;
 
 	QListViewItem * fDLPopupItem;	// download item that was right clicked
 	QListViewItem * fULPopupItem;	// upload item that was right clicked
@@ -164,6 +171,15 @@ private:
 		ID_8MB,
 		ID_16MB,
 		ID_32MB,
+		ID_UNBAN,
+		ID_BAN1,
+		ID_BAN2,
+		ID_BAN5,
+		ID_BAN10,
+		ID_BAN15,
+		ID_BAN30,
+		ID_BAN1H,
+		ID_BANINF,
 		ID_MOVEUP,
 		ID_MOVEDOWN
 	};

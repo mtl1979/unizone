@@ -207,8 +207,12 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					case WDownload::TransferNotifyRejected:
 						{
 							Message * q = new Message(WGenericEvent::FileBlocked);
+							uint64 timeleft = (uint64) -1;
+							(void) next()->FindInt64("timeleft", (int64 *) &timeleft);
+							if (timeleft != -1)
+								q->AddInt64("timeleft", timeleft);
 							SendReply(q);
-							SetBlocked(true);
+							SetBlocked(true, timeleft);
 						}
 
 					case WDownload::TransferFileHeader:
@@ -555,3 +559,19 @@ WDownloadThread::SetRate(int rate, AbstractReflectSessionRef ref)
 		ref()->SetInputPolicy(PolicyRef(NULL, NULL));
 }
 
+
+void
+WDownloadThread::SetBlocked(bool b, int64 timeLeft)
+{
+	WGenericThread::SetBlocked(b, timeLeft);
+	if (b)
+	{
+		Message * msg = new Message(WGenericEvent::FileBlocked);
+		if (msg)
+		{
+			if (fTimeLeft != -1)
+				msg->AddInt64("timeleft", fTimeLeft);
+			SendReply(msg);
+		}
+	}
+}

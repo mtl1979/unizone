@@ -35,7 +35,7 @@ public:
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
 
-	virtual void SetBlocked(bool b);
+	virtual void SetBlocked(bool b, int64 timeLeft = -1);
 	virtual void SetLocallyQueued(bool b);
 	virtual void SetManuallyQueued(bool b);
 
@@ -71,6 +71,7 @@ private:
 	int32 fCurFile, fNumFiles;
 
 	QTimer * CTimer;					// Connect timer
+	QTimer * fBlockTimer;				// blocked timer
 
 	void DoUpload();
 };
