@@ -147,8 +147,9 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/help"))
 		{
+			QString command = GetParameterString(sendText);
 			if (fSettings->GetInfo())
-				ShowHelp();
+				ShowHelp(command);
 		}
 		else if (CompareCommand(sendText, "/clearline"))
 		{
@@ -1595,7 +1596,7 @@ WinShareWindow::Disconnect2()
 }
 
 void
-WinShareWindow::ShowHelp()
+WinShareWindow::ShowHelp(QString command)
 {
 	QString helpText	=	"\n" NAME " Command Reference\n"
 							"\n\t\t\t\t/action [action] - do something"
@@ -1618,7 +1619,7 @@ WinShareWindow::ShowHelp()
 							"\n\t\t\t\t/connect - connect to the currently selected server"
 							"\n\t\t\t\t/disconnect - disconnect from server"
 							"\n\t\t\t\t/dns [user|host] - give information about host"
-							"\n\t\t\t\t/help - show this help text"
+							"\n\t\t\t\t/help [command] - show help for command (no '/' in front of command) or show this help text if no command given."
 							"\n\t\t\t\t/heremsg - message for here state"
 							"\n\t\t\t\t/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)"
 							"\n\t\t\t\t/me [action] - /action synonym"
@@ -1672,7 +1673,31 @@ WinShareWindow::ShowHelp()
 							"\nIgnore pattern : " + fIgnore +
 							"\nWatch pattern : " + fWatch;
 
-	QString str = ParseStringStr(helpText);
+	QString str;
+	if ((command != QString::null) && (command != ""))
+	{
+		QString cmd = "\t/" + command + " ";
+		int i = helpText.find(cmd);
+		if (i >= 0)
+		{
+			i = i + 1;
+			QString chelp = helpText.mid(i);
+			int j = chelp.find("\n", 5);
+			if (j >= 0)
+			{
+				chelp = chelp.left(j);
+				str = "\nHelp for " + command + ":\n\n" + chelp;
+				ParseString(str);
+				PrintSystem(str);
+				return;
+			}
+		}
+		else
+		{
+			PrintError(tr("Command %1 not found").arg(command));
+		}
+	}
+	str = ParseStringStr(helpText);
 	PrintSystem(str);
 }
 

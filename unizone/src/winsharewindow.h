@@ -275,7 +275,7 @@ private:
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
 	void Action(const QString & name, const QString & msg, bool batch = false);
 
-	void ShowHelp();
+	void ShowHelp(QString command = QString::null);
 
 	// parsing stuff...
 	bool MatchUserFilter(const WUser * user, const char * filter);
