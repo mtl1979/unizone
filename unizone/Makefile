@@ -176,12 +176,17 @@ src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
 clean :
 	rm -f *.o *.a $(EXECUTABLES)
 	rm -f src/moc_*.cpp
+	rm -f src/muscle/qtsupport/moc_*.cpp
 	rm -f src/aboutdlg.h src/aboutdlg.cpp
 	rm -f src/channel.h src/channel.cpp
 	rm -f src/prefs.h src/prefs.cpp
 	rm -f src/privatewindow.h src/privatewindow.cpp
 	$(MAKE) -C src -f Makefile clean
 	$(MAKE) -C linux -f Makefile clean
+
+distclean : clean
+	rm -f .depends .depends1 .depends2
+
 # DO NOT DELETE
 
 include .depends
