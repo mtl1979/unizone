@@ -1703,6 +1703,22 @@ Päiväys: %4</translation>
         <source>&lt;u&gt;http://magep.com/&lt;/u&gt;</source>
         <translation>&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
+    <message>
+        <source>This is the color of "Warning".</source>
+        <translation>Tekstin "Varoitus" väri.</translation>
+    </message>
+    <message>
+        <source>This is the color of the text in warning messages.</source>
+        <translation>Varoitusviestien tekstin väri.</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Warning&lt;/b&gt;</source>
+        <translation>&lt;b&gt;Varoitus&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Warning text</source>
+        <translation>Varoitusteksti</translation>
+    </message>
 </context>
 <context>
     <name>WPrefsBase</name>
@@ -2285,6 +2301,14 @@ Päiväys: %4</translation>
     <message>
         <source>Automatically Close</source>
         <translation>Sulje Automaattisesti</translation>
+    </message>
+    <message>
+        <source>Warning Text</source>
+        <translation>Varoitusteksti</translation>
+    </message>
+    <message>
+        <source>Warning Message Text</source>
+        <translation>Varoitusviestin teksti</translation>
     </message>
 </context>
 <context>

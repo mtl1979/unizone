@@ -1465,6 +1465,22 @@ Date: %4</source>
         <source>&lt;font color="%1"&gt;%2&lt;/font&gt;</source>
         <translation>&lt;font color="%1"&gt;%2&lt;/font&gt;</translation>
     </message>
+    <message>
+        <source>This is the color of "Warning".</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>This is the color of the text in warning messages.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Warning&lt;/b&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Warning text</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrefsBase</name>
@@ -1987,6 +2003,14 @@ Date: %4</source>
     <message>
         <source>Automatically Close</source>
         <translation>Automatically Close</translation>
+    </message>
+    <message>
+        <source>Warning Text</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Warning Message Text</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

@@ -1375,6 +1375,18 @@
                                 <string>'Name Said' Text</string>
                             </property>
                         </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Warning Text</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Warning Message Text</string>
+                            </property>
+                        </item>
                         <property stdset="1">
                             <name>name</name>
                             <cstring>fColorsList</cstring>

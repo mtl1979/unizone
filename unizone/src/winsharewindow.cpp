@@ -1668,6 +1668,10 @@ WinShareWindow::LoadSettings()
 			WColors::URL = str;
 		if ((str = fSettings->GetColorItem(10)) != QString::null)
 			WColors::NameSaid = str;
+		if ((str = fSettings->GetColorItem(11)) != QString::null)
+			WColors::Warning = str;
+		if ((str = fSettings->GetColorItem(12)) != QString::null)
+			WColors::WarningMsg = str;
 
 		fWatch = fSettings->GetWatchPattern();
 		fIgnore = fSettings->GetIgnorePattern();

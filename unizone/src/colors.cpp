@@ -12,3 +12,5 @@ QString WColors::Action = "#CC00CC";
 QString WColors::URL = "#0000FF";
 QString WColors::NameSaid = "#FF0033";
 QString WColors::Watch = "#660000";
+QString WColors::Warning = "#FFAA00";
+QString WColors::WarningMsg = "#FFAA7F";

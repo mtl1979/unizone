@@ -26,7 +26,7 @@ private:
 	void UpdateDescription(int);
 	
 	int fCurColorIndex;
-	QString fColor[11];
+	QString fColor[13];
 };
 
 #endif // PREFS_H

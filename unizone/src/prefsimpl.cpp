@@ -39,7 +39,7 @@
 #include <qtabwidget.h>
 #include <qlineedit.h>
 
-const char * kColorDesc[11] = {	
+const char * kColorDesc[13] = {	
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name." ), 
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of other users' names." ),
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of text sent by you and other users." ),
@@ -50,10 +50,12 @@ const char * kColorDesc[11] = {
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of private text." ),
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Action\"." ),
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of URLs." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name in text when someone says your name in the main chat." )
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name in text when someone says your name in the main chat." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Warning\"." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in warning messages." )
 								};
 
-const char * kSampleText[11] = {	
+const char * kSampleText[13] = {	
 									QT_TRANSLATE_NOOP( "WPrefs", "Username" ),
 									QT_TRANSLATE_NOOP( "WPrefs", "Remote User" ),
 									QT_TRANSLATE_NOOP( "WPrefs", "Sample text" ),
@@ -64,7 +66,9 @@ const char * kSampleText[11] = {
 									QT_TRANSLATE_NOOP( "WPrefs", "Private text" ),
 									QT_TRANSLATE_NOOP( "WPrefs", "<b>Action</b>" ),
 									QT_TRANSLATE_NOOP( "WPrefs", "<u>http://magep.com/</u>" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "Username" )
+									QT_TRANSLATE_NOOP( "WPrefs", "Username" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "<b>Warning</b>" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "Warning text" )
 								};
 
 /*
@@ -99,6 +103,8 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fColor[8] = WColors::Action;
 	fColor[9] = WColors::URL;
 	fColor[10] = WColors::NameSaid;
+	fColor[11] = WColors::Warning;
+	fColor[12] = WColors::WarningMsg;
 
 	
 	fAutoUpdateServers->setChecked(gWin->fSettings->GetAutoUpdateServers());
@@ -285,7 +291,7 @@ WPrefs::OK()
 
 	// save the colors
 	gWin->fSettings->EmptyColorList();
-	for (i = 0; i < 11; i++)
+	for (i = 0; i < 13; i++)
 		gWin->fSettings->AddColorItem(fColor[i]);
 	WColors::LocalName = fColor[0];
 	WColors::RemoteName = fColor[1];
@@ -298,6 +304,8 @@ WPrefs::OK()
 	WColors::Action = fColor[8];
 	WColors::URL = fColor[9];
 	WColors::NameSaid = fColor[10];
+	WColors::Warning = fColor[11];
+	WColors::WarningMsg = fColor[12];
 
 	// save all the other stuff
 	gWin->fSettings->SetAutoUpdateServers(fAutoUpdateServers->isChecked());

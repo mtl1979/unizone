@@ -19,6 +19,8 @@ public:
 	static QString URL;
 	static QString NameSaid;
 	static QString Watch;
+	static QString Warning;
+	static QString WarningMsg;
 };
 
 #endif

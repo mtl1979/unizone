@@ -1615,6 +1615,22 @@ Date: %4</translation>
         <source>&lt;u&gt;http://magep.com/&lt;/u&gt;</source>
         <translation>&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
+    <message>
+        <source>This is the color of "Warning".</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>This is the color of the text in warning messages.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Warning&lt;/b&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Warning text</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrefsBase</name>
@@ -2197,6 +2213,14 @@ Date: %4</translation>
     <message>
         <source>Automatically Close</source>
         <translation>Nuke Them</translation>
+    </message>
+    <message>
+        <source>Warning Text</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Warning Message Text</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

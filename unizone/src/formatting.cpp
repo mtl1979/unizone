@@ -217,10 +217,10 @@ QString WFormat::Error(const QString &text)
 QString WFormat::Warning(const QString &text)
 {
 	int font = GetFontSize();
-	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Error).arg(font);
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Warning).arg(font);
 	temp += tr("<b>Warning:</b>");
 	temp += "</font> ";
-	temp += tr("<font color=\"%1\" size=\"%2\">").arg(WColors::ErrorMsg).arg(font);
+	temp += tr("<font color=\"%1\" size=\"%2\">").arg(WColors::WarningMsg).arg(font);
 	temp += text;
 	temp += "</font>";
 	return temp;
