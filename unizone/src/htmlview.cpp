@@ -280,7 +280,7 @@ WHTMLView::UpdateScrollState()
 bool
 WHTMLView::event(QEvent *event)
 {
-	if (event->type() == WMessageEvent::MessageEventType)
+	if (event->type() == (int) WMessageEvent::MessageEventType)
 	{
 		WMessageEvent *wme = dynamic_cast<WMessageEvent *>(event);
 		if (wme)

@@ -80,6 +80,7 @@ WFile::WriteBlock(const void *buf, int size)
 void
 WFile::Flush()
 {
+	(void) fsync(file);
 }
 
 UINT64
