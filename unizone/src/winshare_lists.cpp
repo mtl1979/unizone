@@ -1,4 +1,5 @@
 #include "winsharewindow.h"
+#include "debugimpl.h"
 #include "wstring.h"
 #include "netclient.h"
 #include "tokenizer.h"

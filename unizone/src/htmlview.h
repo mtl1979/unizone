@@ -1,7 +1,9 @@
 #ifndef HTMLVIEW_H
 #define HTMLVIEW_H
 
-#include "debugimpl.h"
+#include "system/Mutex.h"
+
+using namespace muscle;
 
 #include <qtextbrowser.h>
 
@@ -27,17 +29,15 @@ protected:
 	
 	virtual void showEvent(QShowEvent * event);
 
-	virtual void BeforeShown();
-	virtual void GotShown(const QString & txt);
-
 private:
 	QString fOldURL, fURL, fContext;
 	QString fBuffer;
 	int fScrollX, fScrollY;				// do we need to scroll the view down after an insertion?
 	bool fScrollDown;
 
+	Mutex fLock;
+
 	void CheckScrollState();
-	void UpdateTextView();
 	void UpdateScrollState();
 
 	virtual void append( const QString & text);
@@ -47,5 +47,3 @@ private slots:
 };
 
 #endif
-
-

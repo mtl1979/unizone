@@ -16,6 +16,7 @@ WHTMLView::WHTMLView(QWidget * parent, const char * name)
 	if (!name)
 		setName( "WHTMLView" );
 	fURL = fOldURL = fContext = QString::null;
+	fScrollY = -1;
 	fScrollDown = true;
 	connect( this, SIGNAL(highlighted(const QString &)), this, SLOT(URLSelected(const QString &)) );
 }
@@ -55,20 +56,26 @@ WHTMLView::viewportMouseMoveEvent(QMouseEvent * e)
 }
 
 void 
-WHTMLView::showEvent(QShowEvent * /* event */)
+WHTMLView::showEvent(QShowEvent *)
 {
 #if (QT_VERSION < 0x030000)
-	BeforeShown();
+//	Force scrolling down...
+	fScrollDown = true;
+	fScrollY = 0;
+//  -----------------------
 	QString txt;
 	if (fBuffer.length() > 0)
 	{
-		txt = fBuffer;
+		txt = ParseForShown(fBuffer);
 		fBuffer = "";
 	}
 	else
-		txt = text();
+		txt = ParseForShown(text());
+	fLock.Lock();
 	setText("");
-	GotShown(txt);
+	setText(txt);
+	fLock.Unlock();
+	UpdateScrollState();
 #endif
 }
 
@@ -108,15 +115,23 @@ WHTMLView::append(const QString &newtext)
 	PRINT("WHTMLView::append()\n");
 #if (QT_VERSION < 0x030000)
 	if (text().length() == 0)
+	{
+		fLock.Lock();
 		setText(newtext);
+		fLock.Unlock();
+	}
 	else
 	{
 		QString tmp("\t");
 		tmp += newtext;
+		fLock.Lock();
 		QTextBrowser::append(tmp);
+		fLock.Unlock();
 	}
 #else
+	fLock.Lock();
 	QTextBrowser::append(newtext);
+	fLock.Unlock();
 #endif
 	PRINT("WHTMLView::append() OK\n");
 }
@@ -133,31 +148,30 @@ WHTMLView::appendText(const QString &newtext)
 		if (!widget->isVisible())
 		{
 			PRINT("appendText 2\n");
-			BeforeShown();	
+			CheckScrollState();	
 			if (fBuffer.length() == 0)
 			{
 				fBuffer = text();
 			}
 			PRINT("appendText 3\n");
+			fLock.Lock();
 			setText("");
+			fLock.Unlock();
 			if (fBuffer.length() > 0)
 			{
 				fBuffer += "<br>";
 			}
 			PRINT("appendText 4\n");
 			fBuffer += newtext;
-			PRINT("appendText 5\n");
-			GotShown(fBuffer);
+/*	We don't use UpdateScrollState() here because nothing is really shown on the screen */
 			PRINT("appendText OK\n");
 			return;
 		}
 	}
 	// fall through here...
 	{
-		// We need to explicitly call BeforeShown() here because we are clearing fBuffer
-		// and scroll bar might be on top position because we cleared the textview.
-		PRINT("appendText: Calling BeforeShown()\n");
-		BeforeShown();	
+		PRINT("appendText: Calling CheckScrollState()\n");
+		CheckScrollState();	
 		PRINT("appendText: Calling append(fBuffer)\n");
 		if (fBuffer.length() > 0)
 		{
@@ -166,8 +180,8 @@ WHTMLView::appendText(const QString &newtext)
 		}
 		PRINT("appendText: Calling append(newtext)\n");
 		append(newtext);
-		PRINT("appendText: Calling UpdateTextView()\n");
-		UpdateTextView();
+		PRINT("appendText: Calling UpdateScrollState()\n");
+		UpdateScrollState();
 	}
 	PRINT("appendText OK\n");
 }
@@ -175,25 +189,13 @@ WHTMLView::appendText(const QString &newtext)
 void
 WHTMLView::clear()
 {
+	PRINT("WHTMLView::clear()\n");
 	fBuffer = "";
-	fScrollY = 0;
+	fScrollY = -1;
+	fLock.Lock();
 	setText("");
-}
-
-void
-WHTMLView::BeforeShown()
-{
-	CheckScrollState();
-}
-
-void
-WHTMLView::GotShown(const QString & txt)
-{
-	if (fBuffer.length() == 0)
-	{
-		setText(ParseForShown(txt));
-		UpdateTextView();
-	}
+	fLock.Unlock();
+	PRINT("WHTMLView::clear() OK\n");
 }
 
 void
@@ -201,49 +203,44 @@ WHTMLView::CheckScrollState()
 {
 	QScrollBar * scroll = verticalScrollBar();
 #ifdef DEBUG2
-	PRINT("CHECKSCROLLSTATE: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
+	PRINT("CheckScrollState: ContentsX = %d, ContentsY = %d\n", fChatText->contentsX(),		fChatText->contentsY());
+	PRINT("CheckScrollState: ContentsW = %d, ContentsH = %d\n", fChatText->contentsWidth(),	fChatText->contentsHeight());
+	PRINT("CheckScrollState: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
 #endif
 	fScrollX = contentsX();
 	if (scroll->value() >= scroll->maxValue())
 	{
 		fScrollDown = true;
-//		fScrollY = contentsY();
 	}
 	else
 	{
 		fScrollDown = false;
-		if (scroll->maxValue() > 0)			// TextView might be cleared and then we should use the old value
+		if (fScrollY == -1)
 			fScrollY = scroll->value();
 	}
 }
 
 void
-WHTMLView::UpdateTextView()
-{
-	// <postmaster@raasu.org> 20021021 -- Fixed too long line in debug output
-#ifdef DEBUG2
-	PRINT("UPDATETEXTVIEW: ContentsX = %d, ContentsY = %d\n", fChatText->contentsX(),		fChatText->contentsY());
-	PRINT("              : ContentsW = %d, ContentsH = %d\n", fChatText->contentsWidth(),	fChatText->contentsHeight());
-#endif
-	UpdateScrollState();
-}
-
-void
 WHTMLView::UpdateScrollState()
 {
+	// if we don't have previous state saved, let's scroll to bottom
+	if (fScrollY == -1)
+		fScrollDown = true;
+	// -------------------------------------------------------------
+
 	if (fScrollDown)
-	{
 		fScrollY = contentsHeight();
-	}
 
 	if (fScrollX != contentsX() || fScrollY != contentsY())
 	{
 		setContentsPos(fScrollX, QMIN(fScrollY, contentsHeight()));
-#ifndef WIN32	// linux only... (FreeBSD???)
+#ifndef WIN32	// linux only... (FreeBSD, QNX???)
 		repaintContents(
 							contentsX(), contentsY(),
 							contentsWidth(), contentsHeight(),
 							false);
 #endif
+		if (fScrollY <= contentsHeight())
+			fScrollY = -1;
 	}
 }
