@@ -192,28 +192,33 @@ StripURL(const char * c)
 bool
 IsURL(const String & url)
 {
+	String u = url.ToLowerCase();
+
+	// Add default protocol prefixes
+
+	if (u.StartsWith("www."))		u = u.Prepend("http://");
+	if (u.StartsWith("ftp."))		u = u.Prepend("ftp://");
+	if (u.StartsWith("beshare."))	u = u.Prepend("server://");
+	if (u.StartsWith("irc."))		u = u.Prepend("irc://");
+
 	if (
-		(url.StartsWithIgnoreCase("file://")) || 
-		(url.StartsWithIgnoreCase("http://")) ||
-		(url.StartsWithIgnoreCase("www.")) ||
-		(url.StartsWithIgnoreCase("https://")) ||
-		(url.StartsWithIgnoreCase("mailto:")) ||
-		(url.StartsWithIgnoreCase("ftp://")) ||
-		(url.StartsWithIgnoreCase("ftp.")) ||
-		(url.StartsWithIgnoreCase("audio://")) ||
-		(url.StartsWithIgnoreCase("beshare:")) ||
-		(url.StartsWithIgnoreCase("beshare.")) ||
-		(url.StartsWithIgnoreCase("server://")) ||
-		(url.StartsWithIgnoreCase("priv:")) ||
-		(url.StartsWithIgnoreCase("share:")) || 
-		(url.StartsWithIgnoreCase("mms://")) ||
-		(url.StartsWithIgnoreCase("irc://")) ||
-		(url.StartsWithIgnoreCase("irc."))
+		(u.StartsWith("file://")) || 
+		(u.StartsWith("http://")) || 
+		(u.StartsWith("https://")) ||
+		(u.StartsWith("mailto:")) ||
+		(u.StartsWith("ftp://")) ||
+		(u.StartsWith("audio://")) || 
+		(u.StartsWith("mms://")) || 
+		(u.StartsWith("beshare:")) || 
+		(u.StartsWith("share:")) || 
+		(u.StartsWith("server://")) ||
+		(u.StartsWith("priv:")) ||
+		(u.StartsWith("irc://"))
 		)
 	{
 		if (
-			!url.EndsWith("://") &&
-			(url.Length() > 9)
+			!u.EndsWith("://") &&
+			(u.Length() > 9)
 			)
 		{
 			return true;
