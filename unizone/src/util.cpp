@@ -112,9 +112,9 @@ ParseChatText(const QString & str)
 						break;
 
 					if 	(
-						muscleInRange(last.unicode(), L'0', L'9') ||
-						muscleInRange(last.unicode(), L'a', L'z') ||
-						muscleInRange(last.unicode(), L'A', L'Z') ||
+						muscleInRange(last.unicode(), (unichar) '0', (unichar) '9') ||
+						muscleInRange(last.unicode(), (unichar) 'a', (unichar) 'z') ||
+						muscleInRange(last.unicode(), (unichar) 'A', (unichar) 'Z') ||
 						(last == '/')
 						)
 					{
@@ -1156,7 +1156,7 @@ toULongLong(const QString &in, bool *ok)
 	for (unsigned int x = 0; x < in.length(); x++)
 	{
 		QChar c = in.at(x);
-		if (!muscleInRange(c.unicode(), L'0', L'9'))
+		if (!muscleInRange(c.unicode(), (unichar) '0', (unichar) '9'))
 		{
 			o = false;
 			break;
@@ -1226,7 +1226,7 @@ int64 toLongLong(const QString &in, bool *ok)
 		QChar c = in.at(x);
 		if ((x == 0) && (c.unicode() == '-'))
 			negate = true;
-		else if (!muscleInRange(c.unicode(), L'0', L'9'))
+		else if (!muscleInRange(c.unicode(), (unichar) '0', (unichar) '9'))
 		{
 			o = false;
 			break;
@@ -1359,8 +1359,10 @@ void HEXClean(QString &in)
 	for (unsigned int x = 0; x < in.length(); x++)
 	{
 		QChar c = in[x].lower();
-		if (muscleInRange(c.unicode(), L'0', L'9') || 
-			muscleInRange(c.unicode(), L'a', L'f'))
+		if (
+			muscleInRange(c.unicode(), (unichar) '0', (unichar) '9') || 
+			muscleInRange(c.unicode(), (unichar) 'a', (unichar) 'f')
+		   )
 			tmp += c;
 	}
 	in = tmp;
@@ -1373,7 +1375,7 @@ void BINClean(QString &in)
 	while (s < in.length())
 	{
 		// Skip initial garbage
-		while (!muscleInRange(in[s].unicode(), L'0', L'1'))
+		while (!muscleInRange(in[s].unicode(), (unichar) '0', (unichar) '1'))
 		{
 			s++;
 			// avoid looping out of string...
@@ -1395,7 +1397,7 @@ void BINClean(QString &in)
 			if (s == in.length())
 			  break;
 			QChar c = in[s++];
-			if (muscleInRange(c.unicode(), L'0', L'1'))
+			if (muscleInRange(c.unicode(), (unichar) '0', (unichar) '1'))
 				part += c;
 			else // garbage?
 				break;
@@ -1404,7 +1406,7 @@ void BINClean(QString &in)
 		if (p > 0)
 		{
 			while (part.length() < 8) 
-				part = "0" + part;
+				part = part.prepend("0");
 			tmp += part;
 		}
 	}
@@ -1418,7 +1420,7 @@ void OCTClean(QString &in)
 	while (s < in.length())
 	{
 		// Skip initial garbage
-		while (!muscleInRange(in[s].unicode(), L'0', L'6'))
+		while (!muscleInRange(in[s].unicode(), (unichar) '0', (unichar) '6'))
 		{
 			s++;
 			// avoid looping out of string...
@@ -1440,7 +1442,7 @@ void OCTClean(QString &in)
 			if (s == in.length())
 			  break;
 			QChar c = in[s++];
-			if (muscleInRange(c.unicode(), L'0', L'6'))
+			if (muscleInRange(c.unicode(), (unichar) '0', (unichar) '6'))
 				part += c;
 			else // garbage?
 				break;
@@ -1449,7 +1451,7 @@ void OCTClean(QString &in)
 		if (p > 0)
 		{
 			while (part.length() < 3) 
-				part = "0" + part;
+				part = part.prepend("0");
 			tmp += part;
 		}
 	}
@@ -1490,9 +1492,9 @@ QString BINEncode(const QString &in)
 		for (int xx = 0; xx < 8; xx++)
 		{
 			if (c % 2 == 1)
-				part = "1" + part;
+				part = part.prepend("1");
 			else
-				part = "0" + part;
+				part = part.prepend("0");
 			c /= 2;
 		}
 		out += part;
@@ -1532,7 +1534,7 @@ QString OCTEncode(const QString &in)
 		part = "";
 		for (int xx = 0; xx < 3; xx++)
 		{
-			part = ('0' + (c % 7)) + part;
+			part = part.prepend('0' + (c % 7));
 			c /= 7;
 		}
 		out += part;

@@ -1,16 +1,26 @@
+ifeq ($(DEBUG), )
+  DEBUG=0
+endif
+
+ifeq ($(DEBUG), 0)
+  DEBUGCXXFLAGS = -DNDEBUG
+else 
+  DEBUGCXXFLAGS = -g -D_DEBUG 
+endif
+
 INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/unix -Isrc/muscle \
 	-Isrc/muscle/message -Isrc/muscle/iogateway \
 	-Isrc/muscle/reflector -Isrc/muscle/regex -Isrc/muscle/util \
 	-Isrc/muscle/syslog -Isrc/muscle/system
 GCCOPTFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT \
-	-DNDEBUG -DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
+	-DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
 KERNEL_NAME := $(shell uname -s || true)
 
 ifeq ($(KERNEL_NAME), Linux)
 GCCOPTFLAGS += -DLINUX -D__USE_LARGEFILE_64
 endif
 
-CXXFLAGS = -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
+CXXFLAGS = $(DEBUGCXXFLAGS) -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
