@@ -17,6 +17,8 @@
 
 #include "netclient.h"
 #include "regex/StringMatcher.h"
+#include "combo.h"					// <postmaster@raasu.org> 20030218
+#include "textevent.h"				// <postmaster@raasu.org> 20030218
 
 #include <map>
 using std::multimap;
@@ -43,6 +45,8 @@ signals:
 
 protected:
 	virtual void resizeEvent(QResizeEvent *);
+	virtual void customEvent(QCustomEvent *);
+
 
 private slots:
 	void Close();
@@ -62,7 +66,8 @@ private:
 	QHGroupBox * fEntryBox;
 	QHGroupBox * fButtonsBox;
 	QLabel * fSearchLabel;
-	QLineEdit * fSearchEdit;
+	// QLineEdit * fSearchEdit;
+	WComboBox * fSearchEdit;
 	QListView * fSearchList;
 	QPushButton * fDownload;
 	QPushButton * fClose;
@@ -86,6 +91,8 @@ private:
 	void StartQuery(QString sidRegExp, QString fileRegExp);
 	void SetResultsMessage();
 	void SetStatus(const QString & status);
+
+	void HandleComboEvent(WTextEvent *);
 
 	// quick inline method to generate a pair
 	WFIPair MakePair(const QString s, WFileInfo * fi)

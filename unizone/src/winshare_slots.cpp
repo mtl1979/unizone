@@ -134,13 +134,13 @@ WinShareWindow::UserStatusChanged(QString id, QString n, QString s)
 	{
 		QString system = WFormat::SystemText.arg(WColors::System).arg(fSettings->GetFontSize());
 
-		// <postmaster@raasu.org> 20020929,20030211,20030314
+		// <postmaster@raasu.org> 20020929,20030211,20030214
 
 		TranslateStatus(s);
 
 		if ((n == "?") || (n == "")) // Invalid user name?
 		{
-			// <postmaster@raasu.org> 20030314
+			// <postmaster@raasu.org> 20030214
 			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
 				WFormat::UserStatusChanged2.arg(id).arg(FixStringStr(s)) 
 				);	

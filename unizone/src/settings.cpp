@@ -1053,3 +1053,25 @@ WSettings::GetRemotePassword()
 	fSet->FindString(REMOTEPASSWORD, pw);
 	return QString::fromUtf8(pw.Cstr());
 }
+
+void
+WSettings::AddQueryItem(QString str)
+{
+	fSet->AddString(QUERY_LIST, (const char *) str.utf8());
+}
+
+QString
+WSettings::GetQueryItem(int index)
+{
+	String str;
+	if (fSet->FindString(QUERY_LIST, index, str) == B_OK)
+		return QString::fromUtf8(str.Cstr());
+	return QString::null;
+}
+
+void
+WSettings::EmptyQueryList()
+{
+	fSet->RemoveName(QUERY_LIST);
+}
+

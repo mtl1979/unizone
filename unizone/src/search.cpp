@@ -11,6 +11,7 @@
 #include "searchitem.h"
 #include "lang.h"			// <postmaster@raasu.org> 20020924
 #include "platform.h"		// <postmaster@raasu.org> 20021114
+#include "combo.h"			// <postmaster@raasu.org> 20030218
 
 #include <time.h>
 
@@ -71,8 +72,11 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fSearchLabel = new QLabel(fEntryBox);
 	CHECK_PTR(fSearchLabel);
 
-	fSearchEdit = new QLineEdit(fEntryBox);
+	// fSearchEdit = new QLineEdit(fEntryBox);
+	fSearchEdit = new WComboBox(this, fEntryBox, "fSearchEdit");
 	CHECK_PTR(fSearchEdit);
+	fSearchEdit->setEditable(true);
+	fSearchEdit->setMinimumWidth(this->width()*0.75);
 	fSearchLabel->setBuddy(fSearchEdit);
 	fSearchLabel->setText(MSG_SW_CSEARCH);
 	
@@ -98,9 +102,15 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 
 	fNet = net;
 
+	// load query history
+	QString str;
+	for (i = 0; (str = gWin->fSettings->GetQueryItem(i)) != QString::null; i++)
+		fSearchEdit->insertItem(str, i);
+
+
 	// connect up slots
 	connect(fClose, SIGNAL(clicked()), this, SLOT(Close()));
-	connect(fSearchEdit, SIGNAL(returnPressed()), this, SLOT(GoSearch()));
+	// connect(fSearchEdit, SIGNAL(returnPressed()), this, SLOT(GoSearch()));
 	connect(fNet, SIGNAL(AddFile(const QString, const QString, bool, MessageRef)), this,
 			SLOT(AddFile(const QString, const QString, bool, MessageRef)));
 	connect(fNet, SIGNAL(RemoveFile(const QString, const QString)), this, 
@@ -119,6 +129,17 @@ WSearch::~WSearch()
 {
 	StopSearch();
 	ClearList();
+
+	gWin->fSettings->EmptyQueryList();
+
+	// save query history
+	int i;
+	for (i = 0; i < fSearchEdit->count(); i++)
+	{
+		gWin->fSettings->AddQueryItem(fSearchEdit->text(i));
+		PRINT("Saved query %s\n", fSearchEdit->text(i).latin1());
+	}
+
 	fIsRunning = false;
 	emit Closed();
 }
@@ -286,14 +307,20 @@ WSearch::GoSearch()
 
 
 	// here we go with the new search pattern
-	if (fSearchEdit->text().stripWhiteSpace() == "")	// no search string
+	if (fSearchEdit->currentText().stripWhiteSpace() == "")	// no search string
 		return;
+
+	if (gWin->fNetClient->IsInternalThreadRunning() == false)
+	{
+		fStatus->message(MSG_NOTCONNECTED);
+		return;
+	}
 
 	// now we lock
 	Lock();
 
 	// parse the string for the '@' if it exists
-	String fileExp(fSearchEdit->text().utf8());
+	String fileExp(fSearchEdit->currentText().utf8());
 	String userExp;
 
 	fileExp = fileExp.Trim();
@@ -441,6 +468,43 @@ WSearch::SetStatus(const QString & status)
 void
 WSearch::SetSearch(QString pattern)
 {
-	fSearchEdit->setText(pattern);
+	//fSearchEdit->setText(pattern);
+	// Is already on history?
+	for (int i = 0; i < fSearchEdit->count(); i++)
+	{
+		if (fSearchEdit->text(i) == pattern)
+		{
+			fSearchEdit->setCurrentItem(i);
+			GoSearch();
+			return;
+		}
+	}
+	fSearchEdit->insertItem(0, pattern);
+	fSearchEdit->setCurrentItem(0);
 	GoSearch();
+}
+
+void
+WSearch::customEvent(QCustomEvent * event)
+{
+	switch (event->type())
+	{
+				case WTextEvent::ComboType:
+					HandleComboEvent(dynamic_cast<WTextEvent *>(event));
+					return;
+				default:
+					break;
+	}
+}
+
+void
+WSearch::HandleComboEvent(WTextEvent * e)
+{
+	if (e)
+	{
+		WComboBox * sender = (WComboBox *)e->data();
+		// see who sent this 
+		if (sender == fSearchEdit)
+			GoSearch();
+	}
 }

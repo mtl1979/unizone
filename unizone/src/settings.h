@@ -82,6 +82,8 @@ using namespace muscle;
 
 #define REMOTEPASSWORD "remotepassword"
 
+#define QUERY_LIST "querylist"
+
 class WSettings
 {
 public:
@@ -117,6 +119,11 @@ public:
 	void EmptyStatusList();
 	void SetCurrentStatusItem(int item);
 	int GetCurrentStatusItem();
+
+	// query list
+	void AddQueryItem(QString str);
+	QString GetQueryItem(int index);
+	void EmptyQueryList();
 
 	// style
 	void SetStyle(WinShareWindow::Style style);
