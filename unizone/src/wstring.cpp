@@ -182,6 +182,12 @@ WString::operator==(const QString &str)
 	return b;
 }
 
+
+WString::operator const char *() const
+{
+	return toQString().local8Bit();
+}
+
 void
 WString::free()
 {

@@ -53,8 +53,7 @@ SetWorkingDirectory(const char *app)
 SetWorkingDirectory()
 {
 	// we have to use some windows api to get our path...
-	// <postmaster@raasu.org> 20021022 -- use wchar_t instead of TCHAR to follow common typedef across source files
-	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
+	TCHAR * name = new TCHAR[MAX_PATH];	// maximum size for Win32 filenames
 	CHECK_PTR(name);
 	if (GetModuleFileName(NULL,				/* current apps module */
 							name,			/* buffer */

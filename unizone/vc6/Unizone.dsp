@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Application" 0x0101
 
-CFG=Unizone - Win32 Debug
+CFG=Unizone - Win32 Debug ANSI
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,12 +13,14 @@ CFG=Unizone - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "Unizone.mak" CFG="Unizone - Win32 Debug"
+!MESSAGE NMAKE /f "Unizone.mak" CFG="Unizone - Win32 Debug ANSI"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "Unizone - Win32 Release" (based on "Win32 (x86) Application")
 !MESSAGE "Unizone - Win32 Debug" (based on "Win32 (x86) Application")
+!MESSAGE "Unizone - Win32 Debug ANSI" (based on "Win32 (x86) Application")
+!MESSAGE "Unizone - Win32 Release ANSI" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
@@ -85,12 +87,76 @@ LINK32=link.exe
 # ADD LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug"
 # SUBTRACT LINK32 /incremental:no
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "Unizone___Win32_Debug_ANSI"
+# PROP BASE Intermediate_Dir "Unizone___Win32_Debug_ANSI"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "Unizone___Win32_Debug_ANSI"
+# PROP Intermediate_Dir "Unizone___Win32_Debug_ANSI"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
+# SUBTRACT BASE CPP /X /YX
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
+# SUBTRACT CPP /X /YX
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo /o"Debug/Unizoned.bsc"
+# ADD BSC32 /nologo /o"Debug/Unizonead.bsc"
+LINK32=link.exe
+# ADD BASE LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug"
+# SUBTRACT BASE LINK32 /incremental:no
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib musclead.lib zlibad.lib regexad.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegad.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI"
+# SUBTRACT LINK32 /incremental:no
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "Unizone___Win32_Release_ANSI"
+# PROP BASE Intermediate_Dir "Unizone___Win32_Release_ANSI"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "Unizone___Win32_Release_ANSI"
+# PROP Intermediate_Dir "Unizone___Win32_Release_ANSI"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
+# SUBTRACT BASE CPP /X
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
+# SUBTRACT CPP /X
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo /o"Unizone___Win32_Release_ANSI/Unizonea.bsc"
+LINK32=link.exe
+# ADD BASE LINK32 muscle.lib zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release"
+# SUBTRACT BASE LINK32 /pdb:none /incremental:yes
+# ADD LINK32 musclea.lib zliba.lib regexa.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpega.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizonea.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release_ANSI" /libpath:"zlib___Win32_Release_ANSI" /libpath:"regex___Win32_Release_ANSI"
+# SUBTRACT LINK32 /pdb:none /incremental:yes
+
 !ENDIF 
 
 # Begin Target
 
 # Name "Unizone - Win32 Release"
 # Name "Unizone - Win32 Debug"
+# Name "Unizone - Win32 Debug ANSI"
+# Name "Unizone - Win32 Release ANSI"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -472,6 +538,34 @@ InputName=aboutdlg
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\aboutdlg.h
+InputName=aboutdlg
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\aboutdlg.h
+InputName=aboutdlg
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -494,6 +588,34 @@ InputName=aboutdlgimpl
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\aboutdlgimpl.h
+InputName=aboutdlgimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\aboutdlgimpl.h
+InputName=aboutdlgimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -542,6 +664,34 @@ InputName=channel
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\channel.h
+InputName=channel
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\channel.h
+InputName=channel
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -564,6 +714,34 @@ InputName=channelimpl
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\channelimpl.h
+InputName=channelimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\channelimpl.h
+InputName=channelimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -601,6 +779,34 @@ InputName=chattext
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\chattext.h
+InputName=chattext
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\chattext.h
+InputName=chattext
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -653,6 +859,34 @@ InputName=combo
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\combo.h
+InputName=combo
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\combo.h
+InputName=combo
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -690,6 +924,34 @@ InputName=downloadimpl
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\downloadimpl.h
+InputName=downloadimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\downloadimpl.h
+InputName=downloadimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -712,6 +974,34 @@ InputName=downloadthread
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\downloadthread.h
+InputName=downloadthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\downloadthread.h
+InputName=downloadthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -768,6 +1058,34 @@ InputName=formatting
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\formatting.h
+InputName=formatting
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\formatting.h
+InputName=formatting
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -798,6 +1116,34 @@ InputName=htmlview
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\htmlview.h
+InputName=htmlview
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\htmlview.h
+InputName=htmlview
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -850,6 +1196,34 @@ InputName=menubar
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\menubar.h
+InputName=menubar
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\menubar.h
+InputName=menubar
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -872,6 +1246,34 @@ InputName=netclient
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\netclient.h
+InputName=netclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\netclient.h
+InputName=netclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -920,6 +1322,34 @@ InputName=picviewer
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\picviewer.h
+InputName=picviewer
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\picviewer.h
+InputName=picviewer
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -941,6 +1371,22 @@ InputName=picviewerimpl
 	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\picviewerimpl.h
+InputName=picviewerimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
 !ENDIF 
 
@@ -968,6 +1414,34 @@ InputName=prefs
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\prefs.h
+InputName=prefs
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\prefs.h
+InputName=prefs
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -1012,6 +1486,34 @@ InputName=prefsimpl
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\prefsimpl.h
+InputName=prefsimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\prefsimpl.h
+InputName=prefsimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1034,6 +1536,34 @@ InputName=privatewindow
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\privatewindow.h
+InputName=privatewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\privatewindow.h
+InputName=privatewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -1078,6 +1608,34 @@ InputName=privatewindowimpl
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\privatewindowimpl.h
+InputName=privatewindowimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\privatewindowimpl.h
+InputName=privatewindowimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1111,6 +1669,34 @@ InputName=QAcceptSocketsThread
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputName=QAcceptSocketsThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputName=QAcceptSocketsThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1133,6 +1719,34 @@ InputName=QMessageTransceiverThread
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputName=QMessageTransceiverThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputName=QMessageTransceiverThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src\muscle\qtsupport
@@ -1186,6 +1800,34 @@ InputName=serverclient
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\serverclient.h
+InputName=serverclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\serverclient.h
+InputName=serverclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -1254,6 +1896,34 @@ InputName=ulistview
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\ulistview.h
+InputName=ulistview
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\ulistview.h
+InputName=ulistview
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1287,6 +1957,34 @@ InputName=updateclient
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\updateclient.h
+InputName=updateclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\updateclient.h
+InputName=updateclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1309,6 +2007,34 @@ InputName=uploadthread
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\uploadthread.h
+InputName=uploadthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\uploadthread.h
+InputName=uploadthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -1366,6 +2092,34 @@ InputName=winsharewindow
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\winsharewindow.h
+InputName=winsharewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\winsharewindow.h
+InputName=winsharewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
@@ -1472,6 +2226,48 @@ BuildCmds= \
    $(BuildCmds)
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\aboutdlg.ui
+InputName=aboutdlg
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\aboutdlg.ui
+InputName=aboutdlg
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1501,6 +2297,48 @@ BuildCmds= \
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\channel.ui
+InputName=channel
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\channel.ui
+InputName=channel
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
@@ -1566,6 +2404,48 @@ BuildCmds= \
    $(BuildCmds)
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\picviewer.ui
+InputName=picviewer
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\picviewer.ui
+InputName=picviewer
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1595,6 +2475,48 @@ BuildCmds= \
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\prefs.ui
+InputName=prefs
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\prefs.ui
+InputName=prefs
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
@@ -1660,6 +2582,48 @@ BuildCmds= \
    $(BuildCmds)
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\privatewindow.ui
+InputName=privatewindow
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\privatewindow.ui
+InputName=privatewindow
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1687,6 +2651,44 @@ BuildCmds= \
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\scanprogress.ui
+InputName=scanprogress
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\unizone\src
+InputPath=..\src\scanprogress.ui
+InputName=scanprogress
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
@@ -1734,6 +2736,84 @@ InputName=qjpeg
 
 # PROP Exclude_From_Build 1
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Exclude_From_Build 1
+# PROP Ignore_Default_Tool 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\Release_ANSI\qjpega.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=\build\unizone\libjpeg\Release_ANSI
+TargetDir=\build\unizone\vc6
+InputPath=..\libjpeg\Release_ANSI\qjpega.dll
+InputName=qjpega
+
+"$(TargetDir)\qjpega.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\Debug_ANSI\qjpegad.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=\build\unizone\libjpeg\Debug_ANSI
+TargetDir=\build\unizone\vc6
+InputPath=..\libjpeg\Debug_ANSI\qjpegad.dll
+InputName=qjpegad
+
+"$(TargetDir)\qjpegad.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
 !ENDIF 
 
 # End Source File
@@ -1759,6 +2839,17 @@ InputName=qjpegd
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Exclude_From_Build 1
+# PROP Ignore_Default_Tool 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
 !ENDIF 
 
 # End Source File
@@ -1769,22 +2860,94 @@ InputName=qjpegd
 # Begin Source File
 
 SOURCE=..\src\windows\ansi\fileinfo_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\windows\ansi\filethread_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\windows\ansi\gotourl_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\windows\ansi\wlaunchthread_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Unicode"
@@ -1793,18 +2956,78 @@ SOURCE=..\src\windows\ansi\wlaunchthread_win.cpp
 # Begin Source File
 
 SOURCE=..\src\windows\unicode\fileinfo_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\windows\unicode\filethread_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\windows\unicode\gotourl_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\windows\unicode\wlaunchthread_win.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Unix"
@@ -1813,22 +3036,102 @@ SOURCE=..\src\windows\unicode\wlaunchthread_win.cpp
 # Begin Source File
 
 SOURCE=..\src\unix\fileinfo_unix.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\unix\filethread_unix.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\unix\gotourl_unix.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\unix\wlaunchthread_unix.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Unix Headers"

@@ -20,3 +20,11 @@ zlib___Win32_Release
 *.pdb
 *.bsc
 *.exe
+Unizone___Win32_Debug_ANSI
+muscle___Win32_Debug_ANSI
+regex___Win32_Debug_ANSI
+zlib___Win32_Debug_ANSI
+Unizone___Win32_Release_ANSI
+muscle___Win32_Release_ANSI
+regex___Win32_Release_ANSI
+zlib___Win32_Release_ANSI

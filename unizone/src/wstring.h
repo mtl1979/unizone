@@ -43,6 +43,7 @@ public:
 #endif
 
 	operator wchar_t *() const { return buffer; };
+	operator const char *() const;
 	wchar_t *getBuffer() const { return buffer; };
 	int length() const; 
 	QString toQString() const;

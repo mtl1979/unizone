@@ -6,7 +6,7 @@
 #include "debugimpl.h"
 
 void
-UFileInfo::InitMimeType()
+UFileInfo::InitMIMEType()
 {
 	// Read the mime-type
 	HKEY hkey;

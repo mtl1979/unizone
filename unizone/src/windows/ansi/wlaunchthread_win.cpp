@@ -3,7 +3,7 @@
 
 #include <qstring.h>
 
-#include "windows/launchthread_win.h"
+#include "windows/wlaunchthread_win.h"
 #include "wstring.h"
 #include "debugimpl.h"
 

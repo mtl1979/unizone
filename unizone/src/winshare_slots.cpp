@@ -399,9 +399,6 @@ WinShareWindow::Preferences()
 		// this will also handle changes in firewall settings
 		if (fSettings->GetSharingEnabled())		
 		{
-			if (oldFirewalled != fSettings->GetFirewalled())
-			{
-
 			if ((oldSharing == false) || (oldFirewalled != fSettings->GetFirewalled()))
 			{
 					StartAcceptThread();
@@ -412,7 +409,6 @@ WinShareWindow::Preferences()
 					}
 					else if (fNetClient->IsConnected())
 						UpdateShares();
-				}
 			}
 			if (fNetClient->IsConnected())
 				fNetClient->SetLoad(0, fSettings->GetMaxUploads());

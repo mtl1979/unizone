@@ -8,6 +8,7 @@
 #include <shlobj.h>
 
 #include "fileinfo.h"
+#include "filethread.h"
 #include "wstring.h"
 #include "winsharewindow.h"
 #include "global.h"
@@ -64,7 +65,7 @@ WFileThread::ResolveLink(const QString & lnk)
 						if (SUCCEEDED(hres))
 						{
 							PRINT("GetPath() = %s\n",szFile);
-							ret = szFile;
+							ret = QString::fromLocal8Bit(szFile);
 						}
 						else
 						{

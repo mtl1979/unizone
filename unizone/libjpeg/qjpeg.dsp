@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=qjpeg - Win32 Debug
+CFG=qjpeg - Win32 Debug ANSI
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,12 +13,14 @@ CFG=qjpeg - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "qjpeg.mak" CFG="qjpeg - Win32 Debug"
+!MESSAGE NMAKE /f "qjpeg.mak" CFG="qjpeg - Win32 Debug ANSI"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "qjpeg - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "qjpeg - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "qjpeg - Win32 Debug ANSI" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "qjpeg - Win32 Release ANSI" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -81,12 +83,68 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib qt-mt230nc.lib qtmain.lib /nologo /dll /debug /machine:I386 /out:"Debug/qjpegd.dll" /pdbtype:sept /libpath:"$(QTDIR)\lib"
 
+!ELSEIF  "$(CFG)" == "qjpeg - Win32 Debug ANSI"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "qjpeg___Win32_Debug_ANSI"
+# PROP BASE Intermediate_Dir "qjpeg___Win32_Debug_ANSI"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "Debug_ANSI"
+# PROP Intermediate_Dir "Debug_ANSI"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(QTDIR)\include" /I "..\jpeglib" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "QJPEG_EXPORTS" /D "QT_DLL" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(QTDIR)\include" /I "..\jpeglib" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "QJPEG_EXPORTS" /D "QT_DLL" /FR /YX /FD /GZ /c
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x40b /d "_DEBUG"
+# ADD RSC /l 0x40b /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo /o"Debug/qjpegd.bsc"
+# ADD BSC32 /nologo /o"Debug_ANSI/qjpegad.bsc"
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib qt-mt230nc.lib qtmain.lib /nologo /dll /debug /machine:I386 /out:"Debug/qjpegd.dll" /pdbtype:sept /libpath:"$(QTDIR)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib qt-mt230nc.lib qtmain.lib /nologo /dll /debug /machine:I386 /out:"Debug_ANSI/qjpegad.dll" /pdbtype:sept /libpath:"$(QTDIR)\lib"
+
+!ELSEIF  "$(CFG)" == "qjpeg - Win32 Release ANSI"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "qjpeg___Win32_Release_ANSI"
+# PROP BASE Intermediate_Dir "qjpeg___Win32_Release_ANSI"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "Release_ANSI"
+# PROP Intermediate_Dir "Release_ANSI"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "$(QTDIR)\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "QJPEG_EXPORTS" /D "QT_DLL" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "$(QTDIR)\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "QJPEG_EXPORTS" /D "QT_DLL" /YX /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x40b /d "NDEBUG"
+# ADD RSC /l 0x40b /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo /o"Release_ANSI/qjpega.bsc"
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib qt-mt230nc.lib /nologo /dll /machine:I386 /libpath:"$(QTDIR)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib qt-mt230nc.lib /nologo /dll /machine:I386 /out:"Release_ANSI/qjpega.dll" /libpath:"$(QTDIR)\lib"
+
 !ENDIF 
 
 # Begin Target
 
 # Name "qjpeg - Win32 Release"
 # Name "qjpeg - Win32 Debug"
+# Name "qjpeg - Win32 Debug ANSI"
+# Name "qjpeg - Win32 Release ANSI"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
