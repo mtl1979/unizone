@@ -178,41 +178,11 @@ WUploadThread::InitSession()
 		limit = ref;
 	}
 
-	if (!fAccept)
+	if (fAccept)
 	{
-		if (qmtt->AddNewSession(fSocket, limit) == B_OK && qmtt->StartInternalThread() == B_OK)
-		{
-			MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
-			if (mref())
-			{
-				SendReply(mref);
-			}
-			CTimer->start(60000, true);
-		}
-		else
-		{
-			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
-			if (fail())
-			{
-				fail()->AddString("why", QT_TR_NOOP( "Could not init session!" ));
-				SendReply(fail);
-			}
-			return false;
-		}
-	}
-	else
-	{
-		const String sRemoteIP = (const char *) fStrRemoteIP.utf8(); // <postmaster@raasu.org> 20021026
-		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && qmtt->StartInternalThread() == B_OK)
-		{
-			MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
-			if (mref())
-			{
-				SendReply(mref);
-			}
-			CTimer->start(60000, true);
-		}
-		else
+		// <postmaster@raasu.org> 20021026
+		const String sRemoteIP = (const char *) fStrRemoteIP.utf8(); 
+		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) != B_OK)
 		{
 			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 			if (fail())
@@ -223,69 +193,104 @@ WUploadThread::InitSession()
 			return false;
 		}
 	}
-	return true;
+	else
+	{
+		if (qmtt->AddNewSession(fSocket, limit) != B_OK)
+		{
+			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
+			if (fail())
+			{
+				fail()->AddString("why", QT_TR_NOOP( "Could not init session!" ));
+				SendReply(fail);
+			}
+			return false;
+		}
+	}
+
+	//
+	// We should have a session created now
+	//
+
+	if (qmtt->StartInternalThread() == B_OK)
+	{
+		MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
+		if (mref())
+		{
+			SendReply(mref);
+		}
+		CTimer->start(60000, true);
+		return true;
+	}
+
+	MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
+	if (fail())
+	{
+		fail()->AddString("why", QT_TR_NOOP( "Could not start internal thread!" ));
+		SendReply(fail);
+	}
+	return false;
 }
 
 void
 WUploadThread::SetLocallyQueued(bool b)
 {
-	if (fLocallyQueued == b)
-		return;
-
-	if (!fConnecting && !IsInternalThreadRunning())
+	if (fLocallyQueued != b)
 	{
-		Reset();
-	}
-
-	if (fFinished)
-		return;
-
-	// -----------------------------------------------
-
-	fLocallyQueued = b;
-
-	if (b)
-	{
-		fStartTime = 0;
-	}
-	else
-	{
-		fLastData.restart();
-		InitTransferETA();
-		InitTransferRate();
-
-		if (fSavedFileList())
+		if (!fConnecting && !IsInternalThreadRunning())
 		{
-			MessageRef fFileList = fSavedFileList;
-			fSavedFileList.Reset();
-			WUploadEvent *wue = new WUploadEvent(fFileList);
-			if (wue) 
-				QApplication::postEvent(this, wue);
-			// TransferFileList(fFileList);
+			Reset();
+		}
+		
+		if (fFinished)
 			return;
-		}
-		else if (IsInternalThreadRunning())  // Still connected?
+		
+		// -----------------------------------------------
+		
+		fLocallyQueued = b;
+		
+		if (b)
 		{
-			// Don't need to start forced or finished uploads ;)
-			if (!fForced)
-			{
-				// we can start now!
-				SignalUpload();
-			}				
-		}
-		else if (fConnecting)
-		{
-			MessageRef con(GetMessageFromPool(WUploadEvent::ConnectInProgress));
-			if (con())
-			{
-				SendReply(con);
-			}
+			fStartTime = 0;
 		}
 		else
 		{
-			// fActive   == true
-			// fFinished == false
-			ConnectTimer();
+			fLastData.restart();
+			InitTransferETA();
+			InitTransferRate();
+			
+			if (fSavedFileList())
+			{
+				MessageRef fFileList = fSavedFileList;
+				fSavedFileList.Reset();
+				WUploadEvent *wue = new WUploadEvent(fFileList);
+				if (wue) 
+					QApplication::postEvent(this, wue);
+				// TransferFileList(fFileList);
+				return;
+			}
+			else if (IsInternalThreadRunning())  // Still connected?
+			{
+				// Don't need to start forced or finished uploads ;)
+				if (!fForced)
+				{
+					// we can start now!
+					SignalUpload();
+				}				
+			}
+			else if (fConnecting)
+			{
+				MessageRef con(GetMessageFromPool(WUploadEvent::ConnectInProgress));
+				if (con())
+				{
+					SendReply(con);
+				}
+			}
+			else
+			{
+				// fActive   == true
+				// fFinished == false
+				ConnectTimer();
+			}
 		}
 	}
 }
@@ -293,59 +298,63 @@ WUploadThread::SetLocallyQueued(bool b)
 void
 WUploadThread::SetBlocked(bool b, int64 timeLeft)
 {
-	SetActive(!b);
-	fBlocked = b;
-	if (b)
+	if (fBlocked != b)
 	{
-		fTimeLeft = timeLeft;
-		fStartTime = 0;
-		if (timeLeft != -1)
-			fBlockTimer->start(timeLeft/1000, true);
-		
-		// Send notification
-
-		if (IsInternalThreadRunning())
-			SendRejectedNotification(true);
-		else
-			SendRejectedNotification(false);
-	}
-	else // !b
-	{
-		fTimeLeft = 0;
-		fLastData.restart();
-		InitTransferETA();
-		InitTransferRate();
-		if (fBlockTimer->isActive())
+		SetActive(!b);
+		fBlocked = b;
+		if (b)
 		{
-			fBlockTimer->stop();
+			fTimeLeft = timeLeft;
+			fStartTime = 0;
+			if (timeLeft != -1)
+				fBlockTimer->start(timeLeft/1000, true);
+			
+			// Send notification
+			
+			if (IsInternalThreadRunning())
+				SendRejectedNotification(true);
+			else
+				SendRejectedNotification(false);
 		}
-
-		if (IsInternalThreadRunning())
-			SetLocallyQueued(true); // put in queue ;)
+		else // !b
+		{
+			fTimeLeft = 0;
+			fLastData.restart();
+			InitTransferETA();
+			InitTransferRate();
+			if (fBlockTimer->isActive())
+			{
+				fBlockTimer->stop();
+			}
+			
+			if (IsInternalThreadRunning())
+				SetLocallyQueued(true); // put in queue ;)
+		}
 	}
 }
 
 void
 WUploadThread::SetManuallyQueued(bool b)
 {
-	fManuallyQueued = b;	
-	if (IsInternalThreadRunning() && b)
-		SendQueuedNotification();
+	if (fManuallyQueued != b)
+	{
+		fManuallyQueued = b;	
+		if (IsInternalThreadRunning() && b)
+			SendQueuedNotification();
+	}
 }
 
 
 void 
 WUploadThread::SendReply(MessageRef &m)
 {
+	if (fShutdownFlag && *fShutdownFlag)
+	{
+		Reset();
+	}
+
 	if (m())
 	{
-		if (fShutdownFlag && *fShutdownFlag)
-		{
-			Reset();
-//			return;
-		}
-
-//		m()->AddBool("upload", true);
 		m()->AddPointer("sender", this);
 		WUploadEvent * wue = new WUploadEvent(m);
 		if (wue)
@@ -568,11 +577,12 @@ WUploadThread::SendQueuedNotification()
 	if (q())
 	{
 		SendMessageToSessions(q);
-	}
-	MessageRef qf(GetMessageFromPool(WUploadEvent::FileQueued));
-	if (qf())
-	{
-		SendReply(qf);
+
+		MessageRef qf(GetMessageFromPool(WUploadEvent::FileQueued));
+		if (qf())
+		{
+			SendReply(qf);
+		}
 	}
 }
 
@@ -767,11 +777,7 @@ WUploadThread::DoUpload()
 				
 				if (numBytes <= 0)
 				{
-					// next file
-					fFile->close();
-					delete fFile; 
-					fFile = NULL;
-					fCurrentOffset = fFileSize = 0;
+					NextFile();
 					SignalUpload();
 					return;
 				}
@@ -1343,7 +1349,7 @@ QString
 WUploadThread::GetUserName(const QString & sid) const
 {
 	WUserRef uref = gWin->FindUser(sid);
-	QString ret = sid;
+	QString ret;
 	if (uref())
 		ret = uref()->GetUserName();
 	else
@@ -1352,6 +1358,10 @@ WUploadThread::GetUserName(const QString & sid) const
 		if (uref())
 		{
 			ret = uref()->GetUserName();
+		}
+		else
+		{
+			ret = sid;
 		}
 	}
 	return ret;
@@ -1418,4 +1428,17 @@ WUploadThread::BlockedTimer()
 {
 	SetBlocked(false);
 	fTimeLeft = 0;
+}
+
+void
+WUploadThread::NextFile()
+{
+	// next file
+	if (fFile)
+	{
+		fFile->close();
+		delete fFile; 
+		fFile = NULL;
+	}
+	fCurrentOffset = fFileSize = 0;
 }

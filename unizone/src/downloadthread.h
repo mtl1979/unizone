@@ -178,6 +178,8 @@ private:
 
 	void InitTransferRate();
 	void InitTransferETA();
+
+	void InitSessionAux();
 };
 
 #endif

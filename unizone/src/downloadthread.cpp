@@ -271,13 +271,10 @@ WDownloadThread::InitSession()
 			String sIP = (const char *) fIP.utf8(); // <postmaster@raasu.org> 20021026
 			if (qmtt->AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
 			{
-				fCurrentOffset = fFileSize = 0;
-				fFile = NULL;
-				fDownloading = false;
+				InitSessionAux();
 				MessageRef msg(GetMessageFromPool(WDownloadEvent::ConnectInProgress));
 				if (msg())
 					SendReply(msg);
-				CTimer->start(30000, true); // 30 seconds
 				return true;
 			}
 			else
@@ -334,8 +331,7 @@ WDownloadThread::InitSession()
 		}
 		if (ret == B_OK)
 		{
-			fDownloading = false;
-			fCurrentOffset = fFileSize = 0;
+			InitSessionAux();
 			MessageRef cnt(GetMessageFromPool(WDownloadEvent::ConnectBackRequest));
 			if (cnt())
 			{
@@ -343,7 +339,6 @@ WDownloadThread::InitSession()
 				cnt()->AddInt32("port", fAcceptingOn);
 				SendReply(cnt);
 			}
-			CTimer->start(30000, true); // 30 seconds
 			return true;
 		}
 	}
@@ -951,25 +946,28 @@ WDownloadThread::SetRate(int rate, AbstractReflectSessionRef & ref)
 void
 WDownloadThread::SetBlocked(bool b, int64 timeLeft)
 {
-	fBlocked = b;
-	if (b)
+	if (fBlocked != b)
 	{
-		fTimeLeft = timeLeft;
-		fStartTime = 0;
-		MessageRef msg(GetMessageFromPool(WDownloadEvent::FileBlocked));
-		if (msg())
+		fBlocked = b;
+		if (b)
 		{
-			if (fTimeLeft != -1)
-				msg()->AddInt64("timeleft", fTimeLeft);
-			SendReply(msg);
+			fTimeLeft = timeLeft;
+			fStartTime = 0;
+			MessageRef msg(GetMessageFromPool(WDownloadEvent::FileBlocked));
+			if (msg())
+			{
+				if (fTimeLeft != -1)
+					msg()->AddInt64("timeleft", fTimeLeft);
+				SendReply(msg);
+			}
 		}
-	}
-	else
-	{
-		fTimeLeft = 0;
-		fLastData.restart();
-		InitTransferETA();
-		InitTransferRate();
+		else
+		{
+			fTimeLeft = 0;
+			fLastData.restart();
+			InitTransferETA();
+			InitTransferRate();
+		}
 	}
 }
 
@@ -1053,12 +1051,15 @@ WDownloadThread::IsRemotelyQueued() const
 void
 WDownloadThread::SetRemotelyQueued(bool b)
 {
-	fRemotelyQueued = b;
-	if (!b)
+	if (fRemotelyQueued != b)
 	{
-		fLastData.restart();
-		InitTransferETA();
-		InitTransferRate();
+		fRemotelyQueued = b;
+		if (!b)
+		{
+			fLastData.restart();
+			InitTransferETA();
+			InitTransferRate();
+		}
 	}
 }
 
@@ -1098,16 +1099,19 @@ WDownloadThread::Reset()
 void
 WDownloadThread::SetLocallyQueued(bool b)
 {
-	fLocallyQueued = b;
-	if (b)
+	if (fLocallyQueued != b)
 	{
-		fStartTime = 0;
-	}
-	else
-	{
-		fLastData.restart();
-		InitTransferETA();
-		InitTransferRate();
+		fLocallyQueued = b;
+		if (b)
+		{
+			fStartTime = 0;
+		}
+		else
+		{
+			fLastData.restart();
+			InitTransferETA();
+			InitTransferRate();
+		}
 	}
 }
 
@@ -1231,7 +1235,7 @@ QString
 WDownloadThread::GetUserName(const QString & sid) const
 {
 	WUserRef uref = gWin->FindUser(sid);
-	QString ret = sid;
+	QString ret;
 	if (uref())
 		ret = uref()->GetUserName();
 	else
@@ -1240,6 +1244,10 @@ WDownloadThread::GetUserName(const QString & sid) const
 		if (uref())
 		{
 			ret = uref()->GetUserName();
+		}
+		else
+		{
+			ret = sid;
 		}
 	}
 	return ret;
@@ -1312,4 +1320,13 @@ void
 WDownloadThread::SessionDetached(const String &sessionID)
 {
 	SessionDisconnected(sessionID);
+}
+
+void
+WDownloadThread::InitSessionAux()
+{
+	fCurrentOffset = fFileSize = 0;
+	fFile = NULL;
+	fDownloading = false;
+	CTimer->start(30000, true); // 30 seconds
 }

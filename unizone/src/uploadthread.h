@@ -194,6 +194,7 @@ private:
 
 	void DoUpload();
 	void TransferFileList(const MessageRef &);
+	void NextFile();
 	void SignalUpload();
 
 	enum
