@@ -1256,6 +1256,10 @@ Date: %4</translation>
         <source>Finished downloading %2 from %1.</source>
         <translation type='unfinished'>Finished downloading %2 from %1.</translation>
     </message>
+    <message>
+        <source>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WGenericThread</name>

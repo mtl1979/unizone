@@ -1382,6 +1382,10 @@ Päiväys: %4</translation>
         <source>Finished downloading %2 from %1.</source>
         <translation>Tiedoston %2 lataaminen käyttäjältä %1 on valmis.</translation>
     </message>
+    <message>
+        <source>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)</source>
+        <translation>Paketin Tarkistussumma ei täsmää tiedostossa [%1] (minun=%2, hänen=%3, %4 tavua)</translation>
+    </message>
 </context>
 <context>
     <name>WGenericThread</name>

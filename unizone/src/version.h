@@ -4,6 +4,6 @@
 const int kMajor = 1;
 const int kMinor = 2;
 const int kPatch = 1;
-const int kBuild = 6;
+const int kBuild = 7;
 
 #endif

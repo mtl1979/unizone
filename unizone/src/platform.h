@@ -109,4 +109,8 @@ QString FixFileName(const QString & fixMe);
 // Return first parameter if non-empty, otherwise second
 const QString & CheckIfEmpty(const QString & str, const QString & str2);
 
+// Calculate Checksum for raw buffer (borrowed from BeShare)
+uint32 CalculateChecksum(const uint8 * data, size_t bufSize);
+
+
 #endif // PLATFORM_H

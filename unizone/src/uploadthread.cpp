@@ -740,7 +740,8 @@ WUploadThread::DoUpload()
 					}
 					
 					// possibly do checksums here
-					
+					uref()->AddInt32("chk", CalculateChecksum(scratchBuffer, numBytes));  // a little paranoioa, due to file-resumes not working.... (TCP should handle this BUT...)
+
 					if ((uint32)numBytes < bufferSize)
 					{
 						// aha, extra bytes must be removed!

@@ -653,3 +653,11 @@ CheckIfEmpty(const QString & str, const QString & str2)
 		return str;
 	}
 }
+
+uint32
+CalculateChecksum(const uint8 * data, size_t bufSize)
+{
+   uint32 sum = 0L;
+   for (size_t i=0; i<bufSize; i++) sum += (*(data++)<<(i%24));
+   return sum;
+}

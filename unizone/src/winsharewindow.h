@@ -207,6 +207,8 @@ public:
 	bool GotParams() { return fGotParams; }
 
 	void PrintSystem(const QString & msg, bool batch = false);
+	void PrintError(const QString & error, bool batch = false);
+
 	void GotUpdateCmd(const char * param, const char * val);
 
 public slots:
@@ -441,7 +443,6 @@ private:
 
 	void PrintText(const QString & str, bool begin);
 	void PrintText(const QString & str);
-	void PrintError(const QString & error, bool batch = false);
 	void PrintWarning(const QString & warning, bool batch = false);
 
 	void NameChanged(const QString & newName);

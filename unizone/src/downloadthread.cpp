@@ -598,7 +598,36 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 
 				if (msg()->FindDataPointer("data", B_RAW_TYPE, (void **)&data, (uint32 *)&numBytes) == B_OK)
 				{
-									
+					// paranoia!!!  This shouldn't be necessary, since TCP is supposed to handle this sort of thing. 
+					// But I want to check anyway, just in case.
+					uint32 checksum;
+					if (msg()->FindInt32("chk", (int32*)&checksum) == B_NO_ERROR)
+					{
+						uint32 myChecksum = CalculateChecksum(data, numBytes);  // a little paranoioa (people keep getting munged data -> download-resume failures, why?)
+						if (myChecksum != checksum)
+						{
+							QString errStr = tr("Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)").arg(fFileDl[fCurFile]).arg(myChecksum).arg(checksum).arg(numBytes);
+							
+							if (gWin->fSettings->GetDownloads())
+								gWin->PrintError(errStr);
+							
+							MessageRef error(GetMessageFromPool(WDownloadEvent::FileError));
+							if (error())
+							{
+								error()->AddString("why", (const char *) errStr.utf8());
+								SendReply(error);
+							}
+							
+							fFile->close();
+							delete fFile; 
+							fFile = NULL;
+							
+							Reset();
+							return;
+						}
+					}
+
+
 					// check munge-mode here... not yet
 					if (fFile->writeBlock((const char *)data, (uint)numBytes) == (int)numBytes)
 					{
