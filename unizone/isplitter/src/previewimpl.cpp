@@ -6,6 +6,7 @@
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qmessagebox.h>
 
 Preview::Preview(QWidget* parent, const char* name, WFlags fl)
 :PreviewWindow(parent, name, fl)
@@ -32,6 +33,23 @@ Preview::ShowImage(QImage *img)
 	image = img;
 	if (image)
 		PreviewButton->setEnabled(true);
+}
+
+template <typename T> 
+bool clamp(T a, const T b, const T c)
+{
+	bool ret = false;
+	if (a < b) 
+	{
+		a = b;
+		ret = true;
+	}
+	else if (a > c)
+	{
+		a = c;
+		ret = true;
+	}
+	return ret;
 }
 
 void
@@ -100,14 +118,23 @@ Preview::PreviewImage()
 	//  Make sure we don't get 'divide by zero' error
 	//
 
-	if (collageSizeX == 0) collageSizeX = 1;
-	if (collageSizeY == 0) collageSizeY = 1;
+	if (collageSizeX == 0) 
+	{ 
+		collageSizeX = 1;
+		Splitter->CollageSizeX->setText("1");
+	}
 
-	if ((collageIndexX < 0) || (collageIndexX >= collageSizeX))
-		return;
+	if (collageSizeY == 0) 
+	{
+		collageSizeY = 1;
+		Splitter->CollageSizeY->setText("1");
+	}
 
-	if ((collageIndexY < 0) || (collageIndexY >= collageSizeY))
-		return;
+	if (clamp(collageIndexX, 0, collageSizeX - 1))
+		Splitter->OffsetIndexX->setText(QString::number(collageIndexX));
+
+	if (clamp(collageIndexY, 0, collageSizeY - 1))
+		Splitter->OffsetIndexY->setText(QString::number(collageIndexY));
 	
 	//
 	// Calculate subimage dimensions
@@ -153,7 +180,21 @@ Preview::Save()
 		QString base = info.baseName();
 		QString ext = info.extension();
 		QString newname = path + "/" + base + "_" + Splitter->OffsetIndexX->text() + "_" + Splitter->OffsetIndexY->text() + "." + ext;
-		pixPreview->save(newname, fmt);
+		if (!pixPreview->save(newname, fmt))
+		{
+			// If original plugin doesn't support writing, try jpeg plugin
+			//
+			bool ret = false;
+
+			if (strcmp(fmt, "JPEG") != 0)
+			{
+				newname = path + "/" + base + "_" + Splitter->OffsetIndexX->text() + "_" + Splitter->OffsetIndexY->text() + ".jpg";
+				ret = pixPreview->save(newname, "JPEG");
+			}
+
+			if (!ret)
+				QMessageBox::critical(this, tr("Save"), tr("Unable to save output!"));
+		}
 	}
 }
 
