@@ -256,7 +256,8 @@ WPrivateWindow::PutChatText(QString fromsid, QString msg)
 				gWin->fSettings->GetFontSize()).arg(msg);
 			}
 			PrintText(s);
-			QApplication::beep();
+			if (gWin->fSettings->GetSounds())
+				QApplication::beep();
 			// <postmaster@raasu.org> 20021021 -- Fix Window Flashing on older API's
 #ifdef WIN32
 			// flash away!

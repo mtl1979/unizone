@@ -1550,7 +1550,8 @@ WinShareWindow::HandleMessage(Message * msg)
 								chat = WFormat::ReceivePrivMsg.arg(WColors::RemoteName).arg(fSettings->GetFontSize()).arg(session).arg(FixStringStr(userName)).arg(
 									WColors::PrivText).arg(fSettings->GetFontSize()).arg(nameText);
 							}
-							QApplication::beep();
+							if (fSettings->GetSounds())
+								QApplication::beep();
 #ifdef WIN32
 							if (fWinHandle && !this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashPriv))	// if we have a valid handle AND we are not active AND the user wants to flash
 							{
@@ -1572,7 +1573,7 @@ WinShareWindow::HandleMessage(Message * msg)
 							PRINT("Fixing string\n");
 							QString nameText = FixStringStr(text);
 							PRINT("Name said\n");
-							if (NameSaid(nameText))
+							if (NameSaid(nameText) && fSettings->GetSounds())
 								QApplication::beep();
 							QString res;	// not used...
 							if (MatchUserFilter(user(), (const char *) fWatch.utf8()))

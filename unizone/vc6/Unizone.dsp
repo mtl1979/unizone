@@ -124,14 +124,6 @@ SOURCE=..\src\channelinfo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channels.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\channelsimpl.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\chattext.cpp
 # End Source File
 # Begin Source File
@@ -212,14 +204,6 @@ SOURCE=..\src\moc_channelimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_channels.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_channelsimpl.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\moc_chattext.cpp
 # End Source File
 # Begin Source File
@@ -264,10 +248,6 @@ SOURCE=..\src\moc_privatewindowimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_search.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\moc_ulistview.cpp
 # End Source File
 # Begin Source File
@@ -301,10 +281,6 @@ SOURCE=..\src\privatewindow.cpp
 # Begin Source File
 
 SOURCE=..\src\privatewindowimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\search.cpp
 # End Source File
 # Begin Source File
 
@@ -505,72 +481,6 @@ InputName=channelimpl
 # Begin Source File
 
 SOURCE=..\src\channelinfo.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\channels.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\channels.h
-InputName=channels
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\channels.h
-InputName=channels
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\channelsimpl.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\channelsimpl.h
-InputName=channelsimpl
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\channelsimpl.h
-InputName=channelsimpl
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -993,39 +903,6 @@ SOURCE=..\src\resource.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\search.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\search.h
-InputName=search
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\search.h
-InputName=search
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\searchitem.h
 # End Source File
 # Begin Source File
@@ -1228,52 +1105,6 @@ BuildCmds= \
 InputDir=\build\unizone\src
 InputPath=..\src\channel.ui
 InputName=channel
-
-BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	
-
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\channels.ui
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
-InputPath=..\src\channels.ui
-InputName=channels
-
-BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	
-
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
-InputPath=..\src\channels.ui
-InputName=channels
 
 BuildCmds= \
 	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \

@@ -99,6 +99,7 @@ WinShareWindow::UserNameChanged(QString sid, QString old, QString newname)
 void
 WinShareWindow::DisconnectedFromServer()
 {
+	StopSearch();
 	fDisconnectCount++;
 	
 	if ((fDisconnectCount == 1) && (!fDisconnectFlag))
@@ -377,12 +378,14 @@ WinShareWindow::ReconnectTimer()
 	Connect();
 }
 
+/*
 void
 WinShareWindow::SearchDialog()
 {
 	QString pattern = "";
 	LaunchSearch(pattern);
 }
+*/
 
 void
 WinShareWindow::GotShown(const QString & txt)
@@ -401,6 +404,7 @@ WinShareWindow::AboutToQuit()
 	QApplication::exit(0);
 }
 
+/*
 void
 WinShareWindow::SearchWindowClosed()
 {
@@ -414,6 +418,7 @@ WinShareWindow::ChannelsWindowClosed()
 	PRINT("Channels window closed!\n");
 	fChannels = NULL;
 }
+*/
 
 void
 WinShareWindow::DownloadWindowClosed()

@@ -13,6 +13,8 @@
 
 NetClient::NetClient(QObject * owner)
 {
+	setName( "NetClient" );
+
 	fPort = 0;
 	fServerPort = 0;
 	fOwner = owner;

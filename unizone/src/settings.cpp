@@ -692,6 +692,18 @@ WSettings::GetError()
 }
 
 void
+WSettings::SetSounds(bool b)
+{
+	SET_BOOL(SOUNDS, b);
+}
+
+bool
+WSettings::GetSounds()
+{
+	GET_BOOL(SOUNDS, true);
+}
+
+void
 WSettings::SetAutoAway(int i)
 {
 	fSet->RemoveName(AUTO_AWAY);

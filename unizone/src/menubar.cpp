@@ -20,8 +20,8 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent)
 	fFile->insertItem(tr("Open &Logs Folder"), parent, SLOT(OpenLogsFolder()), QAccel::stringToKey(tr("CTRL+L")));
 	fFile->insertSeparator();
 	fFile->insertItem(tr("Cl&ear Chat Log"), parent, SLOT(ClearChatLog()), QAccel::stringToKey(tr("CTRL+E")));
-	fFile->insertSeparator();
-	fFile->insertItem(tr("Search"), parent, SLOT(SearchDialog()), QAccel::stringToKey(tr("ALT+S")));
+//	fFile->insertSeparator();
+//	fFile->insertItem(tr("Search"), parent, SLOT(SearchDialog()), QAccel::stringToKey(tr("ALT+S")));
 	fFile->insertSeparator();
 
 	fFile->insertItem(tr("E&xit"), parent, SLOT(Exit()), QAccel::stringToKey(tr("ALT+X")));
@@ -38,7 +38,7 @@ MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent)
 	fWindows = new QPopupMenu(this);
 	CHECK_PTR(fWindows);
 
-	fWindows->insertItem(tr("C&hannels"), parent, SLOT(OpenChannels()), QAccel::stringToKey(tr("F10")));
+	//fWindows->insertItem(tr("C&hannels"), parent, SLOT(OpenChannels()), QAccel::stringToKey(tr("F10")));
 	fWindows->insertItem(tr("&Downloads"), parent, SLOT(OpenDownloads()), QAccel::stringToKey(tr("F11")));
 
 	// help menu

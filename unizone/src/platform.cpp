@@ -1,8 +1,3 @@
-
-#if defined(__LINUX__)
-#include <wchar.h>
-#endif
-
 #include "platform.h"
 #include "debugimpl.h"
 

@@ -96,6 +96,8 @@ using namespace muscle;
 #define RESUMEFILE "resumefile"
 #define RESUMEUSER "resumeuser"
 
+#define SOUNDS     "sounds"
+
 class WSettings
 {
 public:
@@ -223,6 +225,7 @@ public:
 	void SetInfo(bool b);
 	void SetWarning(bool b);
 	void SetError(bool b);
+	void SetSounds(bool b);
 
 	bool GetTimeStamps();
 	bool GetUserEvents();
@@ -232,6 +235,7 @@ public:
 	bool GetInfo();
 	bool GetWarning();
 	bool GetError();
+	bool GetSounds();
 
 	// auto away
 	void SetAutoAway(int i);	// index of time

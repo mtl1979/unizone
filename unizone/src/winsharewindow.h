@@ -20,19 +20,24 @@
 #include <qthread.h>
 #include <qtimer.h>
 #include <qevent.h>
+#include <qlayout.h>
+#include <qtabwidget.h>
 
 #include "menubar.h"
 #include "netclient.h"
 #include "privatewindowimpl.h"
 #include "channelimpl.h"
-#include "channelsimpl.h"
+// #include "channelsimpl.h"
 #include "system/SetupSystem.h"
 #include "regex/StringMatcher.h"
 #include "chattext.h"
 #include "downloadimpl.h"
 #include "accept.h"
 #include "filethread.h"
-#include "search.h"
+#include "combo.h"
+#include "searchitem.h"
+#include "channelinfo.h"
+// #include "search.h"
 #include "Log.h"
 
 #define UPDATE_SERVER "www.raasu.org"
@@ -46,9 +51,26 @@ using std::pair;
 using std::multimap;
 using std::iterator;
 
+struct WFileInfo
+{
+	WUserRef fiUser;
+	QString fiFilename;
+	MessageRef fiRef;
+	bool fiFirewalled;
+	WSearchListItem * fiListItem;	// the list view item this file is tied to
+};
+
 typedef pair<QString, QString> WResumePair;
 typedef multimap<QString, QString> WResumeMap;
 typedef WResumeMap::iterator WResumeIter;
+
+typedef multimap<QString, WFileInfo *> WFIMap;
+typedef pair<QString, WFileInfo *> WFIPair;
+typedef WFIMap::iterator WFIIter;
+
+typedef pair<QString, ChannelInfo *> WChannelPair;
+typedef multimap<QString, ChannelInfo *> WChannelMap;
+typedef WChannelMap::iterator WChannelIter;
 
 inline 
 WResumePair
@@ -57,6 +79,17 @@ MakePair(QString f, QString u)
 	WResumePair p;
 	p.first = f;
 	p.second = u;
+	return p;
+}
+
+// quick inline method to generate a pair
+inline
+WFIPair 
+MakePair(const QString s, WFileInfo * fi)
+{
+	WFIPair p;
+	p.first = s;
+	p.second = fi;
 	return p;
 }
 
@@ -140,26 +173,46 @@ public slots:
 	void ReconnectTimer();
 
 	// open a new search dialog
-	void SearchDialog();
+	//void SearchDialog();
 
 	// this won't be emitted under Windows
 	void GotShown(const QString &);
 
 	/*** Windows Menu ***/
-	void OpenChannels();
+	// void OpenChannels();
 	void OpenDownloads();
 
 	void AboutToQuit();
-	void SearchWindowClosed();
+	// void SearchWindowClosed();
 	void DownloadWindowClosed();
-	void ChannelsWindowClosed();
+	// void ChannelsWindowClosed();
 
 	void FileFailed(QString, QString); // from WDownload
 	void FileInterrupted(QString, QString);
 
+	// Channels
+	void ChannelAdded(const QString, const QString, int64);
+	void ChannelAdmins(const QString, const QString, const QString);
+	void ChannelTopic(const QString, const QString, const QString);
+	void ChannelPublic(const QString, const QString, bool);
+	void CreateChannel();
+	void JoinChannel();
+	void ChannelOwner(const QString, const QString, const QString);
+	void UserIDChanged(QString, QString);
+
 protected:
 	virtual void customEvent(QCustomEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
+
+private slots:
+	// void Close();
+	void GoSearch();
+	void StopSearch();
+	void ClearList();
+	void Download();
+
+	void AddFile(const QString, const QString, bool, MessageRef);
+	void RemoveFile(const QString, const QString);
 
 private:
 	mutable NetClient * fNetClient;
@@ -181,7 +234,8 @@ private:
 	WUniListView * fUsers;
 
 	QVGroupBox * fLeftPane;
-	QHGroupBox * fInfoPane;	// holds server list, user name, user status
+
+	// QHGroupBox * fInfoPane;	// holds server list, user name, user status
 	QComboBox * fServerList, * fUserList, * fStatusList;
 	QLabel * fServerLabel, * fUserLabel, * fStatusLabel;
 	QSplitter * fChatSplitter;
@@ -256,8 +310,8 @@ private:
 	QTimer * fAutoAway;
 	QTimer * fReconnectTimer;
 
-	WSearch * fSearchWindow;
-	Channels * fChannels;
+	// WSearch * fSearchWindow;
+	// Channels * fChannels;
 	WLog fMainLog;
 
 #ifdef WIN32			// if the OS is Windows, 
@@ -345,6 +399,86 @@ private:
 
 	WResumeMap fResumeMap;
 
+	// QGridLayout * fMainLayout;
+	QGridLayout * fMainBox;
+    QTabWidget * fTabs;
+	
+	QWidget * fSearchWidget;
+	QGridLayout * fSearchTab;
+	
+	QWidget * fChannelsWidget;
+	QGridLayout * fChannelsTab;
+	QListView * ChannelList;
+	QPushButton * Create;
+	QPushButton * Join;
+	// Search Pane
+
+	//QGridLayout * fSearchPane;
+	// QVGroupBox * fSearchBox;
+	// QHGroupBox * fEntryBox;
+	// QVGroupBox * fButtonsBox;
+	QLabel * fSearchLabel;
+	// QLineEdit * fSearchEdit;
+	WComboBox * fSearchEdit;
+	QListView * fSearchList;
+	QPushButton * fDownload;
+	// QPushButton * fClose;
+	QPushButton * fClear;
+	QPushButton * fStop;
+	QStatusBar * fStatus;
+	Message * fQueue;
+	QMutex fLock;		// to lock the list so only one method can be using it at a time
+
+	QString fCurrentSearchPattern;
+	StringMatcher fFileRegExp, fUserRegExp;
+	QString fFileRegExpStr, fUserRegExpStr;
+
+	bool fIsRunning;
+
+	WFIMap fFileList;
+
+	void StartQuery(QString sidRegExp, QString fileRegExp);
+	void SetResultsMessage();
+	void SetSearchStatus(const QString & status);
+	void SetSearch(QString pattern);
+
+	void QueueDownload(QString file, WUser * user);
+	void EmptyQueues();
+
+	void Lock() { fSearchLock.lock(); }
+	void Unlock() { fSearchLock.unlock(); }
+
+	QMutex fSearchLock;		// to lock the list so only one method can be using it at a time
+
+	// Channels
+
+	void ChannelCreated(const QString, const QString, int64);
+	void ChannelJoin(const QString, const QString);
+	void ChannelPart(const QString, const QString);
+	void ChannelInvite(const QString, const QString, const QString);
+	void ChannelKick(const QString, const QString, const QString);
+
+	WChannelMap fChannels;
+
+	void UpdateAdmins(WChannelIter iter);
+	void UpdateUsers(WChannelIter iter);
+	void UpdateTopic(WChannelIter iter);
+	void UpdatePublic(WChannelIter iter);
+	void JoinChannel(QString channel);
+
+	bool IsOwner(QString channel, QString user);
+	bool IsPublic(QString channel);
+	void SetPublic(QString channel, bool pub);
+
+	void PartChannel(QString channel, QString user = QString::null);
+
+	bool IsAdmin(QString channel, QString user);
+	void AddAdmin(QString channel, QString user);
+	void RemoveAdmin(QString channel, QString user);
+	QString GetAdmins(QString channel);
+
+	void SetTopic(QString channel, QString topic);
+
 public:
 	QString GetUserName() const;
 	QString GetServer() const;
@@ -393,16 +527,9 @@ public:
 	// UniShare
 	int64 GetRegisterTime() { return fRegistered; }
 
-
 signals:
 	void UpdatePrivateUserLists();
-	void ChannelCreated(const QString, const QString, int64);
-	void ChannelJoin(const QString, const QString);
-	void ChannelPart(const QString, const QString);
-	void ChannelInvite(const QString, const QString, const QString);
-	void ChannelKick(const QString, const QString, const QString);
-	void ChannelTopic(const QString, const QString, const QString);
-	void ChannelPublic(const QString, const QString, bool);
+	void ChannelAdminsChanged(const QString, const QString);
 	void NewChannelText(const QString, const QString, const QString);
 };
 

@@ -192,15 +192,15 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout33</cstring>
+                    <cstring>Layout36</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>0</x>
-                        <y>10</y>
+                        <x>1</x>
+                        <y>12</y>
                         <width>540</width>
-                        <height>195</height>
+                        <height>193</height>
                     </rect>
                 </property>
                 <hbox>
@@ -217,6 +217,13 @@
                         <property stdset="1">
                             <name>name</name>
                             <cstring>Layout23</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>minimumSize</name>
+                            <size>
+                                <width>250</width>
+                                <height>0</height>
+                            </size>
                         </property>
                         <property>
                             <name>layoutSpacing</name>
@@ -415,27 +422,62 @@
                             </widget>
                         </vbox>
                     </widget>
-                    <spacer>
-                        <property>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
                             <name>name</name>
-                            <cstring>Spacer27</cstring>
+                            <cstring>Layout35</cstring>
                         </property>
-                        <property>
-                            <name>orientation</name>
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property>
-                            <name>sizeType</name>
-                            <enum>Expanding</enum>
-                        </property>
-                        <property>
-                            <name>sizeHint</name>
+                        <property stdset="1">
+                            <name>minimumSize</name>
                             <size>
-                                <width>20</width>
-                                <height>20</height>
+                                <width>250</width>
+                                <height>0</height>
                             </size>
                         </property>
-                    </spacer>
+                        <vbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fSounds</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Enable Sound Effects</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property>
+                                    <name>name</name>
+                                    <cstring>Spacer30</cstring>
+                                </property>
+                                <property>
+                                    <name>orientation</name>
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property>
+                                    <name>sizeType</name>
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property>
+                                    <name>sizeHint</name>
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </vbox>
+                    </widget>
                 </hbox>
             </widget>
         </widget>

@@ -115,6 +115,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fInfo->setChecked(gWin->fSettings->GetInfo());
 	fWarning->setChecked(gWin->fSettings->GetWarning());
 	fError->setChecked(gWin->fSettings->GetError());
+	fSounds->setChecked(gWin->fSettings->GetSounds());
 	
 	switch (gWin->fSettings->GetStyle())
 	{
@@ -294,6 +295,7 @@ WPrefs::OK()
 	gWin->fSettings->SetInfo(fInfo->isChecked());
 	gWin->fSettings->SetWarning(fWarning->isChecked());
 	gWin->fSettings->SetError(fError->isChecked());
+	gWin->fSettings->SetSounds(fSounds->isChecked());
 
 	// flash settings
 	int flags = WSettings::FlashNone;
