@@ -653,6 +653,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/dns"))
 		{
 			QString user = GetParameterString(sendText);
+			QString uid = "";
 			QString addr;
 			WUserRef uref = FindUser(user);
 			uint32 address = 0;
@@ -664,6 +665,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				address = GetHostByName(uref()->GetUserHostName().latin1());
 				addr = uref()->GetUserHostName();
+				user = uref()->GetUserName();
+				uid = uref()->GetUserID();
 			}
 			else
 			{
@@ -675,7 +678,11 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				host = Inet_NtoA(address);
 				
-				PrintSystem( tr("Address info for %1:").arg(user), false);
+				if (uid != "")
+					PrintSystem( tr("Address info for user #%1 (%2):").arg(uid).arg(user), false);
+				else
+					PrintSystem( tr("Address info for %1:").arg(user), false);
+
 				PrintSystem( tr("IP Address: %1").arg(host.Cstr()), false);
 				iaHost.s_addr = inet_addr(host.Cstr());
 				lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
@@ -683,6 +690,24 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (lpHostEntry != NULL)
 				{
 					PrintSystem( tr("Host Name: %1").arg(lpHostEntry->h_name), false);
+				}
+
+				if (uid == "")
+				{
+					// List all users from this ip
+					START_OUTPUT();
+					PrintSystem( "Connected users: ", true);
+
+					WUserMap cmap;
+					fNetClient->FindUsersByIP(cmap, host.Cstr());
+					for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
+					{
+						if ( (*it).second() )
+						{
+							PrintSystem( tr("#%1 - %2").arg( (*it).second()->GetUserID() ).arg( (*it).second()->GetUserName() ), true);
+						}
+					}
+					END_OUTPUT();
 				}
 			}
 			else

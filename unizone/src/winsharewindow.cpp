@@ -740,7 +740,8 @@ WinShareWindow::UpdatePrivateUserLists()
 	for ( WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); ++it )
 	{
 		WPrivateWindow * pw = (*it).first;
-		pw->UpdateUserList();
+		if (pw)
+			pw->UpdateUserList();
 	}
 	pLock.unlock();
 }
