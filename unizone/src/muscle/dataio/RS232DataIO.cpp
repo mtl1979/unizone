@@ -10,6 +10,7 @@
 #endif
 
 #if defined(WIN32) || defined(__CYGWIN__)
+# include <process.h>  // for _beginthreadex()
 # include "util/Queue.h"
 # define USE_WINDOWS_IMPLEMENTATION
 #else
@@ -83,7 +84,8 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
                   if ((_wakeupSignal != INVALID_HANDLE_VALUE)&&(_ovWait.hEvent != INVALID_HANDLE_VALUE)&&(_ovRead.hEvent != INVALID_HANDLE_VALUE)&&(_ovWrite.hEvent != INVALID_HANDLE_VALUE)&&(CreateConnectedSocketPair(_masterNotifySocket, _slaveNotifySocket, false) == B_NO_ERROR))
                   {
                      DWORD junkThreadID;
-                     if ((_ioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)IOThreadEntryFunc, this, 0, &junkThreadID)) != NULL) okay = true;
+                     typedef unsigned (__stdcall *PTHREAD_START) (void *);
+                     if ((_ioThread = (HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != NULL) okay = true;
                   }
                }
                else okay = true;

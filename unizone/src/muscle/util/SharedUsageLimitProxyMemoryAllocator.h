@@ -63,6 +63,11 @@ public:
     */
    status_t GetCurrentMemoryUsage(size_t * retCounts) const;
 
+   /** Returns true iff our shared memory area setup worked and we are ready for use.
+     * Returns false if there was a problem setting up and we aren't usable.
+     */
+   bool IsValid() const {return (_shared.GetAreaSize() > 0);}
+
 private:
    void ResetDaemonCounter(); // Note: this assumes the SharedMemory is already locked for read/write!
    status_t ChangeDaemonCounter(int32 byteDelta);  // Note: this assumes the SharedMemory is not locked yet

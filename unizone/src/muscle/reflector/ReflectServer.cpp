@@ -360,9 +360,8 @@ ServerProcessLoop()
             Convert64ToTimeVal(waitTime64, waitTime);
          }
 
-         // Block here until the next I/O or pulse event becomes ready
-         int numBitsSet = select(maxSocket+1, (maxSocket >= 0) ? &readSet : NULL, (maxSocket >= 0) ? &writeSet : NULL, NULL, (nextPulseAt == MUSCLE_TIME_NEVER) ? NULL : &waitTime);
-         if (numBitsSet < 0) 
+         // We sleep here until the next I/O or pulse event becomes ready
+         if ((select(maxSocket+1, (maxSocket >= 0) ? &readSet : NULL, (maxSocket >= 0) ? &writeSet : NULL, NULL, (nextPulseAt == MUSCLE_TIME_NEVER) ? NULL : &waitTime) < 0)&&(PreviousOperationWasInterrupted() == false))
          {
             if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "select() failed, aborting!\n");
             ClearLameDucks();

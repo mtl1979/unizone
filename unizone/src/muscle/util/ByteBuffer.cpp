@@ -1,21 +1,13 @@
 #include "util/ByteBuffer.h"
+#include "system/GlobalMemoryAllocator.h"
 
 namespace muscle {
 
-status_t ByteBuffer :: SetBuffer(uint32 numBytes, const uint8 * buffer, bool copyBuffer)
+status_t ByteBuffer :: SetBuffer(uint32 numBytes, const uint8 * buffer)
 {
    Clear();
-   if (copyBuffer) 
-   {
-      if (SetNumBytes(numBytes, false) != B_NO_ERROR) return B_ERROR;
-      if ((buffer)&&(_buffer)) memcpy(_buffer, buffer, numBytes);
-   }
-   else 
-   {
-      delete [] _buffer;
-      _buffer = (uint8 *)buffer;
-      _numValidBytes = _numAllocatedBytes = numBytes;
-   }
+   if (SetNumBytes(numBytes, false) != B_NO_ERROR) return B_ERROR;
+   if ((buffer)&&(_buffer)) memcpy(_buffer, buffer, numBytes);
    return B_NO_ERROR;
 }
 
@@ -23,23 +15,54 @@ status_t ByteBuffer :: SetNumBytes(uint32 newNumBytes, bool retainData)
 {
    if (newNumBytes > _numAllocatedBytes)
    {
-      uint8 * newBuf = NULL;
-      if (newNumBytes > 0)
+      if (retainData)
       {
-         newBuf = newnothrow uint8[newNumBytes];
-         if (newBuf == NULL) 
+         uint8 * newBuf = (uint8 *)muscleRealloc(_buffer, newNumBytes);
+         if (newBuf)
+         {
+            _buffer = newBuf;
+            _numAllocatedBytes = newNumBytes;
+         }
+         else
          {
             WARN_OUT_OF_MEMORY;
             return B_ERROR;
          }
       }
-      if ((retainData)&&(newBuf)&&(_buffer)) memcpy(newBuf, _buffer, muscleMin(newNumBytes, _numValidBytes));
-      delete [] _buffer;
-      _buffer = newBuf;
-      _numAllocatedBytes = _numValidBytes = newNumBytes;
+      else
+      {
+         uint8 * newBuf = NULL;
+         if (newNumBytes > 0)
+         {
+            newBuf = (uint8 *) muscleAlloc(newNumBytes);
+            if (newBuf == NULL) 
+            {
+               WARN_OUT_OF_MEMORY;
+               return B_ERROR;
+            }
+         }
+         muscleFree(_buffer);
+         _buffer = newBuf;
+         _numAllocatedBytes = _numValidBytes = newNumBytes;
+      }
    }
    else _numValidBytes = newNumBytes;  // truncating our array is easy!
 
+   return B_NO_ERROR;
+}
+
+status_t ByteBuffer :: FreeExtraBytes()
+{
+   if (_numValidBytes < _numAllocatedBytes)
+   {
+      uint8 * newBuf = (uint8 *) muscleRealloc(_buffer, _numValidBytes);
+      if ((_numValidBytes == 0)||(newBuf)) 
+      {
+         _buffer            = newBuf;
+         _numAllocatedBytes = _numValidBytes;
+      }
+      else return B_ERROR;  // huh?  Why would this happen?  Why?  Why?
+   }
    return B_NO_ERROR;
 }
 
@@ -59,7 +82,7 @@ void ByteBuffer :: Clear(bool releaseBuffers)
 {
    if (releaseBuffers)
    {
-      delete [] _buffer;
+      muscleFree(_buffer);
       _buffer = NULL;
       _numValidBytes = _numAllocatedBytes = 0;
    }
@@ -70,10 +93,10 @@ static void ClearBufferFunc(ByteBuffer * buf, void *) {buf->Clear(buf->GetNumByt
 static ByteBufferRef::ItemPool _bufferPool(100, ClearBufferFunc);
 ByteBufferRef::ItemPool * GetByteBufferPool() {return &_bufferPool;}
 
-ByteBufferRef GetByteBufferFromPool(uint32 numBytes, const uint8 * buffer, bool copyBuffer)
+ByteBufferRef GetByteBufferFromPool(uint32 numBytes, const uint8 * optBuffer)
 {
    ByteBufferRef ref(_bufferPool.ObtainObject(), &_bufferPool);
-   if ((ref())&&(ref()->SetBuffer(numBytes, buffer, copyBuffer) != B_NO_ERROR)) ref.Reset();  // return NULL ref on out-of-memory
+   if ((ref())&&(ref()->SetBuffer(numBytes, optBuffer) != B_NO_ERROR)) ref.Reset();  // return NULL ref on out-of-memory
    return ref;
 }
 

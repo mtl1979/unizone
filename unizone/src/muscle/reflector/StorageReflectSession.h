@@ -266,10 +266,12 @@ protected:
 
    /** Remove all nodes that match (nodePath).
     *  @param nodePath A relative path indicating node(s) to remove.  Wildcarding is okay.
+    *  @param filterRef If non-NULL, we'll use the given QueryFilter object to filter out our result set.
+    *                   Only nodes whose Messages match the QueryFilter will be removed.  Default is a NULL reference.
     *  @param quiet If set to true, subscriber's won't be updated regarding this change to the database
     *  @return B_NO_ERROR on success, or B_ERROR on failure.
     */
-   status_t RemoveDataNodes(const String & nodePath, QueryFilterRef filterRef, bool quiet = false);
+   status_t RemoveDataNodes(const String & nodePath, QueryFilterRef filterRef = QueryFilterRef(), bool quiet = false);
 
    /**
     * Recursively saves a given subtree of the node database into the given Message object, for safe-keeping.
@@ -394,6 +396,8 @@ protected:
    /** Convenience method:  Adds sessions that contain nodes that match the given pattern to the passed-in Hashtable.
     *  @param nodePath the node path to match against.  May be absolute (e.g. "/0/1234/frc*") or relative (e.g. "blah")
     *                  If the nodePath is a zero-length String, all sessions will match.
+    *  @param filter If non-NULL, only nodes whose data Messages match this filter will have their sessions added 
+    *                to the (retSessions) table.
     *  @param retSessions A table that will on return contain the set of matching sessions, keyed by their session ID strings.
     *                     Make sure you have called SetKeyCompareFunction(CStringCompareFunc) on this table!
     *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
@@ -407,6 +411,7 @@ protected:
     *  @param msgRef the Message to pass on.
     *  @param nodePath the node path to match against.  May be absolute (e.g. "/0/1234/frc*") or relative (e.g. "blah")
     *                  If the nodePath is a zero-length String, all sessions will match.
+    *  @param filter If non-NULL, only nodes whose data Messages match this filter will receive the Message.
     *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */

@@ -32,7 +32,6 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <string.h>
-#include <errno.h>
 #include <sys/stat.h>
 
 // On some OS's, calls like accept() take an int* rather than a uint32*
@@ -86,20 +85,11 @@ void CloseSocket(int socket)
    if (socket >= 0) closesocket(socket);  // a little bit silly, perhaps...
 }
 
-bool PreviousOperationWouldBlock()
-{
-#ifdef WIN32
-   return (WSAGetLastError() == WSAEWOULDBLOCK);
-#else
-   return (errno == EWOULDBLOCK);
-#endif
-}
-
 // helper function for disentangling the true meaning of recv() and send() return values!
-static int32 CalculateReturnValue(int ret, uint32 maxSize, bool blocking)
+inline int32 CalculateReturnValue(int ret, uint32 maxSize, bool blocking)
 {
    int32 retForBlocking = ((ret == 0)&&(maxSize>0)) ? -1 : ret;
-   return blocking ? retForBlocking : (((ret < 0)&&(PreviousOperationWouldBlock())) ? 0 : retForBlocking);
+   return blocking ? retForBlocking : (((ret < 0)&&((PreviousOperationWouldBlock())||(PreviousOperationWasInterrupted()))) ? 0 : retForBlocking);
 }
 
 int32 ReceiveData(int socket, void * buffer, uint32 size, bool bm)

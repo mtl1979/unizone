@@ -494,7 +494,7 @@ AddHead(const Queue<ItemType> &queue, uint32 startIndex, uint32 numNewItems)
    numNewItems = muscleMin(numNewItems, (startIndex < hisSize) ? (hisSize-startIndex) : 0);
 
    if (EnsureSize(numNewItems+GetNumItems()) != B_NO_ERROR) return B_ERROR;
-   for (int i=((int)startIndex+numNewItems)-1; i>=startIndex; i--) if (AddHead(queue[i]) == B_ERROR) return B_ERROR;
+   for (int i=((int)startIndex+numNewItems)-1; i>=(int32)startIndex; i--) if (AddHead(queue[i]) == B_ERROR) return B_ERROR;
    return B_NO_ERROR;
 }
 
@@ -790,14 +790,7 @@ Queue<ItemType>::
 RemoveFirstInstanceOf(const ItemType & val) 
 {
    uint32 ni = GetNumItems();
-   for (uint32 i=0; i<ni; i++)
-   {
-      if ((*this)[i] == val) 
-      {
-         RemoveItemAt(i);
-         return B_NO_ERROR;
-      }
-   }
+   for (uint32 i=0; i<ni; i++) if ((*this)[i] == val) return RemoveItemAt(i);
    return B_ERROR;
 }
 
@@ -806,14 +799,7 @@ status_t
 Queue<ItemType>::
 RemoveLastInstanceOf(const ItemType & val) 
 {
-   for (int32 i=((int32)GetNumItems())-1; i>=0; i--)
-   {
-      if ((*this)[i] == val) 
-      {
-         RemoveItemAt(i);
-         return B_NO_ERROR;
-      }
-   }
+   for (int32 i=((int32)GetNumItems())-1; i>=0; i--) if ((*this)[i] == val) return RemoveItemAt(i);
    return B_ERROR;
 }
 

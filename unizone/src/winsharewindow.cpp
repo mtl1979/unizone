@@ -16,6 +16,7 @@
 #include "util/StringTokenizer.h"
 #include "regex/StringMatcher.h"
 #include "iogateway/PlainTextMessageIOGateway.h"
+#include "zlib/ZLibUtilityFunctions.h"
 #include "settings.h"
 #include "filethread.h"
 #include "tokenizer.h"								// <postmaster@raasu.org> 20021114
@@ -399,7 +400,20 @@ WinShareWindow::customEvent(QCustomEvent * event)
 						MessageRef mref = fFileScanThread->GetSharedFile(n); 
 						String s;
 						if (mref()->FindString("secret:NodePath", s) == B_OK)
-							fNetClient->SetNodeValue(s.Cstr(), mref);
+						{
+							uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
+							// Use encoded file attributes?
+							if (enc != 0)
+							{
+								MessageRef packed = DeflateMessage(mref, enc, true);
+								if (packed())
+									fNetClient->SetNodeValue(s.Cstr(), packed);
+							}
+							else
+							{
+								fNetClient->SetNodeValue(s.Cstr(), mref);
+							}
+						}
 					}
 					fFileScanThread->Unlock();
 					PRINT("Done\n");
@@ -440,8 +454,20 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			{
 				PRINT("Received SessionConnected message\n");
 
-				// Set Message Encoding
-				fNetClient->SetOutgoingMessageEncoding( fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer)) );
+				// Set Outgoing Message Encoding
+				uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
+				fNetClient->SetOutgoingMessageEncoding( enc );
+				
+				// Set Incoming Message Encoding
+				if (enc != 0)
+				{
+					MessageRef setref(GetMessageFromPool(PR_COMMAND_SETPARAMETERS));
+					if (setref())
+					{
+						setref()->AddInt32(PR_NAME_REPLY_ENCODING, enc);
+						fNetClient->SendMessageToSessions(setref);
+					}
+				}
 
 				PRINT("Uploading public data\n");
 				fGotParams = false; // set to false here :)
@@ -450,8 +476,8 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				fNetClient->SendMessageToSessions(askref);
 				// get a list of users as well
 				fNetClient->AddSubscription("SUBSCRIBE:beshare/*"); // all user info :)
-				fNetClient->AddSubscription("SUBSCRIBE:unishare/*");
-				fNetClient->AddSubscription("SUBSCRIBE:unishare/channeldata/*");
+				fNetClient->AddSubscription("SUBSCRIBE:unishare/*"); // all unishare-specific user data
+				fNetClient->AddSubscription("SUBSCRIBE:unishare/channeldata/*"); // all unishare-specific channel data
 				fNetClient->SetUserName(GetUserName());
 				fNetClient->SetUserStatus(GetStatus());
 				fNetClient->SetConnection(fSettings->GetConnection());

@@ -13,14 +13,11 @@ class ByteBuffer : public FlatCountable
 {
 public:
    /** Constructs a ByteBuffer that holds the specified bytes.
-     * @param numBytes Number of bytes to copy in (or just allocate, if (buffer) is NULL).  Defaults to zero bytes (i.e., don't allocate a buffer)
-     * @param buffer Points to bytes that we will have in our internal buffer (see the copyBuffer parameter, below, for the exact semantics of this).
-     *               If NULL, this ByteBuffer will contain (numBytes) uninitialized bytes.  Defaults to NULL.
-     * @param copyBuffer If true, (buffer) is copied into a separately allocated internal buffer, and we do not assume ownership of (buffer).
-     *                   If false, (buffer) is not copied, but instead we assume ownership of (buffer) and will delete[] it when we are done with it.
-     *                   Defaults to true.  If you set this false, then (buffer) must have been allocated with new[].
+     * @param numBytes Number of bytes to copy in (or just allocate, if (optBuffer) is NULL).  Defaults to zero bytes (i.e., don't allocate a buffer)
+     * @param optBuffer May be set to point to an array of (numBytes) bytes that we should copy into our internal buffer.
+     *                  If NULL, this ByteBuffer will contain (numBytes) uninitialized bytes.  Defaults to NULL.
      */
-   ByteBuffer(uint32 numBytes = 0, const uint8 * buffer = NULL, bool copyBuffer = true) : _buffer(NULL), _numValidBytes(0), _numAllocatedBytes(0) {(void) SetBuffer(numBytes, buffer, copyBuffer);}
+   ByteBuffer(uint32 numBytes = 0, const uint8 * optBuffer = NULL) : _buffer(NULL), _numValidBytes(0), _numAllocatedBytes(0) {(void) SetBuffer(numBytes, optBuffer);}
   
    /** Copy Constructor. 
      * @param copyMe The ByteBuffer to become a copy of.
@@ -60,34 +57,40 @@ public:
    bool operator !=(const ByteBuffer &rhs) const {return !(*this == rhs);}
 
    /** Sets our content using the given byte buffer.
-     * @param numBytes Number of bytes to copy in (or just allocate, if (buffer) is NULL).  Defaults to zero bytes (i.e., don't allocate a buffer)
-     * @param buffer Points to bytes that we will have in our internal buffer (see the copyBuffer parameter, below, for the exact semantics of this).
-     *               If NULL, this ByteBuffer will contain (numBytes) uninitialized bytes.  Defaults to NULL.
-     * @param copyBuffer If true, (buffer) is copied into a separately allocated internal buffer, and we do not assume ownership of (buffer).
-     *                   If false, (buffer) is not copied, but instead we assume ownership of (buffer) and will delete[] it when we are done with it.
-     *                   Defaults to true.  If you set this false, then (buffer) must have been allocated with new[].
+     * @param numBytes Number of bytes to copy in (or just to allocate, if (optBuffer) is NULL).  Defaults to zero bytes (i.e., don't allocate a buffer)
+     * @param optBuffer May be set to point to an array of bytes to copy into our internal buffer.
+     *                  If NULL, this ByteBuffer will contain (numBytess) uninitialized bytes.  Defaults to NULL.
      * @param B_NO_ERROR on success, or B_ERROR on failure (out of memory--there are no side effects if this occurs)
      */ 
-   status_t SetBuffer(uint32 numBytes = 0, const uint8 * buffer = NULL, bool copyBuffer = true);
+   status_t SetBuffer(uint32 numBytes = 0, const uint8 * optBuffer = NULL);
 
-   /** Resets us to not holding any buffer
-     * @param releaseBuffer If true, we will delete any memory we are holding; otherwise we will keep it for later re-use.
+   /** Resets this ByteBuffer to its empty state, i.e. not holding any buffer.
+     * @param releaseBuffer If true, we will immediately muscleFree() any buffer we are holding; otherwise we will keep the buffer around for potential later re-use.
      */
    void Clear(bool releaseBuffer = false);
 
    /** Causes us to allocate/reallocate our buffer as necessary to be the given size.
      * @param newNumBytes New desired length for our buffer
      * @param retainData If true, we will take steps to ensure our current data is retained (as much as possible).
-     *                   Otherwise, the contents of the new buffer will be uninitialized/undefined.
+     *                   Otherwise, the contents of the resized buffer will be undefined.
      * @return B_NO_ERROR on success, or B_ERROR on out-of-memory.
      */
    status_t SetNumBytes(uint32 newNumBytes, bool retainData);
 
-   /** Causes us to forget the byte buffer we were holding, without deleting it.  Once this method 
-     * is called, the calling code becomes responsible for array-deleting our (previously held) buffer.
-     * So make sure you are holding a pointer to our data (via GetBuffer()) before you call this!
+   /** If we contain any extra bytes that are not being used to hold actual data (i.e. if GetNumAllocatedBytes()
+    *  is returning a valud greater than GetNumBytes(), this method can be called to free up the unused bytes.
+    *  This method calls muscleRealloc(), so it should be quite efficient.  After this method returns successfully,
+    *  the number of allocated bytes will be equal to the number of used bytes.
+    *  @returns B_NO_ERROR on success or B_ERROR on failure (although I can't imagine why muscleRealloc() would ever fail)
+    */
+   status_t FreeExtraBytes();
+
+   /** Causes us to forget the byte buffer we were holding, without freeing it.  Once this method 
+     * is called, the calling code becomes responsible for calling muscleFree() on our (previously held) buffer.
+     * @returns a pointer to our data bytes.  It becomes the responsibility of the caller to muscleFree() this buffer
+     *          when he is done with it!
      */
-   void ReleaseBuffer() {_buffer = NULL; _numValidBytes = _numAllocatedBytes = 0;}
+   const uint8 * ReleaseBuffer() {const uint8 * ret = _buffer; _buffer = NULL; _numValidBytes = _numAllocatedBytes = 0; return ret;}
 
    // Flattenable interface
    virtual bool IsFixedSize() const {return false;}
@@ -113,20 +116,17 @@ private:
 typedef Ref<ByteBuffer> ByteBufferRef;
 
 /** This function returns a pointer to a singleton ObjectPool that can be used to minimize the number of 
- *  ByteBuffer allocations and deletions by recycling the ByteBuffer objects.
+ *  ByteBuffer allocations and frees by recycling the ByteBuffer objects.
  */
 ByteBufferRef::ItemPool * GetByteBufferPool();
 
-/** Convenience method:  Gets a ByteBuffer from the ByteBuffer pool, makes it equal to (copyMe), and returns a reference to it.
- *  @param numBytes Number of bytes to copy in (or just allocate, if (buffer) is NULL).  Defaults to zero bytes (i.e. allocate an empty buffer)
- *  @param buffer Points to bytes that we will have in our internal buffer (see the copyBuffer parameter, below, for the exact semantics of this).
- *                If NULL, this ByteBuffer will contain (numBytes) uninitialized bytes.  Defaults to NULL.
- *  @param copyBuffer If true, (buffer) is copied into a separately allocated internal buffer, and we do not assume ownership of (buffer).
- *                    If false, (buffer) is not copied, but instead we assume ownership of (buffer) and will delete[] it when we are done with it.
- *                    Defaults to true.  If you set this false, then (buffer) must have been allocated with new[].
- *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).
+/** Convenience method:  Gets a ByteBuffer from the ByteBuffer pool, makes sure it holds the specified number of bytes, and returns it.
+ *  @param numBytes Number of bytes to copy in (or just allocate, if (optBuffer) is NULL).  Defaults to zero bytes (i.e. retrieve an empty buffer)
+ *  @param optBuffer If non-NULL, points to an array of (numBytes) bytes to copy in to our internal buffer. 
+ *                   If NULL, this ByteBuffer will contain (numBytes) uninitialized bytes.  Defaults to NULL.
+ *  @return Reference to a ByteBuffer object that has been initialized as specified, or a NULL ref on failure (out of memory).
  */
-ByteBufferRef GetByteBufferFromPool(uint32 numBytes = 0, const uint8 * buffer = NULL, bool copyBuffer = true);
+ByteBufferRef GetByteBufferFromPool(uint32 numBytes = 0, const uint8 * optBuffer = NULL);
 
 /** Convenience method:  Gets a ByteBuffer from the ByteBuffer pool, makes it equal to (copyMe), and returns a reference to it.
  *  @param copyMe A ByteBuffer to clone.

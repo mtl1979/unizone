@@ -134,7 +134,7 @@ public:
    /**
     * Reads some more incoming message bytes from the wire.  
     * Any time a new Message is received, MessageReceivedFromGateway() should be
-    * called on the provided IGatewayMessageReceiver to notify him about it.
+    * called on the provided AbstractGatewayMessageReceiver to notify him about it.
     * @note Do not override this method!  Override DoInputImplementation() instead!
     * @param receiver An object to call MessageReceivedFromGateway() on whenever a new 
     *                 incoming Message is available.
@@ -235,12 +235,12 @@ protected:
    /**
     * Reads some more incoming message bytes from the wire.  
     * Any time a new Message is received, MessageReceivedFromGateway() should be
-    * called on the provided IGatewayMessageReceiver to notify him about it.
+    * called on the provided AbstractGatewayMessageReceiver to notify him about it.
     * @param receiver An object to call MessageReceivedFromGateway() on whenever a new 
     *                 incoming Message is available.
     * @param maxBytes optional limit on the number of bytes that should be read in.
     *                 Defaults to MUSCLE_NO_LIMIT (which is a very large number)
-    * Tries not to block, but may (depending on implementation)
+    * Tries not to block, but may (if the held DataIO object is in blocking mode)
     * @return The number of bytes read, or a negative value if the connection has been broken
     *         or some other catastrophic condition has occurred.
     */

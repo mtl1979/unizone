@@ -200,6 +200,10 @@ SOURCE=..\src\muscle\zlib\ZLibCodec.cpp
 
 SOURCE=..\src\muscle\zlib\ZLibDataIO.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibUtilityFunctions.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -415,6 +419,10 @@ SOURCE=..\src\muscle\zlib\ZLibCodec.h
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\ZLibDataIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibUtilityFunctions.h
 # End Source File
 # End Group
 # End Target

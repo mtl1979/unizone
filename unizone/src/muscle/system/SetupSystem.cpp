@@ -123,8 +123,8 @@ uint64 GetRunTime64()
    if (_ticksPerSecond <= 0) _ticksPerSecond = sysconf(_SC_CLK_TCK);
 
    struct tms junk;
-   clock_t curTicks = times(&junk);
-   return ((_ticksPerSecond > 0)&&(curTicks >= 0)) ? ((((uint64)curTicks)*1000000)/_ticksPerSecond) : 0;
+   int64 curTicks = (int64) times(&junk);
+   return ((_ticksPerSecond > 0)&&(curTicks >= 0)) ? ((curTicks*1000000)/_ticksPerSecond) : 0;
 #endif
 }
 

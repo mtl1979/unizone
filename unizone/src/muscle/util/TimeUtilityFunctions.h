@@ -156,6 +156,20 @@ inline bool OnceEvery(uint64 interval, uint64 & lastTime)
    return false;
 }
 
+/** This handy macro will print out, twice a second, 
+ *  the average number of times per second it is being called.
+ */
+#define PRINT_CALLS_PER_SECOND(x) \
+{ \
+   static uint32 count = 0; \
+   static uint64 startTime = 0; \
+   uint64 lastTime = 0; \
+   uint64 now = GetCurrentTime64(); \
+   if (startTime == 0) startTime = now; \
+   count++; \
+   if ((OnceEvery(500000, lastTime))&&(now>startTime)) printf("%s: %llu/s\n", x, (1000000*((uint64)count))/(now-startTime)); \
+}
+
 };  // end namespace muscle
 
 #endif

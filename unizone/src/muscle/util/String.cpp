@@ -1,11 +1,12 @@
 /* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "util/String.h"
+#include "system/GlobalMemoryAllocator.h"
 #include <stdarg.h>
 
 namespace muscle {
 
-String::String(const char * str, int32 maxLen) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
+String::String(const char * str, uint32 maxLen) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
 {
    SetCstr(str, maxLen);
 }
@@ -15,10 +16,20 @@ String::String(const String & str) : Flattenable(), _buffer(NULL), _bufferLen(0)
    *this = str;
 }
 
-status_t
-String::SetCstr(const char * str, int32 maxLen)
+String :: ~String() 
 {
-   if (maxLen < 0) maxLen = str ? strlen(str) : 0;
+   if (_buffer != _smallBuffer) muscleFree(_buffer);
+}
+
+status_t
+String::SetCstr(const char * str, uint32 maxLen)
+{
+   // If (str)'s got a NUL byte before maxLen, make (maxLen) smaller.
+   // We can't call strlen(str) because we don't have any guarantee that the NUL 
+   // byte even exists!  Without a NUL byte, strlen() could run off into the weeds...
+   uint32 sLen = 0;
+   if (str) {while((sLen<maxLen)&&(str[sLen] != '\0')) sLen++;}
+   if (sLen < maxLen) maxLen = sLen;
    if (maxLen > 0)
    {
       if (str[maxLen-1] != '\0') maxLen++;  // make room to add the NUL byte if necessary
@@ -65,7 +76,7 @@ String::operator+=(const String &other)
    uint32 otherLen = other.Length();
    if ((otherLen > 0)&&(EnsureBufferSize(Length() + otherLen + 1, true) == B_NO_ERROR))
    {
-      strcpy(&_buffer[_length], other.Cstr());
+      memcpy(&_buffer[_length], other.Cstr(), other.Length()+1);
       _length += otherLen;
    }
    return *this;
@@ -263,16 +274,9 @@ String::Substring(uint32 left) const
 String
 String::Substring(uint32 left, uint32 right) const
 {
-   MASSERT(left <= right, "Invalid Substring range");
-   MASSERT(right <= Length(), "Index out of bounds");
-
-   String ret;
-   if (ret.EnsureBufferSize(right-left+1, true) == B_NO_ERROR)
-   {
-      const char * c = Cstr();
-      for (uint32 i=left; i<right; i++) ret += c[i];
-   }
-   return ret;
+   right = muscleMin(right, Length());
+   left  = muscleMin(left, right);
+   return String(Cstr()+left, right-left);
 }
 
 String
@@ -322,12 +326,12 @@ uint32 String :: FlattenedSize() const
 
 void String :: Flatten(uint8 *buffer) const
 {
-   strcpy((char *)buffer, Cstr());
+   memcpy((char *)buffer, Cstr(), Length()+1);
 }
 
 status_t String :: Unflatten(const uint8 *buf, uint32 size)
 {
-   return SetCstr((const char *)buf, (int32)size);
+   return SetCstr((const char *)buf, size);
 }
 
 uint32 String :: HashCode() const
@@ -365,25 +369,65 @@ uint32 String :: GetNumInstancesOf(const String & substring) const
 // returns...
 status_t String::EnsureBufferSize(uint32 requestedBufLen, bool retainValue)
 {
-   if ((requestedBufLen > 0)&&((_buffer == NULL)||(requestedBufLen > _bufferLen)))
+   if (requestedBufLen > _bufferLen)
    {
-      // If we're doing an initial allocation, just allocate the bytes requested.
-      // If it's a re-allocation, allocate more than requested as it's more likely
-      // to happen yet another time...
-      uint32 newBufLen = (_buffer == NULL) ? requestedBufLen : (requestedBufLen * 2);
-      char * newBuf = (requestedBufLen <= sizeof(_smallBuffer)) ? _smallBuffer : newnothrow char[newBufLen]; 
-      if (newBuf == _smallBuffer) newBufLen = sizeof(_smallBuffer);
-      if (newBuf)
+      if (requestedBufLen <= sizeof(_smallBuffer))  // guaranteed only to be true the very first time we are called!
       {
-         if ((retainValue)&&(_buffer)&&(newBuf != _buffer)) strncpy(newBuf, _buffer, newBufLen);
-         if (_buffer != _smallBuffer) delete [] _buffer;
-         _buffer = newBuf;
-         _bufferLen = newBufLen;
+         // For small initial requests, we can just set up our buffer pointer to point to our static-buffer area.  Cheap!
+         _buffer    = _smallBuffer;
+         _bufferLen = sizeof(_smallBuffer);
       }
-      else 
+      else
       {
-         WARN_OUT_OF_MEMORY;
-         return B_ERROR;
+         // If we're doing a first-time allocation, allocate exactly the number of the bytes requested.
+         // If it's a re-allocation, allocate more than requested as it's more likely to happen yet another time...
+         uint32 newBufLen = (_buffer == NULL) ? requestedBufLen : (requestedBufLen * 2);
+         if (retainValue)
+         {
+            if ((_buffer)&&(_buffer != _smallBuffer))
+            {
+               // We can call muscleRealloc() to hopefully avoid data copying
+               char * newBuf = (char *)muscleRealloc(_buffer, newBufLen);
+               if (newBuf)
+               {
+                  _buffer    = newBuf;
+                  _bufferLen = newBufLen;
+               }
+               else
+               {
+                  WARN_OUT_OF_MEMORY;
+                  return B_ERROR;
+               }
+            }
+            else
+            {
+               // Oops, muscleRealloc() won't do.... we'll just have to copy the bytes over
+               char * newBuf = (char *) muscleAlloc(newBufLen);
+               if (newBuf == NULL) 
+               {
+                  WARN_OUT_OF_MEMORY;
+                  return B_ERROR;
+               }
+               if (_buffer) memcpy(newBuf, _buffer, Length()+1);
+               if (_buffer != _smallBuffer) muscleFree(_buffer);
+               _buffer    = newBuf;
+               _bufferLen = newBufLen;
+            }
+         }
+         else
+         {
+            // If the caller doesn't care about retaining the value, then it's
+            // probably cheaper just to free our buffer and get a new one.
+            char * newBuf = (char *) muscleAlloc(newBufLen);
+            if (newBuf == NULL) 
+            {
+               WARN_OUT_OF_MEMORY;
+               return B_ERROR;
+            }
+            if (_buffer != _smallBuffer) muscleFree(_buffer);
+            _buffer    = newBuf;
+            _bufferLen = newBufLen;
+         }
       }
    }
    return B_NO_ERROR;

@@ -10,6 +10,7 @@
 #include "util/TimeUtilityFunctions.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "iogateway/MessageIOGateway.h"
+#include "zlib/ZLibUtilityFunctions.h"
 
 NetClient::NetClient(QObject * owner)
 {
@@ -547,7 +548,9 @@ NetClient::HandleBeAddMessage(String nodePath, MessageRef ref)
 				{
 					QString fileName = QString::fromUtf8(GetPathClause(FILE_INFO_DEPTH, nodePath.Cstr()));
 					
-					emit AddFile(sid, fileName, (GetPathClause(USER_NAME_DEPTH, nodePath.Cstr())[2] == 'r')? true : false, tmpRef);
+					MessageRef unpacked = InflateMessage(tmpRef);
+					if (unpacked())
+						emit AddFile(sid, fileName, (GetPathClause(USER_NAME_DEPTH, nodePath.Cstr())[2] == 'r')? true : false, unpacked);
 					break;
 				}
 			}

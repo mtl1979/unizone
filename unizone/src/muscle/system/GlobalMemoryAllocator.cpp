@@ -83,6 +83,66 @@ void * muscleAlloc(size_t s, bool retryOnFailure)
    return ret;
 }
 
+void * muscleRealloc(void * ptr, size_t s, bool retryOnFailure)
+{
+   using namespace muscle;
+
+        if (ptr == NULL) return muscleAlloc(s, retryOnFailure);
+   else if (s   == 0)
+   {
+      muscleFree(ptr);
+      return NULL;
+   }
+
+   size_t allocSize = s + sizeof(size_t); // requested size, plus extra bytes for our tag
+   size_t * oldPtr = (((size_t*)ptr)-1);  // how much we already have allocated, including tag bytes
+   if (allocSize == *oldPtr) return ptr;  // same size as before?  Then we are already done!
+
+   void * ret = NULL;
+   bool reallocFailed = false;
+   MemoryAllocator * ma = _globalAllocatorRef();
+   if (allocSize > *oldPtr)
+   {
+      size_t growBy = allocSize-*oldPtr;
+      if ((ma == NULL)||(ma->AboutToAllocate(_currentlyAllocatedBytes, growBy) == B_NO_ERROR))
+      {
+         size_t * a = (size_t *) realloc(oldPtr, allocSize);
+         if (a)
+         {
+            *a = allocSize;  // our little header tag so that muscleFree() will know how big the allocation was
+            _currentlyAllocatedBytes += growBy;  // only reflect the newly-allocated bytes
+//printf("r+%lu(->%lu) = %lu\n", (uint32)growBy, (uint32)allocSize, (uint32)_currentlyAllocatedBytes);
+            ret = (void *)(a+1);  // user doesn't want to see the header tag, of course
+         }
+         else reallocFailed = true;
+      }
+      if ((ma)&&(ret == NULL)) 
+      {
+         ma->SetAllocationHasFailed(true);
+         ma->AllocationFailed(_currentlyAllocatedBytes, growBy);
+
+         // Maybe the AllocationFailed() method was able to free up some memory; so we'll try it one more time
+         // That way we might be able to recover without interrupting the operation that was in progress.
+         if ((reallocFailed)&&(retryOnFailure)) ret = muscleRealloc(ptr, s, false);
+      }
+   }
+   else
+   {
+      size_t shrinkBy = *oldPtr-allocSize;
+      if (ma) ma->AboutToFree(_currentlyAllocatedBytes, shrinkBy);
+      size_t * a = (size_t *) realloc(oldPtr, allocSize);
+      if (a)
+      {
+         *a = allocSize;  // our little header tag so that muscleFree() will know how big the allocation is now
+         _currentlyAllocatedBytes -= shrinkBy;
+//printf("r-%lu(->%lu) = %lu\n", (uint32)shrinkBy, (uint32)allocSize, (uint32)_currentlyAllocatedBytes);
+         ret = (void *)(a+1);  // use doesn't see the header tag though
+      }
+      else ret = ptr;  // I guess the best thing to do is just send back the old pointer?  Not sure what to do here.
+   }
+   return ret;
+}
+
 void muscleFree(void * p)
 {
    using namespace muscle;
@@ -125,4 +185,3 @@ void operator delete(  void * p) THROW LPAREN RPAREN {muscle::muscleFree(p);}
 void operator delete[](void * p) THROW LPAREN RPAREN {muscle::muscleFree(p);}
 
 #endif
-

@@ -4,6 +4,10 @@
 #include "util/NetworkUtilityFunctions.h"
 #include "dataio/TCPSocketDataIO.h"  // to get the proper #includes for recv()'ing
 
+#if defined(WIN32)
+# include <process.h>  // for _beginthreadex()
+#endif
+
 namespace muscle {
 
 Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
@@ -90,7 +94,8 @@ status_t Thread :: StartInternalThreadAux()
       }
 #elif defined(WIN32)
       DWORD junkThreadID;
-      if ((_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)InternalThreadEntryFunc, this, 0, &junkThreadID)) != NULL) return B_NO_ERROR;
+      typedef unsigned (__stdcall *PTHREAD_START) (void *);
+      if ((_thread = (HANDLE)_beginthreadex(NULL, 0, (PTHREAD_START)InternalThreadEntryFunc, this, 0, (unsigned *)&junkThreadID)) != NULL) return B_NO_ERROR;
 #elif defined(__ATHEOS__)
       if ((_thread = spawn_thread("MUSCLE Thread", InternalThreadEntryFunc, NORMAL_PRIORITY, 32767, this)) >= 0)
       {

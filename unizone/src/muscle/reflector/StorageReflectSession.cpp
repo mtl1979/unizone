@@ -575,7 +575,8 @@ MessageReceivedFromGateway(MessageRef msgRef, void * userData)
                   if (subscribeQuietly == false) 
                   {
                      getMsg.AddString(PR_NAME_KEYS, path);
-                     getMsg.AddMessage(PR_NAME_FILTERS, filterMsgRef() ? filterMsgRef : GetMessageFromPool());
+                     if (filterMsgRef() == NULL) filterMsgRef = GetMessageFromPool();  // separate for Borland
+                     if (filterMsgRef()) getMsg.AddMessage(PR_NAME_FILTERS, filterMsgRef);
                   }
                }
                else if (strcmp(fn, PR_NAME_REFLECT_TO_SELF) == 0)

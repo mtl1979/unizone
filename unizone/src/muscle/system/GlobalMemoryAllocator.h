@@ -56,6 +56,23 @@ void * muscleAlloc(size_t numBytes, bool retryOnFailure = true);
  */
 void muscleFree(void * buf);
 
+/** MUSCLE version of the C realloc() call.  Works just like the C realloc(),
+ *  except that it calls the proper callbacks on the global MemoryAllocator
+ *  object, as appropriate.
+ *  @param ptr Pointer to the buffer to resize, or a NULL pointer if you wish
+ *             to allocate a new buffer.
+ *  @param s Desired new size for the buffer, or 0 if you wish to free the buffer.
+ *  @param retryOnFailure See muscleAlloc() for a description of this argument.
+ *  @returns Pointer to the resized array on success, or NULL on failure or
+ *           if (s) was zero.  Note that the returned pointer may be the
+ *           same as (ptr).
+ */
+void * muscleRealloc(void * ptr, size_t s, bool retryOnFailure = true);
+
+#else
+# define muscleAlloc malloc
+# define muscleFree free
+# define muscleRealloc realloc
 #endif
 
 };  // end namespace muscle

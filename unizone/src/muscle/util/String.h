@@ -25,13 +25,13 @@ public:
     *                this String (not including the NUL terminator byte).
     *                Default is to scan the string to determine the length.
     */
-   String(const char * str = NULL, int32 maxLen = -1);
+   String(const char * str = NULL, uint32 maxLen = ((uint32)-1));
 
    /** Copy Constructor. */
    String(const String & str);
 
    /** Destructor. */
-   virtual ~String() {if (_buffer != _smallBuffer) delete [] _buffer;}
+   virtual ~String();
 
    /** Assignment Operator. */
    String & operator = (char val) {(void) SetCstr(&val, 1); return *this;}
@@ -147,7 +147,7 @@ public:
      *               terminator byte).  By default, the number of characters is determined
      *               automatically by scanning the string.
      */
-   status_t SetCstr(const char * str, int32 maxLen = -1);
+   status_t SetCstr(const char * str, uint32 maxLen = ((uint32)-1));
 
    /** Returns true iff this string ends with (suffix) */
    bool EndsWith(const String &suffix) const;

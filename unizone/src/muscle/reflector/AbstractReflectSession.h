@@ -287,6 +287,9 @@ protected:
     */
    status_t Reconnect();
 
+   /** Returns true iff we are currently in the middle of an asynchronous TCP connection */
+   bool IsConnectingAsync() const {return _connectingAsync;}
+
 private:
    void SetPolicyAux(PolicyRef & setRef, uint32 & setChunk, PolicyRef newRef, bool isInput);
 

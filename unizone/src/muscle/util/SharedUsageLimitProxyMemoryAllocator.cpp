@@ -88,7 +88,7 @@ status_t SharedUsageLimitProxyMemoryAllocator :: ChangeDaemonCounterAux(int32 by
          {
             sa[0]           += byteDelta;
             sa[_memberID+1] += byteDelta;
-//printf("delta(%i): slot %lu is now %u, total is now %u\n", byteDelta, _memberID, sa[_memberID+1], sa[0]);
+//printf("delta(%li): slot %li is now %u, total is now %u/%u\n", byteDelta, _memberID, sa[_memberID+1], sa[0], _maxBytes);
             ret = B_NO_ERROR;
          }
       }
@@ -110,7 +110,7 @@ status_t SharedUsageLimitProxyMemoryAllocator :: AboutToAllocate(size_t cab, siz
 
 void SharedUsageLimitProxyMemoryAllocator :: AllocationFailed(size_t cab, size_t arb)
 {
-   (void) ChangeDaemonCounter(-((size_t)arb));
+   (void) ChangeDaemonCounter(-((int32)arb));
    ProxyMemoryAllocator::AllocationFailed(cab, arb);
 }
 

@@ -15,6 +15,8 @@
 # include <sys/socket.h>
 #endif
 
+#include <errno.h>
+
 namespace muscle {
 
 /** Numeric representation of 127.0.0.1, for convenience */
@@ -108,8 +110,29 @@ status_t FinalizeAsyncConnect(int socket);
  */
 status_t ShutdownSocket(int socket, bool disableReception = true, bool disableTransmission = true);
 
-/** Checks errno and returns true iff the last network operation failed because it would have had to block otherwise. */
-bool PreviousOperationWouldBlock();
+/** Checks errno and returns true iff the last network operation failed because 
+  * it would have had to block otherwise. 
+  */
+inline bool PreviousOperationWouldBlock()
+{
+#ifdef WIN32
+   return (WSAGetLastError() == WSAEWOULDBLOCK);
+#else
+   return (errno == EWOULDBLOCK);
+#endif
+}
+
+/** Checks errno and returns true iff the last network operation failed 
+  * because it was interrupted by a signal or etc.
+  */
+inline bool PreviousOperationWasInterrupted()
+{
+#ifdef WIN32
+   return (WSAGetLastError() == WSAEINTR);
+#else
+   return (errno == EINTR);
+#endif
+}
 
 /** Closes the given socket.  
   * @param socket The socket to close.  (socket) may be negative, indicating a no-op.
