@@ -1631,7 +1631,7 @@ WinShareWindow::GetRemoteVersionString(const MessageRef msg)
 	{
 		if (version[0] > '0' && version[0] <= '9')
 		{
-			versionString = "BeShare v";
+			versionString = "BeShare ";
 			versionString += QString::fromUtf8(version);
 		}
 		else
