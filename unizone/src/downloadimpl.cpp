@@ -494,8 +494,12 @@ WDownload::customEvent(QCustomEvent * e)
 						(msg->FindString("file", mFile) == B_OK)
 						)
 					{
-						QString qFile = QString::fromUtf8( mFile.Cstr() );
-						emit FileFailed(qFile, gt->GetRemoteUser());
+						// "failed" == true only, if the transfer has failed
+						if (b)
+						{
+							QString qFile = QString::fromUtf8( mFile.Cstr() );
+							emit FileFailed(qFile, gt->GetRemoteUser());
+						}
 					}
 					DecreaseCount(gt, fNumDownloads);
 					WASSERT(fNumDownloads >= 0, "Download count is negative!");
