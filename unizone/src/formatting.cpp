@@ -188,7 +188,7 @@ QString WFormat::PingText(int32 time, const QString &version)
 	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Ping).arg(GetFontSize());
 	temp += tr("Ping returned in %1 milliseconds").arg(time);
 	temp += "(";
-	temp += "version";
+	temp += version;
 	temp += ")</font>";
 	return temp;
 }

@@ -40,6 +40,10 @@ typedef hostent *LPHOSTENT;
 
 #include <qapplication.h>
 
+#if (QT_VERSION >= 0x030000)
+#include <qregexp.h>
+#endif
+
 void
 WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 {

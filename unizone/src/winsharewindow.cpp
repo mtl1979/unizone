@@ -87,9 +87,11 @@ const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
 WinShareWindow * gWin = NULL;
 
 WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
-	: QMainWindow(parent, name, f | WPaintDesktop | WPaintClever), fMenus(NULL), pLock(true), rLock(true), fSearchLock(true),
-	ChatWindow(MainType)
+	: QMainWindow(parent, name, f | WPaintDesktop | WPaintClever),  
+	ChatWindow(MainType), pLock(true), rLock(true), fSearchLock(true)
 {
+	fMenus = NULL;
+
 	if ( !name ) 
 		setName( "WinShareWindow" );
 

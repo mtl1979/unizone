@@ -11,6 +11,8 @@
 #include "wstring.h"
 #include "formatting.h"
 
+#include <qapplication.h>
+
 ChatWindow::ChatWindow(ChatType type)
 {
 	_type = type;
@@ -96,8 +98,8 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		WString wTemp(temp);
 		WString wTxt(itxt);
 		PRINT("Comparing \"%S\" to \"%S\"\n", wTemp.getBuffer(), wTxt.getBuffer());
-		int c1 = sred + rlen;	// itxt
-		int c2 = rlen;			// temp
+		unsigned int c1 = sred + rlen;	// itxt
+		unsigned int c2 = rlen;		// temp
 
 		if (c1 < itxt.length())
 		{

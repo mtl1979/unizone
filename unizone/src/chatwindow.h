@@ -5,8 +5,8 @@
 
 #include "htmlview.h"
 
-#include <QString.h>
-#include <QWidget.h>
+#include <qstring.h>
+#include <qwidget.h>
 
 #ifdef WIN32
 #pragma warning(disable: 4786)

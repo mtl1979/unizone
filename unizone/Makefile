@@ -26,11 +26,11 @@ OBJFILES = \
 
 MOC_OBJFILES = \
 	moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
-	moc_downloadimpl.o moc_downloadthread.o moc_htmlview.o \
-	moc_netclient.o moc_prefs.o moc_prefsimpl.o moc_privatewindow.o \
-	moc_privatewindowimpl.o moc_winsharewindow.o moc_uploadthread.o \
-	moc_channel.o moc_channelimpl.o moc_menubar.o moc_ulistview.o \
-	moc_updateclient.o moc_serverclient.o moc_scanprogress.o \
+	moc_downloadimpl.o moc_downloadthread.o moc_formatting.o \
+	moc_htmlview.o moc_netclient.o moc_prefs.o moc_prefsimpl.o \
+	moc_privatewindow.o moc_privatewindowimpl.o moc_winsharewindow.o \
+	moc_uploadthread.o moc_channel.o moc_channelimpl.o moc_menubar.o \
+	moc_ulistview.o moc_updateclient.o moc_serverclient.o moc_scanprogress.o \
 	moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o 
 
 MUSCLE_OBJFILES = \
@@ -155,6 +155,9 @@ src/moc_menubar.cpp: src/menubar.h
 	moc $< -o $@
 
 src/moc_ulistview.cpp: src/ulistview.h
+	moc $< -o $@
+
+src/moc_formatting.cpp: src/formatting.h
 	moc $< -o $@
 
 src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp: src/muscle/qtsupport/QAcceptSocketsThread.h
