@@ -657,7 +657,7 @@ ConPair Bandwidths[] = {
 	{QT_TRANSLATE_NOOP("Connection", "OC-3"),		155520000}, // 3  * 51840000
 	{QT_TRANSLATE_NOOP("Connection", "OC-12"),		622080000}, // 12 * 51840000
 	{"?", 0},													// Dummy entry
-	{NULL, -1}
+	{NULL, ULONG_MAX}
 };
 
 uint32
@@ -691,7 +691,7 @@ BandwidthToBytes(const QString & connection)
 				bps = bw.bw;
 				break;
 			}
-		} while (bw.bw != -1);
+		} while (bw.bw != ULONG_MAX);
 	}
 #ifdef DEBUG2
 	PRINT("Connection = '%S', bps = %lu\n", WString(conn).getBuffer(), bps);
