@@ -38,7 +38,10 @@ public:
 				fMsg.truncate(fMsg.length() - 1);
 				fMsg += " ";
 				fMsg += smsg;
-				PRINT("Sending text: %S\n", qStringToWideChar(fMsg));
+
+				wchar_t * wText = qStringToWideChar(fMsg);
+				PRINT("Sending text: %S\n", wText);
+				delete [] wText;
 			}
 		}
 		else

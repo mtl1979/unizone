@@ -170,7 +170,9 @@ WinShareWindow::TabPressed(QString str)
 		fInputText->setCursorPosition(9999, 9999);
 		PRINT("Returned true\n");
 	}
-	PRINT("Tab completion result: %S\n", qStringToWideChar(result));
+	wchar_t * wResult = qStringToWideChar(result);
+	PRINT("Tab completion result: %S\n", wResult);
+	delete [] wResult;
 }
 
 void
@@ -202,7 +204,10 @@ WinShareWindow::URLClicked()
 void
 WinShareWindow::URLSelected(const QString & href)
 {
-	PRINT("URL Selected %S\n", qStringToWideChar(href));
+	wchar_t * wRef = qStringToWideChar(href);
+	PRINT("URL Selected %S\n", wRef);
+	delete [] wRef;
+
 	fCurURL = href;
 }
 
@@ -466,7 +471,9 @@ void
 WinShareWindow::CheckResumes(QString user)
 {
 	// No need to check if empty!
-	PRINT("CheckResumes: user   = %S\n", qStringToWideChar( StripURL(user) ));
+	wchar_t * wUser = qStringToWideChar( StripURL(user) );
+	PRINT("CheckResumes: user   = %S\n", wUser);
+	delete [] wUser;
 
 	if (fResumeMap.empty()) 
 		return;
@@ -483,7 +490,10 @@ WinShareWindow::CheckResumes(QString user)
 	WResumeIter it = fResumeMap.begin();
 	while (it != fResumeMap.end())
 	{
-		PRINT("CheckResumes: second = %S\n", qStringToWideChar( StripURL((*it).second) ));
+		wchar_t * wSecond = qStringToWideChar( StripURL((*it).second) );
+		PRINT("CheckResumes: second = %S\n", wSecond);
+		delete [] wSecond;
+
 		if (StripURL((*it).second) == StripURL(user))
 		{
 			// User name matches

@@ -536,8 +536,14 @@ Channel::customEvent(QCustomEvent * event)
 							for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
 							{
 								WUserRef found = (*uit).second;
-								PRINT("found - UserID = %S\n", qStringToWideChar(found()->GetUserID()));
-								PRINT("uref  - UserID = %S\n", qStringToWideChar(uref()->GetUserID()));
+
+								wchar_t * wUser1 = qStringToWideChar(found()->GetUserID());
+								wchar_t * wUser2 = qStringToWideChar(uref()->GetUserID());
+								PRINT("found - UserID = %S\n", wUser1);
+								PRINT("uref  - UserID = %S\n", wUser2);
+								delete [] wUser1;
+								delete [] wUser2;
+
 								if (found()->GetUserID() == uref()->GetUserID())
 								{
 									Kick(uref()->GetUserID());
@@ -563,7 +569,11 @@ Channel::customEvent(QCustomEvent * event)
 					QString message = gWin->GetUserName();
 					message += "'s ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
-					PRINT("\t\t%S\n", qStringToWideChar(message));
+					
+					wchar_t * wMessage = qStringToWideChar(message);
+					PRINT("\t\t%S\n", wMessage);
+					delete [] wMessage;
+					
 					SendChannelText(message);
 				}
 				else if (wte->Text().lower().startsWith("/action ") ||
@@ -573,7 +583,11 @@ Channel::customEvent(QCustomEvent * event)
 					QString message = gWin->GetUserName();
 					message += " ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
-					PRINT("\t\t%S\n", qStringToWideChar(message));
+					
+					wchar_t * wMessage = qStringToWideChar(message);
+					PRINT("\t\t%S\n", wMessage);
+					delete [] wMessage;
+					
 					SendChannelText(message);
 				}
 				else if (wte->Text().lower().startsWith("/clear"))

@@ -83,7 +83,11 @@ GotoURL(QString url, QString browser)
 	launch += "\"";
 	launch += url;
 	launch += "\"";
-	PRINT("Launching %S\n", qStringToWideChar(launch));
+
+	wchar_t * wLaunch = qStringToWideChar(launch);
+	PRINT("Launching %S\n", wLaunch);
+	delete [] wLaunch;
+
 	system(launch);
 	return true;
 }

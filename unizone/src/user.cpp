@@ -99,8 +99,10 @@ WUser::InitName(const Message * msg)
 
 	//
 
-	PRINT("WUser: %S is a %s with installid %d on port %d\n", qStringToWideChar(fUserName), (fBot ? "bot" : "user"), 
-																fInstallID, fPort);
+	wchar_t * wUser = qStringToWideChar(fUserName);
+	PRINT("WUser: %S is a %s with installid %d on port %d\n", 
+		wUser, (fBot ? "bot" : "user"), fInstallID, fPort);
+	delete [] wUser;
 }
 
 void
@@ -111,7 +113,11 @@ WUser::InitStatus(const Message * msg)
 		fUserStatus = QString::fromUtf8(status);
 	else
 		fUserStatus = "?";
-	PRINT("WUser: %S with status %S\n", qStringToWideChar(fUserName), qStringToWideChar(fUserStatus));
+	wchar_t * wUser = qStringToWideChar(fUserName);
+	wchar_t * wStatus = qStringToWideChar(fUserStatus);
+	PRINT("WUser: %S with status %S\n", wUser, wStatus);
+	delete [] wUser;
+	delete [] wStatus;
 }
 
 void
@@ -122,7 +128,9 @@ WUser::InitUploadStats(const Message * msg)
 		fCurUploads = c;
 	if (msg->FindInt32("max", (int32 *)&m) == B_OK)
 		fMaxUploads = m;
-	PRINT("WUser: %S with %d of %d uploads going\n", qStringToWideChar(fUserName), fCurUploads, fMaxUploads);
+	wchar_t * wUser = qStringToWideChar(fUserName);
+	PRINT("WUser: %S with %d of %d uploads going\n", wUser, fCurUploads, fMaxUploads);
+	delete [] wUser;
 }
 
 void
@@ -137,7 +145,11 @@ WUser::InitBandwidth(const Message * msg)
 		fBandwidthLabel = BandwidthToString(bps);
 	else if (msg->FindString("label", &l) == B_OK)
 		fBandwidthLabel = QString::fromUtf8(l);
-	PRINT("WUser: %S with label %S and bps %d\n", qStringToWideChar(fUserName), qStringToWideChar(fBandwidthLabel), fBandwidthBPS);
+	wchar_t * wUser = qStringToWideChar(fUserName);
+	wchar_t * wBandwidth = qStringToWideChar(fBandwidthLabel);
+	PRINT("WUser: %S with label %S and bps %d\n", wUser, wBandwidth, fBandwidthBPS);
+	delete [] wUser;
+	delete [] wBandwidth;
 }
 
 void
@@ -146,7 +158,9 @@ WUser::InitFileCount(const Message * msg)
 	int32 fc;
 	if (msg->FindInt32("filecount", &fc) == B_OK)
 		fFileCount = fc;
-	PRINT("WUser: %S with filecount %d\n", qStringToWideChar(fUserName), fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
+	wchar_t * wUser = qStringToWideChar(fUserName);
+	PRINT("WUser: %S with filecount %d\n", wUser, fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
+	delete [] wUser;
 }
 
 void

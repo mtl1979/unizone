@@ -58,6 +58,7 @@ WUniListItem::key(int c, bool asc) const
 	int n, m;
 	int32 bw;
 	QString result, q1, q2;
+	wchar_t * wResult;
 	switch (UColumnType[c])
 	{
 	case Number:
@@ -68,14 +69,19 @@ WUniListItem::key(int c, bool asc) const
 	case TransferSpeed:
 		{
 			result = fKey[c];
-			PRINT("\tRESULT STARTS AS\t %S\n", qStringToWideChar(result));
+			wResult = qStringToWideChar(result);
+			PRINT("\tRESULT STARTS AS\t %S\n", wResult);
+			delete wResult;
+
 			bool ok;
 			n = result.toLong(&ok);
 			if (ok)
 			{
 				// convert our number to hexadecimal! what a thought, huh?
 				result.sprintf("0x%08x", n);
-				PRINT("\tRESULT IS %S\n", qStringToWideChar(result));
+				wResult = qStringToWideChar(result);
+				PRINT("\tRESULT IS %S\n", wResult);
+				delete [] wResult;
 			}
 			return result;
 		}

@@ -991,7 +991,12 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 			QString qsendtext;
 			while (iter != sendTo.end())
 			{
-				PRINT("Found user %S and rest of text %S\n", qStringToWideChar((*iter).second.user()->GetUserName()), qStringToWideChar((*iter).second.text));
+				wchar_t * wUser = qStringToWideChar((*iter).second.user()->GetUserName());
+				wchar_t * wText = qStringToWideChar((*iter).second.text);
+				PRINT("Found user %S and rest of text %S\n", wUser, wText);
+				delete [] wUser;
+				delete [] wText;
+
 				user = (*iter).second.user;
 
 				QString sid = user()->GetUserID();
@@ -2198,15 +2203,23 @@ WinShareWindow::ShowHelp(QString command)
 bool
 WinShareWindow::IsIgnoredIP(QString ip)
 {
-	PRINT("IsIgnoredIP(%S)\n", qStringToWideChar(ip));
-	PRINT("IP IGNORE MASK: %S\n", qStringToWideChar(fIgnoreIP));
+	wchar_t * wIP = qStringToWideChar(ip);
+	PRINT("IsIgnoredIP(%S)\n", wIP);
+	delete [] wIP;
+
+	wIP = qStringToWideChar(fIgnoreIP);
+	PRINT("IP IGNORE MASK: %S\n", wIP);
+	delete [] wIP;
+
 	return MatchFilter(ip, (const char *) fIgnoreIP.utf8());
 }
 
 bool
 WinShareWindow::AddIPIgnore(QString ip)
 {
-	PRINT("AddIPIgnore(%S)\n", qStringToWideChar(ip));
+	wchar_t * wIP = qStringToWideChar(ip);
+	PRINT("AddIPIgnore(%S)\n", wIP);
+	delete [] wIP;
 	if ( IsIgnoredIP(ip) )
 		return false;
 
@@ -2216,7 +2229,10 @@ WinShareWindow::AddIPIgnore(QString ip)
 		fIgnoreIP = ip;
 	else
 		fIgnoreIP += ip.prepend(",");
-	PRINT("IP IGNORE MASK: %S\n", qStringToWideChar(fIgnoreIP));
+
+	wIP = qStringToWideChar(fIgnoreIP);
+	PRINT("IP IGNORE MASK: %S\n", wIP);
+	delete [] wIP;
 	return true;
 
 }
@@ -2224,14 +2240,18 @@ WinShareWindow::AddIPIgnore(QString ip)
 bool
 WinShareWindow::RemoveIPIgnore(QString ip)
 {
-	PRINT("RemoveIPIgnore(%S)\n", qStringToWideChar(ip));
+	wchar_t * wIP = qStringToWideChar(ip);
+	PRINT("RemoveIPIgnore(%S)\n", wIP);
+	delete [] wIP;
+
 	if ( !IsIgnoredIP(ip) )
 		return false;
 
 	if (fIgnoreIP == ip) // First and only?
 	{
 		fIgnoreIP = "";
-		PRINT("IP IGNORE MASK: %S\n", qStringToWideChar(fIgnoreIP));
+		PRINT("IP IGNORE MASK CLEARED\n");
+
 		return true;
 	}
 	// First in list?
@@ -2273,7 +2293,9 @@ WinShareWindow::RemoveIPIgnore(QString ip)
 		fIgnoreIP = fIgnoreIP.left(pos)+fIgnoreIP.mid(len+pos);
 	}
 
-	PRINT("IP IGNORE MASK: %S\n", qStringToWideChar(fIgnoreIP));
+	wIP = qStringToWideChar(fIgnoreIP);
+	PRINT("IP IGNORE MASK: %S\n", wIP);
+	delete [] wIP;
 	return true;
 }
 

@@ -910,8 +910,12 @@ WDownload::customEvent(QCustomEvent * e)
 					)
 				{
 					QString uname = GetUserName(QString::fromUtf8(user.Cstr()));
+
+					wchar_t * wUser = qStringToWideChar(uname);
 					PRINT("USER ID  : %s\n", user.Cstr());
-					PRINT("USER NAME: %S\n", qStringToWideChar(uname));
+					PRINT("USER NAME: %S\n", wUser);
+					delete [] wUser;
+
 					if (strcmp(uname.latin1(), user.Cstr()) == 0) // No user name?
 					{
 						uname = gt->GetRemoteIP();
@@ -2381,7 +2385,10 @@ WDownload::UpdateULRatings()
 	{
 		if ((*it).second)
 		{
-			PRINT("Item %d: %S\n", qr, qStringToWideChar( (*it).second->text(WTransferItem::Filename) ) );
+			wchar_t * wFile = qStringToWideChar( (*it).second->text(WTransferItem::Filename) );
+			PRINT("Item %d: %S\n", qr, wFile );
+			delete [] wFile;
+
 			(*it).second->setText(WTransferItem::QR, QString::number(qr++));
 		}
 	}

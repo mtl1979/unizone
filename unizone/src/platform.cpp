@@ -114,9 +114,12 @@ GetCommandString(QString qCommand)
 bool 
 CompareCommand(QString qCommand, const char * cCommand)
 {
-	PRINT("Compare String: qCommand=\'%S\'\n", qStringToWideChar(GetCommandString(qCommand)));
+	QString com = GetCommandString(qCommand);
+	wchar_t * wCommand = qStringToWideChar(com);
+	PRINT("Compare String: qCommand=\'%S\'\n", wCommand);
 	PRINT("                cCommand=\'%s\'\n", cCommand);
-	return (strcmp(GetCommandString(qCommand).latin1(),cCommand) ? false : true);
+	delete [] wCommand;
+	return (strcmp(com.latin1(), cCommand) ? false : true);
 }
 
 String

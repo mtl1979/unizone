@@ -80,7 +80,10 @@ WFileThread::ParseDir(const QString & d)
 {
 	QFileInfo * info = new QFileInfo(d);
 	CHECK_PTR(info);
-	PRINT("Parsing directory %S\n", qStringToWideChar(d));
+
+	wchar_t * wD = qStringToWideChar(d);
+	PRINT("Parsing directory %S\n", wD);
+	delete [] wD;
 
 	// Directory doesn't exist?
 	if (!info->exists())
@@ -142,7 +145,10 @@ WFileThread::ScanFiles(QString directory)
 					continue;
 
 				QString ndata = i.node->data;
-				PRINT("\tChecking file %S\n", qStringToWideChar(ndata));
+				wchar_t * wData = qStringToWideChar(ndata);
+				PRINT("\tChecking file %S\n", wData);
+				delete [] wData;
+
 				QString filePath = dir->absFilePath(ndata);
 
 				AddFile(filePath);
@@ -156,7 +162,9 @@ WFileThread::ScanFiles(QString directory)
 void
 WFileThread::AddFile(const QString & filePath)
 {
-	PRINT("Setting to filePath: %S\n", qStringToWideChar(filePath));
+	wchar_t * wFilePath = qStringToWideChar(filePath);
+	PRINT("Setting to filePath: %S\n", wFilePath);
+	delete [] wFilePath;
 	
 	QFileInfo * finfo = new QFileInfo(filePath);
 	CHECK_PTR(finfo);
@@ -169,7 +177,11 @@ WFileThread::AddFile(const QString & filePath)
 					
 		// resolve symlink
 		QString ret = ResolveLink(finfo->filePath());
-		PRINT("Resolved to: %S\n", qStringToWideChar(ret));
+
+		wchar_t * wRet = qStringToWideChar(ret);
+		PRINT("Resolved to: %S\n", wRet);
+		delete [] wRet;
+
 		finfo->setFile(ret);
 					
 		// is this a directory?
@@ -225,7 +237,10 @@ WFileThread::ResolveLink(const QString & lnk)
 {
 #ifdef WIN32
 	QString ret = lnk;
-	PRINT("\tResolving %S\n", qStringToWideChar(ret));
+	wchar_t * wRet = qStringToWideChar(ret);
+	PRINT("\tResolving %S\n", wRet);
+	delete [] wRet;
+
 	if (ret.contains(".lnk") > 0)
 	{
 		PRINT("Is Link\n");

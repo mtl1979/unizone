@@ -426,7 +426,11 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					QString message = gWin->GetUserName();
 					message += "'s ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
-					PRINT("\t\t%S\n", qStringToWideChar(message));
+					
+					wchar_t * wMessage = qStringToWideChar(message);
+					PRINT("\t\t%S\n", wMessage);
+					delete [] wMessage;
+					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
 					if (e)
 					{
@@ -441,7 +445,11 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					QString message = gWin->GetUserName();
 					message += " ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
-					PRINT("\t\t%S\n", qStringToWideChar(message));
+					
+					wchar_t * wMessage = qStringToWideChar(message);
+					PRINT("\t\t%S\n", wMessage);
+					delete [] wMessage;
+					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
 					if (e)
 					{

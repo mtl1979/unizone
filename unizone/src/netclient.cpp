@@ -631,7 +631,10 @@ NetClient::HandleParameters(MessageRef & next)
 				fOldID = fSessionID;
 			}
 
-			PRINT("My ID is: %S\n", qStringToWideChar(fSessionID));
+			wchar_t * wSessionID = qStringToWideChar(fSessionID);
+			PRINT("My ID is: %S\n", wSessionID);
+			delete [] wSessionID;
+
 			gWin->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
 		}
 	}
