@@ -36,8 +36,7 @@ WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 	fOwner = owner;
 	fShutdownFlag = optShutdownFlag;
 
-	fScanProgress = new ScanProgress(fOwner);
-	CHECK_PTR(fScanProgress);
+	fScanProgress = NULL;
 }
 
 WFileThread::~WFileThread()
@@ -59,6 +58,9 @@ WFileThread::run()
 	Unlock(); 
 	int iScannedDirs = 0;
 
+	fScanProgress = new ScanProgress(NULL);
+	CHECK_PTR(fScanProgress);
+
 	fScanProgress->show();
 	SendReset(); 
 
@@ -68,7 +70,7 @@ WFileThread::run()
 
 	fPaths.AddTail("shared");
 	QString path;
-	while (!fPaths.IsEmpty())
+	while (fPaths.RemoveHead(path) == B_NO_ERROR)
 	{
 		Lock();
 #ifdef WIN32
@@ -76,7 +78,7 @@ WFileThread::run()
 #else
 		SendInt(ScanEvent::DirsLeft, fPaths.GetNumItems());
 #endif
-		fPaths.RemoveHead(path);
+//		fPaths.RemoveHead(path);
 		Unlock();
 		if (fShutdownFlag && *fShutdownFlag)
 		{
@@ -98,6 +100,8 @@ WFileThread::run()
 #endif
 
 	fScanProgress->close();
+	delete fScanProgress;
+	fScanProgress = NULL;
 
 	Lock();
 	fScannedDirs.Clear(true);
@@ -271,9 +275,9 @@ WFileThread::ScanFiles(const QString & directory)
 	if (!files.IsEmpty())
 	{
 		QString file;
-		while (files.GetNumItems() > 0)
+		while (files.RemoveHead(file) == B_NO_ERROR)
 		{
-			files.RemoveHead(file);
+//			files.RemoveHead(file);
 			
 			{
 				WString wData(file);
