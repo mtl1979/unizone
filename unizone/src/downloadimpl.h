@@ -27,9 +27,11 @@ using std::iterator;
 
 class MD5Thread;
 class MD5Looper;
-class WGenericThread;
-class WGenericEvent;
+//class WGenericThread;
+//class WGenericEvent;
+class WDownloadEvent;
 class WDownloadThread;
+class WUploadEvent;
 class WUploadThread;
 class WFileThread;
 class WUser;
@@ -98,7 +100,9 @@ public:
 
 protected:
 	virtual void customEvent(QCustomEvent *);
-	virtual void genericEvent(WGenericEvent * g);
+//	virtual void genericEvent(WGenericEvent * g);
+	virtual void downloadEvent(WDownloadEvent *);
+	virtual void uploadEvent(WUploadEvent *);
 
 	virtual void resizeEvent(QResizeEvent * e)
 	{
@@ -110,8 +114,8 @@ private:
 	typedef pair<MD5Thread *, bool> MD5Pair;
 	typedef MD5List::iterator MD5Iter;
 
-	WTList fDownloadList;
-	WTList fUploadList;
+	DLList fDownloadList;
+	ULList fUploadList;
 
 	QSplitter * fMainSplit;
 	QListView * fUploads, * fDownloads;
@@ -134,13 +138,17 @@ private:
 	QString fLocalSID;
 	WFileThread * fSharedFiles;
 
-	QString GetUserName(WGenericThread *gt);
+	QString GetUserName(WDownloadThread *gt);
+	QString GetUserName(WUploadThread *gt);
 	QString FormatIndex(long cur, long num);
 
 	// Simple method that is used to decrease the download/upload count
 	// when one is canceled or finished. Returns the count after everything
 	// has been done.
 	void UpdateLoad();
+
+	void EmptyDownloads();
+	void EmptyUploads();
 
 	// Popup menu id's
 	enum
@@ -203,11 +211,15 @@ private:
 
 	// Find an item in the list that matches the list view item
 	// and return the index
-	bool FindItem(WTList &, int &, QListViewItem *);
+	bool FindDLItem(int &, QListViewItem *);
+	bool FindULItem(int &, QListViewItem *);
 
 	// Reorganize transfer queue
-	void MoveUp(WTList & lst, int index);
-	void MoveDown(WTList & lst, int index);
+	void DLMoveUp(int index);
+	void DLMoveDown(int index);
+
+	void ULMoveUp(int index);
+	void ULMoveDown(int index);
 
 	// Update Queue Ratings
 	void UpdateDLRatings();
@@ -234,8 +246,6 @@ private:
 		fLock.lock(); 
 	}
 	void Unlock() { fLock.unlock(); }
-
-	bool fClearingUL, fClearingDL;
 
 private slots:
 

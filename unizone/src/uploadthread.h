@@ -5,14 +5,20 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include "genericthread.h"
+// #include "genericthread.h"
 // #include "filethread.h"
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
+#include "message/Message.h"
+#include "system/MessageTransceiverThread.h"
+#include "qtsupport/QMessageTransceiverThread.h"
+
+using namespace muscle;
 
 #include <qobject.h>
 #include <qstring.h>
 #include <qfile.h>
+#include <qdatetime.h>
 
 class WFileThread;
 
@@ -22,14 +28,54 @@ class WFileThread;
  *	connection remote peer and transfering a file(s) to him/her.
  *
  */
-class WUploadThread : public WGenericThread
+
+#define MD5_DIGEST_SIZE 16
+
+#define MAX_RATE_COUNT 10
+#define MAX_ETA_COUNT 10
+
+#define PARTIAL_RESUME_SIZE (64 * 1024)
+
+class WUploadThread : public QObject
 {
+	Q_OBJECT
 public:
 	WUploadThread(QObject * owner, bool * optShutdownFlag = NULL);
-	virtual ~WUploadThread();
+	~WUploadThread();
 
 	void SetUpload(int socket, uint32 remoteIP, WFileThread * ft);
 	void SetUpload(QString remoteIP, uint32 remotePort, WFileThread * ft);
+
+	bool InitSession();
+
+	QTime fLastData;		// public time to keep control of the last time we got some data
+
+	bool IsManuallyQueued() const;
+	void SetManuallyQueued(bool b);
+
+	bool IsLocallyQueued() const;
+	void SetLocallyQueued(bool b);
+
+	bool IsRemotelyQueued() const;
+	void SetRemotelyQueued(bool b);
+
+	// The active state signifies whether the download is active.
+	// IE: It has not been canceled, and is still in downloading, etc.
+	bool IsActive() const;
+	void SetActive(bool b);
+
+	bool IsBlocked() const;
+	void SetBlocked(bool b, int64 timeLeft = -1);
+
+	bool IsFinished() const;
+	void SetFinished(bool b);
+
+	double GetCalculatedRate() const;
+	void SetMostRecentRate(double rate);
+	void SetPacketCount(double bytes);
+
+	QString GetETA(uint64 cur, uint64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
+	uint64	GetStartTime() { return fStartTime; }
 
 	QString GetRemoteID() {return fRemoteSessionID;}
 	QString GetRemoteUser(); 
@@ -40,15 +86,29 @@ public:
 
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
+	bool IsLastFile(); 
 
-	virtual void SetBlocked(bool b, int64 timeLeft = -1);
-	virtual void SetLocallyQueued(bool b);
-	virtual void SetManuallyQueued(bool b);
+	int GetRate() { return fTXRate; }
+	virtual void SetRate(int rate, AbstractReflectSessionRef & ref); 
+	virtual void SetRate(int rate); 
+	virtual void ResetRate() { SetRate(fTXRate); }
+	virtual void ResetRate(AbstractReflectSessionRef & ref) { SetRate(fTXRate, ref); }
 
-	void SetRate(int rate);
-	void SetRate(int rate, AbstractReflectSessionRef ref);
+	void SetPacketSize(int s);		// Set/get packet size in kB
+	int GetPacketSize();
+
+	int GetBanTime();
+
+	// forwarders
+
+	void Reset();
+	bool IsInternalThreadRunning();
+	status_t RemoveSessions(const char * optDistPath = NULL);
+	status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
 
 public slots:
+	void ConnectTimer(); // Connection timed out?
+	void BlockedTimer(); // Blocking timed out?
 
 	void ServerExited();
 	void SessionConnected(const String &sessionID);
@@ -58,11 +118,41 @@ public slots:
 	void OutputQueuesDrained(MessageRef msg);
 
 protected:
-	virtual void SendReply(MessageRef &m);
+	void SendReply(MessageRef &m);
 	void SendQueuedNotification();
 	void SendRejectedNotification(bool);
-	virtual void timerEvent(QTimerEvent *);
+	void timerEvent(QTimerEvent *);
 	bool event(QEvent *);
+	QObject * fOwner;
+	bool fShutdown;
+	bool * fShutdownFlag;
+	bool fManuallyQueued;
+	bool fLocallyQueued;
+	bool fRemotelyQueued;			// only usable in downloads
+	bool fActive;
+	bool fBlocked;
+	bool fFinished;
+	volatile bool fDisconnected;
+	double fRate[MAX_RATE_COUNT];	// last 20 rates
+	int fRateCount;					// amount we have, 20 max
+	uint32 fETA[MAX_ETA_COUNT];		// last 5 ETA's
+	int fETACount;					// amount we have, 5 max
+	double fPackets;				// amount of ultrafast 8 kB packets transfered
+	int64 fTimeLeft;
+	uint64 fStartTime;				// Time elapsed since this session started
+	int fPacket;
+
+	void SetMostRecentETA(uint32 eta);
+	uint32 ComputeETA() const;
+
+	QString GetUserName(QString sid);
+
+	int fTXRate; // Current transfer throttling rate
+
+	QTimer * CTimer;					// Connect timer
+	QTimer * fBlockTimer;				// Blocked timer
+
+	QMessageTransceiverThread * qmtt;
 
 private:
 	Queue<MessageRef> fUploads;
@@ -92,7 +182,6 @@ private:
 	String _sessionID;
 
 	void DoUpload();
-	bool InitSessionAux();
 	void TransferFileList(const MessageRef &);
 	void SignalUpload();
 
@@ -102,6 +191,9 @@ private:
 	};
 
 	MessageRef fSavedFileList;
+
+	void InitTransferRate();
+	void InitTransferETA();
 };
 
 

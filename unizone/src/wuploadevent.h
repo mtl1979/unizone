@@ -1,5 +1,5 @@
-#ifndef WGENERICEVENT_H
-#define WGENERICEVENT_H
+#ifndef WUPLOADEVENT_H
+#define WUPLOADEVENT_H
 
 #include "message/Message.h"
 
@@ -10,15 +10,15 @@
 #endif
 
 //------------------------------------------------------------------
-class WGenericEvent : public QCustomEvent
+class WUploadEvent : public QCustomEvent
 {
 public:
-	enum { Type = 'wGeE' };
+	enum { Type = 'wUeE' };
 
 	// This event stores a MessageRef
-	WGenericEvent(MessageRef msg) 
+	WUploadEvent(MessageRef msg) 
 		: QCustomEvent(Type) { fMsg = msg; }
-	virtual ~WGenericEvent() { }
+	virtual ~WUploadEvent() { }
 
 	MessageRef Msg() const { return fMsg; }
 	void SetMsg(MessageRef m) { fMsg = m; }
@@ -33,9 +33,9 @@ public:
 		FileFailed,				// file dl failed due to an error (not a disconnection)
 		FileStarted,			// started new file dl
         FileError,				// critical error, file system error
-		FileDataReceived,		// received some data
+		FileDataSent,			// sent some data
 		FileHashing,			// we're md5'ing the file
-		ConnectBackRequest,		// the thread is accepting on a port, send a connect back request to the remote client
+//		ConnectBackRequest,		// the thread is accepting on a port, send a connect back request to the remote client
 		FileQueued,				// we're queued
 		Init,					// is sent to the GUI with the path of the file being downloaded/requested. This filename may change (also may include the user as well)
 		UpdateUI,				// this is sent to the GUI with a new session ID/name pair to update for the upload

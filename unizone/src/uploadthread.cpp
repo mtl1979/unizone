@@ -3,7 +3,7 @@
 #endif
 
 #include "uploadthread.h"
-#include "wgenericevent.h"
+#include "wuploadevent.h"
 #include "global.h"
 #include "downloadimpl.h"
 #include "settings.h"
@@ -13,23 +13,55 @@
 #include "debugimpl.h"
 
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
-	: WGenericThread(owner, optShutdownFlag) 
+	: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag) 
 { 
 	PRINT("WUploadThread ctor\n");
 	setName( "WUploadThread" );
 	fFile = NULL; 
 	fFileUl = QString::null;
 	fRemoteSessionID = QString::null;
+	qmtt = new QMessageTransceiverThread(this);
+	CHECK_PTR(qmtt);
+
+	// Default status
+
+	if (!fShutdownFlag)					// Force use of Shutdown Flag
+	{
+		fShutdown = false;
+		fShutdownFlag = &fShutdown;
+	}
+
 	fCurFile = -1;
 	fNumFiles = -1;
 	fPort = 0;
 	fSocket = 0;
-	fActive = false;
-//	fInit = false;
-	fBlocked = false;
-	fTimeLeft = 0;
 	fForced = false;
 	timerID = 0;
+	fActive = true;
+	fBlocked = false;
+	fFinished = false;
+	fManuallyQueued = false;
+	fLocallyQueued = false;
+	fRemotelyQueued = false;
+	fDisconnected = false;
+	fPackets = 0;
+	fTXRate = 0;
+	fTimeLeft = 0;
+	fStartTime = 0;
+	fPacket = 8;
+
+	InitTransferRate();
+	InitTransferETA();
+
+	CTimer = new QTimer(this, "Connect Timer");
+	CHECK_PTR(CTimer);
+
+	connect( CTimer, SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
+	
+	fBlockTimer = new QTimer(this, "Blocked Timer");
+	CHECK_PTR(fBlockTimer);
+
+	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
 			this, SLOT(MessageReceived(MessageRef, const String &)));
@@ -96,7 +128,7 @@ WUploadThread::SetUpload(QString remoteIP, uint32 remotePort, WFileThread * ft)
 }
 
 bool 
-WUploadThread::InitSessionAux()
+WUploadThread::InitSession()
 {
 	PRINT("WUploadThread::InitSession\n");
 
@@ -130,7 +162,7 @@ WUploadThread::InitSessionAux()
 	{
 		if (qmtt->AddNewSession(fSocket, limit) == B_OK && qmtt->StartInternalThread() == B_OK)
 		{
-			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
+			MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
 			if (mref())
 			{
 				SendReply(mref);
@@ -139,7 +171,7 @@ WUploadThread::InitSessionAux()
 		}
 		else
 		{
-			MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
+			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 			if (fail())
 			{
 				fail()->AddString("why", QT_TR_NOOP( "Could not init session!" ));
@@ -153,7 +185,7 @@ WUploadThread::InitSessionAux()
 		const String sRemoteIP = (const char *) fStrRemoteIP.utf8(); // <postmaster@raasu.org> 20021026
 		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && qmtt->StartInternalThread() == B_OK)
 		{
-			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
+			MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
 			if (mref())
 			{
 				SendReply(mref);
@@ -162,7 +194,7 @@ WUploadThread::InitSessionAux()
 		}
 		else
 		{
-			MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
+			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 			if (fail())
 			{
 				fail()->AddString("why", QT_TR_NOOP( "Couldn't create new connect session!" ));
@@ -177,14 +209,19 @@ WUploadThread::InitSessionAux()
 void
 WUploadThread::SetLocallyQueued(bool b)
 {
-	WGenericThread::SetLocallyQueued(b);
-	if (!b)
+	fLocallyQueued = b;
+	if (b)
 	{
+		fStartTime = 0;
+	}
+	else
+	{
+		fLastData.restart();
 		if (fSavedFileList())
 		{
 			MessageRef fFileList = fSavedFileList;
 			fSavedFileList.Reset();
-			WGenericEvent *wge = new WGenericEvent(fFileList);
+			WUploadEvent *wge = new WUploadEvent(fFileList);
 			if (wge) QApplication::postEvent(this, wge);
 			return;
 		}
@@ -200,7 +237,7 @@ WUploadThread::SetLocallyQueued(bool b)
 		else if (fActive)
 		{
 			qmtt->Reset();
-			MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
+			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 			if (fail())
 			{
 				fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
@@ -216,17 +253,23 @@ void
 WUploadThread::SetBlocked(bool b, int64 timeLeft)
 {
 	SetActive(!b);
+	fBlocked = b;
 	if (b)
 	{
+		fTimeLeft = timeLeft;
+		fStartTime = 0;
 		if (timeLeft != -1)
 			fBlockTimer->start(timeLeft/1000, true);
 	}
-	else if (!b && fBlockTimer->isActive())
+	else if (!b)
 	{
-		fBlockTimer->stop();
+		fTimeLeft = 0;
+		fLastData.restart();
+		if (fBlockTimer->isActive())
+		{
+			fBlockTimer->stop();
+		}
 	}
-
-	WGenericThread::SetBlocked(b, timeLeft);
 	if (qmtt->IsInternalThreadRunning())
 	{
 		if (b)
@@ -252,7 +295,7 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 void
 WUploadThread::SetManuallyQueued(bool b)
 {
-	WGenericThread::SetManuallyQueued(b);
+	fManuallyQueued = b;	
 	if (qmtt->IsInternalThreadRunning() && b)
 		SendQueuedNotification();
 }
@@ -263,8 +306,11 @@ WUploadThread::SendReply(MessageRef &m)
 {
 	if (m())
 	{
-		m()->AddBool("upload", true);
-		WGenericThread::SendReply(m);
+//		m()->AddBool("upload", true);
+		m()->AddPointer("sender", this);
+		WUploadEvent * wue = new WUploadEvent(m);
+		if (wue)
+			QThread::postEvent(fOwner, wue);
 	}
 }
 
@@ -277,7 +323,7 @@ WUploadThread::SessionAttached(const String &sessionID)
 
 	timerID = startTimer(10000);
 
-	MessageRef con(GetMessageFromPool(WGenericEvent::Connected));
+	MessageRef con(GetMessageFromPool(WUploadEvent::Connected));
 	if (con())
 	{
 		SendReply(con);
@@ -293,7 +339,7 @@ WUploadThread::SessionConnected(const String &sessionID)
 
 	timerID = startTimer(10000);
 
-	MessageRef con(GetMessageFromPool(WGenericEvent::Connected));
+	MessageRef con(GetMessageFromPool(WUploadEvent::Connected));
 	if (con())
 	{
 		SendReply(con);
@@ -336,7 +382,7 @@ WUploadThread::SessionDisconnected(const String &sessionID)
 		fFile = NULL;
 	}
 
-	MessageRef dis(GetMessageFromPool(WGenericEvent::Disconnected));
+	MessageRef dis(GetMessageFromPool(WUploadEvent::Disconnected));
 	if (dis())
 	{
 		if (fCurrentOffset < fFileSize || fUploads.GetNumItems() > 0)
@@ -385,7 +431,7 @@ WUploadThread::MessageReceived(MessageRef msg, const String &sessionID)
 				SetBlocked(true);
 			}
 
-			MessageRef ui(GetMessageFromPool(WGenericEvent::UpdateUI));
+			MessageRef ui(GetMessageFromPool(WUploadEvent::UpdateUI));
 			if (ui())
 			{
 				if (name) 
@@ -407,7 +453,7 @@ WUploadThread::MessageReceived(MessageRef msg, const String &sessionID)
 	
 		case WDownload::TransferFileList:
 		{
-			WGenericEvent *qce = new WGenericEvent(msg);
+			WUploadEvent *qce = new WUploadEvent(msg);
 			if (qce) 
 			{
 				QApplication::postEvent(this, qce);
@@ -432,7 +478,7 @@ WUploadThread::OutputQueuesDrained(MessageRef msg)
 
 		PRINT("\t\tSending message\n");
 
-		MessageRef msg(GetMessageFromPool(WGenericEvent::FileDone));
+		MessageRef msg(GetMessageFromPool(WUploadEvent::FileDone));
 		if (msg())
 		{
 			msg()->AddBool("done", true);
@@ -461,7 +507,7 @@ WUploadThread::SendQueuedNotification()
 	{
 		qmtt->SendMessageToSessions(q);
 	}
-	MessageRef qf(GetMessageFromPool(WGenericEvent::FileQueued));
+	MessageRef qf(GetMessageFromPool(WUploadEvent::FileQueued));
 	if (qf())
 	{
 		SendReply(qf);
@@ -506,7 +552,7 @@ WUploadThread::SendRejectedNotification(bool direct)
 				gWin->SendRejectedNotification(q);
 		}
 	}
-	MessageRef b(GetMessageFromPool(WGenericEvent::FileBlocked));
+	MessageRef b(GetMessageFromPool(WUploadEvent::FileBlocked));
 	if (b())
 	{
 		if (fTimeLeft != -1)
@@ -526,7 +572,7 @@ WUploadThread::DoUpload()
 
 	if (!qmtt->IsInternalThreadRunning())
 	{
-		MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
+		MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 		if (fail())
 		{
 			fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
@@ -545,7 +591,7 @@ WUploadThread::DoUpload()
 		if (fFile && (fFileSize >= gWin->fSettings->GetMinQueuedSize()))		// not yet
 		{
 			fForced = false;
-			MessageRef lq(GetMessageFromPool(WGenericEvent::FileQueued));
+			MessageRef lq(GetMessageFromPool(WUploadEvent::FileQueued));
 			if (lq())
 			{
 				SendReply(lq);
@@ -565,7 +611,7 @@ WUploadThread::DoUpload()
 
 	if (IsBlocked())
 	{
-		MessageRef msg(GetMessageFromPool(WGenericEvent::FileBlocked));
+		MessageRef msg(GetMessageFromPool(WUploadEvent::FileBlocked));
 		if (msg())
 		{
 			if (fTimeLeft != -1)
@@ -631,7 +677,7 @@ WUploadThread::DoUpload()
 						qmtt->RequestOutputQueuesDrainedNotification(drain);
 
 					// we'll use this event for sending as well
-					MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));	
+					MessageRef update(GetMessageFromPool(WUploadEvent::FileDataSent));	
 					if (update())
 					{
 						update()->AddInt64("offset", fCurrentOffset);
@@ -718,7 +764,7 @@ WUploadThread::DoUpload()
 
 				fCurFile++;
 
-				MessageRef mref(GetMessageFromPool(WGenericEvent::FileStarted));
+				MessageRef mref(GetMessageFromPool(WUploadEvent::FileStarted));
 				if (mref())
 				{
 					mref()->AddString("file", filePath.Cstr());
@@ -763,7 +809,7 @@ WUploadThread::GetFileName(int i)
 void
 WUploadThread::SetRate(int rate)
 {
-	WGenericThread::SetRate(rate);
+	fTXRate = rate;
 	if (rate != 0)
 		qmtt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
@@ -771,9 +817,9 @@ WUploadThread::SetRate(int rate)
 }
 
 void
-WUploadThread::SetRate(int rate, AbstractReflectSessionRef ref)
+WUploadThread::SetRate(int rate, AbstractReflectSessionRef & ref)
 {
-	WGenericThread::SetRate(rate);
+	fTXRate = rate;
 	if (rate != 0)
 		ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
@@ -808,11 +854,11 @@ WUploadThread::event(QEvent *e)
 	int t = (int) e->type();
 	switch (t)
 	{
-	case WGenericEvent::Type:
+	case WUploadEvent::Type:
 		{
-			WGenericEvent * wge = dynamic_cast<WGenericEvent *>(e);
-			if (wge)
-				TransferFileList(wge->Msg());
+			WUploadEvent * wue = dynamic_cast<WUploadEvent *>(e);
+			if (wue)
+				TransferFileList(wue->Msg());
 			return true;
 		}
 	case UploadEvent:
@@ -822,7 +868,7 @@ WUploadThread::event(QEvent *e)
 		}
 	default:
 		{
-			return WGenericThread::event(e);
+			return QObject::event(e);
 		}
 	}
 }
@@ -912,7 +958,7 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 						filePath += filename;
 									
 						// Notify window of our hashing
-						MessageRef m(GetMessageFromPool(WGenericEvent::FileHashing));
+						MessageRef m(GetMessageFromPool(WUploadEvent::FileHashing));
 						if (m())
 						{
 							m()->AddString("file", filePath);
@@ -966,7 +1012,7 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 						firstFile += "/";
 		
 					firstFile += filename;
-					MessageRef initmsg(GetMessageFromPool(WGenericEvent::Init));
+					MessageRef initmsg(GetMessageFromPool(WUploadEvent::Init));
 					if (initmsg())
 					{
 						initmsg()->AddString("file", firstFile);
@@ -992,4 +1038,266 @@ WUploadThread::SignalUpload()
 	{
 		QApplication::postEvent(this, qce);
 	}
+}
+
+void
+WUploadThread::InitTransferRate()
+{
+	for (int i = 0; i < MAX_RATE_COUNT; i++)
+	{
+		fRate[i] = 0.0f;
+	}
+
+	fRateCount = 0;
+}
+
+void
+WUploadThread::InitTransferETA()
+{
+	for (int i = 0; i < MAX_ETA_COUNT; i++)
+	{
+		fETA[i] = 0;
+	}
+
+	fETACount = 0;
+}
+
+void
+WUploadThread::Reset()
+{
+	PRINT("WUploadThread::Reset()\n");
+	SetFinished(true);
+	SetActive(false);
+	SetLocallyQueued(false);
+	if ( fShutdownFlag )
+		*fShutdownFlag = true;
+	qmtt->Reset();
+	qApp->processEvents();
+	PRINT("WUploadThread::Reset() OK\n");
+}
+
+void
+WUploadThread::SetPacketSize(int s)
+{
+	// Clear Rate and ETA counts because changing the Packet Size between two estimate recalculations causes miscalculation
+	if (fPacket != s)
+	{
+		fRateCount = 0;
+		fETACount = 0;
+	}
+	fPacket = s;
+}
+
+bool
+WUploadThread::IsLocallyQueued() const
+{
+	return fLocallyQueued;
+}
+
+bool
+WUploadThread::IsManuallyQueued() const
+{
+	return fManuallyQueued;
+}
+
+bool
+WUploadThread::IsFinished() const
+{
+	return fFinished;
+}
+
+bool
+WUploadThread::IsActive() const
+{
+	return fActive;
+}
+
+bool
+WUploadThread::IsBlocked() const
+{
+	return fBlocked;
+}
+
+QString
+WUploadThread::GetETA(uint64 cur, uint64 max, double rate)
+{
+	if (rate < 0)
+		rate = GetCalculatedRate();
+	// d = r * t
+	// t = d / r
+	uint64 left = max - cur;	// amount left
+	uint32 secs = (uint32)((double)(int64)left / rate);
+
+	SetMostRecentETA(secs);
+	secs = ComputeETA();
+
+	QString ret;
+	ret.setNum(secs);
+	return ret;
+}
+
+double
+WUploadThread::GetCalculatedRate() const
+{
+	double added = 0.0f;
+	double rate = 0.0f;
+
+	for (int i = 0; i < fRateCount; i++)
+		added += fRate[i];
+
+	// <postmaster@raasu.org> 20021024,20021026,20021101 -- Don't try to divide zero or by zero
+
+	if ( (added > 0.0f) && (fRateCount > 0) )
+		rate = added / (double)fRateCount;
+
+	return rate;
+}
+
+void 
+WUploadThread::SetPacketCount(double bytes)
+{
+	fPackets += bytes / ((double) fPacket) ;
+}
+
+void
+WUploadThread::SetMostRecentRate(double rate)
+{
+	if (fPackets != 0.0f)
+	{
+		rate *= 1 + fPackets;
+	}
+	if (fRateCount == MAX_RATE_COUNT)
+	{
+		// remove the oldest rate
+		for (int i = 1; i < MAX_RATE_COUNT; i++)
+			fRate[i - 1] = fRate[i];
+		fRate[MAX_RATE_COUNT - 1] = rate;
+	}
+	else
+		fRate[fRateCount++] = rate;
+	fPackets = 0.0f; // reset packet count
+}
+
+bool
+WUploadThread::IsLastFile()
+{ 
+	int c = GetCurrentNum() + 1;
+	int n = GetNumFiles();
+	return (c >= n); 
+}
+
+void
+WUploadThread::SetActive(bool b)
+{
+	fActive = b;
+}
+
+void
+WUploadThread::SetFinished(bool b)
+{
+	fFinished = b;
+}
+
+int
+WUploadThread::GetPacketSize()
+{
+	return fPacket;
+}
+
+int
+WUploadThread::GetBanTime()
+{
+	if (fTimeLeft == 0)
+		return 0;
+	else if (fTimeLeft == -1)
+		return -1;
+	else
+		return (fTimeLeft / 60000000);
+}
+
+QString
+WUploadThread::GetUserName(QString sid)
+{
+	WUserRef uref = gWin->FindUser(sid);
+	QString ret = sid;
+	if (uref())
+		ret = uref()->GetUserName();
+	else
+	{
+		uref = gWin->FindUserByIPandPort(GetRemoteIP(), 0);
+		if (uref())
+		{
+			ret = uref()->GetUserName();
+		}
+	}
+	return ret;
+}
+
+status_t
+WUploadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
+{
+	if (qmtt)
+		return qmtt->SendMessageToSessions(msgRef, optDistPath);
+	else
+		return B_ERROR;
+}
+
+bool 
+WUploadThread::IsInternalThreadRunning()
+{
+	if (qmtt)
+		return qmtt->IsInternalThreadRunning();
+	else
+		return false;
+}
+
+uint32
+WUploadThread::ComputeETA() const
+{
+	uint32 added = 0;
+	uint32 eta = 0;
+	for (int i = 0; i < fETACount; i++)
+		added += fETA[i];
+
+	if ( (added > 0) && (fETACount > 0 ) )
+	{
+		eta = added / fETACount;
+	}
+
+	return eta;
+}
+
+// Do the same averaging for ETA's that we do for rates
+void
+WUploadThread::SetMostRecentETA(uint32 eta)
+{
+	if (fETACount == MAX_ETA_COUNT)
+	{
+		// remove the oldest eta
+		for (int i = 1; i < MAX_ETA_COUNT; i++)
+			fETA[i - 1] = fETA[i];
+		fETA[MAX_ETA_COUNT - 1] = eta;
+	}
+	else
+		fETA[fETACount++] = eta;
+
+}
+
+void
+WUploadThread::ConnectTimer()
+{
+	Reset();
+	MessageRef msg(GetMessageFromPool(WUploadEvent::ConnectFailed));
+	if (msg())
+	{
+		msg()->AddString("why", QT_TR_NOOP( "Connection timed out!" ));
+		SendReply(msg);
+	}
+}
+
+void
+WUploadThread::BlockedTimer()
+{
+	SetBlocked(false);
+	fTimeLeft = 0;
 }

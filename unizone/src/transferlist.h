@@ -1,7 +1,8 @@
 #ifndef TRANSFERLIST_H
 #define TRANSFERLIST_H
 
-#include "genericthread.h"
+#include "downloadthread.h"
+#include "uploadthread.h"
 #include "transferitem.h"
 
 #include "util/Queue.h"
@@ -11,8 +12,10 @@
 using std::pair;
 using std::list;
 
-typedef pair<WGenericThread *, WTransferItem *> WTPair;
-typedef Queue<WTPair> WTList;
-//typedef WTList::iterator WTIter;
+typedef pair<WDownloadThread *, WTransferItem *> DLPair;
+typedef Queue<DLPair> DLList;
+
+typedef pair<WUploadThread *, WTransferItem *> ULPair;
+typedef Queue<ULPair> ULList;
 
 #endif

@@ -1,6 +1,6 @@
 #include "downloadthread.h"
 #include "downloadimpl.h"
-#include "wgenericevent.h"
+#include "wdownloadevent.h"
 #include "md5.h"
 #include "global.h"
 #include "settings.h"
@@ -14,15 +14,51 @@
 using namespace muscle;
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
-: WGenericThread(owner, optShutdownFlag), fLockFile(true) 
+: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag), fLockFile(true) 
 {
 	setName( "WDownloadThread" );
+
+	qmtt = new QMessageTransceiverThread(this);
+	CHECK_PTR(qmtt);
+
+	// Default status
+
+	if (!fShutdownFlag)					// Force use of Shutdown Flag
+	{
+		fShutdown = false;
+		fShutdownFlag = &fShutdown;
+	}
+
 	fFile = NULL; 
 	fFileDl = NULL;
 	fLocalFileDl = NULL;
 	fNumFiles = -1;
 	fCurFile = -1;
 	timerID = 0;
+	fActive = true;
+	fBlocked = false;
+	fFinished = false;
+	fManuallyQueued = false;
+	fLocallyQueued = false;
+	fRemotelyQueued = false;
+	fDisconnected = false;
+	fPackets = 0;
+	fTXRate = 0;
+	fTimeLeft = 0;
+	fStartTime = 0;
+	fPacket = 8;
+	InitTransferRate();
+	InitTransferETA();
+
+	CTimer = new QTimer(this, "Connect Timer");
+	CHECK_PTR(CTimer);
+
+	connect( CTimer, SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
+	
+	fBlockTimer = new QTimer(this, "Blocked Timer");
+	CHECK_PTR(fBlockTimer);
+
+	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
 			this, SLOT(MessageReceived(MessageRef, const String &)));
@@ -96,7 +132,7 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, QStr
 	fFirewalled = firewalled;
 	fPartial = partial;
 	
-	MessageRef msg(GetMessageFromPool(WGenericEvent::Init));
+	MessageRef msg(GetMessageFromPool(WDownloadEvent::Init));
 	if (msg())
 	{
 		QString dlFile;
@@ -146,7 +182,7 @@ WDownloadThread::FixFileName(const QString & fixMe)
 }
 
 bool
-WDownloadThread::InitSessionAux()
+WDownloadThread::InitSession()
 {
 	if (fCurFile == -1) // No more files
 	{
@@ -211,7 +247,7 @@ WDownloadThread::InitSessionAux()
 				fCurrentOffset = fFileSize = 0;
 				fFile = NULL;
 				fDownloading = false;
-				MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectInProgress));
+				MessageRef msg(GetMessageFromPool(WDownloadEvent::ConnectInProgress));
 				if (msg())
 					SendReply(msg);
 				CTimer->start(30000, true); // 30 seconds
@@ -220,7 +256,7 @@ WDownloadThread::InitSessionAux()
 			else
 			{
 				qmtt->Reset();
-				MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
+				MessageRef msg(GetMessageFromPool(WDownloadEvent::ConnectFailed));
 				if (msg())
 				{
 					msg()->AddString("why", QT_TR_NOOP( "Could not add new connect session!" ));
@@ -230,7 +266,7 @@ WDownloadThread::InitSessionAux()
 		}
 		else
 		{
-			MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
+			MessageRef msg(GetMessageFromPool(WDownloadEvent::ConnectFailed));
 			if (msg())
 			{
 				msg()->AddString("why", QT_TR_NOOP( "Failed to start internal thread!" ));
@@ -273,7 +309,7 @@ WDownloadThread::InitSessionAux()
 		{
 			fDownloading = false;
 			fCurrentOffset = fFileSize = 0;
-			MessageRef cnt(GetMessageFromPool(WGenericEvent::ConnectBackRequest));
+			MessageRef cnt(GetMessageFromPool(WDownloadEvent::ConnectBackRequest));
 			if (cnt())
 			{
 				cnt()->AddString("session", (const char *) fFromSession.utf8());
@@ -292,8 +328,11 @@ WDownloadThread::SendReply(MessageRef &m)
 {
 	if (m())
 	{
-		m()->AddBool("download", true);	// the value doesn't matter
-		WGenericThread::SendReply(m);
+//		m()->AddBool("download", true);	// the value doesn't matter
+		m()->AddPointer("sender", this);
+		WDownloadEvent * wde = new WDownloadEvent(m);
+		if (wde)
+			QThread::postEvent(fOwner, wde);
 	}
 }
 
@@ -304,7 +343,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 	{
 		case WDownload::TransferNotifyQueued:
 		{
-			MessageRef q(GetMessageFromPool(WGenericEvent::FileQueued));
+			MessageRef q(GetMessageFromPool(WDownloadEvent::FileQueued));
 			if (q())
 			{
 				SendReply(q);
@@ -315,7 +354,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 					
 		case WDownload::TransferNotifyRejected:
 		{
-			MessageRef q(GetMessageFromPool(WGenericEvent::FileBlocked));
+			MessageRef q(GetMessageFromPool(WDownloadEvent::FileBlocked));
 			uint64 timeleft = (uint64) -1;
 			(void) msg()->FindInt64("timeleft", (int64 *) &timeleft);
 			if (q())
@@ -353,7 +392,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 
 				if (IsLastFile()) fFinished = true;
 
-				MessageRef done(GetMessageFromPool(WGenericEvent::FileDone));
+				MessageRef done(GetMessageFromPool(WDownloadEvent::FileDone));
 				if (done())
 				{
 					
@@ -464,7 +503,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 					{
 						if (fCurrentOffset != fFileSize)
 						{
-							status = GetMessageFromPool(WGenericEvent::FileStarted);
+							status = GetMessageFromPool(WDownloadEvent::FileStarted);
 							if (status())
 							{
 								status()->AddString("file", (const char *) fixed.utf8());
@@ -482,7 +521,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 
 							if (IsLastFile()) fFinished = true;
 
-							status = GetMessageFromPool(WGenericEvent::FileDone);
+							status = GetMessageFromPool(WDownloadEvent::FileDone);
 							if (status())
 							{
 								status()->AddBool("done", false);
@@ -500,7 +539,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 					delete fFile;
 					fFile = NULL;
 
-					status = GetMessageFromPool(WGenericEvent::FileError);
+					status = GetMessageFromPool(WDownloadEvent::FileError);
 					if (status())
 					{
 						status()->AddString("file", (const char *) fixed.utf8());
@@ -513,7 +552,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 			else
 			{
 				//disconnected = true;
-				MessageRef status(GetMessageFromPool(WGenericEvent::FileError));
+				MessageRef status(GetMessageFromPool(WDownloadEvent::FileError));
 				if (status())
 				{
 					status()->AddString("why", QT_TR_NOOP( "Could not read file info!" ));
@@ -549,7 +588,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 					{
 						fCurrentOffset += numBytes;
 
-						MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));
+						MessageRef update(GetMessageFromPool(WDownloadEvent::FileDataReceived));
 						if (update())
 						{
 							update()->AddInt64("offset", fCurrentOffset);
@@ -586,7 +625,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 						// error
 						PRINT("\tWDownload::TransferFileData FAIL!!!\n");
 
-						MessageRef error(GetMessageFromPool(WGenericEvent::FileError));
+						MessageRef error(GetMessageFromPool(WDownloadEvent::FileError));
 						if (error())
 						{
 							error()->AddString("why", QT_TR_NOOP( "Couldn't write file data!" ));
@@ -618,7 +657,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 
 	_sessionID = sessionID;
 
-	MessageRef replyMsg(GetMessageFromPool(WGenericEvent::Connected));
+	MessageRef replyMsg(GetMessageFromPool(WDownloadEvent::Connected));
 	if (replyMsg())
 	{
 		SendReply(replyMsg);
@@ -664,7 +703,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 				uint64 retBytesHashed = 0;
 				uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
 								
-				MessageRef hashMsg(GetMessageFromPool(WGenericEvent::FileHashing));
+				MessageRef hashMsg(GetMessageFromPool(WDownloadEvent::FileHashing));
 				if (hashMsg())
 				{
 					hashMsg()->AddString("file", (const char *)fixed.utf8());
@@ -680,7 +719,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 					}
 					else	// ERROR?
 					{
-						MessageRef e(GetMessageFromPool(WGenericEvent::FileError));
+						MessageRef e(GetMessageFromPool(WDownloadEvent::FileError));
 						if (e())
 						{
 							e()->AddString("file", (const char *) outFile.utf8());
@@ -736,7 +775,7 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 	{
 		if (fCurrentOffset != fFileSize)
 		{
-			dis = GetMessageFromPool(WGenericEvent::Disconnected);
+			dis = GetMessageFromPool(WDownloadEvent::Disconnected);
 			if (dis())
 			{
 				dis()->AddBool("failed", true);
@@ -748,7 +787,7 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 			if (IsLastFile())
 			{
 				fFinished = true;
-				dis = GetMessageFromPool(WGenericEvent::FileDone);
+				dis = GetMessageFromPool(WDownloadEvent::FileDone);
 				if (dis())
 				{
 					dis()->AddBool("done", true);		
@@ -760,7 +799,7 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 			{
 				NextFile();
 
-				dis = GetMessageFromPool(WGenericEvent::FileFailed);
+				dis = GetMessageFromPool(WDownloadEvent::FileFailed);
 				if (dis())
 				{
 					dis()->AddBool("failed", true);
@@ -771,7 +810,7 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 	}
 	else
 	{
-		dis = GetMessageFromPool(WGenericEvent::Disconnected);
+		dis = GetMessageFromPool(WDownloadEvent::Disconnected);
 		if (dis())
 		{
 			if (fCurFile == -1)
@@ -829,7 +868,7 @@ void WDownloadThread::NextFile()
 void
 WDownloadThread::SetRate(int rate)
 {
-	WGenericThread::SetRate(rate);
+	fTXRate = rate;
 	if (rate != 0)
 		qmtt->SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
@@ -837,9 +876,9 @@ WDownloadThread::SetRate(int rate)
 }
 
 void
-WDownloadThread::SetRate(int rate, AbstractReflectSessionRef ref)
+WDownloadThread::SetRate(int rate, AbstractReflectSessionRef & ref)
 {
-	WGenericThread::SetRate(rate, ref);
+	fTXRate = rate;
 	if (rate != 0)
 		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
@@ -850,16 +889,23 @@ WDownloadThread::SetRate(int rate, AbstractReflectSessionRef ref)
 void
 WDownloadThread::SetBlocked(bool b, int64 timeLeft)
 {
-	WGenericThread::SetBlocked(b, timeLeft);
+	fBlocked = b;
 	if (b)
 	{
-		MessageRef msg(GetMessageFromPool(WGenericEvent::FileBlocked));
+		fTimeLeft = timeLeft;
+		fStartTime = 0;
+		MessageRef msg(GetMessageFromPool(WDownloadEvent::FileBlocked));
 		if (msg())
 		{
 			if (fTimeLeft != -1)
 				msg()->AddInt64("timeleft", fTimeLeft);
 			SendReply(msg);
 		}
+	}
+	else
+	{
+		fTimeLeft = 0;
+		fLastData.restart();
 	}
 }
 
@@ -928,4 +974,273 @@ WDownloadThread::timerEvent(QTimerEvent *e)
 			SendMessageToSessions(nop);
 		}
 	}
+}
+
+bool
+WDownloadThread::IsRemotelyQueued() const
+{
+	return fRemotelyQueued;
+}
+
+void
+WDownloadThread::SetRemotelyQueued(bool b)
+{
+	fRemotelyQueued = b;
+	if (!b)
+	{
+		fLastData.restart();
+	}
+}
+
+void
+WDownloadThread::InitTransferRate()
+{
+	for (int i = 0; i < MAX_RATE_COUNT; i++)
+	{
+		fRate[i] = 0.0f;
+	}
+
+	fRateCount = 0;
+}
+
+void
+WDownloadThread::InitTransferETA()
+{
+	for (int i = 0; i < MAX_ETA_COUNT; i++)
+	{
+		fETA[i] = 0;
+	}
+
+	fETACount = 0;
+}
+
+void
+WDownloadThread::Reset()
+{
+	PRINT("WDownloadThread::Reset()\n");
+	SetFinished(true);
+	SetActive(false);
+	SetLocallyQueued(false);
+	if ( fShutdownFlag )
+		*fShutdownFlag = true;
+	qmtt->Reset();
+	qApp->processEvents();
+	PRINT("WDownloadThread::Reset() OK\n");
+}
+
+void
+WDownloadThread::SetLocallyQueued(bool b)
+{
+	fLocallyQueued = b;
+	if (b)
+	{
+		fStartTime = 0;
+	}
+	else
+	{
+		fLastData.restart();
+	}
+}
+
+bool
+WDownloadThread::IsLocallyQueued() const
+{
+	return fLocallyQueued;
+}
+
+bool
+WDownloadThread::IsManuallyQueued() const
+{
+	return fManuallyQueued;
+}
+
+bool
+WDownloadThread::IsFinished() const
+{
+	return fFinished;
+}
+
+bool
+WDownloadThread::IsActive() const
+{
+	return fActive;
+}
+
+QString
+WDownloadThread::GetETA(uint64 cur, uint64 max, double rate)
+{
+	if (rate < 0)
+		rate = GetCalculatedRate();
+	// d = r * t
+	// t = d / r
+	uint64 left = max - cur;	// amount left
+	uint32 secs = (uint32)((double)(int64)left / rate);
+
+	SetMostRecentETA(secs);
+	secs = ComputeETA();
+
+	QString ret;
+	ret.setNum(secs);
+	return ret;
+}
+
+double
+WDownloadThread::GetCalculatedRate() const
+{
+	double added = 0.0f;
+	double rate = 0.0f;
+
+	for (int i = 0; i < fRateCount; i++)
+		added += fRate[i];
+
+	// <postmaster@raasu.org> 20021024,20021026,20021101 -- Don't try to divide zero or by zero
+
+	if ( (added > 0.0f) && (fRateCount > 0) )
+		rate = added / (double)fRateCount;
+
+	return rate;
+}
+
+void 
+WDownloadThread::SetPacketCount(double bytes)
+{
+	fPackets += bytes / ((double) fPacket) ;
+}
+
+void
+WDownloadThread::SetMostRecentRate(double rate)
+{
+	if (fPackets != 0.0f)
+	{
+		rate *= 1 + fPackets;
+	}
+	if (fRateCount == MAX_RATE_COUNT)
+	{
+		// remove the oldest rate
+		for (int i = 1; i < MAX_RATE_COUNT; i++)
+			fRate[i - 1] = fRate[i];
+		fRate[MAX_RATE_COUNT - 1] = rate;
+	}
+	else
+		fRate[fRateCount++] = rate;
+	fPackets = 0.0f; // reset packet count
+}
+
+bool
+WDownloadThread::IsLastFile()
+{ 
+	int c = GetCurrentNum() + 1;
+	int n = GetNumFiles();
+	return (c >= n); 
+}
+
+void
+WDownloadThread::SetActive(bool b)
+{
+	fActive = b;
+}
+
+void
+WDownloadThread::SetFinished(bool b)
+{
+	fFinished = b;
+}
+
+void
+WDownloadThread::SetManuallyQueued(bool b)
+{
+	fManuallyQueued = b;	
+}
+
+bool
+WDownloadThread::IsBlocked() const
+{
+	return fBlocked;
+}
+
+QString
+WDownloadThread::GetUserName(QString sid)
+{
+	WUserRef uref = gWin->FindUser(sid);
+	QString ret = sid;
+	if (uref())
+		ret = uref()->GetUserName();
+	else
+	{
+		uref = gWin->FindUserByIPandPort(GetRemoteIP(), 0);
+		if (uref())
+		{
+			ret = uref()->GetUserName();
+		}
+	}
+	return ret;
+}
+
+status_t
+WDownloadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
+{
+	if (qmtt)
+		return qmtt->SendMessageToSessions(msgRef, optDistPath);
+	else
+		return B_ERROR;
+}
+
+bool 
+WDownloadThread::IsInternalThreadRunning()
+{
+	if (qmtt)
+		return qmtt->IsInternalThreadRunning();
+	else
+		return false;
+}
+
+uint32
+WDownloadThread::ComputeETA() const
+{
+	uint32 added = 0;
+	uint32 eta = 0;
+	for (int i = 0; i < fETACount; i++)
+		added += fETA[i];
+
+	if ( (added > 0) && (fETACount > 0 ) )
+	{
+		eta = added / fETACount;
+	}
+
+	return eta;
+}
+
+// Do the same averaging for ETA's that we do for rates
+void
+WDownloadThread::SetMostRecentETA(uint32 eta)
+{
+	if (fETACount == MAX_ETA_COUNT)
+	{
+		// remove the oldest eta
+		for (int i = 1; i < MAX_ETA_COUNT; i++)
+			fETA[i - 1] = fETA[i];
+		fETA[MAX_ETA_COUNT - 1] = eta;
+	}
+	else
+		fETA[fETACount++] = eta;
+
+}
+
+void
+WDownloadThread::ConnectTimer()
+{
+	Reset();
+	MessageRef msg(GetMessageFromPool(WDownloadEvent::ConnectFailed));
+	if (msg())
+	{
+		msg()->AddString("why", QT_TR_NOOP( "Connection timed out!" ));
+		SendReply(msg);
+	}
+}
+
+void
+WDownloadThread::BlockedTimer()
+{
+	SetBlocked(false);
+	fTimeLeft = 0;
 }

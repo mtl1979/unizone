@@ -1,14 +1,15 @@
-GCCOPTFLAGS = -I$(QTDIR)/include -DQT_THREAD_SUPPORT -Isrc -DNDEBUG -DNAME=\"Unizone\" -Isrc/muscle -DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
+INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/muscle
+GCCOPTFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT -DNDEBUG -DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
 LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
 OBJFILES = aboutdlg.o aboutdlgimpl.o botitem.o chattext.o \
 colors.o combo.o downloadimpl.o downloadthread.o fileinfo.o \
-filethread.o formatting.o genericthread.o gotourl.o main.o md5.o \
+filethread.o formatting.o gotourl.o main.o md5.o \
 menubar.o moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
-moc_downloadimpl.o moc_genericthread.o moc_htmlview.o moc_netclient.o \
+moc_downloadimpl.o moc_downloadthread.o moc_htmlview.o moc_netclient.o \
 moc_prefs.o moc_prefsimpl.o moc_privatewindow.o moc_privatewindowimpl.o \
-moc_winsharewindow.o netclient.o nicklist.o platform.o \
+moc_winsharewindow.o moc_uploadthread.o netclient.o nicklist.o platform.o \
 prefs.o prefsimpl.o privatewindow.o privatewindowimpl.o \
 searchitem.o settings.o textevent.o transferitem.o ulistview.o \
 uploadthread.o user.o userlistitem.o winshare_network.o \
@@ -83,7 +84,10 @@ src/moc_combo.cpp: src/combo.h
 src/moc_downloadimpl.cpp: src/downloadimpl.h
 	moc $< -o $@
 
-src/moc_genericthread.cpp: src/genericthread.h
+src/moc_downloadthread.cpp: src/downloadthread.h
+	moc $< -o $@
+
+src/moc_uploadthread.cpp: src/uploadthread.h
 	moc $< -o $@
 
 src/moc_htmlview.cpp: src/htmlview.h
