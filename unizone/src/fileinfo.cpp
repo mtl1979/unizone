@@ -201,7 +201,7 @@ UFileInfo::InitSize()
 {
 	if (!fInfo)
 	{
-		fSize = -1;
+		fSize = 0;
 	}
 	else
 	{

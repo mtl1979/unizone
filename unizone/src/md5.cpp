@@ -204,10 +204,9 @@ HashFileMD5(QString entry, uint64 & len, uint64 offset, uint64 & retBytesHashed,
 			uint8 * returnDigest, volatile bool * optShutdownFlag)
 {
 	QFile file(entry); // UNICODE !!!
-	uint64 size = -1;  
 	if (!file.open(IO_ReadOnly))
 		return B_ERROR;
-	size = (uint64)file.size();
+	uint64 size = (uint64)file.size();
 	if (len > 0 && size < len)
 		return B_ERROR;
 
