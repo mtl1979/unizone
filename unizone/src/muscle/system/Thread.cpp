@@ -281,7 +281,7 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
                      int nextSocket;
                      bool * nextValue;
                      HashtableIterator<int, bool> iter = t.GetIterator();
-                     while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket, psets[j]) ? true : false;
+                     while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket, psets[j]) ? true : false;  // ternary operator used to shut VC++ warnings up
                   }
                }
 
