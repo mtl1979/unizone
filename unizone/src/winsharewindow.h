@@ -30,7 +30,6 @@
 #include "qtsupport/QAcceptSocketsThread.h"
 #include "regex/StringMatcher.h"
 #include "support/MuscleSupport.h"
-// #include "search.h"
 #include "user.h"
 #include "titanic.h"
 
@@ -38,9 +37,6 @@ using namespace muscle;
 
 #define UPDATE_SERVER "www.raasu.org"
 #define UPDATE_FILE "/tools/windows/version.txt"
-
-// #define START_OUTPUT() fPrintOutput = false; PrintText("", true)
-// #define END_OUTPUT() fPrintOutput = true; PrintText("", false)
 
 #include <map>
 using std::pair;

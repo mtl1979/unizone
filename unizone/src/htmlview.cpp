@@ -138,12 +138,13 @@ ParseForShown(const QString & txt)
 		{
 			// copy everything before first TAB
 			out += txt.left(n);
+			out += "<br>";
 
 			// skip the TAB ;)
 			n++;
 		}
 
-		while (n < txt.length())
+		while (n < (int) txt.length())
 		{
 			m = txt.find('\t', n);
 			if (m > n)

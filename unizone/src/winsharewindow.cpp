@@ -1370,10 +1370,8 @@ WinShareWindow::EndMessageBatch()
 {
 	if (!fOutput.isEmpty())
 	{
-#if (QT_VERSION >= 0x030000)
 		if (fOutput.right(4) == "<br>")
 			fOutput.truncate(fOutput.length() - 4);
-#endif
 
 		if (fChatText->text().isEmpty())
 			fChatText->setText(fOutput);
@@ -1399,7 +1397,11 @@ WinShareWindow::PrintText(const QString & str, bool)
 		fOutput += GetTimeStamp();
 
 	if (!str.isEmpty())
+	{
 		fOutput += str;
+		if (str.right(4) == "<br>")
+			return;
+	}
 
 	fOutput += "<br>";	
 }
@@ -1411,7 +1413,10 @@ WinShareWindow::PrintText(const QString & str)
 	QString out("");
 	if (fSettings->GetTimeStamps())
 		out = GetTimeStamp();
-	out += str;
+
+	if (!str.isEmpty())
+		out += str;
+
 	if (fChatText->text().isEmpty())
 		fChatText->setText(out);
 	else
@@ -1596,7 +1601,7 @@ void
 WinShareWindow::PrintSystem(const QString & msg, bool batch)
 {
 	QString s = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
-	s += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(ParseChatText((QString &)msg));
+	s += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(ParseChatText(msg));
 	if (batch)
 		PrintText(s, false);
 	else
