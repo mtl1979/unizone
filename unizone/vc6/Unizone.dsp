@@ -104,10 +104,6 @@ SOURCE=..\src\aboutdlgimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\accept.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\botitem.cpp
 # End Source File
 # Begin Source File
@@ -248,7 +244,23 @@ SOURCE=..\src\moc_privatewindowimpl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\muscle\qtsupport\moc_QAcceptSocketsThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\moc_QMessageTransceiverThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_serverclient.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\moc_ulistview.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_updateclient.cpp
 # End Source File
 # Begin Source File
 
@@ -284,7 +296,19 @@ SOURCE=..\src\privatewindowimpl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\searchitem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\serverclient.cpp
 # End Source File
 # Begin Source File
 
@@ -301,6 +325,10 @@ SOURCE=..\src\transferitem.cpp
 # Begin Source File
 
 SOURCE=..\src\ulistview.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\updateclient.cpp
 # End Source File
 # Begin Source File
 
@@ -419,10 +447,6 @@ InputName=aboutdlgimpl
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\accept.h
 # End Source File
 # Begin Source File
 
@@ -738,39 +762,6 @@ InputName=menubar
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\messenger.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\messenger.h
-InputName=messenger
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\messenger.h
-InputName=messenger
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\netclient.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
@@ -944,11 +935,110 @@ InputName=privatewindowimpl
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputName=QAcceptSocketsThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputName=QAcceptSocketsThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputName=QMessageTransceiverThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputName=QMessageTransceiverThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\resource.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\searchitem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\serverclient.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\serverclient.h
+InputName=serverclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\serverclient.h
+InputName=serverclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -990,6 +1080,39 @@ InputName=ulistview
 InputDir=\build\unizone\src
 InputPath=..\src\ulistview.h
 InputName=ulistview
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\updateclient.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\updateclient.h
+InputName=updateclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\updateclient.h
+InputName=updateclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
