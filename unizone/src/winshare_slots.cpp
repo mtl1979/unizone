@@ -312,7 +312,7 @@ WinShareWindow::Preferences()
 			}
 			if (fSettings->GetSharingEnabled())		// this will also handle changes in firewall settings
 			{
-				if (QMessageBox::information(this, "File Scan", "Scan your shared files now?", "Yes", "No") == 0)
+				if (QMessageBox::information(this, tr( "File Scan" ), tr( "Scan your shared files now?" ), tr( "Yes" ), tr( "No" )) == 0)
 				{
 					ScanShares();
 					if (!fAccept)	// accept thread not running yet?
