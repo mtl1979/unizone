@@ -151,7 +151,7 @@ ParseForShown(const QString & txt)
 			{
 				out += txt.mid(n, m - n);
 				out += "<br>";
-				n += m - n + 1;
+				n = m + 1;
 			}
 			else
 			{
