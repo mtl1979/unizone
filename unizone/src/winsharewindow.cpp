@@ -1399,6 +1399,7 @@ WinShareWindow::EndMessageBatch()
 		UpdateTextView();
 
 		fOutput = "";
+		fInBatch = false;
 	}
 }
 
@@ -2447,7 +2448,7 @@ WinShareWindow::OpenDownload()
 	if (!fDLWindow)
 	{
 		PRINT("New DL Window\n");
-		fDLWindow = new WDownload(NULL, fNetClient->LocalSessionID(), fFileScanThread);
+		fDLWindow = new WDownload(NULL, GetUserID(), fFileScanThread);
 		CHECK_PTR(fDLWindow);
 		
 		connect(fDLWindow, SIGNAL(FileFailed(const QString &, const QString &, const QString &)), 

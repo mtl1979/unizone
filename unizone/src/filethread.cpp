@@ -147,46 +147,50 @@ WFileThread::ParseDirAux(QString &dir)
 {
 	status_t ret = B_NO_ERROR;
 	
-	QFileInfo info(dir);
+	QFileInfo *info = new QFileInfo(dir);
 	
-	// Directory doesn't exist?
-	if (info.exists())
-	{		
-		PRINT("Exists\n");
-		
+	if (info)
+	{
+		// Directory doesn't exist?
+		if (info->exists())
+		{		
+			PRINT("Exists\n");
+			
 #ifndef WIN32
-		// Read the symlink
-		
-		while (info.isSymLink())
-		{
-			info.setFile(info.readLink());
-		}
-		
-		PRINT("Symlinks resolved\n");
+			// Read the symlink
+			
+			while (info->isSymLink())
+			{
+				info->setFile(info->readLink());
+			}
+			
+			PRINT("Symlinks resolved\n");
 #endif
-		
-		if (info.isDir()) // Directory?
-		{
-			dir = info.absFilePath();
-			String d = (const char *) dir.utf8();
-
-			Lock();
-
+			
+			if (info->isDir()) // Directory?
 			{
-				String path;
-				ret = fScannedDirs.Get(d, path);
-			}
-
-			Unlock();
-
-			if (ret != B_NO_ERROR)
-			{
-				// Add to checked dirs
+				dir = info->absFilePath();
+				String d = (const char *) dir.utf8();
+				
 				Lock();
-				fScannedDirs.Put(d, d); 
+				
+				{
+					String path;
+					ret = fScannedDirs.Get(d, path);
+				}
+				
 				Unlock();
+				
+				if (ret != B_NO_ERROR)
+				{
+					// Add to checked dirs
+					Lock();
+					fScannedDirs.Put(d, d); 
+					Unlock();
+				}
 			}
 		}
+		delete info;
 	}
 	return ret;
 }

@@ -580,3 +580,23 @@ String MakePath(const String &dir, const String &file)
 	
 	return ret; 
 }
+
+/*
+ * Is received text action text or normal text
+ *
+ */
+
+bool
+IsAction(const QString &text, const QString &user)
+{
+	bool ret = false;
+
+	if (text.startsWith(user + " "))
+		ret = true;
+
+	if (text.startsWith(user + "'s "))
+		ret = true;
+
+	return ret;
+}
+

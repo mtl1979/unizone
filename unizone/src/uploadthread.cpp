@@ -328,7 +328,10 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 			}
 			
 			if (IsInternalThreadRunning())
+			{
 				SetLocallyQueued(true); // put in queue ;)
+				SendQueuedNotification();
+			}
 		}
 	}
 }

@@ -184,7 +184,7 @@ public:
 	// ----------------------
 	//
 	// 1. Set the pattern using SetDelayedSearchPattern(const QString &)
-	// 2. Call Connect(QString)
+	// 2. Call Connect(const QString &)
 	//
 	void Connect(const QString & server);
 	void SetDelayedSearchPattern(const QString & pattern);

@@ -61,6 +61,9 @@ bool IsURL(const String &);
 bool IsURL(const char *); 
 bool IsURL(const QString &);
 
+// Is the specified string an action text?
+bool IsAction(const QString & text, const QString & user);
+
 // Format a nice size string
 QString MakeSizeString(uint64 s);
 

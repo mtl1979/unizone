@@ -262,7 +262,7 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 			QString name = (*it).second()->GetUserName();
 			FixString(name);
 			QString s;
-			if (msg.startsWith(name + " ") || msg.startsWith(name + "'s ")) // simulate action?
+			if ( IsAction(msg, name) ) // simulate action?
 			{
 				s = WFormat::Action().arg(WColors::Action).arg( gWin->fSettings->GetFontSize() );
 				s += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);

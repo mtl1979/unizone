@@ -343,8 +343,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString text = tr("Uptime: %1").arg(GetUptimeString());
 			if (fNetClient->IsConnected())
-				fNetClient->SendChatText("*", text);
-			PrintSystem(text);
+				SendChatText("*", text);
 		}
 		else if (CompareCommand(sendText, "/logged"))
 		{
@@ -556,7 +555,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					if (tire())
 					{
 						tire()->AddString(PR_NAME_KEYS, to);
-						tire()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
+						tire()->AddString("session", (const char *) GetUserID().utf8());
 						if (command == "gmt")
 						{
 							tire()->AddBool("gmt", true);
@@ -604,8 +603,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			QString text = tr("Current time: %1 %2").arg(lt.Cstr()).arg(zone);
 
 			if (fNetClient->IsConnected())
-				fNetClient->SendChatText("*", text);
-			PrintSystem(text);
+				SendChatText("*", text);
 		}
 		else if (CompareCommand(sendText, "/ignore"))
 		{
@@ -895,7 +893,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString qtext = GetParameterString(sendText);
 			Reverse(qtext);
-			SendChatText("*", qtext);
+			if (fNetClient->IsConnected())
+				SendChatText("*", qtext);
 		}
 		else if (CompareCommand(sendText, "/revsay"))
 		{
@@ -913,7 +912,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				Reverse(qtext);
 			}
-			SendChatText("*", qtext);
+			if (fNetClient->IsConnected())
+				SendChatText("*", qtext);
 		}
 		// add more commands BEFORE this one
 
@@ -950,7 +950,7 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt)
 	{
 		if (fSettings->GetChat())
 		{
-			QString chat = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(fNetClient->LocalSessionID()).arg(FixStringStr(GetUserName()));
+			QString chat = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(GetUserID()).arg(FixStringStr(GetUserName()));
 			chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
 			PrintText(chat);
 		}
@@ -969,7 +969,16 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 {
 	fNetClient->SendChatText(sid, txt);
 	QString out = FixStringStr(txt);
-	if (sid != "*")	// not a global message?
+	if (sid == "*")	// not a global message?
+	{
+		if (fSettings->GetChat())
+		{
+			QString chat = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(GetUserID()).arg(FixStringStr(GetUserName()));
+			chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
+			PrintText(chat);
+		}
+	}
+	else
 	{
 		if (priv())
 		{
@@ -979,31 +988,25 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 				if (fSettings->GetPrivate())	// do we take private messages?
 				{
 					QString chat;
+					QString me = GetUserName();
+					FixString(me);
+					QString other = priv()->GetUserName();
+					FixString(other);
 					PRINT("Appending to chat\n");
-					if (txt.startsWith(FixStringStr(GetUserName()) + " ") || txt.startsWith(FixStringStr(GetUserName()) + "'s ")) // simulate action?
+					if ( IsAction(txt, me) ) // simulate action?
 					{
 						chat = WFormat::Action().arg(WColors::Action).arg( fSettings->GetFontSize() );
-						chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
 					}
 					else
 					{
-						chat = WFormat::SendPrivMsg.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(fNetClient->LocalSessionID()).arg(
-									FixStringStr(GetUserName())).arg(FixStringStr(priv()->GetUserName()));
-						chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
+						chat = WFormat::SendPrivMsg.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(GetUserID()).arg(
+									me).arg(other);
 					}
+					chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
 					PRINT("Printing\n");
 					PrintText(chat);
 				}
 			}
-		}
-	}
-	else
-	{
-		if (fSettings->GetChat())
-		{
-			QString chat = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(fNetClient->LocalSessionID()).arg(FixStringStr(GetUserName()));
-			chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
-			PrintText(chat);
 		}
 	}
 	// change away state
@@ -1095,7 +1098,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 					}
 					else
 					{
-						fmt = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(fNetClient->LocalSessionID()).arg(name);
+						fmt = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(GetUserID()).arg(name);
 					}
 					fmt += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(qsendtext);
 					text = fmt;
@@ -1579,7 +1582,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					msg()->RemoveName(PR_NAME_KEYS);
 					msg()->AddString(PR_NAME_KEYS, tostr);
 					msg()->RemoveName("session");
-					msg()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
+					msg()->AddString("session", (const char *) GetUserID().utf8());
 					msg()->RemoveName("version");
 					
 					QString version = tr("Unizone (English)");
@@ -1680,7 +1683,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					if (tire())
 					{
 						tire()->AddString(PR_NAME_KEYS, tostr);
-						tire()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
+						tire()->AddString("session", (const char *) GetUserID().utf8());
 						tire()->AddString("time", lt);
 						tire()->AddString("zone", zone);
 						fNetClient->SendMessageToSessions(tire);
@@ -2723,6 +2726,7 @@ WinShareWindow::PrintAddressInfo(uint32 address)
 	struct in_addr iaHost;	   // Internet address structure
 	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 	QString out("");
+	bool found = false;
 
 	if (address > 0)
 	{
@@ -2738,6 +2742,7 @@ WinShareWindow::PrintAddressInfo(uint32 address)
 		if (lpHostEntry != NULL)
 		{
 			out += "\n" + tr("Host Name: %1").arg(lpHostEntry->h_name);
+			found = true;
 		}
 					
 		// List all users from this ip
@@ -2759,14 +2764,17 @@ WinShareWindow::PrintAddressInfo(uint32 address)
 						out += "\n" + tr("#%1 - %2 (port: %3)").arg(uid).arg(uname).arg(port);
 					else
 						out += "\n" + tr("#%1 - %2").arg(uid).arg(uname);
+					found = true;
 				}
 			}
 		}
-		FixString(out);
-		PrintSystem(out);
-		return true;
+		if (found)
+		{
+			FixString(out);
+			PrintSystem(out);
+		}
 	}
-	return false;
+	return found;
 }
 
 void
@@ -2836,7 +2844,12 @@ WinShareWindow::ConnectionAccepted(SocketHolderRef socketRef)
 QString
 WinShareWindow::GetUserID() const
 { 
-	return fNetClient->LocalSessionID(); 
+	if (fNetClient)
+	{
+		if (fNetClient->IsConnected())
+			return fNetClient->LocalSessionID();
+	}
+	return QString::null;
 }
 
 void

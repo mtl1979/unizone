@@ -1,11 +1,7 @@
 #ifndef HTMLVIEW_H
 #define HTMLVIEW_H
 
-#ifdef UNIVIEW
-#include "../UniView/debugimpl.h"
-#else
 #include "debugimpl.h"
-#endif
 
 #include <qtextbrowser.h>
 

@@ -151,7 +151,7 @@ WinShareWindow::CreateChannel()
 			// Create Channel
 			WChannelPair wcp;
 			wcp.first = text;
-			wcp.second = new ChannelInfo(text, fNetClient->LocalSessionID());
+			wcp.second = new ChannelInfo(text, GetUserID());
 			fChannels.insert(fChannels.end(), wcp);
 
 			it = fChannels.find(text);
@@ -161,12 +161,12 @@ WinShareWindow::CreateChannel()
 			// Create Window item
 			Channel * win = new Channel(this, fNetClient, text);
 			wcp.second->SetWindow(win);
-			wcp.second->AddUser(fNetClient->LocalSessionID());
-			win->SetOwner(fNetClient->LocalSessionID());
+			wcp.second->AddUser(GetUserID());
+			win->SetOwner(GetUserID());
 			win->show();
 
 			//wcp.second->AddAdmin(fNet->LocalSessionID());
-			ChannelAdmins(text, fNetClient->LocalSessionID(), fNetClient->LocalSessionID());
+			ChannelAdmins(text, GetUserID(), GetUserID());
 			UpdateUsers(it);
 			UpdatePublic(it);
 
@@ -176,7 +176,7 @@ WinShareWindow::CreateChannel()
 			{
 				QString to("/*/*/unishare");
 				cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-				cc()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
+				cc()->AddString("session", (const char *) GetUserID().utf8());
 				cc()->AddInt64("when", GetCurrentTime64());
 				cc()->AddString("channel", (const char *) text.utf8());
 				fNetClient->SendMessageToSessions(cc);
@@ -234,7 +234,7 @@ WinShareWindow::JoinChannel(const QString & channel)
 		delete [] user;
 	}
 	
-	(*it).second->AddUser(fNetClient->LocalSessionID());
+	(*it).second->AddUser(GetUserID());
 	win->SetOwner((*it).second->GetOwner());
 	win->SetTopic((*it).second->GetTopic());
 	win->SetPublic((*it).second->GetPublic());
@@ -251,8 +251,8 @@ WinShareWindow::JoinChannel(const QString & channel)
 		{
 			QString to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
-			cc()->AddString("who", (const char *) fNetClient->LocalSessionID().utf8());
+			cc()->AddString("session", (const char *) GetUserID().utf8());
+			cc()->AddString("who", (const char *) GetUserID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
@@ -269,7 +269,7 @@ WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, i
 		// Create Channel
 		WChannelPair wcp;
 		wcp.first = channel;
-		wcp.second = new ChannelInfo(channel, fNetClient->LocalSessionID());
+		wcp.second = new ChannelInfo(channel, GetUserID());
 		fChannels.insert(fChannels.end(), wcp);
 
 		it = fChannels.find(channel);
@@ -291,7 +291,7 @@ WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, i
 			to += owner;
 			to += "/unishare";
 				cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
+			cc()->AddString("session", (const char *) GetUserID().utf8());
 			cc()->AddInt64("when", (*it).second->GetCreated());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
@@ -329,14 +329,14 @@ WinShareWindow::ChannelPart(const QString & channel, const QString & user)
 void
 WinShareWindow::PartChannel(const QString & channel, const QString & user)
 {
-	if (user == fNetClient->LocalSessionID())
+	if (user == GetUserID())
 	{
 		MessageRef cc = GetMessageFromPool(NetClient::ChannelPart);
 		if (cc())
 		{
 			QString to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
+			cc()->AddString("session", (const char *) GetUserID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
@@ -347,7 +347,7 @@ WinShareWindow::PartChannel(const QString & channel, const QString & user)
 	if (iter != fChannels.end())
 	{
 		// Make sure we don't have a stale window reference, so we can re-join later
-		if (user == fNetClient->LocalSessionID())
+		if (user == GetUserID())
 		{
 			(*iter).second->SetWindow(NULL);
 		}
@@ -431,7 +431,7 @@ WinShareWindow::ChannelInvite(const QString & channel, const QString & user, con
 	WChannelIter iter = fChannels.find(channel);
 	// We need to have existing channel to be able to check for admin status
 	if (
-		(who == fNetClient->LocalSessionID()) && 
+		(who == GetUserID()) && 
 		(iter == fChannels.end())
 		)
 	{
@@ -441,7 +441,7 @@ WinShareWindow::ChannelInvite(const QString & channel, const QString & user, con
 
 	if (IsAdmin(channel, user))
 	{
-		if (who == fNetClient->LocalSessionID())
+		if (who == GetUserID())
 		{
 			// Got invited
 			if (!(*iter).second->GetWindow())
@@ -462,7 +462,7 @@ WinShareWindow::ChannelInvite(const QString & channel, const QString & user, con
 			}
 			(*iter).second->GetWindow()->SetActive(true);
 		}
-		else if ( IsAdmin(channel, fNetClient->LocalSessionID()) && (*iter).second->GetWindow() )
+		else if ( IsAdmin(channel, GetUserID()) && (*iter).second->GetWindow() )
 		{
 			// User requested invite from us
 			if (QMessageBox::information(this, tr( "Channels" ), 
@@ -481,7 +481,7 @@ WinShareWindow::ChannelKick(const QString &channel, const QString &user, const Q
 	WChannelIter iter = fChannels.find(channel);
 	if (IsAdmin(channel, user))
 	{
-		if (who == fNetClient->LocalSessionID())
+		if (who == GetUserID())
 		{
 			// Got kicked
 			if ( (iter != fChannels.end()) && (*iter).second->GetWindow() )
@@ -574,12 +574,12 @@ WinShareWindow::UserIDChanged(const QString &oldid, const QString &newid)
 		}
 		(*iter).second->RemoveUser(oldid);
 		(*iter).second->AddUser(newid);
-		WString wMyID(fNetClient->LocalSessionID());
+		WString wMyID(GetUserID());
 		WString wOldID(oldid);
 		WString wNewID(newid);
 		PRINT("UserIDChanged, myid = %S, old = %S, new = %S\n", wMyID.getBuffer(), wOldID.getBuffer(), wNewID.getBuffer());
 
-		if (newid == fNetClient->LocalSessionID())
+		if (newid == GetUserID())
 		{
 			// Our ID got changed
 			if ((*iter).second->GetWindow())

@@ -1,11 +1,5 @@
 #include "combo.h"
-
-#ifdef UNIVIEW
-#  include "../UniView/debugimpl.h"
-#else
-#  include "debugimpl.h"
-#endif
-
+#include "debugimpl.h"
 #include "textevent.h"
 
 #include <qapplication.h>
