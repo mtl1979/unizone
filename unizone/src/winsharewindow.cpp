@@ -1469,7 +1469,7 @@ WinShareWindow::LoadSettings()
 		int size;
 		QString str;
 		// load servers
-		for (i = 0; (str = fSettings->GetServerItem(i)) != QString::null; i++)
+		for (i = 0; (str = fSettings->GetServerItem(i).stripWhiteSpace()) != QString::null; i++)
 			fServerList->insertItem(str, i);
 		i = fSettings->GetCurrentServerItem();
 		if (i < fServerList->count())
@@ -1477,7 +1477,7 @@ WinShareWindow::LoadSettings()
 		fServer = fServerList->currentText();
 		
 		// load usernames
-		for (i = 0; (str = fSettings->GetUserItem(i)) != QString::null; i++)
+		for (i = 0; (str = fSettings->GetUserItem(i).stripWhiteSpace()) != QString::null; i++)
 			fUserList->insertItem(str, i);
 		i = fSettings->GetCurrentUserItem();
 		if (i < fUserList->count())
@@ -1485,7 +1485,7 @@ WinShareWindow::LoadSettings()
 		fUserName = fUserList->currentText();
 
 		// load status
-		for (i = 0; (str = fSettings->GetStatusItem(i)) != QString::null; i++)
+		for (i = 0; (str = fSettings->GetStatusItem(i).stripWhiteSpace()) != QString::null; i++)
 		{
 			// Skip old 'testing' statuses
 			if ((str.startsWith(tr("Testing Unizone (English)")) == false) &&	// new internationalized
@@ -1757,60 +1757,56 @@ WinShareWindow::SaveSettings()
 	
 	// save server list
 	int i;
-#ifdef _DEBUG
-	WString wServer;
-#endif
+
 	for (i = 0; i < fServerList->count(); i++)
 	{
-		fSettings->AddServerItem(fServerList->text(i));
+		QString qServer = fServerList->text(i).stripWhiteSpace();
+		fSettings->AddServerItem(qServer);
 
 #ifdef _DEBUG
-		wServer = fServerList->text(i);
+		WString wServer(qServer);
 		PRINT("Saved server %S\n", wServer.getBuffer());
 #endif
 	}
 	fSettings->SetCurrentServerItem(fServerList->currentItem());
 	
 	// save user list
-#ifdef _DEBUG
-	WString wUser;
-#endif
+
 	for (i = 0; i < fUserList->count(); i++)
 	{
-		fSettings->AddUserItem(fUserList->text(i));
+		QString qUser = fUserList->text(i).stripWhiteSpace();
+		fSettings->AddUserItem(qUser);
 
 #ifdef _DEBUG
-		wUser = fUserList->text(i);
+		WString wUser(qUser);
 		PRINT("Saved user %S\n", wUser.getBuffer());
 #endif
 	}
 	fSettings->SetCurrentUserItem(fUserList->currentItem());
 	
 	// save status list
-#ifdef _DEBUG
-	WString wStatus;
-#endif
+
 	for (i = 0; i < fStatusList->count(); i++)
 	{
-		fSettings->AddStatusItem(fStatusList->text(i));
+		QString qStatus = fStatusList->text(i).stripWhiteSpace();
+		fSettings->AddStatusItem(qStatus);
 
 #ifdef _DEBUG
-		wStatus = fStatusList->text(i);
+		WString wStatus(qStatus);
 		PRINT("Saved status %S\n", wStatus.getBuffer());
 #endif
 	}
 	fSettings->SetCurrentStatusItem(fStatusList->currentItem());
 
 	// save query history
-#ifdef _DEBUG
-	WString wQuery;
-#endif
+
 	for (i = 0; i < fSearchEdit->count(); i++)
 	{
-		fSettings->AddQueryItem(fSearchEdit->text(i));
+		QString qQuery = fSearchEdit->text(i).stripWhiteSpace();
+		fSettings->AddQueryItem(qQuery);
 
 #ifdef _DEBUG
-		wQuery = fSearchEdit->text(i);
+		WString wQuery(qQuery);
 		PRINT("Saved query %S\n", wQuery.getBuffer());
 #endif
 	}
