@@ -44,6 +44,8 @@
 #define MSG_HEREMESSAGE		"Message Présent fixé à %1."
 #define MSG_UNKNOWNCMD		"Commande inconnue!"
 #define MSG_NOUSERS			"Aucun utilisateur passé."
+#define MSG_NO_INDEX		"No index specified."
+#define MSG_INVALID_INDEX	"Invalid index."
 #define MSG_USERSNOTFOUND   "Utilisateur(s) introuvable(s)!"
 #define MSG_PINGSENT		"Ping envoyé à l'utilisateur #%1 (a.k.a. <font color=\"%3\">%2</font>)."
 #define MSG_NEWVERSION		" %1 est disponible sur http://www.raasu.org/tools/windows/."
@@ -53,8 +55,13 @@
 #define MSG_USERHOST		"L'adresse IP de <font color=\"%3\">%1</font> est %2."
 #define MSG_NUM_USERS		"Nombre d'utilisateur connecté : %1\n"
 
-#define MSG_HERE		"présent"
-#define MSG_AWAY		"absent"
+#define MSG_HERE			"présent"
+#define MSG_AWAY			"absent"
+#define MSG_STATUS_IDLE		"libre"
+#define MSG_STATUS_BUSY		"busy"
+#define MSG_AT_WORK			"at work"
+#define MSG_AROUND			"around"
+
 //
 // Menus
 //
@@ -132,6 +139,8 @@
 #define MSG_CHECK_NEW		"Vérifier si nouvelle version"
 #define MSG_LOGIN_ON_START	"Se connecter au lancement"
 #define MSG_ENABLE_LOGGING	"Activer les Traces"
+#define MSG_MULTI_COLOR_LISTVIEWS "Multi-color ListViews"
+
 #define MSG_OK				"OK"
 #define MSG_CANCEL			"Annuler"
 
@@ -186,6 +195,8 @@
 // File Sharing
 
 #define MSG_FS_ENABLED		"Partage de fichier activé ?"
+#define MSG_BINKYNUKE		"Block binkies?"
+#define MSG_BLOCK_DISCONNECTED "Block disconnected users?"
 #define MSG_CFS_MAXUP		"Uploads simultanés max :"
 #define MSG_CFS_MAXDOWN		"Downloads simultanés max :"
 
@@ -194,6 +205,7 @@
 #define MSG_CCHAT			"Discussion :"
 #define MSG_TH_UPLOADS		"Uploads (par upload) :"
 #define MSG_TH_DOWNLOADS	"Downloads (par download) :"
+#define MSG_TH_BLOCKED		"Uploads (per blocked) :"
 #define MSG_UNLIMITED		"Illimité"
 #define MSG_NO_LIMIT		"Pas de Limite"
 #define MSG_BYTES			"octets"

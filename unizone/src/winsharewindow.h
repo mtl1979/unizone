@@ -309,6 +309,8 @@ public:
 	bool IsBlackListedIP(QString & ip);
 	bool IsBlackListed(QString & user);
 	
+	void TranslateStatus(QString & s);
+	
 	WSettings * fSettings;	// for use by prefs
 	WDownload * fDLWindow;
 };

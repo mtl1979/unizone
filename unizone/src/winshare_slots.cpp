@@ -134,15 +134,8 @@ WinShareWindow::UserStatusChanged(QString id, QString n, QString s)
 	{
 		QString system = WFormat::SystemText.arg(WColors::System).arg(fSettings->GetFontSize());
 
-		// <postmaster@raasu.org> 20020929
-		if (s == "here")
-		{
-			s = MSG_HERE;
-		}
-		if (s == "away")
-		{
-			s = MSG_AWAY;
-		}
+		// <postmaster@raasu.org> 20020929,20030211
+		TranslateStatus(s);
 		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
 			WFormat::UserStatusChanged.arg(id).arg(FixStringStr(n)).arg(FixStringStr(s)).arg(WColors::RemoteName) ); // <postmaster@raasu.org> 20021112
 		PrintText(system);

@@ -512,15 +512,8 @@ WinShareWindow::StatusChanged(const QString & newStatus)
 	QString pstatus = fUserStatus;
 	EscapeHTML(pstatus);
 
-	// <postmaster@raasu.org> 20020929
-	if (pstatus == "here") 
-	{
-		pstatus = MSG_HERE;
-	}
-	if (pstatus == "away") 
-	{
-		pstatus = MSG_AWAY;
-	}
+	// <postmaster@raasu.org> 20020929,20030211
+	TranslateStatus(pstatus);
 	//
 
 	PrintSystem(WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
@@ -1508,4 +1501,33 @@ void
 WinShareWindow::UpdateReceiveStats(uint64 r)
 {
 	rx += r;
+}
+
+void
+WinShareWindow::TranslateStatus(QString & s)
+{
+		if (s == "here")
+		{
+			s = MSG_HERE;
+		}
+		else if (s == "away")
+		{
+			s = MSG_AWAY;
+		}
+		else if (s == "idle")
+		{
+			s = MSG_STATUS_IDLE;
+		}
+		else if (s == "busy")
+		{
+			s = MSG_STATUS_BUSY;
+		}
+		else if (s == "at work")
+		{
+			s = MSG_AT_WORK;
+		}
+		else if (s == "around")
+		{
+			s = MSG_AROUND;
+		}
 }

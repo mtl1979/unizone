@@ -45,6 +45,8 @@
 #define MSG_HEREMESSAGE				"Here message set to %1."
 #define MSG_UNKNOWNCMD				"Unbekannter Befehl!"
 #define MSG_NOUSERS                 "Kein(e) Benutzer anwesend."
+#define MSG_NO_INDEX				"No index specified."
+#define MSG_INVALID_INDEX			"Invalid index."
 #define MSG_USERSNOTFOUND			"Benutzer nicht gefunden!"
 #define MSG_PINGSENT				"Ping gesendet an Benutzer #%1 (a.k.a. <font color=\"%3\">%2</font>)."
 #define MSG_NEWVERSION				" %1 ist erhältlich bei http://ozone-o3.net ."
@@ -56,6 +58,11 @@
 
 #define MSG_HERE                    "here"
 #define MSG_AWAY                    "away"
+#define MSG_STATUS_IDLE				"bereit"
+#define MSG_STATUS_BUSY				"busy"
+#define MSG_AT_WORK					"at work"
+#define MSG_AROUND					"around"
+
 
 #define MSG_ACCEPT_THREAD_READY		"Bereit und lausche an Port %1."
 #define MSG_ACCEPT_THREAD_FAILED	"Start der Befehlsfolge fehlgeschlagen!"
@@ -142,6 +149,8 @@
 #define MSG_CHECK_NEW           "Nach neuer Version suchen"
 #define MSG_LOGIN_ON_START      "Beim Start einloggen"
 #define MSG_ENABLE_LOGGING      "Loggen aktiviert"
+#define MSG_MULTI_COLOR_LISTVIEWS "Multi-color ListViews"
+
 #define MSG_OK                  "OK"
 #define MSG_CANCEL              "Abbruch"
 
@@ -196,6 +205,8 @@
 // File Sharing
 
 #define MSG_FS_ENABLED          "Datei- Tausch aktiviert?"
+#define MSG_BINKYNUKE			"Block binkies?"
+#define MSG_BLOCK_DISCONNECTED	"Block disconnected users?"
 #define MSG_CFS_MAXUP           "Maximal gleichzeitige Uploads:"
 #define MSG_CFS_MAXDOWN         "Maximal gleichzeitige Downloads:"
 
@@ -204,6 +215,7 @@
 #define MSG_CCHAT                       "Chat:"
 #define MSG_TH_UPLOADS                  "Uploads (pro upload):"
 #define MSG_TH_DOWNLOADS                "Downloads (pro download):"
+#define MSG_TH_BLOCKED					"Uploads (per blocked):"
 #define MSG_UNLIMITED                   "Unbegrenzt"
 #define MSG_NO_LIMIT                    "Kein Limit"
 #define MSG_BYTES                       "bytes"

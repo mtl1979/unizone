@@ -1,3 +1,6 @@
+// Universal List View class (C) 2002 FieldNet Association / Team UniShare
+// Released under Lesser GPL as in LGPL.TXT in source root folder
+
 #ifndef BOTITEM_H
 #define BOTITEM_H
 

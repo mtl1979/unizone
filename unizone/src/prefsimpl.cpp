@@ -466,6 +466,7 @@ WPrefs::InitLanguage()
 	fNewVersions->setProperty("text", MSG_CHECK_NEW);
 	fLoginStartup->setProperty("text", MSG_LOGIN_ON_START);
 	fLogging->setProperty("text", MSG_ENABLE_LOGGING);
+	fMultiColor->setProperty("text", MSG_MULTI_COLOR_LISTVIEWS);
 
 	// Connection
 	TextLabel2->setText(MSG_CUPLOAD_BAND);
@@ -506,6 +507,8 @@ WPrefs::InitLanguage()
 
 	// File sharing
 	fFileSharingEnabled->setProperty("text", MSG_FS_ENABLED);
+	fBinkyNuke->setProperty("text", MSG_BINKYNUKE);
+	fBlockDisconnected->setProperty("text", MSG_BLOCK_DISCONNECTED);
 	TextLabel1_2_3->setProperty("text", MSG_CFS_MAXUP);
 	TextLabel1_2_3_3->setProperty("text", MSG_CFS_MAXDOWN);
 	fMaxUL->removeItem(9);	// remove "Unlimited"
@@ -522,6 +525,7 @@ WPrefs::InitLanguage()
 	TextLabel1_2_4->setProperty("text", MSG_CCHAT);
 	TextLabel1_2_4_2->setProperty("text", MSG_TH_UPLOADS);
 	TextLabel1_2_4_3->setProperty("text", MSG_TH_DOWNLOADS);
+	TextLabel1_2_4_4->setProperty("text", MSG_TH_BLOCKED);
 	fChatLimit->removeItem(0);
 	fChatLimit->insertItem(MSG_NO_LIMIT, 0);
 	fULLimit->removeItem(0);

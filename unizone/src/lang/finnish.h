@@ -48,6 +48,8 @@
 #define MSG_HEREMESSAGE		"Paikalla-viestisi on nyt %1."
 #define MSG_UNKNOWNCMD		"Tuntematon komento!"
 #define MSG_NOUSERS			"Et antanut k‰ytt‰ji‰."
+#define MSG_NO_INDEX		"Et antanut indeksi‰."
+#define MSG_INVALID_INDEX	"Ep‰kelpo indeksi."
 #define MSG_USERSNOTFOUND   "K‰ytt‰j‰‰(-ji‰) ei lˆytynyt!"
 #define MSG_PINGSENT		"Ping l‰hetetty k‰ytt‰j‰lle #%1, eli <font color=\"%3\">%2</font>."
 #define MSG_NEWVERSION		" %1 on ilmestynyt osoitteessa http://www.raasu.org/tools/windows/."
@@ -59,6 +61,11 @@
 
 #define MSG_HERE			"t‰‰ll‰"
 #define MSG_AWAY			"poissa"
+#define MSG_STATUS_IDLE		"laiskottelemassa"
+#define MSG_STATUS_BUSY		"kiireinen"
+#define MSG_AT_WORK			"tˆiss‰"
+#define MSG_AROUND			"ymp‰rill‰"
+
 //
 // Menus
 //
@@ -137,6 +144,7 @@
 #define MSG_CHECK_NEW		"Tarkista uusi versio"
 #define MSG_LOGIN_ON_START	"Kirjaudu alussa"
 #define MSG_ENABLE_LOGGING	"Loki p‰‰ll‰"
+#define MSG_MULTI_COLOR_LISTVIEWS "Moniv‰riset listat"
 
 #define MSG_OK				"OK"
 #define MSG_CANCEL			"Peruuta"
@@ -190,6 +198,8 @@
 // File Sharing
 
 #define MSG_FS_ENABLED		"Tiedostojen jako p‰‰ll‰?"
+#define MSG_BINKYNUKE		"Est‰ binkyjen imuroinnit?"
+#define MSG_BLOCK_DISCONNECTED "Est‰ poistuneiden imuroinnit?"
 #define MSG_CFS_MAXUP		"Samanaikaisia l‰hetyksi‰ enint‰‰n:"
 #define MSG_CFS_MAXDOWN		"Samanaikaisia vastaanottoja enint‰‰n:"
 
@@ -198,6 +208,7 @@
 #define MSG_CCHAT			"Keskustelu:"
 #define MSG_TH_UPLOADS		"Per l‰hetys:"
 #define MSG_TH_DOWNLOADS	"Per vastaanotto:"
+#define MSG_TH_BLOCKED		"Per estetty:"
 #define MSG_UNLIMITED		"Rajaton"
 #define MSG_NO_LIMIT		"Ei rajaa"
 #define MSG_BYTES			"tavua"

@@ -549,7 +549,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (ok && (u < fUserList->count()))
 					PrintSystem( tr("User %1: %2").arg(u).arg(fUserList->text(u)) );
 				else if (fSettings->GetError())
-					PrintError("Invalid index");
+					PrintError(MSG_INVALID_INDEX);
 			}
 			else if (fSettings->GetError())
 				PrintError(MSG_NOUSERS);
@@ -568,7 +568,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					fUserList->removeItem(u);
 				}
 				else if (fSettings->GetError())
-					PrintError("Invalid index");
+					PrintError(MSG_INVALID_INDEX);
 			}
 			else if (fSettings->GetError())
 				PrintError(MSG_NOUSERS);
@@ -584,10 +584,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (ok && (u < fStatusList->count()))
 					PrintSystem( tr("Status %1: %2").arg(u).arg(fStatusList->text(u)) );
 				else if (fSettings->GetError())
-					PrintError("Invalid index");
+					PrintError(MSG_INVALID_INDEX);
 			}
 			else if (fSettings->GetError())
-				PrintError("No index specified");
+				PrintError(MSG_NO_INDEX);
 		}
 		else if (CompareCommand(sendText, "/remstatus"))
 		{
@@ -603,7 +603,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					fStatusList->removeItem(u);
 				}
 				else if (fSettings->GetError())
-					PrintError("Invalid index");
+					PrintError(MSG_INVALID_INDEX);
 			}
 			else if (fSettings->GetError())
 				PrintError(MSG_NOUSERS);
@@ -619,10 +619,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (ok && (u < fServerList->count()))
 					PrintSystem( tr("Server %1: %2").arg(u).arg(fServerList->text(u)) );
 				else if (fSettings->GetError())
-					PrintError("Invalid index");
+					PrintError(MSG_INVALID_INDEX);
 			}
 			else if (fSettings->GetError())
-				PrintError("No index specified");
+				PrintError(MSG_NO_INDEX);
 		}
 		else if (CompareCommand(sendText, "/remserver"))
 		{
@@ -638,10 +638,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					fServerList->removeItem(u);
 				}
 				else if (fSettings->GetError())
-					PrintError("Invalid index");
+					PrintError(MSG_INVALID_INDEX);
 			}
 			else if (fSettings->GetError())
-				PrintError("No index specified");
+				PrintError(MSG_NO_INDEX);
 		}
 		else if (CompareCommand(sendText, "/save"))
 		{
@@ -1695,7 +1695,7 @@ WinShareWindow::BlackList(QString & user)
 	if (IsBlackListed(user))
 		return false;
 
-	// Append to ignore list
+	// Append to blacklist
 	//
 	if (fBlackList == "")
 		fBlackList = user;
@@ -1705,6 +1705,7 @@ WinShareWindow::BlackList(QString & user)
 }
 
 // Remove from blacklist
+//
 
 bool
 WinShareWindow::UnBlackList(QString & user)

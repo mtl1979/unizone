@@ -46,6 +46,8 @@
 #define MSG_HEREMESSAGE		"Mensagem de presena configurada para %1."
 #define MSG_UNKNOWNCMD		"Comando desconhecido!"
 #define MSG_NOUSERS			"Não foi informado um usuário."
+#define MSG_NO_INDEX		"No index specified."
+#define MSG_INVALID_INDEX	"Invalid index."
 #define MSG_USERSNOTFOUND   "Usurio(s) não encontrado(s)!"
 #define MSG_PINGSENT		"Ping enviado ao usuário #%1 (também conhecido por <font color=\"%3\">%2</font>)."
 #define MSG_NEWVERSION		" %1 est disponvel em http://www.raasu.org/tools/windows/."
@@ -57,6 +59,11 @@
 
 #define MSG_HERE			"aqui"
 #define MSG_AWAY			"fora"
+#define MSG_STATUS_IDLE		"ocioso"
+#define MSG_STATUS_BUSY		"busy"
+#define MSG_AT_WORK			"at work"
+#define MSG_AROUND			"around"
+
 
 //
 // Menus
@@ -135,6 +142,8 @@
 #define MSG_CHECK_NEW		"Checar Novas Verses"
 #define MSG_LOGIN_ON_START	"Conectar ao Iniciar"
 #define MSG_ENABLE_LOGGING	"Log ativado"
+#define MSG_MULTI_COLOR_LISTVIEWS "Multi-color ListViews"
+
 #define MSG_OK				"OK"
 #define MSG_CANCEL			"Cancelar"
 
@@ -189,6 +198,8 @@
 // File Sharing
 
 #define MSG_FS_ENABLED		"Compartilhamento de Arquivos Habilitado?"
+#define MSG_BINKYNUKE		"Block binkies?"
+#define MSG_BLOCK_DISCONNECTED "Block disconnected users?"
 #define MSG_CFS_MAXUP		"Máximo de Uploads Simultâneos:"
 #define MSG_CFS_MAXDOWN		"Máximo de Downloads Simultâneos:"
 
@@ -197,6 +208,7 @@
 #define MSG_CCHAT				"Conversaço:"
 #define MSG_TH_UPLOADS			"Uploads (por upload)"
 #define MSG_TH_DOWNLOADS		"Downloads (por download)"
+#define MSG_TH_BLOCKED			"Uploads (per blocked)"
 #define MSG_UNLIMITED			"Ilimitado"
 #define MSG_NO_LIMIT			"Sem Limite"
 #define MSG_BYTES				"bytes"
