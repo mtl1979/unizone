@@ -255,21 +255,30 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				{
 					fStatusBar->setText(tr( "Current compression: %1" ).arg(_en), 1);
 
-					_en += MUSCLE_MESSAGE_ENCODING_DEFAULT;
-					if (_en >= MUSCLE_MESSAGE_ENCODING_END_MARKER)
+					int _en2 = _en + MUSCLE_MESSAGE_ENCODING_DEFAULT;
+					if (_en2 >= MUSCLE_MESSAGE_ENCODING_END_MARKER)
 					{
 						if (fSettings->GetError())
 							PrintError(tr("Invalid compression!"));
 					}
 					else
 					{
-						fSettings->SetEncoding(GetServerName(fServer), GetServerPort(fServer), _en);
+						fSettings->SetEncoding(GetServerName(fServer), GetServerPort(fServer), _en2);
 						if (fNetClient->IsConnected())
 						{
-							fNetClient->SetOutgoingMessageEncoding(_en);
+							fNetClient->SetOutgoingMessageEncoding(_en2);
 						}
 						if (fSettings->GetInfo())
-							PrintSystem( tr("Compression level for server %1 at port %2 set to %3.").arg(GetServerName(fServer)).arg(GetServerPort(fServer)).arg(_en - MUSCLE_MESSAGE_ENCODING_DEFAULT) );
+						{
+							// Make the hyperlink contain port number too ;)
+							QString uri = "server://"; 
+							uri += fServer;
+							uri += " [";
+							uri += GetServerName(fServer);
+							uri += "]";
+							//
+							PrintSystem( tr("Compression level for server %1 at port %2 set to %3.").arg(uri).arg(GetServerPort(fServer)).arg(_en) );
+						}
 					}
 				}
 				else
