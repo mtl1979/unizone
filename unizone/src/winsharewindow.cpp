@@ -1383,7 +1383,7 @@ WinShareWindow::CheckScrollState()
 }
 
 bool
-WinShareWindow::ParseUserTargets(QString text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net)
+WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net)
 {
 	StringTokenizer wholeStringTok((const char *) text.utf8(), " ");
 	String restOfString2(wholeStringTok.GetRemainderOfString());
@@ -2037,7 +2037,7 @@ WinShareWindow::WaitOnFileThread()
 }
 
 void
-WinShareWindow::LaunchSearch(QString & pattern)
+WinShareWindow::LaunchSearch(const QString & pattern)
 {
 	// (be)share://server/pattern
 	if (pattern.find("//") == 0)	
@@ -2053,8 +2053,8 @@ WinShareWindow::LaunchSearch(QString & pattern)
 			gWin->Connect(qServer);
 			return;
 		}
-		// fall through
-		pattern = pattern.mid(2);
+		gWin->SetSearch(pattern.mid(2));
+		return;
 	}
 	// (be)share:pattern
 	gWin->SetSearch(pattern);
@@ -2388,7 +2388,7 @@ WinShareWindow::OpenDownloads()
 }
 
 void
-WinShareWindow::SetDelayedSearchPattern(QString pattern)
+WinShareWindow::SetDelayedSearchPattern(const QString & pattern)
 {
 	if ((fOnConnect != QString::null) && (fOnConnect.length() > 2))
 	{
@@ -2452,7 +2452,7 @@ WinShareWindow::ScanShares(bool rescan)
 }
 
 int64
-WinShareWindow::GetRegisterTime(QString nick)
+WinShareWindow::GetRegisterTime(const QString & nick) const
 { 
 	return fSettings->GetRegisterTime(nick); 
 }

@@ -1,6 +1,6 @@
 #include "textevent.h"
 
-WTextEvent::WTextEvent(QString text, int type)
+WTextEvent::WTextEvent(const QString & text, int type)
 : QCustomEvent(type), fValid(false)
 {
 	fText = text.stripWhiteSpace();

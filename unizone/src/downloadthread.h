@@ -66,27 +66,27 @@ public:
 	QString GetETA(uint64 cur, uint64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
 	uint64	GetStartTime() { return fStartTime; }
 
-	void SetFile(QString * files, QString * lfiles, int32 numFiles, QString fromIP, QString fromSession,
-					QString localSession, uint32 remotePort, bool firewalled, bool partial);
+	void SetFile(QString * files, QString * lfiles, int32 numFiles, const QString & fromIP, const QString & fromSession,
+					const QString & localSession, uint32 remotePort, bool firewalled, bool partial);
 	void NextFile();
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
 
 	QFile * GetFile() const { return fFile; }
-	QString GetCurrentFile();
-	QString GetCurrentLocalFile();
-	QString GetFileName(int i);
-	QString GetLocalFileName(int i);
+	QString GetCurrentFile() const;
+	QString GetCurrentLocalFile() const;
+	QString GetFileName(int i) const;
+	QString GetLocalFileName(int i) const;
 	bool IsLastFile(); 
 
 	static QString FixFileName(const QString & fixMe);
 
-	QString GetRemoteID() { return fFromSession; }
-	QString GetRemoteUser() { return fFromUser; }
-	QString GetRemoteIP() { return fIP; }
-	uint32 GetRemotePort() { return fPort; }
+	QString GetRemoteID() const { return fFromSession; }
+	QString GetRemoteUser() const { return fFromUser; }
+	QString GetRemoteIP() const { return fIP; }
+	uint32 GetRemotePort() const{ return fPort; }
 
-	int GetRate() { return fTXRate; }
+	int GetRate() const { return fTXRate; }
 	void SetRate(int rate, AbstractReflectSessionRef & ref);
 	void SetRate(int rate);
 	void ResetRate() { SetRate(fTXRate); }
@@ -158,7 +158,7 @@ protected:
 	void SetMostRecentETA(uint32 eta);
 	uint32 ComputeETA() const;
 
-	QString GetUserName(QString sid);
+	QString GetUserName(const QString & sid) const;
 
 	int fTXRate; // Current transfer throttling rate
 
@@ -166,7 +166,7 @@ protected:
 	QTimer * fBlockTimer;				// Blocked timer
 
 private:
-	QString UniqueName(QString file, int index); // build up unique name using 'file' and 'index'
+	QString UniqueName(const QString & file, int index); // build up unique name using 'file' and 'index'
 	String _sessionID;
 
 	int timerID;

@@ -28,40 +28,40 @@ public:
 
 	~ChannelInfo();
 
-	bool SetAdmins(QString);
+	bool SetAdmins(const QString &);
 	int NumAdmins() 
 	{ 
 		return fAdmins.GetNumItems(); 
 	}
 
-	void AddAdmin(QString);
-	void RemoveAdmin(QString);
-	QString GetAdmins();
-	bool IsAdmin(QString);
+	void AddAdmin(const QString &);
+	void RemoveAdmin(const QString &);
+	QString GetAdmins() const ;
+	bool IsAdmin(const QString &) const;
 
-	void AddUser(QString);
-	void RemoveUser(QString);
-	QString GetUsers();
-	int NumUsers(); 
+	void AddUser(const QString &);
+	void RemoveUser(const QString &);
+	QString GetUsers() const;
+	int NumUsers() const; 
 
-	void SetTopic(QString t); 
-	QString GetTopic(); 
+	void SetTopic(const QString & t); 
+	QString GetTopic() const; 
 	
 	void SetPublic(bool p); 
-	bool GetPublic(); 
+	bool GetPublic() const; 
 	
 	void SetItem(QListViewItem * item); 
-	QListViewItem * GetItem(); 
+	QListViewItem * GetItem() const; 
 	
 	void SetWindow(Channel * win); 
-	Channel * GetWindow(); 
+	Channel * GetWindow() const; 
 
 	void SetCreated(int64 i);
-	int64 GetCreated();
+	int64 GetCreated() const;
 
-	void SetOwner(QString owner);
-	QString GetOwner();
-	bool IsOwner(QString);
+	void SetOwner(const QString & owner);
+	QString GetOwner() const;
+	bool IsOwner(const QString &) const;
 
 private:
 	WAdminList fAdmins;

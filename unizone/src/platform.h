@@ -43,13 +43,13 @@ void WFlashWindow(HWND fWinHandle);
 //
 
 // Get parameters after command, f.ex. '/nick Unizone Binky' returns 'Unizone Binky' 
-QString GetParameterString(QString qCommand);
+QString GetParameterString(const QString & qCommand);
 
 // Get command from full string, converts to lower case for using with CompareCommand()
-QString GetCommandString(QString qCommand);
+QString GetCommandString(const QString & qCommand);
 
 // Compare command strings, uses GetCommandString to split parts
-bool CompareCommand(QString qCommand, const char * cCommand);
+bool CompareCommand(const QString & qCommand, const char * cCommand);
 
 // Strip urls from string
 String StripURL(const String &);
@@ -68,22 +68,22 @@ QString MakeSizeString(uint64 s);
 // String Trim(String orig);
 
 // Convert 'Connection string' to 'bytes per second'
-uint32 BandwidthToBytes(QString connection);
+uint32 BandwidthToBytes(const QString & connection);
 
 // Convert 'bytes per second' to 'Connection string'
 QString BandwidthToString(uint32 bps);
 
 // Get server name from full server URL
-QString GetServerName(QString server);
+QString GetServerName(const QString & server);
 
 // Get server port from full server URL
-uint16 GetServerPort(QString server);
+uint16 GetServerPort(const QString & server);
 
 // Convert simple wildcard pattern to regex
 void ConvertToRegex(String & s);
 
 // Localize Month Names
-QString TranslateMonth(QString m);
+QString TranslateMonth(const QString & m);
 
 // Get nice time stamp ;)
 QString GetTimeStamp();

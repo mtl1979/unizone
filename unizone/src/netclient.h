@@ -20,8 +20,8 @@ public:
 	virtual ~NetClient();
 	
 	// <postmaster@raasu.org> -- Add support for port numbers
-	status_t Connect(QString server, uint16 port);
-	status_t Connect(QString server);
+	status_t Connect(const QString &server, uint16 port);
+	status_t Connect(const QString &server);
 	void Disconnect();
 	QString GetServer() { return fServer; } // Get current server hostname or ip address if hostname isn't available
 	QString GetServerIP();					// Get current server IP address
@@ -29,15 +29,15 @@ public:
 	
 	bool IsConnected() const;
 	
-	void AddSubscription(QString str, bool q = false);	// if "q" is true, u won't get an initial response
-	void RemoveSubscription(QString str);
+	void AddSubscription(const QString & str, bool q = false);	// if "q" is true, u won't get an initial response
+	void RemoveSubscription(const QString & str);
 	
-	void SendChatText(QString target, QString text);
-	void SendPing(QString target);
+	void SendChatText(const QString &target, const QString &text);
+	void SendPing(const QString &target);
 	
-	void SetUserName(QString user); 	// <postmaster@raasu.org> 20021001
-	void SetUserStatus(QString status); //
-	void SetConnection(QString connection);
+	void SetUserName(const QString &user); 	// <postmaster@raasu.org> 20021001
+	void SetUserStatus(const QString &status);		//
+	void SetConnection(const QString &connection);
 	void SetPort(uint32 port) { fPort = port; }
 	void SetFileCount(int32 count);
 	void SetLoad(int32 num, int32 max);
@@ -48,8 +48,8 @@ public:
 	QString * GetChannelList();
 	int GetChannelCount();
 	
-	QString * GetChannelUsers(QString channel);
-	int GetUserCount(QString channel);
+	QString * GetChannelUsers(const QString &channel);
+	int GetUserCount(const QString &channel);
 	
 	// events
 	enum
@@ -117,18 +117,18 @@ public:
 	void HandleParameters(MessageRef & next);
 	void HandleResultMessage(MessageRef & ref);
 	
-	bool ExistUser(QString sid);
+	bool ExistUser(const QString &sid);
 	// this is idential to ExistUser() in that it will return
 	// NULL (ExistUser() returns false) if the user is not found, but unlike
 	// ExistUser(), it will return a pointer to the found user.
-	WUserRef FindUser(QString sid);
+	WUserRef FindUser(const QString &sid);
 	// Find users by IP address
-	void FindUsersByIP(WUserMap & umap, QString ip);
-	WUserRef FindUserByIPandPort(QString ip, uint32 port);
+	void FindUsersByIP(WUserMap & umap, const QString &ip);
+	WUserRef FindUserByIPandPort(const QString &ip, uint32 port);
 	// create a new user
-	WUserRef CreateUser(QString sessionID);
+	WUserRef CreateUser(const QString &sessionID);
 	// deletes a user, including removing from the list view
-	void RemoveUser(QString sessionID);
+	void RemoveUser(const QString &sessionID);
 	
 	WUserMap & Users() { return fUsers; }
 	
@@ -165,14 +165,14 @@ private:
 	WUserMap fUsers;		// a list of users
 	MessageRef fChannels;	// channel database
 	
-	void HandleBeRemoveMessage(String nodePath);
-	void HandleBeAddMessage(String nodePath, MessageRef ref);
+	void HandleBeRemoveMessage(const String &nodePath);
+	void HandleBeAddMessage(const String &nodePath, MessageRef ref);
 	
-	void HandleUniRemoveMessage(String nodePath);
-	void HandleUniAddMessage(String nodePath, MessageRef ref);
+	void HandleUniRemoveMessage(const String &nodePath);
+	void HandleUniAddMessage(const String &nodePath, MessageRef ref);
 	
-	void AddChannel(QString sid, QString channel);
-	void RemoveChannel(QString sid, QString channel);
+	void AddChannel(const QString &sid, const QString &channel);
+	void RemoveChannel(const QString &sid, const QString &channel);
 
 	void SendSignal(int signal);
 	

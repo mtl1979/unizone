@@ -249,10 +249,10 @@ WPrivateWindow::PrintSystem(const QString & msg)
 }
 
 void
-WPrivateWindow::PutChatText(QString fromsid, QString msg)
+WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 {
 	WUserIter it = fUsers.find(fromsid);
-	FixString(msg);
+	QString msg = FixStringStr(message);
 
 	if (it != fUsers.end())
 	{

@@ -18,14 +18,14 @@
 #include "wstring.h"
 #include "debugimpl.h"
 
-UFileInfo::UFileInfo(QFileInfo info)
+UFileInfo::UFileInfo(const QFileInfo & info)
 {
 	fFileInfo = new QFileInfo(info);
 	fModificationTime = time(NULL);
 	fSize = 0;
 }
 
-UFileInfo::UFileInfo(QString file)
+UFileInfo::UFileInfo(const QString & file)
 {
 	fFileInfo = new QFileInfo(file);
 	fModificationTime = time(NULL);

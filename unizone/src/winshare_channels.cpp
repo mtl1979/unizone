@@ -24,7 +24,7 @@ WinShareWindow::ChannelAdmins(const QString &channel, const QString &sid, const 
 }
 
 bool
-WinShareWindow::IsAdmin(QString channel, QString user)
+WinShareWindow::IsAdmin(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -35,7 +35,7 @@ WinShareWindow::IsAdmin(QString channel, QString user)
 }
 
 bool
-WinShareWindow::IsOwner(QString channel, QString user)
+WinShareWindow::IsOwner(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -46,7 +46,7 @@ WinShareWindow::IsOwner(QString channel, QString user)
 }
 
 bool
-WinShareWindow::IsPublic(QString channel)
+WinShareWindow::IsPublic(const QString & channel)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -200,7 +200,7 @@ WinShareWindow::JoinChannel()
 }
 
 void
-WinShareWindow::JoinChannel(QString channel)
+WinShareWindow::JoinChannel(const QString & channel)
 {
 	WChannelIter it = fChannels.find(channel);
 	Channel * win;
@@ -261,7 +261,7 @@ WinShareWindow::JoinChannel(QString channel)
 }
 
 void
-WinShareWindow::ChannelCreated(const QString channel, const QString owner, int64 timecreated)
+WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, int64 timecreated)
 {
 	WChannelIter it = fChannels.find(channel);
 	if (it == fChannels.end())
@@ -305,7 +305,7 @@ WinShareWindow::ChannelCreated(const QString channel, const QString owner, int64
 }
 
 void
-WinShareWindow::ChannelJoin(const QString channel, const QString user)
+WinShareWindow::ChannelJoin(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -316,7 +316,7 @@ WinShareWindow::ChannelJoin(const QString channel, const QString user)
 }
 
 void
-WinShareWindow::ChannelPart(const QString channel, const QString user)
+WinShareWindow::ChannelPart(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -327,11 +327,10 @@ WinShareWindow::ChannelPart(const QString channel, const QString user)
 }
 
 void
-WinShareWindow::PartChannel(QString channel, QString user)
+WinShareWindow::PartChannel(const QString & channel, const QString & user)
 {
-	if (user == QString::null)
+	if (user == fNetClient->LocalSessionID())
 	{
-		user = fNetClient->LocalSessionID();
 		MessageRef cc = GetMessageFromPool(NetClient::ChannelPart);
 		if (cc())
 		{
@@ -363,7 +362,7 @@ WinShareWindow::PartChannel(QString channel, QString user)
 }
 
 void
-WinShareWindow::AddAdmin(QString channel, QString user)
+WinShareWindow::AddAdmin(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -378,7 +377,7 @@ WinShareWindow::AddAdmin(QString channel, QString user)
 }
 
 void
-WinShareWindow::RemoveAdmin(QString channel, QString user)
+WinShareWindow::RemoveAdmin(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -393,7 +392,7 @@ WinShareWindow::RemoveAdmin(QString channel, QString user)
 }
 
 QString
-WinShareWindow::GetAdmins(QString channel)
+WinShareWindow::GetAdmins(const QString & channel)
 {
 	QString adm = QString::null;
 	WChannelIter iter = fChannels.find(channel);
@@ -405,7 +404,7 @@ WinShareWindow::GetAdmins(QString channel)
 }
 
 void
-WinShareWindow::SetTopic(QString channel, QString topic)
+WinShareWindow::SetTopic(const QString & channel, const QString & topic)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -416,7 +415,7 @@ WinShareWindow::SetTopic(QString channel, QString topic)
 }
 
 void
-WinShareWindow::SetPublic(QString channel, bool pub)
+WinShareWindow::SetPublic(const QString & channel, bool pub)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -427,7 +426,7 @@ WinShareWindow::SetPublic(QString channel, bool pub)
 }
 
 void
-WinShareWindow::ChannelInvite(const QString channel, const QString user, const QString who)
+WinShareWindow::ChannelInvite(const QString & channel, const QString & user, const QString & who)
 {
 	WChannelIter iter = fChannels.find(channel);
 	// We need to have existing channel to be able to check for admin status
@@ -477,7 +476,7 @@ WinShareWindow::ChannelInvite(const QString channel, const QString user, const Q
 }
 
 void
-WinShareWindow::ChannelKick(const QString channel, const QString user, const QString who)
+WinShareWindow::ChannelKick(const QString &channel, const QString &user, const QString &who)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (IsAdmin(channel, user))

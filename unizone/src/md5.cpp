@@ -200,7 +200,7 @@ MD5Transform(UWORD32 buf[4], UWORD32 const in[16])
 
 
 status_t 
-HashFileMD5(QString entry, uint64 & len, uint64 offset, uint64 & retBytesHashed,
+HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retBytesHashed,
 			uint8 * returnDigest, volatile bool * optShutdownFlag)
 {
 	QFile file(entry); // UNICODE !!!

@@ -16,7 +16,7 @@
 #include <qapplication.h>
 
 int
-WinShareWindow::MatchUserName(QString un, QString & result, const char * filter)
+WinShareWindow::MatchUserName(const QString & un, QString & result, const char * filter)
 {
 	int matchCount = 0;
 	WUserIter iter = fNetClient->Users().begin();
@@ -115,7 +115,7 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 }
 
 bool
-WinShareWindow::DoTabCompletion(QString origText, QString & result, const char * filter)
+WinShareWindow::DoTabCompletion(const QString & origText, QString & result, const char * filter)
 {
 	// Do it all in lower case, for case insensitivity
 	String text((const char *) origText.lower().utf8());
@@ -313,13 +313,14 @@ WinShareWindow::NameSaid2(const String &sname, QString & msg, unsigned long inde
 }
 
 void
-WinShareWindow::GotUpdateCmd(const char * key, QString value)
+WinShareWindow::GotUpdateCmd(const char * key, const char * value)
 {
-	if (value.length()>0)
+	if (strlen(value) > 0)
 	{
-		QString server = value.lower();
+		QString server = value;
+		server = server.lower().stripWhiteSpace();
 		// you can also compare against "version", but that is beshare specific
-		if (!strcmp(key, "addserver"))
+		if (strcmp(key, "addserver") == 0)
 		{
 			bool exists = false;
 			// see if the server exists yet...
@@ -333,9 +334,9 @@ WinShareWindow::GotUpdateCmd(const char * key, QString value)
 				}
 			}
 			if (!exists)
-				fServerList->insertItem(value);
+				fServerList->insertItem(server);
 		}
-		else if (!strcmp(key, "removeserver"))
+		else if (strcmp(key, "removeserver") == 0)
 		{
 			// try to find the server
 			for (int i = 0; i < fServerList->count(); i++)
@@ -382,7 +383,7 @@ WinShareWindow::ServerParametersReceived(const MessageRef msg)
 }
 
 void
-WinShareWindow::SetWatchPattern(QString pattern)
+WinShareWindow::SetWatchPattern(const QString &pattern)
 {
 	fWatch = pattern;
 	if (fSettings->GetInfo())
@@ -395,7 +396,7 @@ WinShareWindow::SetWatchPattern(QString pattern)
 }
 
 bool
-WinShareWindow::MatchFilter(const QString user, const char * filter)
+WinShareWindow::MatchFilter(const QString & user, const char * filter)
 {
 	if (user == NULL) 
 		return false;

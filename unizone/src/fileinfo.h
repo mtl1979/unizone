@@ -13,8 +13,8 @@
 class UFileInfo
 {
 public:
-	UFileInfo(QFileInfo info);
-	UFileInfo(QString file);
+	UFileInfo(const QFileInfo & info);
+	UFileInfo(const QString & file);
 	virtual ~UFileInfo();
 	
 	uint32 getModificationTime();

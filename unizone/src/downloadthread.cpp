@@ -100,8 +100,8 @@ WDownloadThread::~WDownloadThread()
 }
 
 void 
-WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, QString fromIP, QString fromSession,
-						 QString localSession, uint32 remotePort, bool firewalled, bool partial)
+WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, const QString & fromIP, const QString & fromSession,
+						 const QString & localSession, uint32 remotePort, bool firewalled, bool partial)
 {
 	fFileDl = files;
 	if (lfiles)
@@ -840,7 +840,7 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 }
 
 QString
-WDownloadThread::UniqueName(QString file, int index)
+WDownloadThread::UniqueName(const QString & file, int index)
 {
 	QString tmp, base, ext;
 	int sp = file.findRev("/", -1); // Find last /
@@ -917,7 +917,7 @@ WDownloadThread::SetBlocked(bool b, int64 timeLeft)
 }
 
 QString
-WDownloadThread::GetCurrentFile()
+WDownloadThread::GetCurrentFile() const
 {
 	if (fCurFile > -1 && fCurFile < fNumFiles)
 		return fFileDl[fCurFile];
@@ -926,7 +926,7 @@ WDownloadThread::GetCurrentFile()
 }
 
 QString
-WDownloadThread::GetCurrentLocalFile()
+WDownloadThread::GetCurrentLocalFile() const
 { 
 	if (fCurFile > -1 && fCurFile < fNumFiles)
 		return fLocalFileDl[fCurFile]; 
@@ -935,7 +935,7 @@ WDownloadThread::GetCurrentLocalFile()
 }
 
 QString
-WDownloadThread::GetFileName(int i)
+WDownloadThread::GetFileName(int i) const
  { 
 	if (i > -1 && i < fNumFiles)
 		return fFileDl[i]; 
@@ -944,7 +944,7 @@ WDownloadThread::GetFileName(int i)
 }
 
 QString
-WDownloadThread::GetLocalFileName(int i)
+WDownloadThread::GetLocalFileName(int i) const
  {
 	if (i > -1 && i < fNumFiles)
 		return fLocalFileDl[i]; 
@@ -1150,7 +1150,7 @@ WDownloadThread::IsBlocked() const
 }
 
 QString
-WDownloadThread::GetUserName(QString sid)
+WDownloadThread::GetUserName(const QString & sid) const
 {
 	WUserRef uref = gWin->FindUser(sid);
 	QString ret = sid;

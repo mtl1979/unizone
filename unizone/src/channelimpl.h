@@ -26,14 +26,14 @@ class Channel : public ChannelBase
 public:
     Channel( QWidget* parent = 0, NetClient * net = 0, QString cname = QString::null, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
     ~Channel();
-	void SetOwner(QString);
-	void SetTopic(QString);
+	void SetOwner(const QString &);
+	void SetTopic(const QString &);
 	void SetActive(bool);
 	void SetPublic(bool);
-	void AddUser(QString user);
-	bool RemUser(QString user);
-	void Invite(QString user);
-	void Kick(QString user);
+	void AddUser(const QString & user);
+	bool RemUser(const QString & user);
+	void Invite(const QString & user);
+	void Kick(const QString & user);
 protected:
 	virtual void customEvent(QCustomEvent *);
 	virtual void resizeEvent(QResizeEvent * e);
@@ -60,14 +60,14 @@ private:
 	void PrintText(const QString & str);
 	void PrintSystem(const QString & str);
 	void PrintError(const QString & str);
-	void SendChannelText(QString message);
+	void SendChannelText(const QString & message);
 	void CheckScrollState();
 	void UpdateView();
 	void Action(const QString & name, const QString & msg, bool batch = false);
 
 	void UpdateNode();
 
-	WUserRef FindUser(QString user);
+	WUserRef FindUser(const QString & user);
 
 
 

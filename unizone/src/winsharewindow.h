@@ -89,7 +89,7 @@ typedef WChannelMap::iterator WChannelIter;
 
 inline 
 WResumePair
-MakePair(QString f, WResumeInfo u)
+MakePair(const QString & f, WResumeInfo u)
 {
 	WResumePair p;
 	p.first = f;
@@ -100,7 +100,7 @@ MakePair(QString f, WResumeInfo u)
 // quick inline method to generate a pair
 inline
 WFIPair 
-MakePair(const QString s, WFileInfo * fi)
+MakePair(const QString & s, WFileInfo * fi)
 {
 	WFIPair p;
 	p.first = s;
@@ -155,44 +155,47 @@ public:
 	void BeginMessageBatch();
 	void EndMessageBatch();
 
-	void SendChatText(QString sid, QString txt, WUserRef priv = WUserRef(NULL, NULL), bool * reply = NULL);
+	void SendChatText(const QString & sid, const QString & txt, WUserRef priv = WUserRef(NULL, NULL), bool * reply = NULL);
 
 	static QString GetRemoteVersionString(const MessageRef);
-	static void LaunchSearch(QString & pattern);		// launches a search
-	void LaunchPrivate(const QString & pattern);		// launches a private window with multiple users in it
-	static void QueueFile(const QString & ref);			// Queue TTP transfer
+	// launches a search
+	static void LaunchSearch(const QString & pattern);	
+	// launches a private window with multiple users in it
+	void LaunchPrivate(const QString & pattern);		
+	// Queue TTP transfer
+	static void QueueFile(const QString & ref);			
 	void QueueFileAux(const QString & ref);
 	void StartQueue(const QString & session);
 	void UpdateTransmitStats(uint64 t);
 	void UpdateReceiveStats(uint64 r);
 
-	bool IsIgnored(QString & user, bool bTransfer = false);
-	bool IsIgnored(QString & user, bool bTransfer, bool bDisconnected);
-	bool IsIgnoredIP(QString ip);
-	bool AddIPIgnore(QString ip);
-	bool RemoveIPIgnore(QString ip);
+	bool IsIgnored(const QString & user, bool bTransfer = false);
+	bool IsIgnored(const QString & user, bool bTransfer, bool bDisconnected);
+	bool IsIgnoredIP(const QString & ip);
+	bool AddIPIgnore(const QString & ip);
+	bool RemoveIPIgnore(const QString & ip);
 
-	bool IsBlackListedIP(QString & ip);
-	bool IsBlackListed(QString & user);
+	bool IsBlackListedIP(const QString & ip);
+	bool IsBlackListed(const QString & user);
 
-	bool IsAutoPrivate(QString user);
-	bool IsConnected(QString user);
+	bool IsAutoPrivate(const QString & user);
+	bool IsConnected(const QString & user);
 
 	void SendRejectedNotification(MessageRef rej);
 
 	// To use delayed search:
 	// ----------------------
 	//
-	// 1. Set the pattern using SetDelayedSearchPattern(QString)
+	// 1. Set the pattern using SetDelayedSearchPattern(const QString &)
 	// 2. Call Connect(QString)
 	//
-	void Connect(QString server);
-	void SetDelayedSearchPattern(QString pattern);
+	void Connect(const QString & server);
+	void SetDelayedSearchPattern(const QString & pattern);
 	
 	void TranslateStatus(QString & s);
 	
-	WUserRef FindUser(QString user);
-	WUserRef FindUserByIPandPort(QString ip, uint32 port);
+	WUserRef FindUser(const QString & user);
+	WUserRef FindUserByIPandPort(const QString & ip, uint32 port);
 	int FillUserMap(const QString & filter, WUserMap & wmap);
 
 	bool IsScanning() { return fScanning; }
@@ -201,13 +204,13 @@ public:
 	WDownload * fDLWindow;
 
 	// UniShare
-	int64 GetRegisterTime(QString nick); 
+	int64 GetRegisterTime(const QString & nick) const; 
 
 	void GotParams(bool g) { fGotParams = g; }
 	bool GotParams() { return fGotParams; }
 
 	void PrintSystem(const QString & msg, bool batch = false);
-	void GotUpdateCmd(const char * param, QString val);
+	void GotUpdateCmd(const char * param, const char * val);
 
 public slots:
 	/** File Menu **/
@@ -378,16 +381,16 @@ private:
 	void TransferCallbackRejected(const QString &qFrom, int64 timeLeft, uint32 port);
 	
 	bool IsIgnored(const WUser * user);
-	bool Ignore(QString & user);
-	bool UnIgnore(QString & user);
+	bool Ignore(const QString & user);
+	bool UnIgnore(const QString & user);
 
 	bool IsBlackListed(const WUser * user);
-	bool BlackList(QString & user);
-	bool UnBlackList(QString & user);
+	bool BlackList(const QString & user);
+	bool UnBlackList(const QString & user);
 
 	bool IsAutoPrivate(const WUser * user);
-	bool AutoPrivate(QString & user);
-	bool UnAutoPrivate(QString & user);
+	bool AutoPrivate(const QString & user);
+	bool UnAutoPrivate(const QString & user);
 
 	// Internal disconnection handling
 	void Disconnect2();					
@@ -443,21 +446,21 @@ private:
 	void SetStatus(const QString & s);
 
 	// stolen from BeShare :) thanx Jeremy
-	static bool ParseUserTargets(QString text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
+	static bool ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
 	void Action(const QString & name, const QString & msg, bool batch = false);
 	void GetAddressInfo(const QString & user);
 	void PrintAddressInfo(WUserRef user);
 	bool PrintAddressInfo(uint32 address);
 	
-	void ShowHelp(QString command = QString::null);
+	void ShowHelp(const QString & command = QString::null);
 
 	// parsing stuff...
 	bool MatchUserFilter(const WUser * user, const char * filter);
-	bool MatchFilter(const QString user, const char * filter);
+	bool MatchFilter(const QString & user, const char * filter);
 
-	int MatchUserName(QString un, QString & result, const char * filter);
-	bool DoTabCompletion(QString origText, QString & result, const char * filter);
+	int MatchUserName(const QString & un, QString & result, const char * filter);
+	bool DoTabCompletion(const QString & origText, QString & result, const char * filter);
 
 	QString MapUsersToIDs(const QString & pattern);
 	QString MapIPsToNodes(const QString & pattern);
@@ -465,7 +468,7 @@ private:
 
 	// see if we were named...
 	bool NameSaid(QString & msg);	// msg will be syntaxed if needed
-	void SetWatchPattern(QString pattern);
+	void SetWatchPattern(const QString & pattern);
 
 	void ServerParametersReceived(const MessageRef msg);
 
@@ -531,12 +534,12 @@ private:
 
 	WFIMap fFileList;
 
-	void StartQuery(QString sidRegExp, QString fileRegExp);
+	void StartQuery(const QString & sidRegExp, const QString & fileRegExp);
 	void SetResultsMessage();
 	void SetSearchStatus(const QString & status, int index = 0);
-	void SetSearch(QString pattern);
+	void SetSearch(const QString & pattern);
 
-	void QueueDownload(QString file, WUser * user);
+	void QueueDownload(const QString & file, WUser * user);
 	void EmptyQueues();
 
 	// void Lock() { fSearchLock.lock(); }
@@ -546,15 +549,15 @@ private:
 
 	// UniShare
 
-	int64 GetRegisterTime() { return GetRegisterTime( GetUserName() ); }
+	int64 GetRegisterTime() const { return GetRegisterTime( GetUserName() ); }
 
 	// Channels
 
-	void ChannelCreated(const QString, const QString, int64);
-	void ChannelJoin(const QString, const QString);
-	void ChannelPart(const QString, const QString);
-	void ChannelInvite(const QString, const QString, const QString);
-	void ChannelKick(const QString, const QString, const QString);
+	void ChannelCreated(const QString &, const QString &, int64);
+	void ChannelJoin(const QString &, const QString &);
+	void ChannelPart(const QString &, const QString &);
+	void ChannelInvite(const QString &, const QString &, const QString &);
+	void ChannelKick(const QString &, const QString &, const QString &);
 
 	WChannelMap fChannels;
 
@@ -562,20 +565,20 @@ private:
 	void UpdateUsers(WChannelIter iter);
 	void UpdateTopic(WChannelIter iter);
 	void UpdatePublic(WChannelIter iter);
-	void JoinChannel(QString channel);
+	void JoinChannel(const QString &channel);
 
-	bool IsOwner(QString channel, QString user);
-	bool IsPublic(QString channel);
-	void SetPublic(QString channel, bool pub);
+	bool IsOwner(const QString & channel, const QString & user);
+	bool IsPublic(const QString & channel);
+	void SetPublic(const QString & channel, bool pub);
 
-	void PartChannel(QString channel, QString user = QString::null);
+	void PartChannel(const QString & channel, const QString & user);
 
-	bool IsAdmin(QString channel, QString user);
-	void AddAdmin(QString channel, QString user);
-	void RemoveAdmin(QString channel, QString user);
-	QString GetAdmins(QString channel);
+	bool IsAdmin(const QString & channel, const QString & user);
+	void AddAdmin(const QString & channel, const QString & user);
+	void RemoveAdmin(const QString & channel, const QString & user);
+	QString GetAdmins(const QString & channel);
 
-	void SetTopic(QString channel, QString topic);
+	void SetTopic(const QString & channel, const QString & topic);
 
 	Queue<TTPInfo *> _ttpFiles;
 

@@ -60,7 +60,7 @@ WFlashWindow(HWND fWinHandle)
 #endif
 
 QString 
-GetParameterString(QString qCommand)
+GetParameterString(const QString & qCommand)
 {
 	QString qParameters = "";
 	int sPos = qCommand.find(" ")+1;
@@ -75,7 +75,7 @@ GetParameterString(QString qCommand)
 //
 
 QString 
-GetCommandString(QString qCommand)
+GetCommandString(const QString & qCommand)
 {
 	QString qCommand2 = qCommand.lower();
 	int sPos = qCommand2.find(" ");  // parameters should follow after <space> so they should be stripped off
@@ -88,7 +88,7 @@ GetCommandString(QString qCommand)
 }
 
 bool 
-CompareCommand(QString qCommand, const char * cCommand)
+CompareCommand(const QString & qCommand, const char * cCommand)
 {
 	QString com = GetCommandString(qCommand);
 #ifdef DEBUG2
@@ -253,7 +253,7 @@ MakeSizeString(uint64 s)
 }
 
 uint32
-BandwidthToBytes(QString connection)
+BandwidthToBytes(const QString & connection)
 {
 	uint32 bps = 0;
 	if (connection.find(",") > 0)
@@ -356,7 +356,7 @@ BandwidthToString(uint32 bps)
 }
 
 QString
-GetServerName(QString server)
+GetServerName(const QString & server)
 {
 	int pColon = server.find(":");
 	if (pColon >= 0)
@@ -370,7 +370,7 @@ GetServerName(QString server)
 }
 
 uint16
-GetServerPort(QString server)
+GetServerPort(const QString & server)
 {
 	int pColon = server.find(":");
 	if (pColon >= 0)
@@ -448,7 +448,7 @@ const char * MonthNames[12] = {
 								QT_TRANSLATE_NOOP( "Date", "Dec" )
 };
 
-QString TranslateMonth(QString m)
+QString TranslateMonth(const QString & m)
 {
 	return QObject::tr(m.latin1());
 }
@@ -463,7 +463,7 @@ const char * DayNames[7] = {
 								QT_TRANSLATE_NOOP( "Date", "Sun" )
 };
 
-QString TranslateDay(QString d)
+QString TranslateDay(const QString & d)
 {
 	return QObject::tr(d.latin1());
 }

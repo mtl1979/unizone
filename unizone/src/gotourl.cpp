@@ -25,7 +25,7 @@
 class WLaunchThread : public QThread
 {
 public:
-	WLaunchThread(QString url) : QThread(), fURL(url) {}
+	WLaunchThread(const QString & url) : QThread(), fURL(url) {}
 
 // set the launcher (Linux and FreeBSD only)
 #if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
@@ -52,7 +52,7 @@ WLaunchThread::run()
 
 #ifdef WIN32
 
-bool GotoURL(QString url, int showcmd)
+bool GotoURL(const QString & url, int showcmd)
     {
     /* if the ShellExecute() fails          */
     bool retflag = FALSE;
@@ -70,7 +70,7 @@ bool GotoURL(QString url, int showcmd)
 #else
 
 bool
-GotoURL(QString url, QString browser)
+GotoURL(const QString & url, const QString & browser)
 {
 	QString launch;
 
@@ -93,7 +93,7 @@ GotoURL(QString url, QString browser)
 #endif
 
 void
-GotoURL(QString url)
+GotoURL(const QString & url)
 {
 	PRINT("GotoURL() called\n");
 	QString u = url.lower();
@@ -110,10 +110,10 @@ GotoURL(QString url)
 #ifdef WIN32
 	if (u.startsWith("audio"))		// <postmaster@raasu.org> 20021116
 	{
-		url = "mms" + url.mid(5);
+		u = "mms" + url.mid(5);
 	}
 #endif
-	WLaunchThread * t = new WLaunchThread(url);
+	WLaunchThread * t = new WLaunchThread(u);
 	CHECK_PTR(t);
 #if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
 
@@ -144,7 +144,7 @@ GotoURL(QString url)
 }
 
 void
-RunCommand(QString command)
+RunCommand(const QString & command)
 {
 	PRINT("RunCommand() called\n");
 	WLaunchThread * t = new WLaunchThread(command);

@@ -16,7 +16,7 @@ public:
 	enum { Type = 'wUeE' };
 
 	// This event stores a MessageRef
-	WUploadEvent(MessageRef msg) 
+	WUploadEvent(const MessageRef msg) 
 		: QCustomEvent(Type) { fMsg = msg; }
 	virtual ~WUploadEvent() { }
 

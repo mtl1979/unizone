@@ -15,7 +15,7 @@ QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const c
 
 QMessageTransceiverThread :: ~QMessageTransceiverThread()
 {
-//   ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
+   ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
 }
 
 status_t QMessageTransceiverThread :: SendMessageToSessions(MessageRef msgRef, const char * optDistPath)       

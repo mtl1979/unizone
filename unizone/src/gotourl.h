@@ -3,14 +3,13 @@
 
 #include <qstring.h>
 
-void GotoURL(QString url);		// async launch
-void RunCommand(QString command);
+void GotoURL(const QString & url);				// async launch
+void RunCommand(const QString & command);		// shell command launcher
 
 #ifdef WIN32
-bool GotoURL(QString url, int showcmd );	// sync launch, used internally by the asnyc version
-
+bool GotoURL(const QString & url, int showcmd);	// sync launch, used internally by the async version
 #else
-bool GotoURL(QString url, QString browser);
+bool GotoURL(const QString & url, const QString & browser);
 #endif
 
 #endif

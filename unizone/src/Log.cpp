@@ -102,10 +102,11 @@ WLog::LogString(const char * txt)
 }
 
 void
-WLog::LogString(QString txt)
+WLog::LogString(const QString & txt)
 {
-	txt += "<br>";
-	QCString ctxt = txt.utf8();
+	QString out = txt;
+	out += "<br>";
+	QCString ctxt = out.utf8();
 	if (InitCheck())
 	{
 		fFile->writeBlock(ctxt, ctxt.length());

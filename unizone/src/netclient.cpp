@@ -39,20 +39,22 @@ NetClient::~NetClient()
 
 // <postmaster@raasu.org> -- Add support for port numbers
 status_t
-NetClient::Connect(QString server)
+NetClient::Connect(const QString & server)
 {
 	uint16 uiPort = 2960;
+	QString host = server;
+
 	int pColon = server.find(":");
 	if (pColon >= 0)
 	{
 		uiPort = server.mid(pColon+1).toUShort();
-		server = server.left(pColon);
+		host = server.left(pColon);
 	}
-	return Connect(server,uiPort);
+	return Connect(host, uiPort);
 }
 
 status_t
-NetClient::Connect(QString server, uint16 port)
+NetClient::Connect(const QString & server, uint16 port)
 {
 	PRINT("NetClient::Connect()\n");
 	Disconnect();
@@ -122,7 +124,7 @@ NetClient::LocalSessionID() const
 }
 
 void
-NetClient::AddSubscription(QString str, bool q)
+NetClient::AddSubscription(const QString & str, bool q)
 {
 	MessageRef ref(GetMessageFromPool(PR_COMMAND_SETPARAMETERS));
 	if (ref())
@@ -135,7 +137,7 @@ NetClient::AddSubscription(QString str, bool q)
 }
 
 void
-NetClient::RemoveSubscription(QString str)
+NetClient::RemoveSubscription(const QString & str)
 {
 	MessageRef ref(GetMessageFromPool(PR_COMMAND_REMOVEPARAMETERS));
 	if (ref())
@@ -146,7 +148,7 @@ NetClient::RemoveSubscription(QString str)
 }
 
 bool
-NetClient::ExistUser(QString sessionID)
+NetClient::ExistUser(const QString & sessionID)
 {
 	QString id = sessionID;
 	if (fUsers.find(id) != fUsers.end())
@@ -155,7 +157,7 @@ NetClient::ExistUser(QString sessionID)
 }
 
 WUserRef
-NetClient::FindUser(QString sessionID)
+NetClient::FindUser(const QString & sessionID)
 {
 	QString id = sessionID;
 	WUserIter iter = fUsers.find(id);
@@ -165,7 +167,7 @@ NetClient::FindUser(QString sessionID)
 }
 
 void 
-NetClient::FindUsersByIP(WUserMap & umap, QString ip)
+NetClient::FindUsersByIP(WUserMap & umap, const QString & ip)
 {
 	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
 	{
@@ -178,7 +180,7 @@ NetClient::FindUsersByIP(WUserMap & umap, QString ip)
 }
 
 WUserRef
-NetClient::FindUserByIPandPort(QString ip, uint32 port)
+NetClient::FindUserByIPandPort(const QString & ip, uint32 port)
 {
 	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
 	{
@@ -198,7 +200,7 @@ NetClient::FindUserByIPandPort(QString ip, uint32 port)
 
 // will insert into list if successful
 WUserRef
-NetClient::CreateUser(QString sessionID)
+NetClient::CreateUser(const QString & sessionID)
 {
 	WUser * n = new WUser(sessionID);
 	if (n)
@@ -214,7 +216,7 @@ NetClient::CreateUser(QString sessionID)
 }
 
 void
-NetClient::RemoveUser(QString sessionID)
+NetClient::RemoveUser(const QString & sessionID)
 {
 	WUserIter iter = fUsers.find(sessionID);
 	if (iter != fUsers.end())
@@ -229,7 +231,7 @@ NetClient::RemoveUser(QString sessionID)
 }
 
 void
-NetClient::HandleBeRemoveMessage(String nodePath)
+NetClient::HandleBeRemoveMessage(const String & nodePath)
 {
 	int pd = GetPathDepth(nodePath.Cstr());
 	if (pd >= USER_NAME_DEPTH)
@@ -260,7 +262,7 @@ NetClient::HandleBeRemoveMessage(String nodePath)
 }
 
 void
-NetClient::HandleUniRemoveMessage(String nodePath)
+NetClient::HandleUniRemoveMessage(const String & nodePath)
 {
 	int pd = GetPathDepth(nodePath.Cstr());
 	if (pd >= USER_NAME_DEPTH)
@@ -295,7 +297,7 @@ NetClient::HandleUniRemoveMessage(String nodePath)
 }
 
 void
-NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
+NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 {
 	QString cdata;
 	PRINT("UniShare: AddMessage - node = %s\n", nodePath.Cstr());
@@ -393,7 +395,7 @@ NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
 }
 
 void
-NetClient::AddChannel(QString sid, QString channel)
+NetClient::AddChannel(const QString &sid, const QString &channel)
 {
 	MessageRef mChannel;
 	fChannelLock.lock();
@@ -412,7 +414,7 @@ NetClient::AddChannel(QString sid, QString channel)
 }
 
 void
-NetClient::RemoveChannel(QString sid, QString channel)
+NetClient::RemoveChannel(const QString &sid, const QString &channel)
 {
 	MessageRef mChannel;
 	fChannelLock.lock();
@@ -446,7 +448,7 @@ NetClient::GetChannelList()
 }
 
 QString *
-NetClient::GetChannelUsers(QString channel)
+NetClient::GetChannelUsers(const QString & channel)
 {
 	MessageRef mChannel;
 	fChannelLock.lock();
@@ -477,7 +479,7 @@ NetClient::GetChannelCount()
 }
 
 int
-NetClient::GetUserCount(QString channel)
+NetClient::GetUserCount(const QString & channel)
 {
 	fChannelLock.lock();
 	int n = 0;
@@ -491,7 +493,7 @@ NetClient::GetUserCount(QString channel)
 }
 
 void
-NetClient::HandleBeAddMessage(String nodePath, MessageRef ref)
+NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 {
 	int pd = GetPathDepth(nodePath.Cstr());
 	if (pd >= USER_NAME_DEPTH)
@@ -660,7 +662,7 @@ NetClient::HandleParameters(MessageRef & next)
 }
 
 void
-NetClient::SendChatText(QString target, QString text)
+NetClient::SendChatText(const QString & target, const QString & text)
 {
 	if (IsInternalThreadRunning())
 	{
@@ -681,7 +683,7 @@ NetClient::SendChatText(QString target, QString text)
 }
 
 void
-NetClient::SendPing(QString target)
+NetClient::SendPing(const QString & target)
 {
 	if (IsInternalThreadRunning())
 	{
@@ -700,7 +702,7 @@ NetClient::SendPing(QString target)
 }
 
 void
-NetClient::SetUserName(QString user)
+NetClient::SetUserName(const QString & user)
 {
 	fUserName = user;
 	// change the user name
@@ -722,7 +724,7 @@ NetClient::SetUserName(QString user)
 }
 
 void
-NetClient::SetUserStatus(QString status)
+NetClient::SetUserStatus(const QString & status)
 {
 	MessageRef ref(GetMessageFromPool());
 	if (ref())
@@ -733,7 +735,7 @@ NetClient::SetUserStatus(QString status)
 }
 
 void
-NetClient::SetConnection(QString connection)
+NetClient::SetConnection(const QString & connection)
 {
 	int32 bps;
 	MessageRef ref(GetMessageFromPool());

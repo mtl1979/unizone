@@ -262,7 +262,7 @@ WinShareWindow::GoSearch()
 }
 
 void
-WinShareWindow::StartQuery(QString sidRegExp, QString fileRegExp)
+WinShareWindow::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 {
 	fSearchLock.lock();
 	QString tmp = "SUBSCRIBE:/*/";
@@ -339,7 +339,7 @@ WinShareWindow::SetSearchStatus(const QString & status, int index)
 }
 
 void
-WinShareWindow::SetSearch(QString pattern)
+WinShareWindow::SetSearch(const QString & pattern)
 {
 	fTabs->showPage(fSearchWidget);
 	// Is already on history?
@@ -358,7 +358,7 @@ WinShareWindow::SetSearch(QString pattern)
 }
 
 void
-WinShareWindow::QueueDownload(QString file, WUser * user)
+WinShareWindow::QueueDownload(const QString & file, WUser * user)
 {
 	int32 i = 0;
 	String mUser = (const char *) user->GetUserID().utf8();

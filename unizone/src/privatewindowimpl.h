@@ -33,7 +33,7 @@ public:
     virtual ~WPrivateWindow();
 
 	// received text from one of the users..
-	void PutChatText(QString fromsid, QString msg);
+	void PutChatText(const QString & fromsid, const QString & msg);
 
 	void AddUser(WUserRef & user);
 	bool RemUser(WUserRef & user);

@@ -13,7 +13,7 @@
 #include <qstring.h>
 
 
-WUser::WUser(QString sid)
+WUser::WUser(const QString & sid)
 {
 	fUserName = "?";
 	fUserStatus = "?";

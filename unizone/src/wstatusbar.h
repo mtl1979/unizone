@@ -9,7 +9,7 @@ public:
 	WStatusBar( QWidget * parent = 0, const char * name = 0, unsigned int columns = 3);
 	~WStatusBar();
 
-	void setText(QString text, unsigned int index);
+	void setText(const QString & text, unsigned int index);
 	QString text(unsigned int index);
 protected:
 	virtual void resizeEvent(QResizeEvent * e);

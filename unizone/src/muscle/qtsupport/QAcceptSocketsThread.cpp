@@ -15,7 +15,7 @@ QAcceptSocketsThread :: QAcceptSocketsThread(QObject * parent, const char * name
 
 QAcceptSocketsThread :: ~QAcceptSocketsThread()
 {
-//   ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
+   ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
 }
 
 void QAcceptSocketsThread :: SignalOwner()

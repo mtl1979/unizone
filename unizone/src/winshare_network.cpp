@@ -227,8 +227,9 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				{
 					QString serverStr = server.stripWhiteSpace();
 
-					GotUpdateCmd("addserver", server);	// the easy way to add the server to the list...
-														// this will check for duplicates
+					// the easy way to add the server to the list...
+					// this will check for duplicates
+					GotUpdateCmd("addserver", serverStr.latin1());	
 					// now find our server
 					for (int i = 0; i < fServerList->count(); i++)
 					{
@@ -916,9 +917,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 }
 
 void
-WinShareWindow::SendChatText(QString sid, QString txt, WUserRef priv, bool * reply)
+WinShareWindow::SendChatText(const QString & sid, const QString & txt, WUserRef priv, bool * reply)
 {
 	fNetClient->SendChatText(sid, txt);
+	QString out = FixStringStr(txt);
 	if (sid != "*")	// not a global message?
 	{
 		if (priv())
@@ -929,18 +931,17 @@ WinShareWindow::SendChatText(QString sid, QString txt, WUserRef priv, bool * rep
 				if (fSettings->GetPrivate())	// do we take private messages?
 				{
 					QString chat;
-					FixString(txt);
 					PRINT("Appending to chat\n");
 					if (txt.startsWith(FixStringStr(GetUserName()) + " ") || txt.startsWith(FixStringStr(GetUserName()) + "'s ")) // simulate action?
 					{
 						chat = WFormat::Action().arg(WColors::Action).arg( fSettings->GetFontSize() );
-						chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(txt);
+						chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
 					}
 					else
 					{
 						chat = WFormat::SendPrivMsg.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(fNetClient->LocalSessionID()).arg(
 									FixStringStr(GetUserName())).arg(FixStringStr(priv()->GetUserName()));
-						chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(txt);
+						chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
 					}
 					PRINT("Printing\n");
 					PrintText(chat);
@@ -953,7 +954,7 @@ WinShareWindow::SendChatText(QString sid, QString txt, WUserRef priv, bool * rep
 		if (fSettings->GetChat())
 		{
 			QString chat = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(fNetClient->LocalSessionID()).arg(FixStringStr(GetUserName()));
-			chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg( FixStringStr(txt) );
+			chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
 			PrintText(chat);
 		}
 	}
@@ -1407,7 +1408,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString qOwner = QString::fromUtf8(repto.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					emit ChannelCreated(qChan, qOwner, rtime);
+					ChannelCreated(qChan, qOwner, rtime);
 				}
 
 				break;
@@ -1422,7 +1423,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					emit ChannelJoin(qChan, qUser);
+					ChannelJoin(qChan, qUser);
 				}
 				break;
 			}
@@ -1436,7 +1437,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					emit ChannelPart(qChan, qUser);
+					ChannelPart(qChan, qUser);
 				}
 				break;
 			}
@@ -1452,7 +1453,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qWho = QString::fromUtf8(who.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					emit ChannelInvite(qChan, qUser, qWho);
+					ChannelInvite(qChan, qUser, qWho);
 				}
 				break;
 			}
@@ -1468,7 +1469,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qWho = QString::fromUtf8(who.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					emit ChannelKick(qChan, qUser, qWho);
+					ChannelKick(qChan, qUser, qWho);
 				}
 				break;
 			}
@@ -1484,7 +1485,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qTopic = QString::fromUtf8(topic.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					emit ChannelTopic(qChan, qUser, qTopic);
+					ChannelTopic(qChan, qUser, qTopic);
 				}
 				break;
 			}
@@ -1500,7 +1501,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					emit ChannelPublic(qChan, qUser, pub);
+					ChannelPublic(qChan, qUser, pub);
 				}
 				break;
 			}
@@ -1688,12 +1689,12 @@ WinShareWindow::Connect()
 }
 
 void
-WinShareWindow::Connect(QString server)
+WinShareWindow::Connect(const QString & server)
 {
 	fServer = server;
 	if (fServerList->currentText() != fServer)
 	{
-		GotUpdateCmd("addserver", fServer);
+		GotUpdateCmd("addserver", fServer.latin1());
 		for (int i = 0; i < fServerList->count(); i++)
 		{
 			QString slist = fServerList->text(i).stripWhiteSpace();
@@ -1750,7 +1751,7 @@ WinShareWindow::Disconnect2()
 }
 
 void
-WinShareWindow::ShowHelp(QString command)
+WinShareWindow::ShowHelp(const QString & command)
 {
 	QString helpText	=	"\n";
 	helpText			+=	tr("Unizone Command Reference");
@@ -1949,7 +1950,7 @@ WinShareWindow::ShowHelp(QString command)
 }
 
 bool
-WinShareWindow::IsIgnoredIP(QString ip)
+WinShareWindow::IsIgnoredIP(const QString & ip)
 {
 	WString wIP = ip;
 	PRINT("IsIgnoredIP(%S)\n", wIP.getBuffer());
@@ -1961,7 +1962,7 @@ WinShareWindow::IsIgnoredIP(QString ip)
 }
 
 bool
-WinShareWindow::AddIPIgnore(QString ip)
+WinShareWindow::AddIPIgnore(const QString & ip)
 {
 	WString wIP = ip;
 	PRINT("AddIPIgnore(%S)\n", wIP.getBuffer());
@@ -1974,7 +1975,10 @@ WinShareWindow::AddIPIgnore(QString ip)
 	if (fIgnoreIP.isEmpty())
 		fIgnoreIP = ip;
 	else
-		fIgnoreIP += ip.prepend(",");
+	{
+		fIgnoreIP += ",";
+		fIgnoreIP += ip;
+	}
 
 	wIP = fIgnoreIP;
 	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
@@ -1984,7 +1988,7 @@ WinShareWindow::AddIPIgnore(QString ip)
 }
 
 bool
-WinShareWindow::RemoveIPIgnore(QString ip)
+WinShareWindow::RemoveIPIgnore(const QString & ip)
 {
 	WString wIP = ip;
 	PRINT("RemoveIPIgnore(%S)\n", wIP.getBuffer());
@@ -2045,7 +2049,7 @@ WinShareWindow::RemoveIPIgnore(QString ip)
 }
 
 bool
-WinShareWindow::IsBlackListedIP(QString & ip)
+WinShareWindow::IsBlackListedIP(const QString & ip)
 {
 	WUserMap umap;
 	fNetClient->FindUsersByIP(umap, ip);
@@ -2074,7 +2078,7 @@ WinShareWindow::IsBlackListed(const WUser * user)
 }
 
 bool
-WinShareWindow::IsBlackListed(QString & user)
+WinShareWindow::IsBlackListed(const QString & user)
 {
 	// Find the user record
 	//
@@ -2101,7 +2105,7 @@ WinShareWindow::IsBlackListed(QString & user)
 }
 
 bool
-WinShareWindow::IsAutoPrivate(QString user)
+WinShareWindow::IsAutoPrivate(const QString & user)
 {
 	// Find the user record
 	//
@@ -2128,7 +2132,7 @@ WinShareWindow::IsAutoPrivate(QString user)
 }
 
 bool
-WinShareWindow::IsConnected(QString user)
+WinShareWindow::IsConnected(const QString & user)
 {
 	// Find the user record
 	//
@@ -2165,7 +2169,7 @@ WinShareWindow::IsIgnored(const WUser * user)
 }
 
 bool
-WinShareWindow::IsIgnored(QString & user, bool bTransfer)
+WinShareWindow::IsIgnored(const QString & user, bool bTransfer)
 {
 	bool bDisconnected = false;
 
@@ -2177,7 +2181,7 @@ WinShareWindow::IsIgnored(QString & user, bool bTransfer)
 }
 
 bool
-WinShareWindow::IsIgnored(QString & user, bool bTransfer, bool bDisconnected)
+WinShareWindow::IsIgnored(const QString & user, bool bTransfer, bool bDisconnected)
 {
 	// Find the user record
 	//
@@ -2220,7 +2224,7 @@ WinShareWindow::IsIgnored(QString & user, bool bTransfer, bool bDisconnected)
 //
 
 bool
-WinShareWindow::BlackList(QString & user)
+WinShareWindow::BlackList(const QString & user)
 {
 	// Is user specified?
 	//
@@ -2237,7 +2241,10 @@ WinShareWindow::BlackList(QString & user)
 	if (fBlackList.isEmpty())
 		fBlackList = user;
 	else
-		fBlackList += user.prepend(",");
+	{
+		fBlackList += ",";
+		fBlackList += user;
+	}
 	return true;
 }
 
@@ -2245,7 +2252,7 @@ WinShareWindow::BlackList(QString & user)
 //
 
 bool
-WinShareWindow::UnBlackList(QString & user)
+WinShareWindow::UnBlackList(const QString & user)
 {
 	// Is user specified?
 	//
@@ -2308,7 +2315,7 @@ WinShareWindow::UnBlackList(QString & user)
 //
 
 bool
-WinShareWindow::Ignore(QString & user)
+WinShareWindow::Ignore(const QString & user)
 {
 	// Is user specified?
 	//
@@ -2325,7 +2332,10 @@ WinShareWindow::Ignore(QString & user)
 	if (fIgnore == "")
 		fIgnore = user;
 	else
-		fIgnore += user.prepend(",");
+	{
+		fIgnore += ",";
+		fIgnore += user;
+	}
 	return true;
 }
 
@@ -2334,7 +2344,7 @@ WinShareWindow::Ignore(QString & user)
 //
 
 bool
-WinShareWindow::UnIgnore(QString & user)
+WinShareWindow::UnIgnore(const QString & user)
 {
 	// Is user specified?
 	//
@@ -2408,7 +2418,7 @@ WinShareWindow::IsAutoPrivate(const WUser * user)
 //
 
 bool
-WinShareWindow::AutoPrivate(QString & user)
+WinShareWindow::AutoPrivate(const QString & user)
 {
 	// Is user specified?
 	//
@@ -2425,7 +2435,10 @@ WinShareWindow::AutoPrivate(QString & user)
 	if (fAutoPriv.isEmpty())
 		fAutoPriv = user;
 	else
-		fAutoPriv += user.prepend(",");
+	{
+		fAutoPriv += ",";
+		fAutoPriv += user;
+	}
 	return true;
 }
 
@@ -2433,7 +2446,7 @@ WinShareWindow::AutoPrivate(QString & user)
 //
 
 bool
-WinShareWindow::UnAutoPrivate(QString & user)
+WinShareWindow::UnAutoPrivate(const QString & user)
 {
 	// Is user specified?
 	//
@@ -2493,7 +2506,7 @@ WinShareWindow::UnAutoPrivate(QString & user)
 }
 
 WUserRef
-WinShareWindow::FindUser(QString user)
+WinShareWindow::FindUser(const QString & user)
 {
 	WUserMap & umap = fNetClient->Users();
 	for (WUserIter iter = umap.begin(); iter != umap.end(); iter++)
@@ -2507,7 +2520,7 @@ WinShareWindow::FindUser(QString user)
 }
 
 WUserRef 
-WinShareWindow::FindUserByIPandPort(QString ip, uint32 port)
+WinShareWindow::FindUserByIPandPort(const QString & ip, uint32 port)
 {
 	if (fNetClient)
 	{

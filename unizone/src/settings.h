@@ -122,7 +122,7 @@ public:
 	bool Save();
 
 	// server list
-	void AddServerItem(QString str);
+	void AddServerItem(const QString & str);
 	QString GetServerItem(int index);
 	QString StartServerIter();		// get first item in the server list, initializing the internal iterator
 	QString GetNextServerItem();	// if returns QString::null, out of items
@@ -131,7 +131,7 @@ public:
 	int GetCurrentServerItem();
 
 	// user list
-	void AddUserItem(QString str);
+	void AddUserItem(const QString & str);
 	QString GetUserItem(int index);
 	QString StartUserIter();
 	QString GetNextUserItem();
@@ -140,7 +140,7 @@ public:
 	int GetCurrentUserItem();
 
 	// status list
-	void AddStatusItem(QString str);
+	void AddStatusItem(const QString & str);
 	QString GetStatusItem(int index);
 	QString StartStatusIter();
 	QString GetNextStatusItem();
@@ -149,7 +149,7 @@ public:
 	int GetCurrentStatusItem();
 
 	// query list
-	void AddQueryItem(QString str);
+	void AddQueryItem(const QString & str);
 	QString GetQueryItem(int index);
 	void EmptyQueryList();
 	void SetCurrentQueryItem(int item);
@@ -192,19 +192,19 @@ public:
 	void SetMainSizes(QValueList<int> & sizes);
 
 	// status messages
-	void SetAwayMsg(QString away);
+	void SetAwayMsg(const QString & away);
 	QString GetAwayMsg();
-	void SetHereMsg(QString here);
+	void SetHereMsg(const QString & here);
 	QString GetHereMsg();
 
 	// On Connect
-	void SetOnConnect(QString s);
+	void SetOnConnect(const QString & s);
 	QString GetOnConnect();
-	void SetOnConnect2(QString s);
+	void SetOnConnect2(const QString & s);
 	QString GetOnConnect2();
 
 	// colors
-	void AddColorItem(QString c);
+	void AddColorItem(const QString & c);
 	QString GetColorItem(int index);
 	QString StartColorIter();
 	QString GetNextColorItem();
@@ -228,10 +228,10 @@ public:
 	void SetMultiColor(bool m);
 	bool GetMultiColor();
 
-	void SetConnection(QString str);
+	void SetConnection(const QString & str);
 	QString GetConnection();
-	void SetEncoding(QString server, uint16 port, uint32 encoding);
-	uint32 GetEncoding(QString server, uint16 port);
+	void SetEncoding(const QString & server, uint16 port, uint32 encoding);
+	uint32 GetEncoding(const QString & server, uint16 port);
 
 	void SetTimeStamps(bool b);
 	void SetUserEvents(bool b);
@@ -263,9 +263,9 @@ public:
 
 	// UniShare
 	void SetRegisterTime(int64 i); // Nick Registration Time
-	void SetRegisterTime(QString nick, int64 i);
+	void SetRegisterTime(const QString & nick, int64 i);
 	int64 GetRegisterTime();
-	int64 GetRegisterTime(QString nick);
+	int64 GetRegisterTime(const QString & nick);
 
 	// window flashing
 	enum
@@ -317,36 +317,36 @@ public:
 
 	// watch pattern
 	QString GetWatchPattern();
-	void SetWatchPattern(QString p);
+	void SetWatchPattern(const QString & p);
 
 	// ignore pattern
 	QString GetIgnorePattern();
-	void SetIgnorePattern(QString p);
+	void SetIgnorePattern(const QString & p);
 
 	// ip ignore pattern
 	QString GetIPIgnorePattern();
-	void SetIPIgnorePattern(QString p);
+	void SetIPIgnorePattern(const QString & p);
 
 	// blacklist pattern
 	QString GetBlackListPattern();
-	void SetBlackListPattern(QString p);
+	void SetBlackListPattern(const QString & p);
 
 	// auto-private pattern
 	QString GetAutoPrivatePattern();
-	void SetAutoPrivatePattern(QString p);
+	void SetAutoPrivatePattern(const QString & p);
 
 #if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)
 	QString GetFTPLauncher();
-	void SetFTPLauncher(QString l);
+	void SetFTPLauncher(const QString & l);
 
 	QString GetHTTPLauncher();
-	void SetHTTPLauncher(QString l);
+	void SetHTTPLauncher(const QString & l);
 
 	QString GetMailLauncher();
-	void SetMailLauncher(QString l);
+	void SetMailLauncher(const QString & l);
 
 	QString GetDefaultLauncher();
-	void SetDefaultLauncher(QString l);
+	void SetDefaultLauncher(const QString & l);
 #endif
 
 	enum	// throttling constants
@@ -423,7 +423,7 @@ public:
 
 	// remote control
 	QString GetRemotePassword();
-	void SetRemotePassword(QString pw);
+	void SetRemotePassword(const QString & pw);
 
 	// toolbar layout
 	void GetToolBarLayout(int toolbar, int & dock, int & index, bool & nl, int & extra);

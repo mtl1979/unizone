@@ -18,11 +18,7 @@ public:
 	QPopupMenu * Help() const { return fHelp; }
 	QPopupMenu * Windows() const { return fWindows; }
 
-//	QMenuBar * Bar() const { return fBar; }
-
 private:
-	/* Menu bar */
-//	QMenuBar * fBar;
 
 	/* File menu */
 	QPopupMenu * fFile;

@@ -26,14 +26,14 @@ class QListViewItem;
 class WUser : public RefCountable
 {
 public:
-	WUser(QString sid);
+	WUser(const QString & sid);
 	~WUser();
 
 	// <postmaster@raasu.org> 20021001
-	void SetUserName(QString name) {fUserName = name; }
-	void SetStatus(QString s) {fUserStatus = s; } 
-	void SetUserID(QString id) { fUserID = id; }
-	void SetUserHostName(QString h) { fHostName = h; }
+	void SetUserName(const QString & name) {fUserName = name; }
+	void SetStatus(const QString & s) {fUserStatus = s; } 
+	void SetUserID(const QString & id) { fUserID = id; }
+	void SetUserHostName(const QString & h) { fHostName = h; }
 	
 	void SetCurUploads(uint32 c) { fCurUploads = c; }
 	void SetMaxUploads(uint32 m) { fMaxUploads = m; }
@@ -139,7 +139,7 @@ typedef pair<QString, WUserSearch> WUserSearchPair;
 typedef WUserSearchMap::iterator WUserSearchIter;
 
 inline WUserPair
-MakePair(QString s, WUserRef & w)
+MakePair(const QString & s, WUserRef & w)
 {
 	WUserPair p;
 	p.first = s;
@@ -148,7 +148,7 @@ MakePair(QString s, WUserRef & w)
 }
 
 inline WUserSearchPair
-MakePair(QString s, WUserRef & w, QString txt)
+MakePair(const QString & s, WUserRef & w, QString txt)
 {
 	WUserSearch wus;
 	wus.user = w;

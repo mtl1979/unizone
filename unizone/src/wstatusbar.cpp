@@ -30,7 +30,7 @@ WStatusBar::~WStatusBar()
 }
 
 void
-WStatusBar::setText(QString text, unsigned int index)
+WStatusBar::setText(const QString & text, unsigned int index)
 {
 	if (index < fColumns)
 	{

@@ -44,7 +44,7 @@ public:
 	~WUploadThread();
 
 	void SetUpload(int socket, uint32 remoteIP, WFileThread * ft);
-	void SetUpload(QString remoteIP, uint32 remotePort, WFileThread * ft);
+	void SetUpload(const QString & remoteIP, uint32 remotePort, WFileThread * ft);
 
 	bool InitSession();
 
@@ -77,15 +77,15 @@ public:
 	QString GetETA(uint64 cur, uint64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
 	uint64	GetStartTime() { return fStartTime; }
 
-	QString GetRemoteID() {return fRemoteSessionID;}
-	QString GetRemoteUser(); 
-	QString GetRemoteIP() {return fStrRemoteIP;}
-	uint32 GetRemotePort() {return fPort;}
-	QString GetCurrentFile() {return fFileUl;}
-	QString GetFileName(int i);
+	QString GetRemoteID() const {return fRemoteSessionID;}
+	QString GetRemoteUser() const; 
+	QString GetRemoteIP() const {return fStrRemoteIP;}
+	uint32 GetRemotePort() const {return fPort;}
+	QString GetCurrentFile() const {return fFileUl;}
+	QString GetFileName(int i) const;
 
-	int32 GetCurrentNum() { return fCurFile; }
-	int32 GetNumFiles() { return fNumFiles; }
+	int32 GetCurrentNum() const { return fCurFile; }
+	int32 GetNumFiles() const { return fNumFiles; }
 	bool IsLastFile(); 
 
 	int GetRate() { return fTXRate; }
@@ -153,7 +153,7 @@ protected:
 	void SetMostRecentETA(uint32 eta);
 	uint32 ComputeETA() const;
 
-	QString GetUserName(QString sid);
+	QString GetUserName(const QString & sid) const;
 
 	int fTXRate; // Current transfer throttling rate
 

@@ -128,11 +128,11 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 
 Channel::~Channel()
 {
-	gWin->PartChannel(fName);
+	gWin->PartChannel(fName, fNet->LocalSessionID());
 }
 
 void
-Channel::SetOwner(QString owner)
+Channel::SetOwner(const QString & owner)
 {
 	if (fOwner != owner)
 	{
@@ -160,7 +160,7 @@ Channel::SetOwner(QString owner)
 }
 
 void
-Channel::SetTopic(QString topic)
+Channel::SetTopic(const QString & topic)
 {
 	if (fTopic != topic)
 	{
@@ -208,7 +208,7 @@ Channel::SetPublic(bool p)
 }
 
 void
-Channel::Invite(QString user)
+Channel::Invite(const QString & user)
 {
 	MessageRef cc = GetMessageFromPool(NetClient::ChannelInvite);
 	if (cc())
@@ -225,7 +225,7 @@ Channel::Invite(QString user)
 }
 
 void
-Channel::Kick(QString user)
+Channel::Kick(const QString & user)
 {
 	MessageRef cc = GetMessageFromPool(NetClient::ChannelKick);
 	if (cc())
@@ -288,7 +288,7 @@ Channel::UpdateUserList()
 }
 
 void
-Channel::AddUser(QString user)
+Channel::AddUser(const QString & user)
 {
 	if (user == "0")
 	{
@@ -308,7 +308,7 @@ Channel::AddUser(QString user)
 }
 
 bool
-Channel::RemUser(QString user)
+Channel::RemUser(const QString & user)
 {
 	WUserIter it = fUsers.find(user);
 	if (it == fUsers.end())
@@ -603,7 +603,7 @@ Channel::customEvent(QCustomEvent * event)
 }
 
 void
-Channel::SendChannelText(QString message)
+Channel::SendChannelText(const QString & message)
 {
 	if (fNet->IsConnected())
 	{
@@ -619,10 +619,10 @@ Channel::SendChannelText(QString message)
 		}
 	}
 	QString name = FixStringStr(gWin->GetUserName());
-	message = FixStringStr(message);
+	QString msg = FixStringStr(message);
 	QString fmt;
 	fmt = WFormat::LocalName.arg(WColors::LocalName).arg(gWin->fSettings->GetFontSize()).arg(fNet->LocalSessionID()).arg(name);
-	fmt += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(message);
+	fmt += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);
 	PrintText(fmt);
 }
 
@@ -824,7 +824,7 @@ Channel::UserDisconnected(const QString &sid, const QString &name)
 }
 
 WUserRef
-Channel::FindUser(QString user)
+Channel::FindUser(const QString & user)
 {
 	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
 	{

@@ -2,7 +2,7 @@
 #include "tokenizer.h"
 
 bool
-ChannelInfo::IsOwner(QString sid)
+ChannelInfo::IsOwner(const QString & sid) const
 {
 	if (sid == fOwner)
 		return true;
@@ -11,7 +11,7 @@ ChannelInfo::IsOwner(QString sid)
 }
 
 bool
-ChannelInfo::IsAdmin(QString sid)
+ChannelInfo::IsAdmin(const QString & sid) const
 {
 	if (fAdmins.IsEmpty())		// Allow initial set-up
 		return true;
@@ -22,7 +22,7 @@ ChannelInfo::IsAdmin(QString sid)
 }
 
 bool
-ChannelInfo::SetAdmins(QString admins)
+ChannelInfo::SetAdmins(const QString & admins)
 {
 	if (fStrAdmins == admins)
 		return false;
@@ -58,7 +58,7 @@ ChannelInfo::~ChannelInfo()
 }
 
 void
-ChannelInfo::AddUser(QString user)
+ChannelInfo::AddUser(const QString & user)
 {
 	if ( fUsers.IndexOf(user) == -1 )
 	{
@@ -71,7 +71,7 @@ ChannelInfo::AddUser(QString user)
 }
 
 void
-ChannelInfo::RemoveUser(QString user)
+ChannelInfo::RemoveUser(const QString & user)
 {
 	int i = fUsers.IndexOf(user);
 	if (i != -1)
@@ -85,7 +85,7 @@ ChannelInfo::RemoveUser(QString user)
 }
 
 void
-ChannelInfo::AddAdmin(QString user)
+ChannelInfo::AddAdmin(const QString & user)
 {
 	if ( fAdmins.IndexOf(user) == -1 )
 	{
@@ -95,7 +95,7 @@ ChannelInfo::AddAdmin(QString user)
 }
 
 void
-ChannelInfo::RemoveAdmin(QString user)
+ChannelInfo::RemoveAdmin(const QString & user)
 {
 	int i = fAdmins.IndexOf(user);
 	if (i != -1)
@@ -106,7 +106,7 @@ ChannelInfo::RemoveAdmin(QString user)
 }
 
 QString
-ChannelInfo::GetAdmins()
+ChannelInfo::GetAdmins() const
 {
 	QString adm = QString::null;
 	int n = fAdmins.GetNumItems();
@@ -124,7 +124,7 @@ ChannelInfo::GetAdmins()
 }
 
 QString
-ChannelInfo::GetUsers()
+ChannelInfo::GetUsers() const
 {
 	QString usr = QString::null;
 	int n = fUsers.GetNumItems();
@@ -142,19 +142,19 @@ ChannelInfo::GetUsers()
 }
 
 int 
-ChannelInfo::NumUsers() 
+ChannelInfo::NumUsers() const
 { 
 	return fUsers.GetNumItems(); 
 }
 
 void 
-ChannelInfo::SetTopic(QString t) 
+ChannelInfo::SetTopic(const QString & t) 
 {
 	fTopic = t; 
 }
 
 QString 
-ChannelInfo::GetTopic() 
+ChannelInfo::GetTopic() const
 { 
 	return fTopic; 
 }
@@ -166,7 +166,7 @@ ChannelInfo::SetPublic(bool p)
 }
 
 bool 
-ChannelInfo::GetPublic() 
+ChannelInfo::GetPublic() const
 { 
 	return fPublic; 
 }
@@ -178,7 +178,7 @@ ChannelInfo::SetItem(QListViewItem * item)
 }
 
 QListViewItem * 
-ChannelInfo::GetItem() 
+ChannelInfo::GetItem() const
 { 
 	return fItem; 
 }
@@ -190,7 +190,7 @@ ChannelInfo::SetWindow(Channel * win)
 }
 
 Channel * 
-ChannelInfo::GetWindow() 
+ChannelInfo::GetWindow() const
 { 
 	return fWindow;
 }
@@ -202,19 +202,19 @@ ChannelInfo::SetCreated(int64 i)
 }
 
 int64 
-ChannelInfo::GetCreated()
+ChannelInfo::GetCreated() const
 {
 	return fCreated;
 }
 
 void 
-ChannelInfo::SetOwner(QString owner)
+ChannelInfo::SetOwner(const QString & owner)
 {
 	fOwner = owner;
 }
 
 QString 
-ChannelInfo::GetOwner()
+ChannelInfo::GetOwner() const
 {
 	return fOwner;
 }

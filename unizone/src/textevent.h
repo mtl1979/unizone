@@ -19,7 +19,7 @@ public:
 		ResumeType					// check if user has resumable files
 	};
 
-	WTextEvent(QString text, int type = TextType);
+	WTextEvent(const QString & text, int type = TextType);
 	virtual ~WTextEvent();
 
 	bool Valid() const;

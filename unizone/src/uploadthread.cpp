@@ -109,7 +109,7 @@ WUploadThread::SetUpload(int socket, uint32 remoteIP, WFileThread * ft)
 }
 
 void 
-WUploadThread::SetUpload(QString remoteIP, uint32 remotePort, WFileThread * ft)
+WUploadThread::SetUpload(const QString & remoteIP, uint32 remotePort, WFileThread * ft)
 {
 	fFileThread = ft;
 	fAccept = true;
@@ -828,7 +828,7 @@ WUploadThread::DoUpload()
 }
 
 QString
-WUploadThread::GetFileName(int i)
+WUploadThread::GetFileName(int i) const
 {
 	if (i >= 0 && i < fNames.GetNumItems())
 	{
@@ -861,7 +861,7 @@ WUploadThread::SetRate(int rate, AbstractReflectSessionRef & ref)
 }
 
 QString
-WUploadThread::GetRemoteUser()
+WUploadThread::GetRemoteUser() const
 {
 	if (fRemoteUser.isEmpty())
 		return tr("User #%1").arg(fRemoteSessionID);
@@ -1282,7 +1282,7 @@ WUploadThread::GetBanTime()
 }
 
 QString
-WUploadThread::GetUserName(QString sid)
+WUploadThread::GetUserName(const QString & sid) const
 {
 	WUserRef uref = gWin->FindUser(sid);
 	QString ret = sid;

@@ -331,19 +331,12 @@ WDownload::EmptyUploads()
 
 void
 WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QString remoteSessionID,
-					   uint32 remotePort, QString remoteIP, uint64 remoteInstallID, bool firewalled, bool partial)
+					   uint32 remotePort, const QString & remoteIP, uint64 remoteInstallID, bool firewalled, bool partial)
 {
 	WDownloadThread * nt = new WDownloadThread(this);
 	CHECK_PTR(nt);
-	nt->SetFile(files, lfiles, filecount, remoteIP, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
-	
-	DLPair p;
-	p.first = nt;
-	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
-	CHECK_PTR(p.second);
-	
-	
-	
+
+	QString ip = remoteIP;
 	if (!firewalled) // Check for valid ip and port if not firewalled
 	{
 		int x;
@@ -352,8 +345,8 @@ WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QStri
 		
 		if (remoteIP == "127.0.0.1")	
 		{
-			remoteIP = gWin->fNetClient->GetServerIP();
-			if (remoteIP != "127.0.0.1")
+			ip = gWin->fNetClient->GetServerIP();
+			if (ip != "127.0.0.1")
 			{
 				for (x = 0; x < filecount; x++)
 					gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP));
@@ -368,7 +361,14 @@ WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QStri
 				gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]));
 		}
 	}
+
+	nt->SetFile(files, lfiles, filecount, ip, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
 	
+	DLPair p;
+	p.first = nt;
+	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.second);
+		
 	if (GetNumDownloads() < gWin->fSettings->GetMaxDownloads())
 	{
 		nt->InitSession();
@@ -423,7 +423,7 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, WU
 }
 
 void
-WDownload::AddUpload(QString remoteIP, uint32 port)
+WDownload::AddUpload(const QString & remoteIP, uint32 port)
 {
 	PRINT("WDownload::AddUpload(QString, uint32)\n");
 	WUploadThread * ut = new WUploadThread(this);

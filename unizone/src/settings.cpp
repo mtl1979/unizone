@@ -41,7 +41,7 @@ WSettings::~WSettings()
 }
 
 void
-WSettings::AddServerItem(QString str)
+WSettings::AddServerItem(const QString & str)
 {
 	fSet()->AddString(SERVER_LIST, (const char *) str.utf8());
 }
@@ -91,7 +91,7 @@ WSettings::GetCurrentServerItem()
 
 // users
 void
-WSettings::AddUserItem(QString str)
+WSettings::AddUserItem(const QString & str)
 {
 	fSet()->AddString(USER_LIST, (const char *) str.utf8());
 }
@@ -141,7 +141,7 @@ WSettings::GetCurrentUserItem()
 
 // status
 void
-WSettings::AddStatusItem(QString str)
+WSettings::AddStatusItem(const QString & str)
 {
 	fSet()->AddString(STATUS_LIST, (const char *) str.utf8());
 }
@@ -344,14 +344,14 @@ WSettings::SetMainSizes(QValueList<int> & sizes)
 
 // status messages
 void
-WSettings::SetAwayMsg(QString away)
+WSettings::SetAwayMsg(const QString & away)
 {
 	fSet()->RemoveName(AWAY_MSG);
 	fSet()->AddString(AWAY_MSG, (const char *) away.utf8());
 }
 
 void
-WSettings::SetHereMsg(QString here)
+WSettings::SetHereMsg(const QString & here)
 {
 	fSet()->RemoveName(HERE_MSG);
 	fSet()->AddString(HERE_MSG, (const char *) here.utf8());
@@ -375,7 +375,7 @@ WSettings::GetHereMsg()
 
 // colors
 void
-WSettings::AddColorItem(QString c)
+WSettings::AddColorItem(const QString & c)
 {
 	fSet()->AddString(COLORS, (const char *) c.utf8());
 }
@@ -564,7 +564,7 @@ WSettings::GetMultiColor()
 }
 
 void
-WSettings::SetConnection(QString str)
+WSettings::SetConnection(const QString & str)
 {
 	fSet()->RemoveName(CONNECTION);
 	fSet()->AddString(CONNECTION, (const char *)str.utf8());
@@ -579,7 +579,7 @@ WSettings::GetConnection()
 }
 
 void 
-WSettings::SetEncoding(QString server, uint16 port, uint32 encoding)
+WSettings::SetEncoding(const QString & server, uint16 port, uint32 encoding)
 {
 	QString key = server+":"+QString::number(port);
 	fSet()->RemoveName(key.latin1());
@@ -587,7 +587,7 @@ WSettings::SetEncoding(QString server, uint16 port, uint32 encoding)
 }
 
 uint32
-WSettings::GetEncoding(QString server, uint16 port)
+WSettings::GetEncoding(const QString & server, uint16 port)
 {
 	QString key = server+":"+QString::number(port);
 	uint32 encoding = MUSCLE_MESSAGE_ENCODING_DEFAULT;
@@ -750,7 +750,7 @@ WSettings::SetRegisterTime(int64 i)
 }
 
 void
-WSettings::SetRegisterTime(QString nick, int64 i)
+WSettings::SetRegisterTime(const QString & nick, int64 i)
 {
 	String ni = String(REGISTERTIME);
 	ni += "_";
@@ -768,7 +768,7 @@ WSettings::GetRegisterTime()
 }
 
 int64
-WSettings::GetRegisterTime(QString nick)
+WSettings::GetRegisterTime(const QString & nick)
 {
 	String ni = String(REGISTERTIME);
 	ni += "_";
@@ -889,7 +889,7 @@ WSettings::GetWatchPattern()
 }
 
 void
-WSettings::SetWatchPattern(QString p)
+WSettings::SetWatchPattern(const QString & p)
 {
 	fSet()->RemoveName(WATCH_PATTERN);
 	fSet()->AddString(WATCH_PATTERN, (const char *) p.utf8());
@@ -904,7 +904,7 @@ WSettings::GetIgnorePattern()
 }
 
 void
-WSettings::SetIgnorePattern(QString p)
+WSettings::SetIgnorePattern(const QString & p)
 {
 	fSet()->RemoveName(IGNORE_PATTERN);
 	fSet()->AddString(IGNORE_PATTERN, (const char *) p.utf8());
@@ -919,7 +919,7 @@ WSettings::GetIPIgnorePattern()
 }
 
 void
-WSettings::SetIPIgnorePattern(QString p)
+WSettings::SetIPIgnorePattern(const QString & p)
 {
 	fSet()->RemoveName(IPIGNORE_PATTERN);
 	fSet()->AddString(IPIGNORE_PATTERN, (const char *) p.utf8());
@@ -934,7 +934,7 @@ WSettings::GetBlackListPattern()
 }
 
 void
-WSettings::SetAutoPrivatePattern(QString p)
+WSettings::SetAutoPrivatePattern(const QString & p)
 {
 	fSet()->RemoveName(AUTOPRIV);
 	fSet()->AddString(AUTOPRIV, (const char *) p.utf8());
@@ -949,7 +949,7 @@ WSettings::GetAutoPrivatePattern()
 }
 
 void
-WSettings::SetBlackListPattern(QString p)
+WSettings::SetBlackListPattern(const QString & p)
 {
 	fSet()->RemoveName(BLACKLIST);
 	fSet()->AddString(BLACKLIST, (const char *) p.utf8());
@@ -964,7 +964,7 @@ WSettings::GetOnConnect()
 }
 
 void
-WSettings::SetOnConnect(QString s)
+WSettings::SetOnConnect(const QString & s)
 {
 	fSet()->RemoveName(ONCONN);
 	fSet()->AddString(ONCONN, (const char *) s.utf8());
@@ -979,7 +979,7 @@ WSettings::GetOnConnect2()
 }
 
 void
-WSettings::SetOnConnect2(QString s)
+WSettings::SetOnConnect2(const QString & s)
 {
 	fSet()->RemoveName(ONCONN2);
 	fSet()->AddString(ONCONN2, (const char *) s.utf8());
@@ -987,28 +987,28 @@ WSettings::SetOnConnect2(QString s)
 
 #if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
 void
-WSettings::SetFTPLauncher(QString l)
+WSettings::SetFTPLauncher(const QString & l)
 {
 	fSet()->RemoveName(FTP_LAUNCHER);
 	fSet()->AddString(FTP_LAUNCHER, (const char *) l.utf8());
 }
 
 void
-WSettings::SetMailLauncher(QString l)
+WSettings::SetMailLauncher(const QString & l)
 {
 	fSet()->RemoveName(MAILTO_LAUNCHER);
 	fSet()->AddString(MAILTO_LAUNCHER, (const char *) l.utf8());
 }
 
 void
-WSettings::SetHTTPLauncher(QString l)
+WSettings::SetHTTPLauncher(const QString & l)
 {
 	fSet()->RemoveName(HTTP_LAUNCHER);
 	fSet()->AddString(HTTP_LAUNCHER, (const char *) l.utf8());
 }
 
 void
-WSettings::SetDefaultLauncher(QString l)
+WSettings::SetDefaultLauncher(const QString & l)
 {
 	fSet()->RemoveName(DEFAULT_LAUNCHER);
 	fSet()->AddString(DEFAULT_LAUNCHER, (const char *) l.utf8());
@@ -1344,7 +1344,7 @@ WSettings::SetSearchListSortAscending(bool a)
 }
 
 void
-WSettings::SetRemotePassword(QString pw)
+WSettings::SetRemotePassword(const QString & pw)
 {
 	fSet()->RemoveName(REMOTEPASSWORD);
 	fSet()->AddString(REMOTEPASSWORD, (const char *) pw.utf8());
@@ -1359,7 +1359,7 @@ WSettings::GetRemotePassword()
 }
 
 void
-WSettings::AddQueryItem(QString str)
+WSettings::AddQueryItem(const QString & str)
 {
 	fSet()->AddString(QUERY_LIST, (const char *) str.utf8());
 }

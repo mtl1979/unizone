@@ -1209,10 +1209,6 @@ SOURCE=..\src\wdownloadevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wgenericevent.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\winsharewindow.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"

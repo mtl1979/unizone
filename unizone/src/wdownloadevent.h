@@ -16,7 +16,7 @@ public:
 	enum { Type = 'wDeE' };
 
 	// This event stores a MessageRef
-	WDownloadEvent(MessageRef msg) 
+	WDownloadEvent(const MessageRef msg) 
 		: QCustomEvent(Type) { fMsg = msg; }
 	virtual ~WDownloadEvent() { }
 
