@@ -29,7 +29,7 @@ public:
 	void InitSession();
 
 	QString GetRemoteID() {return fRemoteSessionID;}
-	QString GetRemoteUser() {return fRemoteUser;}
+	QString GetRemoteUser(); 
 	QString GetRemoteIP() {return fStrRemoteIP;}
 	uint32 GetRemotePort() {return fPort;}
 	QString GetCurrentFile() {return fFileUl;}

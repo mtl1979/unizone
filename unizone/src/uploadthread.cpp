@@ -794,3 +794,12 @@ WUploadThread::SetRate(int rate, AbstractReflectSessionRef ref)
 	else
 		ref()->SetOutputPolicy(PolicyRef(NULL, NULL));
 }
+
+QString
+WUploadThread::GetRemoteUser()
+{
+	if (fRemoteUser.isEmpty())
+		return tr("User #%1").arg(fRemoteSessionID);
+	else
+		return fRemoteUser;
+}

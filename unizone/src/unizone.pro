@@ -5,6 +5,7 @@ SOURCES =		aboutdlg.cpp \
 				channel.cpp \
 				channelimpl.cpp \
 				downloadimpl.cpp \
+				downloadthread.cpp \
 				formatting.cpp \
 				menubar.cpp \
 				netclient.cpp \
@@ -14,6 +15,7 @@ SOURCES =		aboutdlg.cpp \
                 privatewindow.cpp \
 				privatewindowimpl.cpp \
 				ulistview.cpp \
+				uploadthread.cpp \
                 winshare_channels.cpp \
 				winshare_parsing.cpp \
 				winshare_network.cpp \

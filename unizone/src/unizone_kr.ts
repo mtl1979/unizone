@@ -949,6 +949,17 @@ Date: %4</source>
     </message>
 </context>
 <context>
+    <name>WDownloadThread</name>
+    <message>
+        <source>%1%2 %3%4</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1%2 %3</source>
+        <translation type='unfinished'>%1%2 %3</translation>
+    </message>
+</context>
+<context>
     <name>WPrefs</name>
     <message>
         <source>This is the color of your user name.</source>
@@ -1701,6 +1712,17 @@ Date: %4</source>
     <message>
         <source>Results: %1</source>
         <translation type='obsolete'>결과: %1</translation>
+    </message>
+</context>
+<context>
+    <name>WUploadThread</name>
+    <message>
+        <source>Your download has been blocked for %1 minute(s)!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User #%1</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

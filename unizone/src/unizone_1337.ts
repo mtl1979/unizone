@@ -293,7 +293,7 @@ Version %1</translation>
     </message>
     <message>
         <source>/me [action] - same as /action</source>
-        <translation>/me [action] - check /action n00b!</translation>
+        <translation>/me [action] - check /action n00b</translation>
     </message>
     <message>
         <source>/op [name or session id] - give admin status to other user</source>
@@ -674,7 +674,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;User #%3 (a.k.a. &lt;font color="%5"&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</source>
-        <translation>&lt;font color="%1" size="%2"&gt;User #%3 (a.k.a. &lt;font color="%5"&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</translation>
+        <translation>&lt;font color="%1" size="%2"&gt;Loser #%3 (a.k.a. &lt;font color="%5"&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
@@ -755,7 +755,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;font color="%1" size="%2"&gt;Ping ponged in %3 milliseconds (%4)&lt;/font&gt;</translation>
     </message>
 </context>
 <context>
@@ -1102,6 +1102,17 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>WDownloadThread</name>
+    <message>
+        <source>%1%2 %3%4</source>
+        <translation>%1%2 %3%4</translation>
+    </message>
+    <message>
+        <source>%1%2 %3</source>
+        <translation>%1%2 %3</translation>
+    </message>
+</context>
+<context>
     <name>WPrefs</name>
     <message>
         <source>&lt;font color="%1"&gt;%2&lt;/font&gt;</source>
@@ -1109,7 +1120,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>This is the color of your user name.</source>
-        <translation>This is the color of your user namez.</translation>
+        <translation>This is the color of your loser namez.</translation>
     </message>
     <message>
         <source>This is the color of other users&apos; names.</source>
@@ -1149,7 +1160,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>This is the color of your user name in text when someone says your name in the main chat.</source>
-        <translation>This is the color of your user namez in text when someone says your namez in the main chat.</translation>
+        <translation>This is the color of your loser namez in text when someone says your namez in the main chat.</translation>
     </message>
     <message>
         <source>Username</source>
@@ -1464,7 +1475,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>The selected style will be applied as soon as it is selected.</source>
-        <translation>The selected style will be used asap. Chill out!</translation>
+        <translation>The selected style will be used asap. Chill out.</translation>
     </message>
     <message>
         <source>Style</source>
@@ -1931,6 +1942,17 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>WUploadThread</name>
+    <message>
+        <source>Your download has been blocked for %1 minute(s)!</source>
+        <translation>Your leech has been blocked for %1 minute(z)!</translation>
+    </message>
+    <message>
+        <source>User #%1</source>
+        <translation>Loser #%1</translation>
+    </message>
+</context>
+<context>
     <name>WinShare</name>
     <message>
         <source>%d.%d.%d build %d</source>
@@ -2094,7 +2116,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
-        <translation>Ping pong user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
+        <translation>Ping pong loser #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
@@ -2390,7 +2412,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Nick collision with user #%1</source>
-        <translation>Nick collision with user #%1</translation>
+        <translation>Nick collision with loser #%1</translation>
     </message>
     <message>
         <source>[Freeware] - Unizone</source>
@@ -2998,11 +3020,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation>User #%1 invited you to be mocked in channel %2. Do you accept?</translation>
+        <translation>Loser #%1 invited you to be mocked in channel %2. Do you accept?</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation>User #%1 requested to be mocked in channel %2. Do you?</translation>
+        <translation>Loser #%1 requested to be mocked in channel %2. Do you?</translation>
     </message>
     <message>
         <source>Server version: %1</source>
@@ -3078,7 +3100,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation type='unfinished'></translation>
+        <translation>Welcome to Unizone (31337 English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
     </message>
 </context>
 </TS>

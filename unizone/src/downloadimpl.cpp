@@ -1888,6 +1888,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 				fULPopup->setItemEnabled(ID_BLOCK, false);
 				fULPopup->setItemEnabled(ID_THROTTLE, false);
 				fULPopup->setItemEnabled(ID_SETPACKET, false);
+				fULPopup->setItemEnabled(ID_CANCEL, false);
 			}
 			else
 			{
@@ -1895,6 +1896,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 				fULPopup->setItemEnabled(ID_BLOCK, true);
 				fULPopup->setItemEnabled(ID_THROTTLE, true);
 				fULPopup->setItemEnabled(ID_SETPACKET, true);
+				fULPopup->setItemEnabled(ID_CANCEL, true);
 			}
 
 			fULPopup->setItemChecked(ID_QUEUE, (*iter).first->IsLocallyQueued());
@@ -2191,12 +2193,14 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 				fDLPopup->setItemEnabled(ID_THROTTLE, false);
 				fDLPopup->setItemEnabled(ID_QUEUE, false);
 				fDLPopup->setItemEnabled(ID_RUN, true);
+				fDLPopup->setItemEnabled(ID_CANCEL, false);
 			}
 			else
 			{
 				fDLPopup->setItemEnabled(ID_THROTTLE, true);
 				fDLPopup->setItemEnabled(ID_QUEUE, true);
 				fDLPopup->setItemEnabled(ID_RUN, false);
+				fDLPopup->setItemEnabled(ID_CANCEL, true);
 			}
 
 			fDLPopup->setItemChecked(ID_QUEUE, (*iter).first->IsLocallyQueued());

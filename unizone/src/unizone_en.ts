@@ -1098,6 +1098,17 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>WDownloadThread</name>
+    <message>
+        <source>%1%2 %3%4</source>
+        <translation>%1%2 %3%4</translation>
+    </message>
+    <message>
+        <source>%1%2 %3</source>
+        <translation>%1%2 %3</translation>
+    </message>
+</context>
+<context>
     <name>WPrefs</name>
     <message>
         <source>&lt;font color="%1"&gt;%2&lt;/font&gt;</source>
@@ -1924,6 +1935,17 @@ Date: %4</translation>
     <message>
         <source>Results: %1</source>
         <translation type='obsolete'>Results: %1</translation>
+    </message>
+</context>
+<context>
+    <name>WUploadThread</name>
+    <message>
+        <source>Your download has been blocked for %1 minute(s)!</source>
+        <translation>Your download has been blocked for %1 minute(s)!</translation>
+    </message>
+    <message>
+        <source>User #%1</source>
+        <translation>User #%1</translation>
     </message>
 </context>
 <context>
