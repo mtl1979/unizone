@@ -336,7 +336,7 @@ WPrefs::OK()
 	gWin->fSettings->SetMailLauncher(fMailtoLauncher->text());
 	gWin->fSettings->SetHTTPLauncher(fHTTPLauncher->text());
 	gWin->fSettings->SetFTPLauncher(fFTPLauncher->text());
-	gWin->fSettings->SetDefaultLauncher(fDefaultLauncher->test());
+	gWin->fSettings->SetDefaultLauncher(fDefaultLauncher->text());
 #endif
 	
 	gWin->fSettings->SetULLimit(fULLimit->currentItem());

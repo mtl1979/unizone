@@ -120,7 +120,7 @@ GotoURL(QString url)
 	}
 	else
 	{
-		t->fLauncher = gWin->fSettings->GetDefaultLauncher();	// unknown? use HTTP launcher...
+		t->fLauncher = gWin->fSettings->GetDefaultLauncher();	// unknown? use default launcher...
 	}
 #endif
 	t->start();
