@@ -23,6 +23,7 @@ CFG=Unizone - Win32 Debug
 !MESSAGE "Unizone - Win32 Portuguese" (based on "Win32 (x86) Application")
 !MESSAGE "Unizone - Win32 German" (based on "Win32 (x86) Application")
 !MESSAGE "Unizone - Win32 French" (based on "Win32 (x86) Application")
+!MESSAGE "Unizone - Win32 Russian" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
@@ -212,6 +213,37 @@ LINK32=link.exe
 # ADD LINK32 unicows.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib qt-mt230nc.lib qtmain.lib muscle.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone_fr.exe" /libpath:"$(QTDIR)\lib"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "Unizone___Win32_Russian"
+# PROP BASE Intermediate_Dir "Unizone___Win32_Russian"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "Unizone___Win32_Russian"
+# PROP Intermediate_Dir "Unizone___Win32_Russian"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D MSG_LANG=1 /D "QT_NO_ASCII_CAST" /D "UNICODE" /YX /FD /c
+# SUBTRACT BASE CPP /X /Fr
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D MSG_LANG=7 /D "QT_NO_ASCII_CAST" /D "UNICODE" /Fr /YX /FD /c
+# SUBTRACT CPP /X
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo /o"Release/Unizone.bsc"
+# ADD BSC32 /nologo /o"Release/Unizone.bsc"
+LINK32=link.exe
+# ADD BASE LINK32 unicows.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib qt-mt230nc.lib qtmain.lib muscle.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone_en.exe" /libpath:"$(QTDIR)\lib"
+# SUBTRACT BASE LINK32 /pdb:none /incremental:yes
+# ADD LINK32 unicows.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib qt-mt230nc.lib qtmain.lib muscle.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone_ru.exe" /libpath:"$(QTDIR)\lib"
+# SUBTRACT LINK32 /pdb:none /incremental:yes
+
 !ENDIF 
 
 # Begin Target
@@ -222,6 +254,7 @@ LINK32=link.exe
 # Name "Unizone - Win32 Portuguese"
 # Name "Unizone - Win32 German"
 # Name "Unizone - Win32 French"
+# Name "Unizone - Win32 Russian"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -532,6 +565,20 @@ InputName=aboutdlg
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\aboutdlg.h
+InputName=aboutdlg
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -606,6 +653,20 @@ InputName=aboutdlgimpl
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 French"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\aboutdlgimpl.h
+InputName=aboutdlgimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
 
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
@@ -718,6 +779,20 @@ InputName=chattext
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\chattext.h
+InputName=chattext
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -813,6 +888,20 @@ InputName=combo
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\combo.h
+InputName=combo
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -891,6 +980,20 @@ InputName=downloadimpl
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 French"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\downloadimpl.h
+InputName=downloadimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
 
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
@@ -1015,6 +1118,20 @@ InputName=genericthread
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\genericthread.h
+InputName=genericthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1101,6 +1218,20 @@ InputName=htmlview
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 French"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\htmlview.h
+InputName=htmlview
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
 
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
@@ -1221,6 +1352,20 @@ InputName=netclient
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\netclient.h
+InputName=netclient
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1307,6 +1452,20 @@ InputName=prefs
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 French"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\prefs.h
+InputName=prefs
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
 
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
@@ -1407,6 +1566,20 @@ InputName=prefsimpl
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\prefsimpl.h
+InputName=prefsimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -1481,6 +1654,20 @@ InputName=privatewindow
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 French"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\privatewindow.h
+InputName=privatewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
 
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
@@ -1581,12 +1768,30 @@ InputName=privatewindowimpl
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\privatewindowimpl.h
+InputName=privatewindowimpl
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\resource.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\lang\russian.h
 # End Source File
 # Begin Source File
 
@@ -1659,6 +1864,20 @@ InputName=search
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 French"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\search.h
+InputName=search
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
 
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
@@ -1790,6 +2009,20 @@ InputName=winsharewindow
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 French"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\Unizone\src
+InputPath=..\src\winsharewindow.h
+InputName=winsharewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
 
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
@@ -1948,6 +2181,27 @@ BuildCmds= \
    $(BuildCmds)
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\Unizone\src
+InputPath=..\src\aboutdlg.ui
+InputName=aboutdlg
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -2077,6 +2331,27 @@ BuildCmds= \
    $(BuildCmds)
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\Unizone\src
+InputPath=..\src\prefs.ui
+InputName=prefs
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -2186,6 +2461,27 @@ BuildCmds= \
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 French"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=\build\Unizone\src
+InputPath=..\src\privatewindow.ui
+InputName=privatewindow
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Russian"
 
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
