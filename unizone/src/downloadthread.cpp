@@ -61,12 +61,15 @@ WDownloadThread::SetFile(QString * files, int32 numFiles, QString fromIP, QStrin
 	fPartial = partial;
 	
 	MessageRef msg(GetMessageFromPool(WGenericEvent::Init));
-	QString dlFile = "downloads";
-	dlFile += "/";
-	dlFile += fFileDl[0];
-	msg()->AddString("file", (const char *) dlFile.utf8());
-	msg()->AddString("user", (const char *) fromSession.utf8());
-	SendReply(msg);	// send the init message to our owner
+	if (msg())
+	{
+		QString dlFile = "downloads";
+		dlFile += "/";
+		dlFile += fFileDl[0];
+		msg()->AddString("file", (const char *) dlFile.utf8());
+		msg()->AddString("user", (const char *) fromSession.utf8());
+		SendReply(msg);	// send the init message to our owner
+	}
 }
 
 QString 
@@ -164,7 +167,8 @@ WDownloadThread::InitSession()
 				fFile = NULL;
 				fDownloading = false;
 				MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectInProgress));
-				SendReply(msg);
+				if (msg())
+					SendReply(msg);
 				CTimer->start(30000, true); // 30 seconds
 				return true;
 			}
@@ -172,15 +176,21 @@ WDownloadThread::InitSession()
 			{
 				Reset();
 				MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
-				msg()->AddString("why", "Could not add new connect session!");
-				SendReply(msg);
+				if (msg())
+				{
+					msg()->AddString("why", "Could not add new connect session!");
+					SendReply(msg);
+				}
 			}
 		}
 		else
 		{
 			MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
-			msg()->AddString("why", "Failed to start internal thread!");
-			SendReply(msg);
+			if (msg())
+			{
+				msg()->AddString("why", "Failed to start internal thread!");
+				SendReply(msg);
+			}
 		}
 	}
 	else	// he is firewalled?
@@ -216,9 +226,12 @@ WDownloadThread::InitSession()
 			fDownloading = false;
 			fCurrentOffset = fFileSize = 0;
 			MessageRef cnt(GetMessageFromPool(WGenericEvent::ConnectBackRequest));
-			cnt()->AddString("session", (const char *) fFromSession.utf8());
-			cnt()->AddInt32("port", fAcceptingOn);
-			SendReply(cnt);
+			if (cnt())
+			{
+				cnt()->AddString("session", (const char *) fFromSession.utf8());
+				cnt()->AddInt32("port", fAcceptingOn);
+				SendReply(cnt);
+			}
 			CTimer->start(30000, true); // 30 seconds
 			return true;
 		}
@@ -258,7 +271,10 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 				case WDownload::TransferNotifyQueued:
 					{
 						MessageRef q(GetMessageFromPool(WGenericEvent::FileQueued));
-						SendReply(q);
+						if (q())
+						{
+							SendReply(q);
+						}
 						SetRemotelyQueued(true);
 						//CTimer->start(60000, true);
 						break;
@@ -269,9 +285,14 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						MessageRef q(GetMessageFromPool(WGenericEvent::FileBlocked));
 						uint64 timeleft = (uint64) -1;
 						(void) next()->FindInt64("timeleft", (int64 *) &timeleft);
-						if (timeleft != -1)
-							q()->AddInt64("timeleft", timeleft);
-						SendReply(q);
+						if (q())
+						{
+							if (timeleft != -1)
+							{
+								q()->AddInt64("timeleft", timeleft);
+							}
+							SendReply(q);
+						}
 						SetBlocked(true, timeleft);
 						break;
 					}
@@ -294,12 +315,15 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								fFile = NULL;
 							}
 							MessageRef msg(GetMessageFromPool(WGenericEvent::FileDone));
-							msg()->AddBool("done", false);
-							if (fCurrentOffset < fFileSize)				// hm... cut off short?
-							{					
-								msg()->AddBool("error", true);
+							if (msg())
+							{
+								msg()->AddBool("done", false);
+								if (fCurrentOffset < fFileSize)				// hm... cut off short?
+								{					
+									msg()->AddBool("error", true);
+								}
+								SendReply(msg);
 							}
-							SendReply(msg);
 							//fCurrentOffset = fFileSize = 0;
 							NextFile();
 						}
@@ -365,24 +389,30 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							MessageRef msg;
 							if (fFile->open((append ? IO_Append | IO_WriteOnly : IO_WriteOnly)))
 							{
-								msg = MessageRef(GetMessageFromPool(WGenericEvent::FileStarted));
-								msg()->AddString("file", (const char *) fixed.utf8());
-								msg()->AddInt64("start", fCurrentOffset);
-								msg()->AddInt64("size", fFileSize);
-								msg()->AddString("user", (const char *) fFromSession.utf8());
+								msg = GetMessageFromPool(WGenericEvent::FileStarted);
+								if (msg())
+								{
+									msg()->AddString("file", (const char *) fixed.utf8());
+									msg()->AddInt64("start", fCurrentOffset);
+									msg()->AddInt64("size", fFileSize);
+									msg()->AddString("user", (const char *) fFromSession.utf8());
+									SendReply(msg);
+								}
 								fDownloading = true;
-								SendReply(msg);
 							}
 							else
 							{
 								// ERROR!
 								disconnected = true;	// we're done
-								msg = MessageRef(GetMessageFromPool(WGenericEvent::FileError));
-								msg()->AddString("file", (const char *) outFile.utf8());
-								msg()->AddString("why", "Critical error: Could not create file!");
 								delete fFile;
 								fFile = NULL;
-								SendReply(msg);
+								msg = GetMessageFromPool(WGenericEvent::FileError);
+								if (msg())
+								{
+									msg()->AddString("file", (const char *) outFile.utf8());
+									msg()->AddString("why", "Critical error: Could not create file!");
+									SendReply(msg);
+								}
 								NextFile();
 							}	
 						}
@@ -390,8 +420,11 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						{
 							disconnected = true;
 							MessageRef msg(GetMessageFromPool(WGenericEvent::FileError));
-							msg()->AddString("why", "Could not read file info!");
-							SendReply(msg);
+							if (msg())
+							{
+								msg()->AddString("why", "Could not read file info!");
+								SendReply(msg);
+							}
 						}
 						break;
 					}
@@ -416,24 +449,35 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 									// check munge-mode here... not yet
 									if (fFile->writeBlock((const char *)data, (uint)numBytes) == (int)numBytes)
 									{
-										MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));
 										fCurrentOffset += numBytes;
-										update()->AddInt64("offset", fCurrentOffset);
-										update()->AddInt64("size", fFileSize);
-										update()->AddInt32("got", numBytes);
+										MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));
+										if (update())
+										{
+											update()->AddInt64("offset", fCurrentOffset);
+											update()->AddInt64("size", fFileSize);
+											update()->AddInt32("got", numBytes);
+										}
 										
 										if (fCurrentOffset >= fFileSize)
 										{
-											update()->AddBool("done", true);	// file done!
-											if (fCurFile != -1)
-												update()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
+											if (update())
+											{
+												update()->AddBool("done", true);	// file done!
+												if (fCurFile != -1)
+												{
+													update()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
+												}
+											}
 											fFile->close();
 											delete fFile; 
 											fFile = NULL;
 											fDownloading = false;
 											NextFile();
 										}
-										SendReply(update);
+										if (update())
+										{
+											SendReply(update);
+										}
 										//CTimer->start(30000, true); // 30 seconds
 										PRINT("\tWDownload::TransferFileData OK\n");
 									}
@@ -442,8 +486,11 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 										// error
 										PRINT("\tWDownload::TransferFileData FAIL!!!\n");
 										MessageRef error(GetMessageFromPool(WGenericEvent::FileError));
-										error()->AddString("why", "Couldn't write file data!");
-										SendReply(error);
+										if (error())
+										{
+											error()->AddString("why", "Couldn't write file data!");
+											SendReply(error);
+										}
 										Reset();
 										fDownloading = false;
 										fFile->close();
@@ -464,14 +511,24 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 			case MTT_EVENT_SESSION_CONNECTED:
 				{
 					MessageRef replyMsg(GetMessageFromPool(WGenericEvent::Connected));
-					SendReply(replyMsg);
+					if (replyMsg())
+					{
+						SendReply(replyMsg);
+					}
 					
 					MessageRef comID(GetMessageFromPool(WDownload::TransferCommandPeerID));
-					comID()->AddString("beshare:FromUserName", (const char *) gWin->GetUserName().utf8());
-					comID()->AddString("beshare:FromSession", (const char *) gWin->GetUserID().utf8());
-					SendMessageToSessions(comID);
+					if (comID())
+					{
+						comID()->AddString("beshare:FromUserName", (const char *) gWin->GetUserName().utf8());
+						comID()->AddString("beshare:FromSession", (const char *) gWin->GetUserID().utf8());
+						SendMessageToSessions(comID);
+					}
 					
 					MessageRef neg(GetMessageFromPool(WDownload::TransferFileList));
+					if (!neg())
+					{
+						break;
+					}
 					for (int c = 0; c < fNumFiles; c++)
 					{
 						// check to see wether the file exists
@@ -491,8 +548,11 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
 							
 							MessageRef hashMsg(GetMessageFromPool(WGenericEvent::FileHashing));
-							hashMsg()->AddString("file", (const char *)fixed.utf8());
-							SendReply(hashMsg);
+							if (hashMsg())
+							{
+								hashMsg()->AddString("file", (const char *)fixed.utf8());
+								SendReply(hashMsg);
+							}
 							
 							if (HashFileMD5(fixed, fileOffset, bytesFromBack, retBytesHashed, digest, fShutdownFlag) == B_ERROR)
 							{
@@ -504,9 +564,12 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								else	// ERROR?
 								{
 									MessageRef e(GetMessageFromPool(WGenericEvent::FileError));
-									e()->AddString("file", (const char *) outFile.utf8());
-									e()->AddString("why", "MD5 hashing failed! Can't resume.");
-									SendReply(e);
+									if (e())
+									{
+										e()->AddString("file", (const char *) outFile.utf8());
+										e()->AddString("why", "MD5 hashing failed! Can't resume.");
+										SendReply(e);
+									}
 								}
 							}
 							else
@@ -530,8 +593,11 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 			case MTT_EVENT_SERVER_EXITED:		// same handler for the both of these
 				{
 					PRINT("WDownloadThread::SignalOwner: MTT_EVENT_SERVER_EXITED\n");
-					// Fall through?
-					break;
+					if (fFinished || fManuallyQueued)
+					{
+						break;
+					}
+					// Fall through
 				}
 			case MTT_EVENT_SESSION_DISCONNECTED:
 				{
@@ -542,32 +608,44 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					{
 						if (fCurrentOffset != fFileSize)
 						{
-							dis = MessageRef(GetMessageFromPool(WGenericEvent::Disconnected));
-							dis()->AddBool("failed", true);
+							dis = GetMessageFromPool(WGenericEvent::Disconnected);
+							if (dis())
+							{
+								dis()->AddBool("failed", true);
+							}
 						}
 						else if (fCurrentOffset == fFileSize)
 						{
 							if (IsLastFile())
 							{
-								dis = MessageRef(GetMessageFromPool(WGenericEvent::FileDone));
-								dis()->AddBool("done", true);		
-								dis()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
+								dis = GetMessageFromPool(WGenericEvent::FileDone);
+								if (dis())
+								{
+									dis()->AddBool("done", true);		
+									dis()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
+								}
 							}
 							else
 							{
 								NextFile();
-								dis = MessageRef(GetMessageFromPool(WGenericEvent::FileFailed));
-								dis()->AddBool("failed", true);
+								dis = GetMessageFromPool(WGenericEvent::FileFailed);
+								if (dis())
+								{
+									dis()->AddBool("failed", true);
+								}
 							}
 						}
 					}
 					else
 					{
-						dis = MessageRef(GetMessageFromPool(WGenericEvent::Disconnected));
-						if (fCurFile == -1)
-							dis()->AddBool("failed", false);
-						else
-							dis()->AddBool("failed", true);
+						dis = GetMessageFromPool(WGenericEvent::Disconnected);
+						if (dis())
+						{
+							if (fCurFile == -1)
+								dis()->AddBool("failed", false);
+							else
+								dis()->AddBool("failed", true);
+						}
 					}
 					
 					fDownloading = false;
@@ -577,7 +655,10 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						delete fFile; 
 						fFile = NULL;
 					}
-					SendReply(dis);
+					if (dis())
+					{
+						SendReply(dis);
+					}
 					disconnected = true;
 					break;
 				}

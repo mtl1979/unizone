@@ -226,6 +226,11 @@ WinShareWindow::StartAcceptThread()
 		}
 		return false;
 	}
+	if (fAcceptThread)			// Already running, no need to start this time.
+	{
+		return false;
+	}
+
 	// setup accept thread
 	fAccept = new WAcceptThread(this);
 	CHECK_PTR(fAccept);

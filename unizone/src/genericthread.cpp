@@ -315,9 +315,11 @@ WGenericThread::ConnectTimer()
 {
 	Reset();
 	MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
-	msg()->AddString("why", "Connection timed out!");
-	// msg()->AddBool("retry", true);
-	SendReply(msg);
+	if (msg())
+	{
+		msg()->AddString("why", "Connection timed out!");
+		SendReply(msg);
+	}
 }
 
 void

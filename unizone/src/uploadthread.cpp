@@ -102,14 +102,20 @@ WUploadThread::InitSession()
 		if (AddNewSession(fSocket, limit) == B_OK && StartInternalThread() == B_OK)
 		{
 			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
-			SendReply(mref);
+			if (mref())
+			{
+				SendReply(mref);
+			}
 			CTimer->start(60000, true);
 		}
 		else
 		{
 			MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
-			fail()->AddString("why", "Could not init session!");
-			SendReply(fail);
+			if (fail())
+			{
+				fail()->AddString("why", "Could not init session!");
+				SendReply(fail);
+			}
 		}
 	}
 	else
@@ -118,14 +124,20 @@ WUploadThread::InitSession()
 		if (AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && StartInternalThread() == B_OK)
 		{
 			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
-			SendReply(mref);
+			if (mref())
+			{
+				SendReply(mref);
+			}
 			CTimer->start(60000, true);
 		}
 		else
 		{
 			MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
-			fail()->AddString("why", "Couldn't create new connect session!");
-			SendReply(fail);
+			if (fail())
+			{
+				fail()->AddString("why", "Couldn't create new connect session!");
+				SendReply(fail);
+			}
 		}
 	}
 }
@@ -179,10 +191,6 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 		{
 			SendRejectedNotification(false);
 		}
-		else
-		{
-			InitSession();
-		}
 	}
 }
 
@@ -220,9 +228,20 @@ WUploadThread::SignalOwner()
 			case MTT_EVENT_SESSION_CONNECTED:
 			{
 				MessageRef con(GetMessageFromPool(WGenericEvent::Connected));
-				SendReply(con);
-				// if queued, send a queued message here, otherwise, nothing
+				if (con())
+				{
+					SendReply(con);
+				}
 				break;
+			}
+
+			case MTT_EVENT_SERVER_EXITED:
+			{
+				if (fFinished)
+				{
+					break;
+				}
+				// Fall through...
 			}
 
 			case MTT_EVENT_SESSION_DISCONNECTED:
@@ -234,11 +253,14 @@ WUploadThread::SignalOwner()
 					fFile = NULL;
 				}
 				MessageRef dis(GetMessageFromPool(WGenericEvent::Disconnected));
-				if (fCurrentOffset < fFileSize || fUploads.size() > 0)
-					dis()->AddBool("failed", true);
-				else
-					dis()->AddBool("failed", false);
-				SendReply(dis);
+				if (dis())
+				{
+					if (fCurrentOffset < fFileSize || fUploads.size() > 0)
+						dis()->AddBool("failed", true);
+					else
+						dis()->AddBool("failed", false);
+					SendReply(dis);
+				}
 				break;
 			}
 
@@ -252,16 +274,21 @@ WUploadThread::SignalOwner()
 						if (next()->FindString("beshare:FromUserName", &name) ==  B_OK &&
 							next()->FindString("beshare:FromSession", &id) == B_OK)
 						{
-							MessageRef ui(GetMessageFromPool(WGenericEvent::UpdateUI));
-							ui()->AddString("name", name);
-							ui()->AddString("id", id);
 							fRemoteSessionID = QString::fromUtf8(id);
 							fRemoteUser = QString::fromUtf8(name);
+
 							if (gWin->IsIgnored(fRemoteSessionID, true))
 							{
 								SetBlocked(true);
 							}
-							SendReply(ui);
+
+							MessageRef ui(GetMessageFromPool(WGenericEvent::UpdateUI));
+							if (ui())
+							{
+								ui()->AddString("name", name);
+								ui()->AddString("id", id);
+								SendReply(ui);
+							}
 						}
 						break;
 					}
@@ -329,8 +356,11 @@ WUploadThread::SignalOwner()
 
 										// Notify window of our hashing
 										MessageRef m(GetMessageFromPool(WGenericEvent::FileHashing));
-										m()->AddString("file", filePath);
-										SendReply(m);
+										if (m())
+										{
+											m()->AddString("file", filePath);
+											SendReply(m);
+										}
 
 										// Hash
 										uint64 retBytesHashed = 0;
@@ -371,9 +401,12 @@ WUploadThread::SignalOwner()
 											firstFile += "/";
 										firstFile += filename;
 										MessageRef initmsg(GetMessageFromPool(WGenericEvent::Init));
-										initmsg()->AddString("file", firstFile);
-										initmsg()->AddString("user", (const char *) fRemoteSessionID.utf8());
-										SendReply(initmsg);
+										if (initmsg())
+										{
+											initmsg()->AddString("file", firstFile);
+											initmsg()->AddString("user", (const char *) fRemoteSessionID.utf8());
+											SendReply(initmsg);
+										}
 									}
 								}
 							}
@@ -396,11 +429,18 @@ WUploadThread::SignalOwner()
 #endif
 					PRINT("\t\tSending message\n");
 					MessageRef msg(GetMessageFromPool(WGenericEvent::Disconnected));
-					msg()->AddBool("done", true);
-					msg()->AddString("file", (const char *) fFileUl.utf8());
-					PRINT("\t\tSending...\n");
-					SendReply(msg);
-					PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
+					if (msg())
+					{
+						msg()->AddBool("done", true);
+						msg()->AddString("file", (const char *) fFileUl.utf8());
+						PRINT("\t\tSending...\n");
+						SendReply(msg);
+						PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
+					}
+					else
+					{
+						PRINT("\t\tNot sent!\n");
+					}
 					return;
 				}
 				else
@@ -415,15 +455,25 @@ void
 WUploadThread::SendQueuedNotification()
 {
 	MessageRef q(GetMessageFromPool(WDownload::TransferNotifyQueued));
-	SendMessageToSessions(q);
+	if (q())
+	{
+		SendMessageToSessions(q);
+	}
 	MessageRef qf(GetMessageFromPool(WGenericEvent::FileQueued));
-	SendReply(qf);
+	if (qf())
+	{
+		SendReply(qf);
+	}
 }
 
 void
 WUploadThread::SendRejectedNotification(bool direct)
 {
 	MessageRef q(GetMessageFromPool(WDownload::TransferNotifyRejected));
+
+	if (!q())
+		return;
+
 	if (fTimeLeft != -1)
 		q()->AddInt64("timeleft", fTimeLeft);
 	if (direct || (fPort == 0))
@@ -467,7 +517,10 @@ WUploadThread::DoUpload()
 	if (IsLocallyQueued())		// not yet
 	{
 		MessageRef lq(GetMessageFromPool(WGenericEvent::FileQueued));
-		SendReply(lq);
+		if (lq())
+		{
+			SendReply(lq);
+		}
 		return;
 	}
 
@@ -538,16 +591,19 @@ WUploadThread::DoUpload()
 				RequestOutputQueuesDrainedNotification(MessageRef());
 				fCurrentOffset += numBytes;
 				MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));	// we'll use this event for sending as well
-				update()->AddInt64("offset", fCurrentOffset);
-				update()->AddInt64("size", fFileSize);
-				update()->AddInt32("sent", numBytes);
-				
-				if (fCurrentOffset >= fFileSize)
+				if (update())
 				{
-					update()->AddBool("done", true);	// file done!
-					update()->AddString("file", (const char *) fFileUl.utf8());
+					update()->AddInt64("offset", fCurrentOffset);
+					update()->AddInt64("size", fFileSize);
+					update()->AddInt32("sent", numBytes);
+				
+					if (fCurrentOffset >= fFileSize)
+					{
+						update()->AddBool("done", true);	// file done!
+						update()->AddString("file", (const char *) fFileUl.utf8());
+					}
+					SendReply(update);
 				}
-				SendReply(update);
 				return;
 			}
 
@@ -612,11 +668,14 @@ WUploadThread::DoUpload()
 				fCurFile++;
 
 				MessageRef msg(GetMessageFromPool(WGenericEvent::FileStarted));
-				msg()->AddString("file", filePath.Cstr());
-				msg()->AddInt64("start", fCurrentOffset);
-				msg()->AddInt64("size", fFileSize);
-				msg()->AddString("user", (const char *) fRemoteSessionID.utf8());
-				SendReply(msg);
+				if (msg())
+				{
+					msg()->AddString("file", filePath.Cstr());
+					msg()->AddInt64("start", fCurrentOffset);
+					msg()->AddInt64("size", fFileSize);
+					msg()->AddString("user", (const char *) fRemoteSessionID.utf8());
+					SendReply(msg);
+				}
 
 				DoUpload();	// nested call
 			}
