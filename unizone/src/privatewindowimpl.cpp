@@ -99,7 +99,6 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 
 #ifdef WIN32
-	// <postmaster@raasu.org> 20021021 -- Use Unicode macro L"..."
 	QString title = tr ("[Freeware] - Private");
 	wchar_t * wtitle = qStringToWideChar(title);
 	fWinHandle = FindWindow(NULL, wtitle);
