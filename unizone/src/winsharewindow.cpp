@@ -2267,7 +2267,7 @@ WinShareWindow::CancelShares()
 	if (delData())
 	{
 		delData()->AddString(PR_NAME_KEYS, "beshare/fi*");
-		fNetClient->SendMessageToSessions(delData);
+		fNetClient->SendMessageToSessions(delData, 0);
 	}
 }
 
@@ -2499,6 +2499,9 @@ WinShareWindow::UpdateShares()
 	if (fSettings->GetSharingEnabled()) // Make sure sharing is enabled and fully functional
 	{
 		CancelShares();
+
+		if (fListThread->IsInternalThreadRunning())
+			fListThread->ShutdownInternalThread();
 
 		fListThread->StartInternalThread();
 	}				

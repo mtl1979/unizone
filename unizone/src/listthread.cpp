@@ -51,7 +51,7 @@ WListThread::InternalThreadEntry()
 		while (filesIter.HasMoreKeys())
 		{
 			// stop iterating if we are waiting for file scan thread to finish
-			if (fShutdownFlag)
+			if (fShutdownFlag && *fShutdownFlag)
 				break;
 			
 			//				qApp->processEvents(300);
