@@ -263,6 +263,7 @@ WDownload::~WDownload()
 		it = fDownloadList.begin();
 	}
 	fLock.unlock();
+
 	fLock.lock();
 	PRINT("Number of uploads: %d\n", fUploadList.size());
 	it = fUploadList.begin();
@@ -299,29 +300,35 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "");
 	CHECK_PTR(p.second);
 
-	int x;
+	
 
-	if (remoteIP == "127.0.0.1")	// Can't use localhost to download!!!
+	if (!firewalled) // Check for valid ip and port if not firewalled
 	{
-		remoteIP = gWin->fNetClient->GetServerIP();
-		if (remoteIP != "127.0.0.1")
+		int x;
+
+		// Can't use localhost to download!!!
+
+		if (remoteIP == "127.0.0.1")	
+		{
+			remoteIP = gWin->fNetClient->GetServerIP();
+			if (remoteIP != "127.0.0.1")
+			{
+				for (x = 0; x < filecount; x++)
+					gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP), false);
+			}
+		}
+		
+		// Detect uncommon remote port 
+		
+		if (!muscleInRange(remotePort, (uint32) DEFAULT_LISTEN_PORT, (uint32) (DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE)))
 		{
 			for (x = 0; x < filecount; x++)
-				gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP), false);
+				gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]), false);
 		}
-	}
-
-	// Detect uncommon remote port 
-
-	if (!muscleInRange(remotePort, (uint32) DEFAULT_LISTEN_PORT, (uint32) (DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE)))
-	{
-		for (x = 0; x < filecount; x++)
-			gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]), false);
 	}
 
 	if (GetNumDownloads() < gWin->fSettings->GetMaxDownloads())
 	{
-//		PRINT("DLS (%d, %d)\n", fNumDownloads, gWin->fSettings->GetMaxDownloads());
 		nt->InitSession();
 		nt->SetLocallyQueued(false);
 	}
@@ -330,8 +337,6 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 		nt->SetLocallyQueued(true);
 		p.second->setText(WTransferItem::Status, tr("Locally Queued."));
 	}
-//	fNumDownloads++;
-//	WASSERT(fNumDownloads >= 0, "Download count is negative!");
 	fLock.lock();
 	fDownloadList.insert(fDownloadList.end(), p);
 	fLock.unlock();
@@ -380,8 +385,7 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 		PRINT("Queued\n");
 		ut->SetLocallyQueued(true);
 	}
-//	fNumUploads++;
-//	WASSERT(fNumUploads >= 0, "Upload count is negative!");
+
 	PRINT("Init session\n");
 	ut->InitSession();
 	WTPair p;
@@ -405,8 +409,11 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 void
 WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 {
+	PRINT("WDownload::AddUpload(int, uint32, bool)\n");
 	WUploadThread * ut = new WUploadThread(this);
 	CHECK_PTR(ut);
+
+	PRINT("Setting upload\n");
 	ut->SetUpload(socket, remoteIP, fSharedFiles);
 	
 	if (GetNumUploads() < gWin->fSettings->GetMaxUploads())
@@ -419,8 +426,8 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 		PRINT("Queued\n");
 		ut->SetLocallyQueued(true);
 	}
-//	fNumUploads++;
-//	WASSERT(fNumUploads >= 0, "Upload count is negative!");
+
+	PRINT("Init session\n");
 	ut->InitSession();
 
 	WTPair p;
@@ -429,7 +436,11 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 	CHECK_PTR(p.second);
 
 	if (ut->IsLocallyQueued())
+	{
+		PRINT("IsQueued\n");
 		p.second->setText(WTransferItem::Status, tr("Queued."));
+	}
+	PRINT("Inserting\n");
 	fLock.lock();
 	fUploadList.insert(fUploadList.end(), p);
 	fLock.unlock();
@@ -662,10 +673,15 @@ WDownload::customEvent(QCustomEvent * e)
 				if (upload)
 				{
 					item->setText(WTransferItem::Status, tr("Queued."));
+					item->setText(WTransferItem::Rate, "0.0");
+					item->setText(WTransferItem::ETA, "");
+
 				}
 				else
 				{
 					item->setText(WTransferItem::Status, tr("Remotely Queued."));
+					item->setText(WTransferItem::Rate, "0.0");
+					item->setText(WTransferItem::ETA, "");
 				}
 				break;
 			}
@@ -676,9 +692,15 @@ WDownload::customEvent(QCustomEvent * e)
 				uint64 timeLeft = (uint64) -1;
 				(void) msg()->FindInt64("timeleft", (int64 *) &timeLeft);
 				if (timeLeft == -1)
+				{
 					item->setText(WTransferItem::Status, tr("Blocked."));
+				}
 				else
+				{
 					item->setText(WTransferItem::Status, tr("Blocked for %1 minute(s).").arg((int) (timeLeft/60000000)));
+				}
+				item->setText(WTransferItem::Rate, "0.0");
+				item->setText(WTransferItem::ETA, "");
 				break;
 			}
 			
@@ -696,10 +718,10 @@ WDownload::customEvent(QCustomEvent * e)
 						)
 					{
 						item->setText(WTransferItem::Status, tr("Waiting for incoming connection..."));
-						QString tostr = "/*/";
-						tostr += QString::fromUtf8(session.Cstr());
+						String tostr = "/*/";
+						tostr += session.Cstr();
 						tostr += "/beshare";
-						cb()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
+						cb()->AddString(PR_NAME_KEYS, tostr);
 						cb()->AddString("session", session);
 						cb()->AddInt32("port", port);
                         gWin->fNetClient->SendMessageToSessions(cb);
@@ -734,8 +756,6 @@ WDownload::customEvent(QCustomEvent * e)
 				gt->SetActive(false);
 				if (upload)
 				{
-//					DecreaseCount(gt, fNumUploads, false);
-//					WASSERT(fNumUploads >= 0, "Upload count is negative!");
 					DequeueULSessions();
 
 				}
@@ -747,8 +767,6 @@ WDownload::customEvent(QCustomEvent * e)
 						emit FileFailed(qFile, gt->GetRemoteUser());
 					}
 
-//					DecreaseCount(gt, fNumDownloads, false);
-//					WASSERT(fNumDownloads >= 0, "Download count is negative!");
 					DequeueDLSessions();
 				}
 				break;
@@ -781,14 +799,16 @@ WDownload::customEvent(QCustomEvent * e)
 					gt->SetFinished(true);
 					gt->SetActive(false);
 					gt->Reset();
-//					DecreaseCount(gt, fNumUploads);
-//					WASSERT(fNumUploads >= 0, "Upload count is negative!");
 					DequeueULSessions();
 				}
 				else
 				{
 					if (gt->IsManuallyQueued())
+					{
 						item->setText(WTransferItem::Status, tr("Manually Queued."));
+						item->setText(WTransferItem::Rate, "0.0");
+						item->setText(WTransferItem::ETA, "");
+					}
 					else
 					{
 						gt->SetFinished(true);
@@ -814,8 +834,6 @@ WDownload::customEvent(QCustomEvent * e)
 						}
 					}
 					gt->Reset();
-//					DecreaseCount(gt, fNumDownloads);
-//					WASSERT(fNumDownloads >= 0, "Download count is negative!");
 					DequeueDLSessions();
 				}
 				break;
@@ -831,9 +849,6 @@ WDownload::customEvent(QCustomEvent * e)
 					if (!upload)
 					{
 						PRINT("\tIs download\n");
-//						if (gt->IsLastFile())
-//							DecreaseCount(gt, fNumDownloads, false);
-//						WASSERT(fNumDownloads >= 0, "Download count is negative!");
 						DequeueDLSessions();
 					}
 					item->setText(WTransferItem::Status, tr("Finished."));
@@ -998,8 +1013,6 @@ WDownload::customEvent(QCustomEvent * e)
 
 							if (msg()->FindString("file", mFile) == B_OK)
 								gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
-//							DecreaseCount(gt, fNumDownloads, false);
-//							WASSERT(fNumDownloads >= 0, "Download count is negative!");
 						}
 						PRINT("\tWGenericEvent::FileDataReceived OK\n");
 					}
@@ -1094,9 +1107,7 @@ WDownload::KillLocalQueues()
 				// free it
 				delete (*it).second;
 				(*it).first->Reset();
-//				DecreaseCount((*it).first, fNumDownloads);
 				delete (*it).first;
-//				WASSERT(fNumDownloads >= 0, "Download count is negative!");
 				WTIter nextIt = it;
 				nextIt++;
 				fDownloadList.erase(it);
@@ -1119,29 +1130,6 @@ WDownload::GetUserName(QString sid)
 	return ret;
 }
 
-// This method also resets the thread.
-/*
-int
-WDownload::DecreaseCount(WGenericThread * thread, int & count, bool reset)
-{
-	if (thread)
-	{
-		if (thread->IsActive())
-		{
-			count--;
-			if (reset)
-				thread->Reset();
-			thread->SetActive(false);
-		}
-		else
-		{
-			if (reset)
-				thread->Reset();
-		}
-	}
-	return count;
-}
-*/
 void
 WDownload::UpdateLoad()
 {
@@ -1257,8 +1245,6 @@ WDownload::DLPopupActivated(int id)
 			gt->SetFinished(true);
 			gt->SetActive(false);
 			gt->Reset();
-//			DecreaseCount(gt, fNumDownloads);
-//			WASSERT(fNumDownloads >= 0, "Download count is negative!");
 			fLock.unlock();
 			DequeueDLSessions();
 			break;
@@ -1490,8 +1476,7 @@ WDownload::ULPopupActivated(int id)
 			(*i).second->setText(WTransferItem::Status, tr("Canceled."));
 			gt->SetFinished(true);
 			gt->SetActive(false);
-//			DecreaseCount(gt, fNumUploads);
-//			WASSERT(fNumUploads >= 0, "Upload count is negative!");
+			gt->Reset();
 			fLock.unlock();
 			DequeueULSessions();
 			break;
