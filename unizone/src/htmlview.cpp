@@ -139,11 +139,7 @@ WHTMLView::appendText(const QString &newtext)
 			setText("");
 			if (fBuffer.length() > 0)
 			{
-#if (QT_VERSION >= 0x030000)
 				fBuffer += "<br>";
-#else
-				fBuffer += "<br>";
-#endif
 			}
 			PRINT("appendText 4\n");
 			fBuffer += newtext;
@@ -166,6 +162,13 @@ WHTMLView::appendText(const QString &newtext)
 		UpdateTextView();
 	}
 	PRINT("appendText OK\n");
+}
+
+void
+WHTMLView::clear()
+{
+	fBuffer = "";
+	setText("");
 }
 
 void

@@ -15,6 +15,7 @@ public:
 	virtual void setSource( const QString & name );	
 	virtual void appendText( const QString & text);
 	virtual QString context() const { return fContext; }
+	virtual void clear();
 
 signals:
 	void URLClicked(const QString & url);

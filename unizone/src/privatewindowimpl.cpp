@@ -401,7 +401,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 				}
 				else if (CompareCommand(stxt, "/clear"))
 				{
-					fChatText->setText("");	// empty the text
+					fChatText->clear();	// empty the text
 				}
 				else if (CompareCommand(stxt, "/encryption"))
 				{

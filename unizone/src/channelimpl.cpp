@@ -588,7 +588,7 @@ Channel::customEvent(QCustomEvent * event)
 				}
 				else if (wte->Text().lower().startsWith("/clear"))
 				{
-					fChatText->setText("");	// empty the text
+					fChatText->clear();	// empty the text
 				}
 				else
 				{

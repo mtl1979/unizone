@@ -360,7 +360,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/clear"))
 		{
-			fChatText->setText("");	// empty the text
+			fChatText->clear();	// empty the text
 		}
 		else if (CompareCommand(sendText, "/watch"))
 		{
