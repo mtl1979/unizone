@@ -174,7 +174,8 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 		}
 		else
 		{
-			DoUpload();		// we can start now!
+			SetLocallyQueued(true); // put in queue ;)
+			DoUpload();				// we can start now!
 		}
 	}
 	else
