@@ -4,7 +4,7 @@
 #include "debugimpl.h"
 #include "wstring.h"
 
-WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg)
+WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypted)
 		: QCustomEvent(type)
 {
 	fWant = false;
@@ -23,7 +23,10 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg)
 			QString smsg = msg;
 			if (smsg.startsWith("//"))
 				smsg.replace(0, 2, "/");
-			fMsg = "/msg ";
+			if (encrypted)
+				fMsg = "/emsg ";
+			else
+				fMsg = "/msg ";
 			for (WUserIter it = users.begin(); it != users.end(); it++)
 			{
 				fMsg += (*it).second()->GetUserID();

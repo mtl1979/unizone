@@ -27,10 +27,12 @@ public:
 
 	QString Text() const;
 	void SetText(const QString & str) { fText = str; }
+	bool Encrypted() { return fEncrypted; }
+	void SetEncrypted(bool e) { fEncrypted = e; } 
 
 private:
 	QString fText;
-	bool fValid;
+	bool fValid, fEncrypted;
 };
 
 #endif	// TEXTEVENT_H

@@ -575,6 +575,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 #endif
 
 					te.SetText(wpe->GetText());
+					te.SetEncrypted(wpe->Encrypted());
 					if (wpe->GetWantReply())	// reply wanted... do the following...
 					{
 						bool rep = false;

@@ -4,6 +4,7 @@ WTextEvent::WTextEvent(const QString & text, int type)
 : QCustomEvent(type), fValid(false)
 {
 	fText = text.stripWhiteSpace();
+	fEncrypted = false;
 	// <postmaster@raasu.org> 20021024 
 	if (fText.length() == 0) 
 		return; // empty string

@@ -9,7 +9,7 @@
 class WPWEvent : public QCustomEvent
 {
 public:
-	WPWEvent(int type, WUserMap & users, const QString & msg);
+	WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypted = false);
 	WPWEvent(int type, const QString & msg);
 
 	virtual ~WPWEvent() {}
@@ -18,6 +18,7 @@ public:
 	void SetText(const QString & txt) { fMsg = txt; }
 	QObject * SendTo() { return fReply; }
 	void SetSendTo(QObject * o) { fReply = o; }
+	bool Encrypted() { return fEncrypted; }
 
 	enum
 	{
@@ -32,7 +33,7 @@ public:
 	bool GetWantReply() const { return fWant; }
 
 private:
-	bool fWant;
+	bool fWant, fEncrypted;
 	QString fMsg;
 	QObject * fReply;
 

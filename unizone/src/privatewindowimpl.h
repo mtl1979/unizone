@@ -76,6 +76,8 @@ private:
 	WUserMap fUsers;	// users in list
 	WLog fLog;
 
+	bool fEncrypted;
+
 	void StartLogging();
 	void StopLogging();
 

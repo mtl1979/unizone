@@ -96,7 +96,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/msg"))
 		{
-			SendPingOrMsg(sendText, false, reply, false);
+			SendPingOrMsg(sendText, false, reply, e->Encrypted());
 			if (reply && *reply)		// is reply wanted? and should it be sent?
 				e->SetText(sendText);	// modified by SendPingOrMsg();
 		}

@@ -23,7 +23,6 @@
 #include <qapplication.h>
 #include <qmessagebox.h>
 
-
 /* 
  *  Constructs a privatewindow which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
@@ -37,6 +36,7 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 {
 	fOwner = owner;
 	fNet = net;
+	fEncrypted = false;
 
 	if ( !name ) 
 		setName( "WPrivateWindow" );
@@ -414,9 +414,23 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 				{
 					fChatText->setText("");	// empty the text
 				}
+				else if (CompareCommand(stxt, "/encryption"))
+				{
+					QString qtext = GetParameterString(stxt);
+					if (stxt == "on")
+					{
+						PrintSystem(tr("Encryption enabled."));
+						fEncrypted = true;
+					}
+					else
+					{
+						fEncrypted = false;
+						PrintSystem(tr("Encryption disabled."));
+					}
+				}
 				else
 				{
-					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, stxt);
+					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, stxt, fEncrypted);
 					if (e)
 					{
 						e->SetSendTo(this);
