@@ -228,6 +228,11 @@ WinShareWindow::URLClicked(const QString & url)
 			surl = url.mid(url.find(":") + 1);
 			LaunchPrivate(surl);
 		}
+		else if (url.lower().startsWith("ttp://")) // <postmaster@raasu.org> 20030911
+		{
+			surl = url.mid(url.find(":") + 1);
+			QueueFile(surl);
+		}
 		else
 			GotoURL(url);
 	}

@@ -328,6 +328,16 @@ WinShareWindow::~WinShareWindow()
 
 	fIsRunning = false;
 
+	if (_ttpFiles.GetNumItems() > 0)
+	{
+		TTPInfo * ttpInfo;
+		while (_ttpFiles.GetNumItems() > 0)
+		{
+			_ttpFiles.RemoveHead(ttpInfo);
+			delete ttpInfo;
+		}
+	}
+
 	// all the NetClients get deleted by Qt
 	// since they are QObject's
 
@@ -2163,6 +2173,66 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 	pLock.lock();
 	gWin->fPrivateWindows.insert(p);
 	pLock.unlock();
+}
+
+void
+WinShareWindow::QueueFile(const QString & ref)
+{
+	gWin->QueueFileAux(ref);
+}
+
+void
+WinShareWindow::QueueFileAux(const QString & ref)
+{
+	QString url = ref;
+	if (url.startsWith("//"))
+	{
+		url = url.mid(2);
+	}
+	QString from = url.left(url.find("/"));
+	QString file = url.mid(url.find("/") + 1);
+	String sfile = TTPDecode(file.latin1());
+	TTPInfo * ttpInfo = new TTPInfo;
+	if (ttpInfo)
+	{
+		ttpInfo->bot = from.latin1();
+		ttpInfo->file = sfile;
+		_ttpFiles.AddTail(ttpInfo);
+		PrintSystem(tr("Queued file %1 from user #%2.").arg( QString::fromUtf8(sfile.Cstr()) ).arg(from));
+	}
+}
+
+void
+WinShareWindow::StartQueue(const QString &session)
+{
+	if (_ttpFiles.GetNumItems() > 0)
+	{
+		WUserRef user = FindUser(session);
+		if (user() == NULL)
+			return;
+
+		int i = 0;
+		fSearchLock.lock();
+		while (_ttpFiles.GetNumItems() > 0)
+		{
+			TTPInfo * ttpInfo = NULL;
+			_ttpFiles.GetItemAt(i, ttpInfo);
+			if (ttpInfo)
+			{
+				if (ttpInfo->bot == session.latin1())
+				{
+					QueueDownload(QString::fromUtf8(ttpInfo->file.Cstr()), user());
+					_ttpFiles.RemoveItemAt(i);
+					PrintSystem(tr("Downloading file %1 from user #%2.").arg( QString::fromUtf8(ttpInfo->file.Cstr()) ).arg(session));
+				}
+				else i++;
+				if (i >= _ttpFiles.GetNumItems())
+					break;
+			}
+		}
+		EmptyQueues();
+		fSearchLock.unlock();
+	}
 }
 
 void

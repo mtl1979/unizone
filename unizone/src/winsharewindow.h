@@ -32,6 +32,7 @@
 #include "support/MuscleSupport.h"
 // #include "search.h"
 #include "user.h"
+#include "titanic.h"
 
 using namespace muscle;
 
@@ -159,6 +160,9 @@ public:
 	static QString GetRemoteVersionString(const MessageRef);
 	static void LaunchSearch(QString & pattern);		// launches a search
 	void LaunchPrivate(const QString & pattern);		// launches a private window with multiple users in it
+	static void QueueFile(const QString & ref);			// Queue TTP transfer
+	void QueueFileAux(const QString & ref);
+	void StartQueue(const QString & session);
 	void UpdateTransmitStats(uint64 t);
 	void UpdateReceiveStats(uint64 r);
 
@@ -560,6 +564,8 @@ private:
 	QString GetAdmins(QString channel);
 
 	void SetTopic(QString channel, QString topic);
+
+	Queue<TTPInfo *> _ttpFiles;
 
 signals:
 	void UpdatePrivateUserLists();

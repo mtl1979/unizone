@@ -3311,5 +3311,13 @@ Date: %4</translation>
         <source>On Connect:</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Queued file %1 from user #%2.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Downloading file %1 from user #%2.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

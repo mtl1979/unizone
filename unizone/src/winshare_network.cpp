@@ -1070,6 +1070,16 @@ WinShareWindow::HandleMessage(MessageRef msg)
 */
 	switch (msg()->what)
 	{
+	case TTP_START_QUEUE:
+		{
+			const char * from;
+			if (msg()->FindString(PR_NAME_SESSION, &from) == B_NO_ERROR)
+			{
+				QString qFrom = from;
+				StartQueue(qFrom);
+			}
+			break;
+		}
 	case WDownload::TransferNotifyRejected:
 		{
 			const char * from;
@@ -1130,9 +1140,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		
 	case NetClient::CONNECT_BACK_REQUEST:
 		{
-			PRINT("\tCONNECTBACKREQUEST\n");
+			PRINT("\tCONNECT_BACK_REQUEST\n");
 			
-
 			const char * session;
 			int32 port;
 			if ((msg()->FindString("session", &session) == B_OK) && (msg()->FindInt32("port", &port) == B_OK))
@@ -1156,7 +1165,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			
 			msg()->FindString("session", &session);
 			msg()->FindString("text", &strTemp);
-			// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Latin-1
+			// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
 			text = QString::fromUtf8(strTemp);
 			
 			// get user info first

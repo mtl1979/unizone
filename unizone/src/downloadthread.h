@@ -99,7 +99,7 @@ public:
 	status_t RemoveSessions(const char * optDistPath = NULL);
 	status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
 
-public slots:
+private slots:
 	void ConnectTimer(); // Connection timed out?
 	void BlockedTimer(); // Blocking timed out?
 

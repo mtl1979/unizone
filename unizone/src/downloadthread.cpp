@@ -1020,10 +1020,7 @@ WDownloadThread::Reset()
 {
 	PRINT("WDownloadThread::Reset()\n");
 	SetFinished(true);
-//	SetActive(false);
-	SetLocallyQueued(false);
-//	if ( fShutdownFlag )
-//		*fShutdownFlag = true;
+	// SetLocallyQueued(false);
 	QMessageTransceiverThread::Reset();
 	PRINT("WDownloadThread::Reset() OK\n");
 }

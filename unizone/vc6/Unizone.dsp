@@ -332,6 +332,10 @@ SOURCE=..\src\textevent.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\titanic.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\transferitem.cpp
 # End Source File
 # Begin Source File
@@ -1071,6 +1075,10 @@ SOURCE=..\src\settings.h
 # Begin Source File
 
 SOURCE=..\src\textevent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\titanic.h
 # End Source File
 # Begin Source File
 

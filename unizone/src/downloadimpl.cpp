@@ -845,7 +845,6 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			msg()->FindString("why", why);
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
 			dt->SetFinished(true);
-//			dt->SetActive(false);
 			for (int n = dt->GetCurrentNum(); n < dt->GetNumFiles(); n++)
 			{
 				QString qFile = dt->GetFileName(n);
@@ -885,29 +884,25 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			else
 			{
 				dt->SetFinished(true);
-//				dt->SetActive(false);
 				// emit FileFailed signal(s), so we can record the filename and remote username for resuming later
 				bool f;
-				if (msg()->FindBool("failed", &f) == B_OK)
+				if ((msg()->FindBool("failed", &f) == B_OK) && f)
 				{
 					// "failed" == true only, if the transfer has failed
-					if (f)
+					if (dt->GetCurrentNum() != -1)
 					{
-						if (dt->GetCurrentNum() != -1)
+						for (int n = dt->GetCurrentNum(); n < dt->GetNumFiles(); n++)
 						{
-							for (int n = dt->GetCurrentNum(); n < dt->GetNumFiles(); n++)
-							{
-								QString qFile = dt->GetFileName(n);
-								QString qLFile = dt->GetLocalFileName(n);
-								emit FileFailed(qFile, qLFile, dt->GetRemoteUser());
-							}
+							QString qFile = dt->GetFileName(n);
+							QString qLFile = dt->GetLocalFileName(n);
+							emit FileFailed(qFile, qLFile, dt->GetRemoteUser());
 						}
 					}
-					else
-					{
-						item->setText(WTransferItem::Status, tr("Finished."));
-						item->setText(WTransferItem::ETA, "");
-					}
+				}
+				else
+				{
+					item->setText(WTransferItem::Status, tr("Finished."));
+					item->setText(WTransferItem::ETA, "");
 				}
 			}
 			dt->Reset();
@@ -1236,7 +1231,6 @@ WDownload::uploadEvent(WUploadEvent *u)
 			msg()->FindString("why", why);
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
 			ut->SetFinished(true);
-			// ut->SetActive(false);
 			ut->Reset();
 			
 			if (gWin->fSettings->GetAutoClear())
@@ -1258,23 +1252,21 @@ WDownload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::Disconnected:
 		{
 			PRINT("\tWUploadEvent::Disconnected\n");
-			if (item->text(0) != tr("Finished."))
-				item->setText(WTransferItem::Status, tr("Disconnected."));
-			
+			item->setText(WTransferItem::ETA, "");
+		
 			bool f;
-			if (msg()->FindBool("failed", &f) == B_OK)
+			if ((msg()->FindBool("failed", &f) == B_OK) && f)
 			{
 				// "failed" == true only, if the transfer has failed
-				if (!f)
-				{
-					item->setText(WTransferItem::Status, tr("Finished."));
-					item->setText(WTransferItem::ETA, "");
-				}
+				item->setText(WTransferItem::Status, tr("Disconnected."));
+			}
+			else
+			{
+				item->setText(WTransferItem::Status, tr("Finished."));
 			}
 			
 			ut->SetFinished(true);
-//			ut->SetActive(false);
-			ut->SetLocallyQueued(false);
+			// ut->SetLocallyQueued(false);
 			
 			if (gWin->fSettings->GetAutoClear())
 			{
@@ -1669,7 +1661,6 @@ WDownload::DLPopupActivated(int id)
 			// found our item, stop it
 			fDLPopupItem->setText(WTransferItem::Status, tr("Canceled."));
 			dt->SetFinished(true);
-//			dt->SetActive(false);
 			dt->Reset();
 			Unlock();
 			
@@ -1912,7 +1903,6 @@ WDownload::ULPopupActivated(int id)
 			// found our item, stop it
 			fULPopupItem->setText(WTransferItem::Status, tr("Canceled."));
 			ut->SetFinished(true);
-//			ut->SetActive(false);
 			ut->Reset();
 			Unlock();
 			

@@ -194,7 +194,8 @@ IsURL(const String & url)
 		(u.StartsWith("share:")) || 
 		(u.StartsWith("server://")) ||
 		(u.StartsWith("priv:")) ||
-		(u.StartsWith("irc://"))
+		(u.StartsWith("irc://")) ||
+		(u.StartsWith("ttp://"))
 		)
 	{
 		if (

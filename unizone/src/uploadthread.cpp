@@ -251,7 +251,7 @@ WUploadThread::SetLocallyQueued(bool b)
 				SendReply(con);
 			}
 		}
-		else if (!fFinished)
+		else if (fActive)		// !fFinished
 		{
 			// fActive = false;
 			fFinished = true;
@@ -396,9 +396,10 @@ WUploadThread::SessionDisconnected(const String &sessionID)
 	*fShutdownFlag = true;
 	fDisconnected = true;
 
-	if (fActive) // Do it only once...
+	if (fActive || fConnecting) // Do it only once...
 	{
 		fActive = false;
+		fConnecting = false;
 
 		if (fFile)
 		{
@@ -1130,10 +1131,7 @@ WUploadThread::Reset()
 {
 	PRINT("WUploadThread::Reset()\n");
 	SetFinished(true);
-//	SetActive(false);
-	SetLocallyQueued(false);
-//	if ( fShutdownFlag )
-//		*fShutdownFlag = true;
+	// SetLocallyQueued(false);
 	QMessageTransceiverThread::Reset();
 	PRINT("WUploadThread::Reset() OK\n");
 }

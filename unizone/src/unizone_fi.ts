@@ -3399,5 +3399,13 @@ Päiväys: %4</translation>
         <source>On Connect:</source>
         <translation>Yhdistäessä tee:</translation>
     </message>
+    <message>
+        <source>Queued file %1 from user #%2.</source>
+        <translation>Lisättiin tiedosto %1 käyttäjältä #%2 jonoon.</translation>
+    </message>
+    <message>
+        <source>Downloading file %1 from user #%2.</source>
+        <translation>Ladataan tiedostoa %1 käyttäjältä #%2.</translation>
+    </message>
 </context>
 </TS>
