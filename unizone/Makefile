@@ -19,7 +19,7 @@ OBJFILES = \
 	winshare_slots.o winsharewindow.o Log.o htmlview.o \
 	channelinfo.o channelimpl.o wpwevent.o wstring.o wstatusbar.o \
 	winshare_channels.o winshare_search.o updateclient.o util.o \
-	serverclient.o titanic.o wlaunchthread_unix.o \
+	serverclient.o titanic.o wlaunchthread_unix.o mimedb.o \
 	QMessageTransceiverThread.o QAcceptSocketsThread.o \
 	chatwindow.o wsystemevent.o wwarningevent.o werrorevent.o \
 	version.o

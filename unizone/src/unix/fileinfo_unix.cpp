@@ -4,11 +4,12 @@
 #include <qstring.h>
 
 #include "fileinfo.h"
+#include "mimedb.h"
 
 void
 UFileInfo::InitMIMEType()
 {
-	fMIMEType = QString::null;
+	fMIMEType = queryMimeType(getExtension());
 }
 
 void
