@@ -330,6 +330,10 @@ SOURCE=..\src\winshare_slots.cpp
 
 SOURCE=..\src\winsharewindow.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\src\wpwevent.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
