@@ -600,3 +600,34 @@ IsAction(const QString &text, const QString &user)
 	return ret;
 }
 
+
+QString 
+FixFileName(const QString & fixMe)
+{
+	// bad characters in Windows:
+	//	/, \, :, *, ?, ", <, >, |
+#ifdef WIN32
+	QString ret(fixMe);
+	for (unsigned int i = 0; i < ret.length(); i++)
+	{
+		switch ((QChar) ret.at(i))
+		{
+		case '/':
+		case '\\':
+		case ':':
+		case '*':
+		case '?':
+		case '\"':
+		case '<':
+		case '>':
+		case '|':
+			ret.replace(i, 1, "_");
+			break;
+		}
+	}
+	return ret;
+#else
+	return fixMe;
+#endif
+}
+

@@ -79,8 +79,6 @@ public:
 	QString GetLocalFileName(int i) const;
 	bool IsLastFile(); 
 
-	static QString FixFileName(const QString & fixMe);
-
 	QString GetRemoteID() const { return fFromSession; }
 	QString GetRemoteUser() const { return fFromUser; }
 	QString GetRemoteIP() const { return fIP; }

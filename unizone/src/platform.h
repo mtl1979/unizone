@@ -103,4 +103,7 @@ void MakeNodePath(String &file);
 // Return full filepath from 'dir' and 'file'
 String MakePath(const String &dir, const String &file);
 
+// Return filename that has no invalid characters (Windows only)
+QString FixFileName(const QString & fixMe);
+
 #endif // PLATFORM_H

@@ -5,10 +5,12 @@
 #include "md5.h"
 #include "global.h"
 #include "settings.h"
+#include "platform.h"
+#include "debugimpl.h"
+
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "qtsupport/QMessageTransceiverThread.h"
-#include "debugimpl.h"
 
 #include <qapplication.h>
 #include <qdir.h>
@@ -176,36 +178,6 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, cons
 		msg()->AddString("user", (const char *) fromSession.utf8());
 		SendReply(msg);	// send the init message to our owner
 	}
-}
-
-QString 
-WDownloadThread::FixFileName(const QString & fixMe)
-{
-	// bad characters in Windows:
-	//	/, \, :, *, ?, ", <, >, |
-#ifdef WIN32
-	QString ret(fixMe);
-	for (unsigned int i = 0; i < ret.length(); i++)
-	{
-		switch ((QChar) ret.at(i))
-		{
-		case '/':
-		case '\\':
-		case ':':
-		case '*':
-		case '?':
-		case '\"':
-		case '<':
-		case '>':
-		case '|':
-			ret.replace(i, 1, "_");
-			break;
-		}
-	}
-	return ret;
-#else
-	return fixMe;
-#endif
 }
 
 bool

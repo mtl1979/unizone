@@ -223,7 +223,7 @@ ParseChatText(const QString & str)
 			}
 			else
 			{
-				// Remove html tag after the url and ensure that URL doesn't end with a dot, comma or colon
+				// Remove html tag after the url...
 				if (qToken.right(1) == ">")
 				{
 					bool bInTag = true;
@@ -234,13 +234,22 @@ ParseChatText(const QString & str)
 						qToken.truncate(qToken.length() - 1);
 					}
 				}
-				if (
-					(qToken.right(1) == ".") ||
-					(qToken.right(1) == ",") ||
-					(qToken.right(1) == ":")
-					)
+				// ...and ensure that URL doesn't end with a dot, comma or colon
+				bool cont = true;
+				while ((qToken.length() > 0) && cont)
 				{
-					qToken.truncate(qToken.length() - 1);
+					unsigned int pos = qToken.length() - 1;
+					switch ((QChar) qToken.at(pos))
+					{
+					case '.':
+					case ',':
+					case ':':
+							qToken.truncate(pos);
+							break;
+					default:
+							cont = false;
+							break;
+					}
 				}
 			}
 			if (IsURL(qToken))
