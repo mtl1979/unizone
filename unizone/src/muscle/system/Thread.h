@@ -14,6 +14,9 @@
 # include <qthread.h>
 # include <qmutex.h>
 # include <qwaitcondition.h>
+# if QT_VERSION >= 0x030200
+#  define QT_HAS_THREAD_PRIORITIES
+# endif
 #elif defined(__BEOS__)
 # include <kernel/OS.h>
 #elif defined(__ATHEOS__)
@@ -402,12 +405,15 @@ private:
    friend class MuscleQThread;
 
 protected:
+#ifdef QT_HAS_THREAD_PRIORITIES
    /** Returns the priority that the internal thread should be launched under.  Only available
-    *  when using the Qt implementation of Thread class (e.g. when QT_THREAD_SUPPORT is defined)
+    *  when using Qt 3.2 or higher, so you may want to wrap your references to this method in an 
+    *  #ifdef QT_HAS_THREAD_PRIORITIES test, to make sure your code remains portable.
     *  @returns the QThread::Priority value, as described in the QThread documentation.  Default
     *           implementation always returns QThread::InheritPriority.
     */
    virtual QThread::Priority GetInternalQThreadPriority() const {return QThread::InheritPriority;}
+#endif
 
 private:
 #elif defined(__BEOS__)

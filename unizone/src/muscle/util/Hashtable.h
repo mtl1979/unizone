@@ -871,10 +871,22 @@ Hashtable<KeyType,ValueType,HashFunctorType>::GetEntry(uint32 hash, const KeyTyp
    HashtableEntry * e = _table[hash%_tableSize].GetMapTo();
    if (IsBucketHead(e))  // if the e isn't the start of a bucket, then we know our entry doesn't exist
    {
-      while(e)
+      // While loops separated out for efficiency (one less if statement) --jaf
+      if (_userKeyCompareFunc)
       {
-         if ((e->_hash == hash)&&((_userKeyCompareFunc) ? (_userKeyCompareFunc(e->_key, key, _compareCookie) == 0) : (e->_key == key))) return e;
-         e = e->_bucketNext; 
+         while(e)
+         {
+            if ((e->_hash == hash)&&(_userKeyCompareFunc(e->_key, key, _compareCookie) == 0)) return e;
+            e = e->_bucketNext; 
+         }
+      }
+      else
+      {
+         while(e)
+         {
+            if ((e->_hash == hash)&&(e->_key == key)) return e;
+            e = e->_bucketNext; 
+         }
       }
    }
    return NULL;

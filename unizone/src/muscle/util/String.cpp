@@ -38,11 +38,8 @@ String::SetFromString(const String & s, uint32 firstChar, uint32 afterLastChar)
       _buffer[len] = '\0';
       _length = len;
    }
-   else
-   {
-      if (_buffer) _buffer[0] = '\0';
-      _length = 0;
-   }
+   else Clear();
+
    return B_NO_ERROR;
 }
 
@@ -63,11 +60,8 @@ String::SetCstr(const char * str, uint32 maxLen)
       _buffer[maxLen-1] = '\0';
       _length = maxLen-1;
    }
-   else
-   {
-      if (_buffer) _buffer[0] = '\0';
-      _length = 0;
-   }
+   else Clear();
+
    return B_NO_ERROR;
 }
 
@@ -421,11 +415,6 @@ void String :: Flatten(uint8 *buffer) const
 status_t String :: Unflatten(const uint8 *buf, uint32 size)
 {
    return SetCstr((const char *)buf, size);
-}
-
-uint32 String :: HashCode() const
-{
-   return CStringHashFunc(Cstr());
 }
 
 uint32 String :: GetNumInstancesOf(char ch) const

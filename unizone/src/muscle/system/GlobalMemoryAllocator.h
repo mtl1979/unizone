@@ -71,7 +71,7 @@ void * muscleRealloc(void * ptr, size_t s, bool retryOnFailure = true);
 
 #else
 # define muscleAlloc malloc
-# define muscleFree free
+# define muscleFree(x) {if (x) free(x);}
 # define muscleRealloc realloc
 #endif
 

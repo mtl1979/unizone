@@ -21,7 +21,7 @@ public:
    /** Default constructor */
    PulseNode();
 
-   /** Destructor.  Does not delete any attached child pulsables. */
+   /** Destructor.  Does not delete any attached child PulseNodes. */
    virtual ~PulseNode();
 
    /**
@@ -65,7 +65,7 @@ public:
     *  Adds the given child into our set of child PulseNodes.  Any PulseNode in our
     *  set of children will have its pulsing needs taken care of by us, but it is
     *  not considered "owned" by this PulseNode--it will not be deleted when we are.
-    *  @param child The child to place into our set of child pulsables.
+    *  @param child The child to place into our set of child PulseNodes.
     *  @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory).
     */
    status_t PutPulseChild(PulseNode * child);
@@ -120,7 +120,7 @@ public:
 
 protected:
    /**
-    * Sets a flag to indicate that GetPulseTime() to be called on this object.
+    * Sets a flag to indicate that GetPulseTime() should be called on this object.
     * Call this whenever you've decided to reschedule your pulse time outside
     * of a Pulse() event.
     * @param clearPrevResult if true, this call will also clear the stored prevResult

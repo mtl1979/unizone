@@ -98,7 +98,7 @@ public:
 
    /** Unlocks the lock.  Once this is done, any other thread that is blocked in the Lock()
      * method will gain ownership of the lock and return.
-     * @returns B_NO_ERROR on success, or B_ERORR on failure (perhaps you tried to unlock a lock
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (perhaps you tried to unlock a lock
      *          that wasn't locked?  This method should never fail in typical usage)
      */
    status_t Unlock() const
@@ -135,6 +135,18 @@ private:
 # endif
 #endif
 };
+
+#ifdef MUSCLE_USE_PTHREADS
+// These calls are useful in conjunction with tests/deadlockfinder.cpp, for tracking
+// down potential synchronization deadlocks in multithreaded code.  Note that they only
+// work when using a pThreads environment, however.
+#define PLOCK(  name,pointer) _PLOCKimp(  name,pointer,__FILE__,__LINE__)
+#define PUNLOCK(name,pointer) _PUNLOCKimp(name,pointer,__FILE__,__LINE__)
+
+// don't call these directly -- call the PLOCK() and PUNLOCK() macros instead!
+static inline void _PLOCKimp(const char * n, const void * p, const char * f, int ln) {printf("%li plock p=%p [%s] %s:%i\n", pthread_self(), p, n, f, ln);}
+static inline void _PUNLOCKimp(const char * n, const void * p, const char * f, int ln) {printf("%li punlock p=%p [%s] %s:%i\n", pthread_self(), p, n, f, ln);}
+#endif
 
 END_NAMESPACE(muscle);
 

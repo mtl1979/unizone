@@ -1,7 +1,10 @@
 /* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
-#include <new>
-#include <typeinfo>
+#ifndef NEW_H_NOT_AVAILABLE
+# include <new>
+# include <typeinfo>
+#endif
+
 #include <string.h>
 
 #include "system/GlobalMemoryAllocator.h"
@@ -11,9 +14,11 @@
 // looks okay, but after a few dozen malloc()/free() calls, free()
 // crashes!) so I'm just going to disable this code for PowerPC/Metrowerks
 // machines.  Sorry!   --jaf 12/01/00
-#ifdef __MWERKS__
-# ifdef MUSCLE_ENABLE_MEMORY_TRACKING
-#  undef MUSCLE_ENABLE_MEMORY_TRACKING
+#ifndef __osf__
+# ifdef __MWERKS__
+#  ifdef MUSCLE_ENABLE_MEMORY_TRACKING
+#   undef MUSCLE_ENABLE_MEMORY_TRACKING
+#  endif
 # endif
 #endif
 
@@ -177,10 +182,12 @@ void * operator new[](size_t s) THROW LPAREN BAD_ALLOC RPAREN
    return ret;
 }
 
-// Borland and VC++ don't like separate throw/no-throw operators, it seems
+// Borland, VC++, and OSF don't like separate throw/no-throw operators, it seems
 # ifndef WIN32
+#  ifndef __osf__
 void * operator new(  size_t s, nothrow_t const &) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); return muscleAlloc(s);}
 void * operator new[](size_t s, nothrow_t const &) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); return muscleAlloc(s);}
+#  endif
 # endif
 
 void operator delete(  void * p) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); muscleFree(p);}

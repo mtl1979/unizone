@@ -12,9 +12,9 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.53"
+#define MUSCLE_VERSION_STRING "2.61"
 
-// If we are in an environment where known assembly is available, make a note of that fact
+/* If we are in an environment where known assembly is available, make a note of that fact */
 #if defined(__GNUC__)
 # if (defined(__PPC__) || defined(__APPLE__))
 #  define MUSCLE_USE_POWERPC_INLINE_ASSEMBLY 1
@@ -28,9 +28,10 @@
 # define NEW_H_NOT_AVAILABLE
 #endif
 
-// Since certain antique compilers don't support namespaces, we
-// do all namespace-related declarations via macros which can
-// be no-op'd out by declaring -DMUSCLE_AVOID_NAMESPACES in the Makefile.
+/* Since certain antique compilers don't support namespaces, we
+ * do all namespace-related declarations via macros which can
+ * be no-op'd out by declaring -DMUSCLE_AVOID_NAMESPACES in the Makefile.
+ */
 #ifdef MUSCLE_AVOID_NAMESPACES
 # define DECLARE_NAMESPACE(x)
 # define BEGIN_NAMESPACE(x)
@@ -43,26 +44,25 @@
 # define USING_NAMESPACE(x) using namespace x;
 #endif
 
-// Just declare the muscle namespace as existing.
-// If we ever decide to make the muscle namespace a superset
-// of another namespace, we would add a 'using namespace' line here.
+/* Just declare the muscle namespace as existing.
+ * If we ever decide to make the muscle namespace a superset
+ * of another namespace, we would add a 'using namespace' line here.
+ */
 DECLARE_NAMESPACE(muscle);
 
-// MIPS CPUs (e.g. on SGIs) can't stand non-aligned word reads, so we'll
-// accomodate them by using memcpy() instead.
+/* MIPS CPUs (e.g. on SGIs) can't stand non-aligned word reads, so we'll accomodate them by using memcpy() instead. */
 #ifdef MIPS
 # define MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT
 #endif
 
-// Borland C++ builder also runs under Win32, but it doesn't set this flag
-// So we'd better set it ourselves.
+/* Borland C++ builder also runs under Win32, but it doesn't set this flag So we'd better set it ourselves. */
 #ifdef __BORLANDC__
 # ifndef WIN32
 #  define WIN32 1
 # endif
 #endif
 
-// VC++ can't handle this stuff, it's too lame
+/* VC++ can't handle this stuff, it's too lame */
 #ifdef WIN32
 # define UNISTD_H_NOT_AVAILABLE
 # define NEW_H_NOT_AVAILABLE
@@ -75,11 +75,13 @@ DECLARE_NAMESPACE(muscle);
 #ifndef NEW_H_NOT_AVAILABLE
 # include <new>
 # ifndef MUSCLE_AVOID_NAMESPACES
+#  ifndef __MWERKS__  
 using std::bad_alloc;
 using std::nothrow_t;
 using std::nothrow;
 using std::new_handler;
 using std::set_new_handler;
+#  endif
 # endif
 #else
 # define MUSCLE_AVOID_NEWNOTHROW
@@ -93,7 +95,7 @@ using std::set_new_handler;
 # endif
 #endif
 
-// Unfortunately, the 64-bit printf() format specifier is different for different compilers :^P
+/* Unfortunately, the 64-bit printf() format specifier is different for different compilers :^P */
 #if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || defined(__BEOS__)
 # if (_MSC_VER == 1200)
 #  define  INT64_FORMAT_SPEC "%I64i"
@@ -120,7 +122,11 @@ using std::set_new_handler;
 # define MCRASH_IMPL *((uint32*)NULL) = 0x666
 #endif
 
-#define MASSERT(x,msg) {if(!(x)) MCRASH(msg)}
+#ifdef MUSCLE_AVOID_ASSERTIONS
+# define MASSERT(x,msg) 
+#else
+# define MASSERT(x,msg) {if(!(x)) MCRASH(msg)}
+#endif
 
 #ifdef MUSCLE_AVOID_NAMESPACES
 # define MCRASH(msg) {LogTime(MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
@@ -133,13 +139,13 @@ using std::set_new_handler;
 #endif
 
 #define UNLESS(x) if(!(x))
-#define ARRAYITEMS(x) (sizeof(x)/sizeof(x[0]))  // returns # of items in array
+#define ARRAYITEMS(x) (sizeof(x)/sizeof(x[0]))  /* returns # of items in array */
 
-typedef void * muscleVoidPointer;  // it's a bit easier, syntax-wise, to use this type than (void *) directly in some cases.
+typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use this type than (void *) directly in some cases. */
 
 #ifdef __BEOS__
 # include <support/Errors.h>
-# include <support/ByteOrder.h>  // might as well use the real thing (and avoid complaints about duplication)
+# include <support/ByteOrder.h>  /* might as well use the real thing (and avoid complaints about duplication) */
 # include <support/SupportDefs.h>
 # include <support/TypeConstants.h>
 # ifdef BONE
@@ -164,8 +170,16 @@ typedef void * muscleVoidPointer;  // it's a bit easier, syntax-wise, to use thi
     typedef unsigned char           uint8;
     typedef short                   int16;
     typedef unsigned short          uint16;
-    typedef long                    int32;
-    typedef unsigned long           uint32;
+#   if defined(__osf__)     /* some 64bit systems will have long=64-bit, int=32-bit */
+     typedef int                    int32;
+     typedef unsigned int           uint32;
+#   elif defined(__amd64__) /* some 64bit systems will have long=64-bit, int=32-bit */
+     typedef int                    int32;
+     typedef unsigned int           uint32;
+#   else
+     typedef long                   int32;
+     typedef unsigned long          uint32;
+#   endif
 #   if defined(WIN32) && !defined(__GNUWIN32__)
      typedef __int64                int64;
      typedef unsigned __int64       uint64;
@@ -186,38 +200,38 @@ typedef void * muscleVoidPointer;  // it's a bit easier, syntax-wise, to use thi
                      (((unsigned long)(x[3])) <<  0))
 
 #ifndef __BEOS__
-//:Be-style message-field type codes.
-// I've calculated the integer equivalents for these codes
-// because gcc whines like a little girl about the four-byte
-// constants when compiling under Linux --jaf
+/* Be-style message-field type codes.
+ * I've calculated the integer equivalents for these codes
+ * because gcc whines like a little girl about the four-byte
+ * constants when compiling under Linux --jaf
+ */
 enum {
-   B_ANY_TYPE     = 1095653716, // 'ANYT',  // wild card
-   B_BOOL_TYPE    = 1112493900, // 'BOOL',
-   B_DOUBLE_TYPE  = 1145195589, // 'DBLE',
-   B_FLOAT_TYPE   = 1179406164, // 'FLOT',
-   B_INT64_TYPE   = 1280069191, // 'LLNG',
-   B_INT32_TYPE   = 1280265799, // 'LONG',
-   B_INT16_TYPE   = 1397248596, // 'SHRT',
-   B_INT8_TYPE    = 1113150533, // 'BYTE',
-   B_MESSAGE_TYPE = 1297303367, // 'MSGG',
-   B_POINTER_TYPE = 1347310674, // 'PNTR',
-   B_POINT_TYPE   = 1112559188, // 'BPNT',
-   B_RECT_TYPE    = 1380270932, // 'RECT',
-   B_STRING_TYPE  = 1129534546, // 'CSTR',
-   B_OBJECT_TYPE  = 1330664530, // 'OPTR',  // used for flattened objects
-   B_RAW_TYPE     = 1380013908, // 'RAWT',  // used for raw byte arrays
-   B_MIME_TYPE    = 1296649541  // 'MIME',  // new for v1.44
+   B_ANY_TYPE     = 1095653716, /* 'ANYT' = wild card                                   */
+   B_BOOL_TYPE    = 1112493900, /* 'BOOL' = boolean (1 byte per bool)                   */
+   B_DOUBLE_TYPE  = 1145195589, /* 'DBLE' = double-precision float (8 bytes per double) */
+   B_FLOAT_TYPE   = 1179406164, /* 'FLOT' = single-precision float (4 bytes per float)  */
+   B_INT64_TYPE   = 1280069191, /* 'LLNG' = long long integer (8 bytes per int)         */
+   B_INT32_TYPE   = 1280265799, /* 'LONG' = long integer (4 bytes per int)              */
+   B_INT16_TYPE   = 1397248596, /* 'SHRT' = short integer (2 bytes per int)             */
+   B_INT8_TYPE    = 1113150533, /* 'BYTE' = byte integer (1 byte per int)               */
+   B_MESSAGE_TYPE = 1297303367, /* 'MSGG' = sub Message objects (reference counted)     */
+   B_POINTER_TYPE = 1347310674, /* 'PNTR' = pointers (will not be flattened)            */
+   B_POINT_TYPE   = 1112559188, /* 'BPNT' = Point objects (each Point has two floats)   */
+   B_RECT_TYPE    = 1380270932, /* 'RECT' = Rect objects (each Rect has four floats)    */
+   B_STRING_TYPE  = 1129534546, /* 'CSTR' = String objects (variable length)            */
+   B_OBJECT_TYPE  = 1330664530, /* 'OPTR' = Flattened user objects (obsolete)           */
+   B_RAW_TYPE     = 1380013908, /* 'RAWT' = Raw data (variable number of bytes)         */
+   B_MIME_TYPE    = 1296649541  /* 'MIME' = MIME strings (obsolete)                     */
 };
 #endif
 
-// This constant is used in various places to mean 'as much as you want'
-#define MUSCLE_NO_LIMIT ((uint32)-1)
-
-// Constants that aren't actual BeOS field types, but I'll continue 
-// using the naming convention, just for consistency
+/* This one isn't defined by BeOS, so we have to enumerate it separately.               */
 enum {
-   B_TAG_TYPE     = 1297367367  // 'MTAG'  // new for v2.00; for in-mem-only tags
+   B_TAG_TYPE     = 1297367367  /* 'MTAG' = new for v2.00; for in-mem-only tags         */
 };
+
+/* This constant is used in various places to mean 'as much as you want' */
+#define MUSCLE_NO_LIMIT ((uint32)-1)
 
 #ifdef __cplusplus
 
@@ -231,10 +245,10 @@ template<typename T> inline T muscleSwapBytes(T swapMe)
    return retVal;
 }
 
-/** This template safely copies a value in from an untyped byte buffer to a typed value. 
-  * (Make sure MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT is defined if you are on a CPU
-  *  that doesn't like non-word-aligned data reads and writes)
-  */
+/* This template safely copies a value in from an untyped byte buffer to a typed value. 
+ * (Make sure MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT is defined if you are on a CPU
+ * that doesn't like non-word-aligned data reads and writes)
+ */
 template<typename T> inline void muscleCopyIn(T & dest, const void * source) 
 {
 #ifdef MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT
@@ -284,10 +298,10 @@ inline int muscleRintf(float f) {return (f>=0.0f) ? ((int)(f+0.5f)) : -((int)((-
 /** Returns -1 if the value is less than zero, +1 if it is greater than zero, or 0 otherwise. */
 template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((arg>0)?1:0);}
 
-#endif  // __cplusplus
+#endif  /* __cplusplus */
 
 #ifndef __BEOS__
-# if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) || defined(__LITTLEENDIAN__) // Cygwin is for Windows on x86, hence little endian  
+# if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) || defined(__LITTLEENDIAN__) /* Cygwin is for Windows on x86, hence little endian */
 #  define LITTLE_ENDIAN 1234
 #  define BIG_ENDIAN    4321
 #  define BYTE_ORDER LITTLE_ENDIAN  
@@ -297,36 +311,38 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
 #  define BYTE_ORDER BIG_ENDIAN  
 # elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
 #  include <machine/endian.h>
+# elif defined(__osf__)
+#  include <sex.h>
 # else
-#  include <endian.h>  // (non-standard) POSIX-ish include, defines BYTE_ORDER as LITTLE_ENDIAN or BIG_ENDIAN
+#  include <endian.h>  /* (non-standard) POSIX-ish include, defines BYTE_ORDER as LITTLE_ENDIAN or BIG_ENDIAN */
 # endif
 # if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
-inline uint16 MusclePowerPCSwapInt16(uint16 val)
+static inline uint16 MusclePowerPCSwapInt16(uint16 val)
 {
    uint16 a;
    volatile uint16 * addr = &a;
    __asm__ __volatile__("sthbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
    return a;
 }
-inline uint32 MusclePowerPCSwapInt32(uint32 val)
+static inline uint32 MusclePowerPCSwapInt32(uint32 val)
 {
    uint32 a;
    volatile uint32 * addr = &a;
    __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
    return a;
 }
-inline float MusclePowerPCSwapFloat(float val)
+static inline float MusclePowerPCSwapFloat(float val)
 {
    float a;
    volatile float * addr = &a;
    __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
    return a;
 }
-inline uint64 MusclePowerPCSwapInt64(uint64 val)
+static inline uint64 MusclePowerPCSwapInt64(uint64 val)
 {
    return ((uint64)(MusclePowerPCSwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MusclePowerPCSwapInt32((uint32)(val&0xFFFFFFFF))))<<32);   
 }
-inline double MusclePowerPCSwapDouble(double val)
+static inline double MusclePowerPCSwapDouble(double val)
 {
    uint64 v64 = MusclePowerPCSwapInt64(*((uint64 *)&val));
    return *((double *)&v64);
@@ -337,26 +353,26 @@ inline double MusclePowerPCSwapDouble(double val)
 #  define B_SWAP_INT32(arg)    MusclePowerPCSwapInt32((uint32)(arg))
 #  define B_SWAP_INT16(arg)    MusclePowerPCSwapInt16((uint16)(arg))
 # elif defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
-inline uint16 MuscleX86SwapInt16(uint16 val)
+static inline uint16 MuscleX86SwapInt16(uint16 val)
 {
    __asm__ __volatile__ ("xchgb %b0,%h0" : "=q" (val) : "0" (val));
    return val;
 }
-inline uint32 MuscleX86SwapInt32(uint32 val)
+static inline uint32 MuscleX86SwapInt32(uint32 val)
 {
    __asm__ __volatile__ ("bswap %0" : "+r" (val));
    return val;
 }
-inline float MuscleX86SwapFloat(float val)
+static inline float MuscleX86SwapFloat(float val)
 {
    __asm__ __volatile__ ("bswap %0" : "+r" (val));
    return val;
 }
-inline uint64 MuscleX86SwapInt64(uint64 val)
+static inline uint64 MuscleX86SwapInt64(uint64 val)
 {
    return ((uint64)(MuscleX86SwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MuscleX86SwapInt32((uint32)(val&0xFFFFFFFF))))<<32);   
 }
-inline double MuscleX86SwapDouble(double val)
+static inline double MuscleX86SwapDouble(double val)
 {
    uint64 v64 = MuscleX86SwapInt64(*((uint64 *)&val));
    return *((double *)&v64);
@@ -422,9 +438,10 @@ inline double MuscleX86SwapDouble(double val)
 # endif /* !LITTLE_ENDIAN */
 #endif /* !__BEOS__ */
 
-//:Macro to turn a type code into a string representation.
-// (typecode) is the type code to get the string for
-// (buf) is a (char *) to hold the output string; it must be >= 5 bytes long.
+/* Macro to turn a type code into a string representation.
+ * (typecode) is the type code to get the string for
+ * (buf) is a (char *) to hold the output string; it must be >= 5 bytes long.
+ */
 #define MakePrettyTypeCodeString(typecode, buf)                     \
    {                                                                \
       uint32 __bigEndian = B_HOST_TO_BENDIAN_INT32(typecode);       \
@@ -434,19 +451,22 @@ inline double MuscleX86SwapDouble(double val)
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>     // for errno
+#include <errno.h>     /* for errno */
 
 #ifdef WIN32
-# include <winsock.h>  // for WSAGetLastError()
+# include <windows.h>
+# include <winsock.h>  /* for WSAGetLastError() */
 #endif
 
 #ifdef __cplusplus
-# include "syslog/SysLog.h"  // for LogTime()
+# include "syslog/SysLog.h"  /* for LogTime() */
+#endif  /* __cplusplus */
 
 /** Checks errno and returns true iff the last I/O operation 
   * failed because it would have had to block otherwise. 
+  * NOTE:  Returns int so that it will compile even in C environments where no bool type is defined.
   */
-inline bool PreviousOperationWouldBlock()
+static inline int PreviousOperationWouldBlock()
 {
 #ifdef WIN32
    return (WSAGetLastError() == WSAEWOULDBLOCK);
@@ -457,8 +477,9 @@ inline bool PreviousOperationWouldBlock()
 
 /** Checks errno and returns true iff the last I/O operation 
   * failed because it was interrupted by a signal or etc.
+  * NOTE:  Returns int so that it will compile even in C environments where no bool type is defined.
   */
-inline bool PreviousOperationWasInterrupted()
+static inline int PreviousOperationWasInterrupted()
 {
 #ifdef WIN32
    return (WSAGetLastError() == WSAEINTR);
@@ -468,20 +489,18 @@ inline bool PreviousOperationWasInterrupted()
 }
 
 /** This function applies semi-standard logic to convert the return value
- *  of a system I/O call and (errno) into a proper MUSCLE-standard return value.
- *  (A MUSCLE-standard return value's semantics are:  Negative on error,
- *  otherwise the return value is the number of bytes that were transferred)
- *  @param origRet The return value of the original system call (e.g. to read()/write()/send()/recv())
- *  @param maxSize The maximum number of bytes that the system call was permitted to send during that call.
- *  @param blocking True iff the socket/file descriptor is in blocking I/O mode.
- *  @returns The system call's return value equivalent in MUSCLE return value semantics.
- */
-inline int32 ConvertReturnValueToMuscleSemantics(int origRet, uint32 maxSize, bool blocking)
+  * of a system I/O call and (errno) into a proper MUSCLE-standard return value.
+  * (A MUSCLE-standard return value's semantics are:  Negative on error,
+  * otherwise the return value is the number of bytes that were transferred)
+  * @param origRet The return value of the original system call (e.g. to read()/write()/send()/recv())
+  * @param maxSize The maximum number of bytes that the system call was permitted to send during that call.
+  * @param blocking True iff the socket/file descriptor is in blocking I/O mode.  (Type is int for C compatibility -- it's really a boolean parameter)
+  * @returns The system call's return value equivalent in MUSCLE return value semantics.
+  */
+static inline int32 ConvertReturnValueToMuscleSemantics(int origRet, uint32 maxSize, int blocking)
 {
    int32 retForBlocking = ((origRet > 0)||(maxSize == 0)) ? origRet : -1;
    return blocking ? retForBlocking : ((origRet<0)&&((PreviousOperationWouldBlock())||(PreviousOperationWasInterrupted()))) ? 0 : retForBlocking;
 }
-
-#endif  // __cplusplus
 
 #endif /* _MUSCLE_SUPPORT_H */

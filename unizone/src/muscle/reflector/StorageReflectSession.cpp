@@ -481,6 +481,7 @@ MessageReceivedFromGateway(MessageRef msgRef, void * userData)
          break;
 
          case PR_COMMAND_SETDATATREES:
+            BounceMessage(PR_RESULT_ERRORUNIMPLEMENTED, msgRef);    // not implemented, for now
          break;
 
          case PR_COMMAND_GETDATATREES:
@@ -814,7 +815,7 @@ MessageReceivedFromGateway(MessageRef msgRef, void * userData)
 
          case PR_COMMAND_PING:
          {
-            msg.what = PR_RESULT_PONG;                         // mark it as processed...
+            msg.what = PR_RESULT_PONG;                        // mark it as processed...
             MessageReceivedFromSession(*this, msgRef, NULL);  // and send it right back to our client
          }
          break;

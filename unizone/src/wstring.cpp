@@ -30,7 +30,7 @@ WString::WString(const char * str)
 	buffer = new wchar_t[len+1];
 	(void) MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), buffer, len);
 #else
-	int len = mbstowcs(NULL, str, strlen(str));
+	int len = mbstowcs(NULL, str, MB_CUR_MAX);
 	buffer = new wchar_t[len+1];
 	(void) mbstowcs(buffer, str, len);
 #endif

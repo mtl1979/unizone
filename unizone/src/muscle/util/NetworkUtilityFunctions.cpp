@@ -11,6 +11,7 @@
 #endif
 
 #ifdef WIN32
+# include <windows.h>
 # include <winsock.h>
 # pragma warning(disable: 4800 4018)
 #else
@@ -34,7 +35,9 @@
 
 // On some OS's, calls like accept() take an int* rather than a uint32*
 // So I define net_length_t to avoid having to #ifdef all my code
-#if __BEOS__ || __APPLE__ || __CYGWIN__ || WIN32 || __QNX__
+#if defined(__amd64__)
+typedef socklen_t net_length_t;
+#elif defined(__BEOS__) || defined(__APPLE__) || defined(__CYGWIN__) || defined(WIN32) || defined(__QNX__) || defined(__osf__)
 typedef int net_length_t;
 #else
 typedef size_t net_length_t;
@@ -296,7 +299,7 @@ int Connect(uint32 hostIP, uint16 port, const char * optDebugHostName, const cha
 uint32 GetHostByName(const char * name)
 {
    uint32 ret = inet_addr(name);  // first see if we can parse it as a numeric address
-   if ((ret == 0)||(ret == (uint32)-1))
+   if ((ret == 0)||(ret == ((uint32)-1)))
    {
       struct hostent * he = gethostbyname(name);
       ret = ntohl(he ? *((uint32*)he->h_addr) : 0);

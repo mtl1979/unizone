@@ -19,8 +19,8 @@ class ReflectServer : public PulseNode, private PulseNodeManager
 {
 public: 
    /** Constructor. 
-     * @param optMemoryUsageTracker If non-NULL, this tracker will be inspected by the server
-     *                              report back to clients how much memory is currently available
+     * @param optMemoryUsageTracker If non-NULL, this tracker will be inspected by the server in order
+     *                              to report back to clients how much memory is currently available
      *                              on the server.  Note that this tracker does NOT become
      *                              owned by the ReflectServer!
      */

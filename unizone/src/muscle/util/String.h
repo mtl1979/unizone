@@ -14,6 +14,9 @@ BEGIN_NAMESPACE(muscle);
 # define SMALL_MUSCLE_STRING_LENGTH 7  // strings shorter than this length can be stored inline, without requiring an extra new[].
 #endif
 
+/** A nice hashing function for use with (const char *)'s */
+uint32 CStringHashFunc(const char * str); 
+
 class String;
 
 /** A character string class, similar to Java's java.lang.String */
@@ -127,12 +130,12 @@ public:
    /** Array Operator.  Used to get easy access to the characters that make up this string.
     *  @param index Index of the character to return.  Be sure to only use valid indices!
     */
-   char operator [] (uint32 index) const {verifyIndex(index); return _buffer[index];}
+   char operator [] (uint32 index) const {VerifyIndex(index); return _buffer[index];}
 
    /** Array Operator.  Used to get easy access to the characters that make up this string.
     *  @param index Index of the character to set.  Be sure to only use valid indices!
     */
-   char & operator [] (uint32 index) {verifyIndex(index); return _buffer[index];}
+   char & operator [] (uint32 index) {VerifyIndex(index); return _buffer[index];}
 
    /** Returns the character at the (index)'th position in the string.
     *  @param index A value between 0 and (Length()-1), inclusive.
@@ -148,6 +151,9 @@ public:
 
    /** Convenience synonym for Cstr(). */
    const char * operator()() const {return Cstr();}  
+
+   /** Clears this string so that it contains no characters.  Equivalent to setting it to "". */
+   void Clear() {if (_buffer) _buffer[0] = '\0'; _length = 0;}
 
    /** Sets our state from the given C-style string.
      * @param str The new string to copy from.  If maxLen is negative, this may be NULL.
@@ -290,7 +296,7 @@ public:
    bool StartsWithIgnoreCase(const String &s, uint32 o) const {return ToLowerCase().StartsWith(s.ToLowerCase(),o);}
 
    /** Returns a hash code for this string */
-   uint32 HashCode() const;
+   inline uint32 HashCode() const {return CStringHashFunc(Cstr());}
 
    /** Replaces all instances of (oldChar) in this string with (newChar).
      * @param replaceMe The character to search for.
@@ -399,14 +405,18 @@ private:
    uint32 _bufferLen;         // Number of bytes pointed to by (_buffer)
    uint32 _length;            // cached strlen(_buffer)
 
-   void verifyIndex(uint32 index) const {MASSERT(index < _length, "Index Out Of Bounds Exception");}
+   void VerifyIndex(uint32 index) const 
+   {
+#ifdef MUSCLE_AVOID_ASSERTIONS
+      (void) index;  // avoid compiler warnings
+#else
+      MASSERT(index < _length, "Index Out Of Bounds Exception");
+#endif
+   }
 };
 
 /** Convenience method:  returns a string with no characters in it (i.e. "") */
 const String & GetEmptyString();
-
-/** A nice hashing function for use with (const char *)'s */
-uint32 CStringHashFunc(const char * str); 
 
 template <class T> class HashFunctor;
 

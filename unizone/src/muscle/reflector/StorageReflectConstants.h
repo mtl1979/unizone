@@ -28,7 +28,7 @@ enum
    PR_COMMAND_REORDERDATA,        // Moves one or more entries in a node index to a different spot in the index
    PR_COMMAND_ADDREQUIRES,        // Add require patterns to the server's require list (Requires ban privilege)
    PR_COMMAND_REMOVEREQUIRES,     // Remove require patterns from the server's require list (Requires ban privilege)
-   PR_COMMAND_SETDATATREES,       // Sets an entire subtree of data from a single Message
+   PR_COMMAND_SETDATATREES,       // Sets an entire subtree of data from a single Message (Not implemented!)
    PR_COMMAND_GETDATATREES,       // Returns an entire subtree of data as a single Message
    PR_COMMAND_JETTISONDATATREES,  // Removes matching RESULT_DATATREES Messages from the outgoing queue
    PR_COMMAND_RESERVED14,         // reserved for future expansion

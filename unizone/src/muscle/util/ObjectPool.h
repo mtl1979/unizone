@@ -211,6 +211,19 @@ public:
       else return B_ERROR;
    }
 
+   /** Returns the maximum number of "spare" objects that will be kept
+     * in the pool, ready to be recycled.  This is the value that was
+     * previously set either in the constructor or by SetMaxPoolSize().
+     */
+   uint32 GetMaxPoolSize() const {return _maxPoolSize;}
+
+   /** Sets a new maximum size for this pool.  Note that changing this
+     * value will not cause any object to be added or removed to the
+     * pool immediately;  rather the new size will be enforced only
+     * on future operations.
+     */
+   void SetMaxPoolSize(uint32 mps) {_maxPoolSize = mps;}
+
 private:
    Mutex _mutex;
 

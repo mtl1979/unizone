@@ -37,7 +37,7 @@ public:
    /** Destructor.  */
    virtual ~SharedUsageLimitProxyMemoryAllocator();
 
-   /** Overridden to return false if memory usage would exceed the aggregate maximum due to this allocation. */
+   /** Overridden to return B_ERROR if memory usage would exceed the aggregate maximum due to this allocation. */
    virtual status_t AboutToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
 
    /** Overridden to record this amount of memory being freed */

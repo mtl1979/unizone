@@ -3,6 +3,7 @@
 #include "system/SetupSystem.h"
 
 #ifdef WIN32
+# include <windows.h>
 # include <winsock.h>
 # include <signal.h>
 #else
