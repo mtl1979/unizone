@@ -768,7 +768,7 @@ WDownload::customEvent(QCustomEvent * e)
 					// rec, total, rate
 					item->setText(WTransferItem::Received, tr("%1").arg((int) start));
 					item->setText(WTransferItem::Total, tr("%1").arg((int) size));
-					item->setText(WTransferItem::Rate, "0.0");	// <postmaster@raasu.org> 20021023 -- Fix to lowercase 'k'
+					item->setText(WTransferItem::Rate, "0.0");
 					item->setText(WTransferItem::ETA, "");
 					item->setText(WTransferItem::User, GetUserName( QString::fromUtf8( user.Cstr() ) ));
 					item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
@@ -824,7 +824,6 @@ WDownload::customEvent(QCustomEvent * e)
 						double gotk = (double)((double)got / 1024.0f);
 						double kps = gotk / secs;
 						
-						//item->setText(WTransferItem::Status, "Downloading...");
 						item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(gt->ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, tr("%1").arg((int) offset));
 						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 50 ms?
@@ -861,7 +860,6 @@ WDownload::customEvent(QCustomEvent * e)
 						double gotk = (double)((double)got / 1024.0f);
 						double kps = gotk / secs;
 						
-						//item->setText(WTransferItem::Status, "Uploading...");
 						item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(gt->ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, tr("%1").arg((int) offset));
 						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 50 ms?
@@ -1096,7 +1094,6 @@ WDownload::DLPopupActivated(int id)
 	WTIter i;
 	WGenericThread * gt = NULL;
 	bool findRet;
-	//int junk = 0;
 
 	findRet = FindItem(fDownloadList, i, fDLPopupItem);
 
@@ -1863,12 +1860,15 @@ WDownload::UpdateDLRatings()
 }
 
 void
-WDownload::TransferCallBackRejected(QString qFrom, int64 timeLeft)
+WDownload::TransferCallBackRejected(QString qFrom, int64 timeLeft, uint32 port)
 {
 	fLock.lock();
 	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
 	{
-		if (((*it).first->GetRemoteUser() == qFrom) && ((*it).first->IsActive() == false))
+		if (((*it).first->GetRemoteUser() == qFrom) && 
+			((*it).first->IsActive() == false) &&
+			((*it).first->GetRemotePort() == port)
+			)
 		{
 			(*it).first->SetBlocked(true, timeLeft);
 			break;

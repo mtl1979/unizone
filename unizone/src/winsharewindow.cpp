@@ -312,6 +312,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				PRINT("Doing a scan of the returned files for uploading.\n");
 				for (WMsgListIter it = fFileScanThread->GetSharedFiles().begin(); it != fFileScanThread->GetSharedFiles().end(); it++)
 				{
+					qApp->processEvents(300);
 					MessageRef mref = (*it); 
 					String s;
 					if (mref()->FindString("secret:NodePath", s) == B_OK)
@@ -772,31 +773,62 @@ WinShareWindow::MakeHumanTime(int64 time)
 	QString s, qTime;
 	if (weeks == 1)
 	{
-		s = "1 week, ";
+		s = tr("1 " MSG_WEEK ", ");
 	}
 	else if (weeks > 1)
 	{
-		s = tr("%1 weeks, ").arg((long)weeks);
+		s = tr("%1 " MSG_WEEKS ", ").arg((long)weeks);
 	}
 
 	if (days == 1)
 	{
-		s += "1 day, ";
+		s += tr("1 " MSG_DAY ", ");
 	}
 	else if (days > 1)
 	{
-		s += tr("%1 days, ").arg((long)days);
+		s += tr("%1 " MSG_DAYS ", ").arg((long)days);
 	}
 
-	qTime.sprintf("%u:%02u:%02u", (uint) hours, (uint) minutes, (uint) seconds);
+	if (hours == 1)
+	{
+		s += tr("1 " MSG_HOUR ", ");
+	}
+	else if (hours > 1)
+	{
+		s += tr("%1 " MSG_HOURS ", ").arg((long)hours);
+	}
+
+	if (minutes == 1)
+	{
+		s += tr("1 " MSG_MINUTE ", ");
+	}
+	else if (minutes > 1)
+	{
+		s += tr("%1 " MSG_MINUTES ", ").arg((long)minutes);
+	}
+
+	if (seconds == 1)
+	{
+		s += tr("1 " MSG_SECOND ", ");
+	}
+	else if (seconds > 1)
+	{
+		s += tr("%1 " MSG_SECONDS ", ").arg((long)seconds);
+	}
 	
-	// No need to print empty time, strip extra comma and space if no time
-	if (qTime != "0:00:00")
-		s += qTime;
-	else if ((s.length() > 2) && (s.right(2) == ", "))
+	if ((s.length() > 2) && (s.right(2) == ", "))
 		s = s.left(s.length()-2);
 
-	return s;
+	int cp = s.findRev(", ");
+
+	if (cp >= 0)
+	{
+		return s.left(cp)+tr(MSG_AND)+s.mid(cp+2);
+	}
+	else
+	{
+		return s;
+	}
 }
 
 void
@@ -804,7 +836,7 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 {
 	static QString output = "";
 	static bool first = false;
-	if (begin)	// starting starting message batch
+	if (begin)	// starting message batch
 	{
 #ifndef WIN32
 		output = "\t";	// reset (we always start with a tab..., this is a linux bug workaround)

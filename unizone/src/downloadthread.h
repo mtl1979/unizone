@@ -17,7 +17,7 @@ public:
 	virtual ~WDownloadThread();
 
 	void SetFile(QString * files, int32 numFiles, QString fromIP, QString fromSession,
-					QString localSession, int32 remotePort, bool firewalled, bool partial);
+					QString localSession, uint32 remotePort, bool firewalled, bool partial);
 	void NextFile();
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
@@ -31,6 +31,7 @@ public:
 	QString GetRemoteID() { return fFromSession; }
 	QString GetRemoteUser() { return fFromUser; }
 	QString GetRemoteIP() { return fIP; }
+	uint32 GetRemotePort() { return fPort; }
 
 	// call this after setting the file to init the download
 	// this will also send a message to show the dialog, so do not do it yourself
@@ -49,7 +50,7 @@ protected:
 	QString fFromSession;	// session ID of remote client
 	QString fFromUser;		// user name of remote client
 	QString fLocalSession;	// our session ID
-	int32 fPort;		// port of the remote client (the one it's listening on)
+	uint32 fPort;		// port of the remote client (the one it's listening on)
 	int32 fAcceptingOn;	// port we're accepting on in case the user is firewalled
 	uint64 fCurrentOffset;	// current offset in the file
 	uint64 fFileSize;		// the file size

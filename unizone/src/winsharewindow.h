@@ -218,7 +218,7 @@ private:
 	uint64 tx,rx;		// cumulative
 	uint64 tx2,rx2;		// in the beginning of session
 
-	void TransferCallbackRejected(QString qFrom, int64 timeLeft);
+	void TransferCallbackRejected(QString qFrom, int64 timeLeft, uint32 port);
 
 	
 	bool IsIgnored(const WUser * user);

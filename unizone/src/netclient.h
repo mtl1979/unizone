@@ -33,7 +33,7 @@ public:
 	void SetUserName(QString user);		// <postmaster@raasu.org> 20021001
 	void SetUserStatus(QString status);	//
 	void SetConnection(QString connection);
-	void SetPort(int32 port) { fPort = port; }
+	void SetPort(uint32 port) { fPort = port; }
 	void SetFileCount(int32 count);
 	void SetLoad(int32 num, int32 max);
 
@@ -113,7 +113,7 @@ protected:
 	virtual void SignalOwner();
 
 private:
-	int32 fPort;
+	uint32 fPort;
 	QString fSessionID, fServer;
 	QObject * fOwner;
 	WUserMap fUsers;	// a list of users

@@ -34,7 +34,7 @@ WDownloadThread::~WDownloadThread()
 
 void 
 WDownloadThread::SetFile(QString * files, int32 numFiles, QString fromIP, QString fromSession,
-						QString localSession, int32 remotePort, bool firewalled, bool partial)
+						QString localSession, uint32 remotePort, bool firewalled, bool partial)
 {
 	fFileDl = files;
 	fNumFiles = numFiles;

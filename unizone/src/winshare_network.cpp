@@ -277,7 +277,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		// <postmaster@raasu.org> 20021026
 		else if (CompareCommand(sendText, "/uptime"))
 		{
-			PrintSystem( tr("Uptime: %1").arg(GetUptimeString()) );
+			PrintSystem( tr(MSG_UPTIME).arg(GetUptimeString()) );
 		}
 		// <postmaster@raasu.org> 20021116
 		else if (CompareCommand(sendText, "/buptime"))
@@ -1193,12 +1193,16 @@ WinShareWindow::HandleMessage(Message * msg)
 	case WDownload::TransferNotifyRejected:
 		{
 			const char * from;
-			if (msg->FindString(PR_NAME_SESSION, &from) == B_NO_ERROR)
+			uint32 port;
+			if (
+				(msg->FindString(PR_NAME_SESSION, &from) == B_NO_ERROR) &&
+				(msg->FindInt32("port", (int32 *) &port) == B_NO_ERROR)
+				)
 			{
 				QString qFrom = QString::fromUtf8(from);
 				uint64 timeLeft = (uint64) -1;
 				(void) msg->FindInt64("timeleft", (int64 *)&timeLeft);
-				TransferCallbackRejected(qFrom, timeLeft);
+				TransferCallbackRejected(qFrom, timeLeft, port);
 			}
 			break;
 		}
@@ -2313,19 +2317,26 @@ WinShareWindow::GetAddressInfo(QString user)
 		if (uid == "")
 		{
 			// List all users from this ip
-			START_OUTPUT();
-			PrintSystem( "Connected users: ", true);
 						
 			WUserMap cmap;
 			fNetClient->FindUsersByIP(cmap, host.Cstr());
-			for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
+			if (!cmap.empty())
 			{
-				if ( (*it).second() )
+				START_OUTPUT();
+				PrintSystem( "Connected users: ", true);
+
+				for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
 				{
-					PrintSystem( tr("#%1 - %2 (port: %3)").arg( (*it).second()->GetUserID() ).arg( (*it).second()->GetUserName() ).arg( (*it).second()->GetPort() ), true);
+					if ( (*it).second() )
+					{
+						if ((*it).second()->GetPort() != 0)
+							PrintSystem( tr("#%1 - %2 (port: %3)").arg( (*it).second()->GetUserID() ).arg( (*it).second()->GetUserName() ).arg( (*it).second()->GetPort() ), true);
+						else
+							PrintSystem( tr("#%1 - %2").arg( (*it).second()->GetUserID() ).arg( (*it).second()->GetUserName() ), true);
+					}
 				}
+				END_OUTPUT();
 			}
-			END_OUTPUT();
 		}
 	}
 	else
@@ -2349,11 +2360,11 @@ WinShareWindow::ExecCommand(QString command)
 }
 
 void
-WinShareWindow::TransferCallbackRejected(QString qFrom, int64 timeLeft)
+WinShareWindow::TransferCallbackRejected(QString qFrom, int64 timeLeft, uint32 port)
 {
 	if (!fDLWindow)
 		return;
-	fDLWindow->TransferCallBackRejected(qFrom, timeLeft);
+	fDLWindow->TransferCallBackRejected(qFrom, timeLeft, port);
 }
 
 void

@@ -4,6 +4,7 @@
 #endif
 
 #include "filethread.h"
+#include "fileinfo.h"
 #include "global.h"
 #include "settings.h"
 #include "debugimpl.h"
@@ -16,7 +17,6 @@
 #include <string.h>
 #include <qevent.h>
 #include <qapplication.h>
-#include <qfileinfo.h>
 
 #ifdef WIN32
 #include <shellapi.h>
@@ -27,146 +27,6 @@
 #include <shlobj.h>
 #endif
 
-UFileInfo::UFileInfo(QFileInfo & info)
-{
-	fInfo = new QFileInfo(info);
-}
-
-UFileInfo::UFileInfo(QString file)
-{
-	fInfo = new QFileInfo(file);
-}
-
-UFileInfo::~UFileInfo()
-{
-	if (fInfo)
-		delete fInfo;
-}
-
-QString
-UFileInfo::getMIMEType()
-{
-	if (!fInfo)
-		return QString::null;
-
-#ifdef WIN32
-	// Read the mime-type
-	HKEY hkey;
-	DWORD type;
-	char key[MAX_PATH];
-	DWORD dsize = MAX_PATH;
-	QString mt = QString::null;
-
-	QString ext = ".";
-	ext += fInfo->extension();
-	wchar_t * tExt = qStringToWideChar(ext);
-	if (RegOpenKey(HKEY_CLASSES_ROOT, tExt, &hkey) == ERROR_SUCCESS)
-	{
-		LONG ret;
-		// <postmaster@raasu.org> -- Don't use Unicode (wide-char) functions for char[] and char *
-		if ((ret = RegQueryValueExA(hkey, "Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
-		{
-			PRINT("Read key: %s\n", key);
-			mt = key;
-		}
-		else
-		{
-			PRINT("Error: %d [0x%08x]\n", ret, ret);
-		}
-		RegCloseKey(hkey);
-	}
-	delete [] tExt;
-	tExt = NULL; // <postmaster@raasu.org> 20021027
-	return mt;
-#else
-	return QString::null;
-#endif
-
-}
-
-uint32
-UFileInfo::getModificationTime()
-{
-	if (!fInfo)
-		return time(NULL);
-
-#ifdef WIN32
-			// Read the modification time
-		// The FILETIME structure is a 64-bit value representing the number of 100-nanosecond intervals since January 1, 1601 (UTC).
-		FILETIME ftime;
-		// The time functions included in the C run-time use the time_t type to represent the number of seconds elapsed since midnight, January 1, 1970.
-		uint32 mtTime; // <postmaster@raasu.org> 20021230
-		uint64 ftTime; // 
-		HANDLE fileHandle;
-		wchar_t * tFilePath = qStringToWideChar( fInfo->filePath() );
-		fileHandle = CreateFile(tFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		delete [] tFilePath;
-		tFilePath = NULL; // <postmaster@raasu.org> 20021027
-		if (fileHandle)
-		{
-			PRINT("File opened!\n");
-			if (GetFileTime(fileHandle, NULL, NULL, &ftime))
-			{
-				ftTime = (uint64)
-					(
-					(((uint64)ftime.dwHighDateTime) << 32) + 
-					((uint64)ftime.dwLowDateTime) 
-					);
-				ftTime -= 116444736000000000; 
-				// = 11644473600 seconds
-				// = 134774 days
-				// = 369 years + 89 (leap) days
-				mtTime = (uint32)(ftTime  / 10000000);	// converted to seconds
-				PRINT("Got time: %d\n", mtTime);
-			}
-			else
-				mtTime = time(NULL);
-
-			CloseHandle(fileHandle);
-			return mtTime;
-		}
-		else
-			return time(NULL);
-
-#else
-		return time(NULL);
-#endif
-
-}
-
-QString
-UFileInfo::getPath()
-{
-	if (!fInfo)
-		return QString::null;
-	return fInfo->dirPath(true);
-}
-
-QString
-UFileInfo::getName()
-{
-	if (!fInfo)
-		return QString::null;
-	return fInfo->fileName();
-}
-
-uint64
-UFileInfo::getSize()
-{
-	if (!fInfo)
-		return -1;
-	return fInfo->size();
-}
-
-bool
-UFileInfo::isValid()
-{
-	if (!fInfo)				// no valid object
-		return false;
-	if (!fInfo->exists())	// non-existent file
-		return false;
-	return true;
-}
 
 void
 WFileThread::run()
@@ -217,12 +77,6 @@ WFileThread::run()
 void
 WFileThread::ParseDir(const QString & d)
 {
-	QString rpath("beshare/");
-	if (fFired)
-		rpath += "fires/";
-	else
-		rpath += "files/";
-
 	QFileInfo * info = new QFileInfo(d);
 	CHECK_PTR(info);
 	PRINT("Parsing directory %s\n", d.latin1());
@@ -256,8 +110,21 @@ WFileThread::ParseDir(const QString & d)
 	fScannedDirs.insert(fScannedDirs.end(),info->absFilePath()); // Add to checked dirs
 	Unlock(); // test
 
+	ScanFiles(info->absFilePath());
+	delete info;
+}
+
+void
+WFileThread::ScanFiles(QString directory)
+{
+	QString rpath;
+	if (fFired)
+		rpath = "beshare/fires/";
+	else
+		rpath = "beshare/files/";
+
 	PRINT("Checking for directory existance\n");
-	QDir * dir = new QDir(info->absFilePath());
+	QDir * dir = new QDir(directory);
 	CHECK_PTR(dir);
 	if (dir->exists())	// double check
 	{
@@ -272,27 +139,27 @@ WFileThread::ParseDir(const QString & d)
 				PRINT("\tChecking file %s\n", i.node->data.latin1());
 				QString filePath = dir->absFilePath(i.node->data);
 				PRINT("Setting to filePath: %s\n", filePath.latin1());
-				info->setFile(filePath);
+
+				QFileInfo * finfo = new QFileInfo(filePath);
+				CHECK_PTR(finfo);
 				PRINT("Set\n");
-				if (info->exists())
+				if (finfo->exists())
 				{
 					PRINT("Exists\n");
 					// resolve symlink
-					QString ret = ResolveLink(info->filePath());
+					QString ret = ResolveLink(finfo->filePath());
 					PRINT("Resolved to: %s\n", ret.latin1());
-					info->setFile(ret);
+					finfo->setFile(ret);
 
 					// is this a directory?
-					if (info->isDir())
+					if (finfo->isDir())
 					{
-						// ParseDir(info->absFilePath());
 						Lock();
-						fPaths.AddTail(info->absFilePath());
+						fPaths.AddTail(finfo->absFilePath());
 						Unlock();
 					}
 					else
 					{
-						// FileInfo * fsInfo = new FileInfo;	// filesystem info
 						UFileInfo * ufi = new UFileInfo(ret);
 						if (ufi && ufi->isValid())
 						{
@@ -315,19 +182,17 @@ WFileThread::ParseDir(const QString & d)
 							Unlock(); // test
 						}
 
-						// delete fsInfo;
-						// fsInfo = NULL;
 						delete ufi;
 						ufi = NULL;
 					}
 				}
+				delete finfo;
+				finfo = NULL;
 			}
 		}
 	}
-	delete info;
 	delete dir;
 }
-
 QString
 WFileThread::ResolveLink(const QString & lnk)
 {

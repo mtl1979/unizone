@@ -19,6 +19,8 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fRemoteSessionID = QString::null;
 	fCurFile = -1;
 	fNumFiles = -1;
+	fPort = 0;
+	fSocket = 0;
 	fActive = true;
 	fBlocked = false;
 	fTimeLeft = -1;
@@ -402,7 +404,7 @@ WUploadThread::SendRejectedNotification(bool direct)
 	MessageRef q(new Message(WDownload::TransferNotifyRejected), NULL);
 	if (fTimeLeft != -1)
 		q()->AddInt64("timeleft", fTimeLeft);
-	if (direct)
+	if (direct || (fPort == 0))
 		SendMessageToSessions(q);
 	else
 	{
@@ -421,7 +423,8 @@ WUploadThread::SendRejectedNotification(bool direct)
 		}
 		if (
             (q()->AddString(PR_NAME_SESSION, "") == B_NO_ERROR) &&
-            (q()->AddString(PR_NAME_KEYS, node) == B_NO_ERROR)
+            (q()->AddString(PR_NAME_KEYS, node) == B_NO_ERROR) &&
+			(q()->AddInt32("port", (int32) fPort) == B_NO_ERROR)
 			) 
 		{
 				gWin->SendRejectedNotification(q);

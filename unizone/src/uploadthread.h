@@ -12,6 +12,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
+#include <qfile.h>
 
 
 /** This is my wonderful file upload thread. It handles starting the
@@ -30,6 +31,7 @@ public:
 	QString GetRemoteID() {return fRemoteSessionID;}
 	QString GetRemoteUser() {return fRemoteUser;}
 	QString GetRemoteIP() {return fStrRemoteIP;}
+	uint32 GetRemotePort() {return fPort;}
 	QString GetCurrentFile() {return fFileUl;}
 	QString GetFileName(int i);
 

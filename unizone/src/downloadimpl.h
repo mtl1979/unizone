@@ -72,7 +72,7 @@ public:
 	void DequeueSessions();
 	void KillLocalQueues();
 
-	void TransferCallBackRejected(QString qFrom, int64 timeLeft);
+	void TransferCallBackRejected(QString qFrom, int64 timeLeft, uint32 port);
 
 protected:
 	virtual void customEvent(QCustomEvent *);

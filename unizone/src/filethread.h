@@ -7,7 +7,6 @@
 
 #include <qthread.h>
 #include <qstring.h>
-#include <qfileinfo.h>
 
 #include <list>
 using std::list;
@@ -23,25 +22,6 @@ typedef WStrList::iterator WStrListIter;
 typedef list<MessageRef> WMsgList;
 typedef WMsgList::iterator WMsgListIter;
 
-
-class UFileInfo
-{
-public:
-	UFileInfo(QFileInfo & info);
-	UFileInfo(QString file);
-	virtual ~UFileInfo();
-	
-	uint32 getModificationTime();
-	QString getMIMEType();
-	QString getPath();
-	QString getName();
-	uint64 getSize();
-
-	bool isValid();
-
-private:
-	QFileInfo *fInfo;				// Object initialized from?
-};
 
 // This class runs through a list of paths and parses each
 // directory for files to search
@@ -89,7 +69,7 @@ private:
 
 	void ParseDir(const QString & d);
 	QString ResolveLink(const QString & lnk);
-//	bool GetFileInfo(QFileInfo *, FileInfo *);
+	void ScanFiles(QString directory);
 
 	QMutex fLocker;
 };

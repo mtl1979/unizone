@@ -61,7 +61,7 @@ public:
 
 	// check state only...
 	bool IsBot() const { return fBot; }
-	int32 GetPort() const { return fPort; }
+	uint32 GetPort() const { return fPort; }
 	uint64 GetInstallID() const { return fInstallID; }
 
 	void InitName(const Message * msg);
@@ -92,7 +92,7 @@ private:
 	QString fClient;
 
 	bool fBot;
-	int32 fPort;
+	uint32 fPort;
 	uint64 fInstallID;
 
 	bool fNeedPing;
