@@ -167,7 +167,11 @@
 #      undef FAR
 #    endif
 #    include <windows.h>
-#    define ZEXPORT  WINAPI
+#    if defined(_MSC_VER)
+#      define ZEXTERN __declspec(dllexport)
+#    else
+#      define ZEXPORT  WINAPI
+#    endif
 #    ifdef WIN32
 #      define ZEXPORTVA  WINAPIV
 #    else
@@ -185,6 +189,13 @@
 #        define ZEXPORTVA _export
 #      endif
 #    endif
+#  endif
+#endif
+
+#if defined(_MSC_VER) && defined(WIN32)
+#  include <windows.h>
+#  if defined(ZLIB_USEDLL)
+#    define ZEXTERN __declspec(dllimport)
 #  endif
 #endif
 

@@ -10,6 +10,7 @@
  - regfree - free everything
  = extern void regfree(regex_t *);
  */
+REXTERN
 void
 regfree(preg)
 regex_t *preg;
