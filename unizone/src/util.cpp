@@ -80,12 +80,12 @@ ParseChatText(const QString & str)
 			{
 				while (qToken.length() > 1)
 				{
-					QString last = qToken.right(1);
+					QCharRef last = qToken.at(qToken.length() - 1);
 					
 					// <postmaster@raasu.org> 20021012,20021114,20030203
 					//
 
-					if (last == ">")					
+					if (last == '>')					
 					{
 						bInTag = true;
 
@@ -102,7 +102,7 @@ ParseChatText(const QString & str)
 								bInTag = true;
 						}
 
-						last = qToken.right(1);
+						last = qToken.at(qToken.length() - 1);
 					}
 
 					// <postmaster@raasu.org> 20030203 
@@ -112,10 +112,10 @@ ParseChatText(const QString & str)
 						break;
 
 					if 	(
-						((last >= "0") && (last <= "9")) ||
-						((last >= "a") && (last <= "z")) ||
-						((last >= "A") && (last <= "Z")) ||
-						(last == "/")
+						muscleInRange(last.unicode(), L'0', L'9') ||
+						muscleInRange(last.unicode(), L'a', L'z') ||
+						muscleInRange(last.unicode(), L'A', L'Z') ||
+						(last == '/')
 						)
 					{
 						break;
@@ -216,7 +216,7 @@ ParseChatText(const QString & str)
 			int le = qText.find(qLabel);
 			if (
 				(qLabel.length() > 0) && 
-				((lb < 0) || (lb > le))
+				!muscleInRange(lb, 0, le)
 				)
 				urltmp += qLabel.stripWhiteSpace(); // remove surrounding spaces before adding
 			else
@@ -231,7 +231,7 @@ ParseChatText(const QString & str)
 			{
 				lb = qText.find("\n");
 				le = qText.find("]");
-				if ((lb < 0) || (lb > le))
+				if (!muscleInRange(lb, 0, le))
 				{
 					qText = qText.mid(le + 1);
 					if (qText.left(1) == "]")	// Fix for ']' in end of label
@@ -1129,7 +1129,7 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 	{
 		unsigned int bytes = fFile.writeBlock((char *) buf()->GetBuffer(), buf()->GetNumBytes());
 		fFile.close();
-		if  (bytes == buf()->GetNumBytes())
+		if (bytes == buf()->GetNumBytes())
 		{
 			file = nf;
 			return;
@@ -1156,7 +1156,7 @@ toULongLong(const QString &in, bool *ok)
 	for (unsigned int x = 0; x < in.length(); x++)
 	{
 		QChar c = in.at(x);
-		if ((c.unicode() < '0') || (c.unicode() > '9'))
+		if (!muscleInRange(c.unicode(), L'0', L'9'))
 		{
 			o = false;
 			break;
@@ -1226,7 +1226,7 @@ int64 toLongLong(const QString &in, bool *ok)
 		QChar c = in.at(x);
 		if ((x == 0) && (c.unicode() == '-'))
 			negate = true;
-		else if ((c.unicode() < '0') || (c.unicode() > '9'))
+		else if (!muscleInRange(c.unicode(), L'0', L'9'))
 		{
 			o = false;
 			break;
@@ -1359,7 +1359,8 @@ void HEXClean(QString &in)
 	for (unsigned int x = 0; x < in.length(); x++)
 	{
 		QChar c = in[x].lower();
-		if (((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'f')))
+		if (muscleInRange(c.unicode(), L'0', L'9') || 
+			muscleInRange(c.unicode(), L'a', L'f'))
 			tmp += c;
 	}
 	in = tmp;
@@ -1372,7 +1373,7 @@ void BINClean(QString &in)
 	while (s < in.length())
 	{
 		// Skip initial garbage
-		while ((in[s] != '0') && (in[s] != '1'))
+		while (!muscleInRange(in[s].unicode(), L'0', L'1'))
 		{
 			s++;
 			// avoid looping out of string...
@@ -1394,7 +1395,7 @@ void BINClean(QString &in)
 			if (s == in.length())
 			  break;
 			QChar c = in[s++];
-			if ((c == '0') || (c == '1'))
+			if (muscleInRange(c.unicode(), L'0', L'1'))
 				part += c;
 			else // garbage?
 				break;
@@ -1410,11 +1411,58 @@ void BINClean(QString &in)
 	in = tmp;
 }
 
+void OCTClean(QString &in)
+{
+	QString tmp, part;
+	unsigned int s = 0, p;
+	while (s < in.length())
+	{
+		// Skip initial garbage
+		while (!muscleInRange(in[s].unicode(), L'0', L'6'))
+		{
+			s++;
+			// avoid looping out of string...
+			if (s == in.length())
+			{
+				if (tmp.length() == 0) 
+				{
+					in = QString::null;
+					return;
+				}
+				else
+					break;
+			}
+		}
+		part = "";
+		p = 0;
+		while (p < 3)
+		{
+			if (s == in.length())
+			  break;
+			QChar c = in[s++];
+			if (muscleInRange(c.unicode(), L'0', L'6'))
+				part += c;
+			else // garbage?
+				break;
+			p++;
+		}
+		if (p > 0)
+		{
+			while (part.length() < 3) 
+				part = "0" + part;
+			tmp += part;
+		}
+	}
+	in = tmp;
+}
+
 QString BINDecode(const QString &in)
 {
 	QCString out;
+
 	if (in.length() % 8 != 0)
 		return QString::null;
+
 	for (unsigned int x = 0; x < in.length(); x += 8)
 	{
 		QString part = in.mid(x, 8);
@@ -1446,6 +1494,46 @@ QString BINEncode(const QString &in)
 			else
 				part = "0" + part;
 			c /= 2;
+		}
+		out += part;
+	}
+	return out;
+}
+
+QString OCTDecode(const QString &in)
+{
+	QCString out;
+
+	if (in.length() % 3 != 0)
+		return QString::null;
+
+	for (unsigned int x = 0; x < in.length(); x += 3)
+	{
+		QString part = in.mid(x, 3);
+		int xx = 1;
+		int c = 0;
+		for (int y = 2; y > -1; y--)
+		{
+			c = c + (xx * (part[y].unicode() - '0'));
+			xx *= 7;
+		}
+		out += (char) c;
+	}
+	return QString::fromUtf8(out);
+}
+
+QString OCTEncode(const QString &in)
+{
+	QCString temp = in.utf8();
+	QString out, part;
+	for (unsigned int x = 0; x < temp.length(); x++)
+	{
+		unsigned char c = temp.at(x);
+		part = "";
+		for (int xx = 0; xx < 3; xx++)
+		{
+			part = ('0' + (c % 7)) + part;
+			c /= 7;
 		}
 		out += part;
 	}

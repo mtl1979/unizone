@@ -1130,6 +1130,24 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (out.length() > 0)
 				PrintSystem(tr("Encoded: %1").arg(out));
 		}
+		else if (CompareCommand(sendText, "/octdecode"))
+		{
+			QString qtext = GetParameterString(sendText);
+			OCTClean(qtext);
+			if (qtext != QString::null)
+			{
+				QString out = OCTDecode(qtext);
+				if (out.length() > 0)
+					PrintSystem(tr("Decoded: %1").arg(out));
+			}
+		}
+		else if (CompareCommand(sendText, "/octencode"))
+		{
+			QString qtext = GetParameterString(sendText);
+			QString out = OCTEncode(qtext);
+			if (out.length() > 0)
+				PrintSystem(tr("Encoded: %1").arg(out));
+		}
 		else if (CompareCommand(sendText, "/revsay"))
 		{
 			QString qtext = GetParameterString(sendText);
@@ -2545,6 +2563,10 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/msg [name] [message] - send a private message");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/nick [name] - change your user name");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/octdecode - decode octal data and display it");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/octencode - encode as octal data and display it");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/onconnect [command] - set or clear command to perform on successful connect");
 	helpText			+=	"\n\t\t\t\t";

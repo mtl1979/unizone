@@ -126,9 +126,13 @@ QString hexFromLongLong(const int64 &, unsigned int);
 
 void HEXClean(QString &);
 void BINClean(QString &);
+void OCTClean(QString &);
 
 QString BINEncode(const QString &);
 QString BINDecode(const QString &);
+
+QString OCTEncode(const QString &);
+QString OCTDecode(const QString &);
 
 void AddToList(QString &slist, const QString &entry);
 void AddToList(String &slist, const String &entry);

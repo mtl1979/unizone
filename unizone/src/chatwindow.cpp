@@ -24,8 +24,6 @@ ChatWindow::~ChatWindow()
 {
 }
 
-#define InRange(a, b, c) ((a >= b) && (a <= c))
-
 bool 
 ChatWindow::NameSaid(QString & msg)
 {
@@ -34,9 +32,9 @@ ChatWindow::NameSaid(QString & msg)
 	int temp = 0;
 	
 	while (
-		InRange(sname.at(temp), 'A', 'Z')||
-		InRange(sname.at(temp), 'a', 'z')||
-		InRange(sname.at(temp), '0', '9')||
+		muscleInRange(sname.at(temp).unicode(), (wchar_t) 'A', (wchar_t) 'Z')||
+		muscleInRange(sname.at(temp).unicode(), (wchar_t) 'a', (wchar_t) 'z')||
+		muscleInRange(sname.at(temp).unicode(), (wchar_t) '0', (wchar_t) '9')||
 		(sname.at(temp) == '_')||
 		(sname.at(temp).unicode() >= 0x80)
 		)
@@ -119,7 +117,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		{
 			QChar an = itxt.at(c1);
 			
-			if (InRange(an, 'A', 'Z'))
+			if (muscleInRange(an.unicode(), (wchar_t) 'A', (wchar_t) 'Z'))
 			{
 				if (an != 'S')  // allows pluralization without apostrophes though
 				{
@@ -131,7 +129,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 					if ((c1 + 1) < itxt.length())
 					{
 						an = itxt.at(c1 + 1);
-						if (InRange(an, 'A', 'Z'))
+						if (muscleInRange(an.unicode(), (wchar_t) 'A', (wchar_t) 'Z'))
 						{
 							// 'S' must be last letter in word
 							return NameSaid2(sname, msg, sred + 1);
