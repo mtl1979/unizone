@@ -67,6 +67,7 @@ private:
 //	void UpdateScrollState();
 //	void UpdateTextView();		// moves the stuff in the chat screen so that the latest stuff is displayed
 
+	QString tr(const char *);
 
 	ChatType _type;
 

@@ -103,15 +103,20 @@ WHTMLView::setSource( const QString & name )
 }
 
 void
-WHTMLView::append(const QString &text)
+WHTMLView::append(const QString &newtext)
 {
 	PRINT("WHTMLView::append()\n");
 #if (QT_VERSION < 0x030000)
-	QString tmp("\t");
-	tmp += text;
-	QTextBrowser::append(tmp);
+	if (text().length() == 0)
+		setText(newtext);
+	else
+	{
+		QString tmp("\t");
+		tmp += newtext;
+		QTextBrowser::append(tmp);
+	}
 #else
-	QTextBrowser::append(text);
+	QTextBrowser::append(newtext);
 #endif
 	PRINT("WHTMLView::append() OK\n");
 }
@@ -195,11 +200,16 @@ WHTMLView::CheckScrollState()
 	PRINT("CHECKSCROLLSTATE: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
 #endif
 	fScrollX = contentsX();
-	fScrollY = contentsY();
 	if (scroll->value() >= scroll->maxValue())
+	{
 		fScrollDown = true;
+//		fScrollY = contentsY();
+	}
 	else
+	{
 		fScrollDown = false;
+		fScrollY = scroll->value();
+	}
 }
 
 void
@@ -220,6 +230,7 @@ WHTMLView::UpdateScrollState()
 	{
 		fScrollY = contentsHeight();
 	}
+
 	if (fScrollX != contentsX() || fScrollY != contentsY())
 	{
 		setContentsPos(fScrollX, fScrollY);

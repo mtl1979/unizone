@@ -199,17 +199,10 @@ ChatWindow::PrintText(const QString & str)
 	if (!str.isEmpty())
 		out += str;
 
-#if (QT_VERSION < 0x030000)
-	if (fChatText->text().isEmpty())
-		fChatText->setText(out);
-	else
-#endif
-	{
-		fChatText->appendText(out);
-	}
+	fChatText->appendText(out);
+
 	if (Settings()->GetLogging())
 		LogString(out);
-//	UpdateTextView();
 }
 
 void 
@@ -273,14 +266,14 @@ ChatWindow::FindWindowHandle(const QString &title)
 void
 ChatWindow::InitUserList(QListView *lv)
 {
-	lv->addColumn(qApp->translate("ChatWindow", "Name"));
-	lv->addColumn(qApp->translate("ChatWindow", "ID"));
-	lv->addColumn(qApp->translate("ChatWindow", "Status"));
-	lv->addColumn(qApp->translate("ChatWindow", "Files"));
-	lv->addColumn(qApp->translate("ChatWindow", "Connection"));
-	lv->addColumn(qApp->translate("ChatWindow", "Load"));
-	lv->addColumn(qApp->translate("ChatWindow", "Client"));		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
-	lv->addColumn(qApp->translate("ChatWindow", "OS"));			// as of now... Unizone specific, Unizone parses OS tag from Client tag if not present...
+	lv->addColumn(tr("Name"));
+	lv->addColumn(tr("ID"));
+	lv->addColumn(tr("Status"));
+	lv->addColumn(tr("Files"));
+	lv->addColumn(tr("Connection"));
+	lv->addColumn(tr("Load"));
+	lv->addColumn(tr("Client"));		// as of now... WinShare specific, WinShare pings all the users and parses the string for client info
+	lv->addColumn(tr("OS"));			// as of now... Unizone specific, Unizone parses OS tag from Client tag if not present...
 
 	lv->setColumnAlignment(WNickListItem::ID, Qt::AlignRight);		// <postmaster@raasu.org> 20021005
 	lv->setColumnAlignment(WNickListItem::Files, Qt::AlignRight);	// <postmaster@raasu.org> 20021005
@@ -293,4 +286,10 @@ ChatWindow::InitUserList(QListView *lv)
 	lv->setShowSortIndicator(true);
 
 	lv->setAllColumnsShowFocus(true);
+}
+
+QString
+ChatWindow::tr(const char *s)
+{
+	return qApp->translate("ChatWindow", s);
 }
