@@ -204,7 +204,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 				case Status::TransferNotifyRejected:
 					{
 						MessageRef q(GetMessageFromPool(WGenericEvent::FileBlocked));
-						uint64 timeleft = (uint64) -1;
+						int64 timeleft = (uint64) -1;
 						(void) next()->FindInt64("timeleft", (int64 *) &timeleft);
 						if (timeleft != -1)
 							q()->AddInt64("timeleft", timeleft);

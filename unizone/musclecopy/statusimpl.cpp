@@ -7,6 +7,7 @@
 #include <qdir.h>
 
 Status::Status(QWidget* parent, const char* name, bool modal, WFlags fl) 
+ : StatusBase(parent, name, modal, fl)
 {
 	gt = NULL;
 
@@ -34,7 +35,7 @@ void
 Status::customEvent(QCustomEvent *e)
 {
 	WGenericEvent * g = NULL;
-	if (e->type() == WGenericEvent::Type)
+	if ((int) e->type() == WGenericEvent::Type)
 	{
 		g = dynamic_cast<WGenericEvent *>(e);
 	}
@@ -69,7 +70,7 @@ Status::customEvent(QCustomEvent *e)
 			
 		case WGenericEvent::FileBlocked:
 			{
-				uint64 timeLeft = (uint64) -1;
+				int64 timeLeft = -1;
 				(void) msg()->FindInt64("timeleft", (int64 *) &timeLeft);
 				if (timeLeft == -1)
 					setCaption(tr("Blocked."));
@@ -264,7 +265,7 @@ Status::customEvent(QCustomEvent *e)
 							gt->SetPacketCount(gotk);
 						}
 						// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
-						double gcr = gt->GetCalculatedRate();
+						// double gcr = gt->GetCalculatedRate();
 						
 						
 						if (msg()->FindBool("done", &done) == B_OK)

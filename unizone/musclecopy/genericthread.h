@@ -74,11 +74,11 @@ public:
 	virtual long GetCurrentNum() { return -1; }
 	virtual long GetNumFiles() { return 0; }
 	virtual bool IsLastFile() { return ((GetCurrentNum() + 1) == GetNumFiles()); }
-	virtual QString GetFileName(int i) { return QString::null; }
+	virtual QString GetFileName(int) { return QString::null; }
 	virtual QString GetLocalFileName(int i) { return GetFileName(i); }
 
 	int GetRate() { return fTXRate; }
-	virtual void SetRate(int rate, AbstractReflectSessionRef & ref) { fTXRate = rate; }
+	virtual void SetRate(int rate, AbstractReflectSessionRef &) { fTXRate = rate; }
 	virtual void SetRate(int rate) { fTXRate = rate; }
 	virtual void ResetRate() { SetRate(fTXRate); }
 	virtual void ResetRate(AbstractReflectSessionRef & ref) { SetRate(fTXRate, ref); }

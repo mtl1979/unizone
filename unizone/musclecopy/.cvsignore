@@ -7,3 +7,5 @@ moc_statusimpl.cpp
 status.h
 status.cpp
 MuscleCopy.plg
+.depends
+musclecopy
