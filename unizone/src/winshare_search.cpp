@@ -283,6 +283,15 @@ WinShareWindow::StartQuery(const QString & sidRegExp, const QString & fileRegExp
 	fFileRegExp.SetPattern((const char *) fileRegExp.utf8());
 	fFileRegExpStr = fileRegExp;
 
+	if (!fGotResults)
+	{
+		SetSearchStatus(tr("Initializing..."));
+		while (!fGotResults)
+		{
+			qApp->processEvents();
+		}
+	}
+
 	fGotResults = false;
 
 	fNetClient->AddSubscription(tmp); // <postmaster@raasu.org> 20021026

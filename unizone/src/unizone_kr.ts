@@ -1934,6 +1934,10 @@ Date: %4</source>
         <source>%1 is downloading %2.</source>
         <translation type='unfinished'>%1 은 %2 다운로드 중입니다.</translation>
     </message>
+    <message>
+        <source>Could not start internal thread!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WinShare</name>
@@ -2298,7 +2302,7 @@ Date: %4</source>
     </message>
     <message>
         <source>/ping %1</source>
-        <translation>/ping %1</translation>
+        <translation type='obsolete'>/ping %1</translation>
     </message>
     <message>
         <source>Logging disabled.</source>
@@ -2486,7 +2490,7 @@ Date: %4</source>
     </message>
     <message>
         <source>/search %1</source>
-        <translation>/search %1</translation>
+        <translation type='obsolete'>/search %1</translation>
     </message>
     <message>
         <source>Rescanning shared files...</source>
@@ -2902,7 +2906,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Unizone</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Reconnecting in 1 minute!</source>
@@ -3054,6 +3058,10 @@ Date: %4</source>
     </message>
     <message>
         <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

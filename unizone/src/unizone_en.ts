@@ -2157,6 +2157,10 @@ Date: %4</translation>
         <source>%1 is downloading %2.</source>
         <translation>%1 is downloading %2.</translation>
     </message>
+    <message>
+        <source>Could not start internal thread!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WinShare</name>
@@ -2426,7 +2430,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>/ping %1</source>
-        <translation>/ping %1</translation>
+        <translation type='obsolete'>/ping %1</translation>
     </message>
     <message>
         <source>Trying to resume file %1 from user %2</source>
@@ -2606,7 +2610,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>/search %1</source>
-        <translation>/search %1</translation>
+        <translation type='obsolete'>/search %1</translation>
     </message>
     <message>
         <source>Rescanning shared files...</source>
@@ -3302,7 +3306,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone</source>
-        <translation>Unizone</translation>
+        <translation type='obsolete'>Unizone</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
@@ -3355,6 +3359,10 @@ Date: %4</translation>
     <message>
         <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
         <translation>/revsay [nick]: [text] - say text reversed but prefix with nick</translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>
