@@ -440,23 +440,93 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			time_t currentTime = time(NULL);
 			tm * myTime;
 			char zone[64];
+			QString tuser = QString::null;
 
-			if (command != "gmt")
-				myTime = localtime(&currentTime);
+			if ((command.length() > 0) && (command != "gmt")) // User name?
+			{
+				int rpos;
+				if (command.left(1) == "'")
+				{
+					rpos = command.find("'",1);
+					if (rpos >= 0)
+					{
+						tuser = command.mid(1,rpos-1);
+						if (command.length() > (rpos + 3))
+							command = command.mid(rpos + 2);
+						else
+							command = QString::null;
+					}
+				}
+				else
+				{
+					rpos = command.find(" ");
+					if (rpos == -1)
+					{
+						rpos = command.length();
+						tuser = command;
+						command = QString::null;
+					}
+					else
+					{
+						tuser = command.left(rpos);
+						command = command.mid(rpos + 1);
+					}
+				}
+			}
+
+			if (tuser == QString::null)
+			{
+				if (command != "gmt")
+					myTime = localtime(&currentTime);
+				else
+					myTime = gmtime(&currentTime);
+				
+				lt = asctime(myTime);
+				lt = lt.Substring(0, "\n");
+				
+				if (command == "gmt")
+					strcpy(zone, "GMT");
+				else if (myTime->tm_isdst != 1) 
+					strcpy(zone, tzname[0]);
+				else 
+					strcpy(zone, tzname[1]);
+				
+				PrintSystem(tr("Current time: %1 %2").arg(lt.Cstr()).arg(zone),false);
+			}
 			else
-				myTime = gmtime(&currentTime);
+			{
+				WUserRef tu = FindUser(tuser);
+				if (tu())
+				{
+					String to("/*/");
+					to += (const char *) tu()->GetUserID().utf8();
+					to += "/unishare";
 
-			lt = asctime(myTime);
-			lt = lt.Substring(0, "\n");
+					MessageRef tire = GetMessageFromPool(TimeRequest);
+					if (tire())
+					{
+						tire()->AddString(PR_NAME_KEYS, to);
+						tire()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
+						if (command == "gmt")
+						{
+							tire()->AddBool("gmt", true);
+						}
+						if (fSettings->GetInfo())
+						{
+							QString treqMsg = tr("Time request sent to user #%1 (a.k.a. <font color=\"%3\">%2</font>).").arg(tu()->GetUserID()).arg(FixStringStr(tu()->GetUserName())).arg(WColors::RemoteName); 
+							PrintSystem(treqMsg);
+						}
 
-			if (command == "gmt")
-				strcpy(zone, "GMT");
-			else if (myTime->tm_isdst != 1) 
-				strcpy(zone, tzname[0]);
-			else 
-				strcpy(zone, tzname[1]);
-			
-			PrintSystem(tr("Current time: %1 %2").arg(lt.Cstr()).arg(zone),false);
+						fNetClient->SendMessageToSessions(tire);
+					}		
+				}
+				else // Invalid user?
+				{
+					if (fSettings->GetError())
+						PrintError(tr("User(s) not found!"));
+
+				}
+			}
 		}
 		else if (CompareCommand(sendText,"/btime"))
 		{
@@ -1735,6 +1805,68 @@ WinShareWindow::HandleMessage(Message * msg)
 				}
 				break;
 			}
+		case TimeRequest:
+			{
+				String lt, session;
+				if (msg->FindString("session", session) == B_OK)
+				{
+					String tostr("/*/");
+					tostr += session;
+					tostr += "/unishare";
+
+					time_t currentTime = time(NULL);
+					tm * myTime;
+					char zone[64];
+					
+					bool g = false;
+					(void) msg->FindBool("gmt",&g);
+
+					if (g)
+						myTime = gmtime(&currentTime);
+					else
+						myTime = localtime(&currentTime);
+					
+					lt = asctime(myTime);
+					lt = lt.Substring(0, "\n");
+					
+					if (g)
+						strcpy(zone, "GMT");
+					else if (myTime->tm_isdst != 1) 
+						strcpy(zone, tzname[0]);
+					else 
+						strcpy(zone, tzname[1]);
+
+					MessageRef tire = GetMessageFromPool(TimeReply);
+					if (tire())
+					{
+						tire()->AddString(PR_NAME_KEYS, tostr);
+						tire()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
+						tire()->AddString("time", lt);
+						tire()->AddString("zone", zone);
+						fNetClient->SendMessageToSessions(tire);
+					}
+				}
+				break;
+			}
+		case TimeReply: // Reply to TimeRequest
+			{
+				String sTime, sZone;
+				const char * session;
+				if (msg->FindString("session", &session) == B_OK)
+				{
+					WUserRef user = fNetClient->FindUser(session);
+					if (user())
+					{
+						QString qTime = WFormat::RemoteName.arg(WColors::RemoteName).arg(fSettings->GetFontSize()).arg(session).arg(FixStringStr(user()->GetUserName()));
+						if ((msg->FindString("time", sTime) == B_OK) && (msg->FindString("zone", sZone) == B_OK))
+						{
+							qTime += tr("Current time: %1 %2").arg(sTime.Cstr()).arg(sZone.Cstr());
+							PrintText(qTime, false);
+						}
+					}
+				}
+				break;
+			}
 	}
 }
 
@@ -1913,6 +2045,8 @@ WinShareWindow::ShowHelp(QString command)
 	helpText			+=	tr("/status [status] - set status string");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/time [gmt] - show local (or GMT) time");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/time [nick] [gmt] - request time stamp from other user");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/unautopriv [name] - remove name from auto-private list");
 	helpText			+=	"\n\t\t\t\t"; 

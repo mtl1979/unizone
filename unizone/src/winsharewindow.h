@@ -88,6 +88,15 @@ public:
 		UpdatePrivateUsers
 	};
 
+	// Time Events
+	enum
+	{
+		TimeRequest = 'UsTi',
+		TimeReply
+	};
+
+
+
 public slots:
 	/** File Menu **/
 	void Connect();
