@@ -221,6 +221,7 @@ clean :
 	rm -f $(UIC_HEADERS)
 
 distclean : clean
+	$(MAKE) -C src -f Makefile distclean
 	rm -f .depends .depends1 .depends2 .depends3 .depends4
 
 # DO NOT DELETE

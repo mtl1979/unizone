@@ -21,7 +21,9 @@ translations : $(QMFILES)
 	$(LRELEASE) $<
 
 clean : 
-	rm -f unizone_unix.pro 
 	rm -f *.qm
+
+distclean: clean
+	rm -f unizone_unix.pro 
 
 .PHONY=translations clean
