@@ -62,6 +62,7 @@ WHTMLView::showEvent(QShowEvent * event)
 #ifdef UNIVIEW
 	QTextBrowser::showEvent(event);
 #elif (QT_VERSION < 0x030000)
+	emit BeforeShown();
 	QString txt = text();
 	setText("");
 	emit GotShown(txt);

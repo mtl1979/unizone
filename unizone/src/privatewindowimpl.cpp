@@ -96,6 +96,7 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	connect(fChat, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
 #if (QT_VERSION < 0x030000)
+	connect(fText, SIGNAL(BeforeShown()), this, SLOT(BeforeShown()));
 	connect(fText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
 #endif
 	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
@@ -520,6 +521,12 @@ WPrivateWindow::PrintError(const QString & error)
 		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(gWin->fSettings->GetFontSize()).arg(error);
 		PrintText(e);
 	}
+}
+
+void
+WPrivateWindow::BeforeShown()
+{
+	CheckScrollState();
 }
 
 void

@@ -105,6 +105,8 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	connect(fChat, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
 #if (QT_VERSION < 0x030000)
+	connect(fText, SIGNAL(BeforeShown()),
+			this, SLOT(BeforeShown()));
 	connect(fText, SIGNAL(GotShown(const QString &)), 
 			this, SLOT(GotShown(const QString &)));
 #endif
@@ -268,6 +270,12 @@ Channel::URLClicked(const QString & url)
 		else
 			GotoURL(url);
 	}
+}
+
+void
+Channel::BeforeShown()
+{
+	CheckScrollState();
 }
 
 void

@@ -261,6 +261,7 @@ public slots:
 	// reconnect timer
 	void ReconnectTimer();
 
+	void BeforeShown();
 	void GotShown(const QString &);
 
 	void AboutToQuit();

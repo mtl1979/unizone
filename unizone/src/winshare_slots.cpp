@@ -444,6 +444,12 @@ WinShareWindow::ConnectTimer()
 }
 
 void
+WinShareWindow::BeforeShown()
+{
+	CheckScrollState();
+}
+
+void
 WinShareWindow::GotShown(const QString & txt)
 {
 	fChatText->setText(ParseForShown(txt));

@@ -57,6 +57,7 @@ private slots:
 	void DisconnectedFromServer();
 	void TabPressed(const QString &);
 
+	void BeforeShown();
 	void GotShown(const QString &);
 
 	// popup menu

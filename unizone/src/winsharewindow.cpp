@@ -124,6 +124,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 			this, SLOT(URLClicked(const QString &)));
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(AboutToQuit()));
 #if (QT_VERSION < 0x030000)
+	connect(fChatText, SIGNAL(BeforeShown()), this, SLOT(BeforeShown()));
 	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
 #endif
 	// create popup menu

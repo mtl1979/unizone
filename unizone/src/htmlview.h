@@ -22,6 +22,7 @@ public:
 
 signals:
 	void URLClicked(const QString & url);
+	void BeforeShown();
 	void GotShown(const QString & txt);
 
 protected:
