@@ -148,7 +148,9 @@ WFileThread::ParseDirAux(QString &dir)
 			
 			while (info->isSymLink())
 			{
-				info->setFile(info->readLink());
+				QString l = info->readLink();
+				delete info;
+				return ParseDirAux(l);
 			}
 			
 			PRINT("Symlinks resolved\n");
