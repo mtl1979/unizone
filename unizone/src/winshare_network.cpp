@@ -36,6 +36,7 @@ typedef hostent *LPHOSTENT;
 #include "netclient.h"
 #include "serverclient.h"
 #include "updateclient.h"
+#include "wstatusbar.h"
 
 #include <qapplication.h>
 
@@ -256,6 +257,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				_en = enc.toULong(&b);
 				if (b)
 				{
+					fStatusBar->setText(tr( "Current compression: %1" ).arg(_en), 1);
+
 					_en += MUSCLE_MESSAGE_ENCODING_DEFAULT;
 					if (_en >= MUSCLE_MESSAGE_ENCODING_END_MARKER)
 					{

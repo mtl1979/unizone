@@ -509,6 +509,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				// Set Outgoing Message Encoding
 				uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
 				fNetClient->SetOutgoingMessageEncoding( enc );
+				fStatusBar->setText(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
 				
 				// Set Incoming Message Encoding
 				if (enc != 0)
@@ -1152,6 +1153,16 @@ WinShareWindow::InitGUI()
 	CHECK_PTR(fReconnectTimer);
 	connect(fReconnectTimer, SIGNAL(timeout()), this, SLOT(ReconnectTimer()));
 
+	// Main Status Bar
+
+	fStatusBar = new WStatusBar(this);
+	CHECK_PTR(fStatusBar);
+	fStatusBar->setSizeGripEnabled(true);
+
+	fStatusBar->setText(tr( "Not connected." ), 0);
+
+	// Insert tabs
+
 	fTabs->insertTab(fMainSplitter, tr("Chat"));
 	fTabs->insertTab(fSearchWidget, tr("Search"));
 	fTabs->insertTab(fChannelsWidget, tr("Channels"));
@@ -1748,14 +1759,16 @@ WinShareWindow::LoadSettings()
 
 	// Toolbar Layout
 
+#define NUM_TOOLBARS 4
+
 	{
 		int i;
-		int _dock[4];
-		int _index[4];
-		bool _nl[4];
-		int _extra[4];
+		int _dock[NUM_TOOLBARS];
+		int _index[NUM_TOOLBARS];
+		bool _nl[NUM_TOOLBARS];
+		int _extra[NUM_TOOLBARS];
 		
-		for (i = 0; i < 4; i++)
+		for (i = 0; i < NUM_TOOLBARS; i++)
 			fSettings->GetToolBarLayout(i, _dock[i], _index[i], _nl[i], _extra[i]); 
 		
 		// Start from dock position 0
@@ -1763,9 +1776,9 @@ WinShareWindow::LoadSettings()
 
 		for (int d1 = 0; d1 < 7; d1++)			// dock position
 		{
-			for (int ip = 0; ip < 4; ip++)		// index position
+			for (int ip = 0; ip < NUM_TOOLBARS; ip++)		// index position
 			{
-				for (int i1 = 0; i1 < 4; i1++)	// layout index
+				for (int i1 = 0; i1 < NUM_TOOLBARS; i1++)	// layout index
 				{
 					if ((_dock[i1] == d1) && (_index[i1] == ip))
 					{
@@ -1783,7 +1796,6 @@ WinShareWindow::LoadSettings()
 			}
 		}
 	}
-	
 }
 
 

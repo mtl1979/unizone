@@ -24,6 +24,7 @@
 #include "wstring.h"
 #include "filethread.h"
 #include "netclient.h"
+#include "wstatusbar.h"
 
 void
 WinShareWindow::Exit()
@@ -72,6 +73,8 @@ WinShareWindow::UserConnected(const QString &sid)
 		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserConnected().arg(sid));
 		PrintText(system);
 	}
+	int n = fUsers->childCount() + 1;
+	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
 }
 
 void
@@ -93,6 +96,8 @@ WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 		QString parse = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(msg);
 		PrintSystem(parse);
 	}
+	int n = fUsers->childCount() + 1;
+	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
 }
 
 void
@@ -132,6 +137,9 @@ WinShareWindow::DisconnectedFromServer()
 {
 	StopSearch();
 	fDisconnectCount++;
+
+	fStatusBar->setText(tr( "Not connected." ), 0);
+	fStatusBar->setText( "", 1);
 	
 	if ((fDisconnectCount == 1) && (!fDisconnectFlag))
 	{

@@ -217,6 +217,12 @@ WUploadThread::InitSession()
 void
 WUploadThread::SetLocallyQueued(bool b)
 {
+	if (fLocallyQueued == b)
+		return;
+
+	if (fFinished)
+		return;
+
 	fLocallyQueued = b;
 	if (b)
 	{
@@ -228,7 +234,7 @@ WUploadThread::SetLocallyQueued(bool b)
 		if (fSavedFileList())
 		{
 			MessageRef fFileList = fSavedFileList;
-			fSavedFileList.Neutralize();
+			fSavedFileList.Reset();
 			WUploadEvent *wue = new WUploadEvent(fFileList);
 			if (wue) QApplication::postEvent(this, wue);
 			// TransferFileList(fFileList);
@@ -237,7 +243,7 @@ WUploadThread::SetLocallyQueued(bool b)
 		else if (IsInternalThreadRunning())  // Still connected?
 		{
 			// Don't need to start forced or finished uploads ;)
-			if (!fForced && !fFinished)
+			if (!fForced)
 			{
 				// we can start now!
 				SignalUpload();
@@ -251,7 +257,7 @@ WUploadThread::SetLocallyQueued(bool b)
 				SendReply(con);
 			}
 		}
-		else if (fActive)		// !fFinished
+		else /* if (fActive) */		// !fFinished
 		{
 			// fActive = false;
 			fFinished = true;
@@ -277,8 +283,15 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 		fStartTime = 0;
 		if (timeLeft != -1)
 			fBlockTimer->start(timeLeft/1000, true);
+		
+		// Send notification
+
+		if (IsInternalThreadRunning())
+			SendRejectedNotification(true);
+		else
+			SendRejectedNotification(false);
 	}
-	else if (!b)
+	else // !b
 	{
 		fTimeLeft = 0;
 		fLastData.restart();
@@ -286,26 +299,9 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 		{
 			fBlockTimer->stop();
 		}
-	}
-	if (IsInternalThreadRunning())
-	{
-		if (b)
-		{
-			SendRejectedNotification(true);
-		}
-		else
-		{
+
+		if (IsInternalThreadRunning())
 			SetLocallyQueued(true); // put in queue ;)
-			// we can start now!
-			// SignalUpload();
-		}
-	}
-	else
-	{
-		if (b)
-		{
-			SendRejectedNotification(false);
-		}
 	}
 }
 
@@ -554,38 +550,40 @@ void
 WUploadThread::SendRejectedNotification(bool direct)
 {
 	MessageRef q(GetMessageFromPool(WDownload::TransferNotifyRejected));
-
-	if (!q())
-		return;
-
-	if (fTimeLeft != -1)
-		q()->AddInt64("timeleft", fTimeLeft);
-	if (direct || (fPort == 0))
+	
+	if (q())
 	{
-		SendMessageToSessions(q);
-	}
-	else
-	{
-		String node;
-		if (fRemoteSessionID != QString::null)
+		
+		if (fTimeLeft != -1)
+			q()->AddInt64("timeleft", fTimeLeft);
+		
+		if (direct || (fPort == 0))
 		{
-			node = "/*/";
-			node += (const char *) fRemoteSessionID.latin1();
+			SendMessageToSessions(q);
 		}
 		else
 		{
-			// use /<ip>/* instead of /*/<sessionid>, because session id isn't yet known at this point
-			node = "/";
-			node += (const char *) fStrRemoteIP.latin1();
-			node += "/*";
-		}
-		if (
-            (q()->AddString(PR_NAME_SESSION, "") == B_NO_ERROR) &&
-            (q()->AddString(PR_NAME_KEYS, node) == B_NO_ERROR) &&
-			(q()->AddInt32("port", (int32) fPort) == B_NO_ERROR)
-			) 
-		{
+			String node;
+			if (fRemoteSessionID != QString::null)
+			{
+				node = "/*/";
+				node += (const char *) fRemoteSessionID.latin1();
+			}
+			else
+			{
+				// use /<ip>/* instead of /*/<sessionid>, because session id isn't yet known at this point
+				node = "/";
+				node += (const char *) fStrRemoteIP.latin1();
+				node += "/*";
+			}
+			if (
+				(q()->AddString(PR_NAME_SESSION, "") == B_NO_ERROR) &&
+				(q()->AddString(PR_NAME_KEYS, node) == B_NO_ERROR) &&
+				(q()->AddInt32("port", (int32) fPort) == B_NO_ERROR)
+				) 
+			{
 				gWin->SendRejectedNotification(q);
+			}
 		}
 	}
 	MessageRef b(GetMessageFromPool(WUploadEvent::FileBlocked));
@@ -593,6 +591,7 @@ WUploadThread::SendRejectedNotification(bool direct)
 	{
 		if (fTimeLeft != -1)
 			b()->AddInt64("timeleft", fTimeLeft);
+
 		SendReply(b);
 	}
 }
@@ -934,9 +933,12 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 	
 	if (gWin->IsScanning())
 	{
-		fLocallyQueued = true;
 		fSavedFileList = msg;
-		SendQueuedNotification();
+		if (!fBlocked)
+		{
+			fLocallyQueued = true;
+			SendQueuedNotification();
+		}
 		return;
 	}
 	

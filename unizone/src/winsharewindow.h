@@ -329,6 +329,8 @@ private:
 	WHTMLView * fChatText;
 	WChatText * fInputText;
 
+	WStatusBar * fStatusBar;
+
 	int64 fLoginTime;
 
 	QString fUserName, fUserStatus, fServer;

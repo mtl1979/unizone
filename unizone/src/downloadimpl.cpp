@@ -1206,6 +1206,13 @@ WDownload::uploadEvent(WUploadEvent *u)
 			item->setText(WTransferItem::Rate, "0.0");
 			item->setText(WTransferItem::ETA, "");
 			item->setText(WTransferItem::Elapsed, "");
+
+			if (gWin->fSettings->GetAutoClear())
+			{
+				SendSignal(ClearUploads);
+			}
+			
+			SendSignal(DequeueUploads);
 			
 			break;
 		}
@@ -1579,6 +1586,7 @@ WDownload::UserDisconnected(const QString &sid, const QString &name)
 						)
 					{
 						pair.first->SetBlocked(true);
+						pair.first->Reset();
 					}
 				}
 			}
@@ -3115,7 +3123,7 @@ WDownload::GetUploadQueue()
 			fUploadList.GetItemAt(i, pair);
 			if (pair.first)
 			{
-				if (pair.first->IsFinished() == false)
+				if ((pair.first->IsFinished() == false) && (pair.first->IsBlocked() == false))
 				{
 					n++;
 				}
