@@ -475,18 +475,6 @@ WinShareWindow::ConnectTimer()
 }
 
 void
-WinShareWindow::BeforeShown()
-{
-	ChatWindow::BeforeShown();
-}
-
-void
-WinShareWindow::GotShown(const QString & txt)
-{
-	ChatWindow::GotShown(txt);
-}
-
-void
 WinShareWindow::AboutToQuit()
 {
 	Cleanup();

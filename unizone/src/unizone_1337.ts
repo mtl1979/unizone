@@ -1323,6 +1323,10 @@ Date: %4</translation>
         <source>Elapsed</source>
         <translation>Used</translation>
     </message>
+    <message>
+        <source>F11</source>
+        <translation type='unfinished'>F11</translation>
+    </message>
 </context>
 <context>
     <name>WDownloadThread</name>

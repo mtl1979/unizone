@@ -17,6 +17,7 @@ WHTMLView::WHTMLView(QWidget * parent, const char * name)
 	if (!name)
 		setName( "WHTMLView" );
 	fURL = fOldURL = fContext = QString::null;
+	fScrollDown = true;
 	connect( this, SIGNAL(highlighted(const QString &)), this, SLOT(URLSelected(const QString &)) );
 }
 
@@ -58,10 +59,10 @@ void
 WHTMLView::showEvent(QShowEvent * /* event */)
 {
 #if (QT_VERSION < 0x030000)
-	emit BeforeShown();
+	BeforeShown();
 	QString txt = text();
 	setText("");
-	emit GotShown(txt);
+	GotShown(txt);
 #endif
 }
 
@@ -202,6 +203,8 @@ void
 WHTMLView::appendText(const QString &newtext)
 {
 	PRINT("appendText\n");
+	PRINT("appendText 1\n");
+	BeforeShown();
 	QWidget *widget = topLevelWidget();
 	if (widget)
 	{
@@ -212,8 +215,6 @@ WHTMLView::appendText(const QString &newtext)
 			if (newlen >= MAX_BUFFER_SIZE)
 			{
 #endif
-				PRINT("appendText 1\n");
-				emit BeforeShown();
 				PRINT("appendText 2\n");
 				QString temp = text();
 				PRINT("appendText 3\n");
@@ -223,14 +224,12 @@ WHTMLView::appendText(const QString &newtext)
 #endif
 				PRINT("appendText 4\n");
 				temp += newtext;
+				PRINT("appendText 5\n");
 #if (QT_VERSION >= 0x030000)
-				PRINT("appendText 5\n");
 				setText(ParseForShown(temp));
-				PRINT("appendText 6\n");
-#else
-				PRINT("appendText 5\n");
+				PRINT("appendText: Calling GotShown()\n");
 #endif
-				emit GotShown(temp);
+				GotShown(temp);
 				PRINT("appendText OK\n");
 				return;
 #if (QT_VERSION >= 0x030000)
@@ -238,6 +237,73 @@ WHTMLView::appendText(const QString &newtext)
 #endif
 		}
 	}
+	PRINT("appendText: Calling append()\n");
 	append(newtext);
+	PRINT("appendText: Calling UpdateTextView()\n");
+	UpdateTextView();
 	PRINT("appendText OK\n");
+}
+
+void
+WHTMLView::BeforeShown()
+{
+	CheckScrollState();
+}
+
+void
+#if (QT_VERSION < 0x030000)
+WHTMLView::GotShown(const QString & txt)
+#else
+WHTMLView::GotShown(const QString &)
+#endif
+{
+#if (QT_VERSION < 0x030000)
+	setText(ParseForShown(txt));
+#endif
+	UpdateTextView();
+}
+
+void
+WHTMLView::CheckScrollState()
+{
+	QScrollBar * scroll = verticalScrollBar();
+#ifdef DEBUG2
+	PRINT("CHECKSCROLLSTATE: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
+#endif
+	fScrollX = contentsX();
+	fScrollY = contentsY();
+	if (scroll->value() >= scroll->maxValue())
+		fScrollDown = true;
+	else
+		fScrollDown = false;
+}
+
+void
+WHTMLView::UpdateTextView()
+{
+	// <postmaster@raasu.org> 20021021 -- Fixed too long line in debug output
+#ifdef DEBUG2
+	PRINT("UPDATETEXTVIEW: ContentsX = %d, ContentsY = %d\n", fChatText->contentsX(),		fChatText->contentsY());
+	PRINT("              : ContentsW = %d, ContentsH = %d\n", fChatText->contentsWidth(),	fChatText->contentsHeight());
+#endif
+	UpdateScrollState();
+}
+
+void
+WHTMLView::UpdateScrollState()
+{
+	if (fScrollDown)
+	{
+		fScrollY = contentsHeight();
+	}
+	if (fScrollX != contentsX() || fScrollY != contentsY())
+	{
+		setContentsPos(fScrollX, fScrollY);
+#ifndef WIN32	// linux only... (FreeBSD???)
+		repaintContents(
+							contentsX(), contentsY(),
+							contentsWidth(), contentsHeight(),
+							false);
+#endif
+	}
 }

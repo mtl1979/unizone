@@ -100,8 +100,6 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 			this, SLOT(URLClicked(const QString &)));
 	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
-	connect(fChatText, SIGNAL(BeforeShown()), this, SLOT(BeforeShown()));
-	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
 	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 
 #ifdef WIN32
@@ -446,18 +444,6 @@ void
 WPrivateWindow::resizeEvent(QResizeEvent * e)
 {
 	fSplit->resize(e->size().width(), e->size().height());
-}
-
-void
-WPrivateWindow::BeforeShown()
-{
-	ChatWindow::BeforeShown();
-}
-
-void
-WPrivateWindow::GotShown(const QString & txt)
-{
-	ChatWindow::GotShown(txt);
 }
 
 void

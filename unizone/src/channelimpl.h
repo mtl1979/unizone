@@ -68,8 +68,6 @@ private:
 public slots:
 	void TabPressed(const QString &);
 	void URLClicked(const QString &);
-	void BeforeShown();
-	void GotShown(const QString &);
 	void UpdateUserList();
 	void UpdateTopic();
 	void NewChannelText(const QString &, const QString &, const QString &);

@@ -256,9 +256,6 @@ public slots:
 	// reconnect timer
 	void ReconnectTimer();
 
-	void BeforeShown();
-	void GotShown(const QString &);
-
 	void AboutToQuit();
 	void DownloadWindowClosed();
 
@@ -347,8 +344,8 @@ private:
 	bool fGotResults;			// see if we got initial Search Results
 	bool fGotParams;			// see if the initial "Get Params" message was sent
 	bool fAway;
-	bool fScrollDown;			// do we need to scroll the view down after an insertion?
-	int fScrollX, fScrollY;
+//	bool fScrollDown;			// do we need to scroll the view down after an insertion?
+//	int fScrollX, fScrollY;
 	bool fScanning;				// Is File Scan Thread active?
 
 	bool fDisconnect;			// true : disconnected prematurely
@@ -482,7 +479,7 @@ private:
 	void EmptyUsers();
 	void SetAutoAwayTimer();
 	void WaitOnFileThread(bool);
-	void CheckScrollState();
+//	void CheckScrollState();
 
 	void StartLogging();
 	void StopLogging();

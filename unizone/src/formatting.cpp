@@ -367,7 +367,7 @@ QString WFormat::ReceivePrivMsg(const QString &session, const QString &othername
 	temp += "<b>";
 	temp += othername;
 	temp += "</b>";
-	temp += "</font>:";
+	temp += "</font>: ";
 	temp += tr("<font color=\"%1\">").arg(WColors::PrivText);
 	temp += text;
 	temp += "</font></font>";

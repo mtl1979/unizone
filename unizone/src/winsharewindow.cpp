@@ -150,8 +150,6 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
 			this, SLOT(URLClicked(const QString &)));
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(AboutToQuit()));
-	connect(fChatText, SIGNAL(BeforeShown()), this, SLOT(BeforeShown()));
-	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
 
 	// create popup menu
 	fPrivate = new QPopupMenu(this);	// have it deleted on destruction of window
@@ -252,7 +250,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	CHECK_PTR(fFileScanThread);
 
 	fFileShutdownFlag = false;
-	fScrollDown = true;
+//	fScrollDown = true;
 
 	if (fSettings->GetSharingEnabled())
 		ScanShares();
@@ -1346,7 +1344,7 @@ WinShareWindow::MakeHumanTime(int64 time)
 		return s;
 	}
 }
-
+/*
 void
 WinShareWindow::CheckScrollState()
 {
@@ -1361,7 +1359,7 @@ WinShareWindow::CheckScrollState()
 	else
 		fScrollDown = false;
 }
-
+*/
 bool
 WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net)
 {

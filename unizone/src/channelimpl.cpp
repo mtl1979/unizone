@@ -105,10 +105,6 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 			this, SLOT(URLClicked(const QString &)));
 	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
-	connect(fChatText, SIGNAL(BeforeShown()),
-			this, SLOT(BeforeShown()));
-	connect(fChatText, SIGNAL(GotShown(const QString &)), 
-			this, SLOT(GotShown(const QString &)));
 	connect(fTopicEdit, SIGNAL(returnPressed()), 
 			this, SLOT(UpdateTopic()));
 
@@ -783,14 +779,4 @@ Channel::LogString(const char *)
 {
 }
 
-void
-Channel::BeforeShown()
-{
-	ChatWindow::BeforeShown();
-}
 
-void
-Channel::GotShown(const QString & msg)
-{
-	ChatWindow::GotShown(msg);
-}

@@ -50,12 +50,7 @@ public:
 
 protected:
 
-	void BeforeShown();
-	void GotShown(const QString & msg);
-
 	WHTMLView * fChatText;
-
-	bool fScrollDown;			// do we need to scroll the view down after an insertion?
 
 #ifdef WIN32					// if the OS is Windows,
 	void FindWindowHandle(const QString &title);
@@ -65,14 +60,14 @@ protected:
 
 private:
 	bool NameSaid2(const QString &sname, QString & msg, unsigned long index = 0); // Private version for recursing
-	void CheckScrollState();
-	void UpdateScrollState();
-	void UpdateTextView();		// moves the stuff in the chat screen so that the latest stuff is displayed
+//	void CheckScrollState();
+//	void UpdateScrollState();
+//	void UpdateTextView();		// moves the stuff in the chat screen so that the latest stuff is displayed
 
 
 	ChatType _type;
 
-	int fScrollX, fScrollY;
+//	int fScrollX, fScrollY;
 
 };
 #endif

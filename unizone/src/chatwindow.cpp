@@ -210,7 +210,7 @@ ChatWindow::PrintText(const QString & str)
 	else
 #endif
 	{
-		CheckScrollState();
+//		CheckScrollState();
 #if (QT_VERSION < 0x030000)
 		QString tmp("\t");
 		tmp += out;
@@ -221,7 +221,7 @@ ChatWindow::PrintText(const QString & str)
 	}
 	if (Settings()->GetLogging())
 		LogString(out);
-	UpdateTextView();
+//	UpdateTextView();
 }
 
 void 
@@ -252,70 +252,6 @@ ChatWindow::PrintWarning(const QString & warning)
 
 		PrintText(e);
 	}
-}
-
-void
-ChatWindow::CheckScrollState()
-{
-	QScrollBar * scroll = fChatText->verticalScrollBar();
-#ifdef DEBUG2
-	PRINT("CHECKSCROLLSTATE: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
-#endif
-	fScrollX = fChatText->contentsX();
-	fScrollY = fChatText->contentsY();
-	if (scroll->value() >= scroll->maxValue())
-		fScrollDown = true;
-	else
-		fScrollDown = false;
-}
-
-void
-ChatWindow::UpdateTextView()
-{
-	// <postmaster@raasu.org> 20021021 -- Fixed too long line in debug output
-#ifdef DEBUG2
-	PRINT("UPDATETEXTVIEW: ContentsX = %d, ContentsY = %d\n", fChatText->contentsX(),		fChatText->contentsY());
-	PRINT("              : ContentsW = %d, ContentsH = %d\n", fChatText->contentsWidth(),	fChatText->contentsHeight());
-#endif
-	UpdateScrollState();
-}
-
-void
-ChatWindow::UpdateScrollState()
-{
-	if (fScrollDown)
-	{
-		fScrollY = fChatText->contentsHeight();
-	}
-	if (fScrollX != fChatText->contentsX() || fScrollY != fChatText->contentsY())
-	{
-		fChatText->setContentsPos(fScrollX, fScrollY);
-#ifndef WIN32	// linux only... (FreeBSD???)
-		fChatText->repaintContents(
-									fChatText->contentsX(), fChatText->contentsY(),
-									fChatText->contentsWidth(), fChatText->contentsHeight(),
-									false);
-#endif
-	}
-}
-
-void
-ChatWindow::BeforeShown()
-{
-	CheckScrollState();
-}
-
-void
-#if (QT_VERSION < 0x030000)
-ChatWindow::GotShown(const QString & txt)
-#else
-ChatWindow::GotShown(const QString &)
-#endif
-{
-#if (QT_VERSION < 0x030000)
-	fChatText->setText(ParseForShown(txt));
-#endif
-	UpdateTextView();
 }
 
 WSettings *

@@ -1173,6 +1173,10 @@ Date: %4</source>
         <source>Downloading %1 from %2.</source>
         <translation type='obsolete'></translation>
     </message>
+    <message>
+        <source>F11</source>
+        <translation type='unfinished'>F11</translation>
+    </message>
 </context>
 <context>
     <name>WDownloadThread</name>

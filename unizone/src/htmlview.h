@@ -19,8 +19,6 @@ public:
 
 signals:
 	void URLClicked(const QString & url);
-	void BeforeShown();
-	void GotShown(const QString & txt);
 
 protected:
 	virtual void viewportMousePressEvent(QMouseEvent * e);
@@ -29,8 +27,17 @@ protected:
 	
 	virtual void showEvent(QShowEvent * event);
 
+	virtual void BeforeShown();
+	virtual void GotShown(const QString & txt);
+
 private:
 	QString fOldURL, fURL, fContext;
+	int fScrollX, fScrollY;				// do we need to scroll the view down after an insertion?
+	bool fScrollDown;
+
+	void CheckScrollState();
+	void UpdateTextView();
+	void UpdateScrollState();
 
 private slots:
 	void URLSelected(const QString & url);
