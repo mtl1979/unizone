@@ -9,6 +9,8 @@
 #include "searchitem.h"
 #include "netclient.h"
 
+#include <qapplication.h>
+
 void
 WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewalled, MessageRef file)
 {
