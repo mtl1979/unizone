@@ -119,7 +119,7 @@ uint64 ParseHumanReadableTimeString(const String & str);
  *                                     (optOutputTo) will be created.
  *  @return B_NO_ERROR on success (the child process will see this), B_ERROR on failure.
  */
-status_t BecomeDaemonProcess(const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = false);
+status_t BecomeDaemonProcess(const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = true);
 
 /** Same as BecomeDaemonProcess(), except that the parent process returns as well as the child process.  
  *  @param returningAsParent Set to true on return of the parent process, or false on return of the child process.
@@ -131,7 +131,7 @@ status_t BecomeDaemonProcess(const char * optNewDir = NULL, const char * optOutp
  *                                     (optOutputTo) will be created.
  *  @return B_NO_ERROR (twice!) on success, B_ERROR on failure.
  */ 
-status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = false);
+status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = true);
 
 END_NAMESPACE(muscle);
 

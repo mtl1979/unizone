@@ -262,7 +262,7 @@ protected:
     *                        If NULL, the new node will be appended to the end of the index.  If (addToIndex) is false, this argument is ignored.
     * @return B_NO_ERROR on success, or B_ERROR on failure.
     */
-   status_t SetDataNode(const String & nodePath, MessageRef dataMsgRef, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToIndex=false, const char *optInsertBefore=NULL);
+   virtual status_t SetDataNode(const String & nodePath, MessageRef dataMsgRef, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToIndex=false, const char *optInsertBefore=NULL);
 
    /** Remove all nodes that match (nodePath).
     *  @param nodePath A relative path indicating node(s) to remove.  Wildcarding is okay.
@@ -271,7 +271,7 @@ protected:
     *  @param quiet If set to true, subscriber's won't be updated regarding this change to the database
     *  @return B_NO_ERROR on success, or B_ERROR on failure.
     */
-   status_t RemoveDataNodes(const String & nodePath, QueryFilterRef filterRef = QueryFilterRef(), bool quiet = false);
+   virtual status_t RemoveDataNodes(const String & nodePath, QueryFilterRef filterRef = QueryFilterRef(), bool quiet = false);
 
    /**
     * Recursively saves a given subtree of the node database into the given Message object, for safe-keeping.
@@ -303,7 +303,7 @@ protected:
      * @param optRetNewNodes If non-NULL, any newly-created DataNodes will be adde to this table for your inspection.
      * @returns B_NO_ERROR on success, or B_ERROR on failure.
      */
-   status_t InsertOrderedData(MessageRef insertMsg, Hashtable<String, DataNodeRef> * optRetNewNodes);
+   virtual status_t InsertOrderedData(MessageRef insertMsg, Hashtable<String, DataNodeRef> * optRetNewNodes);
 
    /**
     * This typedef represents the proper signature of a node-tree traversal callback function.

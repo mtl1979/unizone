@@ -28,7 +28,8 @@
  *  TRUE to construct a modal dialog.
  */
 WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent,  const char* name, bool modal, WFlags fl)
-    : WPrivateWindowBase(parent, name, modal, fl), fLock(true)
+    : WPrivateWindowBase(parent, name, modal, fl), fLock(true),
+	ChatWindow(PrivateType)
 {
 	fOwner = owner;
 	fNet = net;
@@ -198,7 +199,7 @@ WPrivateWindow::URLClicked(const QString & url)
 			GotoURL(url);
 	}
 }
-
+/*
 void
 WPrivateWindow::UpdateTextView()
 {
@@ -217,7 +218,6 @@ WPrivateWindow::UpdateTextView()
 #endif
 	}
 }
-
 void
 WPrivateWindow::PrintText(const QString & str)
 {
@@ -253,7 +253,7 @@ WPrivateWindow::PrintSystem(const QString & msg)
 	s += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(ParseChatText((QString &)msg));
 	PrintText(s);
 }
-
+*/
 void
 WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 {
@@ -292,6 +292,7 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 		}
 	}
 }
+
 
 void
 WPrivateWindow::AddUser(const WUserRef & user)
@@ -507,7 +508,7 @@ WPrivateWindow::resizeEvent(QResizeEvent * e)
 {
 	fSplit->resize(e->size().width(), e->size().height());
 }
-
+/*
 void
 WPrivateWindow::PrintError(const QString & error)
 {
@@ -518,20 +519,21 @@ WPrivateWindow::PrintError(const QString & error)
 		PrintText(e);
 	}
 }
-
+*/
 void
 WPrivateWindow::BeforeShown()
 {
-	CheckScrollState();
+	ChatWindow::BeforeShown();
 }
+
 
 void
 WPrivateWindow::GotShown(const QString & txt)
 {
-	fChatText->setText(ParseForShown(txt));
-	UpdateTextView();
+	ChatWindow::GotShown(txt);
 }
 
+/*
 void
 WPrivateWindow::CheckScrollState()
 {
@@ -543,6 +545,7 @@ WPrivateWindow::CheckScrollState()
 	else
 		fScrollDown = false;
 }
+*/
 
 void
 WPrivateWindow::StartLogging()
@@ -655,4 +658,22 @@ WPrivateWindow::CheckEmpty()
 			}
 		}
 	}
+}
+
+QWidget *
+WPrivateWindow::Window()
+{
+	return this;
+}
+
+void
+WPrivateWindow::LogString(const QString & text)
+{
+	fLog.LogString(text);
+}
+
+void
+WPrivateWindow::LogString(const char *text)
+{
+	fLog.LogString(text);
 }

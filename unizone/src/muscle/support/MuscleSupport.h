@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.47"
+#define MUSCLE_VERSION_STRING "2.49b"
 
 // Since certain antique compilers don't support namespaces, we
 // do all namespace-related declarations via macros which can

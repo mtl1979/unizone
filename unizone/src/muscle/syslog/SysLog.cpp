@@ -9,8 +9,6 @@
 
 #ifdef __linux__
 # include <execinfo.h>
-#elif defined(WIN32) && !defined(vsnprintf)
-# define vsnprintf _vsnprintf
 #endif
 
 BEGIN_NAMESPACE(muscle);
@@ -119,7 +117,13 @@ LogLineCallback :: ~LogLineCallback()
 void LogLineCallback :: Log(time_t when, int logLevel, const char * format, va_list argList)
 {
    // Generate the new text
+#ifdef __MWERKS__
+   int bytesAttempted = vsprintf(_writeTo, format, argList);  // BeOS/PPC doesn't know vsnprintf :^P
+#elif WIN32
+   int bytesAttempted = _vsnprintf(_writeTo, (sizeof(_buf)-1)-(_writeTo-_buf), format, argList);  // the -1 is for the guaranteed NUL terminator
+#else   
    int bytesAttempted = vsnprintf(_writeTo, (sizeof(_buf)-1)-(_writeTo-_buf), format, argList);  // the -1 is for the guaranteed NUL terminator
+#endif
    bool wasTruncated = (bytesAttempted != (int)strlen(_writeTo));  // do not combine with above line!
 
    // Log any newly completed lines

@@ -39,7 +39,7 @@ WLog::Create(bool priv)
 	String lt(asctime(localtime(&currentTime)));
 	String fullPath;
 
-	String prepend = "<HTML><HEAD><TITLE>Log for: ";
+	String prepend = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html;charset=utf-8\"><TITLE>Log for: ";
 	prepend += lt;
 	if (priv)
 		prepend += " (Private)";

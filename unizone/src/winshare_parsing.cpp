@@ -188,7 +188,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 	}
 	return false;
 }
-
+/*
 bool
 WinShareWindow::NameSaid(QString & msg)
 {
@@ -311,7 +311,7 @@ WinShareWindow::NameSaid2(const String &sname, QString & msg, unsigned long inde
 	}
 	return false;
 }
-
+*/
 void
 WinShareWindow::GotUpdateCmd(const char * key, const char * value)
 {

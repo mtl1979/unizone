@@ -2123,4 +2123,10 @@ bool Message :: FieldsAreSubsetOf(const Message & rhs, bool compareContents) con
    return true;
 }
 
+void Message :: SwapContents(Message & swapWith)
+{
+   muscleSwap(what, swapWith.what);
+   _entries.SwapContents(swapWith._entries);
+}
+
 END_NAMESPACE(muscle);

@@ -750,6 +750,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 			{
 				fixed = outFile;							
 				fixed += FixFileName(fFileDl[c]);
+				fLocalFileDl[c] = fixed;
 			}
 			else
 			{

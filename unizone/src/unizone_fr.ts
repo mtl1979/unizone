@@ -1219,7 +1219,7 @@ Date: %4</translation>
     <name>WDownloadThread</name>
     <message>
         <source>%1%2 %3%4</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>%1%2 %3</source>

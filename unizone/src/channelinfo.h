@@ -4,13 +4,14 @@
 #include <qstring.h>
 #include <qlistview.h>
 
-#include "channelimpl.h"
-
 #include "util/Queue.h"
-using muscle::Queue;
+
+using namespace muscle;
 
 typedef Queue<QString> WAdminList;
 typedef Queue<QString> WUserList;
+
+class Channel;
 
 class ChannelInfo
 {

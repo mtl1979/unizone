@@ -16,7 +16,8 @@
 
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags /* fl */)
 : ChannelBase(/* parent */ NULL, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
-			  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu /* flags */)
+			  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu /* flags */),
+			  ChatWindow(PrivateType)
 {
 	if (!name)
 	{
@@ -270,19 +271,6 @@ Channel::URLClicked(const QString & url)
 		else
 			GotoURL(url);
 	}
-}
-
-void
-Channel::BeforeShown()
-{
-	CheckScrollState();
-}
-
-void
-Channel::GotShown(const QString & txt)
-{
-	fChatText->setText(ParseForShown(txt));
-	UpdateTextView();
 }
 
 void
@@ -634,7 +622,7 @@ Channel::SendChannelText(const QString & message)
 	fmt += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);
 	PrintText(fmt);
 }
-
+/*
 void
 Channel::PrintText(const QString & str)
 {
@@ -679,7 +667,7 @@ Channel::PrintError(const QString & error)
 		PrintText(e);
 	}
 }
-
+*/
 void
 Channel::NewChannelText(const QString &channel, const QString &user, const QString &text)
 {
@@ -693,7 +681,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		{
 			QString msg = GetParameterString(text);
 			if ((msg.length() > 0) && gWin->fSettings->GetChat())
-				Action(user + "'s", msg, true);
+				Action(user + "'s", msg);
 		}
 	}
 	else if (text.lower().left(4) == "/me ")
@@ -702,7 +690,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		{
 			QString msg = GetParameterString(text);
 			if ((msg.length() > 0) && gWin->fSettings->GetChat())
-				Action(user, msg, true);
+				Action(user, msg);
 		}
 	}
 	else
@@ -720,9 +708,9 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		}
 	}
 }
-
+/*
 void
-Channel::Action(const QString & name, const QString & msg, bool /* batch */)
+Channel::Action(const QString & name, const QString & msg)
 {
 	QString nameText = FixStringStr(msg);
 	if (gWin->NameSaid(nameText) && gWin->fSettings->GetSounds())
@@ -730,7 +718,6 @@ Channel::Action(const QString & name, const QString & msg, bool /* batch */)
 
 	QString chat = WFormat::Action().arg(WColors::Action).arg(gWin->fSettings->GetFontSize());
 	chat += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(FixStringStr(name) + " " + nameText);
-	// CheckScrollState();
 	PrintText(chat);
 }
 
@@ -765,7 +752,7 @@ Channel::UpdateTextView()
 #endif
 	}
 }
-
+*/
 void
 Channel::UpdateTopic()
 {
@@ -856,4 +843,32 @@ Channel::FindUser(const QString & user)
 		}
 	}
 	return WUserRef(NULL, NULL);
+}
+
+QWidget *
+Channel::Window()
+{
+	return this;
+}
+
+void
+Channel::LogString(const QString &)
+{
+}
+
+void
+Channel::LogString(const char *)
+{
+}
+
+void
+Channel::BeforeShown()
+{
+	ChatWindow::BeforeShown();
+}
+
+void
+Channel::GotShown(const QString & msg)
+{
+	ChatWindow::GotShown(msg);
 }

@@ -1,4 +1,5 @@
 #include "channelinfo.h"
+#include "channelimpl.h"
 #include "tokenizer.h"
 
 bool

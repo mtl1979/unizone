@@ -294,19 +294,21 @@ NetClient::HandleBeRemoveMessage(const String & nodePath)
 					RemoveUser(sid);
 				break;
 			}
-
+/*
 		case USER_NAME_DEPTH:
 			{
-                if ((strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "name", 4) == 0) ||
+                if (
+					(strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "name", 4) == 0) ||
                     (strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "userstatus", 10) == 0) ||
-                    (strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "bandwidth", 9) == 0))
+                    (strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "bandwidth", 9) == 0)
+					)
 				{
 					// user removed
 					RemoveUser(sid);
 				}
 				break;
 			}
-			
+*/			
 		case FILE_INFO_DEPTH: 
 			{
 				const char * fileName = GetPathClause(FILE_INFO_DEPTH, nodePath.Cstr());
@@ -613,6 +615,8 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 					{
 						user()->SetFirewalled(false);
 					}
+					else
+						RemoveUser(sid);
 				}
 				break;
 				

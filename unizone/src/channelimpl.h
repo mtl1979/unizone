@@ -12,14 +12,14 @@
 #include <qlistview.h>
 
 #include "channel.h"
-//#include "netclient.h"
 #include "chattext.h"
+#include "chatwindow.h"
 #include "htmlview.h"
 #include "user.h"
 
 class NetClient;
 
-class Channel : public ChannelBase
+class Channel : public ChannelBase, public ChatWindow
 { 
     Q_OBJECT
 
@@ -49,28 +49,30 @@ private:
 	QLineEdit * fTopicEdit;
 	QListView * fChannelUsers;
 	WChatText * fInputText;
-	WHTMLView * fChatText;
+//	WHTMLView * fChatText;
 	QWidget * fParent;
 
 	WUserMap fUsers;
 	WUserMap fAdmins;
-	bool fScrollDown;
-	int fScrollX, fScrollY;
+//	bool fScrollDown;
+//	int fScrollX, fScrollY;
 	bool fActive, fPublic;
 
-	void PrintText(const QString & str);
-	void PrintSystem(const QString & str);
-	void PrintError(const QString & str);
+//	void PrintText(const QString & str);
+//	void PrintSystem(const QString & str);
+//	void PrintError(const QString & str);
 	void SendChannelText(const QString & message);
-	void CheckScrollState();
-	void UpdateTextView();
-	void Action(const QString & name, const QString & msg, bool batch = false);
+//	void CheckScrollState();
+//	void UpdateTextView();
+//	void Action(const QString & name, const QString & msg);
 
 	void UpdateNode();
 
 	WUserRef FindUser(const QString & user);
 
-
+	void LogString(const char *);
+	void LogString(const QString &);
+	QWidget *Window();
 
 public slots:
 	void TabPressed(const QString &);

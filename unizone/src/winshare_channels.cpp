@@ -1,5 +1,6 @@
 #include "winsharewindow.h"
 #include "channelinfo.h"
+#include "channelimpl.h"
 #include "tokenizer.h"
 #include "debugimpl.h"
 #include "global.h"

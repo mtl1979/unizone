@@ -31,6 +31,7 @@
 #include "regex/StringMatcher.h"
 #include "support/MuscleSupport.h"
 #include "user.h"
+#include "chatwindow.h"
 #include "titanic.h"
 
 using namespace muscle;
@@ -109,7 +110,7 @@ class WChatText;
 class WSettings;
 class WStatusBar;
 
-class WinShareWindow : public QMainWindow
+class WinShareWindow : public QMainWindow, public ChatWindow
 {
 	Q_OBJECT
 public:
@@ -144,9 +145,9 @@ public:
 	QString GetServer() const;
 	QString GetStatus() const;
 	QString GetUserID() const; 
-#ifdef WIN32
-	HWND GetHandle() { return fWinHandle; }
-#endif
+// #ifdef WIN32
+// 	HWND GetHandle() { return fWinHandle; }
+// #endif
 
 //	void BeginMessageBatch();
 //	void EndMessageBatch();
@@ -206,10 +207,14 @@ public:
 	void GotParams(bool g) { fGotParams = g; }
 	bool GotParams() { return fGotParams; }
 
-	void PrintSystem(const QString & msg/*, bool batch = false*/);
-	void PrintError(const QString & error/*, bool batch = false*/);
+//	void PrintSystem(const QString & msg);
+//	void PrintError(const QString & error);
 
 	void GotUpdateCmd(const char * param, const char * val);
+
+	void LogString(const char *);
+	void LogString(const QString &);
+	QWidget *Window();
 
 public slots:
 	/** File Menu **/
@@ -330,7 +335,7 @@ private:
 	QComboBox * fServerList, * fUserList, * fStatusList;
 	QLabel * fServerLabel, * fUserLabel, * fStatusLabel;
 	QSplitter * fChatSplitter;
-	WHTMLView * fChatText;
+//	WHTMLView * fChatText;
 	WChatText * fInputText;
 
 	WStatusBar * fStatusBar;
@@ -409,7 +414,6 @@ private:
 	// execute specified command
 	void ExecCommand(const QString &command);			
 
-	bool NameSaid2(const String &sname, QString & msg, unsigned long index = 0); // Private version for recursing
 
 	void SignalDownload(int);
 
@@ -421,9 +425,9 @@ private:
 
 	WLog fMainLog;
 
-#ifdef WIN32			// if the OS is Windows, 
-	HWND fWinHandle;	// handle to our window for flashing
-#endif
+// #ifdef WIN32			// if the OS is Windows, 
+// 	HWND fWinHandle;	// handle to our window for flashing
+// #endif
 
 	void InitGUI();
 	void InitToolbars();
@@ -436,14 +440,13 @@ private:
 	void HandleMessage(MessageRef);
 	void HandleComboEvent(WTextEvent *);
 
-	void UpdateTextView();		// moves the stuff in the chat screen so that the latest stuff is displayed
+//	void UpdateTextView();		// moves the stuff in the chat screen so that the latest stuff is displayed
 	void UpdateUserList();
 
 	QString MakeHumanTime(int64 time);
 
-//	void PrintText(const QString & str, bool begin);
-	void PrintText(const QString & str);
-	void PrintWarning(const QString & warning/*, bool batch = false*/);
+//	void PrintText(const QString & str);
+//	void PrintWarning(const QString & warning);
 
 	void NameChanged(const QString & newName);
 	void StatusChanged(const QString & newStatus);
@@ -453,7 +456,7 @@ private:
 	// stolen from BeShare :) thanx Jeremy
 	static bool ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
-	void Action(const QString & name, const QString & msg/*, bool batch = false*/);
+//	void Action(const QString & name, const QString & msg);
 	void GetAddressInfo(const QString & user, bool verbose = true);
 	void PrintAddressInfo(const WUserRef & user, bool verbose);
 	bool PrintAddressInfo(uint32 address, bool verbose);
@@ -470,8 +473,6 @@ private:
 	QString MapUsersToIDs(const QString & pattern);
 	QString MapIPsToNodes(const QString & pattern);
 
-	// see if we were named...
-	bool NameSaid(QString & msg);	// msg will be syntaxed if needed
 	void SetWatchPattern(const QString & pattern);
 
 	void ServerParametersReceived(const MessageRef msg);

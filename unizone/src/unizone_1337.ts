@@ -635,11 +635,11 @@ Version %1</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation type='unfinished'></translation>
+        <translation>You must change your nickname before connecting!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation type='unfinished'></translation>
+        <translation>&apos;binky&apos; stinkz. We don&apos;t like binkiez.</translation>
     </message>
 </context>
 <context>
@@ -856,7 +856,7 @@ Date: %4</translation>
     <message>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
-        <translation type='unfinished'></translation>
+        <translation>Reading directory...</translation>
     </message>
 </context>
 <context>
@@ -1252,7 +1252,7 @@ Date: %4</translation>
     <name>WDownloadThread</name>
     <message>
         <source>%1%2 %3%4</source>
-        <translation>%1%2 %3%4</translation>
+        <translation type='obsolete'>%1%2 %3%4</translation>
     </message>
     <message>
         <source>%1%2 %3</source>
@@ -1288,15 +1288,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
-        <translation type='unfinished'>Leeching %1 from %2.</translation>
+        <translation>Leeching %1 from %2.</translation>
     </message>
     <message>
         <source>Finished downloading %2 from %1.</source>
-        <translation type='unfinished'>Finished leeching %2 from %1.</translation>
+        <translation>Finished leeching %2 from %1.</translation>
     </message>
     <message>
         <source>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)</source>
-        <translation type='unfinished'></translation>
+        <translation>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytez)</translation>
     </message>
 </context>
 <context>
@@ -1961,19 +1961,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Empty Windows:</source>
-        <translation type='unfinished'></translation>
+        <translation>Empty Windowz:</translation>
     </message>
     <message>
         <source>Do Nothing</source>
-        <translation type='unfinished'></translation>
+        <translation>Chill Out</translation>
     </message>
     <message>
         <source>Prompt</source>
-        <translation type='unfinished'></translation>
+        <translation>Whine</translation>
     </message>
     <message>
         <source>Automatically Close</source>
-        <translation type='unfinished'></translation>
+        <translation>Nuke Them</translation>
     </message>
 </context>
 <context>
@@ -2187,15 +2187,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
-        <translation type='unfinished'>%1 has finished leeching %2.</translation>
+        <translation>%1 has finished leeching %2.</translation>
     </message>
     <message>
         <source>%1 is downloading %2.</source>
-        <translation type='unfinished'>%1 is leeching %2.</translation>
+        <translation>%1 is leeching %2.</translation>
     </message>
     <message>
         <source>Could not start internal thread!</source>
-        <translation type='unfinished'></translation>
+        <translation>Internal thread crapped!</translation>
     </message>
 </context>
 <context>
@@ -2774,7 +2774,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 weeks</source>
-        <translation>%1 weeks</translation>
+        <translation>%1 weekz</translation>
     </message>
     <message>
         <source>1 day</source>
@@ -2782,7 +2782,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 days</source>
-        <translation>%1 days</translation>
+        <translation>%1 dayz</translation>
     </message>
     <message>
         <source>1 hour</source>
@@ -2790,7 +2790,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 hours</source>
-        <translation>%1 hours</translation>
+        <translation>%1 hourz</translation>
     </message>
     <message>
         <source>1 minute</source>
@@ -2806,7 +2806,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 seconds</source>
-        <translation>%1 seconds</translation>
+        <translation>%1 secondz</translation>
     </message>
     <message>
         <source>and</source>
@@ -3390,27 +3390,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>/reverse [text] - say text in reverse</source>
-        <translation type='unfinished'></translation>
+        <translation>/reverse [text] - say text in reverse</translation>
     </message>
     <message>
         <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
-        <translation type='unfinished'></translation>
+        <translation>/revsay [nick]: [text] - say text reversed but prefix with nick</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type='unfinished'></translation>
+        <translation>Initializing...</translation>
     </message>
     <message>
         <source>On Connect: Do Nothing ;)</source>
-        <translation type='unfinished'></translation>
+        <translation>On Connect: Chill Out ;)</translation>
     </message>
     <message>
         <source>&amp;lt;None&amp;gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&amp;lt;None&amp;gt;</translation>
     </message>
     <message>
         <source>/ip [user|host] - give information about host</source>
-        <translation type='unfinished'></translation>
+        <translation>/ip [user|host] - give information about host</translation>
     </message>
 </context>
 </TS>

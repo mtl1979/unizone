@@ -1248,7 +1248,7 @@ Date: %4</translation>
     <name>WDownloadThread</name>
     <message>
         <source>%1%2 %3%4</source>
-        <translation>%1%2 %3%4</translation>
+        <translation type='obsolete'>%1%2 %3%4</translation>
     </message>
     <message>
         <source>%1%2 %3</source>

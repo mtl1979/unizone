@@ -129,7 +129,7 @@ bool IsRegexToken(char c, bool isFirstCharInString)
 {
    switch(c)
    {
-     case '[': case ']': case '*': case '?': case '\\': case ',': case '|': case '(': case ')':
+     case '[': case ']': case '*': case '?': case '\\': case ',': case '|': case '(': case ')': case '+':
         return true;
 
      case '<': case '~':   // these chars are only special if they are the first character in the string

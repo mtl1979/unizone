@@ -21,7 +21,7 @@ status_t ByteBuffer :: SetNumBytes(uint32 newNumBytes, bool retainData)
          if (newBuf)
          {
             _buffer = newBuf;
-            _numAllocatedBytes = newNumBytes;
+            _numAllocatedBytes = _numValidBytes = newNumBytes;
          }
          else
          {

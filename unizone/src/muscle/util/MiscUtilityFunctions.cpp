@@ -23,9 +23,8 @@ BEGIN_NAMESPACE(muscle);
 
 status_t ParseArg(const String & a, Message & addTo)
 {
-   String argName = a.Substring("#").Trim();
-
    // Remove any initial dashes
+   String argName = a.Trim();
    while(argName.StartsWith("-")) argName = argName.Substring(1);
 
    int equalsAt = argName.IndexOf('=');
@@ -40,7 +39,7 @@ status_t ParseArg(const String & a, Message & addTo)
 
 status_t ParseArgs(const String & line, Message & addTo)
 {
-   const String trimmed = line.Substring("#").Trim();
+   const String trimmed = line.Trim();
    uint32 len = trimmed.Length();
 
    // First, we'll pre-process the string into a StringTokenizer-friendly
@@ -54,7 +53,11 @@ status_t ParseArgs(const String & line, Message & addTo)
    {
       char c = trimmed[i];
       if ((lastCharWasBackslash == false)&&(c == '\"')) inQuotes = !inQuotes;
-                                                   else tokenizeThis += ((inQuotes)&&(c == ' ')) ? GUNK_CHAR : c;
+      else 
+      {
+         if ((inQuotes == false)&&(c == '#')) break;  // comment to EOL
+         tokenizeThis += ((inQuotes)&&(c == ' ')) ? GUNK_CHAR : c;
+      }
       lastCharWasBackslash = (c == '\\');
    }
    StringTokenizer tok(tokenizeThis());
@@ -133,10 +136,11 @@ status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
 void HandleStandardDaemonArgs(const Message & args)
 {
    // Do this first, so that the stuff below will affect the right process.
-   if (args.HasName("daemon"))
+   const char * n;
+   if (args.FindString("daemon", &n) == B_NO_ERROR)
    {
       LogTime(MUSCLE_LOG_INFO, "Spawning off a daemon-child...\n");
-      if (BecomeDaemonProcess(NULL, "/dev/console") != B_NO_ERROR)
+      if (BecomeDaemonProcess(NULL, n[0] ? n : "/dev/null") != B_NO_ERROR)
       {
          LogTime(MUSCLE_LOG_CRITICALERROR, "Couldn't spawn daemon-child process!\n");
          exit(10);

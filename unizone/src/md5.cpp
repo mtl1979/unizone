@@ -210,6 +210,7 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
 	if (len > 0 && size < len)
 		return B_ERROR;
 
+	/*
 	if (len == 0 || len == size)
 	{
 		uint8 buf[24];
@@ -233,6 +234,7 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
 			}
 		}
 	}
+	*/
 
 	for (int i = 0; i < 16; i++)
 		returnDigest[i] = 0;
@@ -244,20 +246,20 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
 	uint64 bytesLeft = (len > 0) ? len : size;
 
 	if (offset > 0)
+    {
+		if (len > 0)
         {
-                if (len > 0)
-                {
-                        if ((offset + len) > size)
-                                return B_ERROR;
-                        file.at(offset);
-                }
-                else
-                {
-                        if (offset < size)
-                                file.at(size - offset);
-                        bytesLeft = (offset < size) ? offset : size;
-                }
+			if ((offset + len) > size)
+				return B_ERROR;
+            file.at(offset);
         }
+        else
+        {
+			if (offset < size)
+				file.at(size - offset);
+            bytesLeft = (offset < size) ? offset : size;
+        }
+    }
 
 	MD5Init(&ctx);
 	uint64 numRead;
@@ -295,6 +297,8 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
 
 	if (len == 0)
 		len = size;
+	
+	/*
 	if (len == size)
 	{
 		// cache the results
@@ -311,5 +315,6 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
 			cache.close();
 		}
 	}
+	*/
 	return B_OK;
 }

@@ -40,6 +40,9 @@ public:
     */
    virtual ~QMessageTransceiverThread();
 
+   /** Overridden to handle signal events from our internal thread */
+   virtual bool event(QEvent * event);
+
 signals:
    /** Emitted when MessageReceived() is about to be emitted one or more times. */
    void BeginMessageBatch();
@@ -127,9 +130,6 @@ public slots:
 protected:
    /** Overridden to send a QEvent */
    virtual void SignalOwner();
-
-private slots:
-   virtual bool event(QEvent * event);
 };
 
 #ifndef MUSCLE_AVOID_NAMESPACES

@@ -10,8 +10,8 @@
 #include "chattext.h"
 #include "user.h"
 #include "htmlview.h"
-// #include "netclient.h"
 #include "Log.h"
+#include "chatwindow.h"
 
 #include <qlistview.h>
 #include <qsplitter.h>
@@ -21,7 +21,7 @@
 
 class NetClient;
 
-class WPrivateWindow : public WPrivateWindowBase
+class WPrivateWindow : public WPrivateWindowBase, public ChatWindow
 { 
     Q_OBJECT
 
@@ -70,7 +70,7 @@ private:
 	QObject * fOwner;
 	NetClient * fNet;
 	QListView * fPrivateUsers;
-	WHTMLView * fChatText;	// chat text...
+//	WHTMLView * fChatText;	// chat text...
 	WChatText * fInputText;	// input box;
 	QSplitter * fSplit;
 	QSplitter * fSplitChat;
@@ -78,27 +78,31 @@ private:
 
 	QString fPopupUser;
 	WUserMap fUsers;	// users in list
-	bool fScrollDown;
-	int fScrollX, fScrollY;
+//	bool fScrollDown;
+//	int fScrollX, fScrollY;
 	WLog fLog;
 
-#ifdef WIN32
-	HWND fWinHandle;
-#endif
+// #ifdef WIN32
+// 	HWND fWinHandle;
+// #endif
 
-	void UpdateTextView();
+//	void UpdateTextView();
 
-	void PrintText(const QString & str);
-	void PrintError(const QString & error);
-	void PrintSystem(const QString & msg);
+//	void PrintText(const QString & str);
+//	void PrintError(const QString & error);
+//	void PrintSystem(const QString & msg);
 
-	void CheckScrollState();
+//	void CheckScrollState();
 	void StartLogging();
 	void StopLogging();
 
 	void CheckEmpty();
 
 	friend class WinShareWindow;
+
+	void LogString(const char *);
+	void LogString(const QString &);
+	QWidget *Window();
 };
 
 typedef map<WPrivateWindow *, WPrivateWindow *> WPrivMap;

@@ -165,6 +165,16 @@ public:
      */
    void Neutralize() {if ((_doRefCount)&&(_item)) (void) _item->DecrementRefCount(); _item = NULL;}
 
+   /** Swaps this Ref's contents with those of the specified Ref.
+     * @param swapWith Ref to swap state with.
+     */
+   void SwapContents(Ref & swapWith)
+   {
+      muscleSwap(_item,       swapWith._item); 
+      muscleSwap(_recycler,   swapWith._recycler);
+      muscleSwap(_doRefCount, swapWith._doRefCount);
+   }
+
    /** Returns this Ref's recycler object (may be NULL). */
    AbstractObjectRecycler * GetItemRecycler() const {return _recycler;}
 

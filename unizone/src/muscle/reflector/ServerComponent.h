@@ -76,6 +76,9 @@ public:
     */
    virtual void MessageReceivedFromFactory(ReflectSessionFactory & from, MessageRef msg, void * userData);
 
+   /** Returns true if we are attached to the ReflectServer object, false if we are not.  */
+   bool IsAttachedToServer() const {return (_owner != NULL);}
+
 protected:
    /** Returns the number of milliseconds that the server has been running. */
    uint64 GetServerUptime() const;
@@ -155,9 +158,6 @@ protected:
    /** Given a port number, returns a reference to the factory of that port, or a NULL reference if no
 such factory exists. */
    ReflectSessionFactoryRef GetFactory(uint16) const;         
-
-   /** Returns true if we are attached to the ReflectServer object, false if we are not.  */
-   bool IsAttachedToServer() const {return (_owner != NULL);}
 
 private:
    friend class ReflectServer;

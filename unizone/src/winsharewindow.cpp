@@ -87,7 +87,8 @@ const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
 WinShareWindow * gWin = NULL;
 
 WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
-	: QMainWindow(parent, name, f | WPaintDesktop | WPaintClever), fMenus(NULL), pLock(true), rLock(true), fSearchLock(true)
+	: QMainWindow(parent, name, f | WPaintDesktop | WPaintClever), fMenus(NULL), pLock(true), rLock(true), fSearchLock(true),
+	ChatWindow(MainType)
 {
 	if ( !name ) 
 		setName( "WinShareWindow" );
@@ -571,6 +572,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				MessageRef askref(GetMessageFromPool(PR_COMMAND_GETPARAMETERS));
 				fNetClient->SendMessageToSessions(askref);
 				// get a list of users as well
+				fNetClient->AddSubscription("SUBSCRIBE:beshare"); // base BeShare node
 				fNetClient->AddSubscription("SUBSCRIBE:beshare/*"); // all user info :)
 				fNetClient->AddSubscription("SUBSCRIBE:unishare/*"); // all unishare-specific user data
 				fNetClient->AddSubscription("SUBSCRIBE:unishare/channeldata/*"); // all unishare-specific channel data
@@ -1246,6 +1248,7 @@ WinShareWindow::GetStatus() const
 	return fUserStatus;
 }
 
+/*
 void
 WinShareWindow::UpdateTextView()
 {
@@ -1269,7 +1272,7 @@ WinShareWindow::UpdateTextView()
 #endif
 	}
 }
-
+*/
 void
 WinShareWindow::UpdateUserList()
 {
@@ -1369,6 +1372,7 @@ WinShareWindow::MakeHumanTime(int64 time)
 	}
 }
 
+/*
 void
 WinShareWindow::PrintText(const QString & str)
 {
@@ -1392,10 +1396,11 @@ WinShareWindow::PrintText(const QString & str)
 #endif
  					out);
 	}
-	fMainLog.LogString(out);
+	if (fSettings->GetLogging())
+		fMainLog.LogString(out);
 	UpdateTextView();
 }
-
+*/
 void
 WinShareWindow::CheckScrollState()
 {
@@ -1507,70 +1512,52 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 	return false;
 }
 
+/*
 void
-WinShareWindow::Action(const QString & name, const QString & msg/*, bool batch*/)
+WinShareWindow::Action(const QString & name, const QString & msg)
 {
 	QString chat = WFormat::Action().arg(WColors::Action).arg(fSettings->GetFontSize());
 	QString nameText = FixStringStr(msg);
 	if (NameSaid(nameText) && fSettings->GetSounds())
 		QApplication::beep();
 	chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(tr("%1 %2").arg(FixStringStr(name)).arg(nameText));
-//	if (batch)
-//	{
-//		PrintText(chat, false);
-//	}
-//	else
-	{
-		PrintText(chat);
-	}
+
+	PrintText(chat);
 }
 
 void
-WinShareWindow::PrintError(const QString & error/*, bool batch*/)
+WinShareWindow::PrintError(const QString & error)
 {
 	if (fSettings->GetError())
 	{
 		QString e = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
 		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(error);
-//		if (batch)
-//		{
-//			PrintText(e, false);
-//		}
-//		else
-		{
-			PrintText(e);
-		}
+
+		PrintText(e);
 	}
 }
 
 void
-WinShareWindow::PrintWarning(const QString & warning/*, bool batch*/)
+WinShareWindow::PrintWarning(const QString & warning)
 {
 	if (fSettings->GetError())
 	{
 		QString e = WFormat::Warning().arg(WColors::Error).arg(fSettings->GetFontSize());
 		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(warning);
-//		if (batch)
-//		{
-//			PrintText(e, false);
-//		}
-//		else
-		{
-			PrintText(e);
-		}
+
+		PrintText(e);
 	}
 }
 
 void
-WinShareWindow::PrintSystem(const QString & msg/*, bool batch*/)
+WinShareWindow::PrintSystem(const QString & msg)
 {
 	QString s = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 	s += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(ParseChatText(msg));
-//	if (batch)
-//		PrintText(s, false);
-//	else
-		PrintText(s);
+
+	PrintText(s);
 }
+*/
 
 QString
 WinShareWindow::GetRemoteVersionString(const MessageRef msg)
@@ -2525,4 +2512,22 @@ WinShareWindow::keyPressEvent(QKeyEvent *event)
 	}
 	else
 		QMainWindow::keyPressEvent(event);
+}
+
+QWidget *
+WinShareWindow::Window()
+{
+	return this;
+}
+
+void
+WinShareWindow::LogString(const QString &text)
+{
+	fMainLog.LogString(text);
+}
+
+void
+WinShareWindow::LogString(const char *text)
+{
+	fMainLog.LogString(text);
 }

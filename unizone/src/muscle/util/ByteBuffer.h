@@ -92,6 +92,16 @@ public:
      */
    const uint8 * ReleaseBuffer() {const uint8 * ret = _buffer; _buffer = NULL; _numValidBytes = _numAllocatedBytes = 0; return ret;}
 
+   /** Swaps our contents with those of the specified ByteBuffer.  This is an efficient O(1) operation.
+     * @param swapWith ByteBuffer to swap contents with.
+     */
+   void SwapContents(ByteBuffer & swapWith)
+   {
+      muscleSwap(_buffer,            swapWith._buffer);
+      muscleSwap(_numValidBytes,     swapWith._numValidBytes);
+      muscleSwap(_numAllocatedBytes, swapWith._numAllocatedBytes);
+   }
+
    // Flattenable interface
    virtual bool IsFixedSize() const {return false;}
    virtual uint32 TypeCode() const {return B_RAW_TYPE;}

@@ -991,9 +991,16 @@ public:
     * Any data that was under (name) in (moveTo) will be replaced.
     * @param name Name of an existing field to be copied.
     * @param copyTo A Message to copy the field into.
-    *  @result B_NO_ERROR on success, or B_ERROR if there is an error copying the field.
+    * @result B_NO_ERROR on success, or B_ERROR if there is an error copying the field.
     */
    status_t CopyName(const String & name, Message &copyTo) const;
+
+   /** 
+    * Swaps the contents and 'what' code of this Message with the specified Message.
+    * This is a very efficient, O(1) operation.
+    * @param swapWith Message whose contents should be swapped with this one.
+    */
+   void SwapContents(Message & swapWith);
 
    /**
     * Returns an iterator that iterates over the names of the fields in this

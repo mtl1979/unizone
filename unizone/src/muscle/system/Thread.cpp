@@ -1,5 +1,11 @@
 /* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
+#if defined(MUSCLE_USE_CLONE)
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <unistd.h>
+#endif
+
 #include "system/Thread.h"
 #include "util/NetworkUtilityFunctions.h"
 #include "dataio/TCPSocketDataIO.h"  // to get the proper #includes for recv()'ing
@@ -16,7 +22,10 @@ BEGIN_NAMESPACE(muscle);
 
 Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
 {
-#if defined(MUSCLE_USE_PTHREADS)
+#if defined(MUSCLE_USE_CLONE)
+   _cloneFlags     = CLONE_FILES|CLONE_VM;
+   _cloneStackSize = 32768;
+#elif defined(MUSCLE_USE_PTHREADS)
    // do nothing
 #elif defined(WIN32)
    // do nothing
@@ -27,7 +36,7 @@ Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
 
 Thread :: ~Thread()
 {
-   MASSERT(IsInternalThreadRunning() == false, "You mustn't delete a Thread object while its internal thread is still running! (i.e. You must call thread.WaitForThreadToExit() before deleting the Thread)");
+   MASSERT(IsInternalThreadRunning() == false, "You mustn't delete a Thread object while its internal thread is still running! (i.e. You must call thread.ShutdownInternalThread() or thread.WaitForThreadToExit() before deleting the Thread object)");
    CloseSockets();
 }
 
@@ -82,7 +91,14 @@ status_t Thread :: StartInternalThreadAux()
    {
       _threadRunning = true;  // set this first, to avoid a race condition with the thread's startup...
 
-#if defined(MUSCLE_USE_PTHREADS)
+#if defined(MUSCLE_USE_CLONE)
+      if (_cloneStack.SetNumBytes(_cloneStackSize, false) == B_NO_ERROR)
+      {
+         typedef int (*cloneFunc)(void *);
+         _clonePID = clone((cloneFunc)InternalThreadEntryFunc, _cloneStack()+_cloneStackSize, _cloneFlags, this); 
+         if (_clonePID >= 0) return B_NO_ERROR;
+      }
+#elif defined(MUSCLE_USE_PTHREADS)
       if (pthread_create(&_thread, NULL, InternalThreadEntryFunc, this) == 0) return B_NO_ERROR;
 #elif defined(WIN32)
       typedef unsigned (__stdcall *PTHREAD_START) (void *);
@@ -118,7 +134,9 @@ bool Thread :: IsCallerInternalThread() const
 {
    if (IsInternalThreadRunning() == false) return false;  // we can't be him if he doesn't exist!
 
-#if defined(MUSCLE_USE_PTHREADS)
+#if defined(MUSCLE_USE_CLONE)
+   return (_clonePID == getpid());
+#elif defined(MUSCLE_USE_PTHREADS)
    return pthread_equal(pthread_self(), _thread);
 #elif defined(WIN32)
    return (_threadID == GetCurrentThreadId());
@@ -299,7 +317,9 @@ status_t Thread :: WaitForInternalThreadToExit()
 {
    if (_threadRunning)
    {
-#if defined(MUSCLE_USE_PTHREADS)
+#if defined(MUSCLE_USE_CLONE)
+      (void) waitpid(_clonePID, NULL, __WCLONE); 
+#elif defined(MUSCLE_USE_PTHREADS)
       (void) pthread_join(_thread, NULL);
 #elif defined(WIN32)
       (void) WaitForSingleObject(_thread, INFINITE);

@@ -1022,7 +1022,7 @@ Queue<ItemType>::SwapContentsAux(Queue<ItemType> & largeThat)
 {
    // First, copy over our (small) contents to his static buffer
    uint32 ni = GetNumItems();
-   for (int32 i=0; i<ni; i++) largeThat._smallQueue[i] = (*this)[i];
+   for (uint32 i=0; i<ni; i++) largeThat._smallQueue[i] = (*this)[i];
 
    // Now adopt his dynamic buffer
    _queue     = largeThat._queue;
