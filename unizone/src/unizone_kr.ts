@@ -1361,11 +1361,11 @@ Date: %4</source>
     </message>
     <message>
         <source>You are now</source>
-        <translation type='obsolete'>당신은 이제</translation>
+        <translation>당신은 이제</translation>
     </message>
     <message>
         <source>Name changed to</source>
-        <translation type='obsolete'></translation>
+        <translation></translation>
     </message>
     <message>
         <source>) is now</source>
@@ -1378,27 +1378,27 @@ Date: %4</source>
     <message>
         <source>.</source>
         <comment>&apos;is now known as&apos; suffix</comment>
-        <translation type='obsolete'>로 알려졌습니다.</translation>
+        <translation>로 알려졌습니다.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now nameless&apos; suffix</comment>
-        <translation type='obsolete'>.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now&apos; suffix</comment>
-        <translation type='obsolete'>님입니다.</translation>
+        <translation>님입니다.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;You are now&apos; suffix</comment>
-        <translation type='obsolete'>입니다.</translation>
+        <translation>입니다.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
-        <translation type='obsolete'>로 이름이 변경됨.</translation>
+        <translation>로 이름이 변경됨.</translation>
     </message>
 </context>
 <context>

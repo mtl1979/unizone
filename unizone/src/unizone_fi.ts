@@ -1599,11 +1599,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>You are now</source>
-        <translation type='obsolete'>Olet nyt</translation>
+        <translation>Olet nyt</translation>
     </message>
     <message>
         <source>Name changed to</source>
-        <translation type='obsolete'>Nimesi on nyt</translation>
+        <translation>Nimesi on nyt</translation>
     </message>
     <message>
         <source>) is now</source>
@@ -1616,27 +1616,27 @@ Päiväys: %4</translation>
     <message>
         <source>.</source>
         <comment>&apos;is now known as&apos; suffix</comment>
-        <translation type='obsolete'>.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now nameless&apos; suffix</comment>
-        <translation type='obsolete'>.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now&apos; suffix</comment>
-        <translation type='obsolete'>.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;You are now&apos; suffix</comment>
-        <translation type='obsolete'>.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
-        <translation type='obsolete'>.</translation>
+        <translation>.</translation>
     </message>
 </context>
 <context>
