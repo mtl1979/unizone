@@ -36,6 +36,8 @@ NetClient::NetClient(QObject * owner)
 	fUserName = QString::null;
 	timerID = 0;
 	hasmessages = false;
+	fLoggedIn = false;
+	fLoginTime = 0;
 	fChannelLock.lock();
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
@@ -163,6 +165,7 @@ void
 NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
+	fLoggedIn = false;
 	if (IsConnected()) 
 	{
 		WinShareWindow *win = GetWindow(this);
@@ -725,6 +728,8 @@ NetClient::HandleParameters(MessageRef & next)
 		{
 			fOldID = fSessionID;
 			fSessionID = id.Cstr();
+			fLoggedIn = true;
+			fLoginTime = GetCurrentTime64();
 
 			WinShareWindow *win = GetWindow(this);
 			if (win)
@@ -770,8 +775,7 @@ NetClient::HandleParameters(MessageRef & next)
 					temp += GetServerIP();
 					win->setStatus( temp , 2);
 				}
-				if (!win->fSettings->GetTimeStamps())
-					win->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
+				win->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
 			}
 		}
 	}
@@ -840,7 +844,7 @@ NetClient::SendPing(const QString & target)
 			to += "/beshare";
 			ping()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 			ping()->AddString(PR_NAME_SESSION, (const char *) LocalSessionID().utf8());
-			ping()->AddInt64("when", GetCurrentTime64());
+			ping()->AddInt64("when", (int64) GetCurrentTime64());
 			SendMessageToSessions(ping);
 		}
 	}
@@ -955,7 +959,7 @@ NetClient::SetLoad(int32 num, int32 max)
 }
 
 QString
-NetClient::GetServerIP()
+NetClient::GetServerIP() const
 {
 	QString ip = "0.0.0.0";
 	uint32 address;
@@ -1348,6 +1352,13 @@ NetClient::event(QEvent * e)
 		return QObject::event(e);
 }
 
+// Expire in 1 hour
+#ifdef WIN32
+# define EXPIRETIME 3600000000UI64
+#else
+# define EXPIRETIME 3600000000ULL
+#endif
+
 uint32
 NetClient::ResolveAddress(const QString &address)
 {
@@ -1359,7 +1370,17 @@ NetClient::ResolveAddress(const QString &address)
 		{
 			na = fAddressCache[i];
 			if (na.address == address)
-				return na.ip;
+			{
+				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME) 
+					return na.ip;
+				else
+				{
+					na.ip = GetHostByName(address);
+					na.lastcheck = GetCurrentTime64();
+					fAddressCache.ReplaceItemAt(i, na);
+					return na.ip;
+				}
+			}
 			i++;
 		} while (i < fAddressCache.GetNumItems());
 	}

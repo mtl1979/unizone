@@ -136,7 +136,7 @@ Channel::SetOwner(const QString & owner)
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
-			cc()->AddInt64("when", GetCurrentTime64());
+			cc()->AddInt64("when", (int64) GetCurrentTime64());
 			cc()->AddString("channel", (const char *) fName.utf8());
 			fNet->SendMessageToSessions(cc);
 		}
@@ -156,7 +156,7 @@ Channel::SetTopic(const QString & topic)
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
-			cc()->AddInt64("when", GetCurrentTime64());
+			cc()->AddInt64("when", (int64) GetCurrentTime64());
 			cc()->AddString("channel", (const char *) fName.utf8());
 			cc()->AddString("topic", (const char *) topic.utf8());
 			fNet->SendMessageToSessions(cc);
@@ -181,7 +181,7 @@ Channel::SetPublic(bool p)
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
-			cc()->AddInt64("when", GetCurrentTime64());
+			cc()->AddInt64("when", (int64) GetCurrentTime64());
 			cc()->AddString("channel", (const char *) fName.utf8());
 			cc()->AddBool("public", p);
 			fNet->SendMessageToSessions(cc);
@@ -203,7 +203,7 @@ Channel::Invite(const QString & user)
 		to += "/unishare";
 		cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 		cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
-		cc()->AddInt64("when", GetCurrentTime64());
+		cc()->AddInt64("when", (int64) GetCurrentTime64());
 		cc()->AddString("channel", (const char *) fName.utf8());
 		fNet->SendMessageToSessions(cc);
 	}
@@ -220,7 +220,7 @@ Channel::Kick(const QString & user)
 		to += "/unishare";
 		cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 		cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
-		cc()->AddInt64("when", GetCurrentTime64());
+		cc()->AddInt64("when", (int64) GetCurrentTime64());
 		cc()->AddString("channel", (const char *) fName.utf8());
 		fNet->SendMessageToSessions(cc);
 	}

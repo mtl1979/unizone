@@ -176,7 +176,7 @@ WinShareWindow::CreateChannel()
 				String to("/*/*/unishare");
 				cc()->AddString(PR_NAME_KEYS, to);
 				cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
-				cc()->AddInt64("when", GetCurrentTime64());
+				cc()->AddInt64("when", (int64) GetCurrentTime64());
 				cc()->AddString("channel", (const char *) text.utf8());
 				fNetClient->SendMessageToSessions(cc);
 			}
@@ -254,7 +254,7 @@ WinShareWindow::JoinChannel(const QString & channel)
 			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 			cc()->AddString("who", (const char *) GetUserID().utf8());
-			cc()->AddInt64("when", GetCurrentTime64());
+			cc()->AddInt64("when", (int64) GetCurrentTime64());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
 		}
@@ -262,7 +262,7 @@ WinShareWindow::JoinChannel(const QString & channel)
 }
 
 void
-WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, int64 timecreated)
+WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, uint64 timecreated)
 {
 	WChannelIter it = fChannels.find(channel);
 	if (it == fChannels.end())
@@ -293,7 +293,7 @@ WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, i
 			to += "/unishare";
 			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
-			cc()->AddInt64("when", (*it).second->GetCreated());
+			cc()->AddInt64("when", (int64) (*it).second->GetCreated());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
 		}
@@ -338,7 +338,7 @@ WinShareWindow::PartChannel(const QString & channel, const QString & user)
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
-			cc()->AddInt64("when", GetCurrentTime64());
+			cc()->AddInt64("when", (int64) GetCurrentTime64());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
 		}

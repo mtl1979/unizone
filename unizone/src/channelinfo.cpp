@@ -2,6 +2,18 @@
 #include "channelimpl.h"
 #include "tokenizer.h"
 
+ChannelInfo::ChannelInfo(const QString &name, const QString &owner)
+{
+	fName = name;
+	fOwner = owner;
+	fTopic = QString::null;
+	fStrAdmins = QString::null;
+	fPublic = true;
+	fItem = NULL;
+	fWindow = NULL;
+}
+
+
 bool
 ChannelInfo::IsOwner(const QString & sid) const
 {
@@ -196,12 +208,12 @@ ChannelInfo::GetWindow() const
 }
 
 void 
-ChannelInfo::SetCreated(int64 i)
+ChannelInfo::SetCreated(uint64 i)
 {
 	fCreated = i;
 }
 
-int64 
+uint64 
 ChannelInfo::GetCreated() const
 {
 	return fCreated;

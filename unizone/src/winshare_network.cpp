@@ -390,7 +390,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			if (fNetClient->IsConnected())	// are we connected?
 			{
-				PrintSystem( tr("Logged In: %1").arg(MakeHumanTime(GetCurrentTime64() - fLoginTime)) );
+				PrintSystem( tr("Logged In: %1").arg(MakeHumanTime(GetCurrentTime64() - fNetClient->LoginTime())) );
 			}
 			else
 			{
@@ -2114,11 +2114,11 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		case NetClient::ChannelCreated:
 			{
 				String channel, repto;
-				int64 rtime;
+				uint64 rtime;
 				if (
 					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
 					(msg()->FindString("channel", channel) == B_OK) &&
-					(msg()->FindInt64("when", &rtime) == B_OK)
+					(msg()->FindInt64("when", (int64 *) &rtime) == B_OK)
 					)
 				{
 					QString qOwner = QString::fromUtf8(repto.Cstr());
@@ -2254,11 +2254,11 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					
 						// <postmaster@raasu.org> 20021025 -- Added uptime calculating for Windows
 						// <postmaster@raasu.org> 20021231 -- and for Linux ;)
-						int64 fUptime = GetUptime();
-						int64 fOnlineTime = GetCurrentTime64() - fLoginTime;
+						uint64 fUptime = GetUptime();
+						uint64 fOnlineTime = GetCurrentTime64() - fNetClient->LoginTime();
 						rep()->AddString("version", (const char *) version.utf8());
-						rep()->AddInt64("uptime", fUptime);
-						rep()->AddInt64("onlinetime", fOnlineTime);
+						rep()->AddInt64("uptime", (int64) fUptime);
+						rep()->AddInt64("onlinetime", (int64) fOnlineTime);
 					
 						fNetClient->SendMessageToSessions(rep);
 					}
@@ -2270,12 +2270,13 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		case NetClient::PONG:
 			{
 				const char * session;
-				int64 when;
+				uint64 when;
 				
 				if (!fSettings->GetInfo())
 					return;
 				
-				if ((msg()->FindString(PR_NAME_SESSION, &session) == B_OK) && (msg()->FindInt64("when", &when) == B_OK))
+				if ((msg()->FindString(PR_NAME_SESSION, &session) == B_OK) && 
+					(msg()->FindInt64("when", (int64 *) &when) == B_OK))
 				{
 					WUserRef user = fNetClient->FindUser(session);
 					if (user())
@@ -2287,15 +2288,16 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						else
 						{
 							QString pre = WFormat::RemoteName(session, FixStringStr(user()->GetUserName()));
-							int32 time = ((GetCurrentTime64() - when) / 10000L);
+							uint32 time = ((GetCurrentTime64() - when) / 10000L);
 							QString versionString = GetRemoteVersionString(msg);
 							
 							QString pong(pre);
 							pong += WFormat::PingText(time, versionString);
 							PrintText(pong);
 							
-							int64 uptime, onlinetime;
-							if ((msg()->FindInt64("uptime", &uptime) == B_OK) && (msg()->FindInt64("onlinetime", &onlinetime) == B_OK))
+							uint64 uptime, onlinetime;
+							if ((msg()->FindInt64("uptime", (int64 *) &uptime) == B_OK) && 
+								(msg()->FindInt64("onlinetime", (int64 *) &onlinetime) == B_OK))
 							{
 								pong = pre;
 								pong += WFormat::PingUptime(MakeHumanTime(uptime), MakeHumanTime(onlinetime));
@@ -2401,7 +2403,6 @@ WinShareWindow::Connect()
 				SendSystemEvent(tr("Connection to server failed!"));
 		}
 	}
-	fLoginTime = GetCurrentTime64();
 }
 
 void

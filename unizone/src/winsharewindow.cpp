@@ -1240,32 +1240,32 @@ WinShareWindow::GetStatus() const
 }
 
 QString
-WinShareWindow::MakeHumanDiffTime(int64 time)
+WinShareWindow::MakeHumanDiffTime(uint64 time)
 {
-	int64 seconds = time / 1000000;
-	int64 minutes = seconds / 60;  seconds = seconds % 60;
-	int64 hours   = minutes / 60;  minutes = minutes % 60;
+	uint64 seconds = time / 1000000;
+	uint64 minutes = seconds / 60;  seconds = seconds % 60;
+	uint64 hours   = minutes / 60;  minutes = minutes % 60;
 
 	QString s;
 
 	char buf[25];
-	sprintf(buf, INT64_FORMAT_SPEC ":%02i:%02i", hours, (int) minutes, (int) seconds);
+	sprintf(buf, UINT64_FORMAT_SPEC ":%02u:%02u", hours, (int) minutes, (int) seconds);
 	s = buf;
 	
 	return s;
 }
 
 QString
-WinShareWindow::MakeHumanTime(int64 time)
+WinShareWindow::MakeHumanTime(uint64 time)
 {
 	if (time < 1000000)
 		return tr("%1 seconds").arg(0);
 
-	int64 seconds = time / 1000000;
-	int64 minutes = seconds / 60;  seconds = seconds % 60;
-	int64 hours   = minutes / 60;  minutes = minutes % 60;
-	int64 days    = hours   / 24;  hours   = hours   % 24;
-	int64 weeks   = days    /  7;  days    = days    % 7;
+	uint64 seconds = time / 1000000;
+	uint64 minutes = seconds / 60;  seconds = seconds % 60;
+	uint64 hours   = minutes / 60;  minutes = minutes % 60;
+	uint64 days    = hours   / 24;  hours   = hours   % 24;
+	uint64 weeks   = days    /  7;  days    = days    % 7;
 
 	QString s, qTime;
 
@@ -2245,19 +2245,19 @@ WinShareWindow::GetUptimeString()
 	return MakeHumanTime(GetUptime());
 }
 
-int64
+uint64
 WinShareWindow::GetUptime()
 {
 #ifdef WIN32
-	return ((int64)GetTickCount()) * 1000;
+	return ((uint64)GetTickCount()) * 1000;
 #elif defined(__LINUX__) || defined(linux)
 	struct sysinfo sinfo;
 	sysinfo(&sinfo);
-	int64 uptime = sinfo.uptime;
+	uint64 uptime = sinfo.uptime;
 	uptime *= 1000000L;
 	return uptime;
 #elif defined(__FreeBSD__) || defined(__QNX__)
-	int64 uptime = 0;
+	uint64 uptime = 0;
 	struct timeval boottime;
 	time_t now;
 	size_t size;
@@ -2471,14 +2471,18 @@ WinShareWindow::timerEvent(QTimerEvent *)
 	setStatus(GetTimeStamp2(), 3);
 	if (
 		fSettings->GetTimeStamps() && 
-		(fNetClient->IsConnected() && fNetClient->LocalSessionID() != QString::null)
+		(fNetClient->IsLoggedIn() && fNetClient->LocalSessionID() != QString::null)
 		)
 	{
-		QString tmp = tr("Unizone - User #%1 on %2").arg(fNetClient->LocalSessionID()).arg(fNetClient->GetServer());
-		tmp += " (";
-		tmp += tr("Logged In: %1").arg(MakeHumanDiffTime(GetCurrentTime64() - fLoginTime));
-		tmp += ")";
-		setCaption(tmp);
+		uint64 fLoginTime = GetCurrentTime64() - fNetClient->LoginTime();
+		if (fLoginTime >= 1000000)
+		{
+			QString tmp = tr("Unizone - User #%1 on %2").arg(fNetClient->LocalSessionID()).arg(fNetClient->GetServer());
+			tmp += " (";
+			tmp += tr("Logged In: %1").arg(MakeHumanDiffTime(fLoginTime));
+			tmp += ")";
+			setCaption(tmp);
+		}
 	}
 }
 

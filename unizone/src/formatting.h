@@ -45,7 +45,7 @@ public:
 	static QString UserIPAddress2(const QString &session, const QString &ip);
 
 	// ping formatting
-	static QString PingText(int32 time, const QString &version);
+	static QString PingText(uint32 time, const QString &version);
 	static QString PingUptime(const QString &uptime, const QString &logged);
 
 	// error format

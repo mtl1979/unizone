@@ -338,8 +338,6 @@ private:
 
 	WStatusBar * fStatusBar;
 
-	int64 fLoginTime;
-
 	QString fUserName, fUserStatus, fServer;
 	QString fPopupUser;
 	QPopupMenu * fPrivate;		// private window popup
@@ -445,8 +443,8 @@ private:
 
 	void HandleComboEvent(WTextEvent *);
 
-	QString MakeHumanTime(int64 time);
-	QString MakeHumanDiffTime(int64 time);
+	QString MakeHumanTime(uint64 time);
+	QString MakeHumanDiffTime(uint64 time);
 
 	void NameChanged(const QString & newName);
 	void StatusChanged(const QString & newStatus);
@@ -499,7 +497,7 @@ private:
 	void StopAcceptThread();
 
 	QString GetUptimeString();
-	int64 GetUptime();
+	uint64 GetUptime();
 
 	void OpenDownload();
 
@@ -568,7 +566,7 @@ private:
 
 	// Channels
 
-	void ChannelCreated(const QString &, const QString &, int64);
+	void ChannelCreated(const QString &, const QString &, uint64);
 	void ChannelJoin(const QString &, const QString &);
 	void ChannelPart(const QString &, const QString &);
 	void ChannelInvite(const QString &, const QString &, const QString &);

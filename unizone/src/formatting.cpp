@@ -305,7 +305,7 @@ QString WFormat::UserIPAddress2(const QString &session, const QString &ip)
 }
 
 // ping formatting
-QString WFormat::PingText(int32 time, const QString &version)
+QString WFormat::PingText(uint32 time, const QString &version)
 {
 	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
 	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::Ping));

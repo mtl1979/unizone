@@ -23,6 +23,7 @@ struct NetAddress
 {
 	uint32 ip;
 	QString address;
+	uint64 lastcheck;
 };
 
 class NetClient : public QObject 
@@ -36,11 +37,13 @@ public:
 	status_t Connect(const QString &server, uint16 port);
 	status_t Connect(const QString &server);
 	void Disconnect();
-	QString GetServer() { return fServer; } // Get current server hostname or ip address if hostname isn't available
-	QString GetServerIP();					// Get current server IP address
-	uint32 GetServerPort() { return fServerPort; } // Get current server port number
+	QString GetServer() const { return fServer; } // Get current server hostname or ip address if hostname isn't available
+	QString GetServerIP() const;					// Get current server IP address
+	uint32 GetServerPort() const { return fServerPort; } // Get current server port number
 	
 	bool IsConnected() const;
+	bool IsLoggedIn() const { return fLoggedIn; }
+	uint64 LoginTime() const { return fLoginTime; }
 	
 	void AddSubscription(const String & str, bool q = false);	// if "q" is true, u won't get an initial response
 	void AddSubscriptionList(const String * str, bool q = false);
@@ -212,7 +215,8 @@ private:
 
 	QMutex fPacketLock;
 	QMutex fLowPacketLock;
-	bool hasmessages;
+	bool hasmessages, fLoggedIn;
+	uint64 fLoginTime;
 
 private slots:
 

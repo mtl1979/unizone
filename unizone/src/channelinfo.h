@@ -2,7 +2,6 @@
 #define CHANNELINFO_H
 
 #include <qstring.h>
-#include <qlistview.h>
 
 #include "util/Queue.h"
 
@@ -12,21 +11,12 @@ typedef Queue<QString> WAdminList;
 typedef Queue<QString> WUserList;
 
 class Channel;
+class QListViewItem;
 
 class ChannelInfo
 {
 public:
-	ChannelInfo(QString name, QString owner)
-	{
-		fName = name;
-		fOwner = owner;
-		fTopic = QString::null;
-		fStrAdmins = QString::null;
-		fPublic = true;
-		fItem = NULL;
-		fWindow = NULL;
-	}
-
+	ChannelInfo(const QString &name, const QString &owner);
 	~ChannelInfo();
 
 	bool SetAdmins(const QString &);
@@ -57,8 +47,8 @@ public:
 	void SetWindow(Channel * win); 
 	Channel * GetWindow() const; 
 
-	void SetCreated(int64 i);
-	int64 GetCreated() const;
+	void SetCreated(uint64 i);
+	uint64 GetCreated() const;
 
 	void SetOwner(const QString & owner);
 	QString GetOwner() const;
@@ -73,7 +63,7 @@ private:
 	QString fTopic;
 	QString fStrAdmins;
 	bool fPublic;
-	int64 fCreated;
+	uint64 fCreated;
 };
 
 #endif
