@@ -1370,10 +1370,10 @@ WinShareWindow::EndMessageBatch()
 {
 	if (!fOutput.isEmpty())
 	{
-		/*
+#if (QT_VERSION >= 0x030000)
 		if (fOutput.right(4) == "<br>")
 			fOutput.truncate(fOutput.length() - 4);
-		*/
+#endif
 
 		if (fChatText->text().isEmpty())
 			fChatText->setText(fOutput);
