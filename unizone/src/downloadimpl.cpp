@@ -676,14 +676,14 @@ WDownload::customEvent(QCustomEvent * e)
 				if (timeLeft == -1)
 					item->setText(WTransferItem::Status, "Blocked.");
 				else
-					item->setText(WTransferItem::Status, tr("Blocked for %1 minutes.").arg((int) (timeLeft/1000000)));
+					item->setText(WTransferItem::Status, tr("Blocked for %1 minute(s).").arg((int) (timeLeft/60000000)));
 				break;
 			}
 			
 		case WGenericEvent::ConnectBackRequest:
 			{
 				PRINT("\tWGenericEvent::ConnectBackRequest\n");
-				MessageRef cb(new Message(NetClient::CONNECT_BACK_REQUEST), NULL);
+				MessageRef cb(GetMessageFromPool(NetClient::CONNECT_BACK_REQUEST));
 				if (cb())
 				{
 					String session;
@@ -1734,43 +1734,43 @@ WDownload::ULPopupActivated(int id)
 		
 	case ID_BAN1:
 		{
-			gt->SetBlocked(true, 1000000);
+			gt->SetBlocked(true, 60000000);
 			break;
 		}
 		
 	case ID_BAN2:
 		{
-			gt->SetBlocked(true, 2000000);
+			gt->SetBlocked(true, 120000000);
 			break;
 		}
 		
 	case ID_BAN5:
 		{
-			gt->SetBlocked(true, 5000000);
+			gt->SetBlocked(true, 300000000);
 			break;
 		}
 		
 	case ID_BAN10:
 		{
-			gt->SetBlocked(true, 10000000);
+			gt->SetBlocked(true, 600000000);
 			break;
 		}
 		
 	case ID_BAN15:
 		{
-			gt->SetBlocked(true, 15000000);
+			gt->SetBlocked(true, 900000000);
 			break;
 		}
 		
 	case ID_BAN30:
 		{
-			gt->SetBlocked(true, 30000000);
+			gt->SetBlocked(true, 1800000000);
 			break;
 		}
 		
 	case ID_BAN1H:
 		{
-			gt->SetBlocked(true, 60000000);
+			gt->SetBlocked(true, 3600000000L);
 			break;
 		}
 
@@ -2521,11 +2521,11 @@ WDownload::GetNumUploads()
 {
 	PRINT("\tWDownload::GetNumUploads\n");
 	int n = 0;
-	if ( fDownloadList.empty() )
+	if ( fUploadList.empty() )
 		return n;
 
 	fLock.lock();
-	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
+	for (WTIter it = fUploadList.begin(); it != fUploadList.end(); it++)
 	{
 		if ((*it).first)
 		{

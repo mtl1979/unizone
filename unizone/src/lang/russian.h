@@ -11,22 +11,24 @@
 // Search Window
 //
 
-#define MSG_SW_CSEARCH        "Поиск:"
-#define MSG_SW_FILENAME       "Наименование"
-#define MSG_SW_FILESIZE       "Размер"
-#define MSG_SW_FILETYPE       "Тип"
-#define MSG_SW_MODIFIED       "Изменен"
-#define MSG_SW_PATH           "Путь"
-#define MSG_SW_USER           "Пользователь"
-#define MSG_SW_DOWNLOAD       "Скачать"
-#define MSG_SW_CLOSE          "Закрыть"
-#define MSG_SW_CLEAR          "Очистить"
-#define MSG_SW_STOP           "Остановить"
+#define MSG_SW_CAPTION			"Search"
 
-#define MSG_IDLE			"Idle."
-#define MSG_WF_RESULTS		"результатов: %1"
-#define MSG_SEARCHING		"Поиск: \"%1\"."
-#define MSG_WAIT_FOR_FST	"Ожидается завершения сканирования файлов..."
+#define MSG_SW_CSEARCH			"Поиск:"
+#define MSG_SW_FILENAME			"Наименование"
+#define MSG_SW_FILESIZE			"Размер"
+#define MSG_SW_FILETYPE			"Тип"
+#define MSG_SW_MODIFIED			"Изменен"
+#define MSG_SW_PATH				"Путь"
+#define MSG_SW_USER				"Пользователь"
+#define MSG_SW_DOWNLOAD			"Скачать"
+#define MSG_SW_CLOSE			"Закрыть"
+#define MSG_SW_CLEAR			"Очистить"
+#define MSG_SW_STOP				"Остановить"
+
+#define MSG_IDLE				"Idle."
+#define MSG_WF_RESULTS			"результатов: %1"
+#define MSG_SEARCHING			"Поиск: \"%1\"."
+#define MSG_WAIT_FOR_FST		"Ожидается завершения сканирования файлов..."
 
 // Main Window
 

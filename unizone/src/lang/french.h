@@ -5,6 +5,8 @@
 // Search Window
 //
 
+#define MSG_SW_CAPTION			"Rechercher"
+
 #define MSG_SW_CSEARCH        	"Chercher:"
 #define MSG_SW_FILENAME       	"Nom du Fichier"
 #define MSG_SW_FILESIZE       	"Taille du Fichier"
@@ -17,10 +19,10 @@
 #define MSG_SW_CLEAR          	"Effacer"
 #define MSG_SW_STOP          	"Arréter"
 
-#define MSG_IDLE			"libre."
-#define MSG_WF_RESULTS		"Resultats: %1"
-#define MSG_SEARCHING		"Recherche en cours de: \"%1\"."
-#define MSG_WAIT_FOR_FST	"En attente de la fin du thread de recherche fichier..."
+#define MSG_IDLE				"libre."
+#define MSG_WF_RESULTS			"Resultats: %1"
+#define MSG_SEARCHING			"Recherche en cours de: \"%1\"."
+#define MSG_WAIT_FOR_FST		"En attente de la fin du thread de recherche fichier..."
 
 // Main Window
 

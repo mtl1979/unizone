@@ -7,22 +7,24 @@
 // Search Window
 //
 
-#define MSG_SW_CSEARCH        "Pesquisa:"
-#define MSG_SW_FILENAME       "Nome do Arquivo"
-#define MSG_SW_FILESIZE       "Tamanho do Arquivo"
-#define MSG_SW_FILETYPE       "Tipo"
-#define MSG_SW_MODIFIED       "Modificado"
-#define MSG_SW_PATH           "Caminho"
-#define MSG_SW_USER           "Usuário"
-#define MSG_SW_DOWNLOAD       "Download"
-#define MSG_SW_CLOSE          "Fechar"
-#define MSG_SW_CLEAR          "Limpar"
-#define MSG_SW_STOP           "Parar"
+#define MSG_SW_CAPTION			"Pesquisar"
 
-#define MSG_IDLE			"Ocioso."
-#define MSG_WF_RESULTS		"Resultados: %1"
-#define MSG_SEARCHING		"Procurando por: \"%1\"."
-#define MSG_WAIT_FOR_FST	"Esperando a varredura de arquivos terminar..."
+#define MSG_SW_CSEARCH			"Pesquisa:"
+#define MSG_SW_FILENAME			"Nome do Arquivo"
+#define MSG_SW_FILESIZE			"Tamanho do Arquivo"
+#define MSG_SW_FILETYPE			"Tipo"
+#define MSG_SW_MODIFIED			"Modificado"
+#define MSG_SW_PATH				"Caminho"
+#define MSG_SW_USER				"Usuário"
+#define MSG_SW_DOWNLOAD			"Download"
+#define MSG_SW_CLOSE			"Fechar"
+#define MSG_SW_CLEAR			"Limpar"
+#define MSG_SW_STOP				"Parar"
+
+#define MSG_IDLE				"Ocioso."
+#define MSG_WF_RESULTS			"Resultados: %1"
+#define MSG_SEARCHING			"Procurando por: \"%1\"."
+#define MSG_WAIT_FOR_FST		"Esperando a varredura de arquivos terminar..."
 
 // Main Window
 

@@ -7,22 +7,24 @@
 // Search Window
 //
 
-#define MSG_SW_CSEARCH        "Search:"
-#define MSG_SW_FILENAME       "File Name"
-#define MSG_SW_FILESIZE       "File Size"
-#define MSG_SW_FILETYPE       "File Type"
-#define MSG_SW_MODIFIED       "Modified"
-#define MSG_SW_PATH           "Path"
-#define MSG_SW_USER           "User"
-#define MSG_SW_DOWNLOAD       "Download"
-#define MSG_SW_CLOSE          "Close"
-#define MSG_SW_CLEAR          "Clear"
-#define MSG_SW_STOP           "Stop"
+#define MSG_SW_CAPTION			"Search"
 
-#define MSG_IDLE			"Idle."
-#define MSG_WF_RESULTS		"Results: %1"
-#define MSG_SEARCHING		"Searching for: \"%1\"."
-#define MSG_WAIT_FOR_FST	"Waiting for file scan thread to finish..."
+#define MSG_SW_CSEARCH			"Search:"
+#define MSG_SW_FILENAME			"File Name"
+#define MSG_SW_FILESIZE			"File Size"
+#define MSG_SW_FILETYPE			"File Type"
+#define MSG_SW_MODIFIED			"Modified"
+#define MSG_SW_PATH				"Path"
+#define MSG_SW_USER				"User"
+#define MSG_SW_DOWNLOAD			"Download"
+#define MSG_SW_CLOSE			"Close"
+#define MSG_SW_CLEAR			"Clear"
+#define MSG_SW_STOP				"Stop"
+
+#define MSG_IDLE				"Idle."
+#define MSG_WF_RESULTS			"Results: %1"
+#define MSG_SEARCHING			"Searching for: \"%1\"."
+#define MSG_WAIT_FOR_FST		"Waiting for file scan thread to finish..."
 
 // Main Window
 

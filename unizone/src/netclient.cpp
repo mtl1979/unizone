@@ -112,7 +112,7 @@ NetClient::LocalSessionID() const
 void
 NetClient::AddSubscription(QString str, bool q)
 {
-	MessageRef ref(new Message(PR_COMMAND_SETPARAMETERS), NULL);
+	MessageRef ref(GetMessageFromPool(PR_COMMAND_SETPARAMETERS));
 	if (ref())
 	{
 		ref()->AddBool((const char *) str.utf8(), true);		// true doesn't mean anything
@@ -125,7 +125,7 @@ NetClient::AddSubscription(QString str, bool q)
 void
 NetClient::RemoveSubscription(QString str)
 {
-	MessageRef ref(new Message(PR_COMMAND_REMOVEPARAMETERS), NULL);
+	MessageRef ref(GetMessageFromPool(PR_COMMAND_REMOVEPARAMETERS));
 	if (ref())
 	{
 		ref()->AddString(PR_NAME_KEYS, (const char *) str.utf8());
@@ -339,7 +339,7 @@ NetClient::SendChatText(QString target, QString text)
 {
 	if (IsInternalThreadRunning())
 	{
-		MessageRef chat(new Message(NEW_CHAT_TEXT), NULL);
+		MessageRef chat(GetMessageFromPool(NEW_CHAT_TEXT));
 		if (chat())
 		{
 			QString tostr = "/*/";
@@ -360,7 +360,7 @@ NetClient::SendPing(QString target)
 {
 	if (IsInternalThreadRunning())
 	{
-		MessageRef ping(new Message(PING), NULL);
+		MessageRef ping(GetMessageFromPool(PING));
 		if (ping())
 		{
 			QString to("/*/");
@@ -378,7 +378,7 @@ void
 NetClient::SetUserName(QString user)
 {
 	// change the user name
-	MessageRef ref(new Message(), NULL);
+	MessageRef ref(GetMessageFromPool());
 	if (ref())
 	{
 		QString version = tr(NAME);
@@ -397,7 +397,7 @@ NetClient::SetUserName(QString user)
 void
 NetClient::SetUserStatus(QString status)
 {
-	MessageRef ref(new Message(), NULL);
+	MessageRef ref(GetMessageFromPool());
 	if (ref())
 	{
 		ref()->AddString("userstatus", (const char *) status.utf8()); // <postmaster@raasu.org> 20021001
@@ -408,7 +408,7 @@ NetClient::SetUserStatus(QString status)
 void
 NetClient::SetConnection(QString connection)
 {
-	MessageRef ref(new Message(), NULL);
+	MessageRef ref(GetMessageFromPool());
 	if (ref())
 	{
 		ref()->AddString("label", (const char *) connection.utf8());
@@ -421,7 +421,7 @@ NetClient::SetConnection(QString connection)
 void
 NetClient::SetNodeValue(const char * node, MessageRef & val)
 {
-	MessageRef ref(new Message(PR_COMMAND_SETDATA), NULL);
+	MessageRef ref(GetMessageFromPool(PR_COMMAND_SETDATA));
 	if (ref())
 	{
 		ref()->AddMessage(node, val);
@@ -432,7 +432,7 @@ NetClient::SetNodeValue(const char * node, MessageRef & val)
 void
 NetClient::SetFileCount(int32 count)
 {
-	MessageRef fc(new Message(), NULL);
+	MessageRef fc(GetMessageFromPool());
 	fc()->AddInt32("filecount", count);
 	SetNodeValue("beshare/filecount", fc);
 }
@@ -440,7 +440,7 @@ NetClient::SetFileCount(int32 count)
 void
 NetClient::SetLoad(int32 num, int32 max)
 {
-	MessageRef load(new Message(), NULL);
+	MessageRef load(GetMessageFromPool());
 	if (load())
 	{
 		load()->AddInt32("cur", num);

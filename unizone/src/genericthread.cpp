@@ -314,7 +314,7 @@ void
 WGenericThread::ConnectTimer()
 {
 	Reset();
-	MessageRef msg(new Message(WGenericEvent::ConnectFailed), NULL);
+	MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
 	msg()->AddString("why", "Connection timed out!");
 	// msg()->AddBool("retry", true);
 	SendReply(msg);
@@ -335,5 +335,5 @@ WGenericThread::GetBanTime()
 	else if (fTimeLeft == -1)
 		return -1;
 	else
-		return (fTimeLeft / 1000000);
+		return (fTimeLeft / 60000000);
 }

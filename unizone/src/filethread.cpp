@@ -173,7 +173,7 @@ WFileThread::ScanFiles(QString directory)
 						CHECK_PTR(ufi);
 						if (ufi->isValid())
 						{
-							MessageRef ref(new Message(), NULL);
+							MessageRef ref(GetMessageFromPool());
 							QCString qcPath = ufi->getPath().utf8();
 							ref()->AddInt32("beshare:Modification Time", ufi->getModificationTime());
 							ref()->AddString("beshare:Kind", (const char *) ufi->getMIMEType().utf8());	// give BeSharer's some relief

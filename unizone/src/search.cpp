@@ -32,7 +32,7 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fCurrentSearchPattern = "";
 	fIsRunning = false;
 
-	setCaption(tr(MSG_SEARCH));
+	setCaption(tr(MSG_SW_CAPTION));
 	// initialize GUI
 	fMainBox = new QVGroupBox(this);
 	CHECK_PTR(fMainBox);
@@ -267,7 +267,7 @@ WSearch::StopSearch()
 		// fCurrentSearchPattern contains a fully formatted subscription string
 		fNet->RemoveSubscription(fCurrentSearchPattern);
 		// also dump pending results
-		MessageRef cancel(new Message(PR_COMMAND_JETTISONRESULTS), NULL);
+		MessageRef cancel(GetMessageFromPool(PR_COMMAND_JETTISONRESULTS));
 		if (cancel())
 		{
 			// since "fCurrentSearchPattern" is in a /*/*/beshare/fi*es/*

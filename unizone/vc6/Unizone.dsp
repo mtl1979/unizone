@@ -394,10 +394,6 @@ SOURCE=..\src\Log.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\looper.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\main.cpp
 # End Source File
 # Begin Source File
@@ -1525,10 +1521,6 @@ SOURCE=..\src\lang.h
 # Begin Source File
 
 SOURCE=..\src\Log.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\looper.h
 # End Source File
 # Begin Source File
 

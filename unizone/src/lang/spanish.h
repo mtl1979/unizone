@@ -7,22 +7,24 @@
 // Search Window
 //
 
-#define MSG_SW_CSEARCH        "Buscar:"
-#define MSG_SW_FILENAME       "Nombre"
-#define MSG_SW_FILESIZE       "Tamaño"
-#define MSG_SW_FILETYPE       "Tipo"
-#define MSG_SW_MODIFIED       "Modificado"
-#define MSG_SW_PATH           "Directorio"
-#define MSG_SW_USER           "Usuario"
-#define MSG_SW_DOWNLOAD       "Descarga"
-#define MSG_SW_CLOSE          "Cerrar"
-#define MSG_SW_CLEAR          "Limpiar"
-#define MSG_SW_STOP           "Detener"
+#define MSG_SW_CAPTION			"Buscar"
 
-#define MSG_IDLE			"Idle."
-#define MSG_WF_RESULTS		"Resultados: %1"
-#define MSG_SEARCHING		"Buscando: \"%1\"."
-#define MSG_WAIT_FOR_FST	"Esperando escaneo para terminar..."
+#define MSG_SW_CSEARCH			"Buscar:"
+#define MSG_SW_FILENAME			"Nombre"
+#define MSG_SW_FILESIZE			"Tamaño"
+#define MSG_SW_FILETYPE			"Tipo"
+#define MSG_SW_MODIFIED			"Modificado"
+#define MSG_SW_PATH				"Directorio"
+#define MSG_SW_USER				"Usuario"
+#define MSG_SW_DOWNLOAD			"Descarga"
+#define MSG_SW_CLOSE			"Cerrar"
+#define MSG_SW_CLEAR			"Limpiar"
+#define MSG_SW_STOP				"Detener"
+
+#define MSG_IDLE				"Idle."
+#define MSG_WF_RESULTS			"Resultados: %1"
+#define MSG_SEARCHING			"Buscando: \"%1\"."
+#define MSG_WAIT_FOR_FST		"Esperando escaneo para terminar..."
 
 // Main Window
 

@@ -8,6 +8,8 @@
 // Search Window
 //
 
+#define MSG_SW_CAPTION			"Etsi"
+
 #define MSG_IDLE				"Vapaa."
 #define MSG_WF_RESULTS			"Tuloksia: %1"
 #define MSG_SEARCHING			"Etsii: \"%1\"."

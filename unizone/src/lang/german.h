@@ -7,6 +7,8 @@
 // Search Window
 //
 
+#define MSG_SW_CAPTION				"Suche"
+
 #define MSG_SW_CSEARCH				"Suche:"
 #define MSG_SW_FILENAME				"Datei Name"
 #define MSG_SW_FILESIZE				"Datei Größe"

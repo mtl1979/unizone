@@ -208,7 +208,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/serverinfo"))
 		{
-			fNetClient->SendMessageToSessions(MessageRef(new Message(PR_COMMAND_GETPARAMETERS), NULL));
+			fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_GETPARAMETERS));
 		}
 		else if (CompareCommand(sendText, "/server"))
 		{
@@ -319,7 +319,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			if (users.length() > 0)
 			{
-				MessageRef mrf(new Message(PR_COMMAND_KICK), NULL);
+				MessageRef mrf(GetMessageFromPool(PR_COMMAND_KICK));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapUsersToIDs(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
@@ -332,7 +332,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			if (users.length() > 0)
 			{
-				MessageRef mrf(new Message(PR_COMMAND_KICK), NULL);
+				MessageRef mrf(GetMessageFromPool(PR_COMMAND_KICK));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) users.utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
@@ -345,7 +345,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			if (users.length() > 0)
 			{
-				MessageRef mrf(new Message(PR_COMMAND_ADDBANS), NULL);
+				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDBANS));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapUsersToIDs(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
@@ -358,7 +358,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			if (users.length() > 0)
 			{
-				MessageRef mrf(new Message(PR_COMMAND_ADDBANS), NULL);
+				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDBANS));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) users.utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
@@ -371,7 +371,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			if (users.length() > 0)
 			{
-				MessageRef mrf(new Message(PR_COMMAND_REMOVEBANS), NULL);
+				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEBANS));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapUsersToIDs(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
@@ -384,7 +384,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			if (users.length() > 0)
 			{
-				MessageRef mrf(new Message(PR_COMMAND_REMOVEBANS), NULL);
+				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEBANS));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) users.utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
@@ -397,7 +397,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			if (mask.length() > 0)
 			{
-				MessageRef mrf(new Message(PR_COMMAND_ADDREQUIRES), NULL);
+				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDREQUIRES));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) mask.utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
@@ -408,7 +408,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			if (mask.length() > 0)
 			{
-				MessageRef mrf(new Message(PR_COMMAND_REMOVEREQUIRES), NULL);
+				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEREQUIRES));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) mask.utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}

@@ -387,7 +387,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				PRINT("Uploading public data\n");
 				fGotParams = false; // set to false here :)
 				// send a message out to the server asking for our parameters
-				MessageRef askref(new Message(PR_COMMAND_GETPARAMETERS), NULL);
+				MessageRef askref(GetMessageFromPool(PR_COMMAND_GETPARAMETERS));
 				fNetClient->SendMessageToSessions(askref);
 				// get a list of users as well
 				fNetClient->AddSubscription("SUBSCRIBE:beshare/*"); // all user info :)
@@ -399,7 +399,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					fNetClient->SetLoad(0, fSettings->GetMaxUploads());
 				
 				
-				fNetClient->SendMessageToSessions(MessageRef(new Message(PR_COMMAND_PING), NULL));
+				fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_PING));
 				
 				if (fSettings->GetInfo())
 					PrintSystem(tr(MSG_CONNECTED));
@@ -1603,7 +1603,7 @@ WinShareWindow::StopLogging()
 void
 WinShareWindow::CancelShares()
 {
-	MessageRef delData(new Message(PR_COMMAND_REMOVEDATA), NULL);
+	MessageRef delData(GetMessageFromPool(PR_COMMAND_REMOVEDATA));
 	delData()->AddString(PR_NAME_KEYS, "beshare/fi*");
 	fNetClient->SendMessageToSessions(delData);
 }

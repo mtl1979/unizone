@@ -7,22 +7,24 @@
 // Search Window
 //
 
-#define MSG_SW_CSEARCH        "Sök:"
-#define MSG_SW_FILENAME       "Filnamn"
-#define MSG_SW_FILESIZE       "Filstorlek"
-#define MSG_SW_FILETYPE       "Filtyp"
-#define MSG_SW_MODIFIED       "Ändrad"
-#define MSG_SW_PATH           "Sökväg"
-#define MSG_SW_USER           "Användare"
-#define MSG_SW_DOWNLOAD       "Ladda ner"
-#define MSG_SW_CLOSE          "Avstänga"
-#define MSG_SW_CLEAR          "Rensa"
-#define MSG_SW_STOP           "Stoppa"
+#define MSG_SW_CAPTION			"Sök"
 
-#define MSG_IDLE			"Ledig."
-#define MSG_WF_RESULTS		"Resultat visade: %1"
-#define MSG_SEARCHING		"Sökas: \"%1\"."
-#define MSG_WAIT_FOR_FST	"Väntar att filsökningsträdd har slutat..."
+#define MSG_SW_CSEARCH			"Sök:"
+#define MSG_SW_FILENAME			"Filnamn"
+#define MSG_SW_FILESIZE			"Filstorlek"
+#define MSG_SW_FILETYPE			"Filtyp"
+#define MSG_SW_MODIFIED			"Ändrad"
+#define MSG_SW_PATH				"Sökväg"
+#define MSG_SW_USER				"Användare"
+#define MSG_SW_DOWNLOAD			"Ladda ner"
+#define MSG_SW_CLOSE			"Avstänga"
+#define MSG_SW_CLEAR			"Rensa"
+#define MSG_SW_STOP				"Stoppa"
+
+#define MSG_IDLE				"Ledig."
+#define MSG_WF_RESULTS			"Resultat visade: %1"
+#define MSG_SEARCHING			"Sökas: \"%1\"."
+#define MSG_WAIT_FOR_FST		"Väntar att filsökningsträdd har slutat..."
 
 // Main Window
 
