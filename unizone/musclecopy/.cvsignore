@@ -1,6 +1,8 @@
 Debug
 MuscleCopy.ncb
 MuscleCopy.opt
-moc_genericthread.cpp moc_md5.cpp moc_status.cpp moc_statusimpl.cpp
+moc_genericthread.cpp moc_md5.cpp moc_status.cpp 
+moc_statusimpl.cpp
 status.h
 status.cpp
+MuscleCopy.plg
