@@ -191,7 +191,7 @@ WPrivateWindow::UpdateView()
 {
 	if (fScrollDown)
 		fText->setContentsPos(0, fText->contentsHeight());
-#ifndef WIN32
+#ifndef WIN32 // for Linux (does FreeBSD need this too???)
 	fText->repaintContents(fText->contentsX(), fText->contentsY(),
 					fText->contentsWidth(), fText->contentsHeight(),
 					false);

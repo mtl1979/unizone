@@ -70,7 +70,9 @@ using namespace muscle;
 
 #define REGISTERTIME "registertime"
 
-#ifdef __linux__	/* Linux is our only configurable URL launcher */
+/* Linux was our only configurable URL launcher */
+/* Now let's try it with FreeBSD too            */
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
 # define MAILTO_LAUNCHER	"mailtolauncher"
 # define HTTP_LAUNCHER		"httplauncher"
 # define FTP_LAUNCHER		"ftplauncher"
@@ -324,7 +326,7 @@ public:
 	QString GetAutoPrivatePattern();
 	void SetAutoPrivatePattern(QString p);
 
-#ifdef __linux__
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)
 	QString GetFTPLauncher();
 	void SetFTPLauncher(QString l);
 

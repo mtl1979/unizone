@@ -8,14 +8,14 @@ class QString;
 
 // RedHat Linux 8.x doesn't seem to define __LINUX__
 
-#ifdef linux
+#if defined(linux)
 #  if !defined(__LINUX__)
 #    define __LINUX__
 #  endif
 #endif
 
-// For Unicode support on Linux
-#if defined(__LINUX__)
+// For Unicode support on Linux or FreeBSD???
+#if defined(__LINUX__) || defined(__FreeBSD__)
 #include <wchar.h>
 #endif
 

@@ -159,7 +159,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	else
 		fFlashPrivate->setChecked(false);
 #else
-	// linux doesn't get this nifty feature
+	// Linux and FreeBSD don't get this nifty feature
 	fFlashMain->hide();
 	fFlashPrivate->hide();
 #endif
@@ -354,7 +354,7 @@ WPrefs::OK()
 
 	gWin->fSettings->SetFontSize(fFontSize->value());
 
-#ifdef __linux__
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
 	// save our launcher settings
 	gWin->fSettings->SetMailLauncher(fMailtoLauncher->text());
 	gWin->fSettings->SetHTTPLauncher(fHTTPLauncher->text());

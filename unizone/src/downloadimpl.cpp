@@ -1779,7 +1779,7 @@ WDownload::ULPopupActivated(int id)
 		
 	case ID_BAN1H:
 		{
-#ifdef __LINUX__
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)
 			gt->SetBlocked(true, 3600000000LL);
 #else
 			gt->SetBlocked(true, 3600000000UL);

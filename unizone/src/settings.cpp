@@ -958,7 +958,7 @@ WSettings::SetOnConnect2(QString s)
 	fSet()->AddString(ONCONN2, (const char *) s.utf8());
 }
 
-#ifdef __linux__
+#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
 void
 WSettings::SetFTPLauncher(QString l)
 {

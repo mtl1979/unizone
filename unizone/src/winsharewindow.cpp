@@ -49,9 +49,16 @@
 
 #ifdef WIN32
 #include <objbase.h>
-#elif defined(__linux__)
+#endif
+
 // uptime
+
+#if defined(__LINUX__) || defined(linux) 
 #include <sys/sysinfo.h>
+#elif defined(__FreeBSD__)
+#include <sys/time.h>
+#include <sys/param.h>
+#include <sys/sysctl.h>
 #endif
 
 #define CLUMP_CHAR '\1'
@@ -177,8 +184,10 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 		START_OUTPUT();
 #ifdef WIN32
 		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Windows!"), true);
-#else
+#elif defined(__LINUX__) || defined(linux)
 		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Linux!"), true);
+#elif defined(__FreeBSD__)
+		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for FreeBSD!"), true);
 #endif
 		// <postmaster@raasu.org> 20030225
 		PrintSystem(tr("Copyright (C) 2002-2003 Mika T. Lindqvist."), true);
@@ -1176,7 +1185,7 @@ WinShareWindow::UpdateTextView()
 #endif
 	if (fScrollDown)
 		fChatText->setContentsPos(0, fChatText->contentsHeight());
-#ifndef WIN32	// linux only...
+#ifndef WIN32	// linux only... (FreeBSD???)
 	fChatText->repaintContents(fChatText->contentsX(), fChatText->contentsY(),
 					fChatText->contentsWidth(), fChatText->contentsHeight(),
 					false);
@@ -2206,10 +2215,24 @@ WinShareWindow::GetUptime()
 {
 #ifdef WIN32
 	return ((int64)GetTickCount()) * 1000;
-#elif defined(__linux__)
+#elif defined(__LINUX__) || defined(linux)
 	struct sysinfo sinfo;
 	sysinfo(&sinfo);
 	return sinfo.uptime * 1000 * 1000;
+#elif defined(__FreeBSD__)
+	int64 uptime = 0;
+    struct timeval boottime;
+    time_t now;
+    size_t size;
+    int mib[2];
+
+    time(&now);
+    mib[0] = CTL_KERN;
+	mib[1] = KERN_BOOTTIME;
+	size = sizeof (boottime);
+    if (sysctl (mib, 2, &boottime, &size, NULL, 0) != -1 && boottime.tv_sec != 0)
+		uptime = now - boottime.tv_sec;
+	return (uptime * 1000 * 1000);
 #else
 # error "Uptime not implemented for your OS"
 #endif

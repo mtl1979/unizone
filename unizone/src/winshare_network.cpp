@@ -1803,8 +1803,10 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					
 					QString version = tr("Unizone (English)");
 					version += " ";
-#ifndef WIN32
+#if defined(__LINUX__) || defined(linux)
 					version += "(Linux) ";
+#elif defined(__FreeBSD__)
+					version += "(FreeBSD) ";
 #endif
 					version += WinShareVersionString();
 					
