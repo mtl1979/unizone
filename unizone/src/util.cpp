@@ -831,7 +831,9 @@ GetTimeStamp()
 	QString qCurTime;
 
 	qCurTime = QDateTime::currentDateTime().toString();
+#ifndef WIN32
 	qCurTime = QString::fromLocal8Bit(qCurTime);
+#endif
 
 	// Strip off year
 	QString qYear = qCurTime.mid(qCurTime.findRev(" ") + 1);

@@ -440,79 +440,79 @@ Version %1</translation>
     <name>Date</name>
     <message>
         <source>Jan</source>
-        <translation type='unfinished'>Jan</translation>
+        <translation>Jan</translation>
     </message>
     <message>
         <source>Feb</source>
-        <translation type='unfinished'>Feb</translation>
+        <translation>Feb</translation>
     </message>
     <message>
         <source>Mar</source>
-        <translation type='unfinished'>Mar</translation>
+        <translation>Mar</translation>
     </message>
     <message>
         <source>Apr</source>
-        <translation type='unfinished'>Apr</translation>
+        <translation>Apr</translation>
     </message>
     <message>
         <source>May</source>
-        <translation type='unfinished'>May</translation>
+        <translation>May</translation>
     </message>
     <message>
         <source>Jun</source>
-        <translation type='unfinished'>Jun</translation>
+        <translation>Jun</translation>
     </message>
     <message>
         <source>Jul</source>
-        <translation type='unfinished'>Jul</translation>
+        <translation>Jul</translation>
     </message>
     <message>
         <source>Aug</source>
-        <translation type='unfinished'>Aug</translation>
+        <translation>Aug</translation>
     </message>
     <message>
         <source>Sep</source>
-        <translation type='unfinished'>Sep</translation>
+        <translation>Sep</translation>
     </message>
     <message>
         <source>Oct</source>
-        <translation type='unfinished'>Okt</translation>
+        <translation>Okt</translation>
     </message>
     <message>
         <source>Nov</source>
-        <translation type='unfinished'>Nov</translation>
+        <translation>Nov</translation>
     </message>
     <message>
         <source>Dec</source>
-        <translation type='unfinished'>Dez</translation>
+        <translation>Dez</translation>
     </message>
     <message>
         <source>Mon</source>
-        <translation type='unfinished'>Mon</translation>
+        <translation>Mon</translation>
     </message>
     <message>
         <source>Tue</source>
-        <translation type='unfinished'>Di</translation>
+        <translation>Di</translation>
     </message>
     <message>
         <source>Wed</source>
-        <translation type='unfinished'>Mi</translation>
+        <translation>Mi</translation>
     </message>
     <message>
         <source>Thu</source>
-        <translation type='unfinished'>Do</translation>
+        <translation>Do</translation>
     </message>
     <message>
         <source>Fri</source>
-        <translation type='unfinished'>Fr</translation>
+        <translation>Fr</translation>
     </message>
     <message>
         <source>Sat</source>
-        <translation type='unfinished'>Sa</translation>
+        <translation>Sa</translation>
     </message>
     <message>
         <source>Sun</source>
-        <translation type='unfinished'>So</translation>
+        <translation>So</translation>
     </message>
 </context>
 <context>
@@ -765,55 +765,55 @@ Date: %4</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='unfinished'>14.4 kbps</translation>
+        <translation>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='unfinished'>28.8 kbps</translation>
+        <translation>28.8 kbps</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation type='unfinished'>33.6 kbps</translation>
+        <translation>33.6 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='unfinished'>36.6 kbps</translation>
+        <translation>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='unfinished'>57.6 kbps</translation>
+        <translation>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='unfinished'>ISDN-64k</translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='unfinished'>ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type='unfinished'>DSL</translation>
+        <translation>DSL</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='unfinished'>Cable</translation>
+        <translation>Cable</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='unfinished'>T1</translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='unfinished'>T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='unfinished'>OC-3</translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='unfinished'>OC-12</translation>
+        <translation>OC-12</translation>
     </message>
     <message>
         <source>300 baud</source>
@@ -821,15 +821,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='unfinished'>DSL-256k</translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='unfinished'>DSL-384k</translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='unfinished'>DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
@@ -838,7 +838,7 @@ Date: %4</translation>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation type='unfinished'>Datum:</translation>
+        <translation>Datum:</translation>
     </message>
     <message>
         <source>B</source>

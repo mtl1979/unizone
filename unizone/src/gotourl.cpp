@@ -103,7 +103,7 @@ GotoURL(const QString & url)
 	QString address;
 	if (u.startsWith("server://"))
 	{
-		address = u.mid(9);
+		address = url.mid(9);
 		if (address.right(1) == "/")
 		{
 			address.truncate(address.length() - 1);
