@@ -2369,21 +2369,26 @@ WinShareWindow::GetUptime()
 #elif defined(__LINUX__) || defined(linux)
 	struct sysinfo sinfo;
 	sysinfo(&sinfo);
-	return sinfo.uptime * 1000 * 1000;
+	int64 uptime = sinfo.uptime;
+	uptime *= 1000000L;
+	return uptime;
 #elif defined(__FreeBSD__)
 	int64 uptime = 0;
-    struct timeval boottime;
-    time_t now;
-    size_t size;
-    int mib[2];
+	struct timeval boottime;
+    	time_t now;
+    	size_t size;
+    	int mib[2];
 
-    time(&now);
-    mib[0] = CTL_KERN;
+    	time(&now);
+    	mib[0] = CTL_KERN;
 	mib[1] = KERN_BOOTTIME;
-	size = sizeof (boottime);
-    if (sysctl (mib, 2, &boottime, &size, NULL, 0) != -1 && boottime.tv_sec != 0)
+	size = sizeof(boottime);
+    	if ((sysctl(mib, 2, &boottime, &size, NULL, 0) != -1) && (boottime.tv_sec != 0))
+	{
 		uptime = now - boottime.tv_sec;
-	return (uptime * 1000 * 1000);
+		uptime *= 1000000L;
+	}
+	return uptime;
 #else
 # error "Uptime not implemented for your OS"
 #endif
