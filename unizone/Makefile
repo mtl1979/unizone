@@ -13,11 +13,9 @@ prefs.o prefsimpl.o privatewindow.o privatewindowimpl.o search.o \
 searchitem.o settings.o textevent.o transferitem.o ulistview.o \
 uploadthread.o user.o userlistitem.o winshare_network.o \
 winshare_parsing.o winshare_slots.o winsharewindow.o Log.o \
-channel.o channels.o channelinfo.o channelimpl.o \
+htmlview.o channel.o channels.o channelinfo.o channelimpl.o \
 channelsimpl.o moc_channel.o moc_channels.o \
 moc_channelimpl.o moc_channelsimpl.o moc_menubar.o moc_ulistview.o
-#UICFILES = privatewindow.h privatewindow.cpp debug.h debug.cpp aboutdlg.h aboutdlg.cpp prefs.h prefs.cpp
-#MOCFILES = moc_aboutdlg.h moc_aboutdlgimpl.h moc_chattext.h moc_combo.h moc_debug.h moc_htmlview.h moc_netclient.h moc_privatewindow.h moc_privatewindowimpl.h moc_winsharewindow.h moc_prefs.h moc_prefsimpl.h moc_search.h
 VPATH = src
 CXXFLAGS = -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 
