@@ -4,7 +4,6 @@ SOURCES =		aboutdlg.cpp \
 				aboutdlgimpl.cpp \
 				channel.cpp \
 				channelimpl.cpp \
-				channels.cpp \
 				downloadimpl.cpp \
 				formatting.cpp \
 				menubar.cpp \
