@@ -17,7 +17,7 @@ public:
 	UFileInfo(const QString & file);
 	virtual ~UFileInfo();
 	
-	uint32 getModificationTime();
+	uint32 getModificationTime() const;
 	QString getMIMEType() const;
 	QString getPath() const;
 	QString getAbsPath() const;
@@ -27,8 +27,8 @@ public:
 	QString getExtension() const;
 	uint64 getSize();
 
-	bool isValid();
-	bool isDir();
+	bool isValid() const;
+	bool isDir() const;
 
 protected:
 

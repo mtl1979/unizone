@@ -16,7 +16,7 @@
 // ANSI version of ResolveLink for Windows 95, 98 & ME and Microsoft Unicode Layer
 // IShellLinkW is not supported on Windows 95, 98 or ME
 QString
-WFileThread::ResolveLink(const QString & lnk)
+WFileThread::ResolveLink(const QString & lnk) const
 {
 #ifdef DEBUG2
 	{

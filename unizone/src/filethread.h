@@ -68,10 +68,10 @@ private:
 
 	void ParseDir(const QString & d);
 	status_t ParseDirAux(QString &);
-	QString ResolveLink(const QString & lnk);
+	QString ResolveLink(const QString & lnk) const;
 
 	void ScanFiles(const QString & directory);
-	bool GetInfo(const QString & file, MessageRef & mref);
+	bool GetInfo(const QString & file, MessageRef & mref) const;
 
 #ifdef WIN32
 	void SendReset();

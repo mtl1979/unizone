@@ -4,7 +4,7 @@
 #include "filethread.h"
 
 QString
-WFileThread::ResolveLink(const QString & lnk)
+WFileThread::ResolveLink(const QString & lnk) const
 {
 	QFileInfo inf(lnk);
 	if (inf.isSymLink())

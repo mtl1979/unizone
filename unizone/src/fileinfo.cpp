@@ -37,7 +37,7 @@ UFileInfo::getMIMEType() const
 }
 
 uint32
-UFileInfo::getModificationTime()
+UFileInfo::getModificationTime() const
 {
 	return fModificationTime;
 }
@@ -138,7 +138,7 @@ UFileInfo::getSize()
 }
 
 bool
-UFileInfo::isValid()
+UFileInfo::isValid() const
 {
 	if (fFileInfo)
 		return fFileInfo->exists();	// non-existent file?
@@ -161,7 +161,7 @@ UFileInfo::setName(const QString & n)
 }
 
 bool
-UFileInfo::isDir()
+UFileInfo::isDir() const
 {
 	if ( isValid() )
 		return fFileInfo->isDir();

@@ -15,7 +15,7 @@
 // Unicode version of ResolveLink for Windows 2000 and newer
 // IShellLinkW is only supported on Windows 2000 and later
 QString
-WFileThread::ResolveLink(const QString & lnk)
+WFileThread::ResolveLink(const QString & lnk) const
 {
 #ifdef DEBUG2
 	{

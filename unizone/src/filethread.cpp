@@ -482,7 +482,7 @@ WFileThread::SendHide()
 #endif
 
 bool
-WFileThread::GetInfo(const QString &file, MessageRef &mref)
+WFileThread::GetInfo(const QString &file, MessageRef &mref) const
 {
 	bool ret = false;
 	UFileInfo ufi(file);
