@@ -14,13 +14,13 @@
 #include "iogateway/MessageIOGateway.h"
 #include "zlib/ZLibUtilityFunctions.h"
 
-NetClient::NetClient(QObject * owner) 
-: WMessenger(owner, NULL)
+NetClient::NetClient(QObject * owner)
+: QObject(owner)
 {
 	setName( "NetClient" );
 
-	wmt = new WMessengerThread(this);
-	CHECK_PTR(wmt);
+	qmtt = new QMessageTransceiverThread();
+	CHECK_PTR(qmtt);
 
 	fPort = 0;
 	fServerPort = 0;
@@ -32,20 +32,39 @@ NetClient::NetClient(QObject * owner)
 	fChannelLock.lock();
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
+
+	connect(qmtt, SIGNAL(BeginMessageBatch()),
+			this, SLOT(BeginMessageBatch()));
+	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
+			this, SLOT(MessageReceived(MessageRef, const String &)));
+	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
+			this, SLOT(SessionAccepted(const String &, uint16)));
+	connect(qmtt, SIGNAL(SessionAttached(const String &)),
+			this, SLOT(SessionAttached(const String &)));
+	connect(qmtt, SIGNAL(SessionConnected(const String &)),
+			this, SLOT(SessionConnected(const String &)));
+	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
+			this, SLOT(SessionDisconnected(const String &)));
+	connect(qmtt, SIGNAL(SessionDetached(const String &)),
+			this, SLOT(SessionDetached(const String &)));
+	connect(qmtt, SIGNAL(FactoryAttached(uint16)),
+			this, SLOT(FactoryAttached(uint16)));
+	connect(qmtt, SIGNAL(FactoryDetached(uint16)),
+			this, SLOT(FactoryDetached(uint16)));
+	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
+			this, SLOT(OutputQueuesDrained(MessageRef)));
+	connect(qmtt, SIGNAL(ServerExited()),
+			this, SLOT(ServerExited()));
+	connect(qmtt, SIGNAL(EndMessageBatch()),
+			this, SLOT(EndMessageBatch()));
 }
 
 NetClient::~NetClient()
 {
-	//fChannelLock.lock();
-	//if (fChannels)
-	//{
-	//	delete fChannels;
-	//}
-	//fChannelLock.unlock();
 	Disconnect();
-	wmt->WaitForInternalThreadToExit();
-	delete wmt;
-	wmt = NULL;
+	qmtt->WaitForInternalThreadToExit();
+	delete qmtt;
+	qmtt = NULL;
 }
 
 // <postmaster@raasu.org> -- Add support for port numbers
@@ -68,7 +87,7 @@ NetClient::Connect(QString server, uint16 port)
 	Disconnect();
 
 	PRINT("Starting thread\n");
-	if (wmt->StartInternalThread() != B_NO_ERROR)
+	if (qmtt->StartInternalThread() != B_NO_ERROR)
 	{
 		return B_ERROR;
 	}
@@ -78,7 +97,7 @@ NetClient::Connect(QString server, uint16 port)
 
 	if (gWin->fSettings->GetChatLimit() == WSettings::LimitNone)
 	{
-		if (wmt->AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
+		if (qmtt->AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
 		{
 			return B_ERROR;
 		}
@@ -91,7 +110,7 @@ NetClient::Connect(QString server, uint16 port)
 								gWin->fSettings->GetChatLimit())), NULL));
 		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
 								gWin->fSettings->GetChatLimit())), NULL));
-		if (wmt->AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
+		if (qmtt->AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
 			return B_ERROR;
 	}
 
@@ -106,10 +125,10 @@ NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
 	gWin->setCaption("Unizone");
-	if (wmt->IsInternalThreadRunning()) 
+	if (qmtt->IsInternalThreadRunning()) 
 	{
-		wmt->ShutdownInternalThread();
-		wmt->Reset(); 
+		qmtt->ShutdownInternalThread();
+		qmtt->Reset(); 
 		emit DisconnectedFromServer();
 		PRINT("DELETING\n");
 		WUserIter it = fUsers.begin();
@@ -121,14 +140,6 @@ NetClient::Disconnect()
 		}
 		PRINT("DONE\n");
 	}
-}
-
-void
-NetClient::SignalOwner()
-{
-	QCustomEvent *e = new QCustomEvent(NetClient::SignalEvent);
-	if (e)
-		QThread::postEvent(fOwner, e);
 }
 
 QString
@@ -146,7 +157,7 @@ NetClient::AddSubscription(QString str, bool q)
 		ref()->AddBool((const char *) str.utf8(), true);		// true doesn't mean anything
 		if (q)
 			ref()->AddBool(PR_NAME_SUBSCRIBE_QUIETLY, true);		// no initial response
-		wmt->SendMessageToSessions(ref);
+		qmtt->SendMessageToSessions(ref);
 	}
 }
 
@@ -157,7 +168,7 @@ NetClient::RemoveSubscription(QString str)
 	if (ref())
 	{
 		ref()->AddString(PR_NAME_KEYS, (const char *) str.utf8());
-		wmt->SendMessageToSessions(ref);
+		qmtt->SendMessageToSessions(ref);
 	}
 }
 
@@ -361,7 +372,7 @@ NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
 								col()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 								col()->AddString("name", (const char *) gWin->GetUserName().utf8() );
 								col()->AddInt64("registertime", gWin->GetRegisterTime( gWin->GetUserName() ) );
-								wmt->SendMessageToSessions(col);
+								qmtt->SendMessageToSessions(col);
 							}
 						}
 					}
@@ -677,7 +688,7 @@ NetClient::HandleParameters(MessageRef & next)
 void
 NetClient::SendChatText(QString target, QString text)
 {
-	if (wmt->IsInternalThreadRunning())
+	if (qmtt->IsInternalThreadRunning())
 	{
 		MessageRef chat(GetMessageFromPool(NEW_CHAT_TEXT));
 		if (chat())
@@ -690,7 +701,7 @@ NetClient::SendChatText(QString target, QString text)
 			chat()->AddString("text", (const char *) text.utf8());
 			if (target != "*")
 				chat()->AddBool("private", true);
-			wmt->SendMessageToSessions(chat);
+			qmtt->SendMessageToSessions(chat);
 		}
 	}
 }
@@ -698,7 +709,7 @@ NetClient::SendChatText(QString target, QString text)
 void
 NetClient::SendPing(QString target)
 {
-	if (wmt->IsInternalThreadRunning())
+	if (qmtt->IsInternalThreadRunning())
 	{
 		MessageRef ping(GetMessageFromPool(PING));
 		if (ping())
@@ -709,7 +720,7 @@ NetClient::SendPing(QString target)
 			ping()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 			ping()->AddString("session", (const char *) LocalSessionID().utf8());
 			ping()->AddInt64("when", GetCurrentTime64());
-			wmt->SendMessageToSessions(ping);
+			qmtt->SendMessageToSessions(ping);
 		}
 	}
 }
@@ -770,7 +781,7 @@ NetClient::SetNodeValue(const char * node, MessageRef & val)
 	if (ref())
 	{
 		ref()->AddMessage(node, val);
-		wmt->SendMessageToSessions(ref);
+		qmtt->SendMessageToSessions(ref);
 	}
 }
 
@@ -807,5 +818,196 @@ NetClient::GetServerIP()
 		ip = host;
 	}
 	return ip;
+}
+
+// ----
+
+void
+NetClient::BeginMessageBatch()
+{
+	gWin->BeginMessageBatch();
+}
+
+void
+NetClient::MessageReceived(MessageRef msg, const String &sessionID)
+{
+	PRINT("MTT_EVENT_INCOMING_MESSAGE\n");
+	if (msg())
+	{
+		switch (msg()->what)
+		{
+			case PR_RESULT_PARAMETERS:
+			{
+				if (!gWin->GotParams())
+				{
+					HandleParameters(msg);
+					gWin->GotParams(true);
+				}
+				else	// a /serverinfo was sent
+				{
+					gWin->ServerParametersReceived(msg);
+				}
+				break;
+			}
+
+			case PR_RESULT_DATAITEMS:
+			{
+				PRINT("PR_RESULT_DATAITEMS\n");
+				HandleResultMessage(msg);
+				
+				// add/remove all the users to the list view (if not there yet...)
+				gWin->UpdateUserList();
+
+				QCustomEvent * qce = new QCustomEvent(WinShareWindow::UpdatePrivateUsers);
+				if (qce)
+				{
+					QThread::postEvent(gWin, qce);
+				}
+
+				break;
+			}
+
+			case PR_RESULT_ERRORACCESSDENIED:
+			{
+				PRINT("PR_RESULT_ERRORACCESSDENIED\n");
+				gWin->PrintError( tr ( "Access Denied!!!" ) );
+
+				MessageRef subMsg;
+				QString action = tr( "do that to" );
+
+				String who;
+				if (msg()->FindMessage(PR_NAME_REJECTED_MESSAGE, subMsg) == B_NO_ERROR)
+				{
+					if (subMsg())
+					{
+						switch(subMsg()->what)
+						{
+							case PR_COMMAND_KICK:			
+							{
+								action = tr( "kick" );		
+								break;
+							}
+					
+							case PR_COMMAND_ADDBANS:		
+							{
+								action = tr( "ban" );			
+								break;
+							}
+							
+							case PR_COMMAND_REMOVEBANS:		
+							{
+								action = tr( "unban" );		
+								break;
+							}
+							
+							case PR_COMMAND_ADDREQUIRES:    
+							{
+								action = tr( "require" );		
+								break;
+							}
+							
+							case PR_COMMAND_REMOVEREQUIRES: 
+							{
+								action = tr( "unrequire" );	
+								break;
+							}
+						}
+					
+						if (subMsg()->FindString(PR_NAME_KEYS, who) == B_NO_ERROR)
+						{
+							QString qWho = QString::fromUtf8(who.Cstr());
+							gWin->PrintError( tr("You are not allowed to %1 [%2]").arg(action).arg(qWho) );
+						}
+					}
+				}
+				break;
+			}
+
+			default:
+			{
+				PRINT("Handling message\n");
+				gWin->HandleMessage(msg);
+				break;
+			}
+		}
+	}
+}
+
+void
+NetClient::SessionAccepted(const String &sessionID, uint16 port)
+{
+	PRINT("MTT_EVENT_SESSION_ACCEPTED\n");
+}
+
+void
+NetClient::SessionAttached(const String &sessionID)
+{
+	PRINT("MTT_EVENT_SESSION_ATTACHED\n");
+	QCustomEvent *e = new QCustomEvent(NetClient::SESSION_ATTACHED);
+	if (e)
+		QThread::postEvent(gWin, e);
+}
+
+void
+NetClient::SessionConnected(const String &sessionID)
+{
+	PRINT("MTT_EVENT_SESSION_CONNECTED\n");
+	QCustomEvent *e = new QCustomEvent(NetClient::SESSION_CONNECTED);
+	if (e)
+		QThread::postEvent(gWin, e);
+	PRINT("Returning\n");
+}
+
+void
+NetClient::SessionDisconnected(const String &sessionID)
+{
+	PRINT("MTT_EVENT_SESSION_DISCONNECTED\n");
+	QCustomEvent *e = new QCustomEvent(NetClient::DISCONNECTED);
+	if (e)
+		QThread::postEvent(gWin, e);
+}
+
+void
+NetClient::SessionDetached(const String &sessionID)
+{
+	PRINT("MTT_EVENT_SESSION_DETACHED\n");
+	QCustomEvent *e = new QCustomEvent(NetClient::DISCONNECTED);
+	if (e)
+		QThread::postEvent(this, e);
+}
+
+void
+NetClient::FactoryAttached(uint16 port)
+{
+	PRINT("MTT_EVENT_FACTORY_ATTACHED\n");
+}
+
+void
+NetClient::FactoryDetached(uint16 port)
+{
+	PRINT("MTT_EVENT_FACTORY_DETACHED\n");
+}
+
+void
+NetClient::OutputQueuesDrained(MessageRef ref)
+{
+ 	PRINT("MTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
+}
+
+void
+NetClient::ServerExited()
+{
+	PRINT("MTT_EVENT_SERVER_EXITED\n");
+	// as you noticed... this message is sent by several MTT_EVENT_* events :)
+
+	QCustomEvent *e = new QCustomEvent(NetClient::DISCONNECTED);
+	if (e)
+		QThread::postEvent(gWin, e);
+}
+
+void
+NetClient::EndMessageBatch()
+{
+	gWin->EndMessageBatch();
 }
 

@@ -45,6 +45,13 @@ public:
 
 	void SetBlocked(bool b, int64 timeLeft = -1);
 
+public slots:
+	void MessageReceived(MessageRef msg, const String & sessionID);
+	void SessionAccepted(const String &sessionID, uint16 port);
+	void SessionConnected(const String &sessionID);
+	void ServerExited();
+	void SessionDisconnected(const String &sessionID);
+
 protected:
 	QMutex fLockFile;
 	QFile * fFile;			// file on the HD
@@ -66,10 +73,9 @@ protected:
 
 	virtual void SendReply(MessageRef &m);
 
-	virtual void SignalOwner();
 private:
 	QString UniqueName(QString file, int index); // build up unique name using 'file' and 'index'
-
+	String _sessionID;
 };
 
 // subclass ThreadWorkerSessionFactory to do throttling

@@ -311,11 +311,11 @@ WinShareWindow::Preferences()
 	if (prefs->exec() == QDialog::Accepted)	// only do the below code if the dialog was ACCEPTED!
 	{
 		SaveSettings();	// in case we crash :)
-		if (fNetClient->IsInternalThreadRunning())
+		if (fNetClient->IsConnected())
 			fNetClient->SetConnection(fSettings->GetConnection());
 		SetAutoAwayTimer();
 
-		if (fNetClient->IsInternalThreadRunning())	// are we still connected?
+		if (fNetClient->IsConnected())	// are we still connected?
 		{
 			if (oldSharing && !fSettings->GetSharingEnabled())	// if we were previously sharing and are not now.. remove old data
 			{

@@ -126,7 +126,7 @@ WinShareWindow::UpdatePublic(WChannelIter iter)
 void
 WinShareWindow::CreateChannel()
 {
-	if (!fNetClient->IsInternalThreadRunning())
+	if (!fNetClient->IsConnected())
 	{
 		// Don't create, when we aren't connected
 		return;

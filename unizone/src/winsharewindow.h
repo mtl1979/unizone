@@ -24,14 +24,16 @@
 #include <qtabwidget.h>
 
 #include "netclient.h"
+#include "serverclient.h"
+#include "updateclient.h"
 #include "privatewindowimpl.h"
 #include "system/SetupSystem.h"
-#include "accept.h"
+#include "qtsupport/QAcceptSocketsThread.h"
 #include "search.h"
 #include "user.h"
 
 #define UPDATE_SERVER "www.raasu.org"
-#define UPDATE_FILE "http://www.raasu.org/tools/windows/version.txt"
+#define UPDATE_FILE "/tools/windows/version.txt"
 
 #define START_OUTPUT() fPrintOutput = false; PrintText("", true)
 #define END_OUTPUT() fPrintOutput = true; PrintText("", false)
@@ -41,6 +43,7 @@ using std::pair;
 using std::multimap;
 using std::iterator;
 
+class WDownload;
 class ChannelInfo;
 class WSearchListItem;
 class WFileThread;
@@ -133,7 +136,66 @@ public:
 		TimeReply
 	};
 
+	QString GetUserName() const;
+	QString GetServer() const;
+	QString GetStatus() const;
+	QString GetUserID() const { return fNetClient->LocalSessionID(); }
+#ifdef WIN32
+	HWND GetHandle() { return fWinHandle; }
+#endif
 
+	void BeginMessageBatch();
+	void EndMessageBatch();
+
+	void SendChatText(QString sid, QString txt, WUserRef priv = WUserRef(NULL, NULL), bool * reply = NULL);
+
+	static QString GetRemoteVersionString(const MessageRef);
+	static void LaunchSearch(QString & pattern);		// launches a search
+	void LaunchPrivate(const QString & pattern);		// launches a private window with multiple users in it
+	void UpdateTransmitStats(uint64 t);
+	void UpdateReceiveStats(uint64 r);
+
+	bool IsIgnored(QString & user, bool bTransfer = false);
+	bool IsIgnored(QString & user, bool bTransfer, bool bDisconnected);
+	bool IsIgnoredIP(QString ip);
+	bool AddIPIgnore(QString ip);
+	bool RemoveIPIgnore(QString ip);
+
+	bool IsBlackListedIP(QString & ip);
+	bool IsBlackListed(QString & user);
+
+	bool IsAutoPrivate(QString user);
+	bool IsConnected(QString user);
+
+	void SendRejectedNotification(MessageRef rej);
+
+	// To use delayed search:
+	// ----------------------
+	//
+	// 1. Set the pattern using SetDelayedSearchPattern(QString)
+	// 2. Call Connect(QString)
+	//
+	void Connect(QString server);
+	void SetDelayedSearchPattern(QString pattern);
+	
+	void TranslateStatus(QString & s);
+	
+	WUserRef FindUser(QString user);
+	WUserRef FindUserByIPandPort(QString ip, uint32 port);
+
+	bool IsScanning() { return fScanning; }
+
+	WSettings * fSettings;	// for use by prefs
+	WDownload * fDLWindow;
+
+	// UniShare
+	int64 GetRegisterTime(QString nick); 
+
+	void GotParams(bool g) { fGotParams = g; }
+	bool GotParams() { return fGotParams; }
+
+	void PrintSystem(const QString & msg, bool batch = false);
+	void GotUpdateCmd(const char * param, QString val);
 
 public slots:
 	/** File Menu **/
@@ -220,12 +282,15 @@ private slots:
 	void CreateChannel();
 	void JoinChannel();
 
+	// Accept Thread
+	void ConnectionAccepted(SocketHolderRef socketRef);
+
 private:
 	mutable NetClient * fNetClient;
-	mutable NetClient * fServerThread;	// used to get latest servers from beshare.tycomsystems.com
-	mutable NetClient * fUpdateThread;
+	mutable ServerClient * fServerThread;	// used to get latest servers from beshare.tycomsystems.com
+	mutable UpdateClient * fUpdateThread;	// used to get latest version information from www.raasu.org
 
-	mutable WAcceptThread * fAccept;
+	mutable QAcceptSocketsThread * fAccept;
 	WFileThread * fFileScanThread;
 	bool fFileShutdownFlag;
 
@@ -344,7 +409,6 @@ private:
 	void PrintText(const QString & str);
 	void PrintError(const QString & error, bool batch = false);
 	void PrintWarning(const QString & warning, bool batch = false);
-	void PrintSystem(const QString & msg, bool batch = false);
 
 	void NameChanged(const QString & newName);
 	void StatusChanged(const QString & newStatus);
@@ -365,7 +429,6 @@ private:
 
 	int MatchUserName(QString un, QString & result, const char * filter);
 	bool DoTabCompletion(QString origText, QString & result, const char * filter);
-	void GotUpdateCmd(const char * param, QString val);
 
 	QString MapUsersToIDs(const QString & pattern);
 	QString MapIPsToNodes(const QString & pattern);
@@ -389,7 +452,6 @@ private:
 	void CancelShares();
 	void ScanShares(bool rescan = false);
 	void CreateDirectories();
-	bool CheckVersion(const char *, QString * = NULL);
 
 	bool StartAcceptThread();
 	void StopAcceptThread();
@@ -404,6 +466,7 @@ private:
 	friend class WUser;
 	friend class WSearch;
 	friend class WDownload;
+	friend class NetClient;
 
 	WResumeMap fResumeMap;
 
@@ -484,60 +547,6 @@ private:
 	QString GetAdmins(QString channel);
 
 	void SetTopic(QString channel, QString topic);
-
-public:
-	QString GetUserName() const;
-	QString GetServer() const;
-	QString GetStatus() const;
-	QString GetUserID() const { return fNetClient->LocalSessionID(); }
-#ifdef WIN32
-	HWND GetHandle() { return fWinHandle; }
-#endif
-
-	void SendChatText(QString sid, QString txt, WUserRef priv = WUserRef(NULL, NULL), bool * reply = NULL);
-
-	static QString GetRemoteVersionString(const MessageRef);
-	static void LaunchSearch(QString & pattern);		// launches a search
-	void LaunchPrivate(const QString & pattern);		// launches a private window with multiple users in it
-	void UpdateTransmitStats(uint64 t);
-	void UpdateReceiveStats(uint64 r);
-
-	bool IsIgnored(QString & user, bool bTransfer = false);
-	bool IsIgnored(QString & user, bool bTransfer, bool bDisconnected);
-	bool IsIgnoredIP(QString ip);
-	bool AddIPIgnore(QString ip);
-	bool RemoveIPIgnore(QString ip);
-
-	bool IsBlackListedIP(QString & ip);
-	bool IsBlackListed(QString & user);
-
-	bool IsAutoPrivate(QString user);
-	bool IsConnected(QString user);
-
-	void SendRejectedNotification(MessageRef rej);
-
-	// To use delayed search:
-	// ----------------------
-	//
-	// 1. Set the pattern using SetDelayedSearchPattern(QString)
-	// 2. Call Connect(QString)
-	//
-	void Connect(QString server);
-	void SetDelayedSearchPattern(QString pattern);
-	
-	void TranslateStatus(QString & s);
-	
-	WUserRef FindUser(QString user);
-	WUserRef FindUserByIPandPort(QString ip, uint32 port);
-
-
-	bool IsScanning() { return fScanning; }
-
-	WSettings * fSettings;	// for use by prefs
-	WDownload * fDLWindow;
-
-	// UniShare
-	int64 GetRegisterTime(QString nick); 
 
 signals:
 	void UpdatePrivateUserLists();

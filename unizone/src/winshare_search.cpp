@@ -184,7 +184,7 @@ WinShareWindow::GoSearch()
 	if (fSearchEdit->currentText().stripWhiteSpace().isEmpty())	// no search string
 		return;
 
-	if (fNetClient->IsInternalThreadRunning() == false)
+	if (fNetClient->IsConnected() == false)
 	{
 		fStatus->message(tr("Not connected."));
 		return;

@@ -45,10 +45,17 @@ public:
 	void SetRate(int rate);
 	void SetRate(int rate, AbstractReflectSessionRef ref);
 
+	void SessionConnected(const String &sessionID);
+
+public slots:
+
+	void ServerExited();
+	void SessionDisconnected(const String &sessionID);
+	void MessageReceived(MessageRef msg, const String &sessionID);
+	void OutputQueuesDrained(MessageRef msg);
 
 protected:
 	virtual void SendReply(MessageRef &m);
-	virtual void SignalOwner();
 	void SendQueuedNotification();
 	void SendRejectedNotification(bool);
 
@@ -73,6 +80,8 @@ private:
 	bool fForced;						// did this transfer bypass queue?
 
 	int32 fCurFile, fNumFiles;
+
+	String _sessionID;
 
 	void DoUpload();
 };

@@ -26,6 +26,17 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fBlocked = false;
 	fTimeLeft = 0;
 	fForced = false;
+
+	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
+			this, SLOT(MessageReceived(MessageRef, const String &)));
+	connect(qmtt, SIGNAL(SessionConnected(const String &)),
+			this, SLOT(SessionConnected(const String &)));
+	connect(qmtt, SIGNAL(ServerExited()),
+			this, SLOT(ServerExited()));
+	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
+			this, SLOT(SessionDisconnected(const String &)));
+	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
+			this, SLOT(OutputQueuesDrained(MessageRef)));
 }
 
 WUploadThread::~WUploadThread()
@@ -91,7 +102,7 @@ WUploadThread::InitSession()
 
 	if (!fAccept)
 	{
-		if (wmt->AddNewSession(fSocket, limit) == B_OK && wmt->StartInternalThread() == B_OK)
+		if (qmtt->AddNewSession(fSocket, limit) == B_OK && qmtt->StartInternalThread() == B_OK)
 		{
 			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
 			if (mref())
@@ -113,7 +124,7 @@ WUploadThread::InitSession()
 	else
 	{
 		const String sRemoteIP = (const char *) fStrRemoteIP.utf8(); // <postmaster@raasu.org> 20021026
-		if (wmt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && wmt->StartInternalThread() == B_OK)
+		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && qmtt->StartInternalThread() == B_OK)
 		{
 			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
 			if (mref())
@@ -140,7 +151,7 @@ WUploadThread::SetLocallyQueued(bool b)
 	WGenericThread::SetLocallyQueued(b);
 	if (!b)
 	{
-		if (wmt->IsInternalThreadRunning())  // Still connected?
+		if (qmtt->IsInternalThreadRunning())  // Still connected?
 		{
 			// Don't need to start forced uploads ;)
 			if (!fForced)
@@ -176,7 +187,7 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 	}
 
 	WGenericThread::SetBlocked(b, timeLeft);
-	if (wmt->IsInternalThreadRunning())
+	if (qmtt->IsInternalThreadRunning())
 	{
 		if (b)
 		{
@@ -201,7 +212,7 @@ void
 WUploadThread::SetManuallyQueued(bool b)
 {
 	WGenericThread::SetManuallyQueued(b);
-	if (wmt->IsInternalThreadRunning() && b)
+	if (qmtt->IsInternalThreadRunning() && b)
 		SendQueuedNotification();
 }
 
@@ -215,251 +226,264 @@ WUploadThread::SendReply(MessageRef &m)
 		WGenericThread::SendReply(m);
 	}
 }
-
+/*
 void
 WUploadThread::SignalOwner()
 {
 	MessageRef next;
 	uint32 code;
 
-	CTimer->stop();
-
-	while (wmt->GetNextEventFromInternalThread(code, &next) >= 0)
+	while (qmtt->GetNextEventFromInternalThread(code, &next) >= 0)
 	{
 		switch (code)
 		{
-			case MTT_EVENT_SESSION_CONNECTED:
+		*/
+void
+WUploadThread::SessionConnected(const String &sessionID)
+{
+	_sessionID = sessionID;
+	CTimer->stop();
+
+	MessageRef con(GetMessageFromPool(WGenericEvent::Connected));
+	if (con())
+	{
+		SendReply(con);
+	}
+}
+
+void
+WUploadThread::ServerExited()
+{
+	SessionDisconnected(_sessionID);
+}
+
+void
+WUploadThread::SessionDisconnected(const String &sessionID)
+{
+
+	if (fFinished) // Do it only once...
+	{
+		return;
+	}
+
+	if (fFile)
+	{
+		fFile->close();
+		delete fFile; 
+		fFile = NULL;
+	}
+
+	MessageRef dis(GetMessageFromPool(WGenericEvent::Disconnected));
+	if (dis())
+	{
+		if (fCurrentOffset < fFileSize || fUploads.GetNumItems() > 0)
+			dis()->AddBool("failed", true);
+		else
+			dis()->AddBool("failed", false);
+		SendReply(dis);
+	}
+}
+
+void
+WUploadThread::MessageReceived(MessageRef msg, const String &sessionID)
+{
+	switch (msg()->what)
+	{
+		case WDownload::TransferCommandPeerID:
+		{
+			const char * name, * id;
+			if (msg()->FindString("beshare:FromUserName", &name) ==  B_OK &&
+				msg()->FindString("beshare:FromSession", &id) == B_OK)
 			{
-				MessageRef con(GetMessageFromPool(WGenericEvent::Connected));
-				if (con())
-				{
-					SendReply(con);
-				}
-				break;
-			}
-
-			case MTT_EVENT_SERVER_EXITED:
-			case MTT_EVENT_SESSION_DISCONNECTED:
-			{
-				if (fFinished) // Do it only once...
-				{
-					break;
-				}
-
-				if (fFile)
-				{
-					fFile->close();
-					delete fFile; 
-					fFile = NULL;
-				}
-				MessageRef dis(GetMessageFromPool(WGenericEvent::Disconnected));
-				if (dis())
-				{
-					if (fCurrentOffset < fFileSize || fUploads.GetNumItems() > 0)
-						dis()->AddBool("failed", true);
-					else
-						dis()->AddBool("failed", false);
-					SendReply(dis);
-				}
-				break;
-			}
-
-			case MTT_EVENT_INCOMING_MESSAGE:
-			{
-				switch (next()->what)
-				{
-					case WDownload::TransferCommandPeerID:
-					{
-						const char * name, * id;
-						if (next()->FindString("beshare:FromUserName", &name) ==  B_OK &&
-							next()->FindString("beshare:FromSession", &id) == B_OK)
-						{
-							fRemoteSessionID = QString::fromUtf8(id);
+				fRemoteSessionID = QString::fromUtf8(id);
 							
-							QString user = QString::fromUtf8(name);
-							if (user.isEmpty())
-								fRemoteUser = GetUserName(fRemoteSessionID);
-							else
-								fRemoteUser = user; 
-
-							if (gWin->IsIgnored(fRemoteSessionID, true))
-							{
-								SetBlocked(true);
-							}
-
-							MessageRef ui(GetMessageFromPool(WGenericEvent::UpdateUI));
-							if (ui())
-							{
-								ui()->AddString("name", name);
-								ui()->AddString("id", id);
-								SendReply(ui);
-							}
-						}
-						bool c = false;
-						if (next()->FindBool("unishare:supports_compression", &c) == B_OK)
-						{
-							wmt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
-						}
-						break;
-					}
-					case WDownload::TransferFileList:
-					{
-						const char * file;
-						if (next()->FindString("files", &file) == B_OK)
-						{
-							String sid, name;
-							int32 mm;
-							if (next()->FindInt32("mm", &mm) == B_OK)
-								fMungeMode = mm;
-							else
-								fMungeMode = WDownload::MungeModeNone;
-
-							if (next()->FindString("beshare:FromSession", sid) == B_OK)
-								fRemoteSessionID = QString::fromUtf8(sid.Cstr());
-							
-							if (next()->FindString("beshare:FromUserName", name) ==  B_OK)
-							{
-								QString user = QString::fromUtf8(name.Cstr());
-								if (!user.isEmpty())
-									fRemoteUser = user;
-							}
-
-							int i;
-							
-							for (i = 0; (next()->FindString("files", i, &file) == B_OK); i++)
-							{
-								MessageRef fileRef;
-
-								if (fFileThread->FindFile(QString::fromUtf8(file), &fileRef) && (fileRef())) // <postmaster@raasu.org> 20021023
-								{
-									// remove any previous offsets
-									fileRef()->RemoveName("secret:offset");
-									// see if we need to add them
-									uint64 offset = 0L;
-									const uint8 * hisDigest = NULL;
-									uint32 numBytes = 0L;
-									if (next()->FindInt64("offsets", i, (int64 *)&offset) == B_OK &&
-										next()->FindData("md5", B_RAW_TYPE, i, (const void **)&hisDigest,
-										(uint32 *)&numBytes) == B_OK && numBytes == MD5_DIGEST_SIZE)
-									{
-										uint8 myDigest[MD5_DIGEST_SIZE];
-										uint64 readLen = 0;
-										uint64 onSuccessOffset = offset;
-
-										for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
-											myDigest[j] = 'x';
-
-										if (next()->FindInt64("numbytes", (int64 *)&readLen) == B_OK)
-										{
-											PRINT("\t\tULT: peer requested partial resume\n");
-											uint64 temp = readLen;
-											readLen = offset - readLen;	// readLen is now the seekTo value
-											offset = temp;				// offset is now the numBytes value
-										}
-
-
-										// figure the path to our requested file
-										String path, filename;
-										fileRef()->FindString("winshare:Path", path);
-										fileRef()->FindString("beshare:File Name", filename);
-										String filePath = path;
-										if (!filePath.EndsWith("/"))
-											filePath += "/";
-										filePath += filename;
-
-										// Notify window of our hashing
-										MessageRef m(GetMessageFromPool(WGenericEvent::FileHashing));
-										if (m())
-										{
-											m()->AddString("file", filePath);
-											SendReply(m);
-										}
-
-										// Hash
-										uint64 retBytesHashed = 0;
-
-										if (HashFileMD5(QString::fromUtf8(filePath.Cstr()), offset, readLen, retBytesHashed, myDigest, 
-											fShutdownFlag) == B_OK && memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
-										{
-											// put this into our message ref
-											fileRef()->AddInt64("secret:offset", onSuccessOffset);
-										}
-									}
-									fUploads.AddTail(fileRef);
-									fNames.AddTail(QString::fromUtf8(file));
-								}
-							}
-							fNumFiles = i;
-
-							fWaitingForUploadToFinish = false;
-							SendQueuedNotification();
-							// also send a message along to our GUI telling it what the first file is
-							
-							if (fUploads.GetNumItems() != 0)
-							{
-								String firstFile;
-								const char * path, * filename;
-								uint64 filesize;
-								MessageRef fref = fUploads[0];
-								if (fref()->FindString("winshare:Path", &path) == B_OK &&
-									fref()->FindString("beshare:File Name", &filename) == B_OK &&
-									fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
-								{
-									if (filesize < gWin->fSettings->GetMinQueuedSize() || !IsLocallyQueued())
-									{
-										DoUpload();
-									}
-									else
-									{
-										firstFile = path;
-										if (!firstFile.EndsWith("/"))
-											firstFile += "/";
-										firstFile += filename;
-										MessageRef initmsg(GetMessageFromPool(WGenericEvent::Init));
-										if (initmsg())
-										{
-											initmsg()->AddString("file", firstFile);
-											initmsg()->AddString("user", (const char *) fRemoteSessionID.utf8());
-											SendReply(initmsg);
-										}
-									}
-								}
-							}
-						}
-						break;
-					}
-				}
-				break;
-			}
-
-			case MTT_EVENT_OUTPUT_QUEUES_DRAINED:
-			{
-				PRINT("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
-				if (fWaitingForUploadToFinish)
-				{
-					PRINT("\tfWaiting\n");
-					PRINT("\t\tSending message\n");
-					MessageRef msg(GetMessageFromPool(WGenericEvent::Disconnected));
-					if (msg())
-					{
-						msg()->AddBool("done", true);
-						msg()->AddString("file", (const char *) fFileUl.utf8());
-						PRINT("\t\tSending...\n");
-						SendReply(msg);
-						PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
-					}
-					else
-					{
-						PRINT("\t\tNot sent!\n");
-					}
-					return;
-				}
+				QString user = QString::fromUtf8(name);
+				if (user.isEmpty())
+					fRemoteUser = GetUserName(fRemoteSessionID);
 				else
-					DoUpload();
-				break;
+					fRemoteUser = user; 
+
+				if (gWin->IsIgnored(fRemoteSessionID, true))
+				{
+					SetBlocked(true);
+				}
+
+				MessageRef ui(GetMessageFromPool(WGenericEvent::UpdateUI));
+				if (ui())
+				{
+					ui()->AddString("name", name);
+					ui()->AddString("id", id);
+					SendReply(ui);
+				}
 			}
+
+			bool c = false;
+			
+			if (msg()->FindBool("unishare:supports_compression", &c) == B_OK)
+			{
+				qmtt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
+			}
+			break;
+		}
+	
+		case WDownload::TransferFileList:
+		{
+			const char * file;
+			if (msg()->FindString("files", &file) == B_OK)
+			{
+				String sid, name;
+				int32 mm;
+				if (msg()->FindInt32("mm", &mm) == B_OK)
+					fMungeMode = mm;
+				else
+					fMungeMode = WDownload::MungeModeNone;
+
+				if (msg()->FindString("beshare:FromSession", sid) == B_OK)
+					fRemoteSessionID = QString::fromUtf8(sid.Cstr());
+							
+				if (msg()->FindString("beshare:FromUserName", name) ==  B_OK)
+				{
+					QString user = QString::fromUtf8(name.Cstr());
+					if (!user.isEmpty())
+						fRemoteUser = user;
+				}
+
+				int i;
+							
+				for (i = 0; (msg()->FindString("files", i, &file) == B_OK); i++)
+				{
+					MessageRef fileRef;
+
+					if (fFileThread->FindFile(QString::fromUtf8(file), &fileRef) && (fileRef())) // <postmaster@raasu.org> 20021023
+					{
+						// remove any previous offsets
+						fileRef()->RemoveName("secret:offset");
+						// see if we need to add them
+						uint64 offset = 0L;
+						const uint8 * hisDigest = NULL;
+						uint32 numBytes = 0L;
+						if (msg()->FindInt64("offsets", i, (int64 *)&offset) == B_OK &&
+							msg()->FindData("md5", B_RAW_TYPE, i, (const void **)&hisDigest, (uint32 *)&numBytes) == B_OK && 
+							numBytes == MD5_DIGEST_SIZE)
+						{
+							uint8 myDigest[MD5_DIGEST_SIZE];
+							uint64 readLen = 0;
+							uint64 onSuccessOffset = offset;
+
+							for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
+								myDigest[j] = 'x';
+
+							if (msg()->FindInt64("numbytes", (int64 *)&readLen) == B_OK)
+							{
+								PRINT("\t\tULT: peer requested partial resume\n");
+								uint64 temp = readLen;
+								readLen = offset - readLen;	// readLen is now the seekTo value
+								offset = temp;				// offset is now the numBytes value
+							}
+
+
+							// figure the path to our requested file
+							String path, filename;
+							fileRef()->FindString("winshare:Path", path);
+							fileRef()->FindString("beshare:File Name", filename);
+
+							String filePath = path;
+							if (!filePath.EndsWith("/"))
+								filePath += "/";
+							filePath += filename;
+
+							// Notify window of our hashing
+							MessageRef m(GetMessageFromPool(WGenericEvent::FileHashing));
+							if (m())
+							{
+								m()->AddString("file", filePath);
+								SendReply(m);
+							}
+
+							// Hash
+							uint64 retBytesHashed = 0;
+
+							if (HashFileMD5(QString::fromUtf8(filePath.Cstr()), offset, readLen, retBytesHashed, myDigest, 
+								fShutdownFlag) == B_OK && memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
+							{
+								// put this into our message ref
+								fileRef()->AddInt64("secret:offset", onSuccessOffset);
+							}
+						}
+						fUploads.AddTail(fileRef);
+						fNames.AddTail(QString::fromUtf8(file));
+					}
+				}
+				fNumFiles = i;
+
+				fWaitingForUploadToFinish = false;
+				SendQueuedNotification();
+
+				// also send a message along to our GUI telling it what the first file is
+							
+				if (fUploads.GetNumItems() != 0)
+				{
+					String firstFile;
+					const char * path, * filename;
+					uint64 filesize;
+					MessageRef fref = fUploads[0];
+					if (fref()->FindString("winshare:Path", &path) == B_OK &&
+						fref()->FindString("beshare:File Name", &filename) == B_OK &&
+						fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
+					{
+						if (filesize < gWin->fSettings->GetMinQueuedSize() || !IsLocallyQueued())
+						{
+							DoUpload();
+						}
+						else
+						{
+							firstFile = path;
+							if (!firstFile.EndsWith("/"))
+								firstFile += "/";
+							firstFile += filename;
+								MessageRef initmsg(GetMessageFromPool(WGenericEvent::Init));
+								if (initmsg())
+							{
+								initmsg()->AddString("file", firstFile);
+								initmsg()->AddString("user", (const char *) fRemoteSessionID.utf8());
+								SendReply(initmsg);
+							}
+						}
+					}
+				}
+			}
+			break;
 		}
 	}
+}
+
+void
+WUploadThread::OutputQueuesDrained(MessageRef msg)
+{
+	PRINT("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
+
+	if (fWaitingForUploadToFinish)
+	{
+		PRINT("\tfWaiting\n");
+		PRINT("\t\tSending message\n");
+
+		MessageRef msg(GetMessageFromPool(WGenericEvent::Disconnected));
+		if (msg())
+		{
+			msg()->AddBool("done", true);
+			msg()->AddString("file", (const char *) fFileUl.utf8());
+			PRINT("\t\tSending...\n");
+			SendReply(msg);
+			PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
+		}
+		else
+		{
+			PRINT("\t\tNot sent!\n");
+		}
+		return;
+	}
+	else
+		DoUpload();
 }
 
 void 
@@ -468,7 +492,7 @@ WUploadThread::SendQueuedNotification()
 	MessageRef q(GetMessageFromPool(WDownload::TransferNotifyQueued));
 	if (q())
 	{
-		wmt->SendMessageToSessions(q);
+		qmtt->SendMessageToSessions(q);
 	}
 	MessageRef qf(GetMessageFromPool(WGenericEvent::FileQueued));
 	if (qf())
@@ -489,7 +513,7 @@ WUploadThread::SendRejectedNotification(bool direct)
 		q()->AddInt64("timeleft", fTimeLeft);
 	if (direct || (fPort == 0))
 	{
-		wmt->SendMessageToSessions(q);
+		qmtt->SendMessageToSessions(q);
 	}
 	else
 	{
@@ -532,7 +556,7 @@ WUploadThread::DoUpload()
 
 	// Still connected?
 
-	if (!wmt->IsInternalThreadRunning())
+	if (!qmtt->IsInternalThreadRunning())
 	{
 		MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
 		if (fail())
@@ -640,14 +664,14 @@ WUploadThread::DoUpload()
 						uref()->AddData("temp", B_RAW_TYPE, scratchBuffer, numBytes);
 						uref()->Rename("temp", "data");
 					}
-					wmt->SendMessageToSessions(uref);
+					qmtt->SendMessageToSessions(uref);
 
 					// NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before
 					//       calling it!
 					fCurrentOffset += numBytes;
 					MessageRef drain(GetMessageFromPool());
 					if (drain())
-						wmt->RequestOutputQueuesDrainedNotification(drain);
+						qmtt->RequestOutputQueuesDrainedNotification(drain);
 
 					// we'll use this event for sending as well
 					MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));	
@@ -732,7 +756,7 @@ WUploadThread::DoUpload()
 				{
 					headRef()->what = WDownload::TransferFileHeader;
 					headRef()->AddInt64("beshare:StartOffset", fCurrentOffset);
-					wmt->SendMessageToSessions(headRef);
+					qmtt->SendMessageToSessions(headRef);
 				}
 
 				fCurFile++;
@@ -755,7 +779,7 @@ WUploadThread::DoUpload()
 				fWaitingForUploadToFinish = true;
 				MessageRef drain(GetMessageFromPool());
 				if (drain())
-					wmt->RequestOutputQueuesDrainedNotification(drain);
+					qmtt->RequestOutputQueuesDrainedNotification(drain);
 				break;
 			}
 		}
@@ -780,9 +804,9 @@ WUploadThread::SetRate(int rate)
 {
 	WGenericThread::SetRate(rate);
 	if (rate != 0)
-		wmt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		qmtt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
-		wmt->SetNewOutputPolicy(PolicyRef(NULL, NULL));
+		qmtt->SetNewOutputPolicy(PolicyRef(NULL, NULL));
 }
 
 void

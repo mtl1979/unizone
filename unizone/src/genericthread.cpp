@@ -7,12 +7,12 @@
 #include <qapplication.h>
 
 WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
-: WMessenger(owner, NULL), fOwner(owner), fShutdownFlag(optShutdownFlag)
+: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag)
 {
 	setName( "WGenericThread" );
 
-	wmt = new WMessengerThread(this);
-	CHECK_PTR(wmt);
+	qmtt = new QMessageTransceiverThread();
+	CHECK_PTR(qmtt);
 
 	// Default status
 
@@ -52,14 +52,14 @@ WGenericThread::~WGenericThread()
 	{
 		*fShutdownFlag = true;
 	}
-	if (wmt->IsInternalThreadRunning()) 
+	if (qmtt->IsInternalThreadRunning()) 
 	{
-		wmt->ShutdownInternalThread();
-		wmt->Reset(); 
+		qmtt->ShutdownInternalThread();
+		qmtt->Reset(); 
 	}
-	wmt->WaitForInternalThreadToExit();
-	delete wmt;
-	wmt = NULL;
+	qmtt->WaitForInternalThreadToExit();
+	delete qmtt;
+	qmtt = NULL;
 }
 
 bool
@@ -163,9 +163,9 @@ WGenericThread::SendReply(MessageRef &m)
 	if (!gWin->fDLWindow)	// doesn't exist anymore??
 	{
 		PRINT("WGenericThread::SendReply() : Invalid fOwner\n");
-		if (wmt->IsInternalThreadRunning())
+		if (qmtt->IsInternalThreadRunning())
 		{
-			wmt->Reset();
+			qmtt->Reset();
 		}
 		return;
 	}
@@ -355,3 +355,4 @@ WGenericThread::InitTransferETA()
 
 	fETACount = 0;
 }
+

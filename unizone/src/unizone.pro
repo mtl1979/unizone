@@ -14,7 +14,9 @@ SOURCES =		aboutdlg.cpp \
 				prefsimpl.cpp \
                 privatewindow.cpp \
 				privatewindowimpl.cpp \
+				serverclient.cpp \
 				ulistview.cpp \
+				updateclient.cpp \
 				uploadthread.cpp \
                 winshare_channels.cpp \
 				winshare_parsing.cpp \

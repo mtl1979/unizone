@@ -5,8 +5,8 @@
 
 const int kMajor = 1;
 const int kMinor = 2;
-const int kPatch = 0;
-const int kBuild = 11;
+const int kPatch = 1;
+const int kBuild = 1;
 
 inline QString
 WinShareVersionString()

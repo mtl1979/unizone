@@ -597,7 +597,7 @@ Channel::customEvent(QCustomEvent * event)
 void
 Channel::SendChannelText(QString message)
 {
-	if (fNet->IsInternalThreadRunning())
+	if (fNet->IsConnected())
 	{
 		MessageRef chat(GetMessageFromPool(NetClient::ChannelText));
 		if (chat())

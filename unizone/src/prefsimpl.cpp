@@ -213,7 +213,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	}
 
 	fFileSharingEnabled->setChecked(gWin->fSettings->GetSharingEnabled());
-	printf("Setting font size\n");
+	PRINT("Setting font size\n");
 	fFontSize->setValue(gWin->fSettings->GetFontSize());
 
 #ifdef WIN32	// windows has a system based launcher

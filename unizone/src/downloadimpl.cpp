@@ -22,7 +22,6 @@ using std::iterator;
 #include "debugimpl.h"
 #include "global.h"
 #include "filethread.h"
-#include "accept.h"
 #include "settings.h"
 #include "downloadthread.h"
 #include "uploadthread.h"

@@ -80,7 +80,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fDLWindow = NULL;
 	fAccept = NULL;
 	
-	fUpdateThread = new NetClient(this);
+	fUpdateThread = new UpdateClient(this);
 	CHECK_PTR(fUpdateThread);
 
 	fPrintOutput = false;
@@ -91,7 +91,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fNetClient = new NetClient(this);
 	CHECK_PTR(fNetClient);
 
-	fServerThread = new NetClient(this);
+	fServerThread = new ServerClient(this);
 	CHECK_PTR(fServerThread);
 
 	fSettings = new WSettings;
@@ -248,11 +248,14 @@ WinShareWindow::StartAcceptThread()
 	}
 
 	// setup accept thread
-	fAccept = new WAcceptThread(this);
+	fAccept = new QAcceptSocketsThread();
 	CHECK_PTR(fAccept);
 
+	connect(fAccept, SIGNAL(ConnectionAccepted(SocketHolderRef)), 
+			this, SLOT(ConnectionAccepted(SocketHolderRef)));
+
 	uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
-	uint32 pEnd = pStart + LISTEN_PORT_RANGE;
+	uint32 pEnd = pStart + 100;
 
 	for (uint16 i = pStart; i <= pEnd; i++)
 	{
@@ -461,37 +464,20 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				}
 				return;
 			}
-			
-		case WAcceptThreadEvent::Type:
-			{
-				PRINT("\tWAcceptThreadEvent::Type\n");
-				WAcceptThreadEvent * te = dynamic_cast<WAcceptThreadEvent *>(event);
-				if (te)
-				{
-					SocketHolderRef ref = te->Get();
-					int socket = ref() ? (ref()->ReleaseSocket()) : -1;
-					uint32 ip;
-					if (socket >= 0 && (ip = GetPeerIPAddress(socket)) > 0)
-					{
-						OpenDownload();
-						fDLWindow->AddUpload(socket, ip, false);
-					}
-				}
-				return;
-			}
-			
+/*			
 		case NetClient::SignalEvent:
 			{
 				PRINT("SignalEvent\n");
 				HandleSignal();
 				return;
 			}
-		case NetClient::SessionAttached:
+*/
+		case NetClient::SESSION_ATTACHED:
 			{
 				PRINT("Received SessionAttached message\n");
 				return;
 			}
-		case NetClient::SessionConnected:
+		case NetClient::SESSION_CONNECTED:
 			{
 				PRINT("Received SessionConnected message\n");
 
@@ -552,7 +538,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				return;
 			}
 			
-		case NetClient::Disconnected:
+		case NetClient::DISCONNECTED:
 			{
 				PRINT("\tNetClient::Disconnected\n");
 				DisconnectedFromServer();
@@ -719,7 +705,7 @@ WinShareWindow::ServerChanged(const QString & newServer)
 	if (fServer.right(5) == ":2960")
 		fServer.truncate(fServer.length() - 5); // strip default port
 
-	if (fNetClient->IsInternalThreadRunning())
+	if (fNetClient->IsConnected())
 		Connect();
 }
 
@@ -2321,7 +2307,7 @@ void
 WinShareWindow::ScanShares(bool rescan)
 {
 	// are we connected?
-	if (!fNetClient->IsInternalThreadRunning())	
+	if (!fNetClient->IsConnected())	
 	{
 		if (fSettings->GetError())
 		{

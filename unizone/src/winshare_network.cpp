@@ -53,7 +53,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			if (fSettings->GetSharingEnabled())
 			{
-				if (fNetClient->IsInternalThreadRunning())	// are we connected?
+				if (fNetClient->IsConnected())	// are we connected?
 				{
 					if (!fFileScanThread->IsRunning())
 					{
@@ -262,7 +262,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					else
 					{
 						fSettings->SetEncoding(GetServerName(fServer), GetServerPort(fServer), _en);
-						if (fNetClient->IsInternalThreadRunning())
+						if (fNetClient->IsConnected())
 						{
 							fNetClient->SetOutgoingMessageEncoding(_en);
 						}
@@ -346,7 +346,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/logged"))
 		{
-			if (fNetClient->IsInternalThreadRunning())	// are we connected?
+			if (fNetClient->IsConnected())	// are we connected?
 			{
 				PrintSystem( tr("Logged In: %1").arg(MakeHumanTime(GetCurrentTime64() - fLoginTime)) );
 			}
@@ -1051,294 +1051,6 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 }
 
 void
-WinShareWindow::HandleSignal()
-{
-	MessageRef next;
-	uint32 code;
-	String sid;
-	uint16 port;
-	bool gotIncoming = false;
-
-	//fNetClient->Lock();
-	PRINT("SignalOwner\n");
-	while (fNetClient->GetNextEventFromInternalThread(code, &next, &sid, &port) >= 0)
-	{
-		switch (code)
-		{
-			case MTT_EVENT_INCOMING_MESSAGE:
-			{
-				if (gotIncoming == false)
-				{
-					gotIncoming = true;
-					START_OUTPUT();
-				}
-				PRINT("MTT_EVENT_INCOMING_MESSAGE\n");
-				if (next())
-				{
-					switch (next()->what)
-					{
-						case PR_RESULT_PARAMETERS:
-						{
-							if (!fGotParams)
-							{
-								fNetClient->HandleParameters(next);
-								fGotParams = true;
-							}
-							else	// a /serverinfo was sent
-							{
-								ServerParametersReceived(next);
-							}
-							break;
-						}
-
-						case PR_RESULT_DATAITEMS:
-						{
-							PRINT("PR_RESULT_DATAITEMS\n");
-							fNetClient->HandleResultMessage(next);
-							// add/remove all the users to the list view (if not there yet...)
-							UpdateUserList();
-							QCustomEvent * qce = new QCustomEvent(WinShareWindow::UpdatePrivateUsers);
-							if (qce)
-							{
-								QApplication::postEvent(this, qce);
-							}
-
-							break;
-						}
-
-						case PR_RESULT_ERRORACCESSDENIED:
-						{
-							PRINT("PR_RESULT_ERRORACCESSDENIED\n");
-							PrintError( tr ( "Access Denied!!!" ) );
-							MessageRef subMsg;
-							QString action = tr( "do that to" );
-
-							String who;
-							if (next()->FindMessage(PR_NAME_REJECTED_MESSAGE, subMsg) == B_NO_ERROR)
-							{
-								if (subMsg())
-								{
-									switch(subMsg()->what)
-									{
-										case PR_COMMAND_KICK:			
-											{
-												action = tr( "kick" );		
-												break;
-											}
-										case PR_COMMAND_ADDBANS:		
-											{
-												action = tr( "ban" );			
-												break;
-											}
-										case PR_COMMAND_REMOVEBANS:		
-											{
-												action = tr( "unban" );		
-												break;
-											}
-										case PR_COMMAND_ADDREQUIRES:    
-											{
-												action = tr( "require" );		
-												break;
-											}
-										case PR_COMMAND_REMOVEREQUIRES: 
-											{
-												action = tr( "unrequire" );	
-												break;
-											}
-									}
-									if (subMsg()->FindString(PR_NAME_KEYS, who) == B_NO_ERROR)
-									{
-										QString qWho = QString::fromUtf8(who.Cstr());
-										PrintError( tr("You are not allowed to %1 [%2]").arg(action).arg(qWho) );
-									}
-								}
-							}
-							break;
-						}
-
-						default:
-						{
-							PRINT("Handling message\n");
-							HandleMessage(next);
-							break;
-						}
-					}
-				}
-				break;
-			}
-	        case MTT_EVENT_SESSION_ACCEPTED:
-			{
-				PRINT("MTT_EVENT_SESSION_ACCEPTED\n");
-				break;
-			}
-            case MTT_EVENT_SESSION_ATTACHED:
-			{
-				PRINT("MTT_EVENT_SESSION_ATTACHED\n");
-				QCustomEvent *e = new QCustomEvent(NetClient::SessionAttached);
-				if (e)
-					QApplication::postEvent(this, e);
-				break;
-			}
-            case MTT_EVENT_SESSION_CONNECTED:
-			{
-				PRINT("MTT_EVENT_SESSION_CONNECTED\n");
-				QCustomEvent *e = new QCustomEvent(NetClient::SessionConnected);
-				if (e)
-					QApplication::postEvent(this, e);
-				PRINT("Returning\n");
-				break;
-			}
-            case MTT_EVENT_SESSION_DISCONNECTED:
-			{
-				PRINT("MTT_EVENT_SESSION_DISCONNECTED\n");
-				QCustomEvent *e = new QCustomEvent(NetClient::Disconnected);
-				if (e)
-					QApplication::postEvent(this, e);
-			}
-            case MTT_EVENT_SESSION_DETACHED:
-			{
-				PRINT("MTT_EVENT_SESSION_DETACHED\n");
-				QCustomEvent *e = new QCustomEvent(NetClient::Disconnected);
-				if (e)
-					QApplication::postEvent(this, e);
-				break;
-			}
-            case MTT_EVENT_FACTORY_ATTACHED:
-			{
-				PRINT("MTT_EVENT_FACTORY_ATTACHED\n");
-				break;
-			}
-            case MTT_EVENT_FACTORY_DETACHED:
-			{
-				PRINT("MTT_EVENT_FACTORY_DETACHED\n");
-				break;
-			}
-            case MTT_EVENT_OUTPUT_QUEUES_DRAINED:
-			{
-				PRINT("MTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
-				break;
-			}
-            case MTT_EVENT_SERVER_EXITED:
-			{
-				PRINT("MTT_EVENT_SERVER_EXITED\n");
-				// as you noticed... this message is sent by several MTT_EVENT_* events :)
-				QCustomEvent *e = new QCustomEvent(NetClient::Disconnected);
-				if (e)
-					QApplication::postEvent(this, e);
-				break;
-			}
-		}
-	}
-	if (gotIncoming)
-	{
-		END_OUTPUT();
-	}
-
-	//fNetClient->Unlock();
-
-	PRINT("SignalEvent: Update thread\n");
-	// handle update thread
-	if (fUpdateThread->IsInternalThreadRunning() && fSettings->GetCheckNewVersions())
-	{
-		PRINT("Checking update thread\n");
-		while (fUpdateThread->GetNextEventFromInternalThread(code, &next, &sid, &port) >= 0)
-		{
-			switch (code)
-			{
-				case MTT_EVENT_INCOMING_MESSAGE:
-				{
-					PRINT("Update thread received a message\n");
-					String str;
-					for (int i = 0; next()->FindString(PR_NAME_TEXT_LINE, i, str) == B_OK; i++)
-					{
-						QString s;
-						if (CheckVersion(str.Cstr(), &s))
-							PrintSystem(tr("Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.").arg(s));
-					}
-					break;
-				}
-
-				case MTT_EVENT_SESSION_CONNECTED:
-				{
-					PRINT("Update thread connected\n");
-					MessageRef ref(new Message, NULL);
-					if (ref())
-					{
-						ref()->AddString(PR_NAME_TEXT_LINE, "GET " UPDATE_FILE " HTTP/1.0\n\n");
-						fUpdateThread->SendMessageToSessions(ref);
-					}
-					break;
-				}
-
-				case MTT_EVENT_SESSION_DETACHED:
-				{
-					PRINT("Update thread disconnected\n");
-					fUpdateThread->Reset();
-					break;
-				}
-			}
-		}
-	}
-
-	PRINT("SignalEvent: Server thread\n");
-	if (fServerThread->IsInternalThreadRunning() && fSettings->GetAutoUpdateServers())
-	{
-		PRINT("Checking server messages\n");
-		while (fServerThread->GetNextEventFromInternalThread(code, &next) >= 0)
-		{
-			switch (code)
-			{
-				case MTT_EVENT_INCOMING_MESSAGE:
-				{
-					if (next())
-					{
-						String nstr;
-						for (int i = 0; next()->FindString(PR_NAME_TEXT_LINE, i, nstr) == B_OK; i++)
-						{
-							PRINT("UPDATESERVER: %s\n", nstr.Cstr());
-							int hind = nstr.IndexOf("#");
-							if (hind >= 0)
-								nstr = nstr.Substring(0, hind);
-							if (nstr.StartsWith("beshare_"))
-							{
-								StringTokenizer tok(nstr() + 8, "=");
-								const char * param = tok.GetNextToken();
-								if (param)
-								{
-									const char * val = tok.GetRemainderOfString();
-									String valstr(val ? val : "");
-									GotUpdateCmd(String(param).Trim().Cstr(), valstr.Trim().Cstr());
-								}
-							}
-						}
-					}
-					break;
-				}
-
-				case MTT_EVENT_SESSION_CONNECTED:
-				{
-					MessageRef msgref(new Message, NULL);
-					if (msgref())
-					{
-						msgref()->AddString(PR_NAME_TEXT_LINE, "GET /servers.txt HTTP/1.1\nUser-Agent: Unizone/1.1\nHost: beshare.tycomsystems.com\n\n");
-						fServerThread->SendMessageToSessions(msgref);
-					}
-					break;
-				}
-
-				case MTT_EVENT_SESSION_DETACHED:
-				{
-					fServerThread->Reset();
-					break;
-				}
-			}
-		}
-	}
-
-	PRINT("DONE\n");
-}
-
-void
 WinShareWindow::HandleMessage(MessageRef msg)
 {
 /* 
@@ -2006,7 +1718,7 @@ WinShareWindow::Disconnect2()
 		}
 	}
 
-	if (fNetClient && fNetClient->IsInternalThreadRunning()	/* this is to stop a forever loop involving the DisconnectedFromServer() signal */)
+	if (fNetClient && fNetClient->IsConnected()	/* this is to stop a forever loop involving the DisconnectedFromServer() signal */)
 	{
 		fNetClient->Disconnect();
 		fNetClient->WaitForInternalThreadToExit(); // Helps server change?
@@ -2937,4 +2649,29 @@ void
 WinShareWindow::SendRejectedNotification(MessageRef rej)
 {
 	fNetClient->SendMessageToSessions(rej);
+}
+
+void
+WinShareWindow::ConnectionAccepted(SocketHolderRef socketRef)
+{
+	PRINT("\tWinShareWindow::ConnectionAccepted\n");
+	int socket = socketRef() ? (socketRef()->ReleaseSocket()) : -1;
+	uint32 ip;
+	if (socket >= 0 && (ip = GetPeerIPAddress(socket)) > 0)
+	{
+		OpenDownload();
+		fDLWindow->AddUpload(socket, ip, false);
+	}
+}
+
+void
+WinShareWindow::BeginMessageBatch()
+{
+	START_OUTPUT();
+}
+
+void
+WinShareWindow::EndMessageBatch()
+{
+	END_OUTPUT();
 }
