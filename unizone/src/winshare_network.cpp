@@ -23,6 +23,7 @@ typedef hostent *LPHOSTENT;
 								// For GetParameterString that will split user command parameters from string 
 								// containing both command and parameters, 
 								// can handle situation when no parameters have been passed
+#include "wstring.h"
 #include "gotourl.h"			// <postmaster@raasu.org> 20021116 -- for /shell
 #include "tokenizer.h"			// <postmaster@raasu.org> 20030902 -- for !remote
 #include <time.h>				//                                 -- for /time
@@ -992,11 +993,9 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 			QString qsendtext;
 			while (iter != sendTo.end())
 			{
-				wchar_t * wUser = qStringToWideChar((*iter).second.user()->GetUserName());
-				wchar_t * wText = qStringToWideChar((*iter).second.text);
+				WString wUser = (*iter).second.user()->GetUserName();
+				WString wText = (*iter).second.text;
 				PRINT("Found user %S and rest of text %S\n", wUser, wText);
-				delete [] wUser;
-				delete [] wText;
 
 				user = (*iter).second.user;
 
@@ -2212,13 +2211,11 @@ WinShareWindow::ShowHelp(QString command)
 bool
 WinShareWindow::IsIgnoredIP(QString ip)
 {
-	wchar_t * wIP = qStringToWideChar(ip);
+	WString wIP = ip;
 	PRINT("IsIgnoredIP(%S)\n", wIP);
-	delete [] wIP;
 
-	wIP = qStringToWideChar(fIgnoreIP);
+	wIP = fIgnoreIP;
 	PRINT("IP IGNORE MASK: %S\n", wIP);
-	delete [] wIP;
 
 	return MatchFilter(ip, (const char *) fIgnoreIP.utf8());
 }
@@ -2226,9 +2223,9 @@ WinShareWindow::IsIgnoredIP(QString ip)
 bool
 WinShareWindow::AddIPIgnore(QString ip)
 {
-	wchar_t * wIP = qStringToWideChar(ip);
+	WString wIP = ip;
 	PRINT("AddIPIgnore(%S)\n", wIP);
-	delete [] wIP;
+
 	if ( IsIgnoredIP(ip) )
 		return false;
 
@@ -2239,9 +2236,9 @@ WinShareWindow::AddIPIgnore(QString ip)
 	else
 		fIgnoreIP += ip.prepend(",");
 
-	wIP = qStringToWideChar(fIgnoreIP);
+	wIP = fIgnoreIP;
 	PRINT("IP IGNORE MASK: %S\n", wIP);
-	delete [] wIP;
+
 	return true;
 
 }
@@ -2249,9 +2246,8 @@ WinShareWindow::AddIPIgnore(QString ip)
 bool
 WinShareWindow::RemoveIPIgnore(QString ip)
 {
-	wchar_t * wIP = qStringToWideChar(ip);
+	WString wIP = ip;
 	PRINT("RemoveIPIgnore(%S)\n", wIP);
-	delete [] wIP;
 
 	if ( !IsIgnoredIP(ip) )
 		return false;
@@ -2302,9 +2298,9 @@ WinShareWindow::RemoveIPIgnore(QString ip)
 		fIgnoreIP = fIgnoreIP.left(pos)+fIgnoreIP.mid(len+pos);
 	}
 
-	wIP = qStringToWideChar(fIgnoreIP);
+	wIP = fIgnoreIP;
 	PRINT("IP IGNORE MASK: %S\n", wIP);
-	delete [] wIP;
+
 	return true;
 }
 

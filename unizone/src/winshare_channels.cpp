@@ -3,7 +3,7 @@
 #include "tokenizer.h"
 #include "debugimpl.h"
 #include "global.h"
-#include "platform.h"
+#include "wstring.h"
 
 #include <qinputdialog.h>
 #include <qmessagebox.h>
@@ -219,7 +219,8 @@ WinShareWindow::JoinChannel(QString channel)
 	}
 	
 	// Send user list to window
-	PRINT("JoinChannel: GetUsers = %s\n", (*it).second->GetUsers().latin1());
+	WString wUsers = (*it).second->GetUsers().latin1();
+	PRINT("JoinChannel: GetUsers = %S\n", wUsers);
 	int n = fNetClient->GetUserCount(channel);
 	if (n > 0)
 	{
@@ -573,13 +574,10 @@ WinShareWindow::UserIDChanged(QString oldid, QString newid)
 		}
 		(*iter).second->RemoveUser(oldid);
 		(*iter).second->AddUser(newid);
-		wchar_t * wMyID = qStringToWideChar(fNetClient->LocalSessionID());
-		wchar_t * wOldID = qStringToWideChar(oldid);
-		wchar_t * wNewID = qStringToWideChar(newid);
+		WString wMyID = fNetClient->LocalSessionID();
+		WString wOldID = oldid;
+		WString wNewID = newid;
 		PRINT("UserIDChanged, myid = %S, old = %S, new = %S\n", wMyID, wOldID, wNewID);
-		delete [] wMyID;
-		delete [] wOldID;
-		delete [] wNewID;
 
 		if (newid == fNetClient->LocalSessionID())
 		{

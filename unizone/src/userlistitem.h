@@ -8,7 +8,6 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include "platform.h"
 #include "ulistview.h"
 #include "nicklist.h"
 

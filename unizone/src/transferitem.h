@@ -4,7 +4,6 @@
 #ifndef TRANSFERITEM_H
 #define TRANSFERITEM_H
 
-#include "platform.h"
 #include "ulistview.h"
 
 #include <qlistview.h>

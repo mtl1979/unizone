@@ -8,7 +8,7 @@
 #include "downloadimpl.h"
 #include "settings.h"
 #include "md5.h"
-#include "platform.h"		// <postmaster@raasu.org> 20021114
+#include "wstring.h"
 #include "debugimpl.h"
 
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
@@ -660,9 +660,8 @@ WUploadThread::DoUpload()
 				fFileUl = QString::fromUtf8(filePath.Cstr());
 
 				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
-				wchar_t * wFileUl = qStringToWideChar(fFileUl); 
+				WString wFileUl = fFileUl; 
 				PRINT("WUploadThread::DoUpload: filePath = %S\n", wFileUl); 
-				delete [] wFileUl;
 				
 				fFile = new QFile(fFileUl);
 				CHECK_PTR(fFile);

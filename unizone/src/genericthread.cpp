@@ -2,7 +2,6 @@
 #include "wgenericevent.h"
 #include "winsharewindow.h"
 #include "global.h"
-#include "platform.h"		// <postmaster@raasu.org> 20021114
 #include "debugimpl.h"
 
 #include <qapplication.h>

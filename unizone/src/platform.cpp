@@ -1,4 +1,5 @@
 #include "platform.h"
+#include "wstring.h"
 #include "debugimpl.h"
 #include "colors.h"
 #include "formatting.h"
@@ -55,36 +56,6 @@ WFlashWindow(HWND fWinHandle)
 #endif
 
 QString 
-wideCharToQString(const wchar_t *wide)
-{
-    QString result;
-#ifdef WIN32
-    result.setUnicodeCodes(wide, lstrlenW(wide));
-#else
-    result.setUnicodeCodes((const ushort *) wide, wcslen(wide));
-#endif
-    return result;
-}
-
-wchar_t *
-qStringToWideChar(const QString &str)
-{
-    	if (str.isNull())
-        	return NULL;
-	wchar_t *result = new wchar_t[str.length() + 1];
-	if (result)
-	{
-		for (unsigned int i = 0; i < str.length(); ++i)
-			result[i] = str.at(i).unicode();
-		result[str.length()] = 0;
-//		PRINT("qStringToWideChar: result = %S\n", result);
-		return result;
-	}
-	else
-		return NULL;
-}
-
-QString 
 GetParameterString(QString qCommand)
 {
 	QString qParameters = "";
@@ -116,10 +87,9 @@ bool
 CompareCommand(QString qCommand, const char * cCommand)
 {
 	QString com = GetCommandString(qCommand);
-	wchar_t * wCommand = qStringToWideChar(com);
+	WString wCommand = com;
 	PRINT("Compare String: qCommand=\'%S\'\n", wCommand);
 	PRINT("                cCommand=\'%s\'\n", cCommand);
-	delete [] wCommand;
 	return (strcmp(com.latin1(), cCommand) ? false : true);
 }
 

@@ -6,6 +6,7 @@
 #include "userlistitem.h"
 #include "regex/PathMatcher.h"
 #include "platform.h"			// <postmaster@raasu.org> 20021114
+#include "wstring.h"
 #include "winsharewindow.h"
 
 #include <qlistview.h>
@@ -100,10 +101,9 @@ WUser::InitName(const Message * msg)
 
 	//
 
-	wchar_t * wUser = qStringToWideChar(fUserName);
+	WString wUser = fUserName;
 	PRINT("WUser: %S is a %s with installid %d on port %d\n", 
 		wUser, (fBot ? "bot" : "user"), fInstallID, fPort);
-	delete [] wUser;
 }
 
 void
@@ -114,11 +114,9 @@ WUser::InitStatus(const Message * msg)
 		fUserStatus = QString::fromUtf8(status);
 	else
 		fUserStatus = "?";
-	wchar_t * wUser = qStringToWideChar(fUserName);
-	wchar_t * wStatus = qStringToWideChar(fUserStatus);
+	WString wUser = fUserName;
+	WString wStatus = fUserStatus;
 	PRINT("WUser: %S with status %S\n", wUser, wStatus);
-	delete [] wUser;
-	delete [] wStatus;
 }
 
 void
@@ -129,9 +127,8 @@ WUser::InitUploadStats(const Message * msg)
 		fCurUploads = c;
 	if (msg->FindInt32("max", (int32 *)&m) == B_OK)
 		fMaxUploads = m;
-	wchar_t * wUser = qStringToWideChar(fUserName);
+	WString wUser = fUserName;
 	PRINT("WUser: %S with %d of %d uploads going\n", wUser, fCurUploads, fMaxUploads);
-	delete [] wUser;
 }
 
 void
@@ -146,11 +143,9 @@ WUser::InitBandwidth(const Message * msg)
 		fBandwidthLabel = BandwidthToString(bps);
 	else if (msg->FindString("label", &l) == B_OK)
 		fBandwidthLabel = QString::fromUtf8(l);
-	wchar_t * wUser = qStringToWideChar(fUserName);
-	wchar_t * wBandwidth = qStringToWideChar(fBandwidthLabel);
+	WString wUser = fUserName;
+	WString wBandwidth = fBandwidthLabel;
 	PRINT("WUser: %S with label %S and bps %d\n", wUser, wBandwidth, fBandwidthBPS);
-	delete [] wUser;
-	delete [] wBandwidth;
 }
 
 void
@@ -159,9 +154,8 @@ WUser::InitFileCount(const Message * msg)
 	int32 fc;
 	if (msg->FindInt32("filecount", &fc) == B_OK)
 		fFileCount = fc;
-	wchar_t * wUser = qStringToWideChar(fUserName);
+	WString wUser = fUserName;
 	PRINT("WUser: %S with filecount %d\n", wUser, fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
-	delete [] wUser;
 }
 
 void

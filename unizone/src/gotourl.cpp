@@ -19,7 +19,7 @@
 #include "util/String.h"
 #include "winsharewindow.h"
 #include "settings.h"
-#include "platform.h"		// <postmaster@raasu.org> 20021023 -- Move Platform-dependant code to own files
+#include "wstring.h"
 #include "global.h"
 
 class WLaunchThread : public QThread
@@ -56,15 +56,13 @@ bool GotoURL(QString url, int showcmd)
     /* if the ShellExecute() fails          */
     bool retflag = FALSE;
 
-	wchar_t * tUrl = qStringToWideChar(url);
+	WString tUrl = url;
 	PRINT("GotoURL: tUrl = %S\n",tUrl);
 	// <postmaster@raasu.org> 20021103 -- Use NULL instead of L"open", L"open" doesn't seem to work on WinME
     if((long)ShellExecuteW(NULL, NULL, tUrl, NULL, NULL, showcmd) > 32)
         retflag = TRUE;
 	else if ((long)ShellExecuteA(NULL, NULL, url.latin1(), NULL, NULL, showcmd) > 32)
 		retflag = TRUE;
-	delete [] tUrl;
-	tUrl = NULL; // <postmaster@raasu.org> 20021027
     return retflag;
 }
 
@@ -84,9 +82,8 @@ GotoURL(QString url, QString browser)
 	launch += url;
 	launch += "\"";
 
-	wchar_t * wLaunch = qStringToWideChar(launch);
+	WString wLaunch = launch;
 	PRINT("Launching %S\n", wLaunch);
-	delete [] wLaunch;
 
 	system(launch);
 	return true;

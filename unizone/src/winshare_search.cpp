@@ -5,6 +5,7 @@
 #include "settings.h"
 #include "wstatusbar.h"
 #include "platform.h"
+#include "wstring.h"
 #include "searchitem.h"
 
 void
@@ -14,11 +15,9 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 	if (firewalled && fSettings->GetFirewalled())
 		return;	// we don't need to show this file if we are firewalled
 	
-	wchar_t * wFileName = qStringToWideChar(filename);
-	wchar_t * wSID = qStringToWideChar(sid);
+	WString wFileName = filename;
+	WString wSID = sid;
 	PRINT("ADDFILE: filename=%S (%s) [%S]\n", wFileName, firewalled ? "firewalled" : "hackable", wSID);
-	delete [] wFileName;
-	delete [] wSID;
 
 	// Workaround for StringMatcher bug (for now!)
 	if (fCurrentSearchPattern == "")
@@ -96,11 +95,9 @@ WinShareWindow::RemoveFile(const QString sid, const QString filename)
 	WFIIter iter = fFileList.begin();
 	WFileInfo * info;
 
-	wchar_t * wSID = qStringToWideChar(sid);
-	wchar_t * wFilename = qStringToWideChar(filename);
+	WString wSID = sid;
+	WString wFilename = filename;
 	PRINT("Sid = %S, filename = %S\n", wSID, wFilename);
-	delete [] wSID;
-	delete [] wFilename;
 
 	while (iter != fFileList.end())
 	{
@@ -276,13 +273,10 @@ WinShareWindow::StartQuery(QString sidRegExp, QString fileRegExp)
 	fCurrentSearchPattern = tmp;
 	// <postmaster@raasu.org> 20021023 -- Fixed typo
 
-	wchar_t * wCurrentSearchPattern = qStringToWideChar(fCurrentSearchPattern);
-	wchar_t * wSIDRegExp = qStringToWideChar(sidRegExp);
-	wchar_t * wFileRegExp = qStringToWideChar(fileRegExp);
+	WString wCurrentSearchPattern = fCurrentSearchPattern;
+	WString wSIDRegExp = sidRegExp;
+	WString wFileRegExp = fileRegExp;
 	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", wCurrentSearchPattern, wSIDRegExp, wFileRegExp);
-	delete [] wCurrentSearchPattern;
-	delete [] wSIDRegExp;
-	delete [] wFileRegExp;
 
 	fUserRegExp.SetPattern((const char *) sidRegExp.utf8());
 	fUserRegExpStr = sidRegExp;
@@ -313,11 +307,9 @@ WinShareWindow::Download()
 		{
 			WFileInfo * fi = (*it).second;
 
-			wchar_t * wFile = qStringToWideChar(fi->fiListItem->text(0));
-			wchar_t * wUser = qStringToWideChar(fi->fiListItem->text(5));
+			WString wFile = fi->fiListItem->text(0);
+			WString wUser = fi->fiListItem->text(5);
 			PRINT("Checking: %S, %S\n", wFile, wUser);
-			delete [] wFile;
-			delete [] wUser;
 
 			if (fi->fiListItem->isSelected())
 			{

@@ -11,6 +11,7 @@
 #include "settings.h"
 #include "util/String.h"
 #include "platform.h"
+#include "wstring.h"
 #include "wpwevent.h"
 #include "nicklist.h"
 
@@ -95,10 +96,9 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 
 #ifdef WIN32
-	QString title = tr ("[Freeware] - Private");
-	wchar_t * wtitle = qStringToWideChar(title);
+	// QString title = tr ("[Freeware] - Private");
+	WString wtitle = tr ("[Freeware] - Private");
 	fWinHandle = FindWindow(NULL, wtitle);
-	delete [] wtitle;
 	// <postmaster@raasu.org> 20020925
 	if (fWinHandle)
 	{
@@ -420,9 +420,8 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += "'s ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
-					wchar_t * wMessage = qStringToWideChar(message);
+					WString wMessage = message;
 					PRINT("\t\t%S\n", wMessage);
-					delete [] wMessage;
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
 					if (e)
@@ -439,9 +438,8 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += " ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
-					wchar_t * wMessage = qStringToWideChar(message);
+					WString wMessage = message;
 					PRINT("\t\t%S\n", wMessage);
-					delete [] wMessage;
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
 					if (e)

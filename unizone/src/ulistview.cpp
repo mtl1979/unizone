@@ -4,6 +4,8 @@
 #include "ulistview.h"
 #include "settings.h"
 #include "debugimpl.h"
+#include "platform.h"
+#include "wstring.h"
 
 WUniListItem::WUniListItem(
 						   QListView * parent, 
@@ -58,7 +60,7 @@ WUniListItem::key(int c, bool asc) const
 	int n, m;
 	int32 bw;
 	QString result, q1, q2;
-	wchar_t * wResult;
+	WString wResult;
 	switch (UColumnType[c])
 	{
 	case Number:
@@ -68,7 +70,7 @@ WUniListItem::key(int c, bool asc) const
 	case Time:
 		{
 			result = fKey[c];
-			wResult = qStringToWideChar(result);
+			wResult = result;
 			PRINT("\tRESULT STARTS AS\t %S\n", wResult);
 			delete wResult;
 
@@ -78,18 +80,16 @@ WUniListItem::key(int c, bool asc) const
 			{
 				// convert our number to hexadecimal! what a thought, huh?
 				result.sprintf("0x%08x", n);
-				wResult = qStringToWideChar(result);
+				wResult = result;
 				PRINT("\tRESULT IS %S\n", wResult);
-				delete [] wResult;
 			}
 			return result;
 		}
 	case TransferSpeed:
 		{
 			result = fKey[c];
-			wResult = qStringToWideChar(result);
+			wResult = result;
 			PRINT("\tRESULT STARTS AS\t %S\n", wResult);
-			delete wResult;
 
 			bool ok;
 			n = (long) result.toDouble(&ok); // We need to convert from double to long
@@ -97,9 +97,8 @@ WUniListItem::key(int c, bool asc) const
 			{
 				// convert our number to hexadecimal! what a thought, huh?
 				result.sprintf("0x%08x", n);
-				wResult = qStringToWideChar(result);
+				wResult = result;
 				PRINT("\tRESULT IS %S\n", wResult);
-				delete [] wResult;
 			}
 			return result;
 		}

@@ -4,7 +4,6 @@
 #include "settings.h"
 #include "colors.h"
 #include "debugimpl.h"
-#include "platform.h"			// <postmaster@raasu.org> 20021114
 
 #include <qmotifstyle.h>
 #include <qwindowsstyle.h>

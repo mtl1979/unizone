@@ -7,7 +7,7 @@
 #include <qstring.h>
 
 #include "fileinfo.h"
-#include "platform.h"
+#include "wstring.h"
 #include "debugimpl.h"
 
 UFileInfo::UFileInfo(QFileInfo info) : QFileInfo(info)
@@ -35,7 +35,7 @@ UFileInfo::InitMIMEType()
 
 	QString ext = ".";
 	ext += getExtension();
-	wchar_t * tExt = qStringToWideChar(ext);
+	WString tExt = ext;
 	if (RegOpenKey(HKEY_CLASSES_ROOT, tExt, &hkey) == ERROR_SUCCESS)
 	{
 		LONG ret;
@@ -51,8 +51,6 @@ UFileInfo::InitMIMEType()
 		}
 		RegCloseKey(hkey);
 	}
-	delete [] tExt;
-	tExt = NULL; // <postmaster@raasu.org> 20021027
 	fMIMEType = mt;
 	return;
 #else
@@ -79,10 +77,9 @@ UFileInfo::InitModificationTime()
 		uint32 mtTime; // <postmaster@raasu.org> 20021230
 		uint64 ftTime; // 
 		HANDLE fileHandle;
-		wchar_t * tFilePath = qStringToWideChar( fFileName );
+		WString tFilePath = fFileName;
 		fileHandle = CreateFile(tFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		delete [] tFilePath;
-		tFilePath = NULL; // <postmaster@raasu.org> 20021027
+
 		if (fileHandle)
 		{
 			PRINT("File opened!\n");

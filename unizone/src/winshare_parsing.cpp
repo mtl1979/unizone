@@ -10,6 +10,7 @@
 #include "formatting.h"
 #include "version.h"
 #include "platform.h"
+#include "wstring.h"
 #include "tokenizer.h" // <postmaster@raasu.org> 20021128
 
 #include <qapplication.h>
@@ -54,9 +55,9 @@ WinShareWindow::MatchUserName(QString un, QString & result, const char * filter)
 		iter++;
 	}
 
-	wchar_t * wUser = qStringToWideChar(res);
+	WString wUser = res;
 	PRINT("WinShareWindow::MatchUserName: Result %S\n", wUser);
-	delete [] wUser;
+
 	result = res;
 	return matchCount;
 }
@@ -76,7 +77,7 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 
 		PRINT("MatchUserFilter: UserID = %s\n", (const char *) user->GetUserID().utf8());
 		PRINT("MatchUserFilter: next   = %s\n", next.Cstr());
-		String userID = user->GetUserID().latin1();
+		String userID = (const char *) user->GetUserID().utf8();
 		if (userID.Length() > 0)
 		{
 			// Is this item our user's session ID?
@@ -152,9 +153,8 @@ WinShareWindow::DoTabCompletion(QString origText, QString & result, const char *
 		PRINT("Match complete\n");
 		if (numMatches == 1)
 		{
-			wchar_t * wResult = qStringToWideChar(qres);
+			WString wResult = qres;
 			PRINT("Found match %S\n", wResult);
-			delete [] wResult;
 
 			matchString = (const char *) qres.utf8();  // found a unique match!  We're done!
 			startAt = matchAt;
@@ -162,9 +162,8 @@ WinShareWindow::DoTabCompletion(QString origText, QString & result, const char *
 		}
 		else if (numMatches > 1)
 		{
-			wchar_t * wResult = qStringToWideChar(qres);
+			WString wResult = qres;
 			PRINT("Found multiple matches %S\n", wResult);
-			delete [] wResult;
 
 			backupMatchString = (const char *) qres.utf8();  // found several matches; keep trying for a single
 			backupStartAt = matchAt;         // but we'll use this if nothing else
@@ -304,9 +303,8 @@ WinShareWindow::NameSaid2(String sname, QString & msg, unsigned long index)
 		smsg += "</font>";
 		smsg += QString::fromUtf8(itxt2.Cstr()); // <postmaster@raasu.org> 20021005
 
-		wchar_t * wMessage = qStringToWideChar(smsg);
+		WString wMessage = smsg;
 		PRINT("Name said string: %S\n", wMessage);
-		delete [] wMessage;
 
 		msg = smsg;
 		return true;

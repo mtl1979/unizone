@@ -19,6 +19,8 @@
 #include "util/StringTokenizer.h"
 #include "textevent.h"
 #include "downloadimpl.h"
+#include "platform.h"
+#include "wstring.h"
 
 void
 WinShareWindow::Exit()
@@ -182,9 +184,8 @@ WinShareWindow::TabPressed(QString str)
 		fInputText->setCursorPosition(9999, 9999);
 		PRINT("Returned true\n");
 	}
-	wchar_t * wResult = qStringToWideChar(result);
+	WString wResult = result;
 	PRINT("Tab completion result: %S\n", wResult);
-	delete [] wResult;
 }
 
 void
@@ -455,9 +456,8 @@ void
 WinShareWindow::CheckResumes(QString user)
 {
 	// No need to check if empty!
-	wchar_t * wUser = qStringToWideChar( StripURL(user) );
+	WString wUser = StripURL(user);
 	PRINT("CheckResumes: user   = %S\n", wUser);
-	delete [] wUser;
 
 	if (fResumeMap.empty()) 
 		return;
@@ -475,9 +475,8 @@ WinShareWindow::CheckResumes(QString user)
 	WResumeIter it = fResumeMap.begin();
 	while (it != fResumeMap.end())
 	{
-		wchar_t * wSecond = qStringToWideChar( StripURL((*it).first) );
+		WString wSecond = StripURL((*it).first);
 		PRINT("CheckResumes: user = %S\n", wSecond);
-		delete [] wSecond;
 
 		if (StripURL((*it).first) == StripURL(user))
 		{

@@ -9,7 +9,7 @@
 #include "settings.h"
 #include "debugimpl.h"
 #include "util/String.h"
-#include "platform.h"
+#include "wstring.h"
 
 #include <qdir.h>
 #include <qstringlist.h>
@@ -82,9 +82,8 @@ WFileThread::ParseDir(const QString & d)
 	QFileInfo * info = new QFileInfo(d);
 	CHECK_PTR(info);
 
-	wchar_t * wD = qStringToWideChar(d);
+	WString wD = d;
 	PRINT("Parsing directory %S\n", wD);
-	delete [] wD;
 
 	// Directory doesn't exist?
 	if (!info->exists())
@@ -163,9 +162,8 @@ WFileThread::ScanFiles(QString directory)
 					}
 				}
 
-				wchar_t * wData = qStringToWideChar(ndata);
+				WString wData = ndata;
 				PRINT("\tChecking file %S\n", wData);
-				delete [] wData;
 
 				QString filePath = dir->absFilePath(ndata);
 
@@ -181,9 +179,8 @@ WFileThread::ScanFiles(QString directory)
 void
 WFileThread::AddFile(const QString & filePath)
 {
-	wchar_t * wFilePath = qStringToWideChar(filePath);
+	WString wFilePath = filePath;
 	PRINT("Setting to filePath: %S\n", wFilePath);
-	delete [] wFilePath;
 	
 	QFileInfo * finfo = new QFileInfo(filePath);
 	CHECK_PTR(finfo);
@@ -197,9 +194,8 @@ WFileThread::AddFile(const QString & filePath)
 		// resolve symlink
 		QString ret = ResolveLink(finfo->filePath());
 
-		wchar_t * wRet = qStringToWideChar(ret);
+		WString wRet = ret;
 		PRINT("Resolved to: %S\n", wRet);
-		delete [] wRet;
 
 		finfo->setFile(ret);
 					
@@ -257,10 +253,8 @@ WFileThread::ResolveLink(const QString & lnk)
 {
 #ifdef WIN32
 	QString ret = lnk;
-	wchar_t * wRet = qStringToWideChar(ret);
+	WString wRet = ret;
 	PRINT("\tResolving %S\n", wRet);
-	delete [] wRet;
-	wRet = NULL;
 
 	if (ret.right(4) == ".lnk")
 	{
@@ -269,7 +263,7 @@ WFileThread::ResolveLink(const QString & lnk)
 		HRESULT hres;
 		// Unicode
 		IShellLink * psl;
-		wchar_t * wsz = NULL;
+		WString wsz;
 		wchar_t szFile[MAX_PATH];
 		WIN32_FIND_DATA wfd;
 
@@ -284,7 +278,7 @@ WFileThread::ResolveLink(const QString & lnk)
 			if (SUCCEEDED(hres))
 			{
 				PRINT("Got persistfile\n");
-				wsz = qStringToWideChar(ret);		// <postmaster@raasu.org> -- Move type definition to start of function
+				wsz = ret;		// <postmaster@raasu.org> -- Move type definition to start of function
 				hres = ppf->Load(wsz, STGM_READ);
 				if (SUCCEEDED(hres))
 				{
@@ -300,8 +294,6 @@ WFileThread::ResolveLink(const QString & lnk)
 						ret = wideCharToQString(szFile);
 					}
 				}
-				delete [] wsz;
-				wsz = NULL; // <postmaster@raasu.org> 20021027
 
 				ppf->Release();
 			}
@@ -334,7 +326,7 @@ WFileThread::ResolveLinkA(const QString & lnk)
 	HRESULT hres;
 	
 	// Unicode
-	wchar_t * wsz = NULL;
+	WString wsz;
 	
 	// Ansi
 	IShellLinkA * psl;
@@ -353,7 +345,7 @@ WFileThread::ResolveLinkA(const QString & lnk)
 		{
 			PRINT("Got persistfile\n");
 			// <postmaster@raasu.org> -- Move type definition to start of function
-			wsz = qStringToWideChar(lnk);		
+			wsz = lnk;		
 			hres = ppf->Load(wsz, STGM_READ);
 			if (SUCCEEDED(hres))
 			{
@@ -369,8 +361,6 @@ WFileThread::ResolveLinkA(const QString & lnk)
 					ret = szFile;
 				}
 			}
-			delete [] wsz;
-			wsz = NULL; // <postmaster@raasu.org> 20021027
 						
 			ppf->Release();
 		}

@@ -105,9 +105,10 @@ void
 WLog::LogString(QString txt)
 {
 	txt += "<br>";
+	QCString ctxt = txt.utf8();
 	if (InitCheck())
 	{
-		fFile->writeBlock(txt.latin1(), txt.length());
+		fFile->writeBlock(ctxt, ctxt.length());
 		fFile->flush();
 	}
 }

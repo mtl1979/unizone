@@ -8,6 +8,8 @@
 #include "formatting.h"
 #include "nicklist.h"
 #include "textevent.h"
+#include "platform.h"
+#include "wstring.h"
 
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags fl)
 : ChannelBase(/* parent */ NULL, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
@@ -526,12 +528,10 @@ Channel::customEvent(QCustomEvent * event)
 							{
 								WUserRef found = (*uit).second;
 
-								wchar_t * wUser1 = qStringToWideChar(found()->GetUserID());
-								wchar_t * wUser2 = qStringToWideChar(uref()->GetUserID());
+								WString wUser1 = found()->GetUserID();
+								WString wUser2 = uref()->GetUserID();
 								PRINT("found - UserID = %S\n", wUser1);
 								PRINT("uref  - UserID = %S\n", wUser2);
-								delete [] wUser1;
-								delete [] wUser2;
 
 								if (found()->GetUserID() == uref()->GetUserID())
 								{
@@ -559,9 +559,8 @@ Channel::customEvent(QCustomEvent * event)
 					message += "'s ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
-					wchar_t * wMessage = qStringToWideChar(message);
+					WString wMessage = message;
 					PRINT("\t\t%S\n", wMessage);
-					delete [] wMessage;
 					
 					SendChannelText(message);
 				}
@@ -573,9 +572,8 @@ Channel::customEvent(QCustomEvent * event)
 					message += " ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
-					wchar_t * wMessage = qStringToWideChar(message);
+					WString wMessage = message;
 					PRINT("\t\t%S\n", wMessage);
-					delete [] wMessage;
 					
 					SendChannelText(message);
 				}

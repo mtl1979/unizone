@@ -23,6 +23,7 @@
 #include "filethread.h"
 #include "tokenizer.h"								// <postmaster@raasu.org> 20021114
 #include "platform.h"
+#include "wstring.h"
 #include "nicklist.h"
 #include "searchitem.h"
 #include "user.h"
@@ -192,10 +193,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 #ifdef WIN32
 	// try to find our handle
-	QString title = tr("[Freeware] - Unizone");
-	wchar_t * wtitle = qStringToWideChar(title);
+	// QString title = tr("[Freeware] - Unizone");
+	WString wtitle = tr("[Freeware] - Unizone");
 	fWinHandle = FindWindow(NULL, wtitle); 
-	delete [] wtitle;
 
 	if (fWinHandle)
 	{
@@ -548,17 +548,15 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				{
 					WTextEvent te("");
 
-					wchar_t * wText = qStringToWideChar(wpe->GetText());
+					WString wText = wpe->GetText();
 					PRINT("wpe->GetText() %S\n", wText);
-					delete [] wText;
 
 					te.SetText(wpe->GetText());
 					if (wpe->GetWantReply())	// reply wanted... do the following...
 					{
 						bool rep = false;
-						wText = qStringToWideChar(te.Text());
+						wText = te.Text();
 						PRINT("Sending the following text to SendChatText %S\n", wText);
-						delete [] wText;
 
 						SendChatText(&te, &rep);
 						if (rep)	// does this event WANT a reply
@@ -1580,9 +1578,8 @@ WinShareWindow::LoadSettings()
 		// status messages
 		fAwayMsg = fSettings->GetAwayMsg();
 
-		wchar_t * wAwayMsg = qStringToWideChar(fAwayMsg);
+		WString wAwayMsg = fAwayMsg;
 		PRINT("Away Msg: %S\n", wAwayMsg);
-		delete [] wAwayMsg;
 		
 		fHereMsg = fSettings->GetHereMsg();
 
@@ -1725,46 +1722,43 @@ WinShareWindow::SaveSettings()
 	
 	// save server list
 	int i;
-	wchar_t * wServer;
+	WString wServer;
 	for (i = 0; i < fServerList->count(); i++)
 	{
 		fSettings->AddServerItem(fServerList->text(i));
-		wServer = qStringToWideChar(fServerList->text(i));
+		wServer = fServerList->text(i);
 		PRINT("Saved server %S\n", wServer);
-		delete [] wServer;
 	}
 	fSettings->SetCurrentServerItem(fServerList->currentItem());
 	
 	// save user list
-	wchar_t * wUser;
+	WString wUser;
 	for (i = 0; i < fUserList->count(); i++)
 	{
 		fSettings->AddUserItem(fUserList->text(i));
-		wUser = qStringToWideChar(fUserList->text(i));
+		wUser = fUserList->text(i);
 		PRINT("Saved user %S\n", wUser);
-		delete [] wUser;
 	}
 	fSettings->SetCurrentUserItem(fUserList->currentItem());
 	
 	// save status list
-	wchar_t * wStatus;
+	WString wStatus;
 	for (i = 0; i < fStatusList->count(); i++)
 	{
 		fSettings->AddStatusItem(fStatusList->text(i));
-		wStatus = qStringToWideChar(fStatusList->text(i));
+		wStatus = fStatusList->text(i);
 		PRINT("Saved status %S\n", wStatus);
-		delete [] wStatus;
 	}
 	fSettings->SetCurrentStatusItem(fStatusList->currentItem());
 
 	// save query history
+	WString wQuery;
 	for (i = 0; i < fSearchEdit->count(); i++)
 	{
 		fSettings->AddQueryItem(fSearchEdit->text(i));
 
-		wchar_t * wQuery = qStringToWideChar(fSearchEdit->text(i));
+		wQuery = fSearchEdit->text(i);
 		PRINT("Saved query %S\n", wQuery);
-		delete [] wQuery;
 	}
 	fSettings->SetCurrentQueryItem(fSearchEdit->currentItem());
 
@@ -1989,9 +1983,8 @@ WinShareWindow::MapIPsToNodes(const QString & pattern)
 		qResult.truncate(qResult.length() - 1);
 	}
 
-	wchar_t * wResult = qStringToWideChar(qResult);
+	WString wResult = qResult;
 	PRINT("MapIPsToNodes: %S\n", wResult);
-	delete [] wResult;
 
 	return qResult;
 }
@@ -2040,9 +2033,8 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 		qResult.truncate(qResult.length() - 1);
 	}
 
-	wchar_t * wResult = qStringToWideChar(qResult);
+	WString wResult = qResult;
 	PRINT("MapUsersToIDs: %S\n", wResult);
-	delete [] wResult;
 
 	return qResult;
 }

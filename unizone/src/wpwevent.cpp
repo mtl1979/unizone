@@ -2,7 +2,7 @@
 #include "user.h"
 #include "privatewindowimpl.h"
 #include "debugimpl.h"
-#include "platform.h"
+#include "wstring.h"
 
 WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg)
 		: QCustomEvent(type)
@@ -33,9 +33,8 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg)
 			fMsg += " ";
 			fMsg += smsg;
 			
-			wchar_t * wText = qStringToWideChar(fMsg);
+			WString wText = fMsg;
 			PRINT("Sending text: %S\n", wText);
-			delete [] wText;
 		}
 	}
 	else

@@ -5,6 +5,7 @@
 #include "version.h"
 #include "settings.h"
 #include "platform.h"			// <postmaster@raasu.org> 20021114
+#include "wstring.h"
 
 #include <qapplication.h>
 #include "regex/PathMatcher.h"
@@ -643,9 +644,8 @@ NetClient::HandleParameters(MessageRef & next)
 				fOldID = fSessionID;
 			}
 
-			wchar_t * wSessionID = qStringToWideChar(fSessionID);
+			WString wSessionID = fSessionID;
 			PRINT("My ID is: %S\n", wSessionID);
-			delete [] wSessionID;
 
 			gWin->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
 		}
@@ -701,11 +701,12 @@ NetClient::SetUserName(QString user)
 	if (ref())
 	{
 		QString version = tr("Unizone (English)");
+		QCString vstring = WinShareVersionString().utf8();
 		ref()->AddString("name", (const char *) user.utf8()); // <postmaster@raasu.org> 20021001
 		ref()->AddInt32("port", fPort);
 		ref()->AddInt64("installid", 0);
 		ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
-		ref()->AddString("version_num", (const char *) WinShareVersionString().utf8());
+		ref()->AddString("version_num", (const char *) vstring);
 		ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes
 		ref()->AddBool("firewalled", gWin->fSettings->GetFirewalled()); // is firewalled user, needed if no files shared
 

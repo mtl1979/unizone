@@ -31,30 +31,12 @@ long GetRegKey( HKEY key, wchar_t *subkey, wchar_t *retdata, wchar_t value = NUL
 void WFlashWindow(HWND fWinHandle);
 #endif // WIN32
 
-// RedHat Linux 8.x doesn't seem to define __LINUX__
-#ifdef linux
-#  if !defined(__LINUX__)
-#    define __LINUX__
-#  endif
-#endif
-
-// For Unicode support on Linux
-#if defined(__LINUX__)
-#include <wchar.h>
-#endif
-
-
 /*
  *
  *  Common functions
  *
  */
 
-// Converts array of wchar_t to QString
-QString wideCharToQString(const wchar_t *wide);
-
-// Converts QString to pointer to array of wchar_t, pointer must be deleted when not needed anymore
-wchar_t *qStringToWideChar(const QString &str);
 
 //
 // <postmaster@raasu.org> 20021021

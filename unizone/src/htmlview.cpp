@@ -1,5 +1,6 @@
 #include "htmlview.h"
 #include "tokenizer.h"
+#include "wstring.h"
 
 #ifdef UNIVIEW
 #  define PRINT qDebug
@@ -62,7 +63,8 @@ void
 WHTMLView::URLSelected(const QString & url)
 {
 	fURL = url;
-	PRINT("WHTMLView: URLSelected: %s\n", url.latin1());
+	WString wURL = url;
+	PRINT("WHTMLView: URLSelected: %S\n", wURL);
 }
 
 void 
@@ -78,7 +80,8 @@ WHTMLView::setSource( const QString & name )
 			fContext += name;
 		}
 	}
-	PRINT("WHTMLView: setSource: %s\n", fContext.latin1());
+	WString wContext = fContext;
+	PRINT("WHTMLView: setSource: %S\n", wContext);
 #ifdef UNIVIEW
 	QTextBrowser::setSource( fContext );
 #endif
@@ -107,7 +110,8 @@ ParseForShown(const QString & txt)
 		{
 			line = "<br>"; // replace our TAB
 		}
-		qDebug("ParseForShown: %s", line.latin1());	// We need to use qDebug for UniView compatibility
+		WString wLine = line;
+		qDebug("ParseForShown: %S", wLine);	// We need to use qDebug for UniView compatibility
 		out += line;
 	}
 #else

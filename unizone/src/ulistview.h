@@ -4,8 +4,6 @@
 #ifndef ULISTITEM_H
 #define ULISTITEM_H
 
-#include "platform.h"
-
 #include <qlistview.h>
 
 class WUniListItem : public QListViewItem

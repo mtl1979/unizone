@@ -1,7 +1,6 @@
 #ifndef SEARCHITEM_H
 #define SEARCHITEM_H
 
-#include "platform.h"
 #include "ulistview.h"
 
 #include <qlistview.h>

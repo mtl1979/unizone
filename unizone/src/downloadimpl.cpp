@@ -29,7 +29,7 @@ using std::iterator;
 #include "wgenericevent.h"
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
-#include "platform.h"	// <postmaster@raasu.org> 20021114
+#include "wstring.h"
 #include "transferitem.h"
 #include "gotourl.h"
 
@@ -936,10 +936,9 @@ WDownload::customEvent(QCustomEvent * e)
 				{
 					QString uname = GetUserName(QString::fromUtf8(user.Cstr()));
 
-					wchar_t * wUser = qStringToWideChar(uname);
+					WString wUser = uname;
 					PRINT("USER ID  : %s\n", user.Cstr());
 					PRINT("USER NAME: %S\n", wUser);
-					delete [] wUser;
 
 					if (strcmp(uname.latin1(), user.Cstr()) == 0) // No user name?
 					{
@@ -2426,9 +2425,8 @@ WDownload::UpdateULRatings()
 	{
 		if ((*it).second)
 		{
-			wchar_t * wFile = qStringToWideChar( (*it).second->text(WTransferItem::Filename) );
+			WString wFile = (*it).second->text(WTransferItem::Filename);
 			PRINT("Item %d: %S\n", qr, wFile );
-			delete [] wFile;
 
 			(*it).second->setText(WTransferItem::QR, QString::number(qr++));
 		}

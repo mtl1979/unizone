@@ -4,7 +4,6 @@
 #ifndef NICKLIST_H
 #define NICKLIST_H
 
-#include "platform.h"
 #include "ulistview.h"
 #include "nicklist.h"
 
