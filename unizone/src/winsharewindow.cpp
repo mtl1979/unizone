@@ -122,10 +122,16 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 			this, SLOT(DoubleClicked(QListViewItem *)));
 
 	LoadSettings();
+
 	// initialize local user
 	fUserName = fUserList->currentText();
 	fServer = fServerList->currentText();
 	fUserStatus = fStatusList->currentText();
+
+	// load query history
+	QString str;
+	for (int i = 0; (str = gWin->fSettings->GetQueryItem(i)) != QString::null; i++)
+		fSearchEdit->insertItem(str, i);
 
 	// server check thread
 	// run the thread here
@@ -195,7 +201,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	// try to find our handle
 	QString title = tr("[Freeware] - Unizone");
 	wchar_t * wtitle = qStringToWideChar(title);
-	fWinHandle = FindWindow(NULL, wtitle); // <postmaster@raasu.org> 20021021 -- Use Unicode macro L"..."
+	fWinHandle = FindWindow(NULL, wtitle); 
 	delete [] wtitle;
 
 	if (fWinHandle)
@@ -872,12 +878,6 @@ WinShareWindow::InitGUI()
 	CHECK_PTR(fClear);
 
 	fSearchTab->addMultiCellWidget(fClear, 8, 8, 8, 10);
-
-	// load query history
-	QString str;
-	for (i = 0; (str = gWin->fSettings->GetQueryItem(i)) != QString::null; i++)
-		fSearchEdit->insertItem(str, i);
-
 
 	// connect up slots
 	connect(fNetClient, SIGNAL(AddFile(const QString, const QString, bool, MessageRef)), this,
