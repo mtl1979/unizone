@@ -346,10 +346,6 @@ SOURCE=..\src\chattext.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\checkgroup.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\colors.cpp
 # End Source File
 # Begin Source File

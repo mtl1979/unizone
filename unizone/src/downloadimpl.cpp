@@ -20,7 +20,6 @@ using std::iterator;
 #include "downloadimpl.h"
 #include "md5.h"
 #include "debugimpl.h"
-#include "looper.h"
 #include "global.h"
 #include "filethread.h"
 #include "accept.h"

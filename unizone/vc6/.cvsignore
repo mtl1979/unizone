@@ -1,5 +1,5 @@
 Debug Release muscle___Win32_Debug Unizone___Win32_English Unizone___Win32_French Unizone___Win32_German Unizone___Win32_Portuguese
-muscle.lib muscled.lib Unizone.ncb Unizone.opt Unizone.plg Unizoned.ilk
+muscle.lib muscled.lib Unizone.ncb Unizone.opt Unizone.plg muscle.plg Unizoned.ilk
 downloads logs shared
 settings.ini stdout.txt
 Unizone___Win32_Russian

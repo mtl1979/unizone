@@ -153,7 +153,7 @@ WGenericThread::SendReply(MessageRef m)
 	m()->AddPointer("sender", this);
 	WGenericEvent * wge = new WGenericEvent(m);
 	if (wge)
-		QThread::postEvent(fOwner, wge); // Don't use QApplication::postEvent() here ;)
+		QApplication::postEvent(fOwner, wge);
 }
 
 void 

@@ -5,7 +5,6 @@
 
 #include <qmenubar.h>
 #include <qpopupmenu.h>
-#include "checkgroup.h"
 
 class MenuBar : public Qt
 {

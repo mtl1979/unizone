@@ -73,7 +73,7 @@ WFileThread::run()
 	fRunning = false;
 	QCustomEvent *qce = new QCustomEvent(ScanDone);
 	if (qce)
-		QThread::postEvent(fOwner, qce);
+		postEvent(fOwner, qce);
 }
 
 void

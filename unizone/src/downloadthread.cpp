@@ -189,13 +189,17 @@ WDownloadThread::InitSession()
 		ReflectSessionFactoryRef factoryRef;
 		if (gWin->fSettings->GetDLLimit() != WSettings::LimitNone)	// throttling?
 		{
-			ReflectSessionFactoryRef fref(new WDownloadThreadWorkerSessionFactory(gWin->fSettings->GetDLLimit()), NULL);
-			factoryRef = fref;
+			fTXRate = gWin->fSettings->ConvertToBytes( gWin->fSettings->GetDLLimit() );
+			factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(fTXRate), NULL);
+		}
+		else if (GetRate() != 0)
+		{
+			factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(GetRate()), NULL);
 		}
 		else
 		{
-			ReflectSessionFactoryRef fref(new ThreadWorkerSessionFactory(), NULL);
-			factoryRef = fref;
+			fTXRate = 0;
+			factoryRef = ReflectSessionFactoryRef(new ThreadWorkerSessionFactory(), NULL);
 		}
 		
 		status_t ret = B_OK;
@@ -607,24 +611,6 @@ void WDownloadThread::NextFile()
 		fCurFile = -1;
 }
 
-// -----------------------------------------------------------------------------
-WDownloadThreadWorkerSessionFactory::WDownloadThreadWorkerSessionFactory(int limit)
-{
-	fLimit = limit;
-}
-
-AbstractReflectSession *
-WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
-{
-	AbstractReflectSession * ref = ThreadWorkerSessionFactory::CreateSession(s);
-	if (ref && fLimit != WSettings::LimitNone)
-	{
-		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
-			fLimit)), NULL));
-	}
-	return ref;
-}
-
 void
 WDownloadThread::SetRate(int rate)
 {
@@ -661,3 +647,22 @@ WDownloadThread::SetBlocked(bool b, int64 timeLeft)
 		}
 	}
 }
+
+// -----------------------------------------------------------------------------
+WDownloadThreadWorkerSessionFactory::WDownloadThreadWorkerSessionFactory(int limit)
+{
+	fLimit = limit;
+}
+
+AbstractReflectSession *
+WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
+{
+	AbstractReflectSession * ref = ThreadWorkerSessionFactory::CreateSession(s);
+	if (ref && fLimit != /*WSettings::LimitNone*/ 0)
+	{
+		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(/*WSettings::ConvertToBytes(*/
+			fLimit/*)*/), NULL));
+	}
+	return ref;
+}
+

@@ -316,13 +316,13 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					PrintSystem("Reconnecting in 1 minute!");
 					fReconnectTimer->start(60000, true); // 1 minute
 				}
-				break;
+				return;
 			}
 		case WinShareWindow::UpdatePrivateUsers:
 			{
 				PRINT("\tWinShareWindow::UpdatePrivateUsers\n");
 				emit UpdatePrivateUserLists();
-				break;
+				return;
 			}
 		case WFileThread::ScanDone:
 			{
@@ -1239,7 +1239,7 @@ WinShareWindow::LoadSettings()
 		for (i = 0; i <= fSettings->GetResumeCount(); i++)
 		{
 			WResumePair wrp;
-			if (fSettings->GetResumeItem(i, wrp) == B_OK)
+			if (fSettings->GetResumeItem(i, wrp))
 				fResumeMap.insert(wrp);
 		}
 		rLock.unlock();
