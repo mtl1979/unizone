@@ -4,6 +4,7 @@
 
 #include "uploadthread.h"
 #include "wuploadevent.h"
+#include "wsystemevent.h"
 #include "global.h"
 #include "downloadimpl.h"
 #include "settings.h"
@@ -771,7 +772,9 @@ WUploadThread::DoUpload()
 
 							if (gWin->fSettings->GetUploads())
 							{
-								gWin->PrintSystem( tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+								WSystemEvent *wse = new WSystemEvent( tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+								if (wse)
+									QApplication::postEvent(gWin, wse);
 							}
 						}
 						SendReply(update);
@@ -862,7 +865,9 @@ WUploadThread::DoUpload()
 
 				if (gWin->fSettings->GetUploads())
 				{
-					gWin->PrintSystem( tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+					WSystemEvent *wse = new WSystemEvent( tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+					if (wse)
+						QApplication::postEvent(gWin, wse);
 				}
 
 				// nested call

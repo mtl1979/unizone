@@ -13,6 +13,8 @@
 #include "htmlview.h"
 #include "privatewindowimpl.h"
 #include "wpwevent.h"
+#include "wsystemevent.h"
+#include "wwarningevent.h"
 #include "combo.h"
 #include "menubar.h"
 #include "util/StringTokenizer.h"
@@ -697,7 +699,21 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				}
 				return;
 			}
-			
+		
+		case WSystemEvent::SystemEvent:
+			{
+				WSystemEvent *wse = dynamic_cast<WSystemEvent *>(event);
+				if (wse)
+					PrintSystem(wse->GetText());
+			}
+
+		case WWarningEvent::WarningEvent:
+			{
+				WWarningEvent *wwe = dynamic_cast<WWarningEvent *>(event);
+				if (wwe)
+					PrintWarning(wwe->GetText());
+			}
+
 		}
 		
 	}

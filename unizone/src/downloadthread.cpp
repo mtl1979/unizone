@@ -2,6 +2,7 @@
 #include "downloadworker.h"
 #include "downloadimpl.h"
 #include "wdownloadevent.h"
+#include "wsystemevent.h"
 #include "md5.h"
 #include "global.h"
 #include "settings.h"
@@ -527,7 +528,9 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 
 							if (gWin->fSettings->GetDownloads())
 							{
-								gWin->PrintSystem( tr("Downloading %1 from %2.").arg( fFileDl[fCurFile] ).arg( GetRemoteUser() ) );
+								WSystemEvent *wse = new WSystemEvent( tr("Downloading %1 from %2.").arg( fFileDl[fCurFile] ).arg( GetRemoteUser() ) );
+								if (wse)
+									QApplication::postEvent(gWin, wse);
 							}
 
 							fDownloading = true;
@@ -658,7 +661,9 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 
 							if (gWin->fSettings->GetDownloads())
 							{
-								gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg( GetRemoteUser() ).arg( fFileDl[fCurFile] ) );
+								WSystemEvent *wse = new WSystemEvent( tr("Finished downloading %2 from %1.").arg( GetRemoteUser() ).arg( fFileDl[fCurFile] ) );
+								if (wse)
+									QApplication::postEvent(gWin, wse);
 							}
 
 							fFile->close();

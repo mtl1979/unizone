@@ -3,6 +3,8 @@
 #include "global.h"
 #include "winsharewindow.h"
 #include "version.h"
+#include "wsystemevent.h"
+
 #include "iogateway/PlainTextMessageIOGateway.h"
 
 UpdateClient::UpdateClient(QObject *owner)
@@ -40,7 +42,11 @@ UpdateClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 	{
 		QString s;
 		if (CheckVersion(str.Cstr(), &s))
-			gWin->PrintSystem(tr("Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.").arg(s));
+		{
+			WSystemEvent *wse = new WSystemEvent(tr("Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.").arg(s));
+			if (wse)
+				QApplication::postEvent(gWin, wse);
+		}
 	}
 }
 

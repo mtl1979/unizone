@@ -27,6 +27,7 @@ using std::iterator;
 #include "uploadthread.h"
 #include "wdownloadevent.h"
 #include "wuploadevent.h"
+#include "wwarningevent.h"
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "wstring.h"
@@ -353,7 +354,11 @@ WDownload::AddDownload(QString * files, QString * lfiles,
 			if (ip != "127.0.0.1")
 			{
 				for (x = 0; x < filecount; x++)
-					gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP));
+				{
+					WWarningEvent *wwe = new WWarningEvent(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP));
+					if (wwe)
+						QApplication::postEvent(gWin, wwe);
+				}
 			}
 		}
 		
@@ -362,7 +367,11 @@ WDownload::AddDownload(QString * files, QString * lfiles,
 		if (!muscleInRange(remotePort, (uint32) 1, (uint32) 65535))
 		{
 			for (x = 0; x < filecount; x++)
-				gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]));
+			{
+				WWarningEvent *wwe = new WWarningEvent(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]));
+				if (wwe)
+					QApplication::postEvent(gWin, wwe);
+			}
 		}
 	}
 
