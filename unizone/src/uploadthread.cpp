@@ -448,40 +448,40 @@ WUploadThread::MessageReceived(MessageRef msg, const String &sessionID)
 		case WDownload::TransferCommandPeerID:
 		{
 			PRINT("WDownload::TransferCommandPeerID\n");
-			const char *name = NULL;
 			const char *id = NULL;
 			if (msg()->FindString("beshare:FromSession", &id) == B_OK)
 			{
 				fRemoteSessionID = QString::fromUtf8(id);
-			}
-
-			if (msg()->FindString("beshare:FromUserName", &name) ==  B_OK)
-			{							
-				QString user = QString::fromUtf8(name);
-				if (user.isEmpty())
-					fRemoteUser = GetUserName(fRemoteSessionID);
-				else
-					fRemoteUser = user; 
-			}
-			else
-			{
-				fRemoteUser = GetUserName(fRemoteSessionID);
-			}
-
-			if (gWin->IsIgnored(fRemoteSessionID, true))
-			{
-				SetBlocked(true);
-			}
-
-			MessageRef ui(GetMessageFromPool(WUploadEvent::UpdateUI));
-			if (ui())
-			{
-				if (name) 
-					ui()->AddString("name", name);
-				if (id) 
+				
+				{
+					const char *name = NULL;
+					
+					if (msg()->FindString("beshare:FromUserName", &name) ==  B_OK)
+					{							
+						QString user = QString::fromUtf8(name);
+						if (user.isEmpty())
+							fRemoteUser = GetUserName(fRemoteSessionID);
+						else
+							fRemoteUser = user; 
+					}
+					else
+					{
+						fRemoteUser = GetUserName(fRemoteSessionID);
+					}
+				}
+				
+				if (gWin->IsIgnored(fRemoteSessionID, true))
+				{
+					SetBlocked(true);
+				}
+				
+				MessageRef ui(GetMessageFromPool(WUploadEvent::UpdateUI));
+				if (ui())
+				{
 					ui()->AddString("id", id);
-
-				SendReply(ui);
+					SendReply(ui);
+				}
+				
 			}
 
 			bool c = false;
@@ -512,6 +512,7 @@ WUploadThread::OutputQueuesDrained(MessageRef msg)
 	PRINT("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
 
 	fIdles = 0;
+
 	if (fWaitingForUploadToFinish)
 	{
 		PRINT("\tfWaitingForUploadToFinish\n");
@@ -520,27 +521,38 @@ WUploadThread::OutputQueuesDrained(MessageRef msg)
 
 		PRINT("\t\tSending message\n");
 
-		MessageRef msg(GetMessageFromPool(WUploadEvent::FileDone));
-		if (msg())
 		{
-			msg()->AddBool("done", true);
-			msg()->AddString("file", (const char *) fFileUl.utf8());
-			PRINT("\t\tSending...\n");
-			SendReply(msg);
-			PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
-			PRINT("\t\tDisconnecting...\n");
+			MessageRef msg(GetMessageFromPool(WUploadEvent::FileDone));
+			if (msg())
+			{
+				msg()->AddBool("done", true);
+				msg()->AddString("file", (const char *) fFileUl.utf8());
+				PRINT("\t\tSending...\n");
+				SendReply(msg);
+				PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
+			}
+			else
+			{
+				PRINT("\t\tNot sent!\n");
+			}
+		}
+		
+		PRINT("\t\tDisconnecting...\n");
+		
+		{
 			MessageRef dis(GetMessageFromPool(WUploadEvent::Disconnected));
 			if (dis())
 			{
 				dis()->AddBool("done", true);
 				SendReply(dis);
+				PRINT("\t\tDisconnected...\n");
 			}
-			PRINT("\t\tDisconnected...\n");
+			else
+			{
+				PRINT("\t\tCould not disconnect!\n");
+			}
 		}
-		else
-		{
-			PRINT("\t\tNot sent!\n");
-		}
+
 		PRINT("\tfWaitingForUploadToFinish OK\n");
 	}
 	else if (!fFinished)
