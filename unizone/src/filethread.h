@@ -31,7 +31,7 @@ public:
 
 	virtual ~WFileThread();
 
-	void SetFirewalled(bool f) { fFired = f; }
+//	void SetFirewalled(bool f) { fFired = f; }
 	int GetNumFiles() const;
 
 	Queue<MessageRef> & GetSharedFiles() { return fFiles; }
@@ -51,7 +51,7 @@ protected:
 	virtual void run();
 
 private:
-	bool fFired;
+//	bool fFired;
 	NetClient * fNet;
 	QObject * fOwner;
 	bool * fShutdownFlag;

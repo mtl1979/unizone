@@ -297,15 +297,6 @@ WFileThread::AddFile(const QString & filePath)
 				ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
 				ref()->AddString("beshare:File Name", (const char *) ufi.getName().utf8());
 				
-				QString nodePath;
-				if (fFired)
-					nodePath = "beshare/fires/";
-				else
-					nodePath = "beshare/files/";
-				
-				nodePath += ufi.getName();
-				
-				ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
 				Lock(); 
 				fFiles.AddTail(ref);
 				Unlock(); 

@@ -553,3 +553,20 @@ Reverse(QString &text)
 		end--;
 	}
 }
+
+void MakeNodePath(String &file)
+{
+	if (gWin->fSettings)
+	{
+		if (gWin->fSettings->GetFirewalled())
+		{
+			file.Prepend("fires/");
+		}
+		else
+		{
+			file.Prepend("files/");
+		}
+		file.Prepend("beshare/");
+	}
+}
+

@@ -94,4 +94,7 @@ QString ComputePercentString(int64 cur, int64 max);
 // Reverse string
 void Reverse(QString &text);
 
+// Convert file name to node path equivalent
+void MakeNodePath(String &file);
+
 #endif // PLATFORM_H
