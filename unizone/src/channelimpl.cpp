@@ -654,12 +654,8 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		if (uref())
 		{
 			QString name = uref()->GetUserName();
-			name = FixStringStr(name);
-			QString message = FixStringStr(text);
-			if (NameSaid(message) && Settings()->GetSounds())
-				QApplication::beep();
-			QString fmt;
-			fmt = WFormat::RemoteText(user, name, message);
+			// NOTE: Can't use FixString(text)
+			QString fmt = WFormat::RemoteText(user, FixStringStr(name), FormatNameSaid(text));
 			PrintText(fmt);
 		}
 	}

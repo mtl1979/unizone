@@ -42,8 +42,7 @@ public:
 	void PrintError(const QString & error);
 	void PrintWarning(const QString & warning);
 
-	// see if we were named...
-	bool NameSaid(QString & msg);	// msg will be syntaxed if needed
+	QString FormatNameSaid(const QString & msg); // Check and format message for Name Said...
 
 #ifdef WIN32
 	HWND GetHandle() { return fWinHandle; }
@@ -62,6 +61,8 @@ protected:
 	void InitUserList(QListView * lv);
 
 private:
+	// see if we were named...
+	bool NameSaid(QString & msg);	// msg will be syntaxed if needed
 	bool NameSaid2(const QString &sname, QString & msg, unsigned long index = 0); // Private version for recursing
 //	void CheckScrollState();
 //	void UpdateScrollState();

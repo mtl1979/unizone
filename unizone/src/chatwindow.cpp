@@ -24,6 +24,17 @@ ChatWindow::~ChatWindow()
 {
 }
 
+QString
+ChatWindow::FormatNameSaid(const QString &msg)
+{
+	QString message(msg);
+	EscapeHTML(message);
+	if (NameSaid(message) && Settings()->GetSounds())
+		QApplication::beep();
+	message = ParseChatText(message);
+	return ParseStringStr(message);
+}
+
 bool 
 ChatWindow::NameSaid(QString & msg)
 {
@@ -179,10 +190,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 void 
 ChatWindow::Action(const QString & name, const QString & msg)
 {
-	QString nameText = FixStringStr(msg);
-	if (NameSaid(nameText) && Settings()->GetSounds())
-		QApplication::beep();
-	QString chat = WFormat::Action(FixStringStr(name), nameText);
+	QString chat = WFormat::Action(FixStringStr(name), FormatNameSaid(msg));
 
 	PrintText(chat);
 }

@@ -181,19 +181,16 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 		
 		if (it != fUsers.end())
 		{
-			QString msg = FixStringStr(message);
 			QString name = (*it).second()->GetUserName();
 			FixString(name);
-			if (NameSaid(msg) && Settings()->GetSounds())
-				QApplication::beep();
 			QString s;
-			if ( IsAction(msg, name) ) // simulate action?
+			if ( IsAction(message, name) ) // simulate action?
 			{
-				s = WFormat::Action(msg);
+				s = WFormat::Action(FormatNameSaid(message));
 			}
 			else
 			{
-				s = WFormat::ReceivePrivMsg(fromsid, name, msg);
+				s = WFormat::ReceivePrivMsg(fromsid, name, FormatNameSaid(message));
 			}
 			PrintText(s);
 			if (Settings()->GetSounds())

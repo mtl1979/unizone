@@ -1648,17 +1648,12 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 		{
 			if (fSettings->GetChat())
 			{
-				PRINT("Fixing string\n");
-				QString nameText = FixStringStr(text);
 			
 				PRINT("Name said\n");
-				if (NameSaid(nameText) && fSettings->GetSounds())
-					QApplication::beep();
-
 				if (MatchUserFilter(from, fWatch))
-					chat += WFormat::RemoteWatch(userID, FixStringStr(userName), nameText);
+					chat += WFormat::RemoteWatch(userID, FixStringStr(userName), FormatNameSaid(text));
 				else
-					chat += WFormat::RemoteText(userID, FixStringStr(userName), nameText);
+					chat += WFormat::RemoteText(userID, FixStringStr(userName), FormatNameSaid(text));
 		
 				TextEvent(this, chat, WTextEvent::ChatTextEvent); 
 			}
