@@ -353,16 +353,16 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				{
 					fFileScanThread->Lock();
 					if (fSettings->GetInfo())
-						PrintSystem(tr("Sharing %1 file(s).").arg(fFileScanThread->GetSharedFiles().size()));
-					fNetClient->SetFileCount(fFileScanThread->GetSharedFiles().size());
+						PrintSystem(tr("Sharing %1 file(s).").arg(fFileScanThread->GetNumFiles()));
+					fNetClient->SetFileCount(fFileScanThread->GetNumFiles());
 					PRINT("Doing a scan of the returned files for uploading.\n");
-					for (WMsgListIter it = fFileScanThread->GetSharedFiles().begin(); it != fFileScanThread->GetSharedFiles().end(); it++)
+					for  (int n = 0; n < fFileScanThread->GetNumFiles(); n++)
 					{
 						// stop iterating if we are waiting for file scan thread to finish
 						if (fFileShutdownFlag)
 							break;
 						qApp->processEvents(300);
-						MessageRef mref = (*it); 
+						MessageRef mref = fFileScanThread->GetSharedFile(n); 
 						String s;
 						if (mref()->FindString("secret:NodePath", s) == B_OK)
 							fNetClient->SetNodeValue(s.Cstr(), mref);

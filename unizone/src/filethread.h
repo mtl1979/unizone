@@ -17,10 +17,10 @@ using muscle::Queue;
 
 #include "netclient.h"
 
-typedef list<QString> WStrList;
-typedef WStrList::iterator WStrListIter;
-typedef list<MessageRef> WMsgList;
-typedef WMsgList::iterator WMsgListIter;
+//typedef list<QString> WStrList;
+//typedef WStrList::iterator WStrListIter;
+//typedef list<MessageRef> WMsgList;
+//typedef WMsgList::iterator WMsgListIter;
 
 
 // This class runs through a list of paths and parses each
@@ -36,7 +36,8 @@ public:
 	void SetFirewalled(bool f) { fFired = f; }
 	int GetNumFiles() const;
 
-	WMsgList & GetSharedFiles() { return fFiles; }
+	Queue<MessageRef> & GetSharedFiles() { return fFiles; }
+	MessageRef GetSharedFile(int n);
 	bool FindFile(const QString & file, MessageRef * ref);
 	bool IsRunning();
 	void EmptyList();
@@ -56,8 +57,8 @@ private:
 	QObject * fOwner;
 	bool * fShutdownFlag;
 	Queue<QString> fPaths;
-	WMsgList fFiles;
-	WStrList fScannedDirs;
+	Queue<MessageRef> fFiles;
+	Queue<QString> fScannedDirs;
 
 	bool CheckFile(const QString & file);	// checks whether this file has been found or not
 											// returns true if the file already exists

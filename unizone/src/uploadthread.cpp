@@ -253,7 +253,7 @@ WUploadThread::SignalOwner()
 				MessageRef dis(GetMessageFromPool(WGenericEvent::Disconnected));
 				if (dis())
 				{
-					if (fCurrentOffset < fFileSize || fUploads.size() > 0)
+					if (fCurrentOffset < fFileSize || fUploads.GetNumItems() > 0)
 						dis()->AddBool("failed", true);
 					else
 						dis()->AddBool("failed", false);
@@ -373,8 +373,8 @@ WUploadThread::SignalOwner()
 											fileRef()->AddInt64("secret:offset", onSuccessOffset);
 										}
 									}
-									fUploads.insert(fUploads.end(), fileRef);
-									fNames.insert(fNames.end(), QString::fromUtf8(file));
+									fUploads.AddTail(fileRef);
+									fNames.AddTail(QString::fromUtf8(file));
 								}
 							}
 							fNumFiles = i;
@@ -388,12 +388,12 @@ WUploadThread::SignalOwner()
 							{
 								SendQueuedNotification();
 								// also send a message along to our GUI telling it what the first file is
-								WMsgListIter it = fUploads.begin();
-								if (it != fUploads.end())
+								
+								if (fUploads.GetNumItems() != 0)
 								{
 									String firstFile;
 									const char * path, * filename;
-									MessageRef fref = (*it);
+									MessageRef fref = fUploads[0];
 									if (fref()->FindString("winshare:Path", &path) == B_OK &&
 										fref()->FindString("beshare:File Name", &filename) == B_OK)
 									{
@@ -624,12 +624,10 @@ WUploadThread::DoUpload()
 	{
 		while (!fFile)
 		{
-			WMsgListIter first = fUploads.begin();
-			if (first != fUploads.end())
+			if (fUploads.GetNumItems() != 0)
 			{
 				// grab the ref and remove it from the list
-				fCurrentRef = (*first);
-				fUploads.erase(first);
+				fUploads.RemoveHead(fCurrentRef);
 				Message * m = fCurrentRef.GetItemPointer();
 				String path, filename;
 				m->FindString("winshare:Path", path);
@@ -696,14 +694,14 @@ WUploadThread::DoUpload()
 QString
 WUploadThread::GetFileName(int i)
 {
-	int n = 0;
-	WStrListIter iter = fNames.begin();
-	while (n < i)
+	if (i >= 0 && i < fNames.GetNumItems())
 	{
-		iter++;
-		n++;
+		return fNames[i];
 	}
-	return (*iter);
+	else
+	{
+		return QString::null;
+	}
 }
 
 void

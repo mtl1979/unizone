@@ -53,8 +53,8 @@ protected:
 	void SendRejectedNotification(bool);
 
 private:
-	WMsgList fUploads;
-	WStrList fNames;
+	Queue<MessageRef> fUploads;
+	Queue<QString> fNames;
 	QFile * fFile;
 	uint32 fRemoteIP;
 	QString fStrRemoteIP;				// the accept version gets a string IP

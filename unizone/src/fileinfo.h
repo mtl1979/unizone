@@ -24,8 +24,6 @@ public:
 	uint64 getSize();
 
 	bool isValid();
-
-protected:
 	void Init();
 
 private:

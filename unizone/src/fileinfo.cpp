@@ -14,14 +14,14 @@ UFileInfo::UFileInfo(QFileInfo info)
 {
 	fInfo = new QFileInfo(info);
 	CHECK_PTR(fInfo);
-	Init();
+//	Init();
 }
 
 UFileInfo::UFileInfo(QString file)
 {
 	fInfo = new QFileInfo(file);
 	CHECK_PTR(fInfo);
-	Init();
+//	Init();
 }
 
 UFileInfo::~UFileInfo()
