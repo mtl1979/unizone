@@ -1,6 +1,10 @@
 #include "wcrypt.h"
 #include "titanic.h"
 
+#if defined(LINUX) || defined(__LINUX__)
+#include <netinet/in.h>
+#endif
+
 const char mask[4] = {'5', '0', '3', '8'};
 
 QString

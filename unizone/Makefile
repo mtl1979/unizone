@@ -4,6 +4,9 @@ INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/unix -Isrc/muscle \
 	-Isrc/muscle/syslog -Isrc/muscle/system
 GCCOPTFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT \
 	-DNDEBUG -DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
+ifeq ($(OSTYPE), linux)
+GCCOPTFLAGS += -DLINUX
+endif
 CXXFLAGS = -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
