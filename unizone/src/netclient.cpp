@@ -14,7 +14,7 @@
 #include "zlib/ZLibUtilityFunctions.h"
 
 NetClient::NetClient(QObject * owner)
-: QObject(owner), fChannelLock(true)
+: QMessageTransceiverThread(owner), fChannelLock(true)
 {
 	setName( "NetClient" );
 
@@ -30,9 +30,10 @@ NetClient::NetClient(QObject * owner)
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
 
-	qmtt = new QMessageTransceiverThread(this);
-	CHECK_PTR(qmtt);
+	// qmtt = new QMessageTransceiverThread(this);
+	// CHECK_PTR(qmtt);
 
+	/*
 	connect(qmtt, SIGNAL(BeginMessageBatch()),
 			this, SLOT(BeginMessageBatch()));
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
@@ -57,15 +58,13 @@ NetClient::NetClient(QObject * owner)
 			this, SLOT(ServerExited()));
 	connect(qmtt, SIGNAL(EndMessageBatch()),
 			this, SLOT(EndMessageBatch()));
+	*/
 }
 
 NetClient::~NetClient()
 {
 	Disconnect();
-	if (qmtt)
-	{
-		qmtt->WaitForInternalThreadToExit();
-	}
+	WaitForInternalThreadToExit();
 }
 
 // <postmaster@raasu.org> -- Add support for port numbers
@@ -89,7 +88,7 @@ NetClient::Connect(QString server, uint16 port)
 	Disconnect();
 
 	PRINT("Starting thread\n");
-	if (qmtt->StartInternalThread() != B_NO_ERROR)
+	if (StartInternalThread() != B_NO_ERROR)
 	{
 		return B_ERROR;
 	}
@@ -99,7 +98,7 @@ NetClient::Connect(QString server, uint16 port)
 
 	if (gWin->fSettings->GetChatLimit() == WSettings::LimitNone)
 	{
-		if (qmtt->AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
+		if (AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
 		{
 			return B_ERROR;
 		}
@@ -112,7 +111,7 @@ NetClient::Connect(QString server, uint16 port)
 								gWin->fSettings->GetChatLimit())), NULL));
 		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
 								gWin->fSettings->GetChatLimit())), NULL));
-		if (qmtt->AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
+		if (AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
 		{
 			return B_ERROR;
 		}
@@ -129,23 +128,20 @@ NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
 	gWin->setCaption("Unizone");
-	if (qmtt)
+	if (IsInternalThreadRunning()) 
 	{
-		if (qmtt->IsInternalThreadRunning()) 
+		ShutdownInternalThread();
+		Reset(); 
+		emit DisconnectedFromServer();
+		PRINT("DELETING\n");
+		WUserIter it = fUsers.begin();
+		while (it != fUsers.end())
 		{
-			qmtt->ShutdownInternalThread();
-			qmtt->Reset(); 
-			emit DisconnectedFromServer();
-			PRINT("DELETING\n");
-			WUserIter it = fUsers.begin();
-			while (it != fUsers.end())
-			{
-				(*it).second()->RemoveFromListView();
-				fUsers.erase(it);
-				it = fUsers.begin();
-			}
-			PRINT("DONE\n");
+			(*it).second()->RemoveFromListView();
+			fUsers.erase(it);
+			it = fUsers.begin();
 		}
+		PRINT("DONE\n");
 	}
 }
 
@@ -696,7 +692,7 @@ NetClient::HandleParameters(MessageRef & next)
 void
 NetClient::SendChatText(QString target, QString text)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsInternalThreadRunning())
 	{
 		MessageRef chat(GetMessageFromPool(NEW_CHAT_TEXT));
 		if (chat())
@@ -717,7 +713,7 @@ NetClient::SendChatText(QString target, QString text)
 void
 NetClient::SendPing(QString target)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsInternalThreadRunning())
 	{
 		MessageRef ping(GetMessageFromPool(PING));
 		if (ping())
@@ -979,6 +975,13 @@ void
 NetClient::SessionDetached(const String &sessionID)
 {
 	PRINT("MTT_EVENT_SESSION_DETACHED\n");
+
+	if (timerID != 0) 
+	{
+		killTimer(timerID);
+		timerID = 0;
+	}
+
 	SendSignal(NetClient::DISCONNECTED);
 }
 
@@ -1006,6 +1009,12 @@ NetClient::ServerExited()
 	PRINT("MTT_EVENT_SERVER_EXITED\n");
 	// as you noticed... this message is sent by several MTT_EVENT_* events :)
 
+	if (timerID != 0) 
+	{
+		killTimer(timerID);
+		timerID = 0;
+	}
+
 	SendSignal(NetClient::DISCONNECTED);
 }
 
@@ -1019,44 +1028,31 @@ NetClient::EndMessageBatch()
 bool
 NetClient::IsConnected() const
 { 
-	if (qmtt)
-		return qmtt->IsInternalThreadRunning();
-	else
-		return false;
+	return IsInternalThreadRunning();
 }
 
 void
 NetClient::Reset()
 {
-	if (qmtt)
-		qmtt->Reset();
+	QMessageTransceiverThread::Reset();
 }
 
 status_t 
 NetClient::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
 {
-	if (qmtt)
-		return qmtt->SendMessageToSessions(msgRef, optDistPath);
-	else
-		return B_ERROR;
+	return QMessageTransceiverThread::SendMessageToSessions(msgRef, optDistPath);
 }
 
 status_t 
 NetClient::SetOutgoingMessageEncoding(int32 encoding, const char * optDistPath)
 {
-	if (qmtt)
-		return qmtt->SetOutgoingMessageEncoding(encoding, optDistPath);
-	else
-		return B_ERROR;
+	return QMessageTransceiverThread::SetOutgoingMessageEncoding(encoding, optDistPath);
 }
 
 status_t 
 NetClient::WaitForInternalThreadToExit()
 {
-	if (qmtt)
-		return qmtt->WaitForInternalThreadToExit();
-	else
-		return B_ERROR;
+	return QMessageTransceiverThread::WaitForInternalThreadToExit();
 }
 
 void

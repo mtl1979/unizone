@@ -2,6 +2,8 @@
 
 #include "qtsupport/QAcceptSocketsThread.h"
 
+#include <qapplication.h>
+
 namespace muscle {
 
 static const uint32 QMTT_SIGNAL_EVENT = 8360446;  // why yes, this is a completely arbitrary number
@@ -13,13 +15,13 @@ QAcceptSocketsThread :: QAcceptSocketsThread(QObject * parent, const char * name
 
 QAcceptSocketsThread :: ~QAcceptSocketsThread()
 {
-   ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
+//   ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
 }
 
 void QAcceptSocketsThread :: SignalOwner()
 {
    QCustomEvent * evt = newnothrow QCustomEvent(QMTT_SIGNAL_EVENT);
-   if (evt) QThread::postEvent(this, evt);
+   if (evt) QApplication::postEvent(this, evt);
        else WARN_OUT_OF_MEMORY;
 }
 

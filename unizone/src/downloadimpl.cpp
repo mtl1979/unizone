@@ -163,6 +163,8 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	connect(fDLRunMenu, SIGNAL(activated(int)), this, SLOT(DLPopupActivated(int)));
 	connect(fDownloads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 		this, SLOT(DLRightClicked(QListViewItem *, const QPoint &, int)));
+
+	fDLPopupItem = NULL;
 	
 	fULPopup = new QPopupMenu(this, "Upload Popup");
 	CHECK_PTR(fULPopup);
@@ -251,6 +253,7 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	connect(fUploads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 		this, SLOT(ULRightClicked(QListViewItem *, const QPoint &, int)));
 	
+	fULPopupItem = NULL;
 }
 
 WDownload::~WDownload()
@@ -1477,9 +1480,10 @@ WDownload::uploadEvent(WUploadEvent *u)
 					
 					if (ut->IsLastFile())
 					{
-						msg()->what = WUploadEvent::Disconnected;
-						WUploadEvent *due = new WUploadEvent(msg);
-						if (due) QApplication::postEvent(this, due);
+						// ut->Reset();
+						// msg()->what = WUploadEvent::Disconnected;
+						// WUploadEvent *due = new WUploadEvent(msg);
+						// if (due) QApplication::postEvent(this, due);
 					}
 				}
 				PRINT("\tWUploadEvent::FileDataSent OK\n");

@@ -267,6 +267,8 @@ private:
 #elif defined(__BEOS__)
    thread_id _thread;
    static int32 InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return 0;}
+#elif defined(QT_THREAD_SUPPORT)
+   // empty
 #elif defined(WIN32)
    HANDLE _thread;
    static DWORD WINAPI InternalThreadEntryFunc(LPVOID This) {((Thread*)This)->InternalThreadEntryAux(); return 0;}

@@ -120,8 +120,8 @@ private:
 
 	QSplitter * fMainSplit;
 	QListView * fUploads, * fDownloads;
-	QPushButton * fCancelU;
-	QPushButton * fCancelD;
+//	QPushButton * fCancelU;
+//	QPushButton * fCancelD;
 	QVBox * fBoxU, * fBoxD;
 	QPopupMenu * fDLPopup, *fULPopup;
 	QPopupMenu * fDLThrottleMenu, * fULThrottleMenu;

@@ -27,7 +27,6 @@
 // #include "serverclient.h"
 // #include "updateclient.h"
 #include "privatewindowimpl.h"
-#include "system/SetupSystem.h"
 #include "qtsupport/QAcceptSocketsThread.h"
 #include "regex/StringMatcher.h"
 #include "support/MuscleSupport.h"
@@ -304,8 +303,6 @@ private:
 	bool fFileShutdownFlag;
 
 	MenuBar * fMenus;
-
-	muscle::CompleteSetupSystem fMuscle;
 
 	// gui
 	QSplitter * fMainSplitter;	// splits user list and the rest of the window

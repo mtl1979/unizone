@@ -6,8 +6,10 @@
 #include "iogateway/PlainTextMessageIOGateway.h"
 
 UpdateClient::UpdateClient(QObject *owner)
+: QMessageTransceiverThread(owner)
 {
 	setName( "UpdateClient" );
+	/*
 	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
@@ -17,6 +19,7 @@ UpdateClient::UpdateClient(QObject *owner)
 			this, SLOT(SessionConnected(const String &)));
 	connect(qmtt, SIGNAL(SessionDetached(const String &)),
 			this, SLOT(SessionDetached(const String &)));
+	*/
 }
 
 UpdateClient::~UpdateClient()
@@ -45,7 +48,7 @@ UpdateClient::SessionConnected(const String &sessionID)
 	if (ref())
 	{
 		ref()->AddString(PR_NAME_TEXT_LINE, "GET " UPDATE_FILE " HTTP/1.1\nUser-Agent: Unizone/1.2\nHost: " UPDATE_SERVER "\n\n");
-		qmtt->SendMessageToSessions(ref);
+		SendMessageToSessions(ref);
 	}
 }
 
@@ -53,17 +56,17 @@ void
 UpdateClient::SessionDetached(const String &sessionID)
 {
 	PRINT("Update thread disconnected\n");
-	qmtt->Reset();
+	Reset();
 }
 
 void
 UpdateClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
-	if (qmtt->IsInternalThreadRunning()) 
+	if (IsInternalThreadRunning()) 
 	{
-		qmtt->ShutdownInternalThread();
-		qmtt->Reset(); 
+		ShutdownInternalThread();
+		Reset(); 
 	}
 }
 

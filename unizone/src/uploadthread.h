@@ -36,7 +36,7 @@ class WFileThread;
 
 #define PARTIAL_RESUME_SIZE (64 * 1024)
 
-class WUploadThread : public QObject
+class WUploadThread : public QMessageTransceiverThread
 {
 	Q_OBJECT
 public:
@@ -110,15 +110,21 @@ public slots:
 	void ConnectTimer(); // Connection timed out?
 	void BlockedTimer(); // Blocking timed out?
 
-	void ServerExited();
-	void SessionConnected(const String &sessionID);
-    void SessionAttached(const String & sessionID);
-	void SessionDetached(const String & sessionID);
-	void SessionDisconnected(const String &sessionID);
+protected:
+
 	void MessageReceived(MessageRef msg, const String &sessionID);
 	void OutputQueuesDrained(MessageRef msg);
+	
+	void SessionConnected(const String &sessionID);
+	void SessionDisconnected(const String &sessionID);
 
-protected:
+    void SessionAttached(const String & sessionID);
+	void SessionDetached(const String & sessionID);
+
+	void ServerExited();
+
+	// --------------------------------------------------------------------------------------------
+
 	void SendReply(MessageRef &m);
 	void SendQueuedNotification();
 	void SendRejectedNotification(bool);
@@ -154,7 +160,7 @@ protected:
 	QTimer * CTimer;					// Connect timer
 	QTimer * fBlockTimer;				// Blocked timer
 
-	QMessageTransceiverThread * qmtt;
+	// QMessageTransceiverThread * qmtt;
 
 private:
 	Queue<MessageRef> fUploads;

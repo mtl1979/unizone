@@ -12,7 +12,7 @@ using namespace muscle;
 #include <qobject.h>
 
 #include "user.h"
-class NetClient : public QObject 
+class NetClient : public QMessageTransceiverThread 
 {
 	Q_OBJECT
 public:
@@ -164,7 +164,7 @@ private:
 	QObject * fOwner;
 	WUserMap fUsers;		// a list of users
 	MessageRef fChannels;	// channel database
-	QMessageTransceiverThread *qmtt;
+	// QMessageTransceiverThread *qmtt;
 	
 	void HandleBeRemoveMessage(String nodePath);
 	void HandleBeAddMessage(String nodePath, MessageRef ref);
@@ -184,64 +184,26 @@ private:
 protected:
 	virtual void timerEvent(QTimerEvent *);
 
-public slots:
-   /** Emitted when MessageReceived() is about to be emitted one or more times. */
-   void BeginMessageBatch();
+	// --------------------------------------------------------------------------------------------
 
-   /** Emitted when a new Message has been received by one of the sessions being operated by our internal thread.
-     * @param msg Reference to the Message that was received.
-     * @param sessionID Session ID string of the session that received the message
-     */
-   void MessageReceived(MessageRef msg, const String & sessionID);
+	void BeginMessageBatch();
+	void MessageReceived(MessageRef msg, const String & sessionID);
+	void EndMessageBatch();
 
-   /** Emitted when we are done emitting MessageReceived, for the time being. */
-   void EndMessageBatch();
+	void SessionAttached(const String & sessionID);
+	void SessionDetached(const String & sessionID);
+   
+	void SessionAccepted(const String & sessionID, uint16 port);
 
-   /** Emitted when a new Session object is accepted by one of the factories being operated by our internal thread
-     * @param sessionID Session ID string of the newly accepted Session object.
-     * @param port Port number that the accepting factory was listening to
-     */ 
-   void SessionAccepted(const String & sessionID, uint16 port);
+	void SessionConnected(const String & sessionID);
+	void SessionDisconnected(const String & sessionID);
 
-   /** Emitted when a session object is attached to the internal thread's ReflectServer */
-   void SessionAttached(const String & sessionID);
+	void FactoryAttached(uint16 port);
+	void FactoryDetached(uint16 port);
 
-   /** Emitted when a session object connects to its remote peer (only used by sessions that were
-     * created using AddNewConnectSession())
-     * @param sessionID Session ID string of the newly connected Session object.
-     */
-   void SessionConnected(const String & sessionID);
+	void ServerExited();
 
-   /** Emitted when a session object is disconnected from its remote peer
-     * @param sessionID Session ID string of the newly disconnected Session object.
-     */
-   void SessionDisconnected(const String & sessionID);
-
-   /** Emitted when a session object is removed from the internal thread's ReflectServer 
-     * @param sessionID Session ID string of the newly disconnected Session object.
-     */
-   void SessionDetached(const String & sessionID);
-
-   /** Emitted when a factory object is attached to the internal thread's ReflectServer.
-     * @param port Port ID that the factory object is attached on.
-     */
-   void FactoryAttached(uint16 port);
-
-   /** Emitted when a factory object is removed from the internal thread's ReflectServer.
-     * @param port Port ID that the factory object was removed from.
-     */
-   void FactoryDetached(uint16 port);
-
-   /** Emitted when the thread's internal ReflectServer object exits. */
-   void ServerExited();
-
-   /** Emitted when the output-queues of the sessions specified in a previous call to 
-     * RequestOutputQueuesDrainedNotification() have drained.  Note that this signal only 
-     * gets emitted once per call to RequestOutputQueuesDrainedNotification();
-     * it is not emitted spontaneously.
-     * @param ref MessageRef that you previously specified in RequestOutputQueuesDrainedNotification().
-     */
-   void OutputQueuesDrained(MessageRef ref);
+	void OutputQueuesDrained(MessageRef ref);
 
 };
 

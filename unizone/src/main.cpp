@@ -1,5 +1,6 @@
 #include "winsharewindow.h"
 #include "util/TimeUtilityFunctions.h"
+#include "system/SetupSystem.h"
 
 #include <qapplication.h>
 #include <qplatinumstyle.h>
@@ -40,10 +41,12 @@ WinShareVersionString()
 int 
 main( int argc, char** argv )
 {
+	RedirectDebugOutput();
+	muscle::CompleteSetupSystem fMuscle;
+
 	fStartTime = GetCurrentTime64();
 	QApplication app( argc, argv );
 
-	RedirectDebugOutput();
 
 	// Set alternative settings file if requested
 
@@ -135,5 +138,9 @@ main( int argc, char** argv )
 
 	window->show();
 
-	return app.exec();
+	int ret = app.exec();
+
+	CleanupDebug();
+
+	return ret;
 }

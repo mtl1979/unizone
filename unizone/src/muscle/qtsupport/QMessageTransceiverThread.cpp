@@ -2,6 +2,8 @@
 
 #include "qtsupport/QMessageTransceiverThread.h"
 
+#include <qapplication.h>
+
 namespace muscle {
 
 static const uint32 QMTT_SIGNAL_EVENT = 8360447;  // why yes, this is a completely arbitrary number
@@ -13,7 +15,7 @@ QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const c
 
 QMessageTransceiverThread :: ~QMessageTransceiverThread()
 {
-   ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
+//   ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
 }
 
 status_t QMessageTransceiverThread :: SendMessageToSessions(MessageRef msgRef, const char * optDistPath)       
@@ -24,7 +26,7 @@ status_t QMessageTransceiverThread :: SendMessageToSessions(MessageRef msgRef, c
 void QMessageTransceiverThread :: SignalOwner()
 {
    QCustomEvent * evt = newnothrow QCustomEvent(QMTT_SIGNAL_EVENT);
-   if (evt) QThread::postEvent(this, evt);
+   if (evt) QApplication::postEvent(this, evt);
        else WARN_OUT_OF_MEMORY;
 }
 
@@ -47,23 +49,23 @@ bool QMessageTransceiverThread :: event(QEvent * event)
                if (seenIncomingMessage == false)
                {
                   seenIncomingMessage = true;
-                  emit BeginMessageBatch();
+                  BeginMessageBatch();
                }
-               emit MessageReceived(next, sessionID); 
+               MessageReceived(next, sessionID); 
             break;
-            case MTT_EVENT_SESSION_ACCEPTED:      emit SessionAccepted(sessionID, port); break;
-            case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached(sessionID);       break;
-            case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(sessionID);      break;
-            case MTT_EVENT_SESSION_DISCONNECTED:  emit SessionDisconnected(sessionID);   break;
-            case MTT_EVENT_SESSION_DETACHED:      emit SessionDetached(sessionID);       break;
-            case MTT_EVENT_FACTORY_ATTACHED:      emit FactoryAttached(port);            break;
-            case MTT_EVENT_FACTORY_DETACHED:      emit FactoryDetached(port);            break;
-            case MTT_EVENT_OUTPUT_QUEUES_DRAINED: emit OutputQueuesDrained(next);        break;
-            case MTT_EVENT_SERVER_EXITED:         emit ServerExited();                   break;
+            case MTT_EVENT_SESSION_ACCEPTED:      SessionAccepted(sessionID, port); break;
+            case MTT_EVENT_SESSION_ATTACHED:      SessionAttached(sessionID);       break;
+            case MTT_EVENT_SESSION_CONNECTED:     SessionConnected(sessionID);      break;
+            case MTT_EVENT_SESSION_DISCONNECTED:  SessionDisconnected(sessionID);   break;
+            case MTT_EVENT_SESSION_DETACHED:      SessionDetached(sessionID);       break;
+            case MTT_EVENT_FACTORY_ATTACHED:      FactoryAttached(port);            break;
+            case MTT_EVENT_FACTORY_DETACHED:      FactoryDetached(port);            break;
+            case MTT_EVENT_OUTPUT_QUEUES_DRAINED: OutputQueuesDrained(next);        break;
+            case MTT_EVENT_SERVER_EXITED:         ServerExited();                   break;
          }
-         emit InternalThreadEvent(code, next, sessionID, port);  // these get emitted for any event
+         InternalThreadEvent(code, next, sessionID, port);  // these get emitted for any event
       }
-      if (seenIncomingMessage) emit EndMessageBatch();
+      if (seenIncomingMessage) EndMessageBatch();
       return true;
    }
    else return QObject::event(event);

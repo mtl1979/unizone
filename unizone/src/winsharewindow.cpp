@@ -361,8 +361,6 @@ WinShareWindow::~WinShareWindow()
 		StopAcceptThread();
 	}
 
-	CleanupDebug();
-
 	StopLogging();
 
 	QApplication::exit(0);

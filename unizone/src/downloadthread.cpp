@@ -15,12 +15,12 @@
 using namespace muscle;
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
-: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag), fLockFile(true) 
+: QMessageTransceiverThread(owner), fOwner(owner), fShutdownFlag(optShutdownFlag), fLockFile(true) 
 {
 	setName( "WDownloadThread" );
 
-	qmtt = new QMessageTransceiverThread(this);
-	CHECK_PTR(qmtt);
+	// qmtt = new QMessageTransceiverThread(this);
+	// CHECK_PTR(qmtt);
 
 	// Default status
 
@@ -60,7 +60,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	CHECK_PTR(fBlockTimer);
 
 	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
-
+	/*
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
 			this, SLOT(MessageReceived(MessageRef, const String &)));
 	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
@@ -71,10 +71,12 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 			this, SLOT(ServerExited()));
 	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
 			this, SLOT(SessionDisconnected(const String &)));
+	*/
 }
 
 WDownloadThread::~WDownloadThread()
 {
+	PRINT("WDownloadThread dtor\n");
 	if (timerID != 0) 
 	{
 		killTimer(timerID);
@@ -105,9 +107,11 @@ WDownloadThread::~WDownloadThread()
 		fLocalFileDl = NULL;
 	}
 
-	qApp->processEvents();
+//	qApp->sendPostedEvents( fOwner, WDownloadEvent::Type );
 
-	delete qmtt;
+	// Reset();
+
+	PRINT("WDownloadThread dtor OK\n");
 }
 
 void 
@@ -232,7 +236,7 @@ WDownloadThread::InitSession()
 	
 	if (!fFirewalled)	// the remote user is not firewalled?
 	{
-		if (qmtt->StartInternalThread() == B_OK)
+		if (StartInternalThread() == B_OK)
 		{
 			AbstractReflectSessionRef connectRef;
 			
@@ -254,7 +258,7 @@ WDownloadThread::InitSession()
 			}
 			
 			String sIP = (const char *) fIP.utf8(); // <postmaster@raasu.org> 20021026
-			if (qmtt->AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
+			if (AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
 			{
 				fCurrentOffset = fFileSize = 0;
 				fFile = NULL;
@@ -267,7 +271,7 @@ WDownloadThread::InitSession()
 			}
 			else
 			{
-				qmtt->Reset();
+				Reset();
 				MessageRef msg(GetMessageFromPool(WDownloadEvent::ConnectFailed));
 				if (msg())
 				{
@@ -310,10 +314,10 @@ WDownloadThread::InitSession()
 
 		for (unsigned int i = pStart; i <= pEnd; i++)
 		{
-			if ((ret = qmtt->PutAcceptFactory(i, factoryRef)) == B_OK)
+			if ((ret = PutAcceptFactory(i, factoryRef)) == B_OK)
 			{
 				fAcceptingOn = factoryRef()->GetPort();
-				ret = qmtt->StartInternalThread();
+				ret = StartInternalThread();
 				break;
 			}
 		}
@@ -340,6 +344,12 @@ WDownloadThread::SendReply(MessageRef &m)
 {
 	if (m())
 	{
+		if (fShutdownFlag && *fShutdownFlag)
+		{
+			Reset();
+//			return;
+		}
+
 //		m()->AddBool("download", true);	// the value doesn't matter
 		m()->AddPointer("sender", this);
 		WDownloadEvent * wde = new WDownloadEvent(m);
@@ -643,7 +653,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 							error()->AddString("why", QT_TR_NOOP( "Couldn't write file data!" ));
 							SendReply(error);
 						}
-						qmtt->Reset();
+						Reset();
 						NextFile();
 					}
 				}
@@ -656,7 +666,8 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 void 
 WDownloadThread::SessionAccepted(const String &sessionID, uint16 port)
 {
-	qmtt->RemoveAcceptFactory(0);		// no need to accept anymore
+	// no need to accept anymore
+	RemoveAcceptFactory(0);		
 	SessionConnected(sessionID);
 }
 
@@ -681,7 +692,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 		comID()->AddString("beshare:FromUserName", (const char *) gWin->GetUserName().utf8());
 		comID()->AddString("beshare:FromSession", (const char *) gWin->GetUserID().utf8());
 		comID()->AddBool("unishare:supports_compression", true);
-		qmtt->SendMessageToSessions(comID);
+		SendMessageToSessions(comID);
 	}
 					
 	MessageRef neg(GetMessageFromPool(WDownload::TransferFileList));
@@ -754,7 +765,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 			neg()->AddString("files", (const char *) fFileDl[c].utf8());
 		}
 		neg()->AddString("beshare:FromSession", (const char *) fLocalSession.utf8());
-		qmtt->SendMessageToSessions(neg);
+		SendMessageToSessions(neg);
 	}
 }
 
@@ -878,9 +889,9 @@ WDownloadThread::SetRate(int rate)
 {
 	fTXRate = rate;
 	if (rate != 0)
-		qmtt->SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
-		qmtt->SetNewInputPolicy(PolicyRef(NULL, NULL));
+		SetNewInputPolicy(PolicyRef(NULL, NULL));
 }
 
 void
@@ -1011,9 +1022,9 @@ WDownloadThread::Reset()
 	SetFinished(true);
 //	SetActive(false);
 	SetLocallyQueued(false);
-	if ( fShutdownFlag )
-		*fShutdownFlag = true;
-	qmtt->Reset();
+//	if ( fShutdownFlag )
+//		*fShutdownFlag = true;
+	QMessageTransceiverThread::Reset();
 	PRINT("WDownloadThread::Reset() OK\n");
 }
 
@@ -1168,19 +1179,13 @@ WDownloadThread::GetUserName(QString sid)
 status_t
 WDownloadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
 {
-	if (qmtt)
-		return qmtt->SendMessageToSessions(msgRef, optDistPath);
-	else
-		return B_ERROR;
+	return QMessageTransceiverThread::SendMessageToSessions(msgRef, optDistPath);
 }
 
 bool 
 WDownloadThread::IsInternalThreadRunning()
 {
-	if (qmtt)
-		return qmtt->IsInternalThreadRunning();
-	else
-		return false;
+	return QMessageTransceiverThread::IsInternalThreadRunning();
 }
 
 uint32
@@ -1232,4 +1237,10 @@ WDownloadThread::BlockedTimer()
 {
 	SetBlocked(false);
 	fTimeLeft = 0;
+}
+
+void
+WDownloadThread::SessionDetached(const String &sessionID)
+{
+	SessionDisconnected(sessionID);
 }

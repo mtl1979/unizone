@@ -156,10 +156,6 @@ SOURCE=..\src\formatting.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\genericthread.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\gotourl.cpp
 # End Source File
 # Begin Source File
