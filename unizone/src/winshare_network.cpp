@@ -2040,25 +2040,42 @@ WinShareWindow::ShowHelp(const QString & command)
 	else
 	{
 		QString cmd = "\t/" + command + " ";
-		int i = helpText.find(cmd);
-		if (i >= 0)
+		int s = 0;
+		bool found = false;
+		while (true)
 		{
-			i = i + 1;
-			QString chelp = helpText.mid(i);
-			int j = chelp.find("\n", 5);
-			if (j >= 0)
+			int i = helpText.find(cmd,s);
+			if (i >= 0)
 			{
-				chelp = chelp.left(j);
-				
-				str = "\n"; 
-				str += tr("Help for %1:").arg(command);
-				str += "\n\n";
-				str += chelp;
-				
-				ParseString(str);
-				PrintSystem(str);
-				return;
+				if (s == 0)		// First one?
+				{
+					str = "\n"; 
+					str += tr("Help for %1:").arg(command);
+					str += "\n";
+				}
+				i++;
+				QString chelp = helpText.mid(i);
+				int j = chelp.find("\n", 5);
+				if (j >= 0)
+				{
+					found = true;
+					
+					chelp = chelp.left(j);
+										
+					str += "\n";
+					str += chelp;
+				}
 			}
+			else
+			{
+				break;
+			}
+			s = i;
+		}
+		if (found)
+		{
+			ParseString(str);
+			PrintSystem(str);
 		}
 		else
 		{

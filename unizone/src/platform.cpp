@@ -177,10 +177,14 @@ IsURL(const String & url)
 
 	// Add default protocol prefixes
 
-	if (u.StartsWith("www."))		u = u.Prepend("http://");
-	if (u.StartsWith("ftp."))		u = u.Prepend("ftp://");
-	if (u.StartsWith("beshare."))	u = u.Prepend("server://");
-	if (u.StartsWith("irc."))		u = u.Prepend("irc://");
+	if (u.StartsWith("www."))		
+		u = u.Prepend("http://");
+	if (u.StartsWith("ftp."))		
+		u = u.Prepend("ftp://");
+	if (u.StartsWith("beshare.") && u.Length() > 12)	
+		u = u.Prepend("server://");
+	if (u.StartsWith("irc."))		
+		u = u.Prepend("irc://");
 
 	if (
 		(u.StartsWith("file://")) || 

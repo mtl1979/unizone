@@ -257,6 +257,20 @@ WFileThread::ScanFiles(const QString & directory)
 						continue;
 					}
 				}
+
+				// Skip misc Windows files
+
+				if (ndata == "SThumbs.dat")			// Shareaza Thumbnail Data
+				{
+					i++;
+					continue;
+				}
+
+				if (ndata == "Metadata")			// Shareaza Metadata folder
+				{
+					i++;
+					continue;
+				}
 #endif
 
 				{
@@ -276,6 +290,12 @@ WFileThread::ScanFiles(const QString & directory)
 		QString file;
 		while (files.RemoveHead(file) == B_NO_ERROR)
 		{
+			if (fShutdownFlag && *fShutdownFlag)
+			{
+				files.Clear();
+				return;
+			}
+
 			{
 				WString wData(file);
 				PRINT("\tChecking file %S\n", wData.getBuffer());
