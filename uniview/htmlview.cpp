@@ -5,11 +5,7 @@
 #include <qregexp.h>
 #endif
 
-#ifdef UNIVIEW
-#  include "../UniView/debugimpl.h"
-#else
-#  include "debugimpl.h"
-#endif
+#include "debugimpl.h"
 
 #include <qtooltip.h>
 
@@ -59,14 +55,7 @@ WHTMLView::viewportMouseMoveEvent(QMouseEvent * e)
 void 
 WHTMLView::showEvent(QShowEvent * event)
 {
-#ifdef UNIVIEW
 	QTextBrowser::showEvent(event);
-#elif (QT_VERSION < 0x030000)
-	emit BeforeShown();
-	QString txt = text();
-	setText("");
-	emit GotShown(txt);
-#endif
 }
 
 void 
@@ -92,9 +81,7 @@ WHTMLView::setSource( const QString & name )
 	}
 	WString wContext(fContext);
 	PRINT("WHTMLView: setSource: %S\n", wContext.getBuffer());
-#ifdef UNIVIEW
 	QTextBrowser::setSource( fContext );
-#endif
 	emit URLClicked( fContext );
 }
 

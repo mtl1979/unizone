@@ -78,7 +78,7 @@ UniWindow::UniWindow( QWidget* parent, const char* name, WFlags f)
 	connect(fView, SIGNAL(backwardAvailable(bool)), this, SLOT(backwardAvailable(bool)));
 	connect(fView, SIGNAL(forwardAvailable(bool)), this, SLOT(forwardAvailable(bool)));
 	connect(fView, SIGNAL(URLClicked(const QString &)), this, SLOT(linkClicked(const QString &)));
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(WIN32)
 	fView->mimeSourceFactory()->setFilePath( "../doc" );
 #else
 	fView->mimeSourceFactory()->setFilePath( "./doc" );
