@@ -2676,23 +2676,23 @@ Date: %4</translation>
     </message>
     <message>
         <source>Auto-private pattern : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Blacklist pattern : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Ignore pattern : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Watch pattern : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>On Connect : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>On Connect 2: %1</source>
@@ -2868,6 +2868,10 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>On Connect: %1</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

@@ -396,7 +396,7 @@ Version %1</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation>Salir</translation>
+        <translation>&amp;Salir</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
@@ -1147,7 +1147,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Upload Bandwidth:</source>
-        <translation>Ancho de banda de Subida</translation>
+        <translation>Ancho de banda de Subida:</translation>
     </message>
     <message>
         <source>300 baud</source>
@@ -1700,7 +1700,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User(s) not found!</source>
-        <translation>Usuario no introducido.</translation>
+        <translation>Usuario no introducido!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
@@ -1938,7 +1938,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User(s) not found!</source>
-        <translation>Usuario no introducido.</translation>
+        <translation>Usuario no introducido!</translation>
     </message>
     <message>
         <source>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
@@ -2686,23 +2686,23 @@ Date: %4</translation>
     </message>
     <message>
         <source>Auto-private pattern : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Blacklist pattern : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Ignore pattern : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Watch pattern : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>On Connect : %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>On Connect 2: %1</source>
@@ -2878,6 +2878,10 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>On Connect: %1</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

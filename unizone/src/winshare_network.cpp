@@ -2156,15 +2156,15 @@ WinShareWindow::ShowHelp(QString command)
 #endif
 	helpText			+=	"\n";
 	helpText			+=	"\n"; 
-	helpText			+=	tr("Auto-private pattern : %1").arg(fAutoPriv);
+	helpText			+=	tr("Auto-private pattern: %1").arg(fAutoPriv);
 	helpText			+=	"\n"; 
-	helpText			+=	tr("Blacklist pattern : %1").arg(fBlackList);
+	helpText			+=	tr("Blacklist pattern: %1").arg(fBlackList);
 	helpText			+=	"\n"; 
-	helpText			+=	tr("Ignore pattern : %1").arg(fIgnore);
+	helpText			+=	tr("Ignore pattern: %1").arg(fIgnore);
 	helpText			+=	"\n"; 
-	helpText			+=	tr("Watch pattern : %1").arg(fWatch);
+	helpText			+=	tr("Watch pattern: %1").arg(fWatch);
 	helpText			+=	"\n"; 
-	helpText			+=	tr("On Connect : %1").arg(fOnConnect);
+	helpText			+=	tr("On Connect: %1").arg(fOnConnect);
 	helpText			+=	"\n"; 
 	helpText			+=	tr("On Connect 2: %1").arg(fOnConnect2);
 

@@ -2807,23 +2807,23 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Auto-private pattern : %1</source>
-        <translation>Automaattisen keskustelun kaava : %1</translation>
+        <translation type='obsolete'>Automaattisen keskustelun kaava : %1</translation>
     </message>
     <message>
         <source>Blacklist pattern : %1</source>
-        <translation>Mustan listan kaava : %1</translation>
+        <translation type='obsolete'>Mustan listan kaava : %1</translation>
     </message>
     <message>
         <source>Ignore pattern : %1</source>
-        <translation>Ignore-kaava : %1</translation>
+        <translation type='obsolete'>Ignore-kaava : %1</translation>
     </message>
     <message>
         <source>Watch pattern : %1</source>
-        <translation>Seurantakaava : %1</translation>
+        <translation type='obsolete'>Seurantakaava : %1</translation>
     </message>
     <message>
         <source>On Connect : %1</source>
-        <translation>Yhdistäessä tee : %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee : %1</translation>
     </message>
     <message>
         <source>On Connect 2: %1</source>
@@ -3000,6 +3000,10 @@ Päiväys: %4</translation>
     <message>
         <source>%1.%2.%3 build %4</source>
         <translation>%1.%2.%3 luonti %4</translation>
+    </message>
+    <message>
+        <source>On Connect: %1</source>
+        <translation>Yhdistäessä tee: %1</translation>
     </message>
 </context>
 </TS>
