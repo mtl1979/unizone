@@ -401,6 +401,10 @@ StripURL(const String & strip)
 	if (IsURL(strip))
 	{
 		sp = strip.IndexOf(" ");
+
+		while (strip.Substring(sp + 1, sp + 2) == " ")
+			sp++;
+		
 		if (sp > 0)
 		{
 			int left = strip.IndexOf('[');	// see if it contains a label..
@@ -457,6 +461,10 @@ StripURL(const QString & u)
 	if (IsURL(u))
 	{
 		sp = u.find(" ");
+
+		while (u.at(sp + 1) == ' ')
+			sp++;
+
 		if (sp > 0)
 		{
 			int left = u.find('[');	// see if it contains a label..
