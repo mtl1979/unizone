@@ -281,6 +281,7 @@ public slots:
 protected:
 	virtual void customEvent(QCustomEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
+	virtual void keyPressEvent(QKeyEvent *event);
 
 private slots:
 	void GoSearch();

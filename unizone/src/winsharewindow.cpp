@@ -2468,3 +2468,17 @@ WinShareWindow::GetRegisterTime(const QString & nick) const
 { 
 	return fSettings->GetRegisterTime(nick); 
 }
+
+void
+WinShareWindow::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Key_F12 && event->state() & ControlButton)
+	{
+		int c = fTabs->currentPageIndex();
+		c++;
+		if (c > 2) c = 0;
+		fTabs->setCurrentPage(c);
+	}
+	else
+		QMainWindow::keyPressEvent(event);
+}
