@@ -2083,6 +2083,10 @@ SOURCE=..\src\werrorevent.h
 # End Source File
 # Begin Source File
 
+SOURCE="..\src\winshare-private.h"
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\winsharewindow.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
