@@ -407,13 +407,12 @@ WinShareWindow::FileFailed(QString file, QString user)
 void 
 WinShareWindow::CheckResumes(QString user)
 {
-	rLock.lock();
+	// No need to check if empty!
+
 	if (fResumeMap.empty()) 
-	{
-		// No need to check if empty!
-		rLock.unlock();
 		return;
-	}
+
+	rLock.lock();
 
 	WResumeIter it = fResumeMap.begin();
 	while (it != fResumeMap.end())
