@@ -14,7 +14,7 @@ searchitem.o settings.o textevent.o transferitem.o ulistview.o \
 uploadthread.o user.o userlistitem.o winshare_network.o \
 winshare_parsing.o winshare_slots.o winsharewindow.o Log.o \
 htmlview.o channel.o channelinfo.o channelimpl.o \
-channelsimpl.o moc_channel.o \
+channelsimpl.o moc_channel.o wpwevent.o \
 moc_channelimpl.o moc_menubar.o moc_ulistview.o
 VPATH = src
 CXXFLAGS = -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
