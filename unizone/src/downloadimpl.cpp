@@ -1050,7 +1050,7 @@ WDownload::customEvent(QCustomEvent * e)
 						
 						item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
 						
-						item->setText(WTransferItem::Rate, tr("%1").arg(gcr*1024.0f));
+						item->setText(WTransferItem::Rate, QString::number(gcr*1024.0f));
 
 						if (msg()->FindBool("done", &done) == B_OK)
 						{
