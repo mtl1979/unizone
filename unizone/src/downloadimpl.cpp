@@ -712,8 +712,6 @@ WDownload::downloadEvent(WDownloadEvent * d)
 {
 	MessageRef msg = d->Msg();
 	WDownloadThread * dt = NULL;
-	bool b;
-	//	bool upload = false;
 	WTransferItem * item = NULL;
 	DLPair foundIt;
 	
@@ -1134,8 +1132,6 @@ WDownload::uploadEvent(WUploadEvent *u)
 {
 	MessageRef msg = u->Msg();
 	WUploadThread * ut = NULL;
-	bool b;
-	//	bool upload = false;
 	WTransferItem * item = NULL;
 	ULPair foundIt;
 	

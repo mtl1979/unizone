@@ -89,13 +89,24 @@ WDownloadThread::~WDownloadThread()
 	{
 		fFile->close();
 		delete fFile;
+		fFile = NULL;
 	}
 	
 	if (fFileDl)
+	{
 		delete [] fFileDl;
+		fFileDl = NULL;
+	}
 	
 	if (fLocalFileDl)
+	{
 		delete [] fLocalFileDl;
+		fLocalFileDl = NULL;
+	}
+
+	qApp->processEvents();
+
+	delete qmtt;
 }
 
 void 
@@ -1024,7 +1035,6 @@ WDownloadThread::Reset()
 	if ( fShutdownFlag )
 		*fShutdownFlag = true;
 	qmtt->Reset();
-	qApp->processEvents();
 	PRINT("WDownloadThread::Reset() OK\n");
 }
 

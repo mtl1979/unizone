@@ -864,6 +864,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			ListResumes();
 		}
+		else if (CompareCommand(sendText, "/clearresumes"))
+		{
+			ClearResumes();
+		}
 		else if (CompareCommand(sendText, "/version"))
 		{
 			START_OUTPUT();
@@ -1771,6 +1775,8 @@ WinShareWindow::ShowHelp(QString command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/clearline - clear all the line buffers");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/clearresumes - clear all pending resumes");
+	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/clearstats - clear transfer statistics");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/compression [level] - set or view message compression level");
@@ -2546,6 +2552,15 @@ WinShareWindow::ListResumes()
 	}
 	PrintSystem(tr("Total: %1 files").arg(i), true);
 	END_OUTPUT();
+	rLock.unlock();
+}
+
+void
+WinShareWindow::ClearResumes()
+{
+	rLock.lock();
+	fResumeMap.clear();
+	PrintSystem(tr("Cleared resume list."));
 	rLock.unlock();
 }
 

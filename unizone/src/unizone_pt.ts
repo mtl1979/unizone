@@ -1232,12 +1232,16 @@ Date: %4</translation>
         <source>MD5 hashing failed! Can&apos;t resume.</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Connection timed out!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WGenericThread</name>
     <message>
         <source>Connection timed out!</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
@@ -2093,6 +2097,10 @@ Date: %4</translation>
     </message>
     <message>
         <source>Connection reset by peer!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Connection timed out!</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -3244,6 +3252,14 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/clearresumes - clear all pending resumes</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Cleared resume list.</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

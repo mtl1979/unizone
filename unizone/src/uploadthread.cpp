@@ -37,7 +37,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fSocket = 0;
 	fForced = false;
 	timerID = 0;
-	fActive = true;
+	fActive = false;
 	fBlocked = false;
 	fFinished = false;
 	fManuallyQueued = false;
@@ -101,6 +101,10 @@ WUploadThread::~WUploadThread()
 		delete fFile;
 		fFile = NULL;
 	}
+
+	qApp->processEvents();
+
+	delete qmtt;
 	PRINT("WUploadThread dtor OK\n");
 }
 
@@ -1072,7 +1076,6 @@ WUploadThread::Reset()
 	if ( fShutdownFlag )
 		*fShutdownFlag = true;
 	qmtt->Reset();
-	qApp->processEvents();
 	PRINT("WUploadThread::Reset() OK\n");
 }
 
@@ -1084,8 +1087,8 @@ WUploadThread::SetPacketSize(int s)
 	{
 		fRateCount = 0;
 		fETACount = 0;
-	}
-	fPacket = s;
+		fPacket = s;
+	}	
 }
 
 bool

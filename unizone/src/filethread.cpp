@@ -466,7 +466,8 @@ WFileThread::FindFile(const QString & file, MessageRef & ref)
 			name = QString::fromUtf8(sn.Cstr());
 			if (file == name)
 			{
-				ref = mref;
+				Message *msg = mref();
+				ref = GetMessageFromPool(*msg); // copy the message, don't pass a ref ;)
 				Unlock();
 				return true;
 			}

@@ -1353,12 +1353,16 @@ Päiväys: %4</translation>
         <source>MD5 hashing failed! Can&apos;t resume.</source>
         <translation>MD5-laskenta epäonnistui! Ei voida jatkaa.</translation>
     </message>
+    <message>
+        <source>Connection timed out!</source>
+        <translation>Yhteyden aikakatkaisu!</translation>
+    </message>
 </context>
 <context>
     <name>WGenericThread</name>
     <message>
         <source>Connection timed out!</source>
-        <translation>Yhteyden aikakatkaisu!</translation>
+        <translation type='obsolete'>Yhteyden aikakatkaisu!</translation>
     </message>
 </context>
 <context>
@@ -2215,6 +2219,10 @@ Päiväys: %4</translation>
     <message>
         <source>Connection reset by peer!</source>
         <translation>Yhteys katkesi ennenaikaisesti!</translation>
+    </message>
+    <message>
+        <source>Connection timed out!</source>
+        <translation>Yhteyden aikakatkaisu!</translation>
     </message>
 </context>
 <context>
@@ -3366,6 +3374,14 @@ Päiväys: %4</translation>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
         <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas FreeBSD:lle!</translation>
+    </message>
+    <message>
+        <source>/clearresumes - clear all pending resumes</source>
+        <translation>/clearresumes - tyhjentää kaikki jatkamista odottavat siirrot</translation>
+    </message>
+    <message>
+        <source>Cleared resume list.</source>
+        <translation>Resume-luettelo tyhjennetty.</translation>
     </message>
 </context>
 </TS>

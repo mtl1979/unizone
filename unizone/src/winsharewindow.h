@@ -389,6 +389,7 @@ private:
 
 	void CheckResumes(QString user);	// Check if resume list contains downloads from 'user'
 	void ListResumes();					// List files waiting to be resumed
+	void ClearResumes();				// Clear the resume list
 
 	bool Remote(String session, QString text);  // handle remote commands
 	QString fRemote;							// remote password
