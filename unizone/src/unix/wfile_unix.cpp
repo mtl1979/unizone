@@ -3,8 +3,6 @@
 
 #include <unistd.h>
 #include <fcntl.h>
-#include <linux/fd.h>
-#include <sys/ioctl.h>
 
 WFile::WFile()
 {
@@ -82,7 +80,6 @@ WFile::WriteBlock(const void *buf, int size)
 void
 WFile::Flush()
 {
-	ioctl(file, FDFLUSH);
 }
 
 UINT64
