@@ -371,22 +371,24 @@ WUploadThread::SignalOwner()
 							fNumFiles = i;
 							//fFileThread->Unlock();
 							fWaitingForUploadToFinish = false;
-							if (!IsLocallyQueued())	// we're not queued?
+							SendQueuedNotification();
+							// also send a message along to our GUI telling it what the first file is
+							
+							if (fUploads.GetNumItems() != 0)
 							{
-								DoUpload();
-							}
-							else
-							{
-								SendQueuedNotification();
-								// also send a message along to our GUI telling it what the first file is
-								
-								if (fUploads.GetNumItems() != 0)
+								String firstFile;
+								const char * path, * filename;
+								uint64 filesize;
+								MessageRef fref = fUploads[0];
+								if (fref()->FindString("winshare:Path", &path) == B_OK &&
+									fref()->FindString("beshare:File Name", &filename) == B_OK &&
+									fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
 								{
-									String firstFile;
-									const char * path, * filename;
-									MessageRef fref = fUploads[0];
-									if (fref()->FindString("winshare:Path", &path) == B_OK &&
-										fref()->FindString("beshare:File Name", &filename) == B_OK)
+									if (filesize < gWin->fSettings->GetMinQueuedSize() || !IsLocallyQueued())
+									{
+										DoUpload();
+									}
+									else
 									{
 										firstFile = path;
 										if (!firstFile.EndsWith("/"))
