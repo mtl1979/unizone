@@ -1176,16 +1176,18 @@ hexFromULongLong(const uint64 &in, unsigned int length)
 	QString out;
 
 	if (in < 10)
-		return QString(QChar(((int) in) + '0'));
-	if (in < 16)
-		return QString(QChar(((int) in) + 55));
-	
-	tmp = in;
-	while (tmp > 0)
+		out = QString(QChar(((int) in) + '0'));
+	else if (in < 16)
+		out = QString(QChar(((int) in) + 55));
+	else
 	{
-		n = tmp % 16;
-		out = out.prepend(QChar(n + ((n < 10) ? '0' : 55)));
-		tmp /= 16;
+		tmp = in;
+		while (tmp > 0)
+		{
+			n = tmp % 16;
+			out = out.prepend(QChar(n + ((n < 10) ? '0' : 55)));
+			tmp /= 16;
+		}
 	}
 	while (out.length() < length) 
 		out = out.prepend("0");
