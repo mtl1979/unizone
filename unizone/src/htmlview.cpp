@@ -165,7 +165,7 @@ ParseForShownAux(const QString &txt)
 
 	if (n > n2)
 	{
-		QString out;	// Text after processing linefeeds and TABs
+		QString out((QChar *) NULL, MAX_BUFFER_SIZE);	// Text after processing linefeeds and TABs, preallocate
 
 		// copy everything before first TAB (after any extra line breaks stripped from the beginning)
 		out = txt.mid(n2, n - n2);
