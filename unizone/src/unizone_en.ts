@@ -2363,6 +2363,14 @@ Date: %4</translation>
         <source>Private</source>
         <translation>Private</translation>
     </message>
+    <message>
+        <source>Encryption enabled.</source>
+        <translation>Encryption enabled.</translation>
+    </message>
+    <message>
+        <source>Encryption disabled.</source>
+        <translation>Encryption disabled.</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindowBase</name>
@@ -3797,27 +3805,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>Bad Conversion!</source>
-        <translation type='unfinished'></translation>
+        <translation>Bad Conversion!</translation>
     </message>
     <message>
         <source>%1 degrees in %2 is:</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees in %2 is:</translation>
     </message>
     <message>
         <source>%1 degrees Celsius</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Celsius</translation>
     </message>
     <message>
         <source>%1 degrees Fahrenheit</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Fahrenheit</translation>
     </message>
     <message>
         <source>%1 degrees Kelvin</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Kelvin</translation>
     </message>
     <message>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
-        <translation type='unfinished'></translation>
+        <translation>/temp [temperature] [C|F|K] - convert between temperature units</translation>
     </message>
 </context>
 </TS>

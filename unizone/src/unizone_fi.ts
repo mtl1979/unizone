@@ -2495,6 +2495,14 @@ Päiväys: %4</translation>
         <source>User #%1 (a.k.a %2) was removed from the private chat window.</source>
         <translation type='obsolete'>Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
     </message>
+    <message>
+        <source>Encryption enabled.</source>
+        <translation>Salakirjoitus päällä.</translation>
+    </message>
+    <message>
+        <source>Encryption disabled.</source>
+        <translation>Salakirjoitus pois päältä.</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindowBase</name>
@@ -3933,27 +3941,27 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Bad Conversion!</source>
-        <translation type='unfinished'></translation>
+        <translation>Epäkelpo muunnos!</translation>
     </message>
     <message>
         <source>%1 degrees in %2 is:</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 astetta yksikössä %2 on:</translation>
     </message>
     <message>
         <source>%1 degrees Celsius</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 astetta Celsius-asteikolla</translation>
     </message>
     <message>
         <source>%1 degrees Fahrenheit</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 astetta Fahrenheit-asteikolla</translation>
     </message>
     <message>
         <source>%1 degrees Kelvin</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 astetta Kelvin-asteikolla</translation>
     </message>
     <message>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
-        <translation type='unfinished'></translation>
+        <translation>/temp [lämpötila] [C|F|K] - muunna lämpötila-asteikoiden välillä</translation>
     </message>
 </context>
 </TS>

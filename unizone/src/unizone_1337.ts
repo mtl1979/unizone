@@ -2308,6 +2308,14 @@ Date: %4</translation>
         <source>Private</source>
         <translation>My Buziness</translation>
     </message>
+    <message>
+        <source>Encryption enabled.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Encryption disabled.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindowBase</name>

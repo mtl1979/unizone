@@ -1075,6 +1075,20 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			QString dtext = wdecrypt2(qtext);
 			PrintSystem(dtext);
 		}
+		else if (CompareCommand(sendText, "/hexdecode"))
+		{
+			QString qtext = GetParameterString(sendText);
+			const char * in = (const char *) qtext.utf8();
+			QString out = QString::fromUtf8(TTPDecode(String(in)).Cstr());
+			PrintSystem(out);
+		}
+		else if (CompareCommand(sendText, "/hexencode"))
+		{
+			QString qtext = GetParameterString(sendText);
+			const char * in = (const char *) qtext.utf8();
+			QString out = QString::fromUtf8(TTPEncode(String(in)).Cstr());
+			PrintSystem(out);
+		}
 		else if (CompareCommand(sendText, "/revsay"))
 		{
 			QString qtext = GetParameterString(sendText);

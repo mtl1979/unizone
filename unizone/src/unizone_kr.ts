@@ -2124,6 +2124,14 @@ Date: %4</source>
         <source>User #%1 (a.k.a %2) was removed from the private chat window.</source>
         <translation type='obsolete'>사용자 #%1 (a.k.a %2) 님은 비밀 대화창에서 사라졌습니다.</translation>
     </message>
+    <message>
+        <source>Encryption enabled.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Encryption disabled.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindowBase</name>
