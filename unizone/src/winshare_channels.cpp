@@ -219,8 +219,8 @@ WinShareWindow::JoinChannel(QString channel)
 	}
 	
 	// Send user list to window
-	WString wUsers = (*it).second->GetUsers().latin1();
-	PRINT("JoinChannel: GetUsers = %S\n", wUsers);
+	WString wUsers = (*it).second->GetUsers();
+	PRINT("JoinChannel: GetUsers = %S\n", wUsers.getBuffer());
 	int n = fNetClient->GetUserCount(channel);
 	if (n > 0)
 	{
@@ -577,7 +577,7 @@ WinShareWindow::UserIDChanged(QString oldid, QString newid)
 		WString wMyID = fNetClient->LocalSessionID();
 		WString wOldID = oldid;
 		WString wNewID = newid;
-		PRINT("UserIDChanged, myid = %S, old = %S, new = %S\n", wMyID, wOldID, wNewID);
+		PRINT("UserIDChanged, myid = %S, old = %S, new = %S\n", wMyID.getBuffer(), wOldID.getBuffer(), wNewID.getBuffer());
 
 		if (newid == fNetClient->LocalSessionID())
 		{

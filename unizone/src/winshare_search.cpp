@@ -17,7 +17,7 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 	
 	WString wFileName = filename;
 	WString wSID = sid;
-	PRINT("ADDFILE: filename=%S (%s) [%S]\n", wFileName, firewalled ? "firewalled" : "hackable", wSID);
+	PRINT("ADDFILE: filename=%S (%s) [%S]\n", wFileName.getBuffer(), firewalled ? "firewalled" : "hackable", wSID.getBuffer());
 
 	// Workaround for StringMatcher bug (for now!)
 	if (fCurrentSearchPattern == "")
@@ -97,7 +97,7 @@ WinShareWindow::RemoveFile(const QString sid, const QString filename)
 
 	WString wSID = sid;
 	WString wFilename = filename;
-	PRINT("Sid = %S, filename = %S\n", wSID, wFilename);
+	PRINT("Sid = %S, filename = %S\n", wSID.getBuffer(), wFilename.getBuffer());
 
 	while (iter != fFileList.end())
 	{
@@ -276,7 +276,7 @@ WinShareWindow::StartQuery(QString sidRegExp, QString fileRegExp)
 	WString wCurrentSearchPattern = fCurrentSearchPattern;
 	WString wSIDRegExp = sidRegExp;
 	WString wFileRegExp = fileRegExp;
-	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", wCurrentSearchPattern, wSIDRegExp, wFileRegExp);
+	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", wCurrentSearchPattern.getBuffer(), wSIDRegExp.getBuffer(), wFileRegExp.getBuffer());
 
 	fUserRegExp.SetPattern((const char *) sidRegExp.utf8());
 	fUserRegExpStr = sidRegExp;
@@ -309,7 +309,7 @@ WinShareWindow::Download()
 
 			WString wFile = fi->fiListItem->text(0);
 			WString wUser = fi->fiListItem->text(5);
-			PRINT("Checking: %S, %S\n", wFile, wUser);
+			PRINT("Checking: %S, %S\n", wFile.getBuffer(), wUser.getBuffer());
 
 			if (fi->fiListItem->isSelected())
 			{

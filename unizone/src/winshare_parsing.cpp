@@ -56,7 +56,7 @@ WinShareWindow::MatchUserName(QString un, QString & result, const char * filter)
 	}
 
 	WString wUser = res;
-	PRINT("WinShareWindow::MatchUserName: Result %S\n", wUser);
+	PRINT("WinShareWindow::MatchUserName: Result %S\n", wUser.getBuffer());
 
 	result = res;
 	return matchCount;
@@ -154,7 +154,7 @@ WinShareWindow::DoTabCompletion(QString origText, QString & result, const char *
 		if (numMatches == 1)
 		{
 			WString wResult = qres;
-			PRINT("Found match %S\n", wResult);
+			PRINT("Found match %S\n", wResult.getBuffer());
 
 			matchString = (const char *) qres.utf8();  // found a unique match!  We're done!
 			startAt = matchAt;
@@ -163,7 +163,7 @@ WinShareWindow::DoTabCompletion(QString origText, QString & result, const char *
 		else if (numMatches > 1)
 		{
 			WString wResult = qres;
-			PRINT("Found multiple matches %S\n", wResult);
+			PRINT("Found multiple matches %S\n", wResult.getBuffer());
 
 			backupMatchString = (const char *) qres.utf8();  // found several matches; keep trying for a single
 			backupStartAt = matchAt;         // but we'll use this if nothing else
@@ -304,7 +304,7 @@ WinShareWindow::NameSaid2(String sname, QString & msg, unsigned long index)
 		smsg += QString::fromUtf8(itxt2.Cstr()); // <postmaster@raasu.org> 20021005
 
 		WString wMessage = smsg;
-		PRINT("Name said string: %S\n", wMessage);
+		PRINT("Name said string: %S\n", wMessage.getBuffer());
 
 		msg = smsg;
 		return true;

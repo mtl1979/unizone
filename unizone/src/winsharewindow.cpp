@@ -549,14 +549,14 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					WTextEvent te("");
 
 					WString wText = wpe->GetText();
-					PRINT("wpe->GetText() %S\n", wText);
+					PRINT("wpe->GetText() %S\n", wText.getBuffer());
 
 					te.SetText(wpe->GetText());
 					if (wpe->GetWantReply())	// reply wanted... do the following...
 					{
 						bool rep = false;
 						wText = te.Text();
-						PRINT("Sending the following text to SendChatText %S\n", wText);
+						PRINT("Sending the following text to SendChatText %S\n", wText.getBuffer());
 
 						SendChatText(&te, &rep);
 						if (rep)	// does this event WANT a reply
@@ -1290,7 +1290,11 @@ WinShareWindow::PrintText(const QString & str)
 	if (fChatText->text().isEmpty())
 		fChatText->setText(out);
 	else
-		fChatText->append("\t" + out);
+		fChatText->append(
+#if (QT_VERSION < 0x030100)
+					"\t" +
+#endif
+ 					out);
 	fMainLog.LogString(out);
 	UpdateTextView();
 }
@@ -1506,25 +1510,33 @@ WinShareWindow::LoadSettings()
 		// load servers
 		for (i = 0; (str = fSettings->GetServerItem(i)) != QString::null; i++)
 			fServerList->insertItem(str, i);
-		fServerList->setCurrentItem(fSettings->GetCurrentServerItem());
+		i = fSettings->GetCurrentServerItem();
+		if (i < fServerList->count())
+			fServerList->setCurrentItem(i);
 		fServer = fServerList->currentText();
 		
 		// load usernames
 		for (i = 0; (str = fSettings->GetUserItem(i)) != QString::null; i++)
 			fUserList->insertItem(str, i);
-		fUserList->setCurrentItem(fSettings->GetCurrentUserItem());
+		i = fSettings->GetCurrentUserItem();
+		if (i < fUserList->count());
+			fUserList->setCurrentItem(i);
 		fUserName = fUserList->currentText();
 
 		// load status
 		for (i = 0; (str = fSettings->GetStatusItem(i)) != QString::null; i++)
 			fStatusList->insertItem(str, i);
-		fStatusList->setCurrentItem(fSettings->GetCurrentStatusItem());
+		i = fSettings->GetCurrentStatusItem();
+		if (i < fStatusList->count())
+			fStatusList->setCurrentItem(i);
 		fUserStatus = fStatusList->currentText();
 
 		// load query history
 		for (i = 0; (str = gWin->fSettings->GetQueryItem(i)) != QString::null; i++)
 			fSearchEdit->insertItem(str, i);
-		fSearchEdit->setCurrentItem(fSettings->GetCurrentQueryItem());
+		i = fSettings->GetCurrentQueryItem();
+		if (i < fSearchEdit->count())
+			fSearchEdit->setCurrentItem(i);
 
 		// load the style
 		switch (fSettings->GetStyle())
@@ -1579,7 +1591,7 @@ WinShareWindow::LoadSettings()
 		fAwayMsg = fSettings->GetAwayMsg();
 
 		WString wAwayMsg = fAwayMsg;
-		PRINT("Away Msg: %S\n", wAwayMsg);
+		PRINT("Away Msg: %S\n", wAwayMsg.getBuffer());
 		
 		fHereMsg = fSettings->GetHereMsg();
 
@@ -1691,7 +1703,7 @@ WinShareWindow::LoadSettings()
 				{
 					if ((_dock[i1] == d1) && (_index[i1] == ip))
 					{
-						QToolBar * tb;
+						QToolBar * tb = NULL;
 						switch (i1)
 						{
 						case 0: tb = fTBMenu;
@@ -1727,7 +1739,7 @@ WinShareWindow::SaveSettings()
 	{
 		fSettings->AddServerItem(fServerList->text(i));
 		wServer = fServerList->text(i);
-		PRINT("Saved server %S\n", wServer);
+		PRINT("Saved server %S\n", wServer.getBuffer());
 	}
 	fSettings->SetCurrentServerItem(fServerList->currentItem());
 	
@@ -1737,7 +1749,7 @@ WinShareWindow::SaveSettings()
 	{
 		fSettings->AddUserItem(fUserList->text(i));
 		wUser = fUserList->text(i);
-		PRINT("Saved user %S\n", wUser);
+		PRINT("Saved user %S\n", wUser.getBuffer());
 	}
 	fSettings->SetCurrentUserItem(fUserList->currentItem());
 	
@@ -1747,7 +1759,7 @@ WinShareWindow::SaveSettings()
 	{
 		fSettings->AddStatusItem(fStatusList->text(i));
 		wStatus = fStatusList->text(i);
-		PRINT("Saved status %S\n", wStatus);
+		PRINT("Saved status %S\n", wStatus.getBuffer());
 	}
 	fSettings->SetCurrentStatusItem(fStatusList->currentItem());
 
@@ -1758,7 +1770,7 @@ WinShareWindow::SaveSettings()
 		fSettings->AddQueryItem(fSearchEdit->text(i));
 
 		wQuery = fSearchEdit->text(i);
-		PRINT("Saved query %S\n", wQuery);
+		PRINT("Saved query %S\n", wQuery.getBuffer());
 	}
 	fSettings->SetCurrentQueryItem(fSearchEdit->currentItem());
 
@@ -1984,7 +1996,7 @@ WinShareWindow::MapIPsToNodes(const QString & pattern)
 	}
 
 	WString wResult = qResult;
-	PRINT("MapIPsToNodes: %S\n", wResult);
+	PRINT("MapIPsToNodes: %S\n", wResult.getBuffer());
 
 	return qResult;
 }
@@ -2034,7 +2046,7 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 	}
 
 	WString wResult = qResult;
-	PRINT("MapUsersToIDs: %S\n", wResult);
+	PRINT("MapUsersToIDs: %S\n", wResult.getBuffer());
 
 	return qResult;
 }

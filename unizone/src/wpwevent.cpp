@@ -34,7 +34,7 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg)
 			fMsg += smsg;
 			
 			WString wText = fMsg;
-			PRINT("Sending text: %S\n", wText);
+			PRINT("Sending text: %S\n", wText.getBuffer());
 		}
 	}
 	else

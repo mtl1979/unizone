@@ -103,7 +103,7 @@ WUser::InitName(const Message * msg)
 
 	WString wUser = fUserName;
 	PRINT("WUser: %S is a %s with installid %d on port %d\n", 
-		wUser, (fBot ? "bot" : "user"), fInstallID, fPort);
+		wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID, fPort);
 }
 
 void
@@ -116,7 +116,7 @@ WUser::InitStatus(const Message * msg)
 		fUserStatus = "?";
 	WString wUser = fUserName;
 	WString wStatus = fUserStatus;
-	PRINT("WUser: %S with status %S\n", wUser, wStatus);
+	PRINT("WUser: %S with status %S\n", wUser.getBuffer(), wStatus.getBuffer());
 }
 
 void
@@ -128,7 +128,7 @@ WUser::InitUploadStats(const Message * msg)
 	if (msg->FindInt32("max", (int32 *)&m) == B_OK)
 		fMaxUploads = m;
 	WString wUser = fUserName;
-	PRINT("WUser: %S with %d of %d uploads going\n", wUser, fCurUploads, fMaxUploads);
+	PRINT("WUser: %S with %d of %d uploads going\n", wUser.getBuffer(), fCurUploads, fMaxUploads);
 }
 
 void
@@ -145,7 +145,7 @@ WUser::InitBandwidth(const Message * msg)
 		fBandwidthLabel = QString::fromUtf8(l);
 	WString wUser = fUserName;
 	WString wBandwidth = fBandwidthLabel;
-	PRINT("WUser: %S with label %S and bps %d\n", wUser, wBandwidth, fBandwidthBPS);
+	PRINT("WUser: %S with label %S and bps %d\n", wUser.getBuffer(), wBandwidth.getBuffer(), fBandwidthBPS);
 }
 
 void
@@ -155,7 +155,7 @@ WUser::InitFileCount(const Message * msg)
 	if (msg->FindInt32("filecount", &fc) == B_OK)
 		fFileCount = fc;
 	WString wUser = fUserName;
-	PRINT("WUser: %S with filecount %d\n", wUser, fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
+	PRINT("WUser: %S with filecount %d\n", wUser.getBuffer(), fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
 }
 
 void

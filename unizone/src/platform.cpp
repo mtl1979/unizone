@@ -10,6 +10,10 @@
 #include <qstring.h>
 #include <qdatetime.h>
 
+#if (QT_VERSION >= 0x030100)
+#include <qregexp.h>
+#endif
+
 #ifdef WIN32
 #include <windows.h>
 
@@ -88,7 +92,7 @@ CompareCommand(QString qCommand, const char * cCommand)
 {
 	QString com = GetCommandString(qCommand);
 	WString wCommand = com;
-	PRINT("Compare String: qCommand=\'%S\'\n", wCommand);
+	PRINT("Compare String: qCommand=\'%S\'\n", wCommand.getBuffer());
 	PRINT("                cCommand=\'%s\'\n", cCommand);
 	return (strcmp(com.latin1(), cCommand) ? false : true);
 }
@@ -445,12 +449,16 @@ GetTimeStamp()
 	qCurTime.truncate(qCurTime.findRev(" "));			// Strip off year
 	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);	// ... and day of week
 	
+	// Linux ;)
+	QChar q(160,0);
+	qCurTime.replace(QRegExp(q), "");
+	//
 	QString qMonth = qCurTime.left(3);
 	qMonth = TranslateMonth(qMonth);
 	
 	qCurTime = qCurTime.mid(3);
 	
-	qCurTime = qCurTime.prepend(qMonth);
+	 qCurTime = qCurTime.prepend(qMonth);
 	qCurTime = qCurTime.prepend("[");
 	qCurTime = qCurTime.append("] ");
 

@@ -211,7 +211,11 @@ WPrivateWindow::PrintText(const QString & str)
 	if (fText->text().isEmpty())
 		fText->setText(output);
 	else
-		fText->append("\t" + output);
+		fText->append(
+#if (QT_VERSION < 0x030100)
+				"\t" + 
+#endif
+				output);
 	UpdateView();
 }
 
@@ -421,7 +425,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 					WString wMessage = message;
-					PRINT("\t\t%S\n", wMessage);
+					PRINT("\t\t%S\n", wMessage.getBuffer());
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
 					if (e)
@@ -439,7 +443,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 					WString wMessage = message;
-					PRINT("\t\t%S\n", wMessage);
+					PRINT("\t\t%S\n", wMessage.getBuffer());
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
 					if (e)

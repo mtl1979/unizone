@@ -34,6 +34,7 @@ public:
 	~WString();
 
 	operator wchar_t *() const { return buffer; };
+	wchar_t *getBuffer() const { return buffer; };
 	QString toQString() const;
 	WString &operator=(const wchar_t *);
 	WString &operator=(const WString &);

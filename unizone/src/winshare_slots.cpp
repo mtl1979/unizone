@@ -185,7 +185,7 @@ WinShareWindow::TabPressed(QString str)
 		PRINT("Returned true\n");
 	}
 	WString wResult = result;
-	PRINT("Tab completion result: %S\n", wResult);
+	PRINT("Tab completion result: %S\n", wResult.getBuffer());
 }
 
 void
@@ -457,7 +457,7 @@ WinShareWindow::CheckResumes(QString user)
 {
 	// No need to check if empty!
 	WString wUser = StripURL(user);
-	PRINT("CheckResumes: user   = %S\n", wUser);
+	PRINT("CheckResumes: user   = %S\n", wUser.getBuffer());
 
 	if (fResumeMap.empty()) 
 		return;
@@ -476,7 +476,7 @@ WinShareWindow::CheckResumes(QString user)
 	while (it != fResumeMap.end())
 	{
 		WString wSecond = StripURL((*it).first);
-		PRINT("CheckResumes: user = %S\n", wSecond);
+		PRINT("CheckResumes: user = %S\n", wSecond.getBuffer());
 
 		if (StripURL((*it).first) == StripURL(user))
 		{

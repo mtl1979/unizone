@@ -71,8 +71,7 @@ WUniListItem::key(int c, bool asc) const
 		{
 			result = fKey[c];
 			wResult = result;
-			PRINT("\tRESULT STARTS AS\t %S\n", wResult);
-			delete wResult;
+			PRINT("\tRESULT STARTS AS\t %S\n", wResult.getBuffer());
 
 			bool ok;
 			n = result.toLong(&ok);
@@ -81,7 +80,7 @@ WUniListItem::key(int c, bool asc) const
 				// convert our number to hexadecimal! what a thought, huh?
 				result.sprintf("0x%08x", n);
 				wResult = result;
-				PRINT("\tRESULT IS %S\n", wResult);
+				PRINT("\tRESULT IS %S\n", wResult.getBuffer());
 			}
 			return result;
 		}
@@ -89,7 +88,7 @@ WUniListItem::key(int c, bool asc) const
 		{
 			result = fKey[c];
 			wResult = result;
-			PRINT("\tRESULT STARTS AS\t %S\n", wResult);
+			PRINT("\tRESULT STARTS AS\t %S\n", wResult.getBuffer());
 
 			bool ok;
 			n = (long) result.toDouble(&ok); // We need to convert from double to long
@@ -98,7 +97,7 @@ WUniListItem::key(int c, bool asc) const
 				// convert our number to hexadecimal! what a thought, huh?
 				result.sprintf("0x%08x", n);
 				wResult = result;
-				PRINT("\tRESULT IS %S\n", wResult);
+				PRINT("\tRESULT IS %S\n", wResult.getBuffer());
 			}
 			return result;
 		}

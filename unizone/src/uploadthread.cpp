@@ -661,7 +661,7 @@ WUploadThread::DoUpload()
 
 				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
 				WString wFileUl = fFileUl; 
-				PRINT("WUploadThread::DoUpload: filePath = %S\n", wFileUl); 
+				PRINT("WUploadThread::DoUpload: filePath = %S\n", wFileUl.getBuffer()); 
 				
 				fFile = new QFile(fFileUl);
 				CHECK_PTR(fFile);

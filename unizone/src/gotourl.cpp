@@ -57,7 +57,7 @@ bool GotoURL(QString url, int showcmd)
     bool retflag = FALSE;
 
 	WString tUrl = url;
-	PRINT("GotoURL: tUrl = %S\n",tUrl);
+	PRINT("GotoURL: tUrl = %S\n",tUrl.getBuffer());
 	// <postmaster@raasu.org> 20021103 -- Use NULL instead of L"open", L"open" doesn't seem to work on WinME
     if((long)ShellExecuteW(NULL, NULL, tUrl, NULL, NULL, showcmd) > 32)
         retflag = TRUE;
@@ -83,7 +83,7 @@ GotoURL(QString url, QString browser)
 	launch += "\"";
 
 	WString wLaunch = launch;
-	PRINT("Launching %S\n", wLaunch);
+	PRINT("Launching %S\n", wLaunch.getBuffer());
 
 	system(launch);
 	return true;

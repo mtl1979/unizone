@@ -938,7 +938,7 @@ WDownload::customEvent(QCustomEvent * e)
 
 					WString wUser = uname;
 					PRINT("USER ID  : %s\n", user.Cstr());
-					PRINT("USER NAME: %S\n", wUser);
+					PRINT("USER NAME: %S\n", wUser.getBuffer());
 
 					if (strcmp(uname.latin1(), user.Cstr()) == 0) // No user name?
 					{
@@ -2426,7 +2426,7 @@ WDownload::UpdateULRatings()
 		if ((*it).second)
 		{
 			WString wFile = (*it).second->text(WTransferItem::Filename);
-			PRINT("Item %d: %S\n", qr, wFile );
+			PRINT("Item %d: %S\n", qr, wFile.getBuffer() );
 
 			(*it).second->setText(WTransferItem::QR, QString::number(qr++));
 		}

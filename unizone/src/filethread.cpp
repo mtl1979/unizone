@@ -83,7 +83,7 @@ WFileThread::ParseDir(const QString & d)
 	CHECK_PTR(info);
 
 	WString wD = d;
-	PRINT("Parsing directory %S\n", wD);
+	PRINT("Parsing directory %S\n", wD.getBuffer());
 
 	// Directory doesn't exist?
 	if (!info->exists())
@@ -163,7 +163,7 @@ WFileThread::ScanFiles(QString directory)
 				}
 
 				WString wData = ndata;
-				PRINT("\tChecking file %S\n", wData);
+				PRINT("\tChecking file %S\n", wData.getBuffer());
 
 				QString filePath = dir->absFilePath(ndata);
 
@@ -180,7 +180,7 @@ void
 WFileThread::AddFile(const QString & filePath)
 {
 	WString wFilePath = filePath;
-	PRINT("Setting to filePath: %S\n", wFilePath);
+	PRINT("Setting to filePath: %S\n", wFilePath.getBuffer());
 	
 	QFileInfo * finfo = new QFileInfo(filePath);
 	CHECK_PTR(finfo);
@@ -195,7 +195,7 @@ WFileThread::AddFile(const QString & filePath)
 		QString ret = ResolveLink(finfo->filePath());
 
 		WString wRet = ret;
-		PRINT("Resolved to: %S\n", wRet);
+		PRINT("Resolved to: %S\n", wRet.getBuffer());
 
 		finfo->setFile(ret);
 					
@@ -254,7 +254,7 @@ WFileThread::ResolveLink(const QString & lnk)
 #ifdef WIN32
 	QString ret = lnk;
 	WString wRet = ret;
-	PRINT("\tResolving %S\n", wRet);
+	PRINT("\tResolving %S\n", wRet.getBuffer);
 
 	if (ret.right(4) == ".lnk")
 	{

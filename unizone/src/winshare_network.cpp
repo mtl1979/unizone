@@ -995,7 +995,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 			{
 				WString wUser = (*iter).second.user()->GetUserName();
 				WString wText = (*iter).second.text;
-				PRINT("Found user %S and rest of text %S\n", wUser, wText);
+				PRINT("Found user %S and rest of text %S\n", wUser.getBuffer(), wText.getBuffer());
 
 				user = (*iter).second.user;
 
@@ -2212,10 +2212,10 @@ bool
 WinShareWindow::IsIgnoredIP(QString ip)
 {
 	WString wIP = ip;
-	PRINT("IsIgnoredIP(%S)\n", wIP);
+	PRINT("IsIgnoredIP(%S)\n", wIP.getBuffer());
 
 	wIP = fIgnoreIP;
-	PRINT("IP IGNORE MASK: %S\n", wIP);
+	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
 
 	return MatchFilter(ip, (const char *) fIgnoreIP.utf8());
 }
@@ -2224,7 +2224,7 @@ bool
 WinShareWindow::AddIPIgnore(QString ip)
 {
 	WString wIP = ip;
-	PRINT("AddIPIgnore(%S)\n", wIP);
+	PRINT("AddIPIgnore(%S)\n", wIP.getBuffer());
 
 	if ( IsIgnoredIP(ip) )
 		return false;
@@ -2237,7 +2237,7 @@ WinShareWindow::AddIPIgnore(QString ip)
 		fIgnoreIP += ip.prepend(",");
 
 	wIP = fIgnoreIP;
-	PRINT("IP IGNORE MASK: %S\n", wIP);
+	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
 
 	return true;
 
@@ -2247,7 +2247,7 @@ bool
 WinShareWindow::RemoveIPIgnore(QString ip)
 {
 	WString wIP = ip;
-	PRINT("RemoveIPIgnore(%S)\n", wIP);
+	PRINT("RemoveIPIgnore(%S)\n", wIP.getBuffer());
 
 	if ( !IsIgnoredIP(ip) )
 		return false;
@@ -2299,7 +2299,7 @@ WinShareWindow::RemoveIPIgnore(QString ip)
 	}
 
 	wIP = fIgnoreIP;
-	PRINT("IP IGNORE MASK: %S\n", wIP);
+	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
 
 	return true;
 }
