@@ -44,6 +44,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fLocallyQueued = false;
 	fRemotelyQueued = false;
 	fDisconnected = false;
+	fConnecting = true;
 	fPackets = 0;
 	fTXRate = 0;
 	fTimeLeft = 0;
@@ -67,6 +68,8 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 			this, SLOT(MessageReceived(MessageRef, const String &)));
 	connect(qmtt, SIGNAL(SessionAttached(const String &)),
 			this, SLOT(SessionAttached(const String &)));
+	connect(qmtt, SIGNAL(SessionDetached(const String &)),
+			this, SLOT(SessionDetached(const String &)));
 	connect(qmtt, SIGNAL(SessionConnected(const String &)),
 			this, SLOT(SessionConnected(const String &)));
 	connect(qmtt, SIGNAL(ServerExited()),
@@ -238,8 +241,18 @@ WUploadThread::SetLocallyQueued(bool b)
 				SignalUpload();
 			}				
 		}
-		else if (fActive)
+		else if (fConnecting)
 		{
+			MessageRef con(GetMessageFromPool(WUploadEvent::ConnectInProgress));
+			if (con())
+			{
+				SendReply(con);
+			}
+		}
+		else if (!fFinished)
+		{
+			// fActive = false;
+			fFinished = true;
 			qmtt->Reset();
 			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 			if (fail())
@@ -247,8 +260,6 @@ WUploadThread::SetLocallyQueued(bool b)
 				fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
 				SendReply(fail);
 			}
-			fActive = false;
-			fFinished = true;
 		}
 	}
 }
@@ -322,6 +333,7 @@ void
 WUploadThread::SessionAttached(const String &sessionID)
 {
 	// If you aren't firewalled
+	fConnecting = false;
 	_sessionID = sessionID;
 	CTimer->stop();
 
@@ -333,11 +345,17 @@ WUploadThread::SessionAttached(const String &sessionID)
 		SendReply(con);
 	}
 }
+void
+WUploadThread::SessionDetached(const String &sessionID)
+{
+	SessionDisconnected(sessionID);
+}
 
 void
 WUploadThread::SessionConnected(const String &sessionID)
 {
 	// If you are firewalled
+	fConnecting = false;
 	_sessionID = sessionID;
 	CTimer->stop();
 
@@ -370,34 +388,30 @@ WUploadThread::SessionDisconnected(const String &sessionID)
 	*fShutdownFlag = true;
 	fDisconnected = true;
 
-	if (fFinished) // Do it only once...
+	if (fActive) // Do it only once...
 	{
-		return;
-	}
-	else
-	{
-		fFinished = true;
-	}
+		fActive = false;
 
-	if (fFile)
-	{
-		fFile->close();
-		delete fFile; 
-		fFile = NULL;
-	}
-
-	MessageRef dis(GetMessageFromPool(WUploadEvent::Disconnected));
-	if (dis())
-	{
-		if (fCurrentOffset < fFileSize || fUploads.GetNumItems() > 0)
+		if (fFile)
 		{
-			dis()->AddBool("failed", true);
+			fFile->close();
+			delete fFile; 
+			fFile = NULL;
 		}
-		else
+		
+		MessageRef dis(GetMessageFromPool(WUploadEvent::Disconnected));
+		if (dis())
 		{
-			dis()->AddBool("failed", false);
+			if (fCurrentOffset < fFileSize || fUploads.GetNumItems() > 0)
+			{
+				dis()->AddBool("failed", true);
+			}
+			else
+			{
+				dis()->AddBool("failed", false);
+			}
+			SendReply(dis);
 		}
-		SendReply(dis);
 	}
 }
 
@@ -477,7 +491,7 @@ WUploadThread::OutputQueuesDrained(MessageRef msg)
 		PRINT("\tfWaitingForUploadToFinish\n");
 		// qmtt->Reset();
 		fFinished = true;
-		fActive = false;
+		// fActive = false;
 		fWaitingForUploadToFinish = false;
 
 		PRINT("\t\tSending message\n");
@@ -570,20 +584,29 @@ WUploadThread::DoUpload()
 {
 	PRINT("WUploadThread::DoUpload\n");
 	if (fShutdownFlag && *fShutdownFlag)	// Do we need to interrupt?
-		return;
-
-	// Still connected?
-
-	if (!qmtt->IsInternalThreadRunning())
 	{
+		fFinished = true;
 		MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 		if (fail())
 		{
 			fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
 			SendReply(fail);
 		}
-		fActive = false;
+		return;
+	}
+
+	// Still connected?
+
+	if (!qmtt->IsInternalThreadRunning())
+	{
 		fFinished = true;
+		MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
+		if (fail())
+		{
+			fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
+			SendReply(fail);
+		}
+//		fActive = false;
 		return;
 	}
 
@@ -785,7 +808,7 @@ WUploadThread::DoUpload()
 			{
 				PRINT("No more files!\n");
 				fWaitingForUploadToFinish = true;
-				fActive = false;
+				// fActive = false;
 				fFinished = true;
 				fLocallyQueued = false;
 				MessageRef drain(GetMessageFromPool());
@@ -993,7 +1016,12 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 					
 		// also send a message along to our GUI telling it what the first file is
 					
-		if (fUploads.GetNumItems() != 0)
+		if (fUploads.GetNumItems() == 0)
+		{
+			fFinished = true;
+			Reset();
+		}
+		else
 		{
 			String firstFile;
 			const char * path, * filename;
@@ -1071,7 +1099,7 @@ WUploadThread::Reset()
 {
 	PRINT("WUploadThread::Reset()\n");
 	SetFinished(true);
-	SetActive(false);
+//	SetActive(false);
 	SetLocallyQueued(false);
 	if ( fShutdownFlag )
 		*fShutdownFlag = true;

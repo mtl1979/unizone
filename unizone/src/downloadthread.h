@@ -172,15 +172,4 @@ private:
 	void InitTransferETA();
 };
 
-// subclass ThreadWorkerSessionFactory to do throttling
-class WDownloadThreadWorkerSessionFactory : public ThreadWorkerSessionFactory
-{
-public:
-	WDownloadThreadWorkerSessionFactory(int limit);
-	AbstractReflectSession * CreateSession(const String &);
-	
-private:
-	int fLimit;
-};
-
 #endif

@@ -1,4 +1,5 @@
 #include "downloadthread.h"
+#include "downloadworker.h"
 #include "downloadimpl.h"
 #include "wdownloadevent.h"
 #include "md5.h"
@@ -766,81 +767,77 @@ WDownloadThread::ServerExited()
 void
 WDownloadThread::SessionDisconnected(const String &sessionID)
 {
-	if (fFinished) // Do it only once...
+	if (fActive) // Do it only once...
 	{
-		return;
-	}
-	else
-	{
-		fFinished = true;
-	}
-	
-	if (timerID != 0) 
-	{
-		killTimer(timerID);
-		timerID = 0;
-	}
-
-	MessageRef dis;
-	if (fDownloading)
-	{
-		if (fCurrentOffset != fFileSize)
+		fActive = false;
+		
+		if (timerID != 0) 
 		{
-			dis = GetMessageFromPool(WDownloadEvent::Disconnected);
-			if (dis())
-			{
-				dis()->AddBool("failed", true);
-				SendReply(dis);
-			}
+			killTimer(timerID);
+			timerID = 0;
 		}
-		else if (fCurrentOffset == fFileSize)
+		
+		MessageRef dis;
+		if (fDownloading)
 		{
-			if (IsLastFile())
+			if (fCurrentOffset != fFileSize)
 			{
-				fFinished = true;
-				dis = GetMessageFromPool(WDownloadEvent::FileDone);
-				if (dis())
-				{
-					dis()->AddBool("done", true);		
-					dis()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
-					SendReply(dis);
-				}
-			}
-			else
-			{
-				NextFile();
-
-				dis = GetMessageFromPool(WDownloadEvent::FileFailed);
+				dis = GetMessageFromPool(WDownloadEvent::Disconnected);
 				if (dis())
 				{
 					dis()->AddBool("failed", true);
 					SendReply(dis);
 				}
 			}
-		}
-	}
-	else
-	{
-		dis = GetMessageFromPool(WDownloadEvent::Disconnected);
-		if (dis())
-		{
-			if (fCurFile == -1)
-				dis()->AddBool("failed", false);
-			else
-				dis()->AddBool("failed", true);
-
-			SendReply(dis);
-		}
-	}
+			else if (fCurrentOffset == fFileSize)
+			{
+				if (IsLastFile())
+				{
+					fFinished = true;
+					dis = GetMessageFromPool(WDownloadEvent::FileDone);
+					if (dis())
+					{
+						dis()->AddBool("done", true);		
+						dis()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
+						SendReply(dis);
+					}
+				}
+				else
+				{
+					NextFile();
 					
-	if (fFile != NULL)
-	{
-		fFile->close();
-		delete fFile; 
-		fFile = NULL;
+					dis = GetMessageFromPool(WDownloadEvent::FileFailed);
+					if (dis())
+					{
+						dis()->AddBool("failed", true);
+						SendReply(dis);
+					}
+				}
+			}
+		}
+		else
+		{
+			dis = GetMessageFromPool(WDownloadEvent::Disconnected);
+			if (dis())
+			{
+				if (fCurFile == -1)
+					dis()->AddBool("failed", false);
+				else
+					dis()->AddBool("failed", true);
+				
+				SendReply(dis);
+			}
+		}
+		
+		if (fFile != NULL)
+		{
+			fFile->close();
+			delete fFile; 
+			fFile = NULL;
+		}
+		fDownloading = false;
+		fDisconnected = true;
 	}
-	fDownloading = false;
-	fDisconnected = true;
 }
 
 QString
@@ -919,24 +916,6 @@ WDownloadThread::SetBlocked(bool b, int64 timeLeft)
 		fLastData.restart();
 	}
 }
-
-// -----------------------------------------------------------------------------
-WDownloadThreadWorkerSessionFactory::WDownloadThreadWorkerSessionFactory(int limit)
-{
-	fLimit = limit;
-}
-
-AbstractReflectSession *
-WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
-{
-	AbstractReflectSession * ref = ThreadWorkerSessionFactory::CreateSession(s);
-	if (ref && fLimit != 0)
-	{
-		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(fLimit), NULL));
-	}
-	return ref;
-}
-
 
 QString
 WDownloadThread::GetCurrentFile()
@@ -1030,7 +1009,7 @@ WDownloadThread::Reset()
 {
 	PRINT("WDownloadThread::Reset()\n");
 	SetFinished(true);
-	SetActive(false);
+//	SetActive(false);
 	SetLocallyQueued(false);
 	if ( fShutdownFlag )
 		*fShutdownFlag = true;

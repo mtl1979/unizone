@@ -2232,11 +2232,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>On connect: %1</source>
-        <translation>An Verbindung: %1</translation>
+        <translation type='obsolete'>An Verbindung: %1</translation>
     </message>
     <message>
         <source>On connect 2: %1</source>
-        <translation>An Verbindung 2: %1</translation>
+        <translation type='obsolete'>An Verbindung 2: %1</translation>
     </message>
     <message>
         <source>Remote password: %1</source>
@@ -3032,7 +3032,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>On Connect 2: %1</source>
-        <translation>verbunden 2: %1</translation>
+        <translation type='obsolete'>verbunden 2: %1</translation>
     </message>
     <message>
         <source>Help for %1:</source>
@@ -3208,7 +3208,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>On Connect: %1</source>
-        <translation>verbunden: %1</translation>
+        <translation type='obsolete'>verbunden: %1</translation>
     </message>
     <message>
         <source>passive</source>
@@ -3260,6 +3260,22 @@ Date: %4</translation>
     </message>
     <message>
         <source>Cleared resume list.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>On connect:</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>1. %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>2. %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>On Connect:</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

@@ -15,7 +15,7 @@
 #include "privatewindowimpl.h"
 #include "prefsimpl.h"
 #include "settings.h"
-#include "search.h"
+// #include "search.h"
 #include "gotourl.h"
 #include "util/StringTokenizer.h"
 #include "textevent.h"

@@ -25,7 +25,7 @@ public:
 
 	enum
 	{
-		ConnectFailed = 'gEcF',	// sent when the connection failed
+		ConnectFailed = 'dEcF',	// sent when the connection failed
 		ConnectInProgress,		// the connection is being established
 		Connected,				// session was connected, negotiating the connection with the remote client
 		Disconnected,			// we got disconnected from the peer before the file was completed

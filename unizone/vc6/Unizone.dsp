@@ -140,6 +140,10 @@ SOURCE=..\src\downloadthread.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\downloadworker.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\fileinfo.cpp
 # End Source File
 # Begin Source File
@@ -208,7 +212,7 @@ SOURCE=..\src\moc_downloadimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_genericthread.cpp
+SOURCE=..\src\moc_downloadthread.cpp
 # End Source File
 # Begin Source File
 
@@ -261,6 +265,10 @@ SOURCE=..\src\moc_ulistview.cpp
 # Begin Source File
 
 SOURCE=..\src\moc_updateclient.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_uploadthread.cpp
 # End Source File
 # Begin Source File
 
@@ -640,6 +648,39 @@ InputName=downloadimpl
 # Begin Source File
 
 SOURCE=..\src\downloadthread.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\downloadthread.h
+InputName=downloadthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\downloadthread.h
+InputName=downloadthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\downloadworker.h
 # End Source File
 # Begin Source File
 
@@ -652,39 +693,6 @@ SOURCE=..\src\filethread.h
 # Begin Source File
 
 SOURCE=..\src\formatting.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\genericthread.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\genericthread.h
-InputName=genericthread
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\src\genericthread.h
-InputName=genericthread
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -1078,6 +1086,10 @@ SOURCE=..\src\transferitem.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\transferlist.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\ulistview.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
@@ -1145,6 +1157,35 @@ InputName=updateclient
 # Begin Source File
 
 SOURCE=..\src\uploadthread.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\uploadthread.h
+InputName=uploadthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\uploadthread.h
+InputName=uploadthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1157,6 +1198,10 @@ SOURCE=..\src\userlistitem.h
 # Begin Source File
 
 SOURCE=..\src\version.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wdownloadevent.h
 # End Source File
 # Begin Source File
 
@@ -1206,6 +1251,10 @@ SOURCE=..\src\wstatusbar.h
 # Begin Source File
 
 SOURCE=..\src\wstring.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wuploadevent.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

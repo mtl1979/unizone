@@ -22,7 +22,7 @@ using std::iterator;
 #include <qpopupmenu.h>
 
 #include "transferlist.h"
-#include "transferitem.h"
+//#include "transferitem.h"
 #include "debugimpl.h"
 
 class MD5Thread;
@@ -35,6 +35,7 @@ class WUploadEvent;
 class WUploadThread;
 class WFileThread;
 class WUser;
+class WTransferItem;
 
 // This class needs to be able to handle downloads AND uploads
 class WDownload : public QDialog

@@ -4,8 +4,8 @@ LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
 OBJFILES = aboutdlg.o aboutdlgimpl.o botitem.o chattext.o \
-colors.o combo.o downloadimpl.o downloadthread.o fileinfo.o \
-filethread.o formatting.o gotourl.o main.o md5.o \
+colors.o combo.o downloadimpl.o downloadthread.o downloadworker.o \
+fileinfo.o filethread.o formatting.o gotourl.o main.o md5.o \
 menubar.o moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
 moc_downloadimpl.o moc_downloadthread.o moc_htmlview.o moc_netclient.o \
 moc_prefs.o moc_prefsimpl.o moc_privatewindow.o moc_privatewindowimpl.o \

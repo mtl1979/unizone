@@ -113,6 +113,7 @@ public slots:
 	void ServerExited();
 	void SessionConnected(const String &sessionID);
     void SessionAttached(const String & sessionID);
+	void SessionDetached(const String & sessionID);
 	void SessionDisconnected(const String &sessionID);
 	void MessageReceived(MessageRef msg, const String &sessionID);
 	void OutputQueuesDrained(MessageRef msg);
@@ -132,6 +133,7 @@ protected:
 	bool fActive;
 	bool fBlocked;
 	bool fFinished;
+	bool fConnecting;
 	volatile bool fDisconnected;
 	double fRate[MAX_RATE_COUNT];	// last 20 rates
 	int fRateCount;					// amount we have, 20 max

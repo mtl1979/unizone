@@ -2353,11 +2353,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>On connect: %1</source>
-        <translation>Yhdistäessä tee: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee: %1</translation>
     </message>
     <message>
         <source>On connect 2: %1</source>
-        <translation>Yhdistäessä tee myös: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee myös: %1</translation>
     </message>
     <message>
         <source>Remote password: %1</source>
@@ -3153,7 +3153,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>On Connect 2: %1</source>
-        <translation>Yhdistäessä tee myös: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee myös: %1</translation>
     </message>
     <message>
         <source>Help for %1:</source>
@@ -3329,7 +3329,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>On Connect: %1</source>
-        <translation>Yhdistäessä tee: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee: %1</translation>
     </message>
     <message>
         <source>passive</source>
@@ -3382,6 +3382,22 @@ Päiväys: %4</translation>
     <message>
         <source>Cleared resume list.</source>
         <translation>Resume-luettelo tyhjennetty.</translation>
+    </message>
+    <message>
+        <source>On connect:</source>
+        <translation type='obsolete'>Yhdistäessä tee:</translation>
+    </message>
+    <message>
+        <source>1. %1</source>
+        <translation>1. %1</translation>
+    </message>
+    <message>
+        <source>2. %1</source>
+        <translation>2. %1</translation>
+    </message>
+    <message>
+        <source>On Connect:</source>
+        <translation>Yhdistäessä tee:</translation>
     </message>
 </context>
 </TS>

@@ -31,7 +31,7 @@
 #include "qtsupport/QAcceptSocketsThread.h"
 #include "regex/StringMatcher.h"
 #include "support/MuscleSupport.h"
-#include "search.h"
+// #include "search.h"
 #include "user.h"
 
 using namespace muscle;

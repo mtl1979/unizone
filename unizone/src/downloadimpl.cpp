@@ -842,14 +842,14 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			msg()->FindString("why", why);
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
 			dt->SetFinished(true);
-			dt->SetActive(false);
+//			dt->SetActive(false);
 			for (int n = dt->GetCurrentNum(); n < dt->GetNumFiles(); n++)
 			{
 				QString qFile = dt->GetFileName(n);
 				QString qLFile = dt->GetLocalFileName(n);
 				emit FileFailed(qFile, qLFile, dt->GetRemoteUser());
 			}
-			// dt->Reset();
+			dt->Reset();
 			if (gWin->fSettings->GetAutoClear())
 			{
 				SendSignal(ClearDownloads);
@@ -882,7 +882,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			else
 			{
 				dt->SetFinished(true);
-				dt->SetActive(false);
+//				dt->SetActive(false);
 				// emit FileFailed signal(s), so we can record the filename and remote username for resuming later
 				bool f;
 				if (msg()->FindBool("failed", &f) == B_OK)
@@ -907,7 +907,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 					}
 				}
 			}
-			// dt->Reset();
+			dt->Reset();
 			if (gWin->fSettings->GetAutoClear())
 			{
 				SendSignal(ClearDownloads);
@@ -1233,8 +1233,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 			msg()->FindString("why", why);
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
 			ut->SetFinished(true);
-			ut->SetActive(false);
-			// ut->Reset();
+			// ut->SetActive(false);
+			ut->Reset();
 			
 			if (gWin->fSettings->GetAutoClear())
 			{
@@ -1270,7 +1270,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 			}
 			
 			ut->SetFinished(true);
-			ut->SetActive(false);
+//			ut->SetActive(false);
 			ut->SetLocallyQueued(false);
 			
 			if (gWin->fSettings->GetAutoClear())
@@ -1292,10 +1292,10 @@ WDownload::uploadEvent(WUploadEvent *u)
 				PRINT("\tFound done\n");
 				if (ut->IsLastFile())
 				{
-					// ut->Reset();
-					msg()->what = WUploadEvent::Disconnected;
-					WUploadEvent *due = new WUploadEvent(msg);
-					if (due) QApplication::postEvent(this, due);
+					ut->Reset();
+					// msg()->what = WUploadEvent::Disconnected;
+					// WUploadEvent *due = new WUploadEvent(msg);
+					// if (due) QApplication::postEvent(this, due);
 				}
 				item->setText(WTransferItem::Status, tr("Finished."));
 				item->setText(WTransferItem::ETA, "");
@@ -1665,7 +1665,7 @@ WDownload::DLPopupActivated(int id)
 			// found our item, stop it
 			fDLPopupItem->setText(WTransferItem::Status, tr("Canceled."));
 			dt->SetFinished(true);
-			dt->SetActive(false);
+//			dt->SetActive(false);
 			dt->Reset();
 			Unlock();
 			
@@ -1908,7 +1908,7 @@ WDownload::ULPopupActivated(int id)
 			// found our item, stop it
 			fULPopupItem->setText(WTransferItem::Status, tr("Canceled."));
 			ut->SetFinished(true);
-			ut->SetActive(false);
+//			ut->SetActive(false);
 			ut->Reset();
 			Unlock();
 			
