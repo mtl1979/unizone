@@ -199,16 +199,16 @@ String::Replace(const String& match, const String& replace)
    {
       String temp(*this);
       String newString;
- 
-      int loc; 
+
+      int loc;
       while ((loc = temp.IndexOf(match)) != -1)
       {
          ret = B_NO_ERROR;
          newString += temp.Substring(0, loc);
          newString += replace;
          temp = temp.Substring(loc + match.Length());
-      } 
-      if (ret == B_NO_ERROR) 
+      }
+      if (ret == B_NO_ERROR)
       {
          newString += temp;
          *this = newString;
@@ -484,6 +484,63 @@ status_t String::EnsureBufferSize(uint32 requestedBufLen, bool retainValue)
       }
    }
    return B_NO_ERROR;
+}
+
+String String :: Pad(uint32 minLength, bool padOnRight, char padChar) const
+{
+   if (Length() < minLength)
+   {
+      uint32 padLen = minLength-Length();
+      String temp; temp += padChar;
+      return (padOnRight) ? Append(temp, padLen) : Prepend(temp, padLen);
+   }
+   else return *this;
+}
+
+#define ARG_IMPLEMENTATION   \
+   char buf[256];            \
+   sprintf(buf, fmt, value); \
+   return ArgAux(buf)
+
+String String :: Arg(int8   value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(uint8  value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(int16  value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(uint16 value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(int32  value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(uint32 value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(int64  value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(uint64 value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(double value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(const String & value)           const {return ArgAux(value());}
+
+String String :: ArgAux(const char * buf) const
+{
+   int32 lowestArg = -1;
+   const char * s = Cstr();
+   while(*s != '\0')
+   {
+      if (*s == '%')
+      {
+         s++;
+         if (muscleInRange(*s, '0', '9'))
+         {
+            int32 val = atol(s);
+            lowestArg = (lowestArg < 0) ? val : muscleMin(val, lowestArg);
+            while(muscleInRange(*s, '0', '9')) s++; 
+         }
+      }
+      else s++;
+   }
+
+   if (lowestArg >= 0)
+   {
+      char token[64];
+      sprintf(token, "%%%li", lowestArg);
+      String ret(*this);
+      (void) ret.Replace(token, buf);
+      return ret;
+   }
+   else return *this;
 }
 
 /*--- ElfHash --------------------------------------------------- 

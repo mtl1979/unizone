@@ -195,12 +195,12 @@ int32 RS232DataIO :: Read(void *buf, uint32 len)
       }
       else 
       {
-         int32 ret = CalculateReturnValue(recv(_masterNotifySocket, (char *)buf, len, 0L));
+         int32 ret = ConvertReturnValueToMuscleSemantics(recv(_masterNotifySocket, (char *)buf, len, 0L), len, _blocking);
          if (ret >= 0) SetEvent(_wakeupSignal);  // wake up the thread in case he has more data to give us
          return ret;
       }
 #else
-      return CalculateReturnValue(read(_handle, buf, len));
+      return ConvertReturnValueToMuscleSemantics(read(_handle, buf, len), len, _blocking);
 #endif
    }
    return -1;
@@ -218,12 +218,12 @@ int32 RS232DataIO :: Write(const void *buf, uint32 len)
       }
       else 
       {
-         int32 ret = CalculateReturnValue(send(_masterNotifySocket, (char *)buf, len, 0L));
-         if (ret >= 0) SetEvent(_wakeupSignal);  // wake up the thread so he'll check his socket for our new data
+         int32 ret = ConvertReturnValueToMuscleSemantics(send(_masterNotifySocket, (char *)buf, len, 0L), len, _blocking);
+         if (ret > 0) SetEvent(_wakeupSignal);  // wake up the thread so he'll check his socket for our new data
          return ret;
       }
 #else
-      return CalculateReturnValue(write(_handle, buf, len));
+      return ConvertReturnValueToMuscleSemantics(write(_handle, buf, len), len, _blocking);
 #endif
    }
    return -1;
@@ -503,7 +503,7 @@ void RS232DataIO :: IOThreadEntry()
       {
          SerialBuffer * buf = inQueue.Head();
          int32 bytesToWrite = buf->_length-buf->_index;
-         int32 bytesWritten = (bytesToWrite > 0) ? CalculateReturnValue(send(_slaveNotifySocket, &buf->_buf[buf->_index], bytesToWrite, 0L)) : 0;
+         int32 bytesWritten = (bytesToWrite > 0) ? ConvertReturnValueToMuscleSemantics(send(_slaveNotifySocket, &buf->_buf[buf->_index], bytesToWrite, 0L), bytesToWrite, false) : 0;
          if (bytesWritten > 0)
          {
             buf->_index += bytesWritten;
@@ -525,7 +525,7 @@ void RS232DataIO :: IOThreadEntry()
 
             // fill up the outBuf with as many more bytes as possible...
             int32 numBytesToRead = sizeof(outBuf._buf)-outBuf._length;
-            int32 numBytesRead = (numBytesToRead > 0) ? CalculateReturnValue(recv(_slaveNotifySocket, &outBuf._buf[outBuf._length], numBytesToRead, 0L)) : 0;
+            int32 numBytesRead = (numBytesToRead > 0) ? ConvertReturnValueToMuscleSemantics(recv(_slaveNotifySocket, &outBuf._buf[outBuf._length], numBytesToRead, 0L), numBytesToRead, false) : 0;
             if (numBytesRead > 0) outBuf._length += numBytesRead;
       
             // Try to write the bytes from outBuf to the serial port

@@ -79,6 +79,20 @@ uint64 Atoull(const char * str)
    return ret;
 }
 
+int64 Atoll(const char * str)
+{
+   bool negative = false;
+   const char * s = str;
+   while((*s)&&(muscleInRange(*s, '0', '9') == false))
+   {
+      if (*s == '-') negative = (negative == false);
+      s++;
+   }
+   int64 ret = (int64) Atoull(s);
+   return negative ? -ret : ret;
+}
+
+
 String GetHumanReadableTimeString(uint64 timeUS)
 {
    char buf[256] = ""; 

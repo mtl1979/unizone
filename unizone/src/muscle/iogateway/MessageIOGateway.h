@@ -28,7 +28,7 @@ enum {
    MUSCLE_MESSAGE_ENCODING_ZLIB_8,
    MUSCLE_MESSAGE_ENCODING_ZLIB_9,                           /**< highest level of zlib compression (most space-efficient) */
 #endif
-   MUSCLE_MESSAGE_ENCODING_END_MARKER = MUSCLE_MESSAGE_ENCODING_DEFAULT+10, /**< Not a valid -- just here to mark the end of the range */
+   MUSCLE_MESSAGE_ENCODING_END_MARKER = MUSCLE_MESSAGE_ENCODING_DEFAULT+10  /**< Not a valid -- just here to mark the end of the range */
 };
 
 /** Callback function type for flatten/unflatten notification callbacks */

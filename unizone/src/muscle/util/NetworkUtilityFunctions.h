@@ -8,9 +8,7 @@
 
 // These includes are here so that people can use select() without having to #include the proper
 // things themselves all the time.
-#ifdef WIN32
-# include <winsock.h>
-#else
+#ifndef WIN32
 # include <sys/types.h>
 # include <sys/socket.h>
 #endif
@@ -18,8 +16,6 @@
 #ifdef BONE
 # include <sys/select.h>  // sikosis at bebits.com says this is necessary... hmm.
 #endif
-
-#include <errno.h>
 
 namespace muscle {
 
@@ -114,30 +110,6 @@ status_t FinalizeAsyncConnect(int socket);
  */
 status_t ShutdownSocket(int socket, bool disableReception = true, bool disableTransmission = true);
 
-/** Checks errno and returns true iff the last network operation failed because 
-  * it would have had to block otherwise. 
-  */
-inline bool PreviousOperationWouldBlock()
-{
-#ifdef WIN32
-   return (WSAGetLastError() == WSAEWOULDBLOCK);
-#else
-   return (errno == EWOULDBLOCK);
-#endif
-}
-
-/** Checks errno and returns true iff the last network operation failed 
-  * because it was interrupted by a signal or etc.
-  */
-inline bool PreviousOperationWasInterrupted()
-{
-#ifdef WIN32
-   return (WSAGetLastError() == WSAEINTR);
-#else
-   return (errno == EINTR);
-#endif
-}
-
 /** Closes the given socket.  
   * @param socket The socket to close.  (socket) may be negative, indicating a no-op.
   */
@@ -221,12 +193,31 @@ status_t SetSocketBlockingEnabled(int socket, bool enabled);
 
 /**
   * Turns Nagle's algorithm (output packet buffering/coalescing) on or off.
+  * @param socket the socket descriptor to act on.
   * @param enabled If true, data will be held momentarily before sending, 
   *                to allow for bigger packets.  If false, each Write() 
   *                call will cause a new packet to be sent immediately.
   * @return B_NO_ERROR on success, B_ERROR on error.
   */
 status_t SetSocketNaglesAlgorithmEnabled(int socket, bool enabled);
+
+/**
+  * Sets the size of the given socket's TCP send buffer to the specified
+  * size (or as close to that size as is possible).
+  * @param socket the socket descriptor to act on.
+  * @param sendBufferSizeBytes New size of the TCP send buffer, in bytes.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t SetSocketSendBufferSize(int socket, uint32 sendBufferSizeBytes);
+
+/**
+  * Sets the size of the given socket's TCP receive buffer to the specified
+  * size (or as close to that size as is possible).
+  * @param socket the socket descriptor to act on.
+  * @param receiveBufferSizeBytes New size of the TCP receive buffer, in bytes.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t SetSocketReceiveBufferSize(int socket, uint32 receiveBufferSizeBytes);
 
 /** Convenience function:  Won't return for a given number of microsends.
  *  @param micros The number of microseconds to wait for.

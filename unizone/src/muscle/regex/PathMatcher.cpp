@@ -101,7 +101,7 @@ status_t PathMatcher :: PutPathsFromMatcher(const PathMatcher & matcher)
    HashtableIterator<String, PathMatcherEntry> iter = matcher.GetEntries().GetIterator();
    const String * nextKey;
    const PathMatcherEntry * nextValue;
-   while(((nextKey = iter.GetNextKey()) != NULL)&&((nextValue = iter.GetNextValue()) != NULL)) 
+   while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
    {
       if (_entries.Put(*nextKey, *nextValue) == B_NO_ERROR)
       {

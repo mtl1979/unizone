@@ -2375,15 +2375,15 @@ WinShareWindow::GetUptime()
 #elif defined(__FreeBSD__)
 	int64 uptime = 0;
 	struct timeval boottime;
-    	time_t now;
-    	size_t size;
-    	int mib[2];
-
-    	time(&now);
-    	mib[0] = CTL_KERN;
+	time_t now;
+	size_t size;
+	int mib[2];
+	
+	time(&now);
+	mib[0] = CTL_KERN;
 	mib[1] = KERN_BOOTTIME;
 	size = sizeof(boottime);
-    	if ((sysctl(mib, 2, &boottime, &size, NULL, 0) != -1) && (boottime.tv_sec != 0))
+	if ((sysctl(mib, 2, &boottime, &size, NULL, 0) != -1) && (boottime.tv_sec != 0))
 	{
 		uptime = now - boottime.tv_sec;
 		uptime *= 1000000L;

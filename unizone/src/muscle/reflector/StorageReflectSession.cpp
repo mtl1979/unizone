@@ -878,7 +878,7 @@ status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, 
       HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
       const char * nextKey;
       AbstractReflectSessionRef nextValue;
-      while((iter.GetNextKey(nextKey) == B_NO_ERROR)&&(iter.GetNextValue(nextValue) == B_NO_ERROR)) if (retSessions.Put(nextKey, nextValue) != B_NO_ERROR) ret = B_ERROR;
+      while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR) if (retSessions.Put(nextKey, nextValue) != B_NO_ERROR) ret = B_ERROR;
    }
 
    if (includeSelf == false) (void) retSessions.Remove(GetSessionIDString());
@@ -1928,7 +1928,7 @@ StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const Strin
    DataNodeRefIterator iter = node.GetChildIterator();
    const char * nextChildName;
    DataNodeRef nextChild; 
-   while((iter.GetNextKey(nextChildName) == B_NO_ERROR)&&(iter.GetNextValue(nextChild) == B_NO_ERROR))
+   while(iter.GetNextKeyAndValue(nextChildName, nextChild) == B_NO_ERROR)
    {
       const DataNode * child = nextChild();
       if (child)

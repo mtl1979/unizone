@@ -9,8 +9,8 @@ namespace muscle {
 
 /** 
  * This policy allows you to enforce an aggregate maximum bandwidth usage for the set
- * of AbstractReflectSessionSessions that use it.  Each Policy
- * 
+ * of AbstractReflectSessionSessions that use it.  Each policy object may referenced by
+ * zero or more PolicyHolders at once.
  */
 class RateLimitSessionIOPolicy : public AbstractSessionIOPolicy
 {

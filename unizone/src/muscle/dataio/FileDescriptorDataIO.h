@@ -92,12 +92,6 @@ public:
    int GetFileDescriptor() const {return _fd;}
 
 private:
-   int CalculateReturnValue(int ret) const
-   {
-      int retForBlocking = ((ret == 0) ? -1 : ret);
-      return (_blocking) ? retForBlocking : ret;
-   }
-
    int _fd;
    bool _blocking;
 };

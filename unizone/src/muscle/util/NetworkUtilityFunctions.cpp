@@ -85,21 +85,14 @@ void CloseSocket(int socket)
    if (socket >= 0) closesocket(socket);  // a little bit silly, perhaps...
 }
 
-// helper function for disentangling the true meaning of recv() and send() return values!
-inline int32 CalculateReturnValue(int ret, uint32 maxSize, bool blocking)
-{
-   int32 retForBlocking = ((ret == 0)&&(maxSize>0)) ? -1 : ret;
-   return blocking ? retForBlocking : (((ret < 0)&&((PreviousOperationWouldBlock())||(PreviousOperationWasInterrupted()))) ? 0 : retForBlocking);
-}
-
 int32 ReceiveData(int socket, void * buffer, uint32 size, bool bm)
 {
-   return (socket >= 0) ? CalculateReturnValue(recv(socket, (char *)buffer, size, 0L), size, bm) : -1;
+   return (socket >= 0) ? ConvertReturnValueToMuscleSemantics(recv(socket, (char *)buffer, size, 0L), size, bm) : -1;
 }
 
 int32 SendData(int socket, const void * buffer, uint32 size, bool bm)
 {
-   return (socket >= 0) ? CalculateReturnValue(send(socket, (const char *)buffer, size, 0L), size, bm) : -1;
+   return (socket >= 0) ? ConvertReturnValueToMuscleSemantics(send(socket, (const char *)buffer, size, 0L), size, bm) : -1;
 }
 
 status_t ShutdownSocket(int socket, bool dRecv, bool dSend)
@@ -441,6 +434,22 @@ status_t FinalizeAsyncConnect(int socket)
    // For most platforms (including BONE), the code below is all we need
    char junk;
    return (send(socket, &junk, 0, 0L) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+status_t SetSocketSendBufferSize(int socket, uint32 sendBufferSizeBytes)
+{
+   if (socket < 0) return B_ERROR;
+
+   int iSize = (int) sendBufferSizeBytes;
+   return (setsockopt(socket, SOL_SOCKET, SO_SNDBUF, (char *)&iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
+}
+
+status_t SetSocketReceiveBufferSize(int socket, uint32 receiveBufferSizeBytes)
+{
+   if (socket < 0) return B_ERROR;
+
+   int iSize = (int) receiveBufferSizeBytes;
+   return (setsockopt(socket, SOL_SOCKET, SO_RCVBUF, (char *)&iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
 }
 
 };  // end namespace muscle

@@ -130,6 +130,20 @@ public:
     */
    ValueType * PeekNextValue() const;
 
+   /** Convenience method -- equivalent to calling GetNextKey() and GetNextValue(). */
+   status_t GetNextKeyAndValue(KeyType & setKey, ValueType & setValue);
+
+   /** Convenience method -- equivalent to calling GetNextKey() and GetNextValue(). */
+   status_t GetNextKeyAndValue(KeyType & setKey, ValueType * & setValuePtr);
+   status_t GetNextKeyAndValue(KeyType & setKey, const ValueType * & setValuePtr);
+
+   /** Convenience method -- equivalent to calling GetNextKey() and GetNextValue(). */
+   status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, ValueType & setValue);
+
+   /** Convenience method -- equivalent to calling GetNextKey() and GetNextValue(). */
+   status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, ValueType * & setValuePtr);
+   status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, const ValueType * & setValuePtr);
+
 private:
    friend class Hashtable<KeyType, ValueType, HashFunctorType>;
 
@@ -1432,6 +1446,48 @@ const KeyType *
 HashtableIterator<KeyType,ValueType,HashFunctorType>::PeekNextKey() const
 {
    return (_owner) ? _owner->GetKeyFromCookie(_nextKeyCookie) : NULL;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKeyAndValue(KeyType & setKey, ValueType & setValue)
+{
+   return (GetNextKey(setKey) == B_NO_ERROR) ? GetNextValue(setValue) : B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKeyAndValue(KeyType & setKey, ValueType * & setValuePtr)
+{
+   return ((setValuePtr = GetNextValue()) != NULL) ? GetNextKey(setKey) : B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKeyAndValue(KeyType & setKey, const ValueType * & setValuePtr)
+{
+   return ((setValuePtr = GetNextValue()) != NULL) ? GetNextKey(setKey) : B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKeyAndValue(const KeyType * & setKeyPtr, ValueType & setValue)
+{
+   return ((setKeyPtr = GetNextKey()) != NULL) ? GetNextValue(setValue) : B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKeyAndValue(const KeyType * & setKeyPtr, ValueType * & setValuePtr)
+{
+   return (((setKeyPtr = GetNextKey()) != NULL)&&((setValuePtr = GetNextValue()) != NULL)) ? B_NO_ERROR : B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKeyAndValue(const KeyType * & setKeyPtr, const ValueType * & setValuePtr)
+{
+   return (((setKeyPtr = GetNextKey()) != NULL)&&((setValuePtr = GetNextValue()) != NULL)) ? B_NO_ERROR : B_ERROR;
 }
 
 };  // end namespace muscle

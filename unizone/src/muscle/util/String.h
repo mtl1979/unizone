@@ -191,6 +191,14 @@ public:
    /** Returns a string that consists of this string followed by (count) copies of (str). */
    String Append(const String & str, uint32 count = 1) const;
 
+   /** Returns a string that is like this string, but padded out to the specified minimum length with (padChar).
+    *  @param minLength Minimum length that the returned string should be.
+    *  @param padOnRight If true, (padChar)s will be added to the right; if false (the default), they will be added on the left.
+    *  @param padChar The character to pad out the string with.  Defaults to ' '.
+    *  @returns the new, padded String.
+    */
+   String Pad(uint32 minLength, bool padOnRight = false, char padChar = ' ') const;
+
    /** Returns a string that consists of only the last part of this string, starting with index (beginIndex).  Does not modify the string it is called on. */
    String Substring(uint32 beginIndex) const; 
 
@@ -312,9 +320,34 @@ public:
     */ 
    status_t Prealloc(uint32 newBufLen) {return EnsureBufferSize(newBufLen+1, true);}
 
+   /** Returns a string like this string, but with the appropriate %# tokens
+     * replaced with a textual representation of the values passed in as (value).
+     * For example, String("%1 is a %2").Arg(13).Arg("bakers dozen") would return
+     * the string "13 is a bakers dozen".
+     * @param value The value to replace in the string.
+     * @param fmt The format parameter to pass to sprintf().  Note that if you supply your
+     *            own format string, you'll need to be careful since a badly chosen format
+     *            string could lead to a crash or out-of-bounds memory overwrite.  In particular,
+     *            the format string should match the type specified, and should not lead to
+     *            more than 256 bytes being written.
+     * @returns a new String with the appropriate tokens replaced.
+     */
+   String Arg(int8 value,   const char * fmt = "%i")   const;
+   String Arg(uint8 value,  const char * fmt = "%u")   const;
+   String Arg(int16 value,  const char * fmt = "%i")   const;
+   String Arg(uint16 value, const char * fmt = "%u")   const;
+   String Arg(int32 value,  const char * fmt = "%li")  const;
+   String Arg(uint32 value, const char * fmt = "%lu")  const;
+   String Arg(int64 value,  const char * fmt = INT64_FORMAT_SPEC) const;
+   String Arg(uint64 value, const char * fmt = UINT64_FORMAT_SPEC) const;
+   String Arg(double value, const char * fmt = "%f")   const;
+   String Arg(const String & value) const;
+
 private:
    bool IsSpaceChar(char c) const {return ((c==' ')||(c=='\t')||(c=='\r')||(c=='\n'));}
    status_t EnsureBufferSize(uint32 newBufLen, bool retainValue);
+   String ArgAux(const char * buf) const;
+
    char _smallBuffer[SMALL_MUSCLE_STRING_LENGTH+1];  // store very small strings in-line, to avoid dynamic allocation
    char * _buffer;            // Stores the chars.  May point at (_smallBuffer), or a dynamically allocated buffer
    uint32 _bufferLen;         // Number of bytes pointed to by (_buffer)

@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.44"
+#define MUSCLE_VERSION_STRING "2.45"
 
 // Just declare the muscle namespace as existing.
 // If we ever decide to make the muscle namespace a superset
@@ -65,6 +65,15 @@ using std::set_new_handler;
 # else
 #  define newnothrow new (nothrow) 
 # endif
+#endif
+
+// Unfortunately, the 64-bit printf() format specifier is different for different compilers :^P
+#if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || defined(__BEOS__)
+# define  INT64_FORMAT_SPEC "%Li"
+# define UINT64_FORMAT_SPEC "%Lu"
+#else
+# define  INT64_FORMAT_SPEC "%lli"
+# define UINT64_FORMAT_SPEC "%llu"
 #endif
 
 #ifdef __BEOS__
@@ -235,11 +244,11 @@ inline int muscleRintf(float f) {return (f>=0.0f) ? ((int)(f+0.5f)) : -((int)((-
 # else
 #  include <endian.h>  // (non-standard) POSIX-ish include, defines BYTE_ORDER as LITTLE_ENDIAN or BIG_ENDIAN
 # endif
-# define SWAP_DOUBLE(arg)   muscleSwapBytes((double)(arg))
-# define SWAP_FLOAT(arg)    muscleSwapBytes((float)(arg))
-# define SWAP_INT64(arg)    muscleSwapBytes((uint64)(arg))
-# define SWAP_INT32(arg)    muscleSwapBytes((uint32)(arg))
-# define SWAP_INT16(arg)    muscleSwapBytes((uint16)(arg))
+# define B_SWAP_DOUBLE(arg)   muscleSwapBytes((double)(arg))
+# define B_SWAP_FLOAT(arg)    muscleSwapBytes((float)(arg))
+# define B_SWAP_INT64(arg)    muscleSwapBytes((uint64)(arg))
+# define B_SWAP_INT32(arg)    muscleSwapBytes((uint32)(arg))
+# define B_SWAP_INT16(arg)    muscleSwapBytes((uint16)(arg))
 # if BYTE_ORDER == LITTLE_ENDIAN
 #  define B_HOST_IS_LENDIAN 1
 #  define B_HOST_IS_BENDIAN 0
@@ -248,39 +257,39 @@ inline int muscleRintf(float f) {return (f>=0.0f) ? ((int)(f+0.5f)) : -((int)((-
 #  define B_HOST_TO_LENDIAN_INT64(arg)  ((uint64)(arg))
 #  define B_HOST_TO_LENDIAN_INT32(arg)  ((uint32)(arg))
 #  define B_HOST_TO_LENDIAN_INT16(arg)  ((uint16)(arg))
-#  define B_HOST_TO_BENDIAN_DOUBLE(arg) SWAP_DOUBLE(arg)
-#  define B_HOST_TO_BENDIAN_FLOAT(arg)  SWAP_FLOAT(arg)
-#  define B_HOST_TO_BENDIAN_INT64(arg)  SWAP_INT64(arg)
-#  define B_HOST_TO_BENDIAN_INT32(arg)  SWAP_INT32(arg)
-#  define B_HOST_TO_BENDIAN_INT16(arg)  SWAP_INT16(arg)
+#  define B_HOST_TO_BENDIAN_DOUBLE(arg) B_SWAP_DOUBLE(arg)
+#  define B_HOST_TO_BENDIAN_FLOAT(arg)  B_SWAP_FLOAT(arg)
+#  define B_HOST_TO_BENDIAN_INT64(arg)  B_SWAP_INT64(arg)
+#  define B_HOST_TO_BENDIAN_INT32(arg)  B_SWAP_INT32(arg)
+#  define B_HOST_TO_BENDIAN_INT16(arg)  B_SWAP_INT16(arg)
 #  define B_LENDIAN_TO_HOST_DOUBLE(arg) ((double)(arg))
 #  define B_LENDIAN_TO_HOST_FLOAT(arg)  ((float)(arg))
 #  define B_LENDIAN_TO_HOST_INT64(arg)  ((uint64)(arg))
 #  define B_LENDIAN_TO_HOST_INT32(arg)  ((uint32)(arg))
 #  define B_LENDIAN_TO_HOST_INT16(arg)  ((uint16)(arg))
-#  define B_BENDIAN_TO_HOST_DOUBLE(arg) SWAP_DOUBLE(arg)
-#  define B_BENDIAN_TO_HOST_FLOAT(arg)  SWAP_FLOAT(arg)
-#  define B_BENDIAN_TO_HOST_INT64(arg)  SWAP_INT64(arg)
-#  define B_BENDIAN_TO_HOST_INT32(arg)  SWAP_INT32(arg)
-#  define B_BENDIAN_TO_HOST_INT16(arg)  SWAP_INT16(arg)
+#  define B_BENDIAN_TO_HOST_DOUBLE(arg) B_SWAP_DOUBLE(arg)
+#  define B_BENDIAN_TO_HOST_FLOAT(arg)  B_SWAP_FLOAT(arg)
+#  define B_BENDIAN_TO_HOST_INT64(arg)  B_SWAP_INT64(arg)
+#  define B_BENDIAN_TO_HOST_INT32(arg)  B_SWAP_INT32(arg)
+#  define B_BENDIAN_TO_HOST_INT16(arg)  B_SWAP_INT16(arg)
 # else /* LITTLE_ENDIAN */
 #  define B_HOST_IS_LENDIAN 0
 #  define B_HOST_IS_BENDIAN 1
-#  define B_HOST_TO_LENDIAN_DOUBLE(arg) SWAP_DOUBLE(arg)
-#  define B_HOST_TO_LENDIAN_FLOAT(arg)  SWAP_FLOAT(arg)
-#  define B_HOST_TO_LENDIAN_INT64(arg)  SWAP_INT64(arg)
-#  define B_HOST_TO_LENDIAN_INT32(arg)  SWAP_INT32(arg)
-#  define B_HOST_TO_LENDIAN_INT16(arg)  SWAP_INT16(arg)
+#  define B_HOST_TO_LENDIAN_DOUBLE(arg) B_SWAP_DOUBLE(arg)
+#  define B_HOST_TO_LENDIAN_FLOAT(arg)  B_SWAP_FLOAT(arg)
+#  define B_HOST_TO_LENDIAN_INT64(arg)  B_SWAP_INT64(arg)
+#  define B_HOST_TO_LENDIAN_INT32(arg)  B_SWAP_INT32(arg)
+#  define B_HOST_TO_LENDIAN_INT16(arg)  B_SWAP_INT16(arg)
 #  define B_HOST_TO_BENDIAN_DOUBLE(arg) ((double)(arg))
 #  define B_HOST_TO_BENDIAN_FLOAT(arg)  ((float)(arg))
 #  define B_HOST_TO_BENDIAN_INT64(arg)  ((uint64)(arg))
 #  define B_HOST_TO_BENDIAN_INT32(arg)  ((uint32)(arg))
 #  define B_HOST_TO_BENDIAN_INT16(arg)  ((uint16)(arg))
-#  define B_LENDIAN_TO_HOST_DOUBLE(arg) SWAP_DOUBLE(arg)
-#  define B_LENDIAN_TO_HOST_FLOAT(arg)  SWAP_FLOAT(arg)
-#  define B_LENDIAN_TO_HOST_INT64(arg)  SWAP_INT64(arg)
-#  define B_LENDIAN_TO_HOST_INT32(arg)  SWAP_INT32(arg)
-#  define B_LENDIAN_TO_HOST_INT16(arg)  SWAP_INT16(arg)
+#  define B_LENDIAN_TO_HOST_DOUBLE(arg) B_SWAP_DOUBLE(arg)
+#  define B_LENDIAN_TO_HOST_FLOAT(arg)  B_SWAP_FLOAT(arg)
+#  define B_LENDIAN_TO_HOST_INT64(arg)  B_SWAP_INT64(arg)
+#  define B_LENDIAN_TO_HOST_INT32(arg)  B_SWAP_INT32(arg)
+#  define B_LENDIAN_TO_HOST_INT16(arg)  B_SWAP_INT16(arg)
 #  define B_BENDIAN_TO_HOST_DOUBLE(arg) ((double)(arg))
 #  define B_BENDIAN_TO_HOST_FLOAT(arg)  ((float)(arg))
 #  define B_BENDIAN_TO_HOST_INT64(arg)  ((uint64)(arg))
@@ -301,6 +310,51 @@ inline int muscleRintf(float f) {return (f>=0.0f) ? ((int)(f+0.5f)) : -((int)((-
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>     // for errno
+
+#ifdef WIN32
+# include <winsock.h>  // for WSAGetLastError()
+#endif
+
 #include "syslog/SysLog.h"  // for LogTime()
+
+/** Checks errno and returns true iff the last I/O operation 
+  * failed because it would have had to block otherwise. 
+  */
+inline bool PreviousOperationWouldBlock()
+{
+#ifdef WIN32
+   return (WSAGetLastError() == WSAEWOULDBLOCK);
+#else
+   return (errno == EWOULDBLOCK);
+#endif
+}
+
+/** Checks errno and returns true iff the last I/O operation 
+  * failed because it was interrupted by a signal or etc.
+  */
+inline bool PreviousOperationWasInterrupted()
+{
+#ifdef WIN32
+   return (WSAGetLastError() == WSAEINTR);
+#else
+   return (errno == EINTR);
+#endif
+}
+
+/** This function applies semi-standard logic to convert the return value
+ *  of a system I/O call and (errno) into a proper MUSCLE-standard return value.
+ *  (A MUSCLE-standard return value's semantics are:  Negative on error,
+ *  otherwise the return value is the number of bytes that were transferred)
+ *  @param origRet The return value of the original system call (e.g. to read()/write()/send()/recv())
+ *  @param maxSize The maximum number of bytes that the system call was permitted to send during that call.
+ *  @param blocking True iff the socket/file descriptor is in blocking I/O mode.
+ *  @returns The system call's return value equivalent in MUSCLE return value semantics.
+ */
+inline int32 ConvertReturnValueToMuscleSemantics(int origRet, uint32 maxSize, bool blocking)
+{
+   int32 retForBlocking = ((origRet > 0)||(maxSize == 0)) ? origRet : -1;
+   return blocking ? retForBlocking : ((origRet<0)&&((PreviousOperationWouldBlock())||(PreviousOperationWasInterrupted()))) ? 0 : retForBlocking;
+}
 
 #endif /* _MUSCLE_SUPPORT_H */

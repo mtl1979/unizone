@@ -44,6 +44,9 @@ status_t ParseArg(const String & arg, Message & addTo);
  */
 uint64 Atoull(const char * str);
 
+/** Similar to Atoll(), but handles negative numbers as well */
+int64 Atoll(const char * str);
+
 /** Given a uint64 representing a time in microseconds since 1970,
   * (e.g. as returned by GetCurrentTime64()), returns an equivalent 
   * human-readable time/date string.  The format of the returned 

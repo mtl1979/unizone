@@ -24,12 +24,12 @@ FileDescriptorDataIO ::
 
 int32 FileDescriptorDataIO :: Read(void * buffer, uint32 size)  
 {
-   return (_fd >= 0) ? CalculateReturnValue(read(_fd, buffer, size)) : -1;
+   return (_fd >= 0) ? ConvertReturnValueToMuscleSemantics(read(_fd, buffer, size), size, _blocking) : -1;
 }
 
 int32 FileDescriptorDataIO :: Write(const void * buffer, uint32 size)
 {
-   return (_fd >= 0) ? CalculateReturnValue(write(_fd, buffer, size)) : -1;
+   return (_fd >= 0) ? ConvertReturnValueToMuscleSemantics(write(_fd, buffer, size), size, _blocking) : -1;
 }
 
 void FileDescriptorDataIO :: FlushOutput()

@@ -6,8 +6,12 @@
 # include <winsock.h>
 # include <signal.h>
 #else
-# if defined(__BEOS__) || defined(__CYGWIN__)
+# if defined(__BEOS__)
 #  include <signal.h>
+# elif defined(__CYGWIN__)
+#  include <signal.h>
+#  include <sys/signal.h>
+#  include <sys/times.h>
 # else
 #  include <sys/signal.h>  // changed signal.h to sys/signal.h to work with OS/X
 #  include <sys/times.h>
@@ -93,29 +97,59 @@ NetworkSetupSystem :: ~NetworkSetupSystem()
 // For BeOS, this is an in-line function, defined in util/TimeUtilityFunctions.h
 #ifndef __BEOS__
 
-/** Defined here since every MUSCLE program will have to include this anyway... */
+/** Defined here since every MUSCLE program will have to include this file anyway... */
 uint64 GetRunTime64()
 {
 #ifdef WIN32
-   static bool _gotFrequency = false;
-   static uint64 _ticksPerSecond;
-   if (_gotFrequency == false)
+   static Mutex _rtMutex;
+   if (_rtMutex.Lock() == B_NO_ERROR)
    {
-      LARGE_INTEGER tps;
-      _ticksPerSecond = (QueryPerformanceFrequency(&tps)) ? ((((uint64)tps.HighPart)<<32)|((uint64)tps.LowPart)) : 0;
-      _gotFrequency = true;
-   }
-   if (_ticksPerSecond > 0)
-   {
-      LARGE_INTEGER curTicks;
-      if (QueryPerformanceCounter(&curTicks))
+      static int64 _brokenQPCOffset = 0;
+      uint64 ret = 0;
+      if (_brokenQPCOffset != 0) ret = (((uint64)timeGetTime())*1000) + _brokenQPCOffset;
+      else
       {
-         uint64 cts = ((((uint64)curTicks.HighPart)<<32)|((uint64)curTicks.LowPart));
-         return (cts*1000000)/_ticksPerSecond;
+         static bool _gotFrequency = false;
+         static uint64 _ticksPerSecond;
+         if (_gotFrequency == false)
+         {
+            LARGE_INTEGER tps;
+            _ticksPerSecond = (QueryPerformanceFrequency(&tps)) ? tps.QuadPart : 0;
+            _gotFrequency = true;
+         }
+
+         LARGE_INTEGER curTicks;
+         if ((_ticksPerSecond > 0)&&(QueryPerformanceCounter(&curTicks)))
+         {
+            uint64 checkGetTime = ((uint64)timeGetTime())*1000;
+            ret = (curTicks.QuadPart*1000000)/_ticksPerSecond;
+
+            // Hack-around for evil Windows/hardware bug in QueryPerformanceCounter().
+            // see http://support.microsoft.com:80/support/kb/articles/Q274/3/23.ASP&NoWebContent=1
+            static uint64 _lastCheckGetTime = 0;
+            static uint64 _lastCheckQPCTime = 0;
+            if (_lastCheckGetTime > 0)
+            {
+               uint64 getTimeElapsed = checkGetTime - _lastCheckGetTime;
+               uint64 qpcTimeElapsed = ret          - _lastCheckQPCTime;
+               if ((muscleMax(getTimeElapsed, qpcTimeElapsed) - muscleMin(getTimeElapsed, qpcTimeElapsed)) > 500000)
+               {
+                  LogTime(MUSCLE_LOG_WARNING, "QueryPerformanceCounter() is buggy, reverting to timeGetTime() method instead!\n");
+                  _brokenQPCOffset = (_lastCheckQPCTime-_lastCheckGetTime);
+uint64 origRet = ret;
+                  ret = (((uint64)timeGetTime())*1000) + _brokenQPCOffset;
+               }
+            }
+            _lastCheckGetTime = checkGetTime;
+            _lastCheckQPCTime = ret;
+         }
       }
-      else return 0;
+      _rtMutex.Unlock();
+      if (ret > 0) return ret;
    }
-   return ((uint64)timeGetTime())*1000;  // convert milliseconds to microseconds -- will wrap after 49.7 days, doh!
+
+   // fallback method: convert milliseconds to microseconds -- will wrap after 49.7 days, doh!
+   return (((uint64)timeGetTime())*1000);
 #else
    // default method:  use POSIX commands
    static clock_t _ticksPerSecond = 0;
@@ -128,7 +162,25 @@ uint64 GetRunTime64()
 #endif
 }
 
-#endif
+/** Defined here since every MUSCLE program will have to include this file anyway... */
+uint64 GetCurrentTime64()
+{
+#ifdef WIN32
+   FILETIME now;
+   GetSystemTimeAsFileTime(&now); // sets (now) to hold time-since-1601 in units of 100 nanoseconds each
 
+   // combine and convert to microseconds since 1970
+   uint64 m = (((((uint64)now.dwHighDateTime)<<32)|((uint64)now.dwLowDateTime))/10);
+   static const uint64 oneDay = ((uint64)1000000)*((uint64)60)*((uint64)60)*((uint64)24);
+   static const uint64 oneYear = oneDay*((uint64)365);
+   return m - ((((uint64)(1970-1601))*oneYear) + (89*oneDay));  // why is the 89-day fudge factor necessary???
+#else
+   struct timeval tv;
+   gettimeofday(&tv, NULL);
+   return ConvertTimeValTo64(tv);
+#endif
+}
+
+#endif
 
 };  // end muscle namespace

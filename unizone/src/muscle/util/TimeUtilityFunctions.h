@@ -88,34 +88,21 @@ inline void SubtractTimeVal(struct timeval & subtractFromThis, const struct time
  *        time automatically to eliminate clock drift may cause this value to decrease occasionally!
  *        If you need a time value that is guaranteed to never decrease, you may want to call GetRunTime64() instead.
  */
-inline uint64 GetCurrentTime64()
-{
 #ifdef __BEOS__
-   return real_time_clock_usecs();
+inline uint64 GetCurrentTime64() {return real_time_clock_usecs();}
 #else
-# ifdef WIN32
-   FILETIME now;
-   GetSystemTimeAsFileTime(&now); // sets (now) to hold time-since-1601 in units of 100 nanoseconds each
-   return ((((uint64)now.dwHighDateTime)<<32)|((uint64)now.dwLowDateTime))/10;  // combine and convert to microseconds
-# else
-   struct timeval tv;
-   gettimeofday(&tv, NULL);
-   return ConvertTimeValTo64(tv);
-# endif
+uint64 GetCurrentTime64();
 #endif
-}
 
 /** Returns a current time value, in microseconds, that is guaranteed never to decrease.  The absolute
  *  values returned by this call are undefined, so you should only use it for measuring relative time
  *  (i.e. how much time has passed between two events).  For a "real time clock" type of result with
- *  a well defined time-base, you can use GetCurrentTime64() instead.
- *  @note Currently, this call just calls through to GetCurrentTime64().  It needs to be reimplemented to
- *        do the right thing instead!!
+ *  a well-defined time-base, you can call GetCurrentTime64() instead.
  */
 #ifdef __BEOS__
-inline uint64 GetRunTime64() {return real_time_clock_usecs();}
+inline uint64 GetRunTime64() {return system_time();}
 #else
-uint64 GetRunTime64();  // for other OS's, it's a bit more involved, so we define the body in system/SetupSytem.cpp
+uint64 GetRunTime64();
 #endif
 
 /** Convenience function:  Returns true no more often than once every (interval).
@@ -167,7 +154,7 @@ inline bool OnceEvery(uint64 interval, uint64 & lastTime)
    uint64 now = GetCurrentTime64(); \
    if (startTime == 0) startTime = now; \
    count++; \
-   if ((OnceEvery(500000, lastTime))&&(now>startTime)) printf("%s: %llu/s\n", x, (1000000*((uint64)count))/(now-startTime)); \
+   if ((OnceEvery(500000, lastTime))&&(now>startTime)) printf("%s: " UINT64_FORMAT_SPEC "/s\n", x, (1000000*((uint64)count))/(now-startTime)); \
 }
 
 };  // end namespace muscle

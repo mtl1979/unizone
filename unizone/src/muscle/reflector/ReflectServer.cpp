@@ -131,7 +131,7 @@ ReflectServer :: Cleanup()
       HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
       const char * nextKey;
       AbstractReflectSessionRef nextValue;
-      while((iter.GetNextKey(nextKey) == B_NO_ERROR)&&(iter.GetNextValue(nextValue) == B_NO_ERROR)) 
+      while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
       {
          if (nextValue()) 
          {
@@ -511,7 +511,7 @@ ServerProcessLoop()
          HashtableIterator<uint16, ReflectSessionFactoryRef> iter = _factories.GetIterator();
          uint16 port;
          ReflectSessionFactoryRef * acc;
-         while((iter.GetNextKey(port) == B_NO_ERROR)&&((acc = iter.GetNextValue()) != NULL)) 
+         while(iter.GetNextKeyAndValue(port, acc) == B_NO_ERROR)
          {
             int acceptSocket = (*acc)()->_socket;
             if (FD_ISSET(acceptSocket, &readSet)) (void) DoAccept(port, acceptSocket, (*acc)());
@@ -751,7 +751,7 @@ RemoveAcceptFactory(uint16 port)
       HashtableIterator<uint16, ReflectSessionFactoryRef> iter = _factories.GetIterator();
       uint16 nextKey;
       ReflectSessionFactoryRef nextValue;
-      while((iter.GetNextKey(nextKey) == B_NO_ERROR)&&(iter.GetNextValue(nextValue) == B_NO_ERROR)) 
+      while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
       {
          RemoveAcceptFactoryAux(nextValue);
          _factories.Remove(nextKey);  // make sure nobody accesses the factory after it is detached

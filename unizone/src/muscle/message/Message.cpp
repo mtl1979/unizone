@@ -512,11 +512,7 @@ public:
 
    virtual uint32 TypeCode() const {return B_INT64_TYPE;}
 
-#if defined(__MWERKS__) || defined(WIN32)
-   virtual const char * GetFormatString() const {return "%Li";}
-#else
-   virtual const char * GetFormatString() const {return "%lli";}
-#endif
+   virtual const char * GetFormatString() const {return INT64_FORMAT_SPEC;}
 
    virtual GenericRef Clone() const;
 
@@ -2119,7 +2115,7 @@ bool Message :: FieldsAreSubsetOf(const Message & rhs, bool compareContents) con
    HashtableIterator<String, GenericRef> iter = _entries.GetIterator();
    const String * nextKey;
    const GenericRef * myNextValue;
-   while(((nextKey = iter.GetNextKey()) != NULL)&&((myNextValue = iter.GetNextValue()) != NULL))
+   while(iter.GetNextKeyAndValue(nextKey, myNextValue) == B_NO_ERROR)
    {
       const GenericRef * hisNextValue = rhs._entries.Get(*nextKey);
       if ((hisNextValue == NULL)||(((const AbstractDataArray*)myNextValue->GetItemPointer())->IsEqualTo((const AbstractDataArray*)(hisNextValue->GetItemPointer()), compareContents) == false)) return false;

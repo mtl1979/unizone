@@ -23,12 +23,12 @@ DebugTimer :: ~DebugTimer()
       HashtableIterator<uint32, uint64> iter = _modeToElapsedTime.GetIterator();
       uint32 nextMode;
       uint64 nextTime;
-      while((iter.GetNextKey(nextMode) == B_NO_ERROR)&&(iter.GetNextValue(nextTime) == B_NO_ERROR)) 
+      while(iter.GetNextKeyAndValue(nextMode, nextTime) == B_NO_ERROR)
       {
          if (nextTime >= _minLogTime)
          {
-            if (nextTime >= 1000) LogTime(_debugLevel, "%s: mode %lu: %llu milliseconds elapsed\n", _title(), nextMode, nextTime/1000);
-                             else LogTime(_debugLevel, "%s: mode %lu: %llu microseconds elapsed\n", _title(), nextMode, nextTime);
+            if (nextTime >= 1000) LogTime(_debugLevel, "%s: mode %lu: " UINT64_FORMAT_SPEC " milliseconds elapsed\n", _title(), nextMode, nextTime/1000);
+                             else LogTime(_debugLevel, "%s: mode %lu: " UINT64_FORMAT_SPEC " microseconds elapsed\n", _title(), nextMode, nextTime);
          }
       }
    }

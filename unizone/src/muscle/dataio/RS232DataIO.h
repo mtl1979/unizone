@@ -62,17 +62,6 @@ public:
    static status_t GetAvailableSerialPortNames(Queue<String> & retList);
 
 private:
-   int CalculateReturnValue(int ret) const
-   {
-      int retForBlocking = ((ret == 0) ? -1 : ret);
-# ifdef WIN32
-      bool isBlocking = (WSAGetLastError() == WSAEWOULDBLOCK);
-# else
-      bool isBlocking = (errno == EWOULDBLOCK);
-# endif
-      return (_blocking) ? retForBlocking : (((ret < 0)&&(isBlocking)) ? 0 : retForBlocking); 
-   }
-
    void Close();
 
    bool _blocking;

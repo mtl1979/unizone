@@ -508,7 +508,7 @@ status_t
 Queue<ItemType>::
 AddHead(const ItemType * items, uint32 numItems)
 {
-   if (EnsureSize(GetNumItems()+numItems) != B_NO_ERROR) return B_ERROR;
+   if (EnsureSize(_itemCount+numItems) != B_NO_ERROR) return B_ERROR;
    for (int i=((int)numItems)-1; i>=0; i--) if (AddHead(items[i]) == B_ERROR) return B_ERROR;
    return B_NO_ERROR;
 }
