@@ -3,3 +3,4 @@ moc_uniwindow.cpp
 *.plg
 Release
 Uniview___Win32_Debug
+*.opt
