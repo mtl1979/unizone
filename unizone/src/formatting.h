@@ -18,7 +18,6 @@ class WFormat : private QObject
 public:
 	// formatting for:
 	//	(id) UserName
-//	static QString LocalName(const QString &session, const QString &name);
 	static QString LocalText(const QString &session, const QString &name, const QString &text);
 
 	static QString RemoteName(const QString &session, const QString &name);
@@ -60,13 +59,11 @@ public:
 	static QString NameChanged(const QString &name);
 
 	// private messages
-//	static QString SendPrivMsg(const QString &session, const QString &myname, const QString &othername);
 	static QString SendPrivMsg(const QString &session, const QString &myname, const QString &othername, const QString &text);
 
 	static QString ReceivePrivMsg(const QString &session, const QString &othername, const QString &text);
 
 	// action
-//	static QString Action();
 	static QString Action(const QString &msg);
 	static QString Action(const QString &name, const QString &msg);
 

@@ -284,7 +284,6 @@ WUploadThread::SetLocallyQueued(bool b)
 				WUploadEvent *wue = new WUploadEvent(fFileList);
 				if (wue) 
 					QApplication::postEvent(this, wue);
-				// TransferFileList(fFileList);
 				return;
 			}
 			else if (IsInternalThreadRunning())  // Still connected?
@@ -306,8 +305,6 @@ WUploadThread::SetLocallyQueued(bool b)
 			}
 			else
 			{
-				// fActive   == true
-				// fFinished == false
 				ConnectTimer();
 			}
 		}
@@ -672,8 +669,6 @@ WUploadThread::DoUpload()
 		ConnectTimer();
 		return;
 	}
-
-	// fActive = true;
 
 	// Small files get to bypass queue
 	if (IsLocallyQueued())
@@ -1426,7 +1421,6 @@ WUploadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath
 			to += "/beshare";
 			msgRef()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 			msgRef()->AddString(PR_NAME_SESSION, "");
-			// msgRef()->AddInt32("my_id", (int32) this);
 			msgRef()->AddBool("upload", true);
 			return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(msgRef);
 		}
@@ -1440,7 +1434,6 @@ WUploadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath
 				to += "/beshare";
 				up()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 				up()->AddString(PR_NAME_SESSION, "");
-				// up()->AddInt32("my_id", (int32) this);
 				up()->AddMessage("message", msgRef);
 				up()->AddBool("upload", true);
 				up()->AddInt32("tunnel_id", hisID);

@@ -223,7 +223,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (newStatus.length() > 0)
 			{
 				QString ns = newStatus.stripWhiteSpace();
-//				bool found = false;
 
 				int i;	// this way we know which one was found
 
@@ -558,7 +557,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					rpos = command.findRev(" ");
 					if (rpos == -1)
 					{
-						//rpos = command.length();
 						tuser = command;
 						command = QString::null;
 					}
@@ -617,7 +615,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 						}
 						if (fSettings->GetInfo())
 						{
-							// QString userid = tu()->GetUserID();
 							QString username = tu()->GetUserName();
 							QString treqMsg = WFormat::TimeRequest(tu()->GetUserID(), FixStringStr(username));
 							PrintSystem(treqMsg);
@@ -1763,7 +1760,6 @@ WinShareWindow::HandleMessage(MessageRef msg)
 	case NetClient::NEW_PICTURE:
 		{
 			PRINT("\tNEW_PICTURE\n");
-			// QString userName = tr("Unknown");
 			QString userID;
 			QString file;
 			
@@ -1825,7 +1821,6 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		{
 			PRINT("\tREQUEST_TUNNEL\n");
 
-			// QString userName = tr("Unknown");
 			QString userID;
 			int32 hisID;
 			
@@ -1884,7 +1879,6 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		{
 			PRINT("\tACCEPT_TUNNEL\n");
 
-			// QString userName = tr("Unknown");
 			QString userID;
 			int32 hisID;
 			int32 myID;
@@ -1915,7 +1909,6 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		{
 			PRINT("\tREJECT_TUNNEL\n");
 
-			// QString userName = tr("Unknown");
 			QString userID;
 			int32 myID;
 			
@@ -1944,7 +1937,6 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		{
 			PRINT("\tTUNNEL_MESSAGE\n");
 
-			// QString userName = tr("Unknown");
 			QString userID;
 			int32 myID;
 			bool upload = false;
@@ -2009,8 +2001,6 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					
 			if (user())
 			{
-				// QString userName = tr("Unknown");
-
 				{
 					const char * strTemp;
 					
@@ -2296,20 +2286,22 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						}
 						else
 						{
-							QString pong = WFormat::RemoteName(session, FixStringStr(user()->GetUserName()));
+							QString pre = WFormat::RemoteName(session, FixStringStr(user()->GetUserName()));
 							int32 time = ((GetCurrentTime64() - when) / 10000L);
 							QString versionString = GetRemoteVersionString(msg);
 							
+							QString pong(pre);
 							pong += WFormat::PingText(time, versionString);
+							PrintText(pong);
 							
 							int64 uptime, onlinetime;
 							if ((msg()->FindInt64("uptime", &uptime) == B_OK) && (msg()->FindInt64("onlinetime", &onlinetime) == B_OK))
 							{
-								pong += " ";
+								pong = pre;
 								pong += WFormat::PingUptime(MakeHumanTime(uptime), MakeHumanTime(onlinetime));
-							}
 							
-							PrintText(pong);
+								PrintText(pong);
+							}
 						}
 					}
 				}

@@ -84,7 +84,6 @@ ServerClient::Disconnect()
 	PRINT("DISCONNECT\n");
 	if (qmtt->IsInternalThreadRunning()) 
 	{
-		// qmtt->ShutdownInternalThread();
 		Reset(); 
 	}
 }

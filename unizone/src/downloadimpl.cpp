@@ -3,13 +3,11 @@
 #endif
 
 #include <qobject.h>
-// #include <qqueue.h>
 #include <qdir.h>
 #include <qaccel.h>
 #include <time.h>
 #include <qapplication.h>
 #include <qlabel.h>
-// #include <qprogressbar.h>
 #include <qpushbutton.h>
 #include <qtimer.h>
 #include <list>
@@ -33,7 +31,6 @@ using std::iterator;
 #include "wstring.h"
 #include "transferitem.h"
 #include "gotourl.h"
-// #include "platform.h"
 #include "util.h"
 #include "netclient.h"
 
@@ -1127,8 +1124,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				item->setText(WTransferItem::Total, "");
 				item->setText(WTransferItem::Rate, "0.0");
 				item->setText(WTransferItem::ETA, "");
-				// v- don't erase the user name
-				// item->setText(WTransferItem::User, "");	
+				// don't erase the user name
 			}
 			PRINT("\tWDownloadEvent::FileDone OK\n");
 			break;
@@ -1432,7 +1428,6 @@ WDownload::uploadEvent(WUploadEvent *u)
 			msg()->FindString("why", why);
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
 
-			// ut->SetFinished(true);
 			ut->Reset();
 			
 			if (gWin->fSettings->GetAutoClear())
@@ -1468,7 +1463,6 @@ WDownload::uploadEvent(WUploadEvent *u)
 			}
 			
 			ut->SetFinished(true);
-			// ut->SetLocallyQueued(false);
 			
 			if (gWin->fSettings->GetAutoClear())
 			{
@@ -3137,8 +3131,6 @@ WDownload::UpdateULRatings()
 			pair.second->setText(WTransferItem::QR, QString::number(i));
 		}
 	}
-	//	fUploads->triggerUpdate();
-	
 	Unlock();
 	
 	PRINT("\tWDownload::UpdateULRatings OK\n");
@@ -3164,8 +3156,6 @@ WDownload::UpdateDLRatings()
 			pair.second->setText(WTransferItem::QR, QString::number(i));
 		}
 	}
-	//	fDownloads->triggerUpdate();
-	
 	Unlock();
 	
 	PRINT("\tWDownload::UpdateDLRatings OK\n");

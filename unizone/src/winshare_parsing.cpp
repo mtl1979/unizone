@@ -20,7 +20,6 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 {
 	int matchCount = 0;
 	WUserIter iter = fNetClient->Users().begin();
-//	QString res = result;
 
 	QString oldName("");
 	while (iter != fNetClient->Users().end())

@@ -88,7 +88,6 @@ WinShareWindow::ChannelAdded(const QString &channel, const QString &sid, int64 t
 	UpdateTopic(iter);
 	UpdateUsers(iter);
 	UpdatePublic(iter);
-	//}
 }
 
 void
@@ -166,7 +165,6 @@ WinShareWindow::CreateChannel()
 			win->SetOwner(GetUserID());
 			win->show();
 
-			//wcp.second->AddAdmin(fNet->LocalSessionID());
 			ChannelAdmins(text, GetUserID(), GetUserID());
 			UpdateUsers(it);
 			UpdatePublic(it);

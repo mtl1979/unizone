@@ -55,9 +55,6 @@ bool IsAction(const QString & text, const QString & user);
 // Format a nice size string
 QString MakeSizeString(uint64 s);
 
-// Strip only spaces off, no other non-printable characters
-// String Trim(String orig);
-
 // Convert 'Connection string' to 'bytes per second'
 uint32 BandwidthToBytes(const QString & connection);
 

@@ -83,7 +83,6 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 			this, SLOT(URLClicked(const QString &)));
 	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
-//	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 
 #ifdef WIN32
 	FindWindowHandle( tr("Private") );
@@ -533,20 +532,6 @@ WPrivateWindow::PopupActivated(int id)
 	}
 }
 
-/*
-void
-WPrivateWindow::UpdateUserList()
-{
-	fLock.lock();
-	WUserIter it = fUsers.begin();
-	while ( it != fUsers.end())
-	{
-		(*it).second()->AddToListView(fPrivateUsers);
-		it++;
-	}
-	fLock.unlock();
-}
-*/
 void
 WPrivateWindow::CheckEmpty()
 {

@@ -87,7 +87,6 @@
 #include <sys/sysctl.h>
 #endif
 
-#define CLUMP_CHAR '\1'
 #define NUM_TOOLBARS 4
 
 const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
@@ -258,7 +257,6 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	CHECK_PTR(fListThread);
 
 	fFileShutdownFlag = false;
-//	fScrollDown = true;
 	startTimer(1000);
 
 	if (fSettings->GetSharingEnabled())
@@ -1241,50 +1239,6 @@ WinShareWindow::GetStatus() const
 	return fUserStatus;
 }
 
-/*
-void
-WinShareWindow::UpdateTextView()
-{
-	// <postmaster@raasu.org> 20021021 -- Fixed too long line in debug output
-#ifdef DEBUG2
-	PRINT("UPDATETEXTVIEW: ContentsX = %d, ContentsY = %d\n", fChatText->contentsX(),		fChatText->contentsY());
-	PRINT("              : ContentsW = %d, ContentsH = %d\n", fChatText->contentsWidth(),	fChatText->contentsHeight());
-#endif
-	if (fScrollDown)
-	{
-		fScrollY = fChatText->contentsHeight();
-	}
-	if (fScrollX != fChatText->contentsX() || fScrollY != fChatText->contentsY())
-	{
-		fChatText->setContentsPos(fScrollX, fScrollY);
-#ifndef WIN32	// linux only... (FreeBSD???)
-		fChatText->repaintContents(
-									fChatText->contentsX(), fChatText->contentsY(),
-									fChatText->contentsWidth(), fChatText->contentsHeight(),
-									false);
-#endif
-	}
-}
-*/
-
-/*
-void
-WinShareWindow::UpdateUserList()
-{
-	WUserMap users = fNetClient->Users();
-
-	WUserIter it = users.begin();
-	while (it != users.end())
-	{
-		if ((*it).second())
-		{
-			(*it).second()->AddToListView(fUsers);
-		}
-		it++;
-	}
-	UpdateUserCount();
-}
-*/
 QString
 WinShareWindow::MakeHumanDiffTime(int64 time)
 {
@@ -1386,34 +1340,16 @@ WinShareWindow::MakeHumanTime(int64 time)
 		return s;
 	}
 }
-/*
-void
-WinShareWindow::CheckScrollState()
-{
-	QScrollBar * scroll = fChatText->verticalScrollBar();
-#ifdef DEBUG2
-	PRINT("CHECKSCROLLSTATE: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
-#endif
-	fScrollX = fChatText->contentsX();
-	fScrollY = fChatText->contentsY();
-	if (scroll->value() >= scroll->maxValue())
-		fScrollDown = true;
-	else
-		fScrollDown = false;
-}
-*/
+
 bool
 WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net)
 {
 	StringTokenizer wholeStringTok((const char *) text.utf8(), " ");
 	String restOfString2(wholeStringTok.GetRemainderOfString());
-//	restOfString2.Replace(CLUMP_CHAR, ' ');
 	const char * w2 = wholeStringTok.GetNextToken();
 	if (w2)
 	{
 		setTargetStr = w2;
-//		setTargetStr.Replace(CLUMP_CHAR, ' ');
-//		w2 = setTargetStr.Cstr();
 
 		setRestOfString = wholeStringTok.GetRemainderOfString();
 

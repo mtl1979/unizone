@@ -99,10 +99,6 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 		this, SLOT(ChannelAdminsChanged(const QString &, const QString &))
 		);
 
-	/*
-	connect(gWin, SIGNAL(UpdatePrivateUserLists()), 
-			this, SLOT(UpdateUserList()));
-	*/
 	connect(gWin, SIGNAL(NewChannelText(const QString &, const QString &, const QString &)),
 			this, SLOT(NewChannelText(const QString &, const QString &, const QString &)));
 	connect(fNet, SIGNAL(UserDisconnected(const QString &, const QString &)), 
@@ -258,27 +254,10 @@ Channel::URLClicked(const QString & url)
 			GotoURL(url);
 	}
 }
-/*
-void
-Channel::UpdateUserList()
-{
-	WUserIter it = fUsers.begin();
-	while ( it != fUsers.end())
-	{
-		(*it).second()->AddToListView(fChannelUsers);
-		it++;
-	}
-}
-*/
+
 void
 Channel::AddUser(const QString & user)
 {
-/*
-	if (user == "0")
-	{
-		return;
-	}
-*/
 	WUserIter it = fUsers.find(user);
 	if (it == fUsers.end())
 	{

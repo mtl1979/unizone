@@ -84,7 +84,6 @@ ParseForShownAux(const QString &txt)
 
 		// copy everything before first TAB (after any extra line breaks stripped from the beginning)
 		out = txt.mid(n2, n - n2);
-//		out += "<br>";
 
 		// skip the TAB ;)
 		n++;

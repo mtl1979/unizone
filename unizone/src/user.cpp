@@ -161,8 +161,6 @@ WUser::InitBandwidth(MessageRef msg)
 	const char * l;
 	uint32 bps = 0;
 
-//	fBandwidthLabel = qApp->translate("Connection", "Unknown"); // Reset
-
 	if (msg()->FindInt32("bps", (int32 *)&bps) == B_OK)
 		fBandwidthBPS = bps;
 

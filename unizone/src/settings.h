@@ -9,8 +9,6 @@
 #include "muscle/message/Message.h"
 using namespace muscle;
 
-// #include "filethread.h"	// for WStrList
-
 #include <qvaluelist.h>
 
 #define SERVER_LIST		"serverlist"

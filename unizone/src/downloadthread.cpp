@@ -122,8 +122,6 @@ WDownloadThread::~WDownloadThread()
 		fLocalFileDl = NULL;
 	}
 
-//	qApp->sendPostedEvents( fOwner, WDownloadEvent::Type );
-
 	if (!fTunneled)
 		qmtt->ShutdownInternalThread();
 
@@ -394,10 +392,8 @@ WDownloadThread::SendReply(MessageRef &m)
 		if (fShutdownFlag && *fShutdownFlag)
 		{
 			Reset();
-//			return;
 		}
 
-//		m()->AddBool("download", true);	// the value doesn't matter
 		m()->AddPointer("sender", this);
 		WDownloadEvent * wde = new WDownloadEvent(m);
 		if (wde)
@@ -617,7 +613,6 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 				else
 				{
 					// ERROR!
-					// disconnected = true;	// we're done
 					delete fFile;
 					fFile = NULL;
 
@@ -633,7 +628,6 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 			}
 			else
 			{
-				//disconnected = true;
 				MessageRef status(GetMessageFromPool(WDownloadEvent::FileError));
 				if (status())
 				{
@@ -905,7 +899,6 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 			{
 				if (IsLastFile())
 				{
-					// SetFinished(true);
 					dis = GetMessageFromPool(WDownloadEvent::FileDone);
 					if (dis())
 					{
@@ -1338,7 +1331,6 @@ WDownloadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPa
 				to += "/beshare";
 				down()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 				down()->AddString(PR_NAME_SESSION, "");
-				// down()->AddInt32("my_id", (int32) this);
 				down()->AddMessage("message", msgRef);
 				down()->AddInt32("tunnel_id", (int32) hisID);
 				return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(down);

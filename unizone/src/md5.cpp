@@ -210,32 +210,6 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
 	if (len > 0 && size < len)
 		return B_ERROR;
 
-	/*
-	if (len == 0 || len == size)
-	{
-		uint8 buf[24];
-		// see if we've cached this MD5 yet
-		QString cf(entry);
-		cf += ".md5";
-		QFile cache(cf);
-		if (cache.open(IO_ReadOnly))	// open will fail if we have not yet cached the item
-		{
-			if (cache.readBlock((char *)buf, sizeof(buf)) == sizeof(buf))
-			{
-				cache.close();
-				uint64 checkSize = B_LENDIAN_TO_HOST_INT64(*((int64 *)buf));
-				if (checkSize == size)
-				{
-					memcpy(returnDigest, &buf[8], 16);
-					if (len == 0)
-						len = size;
-					return B_OK;
-				}
-			}
-		}
-	}
-	*/
-
 	for (int i = 0; i < 16; i++)
 		returnDigest[i] = 0;
 
@@ -298,23 +272,5 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
 	if (len == 0)
 		len = size;
 	
-	/*
-	if (len == size)
-	{
-		// cache the results
-		uint8 buf[24];
-		*((int64 *)buf) = B_HOST_TO_LENDIAN_INT64(size);
-		memcpy(&buf[8], returnDigest, 16);
-		
-		QString cf(entry);
-		cf += ".md5";
-		QFile cache(cf);
-		if (cache.open(IO_WriteOnly))
-		{
-			cache.writeBlock((const char *)buf, sizeof(buf));
-			cache.close();
-		}
-	}
-	*/
 	return B_OK;
 }

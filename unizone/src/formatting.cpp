@@ -496,7 +496,8 @@ WFormat::PingSent(const QString &session, const QString &name)
 		temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
 		temp += name.stripWhiteSpace();
 		temp += "</font>";
-		temp += tr(")", "aka suffix");
+		if (tr(")", "aka suffix") != QString(","))
+			temp += tr(")", "aka suffix");
 	}
 	else
 		temp += tr("user #%1", "Ping sent to user...").arg(session);
@@ -527,6 +528,8 @@ WFormat::TimeRequest(const QString &session, const QString &username)
 		temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
 		temp += username.stripWhiteSpace();
 		temp += "</font>";
+		if (tr(")", "aka suffix") != QString(","))
+			temp += tr(")", "aka suffix");
 	}
 	else
 		temp += tr("user #%1", "Ping sent to user...").arg(session);

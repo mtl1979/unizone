@@ -174,7 +174,6 @@ WHTMLView::appendText(const QString &newtext)
 	{
 		PRINT("appendText: Calling CheckScrollState()\n");
 		sendMessage(CheckMessage);
-//		CheckScrollState();	
 		PRINT("appendText: Calling append(fBuffer)\n");
 		if (fBuffer.length() > 0)
 		{
@@ -184,7 +183,6 @@ WHTMLView::appendText(const QString &newtext)
 				mref()->AddString("text", (const char *) fBuffer.utf8());
 				sendMessage(AppendMessage, mref);
 			}
-//			append(fBuffer);
 			fBuffer = "";
 		}
 		PRINT("appendText: Calling append(newtext)\n");
@@ -194,10 +192,8 @@ WHTMLView::appendText(const QString &newtext)
 			mref()->AddString("text", (const char *) newtext.utf8());
 			sendMessage(AppendMessage, mref);
 		}
-//		append(newtext);
 		PRINT("appendText: Calling UpdateScrollState()\n");
 		sendMessage(ScrollMessage);
-//		UpdateScrollState();
 	}
 	PRINT("appendText OK\n");
 }

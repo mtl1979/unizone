@@ -1,10 +1,6 @@
 #ifndef TITANIC_H
 #define TITANIC_H
 
-// #include "util/String.h"
-
-// using namespace muscle;
-
 enum {
 	TTP_START_QUEUE = 'tTsQ',
 	TTP_ADD_FILE

@@ -47,7 +47,6 @@ ChannelInfo::~ChannelInfo()
 	// Clean-up
 	if (fWindow)
 	{
-		//delete fWindow;
 		fWindow = NULL;
 	}
 	

@@ -33,13 +33,10 @@ WSettings::WSettings()
 {
 	fColor = fColumn = fStatus = fUser = fServer = 0;
 	fSet = GetMessageFromPool();
-	//CHECK_PTR(fSet);
 }
 
 WSettings::~WSettings()
 {
-	//delete fSet;
-	//fSet = NULL; // <postmaster@raasu.org> 20021027
 }
 
 void
@@ -1401,7 +1398,7 @@ WSettings::SetRemotePassword(const QString & pw)
 QString
 WSettings::GetRemotePassword() const
 {
-	String pw = "";	// the default for everything is konqueror
+	String pw = "";
 	fSet()->FindString(REMOTEPASSWORD, pw);
 	return QString::fromUtf8(pw.Cstr());
 }

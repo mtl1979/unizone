@@ -187,7 +187,6 @@ private:
 	bool fWaitingForUploadToFinish;
 	bool fAccept;						// is this the accept version?
 	bool fForced;						// did this transfer bypass queue?
-//	bool fInit;							// has InitSession() been postponed due file scan in progress
 
 	int timerID;
 

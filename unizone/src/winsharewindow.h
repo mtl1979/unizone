@@ -129,9 +129,7 @@ public:
 	// Events
 	enum
 	{
-		ConnectRetry = QEvent::User + 8000,
-//		UpdateMainUsers,
-//		UpdatePrivateUsers
+		ConnectRetry = QEvent::User + 8000
 	};
 
 	// Time Events
@@ -353,8 +351,6 @@ private:
 	bool fGotResults;			// see if we got initial Search Results
 	bool fGotParams;			// see if the initial "Get Params" message was sent
 	bool fAway;
-//	bool fScrollDown;			// do we need to scroll the view down after an insertion?
-//	int fScrollX, fScrollY;
 	bool fScanning;				// Is File Scan Thread active?
 
 	bool fDisconnect;			// true : disconnected prematurely
@@ -442,15 +438,12 @@ private:
 
 	void Cleanup();
 
-//	void HandleSignal();
 	void SendChatText(WTextEvent *, bool * reply = NULL);
 
 	void HandleMessage(MessageRef);
 	void HandleChatText(const WUserRef &from, const QString &text, bool priv);
 
 	void HandleComboEvent(WTextEvent *);
-
-//	void UpdateUserList();
 
 	QString MakeHumanTime(int64 time);
 	QString MakeHumanDiffTime(int64 time);

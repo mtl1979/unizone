@@ -36,7 +36,6 @@ public:
 
 	virtual ~WFileThread();
 
-//	void SetFirewalled(bool f) { fFired = f; }
 	int GetNumFiles() const;
 
 	Hashtable<String, QString> & GetSharedFiles() { return fFiles; }
@@ -53,7 +52,6 @@ protected:
 	virtual void InternalThreadEntry();
 
 private:
-//	bool fFired;
 	NetClient * fNet;
 	QObject * fOwner;
 	bool * fShutdownFlag;

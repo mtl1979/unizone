@@ -172,7 +172,7 @@ WinShareWindow::DisconnectedFromServer()
 
 	if (fDisconnect)
 	{
-		//Connect();			// Reconnect ;)
+		// Reconnect ;)
 		QCustomEvent * recon = new QCustomEvent(WinShareWindow::ConnectRetry);
 		if (recon)
 			QApplication::postEvent(this, recon);

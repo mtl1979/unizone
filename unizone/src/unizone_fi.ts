@@ -1727,7 +1727,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Time request sent to</source>
-        <translation>Aikapyyntö lähetetty käyttäjälle</translation>
+        <translation>Aikapyyntö lähetetty</translation>
     </message>
     <message>
         <source>.</source>

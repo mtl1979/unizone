@@ -316,8 +316,6 @@ NetClient::RemoveUser(const WUserRef user)
 	{
 		QString uid = user()->GetUserID();
 		QString uname = user()->GetUserName();
-		// PRINT("NetClient::RemoveUser: Removing from list\n");
-		// user()->RemoveFromListView();
 		PRINT("NetClient::RemoveUser: Signaling...\n");
 		emit UserDisconnected(uid, uname);
 		PRINT("NetClient::RemoveUser: Erasing\n");
@@ -995,7 +993,6 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 					}
 					else	// a /serverinfo was sent
 					{
-//						win->ServerParametersReceived(msg);
 						::SendEvent(fOwner, WMessageEvent::ServerParametersMessage, msg);
 					}
 				}
@@ -1077,9 +1074,6 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 #ifdef DEBUG2
 				PRINT("Handling message\n");
 #endif
-//				WinShareWindow *win = GetWindow();
-//				if (win)
-//					win->HandleMessage(msg);
 				::SendEvent(fOwner, WMessageEvent::HandleMessage, msg);
 				break;
 			}
@@ -1233,7 +1227,6 @@ NetClient::Reset()
 	{
 		qmtt->Reset();
 		qmtt->WaitForInternalThreadToExit();
-//		qmtt->disconnect();
 		QCustomEvent *qce = new QCustomEvent(NetClient::THREAD_EXITED);
 		if (qce)
 		{
@@ -1348,8 +1341,6 @@ NetClient::event(QEvent * e)
 				ret = true;
 				break;
 			}
-//			SendSignal(WinShareWindow::UpdateMainUsers);
-//			SendSignal(WinShareWindow::UpdatePrivateUsers);
 		}
 		return ret;
 	}
