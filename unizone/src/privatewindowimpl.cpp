@@ -291,10 +291,11 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 			WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
 			if (wte)
 			{
-				if (wte->Text().lower().startsWith("/adduser ") ||
-					wte->Text().lower().startsWith("/removeuser "))
+				QString stxt(wte->Text());
+				if (CompareCommand(stxt, "/adduser") ||
+					CompareCommand(stxt, "/removeuser"))
 				{
-					bool rem = wte->Text().lower().startsWith("/adduser ") ? false : true;
+					bool rem = stxt.lower().startsWith("/adduser ") ? false : true;
 
 					String targetStr, restOfString;
 					WUserSearchMap sendTo;
@@ -321,7 +322,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 								if (user()->IsBot())
 								{
 									if (gWin->fSettings->GetError())
-										PrintError(tr("User #%1 (a.k.a. %2) is a bot!").arg(sid).arg(user()->GetUserName()));
+										PrintError(WFormat::PrivateIsBot(sid, user()->GetUserName()));
 									iter++;
 									continue;	// go on to next user
 								}
@@ -353,8 +354,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 										(*foundIt).second()->RemoveFromListView(fPrivateUsers);
 										if (gWin->fSettings->GetUserEvents())
 										{
-											PrintSystem(tr("User #%1 (a.k.a. %2) was removed from the private chat window.").
-														arg((*foundIt).second()->GetUserID()).arg((*foundIt).second()->GetUserName()));
+											PrintSystem(WFormat::PrivateRemoved((*foundIt).second()->GetUserID(), (*foundIt).second()->GetUserName()));
 										}
 										fUsers.erase(foundIt);
 									}
@@ -368,10 +368,9 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 						}
 					}
 				}
-				else if (wte->Text().lower().startsWith("/action's ") ||
-						wte->Text().lower().startsWith("/me's "))
+				else if (CompareCommand(stxt, "/action's") ||
+						CompareCommand(stxt, "/me's "))
 				{
-					QString stxt(wte->Text());
 					QString message = gWin->GetUserName();
 					message += "'s ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
@@ -388,10 +387,9 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 						QApplication::postEvent(fOwner, e);
 					}
 				}
-				else if (wte->Text().lower().startsWith("/action ") ||
-						wte->Text().lower().startsWith("/me "))
+				else if (CompareCommand(stxt, "/action") ||
+						CompareCommand(stxt, "/me"))
 				{
-					QString stxt(wte->Text());
 					QString message = gWin->GetUserName();
 					message += " ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
@@ -408,13 +406,13 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 						QApplication::postEvent(fOwner, e);
 					}
 				}
-				else if (wte->Text().lower().startsWith("/clear"))
+				else if (CompareCommand(stxt, "/clear"))
 				{
 					fChatText->setText("");	// empty the text
 				}
 				else
 				{
-					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, wte->Text());
+					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, stxt);
 					if (e)
 					{
 						e->SetSendTo(this);

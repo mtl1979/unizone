@@ -94,76 +94,8 @@
         <translation type='obsolete'>&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a.</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>User #%1 is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&apos;s IP address is %1.</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
-    </message>
-    <message>
-        <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Uptime: %1, Logged on for %2)</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>You are now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Name changed to &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;font size="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) pinged you.</source>
-        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
@@ -292,10 +224,6 @@ Version %1</translation>
     <message>
         <source>List of channel admins:</source>
         <translation>List of channel admins:</translation>
-    </message>
-    <message>
-        <source>%1 - %2</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>You got kicked off from this channel!</source>
@@ -435,79 +363,79 @@ Version %1</translation>
     <name>Date</name>
     <message>
         <source>Jan</source>
-        <translation type='unfinished'>Jan</translation>
+        <translation>Jan</translation>
     </message>
     <message>
         <source>Feb</source>
-        <translation type='unfinished'>Feb</translation>
+        <translation>Feb</translation>
     </message>
     <message>
         <source>Mar</source>
-        <translation type='unfinished'>Mar</translation>
+        <translation>Mar</translation>
     </message>
     <message>
         <source>Apr</source>
-        <translation type='unfinished'>Apr</translation>
+        <translation>Apr</translation>
     </message>
     <message>
         <source>May</source>
-        <translation type='unfinished'>May</translation>
+        <translation>May</translation>
     </message>
     <message>
         <source>Jun</source>
-        <translation type='unfinished'>Jun</translation>
+        <translation>Jun</translation>
     </message>
     <message>
         <source>Jul</source>
-        <translation type='unfinished'>Jul</translation>
+        <translation>Jul</translation>
     </message>
     <message>
         <source>Aug</source>
-        <translation type='unfinished'>Aug</translation>
+        <translation>Aug</translation>
     </message>
     <message>
         <source>Sep</source>
-        <translation type='unfinished'>Sep</translation>
+        <translation>Sep</translation>
     </message>
     <message>
         <source>Oct</source>
-        <translation type='unfinished'>Oct</translation>
+        <translation>Oct</translation>
     </message>
     <message>
         <source>Nov</source>
-        <translation type='unfinished'>Nov</translation>
+        <translation>Nov</translation>
     </message>
     <message>
         <source>Dec</source>
-        <translation type='unfinished'>Dec</translation>
+        <translation>Dec</translation>
     </message>
     <message>
         <source>Mon</source>
-        <translation type='unfinished'>Mon</translation>
+        <translation>Mon</translation>
     </message>
     <message>
         <source>Tue</source>
-        <translation type='unfinished'>Tue</translation>
+        <translation>Tue</translation>
     </message>
     <message>
         <source>Wed</source>
-        <translation type='unfinished'>Wed</translation>
+        <translation>Wed</translation>
     </message>
     <message>
         <source>Thu</source>
-        <translation type='unfinished'>Thu</translation>
+        <translation>Thu</translation>
     </message>
     <message>
         <source>Fri</source>
-        <translation type='unfinished'>Fri</translation>
+        <translation>Fri</translation>
     </message>
     <message>
         <source>Sat</source>
-        <translation type='unfinished'>Sat</translation>
+        <translation>Sat</translation>
     </message>
     <message>
         <source>Sun</source>
-        <translation type='unfinished'>Sun</translation>
+        <translation>Sun</translation>
     </message>
 </context>
 <context>
@@ -760,71 +688,71 @@ Date: %4</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='unfinished'>14.4 kbps</translation>
+        <translation>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='unfinished'>28.8 kbps</translation>
+        <translation>28.8 kbps</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation type='unfinished'>33.6 kbps</translation>
+        <translation>33.6 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='unfinished'>36.6 kbps</translation>
+        <translation>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='unfinished'>57.6 kbps</translation>
+        <translation>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='unfinished'>ISDN-64k</translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='unfinished'>ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type='unfinished'>DSL</translation>
+        <translation>DSL</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='unfinished'>Cable</translation>
+        <translation>Cable</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='unfinished'>T1</translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='unfinished'>T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='unfinished'>OC-3</translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='unfinished'>OC-12</translation>
+        <translation>OC-12</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation type='obsolete'>300 baud</translation>
+        <translation>300 baud</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='unfinished'>DSL-256k</translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='unfinished'>DSL-384k</translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='unfinished'>DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
@@ -833,7 +761,7 @@ Date: %4</translation>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation type='unfinished'>Date:</translation>
+        <translation>Date:</translation>
     </message>
     <message>
         <source>B</source>
@@ -895,6 +823,10 @@ Date: %4</translation>
     <message>
         <source>%1 %2</source>
         <translation type='obsolete'>%1 %2</translation>
+    </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation>DSL-1M</translation>
     </message>
 </context>
 <context>
@@ -1278,24 +1210,16 @@ Date: %4</translation>
         <translation>Packet Size</translation>
     </message>
     <message>
-        <source>Downloading %1 from %2.</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>Elapsed</source>
         <translation>Elapsed</translation>
     </message>
     <message>
         <source>F11</source>
-        <translation type='unfinished'>F11</translation>
+        <translation>F11</translation>
     </message>
 </context>
 <context>
     <name>WDownloadThread</name>
-    <message>
-        <source>%1%2 %3%4</source>
-        <translation type='obsolete'></translation>
-    </message>
     <message>
         <source>%1%2 %3</source>
         <translation type='obsolete'>%1%2 %3</translation>
@@ -1343,128 +1267,49 @@ Date: %4</translation>
 </context>
 <context>
     <name>WFormat</name>
+    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;font size="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1"&gt;</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;(%1)&lt;/b&gt; </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation>&lt;font color="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;System:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>User #%1 is now connected.</source>
-        <translation type='unfinished'>User #%1 is now connected.</translation>
-    </message>
-    <message>
-        <source>User #%1 (a.k.a. &lt;font color="%2"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) has disconnected.</source>
-        <translation type='unfinished'></translation>
+        <translation>User #%1 is now connected.</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type='unfinished'>User #%1 has disconnected.</translation>
-    </message>
-    <message>
-        <source>User #%1 is now known as</source>
-        <translation type='unfinished'></translation>
+        <translation>User #%1 has disconnected.</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
-        <translation type='unfinished'></translation>
+        <translation>User #%1 is now</translation>
     </message>
     <message>
         <source>nameless</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>User #%1 (a.k.a.</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>) is now known as &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>User #%1 is now </source>
-        <translation type='obsolete'></translation>
+        <translation>nameless</translation>
     </message>
     <message>
         <source>&apos;s IP address is %1.</source>
-        <translation type='unfinished'></translation>
+        <translation>&apos;s IP address is %1.</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='unfinished'>User #%1&apos;s IP address is %2.</translation>
-    </message>
-    <message>
-        <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Uptime: %1, Logged on for %2)</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>You are now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Name changed to &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>User #%1 (a.k.a. </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) pinged you.</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>) is now known as</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
@@ -1484,44 +1329,92 @@ Date: %4</translation>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>) is now</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
         <source>Time request sent to</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now known as&apos; suffix</comment>
-        <translation type='unfinished'></translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now nameless&apos; suffix</comment>
-        <translation type='unfinished'></translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;is now&apos; suffix</comment>
-        <translation type='unfinished'></translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;You are now&apos; suffix</comment>
-        <translation type='unfinished'></translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>.</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
+        <translation>.</translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a</source>
         <translation type='unfinished'></translation>
     </message>
-</context>
-<context>
-    <name>WGenericThread</name>
     <message>
-        <source>Connection timed out!</source>
-        <translation type='obsolete'></translation>
+        <source>)</source>
+        <comment>aka suffix</comment>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>has disconnected.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>is now known as</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>is now</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>pinged you.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Ping sent to</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>is a bot!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>was removed from the private chat window.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User #%1</source>
+        <translation type='unfinished'>User #%1</translation>
+    </message>
+    <message>
+        <source>user #%1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>ip_prefix</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>ip_space</source>
+        <comment>Need space after username in IP address string?</comment>
+        <translation>no</translation>
+    </message>
+    <message>
+        <source>user #%1 (a.k.a</source>
+        <comment>Ping sent to user...</comment>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -2153,10 +2046,6 @@ Date: %4</translation>
         <translation>Default launcher:</translation>
     </message>
     <message>
-        <source>Upload Packet Size</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>Upload Packet Size:</source>
         <translation>Upload Packet Size:</translation>
     </message>
@@ -2167,14 +2056,6 @@ Date: %4</translation>
     <message>
         <source>Downloads</source>
         <translation>Downloads</translation>
-    </message>
-    <message>
-        <source>Minimum File Size to Queue</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>disabled</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>5 kB</source>
@@ -2207,10 +2088,6 @@ Date: %4</translation>
     <message>
         <source>200 kB</source>
         <translation type='obsolete'>200 kB</translation>
-    </message>
-    <message>
-        <source>250 kB</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>500 kB</source>
@@ -2247,6 +2124,10 @@ Date: %4</translation>
     <message>
         <source>Warning Message Text</source>
         <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation type='unfinished'>DSL-1M</translation>
     </message>
 </context>
 <context>
@@ -2294,7 +2175,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) was removed from the private chat window.</source>
-        <translation>User #%1 (a.k.a. %2) was removed from the private chat window.</translation>
+        <translation type='obsolete'>User #%1 (a.k.a. %2) was removed from the private chat window.</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -2342,7 +2223,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
-        <translation>User #%1 (a.k.a. %2) is a bot!</translation>
+        <translation type='obsolete'>User #%1 (a.k.a. %2) is a bot!</translation>
     </message>
     <message>
         <source>Private</source>
@@ -2430,10 +2311,6 @@ Date: %4</translation>
 <context>
     <name>WUploadThread</name>
     <message>
-        <source>Your download has been blocked for %1 minute(s)!</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>User #%1</source>
         <translation>User #%1</translation>
     </message>
@@ -2444,10 +2321,6 @@ Date: %4</translation>
     <message>
         <source>Couldn&apos;t create new connect session!</source>
         <translation>Couldn&apos;t create new connect session!</translation>
-    </message>
-    <message>
-        <source>Connection reset by peer!</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Connection timed out!</source>
@@ -2464,13 +2337,6 @@ Date: %4</translation>
     <message>
         <source>Could not start internal thread!</source>
         <translation>Could not start internal thread!</translation>
-    </message>
-</context>
-<context>
-    <name>WinShare</name>
-    <message>
-        <source>%d.%d.%d build %d</source>
-        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
@@ -2630,7 +2496,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
-        <translation>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
+        <translation type='obsolete'>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
@@ -3373,30 +3239,6 @@ Date: %4</translation>
         <translation>as time goes on.</translation>
     </message>
     <message>
-        <source>Auto-private pattern : %1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Blacklist pattern : %1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Ignore pattern : %1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Watch pattern : %1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>On Connect : %1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>On Connect 2: %1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>Help for %1:</source>
         <translation>Help for %1:</translation>
     </message>
@@ -3565,14 +3407,6 @@ Date: %4</translation>
         <translation>Watch pattern set to %1.</translation>
     </message>
     <message>
-        <source>%1.%2.%3 build %4</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>On Connect: %1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>passive</source>
         <translation>passive</translation>
     </message>
@@ -3623,10 +3457,6 @@ Date: %4</translation>
     <message>
         <source>Cleared resume list.</source>
         <translation>Cleared resume list.</translation>
-    </message>
-    <message>
-        <source>On connect:</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>1. %1</source>
@@ -3741,16 +3571,12 @@ Date: %4</translation>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>/whitelist - set the whitelist pattern</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation type='unfinished'></translation>
+        <translation>Welcome to Unizone (Русский)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX!</translation>
     </message>
     <message>
         <source>wandering</source>

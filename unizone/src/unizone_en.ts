@@ -110,76 +110,8 @@
         <translation type='obsolete'>Channels</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a.</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>User #%1 is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&apos;s IP address is %1.</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
-    </message>
-    <message>
-        <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Uptime: %1, Logged on for %2)</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>You are now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Name changed to &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;font size="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) pinged you.</source>
-        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
@@ -846,7 +778,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation type='obsolete'>300 baud</translation>
+        <translation>300 baud</translation>
     </message>
     <message>
         <source>DSL-256k</source>
@@ -929,6 +861,10 @@ Date: %4</translation>
     <message>
         <source>%1 %2</source>
         <translation type='obsolete'>%1 %2</translation>
+    </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation>DSL-1M</translation>
     </message>
 </context>
 <context>
@@ -1377,6 +1313,7 @@ Date: %4</translation>
 </context>
 <context>
     <name>WFormat</name>
+    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation>&lt;font size="%1"&gt;</translation>
@@ -1406,12 +1343,8 @@ Date: %4</translation>
         <translation>User #%1 is now connected.</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. &lt;font color="%2"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>) has disconnected.</source>
-        <translation>) has disconnected.</translation>
+        <translation type='obsolete'>) has disconnected.</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
@@ -1419,7 +1352,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 is now known as</source>
-        <translation>User #%1 is now known as</translation>
+        <translation type='obsolete'>User #%1 is now known as</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
@@ -1431,11 +1364,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a.</source>
-        <translation>User #%1 (a.k.a.</translation>
-    </message>
-    <message>
-        <source>) is now known as &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>User #%1 (a.k.a.</translation>
     </message>
     <message>
         <source>) is now </source>
@@ -1451,15 +1380,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation>User #%1&apos;s IP address is %2.</translation>
-    </message>
-    <message>
-        <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Uptime: %1, Logged on for %2)</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
@@ -1468,14 +1389,6 @@ Date: %4</translation>
     <message>
         <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
         <translation>&lt;b&gt;Warning:&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>You are now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Name changed to &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
@@ -1490,16 +1403,12 @@ Date: %4</translation>
         <translation>&lt;b&gt;Action:&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>) pinged you.</source>
-        <translation>) pinged you.</translation>
+        <translation type='obsolete'>) pinged you.</translation>
     </message>
     <message>
         <source>) is now known as</source>
-        <translation>) is now known as</translation>
+        <translation type='obsolete'>) is now known as</translation>
     </message>
     <message>
         <source>Ping returned in %1 milliseconds</source>
@@ -1519,7 +1428,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>) is now</source>
-        <translation>) is now</translation>
+        <translation type='obsolete'>) is now</translation>
     </message>
     <message>
         <source>Time request sent to</source>
@@ -1549,6 +1458,69 @@ Date: %4</translation>
         <source>.</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
         <translation>.</translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a</source>
+        <translation>User #%1 (a.k.a</translation>
+    </message>
+    <message>
+        <source>)</source>
+        <comment>aka suffix</comment>
+        <translation>)</translation>
+    </message>
+    <message>
+        <source>has disconnected.</source>
+        <translation>has disconnected.</translation>
+    </message>
+    <message>
+        <source>is now known as</source>
+        <translation>is now known as</translation>
+    </message>
+    <message>
+        <source>is now</source>
+        <translation>is now</translation>
+    </message>
+    <message>
+        <source>pinged you.</source>
+        <translation>pinged you.</translation>
+    </message>
+    <message>
+        <source>Ping sent to</source>
+        <translation>Ping sent to</translation>
+    </message>
+    <message>
+        <source>is a bot!</source>
+        <translation>is a bot!</translation>
+    </message>
+    <message>
+        <source>was removed from the private chat window.</source>
+        <translation>was removed from the private chat window.</translation>
+    </message>
+    <message>
+        <source>User #%1</source>
+        <translation>User #%1</translation>
+    </message>
+    <message>
+        <source>user #%1 (a.k.a</source>
+        <translation type='obsolete'>user #%1 (a.k.a</translation>
+    </message>
+    <message>
+        <source>user #%1</source>
+        <translation>user #%1</translation>
+    </message>
+    <message>
+        <source>ip_prefix</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>ip_space</source>
+        <comment>Need space after username in IP address string?</comment>
+        <translation>no</translation>
+    </message>
+    <message>
+        <source>user #%1 (a.k.a</source>
+        <comment>Ping sent to user...</comment>
+        <translation>user #%1 (a.k.a</translation>
     </message>
 </context>
 <context>
@@ -2207,10 +2179,6 @@ Date: %4</translation>
         <translation type='obsolete'>Minimum File Size to Queue</translation>
     </message>
     <message>
-        <source>disabled</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>5 kB</source>
         <translation type='obsolete'>5 kB</translation>
     </message>
@@ -2282,6 +2250,10 @@ Date: %4</translation>
         <source>Warning Message Text</source>
         <translation>Warning Message Text</translation>
     </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation>DSL-1M</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -2328,7 +2300,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) was removed from the private chat window.</source>
-        <translation>User #%1 (a.k.a. %2) was removed from the private chat window.</translation>
+        <translation type='obsolete'>User #%1 (a.k.a. %2) was removed from the private chat window.</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -2381,7 +2353,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
-        <translation>User #%1 (a.k.a. %2) is a bot!</translation>
+        <translation type='obsolete'>User #%1 (a.k.a. %2) is a bot!</translation>
     </message>
     <message>
         <source>Private</source>
@@ -2669,7 +2641,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
-        <translation>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
+        <translation type='obsolete'>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
@@ -3664,10 +3636,6 @@ Date: %4</translation>
         <translation>Cleared resume list.</translation>
     </message>
     <message>
-        <source>On connect:</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>1. %1</source>
         <translation>1. %1</translation>
     </message>
@@ -3778,10 +3746,6 @@ Date: %4</translation>
     <message>
         <source>/unwhitelist [name] - remove name from whitelist</source>
         <translation>/unwhitelist [name] - remove name from whitelist</translation>
-    </message>
-    <message>
-        <source>/whitelist - set the whitelist pattern</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>/whitelist [pattern] - set the whitelist pattern</source>

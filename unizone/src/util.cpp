@@ -622,12 +622,13 @@ uint32
 BandwidthToBytes(const QString & connection)
 {
 	uint32 bps = 0;
-	if (connection.find(",") > 0)
+	int p = connection.find(",");
+	if (p > 0)
 	{
-		QString spd = connection.mid(connection.find(",") + 1);
+		QString spd = connection.mid(p + 1);
 		bps = spd.toULong();
 	}
-	else if (connection == "300 baud")
+	else if (connection == "300 baud" || ( connection == QObject::tr( "300 baud" ) ) )
 	{
 		bps = 75;
 	}

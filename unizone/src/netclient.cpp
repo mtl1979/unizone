@@ -1194,7 +1194,7 @@ NetClient::Reset()
 	{
 		qmtt->Reset();
 		qmtt->WaitForInternalThreadToExit();
-		qmtt->disconnect();
+//		qmtt->disconnect();
 		delete qmtt;
 		qmtt = NULL;
 	}

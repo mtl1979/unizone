@@ -592,7 +592,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 						{
 							// QString userid = tu()->GetUserID();
 							QString username = tu()->GetUserName();
-							QString treqMsg = WFormat::TimeRequest(FixStringStr(username));
+							QString treqMsg = WFormat::TimeRequest(tu()->GetUserID(), FixStringStr(username));
 							PrintSystem(treqMsg);
 						}
 
@@ -1288,7 +1288,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 				{
 					if (fSettings->GetInfo())
 					{
-						QString pingMsg = tr("Ping sent to user #%1 (a.k.a. <font color=\"%3\">%2</font>).").arg(sid).arg(FixStringStr(user()->GetUserName())).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
+						QString pingMsg = WFormat::PingSent(sid, FixStringStr(user()->GetUserName())); // <postmaster@raasu.org> 20021112
 						PrintSystem(pingMsg);
 					}
 					fNetClient->SendPing(sid);

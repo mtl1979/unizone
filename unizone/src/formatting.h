@@ -74,11 +74,16 @@ public:
 
 	// You got pinged
 	static QString GotPinged(const QString &session, const QString &name);
+	static QString PingSent(const QString &session, const QString &name);
 
 	static QString TimeStamp(const QString &stamp);
+	
+	// Private Windows
+	static QString PrivateRemoved(const QString &session, const QString &name);
+	static QString PrivateIsBot(const QString &session, const QString &name);
 
 	// UniShare
-	static QString TimeRequest(const QString &username);
+	static QString TimeRequest(const QString &session, const QString &username);
 
 	static QString tr2(const char *s);	// Appends space if not empty
 	static QString tr3(const QString &s);	// Adds leading space if needed.

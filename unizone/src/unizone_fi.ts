@@ -130,18 +130,6 @@
         <translation type='obsolete'>&lt;font color="%1"&gt;</translation>
     </message>
     <message>
-        <source>) is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>User #%1 is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&apos;s IP address is %1.</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation type='obsolete'>Käyttäjän #%1 IP-osoite on %2.</translation>
     </message>
@@ -150,48 +138,8 @@
         <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;</translation>
     </message>
     <message>
-        <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Uptime: %1, Logged on for %2)</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>You are now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Name changed to &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation type='obsolete'>&lt;font size="%1"&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) pinged you.</source>
-        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
@@ -934,7 +882,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation type='obsolete'>300 baudia</translation>
+        <translation>300 baudia</translation>
     </message>
     <message>
         <source>DSL-256k</source>
@@ -1017,6 +965,10 @@ Päiväys: %4</translation>
     <message>
         <source>%1 %2</source>
         <translation type='obsolete'>%1 %2</translation>
+    </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation>DSL-1M</translation>
     </message>
 </context>
 <context>
@@ -1469,6 +1421,7 @@ Päiväys: %4</translation>
 </context>
 <context>
     <name>WFormat</name>
+    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation>&lt;font size="%1"&gt;</translation>
@@ -1503,7 +1456,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>) has disconnected.</source>
-        <translation>, on poistunut.</translation>
+        <translation type='obsolete'>, on poistunut.</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
@@ -1511,7 +1464,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1 is now known as</source>
-        <translation>Käyttäjä #%1 on nyt nimeltään</translation>
+        <translation type='obsolete'>Käyttäjä #%1 on nyt nimeltään</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
@@ -1523,11 +1476,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a.</source>
-        <translation>Käyttäjä #%1, eli</translation>
-    </message>
-    <message>
-        <source>) is now known as &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli</translation>
     </message>
     <message>
         <source>) is now </source>
@@ -1543,11 +1492,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation>Käyttäjän #%1 IP-osoite on %2.</translation>
-    </message>
-    <message>
-        <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>Käyttäjän #%1 IP-osoite on %2.</translation>
     </message>
     <message>
         <source>Uptime: %1, Logged on for %2)</source>
@@ -1582,16 +1527,12 @@ Päiväys: %4</translation>
         <translation>&lt;b&gt;Toiminta:&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>) pinged you.</source>
-        <translation>, pingasi sinua.</translation>
+        <translation type='obsolete'>, pingasi sinua.</translation>
     </message>
     <message>
         <source>) is now known as</source>
-        <translation>, on nyt nimeltään</translation>
+        <translation type='obsolete'>, on nyt nimeltään</translation>
     </message>
     <message>
         <source>Ping returned in %1 milliseconds</source>
@@ -1611,7 +1552,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>) is now</source>
-        <translation>, on nyt</translation>
+        <translation type='obsolete'>, on nyt</translation>
     </message>
     <message>
         <source>Time request sent to</source>
@@ -1641,6 +1582,65 @@ Päiväys: %4</translation>
         <source>.</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
         <translation>.</translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a</source>
+        <translation>Käyttäjä #%1, eli</translation>
+    </message>
+    <message>
+        <source>)</source>
+        <comment>aka suffix</comment>
+        <translation>,</translation>
+    </message>
+    <message>
+        <source>has disconnected.</source>
+        <translation>on poistunut.</translation>
+    </message>
+    <message>
+        <source>is now known as</source>
+        <translation>on nyt nimeltään</translation>
+    </message>
+    <message>
+        <source>is now</source>
+        <translation>on nyt</translation>
+    </message>
+    <message>
+        <source>pinged you.</source>
+        <translation>pingasi sinua.</translation>
+    </message>
+    <message>
+        <source>Ping sent to</source>
+        <translation>Ping lähetetty</translation>
+    </message>
+    <message>
+        <source>is a bot!</source>
+        <translation>on botti!</translation>
+    </message>
+    <message>
+        <source>was removed from the private chat window.</source>
+        <translation>poistettiin keskusteluikkunasta.</translation>
+    </message>
+    <message>
+        <source>User #%1</source>
+        <translation>Käyttäjä #%1</translation>
+    </message>
+    <message>
+        <source>user #%1</source>
+        <translation>käyttäjä #%1</translation>
+    </message>
+    <message>
+        <source>ip_prefix</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>ip_space</source>
+        <comment>Need space after username in IP address string?</comment>
+        <translation>no</translation>
+    </message>
+    <message>
+        <source>user #%1 (a.k.a</source>
+        <comment>Ping sent to user...</comment>
+        <translation>käyttäjälle #%1, eli</translation>
     </message>
 </context>
 <context>
@@ -2374,6 +2374,10 @@ Päiväys: %4</translation>
         <source>Warning Message Text</source>
         <translation>Varoitusviestin teksti</translation>
     </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation>DSL-1M</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -2420,7 +2424,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) was removed from the private chat window.</source>
-        <translation>Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -2473,11 +2477,19 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
-        <translation>Käyttäjä #%1, eli %2, on botti!</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, on botti!</translation>
     </message>
     <message>
         <source>Private</source>
         <translation>Yksityinen</translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a %2) is a bot!</source>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, on botti!</translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a %2) was removed from the private chat window.</source>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
     </message>
 </context>
 <context>
@@ -2761,7 +2773,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
-        <translation>Ping lähetetty käyttäjälle #%1, eli &lt;font color="%3"&gt;%2&lt;/font&gt;.</translation>
+        <translation type='obsolete'>Ping lähetetty käyttäjälle #%1, eli &lt;font color="%3"&gt;%2&lt;/font&gt;.</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>

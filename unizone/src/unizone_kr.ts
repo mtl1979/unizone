@@ -3,76 +3,8 @@
 <context>
     <name>@default</name>
     <message>
-        <source>User #%1 (a.k.a.</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>User #%1 is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&apos;s IP address is %1.</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
-    </message>
-    <message>
-        <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Uptime: %1, Logged on for %2)</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>You are now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Name changed to &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;font size="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) pinged you.</source>
-        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
@@ -784,6 +716,14 @@ Date: %4</source>
         <source>%1 %2</source>
         <translation type='obsolete'>%1 %2</translation>
     </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation>DSL-1M</translation>
+    </message>
+    <message>
+        <source>300 baud</source>
+        <translation>300 baud</translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -1170,20 +1110,12 @@ Date: %4</source>
         <translation>Packet Size</translation>
     </message>
     <message>
-        <source>Downloading %1 from %2.</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>F11</source>
-        <translation type='unfinished'>F11</translation>
+        <translation>F11</translation>
     </message>
 </context>
 <context>
     <name>WDownloadThread</name>
-    <message>
-        <source>%1%2 %3%4</source>
-        <translation type='obsolete'></translation>
-    </message>
     <message>
         <source>%1%2 %3</source>
         <translation type='obsolete'>%1%2 %3</translation>
@@ -1231,6 +1163,7 @@ Date: %4</source>
 </context>
 <context>
     <name>WFormat</name>
+    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation></translation>
@@ -1244,14 +1177,6 @@ Date: %4</source>
         <translation></translation>
     </message>
     <message>
-        <source>&lt;b&gt;(%1)&lt;/b&gt; </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
         <translation>&lt;b&gt;시스템:&lt;/b&gt;</translation>
     </message>
@@ -1260,12 +1185,8 @@ Date: %4</source>
         <translation>#%1 님이 연결되었습니다.</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. &lt;font color="%2"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>) has disconnected.</source>
-        <translation>) 님의 연결이 해제되었습니다.</translation>
+        <translation type='obsolete'>) 님의 연결이 해제되었습니다.</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
@@ -1273,7 +1194,7 @@ Date: %4</source>
     </message>
     <message>
         <source>User #%1 is now known as</source>
-        <translation>사용자 #%1 님은</translation>
+        <translation type='obsolete'>사용자 #%1 님은</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
@@ -1285,19 +1206,7 @@ Date: %4</source>
     </message>
     <message>
         <source>User #%1 (a.k.a.</source>
-        <translation>사용자 #%1 (a.k.a.</translation>
-    </message>
-    <message>
-        <source>) is now known as &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>) is now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>User #%1 is now </source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>사용자 #%1 (a.k.a.</translation>
     </message>
     <message>
         <source>&apos;s IP address is %1.</source>
@@ -1305,15 +1214,7 @@ Date: %4</source>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation>사용자 #%1&apos;s I님의 IP 주소는 %2 입니다.</translation>
-    </message>
-    <message>
-        <source>Ping returned in %3 milliseconds</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Uptime: %1, Logged on for %2)</source>
-        <translation type='obsolete'></translation>
+        <translation type='obsolete'>사용자 #%1&apos;s I님의 IP 주소는 %2 입니다.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
@@ -1324,36 +1225,16 @@ Date: %4</source>
         <translation>&lt;b&gt;경고:&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>You are now </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Name changed to &lt;font color="%1"&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
         <translation>&lt;b&gt;행동:&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. </source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>) pinged you.</source>
-        <translation>) 이 당신에게 ping을 보냈습니다.</translation>
+        <translation type='obsolete'>) 이 당신에게 ping을 보냈습니다.</translation>
     </message>
     <message>
         <source>) is now known as</source>
-        <translation>)</translation>
+        <translation type='obsolete'>)</translation>
     </message>
     <message>
         <source>Ping returned in %1 milliseconds</source>
@@ -1373,7 +1254,7 @@ Date: %4</source>
     </message>
     <message>
         <source>) is now</source>
-        <translation>) 님은 이제</translation>
+        <translation type='obsolete'>) 님은 이제</translation>
     </message>
     <message>
         <source>Time request sent to</source>
@@ -1404,12 +1285,68 @@ Date: %4</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
         <translation>로 이름이 변경됨.</translation>
     </message>
-</context>
-<context>
-    <name>WGenericThread</name>
     <message>
-        <source>Connection timed out!</source>
-        <translation type='obsolete'></translation>
+        <source>User #%1 (a.k.a</source>
+        <translation>사용자 #%1 (a.k.a</translation>
+    </message>
+    <message>
+        <source>)</source>
+        <comment>aka suffix</comment>
+        <translation>)</translation>
+    </message>
+    <message>
+        <source>has disconnected.</source>
+        <translation>님의 연결이 해제되었습니다.</translation>
+    </message>
+    <message>
+        <source>is now known as</source>
+        <translation>님은</translation>
+    </message>
+    <message>
+        <source>is now</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>pinged you.</source>
+        <translation>이 당신에게 ping을 보냈습니다.</translation>
+    </message>
+    <message>
+        <source>Ping sent to</source>
+        <translation>Ping sent to</translation>
+    </message>
+    <message>
+        <source>is a bot!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>was removed from the private chat window.</source>
+        <translation>님은 비밀 대화창에서 사라졌습니다.</translation>
+    </message>
+    <message>
+        <source>User #%1</source>
+        <translation>사용자 #%1</translation>
+    </message>
+    <message>
+        <source>user #%1 (a.k.a</source>
+        <translation type='obsolete'>사용자 #%1 (a.k.a</translation>
+    </message>
+    <message>
+        <source>user #%1</source>
+        <translation>사용자 #%1</translation>
+    </message>
+    <message>
+        <source>ip_prefix</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>ip_space</source>
+        <comment>Need space after username in IP address string?</comment>
+        <translation>no</translation>
+    </message>
+    <message>
+        <source>user #%1 (a.k.a</source>
+        <comment>Ping sent to user...</comment>
+        <translation>사용자 #%1 (a.k.a</translation>
     </message>
 </context>
 <context>
@@ -2076,6 +2013,10 @@ Date: %4</source>
         <source>Warning Message Text</source>
         <translation></translation>
     </message>
+    <message>
+        <source>DSL-1M</source>
+        <translation type='unfinished'>DSL-1M</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -2137,7 +2078,7 @@ Date: %4</source>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
-        <translation>User #%1 (a.k.a. %2) is a bot!</translation>
+        <translation type='obsolete'>User #%1 (a.k.a. %2) is a bot!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is already in this private window!</source>
@@ -2145,7 +2086,7 @@ Date: %4</source>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) was removed from the private chat window.</source>
-        <translation>사용자 #%1 (a.k.a. %2) 님은 비밀 대화창에서 사라졌습니다.</translation>
+        <translation type='obsolete'>사용자 #%1 (a.k.a. %2) 님은 비밀 대화창에서 사라졌습니다.</translation>
     </message>
     <message>
         <source>Failed to create private log.</source>
@@ -2170,6 +2111,14 @@ Date: %4</source>
     <message>
         <source>Private</source>
         <translation>비밀</translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a %2) is a bot!</source>
+        <translation type='obsolete'>User #%1 (a.k.a %2) is a bot!</translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a %2) was removed from the private chat window.</source>
+        <translation type='obsolete'>사용자 #%1 (a.k.a %2) 님은 비밀 대화창에서 사라졌습니다.</translation>
     </message>
 </context>
 <context>
@@ -2249,10 +2198,6 @@ Date: %4</source>
 <context>
     <name>WUploadThread</name>
     <message>
-        <source>Your download has been blocked for %1 minute(s)!</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>User #%1</source>
         <translation>User #%1</translation>
     </message>
@@ -2263,10 +2208,6 @@ Date: %4</source>
     <message>
         <source>Couldn&apos;t create new connect session!</source>
         <translation>Couldn&apos;t create new connect session!</translation>
-    </message>
-    <message>
-        <source>Connection reset by peer!</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Connection timed out!</source>
@@ -2283,13 +2224,6 @@ Date: %4</source>
     <message>
         <source>Could not start internal thread!</source>
         <translation>Could not start internal thread!</translation>
-    </message>
-</context>
-<context>
-    <name>WinShare</name>
-    <message>
-        <source>%d.%d.%d build %d</source>
-        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
@@ -2500,7 +2434,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
-        <translation>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
+        <translation type='obsolete'>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
         <source>Access Denied!!!</source>
@@ -2899,10 +2833,6 @@ Date: %4</source>
         <translation>Watch pattern set to %1.</translation>
     </message>
     <message>
-        <source>%1.%2.%3 build %4</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>Invalid compression!</source>
         <translation>Invalid compression!</translation>
     </message>
@@ -3251,10 +3181,6 @@ Date: %4</source>
         <translation>Scan your shared files now?</translation>
     </message>
     <message>
-        <source>Unizone</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>Reconnecting in 1 minute!</source>
         <translation>Reconnecting in 1 minute!</translation>
     </message>
@@ -3367,10 +3293,6 @@ Date: %4</source>
         <translation>Cleared resume list.</translation>
     </message>
     <message>
-        <source>On connect:</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>1. %1</source>
         <translation>1. %1</translation>
     </message>
@@ -3481,10 +3403,6 @@ Date: %4</source>
     <message>
         <source>/unwhitelist [name] - remove name from whitelist</source>
         <translation>/unwhitelist [name] - remove name from whitelist</translation>
-    </message>
-    <message>
-        <source>/whitelist - set the whitelist pattern</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
