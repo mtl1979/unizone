@@ -77,9 +77,8 @@ UniWindow::UniWindow( QWidget* parent, const char* name, WFlags f)
 	
 	connect(fView, SIGNAL(backwardAvailable(bool)), this, SLOT(backwardAvailable(bool)));
 	connect(fView, SIGNAL(forwardAvailable(bool)), this, SLOT(forwardAvailable(bool)));
-	//connect(fView, SIGNAL(textChanged()), this, SLOT(linkClicked()));
 	connect(fView, SIGNAL(URLClicked(const QString &)), this, SLOT(linkClicked(const QString &)));
-#ifdef DEBUG
+#ifdef _DEBUG
 	fView->mimeSourceFactory()->setFilePath( "../../doc" );
 #else
 	fView->mimeSourceFactory()->setFilePath( "./doc" );
@@ -131,7 +130,7 @@ UniWindow::forwardAvailable( bool available )
 void 
 UniWindow::linkClicked(const QString & link)
 {
-	PRINT("linkClicked: %s", link.latin1());
+	PRINT("linkClicked: %s\n", link.latin1());
 	if (cmbURL->currentText() != link) 
 		cmbURL->setEditText(link);
 }
@@ -145,7 +144,7 @@ UniWindow::customEvent(QCustomEvent * event)
 		{
 			WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
 			if (wte)
-				PRINT("Source: %s ", wte->Text().latin1());
+				PRINT("Source: %s\n", wte->Text().latin1());
 			fView->setSource(wte->Text());
 		}
 	}
