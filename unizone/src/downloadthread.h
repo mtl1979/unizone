@@ -49,6 +49,9 @@ protected:
 	virtual void SendReply(Message * m);
 
 	virtual void SignalOwner();
+private:
+	QString UniqueName(QString file, int index); // build up unique name using 'file' and 'index'
+
 };
 
 // subclass ThreadWorkerSessionFactory to do throttling

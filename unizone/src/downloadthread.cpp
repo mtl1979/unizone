@@ -8,6 +8,7 @@
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "platform.h"	// <postmaster@raasu.org> 20021114
+#include "lang.h"		// <postmaster@raasu.org> 20030224
 #include <qdir.h>
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
@@ -215,9 +216,9 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						if (next()->FindInt64("beshare:File Size", (int64 *)&fFileSize) == B_OK && 
 							next()->FindString("beshare:File Name", fname) == B_OK)
 						{
-							QString outFile = "downloads";
+							QString outFile = "downloads/";
 							QString fixed;
-							outFile += "/";
+							// outFile += "/";
 							fixed = outFile;
 							outFile += QString::fromUtf8(fname.Cstr());
 							PRINT( "WDownloadThread::SignalOwner: %s\n",fname.Cstr() );
@@ -251,7 +252,8 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								QString nf = fixed;
 								int i = 1;
 								while (QFile::exists(nf))
-									nf = QObject::tr("%1 %2").arg(fixed).arg(i++);
+									// nf = QObject::tr("%1 %2").arg(fixed).arg(i++);
+									nf = UniqueName(fixed, i++);
 								delete fFile;
 								fFile = NULL; // <postmaster@raasu.org> 20021027
 								fixed = nf;
@@ -442,6 +444,29 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 	}
 }
 
+QString
+WDownloadThread::UniqueName(QString file, int index)
+{
+	QString tmp, base, ext;
+	int sp = file.findRev("/", -1); // Find last /
+	if (sp > -1)
+	{
+		tmp = file.left(sp + 1); // include slash
+		base = file.mid(sp + 1); // base filename
+		int d = base.find("."); // ...and find first dot
+		if (d > -1)
+		{
+			ext = base.mid(d); // ext contains also the dot;
+			base = base.left(d);
+			return tr("%1%2 %3%4").arg(tmp).arg(base).arg(index).arg(ext);
+		}
+		else
+			return tr("%1%2 %3").arg(tmp).arg(base).arg(index); // no extension
+	}
+	WASSERT(true, "Invalid download path!");
+	return QString::null;
+}
+
 // -----------------------------------------------------------------------------
 WDownloadThreadWorkerSessionFactory::WDownloadThreadWorkerSessionFactory(int limit)
 {
@@ -459,3 +484,4 @@ WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
 	}
 	return ref;
 }
+
