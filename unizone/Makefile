@@ -11,42 +11,130 @@ CXXFLAGS = -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
-OBJFILES = \
-	aboutdlgimpl.o botitem.o chattext.o colors.o combo.o \
-	downloadimpl.o downloadthread.o downloadworker.o fileinfo.o fileinfo_unix.o \
-	filethread.o filethread_unix.o formatting.o gotourl_unix.o main.o md5.o menubar.o \
-	netclient.o nicklist.o picviewer.o picviewerimpl.o platform.o \
-	prefsimpl.o privatewindowimpl.o searchitem.o settings.o \
-	textevent.o transferitem.o ulistview.o uploadthread.o user.o \
-	userlistitem.o winshare_lists.o winshare_network.o winshare_parsing.o \
-	winshare_slots.o winsharewindow.o Log.o htmlview.o \
-	channelinfo.o channelimpl.o wpwevent.o wstring.o wstatusbar.o \
-	winshare_channels.o winshare_search.o updateclient.o util.o \
-	serverclient.o titanic.o wlaunchthread_unix.o mimedb.o \
-	QMessageTransceiverThread.o QAcceptSocketsThread.o \
-	chatwindow.o wsystemevent.o wwarningevent.o werrorevent.o \
-	version.o parser.o wcrypt.o wfile.o wfile_unix.o
+SRCFILES = \
+	src/aboutdlgimpl.cpp \
+	src/botitem.cpp \
+	src/channelinfo.cpp \
+	src/channelimpl.cpp \
+	src/chattext.cpp \
+	src/chatwindow.cpp \
+	src/colors.cpp \
+	src/combo.cpp \
+	src/downloadimpl.cpp \
+	src/downloadthread.cpp \
+	src/downloadworker.cpp \
+	src/fileinfo.cpp \
+	src/filethread.cpp \
+	src/formatting.cpp \
+	src/htmlview.cpp \
+	src/main.cpp \
+	src/md5.cpp \
+	src/menubar.cpp \
+	src/netclient.cpp \
+	src/nicklist.cpp \
+	src/parser.cpp \
+	src/picviewer.cpp \
+	src/picviewerimpl.cpp \
+	src/platform.cpp \
+	src/prefsimpl.cpp \
+	src/privatewindowimpl.cpp \
+	src/searchitem.cpp \
+	src/serverclient.cpp \
+	src/settings.cpp \
+	src/textevent.cpp \
+	src/titanic.cpp \
+	src/transferitem.cpp \
+	src/ulistview.cpp \
+	src/updateclient.cpp \
+	src/uploadthread.cpp \
+	src/user.cpp \
+	src/userlistitem.cpp \
+	src/util.cpp \
+	src/version.cpp \
+	src/wcrypt.cpp \
+	src/werrorevent.cpp \
+	src/wfile.cpp \
+	src/winshare_channels.cpp \
+	src/winshare_lists.cpp \
+	src/winshare_network.cpp \
+	src/winshare_parsing.cpp \
+	src/winshare_search.cpp \
+	src/winshare_slots.cpp \
+	src/winsharewindow.cpp \
+	src/wpwevent.cpp \
+	src/wstatusbar.cpp \
+	src/wstring.cpp \
+	src/wsystemevent.cpp \
+	src/wwarningevent.cpp \
+	src/Log.cpp \
+	src/unix/fileinfo_unix.cpp \
+	src/unix/filethread_unix.cpp \
+	src/unix/gotourl_unix.cpp \
+	src/unix/mimedb.cpp \
+	src/unix/wfile_unix.cpp \
+	src/unix/wlaunchthread_unix.cpp
 
-MOC_OBJFILES = \
-	moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
-	moc_downloadimpl.o moc_downloadthread.o moc_formatting.o \
-	moc_htmlview.o moc_netclient.o moc_picviewer.o moc_picviewerimpl.o \
-	moc_prefs.o moc_prefsimpl.o moc_privatewindow.o moc_privatewindowimpl.o \
-	moc_winsharewindow.o moc_uploadthread.o moc_channel.o moc_channelimpl.o \
-	moc_menubar.o moc_ulistview.o moc_updateclient.o moc_serverclient.o \
-	moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o 
+MOC_SRCFILES = \
+	src/moc_aboutdlg.cpp \
+	src/moc_aboutdlgimpl.cpp \
+	src/moc_channel.cpp \
+	src/moc_channelimpl.cpp \
+	src/moc_chattext.cpp \
+	src/moc_combo.cpp \
+	src/moc_downloadimpl.cpp \
+	src/moc_downloadthread.cpp \
+	src/moc_formatting.cpp \
+	src/moc_htmlview.cpp \
+	src/moc_menubar.cpp \
+	src/moc_netclient.cpp \
+	src/moc_picviewer.cpp \
+	src/moc_picviewerimpl.cpp \
+	src/moc_prefs.cpp \
+	src/moc_prefsimpl.cpp \
+	src/moc_privatewindow.cpp \
+	src/moc_privatewindowimpl.cpp \
+	src/moc_serverclient.cpp \
+	src/moc_ulistview.cpp \
+	src/moc_updateclient.cpp \
+	src/moc_uploadthread.cpp \
+	src/moc_winsharewindow.cpp
 
-MUSCLE_OBJFILES = \
-	AbstractMessageIOGateway.o MessageIOGateway.o \
-	PlainTextMessageIOGateway.o RawDataMessageIOGateway.o \
-	Message.o AbstractReflectSession.o DumbReflectSession.o \
-	FilterSessionFactory.o RateLimitSessionIOPolicy.o \
-	ReflectServer.o ServerComponent.o StorageReflectSession.o \
-	PathMatcher.o StringMatcher.o SysLog.o AcceptSocketsThread.o \
-	GlobalMemoryAllocator.o MessageTransceiverThread.o SetupSystem.o \
-	Thread.o MemoryAllocator.o MiscUtilityFunctions.o \
-	NetworkUtilityFunctions.o PulseNode.o String.o ByteBuffer.o \
-	QueryFilter.o ZLibCodec.o ZLibUtilityFunctions.o
+MUSCLEMOC_SRCFILES = \
+	src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp \
+	src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp
+
+MUSCLE_SRCFILES = \
+	src/muscle/qtsupport/QMessageTransceiverThread.cpp \
+	src/muscle/qtsupport/QAcceptSocketsThread.cpp \
+	src/muscle/iogateway/AbstractMessageIOGateway.cpp \
+	src/muscle/iogateway/MessageIOGateway.cpp \
+	src/muscle/iogateway/PlainTextMessageIOGateway.cpp \
+	src/muscle/iogateway/RawDataMessageIOGateway.cpp \
+	src/muscle/message/Message.cpp \
+	src/muscle/reflector/AbstractReflectSession.cpp \
+	src/muscle/reflector/DumbReflectSession.cpp \
+	src/muscle/reflector/FilterSessionFactory.cpp \
+	src/muscle/reflector/RateLimitSessionIOPolicy.cpp \
+	src/muscle/reflector/ReflectServer.cpp \
+	src/muscle/reflector/ServerComponent.cpp \
+	src/muscle/reflector/StorageReflectSession.cpp \
+	src/muscle/regex/PathMatcher.cpp \
+	src/muscle/regex/QueryFilter.cpp \
+	src/muscle/regex/StringMatcher.cpp \
+	src/muscle/syslog/SysLog.cpp \
+	src/muscle/system/AcceptSocketsThread.cpp \
+	src/muscle/system/GlobalMemoryAllocator.cpp \
+	src/muscle/system/MessageTransceiverThread.cpp \
+	src/muscle/system/SetupSystem.cpp \
+	src/muscle/system/Thread.cpp \
+	src/muscle/util/MemoryAllocator.cpp \
+	src/muscle/util/MiscUtilityFunctions.cpp \
+	src/muscle/util/NetworkUtilityFunctions.cpp \
+	src/muscle/util/PulseNode.cpp \
+	src/muscle/util/String.cpp \
+	src/muscle/util/ByteBuffer.cpp \
+	src/muscle/zlib/ZLibCodec.cpp \
+	src/muscle/zlib/ZLibUtilityFunctions.cpp
 
 VPATH = src src/unix src/muscle/qtsupport src/muscle/message \
 	src/muscle/iogateway src/muscle/reflector \
@@ -54,13 +142,14 @@ VPATH = src src/unix src/muscle/qtsupport src/muscle/message \
 	src/muscle/system src/muscle/zlib
 
 UIC_FILES = aboutdlg.ui channel.ui picviewer.ui prefs.ui privatewindow.ui
-UIC_HEADERS = $(addsuffix .h,$(basename $(UIC_FILES)))
-UIC_SRCFILES = $(addsuffix .cpp,$(basename $(UIC_FILES)))
-UIC_OBJFILES = $(addsuffix .o,$(basename $(UIC_FILES)))
+UIC_HEADERS  = $(addprefix src/,$(addsuffix .h,$(basename $(UIC_FILES))))
+UIC_SRCFILES = $(addprefix src/,$(addsuffix .cpp,$(basename $(UIC_FILES))))
+UIC_OBJFILES = $(addprefix src/,$(addsuffix .o,$(basename $(UIC_FILES))))
 
-SRCFILES =		$(addsuffix .cpp,$(basename $(OBJFILES)))
-MOC_SRCFILES =		$(addsuffix .cpp,$(basename $(MOC_OBJFILES)))
-MUSCLE_SRCFILES = 	$(addsuffix .cpp,$(basename $(MUSCLE_OBJFILES)))
+OBJFILES =		$(addsuffix .o,$(basename $(SRCFILES)))
+MOC_OBJFILES =		$(addsuffix .o,$(basename $(MOC_SRCFILES)))
+MUSCLEMOC_OBJFILES =	$(addsuffix .o,$(basename $(MUSCLEMOC_SRCFILES)))
+MUSCLE_OBJFILES = 	$(addsuffix .o,$(basename $(MUSCLE_SRCFILES)))
 
 
 MOC=$(QTDIR)/bin/moc
@@ -68,7 +157,7 @@ UIC=$(QTDIR)/bin/uic
 
 all : $(EXECUTABLES) translations
 
-Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(UIC_OBJFILES)
+Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(MUSCLEMOC_OBJFILES) $(UIC_OBJFILES)
 	$(CXX) $(LFLAGS) $(LIBS) -o $@ $^
 
 moc_QMessageTransceiverThread.o : src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp
@@ -88,11 +177,12 @@ translations : src/Makefile
 
 depends: .depends
 
-.depends: .depends1 .depends2 .depends3 .depends4
+.depends: .depends1 .depends2 .depends3 .depends4 .depends5
 	cat .depends1 > .depends
 	cat .depends2 >> .depends
 	cat .depends3 >> .depends
 	cat .depends4 >> .depends
+	cat .depends5 >> .depends
  
 .depends1: $(UIC_SRCFILES)
 	$(CXX) $(CXXFLAGS) -MM $^ > .depends1
@@ -105,6 +195,9 @@ depends: .depends
 
 .depends4: $(MUSCLE_SRCFILES)
 	$(CXX) $(CXXFLAGS) -MM $^ > .depends4
+
+.depends5: $(MUSCLEMOC_SRCFILES)
+	$(CXX) $(CXXFLAGS) -MM $^ > .depends5
 
 .PHONY=translations depends
 
@@ -219,14 +312,16 @@ src/channel.cpp: src/channel.h src/channel.ui
 clean :
 	$(MAKE) -C src -f Makefile clean
 	rm -f *.o *.a $(EXECUTABLES)
-	rm -f $(MOC_SRCFILES)
-	rm -f $(UIC_SRCFILES)
+	rm -f $(OBJFILES) $(MUSCLE_OBJFILES)
+	rm -f $(MOC_SRCFILES) $(MOC_OBJFILES)
+	rm -f $(MUSCLEMOC_SRCFILES) $(MUSCLEMOC_OBJFILES)
+	rm -f $(UIC_SRCFILES) $(UIC_OBJFILES)
 	rm -f $(UIC_HEADERS)
 	rm -f core.*
 
 distclean : clean
 	$(MAKE) -C src -f Makefile distclean
-	rm -f .depends .depends1 .depends2 .depends3 .depends4
+	rm -f .depends .depends[1-5] 
 
 # DO NOT DELETE
 
