@@ -480,7 +480,7 @@ WSearch::SetSearch(QString pattern)
 			return;
 		}
 	}
-	fSearchEdit->insertItem(0, pattern);
+	fSearchEdit->insertItem(pattern, 0);
 	fSearchEdit->setCurrentItem(0);
 	GoSearch();
 }
