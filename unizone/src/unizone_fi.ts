@@ -3012,7 +3012,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Sharing %1 file(s).</source>
-        <translation>%1 tiedosto(a) jaossa.</translation>
+        <translation type='obsolete'>%1 tiedosto(a) jaossa.</translation>
     </message>
     <message>
         <source>Connected.</source>
@@ -4109,6 +4109,10 @@ Päiväys: %4</translation>
     <message>
         <source>/binencode - encode as binary data and display it</source>
         <translation>/binencode - muunna teksti binäärimuotoon ja näytä se</translation>
+    </message>
+    <message>
+        <source>Waiting for file list thread to finish...</source>
+        <translation>Odotetaan, että tiedostojenluettelointisäie on valmis...</translation>
     </message>
 </context>
 </TS>

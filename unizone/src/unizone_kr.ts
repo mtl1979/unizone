@@ -2733,7 +2733,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Sharing %1 file(s).</source>
-        <translation>%1 개의 파일 공유 중.</translation>
+        <translation type='obsolete'>%1 개의 파일 공유 중.</translation>
     </message>
     <message>
         <source>Connected.</source>
@@ -3629,6 +3629,10 @@ Date: %4</source>
     </message>
     <message>
         <source>/binencode - encode as binary data and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Waiting for file list thread to finish...</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

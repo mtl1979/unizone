@@ -2825,7 +2825,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Sharing %1 file(s).</source>
-        <translation>Warezing %1 file(s).</translation>
+        <translation type='obsolete'>Warezing %1 file(s).</translation>
     </message>
     <message>
         <source>Connected.</source>
@@ -3917,6 +3917,10 @@ Date: %4</translation>
     </message>
     <message>
         <source>/binencode - encode as binary data and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Waiting for file list thread to finish...</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
