@@ -4227,5 +4227,21 @@ Date: %4</translation>
         <source>zlib version: %1</source>
         <translation>zlib version: %1</translation>
     </message>
+    <message>
+        <source>/octdecode - decode octal data and display it</source>
+        <translation>/octdecode - decode octal data and display it</translation>
+    </message>
+    <message>
+        <source>/octencode - encode as octal data and display it</source>
+        <translation>/octencode - encode as octal data and display it</translation>
+    </message>
+    <message>
+        <source>Logging in...</source>
+        <translation>Logging in...</translation>
+    </message>
+    <message>
+        <source>Negotiating...</source>
+        <translation>Negotiating...</translation>
+    </message>
 </context>
 </TS>

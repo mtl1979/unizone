@@ -3884,5 +3884,21 @@ Date: %4</source>
         <source>zlib version: %1</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>/octdecode - decode octal data and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/octencode - encode as octal data and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Logging in...</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Negotiating...</source>
+        <translation type='unfinished'>교섭중...</translation>
+    </message>
 </context>
 </TS>

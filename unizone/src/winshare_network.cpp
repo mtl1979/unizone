@@ -1703,6 +1703,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		{
 			if (fGotResults)
 			{
+				UpdateUserCount();
 				// Execute OnConnect commands here, when all user information should be available
 				
 				if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
@@ -3099,6 +3100,7 @@ WinShareWindow::GotParams(MessageRef &msg)
 	if (msg()->FindInt32(PR_NAME_REPLY_ENCODING, &enc) == B_NO_ERROR)
 		setStatus(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
 	
+	setStatus(tr( "Logging in...") );
 	// get a list of users
 	static String subscriptionList[] = {
 		"SUBSCRIBE:beshare",		// base BeShare node

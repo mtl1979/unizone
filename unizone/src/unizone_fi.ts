@@ -4361,7 +4361,23 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>zlib version: %1</source>
-        <translation type='unfinished'>zlib versio: %1</translation>
+        <translation>zlib versio: %1</translation>
+    </message>
+    <message>
+        <source>/octdecode - decode octal data and display it</source>
+        <translation>/octdecode - muunna oktaalinen tieto näytettävään muotoon</translation>
+    </message>
+    <message>
+        <source>/octencode - encode as octal data and display it</source>
+        <translation>/octencode - muunna teksti oktaalimuotoon ja näytä se</translation>
+    </message>
+    <message>
+        <source>Logging in...</source>
+        <translation>Kirjaudutaan...</translation>
+    </message>
+    <message>
+        <source>Negotiating...</source>
+        <translation>Neuvotellaan...</translation>
     </message>
 </context>
 </TS>

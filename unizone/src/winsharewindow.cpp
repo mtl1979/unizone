@@ -522,6 +522,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					fConnectTimer->stop();
 				}
 
+				setStatus( tr( "Negotiating..." ) );
 				fDisconnect = false;
 				fDisconnectFlag = false;
 				fDisconnectCount = 0;
