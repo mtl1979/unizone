@@ -6,3 +6,5 @@ icon.aps
 prefs.cpp prefs.h
 privatewindow.cpp privatewindow.h
 *.qm
+scanprogress.h
+scanprogress.cpp
