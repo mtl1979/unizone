@@ -3,13 +3,13 @@
 #endif
 
 #include <qobject.h>
-#include <qqueue.h>
+// #include <qqueue.h>
 #include <qdir.h>
 #include <qaccel.h>
 #include <time.h>
 #include <qapplication.h>
 #include <qlabel.h>
-#include <qprogressbar.h>
+// #include <qprogressbar.h>
 #include <qpushbutton.h>
 #include <qtimer.h>
 #include <list>

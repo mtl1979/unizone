@@ -4359,5 +4359,9 @@ Päiväys: %4</translation>
         <source>Waiting for file list thread to finish...</source>
         <translation>Odotetaan, että tiedostojenluettelointisäie on valmis...</translation>
     </message>
+    <message>
+        <source>zlib version: %1</source>
+        <translation type='unfinished'>zlib versio: %1</translation>
+    </message>
 </context>
 </TS>

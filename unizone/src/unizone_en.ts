@@ -4223,5 +4223,9 @@ Date: %4</translation>
         <source>Waiting for file list thread to finish...</source>
         <translation>Waiting for file list thread to finish...</translation>
     </message>
+    <message>
+        <source>zlib version: %1</source>
+        <translation>zlib version: %1</translation>
+    </message>
 </context>
 </TS>
