@@ -86,7 +86,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fUpdateThread = new UpdateClient(this);
 	CHECK_PTR(fUpdateThread);
 
-	fPrintOutput = false;
+	// fPrintOutput = false;
 
 	fDisconnectCount = 0;	// Initialize disconnection count
 	fDisconnect = false;	// No premature disconnection yet
@@ -190,7 +190,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 	if (fSettings->GetInfo())
 	{
-		START_OUTPUT();
+		BeginMessageBatch();
 #ifdef WIN32
 		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Windows!"), true);
 #elif defined(__LINUX__) || defined(linux)
@@ -203,7 +203,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 		PrintSystem(tr("Original idea by Vitaliy Mikitchenko."), true);
 		PrintSystem(tr("Released to public use under LGPL."), true);
 		PrintSystem(tr("Type /help for a command reference."), true);
-		END_OUTPUT();
+		EndMessageBatch();
 	}
 
 	if (!fAway)
@@ -287,9 +287,9 @@ WinShareWindow::StartAcceptThread()
 			}
 			else
 			{
-				START_OUTPUT();
+				BeginMessageBatch();
 				PrintError(tr("Failed to start accept thread!"), true);
-				END_OUTPUT();
+				EndMessageBatch();
 				PRINT("Failed to start accept thread\n");
 			}
 		}
@@ -1311,52 +1311,51 @@ WinShareWindow::MakeHumanTime(int64 time)
 }
 
 void
-WinShareWindow::PrintText(const QString & str, bool begin)
+WinShareWindow::BeginMessageBatch()
 {
-	static QString output("");
-	if (begin)	// starting message batch
-	{
 #if (QT_VERSION < 0x030000)
-		output = "\t";	// reset (we always start with a tab..., this is a linux bug workaround)
+		fOutput = "\t";	// reset (we always start with a tab..., this is a linux bug workaround)
 #else
-		output = "";
+		fOutput = "";
 #endif
-	}
-	else
+}
+
+void
+WinShareWindow::EndMessageBatch()
+{
+#if (QT_VERSION < 0x030000)
+	if (fOutput != "\t")	// do we have something?
+#else
+	if (!fOutput.isEmpty())
+#endif
 	{
-		if (!fPrintOutput)	// just append
-		{
-			if (fSettings->GetTimeStamps())
-				output += GetTimeStamp();
+		if (fOutput.right(4) == "<br>")
+			fOutput.truncate(fOutput.length() - 4);
 
-			if (!str.isEmpty())
-				output += str;
-
-			output += "<br>";	
-		}
+		if (fChatText->text().isEmpty())
+			fChatText->setText(fOutput);
 		else
 		{
-#if (QT_VERSION < 0x030000)
-			if (output != "\t")	// do we have something?
-#else
-			if (!output.isEmpty())
-#endif
-			{
-				if (output.right(4) == "<br>")
-					output.truncate(output.length() - 4);
-				if (fChatText->text().isEmpty())
-					fChatText->setText(output);
-				else
-				{
-					CheckScrollState();
-					fChatText->append(output);
-				}
-
-				fMainLog.LogString(output);
-				UpdateTextView();
-			}
+			CheckScrollState();
+			fChatText->append(fOutput);
 		}
+
+		fMainLog.LogString(fOutput);
+		UpdateTextView();
 	}
+}
+
+void
+WinShareWindow::PrintText(const QString & str, bool)
+{
+//	static QString output("");
+	if (fSettings->GetTimeStamps())
+		fOutput += GetTimeStamp();
+
+	if (!str.isEmpty())
+		fOutput += str;
+
+	fOutput += "<br>";	
 }
 
 // non-batch version of PrintText

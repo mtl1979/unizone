@@ -875,10 +875,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/version"))
 		{
-			START_OUTPUT();
+			BeginMessageBatch();
 			PrintSystem(tr("Unizone version: %1").arg(WinShareVersionString()), true);
 			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING), true);
-			END_OUTPUT();
+			EndMessageBatch();
 		}
 		else if (CompareCommand(sendText, "/onconnect"))
 		{
@@ -2565,7 +2565,7 @@ WinShareWindow::ListResumes()
 {
 	rLock.lock();
 	WResumeIter it = fResumeMap.begin();
-	START_OUTPUT();
+	BeginMessageBatch();
 	PrintSystem(tr("Resume list:"), true);
 	int i = 0;
 	while (it != fResumeMap.end())
@@ -2579,7 +2579,7 @@ WinShareWindow::ListResumes()
 		it++;
 	}
 	PrintSystem(tr("Total: %1 files").arg(i), true);
-	END_OUTPUT();
+	EndMessageBatch();
 	rLock.unlock();
 }
 
@@ -2753,18 +2753,6 @@ WinShareWindow::ConnectionAccepted(SocketHolderRef socketRef)
 		OpenDownload();
 		fDLWindow->AddUpload(socket, ip, false);
 	}
-}
-
-void
-WinShareWindow::BeginMessageBatch()
-{
-	START_OUTPUT();
-}
-
-void
-WinShareWindow::EndMessageBatch()
-{
-	END_OUTPUT();
 }
 
 QString

@@ -39,8 +39,8 @@ using namespace muscle;
 #define UPDATE_SERVER "www.raasu.org"
 #define UPDATE_FILE "/tools/windows/version.txt"
 
-#define START_OUTPUT() fPrintOutput = false; PrintText("", true)
-#define END_OUTPUT() fPrintOutput = true; PrintText("", false)
+// #define START_OUTPUT() fPrintOutput = false; PrintText("", true)
+// #define END_OUTPUT() fPrintOutput = true; PrintText("", false)
 
 #include <map>
 using std::pair;
@@ -348,7 +348,8 @@ private:
 	bool fGotResults;			// see if we got initial Search Results
 	bool fGotParams;			// see if the initial "Get Params" message was sent
 	bool fAway;
-	bool fPrintOutput;
+	// bool fPrintOutput;
+	QString fOutput;
 	bool fScrollDown;			// do we need to scroll the view down after an insertion?
 	bool fScanning;				// Is File Scan Thread active?
 
