@@ -50,8 +50,7 @@ typedef hostent *LPHOSTENT;
 #include <qregexp.h>
 #endif
 
-void TextEvent(QObject *target, const QString &text, WTextEvent::Type t);
-void AddToList(QString &slist, const QString &entry);
+#include "winshare-private.h"
 
 void
 WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
@@ -59,9 +58,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 	if (e)	// incase the dynamic cast fails
 	{
 		PRINT("WinShareWindow: Received Valid WTextEvent\n");
-		QString sendText = e->Text();
+		QString sendText = e->Text().stripWhiteSpace();
 
-		sendText = sendText.stripWhiteSpace();
 		if (CompareCommand(sendText, "/ping"))
 		{
 			SendPingOrMsg(sendText, true);

@@ -3,6 +3,7 @@
 #include "netclient.h"
 #include "tokenizer.h"
 #include "settings.h"
+#include "winshare-private.h"
 
 #include <qstringlist.h>
 

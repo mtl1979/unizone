@@ -666,17 +666,18 @@ WinShareWindow::HandleComboEvent(WTextEvent * e)
 	{
 		WComboBox * sender = (WComboBox *)e->data();
 		// see who sent this 
+		QString txt = e->Text().stripWhiteSpace();
 		if (sender == fUserList)
 		{
 			PRINT("Received text change event from UserName combo\n");
 			// change the user name
-			NameChanged(e->Text());
+			NameChanged(txt);
 		}
 		else if (sender == fStatusList)
 		{
 			PRINT("Received text change event from Status combo\n");
-			StatusChanged(e->Text());
-			if (e->Text().stripWhiteSpace().lower() != fAwayMsg.stripWhiteSpace().lower())
+			StatusChanged(txt);
+			if (txt.lower() != fAwayMsg.stripWhiteSpace().lower())
 			{
 				SetAutoAwayTimer();
 				fAway = false;	// in case away was true;
@@ -685,7 +686,7 @@ WinShareWindow::HandleComboEvent(WTextEvent * e)
 		else if (sender == fServerList)
 		{
 			PRINT("Received text change event from Server combo\n");
-			ServerChanged(e->Text());
+			ServerChanged(txt);
 		}
 		else if (sender == fSearchEdit)
 		{

@@ -27,6 +27,7 @@
 #include "wsystemevent.h"
 #include "textevent.h"
 
+#include "winshare-private.h"
 
 void
 SystemEvent(QObject *target, const QString &text)
