@@ -97,23 +97,38 @@ GotoURL(const QString & url)
 {
 	PRINT("GotoURL() called\n");
 	QString u = url.lower();
+	QString address;
 	if (u.startsWith("server://"))
 	{
-		u = u.mid(9);
-		if (u.right(1) == "/")
+		address = u.mid(9);
+		if (address.right(1) == "/")
 		{
-			u.truncate(u.length() - 1);
+			address.truncate(address.length() - 1);
 		}
-		gWin->Connect(u);
+		gWin->Connect(address);
 		return;
 	}
 #ifdef WIN32
 	if (u.startsWith("audio"))		// <postmaster@raasu.org> 20021116
 	{
-		u = "mms" + url.mid(5);
+		address = "mms" + url.mid(5);
+	}
+#else // !WIN32
+	if (u.startsWith("mailto:"))
+	{
+		address = url.mid( url.find(":") + 1 );
+		if (address.right(1) == "/")
+		{
+			address.truncate(address.length() - 1);
+		}
 	}
 #endif
-	WLaunchThread * t = new WLaunchThread(u);
+	else
+	{
+		address = url;
+	}
+
+	WLaunchThread * t = new WLaunchThread(address);
 	CHECK_PTR(t);
 #if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
 
@@ -125,19 +140,14 @@ GotoURL(const QString & url)
 	{
 		t->fLauncher = gWin->fSettings->GetFTPLauncher();
 	}
-	else if (u.startsWith("mailto:"))
+	else 
 	{
-		u = u.mid( u.find(":") + 1 );
-		if (u.right(1) == "/")
-		{
-			u.truncate(u.length() - 1);
-		}
-		t->SetURL( u );
 		t->fLauncher = gWin->fSettings->GetMailLauncher();
 	}
 	else
 	{
-		t->fLauncher = gWin->fSettings->GetDefaultLauncher();	// unknown? use default launcher...
+		// unknown? use default launcher...
+		t->fLauncher = gWin->fSettings->GetDefaultLauncher();	
 	}
 #endif
 	t->start();

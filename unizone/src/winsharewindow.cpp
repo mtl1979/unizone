@@ -385,19 +385,21 @@ WinShareWindow::Cleanup()
 		fDLWindow->EmptyLists();
 	}
 
+	if (fFileScanThread)
+	{
+		WaitOnFileThread();
+		delete fFileScanThread;
+		fFileScanThread = NULL; // <postmaster@raasu.org> 20021027
+	}
+
+	// Do these two after everything else
+
 	if (fSettings)
 	{
 		PRINT("Saving settings\n");
 		SaveSettings();
 		delete fSettings;
 		fSettings = NULL; // <postmaster@raasu.org> 20021027
-	}
-
-	if (fFileScanThread)
-	{
-		WaitOnFileThread();
-		delete fFileScanThread;
-		fFileScanThread = NULL; // <postmaster@raasu.org> 20021027
 	}
 
 	StopLogging();
