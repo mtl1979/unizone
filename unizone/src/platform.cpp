@@ -188,14 +188,18 @@ IsURL(const String & url)
 		(u.StartsWith("https://")) ||
 		(u.StartsWith("mailto:")) ||
 		(u.StartsWith("ftp://")) ||
-		(u.StartsWith("audio://")) || 
+		(u.StartsWith("audio://")) ||
 		(u.StartsWith("mms://")) || 
-		(u.StartsWith("beshare:")) || 
-		(u.StartsWith("share:")) || 
-		(u.StartsWith("server://")) ||
-		(u.StartsWith("priv:")) ||
-		(u.StartsWith("irc://")) ||
-		(u.StartsWith("ttp://"))
+		(u.StartsWith("beshare:")) ||		// BeShare Search
+		(u.StartsWith("share:")) ||			//    ----"----
+		(u.StartsWith("server://")) ||		// BeShare Server
+		(u.StartsWith("priv:")) ||			// BeShare Private Chat
+		(u.StartsWith("irc://")) ||			// Internet Relay Chat
+		(u.StartsWith("ttp://")) ||			// Titanic Transfer Protocol
+		(u.StartsWith("ed2k:")) ||			// eDonkey2000
+		(u.StartsWith("magnet:")) ||		// Magnet
+		(u.StartsWith("gnutella:")) ||		// Gnutella
+		(u.StartsWith("mp2p:"))				// Piolet
 		)
 	{
 		if (
