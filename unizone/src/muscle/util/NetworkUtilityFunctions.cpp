@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include <stdio.h>
 
@@ -12,6 +12,7 @@
 
 #ifdef WIN32
 # include <winsock.h>
+# pragma warning(disable: 4800 4018)
 #else
 # include <unistd.h>
 # include <sys/socket.h>
@@ -22,6 +23,9 @@
 #  include <storage/Entry.h>  // for the backup run-time bone check
 #else
 #  include <arpa/inet.h>
+#  include <fcntl.h>
+#  include <netinet/tcp.h>
+#  include <netinet/in.h>
 # endif
 #endif
 
@@ -30,6 +34,14 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/stat.h>
+
+// On some OS's, calls like accept() take an int* rather than a uint32*
+// So I define net_length_t to avoid having to #ifdef all my code
+#if __BEOS__ || __APPLE__ || __CYGWIN__ || WIN32
+typedef int net_length_t;
+#else
+typedef size_t net_length_t;
+#endif
 
 namespace muscle {
 
@@ -74,6 +86,45 @@ void CloseSocket(int socket)
    if (socket >= 0) closesocket(socket);  // a little bit silly, perhaps...
 }
 
+bool PreviousOperationWouldBlock()
+{
+#ifdef WIN32
+   return (WSAGetLastError() == WSAEWOULDBLOCK);
+#else
+   return (errno == EWOULDBLOCK);
+#endif
+}
+
+// helper function for disentangling the true meaning of recv() and send() return values!
+static int32 CalculateReturnValue(int ret, uint32 maxSize, bool blocking)
+{
+   int32 retForBlocking = ((ret == 0)&&(maxSize>0)) ? -1 : ret;
+   return blocking ? retForBlocking : (((ret < 0)&&(PreviousOperationWouldBlock())) ? 0 : retForBlocking);
+}
+
+int32 ReceiveData(int socket, void * buffer, uint32 size, bool bm)
+{
+   return (socket >= 0) ? CalculateReturnValue(recv(socket, (char *)buffer, size, 0L), size, bm) : -1;
+}
+
+int32 SendData(int socket, const void * buffer, uint32 size, bool bm)
+{
+   return (socket >= 0) ? CalculateReturnValue(send(socket, (const char *)buffer, size, 0L), size, bm) : -1;
+}
+
+status_t ShutdownSocket(int socket, bool dRecv, bool dSend)
+{
+   if (socket < 0) return B_ERROR;
+   if ((dRecv == false)&&(dSend == false)) return B_NO_ERROR;  // there's nothing we need to do!
+
+   // Since these constants aren't defined everywhere, I'll define my own:
+   const int MUSCLE_SHUT_RD   = 0;
+   const int MUSCLE_SHUT_WR   = 1;
+   const int MUSCLE_SHUT_RDWR = 2;
+
+   return (shutdown(socket, dRecv?(dSend?MUSCLE_SHUT_RDWR:MUSCLE_SHUT_RD):MUSCLE_SHUT_WR) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
 int Accept(int socket)
 {
    struct sockaddr_in saSocket;
@@ -89,9 +140,11 @@ int Connect(const char * hostName, uint16 port, const char * debugTitle, bool er
 
 int Connect(uint32 hostIP, uint16 port, const char * optDebugHostName, const char * debugTitle, bool errorsOnly)
 {
+   char ipbuf[16]; Inet_NtoA(hostIP, ipbuf);
+
    if ((debugTitle)&&(errorsOnly == false))
    {
-      LogTime(MUSCLE_LOG_INFO, "%s: Connecting to [%s:%u]: ", debugTitle, optDebugHostName?optDebugHostName:Inet_NtoA(hostIP)(), port);
+      LogTime(MUSCLE_LOG_INFO, "%s: Connecting to [%s:%u]: ", debugTitle, optDebugHostName?optDebugHostName:ipbuf, port);
       LogFlush();
    }
 
@@ -111,7 +164,7 @@ int Connect(uint32 hostIP, uint16 port, const char * optDebugHostName, const cha
       }
       else if (debugTitle)
       {
-         if (errorsOnly) LogTime(MUSCLE_LOG_INFO, "%s: connect() to [%s:%u] failed!\n", debugTitle, optDebugHostName?optDebugHostName:Inet_NtoA(hostIP)(), port);
+         if (errorsOnly) LogTime(MUSCLE_LOG_INFO, "%s: connect() to [%s:%u] failed!\n", debugTitle, optDebugHostName?optDebugHostName:ipbuf, port);
                     else Log(MUSCLE_LOG_INFO, "Connection failed!\n");
       }
       CloseSocket(s);
@@ -167,11 +220,9 @@ int ConnectAsync(uint32 hostIP, uint16 port, bool & retIsReady)
    return -1;
 }
 
-String Inet_NtoA(uint32 addr)
+void Inet_NtoA(uint32 addr, char * ipbuf)
 {
-   char buf[64];
-   sprintf(buf, "%li.%li.%li.%li", (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
-   return String(buf);
+   sprintf(ipbuf, "%li.%li.%li.%li", (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
 }
 
 uint32 Inet_AtoN(const char * buf)
@@ -292,7 +343,7 @@ status_t BecomeDaemonProcess(const char * optNewDir, const char * optOutputTo, b
 }
 
 /* See the header file for description of what this does */
-status_t CreateConnectedSocketPair(int & socket1, int & socket2, bool blocking)
+status_t CreateConnectedSocketPair(int & socket1, int & socket2, bool blocking, bool useNagles)
 {
    uint16 port;
    socket1 = CreateAcceptingSocket(0, 1, &port, localhostIP);
@@ -307,7 +358,12 @@ status_t CreateConnectedSocketPair(int & socket1, int & socket2, bool blocking)
             CloseSocket(socket1);
             socket1 = newfd;
             if ((SetSocketBlockingEnabled(socket1, blocking) == B_NO_ERROR)&&
-                (SetSocketBlockingEnabled(socket2, blocking) == B_NO_ERROR)) return B_NO_ERROR;
+                (SetSocketBlockingEnabled(socket2, blocking) == B_NO_ERROR))
+            {
+               (void) SetSocketNaglesAlgorithmEnabled(socket1, useNagles);
+               (void) SetSocketNaglesAlgorithmEnabled(socket2, useNagles);
+               return B_NO_ERROR;
+            }
          }
          CloseSocket(socket2);
       }
@@ -334,6 +390,19 @@ status_t SetSocketBlockingEnabled(int socket, bool blocking)
    flags = blocking ? (flags&~O_NONBLOCK) : (flags|O_NONBLOCK);
    return (fcntl(socket, F_SETFL, flags) == 0) ? B_NO_ERROR : B_ERROR;
 # endif
+#endif
+}
+
+status_t SetSocketNaglesAlgorithmEnabled(int socket, bool enabled)
+{
+   if (socket < 0) return B_ERROR;
+
+#ifdef BEOS_OLD_NETSERVER
+   (void) enabled;  // prevent 'unused var' warning
+   return B_ERROR;  // old networking stack doesn't support this flag
+#else
+   int enableNoDelay = enabled ? 0 : 1;
+   return (setsockopt(socket, IPPROTO_TCP, TCP_NODELAY, (char *) &enableNoDelay, sizeof(enableNoDelay)) >= 0) ? B_NO_ERROR : B_ERROR;
 #endif
 }
 

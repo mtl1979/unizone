@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/AbstractReflectSession.h"
 #include "reflector/AbstractSessionIOPolicy.h"
@@ -6,20 +6,21 @@
 #include "dataio/TCPSocketDataIO.h"
 #include "iogateway/MessageIOGateway.h"
 #include "system/Mutex.h"
+#include "system/SetupSystem.h"
 
 namespace muscle {
 
-extern Mutex * _muscleLogLock;  // we're going to use this too, just since it's already there
 static uint32 _idCounter = 0L;
 
 AbstractReflectSession ::
-AbstractReflectSession() : _port(0), _connectingAsync(false), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT)
+AbstractReflectSession() : _port(0), _connectingAsync(false), _asyncConnectIP(0), _asyncConnectPort(0), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER)
 {
-   MASSERT(_muscleLogLock, "Please instantiate a CompleteSetupSystem object on the stack before creating any session objects (at beginning of main() is preferred)") 
-   if (_muscleLogLock->Lock() == B_NO_ERROR) 
+   Mutex * ml = GetGlobalMuscleLock();
+   MASSERT(ml, "Please instantiate a CompleteSetupSystem object on the stack before creating any session objects (at beginning of main() is preferred)") 
+   if (ml->Lock() == B_NO_ERROR) 
    {
       sprintf(_idString, "%lu", _idCounter++);  
-      _muscleLogLock->Unlock();
+      ml->Unlock();
    }
    else
    {
@@ -66,6 +67,35 @@ AddOutgoingMessage(MessageRef ref)
    return (_gateway()) ? _gateway()->AddOutgoingMessage(ref) : B_ERROR;
 }
 
+status_t
+AbstractReflectSession ::
+Reconnect()
+{
+   MASSERT(IsAttachedToServer(), "Can't call Reconnect() while not attached to the server");
+   if ((_asyncConnectIP > 0)&&(_gateway()))
+   {
+      _gateway()->SetDataIO(DataIORef());  // get rid of any existing socket first
+      _gateway()->Reset();                 // set gateway back to its virgin state
+      _connectingAsync = false;  // paranoia
+
+      bool isReady;
+      int socket = ConnectAsync(_asyncConnectIP, _asyncConnectPort, isReady);
+      if (socket >= 0)
+      {
+         DataIO * io = CreateDataIO(socket);
+         if (io)
+         {
+            _gateway()->SetDataIO(DataIORef(io, NULL));
+            if (isReady) AsyncConnectCompleted();
+                    else _connectingAsync = true;
+            return B_NO_ERROR;
+         }
+         else closesocket(socket);
+      }
+   }
+   return B_ERROR;
+}
+
 AbstractMessageIOGateway * 
 AbstractReflectSession ::
 CreateGateway()
@@ -89,21 +119,6 @@ AbstractReflectSession ::
 ClientConnectionClosed()
 {
    return true;  // true == okay to remove this session
-}
-
-void 
-AbstractReflectSession ::
-CallMessageReceivedFromGateway(MessageRef msgRef)
-{
-   MessageReceivedFromGateway(msgRef);
-   AfterMessageReceivedFromGateway(msgRef);
-}
-
-void
-AbstractReflectSession ::
-AfterMessageReceivedFromGateway(MessageRef)
-{
-   // empty -- but this method may get overridden in subclasses.
 }
 
 void
@@ -165,6 +180,56 @@ EndSession()
 {
    MASSERT(IsAttachedToServer(), "Can't call EndSession() while not attached to the server");
    _owner->EndSession(this);
+}
+
+String
+AbstractReflectSession ::
+GetDefaultHostName() const
+{
+   return "<unknown>";
+}
+
+String
+AbstractReflectSession ::
+GetSessionDescriptionString() const
+{
+   String ret = GetTypeName();
+   ret += " ";
+   ret += GetSessionIDString();
+   ret += (_port>0)?" from [":" to [";
+   ret += _hostName;
+   ret += ':';
+   char buf[64]; sprintf(buf, "%u]", (_port>0)?_port:_asyncConnectPort); ret += buf;
+   return ret;
+}
+
+
+bool
+AbstractReflectSession ::
+HasBytesToOutput() const
+{
+   return _gateway() ? _gateway()->HasBytesToOutput() : false;
+}
+
+bool 
+AbstractReflectSession :: 
+IsReadyForInput() const
+{
+   return _gateway() ? _gateway()->IsReadyForInput() : false;
+}
+
+int32
+AbstractReflectSession ::
+DoInput(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes)
+{
+   return _gateway() ? _gateway()->DoInput(receiver, maxBytes) : 0;
+}
+
+int32 
+AbstractReflectSession ::
+DoOutput(uint32 maxBytes)
+{
+   return _gateway() ? _gateway()->DoOutput(maxBytes) : 0;
 }
 
 ReflectSessionFactory ::

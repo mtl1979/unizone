@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -21,7 +21,7 @@
 #include "support/Rect.h"
 #include "util/String.h"
 #include "util/Hashtable.h"
-#include "util/ByteBuffer.h"
+#include "util/FlatCountable.h"
 
 namespace muscle {
 
@@ -51,29 +51,6 @@ MessageRef GetMessageFromPool(uint32 what = 0L);
  *  @return Reference to a Message object, or a NULL ref on failure (out of memory).
  */
 MessageRef GetMessageFromPool(const Message & copyMe);
-
-/** This function returns a pointer to a singleton ObjectPool that can be 
- *  used to minimize the number of ByteBuffer allocations and deletions by
- *  recycling the ByteBuffer objects.
- */
-ByteBufferRef::ItemPool * GetByteBufferPool();
-
-/** Convenience method:  Gets a ByteBuffer from the ByteBuffer pool, makes it equal to (copyMe), and returns a reference to it.
- *  @param numBytes Number of bytes to copy in (or just allocate, if (buffer) is NULL).  Defaults to zero bytes (i.e., don't allocate a buffer)
- *  @param buffer Points to bytes that we will have in our internal buffer (see the copyBuffer parameter, below, for the exact semantics of this).
- *                If NULL, this ByteBuffer will contain (numBytes) uninitialized bytes.  Defaults to NULL.
- *  @param copyBuffer If true, (buffer) is copied into a separately allocated internal buffer, and we do not assume ownership of (buffer).
- *                    If false, (buffer) is not copied, but instead we assume ownership of (buffer) and will delete[] it when we are done with it.
- *                    Defaults to true.  If you set this false, then (buffer) must have been allocated with new[].           
- *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).
- */
-ByteBufferRef GetByteBufferFromPool(uint32 numBytes = 0, const void * buffer = NULL, bool copyBuffer = true);
-
-/** Convenience method:  Gets a ByteBuffer from the ByteBuffer pool, makes it equal to (copyMe), and returns a reference to it.
- *  @param copyMe A ByteBuffer to clone.
- *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).
- */
-ByteBufferRef GetByteBufferFromPool(const ByteBuffer & copyMe);
 
 // this declaration is for internal use only
 class AbstractDataArray;
@@ -140,9 +117,9 @@ public:
 
 private:
    friend class Message;
-   MessageFieldNameIterator(const HashtableIterator<String, GenericRef> & iter, type_code tc);
+   MessageFieldNameIterator(const HashtableIterator<String, GenericRef> & iter, uint32 tc);
 
-   type_code _typeCode;
+   uint32 _typeCode;
 };
 
 // Version number of the Message serialization protocol.
@@ -198,13 +175,13 @@ public:
     *  @param fixed_size If non-NULL, On success, (*fixed_size) is set to reflect whether the returned field's objects are all the same size, or not.
     *  @return B_NO_ERROR on success, or B_ERROR if the requested field couldn't be found.
     */
-   status_t GetInfo(const String & name, type_code *type, uint32 *c = NULL, bool *fixed_size = NULL) const;
+   status_t GetInfo(const String & name, uint32 *type, uint32 *c = NULL, bool *fixed_size = NULL) const;
 
    /** Returns the number of field names of the given type that are present in the Message.
     *  @param type The type of field to count, or B_ANY_TYPE to count all field types.
     *  @return The number of matching fields
     */
-   uint32 CountNames(type_code type = B_ANY_TYPE) const;
+   uint32 CountNames(uint32 type = B_ANY_TYPE) const;
 
    /** @return true iff there are no fields in this Message. */
    bool IsEmpty() const;
@@ -237,7 +214,7 @@ public:
    virtual bool IsFixedSize() const {return false;}
 
    /** Returns B_MESSAGE_TYPE */
-   virtual type_code TypeCode() const {return B_MESSAGE_TYPE;}
+   virtual uint32 TypeCode() const {return B_MESSAGE_TYPE;}
 
    /** Returns The number of bytes it would take to flatten this Message into a byte buffer. */
    virtual uint32 FlattenedSize() const;
@@ -397,7 +374,7 @@ public:
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or (numBytes) isn't a multiple (type)'s 
     *          known size, or a type conflict occurred.
     */
-   status_t AddData(const String & name, type_code type, const void *data, uint32 numBytes) {return AddDataAux(name, data, numBytes, type, false);}
+   status_t AddData(const String & name, uint32 type, const void *data, uint32 numBytes) {return AddDataAux(name, data, numBytes, type, false);}
 
    /** Prepends a new string to the beginning of a field array in the Message.
     *  @param name Name of the field to add (or prepend to)
@@ -538,7 +515,7 @@ public:
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or (numBytes) isn't a multiple (type)'s 
     *          known size, or a type conflict occurred.
     */
-   status_t PrependData(const String & name, type_code type, const void *data, uint32 numBytes) {return AddDataAux(name, data, numBytes, type, true);}
+   status_t PrependData(const String & name, uint32 type, const void *data, uint32 numBytes) {return AddDataAux(name, data, numBytes, type, true);}
 
    /** Removes the (index)'th item from the given field entry.  If the field entry becomes
     *  empty, the field itself is removed also.
@@ -554,8 +531,11 @@ public:
     */
    status_t RemoveName(const String & name);
 
-   /** Clears all fields from the Message. */
-   void Clear();
+   /** Clears all fields from the Message. 
+    *  @param releaseCachedBuffers If set true, any cached buffers we are holding will be immediately freed.
+    *                              Otherwise, they will be kept around for future re-use.
+    */
+   void Clear(bool releaseCachedBuffers = false) {_entries.Clear(releaseCachedBuffers);}
 
    /** Retrieve a string value from the Message.
     *  @param name The field name to look for the string value under.
@@ -750,7 +730,7 @@ public:
 
    /** Retrieve a pointer to the raw data bytes of a stored message field of any type.
     *  @param name The field name to retrieve the pointer to
-    *  @param type The type_code of the field you are interested, or B_ANY_TYPE if any type is acceptable.
+    *  @param type The type code of the field you are interested, or B_ANY_TYPE if any type is acceptable.
     *  @param data On success, a pointer to the data bytes will be written into this object.
     *  Note:  If you are retrieving B_MESSAGE_TYPE, then (data) will be set to point to a MessageRef
     *         object, and NOT a Message object, or flattened-Message-buffer!
@@ -758,20 +738,20 @@ public:
     *  @param numBytes On success, the number of bytes in the returned data array will be written into this object.  (May be NULL)
     *  @return B_NO_ERROR if the data pointer was retrieved successfully, or B_ERROR if it wasn't.
     */
-   status_t FindData(const String & name, type_code type, uint32 index, const void **data, uint32 *numBytes) const;
+   status_t FindData(const String & name, uint32 type, uint32 index, const void **data, uint32 *numBytes) const;
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindData(const String & name, type_code type, const void **data, uint32 *numBytes) const {return FindData(name, type, 0, data, numBytes);}
+   status_t FindData(const String & name, uint32 type, const void **data, uint32 *numBytes) const {return FindData(name, type, 0, data, numBytes);}
 
    /** As above, only this returns a pointer to an array that you can write directly into, for efficiency.  
     *  You should be very careful with this method, though, as you will be writing into the guts of this Message.
     *  The returned pointer is not guaranteed to be valid after the Message is modified by any method!
     *  @see FindData(...)
     */
-   status_t FindDataPointer(const String & name, type_code type, uint32 index, void **data, uint32 *numBytes) const;
+   status_t FindDataPointer(const String & name, uint32 type, uint32 index, void **data, uint32 *numBytes) const;
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindDataPointer(const String & name, type_code type, void **data, uint32 *numBytes) const {return FindDataPointer(name, type, 0, data, numBytes);}
+   status_t FindDataPointer(const String & name, uint32 type, void **data, uint32 *numBytes) const {return FindDataPointer(name, type, 0, data, numBytes);}
 
    /** Replace a string value in an existing Message field with a new value.
     *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
@@ -968,7 +948,7 @@ public:
    /** Replace one entry in a field of any type.
     *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
     *  @param name The field name to replace an entry in.
-    *  @param type The type_code of the field you are interested, or B_ANY_TYPE if any type is acceptable.
+    *  @param type The uint32 of the field you are interested, or B_ANY_TYPE if any type is acceptable.
     *  @param index Index in the field to replace the data at.
     *  @param data The bytes representing the item you wish to replace an old item in the field with
     *  @param numBytes The number of bytes in your data array.
@@ -977,17 +957,17 @@ public:
     *         (This is inconsistent with BMessage::ReplaceData, which expects a flattened BMessage buffer.  Sorry!)
     *  @return B_NO_ERROR if the data item(s) were replaced successfully, or B_ERROR they weren't.
     */
-   status_t ReplaceData(bool okayToAdd, const String & name, type_code type, uint32 index, const void *data, uint32 numBytes);
+   status_t ReplaceData(bool okayToAdd, const String & name, uint32 type, uint32 index, const void *data, uint32 numBytes);
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t ReplaceData(bool okayToAdd, const String & name, type_code type, const void *data, uint32 numBytes) {return ReplaceData(okayToAdd, name, type, 0, data, numBytes);}
+   status_t ReplaceData(bool okayToAdd, const String & name, uint32 type, const void *data, uint32 numBytes) {return ReplaceData(okayToAdd, name, type, 0, data, numBytes);}
 
    /** Returns true iff there is a field with the given name and type present in the Message.
     *  @param fieldName the field name to look for.
     *  @param type the type to look for, or B_ANY_TYPE if type isn't important to you.
     *  @return true if such a field exists, else false. 
     */
-   bool HasName(const String & fieldName, type_code type = B_ANY_TYPE) const {return (GetArray(fieldName, type) != NULL);}
+   bool HasName(const String & fieldName, uint32 type = B_ANY_TYPE) const {return (GetArray(fieldName, type) != NULL);}
 
    /** Returns the number of values in the field with the given name and type in the Message.
     *  @param fieldName the field name to look for.
@@ -995,7 +975,7 @@ public:
     *  @return The number of values stored under (fieldName) if a field of the right type exists, 
     *          or zero if the field doesn't exist or isn't of a matching type.
     */
-   uint32 GetNumValuesInName(const String & fieldName, type_code type = B_ANY_TYPE) const;
+   uint32 GetNumValuesInName(const String & fieldName, uint32 type = B_ANY_TYPE) const;
 
    /** Take the data under (name) in this message, and moves it into (moveTo). 
     *  Any data that was under (name) in (moveTo) will be replaced.
@@ -1021,7 +1001,7 @@ public:
     * @param type Type of fields you wish to iterate over, or B_ANY_TYPE to iterate over all fields.
     * @param backwards Set this to true if you prefer to iterate backwards, from the last field to the first.
     */
-   MessageFieldNameIterator GetFieldNameIterator(type_code type = B_ANY_TYPE, bool backwards = false) const {return MessageFieldNameIterator(_entries.GetIterator(backwards), type);}
+   MessageFieldNameIterator GetFieldNameIterator(uint32 type = B_ANY_TYPE, bool backwards = false) const {return MessageFieldNameIterator(_entries.GetIterator(backwards), type);}
 
    /**
     * As above, only starts the iteration at the given field name, instead of at the beginning
@@ -1030,7 +1010,7 @@ public:
     * @param type Type of fields you wish to iterate over, or B_ANY_TYPE to iterate over all fields.
     * @param backwards Set this to true if you prefer to iterate backwards, from the last field to the first.
     */
-   MessageFieldNameIterator GetFieldNameIteratorAt(const String & startFieldName, type_code type = B_ANY_TYPE, bool backwards = false) const {return MessageFieldNameIterator(_entries.GetIteratorAt(startFieldName, backwards), type);}
+   MessageFieldNameIterator GetFieldNameIteratorAt(const String & startFieldName, uint32 type = B_ANY_TYPE, bool backwards = false) const {return MessageFieldNameIterator(_entries.GetIteratorAt(startFieldName, backwards), type);}
 
 protected:
    /** Overridden to copy directly if (copyTo) is a Message as well. */
@@ -1041,25 +1021,25 @@ protected:
 
 private:
    // Helper functions
-   status_t AddDataAux(const String &name, type_code type, const void *data, uint32 numBytes, bool prepend);
+   status_t AddDataAux(const String &name, uint32 type, const void *data, uint32 numBytes, bool prepend);
 
-   // Given a known type_code, returns the size of an item of that type.
+   // Given a known uint32, returns the size of an item of that type.
    // Returns zero if items of the given type are variable length.
-   uint32 GetElementSize(type_code type) const;
+   uint32 GetElementSize(uint32 type) const;
 
-   GenericRef GetArrayRef(const String & arrayName, type_code etc) const;
-   AbstractDataArray * GetArray(const String & arrayName, type_code etc) const;
-   AbstractDataArray * GetOrCreateArray(const String & arrayName, type_code tc);
+   GenericRef GetArrayRef(const String & arrayName, uint32 etc) const;
+   AbstractDataArray * GetArray(const String & arrayName, uint32 etc) const;
+   AbstractDataArray * GetOrCreateArray(const String & arrayName, uint32 tc);
 
-   status_t AddFlatBuffer(const String & name, const Flattenable & flat, type_code etc, bool prepend);
-   status_t AddFlatRef(const String & name, FlatCountableRef flat, type_code etc, bool prepend);
-   status_t AddDataAux(const String & name, const void * data, uint32 size, type_code etc, bool prepend);
+   status_t AddFlatBuffer(const String & name, const Flattenable & flat, uint32 etc, bool prepend);
+   status_t AddFlatRef(const String & name, FlatCountableRef flat, uint32 etc, bool prepend);
+   status_t AddDataAux(const String & name, const void * data, uint32 size, uint32 etc, bool prepend);
 
    status_t FindFlatAux(const String & name, uint32 index, Flattenable & flat) const;
-   status_t FindDataItemAux(const String & name, uint32 index, type_code tc, void * setValue, uint32 valueSize) const;
+   status_t FindDataItemAux(const String & name, uint32 index, uint32 tc, void * setValue, uint32 valueSize) const;
 
-   status_t ReplaceFlatItemBuffer(bool okayToAdd, const String & name, uint32 index, const Flattenable & flat, type_code tc);
-   status_t ReplaceDataAux(bool okayToAdd, const String & name, uint32 index, void * dataBuf, uint32 bufSize, type_code tc);
+   status_t ReplaceFlatItemBuffer(bool okayToAdd, const String & name, uint32 index, const Flattenable & flat, uint32 tc);
+   status_t ReplaceDataAux(bool okayToAdd, const String & name, uint32 index, void * dataBuf, uint32 bufSize, uint32 tc);
  
    bool FieldsAreSubsetOf(const Message & rhs, bool compareData) const;
 

@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 /* This class was derived from the String class written by Michael Olivero (mike95@mike95.com) */
  
 #ifndef MuscleString_h
@@ -283,7 +283,7 @@ public:
    /** Part of the Flattenable interface.
     *  @return B_STRING_TYPE
     */
-   virtual type_code TypeCode() const {return B_STRING_TYPE;}
+   virtual uint32 TypeCode() const {return B_STRING_TYPE;}
 
    /** Part of the Flattenable interface.
     *  @return Length()+1  (the +1 is for the terminating NUL byte)
@@ -313,6 +313,7 @@ public:
    status_t Prealloc(uint32 newBufLen) {return EnsureBufferSize(newBufLen+1, true);}
 
 private:
+   bool IsSpaceChar(char c) const {return ((c==' ')||(c=='\t')||(c=='\r')||(c=='\n'));}
    status_t EnsureBufferSize(uint32 newBufLen, bool retainValue);
    char _smallBuffer[SMALL_MUSCLE_STRING_LENGTH+1];  // store very small strings in-line, to avoid dynamic allocation
    char * _buffer;            // Stores the chars.  May point at (_smallBuffer), or a dynamically allocated buffer
@@ -340,6 +341,9 @@ class HashFunctor<const char *>
 public:
    uint32 operator () (const char * x) const {return CStringHashFunc(x);}
 };
+
+/** A function for comparing (const String &)'s -- calls the String operators */
+int StringCompareFunc(const String &, const String &, void *);
 
 /** A function for comparing (const char *)'s -- calls strcmp() */
 int CStringCompareFunc(const char * const &, const char * const &, void *);

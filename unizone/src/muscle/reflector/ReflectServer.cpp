@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/ReflectServer.h"
 #include "reflector/StorageReflectConstants.h"
@@ -49,9 +49,10 @@ AddNewSession(AbstractReflectSessionRef ref, int s)
       {
          uint32 ip = GetPeerIPAddress(socket);
          const String * remapString = _remapIPs.Get(ip);
-         newSession->_hostName = remapString ? *remapString : ((ip > 0) ? Inet_NtoA(ip) : String("<unknown>"));
+         char ipbuf[16]; Inet_NtoA(ip, ipbuf);
+         newSession->_hostName = remapString ? *remapString : ((ip > 0) ? String(ipbuf) : newSession->GetDefaultHostName());
       }
-      else newSession->_hostName = "<local>";
+      else newSession->_hostName = newSession->GetDefaultHostName();
    }
 
    return AddNewSession(ref);
@@ -68,7 +69,10 @@ AddNewConnectSession(AbstractReflectSessionRef ref, uint32 destIP, uint16 port)
       int socket = ConnectAsync(destIP, port, isReady);
       if (socket >= 0)
       {
-         session->_hostName = (destIP > 0) ? Inet_NtoA(destIP) : String("<unknown>");
+         session->_asyncConnectIP = destIP;
+         session->_asyncConnectPort = port;
+         char ipbuf[16]; Inet_NtoA(destIP, ipbuf);
+         session->_hostName = (destIP > 0) ? ipbuf : "<unknown>";
          session->_connectingAsync = (isReady == false);
          status_t ret = AddNewSession(ref, socket);
          if (ret == B_NO_ERROR)
@@ -85,19 +89,20 @@ status_t
 ReflectServer ::
 AddNewSession(AbstractReflectSessionRef ref)
 {
-   AbstractReflectSession * newSession = ref.GetItemPointer();
+   AbstractReflectSession * newSession = ref();
    if ((newSession)&&(_sessions.Put(newSession->GetSessionIDString(), ref) == B_NO_ERROR))
    {
       newSession->_owner = this;
       if (newSession->AttachedToServer() == B_NO_ERROR)
       {
-         if (_doLogging) LogTime(MUSCLE_LOG_INFO, "New %s [%s] from [%s]@%i (%lu total)\n", newSession->GetTypeName(), newSession->GetSessionIDString(), newSession->GetHostName(), newSession->GetPort(), _sessions.GetNumItems());
+         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "New %s (%lu total)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems());
          return B_NO_ERROR;
       }
       else 
       {
          newSession->AboutToDetachFromServer();  // well, it *was* attached, if only for a moment
-         if (_doLogging) LogTime(MUSCLE_LOG_INFO, "%s [%s] from [%s]@%i aborted startup (%lu left)\n", newSession->GetTypeName(), newSession->GetSessionIDString(), newSession->GetHostName(), newSession->GetPort(), _sessions.GetNumItems()-1);
+         newSession->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
+         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "%s aborted startup (%lu left)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
       }
       newSession->_owner = NULL;
       (void) _sessions.Remove(newSession->GetSessionIDString());
@@ -106,7 +111,7 @@ AddNewSession(AbstractReflectSessionRef ref)
 }
 
 
-ReflectServer :: ReflectServer(UsageLimitProxyMemoryAllocator * optMemoryUsageTracker) : _keepServerGoing(true), _startedAt(0), _doLogging(true), _watchMemUsage(optMemoryUsageTracker)
+ReflectServer :: ReflectServer(MemoryAllocator * optMemoryUsageTracker) : _keepServerGoing(true), _cycleStartedAt(0), _serverStartedAt(0), _doLogging(true), _watchMemUsage(optMemoryUsageTracker)
 {
    // make sure _lameDuckSessions has plenty of memory available in advance (we need might need it in a tight spot later!)
    _lameDuckSessions.EnsureSize(256);
@@ -131,6 +136,7 @@ ReflectServer :: Cleanup()
          if (nextValue()) 
          {
             nextValue()->AboutToDetachFromServer();
+            nextValue()->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
             nextValue()->_owner = NULL;
             _lameDuckSessions.AddTail(nextValue);  // we'll delete it below
             _sessions.Remove(nextKey);  // but prevent other sessions from accessing it now that it's detached
@@ -181,11 +187,26 @@ CheckPolicy(Hashtable<PolicyRef, bool> & policies, PolicyRef policyRef, const Po
    return ((ph.GetSession())&&((p == NULL)||(p->OkayToTransfer(ph)))) ? MUSCLE_NO_LIMIT : 0;
 }
 
+void ReflectServer :: CheckForOutOfMemory(AbstractReflectSessionRef optSessionRef)
+{
+   if ((_watchMemUsage)&&(_watchMemUsage->HasAllocationFailed()))
+   {
+      _watchMemUsage->SetAllocationHasFailed(false);  // clear the memory-failed flag
+      if (optSessionRef())
+      {
+         if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "Low Memory!  Aborting %s to get some back!\n", optSessionRef()->GetSessionDescriptionString()());
+         AddLameDuckSession(optSessionRef);
+      }
+      else if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "Low Memory!  Dumping bogged sessions!\n");
+
+      DumpBoggedSessions();       // see what other cleanup we can do
+   }
+}
 status_t 
 ReflectServer ::
 ServerProcessLoop()
 {
-   _startedAt = GetCurrentTime64();
+   _serverStartedAt = GetRunTime64();
 
    if (_doLogging)
    {
@@ -203,17 +224,17 @@ ServerProcessLoop()
    if (_doLogging)
    {
       int numFuncs = _factories.GetNumItems();
-      LogTime(MUSCLE_LOG_INFO, "%s Server is active", GetServerName()); 
+      LogTime(MUSCLE_LOG_DEBUG, "%s Server is active", GetServerName()); 
       if (numFuncs > 0)
       {
-         Log(MUSCLE_LOG_INFO, " and listening on port%s ", (numFuncs > 1) ? "s" : "");
+         Log(MUSCLE_LOG_DEBUG, " and listening on port%s ", (numFuncs > 1) ? "s" : "");
          HashtableIterator<uint16, ReflectSessionFactoryRef> iter = _factories.GetIterator();
          uint16 port;
          int which=0;
-         while(iter.GetNextKey(port) == B_NO_ERROR) Log(MUSCLE_LOG_INFO, "%u%s", port, (++which<numFuncs)?",":"");
+         while(iter.GetNextKey(port) == B_NO_ERROR) Log(MUSCLE_LOG_DEBUG, "%u%s", port, (++which<numFuncs)?",":"");
       }
-      else Log(MUSCLE_LOG_INFO, " but not listening to any ports");
-      Log(MUSCLE_LOG_INFO, ".\n");
+      else Log(MUSCLE_LOG_DEBUG, " but not listening to any ports");
+      Log(MUSCLE_LOG_DEBUG, ".\n");
    }
 
    // The primary event loop for any MUSCLE-based server!
@@ -231,7 +252,7 @@ ServerProcessLoop()
 
       // Set up fd set entries and Pulse() timing info for all our different components
       {
-         const uint64 now = GetCurrentTime64();
+         const uint64 now = GetRunTime64(); // nothing in this scope is supposed to take a significant amount of time to execute, so just calculate this once
 
          // Set up the session-acceptors and their associated session-factories
          if (_factories.GetNumItems() > 0)
@@ -248,7 +269,7 @@ ServerProcessLoop()
             }
          }
 
-         // Set up the sessions and their associated IO-gateways
+         // Set up the sessions, their associated IO-gateways, and their IOPolicies
          if (_sessions.GetNumItems() > 0)
          {
             AbstractReflectSessionRef * nextRef;
@@ -273,19 +294,19 @@ ServerProcessLoop()
                         }
                         else
                         {
-                           session->_maxInputChunk  = CheckPolicy(policies, session->GetInputPolicy(),  PolicyHolder(g->IsReadyForInput()  ? session : NULL, true),  now);
-                           session->_maxOutputChunk = CheckPolicy(policies, session->GetOutputPolicy(), PolicyHolder(g->HasBytesToOutput() ? session : NULL, false), now);
+                           session->_maxInputChunk  = CheckPolicy(policies, session->GetInputPolicy(),  PolicyHolder(session->IsReadyForInput()  ? session : NULL, true),  now);
+                           session->_maxOutputChunk = CheckPolicy(policies, session->GetOutputPolicy(), PolicyHolder(session->HasBytesToOutput() ? session : NULL, false), now);
                            in  = (session->_maxInputChunk  > 0);
-                           out = (session->_maxOutputChunk > 0);
+                           out = ((session->_maxOutputChunk > 0)||((g->GetDataIO())&&(g->GetDataIO()->HasBufferedOutput())));
                         }
 
                         if (in) FD_SET(sessionSocket, &readSet);
                         if (out) 
                         {
                            FD_SET(sessionSocket, &writeSet);
-                           if (session->_lastByteOutputAt == 0) session->_lastByteOutputAt = now;  // start timing....
+                           if (session->_lastByteOutputAt == 0) session->_lastByteOutputAt = now;  // the bogged-session-clock starts ticking when we first want to write...
                         }
-                        else session->_lastByteOutputAt = 0;  // stop timing
+                        else session->_lastByteOutputAt = 0;  // If we no longer want to write, then the bogged-session-clock-timeout is cancelled
 
                         if (((in)||(out))&&(sessionSocket > maxSocket)) maxSocket = sessionSocket;
                      }
@@ -294,8 +315,9 @@ ServerProcessLoop()
                   CallGetPulseTimeAux(*session, now, nextPulseAt);
                }
             }
-            CallGetPulseTimeAux(*this, now, nextPulseAt);
          }
+
+         CallGetPulseTimeAux(*this, now, nextPulseAt);
 
          // Set up the Session IO Policies
          if (policies.GetNumItems() > 0)
@@ -333,7 +355,7 @@ ServerProcessLoop()
          struct timeval waitTime;
          if (nextPulseAt != MUSCLE_TIME_NEVER) 
          {
-            uint64 now = GetCurrentTime64();
+            uint64 now = GetRunTime64();
             uint64 waitTime64 = (nextPulseAt > now) ? (nextPulseAt - now) : 0;
             Convert64ToTimeVal(waitTime64, waitTime);
          }
@@ -348,77 +370,100 @@ ServerProcessLoop()
          }
       }
 
-      // Do the I/O for each of our attached sessions
+      // Each cycle officially "starts" as soon as select() returns
+      _cycleStartedAt = GetRunTime64();
+
+      // Before we do any session I/O, make sure there hasn't been a generalized memory failure
+      CheckForOutOfMemory(AbstractReflectSessionRef());
+
+      // Do I/O for each of our attached sessions
       {
-         AbstractReflectSessionRef * nextRef;
+         AbstractReflectSessionRef sessionRef;
          HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
-         while((nextRef = iter.GetNextValue()) != NULL)
+         while(iter.GetNextValue(sessionRef) == B_NO_ERROR)
          {
-            const uint64 now = GetCurrentTime64();
-            AbstractReflectSession * session = nextRef->GetItemPointer();
+            AbstractReflectSession * session = sessionRef();
             if (session)
             {
-               AbstractMessageIOGateway * gateway = session->GetGateway();
-               if (gateway)
-               {
-                  int socket = GetSocketFor(session);
-                  if (socket >= 0)
-                  {
-                     int32 readBytes = 0, wroteBytes = 0;
-                     if (FD_ISSET(socket, &readSet))
-                     {
-                        AbstractSessionIOPolicy * p = session->GetInputPolicy()();
-                        readBytes = gateway->DoInput(session->_maxInputChunk);
-                        if ((p)&&(readBytes >= 0)) p->BytesTransferred(PolicyHolder(session, true), (uint32)readBytes);
-                     }
-                     if (FD_ISSET(socket, &writeSet))
-                     {
-                        if (session->_connectingAsync) wroteBytes = (FinalizeAsyncConnect(*nextRef) == B_NO_ERROR) ? 0 : -1;
-                        else
-                        {
-                           AbstractSessionIOPolicy * p = session->GetOutputPolicy()();
+               if (_watchMemUsage) (void) _watchMemUsage->SetAllocationHasFailed(false);  // (session)'s responsibility for starts here!  If we run out of mem on his watch, he's history
 
+               CallPulseAux(*session, GetRunTime64());
+               {
+                  AbstractMessageIOGateway * gateway = session->GetGateway();
+                  if (gateway) CallPulseAux(*gateway, GetRunTime64());
+               }
+
+               int socket = GetSocketFor(session);
+               if (socket >= 0)
+               {
+                  int32 readBytes = 0, wroteBytes = 0;
+                  if (FD_ISSET(socket, &readSet))
+                  {
+                     readBytes = session->DoInput(*session, session->_maxInputChunk);  // session->MessageReceivedFromGateway() gets called here
+                     AbstractSessionIOPolicy * p = session->GetInputPolicy()();
+                     if ((p)&&(readBytes >= 0)) p->BytesTransferred(PolicyHolder(session, true), (uint32)readBytes);
+                  }
+                  if (FD_ISSET(socket, &writeSet))
+                  {
+                     if (session->_connectingAsync) wroteBytes = (FinalizeAsyncConnect(sessionRef) == B_NO_ERROR) ? 0 : -1;
+                     else
+                     {
 #ifdef MUSCLE_MAX_OUTPUT_CHUNK
-                           // Certain BeOS configurations (i.e. behind routers??) don't handle large outgoing send()'s very
-                           // well.  If this is the case with your machine, one easy fix is to put -DMUSCLE_MAX_OUTPUT_CHUNK=1000
-                           // or so in your Makefile; that will force all send sizes to be 1000 bytes or less.
-                           // (shatty reports the problem with a net_server -> Ethernet -> linksys -> pppoe -> dsl config)
-                           if (session->_maxOutputChunk > MUSCLE_MAX_OUTPUT_CHUNK) session->_maxOutputChunk = MUSCLE_MAX_OUTPUT_CHUNK;
+                        // HACK: Certain BeOS configurations (i.e. behind routers??) don't handle large outgoing send()'s very
+                        // well.  If this is the case with your machine, one easy fix is to put -DMUSCLE_MAX_OUTPUT_CHUNK=1000
+                        // or so in your Makefile; that will force all send sizes to be 1000 bytes or less.
+                        // (shatty reports the problem with a net_server -> Ethernet -> linksys -> pppoe -> dsl config)
+                        if (session->_maxOutputChunk > MUSCLE_MAX_OUTPUT_CHUNK) session->_maxOutputChunk = MUSCLE_MAX_OUTPUT_CHUNK;
 #endif
-                           wroteBytes = gateway->DoOutput(session->_maxOutputChunk);
-                           if ((p)&&(wroteBytes >= 0)) p->BytesTransferred(PolicyHolder(session, false), (uint32)wroteBytes);
-                        }
-                     }
-                     if ((readBytes < 0)||(wroteBytes < 0))
-                     {
-                        if (session->ClientConnectionClosed()) AddLameDuckSession(*nextRef);
-                        else
+                        
+                        // if the session's DataIO object is still has bytes buffered for output, try to send them now
                         {
-                           if (_doLogging) LogTime(MUSCLE_LOG_INFO, "TCP Connection to [%s]@%i was severed.\n", session->GetHostName(), session->GetPort());
-                           ShutdownIOFor(session);
+                           AbstractMessageIOGateway * g = session->GetGateway();
+                           if (g)
+                           {
+                              DataIO * io = g->GetDataIO();
+                              if (io) io->WriteBufferedOutput();
+                           }
                         }
+
+                        wroteBytes = session->DoOutput(session->_maxOutputChunk);
+
+                        AbstractSessionIOPolicy * p = session->GetOutputPolicy()();
+                        if ((p)&&(wroteBytes >= 0)) p->BytesTransferred(PolicyHolder(session, false), (uint32)wroteBytes);
                      }
-                     else if (session->_lastByteOutputAt > 0)
+                  }
+                  if ((readBytes < 0)||(wroteBytes < 0))
+                  {
+                     bool wasConnecting = session->_connectingAsync;
+                     session->_connectingAsync = false;
+
+                     if (session->ClientConnectionClosed()) AddLameDuckSession(sessionRef);
+                     else
                      {
-                        // Check for output stalls
-                             if (wroteBytes > 0) session->_lastByteOutputAt = now;  // cool, he's streaming out okay
-                        else if (now-session->_lastByteOutputAt > gateway->GetOutputStallLimit())
-                        {
-                           if (_doLogging) LogTime(MUSCLE_LOG_INFO, "TCP Connection to [%s]@%i timed out (output stall).\n", session->GetHostName(), session->GetPort());
-                           if (session->ClientConnectionClosed()) AddLameDuckSession(*nextRef);
-                                                             else ShutdownIOFor(session); 
-                        }
+                        if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "Connection for %s %s.\n", session->GetSessionDescriptionString()(), wasConnecting?"failed":"was severed");
+                        ShutdownIOFor(session);
+                     }
+                  }
+                  else if (session->_lastByteOutputAt > 0)
+                  {
+                     // Check for output stalls
+                     const uint64 now = GetRunTime64();
+                          if ((wroteBytes > 0)||(session->_maxOutputChunk == 0)) session->_lastByteOutputAt = now;  // reset the moribundness-timer
+                     else if (now-session->_lastByteOutputAt > session->_outputStallLimit)
+                     {
+                        if (_doLogging) LogTime(MUSCLE_LOG_WARNING, "Connection for %s timed out (output stall).\n", session->GetSessionDescriptionString()());
+                        if (session->ClientConnectionClosed()) AddLameDuckSession(sessionRef);
+                                                          else ShutdownIOFor(session); 
                      }
                   }
                }
             }
+            CheckForOutOfMemory(sessionRef);  // if the session caused a memory error, give him the boot
          }
       }
 
-      // Pulse() anyone who has it coming
+      // Pulse() our other PulseNode objects, as necessary
       {
-         const uint64 now = GetCurrentTime64();
-
          // Tell the session policies we're done doing I/O (for now)
          if (policies.GetNumItems() > 0)
          {
@@ -429,7 +474,7 @@ ServerProcessLoop()
                AbstractSessionIOPolicy * p = next->GetItemPointer();
                if (p->_hasBegun)
                {
-                  p->EndIO(now);
+                  p->EndIO(GetRunTime64());
                   p->_hasBegun = false;
                }
             }
@@ -440,28 +485,11 @@ ServerProcessLoop()
          {
             const PolicyRef * next;
             HashtableIterator<PolicyRef, bool> iter = policies.GetIterator();
-            while((next = iter.GetNextKey()) != NULL) CallPulseAux(*(next->GetItemPointer()), now);
+            while((next = iter.GetNextKey()) != NULL) CallPulseAux(*(next->GetItemPointer()), GetRunTime64());
          }
 
          // Pulse the Server
-         CallPulseAux(*this, now);
-
-         // Pulse the Sessions and their Gateways
-         if (_sessions.GetNumItems() > 0)
-         {
-            AbstractReflectSessionRef * nextRef;
-            HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
-            while((nextRef = iter.GetNextValue()) != NULL)
-            {
-               AbstractReflectSession * session = nextRef->GetItemPointer();
-               if (session)
-               {
-                  CallPulseAux(*session, now); 
-                  AbstractMessageIOGateway * gw = session->GetGateway();
-                  if (gw) CallPulseAux(*gw, now);
-               }
-            }
-         }
+         CallPulseAux(*this, GetRunTime64());
 
          // Pulse the session-factories
          if (_factories.GetNumItems() > 0)
@@ -471,52 +499,11 @@ ServerProcessLoop()
             while((acc = iter.GetNextValue()) != NULL)
             {
                ReflectSessionFactory * factory = acc->GetItemPointer();
-               if (factory) CallPulseAux(*factory, now);
+               if (factory) CallPulseAux(*factory, GetRunTime64());
             }
          }
       }
       policies.Clear();
-
-      // Let the sessions handle any messages that were queued up during the I/O phase
-      while(true)
-      {
-         bool loopAgain = false;
-
-         AbstractReflectSessionRef sRef;   // keep a copy here to prevent premature self-deletions
-         HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
-         while((loopAgain == false)&&(iter.GetNextValue(sRef) == B_NO_ERROR))
-         {
-            AbstractReflectSession * s = sRef();
-            if (s)
-            {
-               // Note:  It *is* necessary to check fromSession->GetGateway() every time through this
-               //        loop, because a ReplaceSession() call might set it to NULL.
-               MessageRef nextMessageRef;
-               if (_watchMemUsage) (void) _watchMemUsage->SetAllocationHasFailed(false);  // (s)'s responsibility for starts here!  If we run out of mem on his watch, he's history
-               while((s->GetGateway())&&(s->GetGateway()->GetNextIncomingMessage(nextMessageRef) == B_NO_ERROR)) 
-               {
-                  s->CallMessageReceivedFromGateway(nextMessageRef);
-                  if ((_watchMemUsage)&&(_watchMemUsage->HasAllocationFailed())) break;
-                  if (s->GetGateway() == NULL)
-                  {
-                     // oops!  This session must have replaced itself.  Start through the loop again.
-                     loopAgain = true;
-                     break;
-                  }
-               }
-               if ((_watchMemUsage)&&(_watchMemUsage->HasAllocationFailed()))
-               {
-                  _watchMemUsage->SetAllocationHasFailed(false);  // clear the flag
-                  if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "Low Memory!  Aborting active session [%s]@%i to get some back!\n", s->GetHostName(), s->GetPort());
-                  AddLameDuckSession(sRef);
-                  DumpBoggedSessions();       // see what other cleanup we can do
-                  break;
-               }
-            }
-         }
-
-         if (loopAgain == false) break;
-      }
 
       // Lastly, check our accepting ports to see if anyone is trying to connect...
       if (_factories.GetNumItems() > 0)
@@ -561,7 +548,8 @@ status_t ReflectServer :: ClearLameDucks()
          if (_sessions.ContainsKey(id))
          {
             duck->AboutToDetachFromServer();
-            if (_doLogging) LogTime(MUSCLE_LOG_INFO, "Closed %s [%s] to [%s]@%i (%lu left)\n", duck->GetTypeName(), id, duck->GetHostName(), duck->GetPort(), _sessions.GetNumItems()-1);
+            duck->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
+            if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "Closed %s (%lu left)\n", duck->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
             duck->_owner = NULL;
             (void) _sessions.Remove(id);
          }
@@ -580,14 +568,15 @@ status_t ReflectServer :: DoAccept(uint16 port, int acceptSocket, ReflectSession
       uint32 remoteIP = GetPeerIPAddress(newSocket);
       if (remoteIP > 0)
       {
-         String remoteIPString = Inet_NtoA(remoteIP);
+         char ipbuf[16]; Inet_NtoA(remoteIP, ipbuf);
+         String remoteIPString = ipbuf;
          AbstractReflectSessionRef newSessionRef(optFactory ? optFactory->CreateSession(remoteIPString) : NULL, NULL);
          if (newSessionRef())
          {
             newSessionRef()->_port = port;
             if (AddNewSession(newSessionRef, newSocket) == B_NO_ERROR) return B_NO_ERROR;  // success!
          }
-         else if ((optFactory)&&(_doLogging)) LogTime(MUSCLE_LOG_INFO, "Session creation denied for [%s] on port %u.\n", remoteIPString(), port);
+         else if ((optFactory)&&(_doLogging)) LogTime(MUSCLE_LOG_DEBUG, "Session creation denied for [%s] on port %u.\n", remoteIPString(), port);
       }
       else if (_doLogging) LogTime(MUSCLE_LOG_ERROR, "Couldn't get peer IP address for new accept session!\n");
 
@@ -619,12 +608,12 @@ void ReflectServer :: DumpBoggedSessions()
             const Queue<MessageRef> & q = gw->GetOutgoingMessageQueue();
             for (int k=q.GetNumItems()-1; k>=0; k--)
             {
-               const Message * qmsg = q[k].GetItemPointer();
+               const Message * qmsg = q[k]();
                if (qmsg) qSize += qmsg->FlattenedSize();
             }
             if (qSize > MAX_MEGABYTES*1024*1024)
             {
-               if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "Low Memory!  Aborting bogged session [%s]@%i to get some back!\n", asr->GetHostName(), asr->GetPort());
+               if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "Low Memory!  Aborting %s to get some back!\n", asr->GetSessionDescriptionString()());
                AddLameDuckSession(*lRef);
             }
          }
@@ -655,7 +644,7 @@ ReflectServer ::
 ReplaceSession(AbstractReflectSessionRef newSessionRef, AbstractReflectSession * oldSession)
 {
    // move the gateway from the old session to the new one...
-   AbstractReflectSession * newSession = newSessionRef.GetItemPointer();
+   AbstractReflectSession * newSession = newSessionRef();
    if (newSession == NULL) return B_ERROR;
 
    newSession->SetGateway(oldSession->GetGatewayRef());
@@ -780,14 +769,11 @@ ReflectServer ::
 FinalizeAsyncConnect(AbstractReflectSessionRef ref)
 {
    AbstractReflectSession * session = ref();
-   if (session)
+   if ((session)&&(muscle::FinalizeAsyncConnect(GetSocketFor(session)) == B_NO_ERROR))
    {
       session->_connectingAsync = false;  // we're legit now!  :^)
-      if (muscle::FinalizeAsyncConnect(GetSocketFor(session)) == B_NO_ERROR)
-      {
-         session->AsyncConnectCompleted();
-         return B_NO_ERROR;
-      }
+      session->AsyncConnectCompleted();
+      return B_NO_ERROR;
    }
    return B_ERROR;
 }
@@ -796,16 +782,15 @@ uint64
 ReflectServer ::
 GetServerUptime() const
 {
-   return (_startedAt > 0) ? (GetCurrentTime64() - _startedAt) : 0;
+   uint64 now = GetRunTime64();
+   return (_serverStartedAt >= now) ? (now - _serverStartedAt) : 0;
 }
                         
 uint32 
 ReflectServer ::
 GetNumAvailableBytes() const
 {
-   uint32 alloced = GetNumUsedBytes();
-   uint32 max     = GetMaxNumBytes();
-   return (alloced < max) ? (max - alloced) : 0;
+   return (_watchMemUsage) ? (uint32)_watchMemUsage->GetNumAvailableBytes(GetNumUsedBytes()) : MUSCLE_NO_LIMIT;
 }
  
 uint32 

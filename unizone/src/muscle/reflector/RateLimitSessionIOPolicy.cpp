@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include "reflector/RateLimitSessionIOPolicy.h"
 
@@ -52,7 +52,7 @@ RateLimitSessionIOPolicy ::
 GetPulseTime(uint64 now, uint64)
 {
    // Schedule a pulse for when we estimate _transferTally will sink back down to zero.  
-   return (_transferTally>=CUTOFF)?(now+((_transferTally*1000000)/_maxRate)):MUSCLE_TIME_NEVER;
+   return ((_maxRate > 0)&&(_transferTally>=CUTOFF))?(now+((_transferTally*1000000)/_maxRate)):MUSCLE_TIME_NEVER;
 }
 
 void
@@ -79,7 +79,7 @@ bool
 RateLimitSessionIOPolicy ::
 OkayToTransfer(const PolicyHolder &)
 {
-   if (_transferTally < CUTOFF)
+   if ((_maxRate > 0)&&(_transferTally < CUTOFF))
    {
       _numParticipants++;
       return true;

@@ -1,10 +1,10 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 #include "syslog/LogCallback.h"
-#include "system/Mutex.h"
+#include "system/SetupSystem.h"
 #include "util/Hashtable.h"
 
 #ifdef __linux__
@@ -12,6 +12,8 @@
 #endif
 
 namespace muscle {
+
+#ifndef MUSCLE_INLINE_LOGGING
 
 // VC++ can't handle partial template specialization, so we'll do it explicitly here
 #ifdef _MSC_VER
@@ -157,23 +159,23 @@ void LogLineCallback :: Flush()
    }
 }
 
+static bool _inLogCall = false; // to avoid re-entrancy during logcallback calls
 static Hashtable<LogCallbackRef, bool> _logCallbacks;
 static DefaultConsoleLogger _dcl;
 static DefaultFileLogger _dfl;
-
-Mutex * _muscleLogLock = NULL;  // must be set up by a ThreadSetupSystem!
 
 static status_t LockLog()
 {
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
    return B_NO_ERROR;
 #else
-   if (_muscleLogLock == NULL)
+   Mutex * ml = GetGlobalMuscleLock();
+   if (ml == NULL)
    {
       printf("Please instantiate a CompleteSetupSystem object on the stack before doing any logging (at beginning of main() is preferred)");
       exit(10);
    }
-   return _muscleLogLock->Lock();
+   return ml->Lock();
 #endif
 }
 
@@ -182,7 +184,8 @@ static status_t UnlockLog()
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
    return B_NO_ERROR;
 #else
-   return _muscleLogLock->Unlock();
+   Mutex * ml = GetGlobalMuscleLock();
+   return ml ? ml->Unlock() : B_ERROR;
 #endif
 }
 
@@ -231,7 +234,7 @@ status_t SetFileLogLevel(int loglevel)
    if (LockLog() == B_NO_ERROR)
    {
       _dfl._fileLogLevel = loglevel;
-      LogTime(MUSCLE_LOG_INFO, "File logging level set to: %s\n", GetLogLevelName(_dfl._fileLogLevel));
+      LogTime(MUSCLE_LOG_DEBUG, "File logging level set to: %s\n", GetLogLevelName(_dfl._fileLogLevel));
       (void) UnlockLog();
       return B_NO_ERROR;
    }
@@ -243,7 +246,7 @@ status_t SetConsoleLogLevel(int loglevel)
    if (LockLog() == B_NO_ERROR)
    {
       _dcl._consoleLogLevel = loglevel;
-      LogTime(MUSCLE_LOG_INFO, "Console logging level set to: %s\n", GetLogLevelName(_dcl._consoleLogLevel));
+      LogTime(MUSCLE_LOG_DEBUG, "Console logging level set to: %s\n", GetLogLevelName(_dcl._consoleLogLevel));
       (void) UnlockLog();
       return B_NO_ERROR;
    }
@@ -282,21 +285,30 @@ status_t LogTime(int ll, const char * fmt, ...)
 {
    if (LockLog() == B_NO_ERROR)
    {
-      time_t n = time(NULL);
-      char buf[128];
-      GetStandardLogLinePreamble(buf, ll, n);
+      if (_inLogCall == false)
+      {
+         _inLogCall = true;
+         {
+            time_t n = time(NULL);
+            char buf[128];
+            GetStandardLogLinePreamble(buf, ll, n);
 
-      va_list dummyList;
-      va_start(dummyList, fmt);  // not used
-      _dfl.Log(n, ll, buf, dummyList);
-      va_end(dummyList);
-      va_start(dummyList, fmt);  // not used
-      _dcl.Log(n, ll, buf, dummyList);
-      va_end(dummyList);
-   
-      // Log message to file/stdio and callbacks
-      DO_LOGGING(n);
-      (void) UnlockLog();
+            va_list dummyList;
+            va_start(dummyList, fmt);  // not used
+            _dfl.Log(n, ll, buf, dummyList);
+            va_end(dummyList);
+            va_start(dummyList, fmt);  // not used
+            _dcl.Log(n, ll, buf, dummyList);
+            va_end(dummyList);
+         
+            // Log message to file/stdio and callbacks
+            DO_LOGGING(n);
+         }
+         _inLogCall = false;
+
+         (void) UnlockLog();
+      }
+
       return B_NO_ERROR;
    }
    else return B_ERROR;
@@ -341,9 +353,17 @@ status_t Log(int ll, const char * fmt, ...)
 {
    if (LockLog() == B_NO_ERROR)
    {
-      time_t n = time(NULL);  // don't inline this, ya dummy
-      DO_LOGGING(n);
-      (void) UnlockLog();
+      if (_inLogCall == false)
+      {
+         _inLogCall = true;
+         {
+            time_t n = time(NULL);  // don't inline this, ya dummy
+            DO_LOGGING(n);
+         }
+         _inLogCall = false;
+
+         (void) UnlockLog();
+      }
       return B_NO_ERROR;
    }
    else return B_ERROR;
@@ -381,5 +401,7 @@ status_t RemoveLogCallback(LogCallbackRef cb)
    }
    return ret;
 }
+
+#endif
 
 };  // end namespace muscle

@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMemoryBufferDataIO_h
 #define MuscleMemoryBufferDataIO_h
@@ -103,6 +103,13 @@ public:
       return B_NO_ERROR;
    }
    
+   virtual int64 GetPosition() const 
+   {
+           if (_readBuf)  return _readBufOffset;
+      else if (_writeBuf) return _writeBufOffset;
+      else                return -1;
+   }
+
    /** 
     *  No-op method.
     *  This method doesn't do anything at all.

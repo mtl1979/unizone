@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -33,7 +33,7 @@ public:
    virtual bool IsFixedSize() const = 0;
 
    /** Should return the type code identifying this type of object.  */
-   virtual type_code TypeCode() const = 0;
+   virtual uint32 TypeCode() const = 0;
 
    /** Should return the number of bytes needed to store this object in its current state.  */
    virtual uint32 FlattenedSize() const = 0;
@@ -45,12 +45,12 @@ public:
    virtual void Flatten(uint8 *buffer) const = 0;
 
    /** 
-    *  Should return true iff a buffer with type_code (code) can be used to reconstruct
+    *  Should return true iff a buffer with uint32 (code) can be used to reconstruct
     *  this object's state.  Defaults implementation returns true iff (code) equals TypeCode() or B_RAW_DATA.
     *  @param code A type code constant, e.g. B_RAW_TYPE or B_STRING_TYPE, or something custom.
     *  @return True iff this object can Unflatten from a buffer of the given type, false otherwise.
     */
-   virtual bool AllowsTypeCode(type_code code) const {return ((code == B_RAW_TYPE)||(code == TypeCode()));}
+   virtual bool AllowsTypeCode(uint32 code) const {return ((code == B_RAW_TYPE)||(code == TypeCode()));}
 
    /** 
     *  Should attempt to restore this object's state from the given buffer.

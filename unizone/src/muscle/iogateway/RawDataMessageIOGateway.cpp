@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "iogateway/RawDataMessageIOGateway.h"
 
@@ -18,7 +18,7 @@ RawDataMessageIOGateway ::
 
 int32 
 RawDataMessageIOGateway ::
-DoOutput(uint32 maxBytes)
+DoOutputImplementation(uint32 maxBytes)
 {
    const Message * msg = _sendMsgRef();
    if (msg == NULL) 
@@ -37,7 +37,7 @@ DoOutput(uint32 maxBytes)
          else 
          {
             _sendMsgRef.Reset();  // no more data available?  Go to the next message then.
-            return DoOutput(maxBytes);
+            return DoOutputImplementation(maxBytes);
          }
       }
       if ((_sendBufByteOffset >= 0)&&(_sendBufByteOffset < _sendBufLength))
@@ -48,7 +48,7 @@ DoOutput(uint32 maxBytes)
          else if (bytesWritten > 0)
          {
             _sendBufByteOffset += bytesWritten;
-            int32 subRet = DoOutput(maxBytes-bytesWritten);
+            int32 subRet = DoOutputImplementation(maxBytes-bytesWritten);
             return (subRet >= 0) ? subRet+bytesWritten : -1;
          }
       }
@@ -59,7 +59,7 @@ DoOutput(uint32 maxBytes)
 
 int32 
 RawDataMessageIOGateway ::
-DoInput(uint32 maxBytes)
+DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes)
 {
    int32 ret = 0;
    Message * inMsg = _recvMsgRef();
@@ -93,9 +93,9 @@ DoInput(uint32 maxBytes)
             if (_recvBufByteOffset == _recvBufLength)
             {
                // This buffer is full... forward it on to the user, and start receiving the next one.
-               (void) GetIncomingMessageQueue().AddTail(_recvMsgRef);
+               receiver.CallMessageReceivedFromGateway(_recvMsgRef);
                _recvMsgRef.Reset();
-               int32 subRet = DoInput(maxBytes-bytesRead);
+               int32 subRet = DoInputImplementation(receiver, maxBytes-bytesRead);
                return (subRet >= 0) ? (ret+subRet) : -1;
             }
          }
@@ -123,7 +123,7 @@ DoInput(uint32 maxBytes)
       {
          ret += bytesRead;
          MessageRef ref = GetMessageFromPool();
-         if ((ref())&&(ref()->AddData(PR_NAME_DATA_CHUNKS, B_RAW_TYPE, _recvScratchSpace, bytesRead) == B_NO_ERROR)) (void) GetIncomingMessageQueue().AddTail(ref);
+         if ((ref())&&(ref()->AddData(PR_NAME_DATA_CHUNKS, B_RAW_TYPE, _recvScratchSpace, bytesRead) == B_NO_ERROR)) receiver.CallMessageReceivedFromGateway(ref);
          // note:  don't recurse here!  It would be bad (tm) on a fast feed since we might never return
       }
    }
@@ -135,6 +135,15 @@ RawDataMessageIOGateway ::
 HasBytesToOutput() const
 {
    return ((_sendMsgRef())||(GetOutgoingMessageQueue().GetNumItems() > 0));
+}
+
+void
+RawDataMessageIOGateway ::
+Reset()
+{
+   AbstractMessageIOGateway::Reset();
+   _sendMsgRef.Reset();
+   _recvMsgRef.Reset();
 }
 
 };  // end namespace muscle

@@ -1,24 +1,24 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNetworkUtilityFunctions_h
 #define MuscleNetworkUtilityFunctions_h
 
+#include "support/MuscleSupport.h"
 #include "util/TimeUtilityFunctions.h"
-#include "util/String.h"
+
+// These includes are here so that people can use select() without having to #include the proper
+// things themselves all the time.
+#ifdef WIN32
+# include <winsock.h>
+#else
+# include <sys/types.h>
+# include <sys/socket.h>
+#endif
 
 namespace muscle {
 
 /** Numeric representation of 127.0.0.1, for convenience */
 const uint32 localhostIP = ((((uint32)127)<<24)|((uint32)1));
-
-// On these OS's, calls like accept() take an int* rather than a uint32*
-// If you use net_length_t instead of specifying the type directly, you'll
-// remain portable nonetheless.  Or better yet, call Accept() instead...
-#if __BEOS__ || __APPLE__ || __CYGWIN__ || WIN32
-# define net_length_t int
-#else
-# define net_length_t size_t
-#endif
 
 /** Given a hostname or IP address (e.g. "mycomputer.be.com" or "192.168.0.1"),
   * performs a hostname lookup and returns the 4-byte IP address that corresponds
@@ -55,6 +55,26 @@ int Connect(uint32 hostIP, uint16 port, const char * debugHostName = NULL, const
  */
 int Accept(int socket);
 
+/** Reads as many bytes as possible from the given socket and places them into (buffer).
+ *  @param socket The socket to read from.
+ *  @param buffer Buffer to write the bytes into.
+ *  @param bufferSizeBytes Number of bytes in the buffer.
+ *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
+ *  @return The number of bytes read into (buffer), or a negative value if there was an error.
+ *          Note that this value may be smaller than (bufferSizeBytes).
+ */
+int32 ReceiveData(int socket, void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO);
+
+/** Transmits as many bytes as possible from the given buffer over the given socket.
+ *  @param socket The socket to transmit over.
+ *  @param buffer Buffer to read the outgoing bytes from.
+ *  @param bufferSizeBytes Number of bytes to send.
+ *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
+ *  @return The number of bytes sent from (buffer), or a negative value if there was an error.
+ *          Note that this value may be smaller than (bufferSizeBytes).
+ */
+int32 SendData(int socket, const void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO);
+
 /** This function initiates a non-blocking connection to the given host IP address and port.
   * It will return the created socket, which may or may not be fully connected yet.
   * If it is connected, (retIsReady) will be to true, otherwise it will be set to false.
@@ -80,8 +100,19 @@ int ConnectAsync(uint32 hostIP, uint16 port, bool & retIsReady);
   */
 status_t FinalizeAsyncConnect(int socket);
 
+/** Shuts the given socket down.  (Note that you don't generally need to call this function, as CloseSocket() will suffice)
+ *  @param socket The socket to shutdown communication on. 
+ *  @param disableReception If true, further reception of data will be disabled on this socket.
+ *  @param disableTransmission If true, further transmission of data will be disabled on this socket.
+ *  @return B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t ShutdownSocket(int socket, bool disableReception = true, bool disableTransmission = true);
+
+/** Checks errno and returns true iff the last network operation failed because it would have had to block otherwise. */
+bool PreviousOperationWouldBlock();
+
 /** Closes the given socket.  
-  * @param socket the socket to close.  (socket) may be negative, indicating a no-op.
+  * @param socket The socket to close.  (socket) may be negative, indicating a no-op.
   */
 void CloseSocket(int socket);
 
@@ -95,11 +126,12 @@ void CloseSocket(int socket);
  */
 int CreateAcceptingSocket(uint16 port, int maxbacklog = 20, uint16 * optRetPort = NULL, uint32 optFrom = 0); 
 
-/** Returns a string representation of the IP address (address).  Useful on OS's where inet_ntoa isn't available.
+/** Translates the given 4-byte IP address into a string representation.
  *  @param address The 4-byte IP address to translate into text.
- *  @returns The ASCII representation of the IP address.
+ *  @param outBuf Buffer where the NUL-terminated ASCII representation of the string will be placed.
+ *                This buffer must be at least 16 bytes long.
  */
-String Inet_NtoA(uint32 address);
+void Inet_NtoA(uint32 address, char * outBuf);
 
 /** Given a dotted-quad IP address in ASCII format (e.g. "192.168.0.1"), returns
   * the equivalent IP address in uint32 (packet binary) form. 
@@ -147,9 +179,10 @@ status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir = N
  *  @param retSocket1 On success, this value will be set to the socket ID of the first socket.  Set to -1 on failure.
  *  @param retSocket2 On success, this value will be set to the socket ID of the second socket.  Set to -1 on failure.
  *  @param blocking Whether the two sockets should use blocking I/O or not.  Defaults to false.
+ *  @param nagles Whether the two sockets should use Nagle's algorithm or not.  Defaults to false, for lower latency.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t CreateConnectedSocketPair(int & retSocket1, int & retSocket2, bool blocking = false);
+status_t CreateConnectedSocketPair(int & retSocket1, int & retSocket2, bool blocking = false, bool nagles=false);
 
 /** Enables or disables blocking I/O on the given socket. 
  *  (Default for a socket is blocking mode enabled)
@@ -158,6 +191,15 @@ status_t CreateConnectedSocketPair(int & retSocket1, int & retSocket2, bool bloc
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
 status_t SetSocketBlockingEnabled(int socket, bool enabled);
+
+/**
+  * Turns Nagle's algorithm (output packet buffering/coalescing) on or off.
+  * @param enabled If true, data will be held momentarily before sending, 
+  *                to allow for bigger packets.  If false, each Write() 
+  *                call will cause a new packet to be sent immediately.
+  * @return B_NO_ERROR on success, B_ERROR on error.
+  */
+status_t SetSocketNaglesAlgorithmEnabled(int socket, bool enabled);
 
 /** Convenience function:  Won't return for a given number of microsends.
  *  @param micros The number of microseconds to wait for.

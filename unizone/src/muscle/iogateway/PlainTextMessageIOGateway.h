@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MusclePlainTextMessageIOGateway_h
 #define MusclePlainTextMessageIOGateway_h
@@ -28,18 +28,19 @@ public:
    /** Destructor */
    virtual ~PlainTextMessageIOGateway();
 
-   virtual int32 DoOutput(uint32 maxBytes = MUSCLE_NO_LIMIT);
-   virtual int32 DoInput(uint32 maxBytes = MUSCLE_NO_LIMIT);
    virtual bool HasBytesToOutput() const;
+   virtual void Reset();
 
    /** Set the end-of-line string to be attached to outgoing text lines.
     * Default value is "\r\n".
     */
    virtual void SetOutgoingEndOfLineString(const char * str) {_eolString = str;}
 
-private:
-   void FlushPendingInput();
+protected:
+   virtual int32 DoOutputImplementation(uint32 maxBytes = MUSCLE_NO_LIMIT);
+   virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT);
 
+private:
    MessageRef _currentSendingMessage;
    String _currentSendText;
    String _eolString;

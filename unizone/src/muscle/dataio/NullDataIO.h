@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNullDataIO_h
 #define MuscleNullDataIO_h
@@ -39,6 +39,11 @@ public:
     *  This method always returns B_ERROR.
     */
    virtual status_t Seek(int64 /*seekOffset*/, int /*whence*/) {return B_ERROR;}
+
+   /** 
+    *  This method always return -1.
+    */
+   virtual int64 GetPosition() const {return -1;}
 
    /** 
     *  No-op method.

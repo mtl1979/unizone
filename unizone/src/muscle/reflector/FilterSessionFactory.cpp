@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/FilterSessionFactory.h"
 #include "reflector/StorageReflectConstants.h"
@@ -115,7 +115,7 @@ status_t FilterSessionFactory :: PutBanPattern(const char * banPattern)
    {
       if (_bans.Put(banPattern, newMatcherRef) == B_NO_ERROR) 
       {
-         if (_tempLogFor) LogTime(MUSCLE_LOG_INFO, "Session [%s/%s] is banning [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
+         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is banning [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
          return B_NO_ERROR;
       }
    }
@@ -132,7 +132,7 @@ status_t FilterSessionFactory :: PutRequirePattern(const char * requirePattern)
    {
       if (_requires.Put(requirePattern, newMatcherRef) == B_NO_ERROR) 
       {
-         if (_tempLogFor) LogTime(MUSCLE_LOG_INFO, "Session [%s/%s] is requiring [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
+         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is requiring [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
          return B_NO_ERROR;
       }
    }
@@ -145,7 +145,7 @@ status_t FilterSessionFactory :: RemoveBanPattern(const char * banPattern)
 {
    if (_bans.Remove(banPattern) == B_NO_ERROR)
    {
-      if (_tempLogFor) LogTime(MUSCLE_LOG_INFO, "Session [%s/%s] is removing ban [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
+      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing ban [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -155,7 +155,7 @@ status_t FilterSessionFactory :: RemoveRequirePattern(const char * requirePatter
 {
    if (_requires.Remove(requirePattern) == B_NO_ERROR)
    {
-      if (_tempLogFor) LogTime(MUSCLE_LOG_INFO, "Session [%s/%s] is removing requirement [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
+      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing requirement [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
       return B_NO_ERROR;
    }
    return B_ERROR;

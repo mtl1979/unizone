@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDumbReflectSession_h
 #define MuscleDumbReflectSession_h
@@ -30,10 +30,7 @@ public:
    /** Destructor. */
    virtual ~DumbReflectSession();
 
-   /** Called when a new message is received from our IO gateway.
-    *  @param msg Reference to the Message that was received.
-    */
-   virtual void MessageReceivedFromGateway(MessageRef msg);
+   virtual void MessageReceivedFromGateway(MessageRef msg, void * userData);
 
    /** Called when a message is sent to us by another session (possibly this one).  
     *  @param from The session that is sending us the message.

@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleMemoryAllocator_h
 #define MuscleMemoryAllocator_h
@@ -21,14 +21,20 @@ public:
    /** Virtual destructor, to keep C++ honest */
    virtual ~MemoryAllocator() {/* empty */}
 
-   /** Should return true iff it is okay for the system to allocate the given amount of memory.
+   /** This method is called whenever we are about to allocate some memory.
     *  @param currentlyAllocatedBytes How many bytes the system has allocated currently
-    *  @param allocRequestBytes How many bytes the system would like to allocate now.
-    *  @return true If the request should be granted, or false if it should be denied.
+    *  @param allocRequestBytes How many bytes the system would like to allocate.
+    *  @return Should return B_NO_ERROR if the allocation may proceed, or B_ERROR to abort the allocation.
     */
-   virtual bool IsOkayToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes) const = 0;
+   virtual status_t AboutToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes) = 0;
 
-   /** Called if an allocation fails (either because IsOkayToAllocate() returned false, or
+   /** This method is called whenever we are about to free some memory.
+    *  @param currentlyAllocatedBytes How many bytes the system has allocated currently
+    *  @param freeBytes How many bytes the system is about to free.
+    */
+   virtual void AboutToFree(size_t currentlyAllocatedBytes, size_t freeSize) = 0;
+
+   /** Called if an allocation fails (either because AboutToAllocate() returned other than B_NO_ERROR, or
     *  because malloc() returned NULL).   This method does not need to call SetMallocHasFailed(),
     *  because the system will have already called it.
     *  @param currentlyAllocatedBytes How many bytes the system has allocated currently
@@ -41,6 +47,17 @@ public:
     *  been noticed and dealt with.
     */
    virtual void SetAllocationHasFailed(bool hasFailed) {_hasAllocationFailed = hasFailed;}
+
+   /** Should be overridden to return the maximum amount of memory that may be allocated at once.
+    *  If there is no set limit, this method should return MUSCLE_NO_LIMIT.
+    */
+   virtual size_t GetMaxNumBytes() const = 0;
+
+   /** Should be overridden to return the number of bytes still available for allocation,
+    *  given that (currentlyAllocated) bytes have already been allocated.
+    *  If there is no set limit, this method should return MUSCLE_NO_LIMIT.
+    */
+   virtual size_t GetNumAvailableBytes(size_t currentlyAllocated) const = 0;
 
    /** Returns the current state of the "allocation has failed" flag. */
    bool HasAllocationFailed() const {return _hasAllocationFailed;}
@@ -66,16 +83,19 @@ public:
    /** Destructor */
    virtual ~ProxyMemoryAllocator() {/* empty */}
 
-   virtual bool IsOkayToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes) const;
+   virtual status_t AboutToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
+   virtual void AboutToFree(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
    virtual void AllocationFailed(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
    virtual void SetAllocationHasFailed(bool hasFailed);
+   virtual size_t GetMaxNumBytes() const;
+   virtual size_t GetNumAvailableBytes(size_t currentlyAllocated) const;
 
 private:
    MemoryAllocatorRef _slaveRef;
 };
 
 /** This MemoryAllocator decorates its slave MemoryAllocator to 
-  * enforce a user-defined limit on how much memory may be allocated at any given time. 
+  * enforce a user-defined per-process limit on how much memory may be allocated at any given time. 
   */
 class UsageLimitProxyMemoryAllocator : public ProxyMemoryAllocator
 {
@@ -91,13 +111,16 @@ public:
    virtual ~UsageLimitProxyMemoryAllocator();
 
    /** Overridden to return false if memory usage would go over maximum due to this allocation. */
-   virtual bool IsOkayToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes) const;
-
-   /** Returns the maximum number of bytes that may be allocated at any given time */
-   size_t GetMaxNumBytes() const {return _maxBytes;}
+   virtual status_t AboutToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
 
    /** Set a new maximum number of allocatable bytes */
    void SetMaxNumBytes(size_t mb) {_maxBytes = mb;}
+
+   /** Implemented to return our hard-coded size limit, same as GetMaxNumBytes() */
+   virtual size_t GetMaxNumBytes() const {return muscleMin(_maxBytes, ProxyMemoryAllocator::GetMaxNumBytes());}
+
+   /** Implemented to return the difference between the maximum allocation and the current number allocated. */
+   virtual size_t GetNumAvailableBytes(size_t ca) const {return muscleMin((_maxBytes>ca)?_maxBytes-ca:0, ProxyMemoryAllocator::GetNumAvailableBytes(ca));}
 
 private:
    size_t _maxBytes;

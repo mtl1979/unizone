@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.TXT file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.TXT file for details. */
 
 #ifndef MuscleSysLog_h
 #define MuscleSysLog_h
@@ -21,9 +21,29 @@ enum
    NUM_MUSCLE_LOGLEVELS
 }; 
 
+// Define this constant in your Makefile (i.e. -DMUSCLE_DISABLE_LOGGING) to turn all the
+// Log commands into no-ops.
+#ifdef MUSCLE_DISABLE_LOGGING
+# define MUSCLE_INLINE_LOGGING
+
+// No-op implementation of Log()
+inline status_t Log(int, const char * , ...) {return B_NO_ERROR;}
+
+// No-op implementation of LogTime()
+inline status_t LogTime(int, const char *, ...) {return B_NO_ERROR;}
+
+// No-op implementation of LogFlush()
+inline status_t LogFlush() {return B_NO_ERROR;}
+
+// No-op implementation of LogStackTrace()
+inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO) {(void) level; return B_NO_ERROR;}
+
+#else
+
 // Define this constant in your Makefile (i.e. -DMUSCLE_MINIMALIST_LOGGING) if you don't want to have
 // to link in SysLog.cpp and Hashtable.cpp and all the other stuff that is required for "real" logging.
-#ifdef MUSCLE_MINIMALIST_LOGGING
+# ifdef MUSCLE_MINIMALIST_LOGGING
+#  define MUSCLE_INLINE_LOGGING
 
 // Minimalist version of Log(), just sends the output to stdout.
 inline status_t Log(int, const char * fmt, ...) {va_list va; va_start(va, fmt); vprintf(fmt, va); va_end(va); return B_NO_ERROR;}
@@ -32,11 +52,21 @@ inline status_t Log(int, const char * fmt, ...) {va_list va; va_start(va, fmt); 
 inline status_t LogTime(int logLevel, const char * fmt, ...) {printf("%i: ", logLevel); va_list va; va_start(va, fmt); vprintf(fmt, va); va_end(va); return B_NO_ERROR;}
 
 // Minimumist version of LogFlush(), just flushes stdout
-inline status_t LogFlush() {fflush(stdout);}
+inline status_t LogFlush() {fflush(stdout); return B_NO_ERROR;}
 
 // Minimalist version of LogStackTrace(), just prints a dummy string
-inline status_t LogStackTrace() {printf("<stack trace omitted>\n");
+inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO) {(void) level; printf("<stack trace omitted>\n"); return B_NO_ERROR;}
 
+# endif
+#endif
+
+#ifdef MUSCLE_INLINE_LOGGING
+inline int ParseLogLevelKeyword(const char *) {return MUSCLE_LOG_NONE;}
+inline int GetFileLogLevel() {return MUSCLE_LOG_NONE;}
+inline int GetConsoleLogLevel() {return MUSCLE_LOG_NONE;}
+inline int GetMaxLogLevel() {return MUSCLE_LOG_NONE;}
+inline status_t SetFileLogLevel(int) {return B_NO_ERROR;}
+inline status_t SetConsoleLogLevel(int) {return B_NO_ERROR;}
 #else
 
 /** Returns the MUSCLE_LOG_* equivalent of the given keyword string 
@@ -98,11 +128,11 @@ status_t LogTime(int logLevel, const char * fmt, ...);
 status_t LogFlush();
 
 /** Logs out a stack trace, if possible.  Returns B_ERROR if not.
- *  @note Currently only works under Linux.
+ *  @note Currently only works under Linux, and then only if -rdynamic is specified as a compile flag.
  *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
  *  @returns B_NO_ERROR on success, or B_ERROR if a stack trace couldn't be logged because the platform doesn't support it.
  */
-status_t LogStackTrace(int logLevel);
+status_t LogStackTrace(int logLevel = MUSCLE_LOG_INFO);
 
 /** Returns a human-readable string for the given log level.
  *  @param logLevel A MUSCLE_LOG_* value

@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleAbstractReflectSession_h
 #define MuscleAbstractReflectSession_h
@@ -67,7 +67,7 @@ private:
  *  client-server connection.  This class contains no message routing logic of its own, 
  *  but defines the interface so that subclasses can do so.
  */
-class AbstractReflectSession : public ServerComponent
+class AbstractReflectSession : public ServerComponent, public AbstractGatewayMessageReceiver
 {
 public:
    /** Default Constructor. */
@@ -105,29 +105,6 @@ public:
     * @return B_NO_ERROR on success, B_ERROR if the new session refused to be attached.
     */
    status_t ReplaceSession(AbstractReflectSessionRef newSession);
-
-   /**
-    * Calling this method causes MessageReceivedFromGateway() to be called
-    * with the correct semantics.  If you are 'faking' a call to MessageReceivedFromGateway,
-    * it's better to call this then to call MessageReceivedFromGateway() yourself. 
-    * (this method calls AfterMessageReceivedFromGateway() too).
-    * @param msg Reference to the Message to be passed to MessageReceivedFromGateway().
-    */
-   void CallMessageReceivedFromGateway(MessageRef msg);
-
-   /**
-    * Called when a new message is received from our IO gateway.
-    * @param msg A reference to the Message that has been received from our client.
-    */
-   virtual void MessageReceivedFromGateway(MessageRef msg) = 0;
-
-   /**
-    * This method is called after MessageReceivedFromGateway(msg) was called.
-    * Default implementation does nothing, but this method may be overridden 
-    * in a subclass to do cleanup work.
-    * @param msg The MessageRef that was previously passed to MessageReceivedFromGateway().
-    */
-   virtual void AfterMessageReceivedFromGateway(MessageRef msg);
 
    /**
     * Called when the TCP connection to our client is broken.
@@ -175,7 +152,7 @@ public:
      * to set our gateway for us when we are attached.
      * @param ref Reference to the I/O gateway to use, or a NULL reference to remove any gateway we have.
      */
-   void SetGateway(AbstractMessageIOGatewayRef ref) {_gateway = ref;}
+   void SetGateway(AbstractMessageIOGatewayRef ref) {_gateway = ref; _outputStallLimit = _gateway()?_gateway()->GetOutputStallLimit():MUSCLE_TIME_NEVER;}
 
    /**
     * Returns a poitner to our internally held message IO gateway object, 
@@ -186,6 +163,36 @@ public:
 
    /** As above, only returns a reference to the gateway instead of the raw pointer. */
    AbstractMessageIOGatewayRef GetGatewayRef() const {return _gateway;}
+
+   /** Should return true iff we have data pending for output.
+    *  Default implementation calls HasBytesToOutput() on our installed AbstractDataIOGateway object, 
+    *  if we have one, or returns false if we don't.
+    */
+   virtual bool HasBytesToOutput() const;
+
+   /**
+     * Should return true iff we are willing to read more bytes from our
+     * client connection at this time.  Default implementation calls
+     * IsReadyForInput() on our install AbstractDataIOGateway object, if we 
+     * have one, or returns false if we don't.
+     * 
+     */
+   virtual bool IsReadyForInput() const;
+
+   /** Called by the ReflectServer when it wants us to read some more bytes from our client.
+     * Default implementation simply calls DoInput() on our Gateway object (if any).
+     * @param receiver Object to call CallMessageReceivedFromGateway() on when new Messages are ready to be looked at.
+     * @param maxBytes Maximum number of bytes to read before returning.
+     * @returns The total number of bytes read, or -1 if there was a fatal error.
+     */
+   virtual int32 DoInput(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes);
+
+   /** Called by the ReflectServer when it wants us to push some more bytes out to our client.
+     * Default implementation simply calls DoOutput() on our Gateway object (if any).
+     * @param maxBytes Maximum number of bytes to write before returning.
+     * @returns The total number of bytes written, or -1 if there was a fatal error.
+     */
+   virtual int32 DoOutput(uint32 maxBytes);
 
    /**
     * Gateway factory method.  Should return a new AbstractMessageIOGateway
@@ -210,6 +217,30 @@ public:
 
    /** Should return a pretty, human readable string identifying this class.  */
    virtual const char * GetTypeName() const = 0;
+
+   /** May be overridden to return the host name string we should be assigned
+    *  if no host name could be automatically determined by the ReflectServer
+    *  (i.e. if we had no associated socket at the time).
+    *  Default implementation returns "<unknown>".
+    */
+   virtual String GetDefaultHostName() const;
+
+   /** Convenience method -- returns a human-readable string describing our
+    *  type, our hostname, our session ID, and what port we are connected to.
+    */
+   String GetSessionDescriptionString() const;
+
+   /** Returns the IP address we connected asynchronously to.
+    *  The returned value is meaningful only if we were added
+    *  with AddNewConnectSession().
+    */
+   uint32 GetAsyncConnectIP() const {return _asyncConnectIP;}
+
+   /** Returns the remote port we connected asynchronously to.
+    *  The returned value is meaningful only if we were added
+    *  with AddNewConnectSession().
+    */
+   uint16 GetAsyncConnectPort() const {return _asyncConnectPort;}
 
 protected:
    /**
@@ -241,6 +272,21 @@ protected:
     */
    void BroadcastToAllFactories(MessageRef msgRef, void * userData = NULL);
 
+   /**
+    * Closes this session's current TCP connection (if any), and creates a new
+    * TCP socket that will then try to asynchronously connect back to the previous
+    * socket's host and port.  Note that this method is only useful for sessions
+    * that were added with AddNewConnectSession(); for other types of session,
+    * it will return B_ERROR with no side effects.
+    * @note This method will call CreateDataIO() to make a new DataIO object for
+    *       the newly created socket.
+    * @returns B_NO_ERROR on success, or B_ERROR on failure.
+    *          On success, the asynchronous connection result will be reported back
+    *          later, either via a call to AsyncConnectCompleted() (if the connection
+    *          succeeds) or a call to ClientConnectionClosed() (if the connection fails)
+    */
+   status_t Reconnect();
+
 private:
    void SetPolicyAux(PolicyRef & setRef, uint32 & setChunk, PolicyRef newRef, bool isInput);
 
@@ -249,12 +295,15 @@ private:
    uint16 _port;
    bool _connectingAsync;
    String _hostName;
-   AbstractMessageIOGatewayRef _gateway; /* we own this object */
+   uint32 _asyncConnectIP;
+   uint16 _asyncConnectPort;
+   AbstractMessageIOGatewayRef _gateway;
    uint64 _lastByteOutputAt;
    PolicyRef _inputPolicyRef;
    PolicyRef _outputPolicyRef;
    uint32 _maxInputChunk;   // as determined by our Policy object
    uint32 _maxOutputChunk;  // and stored here for convenience
+   uint64 _outputStallLimit;
 };
 
 // VC++ can't handle partial template specialization, so for VC++ we define this explicitely.

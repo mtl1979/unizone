@@ -1,9 +1,10 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MusclePathMatcher_h
 #define MusclePathMatcher_h
 
 #include "util/Queue.h"
+#include "regex/QueryFilter.h"
 #include "regex/StringMatcher.h"
 #include "message/Message.h"
 
@@ -25,42 +26,95 @@ public:
 /** Type for a reference to a queue of StringMatcher objects. */
 typedef Ref<StringMatcherQueue> StringMatcherQueueRef;
 
+/** Returns a point to a singleton ObjectPool that can be used
+ *  to minimize the number of StringMatcherQueue allocations and deletions
+ *  by recycling the StringMatcherQueue objects 
+ */
+StringMatcherQueueRef::ItemPool * GetStringMatcherQueuePool();
+
+/** This class represents one entry in a PathMatcher object.  It contains the StringMatcher objects
+ *  that test a wildcarded path, and optionally, the QueryFilter object that tests the content
+ *  of matching Messages.
+ */
+class PathMatcherEntry
+{
+public:
+   /** Default constructor */
+   PathMatcherEntry() {/* empty */}
+
+   /** Constructor 
+     * @param parser Reference to the list of StringMatcher objects that represent our wildcarded path.
+     * @param filter Optional reference to the QueryFilter object that filters matching nodes by content.
+     */
+   PathMatcherEntry(StringMatcherQueueRef parser, QueryFilterRef filter) : _parser(parser), _filter(filter) {/* empty */}
+
+   /** Returns a reference to our list of StringMatchers. */
+   StringMatcherQueueRef GetParser() const {return _parser;}
+ 
+   /** Returns a reference to our QueryFilter object.  May be a NULL reference. */
+   QueryFilterRef GetFilter() const {return _filter;}
+
+   /** Returns true iff we our filter matches the given Message, or if either (optMsg) or our filter is NULL. */
+   bool FilterMatches(const Message * optMsg) const
+   {
+      const QueryFilter * filter = GetFilter()();
+      return ((filter == NULL)||(optMsg == NULL)||(filter->Matches(*optMsg)));
+   }
+
+private:
+   StringMatcherQueueRef _parser;
+   QueryFilterRef _filter;
+};
+
 /** This class is used to do efficient regex-pattern-matching of one or more query strings (e.g. "/.*./.*./j*remy/fries*") 
   * against various path strings (e.g. "/12.18.240.15/123/jeremy/friesner").  A given path string is said to 'match'
   * if it matches at least one of the query strings added to this object.
+  * As of MUSCLE 2.40, this class also supports QueryFilter objects, so that only nodes whose Messages match the
+  * criteria of the QueryFilter are considered to match the query.  This filtering is optional -- specify a null
+  * QueryFilterRef to disable it.
   */
 class PathMatcher : public RefCountable
 {
 public:
    /** Default Constructor.  Creates a PathMatcher with no query strings in it */
-   PathMatcher();
+   PathMatcher() : _numFilters(0) {/* empty */}
 
    /** Destructor */
-   ~PathMatcher();
+   ~PathMatcher() {/* empty */}
 
    /** Removes all path nodes from this object */
-   void Clear();
+   void Clear() {_entries.Clear(); _numFilters = 0;}
 
    /** Parses the given query string (e.g. "/12.18.240.15/1234/beshare/j*") to this PathMatcher's set of query strings.
     *  @param wildpath a string of form "/x/y/z/...", representing a pattern-matching function.
-    *  @param optStringMatcherPool     If non-NULL, an ObjectPool to recycle StringMatcher objects.  (optional, for optimization only)
-    *  @param optQueuePool             If non-NULL, an ObjectPool to recycle Queue<StringMatcherQueueRef> objects.  (optional, for optimization only)
+    *  @param filter Reference to a QueryFilter object to use to filter Messages that match our path.  If the 
+    *                reference is a NULL reference, then no filtering will be done.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory.
     */
-   status_t AddPathString(const String & path, StringMatcherRef::ItemPool * optStringMatcherPool = NULL, StringMatcherQueueRef::ItemPool * optQueuePool = NULL);
+   status_t PutPathString(const String & path, QueryFilterRef filter);
 
    /** Adds all of (matcher)'s StringMatchers to this matcher */
-   void AddPathsFromMatcher(const PathMatcher & matcher);
+   status_t PutPathsFromMatcher(const PathMatcher & matcher);
 
    /** Adds zero or more wild paths to this matcher based on the contents of a string field in a Message.
-    *  @param fieldName the name of a string field to look for node path expressions in.
+    *  @param pathFieldName the name of a string field to look for node path expressions in.
+    *  @param optFilterFieldName If non-NULL, the name of a Message field to look for archived QueryFilter objects (one for each node path expression) in.
     *  @param msg the Message to look for node path expressions in
     *  @param optPrependIfNoLeadingSlash If non-NULL, a '/' and this string will be prepended to any found path string that doesn't start with a '/' character.
-    *  @param optStringMatcherPool     If non-NULL, an ObjectPool to recycle StringMatcher objects.  (optional, for optimization only)
-    *  @param optQueuePool             If non-NULL, an ObjectPool to recycle Queue<StringMatcherQueueRef> objects.  (optional, for optimization only)
     *  @return B_NO_ERROR on success, or B_ERROR if out of memory.
     */
-   status_t AddPathsFromMessage(const char * fieldName, const Message & msg, const char * optPrependIfNoLeadingSlash, StringMatcherRef::ItemPool * optStringMatcherPool = NULL, StringMatcherQueueRef::ItemPool * optQueuePool = NULL);
+   status_t PutPathsFromMessage(const char * pathFieldName, const char * optFilterFieldName, const Message & msg, const char * optPrependIfNoLeadingSlash);
+
+   /** Convenience method:  Essentially the same as PutPathString(), except that (path) is first run through
+    *  AdjustPathString() before being added to the path matcher.  So this method has the same semantics as
+    *  PutPathsFromMessage(), except that it adds a single string instead of a list of Strings.
+    *  @param path Matching-string to add to this matcher.
+    *  @param optPrependIfNoLeadingSlash If non-NULL, a '/' and this string will be prepended to any found path string that doesn't start with a '/' character.
+    *  @param filter Reference to a QueryFilter object to use for content-based Message filter, or a NULL reference if
+    *                no additional filtering is necessary.
+    *  @return B_NO_ERROR on success, or B_ERROR if out of memory.
+    */
+   status_t PutPathFromString(const String & path, QueryFilterRef filter, const char * optPrependIfNoLeadingSlash);
 
    /** Removes the given path string and its associated StringMatchers from this matcher.
     *  @param wildpath the path string to remove
@@ -71,12 +125,10 @@ public:
    /**
     * Returns true iff the given fully qualified path string matches our query.
     * @param path the path string to check to see if it matches
+    * @param optMessage if non-NULL, this Message will be tested by the QueryFilter objects.
     */
-   bool MatchesPath(const char * path) const;
+   bool MatchesPath(const char * path, const Message * optMessage) const;
     
-   /** Returns true iff the given path string is in our string set */
-   bool ContainsPathString(const String & w) const;
-
    /**
     * Utility method.
     * If (w) starts with '/', this method will remove the slash.
@@ -87,30 +139,22 @@ public:
     */
    void AdjustStringPrefix(String & w, const char * optPrepend) const;
 
-   /** Returns the number of paths present in this PathMatcher.  */
-   uint32 GetNumPaths() const {return _parsers.GetNumItems();}
+   /** Returns a read-only reference to our table of PathMatcherEntries. */
+   const Hashtable<String, PathMatcherEntry> & GetEntries() const {return _entries;}
 
-   /** Returns the nth parser-queue 
-    *  @param which Index of the string you want.
-    *  @return the matcher-queue of the given path string, or NULL on failure (index out of range)
-    */
-   const StringMatcherQueue * GetParserQueue(uint32 which) const {return (which < _parsers.GetNumItems()) ? _parsers[which].GetItemPointer() : NULL;}
-
-   /** Returns the nth path string.
-    *  @param which Index of the string you want.  MUST be between 0 and GetNumPaths()-1, inclusive! 
-    */
-   const String & GetPathString(uint32 which) const {return _pathStrings[which];}
+   /** Returns the number of QueryFilters we are currently using. */
+   uint32 GetNumFilters() const {return _numFilters;}
 
 private:
-   Queue<StringMatcherQueueRef> _parsers;
-   Queue<String> _pathStrings;
+   Hashtable<String, PathMatcherEntry> _entries;
+   uint32 _numFilters;  // count how many filters are installed; so we can optimize when there are none
 };
 
 
 /** Returns a pointer into (path) after the (depth)'th '/' char
  *  @param depth the depth in the path to search for (0 == root, 1 == first level, 2 == second, etc.)
  *  @param path the path string (e.g. "/x/y/z/...") to search through
- *  @result a pointer into (path), or NULL on failure.
+ *  @returns a pointer into (path), or NULL on failure.
  */
 const char * GetPathClause(int depth, const char * path);
 
@@ -119,13 +163,16 @@ const char * GetPathClause(int depth, const char * path);
  *  somewhat less efficient, but easier to user.
  *  @param depth the depth in the path to search for (0 == root, 1 == first level, 2 == second, etc.)
  *  @param path the path string (e.g. "/x/y/z/...") to search through
- *  @result The string that is the (nth) item in the path, or "" if the depth is invalid.
+ *  @returns The string that is the (nth) item in the path, or "" if the depth is invalid.
  */
 String GetPathClauseString(int depth, const char * path);
 
-/** Returns the depth of the given path.  (path) should start with a '/'
- *  @param path a string starting with '/'
- *  @return the number of clauses in (path).  (a.k.a the 'depth' of (path))
+/** Returns the number of clauses in the given path string.
+ *  @param path A path string.  Any leading slash will be ignored.
+ *  @returns The number of clauses in (path).  (a.k.a the 'depth' of (path))
+ *           For example, "" and "/" return 0, "/test" returns 1, "test/me"
+ *           returns 2, "/test/me/thoroughly" returns 3.
+ *          
  */
 int GetPathDepth(const char * path);
 

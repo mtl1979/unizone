@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleServerComponent_h
 #define MuscleServerComponent_h
@@ -155,6 +155,11 @@ protected:
    /** Given a port number, returns a reference to the factory of that port, or a NULL reference if no
 such factory exists. */
    ReflectSessionFactoryRef GetFactory(uint16) const;         
+
+   /** Returns the time at which the current cycle of the server's
+    *  event loop started.
+    */
+   uint64 GetCycleStartTime() const;
 
    /** Returns true if we are attached to the ReflectServer object, false if we are not.  */
    bool IsAttachedToServer() const {return (_owner != NULL);}

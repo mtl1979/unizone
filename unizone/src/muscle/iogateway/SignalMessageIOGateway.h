@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSignalMessageIOGateway_h
 #define MuscleSignalMessageIOGateway_h
@@ -28,23 +28,6 @@ public:
    /** Destructor */
    virtual ~SignalMessageIOGateway() {/* empty */}
 
-   /** DoOutput is a no-op for this gateway... all messages are simply eaten and dropped. */
-   virtual int32 DoOutput(uint32 maxBytes = MUSCLE_NO_LIMIT)
-   {
-      // Just eat and drop ... we don't really support outgoing messages
-      while(GetOutgoingMessageQueue().RemoveHead() == B_NO_ERROR) {/* keep doing it */}
-      return maxBytes;
-   }
-
-   /** Overridden to enqeue a (signalMessage) whenever data is read. */
-   virtual int32 DoInput(uint32 maxBytes = MUSCLE_NO_LIMIT)
-   {
-      char buf[256];
-      int32 bytesRead = GetDataIO()->Read(buf, muscleMin(maxBytes, (uint32)sizeof(buf)));
-      if (bytesRead > 0) (void) GetIncomingMessageQueue().AddTail(_signalMessage);
-      return bytesRead;
-   }
-
    /** Always returns false. */
    virtual bool HasBytesToOutput() const {return false;}
 
@@ -53,6 +36,24 @@ public:
 
    /** Sets our current signal message reference. */
    void SetSignalMessage(MessageRef r) {_signalMessage = r;}
+
+protected:
+   /** DoOutput is a no-op for this gateway... all messages are simply eaten and dropped. */
+   virtual int32 DoOutputImplementation(uint32 maxBytes = MUSCLE_NO_LIMIT)
+   {
+      // Just eat and drop ... we don't really support outgoing messages
+      while(GetOutgoingMessageQueue().RemoveHead() == B_NO_ERROR) {/* keep doing it */}
+      return maxBytes;
+   }
+
+   /** Overridden to enqeue a (signalMessage) whenever data is read. */
+   virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT)
+   {
+      char buf[256];
+      int32 bytesRead = GetDataIO()->Read(buf, muscleMin(maxBytes, (uint32)sizeof(buf)));
+      if (bytesRead > 0) receiver.CallMessageReceivedFromGateway(_signalMessage);
+      return bytesRead;
+   }
 
 private:
    MessageRef _signalMessage;

@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleTimeUtilityFunctions_h
 #define MuscleTimeUtilityFunctions_h
@@ -11,6 +11,10 @@
 # include <winsock.h>
 #else
 # include <sys/time.h>
+#endif
+
+#ifdef __BEOS__
+# include <kernel/OS.h>
 #endif
 
 namespace muscle {
@@ -77,19 +81,42 @@ inline void SubtractTimeVal(struct timeval & subtractFromThis, const struct time
    }
 }
 
-/** Convenience function:  Returns the current clock time as a uint64. */
+/** Returns the current real-time clock time as a uint64.  The returned value is expressed
+ *  as microseconds since the beginning of the year 1970.
+ *  @note that the values returned by this function are NOT guaranteed to be monotonically increasing!
+ *        Events like leap seconds, the user changing the system time, or even the OS tweaking the system
+ *        time automatically to eliminate clock drift may cause this value to decrease occasionally!
+ *        If you need a time value that is guaranteed to never decrease, you may want to call GetRunTime64() instead.
+ */
 inline uint64 GetCurrentTime64()
 {
-#ifdef WIN32
+#ifdef __BEOS__
+   return real_time_clock_usecs();
+#else
+# ifdef WIN32
    FILETIME now;
    GetSystemTimeAsFileTime(&now); // sets (now) to hold time-since-1601 in units of 100 nanoseconds each
    return ((((uint64)now.dwHighDateTime)<<32)|((uint64)now.dwLowDateTime))/10;  // combine and convert to microseconds
-#else
+# else
    struct timeval tv;
    gettimeofday(&tv, NULL);
    return ConvertTimeValTo64(tv);
+# endif
 #endif
 }
+
+/** Returns a current time value, in microseconds, that is guaranteed never to decrease.  The absolute
+ *  values returned by this call are undefined, so you should only use it for measuring relative time
+ *  (i.e. how much time has passed between two events).  For a "real time clock" type of result with
+ *  a well defined time-base, you can use GetCurrentTime64() instead.
+ *  @note Currently, this call just calls through to GetCurrentTime64().  It needs to be reimplemented to
+ *        do the right thing instead!!
+ */
+#ifdef __BEOS__
+inline uint64 GetRunTime64() {return real_time_clock_usecs();}
+#else
+uint64 GetRunTime64();  // for other OS's, it's a bit more involved, so we define the body in system/SetupSytem.cpp
+#endif
 
 /** Convenience function:  Returns true no more often than once every (interval).
  *  Useful if you are in a tight loop, but don't want e.g. more than one debug output line per second, or something like that.
@@ -100,7 +127,7 @@ inline uint64 GetCurrentTime64()
 inline bool OnceEvery(const struct timeval & interval, struct timeval & lastTime)
 {
    // Print current state to stdout every so many seconds
-   uint64 now64 = GetCurrentTime64();
+   uint64 now64 = GetRunTime64();
    struct timeval now; 
    Convert64ToTimeVal(now64, now);
    if (!IsLessThan(now, lastTime))
@@ -120,7 +147,7 @@ inline bool OnceEvery(const struct timeval & interval, struct timeval & lastTime
  */
 inline bool OnceEvery(uint64 interval, uint64 & lastTime)
 {
-   uint64 now = GetCurrentTime64();
+   uint64 now = GetRunTime64();
    if (now >= lastTime+interval)
    {
       lastTime = now;

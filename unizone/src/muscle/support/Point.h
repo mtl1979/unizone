@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 /*******************************************************************************
 /
@@ -79,7 +79,7 @@ public:
    virtual bool IsFixedSize() const {return true;} 
 
    /** Part of the Flattenable interface:  Returns B_POINT_TYPE */
-   virtual type_code TypeCode() const {return B_POINT_TYPE;}
+   virtual uint32 TypeCode() const {return B_POINT_TYPE;}
 
    /** Part of the Flattenable interface:  2*sizeof(float) */
    virtual uint32 FlattenedSize() const {return 2*sizeof(float);}

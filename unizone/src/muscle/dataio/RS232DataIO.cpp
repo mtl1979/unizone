@@ -1,6 +1,13 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "dataio/RS232DataIO.h"
+
+#if defined(__APPLE__)
+# include <CoreFoundation/CoreFoundation.h>
+# include <IOKit/IOKitLib.h>
+# include <IOKit/serial/IOSerialKeys.h>
+# include <IOKit/IOBSD.h>
+#endif
 
 #if defined(WIN32) || defined(__CYGWIN__)
 # include "util/Queue.h"
@@ -232,11 +239,6 @@ void RS232DataIO :: FlushOutput()
    }
 }
 
-status_t RS232DataIO :: Seek(int64, int)
-{
-   return B_ERROR;
-}
-
 int RS232DataIO :: GetSelectSocket() const
 {
 #ifdef USE_WINDOWS_IMPLEMENTATION
@@ -303,6 +305,36 @@ status_t RS232DataIO :: GetAvailableSerialPortNames(Queue<String> & retList)
    }
    return B_ERROR;
 #else
+# if defined(__APPLE__)
+   mach_port_t masterPort;
+   if (IOMasterPort(MACH_PORT_NULL, &masterPort) == KERN_SUCCESS)
+   {
+      CFMutableDictionaryRef classesToMatch = IOServiceMatching(kIOSerialBSDServiceValue);
+      if (classesToMatch)
+      {
+         CFDictionarySetValue(classesToMatch, CFSTR(kIOSerialBSDTypeKey), CFSTR(kIOSerialBSDRS232Type));
+         io_iterator_t serialPortIterator;
+         if (IOServiceGetMatchingServices(masterPort, classesToMatch, &serialPortIterator) == KERN_SUCCESS)
+         {
+            io_object_t modemService;
+            while((modemService = IOIteratorNext(serialPortIterator)) != NULL)
+            {
+               CFTypeRef bsdPathAsCFString = IORegistryEntryCreateCFProperty(modemService, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, 0);
+               if (bsdPathAsCFString)
+               {
+                  char bsdPath[256] = "";
+                  if (CFStringGetCString((CFStringRef)bsdPathAsCFString, bsdPath, sizeof(bsdPath), kCFStringEncodingASCII)) retList.AddTail(bsdPath);
+                  CFRelease(bsdPathAsCFString);
+               }
+               (void) IOObjectRelease(modemService);
+            }
+            IOObjectRelease(serialPortIterator);
+            return B_NO_ERROR;
+         }
+      }
+   }
+   return B_ERROR;  // if we got here, it didn't work
+# else
    for (int i=0; /*empty*/; i++)
    {
       char buf[64]; sprintf(buf, "/dev/ttyS%i", i);
@@ -314,8 +346,8 @@ status_t RS232DataIO :: GetAvailableSerialPortNames(Queue<String> & retList)
       }
       else break;
    }
-
    return B_NO_ERROR;
+# endif
 #endif
 }
 
@@ -340,6 +372,8 @@ public:
 // our queue of incoming serial bytes.  (numBytesRead) MUST be <= SERIAL_BUFFER_SIZE !
 static void ProcessReadBytes(Queue<SerialBuffer *> & inQueue, const char * inBytes, uint32 numBytesRead)
 {
+   MASSERT(numBytesRead <= SERIAL_BUFFER_SIZE, "ProcessReadBytes: numBytesRead was too large!");
+
    SerialBuffer * buf = (inQueue.GetNumItems() > 0) ? inQueue.Tail() : NULL;
    if ((buf)&&((sizeof(buf->_buf)-buf->_length) >= numBytesRead))
    {

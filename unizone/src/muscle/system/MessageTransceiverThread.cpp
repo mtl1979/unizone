@@ -1,7 +1,8 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include "system/MessageTransceiverThread.h"
 #include "iogateway/SignalMessageIOGateway.h"
+#include "iogateway/MessageIOGateway.h"
 #include "reflector/ReflectServer.h"
 #include "util/SocketHolder.h"
 
@@ -245,6 +246,15 @@ status_t MessageTransceiverThread :: SetNewPolicyAux(uint32 what, PolicyRef pref
            ? SendMessageToInternalThread(commandRef) : B_ERROR;
 }
 
+status_t MessageTransceiverThread :: SetOutgoingMessageEncoding(int32 encoding, const char * optDistPath)
+{
+   MessageRef commandRef = GetMessageFromPool(MTT_COMMAND_SET_OUTGOING_ENCODING);
+   return ((commandRef())&&
+           ((optDistPath == NULL)||(commandRef()->AddString(MTT_NAME_PATH, optDistPath) == B_NO_ERROR))&&
+            (commandRef()->AddInt32(MTT_NAME_ENCODING, encoding)                        == B_NO_ERROR))
+           ? SendMessageToInternalThread(commandRef) : B_ERROR;
+}
+
 status_t MessageTransceiverThread :: RemoveSessions(const char * optDistPath)
 {
    MessageRef commandRef = GetMessageFromPool(MTT_COMMAND_REMOVE_SESSIONS);
@@ -378,20 +388,22 @@ void ThreadWorkerSession :: AboutToDetachFromServer()
    StorageReflectSession::AboutToDetachFromServer();
 }
 
-void ThreadWorkerSession :: Tick(uint64)
+int32 ThreadWorkerSession :: DoOutput(uint32 maxBytes)
 {
+   int32 ret = StorageReflectSession::DoOutput(maxBytes);
    if (_drainedNotifiers.GetNumItems() > 0)
    {
       AbstractMessageIOGateway * gw = GetGateway();
-      if ((gw)&&(gw->HasBytesToOutput() == false)) _drainedNotifiers.Clear();
+      if ((gw == NULL)||(gw->HasBytesToOutput() == false)) _drainedNotifiers.Clear();
    }
+   return ret;
 }
 
-void ThreadWorkerSession :: MessageReceivedFromGateway(MessageRef msg)
+void ThreadWorkerSession :: MessageReceivedFromGateway(MessageRef msg, void * userData)
 {
    // Wrap it up so the supervisor knows its for him, and send it out
    MessageRef wrapper = GetMessageFromPool(MTT_EVENT_INCOMING_MESSAGE);
-   if ((wrapper())&&(wrapper()->AddMessage(MTT_NAME_MESSAGE, msg) == B_NO_ERROR)) BroadcastToAllSessions(wrapper);
+   if ((wrapper())&&(wrapper()->AddMessage(MTT_NAME_MESSAGE, msg) == B_NO_ERROR)) BroadcastToAllSessions(wrapper, userData);
 }
 
 void ThreadWorkerSession :: MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msgRef, void * userData)
@@ -429,6 +441,17 @@ void ThreadWorkerSession :: MessageReceivedFromSession(AbstractReflectSession & 
                PolicyRef pref(tagRef, true);
                if (msg->what == MTT_COMMAND_SET_INPUT_POLICY) SetInputPolicy(pref);
                                                          else SetOutputPolicy(pref);
+            }
+            break;
+
+            case MTT_COMMAND_SET_OUTGOING_ENCODING:
+            {
+               int32 enc;
+               if (msg->FindInt32(MTT_NAME_ENCODING, &enc) == B_NO_ERROR)
+               {
+                  MessageIOGateway * gw = dynamic_cast<MessageIOGateway *>(GetGateway());
+                  if (gw) gw->SetOutgoingEncoding(enc);
+               }
             }
             break;
 
@@ -477,7 +500,7 @@ AbstractMessageIOGateway * ThreadSupervisorSession :: CreateGateway()
    return gw;
 }
 
-void ThreadSupervisorSession :: MessageReceivedFromGateway(MessageRef)
+void ThreadSupervisorSession :: MessageReceivedFromGateway(MessageRef, void *)
 {
    // The message from the gateway is merely a signal that we should check
    // the message queue from the main thread again, to see if there are
@@ -524,16 +547,8 @@ status_t ThreadSupervisorSession :: AddNewWorkerConnectSession(AbstractReflectSe
 
 void ThreadSupervisorSession :: DistributeMessageToWorkers(MessageRef distMsg)
 {
-   const char * distPath = _defaultDistributionPath();
-   (void) distMsg()->FindString(MTT_NAME_PATH, &distPath);
-   if (distPath[0])
-   {
-      String temp;
-      if (distPath[0] != '/') {temp = "/*/*/"; temp += distPath; distPath = temp();}
-      NodePathMatcher matcher;
-      if (matcher.AddPathString(distPath, &_stringMatcherPool, &_stringMatcherQueuePool) == B_NO_ERROR) matcher.DoTraversal((PathMatchCallback)PassMessageCallbackFunc, this, GetGlobalRoot(), &distMsg);
-   }
-   else BroadcastToAllSessions(distMsg, NULL, false);
+   String distPath;
+   SendMessageToMatchingSessions(distMsg, (distMsg()->FindString(MTT_NAME_PATH, distPath) == B_NO_ERROR) ? distPath : _defaultDistributionPath, QueryFilterRef(), false); 
 }
 
 status_t ThreadSupervisorSession :: MessageReceivedFromOwner(MessageRef msgRef, uint32)
@@ -625,7 +640,7 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(MessageRef msgRef, 
          break;
 
          default:
-            StorageReflectSession::MessageReceivedFromGateway(msgRef);
+            StorageReflectSession::MessageReceivedFromGateway(msgRef, NULL);
          break;
       }
       return B_NO_ERROR;

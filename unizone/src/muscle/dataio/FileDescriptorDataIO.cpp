@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "dataio/FileDescriptorDataIO.h"
 
@@ -76,13 +76,27 @@ status_t FileDescriptorDataIO :: Seek(int64 offset, int whence)
          default:           return B_ERROR;
       }
 #ifdef __linux__
-         loff_t spot;
-         return (_llseek(_fd, (uint32)((offset >> 32) & 0xFFFFFFFF), (uint32)(offset & 0xFFFFFFFF), &spot, whence) >= 0) ? B_NO_ERROR : B_ERROR;   
+      loff_t spot;
+      return (_llseek(_fd, (uint32)((offset >> 32) & 0xFFFFFFFF), (uint32)(offset & 0xFFFFFFFF), &spot, whence) >= 0) ? B_NO_ERROR : B_ERROR;   
 #else
-         return (lseek(_fd, (off_t) offset, whence) >= 0) ? B_NO_ERROR : B_ERROR; 
+      return (lseek(_fd, (off_t) offset, whence) >= 0) ? B_NO_ERROR : B_ERROR; 
 #endif
    }
    return B_ERROR;
+}
+
+int64 FileDescriptorDataIO :: GetPosition() const
+{
+   if (_fd >= 0)
+   {
+#ifdef __linux__
+      loff_t spot;
+      return (_llseek(_fd, 0, 0, &spot, SEEK_CUR) == 0) ? spot : -1;
+#else
+      return lseek(_fd, 0, SEEK_CUR);
+#endif
+   }
+   return -1;
 }
 
 };  // end namespace muscle

@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef AbstractSessionIOPolicy_h
 #define AbstractSessionIOPolicy_h
@@ -129,7 +129,7 @@ public:
      * number of bytes to/from its DataIO object.
      * @param holder A session which transferred some bytes.  Guaranteed to be one of our
      *               PolicyHolders, and attached to the server.
-     * @param numBytes How many bytes it read.  This value will be less than or equal
+     * @param numBytes How many bytes it transferred.  This value will be less than or equal
      *                 to the max value you return previously for this session from
      *                 GetMaxReadChunkSize().
      */

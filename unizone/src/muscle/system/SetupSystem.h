@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSetupSystem_h
 #define MuscleSetupSystem_h
@@ -48,7 +48,7 @@ private:
    friend class AtomicCounter;
 
 private:
-   Mutex _logLock;  // used by the SysLog class; here instead of static so that it will be constructed after main() starts
+   Mutex _lock;  // Returned by GetGlobalMuscleLock()
 };
 
 #if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
@@ -107,6 +107,12 @@ private:
    NetworkSetupSystem _network;
    ThreadSetupSystem _threads;
 };
+
+/** Returns a pointer to a process-wide Mutex, or NULL if that Mutex
+ *  hasn't been allocated (by a ThreadSetupSystem or CompleteSetupSystem
+ *  object) yet.
+ */
+Mutex * GetGlobalMuscleLock();
 
 };  // end muscle namespace
 

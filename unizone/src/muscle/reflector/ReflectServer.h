@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleReflectServer_h
 #define MuscleReflectServer_h
@@ -7,7 +7,7 @@
 
 namespace muscle {
 
-class UsageLimitProxyMemoryAllocator;
+class MemoryAllocator;
 
 /** This class represents a MUSCLE server:  It runs on a centrally located machine,
  *  and many clients may connect to it simultaneously.  This server can then redirect messages
@@ -24,7 +24,7 @@ public:
      *                              on the server.  Note that this tracker does NOT become
      *                              owned by the ReflectServer!
      */
-   ReflectServer(UsageLimitProxyMemoryAllocator * optMemoryUsageTracker = NULL);
+   ReflectServer(MemoryAllocator * optMemoryUsageTracker = NULL);
 
    /** Destructor.  */
    virtual ~ReflectServer();
@@ -150,6 +150,11 @@ public:
      */
    uint32 GetNumUsedBytes() const;
 
+   /** Returns the time at which the current cycle of the server's
+    *  event loop began.
+    */
+   inline uint64 GetCycleStartTime() const {return _cycleStartedAt;}
+
    /** Returns a reference to a table mapping IP addresses to custom strings...
      * This table may be examined or altered.  When a new connection is accepted,
      * the ReflectServer will consult this table for the address-level MUSCLE node's
@@ -202,6 +207,7 @@ private:
    status_t DoAccept(uint16 port, int acceptSocket, ReflectSessionFactory * optFactory);
    uint32 CheckPolicy(Hashtable<PolicyRef, bool> & policies, PolicyRef policyRef, const PolicyHolder & ph, uint64 now) const;
    int GetSocketFor(AbstractReflectSession * session) const;
+   void CheckForOutOfMemory(AbstractReflectSessionRef optSessionRef);
 
    Hashtable<uint16, ReflectSessionFactoryRef> _factories;
    Queue<ReflectSessionFactoryRef> _lameDuckFactories;  // for delayed-deletion of factories when they go away
@@ -210,12 +216,14 @@ private:
    Hashtable<const char *, AbstractReflectSessionRef> _sessions;
    Queue<AbstractReflectSessionRef> _lameDuckSessions;  // sessions that are due to be removed
    bool _keepServerGoing;
-   uint64 _startedAt;
+   uint64 _cycleStartedAt;
+   uint64 _serverStartedAt;
    bool _doLogging;
+
 
    Hashtable<uint32, String> _remapIPs;  // for v2.20; custom strings for "special" IP addresses
 
-   UsageLimitProxyMemoryAllocator * _watchMemUsage; 
+   MemoryAllocator * _watchMemUsage; 
 };
 
 };  // end namespace muscle

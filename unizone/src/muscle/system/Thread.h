@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleThread_h
 #define MuscleThread_h
@@ -7,18 +7,6 @@
 # include <pthread.h>
 #elif defined(QT_THREAD_SUPPORT)
 # include <qthread.h>
-   class MuscleQThread : public QThread
-   {
-   public:
-      MuscleQThread()  {}  
-
-      virtual void run() 
-	  {
-		  InternalThreadEntryAux();
-	  }
-
-	  virtual void InternalThreadEntryAux() {}
-   };
 #elif defined(__BEOS__)
 # include <kernel/OS.h>
 #elif defined(WIN32)
@@ -42,9 +30,6 @@ namespace muscle {
   * and for waiting for the thread to exit.
   */
 class Thread
-#if defined(QT_THREAD_SUPPORT)
-: public MuscleQThread
-#endif
 {
 public:
    /** Constructor.  Does very little (in particular, the internal thread is not started here...
@@ -101,7 +86,7 @@ public:
      * @param wakeupTime Time at which this method should stop blocking and return,
      *                   even if there is no new reply message ready.  If this value is
      *                   0 (the default) or otherwise less than the current time 
-     *                   (as returned by GetCurrentTime64()), then this method does a 
+     *                   (as returned by GetRunTime64()), then this method does a 
      *                   non-blocking poll of the reply queue.
      *                   If (wakeuptime) is set to MUSCLE_TIME_NEVER, then this method 
      *                   will block indefinitely, until a new reply is ready.
@@ -189,7 +174,7 @@ protected:
      * @param ref On success, (ref) will be set to be a reference to the retrieved Message.
      * @param wakeupTime Time at which this method should stop blocking and return,
      *                   even if there is no new message ready.  If this value is
-     *                   0 or otherwise less than the current time (as returned by GetCurrentTime64()),
+     *                   0 or otherwise less than the current time (as returned by GetRunTime64()),
      *                   then this method does a non-blocking poll of the queue.
      *                   If (wakeuptime) is set to MUSCLE_TIME_NEVER (the default value),
      *                   then this method will block indefinitely, until a Message is ready.
@@ -268,7 +253,18 @@ private:
 #if defined(MUSCLE_USE_PTHREADS)
    pthread_t _thread;
    static void * InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return NULL;}
-//#elif defined(QT_THREAD_SUPPORT)
+#elif defined(QT_THREAD_SUPPORT)
+   class MuscleQThread : public QThread
+   {
+   public:
+      MuscleQThread() : _owner(NULL) {/* empty */}  // _owner not set here, for VC++6 compatibility
+      virtual void run() {_owner->InternalThreadEntryAux();}
+      void SetOwner(Thread * owner) {_owner = owner;}
+   private:
+      Thread * _owner;
+   };
+   MuscleQThread _thread;
+   friend class MuscleQThread;
 #elif defined(__BEOS__)
    thread_id _thread;
    static int32 InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return 0;}

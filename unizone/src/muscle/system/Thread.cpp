@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "system/Thread.h"
 #include "util/NetworkUtilityFunctions.h"
@@ -10,8 +10,8 @@ Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
 {
 #if defined(MUSCLE_USE_PTHREADS)
    // do nothing
-//#elif defined(QT_THREAD_SUPPORT)
-//   _thread.SetOwner(this);
+#elif defined(QT_THREAD_SUPPORT)
+   _thread.SetOwner(this);
 #endif
 
    for (uint32 i=0; i<NUM_MESSAGE_THREADS; i++) 
@@ -40,6 +40,7 @@ int Thread :: GetOwnerWakeupSocket()
 int Thread :: GetThreadWakeupSocketAux(int whichSocket)
 {
    if ((_messageSocketsAllocated == false)&&(CreateConnectedSocketPair(_messageSockets[MESSAGE_THREAD_INTERNAL], _messageSockets[MESSAGE_THREAD_OWNER]) != B_NO_ERROR)) return -1;  
+
    _messageSocketsAllocated = true;
    return _messageSockets[whichSocket];
 }
@@ -79,7 +80,7 @@ status_t Thread :: StartInternalThreadAux()
 #if defined(MUSCLE_USE_PTHREADS)
       if (pthread_create(&_thread, NULL, InternalThreadEntryFunc, this) == 0) return B_NO_ERROR;
 #elif defined(QT_THREAD_SUPPORT)
-      start();
+      _thread.start();
       return B_NO_ERROR;
 #elif defined(__BEOS__)
       if ((_thread = spawn_thread(InternalThreadEntryFunc, "MUSCLE Thread", B_NORMAL_PRIORITY, this)) >= 0)
@@ -187,7 +188,7 @@ int32 Thread :: WaitForNextMessageAux(int whichThread, MessageRef & ref, uint64 
          int fd = _messageSockets[whichThread];
          if (fd >= 0)
          {
-            uint64 now = GetCurrentTime64();
+            uint64 now = GetRunTime64();
             if (wakeupTime > now)
             {
                // block until either a new-message-signal-byte wakes us, or we reach our wakeup time
@@ -232,7 +233,7 @@ status_t Thread :: WaitForInternalThreadToExit()
 #if defined(MUSCLE_USE_PTHREADS)
       (void) pthread_join(_thread, NULL);
 #elif defined(QT_THREAD_SUPPORT)
-      (void) wait();
+      (void) _thread.wait();
 #elif defined(__BEOS__)
       status_t junk;
       (void) wait_for_thread(_thread, &junk);

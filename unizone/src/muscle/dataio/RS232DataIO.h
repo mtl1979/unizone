@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef RS232DataIO_h
 #define RS232DataIO_h
@@ -33,7 +33,10 @@ public:
    virtual int32 Write(const void * buffer, uint32 size);
 
    /** Always returns B_ERROR, since you can't seek on a serial port! */
-   virtual status_t Seek(int64 offset, int whence);
+   virtual status_t Seek(int64, int) {return B_ERROR;}
+
+   /** Always returns -1, since a serial port has no position to speak of */
+   virtual int64 GetPosition() const {return -1;}
 
    /** Doesn't return until all outgoing serial bytes have been sent */
    virtual void FlushOutput();
@@ -51,10 +54,10 @@ public:
    /** Returns true iff we have a valid serial port to communicate through */
    bool IsPortAvailable() const;
 
-   /* Returns a list of serial port names that are present on this machine.
-    * These names may be passed in to the constructor of this class verbatim.
-    * @param retList On success, this list will contain serial port names.
-    * @return B_NO_ERROR on success, or B_ERROR on failure.
+   /** Returns a list of serial port names that are present on this machine.
+    *  These names may be passed in to the constructor of this class verbatim.
+    *  @param retList On success, this list will contain serial port names.
+    *  @return B_NO_ERROR on success, or B_ERROR on failure.
     */
    static status_t GetAvailableSerialPortNames(Queue<String> & retList);
 

@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 
@@ -18,9 +18,9 @@ PlainTextMessageIOGateway ::
 
 int32 
 PlainTextMessageIOGateway ::
-DoOutput(uint32 maxBytes)
+DoOutputImplementation(uint32 maxBytes)
 {
-   const Message * msg = _currentSendingMessage.GetItemPointer();
+   const Message * msg = _currentSendingMessage();
    if (msg == NULL) 
    {
       // try to get the next message from our queue
@@ -42,7 +42,7 @@ DoOutput(uint32 maxBytes)
          else 
          {
             _currentSendingMessage.Reset();  // no more text available?  Go to the next message then.
-            return DoOutput(maxBytes);
+            return DoOutputImplementation(maxBytes);
          }
       }
       if ((msg)&&(_currentSendOffset >= 0)&&(_currentSendOffset < (int32)_currentSendText.Length()))
@@ -50,15 +50,11 @@ DoOutput(uint32 maxBytes)
          // Send as much as we can of the current text line
          const char * bytes = _currentSendText.Cstr() + _currentSendOffset;
          int32 bytesWritten = GetDataIO()->Write(bytes, muscleMin(_currentSendText.Length()-_currentSendOffset, maxBytes));
-         if (bytesWritten < 0) 
-         {
-            FlushPendingInput();
-            return -1;
-         }
+              if (bytesWritten < 0) return -1;
          else if (bytesWritten > 0)
          {
             _currentSendOffset += bytesWritten;
-            int32 subRet = DoOutput(maxBytes-bytesWritten);
+            int32 subRet = DoOutputImplementation(maxBytes-bytesWritten);
             return (subRet >= 0) ? subRet+bytesWritten : -1;
          }
       }
@@ -66,26 +62,9 @@ DoOutput(uint32 maxBytes)
    return 0;
 }
 
-
-void
-PlainTextMessageIOGateway ::
-FlushPendingInput()
-{
-   if (_incomingText.Length() > 0)
-   {
-      MessageRef inMsg = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
-      if (inMsg())
-      {
-         (void) inMsg()->AddString(PR_NAME_TEXT_LINE, _incomingText);
-         _incomingText = "";
-         (void) GetIncomingMessageQueue().AddTail(inMsg);
-      }
-   }
-}
-
 int32 
 PlainTextMessageIOGateway ::
-DoInput(uint32 maxBytes)
+DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes)
 {
    int32 ret = 0;
    const int tempBufSize = 2048;
@@ -93,7 +72,16 @@ DoInput(uint32 maxBytes)
    int32 bytesRead = GetDataIO()->Read(buf, muscleMin(maxBytes, (uint32)(sizeof(buf)-1)));
    if (bytesRead < 0) 
    {
-      FlushPendingInput();
+      if (_incomingText.Length() > 0)
+      {
+         MessageRef inMsg = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
+         if (inMsg())
+         {
+            (void) inMsg()->AddString(PR_NAME_TEXT_LINE, _incomingText);
+            _incomingText = "";
+            receiver.CallMessageReceivedFromGateway(inMsg);
+         }
+      }
       return -1;
    }
    if (bytesRead > 0)
@@ -127,7 +115,7 @@ DoInput(uint32 maxBytes)
          _prevCharWasCarriageReturn = (nextChar == '\r');
       }
       if (beginAt < bytesRead) _incomingText += &buf[beginAt];
-      if (inMsg()) (void) GetIncomingMessageQueue().AddTail(inMsg);
+      if (inMsg()) receiver.CallMessageReceivedFromGateway(inMsg);
    }
    return ret;
 }
@@ -136,7 +124,18 @@ bool
 PlainTextMessageIOGateway ::
 HasBytesToOutput() const
 {
-   return ((_currentSendingMessage.GetItemPointer() != NULL)||(GetOutgoingMessageQueue().GetNumItems() > 0));
+   return ((_currentSendingMessage() != NULL)||(GetOutgoingMessageQueue().GetNumItems() > 0));
+}
+
+void 
+PlainTextMessageIOGateway ::
+Reset()
+{
+   AbstractMessageIOGateway::Reset();
+   _currentSendingMessage.Reset();
+   _currentSendText = "";
+   _prevCharWasCarriageReturn = false;   
+   _incomingText = "";
 }
 
 };  // end namespace muscle

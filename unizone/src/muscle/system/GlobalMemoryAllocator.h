@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleGlobalMemoryAllocator_h
 #define MuscleGlobalMemoryAllocator_h
@@ -30,7 +30,31 @@ MemoryAllocatorRef GetCPlusPlusGlobalMemoryAllocator();
   */
 size_t GetNumAllocatedBytes();
 
-#else
+/** MUSCLE version of the C malloc() call.  Unlike the C malloc() call, however
+ *  this function will use the global MemoryAllocator object when allocating memory.
+ *  The only time you should need to call this directly is from C code where
+ *  you want to use the global memory allocators but don't want to replace all
+ *  the calls to malloc() and free() with new and delete.  For C++ programs, you
+ *  can just use newnothrow and delete as usual and ignore this function.
+ *  @param numBytes Number of bytes to attempt to allocate
+ *  @param retryOnFailure This argument governs muscleAlloc's behaviour when
+ *                        an out-of-memory condition occurs.  If true, muscleAlloc()
+ *                        will attempt the allocation a second time after calling
+ *                        AllocationFailed() on the global memory allocator, in the hope
+ *                        that AllocationFailed() was able to free enough memory
+ *                        to allow the allocation to succeed.  If set false, AllocationFailed()
+ *                        will still be called after an out-of-memory error, but muscleAlloc() 
+ *                        will return NULL.
+ *  @return Pointer to an allocated memory buffer on success, or NULL on failure.
+ */
+void * muscleAlloc(size_t numBytes, bool retryOnFailure = true);
+
+/** Companion to muscleAlloc().  Any buffers allocated with muscleAlloc() should
+ *  be freed with muscleFree() when you are done with them, to avoid memory leaks.
+ *  @param buf Buffer that was previously allocated with (buf).  If NULL, then this
+ *             call becomes a no-op.
+ */
+void muscleFree(void * buf);
 
 #endif
 

@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "iogateway/AbstractMessageIOGateway.h"
 
@@ -24,23 +24,6 @@ AddOutgoingMessage(const MessageRef & messageRef)
    return _hosed ? B_ERROR : _outgoingMessages.AddTail(messageRef);
 }
 
-
-// Retrieves the next message from the incoming messages queue.
-// Returns false iff the queue is empty (in which case setRef
-// will not be modified) 
-status_t 
-AbstractMessageIOGateway ::
-GetNextIncomingMessage(MessageRef & setRef)
-{
-   return _incomingMessages.RemoveHead(setRef);
-}
-
-bool 
-AbstractMessageIOGateway ::
-HasIncomingMessagesReady() const
-{
-   return (_incomingMessages.GetNumItems() > 0);
-}
 
 // Handles buffer allocation and re-allocation
 status_t
@@ -102,6 +85,14 @@ AbstractMessageIOGateway ::
 Shutdown()
 {
    if (_ioRef()) _ioRef()->Shutdown();
+}
+
+void
+AbstractMessageIOGateway ::
+Reset()
+{
+   _outgoingMessages.Clear();
+   _hosed = false;
 }
 
 };  // end namespace muscle

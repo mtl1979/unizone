@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include "util/PulseNode.h"
 
@@ -68,7 +68,6 @@ void PulseNode :: GetPulseTimeAux(uint64 now, uint64 & minPulseTime)
 
 void PulseNode :: PulseAux(uint64 now)
 {
-   Tick(now);   // we always tick once per call, no matter what
    if (now >= _nextPulseAt)
    {
       if (now >= _localPulseAt)
@@ -83,11 +82,6 @@ void PulseNode :: PulseAux(uint64 now)
          while(iter.GetNextKey(nextKey) == B_NO_ERROR) nextKey->PulseAux(now);
       }
    }
-}
-
-void PulseNode :: Tick(uint64)
-{
-   // empty
 }
 
 status_t PulseNode :: PutPulseChild(PulseNode * child)

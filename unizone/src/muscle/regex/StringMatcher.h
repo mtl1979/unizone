@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleStringMatcher_h
 #define MuscleStringMatcher_h
@@ -22,15 +22,6 @@
 #endif
 
 namespace muscle {
-
-////////////////////////////////////////////////////////////////////////////
-//
-// NOTE:  This class is based on the psStringMatcher v1.3 class 
-//        developed by Lars Jørgen Aas <larsa@tihlde.hist.no> for the
-//        Prodigal Software File Requester.  Used by permission.
-//
-////////////////////////////////////////////////////////////////////////////
-
 
 /** A utility class for doing globbing or regular expression matching.  (A thin wrapper around the C regex calls) */
 class StringMatcher : public RefCountable
@@ -96,6 +87,14 @@ private:
    uint32 _rangeMin;
    uint32 _rangeMax;   
 }; 
+
+typedef Ref<StringMatcher> StringMatcherRef;
+
+/** Returns a point to a singleton ObjectPool that can be used
+ *  to minimize the number of StringMatcher allocations and deletions
+ *  by recycling the StringMatcher objects 
+ */
+StringMatcherRef::ItemPool * GetStringMatcherPool();
 
 // Some regular expression utility functions
 

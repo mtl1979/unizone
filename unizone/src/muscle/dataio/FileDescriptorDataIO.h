@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleFileDescriptorDataIO_h
 #define MuscleFileDescriptorDataIO_h
@@ -72,6 +72,9 @@ public:
     */ 
    virtual status_t Seek(int64 offset, int whence);
    
+   /** Returns our current position in the file */
+   virtual int64 GetPosition() const;
+
    /** Returns our file descriptor */
    virtual int GetSelectSocket() const {return _fd;}
 

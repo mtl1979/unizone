@@ -1,31 +1,17 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleTCPSocketDataIO_h
 #define MuscleTCPSocketDataIO_h
 
 #include "support/MuscleSupport.h"
 
-#ifdef WIN32
-# include <winsock.h>
-# pragma warning(disable: 4800 4018)
-#else
-# ifndef BEOS_OLD_NETSERVER
-#  include <fcntl.h>
-#  include <netinet/tcp.h>
-#  include <netinet/in.h>
-# endif
-#include <sys/socket.h>
-#endif
-
-#include <string.h>
-#include <errno.h>
 #include "dataio/DataIO.h"
 #include "util/NetworkUtilityFunctions.h"
 
 namespace muscle {
 
 #ifndef MUSCLE_DEFAULT_TCP_STALL_TIMEOUT
-# define MUSCLE_DEFAULT_TCP_STALL_TIMEOUT (20*60*((uint64)1000000))  // 20 minutes is our default default
+# define MUSCLE_DEFAULT_TCP_STALL_TIMEOUT (20*60*((uint64)1000000))  // 20 minutes is our default timeout period
 #endif
 
 /**
@@ -41,46 +27,29 @@ public:
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
-   TCPSocketDataIO(int sockfd, bool blocking) : _sockfd(sockfd), _stallLimit(MUSCLE_DEFAULT_TCP_STALL_TIMEOUT)
+   TCPSocketDataIO(int sockfd, bool blocking) : _sockfd(sockfd), _naglesEnabled(true), _stallLimit(MUSCLE_DEFAULT_TCP_STALL_TIMEOUT)
    {
       SetBlockingIOEnabled(blocking);
    }
 
    /** Destructor.
-    *  close()'s the held socket descriptor.
+    *  Closes the socket descriptor, if necessary.
     */
    virtual ~TCPSocketDataIO() 
    {
       if (_sockfd >= 0) Shutdown();
    }
 
-   /** Reads bytes from the socket and places them into (buffer).
-    *  @param buffer Buffer to write the bytes into
-    *  @param size Number of bytes in the buffer.
-    *  @return Number of bytes read, or -1 on error.
-    *  @see DataIO::Read()
-    */
-   virtual int32 Read(void * buffer, uint32 size)  
-   {
-      return (_sockfd >= 0) ? CalculateReturnValue(recv(_sockfd, (char *)buffer, size, 0L)) : -1;
-   }
+   virtual int32 Read(void * buffer, uint32 size) {return ReceiveData(_sockfd, buffer, size, _blocking);}
+   virtual int32 Write(const void * buffer, uint32 size) {return SendData(_sockfd, buffer, size, _blocking);}
 
    /**
-    * Reads bytes from (buffer) and sends them out to the TCP socket.
-    *  @param buffer Buffer to read the bytes from.
-    *  @param size Number of bytes in the buffer.
-    *  @return Number of bytes writte, or -1 on error.
-    *  @see DataIO::Write()    
-    */
-   virtual int32 Write(const void * buffer, uint32 size)
-   {
-      return (_sockfd >= 0) ? CalculateReturnValue(send(_sockfd, (const char *)buffer, size, 0L)) : -1;
-   }
-
-   /**
-    *  This method always returns B_ERROR.
+    *  This method implementation always returns B_ERROR, because you can't seek on a socket!
     */
    virtual status_t Seek(int64 /*seekOffset*/, int /*whence*/) {return B_ERROR;}
+
+   /** Always returns -1, since a socket has no position to speak of */
+   virtual int64 GetPosition() const {return -1;}
 
    /**
     * Stall limit for TCP streams is 20*60*1000000 microseconds (20 minutes) by default.
@@ -92,13 +61,17 @@ public:
    void SetOutputStallLimit(uint64 limit) {_stallLimit = limit;}
 
    /**
-    * Flushes the output buffer by turning off Nagle's Algorithm
-    * and then turning it back on again
+    * Flushes the output buffer by turning off Nagle's Algorithm and then turning it back on again.
+    * If Nagle's Algorithm is disabled, then this call is a no-op (since there is never anything to flush)
     */
    virtual void FlushOutput()
    {
-      SetNaglesAlgorithmEnabled(false);
-      SetNaglesAlgorithmEnabled(true);
+      if ((_sockfd >= 0)&&(_naglesEnabled))
+      {
+         SetSocketNaglesAlgorithmEnabled(_sockfd, false);
+         (void) SendData(_sockfd, NULL, 0, _blocking);  // Force immediate buffer flush!
+         SetSocketNaglesAlgorithmEnabled(_sockfd, true);
+      }
    }
    
    /**
@@ -108,9 +81,9 @@ public:
    {
       if (_sockfd >= 0)
       { 
-         shutdown(_sockfd, 2);  // go away right now, dammit
-         closesocket(_sockfd);  // I'm sticking with closesocket() instead of CloseSocket()
-         _sockfd = -1;          // so that I can avoid having to link in NetworkUtilityFunctions.o
+         ShutdownSocket(_sockfd);  // go away right now, dammit
+         CloseSocket(_sockfd);
+         _sockfd = -1;
       }
    }
 
@@ -126,7 +99,7 @@ public:
     */
    status_t SetBlockingIOEnabled(bool blocking)
    {
-      status_t ret = (_sockfd >= 0) ? SetSocketBlockingEnabled(_sockfd, blocking) : B_ERROR;
+      status_t ret = SetSocketBlockingEnabled(_sockfd, blocking);
       if (ret == B_NO_ERROR) _blocking = blocking;
       return ret;
    }
@@ -139,25 +112,9 @@ public:
     */
    status_t SetNaglesAlgorithmEnabled(bool enabled)
    {
-      if (_sockfd >= 0)
-      {
-#ifdef BEOS_OLD_NETSERVER
-         (void)enabled;   // prevent 'unused var' warning
-         return B_ERROR;  // old networking stack doesn't support this flag
-#else
-         long delay = enabled ? 0 : 1;
-         if (setsockopt(_sockfd, IPPROTO_TCP, TCP_NODELAY, (char *) &delay, sizeof(int)) >= 0)
-         {
-            return B_NO_ERROR;
-         }
-         else
-         {
-            perror("TCPSocketDataIO:SetNaglesAlgorithmEnabled(): setsockopt() failed!");
-            return B_ERROR;
-         }
-#endif
-      }
-      else return B_ERROR;
+      status_t ret = SetSocketNaglesAlgorithmEnabled(_sockfd, enabled);
+      if (ret == B_NO_ERROR) _naglesEnabled = enabled;
+      return ret;
    }
 
    /**
@@ -173,20 +130,20 @@ public:
     */
    int GetSocket() const {return _sockfd;}
 
-private:
-   int CalculateReturnValue(int ret) const
-   {
-      int retForBlocking = ((ret == 0) ? -1 : ret);
-#ifdef WIN32
-      bool isBlocking = (WSAGetLastError() == WSAEWOULDBLOCK);
-#else
-      bool isBlocking = (errno == EWOULDBLOCK);
-#endif
-      return (_blocking) ? retForBlocking : (((ret < 0)&&(isBlocking)) ? 0 : retForBlocking); 
-   }
+   /** Returns true iff our socket is set to use blocking I/O (as specified in
+    *  the constructor or in our SetBlockingIOEnabled() method)
+    */
+   bool IsBlockingIOEnabled() const {return _blocking;}
 
+   /** Returns true iff our socket has Nagle's algorithm enabled (as specified
+    *  in our SetNaglesAlgorithmEnabled() method.  Default state is true.
+    */
+   bool IsNaglesAlgorithmEnabled() const {return _naglesEnabled;}
+
+private:
    int _sockfd;
    bool _blocking;
+   bool _naglesEnabled;
    uint64 _stallLimit;
 };
 

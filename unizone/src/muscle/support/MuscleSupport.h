@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.25"
+#define MUSCLE_VERSION_STRING "2.40b2"
 
 // Just declare the muscle namespace as existing.
 // If we ever decide to make the muscle namespace a superset
@@ -47,15 +47,24 @@ namespace muscle
 #endif
 
 #ifndef NEW_H_NOT_AVAILABLE
-# include <new.h>
+# include <new>
+using std::bad_alloc;
+using std::nothrow_t;
+using std::nothrow;
+using std::new_handler;
+using std::set_new_handler;
 #else
-# define newnothrow new
+# define MUSCLE_AVOID_NEWNOTHROW
 #endif
 
 #define WARN_OUT_OF_MEMORY muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  (%s:%i)\n",__FILE__,__LINE__)
 
 #ifndef newnothrow
-# define newnothrow new (nothrow) 
+# ifdef MUSCLE_AVOID_NEWNOTHROW
+#  define newnothrow new
+# else
+#  define newnothrow new (nothrow) 
+# endif
 #endif
 
 #ifdef __BEOS__
@@ -71,6 +80,8 @@ namespace muscle
 
 #define UNLESS(x) if(!(x))
 #define ARRAYITEMS(x) (sizeof(x)/sizeof(x[0]))  // returns # of items in array
+
+typedef void * muscleVoidPointer;  // it's a bit easier, syntax-wise, to use this type than (void *) directly in some cases.
 
 #ifdef __BEOS__
 # include <support/Errors.h>
@@ -91,7 +102,6 @@ namespace muscle
 # endif
 # ifdef __ATHEOS__
 #  include </ainc/atheos/types.h>
-   typedef uint32                  type_code;
 # else
 #  ifndef MUSCLE_TYPES_PREDEFINED  /* certain (ahem) projects already set these themselves... */
 #   define true                     1
@@ -111,7 +121,6 @@ namespace muscle
 #   endif
     typedef unsigned char           uchar;
     typedef unsigned short          unichar;                   
-    typedef uint32                  type_code;
     typedef int32                   status_t;
 #  endif  /* !MUSCLE_TYPES_PREDEFINED */
 # endif  /* !__ATHEOS__*/
@@ -128,14 +137,14 @@ namespace muscle
 // because gcc whines like a little girl about the four-byte
 // constants when compiling under Linux --jaf
 enum {
-   B_ANY_TYPE 	  = 1095653716, // 'ANYT',  // wild card
-   B_BOOL_TYPE 	  = 1112493900, // 'BOOL',
+   B_ANY_TYPE     = 1095653716, // 'ANYT',  // wild card
+   B_BOOL_TYPE    = 1112493900, // 'BOOL',
    B_DOUBLE_TYPE  = 1145195589, // 'DBLE',
    B_FLOAT_TYPE   = 1179406164, // 'FLOT',
    B_INT64_TYPE   = 1280069191, // 'LLNG',
    B_INT32_TYPE   = 1280265799, // 'LONG',
    B_INT16_TYPE   = 1397248596, // 'SHRT',
-   B_INT8_TYPE 	  = 1113150533, // 'BYTE',
+   B_INT8_TYPE    = 1113150533, // 'BYTE',
    B_MESSAGE_TYPE = 1297303367, // 'MSGG',
    B_POINTER_TYPE = 1347310674, // 'PNTR',
    B_POINT_TYPE   = 1112559188, // 'BPNT',
@@ -211,7 +220,10 @@ template<typename T> inline bool muscleInRange(const T & v, const T& lo, const T
 template<typename T> inline int muscleCompare(const T & arg1, const T & arg2) {return (arg1>arg2) ? 1 : ((arg1<arg2) ? -1 : 0);}
 
 /** Returns the absolute value of (arg) */
-template<typename T> inline int muscleAbs(const T & arg) {return (arg<0)?(-arg):arg;}
+template<typename T> inline T muscleAbs(const T & arg) {return (arg<0)?(-arg):arg;}
+
+/** Rounds the given float to the nearest integer value. */
+inline int muscleRintf(float f) {return (f>=0.0f) ? ((int)(f+0.5f)) : -((int)((-f)+0.5f));}
 
 #ifndef __BEOS__
 # if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) // Cygwin is for Windows on x86, hence little endian
@@ -221,64 +233,64 @@ template<typename T> inline int muscleAbs(const T & arg) {return (arg<0)?(-arg):
 # elif defined(__FreeBSD__) || defined(__APPLE__)
 #  include <machine/endian.h>
 # else
-#  include <endian.h>  // (non-standard) POSIX include, defines BYTE_ORDER as LITTLE_ENDIAN or BIG_ENDIAN
+#  include <endian.h>  // (non-standard) POSIX-ish include, defines BYTE_ORDER as LITTLE_ENDIAN or BIG_ENDIAN
 # endif
-# define SWAP_DOUBLE(arg)   muscleSwapBytes((double)arg)
-# define SWAP_FLOAT(arg)    muscleSwapBytes((float)arg)
-# define SWAP_INT64(arg)    muscleSwapBytes((uint64)arg)
-# define SWAP_INT32(arg)    muscleSwapBytes((uint32)arg)
-# define SWAP_INT16(arg)    muscleSwapBytes((uint16)arg)
+# define SWAP_DOUBLE(arg)   muscleSwapBytes((double)(arg))
+# define SWAP_FLOAT(arg)    muscleSwapBytes((float)(arg))
+# define SWAP_INT64(arg)    muscleSwapBytes((uint64)(arg))
+# define SWAP_INT32(arg)    muscleSwapBytes((uint32)(arg))
+# define SWAP_INT16(arg)    muscleSwapBytes((uint16)(arg))
 # if BYTE_ORDER == LITTLE_ENDIAN
 #  define B_HOST_IS_LENDIAN 1
 #  define B_HOST_IS_BENDIAN 0
-#  define B_HOST_TO_LENDIAN_DOUBLE(arg)	(double)(arg)
-#  define B_HOST_TO_LENDIAN_FLOAT(arg)	(float)(arg)
-#  define B_HOST_TO_LENDIAN_INT64(arg)	(uint64)(arg)
-#  define B_HOST_TO_LENDIAN_INT32(arg)	(uint32)(arg)
-#  define B_HOST_TO_LENDIAN_INT16(arg)	(uint16)(arg)
-#  define B_HOST_TO_BENDIAN_DOUBLE(arg)	SWAP_DOUBLE(arg)
-#  define B_HOST_TO_BENDIAN_FLOAT(arg)	SWAP_FLOAT(arg)
-#  define B_HOST_TO_BENDIAN_INT64(arg)	SWAP_INT64(arg)
-#  define B_HOST_TO_BENDIAN_INT32(arg)	SWAP_INT32(arg)
-#  define B_HOST_TO_BENDIAN_INT16(arg)	SWAP_INT16(arg)
-#  define B_LENDIAN_TO_HOST_DOUBLE(arg)	(double)(arg)
-#  define B_LENDIAN_TO_HOST_FLOAT(arg)	(float)(arg)
-#  define B_LENDIAN_TO_HOST_INT64(arg)	(uint64)(arg)
-#  define B_LENDIAN_TO_HOST_INT32(arg)	(uint32)(arg)
-#  define B_LENDIAN_TO_HOST_INT16(arg)	(uint16)(arg)
-#  define B_BENDIAN_TO_HOST_DOUBLE(arg)	SWAP_DOUBLE(arg)
-#  define B_BENDIAN_TO_HOST_FLOAT(arg)	SWAP_FLOAT(arg)
-#  define B_BENDIAN_TO_HOST_INT64(arg)	SWAP_INT64(arg)
-#  define B_BENDIAN_TO_HOST_INT32(arg)	SWAP_INT32(arg)
-#  define B_BENDIAN_TO_HOST_INT16(arg)	SWAP_INT16(arg)
+#  define B_HOST_TO_LENDIAN_DOUBLE(arg) ((double)(arg))
+#  define B_HOST_TO_LENDIAN_FLOAT(arg)  ((float)(arg))
+#  define B_HOST_TO_LENDIAN_INT64(arg)  ((uint64)(arg))
+#  define B_HOST_TO_LENDIAN_INT32(arg)  ((uint32)(arg))
+#  define B_HOST_TO_LENDIAN_INT16(arg)  ((uint16)(arg))
+#  define B_HOST_TO_BENDIAN_DOUBLE(arg) SWAP_DOUBLE(arg)
+#  define B_HOST_TO_BENDIAN_FLOAT(arg)  SWAP_FLOAT(arg)
+#  define B_HOST_TO_BENDIAN_INT64(arg)  SWAP_INT64(arg)
+#  define B_HOST_TO_BENDIAN_INT32(arg)  SWAP_INT32(arg)
+#  define B_HOST_TO_BENDIAN_INT16(arg)  SWAP_INT16(arg)
+#  define B_LENDIAN_TO_HOST_DOUBLE(arg) ((double)(arg))
+#  define B_LENDIAN_TO_HOST_FLOAT(arg)  ((float)(arg))
+#  define B_LENDIAN_TO_HOST_INT64(arg)  ((uint64)(arg))
+#  define B_LENDIAN_TO_HOST_INT32(arg)  ((uint32)(arg))
+#  define B_LENDIAN_TO_HOST_INT16(arg)  ((uint16)(arg))
+#  define B_BENDIAN_TO_HOST_DOUBLE(arg) SWAP_DOUBLE(arg)
+#  define B_BENDIAN_TO_HOST_FLOAT(arg)  SWAP_FLOAT(arg)
+#  define B_BENDIAN_TO_HOST_INT64(arg)  SWAP_INT64(arg)
+#  define B_BENDIAN_TO_HOST_INT32(arg)  SWAP_INT32(arg)
+#  define B_BENDIAN_TO_HOST_INT16(arg)  SWAP_INT16(arg)
 # else /* LITTLE_ENDIAN */
 #  define B_HOST_IS_LENDIAN 0
 #  define B_HOST_IS_BENDIAN 1
-#  define B_HOST_TO_LENDIAN_DOUBLE(arg)	SWAP_DOUBLE(arg)
-#  define B_HOST_TO_LENDIAN_FLOAT(arg)	SWAP_FLOAT(arg)
-#  define B_HOST_TO_LENDIAN_INT64(arg)	SWAP_INT64(arg)
-#  define B_HOST_TO_LENDIAN_INT32(arg)	SWAP_INT32(arg)
-#  define B_HOST_TO_LENDIAN_INT16(arg)	SWAP_INT16(arg)
-#  define B_HOST_TO_BENDIAN_DOUBLE(arg)	(double)(arg)
-#  define B_HOST_TO_BENDIAN_FLOAT(arg)	(float)(arg)
-#  define B_HOST_TO_BENDIAN_INT64(arg)	(uint64)(arg)
-#  define B_HOST_TO_BENDIAN_INT32(arg)	(uint32)(arg)
-#  define B_HOST_TO_BENDIAN_INT16(arg)	(uint16)(arg)
-#  define B_LENDIAN_TO_HOST_DOUBLE(arg)	SWAP_DOUBLE(arg)
-#  define B_LENDIAN_TO_HOST_FLOAT(arg)	SWAP_FLOAT(arg)
-#  define B_LENDIAN_TO_HOST_INT64(arg)	SWAP_INT64(arg)
-#  define B_LENDIAN_TO_HOST_INT32(arg)	SWAP_INT32(arg)
-#  define B_LENDIAN_TO_HOST_INT16(arg)	SWAP_INT16(arg)
-#  define B_BENDIAN_TO_HOST_DOUBLE(arg)	(double)(arg)
-#  define B_BENDIAN_TO_HOST_FLOAT(arg)	(float)(arg)
-#  define B_BENDIAN_TO_HOST_INT64(arg)	(uint64)(arg)
-#  define B_BENDIAN_TO_HOST_INT32(arg)	(uint32)(arg)
-#  define B_BENDIAN_TO_HOST_INT16(arg)	(uint16)(arg)
+#  define B_HOST_TO_LENDIAN_DOUBLE(arg) SWAP_DOUBLE(arg)
+#  define B_HOST_TO_LENDIAN_FLOAT(arg)  SWAP_FLOAT(arg)
+#  define B_HOST_TO_LENDIAN_INT64(arg)  SWAP_INT64(arg)
+#  define B_HOST_TO_LENDIAN_INT32(arg)  SWAP_INT32(arg)
+#  define B_HOST_TO_LENDIAN_INT16(arg)  SWAP_INT16(arg)
+#  define B_HOST_TO_BENDIAN_DOUBLE(arg) ((double)(arg))
+#  define B_HOST_TO_BENDIAN_FLOAT(arg)  ((float)(arg))
+#  define B_HOST_TO_BENDIAN_INT64(arg)  ((uint64)(arg))
+#  define B_HOST_TO_BENDIAN_INT32(arg)  ((uint32)(arg))
+#  define B_HOST_TO_BENDIAN_INT16(arg)  ((uint16)(arg))
+#  define B_LENDIAN_TO_HOST_DOUBLE(arg) SWAP_DOUBLE(arg)
+#  define B_LENDIAN_TO_HOST_FLOAT(arg)  SWAP_FLOAT(arg)
+#  define B_LENDIAN_TO_HOST_INT64(arg)  SWAP_INT64(arg)
+#  define B_LENDIAN_TO_HOST_INT32(arg)  SWAP_INT32(arg)
+#  define B_LENDIAN_TO_HOST_INT16(arg)  SWAP_INT16(arg)
+#  define B_BENDIAN_TO_HOST_DOUBLE(arg) ((double)(arg))
+#  define B_BENDIAN_TO_HOST_FLOAT(arg)  ((float)(arg))
+#  define B_BENDIAN_TO_HOST_INT64(arg)  ((uint64)(arg))
+#  define B_BENDIAN_TO_HOST_INT32(arg)  ((uint32)(arg))
+#  define B_BENDIAN_TO_HOST_INT16(arg)  ((uint16)(arg))
 # endif /* !LITTLE_ENDIAN */
 #endif /* !__BEOS__ */
 
-//:Macro to turn a type_code into a string representation.
-// (typecode) is the type_code to get the string for
+//:Macro to turn a type code into a string representation.
+// (typecode) is the type code to get the string for
 // (buf) is a (char *) to hold the output string; it must be >= 5 bytes long.
 #define MakePrettyTypeCodeString(typecode, buf)                     \
    {                                                                \

@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDataIO_h
 #define MuscleDataIO_h
@@ -58,6 +58,12 @@ public:
     */
    virtual status_t Seek(int64 offset, int whence) = 0;
 
+   /**
+    * Should return the current position, in bytes, of the stream from 
+    * its start position, or -1 if the current position is not known.
+    */
+   virtual int64 GetPosition() const = 0;
+
    /** 
     * Returns the max number of microseconds to allow
     * for an output stall, before presuming that the I/O is hosed.
@@ -100,6 +106,21 @@ public:
     */
    virtual status_t GetReadByteTimeStamp(int32 /*whichByte*/, uint64 & /*retStamp*/) const {return B_ERROR;}
 
+   /**
+    * Optional:  If your DataIO subclass is holding buffered data that it wants
+    *            to output as soon as possible but hasn't been able to yet,
+    *            then override this method to return true, and that will cause
+    *            FlushBufferedOutput() to be called ASAP.  Default implementation
+    *            always returns false.
+    */
+   virtual bool HasBufferedOutput() const {return false;}
+
+   /**
+    * Optional:  If this DataIO is holding any buffered output data, this method should 
+    *            be implemented to Write() as much of that data as possible.  Default 
+    *            implementation is a no-op.
+    */
+   virtual void WriteBufferedOutput() {/* empty */}
 };
 
 typedef Ref<DataIO> DataIORef;

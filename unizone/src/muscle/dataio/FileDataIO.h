@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleFileDataIO_h
 #define MuscleFileDataIO_h
@@ -57,7 +57,7 @@ public:
    }
 
    /** Seeks to the specified point in the file.
-    *  Note that this subclass only supports 32-bit offsets.
+    *  @note this subclass only supports 32-bit offsets.
     *  @param offset Where to seek to.
     *  @param whence IO_SEEK_SET, IO_SEEK_CUR, or IO_SEEK_END. 
     *  @return B_NO_ERROR on success, B_ERROR on failure.
@@ -78,6 +78,14 @@ public:
       return B_ERROR;
    }
    
+   /** Returns our current position in the file.
+    *  @note this subclass only supports 32-bit offsets.
+    */
+   virtual int64 GetPosition() const
+   {
+      return _file ? (int64) ftell(_file) : -1;
+   }
+
    /** Flushes the file output by calling fflush() */
    virtual void FlushOutput() {if (_file) fflush(_file);}
    

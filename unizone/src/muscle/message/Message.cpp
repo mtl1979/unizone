@@ -1,7 +1,7 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
-#include <new.h>
 #include <stdio.h>
+#include "util/ByteBuffer.h"
 #include "util/Queue.h"
 #include "message/Message.h"
 
@@ -15,10 +15,6 @@ static void DoIndents(uint32 num, String & s) {for (uint32 i=0; i<num; i++) s +=
 static void ClearMsgFunc(Message * msg, void *) {msg->what = 0; msg->Clear();}
 static MessageRef::ItemPool _messagePool(100, ClearMsgFunc);
 MessageRef::ItemPool * GetMessagePool() {return &_messagePool;}
-
-static void ClearBufferFunc(ByteBuffer * buf, void *) {buf->Clear();}
-static ByteBufferRef::ItemPool _bufferPool(100, ClearBufferFunc);
-ByteBufferRef::ItemPool * GetByteBufferPool() {return &_bufferPool;}
 
 #define DECLARECLONE(X)                           \
    GenericRef X :: Clone() const                  \
@@ -35,7 +31,7 @@ ByteBufferRef::ItemPool * GetByteBufferPool() {return &_bufferPool;}
 #else
 # define FIELDPOOL(X) (&_pool##X)
 # define NEWFIELD(X)  _pool##X.ObtainObject()
-# define DECLAREFIELDTYPE(X) static void Clear##X(X * obj, void *) {obj->Clear();} static ObjectPool<X> _pool##X(100, Clear##X); DECLARECLONE(X)
+# define DECLAREFIELDTYPE(X) static void Clear##X(X * obj, void *) {obj->Clear(obj->GetNumItems() > 100);} static ObjectPool<X> _pool##X(100, Clear##X); DECLARECLONE(X)
 #endif
 
 MessageRef GetMessageFromPool(uint32 what)
@@ -49,24 +45,6 @@ MessageRef GetMessageFromPool(const Message & copyMe)
 {
    MessageRef ref(_messagePool.ObtainObject(), &_messagePool);
    if (ref()) *(ref()) = copyMe;
-   return ref;
-}
-
-ByteBufferRef GetByteBufferFromPool(uint32 numBytes, const void * buffer, bool copyBuffer)
-{
-   ByteBufferRef ref(_bufferPool.ObtainObject(), &_bufferPool);
-   if ((ref())&&(ref()->SetBuffer(numBytes, buffer, copyBuffer) != B_NO_ERROR)) ref.Reset();  // return NULL ref on out-of-memory
-   return ref;
-}
-
-ByteBufferRef GetByteBufferFromPool(const ByteBuffer & copyMe)
-{
-   ByteBufferRef ref(_bufferPool.ObtainObject(), &_bufferPool);
-   if (ref())
-   {
-      *(ref()) = copyMe;
-      if ((copyMe())&&((*ref())() == NULL)) ref.Reset();  // return NULL ref on out-of-memory
-   }
    return ref;
 }
 
@@ -87,7 +65,7 @@ public:
    virtual status_t PrependDataItem(const void * data, uint32 size) = 0;
 
    // Clears the array
-   virtual void Clear() = 0;
+   virtual void Clear(bool releaseDataBuffers) = 0;
 
    // Sets (setDataLoc) to point to the (index)'th item in our array.
    // Result is not guaranteed to remain valid after this object is modified.
@@ -141,7 +119,7 @@ public:
 
    virtual uint32 GetNumItems() const {return _data.GetNumItems();}
 
-   virtual void Clear() {_data.Clear();}
+   virtual void Clear(bool releaseDataBuffers) {_data.Clear(releaseDataBuffers);}
 
    virtual status_t AddDataItem(const void * item, uint32 size)
    {
@@ -218,7 +196,7 @@ public:
       return B_NO_ERROR;  // just to keep the compiler happy
    }
 
-   virtual type_code TypeCode() const {return B_TAG_TYPE;}
+   virtual uint32 TypeCode() const {return B_TAG_TYPE;}
 
    virtual GenericRef Clone() const; 
 
@@ -287,7 +265,7 @@ public:
       else return B_ERROR;
    }
 
-   virtual type_code TypeCode() const {return _typeCode;}
+   virtual uint32 TypeCode() const {return _typeCode;}
 
 protected:
    virtual void AddToString(String & s, bool, int indent) const
@@ -306,7 +284,7 @@ protected:
    virtual void AddItemToString(String & s, const DataType & item) const = 0;
 
 private:
-   type_code _typeCode;
+   uint32 _typeCode;
    uint32 _flatItemSize;
 };
 
@@ -401,7 +379,7 @@ public:
    Int8DataArray() {/* empty */}
    virtual ~Int8DataArray() {/* empty */}
 
-   virtual type_code TypeCode() const {return B_INT8_TYPE;}
+   virtual uint32 TypeCode() const {return B_INT8_TYPE;}
 
    virtual const char * GetFormatString() const {return "%i";}
  
@@ -426,7 +404,7 @@ public:
    BoolDataArray() {/* empty */}
    virtual ~BoolDataArray() {/* empty */}
 
-   virtual type_code TypeCode() const {return B_BOOL_TYPE;}
+   virtual uint32 TypeCode() const {return B_BOOL_TYPE;}
 
    virtual const char * GetFormatString() const {return "%i";}
 
@@ -474,7 +452,7 @@ public:
    Int16DataArray() {/* empty */}
    virtual ~Int16DataArray() {/* empty */}
 
-   virtual type_code TypeCode() const {return B_INT16_TYPE;}
+   virtual uint32 TypeCode() const {return B_INT16_TYPE;}
 
    virtual const char * GetFormatString() const {return "%i";}
 
@@ -503,7 +481,7 @@ public:
    Int32DataArray() {/* empty */}
    virtual ~Int32DataArray() {/* empty */}
 
-   virtual type_code TypeCode() const {return B_INT32_TYPE;}
+   virtual uint32 TypeCode() const {return B_INT32_TYPE;}
 
    virtual const char * GetFormatString() const {return "%li";}
 
@@ -532,7 +510,7 @@ public:
    Int64DataArray() {/* empty */}
    virtual ~Int64DataArray() {/* empty */}
 
-   virtual type_code TypeCode() const {return B_INT64_TYPE;}
+   virtual uint32 TypeCode() const {return B_INT64_TYPE;}
 
 #ifdef __MWERKS__
    virtual const char * GetFormatString() const {return "%Li";}
@@ -565,7 +543,7 @@ public:
    FloatDataArray() {/* empty */}
    virtual ~FloatDataArray() {/* empty */}
 
-   virtual type_code TypeCode() const {return B_FLOAT_TYPE;}
+   virtual uint32 TypeCode() const {return B_FLOAT_TYPE;}
 
    virtual const char * GetFormatString() const {return "%f";}
 
@@ -594,7 +572,7 @@ public:
    DoubleDataArray() {/* empty */}
    virtual ~DoubleDataArray() {/* empty */}
 
-   virtual type_code TypeCode() const {return B_DOUBLE_TYPE;}
+   virtual uint32 TypeCode() const {return B_DOUBLE_TYPE;}
 
    virtual const char * GetFormatString() const {return "%lf";}
 
@@ -623,7 +601,7 @@ public:
    PointerDataArray() {/* empty */}
    virtual ~PointerDataArray() {/* empty */}
 
-   virtual type_code TypeCode() const {return B_POINTER_TYPE;}
+   virtual uint32 TypeCode() const {return B_POINTER_TYPE;}
 
    virtual const char * GetFormatString() const {return "%p";}
 
@@ -652,11 +630,11 @@ template <class RefType> class FlatCountableRefDataArray : public FixedSizeDataA
 {
 public:
    FlatCountableRefDataArray() : _typeCode(0) {/* empty */}
-   FlatCountableRefDataArray(type_code tc) : _typeCode(tc) {/* empty */}
+   FlatCountableRefDataArray(uint32 tc) : _typeCode(tc) {/* empty */}
    virtual ~FlatCountableRefDataArray() {/* empty */}
 
    /** Sets our type code.  Typically called after using the default ctor. */
-   void SetTypeCode(type_code tc) {_typeCode = tc;}
+   void SetTypeCode(uint32 tc) {_typeCode = tc;}
 
    virtual uint32 GetItemSize(uint32 index) const 
    {
@@ -664,7 +642,7 @@ public:
       return msg ? msg->FlattenedSize() : 0;
    }
 
-   virtual type_code TypeCode() const {return _typeCode;}
+   virtual uint32 TypeCode() const {return _typeCode;}
 
    virtual bool ElementsAreFixedSize() const {return false;}
 
@@ -710,7 +688,7 @@ public:
    }
 
 private:
-   type_code _typeCode;
+   uint32 _typeCode;
 };
 
 // An array of ByteBufferRefs.
@@ -718,12 +696,12 @@ class ByteBufferDataArray : public FlatCountableRefDataArray<FlatCountableRef>
 {
 public:
    ByteBufferDataArray() {/* empty */}
-   ByteBufferDataArray(type_code tc) : FlatCountableRefDataArray<FlatCountableRef>(tc) {/* empty */}
+   ByteBufferDataArray(uint32 tc) : FlatCountableRefDataArray<FlatCountableRef>(tc) {/* empty */}
    virtual ~ByteBufferDataArray() {/* empty */}
 
    virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
    {
-      Clear();
+      Clear(false);
 
       uint32 readOffset = 0;
 
@@ -778,7 +756,7 @@ public:
                s += '[';
                for (uint32 j=0; j<printBytes; j++) 
                {
-                  sprintf(buf, "%02x%s", ((const uint8*)(bb->GetBuffer()))[j], (j<printBytes-1)?" ":"");
+                  sprintf(buf, "%02x%s", (bb->GetBuffer())[j], (j<printBytes-1)?" ":"");
                   s += buf;
                }
                if (printBytes > 10) s += " ...";
@@ -823,7 +801,7 @@ public:
 
    virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
    {
-      Clear();
+      Clear(false);
 
       uint32 readOffset = 0;
       while(readOffset < numBytes)
@@ -940,7 +918,7 @@ public:
 
    virtual status_t Unflatten(const uint8 *buffer, uint32 inputBufferBytes)
    {
-      Clear();
+      Clear(false);
 
       uint32 networkByteOrder;
       uint32 readOffset = 0;
@@ -968,7 +946,7 @@ public:
    StringDataArray() {/* empty */}
    virtual ~StringDataArray() {/* empty */}
 
-   virtual type_code TypeCode() const {return B_STRING_TYPE;}
+   virtual uint32 TypeCode() const {return B_STRING_TYPE;}
 
    virtual GenericRef Clone() const;
 
@@ -993,7 +971,7 @@ MessageFieldNameIterator :: MessageFieldNameIterator() : _typeCode(B_ANY_TYPE)
    // empty
 }
 
-MessageFieldNameIterator :: MessageFieldNameIterator(const HashtableIterator<String, GenericRef> & iter, type_code tc) : HashtableIterator<String, GenericRef>(iter), _typeCode(tc)
+MessageFieldNameIterator :: MessageFieldNameIterator(const HashtableIterator<String, GenericRef> & iter, uint32 tc) : HashtableIterator<String, GenericRef>(iter), _typeCode(tc)
 {
    // empty
 }
@@ -1105,7 +1083,7 @@ Message & Message :: operator=(const Message &rhs)
    return *this;
 }
 
-status_t Message :: GetInfo(const String & name, type_code * type, uint32 * c, bool * fixedSize) const
+status_t Message :: GetInfo(const String & name, uint32 * type, uint32 * c, bool * fixedSize) const
 {
    const AbstractDataArray * array = GetArray(name, B_ANY_TYPE);
    if (array == NULL) return B_ERROR;
@@ -1115,7 +1093,7 @@ status_t Message :: GetInfo(const String & name, type_code * type, uint32 * c, b
    return B_NO_ERROR;
 }
 
-uint32 Message :: CountNames(type_code type) const 
+uint32 Message :: CountNames(uint32 type) const 
 {
    if (type == B_ANY_TYPE) return _entries.GetNumItems();
 
@@ -1163,7 +1141,7 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
    while((nextKey = it.GetNextKey()) != NULL) 
    {
        const AbstractDataArray * nextValue = (const AbstractDataArray *)((*it.GetNextValue())());
-       type_code tc = nextValue->TypeCode();
+       uint32 tc = nextValue->TypeCode();
        MakePrettyTypeCodeString(tc, prettyTypeCodeBuf);
        DoIndents(indent,s); 
        sprintf(buf, "  Entry: Name=[%s], GetNumItems()=%li, TypeCode()='%s' (%li) flatSize=%lu\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, (uint32)nextValue->FlattenedSize()); 
@@ -1173,21 +1151,21 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
 }
 
 // Returns an pointer to a held array of the given type, if it exists.  If (tc) is B_ANY_TYPE, then any type array is acceptable.
-AbstractDataArray * Message :: GetArray(const String & arrayName, type_code tc) const
+AbstractDataArray * Message :: GetArray(const String & arrayName, uint32 tc) const
 {
    GenericRef * array;
    return (((array = _entries.Get(arrayName)) != NULL)&&((tc == B_ANY_TYPE)||(tc == ((const AbstractDataArray *)array->GetItemPointer())->TypeCode()))) ? ((AbstractDataArray *)array->GetItemPointer()) : NULL;
 }
 
 // Returns an pointer to a held array of the given type, if it exists.  If (tc) is B_ANY_TYPE, then any type array is acceptable.
-GenericRef Message :: GetArrayRef(const String & arrayName, type_code tc) const
+GenericRef Message :: GetArrayRef(const String & arrayName, uint32 tc) const
 {
    GenericRef array;
    if ((_entries.Get(arrayName, array) == B_NO_ERROR)&&(tc != B_ANY_TYPE)&&(tc != ((const AbstractDataArray *)array())->TypeCode())) array.Reset();
    return array;
 }
 
-AbstractDataArray * Message :: GetOrCreateArray(const String & arrayName, type_code tc)
+AbstractDataArray * Message :: GetOrCreateArray(const String & arrayName, uint32 tc)
 {
    {
       AbstractDataArray * nextEntry = GetArray(arrayName, tc);
@@ -1355,7 +1333,7 @@ status_t Message :: Unflatten(const uint8 *buffer, uint32 inputBufferBytes)
 
       // Read entry type code
       if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
-      type_code tc = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
+      uint32 tc = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
 
       // Read entry data length
       if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
@@ -1375,7 +1353,7 @@ status_t Message :: Unflatten(const uint8 *buffer, uint32 inputBufferBytes)
    return B_NO_ERROR;
 }
 
-status_t Message :: AddFlatBuffer(const String & name, const Flattenable & flat, type_code tc, bool prepend)
+status_t Message :: AddFlatBuffer(const String & name, const Flattenable & flat, uint32 tc, bool prepend)
 {
    FlatCountableRef fcRef(GetByteBufferFromPool(flat.FlattenedSize()).GetGeneric(), true);
    if ((fcRef())&&(fcRef()->CopyFrom(flat) == B_NO_ERROR))
@@ -1386,7 +1364,7 @@ status_t Message :: AddFlatBuffer(const String & name, const Flattenable & flat,
    return B_ERROR;
 }
 
-status_t Message :: AddFlatRef(const String & name, FlatCountableRef ref, type_code tc, bool prepend)
+status_t Message :: AddFlatRef(const String & name, FlatCountableRef ref, uint32 tc, bool prepend)
 {
    AbstractDataArray * array = GetOrCreateArray(name, tc);
    return (array) ? (prepend ? array->PrependDataItem(&ref, sizeof(ref)) : array->AddDataItem(&ref, sizeof(ref))) : B_ERROR;
@@ -1489,7 +1467,7 @@ status_t Message :: AddFlat(const String &name, FlatCountableRef ref)
    FlatCountable * fc = ref();
    if (fc)
    {
-      type_code tc = fc->TypeCode();
+      uint32 tc = fc->TypeCode();
       switch(tc)
       {
          case B_MESSAGE_TYPE: return AddMessage(name, MessageRef(ref.GetGeneric(), true));
@@ -1500,7 +1478,7 @@ status_t Message :: AddFlat(const String &name, FlatCountableRef ref)
    return B_ERROR;   
 }
 
-uint32 Message :: GetElementSize(type_code type) const
+uint32 Message :: GetElementSize(uint32 type) const
 {
    switch(type)
    {
@@ -1520,7 +1498,7 @@ uint32 Message :: GetElementSize(type_code type) const
    }
 }
 
-status_t Message :: AddDataAux(const String &name, const void *data, uint32 numBytes, type_code tc, bool prepend)
+status_t Message :: AddDataAux(const String &name, const void *data, uint32 numBytes, uint32 tc, bool prepend)
 {
    if (numBytes == 0) return B_ERROR;   // can't add 0 bytes, that's silly
    if (tc == B_STRING_TYPE) 
@@ -1553,7 +1531,7 @@ status_t Message :: AddDataAux(const String &name, const void *data, uint32 numB
       uint32 addSize = elementSize;
       if (isVariableSize)
       {
-         ByteBufferRef bufRef = GetByteBufferFromPool(elementSize, dataToAdd);
+         ByteBufferRef bufRef = GetByteBufferFromPool(elementSize, (const uint8 *)dataToAdd);
          if (bufRef() == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
          fcRef.SetFromGeneric(bufRef.GetGeneric());
          dataToAdd = &fcRef;
@@ -1567,11 +1545,6 @@ status_t Message :: AddDataAux(const String &name, const void *data, uint32 numB
 status_t Message :: RemoveName(const String & name) 
 {
    return _entries.Remove(name);
-}
-
-void Message :: Clear() 
-{
-   _entries.Clear();
 }
 
 status_t Message :: RemoveData(const String &name, uint32 index) 
@@ -1612,7 +1585,7 @@ status_t Message :: FindFlat(const String & name, uint32 index, Flattenable & fl
    const AbstractDataArray * ada = GetArray(name, B_ANY_TYPE);
    if ((ada)&&(index < ada->GetNumItems()))
    {
-      type_code arrayType = ada->TypeCode();
+      uint32 arrayType = ada->TypeCode();
       if (flat.AllowsTypeCode(arrayType))
       {
          switch(arrayType)
@@ -1670,7 +1643,7 @@ status_t Message :: FindFlat(const String &name, uint32 index, FlatCountableRef 
    return B_ERROR;
 }
 
-status_t Message :: FindData(const String & name, type_code tc, uint32 index, const void ** data, uint32 * setSize) const
+status_t Message :: FindData(const String & name, uint32 tc, uint32 index, const void ** data, uint32 * setSize) const
 {
    const AbstractDataArray * array = GetArray(name, tc);
    if ((array)&&(array->FindDataItem(index, data) == B_NO_ERROR))
@@ -1717,7 +1690,7 @@ status_t Message :: FindData(const String & name, type_code tc, uint32 index, co
    else return B_ERROR;
 }
 
-status_t Message :: FindDataItemAux(const String & name, uint32 index, type_code tc, void * setValue, uint32 valueSize) const
+status_t Message :: FindDataItemAux(const String & name, uint32 index, uint32 tc, void * setValue, uint32 valueSize) const
 {
    const AbstractDataArray * array = GetArray(name, tc);
    if (array == NULL) return B_ERROR;
@@ -1775,7 +1748,7 @@ status_t Message :: FindMessage(const String & name, uint32 index, MessageRef & 
    return B_NO_ERROR;
 }
 
-status_t Message :: FindDataPointer(const String &name, type_code tc, uint32 index, void **data, uint32 *setSize) const 
+status_t Message :: FindDataPointer(const String &name, uint32 tc, uint32 index, void **data, uint32 *setSize) const 
 {
    const void * dataLoc;
    status_t ret = FindData(name, tc, index, &dataLoc, setSize);
@@ -1794,7 +1767,7 @@ status_t Message :: ReplaceString(bool okayToAdd, const String &name, uint32 ind
    return array ? array->ReplaceDataItem(index, &string, sizeof(string)) : B_ERROR;
 }
 
-status_t Message :: ReplaceDataAux(bool okayToAdd, const String & name, uint32 index, void * dataBuf, uint32 bufSize, type_code tc)
+status_t Message :: ReplaceDataAux(bool okayToAdd, const String & name, uint32 index, void * dataBuf, uint32 bufSize, uint32 tc)
 {
    AbstractDataArray * array = GetArray(name, tc);
    if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddDataAux(name, dataBuf, bufSize, tc, false);
@@ -1909,7 +1882,7 @@ status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index
    const FlatCountable * fc = ref();
    if (fc)
    {
-      type_code tc = fc->TypeCode();
+      uint32 tc = fc->TypeCode();
       AbstractDataArray * array = GetArray(name, tc);
       if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddFlat(name, ref);
       if (array)
@@ -1932,7 +1905,7 @@ status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index
    return B_ERROR;
 }
 
-status_t Message :: ReplaceData(bool okayToAdd, const String &name, type_code type, uint32 index, const void *data, uint32 numBytes) 
+status_t Message :: ReplaceData(bool okayToAdd, const String &name, uint32 type, uint32 index, const void *data, uint32 numBytes) 
 {
    if (type == B_STRING_TYPE) 
    {   
@@ -1964,7 +1937,7 @@ status_t Message :: ReplaceData(bool okayToAdd, const String &name, type_code ty
       uint32 addSize = elementSize;
       if (isVariableSize)
       {
-         ref.SetFromGeneric(GetByteBufferFromPool(elementSize, dataToAdd).GetGeneric());
+         ref.SetFromGeneric(GetByteBufferFromPool(elementSize, (const uint8 *)dataToAdd).GetGeneric());
          if (ref() == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
          dataToAdd = &ref;
          addSize = sizeof(ref);
@@ -1986,7 +1959,7 @@ status_t Message :: MoveName(const String & name, Message &moveTo)
    return B_ERROR;
 }
 
-uint32 Message :: GetNumValuesInName(const String & name, type_code type) const
+uint32 Message :: GetNumValuesInName(const String & name, uint32 type) const
 {
    const AbstractDataArray * array = GetArray(name, type);
    return array ? array->GetNumItems() : 0;
@@ -2102,7 +2075,7 @@ status_t Message :: PrependFlat(const String &name, FlatCountableRef ref)
    FlatCountable * fc = ref();
    if (fc)
    {
-      type_code tc = fc->TypeCode();
+      uint32 tc = fc->TypeCode();
       switch(tc)
       {
          case B_STRING_TYPE:  return B_ERROR;  // sorry, can't do that (Strings aren't FlatCountables)

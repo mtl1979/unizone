@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MusclePulseNode_h
 #define MusclePulseNode_h
@@ -57,14 +57,6 @@ public:
     *                      use this value to compensate for the slippage, if it bothers you)
     */
    virtual void Pulse(uint64 now, uint64 scheduledTime);
-
-   /**
-    * This method gets called once per iteration of the event loop, no matter what.  
-    * That means it may get called a lot, so don't do anything too expensive in this method
-    * if you override it.  Default implementation is a no-op.
-    * @param now The current time, for convenience.
-    */
-   virtual void Tick(uint64 now);
 
    /** 
     *  Adds the given child into our set of child PulseNodes.  Any PulseNode in our

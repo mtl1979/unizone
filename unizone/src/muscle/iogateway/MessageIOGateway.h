@@ -1,26 +1,43 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMessageIOGateway_h
 #define MuscleMessageIOGateway_h
 
 #include "iogateway/AbstractMessageIOGateway.h"
+#include "util/ByteBuffer.h"
+
+#ifdef MUSCLE_ENABLE_ZLIB_ENCODING
+# include "zlib/ZLibCodec.h"
+#endif
 
 namespace muscle {
 
 /**
- * Encoding IDs.  Only MUSCLE_MESSAGE_ENCODING_DEFAULT is supported for now!
+ * Encoding IDs.  As of MUSCLE 2.40, we support vanilla MUSCLE_MESSAGE_ENCODING_DEFAULT and 9 levels of zlib compression!
  */
 enum {
-   MUSCLE_MESSAGE_ENCODING_DEFAULT = 1164862256  // 'Enc0',  /**< just plain ol' flattened Message objects, with no special encoding */
+   MUSCLE_MESSAGE_ENCODING_DEFAULT = 1164862256, // 'Enc0',  /**< just plain ol' flattened Message objects, with no special encoding */
+#ifdef MUSCLE_ENABLE_ZLIB_ENCODING
+   MUSCLE_MESSAGE_ENCODING_ZLIB_1,                           /**< lowest level of zlib compression (most CPU-efficient) */
+   MUSCLE_MESSAGE_ENCODING_ZLIB_2,
+   MUSCLE_MESSAGE_ENCODING_ZLIB_3,
+   MUSCLE_MESSAGE_ENCODING_ZLIB_4,
+   MUSCLE_MESSAGE_ENCODING_ZLIB_5,
+   MUSCLE_MESSAGE_ENCODING_ZLIB_6,                           /**< This is the recommended CPU vs space-savings setting for zlib */
+   MUSCLE_MESSAGE_ENCODING_ZLIB_7,
+   MUSCLE_MESSAGE_ENCODING_ZLIB_8,
+   MUSCLE_MESSAGE_ENCODING_ZLIB_9,                           /**< highest level of zlib compression (most space-efficient) */
+#endif
+   MUSCLE_MESSAGE_ENCODING_END_MARKER = MUSCLE_MESSAGE_ENCODING_DEFAULT+10, /**< Not a valid -- just here to mark the end of the range */
 };
 
 /** Callback function type for flatten/unflatten notification callbacks */
 typedef void (*MessageFlattenedCallback)(MessageRef msgRef, void * userData);
 
 /**
- * A "gateway" object that knows how to send/receive Messages over a wire
- * (via a provided DataIO object). 
- * May be subclassed to change the byte-level protocol, or used as is if the default protocol is desired.
+ * A "gateway" object that knows how to send/receive Messages over a wire, via a provided DataIO object. 
+ * May be subclassed to change the byte-level protocol, or used as-is if the default protocol is desired.
+ * If ZLib compression is desired, be sure to compile with -DMUSCLE_ENABLE_ZLIB_ENCODING
  *
  * The default protocol format used by this class is:
  *   -# 4 bytes (uint32) indicating the flattened size of the message
@@ -36,10 +53,14 @@ class MessageIOGateway : public AbstractMessageIOGateway
 public:
    /** 
     *  Constructor.
-    *  @param encoding The byte-stream format the message should be encoded into.
-    *                  The only supported format is MUSCLE_MESSAGE_ENCODING_DEFAULT, for now.
+    *  @param outgoingEncoding The byte-stream format the message should be encoded into.
+    *                          Should be one of the MUSCLE_MESSAGE_ENCODING_* values.
+    *                          Default is MUSCLE_MESSAGE_ENCODING_DEFAULT, meaning that no
+    *                          compression will be done.  Note that to use any of the
+    *                          MUSCLE_MESSAGE_ENCODING_ZLIB_* encodings, you MUST have
+    *                          defined the compiler symbol -DMUSCLE_ENABLE_ZLIB_ENCODING.
     */
-   MessageIOGateway(int32 encoding = MUSCLE_MESSAGE_ENCODING_DEFAULT);
+   MessageIOGateway(int32 outgoingEncoding = MUSCLE_MESSAGE_ENCODING_DEFAULT);
 
    /**
     *  Destructor.
@@ -47,9 +68,8 @@ public:
     */
    virtual ~MessageIOGateway();
 
-   virtual int32 DoOutput(uint32 maxBytes = MUSCLE_NO_LIMIT);
-   virtual int32 DoInput(uint32 maxBytes = MUSCLE_NO_LIMIT);
    virtual bool HasBytesToOutput() const;
+   virtual void Reset();
 
    /**
     * Lets you specify a function that will be called every time an outgoing
@@ -88,95 +108,93 @@ public:
    /** Returns the current maximum incoming message size, as was set above. */
    uint32 GetMaxIncomingMessageSize() const {return _maxIncomingMessageSize;}
 
+   /** Returns our encoding method, as specified in the constructor or via SetOutgoingEncoding(). */
+   int32 GetOutgoingEncoding() const {return _outgoingEncoding;}
+
+   /** Call this to change the encoding this gateway applies to outgoing Messages.
+     * Note that the encoding change will take place starting with the next Message
+     * that is actually sent, so if any Messages are currently Queued up to be sent,
+     * they will be sent using the new encoding.
+     * Note that to use any of the MUSCLE_MESSAGE_ENCODING_ZLIB_* encodings, 
+     * you MUST have defined the compiler symbol -DMUSCLE_ENABLE_ZLIB_ENCODING.
+     * @param ec Encoding type to use.  Should be one of the MUSCLE_MESSAGE_ENCODING_* constants.
+     */
+   void SetOutgoingEncoding(int32 ec) {_outgoingEncoding = ec;}
+
 protected:
-   /**
-    * Should return the total number of bytes to use for the body buffer for flattening the given message.
-    * @param msg The Message in question.
-    * @return Default implementation returns msg.FlattenedSize().
-    */
-   virtual uint32 GetFlattenedMessageBodySize(const Message & msg) const;
+   virtual int32 DoOutputImplementation(uint32 maxBytes = MUSCLE_NO_LIMIT);
+   virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT);
 
    /**
-    * Flattens (msg) into (buffer) and (header).
-    * @param msg The Message to flatten into a byte array.
-    * @param header A byte array that is GetHeaderSize() bytes long.  FlattenMessage() must write the
-    *               proper header bytes into this array.
-    * @param buffer A byte array that is GetFlattenedMessageBodySize() bytes long.  FlattenMessage()
-    *               must write the proper message body bytes into this array.
-    * @return B_NO_ERROR if the flattening succeeded and the produced bytes should be sent, 
-    *         B_ERROR if flattening failed and/or the produced bytes should not be sent.
-    * The default implementation always returns B_NO_ERROR.
+    * Flattens a specified Message object into a flat ByteBuffer object.
+    * @param msgRef Reference to a Message to flatten into a byte array.
+    * @param header Pointer to a buffer that is (GetHeaderSize()) bytes long.
+    *               The appropriate header bytes should be written in to this buffer.
+    * @return A reference to a ByteBuffer object containing the flattened Message data on success,
+    *         or a NULL reference on failure.
+    * The default implementation uses msg.Flatten() and then (optionally) ZLib compression to produce the bytes.
     */
-   virtual status_t FlattenMessage(const Message & msg, uint8 * header, uint8 * buffer) const;
+   virtual ByteBufferRef FlattenMessage(MessageRef msgRef, uint8 * header) const;
 
    /**
-    * Unflattens (msg) from (buffer) and (header).
-    * @param setMsg An empty Message.  On success, the restored Message should be written into this object.
-    * @param header The buffer of message header bytes.  It is GetHeaderSize() bytes long.
-    * @param buf The buffer of message body bytes.  It is (bufSize) bytes long.
-    * @param bufSize The number of bytes pointed to by (buf)
-    * @return B_NO_ERROR on success, B_ERROR if the Message couldn't be restored.
+    * Unflattens a specified ByteBuffer object back into a MessageRef object.
+    * @param bufRef Reference to a ByteBuffer object to unflatten back into a Message.
+    * @param header Points to the header bytes that were received for this Message.  This
+    *               array is (GetHeaderSize()) bytes long.
+    * @returns a Reference to a Message object containing the Message that was encoded in
+    *          the ByteBuffer on success, or a NULL reference on failure.
+    * The default implementation uses (optional) ZLib decompression (depending on the header bytes)
+    * and then msg.Unflatten() to produce the Message.
     */
-   virtual status_t UnflattenMessage(Message & setMsg, const uint8 * header, const uint8 * buf, uint32 bufSize) const;
+   virtual MessageRef UnflattenMessage(ByteBufferRef bufRef, const uint8 * header) const;
  
    /**
     * Returns the size of the pre-flattened-message header section, in bytes.
-    * The default encoding has an 8-byte header (4 bytes for encoding ID, 4 bytes for message size)
+    * The default Message protocol uses an 8-byte header (4 bytes for encoding ID, 4 bytes for message size),
+    * so the default implementation of this method always returns 8.
     */
    virtual uint32 GetHeaderSize() const;
 
    /**
     * Must Extract and returns the buffer body size from the given header.
-    * Note that the returned size should NOT include the header bytes!
+    * Note that the returned size should NOT count the header bytes themselves!
     * @param header Points to the header of the message.  The header is GetHeaderSize() bytes long.
-    * @param setSize On success, the number of bytes to expect in the body of the message should be written here.
-    * @return B_NO_ERROR if successful, B_ERROR if the header format was incorrect or for some
-    *         other reason the message body size could not be determined.
+    * @return The number of bytes in the body of the message associated with (header), on success,
+    *         or a negative value to indicate an error (invalid header, etc).
     */
-   virtual status_t GetBodySize(const uint8 * header, uint32 & setSize) const;
-
-   /**
-    * This method is called after GetBodySize() returns an error code.  (i.e.
-    * when the header bytes we read in were not valid)
-    * It should return B_NO_ERROR if the gateway should try to recover from
-    * the invalid header, or B_ERROR if it should just give up and close the connection.
-    * If it returns B_NO_ERROR, it may set the (setFirstValidByte) parameter to the
-    * index of the first byte in the header buffer to start reading the next header
-    * from, or leave (setFirstValidByte) unchanged to throw out all the bytes in the 
-    * current header buffer and start afresh.
-    * Default implementation just returns B_ERROR.
-    * @param headerBuf the header bytes that were read in.
-    * @param setFirstValidByte the length of the header.  May be set as described above.
-    * @return B_NO_ERROR if recovery was successful, else B_ERROR.  (see above)
-    */
-   virtual status_t RecoverFromInvalidHeader(const uint8 * headerBuf, uint32 & setFirstValidByte) const;
-   
-   /**
-    * This method is called after UnflattenMessage() returns an error code (i.e.
-    * when the body bytes we read in were not valid).
-    * It should return B_NO_ERROR if the gateway should try to recover from the
-    * invalid message, or B_ERROR if it should just give up and close the connection.
-    * If B_NO_ERROR is returned, the the gateway will begin trying to read the
-    * next header from the bytes immediately after these.
-    * @param messageBuf Pointer to the message bytes.
-    * @param messageBufSize Number of bytes pointed to by (messageBuf)
-    * @return B_NO_ERROR to continue parsing, B_ERROR to give up (see above).
-    */
-   virtual status_t RecoverFromInvalidMessage(const uint8 * messageBuf, uint32 messageBufSize) const;
+   virtual int32 GetBodySize(const uint8 * header) const;
 
 private:
-   uint8 * _sendBuffer;
-   uint32  _sendBufferSize;
-   int32   _sendBufferOffset;
-   uint32  _currentSendMessageSize;  // includes header bytes
+#ifdef MUSCLE_ENABLE_ZLIB_ENCODING
+   ZLibCodec * GetCodec(int32 newEncoding, ZLibCodec * & setCodec) const;
+#endif
 
-   uint8 * _recvBuffer;
-   uint32  _recvBufferSize;
-   int32   _recvBufferOffset;
-   uint32  _currentRecvMessageSize;  // includes header bytes
-   uint32  _maxIncomingMessageSize;
+   class TransferBuffer
+   {
+   public:
+      TransferBuffer() : _offset(0) {/* empty */}
 
-   int32   _encoding;
+      void Reset()
+      {
+         _buffer.Reset();
+         _offset = 0;
+      }
+
+      ByteBufferRef _buffer;
+      uint32 _offset;
+   };
+
+   status_t SendData(TransferBuffer & buf, int32 & sentBytes, uint32 & maxBytes);
+   status_t ReadData(TransferBuffer & buf, int32 & readBytes, uint32 & maxBytes);
+
+   TransferBuffer _sendHeaderBuffer;
+   TransferBuffer _sendBodyBuffer;
+
+   TransferBuffer _recvHeaderBuffer;
+   TransferBuffer _recvBodyBuffer;
+
+   uint32 _maxIncomingMessageSize;
+   int32 _outgoingEncoding;
   
    MessageFlattenedCallback _aboutToFlattenCallback;
    void * _aboutToFlattenCallbackData;
@@ -186,18 +204,25 @@ private:
 
    MessageFlattenedCallback _unflattenedCallback;
    void * _unflattenedCallbackData;
+
+#ifdef MUSCLE_ENABLE_ZLIB_ENCODING
+   mutable ZLibCodec * _sendCodec;
+   mutable ZLibCodec * _recvCodec;
+#endif
 };
 
 //////////////////////////////////////////////////////////////////////////////////
 //
-// Here is a commented example of a flattened Message's byte structure.
-// When one uses a MessageIOGateway to send Messages, it will
-// send out series of bytes that looks like this.
+// Here is a commented example of a flattened Message's byte structure, using
+// the MUSCLE_MESSAGE_ENCODING_DEFAULT encoding.
+//
+// When one uses a MessageIOGateway with the default encoding to send Messages, 
+// it will send out series of bytes that looks like this.
 //
 // Note that this information is only helpful if you are trying to implement
 // your own MessageIOGateway-compatible serialization/deserialization code.
-// C++ and Java programmers will have a much easier time if they use the 
-// MessageIOGateway class provided in the MUSCLE archive, rather than 
+// C++, Java, and Python programmers will have a much easier time if they use 
+// the MessageIOGateway class provided in the MUSCLE archive, rather than 
 // coding at the byte-stream level.
 //
 // The Message used in this example has a 'what' code value of 2 and the 

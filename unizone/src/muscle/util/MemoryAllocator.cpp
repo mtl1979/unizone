@@ -1,12 +1,17 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */ 
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */ 
 
 #include "util/MemoryAllocator.h"
 
 namespace muscle {
 
-bool ProxyMemoryAllocator :: IsOkayToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes) const
+status_t ProxyMemoryAllocator :: AboutToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes)
 {
-   return _slaveRef() ? _slaveRef()->IsOkayToAllocate(currentlyAllocatedBytes, allocRequestBytes) : true;
+   return _slaveRef() ? _slaveRef()->AboutToAllocate(currentlyAllocatedBytes, allocRequestBytes) : B_NO_ERROR;
+}
+
+void ProxyMemoryAllocator :: AboutToFree(size_t currentlyAllocatedBytes, size_t allocRequestBytes)
+{
+   if (_slaveRef()) _slaveRef()->AboutToFree(currentlyAllocatedBytes, allocRequestBytes);
 }
 
 void ProxyMemoryAllocator :: AllocationFailed(size_t currentlyAllocatedBytes, size_t allocRequestBytes)
@@ -24,6 +29,17 @@ void ProxyMemoryAllocator :: SetAllocationHasFailed(bool hasFailed)
    if (_slaveRef()) _slaveRef()->SetAllocationHasFailed(hasFailed);
 }
 
+size_t ProxyMemoryAllocator :: GetMaxNumBytes() const
+{
+   return (_slaveRef()) ? _slaveRef()->GetMaxNumBytes() : MUSCLE_NO_LIMIT;
+}
+
+size_t ProxyMemoryAllocator :: GetNumAvailableBytes(size_t currentlyAllocated) const
+{
+   return (_slaveRef()) ? _slaveRef()->GetNumAvailableBytes(currentlyAllocated) : MUSCLE_NO_LIMIT;
+}
+
+
 UsageLimitProxyMemoryAllocator :: UsageLimitProxyMemoryAllocator(MemoryAllocatorRef slaveRef, size_t maxBytes) : ProxyMemoryAllocator(slaveRef), _maxBytes(maxBytes)
 {
    // empty
@@ -34,9 +50,9 @@ UsageLimitProxyMemoryAllocator :: ~UsageLimitProxyMemoryAllocator()
    // empty
 }
  
-bool UsageLimitProxyMemoryAllocator :: IsOkayToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes) const
+status_t UsageLimitProxyMemoryAllocator :: AboutToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes)
 {
-   return ((allocRequestBytes < _maxBytes)&&(currentlyAllocatedBytes + allocRequestBytes <= _maxBytes));
+   return ((allocRequestBytes < _maxBytes)&&(currentlyAllocatedBytes + allocRequestBytes <= _maxBytes)) ? ProxyMemoryAllocator::AboutToAllocate(currentlyAllocatedBytes, allocRequestBytes) : B_ERROR;
 }
 
 void AutoCleanupProxyMemoryAllocator :: AllocationFailed(size_t, size_t)

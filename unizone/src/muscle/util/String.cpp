@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "util/String.h"
 #include <stdarg.h>
@@ -310,8 +310,8 @@ String::Trim() const
 { 
    int32 len = (int32) Length();
    const char * s = Cstr();
-   int32 startIdx; for (startIdx = 0;     startIdx<len;    startIdx++) if (!isspace(s[startIdx])) break; 
-   int32 endIdx;   for (endIdx   = len-1; endIdx>startIdx; endIdx--)   if (!isspace(s[endIdx]))   break; 
+   int32 startIdx; for (startIdx = 0;     startIdx<len;    startIdx++) if (!IsSpaceChar(s[startIdx])) break; 
+   int32 endIdx;   for (endIdx   = len-1; endIdx>startIdx; endIdx--)   if (!IsSpaceChar(s[endIdx]))   break; 
    return Substring((uint32)startIdx, (uint32)(endIdx+1)); 
 }
 
@@ -411,6 +411,11 @@ uint32 CStringHashFunc(const char * n)
 int CStringCompareFunc(const char * const & s1, const char * const & s2, void *)
 {
     return strcmp(s1, s2);
+}
+
+int StringCompareFunc(const String & s1, const String & s2, void *)
+{
+   return muscleCompare(s1, s2);
 }
 
 };  // end namespace muscle

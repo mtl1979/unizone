@@ -1,6 +1,5 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
-#include <new.h>
 #include <stdio.h>
 #include "regex/StringMatcher.h"
 #include "util/String.h"
@@ -8,6 +7,9 @@
 #include <string.h>
 
 namespace muscle {
+
+static StringMatcherRef::ItemPool _stringMatcherPool;
+StringMatcherRef::ItemPool * GetStringMatcherPool() {return &_stringMatcherPool;}
 
 StringMatcher::StringMatcher() : _regExpValid(false), _negate(false), _hasRegexTokens(false), _rangeMin(MUSCLE_NO_LIMIT), _rangeMax(MUSCLE_NO_LIMIT)
 {

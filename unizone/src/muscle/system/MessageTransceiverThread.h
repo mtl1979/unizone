@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMessageTransceiverThread_h
 #define MuscleMessageTransceiverThread_h
@@ -40,6 +40,7 @@ enum {
    MTT_COMMAND_SET_INPUT_POLICY,               // set a new input IO Policy for worker sessions
    MTT_COMMAND_SET_OUTPUT_POLICY,              // set a new output IO Policy for worker sessions
    MTT_COMMAND_REMOVE_SESSIONS,                // remove the matching worker sessions
+   MTT_COMMAND_SET_OUTGOING_ENCODING,          // set the MUSCLE_MESSAGE_ENCODING_* setting on worker sessions
    MTT_LAST_COMMAND
 };
 
@@ -55,6 +56,7 @@ enum {
 #define MTT_NAME_FACTORY     "fact"  // field containing a ReflectSessionFactory tag
 #define MTT_NAME_DRAIN_TAG   "dtag"  // field containing a DrainTag reference
 #define MTT_NAME_POLICY_TAG  "ptag"  // field containing an IOPolicy reference
+#define MTT_NAME_ENCODING    "enco"  // field containing the MUSCLE_MESSAGE_ENCODING_* value
 
 /** 
   * This is a class that holds a ReflectServer object in an internal thread, and mediates
@@ -273,6 +275,19 @@ public:
    status_t SetNewOutputPolicy(PolicyRef pref, const char * optDistPath = NULL);
 
    /**
+     * Tells the specified worker session(s) to switch to a different message encoding 
+     * for the Messages they are sending to the network.  Note that this only works if
+     * the workers are using the usual MessageIOGateways for their I/O.
+     * Note that ZLIB encoding is only enabled if your program is compiled with the
+     * -DMUSCLE_ENABLE_ZLIB_ENCODING compiler flag set.
+     * @param encoding one of the MUSCLE_MESSAGE_ENCODING_* constant declared in MessageIOGateway.h
+     * @param optDistPath If non-NULL, only sessions matching this path will be affected.
+     *                    A NULL path (the default) means affect all worker sessions.
+     * @return B_NO_ERROR on success, or B_ERROR on failure.
+     */
+   status_t SetOutgoingMessageEncoding(int32 encoding, const char * optDistPath = NULL);
+
+   /**
      * Tells the specified worker session(s) to go away.
      * @param optDistPath If non-NULL, only sessions matching this path will be affected.
      *                    A NULL path (the default) means all worker sessions will be destroyed.
@@ -344,16 +359,16 @@ public:
    virtual void AsyncConnectCompleted();
 
    /** Overridden to wrap incoming messages and pass them along to our supervisor session */
-   virtual void MessageReceivedFromGateway(MessageRef msg);
+   virtual void MessageReceivedFromGateway(MessageRef msg, void * userData);
 
    /** Overriden to handle messages from our supervisor session */
    virtual void MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msg, void * userData);
 
-   /** Implemented to check our outgoing message queue to see if it's drained */
-   virtual void Tick(uint64);
-
    /** Returns a human-readable label for this session type:  "ThreadWorker" */
    virtual const char * GetTypeName() const {return "ThreadWorker";}
+
+   /** Overridden to clear our _drainNotifiers Queue when appropriate */
+   virtual int32 DoOutput(uint32 maxBytes);
 
 private:
    Queue<MessageRef> _drainedNotifiers;
@@ -398,7 +413,7 @@ public:
    /** Overridden to deal with the MessageTransceiverThread.  If you are subclassing
      * ThreadSupervisorSession, don't override this method; override MessageReceivedFromOwner() instead.
      */
-   virtual void MessageReceivedFromGateway(MessageRef msg);
+   virtual void MessageReceivedFromGateway(MessageRef msg, void * userData);
 
    /** Overridden to handle messages coming from the ThreadWorkerSessions. */
    virtual void MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msg, void * userData);

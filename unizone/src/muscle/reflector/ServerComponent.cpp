@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/ServerComponent.h"
 #include "reflector/ReflectServer.h"
@@ -158,6 +158,14 @@ RemoveAcceptFactory(uint16 port)
 {
    MASSERT(_owner, "Can't call RemoveAcceptFactory() while not attached to the server");
    return _owner->RemoveAcceptFactory(port);
+}
+
+uint64
+ServerComponent ::
+GetCycleStartTime() const
+{
+   MASSERT(_owner, "Can't call GetCycleStartTime() while not attached to the server");
+   return _owner->GetCycleStartTime();
 }
 
 void 

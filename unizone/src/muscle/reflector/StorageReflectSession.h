@@ -1,4 +1,4 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleStorageReflectSession_h
 #define MuscleStorageReflectSession_h
@@ -42,6 +42,10 @@ private:
    uint32 _maxIncomingMessageSize;
 };
 
+#define DECLARE_MUSCLE_TRAVERSAL_CALLBACK(sessionClass, funcName) \
+ int funcName(DataNode & node, void * userData); \
+ static int funcName##Func(StorageReflectSession * This, DataNode & node, void * userData) {return ((sessionClass *)This)->funcName(node, userData);}
+
 /** An intelligent AbstractReflectSession that knows how to
  *  store data on the server, and filter using wildcards.  This class
  *  is used by the muscled server program to handle incoming connections.
@@ -67,10 +71,10 @@ public:
    virtual void AboutToDetachFromServer();
 
    /** Called when a new message is received from our IO gateway. */
-   virtual void MessageReceivedFromGateway(MessageRef msg);
+   virtual void MessageReceivedFromGateway(MessageRef msg, void * userData);
 
    /** Overridden to call PushSubscriptionMessages() */
-   virtual void AfterMessageReceivedFromGateway(MessageRef msg);
+   virtual void AfterMessageReceivedFromGateway(MessageRef msg, void * userData);
 
    /** Drains the storage pools used by StorageReflectSessions, to recover memory */
    static void DrainPools();
@@ -104,12 +108,13 @@ protected:
        * Create and add a new child node for (data), and put it into the ordering index
        * @param data Reference to a message to create a new child node for.
        * @param optInsertBefore if non-NULL, the name of the child to put the new child before in our index.  If NULL, (or the specified child cannot be found) the new child will be appended to the end of the index.
+       * @param optNodeName If non-NULL, the inserted node will have the specified name.  Otherwise, a name will be generated for the node.
        * @param optNotifyWithOnSetParent If non-NULL, a StorageReflectSession to use to notify subscribers that the new node has been added
        * @param optNotifyWithOnChangedData If non-NULL, a StorageReflectSession to use to notify subscribers when the node's data has been alterered
        * @param optAddNewChildren If non-NULL, any newly formed nodes will be added to this hashtable, keyed on their absolute node path.
        * @return B_NO_ERROR on success, B_ERROR if out of memory
        */
-      status_t InsertOrderedChild(MessageRef data, const char * optInsertBefore, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyWithOnChangedData, Hashtable<String, DataNodeRef> * optAddNewChildren);
+      status_t InsertOrderedChild(MessageRef data, const char * optInsertBefore, const char * optNodeName, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyWithOnChangedData, Hashtable<String, DataNodeRef> * optAddNewChildren);
  
       /** 
        * Moves the given node (which must be a child of ours) to be just before the node named
@@ -252,17 +257,19 @@ protected:
     * @param allowOverwriteData Indicates whether existing node-data may be overwritten.  If false, the method will fail if the specified node already exists.
     * @param allowCreateNode indicates whether new nodes may be created.  (If false, the method will fail if any node in the specified node path doesn't already exist)
     * @param quiet If set to true, subscribers won't be updated regarding this change to the database.
-    * @param appendToIndex If set to true, this node will be inserted under its parent as a new indexed node, rather than doing the regular add/replace bit.
+    * @param addToIndex If set to true, this node will be inserted under its parent as a new indexed node, rather than doing the regular add/replace bit.
+    * @param optInsertBefore If (addToIndex) is true, this may be the name of the node to insert this new node before in the index.
+    *                        If NULL, the new node will be appended to the end of the index.  If (addToIndex) is false, this argument is ignored.
     * @return B_NO_ERROR on success, or B_ERROR on failure.
     */
-   status_t SetDataNode(const String & nodePath, MessageRef dataMsgRef, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool appendToIndex=false);
+   status_t SetDataNode(const String & nodePath, MessageRef dataMsgRef, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToIndex=false, const char *optInsertBefore=NULL);
 
    /** Remove all nodes that match (nodePath).
     *  @param nodePath A relative path indicating node(s) to remove.  Wildcarding is okay.
     *  @param quiet If set to true, subscriber's won't be updated regarding this change to the database
     *  @return B_NO_ERROR on success, or B_ERROR on failure.
     */
-   status_t RemoveDataNodes(const String & nodePath, bool quiet = false);
+   status_t RemoveDataNodes(const String & nodePath, QueryFilterRef filterRef, bool quiet = false);
 
    /**
     * Recursively saves a given subtree of the node database into the given Message object, for safe-keeping.
@@ -322,42 +329,47 @@ protected:
       /**
        * Returns true iff the given node matches our query.
        * @param node the node to check to see if it matches
+       * @param optData Message to use for QueryFilter filtering, or NULL to disable filtering.
        * @param rootDepth the depth at which the traversal started (i.e. 0 if started at root)
        */
-      bool MatchesNode(DataNode & node, int rootDepth) const;
+      bool MatchesNode(DataNode & node, const Message * optData, int rootDepth) const;
 
       /**
        * Does a depth-first traversal of the node tree, starting with (node) as the root.
        * @param cb The callback function to call whenever a node is encountered in the traversal
        *           that matches at least one of our path strings.
        * @param node The node to begin the traversal at.
+       * @param useFilters If true, we will only call (cb) on nodes whose Messages match our filter; otherwise
+       *                   we'll call (cb) on any node whose path matches, regardless of filtering status.
        * @param userData Any value you wish; it will be passed along to the callback method.
        */
-      void DoTraversal(PathMatchCallback cb, StorageReflectSession * This, DataNode & node, void * userData);
+      void DoTraversal(PathMatchCallback cb, StorageReflectSession * This, DataNode & node, bool useFilters, void * userData);
  
       /**
        * Returns the number of path-strings that we contain that match (node).
        * Note this is a bit more expensive than MatchesNode(), as we can't use short-circuit boolean logic here!
        * @param node A node to check against our set of path-matcher strings.
+       * @param optData If non-NULL, any QueryFilters will use this Message to filter against.
        * @param rootDepth the depth at which the traversal started (i.e. 0 if started at root)
        */
-      int GetMatchCount(DataNode & node, int nodeDepth) const;
+      uint32 GetMatchCount(DataNode & node, const Message * optData, int nodeDepth) const;
 
    private:
       // This little structy class is used to pass context data around more efficiently
       class TraversalContext
       {
       public:
-         TraversalContext(PathMatchCallback cb, StorageReflectSession * This, void * userData, int rootDepth) : _cb(cb), _This(This), _userData(userData), _rootDepth(rootDepth) {/* empty */}
+         TraversalContext(PathMatchCallback cb, StorageReflectSession * This, bool useFilters, void * userData, int rootDepth) : _cb(cb), _This(This), _useFilters(useFilters), _userData(userData), _rootDepth(rootDepth) {/* empty */}
 
          PathMatchCallback _cb;
          StorageReflectSession * _This;
+         bool _useFilters;
          void * _userData;
          int _rootDepth;
       };
 
       int DoTraversalAux(const TraversalContext & data, DataNode & node);
-      bool PathMatches(DataNode & node, int whichPath, int rootDepth) const;
+      bool PathMatches(DataNode & node, const Message * optData, const PathMatcherEntry & entry, int rootDepth) const;
       bool CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int & depth);
    };
 
@@ -379,22 +391,43 @@ protected:
      */
    void Cleanup();
 
+   /** Convenience method:  Adds sessions that contain nodes that match the given pattern to the passed-in Hashtable.
+    *  @param nodePath the node path to match against.  May be absolute (e.g. "/0/1234/frc*") or relative (e.g. "blah")
+    *                  If the nodePath is a zero-length String, all sessions will match.
+    *  @param retSessions A table that will on return contain the set of matching sessions, keyed by their session ID strings.
+    *                     Make sure you have called SetKeyCompareFunction(CStringCompareFunc) on this table!
+    *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
+    *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
+    */
+    status_t FindMatchingSessions(const String & nodePath, QueryFilterRef filter, Hashtable<const char *, AbstractReflectSessionRef> & retSessions, bool matchSelf) const;
+
    /** Convenience method:  Passes the given Message on to the sessions who match the given nodePath.
     *  (that is, any sessions who have nodes that match (nodePath) will have their MessageReceivedFromSession()
     *  method called with the given Message)
     *  @param msgRef the Message to pass on.
     *  @param nodePath the node path to match against.  May be absolute (e.g. "/0/1234/frc*") or relative (e.g. "blah")
+    *                  If the nodePath is a zero-length String, all sessions will match.
+    *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-    status_t SendMessageToMatchingSessions(MessageRef msgRef, const String & nodePath);
+    status_t SendMessageToMatchingSessions(MessageRef msgRef, const String & nodePath, QueryFilterRef filter, bool matchSelf);
 
    /** Convenience method (used by some customized daemons) -- Given a source node and a destination path,
-     * Make (path) a deep, recursive clone of (node).  (note that node data messages are not cloned, however)
+     * Make (path) a deep, recursive clone of (node).
      * @param sourceNode Reference to a DataNode to clone.
      * @param destPath Path of where the newly created node subtree will appear.  Should be relative to our home node.
+     * @param allowOverwriteData If true, we will clobber any previously existing node at the destination path.
+     *                           Otherwise, the existence of a pre-existing node there will cause us to fail.
+     * @param allowCreateNode If true, we will create a node at the destination path if necessary.
+     *                        Otherwise, the non-existence of a pre-existing node there will cause us to fail.
+     * @param quiet If false, no subscribers will be notified of the changes we make.
+     * @param addToTargetIndex If true, the newly created subtree will be added to the target node using InsertOrderedChild().
+     *                         If false, it will be added using PutChild().
+     * @param optInsertBefore If (addToTargetIndex) is true, this argument will be passed on to InsertOrderedChild().
+     *                        Otherwise, this argument is ignored.
      * @return B_NO_ERROR on success, or B_ERROR on failure (may leave a partially cloned subtree on failure)
      */
-   status_t CloneDataNodeSubtree(const StorageReflectSession::DataNode & sourceNode, const String & destPath);
+   status_t CloneDataNodeSubtree(const StorageReflectSession::DataNode & sourceNode, const String & destPath, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToTargetIndex=false, const char * optInsertBefore = NULL);
 
    /** Tells other sessions that we have modified (node) in our node subtree.
     *  @param node The node that has been modfied.
@@ -482,59 +515,8 @@ protected:
     */
    MessageRef GetBlankMessage() const;
 
-   /** Traversal callback:  matching nodes are ref'd/unref'd with subscribed session IDs */
-   int DoSubscribeRefCallback(DataNode & node, void * userData);
-
-   /** object-pool/recycling callback */
-   static void ResetMatcherQueueFunc(StringMatcherQueue * q, void * /*userData*/) {q->Clear();}
-
    /** object-pool/recycling callback */
    static void ResetNodeFunc(StorageReflectSession::DataNode * node, void * /*userData*/) {node->Reset();}
-
-   /** callback stub */
-   static int DoSubscribeRefCallbackFunc(StorageReflectSession * This, DataNode & node, void * userData) {return This->DoSubscribeRefCallback(node, userData);}
-
-   /** Traversal callback:  matching nodes are sent the given message (userData).  */
-   int PassMessageCallback(DataNode & node, void * userData);
-
-   /** callback stub */
-   static int PassMessageCallbackFunc(StorageReflectSession * This, DataNode & node, void * userData) {return This->PassMessageCallback(node, userData);}
-
-   /** Traversal callback:  owners of matching nodes are EndSession()'d (i.e. kicked off the server) */
-   int KickClientCallback(DataNode & node, void * userData);
-
-   /** callback stub */
-   static int KickClientCallbackFunc(StorageReflectSession * This, DataNode & node, void * userData) {return This->KickClientCallback(node, userData);}
-
-   /** Traversal callback:  matching nodes are placed into the given message (userData).  */
-   int GetDataCallback(DataNode & node, void * userData);
-
-   /** callback stub */
-   static int GetDataCallbackFunc(StorageReflectSession * This, DataNode & node, void * userData) {return This->GetDataCallback(node, userData);}
-
-   /** Traversal callback:  matching nodes are placed in a list (userData) to be removed from the node tree. */
-   int RemoveDataCallback(DataNode & node, void * userData);
-
-   /** callback stub */
-   static int RemoveDataCallbackFunc(StorageReflectSession * This, DataNode & node, void * userData) {return This->RemoveDataCallback(node, userData);}
-
-   /** Traversal callback:  matching nodes have ordered data inserted into them as children.  */
-   int InsertOrderedDataCallback(DataNode & node, void * userData);
-
-   /** callback stub */
-   static int InsertOrderedDataCallbackFunc(StorageReflectSession * This, DataNode & node, void * userData) {return This->InsertOrderedDataCallback(node, userData);}
-
-   /** Traversal callback:  matching nodes are reordered in their parent's index */
-   int ReorderDataCallback(DataNode & node, void * userData);
-
-   /** callback stub */
-   static int ReorderDataCallbackFunc(StorageReflectSession * This, DataNode & node, void * userData) {return This->ReorderDataCallback(node, userData);}
-
-   /** Traversal callback:  matching nodes are added into the user message as archived subtrees */
-   int GetSubtreesCallback(DataNode & node, void * userData);
-
-   /** callback stub */
-   static int GetSubtreesCallbackFunc(StorageReflectSession * This, DataNode & node, void * userData) {return This->GetSubtreesCallback(node, userData);}
 
    /**
     * Call this to get a new DataNode, instead of using the DataNode ctor directly.
@@ -581,16 +563,29 @@ protected:
    /** Our pool of saved database nodes */
    static DataNodeRef::ItemPool _nodePool;   
 
-   /** Our pool of saved StringMatchers */
-   static StringMatcherRef::ItemPool _stringMatcherPool;   
-
-   /** Our pool of saved StringMatcherQueues */
-   static StringMatcherQueueRef::ItemPool _stringMatcherQueuePool;    
-
    /** Returns a reference to the global root node of the database */
    DataNode & GetGlobalRoot() const {return *(_sharedData->_root);}
 
+   // The following macros declare node-visitor callback functions for our various tree-traversal methods 
+   // Note that each one declares both the named method and a static accessor method (name##Func).
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, PassMessageCallback);    /** Matching nodes are sent the given message.  */
+
 private:
+   void NodeChangedAux(DataNode & modifiedNode, bool isBeingRemoved);
+   void UpdateDefaultMessageRoute();
+   int PassMessageCallbackAux(DataNode & node, MessageRef msgRef, bool matchSelfOkay);
+
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, KickClientCallback);     /** Sessions of matching nodes are EndSession()'d  */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, InsertOrderedDataCallback); /** Matching nodes have ordered data inserted into them as child nodes */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, ReorderDataCallback);    /** Matching nodes area reordered in their parent's index */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, GetSubtreesCallback);    /** Matching nodes are added in to the user Message as archived subtrees */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, GetDataCallback);        /** Matching nodes are added to the (userData) Message */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, RemoveDataCallback);     /** Matching nodes are placed in a list (userData) for later removal. */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, DoSubscribeRefCallback); /** Matching nodes are ref'd or unref'd with subscribed session IDs */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, ChangeQueryFilterCallback); /** Matching nodes are ref'd or unref'd depending on the QueryFilter change */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, FindSessionsCallback);   /** Sessions of matching nodes are added to the given Hashtable */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, SendMessageCallback);    /** Similar to PassMessageCallback except matchSelf is an argument */
+
    /**
     * Called by SetParent() to tell us that (node) has been created at a given location.
     * We then respond by letting any matching subscriptions add their mark to the node.
@@ -641,6 +636,7 @@ private:
 
    /** Where user messages get sent if no PR_NAME_KEYS field is present */
    NodePathMatcher _defaultMessageRoute;  
+   Message _defaultMessageRouteMessage;
 
    /** Whether or not we set to report subscription updates or not */
    bool _subscriptionsEnabled;            

@@ -1,33 +1,15 @@
-/* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "regex/PathMatcher.h"
 #include "util/StringTokenizer.h"
 
 namespace muscle {
 
-PathMatcher ::
-PathMatcher()
-{
-   // empty
-}
+static void ResetMatcherQueueFunc(StringMatcherQueue * q, void *) {q->Clear();}
+StringMatcherQueueRef::ItemPool _stringMatcherQueuePool(100, ResetMatcherQueueFunc);
+StringMatcherQueueRef::ItemPool * GetStringMatcherQueuePool() {return &_stringMatcherQueuePool;}
 
-PathMatcher ::
-~PathMatcher()
-{
-   // empty
-}
-
-void 
-PathMatcher :: 
-Clear()
-{
-   _parsers.Clear();
-   _pathStrings.Clear();
-}
-
-void
-PathMatcher ::
-AdjustStringPrefix(String & path, const char * optPrepend) const
+void PathMatcher :: AdjustStringPrefix(String & path, const char * optPrepend) const
 {
    if (path.Length() > 0)
    {
@@ -42,101 +24,112 @@ AdjustStringPrefix(String & path, const char * optPrepend) const
    }
 }
 
-status_t 
-PathMatcher ::
-AddPathString(const String & path, StringMatcherRef::ItemPool * optStringMatcherPool, StringMatcherQueueRef::ItemPool * optQueuePool)
+status_t PathMatcher :: RemovePathString(const String & wildpath) 
 {
-   if (path.Length() > 0) 
+   PathMatcherEntry temp;
+   if (_entries.Remove(wildpath, temp) == B_NO_ERROR)
    {
-      StringMatcherQueue * newQ = optQueuePool ? optQueuePool->ObtainObject() : newnothrow StringMatcherQueue;
-      if (newQ == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
-      StringMatcherQueueRef qRef(newQ, optQueuePool);
-
-      String temp;
-      int lastSlashPos = -1;
-      int slashPos = 0;
-      while(slashPos >= 0)
-      {
-         slashPos = path.IndexOf('/', lastSlashPos+1);
-         temp = path.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : path.Length());
-         StringMatcher * sm = NULL;  // default, same as "*"
-         if (strcmp(temp.Cstr(), "*"))
-         {
-            sm = optStringMatcherPool ? optStringMatcherPool->ObtainObject() : newnothrow StringMatcher;
-            if (sm == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
-            sm->SetPattern(temp.Cstr());
-         }
-         (void) newQ->AddTail(StringMatcherRef(sm, optStringMatcherPool));
-         lastSlashPos = slashPos;
-      }
-      (void) _parsers.AddTail(qRef);
-      (void) _pathStrings.AddTail(path);
-      return B_NO_ERROR;
-   }
-   else return B_ERROR;
-}
-
-status_t 
-PathMatcher ::
-RemovePathString(const String & path)
-{
-   int which = _pathStrings.IndexOf(path);
-   if (which >= 0) 
-   {
-      _parsers.RemoveItemAt(which);
-      _pathStrings.RemoveItemAt(which);
+      if (temp.GetFilter()()) _numFilters--;
       return B_NO_ERROR;
    }
    return B_ERROR;
 }
 
-bool
-PathMatcher ::
-ContainsPathString(const String & w) const
+status_t PathMatcher :: PutPathString(const String & path, QueryFilterRef filter)
 {
-   return (_pathStrings.IndexOf(w) >= 0);
+   if (path.Length() > 0) 
+   {
+      StringMatcherQueue * newQ = GetStringMatcherQueuePool()->ObtainObject();
+      if (newQ)
+      {
+         StringMatcherQueueRef qRef(newQ, GetStringMatcherQueuePool());
+
+         StringMatcherRef::ItemPool * smPool = GetStringMatcherPool();
+         String temp;
+         int lastSlashPos = -1;
+         int slashPos = 0;
+         while(slashPos >= 0)
+         {
+            slashPos = path.IndexOf('/', lastSlashPos+1);
+            temp = path.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : path.Length());
+            StringMatcherRef smRef;
+            if (strcmp(temp(), "*"))
+            {
+               smRef.SetRef(smPool->ObtainObject(), smPool);
+               if ((smRef() == NULL)||(smRef()->SetPattern(temp()) != B_NO_ERROR)) return B_ERROR;
+            }
+            if (newQ->AddTail(smRef) != B_NO_ERROR) return B_ERROR;
+            lastSlashPos = slashPos;
+         }
+         if (_entries.Put(path, PathMatcherEntry(qRef, filter)) == B_NO_ERROR)
+         {
+            if (filter()) _numFilters++;
+            return B_NO_ERROR;
+         }
+      }
+   }
+   return B_ERROR;
 }
 
-status_t 
-PathMatcher ::
-AddPathsFromMessage(const char * fieldName, const Message & msg, const char * prependIfNoLeadingSlash, StringMatcherRef::ItemPool * optStringMatcherPool, StringMatcherQueueRef::ItemPool * optQueuePool)
+status_t PathMatcher :: PutPathsFromMessage(const char * pathFieldName, const char * optFilterFieldName, const Message & msg, const char * prependIfNoLeadingSlash)
 {
    status_t ret = B_NO_ERROR;
+
+   QueryFilterRef filter;  // declared here so that queries can "bleed down" the list without being specified multiple times
    String str;
-   for (int i=0; msg.FindString(fieldName, i, str) == B_NO_ERROR; i++) 
+   for (uint32 i=0; msg.FindString(pathFieldName, i, str) == B_NO_ERROR; i++) 
    {
-      AdjustStringPrefix(str, prependIfNoLeadingSlash);
-      if (AddPathString(str, optStringMatcherPool, optQueuePool) != B_NO_ERROR) ret = B_ERROR;
+      if (optFilterFieldName)
+      {
+         MessageRef filterMsgRef;
+         if (msg.FindMessage(optFilterFieldName, i, filterMsgRef) == B_NO_ERROR) filter = InstantiateQueryFilter(*filterMsgRef());
+      }
+      if (PutPathFromString(str, filter, prependIfNoLeadingSlash) != B_NO_ERROR) ret = B_ERROR;
    }
    return ret;
 }
 
-void 
-PathMatcher ::
-AddPathsFromMatcher(const PathMatcher & matcher)
+status_t PathMatcher :: PutPathFromString(const String & str, QueryFilterRef filter, const char * prependIfNoLeadingSlash)
 {
-   for (int i=matcher._parsers.GetNumItems()-1; i>=0; i--)
-   {
-      (void) _pathStrings.AddTail(*matcher._pathStrings.GetItemAt(i));
-      (void) _parsers.AddTail(*matcher._parsers.GetItemAt(i));
-   }
+   String s = str;
+   AdjustStringPrefix(s, prependIfNoLeadingSlash);
+   return PutPathString(s, filter);
 }
 
-bool
-PathMatcher :: 
-MatchesPath(const char * path) const
+status_t PathMatcher :: PutPathsFromMatcher(const PathMatcher & matcher)
 {
-   uint32 numClauses = GetPathDepth(path);
-   for (int i=_parsers.GetNumItems()-1; i>=0; i--)
+   HashtableIterator<String, PathMatcherEntry> iter = matcher.GetEntries().GetIterator();
+   const String * nextKey;
+   const PathMatcherEntry * nextValue;
+   while(((nextKey = iter.GetNextKey()) != NULL)&&((nextValue = iter.GetNextValue()) != NULL)) 
    {
-      const StringMatcherQueue * nextSubscription = _parsers.GetItemAt(i)->GetItemPointer();
+      if (_entries.Put(*nextKey, *nextValue) == B_NO_ERROR)
+      {
+         if (nextValue->GetFilter()()) _numFilters++;
+      }
+      else return B_ERROR;
+   }
+   return B_NO_ERROR;
+}
+
+bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage) const
+{
+   uint32 leadSlashOffset = ((path[0]=='/')?1:0);
+   uint32 numClauses = GetPathDepth(path) + leadSlashOffset;
+
+   HashtableIterator<String, PathMatcherEntry> iter = _entries.GetIterator();
+   const PathMatcherEntry * nextValue;
+   while((nextValue = iter.GetNextValue()) != NULL)
+   {
+      const StringMatcherQueue * nextSubscription = nextValue->GetParser()();      
       if ((nextSubscription)&&(nextSubscription->GetNumItems() == numClauses))
       {
          bool matched = true;  // default
-         StringTokenizer tok(path, (const char *)"/");
+
+         StringTokenizer tok(path, "/");
          for (uint32 j=0; j<numClauses; j++)
          {
-            const char * nextToken = tok.GetNextToken();
+            const char * nextToken = (j<leadSlashOffset)?"":tok.GetNextToken();
             const StringMatcher * nextMatcher = nextSubscription->GetItemAt(j)->GetItemPointer();
             if ((nextToken == NULL)||((nextMatcher)&&(nextMatcher->Match(nextToken) == false))) 
             {
@@ -144,7 +137,12 @@ MatchesPath(const char * path) const
                break;
             }
          }
-         if (matched) return true;
+
+         if (matched) 
+         {
+            const QueryFilter * filter = nextValue->GetFilter()();
+            if ((filter == NULL)||(optMessage == NULL)||(filter->Matches(*optMessage))) return true;
+         }
       }
    }
    return false;
@@ -178,18 +176,18 @@ String GetPathClauseString(int depth, const char * path)
    return ret;
 }
 
-
 int GetPathDepth(const char * path)
 {
-   if ((path[0] == '/')&&(path[1] == '\0')) return 0;
+   if (path[0] == '/') path++;  // ignore any leading slash
 
    int depth = 0;
    while(true)
    {
-      const char * nextSlash = strchr(path, '/');
-      if (nextSlash == NULL) break;
-      depth++;
-      path = nextSlash+1;
+      if (path[0]) depth++;
+
+      path = strchr(path, '/');
+      if (path) path++;
+           else break;
    }
    return depth;
 }
