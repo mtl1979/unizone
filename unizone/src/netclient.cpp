@@ -16,6 +16,9 @@
 #include "iogateway/MessageIOGateway.h"
 #include "zlib/ZLibUtilityFunctions.h"
 
+// forward declaration
+WinShareWindow * GetWindow(QObject *);
+
 NetClient::NetClient(QObject * owner)
 : QObject(owner), fChannelLock(true)
 {
@@ -67,12 +70,12 @@ NetClient::Connect(const QString & server, uint16 port)
 
 	if (fUserName.find(QString("binky"), 0, false) >= 0)
 	{
-		WErrorEvent *wee = new WErrorEvent(tr("You must change your nickname before connecting!"));
-		if (wee)
-			QApplication::postEvent(fOwner, wee);
-		wee = new WErrorEvent(tr("We prefer that none of the nicknames contain word 'binky'."));
-		if (wee)
-			QApplication::postEvent(fOwner, wee);
+		WinShareWindow *win = GetWindow(this);
+		if (win)
+		{
+			win->SendErrorEvent(tr("You must change your nickname before connecting!"));
+			win->SendErrorEvent(tr("We prefer that none of the nicknames contain word 'binky'."));
+		}
 		return B_ERROR;
 	}
 
@@ -124,12 +127,12 @@ NetClient::Connect(const QString & server, uint16 port)
 	fServer = server;
 	fServerPort = port;
 
-	WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+	WinShareWindow *win = GetWindow(this);
 	if (win)
 	{
 		if (win->fSettings->GetChatLimit() == WSettings::LimitNone)
 		{
-			if (qmtt->AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
+			if (qmtt->AddNewConnectSession(ResolveAddress(server), port) != B_NO_ERROR)
 			{
 				return B_ERROR;
 			}
@@ -142,7 +145,7 @@ NetClient::Connect(const QString & server, uint16 port)
 				win->fSettings->GetChatLimit())), NULL));
 			ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
 				win->fSettings->GetChatLimit())), NULL));
-			if (qmtt->AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
+			if (qmtt->AddNewConnectSession(ResolveAddress(server), port, ref) != B_NO_ERROR)
 			{
 				return B_ERROR;
 			}
@@ -159,7 +162,7 @@ NetClient::Disconnect()
 	PRINT("DISCONNECT\n");
 	if (IsConnected()) 
 	{
-		WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+		WinShareWindow *win = GetWindow(this);
 		if (win)
 			win->setCaption("Unizone");
 	
@@ -167,14 +170,15 @@ NetClient::Disconnect()
 		//
 		PRINT("RESETING\n");
 		Reset(); 
-		emit DisconnectedFromServer();
-		PRINT("DELETING\n");
+		PRINT("DELETING USERS\n");
 		WUserIter it = fUsers.begin();
 		while (it != fUsers.end())
 		{
 			RemoveUser((*it).second);
 			it = fUsers.begin();
 		}
+		PRINT("EMITTING DisconnectedFromServer()\n");
+		emit DisconnectedFromServer();
 		PRINT("DONE\n");
 	}
 }
@@ -409,7 +413,7 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 							QString oid = QString::fromUtf8(oldid.Cstr());
 							emit UserIDChanged(oid, nid);
 						}
-						WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+						WinShareWindow *win = GetWindow(this);
 						if (win)
 						{
 							if (
@@ -710,7 +714,7 @@ NetClient::HandleParameters(MessageRef & next)
 			fOldID = fSessionID;
 			fSessionID = id.Cstr();
 
-			WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+			WinShareWindow *win = GetWindow(this);
 			if (win)
 			{
 				if (win->fDLWindow)
@@ -836,7 +840,7 @@ NetClient::SetUserName(const QString & user)
 	// change the user name
 	if (IsConnected())
 	{
-		WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+		WinShareWindow *win = GetWindow(this);
 		if (win)
 		{
 			MessageRef ref(GetMessageFromPool());
@@ -965,7 +969,7 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 		{
 			case PR_RESULT_PARAMETERS:
 			{
-				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+				WinShareWindow *win = GetWindow(this);
 				if (win)
 				{
 					if (!win->GotParams())
@@ -991,7 +995,7 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 				
 				// update all the users to the list view (if not there yet...)
 //				SendSignal(WinShareWindow::UpdateMainUsers);
-//				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+//				WinShareWindow *win = GetWindow();
 //				if (win)
 //					win->UpdateUserList();
 
@@ -1003,9 +1007,9 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 			case PR_RESULT_ERRORACCESSDENIED:
 			{
 				PRINT("PR_RESULT_ERRORACCESSDENIED\n");
-				WErrorEvent *wee = new WErrorEvent( tr ( "Access Denied!!!" ) );
-				if (wee)
-					QApplication::postEvent(fOwner, wee);
+				WinShareWindow *win = GetWindow(this);
+				if (win)
+					win->SendErrorEvent( tr ( "Access Denied!!!" ) );
 
 				MessageRef subMsg;
 				QString action = tr( "do that to" );
@@ -1051,9 +1055,9 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 						if (subMsg()->FindString(PR_NAME_KEYS, who) == B_NO_ERROR)
 						{
 							QString qWho = QString::fromUtf8(who.Cstr());
-							WErrorEvent *wee = new WErrorEvent( tr("You are not allowed to %1 [%2]").arg(action).arg(qWho) );
-							if (wee)
-								QApplication::postEvent(fOwner, wee);
+							WinShareWindow *win = GetWindow(this);
+							if (win)
+								win->SendErrorEvent( tr("You are not allowed to %1 [%2]").arg(action).arg(qWho) );
 						}
 					}
 				}
@@ -1065,7 +1069,7 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 #ifdef DEBUG2
 				PRINT("Handling message\n");
 #endif
-//				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+//				WinShareWindow *win = GetWindow();
 //				if (win)
 //					win->HandleMessage(msg);
 				SendEvent(fOwner, WMessageEvent::HandleMessage, msg);
@@ -1104,19 +1108,7 @@ NetClient::SessionDisconnected(const String & /* sessionID */)
 {
 	PRINT("MTT_EVENT_SESSION_DISCONNECTED\n");
 
-	if (timerID != 0) 
-	{
-		killTimer(timerID);
-		timerID = 0;
-	}
-
-	fPacketLock.lock();
-	packetbuf.Clear();
-	fPacketLock.unlock();
-
-	fLowPacketLock.lock();
-	lowpacketbuf.Clear();
-	fLowPacketLock.unlock();
+	Cleanup();
 
 	SendSignal(NetClient::DISCONNECTED);
 }
@@ -1126,11 +1118,7 @@ NetClient::SessionDetached(const String & /* sessionID */)
 {
 	PRINT("MTT_EVENT_SESSION_DETACHED\n");
 
-	if (timerID != 0) 
-	{
-		killTimer(timerID);
-		timerID = 0;
-	}
+	Cleanup();
 
 	SendSignal(NetClient::DISCONNECTED);
 }
@@ -1198,13 +1186,30 @@ NetClient::ServerExited()
 	PRINT("MTT_EVENT_SERVER_EXITED\n");
 	// as you noticed... this message is sent by several MTT_EVENT_* events :)
 
+	Cleanup();
+
+	SendSignal(NetClient::DISCONNECTED);
+}
+
+void
+NetClient::Cleanup()
+{
+	PRINT("NetClient::Cleanup()\n");
 	if (timerID != 0) 
 	{
 		killTimer(timerID);
 		timerID = 0;
 	}
 
-	SendSignal(NetClient::DISCONNECTED);
+	fPacketLock.lock();
+	packetbuf.Clear();
+	fPacketLock.unlock();
+
+	fLowPacketLock.lock();
+	lowpacketbuf.Clear();
+	fLowPacketLock.unlock();
+
+	hasmessages = false;
 }
 
 bool
@@ -1365,3 +1370,31 @@ NetClient::SendEvent(QObject * target, int type,const MessageRef &msg)
 	if (wme)
 		QApplication::postEvent(target, wme);
 }
+
+uint32
+NetClient::ResolveAddress(const QString &address)
+{
+	NetAddress na;
+	if (fAddressCache.GetNumItems() > 0)
+	{
+		int i = 0;
+		do
+		{
+			na = fAddressCache[i];
+			if (na.address == address)
+				return na.ip;
+			i++;
+		} while (i < fAddressCache.GetNumItems());
+	}
+	na.address = address;
+	na.ip = GetHostByName(address);
+	fAddressCache.AddTail(na);
+	return na.ip;
+}
+
+WinShareWindow *
+GetWindow(QObject *obj)
+{
+	return dynamic_cast<WinShareWindow *>(obj->parent());
+}
+

@@ -19,6 +19,12 @@ struct NetPacket
 	String path;
 };
 
+struct NetAddress
+{
+	uint32 ip;
+	QString address;
+};
+
 class NetClient : public QObject 
 {
 	Q_OBJECT
@@ -63,7 +69,6 @@ public:
 	// events
 	enum
 	{
-		/* SignalEvent = QEvent::User + 4000, */
 			SESSION_ATTACHED = QEvent::User + 4000,	// just some constant
 			SESSION_CONNECTED,
 			DISCONNECTED,
@@ -194,7 +199,12 @@ private:
 	void SendEvent(QObject *target, int type, const String &from, const MessageRef &msg);
 	void SendEvent(QObject *target, int type, const String &from);
 	void SendEvent(QObject *target, int type, const MessageRef &msg);
-	
+
+	uint32 ResolveAddress(const QString &address);
+	Queue<NetAddress> fAddressCache;
+
+	void Cleanup();
+
 	mutable QMutex fChannelLock;
 
 	int timerID;

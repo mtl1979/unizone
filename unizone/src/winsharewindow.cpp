@@ -5,6 +5,7 @@
 #include "aboutdlgimpl.h"
 #include "downloadimpl.h"
 #include "winsharewindow.h"
+#include "events.h"
 #include "version.h"
 #include "debugimpl.h"
 #include "chattext.h"
@@ -299,7 +300,7 @@ WinShareWindow::StartAcceptThread()
 			{
 				if (fSettings->GetInfo())
 				{
-					PrintSystem(tr("Accept thread ready and listening on port %1.").arg(fAccept->GetPort()));
+					SendSystemEvent(tr("Accept thread ready and listening on port %1.").arg(fAccept->GetPort()));
 				}
 
 				// let the net client know our port
@@ -311,7 +312,7 @@ WinShareWindow::StartAcceptThread()
 			}
 			else
 			{
-				PrintError(tr("Failed to start accept thread!"));
+				SendErrorEvent(tr("Failed to start accept thread!"));
 				PRINT("Failed to start accept thread\n");
 			}
 		}
@@ -464,7 +465,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (!fReconnectTimer->isActive())
 				{
 					// Connect();
-					PrintSystem(tr( "Reconnecting in 1 minute!" ));
+					SendSystemEvent(tr( "Reconnecting in 1 minute!" ));
 					fReconnectTimer->start(60000, true); // 1 minute
 				}
 				return;
@@ -485,7 +486,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				PRINT("\tWinShareWindow::ScanDone\n");
 				fFilesScanned = true;
 				if (fSettings->GetInfo())
-					PrintSystem(tr("Finished scanning shares."));
+					SendSystemEvent(tr("Finished scanning shares."));
 				if (fGotParams)
 					UpdateShares();
 				fFileScanThread->ShutdownInternalThread();
@@ -503,7 +504,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				// Stop timers first, so if we get reconnect event while we are negotiating it will be discarded
 				if (fReconnectTimer->isActive())
 				{
-					PrintSystem(tr("Reconnect timer stopped"));
+					SendSystemEvent(tr("Reconnect timer stopped"));
 					fReconnectTimer->stop();
 				}
 
@@ -544,7 +545,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				fNetClient->SendMessageToSessions(askref);
 				
 				if (fSettings->GetInfo())
-					PrintSystem(tr("Connected."));
+					SendSystemEvent(tr("Connected."));
 
 				return;
 			}
@@ -2210,7 +2211,7 @@ WinShareWindow::QueueFileAux(const QString & ref)
 		ttpInfo->bot = from;
 		ttpInfo->file = sfile;
 		_ttpFiles.AddTail(ttpInfo);
-		PrintSystem(tr("Queued file %1 from user #%2.").arg( sfile ).arg(from));
+		SendSystemEvent(tr("Queued file %1 from user #%2.").arg( sfile ).arg(from));
 	}
 }
 
@@ -2235,7 +2236,7 @@ WinShareWindow::StartQueue(const QString &session)
 				{
 					QueueDownload(ttpInfo->file, user);
 					_ttpFiles.RemoveItemAt(i);
-					PrintSystem(tr("Downloading file %1 from user #%2.").arg( ttpInfo->file ).arg(session));
+					SendSystemEvent(tr("Downloading file %1 from user #%2.").arg( ttpInfo->file ).arg(session));
 				}
 				else i++;
 				if (i >= _ttpFiles.GetNumItems())
@@ -2254,7 +2255,7 @@ WinShareWindow::StartLogging()
 	if (!fMainLog.InitCheck())
 	{
 		if (fSettings->GetError())
-            PrintError( tr("Failed to create log file.") );
+            SendErrorEvent( tr("Failed to create log file.") );
 	}
 }
 
@@ -2411,7 +2412,7 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (fSettings->GetError())
 		{
-			PrintError(tr("File sharing not enabled."));
+			SendErrorEvent(tr("File sharing not enabled."));
 		}
 		return;
 	}
@@ -2423,7 +2424,7 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (fSettings->GetError())
 		{
-			PrintError(tr("Already scanning!"));
+			SendErrorEvent(tr("Already scanning!"));
 		}
 		return;
 	}
@@ -2434,12 +2435,12 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (rescan)
 		{
-			PrintSystem(tr("Rescanning shared files..."));
+			SendSystemEvent(tr("Rescanning shared files..."));
 			fFilesScanned = false;
 		}
 		else
 		{
-			PrintSystem(tr("Scanning shares..."));
+			SendSystemEvent(tr("Scanning shares..."));
 		}
 	}
 
@@ -2508,7 +2509,7 @@ WinShareWindow::UpdateShares()
 		fFileScanThread->Lock();
 		int numShares = fFileScanThread->GetNumFiles();
 		if (fSettings->GetInfo())
-			PrintSystem(tr("Sharing %1 file(s).").arg(numShares));
+			SendSystemEvent(tr("Sharing %1 file(s).").arg(numShares));
 		fNetClient->SetFileCount(numShares);
 		PRINT("Doing a scan of the returned files for uploading.\n");
 		int m = 0;
@@ -2587,4 +2588,22 @@ void
 WinShareWindow::timerEvent(QTimerEvent *)
 {
 	setStatus(GetTimeStamp2(), 3);
+}
+
+void
+WinShareWindow::SendSystemEvent(const QString &message)
+{
+	SystemEvent(this, message);
+}
+
+void
+WinShareWindow::SendErrorEvent(const QString &message)
+{
+	ErrorEvent(this, message);
+}
+
+void
+WinShareWindow::SendWarningEvent(const QString &message)
+{
+	WarningEvent(this, message);
 }

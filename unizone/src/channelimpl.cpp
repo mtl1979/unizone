@@ -14,12 +14,6 @@
 
 #include "reflector/StorageReflectConstants.h"
 
-#ifdef WIN32
-#define LT WLog::LogType
-#else
-#define LT WLog
-#endif
-
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags /* fl */)
 : ChannelBase(/* parent */ NULL, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
 			  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu /* flags */),
@@ -800,7 +794,7 @@ Channel::LogString(const char * str)
 void
 Channel::StartLogging()
 {
-	fLog.Create(LT::LogChannel, fName);	// create a private chat log
+	fLog.Create(WLog::LogChannel, fName);	// create a private chat log
 	if (!fLog.InitCheck())
 	{
 		if (gWin->fSettings->GetError())

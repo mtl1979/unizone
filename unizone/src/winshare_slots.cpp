@@ -27,23 +27,7 @@
 #include "wsystemevent.h"
 #include "textevent.h"
 
-#include "winshare-private.h"
-
-void
-SystemEvent(QObject *target, const QString &text)
-{
-	WSystemEvent *wse = new WSystemEvent(text);
-	if (wse)
-		QApplication::postEvent(target, wse);
-}
-
-void
-TextEvent(QObject *target, const QString &text, WTextEvent::Type t)
-{
-	WTextEvent *wte = new WTextEvent(text, t);
-	if (wte)
-		QApplication::postEvent(target, wte);
-}
+#include "events.h"
 
 void
 WinShareWindow::Exit()
@@ -92,9 +76,7 @@ WinShareWindow::UserConnected(const QString &sid)
 	{
 		QString text = WFormat::UserConnected(sid);
 		QString system = WFormat::Text(text);
-		WSystemEvent *wse = new WSystemEvent(system);
-		if (wse)
-			QApplication::postEvent(this, wse);
+		SendSystemEvent(system);
 	}
 	WUserRef uref = fNetClient->FindUser(sid);
 	if (uref())
@@ -178,7 +160,7 @@ WinShareWindow::DisconnectedFromServer()
 	PRINT("DisconnectedFromServer()\n");
 
 	if (fSettings->GetError() && !fDisconnect) // Don't flood the user ;)
-		PrintError(tr("Disconnected from server."));
+		SendErrorEvent(tr("Disconnected from server."));
 
 	if (fDLWindow)
 		fDLWindow->KillLocalQueues();	// locally queued files will never connect to their peers when we get disconnected

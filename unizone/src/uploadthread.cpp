@@ -793,9 +793,7 @@ WUploadThread::DoUpload()
 
 							if (gWin->fSettings->GetUploads())
 							{
-								WSystemEvent *wse = new WSystemEvent( tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
-								if (wse)
-									QApplication::postEvent(gWin, wse);
+								gWin->SendSystemEvent( tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
 							}
 						}
 						SendReply(update);
@@ -888,9 +886,7 @@ WUploadThread::DoUpload()
 
 				if (gWin->fSettings->GetUploads())
 				{
-					WSystemEvent *wse = new WSystemEvent( tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
-					if (wse)
-						QApplication::postEvent(gWin, wse);
+					gWin->SendSystemEvent( tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
 				}
 
 				// nested call

@@ -19,6 +19,7 @@ SRCFILES = \
 	src/botitem.cpp \
 	src/channelinfo.cpp \
 	src/channelimpl.cpp \
+	src/chatevent.cpp \
 	src/chattext.cpp \
 	src/chatwindow.cpp \
 	src/colors.cpp \
@@ -26,6 +27,7 @@ SRCFILES = \
 	src/downloadimpl.cpp \
 	src/downloadthread.cpp \
 	src/downloadworker.cpp \
+	src/events.cpp \
 	src/fileinfo.cpp \
 	src/filethread.cpp \
 	src/formatting.cpp \

@@ -1,14 +1,12 @@
 #ifdef WIN32
 #include <windows.h>
 #pragma warning(disable: 4786)
-#define LT WLog::LogType
-#else
-#define LT WLog
 #endif
 
 #include "privatewindowimpl.h"
 #include "gotourl.h"
 #include "formatting.h"
+#include "chatevent.h"
 #include "textevent.h"
 #include "global.h"
 #include "settings.h"
@@ -195,11 +193,11 @@ WPrivateWindow::URLClicked(const QString & url)
 void
 WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 {
-	WUserIter it = fUsers.find(fromsid);
-
-	if (it != fUsers.end())
+	if (Settings()->GetPrivate())
 	{
-		if (Settings()->GetPrivate())
+		WUserIter it = fUsers.find(fromsid);
+		
+		if (it != fUsers.end())
 		{
 			QString msg = FixStringStr(message);
 			QString name = (*it).second()->GetUserName();
@@ -279,6 +277,15 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 	PRINT("WPrivateWindow::customEvent\n");
 	switch ((int) event->type())
 	{
+		case WChatEvent::ChatTextType:
+		{
+			WChatEvent *wce = dynamic_cast<WChatEvent *>(event);
+			if (wce)
+			{
+				PutChatText(wce->Sender(), wce->Text());
+			}
+			return;
+		}
 		case WPWEvent::TabCompleted:
 		{
 			WPWEvent * we = dynamic_cast<WPWEvent *>(event);
@@ -456,6 +463,12 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 			}
 			return;
 		}
+
+		case WPWEvent::Created:
+		{
+			show();
+			return;
+		}
 		
 	}		
 }
@@ -469,7 +482,7 @@ WPrivateWindow::resizeEvent(QResizeEvent * e)
 void
 WPrivateWindow::StartLogging()
 {
-	fLog.Create(LT::LogPrivate);	// create a private chat log
+	fLog.Create(WLog::LogPrivate);	// create a private chat log
 	if (!fLog.InitCheck())
 	{
 		if (Settings()->GetError())

@@ -3,46 +3,11 @@
 #include "netclient.h"
 #include "tokenizer.h"
 #include "settings.h"
-#include "winshare-private.h"
-
-#include <qstringlist.h>
+#include "util.h"
 
 #if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
 #endif
-
-void RemoveFromList(QString &slist, const QString &entry)
-{
-	if (slist == entry)
-	{
-		slist = "";
-		return;
-	}
-
-	QStringList list = QStringList::split(",", slist);
-	QStringList::Iterator iter = list.begin();
-	while (iter != list.end())
-	{
-		if ((*iter).lower() == entry.lower())
-		{
-			list.remove(iter);
-			break;
-		}
-		iter++;
-	}
-	slist = list.join(",");
-}
-
-void AddToList(QString &slist, const QString &entry)
-{
-	if (slist.isEmpty())
-		slist = entry;
-	else
-	{
-		slist += ",";
-		slist += entry;
-	}
-}
 
 bool
 WinShareWindow::IsIgnoredIP(const QString & ip)

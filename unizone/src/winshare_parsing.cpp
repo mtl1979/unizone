@@ -249,15 +249,15 @@ WinShareWindow::ServerParametersReceived(const MessageRef msg)
 	{
 		const char * serverVersion;
 		if (msg()->FindString(PR_NAME_SERVER_VERSION, &serverVersion) == B_OK)
-			PrintSystem(tr("Server version: %1").arg(serverVersion));
+			SendSystemEvent(tr("Server version: %1").arg(serverVersion));
 
 		int64 serverUptime;
 		if (msg()->FindInt64(PR_NAME_SERVER_UPTIME, &serverUptime) == B_OK)
-			PrintSystem(tr("Server uptime: %1").arg(MakeHumanTime(serverUptime)));
+			SendSystemEvent(tr("Server uptime: %1").arg(MakeHumanTime(serverUptime)));
 
 		// reuse old string
 		if (msg()->FindString(PR_NAME_SESSION_ROOT, &serverVersion) == B_OK)
-			PrintSystem(tr("Session root: %1").arg(serverVersion));
+			SendSystemEvent(tr("Session root: %1").arg(serverVersion));
 
 		int64 memA, memU;
 		if ((msg()->FindInt64(PR_NAME_SERVER_MEM_AVAILABLE, &memA) == B_OK) &&
@@ -266,7 +266,7 @@ WinShareWindow::ServerParametersReceived(const MessageRef msg)
 			const float one = 1024.0f * 1024.0f;
 			float ma = ((float)memA) / one;
 			float mu = ((float)memU) / one;
-			PrintSystem(tr("Memory usage: %1 MB of %2 MB used").arg(mu).arg(ma));
+			SendSystemEvent(tr("Memory usage: %1 MB of %2 MB used").arg(mu).arg(ma));
 		}
 	}
 }

@@ -3,10 +3,10 @@
 
 #include <qevent.h>
 
-/** This event is send when the user pressed enter in
+/** This event is sent when the user pressed enter in
   *	the text input area.
   * Always call Valid() before sending, as the event makes
-  * sure that an empty string is not send
+  * sure that an empty string is not sent
   * this is kinda of generic event.
   */
 class WTextEvent : public QCustomEvent
@@ -27,7 +27,7 @@ public:
 
 	QString Text() const;
 	void SetText(const QString & str) { fText = str; }
-	bool Encrypted() { return fEncrypted; }
+	bool Encrypted() const { return fEncrypted; }
 	void SetEncrypted(bool e) { fEncrypted = e; } 
 
 private:

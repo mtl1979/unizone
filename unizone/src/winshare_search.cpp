@@ -238,24 +238,6 @@ WinShareWindow::SplitQuery(const String &fileExp)
 }
 
 void
-AddToList(String & slist, const String &item)
-{
-	if (slist.Length() == 0)
-		slist = item;
-	else
-	{
-		slist += ",";
-		slist += item;
-	}
-}
-
-void
-AddToList(String & slist, const char *item)
-{
-	AddToList(slist, String(item));
-}
-
-void
 WinShareWindow::GoSearch()
 {
 	// cancel current search (if there is one)

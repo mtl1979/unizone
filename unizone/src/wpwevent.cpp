@@ -55,3 +55,8 @@ WPWEvent::WPWEvent(int type, const QString & msg)
 	fEncrypted = false;
 	fMsg = msg;
 }
+
+WPWEvent::WPWEvent(int type)
+		: QCustomEvent(type)
+{
+}

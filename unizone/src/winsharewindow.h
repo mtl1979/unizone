@@ -208,6 +208,10 @@ public:
 	void LogString(const QString &);
 	QWidget *Window();
 
+	void SendSystemEvent(const QString &message);
+	void SendErrorEvent(const QString &message);
+	void SendWarningEvent(const QString &message);
+
 public slots:
 	/** File Menu **/
 	void Connect();

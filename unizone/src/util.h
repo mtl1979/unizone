@@ -123,4 +123,10 @@ QString hexFromULongLong(const uint64 &, unsigned int);
 int64 toLongLong(const QString &, bool * = NULL);
 QString fromLongLong(const int64 &);
 QString hexFromLongLong(const int64 &, unsigned int);
+
+void AddToList(QString &slist, const QString &entry);
+void AddToList(String &slist, const String &entry);
+
+void RemoveFromList(QString &slist, const QString &entry);
+void RemoveFromList(String &slist, const String &entry);
 #endif

@@ -591,9 +591,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 
 							if (gWin->fSettings->GetDownloads())
 							{
-								WSystemEvent *wse = new WSystemEvent( tr("Downloading %1 from %2.").arg( fFileDl[fCurFile] ).arg( GetRemoteUser() ) );
-								if (wse)
-									QApplication::postEvent(gWin, wse);
+								gWin->SendSystemEvent( tr("Downloading %1 from %2.").arg( fFileDl[fCurFile] ).arg( GetRemoteUser() ) );
 							}
 
 							fDownloading = true;
@@ -677,7 +675,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 							QString errStr = tr("Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)").arg(fFileDl[fCurFile]).arg(myChecksum).arg(checksum).arg(numBytes);
 							
 							if (gWin->fSettings->GetDownloads())
-								gWin->PrintError(errStr);
+								gWin->SendErrorEvent(errStr);
 							
 							MessageRef error(GetMessageFromPool(WDownloadEvent::FileError));
 							if (error())
@@ -721,9 +719,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 
 							if (gWin->fSettings->GetDownloads())
 							{
-								WSystemEvent *wse = new WSystemEvent( tr("Finished downloading %2 from %1.").arg( GetRemoteUser() ).arg( fFileDl[fCurFile] ) );
-								if (wse)
-									QApplication::postEvent(gWin, wse);
+								gWin->SendSystemEvent( tr("Finished downloading %2 from %1.").arg( GetRemoteUser() ).arg( fFileDl[fCurFile] ) );
 							}
 
 							CloseFile(fFile);

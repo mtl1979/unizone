@@ -18,7 +18,6 @@ typedef hostent *LPHOSTENT;
 #include "settings.h"
 #include "debugimpl.h"
 #include "formatting.h"
-#include "textevent.h"
 #include "platform.h"
 #include "picviewerimpl.h"
 #include "util.h"
@@ -33,7 +32,11 @@ typedef hostent *LPHOSTENT;
 #include "serverclient.h"
 #include "updateclient.h"
 #include "wstatusbar.h"
+
+#include "events.h"
+#include "chatevent.h"
 #include "textevent.h"
+#include "wpwevent.h"
 
 #include "util/TimeUtilityFunctions.h"
 #include "util/StringTokenizer.h"
@@ -50,8 +53,6 @@ typedef hostent *LPHOSTENT;
 #if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
 #endif
-
-#include "winshare-private.h"
 
 void
 WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
@@ -1862,7 +1863,10 @@ WinShareWindow::HandleMessage(MessageRef msg)
 									WUserRef user = (*uit).second;
 									if (user()->GetUserID() == userID)
 									{
-										win->PutChatText(userID, text);
+										WChatEvent *wce = new WChatEvent(userID, text);
+										if (wce)
+											QApplication::postEvent(win, wce);
+//										win->PutChatText(userID, text);
 										foundPriv = true;
 										// continue... this user may be in multiple windows... :)
 									}
@@ -1873,19 +1877,24 @@ WinShareWindow::HandleMessage(MessageRef msg)
 								return;
 							else if ( IsAutoPrivate( userID ) )
 							{
-								// Create new Private Window
-								WPrivateWindow * win = new WPrivateWindow(this, fNetClient, NULL);
-								if (win)
+								WUserRef pu = FindUser(userID);
+								if (pu())
 								{
-									WUserRef pu = FindUser(userID);
-									if (pu())
+									// Create new Private Window
+									WPrivateWindow * win = new WPrivateWindow(this, fNetClient, NULL);
+									if (win)
 									{
 										// Add user to private window
 										win->AddUser(pu);
 										// Send text to private window
-										win->PutChatText(userID, text);
+										WChatEvent *wce = new WChatEvent(userID, text);
+										if (wce)
+											QApplication::postEvent(win, wce);
+										// win->PutChatText(userID, text);
 										// Show newly created private window
-										win->show();
+										WPWEvent *wpw = new WPWEvent(WPWEvent::Created);
+										if (wpw)
+											QApplication::postEvent(win, wpw);
 										// ... and add it to list of private windows
 										WPrivPair p = MakePair(win);
 										pLock.lock();
@@ -2020,7 +2029,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					if (rtime <= GetRegisterTime())
 					{
-						PrintError( tr("Nick collision with user #%1").arg(repto.Cstr()));
+						SendErrorEvent( tr("Nick collision with user #%1").arg(repto.Cstr()));
 					}
 				}
 				break;
@@ -2147,7 +2156,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							PRINT("Print ping\n");
 							WUserRef user = (*uit).second;
 							QString system = WFormat::GotPinged(repto.Cstr(), FixStringStr(user()->GetUserName())); // <postmaster@raasu.org> 20021112
-							PrintSystem(system);
+							SendSystemEvent(system);
 						}
 					}
 					MessageRef rep(GetMessageFromPool(NetClient::PONG));
@@ -2314,12 +2323,12 @@ WinShareWindow::Connect()
 		if (fNetClient->Connect(fServer) == B_OK)
 		{
 			if (fSettings->GetInfo())
-				PrintSystem(tr("Connecting to server %1.").arg(fServer));
+				SendSystemEvent(tr("Connecting to server %1.").arg(fServer));
 		}
 		else
 		{
 			if (fSettings->GetInfo())
-				PrintSystem(tr("Connection to server failed!"));
+				SendSystemEvent(tr("Connection to server failed!"));
 		}
 	}
 	fLoginTime = GetCurrentTime64();
@@ -2339,6 +2348,7 @@ WinShareWindow::Connect(const QString & server)
 			{
 				// found our server
 				fServerList->setCurrentItem(i);
+				break;
 			}
 		}
 	}
@@ -2350,7 +2360,7 @@ WinShareWindow::Disconnect()
 {
 	if (fReconnectTimer->isActive())
 	{
-		PrintSystem(tr("Reconnect timer stopped"));
+		SendSystemEvent(tr("Reconnect timer stopped"));
 		fReconnectTimer->stop();
 	}
 	fDisconnectFlag = true; // User disconnection

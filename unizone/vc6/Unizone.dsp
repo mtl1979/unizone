@@ -186,6 +186,10 @@ SOURCE=..\src\channelinfo.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\chatevent.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\chattext.cpp
 # End Source File
 # Begin Source File
@@ -211,6 +215,10 @@ SOURCE=..\src\downloadthread.cpp
 # Begin Source File
 
 SOURCE=..\src\downloadworker.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\events.cpp
 # End Source File
 # Begin Source File
 
@@ -778,6 +786,10 @@ SOURCE=..\src\channelinfo.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\chatevent.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\chattext.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
@@ -1035,6 +1047,10 @@ InputName=downloadthread
 # Begin Source File
 
 SOURCE=..\src\downloadworker.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\events.h
 # End Source File
 # Begin Source File
 
@@ -2177,10 +2193,6 @@ SOURCE=..\src\werrorevent.h
 # Begin Source File
 
 SOURCE=..\src\wfile.h
-# End Source File
-# Begin Source File
-
-SOURCE="..\src\winshare-private.h"
 # End Source File
 # Begin Source File
 

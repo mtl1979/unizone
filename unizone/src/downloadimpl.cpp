@@ -356,9 +356,7 @@ WDownload::AddDownload(QString * files, QString * lfiles,
 			{
 				for (x = 0; x < filecount; x++)
 				{
-					WWarningEvent *wwe = new WWarningEvent(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP));
-					if (wwe)
-						QApplication::postEvent(gWin, wwe);
+					gWin->SendWarningEvent(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP));
 				}
 			}
 		}
@@ -369,9 +367,7 @@ WDownload::AddDownload(QString * files, QString * lfiles,
 		{
 			for (x = 0; x < filecount; x++)
 			{
-				WWarningEvent *wwe = new WWarningEvent(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]));
-				if (wwe)
-					QApplication::postEvent(gWin, wwe);
+				gWin->SendWarningEvent(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]));
 			}
 		}
 	}

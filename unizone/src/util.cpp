@@ -15,6 +15,7 @@
 #endif
 
 #include "util/Queue.h"
+#include "util/StringTokenizer.h"
 #include "regex/StringMatcher.h"
 using namespace muscle;
 
@@ -23,7 +24,7 @@ using namespace muscle;
 #endif
 
 #include <qdns.h>
-// #include <qfile.h>
+#include <qstringlist.h>
 
 #include <limits.h>
 
@@ -630,86 +631,71 @@ MakeSizeString(uint64 s)
 	return result;	
 }
 
+struct ConPair
+{
+	const char *id;
+	uint32 bw;
+};
+
+ConPair Bandwidths[] = {
+	{QT_TRANSLATE_NOOP("Connection", "300 baud"),	75},		// 300 down / 75 up
+	{QT_TRANSLATE_NOOP("Connection", "14.4 kbps"),	14400},
+	{QT_TRANSLATE_NOOP("Connection", "28.8 kbps"),	28800},
+	{QT_TRANSLATE_NOOP("Connection", "33.6 kbps"),	33600},
+	{QT_TRANSLATE_NOOP("Connection", "36.6 kbps"),	33600},		// Misspelled 33.6 kbps
+	{QT_TRANSLATE_NOOP("Connection", "57.6 kbps"),	57600},
+	{QT_TRANSLATE_NOOP("Connection", "ISDN-64k"),	64000},
+	{QT_TRANSLATE_NOOP("Connection", "ISDN-128k"),	128000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-256k"),	256000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL"),		384000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-384k"),	384000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-512k"),	512000},
+	{QT_TRANSLATE_NOOP("Connection", "Cable"),		768000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-1M"),		1024000},	// Was 1000000
+	{QT_TRANSLATE_NOOP("Connection", "T1"),			1500000},
+	{QT_TRANSLATE_NOOP("Connection", "T3"),			4500000},
+	{QT_TRANSLATE_NOOP("Connection", "OC-3"),		155520000}, // 3  * 51840000
+	{QT_TRANSLATE_NOOP("Connection", "OC-12"),		622080000}, // 12 * 51840000
+	{"?", 0},													// Dummy entry
+	{NULL, -1}
+};
+
 uint32
 BandwidthToBytes(const QString & connection)
 {
 	uint32 bps = 0;
 	int p = connection.find(",");
+	QString conn;
 	if (p > 0)
 	{
+		conn = connection.left(p);
 		QString spd = connection.mid(p + 1);
 		bps = spd.toULong();
 	}
-	else if (connection == "300 baud" || ( connection == QObject::tr( "300 baud" ) ) )
+	else
 	{
-		bps = 75;
+		conn = connection;
 	}
-	else if ( ( connection == "14.4 kbps" ) || ( connection == QObject::tr( "14.4 kbps" ) ) )
+	if (bps == 0)
 	{
-		bps = 14400;
+		ConPair bw;
+		int n = 0;
+		do
+		{
+			bw = Bandwidths[n++];
+			if (
+				( conn == bw.id ) || 
+				( conn == QObject::tr(bw.id) )
+				)
+			{
+				bps = bw.bw;
+				break;
+			}
+		} while (bw.bw != -1);
 	}
-	else if ( ( connection == "28.8 kbps" ) || ( connection == QObject::tr( "28.8 kbps" ) ) ) 
-	{
-		bps = 28800;
-	}
-	else if (
-		( connection == "33.6 kbps" ) || ( connection == QObject::tr( "33.6 kbps" ) ) ||
-		( connection == "36.6 kbps" ) || ( connection == QObject::tr( "36.6 kbps" ) )
-		)
-	{
-		bps = 33600;
-	}
-	else if ( ( connection == "57.6 kbps" ) || ( connection == QObject::tr( "57.6 kbps" ) ) )
-	{
-		bps = 57600;
-	}
-	else if ( ( connection == "ISDN-64k" ) || ( connection == QObject::tr( "ISDN-64k" ) ) )
-	{
-		bps = 64000;
-	}
-	else if ( ( connection == "ISDN-128k" ) || ( connection == QObject::tr( "ISDN-128k" ) ) )
-	{
-		bps = 128000;
-	}
-	else if ( ( connection == "DSL-256k" ) || ( connection == QObject::tr( "DSL-256k" ) ) )
-	{
-		bps = 256000;
-	}
-	else if ( 
-		( connection == "DSL" ) || ( connection == QObject::tr( "DSL" ) ) ||
-		( connection == "DSL-384k" ) || (connection == QObject::tr( "DSL-384k" ) ) 
-		)
-	{
-		bps = 384000;
-	}
-	else if ( ( connection == "DSL-512k" ) || ( connection == QObject::tr( "DSL-512k" ) ) )
-	{
-		bps = 512000;
-	}
-	else if ( ( connection == "Cable" ) || ( connection == QObject::tr( "Cable" ) ) )
-	{
-		bps = 768000;
-	}
-	else if ( ( connection == "DSL-1M" ) || (connection == QObject::tr( "DSL-1M" ) ) )
-	{
-		bps = 1000000;
-	}
-	else if ( ( connection == "T1" ) || ( connection == QObject::tr( "T1" ) ) )
-	{
-		bps = 1500000;
-	}
-	else if ( ( connection == "T3" ) || ( connection == QObject::tr( "T3" ) ) )
-	{
-		bps = 4500000;
-	}
-	else if ( ( connection == "OC-3" ) || ( connection == QObject::tr( "OC-3" ) ) )
-	{
-		bps = 3 * 51840000;
-	}
-	else if ( ( connection == "OC-12" ) || ( connection == QObject::tr( "OC-12" ) ) )
-	{
-		bps = 12 * 51840000;
-	}
+#ifdef DEBUG2
+	PRINT("Connection = '%S', bps = %lu\n", WString(conn).getBuffer(), bps);
+#endif
 	return bps;
 }
 
@@ -718,24 +704,42 @@ BandwidthToString(uint32 bps)
 {
 	switch (bps)
 	{
-	case 75:			return "300 baud";
-	case 300:			return "300 baud";
-	case 14400: 		return "14.4 kbps";
-	case 28800: 		return "28.8 kbps";
-	case 33600: 		return "33.6 kbps";
-	case 57600: 		return "57.6 kbps";
-	case 64000: 		return "ISDN-64k";
-	case 128000:		return "ISDN-128k";
-	case 256000:		return "DSL-256k";
-	case 384000:		return "DSL-384k";
-	case 512000:		return "DSL-512k";
-	case 768000:		return "Cable";
-	case 1000000:		return "DSL-1M";
-	case 1500000:		return "T1";
-	case 4500000:		return "T3";
-	case 3 * 51840000:	return "OC-3";
-	case 12 * 51840000: return "OC-12";
-	default:			return "Unknown";
+	case 75:		
+	case 300:			
+		return "300 baud";
+	case 14400: 		
+		return "14.4 kbps";
+	case 28800: 		
+		return "28.8 kbps";
+	case 33600: 		
+		return "33.6 kbps";
+	case 57600: 		
+		return "57.6 kbps";
+	case 64000: 		
+		return "ISDN-64k";
+	case 128000:		
+		return "ISDN-128k";
+	case 256000:		
+		return "DSL-256k";
+	case 384000:		
+		return "DSL-384k";
+	case 512000:		
+		return "DSL-512k";
+	case 768000:		
+		return "Cable";
+	case 1000000:		
+	case 1024000:		
+		return "DSL-1M";
+	case 1500000:		
+		return "T1";
+	case 4500000:		
+		return "T3";
+	case 155520000:	
+		return "OC-3";
+	case 622080000: 
+		return "OC-12";
+	default:			
+		return "Unknown";
 	}
 }
 
@@ -1260,4 +1264,74 @@ QString hexFromLongLong(const int64 &in, unsigned int length)
 		return hexFromULongLong(UINT64_MAX + (in + 1), length);
 	else
 		return hexFromULongLong((uint64) in, length);
+}
+
+void
+AddToList(String & slist, const String &item)
+{
+	if (slist.Length() == 0)
+		slist = item;
+	else
+	{
+		slist += ",";
+		slist += item;
+	}
+}
+
+void
+AddToList(String & slist, const char *item)
+{
+	AddToList(slist, String(item));
+}
+
+void AddToList(QString &slist, const QString &entry)
+{
+	if (slist.isEmpty())
+		slist = entry;
+	else
+	{
+		slist += ",";
+		slist += entry;
+	}
+}
+
+void RemoveFromList(QString &slist, const QString &entry)
+{
+	if (slist == entry)
+	{
+		slist = "";
+		return;
+	}
+
+	QStringList list = QStringList::split(",", slist);
+	QStringList::Iterator iter = list.begin();
+	while (iter != list.end())
+	{
+		if ((*iter).lower() == entry.lower())
+		{
+			list.remove(iter);
+			break;
+		}
+		iter++;
+	}
+	slist = list.join(",");
+}
+
+void RemoveFromList(String &slist, const String &entry)
+{
+	if (slist == entry)
+	{
+		slist = "";
+		return;
+	}
+
+	StringTokenizer tok(slist.Cstr(), ",");
+	String out;
+	const char * tmp;
+	while ((tmp = tok.GetNextToken()) != NULL)
+	{
+		if (!entry.EqualsIgnoreCase(tmp))
+			AddToList(out, tmp);
+	}
+	slist = out;
 }

@@ -11,6 +11,7 @@ class WPWEvent : public QCustomEvent
 public:
 	WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypted = false);
 	WPWEvent(int type, const QString & msg);
+	WPWEvent(int type);
 
 	virtual ~WPWEvent() {}
 
@@ -26,6 +27,7 @@ public:
 		TextPosted,			// response to textevent
 		TabComplete,		// requesting a tab complete...
 		TabCompleted,		// response to tab complete...
+		Created,
 		Closed
 	};
 

@@ -159,23 +159,42 @@ WUniListItem::key(int c, bool /* asc */) const
 			bw = BandwidthToBytes(QListViewItem::text(c));
 			switch (bw)
 			{
-			case 75:			return "0x01";
-			case 300:			return "0x01";
-			case 14400: 		return "0x02";
-			case 28800: 		return "0x03";
-			case 33600: 		return "0x04";
-			case 57600: 		return "0x05";
-			case 64000: 		return "0x06";
-			case 128000:		return "0x07";
-			case 256000:		return "0x08";
-			case 384000:		return "0x09";
-			case 512000:		return "0x0A";
-			case 768000:		return "0x0B";
-			case 1500000:		return "0x0C";
-			case 4500000:		return "0x0D";
-			case 3 * 51840000:	return "0x0E";
-			case 12 * 51840000: return "0x0F";
-			default:			return "0x00";
+			case 75:				
+			case 300:				
+				return "0x01";
+			case 14400: 			
+				return "0x02";
+			case 28800: 			
+				return "0x03";
+			case 33600: 			
+				return "0x04";
+			case 57600: 			
+				return "0x05";
+			case 64000: 			
+				return "0x06";
+			case 128000:			
+				return "0x07";
+			case 256000:			
+				return "0x08";
+			case 384000:			
+				return "0x09";
+			case 512000:			
+				return "0x0A";
+			case 768000:			
+				return "0x0B";
+			case 1000000:
+			case 1024000:	
+				return "0x0C";
+			case 1500000:			
+				return "0x0D";
+			case 4500000:			
+				return "0x0E";
+			case 155520000:		
+				return "0x0F";
+			case 622080000:		
+				return "0x10";
+			default:		
+				return "0x00";
 			}
 		}
 	default:
@@ -249,23 +268,42 @@ WUniListItem::item(int c)
 			bw = BandwidthToBytes(QListViewItem::text(c));
 			switch (bw)
 			{
-			case 75:			return 1;
-			case 300:			return 1;
-			case 14400: 		return 2;
-			case 28800: 		return 3;
-			case 33600: 		return 4;
-			case 57600: 		return 5;
-			case 64000: 		return 6;
-			case 128000:		return 7;
-			case 256000:		return 8;
-			case 384000:		return 9;
-			case 512000:		return 10;
-			case 768000:		return 11;
-			case 1500000:		return 12;
-			case 4500000:		return 13;
-			case 3 * 51840000:	return 14;
-			case 12 * 51840000: return 15;
-			default:			return 0;
+			case 75:				
+			case 300:				
+				return 1;
+			case 14400: 			
+				return 2;
+			case 28800: 			
+				return 3;
+			case 33600: 			
+				return 4;
+			case 57600: 			
+				return 5;
+			case 64000: 			
+				return 6;
+			case 128000:			
+				return 7;
+			case 256000:			
+				return 8;
+			case 384000:			
+				return 9;
+			case 512000:			
+				return 10;
+			case 768000:			
+				return 11;
+			case 1000000:
+			case 1024000:	
+				return 12;
+			case 1500000:			
+				return 13;
+			case 4500000:			
+				return 14;
+			case 155520000:		
+				return 15;
+			case 622080000:		
+				return 16;
+			default:				
+				return 0;
 			}
 		}
 	default:
