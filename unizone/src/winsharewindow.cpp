@@ -2069,13 +2069,14 @@ WinShareWindow::OpenDownload()
 		connect(fDLWindow, SIGNAL(FileInterrupted(QString, QString)), this, SLOT(FileInterrupted(QString, QString)));
 		connect(fDLWindow, SIGNAL(Closed()), this, SLOT(DownloadWindowClosed()));
 	}
+	fDLWindow->show();
 }
 
 void
 WinShareWindow::OpenDownloads()
 {
 	OpenDownload();
-	fDLWindow->show();
+//	fDLWindow->show();
 }
 
 void
