@@ -383,6 +383,9 @@ private:
    void verifyIndex(uint32 index) const {MASSERT(index < _length, "Index Out Of Bounds Exception");}
 };
 
+/** Convenience method:  returns a string with no characters in it (i.e. "") */
+const String & GetEmptyString();
+
 /** A nice hashing function for use with (const char *)'s */
 uint32 CStringHashFunc(const char * str); 
 

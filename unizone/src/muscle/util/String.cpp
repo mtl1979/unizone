@@ -611,6 +611,12 @@ String String :: ArgAux(const char * buf) const
    else return *this;
 }
 
+const String & GetEmptyString()
+{
+   static const String _empty;
+   return _empty;
+}
+
 /*--- ElfHash --------------------------------------------------- 
  *  The published hash algorithm used in the UNIX ELF format 
  *  for object files. Accepts a pointer to a string to be hashed 

@@ -108,7 +108,7 @@ status_t Thread :: StartInternalThreadAux()
       QMutex mutex; mutex.lock();
       _waitForHandleSet = &waitCondition;  // used as a temporary parameter only
       _waitForHandleMutex = &mutex;  // used as a temporary parameter only
-      _thread.start();
+      _thread.start(GetInternalQThreadPriority());
       waitCondition.wait(&mutex);  // wait until the internal thread signal us that it's okay to continue
       mutex.unlock();
       return B_NO_ERROR;

@@ -129,7 +129,7 @@ bool IsRegexToken(char c, bool isFirstCharInString)
 {
    switch(c)
    {
-      // muscle 2.50:  fixed to match exactly the chars specified in muscle/rege/regex/regcomp.c
+      // muscle 2.50:  fixed to match exactly the chars specified in muscle/regex/regex/regcomp.c
       case '[': case ']': case '*': case '?': case '\\': case ',': case '|': case '(': case ')':
       case '=': case '^': case '+': case '$': case '{':  case '}': case ':': case '-':
         return true;

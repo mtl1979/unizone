@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.51"
+#define MUSCLE_VERSION_STRING "2.52"
 
 // If we are in an environment where known assembly is available, make a note of that fact
 #if defined(__GNUC__)
@@ -304,25 +304,12 @@ inline float MusclePowerPCSwapFloat(float val)
 }
 inline uint64 MusclePowerPCSwapInt64(uint64 val)
 {
-   uint64 a;
-   volatile uint32 * inLo  = (uint32 *) &val;
-   volatile uint32 * outLo = (uint32 *) &a;
-   volatile uint32 * inHi  = (inLo+1);
-   volatile uint32 * outHi = (outLo+1);
-   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*outLo) : "r" (*inHi), "r" (outLo));
-   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*outHi) : "r" (*inLo), "r" (outHi));
-   return a;
+   return ((uint64)(MusclePowerPCSwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MusclePowerPCSwapInt32((uint32)(val&0xFFFFFFFF))))<<32);   
 }
 inline double MusclePowerPCSwapDouble(double val)
 {
-   double a;
-   volatile float * inLo  = (float *) &val;
-   volatile float * outLo = (float *) &a;
-   volatile float * inHi  = (inLo+1);
-   volatile float * outHi = (outLo+1);
-   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*outLo) : "r" (*inHi), "r" (outLo));
-   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*outHi) : "r" (*inLo), "r" (outHi));
-   return a;
+   uint64 v64 = MusclePowerPCSwapInt64(*((uint64 *)&val));
+   return *((double *)&v64);
 }
 #  define B_SWAP_DOUBLE(arg)   MusclePowerPCSwapDouble((double)(arg))
 #  define B_SWAP_FLOAT(arg)    MusclePowerPCSwapFloat((float)(arg))
@@ -337,39 +324,22 @@ inline uint16 MuscleX86SwapInt16(uint16 val)
 }
 inline uint32 MuscleX86SwapInt32(uint32 val)
 {
-   __asm__ __volatile__ ("bswap %0" : "=r" (val) : "0" (val));
+   __asm__ __volatile__ ("bswap %0" : "+r" (val));
    return val;
 }
 inline float MuscleX86SwapFloat(float val)
 {
-   __asm__ __volatile__ ("bswap %0" : "=r" (val) : "0" (val));
+   __asm__ __volatile__ ("bswap %0" : "+r" (val));
    return val;
 }
 inline uint64 MuscleX86SwapInt64(uint64 val)
 {
-   uint64 a;
-   volatile uint32 * inLo  = (uint32 *) &val;
-   volatile uint32 * outLo = (uint32 *) &a;
-   volatile uint32 * inHi  = (inLo+1);
-   volatile uint32 * outHi = (outLo+1);
-   __asm__ __volatile__ ("bswap %0" : "=r" (*inLo) : "0" (*inLo));
-   __asm__ __volatile__ ("bswap %0" : "=r" (*inHi) : "0" (*inHi));
-   *outHi = *inLo;
-   *outLo = *inHi;
-   return a;
+   return ((uint64)(MuscleX86SwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MuscleX86SwapInt32((uint32)(val&0xFFFFFFFF))))<<32);   
 }
 inline double MuscleX86SwapDouble(double val)
 {
-   double a;
-   volatile float * inLo  = (float *) &val;
-   volatile float * outLo = (float *) &a;
-   volatile float * inHi  = (inLo+1);
-   volatile float * outHi = (outLo+1);
-   __asm__ __volatile__ ("bswap %0" : "=r" (*inLo) : "0" (*inLo));
-   __asm__ __volatile__ ("bswap %0" : "=r" (*inHi) : "0" (*inHi));
-   *outHi = *inLo;
-   *outLo = *inHi;
-   return a;
+   uint64 v64 = MuscleX86SwapInt64(*((uint64 *)&val));
+   return *((double *)&v64);
 }
 #  define B_SWAP_DOUBLE(arg)   MuscleX86SwapDouble((double)(arg))
 #  define B_SWAP_FLOAT(arg)    MuscleX86SwapFloat((float)(arg))

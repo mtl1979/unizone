@@ -400,6 +400,16 @@ private:
    QWaitCondition * _waitForHandleSet;  // only valid during thread startup!
    QMutex * _waitForHandleMutex;
    friend class MuscleQThread;
+
+protected:
+   /** Returns the priority that the internal thread should be launched under.  Only available
+    *  when using the Qt implementation of Thread class (e.g. when QT_THREAD_SUPPORT is defined)
+    *  @returns the QThread::Priority value, as described in the QThread documentation.  Default
+    *           implementation always returns QThread::InheritPriority.
+    */
+   virtual QThread::Priority GetInternalQThreadPriority() const {return QThread::InheritPriority;}
+
+private:
 #elif defined(__BEOS__)
    thread_id _thread;
    static int32 InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return 0;}

@@ -60,7 +60,7 @@ status_t ParseArgs(const String & line, Message & addTo)
       }
       lastCharWasBackslash = (c == '\\');
    }
-   StringTokenizer tok(tokenizeThis());
+   StringTokenizer tok(tokenizeThis()," \t\r\n");
    const char * next;
    while((next = tok()) != NULL)
    {
