@@ -730,7 +730,7 @@ WUploadThread::DoUpload()
 
 							if (gWin->fSettings->GetUploads())
 							{
-							gWin->PrintSystem( tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+								gWin->PrintSystem( tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
 							}
 						}
 						SendReply(update);
