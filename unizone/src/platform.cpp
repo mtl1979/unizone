@@ -250,23 +250,17 @@ MakeSizeString(uint64 s)
 	result += postFix;
 	return result;	
 }
-/*
-String 
-Trim(String orig)
-{ 
-   int32 len = (int32) orig.Length();
-   const char * s = orig.Cstr();
-   int32 startIdx; for (startIdx = 0;     startIdx<len;    startIdx++) if (s[startIdx] != ' ') break; 
-   int32 endIdx;   for (endIdx   = len-1; endIdx>startIdx; endIdx--)   if (s[endIdx] != ' ')   break; 
-   return orig.Substring((uint32)startIdx, (uint32)(endIdx+1)); 
-}
-*/
 
-int32
+uint32
 BandwidthToBytes(QString connection)
 {
-	int32 bps = 0;
-	if (connection == "300 baud")
+	uint32 bps = 0;
+	if (connection.find(",") > 0)
+	{
+		QString spd = connection.mid(connection.find(",") + 1);
+		bps = spd.toULong();
+	}
+	else if (connection == "300 baud")
 	{
 		bps = 75;
 	}
@@ -336,12 +330,12 @@ BandwidthToBytes(QString connection)
 }
 
 QString
-BandwidthToString(int32 bps)
+BandwidthToString(uint32 bps)
 {
 	switch (bps)
 	{
 	case 75:			return "300 baud";
-//	case 300:			return "300 baud";
+	case 300:			return "300 baud";
 	case 14400: 		return "14.4 kbps";
 	case 28800: 		return "28.8 kbps";
 	case 33600: 		return "33.6 kbps";

@@ -141,14 +141,25 @@ void
 WUser::InitBandwidth(const MessageRef msg)
 {
 	const char * l;
-	int32 bps = 0;
+	uint32 bps = 0;
+
+	fBandwidthLabel = "Unknown"; // Reset
 
 	if (msg()->FindInt32("bps", (int32 *)&bps) == B_OK)
 		fBandwidthBPS = bps;
+
 	if (bps != 0)
 		fBandwidthLabel = BandwidthToString(bps);
-	else if (msg()->FindString("label", &l) == B_OK)
-		fBandwidthLabel = QString::fromUtf8(l);
+
+	if (fBandwidthLabel == "Unknown")
+	{
+		if (msg()->FindString("label", &l) == B_OK)
+		{
+			fBandwidthLabel = QString::fromUtf8(l);
+			fBandwidthLabel.append(",");
+			fBandwidthLabel.append(QString::number(bps));
+		}
+	}
 	WString wUser = fUserName;
 	WString wBandwidth = fBandwidthLabel;
 	PRINT("WUser: %S with label %S and bps %d\n", wUser.getBuffer(), wBandwidth.getBuffer(), fBandwidthBPS);

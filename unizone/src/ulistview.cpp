@@ -149,6 +149,7 @@ WUniListItem::key(int c, bool asc) const
 			bw = BandwidthToBytes(QListViewItem::text(c));
 			switch (bw)
 			{
+			case 75:			return "0x01";
 			case 300:			return "0x01";
 			case 14400: 		return "0x02";
 			case 28800: 		return "0x03";
@@ -238,6 +239,7 @@ WUniListItem::item(int c)
 			bw = BandwidthToBytes(QListViewItem::text(c));
 			switch (bw)
 			{
+			case 75:			return 1;
 			case 300:			return 1;
 			case 14400: 		return 2;
 			case 28800: 		return 3;
@@ -419,6 +421,17 @@ WUniListItem::text(int c) const
 		}
 		
 		return result;
+		}
+	case ConnectionSpeed:
+		{
+			if (fKey[c].find(",") > 0)	// Strip 'hidden' bps value off
+			{
+				return fKey[c].left( fKey[c].find(",") );
+			}
+			else
+			{
+				return fKey[c];
+			}
 		}
 	default:
 		{

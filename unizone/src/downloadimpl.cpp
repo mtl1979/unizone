@@ -919,9 +919,11 @@ WDownload::genericEvent(WGenericEvent * g)
 						item->setText(WTransferItem::ETA, "");
 					}
 				}
+
 				gt->SetFinished(true);
 				gt->SetActive(false);
-//				gt->Reset();
+				gt->SetLocallyQueued(false);
+
 				if (gWin->fSettings->GetAutoClear())
 				{
 					SendSignal(ClearUploads);

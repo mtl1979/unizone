@@ -67,11 +67,11 @@ QString MakeSizeString(uint64 s);
 // Strip only spaces off, no other non-printable characters
 // String Trim(String orig);
 
-// Convert Connection string to bytes per second
-int32 BandwidthToBytes(QString connection);
+// Convert 'Connection string' to 'bytes per second'
+uint32 BandwidthToBytes(QString connection);
 
-// Convert bytes per second to Connection string
-QString BandwidthToString(int32 bps);
+// Convert 'bytes per second' to 'Connection string'
+QString BandwidthToString(uint32 bps);
 
 // Get server name from full server URL
 QString GetServerName(QString server);
