@@ -316,11 +316,19 @@ SOURCE=..\src\userlistitem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\winshare_channels.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\winshare_network.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\winshare_parsing.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\winshare_search.cpp
 # End Source File
 # Begin Source File
 
@@ -333,6 +341,10 @@ SOURCE=..\src\winsharewindow.cpp
 # Begin Source File
 
 SOURCE=..\src\wpwevent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wstatusbar.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -1014,6 +1026,10 @@ InputName=winsharewindow
 # Begin Source File
 
 SOURCE=..\src\wpwevent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wstatusbar.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
