@@ -80,8 +80,8 @@ public:
 	// UniShare
 	static QString TimeRequest(const QString &username);
 
-	static QString tr2(const char *s);					// Appends space if not empty
-	static QString tr3(const char *s, const char *c);	// Adds leading space if needed.
+	static QString tr2(const char *s);	// Appends space if not empty
+	static QString tr3(const QString &s);	// Adds leading space if needed.
 };
 
 #endif	// FORMATTING_H

@@ -23,10 +23,10 @@ WFormat::tr2(const char *s)
 }
 
 QString 
-WFormat::tr3(const char *s, const char *c)
+WFormat::tr3(const QString &s)
 {
 	QString temp(" ");
-	temp += tr(s, c);
+	temp += s;
 	return temp.stripWhiteSpace();
 }
 
@@ -200,7 +200,7 @@ QString WFormat::UserNameChangedNoOld(const QString &session, const QString &nam
 	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
 	temp += name;
 	temp += "</font>";
-	temp += tr3(".", "'is now known as' suffix");
+	temp += tr3(tr(".", "'is now known as' suffix"));
 	return temp.stripWhiteSpace();
 }
 
@@ -209,7 +209,7 @@ QString WFormat::UserNameChangedNoNew(const QString &session)
 	QString temp = tr("User #%1 is now").arg(session);
 	temp += " ";
 	temp += tr("nameless");
-	temp += tr3(".", "'is now nameless' suffix");
+	temp += tr3(tr(".", "'is now nameless' suffix"));
 	return temp.stripWhiteSpace();
 }
 
@@ -225,7 +225,7 @@ QString WFormat::UserNameChanged(const QString &session, const QString &oldname,
 	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
 	temp += newname;
 	temp += "</font>";
-	temp += tr3(".", "'is now known as' suffix");
+	temp += tr3(tr(".", "'is now known as' suffix"));
 	return temp.stripWhiteSpace();
 }
 
@@ -239,7 +239,7 @@ QString WFormat::UserStatusChanged(const QString &session, const QString &user, 
 	temp += tr(") is now");
 	temp += " ";
 	temp += status;
-	temp += tr3(".", "'is now' suffix");
+	temp += tr3(tr(".", "'is now' suffix"));
 	return temp.stripWhiteSpace();
 }
 
@@ -248,7 +248,7 @@ QString WFormat::UserStatusChanged2(const QString &session, const QString &statu
 	QString temp = tr("User #%1 is now").arg(session);
 	temp += " ";
 	temp += status;
-	temp += tr3(".", "'is now' suffix");
+	temp += tr3(tr(".", "'is now' suffix"));
 	return temp.stripWhiteSpace();
 }
 
@@ -315,20 +315,20 @@ QString WFormat::Warning(const QString &text)
 QString 
 WFormat::StatusChanged(const QString &status)
 {
-	QString temp = tr2("You are now");
+	QString temp = tr2(QT_TRANSLATE_NOOP("WFormat", "You are now"));
 	temp += status;
-	temp += tr3(".", "'You are now' suffix");
+	temp += tr3(tr(".", "'You are now' suffix"));
 	return temp.stripWhiteSpace();
 }
 
 QString
 WFormat::NameChanged(const QString &name)
 {
-	QString temp = tr2("Name changed to");
+	QString temp = tr2(QT_TRANSLATE_NOOP("WFormat", "Name changed to"));
 	temp += tr("<font color=\"%1\">").arg(WColors::LocalName);
 	temp += name;
 	temp += "</font>";
-	temp += tr3(".", "'Name changed to' suffix");
+	temp += tr3(tr(".", "'Name changed to' suffix"));
 	return temp.stripWhiteSpace();
 }
 
