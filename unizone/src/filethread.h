@@ -20,6 +20,26 @@ typedef WStrList::iterator WStrListIter;
 typedef list<MessageRef> WMsgList;
 typedef WMsgList::iterator WMsgListIter;
 
+
+class UFileInfo
+{
+public:
+	UFileInfo(QFileInfo & info);
+	UFileInfo(QString file);
+	virtual ~UFileInfo();
+	
+	uint32 getModificationTime();
+	QString getMIMEType();
+	QString getPath();
+	QString getName();
+	int64 getSize();
+
+	bool isValid();
+
+private:
+	QFileInfo *fInfo;				// Object initialized from?
+};
+
 // This class runs through a list of paths and parses each
 // directory for files to search
 class WFileThread : public QThread
@@ -67,7 +87,7 @@ private:
 
 	void ParseDir(const QString & d);
 	QString ResolveLink(const QString & lnk);
-	bool GetFileInfo(QFileInfo *, FileInfo *);
+//	bool GetFileInfo(QFileInfo *, FileInfo *);
 
 	QMutex fLocker;
 };
