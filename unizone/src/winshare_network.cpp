@@ -1753,7 +1753,7 @@ WinShareWindow::IsBlackListed(QString & user)
 	{
 		// Invalid reference!
 
-		return false;
+		return MatchFilter(user, (const char *) fBlackList.utf8());
 	}
 }
 
@@ -1780,7 +1780,7 @@ WinShareWindow::IsAutoPrivate(QString & user)
 	{
 		// Invalid reference!
 
-		return false;
+		return MatchFilter(user, (const char *) fAutoPriv.utf8());
 	}
 }
 
@@ -1824,6 +1824,18 @@ WinShareWindow::IsIgnored(const WUser * user)
 bool
 WinShareWindow::IsIgnored(QString & user, bool bTransfer)
 {
+	bool bDisconnected = false;
+
+	// default for bDisconnected is true, if bTransfer is true
+	if (bTransfer)
+		bDisconnected = true;
+
+	return IsIgnored(user, bTransfer, bDisconnected);
+}
+
+bool
+WinShareWindow::IsIgnored(QString & user, bool bTransfer, bool bDisconnected)
+{
 	// Find the user record
 	//
 
@@ -1854,10 +1866,10 @@ WinShareWindow::IsIgnored(QString & user, bool bTransfer)
 
 		// Nuke disconnected users?
 
-		if (fSettings->GetBlockDisconnected() && bTransfer)
+		if (fSettings->GetBlockDisconnected() && bTransfer && bDisconnected)
 			return true;
 		else
-			return false;
+			return MatchFilter(user, (const char *) fIgnore.utf8());
 	}
 }
 
@@ -1962,7 +1974,7 @@ WinShareWindow::Ignore(QString & user)
 
 	// Already ignored?
 	//
-	if (IsIgnored(user, true))
+	if (IsIgnored(user, true, false))
 		return false;
 
 	// Append to ignore list

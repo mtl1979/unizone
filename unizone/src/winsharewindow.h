@@ -279,6 +279,8 @@ private:
 
 	// parsing stuff...
 	bool MatchUserFilter(const WUser * user, const char * filter);
+	bool MatchFilter(const QString user, const char * filter);
+
 	int MatchUserName(QString un, QString & result, const char * filter);
 	bool DoTabCompletion(QString origText, QString & result, const char * filter);
 	void GotUpdateCmd(const char * param, QString val);
@@ -342,6 +344,7 @@ public:
 	void UpdateReceiveStats(uint64 r);
 
 	bool IsIgnored(QString & user, bool bTransfer = false);
+	bool IsIgnored(QString & user, bool bTransfer, bool bDisconnected);
 	bool IsBlackListedIP(QString & ip);
 	bool IsBlackListed(QString & user);
 	bool IsAutoPrivate(QString & user);

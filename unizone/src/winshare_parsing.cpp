@@ -381,3 +381,27 @@ WinShareWindow::GetTimeStamp()
 	QString ret = WFormat::TimeStamp.arg(cl).arg(gWin->fSettings->GetFontSize()).arg(sCurTime);
 	return ret;
 }
+
+bool
+WinShareWindow::MatchFilter(const QString user, const char * filter)
+{
+	if (user == NULL) 
+		return false;
+	StringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
+	const char * n;
+	while((n = idTok.GetNextToken()) != NULL)
+	{
+		String next(n);
+		next = next.Trim();
+		
+		// Does this item (interpreted as a regex) match our user's name?
+		MakeRegexCaseInsensitive(next);
+		StringMatcher sm(next.Cstr());
+		String userName = String((const char *) user.utf8()).Trim();
+		if ((userName.Length() > 0) && sm.Match(userName.Cstr()))
+		{
+			return true;
+		}
+	}
+	return false;
+}
