@@ -369,24 +369,46 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 									cd.mkdir("downloads");
 							}
 							
-							fFile = new QFile(fixed);	// fixed filename again
-							CHECK_PTR(fFile);
-							if (fFile->exists() && !append)	// create a new file name
+							if (QFile::exists(fixed) && !append)	// create a new file name
 							{
 								QString nf = fixed;
 								int i = 1;
 								while (QFile::exists(nf))
+								{
+									// Check file size again, because it might have changed
+									QFile* fFile2 = new QFile(nf);
+									CHECK_PTR(fFile2);
+									if (fFile2->open(IO_ReadOnly))
+									{
+										if (fFile2->size() == fCurrentOffset)	// sizes match up?
+										{
+											append = true;
+											fFile2->close();
+											delete fFile2;
+											fFile2 = NULL;
+											break; // Get out of loop
+										}
+										else
+										{
+											fFile2->close();
+										}
+									}
+									delete fFile2;
+									fFile2 = NULL;
 									// nf = QObject::tr("%1 %2").arg(fixed).arg(i++);
 									nf = UniqueName(fixed, i++);
-								delete fFile;
-								fFile = NULL; // <postmaster@raasu.org> 20021027
+								}
+//								delete fFile;
+//								fFile = NULL; // <postmaster@raasu.org> 20021027
 								fixed = nf;
-								fFile = new QFile(fixed);
-								CHECK_PTR(fFile);
+//								fFile = new QFile(fixed);
+//								CHECK_PTR(fFile);
 							}
 							
-							fLocalFileDl[GetCurrentNum()] = fixed;
+							fLocalFileDl[fCurFile] = fixed;
 							MessageRef msg;
+							fFile = new QFile(fixed);	// fixed filename again
+							CHECK_PTR(fFile);
 							if (fFile->open((append ? IO_Append | IO_WriteOnly : IO_WriteOnly)))
 							{
 								msg = GetMessageFromPool(WGenericEvent::FileStarted);

@@ -255,10 +255,21 @@ NetClient::HandleUniRemoveMessage(String nodePath)
 		{
 		case CHANNEL_DEPTH:
 			{
-				QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
-				
-				// user parted channel
-				RemoveChannel(sid, channel);
+				QString cdata = QString::fromUtf8(GetPathClause(CHANNELDATA_DEPTH, nodePath.Cstr()));
+				cdata = cdata.mid(0, cdata.find('/') );
+				if (cdata == "channeldata")
+				{
+					QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
+					if (channel.find('/') >= 0)
+					{
+						channel = channel.mid(0, channel.find('/') );
+					}
+					if (channel != "")
+					{
+						// user parted channel
+						RemoveChannel(sid, channel);
+					}
+				}
 				break;
 			}
 			

@@ -80,7 +80,7 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fSearchEdit = new WComboBox(this, fEntryBox, "fSearchEdit");
 	CHECK_PTR(fSearchEdit);
 	fSearchEdit->setEditable(true);
-	fSearchEdit->setMinimumWidth(this->width()*0.75);
+	fSearchEdit->setMinimumWidth((int) (this->width()*0.75));
 	fSearchLabel->setBuddy(fSearchEdit);
 	fSearchLabel->setText(tr("Search:"));
 	

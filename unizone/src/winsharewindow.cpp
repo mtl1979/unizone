@@ -331,7 +331,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (!fNetClient->IsInternalThreadRunning() && !fReconnectTimer->isActive())
 				{
 					// Connect();
-					PrintSystem("Reconnecting in 1 minute!");
+					PrintSystem(tr( "Reconnecting in 1 minute!" ));
 					fReconnectTimer->start(60000, true); // 1 minute
 				}
 				return;

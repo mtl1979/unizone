@@ -344,19 +344,23 @@ Channel::customEvent(QCustomEvent * event)
 				// Give a list of available commands
 				if (wte->Text().lower().startsWith("/help"))
 				{
-					PrintSystem(tr( "Channel command reference:" ));
-					PrintSystem(tr( "/action [text] - Do something" ));
-					PrintSystem(tr( "/clear - Clear channel window" ));
-					PrintSystem(tr( "/deop [name or session id] - Take admin status from other user" ));
-					PrintSystem(tr( "/help - Show command reference" ));
-					PrintSystem(tr( "/invite [name or session id] - Invite user to channel" ));
-					PrintSystem(tr( "/kick [name or session id] - Kick user off the channel" ));
-					PrintSystem(tr( "/listadmins - Show channel admins" ));
-					PrintSystem(tr( "/me [text] - Same as /action" ));
-					PrintSystem(tr( "/op [name or session id] - Give admin status to other user" ));
-					PrintSystem(tr( "/private - Set channel to private mode" ));
-					PrintSystem(tr( "/public - Set channel to public mode" ));
-					PrintSystem(tr( "/topic [topic] - Change the channel topic" ));
+					QString help = tr(
+						"\nChannel command reference:\n" 
+						"\n\t\t\t\t/action [text] - Do something"
+						"\n\t\t\t\t/clear - Clear channel window"
+						"\n\t\t\t\t/deop [name or session id] - Take admin status from other user"
+						"\n\t\t\t\t/help - Show command reference"
+						"\n\t\t\t\t/invite [name or session id] - Invite user to channel"
+						"\n\t\t\t\t/kick [name or session id] - Kick user off the channel"
+						"\n\t\t\t\t/listadmins - Show channel admins"
+						"\n\t\t\t\t/me [text] - Same as /action"
+						"\n\t\t\t\t/op [name or session id] - Give admin status to other user"
+						"\n\t\t\t\t/private - Set channel to private mode"
+						"\n\t\t\t\t/public - Set channel to public mode"
+						"\n\t\t\t\t/topic [topic] - Change the channel topic" 
+						);
+					ParseString(help);
+					PrintSystem(help);
 				}
 				// Give a list of channel admins
 				else if (wte->Text().lower().startsWith("/listadmins"))
