@@ -21,8 +21,8 @@ translations : $(QMFILES)
 	sed "s/\"unfinished\"/'unfinished'/;s/\"obsolete\"/'obsolete'/;s/<defaultcodec>/<codec>/;s|</defaultcodec>|</codec>|" < $< > $@
 
 %.qm : %.ts2 
-	$(LRELEASE) $<
 	mv -f $< $(addsuffix .ts,$(basename $<))
+	$(LRELEASE) $(addsuffix .ts,$(basename $<))
 clean : 
 	rm -f *.qm *.ts2
 

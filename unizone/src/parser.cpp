@@ -2,6 +2,12 @@
 
 #define MAX_BUFFER_SIZE 262144		// 256 kB
 
+int
+ParseBufferSize()
+{
+	return MAX_BUFFER_SIZE;
+}
+
 QString
 ParseForShown(const QString & txt)
 {

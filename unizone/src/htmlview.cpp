@@ -108,7 +108,7 @@ WHTMLView::appendText(const QString &newtext)
 		{
 #if (QT_VERSION >= 0x030000)
 			int newlen = text().length() + newtext.length();
-			if (newlen >= MAX_BUFFER_SIZE)
+			if (newlen >= ParseBufferSize())
 			{
 #endif
 				PRINT("appendText 2\n");
