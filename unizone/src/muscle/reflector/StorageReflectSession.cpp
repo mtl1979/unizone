@@ -1406,7 +1406,7 @@ InsertIndexEntryAt(uint32 insertIndex, StorageReflectSession * notifyWithOnSetPa
    if (_children)
    {
       // Find a string matching (key) but that belongs to an actual child...
-      HashtableIterator<const char *, DataNodeRef> iter = _children->GetIterator();
+      HashtableIterator<const char *, DataNodeRef> iter(*_children);
       const char * childKey;
       if (_children->GetKey(key, childKey) == B_NO_ERROR)
       {
@@ -1653,7 +1653,7 @@ bool
 StorageReflectSession :: NodePathMatcher ::
 MatchesNode(DataNode & node, const Message * optData, int rootDepth) const
 {
-   HashtableIterator<String, PathMatcherEntry> iter = GetEntries().GetIterator();
+   HashtableIterator<String, PathMatcherEntry> iter(GetEntries());
    const PathMatcherEntry * next;
    while((next = iter.GetNextValue()) != NULL) if (PathMatches(node, optData, *next, rootDepth)) return true;
    return false;
@@ -1664,7 +1664,7 @@ StorageReflectSession :: NodePathMatcher ::
 GetMatchCount(DataNode & node, const Message * optData, int rootDepth) const
 {
    int matchCount = 0;
-   HashtableIterator<String, PathMatcherEntry> iter = GetEntries().GetIterator();
+   HashtableIterator<String, PathMatcherEntry> iter(GetEntries());
    const PathMatcherEntry * next;
    while((next = iter.GetNextValue()) != NULL) if (PathMatches(node, optData, *next, rootDepth)) matchCount++;
    return matchCount;
@@ -1709,7 +1709,7 @@ DoTraversalAux(const TraversalContext & data, DataNode & node)
    bool parsersHaveWildcards = false;  // optimistic default
    {
       // If none of our parsers are using wildcarding at our current level, we can use direct hash lookups (faster)
-      HashtableIterator<String, PathMatcherEntry> iter = GetEntries().GetIterator();
+      HashtableIterator<String, PathMatcherEntry> iter(GetEntries());
       const PathMatcherEntry * nextValue;
       while((nextValue = iter.GetNextValue()) != NULL)
       {
@@ -1738,7 +1738,7 @@ DoTraversalAux(const TraversalContext & data, DataNode & node)
       // optimized case -- since our parsers are all node-specific, we can do a single lookup for each,
       // and avoid having to iterate over all the children of this node.
       Queue<DataNode *> alreadyDid;  // To make sure we don't do the same child twice (could happen if two matchers are the same)
-      HashtableIterator<String, PathMatcherEntry> iter = GetEntries().GetIterator();
+      HashtableIterator<String, PathMatcherEntry> iter(GetEntries());
       const PathMatcherEntry * nextValue;
       while((nextValue = iter.GetNextValue()) != NULL)
       {
@@ -1770,7 +1770,7 @@ CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int 
       bool recursed = false;  // set if we have recursed to this child already
 
       // Try all parsers and see if any of them match at this level
-      HashtableIterator<String, PathMatcherEntry> iter = GetEntries().GetIterator();
+      HashtableIterator<String, PathMatcherEntry> iter(GetEntries());
       const PathMatcherEntry * nextValue;
       while((nextValue = iter.GetNextValue()) != NULL)
       {

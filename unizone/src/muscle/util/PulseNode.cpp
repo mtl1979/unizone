@@ -57,7 +57,7 @@ void PulseNode :: GetPulseTimeAux(uint64 now, uint64 & minPulseTime)
       _nextPulseAt = _localPulseAt;
       if (_children.GetNumItems() > 0)
       {
-         HashtableIterator<PulseNode *, bool> iter = _children.GetIterator();
+         HashtableIterator<PulseNode *, bool> iter(_children);
          PulseNode * nextKey;
          while(iter.GetNextKey(nextKey) == B_NO_ERROR) nextKey->GetPulseTimeAux(now, _nextPulseAt);
       }
@@ -77,7 +77,7 @@ void PulseNode :: PulseAux(uint64 now)
       }
       if (_children.GetNumItems() > 0)
       {
-         HashtableIterator<PulseNode *, bool> iter = _children.GetIterator();
+         HashtableIterator<PulseNode *, bool> iter(_children);
          PulseNode * nextKey;
          while(iter.GetNextKey(nextKey) == B_NO_ERROR) nextKey->PulseAux(now);
       }
@@ -109,7 +109,7 @@ void PulseNode :: ClearPulseChildren()
    if (_children.GetNumItems() > 0) 
    {
       InvalidateGroupPulseTime();  // lack of children may change our timing!
-      HashtableIterator<PulseNode *, bool> iter = _children.GetIterator();
+      HashtableIterator<PulseNode *, bool> iter(_children);
       PulseNode * next;
       while(iter.GetNextKey(next) == B_NO_ERROR) next->_parent = NULL;  // don't delete the kids!
       _children.Clear();

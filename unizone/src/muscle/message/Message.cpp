@@ -1068,7 +1068,7 @@ Message & Message :: operator=(const Message &rhs)
       what = rhs.what;
 
       // Copy all his entries!
-      HashtableIterator<String, GenericRef> it = rhs._entries.GetIterator();
+      HashtableIterator<String, GenericRef> it(rhs._entries);
       const String * nextKey;
       while((nextKey = it.GetNextKey()) != NULL) 
       {
@@ -1095,7 +1095,7 @@ uint32 Message :: CountNames(uint32 type) const
 
    // oops, gotta count just the entries of the given type
    uint32 total = 0;
-   HashtableIterator<String, GenericRef> it = _entries.GetIterator();
+   HashtableIterator<String, GenericRef> it(_entries);
    const GenericRef * nextValue;
    while((nextValue = it.GetNextValue()) != NULL) if (((const AbstractDataArray*)nextValue->GetItemPointer())->TypeCode() == type) total++;
    return total;
@@ -1132,7 +1132,7 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
    sprintf(buf, "Message:  this=%p, what='%s' (%li/0x%lx), entryCount=%li, flatSize=%lu\n", this, prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), (uint32)FlattenedSize()); 
    s += buf;
 
-   HashtableIterator<String, GenericRef> it = _entries.GetIterator();
+   HashtableIterator<String, GenericRef> it(_entries);
    const String * nextKey;
    while((nextKey = it.GetNextKey()) != NULL) 
    {
@@ -1216,7 +1216,7 @@ uint32 Message :: FlattenedSize() const
    uint32 sum = 3 * sizeof(uint32);  // For the message header:  4 bytes for the protocol revision #, 4 bytes for the number-of-entries field, 4 bytes for what code
 
    // For each flattenable field: 4 bytes for the name length, name data, 4 bytes for entry type code, 4 bytes for entry data length, entry data
-   HashtableIterator<String, GenericRef> it = _entries.GetIterator();
+   HashtableIterator<String, GenericRef> it(_entries);
    const String * nextKey;
    while((nextKey = it.GetNextKey()) != NULL)  
    {
@@ -1251,7 +1251,7 @@ void Message :: Flatten(uint8 *buffer) const
    uint32 numFlattenableEntries = 0;
    {
       const GenericRef * next;
-      HashtableIterator<String, GenericRef> it = _entries.GetIterator();
+      HashtableIterator<String, GenericRef> it(_entries);
       while((next = it.GetNextValue()) != NULL) if (((const AbstractDataArray *)next->GetItemPointer())->IsFlattenable()) numFlattenableEntries++;
    }
 
@@ -1260,7 +1260,7 @@ void Message :: Flatten(uint8 *buffer) const
    WriteData(buffer, &writeOffset, &networkByteOrder, sizeof(networkByteOrder));
 
    // Write entries
-   HashtableIterator<String, GenericRef> it = _entries.GetIterator();
+   HashtableIterator<String, GenericRef> it(_entries);
    const String * nextKey;
    while((nextKey = it.GetNextKey()) != NULL)
    {
@@ -2112,7 +2112,7 @@ bool Message :: operator == (const Message & rhs) const
 bool Message :: FieldsAreSubsetOf(const Message & rhs, bool compareContents) const
 {
    // Returns true iff every one of our fields has a like-named, liked-typed, equal-length field in (rhs).
-   HashtableIterator<String, GenericRef> iter = _entries.GetIterator();
+   HashtableIterator<String, GenericRef> iter(_entries);
    const String * nextKey;
    const GenericRef * myNextValue;
    while(iter.GetNextKeyAndValue(nextKey, myNextValue) == B_NO_ERROR)

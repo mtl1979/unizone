@@ -236,7 +236,7 @@ ServerProcessLoop()
       if (numFuncs > 0)
       {
          Log(MUSCLE_LOG_DEBUG, " and listening on port%s ", (numFuncs > 1) ? "s" : "");
-         HashtableIterator<uint16, ReflectSessionFactoryRef> iter = _factories.GetIterator();
+         HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
          uint16 port;
          int which=0;
          while(iter.GetNextKey(port) == B_NO_ERROR) Log(MUSCLE_LOG_DEBUG, "%u%s", port, (++which<numFuncs)?",":"");
@@ -271,7 +271,7 @@ ServerProcessLoop()
          // Set up the session factories so we can be notified when a new connection is received
          if (_factories.GetNumItems() > 0)
          {
-            HashtableIterator<uint16, ReflectSessionFactoryRef> iter = _factories.GetIterator();
+            HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
             ReflectSessionFactoryRef * next; 
             while((next = iter.GetNextValue()) != NULL)
             {
@@ -369,7 +369,7 @@ ServerProcessLoop()
 
             // Now that all is prepared, calculate all the policies' wakeup times
             {
-               HashtableIterator<PolicyRef, bool> iter = policies.GetIterator();
+               HashtableIterator<PolicyRef, bool> iter(policies);
                const PolicyRef * next;
                while((next = iter.GetNextKey()) != NULL) CallGetPulseTimeAux(*(next->GetItemPointer()), now, nextPulseAt);
             }
@@ -495,7 +495,7 @@ ServerProcessLoop()
          if (policies.GetNumItems() > 0)
          {
             const PolicyRef * next;
-            HashtableIterator<PolicyRef, bool> iter = policies.GetIterator();
+            HashtableIterator<PolicyRef, bool> iter(policies);
             while((next = iter.GetNextKey()) != NULL) 
             {
                AbstractSessionIOPolicy * p = next->GetItemPointer();
@@ -511,7 +511,7 @@ ServerProcessLoop()
          if (policies.GetNumItems() > 0)
          {
             const PolicyRef * next;
-            HashtableIterator<PolicyRef, bool> iter = policies.GetIterator();
+            HashtableIterator<PolicyRef, bool> iter(policies);
             while((next = iter.GetNextKey()) != NULL) CallPulseAux(*(next->GetItemPointer()), GetRunTime64());
          }
 
@@ -523,7 +523,7 @@ ServerProcessLoop()
       // Lastly, check our accepting ports to see if anyone is trying to connect...
       if (_factories.GetNumItems() > 0)
       {
-         HashtableIterator<uint16, ReflectSessionFactoryRef> iter = _factories.GetIterator();
+         HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
          uint16 port;
          ReflectSessionFactoryRef * acc;
          while(iter.GetNextKeyAndValue(port, acc) == B_NO_ERROR)
@@ -779,7 +779,7 @@ RemoveAcceptFactory(uint16 port)
    }
    else
    {
-      HashtableIterator<uint16, ReflectSessionFactoryRef> iter = _factories.GetIterator();
+      HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
       uint16 nextKey;
       ReflectSessionFactoryRef nextValue;
       while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)

@@ -1363,13 +1363,13 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 {
 	StringTokenizer wholeStringTok((const char *) text.utf8(), " ");
 	String restOfString2(wholeStringTok.GetRemainderOfString());
-	restOfString2.Replace(CLUMP_CHAR, ' ');
+//	restOfString2.Replace(CLUMP_CHAR, ' ');
 	const char * w2 = wholeStringTok.GetNextToken();
 	if (w2)
 	{
 		setTargetStr = w2;
-		setTargetStr.Replace(CLUMP_CHAR, ' ');
-		w2 = setTargetStr.Cstr();
+//		setTargetStr.Replace(CLUMP_CHAR, ' ');
+//		w2 = setTargetStr.Cstr();
 
 		setRestOfString = wholeStringTok.GetRemainderOfString();
 
@@ -1382,9 +1382,9 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 		// find users by session id
 		for (int i = clauses.GetNumItems() - 1; i >= 0; i--)
 		{
-			WUserRef user;
+			WUserRef user = net->FindUser( QString::fromUtf8( clauses[i].Cstr() ) );
 			PRINT("Checking for user %s\n", clauses[i].Cstr());
-			if ((user = net->FindUser(QString::fromUtf8(clauses[i].Cstr())))() != NULL)
+			if (user() != NULL)
 			{
 				WUserSearchPair pair = MakePair(QString::fromUtf8(clauses[i].Cstr()), user, QString::fromUtf8(setRestOfString.Cstr())); // <postmaster@raasu.org> 20021007
 				sendTo.insert(pair);
@@ -1395,7 +1395,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 		PRINT("Checking using usernames\n");
 		for (int j = clauses.GetNumItems() - 1; j >= 0; j--)
 		{
-			String tstr(clauses[j].Cstr());
+			String tstr(clauses[j]);
 			tstr.Trim();
 			ConvertToRegex(tstr);
 			MakeRegexCaseInsensitive(tstr);
@@ -1435,16 +1435,17 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 			while (iter != net->Users().end())
 			{
 				user = (*iter).second;
-				String userName = String((const char *) user()->GetUserName().utf8()).Trim();
+				QCString uName = user()->GetUserName().utf8();
+				String userName = String((const char *) uName).Trim();
 				userName = StripURL(userName);
 
 				if (userName.Length() > 0 && restOfString2.StartsWith(userName))
 				{
 					PRINT("Found\n");
 					WUserSearchPair pair = MakePair(user()->GetUserID(), user,
-													QString::fromUtf8(restOfString2.Substring(strlen((const char *) user()->GetUserName().utf8())).Trim().Cstr())); // <postmaster@raasu.org> 20021007
+													QString::fromUtf8(restOfString2.Substring(userName.Length()).Cstr()));
 					sendTo.insert(pair);
-					setTargetStr = (const char *) user()->GetUserName().utf8();
+					setTargetStr = (const char *) uName;
 				}
 				iter++;
 			}
@@ -2526,19 +2527,19 @@ WinShareWindow::UpdateShares()
 						MessageRef packed = DeflateMessage(mref, enc, true);
 						if (packed())
 						{
-							refScan()->AddMessage(s.Cstr(), packed);
+							refScan()->AddMessage(s, packed);
 							m++;
 						}
 						else	
 						{
 							// Failed to pack the message?
-							refScan()->AddMessage(s.Cstr(), mref);
+							refScan()->AddMessage(s, mref);
 							m++;
 						}
 					}
 					else
 					{
-						refScan()->AddMessage(s.Cstr(), mref);
+						refScan()->AddMessage(s, mref);
 						m++;
 					}
 					if (m == 20)

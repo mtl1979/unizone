@@ -30,6 +30,14 @@ public:
    /** Copy Constructor. */
    String(const String & str);
 
+   /** This constructor sets this String to be a substring of the specified String.
+     * @param str String to become a copy of.
+     * @param beginIndex Index of the first character in (str) to include.
+     * @param endIndex Index after the last character in (str) to include.  
+     *                 Defaults to a very large number, so that by default the entire remainder of the string is included.
+     */
+   String(const String & str, uint32 beginIndex, uint32 endIndex=((uint32)-1));
+
    /** Destructor. */
    virtual ~String();
 
@@ -42,7 +50,7 @@ public:
    String & operator = (const char * val) {(void) SetCstr(val); return *this;}
 
    /** Assignment Operator. */
-   String & operator = (const String &rhs) {(void) SetCstr(rhs(), rhs.Length()); return *this;}
+   String & operator = (const String &rhs) {(void) SetFromString(rhs); return *this;}
 
    /** Append Operator. 
     *  @param rhs A string to append to this string.
@@ -148,6 +156,17 @@ public:
      *               automatically by scanning the string.
      */
    status_t SetCstr(const char * str, uint32 maxLen = ((uint32)-1));
+
+   /** Sets our state from the given String.  This is similar to the copy constructor, except
+     * that it allows you to optionally specify a maximum length, and it allows you to detect
+     * out-of-memory errors.
+     * @param str The new string to copy from.
+     * @param beginIndex Index of the first character in (str) to include.
+     * @param endIndex Index after the last character in (str) to include.  
+     *                 Defaults to a very large number, so that by default the entire remainder of the string is included.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
+     */
+   status_t SetFromString(const String & str, uint32 firstChar = 0, uint32 maxLen = ((uint32)-1));
 
    /** Returns true iff this string ends with (suffix) */
    bool EndsWith(const String &suffix) const;

@@ -239,7 +239,7 @@ WinShareWindow::SplitQuery(const String &fileExp)
 }
 
 void
-AddToList(String & slist, const char *item)
+AddToList(String & slist, const String &item)
 {
 	if (slist.Length() == 0)
 		slist = item;
@@ -248,6 +248,12 @@ AddToList(String & slist, const char *item)
 		slist += ",";
 		slist += item;
 	}
+}
+
+void
+AddToList(String & slist, const char *item)
+{
+	AddToList(slist, String(item));
 }
 
 void
@@ -314,11 +320,11 @@ WinShareWindow::GoSearch()
 				String userid = (const char *) user()->GetUserID().utf8();
 				if (match.Match(username.Cstr()))
 				{
-					AddToList(ulist, userid.Cstr());
+					AddToList(ulist, userid);
 				}
 				else if (match.Match(userid.Cstr()))
 				{
-					AddToList(ulist, userid.Cstr());
+					AddToList(ulist, userid);
 				}
 				it++;
 			}

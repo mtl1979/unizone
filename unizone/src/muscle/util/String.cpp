@@ -8,17 +8,42 @@ BEGIN_NAMESPACE(muscle);
 
 String::String(const char * str, uint32 maxLen) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
 {
-   SetCstr(str, maxLen);
+   (void) SetCstr(str, maxLen);
 }
 
 String::String(const String & str) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
 {
-   *this = str;
+   (void) SetFromString(str);
+}
+
+String::String(const String & str, uint32 beginIndex, uint32 endIndex) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
+{
+   (void) SetFromString(str, beginIndex, endIndex);
 }
 
 String :: ~String() 
 {
    if (_buffer != _smallBuffer) muscleFree(_buffer);
+}
+
+status_t
+String::SetFromString(const String & s, uint32 firstChar, uint32 afterLastChar)
+{
+   afterLastChar = muscleMin(afterLastChar, s.Length());
+   uint32 len = (afterLastChar > firstChar) ? (afterLastChar-firstChar) : 0;
+   if (len > 0)
+   {
+      if (EnsureBufferSize(len+1, false) != B_NO_ERROR) return B_ERROR;
+      memcpy(_buffer, s()+firstChar, len);
+      _buffer[len] = '\0';
+      _length = len;
+   }
+   else
+   {
+      if (_buffer) _buffer[0] = '\0';
+      _length = 0;
+   }
+   return B_NO_ERROR;
 }
 
 status_t
@@ -122,7 +147,6 @@ String::operator<<(bool rhs)
    return *this << val;
 }
  
-
 bool
 String::operator==(const String &rhs) const
 {
@@ -295,8 +319,8 @@ String::IndexOf(char ch, uint32 fromIndex) const
 int
 String::IndexOf(const String &s2, uint32 fromIndex) const
 {
-   const char *theFind = (fromIndex < Length()) ? strstr(Cstr()+fromIndex, s2.Cstr()) : NULL;
-   return theFind ? (theFind - Cstr()) : -1;
+   const char * temp = (fromIndex < Length()) ? strstr(Cstr()+fromIndex, s2()) : NULL;
+   return temp ? (temp - Cstr()) : -1;
 }
 
 int
@@ -334,31 +358,28 @@ String::StartsWith(const String &s2, uint32 offset) const
 }
 
 String
-String::Substring(uint32 left) const
+String::Substring(uint32 beginIndex) const
 {
-   return Substring(left, Length());
+   return String(*this, beginIndex);
 }
 
 String
-String::Substring(uint32 left, uint32 right) const
+String::Substring(uint32 beginIndex, uint32 endIndex) const
 {
-   right = muscleMin(right, Length());
-   left  = muscleMin(left, right);
-   return String(Cstr()+left, right-left);
+   return String(*this, beginIndex, endIndex);
 }
 
 String
 String::Substring(const String & markerString) const
 {
    int idx = LastIndexOf(markerString);
-   return (idx >= 0) ? Substring(idx+markerString.Length()) : *this;
+   return (idx >= 0) ? String(*this, idx+markerString.Length()) : *this;
 }
 
 String
-String::Substring(uint32 left, const String & markerString) const
+String::Substring(uint32 beginIndex, const String & markerString) const
 {
-   int idx = IndexOf(markerString, left);
-   return (idx >= 0) ? Substring(left, idx) : *this;
+   return String(*this, beginIndex, (uint32) IndexOf(markerString, beginIndex));
 }
 
 String
@@ -384,7 +405,7 @@ String::Trim() const
    const char * s = Cstr();
    int32 startIdx; for (startIdx = 0;     startIdx<len;    startIdx++) if (!IsSpaceChar(s[startIdx])) break; 
    int32 endIdx;   for (endIdx   = len-1; endIdx>startIdx; endIdx--)   if (!IsSpaceChar(s[endIdx]))   break; 
-   return Substring((uint32)startIdx, (uint32)(endIdx+1)); 
+   return String(*this, (uint32)startIdx, (uint32)(endIdx+1));
 }
 
 uint32 String :: FlattenedSize() const

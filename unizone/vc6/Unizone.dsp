@@ -56,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 muscle.lib zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release"
+# ADD LINK32 muscle.lib zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"Debug/Unizoned.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
@@ -115,7 +115,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug"
 # SUBTRACT BASE LINK32 /incremental:no
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib musclead.lib zlibad.lib regexad.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegad.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib musclead.lib zlibad.lib regexad.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegad.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug_ANSI" /libpath:"muscle___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
@@ -146,7 +146,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 muscle.lib zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release"
 # SUBTRACT BASE LINK32 /pdb:none /incremental:yes
-# ADD LINK32 musclea.lib zliba.lib regexa.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpega.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizonea.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release_ANSI" /libpath:"zlib___Win32_Release_ANSI" /libpath:"regex___Win32_Release_ANSI"
+# ADD LINK32 musclea.lib zliba.lib regexa.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpega.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizonea.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release_ANSI" /libpath:"muscle___Win32_Release_ANSI" /libpath:"regex___Win32_Release_ANSI" /libpath:"zlib___Win32_Release_ANSI"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ENDIF 
@@ -2713,7 +2713,7 @@ BuildCmds= \
 # End Group
 # Begin Group "DLL files"
 
-# PROP Default_Filter ".dll"
+# PROP Default_Filter "dll"
 # Begin Source File
 
 SOURCE=..\libjpeg\Release\qjpeg.dll
@@ -2727,7 +2727,7 @@ TargetDir=\build\unizone\vc6
 InputPath=..\libjpeg\Release\qjpeg.dll
 InputName=qjpeg
 
-"$(TargetDir)\qjpeg.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
 
 # End Custom Build
@@ -2775,7 +2775,7 @@ TargetDir=\build\unizone\vc6
 InputPath=..\libjpeg\Release_ANSI\qjpega.dll
 InputName=qjpega
 
-"$(TargetDir)\qjpega.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
 
 # End Custom Build
@@ -2804,7 +2804,7 @@ TargetDir=\build\unizone\vc6
 InputPath=..\libjpeg\Debug_ANSI\qjpegad.dll
 InputName=qjpegad
 
-"$(TargetDir)\qjpegad.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
 
 # End Custom Build
@@ -2834,7 +2834,7 @@ TargetDir=\build\unizone\vc6
 InputPath=..\libjpeg\Debug\qjpegd.dll
 InputName=qjpegd
 
-"$(TargetDir)\qjpegd.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
 
 # End Custom Build
@@ -2849,6 +2849,268 @@ InputName=qjpegd
 
 # PROP BASE Exclude_From_Build 1
 # PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\regex___Win32_Release\regex.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=.\regex___Win32_Release
+TargetDir=\build\unizone\vc6
+InputPath=.\regex___Win32_Release\regex.dll
+InputName=regex
+
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\regex___Win32_Release_ANSI\regexa.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=.\regex___Win32_Release_ANSI
+TargetDir=\build\unizone\vc6
+InputPath=.\regex___Win32_Release_ANSI\regexa.dll
+InputName=regexa
+
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\regex___Win32_Debug_ANSI\regexad.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=.\regex___Win32_Debug_ANSI
+TargetDir=\build\unizone\vc6
+InputPath=.\regex___Win32_Debug_ANSI\regexad.dll
+InputName=regexad
+
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\regex___Win32_Debug\regexd.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=.\regex___Win32_Debug
+TargetDir=\build\unizone\vc6
+InputPath=.\regex___Win32_Debug\regexd.dll
+InputName=regexd
+
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\zlib___Win32_Release\zlib.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=.\zlib___Win32_Release
+TargetDir=\build\unizone\vc6
+InputPath=.\zlib___Win32_Release\zlib.dll
+InputName=zlib
+
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\zlib___Win32_Release_ANSI\zliba.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=.\zlib___Win32_Release_ANSI
+TargetDir=\build\unizone\vc6
+InputPath=.\zlib___Win32_Release_ANSI\zliba.dll
+InputName=zliba
+
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\zlib___Win32_Debug_ANSI\zlibad.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=.\zlib___Win32_Debug_ANSI
+TargetDir=\build\unizone\vc6
+InputPath=.\zlib___Win32_Debug_ANSI\zlibad.dll
+InputName=zlibad
+
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\zlib___Win32_Debug\zlibd.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=.\zlib___Win32_Debug
+TargetDir=\build\unizone\vc6
+InputPath=.\zlib___Win32_Debug\zlibd.dll
+InputName=zlibd
+
+"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
 !ENDIF 
 

@@ -60,14 +60,20 @@ public:
     */
    HashtableIterator();
 
-   /** Copy Constructor.  */
+   /** Copy Constructor. */
    HashtableIterator(const HashtableIterator<KeyType, ValueType, HashFunctorType> & rhs);
+
+   /** Convenience Constructor -- makes an iterator equivalent to the value returned by table.GetIterator().  */
+   HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, bool backwards = false);
+
+   /** Convenience Constructor -- makes an iterator equivalent to the value returned by table.GetIteratorAt().  */
+   HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, const KeyType & startAt, bool backwards);
 
    /** Destructor */
    ~HashtableIterator();
 
    /** Assignment operator. */
-   HashtableIterator<KeyType,ValueType, HashFunctorType> & operator=(const HashtableIterator<KeyType,ValueType,HashFunctorType> & rhs);
+   HashtableIterator<KeyType, ValueType, HashFunctorType> & operator=(const HashtableIterator<KeyType, ValueType, HashFunctorType> & rhs);
 
    /** Returns true iff there are more keys left in the key traversal.  */
    bool HasMoreKeys() const {return (_nextKeyCookie != NULL);}
@@ -174,10 +180,10 @@ public:
    status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, const ValueType * & setValuePtr);
 
 private:
+   void SetOwner(const Hashtable<KeyType,ValueType,HashFunctorType> * optTable);
+
    /** The Hashtable class needs access to our internals to do the iteration operation */
    friend class Hashtable<KeyType, ValueType, HashFunctorType>;
-
-   HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & owner, void * startCookie, bool backwards);
 
    void * _scratchSpace[2];   // ignore this; it's temp scratch space used by EnsureSize().
 
@@ -187,7 +193,6 @@ private:
 
    HashtableIterator<KeyType, ValueType, HashFunctorType> * _prevIter;  // for the doubly linked list so that the table can notify us if it is modified
    HashtableIterator<KeyType, ValueType, HashFunctorType> * _nextIter;  // for the doubly linked list so that the table can notify us if it is modified
-
    const Hashtable<KeyType, ValueType, HashFunctorType>   * _owner;     // table that we are associated with
 };
 
@@ -303,7 +308,12 @@ public:
      * @param backwards Set this to true if you want to iterate through the item list backwards.  Defaults to false.
      * @return an iterator object that can be used to examine the items in the hash table. 
      */
-   HashtableIterator<KeyType,ValueType,HashFunctorType> GetIterator(bool backwards = false) const {return HashtableIterator<KeyType,ValueType,HashFunctorType>(*this, backwards ? _iterTail : _iterHead, backwards);}
+   HashtableIterator<KeyType,ValueType,HashFunctorType> GetIterator(bool backwards = false) const 
+   {
+      HashtableIterator<KeyType,ValueType,HashFunctorType> ret; 
+      InitializeIterator(ret, backwards);
+      return ret;
+   }
 
    /** Get an iterator for use with this table, starting at the given entry.
      * @param startAt The key in this table to start the iteration at.
@@ -311,7 +321,12 @@ public:
      * @return an iterator object that can be used to examine the items in the hash table, starting at
      *         the specified key.  If the specified key is not in this table, an empty iterator will be returned.
      */
-   HashtableIterator<KeyType,ValueType,HashFunctorType> GetIteratorAt(const KeyType & startAt, bool backwards = false) const {return HashtableIterator<KeyType,ValueType,HashFunctorType>(*this, (_count>0)?GetEntry(ComputeHash(startAt), startAt):NULL, backwards);}
+   HashtableIterator<KeyType,ValueType,HashFunctorType> GetIteratorAt(const KeyType & startAt, bool backwards = false) const 
+   {
+      HashtableIterator<KeyType,ValueType,HashFunctorType> ret;
+      InitializeIteratorAt(ret, startAt, backwards);
+      return ret;
+   }
 
    /** Returns a pointer to the (index)'th key in this Hashtable.
     *  (This Hashtable class keeps its entries in a well-defined order)
@@ -541,6 +556,20 @@ private:
    /** Our hashtable iterator class needs access to our internals to register itself with us. */
    friend class HashtableIterator<KeyType, ValueType, HashFunctorType>;
 
+   void InitializeIterator(HashtableIterator<KeyType,ValueType,HashFunctorType> & iter, bool backwards) const
+   {
+      iter.SetOwner(this);
+      iter._backwards     = backwards;
+      iter._nextKeyCookie = iter._nextValueCookie = (backwards ? _iterTail : _iterHead);
+   }
+
+   void InitializeIteratorAt(HashtableIterator<KeyType,ValueType,HashFunctorType> & iter, const KeyType & startAt, bool backwards) const
+   {
+      iter.SetOwner(this);
+      iter._backwards     = backwards;
+      iter._nextKeyCookie = iter._nextValueCookie = ((_count>0)?GetEntry(ComputeHash(startAt), startAt):NULL);
+   }
+
    class HashtableEntry
    {
    public:
@@ -724,9 +753,12 @@ operator=(const Hashtable<KeyType, ValueType, HashFunctorType> & rhs)
    if (this != &rhs)
    {
       Clear();
-      HashtableIterator<KeyType, ValueType, HashFunctorType> iter = rhs.GetIterator();
-      const KeyType * nextKey;
-      while((nextKey = iter.GetNextKey()) != NULL) (void) Put(*nextKey, *iter.GetNextValue());  // no good way to handle out-of-mem here?  
+      if (EnsureSize(rhs.GetNumItems()) == B_NO_ERROR)
+      {
+         HashtableIterator<KeyType, ValueType, HashFunctorType> iter(rhs);
+         const KeyType * nextKey;
+         while((nextKey = iter.GetNextKey()) != NULL) (void) Put(*nextKey, *iter.GetNextValue());  // no good way to handle out-of-mem here?  
+      }
    }
    return *this;
 }
@@ -742,7 +774,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 bool
 Hashtable<KeyType,ValueType,HashFunctorType>::ContainsValue(const ValueType& value) const
 {
-   HashtableIterator<KeyType, ValueType, HashFunctorType> iter = GetIterator();
+   HashtableIterator<KeyType, ValueType, HashFunctorType> iter(*this);
    ValueType * v;
    while((v = iter.GetNextValue()) != NULL) if (*v == value) return true;
    return false;
@@ -1356,9 +1388,15 @@ HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const 
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
-HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & owner, void * startCookie, bool backwards) : _nextKeyCookie(startCookie), _nextValueCookie(startCookie), _backwards(backwards), _owner(&owner)
+HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, bool backwards) : _owner(NULL)
 {
-   _owner->RegisterIterator(this);
+   table.InitializeIterator(*this, backwards);
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, const KeyType & startAt, bool backwards) : _owner(NULL)
+{
+   table.InitializeIteratorAt(*this, startAt, backwards);
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
@@ -1368,17 +1406,24 @@ HashtableIterator<KeyType, ValueType, HashFunctorType>::~HashtableIterator()
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
+void
+HashtableIterator<KeyType,ValueType,HashFunctorType>::SetOwner(const Hashtable<KeyType,ValueType,HashFunctorType> * table)
+{
+   if (_owner != table)
+   {
+      if (_owner) _owner->UnregisterIterator(this);
+      _owner = table;
+      if (_owner) _owner->RegisterIterator(this);
+   }
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
 HashtableIterator<KeyType,ValueType,HashFunctorType> &
 HashtableIterator<KeyType,ValueType,HashFunctorType>:: operator=(const HashtableIterator<KeyType,ValueType,HashFunctorType> & rhs)
 {
    if (this != &rhs)
    {
-      if (_owner != rhs._owner)
-      {
-         if (_owner) _owner->UnregisterIterator(this);
-         _owner = rhs._owner;
-         if (_owner) _owner->RegisterIterator(this);
-      }
+      SetOwner(rhs._owner);
       _backwards       = rhs._backwards;
       _nextKeyCookie   = rhs._nextKeyCookie;
       _nextValueCookie = rhs._nextValueCookie;

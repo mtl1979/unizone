@@ -304,21 +304,20 @@ NetClient::HandleBeRemoveMessage(const String & nodePath)
 	int pd = GetPathDepth(nodePath.Cstr());
 	if (pd >= BESHARE_HOME_DEPTH)
 	{
-		QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-		sid.truncate( sid.find('/') );
+		String sid = GetPathClauseString(SESSION_ID_DEPTH, nodePath.Cstr());
 		
 		switch (pd)
 		{
         case BESHARE_HOME_DEPTH:
 			{
 				if (strncmp(GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr()), "beshare", 7) == 0)
-					RemoveUser(sid);
+					RemoveUser(QString(sid.Cstr()));
 				break;
 			}
 		case FILE_INFO_DEPTH: 
 			{
 				const char * fileName = GetPathClause(FILE_INFO_DEPTH, nodePath.Cstr());
-				emit RemoveFile(sid, fileName);
+				emit RemoveFile(QString(sid.Cstr()), fileName);
 				break;
 			}
 		}
@@ -331,26 +330,21 @@ NetClient::HandleUniRemoveMessage(const String & nodePath)
 	int pd = GetPathDepth(nodePath.Cstr());
 	if (pd >= USER_NAME_DEPTH)
 	{
-		QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-		sid.truncate( sid.find('/') );
+		String sid = GetPathClauseString(SESSION_ID_DEPTH, nodePath.Cstr());
+		QString qsid(sid.Cstr());
 		
 		switch (pd)
 		{
 		case CHANNEL_DEPTH:
 			{
-				QString cdata = QString::fromUtf8(GetPathClause(CHANNELDATA_DEPTH, nodePath.Cstr()));
-				cdata.truncate( cdata.find('/') );
+				String cdata = GetPathClauseString(CHANNELDATA_DEPTH, nodePath.Cstr());
 				if (cdata == "channeldata")
 				{
-					QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
-					if (channel.find('/') >= 0)
-					{
-						channel.truncate( channel.find('/') );
-					}
+					QString channel = QString::fromUtf8( GetPathClauseString(CHANNEL_DEPTH, nodePath.Cstr()).Cstr() );
 					if (!channel.isEmpty())
 					{
 						// user parted channel
-						RemoveChannel(sid, channel);
+						RemoveChannel(qsid, channel);
 					}
 				}
 				break;
@@ -363,7 +357,7 @@ NetClient::HandleUniRemoveMessage(const String & nodePath)
 void
 NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 {
-	QString cdata;
+	String cdata;
 	PRINT("UniShare: AddMessage - node = %s\n", nodePath.Cstr());
 	int pd = GetPathDepth(nodePath.Cstr());
 	if (pd >= USER_NAME_DEPTH)
@@ -371,16 +365,16 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 		MessageRef tmpRef;
 		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
 		{
-			QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-			sid.truncate( sid.find('/') );
+			String sid = GetPathClauseString(SESSION_ID_DEPTH, nodePath.Cstr());
+			QString qsid(sid.Cstr());
 			
 			switch (pd)
 			{
 			case USER_NAME_DEPTH:
 				{
 					PRINT("UniShare: PathDepth == USER_NAME_DEPTH\n");
-					QString nodeName = QString::fromUtf8(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()));
-					if (nodeName.lower() == "serverinfo")
+					String nodeName = GetPathClauseString(USER_NAME_DEPTH, nodePath.Cstr());
+					if (nodeName.EqualsIgnoreCase("serverinfo"))
 					{
 						int64 rtime;
 						String user, newid, oldid;
@@ -406,10 +400,10 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 								MessageRef col(GetMessageFromPool(RegisterFail));
 								if (col())
 								{
-									QString to("/*/");
+									String to("/*/");
 									to += sid;
 									to += "/unishare";
-									col()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+									col()->AddString(PR_NAME_KEYS, to);
 									col()->AddString("name", (const char *) win->GetUserName().utf8() );
 									col()->AddInt64("registertime", win->GetRegisterTime() );
 									SendMessageToSessions(col);
@@ -422,29 +416,24 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 			case CHANNEL_DEPTH:
 				{
 					PRINT("UniShare: PathDepth == CHANNEL_DEPTH\n");
-					cdata = QString::fromUtf8(GetPathClause(CHANNELDATA_DEPTH, nodePath.Cstr()));
-					cdata.truncate( cdata.find('/') );
+					cdata = GetPathClauseString(CHANNELDATA_DEPTH, nodePath.Cstr());
 					if (cdata == "channeldata")
 					{
-						QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
-						if (channel.find('/') >= 0)
-						{
-							channel.truncate( channel.find('/') );
-						}
+						QString channel = QString::fromUtf8( GetPathClauseString(CHANNEL_DEPTH, nodePath.Cstr()).Cstr() );
 						if (!channel.isEmpty())
 						{
 							// user joined channel
-							AddChannel(sid, channel);
+							AddChannel(qsid, channel);
 							String topic, owner, admins;
 							bool pub;
 							if (tmpRef()->FindString("owner", owner) == B_OK)
-								emit ChannelOwner(channel, sid, QString::fromUtf8(owner.Cstr()));
+								emit ChannelOwner(channel, qsid, QString::fromUtf8(owner.Cstr()));
 							if (tmpRef()->FindString("admins", admins) == B_OK)
-								emit ChannelAdmins(channel, sid, QString::fromUtf8(admins.Cstr()));
+								emit ChannelAdmins(channel, qsid, QString::fromUtf8(admins.Cstr()));
 							if (tmpRef()->FindString("topic", topic) == B_OK)
-								emit ChannelTopic(channel, sid, QString::fromUtf8(topic.Cstr()));
+								emit ChannelTopic(channel, qsid, QString::fromUtf8(topic.Cstr()));
 							if (tmpRef()->FindBool("public", &pub) == B_OK)
-								emit ChannelPublic(channel, sid, pub);
+								emit ChannelPublic(channel, qsid, pub);
 						}
 					}
 
@@ -570,63 +559,62 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 		MessageRef tmpRef;
 		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
 		{
-			QString sid = GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr());
-			sid.truncate(sid.find('/'));
+			String sid = GetPathClauseString(SESSION_ID_DEPTH, nodePath.Cstr());
+			QString qsid(sid.Cstr());
 			switch (pd)
 			{
 			case USER_NAME_DEPTH:
 				{
-					const char * host = GetPathClause(NetClient::HOST_NAME_DEPTH, nodePath.Cstr());
-					QString hostName = QString::fromUtf8(host);
-					hostName.truncate(hostName.find('/'));
+					String host = GetPathClauseString(NetClient::HOST_NAME_DEPTH, nodePath.Cstr());
+					QString hostName = QString::fromUtf8(host.Cstr());
 					
-					WUserRef user = FindUser(sid);
+					WUserRef user = FindUser(qsid);
 					if (!user())	// doesn't exist
 					{
-						user = CreateUser(sid);
+						user = CreateUser(qsid);
 						if (!user())	// couldn't create?
 							break;	// oh well
 						user()->SetUserHostName(hostName);
-						emit UserHostName(sid, hostName);
+						emit UserHostName(qsid, hostName);
 					}
 					
-					QString nodeName = QString::fromUtf8(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()));
-					if (nodeName.lower() == "name")
+					String nodeName = GetPathClauseString(USER_NAME_DEPTH, nodePath.Cstr());
+					if (nodeName.EqualsIgnoreCase("name"))
 					{
 						QString oldname = user()->GetUserName();
 						user()->InitName(tmpRef); 
 						if (oldname != user()->GetUserName())
-							emit UserNameChanged(sid, oldname, user()->GetUserName());
+							emit UserNameChanged(qsid, oldname, user()->GetUserName());
 					}
-					else if (nodeName.lower() == "userstatus")
+					else if (nodeName.EqualsIgnoreCase("userstatus"))
 					{
 						QString oldstatus = user()->GetStatus();
 						user()->InitStatus(tmpRef);
 						if (oldstatus != user()->GetStatus())
-							emit UserStatusChanged(sid, user()->GetUserName(), user()->GetStatus());
+							emit UserStatusChanged(qsid, user()->GetUserName(), user()->GetStatus());
 					}
-					else if (nodeName.lower() == "uploadstats")
+					else if (nodeName.EqualsIgnoreCase("uploadstats"))
 					{
 						user()->InitUploadStats(tmpRef);
 					}
-					else if (nodeName.lower() == "bandwidth")
+					else if (nodeName.EqualsIgnoreCase("bandwidth"))
 					{
 						user()->InitBandwidth(tmpRef);
 					}
-					else if (nodeName.lower() == "filecount")
+					else if (nodeName.EqualsIgnoreCase("filecount"))
 					{
 						user()->InitFileCount(tmpRef);
 					}
-					else if (nodeName.lower() == "fires")
+					else if (nodeName.EqualsIgnoreCase("fires"))
 					{
 						user()->SetFirewalled(true);
 					}
-					else if (nodeName.lower() == "files")
+					else if (nodeName.EqualsIgnoreCase("files"))
 					{
 						user()->SetFirewalled(false);
 					}
 					else
-						RemoveUser(sid);
+						RemoveUser(qsid);
 				}
 				break;
 				
@@ -636,7 +624,7 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 					
 					MessageRef unpacked = InflateMessage(tmpRef);
 					if (unpacked())
-						emit AddFile(sid, fileName, (GetPathClause(USER_NAME_DEPTH, nodePath.Cstr())[2] == 'r')? true : false, unpacked);
+						emit AddFile(qsid, fileName, (GetPathClause(USER_NAME_DEPTH, nodePath.Cstr())[2] == 'r')? true : false, unpacked);
 					break;
 				}
 			}
@@ -651,8 +639,7 @@ NetClient::HandleResultMessage(MessageRef & ref)
 	// remove all the items that need to be removed
 	for (int i = 0; (ref()->FindString(PR_NAME_REMOVED_DATAITEMS, i, nodePath) == B_OK); i++)
 	{
-		QString prot = GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr());
-		prot.truncate( prot.find('/') );
+		String prot = GetPathClauseString(BESHARE_HOME_DEPTH, nodePath.Cstr());
 		if (prot == "beshare")
 		{
 			HandleBeRemoveMessage(nodePath);
@@ -667,8 +654,7 @@ NetClient::HandleResultMessage(MessageRef & ref)
 	MessageFieldNameIterator iter = ref()->GetFieldNameIterator(B_MESSAGE_TYPE);
 	while (iter.GetNextFieldName(nodePath) == B_OK)
 	{
-		QString prot = GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr());
-		prot.truncate( prot.find('/') );
+		String prot = GetPathClauseString(BESHARE_HOME_DEPTH, nodePath.Cstr());
 		if (prot == "beshare")
 		{
 			HandleBeAddMessage(nodePath, ref);

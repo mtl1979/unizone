@@ -98,7 +98,7 @@ status_t PathMatcher :: PutPathFromString(const String & str, QueryFilterRef fil
 
 status_t PathMatcher :: PutPathsFromMatcher(const PathMatcher & matcher)
 {
-   HashtableIterator<String, PathMatcherEntry> iter = matcher.GetEntries().GetIterator();
+   HashtableIterator<String, PathMatcherEntry> iter(matcher.GetEntries());
    const String * nextKey;
    const PathMatcherEntry * nextValue;
    while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
@@ -116,7 +116,7 @@ bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage) c
 {
    uint32 numClauses = GetPathDepth(path);
 
-   HashtableIterator<String, PathMatcherEntry> iter = _entries.GetIterator();
+   HashtableIterator<String, PathMatcherEntry> iter(_entries);
    const PathMatcherEntry * nextValue;
    while((nextValue = iter.GetNextValue()) != NULL)
    {

@@ -998,7 +998,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				{
 					item->setText(WTransferItem::Status, tr("Waiting for incoming connection..."));
 					String tostr = "/*/";
-					tostr += session.Cstr();
+					tostr += session;
 					tostr += "/beshare";
 					cb()->AddString(PR_NAME_KEYS, tostr);
 					cb()->AddString(PR_NAME_SESSION, "");

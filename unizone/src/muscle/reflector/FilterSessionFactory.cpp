@@ -45,7 +45,7 @@ AbstractReflectSession * FilterSessionFactory:: CreateSession(const String & cli
       if (_requires.GetNumItems() > 0)
       {
          bool matched = false;
-         HashtableIterator<String, StringMatcherRef> iter = _requires.GetIterator();
+         HashtableIterator<String, StringMatcherRef> iter(_requires);
          StringMatcherRef next;
          while(iter.GetNextValue(next) == B_NO_ERROR)
          {
@@ -63,7 +63,7 @@ AbstractReflectSession * FilterSessionFactory:: CreateSession(const String & cli
       }
 
       // This IP must *not* match any of our bans!
-      HashtableIterator<String, StringMatcherRef> iter = _bans.GetIterator();
+      HashtableIterator<String, StringMatcherRef> iter(_bans);
       StringMatcherRef next;
       while(iter.GetNextValue(next) == B_NO_ERROR)
       {
@@ -164,7 +164,7 @@ status_t FilterSessionFactory :: RemoveRequirePattern(const char * requirePatter
 void FilterSessionFactory :: RemoveMatchingBanPatterns(const char * exp)
 {
    StringMatcher sm(exp);
-   HashtableIterator<String, StringMatcherRef> iter = _bans.GetIterator();  
+   HashtableIterator<String, StringMatcherRef> iter(_bans);
    String next;  // important to make this copy to avoid dangling pointer trouble!
    while(iter.GetNextKey(next) == B_NO_ERROR) if (sm.Match(next())) RemoveBanPattern(next());
 }
@@ -173,7 +173,7 @@ void FilterSessionFactory :: RemoveMatchingBanPatterns(const char * exp)
 void FilterSessionFactory :: RemoveMatchingRequirePatterns(const char * exp)
 {
    StringMatcher sm(exp);
-   HashtableIterator<String, StringMatcherRef> iter = _requires.GetIterator();  
+   HashtableIterator<String, StringMatcherRef> iter(_requires);
    String next;  // important to make this copy to avoid dangling pointer trouble!
    while(iter.GetNextKey(next) == B_NO_ERROR) if (sm.Match(next())) RemoveRequirePattern(next());
 }

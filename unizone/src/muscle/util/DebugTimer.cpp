@@ -20,7 +20,7 @@ DebugTimer :: ~DebugTimer()
       if (curElapsed) *curElapsed += MUSCLE_DEBUG_TIMER_CLOCK-_startTime;
 
       // And print out our stats
-      HashtableIterator<uint32, uint64> iter = _modeToElapsedTime.GetIterator();
+      HashtableIterator<uint32, uint64> iter(_modeToElapsedTime);
       uint32 nextMode;
       uint64 nextTime;
       while(iter.GetNextKeyAndValue(nextMode, nextTime) == B_NO_ERROR)

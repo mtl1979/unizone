@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.52"
+#define MUSCLE_VERSION_STRING "2.53"
 
 // If we are in an environment where known assembly is available, make a note of that fact
 #if defined(__GNUC__)
@@ -21,6 +21,11 @@
 # elif defined(__i386__)
 #  define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
 # endif
+#endif
+
+#ifndef __cplusplus
+# define MUSCLE_AVOID_NAMESPACES
+# define NEW_H_NOT_AVAILABLE
 #endif
 
 // Since certain antique compilers don't support namespaces, we
@@ -203,6 +208,8 @@ enum {
    B_TAG_TYPE     = 1297367367  // 'MTAG'  // new for v2.00; for in-mem-only tags
 };
 
+#ifdef __cplusplus
+
 /** A handy little method to swap the bytes of any int-style datatype around */
 template<typename T> inline T muscleSwapBytes(T swapMe)
 {
@@ -265,6 +272,8 @@ inline int muscleRintf(float f) {return (f>=0.0f) ? ((int)(f+0.5f)) : -((int)((-
 
 /** Returns -1 if the value is less than zero, +1 if it is greater than zero, or 0 otherwise. */
 template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((arg>0)?1:0);}
+
+#endif  // __cplusplus
 
 #ifndef __BEOS__
 # if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) || defined(__LITTLEENDIAN__) // Cygwin is for Windows on x86, hence little endian  
@@ -420,7 +429,8 @@ inline double MuscleX86SwapDouble(double val)
 # include <winsock.h>  // for WSAGetLastError()
 #endif
 
-#include "syslog/SysLog.h"  // for LogTime()
+#ifdef __cplusplus
+# include "syslog/SysLog.h"  // for LogTime()
 
 /** Checks errno and returns true iff the last I/O operation 
   * failed because it would have had to block otherwise. 
@@ -460,5 +470,7 @@ inline int32 ConvertReturnValueToMuscleSemantics(int origRet, uint32 maxSize, bo
    int32 retForBlocking = ((origRet > 0)||(maxSize == 0)) ? origRet : -1;
    return blocking ? retForBlocking : ((origRet<0)&&((PreviousOperationWouldBlock())||(PreviousOperationWasInterrupted()))) ? 0 : retForBlocking;
 }
+
+#endif  // __cplusplus
 
 #endif /* _MUSCLE_SUPPORT_H */

@@ -269,26 +269,26 @@ status_t SetConsoleLogLevel(int loglevel)
    else return B_ERROR;
 }
 
-#define DO_LOGGING(when)                                                       \
-{                                                                              \
-   va_list argList;                                                            \
-   va_start(argList, fmt);                                                     \
-   _dfl.Log(when, ll, fmt, argList);                                           \
-   va_end(argList);                                                            \
-   va_start(argList, fmt);                                                     \
-   _dcl.Log(when, ll, fmt, argList);                                           \
-   va_end(argList);                                                            \
-   HashtableIterator<LogCallbackRef, bool> iter = _logCallbacks.GetIterator(); \
-   const LogCallbackRef * nextKey;                                             \
-   while((nextKey = iter.GetNextKey()) != NULL)                                \
-   {                                                                           \
-      if (nextKey->GetItemPointer())                                           \
-      {                                                                        \
-         va_start(argList, fmt);                                               \
-         nextKey->GetItemPointer()->Log(when, ll, fmt, argList);               \
-         va_end(argList);                                                      \
-      }                                                                        \
-   }                                                                           \
+#define DO_LOGGING(when)                                         \
+{                                                                \
+   va_list argList;                                              \
+   va_start(argList, fmt);                                       \
+   _dfl.Log(when, ll, fmt, argList);                             \
+   va_end(argList);                                              \
+   va_start(argList, fmt);                                       \
+   _dcl.Log(when, ll, fmt, argList);                             \
+   va_end(argList);                                              \
+   HashtableIterator<LogCallbackRef, bool> iter(_logCallbacks);  \
+   const LogCallbackRef * nextKey;                               \
+   while((nextKey = iter.GetNextKey()) != NULL)                  \
+   {                                                             \
+      if (nextKey->GetItemPointer())                             \
+      {                                                          \
+         va_start(argList, fmt);                                 \
+         nextKey->GetItemPointer()->Log(when, ll, fmt, argList); \
+         va_end(argList);                                        \
+      }                                                          \
+   }                                                             \
 }
 
 void GetStandardLogLinePreamble(char * buf, int logLevel, time_t when)
@@ -334,7 +334,7 @@ status_t LogFlush()
 {
    if (LockLog() == B_NO_ERROR)
    {
-      HashtableIterator<LogCallbackRef, bool> iter = _logCallbacks.GetIterator();
+      HashtableIterator<LogCallbackRef, bool> iter(_logCallbacks);
       const LogCallbackRef * next;
       while((next = iter.GetNextKey()) != NULL) if (next->GetItemPointer()) next->GetItemPointer()->Flush();
       (void) UnlockLog();

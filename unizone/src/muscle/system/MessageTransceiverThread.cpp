@@ -481,7 +481,7 @@ ThreadSupervisorSession :: ~ThreadSupervisorSession()
 void ThreadSupervisorSession :: AboutToDetachFromServer()
 {
    // Neutralize all outstanding DrainTrags so that they won't try to call DrainTagIsBeingDeleted() on me after I'm gone.
-   HashtableIterator<DrainTag *, bool> tagIter = _drainTags.GetIterator();
+   HashtableIterator<DrainTag *, bool> tagIter(_drainTags);
    DrainTag * nextKey;
    while(tagIter.GetNextKey(nextKey) == B_NO_ERROR) nextKey->SetNotify(NULL);
 

@@ -52,7 +52,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"muscle.lib"
+# ADD LIB32 /nologo
 
 !ELSEIF  "$(CFG)" == "muscle - Win32 Debug"
 
@@ -76,7 +76,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"muscle___Win32_Debug/muscled.bsc"
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"muscled.lib"
+# ADD LIB32 /nologo /out:"muscle___Win32_Debug/muscled.lib"
 
 !ELSEIF  "$(CFG)" == "muscle - Win32 Debug ANSI"
 
@@ -101,7 +101,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"muscle___Win32_Debug_ANSI/musclead.bsc"
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"muscled.lib"
-# ADD LIB32 /nologo /out:"musclead.lib"
+# ADD LIB32 /nologo /out:"muscle___Win32_Debug_ANSI/musclead.lib"
 
 !ELSEIF  "$(CFG)" == "muscle - Win32 Release ANSI"
 
@@ -126,7 +126,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"muscle___Win32_Release_ANSI/musclea.bsc"
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"muscle.lib"
-# ADD LIB32 /nologo /out:"musclea.lib"
+# ADD LIB32 /nologo /out:"muscle___Win32_Release_ANSI/musclea.lib"
 
 !ENDIF 
 

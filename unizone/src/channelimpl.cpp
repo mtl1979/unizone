@@ -285,15 +285,17 @@ Channel::UpdateUserList()
 void
 Channel::AddUser(const QString & user)
 {
+/*
 	if (user == "0")
 	{
 		return;
 	}
+*/
 	WUserIter it = fUsers.find(user);
 	if (it == fUsers.end())
 	{
 		WUserRef uref = gWin->FindUser(user);
-		if (uref())
+		if (uref() && !uref()->IsBot())
 		{
 			WUserPair p = MakePair(user, uref);
 			fUsers.insert(p);
@@ -340,7 +342,7 @@ Channel::customEvent(QCustomEvent * event)
 				// Give a list of available commands
 				if (wte->Text().lower().startsWith("/help"))
 				{
-					QString help =	"\n";
+					QString help("\n");
 					help		+=	tr("Channel command reference:");
 					help		+=	"\n\n\t\t\t\t";
 					help		+=	tr("/action [action] - do something");
@@ -385,178 +387,186 @@ Channel::customEvent(QCustomEvent * event)
 				// Change channel topic
 				else if (wte->Text().lower().startsWith("/topic "))
 				{
-					if ( !gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					{
+						QString qTemp = GetParameterString(wte->Text());
+						SetTopic(qTemp);
+					}
+					else
 					{
 						// Need to be admin
 						if (gWin->fSettings->GetError())
 							PrintError( tr( "Not allowed!" ) );
-						break;
 					}
-					QString qTemp = GetParameterString(wte->Text());
-					SetTopic(qTemp);
 				}
 				// Set Channel to Public mode
 				else if (wte->Text().lower().startsWith("/public"))
 				{
-					if ( !gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+						SetPublic(true);
+					else
 					{
 						// Need to be admin
 						if (gWin->fSettings->GetError())
 							PrintError( tr( "Not allowed!" ) );
-						break;
 					}
-					
-					SetPublic(true);
 				}
 				// Set Channel to Private mode
 				else if (wte->Text().lower().startsWith("/private"))
 				{
-					if ( !gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+						SetPublic(false);	
+					else
 					{
 						// Need to be admin
 						if (gWin->fSettings->GetError())
 							PrintError( tr( "Not allowed!" ) );
-						break;
-					}
-					
-					SetPublic(false);	
+					}				
 				}
 				// Add admin
 				else if (wte->Text().lower().startsWith("/op "))
 				{
-					if ( !gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					{
+						QString user = GetParameterString(wte->Text());
+						if (user.length() > 0)
+						{
+							if (gWin->IsConnected(user))
+								gWin->AddAdmin(fName, user);
+							else
+							{
+								if (gWin->fSettings->GetError())
+									PrintError( tr( "User(s) not found!" ) );
+							}
+						}
+						else if (gWin->fSettings->GetError())
+							PrintError(tr("No users passed."));
+					}
+					else
 					{
 						// Need to be admin
 						if (gWin->fSettings->GetError())
 							PrintError( tr( "Not allowed!" ) );
-						break;
 					}
-					QString user = GetParameterString(wte->Text());
-					if (user.length() > 0)
-					{
-						if (!gWin->IsConnected(user))
-						{
-							if (gWin->fSettings->GetError())
-								PrintError( tr( "User(s) not found!" ) );
-							break;
-						}
-						gWin->AddAdmin(fName, user);
-					}
-					else if (gWin->fSettings->GetError())
-						PrintError(tr("No users passed."));
 				}
 				// Remove admin
 				else if (wte->Text().lower().startsWith("/deop "))
 				{
-					if ( !gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					{
+						QString user = GetParameterString(wte->Text());
+						if (user.length() > 0)
+						{
+							if (gWin->IsConnected(user))
+								gWin->RemoveAdmin(fName, user);
+							else
+							{
+								if (gWin->fSettings->GetError())
+									PrintError( tr( "User(s) not found!" ) );
+							}
+						}
+						else if (gWin->fSettings->GetError())
+							PrintError(tr("No users passed."));
+					}
+					else
 					{
 						// Need to be admin
 						if (gWin->fSettings->GetError())
 							PrintError( tr( "Not allowed!" ) );
-						break;
 					}
-					QString user = GetParameterString(wte->Text());
-					if (user.length() > 0)
-					{
-						if (!gWin->IsConnected(user))
-						{
-							if (gWin->fSettings->GetError())
-								PrintError( tr( "User(s) not found!" ) );
-							break;
-						}
-						gWin->RemoveAdmin(fName, user);
-					}
-					else if (gWin->fSettings->GetError())
-						PrintError(tr("No users passed."));
 				}
 				// Invite or Kick users
 				else if (wte->Text().lower().startsWith("/invite "))
 				{
-					if ( !gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					{
+						QString qTemp = GetParameterString(wte->Text());
+						if (qTemp.length() > 0)
+						{
+							// see if the user is already in the list
+							bool talking = false;
+							WUserRef uref = FindUser(qTemp);
+							if (uref())
+							{
+								for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
+								{
+									WUserRef found = (*uit).second;
+									if (found() == uref())
+									{
+										if (gWin->fSettings->GetUserEvents())
+											PrintError(tr("User #%1 (a.k.a %2) is already in this channel window!").arg(uref()->GetUserID()).arg(uref()->GetUserName()));
+										
+										talking = true;
+										break;	// done...
+									}
+								}
+							}
+							if (!uref())
+							{
+								uref = gWin->FindUser(qTemp);
+							}
+							if (!talking && uref())	// user not yet in list? add
+							{
+								Invite(uref()->GetUserID());	// the EASY way :)
+							}
+						}
+						else if (gWin->fSettings->GetError())
+							PrintError(tr("No users passed."));			
+					}
+					else
 					{
 						// Need to be admin
 						if (gWin->fSettings->GetError())
 							PrintError( tr( "Not allowed!" ) );
-						break;
 					}
-					QString qTemp = GetParameterString(wte->Text());
-					if (qTemp.length() > 0)
-					{
-						// see if the user is already in the list
-						bool talking = false;
-						WUserRef uref = FindUser(qTemp);
-						if (uref())
-						{
-							for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
-							{
-								WUserRef found = (*uit).second;
-								if (found() == uref())
-								{
-									if (gWin->fSettings->GetUserEvents())
-										PrintError(tr("User #%1 (a.k.a %2) is already in this channel window!").arg(uref()->GetUserID()).arg(uref()->GetUserName()));
-									
-									talking = true;
-									break;	// done...
-								}
-							}
-						}
-						if (!uref())
-						{
-							uref = gWin->FindUser(qTemp);
-						}
-						if (!talking && uref())	// user not yet in list? add
-						{
-							Invite(uref()->GetUserID());	// the EASY way :)
-						}
-					}
-					else if (gWin->fSettings->GetError())
-						PrintError(tr("No users passed."));			
 				}
 				else if (wte->Text().lower().startsWith("/kick "))
 				{
-					if ( !gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					{
+						QString qTemp = GetParameterString(wte->Text());
+						if (qTemp.length() > 0)
+						{
+							// see if the user is already in the list
+							bool f = false;
+							WUserRef uref = FindUser(qTemp);
+							if (uref())
+							{
+								for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
+								{
+									WUserRef found = (*uit).second;
+									
+#ifdef _DEBUG
+									WString wUser1(found()->GetUserID());
+									WString wUser2(uref()->GetUserID());
+									PRINT("found - UserID = %S\n", wUser1.getBuffer());
+									PRINT("uref  - UserID = %S\n", wUser2.getBuffer());
+#endif
+									
+									if (found()->GetUserID() == uref()->GetUserID())
+									{
+										Kick(uref()->GetUserID());
+										
+										f = true;
+										break;	// done...
+									}
+								}
+							}
+							if (!f)
+							{
+								if (gWin->fSettings->GetError())
+									PrintError( tr( "User(s) not found!" ) );
+							}
+						}
+						else if (gWin->fSettings->GetError())
+							PrintError(tr("No users passed."));			
+					}
+					else
 					{
 						// Need to be admin
 						if (gWin->fSettings->GetError())
 							PrintError( tr( "Not allowed!" ) );
-						break;
 					}
-					QString qTemp = GetParameterString(wte->Text());
-					if (qTemp.length() > 0)
-					{
-						// see if the user is already in the list
-						bool f = false;
-						WUserRef uref = FindUser(qTemp);
-						if (uref())
-						{
-							for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
-							{
-								WUserRef found = (*uit).second;
-
-#ifdef _DEBUG
-								WString wUser1(found()->GetUserID());
-								WString wUser2(uref()->GetUserID());
-								PRINT("found - UserID = %S\n", wUser1.getBuffer());
-								PRINT("uref  - UserID = %S\n", wUser2.getBuffer());
-#endif
-
-								if (found()->GetUserID() == uref()->GetUserID())
-								{
-									Kick(uref()->GetUserID());
-									
-									f = true;
-									break;	// done...
-								}
-							}
-						}
-						if (!f)
-						{
-							if (gWin->fSettings->GetError())
-								PrintError( tr( "User(s) not found!" ) );
-						}
-					}
-					else if (gWin->fSettings->GetError())
-						PrintError(tr("No users passed."));			
 				}
 				else if (wte->Text().lower().startsWith("/action's ") ||
 						wte->Text().lower().startsWith("/me's "))
@@ -701,9 +711,9 @@ Channel::UpdateNode()
 		cc()->AddString("topic", (const char *) fTopic.utf8());
 		cc()->AddString("admins", (const char *) admins.utf8());
 		cc()->AddBool("public", fPublic);
-		String node = "unishare/channeldata/";
-		node += (const char *) fName.utf8();
-		fNet->SetNodeValue(node.Cstr(), cc);
+		QString node = "unishare/channeldata/";
+		node += fName;
+		fNet->SetNodeValue((const char *) node.utf8(), cc);
 	}
 }
 
@@ -712,8 +722,8 @@ Channel::ChannelAdminsChanged(const QString &channel, const QString &admins)
 {
 	if ((channel == fName) && (fStrAdmins != admins))
 	{
-		UpdateNode();
 		fStrAdmins = admins;
+		UpdateNode();
 	}
 }
 
