@@ -167,16 +167,15 @@ void
 WFileThread::ScanFiles(const QString & directory)
 {
 	PRINT("Checking for directory existance\n");
-	Queue<QString> files;
 	QDir * dir = new QDir(directory);
 	CHECK_PTR(dir);
 	if (dir->exists())	// double check
 	{
 		QString s = QObject::tr("Reading directory...", "WFileThread");
 #ifdef WIN32
-				SendString(ScanEvent::Type::ScanFile, s);
+		SendString(ScanEvent::Type::ScanFile, s);
 #else
-				SendString(ScanEvent::ScanFile, s);
+		SendString(ScanEvent::ScanFile, s);
 #endif
 
 		QStringList list = dir->entryList("*", (QDir::Dirs | QDir::Files) , QDir::DirsFirst);
@@ -263,7 +262,7 @@ WFileThread::AddFile(const QString & filePath)
 		
 		if (gfn != ret) 
 		{
-			AddFile(ret);
+			files.AddTail(ret);
 			return;
 		}
 	}

@@ -58,6 +58,7 @@ private:
 	Queue<QString> fPaths;
 	Queue<MessageRef> fFiles;
 	Queue<QString> fScannedDirs;
+	Queue<QString> files;
 
 	bool CheckFile(const QString & file);	// checks whether this file has been found or not
 											// returns true if the file already exists

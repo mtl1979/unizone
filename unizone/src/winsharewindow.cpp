@@ -2378,34 +2378,35 @@ WinShareWindow::UpdateReceiveStats(uint64 r)
 void
 WinShareWindow::TranslateStatus(QString & s)
 {
-		if (s == "here")
-		{
-			s = tr("here");
-		}
-		else if (s == "away")
-		{
-			s = tr("away");
-		}
-		else if (s == "idle")
-		{
-			s = tr("idle");
-		}
-		else if (s == "busy")
-		{
-			s = tr("busy");
-		}
-		else if (s == "at work")
-		{
-			s = tr("at work");
-		}
-		else if (s == "around")
-		{
-			s = tr("around");
-		}
-		else if (s == "sleeping")
-		{
-			s = tr("sleeping");
-		}
+	QString st = s.lower();
+	if (st == "here")
+	{
+		s = tr("here");
+	}
+	else if (st == "away")
+	{
+		s = tr("away");
+	}
+	else if (st == "idle")
+	{
+		s = tr("idle");
+	}
+	else if (st == "busy")
+	{
+		s = tr("busy");
+	}
+	else if (st == "at work")
+	{
+		s = tr("at work");
+	}
+	else if (st == "around")
+	{
+		s = tr("around");
+	}
+	else if (st == "sleeping")
+	{
+		s = tr("sleeping");
+	}
 }
 
 void 
@@ -2430,7 +2431,6 @@ void
 WinShareWindow::OpenDownloads()
 {
 	OpenDownload();
-//	fDLWindow->show();
 }
 
 void
@@ -2441,7 +2441,8 @@ WinShareWindow::SetDelayedSearchPattern(const QString & pattern)
 		fOnConnect2 = fOnConnect;
 	}
 		
-	fOnConnect = tr("/search %1").arg(pattern);
+	fOnConnect =  "/search ";
+	fOnConnect += pattern;
 }
 
 void
@@ -2468,6 +2469,7 @@ WinShareWindow::ScanShares(bool rescan)
 	}
 
 	WaitOnFileThread();
+
 	// already running?
 	if (fFileScanThread->running())
 	{
@@ -2492,7 +2494,6 @@ WinShareWindow::ScanShares(bool rescan)
 		}
 	}
 
-	// fFileScanThread->SetFirewalled(fSettings->GetFirewalled());
 	PRINT("Starting...\n");
 	fFileScanThread->start();
 }
