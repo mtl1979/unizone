@@ -3,7 +3,9 @@
 #include "system/SetupSystem.h"
 
 #include <qapplication.h>
+#if !defined(QT_NO_STYLE_PLATINUM)
 #include <qplatinumstyle.h>
+#endif
 #include <qfile.h>
 #include <qfiledialog.h>
 #include "global.h"
@@ -128,8 +130,10 @@ main( int argc, char** argv )
 		app.installTranslator( &qtr );
 	}
 	
+#if !defined(QT_NO_STYLE_PLATINUM)
 	// Set style
 	app.setStyle(new QPlatinumStyle);
+#endif
 
 	WinShareWindow * window = new WinShareWindow(NULL);
 	CHECK_PTR(window);

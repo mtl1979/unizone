@@ -5,13 +5,27 @@
 #include "colors.h"
 #include "debugimpl.h"
 
+#if !defined(QT_NO_STYLE_MOTIF)
 #include <qmotifstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_WINDOWS)
 #include <qwindowsstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_PLATINUM)
 #include <qplatinumstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_CDE)
 #include <qcdestyle.h>
+#endif
+#if !defined(QT_NO_STYLE_INTERLACE)
 #include <qinterlacestyle.h>
+#endif
+#if !defined(QT_NO_STYLE_MOTIF)
 #include <qmotifplusstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_SGI)
 #include <qsgistyle.h>
+#endif
 #include <qapplication.h>
 #include <qcolordialog.h>
 #include <qpushbutton.h>
@@ -439,27 +453,39 @@ WPrefs::StyleSelected(int id)
 	switch (id)
 	{
 		case 0:
+#if !defined(QT_NO_STYLE_CDE)
 			qApp->setStyle(new QCDEStyle);
+#endif
 			gWin->fSettings->SetStyle(WinShareWindow::CDE);
 			break;
 		case 1:
+#if !defined(QT_NO_STYLE_MOTIF)
 			qApp->setStyle(new QMotifStyle);
+#endif
 			gWin->fSettings->SetStyle(WinShareWindow::Motif);
 			break;
 		case 2:
+#if !defined(QT_NO_STYLE_MOTIF)
 			qApp->setStyle(new QMotifPlusStyle);
+#endif
 			gWin->fSettings->SetStyle(WinShareWindow::MotifPlus);
 			break;
 		case 3:
+#if !defined(QT_NO_STYLE_PLATINUM)
 			qApp->setStyle(new QPlatinumStyle);
+#endif
 			gWin->fSettings->SetStyle(WinShareWindow::Platinum);
 			break;
 		case 4:
+#if !defined(QT_NO_STYLE_SGI)
 			qApp->setStyle(new QSGIStyle);
+#endif
 			gWin->fSettings->SetStyle(WinShareWindow::SGI);
 			break;
 		case 5:
+#if !defined(QT_NO_STYLE_WINDOWS)
 			qApp->setStyle(new QWindowsStyle);
+#endif
 			gWin->fSettings->SetStyle(WinShareWindow::Windows);
 			break;
 		default:

@@ -37,13 +37,27 @@
 #include <qfile.h>
 #include <qmessagebox.h>
 #include <qimage.h>
+#if !defined(QT_NO_STYLE_MOTIF)
 #include <qmotifstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_WINDOWS)
 #include <qwindowsstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_PLATINUM)
 #include <qplatinumstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_CDE)
 #include <qcdestyle.h>
+#endif
+#if !defined(QT_NO_STYLE_INTERLACE)
 #include <qinterlacestyle.h>
+#endif
+#if !defined(QT_NO_STYLE_MOTIF)
 #include <qmotifplusstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_SGI)
 #include <qsgistyle.h>
+#endif
 #include <qcstring.h>
 #include <qtextcodec.h>
 #include <qdir.h>
@@ -1694,22 +1708,34 @@ WinShareWindow::LoadSettings()
 		switch (fSettings->GetStyle())
 		{
 			case Motif:
+#if !defined(QT_NO_STYLE_MOTIF)
 				qApp->setStyle(new QMotifStyle);
+#endif
 				break;
 			case Windows:
+#if !defined(QT_NO_STYLE_WINDOWS)
 				qApp->setStyle(new QWindowsStyle);
+#endif
 				break;
 			case Platinum:
+#if !defined(QT_NO_STYLE_PLATINUM)
 				qApp->setStyle(new QPlatinumStyle);
+#endif
 				break;
 			case CDE:
+#if !defined(QT_NO_STYLE_CDE)
 				qApp->setStyle(new QCDEStyle);
+#endif
 				break;
 			case MotifPlus:
+#if !defined(QT_NO_STYLE_MOTIF)
 				qApp->setStyle(new QMotifPlusStyle);
+#endif
 				break;
 			case SGI:
+#if !defined(QT_NO_STYLE_SGI)
 				qApp->setStyle(new QSGIStyle);
+#endif
 				break;
 		}
 
@@ -1805,13 +1831,15 @@ WinShareWindow::LoadSettings()
 	}
 	else	// file doesn't exist, or error
 	{
-		qApp->setStyle(
-#ifdef WIN32
-						new QWindowsStyle
+#if defined(WIN32)
+#  if !defined(QT_NO_STYLE_WINDOWS)
+		qApp->setStyle(new QWindowsStyle);
+#  endif // !QT_NO_STYLE_WINDOWS
 #else
-						new QMotifStyle
-#endif	
-						);
+#  if !defined(QT_NO_STYLE_MOTIF)
+		qApp->setStyle(new QMotifStyle);				
+#  endif // !QT_NO_STYLE_MOTIF
+#endif // WIN32	
 
 		fAwayMsg = "away";
 		fHereMsg = "here";
