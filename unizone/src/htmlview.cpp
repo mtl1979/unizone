@@ -66,6 +66,7 @@ WHTMLView::showEvent(QShowEvent *)
 	fScrollY = 0;
 //  -----------------------
 	QString txt;
+	fLock.Lock();
 	if (fBuffer.length() > 0)
 	{
 		txt = ParseForShown(fBuffer);
@@ -73,7 +74,6 @@ WHTMLView::showEvent(QShowEvent *)
 	}
 	else
 		txt = ParseForShown(text());
-	fLock.Lock();
 	setText("");
 	setText(txt);
 	fLock.Unlock();
@@ -116,20 +116,18 @@ WHTMLView::append(const QString &newtext)
 {
 	PRINT("WHTMLView::append()\n");
 #if (QT_VERSION < 0x030000)
+	fLock.Lock();
 	if (text().length() == 0)
 	{
-		fLock.Lock();
 		setText(newtext);
-		fLock.Unlock();
 	}
 	else
 	{
 		QString tmp("\t");
 		tmp += newtext;
-		fLock.Lock();
 		QTextBrowser::append(tmp);
-		fLock.Unlock();
 	}
+	fLock.Unlock();
 #else
 	fLock.Lock();
 	QTextBrowser::append(newtext);
@@ -150,15 +148,15 @@ WHTMLView::appendText(const QString &newtext)
 		if (!widget->isVisible())
 		{
 			PRINT("appendText 2\n");
+			// Synchronize
+			fLock.Lock();
 			CheckScrollState();	
 			if (fBuffer.length() == 0)
 			{
 				fBuffer = text();
 			}
-			PRINT("appendText 3\n");
-			fLock.Lock();
 			setText("");
-			fLock.Unlock();
+			PRINT("appendText 3\n");
 			if (fBuffer.length() > 0)
 			{
 				fBuffer += "<br>";
@@ -167,6 +165,7 @@ WHTMLView::appendText(const QString &newtext)
 			fBuffer += newtext;
 /*	We don't use UpdateScrollState() here because nothing is really shown on the screen */
 			PRINT("appendText OK\n");
+			fLock.Unlock();
 			return;
 		}
 	}
@@ -202,9 +201,9 @@ void
 WHTMLView::clear()
 {
 	PRINT("WHTMLView::clear()\n");
+	fLock.Lock();
 	fBuffer = "";
 	fScrollY = -1;
-	fLock.Lock();
 	setText("");
 	fLock.Unlock();
 	PRINT("WHTMLView::clear() OK\n");
