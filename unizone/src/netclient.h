@@ -67,7 +67,8 @@ public:
 			SESSION_ATTACHED = QEvent::User + 4000,	// just some constant
 			SESSION_CONNECTED,
 			DISCONNECTED,
-			MESSAGE_RECEIVED
+			MESSAGE_RECEIVED,
+			THREAD_EXITED
 	};
 	// client messages
 	enum 
@@ -225,6 +226,7 @@ private slots:
 protected:
 
 	virtual void timerEvent(QTimerEvent *);
+	virtual bool event(QEvent *);
 };
 
 

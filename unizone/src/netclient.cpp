@@ -1195,7 +1195,12 @@ NetClient::Reset()
 		qmtt->Reset();
 		qmtt->WaitForInternalThreadToExit();
 //		qmtt->disconnect();
-		delete qmtt;
+		QCustomEvent *qce = new QCustomEvent(NetClient::THREAD_EXITED);
+		if (qce)
+		{
+			qce->setData(qmtt);
+			QApplication::postEvent(this, qce);
+		}
 		qmtt = NULL;
 	}
 }
@@ -1265,4 +1270,18 @@ NetClient::timerEvent(QTimerEvent * /* e */)
 			SendMessageToSessions(nop);
 		}
 	}
+}
+
+bool
+NetClient::event(QEvent * e)
+{
+	if (e->type() == NetClient::THREAD_EXITED)
+	{
+		QCustomEvent *qce = dynamic_cast<QCustomEvent *>(e);
+		if (qce)
+			delete (QMessageTransceiverThread *) qce->data();
+		return true;
+	}
+	else
+		return QObject::event(e);
 }
