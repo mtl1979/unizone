@@ -246,7 +246,7 @@ ChatWindow::PrintError(const QString & error)
 void 
 ChatWindow::PrintWarning(const QString & warning)
 {
-	if (Settings()->GetError())
+	if (Settings()->GetWarning())
 	{
 		QString e = WFormat::Warning(warning);
 
