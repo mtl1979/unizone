@@ -419,7 +419,7 @@ public:
 	void SetToolBarLayout(int toolbar, int dock, int index, bool nl, int extra);
 
 private:
-	Message * fSet;
+	MessageRef fSet;
 	int fColor, fColumn, fStatus, fUser, fServer;	// iterators
 };
 

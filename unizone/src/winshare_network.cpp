@@ -1086,7 +1086,7 @@ WinShareWindow::HandleSignal()
 							}
 							else	// a /serverinfo was sent
 							{
-								ServerParametersReceived(next());
+								ServerParametersReceived(next);
 							}
 							break;
 						}
@@ -1159,7 +1159,7 @@ WinShareWindow::HandleSignal()
 						default:
 						{
 							PRINT("Handling message\n");
-							HandleMessage(next());
+							HandleMessage(next);
 							break;
 						}
 					}
@@ -1339,7 +1339,7 @@ WinShareWindow::HandleSignal()
 }
 
 void
-WinShareWindow::HandleMessage(Message * msg)
+WinShareWindow::HandleMessage(MessageRef msg)
 {
 /* 
 * The batch version of all the printing methods are used here because
@@ -1348,20 +1348,20 @@ WinShareWindow::HandleMessage(Message * msg)
 * an MTT_EVENT_INCOMING_MESSAGE is received, and then closes the batch, which
 * flushes the buffer.
 */
-	switch (msg->what)
+	switch (msg()->what)
 	{
 	case WDownload::TransferNotifyRejected:
 		{
 			const char * from;
 			uint32 port;
 			if (
-				(msg->FindString(PR_NAME_SESSION, &from) == B_NO_ERROR) &&
-				(msg->FindInt32("port", (int32 *) &port) == B_NO_ERROR)
+				(msg()->FindString(PR_NAME_SESSION, &from) == B_NO_ERROR) &&
+				(msg()->FindInt32("port", (int32 *) &port) == B_NO_ERROR)
 				)
 			{
 				QString qFrom = QString::fromUtf8(from);
 				uint64 timeLeft = (uint64) -1;
-				(void) msg->FindInt64("timeleft", (int64 *)&timeLeft);
+				(void) msg()->FindInt64("timeleft", (int64 *)&timeLeft);
 				TransferCallbackRejected(qFrom, timeLeft, port);
 			}
 			break;
@@ -1415,7 +1415,7 @@ WinShareWindow::HandleMessage(Message * msg)
 
 			const char * session;
 			int32 port;
-			if ((msg->FindString("session", &session) == B_OK) && (msg->FindInt32("port", &port) == B_OK))
+			if ((msg()->FindString("session", &session) == B_OK) && (msg()->FindInt32("port", &port) == B_OK))
 			{
 				WUserRef user = fNetClient->FindUser(session);
 				if (user())
@@ -1434,8 +1434,8 @@ WinShareWindow::HandleMessage(Message * msg)
 			const char * strTemp;
 			QString userName = tr("Unknown");
 			
-			msg->FindString("session", &session);
-			msg->FindString("text", &strTemp);
+			msg()->FindString("session", &session);
+			msg()->FindString("text", &strTemp);
 			// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Latin-1
 			text = QString::fromUtf8(strTemp);
 			
@@ -1467,7 +1467,7 @@ WinShareWindow::HandleMessage(Message * msg)
 			{
 				QString chat;
 				bool priv;
-				if (msg->FindBool("private", &priv) == B_OK)	// is it private?
+				if (msg()->FindBool("private", &priv) == B_OK)	// is it private?
 				{
 #ifndef NONUKE
 /*
@@ -1602,9 +1602,9 @@ WinShareWindow::HandleMessage(Message * msg)
 			const char * strChannel;
 			QString userID = tr("Unknown");
 			
-			msg->FindString("session", &session);
-			msg->FindString("text", &strTemp);
-			msg->FindString("channel", &strChannel);
+			msg()->FindString("session", &session);
+			msg()->FindString("text", &strTemp);
+			msg()->FindString("channel", &strChannel);
 			// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Latin-1
 			text = QString::fromUtf8(strTemp);
 			channel = QString::fromUtf8(strChannel);
@@ -1625,9 +1625,9 @@ WinShareWindow::HandleMessage(Message * msg)
 				String repname;
 				int64 rtime;
 				if (
-					(msg->FindString("session", repto) == B_OK) &&
-					(msg->FindInt64("registertime", &rtime) == B_OK) &&
-					(msg->FindString("name", repname) == B_OK)
+					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindInt64("registertime", &rtime) == B_OK) &&
+					(msg()->FindString("name", repname) == B_OK)
 					)
 				{
 					if (rtime >= GetRegisterTime())
@@ -1652,8 +1652,8 @@ WinShareWindow::HandleMessage(Message * msg)
 				String repto;
 				int64 rtime;
 				if (
-					(msg->FindString("session", repto) == B_OK) && 
-					(msg->FindInt64("registertime", &rtime) == B_OK)
+					(msg()->FindString("session", repto) == B_OK) && 
+					(msg()->FindInt64("registertime", &rtime) == B_OK)
 					)
 				{
 					if (rtime <= GetRegisterTime())
@@ -1668,9 +1668,9 @@ WinShareWindow::HandleMessage(Message * msg)
 				String channel, repto;
 				int64 rtime;
 				if (
-					(msg->FindString("session", repto) == B_OK) &&
-					(msg->FindString("channel", channel) == B_OK) &&
-					(msg->FindInt64("when", &rtime) == B_OK)
+					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString("channel", channel) == B_OK) &&
+					(msg()->FindInt64("when", &rtime) == B_OK)
 					)
 				{
 					QString qOwner = QString::fromUtf8(repto.Cstr());
@@ -1684,8 +1684,8 @@ WinShareWindow::HandleMessage(Message * msg)
 			{
 				String channel, repto;
 				if (
-					(msg->FindString("session", repto) == B_OK) && 
-					(msg->FindString("channel", channel) == B_OK)
+					(msg()->FindString("session", repto) == B_OK) && 
+					(msg()->FindString("channel", channel) == B_OK)
 					)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
@@ -1698,8 +1698,8 @@ WinShareWindow::HandleMessage(Message * msg)
 			{
 				String channel, repto;
 				if (
-					(msg->FindString("session", repto) == B_OK) && 
-					(msg->FindString("channel", channel) == B_OK)
+					(msg()->FindString("session", repto) == B_OK) && 
+					(msg()->FindString("channel", channel) == B_OK)
 					)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
@@ -1712,9 +1712,9 @@ WinShareWindow::HandleMessage(Message * msg)
 			{
 				String channel, repto, who;
 				if (
-					(msg->FindString("session", repto) == B_OK) &&
-					(msg->FindString("who", who) == B_OK) &&
-					(msg->FindString("channel", channel) == B_OK)
+					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString("who", who) == B_OK) &&
+					(msg()->FindString("channel", channel) == B_OK)
 					)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
@@ -1728,9 +1728,9 @@ WinShareWindow::HandleMessage(Message * msg)
 			{
 				String channel, repto, who;
 				if (
-					(msg->FindString("session", repto) == B_OK) &&
-					(msg->FindString("who", who) == B_OK) &&
-					(msg->FindString("channel", channel) == B_OK)
+					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString("who", who) == B_OK) &&
+					(msg()->FindString("channel", channel) == B_OK)
 					)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
@@ -1744,9 +1744,9 @@ WinShareWindow::HandleMessage(Message * msg)
 			{
 				String channel, repto, topic;
 				if (
-					(msg->FindString("session", repto) == B_OK) &&
-					(msg->FindString("topic", topic) == B_OK) && 
-					(msg->FindString("channel", channel) == B_OK)
+					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindString("topic", topic) == B_OK) && 
+					(msg()->FindString("channel", channel) == B_OK)
 					)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
@@ -1761,9 +1761,9 @@ WinShareWindow::HandleMessage(Message * msg)
 				String channel, repto;
 				bool pub;
 				if (
-					(msg->FindString("session", repto) == B_OK) &&
-					(msg->FindBool("public", &pub) == B_OK) &&
-					(msg->FindString("channel", channel) == B_OK)
+					(msg()->FindString("session", repto) == B_OK) &&
+					(msg()->FindBool("public", &pub) == B_OK) &&
+					(msg()->FindString("channel", channel) == B_OK)
 					)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
@@ -1775,7 +1775,7 @@ WinShareWindow::HandleMessage(Message * msg)
 		case NetClient::PING:
 			{
 				String repto;
-				if (msg->FindString("session", repto) == B_OK)
+				if (msg()->FindString("session", repto) == B_OK)
 				{
 					WUserIter uit = fNetClient->Users().find(QString::fromUtf8(repto.Cstr()));
 					if (uit != fNetClient->Users().end())
@@ -1789,17 +1789,17 @@ WinShareWindow::HandleMessage(Message * msg)
 							PrintSystem(system, true);
 						}
 					}
-					msg->what = NetClient::PONG;
+					msg()->what = NetClient::PONG;
 					
 					String tostr("/*/");
 					tostr += repto;
 					tostr += "/beshare";
 					
-					msg->RemoveName(PR_NAME_KEYS);
-					msg->AddString(PR_NAME_KEYS, tostr);
-					msg->RemoveName("session");
-					msg->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
-					msg->RemoveName("version");
+					msg()->RemoveName(PR_NAME_KEYS);
+					msg()->AddString(PR_NAME_KEYS, tostr);
+					msg()->RemoveName("session");
+					msg()->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
+					msg()->RemoveName("version");
 					
 					QString version = tr("Unizone (English)");
 					version += " ";
@@ -1812,13 +1812,13 @@ WinShareWindow::HandleMessage(Message * msg)
 					// <postmaster@raasu.org> 20021231 -- and for Linux ;)
 					int64 fUptime = GetUptime();
 					int64 fOnlineTime = GetCurrentTime64() - fLoginTime;
-					msg->AddString("version", (const char *) version.utf8());
-					msg->RemoveName("uptime");
-					msg->AddInt64("uptime", fUptime);
-					msg->RemoveName("onlinetime");
-					msg->AddInt64("onlinetime", fOnlineTime);
+					msg()->AddString("version", (const char *) version.utf8());
+					msg()->RemoveName("uptime");
+					msg()->AddInt64("uptime", fUptime);
+					msg()->RemoveName("onlinetime");
+					msg()->AddInt64("onlinetime", fOnlineTime);
 					
-					fNetClient->SendMessageToSessions(MessageRef(msg, NULL));
+					fNetClient->SendMessageToSessions(msg);
 				}
 				break;
 			}
@@ -1832,7 +1832,7 @@ WinShareWindow::HandleMessage(Message * msg)
 				if (!fSettings->GetInfo())
 					return;
 				
-				if ((msg->FindString("session", &session) == B_OK) && (msg->FindInt64("when", &when) == B_OK))
+				if ((msg()->FindString("session", &session) == B_OK) && (msg()->FindInt64("when", &when) == B_OK))
 				{
 					WUserRef user = fNetClient->FindUser(session);
 					if (user())
@@ -1851,7 +1851,7 @@ WinShareWindow::HandleMessage(Message * msg)
 							pong += WFormat::PingText().arg(WColors::Ping).arg(fSettings->GetFontSize()).arg(time).arg(versionString);
 							
 							int64 uptime, onlinetime;
-							if ((msg->FindInt64("uptime", &uptime) == B_OK) && (msg->FindInt64("onlinetime", &onlinetime) == B_OK))
+							if ((msg()->FindInt64("uptime", &uptime) == B_OK) && (msg()->FindInt64("onlinetime", &onlinetime) == B_OK))
 							{
 								pong += WFormat::PingUptime().arg(WColors::Ping).arg(fSettings->GetFontSize()).arg(MakeHumanTime(uptime)).arg(MakeHumanTime(onlinetime));
 							}
@@ -1865,7 +1865,7 @@ WinShareWindow::HandleMessage(Message * msg)
 		case TimeRequest:
 			{
 				String lt, session;
-				if (msg->FindString("session", session) == B_OK)
+				if (msg()->FindString("session", session) == B_OK)
 				{
 					String tostr("/*/");
 					tostr += session;
@@ -1876,7 +1876,7 @@ WinShareWindow::HandleMessage(Message * msg)
 					char zone[64];
 					
 					bool g = false;
-					(void) msg->FindBool("gmt",&g);
+					(void) msg()->FindBool("gmt",&g);
 
 					if (g)
 						myTime = gmtime(&currentTime);
@@ -1909,13 +1909,13 @@ WinShareWindow::HandleMessage(Message * msg)
 			{
 				String sTime, sZone;
 				const char * session;
-				if (msg->FindString("session", &session) == B_OK)
+				if (msg()->FindString("session", &session) == B_OK)
 				{
 					WUserRef user = fNetClient->FindUser(session);
 					if (user())
 					{
 						QString qTime = WFormat::RemoteName.arg(WColors::RemoteName).arg(fSettings->GetFontSize()).arg(session).arg(FixStringStr(user()->GetUserName()));
-						if ((msg->FindString("time", sTime) == B_OK) && (msg->FindString("zone", sZone) == B_OK))
+						if ((msg()->FindString("time", sTime) == B_OK) && (msg()->FindString("zone", sZone) == B_OK))
 						{
 							qTime += tr("Current time: %1 %2").arg(sTime.Cstr()).arg(sZone.Cstr());
 							PrintText(qTime);

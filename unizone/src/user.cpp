@@ -38,7 +38,7 @@ WUser::~WUser()
 }
 
 void
-WUser::InitName(const Message * msg)
+WUser::InitName(const MessageRef msg)
 {
 	int32 port;
 	const char * name;
@@ -46,7 +46,7 @@ WUser::InitName(const Message * msg)
 	bool isbot;
 	uint64 installID;
 
-	if (msg->FindBool("bot", &isbot) == B_OK)
+	if (msg()->FindBool("bot", &isbot) == B_OK)
 	{
 		fBot = true;
 		// is a bot... so no client, files, etc.
@@ -57,22 +57,22 @@ WUser::InitName(const Message * msg)
 	else 
 		fBot = false;
 
-	if (msg->FindInt64("installid", (int64 *)&installID) != B_OK)
+	if (msg()->FindInt64("installid", (int64 *)&installID) != B_OK)
 		fInstallID = 0;
 	else
 		fInstallID = installID;
 
-	if (msg->FindString("name", &name) == B_OK)
+	if (msg()->FindString("name", &name) == B_OK)
 		fUserName = QString::fromUtf8(name);
 	else
 		fUserName = "???";
 
-	if (msg->FindInt32("port", &port) == B_OK)
+	if (msg()->FindInt32("port", &port) == B_OK)
 		fPort = port;
 	else
 		fPort = 0;
 
-	if ((msg->FindString("version_name", &vname) == B_OK) && (msg->FindString("version_num", &vnum) == B_OK))
+	if ((msg()->FindString("version_name", &vname) == B_OK) && (msg()->FindString("version_num", &vnum) == B_OK))
 	{
 		fClient = QString::fromUtf8(vname);
 		fClient += " ";
@@ -87,13 +87,13 @@ WUser::InitName(const Message * msg)
 			gWin->fNetClient->SendPing(fUserID);
 	}
 
-	msg->FindBool("supports_partial_hashing", &fPartial);   // NEW 11/7/2002 partial resumes
+	msg()->FindBool("supports_partial_hashing", &fPartial);   // NEW 11/7/2002 partial resumes
 
 	// <postmaster@raasu.org> 20020213 -- Fix for download troubles when no files shared
 	//
 	bool b;
 
-	if (msg->FindBool("firewalled", &b) == B_OK)
+	if (msg()->FindBool("firewalled", &b) == B_OK)
 	{
 		PRINT("WUser: %s firewalled", (b ? "Is" : "Isn't"));
 		SetFirewalled(b);
@@ -107,10 +107,10 @@ WUser::InitName(const Message * msg)
 }
 
 void
-WUser::InitStatus(const Message * msg)
+WUser::InitStatus(const MessageRef msg)
 {
 	const char * status;
-	if (msg->FindString("userstatus", &status) == B_OK)
+	if (msg()->FindString("userstatus", &status) == B_OK)
 		fUserStatus = QString::fromUtf8(status);
 	else
 		fUserStatus = "?";
@@ -120,28 +120,28 @@ WUser::InitStatus(const Message * msg)
 }
 
 void
-WUser::InitUploadStats(const Message * msg)
+WUser::InitUploadStats(const MessageRef msg)
 {
 	int32 c, m;
-	if (msg->FindInt32("cur", (int32 *)&c) == B_OK)
+	if (msg()->FindInt32("cur", (int32 *)&c) == B_OK)
 		fCurUploads = c;
-	if (msg->FindInt32("max", (int32 *)&m) == B_OK)
+	if (msg()->FindInt32("max", (int32 *)&m) == B_OK)
 		fMaxUploads = m;
 	WString wUser = fUserName;
 	PRINT("WUser: %S with %d of %d uploads going\n", wUser.getBuffer(), fCurUploads, fMaxUploads);
 }
 
 void
-WUser::InitBandwidth(const Message * msg)
+WUser::InitBandwidth(const MessageRef msg)
 {
 	const char * l;
 	int32 bps = 0;
 
-	if (msg->FindInt32("bps", (int32 *)&bps) == B_OK)
+	if (msg()->FindInt32("bps", (int32 *)&bps) == B_OK)
 		fBandwidthBPS = bps;
 	if (bps != 0)
 		fBandwidthLabel = BandwidthToString(bps);
-	else if (msg->FindString("label", &l) == B_OK)
+	else if (msg()->FindString("label", &l) == B_OK)
 		fBandwidthLabel = QString::fromUtf8(l);
 	WString wUser = fUserName;
 	WString wBandwidth = fBandwidthLabel;
@@ -149,10 +149,10 @@ WUser::InitBandwidth(const Message * msg)
 }
 
 void
-WUser::InitFileCount(const Message * msg)
+WUser::InitFileCount(const MessageRef msg)
 {
 	int32 fc;
-	if (msg->FindInt32("filecount", &fc) == B_OK)
+	if (msg()->FindInt32("filecount", &fc) == B_OK)
 		fFileCount = fc;
 	WString wUser = fUserName;
 	PRINT("WUser: %S with filecount %d\n", wUser.getBuffer(), fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
@@ -264,7 +264,7 @@ WUser::RemoveFromListView(QListView * view)
 }
 
 void
-WUser::PingResponse(const Message * msg)
+WUser::PingResponse(const MessageRef msg)
 {
 	fNeedPing = false;
 	fClient = WinShareWindow::GetRemoteVersionString(msg);

@@ -30,27 +30,27 @@ SetSettingsFile(const char * sf)
 WSettings::WSettings()
 {
 	fColor = fColumn = fStatus = fUser = fServer = 0;
-	fSet = new Message();
-	CHECK_PTR(fSet);
+	fSet = GetMessageFromPool();
+	//CHECK_PTR(fSet);
 }
 
 WSettings::~WSettings()
 {
-	delete fSet;
-	fSet = NULL; // <postmaster@raasu.org> 20021027
+	//delete fSet;
+	//fSet = NULL; // <postmaster@raasu.org> 20021027
 }
 
 void
 WSettings::AddServerItem(QString str)
 {
-	fSet->AddString(SERVER_LIST, (const char *) str.utf8());
+	fSet()->AddString(SERVER_LIST, (const char *) str.utf8());
 }
 
 QString
 WSettings::GetServerItem(int index)
 {
 	String str;
-	if (fSet->FindString(SERVER_LIST, index, str) == B_OK)
+	if (fSet()->FindString(SERVER_LIST, index, str) == B_OK)
 		return QString::fromUtf8(str.Cstr());
 	return QString::null;
 }
@@ -71,21 +71,21 @@ WSettings::GetNextServerItem()
 void
 WSettings::EmptyServerList()
 {
-	fSet->RemoveName(SERVER_LIST);
+	fSet()->RemoveName(SERVER_LIST);
 }
 
 void
 WSettings::SetCurrentServerItem(int item)
 {
-	fSet->RemoveName(SERVER_ITEM);
-	fSet->AddInt32(SERVER_ITEM, (int32)item);
+	fSet()->RemoveName(SERVER_ITEM);
+	fSet()->AddInt32(SERVER_ITEM, (int32)item);
 }
 
 int
 WSettings::GetCurrentServerItem()
 {
 	int i = 0;
-	fSet->FindInt32(SERVER_ITEM, (int32 *)&i);	// if it fails, who cares, return 0
+	fSet()->FindInt32(SERVER_ITEM, (int32 *)&i);	// if it fails, who cares, return 0
 	return i;
 }
 
@@ -93,14 +93,14 @@ WSettings::GetCurrentServerItem()
 void
 WSettings::AddUserItem(QString str)
 {
-	fSet->AddString(USER_LIST, (const char *) str.utf8());
+	fSet()->AddString(USER_LIST, (const char *) str.utf8());
 }
 
 QString
 WSettings::GetUserItem(int index)
 {
 	String str;
-	if (fSet->FindString(USER_LIST, index, str) == B_OK)
+	if (fSet()->FindString(USER_LIST, index, str) == B_OK)
 		return QString::fromUtf8(str.Cstr());
 	return QString::null;
 }
@@ -121,21 +121,21 @@ WSettings::GetNextUserItem()
 void
 WSettings::EmptyUserList()
 {
-	fSet->RemoveName(USER_LIST);
+	fSet()->RemoveName(USER_LIST);
 }
 
 void
 WSettings::SetCurrentUserItem(int item)
 {
-	fSet->RemoveName(USER_ITEM);
-	fSet->AddInt32(USER_ITEM, (int32)item);
+	fSet()->RemoveName(USER_ITEM);
+	fSet()->AddInt32(USER_ITEM, (int32)item);
 }
 
 int
 WSettings::GetCurrentUserItem()
 {
 	int i = 0;
-	fSet->FindInt32(USER_ITEM, (int32 *)&i);
+	fSet()->FindInt32(USER_ITEM, (int32 *)&i);
 	return i;
 }
 
@@ -143,14 +143,14 @@ WSettings::GetCurrentUserItem()
 void
 WSettings::AddStatusItem(QString str)
 {
-	fSet->AddString(STATUS_LIST, (const char *) str.utf8());
+	fSet()->AddString(STATUS_LIST, (const char *) str.utf8());
 }
 
 QString
 WSettings::GetStatusItem(int index)
 {
 	String str;
-	if (fSet->FindString(STATUS_LIST, index, str) == B_OK)
+	if (fSet()->FindString(STATUS_LIST, index, str) == B_OK)
 		return QString::fromUtf8(str.Cstr());
 	return QString::null;
 }
@@ -171,21 +171,21 @@ WSettings::GetNextStatusItem()
 void
 WSettings::EmptyStatusList()
 {
-	fSet->RemoveName(STATUS_LIST);
+	fSet()->RemoveName(STATUS_LIST);
 }
 
 void
 WSettings::SetCurrentStatusItem(int item)
 {
-	fSet->RemoveName(STATUS_ITEM);
-	fSet->AddInt32(STATUS_ITEM, (int32)item);
+	fSet()->RemoveName(STATUS_ITEM);
+	fSet()->AddInt32(STATUS_ITEM, (int32)item);
 }
 
 int
 WSettings::GetCurrentStatusItem()
 {
 	int i = 0;
-	fSet->FindInt32(STATUS_ITEM, (int32 *)&i);
+	fSet()->FindInt32(STATUS_ITEM, (int32 *)&i);
 	return i;
 }
 
@@ -193,8 +193,8 @@ WSettings::GetCurrentStatusItem()
 void
 WSettings::SetStyle(WinShareWindow::Style style)
 {
-	fSet->RemoveName(STYLE);
-	fSet->AddInt32(STYLE, (int32)style);
+	fSet()->RemoveName(STYLE);
+	fSet()->AddInt32(STYLE, (int32)style);
 }
 
 WinShareWindow::Style
@@ -206,7 +206,7 @@ WSettings::GetStyle()
 #else
 		WinShareWindow::Motif;
 #endif
-	fSet->FindInt32(STYLE, (int32 *)&s);
+	fSet()->FindInt32(STYLE, (int32 *)&s);
 	return s;
 }
 
@@ -214,14 +214,14 @@ WSettings::GetStyle()
 void
 WSettings::AddColumnItem(int i)
 {
-	fSet->AddInt32(COLUMN_LIST, i);
+	fSet()->AddInt32(COLUMN_LIST, i);
 }
 
 int
 WSettings::GetColumnItem(int index)
 {
 	int i = -1;
-	fSet->FindInt32(COLUMN_LIST, index, (int32 *)&i);
+	fSet()->FindInt32(COLUMN_LIST, index, (int32 *)&i);
 	return i;
 }
 
@@ -241,7 +241,7 @@ WSettings::GetNextColumnItem()
 void
 WSettings::EmptyColumnList()
 {
-	fSet->RemoveName(COLUMN_LIST);
+	fSet()->RemoveName(COLUMN_LIST);
 }
 
 // window
@@ -249,7 +249,7 @@ int
 WSettings::GetWindowHeight()
 {
 	int i = -1;
-	fSet->FindInt32(WINDOW_HEIGHT, (int32 *)&i);
+	fSet()->FindInt32(WINDOW_HEIGHT, (int32 *)&i);
 	return i;
 }
 
@@ -257,7 +257,7 @@ int
 WSettings::GetWindowWidth()
 {
 	int i = -1;
-	fSet->FindInt32(WINDOW_WIDTH, (int32 *)&i);
+	fSet()->FindInt32(WINDOW_WIDTH, (int32 *)&i);
 	return i;
 }
 
@@ -265,7 +265,7 @@ int
 WSettings::GetWindowX()
 {
 	int i = -1;
-	fSet->FindInt32(WINDOW_X, (int32 *)&i);
+	fSet()->FindInt32(WINDOW_X, (int32 *)&i);
 	return i;
 }
 
@@ -273,36 +273,36 @@ int
 WSettings::GetWindowY()
 {
 	int i = -1;
-	fSet->FindInt32(WINDOW_Y, (int32 *)&i);
+	fSet()->FindInt32(WINDOW_Y, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetWindowHeight(int h)
 {
-	fSet->RemoveName(WINDOW_HEIGHT);
-	fSet->AddInt32(WINDOW_HEIGHT, (int32)h);
+	fSet()->RemoveName(WINDOW_HEIGHT);
+	fSet()->AddInt32(WINDOW_HEIGHT, (int32)h);
 }
 
 void
 WSettings::SetWindowWidth(int w)
 {
-	fSet->RemoveName(WINDOW_WIDTH);
-	fSet->AddInt32(WINDOW_WIDTH, (int32)w);
+	fSet()->RemoveName(WINDOW_WIDTH);
+	fSet()->AddInt32(WINDOW_WIDTH, (int32)w);
 }
 
 void
 WSettings::SetWindowX(int x)
 {
-	fSet->RemoveName(WINDOW_X);
-	fSet->AddInt32(WINDOW_X, (int32)x);
+	fSet()->RemoveName(WINDOW_X);
+	fSet()->AddInt32(WINDOW_X, (int32)x);
 }
 
 void
 WSettings::SetWindowY(int y)
 {
-	fSet->RemoveName(WINDOW_Y);
-	fSet->AddInt32(WINDOW_Y, (int32)y);
+	fSet()->RemoveName(WINDOW_Y);
+	fSet()->AddInt32(WINDOW_Y, (int32)y);
 }
 
 // sizes
@@ -311,7 +311,7 @@ WSettings::GetChatSizes()
 {
 	QValueList<int> l;
 	int j;
-	for (int i = 0; fSet->FindInt32(CHAT_SIZES, i, (int32 *)&j) == B_OK; i++)
+	for (int i = 0; fSet()->FindInt32(CHAT_SIZES, i, (int32 *)&j) == B_OK; i++)
 		l.append(j);
 	return l;
 }
@@ -319,9 +319,9 @@ WSettings::GetChatSizes()
 void
 WSettings::SetChatSizes(QValueList<int> & sizes)
 {
-	fSet->RemoveName(CHAT_SIZES);
+	fSet()->RemoveName(CHAT_SIZES);
 	for (int i = 0; i < sizes.count(); i++)
-		fSet->AddInt32(CHAT_SIZES, (int32)sizes[i]);
+		fSet()->AddInt32(CHAT_SIZES, (int32)sizes[i]);
 }
 
 QValueList<int>
@@ -329,7 +329,7 @@ WSettings::GetMainSizes()
 {
 	QValueList<int> l;
 	int j;
-	for (int i = 0; fSet->FindInt32(USER_SIZES, i, (int32 *)&j) == B_OK; i++)
+	for (int i = 0; fSet()->FindInt32(USER_SIZES, i, (int32 *)&j) == B_OK; i++)
 		l.append(j);
 	return l;
 }
@@ -337,31 +337,31 @@ WSettings::GetMainSizes()
 void
 WSettings::SetMainSizes(QValueList<int> & sizes)
 {
-	fSet->RemoveName(USER_SIZES);
+	fSet()->RemoveName(USER_SIZES);
 	for (int i = 0; i < sizes.count(); i++)
-		fSet->AddInt32(USER_SIZES, (int32)sizes[i]);
+		fSet()->AddInt32(USER_SIZES, (int32)sizes[i]);
 }
 
 // status messages
 void
 WSettings::SetAwayMsg(QString away)
 {
-	fSet->RemoveName(AWAY_MSG);
-	fSet->AddString(AWAY_MSG, (const char *) away.utf8());
+	fSet()->RemoveName(AWAY_MSG);
+	fSet()->AddString(AWAY_MSG, (const char *) away.utf8());
 }
 
 void
 WSettings::SetHereMsg(QString here)
 {
-	fSet->RemoveName(HERE_MSG);
-	fSet->AddString(HERE_MSG, (const char *) here.utf8());
+	fSet()->RemoveName(HERE_MSG);
+	fSet()->AddString(HERE_MSG, (const char *) here.utf8());
 }
 
 QString
 WSettings::GetAwayMsg()
 {
 	String str("away");	// default
-	fSet->FindString(AWAY_MSG, str);
+	fSet()->FindString(AWAY_MSG, str);
 	return QString::fromUtf8(str.Cstr());
 }
 
@@ -369,7 +369,7 @@ QString
 WSettings::GetHereMsg()
 {
 	String str("here");
-	fSet->FindString(HERE_MSG, str);
+	fSet()->FindString(HERE_MSG, str);
 	return QString::fromUtf8(str.Cstr());
 }
 
@@ -377,14 +377,14 @@ WSettings::GetHereMsg()
 void
 WSettings::AddColorItem(QString c)
 {
-	fSet->AddString(COLORS, (const char *) c.utf8());
+	fSet()->AddString(COLORS, (const char *) c.utf8());
 }
 
 QString
 WSettings::GetColorItem(int index)
 {
 	String str;
-	if (fSet->FindString(COLORS, index, str) == B_OK)
+	if (fSet()->FindString(COLORS, index, str) == B_OK)
 		return QString::fromUtf8(str.Cstr());
 	return QString::null;
 }
@@ -405,7 +405,7 @@ WSettings::GetNextColorItem()
 void
 WSettings::EmptyColorList()
 {
-	fSet->RemoveName(COLORS);
+	fSet()->RemoveName(COLORS);
 }
 
 bool
@@ -425,7 +425,7 @@ WSettings::Load()
 			else
 			{
 				// reload settings
-				fSet->Unflatten(buffer, file.size());
+				fSet()->Unflatten(buffer, file.size());
 				ret = true;
 			}
 			delete [] buffer;
@@ -442,11 +442,11 @@ WSettings::Save()
 	QFile file(GetSettingsFile());
 	if (file.open(IO_Raw | IO_WriteOnly))
 	{
-		uint8 * buffer = new uint8[fSet->FlattenedSize()];
+		uint8 * buffer = new uint8[fSet()->FlattenedSize()];
 		if (buffer)
 		{
-			fSet->Flatten(buffer);
-			file.writeBlock((const char *)buffer, fSet->FlattenedSize());
+			fSet()->Flatten(buffer);
+			file.writeBlock((const char *)buffer, fSet()->FlattenedSize());
 			delete [] buffer;
 			ret = true;
 		}
@@ -460,11 +460,11 @@ WSettings::Save()
 }
 
 #define SET_BOOL(X, Y) \
-	fSet->RemoveName(X); \
-	fSet->AddBool(X, Y)
+	fSet()->RemoveName(X); \
+	fSet()->AddBool(X, Y)
 #define GET_BOOL(X, D) \
 	bool r = D; \
-	fSet->FindBool(X, &r); \
+	fSet()->FindBool(X, &r); \
 	return r;
 
 void
@@ -566,15 +566,15 @@ WSettings::GetMultiColor()
 void
 WSettings::SetConnection(QString str)
 {
-	fSet->RemoveName(CONNECTION);
-	fSet->AddString(CONNECTION, (const char *)str.utf8());
+	fSet()->RemoveName(CONNECTION);
+	fSet()->AddString(CONNECTION, (const char *)str.utf8());
 }
 
 QString
 WSettings::GetConnection()
 {
 	String str = "?";
-	fSet->FindString(CONNECTION, str);
+	fSet()->FindString(CONNECTION, str);
 	return QString::fromUtf8(str.Cstr());
 }
 
@@ -582,8 +582,8 @@ void
 WSettings::SetEncoding(QString server, uint16 port, uint32 encoding)
 {
 	QString key = server+":"+QString::number(port);
-	fSet->RemoveName(key.latin1());
-	fSet->AddInt32(key.latin1(), encoding);
+	fSet()->RemoveName(key.latin1());
+	fSet()->AddInt32(key.latin1(), encoding);
 }
 
 uint32
@@ -591,7 +591,7 @@ WSettings::GetEncoding(QString server, uint16 port)
 {
 	QString key = server+":"+QString::number(port);
 	uint32 encoding = MUSCLE_MESSAGE_ENCODING_DEFAULT;
-	fSet->FindInt32(key.latin1(), (int32 *) &encoding);
+	fSet()->FindInt32(key.latin1(), (int32 *) &encoding);
 	return encoding;
 }
 
@@ -718,23 +718,23 @@ WSettings::GetSounds()
 void
 WSettings::SetAutoAway(int i)
 {
-	fSet->RemoveName(AUTO_AWAY);
-	fSet->AddInt32(AUTO_AWAY, (int32)i);
+	fSet()->RemoveName(AUTO_AWAY);
+	fSet()->AddInt32(AUTO_AWAY, (int32)i);
 }
 
 int
 WSettings::GetAutoAway()
 {
 	int i = 0;
-	fSet->FindInt32(AUTO_AWAY, (int32 *)&i);
+	fSet()->FindInt32(AUTO_AWAY, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetRegisterTime(int64 i)
 {
-	fSet->RemoveName(REGISTERTIME);
-	fSet->AddInt64(REGISTERTIME, i);
+	fSet()->RemoveName(REGISTERTIME);
+	fSet()->AddInt64(REGISTERTIME, i);
 }
 
 void
@@ -743,15 +743,15 @@ WSettings::SetRegisterTime(QString nick, int64 i)
 	String ni = String(REGISTERTIME);
 	ni += "_";
 	ni += (const char *) nick.utf8();
-	fSet->RemoveName(ni);
-	fSet->AddInt64(ni, i);
+	fSet()->RemoveName(ni);
+	fSet()->AddInt64(ni, i);
 };
 
 int64
 WSettings::GetRegisterTime()
 {
 	int64 i = GetCurrentTime64();
-	fSet->FindInt64(REGISTERTIME, &i);
+	fSet()->FindInt64(REGISTERTIME, &i);
 	return i;
 }
 
@@ -762,22 +762,22 @@ WSettings::GetRegisterTime(QString nick)
 	ni += "_";
 	ni += (const char *) nick.utf8();
 	int64 i = GetCurrentTime64();
-	fSet->FindInt64(ni, &i);
+	fSet()->FindInt64(ni, &i);
 	return i;
 }
 
 void
 WSettings::SetFlash(int flags)
 {
-	fSet->RemoveName(FLASH);
-	fSet->AddInt32(FLASH, (int32)flags);
+	fSet()->RemoveName(FLASH);
+	fSet()->AddInt32(FLASH, (int32)flags);
 }
 
 int
 WSettings::GetFlash()
 {
 	int i = FlashAll;
-	fSet->FindInt32(FLASH, (int32 *)&i);
+	fSet()->FindInt32(FLASH, (int32 *)&i);
 	return i;
 }
 
@@ -797,201 +797,201 @@ int
 WSettings::GetBasePort()
 {
 	int i = 7000;
-	fSet->FindInt32(BASEPORT, (int32 *)&i);
+	fSet()->FindInt32(BASEPORT, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetBasePort(int bp)
 {
-	fSet->RemoveName(BASEPORT);
-	fSet->AddInt32(BASEPORT, (int32)bp);
+	fSet()->RemoveName(BASEPORT);
+	fSet()->AddInt32(BASEPORT, (int32)bp);
 }
 
 int
 WSettings::GetMaxUploads()
 {
 	int i = Five;
-	fSet->FindInt32(MAX_UPLOADS, (int32 *)&i);
+	fSet()->FindInt32(MAX_UPLOADS, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetMaxUploads(int u)
 {
-	fSet->RemoveName(MAX_UPLOADS);
-	fSet->AddInt32(MAX_UPLOADS, (int32)u);
+	fSet()->RemoveName(MAX_UPLOADS);
+	fSet()->AddInt32(MAX_UPLOADS, (int32)u);
 }
 
 int
 WSettings::GetMaxDownloads()
 {
 	int i = Five;
-	fSet->FindInt32(MAX_DOWNLOADS, (int32 *)&i);
+	fSet()->FindInt32(MAX_DOWNLOADS, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetMaxDownloads(int d)
 {
-	fSet->RemoveName(MAX_DOWNLOADS);
-	fSet->AddInt32(MAX_DOWNLOADS, (int32)d);
+	fSet()->RemoveName(MAX_DOWNLOADS);
+	fSet()->AddInt32(MAX_DOWNLOADS, (int32)d);
 }
 
 int
 WSettings::GetFontSize()
 {
 	int i = 3;
-	fSet->FindInt32(FONT_SIZE, (int32 *)&i);
+	fSet()->FindInt32(FONT_SIZE, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetFontSize(int f)
 {
-	fSet->RemoveName(FONT_SIZE);
-	fSet->AddInt32(FONT_SIZE, (int32)f);
+	fSet()->RemoveName(FONT_SIZE);
+	fSet()->AddInt32(FONT_SIZE, (int32)f);
 }
 
 QString
 WSettings::GetWatchPattern()
 {
 	String w = "";
-	fSet->FindString(WATCH_PATTERN, w);
+	fSet()->FindString(WATCH_PATTERN, w);
 	return QString::fromUtf8(w.Cstr());
 }
 
 void
 WSettings::SetWatchPattern(QString p)
 {
-	fSet->RemoveName(WATCH_PATTERN);
-	fSet->AddString(WATCH_PATTERN, (const char *) p.utf8());
+	fSet()->RemoveName(WATCH_PATTERN);
+	fSet()->AddString(WATCH_PATTERN, (const char *) p.utf8());
 }
 
 QString
 WSettings::GetIgnorePattern()
 {
 	String i = "";
-	fSet->FindString(IGNORE_PATTERN, i);
+	fSet()->FindString(IGNORE_PATTERN, i);
 	return QString::fromUtf8(i.Cstr());
 }
 
 void
 WSettings::SetIgnorePattern(QString p)
 {
-	fSet->RemoveName(IGNORE_PATTERN);
-	fSet->AddString(IGNORE_PATTERN, (const char *) p.utf8());
+	fSet()->RemoveName(IGNORE_PATTERN);
+	fSet()->AddString(IGNORE_PATTERN, (const char *) p.utf8());
 }
 
 QString
 WSettings::GetIPIgnorePattern()
 {
 	String i = "";
-	fSet->FindString(IPIGNORE_PATTERN, i);
+	fSet()->FindString(IPIGNORE_PATTERN, i);
 	return QString::fromUtf8(i.Cstr());
 }
 
 void
 WSettings::SetIPIgnorePattern(QString p)
 {
-	fSet->RemoveName(IPIGNORE_PATTERN);
-	fSet->AddString(IPIGNORE_PATTERN, (const char *) p.utf8());
+	fSet()->RemoveName(IPIGNORE_PATTERN);
+	fSet()->AddString(IPIGNORE_PATTERN, (const char *) p.utf8());
 }
 
 QString
 WSettings::GetBlackListPattern()
 {
 	String i = "";
-	fSet->FindString(BLACKLIST, i);
+	fSet()->FindString(BLACKLIST, i);
 	return QString::fromUtf8(i.Cstr());
 }
 
 void
 WSettings::SetAutoPrivatePattern(QString p)
 {
-	fSet->RemoveName(AUTOPRIV);
-	fSet->AddString(AUTOPRIV, (const char *) p.utf8());
+	fSet()->RemoveName(AUTOPRIV);
+	fSet()->AddString(AUTOPRIV, (const char *) p.utf8());
 }
 	
 QString
 WSettings::GetAutoPrivatePattern()
 {
 	String i = "";
-	fSet->FindString(AUTOPRIV, i);
+	fSet()->FindString(AUTOPRIV, i);
 	return QString::fromUtf8(i.Cstr());
 }
 
 void
 WSettings::SetBlackListPattern(QString p)
 {
-	fSet->RemoveName(BLACKLIST);
-	fSet->AddString(BLACKLIST, (const char *) p.utf8());
+	fSet()->RemoveName(BLACKLIST);
+	fSet()->AddString(BLACKLIST, (const char *) p.utf8());
 }
 
 QString
 WSettings::GetOnConnect()
 {
 	String i = "";
-	fSet->FindString(ONCONN, i);
+	fSet()->FindString(ONCONN, i);
 	return QString::fromUtf8(i.Cstr());
 }
 
 void
 WSettings::SetOnConnect(QString s)
 {
-	fSet->RemoveName(ONCONN);
-	fSet->AddString(ONCONN, (const char *) s.utf8());
+	fSet()->RemoveName(ONCONN);
+	fSet()->AddString(ONCONN, (const char *) s.utf8());
 }
 
 QString
 WSettings::GetOnConnect2()
 {
 	String i = "";
-	fSet->FindString(ONCONN2, i);
+	fSet()->FindString(ONCONN2, i);
 	return QString::fromUtf8(i.Cstr());
 }
 
 void
 WSettings::SetOnConnect2(QString s)
 {
-	fSet->RemoveName(ONCONN2);
-	fSet->AddString(ONCONN2, (const char *) s.utf8());
+	fSet()->RemoveName(ONCONN2);
+	fSet()->AddString(ONCONN2, (const char *) s.utf8());
 }
 
 #ifdef __linux__
 void
 WSettings::SetFTPLauncher(QString l)
 {
-	fSet->RemoveName(FTP_LAUNCHER);
-	fSet->AddString(FTP_LAUNCHER, (const char *) l.utf8());
+	fSet()->RemoveName(FTP_LAUNCHER);
+	fSet()->AddString(FTP_LAUNCHER, (const char *) l.utf8());
 }
 
 void
 WSettings::SetMailLauncher(QString l)
 {
-	fSet->RemoveName(MAILTO_LAUNCHER);
-	fSet->AddString(MAILTO_LAUNCHER, (const char *) l.utf8());
+	fSet()->RemoveName(MAILTO_LAUNCHER);
+	fSet()->AddString(MAILTO_LAUNCHER, (const char *) l.utf8());
 }
 
 void
 WSettings::SetHTTPLauncher(QString l)
 {
-	fSet->RemoveName(HTTP_LAUNCHER);
-	fSet->AddString(HTTP_LAUNCHER, (const char *) l.utf8());
+	fSet()->RemoveName(HTTP_LAUNCHER);
+	fSet()->AddString(HTTP_LAUNCHER, (const char *) l.utf8());
 }
 
 void
 WSettings::SetDefaultLauncher(QString l)
 {
-	fSet->RemoveName(DEFAULT_LAUNCHER);
-	fSet->AddString(DEFAULT_LAUNCHER, (const char *) l.utf8());
+	fSet()->RemoveName(DEFAULT_LAUNCHER);
+	fSet()->AddString(DEFAULT_LAUNCHER, (const char *) l.utf8());
 }
 
 QString
 WSettings::GetFTPLauncher()
 {
 	String s = "konqueror";	// the default for everything is konqueror
-	fSet->FindString(FTP_LAUNCHER, s);
+	fSet()->FindString(FTP_LAUNCHER, s);
 	return QString::fromUtf8(s.Cstr());
 }
 
@@ -999,7 +999,7 @@ QString
 WSettings::GetMailLauncher()
 {
 	String s = "konqueror";
-	fSet->FindString(MAILTO_LAUNCHER, s);
+	fSet()->FindString(MAILTO_LAUNCHER, s);
 	return QString::fromUtf8(s.Cstr());
 }
 
@@ -1007,7 +1007,7 @@ QString
 WSettings::GetHTTPLauncher()
 {
 	String s = "konqueror";
-	fSet->FindString(HTTP_LAUNCHER, s);
+	fSet()->FindString(HTTP_LAUNCHER, s);
 	return QString::fromUtf8(s.Cstr());
 }
 
@@ -1015,7 +1015,7 @@ QString
 WSettings::GetDefaultLauncher()
 {
 	String s = "konqueror";
-	fSet->FindString(DEFAULT_LAUNCHER, s);
+	fSet()->FindString(DEFAULT_LAUNCHER, s);
 	return QString::fromUtf8(s.Cstr());
 }
 #endif
@@ -1024,82 +1024,82 @@ int
 WSettings::GetChatLimit()
 {
 	int i = LimitNone;
-	fSet->FindInt32(CHAT_LIMIT, (int32 *)&i);
+	fSet()->FindInt32(CHAT_LIMIT, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetChatLimit(int l)
 {
-	fSet->RemoveName(CHAT_LIMIT);
-	fSet->AddInt32(CHAT_LIMIT, l);
+	fSet()->RemoveName(CHAT_LIMIT);
+	fSet()->AddInt32(CHAT_LIMIT, l);
 }
 
 int
 WSettings::GetULLimit()
 {
 	int i = LimitNone;
-	fSet->FindInt32(UL_LIMIT, (int32 *)&i);
+	fSet()->FindInt32(UL_LIMIT, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetULLimit(int l)
 {
-	fSet->RemoveName(UL_LIMIT);
-	fSet->AddInt32(UL_LIMIT, l);
+	fSet()->RemoveName(UL_LIMIT);
+	fSet()->AddInt32(UL_LIMIT, l);
 }
 
 int
 WSettings::GetDLLimit()
 {
 	int i = LimitNone;
-	fSet->FindInt32(DL_LIMIT, (int32 *)&i);
+	fSet()->FindInt32(DL_LIMIT, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetBLLimit(int l)
 {
-	fSet->RemoveName(BL_LIMIT);
-	fSet->AddInt32(BL_LIMIT, l);
+	fSet()->RemoveName(BL_LIMIT);
+	fSet()->AddInt32(BL_LIMIT, l);
 }
 
 int
 WSettings::GetBLLimit()
 {
 	int i = LimitNone;
-	fSet->FindInt32(BL_LIMIT, (int32 *)&i);
+	fSet()->FindInt32(BL_LIMIT, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetDLLimit(int l)
 {
-	fSet->RemoveName(DL_LIMIT);
-	fSet->AddInt32(DL_LIMIT, l);
+	fSet()->RemoveName(DL_LIMIT);
+	fSet()->AddInt32(DL_LIMIT, l);
 }
 
 int
 WSettings::GetPacketSize()
 {
 	int i = 8;
-	fSet->FindInt32(PACKET_SIZE, (int32 *)&i);
+	fSet()->FindInt32(PACKET_SIZE, (int32 *)&i);
 	return i;
 }
 
 void
 WSettings::SetPacketSize(int l)
 {
-	fSet->RemoveName(PACKET_SIZE);
-	fSet->AddInt32(PACKET_SIZE, l);
+	fSet()->RemoveName(PACKET_SIZE);
+	fSet()->AddInt32(PACKET_SIZE, l);
 }
 
 int
 WSettings::GetMinQueued()
 {
 	int i = 0;
-	fSet->FindInt32(MIN_QUEUED, (int32 *)&i);
+	fSet()->FindInt32(MIN_QUEUED, (int32 *)&i);
 	return i;
 }
 
@@ -1176,38 +1176,38 @@ WSettings::GetMinQueuedSize()
 void
 WSettings::SetMinQueued(int l)
 {
-	fSet->RemoveName(MIN_QUEUED);
-	fSet->AddInt32(MIN_QUEUED, l);
+	fSet()->RemoveName(MIN_QUEUED);
+	fSet()->AddInt32(MIN_QUEUED, l);
 }
 
 uint64
 WSettings::GetTransmitStats()
 {
 	uint64 t = 0;
-	fSet->FindInt64(TX_STATS, (int64 *)&t);
+	fSet()->FindInt64(TX_STATS, (int64 *)&t);
 	return t;
 }
 
 void
 WSettings::SetTransmitStats(uint64 t)
 {
-	fSet->RemoveName(TX_STATS);
-	fSet->AddInt64(TX_STATS, t);
+	fSet()->RemoveName(TX_STATS);
+	fSet()->AddInt64(TX_STATS, t);
 }
 
 uint64
 WSettings::GetReceiveStats()
 {
 	uint64 r = 0;
-	fSet->FindInt64(RX_STATS, (int64 *)&r);
+	fSet()->FindInt64(RX_STATS, (int64 *)&r);
 	return r;
 }
 
 void
 WSettings::SetReceiveStats(uint64 r)
 {
-	fSet->RemoveName(RX_STATS);
-	fSet->AddInt64(RX_STATS, r);
+	fSet()->RemoveName(RX_STATS);
+	fSet()->AddInt64(RX_STATS, r);
 }
 
 int
@@ -1265,15 +1265,15 @@ WSettings::SetLogging(bool log)
 void
 WSettings::SetNickListSortColumn(int c)
 {
-	fSet->RemoveName(NL_SORTCOL);
-	fSet->AddInt32(NL_SORTCOL, (int32)c);
+	fSet()->RemoveName(NL_SORTCOL);
+	fSet()->AddInt32(NL_SORTCOL, (int32)c);
 }
 
 int
 WSettings::GetNickListSortColumn()
 {
 	int i = 0;
-	fSet->FindInt32(NL_SORTCOL, (int32 *)&i);	// if it fails, who cares, return 0
+	fSet()->FindInt32(NL_SORTCOL, (int32 *)&i);	// if it fails, who cares, return 0
 	return i;
 }
 
@@ -1292,15 +1292,15 @@ WSettings::SetNickListSortAscending(bool a)
 void
 WSettings::SetSearchListSortColumn(int c)
 {
-	fSet->RemoveName(SL_SORTCOL);
-	fSet->AddInt32(SL_SORTCOL, (int32)c);
+	fSet()->RemoveName(SL_SORTCOL);
+	fSet()->AddInt32(SL_SORTCOL, (int32)c);
 }
 
 int
 WSettings::GetSearchListSortColumn()
 {
 	int i = 0;
-	fSet->FindInt32(SL_SORTCOL, (int32 *)&i);
+	fSet()->FindInt32(SL_SORTCOL, (int32 *)&i);
 	return i;
 }
 
@@ -1319,29 +1319,29 @@ WSettings::SetSearchListSortAscending(bool a)
 void
 WSettings::SetRemotePassword(QString pw)
 {
-	fSet->RemoveName(REMOTEPASSWORD);
-	fSet->AddString(REMOTEPASSWORD, (const char *) pw.utf8());
+	fSet()->RemoveName(REMOTEPASSWORD);
+	fSet()->AddString(REMOTEPASSWORD, (const char *) pw.utf8());
 }
 
 QString
 WSettings::GetRemotePassword()
 {
 	String pw = "";	// the default for everything is konqueror
-	fSet->FindString(REMOTEPASSWORD, pw);
+	fSet()->FindString(REMOTEPASSWORD, pw);
 	return QString::fromUtf8(pw.Cstr());
 }
 
 void
 WSettings::AddQueryItem(QString str)
 {
-	fSet->AddString(QUERY_LIST, (const char *) str.utf8());
+	fSet()->AddString(QUERY_LIST, (const char *) str.utf8());
 }
 
 QString
 WSettings::GetQueryItem(int index)
 {
 	String str;
-	if (fSet->FindString(QUERY_LIST, index, str) == B_OK)
+	if (fSet()->FindString(QUERY_LIST, index, str) == B_OK)
 		return QString::fromUtf8(str.Cstr());
 	return QString::null;
 }
@@ -1349,30 +1349,30 @@ WSettings::GetQueryItem(int index)
 void
 WSettings::EmptyQueryList()
 {
-	fSet->RemoveName(QUERY_LIST);
+	fSet()->RemoveName(QUERY_LIST);
 }
 
 void
 WSettings::SetCurrentQueryItem(int item)
 {
-	fSet->RemoveName(QUERY_ITEM);
-	fSet->AddInt32(QUERY_ITEM, (int32)item);
+	fSet()->RemoveName(QUERY_ITEM);
+	fSet()->AddInt32(QUERY_ITEM, (int32)item);
 }
 
 int
 WSettings::GetCurrentQueryItem()
 {
 	int i = 0;
-	fSet->FindInt32(QUERY_ITEM, (int32 *)&i);
+	fSet()->FindInt32(QUERY_ITEM, (int32 *)&i);
 	return i;
 }
 
 void 
 WSettings::AddResumeItem(WResumePair wrp)
 {
-	fSet->AddString(RESUMEUSER, (const char *) wrp.first.utf8());
-	fSet->AddString(RESUMEFILE, (const char *) wrp.second.fRemoteName.utf8());
-	fSet->AddString(RESUMEFIL2, (const char *) wrp.second.fLocalName.utf8());
+	fSet()->AddString(RESUMEUSER, (const char *) wrp.first.utf8());
+	fSet()->AddString(RESUMEFILE, (const char *) wrp.second.fRemoteName.utf8());
+	fSet()->AddString(RESUMEFIL2, (const char *) wrp.second.fLocalName.utf8());
 }
 
 bool 
@@ -1381,8 +1381,8 @@ WSettings::GetResumeItem(int index, WResumePair & wrp)
 	String file;
 	String user;
 	if (
-		(fSet->FindString(RESUMEFILE, index, file) == B_OK) &&
-		(fSet->FindString(RESUMEUSER, index, user) == B_OK)
+		(fSet()->FindString(RESUMEFILE, index, file) == B_OK) &&
+		(fSet()->FindString(RESUMEUSER, index, user) == B_OK)
 		)
 	{
 		wrp.first = QString::fromUtf8(user.Cstr());
@@ -1391,7 +1391,7 @@ WSettings::GetResumeItem(int index, WResumePair & wrp)
 		// For backwards compatibility don't require entry for local file name
 		//
 
-		if (fSet->FindString(RESUMEFIL2, index, file) == B_OK)
+		if (fSet()->FindString(RESUMEFIL2, index, file) == B_OK)
 			wrp.second.fLocalName = QString::fromUtf8(file.Cstr());
 		else
 			wrp.second.fLocalName = QString::null;
@@ -1405,22 +1405,22 @@ int
 WSettings::GetResumeCount()
 {
 	int i = 0;
-	fSet->FindInt32(RESUMELIST, (int32 *)&i);	// if it fails, return 0
+	fSet()->FindInt32(RESUMELIST, (int32 *)&i);	// if it fails, return 0
 	return i;
 }
 
 void 
 WSettings::SetResumeCount(int c)
 {
-	fSet->RemoveName(RESUMELIST);
-	fSet->AddInt32(RESUMELIST, (int32)c);
+	fSet()->RemoveName(RESUMELIST);
+	fSet()->AddInt32(RESUMELIST, (int32)c);
 }
 
 void
 WSettings::EmptyResumeList()
 {
-	fSet->RemoveName(RESUMEFILE);
-	fSet->RemoveName(RESUMEUSER);
+	fSet()->RemoveName(RESUMEFILE);
+	fSet()->RemoveName(RESUMEUSER);
 }
 
 void 
@@ -1440,7 +1440,7 @@ WSettings::GetToolBarLayout(int toolbar, int & dock, int & index, bool & nl, int
 	sToolBar += toolbar;
 
 	MessageRef mref;
-	if (fSet->FindMessage(sToolBar, mref) == B_OK)
+	if (fSet()->FindMessage(sToolBar, mref) == B_OK)
 	{
 		mref()->FindInt32("dock", (int32 *) &dock);
 		mref()->FindInt32("index", (int32 *) &index);
@@ -1455,7 +1455,7 @@ WSettings::SetToolBarLayout(int toolbar, int dock, int index, bool nl, int extra
 	String sToolBar = "toolbar";
 	sToolBar += toolbar;
 
-	fSet->RemoveName(sToolBar);
+	fSet()->RemoveName(sToolBar);
 	
 	MessageRef mref = GetMessageFromPool();
 	if (mref())
@@ -1465,6 +1465,6 @@ WSettings::SetToolBarLayout(int toolbar, int dock, int index, bool nl, int extra
 		mref()->AddBool("nl", nl);
 		mref()->AddInt32("extra", extra);
 
-		fSet->AddMessage(sToolBar, mref);
+		fSet()->AddMessage(sToolBar, mref);
 	}
 }

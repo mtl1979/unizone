@@ -305,8 +305,8 @@ WinShareWindow::~WinShareWindow()
 
 	fIsRunning = false;
 
-	if (fQueue)
-		delete fQueue;
+	//if (fQueue)
+	//	delete fQueue;
 
 	// all the NetClients get deleted by Qt
 	// since they are QObject's
@@ -928,8 +928,8 @@ WinShareWindow::InitGUI()
 	connect(fDownload, SIGNAL(clicked()), this, SLOT(Download()));
 	connect(fClearHistory, SIGNAL(clicked()), this, SLOT(ClearHistory()));
 
-	fQueue = new Message();
-	CHECK_PTR(fQueue);
+	fQueue = GetMessageFromPool();
+	//CHECK_PTR(fQueue);
 
 	SetSearchStatus(tr("Idle."));
 
@@ -1496,13 +1496,13 @@ WinShareWindow::PrintSystem(const QString & msg, bool batch)
 }
 
 QString
-WinShareWindow::GetRemoteVersionString(const Message * msg)
+WinShareWindow::GetRemoteVersionString(const MessageRef msg)
 {
 
 	QString versionString = "?";
 	const char * version;
 
-	if (msg->FindString("version", &version) == B_OK)
+	if (msg()->FindString("version", &version) == B_OK)
 	{
 		if (version[0] > '0' && version[0] <= '9')
 		{

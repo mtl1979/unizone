@@ -332,7 +332,7 @@ private:
 	void HandleSignal();
 	void SendChatText(WTextEvent *, bool * reply = NULL);
 
-	void HandleMessage(Message *);
+	void HandleMessage(MessageRef);
 	void HandleComboEvent(WTextEvent *);
 
 	void UpdateTextView();		// moves the stuff in the chat screen so that the latest stuff is displayed
@@ -375,7 +375,7 @@ private:
 	bool NameSaid(QString & msg);	// msg will be syntaxed if needed
 	void SetWatchPattern(QString pattern);
 
-	void ServerParametersReceived(const Message * msg);
+	void ServerParametersReceived(const MessageRef msg);
 
 	void LoadSettings();
 	void SaveSettings();
@@ -428,7 +428,7 @@ private:
 	QPushButton * fStop;
 	QPushButton * fClearHistory;
 	WStatusBar * fStatus;
-	Message * fQueue;
+	MessageRef fQueue;
 	QMutex fLock;		// to lock the list so only one method can be using it at a time
 
 	QString fCurrentSearchPattern;
@@ -496,7 +496,7 @@ public:
 
 	void SendChatText(QString sid, QString txt, WUserRef priv = WUserRef(NULL, NULL), bool * reply = NULL);
 
-	static QString GetRemoteVersionString(const Message *);
+	static QString GetRemoteVersionString(const MessageRef);
 	static void LaunchSearch(QString & pattern);		// launches a search
 	void LaunchPrivate(const QString & pattern);		// launches a private window with multiple users in it
 	void UpdateTransmitStats(uint64 t);

@@ -156,11 +156,11 @@ protected:
 private:
 	uint32 fPort, fServerPort;
 	QString fSessionID, fServer;
-	QString fOldID;		// Old id for persistent channel admin/owner state
+	QString fOldID;			// Old id for persistent channel admin/owner state
 	QString fUserName;
 	QObject * fOwner;
-	WUserMap fUsers;	// a list of users
-	Message * fChannels; // channel database
+	WUserMap fUsers;		// a list of users
+	MessageRef fChannels;	// channel database
 
 	// QMutex fNetLock;
 	void HandleBeRemoveMessage(String nodePath);

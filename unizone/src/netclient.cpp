@@ -26,18 +26,18 @@ NetClient::NetClient(QObject * owner)
 	fSessionID = QString::null;
 	fUserName = QString::null;
 	fChannelLock.lock();
-	fChannels = new Message();
+	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
 }
 
 NetClient::~NetClient()
 {
-	fChannelLock.lock();
-	if (fChannels)
-	{
-		delete fChannels;
-	}
-	fChannelLock.unlock();
+	//fChannelLock.lock();
+	//if (fChannels)
+	//{
+	//	delete fChannels;
+	//}
+	//fChannelLock.unlock();
 	Disconnect();
 	WaitForInternalThreadToExit();
 }
@@ -391,7 +391,7 @@ NetClient::AddChannel(QString sid, QString channel)
 {
 	MessageRef mChannel;
 	fChannelLock.lock();
-	if ( fChannels->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
+	if ( fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
 		mChannel()->AddBool(sid.latin1(), true);
 	}
@@ -400,7 +400,7 @@ NetClient::AddChannel(QString sid, QString channel)
 		emit ChannelAdded(channel, sid, GetCurrentTime64());
 		MessageRef mChannel = GetMessageFromPool();
 		mChannel()->AddBool(sid.latin1(), true);
-		fChannels->AddMessage((const char *) channel.utf8(), mChannel);
+		fChannels()->AddMessage((const char *) channel.utf8(), mChannel);
 	}
 	fChannelLock.unlock();
 }
@@ -410,13 +410,13 @@ NetClient::RemoveChannel(QString sid, QString channel)
 {
 	MessageRef mChannel;
 	fChannelLock.lock();
-	if ( fChannels->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
+	if ( fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
 		mChannel()->RemoveName(sid.latin1());
 		if (mChannel()->CountNames(B_MESSAGE_TYPE) == 0)
 		{
 			// Last user parted, remove channel entry
-			fChannels->RemoveName((const char *) channel.utf8());
+			fChannels()->RemoveName((const char *) channel.utf8());
 		}
 	}
 	fChannelLock.unlock();
@@ -426,11 +426,11 @@ QString *
 NetClient::GetChannelList()
 {
 	fChannelLock.lock();
-	int n = fChannels->CountNames(B_MESSAGE_TYPE);
+	int n = fChannels()->CountNames(B_MESSAGE_TYPE);
 	QString * qChannels = new QString[n];
 	int i = 0;
 	String channel;
-	MessageFieldNameIterator iter = fChannels->GetFieldNameIterator(B_MESSAGE_TYPE);
+	MessageFieldNameIterator iter = fChannels()->GetFieldNameIterator(B_MESSAGE_TYPE);
 	while (iter.GetNextFieldName(channel) == B_OK)
 	{
 		qChannels[i++] = QString::fromUtf8(channel.Cstr());
@@ -445,7 +445,7 @@ NetClient::GetChannelUsers(QString channel)
 	MessageRef mChannel;
 	fChannelLock.lock();
 	QString * users = NULL;
-	if (fChannels->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
+	if (fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
 		int n = mChannel()->CountNames(B_BOOL_TYPE);
 		users = new QString[n];
@@ -465,7 +465,7 @@ int
 NetClient::GetChannelCount()
 {
 	fChannelLock.lock();
-	int n = fChannels->CountNames(B_MESSAGE_TYPE);
+	int n = fChannels()->CountNames(B_MESSAGE_TYPE);
 	fChannelLock.unlock();
 	return n;
 }
@@ -476,7 +476,7 @@ NetClient::GetUserCount(QString channel)
 	fChannelLock.lock();
 	int n = 0;
 	MessageRef mChannel;
-	if (fChannels->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
+	if (fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
 		n = mChannel()->CountNames(B_BOOL_TYPE);
 	}
@@ -493,7 +493,7 @@ NetClient::HandleBeAddMessage(String nodePath, MessageRef ref)
 		MessageRef tmpRef;
 		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
 		{
-			const Message * pmsg = tmpRef.GetItemPointer();
+			//const Message * pmsg = tmpRef.GetItemPointer();
 			QString sid = GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr());
 			sid = sid.left(sid.find('/'));
 			switch (pd)
@@ -516,28 +516,28 @@ NetClient::HandleBeAddMessage(String nodePath, MessageRef ref)
 					if (nodeName.lower().left(4) == "name")
 					{
 						QString oldname = user()->GetUserName();
-						user()->InitName(pmsg); 
+						user()->InitName(tmpRef); 
 						if (oldname != user()->GetUserName())
 							emit UserNameChanged(sid, oldname, user()->GetUserName());
 					}
 					else if (nodeName.lower().left(10) == "userstatus")
 					{
 						QString oldstatus = user()->GetStatus();
-						user()->InitStatus(pmsg);
+						user()->InitStatus(tmpRef);
 						if (oldstatus != user()->GetStatus())
 							emit UserStatusChanged(sid, user()->GetUserName(), user()->GetStatus());
 					}
 					else if (nodeName.lower().left(11) == "uploadstats")
 					{
-						user()->InitUploadStats(pmsg);
+						user()->InitUploadStats(tmpRef);
 					}
 					else if (nodeName.lower().left(9) == "bandwidth")
 					{
-						user()->InitBandwidth(pmsg);
+						user()->InitBandwidth(tmpRef);
 					}
 					else if (nodeName.lower().left(9) == "filecount")
 					{
-						user()->InitFileCount(pmsg);
+						user()->InitFileCount(tmpRef);
 					}
 					else if (nodeName.lower().left(5) == "fires")
 					{

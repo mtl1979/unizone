@@ -363,11 +363,11 @@ WinShareWindow::QueueDownload(QString file, WUser * user)
 {
 	int32 i = 0;
 	String mUser = (const char *) user->GetUserID().utf8();
-	if (fQueue->FindInt32(mUser, &i) == B_OK)
-		fQueue->RemoveName(mUser);
-	fQueue->AddInt32(mUser, ++i);
+	if (fQueue()->FindInt32(mUser, &i) == B_OK)
+		fQueue()->RemoveName(mUser);
+	fQueue()->AddInt32(mUser, ++i);
 	mUser = mUser.Prepend("_");
-	fQueue->AddString(mUser, (const char *) file.utf8());
+	fQueue()->AddString(mUser, (const char *) file.utf8());
 }
 
 void
@@ -378,29 +378,27 @@ WinShareWindow::EmptyQueues()
 	QString * files;
 	WUserRef u;
 	int32 numItems;
-	MessageFieldNameIterator iter = fQueue->GetFieldNameIterator(B_INT32_TYPE);
+	MessageFieldNameIterator iter = fQueue()->GetFieldNameIterator(B_INT32_TYPE);
 	while (iter.GetNextFieldName(mUser) == B_OK)
 	{
 		user = QString::fromUtf8(mUser.Cstr());
 		u = FindUser(user);
 		if (u() != NULL)
 		{
-			fQueue->FindInt32(mUser, &numItems);
+			fQueue()->FindInt32(mUser, &numItems);
 			files = new QString[numItems];
 			CHECK_PTR(files);
 			mUser = mUser.Prepend("_");
 			for (int32 i = 0; i < numItems; i++)
 			{
-				fQueue->FindString(mUser, i, mFile);
+				fQueue()->FindString(mUser, i, mFile);
 				files[i] = QString::fromUtf8(mFile.Cstr());
 			}
 			OpenDownload();
 			fDLWindow->AddDownload(files, NULL, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
 		}
 	}
-	delete fQueue;
-	fQueue = new Message();
-	CHECK_PTR(fQueue);
+	fQueue()->Clear();
 }
 
 
