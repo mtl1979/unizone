@@ -36,7 +36,12 @@ WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 	fOwner = owner;
 	fShutdownFlag = optShutdownFlag;
 
+#ifdef WIN32
+	fScanProgress = new ScanProgress(gWin);
+	CHECK_PTR(fScanProgress);
+#else
 	fScanProgress = NULL;
+#endif
 }
 
 WFileThread::~WFileThread()
@@ -58,8 +63,10 @@ WFileThread::run()
 	Unlock(); 
 	int iScannedDirs = 0;
 
+#if !defined(WIN32)
 	fScanProgress = new ScanProgress(NULL);
 	CHECK_PTR(fScanProgress);
+#endif
 
 	fScanProgress->show();
 	SendReset(); 
@@ -100,8 +107,10 @@ WFileThread::run()
 #endif
 
 	fScanProgress->close();
+#if !defined(WIN32)
 	delete fScanProgress;
 	fScanProgress = NULL;
+#endif
 
 	Lock();
 	fScannedDirs.Clear(true);
