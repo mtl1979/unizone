@@ -125,24 +125,40 @@ ParseForShown(const QString & txt)
 		out += line;
 	}
 #else
-	out = "";
-	int n = 0;
-	int m = 0;
+	out = "";	// Text after processing linefeeds and TABs
+	int n = 0;  // Position of next TAB before text to be included
+	int n2 = 0;	// Start of actual text
+	int m = 0;	// Position of next TAB after text to be included
 
-	// replace our TAB
-	n = txt.find('\t');
+	// Remove any extra line breaks from the start of buffer
+	//
 
-	if (n >= 0)
+	while (n2 < (int) txt.length())
 	{
-		if (n > 0)
+		if (txt.mid(n2, 4) == "<br>")
 		{
-			// copy everything before first TAB
-			out += txt.left(n);
-			out += "<br>";
-
-			// skip the TAB ;)
-			n++;
+			n2 = n2 + 4;
 		}
+		else if (txt.mid(n2, 1) == "\t")
+		{
+			n2++;
+		}
+		else
+		{
+			break; // Found start of actual text
+		}
+	}
+
+	n = txt.find('\t', n2);
+
+	if (n > n2)
+	{
+		// copy everything before first TAB (after any extra line breaks stripped from the beginning)
+		out += txt.mid(n2, n - n2);
+		out += "<br>";
+
+		// skip the TAB ;)
+		n++;
 
 		while (n < (int) txt.length())
 		{
@@ -163,18 +179,7 @@ ParseForShown(const QString & txt)
 	}
 	else
 	{
-		out = txt;
-	}
-	// out.replace(QRegExp("\t"), "<br>");
-	// Remove any extra line breaks in start of buffer
-	//
-	if (out.length() > 4)
-	{
-		while (out.left(4) == "<br>")
-		{
-			out = out.mid(4);
-			if (out.length() < 4) break;	// Just to be safe ;)
-		}
+		out = txt.mid(n2);
 	}
 #endif
 
