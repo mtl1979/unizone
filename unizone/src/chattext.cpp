@@ -5,10 +5,12 @@
 #include <qapplication.h>
 
 #define DEFAULT_SIZE 10
+#define MAX_SIZE 100
 
 WChatText::WChatText(QObject * target, QWidget * parent)
-	: QMultiLineEdit(parent), fBuffer(new Queue<QString>(DEFAULT_SIZE)), fTarget(target) 
+	: QMultiLineEdit(parent), fTarget(target) 
 {
+	fBuffer = new Queue<QString>(DEFAULT_SIZE);
 	fCurLine = 0;
 }
 
@@ -42,10 +44,11 @@ WChatText::keyPressEvent(QKeyEvent * event)
 			}
 			QString line;
 			fBuffer->GetItemAt(fCurLine, line);
-//			if (fCurLine == (int)fBuffer->GetNumItems())		// don't add duplicate items
+			
+			// don't add duplicate items
 			if (text() != line)
 			{
-				fBuffer->AddTail(text());
+				AddLine(text());
 				PRINT("Lines %d\n", fCurLine);
 			}
 			fCurLine = fBuffer->GetNumItems();	// reset
@@ -142,8 +145,10 @@ WChatText::keyPressEvent(QKeyEvent * event)
 void
 WChatText::ClearBuffer()
 {
+	fLock.lock();
 	fBuffer->Clear();
 	fCurLine = 0;	// no more items
+	fLock.unlock();
 }
 
 void
@@ -152,4 +157,21 @@ WChatText::gotoEnd()
 	int lastline = numLines() - 1;
 	int len = lineLength(lastline);
 	setCursorPosition(lastline, len);
+}
+
+void
+WChatText::AddLine(const QString &line)
+{
+	QString junk;
+	fLock.lock();
+	// Remove enough old entries, so total amount after adding this line will not exceed MAX_SIZE
+	while (fBuffer->GetNumItems() >= MAX_SIZE)
+	{
+		fBuffer->RemoveHead(junk);
+		fCurLine--;
+	}
+	if (fCurLine < 0)
+		fCurLine = 0;
+	fBuffer->AddTail(line);
+	fLock.unlock();
 }

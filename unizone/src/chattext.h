@@ -2,6 +2,7 @@
 #define CHATTEXT_H
 
 #include <qmultilineedit.h>
+#include <qthread.h>
 
 #include "util/Queue.h"
 using namespace muscle;
@@ -25,10 +26,12 @@ signals:
 
 protected:
 	virtual void keyPressEvent(QKeyEvent * event);
+	void AddLine(const QString &);
 
 private:
 	Queue<QString> * fBuffer;	// line buffer
 	QObject * fTarget;
+	QMutex fLock;
 	int fCurLine;				// which line in the buffer?
 };
 
