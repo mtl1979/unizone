@@ -232,12 +232,13 @@
 // Format Strings
 //
 
-#define MSG_WF_USERCONNECTED    "Utilisateur #%1 est maintenant connecté."
-#define MSG_WF_USERDISCONNECTED "Utilisateur #%1 (a.k.a. <font color=\"%3\">%2</font>) est déconnecté."
-#define MSG_WF_USERNAMECHANGENO "Utilisateur #%1 est connu maintenant comme <font color=\"%3\">%2</font>."
-#define MSG_WF_USERNAMECHANGED  "Utilisateur #%1 (a.k.a. <font color=\"%4\">%2</font>) est connu maintenant comme <font color=\"%5\">%3</font>."
-#define MSG_WF_USERSTATUSCHANGE "Utilisateur #%1 (a.k.a. <font color=\"%4\">%2</font>) est maintenant %3."
-#define MSG_WF_STATUSCHANGED	"Vous êtes maintenant %1."
+#define MSG_WF_USERCONNECTED		"Utilisateur #%1 est maintenant connecté."
+#define MSG_WF_USERDISCONNECTED		"Utilisateur #%1 (a.k.a. <font color=\"%3\">%2</font>) est déconnecté."
+#define MSG_WF_USERNAMECHANGENO		"Utilisateur #%1 est connu maintenant comme <font color=\"%3\">%2</font>."
+#define MSG_WF_USERNAMECHANGED		"Utilisateur #%1 (a.k.a. <font color=\"%4\">%2</font>) est connu maintenant comme <font color=\"%5\">%3</font>."
+#define MSG_WF_USERSTATUSCHANGE		"Utilisateur #%1 (a.k.a. <font color=\"%4\">%2</font>) est maintenant %3."
+#define MSG_WF_USERSTATUSCHANGE2	"Ulilisateur #%1 est maintenant %2."
+#define MSG_WF_STATUSCHANGED		"Vous êtes maintenant %1."
 
 #define MSG_WF_SYSTEMTEXT       "<font color=\"%1\" size=\"%2\"><b>Système :</b> </font>"
 #define MSG_WF_PINGTEXT         "<font color=\"%1\" size=\"%2\">Ping retourné en %3 millisecondes (%4)</font>"

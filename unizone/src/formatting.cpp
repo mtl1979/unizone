@@ -33,6 +33,7 @@ QString WFormat::UserDisconnected		= MSG_WF_USERDISCONNECTED;
 QString WFormat::UserNameChangedNoOld	= MSG_WF_USERNAMECHANGENO;
 QString WFormat::UserNameChanged		= MSG_WF_USERNAMECHANGED;
 QString WFormat::UserStatusChanged		= MSG_WF_USERSTATUSCHANGE;
+QString WFormat::UserStatusChanged2		= MSG_WF_USERSTATUSCHANGE2;
 
 // ping formatting
 QString WFormat::PingText	= MSG_WF_PINGTEXT;

@@ -234,13 +234,14 @@
 // Format Strings
 //
 
-#define MSG_WF_SYSTEMTEXT       "<font color=\"%1\" size=\"%2\"><b>J‰rjestelm‰:</b> </font>"
-#define MSG_WF_USERCONNECTED    "K‰ytt‰j‰ #%1 on nyt linjoilla."
-#define MSG_WF_USERDISCONNECTED "K‰ytt‰j‰ #%1, eli <font color=\"%3\">%2</font>, on poistunut."
-#define MSG_WF_USERNAMECHANGENO "K‰ytt‰j‰ #%1 on nyt nimelt‰‰n <font color=\"%3\">%2</font>."
-#define MSG_WF_USERNAMECHANGED  "K‰ytt‰j‰ #%1, eli <font color=\"%4\">%2</font>, on nyt nimelt‰‰n <font color=\"%5\">%3</font>."
-#define MSG_WF_USERSTATUSCHANGE "K‰ytt‰j‰ #%1, eli <font color=\"%4\">%2</font>, on nyt %3."
-#define MSG_WF_STATUSCHANGED	"Olet nyt %1."
+#define MSG_WF_SYSTEMTEXT			"<font color=\"%1\" size=\"%2\"><b>J‰rjestelm‰:</b> </font>"
+#define MSG_WF_USERCONNECTED		"K‰ytt‰j‰ #%1 on nyt linjoilla."
+#define MSG_WF_USERDISCONNECTED		"K‰ytt‰j‰ #%1, eli <font color=\"%3\">%2</font>, on poistunut."
+#define MSG_WF_USERNAMECHANGENO		"K‰ytt‰j‰ #%1 on nyt nimelt‰‰n <font color=\"%3\">%2</font>."
+#define MSG_WF_USERNAMECHANGED		"K‰ytt‰j‰ #%1, eli <font color=\"%4\">%2</font>, on nyt nimelt‰‰n <font color=\"%5\">%3</font>."
+#define MSG_WF_USERSTATUSCHANGE		"K‰ytt‰j‰ #%1, eli <font color=\"%4\">%2</font>, on nyt %3."
+#define MSG_WF_USERSTATUSCHANGE2	"K‰ytt‰j‰ #%1 on nyt %2."
+#define MSG_WF_STATUSCHANGED		"Olet nyt %1."
 
 #define MSG_WF_PINGTEXT         "<font color=\"%1\" size=\"%2\">Ping tuli takaisin %3 millisekunnissa (%4)</font>"
 #define MSG_WF_PINGUPTIME       "<font color=\"%1\" size=\"%2\"> (K‰ynniss‰: %3, Kirjautuneena %4)</font>"

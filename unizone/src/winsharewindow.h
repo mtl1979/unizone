@@ -219,7 +219,6 @@ private:
 	void InitGUI();
 	void HandleSignal();
 	void SendChatText(WTextEvent *, bool * reply = NULL);
-	void SendChatText(QString sid, QString txt, WUserRef priv = WUserRef(NULL, NULL), bool * reply = NULL);
 
 	void HandleMessage(Message *);
 	void HandleComboEvent(WTextEvent *);
@@ -297,6 +296,8 @@ public:
 #ifdef WIN32
 	HWND GetHandle() { return fWinHandle; }
 #endif
+
+	void SendChatText(QString sid, QString txt, WUserRef priv = WUserRef(NULL, NULL), bool * reply = NULL);
 
 	static QString GetRemoteVersionString(const Message *);
 	static QString ParseForShown(const QString & str);	// parses the string during shown notifications from

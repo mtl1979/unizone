@@ -338,6 +338,7 @@ WUploadThread::DoUpload()
 	{
 		SetBlocked(true);
 		SendReply(new Message(WGenericEvent::FileBlocked));
+		gWin->SendChatText(fRemoteSessionID, "Your download has been blocked due ignored nick.");
 		return;
 	}
 
