@@ -49,7 +49,6 @@ public slots:
 
 	void ServerExited();
 	void SessionConnected(const String &sessionID);
-	void SessionAccepted(const String &sessionID, uint16 port);
     void SessionAttached(const String & sessionID);
 	void SessionDisconnected(const String &sessionID);
 	void MessageReceived(MessageRef msg, const String &sessionID);

@@ -29,8 +29,6 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
 			this, SLOT(MessageReceived(MessageRef, const String &)));
-	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
-			this, SLOT(SessionAccepted(const String &, uint16)));
 	connect(qmtt, SIGNAL(SessionAttached(const String &)),
 			this, SLOT(SessionAttached(const String &)));
 	connect(qmtt, SIGNAL(SessionConnected(const String &)),
@@ -231,22 +229,10 @@ WUploadThread::SendReply(MessageRef &m)
 	}
 }
 
-void 
-WUploadThread::SessionAccepted(const String &sessionID, uint16 port)
-{
-	_sessionID = sessionID;
-	CTimer->stop();
-
-	MessageRef con(GetMessageFromPool(WGenericEvent::Connected));
-	if (con())
-	{
-		SendReply(con);
-	}
-}
-
 void
 WUploadThread::SessionAttached(const String &sessionID)
 {
+	// If you aren't firewalled
 	_sessionID = sessionID;
 	CTimer->stop();
 
@@ -260,6 +246,7 @@ WUploadThread::SessionAttached(const String &sessionID)
 void
 WUploadThread::SessionConnected(const String &sessionID)
 {
+	// If you are firewalled
 	_sessionID = sessionID;
 	CTimer->stop();
 
