@@ -554,6 +554,10 @@ Versio %1</translation>
         <source>OC-12</source>
         <translation>OC-12</translation>
     </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Tuntematon</translation>
+    </message>
 </context>
 <context>
     <name>Date</name>
@@ -632,6 +636,33 @@ Versio %1</translation>
     <message>
         <source>Sun</source>
         <translation>Su</translation>
+    </message>
+    <message>
+        <source>Date:</source>
+        <translation>Päiväys:</translation>
+    </message>
+</context>
+<context>
+    <name>Debug</name>
+    <message>
+        <source>Unizone (English)</source>
+        <translation>Unizone (Suomi)</translation>
+    </message>
+    <message>
+        <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
+
+%1
+
+Line %2
+File %3
+Date: %4</source>
+        <translation>Lähetä tämä viesti osoitteeseen postmaster@raasu.org! Tämä viesti on myös tallennettu tiedostoon &apos;assert.txt&apos;.
+
+%1
+
+Rivi %2
+Tiedosto %3
+Päiväys: %4</translation>
     </message>
 </context>
 <context>
@@ -814,7 +845,7 @@ Versio %1</translation>
 Line %2
 File %3
 Date: %4</source>
-        <translation>Lähetä tämä viesti osoitteeseen postmaster@raasu.org! Tämä viesti on myös tallennettu tiedostoon &apos;assert.txt&apos;.
+        <translation type='obsolete'>Lähetä tämä viesti osoitteeseen postmaster@raasu.org! Tämä viesti on myös tallennettu tiedostoon &apos;assert.txt&apos;.
 
 %1
 
@@ -824,7 +855,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation>%1/%2</translation>
+        <translation type='obsolete'>%1/%2</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
@@ -1012,48 +1043,48 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
-        <translation>Unizone (Suomi)</translation>
+        <translation type='obsolete'>Unizone (Suomi)</translation>
     </message>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation>Päiväys:</translation>
+        <translation type='obsolete'>Päiväys:</translation>
     </message>
     <message>
         <source>B</source>
-        <translation>t</translation>
+        <translation type='obsolete'>t</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation>kt</translation>
+        <translation type='obsolete'>kt</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation>Mt</translation>
+        <translation type='obsolete'>Mt</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation>Gt</translation>
+        <translation type='obsolete'>Gt</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation>t/s</translation>
+        <translation type='obsolete'>t/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation>kt/s</translation>
+        <translation type='obsolete'>kt/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation>Mt/s</translation>
+        <translation type='obsolete'>Mt/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation>Gt/s</translation>
+        <translation type='obsolete'>Gt/s</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation>%1.%2.%3 luonti %4</translation>
+        <translation type='obsolete'>%1.%2.%3 luonti %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
@@ -1086,11 +1117,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>TB</source>
-        <translation>Tt</translation>
+        <translation type='obsolete'>Tt</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation>Tt/s</translation>
+        <translation type='obsolete'>Tt/s</translation>
     </message>
 </context>
 <context>
@@ -1134,6 +1165,13 @@ Päiväys: %4</translation>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
         <translation>Unizone (Suomi) %1 on ilmestynyt osoitteessa http://www.raasu.org/tools/windows/.</translation>
     </message>
+    <message>
+        <source>%1.%2.%3 build %4</source>
+        <translation>%1.%2.%3 luonti %4</translation>
+    </message>
+</context>
+<context>
+    <name>Version</name>
     <message>
         <source>%1.%2.%3 build %4</source>
         <translation>%1.%2.%3 luonti %4</translation>
@@ -1488,6 +1526,10 @@ Päiväys: %4</translation>
     <message>
         <source>F11</source>
         <translation>F11</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation>%1/%2</translation>
     </message>
 </context>
 <context>
@@ -2719,6 +2761,72 @@ Päiväys: %4</translation>
     </message>
 </context>
 <context>
+    <name>WSettings</name>
+    <message>
+        <source>Read Error</source>
+        <translation>Lukuvirhe</translation>
+    </message>
+    <message>
+        <source>Unable to read data from file!</source>
+        <translation>Ei voitu lukea tietoa tiedostosta!</translation>
+    </message>
+    <message>
+        <source>Bummer</source>
+        <translation>Rähmä</translation>
+    </message>
+    <message>
+        <source>Write Error</source>
+        <translation>Kirjoitusvirhe</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t save settings!</source>
+        <translation>Ei voitu tallentaa asetuksia!</translation>
+    </message>
+</context>
+<context>
+    <name>WUniListItem</name>
+    <message>
+        <source>B</source>
+        <translation>t</translation>
+    </message>
+    <message>
+        <source>TB</source>
+        <translation>Tt</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <translation>Gt</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>Mt</translation>
+    </message>
+    <message>
+        <source>kB</source>
+        <translation>kt</translation>
+    </message>
+    <message>
+        <source>B/s</source>
+        <translation>t/s</translation>
+    </message>
+    <message>
+        <source>TB/s</source>
+        <translation>Tt/s</translation>
+    </message>
+    <message>
+        <source>GB/s</source>
+        <translation>Gt/s</translation>
+    </message>
+    <message>
+        <source>MB/s</source>
+        <translation>Mt/s</translation>
+    </message>
+    <message>
+        <source>kB/s</source>
+        <translation>kt/s</translation>
+    </message>
+</context>
+<context>
     <name>WUploadThread</name>
     <message>
         <source>Your download has been blocked for %1 minute(s)!</source>
@@ -2755,6 +2863,41 @@ Päiväys: %4</translation>
     <message>
         <source>Could not start internal thread!</source>
         <translation>Ei voitu käynnistää sisäistä säiettä!</translation>
+    </message>
+</context>
+<context>
+    <name>WUser</name>
+    <message>
+        <source>Unknown</source>
+        <translation>Tuntematon</translation>
+    </message>
+    <message>
+        <source>Windows</source>
+        <translation>Windows</translation>
+    </message>
+    <message>
+        <source>Linux</source>
+        <translation>Linux</translation>
+    </message>
+    <message>
+        <source>FreeBSD</source>
+        <translation>FreeBSD</translation>
+    </message>
+    <message>
+        <source>BeOS</source>
+        <translation>BeOS</translation>
+    </message>
+    <message>
+        <source>Mac OS</source>
+        <translation>Mac OS</translation>
+    </message>
+    <message>
+        <source>QNX</source>
+        <translation>QNX</translation>
+    </message>
+    <message>
+        <source>OS/2</source>
+        <translation>OS/2</translation>
     </message>
 </context>
 <context>
@@ -2933,7 +3076,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Tuntematon</translation>
+        <translation type='obsolete'>Tuntematon</translation>
     </message>
     <message>
         <source>Unizone (English) </source>

@@ -9,19 +9,20 @@
 #include "wstring.h"
 #include "winsharewindow.h"
 
+#include <qapplication.h>
 #include <qlistview.h>
 #include <qstring.h>
 
 
 WUser::WUser(const QString & sid)
 {
-	fUserName = "?";
+	fUserName = qApp->translate("WUser", "Unknown");
 	fUserStatus = "?";
 	fHostName = "?";
 	fHostOS = QString::null;
 	fUserID = sid;
 	fCurUploads = fMaxUploads = 0;
-	fBandwidthLabel = "?";
+	fBandwidthLabel = qApp->translate("Connection", "Unknown");
 	fBandwidthBPS = 0;
 	fFileCount = 0;
 	fFirewalled = false;
@@ -68,8 +69,6 @@ WUser::InitName(const MessageRef msg)
 
 	if (msg()->FindString("name", &name) == B_OK)
 		fUserName = QString::fromUtf8(name);
-	else
-		fUserName = "?";
 
 	if (msg()->FindInt32("port", (int32 *) &port) == B_OK)
 		fPort = port;
@@ -132,8 +131,7 @@ WUser::InitStatus(const MessageRef msg)
 	const char * status;
 	if (msg()->FindString("userstatus", &status) == B_OK)
 		fUserStatus = QString::fromUtf8(status);
-	else
-		fUserStatus = "?";
+
 #ifdef _DEBUG
 	WString wUser(fUserName);
 	WString wStatus(fUserStatus);
@@ -161,7 +159,7 @@ WUser::InitBandwidth(const MessageRef msg)
 	const char * l;
 	uint32 bps = 0;
 
-	fBandwidthLabel = "Unknown"; // Reset
+//	fBandwidthLabel = qApp->translate("Connection", "Unknown"); // Reset
 
 	if (msg()->FindInt32("bps", (int32 *)&bps) == B_OK)
 		fBandwidthBPS = bps;
@@ -169,7 +167,9 @@ WUser::InitBandwidth(const MessageRef msg)
 	if (bps != 0)
 		fBandwidthLabel = BandwidthToString(bps);
 
-	if (fBandwidthLabel == "Unknown")
+	if ((fBandwidthLabel == qApp->translate("Connection", "Unknown")) ||
+		(fBandwidthLabel == "Unknown")
+		)
 	{
 		if (msg()->FindString("label", &l) == B_OK)
 		{
@@ -384,31 +384,39 @@ WUser::SetClient(const String &s)
 	SetClient(QString::fromUtf8(s.Cstr()));
 }
 
+struct OSPair
+{
+	const char *id;
+	const char *tag;
+};
+
+OSPair Systems[] = {
+	{"Windows", QT_TRANSLATE_NOOP("WUser", "Windows")},		
+	{"Linux", QT_TRANSLATE_NOOP("WUser", "Linux")},
+	{"FreeBSD", QT_TRANSLATE_NOOP("WUser", "FreeBSD")},
+	{"BeOS", QT_TRANSLATE_NOOP("WUser", "BeOS")},
+	{"MacOS", QT_TRANSLATE_NOOP("WUser", "Mac OS")},
+	{"Mac OS", QT_TRANSLATE_NOOP("WUser", "Mac OS")},	
+	{"QNX", QT_TRANSLATE_NOOP("WUser", "QNX")},
+	{"BeShare", QT_TRANSLATE_NOOP("WUser", "BeOS")},
+	{"WinShare", QT_TRANSLATE_NOOP("WUser", "Windows")},
+	{"LinShare", QT_TRANSLATE_NOOP("WUser", "Linux")},
+	{"OS/2", QT_TRANSLATE_NOOP("WUser", "OS/2")},
+	{NULL, NULL}
+};
+
 void
 WUser::SetClient(const QString &s)
 {
 	fClient = s;
 	if (fHostOS == QString::null)
 	{
-		if (s.contains("Windows", false) > 0)
-			fHostOS = QObject::tr("Windows");
-		else if (s.contains("Linux", false) > 0)
-			fHostOS = QObject::tr("Linux");
-		else if (s.contains("FreeBSD", false) > 0)
-			fHostOS = QObject::tr("FreeBSD");
-		else if (s.contains("MacOS", false) > 0)
-			fHostOS = QObject::tr("Mac OS");
-		else if (s.contains("Mac OS", false) > 0)
-			fHostOS = QObject::tr("Mac OS");
-		else if (s.contains("QNX", false) > 0)
-			fHostOS = QObject::tr("QNX");
-		else if (s.contains("BeShare", false) > 0)
-			fHostOS = QObject::tr("BeOS");
-		else if (s.contains("WinShare", false) > 0)
-			fHostOS = QObject::tr("Windows");
-		else if (s.contains("LinShare", false) > 0)
-			fHostOS = QObject::tr("Linux");
-		else if (s.contains("OS/2", false) > 0)
-			fHostOS = QObject::tr("OS/2");
+		OSPair p;
+		for (unsigned int n = 0; (p = Systems[n]).id != NULL; n++)
+		{
+			if (s.contains(p.id, false) > 0)
+				fHostOS = qApp->translate("WUser", p.tag);
+			break;
+		}
 	}
 }

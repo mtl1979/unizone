@@ -1799,7 +1799,7 @@ WDownload::UserDisconnected(const QString &sid, const QString & /* name */)
 QString
 WDownload::FormatIndex(int32 cur, int32 num)
 {
-	return QObject::tr("%1 of %2").arg(cur+1).arg(num);
+	return tr("%1 of %2").arg(cur+1).arg(num);
 }
 
 void

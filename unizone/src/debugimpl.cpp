@@ -4,6 +4,7 @@
 #error "Only include for debug build!"
 #endif
 
+#include <qapplication.h>
 #include <qmultilineedit.h>
 #include <qthread.h>
 #include <qapp.h>
@@ -45,12 +46,12 @@ CleanupDebug()
 
 void WPopup(const QString &msg)
 {
-	(void) QMessageBox::information(NULL, QObject::tr( "Unizone (English)" ), msg, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton); 
+	(void) QMessageBox::information(NULL, qApp->translate( "Debug", "Unizone (English)" ), msg, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton); 
 }
 
 void WPopup(const char *msg)
 { 
-	WPopup(QObject::tr(msg));
+	WPopup(qApp->translate("Debug", msg));
 }
 
 void
@@ -58,8 +59,8 @@ WAssert(bool test, const char *message, int line, const char *file, const char *
 {
 	if (!test) 
 	{ 
-		QString out = QObject::tr("Send this message to postmaster@raasu.org! This message has also been dumped to 'assert.txt'." 
-			"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(QObject::tr(message)).arg(line).arg(file).arg(date); 
+		QString out = qApp->translate("Debug", "Send this message to postmaster@raasu.org! This message has also been dumped to 'assert.txt'." 
+			"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(qApp->translate("Debug", message)).arg(line).arg(file).arg(date); 
 		QFile f("assert.txt");
 		if (f.open(IO_WriteOnly)) 
 		{ 

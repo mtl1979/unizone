@@ -477,6 +477,10 @@ Version %1</translation>
         <source>OC-12</source>
         <translation>OC-12</translation>
     </message>
+    <message>
+        <source>Unknown</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>Date</name>
@@ -555,6 +559,33 @@ Version %1</translation>
     <message>
         <source>Sun</source>
         <translation>Sun</translation>
+    </message>
+    <message>
+        <source>Date:</source>
+        <translation type='unfinished'>Date:</translation>
+    </message>
+</context>
+<context>
+    <name>Debug</name>
+    <message>
+        <source>Unizone (English)</source>
+        <translation type='unfinished'>Unizone (Français)</translation>
+    </message>
+    <message>
+        <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
+
+%1
+
+Line %2
+File %3
+Date: %4</source>
+        <translation type='unfinished'>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
+
+%1
+
+Line %2
+File %3
+Date: %4</translation>
     </message>
 </context>
 <context>
@@ -737,7 +768,7 @@ Version %1</translation>
 Line %2
 File %3
 Date: %4</source>
-        <translation>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
+        <translation type='obsolete'>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
 
 %1
 
@@ -747,7 +778,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation>%1 of %2</translation>
+        <translation type='obsolete'>%1 of %2</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
@@ -875,48 +906,48 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
-        <translation>Unizone (Français)</translation>
+        <translation type='obsolete'>Unizone (Français)</translation>
     </message>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation>Date:</translation>
+        <translation type='obsolete'>Date:</translation>
     </message>
     <message>
         <source>B</source>
-        <translation>o</translation>
+        <translation type='obsolete'>o</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation>ko</translation>
+        <translation type='obsolete'>ko</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation>Mo</translation>
+        <translation type='obsolete'>Mo</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation>Go</translation>
+        <translation type='obsolete'>Go</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation>o/s</translation>
+        <translation type='obsolete'>o/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation>ko/s</translation>
+        <translation type='obsolete'>ko/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation>Mo/s</translation>
+        <translation type='obsolete'>Mo/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation>Go/s</translation>
+        <translation type='obsolete'>Go/s</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation>%1.%2.%3 build %4</translation>
+        <translation type='obsolete'>%1.%2.%3 build %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
@@ -949,11 +980,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>TB</source>
-        <translation>To</translation>
+        <translation type='obsolete'>To</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation>To/s</translation>
+        <translation type='obsolete'>To/s</translation>
     </message>
 </context>
 <context>
@@ -1000,6 +1031,13 @@ Date: %4</translation>
     <message>
         <source>%1.%2.%3 build %4</source>
         <translation>%1.%2.%3 build %4</translation>
+    </message>
+</context>
+<context>
+    <name>Version</name>
+    <message>
+        <source>%1.%2.%3 build %4</source>
+        <translation type='unfinished'>%1.%2.%3 build %4</translation>
     </message>
 </context>
 <context>
@@ -1343,6 +1381,10 @@ Date: %4</translation>
     <message>
         <source>F11</source>
         <translation>F11</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation type='unfinished'>%1 of %2</translation>
     </message>
 </context>
 <context>
@@ -2479,6 +2521,72 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>WSettings</name>
+    <message>
+        <source>Read Error</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Unable to read data from file!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Bummer</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Write Error</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t save settings!</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
+    <name>WUniListItem</name>
+    <message>
+        <source>B</source>
+        <translation type='unfinished'>o</translation>
+    </message>
+    <message>
+        <source>TB</source>
+        <translation type='unfinished'>To</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <translation type='unfinished'>Go</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation type='unfinished'>Mo</translation>
+    </message>
+    <message>
+        <source>kB</source>
+        <translation type='unfinished'>ko</translation>
+    </message>
+    <message>
+        <source>B/s</source>
+        <translation type='unfinished'>o/s</translation>
+    </message>
+    <message>
+        <source>TB/s</source>
+        <translation type='unfinished'>To/s</translation>
+    </message>
+    <message>
+        <source>GB/s</source>
+        <translation type='unfinished'>Go/s</translation>
+    </message>
+    <message>
+        <source>MB/s</source>
+        <translation type='unfinished'>Mo/s</translation>
+    </message>
+    <message>
+        <source>kB/s</source>
+        <translation type='unfinished'>ko/s</translation>
+    </message>
+</context>
+<context>
     <name>WUploadThread</name>
     <message>
         <source>User #%1</source>
@@ -2507,6 +2615,41 @@ Date: %4</translation>
     <message>
         <source>Could not start internal thread!</source>
         <translation>Could not start internal thread!</translation>
+    </message>
+</context>
+<context>
+    <name>WUser</name>
+    <message>
+        <source>Unknown</source>
+        <translation type='unfinished'>Inconnu</translation>
+    </message>
+    <message>
+        <source>Windows</source>
+        <translation type='unfinished'>Windows</translation>
+    </message>
+    <message>
+        <source>Linux</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>FreeBSD</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>BeOS</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Mac OS</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>QNX</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>OS/2</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -2678,7 +2821,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Inconnu</translation>
+        <translation type='obsolete'>Inconnu</translation>
     </message>
     <message>
         <source>Unizone (English) </source>

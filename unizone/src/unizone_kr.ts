@@ -372,6 +372,10 @@ Version %1</source>
         <source>OC-12</source>
         <translation>OC-12</translation>
     </message>
+    <message>
+        <source>Unknown</source>
+        <translation>알 수 없음</translation>
+    </message>
 </context>
 <context>
     <name>Date</name>
@@ -450,6 +454,33 @@ Version %1</source>
     <message>
         <source>Sun</source>
         <translation>Sun</translation>
+    </message>
+    <message>
+        <source>Date:</source>
+        <translation>Date:</translation>
+    </message>
+</context>
+<context>
+    <name>Debug</name>
+    <message>
+        <source>Unizone (English)</source>
+        <translation>Unizone</translation>
+    </message>
+    <message>
+        <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
+
+%1
+
+Line %2
+File %3
+Date: %4</source>
+        <translation>postmaster@raasu.org 에게 이 메세지를 보내주십시요! 이 메세지는 &apos;assert.txt&apos; 파일로 덤프되었습니다.
+
+%1
+
+%2 번째 줄
+%3 파일
+날짜: %4</translation>
     </message>
 </context>
 <context>
@@ -622,7 +653,7 @@ Version %1</source>
     <name>QObject</name>
     <message>
         <source>Unizone (English)</source>
-        <translation>Unizone</translation>
+        <translation type='obsolete'>Unizone</translation>
     </message>
     <message>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
@@ -632,7 +663,7 @@ Version %1</source>
 Line %2
 File %3
 Date: %4</source>
-        <translation>postmaster@raasu.org 에게 이 메세지를 보내주십시요! 이 메세지는 &apos;assert.txt&apos; 파일로 덤프되었습니다.
+        <translation type='obsolete'>postmaster@raasu.org 에게 이 메세지를 보내주십시요! 이 메세지는 &apos;assert.txt&apos; 파일로 덤프되었습니다.
 
 %1
 
@@ -642,7 +673,7 @@ Date: %4</source>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation>%2 중의 %1</translation>
+        <translation type='obsolete'>%2 중의 %1</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
@@ -767,43 +798,43 @@ Date: %4</source>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation>Date:</translation>
+        <translation type='obsolete'>Date:</translation>
     </message>
     <message>
         <source>B</source>
-        <translation>B</translation>
+        <translation type='obsolete'>B</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation>kB</translation>
+        <translation type='obsolete'>kB</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation>MB</translation>
+        <translation type='obsolete'>MB</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation>GB</translation>
+        <translation type='obsolete'>GB</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation>B/s</translation>
+        <translation type='obsolete'>B/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation>kB/s</translation>
+        <translation type='obsolete'>kB/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation>MB/s</translation>
+        <translation type='obsolete'>MB/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation>GB/s</translation>
+        <translation type='obsolete'>GB/s</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation>%1.%2.%3 build %4</translation>
+        <translation type='obsolete'>%1.%2.%3 build %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
@@ -840,11 +871,11 @@ Date: %4</source>
     </message>
     <message>
         <source>TB</source>
-        <translation>TB</translation>
+        <translation type='obsolete'>TB</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation>TB/s</translation>
+        <translation type='obsolete'>TB/s</translation>
     </message>
 </context>
 <context>
@@ -888,6 +919,13 @@ Date: %4</source>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
         <translation>Unizone %1 은 http://www.raasu.org/tools/windows/ 에서 받으실수 있습니다.</translation>
     </message>
+    <message>
+        <source>%1.%2.%3 build %4</source>
+        <translation>%1.%2.%3 build %4</translation>
+    </message>
+</context>
+<context>
+    <name>Version</name>
     <message>
         <source>%1.%2.%3 build %4</source>
         <translation>%1.%2.%3 build %4</translation>
@@ -1234,6 +1272,10 @@ Date: %4</source>
     <message>
         <source>F11</source>
         <translation>F11</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation>%2 중의 %1</translation>
     </message>
 </context>
 <context>
@@ -2344,6 +2386,72 @@ Date: %4</source>
     </message>
 </context>
 <context>
+    <name>WSettings</name>
+    <message>
+        <source>Read Error</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Unable to read data from file!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Bummer</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Write Error</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t save settings!</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
+    <name>WUniListItem</name>
+    <message>
+        <source>B</source>
+        <translation>B</translation>
+    </message>
+    <message>
+        <source>TB</source>
+        <translation>TB</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <translation>GB</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>MB</translation>
+    </message>
+    <message>
+        <source>kB</source>
+        <translation>kB</translation>
+    </message>
+    <message>
+        <source>B/s</source>
+        <translation>B/s</translation>
+    </message>
+    <message>
+        <source>TB/s</source>
+        <translation>TB/s</translation>
+    </message>
+    <message>
+        <source>GB/s</source>
+        <translation>GB/s</translation>
+    </message>
+    <message>
+        <source>MB/s</source>
+        <translation>MB/s</translation>
+    </message>
+    <message>
+        <source>kB/s</source>
+        <translation>kB/s</translation>
+    </message>
+</context>
+<context>
     <name>WUploadThread</name>
     <message>
         <source>User #%1</source>
@@ -2372,6 +2480,41 @@ Date: %4</source>
     <message>
         <source>Could not start internal thread!</source>
         <translation>Could not start internal thread!</translation>
+    </message>
+</context>
+<context>
+    <name>WUser</name>
+    <message>
+        <source>Unknown</source>
+        <translation>알 수 없음</translation>
+    </message>
+    <message>
+        <source>Windows</source>
+        <translation>윈도우즈</translation>
+    </message>
+    <message>
+        <source>Linux</source>
+        <translation>리눅스</translation>
+    </message>
+    <message>
+        <source>FreeBSD</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>BeOS</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Mac OS</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>QNX</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>OS/2</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -2622,7 +2765,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>알 수 없음</translation>
+        <translation type='obsolete'>알 수 없음</translation>
     </message>
     <message>
         <source>Nick collision with user #%1</source>

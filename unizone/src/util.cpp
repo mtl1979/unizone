@@ -23,6 +23,7 @@ using namespace muscle;
 #include <qregexp.h>
 #endif
 
+#include <qapplication.h>
 #include <qdns.h>
 #include <qfile.h>
 #include <qstringlist.h>
@@ -701,7 +702,7 @@ BandwidthToBytes(const QString & connection)
 			bw = Bandwidths[n++];
 			if (
 				( conn == bw.id ) || 
-				( conn == QObject::tr(bw.id) )
+				( conn == qApp->translate("Connection", bw.id) )
 				)
 			{
 				bps = bw.bw;
@@ -722,40 +723,40 @@ BandwidthToString(uint32 bps)
 	{
 	case 75:		
 	case 300:			
-		return "300 baud";
+		return qApp->translate("Connection", "300 baud");
 	case 14400: 		
-		return "14.4 kbps";
+		return qApp->translate("Connection", "14.4 kbps");
 	case 28800: 		
-		return "28.8 kbps";
+		return qApp->translate("Connection", "28.8 kbps");
 	case 33600: 		
-		return "33.6 kbps";
+		return qApp->translate("Connection", "33.6 kbps");
 	case 57600: 		
-		return "57.6 kbps";
+		return qApp->translate("Connection", "57.6 kbps");
 	case 64000: 		
-		return "ISDN-64k";
+		return qApp->translate("Connection", "ISDN-64k");
 	case 128000:		
-		return "ISDN-128k";
+		return qApp->translate("Connection", "ISDN-128k");
 	case 256000:		
-		return "DSL-256k";
+		return qApp->translate("Connection", "DSL-256k");
 	case 384000:		
-		return "DSL-384k";
+		return qApp->translate("Connection", "DSL-384k");
 	case 512000:		
-		return "DSL-512k";
+		return qApp->translate("Connection", "DSL-512k");
 	case 768000:		
-		return "Cable";
+		return qApp->translate("Connection", "Cable");
 	case 1000000:		
 	case 1024000:		
-		return "DSL-1M";
+		return qApp->translate("Connection", "DSL-1M");
 	case 1500000:		
-		return "T1";
+		return qApp->translate("Connection", "T1");
 	case 4500000:		
-		return "T3";
+		return qApp->translate("Connection", "T3");
 	case 155520000:	
-		return "OC-3";
+		return qApp->translate("Connection", "OC-3");
 	case 622080000: 
-		return "OC-12";
+		return qApp->translate("Connection", "OC-12");
 	default:			
-		return "Unknown";
+		return qApp->translate("Connection", "Unknown");
 	}
 }
 
@@ -849,7 +850,7 @@ const char * MonthNames[12] = {
 
 QString TranslateMonth(const QString & m)
 {
-	return QObject::tr(m.local8Bit());
+	return qApp->translate("Date", m.local8Bit());
 }
 
 const char * DayNames[7] = {
@@ -864,7 +865,7 @@ const char * DayNames[7] = {
 
 QString TranslateDay(const QString & d)
 {
-	return QObject::tr(d.local8Bit());
+	return qApp->translate("Date", d.local8Bit());
 }
 
 QString
@@ -934,7 +935,7 @@ GetTimeStamp()
 	{
 		_day = qDate;
 		qDate.prepend(" ");
-		qDate.prepend(QObject::tr("Date:", "Date"));
+		qDate.prepend(qApp->translate("Date", "Date:"));
 		ret = WFormat::TimeStamp(qDate);
 		ret += "<br>";
 	}

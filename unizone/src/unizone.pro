@@ -20,9 +20,11 @@ SOURCES =			aboutdlg.cpp \
 				privatewindowimpl.cpp \
 				scanprogress.cpp \
 				serverclient.cpp \
+				settings.cpp \
 				ulistview.cpp \
 				updateclient.cpp \
 				uploadthread.cpp \
+				user.cpp \
 				util.cpp \
 				version.cpp \
                 		winshare_channels.cpp \

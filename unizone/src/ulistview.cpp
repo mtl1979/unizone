@@ -7,6 +7,8 @@
 #include "util.h"
 #include "wstring.h"
 
+#include <qapplication.h>
+
 WUniListItem::WUniListItem(
 						   QListView * parent, 
 						   QString a, QString b, QString c, QString d, QString e, 
@@ -338,7 +340,7 @@ WUniListItem::text(int c) const
 		{
 		result = fKey[c];
 		n = result.toDouble(&ok);
-		postFix = QObject::tr( "B" );
+		postFix = qApp->translate( "WUniListItem", "B" );
 		if (ok)
 		{
 			if (n >= 1024.0f)	// > 1 kB?
@@ -356,16 +358,16 @@ WUniListItem::text(int c) const
 						if (n >= 1024.0f) // > 1 TB?
 						{
 							n /= 1024.f;
-							postFix = QObject::tr( "TB" );
+							postFix = qApp->translate( "WUniListItem", "TB" );
 						}
 						else
-							postFix = QObject::tr( "GB" );
+							postFix = qApp->translate( "WUniListItem", "GB" );
 					}
 					else
-						postFix = QObject::tr( "MB" );
+						postFix = qApp->translate( "WUniListItem", "MB" );
 				}
 				else
-					postFix = QObject::tr( "kB" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
+					postFix = qApp->translate( "WUniListItem", "kB" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
 
 			}
 
@@ -393,7 +395,7 @@ WUniListItem::text(int c) const
 		{
 		result = QListViewItem::text(c);
 		n = result.toDouble(&ok);
-		postFix = QObject::tr( "B/s" );
+		postFix = qApp->translate( "WUniListItem", "B/s" );
 		if (ok)
 		{
 			if (n >= 1024.0f)	// > 1 kB?
@@ -411,16 +413,16 @@ WUniListItem::text(int c) const
 						if (n >= 1024.0f) // > 1 TB?
 						{
 							n /= 1024.0f;
-							postFix = QObject::tr( "TB/s" );
+							postFix = qApp->translate( "WUniListItem", "TB/s" );
 						}
 						else
-							postFix = QObject::tr( "GB/s" );
+							postFix = qApp->translate( "WUniListItem", "GB/s" );
 					}
 					else
-					postFix = QObject::tr( "MB/s" );
+					postFix = qApp->translate( "WUniListItem", "MB/s" );
 				}
 				else
-					postFix = QObject::tr( "kB/s" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
+					postFix = qApp->translate( "WUniListItem", "kB/s" );	// we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
 
 			}
 		}

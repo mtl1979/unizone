@@ -229,7 +229,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 		if (strcmp(osname, "Unknown") != 0)
 		{
 			out += " ";
-			out += tr("<b>THE</b> MUSCLE client for %1!").arg(osname);
+			out += tr("<b>THE</b> MUSCLE client for %1!").arg(qApp->translate("WUser", osname));
 		}		
 		PrintSystem(out);
 		// <postmaster@raasu.org> 20030225

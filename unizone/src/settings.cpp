@@ -3,6 +3,7 @@
 #include "global.h"
 #include "iogateway/MessageIOGateway.h"
 
+#include <qapplication.h>
 #include <qfile.h>
 #include <qmessagebox.h>
 
@@ -452,7 +453,7 @@ WSettings::Load()
 		{
 			if (file.readBlock((char *)buffer, file.size()) < (long) file.size())
 			{
-				QMessageBox::warning(NULL, QObject::tr( "Read Error" ), QObject::tr( "Unable to read data from file!" ), QObject::tr( "Bummer" ));
+				QMessageBox::warning(NULL, qApp->translate( "WSettings", "Read Error" ), qApp->translate( "WSettings", "Unable to read data from file!" ), qApp->translate( "WSettings", "Bummer" ));
 			}
 			else
 			{
@@ -486,7 +487,7 @@ WSettings::Save()
 	}
 	else
 	{
-		QMessageBox::warning(NULL, QObject::tr( "Write Error" ), QObject::tr( "Couldn't save settings!" ), QObject::tr( "Bummer" ));
+		QMessageBox::warning(NULL, qApp->translate( "WSettings", "Write Error" ), qApp->translate( "WSettings", "Couldn't save settings!" ), qApp->translate( "WSettings", "Bummer" ));
 	}
 	return ret;
 }
@@ -605,8 +606,10 @@ WSettings::SetConnection(const QString & str)
 QString
 WSettings::GetConnection()
 {
-	String str = "?";
+	String str;
 	fSet()->FindString(CONNECTION, str);
+	if (str.Length() == 0)
+		return qApp->translate("Connection", "Unknown");
 	return QString::fromUtf8(str.Cstr());
 }
 

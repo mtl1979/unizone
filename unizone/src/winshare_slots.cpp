@@ -116,12 +116,12 @@ WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QS
 
 		// <postmaster@raasu.org> 20030622
 		QString nameformat;
-		if (old != "?" && !old.isEmpty())
+		if (old != qApp->translate("WUser", "Unknown") && !old.isEmpty())
 		{
 			// <postmaster@raasu.org> 20021112, 20030622
 			nameformat = WFormat::UserNameChanged(sid, FixStringStr(old), FixStringStr(newname));  
 		}
-		else if (newname == "?" || newname.isEmpty())
+		else if (newname == qApp->translate("WUser", "Unknown") || newname.isEmpty())
 		{
 			// <postmaster@raasu.org> 20030819
 			nameformat = WFormat::UserNameChangedNoNew(sid);  
@@ -192,7 +192,7 @@ WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QSt
 		if (status.isEmpty())
 			return;
 
-		if ((n == "?") || (n.isEmpty())) // Invalid user name?
+		if ((n == qApp->translate("WUser", "Unknown")) || (n.isEmpty())) // Invalid user name?
 		{
 			// <postmaster@raasu.org> 20030214
 			nameformat = WFormat::UserStatusChanged2(id, FixStringStr(status)); 

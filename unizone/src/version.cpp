@@ -1,6 +1,6 @@
 #include "version.h"
 
-#include <qobject.h>
+#include <qapplication.h>
 
 const char uzYears[] = "2002-2005";
 const int kMajor = 1;
@@ -12,7 +12,7 @@ const int kBuild = 7;
 QString
 WinShareVersionString()
 {
-	QString version = QObject::tr("%1.%2.%3 build %4").arg(kMajor).arg(kMinor).arg(kPatch).arg(kBuild);
+	QString version = qApp->translate("Version", "%1.%2.%3 build %4").arg(kMajor).arg(kMinor).arg(kPatch).arg(kBuild);
 	return version;
 }
 

@@ -1964,6 +1964,15 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		{
 			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
 			QString userID;
+
+			int32 fcount = 0;
+
+			{
+				int32 f;
+
+				if (msg()->FindInt32("fail_count", &f) == B_OK)
+					fcount = f;
+			}
 			
 			{
 				const char * session;		// from user (their session id)
@@ -1974,10 +1983,18 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			
 			// get user info first
 			WUserRef user = fNetClient->FindUser(userID);
+
+			if (user() == NULL)
+			{
+				fcount++;
+				msg()->ReplaceInt32(true, "fail_count", fcount);
+				if (fcount == 15)
+					user = fNetClient->CreateUser(userID);
+			}
 					
 			if (user())
 			{
-				QString userName = tr("Unknown");
+				// QString userName = tr("Unknown");
 
 				{
 					const char * strTemp;
@@ -2226,7 +2243,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					
 						QString version = tr("Unizone (English)");
 						version += " (";
-						version += GetOSName();
+						version += qApp->translate("WUser", GetOSName());
 						version += ") ";
 						version += WinShareVersionString();
 					

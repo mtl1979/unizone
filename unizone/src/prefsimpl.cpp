@@ -107,7 +107,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fBlockDisconnected->setChecked(gWin->fSettings->GetBlockDisconnected());
 	fAutoClear->setChecked(gWin->fSettings->GetAutoClear());
 	fMultiColor->setChecked(gWin->fSettings->GetMultiColor());
-	if (gWin->fSettings->GetConnection() != "?")
+	if (gWin->fSettings->GetConnection() != qApp->translate("Connection", "Unknown"))
 	{
 		for (int i = 0; i < fBandwidth->count(); i++)
 		{
