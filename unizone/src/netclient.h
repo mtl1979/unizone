@@ -164,7 +164,6 @@ private:
 	QObject * fOwner;
 	WUserMap fUsers;		// a list of users
 	MessageRef fChannels;	// channel database
-	// QMessageTransceiverThread *qmtt;
 	
 	void HandleBeRemoveMessage(String nodePath);
 	void HandleBeAddMessage(String nodePath, MessageRef ref);

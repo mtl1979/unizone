@@ -43,7 +43,6 @@ protected:
 	void SessionDetached(const String & sessionID);
 
 private:
-//	QMessageTransceiverThread * qmtt;
 
 	bool CheckVersion(const char *, QString * = NULL);
 };

@@ -160,8 +160,6 @@ protected:
 	QTimer * CTimer;					// Connect timer
 	QTimer * fBlockTimer;				// Blocked timer
 
-	// QMessageTransceiverThread * qmtt;
-
 private:
 	Queue<MessageRef> fUploads;
 	Queue<QString> fNames;

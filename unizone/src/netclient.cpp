@@ -29,36 +29,6 @@ NetClient::NetClient(QObject * owner)
 	fChannelLock.lock();
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
-
-	// qmtt = new QMessageTransceiverThread(this);
-	// CHECK_PTR(qmtt);
-
-	/*
-	connect(qmtt, SIGNAL(BeginMessageBatch()),
-			this, SLOT(BeginMessageBatch()));
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
-			this, SLOT(MessageReceived(MessageRef, const String &)));
-	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
-			this, SLOT(SessionAccepted(const String &, uint16)));
-	connect(qmtt, SIGNAL(SessionAttached(const String &)),
-			this, SLOT(SessionAttached(const String &)));
-	connect(qmtt, SIGNAL(SessionConnected(const String &)),
-			this, SLOT(SessionConnected(const String &)));
-	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
-			this, SLOT(SessionDisconnected(const String &)));
-	connect(qmtt, SIGNAL(SessionDetached(const String &)),
-			this, SLOT(SessionDetached(const String &)));
-	connect(qmtt, SIGNAL(FactoryAttached(uint16)),
-			this, SLOT(FactoryAttached(uint16)));
-	connect(qmtt, SIGNAL(FactoryDetached(uint16)),
-			this, SLOT(FactoryDetached(uint16)));
-	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
-			this, SLOT(OutputQueuesDrained(MessageRef)));
-	connect(qmtt, SIGNAL(ServerExited()),
-			this, SLOT(ServerExited()));
-	connect(qmtt, SIGNAL(EndMessageBatch()),
-			this, SLOT(EndMessageBatch()));
-	*/
 }
 
 NetClient::~NetClient()

@@ -19,9 +19,6 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 {
 	setName( "WDownloadThread" );
 
-	// qmtt = new QMessageTransceiverThread(this);
-	// CHECK_PTR(qmtt);
-
 	// Default status
 
 	if (!fShutdownFlag)					// Force use of Shutdown Flag
@@ -60,18 +57,6 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	CHECK_PTR(fBlockTimer);
 
 	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
-	/*
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
-			this, SLOT(MessageReceived(MessageRef, const String &)));
-	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
-			this, SLOT(SessionAccepted(const String &, uint16)));
-	connect(qmtt, SIGNAL(SessionConnected(const String &)),
-			this, SLOT(SessionConnected(const String &)));
-	connect(qmtt, SIGNAL(ServerExited()),
-			this, SLOT(ServerExited()));
-	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
-			this, SLOT(SessionDisconnected(const String &)));
-	*/
 }
 
 WDownloadThread::~WDownloadThread()
@@ -737,7 +722,6 @@ WDownloadThread::SessionConnected(const String &sessionID)
 				{
 					if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
 					{
-						// qmtt->ShutdownInternalThread();
 						break;
 					}
 					else	// ERROR?
@@ -804,7 +788,7 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 			{
 				if (IsLastFile())
 				{
-					fFinished = true;
+					// fFinished = true;
 					dis = GetMessageFromPool(WDownloadEvent::FileDone);
 					if (dis())
 					{
@@ -848,6 +832,7 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 		}
 		fDownloading = false;
 		fDisconnected = true;
+		fFinished = true;
 	}
 }
 

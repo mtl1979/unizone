@@ -20,8 +20,6 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fFile = NULL; 
 	fFileUl = QString::null;
 	fRemoteSessionID = QString::null;
-	// qmtt = new QMessageTransceiverThread(this);
-	// CHECK_PTR(qmtt);
 
 	// Default status
 
@@ -63,22 +61,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	CHECK_PTR(fBlockTimer);
 
 	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
-/*
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
-			this, SLOT(MessageReceived(MessageRef, const String &)));
-	connect(qmtt, SIGNAL(SessionAttached(const String &)),
-			this, SLOT(SessionAttached(const String &)));
-	connect(qmtt, SIGNAL(SessionDetached(const String &)),
-			this, SLOT(SessionDetached(const String &)));
-	connect(qmtt, SIGNAL(SessionConnected(const String &)),
-			this, SLOT(SessionConnected(const String &)));
-	connect(qmtt, SIGNAL(ServerExited()),
-			this, SLOT(ServerExited()));
-	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
-			this, SLOT(SessionDisconnected(const String &)));
-	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
-			this, SLOT(OutputQueuesDrained(MessageRef)));
-*/
+
 	PRINT("WUploadThread ctor OK\n");
 }
 
@@ -218,7 +201,6 @@ WUploadThread::SetLocallyQueued(bool b)
 
 	if (!fConnecting && !IsInternalThreadRunning())
 	{
-		fFinished = true;
 		Reset();
 	}
 
@@ -265,8 +247,6 @@ WUploadThread::SetLocallyQueued(bool b)
 		}
 		else /* if (fActive) */		// !fFinished
 		{
-			// fActive = false;
-			fFinished = true;
 			Reset();
 			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 			if (fail())
@@ -392,6 +372,7 @@ WUploadThread::SessionDisconnected(const String &sessionID)
 
 	*fShutdownFlag = true;
 	fDisconnected = true;
+	fFinished = true;
 
 	if (fActive || fConnecting) // Do it only once...
 	{
@@ -496,9 +477,7 @@ WUploadThread::OutputQueuesDrained(MessageRef msg)
 	if (fWaitingForUploadToFinish)
 	{
 		PRINT("\tfWaitingForUploadToFinish\n");
-		// qmtt->Reset();
-		fFinished = true;
-		// fActive = false;
+		SetFinished(true);
 		fWaitingForUploadToFinish = false;
 
 		PRINT("\t\tSending message\n");
@@ -603,7 +582,7 @@ WUploadThread::DoUpload()
 	PRINT("WUploadThread::DoUpload\n");
 	if (fShutdownFlag && *fShutdownFlag)	// Do we need to interrupt?
 	{
-		fFinished = true;
+		SetFinished(true);
 		MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 		if (fail())
 		{
@@ -617,14 +596,13 @@ WUploadThread::DoUpload()
 
 	if (!IsInternalThreadRunning())
 	{
-		fFinished = true;
+		SetFinished(true);
 		MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
 		if (fail())
 		{
 			fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
 			SendReply(fail);
 		}
-//		fActive = false;
 		return;
 	}
 
@@ -830,9 +808,8 @@ WUploadThread::DoUpload()
 			{
 				PRINT("No more files!\n");
 				fWaitingForUploadToFinish = true;
-				// fActive = false;
-				fFinished = true;
-				fLocallyQueued = false;
+				SetFinished(true);
+				SetLocallyQueued(false);
 				MessageRef drain(GetMessageFromPool());
 				if (drain())
 					RequestOutputQueuesDrainedNotification(drain);
@@ -897,7 +874,6 @@ WUploadThread::timerEvent(QTimerEvent *e)
 	}
 	else
 	{
-		fFinished = true;
 		Reset();
 	}
 }
@@ -1060,7 +1036,6 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 			if (fUploads.GetNumItems() == 0)
 			{
 				PRINT("WUploadThread: No Files!!!\n");
-				fFinished = true;
 				Reset();
 			}
 			else
@@ -1142,7 +1117,6 @@ WUploadThread::Reset()
 {
 	PRINT("WUploadThread::Reset()\n");
 	SetFinished(true);
-	// SetLocallyQueued(false);
 	QMessageTransceiverThread::Reset();
 	PRINT("WUploadThread::Reset() OK\n");
 }

@@ -165,8 +165,6 @@ protected:
 	QTimer * CTimer;					// Connect timer
 	QTimer * fBlockTimer;				// Blocked timer
 
-	// QMessageTransceiverThread * qmtt;
-
 private:
 	QString UniqueName(QString file, int index); // build up unique name using 'file' and 'index'
 	String _sessionID;

@@ -31,9 +31,6 @@ protected:
 
 	void SessionConnected(const String & sessionID);
 	void SessionDetached(const String & sessionID);
-
-private:
-//	QMessageTransceiverThread * qmtt;
 };
 
 #endif

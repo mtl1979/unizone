@@ -12,17 +12,6 @@ ServerClient::ServerClient(QObject *owner)
 : QMessageTransceiverThread(owner)
 {
 	setName( "ServerClient" );
-	/*
-	qmtt = new QMessageTransceiverThread(this);
-	CHECK_PTR(qmtt);
-
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
-			this, SLOT(MessageReceived(MessageRef, const String &)));
-	connect(qmtt, SIGNAL(SessionConnected(const String &)),
-			this, SLOT(SessionConnected(const String &)));
-	connect(qmtt, SIGNAL(SessionDetached(const String &)),
-			this, SLOT(SessionDetached(const String &)));
-	*/
 }
 
 ServerClient::~ServerClient()
