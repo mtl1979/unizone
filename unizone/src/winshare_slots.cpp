@@ -543,6 +543,7 @@ WinShareWindow::CheckResumes(const QString &user)
 
 	Queue<QString> fFiles;
 	Queue<QString> fLFiles;
+	QString out;
 	
 	WResumeIter it = fResumeMap.begin();
 	while (it != fResumeMap.end())
@@ -556,7 +557,7 @@ WinShareWindow::CheckResumes(const QString &user)
 
 			if (fSettings->GetDownloads())
 			{
-				PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).second.fRemoteName).arg(user));
+				out += "\n" + tr("Trying to resume file %1 from user %2").arg((*it).second.fRemoteName).arg(user);
 			}
 			fFiles.AddTail((*it).second.fRemoteName);
 			fLFiles.AddTail((*it).second.fLocalName);
@@ -569,6 +570,8 @@ WinShareWindow::CheckResumes(const QString &user)
 	rLock.unlock();
 	if (fFiles.GetNumItems() > 0)
 	{
+		FixString(out);
+		PrintSystem(out);
 		// Make sure File Transfers window is open
 
 		OpenDownload(); 

@@ -43,7 +43,6 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fRemotelyQueued = false;
 	fDisconnected = false;
 	fConnecting = true;
-	fPackets = 0;
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fStartTime = 0;
@@ -221,6 +220,8 @@ WUploadThread::SetLocallyQueued(bool b)
 	else
 	{
 		fLastData.restart();
+		InitTransferETA();
+		InitTransferRate();
 
 		if (fSavedFileList())
 		{
@@ -287,6 +288,8 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 	{
 		fTimeLeft = 0;
 		fLastData.restart();
+		InitTransferETA();
+		InitTransferRate();
 		if (fBlockTimer->isActive())
 		{
 			fBlockTimer->stop();
@@ -378,6 +381,13 @@ WUploadThread::SessionDisconnected(const String &sessionID)
 
 	*fShutdownFlag = true;
 
+	if (fFile)
+	{
+		fFile->close();
+		delete fFile; 
+		fFile = NULL;
+	}
+
 	fDisconnected = true;
 	fFinished = true;
 	fLocallyQueued = false;
@@ -387,13 +397,6 @@ WUploadThread::SessionDisconnected(const String &sessionID)
 		fActive = false;
 		fConnecting = false;
 		fBlocked = false;
-
-		if (fFile)
-		{
-			fFile->close();
-			delete fFile; 
-			fFile = NULL;
-		}
 		
 		MessageRef dis(GetMessageFromPool(WUploadEvent::Disconnected));
 		if (dis())
@@ -517,7 +520,7 @@ WUploadThread::OutputQueuesDrained(MessageRef msg)
 	}
 	else if (!fFinished)
 	{
-		DoUpload();
+		SignalUpload();
 	}
 }
 
@@ -724,9 +727,16 @@ WUploadThread::DoUpload()
 						{
 							update()->AddBool("done", true);	// file done!
 							update()->AddString("file", (const char *) fFileUl.utf8());
+
+							if (gWin->fSettings->GetUploads())
+							{
+							gWin->PrintSystem( tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+							}
 						}
 						SendReply(update);
 					}
+										
+
 					return;
 				}
 				
@@ -737,7 +747,7 @@ WUploadThread::DoUpload()
 					delete fFile; 
 					fFile = NULL;
 					fCurrentOffset = fFileSize = 0;
-					DoUpload();
+					SignalUpload();
 					return;
 				}
 			}
@@ -800,6 +810,10 @@ WUploadThread::DoUpload()
 
 				fCurFile++;
 
+				// Reset statistics
+				InitTransferRate();
+				InitTransferETA();
+
 				MessageRef mref(GetMessageFromPool(WUploadEvent::FileStarted));
 				if (mref())
 				{
@@ -810,8 +824,14 @@ WUploadThread::DoUpload()
 					SendReply(mref);
 				}
 
+				if (gWin->fSettings->GetUploads())
+				{
+					gWin->PrintSystem( tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+				}
+
 				// nested call
-				DoUpload();
+				SignalUpload();
+				return;
 			}
 			else
 			{
@@ -1075,7 +1095,7 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 		{
 			if (filesize < gWin->fSettings->GetMinQueuedSize() || !IsLocallyQueued())
 			{
-				DoUpload();
+				SignalUpload();
 				return;
 			}
 			
@@ -1120,6 +1140,7 @@ WUploadThread::InitTransferRate()
 	}
 
 	fRateCount = 0;
+	fPackets = 0;
 }
 
 void

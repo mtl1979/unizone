@@ -132,6 +132,7 @@ protected:
 	bool fFirewalled;
 	bool fPartial;
 	int32 fNumFiles, fCurFile;
+	uint32 fIdles;
 
 	void SendReply(MessageRef &m);
 	void timerEvent(QTimerEvent *);
@@ -145,6 +146,7 @@ protected:
 	bool fActive;
 	bool fBlocked;
 	bool fFinished;
+	bool fNegotiating;
 	volatile bool fDisconnected;
 	double fRate[MAX_RATE_COUNT];	// last 20 rates
 	int fRateCount;					// amount we have, 20 max

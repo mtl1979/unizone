@@ -1216,7 +1216,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 is downloading %2.</source>
-        <translation>%1 lataa tiedostoa %2.</translation>
+        <translation type='obsolete'>%1 lataa tiedostoa %2.</translation>
     </message>
     <message>
         <source>Error: %1</source>
@@ -1228,7 +1228,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Finished downloading %2 from %1.</source>
-        <translation>Tiedoston %2 lataaminen käyttäjältä %1 on valmis.</translation>
+        <translation type='obsolete'>Tiedoston %2 lataaminen käyttäjältä %1 on valmis.</translation>
     </message>
     <message>
         <source>Uploading: [%1%]</source>
@@ -1236,7 +1236,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
-        <translation>%1 on saanut valmiiksi tiedoston %2 lataamisen.</translation>
+        <translation type='obsolete'>%1 on saanut valmiiksi tiedoston %2 lataamisen.</translation>
     </message>
     <message>
         <source>Locally Queued.</source>
@@ -1312,7 +1312,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
-        <translation>Ladataan tiedostoa %1 käyttäjältä %2.</translation>
+        <translation type='obsolete'>Ladataan tiedostoa %1 käyttäjältä %2.</translation>
     </message>
     <message>
         <source>Elapsed</source>
@@ -1356,6 +1356,14 @@ Päiväys: %4</translation>
     <message>
         <source>Connection timed out!</source>
         <translation>Yhteyden aikakatkaisu!</translation>
+    </message>
+    <message>
+        <source>Downloading %1 from %2.</source>
+        <translation>Ladataan tiedostoa %1 käyttäjältä %2.</translation>
+    </message>
+    <message>
+        <source>Finished downloading %2 from %1.</source>
+        <translation>Tiedoston %2 lataaminen käyttäjältä %1 on valmis.</translation>
     </message>
 </context>
 <context>
@@ -2227,6 +2235,14 @@ Päiväys: %4</translation>
     <message>
         <source>Connection timed out!</source>
         <translation>Yhteyden aikakatkaisu!</translation>
+    </message>
+    <message>
+        <source>%1 has finished downloading %2.</source>
+        <translation>%1 on saanut valmiiksi tiedoston %2 lataamisen.</translation>
+    </message>
+    <message>
+        <source>%1 is downloading %2.</source>
+        <translation>%1 lataa tiedostoa %2.</translation>
     </message>
 </context>
 <context>

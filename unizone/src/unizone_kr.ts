@@ -1027,7 +1027,7 @@ Date: %4</source>
     </message>
     <message>
         <source>%1 is downloading %2.</source>
-        <translation>%1 은 %2 다운로드 중입니다.</translation>
+        <translation type='obsolete'>%1 은 %2 다운로드 중입니다.</translation>
     </message>
     <message>
         <source>Error: %1</source>
@@ -1047,7 +1047,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Finished downloading %2 from %1.</source>
-        <translation>%1 로부터 %2 다운로드 완료.</translation>
+        <translation type='obsolete'>%1 로부터 %2 다운로드 완료.</translation>
     </message>
     <message>
         <source>Uploading: [%1%]</source>
@@ -1055,7 +1055,7 @@ Date: %4</source>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
-        <translation>%1 가 %2 다운로드 완료하였습니다.</translation>
+        <translation type='obsolete'>%1 가 %2 다운로드 완료하였습니다.</translation>
     </message>
     <message>
         <source>%1 (%2)</source>
@@ -1075,7 +1075,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
@@ -1115,6 +1115,14 @@ Date: %4</source>
     <message>
         <source>Connection timed out!</source>
         <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Downloading %1 from %2.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Finished downloading %2 from %1.</source>
+        <translation type='unfinished'>%1 로부터 %2 다운로드 완료.</translation>
     </message>
 </context>
 <context>
@@ -1912,6 +1920,14 @@ Date: %4</source>
     <message>
         <source>Connection timed out!</source>
         <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 has finished downloading %2.</source>
+        <translation type='unfinished'>%1 가 %2 다운로드 완료하였습니다.</translation>
+    </message>
+    <message>
+        <source>%1 is downloading %2.</source>
+        <translation type='unfinished'>%1 은 %2 다운로드 중입니다.</translation>
     </message>
 </context>
 <context>

@@ -40,11 +40,12 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fLocallyQueued = false;
 	fRemotelyQueued = false;
 	fDisconnected = false;
-	fPackets = 0;
+	fNegotiating = false;
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fStartTime = 0;
 	fPacket = 8;
+	fIdles = 0;
 	InitTransferRate();
 	InitTransferETA();
 
@@ -346,6 +347,8 @@ WDownloadThread::SendReply(MessageRef &m)
 void 
 WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 {
+	fIdles = 0;
+
 	switch (msg()->what)
 	{
 		case WDownload::TransferNotifyQueued:
@@ -378,6 +381,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 					
 		case WDownload::TransferFileHeader:
 		{
+			fNegotiating = false;
 			if (IsRemotelyQueued())
 				SetRemotelyQueued(false);
 						
@@ -511,6 +515,10 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 					{
 						if (fCurrentOffset != fFileSize)
 						{
+							// Reset statistics
+							InitTransferETA();
+							InitTransferRate();
+
 							status = GetMessageFromPool(WDownloadEvent::FileStarted);
 							if (status())
 							{
@@ -520,10 +528,17 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 								status()->AddString("user", (const char *) fFromSession.utf8());
 								SendReply(status);
 							}
+
+							if (gWin->fSettings->GetDownloads())
+							{
+								gWin->PrintSystem( tr("Downloading %1 from %2.").arg( fFileDl[fCurFile] ).arg( GetRemoteUser() ) );
+							}
+
 							fDownloading = true;
 						}
 						else
 						{
+							fFile->close();
 							delete fFile;
 							fFile = NULL;
 
@@ -615,6 +630,12 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 									update()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
 								}
 							}
+
+							if (gWin->fSettings->GetDownloads())
+							{
+								gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg( GetRemoteUser() ).arg( fFileDl[fCurFile] ) );
+							}
+
 							fFile->close();
 							delete fFile; 
 							fFile = NULL;
@@ -640,6 +661,11 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 							error()->AddString("why", QT_TR_NOOP( "Couldn't write file data!" ));
 							SendReply(error);
 						}
+
+						fFile->close();
+						delete fFile; 
+						fFile = NULL;
+							
 						Reset();
 						NextFile();
 					}
@@ -666,6 +692,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 	timerID = startTimer(10000);
 
 	_sessionID = sessionID;
+	fNegotiating = true;
 
 	MessageRef replyMsg(GetMessageFromPool(WDownloadEvent::Connected));
 	if (replyMsg())
@@ -764,15 +791,24 @@ WDownloadThread::ServerExited()
 void
 WDownloadThread::SessionDisconnected(const String &sessionID)
 {
+	*fShutdownFlag = true;
+
+	if (fFile)
+	{
+		fFile->close();
+		delete fFile; 
+		fFile = NULL;
+	}
+
+	if (timerID != 0) 
+	{
+		killTimer(timerID);
+		timerID = 0;
+	}
+		
 	if (fActive) // Do it only once...
 	{
 		fActive = false;
-		
-		if (timerID != 0) 
-		{
-			killTimer(timerID);
-			timerID = 0;
-		}
 		
 		MessageRef dis;
 		if (fDownloading)
@@ -826,12 +862,6 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 			}
 		}
 		
-		if (fFile != NULL)
-		{
-			fFile->close();
-			delete fFile; 
-			fFile = NULL;
-		}
 		fDownloading = false;
 		fDisconnected = true;
 		if (!fManuallyQueued)
@@ -913,6 +943,8 @@ WDownloadThread::SetBlocked(bool b, int64 timeLeft)
 	{
 		fTimeLeft = 0;
 		fLastData.restart();
+		InitTransferETA();
+		InitTransferRate();
 	}
 }
 
@@ -957,17 +989,34 @@ WDownloadThread::timerEvent(QTimerEvent *e)
 {
 	if (IsInternalThreadRunning())
 	{
-		MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
-		if ( nop() )
+		if (fRemotelyQueued || fBlocked || fNegotiating)	
 		{
-			SendMessageToSessions(nop);
+			// Remotely queued or blocked or hashing transfer don't need idle check restricting
+			MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
+			if ( nop() )
+			{
+				SendMessageToSessions(nop);
+			}
+			return;
+		}
+		else if (fIdles < 4) 		
+		{
+			// 1 minute maximum
+			fIdles++;
+			if (fIdles < 2)
+			{
+				// 30 seconds to avoid postponing OutputQueuesDrained() message too far
+				MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
+				if ( nop() )
+				{
+					SendMessageToSessions(nop);
+				}
+			}
+			return;
 		}
 	}
-	else
-	{
-		// SetFinished(true);
-		Reset();
-	}
+	// fall through
+	ConnectTimer();
 }
 
 bool
@@ -983,6 +1032,8 @@ WDownloadThread::SetRemotelyQueued(bool b)
 	if (!b)
 	{
 		fLastData.restart();
+		InitTransferETA();
+		InitTransferRate();
 	}
 }
 
@@ -995,6 +1046,7 @@ WDownloadThread::InitTransferRate()
 	}
 
 	fRateCount = 0;
+	fPackets = 0;
 }
 
 void
@@ -1014,7 +1066,6 @@ WDownloadThread::Reset()
 	PRINT("WDownloadThread::Reset()\n");
 	if (!fManuallyQueued)
 		SetFinished(true);
-	// SetLocallyQueued(false);
 	QMessageTransceiverThread::Reset();
 	PRINT("WDownloadThread::Reset() OK\n");
 }
@@ -1030,6 +1081,8 @@ WDownloadThread::SetLocallyQueued(bool b)
 	else
 	{
 		fLastData.restart();
+		InitTransferETA();
+		InitTransferRate();
 	}
 }
 

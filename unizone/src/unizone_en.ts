@@ -1124,7 +1124,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 is downloading %2.</source>
-        <translation>%1 is downloading %2.</translation>
+        <translation type='obsolete'>%1 is downloading %2.</translation>
     </message>
     <message>
         <source>Error: %1</source>
@@ -1136,7 +1136,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Finished downloading %2 from %1.</source>
-        <translation>Finished downloading %2 from %1.</translation>
+        <translation type='obsolete'>Finished downloading %2 from %1.</translation>
     </message>
     <message>
         <source>Uploading: [%1%]</source>
@@ -1144,7 +1144,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
-        <translation>%1 has finished downloading %2.</translation>
+        <translation type='obsolete'>%1 has finished downloading %2.</translation>
     </message>
     <message>
         <source>Locally Queued.</source>
@@ -1220,7 +1220,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
-        <translation>Downloading %1 from %2.</translation>
+        <translation type='obsolete'>Downloading %1 from %2.</translation>
     </message>
     <message>
         <source>Elapsed</source>
@@ -1264,6 +1264,14 @@ Date: %4</translation>
     <message>
         <source>Connection timed out!</source>
         <translation>Connection timed out!</translation>
+    </message>
+    <message>
+        <source>Downloading %1 from %2.</source>
+        <translation type='unfinished'>Downloading %1 from %2.</translation>
+    </message>
+    <message>
+        <source>Finished downloading %2 from %1.</source>
+        <translation type='unfinished'>Finished downloading %2 from %1.</translation>
     </message>
 </context>
 <context>
@@ -2135,6 +2143,14 @@ Date: %4</translation>
     <message>
         <source>Connection timed out!</source>
         <translation>Connection timed out!</translation>
+    </message>
+    <message>
+        <source>%1 has finished downloading %2.</source>
+        <translation type='unfinished'>%1 has finished downloading %2.</translation>
+    </message>
+    <message>
+        <source>%1 is downloading %2.</source>
+        <translation type='unfinished'>%1 is downloading %2.</translation>
     </message>
 </context>
 <context>
