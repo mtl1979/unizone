@@ -112,7 +112,11 @@ UFileInfo::InitModificationTime()
 		int ret = stat(fname, &fst);
 		if (ret == 0)
 		{
+#ifdef __USE_MISC
 			fModificationTime = fst.st_mtim.tv_sec;
+#else
+			fModificationTime = fst.st_mtime;
+#endif
 		}
 		else
 		{
