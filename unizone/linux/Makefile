@@ -1,4 +1,9 @@
-GCCOPTFLAGS = -I../src/muscle/message -I../src/muscle/besupport -I../src/muscle/iogateway -I../src/muscle/reflector -I../src/muscle/regex -I../src/muscle/util -I../src/muscle/syslog -I../src/muscle/system -I../src/muscle -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING -I$(QTDIR)/include -O2
+GCCOPTFLAGS = -I../src/muscle/message -I../src/muscle/besupport \
+	-I../src/muscle/iogateway -I../src/muscle/reflector \
+	-I../src/muscle/regex -I../src/muscle/util \
+	-I../src/muscle/syslog -I../src/muscle/system \
+	-I../src/muscle -DMUSCLE_USE_PTHREADS -DQT_THREAD_SUPPORT \
+	-DMUSCLE_ENABLE_ZLIB_ENCODING -I$(QTDIR)/include -O2
 LFLAGS =
 LIBS =
 EXECUTABLES =
