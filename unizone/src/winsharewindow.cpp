@@ -228,7 +228,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for QNX Neutrino!"));
 #endif
 		// <postmaster@raasu.org> 20030225
-		PrintSystem(tr("Copyright (C) 2002-2003 Mika T. Lindqvist."));
+		PrintSystem(tr("Copyright (C) %1 Mika T. Lindqvist.").arg(GetUnizoneYears()));
 		PrintSystem(tr("Original idea by Vitaliy Mikitchenko."));
 		PrintSystem(tr("Released to public use under LGPL."));
 		PrintSystem(tr("Type /help for a command reference."));

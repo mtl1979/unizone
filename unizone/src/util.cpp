@@ -564,13 +564,13 @@ IsURL(const QString & url)
 
 	// Add default protocol prefixes
 
-	if (u.startsWith("www."))		
+	if (u.startsWith("www.") && !u.startsWith("www.."))		
 		u = u.prepend("http://");
-	if (u.startsWith("ftp."))		
+	if (u.startsWith("ftp.") && !u.startsWith("ftp.."))		
 		u = u.prepend("ftp://");
-	if (u.startsWith("beshare.") && u.length() > 12)	
+	if ((u.startsWith("beshare.") && !u.startsWith("beshare..")) && u.length() > 12)	
 		u = u.prepend("server://");
-	if (u.startsWith("irc."))		
+	if (u.startsWith("irc.") && !u.startsWith("irc.."))		
 		u = u.prepend("irc://");
 
 	if (u.length() > 9)

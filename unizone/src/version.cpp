@@ -2,7 +2,7 @@
 
 #include <qobject.h>
 
-const char uzYears[] = "2003-2004";
+const char uzYears[] = "2002-2004";
 const int kMajor = 1;
 const int kMinor = 2;
 const int kPatch = 2;
