@@ -10,7 +10,7 @@
 #include "util/Queue.h"
 #include "util/RefCount.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This is an interface for an object that knows how to create new
  *  AbstractReflectSession objects when needed.  It is used by the
@@ -326,6 +326,6 @@ public:
 };
 #endif
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

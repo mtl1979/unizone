@@ -6,7 +6,7 @@
 #include "system/AtomicCounter.h"
 #include "system/Mutex.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class AtomicCounter;
 
@@ -137,6 +137,6 @@ private:
  */
 Mutex * GetGlobalMuscleLock();
 
-};  // end muscle namespace
+END_NAMESPACE(muscle);
 
 #endif

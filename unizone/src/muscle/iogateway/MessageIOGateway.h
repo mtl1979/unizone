@@ -10,7 +10,7 @@
 # include "zlib/ZLibCodec.h"
 #endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /**
  * Encoding IDs.  As of MUSCLE 2.40, we support vanilla MUSCLE_MESSAGE_ENCODING_DEFAULT and 9 levels of zlib compression!
@@ -276,6 +276,6 @@ private:
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

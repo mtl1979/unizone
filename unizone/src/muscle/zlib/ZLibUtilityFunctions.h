@@ -7,7 +7,7 @@
 
 #include "message/Message.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** Examines the contents of the given Message, and creates and returns a new
  *  Message that represents the same data as the given Message, but in compressed form.
@@ -43,7 +43,7 @@ MessageRef InflateMessage(MessageRef msgRef);
 // This is the field name that we store deflated data into
 #define MUSCLE_ZLIB_FIELD_NAME "_zlib"
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif
 

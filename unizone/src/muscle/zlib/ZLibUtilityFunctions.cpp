@@ -7,7 +7,7 @@
 #include "zlib/ZLibCodec.h"
 #include "zlib/ZLibUtilityFunctions.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 static const String MUSCLE_ZLIB_FIELD_NAME_STRING = MUSCLE_ZLIB_FIELD_NAME;
 
@@ -90,6 +90,6 @@ MessageRef InflateMessage(MessageRef msgRef)
    return msgRef;
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

@@ -7,7 +7,7 @@
 #include "util/Queue.h"
 #include "util/RefCount.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class MemoryAllocator;
 
@@ -197,6 +197,6 @@ private:
    Queue<OutOfMemoryCallbackRef> _callbacks;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

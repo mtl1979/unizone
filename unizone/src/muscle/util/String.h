@@ -8,7 +8,7 @@
 #include <ctype.h> 
 #include "support/Flattenable.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 #ifndef SMALL_MUSCLE_STRING_LENGTH
 # define SMALL_MUSCLE_STRING_LENGTH 7  // strings shorter than this length can be stored inline, without requiring an extra new[].
@@ -416,6 +416,6 @@ inline String operator-(const String & lhs, const char *rhs)    {String ret(lhs)
 inline String operator-(const char *lhs,    const String &rhs)  {String ret(lhs); ret -= rhs; return ret;}
 inline String operator-(const String & lhs, char rhs)           {String ret(lhs); ret -= rhs; return ret;}
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

@@ -6,7 +6,7 @@
 #include "util/ObjectPool.h" 
 #include "system/AtomicCounter.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class RefCountable;
 
@@ -227,6 +227,6 @@ public:
 };
 #endif
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

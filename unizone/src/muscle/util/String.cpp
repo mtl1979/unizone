@@ -4,7 +4,7 @@
 #include "system/GlobalMemoryAllocator.h"
 #include <stdarg.h>
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 String::String(const char * str, uint32 maxLen) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
 {
@@ -257,7 +257,7 @@ String::SwapContents(String & s)
 
    if ((sSmall)&&(thisSmall))
    {
-      for (int32 i=muscleMax(_length, s._length)+1; i>=0; i--) muscleSwap(_smallBuffer[i], s._smallBuffer[i]);
+      for (int32 i=muscleMax(_length, s._length); i>=0; i--) muscleSwap(_smallBuffer[i], s._smallBuffer[i]);
    }
    else if (thisSmall)
    {
@@ -640,4 +640,4 @@ int StringCompareFunc(const String & s1, const String & s2, void *)
    return muscleCompare(s1, s2);
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

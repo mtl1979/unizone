@@ -3,7 +3,7 @@
 #include "reflector/ServerComponent.h"
 #include "reflector/ReflectServer.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 ServerComponent ::
 ServerComponent() : _owner(NULL)
@@ -174,4 +174,4 @@ MessageReceivedFromFactory(ReflectSessionFactory &, MessageRef, void * )
    // empty
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

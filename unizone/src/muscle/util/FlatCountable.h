@@ -6,7 +6,7 @@
 #include "support/Flattenable.h"
 #include "util/RefCount.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This class is used simply to more succinctly designate any
  *  object that derives from both Flattenable and RefCountable.
@@ -25,6 +25,6 @@ public:
 
 typedef Ref<FlatCountable> FlatCountableRef;
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif 

@@ -6,7 +6,7 @@
 #include "syslog/SysLog.h"
 #include "util/RefCount.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** Callback object that can be added with PutLogCallback() 
  *  Whenever a log message is generated, all added LogCallback
@@ -91,6 +91,6 @@ status_t RemoveLogCallback(LogCallbackRef cbRef);
  */ 
 status_t ClearLogCallbacks();
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

@@ -6,7 +6,7 @@
 
 #include <string.h>
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 static StringMatcherRef::ItemPool _stringMatcherPool;
 StringMatcherRef::ItemPool * GetStringMatcherPool() {return &_stringMatcherPool;}
@@ -199,4 +199,4 @@ bool MakeRegexCaseInsensitive(String & str)
    return changed;
 }
 
-};   // end namespace muscle
+END_NAMESPACE(muscle);

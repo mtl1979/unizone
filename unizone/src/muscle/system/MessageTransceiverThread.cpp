@@ -6,7 +6,7 @@
 #include "reflector/ReflectServer.h"
 #include "util/SocketHolder.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 MessageTransceiverThread :: MessageTransceiverThread() : _server(NULL)
 {
@@ -648,4 +648,4 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(MessageRef msgRef, 
    else return B_ERROR;
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

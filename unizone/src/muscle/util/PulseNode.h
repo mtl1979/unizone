@@ -6,7 +6,7 @@
 #include "util/TimeUtilityFunctions.h"
 #include "util/Hashtable.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class PulseNode;
 class PulseNodeManager;
@@ -184,6 +184,6 @@ protected:
    inline void CallSetCycleStartTime(PulseNode & p, uint64 now) const {p.SetCycleStartTime(now);}
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

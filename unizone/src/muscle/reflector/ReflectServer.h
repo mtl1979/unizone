@@ -5,7 +5,7 @@
 
 #include "reflector/AbstractReflectSession.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class MemoryAllocator;
 
@@ -229,6 +229,6 @@ private:
    MemoryAllocator * _watchMemUsage; 
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

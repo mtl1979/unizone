@@ -6,7 +6,7 @@
 #include "util/RefCount.h"
 #include "util/PulseNode.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class AbstractReflectSession;
 class ReflectServer;
@@ -157,7 +157,7 @@ public:
 };
 #endif
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 // At the bottom to avoid circular-forward-reference problems, while
 // still allowing subclasses to automatically get this header

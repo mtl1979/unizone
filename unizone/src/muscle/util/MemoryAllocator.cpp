@@ -2,7 +2,7 @@
 
 #include "util/MemoryAllocator.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 status_t ProxyMemoryAllocator :: AboutToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes)
 {
@@ -61,4 +61,4 @@ void AutoCleanupProxyMemoryAllocator :: AllocationFailed(size_t, size_t)
    for (uint32 i=0; i<nc; i++) if (_callbacks[i]()) (_callbacks[i]())->OutOfMemory();
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

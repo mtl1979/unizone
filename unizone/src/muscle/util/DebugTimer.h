@@ -14,7 +14,7 @@
 # endif
 #endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This is a little class that can be helpful for debugging.  It will record the amount of time
  *  spent in various modes, and then when the DebugTimer object goes away, it will Log a message
@@ -75,6 +75,6 @@ private:
    bool _enableLog;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

@@ -6,7 +6,7 @@
 #include "util/RefCount.h"
 #include "util/NetworkUtilityFunctions.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** A simple socket-holder class to make sure that socket fd's 
   * added to Messages get properly closed leaked if said 
@@ -37,6 +37,6 @@ private:
 
 typedef Ref<SocketHolder> SocketHolderRef;
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

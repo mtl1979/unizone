@@ -3,7 +3,7 @@
 #include "regex/QueryFilter.h"
 #include "regex/StringMatcher.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 QueryFilter :: ~QueryFilter()
 {
@@ -101,7 +101,7 @@ status_t AndOrQueryFilter :: SaveToArchive(Message & archive) const
 
 status_t AndOrQueryFilter :: SetFromArchive(const Message & archive)
 {
-   if (QueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
+   if (MultiQueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
    if (archive.FindInt32("min", (int32*)&_minMatches) != B_NO_ERROR) _minMatches = ((uint32)-1);
    return B_NO_ERROR;
 }
@@ -128,7 +128,7 @@ status_t NandNotQueryFilter :: SaveToArchive(Message & archive) const
 
 status_t NandNotQueryFilter :: SetFromArchive(const Message & archive)
 {
-   if (QueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
+   if (MultiQueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
    if (archive.FindInt32("max", (int32*)&_maxMatches) != B_NO_ERROR) _maxMatches = 0;
    return B_NO_ERROR;
 }
@@ -408,4 +408,4 @@ QueryFilterRef InstantiateQueryFilter(const Message & msg)
    return ret;
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

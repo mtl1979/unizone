@@ -8,7 +8,7 @@
 # include "zlib/zlib/zlib.h"
 # include "dataio/DataIO.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
  
 /** This class wraps around another DataIO and transparently compresses all 
   * data going to that DataIO, and decompresses all data coming from that
@@ -77,7 +77,7 @@ private:
    z_stream _writeDeflater;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif
 

@@ -3,7 +3,7 @@
 #include <qapplication.h>
 #include "qtsupport/QAcceptSocketsThread.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 static const uint32 QMTT_SIGNAL_EVENT = 8360446;  // why yes, this is a completely arbitrary number
 
@@ -52,4 +52,4 @@ bool QAcceptSocketsThread :: event(QEvent * event)
    else return QObject::event(event);
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

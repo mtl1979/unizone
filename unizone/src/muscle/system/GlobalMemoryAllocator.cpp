@@ -39,7 +39,7 @@
 #  define RPAREN    )
 # endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 static MemoryAllocatorRef _globalAllocatorRef;
 
@@ -52,7 +52,7 @@ size_t GetNumAllocatedBytes() {return _currentlyAllocatedBytes;}
 
 void * muscleAlloc(size_t s, bool retryOnFailure)
 {
-   using namespace muscle;
+   USING_NAMESPACE(muscle);
 
    size_t allocSize = s + sizeof(size_t);  // requested size, plus extra bytes for our tag
    bool mallocFailed = false;
@@ -85,7 +85,7 @@ void * muscleAlloc(size_t s, bool retryOnFailure)
 
 void * muscleRealloc(void * ptr, size_t s, bool retryOnFailure)
 {
-   using namespace muscle;
+   USING_NAMESPACE(muscle);
 
         if (ptr == NULL) return muscleAlloc(s, retryOnFailure);
    else if (s   == 0)
@@ -145,7 +145,7 @@ void * muscleRealloc(void * ptr, size_t s, bool retryOnFailure)
 
 void muscleFree(void * p)
 {
-   using namespace muscle;
+   USING_NAMESPACE(muscle);
    if (p)
    {
       size_t * s = (((size_t*)p)-1);
@@ -159,29 +159,31 @@ void muscleFree(void * p)
    }
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 void * operator new(size_t s) THROW LPAREN BAD_ALLOC RPAREN
 {
-   void * ret = muscle::muscleAlloc(s);
+   USING_NAMESPACE(muscle);
+   void * ret = muscleAlloc(s);
    if (ret == NULL) {THROW BAD_ALLOC LPAREN RPAREN;}
    return ret;
 }
 
 void * operator new[](size_t s) THROW LPAREN BAD_ALLOC RPAREN
 {
-   void * ret = muscle::muscleAlloc(s);
+   USING_NAMESPACE(muscle);
+   void * ret = muscleAlloc(s);
    if (ret == NULL) {THROW BAD_ALLOC LPAREN RPAREN;}
    return ret;
 }
 
 // Borland and VC++ don't like separate throw/no-throw operators, it seems
 # ifndef WIN32
-void * operator new(  size_t s, nothrow_t const &) THROW LPAREN RPAREN {return muscle::muscleAlloc(s);}
-void * operator new[](size_t s, nothrow_t const &) THROW LPAREN RPAREN {return muscle::muscleAlloc(s);}
+void * operator new(  size_t s, nothrow_t const &) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); return muscleAlloc(s);}
+void * operator new[](size_t s, nothrow_t const &) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); return muscleAlloc(s);}
 # endif
 
-void operator delete(  void * p) THROW LPAREN RPAREN {muscle::muscleFree(p);}
-void operator delete[](void * p) THROW LPAREN RPAREN {muscle::muscleFree(p);}
+void operator delete(  void * p) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); muscleFree(p);}
+void operator delete[](void * p) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); muscleFree(p);}
 
 #endif

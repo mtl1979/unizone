@@ -1,6 +1,6 @@
 #include "util/SharedUsageLimitProxyMemoryAllocator.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 static const int32 CACHE_BYTES = 100*1024;  // 100KB local cache size seems reasonable, no?
 
@@ -149,4 +149,4 @@ status_t SharedUsageLimitProxyMemoryAllocator :: GetCurrentMemoryUsage(size_t * 
    return ret;
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

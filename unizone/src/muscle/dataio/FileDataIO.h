@@ -5,7 +5,7 @@
 
 #include "dataio/DataIO.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /**
  *  Data I/O to and from a stdio FILE. 
@@ -118,6 +118,6 @@ private:
    FILE * _file;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

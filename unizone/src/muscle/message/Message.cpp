@@ -5,7 +5,7 @@
 #include "util/Queue.h"
 #include "message/Message.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 static Message _emptyMessage;
 const Message & GetEmptyMessage() {return _emptyMessage;}
@@ -184,7 +184,7 @@ public:
 
    virtual void Flatten(uint8 *) const
    {
-      MCRASH("muscle::Message::TagDataArray:Flatten()  This method should never be called!");
+      MCRASH("Message::TagDataArray:Flatten()  This method should never be called!");
    }
 
    // Flattenable interface
@@ -192,7 +192,7 @@ public:
 
    virtual status_t Unflatten(const uint8 *, uint32)
    {
-      MCRASH("muscle::Message::TagDataArray:Unflatten()  This method should never be called!");
+      MCRASH("Message::TagDataArray:Unflatten()  This method should never be called!");
       return B_NO_ERROR;  // just to keep the compiler happy
    }
 
@@ -2123,4 +2123,4 @@ bool Message :: FieldsAreSubsetOf(const Message & rhs, bool compareContents) con
    return true;
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

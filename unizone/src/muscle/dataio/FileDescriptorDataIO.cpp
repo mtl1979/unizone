@@ -8,7 +8,7 @@
 _syscall5(int, _llseek, uint, fd, ulong, hi, ulong, lo, loff_t *, res, uint, wh);  // scary --jaf
 #endif  
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 FileDescriptorDataIO ::
 FileDescriptorDataIO(int fd, bool blocking) : _fd(fd)
@@ -99,4 +99,4 @@ int64 FileDescriptorDataIO :: GetPosition() const
    return -1;
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

@@ -7,7 +7,9 @@
 #include <qthread.h>
 #include "system/MessageTransceiverThread.h"
 
+#ifndef MUSCLE_AVOID_NAMESPACES
 namespace muscle {
+#endif
 
 /**
  *  This is a Qt-specific subclass of MessageTransceiverThread.
@@ -128,6 +130,8 @@ private slots:
    virtual bool event(QEvent * event);
 };
 
-};  // end namespace muscle
+#ifndef MUSCLE_AVOID_NAMESPACES
+};  // end namespace muscle;
+#endif
 
 #endif

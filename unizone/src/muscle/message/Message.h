@@ -23,7 +23,7 @@
 #include "util/Hashtable.h"
 #include "util/FlatCountable.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class Message;
 typedef Ref<Message> MessageRef;
@@ -1048,7 +1048,7 @@ private:
    Hashtable<String, GenericRef> _entries;   
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif /* _MUSCLEMESSAGE_H */
 

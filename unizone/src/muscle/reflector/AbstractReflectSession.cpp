@@ -8,7 +8,7 @@
 #include "system/Mutex.h"
 #include "system/SetupSystem.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 static uint32 _idCounter = 0L;
 
@@ -279,4 +279,4 @@ BroadcastToAllFactories(MessageRef msgRef, void * userData, bool toSelf)
    }
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

@@ -7,7 +7,7 @@
 #include "util/RefCount.h"
 #include "util/PulseNode.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class AbstractReflectSession;
 class ReflectServer;
@@ -165,6 +165,6 @@ private:
    ReflectServer * _owner;  // set directly by the ReflectServer.
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

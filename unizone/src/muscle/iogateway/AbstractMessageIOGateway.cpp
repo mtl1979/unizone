@@ -2,7 +2,7 @@
 
 #include "iogateway/AbstractMessageIOGateway.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 AbstractMessageIOGateway :: AbstractMessageIOGateway() : _hosed(false), _flushOnEmpty(true)
 {
@@ -95,4 +95,4 @@ Reset()
    _hosed = false;
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

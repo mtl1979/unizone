@@ -5,7 +5,7 @@
 
 #include "util/RefCount.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
  
 /** Abstract base class for a byte-stream Data I/O interface, similar to Be's BDataIO.  */
 class DataIO : public RefCountable
@@ -125,6 +125,6 @@ public:
 
 typedef Ref<DataIO> DataIORef;
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

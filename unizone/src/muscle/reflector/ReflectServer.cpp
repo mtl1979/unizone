@@ -9,7 +9,7 @@
 # include "system/GlobalMemoryAllocator.h"
 #endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 status_t
 ReflectServer ::
@@ -789,7 +789,11 @@ ReflectServer ::
 FinalizeAsyncConnect(AbstractReflectSessionRef ref)
 {
    AbstractReflectSession * session = ref();
+#ifdef MUSCLE_AVOID_NAMESPACES
+   if ((session)&&(::FinalizeAsyncConnect(GetSocketFor(session)) == B_NO_ERROR))
+#else
    if ((session)&&(muscle::FinalizeAsyncConnect(GetSocketFor(session)) == B_NO_ERROR))
+#endif
    {
       session->_connectingAsync = false;  // we're legit now!  :^)
       session->AsyncConnectCompleted();
@@ -867,4 +871,4 @@ ReflectServer :: GetSocketFor(AbstractReflectSession * session) const
 }
 
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

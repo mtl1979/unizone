@@ -6,7 +6,7 @@
 #include <stdarg.h>
 #include "util/TimeUtilityFunctions.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** log level constants to use with SetLogLevel(), GetLogLevel() */
 enum
@@ -155,6 +155,6 @@ void GetStandardLogLinePreamble(char * buf, int logLevel, time_t when);
 
 #endif
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

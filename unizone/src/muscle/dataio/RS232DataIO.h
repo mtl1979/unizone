@@ -8,7 +8,7 @@
 #include "util/String.h"
 #include "util/Queue.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** A serial port DataIO for serial communications.  Note that
  *  this class currently only works under Windows and Linux, and offers
@@ -82,6 +82,6 @@ private:
 #endif
 };
 
-}; // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

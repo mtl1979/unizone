@@ -5,7 +5,7 @@
 
 #include "support/MuscleSupport.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** 'What' codes understood to have special meaning by the StorageReflectSession class */
 enum 
@@ -346,6 +346,6 @@ enum
 //    of the message is not specified by the StorageReflectSession; it just passes any message
 //    on verbatim.
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

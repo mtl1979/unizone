@@ -5,7 +5,7 @@
 
 #include "iogateway/AbstractMessageIOGateway.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This is the name of the field used to hold data chunks */
 #define PR_NAME_DATA_CHUNKS "rd"
@@ -57,6 +57,6 @@ private:
    uint32 _maxChunkSize;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

@@ -21,7 +21,7 @@
 #include "message/Message.h"
 #include "util/Queue.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This class is an platform-independent class that creates an internally held thread and executes it.
   * You will want to subclass Thread in order to specify the behaviour of the internally held thread...
@@ -279,6 +279,6 @@ private:
 #endif
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

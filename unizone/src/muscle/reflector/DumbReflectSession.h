@@ -5,7 +5,7 @@
 
 #include "reflector/AbstractReflectSession.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /**
  *  This is a factory class that returns new DumbReflectSession objects.
@@ -57,6 +57,6 @@ private:
    bool _reflectToSelf;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

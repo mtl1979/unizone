@@ -5,7 +5,7 @@
 
 #include "message/Message.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** Parses the given arguments into a Message full of string fields.
   * Arguments should be of the form argname or argname=value.
@@ -105,6 +105,6 @@ status_t BecomeDaemonProcess(const char * optNewDir = NULL, const char * optOutp
  */ 
 status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = false);
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

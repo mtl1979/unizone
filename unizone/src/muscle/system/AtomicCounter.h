@@ -24,14 +24,14 @@
 #   define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
 #  elif defined(MUSCLE_USE_PTHREADS) || defined(QT_THREAD_SUPPORT)
 #   define MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS 1
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
     extern int32 DoMutexAtomicIncrement(volatile int32 * count, int32 delta);
-};
+END_NAMESPACE(muscle);
 #  endif
 # endif
 #endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This is a teensy little class that works as a cross-platform atomic counter variable. 
   * It's been ifdef'd all to hell, so that it tries to always use the most efficient API
@@ -168,6 +168,6 @@ private:
 #endif
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

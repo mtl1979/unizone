@@ -11,7 +11,7 @@
 # include <execinfo.h>
 #endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 #ifndef MUSCLE_INLINE_LOGGING
 
@@ -404,4 +404,4 @@ status_t RemoveLogCallback(LogCallbackRef cb)
 
 #endif
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

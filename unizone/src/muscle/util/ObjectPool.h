@@ -6,7 +6,7 @@
 #include "util/Queue.h"
 #include "system/Mutex.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 // Uncomment this #define to disable object pools (i.e. turn them intoi
 // fancy new/delete operators).  This is helpful if you are trying
@@ -224,6 +224,6 @@ private:
    uint32 _maxPoolSize;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

@@ -5,7 +5,7 @@
 #include "util/NetworkUtilityFunctions.h"
 #include "util/SocketHolder.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 AcceptSocketsThread :: AcceptSocketsThread() : _acceptSocket(-1)
 {
@@ -85,4 +85,4 @@ void AcceptSocketsThread :: InternalThreadEntry()
    }
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

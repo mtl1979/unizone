@@ -6,7 +6,7 @@
 #include "system/Thread.h"
 #include "reflector/StorageReflectSession.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class ThreadSupervisorSession;
 class ThreadWorkerSession;
@@ -490,7 +490,7 @@ private:
 
 typedef Ref<DrainTag> DrainTagRef;
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif
 

@@ -3,7 +3,7 @@
 #include "reflector/FilterSessionFactory.h"
 #include "reflector/StorageReflectConstants.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 FilterSessionFactory :: FilterSessionFactory(ReflectSessionFactoryRef slaveRef, uint32 msph, uint32 tms) : _slaveRef(slaveRef), _tempLogFor(NULL), _maxSessionsPerHost(msph), _totalMaxSessions(tms)
 {
@@ -178,4 +178,4 @@ void FilterSessionFactory :: RemoveMatchingRequirePatterns(const char * exp)
    while(iter.GetNextKey(next) == B_NO_ERROR) if (sm.Match(next())) RemoveRequirePattern(next());
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

@@ -19,7 +19,7 @@
 #include "util/NetworkUtilityFunctions.h"
 #include "util/StringTokenizer.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 status_t ParseArg(const String & a, Message & addTo)
 {
@@ -325,4 +325,4 @@ status_t BecomeDaemonProcess(const char * optNewDir, const char * optOutputTo, b
 }
 
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

@@ -12,15 +12,27 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.46"
+#define MUSCLE_VERSION_STRING "2.47"
+
+// Since certain antique compilers don't support namespaces, we
+// do all namespace-related declarations via macros which can
+// be no-op'd out by declaring -DMUSCLE_AVOID_NAMESPACES in the Makefile.
+#ifdef MUSCLE_AVOID_NAMESPACES
+# define DECLARE_NAMESPACE(x)
+# define BEGIN_NAMESPACE(x)
+# define END_NAMESPACE(x)
+# define USING_NAMESPACE(x)
+#else
+# define DECLARE_NAMESPACE(x) namespace x {};
+# define BEGIN_NAMESPACE(x) namespace x {
+# define END_NAMESPACE(x) };
+# define USING_NAMESPACE(x) using namespace x;
+#endif
 
 // Just declare the muscle namespace as existing.
 // If we ever decide to make the muscle namespace a superset
 // of another namespace, we would add a 'using namespace' line here.
-namespace muscle
-{
-   // empty
-};
+DECLARE_NAMESPACE(muscle);
 
 // MIPS CPUs (e.g. on SGIs) can't stand non-aligned word reads, so we'll
 // accomodate them by using memcpy() instead.
@@ -48,16 +60,16 @@ namespace muscle
 
 #ifndef NEW_H_NOT_AVAILABLE
 # include <new>
+# ifndef MUSCLE_AVOID_NAMESPACES
 using std::bad_alloc;
 using std::nothrow_t;
 using std::nothrow;
 using std::new_handler;
 using std::set_new_handler;
+# endif
 #else
 # define MUSCLE_AVOID_NEWNOTHROW
 #endif
-
-#define WARN_OUT_OF_MEMORY muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  (%s:%i)\n",__FILE__,__LINE__)
 
 #ifndef newnothrow
 # ifdef MUSCLE_AVOID_NEWNOTHROW
@@ -83,9 +95,17 @@ using std::set_new_handler;
 # define MCRASH_IMPL *((uint32*)NULL) = 0x666
 #endif
 
-#define MCRASH(msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
 #define MASSERT(x,msg) {if(!(x)) MCRASH(msg)}
-#define MCHECKPOINT muscle::LogTime(muscle::MUSCLE_LOG_WARNING, "Reached checkpoint at %s:%i\n", __FILE__, __LINE__)
+
+#ifdef MUSCLE_AVOID_NAMESPACES
+# define MCRASH(msg) {LogTime(MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
+# define WARN_OUT_OF_MEMORY LogTime(MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  (%s:%i)\n",__FILE__,__LINE__)
+# define MCHECKPOINT LogTime(MUSCLE_LOG_WARNING, "Reached checkpoint at %s:%i\n", __FILE__, __LINE__)
+#else
+# define MCRASH(msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
+# define WARN_OUT_OF_MEMORY muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  (%s:%i)\n",__FILE__,__LINE__)
+# define MCHECKPOINT muscle::LogTime(muscle::MUSCLE_LOG_WARNING, "Reached checkpoint at %s:%i\n", __FILE__, __LINE__)
+#endif
 
 #define UNLESS(x) if(!(x))
 #define ARRAYITEMS(x) (sizeof(x)/sizeof(x[0]))  // returns # of items in array

@@ -6,7 +6,7 @@
 #include "zlib/ZLibDataIO.h"
 #include "system/GlobalMemoryAllocator.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 #ifdef MUSCLE_ENABLE_MEMORY_TRACKING
 static void * muscleZLibAlloc(void *, uInt items, uInt size) {return muscleAlloc(items*size);}
@@ -239,6 +239,6 @@ void ZLibDataIO :: WriteBufferedOutput()
    (void) WriteAux(NULL, 0, false);
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

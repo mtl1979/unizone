@@ -5,7 +5,7 @@
 
 #include "reflector/AbstractSessionIOPolicy.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** 
  * This policy allows you to enforce an aggregate maximum bandwidth usage for the set
@@ -51,6 +51,6 @@ private:
    uint32 _numParticipants;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

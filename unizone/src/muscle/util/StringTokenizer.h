@@ -6,7 +6,7 @@
 #include <string.h>
 #include "support/MuscleSupport.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** String tokenizer class, similar to Java's java.util.StringTokenizer */
 class StringTokenizer
@@ -114,6 +114,6 @@ private:
    char * _next;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

@@ -14,7 +14,7 @@
 #include <string.h>
 #include "support/MuscleSupport.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This class is an interface representing an object that knows how
  *  to save itself into an array of bytes, and recover its state from
@@ -189,7 +189,7 @@ protected:
 /*-------------------------------------------------------------*/
 /*-------------------------------------------------------------*/
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif /* _MUSCLEFLATTENABLE_H */
 

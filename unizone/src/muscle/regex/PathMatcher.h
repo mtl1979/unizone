@@ -8,7 +8,7 @@
 #include "regex/StringMatcher.h"
 #include "message/Message.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** Type for a reference to a StringMatcher object. */
 typedef Ref<StringMatcher> StringMatcherRef;
@@ -182,6 +182,6 @@ String GetPathClauseString(int depth, const char * path);
  */
 int GetPathDepth(const char * path);
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

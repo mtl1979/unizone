@@ -2,7 +2,7 @@
 
 #include "util/PulseNode.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 PulseNode :: PulseNode() : _parent(NULL), _nextPulseAtValid(false), _nextPulseAt(MUSCLE_TIME_NEVER), _localPulseAtValid(false), _localPulseAt(MUSCLE_TIME_NEVER), _cycleStartedAt(0), _maxTimeSlice(MUSCLE_TIME_NEVER), _timeSlicingSuggested(false)
 {
@@ -116,4 +116,4 @@ void PulseNode :: ClearPulseChildren()
    }
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

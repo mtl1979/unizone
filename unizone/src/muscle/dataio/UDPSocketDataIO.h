@@ -1,7 +1,7 @@
 /* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
-#ifndef MuscleTCPSocketDataIO_h
-#define MuscleTCPSocketDataIO_h
+#ifndef MuscleUDPSocketDataIO_h
+#define MuscleUDPSocketDataIO_h
 
 #include "support/MuscleSupport.h"
 
@@ -10,24 +10,20 @@
 
 BEGIN_NAMESPACE(muscle);
 
-#ifndef MUSCLE_DEFAULT_TCP_STALL_TIMEOUT
-# define MUSCLE_DEFAULT_TCP_STALL_TIMEOUT (20*60*((uint64)1000000))  // 20 minutes is our default timeout period
-#endif
-
 /**
- *  Data I/O to and from a TCP socket! 
+ *  Data I/O to and from a UDP socket! 
  */
-class TCPSocketDataIO : public DataIO
+class UDPSocketDataIO : public DataIO
 {
 public:
    /**
     *  Constructor.
-    *  @param sockfd The socket to use.  Becomes property of this TCPSocketDataIO object.
+    *  @param sockfd The socket to use.  Becomes property of this UDPSocketDataIO object.
     *  @param blockingIO determines whether to use blocking or non-blocking socket I/O.
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
-   TCPSocketDataIO(int sockfd, bool blocking) : _sockfd(sockfd), _naglesEnabled(true), _stallLimit(MUSCLE_DEFAULT_TCP_STALL_TIMEOUT)
+   UDPSocketDataIO(int sockfd, bool blocking) : _sockfd(sockfd)
    {
       SetBlockingIOEnabled(blocking);
    }
@@ -35,13 +31,13 @@ public:
    /** Destructor.
     *  Closes the socket descriptor, if necessary.
     */
-   virtual ~TCPSocketDataIO() 
+   virtual ~UDPSocketDataIO() 
    {
       if (_sockfd >= 0) Shutdown();
    }
 
-   virtual int32 Read(void * buffer, uint32 size) {return ReceiveData(_sockfd, buffer, size, _blocking);}
-   virtual int32 Write(const void * buffer, uint32 size) {return SendData(_sockfd, buffer, size, _blocking);}
+   virtual int32 Read(void * buffer, uint32 size) {return ReceiveDataUDP(_sockfd, buffer, size, _blocking);}
+   virtual int32 Write(const void * buffer, uint32 size) {return SendDataUDP(_sockfd, buffer, size, _blocking);}
 
    /**
     *  This method implementation always returns B_ERROR, because you can't seek on a socket!
@@ -51,28 +47,8 @@ public:
    /** Always returns -1, since a socket has no position to speak of */
    virtual int64 GetPosition() const {return -1;}
 
-   /**
-    * Stall limit for TCP streams is 20*60*1000000 microseconds (20 minutes) by default.
-    * Or change it by calling SetOutputStallLimit().
-    */
-   virtual uint64 GetOutputStallLimit() const {return _stallLimit;}
-
-   /** Set a new output stall time limit.  Set to MUSCLE_TIME_NEVER to disable stall limiting.  */
-   void SetOutputStallLimit(uint64 limit) {_stallLimit = limit;}
-
-   /**
-    * Flushes the output buffer by turning off Nagle's Algorithm and then turning it back on again.
-    * If Nagle's Algorithm is disabled, then this call is a no-op (since there is never anything to flush)
-    */
-   virtual void FlushOutput()
-   {
-      if ((_sockfd >= 0)&&(_naglesEnabled))
-      {
-         SetSocketNaglesAlgorithmEnabled(_sockfd, false);
-         (void) SendData(_sockfd, NULL, 0, _blocking);  // Force immediate buffer flush!
-         SetSocketNaglesAlgorithmEnabled(_sockfd, true);
-      }
-   }
+   /** Implemented as a no-op:  UDP sockets are always flushed immediately anyway */
+   virtual void FlushOutput() {/* empty */}
    
    /**
     * Closes our socket connection
@@ -105,19 +81,6 @@ public:
    }
 
    /**
-    * Turns Nagle's algorithm (output packet buffering/coalescing) on or off.
-    * @param enabled If true, data will be held momentarily before sending, to allow for bigger packets.
-    *                If false, each Write() call will cause a new packet to be sent immediately.
-    * @return B_NO_ERROR on success, B_ERROR on error.
-    */
-   status_t SetNaglesAlgorithmEnabled(bool enabled)
-   {
-      status_t ret = SetSocketNaglesAlgorithmEnabled(_sockfd, enabled);
-      if (ret == B_NO_ERROR) _naglesEnabled = enabled;
-      return ret;
-   }
-
-   /**
     * Releases control of the contained socket to the calling code.
     * After this method returns, this object no longer owns or can
     * use or close the socket descriptor it once held.
@@ -135,16 +98,9 @@ public:
     */
    bool IsBlockingIOEnabled() const {return _blocking;}
 
-   /** Returns true iff our socket has Nagle's algorithm enabled (as specified
-    *  in our SetNaglesAlgorithmEnabled() method.  Default state is true.
-    */
-   bool IsNaglesAlgorithmEnabled() const {return _naglesEnabled;}
-
 private:
    int _sockfd;
    bool _blocking;
-   bool _naglesEnabled;
-   uint64 _stallLimit;
 };
 
 END_NAMESPACE(muscle);

@@ -2,7 +2,7 @@
 
 #include "iogateway/MessageIOGateway.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 MessageIOGateway :: MessageIOGateway(int32 encoding) :
    _maxIncomingMessageSize(MUSCLE_NO_LIMIT),
@@ -314,4 +314,4 @@ Reset()
    _recvBodyBuffer.Reset();
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

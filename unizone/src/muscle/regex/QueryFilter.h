@@ -7,7 +7,7 @@
 #include "util/ByteBuffer.h"
 #include "message/Message.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 class StringMatcher;
 
@@ -191,7 +191,7 @@ template <typename DataType, uint32 DataTypeCode, uint32 ClassTypeCode>
 class NumericQueryFilter : public ValueQueryFilter
 {
 public:
-   /** Default constructor.  Sets our value to its default (usually zero), and the operator to B_OP_EQUAL_TO. */
+   /** Default constructor.  Sets our value to its default (usually zero), and the operator to OP_EQUAL_TO. */
    NumericQueryFilter() : _value(), _op(OP_EQUAL_TO) {/* empty */}
 
    /** Constructor.
@@ -602,6 +602,6 @@ private:
    uint32 _typeCode;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

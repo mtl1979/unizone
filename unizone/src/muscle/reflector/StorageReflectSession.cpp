@@ -5,7 +5,7 @@
 #include "reflector/StorageReflectSession.h"
 #include "iogateway/MessageIOGateway.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 #define DEFAULT_PATH_PREFIX "*/*"  // when we get a path name without a leading '/', prepend this
 #define DEFAULT_MAX_SUBSCRIPTION_MESSAGE_SIZE   50   // no more than 50 items/update message, please
@@ -315,8 +315,20 @@ NodeChangedAux(DataNode & modifiedNode, bool isBeingRemoved)
       String np;
       if (modifiedNode.GetNodePath(np) == B_NO_ERROR)
       {
-         if (isBeingRemoved) _nextSubscriptionMessage()->AddString(PR_NAME_REMOVED_DATAITEMS, np);
-                        else _nextSubscriptionMessage()->AddMessage(np, modifiedNode.GetData());
+         if (isBeingRemoved) 
+         {
+            if (_nextSubscriptionMessage()->HasName(np, B_MESSAGE_TYPE))
+            {
+               // Oops!  We can't specify a remove-then-add operation for a given node in a single Message,
+               // because the removes and the adds are expressed via different mechanisms.
+               // So in this case we have to force a flush of the current message now, and 
+               // then add the new notification to the next one!
+               PushSubscriptionMessages();
+               NodeChangedAux(modifiedNode, isBeingRemoved);  // and then start again
+            }
+            else _nextSubscriptionMessage()->AddString(PR_NAME_REMOVED_DATAITEMS, np);
+         }
+         else _nextSubscriptionMessage()->AddMessage(np, modifiedNode.GetData());
       }
       if (_nextSubscriptionMessage()->CountNames() >= _maxSubscriptionMessageItems) PushSubscriptionMessages(); 
    }
@@ -1031,7 +1043,7 @@ PushSubscriptionMessage(MessageRef & ref)
    MessageRef oldRef = ref;  // (ref) is one of our _next*SubscriptionMessage members
    while(oldRef()) 
    {
-      ref.Reset();  /* In case FromNeighbor() wants to add more suscriptions... */
+      ref.Reset();  /* In case FromSession() wants to add more suscriptions... */
       MessageReceivedFromSession(*this, oldRef, NULL);
       oldRef = ref;
    }
@@ -2070,5 +2082,5 @@ MessageRef StorageReflectSession :: GetBlankMessage() const
    return _blankMessageRef;
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 

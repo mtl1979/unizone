@@ -21,7 +21,7 @@
 # endif
 #endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** A utility class for doing globbing or regular expression matching.  (A thin wrapper around the C regex calls) */
 class StringMatcher : public RefCountable
@@ -128,7 +128,7 @@ bool IsRegexToken(char c, bool isFirstCharInString);
  */
 bool MakeRegexCaseInsensitive(String & str);
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 
 #endif

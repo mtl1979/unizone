@@ -14,7 +14,7 @@
 #include "support/Flattenable.h"
 #include "support/Tuple.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /*----------------------------------------------------------------------*/
 /*----- Point class --------------------------------------------*/
@@ -114,6 +114,6 @@ public:
 
 DECLARE_ALL_TUPLE_OPERATORS(Point,float);
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif 

@@ -5,7 +5,7 @@
 
 #include "util/String.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This class is a simple platform-independent API wrapper around the native OS's shared-memory facilities.
   * It can be used to create and access shared memory areas from different processes.
@@ -129,6 +129,6 @@ private:
    bool _isCreatedLocally;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

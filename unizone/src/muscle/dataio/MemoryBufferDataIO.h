@@ -5,7 +5,7 @@
 
 #include "dataio/DataIO.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /**
  *  Data I/O equivalent for reading from/writing in-memory arrays
@@ -144,6 +144,6 @@ private:
    int32 _maxWriteChunk;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

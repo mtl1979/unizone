@@ -23,7 +23,7 @@
 # include <float.h>
 #endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 static Mutex * _muscleLock = NULL;
 Mutex * GetGlobalMuscleLock() {return _muscleLock;}
@@ -200,4 +200,4 @@ uint64 GetCurrentTime64()
 
 #endif
 
-};  // end muscle namespace
+END_NAMESPACE(muscle);

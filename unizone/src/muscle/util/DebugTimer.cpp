@@ -3,7 +3,7 @@
 #include "util/DebugTimer.h"
 #include "util/TimeUtilityFunctions.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 DebugTimer :: DebugTimer(const String & title, uint64 mlt, uint32 startMode, int debugLevel) : _currentMode(startMode+1), _title(title), _minLogTime(mlt), _debugLevel(debugLevel), _enableLog(true)
 {
@@ -48,4 +48,4 @@ void DebugTimer :: SetMode(uint32 newMode)
    }
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);

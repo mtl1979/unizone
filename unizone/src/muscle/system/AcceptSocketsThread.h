@@ -5,7 +5,7 @@
 
 #include "system/Thread.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** Event message codes returned by this thread */
 enum {

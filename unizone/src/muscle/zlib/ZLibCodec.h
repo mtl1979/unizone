@@ -8,7 +8,7 @@
 # include "util/ByteBuffer.h"
 # include "zlib/zlib/zlib.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
  
 /** This class is a handy wrapper around the zlib C functions.
   * It quickly and easily inflates and deflates data to/from independently compressed chunks.
@@ -73,7 +73,7 @@ private:
    z_stream _deflater;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif
 

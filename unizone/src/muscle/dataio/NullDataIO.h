@@ -5,7 +5,7 @@
 
 #include "dataio/DataIO.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /**
  *  Data I/O equivalent to /dev/null.  
@@ -61,6 +61,6 @@ private:
    bool _shutdown;
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

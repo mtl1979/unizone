@@ -21,7 +21,7 @@
 
 #include "support/MuscleSupport.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This class is a platform-independent API for a recursive mutual exclusion semaphore (a.k.a mutex). 
   * Typically used to serialize the execution of critical sections in a multithreaded API 
@@ -142,6 +142,6 @@ private:
 #endif
 };
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

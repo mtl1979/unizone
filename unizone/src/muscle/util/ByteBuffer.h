@@ -6,7 +6,7 @@
 #include <string.h>
 #include "util/FlatCountable.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** This class is used to hold a raw buffer of bytes, and is also Flattenable and RefCountable. */
 class ByteBuffer : public FlatCountable
@@ -134,6 +134,6 @@ ByteBufferRef GetByteBufferFromPool(uint32 numBytes = 0, const uint8 * optBuffer
  */
 ByteBufferRef GetByteBufferFromPool(const ByteBuffer & copyMe);               
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif

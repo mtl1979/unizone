@@ -40,7 +40,7 @@ typedef int net_length_t;
 typedef size_t net_length_t;
 #endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 static uint32 _customLocalhostIP = 0;  // disabled by default
 
@@ -210,6 +210,7 @@ int32 SendDataUDP(int sock, const void * buffer, uint32 size, bool bm, uint32 op
           }
           else memset(&toAddr, 0, sizeof(toAddr));
 
+          toAddr.sin_family = AF_INET;
           if (optToIP)   toAddr.sin_addr.s_addr = htonl(optToIP);
           if (optToPort) toAddr.sin_port        = htons(optToPort);
           s = sendto(sock, (const char *)buffer, size, 0L, (struct sockaddr *)&toAddr, sizeof(toAddr));
@@ -510,6 +511,6 @@ status_t SetSocketReceiveBufferSize(int sock, uint32 receiveBufferSizeBytes)
 #endif
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 

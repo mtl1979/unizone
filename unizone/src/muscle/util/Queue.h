@@ -5,7 +5,7 @@
 
 #include "support/MuscleSupport.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 #ifndef SMALL_QUEUE_SIZE
 # define SMALL_QUEUE_SIZE 3
@@ -1048,7 +1048,7 @@ Queue<ItemType>::SwapContentsAux(Queue<ItemType> & largeThat)
    muscleSwap(_itemCount, largeThat._itemCount);
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif
 

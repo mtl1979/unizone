@@ -17,7 +17,7 @@
 # include <sys/select.h>  // sikosis at bebits.com says this is necessary... hmm.
 #endif
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 /** Numeric representation of 127.0.0.1, for convenience */
 const uint32 localhostIP = ((((uint32)127)<<24)|((uint32)1));
@@ -285,7 +285,7 @@ status_t SetUDPSocketTarget(int sock, uint32 remoteIP, uint16 remotePort);
  */
 status_t SetUDPSocketTarget(int sock, const char * remoteHostName, uint16 remotePort);
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
 #endif
 

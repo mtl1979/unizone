@@ -1,7 +1,7 @@
 #include "util/ByteBuffer.h"
 #include "system/GlobalMemoryAllocator.h"
 
-namespace muscle {
+BEGIN_NAMESPACE(muscle);
 
 status_t ByteBuffer :: SetBuffer(uint32 numBytes, const uint8 * buffer)
 {
@@ -111,5 +111,5 @@ ByteBufferRef GetByteBufferFromPool(const ByteBuffer & copyMe)
    return ref;
 }
 
-};  // end namespace muscle
+END_NAMESPACE(muscle);
 
