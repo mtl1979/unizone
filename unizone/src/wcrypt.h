@@ -2,7 +2,7 @@
 #define WCRYPT_H
 
 #include <qstring.h>
-#include "util/string.h"
+#include "util/String.h"
 
 using namespace muscle;
 
