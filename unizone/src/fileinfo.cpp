@@ -45,8 +45,8 @@ UFileInfo::InitMIMEType()
 	// Read the mime-type
 	HKEY hkey;
 	DWORD type;
-	char key[MAX_PATH];
-	DWORD dsize = MAX_PATH;
+	wchar_t key[MAX_PATH];
+	DWORD dsize = MAX_PATH * 2;
 	QString mt = QString::null;
 
 	QString ext = ".";
@@ -55,13 +55,12 @@ UFileInfo::InitMIMEType()
 	if (RegOpenKey(HKEY_CLASSES_ROOT, tExt, &hkey) == ERROR_SUCCESS)
 	{
 		LONG ret;
-		// <postmaster@raasu.org> -- Don't use Unicode (wide-char) functions for char[] and char *
-		if ((ret = RegQueryValueExA(hkey, "Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
+		if ((ret = RegQueryValueEx(hkey, L"Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
 		{
 #ifdef DEBUG2
-			PRINT("Read key: %s\n", key);
+			PRINT("Read key: %S\n", key);
 #endif
-			mt = key;
+			mt = wideCharToQString(key);
 		}
 		else
 		{
