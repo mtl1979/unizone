@@ -11,6 +11,7 @@
 using muscle::String;
 
 #include <qregexp.h>
+#include <qfile.h>
 
 WLog::WLog()
 {

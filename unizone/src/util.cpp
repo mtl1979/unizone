@@ -24,6 +24,7 @@ using namespace muscle;
 #endif
 
 #include <qdns.h>
+#include <qfile.h>
 #include <qstringlist.h>
 
 #include <limits.h>
@@ -352,6 +353,8 @@ GetParameterString(const QString & qCommand)
 	int sPos = qCommand.find(" ")+1;
 	if (sPos > 0)
 	{
+		while (qCommand[sPos].unicode() == 10) 
+			sPos++;
 		qParameters = qCommand.mid(sPos);
 	}
 	return qParameters;
@@ -1334,4 +1337,95 @@ void RemoveFromList(String &slist, const String &entry)
 			AddToList(out, tmp);
 	}
 	slist = out;
+}
+
+void HEXClean(QString &in)
+{
+	QString tmp;
+	for (int x = 0; x < in.length(); x++)
+	{
+		QChar c = in[x].lower();
+		if (((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'f')))
+			tmp += c;
+	}
+	in = tmp;
+}
+
+void BINClean(QString &in)
+{
+	QString tmp, part;
+	int s = 0, p = 0;
+	while (s < in.length())
+	{
+		while ((in[s] != '0') && (in[s] != '1'))
+		{
+			s++;
+			if (s == in.length())		// avoid looping out of string...
+			{
+				in = QString::null;
+				return;
+			}
+		}
+		p = in.find(" ", s);
+		if (p < 0) 
+			p = in.length();
+		if ((p - s) > 7) p = s + 7;
+		part = "";
+		for (; s <= p; s++)
+		{
+			QChar c = in[s];
+			if ((c == '0') || (c == '1'))
+				part += c;
+		}
+		while (part.length() < 8) 
+			part = "0" + part;
+		qDebug(part.latin1());
+		tmp += part;
+		if ((in[s] != '0') && (in[s] != '1')) 
+			s++;
+	}
+	in = tmp;
+}
+
+QString BINDecode(const QString &in)
+{
+	QCString out;
+	if (in.length() % 8 != 0)
+		return QString::null;
+	for (int x = 0; x < in.length(); x += 8)
+	{
+		QString part = in.mid(x, 8);
+		qDebug(part.latin1());
+		int xx = 1;
+		int c = 0;
+		for (int y = 7; y > -1; y--)
+		{
+			if (part[y] == '1')
+				c = c + xx;
+			xx *= 2;
+		}
+		out += (char) c;
+	}
+	return QString::fromUtf8(out);
+}
+
+QString BINEncode(const QString &in)
+{
+	QCString temp = in.utf8();
+	QString out, part;
+	for (int x = 0; x < temp.length(); x++)
+	{
+		char c = temp[x];
+		part = "";
+		for (int xx = 0; xx < 8; xx++)
+		{
+			if (c % 2 == 1)
+				part = "1" + part;
+			else
+				part = "0" + part;
+			c /= 2;
+		}
+		out += part;
+	}
+	return out;
 }

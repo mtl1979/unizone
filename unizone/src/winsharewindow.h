@@ -443,6 +443,8 @@ private:
 	void SendChatText(WTextEvent *, bool * reply = NULL);
 
 	void HandleMessage(MessageRef);
+	void HandleChatText(const WUserRef &from, const QString &text, bool priv);
+
 	void HandleComboEvent(WTextEvent *);
 
 	void UpdateUserList();

@@ -206,6 +206,10 @@ SOURCE=..\src\combo.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\debugimpl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\downloadimpl.cpp
 # End Source File
 # Begin Source File

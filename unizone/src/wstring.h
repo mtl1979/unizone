@@ -20,6 +20,7 @@ class QString;
 // For Unicode support on Linux or FreeBSD???
 #if defined(__LINUX__) || defined(__FreeBSD__) || defined(__QNX__)
 #include <wchar.h>
+#include <stdlib.h>
 #endif
 
 // Converts array of wchar_t to QString

@@ -4102,5 +4102,13 @@ Päiväys: %4</translation>
         <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
         <translation>MUSCLE-asiakas %1:lle!</translation>
     </message>
+    <message>
+        <source>/bindecode - decode binary data and display it</source>
+        <translation>/bindecode - muunna binäärinen tieto näytettävään muotoon</translation>
+    </message>
+    <message>
+        <source>/binencode - encode as binary data and display it</source>
+        <translation>/binencode - muunna teksti binäärimuotoon ja näytä se</translation>
+    </message>
 </context>
 </TS>

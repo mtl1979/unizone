@@ -1,5 +1,6 @@
 #include "netclient.h"
 #include "downloadimpl.h"
+#include "events.h"
 #include "version.h"
 #include "debugimpl.h"
 #include "settings.h"
@@ -10,6 +11,7 @@
 #include "wcrypt.h"
 
 #include <qapplication.h>
+
 #include "regex/PathMatcher.h"
 #include "util/TimeUtilityFunctions.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
@@ -980,7 +982,7 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 					else	// a /serverinfo was sent
 					{
 //						win->ServerParametersReceived(msg);
-						SendEvent(fOwner, WMessageEvent::ServerParametersMessage, msg);
+						::SendEvent(fOwner, WMessageEvent::ServerParametersMessage, msg);
 					}
 				}
 				break;
@@ -1072,7 +1074,7 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 //				WinShareWindow *win = GetWindow();
 //				if (win)
 //					win->HandleMessage(msg);
-				SendEvent(fOwner, WMessageEvent::HandleMessage, msg);
+				::SendEvent(fOwner, WMessageEvent::HandleMessage, msg);
 				break;
 			}
 		}
@@ -1345,30 +1347,6 @@ NetClient::event(QEvent * e)
 	}
 	else
 		return QObject::event(e);
-}
-
-void 
-NetClient::SendEvent(QObject * target, int type, const String &from)
-{
-	WMessageEvent *wme = new WMessageEvent(type, from);
-	if (wme)
-		QApplication::postEvent(target, wme);
-}
-
-void 
-NetClient::SendEvent(QObject * target, int type, const String &from, const MessageRef &msg)
-{
-	WMessageEvent *wme = new WMessageEvent(type, from, msg);
-	if (wme)
-		QApplication::postEvent(target, wme);
-}
-
-void 
-NetClient::SendEvent(QObject * target, int type,const MessageRef &msg)
-{
-	WMessageEvent *wme = new WMessageEvent(type, msg);
-	if (wme)
-		QApplication::postEvent(target, wme);
 }
 
 uint32

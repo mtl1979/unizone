@@ -3623,5 +3623,13 @@ Date: %4</source>
         <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
         <translation>%1용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
     </message>
+    <message>
+        <source>/bindecode - decode binary data and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/binencode - encode as binary data and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

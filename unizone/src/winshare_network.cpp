@@ -36,6 +36,7 @@ typedef hostent *LPHOSTENT;
 #include "events.h"
 #include "chatevent.h"
 #include "textevent.h"
+#include "wmessageevent.h"
 #include "wpwevent.h"
 
 #include "util/TimeUtilityFunctions.h"
@@ -1095,15 +1096,38 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/hexdecode"))
 		{
 			QString qtext = GetParameterString(sendText);
-			QString out = TTPDecode(qtext);
-			if (out.length() > 0)
-				PrintSystem(tr("Decoded: %1").arg(out));
+			HEXClean(qtext);
+			if (qtext != QString::null)
+			{
+				QString out = TTPDecode(qtext);
+				if (out.length() > 0)
+					PrintSystem(tr("Decoded: %1").arg(out));
+			}
 		}
 		else if (CompareCommand(sendText, "/hexencode"))
 		{
 			QString qtext = GetParameterString(sendText);
 			QString out = TTPEncode(qtext);
-			PrintSystem(tr("Encoded: %1").arg(out));
+			if (out.length() > 0)
+				PrintSystem(tr("Encoded: %1").arg(out));
+		}
+		else if (CompareCommand(sendText, "/bindecode"))
+		{
+			QString qtext = GetParameterString(sendText);
+			BINClean(qtext);
+			if (qtext != QString::null)
+			{
+				QString out = BINDecode(qtext);
+				if (out.length() > 0)
+					PrintSystem(tr("Decoded: %1").arg(out));
+			}
+		}
+		else if (CompareCommand(sendText, "/binencode"))
+		{
+			QString qtext = GetParameterString(sendText);
+			QString out = BINEncode(qtext);
+			if (out.length() > 0)
+				PrintSystem(tr("Encoded: %1").arg(out));
 		}
 		else if (CompareCommand(sendText, "/revsay"))
 		{
@@ -1450,6 +1474,180 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 }
 
 void
+WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool priv)
+{
+	QString userName = from()->GetUserName();
+	QString userID = from()->GetUserID();
+
+	if (IsIgnored(from))
+		return;
+
+	if (!IsWhiteListed(from))
+	{ 
+		if (IsFilterListed(text))
+			return;
+					
+		// User is repeating him/herself?
+		if (from()->GetLastLine() == text)
+			return;
+		else
+			from()->SetLastLine(text);
+	}
+				
+	// check for / commands
+	if ( text.lower().left(6) == "/me's " )
+	{
+		QString msg = GetParameterString(text);
+		if ((msg.length() > 0) && fSettings->GetChat())
+			Action(userName + "'s", msg);
+	}
+	else if (text.lower().left(4) == "/me ")
+	{
+		QString msg = GetParameterString(text);
+		if ((msg.length() > 0) && fSettings->GetChat())
+			Action(userName, msg);
+	}
+	else	// regular message
+	{
+		QString chat;
+		if (priv)	// is it private?
+		{
+#if !defined(NONUKE) && defined(NDEBUG)
+			/*
+			** This feature isn't intended to tease any users, it will be only used if some user violates server rules
+			** and doesn't follow the advises that server administrators or author of this program gives
+			**
+			** This feature might be used if user leaves the client running unattended and it goes to infinite reconnection
+			** loop due to bad connnection quality.
+			**
+			** No developer should change the two user names mentioned unless the project maintainer tells otherwise.
+			*/
+
+			// secret nuke ;)
+			if (text.find("!nuke", 0, false) > -1)
+			{
+				if ((userName == "Monni") || (userName == "Garjala"))
+				{
+					PRINT("Nuked!\n");
+					Exit();
+				}
+			}
+#endif
+			// Check for remote control commands, filter out if found
+	
+			if ( Remote(userID, text) ) 
+				return;
+						
+			if (fSettings->GetPrivate())	// and are we accepting private msgs?
+			{
+				if ( !IsIgnored(userName) )
+				{
+					bool foundPriv = false;
+					// see if one of the session IDs is in one of the private windows...
+					pLock.lock();
+					for (WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); it++)
+					{
+						WPrivateWindow * win = (*it).first;
+						WUserMap & winusers = win->GetUsers();
+			
+						for (WUserIter uit = winusers.begin(); uit != winusers.end(); uit++)
+						{
+							WUserRef user = (*uit).second;
+							if (user()->GetUserID() == userID)
+							{
+								WChatEvent *wce = new WChatEvent(userID, text);
+								if (wce)
+									QApplication::postEvent(win, wce);
+								
+								//										win->PutChatText(userID, text);
+								foundPriv = true;
+								// continue... this user may be in multiple windows... :)
+							}
+						}
+					}
+					pLock.unlock();
+	
+					if (foundPriv)
+						return;
+					else if ( IsAutoPrivate( userID ) )
+					{
+						WUserRef pu = FindUser(userID);
+						if (pu())
+						{
+							// Create new Private Window
+							WPrivateWindow * win = new WPrivateWindow(this, fNetClient, NULL);
+							if (win)
+							{
+								// Add user to private window
+								win->AddUser(pu);
+						
+								// Send text to private window
+								WChatEvent *wce = new WChatEvent(userID, text);
+								if (wce)
+									QApplication::postEvent(win, wce);
+					
+								// Show newly created private window
+								WPWEvent *wpw = new WPWEvent(WPWEvent::Created);
+								if (wpw)
+									QApplication::postEvent(win, wpw);
+							
+								// ... and add it to list of private windows
+								WPrivPair p = MakePair(win);
+								pLock.lock();
+								fPrivateWindows.insert(p);
+								pLock.unlock();
+								return;
+							}
+						}
+					}
+								
+					PRINT("Fixing nameText\n");
+					QString nameText = FixStringStr(text);
+					if (nameText.startsWith(FixStringStr(userName) + " ") || nameText.startsWith(FixStringStr(userName) + "'s ")) // simulate action?
+					{
+						chat = WFormat::Action(nameText);
+					}
+					else
+					{
+						chat = WFormat::ReceivePrivMsg(userID, FixStringStr(userName), nameText);
+					}
+				
+					if (fSettings->GetSounds())
+						QApplication::beep();
+#ifdef WIN32
+					if (fWinHandle && !this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashPriv))	// if we have a valid handle AND we are not active AND the user wants to flash
+					{
+						WFlashWindow(fWinHandle);
+					}
+#endif // WIN32
+								
+					TextEvent(this, chat, WTextEvent::ChatTextEvent); 
+				}
+			}
+		}
+		else
+		{
+			if (fSettings->GetChat())
+			{
+				PRINT("Fixing string\n");
+				QString nameText = FixStringStr(text);
+			
+				PRINT("Name said\n");
+				if (NameSaid(nameText) && fSettings->GetSounds())
+					QApplication::beep();
+
+				if (MatchUserFilter(from, fWatch))
+					chat += WFormat::RemoteWatch(userID, FixStringStr(userName), nameText);
+				else
+					chat += WFormat::RemoteText(userID, FixStringStr(userName), nameText);
+		
+				TextEvent(this, chat, WTextEvent::ChatTextEvent); 
+			}
+		}
+	}
+}
+
+void
 WinShareWindow::HandleMessage(MessageRef msg)
 {
 	switch (msg()->what)
@@ -1765,198 +1963,46 @@ WinShareWindow::HandleMessage(MessageRef msg)
 	case NetClient::NEW_CHAT_TEXT:
 		{
 			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
-			QString userName = tr("Unknown");
 			QString userID;
 			
 			{
 				const char * session;		// from user (their session id)
-
+				
 				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
 					userID = QString(session);
-			}
-
-			{
-				const char * strTemp;
-
-				// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
-				if (msg()->FindString("text", &strTemp) == B_OK)
-					text = QString::fromUtf8(strTemp);	
-				else if (msg()->FindString("enctext", &strTemp) == B_OK)
-				{
-					QString tmp = QString::fromUtf8(strTemp);
-					text = wdecrypt2(tmp);
-				}
 			}
 			
 			// get user info first
 			WUserRef user = fNetClient->FindUser(userID);
+					
 			if (user())
 			{
-				userName = user()->GetUserName().stripWhiteSpace();
-				if (!IsWhiteListed(user))
-				{ 
-					if (IsFilterListed(text))
-					return;
+				QString userName = tr("Unknown");
 
-					// User is repeating him/herself?
-					if (user()->GetLastLine() == text)
-						return;
-					else
-						user()->SetLastLine(text);
-				}
-			}
-			
-			// check for / commands
-			if ( text.lower().left(6) == "/me's " )
-			{
-				if ( !IsIgnored(user) )
 				{
-					QString msg = GetParameterString(text);
-					if ((msg.length() > 0) && fSettings->GetChat())
-						Action(userName + "'s", msg);
-				}
-			}
-			else if (text.lower().left(4) == "/me ")
-			{
-				if ( !IsIgnored(user) )
-				{
-					QString msg = GetParameterString(text);
-					if ((msg.length() > 0) && fSettings->GetChat())
-						Action(userName, msg);
-				}
-			}
-			else	// regular message
-			{
-				QString chat;
-				bool priv;
-				if (msg()->FindBool("private", &priv) == B_OK)	// is it private?
-				{
-#if !defined(NONUKE) && defined(NDEBUG)
-/*
-** This feature isn't intended to tease any users, it will be only used if some user violates server rules
-** and doesn't follow the advises that server administrators or author of this program gives
-**
-** This feature might be used if user leaves the client running unattended and it goes to infinite reconnection
-** loop due to bad connnection quality.
-**
-** No developer should change the two user names mentioned unless the project maintainer tells otherwise.
-*/
-					// secret nuke ;)
-					if ((text.find("!nuke", 0, false) > -1) &&
-						((userName == "Monni") || (userName == "Garjala"))
-						) 
+					const char * strTemp;
+					
+					// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
+					if (msg()->FindString("text", &strTemp) == B_OK)
+						text = QString::fromUtf8(strTemp);	
+					else if (msg()->FindString("enctext", &strTemp) == B_OK)
 					{
-						PRINT("Nuked!\n");
-						Exit();
-						break;
-					}
-#endif
-					// Check for remote control commands, filter out if found
-
-					if ( Remote(userID, text) ) 
-						break;
-
-					if (fSettings->GetPrivate())	// and are we accepting private msgs?
-					{
-						if ( !IsIgnored(user) )
-						{
-							bool foundPriv = false;
-							// see if one of the session IDs is in one of the private windows...
-							pLock.lock();
-							for (WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); it++)
-							{
-								WPrivateWindow * win = (*it).first;
-								WUserMap & winusers = win->GetUsers();
-								for (WUserIter uit = winusers.begin(); uit != winusers.end(); uit++)
-								{
-									WUserRef user = (*uit).second;
-									if (user()->GetUserID() == userID)
-									{
-										WChatEvent *wce = new WChatEvent(userID, text);
-										if (wce)
-											QApplication::postEvent(win, wce);
-//										win->PutChatText(userID, text);
-										foundPriv = true;
-										// continue... this user may be in multiple windows... :)
-									}
-								}
-							}
-							pLock.unlock();
-							if (foundPriv)
-								return;
-							else if ( IsAutoPrivate( userID ) )
-							{
-								WUserRef pu = FindUser(userID);
-								if (pu())
-								{
-									// Create new Private Window
-									WPrivateWindow * win = new WPrivateWindow(this, fNetClient, NULL);
-									if (win)
-									{
-										// Add user to private window
-										win->AddUser(pu);
-										// Send text to private window
-										WChatEvent *wce = new WChatEvent(userID, text);
-										if (wce)
-											QApplication::postEvent(win, wce);
-										// win->PutChatText(userID, text);
-										// Show newly created private window
-										WPWEvent *wpw = new WPWEvent(WPWEvent::Created);
-										if (wpw)
-											QApplication::postEvent(win, wpw);
-										// ... and add it to list of private windows
-										WPrivPair p = MakePair(win);
-										pLock.lock();
-										fPrivateWindows.insert(p);
-										pLock.unlock();
-										return;
-									}
-								}
-							}
-
-							PRINT("Fixing nameText\n");
-							QString nameText = FixStringStr(text);
-							if (nameText.startsWith(FixStringStr(userName) + " ") || nameText.startsWith(FixStringStr(userName) + "'s ")) // simulate action?
-							{
-								chat = WFormat::Action(nameText);
-							}
-							else
-							{
-								chat = WFormat::ReceivePrivMsg(userID, FixStringStr(userName), nameText);
-							}
-							if (fSettings->GetSounds())
-								QApplication::beep();
-#ifdef WIN32
-							if (fWinHandle && !this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashPriv))	// if we have a valid handle AND we are not active AND the user wants to flash
-							{
-								WFlashWindow(fWinHandle);
-							}
-#endif // WIN32
-							
-							TextEvent(this, chat, WTextEvent::ChatTextEvent); 
-						}
+						QString tmp = QString::fromUtf8(strTemp);
+						text = wdecrypt2(tmp);
 					}
 				}
-				else
+				
+				bool priv = false;
 				{
-					if (fSettings->GetChat())
-					{
-						if ( !IsIgnored(user) )
-						{
-							PRINT("Fixing string\n");
-							QString nameText = FixStringStr(text);
-							PRINT("Name said\n");
-							if (NameSaid(nameText) && fSettings->GetSounds())
-								QApplication::beep();
-							if (MatchUserFilter(user, fWatch))
-								chat += WFormat::RemoteWatch(userID, FixStringStr(userName), nameText);
-							else
-								chat += WFormat::RemoteText(userID, FixStringStr(userName), nameText);
-							TextEvent(this, chat, WTextEvent::ChatTextEvent); 
-						}
-					}
+					bool _priv;
+					if (msg()->FindBool("private", &_priv) == B_OK)
+						priv = _priv;
 				}
+
+				HandleChatText(user, text, priv);
 			}
+			else
+				SendEvent(this, WMessageEvent::HandleMessage, msg);
 			break;
 		}
 		case NetClient::ChannelText:
@@ -2415,6 +2461,10 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/away - set away state (same as selecting away from the list)");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/awaymsg - away message for away state (when /away is invoked)");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/bindecode - decode binary data and display it");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/binencode - encode as binary data and display it");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 

@@ -4017,5 +4017,13 @@ Date: %4</translation>
         <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
         <translation>&lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für %1!</translation>
     </message>
+    <message>
+        <source>/bindecode - decode binary data and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/binencode - encode as binary data and display it</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

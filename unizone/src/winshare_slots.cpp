@@ -5,6 +5,7 @@
 #endif
 
 #include <qapplication.h>
+#include <qmessagebox.h>
 
 #include "winsharewindow.h"
 #include "aboutdlgimpl.h"

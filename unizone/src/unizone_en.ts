@@ -3966,5 +3966,13 @@ Date: %4</translation>
         <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
         <translation>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</translation>
     </message>
+    <message>
+        <source>/bindecode - decode binary data and display it</source>
+        <translation>/bindecode - decode binary data and display it</translation>
+    </message>
+    <message>
+        <source>/binencode - encode as binary data and display it</source>
+        <translation>/binencode - encode as binary data and display it</translation>
+    </message>
 </context>
 </TS>

@@ -118,7 +118,7 @@ main( int argc, char** argv )
 	if ( lang.open(IO_ReadOnly) ) 
 	{    
 		// file opened successfully
-		QByteArray plang(255);
+		QByteArray plang(256);
 		lang.readLine(plang.data(), 255);
 		lfile = QString::fromUtf8(plang);
 		lang.close();
