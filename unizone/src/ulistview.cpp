@@ -290,7 +290,7 @@ WUniListItem::text(int c) const
 	case String_NoCase_Stripped:
 	case String_Cased_Stripped:
 		{
-		return StripURL(QListViewItem::text(c));
+		return StripURL(QListViewItem::text(c).stripWhiteSpace());
 		}
 	case Percentage:
 		{
