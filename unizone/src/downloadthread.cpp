@@ -328,15 +328,20 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						// fields:
 						//	String		beshare:File Name
 						//	Int64		beshare:File Size
-						//	String		beshare:From Session
+						//	String		beshare:FromSession
 						//	String		beshare:Path
 						//	Int64		beshare:StartOffset
 
 						// I only care to get the size and name
-						String fname;
+						String fname, session;
 						if (next()->FindInt64("beshare:File Size", (int64 *)&fFileSize) == B_OK && 
 							next()->FindString("beshare:File Name", fname) == B_OK)
 						{
+							if (next()->FindString("beshare:FromSession", session) == B_OK)
+							{
+								fFromSession = QString::fromUtf8(session.Cstr());
+								fFromUser = GetUserName(fFromSession);
+							}
 							QString outFile = "downloads/";
 							QString fixed;
 							fixed = outFile;
