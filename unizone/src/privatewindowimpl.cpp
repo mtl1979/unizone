@@ -96,8 +96,9 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 
 #ifdef WIN32
-	// QString title = tr ("[Freeware] - Private");
-	WString wtitle = tr ("[Freeware] - Private");
+	QString title = "[Freeware] - ";
+	title += tr("Private");
+	WString wtitle = title;
 	fWinHandle = FindWindow(NULL, wtitle);
 	// <postmaster@raasu.org> 20020925
 	if (fWinHandle)

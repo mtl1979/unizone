@@ -191,8 +191,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 #ifdef WIN32
 	// try to find our handle
-	// QString title = tr("[Freeware] - Unizone");
-	WString wtitle = tr("[Freeware] - Unizone");
+	QString title = "[Freeware] - ";
+	title += tr("Unizone");
+	WString wtitle = title;
 	fWinHandle = FindWindow(NULL, wtitle); 
 
 	if (fWinHandle)

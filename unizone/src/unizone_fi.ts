@@ -1796,23 +1796,23 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>5 kB</source>
-        <translation>5 kt</translation>
+        <translation type='obsolete'>5 kt</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation>10 kt</translation>
+        <translation type='obsolete'>10 kt</translation>
     </message>
     <message>
         <source>25 kB</source>
-        <translation>25 kt</translation>
+        <translation type='obsolete'>25 kt</translation>
     </message>
     <message>
         <source>50 kB</source>
-        <translation>50 kt</translation>
+        <translation type='obsolete'>50 kt</translation>
     </message>
     <message>
         <source>100 kB</source>
-        <translation>100 kt</translation>
+        <translation type='obsolete'>100 kt</translation>
     </message>
     <message>
         <source>Base Port:</source>
@@ -1824,7 +1824,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>200 kB</source>
-        <translation>200 kt</translation>
+        <translation type='obsolete'>200 kt</translation>
     </message>
     <message>
         <source>250 kB</source>
@@ -1900,7 +1900,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>[Freeware] - Private</source>
-        <translation>[Freeware] - Yksityinen</translation>
+        <translation type='obsolete'>[Freeware] - Yksityinen</translation>
     </message>
     <message>
         <source>Private Chat</source>
@@ -1934,6 +1934,10 @@ Päiväys: %4</translation>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
         <translation>Käyttäjä #%1, eli %2, on botti!</translation>
+    </message>
+    <message>
+        <source>Private</source>
+        <translation>Yksityinen</translation>
     </message>
 </context>
 <context>
@@ -2478,7 +2482,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>[Freeware] - Unizone</source>
-        <translation>[Freeware] - Unizone</translation>
+        <translation type='obsolete'>[Freeware] - Unizone</translation>
     </message>
     <message>
         <source>Ignore pattern cleared.</source>
@@ -3155,6 +3159,10 @@ Päiväys: %4</translation>
     <message>
         <source>Unizone version: %1</source>
         <translation>Unizone versio: %1</translation>
+    </message>
+    <message>
+        <source>Unizone</source>
+        <translation>Unizone</translation>
     </message>
 </context>
 </TS>

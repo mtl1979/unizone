@@ -1670,23 +1670,23 @@ Date: %4</translation>
     </message>
     <message>
         <source>5 kB</source>
-        <translation>5 kB</translation>
+        <translation type='obsolete'>5 kB</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation>10 kB</translation>
+        <translation type='obsolete'>10 kB</translation>
     </message>
     <message>
         <source>25 kB</source>
-        <translation>25 kB</translation>
+        <translation type='obsolete'>25 kB</translation>
     </message>
     <message>
         <source>50 kB</source>
-        <translation>50 kB</translation>
+        <translation type='obsolete'>50 kB</translation>
     </message>
     <message>
         <source>100 kB</source>
-        <translation>100 kB</translation>
+        <translation type='obsolete'>100 kB</translation>
     </message>
     <message>
         <source>Base Port:</source>
@@ -1698,7 +1698,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>200 kB</source>
-        <translation type='unfinished'>200 kB</translation>
+        <translation type='obsolete'>200 kB</translation>
     </message>
     <message>
         <source>250 kB</source>
@@ -1774,7 +1774,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>[Freeware] - Private</source>
-        <translation>[Freeware] - Private</translation>
+        <translation type='obsolete'>[Freeware] - Private</translation>
     </message>
     <message>
         <source>Private Chat</source>
@@ -1803,6 +1803,10 @@ Date: %4</translation>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
         <translation>User #%1 (a.k.a. %2) is a bot!</translation>
+    </message>
+    <message>
+        <source>Private</source>
+        <translation>Private</translation>
     </message>
 </context>
 <context>
@@ -2347,7 +2351,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>[Freeware] - Unizone</source>
-        <translation>[Freeware] - Unizone</translation>
+        <translation type='obsolete'>[Freeware] - Unizone</translation>
     </message>
     <message>
         <source>Ignore pattern cleared.</source>
@@ -3023,7 +3027,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Unizone version: %1</translation>
+    </message>
+    <message>
+        <source>Unizone</source>
+        <translation>Unizone</translation>
     </message>
 </context>
 </TS>
