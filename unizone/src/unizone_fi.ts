@@ -3931,5 +3931,29 @@ Päiväys: %4</translation>
         <source>Copyright (C) %1 Mika T. Lindqvist.</source>
         <translation>Copyright (C) %1 Mika T. Lindqvist.</translation>
     </message>
+    <message>
+        <source>Bad Conversion!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 degrees in %2 is:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 degrees Celsius</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 degrees Fahrenheit</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 degrees Kelvin</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

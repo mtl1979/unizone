@@ -1170,15 +1170,15 @@ Date: %4</source>
     <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
-        <translation></translation>
+        <translation>&lt;font size="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
-        <translation></translation>
+        <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1"&gt;</source>
-        <translation></translation>
+        <translation>&lt;font color="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
@@ -3451,6 +3451,30 @@ Date: %4</source>
     <message>
         <source>Copyright (C) %1 Mika T. Lindqvist.</source>
         <translation>Copyright (C) %1 Mika T. Lindqvist.</translation>
+    </message>
+    <message>
+        <source>Bad Conversion!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 degrees in %2 is:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 degrees Celsius</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 degrees Fahrenheit</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 degrees Kelvin</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>

@@ -23,10 +23,8 @@ QString
 WFormat::tr2(const char *s)
 {
 	QString temp;
-	if (QString(s) != tr(s))
-	{
-		temp = tr(s).stripWhiteSpace();
-	}
+	temp = tr(s).stripWhiteSpace();
+
 	if (temp.length() > 0)
 	{
 		temp += " ";
@@ -37,9 +35,11 @@ WFormat::tr2(const char *s)
 QString 
 WFormat::tr3(const QString &s)
 {
-	QString temp(" ");
-	temp += s;
-	return temp.stripWhiteSpace();
+	QString temp = s.stripWhiteSpace();
+	if (temp != QString("."))
+		return temp.prepend(" ");
+	else
+		return QString(".");
 }
 
 // formatting for:
