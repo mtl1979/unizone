@@ -219,6 +219,7 @@ clean :
 	rm -f $(MOC_SRCFILES)
 	rm -f $(UIC_SRCFILES)
 	rm -f $(UIC_HEADERS)
+	rm -f core.*
 
 distclean : clean
 	$(MAKE) -C src -f Makefile distclean
