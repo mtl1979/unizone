@@ -772,7 +772,8 @@ NetClient::HandleParameters(MessageRef & next)
 					temp += GetServerIP();
 					win->setStatus( temp , 2);
 				}
-				win->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
+				if (!win->fSettings->GetTimeStamps())
+					win->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
 			}
 		}
 	}

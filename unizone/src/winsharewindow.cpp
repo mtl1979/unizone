@@ -1286,8 +1286,25 @@ WinShareWindow::UpdateUserList()
 }
 */
 QString
+WinShareWindow::MakeHumanDiffTime(int64 time)
+{
+	int64 seconds = time / 1000000;
+	int64 minutes = seconds / 60;  seconds = seconds % 60;
+	int64 hours   = minutes / 60;  minutes = minutes % 60;
+
+	QString s;
+
+	s.sprintf(INT64_FORMAT_SPEC ":%02i:%02i", hours, (int) minutes, (int) seconds);
+	
+	return s;
+}
+
+QString
 WinShareWindow::MakeHumanTime(int64 time)
 {
+	if (time < 1000000)
+		return tr("%1 seconds").arg(0);
+
 	int64 seconds = time / 1000000;
 	int64 minutes = seconds / 60;  seconds = seconds % 60;
 	int64 hours   = minutes / 60;  minutes = minutes % 60;
@@ -2514,6 +2531,17 @@ void
 WinShareWindow::timerEvent(QTimerEvent *)
 {
 	setStatus(GetTimeStamp2(), 3);
+	if (
+		fSettings->GetTimeStamps() && 
+		(fNetClient->IsConnected() && fNetClient->LocalSessionID() != QString::null)
+		)
+	{
+		QString tmp = tr("Unizone - User #%1 on %2").arg(fNetClient->LocalSessionID()).arg(fNetClient->GetServer());
+		tmp += " (";
+		tmp += tr("Logged In: %1").arg(MakeHumanDiffTime(GetCurrentTime64() - fLoginTime));
+		tmp += ")";
+		setCaption(tmp);
+	}
 }
 
 void

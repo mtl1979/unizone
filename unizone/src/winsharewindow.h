@@ -453,6 +453,7 @@ private:
 //	void UpdateUserList();
 
 	QString MakeHumanTime(int64 time);
+	QString MakeHumanDiffTime(int64 time);
 
 	void NameChanged(const QString & newName);
 	void StatusChanged(const QString & newStatus);
