@@ -141,7 +141,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 	// Compile a list of pointers to beginnings-of-words in the user's chat string
 	Queue<int> words;
 	bool inSpace = true;
-	int next = 0;
+	unsigned int next = 0;
 	while(next < text.length() )
 	{
 		if (inSpace)
