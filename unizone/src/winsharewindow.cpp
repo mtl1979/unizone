@@ -1519,7 +1519,7 @@ WinShareWindow::LoadSettings()
 		for (i = 0; (str = fSettings->GetUserItem(i)) != QString::null; i++)
 			fUserList->insertItem(str, i);
 		i = fSettings->GetCurrentUserItem();
-		if (i < fUserList->count());
+		if (i < fUserList->count())
 			fUserList->setCurrentItem(i);
 		fUserName = fUserList->currentText();
 
