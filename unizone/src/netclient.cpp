@@ -761,6 +761,29 @@ NetClient::SendChatText(const QString & target, const QString & text)
 }
 
 void
+NetClient::SendPicture(const QString & target, const ByteBufferRef &buffer, const QString &name)
+{
+	if (qmtt->IsInternalThreadRunning())
+	{
+		MessageRef pic(GetMessageFromPool(NEW_PICTURE));
+		if (pic())
+		{
+			QString tostr = "/*/";
+			tostr += target;
+			tostr += "/beshare";
+			pic()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
+			pic()->AddString("session", (const char *) fSessionID.utf8());
+			pic()->AddData("picture", B_RAW_TYPE, buffer()->GetBuffer(), buffer()->GetNumBytes());
+			pic()->AddInt32("chk", CalculateChecksum(buffer()->GetBuffer(), buffer()->GetNumBytes()));
+			pic()->AddString("name", (const char *) name.utf8());
+			if (target != "*")
+				pic()->AddBool("private", true);
+			SendMessageToSessions(pic);
+		}
+	}
+}
+
+void
 NetClient::SendPing(const QString & target)
 {
 	if (qmtt->IsInternalThreadRunning())

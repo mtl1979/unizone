@@ -9,6 +9,7 @@
 
 #include <qstring.h>
 #include "util/String.h"
+#include "util/ByteBuffer.h"
 
 using namespace muscle;
 
@@ -99,5 +100,11 @@ uint32 CalculateChecksum(const uint8 * data, size_t bufSize);
 
 // Return (first) IPv4 address from hostname
 uint32 GetHostByName(const QString &name);
+
+
+QString UniqueName(const QString & file, int index); // build up unique name using 'file' and 'index'
+
+// Save picture to file, makes sure file doesn't exist before writing...
+void SavePicture(QString & file, const ByteBufferRef & buf);
 
 #endif

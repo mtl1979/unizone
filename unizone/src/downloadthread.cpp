@@ -897,21 +897,6 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 	}
 }
 
-QString
-WDownloadThread::UniqueName(const QString & file, int index)
-{
-	QString tmp, base, ext;
-	int sp = file.findRev("/", -1); // Find last /
-	if (sp > -1)
-	{
-		tmp = file.left(sp + 1);			// include slash
-		base = file.mid(sp + 1);			// filename
-		return tr("%1%2 %3").arg(tmp).arg(index).arg(base);
-	}
-	WASSERT(true, "Invalid download path!");
-	return QString::null;
-}
-
 void WDownloadThread::NextFile()
 {
 	fCurrentOffset = 0;

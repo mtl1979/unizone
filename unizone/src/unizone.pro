@@ -12,6 +12,7 @@ SOURCES =			aboutdlg.cpp \
 				main.cpp \
 				menubar.cpp \
 				netclient.cpp \
+				picviewer.cpp \
 				platform.cpp \
                 		prefs.cpp \
 				prefsimpl.cpp \

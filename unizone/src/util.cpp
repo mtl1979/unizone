@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include "util.h"
 #include "tokenizer.h"
 #include "formatting.h"
@@ -1024,4 +1028,48 @@ GetHostByName(const QString &name)
 		ipiter++;
 	}
 	return 0;
+}
+
+QString
+UniqueName(const QString & file, int index)
+{
+	QString tmp, base, ext;
+	int sp = file.findRev("/", -1); // Find last /
+	if (sp > -1)
+	{
+		tmp = file.left(sp + 1);			// include slash
+		base = file.mid(sp + 1);			// filename
+		QString out(tmp);
+		out += QString::number(index);
+		out += " ";
+		out += base;
+		return out;
+	}
+	WASSERT(true, "Invalid download path!");
+	return QString::null;
+}
+
+void
+SavePicture(QString &file, const ByteBufferRef &buf)
+{
+	int n = 1;
+	QString path("downloads/");
+	path += FixFileName(file);
+	QString nf = path;
+	while (QFile::exists(nf)) 
+	{
+		nf = UniqueName(path, n++);
+	}
+	QFile fFile(nf);
+	if (fFile.open(IO_WriteOnly))
+	{
+		int bytes = fFile.writeBlock((char *) buf()->GetBuffer(), buf()->GetNumBytes());
+		fFile.close();
+		if  (bytes == buf()->GetNumBytes())
+		{
+			file = nf;
+			return;
+		}
+	}
+	file = QString::null;
 }

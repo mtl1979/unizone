@@ -12,6 +12,7 @@
 #include "textevent.h"
 #include "htmlview.h"
 #include "privatewindowimpl.h"
+#include "picviewerimpl.h"
 #include "wpwevent.h"
 #include "wsystemevent.h"
 #include "wwarningevent.h"
@@ -104,6 +105,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fDLWindow = NULL;
 	fAccept = NULL;
 	fFileScanThread = NULL;
+	fPicViewer = new WPicViewer(this);
+	CHECK_PTR(fPicViewer);
 	
 	fUpdateThread = new UpdateClient(this);
 	CHECK_PTR(fUpdateThread);

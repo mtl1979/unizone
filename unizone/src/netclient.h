@@ -41,6 +41,7 @@ public:
 	
 	void SendChatText(const QString &target, const QString &text);
 	void SendPing(const QString &target);
+	void SendPicture(const QString & target, const ByteBufferRef &buffer, const QString &name);
 	
 	void SetUserName(const QString &user); 	// <postmaster@raasu.org> 20021001
 	void SetUserStatus(const QString &status);		//
@@ -77,7 +78,8 @@ public:
 			CHECK_FILE_COUNT,
 			PING,
 			PONG,
-			SCAN_THREAD_REPORT
+			SCAN_THREAD_REPORT,
+			NEW_PICTURE
 	}; 
 	
 	// path matching -- BeShare

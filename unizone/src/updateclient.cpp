@@ -86,6 +86,11 @@ bool
 UpdateClient::CheckVersion(const String & buf, QString * version)
 {
 	int maj, min, rev, build;
+	int kMajor, kMinor, kPatch, kBuild;
+	kMajor = UZ_MajorVersion();
+	kMinor = UZ_MinorVersion();
+	kPatch = UZ_Patch();
+	kBuild = UZ_Build();
 	int ret = sscanf(buf.Cstr(), "%d,%d,%d,%d", &maj, &min, &rev, &build);
 	PRINT("CheckVersion: ret == %d\n", ret);
 	if (ret == 4)	// we want 4 return values

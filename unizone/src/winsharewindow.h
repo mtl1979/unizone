@@ -52,6 +52,7 @@ class WComboBox;
 class NetClient;
 class ServerClient;
 class UpdateClient;
+class WPicViewer;
 
 
 struct WFileInfo
@@ -423,6 +424,8 @@ private:
 	QTimer * fReconnectTimer;
 
 	WLog fMainLog;
+
+	WPicViewer * fPicViewer;
 
 	void InitGUI();
 	void InitToolbars();

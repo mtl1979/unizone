@@ -12,8 +12,8 @@ OBJFILES = \
 	aboutdlgimpl.o botitem.o chattext.o colors.o combo.o \
 	downloadimpl.o downloadthread.o downloadworker.o fileinfo.o \
 	filethread.o formatting.o gotourl.o main.o md5.o menubar.o \
-	netclient.o nicklist.o platform.o prefsimpl.o \
-	privatewindowimpl.o searchitem.o settings.o \
+	netclient.o nicklist.o picviewer.o picviewerimpl.o platform.o \
+	prefsimpl.o privatewindowimpl.o searchitem.o settings.o \
 	textevent.o transferitem.o ulistview.o uploadthread.o user.o \
 	userlistitem.o winshare_lists.o winshare_network.o winshare_parsing.o \
 	winshare_slots.o winsharewindow.o Log.o htmlview.o \
@@ -27,11 +27,11 @@ OBJFILES = \
 MOC_OBJFILES = \
 	moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
 	moc_downloadimpl.o moc_downloadthread.o moc_formatting.o \
-	moc_htmlview.o moc_netclient.o moc_prefs.o moc_prefsimpl.o \
-	moc_privatewindow.o moc_privatewindowimpl.o moc_winsharewindow.o \
-	moc_uploadthread.o moc_channel.o moc_channelimpl.o moc_menubar.o \
-	moc_ulistview.o moc_updateclient.o moc_serverclient.o moc_scanprogress.o \
-	moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o 
+	moc_htmlview.o moc_netclient.o moc_picviewer.o moc_picviewerimpl.o \
+	moc_prefs.o moc_prefsimpl.o moc_privatewindow.o moc_privatewindowimpl.o \
+	moc_winsharewindow.o moc_uploadthread.o moc_channel.o moc_channelimpl.o \
+	moc_menubar.o moc_ulistview.o moc_updateclient.o moc_serverclient.o \
+	moc_scanprogress.o moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o 
 
 MUSCLE_OBJFILES = \
 	AbstractMessageIOGateway.o MessageIOGateway.o \
@@ -132,6 +132,12 @@ src/moc_htmlview.cpp: src/htmlview.h
 src/moc_netclient.cpp: src/netclient.h
 	$(MOC) $< -o $@
 
+src/moc_picviewer.cpp: src/picviewer.h
+	$(MOC) $< -o $@
+
+src/moc_picviewerimpl.cpp: src/picviewerimpl.h
+	$(MOC) $< -o $@
+
 src/moc_prefs.cpp: src/prefs.h
 	$(MOC) $< -o $@
 
@@ -178,6 +184,12 @@ src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp: src/muscle/qtsupport/QMe
 	$(MOC) $< -o $@
 
 # stuff for uic
+src/picviewer.h: src/picviewer.ui
+	$(UIC) src/picviewer.ui -o src/picviewer.h
+
+src/picviewer.cpp: src/picviewer.h src/picviewer.ui
+	$(UIC) -impl picviewer.h src/picviewer.ui -o src/picviewer.cpp	
+
 src/privatewindow.h: src/privatewindow.ui
 	$(UIC) src/privatewindow.ui -o src/privatewindow.h
 

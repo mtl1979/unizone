@@ -20,6 +20,7 @@ typedef hostent *LPHOSTENT;
 #include "formatting.h"
 #include "textevent.h"
 #include "platform.h"
+#include "picviewerimpl.h"
 #include "util.h"
 #include "wstring.h"
 #include "gotourl.h"			// <postmaster@raasu.org> 20021116 -- for /shell
@@ -39,12 +40,14 @@ typedef hostent *LPHOSTENT;
 #include "textevent.h"
 
 #include <qapplication.h>
+#include <qfiledialog.h>
 
 #if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
 #endif
 
 void TextEvent(QObject *target, const QString &text, WTextEvent::Type t);
+void AddToList(QString &slist, const QString &entry);
 
 void
 WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
@@ -101,6 +104,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			// <postmaster@raasu.org> 20021001
 			if (name.length() > 0)
 			{
+				if (name.find(QString("binky"), 0, false) >= 0)
+				{
+					if (fSettings->GetError())
+						PrintError(tr("Invalid nickname!"));
+					return;
+				}
 				NameChanged(name);
 				// see if it exists in the list yet...
 				for (int i = 0; i < fUserList->count(); i++)
@@ -1053,6 +1062,70 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (fNetClient->IsConnected())
 				SendChatText("*", qtext);
 		}
+		else if (CompareCommand(sendText, "/view"))
+		{
+			QString file = QFileDialog::getOpenFileName ( "downloads/", "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
+			if (!file.isEmpty())
+			{
+				if (fPicViewer->LoadImage(file))
+				{
+					fPicViewer->show();
+				}
+				else
+				{
+					GotoURL(file);
+				}
+			}
+		}
+		else if (CompareCommand(sendText, "/picture"))
+		{
+			QString users = GetParameterString(sendText);
+			if (users.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+				return;
+			}
+			int numMatches;
+			WUserMap wmap;
+			numMatches = FillUserMap(users, wmap);
+			if (numMatches > 0)	// Found atleast one match in users
+			{
+				QString list;
+				WUserIter uiter = wmap.begin();
+				while (uiter != wmap.end())
+				{
+					AddToList(list, (*uiter).first);
+					uiter++;
+				}
+				
+				QString file = QFileDialog::getOpenFileName ( "downloads/", "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
+				
+				if (!file.isEmpty())
+				{
+					QFile fFile(file);
+					if (fFile.open(IO_ReadOnly))
+					{
+						ByteBufferRef buf = GetByteBufferFromPool();
+						if (buf())
+						{
+							if (buf()->SetNumBytes(fFile.size(), false) == B_OK)
+							{
+								fFile.readBlock((char *) buf()->GetBuffer(), fFile.size());
+								fFile.close();
+								QFileInfo info(file);
+								fNetClient->SendPicture(list, buf, info.fileName());
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				if (gWin->fSettings->GetError())
+					PrintError( tr( "User(s) not found!" ) );
+			}
+		}
 
 		//
 		// add more commands BEFORE this one
@@ -1346,6 +1419,60 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			break;
 		}
 		
+	case NetClient::NEW_PICTURE:
+		{
+			// QString userName = tr("Unknown");
+			QString userID;
+			QString file;
+			
+			{
+				const char * session;		// from user (their session id)
+
+				if (msg()->FindString("session", &session) == B_OK)
+					userID = QString(session);
+			}
+
+			{
+				const char * name;			// original name of picture
+
+				if (msg()->FindString("name", &name) == B_OK)
+					file = QString::fromUtf8(name);
+			}
+
+			WUserRef user = fNetClient->FindUser(userID);
+			if (user())
+			{
+				if (IsIgnored(user))
+					return;
+			}
+
+			uint8 * data;
+			size_t numBytes;
+
+			if (msg()->FindDataPointer("picture", B_RAW_TYPE, (void **)&data, (uint32 *)&numBytes) == B_OK)
+			{
+				ByteBufferRef buf = GetByteBufferFromPool();
+				if (buf())
+				{
+					if (buf()->SetNumBytes(numBytes, false) == B_OK)
+					{
+						buf()->SetBuffer(numBytes, data);
+						uint32 myChecksum, chk;
+						if (msg()->FindInt32("chk", (int32 *) &chk) == B_OK)
+						{
+							myChecksum = CalculateChecksum(buf()->GetBuffer(), buf()->GetNumBytes());
+							if (myChecksum != chk)
+								return;
+						}
+						SavePicture(file, buf);
+						if (fPicViewer->LoadImage(file))
+							fPicViewer->show();
+					}
+				}
+			}
+				
+			break;
+		}
 	case NetClient::NEW_CHAT_TEXT:
 		{
 			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
@@ -2038,6 +2165,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/onconnect [command] - set or clear command to perform on successful connect");
 	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/picture [name or session ids] - send picture to other clients");
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/ping [name or session ids] - ping other clients");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/priv [name or session ids] - open private chat with these users added");
@@ -2100,6 +2229,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/version - show client version strings");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/view - view picture on local machine");
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=  tr("/whitelist [pattern] - set the whitelist pattern");

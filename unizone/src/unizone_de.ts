@@ -1299,7 +1299,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1%2 %3</source>
-        <translation>%1%2 %3</translation>
+        <translation type='obsolete'>%1%2 %3</translation>
     </message>
     <message>
         <source>Could not add new connect session!</source>
@@ -1523,6 +1523,37 @@ Date: %4</translation>
     <message>
         <source>Connection timed out!</source>
         <translation type='obsolete'>Verbindung timed out</translation>
+    </message>
+</context>
+<context>
+    <name>WPicViewerBase</name>
+    <message>
+        <source>Picture Viewer</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>No File</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>First</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>1/1</source>
+        <translation type='unfinished'>1/1</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Last</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -3730,6 +3761,18 @@ Date: %4</translation>
     <message>
         <source>wandering</source>
         <translation>wandering</translation>
+    </message>
+    <message>
+        <source>Invalid nickname!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/picture [name or session ids] - send picture to other clients</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/view - view picture on local machine</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>

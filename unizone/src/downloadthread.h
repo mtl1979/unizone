@@ -170,7 +170,6 @@ protected:
 	QTimer * fBlockTimer;				// Blocked timer
 
 private:
-	QString UniqueName(const QString & file, int index); // build up unique name using 'file' and 'index'
 	String _sessionID;
 
 	int timerID;

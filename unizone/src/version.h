@@ -7,9 +7,9 @@ QString WinShareVersionString();
 
 QString GetUnizoneYears();
 
-const int kMajor = 1;
-const int kMinor = 2;
-const int kPatch = 2;
-const int kBuild = 2;
+int UZ_MajorVersion();
+int UZ_MinorVersion();
+int UZ_Patch();
+int UZ_Build();
 
 #endif

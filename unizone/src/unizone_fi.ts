@@ -1420,7 +1420,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1%2 %3</source>
-        <translation>%1%2 %3</translation>
+        <translation type='obsolete'>%1%2 %3</translation>
     </message>
     <message>
         <source>Could not add new connect session!</source>
@@ -1644,6 +1644,37 @@ Päiväys: %4</translation>
     <message>
         <source>Connection timed out!</source>
         <translation type='obsolete'>Yhteyden aikakatkaisu!</translation>
+    </message>
+</context>
+<context>
+    <name>WPicViewerBase</name>
+    <message>
+        <source>Picture Viewer</source>
+        <translation>Kuvien Katselu</translation>
+    </message>
+    <message>
+        <source>No File</source>
+        <translation>Ei Tiedostoa</translation>
+    </message>
+    <message>
+        <source>First</source>
+        <translation>Ensimmäinen</translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation>Edellinen</translation>
+    </message>
+    <message>
+        <source>1/1</source>
+        <translation>1/1</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Seuraava</translation>
+    </message>
+    <message>
+        <source>Last</source>
+        <translation>Viimeinen</translation>
     </message>
 </context>
 <context>
@@ -3847,6 +3878,18 @@ Päiväys: %4</translation>
     <message>
         <source>wandering</source>
         <translation>harhailemassa</translation>
+    </message>
+    <message>
+        <source>Invalid nickname!</source>
+        <translation>Epäkelpo nimi!</translation>
+    </message>
+    <message>
+        <source>/picture [name or session ids] - send picture to other clients</source>
+        <translation>/picture [nimi tai session id:t] - lähetä kuva muille käyttäjille</translation>
+    </message>
+    <message>
+        <source>/view - view picture on local machine</source>
+        <translation>/view - näytä kuva omalta koneeltasi</translation>
     </message>
 </context>
 </TS>

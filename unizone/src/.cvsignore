@@ -8,3 +8,5 @@ privatewindow.cpp privatewindow.h
 *.qm
 scanprogress.h
 scanprogress.cpp
+picviewer.cpp
+picviewer.h
