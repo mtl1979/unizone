@@ -1063,7 +1063,7 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 	QFile fFile(nf);
 	if (fFile.open(IO_WriteOnly))
 	{
-		int bytes = fFile.writeBlock((char *) buf()->GetBuffer(), buf()->GetNumBytes());
+		unsigned int bytes = fFile.writeBlock((char *) buf()->GetBuffer(), buf()->GetNumBytes());
 		fFile.close();
 		if  (bytes == buf()->GetNumBytes())
 		{
