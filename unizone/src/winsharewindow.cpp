@@ -829,8 +829,6 @@ WinShareWindow::InitGUI()
 
 	setCentralWidget(fTabs);
 
-	// fMainBox->addMultiCellWidget(fTabs, 4, 4, 0, 11);
-
 	// Initialize variables for Search Pane
 
 	fCurrentSearchPattern = "";
@@ -897,7 +895,7 @@ WinShareWindow::InitGUI()
 
 	fSearchList->setSelectionMode(QListView::Extended);
 
-	fSearchTab->addMultiCellWidget(fSearchList, 3, 9, 0, 10);
+	fSearchTab->addMultiCellWidget(fSearchList, 3, 9, 0, 9);
 
 	// Status Bar
 
@@ -905,7 +903,7 @@ WinShareWindow::InitGUI()
 	CHECK_PTR(fStatus);
 	fStatus->setSizeGripEnabled(false);
 
-	fSearchTab->addMultiCellWidget(fStatus, 13, 13, 0, 10);
+	fSearchTab->addMultiCellWidget(fStatus, 13, 13, 0, 9);
 
 	// Search Query Label
 
@@ -927,7 +925,7 @@ WinShareWindow::InitGUI()
 	fSearchLabel->setBuddy(fSearchEdit);
 	fSearchLabel->setText(tr("Search:"));
 
-	fSearchTab->addMultiCellWidget(fSearchEdit, 1, 1, 4, 10);
+	fSearchTab->addMultiCellWidget(fSearchEdit, 1, 1, 4, 9);
 	
 	// Download Button
 
@@ -948,14 +946,14 @@ WinShareWindow::InitGUI()
 	fClear = new QPushButton(tr("Clear"), fSearchWidget);
 	CHECK_PTR(fClear);
 
-	fSearchTab->addMultiCellWidget(fClear, 10, 10, 8, 10);
+	fSearchTab->addMultiCellWidget(fClear, 10, 10, 8, 9);
 
 	// Clear History Button
 
 	fClearHistory = new QPushButton(tr("Clear History"), fSearchWidget);
 	CHECK_PTR(fClearHistory);
 
-	fSearchTab->addMultiCellWidget(fClearHistory, 11, 11, 8, 10);
+	fSearchTab->addMultiCellWidget(fClearHistory, 11, 11, 8, 9);
 
 	// connect up slots
 
@@ -1000,22 +998,22 @@ WinShareWindow::InitGUI()
 	fChannelsTab->addColSpacing(2, 20);
 	fChannelsTab->addColSpacing(4, 20);
 
-    ChannelList = new QListView( fChannelsWidget, "ChannelList" );
-    ChannelList->addColumn( tr( "Name" ) );
-    ChannelList->addColumn( tr( "Topic" ) );
-    ChannelList->addColumn( tr( "Users" ) );
-    ChannelList->addColumn( tr( "Admins" ) );
-    ChannelList->addColumn( tr( "Public" ) );
+	ChannelList = new QListView( fChannelsWidget, "ChannelList" );
+	ChannelList->addColumn( tr( "Name" ) );
+	ChannelList->addColumn( tr( "Topic" ) );
+	ChannelList->addColumn( tr( "Users" ) );
+	ChannelList->addColumn( tr( "Admins" ) );
+	ChannelList->addColumn( tr( "Public" ) );
 
 	fChannelsTab->addMultiCellWidget(ChannelList, 0, 4, 0, 4);
 	
-    Create = new QPushButton( tr( "&Create" ), fChannelsWidget, "Create" );
+	Create = new QPushButton( tr( "&Create" ), fChannelsWidget, "Create" );
 
-    fChannelsTab->addWidget(Create, 6, 1);
+	fChannelsTab->addWidget(Create, 6, 1);
 
-    Join = new QPushButton( tr( "&Join" ), fChannelsWidget, "Join" );
+	Join = new QPushButton( tr( "&Join" ), fChannelsWidget, "Join" );
 
-    fChannelsTab->addWidget(Join, 6, 3);
+	fChannelsTab->addWidget(Join, 6, 3);
 
 	connect( 
 		fNetClient, SIGNAL(ChannelAdded(const QString &, const QString &, int64)), 
@@ -1050,10 +1048,18 @@ WinShareWindow::InitGUI()
 	// End of Channels Pane
 	//
 
+	// chat widget
+	fMainWidget = new QWidget(fTabs);
+	CHECK_PTR(fMainWidget);
+
+	fMainTab = new QGridLayout(fMainWidget, 14, 10, 0, -1, "Chat Tab");
+	CHECK_PTR(fSearchTab);
+
 	// main splitter
-	fMainSplitter = new QSplitter(fTabs);
+	fMainSplitter = new QSplitter(fMainWidget);
 	CHECK_PTR(fMainSplitter);
-	fMainSplitter->move(0, 200);
+	fMainTab->addMultiCellWidget(fMainSplitter, 0, 12, 0, 9);
+	// fMainSplitter->move(0, 200);
 
 	// user list
 	fUsersBox = new QHGroupBox(fMainSplitter);
@@ -1107,6 +1113,15 @@ WinShareWindow::InitGUI()
 	fInputText->setWordWrap(QMultiLineEdit::WidgetWidth);
 	fChatSplitter->setSizes(splitList);
 
+	// Main Status Bar
+
+	fStatusBar = new WStatusBar(fMainWidget);
+	CHECK_PTR(fStatusBar);
+	fStatusBar->setSizeGripEnabled(false);
+	fMainTab->addMultiCellWidget(fStatusBar, 13, 13, 0, 9);
+
+	fStatusBar->setText(tr( "Not connected." ), 0);
+
 	// setup some defaults
 	// <postmaster@raasu.org> 20020924
 	fUserList->insertItem("Unizone Binky");
@@ -1153,17 +1168,9 @@ WinShareWindow::InitGUI()
 	CHECK_PTR(fReconnectTimer);
 	connect(fReconnectTimer, SIGNAL(timeout()), this, SLOT(ReconnectTimer()));
 
-	// Main Status Bar
-
-	fStatusBar = new WStatusBar(this);
-	CHECK_PTR(fStatusBar);
-	fStatusBar->setSizeGripEnabled(true);
-
-	fStatusBar->setText(tr( "Not connected." ), 0);
-
 	// Insert tabs
 
-	fTabs->insertTab(fMainSplitter, tr("Chat"));
+	fTabs->insertTab(fMainWidget, tr("Chat"));
 	fTabs->insertTab(fSearchWidget, tr("Search"));
 	fTabs->insertTab(fChannelsWidget, tr("Channels"));
 }

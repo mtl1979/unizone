@@ -313,7 +313,6 @@ private:
 	MenuBar * fMenus;
 
 	// gui
-	QSplitter * fMainSplitter;	// splits user list and the rest of the window
 
 	// Toolbars
 
@@ -503,8 +502,13 @@ private:
 	WResumeMap fResumeMap;
 
 	QGridLayout * fMainBox;
-    QTabWidget * fTabs;
+	QTabWidget * fTabs;
 	
+	QWidget * fMainWidget;
+	QGridLayout * fMainTab;
+// splits user list and the rest of the window
+	QSplitter * fMainSplitter;	
+
 	QWidget * fSearchWidget;
 	QGridLayout * fSearchTab;
 	
