@@ -696,7 +696,7 @@ NetClient::HandleParameters(MessageRef & next)
 				fOldID = fSessionID;
 			}
 
-			WString wSessionID = fSessionID;
+			WString wSessionID(fSessionID);
 			PRINT("My ID is: %S\n", wSessionID.getBuffer());
 
 			gWin->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );

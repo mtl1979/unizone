@@ -1029,8 +1029,8 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 			QString qsendtext;
 			while (iter != sendTo.end())
 			{
-				WString wUser = (*iter).second.user()->GetUserName();
-				WString wText = (*iter).second.text;
+				WString wUser((*iter).second.user()->GetUserName());
+				WString wText((*iter).second.text);
 				PRINT("Found user %S and rest of text %S\n", wUser.getBuffer(), wText.getBuffer());
 
 				user = (*iter).second.user;
@@ -1980,7 +1980,7 @@ WinShareWindow::ShowHelp(const QString & command)
 bool
 WinShareWindow::IsIgnoredIP(const QString & ip)
 {
-	WString wIP = ip;
+	WString wIP(ip);
 	PRINT("IsIgnoredIP(%S)\n", wIP.getBuffer());
 
 	wIP = fIgnoreIP;
@@ -1992,7 +1992,7 @@ WinShareWindow::IsIgnoredIP(const QString & ip)
 bool
 WinShareWindow::AddIPIgnore(const QString & ip)
 {
-	WString wIP = ip;
+	WString wIP(ip);
 	PRINT("AddIPIgnore(%S)\n", wIP.getBuffer());
 
 	if ( IsIgnoredIP(ip) )
@@ -2018,7 +2018,7 @@ WinShareWindow::AddIPIgnore(const QString & ip)
 bool
 WinShareWindow::RemoveIPIgnore(const QString & ip)
 {
-	WString wIP = ip;
+	WString wIP(ip);
 	PRINT("RemoveIPIgnore(%S)\n", wIP.getBuffer());
 
 	if ( !IsIgnoredIP(ip) )

@@ -546,8 +546,8 @@ Channel::customEvent(QCustomEvent * event)
 							{
 								WUserRef found = (*uit).second;
 
-								WString wUser1 = found()->GetUserID();
-								WString wUser2 = uref()->GetUserID();
+								WString wUser1(found()->GetUserID());
+								WString wUser2(uref()->GetUserID());
 								PRINT("found - UserID = %S\n", wUser1.getBuffer());
 								PRINT("uref  - UserID = %S\n", wUser2.getBuffer());
 
@@ -577,7 +577,7 @@ Channel::customEvent(QCustomEvent * event)
 					message += "'s ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
-					WString wMessage = message;
+					WString wMessage(message);
 					PRINT("\t\t%S\n", wMessage.getBuffer());
 					
 					SendChannelText(message);
@@ -590,7 +590,7 @@ Channel::customEvent(QCustomEvent * event)
 					message += " ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
-					WString wMessage = message;
+					WString wMessage(message);
 					PRINT("\t\t%S\n", wMessage.getBuffer());
 					
 					SendChannelText(message);

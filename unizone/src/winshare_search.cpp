@@ -16,8 +16,8 @@ WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewa
 	if (firewalled && fSettings->GetFirewalled())
 		return;	// we don't need to show this file if we are firewalled
 	
-	WString wFileName = filename;
-	WString wSID = sid;
+	WString wFileName(filename);
+	WString wSID(sid);
 	PRINT("ADDFILE: filename=%S (%s) [%S]\n", wFileName.getBuffer(), firewalled ? "firewalled" : "hackable", wSID.getBuffer());
 
 	// Workaround for StringMatcher bug (for now!)
@@ -94,8 +94,8 @@ WinShareWindow::RemoveFile(const QString &sid, const QString &filename)
 	WFIIter iter = fFileList.begin();
 	WFileInfo * info;
 
-	WString wSID = sid;
-	WString wFilename = filename;
+	WString wSID(sid);
+	WString wFilename(filename);
 	PRINT("Sid = %S, filename = %S\n", wSID.getBuffer(), wFilename.getBuffer());
 
 	while (iter != fFileList.end())
@@ -273,9 +273,9 @@ WinShareWindow::StartQuery(const QString & sidRegExp, const QString & fileRegExp
 	fCurrentSearchPattern = tmp;
 	// <postmaster@raasu.org> 20021023 -- Fixed typo
 
-	WString wCurrentSearchPattern = fCurrentSearchPattern;
-	WString wSIDRegExp = sidRegExp;
-	WString wFileRegExp = fileRegExp;
+	WString wCurrentSearchPattern(fCurrentSearchPattern);
+	WString wSIDRegExp(sidRegExp);
+	WString wFileRegExp(fileRegExp);
 	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", wCurrentSearchPattern.getBuffer(), wSIDRegExp.getBuffer(), wFileRegExp.getBuffer());
 
 	fUserRegExp.SetPattern((const char *) sidRegExp.utf8());

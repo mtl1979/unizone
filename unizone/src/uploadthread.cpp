@@ -805,7 +805,7 @@ WUploadThread::DoUpload()
 				fFileUl = QString::fromUtf8(file.Cstr());
 
 				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
-				WString wFileUl = fFileUl; 
+				WString wFileUl(fFileUl); 
 				PRINT("WUploadThread::DoUpload: filePath = %S\n", wFileUl.getBuffer()); 
 				
 				fFile = new QFile(fFileUl);

@@ -112,7 +112,7 @@ WFileThread::run()
 void
 WFileThread::ParseDir(const QString & d)
 {
-	WString wD = d;
+	WString wD(d);
 	PRINT("Parsing directory %S\n", wD.getBuffer());
 
 #ifdef WIN32
@@ -245,7 +245,7 @@ WFileThread::ScanFiles(const QString & directory)
 			files.RemoveHead(file);
 			
 			{
-				WString wData = file;
+				WString wData(file);
 				PRINT("\tChecking file %S\n", wData.getBuffer());
 			}
 
@@ -260,7 +260,7 @@ void
 WFileThread::AddFile(const QString & filePath)
 {
 #ifdef DEBUG2
-	WString wFilePath = filePath;
+	WString wFilePath(filePath);
 	PRINT("Setting to filePath: %S\n", wFilePath.getBuffer());
 #endif
 	
@@ -342,7 +342,7 @@ WFileThread::ResolveLink(const QString & lnk)
 #ifdef WIN32
 #ifdef DEBUG2
 	{
-		WString wRet = lnk;
+		WString wRet(lnk);
 		PRINT("\tResolving %S\n", wRet.getBuffer());
 	}
 #endif
@@ -401,7 +401,7 @@ WFileThread::ResolveLink(const QString & lnk)
 			// Fallback to ANSI
 			QString ret = ResolveLinkA(lnk);
 			{
-				WString wRet = ret;
+				WString wRet(ret);
 				PRINT("Resolved to: %S\n", wRet.getBuffer());
 			}
 			return ret;

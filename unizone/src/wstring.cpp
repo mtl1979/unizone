@@ -121,7 +121,7 @@ WString::operator+=(const QString &str)
 	if (length() != -1)
 	{
 		int newlen = length() + str.length() + 1;
-		WString s2 = str;
+		WString s2(str);
 		wchar_t *buf2 = new wchar_t[newlen];
 		if (buf2)
 		{
@@ -154,7 +154,7 @@ WString::operator!=(const WString &str)
 bool 
 WString::operator!=(const QString &str)
 {
-	WString s2 = str;
+	WString s2(str);
 	wchar_t *buf2 = s2;
 	bool b = (wcscmp(buffer, buf2) != 0);
 	return b;
@@ -176,7 +176,7 @@ WString::operator==(const WString &str)
 bool 
 WString::operator==(const QString &str)
 {
-	WString s2 = str;
+	WString s2(str);
 	wchar_t *buf2 = s2;
 	bool b = (wcscmp(buffer, buf2) == 0);
 	return b;

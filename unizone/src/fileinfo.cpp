@@ -49,9 +49,9 @@ UFileInfo::InitMIMEType()
 	DWORD dsize = MAX_PATH * 2;
 	QString mt = QString::null;
 
-	QString ext = ".";
+	QString ext(".");
 	ext += getExtension();
-	WString tExt = ext;
+	WString tExt(ext);
 	if (RegOpenKey(HKEY_CLASSES_ROOT, tExt, &hkey) == ERROR_SUCCESS)
 	{
 		LONG ret;
@@ -90,7 +90,7 @@ UFileInfo::InitModificationTime()
 	{
 #ifdef WIN32
 		// Read the modification time
-		WString tFilePath = fFullName;
+		WString tFilePath(fFullName);
 		
 		struct _stat fst;
 		

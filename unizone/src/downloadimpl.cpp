@@ -986,8 +986,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			{
 				QString uname = GetUserName(dt);
 				
-				WString wID = QString::fromUtf8(user.Cstr());
-				WString wUser = uname;
+				WString wID(QString::fromUtf8(user.Cstr()));
+				WString wUser(uname);
 				PRINT("USER ID  : %S\n", wID.getBuffer());
 				PRINT("USER NAME: %S\n", wUser.getBuffer());
 				
@@ -1028,7 +1028,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 			// <postmaster@raasu.org> 20021023 -- Add debug message
 			// <postmaster@raasu.org> 20030815 -- Use WString for Unicode
-			WString wf = QString::fromUtf8(file.Cstr());
+			WString wf(QString::fromUtf8(file.Cstr()));
 			PRINT("WGenericEvent::FileError: File %S\n", wf.getBuffer()); 
 			break;
 		}
@@ -1327,8 +1327,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 			{
 				QString uname = GetUserName(ut);
 				
-				WString wID = QString::fromUtf8(user.Cstr());
-				WString wUser = uname;
+				WString wID(QString::fromUtf8(user.Cstr()));
+				WString wUser(uname);
 				PRINT("USER ID  : %S\n", wID.getBuffer());
 				PRINT("USER NAME: %S\n", wUser.getBuffer());
 				
@@ -1369,7 +1369,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 			item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 			// <postmaster@raasu.org> 20021023 -- Add debug message
 			// <postmaster@raasu.org> 20030815 -- Use WString for Unicode
-			WString wf = QString::fromUtf8(file.Cstr());
+			WString wf(QString::fromUtf8(file.Cstr()));
 			PRINT("WGenericEvent::FileError: File %S\n", wf.getBuffer()); 
 			break;
 		}
@@ -2894,7 +2894,7 @@ WDownload::UpdateULRatings()
 		fUploadList.GetItemAt(i, pair);
 		if (pair.second)
 		{
-			WString wFile = pair.second->text(WTransferItem::Filename);
+			WString wFile(pair.second->text(WTransferItem::Filename));
 			if (wFile.length() > 0)
 				PRINT("Item %d: %S\n", i, wFile.getBuffer() );
 			else

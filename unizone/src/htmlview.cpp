@@ -73,7 +73,7 @@ void
 WHTMLView::URLSelected(const QString & url)
 {
 	fURL = url;
-	WString wURL = url;
+	WString wURL(url);
 	PRINT("WHTMLView: URLSelected: %S\n", wURL.getBuffer());
 }
 
@@ -90,7 +90,7 @@ WHTMLView::setSource( const QString & name )
 			fContext += name;
 		}
 	}
-	WString wContext = fContext;
+	WString wContext(fContext);
 	PRINT("WHTMLView: setSource: %S\n", wContext.getBuffer());
 #ifdef UNIVIEW
 	QTextBrowser::setSource( fContext );
@@ -120,7 +120,7 @@ ParseForShown(const QString & txt)
 		{
 			line = "<br>";	// replace our TAB
 		}
-		WString wLine = line;
+		WString wLine(line);
 		PRINT("ParseForShown: %S", wLine.getBuffer());	
 		out += line;
 	}

@@ -92,7 +92,7 @@ CompareCommand(const QString & qCommand, const char * cCommand)
 {
 	QString com = GetCommandString(qCommand);
 #ifdef DEBUG2
-	WString wCommand = com;
+	WString wCommand(com);
 	PRINT("Compare String: qCommand=\'%S\'\n", wCommand.getBuffer());
 	PRINT("                cCommand=\'%s\'\n", cCommand);
 #endif

@@ -104,7 +104,7 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 #ifdef WIN32
 	QString title = "[Freeware] - ";
 	title += tr("Private");
-	WString wtitle = title;
+	WString wtitle(title);
 	fWinHandle = FindWindow(NULL, wtitle);
 	// <postmaster@raasu.org> 20020925
 	if (fWinHandle)
@@ -455,7 +455,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += "'s ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
-					WString wMessage = message;
+					WString wMessage(message);
 					PRINT("\t\t%S\n", wMessage.getBuffer());
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
@@ -473,7 +473,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += " ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
-					WString wMessage = message;
+					WString wMessage(message);
 					PRINT("\t\t%S\n", wMessage.getBuffer());
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);

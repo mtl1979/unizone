@@ -213,7 +213,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	// try to find our handle
 	QString title = "[Freeware] - ";
 	title += tr("Unizone");
-	WString wtitle = title;
+	WString wtitle(title);
 	fWinHandle = FindWindow(NULL, wtitle); 
 
 	if (fWinHandle)
@@ -437,7 +437,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				CancelShares();
 				if (fSettings->GetSharingEnabled()) // Make sure sharing is enabled and fully functional
 				{
-					// fFileScanThread->Lock();
+					fFileScanThread->Lock();
 					if (fSettings->GetInfo())
 						PrintSystem(tr("Sharing %1 file(s).").arg(fFileScanThread->GetNumFiles()));
 					fNetClient->SetFileCount(fFileScanThread->GetNumFiles());
@@ -505,7 +505,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 						}
 					}
 
-					// fFileScanThread->Unlock();
+					fFileScanThread->Unlock();
 					fScanning = false;
 					if (fDLWindow)
 					{
@@ -627,7 +627,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				{
 					WTextEvent te("");
 
-					WString wText = wpe->GetText();
+					WString wText(wpe->GetText());
 					PRINT("wpe->GetText() %S\n", wText.getBuffer());
 
 					te.SetText(wpe->GetText());
@@ -1715,7 +1715,7 @@ WinShareWindow::LoadSettings()
 		// status messages
 		fAwayMsg = fSettings->GetAwayMsg();
 
-		WString wAwayMsg = fAwayMsg;
+		WString wAwayMsg(fAwayMsg);
 		PRINT("Away Msg: %S\n", wAwayMsg.getBuffer());
 		
 		fHereMsg = fSettings->GetHereMsg();
@@ -2128,7 +2128,7 @@ WinShareWindow::MapIPsToNodes(const QString & pattern)
 		qResult.truncate(qResult.length() - 1);
 	}
 
-	WString wResult = qResult;
+	WString wResult(qResult);
 	PRINT("MapIPsToNodes: %S\n", wResult.getBuffer());
 
 	return qResult;
@@ -2178,7 +2178,7 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 		qResult.truncate(qResult.length() - 1);
 	}
 
-	WString wResult = qResult;
+	WString wResult(qResult);
 	PRINT("MapUsersToIDs: %S\n", wResult.getBuffer());
 
 	return qResult;
