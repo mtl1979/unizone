@@ -7,6 +7,7 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qmessagebox.h>
+#include <qwmatrix.h>
 
 Preview::Preview(QWidget* parent, const char* name, WFlags fl)
 :PreviewWindow(parent, name, fl)
@@ -30,9 +31,11 @@ Preview::setOwner(QWidget *owner)
 void
 Preview::ShowImage(QImage *img)
 {
-	image = img;
-	if (image)
+	if (img)
+	{
+		image = img;
 		PreviewButton->setEnabled(true);
+	}
 }
 
 template <typename T> 
@@ -114,6 +117,10 @@ Preview::PreviewImage()
 	if (!valid)
 		return;
 
+	double imageRotate = Splitter->ImageRotate->text().toDouble(&valid);
+	if (!valid)
+		return;
+
 	//
 	//  Make sure we don't get 'divide by zero' error
 	//
@@ -147,11 +154,33 @@ Preview::PreviewImage()
 	int subWidth = (originalWidth / collageSizeX) - imageOffsetTopX - imageOffsetBottomX;
 	int subHeight = (originalHeight / collageSizeY) - imageOffsetTopY - imageOffsetBottomY;
 
+	// Rotate original
+
+	QImage timg;
+	{
+		QPixmap *pm = new QPixmap(image->size());
+		if (pm)
+		{
+			if (imageRotate == 0)
+			{
+				timg = *image;
+			}
+			else
+			{
+				pm->convertFromImage(*image);
+				QWMatrix wm;
+				wm.rotate(imageRotate);
+				timg = pm->xForm(wm);
+			}
+			delete pm;
+		}
+	}
+
 	//
 	// Generate subimage
 	//
 
-	QImage imgPreview = image->copy(subOffsetX, subOffsetY, subWidth, subHeight);
+	QImage imgPreview = timg.copy(subOffsetX, subOffsetY, subWidth, subHeight, 0);
 	pixPreview = new QPixmap(imgPreview.size());
 	if (pixPreview)
 	{
@@ -162,7 +191,7 @@ Preview::PreviewImage()
 		//
 		
 		pxlPreview->setPixmap(*pixPreview);
-		PreviewButton->setEnabled(true);
+//		PreviewButton->setEnabled(true);
 		SaveButton->setEnabled(true);
 	}
 }
@@ -201,7 +230,7 @@ Preview::Save()
 void
 Preview::ClearPreview()
 {
-	PreviewButton->setEnabled(false);
+//	PreviewButton->setEnabled(false);
 	SaveButton->setEnabled(false);
 
 	if (pixPreview)

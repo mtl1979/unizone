@@ -11,13 +11,23 @@
 #include <qlayout.h>
 #include <qfiledialog.h>
 #include <qapplication.h>
+#include <qfile.h>
+#include <qstring.h>
 
 ImageSplitter::ImageSplitter( QWidget* parent, const char* name, WFlags fl)
 : ImageSplitterBase(parent, name, fl)
 {
 	image = NULL;
 	QString filename = QString::null;
-	QString lastdir = QString::null;
+	lastdir = QString::null;
+	QFile qf("isplitter.ini");
+	if (qf.open(IO_ReadOnly))
+	{
+		QByteArray temp(256);
+		if (qf.readLine(temp.data(), 255) > 0)
+			lastdir = QString::fromUtf8(temp);
+		qf.close();
+	}
 	menuBar = new MenuBar(this);
 	CHECK_PTR(menuBar);
 
@@ -33,8 +43,21 @@ ImageSplitter::ImageSplitter( QWidget* parent, const char* name, WFlags fl)
 	ClearImage();
 };
 
+void
+ImageSplitter::SaveSettings()
+{
+	QFile qf("isplitter.ini");
+	if (qf.open(IO_WriteOnly))
+	{
+		QCString temp = lastdir.utf8();
+		qf.writeBlock(temp, temp.length()); 
+		qf.close();
+	}
+}
+
 ImageSplitter:: ~ImageSplitter()
 {
+	SaveSettings();
 }
 
 void
@@ -55,6 +78,8 @@ ImageSplitter::Load()
 		}
 		QFileInfo info(fFilename);
 		lastdir = info.dirPath();
+
+		setCaption( fFilename );
 	}
 }
 
@@ -74,6 +99,8 @@ ImageSplitter::ClearImage()
 		pxlCollage->setPixmap(empty);
 	}
 	
+    setCaption( tr( "Image Splitter" ) );
+
 	// reset input boxes
 	CollageSizeX->setText("0");
 	CollageSizeY->setText("0");
@@ -97,12 +124,14 @@ ImageSplitter::ClearImage()
 void
 ImageSplitter::Exit()
 {
+	SaveSettings();
 	QApplication::exit(0);
 }
 
 void
 ImageSplitter::resizeEvent(QResizeEvent *e)
 {
+/*
 	QSize s = e->size();
 	QWidget * lwidget = dynamic_cast<QWidget *>(Layout27->parent());
 	if (lwidget)
@@ -115,14 +144,13 @@ ImageSplitter::resizeEvent(QResizeEvent *e)
 			pxlCollage->setMaximumWidth(s.width() / 2 - 20);
 			pxlCollage->setMaximumHeight(s.height());
 		}
-/*
 		if (pxlPreview)
 		{
 			pxlPreview->setMaximumWidth(s.width() / 2 - 20);
 			pxlPreview->setMaximumHeight(s.height() / 3);
 		}
-*/
-//		lwidget->resize(s);
+		lwidget->resize(s);
 	}
+*/
 	ImageSplitterBase::resizeEvent(e);
 }

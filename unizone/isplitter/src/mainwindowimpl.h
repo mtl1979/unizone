@@ -25,6 +25,7 @@ protected slots:
 
 protected:
 	void resizeEvent(QResizeEvent *e);
+	void SaveSettings();
 
 private:
 	QImage *image;
