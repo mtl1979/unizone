@@ -150,18 +150,18 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout8</cstring>
+                    <cstring>Layout23</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>10</x>
-                        <y>20</y>
-                        <width>320</width>
-                        <height>24</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>330</width>
+                        <height>195</height>
                     </rect>
                 </property>
-                <hbox>
+                <vbox>
                     <property stdset="1">
                         <name>margin</name>
                         <number>0</number>
@@ -171,217 +171,189 @@
                         <number>6</number>
                     </property>
                     <widget>
-                        <class>QLabel</class>
+                        <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>TextLabel1</cstring>
+                            <cstring>Layout8</cstring>
                         </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>0</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Auto Away:</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property>
+                                    <name>name</name>
+                                    <cstring>Spacer4</cstring>
+                                </property>
+                                <property>
+                                    <name>orientation</name>
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property>
+                                    <name>sizeType</name>
+                                    <enum>Fixed</enum>
+                                </property>
+                                <property>
+                                    <name>sizeHint</name>
+                                    <size>
+                                        <width>50</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget>
+                                <class>QComboBox</class>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>Disabled</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 Minutes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>5 Minutes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>10 Minutes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>15 Minutes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>20 Minutes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>30 Minutes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1 Hour</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 Hours</string>
+                                    </property>
+                                </item>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fAutoAway</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>7</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QCheckBox</class>
                         <property stdset="1">
-                            <name>sizePolicy</name>
-                            <sizepolicy>
-                                <hsizetype>0</hsizetype>
-                                <vsizetype>1</vsizetype>
-                            </sizepolicy>
+                            <name>name</name>
+                            <cstring>fAutoUpdateServers</cstring>
                         </property>
                         <property stdset="1">
                             <name>text</name>
-                            <string>Auto Away:</string>
+                            <string>Auto Update Server List</string>
                         </property>
                     </widget>
-                    <spacer>
-                        <property>
-                            <name>name</name>
-                            <cstring>Spacer4</cstring>
-                        </property>
-                        <property>
-                            <name>orientation</name>
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property>
-                            <name>sizeType</name>
-                            <enum>Fixed</enum>
-                        </property>
-                        <property>
-                            <name>sizeHint</name>
-                            <size>
-                                <width>50</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
                     <widget>
-                        <class>QComboBox</class>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>Disabled</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>2 Minutes</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>5 Minutes</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>10 Minutes</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>15 Minutes</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>20 Minutes</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>30 Minutes</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>1 Hour</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>2 Hours</string>
-                            </property>
-                        </item>
+                        <class>QCheckBox</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>fAutoAway</cstring>
+                            <cstring>fNewVersions</cstring>
                         </property>
                         <property stdset="1">
-                            <name>sizePolicy</name>
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>0</vsizetype>
-                            </sizepolicy>
+                            <name>text</name>
+                            <string>Check For New Versions</string>
                         </property>
                     </widget>
-                </hbox>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fLoginStartup</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>120</y>
-                        <width>180</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Login On Startup</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fAutoUpdateServers</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>60</y>
-                        <width>230</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Auto Update Server List</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fMultiColor</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>180</y>
-                        <width>230</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Multi-color ListViews</string>
-                </property>
-                <property stdset="1">
-                    <name>checked</name>
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fNewVersions</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>90</y>
-                        <width>230</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Check For New Versions</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fLogging</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>150</y>
-                        <width>210</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Enable Logging</string>
-                </property>
+                    <widget>
+                        <class>QCheckBox</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>fLoginStartup</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>Login On Startup</string>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QCheckBox</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>fLogging</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>Enable Logging</string>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QCheckBox</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>fMultiColor</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>Multi-color ListViews</string>
+                        </property>
+                        <property stdset="1">
+                            <name>checked</name>
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </vbox>
             </widget>
         </widget>
         <widget>
@@ -398,18 +370,18 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout9</cstring>
+                    <cstring>Layout29</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>10</x>
-                        <y>20</y>
-                        <width>320</width>
-                        <height>24</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>330</width>
+                        <height>190</height>
                     </rect>
                 </property>
-                <hbox>
+                <vbox>
                     <property stdset="1">
                         <name>margin</name>
                         <number>0</number>
@@ -419,169 +391,198 @@
                         <number>6</number>
                     </property>
                     <widget>
-                        <class>QLabel</class>
+                        <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>TextLabel2</cstring>
+                            <cstring>Layout9</cstring>
                         </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel2</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>0</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Upload Bandwidth:</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property>
+                                    <name>name</name>
+                                    <cstring>Spacer8</cstring>
+                                </property>
+                                <property>
+                                    <name>orientation</name>
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property>
+                                    <name>sizeType</name>
+                                    <enum>Fixed</enum>
+                                </property>
+                                <property>
+                                    <name>sizeHint</name>
+                                    <size>
+                                        <width>41</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget>
+                                <class>QComboBox</class>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>300 baud</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>14.4 kbps</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>28.8 kbps</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>36.6 kbps</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>57.6 kbps</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>ISDN-64k</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>ISDN-128k</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>DSL-256k</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>DSL-384k</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>DSL-512k</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>Cable</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>T1</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>T3</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>OC-3</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>OC-12</string>
+                                    </property>
+                                </item>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fBandwidth</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>7</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QCheckBox</class>
                         <property stdset="1">
-                            <name>sizePolicy</name>
-                            <sizepolicy>
-                                <hsizetype>0</hsizetype>
-                                <vsizetype>1</vsizetype>
-                            </sizepolicy>
+                            <name>name</name>
+                            <cstring>fFireWalled</cstring>
                         </property>
                         <property stdset="1">
                             <name>text</name>
-                            <string>Upload Bandwidth:</string>
+                            <string>I'm Firewalled</string>
                         </property>
                     </widget>
                     <spacer>
                         <property>
                             <name>name</name>
-                            <cstring>Spacer8</cstring>
+                            <cstring>Spacer8_2</cstring>
                         </property>
                         <property>
                             <name>orientation</name>
-                            <enum>Horizontal</enum>
+                            <enum>Vertical</enum>
                         </property>
                         <property>
                             <name>sizeType</name>
-                            <enum>Fixed</enum>
+                            <enum>Expanding</enum>
                         </property>
                         <property>
                             <name>sizeHint</name>
                             <size>
-                                <width>41</width>
+                                <width>20</width>
                                 <height>20</height>
                             </size>
                         </property>
                     </spacer>
-                    <widget>
-                        <class>QComboBox</class>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>300 baud</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>14.4 kbps</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>28.8 kbps</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>36.6 kbps</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>57.6 kbps</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>ISDN-64k</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>ISDN-128k</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>DSL-256k</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>DSL-384k</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>DSL-512k</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>Cable</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>T1</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>T3</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>OC-3</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property>
-                                <name>text</name>
-                                <string>OC-12</string>
-                            </property>
-                        </item>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>fBandwidth</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>sizePolicy</name>
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>0</vsizetype>
-                            </sizepolicy>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fFireWalled</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>50</y>
-                        <width>170</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>I'm Firewalled</string>
-                </property>
+                </vbox>
             </widget>
         </widget>
         <widget>
@@ -595,252 +596,279 @@
                 <string>Display</string>
             </attribute>
             <widget>
-                <class>QCheckBox</class>
+                <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>fWarning</cstring>
+                    <cstring>Layout22</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>10</x>
-                        <y>140</y>
-                        <width>130</width>
-                        <height>20</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>330</width>
+                        <height>195</height>
                     </rect>
                 </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Warning Messages</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fError</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>160</y>
-                        <width>130</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Error Messages</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fPrivate</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>100</y>
-                        <width>130</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Private Messages</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fUserEvents</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>40</y>
-                        <width>130</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>User Events</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fChat</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>80</y>
-                        <width>130</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Chat</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fInfo</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>120</y>
-                        <width>130</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Info Messages</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fUploads</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>60</y>
-                        <width>130</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Uploads</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fTimeStamps</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>20</y>
-                        <width>130</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Time Stamps</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fFlashMain</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>150</x>
-                        <y>20</y>
-                        <width>180</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Flash Window When Mentioned</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fFlashPrivate</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>150</x>
-                        <y>37</y>
-                        <width>180</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Flash Private Windows</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QGroupBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>GroupBox1</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>150</x>
-                        <y>130</y>
-                        <width>80</width>
-                        <height>60</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>title</name>
-                    <string>Font Size</string>
-                </property>
-                <widget>
-                    <class>QSpinBox</class>
+                <hbox>
                     <property stdset="1">
-                        <name>name</name>
-                        <cstring>fFontSize</cstring>
+                        <name>margin</name>
+                        <number>0</number>
                     </property>
                     <property stdset="1">
-                        <name>geometry</name>
-                        <rect>
-                            <x>10</x>
-                            <y>20</y>
-                            <width>60</width>
-                            <height>31</height>
-                        </rect>
+                        <name>spacing</name>
+                        <number>6</number>
                     </property>
-                    <property stdset="1">
-                        <name>maxValue</name>
-                        <number>7</number>
-                    </property>
-                    <property stdset="1">
-                        <name>minValue</name>
-                        <number>1</number>
-                    </property>
-                    <property stdset="1">
-                        <name>value</name>
-                        <number>3</number>
-                    </property>
-                </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout17</cstring>
+                        </property>
+                        <vbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fTimeStamps</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Time Stamps</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fUserEvents</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>User Events</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fUploads</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Uploads</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fChat</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Chat</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fPrivate</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Private Messages</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fInfo</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Info Messages</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fWarning</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Warning Messages</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fError</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Error Messages</string>
+                                </property>
+                            </widget>
+                        </vbox>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout21</cstring>
+                        </property>
+                        <vbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fFlashMain</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Flash Window When Mentioned</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fFlashPrivate</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Flash Private Windows</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property>
+                                    <name>name</name>
+                                    <cstring>Spacer4_2</cstring>
+                                </property>
+                                <property>
+                                    <name>orientation</name>
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property>
+                                    <name>sizeType</name>
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property>
+                                    <name>sizeHint</name>
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget>
+                                <class>QLayoutWidget</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>Layout19</cstring>
+                                </property>
+                                <hbox>
+                                    <property stdset="1">
+                                        <name>margin</name>
+                                        <number>0</number>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>spacing</name>
+                                        <number>6</number>
+                                    </property>
+                                    <widget>
+                                        <class>QGroupBox</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>GroupBox1</cstring>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>minimumSize</name>
+                                            <size>
+                                                <width>0</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>title</name>
+                                            <string>Font Size</string>
+                                        </property>
+                                        <widget>
+                                            <class>QSpinBox</class>
+                                            <property stdset="1">
+                                                <name>name</name>
+                                                <cstring>fFontSize</cstring>
+                                            </property>
+                                            <property stdset="1">
+                                                <name>geometry</name>
+                                                <rect>
+                                                    <x>10</x>
+                                                    <y>20</y>
+                                                    <width>60</width>
+                                                    <height>31</height>
+                                                </rect>
+                                            </property>
+                                            <property stdset="1">
+                                                <name>maxValue</name>
+                                                <number>7</number>
+                                            </property>
+                                            <property stdset="1">
+                                                <name>minValue</name>
+                                                <number>1</number>
+                                            </property>
+                                            <property stdset="1">
+                                                <name>value</name>
+                                                <number>3</number>
+                                            </property>
+                                        </widget>
+                                    </widget>
+                                    <spacer>
+                                        <property>
+                                            <name>name</name>
+                                            <cstring>Spacer5</cstring>
+                                        </property>
+                                        <property>
+                                            <name>orientation</name>
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                        <property>
+                                            <name>sizeType</name>
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property>
+                                            <name>sizeHint</name>
+                                            <size>
+                                                <width>20</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                </hbox>
+                            </widget>
+                        </vbox>
+                    </widget>
+                </hbox>
             </widget>
         </widget>
         <widget>
@@ -854,200 +882,317 @@
                 <string>Colors</string>
             </attribute>
             <widget>
-                <class>QListBox</class>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Local Name</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Remote Name</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Regular Text</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>System Text</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Ping Text</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Error Text</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Error Message Text</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Private Text</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Action Text</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>URL Text</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>'Name Said' Text</string>
-                    </property>
-                </item>
+                <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>fColorsList</cstring>
+                    <cstring>Layout28</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>5</x>
-                        <y>7</y>
-                        <width>110</width>
-                        <height>191</height>
-                    </rect>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel5</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>120</x>
+                        <x>0</x>
                         <y>10</y>
-                        <width>60</width>
-                        <height>20</height>
+                        <width>330</width>
+                        <height>195</height>
                     </rect>
                 </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Description:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel3</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>120</x>
-                        <y>100</y>
-                        <width>53</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Preview:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fPreview</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>130</x>
-                        <y>120</y>
-                        <width>200</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string></string>
-                </property>
-                <property stdset="1">
-                    <name>textFormat</name>
-                    <enum>RichText</enum>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fDesc</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>126</x>
-                        <y>31</y>
-                        <width>200</width>
-                        <height>51</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string></string>
-                </property>
-                <property stdset="1">
-                    <name>alignment</name>
-                    <set>WordBreak|AlignTop|AlignLeft</set>
-                </property>
-                <property>
-                    <name>vAlign</name>
-                </property>
-                <property>
-                    <name>wordwrap</name>
-                </property>
-            </widget>
-            <widget>
-                <class>QPushButton</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fChange</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>270</x>
-                        <y>160</y>
-                        <width>60</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Change</string>
-                </property>
+                <hbox>
+                    <property stdset="1">
+                        <name>margin</name>
+                        <number>0</number>
+                    </property>
+                    <property stdset="1">
+                        <name>spacing</name>
+                        <number>6</number>
+                    </property>
+                    <widget>
+                        <class>QListBox</class>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Local Name</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Remote Name</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Regular Text</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>System Text</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Ping Text</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Error Text</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Error Message Text</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Private Text</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Action Text</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>URL Text</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>'Name Said' Text</string>
+                            </property>
+                        </item>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>fColorsList</cstring>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout27</cstring>
+                        </property>
+                        <vbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLayoutWidget</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>Layout26</cstring>
+                                </property>
+                                <vbox>
+                                    <property stdset="1">
+                                        <name>margin</name>
+                                        <number>0</number>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>spacing</name>
+                                        <number>6</number>
+                                    </property>
+                                    <widget>
+                                        <class>QLabel</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>TextLabel5</cstring>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>sizePolicy</name>
+                                            <sizepolicy>
+                                                <hsizetype>1</hsizetype>
+                                                <vsizetype>5</vsizetype>
+                                            </sizepolicy>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>maximumSize</name>
+                                            <size>
+                                                <width>32767</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>text</name>
+                                            <string>Description:</string>
+                                        </property>
+                                    </widget>
+                                    <widget>
+                                        <class>QLabel</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>fDesc</cstring>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>text</name>
+                                            <string></string>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>alignment</name>
+                                            <set>WordBreak|AlignTop|AlignLeft</set>
+                                        </property>
+                                        <property>
+                                            <name>vAlign</name>
+                                        </property>
+                                        <property>
+                                            <name>wordwrap</name>
+                                        </property>
+                                    </widget>
+                                </vbox>
+                            </widget>
+                            <widget>
+                                <class>QLayoutWidget</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>Layout25</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>0</width>
+                                        <height>75</height>
+                                    </size>
+                                </property>
+                                <vbox>
+                                    <property stdset="1">
+                                        <name>margin</name>
+                                        <number>0</number>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>spacing</name>
+                                        <number>6</number>
+                                    </property>
+                                    <widget>
+                                        <class>QLabel</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>TextLabel3</cstring>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>sizePolicy</name>
+                                            <sizepolicy>
+                                                <hsizetype>1</hsizetype>
+                                                <vsizetype>4</vsizetype>
+                                            </sizepolicy>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>maximumSize</name>
+                                            <size>
+                                                <width>32767</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>text</name>
+                                            <string>Preview:</string>
+                                        </property>
+                                    </widget>
+                                    <widget>
+                                        <class>QLabel</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>fPreview</cstring>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>text</name>
+                                            <string></string>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>textFormat</name>
+                                            <enum>RichText</enum>
+                                        </property>
+                                    </widget>
+                                </vbox>
+                            </widget>
+                            <spacer>
+                                <property>
+                                    <name>name</name>
+                                    <cstring>Spacer7</cstring>
+                                </property>
+                                <property>
+                                    <name>orientation</name>
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property>
+                                    <name>sizeType</name>
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property>
+                                    <name>sizeHint</name>
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget>
+                                <class>QLayoutWidget</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>Layout24</cstring>
+                                </property>
+                                <hbox>
+                                    <property stdset="1">
+                                        <name>margin</name>
+                                        <number>0</number>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>spacing</name>
+                                        <number>6</number>
+                                    </property>
+                                    <spacer>
+                                        <property>
+                                            <name>name</name>
+                                            <cstring>Spacer6</cstring>
+                                        </property>
+                                        <property>
+                                            <name>orientation</name>
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                        <property>
+                                            <name>sizeType</name>
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property>
+                                            <name>sizeHint</name>
+                                            <size>
+                                                <width>20</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                    <widget>
+                                        <class>QPushButton</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>fChange</cstring>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>text</name>
+                                            <string>Change</string>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                        </vbox>
+                    </widget>
+                </hbox>
             </widget>
         </widget>
         <widget>
@@ -1061,86 +1206,132 @@
                 <string>Style</string>
             </attribute>
             <widget>
-                <class>QListBox</class>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>CDE</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Motif</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Motif Plus</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Platinum</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>SGI</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Windows</string>
-                    </property>
-                </item>
+                <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>fStyleList</cstring>
+                    <cstring>Layout31</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>9</x>
-                        <y>5</y>
-                        <width>97</width>
-                        <height>190</height>
-                    </rect>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel7</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>110</x>
+                        <x>0</x>
                         <y>10</y>
-                        <width>211</width>
-                        <height>61</height>
+                        <width>330</width>
+                        <height>195</height>
                     </rect>
                 </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>The selected style will be applied as soon as it is selected.</string>
-                </property>
-                <property stdset="1">
-                    <name>alignment</name>
-                    <set>WordBreak|AlignTop|AlignLeft</set>
-                </property>
-                <property>
-                    <name>vAlign</name>
-                </property>
-                <property>
-                    <name>wordwrap</name>
-                </property>
+                <hbox>
+                    <property stdset="1">
+                        <name>margin</name>
+                        <number>0</number>
+                    </property>
+                    <property stdset="1">
+                        <name>spacing</name>
+                        <number>6</number>
+                    </property>
+                    <widget>
+                        <class>QListBox</class>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>CDE</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Motif</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Motif Plus</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Platinum</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>SGI</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Windows</string>
+                            </property>
+                        </item>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>fStyleList</cstring>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout30</cstring>
+                        </property>
+                        <vbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel7</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>The selected style will be applied as soon as it is selected.</string>
+                                </property>
+                                <property stdset="1">
+                                    <name>alignment</name>
+                                    <set>WordBreak|AlignTop|AlignLeft</set>
+                                </property>
+                                <property>
+                                    <name>vAlign</name>
+                                </property>
+                                <property>
+                                    <name>wordwrap</name>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property>
+                                    <name>name</name>
+                                    <cstring>Spacer9</cstring>
+                                </property>
+                                <property>
+                                    <name>orientation</name>
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property>
+                                    <name>sizeType</name>
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property>
+                                    <name>sizeHint</name>
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </vbox>
+                    </widget>
+                </hbox>
             </widget>
         </widget>
         <widget>
@@ -1154,290 +1345,292 @@
                 <string>File Sharing</string>
             </attribute>
             <widget>
-                <class>QComboBox</class>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>3</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>5</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>10</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>15</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>20</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>30</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Unlimited</string>
-                    </property>
-                </item>
+                <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>fMaxUL</cstring>
+                    <cstring>Layout16</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>248</x>
-                        <y>110</y>
-                        <width>82</width>
-                        <height>22</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>330</width>
+                        <height>195</height>
                     </rect>
                 </property>
-                <property stdset="1">
-                    <name>sizePolicy</name>
-                    <sizepolicy>
-                        <hsizetype>1</hsizetype>
-                        <vsizetype>0</vsizetype>
-                    </sizepolicy>
-                </property>
-            </widget>
-            <widget>
-                <class>QComboBox</class>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1</string>
+                <vbox>
+                    <property stdset="1">
+                        <name>margin</name>
+                        <number>0</number>
                     </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2</string>
+                    <property stdset="1">
+                        <name>spacing</name>
+                        <number>6</number>
                     </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>3</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>5</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>10</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>15</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>20</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>30</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>Unlimited</string>
-                    </property>
-                </item>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fMaxDL</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>248</x>
-                        <y>143</y>
-                        <width>82</width>
-                        <height>22</height>
-                    </rect>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fBinkyNuke</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>12</x>
-                        <y>40</y>
-                        <width>170</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Block binkies?</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_3</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>12</x>
-                        <y>110</y>
-                        <width>229</width>
-                        <height>22</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>sizePolicy</name>
-                    <sizepolicy>
-                        <hsizetype>1</hsizetype>
-                        <vsizetype>1</vsizetype>
-                    </sizepolicy>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Maximum Simultaneous Uploads:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_3_3</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>12</x>
-                        <y>143</y>
-                        <width>229</width>
-                        <height>22</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Maximum Simultaneous Downloads:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fBlockDisconnected</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>12</x>
-                        <y>77</y>
-                        <width>170</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Block disconnected users?</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fFileSharingEnabled</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>12</x>
-                        <y>7</y>
-                        <width>170</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>File sharing enabled?</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fAutoClear</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>12</x>
-                        <y>176</y>
-                        <width>240</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Auto Clear finished transfers?</string>
-                </property>
+                    <widget>
+                        <class>QCheckBox</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>fFileSharingEnabled</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>File sharing enabled?</string>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QCheckBox</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>fBinkyNuke</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>Block binkies?</string>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QCheckBox</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>fBlockDisconnected</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>Block disconnected users?</string>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout14</cstring>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_2_3</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>175</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Maximum Simultaneous Uploads:</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QComboBox</class>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>3</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>5</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>10</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>15</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>20</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>30</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>Unlimited</string>
+                                    </property>
+                                </item>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fMaxUL</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout15</cstring>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_2_3_3</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>175</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Maximum Simultaneous Downloads:</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QComboBox</class>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>3</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>5</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>10</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>15</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>20</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>30</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>Unlimited</string>
+                                    </property>
+                                </item>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fMaxDL</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QCheckBox</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>fAutoClear</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string>Auto Clear finished transfers?</string>
+                        </property>
+                    </widget>
+                </vbox>
             </widget>
         </widget>
         <widget>
@@ -1451,148 +1644,198 @@
                 <string>URL Launching</string>
             </attribute>
             <widget>
-                <class>QLineEdit</class>
+                <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>fMailtoLauncher</cstring>
+                    <cstring>Layout8</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>140</x>
-                        <y>11</y>
-                        <width>180</width>
-                        <height>22</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>330</width>
+                        <height>195</height>
                     </rect>
                 </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>5</x>
-                        <y>7</y>
-                        <width>120</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Mailto: launcher:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_2</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>5</x>
-                        <y>37</y>
-                        <width>120</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>HTTP launcher:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLineEdit</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fHTTPLauncher</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>140</x>
-                        <y>41</y>
-                        <width>180</width>
-                        <height>22</height>
-                    </rect>
-                </property>
-            </widget>
-            <widget>
-                <class>QLineEdit</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fFTPLauncher</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>140</x>
-                        <y>71</y>
-                        <width>180</width>
-                        <height>22</height>
-                    </rect>
-                </property>
-            </widget>
-            <widget>
-                <class>QLineEdit</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fDefaultLauncher</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>140</x>
-                        <y>101</y>
-                        <width>180</width>
-                        <height>22</height>
-                    </rect>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_2_2</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>5</x>
-                        <y>67</y>
-                        <width>95</width>
-                        <height>23</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>FTP launcher:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_3</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>5</x>
-                        <y>97</y>
-                        <width>116</width>
-                        <height>14</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Default launcher:</string>
-                </property>
+                <vbox>
+                    <property stdset="1">
+                        <name>margin</name>
+                        <number>0</number>
+                    </property>
+                    <property stdset="1">
+                        <name>spacing</name>
+                        <number>6</number>
+                    </property>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout4</cstring>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_2</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>135</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Mailto: launcher:</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QLineEdit</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fMailtoLauncher</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout5</cstring>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_2_2</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>135</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>HTTP launcher:</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QLineEdit</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fHTTPLauncher</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout6</cstring>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_2_2_2</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>135</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>FTP launcher:</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QLineEdit</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fFTPLauncher</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout7</cstring>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_3</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>135</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Default launcher:</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QLineEdit</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fDefaultLauncher</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </vbox>
             </widget>
         </widget>
         <widget>
@@ -1606,628 +1849,678 @@
                 <string>Throttling</string>
             </attribute>
             <widget>
-                <class>QComboBox</class>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>No Limit</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>128 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>256 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>512 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>8 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>16 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>32 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>64 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>128 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>256 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>512 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>8 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>16 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>32 MB</string>
-                    </property>
-                </item>
+                <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>fBLLimit</cstring>
+                    <cstring>Layout13</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>185</x>
-                        <y>135</y>
-                        <width>141</width>
-                        <height>31</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>330</width>
+                        <height>195</height>
                     </rect>
                 </property>
-            </widget>
-            <widget>
-                <class>QComboBox</class>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>No Limit</string>
+                <vbox>
+                    <property stdset="1">
+                        <name>margin</name>
+                        <number>0</number>
                     </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>128 bytes</string>
+                    <property stdset="1">
+                        <name>spacing</name>
+                        <number>6</number>
                     </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>256 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>512 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>8 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>16 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>32 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>64 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>128 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>256 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>512 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>8 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>16 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>32 MB</string>
-                    </property>
-                </item>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fDLLimit</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>185</x>
-                        <y>95</y>
-                        <width>141</width>
-                        <height>31</height>
-                    </rect>
-                </property>
-            </widget>
-            <widget>
-                <class>QComboBox</class>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>No Limit</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>128 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>256 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>512 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>8 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>16 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>32 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>64 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>128 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>256 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>512 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>8 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>16 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>32 MB</string>
-                    </property>
-                </item>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fULLimit</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>185</x>
-                        <y>55</y>
-                        <width>141</width>
-                        <height>31</height>
-                    </rect>
-                </property>
-            </widget>
-            <widget>
-                <class>QComboBox</class>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>No Limit</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>128 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>256 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>512 bytes</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>8 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>16 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>32 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>64 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>128 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>256 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>512 kB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>1 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>2 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>4 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>8 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>16 MB</string>
-                    </property>
-                </item>
-                <item>
-                    <property>
-                        <name>text</name>
-                        <string>32 MB</string>
-                    </property>
-                </item>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fChatLimit</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>185</x>
-                        <y>15</y>
-                        <width>141</width>
-                        <height>31</height>
-                    </rect>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_4</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>15</y>
-                        <width>160</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Chat:</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_4_2</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>55</y>
-                        <width>160</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Uploads (per upload):</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_4_3</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>95</y>
-                        <width>160</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Downloads (per download):</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_4_4</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>135</y>
-                        <width>160</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Uploads (per blacklisted):</string>
-                </property>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout9</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>minimumSize</name>
+                            <size>
+                                <width>135</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_2_4</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Chat:</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QComboBox</class>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>No Limit</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>128 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>256 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>512 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>8 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>16 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>32 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>64 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>128 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>256 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>512 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>8 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>16 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>32 MB</string>
+                                    </property>
+                                </item>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fChatLimit</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout10</cstring>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_2_4_2</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>135</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Uploads (per upload):</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QComboBox</class>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>No Limit</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>128 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>256 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>512 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>8 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>16 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>32 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>64 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>128 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>256 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>512 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>8 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>16 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>32 MB</string>
+                                    </property>
+                                </item>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fULLimit</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout11</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>minimumSize</name>
+                            <size>
+                                <width>135</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_2_4_3</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Downloads (per download):</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QComboBox</class>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>No Limit</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>128 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>256 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>512 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>8 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>16 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>32 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>64 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>128 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>256 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>512 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>8 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>16 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>32 MB</string>
+                                    </property>
+                                </item>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fDLLimit</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget>
+                        <class>QLayoutWidget</class>
+                        <property stdset="1">
+                            <name>name</name>
+                            <cstring>Layout12</cstring>
+                        </property>
+                        <hbox>
+                            <property stdset="1">
+                                <name>margin</name>
+                                <number>0</number>
+                            </property>
+                            <property stdset="1">
+                                <name>spacing</name>
+                                <number>6</number>
+                            </property>
+                            <widget>
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel1_2_4_4</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>135</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Uploads (per blacklisted):</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QComboBox</class>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>No Limit</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>128 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>256 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>512 bytes</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>8 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>16 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>32 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>64 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>128 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>256 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>512 kB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>1 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>2 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>4 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>8 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>16 MB</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property>
+                                        <name>text</name>
+                                        <string>32 MB</string>
+                                    </property>
+                                </item>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fBLLimit</cstring>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </vbox>
             </widget>
         </widget>
     </widget>
