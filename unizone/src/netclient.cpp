@@ -166,8 +166,7 @@ NetClient::Disconnect()
 		WUserIter it = fUsers.begin();
 		while (it != fUsers.end())
 		{
-			(*it).second()->RemoveFromListView();
-			fUsers.erase(it);
+			RemoveUser((*it).second);
 			it = fUsers.begin();
 		}
 		PRINT("DONE\n");
@@ -260,16 +259,16 @@ WUserRef
 NetClient::CreateUser(const QString & sessionID)
 {
 	WUser * n = new WUser(sessionID);
+	WUserRef nref(n, NULL);
 	if (n)
 	{
 		n->SetUserID(sessionID);
-		WUserRef nref(n, NULL);
 		WUserPair pair = MakePair(sessionID, nref);
 
 		fUsers.insert(pair);
 		emit UserConnected(pair.first);
 	}
-	return WUserRef(n, NULL);	// NULL, or a valid user
+	return nref;	// NULL, or a valid user
 }
 
 void
@@ -278,12 +277,21 @@ NetClient::RemoveUser(const QString & sessionID)
 	WUserIter iter = fUsers.find(sessionID);
 	if (iter != fUsers.end())
 	{
-		QString uid = (*iter).first;
-		QString uname = (*iter).second()->GetUserName();
+		RemoveUser((*iter).second);
+	}
+}
+
+void
+NetClient::RemoveUser(const WUserRef user)
+{
+	if (user())
+	{
+		QString uid = user()->GetUserID();
+		QString uname = user()->GetUserName();
 		PRINT("NetClient::RemoveUser: Removing from list\n");
-		(*iter).second()->RemoveFromListView();
+		user()->RemoveFromListView();
 		PRINT("NetClient::RemoveUser: Erasing\n");
-		fUsers.erase(iter);
+		fUsers.erase(uid);
 		PRINT("NetClient::RemoveUser: Signaling...\n");
 		emit UserDisconnected(uid, uname);
 		PRINT("NetClient::RemoveUser: Done\n");
@@ -307,21 +315,6 @@ NetClient::HandleBeRemoveMessage(const String & nodePath)
 					RemoveUser(sid);
 				break;
 			}
-/*
-		case USER_NAME_DEPTH:
-			{
-                if (
-					(strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "name", 4) == 0) ||
-                    (strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "userstatus", 10) == 0) ||
-                    (strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "bandwidth", 9) == 0)
-					)
-				{
-					// user removed
-					RemoveUser(sid);
-				}
-				break;
-			}
-*/			
 		case FILE_INFO_DEPTH: 
 			{
 				const char * fileName = GetPathClause(FILE_INFO_DEPTH, nodePath.Cstr());

@@ -136,6 +136,7 @@ public:
 	WUserRef CreateUser(const QString &sessionID);
 	// deletes a user, including removing from the list view
 	void RemoveUser(const QString &sessionID);
+	void RemoveUser(const WUserRef user);
 	
 	WUserMap & Users() { return fUsers; }
 	

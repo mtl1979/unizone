@@ -552,16 +552,23 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				fNetClient->SetOutgoingMessageEncoding( enc );
 				fStatusBar->setText(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
 				
-				// Set Incoming Message Encoding
-				if (enc != 0)
+
+				MessageRef setref(GetMessageFromPool(PR_COMMAND_SETPARAMETERS));
+				if (setref())
 				{
-					MessageRef setref(GetMessageFromPool(PR_COMMAND_SETPARAMETERS));
-					if (setref())
+					// Set maximum number of update message items
+					setref()->AddInt32(PR_NAME_MAX_UPDATE_MESSAGE_ITEMS, 20);
+					
+					// Set Incoming Message Encoding
+					if (enc != 0)
 					{
 						setref()->AddInt32(PR_NAME_REPLY_ENCODING, enc);
-						fNetClient->SendMessageToSessions(setref);
 					}
+
+					fNetClient->SendMessageToSessions(setref);
 				}
+
+				
 
 				PRINT("Uploading public data\n");
 				fGotParams = false; // set to false here :)

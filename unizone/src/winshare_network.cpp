@@ -1776,6 +1776,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							int64 uptime, onlinetime;
 							if ((msg()->FindInt64("uptime", &uptime) == B_OK) && (msg()->FindInt64("onlinetime", &onlinetime) == B_OK))
 							{
+								pong += " ";
 								pong += WFormat::PingUptime(MakeHumanTime(uptime), MakeHumanTime(onlinetime));
 							}
 							
