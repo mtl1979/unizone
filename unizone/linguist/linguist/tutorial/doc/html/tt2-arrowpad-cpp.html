@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><head><title>
+Translation Tutorial - tt2/arrowpad.cpp
+</title></head><body bgcolor="#ffffff">
+<p>
+<h1 align=center>Source code for <a href="tt2.html">tutorial 2</a>:
+arrowpad.cpp</h1><br clear="all">
+<hr> <pre>/****************************************************************
+**
+** Implementation of ArrowPad class, translation tutorial 2
+**
+****************************************************************/
+
+#include "arrowpad.h"
+
+#include &lt;qpushbutton.h&gt;
+
+ArrowPad::ArrowPad( QWidget *parent, const char *name )
+    : QGrid( 3, Horizontal, parent, name )
+{
+    setMargin( 10 );
+    setSpacing( 10 );
+
+    skip();
+    (void) new QPushButton( tr("&amp;Up"), this );
+    skip();
+    (void) new QPushButton( tr("&amp;Left"), this );
+    skip();
+    (void) new QPushButton( tr("&amp;Right"), this );
+    skip();
+    (void) new QPushButton( tr("&amp;Down"), this );
+    skip();
+}
+
+void ArrowPad::skip()
+{
+    (void) new QWidget( this );
+}
+</pre>
+<p>
+

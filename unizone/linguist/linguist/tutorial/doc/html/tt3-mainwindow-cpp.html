@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><head><title>
+Translation Tutorial - tt3/mainwindow.cpp
+</title></head><body bgcolor="#ffffff">
+<p>
+<h1 align=center>Source code for <a href="tt3.html">tutorial 3</a>:
+mainwindow.cpp</h1><br clear="all">
+<hr> <pre>/****************************************************************
+**
+** Implementation of MainWindow class, translation tutorial 3
+**
+****************************************************************/
+
+#include "mainwindow.h"
+#include "printpanel.h"
+
+#include &lt;qaccel.h&gt;
+#include &lt;qapplication.h&gt;
+#include &lt;qmenubar.h&gt;
+#include &lt;qmessagebox.h&gt;
+#include &lt;qpopupmenu.h&gt;
+
+MainWindow::MainWindow( QWidget *parent, const char *name )
+    : QMainWindow( parent, name )
+{
+    setCaption( tr("Troll Print 1.0") );
+
+    PrintPanel *pp = new PrintPanel( this );
+    setCentralWidget( pp );
+
+    QPopupMenu *file = new QPopupMenu( this );
+    file-&gt;insertItem( tr("E&amp;xit"), qApp, SLOT(quit()),
+                       QAccel::stringToKey(tr("Ctrl+Q")) );
+    QPopupMenu *help = new QPopupMenu( this );
+    help-&gt;insertItem( tr("&amp;About..."), this, SLOT(about()), Key_F1 );
+    help-&gt;insertItem( tr("About &amp;Qt..."), this, SLOT(aboutQt()) );
+
+    menuBar()-&gt;insertItem( tr("&amp;File"), file );
+    menuBar()-&gt;insertSeparator();
+    menuBar()-&gt;insertItem( tr("&amp;Help"), help );
+    menuBar()-&gt;setSeparator( QMenuBar::InWindowsStyle );
+}
+
+void MainWindow::about()
+{
+    QMessageBox::information( this, tr("About Troll Print 1.0"),
+                   tr("Troll Print 1.0.\n\n"
+                      "Copyright 1999 Macroshaft, Inc.") );
+}
+
+void MainWindow::aboutQt()
+{
+    QMessageBox::aboutQt( this );
+}
+</pre>
+<p>
+

@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><head><title>Translation Tutorial -  Chapter 2: Two Custom Widgets</title><style type="text/css"><!--
+h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { text-decoration: none; }
+body { background: white; color: black; }
+--></style></head><body bgcolor="#ffffff">
+<h1 align=center> Chapter 2: Two Custom Widgets</h1><br clear="all">
+<center><img src="tt2_en.png"
+alt="Screenshot of the English version of tutorial 2"></center>
+<p>
+We will now see a more complex example, with several contexts and
+several texts in each context.  And we'll learn what a context is.
+<p>
+<ul>
+<li> <a href="tt2-arrowpad-h.html">arrowpad.h</a> contains the
+     definition of ArrowPad, a custom widget;
+<li> <a href="tt2-arrowpad-cpp.html">arrowpad.cpp</a> contains the
+     implementation of ArrowPad;
+<li> <a href="tt2-mainwindow-h.html">mainwindow.h</a> contains the
+     definition of MainWindow, a QMainWindow subclass;
+<li> <a href="tt2-mainwindow-cpp.html">mainwindow.cpp</a> contains the
+     implementation of MainWindow;
+<li> <a href="tt2-main-cpp.html">main.cpp</a> contains main().
+</ul>
+<p>
+We will provide several translations, and define "several" as meaning
+"two".  Namely, we will provide a French and a Dutch translation.  The
+relevant lines of <a href="tt2-tt2-pro.html">tt2.pro</a> are  <pre>
+    HEADERS         = arrowpad.h \
+                      mainwindow.h
+    SOURCES         = arrowpad.cpp \
+                      main.cpp \
+                      mainwindow.cpp
+    TRANSLATIONS    = tt2_fr.ts \
+                      tt2_nl.ts
+</pre>
+<p>
+Now run <em>lupdate</em>.  You should get two identical message files
+(tt2_fr.ts and tt2_nl.ts).
+<p>
+<h2>Line by Line Walk-Through</h2>
+<p>
+<h3><a href="tt2-arrowpad-h.html">arrowpad.h</a></h3>   <pre>
+    class ArrowPad : public QGrid
+    {
+        Q_OBJECT
+</pre>
+<p>
+ArrowPad is a subclass of
+<a href="http://doc.trolltech.com/qwidget.html">QWidget</a>.  On the
+screenshot above, the central widget with the four buttons is an
+ArrowPad.
+<p>
+"ArrowPad" is also a context:  It is the context of the texts in the
+ArrowPad class.  The Q_OBJECT macro defines <code>tr(x)</code> in ArrowPad like
+this:
+<p>
+<pre>
+    qApp->translate( "ArrowPad", x )
+</pre>
+<p>
+Knowing which class each text occurs enables the Qt Linguist to show
+the right texts together, which in turn eases the translation of the
+program.
+<p>
+<h3><a href="tt2-arrowpad-cpp.html">arrowpad.cpp</a></h3>   <pre>
+        skip();
+        (void) new QPushButton( tr("&amp;Up"), this );
+        skip();
+        (void) new QPushButton( tr("&amp;Left"), this );
+        skip();
+        (void) new QPushButton( tr("&amp;Right"), this );
+        skip();
+        (void) new QPushButton( tr("&amp;Down"), this );
+        skip();
+</pre>
+<p>
+Here, we use ArrowPad::tr() four times.
+<p>
+<h3><a href="tt2-mainwindow-h.html">mainwindow.h</a></h3>   <pre>
+    class MainWindow : public QMainWindow
+    {
+        Q_OBJECT
+</pre>
+<p>
+In the screenshot above, the whole window is a MainWindow.  Here too,
+we use Q_OBJECT, so that MainWindow will become a context in the Qt
+Linguist.
+<p>
+<h3><a href="tt2-mainwindow-cpp.html">mainwindow.cpp</a></h3>   <pre>
+    MainWindow::MainWindow( QWidget *parent, const char *name )
+        : QMainWindow( parent, name )
+    {
+        ArrowPad *ap = new ArrowPad( this, "arrow pad" );
+        setCentralWidget( ap );
+</pre>
+<p>
+In the MainWindow constructor, we create an ArrowPad. <pre>
+        QPopupMenu *file = new QPopupMenu( this );
+        file-&gt;insertItem( tr("E&amp;xit"), qApp, SLOT(quit()),
+                          QAccel::stringToKey(tr("Ctrl+Q")) );
+</pre>
+<p>
+Here we call MainWindow::tr() twice.  Notice the use of
+<a href="http://doc.trolltech.com/qaccel.html#7c073d">
+QAccel::stringToKey</a>() to support different keys in other
+languages.  "Ctrl+Q" is a good choice for Quit in English, but a Dutch
+translator might want to use "Ctrl+A" (for Afsluiten) or a German
+translator "Strg+E" (for, strangely, Beenden).
+<p>
+<h3><a href="tt2-main-cpp.html">main.cpp</a></h3>   <pre>
+        QTranslator tor( 0 );
+        tor.load( QString("tt2_") + QTextCodec::locale(), "." );
+        a.installTranslator( &amp;tor );
+</pre>
+<p>
+Here, we determine which translation to use according to the current
+locale. <a href="http://doc.trolltech.com/qtextcodec.html#75defa">
+QTextCodec::locale</a>() can be influenced by setting the
+<tt>LANG</tt> environment variable, among others.
+<p>
+<h2>Translating to French and Dutch</h2>
+<p>
+Let's translate the example application to French first.  Start Qt
+Linguist with tt2_fr.ts.  You should get the seven source texts
+("&amp;Up", "&amp;Left", etc.) grouped in two contexts ("ArrowPad" and
+"MainWindow").
+<p>
+Now, enter the following translations:
+<p>
+<ul>
+<li> ArrowPad
+     <ul>
+     <li> &amp;Up - &amp;Haut
+     <li> &amp;Left - &amp;Gauche
+     <li> &amp;Right - &amp;Droite
+     <li> &amp;Down - &amp;Bas
+     </ul>
+<li> MainWindow
+     <ul>
+     <li> E&amp;xit - &amp;Quitter
+     <li> Ctrl+Q - Ctrl+Q
+     <li> &amp;File - &amp;Fichier
+     </ul>
+</ul>
+<p>
+(Use the "Finish &amp; Next" button to mark the current item as finished
+and to start editing an unfinished item.)
+<p>
+Save the file and do the same for Dutch:
+<p>
+<ul>
+<li> ArrodPad
+     <ul>
+     <li> &amp;Up - &amp;Boven
+     <li> &amp;Left - &amp;Links
+     <li> &amp;Right - &amp;Rechts
+     <li> &amp;Down - &amp;Onder
+     </ul>
+<li> MainWindow
+     <ul>
+     <li> E&amp;xit - &amp;Afsluiten
+     <li> Ctrl+Q - Ctrl+A
+     <li> File - &amp;Bestand
+     </ul>
+</ul>
+<p>
+Now, we have to convert t1_fr.ts and t1_nl.ts into .qm files.  We
+could use Qt Linguist for that, as in chapter one, but then we would
+miss an opportunity to use the <em>lrelease</em> utility. <em>lrelease</em>
+produces .qm files from .ts files without user interaction.  It's
+chiefly meant for use in makefiles.
+<p>
+Type
+<p>
+<pre>
+    lrelease tt2.pro
+</pre>
+<p>
+You should now have both tt2_fr.qm and tt2_nl.qm.  Set the
+<tt>LANG</tt> environment variable to <tt>fr</tt>.  In Unix,
+one of the two following commands should do it:
+<p>
+<pre>
+    export LANG=fr
+    setenv LANG fr
+</pre>
+<p>
+In Windows, either modify autoexec.bat or run
+<p>
+<pre>
+    set LANG=fr
+</pre>
+<p>
+When you run the program, you should now get
+<p>
+<center><img src="tt2_fr.png"
+alt="Screenshot of the French version of tutorial 2"></center>
+<p>
+Now, try the same with Dutch, by setting <tt>LANG=nl</tt>.  You should
+get
+<p>
+<center><img src="tt2_nl.png"
+alt="Screenshot of the Dutch version of tutorial 2"></center>
+<p>
+<h2>Exercices</h2>
+<p>
+Remove the Q_OBJECT macro from the header files, run <em>lupdate</em>
+and look at the result in Qt Linguist.  What's different now?
+<p>
+Set <tt>LANG=fr_CA</tt> (French Canada) and run the example program
+again.  Explain why the result is the same as with <tt>LANG=fr</tt>.
+<p>
+Let's go on to <a href="tt3.html">chapter three</a>.
+<p>
+[<a href="tt1.html">Previous tutorial</a>]
+[<a href="tt3.html">Next tutorial</a>]
+[<a href="ttutorial.html">Main tutorial page</a>]
+

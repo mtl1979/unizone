@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><head><title>
+Translation Tutorial - tt2/mainwindow.cpp
+</title></head><body bgcolor="#ffffff">
+<p>
+<h1 align=center>Source code for <a href="tt2.html">tutorial 2</a>:
+mainwindow.cpp</h1><br clear="all">
+<hr> <pre>/****************************************************************
+**
+** Implementation of MainWindow class, translation tutorial 2
+**
+****************************************************************/
+
+#include "arrowpad.h"
+#include "mainwindow.h"
+
+#include &lt;qaccel.h&gt;
+#include &lt;qapplication.h&gt;
+#include &lt;qmenubar.h&gt;
+#include &lt;qpopupmenu.h&gt;
+
+MainWindow::MainWindow( QWidget *parent, const char *name )
+    : QMainWindow( parent, name )
+{
+    ArrowPad *ap = new ArrowPad( this, "arrow pad" );
+    setCentralWidget( ap );
+
+    QPopupMenu *file = new QPopupMenu( this );
+    file-&gt;insertItem( tr("E&amp;xit"), qApp, SLOT(quit()),
+                      QAccel::stringToKey(tr("Ctrl+Q")) );
+    menuBar()-&gt;insertItem( tr("&amp;File"), file );
+    menuBar()-&gt;setSeparator( QMenuBar::InWindowsStyle );
+}
+</pre>
+<p>
+
