@@ -38,143 +38,150 @@
     <property name="sizeGripEnabled">
         <bool>false</bool>
     </property>
-    <widget class="QPushButton">
+    <widget class="QLayoutWidget">
         <property name="name">
-            <cstring>buttonOk</cstring>
+            <cstring>layout3</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>330</x>
-                <y>160</y>
-                <width>60</width>
-                <height>30</height>
-            </rect>
-        </property>
-        <property name="caption">
-            <string></string>
-        </property>
-        <property name="text">
-            <string>&amp;OK</string>
-        </property>
-        <property name="autoDefault">
-            <bool>true</bool>
-        </property>
-        <property name="default">
-            <bool>true</bool>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>TextLabel2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>50</x>
-                <y>60</y>
-                <width>300</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Written by Mika T. Lindqvist</string>
-        </property>
-        <property name="alignment">
-            <set>AlignCenter</set>
-        </property>
-        <property name="hAlign" stdset="0">
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>TextLabel2_3</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>50</x>
-                <y>100</y>
-                <width>300</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Which was written by Vitaliy Mikitchenko</string>
-        </property>
-        <property name="alignment">
-            <set>AlignCenter</set>
-        </property>
-        <property name="hAlign" stdset="0">
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>TextLabel2_3_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>130</y>
-                <width>340</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</string>
-        </property>
-        <property name="alignment">
-            <set>AlignCenter</set>
-        </property>
-        <property name="hAlign" stdset="0">
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>titleLabel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
+                <x>0</x>
                 <y>0</y>
-                <width>340</width>
-                <height>60</height>
+                <width>401</width>
+                <height>200</height>
             </rect>
         </property>
-        <property name="font">
-            <font>
-                <pointsize>16</pointsize>
-                <bold>1</bold>
-            </font>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-        <property name="alignment">
-            <set>WordBreak|AlignCenter</set>
-        </property>
-        <property name="hAlign" stdset="0">
-        </property>
-        <property name="wordwrap" stdset="0">
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>TextLabel2_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>40</x>
-                <y>80</y>
-                <width>320</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Based upon the Windows MUSCLE client Ozone</string>
-        </property>
-        <property name="alignment">
-            <set>AlignCenter</set>
-        </property>
-        <property name="hAlign" stdset="0">
-        </property>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout2</cstring>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>titleLabel</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <pointsize>16</pointsize>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string></string>
+                        </property>
+                        <property name="alignment">
+                            <set>WordBreak|AlignCenter</set>
+                        </property>
+                        <property name="hAlign" stdset="0">
+                        </property>
+                        <property name="wordwrap" stdset="0">
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>TextLabel2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Written by Mika T. Lindqvist</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignCenter</set>
+                        </property>
+                        <property name="hAlign" stdset="0">
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>TextLabel2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Based upon the Windows MUSCLE client Ozone</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignCenter</set>
+                        </property>
+                        <property name="hAlign" stdset="0">
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>TextLabel2_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Which was written by Vitaliy Mikitchenko</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignCenter</set>
+                        </property>
+                        <property name="hAlign" stdset="0">
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>TextLabel2_3_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignCenter</set>
+                        </property>
+                        <property name="hAlign" stdset="0">
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout1</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer1</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>311</width>
+                                <height>31</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>buttonOk</cstring>
+                        </property>
+                        <property name="caption">
+                            <string></string>
+                        </property>
+                        <property name="text">
+                            <string>&amp;OK</string>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>true</bool>
+                        </property>
+                        <property name="default">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+        </vbox>
     </widget>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
