@@ -14,7 +14,7 @@ searchitem.o settings.o textevent.o transferitem.o ulistview.o \
 uploadthread.o user.o userlistitem.o winshare_network.o \
 winshare_parsing.o winshare_slots.o winsharewindow.o Log.o \
 htmlview.o channel.o channelinfo.o channelimpl.o \
-channelsimpl.o moc_channel.o wpwevent.o \
+moc_channel.o wpwevent.o \
 moc_channelimpl.o moc_menubar.o moc_ulistview.o
 VPATH = src
 CXXFLAGS = -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
@@ -27,8 +27,7 @@ Unizone : $(OBJFILES) ./linux/muscle.a
 	$(CXX) $(LFLAGS) $(LIBS) -o $@ $(OBJFILES) ./linux/muscle.a
 
 linux/muscle.a : linux/Makefile
-	cd liinux
-	make
+	make -C linux -f Makefile
 
 %.ts : src/unizone.pro
 	lupdate $<
@@ -39,6 +38,8 @@ translations : src/unizone.pro $(TRANSLATIONS)
 	lrelease $<
 
 .PHONY=translations
+
+src/downloadimpl.cpp: src/privatewindow.h src/channel.h
 
 # stuff for moc
 
@@ -126,3 +127,4 @@ clean :
 	rm -f src/channel.h src/channel.cpp
 	rm -f src/prefs.h src/prefs.cpp
 	rm -f src/privatewindow.h src/privatewindow.cpp
+	make -C linux -f Makefile clean
