@@ -1810,7 +1810,7 @@ WDownload::ULPopupActivated(int id)
 		
 	case ID_BAN1H:
 		{
-			gt->SetBlocked(true, 3600000000L);
+			gt->SetBlocked(true, 3600000000LL);
 			break;
 		}
 
@@ -2587,3 +2587,4 @@ WDownload::SetLocalID(QString sid)
 {
 	fLocalSID = sid;
 }
+

@@ -1,13 +1,10 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>AboutDlgBase</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QDialog">
+    <property name="name">
         <cstring>AboutDlgBase</cstring>
     </property>
-    <property stdset="1">
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
@@ -15,43 +12,37 @@
             <height>200</height>
         </rect>
     </property>
-    <property stdset="1">
-        <name>sizePolicy</name>
+    <property name="sizePolicy">
         <sizepolicy>
             <hsizetype>0</hsizetype>
             <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property stdset="1">
-        <name>minimumSize</name>
+    <property name="minimumSize">
         <size>
             <width>400</width>
             <height>200</height>
         </size>
     </property>
-    <property stdset="1">
-        <name>maximumSize</name>
+    <property name="maximumSize">
         <size>
             <width>400</width>
             <height>200</height>
         </size>
     </property>
-    <property stdset="1">
-        <name>caption</name>
+    <property name="caption">
         <string>About Unizone</string>
     </property>
-    <property stdset="1">
-        <name>sizeGripEnabled</name>
+    <property name="sizeGripEnabled">
         <bool>false</bool>
     </property>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
+    <widget class="QPushButton">
+        <property name="name">
             <cstring>buttonOk</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
                 <x>330</x>
                 <y>160</y>
@@ -59,31 +50,24 @@
                 <height>30</height>
             </rect>
         </property>
-        <property stdset="1">
-            <name>caption</name>
+        <property name="caption">
             <string></string>
         </property>
-        <property stdset="1">
-            <name>text</name>
+        <property name="text">
             <string>&amp;OK</string>
         </property>
-        <property stdset="1">
-            <name>autoDefault</name>
+        <property name="autoDefault">
             <bool>true</bool>
         </property>
-        <property stdset="1">
-            <name>default</name>
+        <property name="default">
             <bool>true</bool>
         </property>
     </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
+    <widget class="QLabel">
+        <property name="name">
             <cstring>TextLabel2</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
                 <x>50</x>
                 <y>60</y>
@@ -91,53 +75,20 @@
                 <height>21</height>
             </rect>
         </property>
-        <property stdset="1">
-            <name>text</name>
+        <property name="text">
             <string>Written by Mika T. Lindqvist</string>
         </property>
-        <property stdset="1">
-            <name>alignment</name>
+        <property name="alignment">
             <set>AlignCenter</set>
         </property>
-        <property>
-            <name>hAlign</name>
+        <property name="hAlign" stdset="0">
         </property>
     </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>TextLabel2_2</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>50</x>
-                <y>80</y>
-                <width>300</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Based upon the Windows MUSCLE client Ozone</string>
-        </property>
-        <property stdset="1">
-            <name>alignment</name>
-            <set>AlignCenter</set>
-        </property>
-        <property>
-            <name>hAlign</name>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
+    <widget class="QLabel">
+        <property name="name">
             <cstring>TextLabel2_3</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
                 <x>50</x>
                 <y>100</y>
@@ -145,26 +96,20 @@
                 <height>21</height>
             </rect>
         </property>
-        <property stdset="1">
-            <name>text</name>
+        <property name="text">
             <string>Which was written by Vitaliy Mikitchenko</string>
         </property>
-        <property stdset="1">
-            <name>alignment</name>
+        <property name="alignment">
             <set>AlignCenter</set>
         </property>
-        <property>
-            <name>hAlign</name>
+        <property name="hAlign" stdset="0">
         </property>
     </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
+    <widget class="QLabel">
+        <property name="name">
             <cstring>TextLabel2_3_2</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
                 <x>30</x>
                 <y>130</y>
@@ -172,26 +117,20 @@
                 <height>21</height>
             </rect>
         </property>
-        <property stdset="1">
-            <name>text</name>
+        <property name="text">
             <string>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</string>
         </property>
-        <property stdset="1">
-            <name>alignment</name>
+        <property name="alignment">
             <set>AlignCenter</set>
         </property>
-        <property>
-            <name>hAlign</name>
+        <property name="hAlign" stdset="0">
         </property>
     </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
+    <widget class="QLabel">
+        <property name="name">
             <cstring>titleLabel</cstring>
         </property>
-        <property stdset="1">
-            <name>geometry</name>
+        <property name="geometry">
             <rect>
                 <x>30</x>
                 <y>0</y>
@@ -199,27 +138,44 @@
                 <height>60</height>
             </rect>
         </property>
-        <property stdset="1">
-            <name>font</name>
+        <property name="font">
             <font>
                 <pointsize>16</pointsize>
                 <bold>1</bold>
             </font>
         </property>
-        <property stdset="1">
-            <name>text</name>
+        <property name="text">
             <string></string>
         </property>
-        <property stdset="1">
-            <name>alignment</name>
+        <property name="alignment">
             <set>WordBreak|AlignCenter</set>
         </property>
-        <property>
-            <name>hAlign</name>
+        <property name="hAlign" stdset="0">
         </property>
-        <property>
-            <name>wordwrap</name>
+        <property name="wordwrap" stdset="0">
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>TextLabel2_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>40</x>
+                <y>80</y>
+                <width>320</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Based upon the Windows MUSCLE client Ozone</string>
+        </property>
+        <property name="alignment">
+            <set>AlignCenter</set>
+        </property>
+        <property name="hAlign" stdset="0">
         </property>
     </widget>
 </widget>
+<layoutdefaults spacing="6" margin="11"/>
 </UI>
