@@ -568,7 +568,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				else 
 					strcpy(zone, tzname[1]);
 				
-				PrintSystem(tr("Current time: %1 %2").arg(lt.Cstr()).arg(zone));
+				PrintSystem(tr("Current time: %1 %2").arg(QString::fromLocal8Bit(lt.Cstr())).arg(QString::fromLocal8Bit(zone)));
 			}
 			else
 			{
@@ -630,7 +630,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else 
 				strcpy(zone, tzname[1]);
 
-			QString text = tr("Current time: %1 %2").arg(lt.Cstr()).arg(zone);
+			QString text = tr("Current time: %1 %2").arg(QString::fromLocal8Bit(lt.Cstr())).arg(QString::fromLocal8Bit(zone));
 
 			if (fNetClient->IsConnected())
 				SendChatText("*", text);
@@ -2153,10 +2153,13 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					MessageRef tire(GetMessageFromPool(TimeReply));
 					if (tire())
 					{
+						// Make sure we send using UTF-8 and not local multi-byte encoding
+						QString qlt = QString::fromLocal8Bit(lt.Cstr());
+						QString qzone = QString::fromLocal8Bit(zone);
 						tire()->AddString(PR_NAME_KEYS, tostr);
 						tire()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
-						tire()->AddString("time", lt);
-						tire()->AddString("zone", zone);
+						tire()->AddString("time", (const char *) qlt.utf8());
+						tire()->AddString("zone", (const char *) qzone.utf8());
 						fNetClient->SendMessageToSessions(tire);
 					}
 				}
@@ -2173,7 +2176,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					{
 						if ((msg()->FindString("time", sTime) == B_OK) && (msg()->FindString("zone", sZone) == B_OK))
 						{
-							QString qstamp = tr("Current time: %1 %2").arg(sTime.Cstr()).arg(sZone.Cstr());
+							QString qstamp = tr("Current time: %1 %2").arg(QString::fromUtf8(sTime.Cstr())).arg(QString::fromUtf8(sZone.Cstr()));
 							QString qTime = WFormat::RemoteText(session, FixStringStr(user()->GetUserName()), qstamp);
 							PrintText(qTime);
 						}

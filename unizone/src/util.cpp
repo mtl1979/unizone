@@ -21,7 +21,7 @@ using namespace muscle;
 #include <qregexp.h>
 #endif
 
-#include <qdatetime.h>
+//#include <qdatetime.h>
 #include <qdns.h>
 #include <qfile.h>
 
@@ -835,10 +835,8 @@ GetTimeStamp()
 	static QString _day = "";
 	QString qCurTime;
 
-	qCurTime = QDateTime::currentDateTime().toString();
-#ifndef WIN32
-	qCurTime = QString::fromLocal8Bit(qCurTime);
-#endif
+	time_t currentTime = time(NULL);
+	qCurTime = QString::fromLocal8Bit(asctime(localtime(&currentTime)));
 
 	// Strip off year
 	QString qYear = qCurTime.mid(qCurTime.findRev(" ") + 1);
@@ -850,11 +848,6 @@ GetTimeStamp()
 
 	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);	
 	
-	// Linux ;)
-	// QChar q(160,0);
-	// qCurTime.replace(QRegExp(q), "");
-	//
-
 	// Strip Month and translate it
 	QString qMonth = qCurTime.left(qCurTime.find(" "));
 	qMonth = TranslateMonth(qMonth);
