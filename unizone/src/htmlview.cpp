@@ -125,8 +125,22 @@ ParseForShown(const QString & txt)
 		out += line;
 	}
 #else
-	out = txt;
-	out.replace(QRegExp("\t"), "<br>");		// replace our TAB
+	out = "";
+	unsigned int n = 0;
+	// replace our TAB
+	while (n < txt.length())
+	{
+		if (txt.at(n) != '\t')
+		{
+			out += txt.at(n);
+		}
+		else
+		{
+			out += "<br>";
+		}
+		n++;
+	}
+	// out.replace(QRegExp("\t"), "<br>");
 	// Remove any extra line breaks in start of buffer
 	//
 	if (out.length() > 4)
