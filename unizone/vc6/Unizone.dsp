@@ -358,6 +358,10 @@ SOURCE=..\src\nicklist.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\parser.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\picviewer.cpp
 # End Source File
 # Begin Source File
@@ -1291,6 +1295,10 @@ InputName=netclient
 # Begin Source File
 
 SOURCE=..\src\nicklist.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\parser.h
 # End Source File
 # Begin Source File
 
