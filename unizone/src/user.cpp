@@ -415,8 +415,10 @@ WUser::SetClient(const QString &s)
 		for (unsigned int n = 0; (p = Systems[n]).id != NULL; n++)
 		{
 			if (s.contains(p.id, false) > 0)
+			{
 				fHostOS = qApp->translate("WUser", p.tag);
-			break;
+				break;
+			}
 		}
 	}
 }
