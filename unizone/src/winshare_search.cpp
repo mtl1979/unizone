@@ -18,9 +18,11 @@ WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewa
 	if (firewalled && fSettings->GetFirewalled())
 		return;	// we don't need to show this file if we are firewalled
 	
+#ifdef _DEBUG
 	WString wFileName(filename);
 	WString wSID(sid);
 	PRINT("ADDFILE: filename=%S (%s) [%S]\n", wFileName.getBuffer(), firewalled ? "firewalled" : "hackable", wSID.getBuffer());
+#endif
 
 	// Workaround for StringMatcher bug (for now!)
 	if (fCurrentSearchPattern.isEmpty())
@@ -96,9 +98,11 @@ WinShareWindow::RemoveFile(const QString &sid, const QString &filename)
 	WFIIter iter = fFileList.begin();
 	WFileInfo * info;
 
+#ifdef _DEBUG
 	WString wSID(sid);
 	WString wFilename(filename);
 	PRINT("Sid = %S, filename = %S\n", wSID.getBuffer(), wFilename.getBuffer());
+#endif
 
 	while (iter != fFileList.end())
 	{
@@ -202,7 +206,7 @@ WinShareWindow::SplitQuery(const String &fileExp)
 	while (it != users.end())
 	{	
 		// User ID?
-		user = (const char *) (*it).first.latin1();
+		user = (const char *) (*it).first.utf8();
 		user = user.Prepend("@");
 		if (fileExp.EndsWith(user))
 		{
@@ -351,10 +355,12 @@ WinShareWindow::StartQuery(const QString & sidRegExp, const QString & fileRegExp
 	fCurrentSearchPattern = tmp;
 	// <postmaster@raasu.org> 20021023 -- Fixed typo
 
+#ifdef _DEBUG
 	WString wCurrentSearchPattern(fCurrentSearchPattern);
 	WString wSIDRegExp(sidRegExp);
 	WString wFileRegExp(fileRegExp);
 	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", wCurrentSearchPattern.getBuffer(), wSIDRegExp.getBuffer(), wFileRegExp.getBuffer());
+#endif
 
 	fUserRegExp.SetPattern((const char *) sidRegExp.utf8());
 	fUserRegExpStr = sidRegExp;
@@ -394,9 +400,11 @@ WinShareWindow::Download()
 		{
 			WFileInfo * fi = (*it).second;
 
+#ifdef _DEBUG
 			WString wFile = fi->fiListItem->text(0);
 			WString wUser = fi->fiListItem->text(5);
 			PRINT("Checking: %S, %S\n", wFile.getBuffer(), wUser.getBuffer());
+#endif
 
 			if (fi->fiListItem->isSelected())
 			{

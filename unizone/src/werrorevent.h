@@ -1,22 +1,22 @@
-#ifndef WSYSTEMEVENT_H
-#define WSYSTEMEVENT_H
+#ifndef WERROREVENT_H
+#define WERROREVENT_H
 
 #include <qstring.h>
 #include <qevent.h>
 
-class WSystemEvent : public QCustomEvent
+class WErrorEvent : public QCustomEvent
 {
 public:
-	WSystemEvent(const QString & msg);
+	WErrorEvent(const QString & msg);
 
-	virtual ~WSystemEvent() {}
+	virtual ~WErrorEvent() {}
 
 	QString GetText() const { return fMsg; }
 	void SetText(const QString & txt) { fMsg = txt; }
 
 	enum
 	{
-		SystemEvent = QEvent::User + 12000
+		ErrorEvent = QEvent::User + 13000
 	};
 
 

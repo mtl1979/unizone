@@ -15,13 +15,13 @@ public:
 	enum 
 	{
 		Name,
-			ID,
-			Status,
-			Files,
-			Connection,
-			Load,
-			Client,
-			NumColumns
+		ID,
+		Status,
+		Files,
+		Connection,
+		Load,
+		Client,
+		NumColumns
 	};
 	
 	WNickListItem(QListView * parent) 

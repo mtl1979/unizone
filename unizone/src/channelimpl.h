@@ -49,22 +49,13 @@ private:
 	QLineEdit * fTopicEdit;
 	QListView * fChannelUsers;
 	WChatText * fInputText;
-//	WHTMLView * fChatText;
 	QWidget * fParent;
 
 	WUserMap fUsers;
 	WUserMap fAdmins;
-//	bool fScrollDown;
-//	int fScrollX, fScrollY;
 	bool fActive, fPublic;
 
-//	void PrintText(const QString & str);
-//	void PrintSystem(const QString & str);
-//	void PrintError(const QString & str);
 	void SendChannelText(const QString & message);
-//	void CheckScrollState();
-//	void UpdateTextView();
-//	void Action(const QString & name, const QString & msg);
 
 	void UpdateNode();
 

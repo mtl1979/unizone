@@ -26,6 +26,22 @@ TTPDecode(const String &orig)
 	return temp;
 }
 
+#ifdef QT_DLL
+QString
+TTPDecode(const QString &orig)
+{
+	if ((orig.length() % 2) != 0)
+		return QString("");
+	QString temp("");
+	for (unsigned int x = 0; x < orig.length(); x += 2)
+	{
+		QChar c = hextochar(orig.mid(x, 2));
+		temp += c;
+	}
+	return temp;
+}
+#endif
+
 String
 chartohex(const char c)
 {
@@ -43,3 +59,15 @@ hextochar(const String &orig)
 	long l = strtol(buf, NULL, 16);
 	return (char) (l & 0xFF);
 }
+
+#ifdef QT_DLL
+QChar
+hextochar(const QString &orig)
+{
+	if (orig.length() != 2) 
+		return (QChar) 0;
+	const char *buf = orig.local8Bit();
+	long l = strtol(buf, NULL, 16);
+	return (QChar) (l & 0xFF);
+}
+#endif

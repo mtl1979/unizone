@@ -32,14 +32,6 @@ int64 GetStartTime()
 	return fStartTime;
 }
 
-
-QString
-WinShareVersionString()
-{
-	QString version = QObject::tr("%1.%2.%3 build %4").arg(kMajor).arg(kMinor).arg(kPatch).arg(kBuild);
-	return version;
-}
-
 int 
 main( int argc, char** argv )
 {

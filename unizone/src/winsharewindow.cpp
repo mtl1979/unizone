@@ -5,7 +5,7 @@
 #include "aboutdlgimpl.h"
 #include "downloadimpl.h"
 #include "winsharewindow.h"
-#include "global.h"
+#include "version.h"
 #include "debugimpl.h"
 #include "chattext.h"
 #include "formatting.h"
@@ -15,6 +15,7 @@
 #include "wpwevent.h"
 #include "wsystemevent.h"
 #include "wwarningevent.h"
+#include "werrorevent.h"
 #include "combo.h"
 #include "menubar.h"
 #include "util/StringTokenizer.h"
@@ -229,14 +230,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 #ifdef WIN32
 	// try to find our handle
-	WString wtitle("[Freeware] - Unizone");
-	fWinHandle = FindWindow(NULL, wtitle); 
-
-	if (fWinHandle)
-	{
-		PRINT("Got Handle!\n");
-	}
-
+	FindWindowHandle("Unizone");
 #endif
 
 	// setup accept thread
@@ -639,15 +633,19 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				{
 					WTextEvent te("");
 
+#ifdef _DEBUG
 					WString wText(wpe->GetText());
-					PRINT("wpe->GetText() %S\n", wText.getBuffer());
+					PRINT("wpe->GetText() = %S\n", wText.getBuffer());
+#endif
 
 					te.SetText(wpe->GetText());
 					if (wpe->GetWantReply())	// reply wanted... do the following...
 					{
 						bool rep = false;
+#ifdef _DEBUG
 						wText = te.Text();
 						PRINT("Sending the following text to SendChatText %S\n", wText.getBuffer());
+#endif
 
 						SendChatText(&te, &rep);
 						if (rep)	// does this event WANT a reply
@@ -714,8 +712,15 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					PrintWarning(wwe->GetText());
 			}
 
-		}
+		case WErrorEvent::ErrorEvent:
+			{
+				WErrorEvent *wee = dynamic_cast<WErrorEvent *>(event);
+				if (wee)
+					PrintError(wee->GetText());
+			}
 		
+		}
+
 	}
 }
 
@@ -1656,10 +1661,17 @@ WinShareWindow::LoadSettings()
 		// status messages
 		fAwayMsg = fSettings->GetAwayMsg();
 
+#ifdef _DEBUG
 		WString wAwayMsg(fAwayMsg);
 		PRINT("Away Msg: %S\n", wAwayMsg.getBuffer());
+#endif
 		
 		fHereMsg = fSettings->GetHereMsg();
+
+#ifdef _DEBUG
+		WString wHereMsg(fHereMsg);
+		PRINT("Here Msg: %S\n", wHereMsg.getBuffer());
+#endif
 
 		// load colors
 		if ((str = fSettings->GetColorItem(0)) != QString::null)
@@ -1819,43 +1831,62 @@ WinShareWindow::SaveSettings()
 	
 	// save server list
 	int i;
+#ifdef _DEBUG
 	WString wServer;
+#endif
 	for (i = 0; i < fServerList->count(); i++)
 	{
 		fSettings->AddServerItem(fServerList->text(i));
+
+#ifdef _DEBUG
 		wServer = fServerList->text(i);
 		PRINT("Saved server %S\n", wServer.getBuffer());
+#endif
 	}
 	fSettings->SetCurrentServerItem(fServerList->currentItem());
 	
 	// save user list
+#ifdef _DEBUG
 	WString wUser;
+#endif
 	for (i = 0; i < fUserList->count(); i++)
 	{
 		fSettings->AddUserItem(fUserList->text(i));
+
+#ifdef _DEBUG
 		wUser = fUserList->text(i);
 		PRINT("Saved user %S\n", wUser.getBuffer());
+#endif
 	}
 	fSettings->SetCurrentUserItem(fUserList->currentItem());
 	
 	// save status list
+#ifdef _DEBUG
 	WString wStatus;
+#endif
 	for (i = 0; i < fStatusList->count(); i++)
 	{
 		fSettings->AddStatusItem(fStatusList->text(i));
+
+#ifdef _DEBUG
 		wStatus = fStatusList->text(i);
 		PRINT("Saved status %S\n", wStatus.getBuffer());
+#endif
 	}
 	fSettings->SetCurrentStatusItem(fStatusList->currentItem());
 
 	// save query history
+#ifdef _DEBUG
 	WString wQuery;
+#endif
 	for (i = 0; i < fSearchEdit->count(); i++)
 	{
 		fSettings->AddQueryItem(fSearchEdit->text(i));
 
+#ifdef _DEBUG
 		wQuery = fSearchEdit->text(i);
 		PRINT("Saved query %S\n", wQuery.getBuffer());
+#endif
 	}
 	fSettings->SetCurrentQueryItem(fSearchEdit->currentItem());
 
@@ -2084,8 +2115,10 @@ WinShareWindow::MapIPsToNodes(const QString & pattern)
 		qResult.truncate(qResult.length() - 1);
 	}
 
+#ifdef _DEBUG
 	WString wResult(qResult);
 	PRINT("MapIPsToNodes: %S\n", wResult.getBuffer());
+#endif
 
 	return qResult;
 }
@@ -2134,8 +2167,10 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 		qResult.truncate(qResult.length() - 1);
 	}
 
+#ifdef _DEBUG
 	WString wResult(qResult);
 	PRINT("MapUsersToIDs: %S\n", wResult.getBuffer());
+#endif
 
 	return qResult;
 }
@@ -2207,14 +2242,14 @@ WinShareWindow::QueueFileAux(const QString & ref)
 {
 	QString from = ref.left(ref.find("/"));
 	QString file = ref.mid(ref.find("/") + 1);
-	String sfile = TTPDecode(file.latin1());
+	QString sfile = TTPDecode(file);
 	TTPInfo * ttpInfo = new TTPInfo;
 	if (ttpInfo)
 	{
-		ttpInfo->bot = from.latin1();
+		ttpInfo->bot = from;
 		ttpInfo->file = sfile;
 		_ttpFiles.AddTail(ttpInfo);
-		PrintSystem(tr("Queued file %1 from user #%2.").arg( QString::fromUtf8(sfile.Cstr()) ).arg(from));
+		PrintSystem(tr("Queued file %1 from user #%2.").arg( sfile ).arg(from));
 	}
 }
 
@@ -2235,11 +2270,11 @@ WinShareWindow::StartQueue(const QString &session)
 			_ttpFiles.GetItemAt(i, ttpInfo);
 			if (ttpInfo)
 			{
-				if (ttpInfo->bot == session.latin1())
+				if (ttpInfo->bot == session)
 				{
-					QueueDownload(QString::fromUtf8(ttpInfo->file.Cstr()), user);
+					QueueDownload(ttpInfo->file, user);
 					_ttpFiles.RemoveItemAt(i);
-					PrintSystem(tr("Downloading file %1 from user #%2.").arg( QString::fromUtf8(ttpInfo->file.Cstr()) ).arg(session));
+					PrintSystem(tr("Downloading file %1 from user #%2.").arg( ttpInfo->file ).arg(session));
 				}
 				else i++;
 				if (i >= _ttpFiles.GetNumItems())

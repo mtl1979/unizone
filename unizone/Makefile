@@ -22,7 +22,8 @@ OBJFILES = \
 	winshare_channels.o winshare_search.o updateclient.o util.o \
 	serverclient.o titanic.o scanprogress.o scanprogressimpl.o \
 	QMessageTransceiverThread.o QAcceptSocketsThread.o \
-	chatwindow.o wsystemevent.o wwarningevent.o
+	chatwindow.o wsystemevent.o wwarningevent.o werrorevent.o \
+	version.o
 
 MOC_OBJFILES = \
 	moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \

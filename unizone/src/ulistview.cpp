@@ -62,7 +62,9 @@ WUniListItem::key(int c, bool /* asc */) const
 	int n, m;
 	int32 bw;
 	QString result, q1, q2;
+#ifdef _DEBUG
 	WString wResult;
+#endif
 	switch (UColumnType[c])
 	{
 	case Number:
@@ -72,8 +74,10 @@ WUniListItem::key(int c, bool /* asc */) const
 	case Time:
 		{
 			result = fKey[c];
+#ifdef _DEBUG
 			wResult = result;
 			PRINT("\tRESULT STARTS AS\t %S\n", wResult.getBuffer());
+#endif
 
 			bool ok;
 			n = result.toLong(&ok);
@@ -81,16 +85,20 @@ WUniListItem::key(int c, bool /* asc */) const
 			{
 				// convert our number to hexadecimal! what a thought, huh?
 				result.sprintf("0x%08x", n);
+#ifdef _DEBUG
 				wResult = result;
 				PRINT("\tRESULT IS %S\n", wResult.getBuffer());
+#endif
 			}
 			return result;
 		}
 	case TransferSpeed:
 		{
 			result = fKey[c];
+#ifdef _DEBUG
 			wResult = result;
 			PRINT("\tRESULT STARTS AS\t %S\n", wResult.getBuffer());
+#endif
 
 			bool ok;
 			n = (long) result.toDouble(&ok); // We need to convert from double to long
@@ -98,8 +106,10 @@ WUniListItem::key(int c, bool /* asc */) const
 			{
 				// convert our number to hexadecimal! what a thought, huh?
 				result.sprintf("0x%08x", n);
+#ifdef _DEBUG
 				wResult = result;
 				PRINT("\tRESULT IS %S\n", wResult.getBuffer());
+#endif
 			}
 			return result;
 		}

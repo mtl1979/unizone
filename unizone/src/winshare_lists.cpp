@@ -46,8 +46,10 @@ void AddToList(QString &slist, const QString &entry)
 bool
 WinShareWindow::IsIgnoredIP(const QString & ip)
 {
+#ifdef _DEBUG
 	WString wIP(ip);
 	PRINT("IsIgnoredIP(%S)\n", wIP.getBuffer());
+#endif
 
 #ifdef DEBUG2
 	wIP = fIgnoreIP;
@@ -60,8 +62,10 @@ WinShareWindow::IsIgnoredIP(const QString & ip)
 bool
 WinShareWindow::AddIPIgnore(const QString & ip)
 {
+#ifdef _DEBUG
 	WString wIP(ip);
 	PRINT("AddIPIgnore(%S)\n", wIP.getBuffer());
+#endif
 
 	if ( IsIgnoredIP(ip) )
 		return false;
@@ -83,8 +87,10 @@ WinShareWindow::AddIPIgnore(const QString & ip)
 bool
 WinShareWindow::RemoveIPIgnore(const QString & ip)
 {
+#ifdef _DEBUG
 	WString wIP(ip);
 	PRINT("RemoveIPIgnore(%S)\n", wIP.getBuffer());
+#endif
 
 	if ( !IsIgnoredIP(ip) )
 		return false;

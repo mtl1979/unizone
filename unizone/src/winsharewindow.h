@@ -23,9 +23,6 @@
 #include <qlayout.h>
 #include <qtabwidget.h>
 
-// #include "netclient.h"
-// #include "serverclient.h"
-// #include "updateclient.h"
 #include "privatewindowimpl.h"
 #include "qtsupport/QAcceptSocketsThread.h"
 #include "regex/StringMatcher.h"
@@ -145,12 +142,6 @@ public:
 	QString GetServer() const;
 	QString GetStatus() const;
 	QString GetUserID() const; 
-// #ifdef WIN32
-// 	HWND GetHandle() { return fWinHandle; }
-// #endif
-
-//	void BeginMessageBatch();
-//	void EndMessageBatch();
 
 	void SendChatText(const QString & sid, const QString & txt);
 	void SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply);
@@ -209,10 +200,7 @@ public:
 	void GotParams(bool g) { fGotParams = g; }
 	bool GotParams() { return fGotParams; }
 
-//	void PrintSystem(const QString & msg);
-//	void PrintError(const QString & error);
-
-	void GotUpdateCmd(const char * param, const char * val);
+	void GotUpdateCmd(const QString & param, const QString & val);
 
 	void LogString(const char *);
 	void LogString(const QString &);
@@ -337,7 +325,6 @@ private:
 	QComboBox * fServerList, * fUserList, * fStatusList;
 	QLabel * fServerLabel, * fUserLabel, * fStatusLabel;
 	QSplitter * fChatSplitter;
-//	WHTMLView * fChatText;
 	WChatText * fInputText;
 
 	WStatusBar * fStatusBar;
@@ -437,10 +424,6 @@ private:
 
 	WLog fMainLog;
 
-// #ifdef WIN32			// if the OS is Windows, 
-// 	HWND fWinHandle;	// handle to our window for flashing
-// #endif
-
 	void InitGUI();
 	void InitToolbars();
 
@@ -452,13 +435,9 @@ private:
 	void HandleMessage(MessageRef);
 	void HandleComboEvent(WTextEvent *);
 
-//	void UpdateTextView();		// moves the stuff in the chat screen so that the latest stuff is displayed
 	void UpdateUserList();
 
 	QString MakeHumanTime(int64 time);
-
-//	void PrintText(const QString & str);
-//	void PrintWarning(const QString & warning);
 
 	void NameChanged(const QString & newName);
 	void StatusChanged(const QString & newStatus);
@@ -468,7 +447,7 @@ private:
 	// stolen from BeShare :) thanx Jeremy
 	static bool ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
-//	void Action(const QString & name, const QString & msg);
+
 	void GetAddressInfo(const QString & user, bool verbose = true);
 	void PrintAddressInfo(const WUserRef & user, bool verbose);
 	bool PrintAddressInfo(uint32 address, bool verbose);
@@ -524,7 +503,8 @@ private:
 	
 	QWidget * fMainWidget;
 	QGridLayout * fMainTab;
-// splits user list and the rest of the window
+	
+	// splits user list and the rest of the window
 	QSplitter * fMainSplitter;	
 
 	QWidget * fSearchWidget;

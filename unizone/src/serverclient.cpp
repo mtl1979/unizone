@@ -52,8 +52,9 @@ ServerClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 				if (param)
 				{
 					const char * val = tok.GetRemainderOfString();
-					String valstr(val ? val : "");
-					gWin->GotUpdateCmd(String(param).Trim().Cstr(), valstr.Trim().Cstr());
+					QString qkey = QString::fromUtf8(param).stripWhiteSpace();
+					QString qval = val ? QString::fromUtf8(val).stripWhiteSpace() : "";
+					gWin->GotUpdateCmd(qkey, qval);
 				}
 			}
 		}

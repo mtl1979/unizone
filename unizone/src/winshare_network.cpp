@@ -14,6 +14,7 @@ typedef hostent *LPHOSTENT;
 
 #include "winsharewindow.h"
 #include "global.h"
+#include "version.h"
 #include "settings.h"
 #include "debugimpl.h"
 #include "formatting.h"
@@ -226,7 +227,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 				// the easy way to add the server to the list...
 				// this will check for duplicates
-				GotUpdateCmd("addserver", serverStr.latin1());	
+				GotUpdateCmd("addserver", serverStr);	
 				// now find our server
 				for (int i = 0; i < fServerList->count(); i++)
 				{
@@ -1189,9 +1190,11 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 			QString qsendtext;
 			while (iter != sendTo.end())
 			{
+#ifdef _DEBUG
 				WString wUser((*iter).second.user()->GetUserName());
 				WString wText((*iter).second.text);
 				PRINT("Found user %S and rest of text %S\n", wUser.getBuffer(), wText.getBuffer());
+#endif
 
 				user = (*iter).second.user;
 
@@ -1880,7 +1883,7 @@ WinShareWindow::Connect(const QString & server)
 	fServer = server;
 	if (fServerList->currentText() != fServer)
 	{
-		GotUpdateCmd("addserver", fServer.latin1());
+		GotUpdateCmd("addserver", fServer);
 		for (int i = 0; i < fServerList->count(); i++)
 		{
 			QString slist = fServerList->text(i).stripWhiteSpace();
@@ -2325,7 +2328,7 @@ WinShareWindow::PrintAddressInfo(const WUserRef & user, bool verbose)
 
 	if (user() != NULL)
 	{
-		address = GetHostByName(user()->GetUserHostName().latin1());
+		address = GetHostByName(user()->GetUserHostName());
 		addr = user()->GetUserHostName();
 		uname = user()->GetUserName();
 		uid = user()->GetUserID();
@@ -2444,7 +2447,7 @@ WinShareWindow::GetAddressInfo(const QString & user, bool verbose)
 	}
 	else				// Try as hostname or ip address
 	{
-		address = GetHostByName(user.latin1());
+		address = GetHostByName(user);
 		if (!PrintAddressInfo(address, verbose) && fSettings->GetError())
 		{
 			PrintError(tr("No address info for %1").arg(user));

@@ -58,6 +58,8 @@ protected:
 	bool fScrollDown;			// do we need to scroll the view down after an insertion?
 
 #ifdef WIN32					// if the OS is Windows,
+	void FindWindowHandle(const QString &title);
+
 	HWND fWinHandle;			// handle to our window for flashing
 #endif
 

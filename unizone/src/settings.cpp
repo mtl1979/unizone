@@ -582,8 +582,8 @@ void
 WSettings::SetEncoding(const QString & server, uint16 port, uint32 encoding)
 {
 	QString key = server+":"+QString::number(port);
-	fSet()->RemoveName(key.latin1());
-	fSet()->AddInt32(key.latin1(), encoding);
+	fSet()->RemoveName((const char *) key.utf8());
+	fSet()->AddInt32((const char *) key.utf8(), encoding);
 }
 
 uint32
@@ -591,7 +591,7 @@ WSettings::GetEncoding(const QString & server, uint16 port)
 {
 	QString key = server+":"+QString::number(port);
 	uint32 encoding = MUSCLE_MESSAGE_ENCODING_DEFAULT;
-	fSet()->FindInt32(key.latin1(), (int32 *) &encoding);
+	fSet()->FindInt32((const char *) key.utf8(), (int32 *) &encoding);
 	return encoding;
 }
 

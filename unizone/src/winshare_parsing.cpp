@@ -55,8 +55,10 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 		iter++;
 	}
 
+#ifdef _DEBUG
 	WString wUser(res);
 	PRINT("WinShareWindow::MatchUserName: Result %S\n", wUser.getBuffer());
+#endif
 
 	result = res;
 	return matchCount;
@@ -153,8 +155,10 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 		PRINT("Match complete\n");
 		if (numMatches == 1)
 		{
+#ifdef _DEBUG
 			WString wResult(qres);
 			PRINT("Found match %S\n", wResult.getBuffer());
+#endif
 
 			matchString = (const char *) qres.utf8();  // found a unique match!  We're done!
 			startAt = matchAt;
@@ -162,8 +166,10 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 		}
 		else if (numMatches > 1)
 		{
+#ifdef _DEBUG
 			WString wResult(qres);
 			PRINT("Found multiple matches %S\n", wResult.getBuffer());
+#endif
 
 			backupMatchString = (const char *) qres.utf8();  // found several matches; keep trying for a single
 			backupStartAt = matchAt;         // but we'll use this if nothing else
@@ -190,14 +196,14 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 }
 
 void
-WinShareWindow::GotUpdateCmd(const char * key, const char * value)
+WinShareWindow::GotUpdateCmd(const QString & key, const QString & value)
 {
-	if (strlen(value) > 0)
+	if (value.length() > 0)
 	{
-		QString server = value;
-		server = server.lower().stripWhiteSpace();
+		QString server = value.lower().stripWhiteSpace();
+
 		// you can also compare against "version", but that is beshare specific
-		if (strcmp(key, "addserver") == 0)
+		if (key == "addserver")
 		{
 			bool exists = false;
 			// see if the server exists yet...
@@ -213,7 +219,7 @@ WinShareWindow::GotUpdateCmd(const char * key, const char * value)
 			if (!exists)
 				fServerList->insertItem(server);
 		}
-		else if (strcmp(key, "removeserver") == 0)
+		else if (key == "removeserver")
 		{
 			// try to find the server
 			for (int i = 0; i < fServerList->count(); i++)

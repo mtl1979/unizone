@@ -28,7 +28,8 @@ ChatWindow::~ChatWindow()
 bool 
 ChatWindow::NameSaid(QString & msg)
 {
-	QString sname = StripURL(gWin->GetUserName()); // <postmaster@raasu.org> -- Don't use latin1 ()
+	// <postmaster@raasu.org> -- Don't use latin1 ()
+	QString sname = StripURL(gWin->GetUserName()); 
 	int temp = 0;
 	
 	while (
@@ -73,7 +74,8 @@ ChatWindow::NameSaid(QString & msg)
 bool 
 ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 {
-	QString itxt = msg.upper(); // <postmaster@raasu.org> -- Don't use latin1 ()
+	// <postmaster@raasu.org> -- Don't use latin1 ()
+	QString itxt = msg.upper(); 
 
 	int sred;
 	
@@ -103,10 +105,15 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 	{
 		unsigned int rlen = sname.length();
 
-		QString temp = gWin->GetUserName().upper(); // <postmaster@raasu.org> 20021005 -- don't use latin1 ()
+		// <postmaster@raasu.org> 20021005 -- don't use latin1 ()
+		QString temp = gWin->GetUserName().upper(); 
+
+#ifdef _DEBUG
 		WString wTemp(temp);
 		WString wTxt(itxt);
 		PRINT("Comparing \"%S\" to \"%S\"\n", wTemp.getBuffer(), wTxt.getBuffer());
+#endif
+
 		unsigned int c1 = sred + rlen;	// itxt
 		unsigned int c2 = rlen;		// temp
 
@@ -163,13 +170,16 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		QString itxt2 = itxt.mid(sred+rlen);
 		QString smsg;
 		if (sred > 0)
-			smsg += itxt1;	// <postmaster@raasu.org> 20021005 -- Don't use latin1 ()
+			// <postmaster@raasu.org> 20021005 -- Don't use latin1 ()
+			smsg += itxt1;	
 		smsg += output;
 		smsg += "</font>";
 		smsg += itxt2;		// <postmaster@raasu.org> 20021005
 
+#ifdef _DEBUG
 		WString wMessage(smsg);
 		PRINT("Name said string: %S\n", wMessage.getBuffer());
+#endif
 
 		msg = smsg;
 		return true;
@@ -304,3 +314,25 @@ ChatWindow::Settings()
 {
 	return gWin->fSettings;
 }
+
+#ifdef WIN32
+void
+ChatWindow::FindWindowHandle(const QString &title)
+{
+	WString wtitle(title);
+	fWinHandle = FindWindow(NULL, wtitle);
+
+	if (!fWinHandle)
+	{
+		QString temp("[Freeware] - ");
+		temp += title;
+		wtitle = temp;
+		fWinHandle = FindWindow(NULL, wtitle);
+	}
+	// <postmaster@raasu.org> 20020925
+	if (fWinHandle)
+	{
+		PRINT("ChatWindow: Got Handle!\n");
+	}
+}
+#endif

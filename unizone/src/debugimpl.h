@@ -1,6 +1,12 @@
 #ifndef DEBUGIMPL_H
 #define DEBUGIMPL_H
 
+// Make sure _DEBUG is defined if DEBUG2 is
+#ifdef DEBUG2
+# ifndef _DEBUG
+#  define _DEBUG
+# endif
+#endif
 
 #ifdef _DEBUG
 
@@ -78,7 +84,7 @@ inline void PRINT(const char *, ...)
 			QFile f("assert.txt"); \
 			if (f.open(IO_WriteOnly)) \
 			{ \
-				f.writeBlock(out.latin1(), out.length()); \
+				f.writeBlock(out.local8Bit(), out.length()); \
 				f.close(); \
 			} \
 			QMessageBox box(QObject::tr( "Unizone (English)" ), out,QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \

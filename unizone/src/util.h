@@ -34,7 +34,7 @@ QString GetParameterString(const QString & qCommand);
 QString GetCommandString(const QString & qCommand);
 
 // Compare command strings, uses GetCommandString to split parts
-bool CompareCommand(const QString & qCommand, const char * cCommand);
+bool CompareCommand(const QString & qCommand, const QString & cCommand);
 
 // Strip urls from string
 String StripURL(const String &);
@@ -96,5 +96,8 @@ const QString & CheckIfEmpty(const QString & str, const QString & str2);
 
 // Calculate Checksum for raw buffer (borrowed from BeShare)
 uint32 CalculateChecksum(const uint8 * data, size_t bufSize);
+
+// Return (first) IPv4 address from hostname
+uint32 GetHostByName(const QString &name);
 
 #endif

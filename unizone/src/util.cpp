@@ -14,6 +14,7 @@ using namespace muscle;
 #endif
 
 #include <qdatetime.h>
+#include <qdns.h>
 
 
 QString
@@ -352,15 +353,16 @@ GetCommandString(const QString & qCommand)
 }
 
 bool 
-CompareCommand(const QString & qCommand, const char * cCommand)
+CompareCommand(const QString & qCommand, const QString & cCommand)
 {
 	QString com = GetCommandString(qCommand);
 #ifdef DEBUG2
 	WString wCommand(com);
+	WString wCommand2(cCommand);
 	PRINT("Compare String: qCommand=\'%S\'\n", wCommand.getBuffer());
-	PRINT("                cCommand=\'%s\'\n", cCommand);
+	PRINT("                cCommand=\'%S\'\n", wCommand2.getBuffer());
 #endif
-	return (strcmp(com.latin1(), cCommand) ? false : true);
+	return ((com == cCommand) ? true : false);
 }
 
 String
@@ -719,7 +721,7 @@ const char * MonthNames[12] = {
 
 QString TranslateMonth(const QString & m)
 {
-	return QObject::tr(m.latin1());
+	return QObject::tr(m.local8Bit());
 }
 
 const char * DayNames[7] = {
@@ -734,7 +736,7 @@ const char * DayNames[7] = {
 
 QString TranslateDay(const QString & d)
 {
-	return QObject::tr(d.latin1());
+	return QObject::tr(d.local8Bit());
 }
 
 QString
@@ -919,4 +921,19 @@ CalculateChecksum(const uint8 * data, size_t bufSize)
    uint32 sum = 0L;
    for (size_t i=0; i<bufSize; i++) sum += (*(data++)<<(i%24));
    return sum;
+}
+
+uint32
+GetHostByName(const QString &name)
+{
+	QDns query = QDns(name);
+	QValueList<QHostAddress> ips = query.addresses();
+	QValueList<QHostAddress>::ConstIterator ipiter = ips.begin();
+	while (ipiter != ips.end())
+	{
+		if ((*ipiter).isIp4Addr())
+			return (*ipiter).ip4Addr();
+		ipiter++;
+	}
+	return 0;
 }

@@ -70,7 +70,6 @@ private:
 	QObject * fOwner;
 	NetClient * fNet;
 	QListView * fPrivateUsers;
-//	WHTMLView * fChatText;	// chat text...
 	WChatText * fInputText;	// input box;
 	QSplitter * fSplit;
 	QSplitter * fSplitChat;
@@ -78,21 +77,8 @@ private:
 
 	QString fPopupUser;
 	WUserMap fUsers;	// users in list
-//	bool fScrollDown;
-//	int fScrollX, fScrollY;
 	WLog fLog;
 
-// #ifdef WIN32
-// 	HWND fWinHandle;
-// #endif
-
-//	void UpdateTextView();
-
-//	void PrintText(const QString & str);
-//	void PrintError(const QString & error);
-//	void PrintSystem(const QString & msg);
-
-//	void CheckScrollState();
 	void StartLogging();
 	void StopLogging();
 

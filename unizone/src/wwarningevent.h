@@ -1,8 +1,6 @@
 #ifndef WWARNINGEVENT_H
 #define WWARNINGEVENT_H
 
-#include "user.h"
-
 #include <qstring.h>
 #include <qevent.h>
 

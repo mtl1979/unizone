@@ -211,8 +211,10 @@ WinShareWindow::TabPressed(const QString &str)
 		fInputText->gotoEnd();
 		PRINT("Returned true\n");
 	}
+#ifdef _DEBUG
 	WString wResult(result);
 	PRINT("Tab completion result: %S\n", wResult.getBuffer());
+#endif
 }
 
 void
@@ -529,10 +531,12 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
 void 
 WinShareWindow::CheckResumes(const QString &user)
 {
-	// No need to check if empty!
+#ifdef _DEBUG
 	WString wUser(StripURL(user));
 	PRINT("CheckResumes: user   = %S\n", wUser.getBuffer());
+#endif
 
+	// No need to check if empty!
 	if (fResumeMap.empty()) 
 		return;
 
@@ -550,8 +554,10 @@ WinShareWindow::CheckResumes(const QString &user)
 	WResumeIter it = fResumeMap.begin();
 	while (it != fResumeMap.end())
 	{
+#ifdef _DEBUG
 		WString wSecond(StripURL((*it).first));
 		PRINT("CheckResumes: user = %S\n", wSecond.getBuffer());
+#endif
 
 		if (StripURL((*it).first) == StripURL(user))
 		{

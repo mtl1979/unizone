@@ -999,10 +999,12 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			{
 				QString uname = GetUserName(dt);
 				
+#ifdef _DEBUG
 				WString wID(QString::fromUtf8(user.Cstr()));
 				WString wUser(uname);
 				PRINT("USER ID  : %S\n", wID.getBuffer());
 				PRINT("USER NAME: %S\n", wUser.getBuffer());
+#endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
 				item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
@@ -1039,10 +1041,12 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				item->setText(WTransferItem::Filename, QString::fromUtf8(file.Cstr()) );
 			item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
 			item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
+#ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
 			// <postmaster@raasu.org> 20030815 -- Use WString for Unicode
 			WString wf(QString::fromUtf8(file.Cstr()));
 			PRINT("WGenericEvent::FileError: File %S\n", wf.getBuffer()); 
+#endif
 			break;
 		}
 		
@@ -1061,13 +1065,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			{
 				PRINT("\tWGenericEvent::FileDataReceived\n");
 #ifdef DEBUG2
-# ifdef WIN32
-				PRINT("\tOffset: %I64u\n", offset);
-				PRINT("\tSize  : %I64u\n", size);
-# else
-				PRINT("\tOffset: %llu\n", offset);
-				PRINT("\tSize  : %llu\n", size);
-# endif
+				PRINT("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
+				PRINT("\tSize  : " UINT64_FORMAT_SPEC "\n", size);
 				PRINT("\tGot   : %lu\n", got);
 #endif
 				gWin->UpdateReceiveStats(got);
@@ -1340,10 +1339,12 @@ WDownload::uploadEvent(WUploadEvent *u)
 			{
 				QString uname = GetUserName(ut);
 				
+#ifdef _DEBUG
 				WString wID(QString::fromUtf8(user.Cstr()));
 				WString wUser(uname);
 				PRINT("USER ID  : %S\n", wID.getBuffer());
 				PRINT("USER NAME: %S\n", wUser.getBuffer());
+#endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
 				item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
@@ -1380,10 +1381,12 @@ WDownload::uploadEvent(WUploadEvent *u)
 				item->setText(WTransferItem::Filename, QString::fromUtf8(file.Cstr()) );
 			item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
 			item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
+#ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
 			// <postmaster@raasu.org> 20030815 -- Use WString for Unicode
 			WString wf(QString::fromUtf8(file.Cstr()));
 			PRINT("WGenericEvent::FileError: File %S\n", wf.getBuffer()); 
+#endif
 			break;
 		}
 		
@@ -1402,13 +1405,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 			{
 #ifdef DEBUG2
 				PRINT("\tWUploadEvent::FileDataSent\n");
-# ifdef WIN32
-				PRINT("\tOffset: %I64u\n", offset);
-				PRINT("\tSize  : %I64u\n", size);
-# else
-				PRINT("\tOffset: %llu\n", offset);
-				PRINT("\tSize  : %llu\n", size);
-# endif
+				PRINT("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
+				PRINT("\tSize  : " UINT64_FORMAT_SPEC "\n", size);
 				PRINT("\tSent  : %lu\n", got);
 #endif
 				gWin->UpdateTransmitStats(got);
@@ -2919,11 +2917,13 @@ WDownload::UpdateULRatings()
 		fUploadList.GetItemAt(i, pair);
 		if (pair.second)
 		{
+#ifdef _DEBUG
 			WString wFile(pair.second->text(WTransferItem::Filename));
 			if (wFile.length() > 0)
 				PRINT("Item %d: %S\n", i, wFile.getBuffer() );
 			else
 				PRINT("Item %d\n", i);
+#endif
 			
 			pair.second->setText(WTransferItem::QR, QString::number(i));
 		}

@@ -1,14 +1,11 @@
 #include "menubar.h"
-#include "global.h"
+#include "version.h"
 
 #include <qapplication.h>
 #include <qaccel.h>
 
 MenuBar::MenuBar(QWidget * handler, QWidget * parent) : QMenuBar(parent)
 {
-	//fBar = new QMenuBar(parent);
-	//CHECK_PTR(fBar);
-
 	/* create file menu */
 	fFile = new QPopupMenu(this);
 	CHECK_PTR(fFile);
@@ -20,8 +17,6 @@ MenuBar::MenuBar(QWidget * handler, QWidget * parent) : QMenuBar(parent)
 	fFile->insertItem(tr("Open &Logs Folder"), handler, SLOT(OpenLogsFolder()), QAccel::stringToKey(tr("CTRL+L")));
 	fFile->insertSeparator();
 	fFile->insertItem(tr("Cl&ear Chat Log"), handler, SLOT(ClearChatLog()), QAccel::stringToKey(tr("CTRL+E")));
-//	fFile->insertSeparator();
-//	fFile->insertItem(tr("Search"), parent, SLOT(SearchDialog()), QAccel::stringToKey(tr("ALT+S")));
 	fFile->insertSeparator();
 
 	fFile->insertItem(tr("E&xit"), handler, SLOT(Exit()), QAccel::stringToKey(tr("ALT+X")));
@@ -38,7 +33,6 @@ MenuBar::MenuBar(QWidget * handler, QWidget * parent) : QMenuBar(parent)
 	fWindows = new QPopupMenu(this);
 	CHECK_PTR(fWindows);
 
-	//fWindows->insertItem(tr("C&hannels"), parent, SLOT(OpenChannels()), QAccel::stringToKey(tr("F10")));
 	fWindows->insertItem(tr("&Downloads"), handler, SLOT(OpenDownloads()), QAccel::stringToKey(tr("F11")));
 
 	// help menu

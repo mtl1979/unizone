@@ -1,10 +1,11 @@
 #include "netclient.h"
 #include "downloadimpl.h"
-#include "global.h"
+#include "version.h"
 #include "debugimpl.h"
 #include "settings.h"
 #include "util.h"
 #include "wstring.h"
+#include "werrorevent.h"
 
 #include <qapplication.h>
 #include "regex/PathMatcher.h"
@@ -97,8 +98,12 @@ NetClient::Connect(const QString & server, uint16 port)
 
 	if (fUserName.find(QString("binky"), 0, false) >= 0)
 	{
-		gWin->PrintError(tr("You must change your nickname before connecting!"));
-		gWin->PrintError(tr("We prefer that none of the nicknames contain word 'binky'."));
+		WErrorEvent *wee = new WErrorEvent(tr("You must change your nickname before connecting!"));
+		if (wee)
+			QApplication::postEvent(fOwner, wee);
+		wee = new WErrorEvent(tr("We prefer that none of the nicknames contain word 'binky'."));
+		if (wee)
+			QApplication::postEvent(fOwner, wee);
 		return B_ERROR;
 	}
 
@@ -111,24 +116,28 @@ NetClient::Connect(const QString & server, uint16 port)
 
 	PRINT("Adding new session\n");
 
-	if (gWin->fSettings->GetChatLimit() == WSettings::LimitNone)
+	WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+	if (win)
 	{
-		if (qmtt->AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
+		if (win->fSettings->GetChatLimit() == WSettings::LimitNone)
 		{
-			return B_ERROR;
+			if (qmtt->AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
+			{
+				return B_ERROR;
+			}
 		}
-	}
-	else
-	{
-		AbstractReflectSessionRef ref(new ThreadWorkerSession(), NULL);
-		ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
-		ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
-								gWin->fSettings->GetChatLimit())), NULL));
-		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
-								gWin->fSettings->GetChatLimit())), NULL));
-		if (qmtt->AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
+		else
 		{
-			return B_ERROR;
+			AbstractReflectSessionRef ref(new ThreadWorkerSession(), NULL);
+			ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
+			ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
+				win->fSettings->GetChatLimit())), NULL));
+			ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
+				win->fSettings->GetChatLimit())), NULL));
+			if (qmtt->AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
+			{
+				return B_ERROR;
+			}
 		}
 	}
 
@@ -142,7 +151,10 @@ void
 NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
-	gWin->setCaption("Unizone");
+	WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+	if (win)
+		win->setCaption("Unizone");
+	
 	if (qmtt->IsInternalThreadRunning()) 
 	{
 		// Reset() implies ShutdownInternalThread();
@@ -285,7 +297,7 @@ NetClient::HandleBeRemoveMessage(const String & nodePath)
 	if (pd >= BESHARE_HOME_DEPTH)
 	{
 		QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-		sid = sid.mid(0, sid.find('/') );
+		sid = sid.left( sid.find('/') );
 		
 		switch (pd)
 		{
@@ -327,20 +339,20 @@ NetClient::HandleUniRemoveMessage(const String & nodePath)
 	if (pd >= USER_NAME_DEPTH)
 	{
 		QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-		sid = sid.mid(0, sid.find('/') );
+		sid = sid.left( sid.find('/') );
 		
 		switch (pd)
 		{
 		case CHANNEL_DEPTH:
 			{
 				QString cdata = QString::fromUtf8(GetPathClause(CHANNELDATA_DEPTH, nodePath.Cstr()));
-				cdata = cdata.mid(0, cdata.find('/') );
+				cdata = cdata.left( cdata.find('/') );
 				if (cdata == "channeldata")
 				{
 					QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
 					if (channel.find('/') >= 0)
 					{
-						channel = channel.mid(0, channel.find('/') );
+						channel = channel.left( channel.find('/') );
 					}
 					if (!channel.isEmpty())
 					{
@@ -369,7 +381,7 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 			const Message * pmsg = tmpRef.GetItemPointer();
 			
 			QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-			sid = sid.mid(0, sid.find('/') );
+			sid = sid.left( sid.find('/') );
 			
 			switch (pd)
 			{
@@ -391,22 +403,26 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 							QString oid = QString::fromUtf8(oldid.Cstr());
 							emit UserIDChanged(oid, nid);
 						}
-						if (
-							( gWin->GetUserName() == qUser ) &&
-							( gWin->GetRegisterTime(qUser) <= rtime )
-						)
+						WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+						if (win)
 						{
-							// Collide nick
-							MessageRef col = GetMessageFromPool(RegisterFail);
-							if (col())
+							if (
+								( win->GetUserName() == qUser ) &&
+								( win->GetRegisterTime(qUser) <= rtime )
+								)
 							{
-								QString to("/*/");
-								to += sid;
-								to += "/unishare";
-								col()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-								col()->AddString("name", (const char *) gWin->GetUserName().utf8() );
-								col()->AddInt64("registertime", gWin->GetRegisterTime( gWin->GetUserName() ) );
-								SendMessageToSessions(col);
+								// Collide nick
+								MessageRef col = GetMessageFromPool(RegisterFail);
+								if (col())
+								{
+									QString to("/*/");
+									to += sid;
+									to += "/unishare";
+									col()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+									col()->AddString("name", (const char *) win->GetUserName().utf8() );
+									col()->AddInt64("registertime", win->GetRegisterTime() );
+									SendMessageToSessions(col);
+								}
 							}
 						}
 					}
@@ -416,13 +432,13 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 				{
 					PRINT("UniShare: PathDepth == CHANNEL_DEPTH\n");
 					cdata = QString::fromUtf8(GetPathClause(CHANNELDATA_DEPTH, nodePath.Cstr()));
-					cdata = cdata.mid(0, cdata.find('/') );
+					cdata = cdata.left( cdata.find('/') );
 					if (cdata == "channeldata")
 					{
 						QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
 						if (channel.find('/') >= 0)
 						{
-							channel = channel.mid(0, channel.find('/') );
+							channel = channel.left( channel.find('/') );
 						}
 						if (!channel.isEmpty())
 						{
@@ -460,13 +476,13 @@ NetClient::AddChannel(const QString &sid, const QString &channel)
 	fChannelLock.lock();
 	if ( fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
-		mChannel()->AddBool(sid.latin1(), true);
+		mChannel()->AddBool((const char *) sid.utf8(), true);
 	}
 	else
 	{
 		emit ChannelAdded(channel, sid, GetCurrentTime64());
 		MessageRef mChannel = GetMessageFromPool();
-		mChannel()->AddBool(sid.latin1(), true);
+		mChannel()->AddBool((const char *) sid.utf8(), true);
 		fChannels()->AddMessage((const char *) channel.utf8(), mChannel);
 	}
 	fChannelLock.unlock();
@@ -479,7 +495,7 @@ NetClient::RemoveChannel(const QString &sid, const QString &channel)
 	fChannelLock.lock();
 	if ( fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
-		mChannel()->RemoveName(sid.latin1());
+		mChannel()->RemoveName((const char *) sid.utf8());
 		if (mChannel()->CountNames(B_MESSAGE_TYPE) == 0)
 		{
 			// Last user parted, remove channel entry
@@ -643,7 +659,7 @@ NetClient::HandleResultMessage(MessageRef & ref)
 	for (int i = 0; (ref()->FindString(PR_NAME_REMOVED_DATAITEMS, i, nodePath) == B_OK); i++)
 	{
 		QString prot = GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr());
-		prot = prot.mid(0, prot.find('/') );
+		prot = prot.left( prot.find('/') );
 		if (prot == "beshare")
 		{
 			HandleBeRemoveMessage(nodePath);
@@ -659,7 +675,7 @@ NetClient::HandleResultMessage(MessageRef & ref)
 	while (iter.GetNextFieldName(nodePath) == B_OK)
 	{
 		QString prot = GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr());
-		prot = prot.mid(0, prot.find('/') );
+		prot = prot.left( prot.find('/') );
 		if (prot == "beshare")
 		{
 			HandleBeAddMessage(nodePath, ref);
@@ -689,24 +705,28 @@ NetClient::HandleParameters(MessageRef & next)
 			fOldID = fSessionID;
 			fSessionID = id;
 
-			if (gWin->fDLWindow)
+			WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+			if (win)
 			{
-				// Update Local Session ID in Download Window
-				gWin->fDLWindow->SetLocalID(fSessionID);
-			}
-
-			MessageRef uc(GetMessageFromPool());
-			if (uc())
-			{
-				uc()->AddInt64("registertime", gWin->GetRegisterTime(fUserName));
-				uc()->AddString("session", (const char *) fSessionID.utf8());
-				if ((fOldID != QString::null) && (fOldID != fSessionID))
+				if (win->fDLWindow)
 				{
-					uc()->AddString("oldid", (const char *) fOldID.utf8());
+					// Update Local Session ID in Download Window
+					win->fDLWindow->SetLocalID(fSessionID);
 				}
-				uc()->AddString("name", (const char *) fUserName.utf8());
-		
-				SetNodeValue("unishare/serverinfo", uc);
+				
+				MessageRef uc(GetMessageFromPool());
+				if (uc())
+				{
+					uc()->AddInt64("registertime", win->GetRegisterTime(fUserName));
+					uc()->AddString("session", (const char *) fSessionID.utf8());
+					if ((fOldID != QString::null) && (fOldID != fSessionID))
+					{
+						uc()->AddString("oldid", (const char *) fOldID.utf8());
+					}
+					uc()->AddString("name", (const char *) fUserName.utf8());
+					
+					SetNodeValue("unishare/serverinfo", uc);
+				}
 			}
 
 			if ((fOldID != QString::null) && (fOldID != fSessionID))
@@ -715,10 +735,13 @@ NetClient::HandleParameters(MessageRef & next)
 				fOldID = fSessionID;
 			}
 
+#ifdef _DEBUG
 			WString wSessionID(fSessionID);
 			PRINT("My ID is: %S\n", wSessionID.getBuffer());
+#endif
 
-			gWin->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
+			if (win)
+				win->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
 		}
 	}
 }
@@ -770,20 +793,24 @@ NetClient::SetUserName(const QString & user)
 	// change the user name
 	if (qmtt->IsInternalThreadRunning())
 	{
-		MessageRef ref(GetMessageFromPool());
-		if (ref())
+		WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+		if (win)
 		{
-			QString version = tr("Unizone (English)");
-			QCString vstring = WinShareVersionString().utf8();
-			ref()->AddString("name", (const char *) user.utf8()); // <postmaster@raasu.org> 20021001
-			ref()->AddInt32("port", fPort);
-			ref()->AddInt64("installid", gWin->fSettings->GetInstallID());
-			ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
-			ref()->AddString("version_num", (const char *) vstring);
-			ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes
-			ref()->AddBool("firewalled", gWin->fSettings->GetFirewalled()); // is firewalled user, needed if no files shared
-			
-			SetNodeValue("beshare/name", ref);
+			MessageRef ref(GetMessageFromPool());
+			if (ref())
+			{
+				QString version = tr("Unizone (English)");
+				QCString vstring = WinShareVersionString().utf8();
+				ref()->AddString("name", (const char *) user.utf8()); // <postmaster@raasu.org> 20021001
+				ref()->AddInt32("port", fPort);
+				ref()->AddInt64("installid", win->fSettings->GetInstallID());
+				ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
+				ref()->AddString("version_num", (const char *) vstring);
+				ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes
+				ref()->AddBool("firewalled", win->fSettings->GetFirewalled()); // is firewalled user, needed if no files shared
+				
+				SetNodeValue("beshare/name", ref);
+			}
 		}
 	}
 }
@@ -852,7 +879,7 @@ NetClient::GetServerIP()
 	QString ip = "0.0.0.0";
 	uint32 address;
 	char host[16];
-	address = GetHostByName(fServer.latin1());
+	address = GetHostByName(fServer);
 	if (address > 0)
 	{
 		Inet_NtoA(address, host);
@@ -875,14 +902,18 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 		{
 			case PR_RESULT_PARAMETERS:
 			{
-				if (!gWin->GotParams())
+				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+				if (win)
 				{
-					HandleParameters(msg);
-					gWin->GotParams(true);
-				}
-				else	// a /serverinfo was sent
-				{
-					gWin->ServerParametersReceived(msg);
+					if (!win->GotParams())
+					{
+						HandleParameters(msg);
+						win->GotParams(true);
+					}
+					else	// a /serverinfo was sent
+					{
+						win->ServerParametersReceived(msg);
+					}
 				}
 				break;
 			}
@@ -895,7 +926,9 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 				HandleResultMessage(msg);
 				
 				// add/remove all the users to the list view (if not there yet...)
-				gWin->UpdateUserList();
+				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+				if (win)
+					win->UpdateUserList();
 
 				SendSignal(WinShareWindow::UpdatePrivateUsers);
 
@@ -905,7 +938,9 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 			case PR_RESULT_ERRORACCESSDENIED:
 			{
 				PRINT("PR_RESULT_ERRORACCESSDENIED\n");
-				gWin->PrintError( tr ( "Access Denied!!!" ) );
+				WErrorEvent *wee = new WErrorEvent( tr ( "Access Denied!!!" ) );
+				if (wee)
+					QApplication::postEvent(fOwner, wee);
 
 				MessageRef subMsg;
 				QString action = tr( "do that to" );
@@ -951,7 +986,9 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 						if (subMsg()->FindString(PR_NAME_KEYS, who) == B_NO_ERROR)
 						{
 							QString qWho = QString::fromUtf8(who.Cstr());
-							gWin->PrintError( tr("You are not allowed to %1 [%2]").arg(action).arg(qWho) );
+							WErrorEvent *wee = new WErrorEvent( tr("You are not allowed to %1 [%2]").arg(action).arg(qWho) );
+							if (wee)
+								QApplication::postEvent(fOwner, wee);
 						}
 					}
 				}
@@ -963,7 +1000,9 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 #ifdef DEBUG2
 				PRINT("Handling message\n");
 #endif
-				gWin->HandleMessage(msg);
+				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+				if (win)
+					win->HandleMessage(msg);
 				break;
 			}
 		}
@@ -1155,7 +1194,7 @@ NetClient::SendSignal(int signal)
 {
 	QCustomEvent *e = new QCustomEvent(signal);
 	if (e)
-		QApplication::postEvent(gWin, e);
+		QApplication::postEvent(fOwner, e);
 }
 
 void

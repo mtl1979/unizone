@@ -33,8 +33,10 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg)
 			fMsg += " ";
 			fMsg += smsg;
 			
+#ifdef _DEBUG
 			WString wText(fMsg);
 			PRINT("Sending text: %S\n", wText.getBuffer());
+#endif
 		}
 	}
 	else

@@ -35,5 +35,5 @@ private:
 	int fCurLine;				// which line in the buffer?
 };
 
-#endif	// CHATEXT_H
+#endif	// CHATTEXT_H
 

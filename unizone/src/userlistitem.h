@@ -57,7 +57,7 @@ public:
 		fFire = b; 
 	}
 	
-	bool Firewalled() 
+	bool Firewalled() const
 	{ 
 		return fFire; 
 	}

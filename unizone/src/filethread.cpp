@@ -111,8 +111,10 @@ WFileThread::run()
 void
 WFileThread::ParseDir(const QString & d)
 {
+#ifdef _DEBUG
 	WString wD(d);
 	PRINT("Parsing directory %S\n", wD.getBuffer());
+#endif
 
 #ifdef WIN32
 	SendString(ScanEvent::Type::ScanDirectory, d);
@@ -204,7 +206,7 @@ WFileThread::ScanFiles(const QString & directory)
 		if (!list.isEmpty())
 		{
 			// not empty?
-			QStringList::Iterator i = list.begin();
+			QStringList::ConstIterator i = list.begin();
 			while (i != list.end())
 			{
 				if (fShutdownFlag && *fShutdownFlag)
@@ -298,10 +300,12 @@ WFileThread::ScanFiles(const QString & directory)
 				return;
 			}
 
+#ifdef _DEBUG
 			{
 				WString wData(file);
 				PRINT("\tChecking file %S\n", wData.getBuffer());
 			}
+#endif
 
 			AddFile(file);
 
@@ -380,7 +384,7 @@ WFileThread::ResolveLink(const QString & lnk)
 		WString wRet(lnk);
 		PRINT("\tResolving %S\n", wRet.getBuffer());
 	}
-#endif
+#endif // DEBUG2
 
 	if (lnk.right(4) == ".lnk")
 	{
@@ -435,10 +439,12 @@ WFileThread::ResolveLink(const QString & lnk)
 		{
 			// Fallback to ANSI
 			QString ret = ResolveLinkA(lnk);
+#ifdef _DEBUG
 			{
 				WString wRet(ret);
 				PRINT("Resolved to: %S\n", wRet.getBuffer());
 			}
+#endif
 			return ret;
 		}
 	}

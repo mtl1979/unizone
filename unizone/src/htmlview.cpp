@@ -69,8 +69,10 @@ void
 WHTMLView::URLSelected(const QString & url)
 {
 	fURL = url;
+#ifdef _DEBUG
 	WString wURL(url);
 	PRINT("WHTMLView: URLSelected: %S\n", wURL.getBuffer());
+#endif
 }
 
 void 
@@ -86,8 +88,10 @@ WHTMLView::setSource( const QString & name )
 			fContext += name;
 		}
 	}
+#ifdef _DEBUG
 	WString wContext(fContext);
 	PRINT("WHTMLView: setSource: %S\n", wContext.getBuffer());
+#endif
 	emit URLClicked( fContext );
 }
 
@@ -113,13 +117,15 @@ ParseForShown(const QString & txt)
 		{
 			line = "<br>";	// replace our TAB
 		}
+#ifdef _DEBUG
 		WString wLine(line);
-		PRINT("ParseForShown: %S", wLine.getBuffer());	
+		PRINT("ParseForShown: %S", wLine.getBuffer());
+#endif
 		out += line;
 	}
 #else
 	out = ParseForShownAux(txt);
-#endif
+#endif 
 
 	// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
 	if (out.right(4) == "<br>")

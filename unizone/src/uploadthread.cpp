@@ -613,13 +613,13 @@ WUploadThread::SendRejectedNotification(bool direct)
 			if (fRemoteSessionID != QString::null)
 			{
 				node = "/*/";
-				node += (const char *) fRemoteSessionID.latin1();
+				node += (const char *) fRemoteSessionID.utf8();
 			}
 			else
 			{
 				// use /<ip>/* instead of /*/<sessionid>, because session id isn't yet known at this point
 				node = "/";
-				node += (const char *) fStrRemoteIP.latin1();
+				node += (const char *) fStrRemoteIP.utf8();
 				node += "/*";
 			}
 			if (
@@ -813,9 +813,11 @@ WUploadThread::DoUpload()
 
 				fFileUl = QString::fromUtf8(file.Cstr());
 
+#ifdef _DEBUG
 				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
 				WString wFileUl(fFileUl); 
 				PRINT("WUploadThread::DoUpload: filePath = %S\n", wFileUl.getBuffer()); 
+#endif
 				
 				fFile = new QFile(fFileUl);
 				CHECK_PTR(fFile);

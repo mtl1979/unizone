@@ -22,6 +22,7 @@ SOURCES =		aboutdlg.cpp \
 				ulistview.cpp \
 				updateclient.cpp \
 				uploadthread.cpp \
+				version.cpp \
                 winshare_channels.cpp \
 				winshare_parsing.cpp \
 				winshare_network.cpp \
