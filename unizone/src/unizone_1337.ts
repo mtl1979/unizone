@@ -757,6 +757,38 @@ Date: %4</translation>
         <source>&lt;font color="%1" size="%2"&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
         <translation>&lt;font color="%1" size="%2"&gt;Ping ponged in %3 milliseconds (%4)&lt;/font&gt;</translation>
     </message>
+    <message>
+        <source>B</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>kB</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>B/s</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>kB/s</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>MB/s</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>GB/s</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WDownload</name>

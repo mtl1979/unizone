@@ -753,6 +753,38 @@ Date: %4</translation>
         <comment>Date</comment>
         <translation>Date:</translation>
     </message>
+    <message>
+        <source>B</source>
+        <translation>B</translation>
+    </message>
+    <message>
+        <source>kB</source>
+        <translation>kB</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>MB</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <translation>GB</translation>
+    </message>
+    <message>
+        <source>B/s</source>
+        <translation>B/s</translation>
+    </message>
+    <message>
+        <source>kB/s</source>
+        <translation>kB/s</translation>
+    </message>
+    <message>
+        <source>MB/s</source>
+        <translation>MB/s</translation>
+    </message>
+    <message>
+        <source>GB/s</source>
+        <translation>GB/s</translation>
+    </message>
 </context>
 <context>
     <name>WDownload</name>

@@ -841,6 +841,38 @@ Päiväys: %4</translation>
         <comment>Date</comment>
         <translation>Päiväys:</translation>
     </message>
+    <message>
+        <source>B</source>
+        <translation>t</translation>
+    </message>
+    <message>
+        <source>kB</source>
+        <translation>kt</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>Mt</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <translation>Gt</translation>
+    </message>
+    <message>
+        <source>B/s</source>
+        <translation>t/s</translation>
+    </message>
+    <message>
+        <source>kB/s</source>
+        <translation>kt/s</translation>
+    </message>
+    <message>
+        <source>MB/s</source>
+        <translation>Mt/s</translation>
+    </message>
+    <message>
+        <source>GB/s</source>
+        <translation>Gt/s</translation>
+    </message>
 </context>
 <context>
     <name>WDownload</name>

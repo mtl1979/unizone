@@ -724,6 +724,38 @@ Date: %4</translation>
         <comment>Date</comment>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>B</source>
+        <translation>o</translation>
+    </message>
+    <message>
+        <source>kB</source>
+        <translation>ko</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>Mo</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <translation>Go</translation>
+    </message>
+    <message>
+        <source>B/s</source>
+        <translation>o/s</translation>
+    </message>
+    <message>
+        <source>kB/s</source>
+        <translation>ko/s</translation>
+    </message>
+    <message>
+        <source>MB/s</source>
+        <translation>Mo/s</translation>
+    </message>
+    <message>
+        <source>GB/s</source>
+        <translation>Go/s</translation>
+    </message>
 </context>
 <context>
     <name>WDownload</name>
