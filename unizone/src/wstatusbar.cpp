@@ -67,29 +67,45 @@ WStatusBar::resizeEvent(QResizeEvent *e)
 	inResize = false;
 }
 
+/*
+ * Checks if text fits in to the space left for particular label and clips it, if not.
+ * 
+ */
+
 QString
 WStatusBar::checkText(const QString &text, unsigned int index)
 {
-		QFontMetrics qfm = fText[index]->fontMetrics();
-		int w;
-		QWidget * _parent = dynamic_cast<QWidget *>(parent());
-		if (_parent) 
-			w = _parent->width();
-		else
-		{
-			QLayout * parentLayout = dynamic_cast<QLayout *>(parent());
-			if (parentLayout)
-				w = parentLayout->geometry().width();
-		}
-		if (qfm.width(text) > (int) (w / fColumns))
-		{
-			int i = text.length() - 1;
-			while ( (qfm.width(text.left(i) + "...") > (int) (w / fColumns)) && (i > 0)) i--;
-			return text.left(i) + "...";
-		}
-		else
-		{
-			return text;
-		}
+	QFontMetrics qfm = fText[index]->fontMetrics();
+	int w = 0;
 
+	QWidget * _parent = dynamic_cast<QWidget *>(parent());
+	if (_parent) 
+	{
+		w = _parent->width();
+	}
+	else
+	{
+		QLayout * parentLayout = dynamic_cast<QLayout *>(parent());
+		if (parentLayout) w = parentLayout->geometry().width();
+	}
+
+	int columnWidth = w;
+	if (columnWidth > 0) columnWidth /= fColumns;
+	
+	if ((qfm.width(text) > columnWidth) && (columnWidth > 0))
+	{
+		int i = text.length() - 1;
+		while ( 
+			(qfm.width(text.left(i) + "...") > columnWidth) && 
+			(i > 0) 
+			) 
+		{
+			i--;
+		}
+		return text.left(i) + "...";
+	}
+	else
+	{
+		return text;
+	}	
 }
