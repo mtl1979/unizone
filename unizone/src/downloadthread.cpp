@@ -424,6 +424,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 				{
 					dis = new Message(WGenericEvent::Disconnected);
 					dis->AddBool("failed", false);
+					dis->AddString("file", (const char *) fFileDl.utf8());
 				}
 
 				fDownloading = false;

@@ -268,4 +268,8 @@
 #define MSG_TX_SENT				"Lähetetty"
 #define MSG_TX_CAPTION			"Tiedostonsiirto"
 
+#define MSG_TX_ISDOWNLOADING	"%1 imuroi tiedostoa %2."
+#define MSG_TX_HASFINISHED		"%1 on saanut imuroitua tiedoston %2."
+#define MSG_TX_FINISHED			"Tiedoston %2 imurointi käyttäjältä %1 on valmis."
+
 #endif

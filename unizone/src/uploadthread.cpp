@@ -405,7 +405,6 @@ WUploadThread::DoUpload()
 				
 				if (fCurrentOffset >= fFileSize)
 					update->AddBool("done", true);	// file done!
-
 				SendReply(update);
 				return;
 			}

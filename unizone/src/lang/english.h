@@ -269,4 +269,8 @@
 #define MSG_TX_SENT				"Sent"
 #define MSG_TX_CAPTION			"File Transfers"
 
+#define MSG_TX_ISDOWNLOADING	"%1 is downloading %2."
+#define MSG_TX_HASFINISHED		"%1 has finished downloading %2."
+#define MSG_TX_FINISHED			"Finished downloading %2 from %1."
+
 #endif

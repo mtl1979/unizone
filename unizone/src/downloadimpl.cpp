@@ -487,6 +487,16 @@ WDownload::customEvent(QCustomEvent * e)
 				}
 				else
 				{
+					// emit FileFailed signal, so we can record the filename and remote username for resuming later
+					String mFile;
+					if (
+						(msg->FindBool("failed", &b) == B_OK) &&
+						(msg->FindString("file", mFile) == B_OK)
+						)
+					{
+						QString qFile = QString::fromUtf8( mFile.Cstr() );
+						emit FileFailed(qFile, gt->GetRemoteUser());
+					}
 					DecreaseCount(gt, fNumDownloads);
 					WASSERT(fNumDownloads >= 0, "Download count is negative!");
 					fLock.lock();
@@ -514,13 +524,7 @@ WDownload::customEvent(QCustomEvent * e)
 					}
 					else
 					{
-						// emit FileFailed signal, so we can record the filename and remote username for resuming later
-						String mFile;
-						if (msg->FindString("file", mFile) == B_OK)
-						{
-							QString qFile = QString::fromUtf8( mFile.Cstr() );
-							emit FileFailed(qFile, gt->GetRemoteUser());
-						}
+						PRINT("\tIs download\n");
 						DecreaseCount(gt, fNumDownloads, false);
 						WASSERT(fNumDownloads >= 0, "Download count is negative!");
 					}
@@ -575,7 +579,7 @@ WDownload::customEvent(QCustomEvent * e)
 					if (upload)
 					{
 						if (gWin->fSettings->GetUploads())
-							gWin->PrintSystem(tr("%1 is downloading %2.").arg(GetUserName(QString::fromUtf8(user.Cstr()))).arg(QString::fromUtf8(file.Cstr())));
+							gWin->PrintSystem(tr(MSG_TX_ISDOWNLOADING).arg(GetUserName(QString::fromUtf8(user.Cstr()))).arg(QString::fromUtf8(file.Cstr())));
 					}
 				}
 				gt->fLastData.start();
@@ -644,6 +648,7 @@ WDownload::customEvent(QCustomEvent * e)
 					if (msg->FindBool("done", &done) == B_OK)
 					{
 						item->setText(WTransferItem::Status, "Finished.");
+						gWin->PrintSystem( tr(MSG_TX_FINISHED).arg(gt->GetRemoteUser()).arg(item->text(0)) , false);
 						DecreaseCount(gt, fNumDownloads, false);
 					}
 				}
@@ -681,7 +686,7 @@ WDownload::customEvent(QCustomEvent * e)
 					if (msg->FindBool("done", &done) == B_OK)
 					{
 						item->setText(WTransferItem::Status, "Finished.");
-						gWin->PrintSystem(tr( "User #%1 (%2) has finished downloading %3.").arg(gt->GetRemoteID()).arg(gt->GetRemoteUser()).arg(item->text(0)) , false);
+						gWin->PrintSystem( tr(MSG_TX_HASFINISHED).arg(gt->GetRemoteUser()).arg(item->text(0)) , false);
 					}
 
 				}
