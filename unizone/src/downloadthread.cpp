@@ -206,7 +206,7 @@ WDownloadThread::InitSession()
 				MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
 				if (msg())
 				{
-					msg()->AddString("why", "Could not add new connect session!");
+					msg()->AddString("why", QT_TR_NOOP( "Could not add new connect session!" ));
 					SendReply(msg);
 				}
 			}
@@ -216,7 +216,7 @@ WDownloadThread::InitSession()
 			MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
 			if (msg())
 			{
-				msg()->AddString("why", "Failed to start internal thread!");
+				msg()->AddString("why", QT_TR_NOOP( "Failed to start internal thread!" ));
 				SendReply(msg);
 			}
 		}
@@ -461,7 +461,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 					if (status())
 					{
 						status()->AddString("file", (const char *) fixed.utf8());
-						status()->AddString("why", "Critical error: Could not create file!");
+						status()->AddString("why", QT_TR_NOOP( "Critical error: Could not create file!" ));
 						SendReply(status);
 					}
 					NextFile();
@@ -473,7 +473,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 				MessageRef status(GetMessageFromPool(WGenericEvent::FileError));
 				if (status())
 				{
-					status()->AddString("why", "Could not read file info!");
+					status()->AddString("why", QT_TR_NOOP( "Could not read file info!" ));
 					SendReply(status);
 				}
 			}
@@ -546,7 +546,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 						MessageRef error(GetMessageFromPool(WGenericEvent::FileError));
 						if (error())
 						{
-							error()->AddString("why", "Couldn't write file data!");
+							error()->AddString("why", QT_TR_NOOP( "Couldn't write file data!" ));
 							SendReply(error);
 						}
 						Reset();
@@ -642,7 +642,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 						if (e())
 						{
 							e()->AddString("file", (const char *) outFile.utf8());
-							e()->AddString("why", "MD5 hashing failed! Can't resume.");
+							e()->AddString("why", QT_TR_NOOP( "MD5 hashing failed! Can't resume." ));
 							SendReply(e);
 						}
 					}

@@ -802,7 +802,7 @@ WDownload::customEvent(QCustomEvent * e)
 				PRINT("\tWGenericEvent::ConnectFailed\n");
 				String why, mFile;
 				msg()->FindString("why", why);
-				item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(why.Cstr()));
+				item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
 				gt->SetFinished(true);
 				gt->SetActive(false);
 				if (upload)
@@ -948,8 +948,9 @@ WDownload::customEvent(QCustomEvent * e)
 				{
 					QString uname = GetUserName(gt);
 
+					WString wID = QString::fromUtf8(user.Cstr());
 					WString wUser = uname;
-					PRINT("USER ID  : %s\n", user.Cstr());
+					PRINT("USER ID  : %S\n", wID.getBuffer());
 					PRINT("USER NAME: %S\n", wUser.getBuffer());
 
 					item->setText(WTransferItem::Status, tr("Waiting for stream..."));
@@ -1000,9 +1001,12 @@ WDownload::customEvent(QCustomEvent * e)
 				msg()->FindString("why", why);
 				if (msg()->FindString("file", file) == B_OK)
 					item->setText(WTransferItem::Filename, QString::fromUtf8(file.Cstr()) );
-				item->setText(WTransferItem::Status, tr("Error: %1").arg(why.Cstr()));
+				item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
 				item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
-				PRINT("WGenericEvent::FileError: File %s",file.Cstr()); // <postmaster@raasu.org> 20021023 -- Add debug message
+				// <postmaster@raasu.org> 20021023 -- Add debug message
+				// <postmaster@raasu.org> 20030815 -- Use WString for Unicode
+				WString wf = QString::fromUtf8(file.Cstr());
+				PRINT("WGenericEvent::FileError: File %S\n", wf.getBuffer()); 
 				break;
 			}
 			

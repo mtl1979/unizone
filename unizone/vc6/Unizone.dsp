@@ -220,10 +220,6 @@ SOURCE=..\src\moc_menubar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_messenger.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\moc_netclient.cpp
 # End Source File
 # Begin Source File

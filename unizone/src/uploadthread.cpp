@@ -116,7 +116,7 @@ WUploadThread::InitSession()
 			MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
 			if (fail())
 			{
-				fail()->AddString("why", "Could not init session!");
+				fail()->AddString("why", QT_TR_NOOP( "Could not init session!" ));
 				SendReply(fail);
 			}
 		}
@@ -138,7 +138,7 @@ WUploadThread::InitSession()
 			MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
 			if (fail())
 			{
-				fail()->AddString("why", "Couldn't create new connect session!");
+				fail()->AddString("why", QT_TR_NOOP( "Couldn't create new connect session!" ));
 				SendReply(fail);
 			}
 		}
@@ -163,7 +163,7 @@ WUploadThread::SetLocallyQueued(bool b)
 			MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
 			if (fail())
 			{
-				fail()->AddString("why", "Connection reset by peer!");
+				fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
 				SendReply(fail);
 			}
 			fActive = false;
@@ -561,7 +561,7 @@ WUploadThread::DoUpload()
 		MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
 		if (fail())
 		{
-			fail()->AddString("why", "Connection reset by peer!");
+			fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
 			SendReply(fail);
 		}
 		fActive = false;

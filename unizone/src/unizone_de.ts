@@ -568,6 +568,38 @@ Version %1</translation>
         <source>Unizone - User #%1 on %2</source>
         <translation>Unizone - Benutzer #%1 auf %2</translation>
     </message>
+    <message>
+        <source>Access Denied!!!</source>
+        <translation type='unfinished'>Zugriff verweigert!!!</translation>
+    </message>
+    <message>
+        <source>do that to</source>
+        <translation type='unfinished'>mach das mit</translation>
+    </message>
+    <message>
+        <source>kick</source>
+        <translation type='unfinished'>treten</translation>
+    </message>
+    <message>
+        <source>ban</source>
+        <translation type='unfinished'>verbannen</translation>
+    </message>
+    <message>
+        <source>unban</source>
+        <translation type='unfinished'>begnadigen</translation>
+    </message>
+    <message>
+        <source>require</source>
+        <translation type='unfinished'>erforderlich</translation>
+    </message>
+    <message>
+        <source>unrequire</source>
+        <translation type='unfinished'>nicht erforderlich</translation>
+    </message>
+    <message>
+        <source>You are not allowed to %1 [%2]</source>
+        <translation type='unfinished'>Nicht Gestattet zu %1 [%2]</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -754,6 +786,17 @@ Date: %4</translation>
     </message>
     <message>
         <source>GB/s</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
+    <name>UpdateClient</name>
+    <message>
+        <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
+        <translation type='unfinished'>Unizone (Deutsch) %1 ist erhältlich bei http://www.raasu.org/tools/windows/.</translation>
+    </message>
+    <message>
+        <source>%1.%2.%3 build %4</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -1109,6 +1152,30 @@ Date: %4</translation>
     <message>
         <source>%1%2 %3</source>
         <translation type='unfinished'>%1%2 %3</translation>
+    </message>
+    <message>
+        <source>Could not add new connect session!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Failed to start internal thread!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Critical error: Could not create file!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Could not read file info!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t write file data!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>MD5 hashing failed! Can&apos;t resume.</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -1950,6 +2017,18 @@ Date: %4</translation>
         <source>User #%1</source>
         <translation>Benutzer #%1</translation>
     </message>
+    <message>
+        <source>Could not init session!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t create new connect session!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Connection reset by peer!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WinShare</name>
@@ -2119,11 +2198,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
-        <translation>Nicht Gestattet zu %1 [%2]</translation>
+        <translation type='obsolete'>Nicht Gestattet zu %1 [%2]</translation>
     </message>
     <message>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
-        <translation>Unizone (Deutsch) %1 ist erhältlich bei http://www.raasu.org/tools/windows/.</translation>
+        <translation type='obsolete'>Unizone (Deutsch) %1 ist erhältlich bei http://www.raasu.org/tools/windows/.</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -2467,31 +2546,31 @@ Date: %4</translation>
     </message>
     <message>
         <source>Access Denied!!!</source>
-        <translation>Zugriff verweigert!!!</translation>
+        <translation type='obsolete'>Zugriff verweigert!!!</translation>
     </message>
     <message>
         <source>do that to</source>
-        <translation>mach das mit</translation>
+        <translation type='obsolete'>mach das mit</translation>
     </message>
     <message>
         <source>kick</source>
-        <translation>treten</translation>
+        <translation type='obsolete'>treten</translation>
     </message>
     <message>
         <source>ban</source>
-        <translation>verbannen</translation>
+        <translation type='obsolete'>verbannen</translation>
     </message>
     <message>
         <source>unban</source>
-        <translation>begnadigen</translation>
+        <translation type='obsolete'>begnadigen</translation>
     </message>
     <message>
         <source>require</source>
-        <translation>erforderlich</translation>
+        <translation type='obsolete'>erforderlich</translation>
     </message>
     <message>
         <source>unrequire</source>
-        <translation>nicht erforderlich</translation>
+        <translation type='obsolete'>nicht erforderlich</translation>
     </message>
     <message>
         <source>Resume list:</source>
@@ -3051,7 +3130,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>On Connect: %1</source>

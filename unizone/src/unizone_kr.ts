@@ -452,6 +452,38 @@ Version %1</source>
         <source>Unizone (English)</source>
         <translation>Unizone</translation>
     </message>
+    <message>
+        <source>Access Denied!!!</source>
+        <translation type='unfinished'>접근권한이 없습니다!!!</translation>
+    </message>
+    <message>
+        <source>do that to</source>
+        <translation type='unfinished'>do that to</translation>
+    </message>
+    <message>
+        <source>kick</source>
+        <translation type='unfinished'>강제추방</translation>
+    </message>
+    <message>
+        <source>ban</source>
+        <translation type='unfinished'>추방</translation>
+    </message>
+    <message>
+        <source>unban</source>
+        <translation type='unfinished'>추방 해제</translation>
+    </message>
+    <message>
+        <source>require</source>
+        <translation type='unfinished'>요청</translation>
+    </message>
+    <message>
+        <source>unrequire</source>
+        <translation type='unfinished'>요청 해제</translation>
+    </message>
+    <message>
+        <source>You are not allowed to %1 [%2]</source>
+        <translation type='unfinished'>당신은 %1 [%2]에 허락되지 않았습니다</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -634,6 +666,17 @@ Date: %4</source>
     </message>
     <message>
         <source>GB/s</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
+    <name>UpdateClient</name>
+    <message>
+        <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
+        <translation type='unfinished'>Unizone %1 은 http://www.raasu.org/tools/windows/ 에서 받으실수 있습니다.</translation>
+    </message>
+    <message>
+        <source>%1.%2.%3 build %4</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -989,6 +1032,30 @@ Date: %4</source>
     <message>
         <source>%1%2 %3</source>
         <translation type='unfinished'>%1%2 %3</translation>
+    </message>
+    <message>
+        <source>Could not add new connect session!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Failed to start internal thread!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Critical error: Could not create file!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Could not read file info!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t write file data!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>MD5 hashing failed! Can&apos;t resume.</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -1756,6 +1823,18 @@ Date: %4</source>
         <source>User #%1</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Could not init session!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t create new connect session!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Connection reset by peer!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WinShare</name>
@@ -1976,39 +2055,39 @@ Date: %4</source>
     </message>
     <message>
         <source>Access Denied!!!</source>
-        <translation>접근권한이 없습니다!!!</translation>
+        <translation type='obsolete'>접근권한이 없습니다!!!</translation>
     </message>
     <message>
         <source>do that to</source>
-        <translation>do that to</translation>
+        <translation type='obsolete'>do that to</translation>
     </message>
     <message>
         <source>kick</source>
-        <translation>강제추방</translation>
+        <translation type='obsolete'>강제추방</translation>
     </message>
     <message>
         <source>ban</source>
-        <translation>추방</translation>
+        <translation type='obsolete'>추방</translation>
     </message>
     <message>
         <source>unban</source>
-        <translation>추방 해제</translation>
+        <translation type='obsolete'>추방 해제</translation>
     </message>
     <message>
         <source>require</source>
-        <translation>요청</translation>
+        <translation type='obsolete'>요청</translation>
     </message>
     <message>
         <source>unrequire</source>
-        <translation>요청 해제</translation>
+        <translation type='obsolete'>요청 해제</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
-        <translation>당신은 %1 [%2]에 허락되지 않았습니다</translation>
+        <translation type='obsolete'>당신은 %1 [%2]에 허락되지 않았습니다</translation>
     </message>
     <message>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
-        <translation>Unizone %1 은 http://www.raasu.org/tools/windows/ 에서 받으실수 있습니다.</translation>
+        <translation type='obsolete'>Unizone %1 은 http://www.raasu.org/tools/windows/ 에서 받으실수 있습니다.</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -2372,7 +2451,7 @@ Date: %4</source>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Invalid compression!</source>

@@ -625,6 +625,38 @@ Versio %1</translation>
         <source>Unizone - User #%1 on %2</source>
         <translation>Unizone - Käyttäjä #%1 palvelimella %2</translation>
     </message>
+    <message>
+        <source>Access Denied!!!</source>
+        <translation>Pääsy Evätty!!!</translation>
+    </message>
+    <message>
+        <source>do that to</source>
+        <translation>tehdä</translation>
+    </message>
+    <message>
+        <source>kick</source>
+        <translation>potkaiset</translation>
+    </message>
+    <message>
+        <source>ban</source>
+        <translation>bannaat</translation>
+    </message>
+    <message>
+        <source>unban</source>
+        <translation>poistat bannauksen</translation>
+    </message>
+    <message>
+        <source>require</source>
+        <translation>lisäät vaatimuksen</translation>
+    </message>
+    <message>
+        <source>unrequire</source>
+        <translation>poistat vaatimuksen</translation>
+    </message>
+    <message>
+        <source>You are not allowed to %1 [%2]</source>
+        <translation>Ei ole sallittua, että {1?} {2?}</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -872,6 +904,17 @@ Päiväys: %4</translation>
     <message>
         <source>GB/s</source>
         <translation>Gt/s</translation>
+    </message>
+</context>
+<context>
+    <name>UpdateClient</name>
+    <message>
+        <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
+        <translation>Unizone (Suomi) %1 on ilmestynyt osoitteessa http://www.raasu.org/tools/windows/.</translation>
+    </message>
+    <message>
+        <source>%1.%2.%3 build %4</source>
+        <translation>%1.%2.%3 luonti %4</translation>
     </message>
 </context>
 <context>
@@ -1230,6 +1273,30 @@ Päiväys: %4</translation>
     <message>
         <source>%1%2 %3</source>
         <translation>%1%2 %3</translation>
+    </message>
+    <message>
+        <source>Could not add new connect session!</source>
+        <translation>Ei voitu lisätä uutta yhdistämissessiota!</translation>
+    </message>
+    <message>
+        <source>Failed to start internal thread!</source>
+        <translation>Sisäisen säikeen käynnistäminen epäonnistui!</translation>
+    </message>
+    <message>
+        <source>Critical error: Could not create file!</source>
+        <translation>Kriittinen virhe: Ei voitu luoda tiedostoa!</translation>
+    </message>
+    <message>
+        <source>Could not read file info!</source>
+        <translation>Ei voitu lukea tiedoston tietoja!</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t write file data!</source>
+        <translation>Ei voitu kirjoittaa tiedostoon!</translation>
+    </message>
+    <message>
+        <source>MD5 hashing failed! Can&apos;t resume.</source>
+        <translation>MD5-laskenta epäonnistui! Ei voida jatkaa.</translation>
     </message>
 </context>
 <context>
@@ -2071,6 +2138,18 @@ Päiväys: %4</translation>
         <source>User #%1</source>
         <translation>Käyttäjä #%1</translation>
     </message>
+    <message>
+        <source>Could not init session!</source>
+        <translation>Ei voitu alustaa sessiota!</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t create new connect session!</source>
+        <translation>Ei voitu luoda uutta yhdistämissessiota!</translation>
+    </message>
+    <message>
+        <source>Connection reset by peer!</source>
+        <translation>Yhteys katkesi ennenaikaisesti!</translation>
+    </message>
 </context>
 <context>
     <name>WinShare</name>
@@ -2240,11 +2319,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
-        <translation>Ei ole sallittua, että</translation>
+        <translation type='obsolete'>Ei ole sallittua, että</translation>
     </message>
     <message>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
-        <translation>Unizone (Suomi) %1 on ilmestynyt osoitteessa http://www.raasu.org/tools/windows/.</translation>
+        <translation type='obsolete'>Unizone (Suomi) %1 on ilmestynyt osoitteessa http://www.raasu.org/tools/windows/.</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -2588,31 +2667,31 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Access Denied!!!</source>
-        <translation>Pääsy Evätty!!!</translation>
+        <translation type='obsolete'>Pääsy Evätty!!!</translation>
     </message>
     <message>
         <source>do that to</source>
-        <translation>tehdä</translation>
+        <translation type='obsolete'>tehdä</translation>
     </message>
     <message>
         <source>kick</source>
-        <translation>potkaiset</translation>
+        <translation type='obsolete'>potkaiset</translation>
     </message>
     <message>
         <source>ban</source>
-        <translation>bannaat</translation>
+        <translation type='obsolete'>bannaat</translation>
     </message>
     <message>
         <source>unban</source>
-        <translation>poistat bannauksen</translation>
+        <translation type='obsolete'>poistat bannauksen</translation>
     </message>
     <message>
         <source>require</source>
-        <translation>lisäät vaatimuksen</translation>
+        <translation type='obsolete'>lisäät vaatimuksen</translation>
     </message>
     <message>
         <source>unrequire</source>
-        <translation>poistat vaatimuksen</translation>
+        <translation type='obsolete'>poistat vaatimuksen</translation>
     </message>
     <message>
         <source>Resume list:</source>
@@ -3172,7 +3251,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation>%1.%2.%3 luonti %4</translation>
+        <translation type='obsolete'>%1.%2.%3 luonti %4</translation>
     </message>
     <message>
         <source>On Connect: %1</source>

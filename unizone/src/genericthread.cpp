@@ -293,7 +293,7 @@ WGenericThread::ConnectTimer()
 	MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
 	if (msg())
 	{
-		msg()->AddString("why", "Connection timed out!");
+		msg()->AddString("why", QT_TR_NOOP( "Connection timed out!" ));
 		SendReply(msg);
 	}
 }
