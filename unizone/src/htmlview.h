@@ -15,7 +15,7 @@ public:
 	virtual void setSource( const QString & name );	
 	virtual void appendText( const QString & text);
 
-	virtual QString context() { return fContext; }
+	virtual QString context() const { return fContext; }
 
 signals:
 	void URLClicked(const QString & url);
@@ -42,11 +42,6 @@ private:
 private slots:
 	void URLSelected(const QString & url);
 };
-
-// Parse text for showing on WHTMLView
-QString ParseForShown(const QString & txt);
-QString ParseForShownAux(const QString &txt);
-
 
 #endif
 

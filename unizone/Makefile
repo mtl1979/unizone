@@ -22,7 +22,7 @@ OBJFILES = \
 	serverclient.o titanic.o wlaunchthread_unix.o mimedb.o \
 	QMessageTransceiverThread.o QAcceptSocketsThread.o \
 	chatwindow.o wsystemevent.o wwarningevent.o werrorevent.o \
-	version.o
+	version.o parser.o
 
 MOC_OBJFILES = \
 	moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
