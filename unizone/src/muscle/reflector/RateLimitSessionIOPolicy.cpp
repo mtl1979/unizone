@@ -52,7 +52,7 @@ RateLimitSessionIOPolicy ::
 GetPulseTime(uint64 now, uint64)
 {
    // Schedule a pulse for when we estimate _transferTally will sink back down to zero.  
-   return (_transferTally>CUTOFF)?(now+((_transferTally*1000000)/_maxRate)):MUSCLE_TIME_NEVER;
+   return (_transferTally>=CUTOFF)?(now+((_transferTally*1000000)/_maxRate)):MUSCLE_TIME_NEVER;
 }
 
 void
