@@ -15,3 +15,7 @@ zlib___Win32_Release
 *.lib
 *.plg
 *.exp
+*.bsc
+*.ilk
+*.pdb
+*.bsc
