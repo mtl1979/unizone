@@ -422,10 +422,14 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 						PrintSystem(tr("Encryption enabled."));
 						fEncrypted = true;
 					}
-					else
+					else if (qtext == "off")
 					{
 						fEncrypted = false;
 						PrintSystem(tr("Encryption disabled."));
+					}
+					else
+					{
+						PrintSystem(tr("Encryption is %1.").arg(fEncrypted ? "enabled" : "disabled"));
 					}
 				}
 				else

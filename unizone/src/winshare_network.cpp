@@ -1073,27 +1073,29 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString qtext = GetParameterString(sendText);
 			QString ctext = wencrypt2(qtext);
-			PrintSystem(ctext);
+			PrintSystem(tr("Encrypted: %1").arg(ctext));
 		}
 		else if (CompareCommand(sendText, "/decrypt"))
 		{
 			QString qtext = GetParameterString(sendText);
 			QString dtext = wdecrypt2(qtext);
-			PrintSystem(dtext);
+			if (dtext.length() > 0)
+				PrintSystem(tr("Decrypted: %1").arg(dtext));
 		}
 		else if (CompareCommand(sendText, "/hexdecode"))
 		{
 			QString qtext = GetParameterString(sendText);
 			const char * in = (const char *) qtext.utf8();
-			QString out = QString::fromUtf8(TTPDecode(String(in)).Cstr());
-			PrintSystem(out);
+			QString out = TTPDecode(qtext);
+			if (out.length() > 0)
+				PrintSystem(tr("Decoded: %1").arg(out));
 		}
 		else if (CompareCommand(sendText, "/hexencode"))
 		{
 			QString qtext = GetParameterString(sendText);
 			const char * in = (const char *) qtext.utf8();
-			QString out = QString::fromUtf8(TTPEncode(String(in)).Cstr());
-			PrintSystem(out);
+			QString out = TTPEncode(qtext);
+			PrintSystem(tr("Encoded: %1").arg(out));
 		}
 		else if (CompareCommand(sendText, "/revsay"))
 		{
@@ -2434,15 +2436,27 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/connect - connect to the currently selected server");
 	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/crypt - encrypt text and display it as hexadecimal data");
+	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/decrypt - decrypt text and display it");
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/disconnect - disconnect from server");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/dns [user|host] - give information about host");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/emsg [name] [message] - send an encrypted private message");
+	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/encryption [on|off] - toggle encryption in private windows");
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=  tr("/filter [pattern] - set the word filter pattern");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/help [command] - show help for command (no '/' in front of command) or show this help text if no command given.");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/heremsg - message for here state");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/hexdecode - decode hexadecimal data and display it");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/hexencode - encode as hexadecimal data and display it");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 

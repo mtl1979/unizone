@@ -2,12 +2,12 @@
 #define WCRYPT_H
 
 #include <qstring.h>
-#include "util/String.h"
+// #include "util/String.h"
 
-using namespace muscle;
+// using namespace muscle;
 
-char * wencrypt(const QString &, uint32 * len = NULL);
-QString wdecrypt(const char *, uint32);
+QByteArray wencrypt(const QString &, unsigned long * = NULL);
+QString wdecrypt(const QByteArray &, unsigned long);
 
 // Armoured versions
 QString wencrypt2(const QString &);
