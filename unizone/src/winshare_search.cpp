@@ -222,13 +222,26 @@ WinShareWindow::SplitQuery(const String &fileExp)
 }
 
 void
+AddToList(String & slist, const char *item)
+{
+	if (slist.Length() == 0)
+		slist = item;
+	else
+	{
+		slist += ",";
+		slist += item;
+	}
+}
+
+void
 WinShareWindow::GoSearch()
 {
 	// cancel current search (if there is one)
 	StopSearch();	// these methods lock
 	ClearList();
 
-	if (fSearchEdit->currentText().stripWhiteSpace().isEmpty())	// no search string
+	QString pattern = fSearchEdit->currentText().stripWhiteSpace();
+	if (pattern.isEmpty())	// no search string
 		return;
 
 	if (fNetClient->IsConnected() == false)
@@ -243,7 +256,7 @@ WinShareWindow::GoSearch()
 	fSearchLock.lock();
 
 	// parse the string for the '@' if it exists
-	String fileExp(fSearchEdit->currentText().utf8());
+	String fileExp(pattern.utf8());
 	String userExp;
 
 	fileExp = fileExp.Trim();
@@ -276,18 +289,23 @@ WinShareWindow::GoSearch()
 			WUserMap & users = fNetClient->Users();
 			WUserIter it = users.begin();
 			WUserRef user;
+			String ulist;
 			while (it != users.end())
 			{
 				user = (*it).second;
 				String username = StripURL((const char *) user()->GetUserName().utf8());
-				if (match.Match((const char *) username.Cstr()))
+				String userid = (const char *) user()->GetUserID().utf8();
+				if (match.Match(username.Cstr()))
 				{
-					userExp += ",";
-					userExp += (const char *) user()->GetUserID().utf8();
+					AddToList(ulist, userid.Cstr());
+				}
+				else if (match.Match(userid.Cstr()))
+				{
+					AddToList(ulist, userid.Cstr());
 				}
 				it++;
 			}
-			userExp	= userExp.Substring(userExp.IndexOf(",") + 1);
+			userExp	= ulist;
 		}
 
 		if (atIndex > 0)
