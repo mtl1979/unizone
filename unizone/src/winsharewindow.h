@@ -59,6 +59,7 @@ struct WFileInfo
 {
 	WUserRef fiUser;
 	QString fiFilename;
+	uint64 fiSize;
 	MessageRef fiRef;
 	bool fiFirewalled;
 	WSearchListItem * fiListItem;	// the list view item this file is tied to
@@ -560,7 +561,7 @@ private:
 	void EmptyQueues();
 
 	mutable QMutex fSearchLock;		// to lock the list so only one method can be using it at a time
-
+	uint64 fQueryBytes;
 	// UniShare
 
 	int64 GetRegisterTime() const;

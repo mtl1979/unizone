@@ -62,8 +62,11 @@ WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewa
 					CHECK_PTR(info);
 					info->fiUser = user;
 					info->fiFilename = filename;
+					info->fiSize = size;
 					info->fiRef = file;
 					info->fiFirewalled = firewalled;
+
+					fQueryBytes += size;
 					
 					// name, size, type, modified, path, user
 					QString qkind	= QString::fromUtf8(kind.Cstr());
@@ -114,6 +117,7 @@ WinShareWindow::RemoveFile(const QString &sid, const QString &filename)
 		info = (*iter).second;
 		if (info->fiFilename == filename && info->fiUser()->GetUserID() == sid)	// we found it
 		{
+			fQueryBytes -= info->fiSize;
 			delete info->fiListItem;	// remove it from the list view
 			delete info;
 			info = NULL; // <postmaster@raasu.org> 20021027
@@ -179,6 +183,7 @@ WinShareWindow::ClearList()
 	}
 	// delete them NOW
 	fSearchList->clear();
+	fQueryBytes = 0;
 	fSearchLock.unlock();
 	SetSearchStatus("", 1);
 }
@@ -420,7 +425,11 @@ WinShareWindow::Download()
 void
 WinShareWindow::SetResultsMessage()
 {
-	fStatus->setText(tr("Results: %1").arg(fFileList.size()), 1);
+	QString qmsg = tr("Results: %1").arg(fFileList.size());
+	qmsg += " (";
+	qmsg += MakeSizeString(fQueryBytes);
+	qmsg += ")";
+	SetSearchStatus(qmsg, 1);
 }
 
 void

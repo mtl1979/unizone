@@ -110,6 +110,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fFileScanThread = NULL;
 	fFilesScanned = false;
 	fMaxUsers = 0;
+	fQueryBytes = 0;
 	fPicViewer = new WPicViewer(this);
 	CHECK_PTR(fPicViewer);
 	
