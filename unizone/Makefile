@@ -1,4 +1,4 @@
-INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/muscle \
+INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/unix -Isrc/muscle \
 	-Isrc/muscle/message -Isrc/muscle/iogateway \
 	-Isrc/muscle/reflector -Isrc/muscle/regex -Isrc/muscle/util \
 	-Isrc/muscle/syslog -Isrc/muscle/system
@@ -10,8 +10,8 @@ LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
 OBJFILES = \
 	aboutdlgimpl.o botitem.o chattext.o colors.o combo.o \
-	downloadimpl.o downloadthread.o downloadworker.o fileinfo.o \
-	filethread.o formatting.o gotourl.o main.o md5.o menubar.o \
+	downloadimpl.o downloadthread.o downloadworker.o fileinfo.o fileinfo_unix.o \
+	filethread.o filethread_unix.o formatting.o gotourl_unix.o main.o md5.o menubar.o \
 	netclient.o nicklist.o picviewer.o picviewerimpl.o platform.o \
 	prefsimpl.o privatewindowimpl.o searchitem.o settings.o \
 	textevent.o transferitem.o ulistview.o uploadthread.o user.o \
@@ -19,7 +19,7 @@ OBJFILES = \
 	winshare_slots.o winsharewindow.o Log.o htmlview.o \
 	channelinfo.o channelimpl.o wpwevent.o wstring.o wstatusbar.o \
 	winshare_channels.o winshare_search.o updateclient.o util.o \
-	serverclient.o titanic.o scanprogressimpl.o \
+	serverclient.o titanic.o wlaunchthread_unix.o \
 	QMessageTransceiverThread.o QAcceptSocketsThread.o \
 	chatwindow.o wsystemevent.o wwarningevent.o werrorevent.o \
 	version.o
@@ -31,7 +31,7 @@ MOC_OBJFILES = \
 	moc_prefs.o moc_prefsimpl.o moc_privatewindow.o moc_privatewindowimpl.o \
 	moc_winsharewindow.o moc_uploadthread.o moc_channel.o moc_channelimpl.o \
 	moc_menubar.o moc_ulistview.o moc_updateclient.o moc_serverclient.o \
-	moc_scanprogress.o moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o 
+	moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o 
 
 MUSCLE_OBJFILES = \
 	AbstractMessageIOGateway.o MessageIOGateway.o \
@@ -45,13 +45,15 @@ MUSCLE_OBJFILES = \
 	NetworkUtilityFunctions.o PulseNode.o String.o ByteBuffer.o \
 	QueryFilter.o ZLibCodec.o ZLibUtilityFunctions.o
 
-VPATH = src src/muscle/qtsupport src/muscle/message \
+VPATH = src src/unix src/muscle/qtsupport src/muscle/message \
 	src/muscle/iogateway src/muscle/reflector \
 	src/muscle/regex src/muscle/util src/muscle/syslog \
 	src/muscle/system src/muscle/zlib
-UIC_HEADERS = $(addsuffix .h,$(basename $(wildcard src/*.ui)))
-UIC_SRCFILES = $(addsuffix .cpp,$(basename $(wildcard src/*.ui)))
-UIC_OBJFILES = $(addsuffix .o,$(basename $(wildcard src/*.ui)))
+
+UIC_FILES = aboutdlg.ui channel.ui picviewer.ui prefs.ui privatewindow.ui
+UIC_HEADERS = $(addsuffix .h,$(basename $(UIC_FILES)))
+UIC_SRCFILES = $(addsuffix .cpp,$(basename $(UIC_FILES)))
+UIC_OBJFILES = $(addsuffix .o,$(basename $(UIC_FILES)))
 
 SRCFILES =		$(addsuffix .cpp,$(basename $(OBJFILES)))
 MOC_SRCFILES =		$(addsuffix .cpp,$(basename $(MOC_OBJFILES)))
@@ -150,9 +152,6 @@ src/moc_privatewindow.cpp: src/privatewindow.h
 src/moc_privatewindowimpl.cpp: src/privatewindowimpl.h
 	$(MOC) $< -o $@
 
-src/moc_scanprogress.cpp: src/scanprogress.h
-	$(MOC) $< -o $@
-
 src/moc_serverclient.cpp: src/serverclient.h
 	$(MOC) $< -o $@
 
@@ -213,12 +212,6 @@ src/channel.h: src/channel.ui
 
 src/channel.cpp: src/channel.h src/channel.ui
 	$(UIC) -impl channel.h src/channel.ui -o src/channel.cpp
-
-src/scanprogress.h: src/scanprogress.ui
-	$(UIC) src/scanprogress.ui -o src/scanprogress.h
-
-src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
-	$(UIC) -impl scanprogress.h src/scanprogress.ui -o src/scanprogress.cpp
 
 clean :
 	$(MAKE) -C src -f Makefile clean

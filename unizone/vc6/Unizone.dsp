@@ -160,10 +160,6 @@ SOURCE=..\src\formatting.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gotourl.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\htmlview.cpp
 # End Source File
 # Begin Source File
@@ -1386,6 +1382,10 @@ InputName=winsharewindow
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\windows\wlaunchthread_win.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\wpwevent.h
 # End Source File
 # Begin Source File
@@ -1707,6 +1707,134 @@ BuildCmds= \
 
 !ENDIF 
 
+# End Source File
+# End Group
+# Begin Group "DLL files"
+
+# PROP Default_Filter ".dll"
+# Begin Source File
+
+SOURCE=..\libjpeg\Release\qjpeg.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=\build\unizone\libjpeg\Release
+TargetDir=\build\unizone\vc6
+TargetName=Unizone
+InputPath=..\libjpeg\Release\qjpeg.dll
+InputName=qjpeg
+
+"$(TargetDir)\qjpeg.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(TargetName).dll"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\Debug\qjpegd.dll
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
+InputDir=\build\unizone\libjpeg\Debug
+TargetDir=\build\unizone\vc6
+TargetName=Unizoned
+InputPath=..\libjpeg\Debug\qjpegd.dll
+InputName=qjpegd
+
+"$(TargetDir)\qjpegd.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(TargetName).dll"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Group "ANSI"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\src\windows\ansi\fileinfo_win.cpp
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\windows\ansi\filethread_win.cpp
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\windows\ansi\gotourl_win.cpp
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\windows\ansi\wlaunchthread_win.cpp
+# PROP Exclude_From_Build 1
+# End Source File
+# End Group
+# Begin Group "Unicode"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\src\windows\unicode\fileinfo_win.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\windows\unicode\filethread_win.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\windows\unicode\gotourl_win.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\windows\unicode\wlaunchthread_win.cpp
+# End Source File
+# End Group
+# Begin Group "Unix"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\src\unix\fileinfo_unix.cpp
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\unix\filethread_unix.cpp
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\unix\gotourl_unix.cpp
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\unix\wlaunchthread_unix.cpp
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\unix\wlaunchthread_unix.h
 # End Source File
 # End Group
 # End Target

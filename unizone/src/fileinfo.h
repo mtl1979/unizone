@@ -44,11 +44,11 @@ private:
 	uint64 fSize;
 
 	void InitMIMEType();
+	void InitModificationTime();
 	void InitPath();
 	void InitName();
 	void InitExtension();
 	void InitSize();
-	void InitModificationTime();
 
 	QFileInfo *fFileInfo;
 };

@@ -1,11 +1,9 @@
 #ifdef WIN32
-#include <windows.h>
 #pragma warning(disable: 4786)
 #endif
 
 #include "filethread.h"
 #include "fileinfo.h"
-#include "global.h"
 #include "settings.h"
 #include "debugimpl.h"
 #include "util/String.h"
@@ -21,15 +19,6 @@
 #include <string.h>
 #include <qevent.h>
 #include <qapplication.h>
-
-#ifdef WIN32
-#include <shellapi.h>
-# ifdef VC7
-#  include <shldisp.h>	// hm... we only need this in VC7
-# endif
-#include <shlguid.h>
-#include <shlobj.h>
-#endif
 
 WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 	: QThread(), fLocker(true)
@@ -184,6 +173,23 @@ WFileThread::ParseDirAux(QString &dir)
 	return ret;
 }
 
+const char * skipList[] =
+{
+	".",
+	"..",
+#ifdef WIN32
+	// Skip Windows GUI files
+	//
+	"Thumbs.db",
+	"desktop.ini",
+	"Folder.jpg",
+	// Skip misc Windows files
+	//
+	"SThumbs.dat",			// Shareaza Thumbnail Data
+	"Metadata",				// Shareaza Metadata folder
+#endif
+	NULL
+};
 
 void
 WFileThread::ScanFiles(const QString & directory)
@@ -213,66 +219,33 @@ WFileThread::ScanFiles(const QString & directory)
 
 				QString ndata = i.node->data;
 
-				if ((ndata == ".") || (ndata == ".."))
+				bool skip = false;
+
+				for (int n = 0; skipList[n] != NULL; n++)
 				{
-					i++;
-					continue;
+					if (ndata == skipList[n])
+					{
+						skip = true;
+						break;
+					}
 				}
 
-				if (ndata.length() > 4)
+				if (!skip && (ndata.length() > 4))
 				{
 					if (ndata.right(4) == ".md5")
 					{
-						i++;
-						continue;
+						skip = true;
 					}
-				}
-#ifdef WIN32
-				// Skip Windows GUI files
-				//
-
-				if (ndata == "Thumbs.db")
-				{
-					i++;
-					continue;
-				}
-
-				if (ndata == "desktop.ini")
-				{
-					i++;
-					continue;
-				}
-
-				if (ndata == "Folder.jpg")
-				{
-					i++;
-					continue;
-				}
-
-				if (ndata.length() > 12)
-				{
-					if (ndata.left(8) == "AlbumArt" && ndata.right(4) == ".jpg")
+					else if (ndata.length() > 12)
 					{
-						i++;
-						continue;
+						if (ndata.left(8) == "AlbumArt" && ndata.right(4) == ".jpg")
+						{
+							skip = true;
+						}
 					}
 				}
 
-				// Skip misc Windows files
-
-				if (ndata == "SThumbs.dat")			// Shareaza Thumbnail Data
-				{
-					i++;
-					continue;
-				}
-
-				if (ndata == "Metadata")			// Shareaza Metadata folder
-				{
-					i++;
-					continue;
-				}
-#endif
-
+				if (!skip)
 				{
 					QString qfile = dir->absFilePath(ndata); 
 					files.AddTail(qfile);
@@ -371,147 +344,6 @@ WFileThread::AddFile(const QString & filePath)
 			delete ufi;
 		}
 	}
-}
-
-QString
-WFileThread::ResolveLink(const QString & lnk)
-{
-#ifdef WIN32
-#ifdef DEBUG2
-	{
-		WString wRet(lnk);
-		PRINT("\tResolving %S\n", wRet.getBuffer());
-	}
-#endif // DEBUG2
-
-	if (lnk.right(4) == ".lnk")
-	{
-		PRINT("Is Link\n");
-		// we've got a link...
-		HRESULT hres;
-		// Unicode
-		IShellLink * psl;
-		wchar_t szFile[MAX_PATH];
-		WIN32_FIND_DATA wfd;
-		
-		hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *)&psl);
-		if (SUCCEEDED(hres))
-		{
-			QString ret(lnk);
-
-			// Unicode version
-			PRINT("Created instance\n");
-			IPersistFile * ppf;
-			
-			hres = psl->QueryInterface(IID_IPersistFile, (void **)&ppf);
-			if (SUCCEEDED(hres))
-			{
-				PRINT("Got persistfile\n");
-				WString wsz(ret);
-
-				hres = ppf->Load(wsz, STGM_READ);
-				if (SUCCEEDED(hres))
-				{
-					PRINT("Loaded\n");
-					hres = psl->Resolve(gWin->GetHandle(), SLR_ANY_MATCH);
-					if (SUCCEEDED(hres))
-					{
-						PRINT("Resolved\n");
-						hres = psl->GetPath(szFile, MAX_PATH, (WIN32_FIND_DATA *)&wfd, SLGP_UNCPRIORITY);
-						if (SUCCEEDED(hres))
-						{
-							PRINT("GetPath() = %S\n", szFile);
-							ret = wideCharToQString(szFile);
-						}
-						else
-							MessageBox(gWin->GetHandle(), L"GetPath() failed!", L"Error", MB_OK);
-					}
-				}
-				
-				ppf->Release();
-			}
-			psl->Release();
-			return ret;
-		}
-		else
-		{
-			// Fallback to ANSI
-			QString ret = ResolveLinkA(lnk);
-#ifdef _DEBUG
-			{
-				WString wRet(ret);
-				PRINT("Resolved to: %S\n", wRet.getBuffer());
-			}
-#endif
-			return ret;
-		}
-	}
-	return lnk;
-#else
-	QFileInfo inf(lnk);
-	if (inf.isSymLink())
-		return inf.readLink();
-	else
-		return lnk; 	// oops
-#endif
-}
-
-// ANSI version of ResolveLink for Windows 95 & 98 and Microsoft Unicode Layer
-// IShellLinkW is not supported on Windows 95 or 98
-QString
-WFileThread::ResolveLinkA(const QString & lnk)
-{
-#ifdef WIN32
-	HRESULT hres;
-	
-	// Ansi
-	IShellLinkA * psl;
-	char szFile[MAX_PATH];
-	WIN32_FIND_DATAA wfd;
-	
-	hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLinkA, (LPVOID *)&psl);
-	if (SUCCEEDED(hres))
-	{
-		PRINT("Created instance\n");
-
-		IPersistFile * ppf;
-		QString ret(lnk);
-
-		// IPersistFile is all UNICODE
-		hres = psl->QueryInterface(IID_IPersistFile, (void **)&ppf);
-		if (SUCCEEDED(hres))
-		{
-			PRINT("Got persistfile\n");
-
-			// Unicode
-			WString wsz(lnk);
-			hres = ppf->Load(wsz, STGM_READ);
-			if (SUCCEEDED(hres))
-			{
-				PRINT("Loaded\n");
-				hres = psl->Resolve(gWin->GetHandle(), SLR_ANY_MATCH);
-				if (SUCCEEDED(hres))
-				{
-					PRINT("Resolved\n");
-					hres = psl->GetPath(szFile, MAX_PATH, (WIN32_FIND_DATAA *)&wfd, SLGP_UNCPRIORITY);
-					if (SUCCEEDED(hres))
-					{
-						PRINT("GetPath() = %s\n",szFile);
-						ret = szFile;
-					}
-					else
-					{
-						MessageBoxA(gWin->GetHandle(), "GetPath() failed!", "Error", MB_OK);
-					}
-				}
-			}						
-			ppf->Release();
-		}
-		psl->Release();
-		return ret;
-	}
-#endif
-	return lnk;
 }
 
 bool

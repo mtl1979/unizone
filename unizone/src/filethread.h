@@ -69,7 +69,7 @@ private:
 	void ParseDir(const QString & d);
 	status_t ParseDirAux(QString &);
 	QString ResolveLink(const QString & lnk);
-	QString ResolveLinkA(const QString & lnk);	// Windows only
+
 	void ScanFiles(const QString & directory);
 	bool GetInfo(const QString & file, MessageRef & mref);
 

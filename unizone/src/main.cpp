@@ -1,29 +1,27 @@
-#include "winsharewindow.h"
-#include "util/TimeUtilityFunctions.h"
-#include "system/SetupSystem.h"
-
 #include <qapplication.h>
 #if !defined(QT_NO_STYLE_PLATINUM)
 #include <qplatinumstyle.h>
 #endif
 #include <qfile.h>
 #include <qfiledialog.h>
-#include "global.h"
-#include "debugimpl.h"
-#include "version.h"
+#include <qmessagebox.h>
+#include <qfont.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <qmessagebox.h>
-#include <qfont.h>
-#ifdef ALTCHARSET
-#include <qtextcodec.h>
-#endif
 
 #ifdef WIN32
 #include <windows.h>
 #include <shlwapi.h>
 #endif
+
+#include "global.h"
+#include "debugimpl.h"
+#include "winsharewindow.h"
+
+#include "util/TimeUtilityFunctions.h"
+#include "system/SetupSystem.h"
 
 int64 fStartTime;
 
@@ -31,6 +29,47 @@ int64 GetStartTime()
 {
 	return fStartTime;
 }
+
+void
+#ifndef WIN32
+SetWorkingDirectory(const char *app)
+{
+	const char * wdir = strrchr(app, '/');
+
+	if (wdir)
+	{
+		char * chd = new char[wdir - app + 1]; // figure out length, and make a new string of that length
+		if (chd)
+		{
+			strncpy(chd, app, wdir - argv[0]);
+			chd[wdir - app] = 0;
+			PRINT("Setting working directory to: %s\n", chd);
+			chdir(chd);
+			delete [] chd;
+		}
+	}
+}
+#else
+SetWorkingDirectory()
+{
+	// we have to use some windows api to get our path...
+	// <postmaster@raasu.org> 20021022 -- use wchar_t instead of TCHAR to follow common typedef across source files
+	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
+	CHECK_PTR(name);
+	if (GetModuleFileName(NULL,				/* current apps module */
+							name,			/* buffer */
+							MAX_PATH		/* buffer length */
+							) != 0)
+	{
+		PRINT("Module filename: %S\n", name);
+		PathRemoveFileSpec(name);
+		PRINT("Setting working directory to: %S\n", name);
+		SetCurrentDirectory(name);
+	}
+	delete [] name;
+	name = NULL; // <postmaster@raasu.org> 20021027
+}
+#endif
 
 int 
 main( int argc, char** argv )
@@ -52,38 +91,11 @@ main( int argc, char** argv )
 	// Set our working directory
 
 #ifndef WIN32
-	const char * wdir = strrchr(argv[0], '/');
-
-	if (wdir)
-	{
-		char * chd = new char[wdir - argv[0] + 1]; // figure out length, and make a new string of that length
-		if (chd)
-		{
-			strncpy(chd, argv[0], wdir - argv[0]);
-			chd[wdir - argv[0]] = 0;
-			PRINT("Setting working directory to: %s\n", chd);
-			chdir(chd);
-			delete [] chd;
-		}
-	}
+	SetWorkingDirectory(argv[0]);
 #else
-	// we have to use some windows api to get our path...
-	// <postmaster@raasu.org> 20021022 -- use wchar_t instead of TCHAR to follow common typedef across source files
-	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
-	CHECK_PTR(name);
-	if (GetModuleFileName(NULL,				/* current apps module */
-							name,			/* buffer */
-							MAX_PATH		/* buffer length */
-							) != 0)
-	{
-		PRINT("Module filename: %S\n", name);
-		PathRemoveFileSpec(name);
-		PRINT("Setting working directory to: %S\n", name);
-		SetCurrentDirectory(name);
-	}
-	delete [] name;
-	name = NULL; // <postmaster@raasu.org> 20021027
+	SetWorkingDirectory();
 #endif
+
 	// Load language file
 	QTranslator qtr( 0 );
 	QFile lang("unizone.lng");
@@ -102,6 +114,7 @@ main( int argc, char** argv )
 			}
 		}
 	}
+
 	// (Re-)load translator filename
 	if ( lang.open(IO_ReadOnly) ) 
 	{    
@@ -115,6 +128,7 @@ main( int argc, char** argv )
 		}
 		lang.close();
     }
+
 	// Install translator ;)
 	if (!lfile.isEmpty())
 	{
