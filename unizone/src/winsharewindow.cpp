@@ -299,7 +299,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			}
 		case WinShareWindow::UpdatePrivateUsers:
 			{
-				UpdatePrivateUserLists();
+				emit UpdatePrivateUserLists();
 				break;
 			}
 		case WFileThread::ScanDone:
@@ -746,19 +746,6 @@ WinShareWindow::UpdateUserList()
 
 	for (WUserIter it = users.begin(); it != users.end(); it++)
 		(*it).second()->AddToListView(fUsers);
-}
-
-void
-WinShareWindow::UpdatePrivateUserLists()
-{
-	pLock.lock();
-	for ( WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); ++it )
-	{
-		WPrivateWindow * pw = (*it).first;
-		if (pw)
-			pw->UpdateUserList();
-	}
-	pLock.unlock();
 }
 
 QString

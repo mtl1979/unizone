@@ -93,6 +93,7 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 #ifndef WIN32
 	connect(fText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
 #endif
+	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 
 #ifdef WIN32
 	// <postmaster@raasu.org> 20021021 -- Use Unicode macro L"..."

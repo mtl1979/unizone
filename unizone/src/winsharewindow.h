@@ -263,7 +263,6 @@ private:
 
 	void UpdateTextView();		// moves the stuff in the chat screen so that the latest stuff is displayed
 	void UpdateUserList();
-	void UpdatePrivateUserLists();
 
 	QString MakeHumanTime(int64 time);
 
@@ -378,6 +377,9 @@ public:
 
 	WSettings * fSettings;	// for use by prefs
 	WDownload * fDLWindow;
+
+signals:
+	void UpdatePrivateUserLists();
 };
 
 

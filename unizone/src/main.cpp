@@ -74,7 +74,7 @@ main( int argc, char** argv )
 #endif
 	app.setStyle(new QPlatinumStyle);
 
-	WinShareWindow * window = new WinShareWindow(NULL, "Unizone");
+	WinShareWindow * window = new WinShareWindow(NULL);
 	app.setMainWidget(window);
 
 	window->show();

@@ -44,8 +44,8 @@ public:
 	void Lock() { fLock.lock(); }
 	void Unlock() { fLock.unlock(); }
 
+public slots:
 	void UpdateUserList();
-
 
 protected:
 	virtual void customEvent(QCustomEvent * event);
