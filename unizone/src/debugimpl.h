@@ -11,7 +11,6 @@
 #ifdef _DEBUG
 
 void PRINT(const char *, ...);
-void WPopup(const char *);
 void RedirectDebugOutput();
 void CleanupDebug();
 
@@ -31,6 +30,7 @@ inline void PRINT(const char *, ...)
 
 
 #if defined(_DEBUG) || defined(BETA)
+void WPopup(const char *);
 void WAssert(bool, const char *, int, const char *, const char *);
 #define WASSERT(X, Y) WAssert(X, Y, __LINE__, __FILE__, __DATE__)
 #else

@@ -17,21 +17,15 @@
 
 FILE * nfp = NULL;
 
+#ifdef _DEBUG
 void PRINT(const char *fmt, ...)
 {
-	va_list a;
-	va_start(a, fmt);
-	vfprintf(nfp, fmt, a);
-}
-
-void WPopup(const QString &msg)
-{
-	(void) QMessageBox::information(NULL, QObject::tr( "Unizone (English)" ), msg, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton); 
-}
-
-void WPopup(const char *msg)
-{ 
-	WPopup(QObject::tr(msg));
+	if (nfp)
+	{
+		va_list a;
+		va_start(a, fmt);
+		vfprintf(nfp, fmt, a);
+	}
 }
 
 void
@@ -44,7 +38,19 @@ RedirectDebugOutput()
 void
 CleanupDebug()
 {
-	fclose(nfp);
+	if (nfp)
+		fclose(nfp);
+}
+#endif
+
+void WPopup(const QString &msg)
+{
+	(void) QMessageBox::information(NULL, QObject::tr( "Unizone (English)" ), msg, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton); 
+}
+
+void WPopup(const char *msg)
+{ 
+	WPopup(QObject::tr(msg));
 }
 
 void

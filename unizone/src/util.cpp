@@ -1342,7 +1342,7 @@ void RemoveFromList(String &slist, const String &entry)
 void HEXClean(QString &in)
 {
 	QString tmp;
-	for (int x = 0; x < in.length(); x++)
+	for (unsigned int x = 0; x < in.length(); x++)
 	{
 		QChar c = in[x].lower();
 		if (((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'f')))
@@ -1354,34 +1354,46 @@ void HEXClean(QString &in)
 void BINClean(QString &in)
 {
 	QString tmp, part;
-	int s = 0, p = 0;
+	unsigned int s = 0, p;
 	while (s < in.length())
 	{
+		// Skip initial garbage
 		while ((in[s] != '0') && (in[s] != '1'))
 		{
 			s++;
-			if (s == in.length())		// avoid looping out of string...
+			// avoid looping out of string...
+			if (s == in.length())
 			{
-				in = QString::null;
-				return;
+				if (tmp.length() == 0) 
+				{
+					in = QString::null;
+					return;
+				}
+				else
+					break;
 			}
 		}
-		p = in.find(" ", s);
-		if (p < 0) 
-			p = in.length();
-		if ((p - s) > 7) p = s + 7;
 		part = "";
-		for (; s <= p; s++)
+		p = 0;
+		while (p < 8)
 		{
-			QChar c = in[s];
+			if (s == in.length())
+			  break;
+			QChar c = in[s++];
 			if ((c == '0') || (c == '1'))
 				part += c;
+			else // garbage?
+				break;
+			p++;
 		}
-		while (part.length() < 8) 
-			part = "0" + part;
-		tmp += part;
-		if ((in[s] != '0') && (in[s] != '1')) 
-			s++;
+		if (p > 0)
+		{
+			while (part.length() < 8) 
+				part = "0" + part;
+			tmp += part;
+		}
+//		if ((in[s] != '0') && (in[s] != '1')) 
+//			s++;
 	}
 	in = tmp;
 }
@@ -1391,7 +1403,7 @@ QString BINDecode(const QString &in)
 	QCString out;
 	if (in.length() % 8 != 0)
 		return QString::null;
-	for (int x = 0; x < in.length(); x += 8)
+	for (unsigned int x = 0; x < in.length(); x += 8)
 	{
 		QString part = in.mid(x, 8);
 		int xx = 1;
@@ -1411,7 +1423,7 @@ QString BINEncode(const QString &in)
 {
 	QCString temp = in.utf8();
 	QString out, part;
-	for (int x = 0; x < temp.length(); x++)
+	for (unsigned int x = 0; x < temp.length(); x++)
 	{
 		char c = temp[x];
 		part = "";

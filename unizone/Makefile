@@ -24,6 +24,7 @@ SRCFILES = \
 	src/chatwindow.cpp \
 	src/colors.cpp \
 	src/combo.cpp \
+	src/debugimpl.cpp \
 	src/downloadimpl.cpp \
 	src/downloadthread.cpp \
 	src/downloadworker.cpp \
