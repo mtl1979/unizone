@@ -156,22 +156,38 @@ MUSCLE_OBJFILES = 	$(addsuffix .o,$(basename $(MUSCLE_SRCFILES)))
 MOC=$(QTDIR)/bin/moc
 UIC=$(QTDIR)/bin/uic
 
-all : $(EXECUTABLES) translations
+all : qtcheck $(EXECUTABLES) translations
+
+qtcheck.out : 
+	@touch qtcheck.out
+
+qtcheck : $(QTDIR)/lib/libqt-mt.so qtcheck.out
+	@echo -n "Checking Qt version... "
+	@ls -l $(QTDIR)/lib/libqt-mt.so > qtcheck.tmp
+	@cmp -s qtcheck.tmp qtcheck.out || \
+	(rm -f $(MOC_SRCFILES) $(MUSCLEMOC_SRCFILES) $(UIC_SRCFILES) $(UIC_HEADERS) )
+	@mv -f qtcheck.tmp qtcheck.out
+	@sed -n 's/.*so\.\([[0-9]\.]*\)/\1/p' qtcheck.out
 
 Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(MUSCLEMOC_OBJFILES) $(UIC_OBJFILES)
-	$(CXX) $(LFLAGS) $(LIBS) -o $@ $^
+	@echo Linking $@ ...
+	@$(CXX) $(LFLAGS) $(LIBS) -o $@ $^
 
-moc_QMessageTransceiverThread.o : src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+%.o : %.cpp
+	@echo Compiling $< ...
+	@$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-QMessageTransceiverThread.o : src/muscle/qtsupport/QMessageTransceiverThread.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+# moc_QMessageTransceiverThread.o : src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp
+#	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-moc_QAcceptSocketsThread.o : src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+# QMessageTransceiverThread.o : src/muscle/qtsupport/QMessageTransceiverThread.cpp
+#	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-QAcceptSocketsThread.o : src/muscle/qtsupport/QAcceptSocketsThread.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+# moc_QAcceptSocketsThread.o : src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp
+# 	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+# QAcceptSocketsThread.o : src/muscle/qtsupport/QAcceptSocketsThread.cpp
+#	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 translations : src/Makefile
 	$(MAKE) -C src -f Makefile
@@ -179,150 +195,193 @@ translations : src/Makefile
 depends: .depends
 
 .depends: .depends1 .depends2 .depends3 .depends4 .depends5
-	cat .depends1 > .depends
-	cat .depends2 >> .depends
-	cat .depends3 >> .depends
-	cat .depends4 >> .depends
-	cat .depends5 >> .depends
+	@cat .depends1 > .depends
+	@cat .depends2 >> .depends
+	@cat .depends3 >> .depends
+	@cat .depends4 >> .depends
+	@cat .depends5 >> .depends
  
 .depends1: $(UIC_SRCFILES)
-	$(CXX) $(CXXFLAGS) -MM $^ > .depends1
+	@echo Building dependencies \(1/5\) ...
+	@$(CXX) $(CXXFLAGS) -MM $^ > .depends1
 
 .depends2: $(SRCFILES)
-	$(CXX) $(CXXFLAGS) -MM $^ > .depends2
+	@echo Building dependencies \(2/5\) ...
+	@$(CXX) $(CXXFLAGS) -MM $^ > .depends2
 
 .depends3: $(MOC_SRCFILES)
-	$(CXX) $(CXXFLAGS) -MM $^ > .depends3
+	@echo Building dependencies \(3/5\) ...
+	@$(CXX) $(CXXFLAGS) -MM $^ > .depends3
 
 .depends4: $(MUSCLE_SRCFILES)
-	$(CXX) $(CXXFLAGS) -MM $^ > .depends4
+	@echo Building dependencies \(4/5\) ...
+	@$(CXX) $(CXXFLAGS) -MM $^ > .depends4
 
 .depends5: $(MUSCLEMOC_SRCFILES)
-	$(CXX) $(CXXFLAGS) -MM $^ > .depends5
+	@echo Building dependencies \(5/5\) ...
+	@$(CXX) $(CXXFLAGS) -MM $^ > .depends5
 
 .PHONY=translations depends
 
 # stuff for moc
 
 src/moc_aboutdlg.cpp: src/aboutdlg.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_aboutdlgimpl.cpp: src/aboutdlgimpl.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_chattext.cpp: src/chattext.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_combo.cpp: src/combo.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_downloadimpl.cpp: src/downloadimpl.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_downloadthread.cpp: src/downloadthread.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_uploadthread.cpp: src/uploadthread.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_htmlview.cpp: src/htmlview.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_netclient.cpp: src/netclient.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_picviewer.cpp: src/picviewer.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_picviewerimpl.cpp: src/picviewerimpl.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_prefs.cpp: src/prefs.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_prefsimpl.cpp: src/prefsimpl.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_privatewindow.cpp: src/privatewindow.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_privatewindowimpl.cpp: src/privatewindowimpl.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_serverclient.cpp: src/serverclient.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_updateclient.cpp: src/updateclient.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_winsharewindow.cpp: src/winsharewindow.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_channel.cpp: src/channel.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_channelimpl.cpp: src/channelimpl.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_menubar.cpp: src/menubar.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_ulistview.cpp: src/ulistview.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/moc_formatting.cpp: src/formatting.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp: src/muscle/qtsupport/QAcceptSocketsThread.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp: src/muscle/qtsupport/QMessageTransceiverThread.h
-	$(MOC) $< -o $@
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
 
 # stuff for uic
 src/picviewer.h: src/picviewer.ui
-	$(UIC) src/picviewer.ui -o src/picviewer.h
+	@echo Creating $@ ...
+	@$(UIC) src/picviewer.ui -o src/picviewer.h
 
 src/picviewer.cpp: src/picviewer.h src/picviewer.ui
-	$(UIC) -impl picviewer.h src/picviewer.ui -o src/picviewer.cpp	
+	@echo Creating $@ ...
+	@$(UIC) -impl picviewer.h src/picviewer.ui -o src/picviewer.cpp	
 
 src/privatewindow.h: src/privatewindow.ui
-	$(UIC) src/privatewindow.ui -o src/privatewindow.h
+	@echo Creating $@ ...
+	@$(UIC) src/privatewindow.ui -o src/privatewindow.h
 
 src/privatewindow.cpp: src/privatewindow.h src/privatewindow.ui
-	$(UIC) -impl privatewindow.h src/privatewindow.ui -o src/privatewindow.cpp
+	@echo Creating $@ ...
+	@$(UIC) -impl privatewindow.h src/privatewindow.ui -o src/privatewindow.cpp
 
 src/prefs.h: src/prefs.ui
-	$(UIC) src/prefs.ui -o src/prefs.h
+	@echo Creating $@ ...
+	@$(UIC) src/prefs.ui -o src/prefs.h
 
 src/prefs.cpp: src/prefs.h src/prefs.ui
-	$(UIC) -impl prefs.h src/prefs.ui -o src/prefs.cpp
+	@echo Creating $@ ...
+	@$(UIC) -impl prefs.h src/prefs.ui -o src/prefs.cpp
 
 src/aboutdlg.h: src/aboutdlg.ui
-	$(UIC) src/aboutdlg.ui -o src/aboutdlg.h
+	@echo Creating $@ ...
+	@$(UIC) src/aboutdlg.ui -o src/aboutdlg.h
 
 src/aboutdlg.cpp: src/aboutdlg.h src/aboutdlg.ui
-	$(UIC) -impl aboutdlg.h src/aboutdlg.ui -o src/aboutdlg.cpp
+	@echo Creating $@ ...
+	@$(UIC) -impl aboutdlg.h src/aboutdlg.ui -o src/aboutdlg.cpp
 
 src/channel.h: src/channel.ui
-	$(UIC) src/channel.ui -o src/channel.h
+	@echo Creating $@ ...
+	@$(UIC) src/channel.ui -o src/channel.h
 
 src/channel.cpp: src/channel.h src/channel.ui
-	$(UIC) -impl channel.h src/channel.ui -o src/channel.cpp
+	@echo Creating $@ ...
+	@$(UIC) -impl channel.h src/channel.ui -o src/channel.cpp
 
+clean-aux:
+	@rm -f *.o *.a $(EXECUTABLES)
+	@rm -f $(OBJFILES) $(MUSCLE_OBJFILES)
+	@rm -f $(MOC_SRCFILES) $(MOC_OBJFILES)
+	@rm -f $(MUSCLEMOC_SRCFILES) $(MUSCLEMOC_OBJFILES)
+	@rm -f $(UIC_SRCFILES) $(UIC_OBJFILES)
+	@rm -f $(UIC_HEADERS)
+	@rm -f core.*
 clean :
-	$(MAKE) -C src -f Makefile clean
-	rm -f *.o *.a $(EXECUTABLES)
-	rm -f $(OBJFILES) $(MUSCLE_OBJFILES)
-	rm -f $(MOC_SRCFILES) $(MOC_OBJFILES)
-	rm -f $(MUSCLEMOC_SRCFILES) $(MUSCLEMOC_OBJFILES)
-	rm -f $(UIC_SRCFILES) $(UIC_OBJFILES)
-	rm -f $(UIC_HEADERS)
-	rm -f core.*
+	@$(MAKE) -C src -f Makefile clean
+	@$(MAKE) clean-aux
 
-distclean : clean
-	$(MAKE) -C src -f Makefile distclean
-	rm -f .depends .depends[1-5] 
+distclean :
+	@$(MAKE) -C src -f Makefile distclean
+	@$(MAKE) clean-aux
+	@rm -f .depends .depends[1-5] 
 
 # DO NOT DELETE
 
