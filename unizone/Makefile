@@ -19,8 +19,6 @@ moc_channelimpl.o moc_menubar.o moc_ulistview.o \
 wstatusbar.o winshare_channels.o winshare_search.o
 VPATH = src
 CXXFLAGS = -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
-TRANSLATIONS = unizone_de.qm unizone_en.qm unizone_es.qm unizone_fi.qm \
-unizone_fr.qm unizone_pt.qm unizone_ru.qm unizone_sv.qm 
 
 all : $(EXECUTABLES) translations
 
@@ -28,19 +26,62 @@ Unizone : $(OBJFILES) ./linux/muscle.a
 	$(CXX) $(LFLAGS) $(LIBS) -o $@ $(OBJFILES) ./linux/muscle.a
 
 linux/muscle.a : linux/Makefile
-	make -C linux -f Makefile
+	$(MAKE) -C linux -f Makefile
 
-%.ts : src/unizone.pro
-	lupdate $<
- 
-translations : src/unizone.pro $(TRANSLATIONS)
-
-%.qm : %.ts 
-	lrelease $<
+translations : src/Makefile
+	$(MAKE) -C src -f Makefile
 
 .PHONY=translations
 
-src/downloadimpl.cpp: src/privatewindow.h src/channel.h
+src/channelimpl.cpp : src/privatewindow.h src/channel.h
+
+src/channelinfo.cpp : src/channel.h
+
+src/aboutdlgimpl.cpp : src/aboutdlg.h
+
+src/downloadimpl.cpp : src/privatewindow.h src/channel.h
+
+src/downloadthread.cpp : src/privatewindow.h
+
+src/filethread.cpp : src/privatewindow.h
+
+src/formatting.cpp : src/privatewindow.h
+
+src/genericthread.cpp : src/privatewindow.h
+
+src/gotourl.cpp : src/privatewindow.h
+
+src/main.cpp: src/privatewindow.h
+
+src/netclient.cpp : src/privatewindow.h
+
+src/prefsimpl.cpp : src/privatewindow.h src/prefs.h
+
+src/privatewindowimpl.cpp : src/privatewindow.h
+
+src/settings.cpp : src/privatewindow.h
+
+src/ulistview.cpp : src/privatewindow.h
+
+src/uploadthread.cpp : src/privatewindow.h
+
+src/user.cpp : src/privatewindow.h
+
+src/userlistitem.cpp : src/privatewindow.h
+
+src/winshare_channels.cpp : src/privatewindow.h src/channel.h
+
+src/winshare_network.cpp : src/privatewindow.h
+
+src/winshare_parsing.cpp : src/privatewindow.h
+
+src/winshare_search.cpp : src/privatewindow.h
+
+src/winshare_slots.cpp : src/privatewindow.h src/aboutdlg.h src/prefs.h
+
+src/winsharewindow.cpp : src/privatewindow.h src/aboutdlg.h
+
+src/wpwevent.cpp : src/privatewindow.h
 
 # stuff for moc
 
@@ -122,10 +163,10 @@ src/channel.cpp: src/channel.h src/channel.ui
 
 clean :
 	rm -f *.o $(EXECUTABLES)
-	rm -f src/*.qm
 	rm -f src/moc_*.cpp
 	rm -f src/aboutdlg.h src/aboutdlg.cpp
 	rm -f src/channel.h src/channel.cpp
 	rm -f src/prefs.h src/prefs.cpp
 	rm -f src/privatewindow.h src/privatewindow.cpp
-	make -C linux -f Makefile clean
+	$(MAKE) -C src -f Makefile clean
+	$(MAKE) -C linux -f Makefile clean
