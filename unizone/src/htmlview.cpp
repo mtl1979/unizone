@@ -89,28 +89,26 @@ QString
 ParseForShown(const QString & txt)
 {
 	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
-	QStringTokenizer tk(txt, "\t");
+	QString temp = txt;
+	temp.replace(QRegExp("<br>"), "\t");		// Resplit lines, so debugging is easier ;)
+	QStringTokenizer tk(temp, "\t");
 	QString next;
 	QString out;
+	QString line;
 	while ((next = tk.GetNextToken()) != QString::null)
 	{
-		next = next.stripWhiteSpace();
 		if (!next.isEmpty())
-			out += next; 
-//#if (QT_VERSION < 0x030100)
-		out += "<br>";	// replace our TAB
-//#endif
+			line = next;
+		else
+			line = "";
+		line += "<br>";	// replace our TAB
+		qDebug("ParseForShown: %s", line.latin1());
+		out += line;
 	}
-	out = out.stripWhiteSpace();
 
-	// <postmaster@raasu.org> 20030722 -- Strip off preceding line breaks, we don't need them	
-	while (out.left(4) == "<br>")
-		out = out.mid(4);
-
-	// <postmaster@raasu.org> 20030721 -- Strip off trailing line breaks, we don't need them
-	while (out.right(4) == "<br>")
+	// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
+	if (out.right(4) == "<br>")
 		out.truncate(out.length() - 4);
-	qDebug("ParseForShown: %s", out.latin1());
 	return out;
 }
 

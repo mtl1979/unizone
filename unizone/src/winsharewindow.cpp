@@ -1232,11 +1232,11 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 	static QString output("");
 	if (begin)	// starting message batch
 	{
-#ifndef WIN32
+//#ifndef WIN32
 		output = "\t";	// reset (we always start with a tab..., this is a linux bug workaround)
-#else
-		output = "";
-#endif
+//#else
+//		output = "";
+//#endif
 	}
 	else
 	{
@@ -1252,11 +1252,11 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 		}
 		else
 		{
-#ifndef WIN32
+//#ifndef WIN32
 			if (output != "\t")	// do we have something?
-#else
-			if (!output.isEmpty())
-#endif
+//#else
+//			if (!output.isEmpty())
+//#endif
 			{
 				if (output.right(4) == "<br>")
 					output.truncate(output.length() - 4);
