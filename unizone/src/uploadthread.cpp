@@ -516,7 +516,7 @@ WUploadThread::SendRejectedNotification(bool direct)
 void 
 WUploadThread::DoUpload()
 {
-	if (fShutdownFlag && *fShutDownFlag)	// Do we need to interrupt?
+	if (fShutdownFlag && *fShutdownFlag)	// Do we need to interrupt?
 		return;
 
 	// Small files get to bypass queue
