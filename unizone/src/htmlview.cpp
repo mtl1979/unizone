@@ -126,9 +126,6 @@ WHTMLView::appendText(const QString &newtext)
 {
 	PRINT("appendText\n");
 
-	if (fBuffer.length() == 0)
-		BeforeShown();	
-
 	QWidget *widget = topLevelWidget();
 	if (widget)
 	{
@@ -136,6 +133,7 @@ WHTMLView::appendText(const QString &newtext)
 		if (!widget->isVisible())
 		{
 			PRINT("appendText 2\n");
+			BeforeShown();	
 			if (fBuffer.length() == 0)
 			{
 				fBuffer = text();
@@ -156,12 +154,17 @@ WHTMLView::appendText(const QString &newtext)
 	}
 	// fall through here...
 	{
-		PRINT("appendText: Calling append()\n");
+		// We need to explicitly call BeforeShown() here because we are clearing fBuffer
+		// and scroll bar might be on top position because we cleared the textview.
+		PRINT("appendText: Calling BeforeShown()\n");
+		BeforeShown();	
+		PRINT("appendText: Calling append(fBuffer)\n");
 		if (fBuffer.length() > 0)
 		{
 			append(fBuffer);
 			fBuffer = "";
 		}
+		PRINT("appendText: Calling append(newtext)\n");
 		append(newtext);
 		PRINT("appendText: Calling UpdateTextView()\n");
 		UpdateTextView();
@@ -173,6 +176,7 @@ void
 WHTMLView::clear()
 {
 	fBuffer = "";
+	fScrollY = 0;
 	setText("");
 }
 
@@ -208,7 +212,8 @@ WHTMLView::CheckScrollState()
 	else
 	{
 		fScrollDown = false;
-		fScrollY = scroll->value();
+		if (scroll->maxValue() > 0)			// TextView might be cleared and then we should use the old value
+			fScrollY = scroll->value();
 	}
 }
 
