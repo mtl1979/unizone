@@ -163,7 +163,26 @@ void
 WChatText::AddLine(const QString &line)
 {
 	QString junk;
+	int l = 0;
 	fLock.lock();
+	// Remove duplicate entries
+	while (l < (int) fBuffer->GetNumItems())
+	{
+		fBuffer->GetItemAt(l, junk);
+		if (junk == line)
+		{
+			fBuffer->RemoveItemAt(l);
+			if (l <= fCurLine)
+				fCurLine--;
+		}
+		else
+		{
+			l++;
+		}
+
+		if (l >= (int) fBuffer->GetNumItems())
+			break;
+	}
 	// Remove enough old entries, so total amount after adding this line will not exceed MAX_SIZE
 	while (fBuffer->GetNumItems() >= MAX_SIZE)
 	{
