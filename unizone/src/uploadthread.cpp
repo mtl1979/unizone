@@ -105,10 +105,6 @@ WUploadThread::~WUploadThread()
 		fFile = NULL;
 	}
 
-//	qApp->sendPostedEvents( fOwner, WUploadEvent::Type );
-
-	// Reset();
-
 	PRINT("WUploadThread dtor OK\n");
 }
 
@@ -220,10 +216,19 @@ WUploadThread::SetLocallyQueued(bool b)
 	if (fLocallyQueued == b)
 		return;
 
+	if (!fConnecting && !IsInternalThreadRunning())
+	{
+		fFinished = true;
+		Reset();
+	}
+
 	if (fFinished)
 		return;
 
+	// -----------------------------------------------
+
 	fLocallyQueued = b;
+
 	if (b)
 	{
 		fStartTime = 0;
@@ -231,6 +236,7 @@ WUploadThread::SetLocallyQueued(bool b)
 	else
 	{
 		fLastData.restart();
+
 		if (fSavedFileList())
 		{
 			MessageRef fFileList = fSavedFileList;
@@ -329,7 +335,7 @@ WUploadThread::SendReply(MessageRef &m)
 		m()->AddPointer("sender", this);
 		WUploadEvent * wue = new WUploadEvent(m);
 		if (wue)
-			QThread::postEvent(fOwner, wue);
+			QApplication::postEvent(fOwner, wue);
 	}
 }
 
@@ -337,18 +343,10 @@ void
 WUploadThread::SessionAttached(const String &sessionID)
 {
 	// If you aren't firewalled
-	fConnecting = false;
-	_sessionID = sessionID;
-	CTimer->stop();
 
-	timerID = startTimer(10000);
-
-	MessageRef con(GetMessageFromPool(WUploadEvent::Connected));
-	if (con())
-	{
-		SendReply(con);
-	}
+	SessionConnected(sessionID);
 }
+
 void
 WUploadThread::SessionDetached(const String &sessionID)
 {
@@ -359,7 +357,10 @@ void
 WUploadThread::SessionConnected(const String &sessionID)
 {
 	// If you are firewalled
+
 	fConnecting = false;
+	fActive = true;
+
 	_sessionID = sessionID;
 	CTimer->stop();
 
@@ -627,7 +628,7 @@ WUploadThread::DoUpload()
 		return;
 	}
 
-	fActive = true;
+	// fActive = true;
 
 	// Small files get to bypass queue
 	if (IsLocallyQueued())
@@ -933,14 +934,17 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 	PRINT("WUploadThread::TransferFileList\n");
 	
 	if (fShutdownFlag && *fShutdownFlag)	// do we need to abort?
+	{
+		Reset();
 		return;
+	}
 	
 	if (gWin->IsScanning())
 	{
 		fSavedFileList = msg;
 		if (!fBlocked)
 		{
-			fLocallyQueued = true;
+			SetLocallyQueued(true);
 			SendQueuedNotification();
 		}
 		return;

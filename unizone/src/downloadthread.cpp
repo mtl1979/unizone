@@ -354,7 +354,7 @@ WDownloadThread::SendReply(MessageRef &m)
 		m()->AddPointer("sender", this);
 		WDownloadEvent * wde = new WDownloadEvent(m);
 		if (wde)
-			QThread::postEvent(fOwner, wde);
+			QApplication::postEvent(fOwner, wde);
 	}
 }
 

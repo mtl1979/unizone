@@ -1926,6 +1926,10 @@ Date: %4</translation>
         <source>IP Addresses</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Number of Ports:</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>

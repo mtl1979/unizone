@@ -1922,6 +1922,10 @@ Date: %4</translation>
         <source>IP Addresses</source>
         <translation>IP Addresses</translation>
     </message>
+    <message>
+        <source>Number of Ports:</source>
+        <translation>Number of Ports:</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -3309,11 +3313,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Queued file %1 from user #%2.</source>
-        <translation type='unfinished'></translation>
+        <translation>Queued file %1 from user #%2.</translation>
     </message>
     <message>
         <source>Downloading file %1 from user #%2.</source>
-        <translation type='unfinished'></translation>
+        <translation>Downloading file %1 from user #%2.</translation>
     </message>
 </context>
 </TS>
