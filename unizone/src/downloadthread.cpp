@@ -902,17 +902,9 @@ WDownloadThread::UniqueName(const QString & file, int index)
 	int sp = file.findRev("/", -1); // Find last /
 	if (sp > -1)
 	{
-		tmp = file.left(sp + 1);	// include slash
-		base = file.mid(sp + 1);	// base filename
-		int d = base.find(".");		// ...and find first dot
-		if (d > -1)
-		{
-			ext = base.mid(d);		// ext contains also the dot
-			base = base.left(d);
-			return tr("%1%2 %3%4").arg(tmp).arg(base).arg(index).arg(ext);
-		}
-		else
-			return tr("%1%2 %3").arg(tmp).arg(base).arg(index); // no extension
+		tmp = file.left(sp + 1);			// include slash
+		base = file.mid(sp + 1);			// filename
+		return tr("%1%2 %3").arg(tmp).arg(index).arg(base);
 	}
 	WASSERT(true, "Invalid download path!");
 	return QString::null;
