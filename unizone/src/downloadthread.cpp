@@ -20,7 +20,7 @@
 using namespace muscle;
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
-: QObject(owner), fLockFile(true) 
+: QObject(owner), fLockFile() 
 {
 	fOwner = owner;
 	fShutdownFlag = optShutdownFlag;

@@ -6,8 +6,6 @@
 
 #include <qapplication.h>
 #include <qmultilineedit.h>
-#include <qthread.h>
-#include <qapp.h>
 #include <qmessagebox.h>
 #include <qstring.h>
 #include <qfile.h>

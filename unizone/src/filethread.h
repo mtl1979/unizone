@@ -5,7 +5,6 @@
 #pragma warning(disable: 4786)
 #endif
 
-// #include <qthread.h>
 #include <qstring.h>
 #include <qobject.h>
 

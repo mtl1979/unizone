@@ -6,7 +6,7 @@
 #include "wstring.h"
 
 void
-WLaunchThread::run()
+WLaunchThread::InternalThreadEntry()
 {
 	GotoURL(fURL, fLauncher);
 }

@@ -238,6 +238,9 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fFTPLauncher->setText(gWin->fSettings->GetFTPLauncher());
 	fDefaultLauncher->setText(gWin->fSettings->GetDefaultLauncher());
 #endif
+#ifdef QT_NO_STYLE
+	fTabs->setTabEnabled(fStyle, false);
+#endif
 
 	fChatLimit->setCurrentItem(gWin->fSettings->GetChatLimit());
 	fULLimit->setCurrentItem(gWin->fSettings->GetULLimit());

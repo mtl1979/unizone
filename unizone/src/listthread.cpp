@@ -1,5 +1,4 @@
 #include <qapplication.h>
-#include <qthread.h>
 
 #include "events.h"
 #include "filethread.h"
@@ -109,11 +108,7 @@ WListThread::InternalThreadEntry()
 	QCustomEvent *qce = new QCustomEvent(ListDone);
 	if (qce)
 	{
-#if (QT_VERSION > 0x030000)
-		QThread::postEvent(fOwner, qce);
-#else
 		QApplication::postEvent(fOwner, qce);
-#endif
 	}
 	Unlock();
 }

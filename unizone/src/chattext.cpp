@@ -145,10 +145,10 @@ WChatText::keyPressEvent(QKeyEvent * event)
 void
 WChatText::ClearBuffer()
 {
-	fLock.lock();
+	fLock.Lock();
 	fBuffer->Clear();
 	fCurLine = 0;	// no more items
-	fLock.unlock();
+	fLock.Unlock();
 }
 
 void
@@ -164,7 +164,7 @@ WChatText::AddLine(const QString &line)
 {
 	QString junk;
 	int l = 0;
-	fLock.lock();
+	fLock.Lock();
 	// Remove duplicate entries
 	while (l < (int) fBuffer->GetNumItems())
 	{
@@ -192,5 +192,5 @@ WChatText::AddLine(const QString &line)
 	if (fCurLine < 0)
 		fCurLine = 0;
 	fBuffer->AddTail(line);
-	fLock.unlock();
+	fLock.Unlock();
 }

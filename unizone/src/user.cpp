@@ -472,6 +472,11 @@ struct OSPair
 };
 
 OSPair Systems[] = {
+	// Known clients
+	{"BeShare", QT_TRANSLATE_NOOP("WUser", "BeOS")},
+	{"WinShare", QT_TRANSLATE_NOOP("WUser", "Windows")},
+	{"LinShare", QT_TRANSLATE_NOOP("WUser", "Linux")},
+	// Known OS tags used by MUSCLE and JavaShare
 	{"Windows", QT_TRANSLATE_NOOP("WUser", "Windows")},		
 	{"Linux", QT_TRANSLATE_NOOP("WUser", "Linux")},
 	{"FreeBSD", QT_TRANSLATE_NOOP("WUser", "FreeBSD")},
@@ -492,10 +497,6 @@ OSPair Systems[] = {
 	{"HPUX", QT_TRANSLATE_NOOP("WUser", "HPUX")},
 	{"Solaris", QT_TRANSLATE_NOOP("WUser", "Solaris")},
 	{"UnixWare", QT_TRANSLATE_NOOP("WUser", "UnixWare")},
-	// Known clients
-	{"BeShare", QT_TRANSLATE_NOOP("WUser", "BeOS")},
-	{"WinShare", QT_TRANSLATE_NOOP("WUser", "Windows")},
-	{"LinShare", QT_TRANSLATE_NOOP("WUser", "Linux")},
 	// End of list marker ;)
 	{NULL, NULL}
 };

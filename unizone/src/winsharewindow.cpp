@@ -816,6 +816,7 @@ WinShareWindow::InitGUI()
 	//
 
 	fTBMenu = new QToolBar( this );
+	CHECK_PTR(fTBMenu);
 	addToolBar( fTBMenu, tr( "Menubar" ), Top, FALSE );
 
 	fMenus = new MenuBar(this, fTBMenu);
@@ -834,6 +835,7 @@ WinShareWindow::InitGUI()
 	//
 	
 	fTBServer = new QToolBar( this );
+	CHECK_PTR(fTBServer);
 	addToolBar( fTBServer, tr( "Server bar" ), Top, TRUE );
 
 	fServerLabel = new QLabel(tr("Server:"), fTBServer);
@@ -849,6 +851,7 @@ WinShareWindow::InitGUI()
 	//
 
 	fTBNick = new QToolBar( this );
+	CHECK_PTR(fTBNick);
 	addToolBar( fTBNick, tr( "Nickbar" ), Top, FALSE );
 
 	fUserLabel = new QLabel(tr("Nick:"), fTBNick);
@@ -864,6 +867,7 @@ WinShareWindow::InitGUI()
 	//
 
 	fTBStatus = new QToolBar( this );
+	CHECK_PTR(fTBStatus);
 	addToolBar( fTBStatus, tr( "Statusbar" ), Top, FALSE );
 
 	fStatusLabel = new QLabel(tr("Status:"), fTBStatus);

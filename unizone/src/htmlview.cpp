@@ -96,47 +96,54 @@ WHTMLView::setSource( const QString & name )
 }
 
 void
+WHTMLView::append(const QString &text)
+{
+	PRINT("WHTMLView::append()\n");
+#if (QT_VERSION < 0x030000)
+	QString tmp("\t");
+	tmp += text;
+	QTextBrowser::append(tmp);
+#else
+	QTextBrowser::append(text);
+#endif
+	PRINT("WHTMLView::append() OK\n");
+}
+
+void
 WHTMLView::appendText(const QString &newtext)
 {
 	PRINT("appendText\n");
-	PRINT("appendText 1\n");
 	BeforeShown();
 	QWidget *widget = topLevelWidget();
 	if (widget)
 	{
+		PRINT("appendText 1\n");
 		if (!widget->isVisible())
 		{
+			PRINT("appendText 2\n");
+			QString temp = text();
+			PRINT("appendText 3\n");
+			setText("");
 #if (QT_VERSION >= 0x030000)
-			int newlen = text().length() + newtext.length() + 4;
-			if (newlen >= ParseBufferSize())
-			{
+			temp += "<br>";
+#else
+			temp += "\t";
 #endif
-				PRINT("appendText 2\n");
-				QString temp = text();
-				PRINT("appendText 3\n");
-				setText("");
-#if (QT_VERSION >= 0x030000)
-				temp += "<br>";
-#endif
-				PRINT("appendText 4\n");
-				temp += newtext;
-				PRINT("appendText 5\n");
-#if (QT_VERSION >= 0x030000)
-				setText(ParseForShown(temp));
-				PRINT("appendText: Calling GotShown()\n");
-#endif
-				GotShown(temp);
-				PRINT("appendText OK\n");
-				return;
-#if (QT_VERSION >= 0x030000)
-			}
-#endif
+			PRINT("appendText 4\n");
+			temp += newtext;
+			PRINT("appendText 5\n");
+			GotShown(temp);
+			PRINT("appendText OK\n");
+			return;
 		}
 	}
-	PRINT("appendText: Calling append()\n");
-	append(newtext);
-	PRINT("appendText: Calling UpdateTextView()\n");
-	UpdateTextView();
+	// fall through here...
+	{
+		PRINT("appendText: Calling append()\n");
+		append(newtext);
+		PRINT("appendText: Calling UpdateTextView()\n");
+		UpdateTextView();
+	}
 	PRINT("appendText OK\n");
 }
 
@@ -147,15 +154,9 @@ WHTMLView::BeforeShown()
 }
 
 void
-#if (QT_VERSION < 0x030000)
 WHTMLView::GotShown(const QString & txt)
-#else
-WHTMLView::GotShown(const QString &)
-#endif
 {
-#if (QT_VERSION < 0x030000)
 	setText(ParseForShown(txt));
-#endif
 	UpdateTextView();
 }
 

@@ -1609,6 +1609,11 @@ Date: %4</translation>
         <comment>Ping sent to user...</comment>
         <translation>el usuario (a.k.a</translation>
     </message>
+    <message>
+        <source>user #%1</source>
+        <comment>Ping sent to user...</comment>
+        <translation type='unfinished'>el usuario #%1</translation>
+    </message>
 </context>
 <context>
     <name>WListThread</name>
@@ -2654,6 +2659,54 @@ Date: %4</translation>
     </message>
     <message>
         <source>OS/2</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>OpenBSD</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>NetBSD</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>SunOS</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>AtheOS</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Tru64</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Irix</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>AIX</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Sequent</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>OpenServer</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>HPUX</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Solaris</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>UnixWare</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

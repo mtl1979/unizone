@@ -2,7 +2,6 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <qthread.h>
 #include <qobject.h>
 #include <qqueue.h>
 #include <qdir.h>

@@ -1,19 +1,22 @@
 #ifndef WLAUNCHTHREAD_WIN_H
 #define WLAUNCHTHREAD_WIN_H
 
-#include <qthread.h>
+// #include <qthread.h>
 #include <qstring.h>
+#include "system/Thread.h"
 
-class WLaunchThread : public QThread
+using namespace muscle;
+
+class WLaunchThread : public Thread
 {
 public:
-	WLaunchThread(const QString & url) : QThread(), fURL(url) {}
-	WLaunchThread() : QThread() {}
+	WLaunchThread(const QString & url) : Thread(), fURL(url) {}
+	WLaunchThread() : Thread() {}
 
 	void SetURL(const QString & url) { fURL = url; }
 
 protected:
-	virtual void run();
+	virtual void InternalThreadEntry();
 
 private:
 	bool GotoURL(const QString &url, int showcmd);

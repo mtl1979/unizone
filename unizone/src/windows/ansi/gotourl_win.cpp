@@ -44,9 +44,10 @@ RunCommand(const QString & command)
 {
 	PRINT("RunCommand() called\n");
 	QApplication::setOverrideCursor( Qt::waitCursor );
-	fLaunchThread->wait();
+	if (fLaunchThread->IsInternalThreadRunning())
+		fLaunchThread->WaitForInternalThreadToExit();
 	fLaunchThread->SetURL(command);
-	fLaunchThread->start();
+	fLaunchThread->StartInternalThread();
 	QApplication::restoreOverrideCursor();
 }
 
@@ -60,7 +61,6 @@ InitLaunchThread()
 void
 DeinitLaunchThread()
 {
-	if (fLaunchThread->running())
-		fLaunchThread->wait();
-	// delete fLaunchThread;
+	if (fLaunchThread->IsInternalThreadRunning())
+		fLaunchThread->WaitForInternalThreadToExit();
 }

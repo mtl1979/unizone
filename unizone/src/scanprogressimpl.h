@@ -1,8 +1,6 @@
 #ifndef SCANPROGRESS_H
 #define SCANPROGRESS_H
 
-#include <qthread.h>
-
 #include "scanprogress.h"
 
 #ifdef WIN32

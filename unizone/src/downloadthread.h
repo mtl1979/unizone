@@ -8,7 +8,6 @@
 
 #include <qfile.h>
 #include <qstring.h>
-#include <qthread.h>
 #include <qdatetime.h>
 #include <qtimer.h>
 #include <time.h>
@@ -126,7 +125,7 @@ protected:
 
 	void MessageReceived(MessageRef msg) { MessageReceived(msg, _sessionID); }
 
-	mutable QMutex fLockFile;
+	mutable Mutex fLockFile;
 	WFile * fFile;			// file on the HD
 	QString * fFileDl;		// file to dl
 	QString * fLocalFileDl; // local filenames for downloaded files

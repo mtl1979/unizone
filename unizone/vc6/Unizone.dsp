@@ -73,7 +73,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -258,118 +258,6 @@ SOURCE=..\src\menubar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_aboutdlg.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_aboutdlgimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_channel.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_channelimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_chattext.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_combo.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_downloadimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_downloadthread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_filethread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_formatting.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_htmlview.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_listthread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_menubar.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_netclient.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_picviewer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_picviewerimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_prefs.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_prefsimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_privatewindow.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_privatewindowimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\qtsupport\moc_QAcceptSocketsThread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\qtsupport\moc_QMessageTransceiverThread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_scanprogress.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_serverclient.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_ulistview.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_updateclient.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_uploadthread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\moc_winsharewindow.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\netclient.cpp
 # End Source File
 # Begin Source File
@@ -407,14 +295,6 @@ SOURCE=..\src\privatewindow.cpp
 # Begin Source File
 
 SOURCE=..\src\privatewindowimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.cpp
 # End Source File
 # Begin Source File
 
@@ -1814,128 +1694,6 @@ InputName=privatewindowimpl
 InputDir=\build\unizone\src
 InputPath=..\src\privatewindowimpl.h
 InputName=privatewindowimpl
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
-InputName=QAcceptSocketsThread
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
-InputName=QAcceptSocketsThread
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
-InputName=QAcceptSocketsThread
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
-InputName=QAcceptSocketsThread
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
-InputName=QMessageTransceiverThread
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
-InputName=QMessageTransceiverThread
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
-InputName=QMessageTransceiverThread
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
-InputName=QMessageTransceiverThread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
@@ -3579,6 +3337,114 @@ SOURCE=..\src\windows\unicode\wlaunchthread_win.cpp
 
 !ENDIF 
 
+# End Source File
+# End Group
+# Begin Group "MOC Sources"
+
+# PROP Default_Filter "cpp"
+# Begin Source File
+
+SOURCE=..\src\moc_aboutdlg.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_aboutdlgimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_channel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_channelimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_chattext.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_combo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_downloadimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_downloadthread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_filethread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_formatting.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_htmlview.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_listthread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_menubar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_netclient.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_picviewer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_picviewerimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_prefs.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_prefsimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_privatewindow.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_privatewindowimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_scanprogress.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_serverclient.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_ulistview.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_updateclient.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_uploadthread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_winsharewindow.cpp
 # End Source File
 # End Group
 # End Target

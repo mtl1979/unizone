@@ -1813,6 +1813,11 @@ Päiväys: %4</translation>
         <comment>Ping sent to user...</comment>
         <translation>käyttäjälle #%1, eli</translation>
     </message>
+    <message>
+        <source>user #%1</source>
+        <comment>Ping sent to user...</comment>
+        <translation>käyttäjä #%1</translation>
+    </message>
 </context>
 <context>
     <name>WGenericThread</name>
@@ -2898,6 +2903,54 @@ Päiväys: %4</translation>
     <message>
         <source>OS/2</source>
         <translation>OS/2</translation>
+    </message>
+    <message>
+        <source>OpenBSD</source>
+        <translation>OpenBSD</translation>
+    </message>
+    <message>
+        <source>NetBSD</source>
+        <translation>NetBSD</translation>
+    </message>
+    <message>
+        <source>SunOS</source>
+        <translation>SunOS</translation>
+    </message>
+    <message>
+        <source>AtheOS</source>
+        <translation>AtheOS</translation>
+    </message>
+    <message>
+        <source>Tru64</source>
+        <translation>Tru64</translation>
+    </message>
+    <message>
+        <source>Irix</source>
+        <translation>Irix</translation>
+    </message>
+    <message>
+        <source>AIX</source>
+        <translation>AIX</translation>
+    </message>
+    <message>
+        <source>Sequent</source>
+        <translation>Sequent</translation>
+    </message>
+    <message>
+        <source>OpenServer</source>
+        <translation>OpenServer</translation>
+    </message>
+    <message>
+        <source>HPUX</source>
+        <translation>HPUX</translation>
+    </message>
+    <message>
+        <source>Solaris</source>
+        <translation>Solaris</translation>
+    </message>
+    <message>
+        <source>UnixWare</source>
+        <translation>UnixWare</translation>
     </message>
 </context>
 <context>

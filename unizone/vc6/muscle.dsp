@@ -67,7 +67,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "muscle___Win32_Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\src\muscle" /I "$(QTDIR)\include" /I "..\src\muscle\regex" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\src\muscle" /I "$(QTDIR)\include" /I "..\src\muscle\regex" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /FR /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -202,6 +202,14 @@ SOURCE=..\src\muscle\iogateway\PlainTextMessageIOGateway.cpp
 # Begin Source File
 
 SOURCE=..\src\muscle\util\PulseNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.cpp
 # End Source File
 # Begin Source File
 
@@ -389,6 +397,14 @@ SOURCE=..\src\muscle\util\PulseNode.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\muscle\regex\QueryFilter.h
 # End Source File
 # Begin Source File
@@ -486,6 +502,18 @@ SOURCE=..\src\muscle\zlib\ZLibDataIO.h
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\ZLibUtilityFunctions.h
+# End Source File
+# End Group
+# Begin Group "MOC Sources"
+
+# PROP Default_Filter "cpp"
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\moc_QAcceptSocketsThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\moc_QMessageTransceiverThread.cpp
 # End Source File
 # End Group
 # End Target

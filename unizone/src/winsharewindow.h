@@ -17,7 +17,6 @@
 #include <qvgroupbox.h>
 #include <qlistview.h>
 #include <qtextbrowser.h>
-#include <qthread.h>
 #include <qtimer.h>
 #include <qevent.h>
 #include <qlayout.h>

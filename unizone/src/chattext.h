@@ -2,9 +2,9 @@
 #define CHATTEXT_H
 
 #include <qmultilineedit.h>
-#include <qthread.h>
 
 #include "util/Queue.h"
+#include "system/Thread.h"
 using namespace muscle;
 
 /** This class will chat SHIFT+ENTER and ENTER keystrokes and
@@ -31,7 +31,7 @@ protected:
 private:
 	Queue<QString> * fBuffer;	// line buffer
 	QObject * fTarget;
-	QMutex fLock;
+	Mutex fLock;
 	int fCurLine;				// which line in the buffer?
 };
 

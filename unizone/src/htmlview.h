@@ -14,7 +14,6 @@ public:
 
 	virtual void setSource( const QString & name );	
 	virtual void appendText( const QString & text);
-
 	virtual QString context() const { return fContext; }
 
 signals:
@@ -38,6 +37,8 @@ private:
 	void CheckScrollState();
 	void UpdateTextView();
 	void UpdateScrollState();
+
+	virtual void append( const QString & text);
 
 private slots:
 	void URLSelected(const QString & url);

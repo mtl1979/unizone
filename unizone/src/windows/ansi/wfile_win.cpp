@@ -25,6 +25,7 @@ bool
 WFile::Open(const QString &name, int mode)
 {
 	WString wname(name);
+	wname.replace(L'/', L'\\');
 	int fmode = TranslateMode(mode);
 	return Open(wname, fmode);
 }

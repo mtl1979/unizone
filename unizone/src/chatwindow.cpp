@@ -205,14 +205,7 @@ ChatWindow::PrintText(const QString & str)
 	else
 #endif
 	{
-//		CheckScrollState();
-#if (QT_VERSION < 0x030000)
-		QString tmp("\t");
-		tmp += out;
-		fChatText->appendText(tmp);
-#else
 		fChatText->appendText(out);
-#endif
 	}
 	if (Settings()->GetLogging())
 		LogString(out);

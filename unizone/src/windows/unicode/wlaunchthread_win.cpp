@@ -8,7 +8,7 @@
 #include "debugimpl.h"
 
 void
-WLaunchThread::run()
+WLaunchThread::InternalThreadEntry()
 {
 	GotoURL(fURL, SW_SHOW);
 }

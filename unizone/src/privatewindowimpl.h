@@ -14,9 +14,9 @@
 #include "chatwindow.h"
 
 #include <qlistview.h>
+#include <qpopupmenu.h>
 #include <qsplitter.h>
 #include <qvgroupbox.h>
-#include <qthread.h>
 
 
 class NetClient;

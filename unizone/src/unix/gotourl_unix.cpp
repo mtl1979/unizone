@@ -1,6 +1,5 @@
 #include <qapplication.h>
 #include <qstring.h>
-#include <qthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -45,7 +44,8 @@ GotoURL(const QString & url)
 	}
 
 	QApplication::setOverrideCursor( Qt::waitCursor );
-	fLaunchThread->wait();
+	if (fLaunchThread->IsInternalThreadRunning())
+		fLaunchThread->WaitForInternalThreadToExit();
 	fLaunchThread->SetURL(address);
 	if (u.startsWith("http"))	// also includes 'https'
 	{
@@ -64,7 +64,7 @@ GotoURL(const QString & url)
 		// unknown? use default launcher...
 		fLaunchThread->SetLauncher(gWin->fSettings->GetDefaultLauncher());	
 	}
-	fLaunchThread->start();
+	fLaunchThread->StartInternalThread();
 	QApplication::restoreOverrideCursor();
 }
 
@@ -73,10 +73,11 @@ RunCommand(const QString & command)
 {
 	PRINT("RunCommand() called\n");
 	QApplication::setOverrideCursor( Qt::waitCursor );
-	fLaunchThread->wait();
+	if (fLaunchThread->IsInternalThreadRunning())
+		fLaunchThread->WaitForInternalThreadToExit();
 	fLaunchThread->SetURL(command);
 	fLaunchThread->SetLauncher(QString::null);
-	fLaunchThread->start();
+	fLaunchThread->StartInternalThread();
 	QApplication::restoreOverrideCursor();
 }
 
@@ -90,7 +91,6 @@ InitLaunchThread()
 void
 DeinitLaunchThread()
 {
-	if (fLaunchThread->running())
-		fLaunchThread->wait();
-	// delete fLaunchThread;
+	if (fLaunchThread->IsInternalThreadRunning())
+		fLaunchThread->WaitForInternalThreadToExit();
 }
