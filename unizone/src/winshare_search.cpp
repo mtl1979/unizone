@@ -1,7 +1,11 @@
 #include "winsharewindow.h"
+#include "combo.h"
 #include "debugimpl.h"
+#include "downloadimpl.h"
 #include "settings.h"
 #include "wstatusbar.h"
+#include "platform.h"
+#include "searchitem.h"
 
 void
 WinShareWindow::AddFile(const QString sid, const QString filename, bool firewalled, MessageRef file)

@@ -24,6 +24,7 @@
 #include <qdir.h>
 #include <qstringlist.h>
 #include <qtabwidget.h>
+#include <qlineedit.h>
 
 const char * kColorDesc[11] = {	
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name." ), 

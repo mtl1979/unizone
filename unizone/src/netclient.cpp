@@ -1,4 +1,5 @@
 #include "netclient.h"
+#include "downloadimpl.h"
 #include "global.h"
 #include "debugimpl.h"
 #include "version.h"

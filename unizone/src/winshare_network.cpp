@@ -30,6 +30,8 @@ typedef hostent *LPHOSTENT;
 #include "iogateway/PlainTextMessageIOGateway.h"
 #include "iogateway/MessageIOGateway.h"
 #include "util/StringTokenizer.h"
+#include "ulistview.h"
+#include "downloadimpl.h"
 
 #include <qapplication.h>
 

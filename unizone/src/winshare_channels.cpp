@@ -3,6 +3,7 @@
 #include "tokenizer.h"
 #include "debugimpl.h"
 #include "global.h"
+#include "platform.h"
 
 #include <qinputdialog.h>
 #include <qmessagebox.h>

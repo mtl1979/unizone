@@ -620,7 +620,7 @@ void
 WDownload::customEvent(QCustomEvent * e)
 {
 	WGenericEvent * g = NULL;
-	if (e->type() == WGenericEvent::Type)
+	if ((int) e->type() == WGenericEvent::Type)
 	{
 		g = dynamic_cast<WGenericEvent *>(e);
 	}

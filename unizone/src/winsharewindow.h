@@ -23,22 +23,23 @@
 #include <qlayout.h>
 #include <qtabwidget.h>
 
-#include "menubar.h"
+// #include "menubar.h"
 #include "netclient.h"
 #include "privatewindowimpl.h"
-#include "channelimpl.h"
+// #include "channelimpl.h"
 // #include "channelsimpl.h"
 #include "system/SetupSystem.h"
-#include "regex/StringMatcher.h"
-#include "chattext.h"
-#include "downloadimpl.h"
+// #include "regex/StringMatcher.h"
+// #include "chattext.h"
+// #include "downloadimpl.h"
 #include "accept.h"
-#include "filethread.h"
-#include "combo.h"
-#include "searchitem.h"
+// #include "filethread.h"
+// #include "combo.h"
+// #include "searchitem.h"
 // #include "channelinfo.h"
-// #include "search.h"
-#include "Log.h"
+#include "search.h"
+// #include "Log.h"
+#include "user.h"
 
 #define UPDATE_SERVER "www.raasu.org"
 #define UPDATE_FILE "http://www.raasu.org/tools/windows/version.txt"
@@ -52,6 +53,12 @@ using std::multimap;
 using std::iterator;
 
 class ChannelInfo;
+class WSearchListItem;
+class WFileThread;
+class MenuBar;
+class WUniListView;
+class WHTMLView;
+class WComboBox;
 
 struct WFileInfo
 {

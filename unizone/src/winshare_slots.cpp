@@ -4,6 +4,8 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+
 #include "winsharewindow.h"
 #include "aboutdlgimpl.h"
 #include "formatting.h"
@@ -16,8 +18,7 @@
 #include "gotourl.h"
 #include "util/StringTokenizer.h"
 #include "textevent.h"
-
-#include <qapplication.h>
+#include "downloadimpl.h"
 
 void
 WinShareWindow::Exit()

@@ -3,6 +3,7 @@
 #endif
 
 #include "aboutdlgimpl.h"
+#include "downloadimpl.h"
 #include "winsharewindow.h"
 #include "version.h"
 #include "debugimpl.h"
@@ -13,6 +14,7 @@
 #include "privatewindowimpl.h"
 #include "wpwevent.h"
 #include "combo.h"
+#include "menubar.h"
 #include "util/StringTokenizer.h"
 #include "regex/StringMatcher.h"
 #include "iogateway/PlainTextMessageIOGateway.h"
