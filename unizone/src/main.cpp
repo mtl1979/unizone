@@ -41,7 +41,7 @@ SetWorkingDirectory(const char *app)
 		char * chd = new char[wdir - app + 1]; // figure out length, and make a new string of that length
 		if (chd)
 		{
-			strncpy(chd, app, wdir - argv[0]);
+			strncpy(chd, app, wdir - app);
 			chd[wdir - app] = 0;
 			PRINT("Setting working directory to: %s\n", chd);
 			chdir(chd);
