@@ -2895,11 +2895,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</source>
-        <translation>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für Windows!</translation>
+        <translation type='obsolete'>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für Windows!</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</source>
-        <translation>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für Linux!</translation>
+        <translation type='obsolete'>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für Linux!</translation>
     </message>
     <message>
         <source>Original idea by Vitaliy Mikitchenko.</source>
@@ -3767,7 +3767,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für FreeBSD!</translation>
+        <translation type='obsolete'>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für FreeBSD!</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
@@ -3903,7 +3903,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für QNX Neutrino!</translation>
+        <translation type='obsolete'>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für QNX Neutrino!</translation>
     </message>
     <message>
         <source>wandering</source>
@@ -4004,6 +4004,18 @@ Date: %4</translation>
     <message>
         <source>/hexencode - encode as hexadecimal data and display it</source>
         <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
+        <translation type='obsolete'>Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für %1!</translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)!</source>
+        <translation>Willkommen bei Unizone (Deutsch)!</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
+        <translation>&lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für %1!</translation>
     </message>
 </context>
 </TS>

@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleMiscUtilityFunctions_h
 #define MuscleMiscUtilityFunctions_h
@@ -132,6 +132,11 @@ status_t BecomeDaemonProcess(const char * optNewDir = NULL, const char * optOutp
  *  @return B_NO_ERROR (twice!) on success, B_ERROR on failure.
  */ 
 status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = true);
+
+/** Convenience function:  Removes any ANSI formatting escape-sequences from (s), so 
+  * that (s) can be displayed as plain text without a bunch of garbage showing up in it.
+  */
+void RemoveANSISequences(String & s);
 
 END_NAMESPACE(muscle);
 

@@ -132,6 +132,7 @@ MUSCLE_SRCFILES = \
 	src/muscle/system/GlobalMemoryAllocator.cpp \
 	src/muscle/system/MessageTransceiverThread.cpp \
 	src/muscle/system/SetupSystem.cpp \
+	src/muscle/system/SystemInfo.cpp \
 	src/muscle/system/Thread.cpp \
 	src/muscle/util/ByteBuffer.cpp \
 	src/muscle/util/MemoryAllocator.cpp \

@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
 /* This class was derived from the String class written by Michael Olivero (mike95@mike95.com) */
  
 #ifndef MuscleString_h

@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include "system/SetupSystem.h"
 
@@ -174,12 +174,9 @@ uint64 origRet = ret;
 #else
 # if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined (MUSCLE_POWERPC_TIMEBASE_HZ)
    // http://lists.linuxppc.org/linuxppc-embedded/200110/msg00338.html
-   uint64 ret;
-   uint32 & hiWord = *((uint32 *)(&ret));
-   uint32 & loWord = *((&hiWord)+1);
-   uint32 wrapCheck;
+   uint32 hiWord, loWord, wrapCheck;
    __asm__ __volatile__("0:; mftbu %0; mftb %1; mftbu %2; cmpw %0,%2; bne 0" : "=&r" (hiWord), "=&r" (loWord), "=&r" (wrapCheck));
-   return (ret*((uint64)1000000))/((uint64)MUSCLE_POWERPC_TIMEBASE_HZ);
+   return (((((uint64)hiWord)<<32)|((uint64)loWord))*((uint64)1000000))/((uint64)MUSCLE_POWERPC_TIMEBASE_HZ);
 # else
    // default method:  use POSIX commands
    static clock_t _ticksPerSecond = 0;

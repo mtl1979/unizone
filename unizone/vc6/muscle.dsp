@@ -245,6 +245,10 @@ SOURCE=..\src\muscle\syslog\SysLog.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\muscle\system\SystemInfo.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\muscle\system\Thread.cpp
 # End Source File
 # Begin Source File
@@ -450,6 +454,10 @@ SOURCE=..\src\muscle\util\StringTokenizer.h
 # Begin Source File
 
 SOURCE=..\src\muscle\syslog\SysLog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\SystemInfo.h
 # End Source File
 # Begin Source File
 

@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef RS232DataIO_h
 #define RS232DataIO_h
@@ -11,7 +11,7 @@
 BEGIN_NAMESPACE(muscle);
 
 /** A serial port DataIO for serial communications.  Note that
- *  this class currently only works under Windows and Linux, and offers
+ *  this class currently only works under Windows, OS/X and Linux, and offers
  *  only minimal control of the serial parameters (baud rate only at the moment).
  *  On the plus side, it provides a serial-port-socket for use with select(), even under Windows.
  */

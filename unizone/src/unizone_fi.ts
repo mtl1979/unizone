@@ -2984,11 +2984,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</source>
-        <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas Windowsille!</translation>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas Windowsille!</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</source>
-        <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas Linuxille!</translation>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas Linuxille!</translation>
     </message>
     <message>
         <source>Original idea by Vitaliy Mikitchenko.</source>
@@ -3856,7 +3856,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas FreeBSD:lle!</translation>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas FreeBSD:lle!</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
@@ -3988,7 +3988,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas QNX Neutrinolle!</translation>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas QNX Neutrinolle!</translation>
     </message>
     <message>
         <source>wandering</source>
@@ -4089,6 +4089,18 @@ Päiväys: %4</translation>
     <message>
         <source>/hexencode - encode as hexadecimal data and display it</source>
         <translation>/hexencode - muunna teksti heksadesimaalimuotoon ja näytä se</translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas %1:lle!</translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)!</source>
+        <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)!</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
+        <translation>MUSCLE-asiakas %1:lle!</translation>
     </message>
 </context>
 </TS>

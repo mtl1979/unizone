@@ -2715,11 +2715,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</source>
-        <translation>Welcome to Unizone (Русский)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</translation>
+        <translation type='obsolete'>Welcome to Unizone (Русский)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</source>
-        <translation>Welcome to Unizone (Русский)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</translation>
+        <translation type='obsolete'>Welcome to Unizone (Русский)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</translation>
     </message>
     <message>
         <source>Original idea by Vitaliy Mikitchenko.</source>
@@ -3555,7 +3555,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
+        <translation type='obsolete'>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
@@ -3683,7 +3683,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation>Welcome to Unizone (Русский)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX!</translation>
+        <translation type='obsolete'>Welcome to Unizone (Русский)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX!</translation>
     </message>
     <message>
         <source>wandering</source>
@@ -3784,6 +3784,18 @@ Date: %4</translation>
     <message>
         <source>/hexencode - encode as hexadecimal data and display it</source>
         <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
+        <translation type='obsolete'>Welcome to Unizone (Русский)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)!</source>
+        <translation>Welcome to Unizone (Русский)!</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
+        <translation>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</translation>
     </message>
 </context>
 </TS>

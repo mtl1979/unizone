@@ -45,6 +45,7 @@ typedef hostent *LPHOSTENT;
 #ifdef MUSCLE_ENABLE_MEMORY_TRACKING
 #include "system/GlobalMemoryAllocator.h"
 #endif
+#include "system/SystemInfo.h"
 
 #include <time.h>				//                                 -- for /time
 #include <qapplication.h>
@@ -2178,18 +2179,9 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						rep()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 					
 						QString version = tr("Unizone (English)");
-						version += " ";
-#if defined(WIN32)
-						version += "(Windows) ";
-#elif defined(__LINUX__) || defined(linux)
-						version += "(Linux) ";
-#elif defined(__FreeBSD__)
-						version += "(FreeBSD) ";
-#elif defined(__QNX__)
-						version += "(QNX) ";
-#else
-#error "Oops! Damn developer forgot to implement this correctly!"
-#endif
+						version += " (";
+						version += GetOSName();
+						version += ") ";
 						version += WinShareVersionString();
 					
 						// <postmaster@raasu.org> 20021025 -- Added uptime calculating for Windows

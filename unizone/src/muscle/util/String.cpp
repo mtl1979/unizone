@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "util/String.h"
 #include "system/GlobalMemoryAllocator.h"

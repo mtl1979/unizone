@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
 #include "dataio/RS232DataIO.h"
 
@@ -94,7 +94,11 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
       }
    }
 #else
+#  if defined(__BEOS__)
+   _handle = open(port, O_RDWR | O_NONBLOCK);
+#  else
    _handle = open(port, O_RDWR | O_NOCTTY);
+#  endif
    if ((_handle >= 0)&&(SetSocketBlockingEnabled(_handle, _blocking) == B_NO_ERROR))
    {
       okay = true;
@@ -111,6 +115,10 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
             cfsetospeed(&t, B9600);
             cfsetispeed(&t, B9600);
             break;
+         case 19200:
+            cfsetospeed(&t, B19200);
+            cfsetispeed(&t, B19200);
+            break;
          case 38400:
             cfsetospeed(&t, B38400);
             cfsetispeed(&t, B38400);
@@ -123,10 +131,6 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
             cfsetospeed(&t, B115200);
             cfsetispeed(&t, B115200);
             break;
-         case 19200:
-            cfsetospeed(&t, B19200);
-            cfsetispeed(&t, B19200);
-            break;
          default:
             okay = false;  // unknown baud rate!
             break;
@@ -134,7 +138,10 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
       if (okay)
       {
          t.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL | ISIG | IEXTEN);
-         t.c_iflag &= ~(INPCK | ISTRIP | IGNCR | ICRNL | INLCR | IXOFF | IXON | IMAXBEL);
+         t.c_iflag &= ~(INPCK | ISTRIP | IGNCR | ICRNL | INLCR | IXOFF | IXON);
+#ifndef __BEOS__
+         t.c_iflag &= ~(IMAXBEL);
+#endif
          t.c_iflag |= (IGNBRK);
          t.c_cflag &= ~(HUPCL | PARENB | CRTSCTS | CSIZE);
          t.c_cflag |= (CS8 | CLOCAL);
@@ -280,6 +287,7 @@ status_t RS232DataIO :: GetAvailableSerialPortNames(Queue<String> & retList)
          }
          return B_NO_ERROR;
       }
+      return B_ERROR;
    }
    else
    {
@@ -305,7 +313,6 @@ status_t RS232DataIO :: GetAvailableSerialPortNames(Queue<String> & retList)
       }
       return B_NO_ERROR;
    }
-   return B_ERROR;
 #else
 # if defined(__APPLE__)
    mach_port_t masterPort;
@@ -339,8 +346,14 @@ status_t RS232DataIO :: GetAvailableSerialPortNames(Queue<String> & retList)
 # else
    for (int i=0; /*empty*/; i++)
    {
-      char buf[64]; sprintf(buf, "/dev/ttyS%i", i);
+      char buf[64]; 
+#  if defined(__BEOS__)
+      sprintf(buf, "/dev/ports/serial%i", i+1);
+      int temp = open(buf, O_RDWR | O_NONBLOCK);
+#  else
+      sprintf(buf, "/dev/ttyS%i", i);
       int temp = open(buf, O_RDWR | O_NOCTTY);
+#  endif
       if (temp >= 0)
       {
          close(temp);

@@ -3,6 +3,13 @@
 
 BEGIN_NAMESPACE(muscle);
 
+void ByteBuffer :: AdoptBuffer(uint32 numBytes, uint8 * optBuffer)
+{
+   Clear(true);  // free any previously held array
+   _buffer = optBuffer;
+   _numValidBytes = _numAllocatedBytes = numBytes;
+}
+
 status_t ByteBuffer :: SetBuffer(uint32 numBytes, const uint8 * buffer)
 {
    Clear();

@@ -105,7 +105,7 @@ status_t SharedMemory :: SetArea(const char * keyString, uint32 createSize, bool
    }
 
    DECLARE_SEMCTL_ARG(semopts);
-   const int permissionBits = 0770;  // allow access only to our own user and group
+   const int permissionBits = 0777;
 
    // Try to create a new semaphore to control access to our area
    _semID = semget(requestedKey, 1, IPC_CREAT|IPC_EXCL|permissionBits);

@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include <fcntl.h>
 
@@ -382,6 +382,38 @@ status_t BecomeDaemonProcess(const char * optNewDir, const char * optOutputTo, b
    status_t ret = SpawnDaemonProcess(isParent, optNewDir, optOutputTo, createIfNecessary);
    if ((ret == B_NO_ERROR)&&(isParent)) exit(0);
    return ret;
+}
+
+void RemoveANSISequences(String & s)
+{
+   static const char _escapeBuf[] = {0x1B, '[', '\0'};
+   static String _escape; if (_escape.Length() == 0) _escape = _escapeBuf;
+
+   while(true)
+   {
+      int32 idx = s.IndexOf(_escape);  // find the next escape sequence
+      if (idx >= 0)
+      {
+         const char * data = s()+idx+2;  // move past the ESC char and the [ char
+         switch(data[0])
+         {
+            case 's': case 'u': case 'K':   // these are single-letter codes, so
+	       data++;                      // just skip over them and we are done
+	    break;
+
+            case '=':
+	       data++;
+	    // fall through!
+	    default:
+	       // For numeric codes, keep going until we find a non-digit that isn't a semicolon
+	       while((muscleInRange(*data, '0', '9'))||(*data == ';')) data++;
+	       if (*data) data++;  // and skip over the trailing letter too.
+	    break;
+         }
+	 s = s.Substring(0, idx) + s.Substring(data-s());  // remove the escape substring
+      }
+      else break;
+   }
 }
 
 

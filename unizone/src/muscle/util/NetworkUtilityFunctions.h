@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNetworkUtilityFunctions_h
 #define MuscleNetworkUtilityFunctions_h
@@ -21,6 +21,9 @@ BEGIN_NAMESPACE(muscle);
 
 /** Numeric representation of 127.0.0.1, for convenience */
 const uint32 localhostIP = ((((uint32)127)<<24)|((uint32)1));
+
+/** Numeric representation of 255.255.255.255, for convenience */
+const uint32 broadcastIP = ((uint32)-1);
 
 /** Given a hostname or IP address (e.g. "mycomputer.be.com" or "192.168.0.1"),
   * performs a hostname lookup and returns the 4-byte IP address that corresponds
@@ -274,6 +277,14 @@ status_t BindUDPSocket(int sock, uint16 port, uint16 * optRetPort = NULL, uint32
  *  @returns B_NO_ERROR on success, or B_ERROR on failure.
  */
 status_t SetUDPSocketTarget(int sock, uint32 remoteIP, uint16 remotePort);
+
+/** Enable/disable sending of broadcast packets on the given UDP socket.
+ *  @param sock UDP socket to enable or disable the sending of broadcast UDP packets with.
+ *              (Note that the default state of newly created UDP sockets is broadcast-disabled)
+ *  @param broadcast True if broadcasting should be enabled, false if broadcasting should be disabled.
+ *  @returns B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t SetUDPSocketBroadcastEnabled(int sock, bool broadcast);
 
 /** As above, except that the remote host is specified by hostname instead of IP address.
  *  Note that this function may take involve a DNS lookup, and so may take a significant

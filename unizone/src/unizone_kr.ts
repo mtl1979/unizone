@@ -2697,11 +2697,11 @@ Date: %4</source>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</source>
-        <translation>Unizone에 오신것을 환영합니다! 윈도우즈용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
+        <translation type='obsolete'>Unizone에 오신것을 환영합니다! 윈도우즈용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</source>
-        <translation>Unizone에 오신것을 환영합니다! 리눅스용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
+        <translation type='obsolete'>Unizone에 오신것을 환영합니다! 리눅스용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
     </message>
     <message>
         <source>Copyright (C) 2002-2003 Mika T. Lindqvist.</source>
@@ -3381,7 +3381,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation>Welcome to Unizone (Korean)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
+        <translation type='obsolete'>Welcome to Unizone (Korean)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
@@ -3509,7 +3509,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation>Welcome to Unizone (Korean)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</translation>
+        <translation type='obsolete'>Welcome to Unizone (Korean)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</translation>
     </message>
     <message>
         <source>wandering</source>
@@ -3610,6 +3610,18 @@ Date: %4</source>
     <message>
         <source>/hexencode - encode as hexadecimal data and display it</source>
         <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
+        <translation type='obsolete'>Unizone에 오신것을 환영합니다! %1용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)!</source>
+        <translation>Unizone에 오신것을 환영합니다!</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
+        <translation>%1용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
     </message>
 </context>
 </TS>

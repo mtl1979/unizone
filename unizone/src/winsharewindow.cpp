@@ -24,6 +24,7 @@
 #include "util/StringTokenizer.h"
 #include "regex/StringMatcher.h"
 #include "iogateway/PlainTextMessageIOGateway.h"
+#include "system/SystemInfo.h"
 #include "zlib/ZLibUtilityFunctions.h"
 #include "settings.h"
 #include "filethread.h"
@@ -222,17 +223,14 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 	if (fSettings->GetInfo())
 	{
-#if defined(WIN32)
-		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Windows!"));
-#elif defined(__LINUX__) || defined(linux)
-		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Linux!"));
-#elif defined(__FreeBSD__)
-		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for FreeBSD!"));
-#elif defined(__QNX__)
-		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for QNX Neutrino!"));
-#else
-#error "Oops! Damn developer forgot to implement this correctly!"
-#endif
+		const char * osname = GetOSName();
+		QString out = tr("Welcome to Unizone (English)!");
+		if (strcmp(osname, "Unknown") != 0)
+		{
+			out += " ";
+			out += tr("<b>THE</b> MUSCLE client for %1!").arg(osname);
+		}		
+		PrintSystem(out);
 		// <postmaster@raasu.org> 20030225
 		PrintSystem(tr("Copyright (C) %1 Mika T. Lindqvist.").arg(GetUnizoneYears()));
 		PrintSystem(tr("Original idea by Vitaliy Mikitchenko."));

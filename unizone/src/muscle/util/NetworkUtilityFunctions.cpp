@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include <stdio.h>
 
@@ -429,6 +429,14 @@ status_t SetSocketBlockingEnabled(int sock, bool blocking)
    return (fcntl(sock, F_SETFL, flags) == 0) ? B_NO_ERROR : B_ERROR;
 # endif
 #endif
+}
+
+status_t SetUDPSocketBroadcastEnabled(int sock, bool broadcast)
+{
+   if (sock < 0) return B_ERROR;
+
+   int val = (broadcast ? 1 : 0);
+   return (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (char *) &val, sizeof(val)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
 status_t SetSocketNaglesAlgorithmEnabled(int sock, bool enabled)

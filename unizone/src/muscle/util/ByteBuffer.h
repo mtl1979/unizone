@@ -1,4 +1,4 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleByteBuffer_h
 #define MuscleByteBuffer_h
@@ -69,6 +69,15 @@ public:
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory--there are no side effects if this occurs)
      */ 
    status_t SetBuffer(uint32 numBytes = 0, const uint8 * optBuffer = NULL);
+
+   /** This method is similar to SetBuffer(), except that instead of copying the bytes out of (optBuffer),
+     * we simply assume ownership of (optBuffer) for ourself.  This means that this ByteBuffer object will
+     * free the passed-in array-pointer later on, so you must be very careful to make sure that that is
+     * the right thing to do!  If you aren't sure, call SetBuffer() instead.
+     * @param numBytes Number of bytes that optBuffer points to.
+     * @param optBuffer Pointer to an array to adopt.  Note that we take ownership of this array!
+     */
+   void AdoptBuffer(uint32 numBytes, uint8 * optBuffer);
 
    /** Resets this ByteBuffer to its empty state, i.e. not holding any buffer.
      * @param releaseBuffer If true, we will immediately muscleFree() any buffer we are holding; otherwise we will keep the buffer around for potential later re-use.
