@@ -854,7 +854,7 @@ WUploadThread::DoUpload()
 				fCurrentOffset = 0;	// from the start
 				if (fCurrentRef()->FindInt64("secret:offset", (int64 *)&fCurrentOffset) == B_OK)
 				{
-					if (!fFile->At(fCurrentOffset)) // <postmaster@raasu.org> 20021026
+					if (!fFile->Seek(fCurrentOffset)) // <postmaster@raasu.org> 20021026
 					{
 						fFile->Seek(0);	// this can't fail :) (I hope)
 						fCurrentOffset = 0;
