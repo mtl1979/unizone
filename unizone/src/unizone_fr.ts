@@ -1707,11 +1707,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>250 kB</source>
-        <translation>250 ko</translation>
+        <translation type='obsolete'>250 ko</translation>
     </message>
     <message>
         <source>500 kB</source>
-        <translation>500 ko</translation>
+        <translation type='obsolete'>500 ko</translation>
     </message>
 </context>
 <context>

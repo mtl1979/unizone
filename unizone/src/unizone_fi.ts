@@ -1828,11 +1828,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>250 kB</source>
-        <translation>250 kt</translation>
+        <translation type='obsolete'>250 kt</translation>
     </message>
     <message>
         <source>500 kB</source>
-        <translation>500 kt</translation>
+        <translation type='obsolete'>500 kt</translation>
     </message>
 </context>
 <context>

@@ -2242,37 +2242,37 @@
                                         <item>
                                             <property>
                                                 <name>text</name>
-                                                <string>5 kB</string>
+                                                <string>4 kB</string>
                                             </property>
                                         </item>
                                         <item>
                                             <property>
                                                 <name>text</name>
-                                                <string>10 kB</string>
+                                                <string>8 kB</string>
                                             </property>
                                         </item>
                                         <item>
                                             <property>
                                                 <name>text</name>
-                                                <string>25 kB</string>
+                                                <string>16 kB</string>
                                             </property>
                                         </item>
                                         <item>
                                             <property>
                                                 <name>text</name>
-                                                <string>50 kB</string>
+                                                <string>32 kB</string>
                                             </property>
                                         </item>
                                         <item>
                                             <property>
                                                 <name>text</name>
-                                                <string>100 kB</string>
+                                                <string>64 kB</string>
                                             </property>
                                         </item>
                                         <item>
                                             <property>
                                                 <name>text</name>
-                                                <string>200 kB</string>
+                                                <string>128 kB</string>
                                             </property>
                                         </item>
                                         <item>

@@ -1698,15 +1698,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>200 kB</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>200 kB</translation>
     </message>
     <message>
         <source>250 kB</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>500 kB</source>
-        <translation type='unfinished'>500 kB</translation>
+        <translation type='obsolete'>500 kB</translation>
     </message>
 </context>
 <context>
