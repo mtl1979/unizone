@@ -70,7 +70,7 @@ private:
 	void ScanFiles(const QString & directory);
 
 	void SendReset();
-	void SendString(ScanEvent::Type, QString);
+	void SendString(ScanEvent::Type, const QString &);
 	void SendInt(ScanEvent::Type, int);
 
 	ScanProgress * fScanProgress;

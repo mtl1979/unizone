@@ -540,13 +540,9 @@ WFileThread::SendReset()
 }
 
 void
-WFileThread::SendString(ScanEvent::Type t, QString str)
+WFileThread::SendString(ScanEvent::Type t, const QString &str)
 {
-#ifdef WIN32
 	ScanEvent *se = new ScanEvent(t, str);
-#else
-	ScanEvent *se = new ScanEvent(t, str);
-#endif
 	if (se)
 #if (QT_VERSION < 0x030000)
 		QThread::postEvent(fScanProgress, se);
