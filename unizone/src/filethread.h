@@ -31,6 +31,7 @@ class NetClient;
 // directory for files to search
 class WFileThread : public QObject, public Thread
 {
+	Q_OBJECT
 public:
 	WFileThread(NetClient * net, QObject * owner, bool * optShutdownFlag = NULL);
 

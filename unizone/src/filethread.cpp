@@ -202,7 +202,7 @@ WFileThread::ScanFiles(const QString & directory)
 	if (dir->exists())	// double check
 	{
 #ifdef WIN32
-		QString s = QObject::tr("Reading directory...", "WFileThread");
+		QString s = tr("Reading directory...");
 		SendString(SET::ScanFile, s);
 #endif
 

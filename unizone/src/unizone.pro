@@ -8,6 +8,7 @@ SOURCES =			aboutdlg.cpp \
 				downloadthread.cpp \
 				filethread.cpp \
 				formatting.cpp \
+				listthread.cpp \
 				main.cpp \
 				menubar.cpp \
 				netclient.cpp \

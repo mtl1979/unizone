@@ -12,6 +12,7 @@ class WFileThread;
 
 class WListThread : public QObject, public Thread
 {
+	Q_OBJECT
 public:
 	WListThread(NetClient * net, WFileThread * ft, QObject * owner, bool * optShutdownFlag = NULL);
 

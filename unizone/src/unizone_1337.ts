@@ -974,7 +974,7 @@ Date: %4</translation>
     <message>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
-        <translation>Reading directory...</translation>
+        <translation type='obsolete'>Reading directory...</translation>
     </message>
     <message>
         <source>%1 %2</source>
@@ -1438,6 +1438,13 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>WFileThread</name>
+    <message>
+        <source>Reading directory...</source>
+        <translation>Reading directory...</translation>
+    </message>
+</context>
+<context>
     <name>WFormat</name>
     <comment>IP address prefix</comment>
     <message>
@@ -1595,6 +1602,13 @@ Date: %4</translation>
         <source>user #%1 (a.k.a</source>
         <comment>Ping sent to user...</comment>
         <translation>loser #%1 (a.k.a</translation>
+    </message>
+</context>
+<context>
+    <name>WListThread</name>
+    <message>
+        <source>Sharing %1 file(s).</source>
+        <translation>Warezing %1 file(s).</translation>
     </message>
 </context>
 <context>
@@ -2319,7 +2333,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>DSL-1M</translation>
     </message>
 </context>
 <context>

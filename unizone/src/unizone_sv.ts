@@ -407,75 +407,75 @@ Version %1</translation>
     <name>Connection</name>
     <message>
         <source>300 baud</source>
-        <translation type='unfinished'>300 baud</translation>
+        <translation>300 baud</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>28.8 kbps</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>33.6 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='unfinished'>57.6 kbps</translation>
+        <translation>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='unfinished'></translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='unfinished'>ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='unfinished'></translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type='unfinished'>DSL</translation>
+        <translation>DSL</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='unfinished'></translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='unfinished'>DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='unfinished'>Cable</translation>
+        <translation>Cable</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='unfinished'></translation>
+        <translation>DSL-1M</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='unfinished'></translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='unfinished'>T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='unfinished'></translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='unfinished'>OC-12</translation>
+        <translation>OC-12</translation>
     </message>
 </context>
 <context>
@@ -937,7 +937,7 @@ Date: %4</translation>
     <message>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
-        <translation>Reading directory...</translation>
+        <translation type='obsolete'>Reading directory...</translation>
     </message>
     <message>
         <source>%1 %2</source>
@@ -949,11 +949,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>TB</source>
-        <translation type='unfinished'></translation>
+        <translation>TB</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation type='unfinished'></translation>
+        <translation>TB/s</translation>
     </message>
 </context>
 <context>
@@ -1393,6 +1393,13 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>WFileThread</name>
+    <message>
+        <source>Reading directory...</source>
+        <translation type='unfinished'>Reading directory...</translation>
+    </message>
+</context>
+<context>
     <name>WFormat</name>
     <message>
         <source>&lt;font size="%1"&gt;</source>
@@ -1549,6 +1556,13 @@ Date: %4</translation>
     <message>
         <source>was removed from the private chat window.</source>
         <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
+    <name>WListThread</name>
+    <message>
+        <source>Sharing %1 file(s).</source>
+        <translation>%1 fil(er) deladen.</translation>
     </message>
 </context>
 <context>

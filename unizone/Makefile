@@ -90,8 +90,10 @@ MOC_SRCFILES = \
 	src/moc_combo.cpp \
 	src/moc_downloadimpl.cpp \
 	src/moc_downloadthread.cpp \
+	src/moc_filethread.cpp \
 	src/moc_formatting.cpp \
 	src/moc_htmlview.cpp \
+	src/moc_listthread.cpp \
 	src/moc_menubar.cpp \
 	src/moc_netclient.cpp \
 	src/moc_picviewer.cpp \
@@ -186,18 +188,6 @@ Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(MUSCLEMOC_OBJFILES) $
 	@echo Compiling $< ...
 	@$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-# moc_QMessageTransceiverThread.o : src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp
-#	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-# QMessageTransceiverThread.o : src/muscle/qtsupport/QMessageTransceiverThread.cpp
-#	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-# moc_QAcceptSocketsThread.o : src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp
-# 	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-# QAcceptSocketsThread.o : src/muscle/qtsupport/QAcceptSocketsThread.cpp
-#	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
 translations : src/Makefile
 	@$(MAKE) -C src -f Makefile
 
@@ -257,6 +247,14 @@ src/moc_downloadthread.cpp: src/downloadthread.h
 	@$(MOC) $< -o $@
 
 src/moc_uploadthread.cpp: src/uploadthread.h
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
+
+src/moc_filethread.cpp: src/filethread.h
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
+
+src/moc_listthread.cpp: src/listthread.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
 

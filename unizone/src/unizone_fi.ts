@@ -1074,7 +1074,7 @@ Päiväys: %4</translation>
     <message>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
-        <translation>Luetaan hakemistoa...</translation>
+        <translation type='obsolete'>Luetaan hakemistoa...</translation>
     </message>
     <message>
         <source>%1 %2</source>
@@ -1542,6 +1542,13 @@ Päiväys: %4</translation>
     </message>
 </context>
 <context>
+    <name>WFileThread</name>
+    <message>
+        <source>Reading directory...</source>
+        <translation>Luetaan hakemistoa...</translation>
+    </message>
+</context>
+<context>
     <name>WFormat</name>
     <comment>IP address prefix</comment>
     <message>
@@ -1770,6 +1777,13 @@ Päiväys: %4</translation>
     <message>
         <source>Connection timed out!</source>
         <translation type='obsolete'>Yhteyden aikakatkaisu!</translation>
+    </message>
+</context>
+<context>
+    <name>WListThread</name>
+    <message>
+        <source>Sharing %1 file(s).</source>
+        <translation>%1 tiedosto(a) jaossa.</translation>
     </message>
 </context>
 <context>
