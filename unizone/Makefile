@@ -18,14 +18,28 @@ channelsimpl.o moc_channel.o moc_channels.o \
 moc_channelimpl.o moc_channelsimpl.o moc_menubar.o moc_ulistview.o
 VPATH = src
 CXXFLAGS = -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
+TRANSLATIONS = unizone_de.qm unizone_en.qm unizone_es.qm unizone_fi.qm \
+unizone_fr.qm unizone_pt.qm unizone_ru.qm unizone_sv.qm 
 
-all : $(EXECUTABLES)
+all : $(EXECUTABLES) translations
 
-Unizone : $(OBJFILES)
+Unizone : $(OBJFILES) ./linux/muscle.a
 	$(CXX) $(LFLAGS) $(LIBS) -o $@ $(OBJFILES) ./linux/muscle.a
 
+linux/muscle.a : linux/Makefile
+	cd liinux
+	make
+
+%.ts : src/unizone.pro
+	lupdate $<
+ 
+translations : src/unizone.pro $(TRANSLATIONS)
+
+%.qm : %.ts 
+	lrelease $<
+
 # stuff for moc
-.PHONY=moc uic
+.PHONY=moc uic translations
 moc:
 	moc src/aboutdlg.h -o src/moc_aboutdlg.cpp
 	moc src/aboutdlgimpl.h -o src/moc_aboutdlgimpl.cpp
@@ -62,3 +76,4 @@ uic:
 	uic -impl channels.h src/channels.ui -o src/channels.cpp
 clean :
 	rm -f *.o $(EXECUTABLES)
+	rm -f src/*.qm
