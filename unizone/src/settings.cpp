@@ -821,6 +821,21 @@ WSettings::SetBasePort(int bp)
 }
 
 int
+WSettings::GetPortRange()
+{
+	int i = 100;
+	fSet()->FindInt32(PORTRANGE, (int32 *)&i);
+	return i;
+}
+
+void
+WSettings::SetPortRange(int pr)
+{
+	fSet()->RemoveName(PORTRANGE);
+	fSet()->AddInt32(PORTRANGE, (int32)pr);
+}
+
+int
 WSettings::GetMaxUploads()
 {
 	int i = Five;

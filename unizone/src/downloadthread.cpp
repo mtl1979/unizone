@@ -310,7 +310,7 @@ WDownloadThread::InitSession()
 		
 		status_t ret = B_OK;
 		uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
-		uint32 pEnd = pStart + 100;
+		uint32 pEnd = pStart + (uint32) gWin->fSettings->GetPortRange() - 1;
 
 		for (unsigned int i = pStart; i <= pEnd; i++)
 		{

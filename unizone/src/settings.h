@@ -55,6 +55,7 @@ using namespace muscle;
 #define FLASH				"flash"
 #define SHARING_ENABLED		"sharingenabled"
 #define BASEPORT			"baseport"
+#define PORTRANGE			"portrange"
 #define MAX_UPLOADS			"maxuploads"
 #define MAX_DOWNLOADS		"maxdownloads"
 #define PACKET_SIZE			"packetsize"
@@ -284,6 +285,9 @@ public:
 
 	int GetBasePort();
 	void SetBasePort(int bp);
+
+	int GetPortRange();
+	void SetPortRange(int pr);
 
 	enum
 	{

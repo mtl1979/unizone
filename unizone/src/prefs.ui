@@ -1732,7 +1732,7 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout44</cstring>
+                    <cstring>Layout42</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
@@ -1756,7 +1756,7 @@
                         <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>Layout43</cstring>
+                            <cstring>Layout41</cstring>
                         </property>
                         <vbox>
                             <property stdset="1">
@@ -1837,6 +1837,69 @@
                                         <property stdset="1">
                                             <name>name</name>
                                             <cstring>fBasePort</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget>
+                                <class>QLayoutWidget</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>Layout40</cstring>
+                                </property>
+                                <hbox>
+                                    <property stdset="1">
+                                        <name>margin</name>
+                                        <number>0</number>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>spacing</name>
+                                        <number>6</number>
+                                    </property>
+                                    <widget>
+                                        <class>QLabel</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>TextLabel1_7</cstring>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>minimumSize</name>
+                                            <size>
+                                                <width>75</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>text</name>
+                                            <string>Number of Ports:</string>
+                                        </property>
+                                    </widget>
+                                    <spacer>
+                                        <property>
+                                            <name>name</name>
+                                            <cstring>Spacer36</cstring>
+                                        </property>
+                                        <property>
+                                            <name>orientation</name>
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                        <property>
+                                            <name>sizeType</name>
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property>
+                                            <name>sizeHint</name>
+                                            <size>
+                                                <width>20</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                    <widget>
+                                        <class>QLineEdit</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>fPortRange</cstring>
                                         </property>
                                     </widget>
                                 </hbox>

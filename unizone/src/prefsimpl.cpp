@@ -251,6 +251,8 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fLogging->setChecked(gWin->fSettings->GetLogging());
 
 	fBasePort->setText( QString::number( gWin->fSettings->GetBasePort() ) );
+
+	fPortRange->setText ( QString::number( gWin->fSettings->GetPortRange() ) );
 }
 
 /*
@@ -390,7 +392,7 @@ WPrefs::OK()
 	gWin->fSettings->SetLogging(fLogging->isChecked());
 
 	bool o;
-	unsigned long bp;
+	unsigned long bp,pr;
 	bp = fBasePort->text().toULong(&o);
 	if (o)
 	{
@@ -399,6 +401,16 @@ WPrefs::OK()
 	else
 	{
 		gWin->fSettings->SetBasePort(7000);
+	}
+
+	pr = fPortRange->text().toULong(&o);
+	if (o)
+	{
+		gWin->fSettings->SetPortRange(pr);
+	}
+	else
+	{
+		gWin->fSettings->SetPortRange(100);
 	}
 	// ok
 	accept();
