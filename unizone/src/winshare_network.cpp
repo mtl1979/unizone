@@ -786,6 +786,13 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			ListResumes();
 		}
+		else if (CompareCommand(sendText, "/version"))
+		{
+			START_OUTPUT();
+			PrintSystem(tr("Unizone version: %1.%2.%3 build %4").arg(kMajor).arg(kMinor).arg(kPatch).arg(kBuild), true);
+			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING), true);
+			END_OUTPUT();
+		}
 		// add more commands BEFORE this one
 
 		else if (sendText.left(1) == "/")
@@ -1633,7 +1640,7 @@ WinShareWindow::ShowHelp()
 #ifdef WIN32
 							"\n\t\t\t\t/shell [command] - execute command"
 #endif
-							"\n\t\t\t\t/showpatterns - show blacklist, ignore and watch patterns"
+							"\n\t\t\t\t/showpatterns - show auto-private, blacklist, ignore and watch patterns"
 							"\n\t\t\t\t/showstats - show transfer statistics"
 							"\n\t\t\t\t/status [status] - set status string"
 							"\n\t\t\t\t/time [gmt] - show local (or GMT) time"
@@ -1642,6 +1649,7 @@ WinShareWindow::ShowHelp()
 							"\n\t\t\t\t/unignore [name] - remove name from ignore list"
 							"\n\t\t\t\t/uptime - show system uptime"
 							"\n\t\t\t\t/users - show number of users connected"
+							"\n\t\t\t\t/version - show client version strings"
 							"\n\t\t\t\t/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)"
 							"\n"
 							"\nAdmin Command Reference\n"
