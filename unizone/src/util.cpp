@@ -1437,7 +1437,7 @@ QString BINEncode(const QString &in)
 	QString out, part;
 	for (unsigned int x = 0; x < temp.length(); x++)
 	{
-		char c = temp.at(x);
+		unsigned char c = temp.at(x);
 		part = "";
 		for (int xx = 0; xx < 8; xx++)
 		{
