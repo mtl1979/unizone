@@ -1,6 +1,9 @@
 #ifdef WIN32
 #include <windows.h>
 #pragma warning(disable: 4786)
+#else
+#include <sys/types.h>
+#include <sys/stat.h>
 #endif
 
 #include <qfileinfo.h>
@@ -115,7 +118,17 @@ UFileInfo::InitModificationTime()
 		}
 
 #else
-		fModificationTime = time(NULL);
+		struct stat fst;
+		// assume UTF-8 encoded file system
+		int ret = stat((const char *) fFullName.utf8(), &fst);
+		if (ret == 0)
+		{
+			fModificationTime = fst.st_mtim.tv_sec;
+		}
+		else
+		{
+			fModificationTime = time(NULL);
+		}
 		return;
 #endif
 
