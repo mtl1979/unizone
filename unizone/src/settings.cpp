@@ -689,24 +689,6 @@ WSettings::GetFlash()
 	return i;
 }
 
-WStrList
-WSettings::GetSharedDirs()
-{
-	WStrList l;
-	const char * s;
-	for (int i = 0; (fSet->FindString(SHARED_DIRS, i, &s) == B_OK); i++)
-		l.insert(l.end(), QString::fromUtf8(s));
-	return l;
-}
-
-void
-WSettings::SetSharedDirs(WStrList & l)
-{
-	fSet->RemoveName(SHARED_DIRS);
-	for (WStrListIter it = l.begin(); it != l.end(); it++)
-		fSet->AddString(SHARED_DIRS, (const char *) (*it).utf8());
-}
-
 bool
 WSettings::GetSharingEnabled()
 {

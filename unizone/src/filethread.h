@@ -13,6 +13,9 @@
 using std::list;
 using std::iterator;
 
+#include "util/Queue.h"
+using muscle::Queue;
+
 #include "netclient.h"
 
 typedef list<QString> WStrList;
@@ -32,7 +35,7 @@ public:
 	QString getMIMEType();
 	QString getPath();
 	QString getName();
-	int64 getSize();
+	uint64 getSize();
 
 	bool isValid();
 
@@ -50,7 +53,6 @@ public:
 
 	virtual ~WFileThread() {}
 
-	void SetList(const WStrList & list) { fPaths = list; }
 	void SetFirewalled(bool f) { fFired = f; }
 	int GetNumFiles() const;
 
@@ -73,7 +75,7 @@ private:
 	NetClient * fNet;
 	QObject * fOwner;
 	bool * fShutdownFlag;
-	WStrList fPaths;
+	Queue<QString> fPaths;
 	WMsgList fFiles;
 	WStrList fScannedDirs;
 

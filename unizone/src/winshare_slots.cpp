@@ -307,7 +307,7 @@ WinShareWindow::Preferences()
 				if (QMessageBox::information(this, "File Scan", "Scan your shared files now?", "Yes", "No") == 0)
 				{
 					CancelShares();
-					fFileScanThread->SetList(fSettings->GetSharedDirs());
+					//fFileScanThread->SetList(fSettings->GetSharedDirs());
 					fFileScanThread->SetFirewalled(fSettings->GetFirewalled());
 					fFileScanThread->start();
 					if (!fAccept)	// accept thread not running yet?

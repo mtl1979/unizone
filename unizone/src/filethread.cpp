@@ -150,7 +150,7 @@ UFileInfo::getName()
 	return fInfo->fileName();
 }
 
-int64
+uint64
 UFileInfo::getSize()
 {
 	if (!fInfo)
@@ -181,6 +181,7 @@ WFileThread::run()
 	Lock(); // test
 	fFiles.clear();
 	fScannedDirs.clear();
+	fPaths.Clear();
 	Unlock(); // test
 
 #ifdef WIN32
@@ -188,8 +189,15 @@ WFileThread::run()
 #endif
 
 	/** 20020616: Re-coded the file parsing mechanism */
-	ParseDir("shared");
-
+	fPaths.AddTail("shared");
+	QString path;
+	while (!fPaths.IsEmpty())
+	{
+		Lock();
+		fPaths.RemoveHead(path);
+		Unlock();
+		ParseDir(path);
+	} 
 #ifdef WIN32
 	CoUninitialize();
 #endif
@@ -273,7 +281,10 @@ WFileThread::ParseDir(const QString & d)
 					// is this a directory?
 					if (info->isDir())
 					{
-						ParseDir(info->absFilePath());
+						// ParseDir(info->absFilePath());
+						Lock();
+						fPaths.AddTail(info->absFilePath());
+						Unlock();
 					}
 					else
 					{

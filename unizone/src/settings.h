@@ -50,7 +50,6 @@ using namespace muscle;
 
 #define AUTO_AWAY "autoaway"
 #define FLASH "flash"
-#define SHARED_DIRS "sharedirs"
 #define SHARING_ENABLED "sharingenabled"
 #define MAX_UPLOADS "maxuploads"
 #define MAX_DOWNLOADS "maxdownloads"
@@ -231,10 +230,6 @@ public:
 	void SetFlash(int);	// set flash flags
 	int GetFlash();
 	
-	// download dirs
-	WStrList GetSharedDirs();
-	void SetSharedDirs(WStrList & l);
-
 	// file sharing
 	bool GetSharingEnabled();
 	void SetSharingEnabled(bool b);

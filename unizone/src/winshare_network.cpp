@@ -1256,8 +1256,8 @@ WinShareWindow::HandleMessage(Message * msg)
 			if (fSettings->GetSharingEnabled())
 			{
 				PrintSystem(MSG_SCANSHARES);
-				PRINT("Setting list...\n");
-				fFileScanThread->SetList(fSettings->GetSharedDirs());
+				//PRINT("Setting list...\n");
+				//fFileScanThread->SetList(fSettings->GetSharedDirs());
 				fFileScanThread->SetFirewalled(fSettings->GetFirewalled());
 				PRINT("Starting...\n");
 				fFileScanThread->start();
