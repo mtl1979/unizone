@@ -208,7 +208,7 @@ WinShareWindow::TabPressed(const QString &str)
 	if (DoTabCompletion(str, result, NULL))
 	{
 		fInputText->setText(result);
-		fInputText->setCursorPosition(9999, 9999);
+		fInputText->gotoEnd();
 		PRINT("Returned true\n");
 	}
 	WString wResult = result;

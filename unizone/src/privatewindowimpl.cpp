@@ -341,7 +341,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 			if (we)
 			{
 				fChat->setText(we->GetText());
-				fChat->setCursorPosition(9999,9999);
+				fChat->gotoEnd();
 			}
 			return;
 		}

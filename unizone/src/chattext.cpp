@@ -73,7 +73,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 				QString line;
 				fBuffer->GetItemAt(fCurLine, line);
 				setText(line);
-				setCursorPosition(9999, 9999);
+				gotoEnd();
 			}
 		}
 		else
@@ -85,7 +85,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 				QString line;
 				fBuffer->GetItemAt(fCurLine, line);
 				setText(line);
-				setCursorPosition(9999, 9999);
+				gotoEnd();
 			}
 		}
 	}
@@ -104,7 +104,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 				QString line;
 				fBuffer->GetItemAt(fCurLine, line);
 				setText(line);
-				setCursorPosition(9999, 9999);
+				gotoEnd();
 			}
 			else
 			{
@@ -121,7 +121,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 				QString line;
 				fBuffer->GetItemAt(fCurLine, line);
 				setText(line);
-				setCursorPosition(9999, 9999);
+				gotoEnd();
 			}
 			else
 			{
@@ -146,3 +146,10 @@ WChatText::ClearBuffer()
 	fCurLine = 0;	// no more items
 }
 
+void
+WChatText::gotoEnd()
+{
+	int lastline = numLines() - 1;
+	int len = lineLength(lastline);
+	setCursorPosition(lastline, len);
+}

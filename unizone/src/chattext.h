@@ -18,6 +18,8 @@ public:
 
 	void ClearBuffer();
 
+	void gotoEnd();
+
 signals:
 	void TabPressed(const QString &str);
 
