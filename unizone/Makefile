@@ -32,8 +32,8 @@ CXXFLAGS = -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 
 all : depends $(EXECUTABLES) translations
 
-Unizone : $(OBJFILES) $(QT_OBJFILES) ./linux/muscle.a
-	$(CXX) $(LFLAGS) $(LIBS) -o $@ $(OBJFILES) $(QT_OBJFILES) ./linux/muscle.a
+Unizone : muscle.a $(OBJFILES) $(QT_OBJFILES)
+	$(CXX) $(LFLAGS) $(LIBS) -o $@ $(OBJFILES) $(QT_OBJFILES) muscle.a
 
 moc_QMessageTransceiverThread.o : src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -50,6 +50,9 @@ QAcceptSocketsThread.o : src/muscle/qtsupport/QAcceptSocketsThread.cpp
 linux/muscle.a : linux/Makefile
 	$(MAKE) -C linux -f Makefile
 
+muscle.a : linux/muscle.a
+	mv -f linux/muscle.a muscle.a
+
 translations : src/Makefile
 	$(MAKE) -C src -f Makefile
 
@@ -58,6 +61,7 @@ depends: .depends
 .depends: .depends1 .depends2
 	cat .depends1 > .depends
 	cat .depends2 >> .depends
+	rm -f linux/muscle.a
  
 .depends1: $(SRCFILES)
 	$(CXX) $(CXXFLAGS) -MM $(SRCFILES) > .depends1
@@ -170,7 +174,7 @@ src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
 	uic -impl scanprogress.h src/scanprogress.ui -o src/scanprogress.cpp
 
 clean :
-	rm -f *.o $(EXECUTABLES)
+	rm -f *.o *.a $(EXECUTABLES)
 	rm -f src/moc_*.cpp
 	rm -f src/aboutdlg.h src/aboutdlg.cpp
 	rm -f src/channel.h src/channel.cpp
