@@ -4,6 +4,41 @@
 #include "tokenizer.h"
 #include "settings.h"
 
+#include <qstringlist.h>
+
+void RemoveFromList(QString &slist, const QString &entry)
+{
+	if (slist == entry)
+	{
+		slist = "";
+		return;
+	}
+
+	QStringList list = QStringList::split(",", slist);
+	QStringList::Iterator iter = list.begin();
+	while (iter != list.end())
+	{
+		if ((*iter).lower() == entry.lower())
+		{
+			list.remove(iter);
+			break;
+		}
+		iter++;
+	}
+	slist = list.join(",");
+}
+
+void AddToList(QString &slist, const QString &entry)
+{
+	if (slist.isEmpty())
+		slist = entry;
+	else
+	{
+		slist += ",";
+		slist += entry;
+	}
+}
+
 bool
 WinShareWindow::IsIgnoredIP(const QString & ip)
 {
@@ -29,13 +64,8 @@ WinShareWindow::AddIPIgnore(const QString & ip)
 
 	// Append to ignore list
 	//
-	if (fIgnoreIP.isEmpty())
-		fIgnoreIP = ip;
-	else
-	{
-		fIgnoreIP += ",";
-		fIgnoreIP += ip;
-	}
+
+	AddToList(fIgnoreIP, ip);
 
 #ifdef DEBUG2
 	wIP = fIgnoreIP;
@@ -64,44 +94,8 @@ WinShareWindow::RemoveIPIgnore(const QString & ip)
 
 		return true;
 	}
-	// First in list?
 
-	int pos = fIgnoreIP.startsWith(ip + ",") ? 0 : -1 ; 
-
-	// Second or later in the list?
-
-	if (pos == -1)
-		pos = fIgnoreIP.find("," + ip + ",", 0, false); 
-	
-	// You need to add 1 to the length to strip extra comma too
-	
-	int len = ip.length() + 1;
-	
-	// last in the list?
-
-	if (pos == -1)
-	{
-		if (fIgnoreIP.right(len) == ("," + ip))
-		{
-			// Find last occurance (there is no endsWith in QString class)
-			pos = fIgnoreIP.findRev("," + ip, -1, false);
-		}
-	}
-
-	if (pos == -1)	
-	{
-		// Not ignored!
-		return false;
-	}
-
-	if (pos == 0)
-	{
-		fIgnoreIP = fIgnoreIP.mid(len);
-	}
-	else
-	{
-		fIgnoreIP = fIgnoreIP.left(pos)+fIgnoreIP.mid(len+pos);
-	}
+	RemoveFromList(fIgnoreIP, ip);
 
 #ifdef DEBUG2
 	wIP = fIgnoreIP;
@@ -330,15 +324,8 @@ WinShareWindow::BlackList(const QString & user)
 	if (IsBlackListed(user))
 		return false;
 
-	// Append to blacklist
-	//
-	if (fBlackList.isEmpty())
-		fBlackList = user;
-	else
-	{
-		fBlackList += ",";
-		fBlackList += user;
-	}
+	AddToList(fBlackList, user);
+
 	return true;
 }
 
@@ -355,15 +342,8 @@ WinShareWindow::WhiteList(const QString & user)
 	if (IsWhiteListed(user))
 		return false;
 
-	// Append to whitelist
-	//
-	if (fWhiteList.isEmpty())
-		fWhiteList = user;
-	else
-	{
-		fWhiteList += ",";
-		fWhiteList += user;
-	}
+	AddToList(fWhiteList, user);
+
 	return true;
 }
 
@@ -380,15 +360,8 @@ WinShareWindow::FilterList(const QString & pattern)
 	if (IsFilterListed(pattern))
 		return false;
 
-	// Append to filter list
-	//
-	if (fFilterList.isEmpty())
-		fFilterList = pattern;
-	else
-	{
-		fFilterList += ",";
-		fFilterList += pattern;
-	}
+	AddToList(fFilterList, pattern);
+
 	return true;
 }
 
@@ -405,52 +378,12 @@ WinShareWindow::UnBlackList(const QString & user)
 
 	// Is really blacklisted?
 	//
-	if (fBlackList == user) // First and only?
-	{
-		fBlackList = "";
-		return true;
-	}
 
-	// First in list?
-
-	int pos = fBlackList.lower().startsWith(user.lower() + ",") ? 0 : -1 ; 
-
-	// Second or later in the list?
-
-	if (pos == -1)
-		pos = fBlackList.find("," + user + ",", 0, false); 
-	
-	// You need to add 1 to the length to strip extra comma too
-	
-	int len = user.length() + 1;
-	
-	// last in the list?
-
-	if (pos == -1)
-	{
-		if (fBlackList.lower().right(len) == ("," + user.lower()))
-		{
-			// Find last occurance (there is no endsWith in QString class)
-
-			pos = fBlackList.findRev("," + user, -1, false);
-		}
-	}
-
-	if (pos == -1)	
-	{
-		// Not blacklisted!
-
+	if (!IsBlackListed(user))
 		return false;
-	}
 
-	if (pos == 0)
-	{
-		fBlackList = fBlackList.mid(len);
-	}
-	else
-	{
-		fBlackList = fBlackList.left(pos)+fBlackList.mid(len+pos);
-	}
+	RemoveFromList(fBlackList, user);
+
 	return true;
 }
 
@@ -464,52 +397,12 @@ WinShareWindow::UnWhiteList(const QString & user)
 
 	// Is really whitelisted?
 	//
-	if (fWhiteList == user) // First and only?
-	{
-		fWhiteList = "";
-		return true;
-	}
 
-	// First in list?
-
-	int pos = fWhiteList.lower().startsWith(user.lower() + ",") ? 0 : -1 ; 
-
-	// Second or later in the list?
-
-	if (pos == -1)
-		pos = fWhiteList.find("," + user + ",", 0, false); 
-	
-	// You need to add 1 to the length to strip extra comma too
-	
-	int len = user.length() + 1;
-	
-	// last in the list?
-
-	if (pos == -1)
-	{
-		if (fWhiteList.lower().right(len) == ("," + user.lower()))
-		{
-			// Find last occurance (there is no endsWith in QString class)
-
-			pos = fWhiteList.findRev("," + user, -1, false);
-		}
-	}
-
-	if (pos == -1)	
-	{
-		// Not whitelisted!
-
+	if (!IsWhiteListed(user))
 		return false;
-	}
 
-	if (pos == 0)
-	{
-		fWhiteList = fWhiteList.mid(len);
-	}
-	else
-	{
-		fWhiteList = fWhiteList.left(pos)+fWhiteList.mid(len+pos);
-	}
+	RemoveFromList(fWhiteList, user);
+
 	return true;
 }
 
@@ -523,52 +416,12 @@ WinShareWindow::UnFilterList(const QString & pattern)
 
 	// Is really in filter list?
 	//
-	if (fFilterList == pattern) // First and only?
-	{
-		fFilterList = "";
-		return true;
-	}
 
-	// First in list?
-
-	int pos = fFilterList.lower().startsWith(pattern.lower() + ",") ? 0 : -1 ; 
-
-	// Second or later in the list?
-
-	if (pos == -1)
-		pos = fFilterList.find("," + pattern + ",", 0, false); 
-	
-	// You need to add 1 to the length to strip extra comma too
-	
-	int len = pattern.length() + 1;
-	
-	// last in the list?
-
-	if (pos == -1)
-	{
-		if (fFilterList.lower().right(len) == ("," + pattern.lower()))
-		{
-			// Find last occurance (there is no endsWith in QString class)
-
-			pos = fFilterList.findRev("," + pattern, -1, false);
-		}
-	}
-
-	if (pos == -1)	
-	{
-		// Not in filter list!
-
+	if (!IsFilterListed(pattern))
 		return false;
-	}
 
-	if (pos == 0)
-	{
-		fFilterList = fFilterList.mid(len);
-	}
-	else
-	{
-		fFilterList = fFilterList.left(pos)+fFilterList.mid(len+pos);
-	}
+	RemoveFromList(fFilterList, pattern);
+
 	return true;
 }
 
@@ -588,15 +441,8 @@ WinShareWindow::Ignore(const QString & user)
 	if (IsIgnored(user, true, false))
 		return false;
 
-	// Append to ignore list
-	//
-	if (fIgnore == "")
-		fIgnore = user;
-	else
-	{
-		fIgnore += ",";
-		fIgnore += user;
-	}
+	AddToList(fIgnore, user);
+
 	return true;
 }
 
@@ -614,52 +460,12 @@ WinShareWindow::UnIgnore(const QString & user)
 
 	// Is really ignored?
 	//
-	if (fIgnore == user) // First and only?
-	{
-		fIgnore = "";
-		return true;
-	}
 
-	// First in list?
-
-	int pos = fIgnore.lower().startsWith(user.lower() + ",") ? 0 : -1 ; 
-
-	// Second or later in the list?
-
-	if (pos == -1)
-		pos = fIgnore.find("," + user + ",", 0, false); 
-	
-	// You need to add 1 to the length to strip extra comma too
-	
-	int len = user.length() + 1;
-	
-	// last in the list?
-
-	if (pos == -1)
-	{
-		if (fIgnore.lower().right(len) == ("," + user.lower()))
-		{
-			// Find last occurance (there is no endsWith in QString class)
-
-			pos = fIgnore.findRev("," + user, -1, false);
-		}
-	}
-
-	if (pos == -1)	
-	{
-		// Not ignored!
-
+	if (!IsIgnored(user, true, false))
 		return false;
-	}
 
-	if (pos == 0)
-	{
-		fIgnore = fIgnore.mid(len);
-	}
-	else
-	{
-		fIgnore = fIgnore.left(pos)+fIgnore.mid(len+pos);
-	}
+	RemoveFromList(fIgnore, user);
+
 	return true;
 }
 
@@ -691,15 +497,8 @@ WinShareWindow::AutoPrivate(const QString & user)
 	if (IsAutoPrivate(user))
 		return false;
 
-	// Append to auto-private list
-	//
-	if (fAutoPriv.isEmpty())
-		fAutoPriv = user;
-	else
-	{
-		fAutoPriv += ",";
-		fAutoPriv += user;
-	}
+	AddToList(fAutoPriv, user);
+
 	return true;
 }
 
@@ -716,52 +515,11 @@ WinShareWindow::UnAutoPrivate(const QString & user)
 
 	// Is really in auto-private list?
 	//
-	if (fAutoPriv == user) // First and only?
-	{
-		fAutoPriv = "";
-		return true;
-	}
 
-	// First in list?
-
-	int pos = fAutoPriv.lower().startsWith(user.lower() + ",") ? 0 : -1 ; 
-
-	// Second or later in the list?
-
-	if (pos == -1)
-		pos = fAutoPriv.find("," + user + ",", 0, false); 
-	
-	// You need to add 1 to the length to strip extra comma too
-	
-	int len = user.length() + 1;
-	
-	// last in the list?
-
-	if (pos == -1)
-	{
-		if (fAutoPriv.lower().right(len) == ("," + user.lower()))
-		{
-			// Find last occurance (there is no endsWith in QString class)
-
-			pos = fAutoPriv.findRev("," + user, -1, false);
-		}
-	}
-
-	if (pos == -1)	
-	{
-		// Not in auto-private list!
-
+	if (!IsAutoPrivate(user))
 		return false;
-	}
 
-	if (pos == 0)
-	{
-		fAutoPriv = fAutoPriv.mid(len);
-	}
-	else
-	{
-		fAutoPriv = fAutoPriv.left(pos)+fAutoPriv.mid(len+pos);
-	}
+	RemoveFromList(fAutoPriv, user);
+
 	return true;
-
 }
