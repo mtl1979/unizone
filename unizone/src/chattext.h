@@ -19,7 +19,7 @@ public:
 	void ClearBuffer();
 
 signals:
-	void TabPressed(QString str);
+	void TabPressed(const QString &str);
 
 protected:
 	virtual void keyPressEvent(QKeyEvent * event);

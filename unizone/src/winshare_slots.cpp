@@ -64,7 +64,7 @@ WinShareWindow::AboutWinShare()
 
 // user slots
 void
-WinShareWindow::UserConnected(QString sid)
+WinShareWindow::UserConnected(const QString &sid)
 {
 	if (fSettings->GetUserEvents())
 	{
@@ -75,7 +75,7 @@ WinShareWindow::UserConnected(QString sid)
 }
 
 void
-WinShareWindow::UserDisconnected(QString sid, QString name)
+WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 {
 	if (fSettings->GetUserEvents())
 	{
@@ -96,7 +96,7 @@ WinShareWindow::UserDisconnected(QString sid, QString name)
 }
 
 void
-WinShareWindow::UserNameChanged(QString sid, QString old, QString newname)
+WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QString &newname)
 {
 	if (fSettings->GetUserEvents())
 	{
@@ -163,7 +163,7 @@ WinShareWindow::DisconnectedFromServer()
 }
 
 void
-WinShareWindow::UserStatusChanged(QString id, QString n, QString s)
+WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QString &s)
 {
 	if (fSettings->GetUserEvents())
 	{
@@ -171,20 +171,21 @@ WinShareWindow::UserStatusChanged(QString id, QString n, QString s)
 
 		// <postmaster@raasu.org> 20020929,20030211,20030214
 
-		TranslateStatus(s);
+		QString status = s;
+		TranslateStatus(status);
 
 		if ((n == "?") || (n.isEmpty())) // Invalid user name?
 		{
 			// <postmaster@raasu.org> 20030214
 			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
-				WFormat::UserStatusChanged2().arg(id).arg(FixStringStr(s)) 
+				WFormat::UserStatusChanged2().arg(id).arg(FixStringStr(status)) 
 				);	
 		}
 		else
 		{
 			// <postmaster@raasu.org> 20021112
 			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
-				WFormat::UserStatusChanged().arg(id).arg(FixStringStr(n)).arg(FixStringStr(s)).arg(WColors::RemoteName) 
+				WFormat::UserStatusChanged().arg(id).arg(FixStringStr(n)).arg(FixStringStr(status)).arg(WColors::RemoteName) 
 				); 
 		}
 		PrintText(system);
@@ -192,7 +193,7 @@ WinShareWindow::UserStatusChanged(QString id, QString n, QString s)
 }
 
 void
-WinShareWindow::TabPressed(QString str)
+WinShareWindow::TabPressed(const QString &str)
 {
 	PRINT("Wow, tab received\n");
 	QString result;
@@ -464,7 +465,7 @@ WinShareWindow::DownloadWindowClosed()
  */
 
 void
-WinShareWindow::FileFailed(QString file, QString lfile, QString user)
+WinShareWindow::FileFailed(const QString &file, const QString &lfile, const QString &user)
 {
 	FileInterrupted(file, lfile, user);
 
@@ -479,7 +480,7 @@ WinShareWindow::FileFailed(QString file, QString lfile, QString user)
 //
 
 void
-WinShareWindow::FileInterrupted(QString file, QString lfile, QString user)
+WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const QString &user)
 {
 	WResumeInfo wri;
 	wri.fRemoteName = file;

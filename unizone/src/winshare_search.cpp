@@ -10,7 +10,7 @@
 #include "netclient.h"
 
 void
-WinShareWindow::AddFile(const QString sid, const QString filename, bool firewalled, MessageRef file)
+WinShareWindow::AddFile(const QString &sid, const QString &filename, bool firewalled, MessageRef file)
 {
 	PRINT("ADDFILE called\n");
 	if (firewalled && fSettings->GetFirewalled())
@@ -86,7 +86,7 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 }
 
 void
-WinShareWindow::RemoveFile(const QString sid, const QString filename)
+WinShareWindow::RemoveFile(const QString &sid, const QString &filename)
 {
 	fSearchLock.lock();
 	PRINT("WSearch::RemoveFile\n");

@@ -2704,7 +2704,7 @@ WinShareWindow::GetUserID() const
 }
 
 void
-WinShareWindow::UserHostName(QString sid, QString host)
+WinShareWindow::UserHostName(const QString &sid, const QString &host)
 {
 	if (fSettings->GetIPAddresses())
 	{

@@ -227,15 +227,15 @@ public slots:
 	void AboutWinShare();
 
 	// user connection/disconnection messages
-	void UserNameChanged(QString, QString, QString);
-	void UserConnected(QString);
-	void UserDisconnected(QString, QString);
+	void UserNameChanged(const QString &, const QString &, const QString &);
+	void UserConnected(const QString &);
+	void UserDisconnected(const QString &, const QString &);
 	void DisconnectedFromServer();
-	void UserStatusChanged(QString, QString, QString);
-	void UserHostName(QString, QString);
+	void UserStatusChanged(const QString &, const QString &, const QString &);
+	void UserHostName(const QString &, const QString &);
 
 	// tab completion signal
-	void TabPressed(QString str);
+	void TabPressed(const QString &);
 
 	// URL's
 	void URLClicked(const QString &);
@@ -258,16 +258,16 @@ public slots:
 	void AboutToQuit();
 	void DownloadWindowClosed();
 
-	void FileFailed(QString, QString, QString); // from WDownload
-	void FileInterrupted(QString, QString, QString);
+	void FileFailed(const QString &, const QString &, const QString &); // from WDownload
+	void FileInterrupted(const QString &, const QString &, const QString &);
 
 	// Channels
-	void ChannelAdded(const QString, const QString, int64);
-	void ChannelAdmins(const QString, const QString, const QString);
-	void ChannelTopic(const QString, const QString, const QString);
-	void ChannelPublic(const QString, const QString, bool);
-	void ChannelOwner(const QString, const QString, const QString);
-	void UserIDChanged(QString, QString);
+	void ChannelAdded(const QString &, const QString &, int64);
+	void ChannelAdmins(const QString &, const QString &, const QString &);
+	void ChannelTopic(const QString &, const QString &, const QString &);
+	void ChannelPublic(const QString &, const QString &, bool);
+	void ChannelOwner(const QString &, const QString &, const QString &);
+	void UserIDChanged(const QString &, const QString &);
 
 protected:
 	virtual void customEvent(QCustomEvent * event);
@@ -282,8 +282,8 @@ private slots:
 
 	// Search
 
-	void AddFile(const QString, const QString, bool, MessageRef);
-	void RemoveFile(const QString, const QString);
+	void AddFile(const QString &, const QString &, bool, MessageRef);
+	void RemoveFile(const QString &, const QString &);
 
 	// Channels
 
@@ -563,8 +563,8 @@ private:
 
 signals:
 	void UpdatePrivateUserLists();
-	void ChannelAdminsChanged(const QString, const QString);
-	void NewChannelText(const QString, const QString, const QString);
+	void ChannelAdminsChanged(const QString &, const QString &);
+	void NewChannelText(const QString &, const QString &, const QString &);
 };
 
 

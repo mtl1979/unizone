@@ -99,8 +99,8 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
-	connect(gWin->fNetClient, SIGNAL(UserDisconnected(QString, QString)), this,
-		SLOT(UserDisconnected(QString, QString)));
+	connect(gWin->fNetClient, SIGNAL(UserDisconnected(const QString &, const QString &)), 
+			this, SLOT(UserDisconnected(const QString &, const QString &)));
 	
 	
 	setCaption(tr("File Transfers"));
@@ -1567,7 +1567,7 @@ WDownload::UpdateLoad()
 *
 */
 void
-WDownload::UserDisconnected(QString sid, QString name)
+WDownload::UserDisconnected(const QString &sid, const QString &name)
 {
 	if (gWin->fSettings->GetBlockDisconnected())
 	{

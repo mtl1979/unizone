@@ -87,12 +87,14 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	connect(fPrivateUsers, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 			this, SLOT(RightButtonClicked(QListViewItem *, const QPoint &, int)));
 
-	connect(fNet, SIGNAL(UserDisconnected(QString, QString)), this,
-			SLOT(UserDisconnected(QString, QString)));
-	connect(fNet, SIGNAL(DisconnectedFromServer()), this,
-			SLOT(DisconnectedFromServer()));
-	connect(fText, SIGNAL(URLClicked(const QString &)), this, SLOT(URLClicked(const QString &)));
-	connect(fChat, SIGNAL(TabPressed(QString)), this, SLOT(TabPressed(QString)));
+	connect(fNet, SIGNAL(UserDisconnected(const QString &, const QString &)), 
+			this, SLOT(UserDisconnected(const QString &, const QString &)));
+	connect(fNet, SIGNAL(DisconnectedFromServer()), 
+			this, SLOT(DisconnectedFromServer()));
+	connect(fText, SIGNAL(URLClicked(const QString &)), 
+			this, SLOT(URLClicked(const QString &)));
+	connect(fChat, SIGNAL(TabPressed(const QString &)), 
+			this, SLOT(TabPressed(const QString &)));
 #if (QT_VERSION < 0x030100)
 	connect(fText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
 #endif
@@ -143,7 +145,7 @@ WPrivateWindow::DisconnectedFromServer()
 }
 
 void
-WPrivateWindow::UserDisconnected(QString sid, QString name)
+WPrivateWindow::UserDisconnected(const QString &sid, const QString &name)
 {
 	WUserIter iter = fUsers.find(sid);
 	if (iter != fUsers.end())
@@ -310,7 +312,7 @@ WPrivateWindow::RemUser(WUserRef & user)
 }
 
 void
-WPrivateWindow::TabPressed(QString str)
+WPrivateWindow::TabPressed(const QString &str)
 {
 	PRINT("WPrivateWindow::Tab\n");
 	WPWEvent *e = new WPWEvent(WPWEvent::TabComplete, fChat->text());

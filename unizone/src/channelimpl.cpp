@@ -100,23 +100,28 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fSplitChat->setSizes(splitList3);
 	
 
-	connect(fText, SIGNAL(URLClicked(const QString &)), this, SLOT(URLClicked(const QString &)));
-	connect(fChat, SIGNAL(TabPressed(QString)), this, SLOT(TabPressed(QString)));
+	connect(fText, SIGNAL(URLClicked(const QString &)), 
+			this, SLOT(URLClicked(const QString &)));
+	connect(fChat, SIGNAL(TabPressed(const QString &)), 
+			this, SLOT(TabPressed(const QString &)));
 #if (QT_VERSION < 0x030100)
-	connect(fText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
+	connect(fText, SIGNAL(GotShown(const QString &)), 
+			this, SLOT(GotShown(const QString &)));
 #endif
-	connect(fTopicEdit, SIGNAL(returnPressed()), this, SLOT(UpdateTopic()));
+	connect(fTopicEdit, SIGNAL(returnPressed()), 
+			this, SLOT(UpdateTopic()));
 
 	connect(
-		parent, SIGNAL(ChannelAdminsChanged(const QString, const QString)),
-		this, SLOT(ChannelAdminsChanged(const QString, const QString))
+		parent, SIGNAL(ChannelAdminsChanged(const QString &, const QString &)),
+		this, SLOT(ChannelAdminsChanged(const QString &, const QString &))
 		);
 
-	connect(gWin, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
-	connect(gWin, SIGNAL(NewChannelText(const QString, const QString, const QString)),
-			this, SLOT(NewChannelText(const QString, const QString, const QString)));
-	connect(fNet, SIGNAL(UserDisconnected(QString, QString)), this,
-			SLOT(UserDisconnected(QString, QString)));
+	connect(gWin, SIGNAL(UpdatePrivateUserLists()), 
+			this, SLOT(UpdateUserList()));
+	connect(gWin, SIGNAL(NewChannelText(const QString &, const QString &, const QString &)),
+			this, SLOT(NewChannelText(const QString &, const QString &, const QString &)));
+	connect(fNet, SIGNAL(UserDisconnected(const QString &, const QString &)), 
+			this, SLOT(UserDisconnected(const QString &, const QString &)));
 
 	UpdateNode();
 }
@@ -238,7 +243,7 @@ Channel::Kick(QString user)
 }
 
 void
-Channel::TabPressed(QString str)
+Channel::TabPressed(const QString &str)
 {
 	PRINT("Channel::Tab\n");
 	WPWEvent *e = new WPWEvent(WPWEvent::TabComplete, fChat->text());
@@ -663,7 +668,7 @@ Channel::PrintError(const QString & error)
 }
 
 void
-Channel::NewChannelText(const QString channel, const QString user, const QString text)
+Channel::NewChannelText(const QString &channel, const QString &user, const QString &text)
 {
 	if (channel != fName)
 		return;
@@ -782,7 +787,7 @@ Channel::UpdateNode()
 }
 
 void
-Channel::ChannelAdminsChanged(const QString channel, const QString admins)
+Channel::ChannelAdminsChanged(const QString &channel, const QString &admins)
 {
 	if ((channel == fName) && (fStrAdmins != admins))
 	{
@@ -792,7 +797,7 @@ Channel::ChannelAdminsChanged(const QString channel, const QString admins)
 }
 
 void
-Channel::UserDisconnected(QString sid, QString name)
+Channel::UserDisconnected(const QString &sid, const QString &name)
 {
 	WUserIter iter = fUsers.find(sid);
 	if (iter != fUsers.end())

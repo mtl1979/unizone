@@ -257,12 +257,12 @@ private slots:
 	void ULRightClicked(QListViewItem *, const QPoint &, int);
 
 public slots:
-	void UserDisconnected(QString, QString);
+	void UserDisconnected(const QString &, const QString &);
 
 signals:
 	// Parameter 1 = Remote File Name, Parameter 2 = Local File Name, Parameter 3 = User Name
-	void FileFailed(QString, QString, QString); 
-	void FileInterrupted(QString, QString, QString);
+	void FileFailed(const QString &, const QString &, const QString &); 
+	void FileInterrupted(const QString &, const QString &, const QString &);
 	// the download window has been closed
 	void Closed();		
 

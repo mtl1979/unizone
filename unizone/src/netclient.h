@@ -139,22 +139,22 @@ public:
 	status_t WaitForInternalThreadToExit();
 
 signals:
-	void UserDisconnected(QString sid, QString name);
-	void UserConnected(QString id);
-	void UserNameChanged(QString id, QString oldname, QString newname);
+	void UserDisconnected(const QString &, const QString &);
+	void UserConnected(const QString &);
+	void UserNameChanged(const QString &, const QString &, const QString &);
 	void DisconnectedFromServer();
-	void UserStatusChanged(QString id, QString name, QString status);
-	void UserIDChanged(QString oldid, QString newid);
-	void UserHostName(QString sid, QString hostname);
+	void UserStatusChanged(const QString &, const QString &, const QString &);
+	void UserIDChanged(const QString &, const QString &);
+	void UserHostName(const QString &, const QString &);
 	
-	void RemoveFile(const QString, const QString);
-	void AddFile(const QString, const QString, bool, MessageRef);
+	void RemoveFile(const QString &, const QString &);
+	void AddFile(const QString &, const QString &, bool, MessageRef);
 	
-	void ChannelTopic(const QString, const QString, const QString);
-	void ChannelAdmins(const QString, const QString, const QString);
-	void ChannelAdded(const QString, const QString, int64);
-	void ChannelPublic(const QString, const QString, bool);
-	void ChannelOwner(const QString, const QString, const QString);
+	void ChannelTopic(const QString &, const QString &, const QString &);
+	void ChannelAdmins(const QString &, const QString &, const QString &);
+	void ChannelAdded(const QString &, const QString &, int64);
+	void ChannelPublic(const QString &, const QString &, bool);
+	void ChannelOwner(const QString &, const QString &, const QString &);
 	
 private:
 	uint32 fPort, fServerPort;

@@ -106,20 +106,22 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	resize(800, 600);
 	InitGUI();
 
-	connect(fNetClient, SIGNAL(UserDisconnected(QString, QString)), this,
-			SLOT(UserDisconnected(QString, QString)));
-	connect(fNetClient, SIGNAL(UserConnected(QString)), this,
-			SLOT(UserConnected(QString)));
-	connect(fNetClient, SIGNAL(UserNameChanged(QString, QString, QString)), this,
-			SLOT(UserNameChanged(QString, QString, QString)));
-	connect(fNetClient, SIGNAL(DisconnectedFromServer()), this,
-			SLOT(DisconnectedFromServer()));
-	connect(fNetClient, SIGNAL(UserStatusChanged(QString, QString, QString)), this,
-			SLOT(UserStatusChanged(QString, QString, QString)));
-	connect(fNetClient, SIGNAL(UserHostName(QString, QString)), this,
-			SLOT(UserHostName(QString, QString)));
-	connect(fInputText, SIGNAL(TabPressed(QString)), this, SLOT(TabPressed(QString)));
-	connect(fChatText, SIGNAL(URLClicked(const QString &)), this, SLOT(URLClicked(const QString &)));
+	connect(fNetClient, SIGNAL(UserDisconnected(const QString &, const QString &)), 
+			this, SLOT(UserDisconnected(const QString &, const QString &)));
+	connect(fNetClient, SIGNAL(UserConnected(const QString &)), 
+			this, SLOT(UserConnected(const QString &)));
+	connect(fNetClient, SIGNAL(UserNameChanged(const QString &, const QString &, const QString &)), 
+			this, SLOT(UserNameChanged(const QString &, const QString &, const QString &)));
+	connect(fNetClient, SIGNAL(DisconnectedFromServer()), 
+			this, SLOT(DisconnectedFromServer()));
+	connect(fNetClient, SIGNAL(UserStatusChanged(const QString &, const QString &, const QString &)), 
+			this, SLOT(UserStatusChanged(const QString &, const QString &, const QString &)));
+	connect(fNetClient, SIGNAL(UserHostName(const QString &, const QString &)), 
+			this, SLOT(UserHostName(const QString &, const QString &)));
+	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
+			this, SLOT(TabPressed(const QString &)));
+	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
+			this, SLOT(URLClicked(const QString &)));
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(AboutToQuit()));
 #if (QT_VERSION < 0x030100)
 	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
@@ -946,10 +948,10 @@ WinShareWindow::InitGUI()
 
 	// connect up slots
 
-	connect(fNetClient, SIGNAL(AddFile(const QString, const QString, bool, MessageRef)), this,
-			SLOT(AddFile(const QString, const QString, bool, MessageRef)));
-	connect(fNetClient, SIGNAL(RemoveFile(const QString, const QString)), this, 
-			SLOT(RemoveFile(const QString, const QString)));
+	connect(fNetClient, SIGNAL(AddFile(const QString &, const QString &, bool, MessageRef)), 
+			this, SLOT(AddFile(const QString &, const QString &, bool, MessageRef)));
+	connect(fNetClient, SIGNAL(RemoveFile(const QString &, const QString &)), 
+			this, SLOT(RemoveFile(const QString &, const QString &)));
 
 	connect(fClear, SIGNAL(clicked()), this, SLOT(ClearList()));
 	connect(fStop, SIGNAL(clicked()), this, SLOT(StopSearch()));
@@ -1005,28 +1007,28 @@ WinShareWindow::InitGUI()
     fChannelsTab->addWidget(Join, 6, 3);
 
 	connect( 
-		fNetClient, SIGNAL(ChannelAdded(const QString, const QString, int64)), 
-		this, SLOT(ChannelAdded(const QString, const QString, int64)) 
+		fNetClient, SIGNAL(ChannelAdded(const QString &, const QString &, int64)), 
+		this, SLOT(ChannelAdded(const QString &, const QString &, int64)) 
 		);
 	connect(
-		fNetClient, SIGNAL(ChannelTopic(const QString, const QString, const QString)),
-		this, SLOT(ChannelTopic(const QString, const QString, const QString))
+		fNetClient, SIGNAL(ChannelTopic(const QString &, const QString &, const QString &)),
+		this, SLOT(ChannelTopic(const QString &, const QString &, const QString &))
 		);
 	connect(
-		fNetClient, SIGNAL(ChannelOwner(const QString, const QString, const QString)),
-		this, SLOT(ChannelOwner(const QString, const QString, const QString))
+		fNetClient, SIGNAL(ChannelOwner(const QString &, const QString &, const QString &)),
+		this, SLOT(ChannelOwner(const QString &, const QString &, const QString &))
 		);
 	connect(
-		fNetClient, SIGNAL(ChannelPublic(const QString, const QString, bool)),
-		this, SLOT(ChannelPublic(const QString, const QString, bool))
+		fNetClient, SIGNAL(ChannelPublic(const QString &, const QString &, bool)),
+		this, SLOT(ChannelPublic(const QString &, const QString &, bool))
 		);
 	connect(
-		fNetClient, SIGNAL(ChannelAdmins(const QString, const QString, const QString)),
-		this, SLOT(ChannelAdmins(const QString, const QString, const QString))
+		fNetClient, SIGNAL(ChannelAdmins(const QString &, const QString &, const QString &)),
+		this, SLOT(ChannelAdmins(const QString &, const QString &, const QString &))
 		);
 	connect(
-		fNetClient, SIGNAL(UserIDChanged(QString, QString)),
-		this, SLOT(UserIDChanged(QString, QString))
+		fNetClient, SIGNAL(UserIDChanged(const QString &, const QString &)),
+		this, SLOT(UserIDChanged(const QString &, const QString &))
 		);
 
 	// Window widget events
@@ -2287,8 +2289,10 @@ WinShareWindow::OpenDownload()
 		fDLWindow = new WDownload(NULL, fNetClient->LocalSessionID(), fFileScanThread);
 		CHECK_PTR(fDLWindow);
 		
-		connect(fDLWindow, SIGNAL(FileFailed(QString, QString, QString)), this, SLOT(FileFailed(QString, QString, QString)));
-		connect(fDLWindow, SIGNAL(FileInterrupted(QString, QString, QString)), this, SLOT(FileInterrupted(QString, QString, QString)));
+		connect(fDLWindow, SIGNAL(FileFailed(const QString &, const QString &, const QString &)), 
+				this, SLOT(FileFailed(const QString &, const QString &, const QString &)));
+		connect(fDLWindow, SIGNAL(FileInterrupted(const QString &, const QString &, const QString &)), 
+				this, SLOT(FileInterrupted(const QString &, const QString &, const QString &)));
 		connect(fDLWindow, SIGNAL(Closed()), this, SLOT(DownloadWindowClosed()));
 	}
 	fDLWindow->show();

@@ -72,14 +72,14 @@ private:
 
 
 public slots:
-	void TabPressed(QString str);
-	void URLClicked(const QString & url);
-	void GotShown(const QString & txt);
+	void TabPressed(const QString &);
+	void URLClicked(const QString &);
+	void GotShown(const QString &);
 	void UpdateUserList();
 	void UpdateTopic();
-	void NewChannelText(const QString, const QString, const QString);
-	void ChannelAdminsChanged(const QString, const QString);
-	void UserDisconnected(QString sid, QString name);
+	void NewChannelText(const QString &, const QString &, const QString &);
+	void ChannelAdminsChanged(const QString &, const QString &);
+	void UserDisconnected(const QString &, const QString &);
 
 };
 

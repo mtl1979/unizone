@@ -10,7 +10,7 @@
 #include <qmessagebox.h>
 
 void
-WinShareWindow::ChannelAdmins(const QString channel, const QString sid, const QString admins)
+WinShareWindow::ChannelAdmins(const QString &channel, const QString &sid, const QString &admins)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -57,7 +57,7 @@ WinShareWindow::IsPublic(QString channel)
 }
 
 void
-WinShareWindow::ChannelAdded(const QString channel, const QString sid, int64 timecreated)
+WinShareWindow::ChannelAdded(const QString &channel, const QString &sid, int64 timecreated)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter == fChannels.end())
@@ -494,7 +494,7 @@ WinShareWindow::ChannelKick(const QString channel, const QString user, const QSt
 }
 
 void
-WinShareWindow::ChannelTopic(const QString channel, const QString user, const QString topic)
+WinShareWindow::ChannelTopic(const QString &channel, const QString &user, const QString &topic)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (IsAdmin(channel, user))
@@ -516,7 +516,7 @@ WinShareWindow::ChannelTopic(const QString channel, const QString user, const QS
 }
 
 void
-WinShareWindow::ChannelOwner(const QString channel, const QString user, const QString owner)
+WinShareWindow::ChannelOwner(const QString &channel, const QString &user, const QString &owner)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (IsAdmin(channel, user))
@@ -537,7 +537,7 @@ WinShareWindow::ChannelOwner(const QString channel, const QString user, const QS
 }
 
 void
-WinShareWindow::ChannelPublic(const QString channel, const QString user, bool pub)
+WinShareWindow::ChannelPublic(const QString &channel, const QString &user, bool pub)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (IsAdmin(channel, user))
@@ -554,7 +554,7 @@ WinShareWindow::ChannelPublic(const QString channel, const QString user, bool pu
 }
 
 void
-WinShareWindow::UserIDChanged(QString oldid, QString newid)
+WinShareWindow::UserIDChanged(const QString &oldid, const QString &newid)
 {
 	for (WChannelIter iter = fChannels.begin(); iter != fChannels.end(); iter++)
 	{
