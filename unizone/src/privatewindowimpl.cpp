@@ -195,9 +195,9 @@ WPrivateWindow::URLClicked(const QString & url)
 			surl = url.mid(url.find(":") + 1);
 			WinShareWindow::LaunchSearch(surl);
 		}
-		else if (url.lower().startsWith("ttp://")) // <postmaster@raasu.org> 20030911
+		else if (url.lower().startsWith("ttp://"))	// <postmaster@raasu.org> 20030911
 		{
-			surl = url.mid(url.find(":") + 1);
+			surl = url.mid(url.find(":") + 3);		// skip ://
 			WinShareWindow::QueueFile(surl);
 		}
 		else
@@ -206,15 +206,18 @@ WPrivateWindow::URLClicked(const QString & url)
 }
 
 void
-WPrivateWindow::UpdateView()
+WPrivateWindow::UpdateTextView()
 {
 	if (fScrollDown)
+	{
 		fText->setContentsPos(0, fText->contentsHeight());
 #ifndef WIN32 // for Linux (does FreeBSD need this too???)
-	fText->repaintContents(fText->contentsX(), fText->contentsY(),
-					fText->contentsWidth(), fText->contentsHeight(),
-					false);
+		fText->repaintContents(
+								fText->contentsX(), fText->contentsY(),
+								fText->contentsWidth(), fText->contentsHeight(),
+								false);
 #endif
+	}
 }
 
 void
@@ -240,7 +243,7 @@ WPrivateWindow::PrintText(const QString & str)
 #endif
 				output);
 	}
-	UpdateView();
+	UpdateTextView();
 }
 
 void

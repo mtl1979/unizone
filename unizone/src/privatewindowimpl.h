@@ -85,7 +85,8 @@ private:
 	HWND fWinHandle;
 #endif
 
-	void UpdateView();
+	void UpdateTextView();
+
 	void PrintText(const QString & str);
 	void PrintError(const QString & error);
 	void PrintSystem(const QString & msg);

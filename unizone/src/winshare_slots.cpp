@@ -29,7 +29,8 @@
 void
 WinShareWindow::Exit()
 {
-	qApp->exit(0);
+	Cleanup();
+	QApplication::exit(0);
 }
 
 void
@@ -231,14 +232,14 @@ WinShareWindow::URLClicked(const QString & url)
 			surl = url.mid(url.find(":") + 1);
 			LaunchSearch(surl);
 		}
-		else if (url.lower().startsWith("priv:")) // <postmaster@raasu.org> 20021013
+		else if (url.lower().startsWith("priv:"))	// <postmaster@raasu.org> 20021013
 		{
 			surl = url.mid(url.find(":") + 1);
 			LaunchPrivate(surl);
 		}
-		else if (url.lower().startsWith("ttp://")) // <postmaster@raasu.org> 20030911
+		else if (url.lower().startsWith("ttp://"))	// <postmaster@raasu.org> 20030911
 		{
-			surl = url.mid(url.find(":") + 1);
+			surl = url.mid(url.find(":") + 3);		// skip ://
 			QueueFile(surl);
 		}
 		else

@@ -655,7 +655,7 @@ Channel::PrintText(const QString & str)
 #endif
 				output);
 	}
-	UpdateView();
+	UpdateTextView();
 }
 
 void
@@ -743,15 +743,18 @@ Channel::CheckScrollState()
 }
 
 void
-Channel::UpdateView()
+Channel::UpdateTextView()
 {
 	if (fScrollDown)
+	{
 		fText->setContentsPos(0, fText->contentsHeight());
 #ifndef WIN32
-	fText->repaintContents(fText->contentsX(), fText->contentsY(),
-					fText->contentsWidth(), fText->contentsHeight(),
-					false);
+		fText->repaintContents(
+								fText->contentsX(), fText->contentsY(),
+								fText->contentsWidth(), fText->contentsHeight(),
+								false);
 #endif
+	}
 }
 
 void

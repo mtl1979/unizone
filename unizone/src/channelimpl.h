@@ -62,7 +62,7 @@ private:
 	void PrintError(const QString & str);
 	void SendChannelText(const QString & message);
 	void CheckScrollState();
-	void UpdateView();
+	void UpdateTextView();
 	void Action(const QString & name, const QString & msg, bool batch = false);
 
 	void UpdateNode();

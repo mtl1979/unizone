@@ -1225,12 +1225,15 @@ WinShareWindow::UpdateTextView()
 	PRINT("              : ContentsW = %d, ContentsH = %d\n", fChatText->contentsWidth(),	fChatText->contentsHeight());
 #endif
 	if (fScrollDown)
+	{
 		fChatText->setContentsPos(0, fChatText->contentsHeight());
 #ifndef WIN32	// linux only... (FreeBSD???)
-	fChatText->repaintContents(fChatText->contentsX(), fChatText->contentsY(),
-					fChatText->contentsWidth(), fChatText->contentsHeight(),
-					false);
+		fChatText->repaintContents(
+									fChatText->contentsX(), fChatText->contentsY(),
+									fChatText->contentsWidth(), fChatText->contentsHeight(),
+									false);
 #endif
+	}
 }
 
 void
@@ -2230,13 +2233,8 @@ WinShareWindow::QueueFile(const QString & ref)
 void
 WinShareWindow::QueueFileAux(const QString & ref)
 {
-	QString url = ref;
-	if (url.startsWith("//"))
-	{
-		url = url.mid(2);
-	}
-	QString from = url.left(url.find("/"));
-	QString file = url.mid(url.find("/") + 1);
+	QString from = ref.left(ref.find("/"));
+	QString file = ref.mid(ref.find("/") + 1);
 	String sfile = TTPDecode(file.latin1());
 	TTPInfo * ttpInfo = new TTPInfo;
 	if (ttpInfo)
