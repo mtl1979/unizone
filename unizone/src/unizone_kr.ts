@@ -3459,5 +3459,9 @@ Date: %4</source>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
         <translation>Welcome to Unizone (Korean)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</translation>
     </message>
+    <message>
+        <source>wandering</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

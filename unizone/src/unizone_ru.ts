@@ -3717,5 +3717,9 @@ Date: %4</translation>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>wandering</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

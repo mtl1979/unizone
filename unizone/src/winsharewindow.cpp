@@ -2385,37 +2385,30 @@ WinShareWindow::UpdateReceiveStats(uint64 r)
 	rx += r;
 }
 
+const char * statusList[] = {
+	QT_TRANSLATE_NOOP("WinShareWindow", "here"),
+	QT_TRANSLATE_NOOP("WinShareWindow", "away"),
+	QT_TRANSLATE_NOOP("WinShareWindow", "idle"),
+	QT_TRANSLATE_NOOP("WinShareWindow", "busy"),
+	QT_TRANSLATE_NOOP("WinShareWindow", "at work"),
+	QT_TRANSLATE_NOOP("WinShareWindow", "around"),
+	QT_TRANSLATE_NOOP("WinShareWindow", "sleeping"),
+	QT_TRANSLATE_NOOP("WinShareWindow", "wandering"),
+	NULL
+};
+
 void
 WinShareWindow::TranslateStatus(QString & s)
 {
 	QString st = s.lower();
-	if (st == "here")
+	const char *t;
+	for (unsigned int x = 0; (t = statusList[x]) != NULL; x++)
 	{
-		s = tr("here");
-	}
-	else if (st == "away")
-	{
-		s = tr("away");
-	}
-	else if (st == "idle")
-	{
-		s = tr("idle");
-	}
-	else if (st == "busy")
-	{
-		s = tr("busy");
-	}
-	else if (st == "at work")
-	{
-		s = tr("at work");
-	}
-	else if (st == "around")
-	{
-		s = tr("around");
-	}
-	else if (st == "sleeping")
-	{
-		s = tr("sleeping");
+		if (st == t)
+		{
+			s = tr(t);
+			break;
+		}
 	}
 }
 

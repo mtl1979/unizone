@@ -3844,5 +3844,9 @@ Päiväys: %4</translation>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
         <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas QNX Neutrinolle!</translation>
     </message>
+    <message>
+        <source>wandering</source>
+        <translation>harhailemassa</translation>
+    </message>
 </context>
 </TS>

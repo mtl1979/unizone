@@ -444,9 +444,6 @@ WFormat::Action(const QString &name, const QString &msg)
 	return Action(temp);
 }
 
-// <postmaster@raasu.org> 20020930
-// WFormat::URL Doesn't work because % is a valid character in URLs
-
 QString 
 WFormat::URL(const QString &url)
 { 
