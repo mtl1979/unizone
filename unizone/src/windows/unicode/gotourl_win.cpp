@@ -10,6 +10,8 @@
 #include "wstring.h"
 #include "global.h"
 
+WLaunchThread * fLaunchThread = NULL;
+
 void
 GotoURL(const QString & url)
 {
@@ -35,16 +37,30 @@ GotoURL(const QString & url)
 		address = url;
 	}
 
-	WLaunchThread * t = new WLaunchThread(address);
-	CHECK_PTR(t);
-	t->start();
+	RunCommand(address);
 }
 
 void
 RunCommand(const QString & command)
 {
 	PRINT("RunCommand() called\n");
-	WLaunchThread * t = new WLaunchThread(command);
-	CHECK_PTR(t);
-	t->start();
+	fLaunchThread->wait();
+	QApplication::setOverrideCursor( Qt::waitCursor );
+	fLaunchThread->SetURL(command);
+	fLaunchThread->start();
+	QApplication::restoreOverrideCursor();
+}
+
+void
+InitLaunchThread()
+{
+	fLaunchThread = new WLaunchThread();
+	CHECK_PTR(fLaunchThread);
+}
+
+void
+DeinitLaunchThread()
+{
+	fLaunchThread->wait();
+	delete fLaunchThread;
 }

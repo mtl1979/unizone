@@ -8,6 +8,7 @@ class WLaunchThread : public QThread
 {
 public:
 	WLaunchThread(const QString & url) : QThread(), fURL(url) {}
+	WLaunchThread() : QThread() {}
 
 	void SetLauncher(const QString & launcher) { fLauncher = launcher; }
 	void SetURL(const QString & url) { fURL = url; }

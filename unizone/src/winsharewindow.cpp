@@ -35,6 +35,7 @@
 #include "netclient.h"
 #include "serverclient.h"
 #include "updateclient.h"
+#include "gotourl.h"
 
 #include <qapplication.h>
 #include <qstylesheet.h>
@@ -108,6 +109,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fPicViewer = new WPicViewer(this);
 	CHECK_PTR(fPicViewer);
 	
+	InitLaunchThread();
+
 	fUpdateThread = new UpdateClient(this);
 	CHECK_PTR(fUpdateThread);
 
@@ -403,6 +406,8 @@ WinShareWindow::Cleanup()
 		delete fFileScanThread;
 		fFileScanThread = NULL; // <postmaster@raasu.org> 20021027
 	}
+
+	DeinitLaunchThread();
 
 	// Do these two after everything else
 

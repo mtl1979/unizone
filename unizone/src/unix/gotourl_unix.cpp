@@ -1,3 +1,4 @@
+#include <qapplication.h>
 #include <qstring.h>
 #include <qthread.h>
 #include <stdio.h>
@@ -11,6 +12,8 @@
 #include "settings.h"
 #include "wstring.h"
 #include "global.h"
+
+WLaunchThread * fLaunchThread = NULL;
 
 void
 GotoURL(const QString & url)
@@ -41,34 +44,52 @@ GotoURL(const QString & url)
 		address = url;
 	}
 
-	WLaunchThread * t = new WLaunchThread(address);
-	CHECK_PTR(t);
+	QApplication::setOverrideCursor( Qt::waitCursor );
+	fLaunchThread->wait();
+	fLaunchThread->SetURL(address);
 	if (u.startsWith("http"))	// also includes 'https'
 	{
-		t->SetLauncher(gWin->fSettings->GetHTTPLauncher());
+		fLaunchThread->SetLauncher(gWin->fSettings->GetHTTPLauncher());
 	}
 	else if (u.startsWith("ftp"))
 	{
-		t->SetLauncher(gWin->fSettings->GetFTPLauncher());
+		fLaunchThread->SetLauncher(gWin->fSettings->GetFTPLauncher());
 	}
 	else if (u.startsWith("mailto:"))
 	{
-		t->SetLauncher(gWin->fSettings->GetMailLauncher());
+		fLaunchThread->SetLauncher(gWin->fSettings->GetMailLauncher());
 	}
 	else
 	{
 		// unknown? use default launcher...
-		t->SetLauncher(gWin->fSettings->GetDefaultLauncher());	
+		fLaunchThread->SetLauncher(gWin->fSettings->GetDefaultLauncher());	
 	}
-	t->start();
+	fLaunchThread->start();
+	QApplication::restoreOverrideCursor();
 }
 
 void
 RunCommand(const QString & command)
 {
 	PRINT("RunCommand() called\n");
-	WLaunchThread * t = new WLaunchThread(command);
-	CHECK_PTR(t);
-	t->SetLauncher(QString::null);
-	t->start();
+	QApplication::setOverrideCursor( Qt::waitCursor );
+	fLaunchThread->wait();
+	fLaunchThread->SetURL(command);
+	fLaunchThread->SetLauncher(QString::null);
+	fLaunchThread->start();
+	QApplication::restoreOverrideCursor();
+}
+
+void
+InitLaunchThread()
+{
+	fLaunchThread = new WLaunchThread();
+	CHECK_PTR(fLaunchThread);
+}
+
+void
+DeinitLaunchThread()
+{
+	fLaunchThread->wait();
+	delete fLaunchThread;
 }
