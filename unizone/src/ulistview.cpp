@@ -66,7 +66,6 @@ WUniListItem::key(int c, bool asc) const
 	case Date:
 	case Size:
 	case Time:
-	case TransferSpeed:
 		{
 			result = fKey[c];
 			wResult = qStringToWideChar(result);
@@ -75,6 +74,25 @@ WUniListItem::key(int c, bool asc) const
 
 			bool ok;
 			n = result.toLong(&ok);
+			if (ok)
+			{
+				// convert our number to hexadecimal! what a thought, huh?
+				result.sprintf("0x%08x", n);
+				wResult = qStringToWideChar(result);
+				PRINT("\tRESULT IS %S\n", wResult);
+				delete [] wResult;
+			}
+			return result;
+		}
+	case TransferSpeed:
+		{
+			result = fKey[c];
+			wResult = qStringToWideChar(result);
+			PRINT("\tRESULT STARTS AS\t %S\n", wResult);
+			delete wResult;
+
+			bool ok;
+			n = (long) result.toDouble(&ok); // We need to convert from double to long
 			if (ok)
 			{
 				// convert our number to hexadecimal! what a thought, huh?
