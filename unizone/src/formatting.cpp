@@ -26,6 +26,9 @@ WFormat::tr2(const char *s)
 	if (QString(s) != tr(s))
 	{
 		temp = tr(s).stripWhiteSpace();
+	}
+	if (temp.length() > 0)
+	{
 		temp += " ";
 	}
 	return temp;
