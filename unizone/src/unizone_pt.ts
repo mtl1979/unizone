@@ -2282,7 +2282,23 @@ Date: %4</translation>
     </message>
     <message>
         <source>Testing Unizone (English)</source>
-        <translation type='unfinished'>Testing Unizone (Português)</translation>
+        <translation>Testing Unizone (Português)</translation>
+    </message>
+    <message>
+        <source>File Scan</source>
+        <translation>File Scan</translation>
+    </message>
+    <message>
+        <source>Scan your shared files now?</source>
+        <translation>Scan your shared files now?</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Yes</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>No</translation>
     </message>
 </context>
 </TS>

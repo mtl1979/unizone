@@ -2405,5 +2405,21 @@ Päiväys: %4</translation>
         <source>Testing Unizone (English)</source>
         <translation>Testaa Unizone (Suomi)</translation>
     </message>
+    <message>
+        <source>File Scan</source>
+        <translation>Tiedostojenhaku</translation>
+    </message>
+    <message>
+        <source>Scan your shared files now?</source>
+        <translation>Tarkista jaetut tiedostot nyt?</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Kyllä</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Ei</translation>
+    </message>
 </context>
 </TS>
