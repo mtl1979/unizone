@@ -2371,7 +2371,10 @@ WinShareWindow::OpenDownload()
 void
 WinShareWindow::OpenDownloads()
 {
-	OpenDownload();
+	if (fDLWindow && !fDLWindow->isHidden())
+		fDLWindow->hide();
+	else
+		OpenDownload();
 }
 
 void

@@ -6,6 +6,7 @@
 #include <qobject.h>
 #include <qqueue.h>
 #include <qdir.h>
+#include <qaccel.h>
 #include <time.h>
 #include <qapplication.h>
 #include <qlabel.h>
@@ -1659,6 +1660,15 @@ WDownload::uploadEvent(WUploadEvent *u)
 			break;
 		}
 	}
+}
+
+void 
+WDownload::keyPressEvent(QKeyEvent * event)
+{
+	if (event->key() == QAccel::stringToKey(tr("F11")))
+		hide();
+	else
+		QDialog::keyPressEvent(event);
 }
 
 void

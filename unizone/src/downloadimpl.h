@@ -111,7 +111,7 @@ public:
 
 protected:
 	virtual void customEvent(QCustomEvent *);
-//	virtual void genericEvent(WGenericEvent * g);
+	virtual void keyPressEvent(QKeyEvent * event);
 	virtual void downloadEvent(WDownloadEvent *);
 	virtual void uploadEvent(WUploadEvent *);
 
