@@ -137,7 +137,7 @@ WinShareWindow::CreateChannel()
 	QString text = QInputDialog::getText( 
 		tr( "Create Channel" ), 
 		tr( "Please enter channel name" ),
-#if (QT_VERSION >= 0x030100)
+#if (QT_VERSION >= 0x030000)
 		QLineEdit::Normal, 
 #endif
 		QString::null, &ok, this 

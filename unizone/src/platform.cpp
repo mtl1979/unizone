@@ -10,7 +10,7 @@
 #include <qstring.h>
 #include <qdatetime.h>
 
-#if (QT_VERSION >= 0x030100)
+#if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
 #endif
 

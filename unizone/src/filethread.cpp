@@ -503,12 +503,19 @@ WFileThread::GetSharedFile(int n, MessageRef & mref)
 	Unlock();
 }
 
+// NOTE: Doesn't seem to work with QApplication::postEvent() under Qt 2.3, so we continue using deprecated version
+//       QThread::postEvent()
+
 void
 WFileThread::SendReset()
 {
 	ScanEvent *se = new ScanEvent(ScanEvent::Type::Reset);
 	if (se)
+#if (QT_VERSION < 0x030000)
+		QThread::postEvent(fScanProgress, se);
+#else
 		QApplication::postEvent(fScanProgress, se);
+#endif
 }
 
 void
@@ -516,7 +523,11 @@ WFileThread::SendString(ScanEvent::Type t, QString str)
 {
 	ScanEvent *se = new ScanEvent(t, str);
 	if (se)
+#if (QT_VERSION < 0x030000)
+		QThread::postEvent(fScanProgress, se);
+#else
 		QApplication::postEvent(fScanProgress, se);
+#endif
 }
 
 void
@@ -524,5 +535,9 @@ WFileThread::SendInt(ScanEvent::Type t, int i)
 {
 	ScanEvent *se = new ScanEvent(t, i);
 	if (se)
+#if (QT_VERSION < 0x030000)
+		QThread::postEvent(fScanProgress, se);
+#else
 		QApplication::postEvent(fScanProgress, se);
+#endif
 }

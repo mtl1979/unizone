@@ -1,7 +1,7 @@
 #include "htmlview.h"
 #include "tokenizer.h"
 #include "wstring.h"
-#if (QT_VERSION >= 0x030100)
+#if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
 #endif
 
@@ -61,7 +61,7 @@ WHTMLView::showEvent(QShowEvent * event)
 {
 #ifdef UNIVIEW
 	QTextBrowser::showEvent(event);
-#elif (QT_VERSION < 0x030100)
+#elif (QT_VERSION < 0x030000)
 	QString txt = text();
 	setText("");
 	emit GotShown(txt);

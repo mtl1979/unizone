@@ -123,7 +123,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
 			this, SLOT(URLClicked(const QString &)));
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(AboutToQuit()));
-#if (QT_VERSION < 0x030100)
+#if (QT_VERSION < 0x030000)
 	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
 #endif
 	// create popup menu
@@ -1308,7 +1308,7 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 	static QString output("");
 	if (begin)	// starting message batch
 	{
-#if (QT_VERSION < 0x030100)
+#if (QT_VERSION < 0x030000)
 		output = "\t";	// reset (we always start with a tab..., this is a linux bug workaround)
 #else
 		output = "";
@@ -1328,7 +1328,7 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 		}
 		else
 		{
-#if (QT_VERSION < 0x030100)
+#if (QT_VERSION < 0x030000)
 			if (output != "\t")	// do we have something?
 #else
 			if (!output.isEmpty())
@@ -1361,7 +1361,7 @@ WinShareWindow::PrintText(const QString & str)
 		fChatText->setText(out);
 	else
 		fChatText->append(
-#if (QT_VERSION < 0x030100)
+#if (QT_VERSION < 0x030000)
 					"\t" +
 #endif
  					out);

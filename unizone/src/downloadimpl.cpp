@@ -1314,9 +1314,6 @@ WDownload::uploadEvent(WUploadEvent *u)
 				if (ut->IsLastFile())
 				{
 					ut->Reset();
-					// msg()->what = WUploadEvent::Disconnected;
-					// WUploadEvent *due = new WUploadEvent(msg);
-					// if (due) QApplication::postEvent(this, due);
 				}
 				item->setText(WTransferItem::Status, tr("Finished."));
 				item->setText(WTransferItem::ETA, "");
@@ -1487,14 +1484,6 @@ WDownload::uploadEvent(WUploadEvent *u)
 						)
 					{
 						gWin->PrintSystem( tr("%1 has finished downloading %2.").arg(ut->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) );
-					}
-					
-					if (ut->IsLastFile())
-					{
-						// ut->Reset();
-						// msg()->what = WUploadEvent::Disconnected;
-						// WUploadEvent *due = new WUploadEvent(msg);
-						// if (due) QApplication::postEvent(this, due);
 					}
 				}
 				PRINT("\tWUploadEvent::FileDataSent OK\n");

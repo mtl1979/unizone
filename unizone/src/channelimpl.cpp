@@ -104,7 +104,7 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 			this, SLOT(URLClicked(const QString &)));
 	connect(fChat, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
-#if (QT_VERSION < 0x030100)
+#if (QT_VERSION < 0x030000)
 	connect(fText, SIGNAL(GotShown(const QString &)), 
 			this, SLOT(GotShown(const QString &)));
 #endif
@@ -641,7 +641,7 @@ Channel::PrintText(const QString & str)
 		fText->setText(output);
 	else
 		fText->append(
-#if (QT_VERSION < 0x030100)
+#if (QT_VERSION < 0x030000)
 				"\t" + 
 #endif
 				output);

@@ -225,7 +225,8 @@ WUploadThread::SetLocallyQueued(bool b)
 			MessageRef fFileList = fSavedFileList;
 			fSavedFileList.Reset();
 			WUploadEvent *wue = new WUploadEvent(fFileList);
-			if (wue) QApplication::postEvent(this, wue);
+			if (wue) 
+				QApplication::postEvent(this, wue);
 			// TransferFileList(fFileList);
 			return;
 		}

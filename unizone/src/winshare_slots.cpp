@@ -581,5 +581,6 @@ void
 WinShareWindow::SignalDownload(int type)
 {
 	QCustomEvent *qce = new QCustomEvent(type);
-	if (qce) QApplication::postEvent(fDLWindow, qce);
+	if (qce) 
+		QApplication::postEvent(fDLWindow, qce);
 }
