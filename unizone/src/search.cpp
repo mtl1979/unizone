@@ -120,6 +120,8 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	connect(fDownload, SIGNAL(clicked()), this, SLOT(Download()));
 	connect(fNet, SIGNAL(DisconnectedFromServer()), this, SLOT(DisconnectedFromServer()));
 
+	fQueue = new Message();
+
 	SetStatus(tr(MSG_IDLE));
 
 	fSearchEdit->setFocus();
@@ -141,6 +143,10 @@ WSearch::~WSearch()
 	}
 
 	fIsRunning = false;
+
+	if (fQueue)
+		delete fQueue;
+
 	emit Closed();
 }
 
@@ -418,32 +424,18 @@ WSearch::Download()
 		while (it != fFileList.end())
 		{
 			WFileInfo * fi = (*it).second;
-			//if (fi->fiListItem == selected)
 			PRINT("Checking: %s, %s\n", fi->fiListItem->text(0).latin1(), fi->fiListItem->text(5).latin1());
 			if (fi->fiListItem->isSelected())
 			{
 				PRINT("DOWNLOAD: Found item\n");
 				WUserRef user = fi->fiUser;
-				bool c = false;
-				if (!gWin->fDLWindow)
-				{
-					// gWin->fDLWindow = new WDownload(fNet->LocalSessionID(), gWin->fFileScanThread);
-					gWin->OpenDownload();
-					c = true;
-				}
 				
-				gWin->fDLWindow->AddDownload(fi->fiFilename, user()->GetUserID(), user()->GetPort(),
-					user()->GetUserHostName(), user()->GetInstallID(), 
-					fi->fiFirewalled, user()->GetPartial());
-				PRINT("Showing\n");
-				if (c)
-					gWin->fDLWindow->show();
-				PRINT("Shown\n");
-				// fi->fiListItem->setSelected(false); // reset selection
+				QueueDownload(fi->fiFilename, user());
 			}					
 			it++;
 		}
 	}
+	EmptyQueues();
 	fDownload->setEnabled(true);
 	Unlock();
 }
@@ -509,3 +501,49 @@ WSearch::HandleComboEvent(WTextEvent * e)
 			GoSearch();
 	}
 }
+
+void
+WSearch::QueueDownload(QString file, WUser * user)
+{
+	int32 i = 0;
+	String mUser = (const char *) user->GetUserID().utf8();
+	if (fQueue->FindInt32(mUser, &i) == B_OK)
+		fQueue->RemoveName(mUser);
+	fQueue->AddInt32(mUser, ++i);
+	mUser = mUser.Prepend("_");
+	fQueue->AddString(mUser, (const char *) file.utf8());
+}
+
+void
+WSearch::EmptyQueues()
+{
+	String mUser, mFile;
+	QString user;
+	QString * files;
+	WUserRef u;
+	int32 numItems;
+	MessageFieldNameIterator iter = fQueue->GetFieldNameIterator(B_INT32_TYPE);
+	while (iter.GetNextFieldName(mUser) == B_OK)
+	{
+		user = QString::fromUtf8(mUser.Cstr());
+		u = gWin->FindUser(user);
+		if (u() != NULL)
+		{
+			fQueue->FindInt32(mUser, &numItems);
+			files = new QString[numItems];
+			mUser = mUser.Prepend("_");
+			for (int32 i = 0; i < numItems; i++)
+			{
+				fQueue->FindString(mUser, i, mFile);
+				files[i] = QString::fromUtf8(mFile.Cstr());
+			}
+			gWin->OpenDownload();
+			gWin->fDLWindow->AddDownload(files, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
+		}
+	}
+	delete fQueue;
+	fQueue = new Message();
+}
+
+
+	

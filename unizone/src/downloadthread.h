@@ -16,10 +16,14 @@ public:
 	WDownloadThread(QObject * owner, bool * optShutdownFlag = NULL);
 	virtual ~WDownloadThread();
 
-	void SetFile(QString file, QString fromIP, QString fromSession,
+	void SetFile(QString * files, int32 numFiles, QString fromIP, QString fromSession,
 					QString localSession, int32 remotePort, bool firewalled, bool partial);
+	void NextFile();
+	int32 GetCurrentNum() { return fCurFile; }
+	int32 GetNumFiles() { return fNumFiles; }
 
 	QFile * GetFile() const { return fFile; }
+	QString GetCurrentFile() { return fFileDl[fCurFile]; }
 
 	static QString FixFileName(const QString & fixMe);
 
@@ -30,13 +34,10 @@ public:
 	// this will also send a message to show the dialog, so do not do it yourself
 	bool InitSession();
 
-public slots:
-	void ConnectTimer(); // Connection timed out?
-
 protected:
 	QMutex fLockFile;
 	QFile * fFile;		// file on the HD
-	QString fFileDl;	// file to dl
+	QString * fFileDl;	// file to dl
 	QString fIP;		// ip address of remote client
 	QString fFromSession;	// session ID of remote client
 	QString fFromUser;		// user name of remote client
@@ -49,6 +50,7 @@ protected:
 	bool fDownloading;
 	bool fFirewalled;
 	bool fPartial;
+	int32 fNumFiles, fCurFile;
 
 	virtual void SendReply(Message * m);
 

@@ -214,3 +214,14 @@ WGenericThread::GetUserName(QString sid)
 		ret = uref()->GetUserName();
 	return ret;
 }
+
+void
+WGenericThread::ConnectTimer()
+{
+	Reset();
+	Message * msg = new Message(WGenericEvent::ConnectFailed);
+	msg->AddString("why", "Connection timed out!");
+	msg->AddString("file", (const char *) GetCurrentFile().utf8());
+	msg->AddBool("retry", true);
+	SendReply(msg);
+}

@@ -412,8 +412,15 @@ WinShareWindow::CheckResumes(QString user)
 	if (fResumeMap.empty()) 
 		return;
 
+	WUserRef u = FindUser(user);
+	
+	if (u() == NULL)
+		return;
+
 	rLock.lock();
 
+	Queue<QString> fFiles;
+	
 	WResumeIter it = fResumeMap.begin();
 	while (it != fResumeMap.end())
 	{
@@ -426,19 +433,16 @@ WinShareWindow::CheckResumes(QString user)
 			if (!fDLWindow)
 				OpenDownload(); 
 
-			WUserRef u = FindUser(user);
-			if (u())
-			{
-				PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).first).arg(user), false);
-				fDLWindow->AddDownload((*it).first, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
-				fResumeMap.erase(it);
-				it = fResumeMap.begin(); // start from beginning
-			}
-			else
-				it++;
+			PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).first).arg(user), false);
+			fFiles.AddTail((*it).first);
+			fResumeMap.erase(it);
+			it = fResumeMap.begin(); // start from beginning
 		}
 		else
 			it++;
 	}
 	rLock.unlock();
+	if (fFiles.GetNumItems() > 0)
+		fDLWindow->AddDownloadList(fFiles, u());
+
 }

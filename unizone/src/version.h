@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 const int kMajor = 1;
-const int kMinor = 1;
+const int kMinor = 2;
 const int kPatch = 0;
 
 #include "build.h"		// just a trick to increment builds everytime it is built :)

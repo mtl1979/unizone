@@ -59,6 +59,7 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	fDownloads->addColumn(tr(MSG_TX_RATE));
 	fDownloads->addColumn(tr(MSG_TX_ETA));
 	fDownloads->addColumn(tr(MSG_TX_USER));
+	fDownloads->addColumn(tr("Index"));
 	
 	fDownloads->setColumnAlignment(2, AlignRight); // <postmaster@raasu.org> 20021213
 	fDownloads->setColumnAlignment(3, AlignRight); // 
@@ -84,6 +85,7 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	fUploads->addColumn(tr(MSG_TX_RATE));
 	fUploads->addColumn(tr(MSG_TX_ETA));
 	fUploads->addColumn(tr(MSG_TX_USER));
+	fUploads->addColumn(tr("Index"));
 	
 	fUploads->setColumnAlignment(WTransferItem::Received, AlignRight);	// <postmaster@raasu.org> 20021213
 	fUploads->setColumnAlignment(WTransferItem::Total, AlignRight);		// 
@@ -150,27 +152,35 @@ WDownload::~WDownload()
 }
 
 void
-WDownload::AddDownload(QString file, QString remoteSessionID,
+WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID,
 					   uint32 remotePort, QString remoteIP, uint64 remoteInstallID, bool firewalled, bool partial)
 {
 	WDownloadThread * nt = new WDownloadThread(this);
-	nt->SetFile(file, remoteIP, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
+	nt->SetFile(files, filecount, remoteIP, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
 	
 	WTPair p;
 	p.first = nt;
 	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "");
 
+	int x;
+
 	if (remoteIP == "127.0.0.1")	// Can't use localhost to download!!!
 	{
 		remoteIP = gWin->fNetClient->GetServerIP();
 		if (remoteIP != "127.0.0.1")
-			gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(file).arg(remoteIP), false);
+		{
+			for (x = 0; x < filecount; x++)
+				gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP), false);
+		}
 	}
 
 	// Detect uncommon remote port 
 
 	if (!muscleInRange(remotePort, (uint32) DEFAULT_LISTEN_PORT, (uint32) (DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE)))
-		gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(file), false);
+	{
+		for (x = 0; x < filecount; x++)
+			gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]), false);
+	}
 
 	if (fNumDownloads < gWin->fSettings->GetMaxDownloads())
 	{
@@ -188,6 +198,19 @@ WDownload::AddDownload(QString file, QString remoteSessionID,
 	fLock.lock();
 	fDownloadList.insert(fDownloadList.end(), p);
 	fLock.unlock();
+}
+
+void
+WDownload::AddDownloadList(Queue<QString> & fQueue, WUser * user)
+{
+	int32 nFiles = fQueue.GetNumItems();
+	QString * qFiles = new QString[nFiles];
+	int n = 0;
+	while (!fQueue.IsEmpty())
+	{
+		qFiles[n++] = fQueue.RemoveHead();
+	}
+	AddDownload(qFiles, nFiles, user->GetUserID(), user->GetPort(), user->GetUserHostName(), user->GetInstallID(), user->GetFirewalled(), user->GetPartial());
 }
 
 void
@@ -390,6 +413,7 @@ WDownload::customEvent(QCustomEvent * e)
 				{
 					item->setText(WTransferItem::Filename, QString::fromUtf8(filename));
 					item->setText(WTransferItem::User, GetUserName(user));
+					item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
 				}
 				break;
 			}
@@ -547,13 +571,15 @@ WDownload::customEvent(QCustomEvent * e)
 					if (upload)
 					{
 						PRINT("\tIs upload\n");
-						DecreaseCount(gt, fNumUploads);
+						if (gt->IsLastFile())
+							DecreaseCount(gt, fNumUploads);
 						WASSERT(fNumUploads >= 0, "Upload count is negative!");
 					}
 					else
 					{
 						PRINT("\tIs download\n");
-						DecreaseCount(gt, fNumDownloads, false);
+						if (gt->IsLastFile())
+							DecreaseCount(gt, fNumDownloads, false);
 						WASSERT(fNumDownloads >= 0, "Download count is negative!");
 					}
 					DequeueSessions();
@@ -603,7 +629,8 @@ WDownload::customEvent(QCustomEvent * e)
 					item->setText(WTransferItem::Rate, "0.0");	// <postmaster@raasu.org> 20021023 -- Fix to lowercase 'k'
 					item->setText(WTransferItem::ETA, "");
 					item->setText(WTransferItem::User, GetUserName( QString::fromUtf8( user.Cstr() ) ));
-					
+					item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
+
 					if (upload)
 					{
 						if (gWin->fSettings->GetUploads())
@@ -632,6 +659,7 @@ WDownload::customEvent(QCustomEvent * e)
 				if (msg->FindString("file", file) == B_OK)
 					item->setText(WTransferItem::Filename, QString::fromUtf8(file.Cstr()) );
 				item->setText(WTransferItem::Status, tr("Error: %1").arg(why.Cstr()));
+				item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
 				PRINT("WGenericEvent::FileError: File %s",file.Cstr()); // <postmaster@raasu.org> 20021023 -- Add debug message
 				break;
 			}
@@ -640,83 +668,86 @@ WDownload::customEvent(QCustomEvent * e)
 			{
 				uint64 offset, size;
 				bool done;
+				String mFile;
 				uint32 got;
 				
 				if ((msg->FindInt64("offset", (int64 *)&offset) == B_OK) && 
-					(msg->FindInt64("size", (int64 *)&size) == B_OK) &&
-					(msg->FindInt32("got", (int32 *)&got) == B_OK))	// a download ("got")
+					(msg->FindInt64("size", (int64 *)&size) == B_OK))
 				{
-					gWin->UpdateReceiveStats(got);
-					
-					double secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
-					double gotk = (double)((double)got / 1024.0f);
-					double kps = gotk / secs;
-					
-					//item->setText(WTransferItem::Status, "Downloading...");
-					item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(gt->ComputePercentString(offset, size)));
-					item->setText(WTransferItem::Received, tr("%1").arg((int) offset));
-					// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 50 ms?
-					if (secs > 0.05f)
+					if (msg->FindInt32("got", (int32 *)&got) == B_OK)	// a download ("got")
 					{
-						gt->SetMostRecentRate(kps);
-						gt->fLastData.restart();
+						gWin->UpdateReceiveStats(got);
+						
+						double secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
+						double gotk = (double)((double)got / 1024.0f);
+						double kps = gotk / secs;
+						
+						//item->setText(WTransferItem::Status, "Downloading...");
+						item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(gt->ComputePercentString(offset, size)));
+						item->setText(WTransferItem::Received, tr("%1").arg((int) offset));
+						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 50 ms?
+						if (secs > 0.05f)
+						{
+							gt->SetMostRecentRate(kps);
+							gt->fLastData.restart();
+						}
+						else
+						{
+							gt->SetPacketCount(gotk);
+						}
+						
+						// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
+						double gcr = gt->GetCalculatedRate();
+						
+						item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
+						
+						item->setText(WTransferItem::Rate, tr("%1").arg(gcr*1024.0f));
+						
+						if (msg->FindBool("done", &done) == B_OK)
+						{
+							item->setText(WTransferItem::Status, "Finished.");
+							if (msg->FindString("file", mFile) == B_OK)
+								gWin->PrintSystem( tr(MSG_TX_FINISHED).arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
+							DecreaseCount(gt, fNumDownloads, false);
+						}
 					}
-					else
+					else if (msg->FindInt32("sent", (int32 *)&got) == B_OK)	// an upload ("sent")
 					{
-						gt->SetPacketCount(gotk);
+						gWin->UpdateTransmitStats(got);
+						
+						double secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
+						double gotk = (double)((double)got / 1024.0f);
+						double kps = gotk / secs;
+						
+						//item->setText(WTransferItem::Status, "Uploading...");
+						item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(gt->ComputePercentString(offset, size)));
+						item->setText(WTransferItem::Received, tr("%1").arg((int) offset));
+						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 50 ms?
+						if (secs > 0.05f) 
+						{
+							gt->SetMostRecentRate(kps);
+							gt->fLastData.restart();
+						}
+						else
+						{
+							gt->SetPacketCount(gotk);
+						}
+						
+						// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
+						double gcr = gt->GetCalculatedRate();
+						
+						item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
+						
+						item->setText(WTransferItem::Rate, tr("%1").arg(gcr*1024.0f));
+						
+						if (msg->FindBool("done", &done) == B_OK)
+						{
+							item->setText(WTransferItem::Status, "Finished.");
+							if (msg->FindString("file", mFile) == B_OK)
+								gWin->PrintSystem( tr(MSG_TX_HASFINISHED).arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
+						}
+						
 					}
-					
-					// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
-					double gcr = gt->GetCalculatedRate();
-					
-					item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
-					
-					item->setText(WTransferItem::Rate, tr("%1").arg(gcr*1024.0f));
-					
-					if (msg->FindBool("done", &done) == B_OK)
-					{
-						item->setText(WTransferItem::Status, "Finished.");
-						gWin->PrintSystem( tr(MSG_TX_FINISHED).arg(gt->GetRemoteUser()).arg(item->text(WTransferItem::Filename)) , false);
-						DecreaseCount(gt, fNumDownloads, false);
-					}
-				}
-				else if ((msg->FindInt64("offset", (int64 *)&offset) == B_OK) && 
-					(msg->FindInt64("size", (int64 *)&size) == B_OK) &&
-					(msg->FindInt32("sent", (int32 *)&got) == B_OK))	// an upload ("sent")
-				{
-					gWin->UpdateTransmitStats(got);
-					
-					double secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
-					double gotk = (double)((double)got / 1024.0f);
-					double kps = gotk / secs;
-					
-					//item->setText(WTransferItem::Status, "Uploading...");
-					item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(gt->ComputePercentString(offset, size)));
-					item->setText(WTransferItem::Received, tr("%1").arg((int) offset));
-					// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 50 ms?
-					if (secs > 0.05f) 
-					{
-						gt->SetMostRecentRate(kps);
-						gt->fLastData.restart();
-					}
-					else
-					{
-						gt->SetPacketCount(gotk);
-					}
-					
-					// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
-					double gcr = gt->GetCalculatedRate();
-					
-					item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
-					
-					item->setText(WTransferItem::Rate, tr("%1").arg(gcr*1024.0f));
-
-					if (msg->FindBool("done", &done) == B_OK)
-					{
-						item->setText(WTransferItem::Status, "Finished.");
-						gWin->PrintSystem( tr(MSG_TX_HASFINISHED).arg(gt->GetRemoteUser()).arg(item->text(WTransferItem::Filename)) , false);
-					}
-
 				}
 				break;
 			}
@@ -897,4 +928,10 @@ WDownload::UserDisconnected(QString sid, QString name)
 		}
 		fLock.unlock();
 	}
+}
+
+QString
+WDownload::FormatIndex(int32 cur, int32 num)
+{
+	return QObject::tr("%1 of %2").arg(cur+1).arg(num);
 }

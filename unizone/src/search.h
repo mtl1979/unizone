@@ -74,6 +74,7 @@ private:
 	QPushButton * fClear;
 	QPushButton * fStop;
 	QStatusBar * fStatus;
+	Message * fQueue;
 	QMutex fLock;		// to lock the list so only one method can be using it at a time
 
 	QString fCurrentSearchPattern;
@@ -91,6 +92,9 @@ private:
 	void StartQuery(QString sidRegExp, QString fileRegExp);
 	void SetResultsMessage();
 	void SetStatus(const QString & status);
+
+	void QueueDownload(QString file, WUser * user);
+	void EmptyQueues();
 
 	void HandleComboEvent(WTextEvent *);
 

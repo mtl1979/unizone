@@ -13,7 +13,11 @@
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	: WGenericThread(owner, optShutdownFlag) 
 { 
+	setName( "WUploadThread" );
 	fFile = NULL; 
+	fFileUl = QString::null;
+	fCurFile = -1;
+	fNumFiles = -1;
 	fActive = true;
 	fBlocked = false;
 }
@@ -267,6 +271,7 @@ WUploadThread::SignalOwner()
 									fUploads.insert(fUploads.end(), fileRef);
 								}
 							}
+							fNumFiles = i;
 							fFileThread->Unlock();
 							fWaitingForUploadToFinish = false;
 							if (!fQueued)	// we're not queued?
@@ -317,6 +322,7 @@ WUploadThread::SignalOwner()
 					PRINT("\t\tSending message\n");
 					Message * msg = new Message(WGenericEvent::Disconnected);
 					msg->AddBool("done", true);
+					msg->AddString("file", (const char *) fFileUl.utf8());
 					PRINT("\t\tSending...\n");
 					SendReply(msg);
 					PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
@@ -404,7 +410,10 @@ WUploadThread::DoUpload()
 				update->AddInt32("sent", numBytes);
 				
 				if (fCurrentOffset >= fFileSize)
+				{
 					update->AddBool("done", true);	// file done!
+					update->AddString("file", (const char *) fFileUl.utf8());
+				}
 				SendReply(update);
 				return;
 			}
@@ -440,7 +449,8 @@ WUploadThread::DoUpload()
 					filePath += "/";
 				filePath += filename;
 				PRINT("WUploadThread::DoUpload: filePath = %s\n", filePath.Cstr()); // <postmaster@raasu.org> 20021023 -- Add additional debug message
-				fFile = new QFile(QString::fromUtf8(filePath.Cstr()));
+				fFileUl = QString::fromUtf8(filePath.Cstr());
+				fFile = new QFile(fFileUl);
 				if (!fFile->open(IO_ReadOnly))	// probably doesn't exist
 				{
 					delete fFile;
@@ -470,6 +480,8 @@ WUploadThread::DoUpload()
 				msg->AddInt64("size", fFileSize);
 				msg->AddString("user", (const char *) fRemoteSessionID.utf8());
 				SendReply(msg);
+
+				fCurFile++;
 
 				DoUpload();	// nested call
 			}

@@ -60,8 +60,10 @@ public:
 		TransferCommandPeerID
 	};
 
-	void AddDownload(QString file, QString remoteSessionID, uint32 remotePort,
+	void AddDownload(QString * files, int32 numFiles, QString remoteSessionID, uint32 remotePort,
 						QString remoteIP, uint64 remoteInstallID, bool firewalled, bool partial);
+	void AddDownloadList(Queue<QString> & fQueue, WUser * user);
+
 	void AddUpload(int socket, uint32 remoteIP, bool queued);
 	void AddUpload(QString remoteIP, uint32 port);
 
@@ -99,6 +101,7 @@ private:
 	int fNumUploads, fNumDownloads;
 
 	QString GetUserName(QString);
+	QString FormatIndex(long cur, long num);
 	// Simple method that is used to decrease the download/upload count
 	// when one is canceled or finished. Returns the count after everything
 	// has been done.

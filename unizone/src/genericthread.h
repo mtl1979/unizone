@@ -55,6 +55,14 @@ public:
 
 	virtual QString GetRemoteID() { return QString::null; }
 	virtual QString GetRemoteUser() { return QString::null; }
+	virtual QString GetCurrentFile() { return QString::null; }
+
+	virtual long GetCurrentNum() { return -1; }
+	virtual long GetNumFiles() { return 0; }
+	virtual bool IsLastFile() { return ((GetCurrentNum() + 1) == GetNumFiles()); }
+
+public slots:
+	void ConnectTimer(); // Connection timed out?
 
 protected:
 	QObject * fOwner;

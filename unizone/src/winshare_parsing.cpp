@@ -373,18 +373,28 @@ WinShareWindow::CheckVersion(const char * buf, QString * version)
 	if (ret == 4)	// we want 4 return values
 	{
 		PRINT("Checking version %d.%d.%d.%d\n", maj, min, rev, build);
-		if (maj <= kMajor)
+		if (maj == kMajor)
 		{
-			if (min <= kMinor)
+			if (min == kMinor)
 			{
-				if (rev <= kPatch)
+				if (rev == kPatch)
 				{
 					if (build <= kBuild)
-					{
 						return false;
-					}
+				}
+				else if (rev < kPatch)
+				{
+					return false;
 				}
 			}
+			else if (min < kMinor)
+			{
+				return false;
+			}
+		}
+		else if (maj < kMajor)
+		{
+			return false;
 		}
 		if (version)
 			*version = tr("%1.%2.%3 build %4").arg(maj).arg(min).arg(rev).arg(build);

@@ -14,22 +14,31 @@
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 		: WGenericThread(owner, optShutdownFlag) 
 {
+	setName( "WDownloadThread" );
 	fFile = NULL; 
+	fFileDl = NULL;
+	fNumFiles = -1;
+	fCurFile = -1;
 	CTimer = new QTimer(this, "Connect Timer");
-	connect( CTimer , SIGNAL(timeout()), SLOT(ConnectTimer()) );
+	connect( CTimer , SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
 }
 
 WDownloadThread::~WDownloadThread()
 {
 	if (fFile)
 		delete fFile;
+
+	if (fFileDl)
+		delete [] fFileDl;
 }
 
 void 
-WDownloadThread::SetFile(QString file, QString fromIP, QString fromSession,
+WDownloadThread::SetFile(QString * files, int32 numFiles, QString fromIP, QString fromSession,
 						QString localSession, int32 remotePort, bool firewalled, bool partial)
 {
-	fFileDl = file;
+	fFileDl = files;
+	fNumFiles = numFiles;
+	fCurFile = 0;
 	fIP = fromIP;
 	fFromSession = fromSession;
 	fFromUser = GetUserName(fFromSession);
@@ -41,7 +50,7 @@ WDownloadThread::SetFile(QString file, QString fromIP, QString fromSession,
 	Message * msg = new Message(WGenericEvent::Init);
 	QString dlFile = "downloads";
 	dlFile += "/";
-	dlFile += fFileDl;
+	dlFile += fFileDl[0];
 	msg->AddString("file", (const char *) dlFile.utf8());
 	msg->AddString("user", (const char *) fromSession.utf8());
 	SendReply(msg);	// send the init message to our owner
@@ -151,6 +160,7 @@ WDownloadThread::InitSession()
 			cnt->AddString("session", (const char *) fFromSession.utf8());
 			cnt->AddInt32("port", fAcceptingOn);
 			SendReply(cnt);
+			CTimer->start(180000, true); // 180 seconds
 			return true;
 		}
 	}
@@ -187,6 +197,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					{
 						Message * q = new Message(WGenericEvent::FileQueued);
 						SendReply(q);
+						CTimer->start(60000, true);
 						break;
 					}
 
@@ -209,6 +220,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							}
 							SendReply(msg);
 							fCurrentOffset = fFileSize = 0;
+							NextFile();
 						}
 						// fields:
 						//	String		beshare:File Name
@@ -317,10 +329,12 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 									if (fCurrentOffset >= fFileSize)
 									{
 										update->AddBool("done", true);	// file done!
+										update->AddString("file", (const char *) fFileDl[fCurFile].utf8());
 										fFile->close();
 										delete fFile; 
 										fFile = NULL;
 										fDownloading = false;
+										NextFile();
 									}
 									SendReply(update);
 								}
@@ -358,53 +372,56 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 				SendMessageToSessions(comID);
 
 				MessageRef neg(new Message(WDownload::TransferFileList), NULL);
-				// check to see wether the file exists
-				QString outFile("downloads");
-				if (!(outFile.right(1) == "/"))
-					outFile += "/";
-				QString fixed = outFile;
-				outFile += fFileDl;
-				fixed += FixFileName(fFileDl);
-
-				if (QFile::exists(fixed))
+				for (int c = 0; c < fNumFiles; c++)
 				{
-					// get an MD5 hash code out of it
-					uint8 digest[MD5_DIGEST_SIZE];
-					uint64 fileOffset = 0;	// autodetect file size for offset
-					uint64 retBytesHashed = 0;
-					uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
-
-					Message * hashMsg = new Message(WGenericEvent::FileHashing);
-					hashMsg->AddString("file", (const char *)fixed.utf8());
-					SendReply(hashMsg);
-
-					if (HashFileMD5(fixed, fileOffset, bytesFromBack, retBytesHashed, digest, fShutdownFlag) == B_ERROR)
+					// check to see wether the file exists
+					QString outFile("downloads");
+					if (!(outFile.right(1) == "/"))
+						outFile += "/";
+					QString fixed = outFile;
+					outFile += fFileDl[c];
+					fixed += FixFileName(fFileDl[fCurFile]);
+					
+					if (QFile::exists(fixed))
 					{
-						if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
+						// get an MD5 hash code out of it
+						uint8 digest[MD5_DIGEST_SIZE];
+						uint64 fileOffset = 0;	// autodetect file size for offset
+						uint64 retBytesHashed = 0;
+						uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
+						
+						Message * hashMsg = new Message(WGenericEvent::FileHashing);
+						hashMsg->AddString("file", (const char *)fixed.utf8());
+						SendReply(hashMsg);
+						
+						if (HashFileMD5(fixed, fileOffset, bytesFromBack, retBytesHashed, digest, fShutdownFlag) == B_ERROR)
 						{
-							ShutdownInternalThread();
-							break;
+							if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
+							{
+								ShutdownInternalThread();
+								break;
+							}
+							else	// ERROR?
+							{
+								Message * e = new Message(WGenericEvent::FileError);
+								e->AddString("file", (const char *) outFile.utf8());
+								e->AddString("why", "MD5 hashing failed! Can't resume.");
+								SendReply(e);
+							}
 						}
-						else	// ERROR?
+						else
 						{
-							Message * e = new Message(WGenericEvent::FileError);
-                            e->AddString("file", (const char *) outFile.utf8());
-							e->AddString("why", "MD5 hashing failed! Can't resume.");
-							SendReply(e);
+							// aha! succeeded!
+							neg()->AddInt64("offsets", fileOffset);
+							
+							if (bytesFromBack > 0)
+								neg()->AddInt64("numbytes", retBytesHashed);
+							
+							neg()->AddData("md5", B_RAW_TYPE, digest, (fileOffset > 0) ? sizeof(digest) : 1);
 						}
 					}
-					else
-					{
-						// aha! succeeded!
-						neg()->AddInt64("offsets", fileOffset);
-
-						if (bytesFromBack > 0)
-							neg()->AddInt64("numbytes", retBytesHashed);
-
-						neg()->AddData("md5", B_RAW_TYPE, digest, (fileOffset > 0) ? sizeof(digest) : 1);
-					}
+					neg()->AddString("files", (const char *) fFileDl[c].utf8());
 				}
-				neg()->AddString("files", (const char *) fFileDl.utf8());
 				neg()->AddString("beshare:FromSession", (const char *) fLocalSession.utf8());
 				SendMessageToSessions(neg);
 				break;
@@ -418,20 +435,22 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 				{
 					dis = new Message(WGenericEvent::Disconnected);
 					dis->AddBool("failed", true);
-					dis->AddString("file", (const char *) fFileDl.utf8());
+					dis->AddString("file", (const char *) fFileDl[fCurFile].utf8());
 				}
 				else if (fDownloading && (fCurrentOffset == fFileSize))
 				{
 					dis = new Message(WGenericEvent::FileDone);
 					dis->AddBool("done", true);		// when we do multiple file downloads in one dialog
-														// this will come in handy... it will tell the GUI to give
-														// us the next file
+													// this will come in handy... it will tell the GUI to give
+													// us the next file
+					dis->AddString("file", (const char *) fFileDl[fCurFile].utf8());
 				}
 				else
 				{
 					dis = new Message(WGenericEvent::Disconnected);
 					dis->AddBool("failed", false);
-					dis->AddString("file", (const char *) fFileDl.utf8());
+					if (fCurFile != -1)
+						dis->AddString("file", (const char *) fFileDl[fCurFile].utf8());
 				}
 
 				fDownloading = false;
@@ -472,14 +491,11 @@ WDownloadThread::UniqueName(QString file, int index)
 	return QString::null;
 }
 
-void
-WDownloadThread::ConnectTimer()
+void WDownloadThread::NextFile()
 {
-	Reset();
-	Message * msg = new Message(WGenericEvent::ConnectFailed);
-	msg->AddString("why", "Connection timed out!");
-	msg->AddBool("retry", true);
-	SendReply(msg);
+	fCurFile++;
+	if (fCurFile == fNumFiles)
+		fCurFile = -1;
 }
 
 // -----------------------------------------------------------------------------

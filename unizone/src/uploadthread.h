@@ -29,6 +29,10 @@ public:
 
 	QString GetRemoteID() {return fRemoteSessionID;}
 	QString GetRemoteUser() {return fRemoteUser;}
+	QString GetCurrentFile() {return fFileUl;}
+
+	int32 GetCurrentNum() { return fCurFile; }
+	int32 GetNumFiles() { return fNumFiles; }
 
 	virtual void SetQueued(bool b);
 	virtual void SetBlocked(bool b);
@@ -50,10 +54,13 @@ private:
 	int fMungeMode;
 	QString fRemoteSessionID;
 	QString fRemoteUser;
+	QString fFileUl;
 	WFileThread * fFileThread;
 	MessageRef fCurrentRef;
 	bool fWaitingForUploadToFinish;
 	bool fAccept;		// is this the accept version?
+
+	int32 fCurFile, fNumFiles;
 
 	void DoUpload();
 };

@@ -1604,4 +1604,5 @@ WinShareWindow::OpenDownload()
 		return;
 	fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
 	connect(fDLWindow, SIGNAL(FileFailed(QString, QString)), this, SLOT(FileFailed(QString, QString)));
+	fDLWindow->show();
 }
