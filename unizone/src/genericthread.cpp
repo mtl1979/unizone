@@ -31,8 +31,8 @@ WGenericThread::~WGenericThread()
 	if (fShutdownFlag && !*fShutdownFlag)
 	{
 		*fShutdownFlag = true;
-		WaitForInternalThreadToExit();
 	}
+	WaitForInternalThreadToExit();
 }
 /*
 bool
