@@ -648,7 +648,7 @@ WDownload::customEvent(QCustomEvent * e)
 					if (msg->FindBool("done", &done) == B_OK)
 					{
 						item->setText(WTransferItem::Status, "Finished.");
-						gWin->PrintSystem( tr(MSG_TX_FINISHED).arg(gt->GetRemoteUser()).arg(item->text(0)) , false);
+						gWin->PrintSystem( tr(MSG_TX_FINISHED).arg(gt->GetRemoteUser()).arg(item->text(WTransferItem::Filename)) , false);
 						DecreaseCount(gt, fNumDownloads, false);
 					}
 				}
@@ -686,7 +686,7 @@ WDownload::customEvent(QCustomEvent * e)
 					if (msg->FindBool("done", &done) == B_OK)
 					{
 						item->setText(WTransferItem::Status, "Finished.");
-						gWin->PrintSystem( tr(MSG_TX_HASFINISHED).arg(gt->GetRemoteUser()).arg(item->text(0)) , false);
+						gWin->PrintSystem( tr(MSG_TX_HASFINISHED).arg(gt->GetRemoteUser()).arg(item->text(WTransferItem::Filename)) , false);
 					}
 
 				}
