@@ -29,6 +29,10 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
 			this, SLOT(MessageReceived(MessageRef, const String &)));
+	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
+			this, SLOT(SessionAccepted(const String &, uint16)));
+	connect(qmtt, SIGNAL(SessionAttached(const String &)),
+			this, SLOT(SessionAttached(const String &)));
 	connect(qmtt, SIGNAL(SessionConnected(const String &)),
 			this, SLOT(SessionConnected(const String &)));
 	connect(qmtt, SIGNAL(ServerExited()),
@@ -226,18 +230,33 @@ WUploadThread::SendReply(MessageRef &m)
 		WGenericThread::SendReply(m);
 	}
 }
-/*
-void
-WUploadThread::SignalOwner()
-{
-	MessageRef next;
-	uint32 code;
 
-	while (qmtt->GetNextEventFromInternalThread(code, &next) >= 0)
+void 
+WUploadThread::SessionAccepted(const String &sessionID, uint16 port)
+{
+	_sessionID = sessionID;
+	CTimer->stop();
+
+	MessageRef con(GetMessageFromPool(WGenericEvent::Connected));
+	if (con())
 	{
-		switch (code)
-		{
-		*/
+		SendReply(con);
+	}
+}
+
+void
+WUploadThread::SessionAttached(const String &sessionID)
+{
+	_sessionID = sessionID;
+	CTimer->stop();
+
+	MessageRef con(GetMessageFromPool(WGenericEvent::Connected));
+	if (con())
+	{
+		SendReply(con);
+	}
+}
+
 void
 WUploadThread::SessionConnected(const String &sessionID)
 {

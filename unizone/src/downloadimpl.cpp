@@ -635,243 +635,265 @@ void
 WDownload::customEvent(QCustomEvent * e)
 {
 	WGenericEvent * g = NULL;
-	if ((int) e->type() == WGenericEvent::Type)
+	int t = (int) e->type();
+	switch (t)
 	{
-		g = dynamic_cast<WGenericEvent *>(e);
+	case WGenericEvent::Type:
+		{
+			g = dynamic_cast<WGenericEvent *>(e);
+			if (g) genericEvent(g);
+			break;
+		}
+	case DequeueDownloads:
+		{
+			DequeueDLSessions();
+			break;
+		}
+	case DequeueUploads:
+		{
+			DequeueULSessions();
+			break;
+		}
 	}
+}
 
-	if (g)
+void
+WDownload::genericEvent(WGenericEvent * g)
+{
+	MessageRef msg = g->Msg();
+	WGenericThread * gt = NULL;
+	bool b;
+	bool upload = false;
+	WTransferItem * item = NULL;
+	WTIter foundIt;
+	
+	if (!msg())
+		return; // Invalid MessageRef!
+	
+	if (msg()->FindPointer("sender", (void **)&gt) != B_OK)
+		return;	// failed! ouch!
+	
+	if (!gt)
+		return;
+	
+	if (msg()->FindBool("download", &b) == B_OK)
 	{
-		MessageRef msg = g->Msg();
-		WGenericThread * gt = NULL;
-		bool b;
-		bool upload = false;
-		WTransferItem * item = NULL;
-		WTIter foundIt;
+		// a download
+		fLock.lock();
+		for (foundIt = fDownloadList.begin(); foundIt != fDownloadList.end(); foundIt++)
+		{
+			if ((*foundIt).first == gt)
+			{
+				// found our thread
+				item = (*foundIt).second;
+				PRINT("\t\tFound dl!!!\n");
+				break;
+			}
+		}
+		fLock.unlock();
+	}
+	else if (msg()->FindBool("upload", &b) == B_OK)
+	{
+		fLock.lock();
+		for (foundIt = fUploadList.begin(); foundIt != fUploadList.end(); foundIt++)
+		{
+			if ((*foundIt).first == gt)
+			{
+				// found our thread
+				item = (*foundIt).second;
+				upload = true;
+				PRINT("\t\tFound ul!!!\n");
+				break;
+			}
+		}
+		fLock.unlock();
+	}
+	if (!item)
+	{
+		// <postmaster@raasu.org> 20021023 -- Add debug message
+		PRINT("\t\tFailed to find file!!!\n");
+		return;	// failed to find a item
+	}
+	switch (msg()->what)
+	{
+	case WGenericEvent::Init:
+		{
+			PRINT("\tWGenericEvent::Init\n");
+			const char * filename, * user;
+			if (
+				(msg()->FindString("file", &filename) == B_OK) && 
+				(msg()->FindString("user", &user) == B_OK)
+				)
+			{
+				item->setText(WTransferItem::Filename, QString::fromUtf8(filename));
+				item->setText(WTransferItem::User, GetUserName(gt));
+				item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
+			}
+			break;
+		}
 		
-		if (!msg())
-			return; // Invalid MessageRef!
-
-		if (msg()->FindPointer("sender", (void **)&gt) != B_OK)
-			return;	// failed! ouch!
-
-		if (!gt)
-			return;
-
-		if (msg()->FindBool("download", &b) == B_OK)
+	case WGenericEvent::FileQueued:
 		{
-			// a download
-			fLock.lock();
-			for (foundIt = fDownloadList.begin(); foundIt != fDownloadList.end(); foundIt++)
+			PRINT("\tWGenericEvent::FileQueued\n");
+			if (upload)
 			{
-				if ((*foundIt).first == gt)
-				{
-					// found our thread
-					item = (*foundIt).second;
-					PRINT("\t\tFound dl!!!\n");
-					break;
-				}
-			}
-			fLock.unlock();
-		}
-		else if (msg()->FindBool("upload", &b) == B_OK)
-		{
-			fLock.lock();
-			for (foundIt = fUploadList.begin(); foundIt != fUploadList.end(); foundIt++)
-			{
-				if ((*foundIt).first == gt)
-				{
-					// found our thread
-					item = (*foundIt).second;
-					upload = true;
-					PRINT("\t\tFound ul!!!\n");
-					break;
-				}
-			}
-			fLock.unlock();
-		}
-		if (!item)
-		{
-			// <postmaster@raasu.org> 20021023 -- Add debug message
-			PRINT("\t\tFailed to find file!!!\n");
-			return;	// failed to find a item
-		}
-		switch (msg()->what)
-		{
-		case WGenericEvent::Init:
-			{
-				PRINT("\tWGenericEvent::Init\n");
-				const char * filename, * user;
-				if (
-					(msg()->FindString("file", &filename) == B_OK) && 
-					(msg()->FindString("user", &user) == B_OK)
-					)
-				{
-					item->setText(WTransferItem::Filename, QString::fromUtf8(filename));
-					item->setText(WTransferItem::User, GetUserName(gt));
-					item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
-				}
-				break;
-			}
-			
-		case WGenericEvent::FileQueued:
-			{
-				PRINT("\tWGenericEvent::FileQueued\n");
-				if (upload)
-				{
-					item->setText(WTransferItem::Status, tr("Queued."));
-					item->setText(WTransferItem::Rate, "0.0");
-					item->setText(WTransferItem::ETA, "");
-					item->setText(WTransferItem::Elapsed, "");
-
-				}
-				else
-				{
-					item->setText(WTransferItem::Status, tr("Remotely Queued."));
-					item->setText(WTransferItem::Rate, "0.0");
-					item->setText(WTransferItem::ETA, "");
-					item->setText(WTransferItem::Elapsed, "");
-				}
-				break;
-			}
-			
-		case WGenericEvent::FileBlocked:
-			{
-				PRINT("\tWGenericEvent::FileBlocked\n");
-				uint64 timeLeft = (uint64) -1;
-				(void) msg()->FindInt64("timeleft", (int64 *) &timeLeft);
-				if (timeLeft == -1)
-				{
-					item->setText(WTransferItem::Status, tr("Blocked."));
-				}
-				else
-				{
-					item->setText(WTransferItem::Status, tr("Blocked for %1 minute(s).").arg((int) (timeLeft/60000000)));
-				}
+				item->setText(WTransferItem::Status, tr("Queued."));
 				item->setText(WTransferItem::Rate, "0.0");
 				item->setText(WTransferItem::ETA, "");
 				item->setText(WTransferItem::Elapsed, "");
-
-				break;
+				
 			}
-			
-		case WGenericEvent::ConnectBackRequest:
+			else
 			{
-				PRINT("\tWGenericEvent::ConnectBackRequest\n");
-				MessageRef cb(GetMessageFromPool(NetClient::CONNECT_BACK_REQUEST));
-				if (cb())
+				item->setText(WTransferItem::Status, tr("Remotely Queued."));
+				item->setText(WTransferItem::Rate, "0.0");
+				item->setText(WTransferItem::ETA, "");
+				item->setText(WTransferItem::Elapsed, "");
+			}
+			break;
+		}
+		
+	case WGenericEvent::FileBlocked:
+		{
+			PRINT("\tWGenericEvent::FileBlocked\n");
+			uint64 timeLeft = (uint64) -1;
+			(void) msg()->FindInt64("timeleft", (int64 *) &timeLeft);
+			if (timeLeft == -1)
+			{
+				item->setText(WTransferItem::Status, tr("Blocked."));
+			}
+			else
+			{
+				item->setText(WTransferItem::Status, tr("Blocked for %1 minute(s).").arg((int) (timeLeft/60000000)));
+			}
+			item->setText(WTransferItem::Rate, "0.0");
+			item->setText(WTransferItem::ETA, "");
+			item->setText(WTransferItem::Elapsed, "");
+			
+			break;
+		}
+		
+	case WGenericEvent::ConnectBackRequest:
+		{
+			PRINT("\tWGenericEvent::ConnectBackRequest\n");
+			MessageRef cb(GetMessageFromPool(NetClient::CONNECT_BACK_REQUEST));
+			if (cb())
+			{
+				String session;
+				int32 port;
+				if (
+					(msg()->FindInt32("port", &port) == B_OK) && 
+					(msg()->FindString("session", session) == B_OK)
+					)
 				{
-					String session;
-					int32 port;
-					if (
-						(msg()->FindInt32("port", &port) == B_OK) && 
-						(msg()->FindString("session", session) == B_OK)
-						)
+					item->setText(WTransferItem::Status, tr("Waiting for incoming connection..."));
+					String tostr = "/*/";
+					tostr += session.Cstr();
+					tostr += "/beshare";
+					cb()->AddString(PR_NAME_KEYS, tostr);
+					cb()->AddString("session", session);
+					cb()->AddInt32("port", port);
+					gWin->fNetClient->SendMessageToSessions(cb);
+					break;
+				}
+			}
+			gt->Reset();	// failed...
+			break;
+		}
+		
+	case WGenericEvent::FileHashing:
+		{
+			PRINT("\tWGenericEvent::FileHashing\n");
+			item->setText(WTransferItem::Status, tr("Examining for resume..."));
+			break;
+		}
+		
+	case WGenericEvent::ConnectInProgress:
+		{
+			PRINT("\tWGenericEvent::ConnectInProgress\n");
+			item->setText(WTransferItem::Status, tr("Connecting..."));
+			break;
+		}
+		
+	case WGenericEvent::ConnectFailed:
+		{
+			PRINT("\tWGenericEvent::ConnectFailed\n");
+			String why, mFile;
+			msg()->FindString("why", why);
+			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
+			gt->SetFinished(true);
+			gt->SetActive(false);
+			if (upload)
+			{
+				QCustomEvent * qce = new QCustomEvent(DequeueUploads);
+				if (qce) QThread::postEvent(this, qce);
+			}
+			else
+			{
+				for (int n = gt->GetCurrentNum(); n < gt->GetNumFiles(); n++)
+				{
+					QString qFile = gt->GetFileName(n);
+					QString qLFile = gt->GetLocalFileName(n);
+					emit FileFailed(qFile, qLFile, GetUserName(gt));
+				}
+				
+				QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
+				if (qce) QThread::postEvent(this, qce);
+			}
+			break;
+		}
+		
+	case WGenericEvent::Connected:
+		{
+			PRINT("\tWGenericEvent::Connected\n");
+			item->setText(WTransferItem::Status, tr("Negotiating..."));
+			break;
+		}
+		
+	case WGenericEvent::Disconnected:
+		{
+			PRINT("\tWGenericEvent::Disconnected\n");
+			if (item->text(0) != tr("Finished."))
+				item->setText(WTransferItem::Status, tr("Disconnected."));
+			if (upload)
+			{
+				bool f;
+				if (msg()->FindBool("failed", &f) == B_OK)
+				{
+					// "failed" == true only, if the transfer has failed
+					if (!f)
 					{
-						item->setText(WTransferItem::Status, tr("Waiting for incoming connection..."));
-						String tostr = "/*/";
-						tostr += session.Cstr();
-						tostr += "/beshare";
-						cb()->AddString(PR_NAME_KEYS, tostr);
-						cb()->AddString("session", session);
-						cb()->AddInt32("port", port);
-                        gWin->fNetClient->SendMessageToSessions(cb);
-						break;
+						item->setText(WTransferItem::Status, tr("Finished."));
+						item->setText(WTransferItem::ETA, "");
 					}
 				}
-				gt->Reset();	// failed...
-				break;
-			}
-			
-		case WGenericEvent::FileHashing:
-			{
-				PRINT("\tWGenericEvent::FileHashing\n");
-				item->setText(WTransferItem::Status, tr("Examining for resume..."));
-				break;
-			}
-			
-		case WGenericEvent::ConnectInProgress:
-			{
-				PRINT("\tWGenericEvent::ConnectInProgress\n");
-				item->setText(WTransferItem::Status, tr("Connecting..."));
-				break;
-			}
-			
-		case WGenericEvent::ConnectFailed:
-			{
-				PRINT("\tWGenericEvent::ConnectFailed\n");
-				String why, mFile;
-				msg()->FindString("why", why);
-				item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
 				gt->SetFinished(true);
 				gt->SetActive(false);
-				if (upload)
+				gt->Reset();
+				QCustomEvent * qce = new QCustomEvent(DequeueUploads);
+				if (qce) QThread::postEvent(this, qce);
+			}
+			else
+			{
+				if (gt->IsManuallyQueued())
 				{
-					DequeueULSessions();
-
+					item->setText(WTransferItem::Status, tr("Manually Queued."));
+					item->setText(WTransferItem::Rate, "0.0");
+					item->setText(WTransferItem::ETA, "");
+					item->setText(WTransferItem::Elapsed, "");
 				}
 				else
 				{
-					for (int n = gt->GetCurrentNum(); n < gt->GetNumFiles(); n++)
-					{
-						QString qFile = gt->GetFileName(n);
-						QString qLFile = gt->GetLocalFileName(n);
-						emit FileFailed(qFile, qLFile, GetUserName(gt));
-					}
-
-					DequeueDLSessions();
-				}
-				break;
-			}
-			
-		case WGenericEvent::Connected:
-			{
-				PRINT("\tWGenericEvent::Connected\n");
-				item->setText(WTransferItem::Status, tr("Negotiating..."));
-				break;
-			}
-			
-		case WGenericEvent::Disconnected:
-			{
-				PRINT("\tWGenericEvent::Disconnected\n");
-				if (item->text(0) != tr("Finished."))
-					item->setText(WTransferItem::Status, tr("Disconnected."));
-				if (upload)
-				{
+					gt->SetFinished(true);
+					gt->SetActive(false);
+					// emit FileFailed signal, so we can record the filename and remote username for resuming later
 					bool f;
 					if (msg()->FindBool("failed", &f) == B_OK)
 					{
 						// "failed" == true only, if the transfer has failed
-						if (!f)
+						if (f)
 						{
-							item->setText(WTransferItem::Status, tr("Finished."));
-							item->setText(WTransferItem::ETA, "");
-						}
-					}
-					gt->SetFinished(true);
-					gt->SetActive(false);
-					gt->Reset();
-					DequeueULSessions();
-				}
-				else
-				{
-					if (gt->IsManuallyQueued())
-					{
-						item->setText(WTransferItem::Status, tr("Manually Queued."));
-						item->setText(WTransferItem::Rate, "0.0");
-						item->setText(WTransferItem::ETA, "");
-						item->setText(WTransferItem::Elapsed, "");
-					}
-					else
-					{
-						gt->SetFinished(true);
-						gt->SetActive(false);
-						// emit FileFailed signal, so we can record the filename and remote username for resuming later
-						bool f;
-						if (msg()->FindBool("failed", &f) == B_OK)
-						{
-							// "failed" == true only, if the transfer has failed
-							if (f)
+							if (gt->GetCurrentNum() != -1)
 							{
 								for (int n = gt->GetCurrentNum(); n < gt->GetNumFiles(); n++)
 								{
@@ -880,308 +902,309 @@ WDownload::customEvent(QCustomEvent * e)
 									emit FileFailed(qFile, qLFile, GetUserName(gt));
 								}
 							}
-							else
-							{
-								item->setText(WTransferItem::Status, tr("Finished."));
-								item->setText(WTransferItem::ETA, "");
-							}
-						}
-					}
-					gt->Reset();
-					DequeueDLSessions();
-				}
-				break;
-			}
-			
-		case WGenericEvent::FileDone:
-			{
-				PRINT("\tWGenericEvent::FileDone\n");
-				bool d;
-				if (msg()->FindBool("done", &d) == B_OK)
-				{
-					PRINT("\tFound done\n");
-					if (!upload)
-					{
-						PRINT("\tIs download\n");
-						DequeueDLSessions();
-					}
-					item->setText(WTransferItem::Status, tr("Finished."));
-					item->setText(WTransferItem::ETA, "");
-				}
-				else
-				{
-					if (!upload)
-					{
-						item->setText(WTransferItem::Status, tr("Waiting..."));
-						item->setText(WTransferItem::Filename, tr("Waiting for next file..."));
-						item->setText(WTransferItem::Received, "");
-						item->setText(WTransferItem::Total, "");
-						item->setText(WTransferItem::Rate, "0.0");
-						item->setText(WTransferItem::ETA, "");
-						//item->setText(WTransferItem::User, "");	<- don't erase the user name
-					}
-				}
-				break;
-			}
-			
-		case WGenericEvent::FileFailed:
-			{
-				PRINT("\tWGenericEvent::FileFailed\n");
-				// not used...
-				break;
-			}
-			
-		case WGenericEvent::FileStarted:
-			{
-				PRINT("\tWGenericEvent::FileStarted\n");
-				String file;
-				uint64 start;
-				uint64 size;
-				String user;
-				
-				if (
-					(msg()->FindString("file", file) == B_OK) && 
-					(msg()->FindInt64("start", (int64 *)&start) == B_OK) &&
-					(msg()->FindInt64("size", (int64 *)&size) == B_OK) && 
-					(msg()->FindString("user", user) == B_OK)
-					)
-				{
-					QString uname = GetUserName(gt);
-
-					WString wID = QString::fromUtf8(user.Cstr());
-					WString wUser = uname;
-					PRINT("USER ID  : %S\n", wID.getBuffer());
-					PRINT("USER NAME: %S\n", wUser.getBuffer());
-
-					item->setText(WTransferItem::Status, tr("Waiting for stream..."));
-					item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
-					// rec, total, rate
-					item->setText(WTransferItem::Received, QString::number((int) start));
-					item->setText(WTransferItem::Total, QString::number((int) size));
-					item->setText(WTransferItem::Rate, "0.0");
-					item->setText(WTransferItem::ETA, "");
-					item->setText(WTransferItem::User, uname);
-					item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
-					
-					if (upload)
-					{
-						if (gWin->fSettings->GetUploads())
-						{
-							gWin->PrintSystem( tr("%1 is downloading %2.").arg(uname).arg(QString::fromUtf8(file.Cstr())) );
-						}
-					}
-					else
-					{
-						if (gWin->fSettings->GetDownloads())
-						{
-							gWin->PrintSystem( tr("Downloading %1 from %2.").arg( gt->GetCurrentFile() ).arg(uname) );
-						}
-					}
-				}
-				gt->fLastData.start();
-				break;
-			}
-			
-		case WGenericEvent::UpdateUI:
-			{
-				PRINT("\tWGenericEvent::UpdateUI\n");
-				const char * id;
-				if (msg()->FindString("id", &id) == B_OK)
-				{
-					item->setText(WTransferItem::User, GetUserName(gt));
-				}
-				break;
-			}
-			
-		case WGenericEvent::FileError:
-			{
-				PRINT("\tWGenericEvent::FileError\n");
-				String why;
-				String file;
-				msg()->FindString("why", why);
-				if (msg()->FindString("file", file) == B_OK)
-					item->setText(WTransferItem::Filename, QString::fromUtf8(file.Cstr()) );
-				item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
-				item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
-				// <postmaster@raasu.org> 20021023 -- Add debug message
-				// <postmaster@raasu.org> 20030815 -- Use WString for Unicode
-				WString wf = QString::fromUtf8(file.Cstr());
-				PRINT("WGenericEvent::FileError: File %S\n", wf.getBuffer()); 
-				break;
-			}
-			
-		case WGenericEvent::FileDataReceived:
-			{
-				PRINT("\tWGenericEvent::FileDataReceived\n");
-				uint64 offset, size;
-				bool done;
-				String mFile;
-				uint32 got;
-				
-				if (
-					(msg()->FindInt64("offset", (int64 *)&offset) == B_OK) && 
-					(msg()->FindInt64("size", (int64 *)&size) == B_OK)
-					)
-				{
-					if (msg()->FindInt32("got", (int32 *)&got) == B_OK)	// a download ("got")
-					{
-#ifdef DEBUG2
-						PRINT("\tOffset: %d\n", offset);
-						PRINT("\tSize  : %d\n", size);
-						PRINT("\tGot   : %d\n", got);
-#endif
-						gWin->UpdateReceiveStats(got);
-						
-						double secs = 0.0f;
-						
-						if (gt->fLastData.elapsed() > 0)
-						{
-							secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
-						}
-
-						double gotk = 0.0f;
-						
-						if (got > 0)
-						{
-							gotk = (double)((double)got / 1024.0f);
-						}
-
-						double kps = 0.0f;
-						
-						if ( (gotk > 0) && (secs > 0) )
-						{
-							kps = gotk / secs;
-						}
-						
-						item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(ComputePercentString(offset, size)));
-						item->setText(WTransferItem::Received, QString::number((int) offset));
-						// <postmaster@raasu.org> 20021104, 20030217, 20030622
-						// elapsed time >= 1 s?
-						if (secs >= 1.0f)
-						{
-							gt->SetMostRecentRate(kps);
-							gt->fLastData.restart();
 						}
 						else
-						{
-							gt->SetPacketCount(gotk);
-						}
-						// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
-						double gcr = gt->GetCalculatedRate();
-
-						uint64 _fileStarted = gt->GetStartTime();
-						if (_fileStarted != 0)
-						{
-							uint64 _now = GetRunTime64();
-							if (_now >= _fileStarted)
-							{
-								uint64 _elapsed = (_now - _fileStarted) / 1000000;	// convert microseconds to seconds
-								item->setText(WTransferItem::Elapsed, QString::number((ulong) _elapsed));
-							}
-						}
-						
-						item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
-						
-						item->setText(WTransferItem::Rate, QString::number(gcr*1024.0f));
-
-						if (msg()->FindBool("done", &done) == B_OK)
-						{
- 							item->setText(WTransferItem::Status, tr("File finished."));
-							item->setText(WTransferItem::ETA, "");
-
-							if (
-								(msg()->FindString("file", mFile) == B_OK) &&
-								gWin->fSettings->GetDownloads()
-								)
-							{
-								gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) );
-							}
-						}
-						PRINT("\tWGenericEvent::FileDataReceived OK\n");
-					}
-					else if (msg()->FindInt32("sent", (int32 *)&got) == B_OK)	// an upload ("sent")
-					{
-#ifdef DEBUG2
-						PRINT("\tOffset: %d\n", offset);
-						PRINT("\tSize  : %d\n", size);
-						PRINT("\tSent  : %d\n", got);
-#endif
-						gWin->UpdateTransmitStats(got);
-						
-						double secs = 0.0f;
-						
-						if (gt->fLastData.elapsed() > 0)
-						{
-							secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
-						}
-
-						double gotk = 0.0f;
-						
-						if (got > 0)
-						{
-							gotk = (double)((double)got / 1024.0f);
-						}
-
-						double kps = 0.0f;
-						
-						if ( (gotk > 0) && (secs > 0) )
-						{
-							kps = gotk / secs;
-						}
-												
-						item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(ComputePercentString(offset, size)));
-						item->setText(WTransferItem::Received, QString::number((int) offset));
-						// <postmaster@raasu.org> 20021104, 20030217, 20030622
-						// elapsed time >= 1 s?
-						if (secs >= 1.0f) 
-						{
-							gt->SetMostRecentRate(kps);
-							gt->fLastData.restart();
-						}
-						else
-						{
-							gt->SetPacketCount(gotk);
-						}
-						
-						// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
-						double gcr = gt->GetCalculatedRate();
-
-						uint64 _fileStarted = gt->GetStartTime();
-						if (_fileStarted != 0)
-						{
-							uint64 _now = GetRunTime64();
-							if (_now >= _fileStarted)
-							{
-								uint64 _elapsed = (_now - _fileStarted) / 1000000;	// convert microseconds to seconds
-								item->setText(WTransferItem::Elapsed, QString::number((ulong) _elapsed));
-							}
-						}
-
-						
-						item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
-						
-						item->setText(WTransferItem::Rate, QString::number(gcr*1024.0f));
-						
-						if (msg()->FindBool("done", &done) == B_OK)
 						{
 							item->setText(WTransferItem::Status, tr("Finished."));
 							item->setText(WTransferItem::ETA, "");
-
-							if (
-								(msg()->FindString("file", mFile) == B_OK) &&
-								gWin->fSettings->GetUploads()
-								)
-							{
-								gWin->PrintSystem( tr("%1 has finished downloading %2.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) );
-							}
 						}
-						
 					}
 				}
-				break;
+				gt->Reset();
+				QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
+				if (qce) QThread::postEvent(this, qce);
 			}
+			break;
 		}
-		return;
+		
+	case WGenericEvent::FileDone:
+		{
+			PRINT("\tWGenericEvent::FileDone\n");
+			bool d;
+			if (msg()->FindBool("done", &d) == B_OK)
+			{
+				PRINT("\tFound done\n");
+				if (!upload)
+				{
+					PRINT("\tIs download\n");
+					QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
+					if (qce) QThread::postEvent(this, qce);
+				}
+				item->setText(WTransferItem::Status, tr("Finished."));
+				item->setText(WTransferItem::ETA, "");
+			}
+			else
+			{
+				if (!upload)
+				{
+					item->setText(WTransferItem::Status, tr("Waiting..."));
+					item->setText(WTransferItem::Filename, tr("Waiting for next file..."));
+					item->setText(WTransferItem::Received, "");
+					item->setText(WTransferItem::Total, "");
+					item->setText(WTransferItem::Rate, "0.0");
+					item->setText(WTransferItem::ETA, "");
+					//item->setText(WTransferItem::User, "");	<- don't erase the user name
+				}
+			}
+			break;
+		}
+		
+	case WGenericEvent::FileFailed:
+		{
+			PRINT("\tWGenericEvent::FileFailed\n");
+			// not used...
+			break;
+		}
+		
+	case WGenericEvent::FileStarted:
+		{
+			PRINT("\tWGenericEvent::FileStarted\n");
+			String file;
+			uint64 start;
+			uint64 size;
+			String user;
+			
+			if (
+				(msg()->FindString("file", file) == B_OK) && 
+				(msg()->FindInt64("start", (int64 *)&start) == B_OK) &&
+				(msg()->FindInt64("size", (int64 *)&size) == B_OK) && 
+				(msg()->FindString("user", user) == B_OK)
+				)
+			{
+				QString uname = GetUserName(gt);
+				
+				WString wID = QString::fromUtf8(user.Cstr());
+				WString wUser = uname;
+				PRINT("USER ID  : %S\n", wID.getBuffer());
+				PRINT("USER NAME: %S\n", wUser.getBuffer());
+				
+				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
+				item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
+				// rec, total, rate
+				item->setText(WTransferItem::Received, QString::number((int) start));
+				item->setText(WTransferItem::Total, QString::number((int) size));
+				item->setText(WTransferItem::Rate, "0.0");
+				item->setText(WTransferItem::ETA, "");
+				item->setText(WTransferItem::User, uname);
+				item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
+				
+				if (upload)
+				{
+					if (gWin->fSettings->GetUploads())
+					{
+						gWin->PrintSystem( tr("%1 is downloading %2.").arg(uname).arg(QString::fromUtf8(file.Cstr())) );
+					}
+				}
+				else
+				{
+					if (gWin->fSettings->GetDownloads())
+					{
+						gWin->PrintSystem( tr("Downloading %1 from %2.").arg( gt->GetCurrentFile() ).arg(uname) );
+					}
+				}
+			}
+			gt->fLastData.start();
+			break;
+		}
+		
+	case WGenericEvent::UpdateUI:
+		{
+			PRINT("\tWGenericEvent::UpdateUI\n");
+			const char * id;
+			if (msg()->FindString("id", &id) == B_OK)
+			{
+				item->setText(WTransferItem::User, GetUserName(gt));
+			}
+			break;
+		}
+		
+	case WGenericEvent::FileError:
+		{
+			PRINT("\tWGenericEvent::FileError\n");
+			String why;
+			String file;
+			msg()->FindString("why", why);
+			if (msg()->FindString("file", file) == B_OK)
+				item->setText(WTransferItem::Filename, QString::fromUtf8(file.Cstr()) );
+			item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
+			item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
+			// <postmaster@raasu.org> 20021023 -- Add debug message
+			// <postmaster@raasu.org> 20030815 -- Use WString for Unicode
+			WString wf = QString::fromUtf8(file.Cstr());
+			PRINT("WGenericEvent::FileError: File %S\n", wf.getBuffer()); 
+			break;
+		}
+		
+	case WGenericEvent::FileDataReceived:
+		{
+			PRINT("\tWGenericEvent::FileDataReceived\n");
+			uint64 offset, size;
+			bool done;
+			String mFile;
+			uint32 got;
+			
+			if (
+				(msg()->FindInt64("offset", (int64 *)&offset) == B_OK) && 
+				(msg()->FindInt64("size", (int64 *)&size) == B_OK)
+				)
+			{
+				if (msg()->FindInt32("got", (int32 *)&got) == B_OK)	// a download ("got")
+				{
+#ifdef DEBUG2
+					PRINT("\tOffset: %d\n", offset);
+					PRINT("\tSize  : %d\n", size);
+					PRINT("\tGot   : %d\n", got);
+#endif
+					gWin->UpdateReceiveStats(got);
+					
+					double secs = 0.0f;
+					
+					if (gt->fLastData.elapsed() > 0)
+					{
+						secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
+					}
+					
+					double gotk = 0.0f;
+					
+					if (got > 0)
+					{
+						gotk = (double)((double)got / 1024.0f);
+					}
+					
+					double kps = 0.0f;
+					
+					if ( (gotk > 0) && (secs > 0) )
+					{
+						kps = gotk / secs;
+					}
+					
+					item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(ComputePercentString(offset, size)));
+					item->setText(WTransferItem::Received, QString::number((int) offset));
+					// <postmaster@raasu.org> 20021104, 20030217, 20030622
+					// elapsed time >= 1 s?
+					if (secs >= 1.0f)
+					{
+						gt->SetMostRecentRate(kps);
+						gt->fLastData.restart();
+					}
+					else
+					{
+						gt->SetPacketCount(gotk);
+					}
+					// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
+					double gcr = gt->GetCalculatedRate();
+					
+					uint64 _fileStarted = gt->GetStartTime();
+					if (_fileStarted != 0)
+					{
+						uint64 _now = GetRunTime64();
+						if (_now >= _fileStarted)
+						{
+							uint64 _elapsed = (_now - _fileStarted) / 1000000;	// convert microseconds to seconds
+							item->setText(WTransferItem::Elapsed, QString::number((ulong) _elapsed));
+						}
+					}
+					
+					item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
+					
+					item->setText(WTransferItem::Rate, QString::number(gcr*1024.0f));
+					
+					if (msg()->FindBool("done", &done) == B_OK)
+					{
+						item->setText(WTransferItem::Status, tr("File finished."));
+						item->setText(WTransferItem::ETA, "");
+						
+						if (
+							(msg()->FindString("file", mFile) == B_OK) &&
+							gWin->fSettings->GetDownloads()
+							)
+						{
+							gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) );
+						}
+					}
+					PRINT("\tWGenericEvent::FileDataReceived OK\n");
+				}
+				else if (msg()->FindInt32("sent", (int32 *)&got) == B_OK)	// an upload ("sent")
+				{
+#ifdef DEBUG2
+					PRINT("\tOffset: %d\n", offset);
+					PRINT("\tSize  : %d\n", size);
+					PRINT("\tSent  : %d\n", got);
+#endif
+					gWin->UpdateTransmitStats(got);
+					
+					double secs = 0.0f;
+					
+					if (gt->fLastData.elapsed() > 0)
+					{
+						secs = (double)((double)gt->fLastData.elapsed() / 1000.0f);
+					}
+					
+					double gotk = 0.0f;
+					
+					if (got > 0)
+					{
+						gotk = (double)((double)got / 1024.0f);
+					}
+					
+					double kps = 0.0f;
+					
+					if ( (gotk > 0) && (secs > 0) )
+					{
+						kps = gotk / secs;
+					}
+					
+					item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(ComputePercentString(offset, size)));
+					item->setText(WTransferItem::Received, QString::number((int) offset));
+					// <postmaster@raasu.org> 20021104, 20030217, 20030622
+					// elapsed time >= 1 s?
+					if (secs >= 1.0f) 
+					{
+						gt->SetMostRecentRate(kps);
+						gt->fLastData.restart();
+					}
+					else
+					{
+						gt->SetPacketCount(gotk);
+					}
+					
+					// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
+					double gcr = gt->GetCalculatedRate();
+					
+					uint64 _fileStarted = gt->GetStartTime();
+					if (_fileStarted != 0)
+					{
+						uint64 _now = GetRunTime64();
+						if (_now >= _fileStarted)
+						{
+							uint64 _elapsed = (_now - _fileStarted) / 1000000;	// convert microseconds to seconds
+							item->setText(WTransferItem::Elapsed, QString::number((ulong) _elapsed));
+						}
+					}
+					
+					
+					item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
+					
+					item->setText(WTransferItem::Rate, QString::number(gcr*1024.0f));
+					
+					if (msg()->FindBool("done", &done) == B_OK)
+					{
+						item->setText(WTransferItem::Status, tr("Finished."));
+						item->setText(WTransferItem::ETA, "");
+						
+						if (
+							(msg()->FindString("file", mFile) == B_OK) &&
+							gWin->fSettings->GetUploads()
+							)
+						{
+							gWin->PrintSystem( tr("%1 has finished downloading %2.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) );
+						}
+					}
+					
+				}
+			}
+			break;
+		}
 	}
 }
 
@@ -1352,7 +1375,8 @@ WDownload::DLPopupActivated(int id)
 			gt->SetActive(false);
 			gt->Reset();
 			fLock.unlock();
-			DequeueDLSessions();
+			QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
+			if (qce) QThread::postEvent(this, qce);
 			break;
 		}
 		
@@ -1584,7 +1608,8 @@ WDownload::ULPopupActivated(int id)
 			gt->SetActive(false);
 			gt->Reset();
 			fLock.unlock();
-			DequeueULSessions();
+			QCustomEvent * qce = new QCustomEvent(DequeueUploads);
+			if (qce) QThread::postEvent(this, qce);
 			break;
 		}
 				
@@ -2640,23 +2665,23 @@ WDownload::GetUploadQueue()
 {
 	PRINT("\tWDownload::GetUploadQueue\n");
 	int n = 0;
-	if ( fUploadList.empty() )
-		return n;
-
-	fLock.lock();
-	for (WTIter it = fUploadList.begin(); it != fUploadList.end(); it++)
+	if (!fUploadList.empty() )
 	{
-		if ((*it).first)
+		fLock.lock();
+		for (WTIter it = fUploadList.begin(); it != fUploadList.end(); it++)
 		{
-			if (
-				((*it).first->IsFinished() == false)
-				)
+			if ((*it).first)
 			{
-				n++;
+				if (
+					((*it).first->IsFinished() == false)
+					)
+				{
+					n++;
+				}
 			}
 		}
+		fLock.unlock();
 	}
-	fLock.unlock();
 	return n;
 }
 

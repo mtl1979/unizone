@@ -56,8 +56,8 @@ WGenericThread::~WGenericThread()
 	{
 		qmtt->ShutdownInternalThread();
 		qmtt->Reset(); 
+		qmtt->WaitForInternalThreadToExit();
 	}
-	qmtt->WaitForInternalThreadToExit();
 	delete qmtt;
 	qmtt = NULL;
 }

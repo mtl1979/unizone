@@ -27,6 +27,7 @@ using std::iterator;
 class MD5Thread;
 class MD5Looper;
 class WGenericThread;
+class WGenericEvent;
 class WDownloadThread;
 class WUploadThread;
 
@@ -62,6 +63,13 @@ public:
 		TransferNotifyRejected
 	};
 
+	// Internal event codes
+	enum
+	{
+		DequeueDownloads = QEvent::User + 11000,
+		DequeueUploads
+	};
+
 	void AddDownload(QString * files, QString * lfiles, int32 numFiles, QString remoteSessionID, uint32 remotePort,
 						QString remoteIP, uint64 remoteInstallID, bool firewalled, bool partial);
 	void AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, WUser * user);
@@ -82,6 +90,8 @@ public:
 
 protected:
 	virtual void customEvent(QCustomEvent *);
+	virtual void genericEvent(WGenericEvent * g);
+
 	virtual void resizeEvent(QResizeEvent * e)
 	{
 		fMainSplit->resize(e->size());
