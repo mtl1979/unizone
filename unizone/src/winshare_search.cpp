@@ -316,7 +316,7 @@ WinShareWindow::Download()
 				PRINT("DOWNLOAD: Found item\n");
 				WUserRef user = fi->fiUser;
 				
-				QueueDownload(fi->fiFilename, user());
+				QueueDownload(fi->fiFilename, user);
 			}					
 			it++;
 		}
@@ -358,10 +358,10 @@ WinShareWindow::SetSearch(const QString & pattern)
 }
 
 void
-WinShareWindow::QueueDownload(const QString & file, WUser * user)
+WinShareWindow::QueueDownload(const QString & file, const WUserRef & user)
 {
 	int32 i = 0;
-	String mUser = (const char *) user->GetUserID().utf8();
+	String mUser = (const char *) user()->GetUserID().utf8();
 	if (fQueue()->FindInt32(mUser, &i) == B_OK)
 		fQueue()->RemoveName(mUser);
 	fQueue()->AddInt32(mUser, ++i);

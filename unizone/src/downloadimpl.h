@@ -37,6 +37,8 @@ class WFileThread;
 class WUser;
 class WTransferItem;
 
+typedef Ref<WUser> WUserRef;
+
 // This class needs to be able to handle downloads AND uploads
 class WDownload : public QDialog
 {
@@ -83,7 +85,7 @@ public:
 
 	void AddDownload(QString * files, QString * lfiles, int32 numFiles, QString remoteSessionID, uint32 remotePort,
 						const QString & remoteIP, uint64 remoteInstallID, bool firewalled, bool partial);
-	void AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, WUser * user);
+	void AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, const WUserRef & user);
 
 	void AddUpload(int socket, uint32 remoteIP, bool queued);
 	void AddUpload(const QString & remoteIP, uint32 port);

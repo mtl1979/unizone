@@ -941,7 +941,30 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 }
 
 void
-WinShareWindow::SendChatText(const QString & sid, const QString & txt, WUserRef priv, bool * reply)
+WinShareWindow::SendChatText(const QString & sid, const QString & txt)
+{
+	fNetClient->SendChatText(sid, txt);
+	QString out = FixStringStr(txt);
+	if (sid == "*")	// global message?
+	{
+		if (fSettings->GetChat())
+		{
+			QString chat = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(fNetClient->LocalSessionID()).arg(FixStringStr(GetUserName()));
+			chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
+			PrintText(chat);
+		}
+	}
+	// change away state
+	if (fAway)
+	{
+		SetStatus(fHereMsg);
+		fAway = false;
+	}
+	SetAutoAwayTimer();	// reinit away
+}
+
+void
+WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply)
 {
 	fNetClient->SendChatText(sid, txt);
 	QString out = FixStringStr(txt);
@@ -1204,7 +1227,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			// check for / commands
 			if ( text.lower().left(6) == "/me's " )
 			{
-				if ( !IsIgnored(user()) )
+				if ( !IsIgnored(user) )
 				{
 					QString msg = GetParameterString(text);
 					if ((msg.length() > 0) && fSettings->GetChat())
@@ -1213,7 +1236,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			}
 			else if (text.lower().left(4) == "/me ")
 			{
-				if ( !IsIgnored(user()) )
+				if ( !IsIgnored(user) )
 				{
 					QString msg = GetParameterString(text);
 					if ((msg.length() > 0) && fSettings->GetChat())
@@ -1253,7 +1276,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 
 					if (fSettings->GetPrivate())	// and are we accepting private msgs?
 					{
-						if ( !IsIgnored(user()) )
+						if ( !IsIgnored(user) )
 						{
 							bool foundPriv = false;
 							// see if one of the session IDs is in one of the private windows...
@@ -1330,7 +1353,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					if (fSettings->GetChat())
 					{
-						if ( !IsIgnored(user()) )
+						if ( !IsIgnored(user) )
 						{
 							chat = WFormat::RemoteName.arg(WColors::RemoteName).arg(fSettings->GetFontSize()).arg(session).arg(FixStringStr(userName));
 							PRINT("Fixing string\n");
@@ -1339,7 +1362,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							if (NameSaid(nameText) && fSettings->GetSounds())
 								QApplication::beep();
 							QString res;	// not used...
-							if (MatchUserFilter(user(), (const char *) fWatch.utf8()))
+							if (MatchUserFilter(user, (const char *) fWatch.utf8()))
 								chat += WFormat::Text.arg(WColors::Watch).arg(fSettings->GetFontSize()).arg(nameText);
 							else
 								chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameText);
@@ -2086,7 +2109,7 @@ WinShareWindow::IsBlackListedIP(const QString & ip)
 	{
 		if ((*iter).second() != NULL)
 		{
-			if ( IsBlackListed((*iter).second()) )
+			if ( IsBlackListed((*iter).second) )
 				return true;
 		}
 	}
@@ -2094,9 +2117,9 @@ WinShareWindow::IsBlackListedIP(const QString & ip)
 }
 
 bool
-WinShareWindow::IsBlackListed(const WUser * user)
+WinShareWindow::IsBlackListed(const WUserRef & user)
 {
-	if (user == NULL) // Is the user still connected?
+	if (user() == NULL) // Is the user still connected?
 		return false;
 
 	if (fBlackList.isEmpty()) // No users in blacklist?
@@ -2122,7 +2145,7 @@ WinShareWindow::IsBlackListed(const QString & user)
 	
 		// Check user reference against blacklist
 		
-		return IsBlackListed(uref());
+		return IsBlackListed(uref);
 	}
 	else
 	{
@@ -2149,7 +2172,7 @@ WinShareWindow::IsAutoPrivate(const QString & user)
 	
 		// Check user reference against auto-private list
 		
-		return IsAutoPrivate(uref());
+		return IsAutoPrivate(uref);
 	}
 	else
 	{
@@ -2185,9 +2208,9 @@ WinShareWindow::IsConnected(const QString & user)
 }
 
 bool
-WinShareWindow::IsIgnored(const WUser * user)
+WinShareWindow::IsIgnored(const WUserRef & user)
 {
-	if (user == NULL) // Is the user still connected?
+	if (user() == NULL) // Is the user still connected?
 		return false;
 
 	if (fIgnore.isEmpty()) // No users in ignore list?
@@ -2233,7 +2256,7 @@ WinShareWindow::IsIgnored(const QString & user, bool bTransfer, bool bDisconnect
 	
 		// Check user reference against ignore list
 		
-		return IsIgnored(uref());
+		return IsIgnored(uref);
 	}
 	else
 	{
@@ -2431,9 +2454,9 @@ WinShareWindow::UnIgnore(const QString & user)
 }
 
 bool
-WinShareWindow::IsAutoPrivate(const WUser * user)
+WinShareWindow::IsAutoPrivate(const WUserRef & user)
 {
-	if (user == NULL) // Is the user still connected?
+	if (user() == NULL) // Is the user still connected?
 		return false;
 
 	if (fAutoPriv.isEmpty()) // No users in auto-private list?
@@ -2539,7 +2562,7 @@ WinShareWindow::FindUser(const QString & user)
 	WUserMap & umap = fNetClient->Users();
 	for (WUserIter iter = umap.begin(); iter != umap.end(); iter++)
 	{
-		if (MatchUserFilter((*iter).second(), (const char*) user.utf8()))
+		if (MatchUserFilter((*iter).second, (const char*) user.utf8()))
 		{
 			return (*iter).second;
 		}
@@ -2621,7 +2644,7 @@ WinShareWindow::ClearResumes()
 }
 
 void
-WinShareWindow::PrintAddressInfo(WUserRef user)
+WinShareWindow::PrintAddressInfo(const WUserRef & user)
 {
 	QString addr, uname, uid;
 	QString out("");

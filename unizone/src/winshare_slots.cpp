@@ -326,7 +326,8 @@ WinShareWindow::PopupActivated(int id)
 		}
 		else if (id == 5)
 		{
-			QString pingMsg = tr("/ping %1").arg((*it).second()->GetUserID());
+			QString pingMsg("/ping ");
+			pingMsg += (*it).second()->GetUserID();
 			SendPingOrMsg(pingMsg, true);
 		}
 
@@ -579,7 +580,7 @@ WinShareWindow::CheckResumes(const QString &user)
 
 		OpenDownload(); 
 
-		fDLWindow->AddDownloadList(fFiles, fLFiles, u());
+		fDLWindow->AddDownloadList(fFiles, fLFiles, u);
 	}
 }
 

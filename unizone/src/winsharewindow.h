@@ -89,7 +89,7 @@ typedef WChannelMap::iterator WChannelIter;
 
 inline 
 WResumePair
-MakePair(const QString & f, WResumeInfo u)
+MakePair(const QString & f, const WResumeInfo & u)
 {
 	WResumePair p;
 	p.first = f;
@@ -155,7 +155,8 @@ public:
 	void BeginMessageBatch();
 	void EndMessageBatch();
 
-	void SendChatText(const QString & sid, const QString & txt, WUserRef priv = WUserRef(NULL, NULL), bool * reply = NULL);
+	void SendChatText(const QString & sid, const QString & txt);
+	void SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply);
 
 	static QString GetRemoteVersionString(const MessageRef);
 	// launches a search
@@ -383,15 +384,15 @@ private:
 
 	void TransferCallbackRejected(const QString &qFrom, int64 timeLeft, uint32 port);
 	
-	bool IsIgnored(const WUser * user);
+	bool IsIgnored(const WUserRef & user);
 	bool Ignore(const QString & user);
 	bool UnIgnore(const QString & user);
 
-	bool IsBlackListed(const WUser * user);
+	bool IsBlackListed(const WUserRef & user);
 	bool BlackList(const QString & user);
 	bool UnBlackList(const QString & user);
 
-	bool IsAutoPrivate(const WUser * user);
+	bool IsAutoPrivate(const WUserRef & user);
 	bool AutoPrivate(const QString & user);
 	bool UnAutoPrivate(const QString & user);
 
@@ -457,13 +458,13 @@ private:
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
 	void Action(const QString & name, const QString & msg, bool batch = false);
 	void GetAddressInfo(const QString & user);
-	void PrintAddressInfo(WUserRef user);
+	void PrintAddressInfo(const WUserRef & user);
 	bool PrintAddressInfo(uint32 address);
 	
 	void ShowHelp(const QString & command = QString::null);
 
 	// parsing stuff...
-	bool MatchUserFilter(const WUser * user, const char * filter);
+	bool MatchUserFilter(const WUserRef & user, const char * filter);
 	bool MatchFilter(const QString & user, const char * filter);
 
 	int MatchUserName(const QString & un, QString & result, const char * filter);
@@ -550,7 +551,7 @@ private:
 	void SetSearchStatus(const QString & status, int index = 0);
 	void SetSearch(const QString & pattern);
 
-	void QueueDownload(const QString & file, WUser * user);
+	void QueueDownload(const QString & file, const WUserRef & user);
 	void EmptyQueues();
 
 	mutable QMutex fSearchLock;		// to lock the list so only one method can be using it at a time

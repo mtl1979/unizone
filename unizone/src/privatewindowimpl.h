@@ -35,8 +35,8 @@ public:
 	// received text from one of the users..
 	void PutChatText(const QString & fromsid, const QString & msg);
 
-	void AddUser(WUserRef & user);
-	bool RemUser(WUserRef & user);
+	void AddUser(const WUserRef & user);
+	bool RemUser(const WUserRef & user);
 	WUserMap & GetUsers() { return fUsers; }
 
 	void ClearBuffer() { fInputText->ClearBuffer(); }

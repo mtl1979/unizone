@@ -28,7 +28,7 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 	{
 		user = (*iter).second;
 		QString userName = StripURL(user()->GetUserName().lower().stripWhiteSpace());
-		if (((filter == NULL) || (MatchUserFilter(user(), filter))) &&
+		if (((filter == NULL) || (MatchUserFilter(user, filter))) &&
 			((userName.startsWith(un)) || (userName.contains(" ["+un) > 0)))
 		{
 			matchCount++;
@@ -63,9 +63,9 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 }
 
 bool
-WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
+WinShareWindow::MatchUserFilter(const WUserRef & user, const char * filter)
 {
-	if (user == NULL) 
+	if (user() == NULL) 
 		return false;
 
 	StringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
@@ -75,9 +75,9 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 		String next = StripURL(n);
 		next = next.Trim();
 
-		PRINT("MatchUserFilter: UserID = %s\n", (const char *) user->GetUserID().utf8());
+		PRINT("MatchUserFilter: UserID = %s\n", (const char *) user()->GetUserID().utf8());
 		PRINT("MatchUserFilter: next   = %s\n", next.Cstr());
-		String userID = (const char *) user->GetUserID().utf8();
+		String userID = (const char *) user()->GetUserID().utf8();
 		if (userID.Length() > 0)
 		{
 			// Is this item our user's session ID?
@@ -87,7 +87,7 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 			}
 		}
 
-		String userName = StripURL((const char *) user->GetUserName().utf8());
+		String userName = StripURL((const char *) user()->GetUserName().utf8());
 		userName = userName.Trim();
 
 		if (userName.Length() > 0)
@@ -430,7 +430,7 @@ WinShareWindow::FillUserMap(const QString & filter, WUserMap & wmap)
 	while (iter != fNetClient->Users().end())
 	{
 		user = (*iter).second;
-		if ( MatchUserFilter(user(), (const char *) filter.utf8()) )
+		if ( MatchUserFilter(user, (const char *) filter.utf8()) )
 		{
 			WUserPair wpair = MakePair(user()->GetUserID(), user);
 			wmap.insert(wmap.end(), wpair);

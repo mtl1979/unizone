@@ -386,7 +386,7 @@ WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QStri
 }
 
 void
-WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, WUser * user)
+WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, const WUserRef & user)
 {
 	int32 nFiles = fQueue.GetNumItems();
 	QString * qFiles = new QString[nFiles];
@@ -395,9 +395,9 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, WU
 	QString * qLFiles = new QString[nFiles];
 	QString tmp, tmp2;
 	int n = 0;
-	while (!fQueue.IsEmpty())
+	while ((fQueue.RemoveHead(tmp) == B_NO_ERROR) && (fLQueue.RemoveHead(tmp2) == B_NO_ERROR))
 	{
-		fQueue.RemoveHead(tmp);
+		// Remote name
 		if (!tmp.isEmpty()) 
 		{
 			qFiles[n] = tmp;
@@ -407,10 +407,10 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, WU
 			qFiles[n] = QString::null;
 		}
 		
-		fLQueue.RemoveHead(tmp);
-		if (!tmp.isEmpty())
+		// Local name
+		if (!tmp2.isEmpty())
 		{
-			qLFiles[n] = tmp;
+			qLFiles[n] = tmp2;
 		}
 		else
 		{
@@ -419,7 +419,7 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, WU
 		
 		n++;
 	}
-	AddDownload(qFiles, qLFiles, n, user->GetUserID(), user->GetPort(), user->GetUserHostName(), user->GetInstallID(), user->GetFirewalled(), user->GetPartial());
+	AddDownload(qFiles, qLFiles, n, user()->GetUserID(), user()->GetPort(), user()->GetUserHostName(), user()->GetInstallID(), user()->GetFirewalled(), user()->GetPartial());
 }
 
 void

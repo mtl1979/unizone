@@ -139,7 +139,7 @@ typedef pair<QString, WUserSearch> WUserSearchPair;
 typedef WUserSearchMap::iterator WUserSearchIter;
 
 inline WUserPair
-MakePair(const QString & s, WUserRef & w)
+MakePair(const QString & s, const WUserRef & w)
 {
 	WUserPair p;
 	p.first = s;
@@ -148,7 +148,7 @@ MakePair(const QString & s, WUserRef & w)
 }
 
 inline WUserSearchPair
-MakePair(const QString & s, WUserRef & w, QString txt)
+MakePair(const QString & s, const WUserRef & w, const QString &txt)
 {
 	WUserSearch wus;
 	wus.user = w;

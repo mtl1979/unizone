@@ -2287,7 +2287,7 @@ WinShareWindow::StartQueue(const QString &session)
 			{
 				if (ttpInfo->bot == session.latin1())
 				{
-					QueueDownload(QString::fromUtf8(ttpInfo->file.Cstr()), user());
+					QueueDownload(QString::fromUtf8(ttpInfo->file.Cstr()), user);
 					_ttpFiles.RemoveItemAt(i);
 					PrintSystem(tr("Downloading file %1 from user #%2.").arg( QString::fromUtf8(ttpInfo->file.Cstr()) ).arg(session));
 				}

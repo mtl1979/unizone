@@ -298,7 +298,7 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 }
 
 void
-WPrivateWindow::AddUser(WUserRef & user)
+WPrivateWindow::AddUser(const WUserRef & user)
 {
 	fLock.lock();
 	WUserIter it = fUsers.find(user()->GetUserID());
@@ -312,7 +312,7 @@ WPrivateWindow::AddUser(WUserRef & user)
 }
 
 bool
-WPrivateWindow::RemUser(WUserRef & user)
+WPrivateWindow::RemUser(const WUserRef & user)
 {
 	fLock.lock();
 	WUserIter it = fUsers.find(user()->GetUserID());
