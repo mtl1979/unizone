@@ -709,7 +709,7 @@ WDownload::customEvent(QCustomEvent * e)
 					)
 				{
 					item->setText(WTransferItem::Filename, QString::fromUtf8(filename));
-					item->setText(WTransferItem::User, GetUserName(user));
+					item->setText(WTransferItem::User, GetUserName(gt));
 					item->setText(WTransferItem::Index, FormatIndex(gt->GetCurrentNum(), gt->GetNumFiles()));
 				}
 				break;
@@ -817,7 +817,7 @@ WDownload::customEvent(QCustomEvent * e)
 					{
 						QString qFile = gt->GetFileName(n);
 						QString qLFile = gt->GetLocalFileName(n);
-						emit FileFailed(qFile, qLFile, gt->GetRemoteUser());
+						emit FileFailed(qFile, qLFile, GetUserName(gt));
 					}
 
 					DequeueDLSessions();
@@ -878,7 +878,7 @@ WDownload::customEvent(QCustomEvent * e)
 								{
 									QString qFile = gt->GetFileName(n);
 									QString qLFile = gt->GetLocalFileName(n);
-									emit FileFailed(qFile, qLFile, gt->GetRemoteUser());
+									emit FileFailed(qFile, qLFile, GetUserName(gt));
 								}
 							}
 							else
@@ -947,16 +947,12 @@ WDownload::customEvent(QCustomEvent * e)
 					(msg()->FindString("user", user) == B_OK)
 					)
 				{
-					QString uname = GetUserName(QString::fromUtf8(user.Cstr()));
+					QString uname = GetUserName(gt);
 
 					WString wUser = uname;
 					PRINT("USER ID  : %s\n", user.Cstr());
 					PRINT("USER NAME: %S\n", wUser.getBuffer());
 
-					if (strcmp(uname.latin1(), user.Cstr()) == 0) // No user name?
-					{
-						uname = gt->GetRemoteIP();
-					}
 					item->setText(WTransferItem::Status, tr("Waiting for stream..."));
 					item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
 					// rec, total, rate
@@ -992,7 +988,7 @@ WDownload::customEvent(QCustomEvent * e)
 				const char * id;
 				if (msg()->FindString("id", &id) == B_OK)
 				{
-					item->setText(WTransferItem::User, GetUserName(id));
+					item->setText(WTransferItem::User, GetUserName(gt));
 				}
 				break;
 			}
@@ -1225,12 +1221,15 @@ WDownload::KillLocalQueues()
 }
 
 QString
-WDownload::GetUserName(QString sid)
+WDownload::GetUserName(WGenericThread *gt)
 {
-	WUserRef uref = gWin->fNetClient->FindUser(sid);
-	QString ret = sid;
-	if (uref())
-		ret = tr("%1 (%2)").arg(uref()->GetUserName()).arg(sid);
+	QString sid = gt->GetRemoteID();
+	QString name = gt->GetRemoteUser();
+	QString ret;
+	if (sid != name)
+		ret = tr("%1 (%2)").arg(name).arg(sid);
+	else
+		ret = gt->GetRemoteIP();
 	return ret;
 }
 

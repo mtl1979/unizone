@@ -91,7 +91,6 @@ private:
 	typedef map<MD5Thread *, bool> MD5List;
 	typedef pair<MD5Thread *, bool> MD5Pair;
 	typedef MD5List::iterator MD5Iter;
-	//typedef map<WGenericThread *, WTransferItem *> WTList;
 	typedef pair<WGenericThread *, WTransferItem *> WTPair;
 	typedef list<WTPair> WTList;
 	typedef WTList::iterator WTIter;
@@ -119,15 +118,13 @@ private:
 
 	QString fLocalSID;
 	WFileThread * fSharedFiles;
-//	int fNumUploads, fNumDownloads;
 
-	QString GetUserName(QString);
+	QString GetUserName(WGenericThread *gt);
 	QString FormatIndex(long cur, long num);
 
 	// Simple method that is used to decrease the download/upload count
 	// when one is canceled or finished. Returns the count after everything
 	// has been done.
-//	int DecreaseCount(WGenericThread *, int &, bool = true);
 	void UpdateLoad();
 
 	// Popup menu id's
@@ -217,9 +214,6 @@ private:
 	QMutex fLock;
 
 private slots:
-	//void CancelDL();
-	//void CancelUL();
-	//void UnblockUL();
 
 	void DLPopupActivated(int);
 	void ULPopupActivated(int);

@@ -277,18 +277,10 @@ WGenericThread::GetUserName(QString sid)
 		ret = uref()->GetUserName();
 	else
 	{
-		uref = gWin->FindUserByIPandPort(GetRemoteIP(), GetRemotePort());
+		uref = gWin->FindUserByIPandPort(GetRemoteIP(), 0);
 		if (uref())
 		{
 			ret = uref()->GetUserName();
-		}
-		else
-		{
-			uref = gWin->FindUserByIPandPort(GetRemoteIP(), 0);
-			if (uref())
-			{
-				ret = uref()->GetUserName();
-			}
 		}
 	}
 	return ret;
