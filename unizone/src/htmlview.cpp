@@ -207,15 +207,20 @@ WHTMLView::appendText(const QString &newtext)
 	{
 		if (!widget->isVisible())
 		{
+#if (QT_VERSION >= 0x030000)
 			int newlen = text().length() + newtext.length();
-//			if (newlen >= MAX_BUFFER_SIZE)
-//			{
+			if (newlen >= MAX_BUFFER_SIZE)
+			{
+#endif
 				PRINT("appendText 1\n");
 				emit BeforeShown();
 				PRINT("appendText 2\n");
 				QString temp = text();
 				PRINT("appendText 3\n");
 				setText("");
+#if (QT_VERSION >= 0x030000)
+				temp += "<br>";
+#endif
 				PRINT("appendText 4\n");
 				temp += newtext;
 #if (QT_VERSION >= 0x030000)
@@ -228,7 +233,9 @@ WHTMLView::appendText(const QString &newtext)
 				emit GotShown(temp);
 				PRINT("appendText OK\n");
 				return;
-//			}
+#if (QT_VERSION >= 0x030000)
+			}
+#endif
 		}
 	}
 	append(newtext);

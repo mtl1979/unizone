@@ -1,7 +1,6 @@
 INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/muscle \
-	-Isrc/muscle/message -Isrc/muscle/besupport \
-	-Isrc/muscle/iogateway -Isrc/muscle/reflector \
-	-Isrc/muscle/regex -Isrc/muscle/util \
+	-Isrc/muscle/message -Isrc/muscle/iogateway \
+	-Isrc/muscle/reflector -Isrc/muscle/regex -Isrc/muscle/util \
 	-Isrc/muscle/syslog -Isrc/muscle/system
 GCCOPTFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT \
 	-DNDEBUG -DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
@@ -10,17 +9,17 @@ LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
 OBJFILES = \
-	aboutdlg.o aboutdlgimpl.o botitem.o chattext.o colors.o combo.o \
+	aboutdlgimpl.o botitem.o chattext.o colors.o combo.o \
 	downloadimpl.o downloadthread.o downloadworker.o fileinfo.o \
 	filethread.o formatting.o gotourl.o main.o md5.o menubar.o \
-	netclient.o nicklist.o platform.o prefs.o prefsimpl.o \
-	privatewindow.o privatewindowimpl.o searchitem.o settings.o \
+	netclient.o nicklist.o platform.o prefsimpl.o \
+	privatewindowimpl.o searchitem.o settings.o \
 	textevent.o transferitem.o ulistview.o uploadthread.o user.o \
 	userlistitem.o winshare_lists.o winshare_network.o winshare_parsing.o \
-	winshare_slots.o winsharewindow.o Log.o htmlview.o channel.o \
+	winshare_slots.o winsharewindow.o Log.o htmlview.o \
 	channelinfo.o channelimpl.o wpwevent.o wstring.o wstatusbar.o \
 	winshare_channels.o winshare_search.o updateclient.o util.o \
-	serverclient.o titanic.o scanprogress.o scanprogressimpl.o \
+	serverclient.o titanic.o scanprogressimpl.o \
 	QMessageTransceiverThread.o QAcceptSocketsThread.o \
 	chatwindow.o wsystemevent.o wwarningevent.o werrorevent.o \
 	version.o
@@ -46,21 +45,25 @@ MUSCLE_OBJFILES = \
 	NetworkUtilityFunctions.o PulseNode.o String.o ByteBuffer.o \
 	QueryFilter.o ZLibCodec.o ZLibUtilityFunctions.o
 
-VPATH = src src/muscle/qtsupport \
- 	src/muscle/message src/muscle/besupport \
+VPATH = src src/muscle/qtsupport src/muscle/message \
 	src/muscle/iogateway src/muscle/reflector \
 	src/muscle/regex src/muscle/util src/muscle/syslog \
 	src/muscle/system src/muscle/zlib
+UIC_HEADERS = $(addsuffix .h,$(basename $(wildcard src/*.ui)))
+UIC_SRCFILES = $(addsuffix .cpp,$(basename $(wildcard src/*.ui)))
+UIC_OBJFILES = $(addsuffix .o,$(basename $(wildcard src/*.ui)))
+
 SRCFILES =		$(addsuffix .cpp,$(basename $(OBJFILES)))
 MOC_SRCFILES =		$(addsuffix .cpp,$(basename $(MOC_OBJFILES)))
 MUSCLE_SRCFILES = 	$(addsuffix .cpp,$(basename $(MUSCLE_OBJFILES)))
 
+
 MOC=$(QTDIR)/bin/moc
 UIC=$(QTDIR)/bin/uic
 
-all : depends $(EXECUTABLES) translations
+all : $(EXECUTABLES) translations
 
-Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES)
+Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(UIC_OBJFILES)
 	$(CXX) $(LFLAGS) $(LIBS) -o $@ $^
 
 moc_QMessageTransceiverThread.o : src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp
@@ -80,19 +83,23 @@ translations : src/Makefile
 
 depends: .depends
 
-.depends: .depends1 .depends2 .depends3
+.depends: .depends1 .depends2 .depends3 .depends4
 	cat .depends1 > .depends
 	cat .depends2 >> .depends
 	cat .depends3 >> .depends
+	cat .depends4 >> .depends
  
-.depends1: $(SRCFILES)
+.depends1: $(UIC_SRCFILES)
 	$(CXX) $(CXXFLAGS) -MM $^ > .depends1
 
-.depends2: $(MOC_SRCFILES)
+.depends2: $(SRCFILES)
 	$(CXX) $(CXXFLAGS) -MM $^ > .depends2
 
-.depends3: $(MUSCLE_SRCFILES)
+.depends3: $(MOC_SRCFILES)
 	$(CXX) $(CXXFLAGS) -MM $^ > .depends3
+
+.depends4: $(MUSCLE_SRCFILES)
+	$(CXX) $(CXXFLAGS) -MM $^ > .depends4
 
 .PHONY=translations depends
 
@@ -202,14 +209,11 @@ src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
 	$(UIC) -impl scanprogress.h src/scanprogress.ui -o src/scanprogress.cpp
 
 clean :
-	rm -f *.o *.a $(EXECUTABLES)
-	rm -f src/moc_*.cpp
-	rm -f src/muscle/qtsupport/moc_*.cpp
-	rm -f src/aboutdlg.h src/aboutdlg.cpp
-	rm -f src/channel.h src/channel.cpp
-	rm -f src/prefs.h src/prefs.cpp
-	rm -f src/privatewindow.h src/privatewindow.cpp
 	$(MAKE) -C src -f Makefile clean
+	rm -f *.o *.a $(EXECUTABLES)
+	rm -f $(MOC_SRCFILES)
+	rm -f $(UIC_SRCFILES)
+	rm -f $(UIC_HEADERS)
 
 distclean : clean
 	rm -f .depends .depends1 .depends2 .depends3

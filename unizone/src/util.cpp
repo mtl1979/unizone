@@ -831,6 +831,7 @@ GetTimeStamp()
 	QString qCurTime;
 
 	qCurTime = QDateTime::currentDateTime().toString();
+	qCurTime = QString::fromLocal8Bit(qCurTime);
 
 	// Strip off year
 	QString qYear = qCurTime.mid(qCurTime.findRev(" ") + 1);
@@ -843,8 +844,8 @@ GetTimeStamp()
 	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);	
 	
 	// Linux ;)
-	QChar q(160,0);
-	qCurTime.replace(QRegExp(q), "");
+	// QChar q(160,0);
+	// qCurTime.replace(QRegExp(q), "");
 	//
 
 	// Strip Month and translate it

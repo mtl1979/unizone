@@ -1,6 +1,6 @@
-HEADERS =       debugimpl.h \
+HEADERS =       		debugimpl.h \
 				version.h
-SOURCES =		aboutdlg.cpp \ 	
+SOURCES =			aboutdlg.cpp \
 				aboutdlgimpl.cpp \
 				channel.cpp \
 				channelimpl.cpp \
@@ -13,9 +13,9 @@ SOURCES =		aboutdlg.cpp \
 				menubar.cpp \
 				netclient.cpp \
 				platform.cpp \
-                prefs.cpp \
+                		prefs.cpp \
 				prefsimpl.cpp \
-                privatewindow.cpp \
+                		privatewindow.cpp \
 				privatewindowimpl.cpp \
 				scanprogress.cpp \
 				serverclient.cpp \
@@ -23,14 +23,14 @@ SOURCES =		aboutdlg.cpp \
 				updateclient.cpp \
 				uploadthread.cpp \
 				version.cpp \
-                winshare_channels.cpp \
+                		winshare_channels.cpp \
 				winshare_parsing.cpp \
 				winshare_network.cpp \
-                winshare_search.cpp \
+                		winshare_search.cpp \
 				winshare_slots.cpp \
-                winsharewindow.cpp
+                		winsharewindow.cpp
 
-TRANSLATIONS =	unizone_en.ts \
+TRANSLATIONS =			unizone_en.ts \
 				unizone_fi.ts \
 				unizone_fr.ts \
 				unizone_de.ts \
