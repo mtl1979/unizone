@@ -437,25 +437,27 @@ WinShareWindow::customEvent(QCustomEvent * event)
 	{
 		switch ((int) event->type())
 		{
-		case WMessageEvent::HandleMessage:
+		case WMessageEvent::MessageEventType:
 			{
 				WMessageEvent *wme = dynamic_cast<WMessageEvent *>(event);
 				if (wme)
 				{
-					HandleMessage(wme->Message());
+					switch (wme->MessageType())
+					{
+					case WMessageEvent::HandleMessage:
+						{
+							HandleMessage(wme->Message());
+							break;
+						}
+					case WMessageEvent::ServerParametersMessage:
+						{
+							ServerParametersReceived(wme->Message());
+							break;
+						}
+					}
 				}
 				return;
 			}
-		case WMessageEvent::ServerParametersMessage:
-			{
-				WMessageEvent *wme = dynamic_cast<WMessageEvent *>(event);
-				if (wme)
-				{
-					ServerParametersReceived(wme->Message());
-				}
-				return;
-			}
-
 		case WinShareWindow::ConnectRetry:
 			{
 				PRINT("\tWinShareWindow::ConnectRetry\n");
