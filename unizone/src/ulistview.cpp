@@ -191,7 +191,7 @@ WUniListItem::item(int c)
 	case Time:
 	case Size:
 		{
-		n = fKey[c].toLong();
+		n = fKey[c].toULong();
 		return n;
 		}
 	case TransferSpeed:
@@ -287,7 +287,7 @@ WUniListItem::text(int c) const
 	case Size:
 		{
 		result = QListViewItem::text(c);
-		n = (double)result.toLong(&ok);
+		n = result.toDouble(&ok);
 		postFix = "B";
 		if (ok)
 		{
@@ -394,9 +394,7 @@ WUniListItem::text(int c) const
 		{
 		lMod = fKey[c].toLong();
 		result = ctime((const time_t *)&lMod);
-#ifdef WIN32
 		result.truncate(result.length() - 1);
-#endif
 		return result;
 		}
 	case Time:
