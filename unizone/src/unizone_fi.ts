@@ -2793,5 +2793,21 @@ Päiväys: %4</translation>
         <source>/time [nick] [gmt] - request time stamp from other user</source>
         <translation>/time [nimi] [gmt] - pyydä aikaleima toiselta käyttäjältä</translation>
     </message>
+    <message>
+        <source>Invalid compression!</source>
+        <translation>Epäkelpo pakkaus!</translation>
+    </message>
+    <message>
+        <source>Compression level for server %1 at port %2 set to %3.</source>
+        <translation>Pakkaustaso palvelimelle %1 portissa %2 on nyt %3.</translation>
+    </message>
+    <message>
+        <source>Current compression: %1</source>
+        <translation>Nykyinen pakkaustaso: %1</translation>
+    </message>
+    <message>
+        <source>/compression [level] - set or view message compression level</source>
+        <translation>/compression [taso] - asettaa tai näyttää viestien pakkaustason</translation>
+    </message>
 </context>
 </TS>

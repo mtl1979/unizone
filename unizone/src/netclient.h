@@ -21,6 +21,7 @@ public:
 	void Disconnect();
 	QString GetServer() { return fServer; } // Get current server hostname or ip address if hostname isn't available
 	QString GetServerIP();					// Get current server IP address
+	uint32 GetServerPort() { return fServerPort; } // Get current server port number
 
 	bool IsConnected() const { return IsInternalThreadRunning(); }
 
@@ -153,7 +154,7 @@ protected:
 	virtual void SignalOwner();
 
 private:
-	uint32 fPort;
+	uint32 fPort, fServerPort;
 	QString fSessionID, fServer;
 	QString fOldID;		// Old id for persistent channel admin/owner state
 	QString fUserName;

@@ -27,6 +27,7 @@ typedef hostent *LPHOSTENT;
 #include <time.h>				//                                 -- for /time
 #include "util/TimeUtilityFunctions.h"
 #include "iogateway/PlainTextMessageIOGateway.h"
+#include "iogateway/MessageIOGateway.h"
 #include "util/StringTokenizer.h"
 
 #include <qapplication.h>
@@ -237,6 +238,45 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/connect"))
 		{
 			Connect();
+		}
+		else if (CompareCommand(sendText, "/compression"))
+		{
+			QString enc = GetParameterString(sendText);
+			uint32 _en = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer)); // Current value
+			if (enc.length() > 0)
+			{
+				bool b;
+				_en = enc.toULong(&b);
+				if (b)
+				{
+					_en += MUSCLE_MESSAGE_ENCODING_DEFAULT;
+					if (_en >= MUSCLE_MESSAGE_ENCODING_END_MARKER)
+					{
+						if (fSettings->GetError())
+							PrintError(tr("Invalid compression!"));
+					}
+					else
+					{
+						fSettings->SetEncoding(GetServerName(fServer), GetServerPort(fServer), _en);
+						if (fNetClient->IsInternalThreadRunning())
+						{
+							fNetClient->SetOutgoingMessageEncoding(_en);
+						}
+						if (fSettings->GetInfo())
+							PrintSystem( tr("Compression level for server %1 at port %2 set to %3.").arg(GetServerName(fServer)).arg(GetServerPort(fServer)).arg(_en - MUSCLE_MESSAGE_ENCODING_DEFAULT) );
+					}
+				}
+				else
+				{
+					if (fSettings->GetError())
+						PrintError(tr("Invalid compression!"));
+				}
+			}
+			else
+			{
+				if (fSettings->GetInfo())
+					PrintSystem(tr("Current compression: %1").arg(_en - MUSCLE_MESSAGE_ENCODING_DEFAULT), false);
+			}
 		}
 		else if (CompareCommand(sendText, "/disconnect"))
 		{
@@ -1985,9 +2025,11 @@ WinShareWindow::ShowHelp(QString command)
 	helpText			+=	tr("/clearline - clear all the line buffers");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/clearstats - clear transfer statistics");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/compression [level] - set or view message compression level");
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/connect - connect to the currently selected server");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/disconnect - disconnect from server");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/dns [user|host] - give information about host");
@@ -2733,7 +2775,7 @@ WinShareWindow::GetAddressInfo(QString user)
 	QString addr;
 	WUserRef uref = FindUser(user);
 	uint32 address = 0;
-	String host;
+	char host[16];
 	struct in_addr iaHost;	   // Internet address structure
 	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 			
@@ -2752,19 +2794,19 @@ WinShareWindow::GetAddressInfo(QString user)
 				
 	if (address > 0)
 	{
-		host = Inet_NtoA(address);
+		Inet_NtoA(address, host);
 					
 		if (uid != "")
 			PrintSystem( tr("Address info for user #%1 (%2):").arg(uid).arg(user), false);
 		else
 			PrintSystem( tr("Address info for %1:").arg(user), false);
 					
-		PrintSystem( tr("IP Address: %1").arg(host.Cstr()), false);
+		PrintSystem( tr("IP Address: %1").arg(host), false);
 					
 		if (uid != "")
 			PrintSystem( tr("Port: %1").arg( uref()->GetPort() ), false);
 					
-		iaHost.s_addr = inet_addr(host.Cstr());
+		iaHost.s_addr = inet_addr(host);
 		lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
 					
 		if (lpHostEntry != NULL)
@@ -2777,7 +2819,7 @@ WinShareWindow::GetAddressInfo(QString user)
 			// List all users from this ip
 						
 			WUserMap cmap;
-			fNetClient->FindUsersByIP(cmap, host.Cstr());
+			fNetClient->FindUsersByIP(cmap, host);
 			if (!cmap.empty())
 			{
 				START_OUTPUT();

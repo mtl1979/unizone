@@ -48,15 +48,15 @@ WUploadThread::~WUploadThread()
 void
 WUploadThread::SetUpload(int socket, uint32 remoteIP, WFileThread * ft)
 {
-	String host;
+	char host[16];
 	fAccept = false;
 	fRemoteIP = remoteIP;
 	fSocket = socket;
 	fFileThread = ft;
 	// Set string ip too
 	uint32 _ip = GetPeerIPAddress(fSocket);
-	host = Inet_NtoA(_ip);
-	fStrRemoteIP = host.Cstr();
+	Inet_NtoA(_ip, host);
+	fStrRemoteIP = host;
 }
 
 void 

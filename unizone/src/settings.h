@@ -211,6 +211,8 @@ public:
 
 	void SetConnection(QString str);
 	QString GetConnection();
+	void SetEncoding(QString server, uint16 port, uint32 encoding);
+	uint32 GetEncoding(QString server, uint16 port);
 
 	void SetTimeStamps(bool b);
 	void SetUserEvents(bool b);

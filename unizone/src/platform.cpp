@@ -344,3 +344,31 @@ BandwidthToString(int32 bps)
 	default:			return "Unknown";
 	}
 }
+
+QString
+GetServerName(QString server)
+{
+	int pColon = server.find(":");
+	if (pColon >= 0)
+	{
+		return server.left(pColon);
+	}
+	else
+	{
+		return server;
+	}
+}
+
+uint16
+GetServerPort(QString server)
+{
+	int pColon = server.find(":");
+	if (pColon >= 0)
+	{
+		return server.mid(pColon+1).toUShort();
+	}
+	else
+	{
+		return 2960;
+	}
+}

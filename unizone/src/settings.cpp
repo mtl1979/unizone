@@ -1,5 +1,7 @@
 #include "settings.h"
 #include "global.h"
+#include "iogateway/MessageIOGateway.h"
+
 #include <qfile.h>
 #include <qmessagebox.h>
 
@@ -574,6 +576,23 @@ WSettings::GetConnection()
 	String str = "?";
 	fSet->FindString(CONNECTION, str);
 	return QString::fromUtf8(str.Cstr());
+}
+
+void 
+WSettings::SetEncoding(QString server, uint16 port, uint32 encoding)
+{
+	QString key = server+":"+QString::number(port);
+	fSet->RemoveName(key.latin1());
+	fSet->AddInt32(key.latin1(), encoding);
+}
+
+uint32
+WSettings::GetEncoding(QString server, uint16 port)
+{
+	QString key = server+":"+QString::number(port);
+	uint32 encoding = MUSCLE_MESSAGE_ENCODING_DEFAULT;
+	fSet->FindInt32(key.latin1(), (int32 *) &encoding);
+	return encoding;
 }
 
 void

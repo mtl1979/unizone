@@ -779,6 +779,7 @@ WDownload::customEvent(QCustomEvent * e)
 						}
 					}
 					gt->SetFinished(true);
+					gt->SetActive(false);
 					gt->Reset();
 //					DecreaseCount(gt, fNumUploads);
 //					WASSERT(fNumUploads >= 0, "Upload count is negative!");
@@ -791,6 +792,7 @@ WDownload::customEvent(QCustomEvent * e)
 					else
 					{
 						gt->SetFinished(true);
+						gt->SetActive(false);
 						// emit FileFailed signal, so we can record the filename and remote username for resuming later
 						bool f;
 						if (msg()->FindBool("failed", &f) == B_OK)

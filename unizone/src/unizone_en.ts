@@ -2701,5 +2701,21 @@ Date: %4</translation>
         <source>/time [nick] [gmt] - request time stamp from other user</source>
         <translation>/time [nick] [gmt] - request time stamp from other user</translation>
     </message>
+    <message>
+        <source>Invalid compression!</source>
+        <translation>Invalid compression!</translation>
+    </message>
+    <message>
+        <source>Compression level for server %1 at port %2 set to %3.</source>
+        <translation>Compression level for server %1 at port %2 set to %3.</translation>
+    </message>
+    <message>
+        <source>Current compression: %1</source>
+        <translation>Current compression: %1</translation>
+    </message>
+    <message>
+        <source>/compression [level] - set or view message compression level</source>
+        <translation>/compression [level] - set or view message compression level</translation>
+    </message>
 </context>
 </TS>

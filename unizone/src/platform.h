@@ -76,4 +76,10 @@ int32 BandwidthToBytes(QString connection);
 // Convert bytes per second to Connection string
 QString BandwidthToString(int32 bps);
 
+// Get server name from full server URL
+QString GetServerName(QString server);
+
+// Get server port from full server URL
+uint16 GetServerPort(QString server);
+
 #endif // PLATFORM_H

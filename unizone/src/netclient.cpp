@@ -14,6 +14,7 @@
 NetClient::NetClient(QObject * owner)
 {
 	fPort = 0;
+	fServerPort = 0;
 	fOwner = owner;
 	fServer = QString::null;
 	fOldID = QString::null;
@@ -53,12 +54,14 @@ status_t
 NetClient::Connect(QString server, uint16 port)
 {
 	Disconnect();
+
 	PRINT("Starting thread\n");
 	if (StartInternalThread() != B_NO_ERROR)
 	{
 		return B_ERROR;
 	}
 	PRINT("Internal thread running\n");
+
 	PRINT("Adding new session\n");
 
 	if (gWin->fSettings->GetChatLimit() == WSettings::LimitNone)
@@ -79,8 +82,10 @@ NetClient::Connect(QString server, uint16 port)
 		if (AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
 			return B_ERROR;
 	}
+
 	PRINT("New session added\n");
 	fServer = server;
+	fServerPort = port;
 	return B_NO_ERROR;
 }
 
@@ -756,12 +761,12 @@ NetClient::GetServerIP()
 {
 	QString ip = "0.0.0.0";
 	uint32 address;
-	String host;
+	char host[16];
 	address = GetHostByName(fServer.latin1());
 	if (address > 0)
 	{
-		host = Inet_NtoA(address);
-		ip = host.Cstr();
+		Inet_NtoA(address, host);
+		ip = host;
 	}
 	return ip;
 }

@@ -402,6 +402,10 @@ WinShareWindow::customEvent(QCustomEvent * event)
 		case NetClient::SessionConnected:
 			{
 				PRINT("Received SessionConnected message\n");
+
+				// Set Message Encoding
+				fNetClient->SetOutgoingMessageEncoding( fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer)) );
+
 				PRINT("Uploading public data\n");
 				fGotParams = false; // set to false here :)
 				// send a message out to the server asking for our parameters
