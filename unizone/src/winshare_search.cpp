@@ -178,6 +178,16 @@ WinShareWindow::ClearList()
 int
 WinShareWindow::SplitQuery(const String &fileExp)
 {
+	// Test if all but one @ is escaped (don't change string length)
+	{
+		String temp = fileExp;
+		temp.Replace("\\@", "??");
+		if (temp.GetNumInstancesOf("@") == 1)
+		{
+			return temp.IndexOf("@");
+		}
+	}
+	//
 	WUserMap &users = fNetClient->Users();
 	WUserIter it = users.begin();
 	String user;
