@@ -9,7 +9,7 @@
     <property stdset="1">
         <name>geometry</name>
         <rect>
-            <x>4</x>
+            <x>0</x>
             <y>0</y>
             <width>400</width>
             <height>200</height>
@@ -173,7 +173,7 @@
                         </property>
                         <property stdset="1">
                             <name>text</name>
-                            <string>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</string>
+                            <string></string>
                         </property>
                         <property stdset="1">
                             <name>alignment</name>

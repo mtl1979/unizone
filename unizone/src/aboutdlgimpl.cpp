@@ -26,6 +26,7 @@ AboutDlg::AboutDlg( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	QString about = tr("Unizone (English)\nVersion %1").arg(WinShareVersionString());
 	titleLabel->setProperty("text", about);
 	setCaption(tr("About Unizone (English)"));
+    TextLabel2_3_2->setText( tr( "Unizone is Copyright (C) %1 by Mika T. Lindqvist" ).arg(uzYears) );
 }
 
 

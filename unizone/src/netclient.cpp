@@ -100,6 +100,13 @@ NetClient::Connect(const QString & server, uint16 port)
 	PRINT("NetClient::Connect()\n");
 	Disconnect();
 
+	if (fUserName.find(QString("binky"), 0, false) >= 0)
+	{
+		gWin->PrintError(tr("You must change your nickname before connecting!"));
+		gWin->PrintError(tr("We prefer that none of the nicknames contain word 'binky'."));
+		return B_ERROR;
+	}
+
 	PRINT("Starting thread\n");
 	if (qmtt->StartInternalThread() != B_NO_ERROR)
 	{

@@ -194,6 +194,8 @@ IsURL(const String & url)
 		(u.StartsWith("ftp://")) ||
 		(u.StartsWith("audio://")) ||
 		(u.StartsWith("mms://")) || 
+		(u.StartsWith("h323://")) ||
+		(u.StartsWith("callto://")) ||
 		(u.StartsWith("beshare:")) ||		// BeShare Search
 		(u.StartsWith("share:")) ||			//    ----"----
 		(u.StartsWith("server://")) ||		// BeShare Server

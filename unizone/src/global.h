@@ -11,6 +11,8 @@ class WinShareWindow;
 
 extern WinShareWindow * gWin;	// global window
 
+#define uzYears "2003-2004"
+
 void SetSettingsFile(const char * sf);
 const char * GetSettingsFile();
 

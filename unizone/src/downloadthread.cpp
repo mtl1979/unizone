@@ -1010,6 +1010,10 @@ WDownloadThread::timerEvent(QTimerEvent *e)
 			return;
 		}
 	}
+	// Manually queued files don't need any special handling
+	if (fManuallyQueued)
+		return;
+
 	// fall through
 	ConnectTimer();
 }
@@ -1065,6 +1069,15 @@ WDownloadThread::Reset()
 	if (!fManuallyQueued)
 		SetFinished(true);
 	qmtt->Reset();
+	
+	// Make sure we close the file if user queues the transfer manually
+	if (fFile)
+	{
+		fFile->close();
+		delete fFile;
+		fFile = NULL;
+	}
+
 	PRINT("WDownloadThread::Reset() OK\n");
 }
 

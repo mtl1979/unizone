@@ -134,6 +134,10 @@ Versio %1</translation>
         <source>About Unizone (English)</source>
         <translation>Tietoja Unizone (Suomi) -ohjelmasta</translation>
     </message>
+    <message>
+        <source>Unizone is Copyright (C) %1 by Mika T. Lindqvist</source>
+        <translation>Unizone on (C) %1 Mika T. Lindqvist</translation>
+    </message>
 </context>
 <context>
     <name>AboutDlgBase</name>
@@ -656,6 +660,14 @@ Versio %1</translation>
     <message>
         <source>You are not allowed to %1 [%2]</source>
         <translation>Ei ole sallittua, että {1?} {2?}</translation>
+    </message>
+    <message>
+        <source>You must change your nickname before connecting!</source>
+        <translation>Sinun täytyy vaihtaa käyttäjänimesi ennen yhteyden muodostamista!</translation>
+    </message>
+    <message>
+        <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
+        <translation>Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
     </message>
 </context>
 <context>

@@ -2977,7 +2977,7 @@ WDownload::ClearFinishedDL()
 		{
 			DLPair pair;
 			fDownloadList.GetItemAt(i, pair);
-			if (pair.first->IsFinished() == true)
+			if ((pair.first->IsFinished() == true) && (pair.first->IsManuallyQueued() == false))
 			{
 				// found finished item, erase it
 				fDownloadList.RemoveItemAt(i);

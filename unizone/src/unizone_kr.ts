@@ -12,6 +12,10 @@ Version %1</source>
         <source>About Unizone (English)</source>
         <translation>Unizone에 대하여</translation>
     </message>
+    <message>
+        <source>Unizone is Copyright (C) %1 by Mika T. Lindqvist</source>
+        <translation>Unizone은 Copyright (C) %1 by Mika T. Lindqvist</translation>
+    </message>
 </context>
 <context>
     <name>AboutDlgBase</name>
@@ -483,6 +487,14 @@ Version %1</source>
     <message>
         <source>You are not allowed to %1 [%2]</source>
         <translation type='unfinished'>당신은 %1 [%2]에 허락되지 않았습니다</translation>
+    </message>
+    <message>
+        <source>You must change your nickname before connecting!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
