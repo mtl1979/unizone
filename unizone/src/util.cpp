@@ -678,11 +678,12 @@ void ConvertToRegex(String & s)
 	{
 		if (*str == '\\')			// skip \c
 		{
-			ret += *str;
 			const char * n = (str + 1);
-			str++;
 			if (n)
 			{
+				if (*n != '@')	// convert \@ to @
+					ret += *str;
+				str++;
 				ret += *n;
 				str++;
 			}

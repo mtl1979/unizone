@@ -279,7 +279,8 @@ WinShareWindow::GoSearch()
 			while (it != users.end())
 			{
 				user = (*it).second;
-				if (match.Match((const char *) user()->GetUserName().utf8()))
+				String username = StripURL((const char *) user()->GetUserName().utf8());
+				if (match.Match((const char *) username.Cstr()))
 				{
 					userExp += ",";
 					userExp += (const char *) user()->GetUserID().utf8();
@@ -290,7 +291,9 @@ WinShareWindow::GoSearch()
 		}
 
 		if (atIndex > 0)
+		{
 			fileExp = fileExp.Substring(0, atIndex);
+		}
 		else
 			fileExp = "";
 	}
