@@ -133,7 +133,8 @@ WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QS
 		system = WFormat::Text(nameformat);
 		SystemEvent(this, system);
 	}
-	TextEvent(this, newname, WTextEvent::ResumeType);
+	if (newname.length() > 0)
+		TextEvent(this, newname, WTextEvent::ResumeType);
 }
 
 void
