@@ -79,8 +79,8 @@ UFileInfo::InitModificationTime()
 		uint32 mtTime; // <postmaster@raasu.org> 20021230
 		uint64 ftTime; // 
 		HANDLE fileHandle;
-		WString tFilePath = fFileName;
-		fileHandle = CreateFile(tFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		WString tFilePath = fFullName;
+		fileHandle = CreateFile(tFilePath.getBuffer(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 		if (fileHandle)
 		{
@@ -154,6 +154,7 @@ void
 UFileInfo::InitName()
 {
 	fFileName = fileName();
+	fFullName = filePath();
 }
 
 QString

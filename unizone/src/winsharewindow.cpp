@@ -389,33 +389,59 @@ WinShareWindow::customEvent(QCustomEvent * event)
 						PrintSystem(tr("Sharing %1 file(s).").arg(fFileScanThread->GetNumFiles()));
 					fNetClient->SetFileCount(fFileScanThread->GetNumFiles());
 					PRINT("Doing a scan of the returned files for uploading.\n");
-					for  (int n = 0; n < fFileScanThread->GetNumFiles(); n++)
+					int m = 0;
+					MessageRef refScan(GetMessageFromPool(PR_COMMAND_SETDATA));
+
+					if (refScan())
 					{
-						// stop iterating if we are waiting for file scan thread to finish
-						if (fFileShutdownFlag)
-							break;
-						qApp->processEvents(300);
-						MessageRef mref = fFileScanThread->GetSharedFile(n); 
-						String s;
-						if (mref())
+						
+						for  (int n = 0; n < fFileScanThread->GetNumFiles(); n++)
 						{
-							if (mref()->FindString("secret:NodePath", s) == B_OK)
+							// stop iterating if we are waiting for file scan thread to finish
+							if (fFileShutdownFlag)
+								break;
+							qApp->processEvents(300);
+							MessageRef mref = fFileScanThread->GetSharedFile(n); 
+							String s;
+							if (mref())
 							{
-								uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
-								// Use encoded file attributes?
-								if (enc != 0)
+								if (mref()->FindString("secret:NodePath", s) == B_OK)
 								{
-									MessageRef packed = DeflateMessage(mref, enc, true);
-									if (packed())
-										fNetClient->SetNodeValue(s.Cstr(), packed);
+									uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
+									// Use encoded file attributes?
+									if (enc != 0)
+									{
+										MessageRef packed = DeflateMessage(mref, enc, true);
+										if (packed())
+										{
+											refScan()->AddMessage(s.Cstr(), packed);
+											m++;
+										}
+									}
+									else
+									{
+										refScan()->AddMessage(s.Cstr(), mref);
+										m++;
+									}
 								}
-								else
+								if (m == 20)
 								{
-									fNetClient->SetNodeValue(s.Cstr(), mref);
+									m = 0;
+									fNetClient->SendMessageToSessions(refScan);
+									refScan = GetMessageFromPool(PR_COMMAND_SETDATA);
 								}
 							}
 						}
+						if (refScan())
+						{
+							if (!refScan()->IsEmpty())
+							{
+								fNetClient->SendMessageToSessions(refScan);
+								refScan.Reset();
+							}
+						}
 					}
+
 					fFileScanThread->Unlock();
 					fScanning = false;
 					if (fDLWindow)

@@ -30,6 +30,7 @@ TRANSLATIONS =	unizone_en.ts \
 				unizone_pt.ts \
 				unizone_ru.ts \
 				unizone_es.ts \
-				unizone_sv.ts
+				unizone_sv.ts \
+				unizone_1337.ts
 
 CODEC =			utf-8

@@ -28,7 +28,7 @@ public:
 	void Init();
 
 private:
-	QString fFileName;
+	QString fFileName, fFullName;
 	QString fExtension;
 	QString fFilePath;
 	QString fMIMEType;
