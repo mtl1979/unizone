@@ -151,7 +151,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
-        <translation>Unizone owned (C) 2003 by Mika T. Lindqvist</translation>
+        <translation type='obsolete'>Unizone owned (C) 2003 by Mika T. Lindqvist</translation>
     </message>
 </context>
 <context>

@@ -163,7 +163,7 @@ Versio %1</translation>
     </message>
     <message>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
-        <translation>Unizone on (C) 2003 Mika T. Lindqvist</translation>
+        <translation type='obsolete'>Unizone on (C) 2003 Mika T. Lindqvist</translation>
     </message>
 </context>
 <context>
