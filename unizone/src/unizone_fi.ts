@@ -497,79 +497,79 @@ Versio %1</translation>
     <name>Date</name>
     <message>
         <source>Jan</source>
-        <translation type='obsolete'>Tammi</translation>
+        <translation>Tammi</translation>
     </message>
     <message>
         <source>Feb</source>
-        <translation type='obsolete'>Helmi</translation>
+        <translation>Helmi</translation>
     </message>
     <message>
         <source>Mar</source>
-        <translation type='obsolete'>Maalis</translation>
+        <translation>Maalis</translation>
     </message>
     <message>
         <source>Apr</source>
-        <translation type='obsolete'>Huhti</translation>
+        <translation>Huhti</translation>
     </message>
     <message>
         <source>May</source>
-        <translation type='obsolete'>Touko</translation>
+        <translation>Touko</translation>
     </message>
     <message>
         <source>Jun</source>
-        <translation type='obsolete'>Kesä</translation>
+        <translation>Kesä</translation>
     </message>
     <message>
         <source>Jul</source>
-        <translation type='obsolete'>Heinä</translation>
+        <translation>Heinä</translation>
     </message>
     <message>
         <source>Aug</source>
-        <translation type='obsolete'>Elo</translation>
+        <translation>Elo</translation>
     </message>
     <message>
         <source>Sep</source>
-        <translation type='obsolete'>Syys</translation>
+        <translation>Syys</translation>
     </message>
     <message>
         <source>Oct</source>
-        <translation type='obsolete'>Loka</translation>
+        <translation>Loka</translation>
     </message>
     <message>
         <source>Nov</source>
-        <translation type='obsolete'>Marras</translation>
+        <translation>Marras</translation>
     </message>
     <message>
         <source>Dec</source>
-        <translation type='obsolete'>Joulu</translation>
+        <translation>Joulu</translation>
     </message>
     <message>
         <source>Mon</source>
-        <translation type='obsolete'>Ma</translation>
+        <translation>Ma</translation>
     </message>
     <message>
         <source>Tue</source>
-        <translation type='obsolete'>Ti</translation>
+        <translation>Ti</translation>
     </message>
     <message>
         <source>Wed</source>
-        <translation type='obsolete'>Ke</translation>
+        <translation>Ke</translation>
     </message>
     <message>
         <source>Thu</source>
-        <translation type='obsolete'>To</translation>
+        <translation>To</translation>
     </message>
     <message>
         <source>Fri</source>
-        <translation type='obsolete'>Pe</translation>
+        <translation>Pe</translation>
     </message>
     <message>
         <source>Sat</source>
-        <translation type='obsolete'>La</translation>
+        <translation>La</translation>
     </message>
     <message>
         <source>Sun</source>
-        <translation type='obsolete'>Su</translation>
+        <translation>Su</translation>
     </message>
 </context>
 <context>
@@ -882,55 +882,55 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='obsolete'>14.4 kt/s</translation>
+        <translation>14.4 kt/s</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='obsolete'>28.8 kt/s</translation>
+        <translation>28.8 kt/s</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation type='obsolete'>33.6 kt/s</translation>
+        <translation>33.6 kt/s</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='obsolete'>36.6 kt/s</translation>
+        <translation>36.6 kt/s</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='obsolete'>57.6 kt/s</translation>
+        <translation>57.6 kt/s</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='obsolete'>ISDN-64k</translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='obsolete'>ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type='obsolete'>DSL</translation>
+        <translation>DSL</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='obsolete'>Kaapeli</translation>
+        <translation>Kaapeli</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='obsolete'>T1</translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='obsolete'>T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='obsolete'>OC-3</translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='obsolete'>OC-12</translation>
+        <translation>OC-12</translation>
     </message>
     <message>
         <source>300 baud</source>
@@ -938,15 +938,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='obsolete'>DSL-256k</translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='obsolete'>DSL-384k</translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='obsolete'>DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
@@ -955,7 +955,7 @@ Päiväys: %4</translation>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation type='obsolete'>Päiväys:</translation>
+        <translation>Päiväys:</translation>
     </message>
     <message>
         <source>B</source>
