@@ -1158,12 +1158,6 @@ WinShareWindow::InitGUI()
 
 	fUserList->insertItem("Unizone Binky");
 	fServerList->insertItem("beshare.tycomsystems.com");
-#ifdef BETA
-	QString status = tr("Testing Unizone (English)");
-	status += " ";
-	status += WinShareVersionString();
-	fStatusList->insertItem(status);
-#endif
 	fStatusList->insertItem("here");
 	fStatusList->insertItem("away");
 
@@ -1510,11 +1504,35 @@ WinShareWindow::LoadSettings()
 
 		// load status
 		for (i = 0; (str = fSettings->GetStatusItem(i)) != QString::null; i++)
-			fStatusList->insertItem(str, i);
-		i = fSettings->GetCurrentStatusItem();
-		if (i < fStatusList->count())
-			fStatusList->setCurrentItem(i);
-		fUserStatus = fStatusList->currentText();
+		{
+			// Skip old 'testing' statuses
+			if ((str.startsWith(tr("Testing Unizone (English)")) == false) &&	// new internationalized
+				(str.startsWith("Testing Unizone (") == false)					// old format
+				)
+				fStatusList->insertItem(str);
+		}
+
+		QString status;
+#ifdef BETA
+		// Add new 'testing' status
+		status = tr("Testing Unizone (English)");
+		status += " ";
+		status += WinShareVersionString();
+		fStatusList->insertItem(status);
+#endif
+		// reselect previous status line if possible
+		int ci = fSettings->GetCurrentStatusItem();
+		status = fSettings->GetStatusItem(ci);
+		for (i = 0; i < fStatusList->count(); i++)
+		{
+			if (fStatusList->text(i) == status)
+			{
+				fStatusList->setCurrentItem(i);
+				break;
+			}
+		}
+		ci = fStatusList->currentItem();
+		fUserStatus = fStatusList->text(ci);
 
 		// load query history
 		for (i = 0; (str = gWin->fSettings->GetQueryItem(i)) != QString::null; i++)

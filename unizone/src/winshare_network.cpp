@@ -1677,14 +1677,17 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			if (user())
 			{
 				userName = user()->GetUserName();
-				if (!IsWhiteListed(user) && IsFilterListed(text))
+				if (!IsWhiteListed(user))
+				{ 
+					if (IsFilterListed(text))
 					return;
 
-				// User is repeating him/herself?
-				if (user()->GetLastLine() == text)
-					return;
-				else
-					user()->SetLastLine(text);
+					// User is repeating him/herself?
+					if (user()->GetLastLine() == text)
+						return;
+					else
+						user()->SetLastLine(text);
+				}
 			}
 			
 			// check for / commands
@@ -1859,8 +1862,13 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					// User is repeating him/herself?
 
-					if (user()->GetLastLine(channel) == text)
-						return;
+					if (!IsWhiteListed(user))
+					{
+						if (user()->GetLastLine(channel) == text)
+							return;
+						else
+							user()->SetLastLine(channel, text);
+					}
 
 					emit NewChannelText(channel, userID, text);
 				}
