@@ -228,9 +228,12 @@ WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int c)
 				fPrivate->insertItem(txt, 2);
 				// <postmaster@raasu.org> 20020926 -- Added id 3
 				txt = tr(MSG_NL_GETIPADDR);
-				fPrivate->insertItem(txt, 3); 
-				txt = tr("Ping %1").arg((*it).second()->GetUserName());
+				fPrivate->insertItem(txt, 3);
+				// <postmaster@raasu.org> 20030307 -- Inserted new item as id 4, moved old as id 5
+				txt = tr(MSG_NL_GETADDRINFO);
 				fPrivate->insertItem(txt, 4);
+				txt = tr("Ping %1").arg((*it).second()->GetUserName());
+				fPrivate->insertItem(txt, 5);
 
 				fPopupUser = uid;
 				fPrivate->popup(p);
@@ -270,6 +273,10 @@ WinShareWindow::PopupActivated(int id)
 			PrintSystem(qTemp,false);
 		}
 		else if (id == 4)
+		{
+			GetAddressInfo((*it).second()->GetUserID());
+		}
+		else if (id == 5)
 		{
 			QString pingMsg = tr("/ping %1").arg((*it).second()->GetUserID());
 			SendPingOrMsg(pingMsg, true);

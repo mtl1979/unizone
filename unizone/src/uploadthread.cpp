@@ -20,6 +20,9 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fNumFiles = -1;
 	fActive = true;
 	fBlocked = false;
+
+	CTimer = new QTimer(this, "Connect Timer");
+	connect( CTimer , SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
 }
 
 WUploadThread::~WUploadThread()
@@ -89,6 +92,7 @@ WUploadThread::InitSession()
 		if (AddNewSession(fSocket, limit) == B_OK && StartInternalThread() == B_OK)
 		{
 			SendReply(new Message(WGenericEvent::ConnectInProgress));
+			CTimer->start(60000, true);
 		}
 		else
 		{
@@ -103,6 +107,7 @@ WUploadThread::InitSession()
 		if (AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && StartInternalThread() == B_OK)
 		{
 			SendReply(new Message(WGenericEvent::ConnectInProgress));
+			CTimer->start(60000, true);
 		}
 		else
 		{
@@ -141,6 +146,8 @@ WUploadThread::SignalOwner()
 {
 	MessageRef next;
 	uint32 code;
+
+	CTimer->stop();
 
 	while (GetNextEventFromInternalThread(code, &next) >= 0)
 	{

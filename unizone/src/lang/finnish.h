@@ -231,6 +231,7 @@
 #define MSG_NL_PRIVATECHAT		"Yksityinen keskustelu %1:n kanssa"
 #define MSG_NL_LISTALLFILES		"Näytä kaikki tiedostot"
 #define MSG_NL_GETIPADDR		"Hae IP-osoite"
+#define MSG_NL_GETADDRINFO		"Hae osoitetiedot"
 #define MSG_REMOVE				"Poista"
 
 // Format Strings

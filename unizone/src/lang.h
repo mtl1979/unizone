@@ -82,6 +82,16 @@
 #endif
 
 //
+// Swedish Strings -- Ripped from BeShare and invented some of my own ;)
+//
+
+#if (MSG_LANG == 46)
+
+#include "lang/swedish.h"
+
+#endif
+
+//
 // End of language translations
 //
 

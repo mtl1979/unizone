@@ -64,6 +64,8 @@ private:
 
 	int32 fCurFile, fNumFiles;
 
+	QTimer * CTimer; // Connect timer
+
 	void DoUpload();
 };
 

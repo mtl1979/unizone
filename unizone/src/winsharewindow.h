@@ -274,7 +274,8 @@ private:
 	static bool ParseUserTargets(QString text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
 	void Action(const QString & name, const QString & msg, bool batch = false);
-
+	void GetAddressInfo(QString user);
+	
 	void ShowHelp(QString command = QString::null);
 
 	// parsing stuff...

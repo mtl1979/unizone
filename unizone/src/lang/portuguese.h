@@ -230,6 +230,7 @@
 #define MSG_NL_PRIVATECHAT		"Conversação Privada Com %1"
 #define MSG_NL_LISTALLFILES		"Listar Todos os Arquivos"
 #define MSG_NL_GETIPADDR		"Pegar Endereço IP"
+#define MSG_NL_GETADDRINFO		"Get Address Info"
 #define MSG_REMOVE				"Remove" // TODO: Translate this ;)
 //
 // Format Strings

@@ -237,6 +237,7 @@
 #define MSG_NL_PRIVATECHAT              "Privater Chat mit %1"
 #define MSG_NL_LISTALLFILES             "Liste aller Dateien"
 #define MSG_NL_GETIPADDR                "Bekomme IP Addresse"
+#define MSG_NL_GETADDRINFO				"Get Address Info"
 #define MSG_REMOVE                      "Entfernen"
 
 //

@@ -689,74 +689,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/dns"))
 		{
 			QString user = GetParameterString(sendText);
-			QString uid = "";
-			QString addr;
-			WUserRef uref = FindUser(user);
-			uint32 address = 0;
-			String host;
-			struct in_addr iaHost;     // Internet address structure
-			LPHOSTENT lpHostEntry;     // Pointer to host entry structure
-			
-			if (uref() != NULL)
-			{
-				address = GetHostByName(uref()->GetUserHostName().latin1());
-				addr = uref()->GetUserHostName();
-				user = uref()->GetUserName();
-				uid = uref()->GetUserID();
-			}
-			else
-			{
-				address = GetHostByName(user.latin1());
-				addr = user;
-			}
-
-			if (address > 0)
-			{
-				host = Inet_NtoA(address);
-				
-				if (uid != "")
-					PrintSystem( tr("Address info for user #%1 (%2):").arg(uid).arg(user), false);
-				else
-					PrintSystem( tr("Address info for %1:").arg(user), false);
-
-				PrintSystem( tr("IP Address: %1").arg(host.Cstr()), false);
-
-				if (uid != "")
-					PrintSystem( tr("Port: %1").arg( uref()->GetPort() ), false);
-
-				iaHost.s_addr = inet_addr(host.Cstr());
-				lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
-				
-				if (lpHostEntry != NULL)
-				{
-					PrintSystem( tr("Host Name: %1").arg(lpHostEntry->h_name), false);
-				}
-
-				if (uid == "")
-				{
-					// List all users from this ip
-					START_OUTPUT();
-					PrintSystem( "Connected users: ", true);
-
-					WUserMap cmap;
-					fNetClient->FindUsersByIP(cmap, host.Cstr());
-					for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
-					{
-						if ( (*it).second() )
-						{
-							PrintSystem( tr("#%1 - %2 (port: %3)").arg( (*it).second()->GetUserID() ).arg( (*it).second()->GetUserName() ).arg( (*it).second()->GetPort() ), true);
-						}
-					}
-					END_OUTPUT();
-				}
-			}
-			else
-			{
-				if (addr != user)
-					PrintError(tr("No address info for %1 or %2").arg(user).arg(addr));
-				else
-					PrintError(tr("No address info for %1").arg(user));
-			}
+			GetAddressInfo(user);
 		}
 		else if (CompareCommand(sendText, "/showstats"))
 		{
@@ -2218,4 +2151,77 @@ WinShareWindow::ListResumes()
 	PrintSystem(tr("Total: %1 files").arg(i), true);
 	END_OUTPUT();
 	rLock.unlock();
+}
+
+void
+WinShareWindow::GetAddressInfo(QString user)
+{
+	QString uid = "";
+	QString addr;
+	WUserRef uref = FindUser(user);
+	uint32 address = 0;
+	String host;
+	struct in_addr iaHost;	   // Internet address structure
+	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
+			
+	if (uref() != NULL)
+	{
+		address = GetHostByName(uref()->GetUserHostName().latin1());
+		addr = uref()->GetUserHostName();
+		user = uref()->GetUserName();
+		uid = uref()->GetUserID();
+	}
+	else
+	{
+		address = GetHostByName(user.latin1());
+		addr = user;
+	}
+				
+	if (address > 0)
+	{
+		host = Inet_NtoA(address);
+					
+		if (uid != "")
+			PrintSystem( tr("Address info for user #%1 (%2):").arg(uid).arg(user), false);
+		else
+			PrintSystem( tr("Address info for %1:").arg(user), false);
+					
+		PrintSystem( tr("IP Address: %1").arg(host.Cstr()), false);
+					
+		if (uid != "")
+			PrintSystem( tr("Port: %1").arg( uref()->GetPort() ), false);
+					
+		iaHost.s_addr = inet_addr(host.Cstr());
+		lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
+					
+		if (lpHostEntry != NULL)
+		{
+			PrintSystem( tr("Host Name: %1").arg(lpHostEntry->h_name), false);
+		}
+					
+		if (uid == "")
+		{
+			// List all users from this ip
+			START_OUTPUT();
+			PrintSystem( "Connected users: ", true);
+						
+			WUserMap cmap;
+			fNetClient->FindUsersByIP(cmap, host.Cstr());
+			for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
+			{
+				if ( (*it).second() )
+				{
+					PrintSystem( tr("#%1 - %2 (port: %3)").arg( (*it).second()->GetUserID() ).arg( (*it).second()->GetUserName() ).arg( (*it).second()->GetPort() ), true);
+				}
+			}
+			END_OUTPUT();
+		}
+	}
+	else
+	{
+		if (addr != user)
+			PrintError(tr("No address info for %1 or %2").arg(user).arg(addr));
+		else
+			PrintError(tr("No address info for %1").arg(user));
+	}
 }

@@ -228,6 +228,7 @@
 #define MSG_NL_PRIVATECHAT	"Discussion Privée avec %1"
 #define MSG_NL_LISTALLFILES	"Lister tous les Fichiers"
 #define MSG_NL_GETIPADDR	"Obtenir l'Adresse IP"
+#define MSG_NL_GETADDRINFO	"Get Address Info"
 #define MSG_REMOVE			"Supprimer"
 
 //
