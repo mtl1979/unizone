@@ -553,17 +553,25 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				}
 				else
 				{
-					rpos = command.find(" ");
+					rpos = command.findRev(" ");
 					if (rpos == -1)
 					{
-						rpos = command.length();
+						//rpos = command.length();
 						tuser = command;
 						command = QString::null;
 					}
 					else
 					{
-						tuser = command.left(rpos);
-						command = command.mid(rpos + 1);
+						if (command.mid(rpos + 1) == "gmt")
+						{
+							tuser = command.left(rpos);
+							command = "gmt";
+						}
+						else
+						{
+							tuser = command;
+							command = QString::null;
+						}
 					}
 				}
 			}
