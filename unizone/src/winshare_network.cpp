@@ -757,7 +757,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/search"))
 		{
-			LaunchSearch(GetParameterString(sendText));
+			QString pattern = GetParameterString(sendText);
+			LaunchSearch(pattern);
 		}
 		// add more commands BEFORE this one
 
