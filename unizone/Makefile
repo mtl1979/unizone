@@ -4,9 +4,12 @@ INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/unix -Isrc/muscle \
 	-Isrc/muscle/syslog -Isrc/muscle/system
 GCCOPTFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT \
 	-DNDEBUG -DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
-ifeq ($(OSTYPE), linux)
+KERNEL_NAME := $(shell uname -s || true)
+
+ifeq ($(KERNEL_NAME), Linux)
 GCCOPTFLAGS += -DLINUX -D__USE_LARGEFILE_64
 endif
+
 CXXFLAGS = -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
@@ -156,13 +159,15 @@ MUSCLE_OBJFILES = 	$(addsuffix .o,$(basename $(MUSCLE_SRCFILES)))
 MOC=$(QTDIR)/bin/moc
 UIC=$(QTDIR)/bin/uic
 
-all : qtcheck $(EXECUTABLES) translations
+all : $(EXECUTABLES) translations
 
-qtcheck.out : 
-	@touch qtcheck.out
+.PHONY : translations depends qtcheck
 
-qtcheck : $(QTDIR)/lib/libqt-mt.so qtcheck.out
+qtcheck : qtcheck.out 
+
+qtcheck.out : $(QTDIR)/lib/libqt-mt.so 
 	@echo -n "Checking Qt version... "
+	@[ -f qtcheck.out ] || touch qtcheck.out
 	@ls -l $(QTDIR)/lib/libqt-mt.so > qtcheck.tmp
 	@cmp -s qtcheck.tmp qtcheck.out || \
 	(rm -f $(MOC_SRCFILES) $(MUSCLEMOC_SRCFILES) $(UIC_SRCFILES) $(UIC_HEADERS) )
@@ -190,11 +195,11 @@ Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(MUSCLEMOC_OBJFILES) $
 #	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 translations : src/Makefile
-	$(MAKE) -C src -f Makefile
+	@$(MAKE) -C src -f Makefile
 
 depends: .depends
 
-.depends: .depends1 .depends2 .depends3 .depends4 .depends5
+.depends: qtcheck.out .depends1 .depends2 .depends3 .depends4 .depends5
 	@cat .depends1 > .depends
 	@cat .depends2 >> .depends
 	@cat .depends3 >> .depends
@@ -220,8 +225,6 @@ depends: .depends
 .depends5: $(MUSCLEMOC_SRCFILES)
 	@echo Building dependencies \(5/5\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends5
-
-.PHONY=translations depends
 
 # stuff for moc
 
