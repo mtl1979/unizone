@@ -73,11 +73,11 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 
 	fChannelUsers->setAllColumnsShowFocus(true);
 
-	fText = new WHTMLView(fSplitChat);
-	CHECK_PTR(fText);
+	fChatText = new WHTMLView(fSplitChat);
+	CHECK_PTR(fChatText);
 
-	fChat = new WChatText(this, fSplitChat);
-	CHECK_PTR(fChat);
+	fInputText = new WChatText(this, fSplitChat);
+	CHECK_PTR(fInputText);
 
 	// Set widget size relationships
 
@@ -100,14 +100,14 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fSplitChat->setSizes(splitList3);
 	
 
-	connect(fText, SIGNAL(URLClicked(const QString &)), 
+	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
 			this, SLOT(URLClicked(const QString &)));
-	connect(fChat, SIGNAL(TabPressed(const QString &)), 
+	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
 #if (QT_VERSION < 0x030000)
-	connect(fText, SIGNAL(BeforeShown()),
+	connect(fChatText, SIGNAL(BeforeShown()),
 			this, SLOT(BeforeShown()));
-	connect(fText, SIGNAL(GotShown(const QString &)), 
+	connect(fChatText, SIGNAL(GotShown(const QString &)), 
 			this, SLOT(GotShown(const QString &)));
 #endif
 	connect(fTopicEdit, SIGNAL(returnPressed()), 
@@ -248,7 +248,7 @@ void
 Channel::TabPressed(const QString &str)
 {
 	PRINT("Channel::Tab\n");
-	WPWEvent *e = new WPWEvent(WPWEvent::TabComplete, fChat->text());
+	WPWEvent *e = new WPWEvent(WPWEvent::TabComplete, fInputText->text());
 	if (e)
 	{
 		e->SetSendTo(this);
@@ -281,7 +281,7 @@ Channel::BeforeShown()
 void
 Channel::GotShown(const QString & txt)
 {
-	fText->setText(ParseForShown(txt));
+	fChatText->setText(ParseForShown(txt));
 }
 
 void
@@ -339,8 +339,8 @@ Channel::customEvent(QCustomEvent * event)
 			WPWEvent * we = dynamic_cast<WPWEvent *>(event);
 			if (we)
 			{
-				fChat->setText(we->GetText());
-				fChat->gotoEnd();
+				fInputText->setText(we->GetText());
+				fInputText->gotoEnd();
 			}
 			return;
 		}
@@ -597,7 +597,7 @@ Channel::customEvent(QCustomEvent * event)
 				}
 				else if (wte->Text().lower().startsWith("/clear"))
 				{
-					fText->setText("");	// empty the text
+					fChatText->setText("");	// empty the text
 				}
 				else
 				{
@@ -644,12 +644,12 @@ Channel::PrintText(const QString & str)
 		output = GetTimeStamp();
 	output += str;
 
-	if (fText->text().isEmpty())
-		fText->setText(output);
+	if (fChatText->text().isEmpty())
+		fChatText->setText(output);
 	else
 	{
 		CheckScrollState();
-		fText->append(
+		fChatText->append(
 #if (QT_VERSION < 0x030000)
 				"\t" + 
 #endif
@@ -734,8 +734,10 @@ Channel::Action(const QString & name, const QString & msg, bool batch)
 void
 Channel::CheckScrollState()
 {
-	QScrollBar * scroll = fText->verticalScrollBar();
+	QScrollBar * scroll = fChatText->verticalScrollBar();
 	PRINT("CHECKSCROLLSTATE: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
+	fScrollX = fChatText->contentsX();
+	fScrollY = fChatText->contentsY();
 	if (scroll->value() >= scroll->maxValue())
 		fScrollDown = true;
 	else
@@ -747,11 +749,15 @@ Channel::UpdateTextView()
 {
 	if (fScrollDown)
 	{
-		fText->setContentsPos(0, fText->contentsHeight());
+		fScrollY = fChatText->contentsHeight();
+	}
+	if (fScrollX != fChatText->contentsX() || fScrollY != fChatText->contentsY())
+	{
+		fChatText->setContentsPos(fScrollX, fScrollY);
 #ifndef WIN32
-		fText->repaintContents(
-								fText->contentsX(), fText->contentsY(),
-								fText->contentsWidth(), fText->contentsHeight(),
+		fChatText->repaintContents(
+								fChatText->contentsX(), fChatText->contentsY(),
+								fChatText->contentsWidth(), fChatText->contentsHeight(),
 								false);
 #endif
 	}

@@ -48,13 +48,14 @@ private:
 	QLabel * fTopicLabel;
 	QLineEdit * fTopicEdit;
 	QListView * fChannelUsers;
-	WChatText * fChat;
-	WHTMLView * fText;
+	WChatText * fInputText;
+	WHTMLView * fChatText;
 	QWidget * fParent;
 
 	WUserMap fUsers;
 	WUserMap fAdmins;
 	bool fScrollDown;
+	int fScrollX, fScrollY;
 	bool fActive, fPublic;
 
 	void PrintText(const QString & str);

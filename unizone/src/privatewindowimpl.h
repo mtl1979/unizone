@@ -39,7 +39,7 @@ public:
 	bool RemUser(WUserRef & user);
 	WUserMap & GetUsers() { return fUsers; }
 
-	void ClearBuffer() { fChat->ClearBuffer(); }
+	void ClearBuffer() { fInputText->ClearBuffer(); }
 
 	void Lock() { fLock.lock(); }
 	void Unlock() { fLock.unlock(); }
@@ -70,8 +70,8 @@ private:
 	QObject * fOwner;
 	NetClient * fNet;
 	QListView * fPrivateUsers;
-	WHTMLView * fText;	// chat text...
-	WChatText * fChat;	// input box;
+	WHTMLView * fChatText;	// chat text...
+	WChatText * fInputText;	// input box;
 	QSplitter * fSplit;
 	QSplitter * fSplitChat;
 	QPopupMenu * fPopup;
@@ -79,6 +79,7 @@ private:
 	QString fPopupUser;
 	WUserMap fUsers;	// users in list
 	bool fScrollDown;
+	int fScrollX, fScrollY;
 	WLog fLog;
 
 #ifdef WIN32

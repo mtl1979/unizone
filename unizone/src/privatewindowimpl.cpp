@@ -40,12 +40,12 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	fSplitChat = new QSplitter(fSplit);
 	CHECK_PTR(fSplitChat);
 
-	fText = new WHTMLView(fSplitChat);
-	CHECK_PTR(fText);
+	fChatText = new WHTMLView(fSplitChat);
+	CHECK_PTR(fChatText);
 	// we still want to autocomplete ALL names, not just
 	// the one's with the ppl we talk to
-	fChat = new WChatText(this, fSplitChat);
-	CHECK_PTR(fChat);
+	fInputText = new WChatText(this, fSplitChat);
+	CHECK_PTR(fInputText);
 
 	// user list
 	fPrivateUsers = new QListView(fSplit);
@@ -91,13 +91,13 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 			this, SLOT(UserDisconnected(const QString &, const QString &)));
 	connect(fNet, SIGNAL(DisconnectedFromServer()), 
 			this, SLOT(DisconnectedFromServer()));
-	connect(fText, SIGNAL(URLClicked(const QString &)), 
+	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
 			this, SLOT(URLClicked(const QString &)));
-	connect(fChat, SIGNAL(TabPressed(const QString &)), 
+	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
 #if (QT_VERSION < 0x030000)
-	connect(fText, SIGNAL(BeforeShown()), this, SLOT(BeforeShown()));
-	connect(fText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
+	connect(fChatText, SIGNAL(BeforeShown()), this, SLOT(BeforeShown()));
+	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
 #endif
 	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 
@@ -210,11 +210,15 @@ WPrivateWindow::UpdateTextView()
 {
 	if (fScrollDown)
 	{
-		fText->setContentsPos(0, fText->contentsHeight());
+		fScrollY = fChatText->contentsHeight();
+	}
+	if (fScrollX != fChatText->contentsX() || fScrollY != fChatText->contentsY())
+	{
+		fChatText->setContentsPos(fScrollX, fScrollY);
 #ifndef WIN32 // for Linux (does FreeBSD need this too???)
-		fText->repaintContents(
-								fText->contentsX(), fText->contentsY(),
-								fText->contentsWidth(), fText->contentsHeight(),
+		fChatText->repaintContents(
+								fChatText->contentsX(), fChatText->contentsY(),
+								fChatText->contentsWidth(), fChatText->contentsHeight(),
 								false);
 #endif
 	}
@@ -232,12 +236,12 @@ WPrivateWindow::PrintText(const QString & str)
 
 	if (gWin->fSettings->GetLogging())
 		fLog.LogString(output);
-	if (fText->text().isEmpty())
-		fText->setText(output);
+	if (fChatText->text().isEmpty())
+		fChatText->setText(output);
 	else
 	{
 		CheckScrollState();
-		fText->append(
+		fChatText->append(
 #if (QT_VERSION < 0x030000)
 				"\t" + 
 #endif
@@ -327,7 +331,7 @@ void
 WPrivateWindow::TabPressed(const QString &str)
 {
 	PRINT("WPrivateWindow::Tab\n");
-	WPWEvent *e = new WPWEvent(WPWEvent::TabComplete, fChat->text());
+	WPWEvent *e = new WPWEvent(WPWEvent::TabComplete, fInputText->text());
 	if (e)
 	{
 		e->SetSendTo(this);
@@ -346,8 +350,8 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 			WPWEvent * we = dynamic_cast<WPWEvent *>(event);
 			if (we)
 			{
-				fChat->setText(we->GetText());
-				fChat->gotoEnd();
+				fInputText->setText(we->GetText());
+				fInputText->gotoEnd();
 			}
 			return;
 		}
@@ -481,7 +485,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 				}
 				else if (wte->Text().lower().startsWith("/clear"))
 				{
-					fText->setText("");	// empty the text
+					fChatText->setText("");	// empty the text
 				}
 				else
 				{
@@ -537,13 +541,15 @@ WPrivateWindow::BeforeShown()
 void
 WPrivateWindow::GotShown(const QString & txt)
 {
-	fText->setText(ParseForShown(txt));
+	fChatText->setText(ParseForShown(txt));
 }
 
 void
 WPrivateWindow::CheckScrollState()
 {
-	QScrollBar * scroll = fText->verticalScrollBar();
+	QScrollBar * scroll = fChatText->verticalScrollBar();
+	fScrollX = fChatText->contentsX();
+	fScrollY = fChatText->contentsY();
 	if (scroll->value() >= scroll->maxValue())
 		fScrollDown = true;
 	else

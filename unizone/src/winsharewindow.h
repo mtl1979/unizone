@@ -352,6 +352,7 @@ private:
 	// bool fPrintOutput;
 	QString fOutput;
 	bool fScrollDown;			// do we need to scroll the view down after an insertion?
+	int fScrollX, fScrollY;
 	bool fScanning;				// Is File Scan Thread active?
 
 	bool fDisconnect;			// true : disconnected prematurely

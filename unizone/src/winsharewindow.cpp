@@ -1226,7 +1226,11 @@ WinShareWindow::UpdateTextView()
 #endif
 	if (fScrollDown)
 	{
-		fChatText->setContentsPos(0, fChatText->contentsHeight());
+		fScrollY = fChatText->contentsHeight();
+	}
+	if (fScrollX != fChatText->contentsX() || fScrollY != fChatText->contentsY())
+	{
+		fChatText->setContentsPos(fScrollX, fScrollY);
 #ifndef WIN32	// linux only... (FreeBSD???)
 		fChatText->repaintContents(
 									fChatText->contentsX(), fChatText->contentsY(),
@@ -1413,6 +1417,8 @@ WinShareWindow::CheckScrollState()
 #ifdef DEBUG2
 	PRINT("CHECKSCROLLSTATE: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
 #endif
+	fScrollX = fChatText->contentsX();
+	fScrollY = fChatText->contentsY();
 	if (scroll->value() >= scroll->maxValue())
 		fScrollDown = true;
 	else

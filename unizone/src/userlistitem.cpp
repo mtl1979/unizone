@@ -38,66 +38,70 @@ WUserListItem::WUserListItem(
 void
 WUserListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w, int alignment)
 {
-	
-	QColorGroup _cg = cg;
-	
-	if (gWin->fSettings->GetMultiColor() == true)
-	{
-		long tx = WUniListItem::item(Load);
+		QColorGroup _cg = cg;
 		
-		if ((column == 0) || (column == 5))
+		bool mc = false;
+		if (gWin->fSettings)
 		{
-			if (tx > 0xFFFEFFFF && tx != -1)
+			mc = gWin->fSettings->GetMultiColor();
+		}
+
+		if (mc == true)
+		{
+			long tx = WUniListItem::item(Load);
+			
+			if ((column == 0) || (column == 5))
 			{
-				_cg.setColor(QColorGroup::Base, rowBaseColor(6));	// Infinite slots 
-				_cg.setColor(QColorGroup::Text, rowTextColor(6));	//  
+				if (tx > 0xFFFEFFFF && tx != -1)
+				{
+					_cg.setColor(QColorGroup::Base, rowBaseColor(6));	// Infinite slots 
+					_cg.setColor(QColorGroup::Text, rowTextColor(6));	//  
+				}
+				else if (tx > 999999 && tx < 0xFFFF0000)
+				{
+					_cg.setColor(QColorGroup::Base, rowBaseColor(5));	// Full
+					_cg.setColor(QColorGroup::Text, rowTextColor(5));	// 
+				}
+				else if (tx > 749999 && tx < 1000000)
+				{
+					_cg.setColor(QColorGroup::Base, rowBaseColor(4));	// 3/4		- Full
+					_cg.setColor(QColorGroup::Text, rowTextColor(4));	// 
+				}
+				else if (tx > 499999 && tx < 750000)
+				{
+					_cg.setColor(QColorGroup::Base, rowBaseColor(3));	// 1/2		- 3/4 Full
+					_cg.setColor(QColorGroup::Text, rowTextColor(3));	// 
+				}
+				else if (tx > 249999 && tx < 500000)
+				{
+					_cg.setColor(QColorGroup::Base, rowBaseColor(2));	// 1/4		- 1/2 Full
+					_cg.setColor(QColorGroup::Text, rowTextColor(2));	// 
+				}
+				else if (tx > -1 && tx < 250000)
+				{
+					_cg.setColor(QColorGroup::Base, rowBaseColor(1));	// Empty	- 1/4 Full
+					_cg.setColor(QColorGroup::Text, rowTextColor(1));	// 
+				}
+				else
+				{
+					_cg.setColor(QColorGroup::Base, rowBaseColor(0));	// default
+					_cg.setColor(QColorGroup::Text, rowTextColor(0));	// 
+				}
 			}
-			else if (tx > 999999 && tx < 0xFFFF0000)
+			else if (column == 3)
 			{
-				_cg.setColor(QColorGroup::Base, rowBaseColor(5));	// Full
-				_cg.setColor(QColorGroup::Text, rowTextColor(5));	// 
-			}
-			else if (tx > 749999 && tx < 1000000)
-			{
-				_cg.setColor(QColorGroup::Base, rowBaseColor(4));	// 3/4		- Full
-				_cg.setColor(QColorGroup::Text, rowTextColor(4));	// 
-			}
-			else if (tx > 499999 && tx < 750000)
-			{
-				_cg.setColor(QColorGroup::Base, rowBaseColor(3));	// 1/2		- 3/4 Full
-				_cg.setColor(QColorGroup::Text, rowTextColor(3));	// 
-			}
-			else if (tx > 249999 && tx < 500000)
-			{
-				_cg.setColor(QColorGroup::Base, rowBaseColor(2));	// 1/4		- 1/2 Full
-				_cg.setColor(QColorGroup::Text, rowTextColor(2));	// 
-			}
-			else if (tx > -1 && tx < 250000)
-			{
-				_cg.setColor(QColorGroup::Base, rowBaseColor(1));	// Empty	- 1/4 Full
-				_cg.setColor(QColorGroup::Text, rowTextColor(1));	// 
-			}
-			else
-			{
-				_cg.setColor(QColorGroup::Base, rowBaseColor(0));	// default
-				_cg.setColor(QColorGroup::Text, rowTextColor(0));	// 
+				if (fFire)															// Firewalled?
+					_cg.setColor(QColorGroup::Text, rowBaseColor(4));
 			}
 		}
-		else if (column == 3)
+		else
 		{
-			if (fFire)															// Firewalled?
-				_cg.setColor(QColorGroup::Text, rowBaseColor(4));
+			if (fFire)
+			{
+				QFont font = p->font();
+				font.setBold(true);
+				p->setFont(font);
+			}
 		}
-	}
-	else
-	{
-		if (fFire)
-		{
-			QFont font = p->font();
-			font.setBold(true);
-			p->setFont(font);
-		}
-	}
-	
 	WNickListItem::paintCell(p, _cg, column, w, alignment);
 }

@@ -1532,7 +1532,15 @@ void
 WDownload::UpdateLoad()
 {
 	PRINT("WDownload::UpdateLoad\n");
-	gWin->fNetClient->SetLoad(GetUploadQueue(), gWin->fSettings->GetMaxUploads());
+	if (gWin->fNetClient)
+	{
+		int mu = 0;
+		if (gWin->fSettings)
+		{
+			mu = gWin->fSettings->GetMaxUploads();
+		}
+		gWin->fNetClient->SetLoad(GetUploadQueue(), gWin->fSettings->GetMaxUploads());
+	}
 	PRINT("WDownload::UpdateLoad OK\n");
 }
 
