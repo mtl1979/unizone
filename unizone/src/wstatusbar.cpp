@@ -1,27 +1,22 @@
 #include "wstatusbar.h"
 
-WStatusBar::WStatusBar(QWidget * parent, const char * name)
-: QStatusBar(parent, name)
+WStatusBar::WStatusBar(QWidget * parent, const char * name, unsigned int columns)
+: QStatusBar(parent, name), fColumns(columns)
 {
-	fText = new QLabel *[3];
+	fText = new QLabel *[columns];
 	CHECK_PTR(fText);
-	// Initialize array elements
-	fText[0] = new QLabel(this);
-	CHECK_PTR(fText[0]);
-	fText[0]->setAlignment(AlignCenter);
-	//
-	fText[1] = new QLabel(this);
-	CHECK_PTR(fText[1]);
-	fText[1]->setAlignment(AlignCenter);
-	//
-	fText[2] = new QLabel(this);
-	CHECK_PTR(fText[2]);
-	fText[2]->setAlignment(AlignCenter);
+	for (unsigned int i = 0; i < columns; i++)
+	{
+		// Initialize array element
+		fText[i] = new QLabel(this);
+		CHECK_PTR(fText[i]);
+		fText[i]->setAlignment(AlignCenter);
+		//
+		// Add elements to status bar
+		addWidget(fText[i], 1);
+	}
 
-	// Add elements to status bar
-	addWidget(fText[0], 1);
-	addWidget(fText[1], 1);
-	addWidget(fText[2], 1);
+	setMaximumHeight(32);
 }
 
 WStatusBar::~WStatusBar()
@@ -30,17 +25,17 @@ WStatusBar::~WStatusBar()
 }
 
 void
-WStatusBar::setText(QString text, int index)
+WStatusBar::setText(QString text, unsigned int index)
 {
-	if ((index >= 0) && (index <= 2))
+	if ((index >= 0) && (index < fColumns))
 		fText[index]->setText(text);
 }
 
 QString
-WStatusBar::text(int index)
+WStatusBar::text(unsigned int index)
 {
 	QString ret = QString::null;
-	if ((index >= 0) && (index <= 2))
+	if ((index >= 0) && (index < fColumns))
 		ret = fText[index]->text();
 	return ret;
 }

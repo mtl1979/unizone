@@ -93,6 +93,7 @@ using namespace muscle;
 #define REMOTEPASSWORD "remotepassword"
 
 #define QUERY_LIST "querylist"
+#define QUERY_ITEM "queryitem"
 
 #define RESUMELIST "resumelist"
 #define RESUMEFILE "resumefile"
@@ -140,6 +141,8 @@ public:
 	void AddQueryItem(QString str);
 	QString GetQueryItem(int index);
 	void EmptyQueryList();
+	void SetCurrentQueryItem(int item);
+	int GetCurrentQueryItem();
 
 	// resume list
 	void AddResumeItem(WResumePair wrp);

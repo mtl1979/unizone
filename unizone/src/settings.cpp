@@ -1289,6 +1289,21 @@ WSettings::EmptyQueryList()
 	fSet->RemoveName(QUERY_LIST);
 }
 
+void
+WSettings::SetCurrentQueryItem(int item)
+{
+	fSet->RemoveName(QUERY_ITEM);
+	fSet->AddInt32(QUERY_ITEM, (int32)item);
+}
+
+int
+WSettings::GetCurrentQueryItem()
+{
+	int i = 0;
+	fSet->FindInt32(QUERY_ITEM, (int32 *)&i);
+	return i;
+}
+
 void 
 WSettings::AddResumeItem(WResumePair wrp)
 {

@@ -128,11 +128,6 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fServer = fServerList->currentText();
 	fUserStatus = fStatusList->currentText();
 
-	// load query history
-	QString str;
-	for (int i = 0; (str = gWin->fSettings->GetQueryItem(i)) != QString::null; i++)
-		fSearchEdit->insertItem(str, i);
-
 	// server check thread
 	// run the thread here
 	if (fSettings->GetAutoUpdateServers())
@@ -309,19 +304,6 @@ WinShareWindow::~WinShareWindow()
 
 	StopSearch();
 	ClearList();
-
-	fSettings->EmptyQueryList();
-
-	// save query history
-	int i;
-	for (i = 0; i < fSearchEdit->count(); i++)
-	{
-		fSettings->AddQueryItem(fSearchEdit->text(i));
-
-		wchar_t * wQuery = qStringToWideChar(fSearchEdit->text(i));
-		PRINT("Saved query %S\n", wQuery);
-		delete [] wQuery;
-	}
 
 	fIsRunning = false;
 
@@ -721,9 +703,9 @@ WinShareWindow::NameChanged(const QString & newName)
 void
 WinShareWindow::resizeEvent(QResizeEvent * event)
 {
-	QPoint qp(0, 0);
-	QSize qs(event->size().width(), event->size().height());
-	fMainBox->setGeometry(QRect(qp, qs));
+	//QPoint qp(0, 0);
+	//QSize qs(event->size().width(), event->size().height());
+	//fMainBox->setGeometry(QRect(qp, qs));
 }
 
 void
@@ -814,7 +796,7 @@ WinShareWindow::InitGUI()
 	fSearchWidget = new QWidget(fTabs);
 	CHECK_PTR(fSearchWidget);
 
-	fSearchTab = new QGridLayout(fSearchWidget, 13, 10, 0, -1, "Search Tab");
+	fSearchTab = new QGridLayout(fSearchWidget, 14, 10, 0, -1, "Search Tab");
 	CHECK_PTR(fSearchTab);
 
 	fSearchTab->addColSpacing(1, 20);
@@ -823,12 +805,30 @@ WinShareWindow::InitGUI()
 	fSearchTab->addColSpacing(7, 20);
 	fSearchTab->addColSpacing(9, 20);
 
-	fSearchTab->addRowSpacing(1, 20);
-	//fSearchTab->addRowSpacing(9, 20);
-	fSearchTab->addRowSpacing(11, 20);
+	fSearchTab->addRowSpacing(0, 5);
+	fSearchTab->addRowSpacing(2, 20);
+	fSearchTab->addRowSpacing(12, 20);
 
+	fSearchTab->setRowStretch(0, 0);	// Least significant
+	fSearchTab->setRowStretch(1, 1);
+	fSearchTab->setRowStretch(2, 1);
+	fSearchTab->setRowStretch(3, 2);	// 3 to 9, most significant
+	fSearchTab->setRowStretch(4, 2);
+	fSearchTab->setRowStretch(5, 2);
+	fSearchTab->setRowStretch(6, 2);
+	fSearchTab->setRowStretch(7, 2);
+	fSearchTab->setRowStretch(8, 2);
+	fSearchTab->setRowStretch(9, 2);
+	fSearchTab->setRowStretch(10, 1);
+	fSearchTab->setRowStretch(11, 1);
+	fSearchTab->setRowStretch(12, 0);	// Least significant
+	fSearchTab->setRowStretch(13, 1);
+
+	// Results ListView
+	
 	fSearchList = new QListView(fSearchWidget);
 	CHECK_PTR(fSearchList);
+
 	fSearchList->addColumn(tr("File Name"));
 	fSearchList->addColumn(tr("File Size"));
 	fSearchList->addColumn(tr("File Type"));
@@ -852,54 +852,70 @@ WinShareWindow::InitGUI()
 
 	fSearchList->setSelectionMode(QListView::Extended);
 
-	fSearchTab->addMultiCellWidget(fSearchList, 2, 8, 0, 10);
+	fSearchTab->addMultiCellWidget(fSearchList, 3, 9, 0, 10);
+
+	// Status Bar
 
 	fStatus = new WStatusBar(fSearchWidget);
 	CHECK_PTR(fStatus);
 	fStatus->setSizeGripEnabled(false);
 
-	fSearchTab->addMultiCellWidget(fStatus, 12, 12, 0, 10);
+	fSearchTab->addMultiCellWidget(fStatus, 13, 13, 0, 10);
+
+	// Search Query Label
 
 	fSearchLabel = new QLabel(fSearchWidget);
 	CHECK_PTR(fSearchLabel);
 
-	fSearchTab->addMultiCellWidget(fSearchLabel, 0, 0, 0, 4); 
+	fSearchTab->addMultiCellWidget(fSearchLabel, 1, 1, 0, 3); 
 
-	// fSearchEdit = new QLineEdit(fEntryBox);
+	// Search Query Combo Box
+
 	fSearchEdit = new WComboBox(this, fSearchWidget, "fSearchEdit");
 	CHECK_PTR(fSearchEdit);
+
 	fSearchEdit->setEditable(true);
 	fSearchEdit->setMinimumWidth((int) (this->width()*0.75));
 	fSearchLabel->setBuddy(fSearchEdit);
 	fSearchLabel->setText(tr("Search:"));
 
-	fSearchTab->addMultiCellWidget(fSearchEdit, 0, 0, 6, 10);
+	fSearchTab->addMultiCellWidget(fSearchEdit, 1, 1, 4, 10);
 	
+	// Download Button
+
 	fDownload = new QPushButton(tr("Download"), fSearchWidget);
 	CHECK_PTR(fDownload);
 
-	fSearchTab->addMultiCellWidget(fDownload, 9, 9, 0, 2);
+	fSearchTab->addMultiCellWidget(fDownload, 10, 10, 0, 2);
+
+	// Stop Button
 
 	fStop = new QPushButton(tr("Stop"), fSearchWidget);
 	CHECK_PTR(fStop);
 
-	fSearchTab->addMultiCellWidget(fStop, 9, 9, 4, 6);
+	fSearchTab->addMultiCellWidget(fStop, 10, 10, 4, 6);
+
+	// Clear Button
 
 	fClear = new QPushButton(tr("Clear"), fSearchWidget);
 	CHECK_PTR(fClear);
 
-	fSearchTab->addMultiCellWidget(fClear, 9, 9, 8, 10);
+	fSearchTab->addMultiCellWidget(fClear, 10, 10, 8, 10);
+
+	// Clear History Button
 
 	fClearHistory = new QPushButton(tr("Clear History"), fSearchWidget);
 	CHECK_PTR(fClearHistory);
 
-	fSearchTab->addMultiCellWidget(fClearHistory, 10, 10, 8, 10);
+	fSearchTab->addMultiCellWidget(fClearHistory, 11, 11, 8, 10);
 
 	// connect up slots
+
 	connect(fNetClient, SIGNAL(AddFile(const QString, const QString, bool, MessageRef)), this,
 			SLOT(AddFile(const QString, const QString, bool, MessageRef)));
 	connect(fNetClient, SIGNAL(RemoveFile(const QString, const QString)), this, 
 			SLOT(RemoveFile(const QString, const QString)));
+
 	connect(fClear, SIGNAL(clicked()), this, SLOT(ClearList()));
 	connect(fStop, SIGNAL(clicked()), this, SLOT(StopSearch()));
 	connect(fDownload, SIGNAL(clicked()), this, SLOT(Download()));
@@ -923,6 +939,14 @@ WinShareWindow::InitGUI()
 	CHECK_PTR(fChannelsTab);
 
 	fChannelsTab->addRowSpacing(5, 20);
+
+	fChannelsTab->setRowStretch(0, 2);
+	fChannelsTab->setRowStretch(1, 2);
+	fChannelsTab->setRowStretch(2, 2);
+	fChannelsTab->setRowStretch(3, 2);
+	fChannelsTab->setRowStretch(4, 2);
+	fChannelsTab->setRowStretch(5, 0);
+	fChannelsTab->setRowStretch(6, 1);
 
 	fChannelsTab->addColSpacing(0, 20);
 	fChannelsTab->addColSpacing(2, 20);
@@ -1473,6 +1497,7 @@ WinShareWindow::LoadSettings()
 		fServerList->clear();
 		fStatusList->clear();
 		fUserList->clear();
+		fSearchEdit->clear();
 
 		int i;
 		int size;
@@ -1489,12 +1514,16 @@ WinShareWindow::LoadSettings()
 		fUserList->setCurrentItem(fSettings->GetCurrentUserItem());
 		fUserName = fUserList->currentText();
 
-
 		// load status
 		for (i = 0; (str = fSettings->GetStatusItem(i)) != QString::null; i++)
 			fStatusList->insertItem(str, i);
 		fStatusList->setCurrentItem(fSettings->GetCurrentStatusItem());
 		fUserStatus = fStatusList->currentText();
+
+		// load query history
+		for (i = 0; (str = gWin->fSettings->GetQueryItem(i)) != QString::null; i++)
+			fSearchEdit->insertItem(str, i);
+		fSearchEdit->setCurrentItem(fSettings->GetCurrentQueryItem());
 
 		// load the style
 		switch (fSettings->GetStyle())
@@ -1651,6 +1680,7 @@ WinShareWindow::SaveSettings()
 	fSettings->EmptyServerList();
 	fSettings->EmptyStatusList();
 	fSettings->EmptyUserList();
+	fSettings->EmptyQueryList();
 	// don't worry about the color list, prefs does it
 	
 	// save server list
@@ -1683,9 +1713,21 @@ WinShareWindow::SaveSettings()
 		fSettings->AddStatusItem(fStatusList->text(i));
 		wStatus = qStringToWideChar(fStatusList->text(i));
 		PRINT("Saved status %S\n", wStatus);
-		delete wStatus;
+		delete [] wStatus;
 	}
 	fSettings->SetCurrentStatusItem(fStatusList->currentItem());
+
+	// save query history
+	for (i = 0; i < fSearchEdit->count(); i++)
+	{
+		fSettings->AddQueryItem(fSearchEdit->text(i));
+
+		wchar_t * wQuery = qStringToWideChar(fSearchEdit->text(i));
+		PRINT("Saved query %S\n", wQuery);
+		delete [] wQuery;
+	}
+	fSettings->SetCurrentQueryItem(fSearchEdit->currentItem());
+
 	// don't worry about style, Prefs does it for us
 	
 	// save list view column widths
