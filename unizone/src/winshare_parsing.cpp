@@ -164,26 +164,51 @@ WinShareWindow::NameSaid(QString & msg)
 	String sname = StripURL((const char *) GetUserName().utf8()); // <postmaster@raasu.org> -- Don't use latin1 ()
 	const unsigned char * orig = (const unsigned char *)sname.Cstr();
 	const unsigned char * temp = orig;
-
+	
 	while(((*temp >= 'A')&&(*temp <= 'Z'))||
-			((*temp >= 'a')&&(*temp <= 'z'))||
-			((*temp >= '0')&&(*temp <= '9'))||
-			(*temp == '_')||
-			(*temp >= 0x80))
+		((*temp >= 'a')&&(*temp <= 'z'))||
+		((*temp >= '0')&&(*temp <= '9'))||
+		(*temp == '_')||
+		(*temp >= 0x80))
 		temp++;
-
+	
 	if (temp > orig)
 		sname = sname.Substring(0, temp - orig);
+	
+	sname = sname.ToUpperCase();
+	
+	bool bNameSaid = false;
+	bool bTemp;
+	while ( (bTemp = NameSaid2(sname, msg)) )
+	{
+		if (bTemp && !bNameSaid)
+			bNameSaid = true;
+	}
+	if (bNameSaid)
+	{
+#ifdef WIN32
+		if (fWinHandle && !this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashMain))	// if we have a valid handle AND we are not active AND the user wants to flash
+		{
+			WFlashWindow(fWinHandle); // flash our window
+		}
+#endif // WIN32
+	}
+	return bNameSaid;
+}
 
+bool
+WinShareWindow::NameSaid2(String sname, QString & msg, unsigned long index)
+{
 	String itxt((const char *) msg.utf8()); // <postmaster@raasu.org> -- Don't use latin1 ()
 	itxt = itxt.ToUpperCase();
-	sname = sname.ToUpperCase();
 
-	int sred = itxt.IndexOf(sname.Prepend(" "));
-	if (sred >= 0)
-		sred++;
-	else
-		sred = (itxt.StartsWith(sname)) ? 0 : -1;
+	int sred = (itxt.StartsWith(sname)) ? 0 : -1;
+	if (sred < 0)
+	{
+		sred = itxt.IndexOf(sname.Prepend(" "), index);
+		if (sred >= 0)
+			sred++;
+	}
 	if (sred >= 0)
 	{
 		int rlen = sname.Length();
@@ -195,11 +220,20 @@ WinShareWindow::NameSaid(QString & msg)
 		const char * c2 = &temp.Cstr()[rlen];
 
 		char an = c1[0];
+		char an2 = c1[1];
 
-        if ((muscleInRange(an, 'A', 'Z')) && (an != 'S'))  // allows pluralization without apostrophes though
-        {
-			// Oops, don't trigger after all, to avoid the tim/time problem
-			return false;
+        if (muscleInRange(an, 'A', 'Z'))
+		{
+			if (an != 'S')  // allows pluralization without apostrophes though
+			{
+				// Oops, don't trigger after all, to avoid the tim/time problem
+				return NameSaid2(sname, msg, sred + 1);
+			}
+			else if (muscleInRange(an2, 'A', 'Z'))
+			{
+				// 'S' must be last letter in word
+				return NameSaid2(sname, msg, sred + 1);
+			}
 		}
 
 		while (c1 && c2 && (*c1 == *c2))
@@ -228,12 +262,6 @@ WinShareWindow::NameSaid(QString & msg)
 		smsg += QString::fromUtf8(itxt2.Cstr()); // <postmaster@raasu.org> 20021005
 		PRINT("Name said string: %s\n", smsg.latin1());
 		msg = smsg;
-#ifdef WIN32
-		if (fWinHandle && !this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashMain))	// if we have a valid handle AND we are not active AND the user wants to flash
-		{
-			WFlashWindow(fWinHandle); // flash our window
-		}
-#endif // WIN32
 		return true;
 	}
 	return false;

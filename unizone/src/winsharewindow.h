@@ -231,11 +231,10 @@ private:
 	void CheckResumes(QString user);	// Check if resume list contains downloads from 'user'
 	void ListResumes();					// List files waiting to be resumed
 
-
-	// StringMatcher fWatchRegex;
-
 	bool Remote(String session, QString text);  // handle remote commands
 	QString fRemote;							// remote password
+
+	bool NameSaid2(String sname, QString & msg, unsigned long index = 0); // Private version for recursing
 
 	QTimer * fAutoAway;
 	QTimer * fReconnectTimer;
