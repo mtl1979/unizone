@@ -96,6 +96,7 @@ public slots:
 
 protected:
 	QObject * fOwner;
+	bool fShutdown;
 	bool * fShutdownFlag;
 	//bool fQueued;
 	bool fManuallyQueued;

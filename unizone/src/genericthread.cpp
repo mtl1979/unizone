@@ -10,6 +10,12 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	: MessageTransceiverThread(), fOwner(owner), fShutdownFlag(optShutdownFlag)
 {
 	// Default status
+
+	if (!fShutdownFlag)					// Force use of Shutdown Flag
+	{
+		fShutdown = false;
+		fShutdownFlag = &fShutdown;
+	}
 	fActive = true;
 	fBlocked = false;
 	fFinished = false;
