@@ -188,39 +188,29 @@ WinShareWindow::TabPressed(QString str)
 }
 
 void
-WinShareWindow::URLClicked()
+WinShareWindow::URLClicked(const QString & url)
 {
 	PRINT("URL Clicked\n");
-	if (fCurURL != QString::null)
+	if (url != QString::null)
 	{
 		// <postmaster@raasu.org> 20021021
 		//
 		// added .lower() to all comparisons
 		//
 		QString surl;	// for LaunchSearch() and LaunchPrivate() 
-		if (fCurURL.lower().startsWith("beshare:") || fCurURL.lower().startsWith("share:"))
+		if (url.lower().startsWith("beshare:") || url.lower().startsWith("share:"))
 		{
-			surl = fCurURL.mid(fCurURL.find(":") + 1);
+			surl = url.mid(url.find(":") + 1);
 			LaunchSearch(surl);
 		}
-		else if (fCurURL.lower().startsWith("priv:")) // <postmaster@raasu.org> 20021013
+		else if (url.lower().startsWith("priv:")) // <postmaster@raasu.org> 20021013
 		{
-			surl = fCurURL.mid(fCurURL.find(":") + 1);
+			surl = url.mid(url.find(":") + 1);
 			LaunchPrivate(surl);
 		}
 		else
-			GotoURL(fCurURL);
+			GotoURL(url);
 	}
-}
-
-void
-WinShareWindow::URLSelected(const QString & href)
-{
-	wchar_t * wRef = qStringToWideChar(href);
-	PRINT("URL Selected %S\n", wRef);
-	delete [] wRef;
-
-	fCurURL = href;
 }
 
 void
@@ -294,7 +284,7 @@ WinShareWindow::PopupActivated(int id)
 		else if (id == 3) 
 		{
 			QString qTemp = tr("<font color=\"%3\">%1</font>'s IP address is %2.").arg(FixStringStr((*it).second()->GetUserName())).arg((*it).second()->GetUserHostName()).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
-			PrintSystem(qTemp,false);
+			PrintSystem(qTemp);
 		}
 		else if (id == 4)
 		{
@@ -392,10 +382,8 @@ WinShareWindow::ReconnectTimer()
 void
 WinShareWindow::GotShown(const QString & txt)
 {
-#ifndef WIN32
 	fChatText->setText(ParseForShown(txt));
 	UpdateTextView();
-#endif
 }
 
 void
@@ -497,7 +485,7 @@ WinShareWindow::CheckResumes(QString user)
 
 			if (fSettings->GetDownloads())
 			{
-				PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).second.fRemoteName).arg(user), false);
+				PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).second.fRemoteName).arg(user));
 			}
 			fFiles.AddTail((*it).second.fRemoteName);
 			fLFiles.AddTail((*it).second.fLocalName);

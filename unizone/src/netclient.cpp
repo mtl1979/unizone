@@ -705,7 +705,7 @@ NetClient::SetUserName(QString user)
 		ref()->AddInt32("port", fPort);
 		ref()->AddInt64("installid", 0);
 		ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
-		ref()->AddString("version_num", WinShareVersionString());
+		ref()->AddString("version_num", (const char *) WinShareVersionString().utf8());
 		ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes
 		ref()->AddBool("firewalled", gWin->fSettings->GetFirewalled()); // is firewalled user, needed if no files shared
 

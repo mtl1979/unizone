@@ -323,7 +323,12 @@ ParseString(QString & str)
 {
 	bool space = true;
 	bool first = true;
-	for (int i = 0; i < (int)str.length(); i++)
+
+	// Remove trailing line feeds
+	while (str.right(1) == "\n")
+		str.truncate(str.length() - 1);
+
+	for (unsigned int i = 0; i < str.length(); i++)
 	{
 		// go through the string and change newlines to <br> (html)
 		if (str[i] == '\n')	
@@ -380,7 +385,7 @@ void
 EscapeHTML(QString & str)
 {
 	// we don't want to show html...
-	for (int i = 0; i < (int)str.length(); i++)
+	for (unsigned int i = 0; i < str.length(); i++)
 	{
 		if (str[i] == '<')
 			str.replace(i, 1, "&lt;");

@@ -1,7 +1,7 @@
-HEADERS =       debugimpl.h
+HEADERS =       debugimpl.h \
+				version.h
 SOURCES =		aboutdlg.cpp \ 	
 				aboutdlgimpl.cpp \
-				channel.cpp \
 				channelimpl.cpp \
 				channels.cpp \
 				downloadimpl.cpp \
@@ -9,15 +9,13 @@ SOURCES =		aboutdlg.cpp \
 				menubar.cpp \
 				netclient.cpp \
 				platform.cpp \
-				prefs.cpp \
 				prefsimpl.cpp \
-				privatewindow.cpp \
 				privatewindowimpl.cpp \
 				ulistview.cpp \
-                                winshare_channels.cpp \
+                winshare_channels.cpp \
 				winshare_parsing.cpp \
 				winshare_network.cpp \
-                                winshare_search.cpp \
+                winshare_search.cpp \
 				winshare_slots.cpp \
                 winsharewindow.cpp
 

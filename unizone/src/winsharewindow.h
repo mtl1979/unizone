@@ -168,8 +168,7 @@ public slots:
 	void TabPressed(QString str);
 
 	// URL's
-	void URLSelected(const QString &);
-	void URLClicked();
+	void URLClicked(const QString &);
 
 	// popup menu
 	void RightButtonClicked(QListViewItem *, const QPoint &, int);
@@ -182,7 +181,6 @@ public slots:
 	// reconnect timer
 	void ReconnectTimer();
 
-	// this won't be emitted under Windows
 	void GotShown(const QString &);
 
 	void AboutToQuit();
@@ -257,7 +255,6 @@ private:
 	int64 fLoginTime;
 
 	QString fUserName, fUserStatus, fServer;
-	QString fCurURL;			// currently selected URL
 	QString fPopupUser;
 	QPopupMenu * fPrivate;		// private window popup
 
@@ -396,8 +393,6 @@ private:
 	QString GetUptimeString();
 	int64 GetUptime();
 
-	static QString GetTimeStamp();
-
 	void OpenDownload();
 
 	friend class WPrivateWindow;
@@ -498,8 +493,6 @@ public:
 	void SendChatText(QString sid, QString txt, WUserRef priv = WUserRef(NULL, NULL), bool * reply = NULL);
 
 	static QString GetRemoteVersionString(const Message *);
-	static QString ParseForShown(const QString & str);	// parses the string during shown notifications from
-														// the HTML view (under Linux)
 	static void LaunchSearch(QString & pattern);		// launches a search
 	void LaunchPrivate(const QString & pattern);		// launches a private window with multiple users in it
 	void UpdateTransmitStats(uint64 t);

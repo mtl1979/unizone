@@ -100,4 +100,10 @@ uint16 GetServerPort(QString server);
 // Convert simple wildcard pattern to regex
 void ConvertToRegex(String & s);
 
+// Localize Month Names
+QString TranslateMonth(QString m);
+
+// Get nice time stamp ;)
+QString GetTimeStamp();
+
 #endif // PLATFORM_H

@@ -329,7 +329,7 @@ WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QStri
 			if (remoteIP != "127.0.0.1")
 			{
 				for (x = 0; x < filecount; x++)
-					gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP), false);
+					gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(files[x]).arg(remoteIP));
 			}
 		}
 		
@@ -338,7 +338,7 @@ WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QStri
 		if (!muscleInRange(remotePort, (uint32) DEFAULT_LISTEN_PORT, (uint32) (DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE)))
 		{
 			for (x = 0; x < filecount; x++)
-				gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]), false);
+				gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]));
 		}
 	}
 
@@ -1062,7 +1062,7 @@ WDownload::customEvent(QCustomEvent * e)
 								gWin->fSettings->GetDownloads()
 								)
 							{
-								gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
+								gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) );
 							}
 						}
 						PRINT("\tWGenericEvent::FileDataReceived OK\n");
@@ -1126,7 +1126,7 @@ WDownload::customEvent(QCustomEvent * e)
 								gWin->fSettings->GetUploads()
 								)
 							{
-								gWin->PrintSystem( tr("%1 has finished downloading %2.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
+								gWin->PrintSystem( tr("%1 has finished downloading %2.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) );
 							}
 						}
 						

@@ -1,6 +1,12 @@
 #ifndef HTMLVIEW_H
 #define HTMLVIEW_H
 
+#ifdef UNIVIEW
+#define PRINT qDebug
+#else
+#include "debugimpl.h"
+#endif
+
 #include <qtextbrowser.h>
 
 class WHTMLView : public QTextBrowser
@@ -10,10 +16,12 @@ public:
 	WHTMLView(QWidget * parent = NULL, const char * name = NULL);
 	virtual ~WHTMLView() {}
 
-	virtual void setSource( const QString & name )	{}
+	virtual void setSource( const QString & name );	
+
+	virtual QString context() { return fContext; }
 
 signals:
-	void URLClicked();
+	void URLClicked(const QString & url);
 	void GotShown(const QString & txt);
 
 protected:
@@ -21,16 +29,18 @@ protected:
 	virtual void viewportMouseReleaseEvent(QMouseEvent * e);
 	virtual void viewportMouseMoveEvent(QMouseEvent * e);
 	
-#ifndef WIN32
 	virtual void showEvent(QShowEvent * event);
-#endif
 
 private:
-	QString fOldURL, fURL;
+	QString fOldURL, fURL, fContext;
 
 private slots:
 	void URLSelected(const QString & url);
 };
+
+// Parse text for showing on WHTMLView
+QString ParseForShown(const QString & txt);
+
 
 #endif
 

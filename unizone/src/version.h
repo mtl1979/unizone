@@ -6,14 +6,15 @@
 const int kMajor = 1;
 const int kMinor = 2;
 const int kPatch = 0;
-const int kBuild = 10;
+const int kBuild = 11;
 
-inline char *
+inline QString
 WinShareVersionString()
 {
 	static char version[50];
-	sprintf(version, "%d.%d.%d Build %d", kMajor, kMinor, kPatch, kBuild);
-	return version;
+	const char * format = QT_TRANSLATE_NOOP( "WinShare", "%d.%d.%d build %d");
+	sprintf(version, format, kMajor, kMinor, kPatch, kBuild);
+	return QObject::tr(version);
 }
 
 #endif

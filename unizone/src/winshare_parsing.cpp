@@ -396,23 +396,6 @@ WinShareWindow::SetWatchPattern(QString pattern)
 	}
 }
 
-QString
-WinShareWindow::ParseForShown(const QString & txt)
-{
-	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
-	QStringTokenizer tk(txt, "\t");
-	QString next;
-	QString out;
-	while ((next = tk.GetNextToken()) != QString::null)
-	{
-#if (QT_VERSION < 0x030100)
-		out += "<br>";	// replace our TAB
-#endif
-		out += next; 
-	}
-	return out;
-}
-
 bool
 WinShareWindow::CheckVersion(const char * buf, QString * version)
 {
@@ -450,23 +433,6 @@ WinShareWindow::CheckVersion(const char * buf, QString * version)
 		return true;
 	}
 	return false;
-}
-
-QString
-WinShareWindow::GetTimeStamp()
-{
-	char sCurTime[50];
-	time_t curTime;
-	struct tm * curTimeTm;
-
-	curTime = time(NULL);
-	curTimeTm = localtime(&curTime);
-	sprintf(sCurTime, "[%d/%d %.2d:%.2d:%.2d] ", curTimeTm->tm_mon + 1, curTimeTm->tm_mday, 
-				curTimeTm->tm_hour, curTimeTm->tm_min, curTimeTm->tm_sec);
-
-	QString cl = WColors::Text;
-	QString ret = WFormat::TimeStamp.arg(cl).arg(gWin->fSettings->GetFontSize()).arg(sCurTime);
-	return ret;
 }
 
 bool

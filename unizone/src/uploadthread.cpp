@@ -418,14 +418,10 @@ WUploadThread::SignalOwner()
 
 			case MTT_EVENT_OUTPUT_QUEUES_DRAINED:
 			{
-#ifndef WIN32
 				PRINT("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
-#endif
 				if (fWaitingForUploadToFinish)
 				{
-#ifndef WIN32
 					PRINT("\tfWaiting\n");
-#endif
 					PRINT("\t\tSending message\n");
 					MessageRef msg(GetMessageFromPool(WGenericEvent::Disconnected));
 					if (msg())
@@ -714,9 +710,7 @@ WUploadThread::DoUpload()
 			}
 			else
 			{
-#ifndef WIN32
 				PRINT("No more files!\n");
-#endif
 				fWaitingForUploadToFinish = true;
 				MessageRef drain(GetMessageFromPool());
 				if (drain())

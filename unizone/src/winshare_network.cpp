@@ -62,7 +62,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					else
 					{
 						if (fSettings->GetError())
-							PrintError(tr("Already scanning!"), false);
+							PrintError(tr("Already scanning!"));
 					}
 				}
 				else
@@ -278,7 +278,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				if (fSettings->GetInfo())
-					PrintSystem(tr("Current compression: %1").arg(_en - MUSCLE_MESSAGE_ENCODING_DEFAULT), false);
+					PrintSystem(tr("Current compression: %1").arg(_en - MUSCLE_MESSAGE_ENCODING_DEFAULT));
 			}
 		}
 		else if (CompareCommand(sendText, "/disconnect"))
@@ -538,7 +538,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				else 
 					strcpy(zone, tzname[1]);
 				
-				PrintSystem(tr("Current time: %1 %2").arg(lt.Cstr()).arg(zone),false);
+				PrintSystem(tr("Current time: %1 %2").arg(lt.Cstr()).arg(zone));
 			}
 			else
 			{
@@ -863,14 +863,14 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/version"))
 		{
 			START_OUTPUT();
-			PrintSystem(tr("Unizone version: %1.%2.%3 build %4").arg(kMajor).arg(kMinor).arg(kPatch).arg(kBuild), true);
+			PrintSystem(tr("Unizone version: %1").arg(WinShareVersionString()), true);
 			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING), true);
 			END_OUTPUT();
 		}
 		else if (CompareCommand(sendText, "/onconnect"))
 		{
 			fOnConnect = GetParameterString(sendText);
-			PrintSystem(tr("On connect do: %1").arg(fOnConnect), false);
+			PrintSystem(tr("On connect do: %1").arg(fOnConnect));
 		}
 		else if (CompareCommand(sendText, "/search"))
 		{
@@ -1071,8 +1071,7 @@ WinShareWindow::HandleSignal()
 				if (gotIncoming == false)
 				{
 					gotIncoming = true;
-					fPrintOutput = false;
-					PrintText("", true);	// beginning batch
+					START_OUTPUT();
 				}
 				PRINT("MTT_EVENT_INCOMING_MESSAGE\n");
 				if (next())
@@ -1233,8 +1232,7 @@ WinShareWindow::HandleSignal()
 	}
 	if (gotIncoming)
 	{
-		fPrintOutput = true;
-		PrintText("", false);
+		END_OUTPUT();
 	}
 
 	//fNetClient->Unlock();
@@ -1589,7 +1587,7 @@ WinShareWindow::HandleMessage(Message * msg)
 								chat += WFormat::Text.arg(WColors::Watch).arg(fSettings->GetFontSize()).arg(nameText);
 							else
 								chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameText);
-							PrintText(chat, false);
+							PrintText(chat, false); // we're not beginning a batch, just continuing
 						}
 					}
 				}
@@ -1859,7 +1857,7 @@ WinShareWindow::HandleMessage(Message * msg)
 								pong += WFormat::PingUptime().arg(WColors::Ping).arg(fSettings->GetFontSize()).arg(MakeHumanTime(uptime)).arg(MakeHumanTime(onlinetime));
 							}
 							
-							PrintText(pong, false);
+							PrintText(pong);
 						}
 					}
 				}
@@ -1921,7 +1919,7 @@ WinShareWindow::HandleMessage(Message * msg)
 						if ((msg->FindString("time", sTime) == B_OK) && (msg->FindString("zone", sZone) == B_OK))
 						{
 							qTime += tr("Current time: %1 %2").arg(sTime.Cstr()).arg(sZone.Cstr());
-							PrintText(qTime, false);
+							PrintText(qTime);
 						}
 					}
 				}
@@ -2851,21 +2849,21 @@ WinShareWindow::GetAddressInfo(QString user)
 		Inet_NtoA(address, host);
 					
 		if (uid != "")
-			PrintSystem( tr("Address info for user #%1 (%2):").arg(uid).arg(user), false);
+			PrintSystem( tr("Address info for user #%1 (%2):").arg(uid).arg(user));
 		else
-			PrintSystem( tr("Address info for %1:").arg(user), false);
+			PrintSystem( tr("Address info for %1:").arg(user));
 					
-		PrintSystem( tr("IP Address: %1").arg(host), false);
+		PrintSystem( tr("IP Address: %1").arg(host));
 					
 		if (uid != "")
-			PrintSystem( tr("Port: %1").arg( uref()->GetPort() ), false);
+			PrintSystem( tr("Port: %1").arg( uref()->GetPort() ));
 					
 		iaHost.s_addr = inet_addr(host);
 		lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
 					
 		if (lpHostEntry != NULL)
 		{
-			PrintSystem( tr("Host Name: %1").arg(lpHostEntry->h_name), false);
+			PrintSystem( tr("Host Name: %1").arg(lpHostEntry->h_name));
 		}
 					
 		if (uid == "")

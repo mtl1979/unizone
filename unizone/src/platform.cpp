@@ -1,7 +1,13 @@
 #include "platform.h"
 #include "debugimpl.h"
+#include "colors.h"
+#include "formatting.h"
+#include "global.h"
+#include "winsharewindow.h"
+#include "settings.h"
 
 #include <qstring.h>
+#include <qdatetime.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -438,5 +444,48 @@ void ConvertToRegex(String & s)
      str++;
    }
    s = ret;
+}
+
+const char * MonthNames[12] = {
+								QT_TRANSLATE_NOOP( "Date", "Jan"),
+								QT_TRANSLATE_NOOP( "Date", "Feb"),
+								QT_TRANSLATE_NOOP( "Date", "Mar"),
+								QT_TRANSLATE_NOOP( "Date", "Apr"),
+								QT_TRANSLATE_NOOP( "Date", "May"),
+								QT_TRANSLATE_NOOP( "Date", "Jun"),
+								QT_TRANSLATE_NOOP( "Date", "Jul"),
+								QT_TRANSLATE_NOOP( "Date", "Aug"),
+								QT_TRANSLATE_NOOP( "Date", "Sep"),
+								QT_TRANSLATE_NOOP( "Date", "Oct"),
+								QT_TRANSLATE_NOOP( "Date", "Nov"),
+								QT_TRANSLATE_NOOP( "Date", "Dec")
+};
+
+QString TranslateMonth(QString m)
+{
+	return QObject::tr(m.latin1());
+}
+
+QString
+GetTimeStamp()
+{
+	QString qCurTime;
+
+	qCurTime = QDateTime::currentDateTime().toString();
+	qCurTime.truncate(qCurTime.findRev(" "));			// Strip off year
+	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);	// ... and day of week
+	
+	QString qMonth = qCurTime.left(3);
+	qMonth = TranslateMonth(qMonth);
+	
+	qCurTime = qCurTime.mid(3);
+	
+	qCurTime = qCurTime.prepend(qMonth);
+	qCurTime = qCurTime.prepend("[");
+	qCurTime = qCurTime.append("] ");
+
+	QString cl = WColors::Text;
+	QString ret = WFormat::TimeStamp.arg(cl).arg(gWin->fSettings->GetFontSize()).arg(qCurTime);
+	return ret;
 }
 

@@ -91,7 +91,6 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fSettings = new WSettings;
 	CHECK_PTR(fSettings);
 
-//	IncrementBuild();
 	setCaption("Unizone");
 
 	resize(800, 600);
@@ -108,13 +107,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	connect(fNetClient, SIGNAL(UserStatusChanged(QString, QString, QString)), this,
 			SLOT(UserStatusChanged(QString, QString, QString)));
 	connect(fInputText, SIGNAL(TabPressed(QString)), this, SLOT(TabPressed(QString)));
-	connect(fChatText, SIGNAL(highlighted(const QString&)), this,
-			SLOT(URLSelected(const QString&)));
-	connect(fChatText, SIGNAL(URLClicked()), this, SLOT(URLClicked()));
+	connect(fChatText, SIGNAL(URLClicked(const QString &)), this, SLOT(URLClicked(const QString &)));
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(AboutToQuit()));
-#ifndef WIN32
 	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
-#endif
 	// create popup menu
 	fPrivate = new QPopupMenu(this);	// have it deleted on destruction of window
 	CHECK_PTR(fPrivate);
@@ -254,9 +249,7 @@ WinShareWindow::StartAcceptThread()
 			{
 				if (fSettings->GetInfo())
 				{
-					START_OUTPUT();
-					PrintSystem(tr("Accept thread ready and listening on port %1.").arg(fAccept->GetPort()), true);
-					END_OUTPUT();
+					PrintSystem(tr("Accept thread ready and listening on port %1.").arg(fAccept->GetPort()));
 				}
 
 				// let the net client know our port
@@ -1236,8 +1229,7 @@ WinShareWindow::MakeHumanTime(int64 time)
 void
 WinShareWindow::PrintText(const QString & str, bool begin)
 {
-	static QString output = "";
-	static bool first = false;
+	static QString output("");
 	if (begin)	// starting message batch
 	{
 #ifndef WIN32
@@ -1245,32 +1237,34 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 #else
 		output = "";
 #endif
-		first = true;
 	}
 	else
 	{
 		if (!fPrintOutput)	// just append
 		{
-			if (!first)
-				output += "<br>";	// add a new line
-			else
-				first = false;
-
 			if (fSettings->GetTimeStamps())
 				output += GetTimeStamp();
 
-			output += str;
+			if (!str.isEmpty())
+				output += str;
+
+			output += "<br>";	
 		}
 		else
 		{
 #ifndef WIN32
 			if (output != "\t")	// do we have something?
 #else
-			if (output != "")
+			if (!output.isEmpty())
 #endif
 			{
+				if (output.right(4) == "<br>")
+					output.truncate(output.length() - 4);
 				CheckScrollState();
-				fChatText->append(output);
+				if (fChatText->text().isEmpty())
+					fChatText->setText(output);
+				else
+					fChatText->append(output);
 				fMainLog.LogString(output);
 				UpdateTextView();
 			}
@@ -1287,12 +1281,10 @@ WinShareWindow::PrintText(const QString & str)
 	if (fSettings->GetTimeStamps())
 		out = GetTimeStamp();
 	out += str;
-	fChatText->append(
-#ifndef WIN32
-						'\t' +
-#endif
-						out
-	);
+	if (fChatText->text().isEmpty())
+		fChatText->setText(out);
+	else
+		fChatText->append("\t" + out);
 	fMainLog.LogString(out);
 	UpdateTextView();
 }
@@ -1945,7 +1937,7 @@ WinShareWindow::WaitOnFileThread()
 	fFileShutdownFlag = true;
 	if (fFileScanThread->IsRunning())
 	{
-		PrintSystem(tr("Waiting for file scan thread to finish..."), false);
+		PrintSystem(tr("Waiting for file scan thread to finish..."));
 		while (fFileScanThread->IsRunning()) 
 		{
 			qApp->processEvents(300);
@@ -2249,7 +2241,7 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (fSettings->GetError())
 		{
-			PrintError(tr("Not connected."), false);
+			PrintError(tr("Not connected."));
 		}
 		return;
 	}
@@ -2259,7 +2251,7 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (fSettings->GetError())
 		{
-			PrintError(tr("File sharing not enabled."), false);
+			PrintError(tr("File sharing not enabled."));
 		}
 		return;
 	}
@@ -2270,7 +2262,7 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (fSettings->GetError())
 		{
-			PrintError(tr("Already scanning!"), false);
+			PrintError(tr("Already scanning!"));
 		}
 		return;
 	}

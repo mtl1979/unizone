@@ -37,7 +37,7 @@ protected:
 
 private:
 	NetClient * fNet;
-	QString fTopic, fOwner, fName, fURL, fStrAdmins;
+	QString fTopic, fOwner, fName, fStrAdmins;
 	QSplitter * fSplit;
 	QSplitter * fSplitBottom;
 	QSplitter * fSplitChat;
@@ -70,9 +70,8 @@ private:
 
 public slots:
 	void TabPressed(QString str);
-	void URLClicked();
+	void URLClicked(const QString & url);
 	void GotShown(const QString & txt);
-	void URLSelected(const QString & href);
 	void UpdateUserList();
 	void UpdateTopic();
 	void NewChannelText(const QString, const QString, const QString);

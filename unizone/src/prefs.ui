@@ -12,7 +12,7 @@
             <x>0</x>
             <y>0</y>
             <width>560</width>
-            <height>285</height>
+            <height>320</height>
         </rect>
     </property>
     <property stdset="1">
@@ -26,14 +26,14 @@
         <name>minimumSize</name>
         <size>
             <width>560</width>
-            <height>285</height>
+            <height>320</height>
         </size>
     </property>
     <property stdset="1">
         <name>maximumSize</name>
         <size>
-            <width>500</width>
-            <height>285</height>
+            <width>560</width>
+            <height>320</height>
         </size>
     </property>
     <property stdset="1">
@@ -53,9 +53,9 @@
         <property stdset="1">
             <name>geometry</name>
             <rect>
-                <x>0</x>
-                <y>250</y>
-                <width>550</width>
+                <x>1</x>
+                <y>291</y>
+                <width>558</width>
                 <height>28</height>
             </rect>
         </property>
@@ -172,10 +172,10 @@
         <property stdset="1">
             <name>geometry</name>
             <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>550</width>
-                <height>250</height>
+                <x>1</x>
+                <y>1</y>
+                <width>558</width>
+                <height>284</height>
             </rect>
         </property>
         <widget>
@@ -192,15 +192,15 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout36</cstring>
+                    <cstring>Layout43</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>1</x>
-                        <y>12</y>
-                        <width>540</width>
-                        <height>193</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>550</width>
+                        <height>240</height>
                     </rect>
                 </property>
                 <hbox>
@@ -216,17 +216,7 @@
                         <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>Layout23</cstring>
-                        </property>
-                        <property stdset="1">
-                            <name>minimumSize</name>
-                            <size>
-                                <width>250</width>
-                                <height>0</height>
-                            </size>
-                        </property>
-                        <property>
-                            <name>layoutSpacing</name>
+                            <cstring>Layout42</cstring>
                         </property>
                         <vbox>
                             <property stdset="1">
@@ -235,7 +225,7 @@
                             </property>
                             <property stdset="1">
                                 <name>spacing</name>
-                                <number>16</number>
+                                <number>6</number>
                             </property>
                             <widget>
                                 <class>QLayoutWidget</class>
@@ -401,6 +391,13 @@
                                     <cstring>fLogging</cstring>
                                 </property>
                                 <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>260</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property stdset="1">
                                     <name>text</name>
                                     <string>Enable Logging</string>
                                 </property>
@@ -420,6 +417,27 @@
                                     <bool>true</bool>
                                 </property>
                             </widget>
+                            <spacer>
+                                <property>
+                                    <name>name</name>
+                                    <cstring>Spacer35</cstring>
+                                </property>
+                                <property>
+                                    <name>orientation</name>
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property>
+                                    <name>sizeType</name>
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property>
+                                    <name>sizeHint</name>
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
                         </vbox>
                     </widget>
                     <widget>
@@ -431,7 +449,7 @@
                         <property stdset="1">
                             <name>minimumSize</name>
                             <size>
-                                <width>250</width>
+                                <width>260</width>
                                 <height>0</height>
                             </size>
                         </property>
@@ -449,6 +467,13 @@
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>fSounds</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>260</width>
+                                        <height>0</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
@@ -502,8 +527,8 @@
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>540</width>
-                        <height>195</height>
+                        <width>550</width>
+                        <height>240</height>
                     </rect>
                 </property>
                 <hbox>
@@ -769,8 +794,8 @@
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>540</width>
-                        <height>190</height>
+                        <width>550</width>
+                        <height>240</height>
                     </rect>
                 </property>
                 <hbox>
@@ -1184,8 +1209,8 @@
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>540</width>
-                        <height>195</height>
+                        <width>550</width>
+                        <height>240</height>
                     </rect>
                 </property>
                 <hbox>
@@ -1506,10 +1531,10 @@
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>10</x>
-                        <y>0</y>
-                        <width>540</width>
-                        <height>195</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>550</width>
+                        <height>240</height>
                     </rect>
                 </property>
                 <hbox>
@@ -1573,7 +1598,7 @@
                         <property stdset="1">
                             <name>maximumSize</name>
                             <size>
-                                <width>200</width>
+                                <width>260</width>
                                 <height>32767</height>
                             </size>
                         </property>
@@ -1626,6 +1651,20 @@
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>TextLabel7</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>sizePolicy</name>
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>5</vsizetype>
+                                    </sizepolicy>
+                                </property>
+                                <property stdset="1">
+                                    <name>minimumSize</name>
+                                    <size>
+                                        <width>275</width>
+                                        <height>0</height>
+                                    </size>
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
@@ -1687,10 +1726,10 @@
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>1</x>
-                        <y>13</y>
-                        <width>540</width>
-                        <height>200</height>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>550</width>
+                        <height>240</height>
                     </rect>
                 </property>
                 <hbox>
@@ -2365,8 +2404,8 @@
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>540</width>
-                        <height>195</height>
+                        <width>550</width>
+                        <height>240</height>
                     </rect>
                 </property>
                 <vbox>
@@ -2590,9 +2629,9 @@
                     <name>geometry</name>
                     <rect>
                         <x>0</x>
-                        <y>11</y>
-                        <width>540</width>
-                        <height>194</height>
+                        <y>10</y>
+                        <width>550</width>
+                        <height>240</height>
                     </rect>
                 </property>
                 <vbox>

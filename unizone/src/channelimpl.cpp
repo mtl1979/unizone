@@ -95,13 +95,9 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fSplitChat->setSizes(splitList3);
 	
 
-	connect(fText, SIGNAL(URLClicked()), this, SLOT(URLClicked()));
-	connect(fText, SIGNAL(highlighted(const QString&)), this,
-			SLOT(URLSelected(const QString&)));
+	connect(fText, SIGNAL(URLClicked(const QString &)), this, SLOT(URLClicked(const QString &)));
 	connect(fChat, SIGNAL(TabPressed(QString)), this, SLOT(TabPressed(QString)));
-#ifndef WIN32
 	connect(fText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
-#endif
 	connect(fTopicEdit, SIGNAL(returnPressed()), this, SLOT(UpdateTopic()));
 
 	connect(
@@ -247,33 +243,25 @@ Channel::TabPressed(QString str)
 }
 
 void
-Channel::URLClicked()
+Channel::URLClicked(const QString & url)
 {
-	if (fURL != QString::null)
+	if (url != QString::null)
 	{
 		// <postmaster@raasu.org> 20021021 -- Use lower() to eliminate not matching because of mixed casing
-		if (fURL.lower().startsWith("beshare:") || fURL.lower().startsWith("share:"))
+		if (url.lower().startsWith("beshare:") || url.lower().startsWith("share:"))
 		{
-			QString surl = fURL.mid(fURL.find(":")+1);
+			QString surl = url.mid(url.find(":") + 1);
 			WinShareWindow::LaunchSearch(surl);
 		}
 		else
-			GotoURL(fURL);
+			GotoURL(url);
 	}
 }
 
 void
 Channel::GotShown(const QString & txt)
 {
-#ifndef WIN32
-	fText->setText(WinShareWindow::ParseForShown(txt));
-#endif
-}
-
-void
-Channel::URLSelected(const QString & href)
-{
-	fURL = href;
+	fText->setText(ParseForShown(txt));
 }
 
 void
@@ -637,11 +625,14 @@ Channel::PrintText(const QString & str)
 
 	// Check for timestamp
 	if (gWin->fSettings->GetTimeStamps())
-		output = WinShareWindow::GetTimeStamp();
+		output = GetTimeStamp();
 	output += str;
 
 	CheckScrollState();
-	fText->append(output);
+	if (fText->text().isEmpty())
+		fText->setText(output);
+	else
+		fText->append("\t" + output);
 	UpdateView();
 }
 

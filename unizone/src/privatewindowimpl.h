@@ -52,13 +52,11 @@ protected:
 	virtual void resizeEvent(QResizeEvent * e);
 
 private slots:
-	void URLSelected(const QString &);	// mouse over url
-	void URLClicked();					// url clicked
+	void URLClicked(const QString &);	// url clicked
 	void UserDisconnected(QString sid, QString name);	// we need to remove user from internal list
 	void DisconnectedFromServer();
 	void TabPressed(QString str);
 
-	// this won't be emitted under Windows
 	void GotShown(const QString &);
 
 	// popup menu
@@ -77,7 +75,6 @@ private:
 	QSplitter * fSplitChat;
 	QPopupMenu * fPopup;
 
-	QString fURL;
 	QString fPopupUser;
 	WUserMap fUsers;	// users in list
 	bool fScrollDown;
