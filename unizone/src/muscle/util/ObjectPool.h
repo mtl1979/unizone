@@ -8,7 +8,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
-// Uncomment this #define to disable object pools (i.e. turn them intoi
+// Uncomment this #define to disable object pools (i.e. turn them into
 // fancy new/delete operators).  This is helpful if you are trying
 // to track down memory leaks.
 //#define DISABLE_OBJECT_POOLING 1

@@ -76,6 +76,12 @@ public:
 
 	bool NeedPing() const { return fNeedPing; }
 
+	QString GetLastLine() const { return fLastLine; }
+	void SetLastLine(const QString & line) { fLastLine = line; }
+
+	QString GetLastLine(const QString & channel) const;
+	void SetLastLine(const QString & channel, const QString & line);
+
 private:
 	QString fHostName;
 	QString fUserID;
@@ -97,9 +103,16 @@ private:
 
 	bool fNeedPing;
 
+	QString fLastLine;
+
+	//
+
 	typedef map<QListView *, QListViewItem *> WListMap;	// holds a list of QListView/QListViewItem pairs
 	typedef WListMap::iterator WListIter;
 	typedef pair<QListView *, QListViewItem *> WListPair;
+	typedef pair<QString, QString> QStringPair;
+
+	Queue<QStringPair> fLastLines;						// holds last lines for channels
 
 	WListMap fLists;
 

@@ -30,6 +30,7 @@ WUser::WUser(const QString & sid)
 	fClient = "?";
 	fNeedPing = true;
 	fPartial = false;
+	fLastLine = QString::null;
 }
 
 WUser::~WUser()
@@ -313,3 +314,39 @@ WUser::SetFirewalled(bool f)
 	}
 }
 
+QString
+WUser::GetLastLine(const QString & channel) const
+{
+	for (unsigned int n = 0; n < fLastLines.GetNumItems(); n++)
+	{
+		QStringPair sp = fLastLines[n];
+		if (sp.first == channel)
+			return sp.second;
+	}
+	return QString::null;
+}
+
+void
+WUser::SetLastLine(const QString & channel, const QString &line)
+{
+	QStringPair sp;
+
+	// Replace old entry if exists
+
+	for (unsigned int n = 0; n < fLastLines.GetNumItems(); n++)
+	{
+		sp = fLastLines[n];
+		if (sp.first == channel)
+		{
+			sp.second = line;
+			fLastLines.ReplaceItemAt(n, sp);
+			return;
+		}
+	}
+	
+	// No entry yet?
+
+	sp.first = channel;
+	sp.second = line;
+	fLastLines.AddTail(sp);
+}

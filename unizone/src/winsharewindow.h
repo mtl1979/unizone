@@ -407,7 +407,7 @@ private:
 	void ClearResumes();
 
 	// handle remote commands
-	bool Remote(const String &session, const QString &text);
+	bool Remote(const QString &session, const QString &text);
 	// remote password
 	QString fRemote;
 	// execute specified command

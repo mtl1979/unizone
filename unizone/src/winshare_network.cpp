@@ -1349,23 +1349,35 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		
 	case NetClient::NEW_CHAT_TEXT:
 		{
-			const char * session;		// from user (their session id)
 			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
-			const char * strTemp;
 			QString userName = tr("Unknown");
+			QString userID;
 			
-			msg()->FindString("session", &session);
-			msg()->FindString("text", &strTemp);
-			// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
-			text = QString::fromUtf8(strTemp);
+			{
+				const char * session;		// from user (their session id)
+				const char * strTemp;
+
+				msg()->FindString("session", &session);
+				msg()->FindString("text", &strTemp);
+				
+				// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
+				text = QString::fromUtf8(strTemp);
+				userID = QString(session);
+			}
 			
 			// get user info first
-			WUserRef user = fNetClient->FindUser(session);
+			WUserRef user = fNetClient->FindUser(userID);
 			if (user())
 			{
 				userName = user()->GetUserName();
 				if (!IsWhiteListed(user) && IsFilterListed(text))
 					return;
+
+				// User is repeating him/herself?
+				if (user()->GetLastLine() == text)
+					return;
+				else
+					user()->SetLastLine(text);
 			}
 			
 			// check for / commands
@@ -1415,7 +1427,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 #endif
 					// Check for remote control commands, filter out if found
 
-					if ( Remote(session, text) ) 
+					if ( Remote(userID, text) ) 
 						break;
 
 					if (fSettings->GetPrivate())	// and are we accepting private msgs?
@@ -1432,9 +1444,9 @@ WinShareWindow::HandleMessage(MessageRef msg)
 								for (WUserIter uit = winusers.begin(); uit != winusers.end(); uit++)
 								{
 									WUserRef user = (*uit).second;
-									if (user()->GetUserID() == session)
+									if (user()->GetUserID() == userID)
 									{
-										win->PutChatText(session, text);
+										win->PutChatText(userID, text);
 										foundPriv = true;
 										// continue... this user may be in multiple windows... :)
 									}
@@ -1443,19 +1455,19 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							pLock.unlock();
 							if (foundPriv)
 								return;
-							else if ( IsAutoPrivate( QString(session) ) )
+							else if ( IsAutoPrivate( userID ) )
 							{
 								// Create new Private Window
 								WPrivateWindow * win = new WPrivateWindow(this, fNetClient, NULL);
 								if (win)
 								{
-									WUserRef pu = FindUser(session);
+									WUserRef pu = FindUser(userID);
 									if (pu())
 									{
 										// Add user to private window
 										win->AddUser(pu);
 										// Send text to private window
-										win->PutChatText(session, text);
+										win->PutChatText(userID, text);
 										// Show newly created private window
 										win->show();
 										// ... and add it to list of private windows
@@ -1477,7 +1489,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							}
 							else
 							{
-								chat = WFormat::ReceivePrivMsg(session, FixStringStr(userName), nameText);
+								chat = WFormat::ReceivePrivMsg(userID, FixStringStr(userName), nameText);
 							}
 							if (fSettings->GetSounds())
 								QApplication::beep();
@@ -1498,7 +1510,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					{
 						if ( !IsIgnored(user) )
 						{
-							chat = WFormat::RemoteName(session, FixStringStr(userName));
+							chat = WFormat::RemoteName(userID, FixStringStr(userName));
 							PRINT("Fixing string\n");
 							QString nameText = FixStringStr(text);
 							PRINT("Name said\n");
@@ -1517,27 +1529,36 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		}
 		case NetClient::ChannelText:
 			{
-			const char * session;		// from user (their session id)
-			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
-			QString channel;
-			const char * strTemp;
-			const char * strChannel;
-			QString userID = tr("Unknown");
+				QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
+				QString channel;
+				QString userID;
+
+				{
+					const char * session;		// from user (their session id)
+					const char * strTemp;
+					const char * strChannel;
 			
-			msg()->FindString("session", &session);
-			msg()->FindString("text", &strTemp);
-			msg()->FindString("channel", &strChannel);
-			// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Latin-1
-			text = QString::fromUtf8(strTemp);
-			channel = QString::fromUtf8(strChannel);
+					msg()->FindString("session", &session);
+					msg()->FindString("text", &strTemp);
+					msg()->FindString("channel", &strChannel);
 			
-			// get user info first
-			WUserRef user = fNetClient->FindUser(session);
-			if (user())
-			{
-				userID = user()->GetUserID();
-				emit NewChannelText(channel, userID, text);
-			}
+					// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Latin-1
+					text = QString::fromUtf8(strTemp);
+					channel = QString::fromUtf8(strChannel);
+					userID = QString(session);
+				}
+			
+				// get user info first
+				WUserRef user = fNetClient->FindUser(userID);
+				if (user())
+				{
+					// User is repeating him/herself?
+
+					if (user()->GetLastLine(channel) == text)
+						return;
+
+					emit NewChannelText(channel, userID, text);
+				}
 
 				break;
 			}
@@ -2253,7 +2274,7 @@ WinShareWindow::FindUserByIPandPort(const QString & ip, uint32 port)
 
 
 bool
-WinShareWindow::Remote(const String & /* session */, const QString &text)
+WinShareWindow::Remote(const QString & /* session */, const QString &text)
 {
 	QString qItem;
 	if (!text.startsWith("!remote"))	// Is a remote request?
@@ -2262,10 +2283,20 @@ WinShareWindow::Remote(const String & /* session */, const QString &text)
 		return false;
 
 	QString cmd = text.mid(8);
+
+	// try to parse password...
 	int sp = cmd.find("\n");
+	
+	if (sp == -1) 
+		return false;
+
 	QString pass = cmd.left(sp);
+	
+	// Correct password?
 	if (pass != fRemote)
 		return false;
+
+	// Parse for commands...
 	QStringTokenizer qTok(cmd.mid(sp+1),"\n");
 	while ((qItem = qTok.GetNextToken()) != QString::null)
 	{

@@ -8,6 +8,8 @@
 
 BEGIN_NAMESPACE(muscle);
 
+class IMemoryAllocationStrategy;
+
 /** This class is used to hold a raw buffer of bytes, and is also Flattenable and RefCountable. */
 class ByteBuffer : public FlatCountable
 {
@@ -16,18 +18,22 @@ public:
      * @param numBytes Number of bytes to copy in (or just allocate, if (optBuffer) is NULL).  Defaults to zero bytes (i.e., don't allocate a buffer)
      * @param optBuffer May be set to point to an array of (numBytes) bytes that we should copy into our internal buffer.
      *                  If NULL, this ByteBuffer will contain (numBytes) uninitialized bytes.  Defaults to NULL.
+     * @param optAllocationStrategy If non-NULL, this object will be used to allocate and free bytes.  If left as NULL (the default),
+     *                              then muscleAlloc(), muscleRealloc(), and/or muscleFree() will be called as necessary.
      */
-   ByteBuffer(uint32 numBytes = 0, const uint8 * optBuffer = NULL) : _buffer(NULL), _numValidBytes(0), _numAllocatedBytes(0) {(void) SetBuffer(numBytes, optBuffer);}
+   ByteBuffer(uint32 numBytes = 0, const uint8 * optBuffer = NULL, IMemoryAllocationStrategy * optAllocationStrategy = NULL) : _buffer(NULL), _numValidBytes(0), _numAllocatedBytes(0), _allocStrategy(optAllocationStrategy) {(void) SetBuffer(numBytes, optBuffer);}
   
    /** Copy Constructor. 
-     * @param copyMe The ByteBuffer to become a copy of.
+     * @param copyMe The ByteBuffer to become a copy of.  We will also use (copyMe)'s allocation strategy pointer.
      */
-   ByteBuffer(const ByteBuffer & copyMe) : FlatCountable(), _buffer(NULL), _numValidBytes(0), _numAllocatedBytes(0) {*this = copyMe;}
+   ByteBuffer(const ByteBuffer & copyMe) : FlatCountable(), _buffer(NULL), _numValidBytes(0), _numAllocatedBytes(0), _allocStrategy(copyMe._allocStrategy) {*this = copyMe;}
   
    /** Destructor.  Deletes our held byte buffer. */
    virtual ~ByteBuffer() {Clear(true);}
 
-   /** Assigment operator.  Copies the byte buffer from (rhs).  If there is an error copying (out of memory), we become an empty ByteBuffer. */
+   /** Assigment operator.  Copies the byte buffer from (rhs).  If there is an error copying (out of memory), we become an empty ByteBuffer.
+    *  @note We do NOT adopt (rhs)'s allocation strategy pointer!
+    */
    ByteBuffer &operator=(const ByteBuffer & rhs) {if ((this != &rhs)&&(SetBuffer(rhs.GetNumBytes(), rhs.GetBuffer()) != B_NO_ERROR)) Clear(); return *this;}
 
    /** Read/Write Accessor.  Returns a pointer to our held buffer, or NULL if we are not currently holding a buffer. */
@@ -94,12 +100,14 @@ public:
 
    /** Swaps our contents with those of the specified ByteBuffer.  This is an efficient O(1) operation.
      * @param swapWith ByteBuffer to swap contents with.
+     * @note Allocation strategy pointers get swapped by this operation.
      */
    void SwapContents(ByteBuffer & swapWith)
    {
       muscleSwap(_buffer,            swapWith._buffer);
       muscleSwap(_numValidBytes,     swapWith._numValidBytes);
       muscleSwap(_numAllocatedBytes, swapWith._numAllocatedBytes);
+      muscleSwap(_allocStrategy,     swapWith._allocStrategy);
    }
 
    // Flattenable interface
@@ -109,6 +117,15 @@ public:
    virtual void Flatten(uint8 *buffer) const {memcpy(buffer, _buffer, _numValidBytes);}
    virtual bool AllowsTypeCode(uint32 /*code*/) const {return true;}
    virtual status_t Unflatten(const uint8 *buf, uint32 size) {return SetBuffer(size, buf);}
+
+   /** Sets our allocation strategy pointer.  Note that you should be careful when you call this,
+    *  as changing strategies can lead to allocation/deallocation method mismatches.
+    *  @param imas Pointer to the new allocation strategy to use from now on.
+    */
+   void SetMemoryAllocationStrategy(IMemoryAllocationStrategy * imas) {_allocStrategy = imas;}
+
+   /** Returns the current value of our allocation strategy pointer (may be NULL if the default strategy is in use) */
+   IMemoryAllocationStrategy * GetMemoryAllocationStrategy() const {return _allocStrategy;}
 
 protected:
    /** Overridden to unflatten directly from our buffer, for added efficiency */
@@ -121,6 +138,7 @@ private:
    uint8 * _buffer;            // pointer to our byte array (or NULL if we haven't got one)
    uint32 _numValidBytes;      // number of bytes the user thinks we have
    uint32 _numAllocatedBytes;  // number of bytes we actually have
+   IMemoryAllocationStrategy * _allocStrategy;
 };
 
 typedef Ref<ByteBuffer> ByteBufferRef;
@@ -143,6 +161,38 @@ ByteBufferRef GetByteBufferFromPool(uint32 numBytes = 0, const uint8 * optBuffer
  *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).
  */
 ByteBufferRef GetByteBufferFromPool(const ByteBuffer & copyMe);               
+
+/** This interface is used to represent any object that knows how to allocate, reallocate, and free memory in a special way. */
+class IMemoryAllocationStrategy 
+{
+public:
+   /** Default constructor */
+   IMemoryAllocationStrategy() {/* empty */}
+
+   /** Destructor */
+   virtual ~IMemoryAllocationStrategy() {/* empty */}
+
+   /** Called when a ByteBuffer needs to allocate a memory buffer.  This method should be implemented to behave similarly to malloc().
+    *  @param size Number of bytes to allocate
+    *  @returns A pointer to the allocated bytes on success, or NULL on failure.
+    */
+   virtual void * Malloc(size_t size) = 0;
+
+   /** Called when a ByteBuffer needs to resize a memory buffer.  This method should be implemented to behave similarly to realloc().
+    *  @param ptr Pointer to the buffer to resize, or NULL if there is no current buffer.
+    *  @param newSize Desired new size of the buffer
+    *  @param oldSize Current size of the buffer
+    *  @param retainData If false, the returned buffer need not retain the contents of the old buffer.
+    *  @returns A pointer to the new buffer on success, or NULL on failure (or if newSize == 0)
+    */
+   virtual void * Realloc(void * ptr, size_t newSize, size_t oldSize, bool retainData) = 0;
+
+   /** Called when a ByteBuffer needs to free a memory buffer.  This method should be implemented to behave similarly to free().
+    *  @param ptr Pointer to the buffer to free.
+    *  @param size Number of byes in the buffer.
+    */
+   virtual void Free(void * ptr, size_t size) = 0;
+};
 
 END_NAMESPACE(muscle);
 

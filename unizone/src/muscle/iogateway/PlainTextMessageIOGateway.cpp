@@ -1,11 +1,11 @@
-/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 
 BEGIN_NAMESPACE(muscle);
 
 PlainTextMessageIOGateway ::
-PlainTextMessageIOGateway() : _eolString("\r\n"), _prevCharWasCarriageReturn(false)
+PlainTextMessageIOGateway() : _eolString("\r\n"), _prevCharWasCarriageReturn(false), _flushPartialIncomingLines(false)
 {
    // empty
 }
@@ -16,12 +16,12 @@ PlainTextMessageIOGateway ::
    // empty
 }
 
-int32 
+int32
 PlainTextMessageIOGateway ::
 DoOutputImplementation(uint32 maxBytes)
 {
    const Message * msg = _currentSendingMessage();
-   if (msg == NULL) 
+   if (msg == NULL)
    {
       // try to get the next message from our queue
       (void) GetOutgoingMessageQueue().RemoveHead(_currentSendingMessage);
@@ -34,12 +34,12 @@ DoOutputImplementation(uint32 maxBytes)
       if ((_currentSendOffset < 0)||(_currentSendOffset >= (int32)_currentSendText.Length()))
       {
          // Try to get the next line of text from our message
-         if (msg->FindString(PR_NAME_TEXT_LINE, ++_currentSendLineIndex, _currentSendText) == B_NO_ERROR) 
+         if (msg->FindString(PR_NAME_TEXT_LINE, ++_currentSendLineIndex, _currentSendText) == B_NO_ERROR)
          {
             _currentSendOffset = 0;
             _currentSendText += _eolString;
          }
-         else 
+         else
          {
             _currentSendingMessage.Reset();  // no more text available?  Go to the next message then.
             return DoOutputImplementation(maxBytes);
@@ -62,7 +62,24 @@ DoOutputImplementation(uint32 maxBytes)
    return 0;
 }
 
-int32 
+MessageRef
+PlainTextMessageIOGateway ::
+AddIncomingText(MessageRef inMsg, const char * s)
+{
+   if (inMsg() == NULL) inMsg = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
+   if (inMsg())
+   {
+      if (_incomingText.Length() > 0)
+      {
+         (void) inMsg()->AddString(PR_NAME_TEXT_LINE, _incomingText.Append(s));
+         _incomingText = "";
+      }
+      else (void) inMsg()->AddString(PR_NAME_TEXT_LINE, s);
+   }
+   return inMsg;
+}
+
+int32
 PlainTextMessageIOGateway ::
 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes)
 {
@@ -70,7 +87,7 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
    const int tempBufSize = 2048;
    char buf[tempBufSize];
    int32 bytesRead = GetDataIO()->Read(buf, muscleMin(maxBytes, (uint32)(sizeof(buf)-1)));
-   if (bytesRead < 0) 
+   if (bytesRead < 0)
    {
       if (_incomingText.Length() > 0)
       {
@@ -97,44 +114,36 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
          if ((nextChar == '\r')||(nextChar == '\n'))
          {
             buf[i] = '\0';  // terminate the string here
-            if ((nextChar == '\r')||(_prevCharWasCarriageReturn == false)) 
-            {
-               if (inMsg() == NULL) inMsg = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
-               if (inMsg())
-               {
-                  if (_incomingText.Length() > 0) 
-                  {
-                     (void) inMsg()->AddString(PR_NAME_TEXT_LINE, _incomingText.Append(&buf[beginAt]));
-                     _incomingText = "";
-                  }
-                  else (void) inMsg()->AddString(PR_NAME_TEXT_LINE, &buf[beginAt]);
-               }
-            }
+            if ((nextChar == '\r')||(_prevCharWasCarriageReturn == false)) inMsg = AddIncomingText(inMsg, &buf[beginAt]);
             beginAt = i+1;
          }
          _prevCharWasCarriageReturn = (nextChar == '\r');
       }
-      if (beginAt < bytesRead) _incomingText += &buf[beginAt];
+      if (beginAt < bytesRead)
+      {
+         if (_flushPartialIncomingLines) inMsg = AddIncomingText(inMsg, &buf[beginAt]);
+                                         _incomingText += &buf[beginAt];
+      }
       if (inMsg()) receiver.CallMessageReceivedFromGateway(inMsg);
    }
    return ret;
 }
 
-bool 
+bool
 PlainTextMessageIOGateway ::
 HasBytesToOutput() const
 {
    return ((_currentSendingMessage() != NULL)||(GetOutgoingMessageQueue().GetNumItems() > 0));
 }
 
-void 
+void
 PlainTextMessageIOGateway ::
 Reset()
 {
    AbstractMessageIOGateway::Reset();
    _currentSendingMessage.Reset();
    _currentSendText = "";
-   _prevCharWasCarriageReturn = false;   
+   _prevCharWasCarriageReturn = false;
    _incomingText = "";
 }
 

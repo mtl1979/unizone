@@ -32,15 +32,27 @@ public:
    virtual void Reset();
 
    /** Set the end-of-line string to be attached to outgoing text lines.
-    * Default value is "\r\n".
+    *  @param str New end-of-line string to use.  (Default value is "\r\n")
     */
    virtual void SetOutgoingEndOfLineString(const char * str) {_eolString = str;}
+
+   /** If set to true, then any "leftover" text after the last carriage return
+    *  will be added to the incoming Message.  If false (the default), then incoming
+    *  text without a carriage return will be buffered internally until the next
+    *  carriage return is received.
+    */
+   void SetFlushPartialIncomingLines(bool f) {_flushPartialIncomingLines = f;}
+
+   /** Returns the flush-partial-incoming-lines value, as set by SetFlushPartialIncomingLines(). */
+   bool GetFlushPartialIncomingLines() const {return _flushPartialIncomingLines;}
 
 protected:
    virtual int32 DoOutputImplementation(uint32 maxBytes = MUSCLE_NO_LIMIT);
    virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT);
 
 private:
+   MessageRef AddIncomingText(MessageRef msg, const char * s);
+
    MessageRef _currentSendingMessage;
    String _currentSendText;
    String _eolString;
@@ -48,6 +60,7 @@ private:
    int32 _currentSendOffset;
    bool _prevCharWasCarriageReturn;
    String _incomingText;
+   bool _flushPartialIncomingLines;
 };
 
 END_NAMESPACE(muscle);

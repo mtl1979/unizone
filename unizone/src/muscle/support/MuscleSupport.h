@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.50"
+#define MUSCLE_VERSION_STRING "2.51b"
 
 // If we are in an environment where known assembly is available, make a note of that fact
 #if defined(__GNUC__)

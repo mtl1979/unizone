@@ -168,6 +168,15 @@ uint64 origRet = ret;
    // fallback method: convert milliseconds to microseconds -- will wrap after 49.7 days, doh!
    return (((uint64)timeGetTime())*1000);
 #else
+# if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined (MUSCLE_POWERPC_TIMEBASE_HZ)
+   // http://lists.linuxppc.org/linuxppc-embedded/200110/msg00338.html
+   uint64 ret;
+   uint32 & hiWord = *((uint32 *)(&ret));
+   uint32 & loWord = *((&hiWord)+1);
+   uint32 wrapCheck;
+   __asm__ __volatile__("0:; mftbu %0; mftb %1; mftbu %2; cmpw %0,%2; bne 0" : "=&r" (hiWord), "=&r" (loWord), "=&r" (wrapCheck));
+   return (ret*((uint64)1000000))/((uint64)MUSCLE_POWERPC_TIMEBASE_HZ);
+# else
    // default method:  use POSIX commands
    static clock_t _ticksPerSecond = 0;
 
@@ -176,6 +185,7 @@ uint64 origRet = ret;
    struct tms junk;
    int64 curTicks = (int64) times(&junk);
    return ((_ticksPerSecond > 0)&&(curTicks >= 0)) ? ((curTicks*1000000)/_ticksPerSecond) : 0;
+# endif
 #endif
 }
 

@@ -691,9 +691,16 @@ bool ReflectServer :: DisconnectSession(AbstractReflectSession * session)
    session->_connectingAsync    = false;  // he's not connecting anymore, by gum!
    session->_scratchReconnected = false;  // if the session calls Reconnect() this will be set to true below
 
+   AbstractMessageIOGateway * oldGW = session->GetGateway();
+   DataIO * oldIO = oldGW ? oldGW->GetDataIO() : NULL;
+
    bool ret = session->ClientConnectionClosed(); 
+
+   AbstractMessageIOGateway * newGW = session->GetGateway();
+   DataIO * newIO = newGW ? newGW->GetDataIO() : NULL;
+
         if (ret) AddLameDuckSession(session);
-   else if (session->_scratchReconnected == false) ShutdownIOFor(session);
+   else if ((session->_scratchReconnected == false)&&(newGW == oldGW)&&(newIO == oldIO)) ShutdownIOFor(session);
 
    return ret;
 }

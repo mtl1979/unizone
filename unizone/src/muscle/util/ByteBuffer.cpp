@@ -17,7 +17,7 @@ status_t ByteBuffer :: SetNumBytes(uint32 newNumBytes, bool retainData)
    {
       if (retainData)
       {
-         uint8 * newBuf = (uint8 *)muscleRealloc(_buffer, newNumBytes);
+         uint8 * newBuf = (uint8 *) (_allocStrategy ? _allocStrategy->Realloc(_buffer, newNumBytes, _numAllocatedBytes, true) : muscleRealloc(_buffer, newNumBytes));
          if (newBuf)
          {
             _buffer = newBuf;
@@ -34,14 +34,14 @@ status_t ByteBuffer :: SetNumBytes(uint32 newNumBytes, bool retainData)
          uint8 * newBuf = NULL;
          if (newNumBytes > 0)
          {
-            newBuf = (uint8 *) muscleAlloc(newNumBytes);
+            newBuf = (uint8 *) (_allocStrategy ? _allocStrategy->Malloc(newNumBytes) : muscleAlloc(newNumBytes));
             if (newBuf == NULL) 
             {
                WARN_OUT_OF_MEMORY;
                return B_ERROR;
             }
          }
-         muscleFree(_buffer);
+         if (_allocStrategy) _allocStrategy->Free(_buffer, _numAllocatedBytes); else muscleFree(_buffer);
          _buffer = newBuf;
          _numAllocatedBytes = _numValidBytes = newNumBytes;
       }
@@ -55,13 +55,13 @@ status_t ByteBuffer :: FreeExtraBytes()
 {
    if (_numValidBytes < _numAllocatedBytes)
    {
-      uint8 * newBuf = (uint8 *) muscleRealloc(_buffer, _numValidBytes);
+      uint8 * newBuf = (uint8 *) (_allocStrategy ? _allocStrategy->Realloc(_buffer, _numValidBytes, _numAllocatedBytes, true) : muscleRealloc(_buffer, _numValidBytes));
       if ((_numValidBytes == 0)||(newBuf)) 
       {
          _buffer            = newBuf;
          _numAllocatedBytes = _numValidBytes;
       }
-      else return B_ERROR;  // huh?  Why would this happen?  Why?  Why?
+      else return B_ERROR;
    }
    return B_NO_ERROR;
 }
@@ -82,7 +82,7 @@ void ByteBuffer :: Clear(bool releaseBuffers)
 {
    if (releaseBuffers)
    {
-      muscleFree(_buffer);
+      if (_allocStrategy) _allocStrategy->Free(_buffer, _numAllocatedBytes); else muscleFree(_buffer);
       _buffer = NULL;
       _numValidBytes = _numAllocatedBytes = 0;
    }
