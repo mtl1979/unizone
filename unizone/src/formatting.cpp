@@ -256,25 +256,38 @@ QString
 WFormat::SendPrivMsg(const QString &session, const QString &myname, const QString &othername)
 {
 	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
-	temp += tr("<b>-%1-</b>").arg(session);
+	temp += "-";
 	temp += "<b>";
+	temp += session;
+	temp += "</b>";
+	temp += "- ";
 	temp += tr("<font color=\"%1\">").arg(WColors::LocalName);
+	temp += "<b>";
 	temp += myname;
+	temp += "</b>";
 	temp += "</font>";
-	temp += " -> (";
+	temp += " -> ";
 	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += "<b>";
 	temp += othername;
+	temp += "</b>";
 	temp += "</font>";
-	temp += ")</b>: </font>";	
+	temp += ": </font>";	
 	return temp;
 }
 
 QString WFormat::ReceivePrivMsg(const QString &session, const QString &othername, const QString &text)
 {
 	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
-	temp += tr("<b>-%1-</b>").arg(session);
+	temp += "-";
+	temp += "<b>";
+	temp += session;
+	temp += "</b>";
+	temp += "- ";
 	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
-	temp += tr("<b>%1</b>").arg(othername);
+	temp += "<b>";
+	temp += othername;
+	temp += "</b>";
 	temp += "</font>: </font>";
 	temp += tr("<font color=\"%1\" size=\"%2\">").arg(WColors::PrivText).arg(GetFontSize());
 	temp += text;

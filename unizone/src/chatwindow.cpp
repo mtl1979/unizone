@@ -90,6 +90,14 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		if (sred >= 0)
 			sred++;
 	}
+	// Check for double quoted nick
+	if (sred < 0)
+	{
+		sred = itxt.find("\"" + sname, index);
+		if (sred >= 0)
+			sred++;
+	}	
+
 	if (sred >= 0)
 	{
 		unsigned int rlen = sname.length();

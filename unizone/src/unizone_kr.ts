@@ -1329,11 +1329,11 @@ Date: %4</source>
     </message>
     <message>
         <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>

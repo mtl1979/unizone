@@ -1475,11 +1475,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation>&lt;b&gt;-%1-&lt;/b&gt;</translation>
+        <translation type='obsolete'>&lt;b&gt;-%1-&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation>&lt;b&gt;%1&lt;/b&gt;</translation>
+        <translation type='obsolete'>&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>

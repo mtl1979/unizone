@@ -258,14 +258,15 @@ void
 WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 {
 	WUserIter it = fUsers.find(fromsid);
-	QString msg = FixStringStr(message);
 
 	if (it != fUsers.end())
 	{
 		if (gWin->fSettings->GetPrivate())
 		{
+			QString msg = FixStringStr(message);
 			QString name = (*it).second()->GetUserName();
 			FixString(name);
+			(void) NameSaid(msg);
 			QString s;
 			if ( IsAction(msg, name) ) // simulate action?
 			{
