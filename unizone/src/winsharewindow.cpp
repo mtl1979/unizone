@@ -1580,12 +1580,17 @@ QString WinShareWindow::MapUsersToIDs(const QString & pattern)
 void
 WinShareWindow::LaunchPrivate(const QString & pattern)
 {
+	QString users = pattern;
+	if (users.startsWith("//"))
+	{
+		users = users.mid(2);
+	}
 	int iUsers = 0;
 	WPrivateWindow * window = new WPrivateWindow(this, fNetClient, NULL);
 	if (!window) 
 		return;
 	QString qItem;
-	QStringTokenizer qTok(pattern,",");
+	QStringTokenizer qTok(users,",");
 	
 	while ((qItem = qTok.GetNextToken()) != QString::null)
 	{
