@@ -96,6 +96,9 @@ WinShareWindow::UserConnected(const QString &sid)
 		if (wse)
 			QApplication::postEvent(this, wse);
 	}
+	WUserRef uref = fNetClient->FindUser(sid);
+	if (uref())
+		uref()->AddToListView(fUsers);
 	UpdateUserCount();
 }
 	

@@ -973,7 +973,7 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 #endif
 				HandleResultMessage(msg);
 				
-				// add/remove all the users to the list view (if not there yet...)
+				// update all the users to the list view (if not there yet...)
 				WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
 				if (win)
 					win->UpdateUserList();

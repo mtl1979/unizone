@@ -543,6 +543,8 @@ private:
 
 	WFIMap fFileList;
 
+	uint32 fMaxUsers;
+
 	void StartQuery(const String & sidRegExp, const String & fileRegExp);
 	int SplitQuery(const String &fileExp);
 	void SetResultsMessage();

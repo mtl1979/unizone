@@ -77,6 +77,8 @@ using namespace muscle;
 
 #define INSTALLID "installid"
 
+#define MAXUSERS "maxusr_"		// Prefix
+
 /* Linux was our only configurable URL launcher */
 /* Now let's try it with FreeBSD and QNX too        */
 #if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__) || defined(__QNX__)	
@@ -235,6 +237,8 @@ public:
 	QString GetConnection();
 	void SetEncoding(const QString & server, uint16 port, uint32 encoding);
 	uint32 GetEncoding(const QString & server, uint16 port);
+	void SetMaxUsers(const QString & server, uint16 port, uint32 users);
+	uint32 GetMaxUsers(const QString & server, uint16 port);
 
 	void SetTimeStamps(bool b);
 	void SetUserEvents(bool b);

@@ -596,6 +596,23 @@ WSettings::GetEncoding(const QString & server, uint16 port)
 }
 
 void
+WSettings::SetMaxUsers(const QString & server, uint16 port, uint32 users)
+{
+	QString key = MAXUSERS + server+":"+QString::number(port);
+	fSet()->RemoveName((const char *) key.utf8());
+	fSet()->AddInt32((const char *) key.utf8(), users);
+}
+
+uint32
+WSettings::GetMaxUsers(const QString & server, uint16 port)
+{
+	QString key = MAXUSERS + server+":"+QString::number(port);
+	uint32 users = 0;
+	fSet()->FindInt32((const char *) key.utf8(), (int32 *) &users);
+	return users;
+}
+
+void
 WSettings::SetTimeStamps(bool b)
 {
 	SET_BOOL(TIME_STAMPS, b);

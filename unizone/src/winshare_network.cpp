@@ -387,7 +387,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/users"))
 		{
 			int iUsers = fUsers->childCount() + 1; // <postmaster@raasu.org> 20021005 -- I think it's 1 for current user that needs to be added to get the total count
-			PrintSystem(tr("Number of users logged in: %1").arg(iUsers));
+			if (iUsers > fMaxUsers)
+				fMaxUsers = iUsers;
+			QString qUsers = QString::number(iUsers) + " (" + QString::number(fMaxUsers) + ")";
+			PrintSystem(tr("Number of users logged in: %1").arg(qUsers));
 		}
 		else if (CompareCommand(sendText, "/priv"))
 		{
@@ -2261,6 +2264,7 @@ WinShareWindow::Connect()
 	{
 		WaitOnFileThread(false);	// make sure our scan thread is dead
 		Disconnect();
+		fMaxUsers = fSettings->GetMaxUsers(GetServerName(fServer), GetServerPort(fServer));
 		fNetClient->SetUserName(GetUserName()); // We need this for binkies
 
 		fConnectTimer->start(60000, true); // 1 minute
@@ -2921,7 +2925,13 @@ WinShareWindow::UpdateUserCount()
 	if (fNetClient->IsConnected())
 	{
 		int n = fUsers->childCount() + 1;
-		setStatus(tr( "Number of users logged in: %1" ).arg(n), 0);
+		if (n > fMaxUsers)
+			fMaxUsers = n;
+
+		fSettings->SetMaxUsers(GetServerName(fServer), GetServerPort(fServer), fMaxUsers);
+		
+		QString qn = QString::number(n) + " (" + QString::number(fMaxUsers) + ")";
+		setStatus(tr( "Number of users logged in: %1" ).arg(qn), 0);
 	}
 	else
 		setStatus(tr( "Not connected." ), 0);

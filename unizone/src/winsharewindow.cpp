@@ -107,6 +107,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fAccept = NULL;
 	fFileScanThread = NULL;
 	fFilesScanned = false;
+	fMaxUsers = 0;
 	fPicViewer = new WPicViewer(this);
 	CHECK_PTR(fPicViewer);
 	
@@ -1225,6 +1226,7 @@ WinShareWindow::UpdateTextView()
 	}
 }
 */
+
 void
 WinShareWindow::UpdateUserList()
 {
@@ -1239,6 +1241,7 @@ WinShareWindow::UpdateUserList()
 		}
 		it++;
 	}
+	UpdateUserCount();
 }
 
 QString
