@@ -244,7 +244,7 @@ QString WFormat::UserStatusChanged(const QString &session, const QString &user, 
 	temp += " ";
 	temp += tr("is now");
 	temp += " ";
-	temp += status;
+	temp += status;		// No need to strip spaces, it was done before translating status...
 	temp += tr3(tr(".", "'is now' suffix"));
 	return temp.stripWhiteSpace();
 }
@@ -253,7 +253,7 @@ QString WFormat::UserStatusChanged2(const QString &session, const QString &statu
 {
 	QString temp = tr("User #%1 is now").arg(session);
 	temp += " ";
-	temp += status;
+	temp += status;		// No need to strip spaces, it was done before translating status
 	temp += tr3(tr(".", "'is now' suffix"));
 	return temp.stripWhiteSpace();
 }

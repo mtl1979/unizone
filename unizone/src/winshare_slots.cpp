@@ -183,8 +183,8 @@ WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QSt
 		QString nameformat;
 
 		// <postmaster@raasu.org> 20020929,20030211,20030214
-
-		QString status = s;
+		// <postmaster@raasu.org> 20041229 -- Strip extra spaces before trying to translate
+		QString status = s.stripWhiteSpace();
 		TranslateStatus(status);
 
 		if (status.isEmpty())
