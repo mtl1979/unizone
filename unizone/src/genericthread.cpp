@@ -41,7 +41,8 @@ WGenericThread::~WGenericThread()
 	{
 		*fShutdownFlag = true;
 	}
-	WaitForInternalThreadToExit();
+	ShutdownInternalThread(true);
+	//WaitForInternalThreadToExit();
 }
 
 bool

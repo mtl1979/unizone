@@ -322,7 +322,7 @@ void
 ParseString(QString & str)
 {
 	bool space = true;
-	bool first = true;
+	bool first = false; // make first always be &nbsp;
 
 	// Remove trailing line feeds
 	while (str.right(1) == "\n")
