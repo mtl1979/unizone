@@ -1383,9 +1383,11 @@ WinShareWindow::EndMessageBatch()
 		if (fOutput.right(4) == "<br>")
 			fOutput.truncate(fOutput.length() - 4);
 
+#if (QT_VERSION < 0x030000)
 		if (fChatText->text().isEmpty())
 			fChatText->setText(fOutput);
 		else
+#endif
 		{
 			CheckScrollState();
 			fChatText->append(
@@ -1432,9 +1434,11 @@ WinShareWindow::PrintText(const QString & str)
 	if (!str.isEmpty())
 		out += str;
 
+#if (QT_VERSION < 0x030000)
 	if (fChatText->text().isEmpty())
 		fChatText->setText(out);
 	else
+#endif
 	{
 		CheckScrollState();
 		fChatText->append(

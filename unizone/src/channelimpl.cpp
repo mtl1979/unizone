@@ -644,9 +644,11 @@ Channel::PrintText(const QString & str)
 		output = GetTimeStamp();
 	output += str;
 
+#if (QT_VERSION < 0x030000)
 	if (fChatText->text().isEmpty())
 		fChatText->setText(output);
 	else
+#endif
 	{
 		CheckScrollState();
 		fChatText->append(
