@@ -316,12 +316,12 @@ NetClient::RemoveUser(const WUserRef user)
 	{
 		QString uid = user()->GetUserID();
 		QString uname = user()->GetUserName();
-		PRINT("NetClient::RemoveUser: Removing from list\n");
-		user()->RemoveFromListView();
-		PRINT("NetClient::RemoveUser: Erasing\n");
-		fUsers.erase(uid);
+		// PRINT("NetClient::RemoveUser: Removing from list\n");
+		// user()->RemoveFromListView();
 		PRINT("NetClient::RemoveUser: Signaling...\n");
 		emit UserDisconnected(uid, uname);
+		PRINT("NetClient::RemoveUser: Erasing\n");
+		fUsers.erase(uid);
 		PRINT("NetClient::RemoveUser: Done\n");
 	}
 }
@@ -641,8 +641,16 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 					{
 						user()->SetFirewalled(false);
 					}
-					else
-						RemoveUser(qsid);
+//					else
+//						RemoveUser(qsid);
+
+					QCustomEvent *qce = new QCustomEvent(WinShareWindow::UpdateMainUsers);
+					if (qce)
+					{
+						qce->setData(user());
+						QApplication::postEvent(fOwner, qce);
+					}
+//					user()->UpdateListViews();
 				}
 				break;
 				
@@ -1342,8 +1350,8 @@ NetClient::event(QEvent * e)
 				ret = true;
 				break;
 			}
-			SendSignal(WinShareWindow::UpdateMainUsers);
-			SendSignal(WinShareWindow::UpdatePrivateUsers);
+//			SendSignal(WinShareWindow::UpdateMainUsers);
+//			SendSignal(WinShareWindow::UpdatePrivateUsers);
 		}
 		return ret;
 	}

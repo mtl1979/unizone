@@ -104,6 +104,9 @@ WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 		QString parse = WFormat::Text(msg);
 		SystemEvent(this, parse);
 	}
+	WUserRef uref = FindUser(sid);
+	if (uref())
+		uref()->RemoveFromListView(fUsers);
 	UpdateUserCount();
 }
 

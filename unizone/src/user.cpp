@@ -96,18 +96,20 @@ WUser::InitName(const MessageRef msg)
 
 	// <postmaster@raasu.org> 20020213 -- Fix for download troubles when no files shared
 	//
-	bool b;
+	bool b = false;
 
 	if (msg()->FindBool("firewalled", &b) == B_OK)
 	{
 		PRINT("WUser: %s firewalled\n", (b ? "Is" : "Isn't"));
-		SetFirewalled(b);
 	}
-	else if (port > 32767)
+
+	if (!b && (port > 32767))
 	{
 		PRINT("WUser: invalid port (%lu), assuming firewalled!\n", port);
 		SetFirewalled(true);
 	}
+	else
+		SetFirewalled(b);
 
 	//
 
@@ -167,15 +169,21 @@ WUser::InitBandwidth(const MessageRef msg)
 	if (bps != 0)
 		fBandwidthLabel = BandwidthToString(bps);
 
-	if ((fBandwidthLabel == qApp->translate("Connection", "Unknown")) ||
-		(fBandwidthLabel == "Unknown")
-		)
+	if (fBandwidthLabel == "Unknown")
+		fBandwidthLabel == qApp->translate("Connection", "Unknown");
+
+	if (fBandwidthLabel == qApp->translate("Connection", "Unknown"))
 	{
 		if (msg()->FindString("label", &l) == B_OK)
 		{
-			fBandwidthLabel = QString::fromUtf8(l);
-			fBandwidthLabel.append(",");
-			fBandwidthLabel.append(QString::number(bps));
+			if (strcmp(l, "?") == 0)
+				fBandwidthLabel = qApp->translate("Connection", "Unknown");
+			else if (strcmp(l, "Unknown") == 0)
+				fBandwidthLabel = qApp->translate("Connection", "Unknown");
+			else
+				fBandwidthLabel = qApp->translate("Connection", l);
+				fBandwidthLabel.append(",");
+				fBandwidthLabel.append(QString::number(bps));
 		}
 	}
 #ifdef _DEBUG
@@ -232,8 +240,16 @@ WUser::AddToListView(QListView * view)
 	}
 	else
 	{
+
 		QListViewItem * item = (*it).second;
 		// if we've been created... then we should update our list item if needed
+		if (!IsBot())
+		{
+			WUserListItem *uli = dynamic_cast<WUserListItem *>(item);
+			if (uli && uli->Firewalled() != fFirewalled)
+				uli->SetFirewalled(fFirewalled);
+		}
+
 		if (item->text(WNickListItem::Name) != fUserName)
 		{
 			item->setText(WNickListItem::Name, fUserName);
@@ -275,6 +291,16 @@ WUser::AddToListView(QListView * view)
 		{
 			item->setText(WNickListItem::HostOS, fHostOS);
 		}
+	}
+}
+
+void
+WUser::UpdateListViews()
+{
+	WListIter it = fLists.begin();
+	while (it != fLists.end())
+	{
+		AddToListView((*it++).first);
 	}
 }
 
@@ -327,12 +353,75 @@ WUser::PingResponse(const MessageRef msg)
 void
 WUser::SetFirewalled(bool f)
 {
-	fFirewalled = f;
 	if (!fBot)
 	{
-		for (WListIter it = fLists.begin(); it != fLists.end(); it++)
-			((WUserListItem *)((*it).second))->SetFirewalled(f);
+		fFirewalled = f;
+//		UpdateListViews();
 	}
+}
+
+void 
+WUser::SetUserName(const QString & name) 
+{
+	fUserName = name; 
+//	UpdateListViews();
+}
+	
+void 
+WUser::SetStatus(const QString & s) 
+{
+	fUserStatus = s; 
+//	UpdateListViews();
+} 
+	
+void 
+WUser::SetUserID(const QString & id) 
+{ 
+	fUserID = id; 
+}
+
+void 
+WUser::SetUserHostName(const QString & h) 
+{ 
+	fHostName = h; 
+}
+	
+void 
+WUser::SetCurUploads(uint32 c) 
+{ 
+	fCurUploads = c; 
+//	UpdateListViews();
+}
+	
+void 
+WUser::SetMaxUploads(uint32 m) 
+{ 
+	fMaxUploads = m; 
+//	UpdateListViews();
+}
+	
+void 
+WUser::SetBandwidthLabel(const char * s) 
+{ 
+	if (strcmp(s, "?") == 0)
+		fBandwidthLabel = qApp->translate("Connection", "Unknown");
+	else 
+		fBandwidthLabel = qApp->translate("Connection", s); 
+//	UpdateListViews();
+}
+
+void 
+WUser::SetBandwidthBPS(uint32 bps) 
+{ 
+	fBandwidthBPS = bps; 
+//	UpdateListViews();
+}
+	
+void 
+WUser::SetFileCount(int32 fc) 
+{ 
+	fFileCount = fc; 
+//	UpdateListViews();
 }
 
 QString
@@ -421,4 +510,5 @@ WUser::SetClient(const QString &s)
 			}
 		}
 	}
+//	UpdateListViews();
 }

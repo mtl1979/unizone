@@ -30,21 +30,23 @@ public:
 	~WUser();
 
 	// <postmaster@raasu.org> 20021001
-	void SetUserName(const QString & name) {fUserName = name; }
-	void SetStatus(const QString & s) {fUserStatus = s; } 
-	void SetUserID(const QString & id) { fUserID = id; }
-	void SetUserHostName(const QString & h) { fHostName = h; }
+	void SetUserName(const QString & name);
+	void SetStatus(const QString & s); 
+	void SetUserID(const QString & id);
+	void SetUserHostName(const QString & h);
 	
-	void SetCurUploads(uint32 c) { fCurUploads = c; }
-	void SetMaxUploads(uint32 m) { fMaxUploads = m; }
-	void SetBandwidthLabel(const char * s) { fBandwidthLabel = s; }
-	void SetBandwidthBPS(uint32 bps) { fBandwidthBPS = bps; }
-	void SetFileCount(int32 fc) { fFileCount = fc; }
+	void SetCurUploads(uint32 c);
+	void SetMaxUploads(uint32 m);
+	void SetBandwidthLabel(const char * s);
+	void SetBandwidthBPS(uint32 bps);
+	void SetFileCount(int32 fc);
 	void SetFirewalled(bool f);
 	void SetClient(const char * c);
 	void SetClient(const String & s);
 	void SetClient(const QString & s);
 	void SetPartial(bool p) { fPartial = p; }
+
+	void UpdateListViews();
 
 	QString GetUserName() const { return fUserName; }
 	QString GetStatus() const { return fUserStatus; }
@@ -131,7 +133,6 @@ private:
 		p.second = i;
 		return p;
 	}
-
 };
 
 typedef Ref<WUser> WUserRef;

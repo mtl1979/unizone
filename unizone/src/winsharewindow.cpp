@@ -482,15 +482,20 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			}
 		case WinShareWindow::UpdateMainUsers:
 			{
-				UpdateUserList();
+				WUser * usr = reinterpret_cast<WUser *>(event->data());
+				if (usr)
+					usr->UpdateListViews();
+//				UpdateUserList();
 				return;
 			}
+/*
 		case WinShareWindow::UpdatePrivateUsers:
 			{
 				PRINT("\tWinShareWindow::UpdatePrivateUsers\n");
 				emit UpdatePrivateUserLists();
 				return;
 			}
+*/
 		case WFileThread::ScanDone:
 			{
 				PRINT("\tWinShareWindow::ScanDone\n");
@@ -1258,6 +1263,7 @@ WinShareWindow::UpdateTextView()
 }
 */
 
+/*
 void
 WinShareWindow::UpdateUserList()
 {
@@ -1274,7 +1280,7 @@ WinShareWindow::UpdateUserList()
 	}
 	UpdateUserCount();
 }
-
+*/
 QString
 WinShareWindow::MakeHumanTime(int64 time)
 {
@@ -1716,10 +1722,10 @@ WinShareWindow::InitToolbars()
 {
 	int	i;
 
-	int _dock[NUM_TOOLBARS];
-	int _index[NUM_TOOLBARS];
+	int32 _dock[NUM_TOOLBARS];
+	int32 _index[NUM_TOOLBARS];
 	bool _nl[NUM_TOOLBARS];
-	int _extra[NUM_TOOLBARS];
+	int32 _extra[NUM_TOOLBARS];
 	
 	for (i = 0; i < NUM_TOOLBARS; i++)
 		fSettings->GetToolBarLayout(i, _dock[i], _index[i], _nl[i], _extra[i]); 

@@ -131,8 +131,8 @@ public:
 	enum
 	{
 		ConnectRetry = QEvent::User + 8000,
-		UpdateMainUsers,
-		UpdatePrivateUsers
+		UpdateMainUsers //,
+//		UpdatePrivateUsers
 	};
 
 	// Time Events
@@ -451,7 +451,7 @@ private:
 
 	void HandleComboEvent(WTextEvent *);
 
-	void UpdateUserList();
+//	void UpdateUserList();
 
 	QString MakeHumanTime(int64 time);
 

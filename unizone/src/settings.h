@@ -128,117 +128,117 @@ public:
 
 	// server list
 	void AddServerItem(const QString & str);
-	QString GetServerItem(int index);
+	QString GetServerItem(int index) const;
 	QString StartServerIter();		// get first item in the server list, initializing the internal iterator
 	QString GetNextServerItem();	// if returns QString::null, out of items
 	void EmptyServerList();
-	void SetCurrentServerItem(int item);	// the currently selected item
-	int GetCurrentServerItem();
+	void SetCurrentServerItem(int32 item);	// the currently selected item
+	int32 GetCurrentServerItem() const;
 
 	// user list
 	void AddUserItem(const QString & str);
-	QString GetUserItem(int index);
+	QString GetUserItem(int index) const;
 	QString StartUserIter();
 	QString GetNextUserItem();
 	void EmptyUserList();
-	void SetCurrentUserItem(int item);
-	int GetCurrentUserItem();
+	void SetCurrentUserItem(int32 item);
+	int32 GetCurrentUserItem() const;
 
 	// status list
 	void AddStatusItem(const QString & str);
-	QString GetStatusItem(int index);
+	QString GetStatusItem(int index) const;
 	QString StartStatusIter();
 	QString GetNextStatusItem();
 	void EmptyStatusList();
-	void SetCurrentStatusItem(int item);
-	int GetCurrentStatusItem();
+	void SetCurrentStatusItem(int32 item);
+	int32 GetCurrentStatusItem() const;
 
 	// query list
 	void AddQueryItem(const QString & str);
-	QString GetQueryItem(int index);
+	QString GetQueryItem(int index) const;
 	void EmptyQueryList();
-	void SetCurrentQueryItem(int item);
-	int GetCurrentQueryItem();
+	void SetCurrentQueryItem(int32 item);
+	int32 GetCurrentQueryItem() const;
 
 	// resume list
 	void AddResumeItem(WResumePair wrp);
-	bool GetResumeItem(int index, WResumePair & wrp);
-	int GetResumeCount();
-	void SetResumeCount(int c);
+	bool GetResumeItem(int index, WResumePair & wrp) const;
+	int32 GetResumeCount() const;
+	void SetResumeCount(int32 c);
 	void EmptyResumeList();
 
 	// style
 	void SetStyle(WinShareWindow::Style style);
-	WinShareWindow::Style GetStyle();
+	WinShareWindow::Style GetStyle() const;
 
 	// column list
-	void AddColumnItem(int i);
-	int GetColumnItem(int index);
+	void AddColumnItem(int32 i);
+	int32 GetColumnItem(int index) const;
 	int StartColumnIter();
-	int GetNextColumnItem();	// returns < 0 when out of items
+	int32 GetNextColumnItem();	// returns < 0 when out of items
 	void EmptyColumnList();
 
 	// window stuff
-	int GetWindowHeight();
-	void SetWindowHeight(int h);
-	int GetWindowWidth();
-	void SetWindowWidth(int w);
-	void SetWindowX(int x);
-	int GetWindowX();
-	void SetWindowY(int y);
-	int GetWindowY();
+	int32 GetWindowHeight() const;
+	void SetWindowHeight(int32 h);
+	int32 GetWindowWidth() const;
+	void SetWindowWidth(int32 w);
+	void SetWindowX(int32 x);
+	int32 GetWindowX() const;
+	void SetWindowY(int32 y);
+	int32 GetWindowY() const;
 
 	// chat splitter sizes
-	QValueList<int> GetChatSizes();
+	QValueList<int> GetChatSizes() const;
 	void SetChatSizes(QValueList<int> & sizes);
 
 	// main splitter sizes
-	QValueList<int> GetMainSizes();
+	QValueList<int> GetMainSizes() const;
 	void SetMainSizes(QValueList<int> & sizes);
 
 	// status messages
 	void SetAwayMsg(const QString & away);
-	QString GetAwayMsg();
+	QString GetAwayMsg() const;
 	void SetHereMsg(const QString & here);
-	QString GetHereMsg();
+	QString GetHereMsg() const;
 
 	// On Connect
 	void SetOnConnect(const QString & s);
-	QString GetOnConnect();
+	QString GetOnConnect() const;
 	void SetOnConnect2(const QString & s);
-	QString GetOnConnect2();
+	QString GetOnConnect2() const;
 
 	// colors
 	void AddColorItem(const QString & c);
-	QString GetColorItem(int index);
+	QString GetColorItem(int index) const;
 	QString StartColorIter();
 	QString GetNextColorItem();
 	void EmptyColorList();
 
 	// other settings
 	void SetAutoUpdateServers(bool f);
-	bool GetAutoUpdateServers();
+	bool GetAutoUpdateServers() const;
 	void SetCheckNewVersions(bool c);
-	bool GetCheckNewVersions();
+	bool GetCheckNewVersions() const;
 	void SetLoginOnStartup(bool s);
-	bool GetLoginOnStartup();
+	bool GetLoginOnStartup() const;
 	void SetFirewalled(bool f);
-	bool GetFirewalled();
+	bool GetFirewalled() const;
 	void SetBinkyNuke(bool b);
-	bool GetBinkyNuke();
+	bool GetBinkyNuke() const;
 	void SetBlockDisconnected(bool b);
-	bool GetBlockDisconnected();
+	bool GetBlockDisconnected() const;
 	void SetAutoClear(bool b);
-	bool GetAutoClear();
+	bool GetAutoClear() const;
 	void SetMultiColor(bool m);
-	bool GetMultiColor();
+	bool GetMultiColor() const;
 
 	void SetConnection(const QString & str);
-	QString GetConnection();
+	QString GetConnection() const;
 	void SetEncoding(const QString & server, uint16 port, uint32 encoding);
-	uint32 GetEncoding(const QString & server, uint16 port);
+	uint32 GetEncoding(const QString & server, uint16 port) const;
 	void SetMaxUsers(const QString & server, uint16 port, uint32 users);
-	uint32 GetMaxUsers(const QString & server, uint16 port);
+	uint32 GetMaxUsers(const QString & server, uint16 port) const;
 
 	void SetTimeStamps(bool b);
 	void SetUserEvents(bool b);
@@ -252,27 +252,27 @@ public:
 	void SetSounds(bool b);
 	void SetIPAddresses(bool b);
 
-	bool GetTimeStamps();
-	bool GetUserEvents();
-	bool GetUploads();
-	bool GetDownloads();
-	bool GetChat();
-	bool GetPrivate();
-	bool GetInfo();
-	bool GetWarning();
-	bool GetError();
-	bool GetSounds();
-	bool GetIPAddresses();
+	bool GetTimeStamps() const;
+	bool GetUserEvents() const;
+	bool GetUploads() const;
+	bool GetDownloads() const;
+	bool GetChat() const;
+	bool GetPrivate() const;
+	bool GetInfo() const;
+	bool GetWarning() const;
+	bool GetError() const;
+	bool GetSounds() const;
+	bool GetIPAddresses() const;
 
 	// auto away
-	void SetAutoAway(int i);	// index of time
-	int GetAutoAway();
+	void SetAutoAway(int32 i);	// index of time
+	int32 GetAutoAway() const;
 
 	// UniShare
 	void SetRegisterTime(int64 i); // Nick Registration Time
 	void SetRegisterTime(const QString & nick, int64 i);
-	int64 GetRegisterTime();
-	int64 GetRegisterTime(const QString & nick);
+	int64 GetRegisterTime() const;
+	int64 GetRegisterTime(const QString & nick) const;
 
 	// window flashing
 	enum
@@ -283,21 +283,21 @@ public:
 		FlashAll = FlashMain | FlashPriv
 	};
 
-	void SetFlash(int);	// set flash flags
-	int GetFlash();
+	void SetFlash(int32);	// set flash flags
+	int32 GetFlash() const;
 
-	void SetEmptyWindows(int); // What do we do if all users leave some window?
-	int GetEmptyWindows();
+	void SetEmptyWindows(int32); // What do we do if all users leave some window?
+	int32 GetEmptyWindows() const;
 	
 	// file sharing
-	bool GetSharingEnabled();
+	bool GetSharingEnabled() const;
 	void SetSharingEnabled(bool b);
 
-	int GetBasePort();
-	void SetBasePort(int bp);
+	int32 GetBasePort() const;
+	void SetBasePort(int32 bp);
 
-	int GetPortRange();
-	void SetPortRange(int pr);
+	int32 GetPortRange() const;
+	void SetPortRange(int32 pr);
 
 	enum
 	{
@@ -315,55 +315,55 @@ public:
 	};
 
 	// 
-	int GetMaxUploads();
-	void SetMaxUploads(int u);
+	int32 GetMaxUploads() const;
+	void SetMaxUploads(int32 u);
 
-	int GetMaxDownloads();
-	void SetMaxDownloads(int d);
+	int32 GetMaxDownloads() const;
+	void SetMaxDownloads(int32 d);
 
 	// font size
-	int GetFontSize();
-	void SetFontSize(int f);
+	int32 GetFontSize() const;
+	void SetFontSize(int32 f);
 
 	// watch pattern
-	QString GetWatchPattern();
+	QString GetWatchPattern() const;
 	void SetWatchPattern(const QString & p);
 
 	// ignore pattern
-	QString GetIgnorePattern();
+	QString GetIgnorePattern() const;
 	void SetIgnorePattern(const QString & p);
 
 	// ip ignore pattern
-	QString GetIPIgnorePattern();
+	QString GetIPIgnorePattern() const;
 	void SetIPIgnorePattern(const QString & p);
 
 	// blacklist pattern
-	QString GetBlackListPattern();
+	QString GetBlackListPattern() const;
 	void SetBlackListPattern(const QString & p);
 
 	// whitelist pattern
-	QString GetWhiteListPattern();
+	QString GetWhiteListPattern() const;
 	void SetWhiteListPattern(const QString & p);
 
 	// filter list pattern
-	QString GetFilterListPattern();
+	QString GetFilterListPattern() const;
 	void SetFilterListPattern(const QString & p);
 
 	// auto-private pattern
-	QString GetAutoPrivatePattern();
+	QString GetAutoPrivatePattern() const;
 	void SetAutoPrivatePattern(const QString & p);
 
 #if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__) || defined(__QNX__)
-	QString GetFTPLauncher();
+	QString GetFTPLauncher() const;
 	void SetFTPLauncher(const QString & l);
 
-	QString GetHTTPLauncher();
+	QString GetHTTPLauncher() const;
 	void SetHTTPLauncher(const QString & l);
 
-	QString GetMailLauncher();
+	QString GetMailLauncher() const;
 	void SetMailLauncher(const QString & l);
 
-	QString GetDefaultLauncher();
+	QString GetDefaultLauncher() const;
 	void SetDefaultLauncher(const QString & l);
 #endif
 
@@ -391,19 +391,19 @@ public:
 		Limit32MB,
 	};
 	
-	int GetChatLimit();
-	void SetChatLimit(int);
-	int GetULLimit();
-	void SetULLimit(int);
-	int GetDLLimit();
-	void SetDLLimit(int);
-	int GetBLLimit();
-	void SetBLLimit(int);
-	int GetPacketSize();
-	void SetPacketSize(int);
-	int GetMinQueued();
+	int32 GetChatLimit() const;
+	void SetChatLimit(int32);
+	int32 GetULLimit() const;
+	void SetULLimit(int32);
+	int32 GetDLLimit() const;
+	void SetDLLimit(int32);
+	int32 GetBLLimit() const;
+	void SetBLLimit(int32);
+	int32 GetPacketSize() const;
+	void SetPacketSize(int32);
+	int32 GetMinQueued() const;
 	uint64 GetMinQueuedSize();
-	void SetMinQueued(int);
+	void SetMinQueued(int32);
 	
 	static int ConvertToBytes(int);	// converts a limit constant into bytes
 	
@@ -417,35 +417,35 @@ public:
 
 	// Transfer Statistics
 
-	uint64 GetTransmitStats();
+	uint64 GetTransmitStats() const;
 	void SetTransmitStats(uint64 t);
 
-	uint64 GetReceiveStats();
+	uint64 GetReceiveStats() const;
 	void SetReceiveStats(uint64 r);
 
 	// Nick List Sorting
 
-	int GetNickListSortColumn();
-	void SetNickListSortColumn(int c);
+	int32 GetNickListSortColumn() const;
+	void SetNickListSortColumn(int32 c);
 
 	bool GetNickListSortAscending() const;
 	void SetNickListSortAscending(bool a);
 
 	// Search Query List Sorting
 
-	int GetSearchListSortColumn();
-	void SetSearchListSortColumn(int c);
+	int32 GetSearchListSortColumn() const;
+	void SetSearchListSortColumn(int32 c);
 
 	bool GetSearchListSortAscending() const;
 	void SetSearchListSortAscending(bool a);
 
 	// remote control
-	QString GetRemotePassword();
+	QString GetRemotePassword() const;
 	void SetRemotePassword(const QString & pw);
 
 	// toolbar layout
-	void GetToolBarLayout(int toolbar, int & dock, int & index, bool & nl, int & extra);
-	void SetToolBarLayout(int toolbar, int dock, int index, bool nl, int extra);
+	void GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl, int32 & extra) const;
+	void SetToolBarLayout(int toolbar, int32 dock, int32 index, bool nl, int32 extra);
 
 	// Install ID
 	int64 GetInstallID();
