@@ -146,7 +146,7 @@ UFileInfo::Init()
 void
 UFileInfo::InitPath()
 {
-	if (fFileInfo)
+	if ( isValid() )
 	{
 		fFilePath = fFileInfo->dirPath(true);
 		fAbsPath = fFileInfo->absFilePath();
@@ -173,7 +173,7 @@ UFileInfo::getAbsPath() const
 void
 UFileInfo::InitName()
 {
-	if (fFileInfo)
+	if ( isValid() )
 	{
 		fFileName = fFileInfo->fileName();
 		fFullName = fFileInfo->filePath();
@@ -200,7 +200,7 @@ UFileInfo::getFullName() const
 void
 UFileInfo::InitExtension()
 {
-	if (fFileInfo)
+	if ( isValid() )
 		fExtension = fFileInfo->extension( false );
 	else
 		fExtension = QString::null;
@@ -215,7 +215,7 @@ UFileInfo::getExtension() const
 void
 UFileInfo::InitSize()
 {
-	if (fFileInfo)
+	if ( isValid() )
 		fSize = fFileInfo->size();
 	else
 		fSize = 0;
@@ -253,7 +253,7 @@ UFileInfo::setName(const QString & n)
 bool
 UFileInfo::isDir()
 {
-	if (fFileInfo)
+	if ( isValid() )
 		return fFileInfo->isDir();
 	else
 		return false;
