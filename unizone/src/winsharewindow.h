@@ -198,7 +198,7 @@ public:
 	// UniShare
 	int64 GetRegisterTime(const QString & nick) const; 
 
-	void GotParams(bool g) { fGotParams = g; }
+	void GotParams(MessageRef &);
 	bool GotParams() { return fGotParams; }
 
 	void GotUpdateCmd(const QString & param, const QString & val);

@@ -2929,3 +2929,41 @@ WinShareWindow::UpdateUserCount()
 		fStatusBar->setText(tr( "Not connected." ), 0);
 }
 
+void
+WinShareWindow::GotParams(MessageRef &msg)
+{
+	int32 enc;
+	fGotParams = true;
+	if (msg()->FindInt32(PR_NAME_REPLY_ENCODING, &enc) == B_NO_ERROR)
+		fStatusBar->setText(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
+	
+	// get a list of users
+	static String subscriptionList[] = {
+		"SUBSCRIBE:beshare",		// base BeShare node
+		"SUBSCRIBE:beshare/*",		// all user info :)
+		"SUBSCRIBE:unishare/*",		// all unishare-specific user data
+		"SUBSCRIBE:unishare/channeldata/*", // all unishare-specific channel data
+		NULL
+	};
+
+	PRINT("Uploading public data\n");
+
+	fNetClient->AddSubscriptionList(subscriptionList); 
+	fNetClient->SetUserName(GetUserName());
+	fNetClient->SetUserStatus(GetStatus());
+	fNetClient->SetConnection(fSettings->GetConnection());
+	fNetClient->SetFileCount(0);
+	
+	if (fSettings->GetSharingEnabled())
+	{
+		fNetClient->SetLoad(0, fSettings->GetMaxUploads());
+		// Fake that we are scanning, so uploads get queued until we scan the very first time.
+		fScanning = true; 
+	}
+	else
+	{
+		fNetClient->SetLoad(0, 0);
+	}
+				
+	fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_PING));			
+}

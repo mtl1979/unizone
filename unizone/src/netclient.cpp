@@ -154,12 +154,12 @@ void
 NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
-	WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
-	if (win)
-		win->setCaption("Unizone");
-	
 	if (IsConnected()) 
 	{
+		WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
+		if (win)
+			win->setCaption("Unizone");
+	
 		// Reset() implies ShutdownInternalThread();
 		//
 		PRINT("RESETING\n");
@@ -688,6 +688,7 @@ void
 NetClient::HandleParameters(MessageRef & next)
 {
 	PRINT("PR_RESULT_PARAMETERS received\n");
+
 	PRINT("Extracting session id\n");
 	const char * sessionRoot;
 
@@ -948,7 +949,7 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 					if (!win->GotParams())
 					{
 						HandleParameters(msg);
-						win->GotParams(true);
+						win->GotParams(msg);
 					}
 					else	// a /serverinfo was sent
 					{

@@ -487,9 +487,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 
 				// Set Outgoing Message Encoding
 				uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
-				fNetClient->SetOutgoingMessageEncoding( enc );
-				fStatusBar->setText(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
-				
+				fNetClient->SetOutgoingMessageEncoding( enc );				
 
 				MessageRef setref(GetMessageFromPool(PR_COMMAND_SETPARAMETERS));
 				if (setref())
@@ -508,33 +506,11 @@ WinShareWindow::customEvent(QCustomEvent * event)
 
 				
 
-				PRINT("Uploading public data\n");
 				fGotParams = false; // set to false here :)
 				fGotResults = true; // fake that we got results, as there is no search yet.
 				// send a message out to the server asking for our parameters
 				MessageRef askref(GetMessageFromPool(PR_COMMAND_GETPARAMETERS));
 				fNetClient->SendMessageToSessions(askref);
-				// get a list of users as well
-				static String subscriptionList[] = {
-					"SUBSCRIBE:beshare",		// base BeShare node
-					"SUBSCRIBE:beshare/*",		// all user info :)
-					"SUBSCRIBE:unishare/*",		// all unishare-specific user data
-					"SUBSCRIBE:unishare/channeldata/*", // all unishare-specific channel data
-					NULL
-				};
-				fNetClient->AddSubscriptionList(subscriptionList); 
-				fNetClient->SetUserName(GetUserName());
-				fNetClient->SetUserStatus(GetStatus());
-				fNetClient->SetConnection(fSettings->GetConnection());
-				fNetClient->SetFileCount(0);
-				if (fSettings->GetSharingEnabled())
-				{
-					fNetClient->SetLoad(0, fSettings->GetMaxUploads());
-					// Fake that we are scanning, so uploads get queued until we scan the very first time.
-					fScanning = true; 
-				}
-				
-				fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_PING));
 				
 				if (fSettings->GetInfo())
 					PrintSystem(tr("Connected."));
