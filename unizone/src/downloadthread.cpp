@@ -778,7 +778,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 				{
 					if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
 					{
-						break;
+						return;
 					}
 					else	// ERROR?
 					{
