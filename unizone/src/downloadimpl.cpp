@@ -493,7 +493,8 @@ WDownload::DequeueULSessions()
 			{
 				if (
 					((*it).first->IsLocallyQueued() == true) && 
-					((*it).first->IsManuallyQueued() == false)
+					((*it).first->IsManuallyQueued() == false) &&
+					((*it).first->IsFinished() == false)
 					)
 				{
 					found = true;
@@ -565,7 +566,8 @@ WDownload::DequeueDLSessions()
 			{
 				if (
 					((*it).first->IsLocallyQueued() == true) && 
-					((*it).first->IsManuallyQueued() == false)
+					((*it).first->IsManuallyQueued() == false) &&
+					((*it).first->IsFinished() == false)
 					)
 				{
 					found = true;
@@ -754,6 +756,12 @@ WDownload::customEvent(QCustomEvent * e)
 				}
 				else
 				{
+					for (int n = gt->GetCurrentNum(); n < gt->GetNumFiles(); n++)
+					{
+						QString qFile = gt->GetFileName(n);
+						emit FileFailed(qFile, gt->GetRemoteUser());
+					}
+
 					DecreaseCount(gt, fNumDownloads, false);
 					fLock.lock();
 					fDownloadList.erase(foundIt);
@@ -1813,7 +1821,7 @@ WDownload::ULPopupActivated(int id)
 #ifdef __LINUX__
 			gt->SetBlocked(true, 3600000000LL);
 #else
-			gt->SetBlocked(true, 3600000000L);
+			gt->SetBlocked(true, 3600000000UL);
 #endif
 			break;
 		}
@@ -2480,8 +2488,9 @@ WDownload::ClearFinishedDL()
 	while (it != fDownloadList.end())
 	{
 		if (
-			((*it).second->text(0) == tr( "Finished." )) ||
-			((*it).second->text(0) == tr( "Disconnected." ))
+//			((*it).second->text(0) == tr( "Finished." )) ||
+//			((*it).second->text(0) == tr( "Disconnected." ))
+			((*it).first->IsFinished() == true)
 			)
 		{
 			// found finished item, erase it
@@ -2510,8 +2519,9 @@ WDownload::ClearFinishedUL()
 	while (it != fUploadList.end())
 	{
 		if (
-			((*it).second->text(0) == tr( "Finished." )) ||
-			((*it).second->text(0) == tr( "Disconnected." ))
+//			((*it).second->text(0) == tr( "Finished." )) ||
+//			((*it).second->text(0) == tr( "Disconnected." )) ||
+			((*it).first->IsFinished() == true)
 			)
 		{
 			// found finished item, erase it

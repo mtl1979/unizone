@@ -25,8 +25,22 @@ public:
 
 	bool isValid();
 
+protected:
+	void Init();
+
 private:
 	QFileInfo *fInfo;				// Object initialized from?
+	QString fFileName;
+	QString fFilePath;
+	QString fMIMEType;
+	uint32 fModificationTime;
+	uint64 fSize;
+
+	void InitMIMEType();
+	void InitPath();
+	void InitName();
+	void InitSize();
+	void InitModificationTime();
 };
 
 #endif
