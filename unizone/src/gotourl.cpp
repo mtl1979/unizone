@@ -140,7 +140,7 @@ GotoURL(const QString & url)
 	{
 		t->fLauncher = gWin->fSettings->GetFTPLauncher();
 	}
-	else 
+	else if (u.startsWith("mailto:"))
 	{
 		t->fLauncher = gWin->fSettings->GetMailLauncher();
 	}
