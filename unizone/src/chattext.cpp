@@ -40,7 +40,10 @@ WChatText::keyPressEvent(QKeyEvent * event)
 				}
 				QApplication::postEvent(fTarget, wte);			// <postmaster@raasu.org> 20021024 -- Fix Access violation due duplicate definition with different type
 			}
-			if (fCurLine == (int)fBuffer->GetNumItems())		// don't add duplicate items
+			QString line;
+			fBuffer->GetItemAt(fCurLine, line);
+//			if (fCurLine == (int)fBuffer->GetNumItems())		// don't add duplicate items
+			if (text() != line)
 			{
 				fBuffer->AddTail(text());
 				PRINT("Lines %d\n", fCurLine);
