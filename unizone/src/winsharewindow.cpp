@@ -1301,6 +1301,7 @@ WinShareWindow::ParseUserTargets(QString text, WUserSearchMap & sendTo, String &
 		{
 			String tstr(clauses[j].Cstr());
 			tstr.Trim();
+			ConvertToRegex(tstr);
 			MakeRegexCaseInsensitive(tstr);
 			StringMatcher sm(tstr.Cstr());
 
@@ -2380,6 +2381,7 @@ WinShareWindow::GoSearch()
 				if (nonNumericFound)
 					userExp = userExp.Prepend("*").Append("*");
 			}
+			ConvertToRegex(userExp);
 			MakeRegexCaseInsensitive(userExp);
 			StringMatcher match(userExp.Cstr());
 			WUserMap & users = fNetClient->Users();
@@ -2410,6 +2412,7 @@ WinShareWindow::GoSearch()
 	fileExp.Replace('/', '?');
 	userExp.Replace('/', '?');
 
+	ConvertToRegex(fileExp);
 	MakeRegexCaseInsensitive(fileExp);
 	
 	Unlock();	// unlock before StartQuery();

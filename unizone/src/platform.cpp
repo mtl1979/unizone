@@ -405,3 +405,38 @@ GetServerPort(QString server)
 		return 2960;
 	}
 }
+
+// Is reserved regex token, but isn't wildcard token (* or ?)
+bool IsRegexToken2(char c, bool isFirstCharInString)
+{
+   switch(c)
+   {
+     case '[': case ']': case '\\': case ',': case '|': case '(': case ')':
+        return true;
+
+     case '<': case '~':   // these chars are only special if they are the first character in the string
+        return isFirstCharInString; 
+
+     default:
+        return false;
+   }
+}
+
+// Converts basic wildcard pattern to valid regex
+void ConvertToRegex(String & s)
+{
+   const char * str = s.Cstr();
+
+   String ret;
+
+   bool isFirst = true;
+   while(*str)
+   {
+     if (IsRegexToken2(*str, isFirst)) ret += '\\';
+     isFirst = false;
+     ret += *str;
+     str++;
+   }
+   s = ret;
+}
+

@@ -97,4 +97,7 @@ QString GetServerName(QString server);
 // Get server port from full server URL
 uint16 GetServerPort(QString server);
 
+// Convert simple wildcard pattern to regex
+void ConvertToRegex(String & s);
+
 #endif // PLATFORM_H

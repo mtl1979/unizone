@@ -98,6 +98,7 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 			else 
 			{
 				// Does this item (interpreted as a regex) match our user's name?
+				ConvertToRegex(next);
 				MakeRegexCaseInsensitive(next);
 				StringMatcher sm(next.Cstr());
 				PRINT("MatchUserFilter: UserName = %s\n", userName.Cstr());
@@ -472,6 +473,7 @@ WinShareWindow::MatchFilter(const QString user, const char * filter)
 		next = next.Trim();
 		
 		// Does this item (interpreted as a regex) match our user's name?
+		ConvertToRegex(next);
 		MakeRegexCaseInsensitive(next);
 		StringMatcher sm(next.Cstr());
 		String userName = String((const char *) user.utf8()).Trim();
