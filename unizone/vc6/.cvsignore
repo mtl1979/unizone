@@ -19,3 +19,4 @@ zlib___Win32_Release
 *.ilk
 *.pdb
 *.bsc
+*.exe
