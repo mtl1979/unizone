@@ -212,6 +212,7 @@ WString::operator const char *() const
 		utflen = len;
 	}
 	(void) wcstombs(utfbuf, buffer, utflen);
+	utfbuf[utflen] = 0;
 	return utfbuf;
 }
 
