@@ -1419,6 +1419,7 @@ WSettings::SetResumeCount(int c)
 void
 WSettings::EmptyResumeList()
 {
+	fSet()->RemoveName(RESUMEFIL2);
 	fSet()->RemoveName(RESUMEFILE);
 	fSet()->RemoveName(RESUMEUSER);
 }
