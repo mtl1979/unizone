@@ -986,7 +986,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Download port for file %1 might be out of range, it might fail!</source>
-        <translation>Latausportti tiedostolle %1 saataa olla yli rajojen, siirto voi epäonnistua!</translation>
+        <translation>Latausportti tiedostolle %1 saattaa olla yli rajojen, siirto voi epäonnistua!</translation>
     </message>
     <message>
         <source>%1</source>
@@ -1669,6 +1669,10 @@ Päiväys: %4</translation>
     <message>
         <source>Uploads (per blacklisted):</source>
         <translation>Per estetty:</translation>
+    </message>
+    <message>
+        <source>Default launcher:</source>
+        <translation>Oletusaukaisija:</translation>
     </message>
 </context>
 <context>
@@ -2559,7 +2563,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>/connect - connect to the currently selected server</source>
-        <translation>/connect - yhdistä nyt valittuna olevaan palvelimeen.</translation>
+        <translation>/connect - yhdistä nyt valittuna olevaan palvelimeen</translation>
     </message>
     <message>
         <source>/disconnect - disconnect from server</source>
@@ -2780,6 +2784,14 @@ Päiväys: %4</translation>
     <message>
         <source>Reconnecting in 1 minute!</source>
         <translation>Yhdistetään uudelleen 1 minuutin kuluttua!</translation>
+    </message>
+    <message>
+        <source>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
+        <translation>Aikapyyntö lähetetty käyttäjälle #%1, eli &lt;font color="%3"&gt;%2&lt;/font&gt;.</translation>
+    </message>
+    <message>
+        <source>/time [nick] [gmt] - request time stamp from other user</source>
+        <translation>/time [nimi] [gmt] - pyydä aikaleima toiselta käyttäjältä</translation>
     </message>
 </context>
 </TS>

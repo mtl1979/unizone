@@ -1578,6 +1578,10 @@ Date: %4</translation>
         <source>Uploads (per blacklisted):</source>
         <translation>Uploads (per blacklisted):</translation>
     </message>
+    <message>
+        <source>Default launcher:</source>
+        <translation>Default launcher:</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -2688,6 +2692,14 @@ Date: %4</translation>
     <message>
         <source>Reconnecting in 1 minute!</source>
         <translation>Reconnecting in 1 minute!</translation>
+    </message>
+    <message>
+        <source>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
+        <translation>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
+    </message>
+    <message>
+        <source>/time [nick] [gmt] - request time stamp from other user</source>
+        <translation>/time [nick] [gmt] - request time stamp from other user</translation>
     </message>
 </context>
 </TS>
