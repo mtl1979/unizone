@@ -9,3 +9,7 @@ Image\ Splitter.plg
 Debug
 Release
 isplitter.lng
+moc_previewimpl.cpp
+preview.cpp
+preview.h
+moc_preview.cpp
