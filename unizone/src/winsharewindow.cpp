@@ -2509,6 +2509,7 @@ WinShareWindow::SetSearchStatus(const QString & status)
 void
 WinShareWindow::SetSearch(QString pattern)
 {
+	fTabs->showPage(fSearchWidget);
 	// Is already on history?
 	for (int i = 0; i < fSearchEdit->count(); i++)
 	{
