@@ -48,7 +48,6 @@ ImageSplitter::Load()
 			QPixmap pixCollage;
 			pixCollage = *image;
 			pxlCollage->setPixmap(pixCollage);
-			SaveButton->setEnabled(true);
 			PreviewButton->setEnabled(true);
 		}
 		QFileInfo info(filename);
@@ -158,6 +157,7 @@ ImageSplitter::Preview()
 		
 		pxlPreview->setPixmap(*pixPreview);
 		PreviewButton->setEnabled(true);
+		SaveButton->setEnabled(true);
 	}
 }
 
@@ -209,13 +209,15 @@ ImageSplitter::ClearImage()
 	ImageOffsetBottomX->setText("0");
 	ImageOffsetBottomY->setText("0");
 	//
-	SaveButton->setEnabled(false);
+	PreviewButton->setEnabled(false);
 	ClearPreview();
 }
 
 void
 ImageSplitter::ClearPreview()
 {
+	SaveButton->setEnabled(false);
+
 	if (pixPreview)
 	{
 		delete pixPreview;
@@ -227,7 +229,6 @@ ImageSplitter::ClearPreview()
 		empty.fill(Qt::white);
 		pxlPreview->setPixmap(empty);
 	}
-	PreviewButton->setEnabled(false);
 }
 
 void
