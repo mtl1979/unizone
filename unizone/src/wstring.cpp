@@ -69,6 +69,75 @@ WString::operator=(const QString &str)
 	return *this;
 }
 
+WString &
+WString::operator+=(const wchar_t *str)
+{
+	if (length() != -1)
+	{
+		int newlen = length() + wcslen(str) + 1;
+		wchar_t *buf2 = new wchar_t[newlen];
+		if (buf2)
+		{
+			wcscpy(buf2, buffer);
+			wcscat(buf2, str);
+			free();
+			buffer = buf2;
+		}
+	}
+	else // No string to append to
+	{
+		buffer = new wchar_t[wcslen(str) + 1];
+		if (buffer)
+			wcscpy(buffer, str);
+	}
+	return *this;
+}
+
+WString &
+WString::operator+=(const WString &str)
+{
+	if (length() != -1)
+	{
+		int newlen = length() + str.length() + 1;
+		wchar_t *buf2 = new wchar_t[newlen];
+		if (buf2)
+		{
+			wcscpy(buf2, buffer);
+			wcscat(buf2, str.getBuffer());
+			free();
+			buffer = buf2;
+		}
+	}
+	else // No string to append to
+	{
+		operator=(str);
+	}
+	return *this;
+}
+
+WString &
+WString::operator+=(const QString &str)
+{
+	if (length() != -1)
+	{
+		int newlen = length() + str.length() + 1;
+		WString s2 = str;
+		wchar_t *buf2 = new wchar_t[newlen];
+		if (buf2)
+		{
+			wcscpy(buf2, buffer);
+			wcscat(buf2, s2.getBuffer());
+			free();
+			buffer = buf2;
+		}
+	}
+	else // No string to append to
+	{
+		operator=(str);
+	}
+	return *this;
+}
+
 bool
 WString::operator!=(const wchar_t *str)
 {
@@ -123,6 +192,79 @@ WString::free()
 	}
 }
 
+void
+WString::setBuffer(wchar_t *buf)
+{
+	free();
+	buffer = buf;
+}
+
+WString
+WString::upper() const 
+{
+	WString s2;
+	if (buffer)
+	{
+		wchar_t *buf2;
+		buf2 = wcsdup(buffer);
+		if (buf2)
+		{
+			buf2 = wcsupr(buf2);
+			s2.setBuffer(buf2);
+		}
+	}
+	return s2;
+}
+
+WString
+WString::lower() const
+{
+	WString s2;
+	if (buffer)
+	{
+		wchar_t *buf2;
+		buf2 = wcsdup(buffer);
+		if (buf2)
+		{
+			buf2 = wcslwr(buf2);
+			s2.setBuffer(buf2);
+		}
+	}
+	return s2;
+}
+
+WString
+WString::reverse() const
+{
+	WString s2;
+	if (buffer)
+	{
+		wchar_t *buf2;
+		buf2 = wcsdup(buffer);
+		if (buf2)
+		{
+			buf2 = wcsrev(buf2);
+			s2.setBuffer(buf2);
+		}
+	}
+	return s2;
+}
+
+int
+WString::length() const
+{ 
+	if (buffer) 
+		return wcslen(buffer);
+	else
+		return -1;
+}
+
+/*
+ *
+ *  Conversion functions
+ *
+ */
+
 QString 
 wideCharToQString(const wchar_t *wide)
 {
@@ -157,11 +299,3 @@ qStringToWideChar(const QString &str)
 	}
 }
 
-int
-WString::length()
-{ 
-	if (buffer) 
-		return wcslen(buffer);
-	else
-		return -1;
-}

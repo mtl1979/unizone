@@ -33,13 +33,22 @@ public:
 	WString(const QString &);
 	~WString();
 
+	WString lower() const;
+	WString upper() const;
+	WString reverse() const;
+
 	operator wchar_t *() const { return buffer; };
 	wchar_t *getBuffer() const { return buffer; };
-	int length(); 
+	int length() const; 
 	QString toQString() const;
+
 	WString &operator=(const wchar_t *);
 	WString &operator=(const WString &);
 	WString &operator=(const QString &);
+
+	WString &operator+=(const wchar_t *);
+	WString &operator+=(const WString &);
+	WString &operator+=(const QString &);
 
 	bool operator!=(const wchar_t *);
 	bool operator!=(const WString &);
@@ -48,6 +57,9 @@ public:
 	bool operator==(const wchar_t *);
 	bool operator==(const WString &);
 	bool operator==(const QString &);
+
+protected:
+	void setBuffer(wchar_t *buf);
 
 private:
 	wchar_t *buffer;
