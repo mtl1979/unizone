@@ -363,6 +363,10 @@ Versio %1</translation>
         <source>/topic [topic] - change the channel topic</source>
         <translation>/topic [aihe] - muuta kanavan keskustelun aihe</translation>
     </message>
+    <message>
+        <source>Failed to create channel log.</source>
+        <translation>Lokitiedoston luominen epäonnistui.</translation>
+    </message>
 </context>
 <context>
     <name>ChannelBase</name>
@@ -3169,7 +3173,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Copyright (C) 2002-2003 Mika T. Lindqvist.</source>
-        <translation>Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
+        <translation type='obsolete'>Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
     </message>
     <message>
         <source>Number of users logged in: %1</source>
@@ -3922,6 +3926,10 @@ Päiväys: %4</translation>
     <message>
         <source>/memory - show number of bytes Unizone is using memory</source>
         <translation>/memory - näytä kuinka monta tavua muistia Unizone käyttää</translation>
+    </message>
+    <message>
+        <source>Copyright (C) %1 Mika T. Lindqvist.</source>
+        <translation>Copyright (C) %1 Mika T. Lindqvist.</translation>
     </message>
 </context>
 </TS>

@@ -185,6 +185,10 @@ Version %1</source>
         <source>You got kicked off from this channel!</source>
         <translation>You got kicked off from this channel!</translation>
     </message>
+    <message>
+        <source>Failed to create channel log.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>ChannelBase</name>
@@ -2606,7 +2610,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Copyright (C) 2002-2003 Mika T. Lindqvist.</source>
-        <translation>Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
+        <translation type='obsolete'>Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
     </message>
     <message>
         <source>Original idea by Vitaliy Mikitchenko.</source>
@@ -3443,6 +3447,10 @@ Date: %4</source>
     <message>
         <source>/memory - show number of bytes Unizone is using memory</source>
         <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Copyright (C) %1 Mika T. Lindqvist.</source>
+        <translation>Copyright (C) %1 Mika T. Lindqvist.</translation>
     </message>
 </context>
 </TS>
