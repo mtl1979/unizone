@@ -236,16 +236,13 @@ WUploadThread::SignalOwner()
 			}
 
 			case MTT_EVENT_SERVER_EXITED:
+			case MTT_EVENT_SESSION_DISCONNECTED:
 			{
-				if (fFinished)
+				if (fFinished) // Do it only once...
 				{
 					break;
 				}
-				// Fall through...
-			}
 
-			case MTT_EVENT_SESSION_DISCONNECTED:
-			{
 				if (fFile)
 				{
 					fFile->close();
@@ -297,7 +294,7 @@ WUploadThread::SignalOwner()
 						const char * file;
 						if (next()->FindString("files", &file) == B_OK)
 						{
-							String sid;
+							String sid, name;
 							int32 mm;
 							if (next()->FindInt32("mm", &mm) == B_OK)
 								fMungeMode = mm;
@@ -306,8 +303,11 @@ WUploadThread::SignalOwner()
 
 							if (next()->FindString("beshare:FromSession", sid) == B_OK)
 								fRemoteSessionID = QString::fromUtf8(sid.Cstr());
-							else
-								fRemoteSessionID = "";
+//							else
+//								fRemoteSessionID = "";
+							
+							if (next()->FindString("beshare:FromUserName", name) ==  B_OK)
+								fRemoteUser = QString::fromUtf8(name.Cstr());
 
 							//fFileThread->Lock();
 

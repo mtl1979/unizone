@@ -212,7 +212,7 @@ WDownloadThread::InitSession()
 		}
 		
 		status_t ret = B_OK;
-		for (int i = 0; i <= DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE; i++)
+		for (int i = DEFAULT_LISTEN_PORT; i <= DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE; i++)
 		{
 			if ((ret = PutAcceptFactory(i, factoryRef)) == B_OK)
 			{
@@ -590,18 +590,13 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					break;
 				}
 				
-			case MTT_EVENT_SERVER_EXITED:		// same handler for the both of these
+			case MTT_EVENT_SERVER_EXITED:			// same handler for the both of these
+			case MTT_EVENT_SESSION_DISCONNECTED:
 				{
-					PRINT("WDownloadThread::SignalOwner: MTT_EVENT_SERVER_EXITED\n");
-					if (fFinished || fManuallyQueued)
+					if (fFinished) // Do it only once...
 					{
 						break;
 					}
-					// Fall through
-				}
-			case MTT_EVENT_SESSION_DISCONNECTED:
-				{
-					PRINT("WDownloadThread::SignalOwner: MTT_EVENT_SESSION_DISCONNECTED\n");
 
 					MessageRef dis;
 					if (fDownloading)

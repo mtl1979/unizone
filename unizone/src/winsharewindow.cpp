@@ -226,7 +226,7 @@ WinShareWindow::StartAcceptThread()
 		}
 		return false;
 	}
-	if (fAcceptThread)			// Already running, no need to start this time.
+	if (fAccept)				// Already running, no need to start this time.
 	{
 		return false;
 	}
