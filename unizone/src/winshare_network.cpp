@@ -1771,6 +1771,7 @@ WinShareWindow::Connect()
 	{
 		WaitOnFileThread();	// make sure our scan thread is dead
 		fNetClient->Disconnect();
+		fNetClient->SetUserName(GetUserName()); // We need this for binkies
 
 		fConnectTimer->start(60000, true); // 1 minute
 		
