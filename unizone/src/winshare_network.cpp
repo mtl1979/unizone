@@ -833,19 +833,46 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/showpatterns"))
 		{
-			PrintSystem( tr("Auto-private pattern: %1").arg(fAutoPriv) );
-			PrintSystem( tr("Blacklist pattern: %1").arg(fBlackList) );
-			PrintSystem( tr("Ignore pattern: %1").arg(fIgnore) );
-			PrintSystem( tr("Watch pattern: %1").arg(fWatch) );
-			if (!fOnConnect.isEmpty())
+			QString temp;
+			QString qNone = tr("&lt;None&gt;");
+
+			// Auto-private
+			//
+			temp = CheckIfEmpty(fAutoPriv, qNone);
+
+			PrintSystem( tr("Auto-private pattern: %1").arg(temp) );
+			
+			// Black List
+			//
+			temp = CheckIfEmpty(fBlackList, qNone);
+
+			PrintSystem( tr("Blacklist pattern: %1").arg(temp) );
+
+			// Ignore
+			//
+			temp = CheckIfEmpty(fIgnore, qNone);
+
+			PrintSystem( tr("Ignore pattern: %1").arg(temp) );
+
+			// Watch
+			//
+			temp = CheckIfEmpty(fWatch, qNone);
+
+			PrintSystem( tr("Watch pattern: %1").arg(temp) );
+
+			// On Connect
+			//
+			if (fOnConnect.isEmpty())
+			{
+				PrintSystem( tr("On Connect: Do Nothing ;)" ) );
+			}
+			else
 			{
 				PrintSystem( tr("On Connect:") );
 				PrintSystem( tr("1. %1").arg(fOnConnect) );
 				if (!fOnConnect2.isEmpty())
 					PrintSystem( tr("2. %1").arg(fOnConnect2) );
 			}
-			else
-				PrintSystem( tr("On Connect: Do Nothing ;)" ) );
 		}
 		else if (CompareCommand(sendText, "/clearstats"))
 		{
@@ -882,7 +909,17 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/onconnect"))
 		{
 			fOnConnect = GetParameterString(sendText);
-			PrintSystem(tr("On connect do: %1").arg(fOnConnect));
+			if (fOnConnect.isEmpty())
+			{
+				PrintSystem( tr("On Connect: Do Nothing ;)" ) );
+			}
+			else
+			{
+				PrintSystem( tr("On Connect:") );
+				PrintSystem( tr("1. %1").arg(fOnConnect) );
+				if (!fOnConnect2.isEmpty())
+					PrintSystem( tr("2. %1").arg(fOnConnect2) );
+			}
 		}
 		else if (CompareCommand(sendText, "/search"))
 		{
@@ -915,7 +952,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (fNetClient->IsConnected())
 				SendChatText("*", qtext);
 		}
+
+		//
 		// add more commands BEFORE this one
+		//
 
 		else if (sendText.left(1) == "/")
 		{
@@ -1804,6 +1844,9 @@ WinShareWindow::Disconnect2()
 void
 WinShareWindow::ShowHelp(const QString & command)
 {
+	QString temp;
+	QString qNone = tr("&lt;None&gt;");
+
 	QString helpText	=	"\n";
 	helpText			+=	tr("Unizone Command Reference");
 	helpText			+=	"\n";
@@ -1954,15 +1997,29 @@ WinShareWindow::ShowHelp(const QString & command)
 #endif
 	helpText			+=	"\n";
 	helpText			+=	"\n"; 
-	helpText			+=	tr("Auto-private pattern: %1").arg(fAutoPriv);
+
+	temp = CheckIfEmpty(fAutoPriv, qNone);
+	helpText			+=	tr("Auto-private pattern: %1").arg(temp);
 	helpText			+=	"\n"; 
-	helpText			+=	tr("Blacklist pattern: %1").arg(fBlackList);
+	
+	temp = CheckIfEmpty(fBlackList, qNone);
+	helpText			+=	tr("Blacklist pattern: %1").arg(temp);
 	helpText			+=	"\n"; 
-	helpText			+=	tr("Ignore pattern: %1").arg(fIgnore);
+
+	temp = CheckIfEmpty(fIgnore, qNone);
+	helpText			+=	tr("Ignore pattern: %1").arg(temp);
 	helpText			+=	"\n"; 
-	helpText			+=	tr("Watch pattern: %1").arg(fWatch);
+
+	temp = CheckIfEmpty(fWatch, qNone);
+	helpText			+=	tr("Watch pattern: %1").arg(temp);
 	helpText			+=	"\n"; 
-	if (!fOnConnect.isEmpty())
+
+	if (fOnConnect.isEmpty())
+	{
+		helpText			+=	tr("On Connect: Do Nothing ;)");
+		helpText			+=	"\n"; 
+	}
+	else
 	{
 		helpText			+=	tr("On Connect:");
 		helpText			+=	"\n"; 
@@ -1972,12 +2029,6 @@ WinShareWindow::ShowHelp(const QString & command)
 			helpText			+=	"\n"; 
 			helpText			+=	tr("2. %1").arg(fOnConnect2);
 		}
-	}
-	else
-	{
-		helpText			+=	tr("On Connect: Do Nothing ;)");
-		helpText			+=	"\n"; 
-
 	}
 
 	QString str;

@@ -106,4 +106,7 @@ String MakePath(const String &dir, const String &file);
 // Return filename that has no invalid characters (Windows only)
 QString FixFileName(const QString & fixMe);
 
+// Return first parameter if non-empty, otherwise second
+const QString & CheckIfEmpty(const QString & str, const QString & str2);
+
 #endif // PLATFORM_H

@@ -2422,7 +2422,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>On connect do: %1</source>
-        <translation>Yhdistäessä tee: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee: %1</translation>
     </message>
     <message>
         <source>Unknown command!</source>
@@ -3475,6 +3475,10 @@ Päiväys: %4</translation>
     <message>
         <source>On Connect: Do Nothing ;)</source>
         <translation>Yhdistäessä Tee: Ei Mitään ;)</translation>
+    </message>
+    <message>
+        <source>&amp;lt;None&amp;gt;</source>
+        <translation>&amp;lt;Ei Mitään&amp;gt;</translation>
     </message>
 </context>
 </TS>

@@ -2301,7 +2301,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>On connect do: %1</source>
-        <translation>An Verbindung zu: %1</translation>
+        <translation type='obsolete'>An Verbindung zu: %1</translation>
     </message>
     <message>
         <source>Unknown command!</source>
@@ -3353,6 +3353,10 @@ Date: %4</translation>
     </message>
     <message>
         <source>On Connect: Do Nothing ;)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&amp;lt;None&amp;gt;</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

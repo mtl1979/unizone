@@ -635,3 +635,15 @@ FixFileName(const QString & fixMe)
 #endif
 }
 
+const QString &
+CheckIfEmpty(const QString & str, const QString & str2)
+{
+	if (str.isEmpty())
+	{
+		return str2;
+	}
+	else
+	{
+		return str;
+	}
+}

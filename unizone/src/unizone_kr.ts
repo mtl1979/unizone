@@ -2154,7 +2154,7 @@ Date: %4</source>
     </message>
     <message>
         <source>On connect do: %1</source>
-        <translation>연결하기: %1</translation>
+        <translation type='obsolete'>연결하기: %1</translation>
     </message>
     <message>
         <source>Unknown command!</source>
@@ -3082,6 +3082,10 @@ Date: %4</source>
     </message>
     <message>
         <source>On Connect: Do Nothing ;)</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&amp;lt;None&amp;gt;</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
