@@ -175,6 +175,42 @@ WinShareWindow::ClearList()
 	SetSearchStatus("", 1);
 }
 
+int
+WinShareWindow::SplitQuery(const String &fileExp)
+{
+	WUserMap &users = fNetClient->Users();
+	WUserIter it = users.begin();
+	String user;
+	if (fileExp.StartsWith("*@"))
+	{
+		return 1;
+	}
+	if (fileExp.EndsWith("@*"))
+	{
+		return fileExp.LastIndexOf("@");
+	}
+	while (it != users.end())
+	{	
+		// User ID?
+		user = (const char *) (*it).first.latin1();
+		user = user.Prepend("@");
+		if (fileExp.EndsWithIgnoreCase(user))
+		{
+			return fileExp.LastIndexOf(user);
+		}
+		// User Name?
+		user = (const char *) (*it).second()->GetUserName().lower().utf8();
+		user = user.Prepend("@");
+		if (fileExp.EndsWithIgnoreCase(user))
+		{
+			return fileExp.LastIndexOf(user);
+		}
+		it++;
+	}
+	// No exact match?
+	return fileExp.LastIndexOf("@");
+}
+
 void
 WinShareWindow::GoSearch()
 {
@@ -201,7 +237,7 @@ WinShareWindow::GoSearch()
 	String userExp;
 
 	fileExp = fileExp.Trim();
-	int32 atIndex = fileExp.LastIndexOf('@');
+	int32 atIndex = SplitQuery(fileExp);
 	if (atIndex >= 0)
 	{
 		if ((uint32)atIndex < fileExp.Length())

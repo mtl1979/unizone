@@ -282,6 +282,7 @@ void
 Channel::GotShown(const QString & txt)
 {
 	fChatText->setText(ParseForShown(txt));
+	UpdateTextView();
 }
 
 void

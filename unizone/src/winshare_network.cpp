@@ -910,10 +910,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/version"))
 		{
-			BeginMessageBatch();
-			PrintSystem(tr("Unizone version: %1").arg(WinShareVersionString()), true);
-			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING), true);
-			EndMessageBatch();
+			PrintSystem(tr("Unizone version: %1").arg(WinShareVersionString()));
+			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING));
 		}
 		else if (CompareCommand(sendText, "/onconnect"))
 		{
@@ -1284,7 +1282,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString msg = GetParameterString(text);
 					if ((msg.length() > 0) && fSettings->GetChat())
-						Action(userName + "'s", msg, true);
+						Action(userName + "'s", msg);
 				}
 			}
 			else if (text.lower().left(4) == "/me ")
@@ -1293,7 +1291,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString msg = GetParameterString(text);
 					if ((msg.length() > 0) && fSettings->GetChat())
-						Action(userName, msg, true);
+						Action(userName, msg);
 				}
 			}
 			else	// regular message
@@ -1398,7 +1396,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							}
 #endif // WIN32
 							
-							PrintText(chat, false); // we're not beginning a batch, just continuing
+							PrintText(chat); 
 						}
 					}
 				}
@@ -1414,12 +1412,11 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							PRINT("Name said\n");
 							if (NameSaid(nameText) && fSettings->GetSounds())
 								QApplication::beep();
-							QString res;	// not used...
 							if (MatchUserFilter(user, (const char *) fWatch.utf8()))
 								chat += WFormat::Text.arg(WColors::Watch).arg(fSettings->GetFontSize()).arg(nameText);
 							else
 								chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameText);
-							PrintText(chat, false); // we're not beginning a batch, just continuing
+							PrintText(chat); 
 						}
 					}
 				}
@@ -1619,7 +1616,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							WUserRef user = (*uit).second;
 							QString system = WFormat::GotPinged().arg(WColors::Text).arg(fSettings->GetFontSize()).arg(repto.Cstr()).arg(
 								FixStringStr(user()->GetUserName())).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
-							PrintSystem(system, true);
+							PrintSystem(system);
 						}
 					}
 					msg()->what = NetClient::PONG;
@@ -2937,6 +2934,6 @@ WinShareWindow::UserHostName(const QString &sid, const QString &host)
 	{
 		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserIPAddress2().arg(sid).arg(host));
-		PrintText(system, true);
+		PrintText(system);
 	}
 }

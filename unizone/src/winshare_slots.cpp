@@ -71,7 +71,7 @@ WinShareWindow::UserConnected(const QString &sid)
 	if (fSettings->GetUserEvents())
 	{
 		QString system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserConnected().arg(sid));
-		PrintSystem(system, true);
+		PrintSystem(system);
 	}
 	int n = fUsers->childCount() + 1;
 	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
@@ -94,7 +94,7 @@ WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 			msg = WFormat::UserDisconnected().arg(sid).arg(uname).arg(WColors::RemoteName); 
 		}
 		QString parse = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(msg);
-		PrintSystem(parse, true);
+		PrintSystem(parse);
 	}
 	int n = fUsers->childCount() + 1;
 	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
@@ -125,7 +125,7 @@ WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QS
 			nameformat = WFormat::UserNameChangedNoOld().arg(sid).arg(FixStringStr(newname)).arg(WColors::RemoteName); 
 		}
 		system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameformat);
-		PrintSystem(system, true);
+		PrintSystem(system);
 	}
 	WTextEvent * wte = new WTextEvent(newname, WTextEvent::ResumeType);
 	if (wte)
@@ -194,7 +194,7 @@ WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QSt
 			nameformat = WFormat::UserStatusChanged().arg(id).arg(FixStringStr(n)).arg(FixStringStr(status)).arg(WColors::RemoteName); 
 		}
 		system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameformat);
-		PrintSystem(system, true);
+		PrintSystem(system);
 	}
 }
 

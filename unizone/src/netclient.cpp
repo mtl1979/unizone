@@ -35,14 +35,8 @@ NetClient::NetClient(QObject * owner)
 	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
-	connect(qmtt, SIGNAL(BeginMessageBatch()),
-			this, SLOT(BeginMessageBatch()));
-	
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
 			this, SLOT(MessageReceived(MessageRef, const String &)));
-
-	connect(qmtt, SIGNAL(EndMessageBatch()),
-			this, SLOT(EndMessageBatch()));
 
 	connect(qmtt, SIGNAL(SessionAttached(const String &)),
 			this, SLOT(SessionAttached(const String &)));
@@ -852,12 +846,6 @@ NetClient::GetServerIP()
 // ----
 
 void
-NetClient::BeginMessageBatch()
-{
-	gWin->BeginMessageBatch();
-}
-
-void
 NetClient::MessageReceived(MessageRef msg, const String &sessionID)
 {
 #ifdef DEBUG2
@@ -1048,13 +1036,6 @@ NetClient::ServerExited()
 
 	SendSignal(NetClient::DISCONNECTED);
 }
-
-void
-NetClient::EndMessageBatch()
-{
-	gWin->EndMessageBatch();
-}
-
 
 bool
 NetClient::IsConnected() const

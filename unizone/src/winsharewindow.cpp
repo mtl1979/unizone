@@ -102,8 +102,6 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fUpdateThread = new UpdateClient(this);
 	CHECK_PTR(fUpdateThread);
 
-	fInBatch = false;
-
 	fDisconnectCount = 0;	// Initialize disconnection count
 	fDisconnect = false;	// No premature disconnection yet
 	fDisconnectFlag = false; // User hasn't disconnected manually yet.
@@ -210,20 +208,18 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 	if (fSettings->GetInfo())
 	{
-		BeginMessageBatch();
 #ifdef WIN32
-		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Windows!"), true);
+		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Windows!"));
 #elif defined(__LINUX__) || defined(linux)
-		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Linux!"), true);
+		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Linux!"));
 #elif defined(__FreeBSD__)
-		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for FreeBSD!"), true);
+		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for FreeBSD!"));
 #endif
 		// <postmaster@raasu.org> 20030225
-		PrintSystem(tr("Copyright (C) 2002-2003 Mika T. Lindqvist."), true);
-		PrintSystem(tr("Original idea by Vitaliy Mikitchenko."), true);
-		PrintSystem(tr("Released to public use under LGPL."), true);
-		PrintSystem(tr("Type /help for a command reference."), true);
-		EndMessageBatch();
+		PrintSystem(tr("Copyright (C) 2002-2003 Mika T. Lindqvist."));
+		PrintSystem(tr("Original idea by Vitaliy Mikitchenko."));
+		PrintSystem(tr("Released to public use under LGPL."));
+		PrintSystem(tr("Type /help for a command reference."));
 	}
 
 #ifdef WIN32
@@ -302,9 +298,7 @@ WinShareWindow::StartAcceptThread()
 			}
 			else
 			{
-				BeginMessageBatch();
-				PrintError(tr("Failed to start accept thread!"), true);
-				EndMessageBatch();
+				PrintError(tr("Failed to start accept thread!"));
 				PRINT("Failed to start accept thread\n");
 			}
 		}
@@ -1376,69 +1370,6 @@ WinShareWindow::MakeHumanTime(int64 time)
 }
 
 void
-WinShareWindow::BeginMessageBatch()
-{
-	if (fInBatch)
-	{
-		EndMessageBatch();
-	}
-
-	fOutput = "";
-	fInBatch = true;
-}
-
-void
-WinShareWindow::EndMessageBatch()
-{
-	WASSERT(fInBatch, "EndMessageBatch() called before BeginMessageBatch()!");
-
-	if (!fOutput.isEmpty())
-	{
-		if (fOutput.right(4) == "<br>")
-			fOutput.truncate(fOutput.length() - 4);
-
-#if (QT_VERSION < 0x030000)
-		if (fChatText->text().isEmpty())
-			fChatText->setText(fOutput);
-		else
-#endif
-		{
-			CheckScrollState();
-			fChatText->append(
-#if (QT_VERSION < 0x030000)
-					"\t" +
-#endif
-					fOutput);
-		}
-
-		fMainLog.LogString(fOutput);
-		UpdateTextView();
-
-		fOutput = "";
-		fInBatch = false;
-	}
-}
-
-void
-WinShareWindow::PrintText(const QString & str, bool)
-{
-	WASSERT(fInBatch, "PrintText(const QString &, bool) called before BeginMessageBatch()!");
-
-	if (fSettings->GetTimeStamps())
-		fOutput += GetTimeStamp();
-
-	if (!str.isEmpty())
-	{
-		fOutput += str;
-		if (str.right(4) == "<br>")
-			return;
-	}
-
-	fOutput += "<br>";	
-}
-
-// non-batch version of PrintText
-void
 WinShareWindow::PrintText(const QString & str)
 {
 	QString out("");
@@ -1577,35 +1508,35 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 }
 
 void
-WinShareWindow::Action(const QString & name, const QString & msg, bool batch)
+WinShareWindow::Action(const QString & name, const QString & msg/*, bool batch*/)
 {
 	QString chat = WFormat::Action().arg(WColors::Action).arg(fSettings->GetFontSize());
 	QString nameText = FixStringStr(msg);
 	if (NameSaid(nameText) && fSettings->GetSounds())
 		QApplication::beep();
 	chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(tr("%1 %2").arg(FixStringStr(name)).arg(nameText));
-	if (batch)
-	{
-		PrintText(chat, false);
-	}
-	else
+//	if (batch)
+//	{
+//		PrintText(chat, false);
+//	}
+//	else
 	{
 		PrintText(chat);
 	}
 }
 
 void
-WinShareWindow::PrintError(const QString & error, bool batch)
+WinShareWindow::PrintError(const QString & error/*, bool batch*/)
 {
 	if (fSettings->GetError())
 	{
 		QString e = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
 		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(error);
-		if (batch)
-		{
-			PrintText(e, false);
-		}
-		else
+//		if (batch)
+//		{
+//			PrintText(e, false);
+//		}
+//		else
 		{
 			PrintText(e);
 		}
@@ -1613,17 +1544,17 @@ WinShareWindow::PrintError(const QString & error, bool batch)
 }
 
 void
-WinShareWindow::PrintWarning(const QString & warning, bool batch)
+WinShareWindow::PrintWarning(const QString & warning/*, bool batch*/)
 {
 	if (fSettings->GetError())
 	{
 		QString e = WFormat::Warning().arg(WColors::Error).arg(fSettings->GetFontSize());
 		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(warning);
-		if (batch)
-		{
-			PrintText(e, false);
-		}
-		else
+//		if (batch)
+//		{
+//			PrintText(e, false);
+//		}
+//		else
 		{
 			PrintText(e);
 		}
@@ -1631,13 +1562,13 @@ WinShareWindow::PrintWarning(const QString & warning, bool batch)
 }
 
 void
-WinShareWindow::PrintSystem(const QString & msg, bool batch)
+WinShareWindow::PrintSystem(const QString & msg/*, bool batch*/)
 {
 	QString s = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 	s += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(ParseChatText(msg));
-	if (batch)
-		PrintText(s, false);
-	else
+//	if (batch)
+//		PrintText(s, false);
+//	else
 		PrintText(s);
 }
 

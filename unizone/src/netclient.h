@@ -184,9 +184,7 @@ private:
 
 private slots:
 
-	void BeginMessageBatch();
 	void MessageReceived(MessageRef msg, const String & sessionID);
-	void EndMessageBatch();
 
 	void SessionAttached(const String & sessionID);
 	void SessionDetached(const String & sessionID);

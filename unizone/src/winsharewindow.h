@@ -148,8 +148,8 @@ public:
 	HWND GetHandle() { return fWinHandle; }
 #endif
 
-	void BeginMessageBatch();
-	void EndMessageBatch();
+//	void BeginMessageBatch();
+//	void EndMessageBatch();
 
 	void SendChatText(const QString & sid, const QString & txt);
 	void SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply);
@@ -206,8 +206,8 @@ public:
 	void GotParams(bool g) { fGotParams = g; }
 	bool GotParams() { return fGotParams; }
 
-	void PrintSystem(const QString & msg, bool batch = false);
-	void PrintError(const QString & error, bool batch = false);
+	void PrintSystem(const QString & msg/*, bool batch = false*/);
+	void PrintError(const QString & error/*, bool batch = false*/);
 
 	void GotUpdateCmd(const char * param, const char * val);
 
@@ -348,8 +348,6 @@ private:
 	bool fGotResults;			// see if we got initial Search Results
 	bool fGotParams;			// see if the initial "Get Params" message was sent
 	bool fAway;
-	bool fInBatch;				// are we inside message batch?
-	QString fOutput;
 	bool fScrollDown;			// do we need to scroll the view down after an insertion?
 	int fScrollX, fScrollY;
 	bool fScanning;				// Is File Scan Thread active?
@@ -441,9 +439,9 @@ private:
 
 	QString MakeHumanTime(int64 time);
 
-	void PrintText(const QString & str, bool begin);
+//	void PrintText(const QString & str, bool begin);
 	void PrintText(const QString & str);
-	void PrintWarning(const QString & warning, bool batch = false);
+	void PrintWarning(const QString & warning/*, bool batch = false*/);
 
 	void NameChanged(const QString & newName);
 	void StatusChanged(const QString & newStatus);
@@ -453,7 +451,7 @@ private:
 	// stolen from BeShare :) thanx Jeremy
 	static bool ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
-	void Action(const QString & name, const QString & msg, bool batch = false);
+	void Action(const QString & name, const QString & msg/*, bool batch = false*/);
 	void GetAddressInfo(const QString & user);
 	void PrintAddressInfo(const WUserRef & user);
 	bool PrintAddressInfo(uint32 address);
@@ -544,6 +542,7 @@ private:
 	WFIMap fFileList;
 
 	void StartQuery(const QString & sidRegExp, const QString & fileRegExp);
+	int SplitQuery(const String &fileExp);
 	void SetResultsMessage();
 	void SetSearchStatus(const QString & status, int index = 0);
 	void SetSearch(const QString & pattern);
