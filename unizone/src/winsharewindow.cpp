@@ -108,7 +108,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	connect(fInputText, SIGNAL(TabPressed(QString)), this, SLOT(TabPressed(QString)));
 	connect(fChatText, SIGNAL(URLClicked(const QString &)), this, SLOT(URLClicked(const QString &)));
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(AboutToQuit()));
+#if (QT_VERSION < 0x030100)
 	connect(fChatText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
+#endif
 	// create popup menu
 	fPrivate = new QPopupMenu(this);	// have it deleted on destruction of window
 	CHECK_PTR(fPrivate);
@@ -1286,11 +1288,11 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 	static QString output("");
 	if (begin)	// starting message batch
 	{
-//#ifndef WIN32
+#if (QT_VERSION < 0x030100)
 		output = "\t";	// reset (we always start with a tab..., this is a linux bug workaround)
-//#else
-//		output = "";
-//#endif
+#else
+		output = "";
+#endif
 	}
 	else
 	{
@@ -1306,11 +1308,11 @@ WinShareWindow::PrintText(const QString & str, bool begin)
 		}
 		else
 		{
-//#ifndef WIN32
+#if (QT_VERSION < 0x030100)
 			if (output != "\t")	// do we have something?
-//#else
-//			if (!output.isEmpty())
-//#endif
+#else
+			if (!output.isEmpty())
+#endif
 			{
 				if (output.right(4) == "<br>")
 					output.truncate(output.length() - 4);

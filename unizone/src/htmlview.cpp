@@ -61,7 +61,7 @@ WHTMLView::showEvent(QShowEvent * event)
 {
 #ifdef UNIVIEW
 	QTextBrowser::showEvent(event);
-#else
+#elsif (QT_VERSION < 0x030100)
 	QString txt = text();
 	setText("");
 	emit GotShown(txt);
@@ -126,7 +126,6 @@ ParseForShown(const QString & txt)
 #else
 	out = txt;
 	out.replace(QRegExp("\t"), "<br>");		// replace our TAB
-
 	// Remove any extra line breaks in start of buffer
 	//
 	if (out.length() > 4)

@@ -92,7 +92,9 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 			SLOT(DisconnectedFromServer()));
 	connect(fText, SIGNAL(URLClicked(const QString &)), this, SLOT(URLClicked(const QString &)));
 	connect(fChat, SIGNAL(TabPressed(QString)), this, SLOT(TabPressed(QString)));
+#if (QT_VERSION < 0x030100)
 	connect(fText, SIGNAL(GotShown(const QString &)), this, SLOT(GotShown(const QString &)));
+#endif
 	connect(owner, SIGNAL(UpdatePrivateUserLists()), this, SLOT(UpdateUserList()));
 
 #ifdef WIN32
