@@ -1495,11 +1495,16 @@ WinShareWindow::LaunchSearch(const QString & pattern)
 	{
 		// Strip server name in front of search pattern
 		QString qServer = pattern.mid(2);						// remove //
-		QString qPattern = qServer.mid(qServer.find("/") + 1);	// get everything after /
-		qServer = qServer.left(qServer.find("/"));				// get everything before /
-		gWin->SetDelayedSearchPattern(qPattern);
-		gWin->Connect(qServer);
-		return;
+		int sp = qServer.find("/");
+		if (sp > -1)
+		{
+			QString qPattern = qServer.mid(sp + 1);	// get everything after /
+			qServer = qServer.left(sp);				// get everything before /
+			gWin->SetDelayedSearchPattern(qPattern);
+			gWin->Connect(qServer);
+			return;
+		}
+		// fall through
 	}
 	// (be)share:pattern
 	if (!gWin->fSearchWindow)
