@@ -115,7 +115,7 @@ private:
 
 	QString fLocalSID;
 	WFileThread * fSharedFiles;
-	int fNumUploads, fNumDownloads;
+//	int fNumUploads, fNumDownloads;
 
 	QString GetUserName(QString);
 	QString FormatIndex(long cur, long num);
@@ -123,7 +123,7 @@ private:
 	// Simple method that is used to decrease the download/upload count
 	// when one is canceled or finished. Returns the count after everything
 	// has been done.
-	int DecreaseCount(WGenericThread *, int &, bool = true);
+//	int DecreaseCount(WGenericThread *, int &, bool = true);
 	void UpdateLoad();
 
 	// Popup menu id's
@@ -199,6 +199,9 @@ private:
 	// Get number of active transfers
 	int GetNumDownloads();
 	int GetNumUploads();
+
+	// Get number of non-finished transfers (active or queued)
+	int GetUploadQueue();
 
 	QMutex fLock;
 

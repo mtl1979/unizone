@@ -69,11 +69,6 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	
 	fDownloads->setAllColumnsShowFocus(true);
 	
-	//fCancelD = new QPushButton(fBoxD);
-	//CHECK_PTR(fCancelD);
-	//fCancelD->setText(tr("Cancel"));
-	//connect(fCancelD, SIGNAL(clicked()), this, SLOT(CancelDL()));
-	
 	fBoxU = new QVBox(fMainSplit);
 	CHECK_PTR(fBoxU);
 	
@@ -97,17 +92,12 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
-	//fCancelU = new QPushButton(fBoxU);
-	//CHECK_PTR(fCancelU);
-	//fCancelU->setText(tr("Cancel"));
-	//connect(fCancelU, SIGNAL(clicked()), this, SLOT(CancelUL()));
-
 	connect(gWin->fNetClient, SIGNAL(UserDisconnected(QString, QString)), this,
 			SLOT(UserDisconnected(QString, QString)));
 
 	
 	setCaption(tr("File Transfers"));
-	fNumUploads = fNumDownloads = 0;
+//	fNumUploads = fNumDownloads = 0;
 
 	fDLPopup = new QPopupMenu(this, "Download Popup");
 	CHECK_PTR(fDLPopup);
@@ -331,7 +321,7 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 
 	if (GetNumDownloads() < gWin->fSettings->GetMaxDownloads())
 	{
-		PRINT("DLS (%d, %d)\n", fNumDownloads, gWin->fSettings->GetMaxDownloads());
+//		PRINT("DLS (%d, %d)\n", fNumDownloads, gWin->fSettings->GetMaxDownloads());
 		nt->InitSession();
 		nt->SetLocallyQueued(false);
 	}
@@ -340,8 +330,8 @@ WDownload::AddDownload(QString * files, int32 filecount, QString remoteSessionID
 		nt->SetLocallyQueued(true);
 		p.second->setText(WTransferItem::Status, tr("Locally Queued."));
 	}
-	fNumDownloads++;
-	WASSERT(fNumDownloads >= 0, "Download count is negative!");
+//	fNumDownloads++;
+//	WASSERT(fNumDownloads >= 0, "Download count is negative!");
 	fLock.lock();
 	fDownloadList.insert(fDownloadList.end(), p);
 	fLock.unlock();
@@ -390,8 +380,8 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 		PRINT("Queued\n");
 		ut->SetLocallyQueued(true);
 	}
-	fNumUploads++;
-	WASSERT(fNumUploads >= 0, "Upload count is negative!");
+//	fNumUploads++;
+//	WASSERT(fNumUploads >= 0, "Upload count is negative!");
 	PRINT("Init session\n");
 	ut->InitSession();
 	WTPair p;
@@ -429,8 +419,8 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 		PRINT("Queued\n");
 		ut->SetLocallyQueued(true);
 	}
-	fNumUploads++;
-	WASSERT(fNumUploads >= 0, "Upload count is negative!");
+//	fNumUploads++;
+//	WASSERT(fNumUploads >= 0, "Upload count is negative!");
 	ut->InitSession();
 
 	WTPair p;
@@ -738,19 +728,14 @@ WDownload::customEvent(QCustomEvent * e)
 			{
 				PRINT("\tWGenericEvent::ConnectFailed\n");
 				String why, mFile;
-				//bool b;
 				msg()->FindString("why", why);
 				item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(why.Cstr()));
-				delete (*foundIt).second;
+				gt->SetFinished(true);
+				gt->SetActive(false);
 				if (upload)
 				{
-					DecreaseCount(gt, fNumUploads, false);
-					fLock.lock();
-					fUploadList.erase(foundIt);
-					fLock.unlock();
-					WASSERT(fNumUploads >= 0, "Upload count is negative!");
-					delete gt;
-					gt = NULL; // <postmaster@raasu.org> 20021027
+//					DecreaseCount(gt, fNumUploads, false);
+//					WASSERT(fNumUploads >= 0, "Upload count is negative!");
 					DequeueULSessions();
 
 				}
@@ -762,13 +747,8 @@ WDownload::customEvent(QCustomEvent * e)
 						emit FileFailed(qFile, gt->GetRemoteUser());
 					}
 
-					DecreaseCount(gt, fNumDownloads, false);
-					fLock.lock();
-					fDownloadList.erase(foundIt);
-					fLock.unlock();
-					WASSERT(fNumDownloads >= 0, "Download count is negative!");
-					delete gt;
-					gt = NULL; // <postmaster@raasu.org> 20021027
+//					DecreaseCount(gt, fNumDownloads, false);
+//					WASSERT(fNumDownloads >= 0, "Download count is negative!");
 					DequeueDLSessions();
 				}
 				break;
@@ -798,27 +778,20 @@ WDownload::customEvent(QCustomEvent * e)
 							item->setText(WTransferItem::ETA, "");
 						}
 					}
-					//delete (*foundIt).second;
 					gt->SetFinished(true);
-					DecreaseCount(gt, fNumUploads);
-					WASSERT(fNumUploads >= 0, "Upload count is negative!");
-					//fLock.lock();
-					//fUploadList.erase(foundIt);
-					//fLock.unlock();
-					//delete gt;
-					//gt = NULL; // <postmaster@raasu.org> 20030317
+					gt->Reset();
+//					DecreaseCount(gt, fNumUploads);
+//					WASSERT(fNumUploads >= 0, "Upload count is negative!");
 					DequeueULSessions();
 				}
 				else
 				{
-					// delete (*foundIt).second;
 					if (gt->IsManuallyQueued())
 						item->setText(WTransferItem::Status, tr("Manually Queued."));
 					else
 					{
 						gt->SetFinished(true);
 						// emit FileFailed signal, so we can record the filename and remote username for resuming later
-						//String mFile;
 						bool f;
 						if (msg()->FindBool("failed", &f) == B_OK)
 						{
@@ -838,15 +811,9 @@ WDownload::customEvent(QCustomEvent * e)
 							}
 						}
 					}
-					DecreaseCount(gt, fNumDownloads);
-					WASSERT(fNumDownloads >= 0, "Download count is negative!");
-					/*
-					fLock.lock();
-					fDownloadList.erase(foundIt);
-					fLock.unlock();
-					delete gt;
-					gt = NULL; // <postmaster@raasu.org> 20030317
-					*/
+					gt->Reset();
+//					DecreaseCount(gt, fNumDownloads);
+//					WASSERT(fNumDownloads >= 0, "Download count is negative!");
 					DequeueDLSessions();
 				}
 				break;
@@ -862,18 +829,10 @@ WDownload::customEvent(QCustomEvent * e)
 					if (!upload)
 					{
 						PRINT("\tIs download\n");
-						if (gt->IsLastFile())
-							DecreaseCount(gt, fNumDownloads, false);
-						WASSERT(fNumDownloads >= 0, "Download count is negative!");
+//						if (gt->IsLastFile())
+//							DecreaseCount(gt, fNumDownloads, false);
+//						WASSERT(fNumDownloads >= 0, "Download count is negative!");
 						DequeueDLSessions();
-					}
-					else // Is this really used???
-					{
-						PRINT("\tIs upload\n");
-						if (gt->IsLastFile())
-							DecreaseCount(gt, fNumUploads);
-						WASSERT(fNumUploads >= 0, "Upload count is negative!");
-						DequeueULSessions();
 					}
 					item->setText(WTransferItem::Status, tr("Finished."));
 					item->setText(WTransferItem::ETA, "");
@@ -889,11 +848,6 @@ WDownload::customEvent(QCustomEvent * e)
 						item->setText(WTransferItem::Rate, "0.0");
 						item->setText(WTransferItem::ETA, "");
 						//item->setText(WTransferItem::User, "");	<- don't erase the user name
-					}
-					else // Is this really used???
-					{
-						item->setText(WTransferItem::Status, tr("Finished."));
-						item->setText(WTransferItem::ETA, "");
 					}
 				}
 				break;
@@ -1042,8 +996,8 @@ WDownload::customEvent(QCustomEvent * e)
 
 							if (msg()->FindString("file", mFile) == B_OK)
 								gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
-							DecreaseCount(gt, fNumDownloads, false);
-							WASSERT(fNumDownloads >= 0, "Download count is negative!");
+//							DecreaseCount(gt, fNumDownloads, false);
+//							WASSERT(fNumDownloads >= 0, "Download count is negative!");
 						}
 						PRINT("\tWGenericEvent::FileDataReceived OK\n");
 					}
@@ -1112,90 +1066,7 @@ WDownload::customEvent(QCustomEvent * e)
 		return;
 	}
 }
-/*
-void
-WDownload::CancelDL()
-{
-	QListViewItem * s = fDownloads->selectedItem();
-	if (s)
-	{
-		fLock.lock();
-		WTIter it = fDownloadList.begin();
-		while (it != fDownloadList.end())
-		{
-			if ((*it).second == s)
-			{
-				// found our item, stop it
-				(*it).second->setText(WTransferItem::Status, tr("Canceled."));
-				DecreaseCount((*it).first, fNumDownloads);
-				WASSERT(fNumDownloads >= 0, "Download count is negative!");
-				delete (*it).first;
-				delete (*it).second;
-				fDownloadList.erase(it);
-				break;
-			}
-			it++;
-		}
-		fLock.unlock();
-	}
-	DequeueDLSessions();
-}
 
-void
-WDownload::CancelUL()
-{
-	QListViewItem * s = fUploads->selectedItem();
-	if (s)
-	{
-		fLock.lock();
-		WTIter it = fUploadList.begin();
-		while (it != fUploadList.end())
-		{
-			if ((*it).second == s)
-			{
-				DecreaseCount((*it).first, fNumUploads);
-				WASSERT(fNumUploads >= 0, "Upload count is negative!");
-				(*it).second->setText(WTransferItem::Status, tr("Canceled."));
-				delete (*it).first;
-				delete (*it).second;
-				fUploadList.erase(it);
-				break;
-			}
-			it++;
-		}
-		fLock.unlock();
-	}
-	DequeueULSessions();
-}
-
-void
-WDownload::UnblockUL()
-{
-	QListViewItem * s = fUploads->selectedItem();
-	if (s)
-	{
-		fLock.lock();
-		WTIter it = fUploadList.begin();
-		while (it != fUploadList.end())
-		{
-			if ((*it).second == s)
-			{
-				if ((*it).first->IsBlocked() == true)
-				{
-					(*it).first->SetBlocked(false);
-				}
-				else
-				{
-					(*it).first->SetBlocked(true);
-				}
-				break;
-			}
-			it++;
-		}
-		fLock.unlock();
-	}
-}
-*/
 void
 WDownload::KillLocalQueues()
 {
@@ -1220,9 +1091,10 @@ WDownload::KillLocalQueues()
 				
 				// free it
 				delete (*it).second;
-				DecreaseCount((*it).first, fNumDownloads);
+				(*it).first->Reset();
+//				DecreaseCount((*it).first, fNumDownloads);
 				delete (*it).first;
-				WASSERT(fNumDownloads >= 0, "Download count is negative!");
+//				WASSERT(fNumDownloads >= 0, "Download count is negative!");
 				WTIter nextIt = it;
 				nextIt++;
 				fDownloadList.erase(it);
@@ -1246,6 +1118,7 @@ WDownload::GetUserName(QString sid)
 }
 
 // This method also resets the thread.
+/*
 int
 WDownload::DecreaseCount(WGenericThread * thread, int & count, bool reset)
 {
@@ -1264,14 +1137,13 @@ WDownload::DecreaseCount(WGenericThread * thread, int & count, bool reset)
 				thread->Reset();
 		}
 	}
-	UpdateLoad();
 	return count;
 }
-
+*/
 void
 WDownload::UpdateLoad()
 {
-	gWin->fNetClient->SetLoad(fNumUploads, gWin->fSettings->GetMaxUploads());
+	gWin->fNetClient->SetLoad(GetUploadQueue(), gWin->fSettings->GetMaxUploads());
 }
 
 /*
@@ -1350,7 +1222,7 @@ WDownload::DLPopupActivated(int id)
 				gt->SetManuallyQueued(false);
 				((WDownloadThread *)gt)->InitSession();
 				// and we need to increase the dl count
-				fNumDownloads++;
+//				fNumDownloads++;
 			}
 			break;
 		}
@@ -1380,11 +1252,11 @@ WDownload::DLPopupActivated(int id)
 			fLock.lock();
 			// found our item, stop it
 			(*i).second->setText(WTransferItem::Status, tr("Canceled."));
-			DecreaseCount(gt, fNumDownloads);
-			WASSERT(fNumDownloads >= 0, "Download count is negative!");
-			delete gt;
-			delete (*i).second;
-			fDownloadList.erase(i);
+			gt->SetFinished(true);
+			gt->SetActive(false);
+			gt->Reset();
+//			DecreaseCount(gt, fNumDownloads);
+//			WASSERT(fNumDownloads >= 0, "Download count is negative!");
 			fLock.unlock();
 			DequeueDLSessions();
 			break;
@@ -1614,11 +1486,10 @@ WDownload::ULPopupActivated(int id)
 			fLock.lock();
 			// found our item, stop it
 			(*i).second->setText(WTransferItem::Status, tr("Canceled."));
-			DecreaseCount(gt, fNumUploads);
-			WASSERT(fNumUploads >= 0, "Upload count is negative!");
-			delete gt;
-			delete (*i).second;
-			fUploadList.erase(i);
+			gt->SetFinished(true);
+			gt->SetActive(false);
+//			DecreaseCount(gt, fNumUploads);
+//			WASSERT(fNumUploads >= 0, "Upload count is negative!");
 			fLock.unlock();
 			DequeueULSessions();
 			break;
@@ -1859,7 +1730,6 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 	{
 		fULPopupItem = item;
 
-		//fLock.lock();
 		WTIter iter;
 		if (FindItem(fUploadList, iter, item))
 		{
@@ -2113,7 +1983,6 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			fULBanMenu->setItemChecked(fULBan, true);
 			fULPopup->popup(p);
 		}
-		//fLock.unlock();
 	}
 }
 
@@ -2124,7 +1993,6 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 	{
 		fDLPopupItem = item;
 
-		//fLock.lock();
 		WTIter iter;
 		if (FindItem(fDownloadList, iter, item))
 		{
@@ -2332,7 +2200,6 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 			}
 			fDLPopup->popup(p);
 		}
-		//fLock.unlock();
 	}
 }
 
@@ -2488,8 +2355,6 @@ WDownload::ClearFinishedDL()
 	while (it != fDownloadList.end())
 	{
 		if (
-//			((*it).second->text(0) == tr( "Finished." )) ||
-//			((*it).second->text(0) == tr( "Disconnected." ))
 			((*it).first->IsFinished() == true)
 			)
 		{
@@ -2519,8 +2384,6 @@ WDownload::ClearFinishedUL()
 	while (it != fUploadList.end())
 	{
 		if (
-//			((*it).second->text(0) == tr( "Finished." )) ||
-//			((*it).second->text(0) == tr( "Disconnected." )) ||
 			((*it).first->IsFinished() == true)
 			)
 		{
@@ -2585,6 +2448,31 @@ WDownload::GetNumUploads()
 			if (
 				((*it).first->IsLocallyQueued() == false) &&
 				((*it).first->IsBlocked() == false) &&
+				((*it).first->IsFinished() == false)
+				)
+			{
+				n++;
+			}
+		}
+	}
+	fLock.unlock();
+	return n;
+}
+
+int
+WDownload::GetUploadQueue()
+{
+	PRINT("\tWDownload::GetUploadQueue\n");
+	int n = 0;
+	if ( fUploadList.empty() )
+		return n;
+
+	fLock.lock();
+	for (WTIter it = fUploadList.begin(); it != fUploadList.end(); it++)
+	{
+		if ((*it).first)
+		{
+			if (
 				((*it).first->IsFinished() == false)
 				)
 			{
