@@ -1,5 +1,5 @@
 #include "menubar.h"
-#include "version.h"
+#include "global.h"
 
 #include <qapplication.h>
 #include <qaccel.h>

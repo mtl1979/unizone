@@ -3,7 +3,7 @@
 #endif
 
 #include "aboutdlgimpl.h"
-#include "version.h"
+#include "global.h"
 
 #include <stdio.h>
 #include <qlabel.h>

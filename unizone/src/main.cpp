@@ -7,6 +7,7 @@
 #include <qfiledialog.h>
 #include "global.h"
 #include "debugimpl.h"
+#include "version.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,6 +29,15 @@ int64 GetStartTime()
 	return fStartTime;
 }
 
+
+QString
+WinShareVersionString()
+{
+	static char version[50];
+	const char * format = QT_TRANSLATE_NOOP( "WinShare", "%d.%d.%d build %d");
+	sprintf(version, format, kMajor, kMinor, kPatch, kBuild);
+	return QObject::tr(version);
+}
 
 int 
 main( int argc, char** argv )

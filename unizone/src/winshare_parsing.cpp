@@ -8,7 +8,7 @@
 #include "debugimpl.h"
 #include "settings.h"
 #include "formatting.h"
-#include "version.h"
+// #include "version.h"
 #include "platform.h"
 #include "wstring.h"
 #include "tokenizer.h" // <postmaster@raasu.org> 20021128

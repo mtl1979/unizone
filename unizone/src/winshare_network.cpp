@@ -18,7 +18,7 @@ typedef hostent *LPHOSTENT;
 #include "debugimpl.h"
 #include "formatting.h"
 #include "textevent.h"
-#include "version.h"
+// #include "version.h"
 #include "platform.h"			// <postmaster@raasu.org> 20021021
 								// For GetParameterString that will split user command parameters from string 
 								// containing both command and parameters, 

@@ -2,7 +2,7 @@
 #include "downloadimpl.h"
 #include "global.h"
 #include "debugimpl.h"
-#include "version.h"
+// #include "version.h"
 #include "settings.h"
 #include "platform.h"			// <postmaster@raasu.org> 20021114
 #include "wstring.h"

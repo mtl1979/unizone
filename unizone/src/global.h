@@ -15,4 +15,6 @@ void SetSettingsFile(const char * sf);
 const char * GetSettingsFile();
 
 int64 GetStartTime();
+
+QString WinShareVersionString();
 #endif

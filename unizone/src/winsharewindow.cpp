@@ -5,7 +5,7 @@
 #include "aboutdlgimpl.h"
 #include "downloadimpl.h"
 #include "winsharewindow.h"
-#include "version.h"
+#include "global.h"
 #include "debugimpl.h"
 #include "chattext.h"
 #include "formatting.h"
