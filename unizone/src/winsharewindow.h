@@ -23,22 +23,11 @@
 #include <qlayout.h>
 #include <qtabwidget.h>
 
-// #include "menubar.h"
 #include "netclient.h"
 #include "privatewindowimpl.h"
-// #include "channelimpl.h"
-// #include "channelsimpl.h"
 #include "system/SetupSystem.h"
-// #include "regex/StringMatcher.h"
-// #include "chattext.h"
-// #include "downloadimpl.h"
 #include "accept.h"
-// #include "filethread.h"
-// #include "combo.h"
-// #include "searchitem.h"
-// #include "channelinfo.h"
 #include "search.h"
-// #include "Log.h"
 #include "user.h"
 
 #define UPDATE_SERVER "www.raasu.org"
@@ -157,12 +146,16 @@ public slots:
 		/* Sep */
 	void ClearChatLog();
 		/* Sep */
-	void AboutWinShare();
-		/* Sep */
 	void Exit();
 
-	/** Prefs menu **/
+	/** Edit Menu **/
 	void Preferences();
+
+	/*** Windows Menu ***/
+	void OpenDownloads();
+
+	/*** Help Menu ***/
+	void AboutWinShare();
 
 	// user connection/disconnection messages
 	void UserNameChanged(QString, QString, QString);
@@ -173,6 +166,7 @@ public slots:
 
 	// tab completion signal
 	void TabPressed(QString str);
+
 	// URL's
 	void URLSelected(const QString &);
 	void URLClicked();
@@ -188,20 +182,11 @@ public slots:
 	// reconnect timer
 	void ReconnectTimer();
 
-	// open a new search dialog
-	//void SearchDialog();
-
 	// this won't be emitted under Windows
 	void GotShown(const QString &);
 
-	/*** Windows Menu ***/
-	// void OpenChannels();
-	void OpenDownloads();
-
 	void AboutToQuit();
-	// void SearchWindowClosed();
 	void DownloadWindowClosed();
-	// void ChannelsWindowClosed();
 
 	void FileFailed(QString, QString, QString); // from WDownload
 	void FileInterrupted(QString, QString, QString);
@@ -211,8 +196,6 @@ public slots:
 	void ChannelAdmins(const QString, const QString, const QString);
 	void ChannelTopic(const QString, const QString, const QString);
 	void ChannelPublic(const QString, const QString, bool);
-	void CreateChannel();
-	void JoinChannel();
 	void ChannelOwner(const QString, const QString, const QString);
 	void UserIDChanged(QString, QString);
 
@@ -221,15 +204,21 @@ protected:
 	virtual void resizeEvent(QResizeEvent * event);
 
 private slots:
-	// void Close();
 	void GoSearch();
 	void StopSearch();
 	void ClearList();
 	void Download();
 	void ClearHistory();
 
+	// Search
+
 	void AddFile(const QString, const QString, bool, MessageRef);
 	void RemoveFile(const QString, const QString);
+
+	// Channels
+
+	void CreateChannel();
+	void JoinChannel();
 
 private:
 	mutable NetClient * fNetClient;
@@ -247,12 +236,11 @@ private:
 	// gui
 	QSplitter * fMainSplitter;	// splits user list and the rest of the window
 
-	QHGroupBox * fUsersBox;	// frame around fUsers
+	QHGroupBox * fUsersBox;		// frame around fUsers
 	WUniListView * fUsers;
 
 	QVGroupBox * fLeftPane;
 
-	// QHGroupBox * fInfoPane;	// holds server list, user name, user status
 	QComboBox * fServerList, * fUserList, * fStatusList;
 	QLabel * fServerLabel, * fUserLabel, * fStatusLabel;
 	QSplitter * fChatSplitter;
@@ -270,26 +258,26 @@ private:
 	QMutex pLock;				// private window mutex
 	QMutex rLock;				// resume list mutex
 
-
-	bool fGotResults;	// see if we got initial Search Results
-	bool fGotParams;	// see if the initial "Get Params" message was sent
+	bool fGotResults;			// see if we got initial Search Results
+	bool fGotParams;			// see if the initial "Get Params" message was sent
 	bool fAway;
 	bool fPrintOutput;
-	bool fScrollDown;	// do we need to scroll the view down after an insertion?
+	bool fScrollDown;			// do we need to scroll the view down after an insertion?
 
-	bool fDisconnect;		// True if disconnected prematurely
-	bool fDisconnectFlag;	// false for no disconnects, true for user disconnection (for when file sharing disabled)
-	int  fDisconnectCount;	// Number of connection drops (1-2 for normal, 3- for premature)
+	bool fDisconnect;			// true : disconnected prematurely
+	bool fDisconnectFlag;		// false: no disconnects
+								// true : user disconnection (for when file sharing disabled)
+	int  fDisconnectCount;		// Number of connection drops (1-2 for normal, 3- for premature)
 
 	QString fAwayMsg;
 	QString fHereMsg;
-	QString fWatch;		// watch pattern
-	QString fIgnore;	// ignore pattern
-	QString fIgnoreIP;	// ip ignore pattern
-	QString fBlackList; // blacklist pattern
-	QString fAutoPriv;	// Auto-private pattern
-	QString fOnConnect;	// On connect perform this command
-	QString fOnConnect2; // On connect perform this too ;)
+	QString fWatch;				// watch pattern
+	QString fIgnore;			// ignore pattern
+	QString fIgnoreIP;			// ip ignore pattern
+	QString fBlackList;			// blacklist pattern
+	QString fAutoPriv;			// Auto-private pattern
+	QString fOnConnect;			// On connect perform this command
+	QString fOnConnect2;		// On connect perform this too ;)
 
 	// transmit/receive statistics
 
@@ -297,10 +285,8 @@ private:
 	uint64 tx2,rx2;		// in the beginning of session
 
 	// UniShare
-	//int64 fRegistered;
 
 	void TransferCallbackRejected(QString qFrom, int64 timeLeft, uint32 port);
-
 	
 	bool IsIgnored(const WUser * user);
 	bool Ignore(QString & user);
@@ -328,8 +314,6 @@ private:
 	QTimer * fAutoAway;
 	QTimer * fReconnectTimer;
 
-	// WSearch * fSearchWindow;
-	// Channels * fChannels;
 	WLog fMainLog;
 
 #ifdef WIN32			// if the OS is Windows, 
@@ -417,7 +401,6 @@ private:
 
 	WResumeMap fResumeMap;
 
-	// QGridLayout * fMainLayout;
 	QGridLayout * fMainBox;
     QTabWidget * fTabs;
 	
@@ -431,16 +414,10 @@ private:
 	QPushButton * Join;
 	// Search Pane
 
-	//QGridLayout * fSearchPane;
-	// QVGroupBox * fSearchBox;
-	// QHGroupBox * fEntryBox;
-	// QVGroupBox * fButtonsBox;
 	QLabel * fSearchLabel;
-	// QLineEdit * fSearchEdit;
 	WComboBox * fSearchEdit;
 	WUniListView * fSearchList;
 	QPushButton * fDownload;
-	// QPushButton * fClose;
 	QPushButton * fClear;
 	QPushButton * fStop;
 	QPushButton * fClearHistory;
@@ -535,8 +512,12 @@ public:
 
 	void SendRejectedNotification(MessageRef rej);
 
-	// To use delayed search, first set the pattern using SetDelayedSearchPattern(QString) and
-	// then call Connect(QString)
+	// To use delayed search:
+	// ----------------------
+	//
+	// 1. Set the pattern using SetDelayedSearchPattern(QString)
+	// 2. Call Connect(QString)
+	//
 	void Connect(QString server);
 	void SetDelayedSearchPattern(QString pattern);
 	
