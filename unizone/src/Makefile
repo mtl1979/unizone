@@ -17,11 +17,14 @@ unizone_unix.pro : unizone.pro $(SOURCES) $(HEADERS)
  
 translations : $(QMFILES)
 
-%.qm : %.ts 
-	$(LRELEASE) $<
+%.ts2 : %.ts
+	sed "s/\"unfinished\"/'unfinished'/;s/\"obsolete\"/'obsolete'/;s/<defaultcodec>/<codec>/;s|</defaultcodec>|</codec>|" < $< > $@
 
+%.qm : %.ts2 
+	$(LRELEASE) $<
+	mv -f $< $(addsuffix .ts,$(basename $<))
 clean : 
-	rm -f *.qm
+	rm -f *.qm *.ts2
 
 distclean: clean
 	rm -f unizone_unix.pro 
