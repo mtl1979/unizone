@@ -2768,6 +2768,20 @@ WinShareWindow::FindUser(QString user)
 	return WUserRef(NULL, NULL);
 }
 
+WUserRef 
+WinShareWindow::FindUserByIPandPort(QString ip, uint32 port)
+{
+	if (fNetClient)
+	{
+		return fNetClient->FindUserByIPandPort(ip, port);
+	}
+	else
+	{
+		return WUserRef(NULL, NULL);
+	}
+}
+
+
 bool
 WinShareWindow::Remote(String session, QString text)
 {

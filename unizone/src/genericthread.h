@@ -14,6 +14,8 @@
 #include "system/MessageTransceiverThread.h"
 using namespace muscle;
 
+#include "messenger.h"
+
 #define MD5_DIGEST_SIZE 16
 
 #define MAX_RATE_COUNT 10
@@ -23,7 +25,7 @@ using namespace muscle;
 
 // ------------------------------------------------------------------------------------
 
-class WGenericThread : public QObject, public MessageTransceiverThread
+class WGenericThread : public QObject, public WMessenger /* MessageTransceiverThread */
 {
 	Q_OBJECT
 public:
@@ -31,10 +33,7 @@ public:
 	virtual ~WGenericThread();
 
 	QTime fLastData;		// public time to keep control of the last time we got some data
-/*
-	bool IsQueued() const;
-	virtual void SetQueued(bool b);
-*/
+
 	bool IsManuallyQueued() const;
 	virtual void SetManuallyQueued(bool b);
 
@@ -62,10 +61,6 @@ public:
 	QString GetETA(uint64 cur, uint64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
 	uint64	GetStartTime() { return fStartTime; }
 
-
-//	QString ComputeSizeString(int64 offset) const;
-	QString ComputePercentString(int64 cur, int64 max);
-
 	virtual QString GetRemoteID() { return QString::null; }
 	virtual QString GetRemoteUser() { return QString::null; }
 	virtual QString GetRemoteIP() { return QString::null; }
@@ -89,6 +84,14 @@ public:
 	virtual int GetPacketSize();
 
 	int GetBanTime();
+
+
+	// Forwarders for WMessengerThread
+
+	void Reset()
+	{
+		wmt->Reset();
+	}
 
 public slots:
 	void ConnectTimer(); // Connection timed out?
@@ -125,6 +128,8 @@ protected:
 
 	QTimer * CTimer;					// Connect timer
 	QTimer * fBlockTimer;				// Blocked timer
+
+	WMessengerThread * wmt;
 
 private:
 	void InitTransferRate();

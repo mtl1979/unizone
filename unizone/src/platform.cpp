@@ -512,3 +512,19 @@ GetTimeStamp()
 	return ret;
 }
 
+
+QString
+ComputePercentString(int64 cur, int64 max)
+{
+	QString ret;
+	double p = 0.0f;
+	
+	if ( (cur > 0) && (max > 0) )
+	{
+		p = ((double)cur / (double)max) * 100.0f;
+	}
+	
+	ret.sprintf("%.2f", p);
+	return ret;
+}
+

@@ -7,8 +7,11 @@
 #include <qapplication.h>
 
 WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
-	: MessageTransceiverThread(), fOwner(owner), fShutdownFlag(optShutdownFlag)
+: fOwner(owner), fShutdownFlag(optShutdownFlag)
 {
+	wmt = new WMessengerThread(this);
+	CHECK_PTR(wmt);
+
 	// Default status
 
 	if (!fShutdownFlag)					// Force use of Shutdown Flag
@@ -47,8 +50,14 @@ WGenericThread::~WGenericThread()
 	{
 		*fShutdownFlag = true;
 	}
-	ShutdownInternalThread(true);
-	//WaitForInternalThreadToExit();
+	if (wmt->IsInternalThreadRunning()) 
+	{
+		wmt->ShutdownInternalThread();
+		wmt->Reset(); 
+	}
+	wmt->WaitForInternalThreadToExit();
+	delete wmt;
+	wmt = NULL;
 }
 
 bool
@@ -152,9 +161,9 @@ WGenericThread::SendReply(MessageRef &m)
 	if (!gWin->fDLWindow)	// doesn't exist anymore??
 	{
 		PRINT("WGenericThread::SendReply() : Invalid fOwner\n");
-		if (IsInternalThreadRunning())
+		if (wmt->IsInternalThreadRunning())
 		{
-			Reset();
+			wmt->Reset();
 		}
 		return;
 	}
@@ -258,27 +267,20 @@ WGenericThread::ComputeETA() const
 }
 
 QString
-WGenericThread::ComputePercentString(int64 cur, int64 max)
-{
-	QString ret;
-	double p = 0.0f;
-	
-	if ( (cur > 0) && (max > 0) )
-	{
-		p = ((double)cur / (double)max) * 100.0f;
-	}
-	
-	ret.sprintf("%.2f", p);
-	return ret;
-}
-
-QString
 WGenericThread::GetUserName(QString sid)
 {
 	WUserRef uref = gWin->FindUser(sid);
 	QString ret = sid;
 	if (uref())
 		ret = uref()->GetUserName();
+	else
+	{
+		uref = gWin->FindUserByIPandPort(GetRemoteIP(), GetRemotePort());
+		if (uref())
+		{
+			ret = uref()->GetUserName();
+		}
+	}
 	return ret;
 }
 

@@ -406,6 +406,10 @@ void
 WinShareWindow::AboutToQuit()
 {
 	WaitOnFileThread();
+	if (fDLWindow)			
+	{
+		fDLWindow->EmptyLists();
+	}
 	SaveSettings();
 	QApplication::exit(0);
 }

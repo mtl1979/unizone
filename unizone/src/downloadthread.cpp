@@ -157,7 +157,7 @@ WDownloadThread::InitSession()
 	
 	if (!fFirewalled)	// the remote user is not firewalled?
 	{
-		if (StartInternalThread() == B_OK)
+		if (wmt->StartInternalThread() == B_OK)
 		{
 			AbstractReflectSessionRef connectRef;
 			
@@ -179,7 +179,7 @@ WDownloadThread::InitSession()
 			}
 			
 			String sIP = (const char *) fIP.utf8(); // <postmaster@raasu.org> 20021026
-			if (AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
+			if (wmt->AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
 			{
 				fCurrentOffset = fFileSize = 0;
 				fFile = NULL;
@@ -235,10 +235,10 @@ WDownloadThread::InitSession()
 
 		for (unsigned int i = pStart; i <= pEnd; i++)
 		{
-			if ((ret = PutAcceptFactory(i, factoryRef)) == B_OK)
+			if ((ret = wmt->PutAcceptFactory(i, factoryRef)) == B_OK)
 			{
 				fAcceptingOn = factoryRef()->GetPort();
-				ret = StartInternalThread();
+				ret = wmt->StartInternalThread();
 				break;
 			}
 		}
@@ -281,7 +281,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 
 	CTimer->stop();
 	
-	while (GetNextEventFromInternalThread(code, &next, &sid, &port) >= 0)
+	while (wmt->GetNextEventFromInternalThread(code, &next, &sid, &port) >= 0)
 	{
 		switch (code)
 		{
@@ -567,7 +567,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 			}
 			
 			case MTT_EVENT_SESSION_ACCEPTED:
-				RemoveAcceptFactory(0);		// no need to accept anymore
+				wmt->RemoveAcceptFactory(0);		// no need to accept anymore
 				// fall through
 			case MTT_EVENT_SESSION_CONNECTED:
 				{
@@ -583,7 +583,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						comID()->AddString("beshare:FromUserName", (const char *) gWin->GetUserName().utf8());
 						comID()->AddString("beshare:FromSession", (const char *) gWin->GetUserID().utf8());
 						comID()->AddBool("unishare:supports_compression", true);
-						SendMessageToSessions(comID);
+						wmt->SendMessageToSessions(comID);
 					}
 					
 					MessageRef neg(GetMessageFromPool(WDownload::TransferFileList));
@@ -627,7 +627,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								{
 									if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
 									{
-										ShutdownInternalThread();
+										wmt->ShutdownInternalThread();
 										break;
 									}
 									else	// ERROR?
@@ -655,7 +655,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							neg()->AddString("files", (const char *) fFileDl[c].utf8());
 						}
 						neg()->AddString("beshare:FromSession", (const char *) fLocalSession.utf8());
-						SendMessageToSessions(neg);
+						wmt->SendMessageToSessions(neg);
 					}
 					break;
 				}
@@ -768,9 +768,9 @@ WDownloadThread::SetRate(int rate)
 {
 	WGenericThread::SetRate(rate);
 	if (rate != 0)
-		SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		wmt->SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
-		SetNewInputPolicy(PolicyRef(NULL, NULL));
+		wmt->SetNewInputPolicy(PolicyRef(NULL, NULL));
 }
 
 void

@@ -77,6 +77,8 @@ public:
 
 	void SetLocalID(QString sid);
 
+	void EmptyLists();
+
 
 protected:
 	virtual void customEvent(QCustomEvent *);

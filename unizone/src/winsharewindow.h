@@ -528,6 +528,8 @@ public:
 	void TranslateStatus(QString & s);
 	
 	WUserRef FindUser(QString user);
+	WUserRef FindUserByIPandPort(QString ip, uint32 port);
+
 
 	bool IsScanning() { return fScanning; }
 

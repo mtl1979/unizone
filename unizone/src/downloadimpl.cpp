@@ -32,6 +32,7 @@ using std::iterator;
 #include "wstring.h"
 #include "transferitem.h"
 #include "gotourl.h"
+#include "platform.h"
 
 // ----------------------------------------------------------------------------------------------
 
@@ -253,6 +254,13 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 
 WDownload::~WDownload()
 {
+	EmptyLists();
+	emit Closed();
+}
+
+void
+WDownload::EmptyLists()
+{
 	fLock.lock();
 	PRINT("Number of downloads: %d\n", fDownloadList.size());
 	WTIter it = fDownloadList.begin();
@@ -303,7 +311,6 @@ WDownload::~WDownload()
 	}
 	fLock.unlock();
 	UpdateLoad();	// do this to set a load of 0
-	emit Closed();
 }
 
 void
@@ -1047,7 +1054,7 @@ WDownload::customEvent(QCustomEvent * e)
 							kps = gotk / secs;
 						}
 						
-						item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(gt->ComputePercentString(offset, size)));
+						item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, QString::number((int) offset));
 						// <postmaster@raasu.org> 20021104, 20030217, 20030622
 						// elapsed time >= 1 s?
@@ -1123,7 +1130,7 @@ WDownload::customEvent(QCustomEvent * e)
 							kps = gotk / secs;
 						}
 												
-						item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(gt->ComputePercentString(offset, size)));
+						item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, QString::number((int) offset));
 						// <postmaster@raasu.org> 20021104, 20030217, 20030622
 						// elapsed time >= 1 s?

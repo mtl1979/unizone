@@ -18,6 +18,9 @@ NetClient::NetClient(QObject * owner)
 {
 	setName( "NetClient" );
 
+	wmt = new WMessengerThread(this);
+	CHECK_PTR(wmt);
+
 	fPort = 0;
 	fServerPort = 0;
 	fOwner = owner;
@@ -39,7 +42,9 @@ NetClient::~NetClient()
 	//}
 	//fChannelLock.unlock();
 	Disconnect();
-	WaitForInternalThreadToExit();
+	wmt->WaitForInternalThreadToExit();
+	delete wmt;
+	wmt = NULL;
 }
 
 // <postmaster@raasu.org> -- Add support for port numbers
@@ -62,7 +67,7 @@ NetClient::Connect(QString server, uint16 port)
 	Disconnect();
 
 	PRINT("Starting thread\n");
-	if (StartInternalThread() != B_NO_ERROR)
+	if (wmt->StartInternalThread() != B_NO_ERROR)
 	{
 		return B_ERROR;
 	}
@@ -72,7 +77,7 @@ NetClient::Connect(QString server, uint16 port)
 
 	if (gWin->fSettings->GetChatLimit() == WSettings::LimitNone)
 	{
-		if (AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
+		if (wmt->AddNewConnectSession((const char *) server.utf8(), port) != B_NO_ERROR)
 		{
 			return B_ERROR;
 		}
@@ -85,7 +90,7 @@ NetClient::Connect(QString server, uint16 port)
 								gWin->fSettings->GetChatLimit())), NULL));
 		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
 								gWin->fSettings->GetChatLimit())), NULL));
-		if (AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
+		if (wmt->AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
 			return B_ERROR;
 	}
 
@@ -100,10 +105,10 @@ NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
 	gWin->setCaption("Unizone");
-	if (IsInternalThreadRunning()) 
+	if (wmt->IsInternalThreadRunning()) 
 	{
-		ShutdownInternalThread();
-		Reset(); 
+		wmt->ShutdownInternalThread();
+		wmt->Reset(); 
 		emit DisconnectedFromServer();
 		PRINT("DELETING\n");
 		WUserIter it = fUsers.begin();
@@ -140,7 +145,7 @@ NetClient::AddSubscription(QString str, bool q)
 		ref()->AddBool((const char *) str.utf8(), true);		// true doesn't mean anything
 		if (q)
 			ref()->AddBool(PR_NAME_SUBSCRIBE_QUIETLY, true);		// no initial response
-		SendMessageToSessions(ref);
+		wmt->SendMessageToSessions(ref);
 	}
 }
 
@@ -151,7 +156,7 @@ NetClient::RemoveSubscription(QString str)
 	if (ref())
 	{
 		ref()->AddString(PR_NAME_KEYS, (const char *) str.utf8());
-		SendMessageToSessions(ref);
+		wmt->SendMessageToSessions(ref);
 	}
 }
 
@@ -183,11 +188,24 @@ NetClient::FindUsersByIP(WUserMap & umap, QString ip)
 		{
 			WUserPair p = MakePair((*iter).second()->GetUserID(), (*iter).second);
 			umap.insert(p);
-			//return (*iter).second;
 		}
 	}
-	return;
-	// return WUserRef(NULL, NULL);
+}
+
+WUserRef
+NetClient::FindUserByIPandPort(QString ip, uint32 port)
+{
+	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
+	{
+		if (
+			((*iter).second()->GetUserHostName() == ip) &&
+			((*iter).second()->GetPort() == port)
+			)
+		{
+			return (*iter).second;
+		}
+	}
+	return WUserRef(NULL, NULL);
 }
 
 // will insert into list if successful
@@ -339,7 +357,7 @@ NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
 								col()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 								col()->AddString("name", (const char *) gWin->GetUserName().utf8() );
 								col()->AddInt64("registertime", gWin->GetRegisterTime( gWin->GetUserName() ) );
-								SendMessageToSessions(col);
+								wmt->SendMessageToSessions(col);
 							}
 						}
 					}
@@ -655,7 +673,7 @@ NetClient::HandleParameters(MessageRef & next)
 void
 NetClient::SendChatText(QString target, QString text)
 {
-	if (IsInternalThreadRunning())
+	if (wmt->IsInternalThreadRunning())
 	{
 		MessageRef chat(GetMessageFromPool(NEW_CHAT_TEXT));
 		if (chat())
@@ -668,7 +686,7 @@ NetClient::SendChatText(QString target, QString text)
 			chat()->AddString("text", (const char *) text.utf8());
 			if (target != "*")
 				chat()->AddBool("private", true);
-			SendMessageToSessions(chat);
+			wmt->SendMessageToSessions(chat);
 		}
 	}
 }
@@ -676,7 +694,7 @@ NetClient::SendChatText(QString target, QString text)
 void
 NetClient::SendPing(QString target)
 {
-	if (IsInternalThreadRunning())
+	if (wmt->IsInternalThreadRunning())
 	{
 		MessageRef ping(GetMessageFromPool(PING));
 		if (ping())
@@ -687,7 +705,7 @@ NetClient::SendPing(QString target)
 			ping()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 			ping()->AddString("session", (const char *) LocalSessionID().utf8());
 			ping()->AddInt64("when", GetCurrentTime64());
-			SendMessageToSessions(ping);
+			wmt->SendMessageToSessions(ping);
 		}
 	}
 }
@@ -748,7 +766,7 @@ NetClient::SetNodeValue(const char * node, MessageRef & val)
 	if (ref())
 	{
 		ref()->AddMessage(node, val);
-		SendMessageToSessions(ref);
+		wmt->SendMessageToSessions(ref);
 	}
 }
 

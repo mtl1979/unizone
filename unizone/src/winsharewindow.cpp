@@ -306,9 +306,6 @@ WinShareWindow::~WinShareWindow()
 
 	fIsRunning = false;
 
-	//if (fQueue)
-	//	delete fQueue;
-
 	// all the NetClients get deleted by Qt
 	// since they are QObject's
 
@@ -324,6 +321,11 @@ WinShareWindow::~WinShareWindow()
 
 	delete fMenus;
 	fMenus = NULL;
+
+	if (fDLWindow)
+	{
+		fDLWindow->EmptyLists();
+	}
 
 	PRINT("Saving settings\n");
 	SaveSettings();

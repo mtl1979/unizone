@@ -91,7 +91,7 @@ WUploadThread::InitSession()
 
 	if (!fAccept)
 	{
-		if (AddNewSession(fSocket, limit) == B_OK && StartInternalThread() == B_OK)
+		if (wmt->AddNewSession(fSocket, limit) == B_OK && wmt->StartInternalThread() == B_OK)
 		{
 			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
 			if (mref())
@@ -113,7 +113,7 @@ WUploadThread::InitSession()
 	else
 	{
 		const String sRemoteIP = (const char *) fStrRemoteIP.utf8(); // <postmaster@raasu.org> 20021026
-		if (AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && StartInternalThread() == B_OK)
+		if (wmt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && wmt->StartInternalThread() == B_OK)
 		{
 			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
 			if (mref())
@@ -140,7 +140,7 @@ WUploadThread::SetLocallyQueued(bool b)
 	WGenericThread::SetLocallyQueued(b);
 	if (!b)
 	{
-		if (IsInternalThreadRunning() && !fForced) // Don't need to start forced uploads ;) 
+		if (wmt->IsInternalThreadRunning() && !fForced) // Don't need to start forced uploads ;) 
 		{
 			DoUpload();		// we can start now!
 		}
@@ -166,7 +166,7 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 	}
 
 	WGenericThread::SetBlocked(b, timeLeft);
-	if (IsInternalThreadRunning())
+	if (wmt->IsInternalThreadRunning())
 	{
 		if (b)
 		{
@@ -191,7 +191,7 @@ void
 WUploadThread::SetManuallyQueued(bool b)
 {
 	WGenericThread::SetManuallyQueued(b);
-	if (IsInternalThreadRunning() && b)
+	if (wmt->IsInternalThreadRunning() && b)
 		SendQueuedNotification();
 }
 
@@ -214,7 +214,7 @@ WUploadThread::SignalOwner()
 
 	CTimer->stop();
 
-	while (GetNextEventFromInternalThread(code, &next) >= 0)
+	while (wmt->GetNextEventFromInternalThread(code, &next) >= 0)
 	{
 		switch (code)
 		{
@@ -288,7 +288,7 @@ WUploadThread::SignalOwner()
 						bool c = false;
 						if (next()->FindBool("unishare:supports_compression", &c) == B_OK)
 						{
-							SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
+							wmt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
 						}
 						break;
 					}
@@ -459,7 +459,7 @@ WUploadThread::SendQueuedNotification()
 	MessageRef q(GetMessageFromPool(WDownload::TransferNotifyQueued));
 	if (q())
 	{
-		SendMessageToSessions(q);
+		wmt->SendMessageToSessions(q);
 	}
 	MessageRef qf(GetMessageFromPool(WGenericEvent::FileQueued));
 	if (qf())
@@ -479,7 +479,9 @@ WUploadThread::SendRejectedNotification(bool direct)
 	if (fTimeLeft != -1)
 		q()->AddInt64("timeleft", fTimeLeft);
 	if (direct || (fPort == 0))
-		SendMessageToSessions(q);
+	{
+		wmt->SendMessageToSessions(q);
+	}
 	else
 	{
 		String node;
@@ -612,13 +614,13 @@ WUploadThread::DoUpload()
 						uref()->AddData("temp", B_RAW_TYPE, scratchBuffer, numBytes);
 						uref()->Rename("temp", "data");
 					}
-					SendMessageToSessions(uref);
+					wmt->SendMessageToSessions(uref);
 					// NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before
 					//       calling it!
 					fCurrentOffset += numBytes;
 					MessageRef drain(GetMessageFromPool());
 					if (drain())
-						RequestOutputQueuesDrainedNotification(drain);
+						wmt->RequestOutputQueuesDrainedNotification(drain);
 
 					// we'll use this event for sending as well
 					MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));	
@@ -703,7 +705,7 @@ WUploadThread::DoUpload()
 				{
 					headRef()->what = WDownload::TransferFileHeader;
 					headRef()->AddInt64("beshare:StartOffset", fCurrentOffset);
-					SendMessageToSessions(headRef);
+					wmt->SendMessageToSessions(headRef);
 				}
 
 				fCurFile++;
@@ -726,7 +728,7 @@ WUploadThread::DoUpload()
 				fWaitingForUploadToFinish = true;
 				MessageRef drain(GetMessageFromPool());
 				if (drain())
-					RequestOutputQueuesDrainedNotification(drain);
+					wmt->RequestOutputQueuesDrainedNotification(drain);
 				break;
 			}
 		}
@@ -751,9 +753,9 @@ WUploadThread::SetRate(int rate)
 {
 	WGenericThread::SetRate(rate);
 	if (rate != 0)
-		SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		wmt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
 	else
-		SetNewOutputPolicy(PolicyRef(NULL, NULL));
+		wmt->SetNewOutputPolicy(PolicyRef(NULL, NULL));
 }
 
 void
