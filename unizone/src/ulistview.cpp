@@ -12,7 +12,7 @@ WUniListItem::WUniListItem(
 						   QString a, QString b, QString c, QString d, QString e, 
 						   QString f, QString g, QString h, QString i, QString j 
 						   ) 
-						   : QListViewItem(parent, a, b, c, d, e, f, g, h)
+						   : QListViewItem(parent)
 {
 	
 	
@@ -520,32 +520,32 @@ WUniListItem::setColumnType(int c, WUniListItem::ColumnType ct)
 }
 
 WUniListItem::ColumnType
-WUniListItem::columnType(int c)
+WUniListItem::columnType(int c) const
 {
 	return UColumnType[c];
 }
 
 // set/get user colors
 void 
-WUniListItem::setRowBaseColor(int i, QColor color) 
+WUniListItem::setRowBaseColor(int i, const QColor & color) 
 {
 	RowBaseColor[i] = color;
 }
 
 QColor 
-WUniListItem::rowBaseColor(int i)
+WUniListItem::rowBaseColor(int i) const
 {
 	return RowBaseColor[i];
 }
 
 void
-WUniListItem::setRowTextColor(int i, QColor color)
+WUniListItem::setRowTextColor(int i, const QColor & color)
 {
 	RowTextColor[i] = color;
 }
 
 QColor
-WUniListItem::rowTextColor(int i)
+WUniListItem::rowTextColor(int i) const
 {
 	return RowTextColor[i];
 }

@@ -75,14 +75,14 @@ public:
 	virtual long item(int c);
 
 	// set/get user colors
-	virtual void setRowBaseColor(int i, QColor color); 
-	virtual void setRowTextColor(int i, QColor color); 
-	virtual QColor rowBaseColor(int i);
-	virtual QColor rowTextColor(int i);
+	virtual void setRowBaseColor(int i, const QColor & color); 
+	virtual void setRowTextColor(int i, const QColor & color); 
+	virtual QColor rowBaseColor(int i) const;
+	virtual QColor rowTextColor(int i) const;
 		
 	// set column type for sorting
 	virtual void setColumnType(int c, WUniListItem::ColumnType ct);
-	virtual WUniListItem::ColumnType columnType(int c);
+	virtual WUniListItem::ColumnType columnType(int c) const;
 
 	virtual void paintCell(QPainter *, const QColorGroup & cg, int column, int w,
 		int alignment);

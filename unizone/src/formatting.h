@@ -28,6 +28,7 @@ public:
 	// text color...
 	static QString Text(const QString &text);
 	static QString Watch(const QString &text);
+	static QString NameSaid(const QString &text);
 
 	//    |
 	//   \ /

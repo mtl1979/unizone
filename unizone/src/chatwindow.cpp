@@ -3,6 +3,7 @@
 #endif
 
 #include "chatwindow.h"
+#include "nicklist.h"
 #include "platform.h"
 #include "util.h"
 #include "global.h"
@@ -153,15 +154,10 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		}
 
 		// yup... we've been mentioned...
-		QString output;
-		output = "<font color=\"";
-		output += WColors::NameSaid;						// <postmaster@raasu.org> 20021005
-		output += "\">";
 		temp = StripURL(gWin->GetUserName());
 		if (rlen >= temp.length()) 
 			rlen = temp.length();
 		temp.truncate(rlen);
-		output += temp;
 		QString itxt = msg;						// <postmaster@raasu.org> 20021005 -- Need to be in original case
 		QString itxt1 = itxt.left(sred);
 		QString itxt2 = itxt.mid(sred+rlen);
@@ -169,8 +165,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		if (sred > 0)
 			// <postmaster@raasu.org> 20021005 -- Don't use latin1 ()
 			smsg += itxt1;	
-		smsg += output;
-		smsg += "</font>";
+		smsg += WFormat::NameSaid(temp);
 		smsg += itxt2;		// <postmaster@raasu.org> 20021005
 
 #ifdef _DEBUG
@@ -281,3 +276,28 @@ ChatWindow::FindWindowHandle(const QString &title)
 	}
 }
 #endif
+
+void
+ChatWindow::InitUserList(QListView *lv)
+{
+	lv->addColumn(qApp->translate("ChatWindow", "Name"));
+	lv->addColumn(qApp->translate("ChatWindow", "ID"));
+	lv->addColumn(qApp->translate("ChatWindow", "Status"));
+	lv->addColumn(qApp->translate("ChatWindow", "Files"));
+	lv->addColumn(qApp->translate("ChatWindow", "Connection"));
+	lv->addColumn(qApp->translate("ChatWindow", "Load"));
+	lv->addColumn(qApp->translate("ChatWindow", "Client"));		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
+	lv->addColumn(qApp->translate("ChatWindow", "OS"));			// as of now... Unizone specific, Unizone parses OS tag from Client tag if not present...
+
+	lv->setColumnAlignment(WNickListItem::ID, Qt::AlignRight);		// <postmaster@raasu.org> 20021005
+	lv->setColumnAlignment(WNickListItem::Files, Qt::AlignRight);	// <postmaster@raasu.org> 20021005
+	lv->setColumnAlignment(WNickListItem::Load, Qt::AlignRight);	// <postmaster@raasu.org> 20021005
+
+	for (int column = 0; column < 7; column++)
+		lv->setColumnWidthMode(column, QListView::Manual);
+
+	// set the sort indicator to show
+	lv->setShowSortIndicator(true);
+
+	lv->setAllColumnsShowFocus(true);
+}

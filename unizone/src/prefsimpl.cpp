@@ -91,20 +91,12 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	connect(fAutoAway, SIGNAL(highlighted(int)), this, SLOT(AwaySelected(int)));
 
 	fCurColorIndex = -1;
+
 	// initialize the colors
-	fColor[0] = WColors::LocalName;
-	fColor[1] = WColors::RemoteName;
-	fColor[2] = WColors::Text;
-	fColor[3] = WColors::System;
-	fColor[4] = WColors::Ping;
-	fColor[5] = WColors::Error;
-	fColor[6] = WColors::ErrorMsg;
-	fColor[7] = WColors::PrivText;
-	fColor[8] = WColors::Action;
-	fColor[9] = WColors::URL;
-	fColor[10] = WColors::NameSaid;
-	fColor[11] = WColors::Warning;
-	fColor[12] = WColors::WarningMsg;
+	for (int i = 0; i < WColors::NumColors; i++)
+	{
+		fColor[i] = gWin->fSettings->GetColorItem(i);
+	}
 
 	
 	fAutoUpdateServers->setChecked(gWin->fSettings->GetAutoUpdateServers());
@@ -293,19 +285,6 @@ WPrefs::OK()
 	gWin->fSettings->EmptyColorList();
 	for (i = 0; i < 13; i++)
 		gWin->fSettings->AddColorItem(fColor[i]);
-	WColors::LocalName = fColor[0];
-	WColors::RemoteName = fColor[1];
-	WColors::Text = fColor[2];
-	WColors::System = fColor[3];
-	WColors::Ping = fColor[4];
-	WColors::Error = fColor[5];
-	WColors::ErrorMsg = fColor[6];
-	WColors::PrivText = fColor[7];
-	WColors::Action = fColor[8];
-	WColors::URL = fColor[9];
-	WColors::NameSaid = fColor[10];
-	WColors::Warning = fColor[11];
-	WColors::WarningMsg = fColor[12];
 
 	// save all the other stuff
 	gWin->fSettings->SetAutoUpdateServers(fAutoUpdateServers->isChecked());

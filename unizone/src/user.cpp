@@ -18,6 +18,7 @@ WUser::WUser(const QString & sid)
 	fUserName = "?";
 	fUserStatus = "?";
 	fHostName = "?";
+	fHostOS = QString::null;
 	fUserID = sid;
 	fCurUploads = fMaxUploads = 0;
 	fBandwidthLabel = "?";
@@ -45,6 +46,7 @@ WUser::InitName(const MessageRef msg)
 	uint32 port;
 	const char * name;
 	const char * vname, * vnum;	// version
+	const char * hostos;
 	bool isbot;
 	uint64 installID;
 
@@ -76,9 +78,10 @@ WUser::InitName(const MessageRef msg)
 
 	if ((msg()->FindString("version_name", &vname) == B_OK) && (msg()->FindString("version_num", &vnum) == B_OK))
 	{
-		fClient = QString::fromUtf8(vname);
-		fClient += " ";
-		fClient += vnum;
+		String vt(vname);
+		vt += " ";
+		vt += vnum;
+		SetClient(vt);
 		fNeedPing = false;
 	}
 	else
@@ -118,6 +121,9 @@ WUser::InitName(const MessageRef msg)
 		PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC " on port %lu\n",
 			wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID, fPort);
 #endif
+
+	if (msg()->FindString("host_os", &hostos) == B_OK)
+		fHostOS = QString::fromUtf8(hostos);
 }
 
 void
@@ -210,7 +216,7 @@ WUser::AddToListView(QListView * view)
 		if (!fBot)
 		{
 			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, QString::fromLatin1(strFileCount), 
-								fBandwidthLabel, qUpload, fClient);
+								fBandwidthLabel, qUpload, fClient, fHostOS);
 			CHECK_PTR(item);
 			pair = MakeListPair(view, item);
 			((WUserListItem *)(pair.second))->SetFirewalled(fFirewalled);
@@ -218,7 +224,7 @@ WUser::AddToListView(QListView * view)
 		else
 		{
 			item = new WBotItem(view, fUserName, fUserID, fUserStatus, QString::fromLatin1(strFileCount), 
-								fBandwidthLabel, qUpload, fClient);
+								fBandwidthLabel, qUpload, fClient, fHostOS);
 			CHECK_PTR(item);
 			pair = MakeListPair(view, item);
 		}
@@ -264,6 +270,11 @@ WUser::AddToListView(QListView * view)
 		{
 			item->setText(WNickListItem::Client, fClient);
 		}
+
+		if (item->text(WNickListItem::HostOS) != fHostOS)
+		{
+			item->setText(WNickListItem::HostOS, fHostOS);
+		}
 	}
 }
 
@@ -300,7 +311,7 @@ void
 WUser::PingResponse(const MessageRef msg)
 {
 	fNeedPing = false;
-	fClient = WinShareWindow::GetRemoteVersionString(msg);
+	SetClient(WinShareWindow::GetRemoteVersionString(msg));
 
 	// go through each item in the list and update the client
 	for (WListIter it = fLists.begin(); it != fLists.end(); it++)
@@ -359,4 +370,45 @@ WUser::SetLastLine(const QString & channel, const QString &line)
 	sp.first = channel;
 	sp.second = line;
 	fLastLines.AddTail(sp);
+}
+
+void
+WUser::SetClient(const char *c)
+{ 
+	SetClient(QString::fromUtf8(c));
+}
+
+void
+WUser::SetClient(const String &s)
+{
+	SetClient(QString::fromUtf8(s.Cstr()));
+}
+
+void
+WUser::SetClient(const QString &s)
+{
+	fClient = s;
+	if (fHostOS == QString::null)
+	{
+		if (s.contains("Windows", false) > 0)
+			fHostOS = QObject::tr("Windows");
+		else if (s.contains("Linux", false) > 0)
+			fHostOS = QObject::tr("Linux");
+		else if (s.contains("FreeBSD", false) > 0)
+			fHostOS = QObject::tr("FreeBSD");
+		else if (s.contains("MacOS", false) > 0)
+			fHostOS = QObject::tr("Mac OS");
+		else if (s.contains("Mac OS", false) > 0)
+			fHostOS = QObject::tr("Mac OS");
+		else if (s.contains("QNX", false) > 0)
+			fHostOS = QObject::tr("QNX");
+		else if (s.contains("BeShare", false) > 0)
+			fHostOS = QObject::tr("BeOS");
+		else if (s.contains("WinShare", false) > 0)
+			fHostOS = QObject::tr("Windows");
+		else if (s.contains("LinShare", false) > 0)
+			fHostOS = QObject::tr("Linux");
+		else if (s.contains("OS/2", false) > 0)
+			fHostOS = QObject::tr("OS/2");
+	}
 }

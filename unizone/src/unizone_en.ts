@@ -170,31 +170,31 @@ Version %1</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Name</translation>
+        <translation type='obsolete'>Name</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type='obsolete'>Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Files</translation>
+        <translation type='obsolete'>Files</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Connection</translation>
+        <translation type='obsolete'>Connection</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Load</translation>
+        <translation type='obsolete'>Load</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Client</translation>
+        <translation type='obsolete'>Client</translation>
     </message>
     <message>
         <source>Topic set to %1.</source>
@@ -399,6 +399,41 @@ Version %1</translation>
     <message>
         <source>&amp;Join</source>
         <translation type='obsolete'>&amp;Join</translation>
+    </message>
+</context>
+<context>
+    <name>ChatWindow</name>
+    <message>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>Files</source>
+        <translation>Files</translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation>Connection</translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation>Load</translation>
+    </message>
+    <message>
+        <source>Client</source>
+        <translation>Client</translation>
+    </message>
+    <message>
+        <source>OS</source>
+        <translation>OS</translation>
     </message>
 </context>
 <context>
@@ -2346,31 +2381,31 @@ Date: %4</translation>
     <name>WPrivateWindow</name>
     <message>
         <source>Name</source>
-        <translation>Name</translation>
+        <translation type='obsolete'>Name</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type='obsolete'>Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Files</translation>
+        <translation type='obsolete'>Files</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Connection</translation>
+        <translation type='obsolete'>Connection</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Load</translation>
+        <translation type='obsolete'>Load</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Client</translation>
+        <translation type='obsolete'>Client</translation>
     </message>
     <message>
         <source>Disconnected from server.</source>
@@ -2912,27 +2947,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type='obsolete'>Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Connection</translation>
+        <translation type='obsolete'>Connection</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Load</translation>
+        <translation type='obsolete'>Load</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Client</translation>
+        <translation type='obsolete'>Client</translation>
     </message>
     <message>
         <source>Testing Unizone (English) </source>

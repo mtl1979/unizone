@@ -41,13 +41,16 @@ public:
 	void SetBandwidthBPS(uint32 bps) { fBandwidthBPS = bps; }
 	void SetFileCount(int32 fc) { fFileCount = fc; }
 	void SetFirewalled(bool f);
-	void SetClient(const char * c) { fClient = c; }
+	void SetClient(const char * c);
+	void SetClient(const String & s);
+	void SetClient(const QString & s);
 	void SetPartial(bool p) { fPartial = p; }
 
 	QString GetUserName() const { return fUserName; }
 	QString GetStatus() const { return fUserStatus; }
 	QString GetUserID() const { return fUserID; }
 	QString GetUserHostName() const { return fHostName; }
+	QString GetHostOS() const { return fHostOS; }
 
 	uint32 GetCurUploads() const { return fCurUploads; }
 	uint32 GetMaxUploads() const { return fMaxUploads; }
@@ -85,6 +88,7 @@ public:
 
 private:
 	QString fHostName;
+	QString fHostOS;
 	QString fUserID;
 	QString fUserStatus;
 	QString fUserName;

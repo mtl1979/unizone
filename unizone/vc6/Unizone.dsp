@@ -198,10 +198,6 @@ SOURCE=..\src\chatwindow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\colors.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\combo.cpp
 # End Source File
 # Begin Source File
@@ -239,6 +235,10 @@ SOURCE=..\src\formatting.cpp
 # Begin Source File
 
 SOURCE=..\src\htmlview.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\listthread.cpp
 # End Source File
 # Begin Source File
 
@@ -1193,6 +1193,10 @@ InputName=htmlview
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\listthread.h
 # End Source File
 # Begin Source File
 

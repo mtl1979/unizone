@@ -22,7 +22,6 @@ SRCFILES = \
 	src/chatevent.cpp \
 	src/chattext.cpp \
 	src/chatwindow.cpp \
-	src/colors.cpp \
 	src/combo.cpp \
 	src/debugimpl.cpp \
 	src/downloadimpl.cpp \

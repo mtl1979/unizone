@@ -27,7 +27,7 @@ class WPrivateWindow : public WPrivateWindowBase, public ChatWindow
 
 public:
     WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent = 0, 
-					const char* name = 0, bool modal = false, WFlags fl = WDestructiveClose | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_Minimize | WStyle_Maximize | WStyle_SysMenu);
+		const char* name = 0, bool modal = false, WFlags fl = WDestructiveClose | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_Minimize | WStyle_Maximize | WStyle_SysMenu);
 		// the window will destroy itself when closed... and the destructor will throw a
 		// WPWTextEvent with itself as the "SendTo" target. Be aware, this pointer is invalid!
     virtual ~WPrivateWindow();

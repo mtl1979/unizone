@@ -57,25 +57,7 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	fPrivateUsers = new QListView(fSplit);
 	CHECK_PTR(fPrivateUsers);
 
-	fPrivateUsers->addColumn(tr("Name"));
-	fPrivateUsers->addColumn(tr("ID"));
-	fPrivateUsers->addColumn(tr("Status"));
-	fPrivateUsers->addColumn(tr("Files"));
-	fPrivateUsers->addColumn(tr("Connection"));
-	fPrivateUsers->addColumn(tr("Load"));
-	fPrivateUsers->addColumn(tr("Client"));		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
-
-	fPrivateUsers->setColumnAlignment(WNickListItem::ID, AlignRight); // <postmaster@raasu.org> 20021005
-	fPrivateUsers->setColumnAlignment(WNickListItem::Files, AlignRight); // <postmaster@raasu.org> 20021005
-	fPrivateUsers->setColumnAlignment(WNickListItem::Load, AlignRight); // <postmaster@raasu.org> 20021005
-
-	for (int column = 0; column < 6; column++)
-		fPrivateUsers->setColumnWidthMode(column, QListView::Manual);
-
-	// set the sort indicator to show
-	fPrivateUsers->setShowSortIndicator(true);
-
-	fPrivateUsers->setAllColumnsShowFocus(true);
+	InitUserList(fPrivateUsers);
 
 	QValueList<int> splitList;
 	splitList.append(4);

@@ -15,6 +15,7 @@
 using namespace muscle;
 
 class WSettings;
+class QListView;
 
 typedef enum 
 {
@@ -57,6 +58,8 @@ protected:
 
 	HWND fWinHandle;			// handle to our window for flashing
 #endif
+
+	void InitUserList(QListView * lv);
 
 private:
 	bool NameSaid2(const QString &sname, QString & msg, unsigned long index = 0); // Private version for recursing

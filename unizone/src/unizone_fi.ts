@@ -198,31 +198,31 @@ Versio %1</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nimi</translation>
+        <translation type='obsolete'>Nimi</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Tila</translation>
+        <translation type='obsolete'>Tila</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Tiedostoja</translation>
+        <translation type='obsolete'>Tiedostoja</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Yhteys</translation>
+        <translation type='obsolete'>Yhteys</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Kuorma</translation>
+        <translation type='obsolete'>Kuorma</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Ohjelma</translation>
+        <translation type='obsolete'>Ohjelma</translation>
     </message>
     <message>
         <source>Topic set to %1.</source>
@@ -443,6 +443,41 @@ Versio %1</translation>
     <message>
         <source>&amp;Join</source>
         <translation type='obsolete'>Lii&amp;ty</translation>
+    </message>
+</context>
+<context>
+    <name>ChatWindow</name>
+    <message>
+        <source>Name</source>
+        <translation>Nimi</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Tila</translation>
+    </message>
+    <message>
+        <source>Files</source>
+        <translation>Tiedostoja</translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation>Yhteys</translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation>Kuorma</translation>
+    </message>
+    <message>
+        <source>Client</source>
+        <translation>Ohjelma</translation>
+    </message>
+    <message>
+        <source>OS</source>
+        <translation>Käyttöjärjestelmä</translation>
     </message>
 </context>
 <context>
@@ -2470,31 +2505,31 @@ Päiväys: %4</translation>
     <name>WPrivateWindow</name>
     <message>
         <source>Name</source>
-        <translation>Nimi</translation>
+        <translation type='obsolete'>Nimi</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Tila</translation>
+        <translation type='obsolete'>Tila</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Tiedostoja</translation>
+        <translation type='obsolete'>Tiedostoja</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Yhteys</translation>
+        <translation type='obsolete'>Yhteys</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Kuorma</translation>
+        <translation type='obsolete'>Kuorma</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Ohjelma</translation>
+        <translation type='obsolete'>Ohjelma</translation>
     </message>
     <message>
         <source>Disconnected from server.</source>
@@ -3044,27 +3079,27 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Tila</translation>
+        <translation type='obsolete'>Tila</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Tiedostoja</translation>
+        <translation type='obsolete'>Tiedostoja</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Yhteys</translation>
+        <translation type='obsolete'>Yhteys</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Kuorma</translation>
+        <translation type='obsolete'>Kuorma</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Ohjelma</translation>
+        <translation type='obsolete'>Ohjelma</translation>
     </message>
     <message>
         <source>Testing Unizone (English) </source>

@@ -15,8 +15,8 @@
 #include "reflector/StorageReflectConstants.h"
 
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags /* fl */)
-: ChannelBase(/* parent */ NULL, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
-			  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu /* flags */),
+: ChannelBase(/* parent */ NULL, name, modal, WDestructiveClose | WStyle_Minimize | 
+			  WStyle_Maximize | WStyle_Title | WStyle_SysMenu /* flags */),
 			  ChatWindow(PrivateType)
 {
 	if (!name)
@@ -58,25 +58,7 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fChannelUsers = new QListView(fSplitBottom);
 	CHECK_PTR(fChannelUsers);
 
-	fChannelUsers->addColumn(tr("Name"));
-	fChannelUsers->addColumn(tr("ID"));
-	fChannelUsers->addColumn(tr("Status"));
-	fChannelUsers->addColumn(tr("Files"));
-	fChannelUsers->addColumn(tr("Connection"));
-	fChannelUsers->addColumn(tr("Load"));
-	fChannelUsers->addColumn(tr("Client"));		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
-
-	fChannelUsers->setColumnAlignment(WNickListItem::ID, AlignRight);		// <postmaster@raasu.org> 20021005
-	fChannelUsers->setColumnAlignment(WNickListItem::Files, AlignRight);	// <postmaster@raasu.org> 20021005
-	fChannelUsers->setColumnAlignment(WNickListItem::Load, AlignRight);		// <postmaster@raasu.org> 20021005
-
-	for (int column = 0; column < 6; column++)
-		fChannelUsers->setColumnWidthMode(column, QListView::Manual);
-
-	// set the sort indicator to show
-	fChannelUsers->setShowSortIndicator(true);
-
-	fChannelUsers->setAllColumnsShowFocus(true);
+	InitUserList(fChannelUsers);
 
 	fChatText = new WHTMLView(fSplitChat);
 	CHECK_PTR(fChatText);

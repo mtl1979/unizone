@@ -63,31 +63,31 @@ Version %1</source>
     </message>
     <message>
         <source>Name</source>
-        <translation>이름</translation>
+        <translation type='obsolete'>이름</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>아이디</translation>
+        <translation type='obsolete'>아이디</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>상태</translation>
+        <translation type='obsolete'>상태</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>파일</translation>
+        <translation type='obsolete'>파일</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>연결</translation>
+        <translation type='obsolete'>연결</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>로드</translation>
+        <translation type='obsolete'>로드</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>클라이언트</translation>
+        <translation type='obsolete'>클라이언트</translation>
     </message>
     <message>
         <source>Topic set to %1.</source>
@@ -264,78 +264,113 @@ Version %1</source>
     </message>
 </context>
 <context>
+    <name>ChatWindow</name>
+    <message>
+        <source>Name</source>
+        <translation>이름</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation>아이디</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>상태</translation>
+    </message>
+    <message>
+        <source>Files</source>
+        <translation>파일</translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation>연결</translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation>불러오기</translation>
+    </message>
+    <message>
+        <source>Client</source>
+        <translation>클라이언트</translation>
+    </message>
+    <message>
+        <source>OS</source>
+        <translation>OS</translation>
+    </message>
+</context>
+<context>
     <name>Connection</name>
     <message>
         <source>300 baud</source>
-        <translation type='unfinished'>300 baud</translation>
+        <translation>300 baud</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>28.8 kbps</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>33.6 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='unfinished'>57.6 kbps</translation>
+        <translation>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='unfinished'></translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='unfinished'>ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='unfinished'></translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type='unfinished'>DSL</translation>
+        <translation>DSL</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='unfinished'></translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='unfinished'>DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='unfinished'>Cable</translation>
+        <translation>Cable</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='unfinished'>DSL-1M</translation>
+        <translation>DSL-1M</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='unfinished'></translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='unfinished'>T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='unfinished'></translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='unfinished'>OC-12</translation>
+        <translation>OC-12</translation>
     </message>
 </context>
 <context>
@@ -805,11 +840,11 @@ Date: %4</source>
     </message>
     <message>
         <source>TB</source>
-        <translation type='unfinished'></translation>
+        <translation>TB</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation type='unfinished'></translation>
+        <translation>TB/s</translation>
     </message>
 </context>
 <context>
@@ -2109,31 +2144,31 @@ Date: %4</source>
     <name>WPrivateWindow</name>
     <message>
         <source>Name</source>
-        <translation>이름</translation>
+        <translation type='obsolete'>이름</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>아이디</translation>
+        <translation type='obsolete'>아이디</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>상태</translation>
+        <translation type='obsolete'>상태</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>파일</translation>
+        <translation type='obsolete'>파일</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>연결</translation>
+        <translation type='obsolete'>연결</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>불러오기</translation>
+        <translation type='obsolete'>불러오기</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>클라이언트</translation>
+        <translation type='obsolete'>클라이언트</translation>
     </message>
     <message>
         <source>[Freeware] - Private</source>
@@ -2761,27 +2796,27 @@ Date: %4</source>
     </message>
     <message>
         <source>ID</source>
-        <translation>아이디</translation>
+        <translation type='obsolete'>아이디</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>상태</translation>
+        <translation type='obsolete'>상태</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>파일</translation>
+        <translation type='obsolete'>파일</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>연결</translation>
+        <translation type='obsolete'>연결</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>불러오기</translation>
+        <translation type='obsolete'>불러오기</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>클라이언트</translation>
+        <translation type='obsolete'>클라이언트</translation>
     </message>
     <message>
         <source>Testing Unizone (English) </source>

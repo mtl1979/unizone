@@ -154,31 +154,31 @@ Version %1</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Namn</translation>
+        <translation type='obsolete'>Namn</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type='obsolete'>Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Filer</translation>
+        <translation type='obsolete'>Filer</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Anslutning</translation>
+        <translation type='obsolete'>Anslutning</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Belastning</translation>
+        <translation type='obsolete'>Belastning</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Klient</translation>
+        <translation type='obsolete'>Klient</translation>
     </message>
     <message>
         <source>Topic set to %1.</source>
@@ -366,6 +366,41 @@ Version %1</translation>
     <message>
         <source>&amp;Join</source>
         <translation type='obsolete'>&amp;Join</translation>
+    </message>
+</context>
+<context>
+    <name>ChatWindow</name>
+    <message>
+        <source>Name</source>
+        <translation>Namn</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>Files</source>
+        <translation>Filer</translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation>Anslutning</translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation>Belastning</translation>
+    </message>
+    <message>
+        <source>Client</source>
+        <translation>Klient</translation>
+    </message>
+    <message>
+        <source>OS</source>
+        <translation>OS</translation>
     </message>
 </context>
 <context>
@@ -2233,31 +2268,31 @@ Date: %4</translation>
     <name>WPrivateWindow</name>
     <message>
         <source>Name</source>
-        <translation>Namn</translation>
+        <translation type='obsolete'>Namn</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type='obsolete'>Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Filer</translation>
+        <translation type='obsolete'>Filer</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Anslutning</translation>
+        <translation type='obsolete'>Anslutning</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Belastning</translation>
+        <translation type='obsolete'>Belastning</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Klient</translation>
+        <translation type='obsolete'>Klient</translation>
     </message>
     <message>
         <source>Disconnected from server.</source>
@@ -2784,27 +2819,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type='obsolete'>Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Filer</translation>
+        <translation type='obsolete'>Filer</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Anslutning</translation>
+        <translation type='obsolete'>Anslutning</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Belastning</translation>
+        <translation type='obsolete'>Belastning</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Klient</translation>
+        <translation type='obsolete'>Klient</translation>
     </message>
     <message>
         <source>Testing Unizone (English) </source>

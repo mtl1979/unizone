@@ -21,6 +21,7 @@ public:
 		Connection,
 		Load,
 		Client,
+		HostOS,
 		NumColumns
 	};
 	

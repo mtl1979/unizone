@@ -1121,28 +1121,9 @@ WinShareWindow::InitGUI()
 
 	fUsers = new WUniListView(fUsersBox);
 	CHECK_PTR(fUsers);
+
 	// initialize the list view
-	fUsers->addColumn(tr("Name"));
-	fUsers->addColumn(tr("ID"));
-	fUsers->addColumn(tr("Status"));
-	fUsers->addColumn(tr("Files"));
-	fUsers->addColumn(tr("Connection"));
-	fUsers->addColumn(tr("Load"));
-	// as of now... WinShare specific, WinShare pings all the users and parses the string for client info
-	fUsers->addColumn(tr("Client"));		
-	
-
-	fUsers->setColumnAlignment(WNickListItem::ID, AlignRight); // <postmaster@raasu.org> 20021005
-	fUsers->setColumnAlignment(WNickListItem::Files, AlignRight); // <postmaster@raasu.org> 20021005
-	fUsers->setColumnAlignment(WNickListItem::Load, AlignRight); // <postmaster@raasu.org> 20021005
-
-	for (int column = 0; column < 6; column++)
-		fUsers->setColumnWidthMode(column, QListView::Manual);
-
-	// set the sort indicator to show
-	fUsers->setShowSortIndicator(true);
-	
-	fUsers->setAllColumnsShowFocus(true);
+	InitUserList(fUsers);
 
 	// left pane
 	fLeftPane = new QVGroupBox(fMainSplitter);
@@ -1651,34 +1632,6 @@ WinShareWindow::LoadSettings()
 		WString wHereMsg(fHereMsg);
 		PRINT("Here Msg: %S\n", wHereMsg.getBuffer());
 #endif
-
-		// load colors
-		if ((str = fSettings->GetColorItem(0)) != QString::null)
-			WColors::LocalName = str;
-		if ((str = fSettings->GetColorItem(1)) != QString::null)
-			WColors::RemoteName = str;
-		if ((str = fSettings->GetColorItem(2)) != QString::null)
-			WColors::Text = str;
-		if ((str = fSettings->GetColorItem(3)) != QString::null)
-			WColors::System = str;
-		if ((str = fSettings->GetColorItem(4)) != QString::null)
-			WColors::Ping = str;
-		if ((str = fSettings->GetColorItem(5)) != QString::null)
-			WColors::Error = str;
-		if ((str = fSettings->GetColorItem(6)) != QString::null)
-			WColors::ErrorMsg = str;
-		if ((str = fSettings->GetColorItem(7)) != QString::null)
-			WColors::PrivText = str;
-		if ((str = fSettings->GetColorItem(8)) != QString::null)
-			WColors::Action = str;
-		if ((str = fSettings->GetColorItem(9)) != QString::null)
-			WColors::URL = str;
-		if ((str = fSettings->GetColorItem(10)) != QString::null)
-			WColors::NameSaid = str;
-		if ((str = fSettings->GetColorItem(11)) != QString::null)
-			WColors::Warning = str;
-		if ((str = fSettings->GetColorItem(12)) != QString::null)
-			WColors::WarningMsg = str;
 
 		fWatch = fSettings->GetWatchPattern();
 		fIgnore = fSettings->GetIgnorePattern();

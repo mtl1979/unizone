@@ -25,6 +25,7 @@ WUserListItem::WUserListItem(
 	setText(Connection,e);
 	setText(Load,f);
 	setText(Client,g);
+	setText(HostOS,h);
 		
 	setRowBaseColor(0, Qt::white);			setRowTextColor(0, Qt::black);
 	setRowBaseColor(1, Qt::green);			setRowTextColor(1, Qt::black);

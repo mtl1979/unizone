@@ -16,6 +16,7 @@
 #include "util/TimeUtilityFunctions.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "iogateway/MessageIOGateway.h"
+#include "system/SystemInfo.h"
 #include "zlib/ZLibUtilityFunctions.h"
 
 // forward declaration
@@ -855,6 +856,7 @@ NetClient::SetUserName(const QString & user)
 				ref()->AddInt64("installid", win->fSettings->GetInstallID());
 				ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
 				ref()->AddString("version_num", (const char *) vstring);
+				ref()->AddString("host_os", GetOSName());
 				ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes
 #ifndef DISABLE_TUNNELING
 				ref()->AddBool("supports_transfer_tunneling", true);

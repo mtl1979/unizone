@@ -17,6 +17,7 @@ WNickListItem::WNickListItem(
 	setColumnType(Connection, ConnectionSpeed);
 	setColumnType(Load, TransferLoad);
 	setColumnType(Client, String_NoCase);
+	setColumnType(HostOS, String_NoCase);
 }
 
 void

@@ -154,31 +154,31 @@ Version %1</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nome</translation>
+        <translation type='obsolete'>Nome</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type='obsolete'>Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Arquivos</translation>
+        <translation type='obsolete'>Arquivos</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Conexão</translation>
+        <translation type='obsolete'>Conexão</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Carga</translation>
+        <translation type='obsolete'>Carga</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Cliente</translation>
+        <translation type='obsolete'>Cliente</translation>
     </message>
     <message>
         <source>Topic set to %1.</source>
@@ -369,78 +369,113 @@ Version %1</translation>
     </message>
 </context>
 <context>
+    <name>ChatWindow</name>
+    <message>
+        <source>Name</source>
+        <translation>Nome</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>Files</source>
+        <translation>Arquivos</translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation>Conexão</translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation>Carga</translation>
+    </message>
+    <message>
+        <source>Client</source>
+        <translation>Cliente</translation>
+    </message>
+    <message>
+        <source>OS</source>
+        <translation>OS</translation>
+    </message>
+</context>
+<context>
     <name>Connection</name>
     <message>
         <source>300 baud</source>
-        <translation type='unfinished'>300 baud</translation>
+        <translation>300 baud</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>28.8 kbps</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>33.6 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='unfinished'>57.6 kbps</translation>
+        <translation>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='unfinished'></translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='unfinished'>ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='unfinished'></translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type='unfinished'>DSL</translation>
+        <translation>DSL</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='unfinished'></translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='unfinished'>DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='unfinished'>Cable</translation>
+        <translation>Cable</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='unfinished'>DSL-1M</translation>
+        <translation>DSL-1M</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='unfinished'></translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='unfinished'>T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='unfinished'></translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='unfinished'>OC-12</translation>
+        <translation>OC-12</translation>
     </message>
 </context>
 <context>
@@ -495,31 +530,31 @@ Version %1</translation>
     </message>
     <message>
         <source>Mon</source>
-        <translation type='unfinished'>Mon</translation>
+        <translation>Mon</translation>
     </message>
     <message>
         <source>Tue</source>
-        <translation type='unfinished'>Tue</translation>
+        <translation>Tue</translation>
     </message>
     <message>
         <source>Wed</source>
-        <translation type='unfinished'>Wed</translation>
+        <translation>Wed</translation>
     </message>
     <message>
         <source>Thu</source>
-        <translation type='unfinished'>Thu</translation>
+        <translation>Thu</translation>
     </message>
     <message>
         <source>Fri</source>
-        <translation type='unfinished'>Fri</translation>
+        <translation>Fri</translation>
     </message>
     <message>
         <source>Sat</source>
-        <translation type='unfinished'>Sat</translation>
+        <translation>Sat</translation>
     </message>
     <message>
         <source>Sun</source>
-        <translation type='unfinished'>Sun</translation>
+        <translation>Sun</translation>
     </message>
 </context>
 <context>
@@ -914,11 +949,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>TB</source>
-        <translation type='unfinished'></translation>
+        <translation>TB</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation type='unfinished'></translation>
+        <translation>TB/s</translation>
     </message>
 </context>
 <context>
@@ -2243,31 +2278,31 @@ Date: %4</translation>
     <name>WPrivateWindow</name>
     <message>
         <source>Name</source>
-        <translation>Nome</translation>
+        <translation type='obsolete'>Nome</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type='obsolete'>Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Arquivos</translation>
+        <translation type='obsolete'>Arquivos</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Conexão</translation>
+        <translation type='obsolete'>Conexão</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Carga</translation>
+        <translation type='obsolete'>Carga</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Cliente</translation>
+        <translation type='obsolete'>Cliente</translation>
     </message>
     <message>
         <source>Disconnected from server.</source>
@@ -2794,27 +2829,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type='obsolete'>Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation>Arquivos</translation>
+        <translation type='obsolete'>Arquivos</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Conexão</translation>
+        <translation type='obsolete'>Conexão</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>Carga</translation>
+        <translation type='obsolete'>Carga</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation>Cliente</translation>
+        <translation type='obsolete'>Cliente</translation>
     </message>
     <message>
         <source>Testing Unizone (English) </source>

@@ -1,4 +1,5 @@
 #include "settings.h"
+#include "colors.h"
 #include "global.h"
 #include "iogateway/MessageIOGateway.h"
 
@@ -386,7 +387,38 @@ WSettings::GetColorItem(int index)
 	String str;
 	if (fSet()->FindString(COLORS, index, str) == B_OK)
 		return QString::fromUtf8(str.Cstr());
-	return QString::null;
+	// Default values
+	switch (index)
+	{
+	case WColors::LocalName: 
+		return "#008800";
+	case WColors::RemoteName: 
+		return "#000000";
+	case WColors::Text: 
+		return "#000000";
+	case WColors::System:
+		return "#0000FF";
+	case WColors::Ping: 
+		return "#DD2488";
+	case WColors::Error:
+		return "#FF0000";
+	case WColors::ErrorMsg:
+		return "#550000";
+	case WColors::PrivText:
+		return "#009999";
+	case WColors::Action:
+		return "#CC00CC";
+	case WColors::URL:
+		return "#0000FF";
+	case WColors::NameSaid:
+		return "#FF0033";
+	case WColors::Warning:
+		return "#FFAA00";
+	case WColors::WarningMsg:
+		return "#FFAA7F";
+	default:	// This should never happen
+		return "#000000";
+	}
 }
 
 QString
