@@ -1,8 +1,18 @@
-GCCOPTFLAGS = -I$(QTDIR)/include -DQT_THREAD_SUPPORT -Isrc -DNDEBUG -DNAME=\"Ozone\" -Isrc/muscle -DBETA -DQT_DLL -O2
+GCCOPTFLAGS = -I$(QTDIR)/include -DQT_THREAD_SUPPORT -Isrc -DNDEBUG -DNAME=\"Unizone\" -Isrc/muscle -DBETA -DQT_DLL -O2
 LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
-EXECUTABLES = Ozone
-OBJFILES = aboutdlg.o aboutdlgimpl.o chattext.o checkgroup.o colors.o combo.o formatting.o gotourl.o main.o menubar.o moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o moc_htmlview.o moc_netclient.o moc_privatewindow.o moc_privatewindowimpl.o moc_winsharewindow.o downloadthread.o netclient.o privatewindow.o privatewindowimpl.o textevent.o user.o winshare_network.o winshare_parsing.o winshare_slots.o winsharewindow.o prefs.o prefsimpl.o moc_prefs.o moc_prefsimpl.o settings.o search.o moc_search.o moc_downloadimpl.o downloadimpl.o md5.o filethread.o accept.o genericthread.o uploadthread.o Log.o
+EXECUTABLES = Unizone
+OBJFILES = aboutdlg.o aboutdlgimpl.o accept.o botitem.o chattext.o \
+checkgroup.o colors.o combo.o downloadimpl.o downloadthread.o fileinfo.o \
+filethread.o formatting.o genericthread.o gotourl.o looper.o main.o md5.o \
+menubar.o moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
+moc_downloadimpl.o moc_genericthread.o moc_htmlview.o moc_netclient.o \
+moc_prefs.o moc_prefsimpl.o moc_privatewindow.o moc_privatewindowimpl.o \
+moc_search.o moc_winsharewindow.o netclient.o nicklist.o platform.o \
+prefs.o prefsimpl.o privatewindow.o privatewindowimpl.o search.o \
+searchitem.o settings.o textevent.o transferitem.o ulistview.o \
+uploadthread.o user.o userlistitem.o winshare_network.o \
+winshare_parsing.o winshare_slots.o winsharewindow.o Log.o
 #UICFILES = privatewindow.h privatewindow.cpp debug.h debug.cpp aboutdlg.h aboutdlg.cpp prefs.h prefs.cpp
 #MOCFILES = moc_aboutdlg.h moc_aboutdlgimpl.h moc_chattext.h moc_combo.h moc_debug.h moc_htmlview.h moc_netclient.h moc_privatewindow.h moc_privatewindowimpl.h moc_winsharewindow.h moc_prefs.h moc_prefsimpl.h moc_search.h
 VPATH = src
@@ -10,7 +20,7 @@ CXXFLAGS = -W -Wno-multichar $(GCCOPTFLAGS)
 
 all : $(EXECUTABLES)
 
-Ozone : $(UICFILES) $(OBJFILES)
+Unizone : $(UICFILES) $(OBJFILES)
 	$(CXX) $(LFLAGS) $(LIBS) -o $@ $(OBJFILES) ./linux/muscle.a
 
 # stuff for moc
@@ -20,15 +30,16 @@ moc:
 	moc src/aboutdlgimpl.h -o src/moc_aboutdlgimpl.cpp
 	moc src/chattext.h -o src/moc_chattext.cpp
 	moc src/combo.h -o src/moc_combo.cpp
+	moc src/downloadimpl.h -o src/moc_downloadimpl.cpp
+	moc src/genericthread.h -o src/moc_genericthread.cpp
 	moc src/htmlview.h -o src/moc_htmlview.cpp
 	moc src/netclient.h -o src/moc_netclient.cpp
-	moc src/privatewindow.h -o src/moc_privatewindow.cpp
-	moc src/privatewindowimpl.h -o src/moc_privatewindowimpl.cpp
-	moc src/winsharewindow.h -o src/moc_winsharewindow.cpp
 	moc src/prefs.h -o src/moc_prefs.cpp
 	moc src/prefsimpl.h -o src/moc_prefsimpl.cpp
+	moc src/privatewindow.h -o src/moc_privatewindow.cpp
+	moc src/privatewindowimpl.h -o src/moc_privatewindowimpl.cpp
 	moc src/search.h -o src/moc_search.cpp
-	moc src/downloadimpl.h -o src/moc_downloadimpl.cpp
+	moc src/winsharewindow.h -o src/moc_winsharewindow.cpp
 
 # stuff for uic
 uic:
