@@ -1413,7 +1413,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>F11</source>
-        <translation type='unfinished'>F11</translation>
+        <translation>F11</translation>
     </message>
 </context>
 <context>
