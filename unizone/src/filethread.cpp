@@ -21,7 +21,7 @@
 #include <qapplication.h>
 
 WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
-	: Thread(), QObject(owner), fLocker(true)
+	: QObject(owner), Thread(), fLocker(true)
 {
 	fNet = net;
 	fOwner = owner;

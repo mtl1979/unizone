@@ -1,8 +1,10 @@
 #ifdef WIN32
 #include <windows.h>
 #pragma warning(disable: 4786)
-#endif
 #define LT WLog::LogType
+#else
+#define LT WLog
+#endif
 
 #include "privatewindowimpl.h"
 #include "gotourl.h"

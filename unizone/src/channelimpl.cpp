@@ -14,7 +14,11 @@
 
 #include "reflector/StorageReflectConstants.h"
 
+#ifdef WIN32
 #define LT WLog::LogType
+#else
+#define LT WLog
+#endif
 
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags /* fl */)
 : ChannelBase(/* parent */ NULL, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 

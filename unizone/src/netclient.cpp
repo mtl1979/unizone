@@ -1275,7 +1275,7 @@ NetClient::timerEvent(QTimerEvent * /* e */)
 bool
 NetClient::event(QEvent * e)
 {
-	if (e->type() == NetClient::THREAD_EXITED)
+	if (e->type() == (QEvent::Type) NetClient::THREAD_EXITED)
 	{
 		QCustomEvent *qce = dynamic_cast<QCustomEvent *>(e);
 		if (qce)
