@@ -12,9 +12,12 @@
 #include <qlistview.h>
 
 #include "channel.h"
-#include "netclient.h"
+//#include "netclient.h"
 #include "chattext.h"
 #include "htmlview.h"
+#include "user.h"
+
+class NetClient;
 
 class Channel : public ChannelBase
 { 

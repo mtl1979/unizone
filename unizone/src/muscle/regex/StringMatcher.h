@@ -100,8 +100,11 @@ StringMatcherRef::ItemPool * GetStringMatcherPool();
 
 /** Puts a backslash in front of any char in (str) that is "special" to the regex pattern matching.
  *  @param str The string to check for special regex chars and possibly modify to escape them.
+ *  @param optTokens If non-NULL, only characters in this string will be treated as regex tokens
+ *                   and escaped.  If left as NULL (the default), then the standard set of regex
+ *                   tokens will be escaped.
  */
-void EscapeRegexTokens(String & str);
+void EscapeRegexTokens(String & str, const char * optTokens = NULL);
 
 /** Returns true iff any "special" chars are found in (str).
  *  @param str The string to check for special regex chars.

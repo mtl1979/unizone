@@ -40,6 +40,9 @@ MessageRef DeflateMessage(MessageRef msgRef, int compressionLevel = 6, bool forc
  */
 MessageRef InflateMessage(MessageRef msgRef);
 
+// This is the field name that we store deflated data into
+#define MUSCLE_ZLIB_FIELD_NAME "_zlib"
+
 };  // end namespace muscle
 
 #endif

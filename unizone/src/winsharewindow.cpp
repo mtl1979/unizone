@@ -28,6 +28,9 @@
 #include "searchitem.h"
 #include "user.h"
 #include "wstatusbar.h"
+#include "netclient.h"
+#include "serverclient.h"
+#include "updateclient.h"
 
 #include <qapplication.h>
 #include <qstylesheet.h>

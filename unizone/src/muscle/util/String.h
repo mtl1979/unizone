@@ -185,11 +185,11 @@ public:
    /** Returns true iff this string starts with the first (tooffset) characters of (prefix) */
    bool StartsWith(const String &prefix, uint32 toffset) const; 
 
-   /** Returns a string that consists of (str) prepended to this string.  Does not modify the String it is called on. */
-   String Prepend(const String & str) const {String ret = str; ret += *this; return ret;}
+   /** Returns a string that consists of (count) copies of (str), followed by this string. */
+   String Prepend(const String & str, uint32 count = 1) const;
 
-   /** Returns a string that consists of (str) appended to this string.  Does not modify the String it is called on. */
-   String Append(const String & str) const {String ret = *this; ret += str; return ret;}
+   /** Returns a string that consists of this string followed by (count) copies of (str). */
+   String Append(const String & str, uint32 count = 1) const;
 
    /** Returns a string that consists of only the last part of this string, starting with index (beginIndex).  Does not modify the string it is called on. */
    String Substring(uint32 beginIndex) const; 

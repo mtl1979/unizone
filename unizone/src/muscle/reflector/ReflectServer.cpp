@@ -202,6 +202,7 @@ void ReflectServer :: CheckForOutOfMemory(AbstractReflectSessionRef optSessionRe
       DumpBoggedSessions();       // see what other cleanup we can do
    }
 }
+
 status_t 
 ReflectServer ::
 ServerProcessLoop()
@@ -666,22 +667,18 @@ ReplaceSession(AbstractReflectSessionRef newSessionRef, AbstractReflectSession *
    }
 }
 
+void ReflectServer :: DisconnectSession(AbstractReflectSession * session)
+{
+   session->_connectingAsync = false;
+   if (session->ClientConnectionClosed()) AddLameDuckSession(session);
+                                     else ShutdownIOFor(session);
+}
 
 void
 ReflectServer ::
 EndSession(AbstractReflectSession * who)
 {
-   AbstractReflectSessionRef * lRef; 
-   HashtableIterator<const char *, AbstractReflectSessionRef> xiter = GetSessions();
-   while((lRef = xiter.GetNextValue()) != NULL)
-   {
-      AbstractReflectSession * session = lRef->GetItemPointer();
-      if (session == who)
-      {
-         AddLameDuckSession(*lRef);
-         return;
-      }
-   }
+   AddLameDuckSession(who);
 }
 
 void
@@ -814,6 +811,23 @@ void
 ReflectServer :: AddLameDuckSession(AbstractReflectSessionRef ref)
 {
    if ((_lameDuckSessions.IndexOf(ref) < 0)&&(_lameDuckSessions.AddTail(ref) != B_NO_ERROR)&&(_doLogging)) LogTime(MUSCLE_LOG_CRITICALERROR, "Server:  AddLameDuckSession() failed, I'm REALLY in trouble!  Aggh!\n");
+}
+
+void
+ReflectServer ::
+AddLameDuckSession(AbstractReflectSession * who)
+{
+   AbstractReflectSessionRef * lRef; 
+   HashtableIterator<const char *, AbstractReflectSessionRef> xiter = GetSessions();
+   while((lRef = xiter.GetNextValue()) != NULL)
+   {
+      AbstractReflectSession * session = lRef->GetItemPointer();
+      if (session == who)
+      {
+         AddLameDuckSession(*lRef);
+         break;
+      }
+   }
 }
 
 int

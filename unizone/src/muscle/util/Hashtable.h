@@ -1244,16 +1244,18 @@ template <class KeyType, class ValueType, class HashFunctorType>
 void
 Hashtable<KeyType,ValueType,HashFunctorType>::Clear(bool releaseCachedBuffers)
 {
+   // First go through our list of active iterators, and let them all know they are now invalid
+   while(_iterList)
+   {
+      HashtableIterator<KeyType,ValueType,HashFunctorType> * next = _iterList->_nextIter;
+      _iterList->_owner = NULL;
+      _iterList->_nextKeyCookie = _iterList-> _nextValueCookie = NULL;
+      _iterList->_prevIter      = _iterList->_nextIter         = NULL;
+      _iterList = next;
+   }
+
    if (_count > 0)
    {
-      // First go through our list of active iterators, and let them all know they are now invalid
-      while(_iterList)
-      {
-         HashtableIterator<KeyType,ValueType,HashFunctorType> * next = _iterList->_nextIter;
-         *_iterList = HashtableIterator<KeyType,ValueType,HashFunctorType>();
-         _iterList = next;
-      }
-
       if (releaseCachedBuffers == false)
       {
          // Go through our list of valid entries and reset them all to their default state

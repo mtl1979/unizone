@@ -182,6 +182,14 @@ EndSession()
    _owner->EndSession(this);
 }
 
+void
+AbstractReflectSession ::
+DisconnectSession()
+{
+   MASSERT(IsAttachedToServer(), "Can't call DisconnectSession() while not attached to the server");
+   _owner->DisconnectSession(this);
+}
+
 String
 AbstractReflectSession ::
 GetDefaultHostName() const

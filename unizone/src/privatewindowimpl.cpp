@@ -14,6 +14,7 @@
 #include "wstring.h"
 #include "wpwevent.h"
 #include "nicklist.h"
+#include "netclient.h"
 
 #include <qapplication.h>
 #include <qmessagebox.h>
@@ -149,9 +150,18 @@ WPrivateWindow::UserDisconnected(QString sid, QString name)
 	{
 		if (gWin->fSettings->GetUserEvents())
 		{
-			QString parse = WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg( 
-				WFormat::UserDisconnected().arg(sid).arg(FixStringStr(name)).arg(WColors::RemoteName) 
-				); // <postmaster@raasu.org> 20021112
+			QString uname = FixStringStr(name);
+			QString msg;
+			if (uname.isEmpty())
+			{
+				msg = WFormat::UserDisconnected2().arg(sid);
+			}
+			else
+			{
+				// <postmaster@raasu.org> 20021112
+				msg = WFormat::UserDisconnected().arg(sid).arg(uname).arg(WColors::RemoteName); 
+			}
+			QString parse = WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);
 			PrintSystem(parse);
 		}
 		(*iter).second()->RemoveFromListView(fPrivateUsers);

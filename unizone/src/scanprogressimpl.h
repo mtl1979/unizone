@@ -11,8 +11,8 @@ public:
 							WStyle_Minimize | WStyle_Maximize);
 	~ScanProgress();
 
-	void SetScanDirectory(QString dir);
-	void SetScanFile(QString file);
+	void SetScanDirectory(const QString &dir);
+	void SetScanFile(const QString &file);
 	void SetScannedDirs(int sd);
 	void SetScannedFiles(int sf);
 	void SetDirsLeft(int dl);

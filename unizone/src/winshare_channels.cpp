@@ -4,6 +4,7 @@
 #include "debugimpl.h"
 #include "global.h"
 #include "wstring.h"
+#include "netclient.h"
 
 #include <qinputdialog.h>
 #include <qmessagebox.h>

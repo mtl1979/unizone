@@ -195,10 +195,14 @@ protected:
    /** Called by a session to get itself removed & destroyed */
    void EndSession(AbstractReflectSession * which);
 
+   /** Called by a session to force its TCP connection to be closed */
+   void DisconnectSession(AbstractReflectSession * which);
+
 private:
    friend class AbstractReflectSession;
    void CleanupSockets(Queue<int> & list);  // utility method
-   void AddLameDuckSession(AbstractReflectSessionRef ref);
+   void AddLameDuckSession(AbstractReflectSessionRef whoRef);
+   void AddLameDuckSession(AbstractReflectSession * who);  // convenience method ... less efficient
    void ShutdownIOFor(AbstractReflectSession * session);
    status_t ClearLameDucks();  // returns B_NO_ERROR if the server should keep going, or B_ERROR otherwise
    void DumpBoggedSessions();

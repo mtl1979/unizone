@@ -3,7 +3,10 @@
 #include "global.h"
 #include "winsharewindow.h"
 #include "iogateway/PlainTextMessageIOGateway.h"
+#include "qtsupport/QMessageTransceiverThread.h"
 #include "util/StringTokenizer.h"
+
+using namespace muscle;
 
 ServerClient::ServerClient(QObject *owner)
 {
@@ -76,4 +79,22 @@ ServerClient::Disconnect()
 		qmtt->ShutdownInternalThread();
 		qmtt->Reset(); 
 	}
+}
+
+status_t 
+ServerClient::StartInternalThread() 
+{
+	return qmtt->StartInternalThread(); 
+}
+
+status_t 
+ServerClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
+{
+	return qmtt->AddNewConnectSession(targetHostName, port, optSessionRef);
+}
+
+void 
+ServerClient::Reset()
+{
+	qmtt->Reset();
 }

@@ -27,7 +27,6 @@ public:
 
 	void SetUpload(int socket, uint32 remoteIP, WFileThread * ft);
 	void SetUpload(QString remoteIP, uint32 remotePort, WFileThread * ft);
-	void InitSession();
 
 	QString GetRemoteID() {return fRemoteSessionID;}
 	QString GetRemoteUser(); 
@@ -79,12 +78,14 @@ private:
 	bool fWaitingForUploadToFinish;
 	bool fAccept;						// is this the accept version?
 	bool fForced;						// did this transfer bypass queue?
+	bool fInit;							// has InitSession() been postponed due file scan in progress
 
 	int32 fCurFile, fNumFiles;
 
 	String _sessionID;
 
 	void DoUpload();
+	bool InitSessionAux();
 };
 
 

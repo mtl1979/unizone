@@ -294,7 +294,7 @@ public:
    MultiQueryFilter() {/* empty */}
 
    virtual status_t SaveToArchive(Message & archive) const;
-   virtual status_t SetFromArchive(Message & archive);
+   virtual status_t SetFromArchive(const Message & archive);
 
    /** Returns a read-only reference to our Queue of child QueryFilterRefs. */
    const Queue<QueryFilterRef> & GetChildren() const {return _children;}
@@ -330,7 +330,7 @@ public:
    }
 
    virtual status_t SaveToArchive(Message & archive) const;
-   virtual status_t SetFromArchive(Message & archive);
+   virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_ANDOR;}
    virtual bool Matches(const Message & msg) const;
 
@@ -380,7 +380,7 @@ public:
    }
 
    virtual status_t SaveToArchive(Message & archive) const;
-   virtual status_t SetFromArchive(Message & archive);
+   virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_NANDNOT;}
    virtual bool Matches(const Message & msg) const;
 

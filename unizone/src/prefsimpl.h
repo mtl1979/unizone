@@ -1,5 +1,9 @@
 #ifndef PREFS_H
 #define PREFS_H
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include "prefs.h"
 
 class WPrefs : public WPrefsBase

@@ -41,9 +41,19 @@ QString WFormat::UserDisconnected()
 	return QObject::tr("User #%1 (a.k.a. <font color=\"%3\">%2</font>) has disconnected.");
 }
 
+QString WFormat::UserDisconnected2()
+{
+	return QObject::tr("User #%1 has disconnected.");
+}
+
 QString WFormat::UserNameChangedNoOld()
 {
 	return QObject::tr("User #%1 is now known as <font color=\"%3\">%2</font>.");
+}
+
+QString WFormat::UserNameChangedNoNew()
+{
+	return QObject::tr("User #%1 is now nameless.");
 }
 
 QString WFormat::UserNameChanged()

@@ -9,10 +9,12 @@
 #include <qthread.h>
 #include <qdatetime.h>
 #include <qobject.h>
+#include <qthread.h>
 
 #include "message/Message.h"
 #include "system/MessageTransceiverThread.h"
 #include "qtsupport/QMessageTransceiverThread.h"
+
 using namespace muscle;
 
 #define MD5_DIGEST_SIZE 16
@@ -21,6 +23,7 @@ using namespace muscle;
 #define MAX_ETA_COUNT 10
 
 #define PARTIAL_RESUME_SIZE (64 * 1024)
+
 
 // ------------------------------------------------------------------------------------
 
@@ -84,18 +87,13 @@ public:
 
 	int GetBanTime();
 
+	void InitSession() { InitSessionAux(); }
+
 	// forwarders
 
-	void Reset()
-	{
-		qmtt->Reset();
-		qmtt->WaitForInternalThreadToExit();
-	}
-
-	bool IsInternalThreadRunning()
-	{
-		return qmtt->IsInternalThreadRunning();
-	}
+	void Reset();
+	bool IsInternalThreadRunning();
+	status_t RemoveSessions(const char * optDistPath = NULL);
 
 public slots:
 	void ConnectTimer(); // Connection timed out?
@@ -170,13 +168,13 @@ protected:
 	QObject * fOwner;
 	bool fShutdown;
 	bool * fShutdownFlag;
-	//bool fQueued;
 	bool fManuallyQueued;
 	bool fLocallyQueued;
 	bool fRemotelyQueued;			// only usable in downloads
 	bool fActive;
 	bool fBlocked;
 	bool fFinished;
+	volatile bool fDisconnected;
 	double fRate[MAX_RATE_COUNT];	// last 20 rates
 	int fRateCount;					// amount we have, 20 max
 	uint32 fETA[MAX_ETA_COUNT];		// last 5 ETA's
@@ -191,13 +189,14 @@ protected:
 
 	virtual void SendReply(MessageRef &m);
 	QString GetUserName(QString sid);
+	virtual bool InitSessionAux() = 0;
 
 	int fTXRate; // Current transfer throttling rate
 
 	QTimer * CTimer;					// Connect timer
 	QTimer * fBlockTimer;				// Blocked timer
 
-	QMessageTransceiverThread * qmtt;
+	QMessageTransceiverThread *qmtt;
 
 private:
 	void InitTransferRate();

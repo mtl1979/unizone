@@ -9,6 +9,7 @@
 #include "winsharewindow.h"
 #include "aboutdlgimpl.h"
 #include "formatting.h"
+#include "colors.h"
 #include "debugimpl.h"
 #include "chattext.h"
 #include "privatewindowimpl.h"
@@ -22,6 +23,7 @@
 #include "platform.h"
 #include "wstring.h"
 #include "filethread.h"
+#include "netclient.h"
 
 void
 WinShareWindow::Exit()
@@ -76,10 +78,19 @@ WinShareWindow::UserDisconnected(QString sid, QString name)
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString system;
-
-		system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserDisconnected().arg(sid).arg(FixStringStr(name)).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112
-		PrintSystem(system);
+		QString uname = FixStringStr(name);
+		QString msg;
+		if (uname.isEmpty())
+		{
+			msg = WFormat::UserDisconnected2().arg(sid);
+		}
+		else
+		{
+			// <postmaster@raasu.org> 20021112
+			msg = WFormat::UserDisconnected().arg(sid).arg(uname).arg(WColors::RemoteName); 
+		}
+		QString parse = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(msg);
+		PrintSystem(parse);
 	}
 }
 
@@ -92,10 +103,15 @@ WinShareWindow::UserNameChanged(QString sid, QString old, QString newname)
 
 		// <postmaster@raasu.org> 20030622
 		QString nameformat;
-		if (old != "?" && old.length() > 0)
+		if (old != "?" && !old.isEmpty())
 		{
 			// <postmaster@raasu.org> 20021112, 20030622
 			nameformat = WFormat::UserNameChanged().arg(sid).arg(FixStringStr(old)).arg(FixStringStr(newname)).arg(WColors::RemoteName).arg(WColors::RemoteName);  
+		}
+		else if (newname == "?" || newname.isEmpty())
+		{
+			// <postmaster@raasu.org> 20030819
+			nameformat = WFormat::UserNameChangedNoNew().arg(sid);  
 		}
 		else
 		{
@@ -308,6 +324,7 @@ WinShareWindow::Preferences()
 	CHECK_PTR(prefs);
 	bool oldSharing = fSettings->GetSharingEnabled();
 	bool oldLogging = fSettings->GetLogging();
+	bool oldFirewalled = fSettings->GetFirewalled();
 
 	if (prefs->exec() == QDialog::Accepted)	// only do the below code if the dialog was ACCEPTED!
 	{
@@ -326,12 +343,16 @@ WinShareWindow::Preferences()
 				StopAcceptThread();
 				fNetClient->SetLoad(0, 0);
 			}
-			if (fSettings->GetSharingEnabled())		// this will also handle changes in firewall settings
+			// this will also handle changes in firewall settings
+			if (fSettings->GetSharingEnabled())		
 			{
-				if (QMessageBox::information(this, tr( "File Scan" ), tr( "Scan your shared files now?" ), tr( "Yes" ), tr( "No" )) == 0)
+				if ((oldSharing == false) || (oldFirewalled != fSettings->GetFirewalled()))
 				{
-					StartAcceptThread();
-					ScanShares();
+					if (QMessageBox::information(this, tr( "File Scan" ), tr( "Scan your shared files now?" ), tr( "Yes" ), tr( "No" )) == 0)
+					{
+						StartAcceptThread();
+						ScanShares();
+					}
 				}
 				fNetClient->SetLoad(0, fSettings->GetMaxUploads());
 			}
@@ -428,8 +449,13 @@ WinShareWindow::DownloadWindowClosed()
 	fDLWindow = NULL;
 }
 
-// Insert failed download to resume list
-//
+/*
+ * Insert failed download to resume list
+ * -------------------------------------
+ *
+ * Failed downloads gets auto-resumed immediately
+ *
+ */
 
 void
 WinShareWindow::FileFailed(QString file, QString lfile, QString user)

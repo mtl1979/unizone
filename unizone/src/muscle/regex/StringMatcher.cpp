@@ -140,7 +140,7 @@ bool IsRegexToken(char c, bool isFirstCharInString)
    }
 }
 
-void EscapeRegexTokens(String & s)
+void EscapeRegexTokens(String & s, const char * optTokens)
 {
    const char * str = s.Cstr();
 
@@ -149,7 +149,7 @@ void EscapeRegexTokens(String & s)
    bool isFirst = true;
    while(*str)
    {
-     if (IsRegexToken(*str, isFirst)) ret += '\\';
+     if (optTokens ? (strchr(optTokens, *str) != NULL) : IsRegexToken(*str, isFirst)) ret += '\\';
      isFirst = false;
      ret += *str;
      str++;

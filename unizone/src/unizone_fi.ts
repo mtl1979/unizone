@@ -909,6 +909,14 @@ Päiväys: %4</translation>
         <source>%1.%2.%3 build %4</source>
         <translation>%1.%2.%3 luonti %4</translation>
     </message>
+    <message>
+        <source>User #%1 has disconnected.</source>
+        <translation>Käyttäjä #%1 on poistunut.</translation>
+    </message>
+    <message>
+        <source>User #%1 is now nameless.</source>
+        <translation>Käyttäjä #%1 on nyt nimetön.</translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>

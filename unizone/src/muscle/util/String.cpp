@@ -362,6 +362,59 @@ uint32 String :: GetNumInstancesOf(const String & substring) const
    return ret;
 }
 
+String String :: Prepend(const String & str, uint32 count) const
+{
+   String ret;
+   uint32 newLen = (count*str.Length())+Length();
+   if (ret.Prealloc(newLen) == B_NO_ERROR)
+   {
+      char * b = ret._buffer;
+
+      if (str.Length() > 0)
+      {
+         for (uint32 i=0; i<count; i++)
+         {
+            memcpy(b, str(), str.Length());
+            b += str.Length();
+         }
+      }
+      if (Length() > 0)
+      {
+         memcpy(b, Cstr(), Length()); 
+         b += Length();
+      }
+      ret._length = (b-ret._buffer);
+      ret._buffer[ret._length] = '\0';   // terminate the string
+   }
+   return ret;
+}
+
+String String :: Append(const String & str, uint32 count) const
+{
+   String ret;
+   uint32 newLen = Length()+(count*str.Length());
+   if (ret.Prealloc(newLen) == B_NO_ERROR)
+   {
+      char * b = ret._buffer;
+      if (Length() > 0)
+      {
+         memcpy(b, Cstr(), Length()); 
+         b += Length();
+      }
+      if (str.Length() > 0)
+      {
+         for (uint32 i=0; i<count; i++)
+         {
+            memcpy(b, str(), str.Length());
+            b += str.Length();
+         }
+      }
+      ret._length = (b-ret._buffer);
+      ret._buffer[ret._length] = '\0';   // terminate the string
+   }
+   return ret;
+}
+
 // This method tries to ensure that at least (newBufLen) chars
 // are available for storing data in.  (requestedBufLen) should include
 // the terminating NUL.  If (retainValue) is true, the current string value

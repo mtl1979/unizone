@@ -2,7 +2,6 @@
 #include "downloadimpl.h"
 #include "global.h"
 #include "debugimpl.h"
-// #include "version.h"
 #include "settings.h"
 #include "platform.h"			// <postmaster@raasu.org> 20021114
 #include "wstring.h"
@@ -19,9 +18,6 @@ NetClient::NetClient(QObject * owner)
 {
 	setName( "NetClient" );
 
-	qmtt = new QMessageTransceiverThread();
-	CHECK_PTR(qmtt);
-
 	fPort = 0;
 	fServerPort = 0;
 	fOwner = owner;
@@ -32,6 +28,9 @@ NetClient::NetClient(QObject * owner)
 	fChannelLock.lock();
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
+
+	qmtt = new QMessageTransceiverThread();
+	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(BeginMessageBatch()),
 			this, SLOT(BeginMessageBatch()));
@@ -62,9 +61,12 @@ NetClient::NetClient(QObject * owner)
 NetClient::~NetClient()
 {
 	Disconnect();
-	qmtt->WaitForInternalThreadToExit();
-	delete qmtt;
-	qmtt = NULL;
+	if (qmtt)
+	{
+		qmtt->WaitForInternalThreadToExit();
+		delete qmtt;
+		qmtt = NULL;
+	}
 }
 
 // <postmaster@raasu.org> -- Add support for port numbers
@@ -84,6 +86,7 @@ NetClient::Connect(QString server)
 status_t
 NetClient::Connect(QString server, uint16 port)
 {
+	PRINT("NetClient::Connect()\n");
 	Disconnect();
 
 	PRINT("Starting thread\n");
@@ -111,7 +114,9 @@ NetClient::Connect(QString server, uint16 port)
 		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
 								gWin->fSettings->GetChatLimit())), NULL));
 		if (qmtt->AddNewConnectSession((const char *) server.utf8(), port, ref) != B_NO_ERROR)
+		{
 			return B_ERROR;
+		}
 	}
 
 	PRINT("New session added\n");
@@ -125,20 +130,23 @@ NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
 	gWin->setCaption("Unizone");
-	if (qmtt->IsInternalThreadRunning()) 
+	if (qmtt)
 	{
-		qmtt->ShutdownInternalThread();
-		qmtt->Reset(); 
-		emit DisconnectedFromServer();
-		PRINT("DELETING\n");
-		WUserIter it = fUsers.begin();
-		while (it != fUsers.end())
+		if (qmtt->IsInternalThreadRunning()) 
 		{
-			(*it).second()->RemoveFromListView();
-			fUsers.erase(it);
-			it = fUsers.begin();
+			qmtt->ShutdownInternalThread();
+			qmtt->Reset(); 
+			emit DisconnectedFromServer();
+			PRINT("DELETING\n");
+			WUserIter it = fUsers.begin();
+			while (it != fUsers.end())
+			{
+				(*it).second()->RemoveFromListView();
+				fUsers.erase(it);
+				it = fUsers.begin();
+			}
+			PRINT("DONE\n");
 		}
-		PRINT("DONE\n");
 	}
 }
 
@@ -157,7 +165,7 @@ NetClient::AddSubscription(QString str, bool q)
 		ref()->AddBool((const char *) str.utf8(), true);		// true doesn't mean anything
 		if (q)
 			ref()->AddBool(PR_NAME_SUBSCRIBE_QUIETLY, true);		// no initial response
-		qmtt->SendMessageToSessions(ref);
+		SendMessageToSessions(ref);
 	}
 }
 
@@ -168,7 +176,7 @@ NetClient::RemoveSubscription(QString str)
 	if (ref())
 	{
 		ref()->AddString(PR_NAME_KEYS, (const char *) str.utf8());
-		qmtt->SendMessageToSessions(ref);
+		SendMessageToSessions(ref);
 	}
 }
 
@@ -372,7 +380,7 @@ NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
 								col()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 								col()->AddString("name", (const char *) gWin->GetUserName().utf8() );
 								col()->AddInt64("registertime", gWin->GetRegisterTime( gWin->GetUserName() ) );
-								qmtt->SendMessageToSessions(col);
+								SendMessageToSessions(col);
 							}
 						}
 					}
@@ -701,7 +709,7 @@ NetClient::SendChatText(QString target, QString text)
 			chat()->AddString("text", (const char *) text.utf8());
 			if (target != "*")
 				chat()->AddBool("private", true);
-			qmtt->SendMessageToSessions(chat);
+			SendMessageToSessions(chat);
 		}
 	}
 }
@@ -720,7 +728,7 @@ NetClient::SendPing(QString target)
 			ping()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 			ping()->AddString("session", (const char *) LocalSessionID().utf8());
 			ping()->AddInt64("when", GetCurrentTime64());
-			qmtt->SendMessageToSessions(ping);
+			SendMessageToSessions(ping);
 		}
 	}
 }
@@ -781,7 +789,7 @@ NetClient::SetNodeValue(const char * node, MessageRef & val)
 	if (ref())
 	{
 		ref()->AddMessage(node, val);
-		qmtt->SendMessageToSessions(ref);
+		SendMessageToSessions(ref);
 	}
 }
 
@@ -1011,3 +1019,46 @@ NetClient::EndMessageBatch()
 	gWin->EndMessageBatch();
 }
 
+
+bool
+NetClient::IsConnected() const
+{ 
+	if (qmtt)
+		return qmtt->IsInternalThreadRunning();
+	else
+		return false;
+}
+
+void
+NetClient::Reset()
+{
+	if (qmtt)
+		qmtt->Reset();
+}
+
+status_t 
+NetClient::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
+{
+	if (qmtt)
+		return qmtt->SendMessageToSessions(msgRef, optDistPath);
+	else
+		return B_ERROR;
+}
+
+status_t 
+NetClient::SetOutgoingMessageEncoding(int32 encoding, const char * optDistPath)
+{
+	if (qmtt)
+		return qmtt->SetOutgoingMessageEncoding(encoding, optDistPath);
+	else
+		return B_ERROR;
+}
+
+status_t 
+NetClient::WaitForInternalThreadToExit()
+{
+	if (qmtt)
+		return qmtt->WaitForInternalThreadToExit();
+	else
+		return B_ERROR;
+}

@@ -3,9 +3,10 @@
 
 #include <qobject.h>
 
+#include "util/String.h"
+#include "message/message.h"
 #include "qtsupport/QMessageTransceiverThread.h"
 #include "reflector/AbstractReflectSession.h"
-#include "util/String.h"
 
 using namespace muscle;
 
@@ -20,20 +21,9 @@ public:
 
 	// forwarders
 
-	status_t StartInternalThread() 
-	{
-		return qmtt->StartInternalThread(); 
-	}
-	
-	status_t AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
-	{
-		return qmtt->AddNewConnectSession(targetHostName, port, optSessionRef);
-	}
-
-	void Reset()
-	{
-		qmtt->Reset();
-	}
+	status_t StartInternalThread(); 
+	status_t AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef);
+	void Reset();
 
 public slots:
    /** Emitted when a new Message has been received by one of the sessions being operated by our internal thread.

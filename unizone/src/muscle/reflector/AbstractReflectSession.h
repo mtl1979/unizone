@@ -94,8 +94,14 @@ public:
     */
    virtual const char * GetSessionIDString() const;
 
-   /** Marks this session to be terminated ASAP, as if the TCP connection had been broken.  */
+   /** Marks this session for immediate termination and removal from the server. */
    void EndSession();
+
+   /** Forces the disconnection of this session's TCP connection to its client.
+    *  Calling this will cause ClientConnectionClosed() to be called, as if the
+    *  TCP connection had been severed externally.
+    */
+   void DisconnectSession();
 
    /**
     * Causes this session to be terminated (similar to EndSession(), 

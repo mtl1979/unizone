@@ -787,6 +787,14 @@ Date: %4</translation>
         <source>%1.%2.%3 build %4</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>User #%1 has disconnected.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User #%1 is now nameless.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>

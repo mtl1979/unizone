@@ -246,9 +246,14 @@ public:
     *                     items to (from) the tail of the Queue until the Queue is the specified size.
     *                     If false (the default), more slots may be pre-allocated, but the 
     *                     number of items officially in the Queue remains the same as before.
+    *  @param extraReallocItems If we have to do an array reallocation, this many extra slots will be
+    *                           added to the newly allocated array, above and beyond what is strictly
+    *                           necessary.  That way the likelihood of another reallocation being necessary
+    *                           in the near future is reduced.  Default value is zero, indicating that
+    *                           no extra slots will be allocated.  This argument is ignored if (setNumItems) is true.
     *  @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory)
     */
-   status_t EnsureSize(uint32 numSlots, bool setNumItems = false);
+   status_t EnsureSize(uint32 numSlots, bool setNumItems = false, uint32 extraReallocItems = 0);
 
    /** Returns the last index of the given (item), or -1 if (item) is
     *  not found in the list.  O(n) search time.
@@ -434,7 +439,7 @@ status_t
 Queue<ItemType>::
 AddTail(const ItemType &item)
 {
-   if (EnsureSize(_itemCount+1) == B_ERROR) return B_ERROR;
+   if (EnsureSize(_itemCount+1, false, _itemCount+1) == B_ERROR) return B_ERROR;
    if (_itemCount == 0) _headIndex = _tailIndex = 0;
                    else _tailIndex = NextIndex(_tailIndex);
    _queue[_tailIndex] = item;
@@ -477,7 +482,7 @@ status_t
 Queue<ItemType>::
 AddHead(const ItemType &item)
 {
-   if (EnsureSize(_itemCount+1) == B_ERROR) return B_ERROR;
+   if (EnsureSize(_itemCount+1, false, _itemCount+1) == B_ERROR) return B_ERROR;
    if (_itemCount == 0) _headIndex = _tailIndex = 0;
                    else _headIndex = PrevIndex(_headIndex);
    _queue[_headIndex] = item;
@@ -503,7 +508,7 @@ status_t
 Queue<ItemType>::
 AddHead(const ItemType * items, uint32 numItems)
 {
-   if (EnsureSize(queue.GetNumItems()+numItems) != B_NO_ERROR) return B_ERROR;
+   if (EnsureSize(GetNumItems()+numItems) != B_NO_ERROR) return B_ERROR;
    for (int i=((int)numItems)-1; i>=0; i--) if (AddHead(items[i]) == B_ERROR) return B_ERROR;
    return B_NO_ERROR;
 }
@@ -672,12 +677,13 @@ Clear(bool releaseCachedBuffers)
 template <class ItemType>
 status_t 
 Queue<ItemType>::
-EnsureSize(uint32 size, bool setNumItems)
+EnsureSize(uint32 size, bool setNumItems, uint32 extraPreallocs)
 {
    if ((_queue == NULL)||(_queueSize < size))
    {
       const uint32 sqLen = ARRAYITEMS(_smallQueue);
-      uint32 newQLen = muscleMax(_initialSize, ((setNumItems)||(size <= sqLen)) ? muscleMax(sqLen,size) : size);
+      uint32 temp    = size + extraPreallocs;
+      uint32 newQLen = muscleMax(_initialSize, ((setNumItems)||(temp <= sqLen)) ? muscleMax(sqLen,temp) : temp);
 
       ItemType * newQueue = ((_queue == _smallQueue)||(newQLen > sqLen)) ? newnothrow ItemType[newQLen] : _smallQueue;
       if (newQueue == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}

@@ -13,12 +13,15 @@ using std::list;
 using std::iterator;
 
 #include "util/Queue.h"
-using muscle::Queue;
+#include "message/message.h"
+using namespace muscle;
+//using muscle::Queue;
 
-#include "netclient.h"
+
+// #include "netclient.h"
 
 class ScanProgress;
-
+class NetClient;
 
 // This class runs through a list of paths and parses each
 // directory for files to search
@@ -34,7 +37,7 @@ public:
 
 	Queue<MessageRef> & GetSharedFiles() { return fFiles; }
 	MessageRef GetSharedFile(int n);
-	bool FindFile(const QString & file, MessageRef * ref);
+	bool FindFile(const QString & file, MessageRef & ref);
 	bool IsRunning();
 	void EmptyList();
 

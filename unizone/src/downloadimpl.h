@@ -198,12 +198,12 @@ private:
 	};
 
 	// Find an item in the list that matches the list view item
-	// and return the WTIter
-	bool FindItem(WTList &, WTIter &, QListViewItem *);
+	// and return the index
+	bool FindItem(WTList &, int &, QListViewItem *);
 
 	// Reorganize transfer queue
-	void MoveUp(WTList & lst, WTIter & iter);
-	void MoveDown(WTList & lst, WTIter & iter);
+	void MoveUp(WTList & lst, int index);
+	void MoveDown(WTList & lst, int index);
 
 	// Update Queue Ratings
 	void UpdateDLRatings();
@@ -239,7 +239,8 @@ signals:
 	// Parameter 1 = Remote File Name, Parameter 2 = Local File Name, Parameter 3 = User Name
 	void FileFailed(QString, QString, QString); 
 	void FileInterrupted(QString, QString, QString);
-	void Closed();		// the download window has been closed
+	// the download window has been closed
+	void Closed();		
 
 };
 

@@ -6,9 +6,12 @@
 #include "settings.h"
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
+#include "qtsupport/QMessageTransceiverThread.h"
 #include "debugimpl.h"
 
 #include <qdir.h>
+
+using namespace muscle;
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 : WGenericThread(owner, optShutdownFlag) 
@@ -19,6 +22,9 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fLocalFileDl = NULL;
 	fNumFiles = -1;
 	fCurFile = -1;
+
+	qmtt = new QMessageTransceiverThread();
+	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
 			this, SLOT(MessageReceived(MessageRef, const String &)));
@@ -34,6 +40,11 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 
 WDownloadThread::~WDownloadThread()
 {
+	if (fShutdownFlag && !*fShutdownFlag)
+	{
+		*fShutdownFlag = true;
+	}
+
 	if (fFile)
 	{
 		fFile->close();
@@ -131,14 +142,16 @@ WDownloadThread::FixFileName(const QString & fixMe)
 }
 
 bool
-WDownloadThread::InitSession()
+WDownloadThread::InitSessionAux()
 {
 	if (fCurFile == -1) // No more files
 	{
 		return false;
 	}
-	else if (fCurFile > 0) // Resuming
+
+	if (fCurFile > 0) // Resuming
 	{
+
 		// Reinitialize file list
 		QString * temp = new QString[fNumFiles-fCurFile];
 		QString * temp2 = new QString[fNumFiles-fCurFile];
@@ -202,7 +215,7 @@ WDownloadThread::InitSession()
 			}
 			else
 			{
-				Reset();
+				qmtt->Reset();
 				MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
 				if (msg())
 				{
@@ -267,6 +280,8 @@ WDownloadThread::InitSession()
 			return true;
 		}
 	}
+	delete qmtt;
+	qmtt = NULL;
 	return false;
 }
 
@@ -569,7 +584,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 							error()->AddString("why", QT_TR_NOOP( "Couldn't write file data!" ));
 							SendReply(error);
 						}
-						Reset();
+						qmtt->Reset();
 						NextFile();
 					}
 				}
@@ -695,6 +710,10 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 	{
 		return;
 	}
+	else
+	{
+		fFinished = true;
+	}
 
 	MessageRef dis;
 	if (fDownloading)
@@ -747,14 +766,14 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 		}
 	}
 					
-	fDownloading = false;
 	if (fFile != NULL)
 	{
 		fFile->close();
 		delete fFile; 
 		fFile = NULL;
 	}
-	//disconnected = true;
+	fDownloading = false;
+	fDisconnected = true;
 }
 
 QString

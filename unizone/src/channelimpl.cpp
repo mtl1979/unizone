@@ -10,6 +10,9 @@
 #include "textevent.h"
 #include "platform.h"
 #include "wstring.h"
+#include "netclient.h"
+
+#include "reflector/StorageReflectConstants.h"
 
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags fl)
 : ChannelBase(/* parent */ NULL, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
@@ -796,9 +799,18 @@ Channel::UserDisconnected(QString sid, QString name)
 	{
 		if (gWin->fSettings->GetUserEvents())
 		{
-			QString parse = WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg( 
-				WFormat::UserDisconnected().arg(sid).arg(FixStringStr(name)).arg(WColors::RemoteName) 
-				); // <postmaster@raasu.org> 20021112
+			QString uname = FixStringStr(name);
+			QString msg;
+			if (uname.isEmpty())
+			{
+				msg = WFormat::UserDisconnected2().arg(sid);
+			}
+			else
+			{
+				// <postmaster@raasu.org> 20021112
+				msg = WFormat::UserDisconnected().arg(sid).arg(uname).arg(WColors::RemoteName); 
+			}
+			QString parse = WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);
 			PrintSystem(parse);
 		}
 		(*iter).second()->RemoveFromListView(fChannelUsers);

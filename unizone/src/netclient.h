@@ -2,15 +2,16 @@
 #define NETCLIENT_H
 
 
-#include "system/MessageTransceiverThread.h"
+// #include "system/MessageTransceiverThread.h"
 #include "qtsupport/QMessageTransceiverThread.h"
+
+#include "support/MuscleSupport.h"
 
 using namespace muscle;
 
 #include <qobject.h>
 
 #include "user.h"
-
 class NetClient : public QObject 
 {
 	Q_OBJECT
@@ -26,7 +27,7 @@ public:
 	QString GetServerIP();					// Get current server IP address
 	uint32 GetServerPort() { return fServerPort; } // Get current server port number
 	
-	bool IsConnected() const { return qmtt->IsInternalThreadRunning(); }
+	bool IsConnected() const;
 	
 	void AddSubscription(QString str, bool q = false);	// if "q" is true, u won't get an initial response
 	void RemoveSubscription(QString str);
@@ -41,6 +42,7 @@ public:
 	void SetFileCount(int32 count);
 	void SetLoad(int32 num, int32 max);
 	
+	status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
 	void SetNodeValue(const char * node, MessageRef & val); // set the Message of a node
 	
 	QString * GetChannelList();
@@ -132,25 +134,9 @@ public:
 	
 	// forwarders
 
-	void Reset()
-	{
-		qmtt->Reset();
-	}
-
-	status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL)
-	{
-		return qmtt->SendMessageToSessions(msgRef, optDistPath);
-	}
-
-	status_t SetOutgoingMessageEncoding(int32 encoding, const char * optDistPath = NULL)
-	{
-		return qmtt->SetOutgoingMessageEncoding(encoding, optDistPath);
-	}
-
-	status_t WaitForInternalThreadToExit()
-	{
-		return qmtt->WaitForInternalThreadToExit();
-	}
+	void Reset();
+	status_t SetOutgoingMessageEncoding(int32 encoding, const char * optDistPath = NULL);
+	status_t WaitForInternalThreadToExit();
 
 signals:
 	void UserDisconnected(QString sid, QString name);
@@ -179,7 +165,6 @@ private:
 	MessageRef fChannels;	// channel database
 	QMessageTransceiverThread *qmtt;
 	
-	// QMutex fNetLock;
 	void HandleBeRemoveMessage(String nodePath);
 	void HandleBeAddMessage(String nodePath, MessageRef ref);
 	

@@ -33,6 +33,9 @@ typedef hostent *LPHOSTENT;
 #include "ulistview.h"
 #include "downloadimpl.h"
 #include "filethread.h"
+#include "netclient.h"
+#include "serverclient.h"
+#include "updateclient.h"
 
 #include <qapplication.h>
 
@@ -2674,4 +2677,9 @@ void
 WinShareWindow::EndMessageBatch()
 {
 	END_OUTPUT();
+}
+QString
+WinShareWindow::GetUserID() const
+{ 
+	return fNetClient->LocalSessionID(); 
 }

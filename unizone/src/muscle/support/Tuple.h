@@ -21,6 +21,13 @@ public:
    /** Copy constructor */
    Tuple(const Tuple & copyMe) {*this = copyMe;}
 
+   /** Silly constructor -- This constructor does no initialization at all.  The arguments are here merely to differentiate it
+    *  from the other constructors, and are ignored.  When this constructor is used, the items in this Tuple will be in an
+    *  undefined state and their state should be set to something definite before use.  (Exception:  if the items are 
+    *  class objects with constructors, those constructors will still be called)
+    */
+   Tuple(bool, bool) {/* empty */}
+
    /** Destructor */
    ~Tuple() {/* empty */}
 
@@ -159,6 +166,12 @@ public:
 
    /** typedef for our item type; used by the binary operators below */
    typedef ItemType TupleItemType;
+
+   /** Convenience method -- returns a pointer to the nth item in our tuple. */
+   ItemType * GetItemPointer(uint32 which) {return &_items[which];}
+
+   /** Convenience method -- returns a read-only pointer to the nth item in our tuple. */
+   const ItemType * GetItemPointer(uint32 which) const {return &_items[which];}
 
 private:
    /** Shifts the values of the indices left (numPlaces) spaces.  Blanks are filled in on the right. */

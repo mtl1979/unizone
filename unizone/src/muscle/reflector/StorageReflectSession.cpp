@@ -735,7 +735,7 @@ MessageReceivedFromGateway(MessageRef msgRef, void * userData)
             while((nextName = it.GetNextFieldNameString()) != NULL)
             {
                MessageRef dataMsgRef;
-               if (msg.FindMessage(*nextName, dataMsgRef) == B_NO_ERROR) SetDataNode(*nextName, dataMsgRef, true, true, quiet);
+               for (int32 i=0; msg.FindMessage(*nextName, i, dataMsgRef) == B_NO_ERROR; i++) SetDataNode(*nextName, dataMsgRef, true, true, quiet);
             }
          }
          break;

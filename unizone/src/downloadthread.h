@@ -2,6 +2,7 @@
 #define DOWNLOADTHREAD_H
 
 #include "genericthread.h"
+#include "qtsupport/QMessageTransceiverThread.h"
 
 #include <qfile.h>
 #include <qstring.h>
@@ -37,7 +38,7 @@ public:
 
 	// call this after setting the file to init the download
 	// this will also send a message to show the dialog, so do not do it yourself
-	bool InitSession();
+	// bool InitSession();
 
 	void SetRate(int rate);
 	void SetRate(int rate, AbstractReflectSessionRef ref);
@@ -75,6 +76,8 @@ protected:
 private:
 	QString UniqueName(QString file, int index); // build up unique name using 'file' and 'index'
 	String _sessionID;
+
+	bool InitSessionAux();
 };
 
 // subclass ThreadWorkerSessionFactory to do throttling

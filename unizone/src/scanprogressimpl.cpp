@@ -21,13 +21,13 @@ ScanProgress::SetDirsLeft(int dl)
 }
 
 void
-ScanProgress::SetScanDirectory(QString dir)
+ScanProgress::SetScanDirectory(const QString & dir)
 {
 	fDirectory->setText(dir);
 }
 
 void
-ScanProgress::SetScanFile(QString file)
+ScanProgress::SetScanFile(const QString & file)
 {
 	fFile->setText(file);
 }

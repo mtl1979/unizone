@@ -28,7 +28,9 @@ public:
 	static QString SystemText();
 	static QString UserConnected();
 	static QString UserDisconnected();
+	static QString UserDisconnected2();
 	static QString UserNameChangedNoOld();
+	static QString UserNameChangedNoNew();
 	static QString UserNameChanged();
 	static QString UserStatusChanged();
 	static QString UserStatusChanged2();

@@ -12,6 +12,7 @@
 #include <qlistview.h>
 #include <qstring.h>
 
+
 WUser::WUser(QString sid)
 {
 	fUserName = "?";

@@ -10,7 +10,7 @@
 #include "chattext.h"
 #include "user.h"
 #include "htmlview.h"
-#include "netclient.h"
+// #include "netclient.h"
 #include "Log.h"
 
 #include <qlistview.h>
@@ -18,8 +18,8 @@
 #include <qvgroupbox.h>
 #include <qthread.h>
 
-// <postmaster@raasu.org> 20021024 -- Use always on Windows
 
+class NetClient;
 
 class WPrivateWindow : public WPrivateWindowBase
 { 

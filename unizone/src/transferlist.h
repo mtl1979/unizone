@@ -4,13 +4,15 @@
 #include "genericthread.h"
 #include "transferitem.h"
 
+#include "util/Queue.h"
+
 #include <list>
 
 using std::pair;
 using std::list;
 
 typedef pair<WGenericThread *, WTransferItem *> WTPair;
-typedef list<WTPair> WTList;
-typedef WTList::iterator WTIter;
+typedef Queue<WTPair> WTList;
+//typedef WTList::iterator WTIter;
 
 #endif

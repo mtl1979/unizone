@@ -9,11 +9,11 @@
 WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 : QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag)
 {
+	PRINT("WGenericThread ctor\n");
+
 	setName( "WGenericThread" );
 
-	qmtt = new QMessageTransceiverThread();
-	CHECK_PTR(qmtt);
-
+	qmtt = NULL;
 	// Default status
 
 	if (!fShutdownFlag)					// Force use of Shutdown Flag
@@ -27,6 +27,7 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	fManuallyQueued = false;
 	fLocallyQueued = false;
 	fRemotelyQueued = false;
+	fDisconnected = false;
 	fPackets = 0;
 	fTXRate = 0;
 	fTimeLeft = 0;
@@ -44,22 +45,23 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	CHECK_PTR(fBlockTimer);
 
 	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
+	PRINT("WGenericThread ctor OK\n");
 }
 
 WGenericThread::~WGenericThread()
 {
-	if (fShutdownFlag && !*fShutdownFlag)
+	PRINT("WGenericThread dtor\n");
+
+	if (qmtt)
 	{
-		*fShutdownFlag = true;
+		if (IsInternalThreadRunning()) 
+		{
+			qmtt->ShutdownInternalThread();
+		}
+		delete qmtt;
+		qmtt = NULL;
 	}
-	if (qmtt->IsInternalThreadRunning()) 
-	{
-		qmtt->ShutdownInternalThread();
-		qmtt->Reset(); 
-		qmtt->WaitForInternalThreadToExit();
-	}
-	delete qmtt;
-	qmtt = NULL;
+	PRINT("WGenericThread dtor OK\n");
 }
 
 bool
@@ -163,9 +165,9 @@ WGenericThread::SendReply(MessageRef &m)
 	if (!gWin->fDLWindow)	// doesn't exist anymore??
 	{
 		PRINT("WGenericThread::SendReply() : Invalid fOwner\n");
-		if (qmtt->IsInternalThreadRunning())
+		if (IsInternalThreadRunning())
 		{
-			qmtt->Reset();
+			Reset();
 		}
 		return;
 	}
@@ -356,3 +358,36 @@ WGenericThread::InitTransferETA()
 	fETACount = 0;
 }
 
+
+void
+WGenericThread::Reset()
+{
+	PRINT("WGenericThread::Reset()\n");
+	PRINT("Disconnecting...\n");
+	if ( fShutdownFlag )
+		*fShutdownFlag = true;
+	if (qmtt)
+	{
+		qmtt->RemoveSessions();
+		qmtt->Reset();
+	}
+	PRINT("WGenericThread::Reset() OK\n");
+}
+
+bool 
+WGenericThread::IsInternalThreadRunning()
+{
+	if (qmtt)
+		return qmtt->IsInternalThreadRunning();
+	else
+		return false;
+}
+
+status_t 
+WGenericThread::RemoveSessions(const char * optDistPath)
+{
+	if (qmtt)
+		return qmtt->RemoveSessions(optDistPath);
+	else
+		return B_ERROR;
+}

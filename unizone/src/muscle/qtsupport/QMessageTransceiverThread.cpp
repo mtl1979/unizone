@@ -2,18 +2,12 @@
 
 #include "qtsupport/QMessageTransceiverThread.h"
 
-
 namespace muscle {
 
-#if (QT_VERSION < 0x030100)
-	static const uint32 QMTT_SIGNAL_EVENT = 65535;
-#else
-	static const uint32 QMTT_SIGNAL_EVENT = QEvent::MaxUser;
-#endif
+static const uint32 QMTT_SIGNAL_EVENT = QEvent::MaxUser;
 
 QMessageTransceiverThread :: QMessageTransceiverThread()
 {
-   setName("QMessageTransceiverThread");
    // empty
 }
 

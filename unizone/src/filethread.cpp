@@ -11,6 +11,7 @@
 #include "util/String.h"
 #include "wstring.h"
 #include "scanprogressimpl.h"
+#include "netclient.h"
 
 #include <qdir.h>
 #include <qstringlist.h>
@@ -250,27 +251,31 @@ WFileThread::AddFile(const QString & filePath)
 				if (ref())
 				{
 					QCString qcPath = ufi->getPath().utf8();
-					ref()->AddInt32("beshare:Modification Time", ufi->getModificationTime());
-					ref()->AddString("beshare:Kind", (const char *) ufi->getMIMEType().utf8()); // give BeSharer's some relief
-					ref()->AddString("beshare:Path", (const char *) qcPath);
-					ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
-					ref()->AddInt64("beshare:File Size", ufi->getSize());
-					ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
-					ref()->AddString("beshare:File Name", (const char *) ufi->getName().utf8());
-							
-					QString nodePath;
-					if (fFired)
-						nodePath = "beshare/fires/";
-					else
-						nodePath = "beshare/files/";
-							
-					nodePath += ufi->getName();
-							
-					ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
-					Lock(); // test
-					fFiles.AddTail(ref);
-					fScanProgress->SetScannedFiles(fFiles.GetNumItems());
-					Unlock(); // test
+					int64 size = ufi->getSize();
+					if (size > 0)
+					{
+						ref()->AddInt32("beshare:Modification Time", ufi->getModificationTime());
+						ref()->AddString("beshare:Kind", (const char *) ufi->getMIMEType().utf8()); // give BeSharer's some relief
+						ref()->AddString("beshare:Path", (const char *) qcPath);
+						ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
+						ref()->AddInt64("beshare:File Size", size);
+						ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
+						ref()->AddString("beshare:File Name", (const char *) ufi->getName().utf8());
+						
+						QString nodePath;
+						if (fFired)
+							nodePath = "beshare/fires/";
+						else
+							nodePath = "beshare/files/";
+						
+						nodePath += ufi->getName();
+						
+						ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
+						Lock(); // test
+						fFiles.AddTail(ref);
+						fScanProgress->SetScannedFiles(fFiles.GetNumItems());
+						Unlock(); // test
+					}
 				}
 			}
 			delete ufi;
@@ -285,8 +290,6 @@ QString
 WFileThread::ResolveLink(const QString & lnk)
 {
 #ifdef WIN32
-	QString ret = lnk;
-
 #ifdef DEBUG2
 	{
 		WString wRet = ret;
@@ -294,8 +297,10 @@ WFileThread::ResolveLink(const QString & lnk)
 	}
 #endif
 
-	if (ret.right(4) == ".lnk")
+	if (lnk.right(4) == ".lnk")
 	{
+		QString ret = lnk;
+
 		PRINT("Is Link\n");
 		// we've got a link...
 		HRESULT hres;
@@ -304,14 +309,14 @@ WFileThread::ResolveLink(const QString & lnk)
 		WString wsz;
 		wchar_t szFile[MAX_PATH];
 		WIN32_FIND_DATA wfd;
-
+		
 		hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *)&psl);
 		if (SUCCEEDED(hres))
 		{
 			// Unicode version
 			PRINT("Created instance\n");
 			IPersistFile * ppf;
-
+			
 			hres = psl->QueryInterface(IID_IPersistFile, (void **)&ppf);
 			if (SUCCEEDED(hres))
 			{
@@ -332,7 +337,7 @@ WFileThread::ResolveLink(const QString & lnk)
 						ret = wideCharToQString(szFile);
 					}
 				}
-
+				
 				ppf->Release();
 			}
 			psl->Release();
@@ -342,14 +347,16 @@ WFileThread::ResolveLink(const QString & lnk)
 			// Fallback to ANSI
 			ret = ResolveLinkA(lnk);
 		}
+		{
+			WString wRet = ret;
+			PRINT("Resolved to: %S\n", wRet.getBuffer());
+		}
+		
+		return ret;
 	}
+	else
+		return lnk;
 
-	{
-		WString wRet = ret;
-		PRINT("Resolved to: %S\n", wRet.getBuffer());
-	}
-
-	return ret;
 
 #else
 	QFileInfo inf(lnk);
@@ -436,7 +443,7 @@ WFileThread::CheckFile(const QString & file)
 }
 
 bool
-WFileThread::FindFile(const QString & file, MessageRef * ref)
+WFileThread::FindFile(const QString & file, MessageRef & ref)
 {
 	Lock();
 	for (int i = 0; i < fFiles.GetNumItems(); i++)
@@ -452,7 +459,7 @@ WFileThread::FindFile(const QString & file, MessageRef * ref)
 		name = QString::fromUtf8(sn.Cstr());
 		if (file == name)
 		{
-			*ref = fFiles[i];
+			ref = fFiles[i];
 			Unlock();
 			return true;
 		}

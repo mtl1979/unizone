@@ -23,14 +23,18 @@
 #include <qlayout.h>
 #include <qtabwidget.h>
 
-#include "netclient.h"
-#include "serverclient.h"
-#include "updateclient.h"
+// #include "netclient.h"
+// #include "serverclient.h"
+// #include "updateclient.h"
 #include "privatewindowimpl.h"
 #include "system/SetupSystem.h"
 #include "qtsupport/QAcceptSocketsThread.h"
+#include "regex/StringMatcher.h"
+#include "support/MuscleSupport.h"
 #include "search.h"
 #include "user.h"
+
+using namespace muscle;
 
 #define UPDATE_SERVER "www.raasu.org"
 #define UPDATE_FILE "/tools/windows/version.txt"
@@ -51,6 +55,10 @@ class MenuBar;
 class WUniListView;
 class WHTMLView;
 class WComboBox;
+class NetClient;
+class ServerClient;
+class UpdateClient;
+
 
 struct WFileInfo
 {
@@ -139,7 +147,7 @@ public:
 	QString GetUserName() const;
 	QString GetServer() const;
 	QString GetStatus() const;
-	QString GetUserID() const { return fNetClient->LocalSessionID(); }
+	QString GetUserID() const; 
 #ifdef WIN32
 	HWND GetHandle() { return fWinHandle; }
 #endif

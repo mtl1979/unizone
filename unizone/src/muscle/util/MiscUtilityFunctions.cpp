@@ -94,15 +94,15 @@ String GetHumanReadableTimeString(uint64 timeUS)
       if (FileTimeToLocalFileTime(&fileTime, &localTime))
       {
          SYSTEMTIME st;
-         if (FileTimeToSystemTime(&localTime, &st)) sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+         if (FileTimeToSystemTime(&localTime, &st)) sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", st.wYear+(1970-1601), st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
       }
 #else
-   time_t timeS = (time_t) (timeUS/1000000);  // timeS is seconds since 1970
-   struct tm * ts = localtime(&timeS);
-   if (ts) sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", ts->tm_year+1900, ts->tm_mon+1, ts->tm_mday, ts->tm_hour, ts->tm_min, ts->tm_sec);
+      time_t timeS = (time_t) (timeUS/1000000);  // timeS is seconds since 1970
+      struct tm * ts = localtime(&timeS);
+      if (ts) sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", ts->tm_year+1900, ts->tm_mon+1, ts->tm_mday, ts->tm_hour, ts->tm_min, ts->tm_sec);
 #endif
    }
-   return buf;
+   return String(buf);
 }
  
 uint64 ParseHumanReadableTimeString(const String & s)

@@ -9,7 +9,7 @@
 
 namespace muscle {
 
-static const String ZLIB_FIELD_NAME = "_zlib";
+static const String MUSCLE_ZLIB_FIELD_NAME_STRING = MUSCLE_ZLIB_FIELD_NAME;
 
 static ZLibCodec * GetZLibCodec(int level)
 {
@@ -26,7 +26,7 @@ static ZLibCodec * GetZLibCodec(int level)
 
 MessageRef DeflateMessage(MessageRef msgRef, int compressionLevel, bool force)
 {
-   if ((msgRef())&&(msgRef()->HasName(ZLIB_FIELD_NAME) == false))
+   if ((msgRef())&&(msgRef()->HasName(MUSCLE_ZLIB_FIELD_NAME_STRING) == false))
    {
       uint32 inflatedSize = msgRef()->FlattenedSize();
       MessageRef defMsg = GetMessageFromPool(msgRef()->what);
@@ -43,7 +43,7 @@ MessageRef DeflateMessage(MessageRef msgRef, int compressionLevel, bool force)
             if (codec)
             {
                buf = codec->Deflate(*buf(), true);
-               if ((buf())&&(defMsg()->AddFlat(ZLIB_FIELD_NAME, FlatCountableRef(buf.GetGeneric(), false)) == B_NO_ERROR)) 
+               if ((buf())&&(defMsg()->AddFlat(MUSCLE_ZLIB_FIELD_NAME_STRING, FlatCountableRef(buf.GetGeneric(), false)) == B_NO_ERROR)) 
                {
                   m->Unlock();
                   return ((force)||(defMsg()->FlattenedSize() < inflatedSize)) ? defMsg : msgRef;
@@ -60,7 +60,7 @@ MessageRef DeflateMessage(MessageRef msgRef, int compressionLevel, bool force)
 MessageRef InflateMessage(MessageRef msgRef)
 {
    FlatCountableRef fcRef;
-   if ((msgRef())&&(msgRef()->FindFlat(ZLIB_FIELD_NAME, fcRef) == B_NO_ERROR))
+   if ((msgRef())&&(msgRef()->FindFlat(MUSCLE_ZLIB_FIELD_NAME_STRING, fcRef) == B_NO_ERROR))
    {
       ByteBufferRef buf(fcRef.GetGeneric(), false);
       if (buf())

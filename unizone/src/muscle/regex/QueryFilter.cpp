@@ -79,7 +79,7 @@ status_t MultiQueryFilter :: SaveToArchive(Message & archive) const
    return B_NO_ERROR;
 }
 
-status_t MultiQueryFilter :: SetFromArchive(Message & archive)
+status_t MultiQueryFilter :: SetFromArchive(const Message & archive)
 {
    if (QueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
 
@@ -99,7 +99,7 @@ status_t AndOrQueryFilter :: SaveToArchive(Message & archive) const
            ((_minMatches == ((uint32)-1))||(archive.AddInt32("min", _minMatches) == B_NO_ERROR))) ? B_NO_ERROR : B_ERROR;
 }
 
-status_t AndOrQueryFilter :: SetFromArchive(Message & archive)
+status_t AndOrQueryFilter :: SetFromArchive(const Message & archive)
 {
    if (QueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
    if (archive.FindInt32("min", (int32*)&_minMatches) != B_NO_ERROR) _minMatches = ((uint32)-1);
@@ -126,7 +126,7 @@ status_t NandNotQueryFilter :: SaveToArchive(Message & archive) const
            ((_maxMatches == 0)||(archive.AddInt32("max", _maxMatches) == B_NO_ERROR))) ? B_NO_ERROR : B_ERROR;
 }
 
-status_t NandNotQueryFilter :: SetFromArchive(Message & archive)
+status_t NandNotQueryFilter :: SetFromArchive(const Message & archive)
 {
    if (QueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
    if (archive.FindInt32("max", (int32*)&_maxMatches) != B_NO_ERROR) _maxMatches = 0;
