@@ -356,7 +356,6 @@ WUser::SetFirewalled(bool f)
 	if (!fBot)
 	{
 		fFirewalled = f;
-//		UpdateListViews();
 	}
 }
 
@@ -364,14 +363,12 @@ void
 WUser::SetUserName(const QString & name) 
 {
 	fUserName = name; 
-//	UpdateListViews();
 }
 	
 void 
 WUser::SetStatus(const QString & s) 
 {
 	fUserStatus = s; 
-//	UpdateListViews();
 } 
 	
 void 
@@ -390,14 +387,12 @@ void
 WUser::SetCurUploads(uint32 c) 
 { 
 	fCurUploads = c; 
-//	UpdateListViews();
 }
 	
 void 
 WUser::SetMaxUploads(uint32 m) 
 { 
 	fMaxUploads = m; 
-//	UpdateListViews();
 }
 	
 void 
@@ -407,21 +402,18 @@ WUser::SetBandwidthLabel(const char * s)
 		fBandwidthLabel = qApp->translate("Connection", "Unknown");
 	else 
 		fBandwidthLabel = qApp->translate("Connection", s); 
-//	UpdateListViews();
 }
 
 void 
 WUser::SetBandwidthBPS(uint32 bps) 
 { 
 	fBandwidthBPS = bps; 
-//	UpdateListViews();
 }
 	
 void 
 WUser::SetFileCount(int32 fc) 
 { 
 	fFileCount = fc; 
-//	UpdateListViews();
 }
 
 QString
@@ -510,5 +502,4 @@ WUser::SetClient(const QString &s)
 			}
 		}
 	}
-//	UpdateListViews();
 }

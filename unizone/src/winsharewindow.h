@@ -131,7 +131,7 @@ public:
 	enum
 	{
 		ConnectRetry = QEvent::User + 8000,
-		UpdateMainUsers //,
+//		UpdateMainUsers,
 //		UpdatePrivateUsers
 	};
 

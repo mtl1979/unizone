@@ -641,16 +641,8 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 					{
 						user()->SetFirewalled(false);
 					}
-//					else
-//						RemoveUser(qsid);
 
-					QCustomEvent *qce = new QCustomEvent(WinShareWindow::UpdateMainUsers);
-					if (qce)
-					{
-						qce->setData(user());
-						QApplication::postEvent(fOwner, qce);
-					}
-//					user()->UpdateListViews();
+					TextEvent(fOwner, qsid, WTextEvent::UserUpdateEvent);
 				}
 				break;
 				
@@ -1005,14 +997,6 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 #endif
 				HandleResultMessage(msg);
 				
-				// update all the users to the list view (if not there yet...)
-//				SendSignal(WinShareWindow::UpdateMainUsers);
-//				WinShareWindow *win = GetWindow();
-//				if (win)
-//					win->UpdateUserList();
-
-//				SendSignal(WinShareWindow::UpdatePrivateUsers);
-
 				break;
 			}
 

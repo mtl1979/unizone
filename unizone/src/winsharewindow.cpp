@@ -480,22 +480,6 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				}
 				return;
 			}
-		case WinShareWindow::UpdateMainUsers:
-			{
-				WUser * usr = reinterpret_cast<WUser *>(event->data());
-				if (usr)
-					usr->UpdateListViews();
-//				UpdateUserList();
-				return;
-			}
-/*
-		case WinShareWindow::UpdatePrivateUsers:
-			{
-				PRINT("\tWinShareWindow::UpdatePrivateUsers\n");
-				emit UpdatePrivateUserLists();
-				return;
-			}
-*/
 		case WFileThread::ScanDone:
 			{
 				PRINT("\tWinShareWindow::ScanDone\n");
@@ -613,6 +597,19 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (wte)
 				{
 					PrintText( wte->Text() );
+				}
+				return;
+			}
+		case WTextEvent::UserUpdateEvent:
+			{
+				WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
+				if (wte)
+				{
+					WUserRef uref = FindUser(wte->Text());
+					if (uref())
+					{
+						uref()->UpdateListViews();
+					}
 				}
 				return;
 			}
