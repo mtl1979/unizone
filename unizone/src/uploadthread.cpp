@@ -185,7 +185,7 @@ WUploadThread::SetManuallyQueued(bool b)
 
 
 void 
-WUploadThread::SendReply(MessageRef m)
+WUploadThread::SendReply(MessageRef &m)
 {
 	if (m())
 	{

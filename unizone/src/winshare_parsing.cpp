@@ -67,7 +67,7 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 	const char * n;
 	while((n = idTok.GetNextToken()) != NULL)
 	{
-		String next(n);
+		String next = StripURL(n);
 		next = next.Trim();
 
 		// Is this item our user's session ID?
@@ -78,7 +78,9 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 			 // Does this item (interpreted as a regex) match our user's name?
 			 MakeRegexCaseInsensitive(next);
 			 StringMatcher sm(next.Cstr());
-			 String userName = String((const char *) user->GetUserName().utf8()).Trim();
+			 String userName = String(StripURL((const char *) user->GetUserName().utf8())).Trim();
+			 PRINT("MatchUserFilter: username = %s\n", userName.Cstr());
+			 PRINT("MatchUserFilter: regex = %s\n", next.Cstr());
 			 if ((userName.Length() > 0) && sm.Match(userName.Cstr()))
 			 {
 				 return true;

@@ -283,7 +283,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 				SetWatchPattern("");	// clear watch pattern
 		}
-#ifdef WIN32
 		// <postmaster@raasu.org> 20021026
 		else if (CompareCommand(sendText, "/uptime"))
 		{
@@ -297,7 +296,18 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendChatText("*", text);
 			PrintSystem(text);
 		}
-#endif
+		else if (CompareCommand(sendText, "/logged"))
+		{
+			if (fNetClient->IsInternalThreadRunning())	// are we connected?
+			{
+				PrintSystem( tr(MSG_LOGGED).arg(MakeHumanTime(GetCurrentTime64() - fLoginTime)) );
+			}
+			else
+			{
+				if (fSettings->GetError())
+					PrintError(tr(MSG_NOTCONNECTED));
+			}		
+		}
 		// <postmaster@raasu.org> 20020929
 		else if (CompareCommand(sendText, "/users"))
 		{
@@ -1622,6 +1632,7 @@ WinShareWindow::ShowHelp(QString command)
 							"\n\t\t\t\t/help [command] - show help for command (no '/' in front of command) or show this help text if no command given."
 							"\n\t\t\t\t/heremsg - message for here state"
 							"\n\t\t\t\t/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)"
+							"\n\t\t\t\t/logged - show the time you have been logged in to a server"
 							"\n\t\t\t\t/me [action] - /action synonym"
 							"\n\t\t\t\t/msg [name] [message] - send a private message"
 							"\n\t\t\t\t/nick [name] - change your user name"
@@ -2240,7 +2251,9 @@ WinShareWindow::FindUser(QString user)
 	for (WUserIter iter = umap.begin(); iter != umap.end(); iter++)
 	{
 		if (MatchUserFilter((*iter).second(), (const char*) user.utf8()))
+		{
 			return (*iter).second;
+		}
 	}
 	return WUserRef(NULL, NULL);
 }

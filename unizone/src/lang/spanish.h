@@ -61,6 +61,7 @@
 #define MSG_NUM_USERS		"Número de usuarios conectados: %1\n"
 
 #define MSG_UPTIME			"Uptime: %1"
+#define MSG_LOGGED			"Logged In: %1"
 #define MSG_WEEK			"semana"
 #define MSG_WEEKS			"semanas"
 #define MSG_DAY				"día"

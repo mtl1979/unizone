@@ -417,7 +417,9 @@ WinShareWindow::FileFailed(QString file, QString user)
 
 	WTextEvent * wte = new WTextEvent(user, WTextEvent::ResumeType);
 	if (wte)
+	{
 		QApplication::postEvent(this, wte);
+	}
 }
 
 // Insert interrupted download to resume list
@@ -454,6 +456,7 @@ void
 WinShareWindow::CheckResumes(QString user)
 {
 	// No need to check if empty!
+	PRINT("CheckResumes: user   = %S\n", qStringToWideChar( StripURL(user) ));
 
 	if (fResumeMap.empty()) 
 		return;
@@ -470,7 +473,8 @@ WinShareWindow::CheckResumes(QString user)
 	WResumeIter it = fResumeMap.begin();
 	while (it != fResumeMap.end())
 	{
-		if ((*it).second == user)
+		PRINT("CheckResumes: second = %S\n", qStringToWideChar( StripURL((*it).second) ));
+		if (StripURL((*it).second) == StripURL(user))
 		{
 			// User name matches
 

@@ -100,7 +100,7 @@ NetClient::SignalOwner()
 {
 	QCustomEvent *e = new QCustomEvent(NetClient::SignalEvent);
 	if (e)
-		QApplication::postEvent(fOwner, e);
+		QThread::postEvent(fOwner, e);
 }
 
 QString

@@ -138,10 +138,10 @@ WGenericThread::IsBlocked() const
 }
 
 void 
-WGenericThread::SendReply(MessageRef m)
+WGenericThread::SendReply(MessageRef &m)
 {
 	// since we're just reading, we don't need to do any locking, etc
-	if (fOwner != gWin->fDLWindow)	// doesn't exist anymore??
+	if (!gWin->fDLWindow)	// doesn't exist anymore??
 	{
 		PRINT("WGenericThread::SendReply() : Invalid fOwner\n");
 		if (IsInternalThreadRunning())
@@ -153,7 +153,7 @@ WGenericThread::SendReply(MessageRef m)
 	m()->AddPointer("sender", this);
 	WGenericEvent * wge = new WGenericEvent(m);
 	if (wge)
-		QApplication::postEvent(fOwner, wge);
+		QThread::postEvent(fOwner, wge);
 }
 
 void 

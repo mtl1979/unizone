@@ -63,6 +63,7 @@
 #define MSG_NUM_USERS		"Käyttäjiä linjoilla: %1\n"
 
 #define MSG_UPTIME			"Käynnissä: %1"
+#define MSG_LOGGED			"Kirjautuneena: %1"
 #define MSG_WEEK			"viikko"
 #define MSG_WEEKS			"viikkoa"
 #define MSG_DAY				"päivä"

@@ -47,7 +47,7 @@ public:
 
 
 protected:
-	virtual void SendReply(MessageRef m);
+	virtual void SendReply(MessageRef &m);
 	virtual void SignalOwner();
 	void SendQueuedNotification();
 	void SendRejectedNotification(bool);

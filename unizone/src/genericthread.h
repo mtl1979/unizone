@@ -110,7 +110,7 @@ protected:
 	uint32 ComputeETA() const;
 
 	virtual void SignalOwner() = 0;
-	virtual void SendReply(MessageRef m);
+	virtual void SendReply(MessageRef &m);
 	QString GetUserName(QString sid);
 
 	int fTXRate; // Current transfer throttling rate

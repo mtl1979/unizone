@@ -228,7 +228,7 @@ WDownloadThread::InitSession()
 }
 
 void 
-WDownloadThread::SendReply(MessageRef m)
+WDownloadThread::SendReply(MessageRef &m)
 {
 	if (m())
 	{
@@ -261,7 +261,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						MessageRef q(GetMessageFromPool(WGenericEvent::FileQueued));
 						SendReply(q);
 						SetRemotelyQueued(true);
-						CTimer->start(60000, true);
+						//CTimer->start(60000, true);
 						break;
 					}
 					
@@ -435,7 +435,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 											NextFile();
 										}
 										SendReply(update);
-										CTimer->start(30000, true); // 30 seconds
+										//CTimer->start(30000, true); // 30 seconds
 										PRINT("\tWDownload::TransferFileData OK\n");
 									}
 									else
@@ -481,7 +481,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							outFile += "/";
 						QString fixed = outFile;
 						outFile += fFileDl[c];
-						fixed += FixFileName(fFileDl[fCurFile]);
+						fixed += FixFileName(fFileDl[c]);
 						
 						if (QFile::exists(fixed))
 						{

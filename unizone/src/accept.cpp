@@ -20,7 +20,7 @@ WAcceptThread::SignalOwner()
 					{
 						WAcceptThreadEvent *e = new WAcceptThreadEvent(sref);
 						if (e)
-							QApplication::postEvent(fOwner, e);
+							QThread::postEvent(fOwner, e);
 					}
 				}
 				break;

@@ -124,7 +124,7 @@ StripURL(const String & strip)
 				int right = strip.IndexOf(']');
 				if (right > left)	// make sure right is than greater left :D
 				{
-					String label = strip.Substring(left, right);
+					String label = Trim(strip.Substring(left, right));
 					if ((right + 1) < (int) strip.Length())
 					{
 						String rest = strip.Substring(right + 1);
@@ -140,7 +140,7 @@ StripURL(const String & strip)
 				}
 				else if (right == -1) // ']' is missing?
 				{
-					String label = strip.Substring(left);
+					String label = Trim(strip.Substring(left));
 					return label;
 				}
 			}
@@ -223,4 +223,14 @@ MakeSizeString(uint64 s)
 	result.sprintf("%.2f ", n);
 	result += postFix;
 	return result;	
+}
+
+String 
+Trim(String orig)
+{ 
+   int32 len = (int32) orig.Length();
+   const char * s = orig.Cstr();
+   int32 startIdx; for (startIdx = 0;     startIdx<len;    startIdx++) if (s[startIdx] != ' ') break; 
+   int32 endIdx;   for (endIdx   = len-1; endIdx>startIdx; endIdx--)   if (s[endIdx] != ' ')   break; 
+   return orig.Substring((uint32)startIdx, (uint32)(endIdx+1)); 
 }

@@ -63,7 +63,7 @@ protected:
 	bool fPartial;
 	int32 fNumFiles, fCurFile;
 
-	virtual void SendReply(MessageRef m);
+	virtual void SendReply(MessageRef &m);
 
 	virtual void SignalOwner();
 private:

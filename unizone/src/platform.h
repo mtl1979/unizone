@@ -68,4 +68,8 @@ bool IsURL(const String &);
 // Format a nice size string
 QString MakeSizeString(uint64 s);
 
+// Strip only spaces of, no other non-printable characters
+String Trim(String orig);
+
+
 #endif // PLATFORM_H

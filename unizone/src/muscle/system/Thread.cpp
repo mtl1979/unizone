@@ -10,8 +10,8 @@ Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
 {
 #if defined(MUSCLE_USE_PTHREADS)
    // do nothing
-#elif defined(QT_THREAD_SUPPORT)
-   _thread.SetOwner(this);
+//#elif defined(QT_THREAD_SUPPORT)
+//   _thread.SetOwner(this);
 #endif
 
    for (uint32 i=0; i<NUM_MESSAGE_THREADS; i++) 
@@ -79,7 +79,7 @@ status_t Thread :: StartInternalThreadAux()
 #if defined(MUSCLE_USE_PTHREADS)
       if (pthread_create(&_thread, NULL, InternalThreadEntryFunc, this) == 0) return B_NO_ERROR;
 #elif defined(QT_THREAD_SUPPORT)
-      _thread.start();
+      start();
       return B_NO_ERROR;
 #elif defined(__BEOS__)
       if ((_thread = spawn_thread(InternalThreadEntryFunc, "MUSCLE Thread", B_NORMAL_PRIORITY, this)) >= 0)
@@ -232,7 +232,7 @@ status_t Thread :: WaitForInternalThreadToExit()
 #if defined(MUSCLE_USE_PTHREADS)
       (void) pthread_join(_thread, NULL);
 #elif defined(QT_THREAD_SUPPORT)
-      (void) _thread.wait();
+      (void) wait();
 #elif defined(__BEOS__)
       status_t junk;
       (void) wait_for_thread(_thread, &junk);
