@@ -593,7 +593,7 @@ Channel::NewChannelText(const QString channel, const QString user, const QString
 		return;
 	if ( text.lower().left(6) == "/me's " )
 	{
-		if ( !gWin->IsIgnored((QString) user) )
+		if ( !gWin->IsIgnored((QString &) user) )
 		{
 			QString msg = GetParameterString(text);
 			if ((msg.length() > 0) && gWin->fSettings->GetChat())
@@ -602,7 +602,7 @@ Channel::NewChannelText(const QString channel, const QString user, const QString
 	}
 	else if (text.lower().left(4) == "/me ")
 	{
-		if ( !gWin->IsIgnored((QString) user) )
+		if ( !gWin->IsIgnored((QString &) user) )
 		{
 			QString msg = GetParameterString(text);
 			if ((msg.length() > 0) && gWin->fSettings->GetChat())

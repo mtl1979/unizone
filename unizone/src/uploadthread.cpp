@@ -101,7 +101,8 @@ WUploadThread::InitSession()
 	{
 		if (AddNewSession(fSocket, limit) == B_OK && StartInternalThread() == B_OK)
 		{
-			SendReply(GetMessageFromPool(WGenericEvent::ConnectInProgress));
+			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
+			SendReply(mref);
 			CTimer->start(60000, true);
 		}
 		else
@@ -116,7 +117,8 @@ WUploadThread::InitSession()
 		const String sRemoteIP = (const char *) fStrRemoteIP.utf8(); // <postmaster@raasu.org> 20021026
 		if (AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) == B_OK && StartInternalThread() == B_OK)
 		{
-			SendReply(GetMessageFromPool(WGenericEvent::ConnectInProgress));
+			MessageRef mref(GetMessageFromPool(WGenericEvent::ConnectInProgress));
+			SendReply(mref);
 			CTimer->start(60000, true);
 		}
 		else
@@ -208,7 +210,8 @@ WUploadThread::SignalOwner()
 		{
 			case MTT_EVENT_SESSION_CONNECTED:
 			{
-				SendReply(GetMessageFromPool(WGenericEvent::Connected));
+				MessageRef con(GetMessageFromPool(WGenericEvent::Connected));
+				SendReply(con);
 				// if queued, send a queued message here, otherwise, nothing
 				break;
 			}
@@ -404,7 +407,8 @@ WUploadThread::SendQueuedNotification()
 {
 	MessageRef q(GetMessageFromPool(WDownload::TransferNotifyQueued));
 	SendMessageToSessions(q);
-	SendReply(GetMessageFromPool(WGenericEvent::FileQueued));
+	MessageRef qf(GetMessageFromPool(WGenericEvent::FileQueued));
+	SendReply(qf);
 }
 
 void
@@ -453,7 +457,8 @@ WUploadThread::DoUpload()
 {
 	if (IsLocallyQueued())		// not yet
 	{
-		SendReply(GetMessageFromPool(WGenericEvent::FileQueued));
+		MessageRef lq(GetMessageFromPool(WGenericEvent::FileQueued));
+		SendReply(lq);
 		return;
 	}
 

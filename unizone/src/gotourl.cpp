@@ -20,6 +20,7 @@
 #include "winsharewindow.h"
 #include "settings.h"
 #include "platform.h"		// <postmaster@raasu.org> 20021023 -- Move Platform-dependant code to own files
+#include "global.h"
 
 class WLaunchThread : public QThread
 {

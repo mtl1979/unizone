@@ -227,7 +227,14 @@ Channels::CreateChannel()
 	}
 
 	bool ok = FALSE;
-	QString text = QInputDialog::getText( tr( "Create Channel" ), tr( "Please enter channel name" ), QString::null, &ok, this );
+	QString text = QInputDialog::getText( 
+		tr( "Create Channel" ), 
+		tr( "Please enter channel name" ),
+#if (QT_VERSION >= 0x030100)
+		QLineEdit::Normal, 
+#endif
+		QString::null, &ok, this 
+		);
 	if ( ok && !text.isEmpty() )
 	{
 		// user entered something and pressed ok

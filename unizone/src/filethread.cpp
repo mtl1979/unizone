@@ -282,7 +282,7 @@ QString
 WFileThread::ResolveLinkA(const QString & lnk)
 {
 	QString ret = lnk;
-
+#ifdef WIN32
 	HRESULT hres;
 	
 	// Unicode
@@ -328,6 +328,7 @@ WFileThread::ResolveLinkA(const QString & lnk)
 		}
 		psl->Release();
 	}
+#endif
 	return ret;
 }
 

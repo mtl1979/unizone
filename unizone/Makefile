@@ -3,8 +3,8 @@ LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
 OBJFILES = aboutdlg.o aboutdlgimpl.o accept.o botitem.o chattext.o \
-checkgroup.o colors.o combo.o downloadimpl.o downloadthread.o fileinfo.o \
-filethread.o formatting.o genericthread.o gotourl.o looper.o main.o md5.o \
+colors.o combo.o downloadimpl.o downloadthread.o fileinfo.o \
+filethread.o formatting.o genericthread.o gotourl.o main.o md5.o \
 menubar.o moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
 moc_downloadimpl.o moc_genericthread.o moc_htmlview.o moc_netclient.o \
 moc_prefs.o moc_prefsimpl.o moc_privatewindow.o moc_privatewindowimpl.o \
@@ -12,7 +12,10 @@ moc_search.o moc_winsharewindow.o netclient.o nicklist.o platform.o \
 prefs.o prefsimpl.o privatewindow.o privatewindowimpl.o search.o \
 searchitem.o settings.o textevent.o transferitem.o ulistview.o \
 uploadthread.o user.o userlistitem.o winshare_network.o \
-winshare_parsing.o winshare_slots.o winsharewindow.o Log.o
+winshare_parsing.o winshare_slots.o winsharewindow.o Log.o \
+channel.o channels.o channelinfo.o channelimpl.o \
+channelsimpl.o moc_channel.o moc_channels.o \
+moc_channelimpl.o moc_channelsimpl.o
 #UICFILES = privatewindow.h privatewindow.cpp debug.h debug.cpp aboutdlg.h aboutdlg.cpp prefs.h prefs.cpp
 #MOCFILES = moc_aboutdlg.h moc_aboutdlgimpl.h moc_chattext.h moc_combo.h moc_debug.h moc_htmlview.h moc_netclient.h moc_privatewindow.h moc_privatewindowimpl.h moc_winsharewindow.h moc_prefs.h moc_prefsimpl.h moc_search.h
 VPATH = src
@@ -40,6 +43,10 @@ moc:
 	moc src/privatewindowimpl.h -o src/moc_privatewindowimpl.cpp
 	moc src/search.h -o src/moc_search.cpp
 	moc src/winsharewindow.h -o src/moc_winsharewindow.cpp
+	moc src/channel.h -o src/moc_channel.cpp
+	moc src/channelimpl.h -o src/moc_channelimpl.cpp
+	moc src/channels.h -o src/moc_channels.cpp
+	moc src/channelsimpl.h -o src/moc_channelsimpl.cpp
 
 # stuff for uic
 uic:
@@ -49,6 +56,9 @@ uic:
 	uic -impl prefs.h src/prefs.ui -o src/prefs.cpp
 	uic src/aboutdlg.ui -o src/aboutdlg.h
 	uic -impl aboutdlg.h src/aboutdlg.ui -o src/aboutdlg.cpp
-
+	uic src/channel.ui -o src/channel.h
+	uic -impl channel.h src/channel.ui -o src/channel.cpp
+	uic src/channels.ui -o src/channels.h
+	uic -impl channels.h src/channels.ui -o src/channels.cpp
 clean :
 	rm -f *.o $(EXECUTABLES)

@@ -1,34 +1,15 @@
-#include <qstring.h>
+
+#if defined(__LINUX__)
+#include <wchar.h>
+#endif
+
 #include "platform.h"
 #include "debugimpl.h"
+
+#include <qstring.h>
+
 #ifdef WIN32
 #include <windows.h>
-
-QString 
-wideCharToQString(const wchar_t *wide)
-{
-    QString result;
-    result.setUnicodeCodes(wide, lstrlenW(wide));
-    return result;
-}
-
-wchar_t *
-qStringToWideChar(const QString &str)
-{
-    if (str.isNull())
-        return NULL;
-    wchar_t *result = new wchar_t[str.length() + 1];
-	if (result)
-	{
-		for (unsigned int i = 0; i < str.length(); ++i)
-			result[i] = str.at(i).unicode();
-		result[str.length()] = 0;
-//		PRINT("qStringToWideChar: result = %S\n", result);
-		return result;
-	}
-	else
-		return NULL;
-}
 
 long 
 GetRegKey( HKEY key, wchar_t *subkey, wchar_t *retdata, wchar_t value )
@@ -71,6 +52,36 @@ WFlashWindow(HWND fWinHandle)
 }
 
 #endif
+
+QString 
+wideCharToQString(const wchar_t *wide)
+{
+    QString result;
+#ifdef WIN32
+    result.setUnicodeCodes(wide, lstrlenW(wide));
+#else
+    result.setUnicodeCodes((const ushort *) wide, wcslen(wide));
+#endif
+    return result;
+}
+
+wchar_t *
+qStringToWideChar(const QString &str)
+{
+    	if (str.isNull())
+        	return NULL;
+	wchar_t *result = new wchar_t[str.length() + 1];
+	if (result)
+	{
+		for (unsigned int i = 0; i < str.length(); ++i)
+			result[i] = str.at(i).unicode();
+		result[str.length()] = 0;
+//		PRINT("qStringToWideChar: result = %S\n", result);
+		return result;
+	}
+	else
+		return NULL;
+}
 
 QString 
 GetParameterString(QString qCommand)

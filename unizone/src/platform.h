@@ -24,12 +24,6 @@ using muscle::String;
 
 #endif // defined(BUILD_WIN98)
 
-// Converts array of wchar_t to QString
-QString wideCharToQString(const wchar_t *wide);
-
-// Converts QString to pointer to array of wchar_t, pointer must be deleted when not needed anymore
-wchar_t *qStringToWideChar(const QString &str);
-
 // Get a registry key's value
 long GetRegKey( HKEY key, wchar_t *subkey, wchar_t *retdata, wchar_t value = NULL);
 
@@ -43,6 +37,11 @@ void WFlashWindow(HWND fWinHandle);
  *
  */
 
+// Converts array of wchar_t to QString
+QString wideCharToQString(const wchar_t *wide);
+
+// Converts QString to pointer to array of wchar_t, pointer must be deleted when not needed anymore
+wchar_t *qStringToWideChar(const QString &str);
 
 //
 // <postmaster@raasu.org> 20021021
