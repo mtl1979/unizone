@@ -31,7 +31,7 @@ protected:
 private:
 	bool LoadImage(const ByteBufferRef &buffer, const QString &format);
 	bool LoadImage(int pos);
-	void DrawImage(const QImage &image);
+	void DrawImage(const QPixmap &image);
 
 	void UpdatePosition(int pos);
 

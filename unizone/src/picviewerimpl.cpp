@@ -71,7 +71,7 @@ bool
 WPicViewer::LoadImage(const ByteBufferRef &buffer, const QString &fmt)
 {
 	bool ret;
-	QImage fImage;
+	QPixmap fImage;
 	ret = fImage.loadFromData(buffer()->GetBuffer(),buffer()->GetNumBytes(), fmt.local8Bit());
 	if (ret)
 		DrawImage(fImage);
@@ -142,12 +142,9 @@ WPicViewer::LastImage()
 }
 
 void
-WPicViewer::DrawImage(const QImage &image)
+WPicViewer::DrawImage(const QPixmap &image)
 {
-	QPixmap pm;
-	pm = image;
-	pxlPixmap->setPixmap(pm);
-//	pxlPixmap->update();
+	pxlPixmap->setPixmap(image);
 }
 
 void
