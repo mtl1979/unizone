@@ -22,13 +22,10 @@ using std::iterator;
 #include <qpopupmenu.h>
 
 #include "transferlist.h"
-//#include "transferitem.h"
 #include "debugimpl.h"
 
 class MD5Thread;
 class MD5Looper;
-//class WGenericThread;
-//class WGenericEvent;
 class WDownloadEvent;
 class WDownloadThread;
 class WUploadEvent;
@@ -110,7 +107,7 @@ public:
 
 	void EmptyLists();
 
-	NetClient * NetClient();
+	NetClient * netClient();
 
 protected:
 	virtual void customEvent(QCustomEvent *);

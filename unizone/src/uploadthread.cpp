@@ -1441,7 +1441,7 @@ WUploadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath
 			msgRef()->AddString(PR_NAME_SESSION, "");
 			// msgRef()->AddInt32("my_id", (int32) this);
 			msgRef()->AddBool("upload", true);
-			return static_cast<WDownload *>(fOwner)->NetClient()->SendMessageToSessions(msgRef);
+			return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(msgRef);
 		}
 		else
 		{		
@@ -1457,7 +1457,7 @@ WUploadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath
 				up()->AddMessage("message", msgRef);
 				up()->AddBool("upload", true);
 				up()->AddInt32("tunnel_id", hisID);
-				return static_cast<WDownload *>(fOwner)->NetClient()->SendMessageToSessions(up);
+				return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(up);
 			}
 			else
 				return B_ERROR;

@@ -101,7 +101,7 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
-	connect(NetClient(), SIGNAL(UserDisconnected(const QString &, const QString &)), 
+	connect(netClient(), SIGNAL(UserDisconnected(const QString &, const QString &)), 
 			this, SLOT(UserDisconnected(const QString &, const QString &)));
 	
 	
@@ -350,7 +350,7 @@ WDownload::AddDownload(QString * files, QString * lfiles,
 		
 		if (remoteIP == "127.0.0.1")	
 		{
-			ip = NetClient()->GetServerIP();
+			ip = netClient()->GetServerIP();
 			if (ip != "127.0.0.1")
 			{
 				for (x = 0; x < filecount; x++)
@@ -1002,7 +1002,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 					cb()->AddString(PR_NAME_KEYS, tostr);
 					cb()->AddString(PR_NAME_SESSION, "");
 					cb()->AddInt32("port", port);
-					NetClient()->SendMessageToSessions(cb);
+					netClient()->SendMessageToSessions(cb);
 					break;
 				}
 			}
@@ -1725,14 +1725,14 @@ void
 WDownload::UpdateLoad()
 {
 	PRINT("WDownload::UpdateLoad\n");
-	if (NetClient())
+	if (netClient())
 	{
 		int mu = 0;
 		if (gWin->fSettings)
 		{
 			mu = gWin->fSettings->GetMaxUploads();
 		}
-		NetClient()->SetLoad(GetUploadQueue(), gWin->fSettings->GetMaxUploads());
+		netClient()->SetLoad(GetUploadQueue(), gWin->fSettings->GetMaxUploads());
 	}
 	PRINT("WDownload::UpdateLoad OK\n");
 }
@@ -3363,7 +3363,7 @@ WDownload::SendSignal(int signal)
 
 
 NetClient *
-WDownload::NetClient()
+WDownload::netClient()
 {
 	return gWin->fNetClient;
 }

@@ -1363,7 +1363,7 @@ WDownloadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPa
 			msgRef()->AddString(PR_NAME_SESSION, "");
 			PRINT("Sending message to %s...\n", (const char *) to.utf8());
 			msgRef()->AddInt32("my_id", (int32) this);
-			return static_cast<WDownload *>(fOwner)->NetClient()->SendMessageToSessions(msgRef);
+			return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(msgRef);
 		}
 		else
 		{
@@ -1378,7 +1378,7 @@ WDownloadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPa
 				// down()->AddInt32("my_id", (int32) this);
 				down()->AddMessage("message", msgRef);
 				down()->AddInt32("tunnel_id", (int32) hisID);
-				return static_cast<WDownload *>(fOwner)->NetClient()->SendMessageToSessions(down);
+				return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(down);
 			}
 			else
 				return B_ERROR;
