@@ -90,7 +90,9 @@ ParseForShown(const QString & txt)
 {
 	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
 	QString temp = txt;
+#ifdef DEBUG
 	temp.replace(QRegExp("<br>"), "\t");		// Resplit lines, so debugging is easier ;)
+#endif
 	QStringTokenizer tk(temp, "\t");
 	QString next;
 	QString out;
@@ -102,7 +104,9 @@ ParseForShown(const QString & txt)
 		else
 			line = "";
 		line += "<br>";	// replace our TAB
-		qDebug("ParseForShown: %s", line.latin1());
+#ifdef DEBUG
+		qDebug("ParseForShown: %s", line.latin1());	// We need to use qDebug for UniView compatibility
+#endif
 		out += line;
 	}
 
