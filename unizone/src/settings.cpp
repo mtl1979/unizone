@@ -1151,17 +1151,17 @@ WSettings::GetMinQueuedSize()
 		}
 	case 9:
 		{
-			mqs = 256000;
+			mqs = 262144;
 			break;
 		}
 	case 10:
 		{
-			mqs = 512000;
+			mqs = 524288;
 			break;
 		}
 	case 11:
 		{
-			mqs = 1024000;
+			mqs = 1048576;
 			break;
 		}
 	default:	

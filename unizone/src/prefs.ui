@@ -2269,6 +2269,30 @@
                                                 <string>100 kB</string>
                                             </property>
                                         </item>
+                                        <item>
+                                            <property>
+                                                <name>text</name>
+                                                <string>200 kB</string>
+                                            </property>
+                                        </item>
+                                        <item>
+                                            <property>
+                                                <name>text</name>
+                                                <string>256 kB</string>
+                                            </property>
+                                        </item>
+                                        <item>
+                                            <property>
+                                                <name>text</name>
+                                                <string>512 kB</string>
+                                            </property>
+                                        </item>
+                                        <item>
+                                            <property>
+                                                <name>text</name>
+                                                <string>1 MB</string>
+                                            </property>
+                                        </item>
                                         <property stdset="1">
                                             <name>name</name>
                                             <cstring>fMinQueued</cstring>
