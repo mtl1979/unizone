@@ -386,7 +386,9 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		// <postmaster@raasu.org> 20020929
 		else if (CompareCommand(sendText, "/users"))
 		{
-			int iUsers = fUsers->childCount() + 1; // <postmaster@raasu.org> 20021005 -- I think it's 1 for current user that needs to be added to get the total count
+
+			// <postmaster@raasu.org> 20021005 -- I think it's 1 for current user that needs to be added to get the total count
+			uint iUsers = fUsers->childCount() + 1;  
 			if (iUsers > fMaxUsers)
 				fMaxUsers = iUsers;
 			QString qUsers = QString::number(iUsers) + " (" + QString::number(fMaxUsers) + ")";
@@ -2924,7 +2926,7 @@ WinShareWindow::UpdateUserCount()
 {
 	if (fNetClient->IsConnected())
 	{
-		int n = fUsers->childCount() + 1;
+		uint n = fUsers->childCount() + 1;
 		if (n > fMaxUsers)
 			fMaxUsers = n;
 

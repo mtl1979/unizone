@@ -18,7 +18,7 @@ unizone_unix.pro : unizone.pro $(SOURCES) $(HEADERS)
 translations : $(QMFILES)
 
 %.ts2 : %.ts
-	sed "s/\"unfinished\"/'unfinished'/;s/\"obsolete\"/'obsolete'/;s/<defaultcodec>/<codec>/;s|</defaultcodec>|</codec>|" < $< > $@
+	sed -f fixts.sed $< > $@
 
 %.qm : %.ts2 
 	mv -f $< $(addsuffix .ts,$(basename $<))
