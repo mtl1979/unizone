@@ -413,6 +413,8 @@ private:
 
 	void SignalDownload(int);
 
+	void UpdateUserCount();
+
 	QTimer * fAutoAway;
 	QTimer * fConnectTimer;
 	QTimer * fReconnectTimer;

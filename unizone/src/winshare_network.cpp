@@ -2937,3 +2937,11 @@ WinShareWindow::UserHostName(const QString &sid, const QString &host)
 		PrintText(system);
 	}
 }
+
+void
+WinShareWindow::UpdateUserCount()
+{
+	int n = fUsers->childCount() + 1;
+	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
+}
+

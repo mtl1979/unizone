@@ -65,6 +65,7 @@ WinShareWindow::AboutWinShare()
 }
 
 // user slots
+
 void
 WinShareWindow::UserConnected(const QString &sid)
 {
@@ -73,10 +74,9 @@ WinShareWindow::UserConnected(const QString &sid)
 		QString system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserConnected().arg(sid));
 		PrintSystem(system);
 	}
-	int n = fUsers->childCount() + 1;
-	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
+	UpdateUserCount();
 }
-
+	
 void
 WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 {
@@ -96,8 +96,7 @@ WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 		QString parse = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(msg);
 		PrintSystem(parse);
 	}
-	int n = fUsers->childCount() + 1;
-	fStatusBar->setText(tr( "Number of users logged in: %1" ).arg(n), 0);
+	UpdateUserCount();
 }
 
 void

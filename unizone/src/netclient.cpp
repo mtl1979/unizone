@@ -265,11 +265,14 @@ NetClient::RemoveUser(const QString & sessionID)
 	WUserIter iter = fUsers.find(sessionID);
 	if (iter != fUsers.end())
 	{
-		emit UserDisconnected((*iter).first, (*iter).second()->GetUserName());
+		QString uid = (*iter).first;
+		QString uname = (*iter).second()->GetUserName();
 		PRINT("NetClient::RemoveUser: Removing from list\n");
 		(*iter).second()->RemoveFromListView();
 		PRINT("NetClient::RemoveUser: Erasing\n");
 		fUsers.erase(iter);
+		PRINT("NetClient::RemoveUser: Signaling...\n");
+		emit UserDisconnected(uid, uname);
 		PRINT("NetClient::RemoveUser: Done\n");
 	}
 }
