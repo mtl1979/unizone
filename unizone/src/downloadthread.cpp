@@ -975,6 +975,10 @@ WDownloadThread::timerEvent(QTimerEvent *e)
 			SendMessageToSessions(nop);
 		}
 	}
+	else
+	{
+		Reset();
+	}
 }
 
 bool

@@ -894,6 +894,10 @@ WUploadThread::timerEvent(QTimerEvent *e)
 			SendMessageToSessions(nop);
 		}
 	}
+	else
+	{
+		Reset();
+	}
 }
 
 bool
