@@ -1377,7 +1377,7 @@ NetClient::ResolveAddress(const QString &address)
 	NetAddress na;
 	if (fAddressCache.GetNumItems() > 0)
 	{
-		int i = 0;
+		unsigned int i = 0;
 		do
 		{
 			na = fAddressCache[i];
