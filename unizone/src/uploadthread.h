@@ -30,6 +30,7 @@ public:
 	QString GetRemoteID() {return fRemoteSessionID;}
 	QString GetRemoteUser() {return fRemoteUser;}
 	QString GetCurrentFile() {return fFileUl;}
+	QString GetFileName(int i);
 
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
@@ -44,6 +45,7 @@ protected:
 
 private:
 	WMsgList fUploads;
+	WStrList fNames;
 	QFile * fFile;
 	uint32 fRemoteIP;
 	QString fStrRemoteIP;	// the accept version gets a string IP

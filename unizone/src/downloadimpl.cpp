@@ -490,15 +490,19 @@ WDownload::customEvent(QCustomEvent * e)
 				}
 				else
 				{
-					if (
-						(msg->FindBool("retry", &b) == B_OK) &&
-						(msg->FindString("file", mFile) == B_OK)
-						)
+					if (msg->FindBool("retry", &b) == B_OK)
 					{
 						if (b)
 						{
-							QString qFile = QString::fromUtf8(mFile.Cstr());
-							emit FileFailed(qFile, gt->GetRemoteUser());
+							int nFiles = gt->GetNumFiles();
+							int n = gt->GetCurrentNum();
+							if (n == -1) // Test!!!
+								n = 0;
+							while (n < nFiles)
+							{
+								QString qFile = gt->GetFileName(n++);
+								emit FileFailed(qFile, gt->GetRemoteUser());
+							}
 						}
 					}
 					DecreaseCount(gt, fNumDownloads, false);
@@ -537,16 +541,16 @@ WDownload::customEvent(QCustomEvent * e)
 				{
 					// emit FileFailed signal, so we can record the filename and remote username for resuming later
 					String mFile;
-					if (
-						(msg->FindBool("failed", &b) == B_OK) &&
-						(msg->FindString("file", mFile) == B_OK)
-						)
+					if (msg->FindBool("failed", &b) == B_OK)
 					{
 						// "failed" == true only, if the transfer has failed
 						if (b)
 						{
-							QString qFile = QString::fromUtf8( mFile.Cstr() );
-							emit FileFailed(qFile, gt->GetRemoteUser());
+							for (int n = gt->GetCurrentNum(); n < gt->GetNumFiles(); n++)
+							{
+								QString qFile = gt->GetFileName(n);
+								emit FileFailed(qFile, gt->GetRemoteUser());
+							}
 						}
 					}
 					DecreaseCount(gt, fNumDownloads);

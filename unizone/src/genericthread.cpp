@@ -221,7 +221,7 @@ WGenericThread::ConnectTimer()
 	Reset();
 	Message * msg = new Message(WGenericEvent::ConnectFailed);
 	msg->AddString("why", "Connection timed out!");
-	msg->AddString("file", (const char *) GetCurrentFile().utf8());
+	//msg->AddString("file", (const char *) GetCurrentFile().utf8());
 	msg->AddBool("retry", true);
 	SendReply(msg);
 }

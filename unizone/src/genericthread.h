@@ -60,6 +60,7 @@ public:
 	virtual long GetCurrentNum() { return -1; }
 	virtual long GetNumFiles() { return 0; }
 	virtual bool IsLastFile() { return ((GetCurrentNum() + 1) == GetNumFiles()); }
+	virtual QString GetFileName(int i) { return QString::null; }
 
 public slots:
 	void ConnectTimer(); // Connection timed out?

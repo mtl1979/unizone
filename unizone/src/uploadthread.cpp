@@ -269,6 +269,7 @@ WUploadThread::SignalOwner()
 										}
 									}
 									fUploads.insert(fUploads.end(), fileRef);
+									fNames.insert(fNames.end(), QString::fromUtf8(file));
 								}
 							}
 							fNumFiles = i;
@@ -455,6 +456,7 @@ WUploadThread::DoUpload()
 				{
 					delete fFile;
 					fFile = NULL;
+					fCurFile++;
 					continue;	// onward
 				}
 				// got our file!
@@ -474,14 +476,14 @@ WUploadThread::DoUpload()
 				headRef()->AddInt64("beshare:StartOffset", fCurrentOffset);
 				SendMessageToSessions(headRef);
 
+				fCurFile++;
+
 				Message * msg = new Message(WGenericEvent::FileStarted);
 				msg->AddString("file", filePath.Cstr());
 				msg->AddInt64("start", fCurrentOffset);
 				msg->AddInt64("size", fFileSize);
 				msg->AddString("user", (const char *) fRemoteSessionID.utf8());
 				SendReply(msg);
-
-				fCurFile++;
 
 				DoUpload();	// nested call
 			}
@@ -498,3 +500,15 @@ WUploadThread::DoUpload()
 	}
 }
 
+QString
+WUploadThread::GetFileName(int i)
+{
+	int n = 0;
+	WStrListIter iter = fNames.begin();
+	while (n < i)
+	{
+		iter++;
+		n++;
+	}
+	return (*iter);
+}

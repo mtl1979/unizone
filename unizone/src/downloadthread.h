@@ -24,6 +24,7 @@ public:
 
 	QFile * GetFile() const { return fFile; }
 	QString GetCurrentFile() { return fFileDl[fCurFile]; }
+	QString GetFileName(int i) { return fFileDl[i]; }
 
 	static QString FixFileName(const QString & fixMe);
 

@@ -286,6 +286,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								msg->AddInt64("size", fFileSize);
 								msg->AddString("user", (const char *) fFromSession.utf8());
 								fDownloading = true;
+								SendReply(msg);
 							}
 							else
 							{
@@ -296,8 +297,9 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								msg->AddString("why", "Critical error: Could not create file!");
 								delete fFile;
 								fFile = NULL;
-							}
-							SendReply(msg);
+								SendReply(msg);
+								NextFile();
+							}	
 						}
 						else
 						{
@@ -435,22 +437,17 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 				{
 					dis = new Message(WGenericEvent::Disconnected);
 					dis->AddBool("failed", true);
-					dis->AddString("file", (const char *) fFileDl[fCurFile].utf8());
 				}
 				else if (fDownloading && (fCurrentOffset == fFileSize))
 				{
 					dis = new Message(WGenericEvent::FileDone);
-					dis->AddBool("done", true);		// when we do multiple file downloads in one dialog
-													// this will come in handy... it will tell the GUI to give
-													// us the next file
+					dis->AddBool("done", true);		
 					dis->AddString("file", (const char *) fFileDl[fCurFile].utf8());
 				}
 				else
 				{
 					dis = new Message(WGenericEvent::Disconnected);
 					dis->AddBool("failed", false);
-					if (fCurFile != -1)
-						dis->AddString("file", (const char *) fFileDl[fCurFile].utf8());
 				}
 
 				fDownloading = false;
