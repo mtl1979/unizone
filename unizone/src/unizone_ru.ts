@@ -324,35 +324,35 @@ Version %1</translation>
     <name>ChannelsBase</name>
     <message>
         <source>Channels</source>
-        <translation>Channels</translation>
+        <translation type='obsolete'>Channels</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Name</translation>
+        <translation type='obsolete'>Name</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation>Topic</translation>
+        <translation type='obsolete'>Topic</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation>Users</translation>
+        <translation type='obsolete'>Users</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation>Admins</translation>
+        <translation type='obsolete'>Admins</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation>Public</translation>
+        <translation type='obsolete'>Public</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation>&amp;Create</translation>
+        <translation type='obsolete'>&amp;Create</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation>&amp;Join</translation>
+        <translation type='obsolete'>&amp;Join</translation>
     </message>
 </context>
 <context>
@@ -3032,6 +3032,10 @@ Date: %4</translation>
     <message>
         <source>Unizone</source>
         <translation>Unizone</translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>

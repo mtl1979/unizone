@@ -217,35 +217,35 @@ Version %1</source>
     <name>ChannelsBase</name>
     <message>
         <source>Channels</source>
-        <translation>채널</translation>
+        <translation type='obsolete'>채널</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>이름</translation>
+        <translation type='obsolete'>이름</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation>주제</translation>
+        <translation type='obsolete'>주제</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation>사용자</translation>
+        <translation type='obsolete'>사용자</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation>관리자</translation>
+        <translation type='obsolete'>관리자</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation>일반</translation>
+        <translation type='obsolete'>일반</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation>만들기(&amp;C)</translation>
+        <translation type='obsolete'>만들기(&amp;C)</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation>참가하기(&amp;J)</translation>
+        <translation type='obsolete'>참가하기(&amp;J)</translation>
     </message>
 </context>
 <context>
@@ -2771,6 +2771,10 @@ Date: %4</source>
     <message>
         <source>Search</source>
         <translation>찾기</translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>

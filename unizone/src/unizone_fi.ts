@@ -386,35 +386,35 @@ Versio %1</translation>
     <name>ChannelsBase</name>
     <message>
         <source>Channels</source>
-        <translation>Kanavat</translation>
+        <translation type='obsolete'>Kanavat</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nimi</translation>
+        <translation type='obsolete'>Nimi</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation>Aihe</translation>
+        <translation type='obsolete'>Aihe</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation>Käyttäjiä</translation>
+        <translation type='obsolete'>Käyttäjiä</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation>Valvojia</translation>
+        <translation type='obsolete'>Valvojia</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation>Yleinen</translation>
+        <translation type='obsolete'>Yleinen</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation>&amp;Luo</translation>
+        <translation type='obsolete'>&amp;Luo</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation>Lii&amp;ty</translation>
+        <translation type='obsolete'>Lii&amp;ty</translation>
     </message>
 </context>
 <context>
@@ -3163,6 +3163,10 @@ Päiväys: %4</translation>
     <message>
         <source>Unizone</source>
         <translation>Unizone</translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
+        <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas FreeBSD:lle!</translation>
     </message>
 </context>
 </TS>

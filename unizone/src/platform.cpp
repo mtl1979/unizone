@@ -389,11 +389,12 @@ GetServerPort(QString server)
 }
 
 // Is reserved regex token, but isn't wildcard token (* or ? or ,)
+// Skip \ now, it's a special case
 bool IsRegexToken2(char c, bool isFirstCharInString)
 {
    switch(c)
    {
-     case '[': case ']': case '\\': case '|': case '(': case ')':
+     case '[': case ']': case '|': case '(': case ')':
         return true;
 
      case '<': case '~':   // these chars are only special if they are the first character in the string
@@ -407,19 +408,34 @@ bool IsRegexToken2(char c, bool isFirstCharInString)
 // Converts basic wildcard pattern to valid regex
 void ConvertToRegex(String & s)
 {
-   const char * str = s.Cstr();
-
-   String ret;
-
-   bool isFirst = true;
-   while(*str)
-   {
-     if (IsRegexToken2(*str, isFirst)) ret += '\\';
-     isFirst = false;
-     ret += *str;
-     str++;
-   }
-   s = ret;
+	const char * str = s.Cstr();
+	
+	String ret;
+	
+	bool isFirst = true;
+	while(*str)
+	{
+		if (*str == '\\')			// skip \c
+		{
+			ret += *str;
+			const char * n = (str + 1);
+			str++;
+			if (n)
+			{
+				ret += *n;
+				str++;
+			}
+			isFirst = false;	
+		}
+		else
+		{
+			if (IsRegexToken2(*str, isFirst)) ret += '\\';
+			isFirst = false;
+			ret += *str;
+			str++;
+		}
+	}
+	s = ret;
 }
 
 const char * MonthNames[12] = {

@@ -358,35 +358,35 @@ Version %1</translation>
     <name>ChannelsBase</name>
     <message>
         <source>Channels</source>
-        <translation>Channelz</translation>
+        <translation type='obsolete'>Channelz</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Namez</translation>
+        <translation type='obsolete'>Namez</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation>Flame Topic</translation>
+        <translation type='obsolete'>Flame Topic</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation>Losers</translation>
+        <translation type='obsolete'>Losers</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation>Gods</translation>
+        <translation type='obsolete'>Gods</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation>Common buziness</translation>
+        <translation type='obsolete'>Common buziness</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation>&amp;Make So</translation>
+        <translation type='obsolete'>&amp;Make So</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation>&amp;Intrude</translation>
+        <translation type='obsolete'>&amp;Intrude</translation>
     </message>
 </context>
 <context>
@@ -650,7 +650,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;Ping ponged in %3 milliseconds (%4)&lt;/font&gt;</source>
-        <translation>&lt;font color="%1" size="%2"&gt;Ping ponged in %3 milliseconds (%4)&lt;/font&gt;</translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;Ping ponged in %3 milliseconds (%4)&lt;/font&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</source>
@@ -752,6 +752,10 @@ Date: %4</translation>
         <source>Date:</source>
         <comment>Date</comment>
         <translation>Date:</translation>
+    </message>
+    <message>
+        <source>&lt;font color="%1" size="%2"&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -3071,6 +3075,10 @@ Date: %4</translation>
     <message>
         <source>Unizone</source>
         <translation>Unizone</translation>
+    </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>
