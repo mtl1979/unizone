@@ -466,7 +466,7 @@ SOURCE=..\src\werrorevent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wfile.cpp
+SOURCE=..\src\windows\wfile.cpp
 # End Source File
 # Begin Source File
 
