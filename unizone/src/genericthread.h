@@ -53,6 +53,9 @@ public:
 //	QString ComputeSizeString(int64 offset) const;
 	QString ComputePercentString(int64 cur, int64 max);
 
+	virtual QString GetRemoteID() { return QString::null; }
+	virtual QString GetRemoteUser() { return QString::null; }
+
 protected:
 	QObject * fOwner;
 	bool * fShutdownFlag;
@@ -70,6 +73,8 @@ protected:
 
 	virtual void SignalOwner() = 0;
 	virtual void SendReply(Message * m);
+	QString GetUserName(QString sid);
+
 };
 
 #endif

@@ -29,6 +29,7 @@ WDownloadThread::SetFile(QString file, QString fromIP, QString fromSession,
 	fFileDl = file;
 	fIP = fromIP;
 	fFromSession = fromSession;
+	fFromUser = GetUserName(fFromSession);
 	fLocalSession = localSession;
 	fPort = remotePort;
 	fFirewalled = firewalled;
@@ -410,6 +411,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 				{
 					dis = new Message(WGenericEvent::Disconnected);
 					dis->AddBool("failed", true);
+					dis->AddString("file", (const char *) fFileDl.utf8());
 				}
 				else if (fDownloading && (fCurrentOffset == fFileSize))
 				{

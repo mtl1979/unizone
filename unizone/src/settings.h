@@ -84,6 +84,10 @@ using namespace muscle;
 
 #define QUERY_LIST "querylist"
 
+#define RESUMELIST "resumelist"
+#define RESUMEFILE "resumefile"
+#define RESUMEUSER "resumeuser"
+
 class WSettings
 {
 public:
@@ -124,6 +128,13 @@ public:
 	void AddQueryItem(QString str);
 	QString GetQueryItem(int index);
 	void EmptyQueryList();
+
+	// resume list
+	void AddResumeItem(WResumePair wrp);
+	bool GetResumeItem(int index, WResumePair & wrp);
+	int GetResumeCount();
+	void SetResumeCount(int c);
+	void EmptyResumeList();
 
 	// style
 	void SetStyle(WinShareWindow::Style style);

@@ -104,6 +104,10 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	CHECK_PTR(fUnblockU);
 	fUnblockU->setText(MSG_TOGGLE_BLOCK);
 	connect(fUnblockU, SIGNAL(clicked()), this, SLOT(UnblockUL()));
+
+	connect(gWin->fNetClient, SIGNAL(UserDisconnected(QString, QString)), this,
+			SLOT(UserDisconnected(QString, QString)));
+
 	
 	setCaption(MSG_TX_CAPTION);
 	fNumUploads = fNumDownloads = 0;
@@ -510,6 +514,13 @@ WDownload::customEvent(QCustomEvent * e)
 					}
 					else
 					{
+						// emit FileFailed signal, so we can record the filename and remote username for resuming later
+						String mFile;
+						if (msg->FindString("file", mFile) == B_OK)
+						{
+							QString qFile = QString::fromUtf8( mFile.Cstr() );
+							emit FileFailed(qFile, gt->GetRemoteUser());
+						}
 						DecreaseCount(gt, fNumDownloads, false);
 						WASSERT(fNumDownloads >= 0, "Download count is negative!");
 					}
@@ -666,6 +677,13 @@ WDownload::customEvent(QCustomEvent * e)
 					item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
 					
 					item->setText(WTransferItem::Rate, tr("%1").arg(gcr*1024.0f));
+
+					if (msg->FindBool("done", &done) == B_OK)
+					{
+						item->setText(WTransferItem::Status, "Finished.");
+						gWin->PrintSystem(tr( "User #%1 (%2) has finished downloading %3.").arg(gt->GetRemoteID()).arg(gt->GetRemoteUser()).arg(item->text(0)) , false);
+					}
+
 				}
 				break;
 			}
@@ -819,4 +837,31 @@ void
 WDownload::UpdateLoad()
 {
 	gWin->fNetClient->SetLoad(fNumUploads, gWin->fSettings->GetMaxUploads());
+}
+
+/*
+ *
+ * Block users that disconnect if user has chosen that feature in settings
+ *
+ */
+void
+WDownload::UserDisconnected(QString sid, QString name)
+{
+	if (gWin->fSettings->GetBlockDisconnected())
+	{
+		fLock.lock();
+		WTIter it = fUploadList.begin();
+		while (it != fUploadList.end())
+		{
+			if ((*it).first->GetRemoteID() == sid)
+			{
+				if ((*it).first->IsBlocked() == false)
+				{
+					(*it).first->SetBlocked(true);
+				}
+			}
+			it++;
+		}
+		fLock.unlock();
+	}
 }

@@ -27,6 +27,9 @@ public:
 	void SetUpload(QString remoteIP, uint32 remotePort, WFileThread * ft);
 	void InitSession();
 
+	QString GetRemoteID() {return fRemoteSessionID;}
+	QString GetRemoteUser() {return fRemoteUser;}
+
 	virtual void SetQueued(bool b);
 	virtual void SetBlocked(bool b);
 
@@ -46,6 +49,7 @@ private:
 	uint64 fCurrentOffset;
 	int fMungeMode;
 	QString fRemoteSessionID;
+	QString fRemoteUser;
 	WFileThread * fFileThread;
 	MessageRef fCurrentRef;
 	bool fWaitingForUploadToFinish;

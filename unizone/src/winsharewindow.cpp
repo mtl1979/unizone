@@ -334,7 +334,8 @@ WinShareWindow::customEvent(QCustomEvent * event)
 						if (!fDLWindow)
 						{
 							PRINT("New DL Window\n");
-							fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
+							// fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
+							OpenDownload();
 							fDLWindow->show();
 						}
 						fDLWindow->AddUpload(socket, ip, false);
@@ -1144,6 +1145,19 @@ WinShareWindow::LoadSettings()
 		fUsers->setSorting(fSettings->GetNickListSortColumn(), fSettings->GetNickListSortAscending());
 
 		fRemote = fSettings->GetRemotePassword();
+
+		// Load resume list
+
+		rLock.lock();
+		fResumeMap.clear();
+
+		for (i = 0; i <= fSettings->GetResumeCount(); i++)
+		{
+			WResumePair wrp;
+			if (fSettings->GetResumeItem(i, wrp) == B_OK)
+				fResumeMap.insert(wrp);
+		}
+		rLock.unlock();
 	}
 	else	// file doesn't exist, or error
 	{
@@ -1251,6 +1265,24 @@ WinShareWindow::SaveSettings()
 
 	// save color settings
 	// don't worry about it... prefs does it
+
+	// Save resume list
+
+	rLock.lock();
+	fSettings->EmptyResumeList();
+
+	i = 0;
+
+	WResumeIter wri = fResumeMap.begin();
+	while ( wri != fResumeMap.end() )
+	{
+		fSettings->AddResumeItem((*wri));
+		wri++;
+		i++;
+	}
+	rLock.unlock();
+	fSettings->SetResumeCount(i);
+
 	fSettings->Save();
 }
 
@@ -1543,4 +1575,13 @@ WinShareWindow::TranslateStatus(QString & s)
 		{
 			s = MSG_SLEEPING;
 		}
+}
+
+void 
+WinShareWindow::OpenDownload()
+{
+	if (fDLWindow)
+		return;
+	fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
+	connect(fDLWindow, SIGNAL(FileFailed(QString, QString)), this, SLOT(FileFailed(QString, QString)));
 }

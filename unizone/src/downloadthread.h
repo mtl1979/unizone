@@ -22,6 +22,9 @@ public:
 
 	static QString FixFileName(const QString & fixMe);
 
+	QString GetRemoteID() { return fFromSession; }
+	QString GetRemoteUser() { return fFromUser; }
+
 	// call this after setting the file to init the download
 	// this will also send a message to show the dialog, so do not do it yourself
 	bool InitSession();
@@ -32,6 +35,7 @@ protected:
 	QString fFileDl;	// file to dl
 	QString fIP;		// ip address of remote client
 	QString fFromSession;	// session ID of remote client
+	QString fFromUser;		// user name of remote client
 	QString fLocalSession;	// our session ID
 	int32 fPort;		// port of the remote client (the one it's listening on)
 	int32 fAcceptingOn;	// port we're accepting on in case the user is firewalled

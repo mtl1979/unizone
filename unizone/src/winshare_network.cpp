@@ -782,6 +782,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				PrintSystem( tr("Remote password set to: %1").arg(p) );
 			}	
 		}
+		else if (CompareCommand(sendText, "/resumes"))
+		{
+			ListResumes();
+		}
 		// add more commands BEFORE this one
 
 		else if (sendText.left(1) == "/")
@@ -1255,7 +1259,8 @@ WinShareWindow::HandleMessage(Message * msg)
 			PRINT("\tCONNECTBACKREQUEST\n");
 			if (!fDLWindow)
 			{
-				fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
+				// fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
+				OpenDownload();
 				fDLWindow->show();
 			}
 			const char * session;
@@ -1620,6 +1625,7 @@ WinShareWindow::ShowHelp()
 							"\n\t\t\t\t/remserver [index] - remove server from server list"
 							"\n\t\t\t\t/remstatus [index] - remove status from status list"
 							"\n\t\t\t\t/remuser [index] - remove nick from nick list"
+							"\n\t\t\t\t/resumes - list files waiting to be resumed"
 							"\n\t\t\t\t/save - saves settings (might be necessary after editing drop-down lists)"
 							"\n\t\t\t\t/scan - rescan shared directory"
 							"\n\t\t\t\t/server [server] - set the current server"
@@ -2138,4 +2144,28 @@ WinShareWindow::Remote(String session, QString text)
 		}
 	}
 	return true;
+}
+
+// List files waiting to be resumed
+
+void 
+WinShareWindow::ListResumes()
+{
+	rLock.lock();
+	WResumeIter it = fResumeMap.begin();
+	START_OUTPUT();
+	PrintSystem("Resume list:", true);
+	int i = 0;
+	while (it != fResumeMap.end())
+	{
+		if ((*it).first != QString::null)
+		{
+			PrintSystem(tr("File %1: (%2) from %3").arg(i).arg((*it).first).arg((*it).second), true);
+			i++;
+		}
+		it++;
+	}
+	PrintSystem(tr("Total: %1 files").arg(i), true);
+	END_OUTPUT();
+	rLock.unlock();
 }

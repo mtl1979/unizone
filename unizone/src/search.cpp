@@ -427,7 +427,8 @@ WSearch::Download()
 				bool c = false;
 				if (!gWin->fDLWindow)
 				{
-					gWin->fDLWindow = new WDownload(fNet->LocalSessionID(), gWin->fFileScanThread);
+					// gWin->fDLWindow = new WDownload(fNet->LocalSessionID(), gWin->fFileScanThread);
+					gWin->OpenDownload();
 					c = true;
 				}
 				

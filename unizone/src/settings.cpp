@@ -1075,3 +1075,48 @@ WSettings::EmptyQueryList()
 	fSet->RemoveName(QUERY_LIST);
 }
 
+void 
+WSettings::AddResumeItem(WResumePair wrp)
+{
+	fSet->AddString(RESUMEFILE, (const char *) wrp.first.utf8());
+	fSet->AddString(RESUMEUSER, (const char *) wrp.second.utf8());
+}
+
+bool 
+WSettings::GetResumeItem(int index, WResumePair & wrp)
+{
+	String file;
+	String user;
+	if (
+		(fSet->FindString(RESUMEFILE, index, file) == B_OK) &&
+		(fSet->FindString(RESUMEUSER, index, user) == B_OK)
+		)
+	{
+		wrp.first = QString::fromUtf8(file.Cstr());
+		wrp.second = QString::fromUtf8(user.Cstr());
+		return true;
+	}
+	return false;
+}
+
+int
+WSettings::GetResumeCount()
+{
+	int i = 0;
+	fSet->FindInt32(RESUMELIST, (int32 *)&i);	// if it fails, return 0
+	return i;
+}
+
+void 
+WSettings::SetResumeCount(int c)
+{
+	fSet->RemoveName(RESUMELIST);
+	fSet->AddInt32(RESUMELIST, (int32)c);
+}
+
+void
+WSettings::EmptyResumeList()
+{
+	fSet->RemoveName(RESUMEFILE);
+	fSet->RemoveName(RESUMEUSER);
+}

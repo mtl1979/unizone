@@ -112,6 +112,12 @@ private slots:
 	void CancelUL();
 	void UnblockUL();
 
+public slots:
+	void UserDisconnected(QString, QString);
+
+signals:
+	void FileFailed(QString, QString); // Parameter 1 = File Name, Parameter 2 = User Name
+
 };
 
 #endif

@@ -91,6 +91,7 @@ WinShareWindow::UserNameChanged(QString sid, QString old, QString newname)
 			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserNameChangedNoOld.arg(sid).arg(FixStringStr(newname)).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112
 		PrintText(system);
 	}
+	CheckResumes(newname);
 }
 
 void
@@ -383,4 +384,62 @@ WinShareWindow::SearchWindowClosed()
 {
 	PRINT("Search window closed!\n");
 	fSearchWindow = NULL;
+}
+
+// Insert failed download to resume list
+//
+
+void
+WinShareWindow::FileFailed(QString file, QString user)
+{
+	rLock.lock();
+	WResumePair wrp = MakePair(file, user);
+	fResumeMap.insert(wrp);
+	rLock.unlock();
+
+	if (IsConnected(user)) // Is still connected?
+		CheckResumes(user); // try to resume immediately
+}
+
+// Check username against resume list
+//
+
+void 
+WinShareWindow::CheckResumes(QString user)
+{
+	rLock.lock();
+	if (fResumeMap.empty()) 
+	{
+		// No need to check if empty!
+		rLock.unlock();
+		return;
+	}
+
+	WResumeIter it = fResumeMap.begin();
+	while (it != fResumeMap.end())
+	{
+		if ((*it).second == user)
+		{
+			// User name matches
+
+			// Make sure File Transfers window is open
+
+			if (!fDLWindow)
+				OpenDownload(); 
+
+			WUserRef u = FindUser(user);
+			if (u())
+			{
+				PrintSystem( tr("Trying to resume file %1 from user %2").arg((*it).first).arg(user), false);
+				fDLWindow->AddDownload((*it).first, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
+				fResumeMap.erase(it);
+				it = fResumeMap.begin(); // start from beginning
+			}
+			else
+				it++;
+		}
+		else
+			it++;
+	}
+	rLock.unlock();
 }

@@ -204,3 +204,13 @@ WGenericThread::ComputePercentString(int64 cur, int64 max)
 	ret.sprintf("%.2f", (double)((double)cur / (double)max) * 100.0);
 	return ret;
 }
+
+QString
+WGenericThread::GetUserName(QString sid)
+{
+	WUserRef uref = gWin->FindUser(sid);
+	QString ret;
+	if (uref())
+		ret = uref()->GetUserName();
+	return ret;
+}

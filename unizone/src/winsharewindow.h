@@ -52,6 +52,25 @@
 #define START_OUTPUT() fPrintOutput = false; PrintText("", true)
 #define END_OUTPUT() fPrintOutput = true; PrintText("", false)
 
+#include <map>
+using std::pair;
+using std::multimap;
+using std::iterator;
+
+typedef pair<QString, QString> WResumePair;
+typedef multimap<QString, QString> WResumeMap;
+typedef WResumeMap::iterator WResumeIter;
+
+inline 
+WResumePair
+MakePair(QString f, QString u)
+{
+	WResumePair p;
+	p.first = f;
+	p.second = u;
+	return p;
+}
+
 class WTextEvent;
 class WChatText;
 class WSettings;
@@ -129,6 +148,8 @@ public slots:
 	void AboutToQuit();
 	void SearchWindowClosed();
 
+	void FileFailed(QString, QString); // from WDownload
+
 protected:
 	virtual void customEvent(QCustomEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
@@ -168,7 +189,8 @@ private:
 	QPopupMenu * fPrivate;		// private window popup
 
 	WPrivMap fPrivateWindows;	// private windows;
-	QMutex pLock;
+	QMutex pLock;				// private window mutex
+	QMutex rLock;				// resume list mutex
 
 
 	bool fGotParams;	// see if the initial "Get Params" message was sent
@@ -187,7 +209,9 @@ private:
 	QString fBlackList; // blacklist pattern
 	QString fAutoPriv;	// Auto-private pattern
 
-	uint64 tx,rx;		// transmit/receive statistics (cumulative)
+	// transmit/receive statistics
+
+	uint64 tx,rx;		// cumulative
 	uint64 tx2,rx2;		// in the beginning of session
 
 	bool IsIgnored(const WUser * user);
@@ -202,9 +226,11 @@ private:
 	bool AutoPrivate(QString & user);
 	bool UnAutoPrivate(QString & user);
 
-	void Disconnect2();
+	void Disconnect2();					// Internal disconnection handling
 
-	WUserRef FindUser(QString user);
+	void CheckResumes(QString user);	// Check if resume list contains downloads from 'user'
+	void ListResumes();					// List files waiting to be resumed
+
 
 	// StringMatcher fWatchRegex;
 
@@ -287,11 +313,14 @@ private:
 
 	static QString GetTimeStamp();
 
+	void OpenDownload();
 
 	friend class WPrivateWindow;
 	friend class WUser;
 	friend class WSearch;
 	friend class WDownload;
+
+	WResumeMap fResumeMap;
 
 public:
 	QString GetUserName() const;
@@ -320,6 +349,8 @@ public:
 	
 	void TranslateStatus(QString & s);
 	
+	WUserRef FindUser(QString user);
+
 	WSettings * fSettings;	// for use by prefs
 	WDownload * fDLWindow;
 };

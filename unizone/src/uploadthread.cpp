@@ -180,6 +180,7 @@ WUploadThread::SignalOwner()
 							ui->AddString("name", name);
 							ui->AddString("id", id);
 							fRemoteSessionID = QString::fromUtf8(id);
+							fRemoteUser = QString::fromUtf8(name);
 							if (gWin->IsIgnored(fRemoteSessionID, true))
 							{
 								SetBlocked(true);
@@ -401,6 +402,10 @@ WUploadThread::DoUpload()
 				update->AddInt64("offset", fCurrentOffset);
 				update->AddInt64("size", fFileSize);
 				update->AddInt32("sent", numBytes);
+				
+				if (fCurrentOffset >= fFileSize)
+					update->AddBool("done", true);	// file done!
+
 				SendReply(update);
 				return;
 			}
