@@ -55,6 +55,9 @@ SRCFILES =		$(addsuffix .cpp,$(basename $(OBJFILES)))
 MOC_SRCFILES =		$(addsuffix .cpp,$(basename $(MOC_OBJFILES)))
 MUSCLE_SRCFILES = 	$(addsuffix .cpp,$(basename $(MUSCLE_OBJFILES)))
 
+MOC=$(QTDIR)/bin/moc
+UIC=$(QTDIR)/bin/uic
+
 all : depends $(EXECUTABLES) translations
 
 Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES)
@@ -96,107 +99,107 @@ depends: .depends
 # stuff for moc
 
 src/moc_aboutdlg.cpp: src/aboutdlg.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_aboutdlgimpl.cpp: src/aboutdlgimpl.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_chattext.cpp: src/chattext.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_combo.cpp: src/combo.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_downloadimpl.cpp: src/downloadimpl.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_downloadthread.cpp: src/downloadthread.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_uploadthread.cpp: src/uploadthread.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_htmlview.cpp: src/htmlview.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_netclient.cpp: src/netclient.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_prefs.cpp: src/prefs.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_prefsimpl.cpp: src/prefsimpl.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_privatewindow.cpp: src/privatewindow.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_privatewindowimpl.cpp: src/privatewindowimpl.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_scanprogress.cpp: src/scanprogress.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_serverclient.cpp: src/serverclient.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_updateclient.cpp: src/updateclient.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_winsharewindow.cpp: src/winsharewindow.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_channel.cpp: src/channel.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_channelimpl.cpp: src/channelimpl.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_menubar.cpp: src/menubar.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_ulistview.cpp: src/ulistview.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/moc_formatting.cpp: src/formatting.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp: src/muscle/qtsupport/QAcceptSocketsThread.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp: src/muscle/qtsupport/QMessageTransceiverThread.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 # stuff for uic
 src/privatewindow.h: src/privatewindow.ui
-	uic src/privatewindow.ui -o src/privatewindow.h
+	$(UIC) src/privatewindow.ui -o src/privatewindow.h
 
 src/privatewindow.cpp: src/privatewindow.h src/privatewindow.ui
-	uic -impl privatewindow.h src/privatewindow.ui -o src/privatewindow.cpp
+	$(UIC) -impl privatewindow.h src/privatewindow.ui -o src/privatewindow.cpp
 
 src/prefs.h: src/prefs.ui
-	uic src/prefs.ui -o src/prefs.h
+	$(UIC) src/prefs.ui -o src/prefs.h
 
 src/prefs.cpp: src/prefs.h src/prefs.ui
-	uic -impl prefs.h src/prefs.ui -o src/prefs.cpp
+	$(UIC) -impl prefs.h src/prefs.ui -o src/prefs.cpp
 
 src/aboutdlg.h: src/aboutdlg.ui
-	uic src/aboutdlg.ui -o src/aboutdlg.h
+	$(UIC) src/aboutdlg.ui -o src/aboutdlg.h
 
 src/aboutdlg.cpp: src/aboutdlg.h src/aboutdlg.ui
-	uic -impl aboutdlg.h src/aboutdlg.ui -o src/aboutdlg.cpp
+	$(UIC) -impl aboutdlg.h src/aboutdlg.ui -o src/aboutdlg.cpp
 
 src/channel.h: src/channel.ui
-	uic src/channel.ui -o src/channel.h
+	$(UIC) src/channel.ui -o src/channel.h
 
 src/channel.cpp: src/channel.h src/channel.ui
-	uic -impl channel.h src/channel.ui -o src/channel.cpp
+	$(UIC) -impl channel.h src/channel.ui -o src/channel.cpp
 
 src/scanprogress.h: src/scanprogress.ui
-	uic src/scanprogress.ui -o src/scanprogress.h
+	$(UIC) src/scanprogress.ui -o src/scanprogress.h
 
 src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
-	uic -impl scanprogress.h src/scanprogress.ui -o src/scanprogress.cpp
+	$(UIC) -impl scanprogress.h src/scanprogress.ui -o src/scanprogress.cpp
 
 clean :
 	rm -f *.o *.a $(EXECUTABLES)
