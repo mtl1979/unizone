@@ -20,7 +20,6 @@ private slots:
 
 private:
 	void UpdateDescription(int);
-	void InitLanguage();
 	
 	int fCurColorIndex;
 	QString fColor[11];

@@ -163,7 +163,7 @@ WUser::AddToListView(QListView * view)
 		QListViewItem *item;
 		if (!fBot)
 		{
-			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, QObject::tr("%1").arg(strFileCount), 
+			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, QString::fromLatin1(strFileCount), 
 								fBandwidthLabel, qUpload, fClient);
 			CHECK_PTR(item);
 			pair = MakeListPair(view, item);
@@ -171,7 +171,7 @@ WUser::AddToListView(QListView * view)
 		}
 		else
 		{
-			item = new WBotItem(view, fUserName, fUserID, fUserStatus, QObject::tr("%1").arg(strFileCount), 
+			item = new WBotItem(view, fUserName, fUserID, fUserStatus, QString::fromLatin1(strFileCount), 
 								fBandwidthLabel, qUpload, fClient);
 			CHECK_PTR(item);
 			pair = MakeListPair(view, item);
@@ -197,7 +197,7 @@ WUser::AddToListView(QListView * view)
 			item->setText(WNickListItem::Status, fUserStatus);
 		}
 
-		QString chk = QObject::tr("%1").arg(strFileCount);
+		QString chk = QString::fromLatin1(strFileCount);
 
 		if (item->text(WNickListItem::Files) != chk)
 		{

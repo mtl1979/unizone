@@ -4,7 +4,6 @@
 
 #include "aboutdlgimpl.h"
 #include "version.h"
-#include "lang.h"			// <postmaster@raasu.org> 20020924
 
 #include <stdio.h>
 #include <qlabel.h>
@@ -24,10 +23,9 @@ AboutDlg::AboutDlg( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	if ( !name ) 
 		setName("AboutDlg");
 	connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
-	char about[100];
-	sprintf(about, NAME "\nVersion %s", WinShareVersionString()); // <postmaster@raasu.org> 20020926 Moved 'Version' to line 2
-	titleLabel->setProperty("text", tr(about));
-	setCaption(tr("About " NAME));
+	QString about = tr("Unizone (English)\nVersion %1").arg(WinShareVersionString());
+	titleLabel->setProperty("text", about);
+	setCaption(tr("About Unizone (English)"));
 }
 
 

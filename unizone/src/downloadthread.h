@@ -70,7 +70,6 @@ private:
 	QString UniqueName(QString file, int index); // build up unique name using 'file' and 'index'
 	QTimer * CTimer; // Connect timer
 
-
 };
 
 // subclass ThreadWorkerSessionFactory to do throttling

@@ -39,6 +39,12 @@ public:
 
 	void SetNodeValue(const char * node, MessageRef & val);	// set the Message of a node
 
+	QString * GetChannelList();
+	int GetChannelCount();
+
+	QString * GetChannelUsers(QString channel);
+	int GetUserCount(QString channel);
+
 	// events
 	enum
 	{
@@ -62,7 +68,7 @@ public:
 	  SCAN_THREAD_REPORT
 	}; 
 
-	// path matching
+	// path matching -- BeShare
 	enum 
 	{
 		ROOT_DEPTH = 0,         // root node
@@ -71,6 +77,33 @@ public:
 		BESHARE_HOME_DEPTH,     // used to separate our stuff from other (non-BeShare) data on the same server
 		USER_NAME_DEPTH,        // user's handle node would be found here
 		FILE_INFO_DEPTH         // user's shared file list is here
+	};
+
+	// path matching -- UniShare
+	enum
+	{
+		UNISHARE_HOME_DEPTH = BESHARE_HOME_DEPTH,
+		CHANNELDATA_DEPTH,
+		CHANNEL_DEPTH,
+		CHANNELINFO_DEPTH
+	};
+
+	// UniShare event codes
+	enum
+	{
+		ClientConnected = 'UsCo',
+		RegisterFail,
+		ClientDisconnected,
+		ChannelCreated,
+		ChannelText,
+		ChannelData,
+		ChannelInvite,
+		ChannelKick,
+		ChannelMaster,
+		ChannelJoin,
+		ChannelPart,
+		ChannelSetTopic,
+		ChannelSetPublic
 	};
 
 	QString LocalSessionID() const;
@@ -105,9 +138,16 @@ signals:
 	void UserNameChanged(QString id, QString oldname, QString newname);
 	void DisconnectedFromServer();
 	void UserStatusChanged(QString id, QString name, QString status);
+	void UserIDChanged(QString oldid, QString newid);
 	
 	void RemoveFile(const QString, const QString);
 	void AddFile(const QString, const QString, bool, MessageRef);
+
+	void ChannelTopic(const QString, const QString, const QString);
+	void ChannelAdmins(const QString, const QString, const QString);
+	void ChannelAdded(const QString, const QString, int64);
+	void ChannelPublic(const QString, const QString, bool);
+	void ChannelOwner(const QString, const QString, const QString);
 
 protected:
 	virtual void SignalOwner();
@@ -115,11 +155,23 @@ protected:
 private:
 	uint32 fPort;
 	QString fSessionID, fServer;
+	QString fOldID;		// Old id for persistent channel admin/owner state
+	QString fUserName;
 	QObject * fOwner;
 	WUserMap fUsers;	// a list of users
+	Message * fChannels; // channel database
 
 	// QMutex fNetLock;
+	void HandleBeRemoveMessage(String nodePath);
+	void HandleBeAddMessage(String nodePath, MessageRef ref);
 
+	void HandleUniRemoveMessage(String nodePath);
+	void HandleUniAddMessage(String nodePath, MessageRef ref);
+
+	void AddChannel(QString sid, QString channel);
+	void RemoveChannel(QString sid, QString channel);
+
+	QMutex fChannelLock;
 };
 
 

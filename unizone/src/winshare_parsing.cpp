@@ -71,6 +71,9 @@ WinShareWindow::MatchUserFilter(const WUser * user, const char * filter)
 		next = next.Trim();
 
 		// Is this item our user's session ID?
+		PRINT("MatchUserFilter: UserID = %s\n", (const char *) user->GetUserID().utf8());
+		PRINT("MatchUserFilter: next   = %s\n", next.Cstr());
+		PRINT("MatchUserFilter: strcmp = %d\n", strcmp((const char *) user->GetUserID().utf8(), next.Cstr()));
 		if (strcmp((const char *) user->GetUserID().utf8(), next.Cstr()) == 0)
 			return true;
 		else
@@ -345,7 +348,7 @@ WinShareWindow::SetWatchPattern(QString pattern)
 	if (fSettings->GetInfo())
 	{
 		if (fWatch == "")	// no pattern?
-			PrintSystem("Watch pattern cleared.");
+			PrintSystem(tr("Watch pattern cleared."));
 		else
 			PrintSystem(tr("Watch pattern set to %1.").arg(pattern));
 	}

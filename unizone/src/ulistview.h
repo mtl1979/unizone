@@ -94,6 +94,7 @@ private:
 
 class WUniListView : public QListView
 {
+	Q_OBJECT
 public:
 	WUniListView( QWidget * parent, const char * name, WFlags f ) 
 		: QListView( parent, name, f )

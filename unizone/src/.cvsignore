@@ -1,5 +1,8 @@
-moc_aboutdlg.cpp moc_aboutdlgimpl.cpp moc_chattext.cpp moc_combo.cpp moc_downloadimpl.cpp moc_genericthread.cpp moc_htmlview.cpp moc_netclient.cpp moc_prefs.cpp moc_prefsimpl.cpp moc_privatewindow.cpp moc_privatewindowimpl.cpp moc_search.cpp moc_winsharewindow.cpp
+moc_*.cpp 
 aboutdlg.cpp aboutdlg.h
+channel.cpp channel.h
+channels.cpp channels.h
 icon.aps
 prefs.cpp prefs.h
 privatewindow.cpp privatewindow.h
+*.qm

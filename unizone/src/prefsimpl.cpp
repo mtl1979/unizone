@@ -4,7 +4,6 @@
 #include "settings.h"
 #include "colors.h"
 #include "debugimpl.h"
-#include "lang.h"				// <postmaster@raasu.org> 20020924
 #include "platform.h"			// <postmaster@raasu.org> 20021114
 
 #include <qmotifstyle.h>
@@ -26,30 +25,32 @@
 #include <qstringlist.h>
 #include <qtabwidget.h>
 
-const char * kColorDesc[11] = {	MSG_HLOCAL_NAME, 
-					MSG_HREMOTE_NAME,
-					MSG_HREGULAR_TEXT,
-					MSG_HSYSTEM_TEXT,
-					MSG_HPING_TEXT,
-					MSG_HERROR_TEXT,
-					MSG_HERRORMSG_TEXT,
-					MSG_HPRIVATE_TEXT,
-					MSG_HACTION_TEXT,
-					MSG_HURL_TEXT,
-					MSG_HNAME_SAID_TEXT
+const char * kColorDesc[11] = {	
+					QT_TR_NOOP( "This is the color of your user name." ), 
+					QT_TR_NOOP( "This is the color of other users' names." ),
+					QT_TR_NOOP( "This is the color of text sent by you and other users." ),
+					QT_TR_NOOP( "This is the color of \"System\"." ),
+					QT_TR_NOOP( "This is the color of the text in a ping response." ),
+					QT_TR_NOOP( "This is the color of \"Error\"." ),
+					QT_TR_NOOP( "This is the color of the text in error messages." ),
+					QT_TR_NOOP( "This is the color of private text." ),
+					QT_TR_NOOP( "This is the color of \"Action\"." ),
+					QT_TR_NOOP( "This is the color of URLs." ),
+					QT_TR_NOOP( "This is the color of your user name in text when someone says your name in the main chat." )
 								};
 
-const char * kSampleText[11] = {	"Username",
-									"Remote User",
-									"Sample text",
-									"<b>System</b>",
-									"Sample text",
-									"<b>Error</b>",
-									"Error text",
-									"Private text",
-									"<b>Action</b>",
-									"<u>http://magep.com/</u>",
-									"Username"
+const char * kSampleText[11] = {	
+									QT_TR_NOOP( "Username" ),
+									QT_TR_NOOP( "Remote User" ),
+									QT_TR_NOOP( "Sample text" ),
+									QT_TR_NOOP( "<b>System</b> " ),
+									QT_TR_NOOP( "Sample text" ),
+									QT_TR_NOOP( "<b>Error</b>" ),
+									QT_TR_NOOP( "Error text" ),
+									QT_TR_NOOP( "Private text" ),
+									QT_TR_NOOP( "<b>Action</b>" ),
+									QT_TR_NOOP( "<u>http://magep.com/</u>" ),
+									QT_TR_NOOP( "Username" )
 								};
 
 /*
@@ -70,8 +71,6 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	connect(fColorsList, SIGNAL(highlighted(int)), this, SLOT(ColorSelected(int)));
 	connect(fChange, SIGNAL(clicked()), this, SLOT(ChangeColor()));
 	connect(fAutoAway, SIGNAL(highlighted(int)), this, SLOT(AwaySelected(int)));
-
-	InitLanguage();
 
 	fCurColorIndex = -1;
 	// initialize the colors
@@ -94,6 +93,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fFireWalled->setChecked(gWin->fSettings->GetFirewalled());
 	fBinkyNuke->setChecked(gWin->fSettings->GetBinkyNuke());
 	fBlockDisconnected->setChecked(gWin->fSettings->GetBlockDisconnected());
+	fAutoClear->setChecked(gWin->fSettings->GetAutoClear());
 	fMultiColor->setChecked(gWin->fSettings->GetMultiColor());
 	if (gWin->fSettings->GetConnection() != "?")
 	{
@@ -267,6 +267,7 @@ WPrefs::OK()
 	gWin->fSettings->SetFirewalled(fFireWalled->isChecked());
 	gWin->fSettings->SetBinkyNuke(fBinkyNuke->isChecked());
 	gWin->fSettings->SetBlockDisconnected(fBlockDisconnected->isChecked());
+	gWin->fSettings->SetAutoClear(fAutoClear->isChecked());
 	gWin->fSettings->SetMultiColor(fMultiColor->isChecked());
 	gWin->fSettings->SetTimeStamps(fTimeStamps->isChecked());
 	gWin->fSettings->SetUserEvents(fUserEvents->isChecked());
@@ -432,109 +433,3 @@ WPrefs::AwaySelected(int index)
 	gWin->fSettings->SetAutoAway(index);
 }
 
-void
-WPrefs::InitLanguage()
-{
-	// Initialize dialog for Languages
-	this->setCaption(tr(MSG_PR_PREFERENCES));
-
-	// Tabs
-	fTabs->changeTab(fGeneral, tr(MSG_GENERAL));
-	fTabs->changeTab(fConnection, tr(MSG_CONNECTION));
-	fTabs->changeTab(fDisplay, tr(MSG_DISPLAY));
-	fTabs->changeTab(fColors, tr(MSG_COLORS));
-	fTabs->changeTab(fStyle, tr(MSG_STYLE));
-	fTabs->changeTab(fFileSharing, tr(MSG_FILE_SHARING));
-	fTabs->changeTab(fURLLaunching, tr(MSG_URL_LAUNCHING));
-	fTabs->changeTab(fThrottling, tr(MSG_THROTTLING));
-
-	// Auto away
-	TextLabel1->setText(tr(MSG_CAUTOAWAY));
-	fAutoAway->clear();
-	fAutoAway->insertItem(tr(MSG_DISABLED));
-	fAutoAway->insertItem(tr(MSG_2_MINUTES));
-	fAutoAway->insertItem(tr(MSG_5_MINUTES));
-	fAutoAway->insertItem(tr(MSG_10_MINUTES));
-	fAutoAway->insertItem(tr(MSG_15_MINUTES));
-	fAutoAway->insertItem(tr(MSG_20_MINUTES));
-	fAutoAway->insertItem(tr(MSG_30_MINUTES));
-	fAutoAway->insertItem(tr(MSG_1_HOUR));
-	fAutoAway->insertItem(tr(MSG_2_HOURS));
-	
-	// Misc general
-	fAutoUpdateServers->setProperty("text", tr(MSG_AUTOUPDATE));
-	fNewVersions->setProperty("text", tr(MSG_CHECK_NEW));
-	fLoginStartup->setProperty("text", tr(MSG_LOGIN_ON_START));
-	fLogging->setProperty("text", tr(MSG_ENABLE_LOGGING));
-	fMultiColor->setProperty("text", tr(MSG_MULTI_COLOR_LISTVIEWS));
-
-	// Connection
-	TextLabel2->setText(tr(MSG_CUPLOAD_BAND));
-	fFireWalled->setProperty("text", tr(MSG_FIREWALLED));
-
-	// Display
-	fWarning->setProperty("text", tr(MSG_WARNING_MSGS));
-	fError->setProperty("text", tr(MSG_ERROR_MSGS));
-	fPrivate->setProperty("text", tr(MSG_PRIVATE_MSGS));
-	fUserEvents->setProperty("text", tr(MSG_USEREVENTS));
-	fChat->setProperty("text", tr(MSG_CHAT));
-	fInfo->setProperty("text", tr(MSG_INFO_MSGS));
-	fUploads->setProperty("text", tr(MSG_UPLOADS));
-	fTimeStamps->setProperty("text", tr(MSG_TIMESTAMPS));
-	fFlashMain->setProperty("text", tr(MSG_FLASH_WINDOW));
-	fFlashPrivate->setProperty("text", tr(MSG_FLASH_PRIVATE));
-	GroupBox1->setProperty("title", tr(MSG_FONT_SIZE));
-
-	// Colors
-	fColorsList->clear();
-	fColorsList->insertItem(tr(MSG_LOCAL_NAME));
-	fColorsList->insertItem(tr(MSG_REMOTE_NAME));
-	fColorsList->insertItem(tr(MSG_REGULAR_TEXT));
-	fColorsList->insertItem(tr(MSG_SYSTEM_TEXT));
-	fColorsList->insertItem(tr(MSG_PING_TEXT));
-	fColorsList->insertItem(tr(MSG_ERROR_TEXT));
-	fColorsList->insertItem(tr(MSG_ERRORMSG_TEXT));
-	fColorsList->insertItem(tr(MSG_PRIVATE_TEXT));
-	fColorsList->insertItem(tr(MSG_ACTION_TEXT));
-	fColorsList->insertItem(tr(MSG_URL_TEXT));
-	fColorsList->insertItem(tr(MSG_NAME_SAID_TEXT));
-	TextLabel5->setProperty("text", tr(MSG_CDESCRIPTION));
-	TextLabel3->setProperty("text", tr(MSG_CPREVIEW));
-	fChange->setProperty("text", tr(MSG_CHANGE));	
-
-	// Style
-	TextLabel7->setProperty("text", tr(MSG_HSTYLE));
-
-	// File sharing
-	fFileSharingEnabled->setProperty("text", tr(MSG_FS_ENABLED));
-	fBinkyNuke->setProperty("text", tr(MSG_BINKYNUKE));
-	fBlockDisconnected->setProperty("text", tr(MSG_BLOCK_DISCONNECTED));
-	TextLabel1_2_3->setProperty("text", tr(MSG_CFS_MAXUP));
-	TextLabel1_2_3_3->setProperty("text", tr(MSG_CFS_MAXDOWN));
-	fMaxUL->removeItem(9);	// remove "Unlimited"
-	fMaxUL->insertItem(tr(MSG_UNLIMITED));
-	fMaxDL->removeItem(9);
-	fMaxDL->insertItem(tr(MSG_UNLIMITED));
-
-	// launchers
-	TextLabel1_2->setProperty("text", tr(MSG_CMAILTO_LAUNCHER));
-	TextLabel1_2_2->setProperty("text", tr(MSG_CHTTP_LAUNCHER));
-	TextLabel1_2_2_2->setProperty("text", tr(MSG_CFTP_LAUNCHER));
-
-	// throttling
-	TextLabel1_2_4->setProperty("text", tr(MSG_CCHAT));
-	TextLabel1_2_4_2->setProperty("text", tr(MSG_TH_UPLOADS));
-	TextLabel1_2_4_3->setProperty("text", tr(MSG_TH_DOWNLOADS));
-	TextLabel1_2_4_4->setProperty("text", tr(MSG_TH_BLOCKED));
-	fChatLimit->removeItem(0);
-	fChatLimit->insertItem(tr(MSG_NO_LIMIT), 0);
-	fULLimit->removeItem(0);
-	fULLimit->insertItem(tr(MSG_NO_LIMIT), 0);
-	fDLLimit->removeItem(0);
-	fDLLimit->insertItem(tr(MSG_NO_LIMIT), 0);
-	fBLLimit->removeItem(0);
-	fBLLimit->insertItem(tr(MSG_NO_LIMIT), 0);
-
-	fOK->setProperty("text", tr(MSG_OK));
-	fCancel->setProperty("text", tr(MSG_CANCEL));
-}

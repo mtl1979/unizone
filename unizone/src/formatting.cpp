@@ -1,5 +1,4 @@
 #include "formatting.h"
-#include "lang.h"			// <postmaster@raasu.org> 20020924
 #include "platform.h"       // <postmaster@raasu.org> 20021114
 #include "tokenizer.h"		//
 #include "util/Queue.h"		//
@@ -29,55 +28,55 @@ QString WFormat::Text = "<font color=\"%1\" size=\"%2\">%3</font>";
 //	System: User #?? is now connected.
 QString WFormat::SystemText()
 {
-	return QObject::tr(MSG_WF_SYSTEMTEXT);
+	return QObject::tr("<font color=\"%1\" size=\"%2\"><b>System:</b> </font>");
 }
 
 QString WFormat::UserConnected()
 {
-	return QObject::tr(MSG_WF_USERCONNECTED);
+	return QObject::tr("User #%1 is now connected.");
 }
 
 QString WFormat::UserDisconnected()
 {
-	return QObject::tr(MSG_WF_USERDISCONNECTED);
+	return QObject::tr("User #%1 (a.k.a. <font color=\"%3\">%2</font>) has disconnected.");
 }
 
 QString WFormat::UserNameChangedNoOld()
 {
-	return QObject::tr(MSG_WF_USERNAMECHANGENO);
+	return QObject::tr("User #%1 is now known as <font color=\"%3\">%2</font>.");
 }
 
 QString WFormat::UserNameChanged()
 {
-	return QObject::tr(MSG_WF_USERNAMECHANGED);
+	return QObject::tr("User #%1 (a.k.a. <font color=\"%4\">%2</font>) is now known as <font color=\"%5\">%3</font>.");
 }
 
 QString WFormat::UserStatusChanged()
 {
-	return QObject::tr(MSG_WF_USERSTATUSCHANGE);
+	return QObject::tr("User #%1 (a.k.a. <font color=\"%4\">%2</font>) is now %3.");
 }
 
 QString WFormat::UserStatusChanged2()
 {
-	return QObject::tr(MSG_WF_USERSTATUSCHANGE2);
+	return QObject::tr("User #%1 is now %2.");
 }
 
 // ping formatting
 QString WFormat::PingText()
 {
-	return QObject::tr(MSG_WF_PINGTEXT);
+	return QObject::tr("<font color=\"%1\" size=\"%2\">Ping returned in %3 milliseconds (%4)</font>");
 }
 
 QString WFormat::PingUptime()
 {
-	return QObject::tr(MSG_WF_PINGUPTIME);
+	return QObject::tr("<font color=\"%1\" size=\"%2\"> (Uptime: %3, Logged on for %4)</font>");
 }
 
 
 // error format
 QString WFormat::Error()
 {
-	return QObject::tr(MSG_WF_ERROR);
+	return QObject::tr("<font color=\"%1\" size=\"%2\"><b>Error:</b></font> ");
 }
 
 // error text color (just regular text)
@@ -86,12 +85,12 @@ QString WFormat::ErrorMsg = "<font color=\"%1\" size=\"%2\">%3</font>";
 // warning format
 QString WFormat::Warning()
 {
-	return QObject::tr(MSG_WF_WARNING);
+	return QObject::tr("<font color=\"%1\" size=\"%2\"><b>Warning:</b></font> ");
 }
 
 QString WFormat::StatusChanged()
 {
-	return QObject::tr(MSG_WF_STATUSCHANGED);
+	return QObject::tr("You are now %1.");
 }
 
 // priv messages
@@ -104,7 +103,7 @@ QString WFormat::ReceivePrivMsg = "<font size=\"%2\"><b>-%3-</b> <font color=\"%
 
 QString WFormat::Action()
 {
-	return QObject::tr(MSG_WF_ACTION);
+	return QObject::tr("<font color=\"%1\" size=\"%2\"><b>Action:</b></font> ");
 }
 
 // <postmaster@raasu.org> 20020930
@@ -115,7 +114,7 @@ QString WFormat::URL2 = "</u></font>";
 
 QString WFormat::GotPinged()
 {
-	return QObject::tr(MSG_WF_GOTPINGED);
+	return QObject::tr("<font color=\"%1\" size=\"%2\">User #%3 (a.k.a. <font color=\"%5\">%4</font>) pinged you.</font>");
 }
 
 QString WFormat::TimeStamp = "<font color=\"%1\" size=\"%2\"><b>%3</b></font> ";

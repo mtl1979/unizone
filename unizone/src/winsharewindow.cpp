@@ -18,7 +18,6 @@
 #include "iogateway/PlainTextMessageIOGateway.h"
 #include "settings.h"
 #include "filethread.h"
-#include "lang.h"									// <postmaster@raasu.org> 20020924
 #include "tokenizer.h"								// <postmaster@raasu.org> 20021114
 #include "platform.h"
 #include "nicklist.h"
@@ -60,6 +59,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	gWin = this;
 	fDLWindow = NULL;
 	fSearchWindow = NULL;
+	fChannels = NULL;
 	fAccept = NULL;
 	
 	RedirectDebugOutput();
@@ -170,15 +170,15 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	{
 		START_OUTPUT();
 #ifdef WIN32
-		PrintSystem(tr("Welcome to " NAME "! <b>THE</b> MUSCLE client for Windows!"), true);
+		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Windows!"), true);
 #else
-		PrintSystem(tr("Welcome to " NAME "! <b>THE</b> MUSCLE client for Linux!"), true);
+		PrintSystem(tr("Welcome to Unizone (English)! <b>THE</b> MUSCLE client for Linux!"), true);
 #endif
 		// <postmaster@raasu.org> 20030225
-		PrintSystem("Copyright (C) 2002-2003 Mika T. Lindqvist.", true);
-		PrintSystem("Original idea by Vitaliy Mikitchenko.", true);
-		PrintSystem("Released to public use under LGPL.", true);
-		PrintSystem("Type /help for a command reference.", true);
+		PrintSystem(tr("Copyright (C) 2002-2003 Mika T. Lindqvist."), true);
+		PrintSystem(tr("Original idea by Vitaliy Mikitchenko."), true);
+		PrintSystem(tr("Released to public use under LGPL."), true);
+		PrintSystem(tr("Type /help for a command reference."), true);
 		END_OUTPUT();
 	}
 
@@ -187,7 +187,10 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 #ifdef WIN32
 	// try to find our handle
-	fWinHandle = FindWindow(NULL, L"[Freeware] - Unizone"); // <postmaster@raasu.org> 20021021 -- Use Unicode macro L"..."
+	QString title = tr("[Freeware] - Unizone");
+	wchar_t * wtitle = qStringToWideChar(title);
+	fWinHandle = FindWindow(NULL, wtitle); // <postmaster@raasu.org> 20021021 -- Use Unicode macro L"..."
+	delete [] wtitle;
 	if (fWinHandle)
 	{
 		PRINT("Got Handle!\n");
@@ -332,7 +335,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				{
 					fFileScanThread->Lock();
 					if (fSettings->GetInfo())
-						PrintSystem(tr(MSG_SHARECOUNT).arg(fFileScanThread->GetSharedFiles().size()));
+						PrintSystem(tr("Sharing %1 file(s).").arg(fFileScanThread->GetSharedFiles().size()));
 					fNetClient->SetFileCount(fFileScanThread->GetSharedFiles().size());
 					PRINT("Doing a scan of the returned files for uploading.\n");
 					for (WMsgListIter it = fFileScanThread->GetSharedFiles().begin(); it != fFileScanThread->GetSharedFiles().end(); it++)
@@ -391,6 +394,8 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				fNetClient->SendMessageToSessions(askref);
 				// get a list of users as well
 				fNetClient->AddSubscription("SUBSCRIBE:beshare/*"); // all user info :)
+				fNetClient->AddSubscription("SUBSCRIBE:unishare/*");
+				fNetClient->AddSubscription("SUBSCRIBE:unishare/channeldata/*");
 				fNetClient->SetUserName(GetUserName());
 				fNetClient->SetUserStatus(GetStatus());
 				fNetClient->SetConnection(fSettings->GetConnection());
@@ -402,11 +407,11 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_PING));
 				
 				if (fSettings->GetInfo())
-					PrintSystem(tr(MSG_CONNECTED));
+					PrintSystem(tr("Connected."));
 
 				if (fReconnectTimer->isActive())
 				{
-					PrintSystem("Reconnect timer stopped");
+					PrintSystem(tr("Reconnect timer stopped"));
 					fReconnectTimer->stop();
 				}
 
@@ -477,7 +482,6 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				}
 				return;
 			}
-			
 		case WPWEvent::TabComplete:
 			{
 				PRINT("\tWPWEvent::TabComplete\n");
@@ -580,7 +584,7 @@ WinShareWindow::NameChanged(const QString & newName)
 {
 	fNetClient->SetUserName(newName); // <postmaster@raasu.org> 20021011
 	QString nameChanged = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
-	nameChanged += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(tr(MSG_NAMECHANGED).
+	nameChanged += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(tr("Name changed to <font color=\"%2\">%1</font>.").
 		arg(FixStringStr(newName)).arg(WColors::LocalName)); // <postmaster@raasu.org> 20021001
 	PrintText(nameChanged);
 	fUserName = newName;
@@ -592,9 +596,9 @@ WinShareWindow::resizeEvent(QResizeEvent * event)
 	if (fMenus)
 	{
 		if (fInfoPane)
-			fMainSplitter->resize(event->size().width(), event->size().height() - fMenus->Bar()->height() - fInfoPane->height());
+			fMainSplitter->resize(event->size().width(), event->size().height() - fMenus->height() - fInfoPane->height());
 		else
-			fMainSplitter->resize(event->size().width(), event->size().height() - fMenus->Bar()->height());
+			fMainSplitter->resize(event->size().width(), event->size().height() - fMenus->height());
 	}
 	if (fInfoPane)
 		fInfoPane->resize(event->size().width(), 48);
@@ -612,27 +616,27 @@ WinShareWindow::InitGUI()
 	fInfoPane = new QHGroupBox(this);
 	CHECK_PTR(fInfoPane);
 
-	fInfoPane->move(0, fMenus->Bar()->height() + 4);
+	fInfoPane->move(0, fMenus->height() + 4);
 	fInfoPane->resize(this->frameSize().width(),48);
 
 	// setup combo/labels
 	// we define the combos as QComboBox, but use WComboBox for 
 	// messaging purposes :)
-	fServerLabel = new QLabel(tr(MSG_CSERVER), fInfoPane);
+	fServerLabel = new QLabel(tr("Server:"), fInfoPane);
 	CHECK_PTR(fServerLabel);
 	fServerList = new WComboBox(this, fInfoPane, "fServerList");
 	CHECK_PTR(fServerList);
 	fServerList->setEditable(true);
 	fServerLabel->setBuddy(fServerList);
 
-	fUserLabel = new QLabel(tr(MSG_CNICK), fInfoPane);
+	fUserLabel = new QLabel(tr("Nick:"), fInfoPane);
 	CHECK_PTR(fUserLabel);
 	fUserList = new WComboBox(this, fInfoPane, "fUserList");
 	CHECK_PTR(fUserList);
 	fUserList->setEditable(true);
 	fUserLabel->setBuddy(fUserList);
 
-	fStatusLabel = new QLabel(tr(MSG_CSTATUS), fInfoPane);
+	fStatusLabel = new QLabel(tr("Status:"), fInfoPane);
 	CHECK_PTR(fStatusLabel);
 	fStatusList = new WComboBox(this, fInfoPane, "fStatusList");
 	CHECK_PTR(fStatusList);
@@ -642,22 +646,22 @@ WinShareWindow::InitGUI()
 	// main splitter
 	fMainSplitter = new QSplitter(this);
 	CHECK_PTR(fMainSplitter);
-	fMainSplitter->move(0, fMenus->Bar()->height() + fInfoPane->height() + 4);
+	fMainSplitter->move(0, fMenus->height() + fInfoPane->height() + 4);
 
 	// user list
 	fUsersBox = new QHGroupBox(fMainSplitter);
 	CHECK_PTR(fUsersBox);
-	fUsersBox->move(0, fMenus->Bar()->height() + fInfoPane->height() + 4);
+	fUsersBox->move(0, fMenus->height() + fInfoPane->height() + 4);
 	fUsers = new WUniListView(fUsersBox);
 	CHECK_PTR(fUsers);
 	// initialize the list view
-	fUsers->addColumn(tr(MSG_NL_NAME));
+	fUsers->addColumn(tr("Name"));
 	fUsers->addColumn(tr("ID"));
-	fUsers->addColumn(tr(MSG_NL_STATUS));
-	fUsers->addColumn(tr(MSG_NL_FILES));
-	fUsers->addColumn(tr(MSG_NL_CONNECTION));
-	fUsers->addColumn(tr(MSG_NL_LOAD));
-	fUsers->addColumn(tr(MSG_NL_CLIENT));		// as of now... WinShare specific, WinShare pings all the users and parses the string for client info
+	fUsers->addColumn(tr("Status"));
+	fUsers->addColumn(tr("Files"));
+	fUsers->addColumn(tr("Connection"));
+	fUsers->addColumn(tr("Load"));
+	fUsers->addColumn(tr("Client"));		// as of now... WinShare specific, WinShare pings all the users and parses the string for client info
 	
 
 	fUsers->setColumnAlignment(WNickListItem::ID, AlignRight); // <postmaster@raasu.org> 20021005
@@ -701,7 +705,7 @@ WinShareWindow::InitGUI()
 	fUserList->insertItem("Unizone Binky");
 	fServerList->insertItem("beshare.tycomsystems.com");
 #ifdef BETA
-	QString status = tr("Testing " NAME " ");
+	QString status = tr("Testing Unizone (English) ");
 	status += WinShareVersionString();
 	fStatusList->insertItem(status);
 #endif
@@ -790,47 +794,47 @@ WinShareWindow::MakeHumanTime(int64 time)
 	QString s, qTime;
 	if (weeks == 1)
 	{
-		s = tr("1 " MSG_WEEK ", ");
+		s = tr("1 week, ");
 	}
 	else if (weeks > 1)
 	{
-		s = tr("%1 " MSG_WEEKS ", ").arg((long)weeks);
+		s = tr("%1 weeks, ").arg((long)weeks);
 	}
 
 	if (days == 1)
 	{
-		s += tr("1 " MSG_DAY ", ");
+		s += tr("1 day, ");
 	}
 	else if (days > 1)
 	{
-		s += tr("%1 " MSG_DAYS ", ").arg((long)days);
+		s += tr("%1 days, ").arg((long)days);
 	}
 
 	if (hours == 1)
 	{
-		s += tr("1 " MSG_HOUR ", ");
+		s += tr("1 hour, ");
 	}
 	else if (hours > 1)
 	{
-		s += tr("%1 " MSG_HOURS ", ").arg((long)hours);
+		s += tr("%1 hours, ").arg((long)hours);
 	}
 
 	if (minutes == 1)
 	{
-		s += tr("1 " MSG_MINUTE ", ");
+		s += tr("1 minute, ");
 	}
 	else if (minutes > 1)
 	{
-		s += tr("%1 " MSG_MINUTES ", ").arg((long)minutes);
+		s += tr("%1 minutes, ").arg((long)minutes);
 	}
 
 	if (seconds == 1)
 	{
-		s += tr("1 " MSG_SECOND ", ");
+		s += tr("1 second, ");
 	}
 	else if (seconds > 1)
 	{
-		s += tr("%1 " MSG_SECONDS ", ").arg((long)seconds);
+		s += tr("%1 seconds, ").arg((long)seconds);
 	}
 	
 	if ((s.length() > 2) && (s.right(2) == ", "))
@@ -840,7 +844,7 @@ WinShareWindow::MakeHumanTime(int64 time)
 
 	if (cp >= 0)
 	{
-		return s.left(cp)+tr(MSG_AND)+s.mid(cp+2);
+		return s.left(cp)+tr(" and ")+s.mid(cp+2);
 	}
 	else
 	{
@@ -1243,6 +1247,10 @@ WinShareWindow::LoadSettings()
 				fResumeMap.insert(wrp);
 		}
 		rLock.unlock();
+
+		// UniShare
+
+		fRegistered = fSettings->GetRegisterTime();
 	}
 	else	// file doesn't exist, or error
 	{
@@ -1263,6 +1271,7 @@ WinShareWindow::LoadSettings()
 		fAutoPriv = "";
 		fOnConnect = "";
 		fOnConnect2 = "";
+		fRegistered = GetCurrentTime64();
 		tx = 0;
 		rx = 0;
 		tx2 = 0;
@@ -1377,6 +1386,10 @@ WinShareWindow::SaveSettings()
 	rLock.unlock();
 	fSettings->SetResumeCount(i);
 
+	// UniShare
+
+	fSettings->SetRegisterTime(fRegistered);
+
 	fSettings->Save();
 }
 
@@ -1449,7 +1462,7 @@ WinShareWindow::WaitOnFileThread()
 	fFileShutdownFlag = true;
 	if (fFileScanThread->IsRunning())
 	{
-		PrintSystem(tr(MSG_WAIT_FOR_FST),false);
+		PrintSystem(tr("Waiting for file scan thread to finish..."),false);
 		while (fFileScanThread->IsRunning()) 
 		{
 			//fFileScanThread->Lock();
@@ -1477,7 +1490,7 @@ WinShareWindow::LaunchSearch(const QString & pattern)
 	// (be)share:pattern
 	if (!gWin->fSearchWindow)
 	{
-		gWin->fSearchWindow = new WSearch(gWin->fNetClient);
+		gWin->fSearchWindow = new WSearch(gWin->fNetClient, gWin);
 		CHECK_PTR(gWin->fSearchWindow);
 		gWin->fSearchWindow->show();
 		connect(gWin->fSearchWindow, SIGNAL(Closed()), gWin, SLOT(SearchWindowClosed()));
@@ -1621,7 +1634,7 @@ WinShareWindow::CreateDirectories()
 QString
 WinShareWindow::GetUptimeString()
 {
-	return tr("%1").arg(MakeHumanTime(GetUptime()));
+	return MakeHumanTime(GetUptime());
 }
 
 int64
@@ -1655,31 +1668,31 @@ WinShareWindow::TranslateStatus(QString & s)
 {
 		if (s == "here")
 		{
-			s = tr(MSG_HERE);
+			s = tr("here");
 		}
 		else if (s == "away")
 		{
-			s = tr(MSG_AWAY);
+			s = tr("away");
 		}
 		else if (s == "idle")
 		{
-			s = tr(MSG_STATUS_IDLE);
+			s = tr("idle");
 		}
 		else if (s == "busy")
 		{
-			s = tr(MSG_STATUS_BUSY);
+			s = tr("busy");
 		}
 		else if (s == "at work")
 		{
-			s = tr(MSG_AT_WORK);
+			s = tr("at work");
 		}
 		else if (s == "around")
 		{
-			s = tr(MSG_AROUND);
+			s = tr("around");
 		}
 		else if (s == "sleeping")
 		{
-			s = tr(MSG_SLEEPING);
+			s = tr("sleeping");
 		}
 }
 
@@ -1689,7 +1702,7 @@ WinShareWindow::OpenDownload()
 	if (fDLWindow)
 		return;
 	PRINT("New DL Window\n");
-	fDLWindow = new WDownload(fNetClient->LocalSessionID(), fFileScanThread);
+	fDLWindow = new WDownload(this, fNetClient->LocalSessionID(), fFileScanThread);
 	CHECK_PTR(fDLWindow);
 
 	connect(fDLWindow, SIGNAL(FileFailed(QString, QString)), this, SLOT(FileFailed(QString, QString)));
@@ -1697,6 +1710,17 @@ WinShareWindow::OpenDownload()
 	connect(fDLWindow, SIGNAL(Closed()), this, SLOT(DownloadWindowClosed()));
 
 	fDLWindow->show();
+}
+
+void
+WinShareWindow::OpenChannels()
+{
+	if (!fChannels)
+	{
+		fChannels = new Channels(this, fNetClient);
+		connect(fChannels, SIGNAL(Closed()), gWin, SLOT(ChannelsWindowClosed()));
+	}
+	fChannels->show();
 }
 
 void
@@ -1718,7 +1742,7 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (fSettings->GetError())
 		{
-			PrintError(tr(MSG_NOTCONNECTED), false);
+			PrintError(tr("Not connected."), false);
 		}
 		return;
 	}
@@ -1728,7 +1752,7 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (fSettings->GetError())
 		{
-			PrintError(tr(MSG_NOTSHARING), false);
+			PrintError(tr("File sharing not enabled."), false);
 		}
 		return;
 	}
@@ -1738,7 +1762,7 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (fSettings->GetError())
 		{
-			PrintError(tr(MSG_SCAN_ERR1), false);
+			PrintError(tr("Already scanning!"), false);
 		}
 		return;
 	}
@@ -1747,11 +1771,11 @@ WinShareWindow::ScanShares(bool rescan)
 	{
 		if (rescan)
 		{
-			PrintSystem(tr(MSG_RESCAN));
+			PrintSystem(tr("Rescanning shared files..."));
 		}
 		else
 		{
-			PrintSystem(tr(MSG_SCANSHARES));
+			PrintSystem(tr("Scanning shares..."));
 		}
 	}
 

@@ -64,82 +64,160 @@ WUniListItem::key(int c, bool asc) const
 	case Size:
 	case Time:
 	case TransferSpeed:
-		result = fKey[c];
-		PRINT("\tRESULT STARTS AS\t %S\n", qStringToWideChar(result));
-		bool ok;
-		n = result.toLong(&ok);
-		if (ok)
 		{
-			// convert our number to hexadecimal! what a thought, huh?
-			result.sprintf("0x%08x", n);
-			PRINT("\tRESULT IS %S\n", qStringToWideChar(result));
+			result = fKey[c];
+			PRINT("\tRESULT STARTS AS\t %S\n", qStringToWideChar(result));
+			bool ok;
+			n = result.toLong(&ok);
+			if (ok)
+			{
+				// convert our number to hexadecimal! what a thought, huh?
+				result.sprintf("0x%08x", n);
+				PRINT("\tRESULT IS %S\n", qStringToWideChar(result));
+			}
+			return result;
 		}
-		return result;
 	case TransferLoad:
-		q1 = fKey[c].left(fKey[c].find(","));
-		q2 = fKey[c].mid(fKey[c].find(",")+1);
-		bool ok1,ok2;
-		n = q1.toInt(&ok1);
-		m = q2.toInt(&ok2);
-		if (ok1 && ok2)
 		{
-			int o = 0;
-			if (m == WSettings::Unlimited)
-				o = 0xFFFF0000 + n; 
-			else if (m == 0)
-				return "          ";
-			else if (n == 0)
-				o = m;
+			q1 = fKey[c].left(fKey[c].find(","));
+			q2 = fKey[c].mid(fKey[c].find(",")+1);
+			bool ok1,ok2;
+			n = q1.toInt(&ok1);
+			m = q2.toInt(&ok2);
+			if (ok1 && ok2)
+			{
+				int o = 0;
+				if (m == WSettings::Unlimited)
+					o = 0xFFFF0000 + n; 
+				else if (m == 0)
+					return "          ";
+				else if (n == 0)
+					o = m;
+				else
+				{
+					o = (int) (double) ( (double) n / (double) m * 10000.0f );
+					o = o * 100 + m;
+				}
+				result.sprintf("0x%08x", o);
+			}
 			else
 			{
-				o = (int) (double) ( (double) n / (double) m * 10000.0f );
-				o = o * 100 + m;
+				return "0x00000000";
 			}
-			result.sprintf("0x%08x", o);
+			return result;
 		}
-		else
-		{
-			return "0x00000000";
-		}
-		return result;
 	case String_NoCase:
-		return text(c).lower();
+		{
+			return text(c).lower();
+		}
 	case String_NoCase_Stripped:
-		return StripURL(text(c)).lower();
+		{
+			return StripURL(text(c)).lower();
+		}
 	case String_Cased_Stripped:
-		return StripURL(text(c));
+		{
+			return StripURL(text(c));
+		}
 	case ConnectionSpeed:
-		q1 = QListViewItem::text(c);
-		if (q1 == "300 baud") 
-			return "0x01";
-		else if (q1 == "14.4 kbps") 
-			return "0x02";
-		else if (q1 == "28.8 kbps") 
-			return "0x03";
-		else if ((q1 == "33.6 kbps") || (q1 == "36.6 kbps")) 
-			return "0x04";
-		else if (q1 == "57.6 kbps") 
-			return "0x05";
-		else if (q1 == "ISDN-64k") 
-			return "0x06";
-		else if (q1 == "ISDN-128k") 
-			return "0x07";
-		else if (q1 == "DSL") 
-			return "0x08";
-		else if (q1 == "Cable") 
-			return "0x09";
-		else if (q1 == "T1") 
-			return "0x0A";
-		else if (q1 == "T3") 
-			return "0x0B";
-		else if (q1 == "OC-3") 
-			return "0x0C";
-		else if (q1 == "OC-12") 
-			return "0x0D";
-		else 
-			return "0x00";
+		{
+			q1 = QListViewItem::text(c);
+			if (q1 == "300 baud")
+			{
+				return "0x01";
+			}
+			else if (
+				( q1 == "14.4 kbps" ) || 
+				( q1 == QObject::tr( "14.4 kbps" ) )
+				)
+			{
+				return "0x02";
+			}
+			else if (
+				( q1 == "28.8 kbps" ) || 
+				( q1 == QObject::tr( "28.8 kbps" ) )
+				) 
+				return "0x03";
+			else if (
+				( q1 == "33.6 kbps" ) || 
+				( q1 == QObject::tr( "33.6 kbps" ) ) ||
+				( q1 == "36.6 kbps" ) || 
+				( q1 == QObject::tr( "36.6 kbps" ) )
+				)
+			{
+				return "0x04";
+			}
+			else if (
+				( q1 == "57.6 kbps" ) || 
+				( q1 == QObject::tr( "57.6 kbps" ) )
+				)
+			{
+				return "0x05";
+			}
+			else if (
+				( q1 == "ISDN-64k" ) || 
+				( q1 == QObject::tr( "ISDN-64k" ) )
+				)
+			{
+				return "0x06";
+			}
+			else if (
+				( q1 == "ISDN-128k" ) || 
+				( q1 == QObject::tr( "ISDN-128k" ) )
+				)
+			{
+				return "0x07";
+			}
+			else if (
+				( q1 == "DSL" ) || 
+				( q1 == QObject::tr( "DSL" ) )
+				)
+			{
+				return "0x08";
+			}
+			else if (
+				( q1 == "Cable" ) || 
+				( q1 == QObject::tr( "Cable" ) )
+				)
+			{
+				return "0x09";
+			}
+			else if (
+				( q1 == "T1" ) || 
+				( q1 == QObject::tr( "T1" ) )
+				)
+			{
+				return "0x0A";
+			}
+			else if (
+				( q1 == "T3" ) || 
+				( q1 == QObject::tr( "T3" ) )
+				)
+			{
+				return "0x0B";
+			}
+			else if (
+				( q1 == "OC-3" ) || 
+				( q1 == QObject::tr( "OC-3" ) )
+				)
+			{
+				return "0x0C";
+			}
+			else if (
+				( q1 == "OC-12" ) || 
+				( q1 == QObject::tr( "OC-12" ) )
+				)
+			{
+				return "0x0D";
+			}
+			else
+			{
+				return "0x00";
+			}
+		}
 	default:
-		return text(c);
+		{
+			return text(c);
+		}
 	}
 }
 
@@ -158,12 +236,17 @@ WUniListItem::item(int c)
 	case Date:
 	case Time:
 	case Size:
+		{
 		n = fKey[c].toLong();
 		return n;
+		}
 	case TransferSpeed:
+		{
 		n = (long) fKey[c].toDouble();
 		return n;
+		}
 	case TransferLoad:
+		{
 		q1 = fKey[c].left(fKey[c].find(","));
 		q2 = fKey[c].mid(fKey[c].find(",")+1);
 		bool ok1,ok2;
@@ -173,11 +256,17 @@ WUniListItem::item(int c)
 		{
 			o = 0;
 			if (m == WSettings::Unlimited)
-				o = 0xFFFF0000 + n; 
+			{
+				o = 0xFFFF0000 + n;
+			}
 			else if (m == 0)
+			{
 				return -1;
+			}
 			else if (n == 0)
+			{
 				o = m;
+			}
 			else
 			{
 				o = (int) (double) ( (double) n / (double) m * 10000.0f );
@@ -189,38 +278,110 @@ WUniListItem::item(int c)
 		{
 			return 0;
 		}
+		}
 	case ConnectionSpeed:
 		q1 = QListViewItem::text(c);
-		if (q1 == "300 baud") 
+		if (
+			(q1 == "300 baud") ||
+			(q1 == QObject::tr( "300 baud" ) )
+			)
+		{
 			return 1;
-		else if (q1 == "14.4 kbps") 
+		}
+		else if (
+			(q1 == "14.4 kbps") ||
+			(q1 == QObject::tr( "14.4 kbps") )
+			)
+		{
 			return 2;
-		else if (q1 == "28.8 kbps") 
+		}
+		else if (
+			(q1 == "28.8 kbps") ||
+			(q1 == QObject::tr( "28.8 kbps" ) )
+			)
+		{
 			return 3;
-		else if ((q1 == "33.6 kbps") || (q1 == "36.6 kbps")) 
+		}
+		else if (
+			(q1 == "33.6 kbps") ||
+			(q1 == QObject::tr( "33.6 kbps" ) ) ||
+			(q1 == "36.6 kbps") ||
+			(q1 == QObject::tr( "36.6 kbps" ) )
+			)
+		{
 			return 4;
-		else if (q1 == "57.6 kbps") 
+		}
+		else if (
+			(q1 == "57.6 kbps") ||
+			(q1 == QObject::tr( "57.6 kbps" ) )
+			)
+		{
 			return 5;
-		else if (q1 == "ISDN-64k") 
+		}
+		else if (
+			(q1 == "ISDN-64k") ||
+			(q1 == QObject::tr( "ISDN-64k") )
+			)
+		{
 			return 6;
-		else if (q1 == "ISDN-128k") 
+		}
+		else if (
+			(q1 == "ISDN-128k") ||
+			(q1 == QObject::tr( "ISDN-128k") )
+			)
+		{
 			return 7;
-		else if (q1 == "DSL") 
+		}
+		else if (
+			(q1 == "DSL") ||
+			(q1 == QObject::tr( "DSL" ) )
+			)
+		{
 			return 8;
-		else if (q1 == "Cable") 
+		}
+		else if (
+			(q1 == "Cable") ||
+			(q1 == QObject::tr( "Cable" ) )
+			)
+		{
 			return 9;
-		else if (q1 == "T1") 
+		}
+		else if (
+			(q1 == "T1") ||
+			(q1 == QObject::tr( "T1" ) )
+			)
+		{
 			return 10;
-		else if (q1 == "T3") 
+		}
+		else if (
+			(q1 == "T3") ||
+			(q1 == QObject::tr( "T3" ) )
+			)
+		{
 			return 11;
-		else if (q1 == "OC-3") 
+		}
+		else if (
+			(q1 == "OC-3") ||
+			(q1 == QObject::tr( "OC-3" ) )
+			)
+		{
 			return 12;
-		else if (q1 == "OC-12") 
+		}
+		else if (
+			(q1 == "OC-12") ||
+			(q1 == QObject::tr( "OC-12" ) )
+			)
+		{
 			return 13;
-		else 
+		}
+		else
+		{
 			return 0;
+		}
 	default:
+		{
 		return -1;
+		}
 	}
 }
 
@@ -238,10 +399,15 @@ WUniListItem::text(int c) const
 	{
 	case String_NoCase_Stripped:
 	case String_Cased_Stripped:
+		{
 		return StripURL(QListViewItem::text(c));
+		}
 	case Percentage:
+		{
 		return QListViewItem::text(c)+" %";
+		}
 	case Size:
+		{
 		result = QListViewItem::text(c);
 		n = (double)result.toLong(&ok);
 		postFix = "B";
@@ -279,8 +445,9 @@ WUniListItem::text(int c) const
 		}
 		
 		return result;
-		
+		}
 	case TransferSpeed:
+		{
 		result = QListViewItem::text(c);
 		n = result.toDouble(&ok);
 		postFix = "B/s";
@@ -316,11 +483,12 @@ WUniListItem::text(int c) const
 		{
 			result = "";
 		}
-
-		return result;
 		
+		return result;
+		}
 		
 	case TransferLoad:
+		{
 		q1 = fKey[c].left(fKey[c].find(","));
 		q2 = fKey[c].mid(fKey[c].find(",")+1);
 		bool ok1,ok2;
@@ -343,15 +511,18 @@ WUniListItem::text(int c) const
 			result.sprintf("(%d/%d) %3.2f %%", p, q, o);
 		}
 		return result;
-		
+		}
 	case Date:
+		{
 		lMod = fKey[c].toLong();
 		result = ctime((const time_t *)&lMod);
 #ifdef WIN32
 		result = result.left(result.length()-1);
 #endif
 		return result;
+		}
 	case Time:
+		{
 		lMod = fKey[c].toLong();
 		secs = lMod;
 		min = secs / 60; secs = secs % 60;
@@ -366,11 +537,13 @@ WUniListItem::text(int c) const
 			// Don't show 0:00:00
 			result = "";
 		}
-
-		return result;
 		
+		return result;
+		}
 	default:
+		{
 		return QListViewItem::text(c);
+		}
 	}
 }
 

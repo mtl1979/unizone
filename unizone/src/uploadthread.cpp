@@ -29,7 +29,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	CHECK_PTR(CTimer);
 
 	connect( CTimer , SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
-
+	
 	fBlockTimer = new QTimer(this, "Blocked Timer");
 	CHECK_PTR(fBlockTimer);
 

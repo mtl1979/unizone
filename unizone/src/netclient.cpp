@@ -3,7 +3,6 @@
 #include "debugimpl.h"
 #include "version.h"
 #include "settings.h"
-#include "lang.h"				// <postmaster@raasu.org> 20020924
 #include "platform.h"			// <postmaster@raasu.org> 20021114
 
 #include <qapplication.h>
@@ -17,10 +16,22 @@ NetClient::NetClient(QObject * owner)
 	fPort = 0;
 	fOwner = owner;
 	fServer = QString::null;
+	fOldID = QString::null;
+	fSessionID = QString::null;
+	fUserName = QString::null;
+	fChannelLock.lock();
+	fChannels = new Message();
+	fChannelLock.unlock();
 }
 
 NetClient::~NetClient()
 {
+	fChannelLock.lock();
+	if (fChannels)
+	{
+		delete fChannels;
+	}
+	fChannelLock.unlock();
 	Disconnect();
 }
 
@@ -200,6 +211,330 @@ NetClient::RemoveUser(QString sessionID)
 	}
 }
 
+void
+NetClient::HandleBeRemoveMessage(String nodePath)
+{
+	int pd = GetPathDepth(nodePath.Cstr());
+	if (pd >= USER_NAME_DEPTH)
+	{
+		QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
+		sid = sid.mid(0, sid.find('/') );
+		
+		switch (pd)
+		{
+		case USER_NAME_DEPTH:
+			{
+				if (!strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "name", 4))
+				{
+					// user removed
+					RemoveUser(sid);
+				}
+				break;
+			}
+			
+		case FILE_INFO_DEPTH: 
+			{
+				const char * fileName = GetPathClause(FILE_INFO_DEPTH, nodePath.Cstr());
+				emit RemoveFile(sid, fileName);
+				break;
+			}
+		}
+	}
+}
+
+void
+NetClient::HandleUniRemoveMessage(String nodePath)
+{
+	int pd = GetPathDepth(nodePath.Cstr());
+	if (pd >= USER_NAME_DEPTH)
+	{
+		QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
+		sid = sid.mid(0, sid.find('/') );
+		
+		switch (pd)
+		{
+		case CHANNEL_DEPTH:
+			{
+				QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
+				
+				// user parted channel
+				RemoveChannel(sid, channel);
+				break;
+			}
+			
+		}
+	}
+}
+
+void
+NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
+{
+	QString cdata;
+	PRINT("UniShare: AddMessage - node = %s\n", nodePath.Cstr());
+	int pd = GetPathDepth(nodePath.Cstr());
+	if (pd >= USER_NAME_DEPTH)
+	{
+		MessageRef tmpRef;
+		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
+		{
+			const Message * pmsg = tmpRef.GetItemPointer();
+			
+			QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
+			sid = sid.mid(0, sid.find('/') );
+			
+			switch (pd)
+			{
+			case USER_NAME_DEPTH:
+				{
+					PRINT("UniShare: PathDepth == USER_NAME_DEPTH\n");
+					QString nodeName = QString::fromUtf8(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()));
+					if (nodeName.lower().left(10) == "serverinfo")
+					{
+						int64 rtime;
+						String user, newid, oldid;
+						pmsg->FindInt64("registertime", &rtime);
+						pmsg->FindString("user", user);
+						pmsg->FindString("session", newid);
+						if (pmsg->FindString("oldid", oldid) == B_OK)
+						{
+							QString nid = QString::fromUtf8(newid.Cstr());
+							QString oid = QString::fromUtf8(oldid.Cstr());
+							emit UserIDChanged(oid, nid);
+						}
+						if (
+							( gWin->GetUserName() == QString::fromUtf8(user.Cstr()) ) &&
+							( gWin->GetRegisterTime() <= rtime )
+						)
+						{
+							// Collide nick
+							MessageRef col = GetMessageFromPool(RegisterFail);
+							if (col())
+							{
+								QString to("/*/");
+								to += sid;
+								to += "/unishare";
+								col()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+								col()->AddString("name", (const char *) gWin->GetUserName().utf8() );
+								col()->AddInt64("registertime", gWin->GetRegisterTime() );
+								SendMessageToSessions(col);
+							}
+						}
+					}
+					break;
+				}
+			case CHANNEL_DEPTH:
+				{
+					PRINT("UniShare: PathDepth == CHANNEL_DEPTH\n");
+					cdata = QString::fromUtf8(GetPathClause(CHANNELDATA_DEPTH, nodePath.Cstr()));
+					cdata = cdata.mid(0, cdata.find('/') );
+					if (cdata == "channeldata")
+					{
+						QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
+						if (channel.find('/') >= 0)
+						{
+							channel = channel.mid(0, channel.find('/') );
+						}
+						if (channel != "")
+						{
+							// user joined channel
+							AddChannel(sid, channel);
+							String topic, owner, admins;
+							bool pub;
+							if (pmsg->FindString("owner", owner) == B_OK)
+								emit ChannelOwner(channel, sid, QString::fromUtf8(owner.Cstr()));
+							if (pmsg->FindString("admins", admins) == B_OK)
+								emit ChannelAdmins(channel, sid, QString::fromUtf8(admins.Cstr()));
+							if (pmsg->FindString("topic", topic) == B_OK)
+								emit ChannelTopic(channel, sid, QString::fromUtf8(topic.Cstr()));
+							if (pmsg->FindBool("public", &pub) == B_OK)
+								emit ChannelPublic(channel, sid, pub);
+						}
+					}
+
+					break;
+				}
+			case CHANNELINFO_DEPTH:
+				{
+					PRINT("UniShare: PathDepth == CHANNELINFO_DEPTH\n");
+					break;
+				}
+			}
+		}
+	}
+}
+
+void
+NetClient::AddChannel(QString sid, QString channel)
+{
+	MessageRef mChannel;
+	fChannelLock.lock();
+	if ( fChannels->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
+	{
+		mChannel()->AddBool(sid.latin1(), true);
+	}
+	else
+	{
+		emit ChannelAdded(channel, sid, GetCurrentTime64());
+		MessageRef mChannel = GetMessageFromPool();
+		mChannel()->AddBool(sid.latin1(), true);
+		fChannels->AddMessage((const char *) channel.utf8(), mChannel);
+	}
+	fChannelLock.unlock();
+}
+
+void
+NetClient::RemoveChannel(QString sid, QString channel)
+{
+	MessageRef mChannel;
+	fChannelLock.lock();
+	if ( fChannels->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
+	{
+		mChannel()->RemoveName(sid.latin1());
+		if (mChannel()->CountNames(B_MESSAGE_TYPE) == 0)
+		{
+			// Last user parted, remove channel entry
+			fChannels->RemoveName((const char *) channel.utf8());
+		}
+	}
+	fChannelLock.unlock();
+}
+
+QString *
+NetClient::GetChannelList()
+{
+	fChannelLock.lock();
+	int n = fChannels->CountNames(B_MESSAGE_TYPE);
+	QString * qChannels = new QString[n];
+	int i = 0;
+	String channel;
+	MessageFieldNameIterator iter = fChannels->GetFieldNameIterator(B_MESSAGE_TYPE);
+	while (iter.GetNextFieldName(channel) == B_OK)
+	{
+		qChannels[i++] = QString::fromUtf8(channel.Cstr());
+	}
+	fChannelLock.unlock();
+	return qChannels;
+}
+
+QString *
+NetClient::GetChannelUsers(QString channel)
+{
+	MessageRef mChannel;
+	fChannelLock.lock();
+	QString * users = NULL;
+	if (fChannels->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
+	{
+		int n = mChannel()->CountNames(B_BOOL_TYPE);
+		users = new QString[n];
+		int i = 0;
+		String user;
+		MessageFieldNameIterator iter = mChannel()->GetFieldNameIterator(B_BOOL_TYPE);
+		while (iter.GetNextFieldName(user) == B_OK)
+		{
+			users[i++] = QString::fromUtf8(user.Cstr());
+		}
+	}
+	fChannelLock.unlock();
+	return users;
+}
+
+int
+NetClient::GetChannelCount()
+{
+	fChannelLock.lock();
+	int n = fChannels->CountNames(B_MESSAGE_TYPE);
+	fChannelLock.unlock();
+	return n;
+}
+
+int
+NetClient::GetUserCount(QString channel)
+{
+	fChannelLock.lock();
+	int n = 0;
+	MessageRef mChannel;
+	if (fChannels->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
+	{
+		n = mChannel()->CountNames(B_BOOL_TYPE);
+	}
+	fChannelLock.unlock();
+	return n;
+}
+
+void
+NetClient::HandleBeAddMessage(String nodePath, MessageRef ref)
+{
+	int pd = GetPathDepth(nodePath.Cstr());
+	if (pd >= USER_NAME_DEPTH)
+	{
+		MessageRef tmpRef;
+		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
+		{
+			const Message * pmsg = tmpRef.GetItemPointer();
+			QString sid = GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr());
+			sid = sid.left(sid.find('/'));
+			switch (pd)
+			{
+			case USER_NAME_DEPTH:
+				{
+					QString hostName = QString::fromUtf8(GetPathClause(NetClient::HOST_NAME_DEPTH, nodePath.Cstr()));
+					hostName = hostName.left(hostName.find('/'));
+					
+					WUserRef user = FindUser(sid);
+					if (!user())	// doesn't exist
+					{
+						user = CreateUser(sid);
+						if (!user())	// couldn't create?
+							break;	// oh well
+						user()->SetUserHostName(hostName);
+					}
+					
+					QString nodeName = QString::fromUtf8(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()));
+					if (nodeName.lower().left(4) == "name")
+					{
+						QString oldname = user()->GetUserName();
+						user()->InitName(pmsg); 
+						emit UserNameChanged(sid, oldname, user()->GetUserName());
+					}
+					else if (nodeName.lower().left(10) == "userstatus")
+					{
+						user()->InitStatus(pmsg); 
+						emit UserStatusChanged(sid, user()->GetUserName(), user()->GetStatus());
+					}
+					else if (nodeName.lower().left(11) == "uploadstats")
+					{
+						user()->InitUploadStats(pmsg);
+					}
+					else if (nodeName.lower().left(9) == "bandwidth")
+					{
+						user()->InitBandwidth(pmsg);
+					}
+					else if (nodeName.lower().left(9) == "filecount")
+					{
+						user()->InitFileCount(pmsg);
+					}
+					else if (nodeName.lower().left(5) == "fires")
+					{
+						user()->SetFirewalled(true);
+					}
+					else if (nodeName.lower().left(5) == "files")
+					{
+						user()->SetFirewalled(false);
+					}
+				}
+				break;
+				
+			case FILE_INFO_DEPTH:
+				{
+					QString fileName = QString::fromUtf8(GetPathClause(FILE_INFO_DEPTH, nodePath.Cstr()));
+					
+					emit AddFile(sid, fileName, (GetPathClause(USER_NAME_DEPTH, nodePath.Cstr())[2] == 'r')? true : false, tmpRef);
+					break;
+				}
+			}
+		}
+	}
+}
 
 void
 NetClient::HandleResultMessage(MessageRef & ref)
@@ -208,31 +543,15 @@ NetClient::HandleResultMessage(MessageRef & ref)
 	// remove all the items that need to be removed
 	for (int i = 0; (ref()->FindString(PR_NAME_REMOVED_DATAITEMS, i, nodePath) == B_OK); i++)
 	{
-		int pd = GetPathDepth(nodePath.Cstr());
-		if (pd >= USER_NAME_DEPTH)
+		QString prot = GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr());
+		prot = prot.mid(0, prot.find('/') );
+		if (prot == "beshare")
 		{
-			QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-			sid = sid.mid(0, sid.find('/') );
-
-			switch (pd)
-			{
-				case USER_NAME_DEPTH:
-				{
-					if (!strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "name", 4))
-					{
-						// user removed
-						RemoveUser(sid);
-					}
-					break;
-				}
-
-				case FILE_INFO_DEPTH: 
-				{
-					const char * fileName = GetPathClause(FILE_INFO_DEPTH, nodePath.Cstr());
-					emit RemoveFile(sid, fileName);
-					break;
-				}
-			}
+			HandleBeRemoveMessage(nodePath);
+		}
+		else if (prot == "unishare")
+		{
+			HandleUniRemoveMessage(nodePath);
 		}
 	}
 
@@ -240,75 +559,15 @@ NetClient::HandleResultMessage(MessageRef & ref)
 	MessageFieldNameIterator iter = ref()->GetFieldNameIterator(B_MESSAGE_TYPE);
 	while (iter.GetNextFieldName(nodePath) == B_OK)
 	{
-		int pd = GetPathDepth(nodePath.Cstr());
-		if (pd >= USER_NAME_DEPTH)
+		QString prot = GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr());
+		prot = prot.mid(0, prot.find('/') );
+		if (prot == "beshare")
 		{
-			MessageRef tmpRef;
-			if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
-			{
-				const Message * pmsg = tmpRef.GetItemPointer();
-				QString sid = GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr());
-				sid = sid.left(sid.find('/'));
-				switch (pd)
-				{
-					case USER_NAME_DEPTH:
-					{
-						QString hostName = QString::fromUtf8(GetPathClause(NetClient::HOST_NAME_DEPTH, nodePath.Cstr()));
-						hostName = hostName.left(hostName.find('/'));
-
-						WUserRef user = FindUser(sid);
-						if (!user())	// doesn't exist
-						{
-							user = CreateUser(sid);
-							if (!user())	// couldn't create?
-								break;	// oh well
-							user()->SetUserHostName(hostName);
-						}
-						
-						QString nodeName = QString::fromUtf8(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()));
-						if (nodeName.lower().left(4) == "name")
-						{
-							QString oldname = user()->GetUserName();
-							user()->InitName(pmsg); 
-							emit UserNameChanged(sid, oldname, user()->GetUserName());
-						}
-						else if (nodeName.lower().left(10) == "userstatus")
-						{
-							user()->InitStatus(pmsg); 
-							emit UserStatusChanged(sid, user()->GetUserName(), user()->GetStatus());
-						}
-						else if (nodeName.lower().left(11) == "uploadstats")
-						{
-							user()->InitUploadStats(pmsg);
-						}
-						else if (nodeName.lower().left(9) == "bandwidth")
-						{
-							user()->InitBandwidth(pmsg);
-						}
-						else if (nodeName.lower().left(9) == "filecount")
-						{
-							user()->InitFileCount(pmsg);
-						}
-						else if (nodeName.lower().left(5) == "fires")
-						{
-							user()->SetFirewalled(true);
-						}
-						else if (nodeName.lower().left(5) == "files")
-						{
-							user()->SetFirewalled(false);
-						}
-					}
-					break;
-	
-					case FILE_INFO_DEPTH:
-					{
-						QString fileName = QString::fromUtf8(GetPathClause(FILE_INFO_DEPTH, nodePath.Cstr()));
-						
-						emit AddFile(sid, fileName, (GetPathClause(USER_NAME_DEPTH, nodePath.Cstr())[2] == 'r')? true : false, tmpRef);
-						break;
-					}
-				}
-			}
+			HandleBeAddMessage(nodePath, ref);
+		}
+		else if (prot == "unishare")
+		{
+			HandleUniAddMessage(nodePath, ref);
 		}
 	}
 }
@@ -327,9 +586,37 @@ NetClient::HandleParameters(MessageRef & next)
 		const char * id = strrchr(sessionRoot, '/');	// get last slash
 		if (id)
 		{
+			fOldID = fSessionID;
 			fSessionID = id + 1;
+
+			if (gWin->fDLWindow)
+			{
+				// Update Local Session ID in Download Window
+				gWin->fDLWindow->SetLocalID(fSessionID);
+			}
+
+			MessageRef uc(GetMessageFromPool());
+			if (uc())
+			{
+				uc()->AddInt64("registertime", gWin->GetRegisterTime());
+				uc()->AddString("session", (const char *) fSessionID.utf8());
+				if ((fOldID != QString::null) && (fOldID != fSessionID))
+				{
+					uc()->AddString("oldid", (const char *) fOldID.utf8());
+				}
+				uc()->AddString("name", (const char *) fUserName.utf8());
+		
+				SetNodeValue("unishare/serverinfo", uc);
+			}
+
+			if ((fOldID != QString::null) && (fOldID != fSessionID))
+			{
+				emit UserIDChanged(fOldID, fSessionID);
+				fOldID = fSessionID;
+			}
+
 			PRINT("My ID is: %S\n", qStringToWideChar(fSessionID));
-			gWin->setCaption( QObject::tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
+			gWin->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
 		}
 	}
 }
@@ -377,11 +664,12 @@ NetClient::SendPing(QString target)
 void
 NetClient::SetUserName(QString user)
 {
+	fUserName = user;
 	// change the user name
 	MessageRef ref(GetMessageFromPool());
 	if (ref())
 	{
-		QString version = tr(NAME);
+		QString version = tr("Unizone (English)");
 		ref()->AddString("name", (const char *) user.utf8()); // <postmaster@raasu.org> 20021001
 		ref()->AddInt32("port", fPort);
 		ref()->AddInt64("installid", 0);

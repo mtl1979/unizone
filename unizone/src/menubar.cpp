@@ -2,49 +2,49 @@
 #include "version.h"
 
 #include <qapplication.h>
-#include "lang.h"			// <postmaster@raasu.org> 20020924
+#include <qaccel.h>
 
-MenuBar::MenuBar(QWidget * parent)
+MenuBar::MenuBar(QWidget * parent) : QMenuBar(parent)
 {
-	fBar = new QMenuBar(parent);
-	CHECK_PTR(fBar);
+	//fBar = new QMenuBar(parent);
+	//CHECK_PTR(fBar);
 
 	/* create file menu */
-	fFile = new QPopupMenu(parent);
+	fFile = new QPopupMenu(this);
 	CHECK_PTR(fFile);
-	fFile->insertItem(QObject::tr(MSG_CONNECT), parent, SLOT(Connect()), MSG_ACONNECT);
-	fFile->insertItem(QObject::tr(MSG_DISCONNECT), parent, SLOT(Disconnect()), MSG_ADISCONNECT);
+	fFile->insertItem(tr("&Connect"), parent, SLOT(Connect()), QAccel::stringToKey(tr("CTRL+SHIFT+C")));
+	fFile->insertItem(tr("&Disconnect"), parent, SLOT(Disconnect()), QAccel::stringToKey(tr("CTRL+SHIFT+D")));
 	fFile->insertSeparator();
-	fFile->insertItem(QObject::tr(MSG_OPEN_SHARED), parent, SLOT(OpenSharedFolder()), MSG_AOPEN_SHARED);
-	fFile->insertItem(QObject::tr(MSG_OPEN_DOWNLOAD), parent, SLOT(OpenDownloadsFolder()), MSG_AOPEN_DOWNLOAD);
-	fFile->insertItem(QObject::tr(MSG_OPEN_LOGFOLDER), parent, SLOT(OpenLogsFolder()), MSG_AOPEN_LOGFOLDER); 	
+	fFile->insertItem(tr("Open &Shared Folder"), parent, SLOT(OpenSharedFolder()), QAccel::stringToKey(tr("CTRL+S")));
+	fFile->insertItem(tr("Open &Downloads Folder"), parent, SLOT(OpenDownloadsFolder()), QAccel::stringToKey(tr("CTRL+D")));
+	fFile->insertItem(tr("Open &Logs Folder"), parent, SLOT(OpenLogsFolder()), QAccel::stringToKey(tr("CTRL+L")));
 	fFile->insertSeparator();
-	fFile->insertItem(QObject::tr(MSG_CLEAR_CHATLOG), parent, SLOT(ClearChatLog()), MSG_ACLEAR_CHATLOG);
+	fFile->insertItem(tr("Cl&ear Chat Log"), parent, SLOT(ClearChatLog()), QAccel::stringToKey(tr("CTRL+E")));
 	fFile->insertSeparator();
-	fFile->insertItem(QObject::tr(MSG_SEARCH), parent, SLOT(SearchDialog()), MSG_ASEARCH);
+	fFile->insertItem(tr("Search"), parent, SLOT(SearchDialog()), QAccel::stringToKey(tr("ALT+S")));
+	fFile->insertItem(tr("Open C&hannels Window"), parent, SLOT(OpenChannels()), QAccel::stringToKey(tr("F11")));
 	fFile->insertSeparator();
 
-	fFile->insertItem(QObject::tr(MSG_EXIT), parent, SLOT(Exit()), MSG_AEXIT);
+	fFile->insertItem(tr("E&xit"), parent, SLOT(Exit()), QAccel::stringToKey(tr("ALT+X")));
 
 	// edit menu
-	fEdit = new QPopupMenu(parent);
+	fEdit = new QPopupMenu(this);
 	CHECK_PTR(fEdit);
 
-	fEdit->insertItem(QObject::tr(MSG_PREFERENCES), parent, SLOT(Preferences()), MSG_APREFERENCES);
+	fEdit->insertItem(tr("&Preferences"), parent, SLOT(Preferences()), QAccel::stringToKey(tr("CTRL+P")));
 
 	// help menu
-	fHelp = new QPopupMenu(parent);
+	fHelp = new QPopupMenu(this);
 	CHECK_PTR(fHelp);
 
-	char about[100];
-	sprintf(about, MSG_ABOUT NAME " %s", WinShareVersionString());
+	QString about = tr( "&About Unizone (English) %1" ).arg(WinShareVersionString());
 
-	fHelp->insertItem(QObject::tr(about), parent, SLOT(AboutWinShare()), MSG_AABOUT);
+	fHelp->insertItem(about, parent, SLOT(AboutWinShare()), QAccel::stringToKey(tr("F12")));
 
 	/* Insert into menubar */
-	fBar->insertItem(QObject::tr(MSG_FILE), fFile);
-	fBar->insertItem(QObject::tr(MSG_EDIT), fEdit);
-	fBar->insertItem(QObject::tr(MSG_HELP), fHelp);
+	insertItem(tr("&File"), fFile);
+	insertItem(tr("&Edit"), fEdit);
+	insertItem(tr("&Help"), fHelp);
 }
 
 MenuBar::~MenuBar()

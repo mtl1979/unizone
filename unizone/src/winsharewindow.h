@@ -24,6 +24,8 @@
 #include "menubar.h"
 #include "netclient.h"
 #include "privatewindowimpl.h"
+#include "channelimpl.h"
+#include "channelsimpl.h"
 #include "system/SetupSystem.h"
 #include "regex/StringMatcher.h"
 #include "chattext.h"
@@ -96,6 +98,7 @@ public slots:
 	void OpenLogsFolder();
 		/* Sep */
 	void ClearChatLog();
+	void OpenChannels();
 		/* Sep */
 	void AboutWinShare();
 		/* Sep */
@@ -136,6 +139,7 @@ public slots:
 	void AboutToQuit();
 	void SearchWindowClosed();
 	void DownloadWindowClosed();
+	void ChannelsWindowClosed();
 
 	void FileFailed(QString, QString); // from WDownload
 	void FileInterrupted(QString, QString);
@@ -207,6 +211,9 @@ private:
 	uint64 tx,rx;		// cumulative
 	uint64 tx2,rx2;		// in the beginning of session
 
+	// UniShare
+	int64 fRegistered;
+
 	void TransferCallbackRejected(QString qFrom, int64 timeLeft, uint32 port);
 
 	
@@ -237,6 +244,7 @@ private:
 	QTimer * fReconnectTimer;
 
 	WSearch * fSearchWindow;
+	Channels * fChannels;
 	WLog fMainLog;
 
 #ifdef WIN32			// if the OS is Windows, 
@@ -316,6 +324,7 @@ private:
 	void OpenDownload();
 
 	friend class WPrivateWindow;
+	friend class Channel;
 	friend class WUser;
 	friend class WSearch;
 	friend class WDownload;
@@ -355,7 +364,6 @@ public:
 
 	void SendRejectedNotification(MessageRef rej);
 
-
 	// To use delayed search, first set the pattern using SetDelayedSearchPattern(QString) and
 	// then call Connect(QString)
 	void Connect(QString server);
@@ -368,8 +376,20 @@ public:
 	WSettings * fSettings;	// for use by prefs
 	WDownload * fDLWindow;
 
+	// UniShare
+	int64 GetRegisterTime() { return fRegistered; }
+
+
 signals:
 	void UpdatePrivateUserLists();
+	void ChannelCreated(const QString, const QString, int64);
+	void ChannelJoin(const QString, const QString);
+	void ChannelPart(const QString, const QString);
+	void ChannelInvite(const QString, const QString, const QString);
+	void ChannelKick(const QString, const QString, const QString);
+	void ChannelTopic(const QString, const QString, const QString);
+	void ChannelPublic(const QString, const QString, bool);
+	void NewChannelText(const QString, const QString, const QString);
 };
 
 

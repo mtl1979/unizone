@@ -16,7 +16,7 @@
 
 #define POPUP(X) \
 { \
-	QMessageBox box(tr(NAME), tr(X), QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
+	QMessageBox box(tr( "Unizone (English)" ), tr(X), QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
 					QMessageBox::NoButton, QMessageBox::NoButton); \
 	box.exec(); \
 }
@@ -78,7 +78,7 @@ inline void PRINT(const char *, ...)
 				f.writeBlock(out.latin1(), out.length()); \
 				f.close(); \
 			} \
-			QMessageBox box(tr(NAME), out,QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
+			QMessageBox box(tr( "Unizone (English)" ), out,QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, \
 					QMessageBox::NoButton, QMessageBox::NoButton); \
 			box.exec(); \
 		}

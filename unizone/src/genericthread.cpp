@@ -249,7 +249,7 @@ WGenericThread::GetETA(uint64 cur, uint64 max, double rate)
 */	
 	QString ret;
 //	ret.sprintf("%d:%.2d:%.2d", hours, min, secs);
-	ret = tr("%1").arg(secs);
+	ret.setNum(secs);
 	return ret;
 }
 
@@ -337,3 +337,4 @@ WGenericThread::GetBanTime()
 	else
 		return (fTimeLeft / 60000000);
 }
+

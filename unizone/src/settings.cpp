@@ -418,7 +418,7 @@ WSettings::Load()
 		{
 			if (file.readBlock((char *)buffer, file.size()) < file.size())
 			{
-				QMessageBox::warning(NULL, "Read Error", "Unable to read data from file!", "Bummer");
+				QMessageBox::warning(NULL, QObject::tr( "Read Error" ), QObject::tr( "Unable to read data from file!" ), QObject::tr( "Bummer" ));
 			}
 			else
 			{
@@ -452,7 +452,7 @@ WSettings::Save()
 	}
 	else
 	{
-		QMessageBox::warning(NULL, "Write Error", "Couldn't save settings!", "Bummer");
+		QMessageBox::warning(NULL, QObject::tr( "Write Error" ), QObject::tr( "Couldn't save settings!" ), QObject::tr( "Bummer" ));
 	}
 	return ret;
 }
@@ -535,6 +535,18 @@ bool
 WSettings::GetBlockDisconnected()
 {
 	GET_BOOL(BLOCKDISCONNECTED, false);
+}
+
+void
+WSettings::SetAutoClear(bool b)
+{
+	SET_BOOL(AUTOCLEAR, b);
+}
+
+bool
+WSettings::GetAutoClear()
+{
+	GET_BOOL(AUTOCLEAR, true);
 }
 
 void
@@ -672,6 +684,21 @@ WSettings::GetAutoAway()
 {
 	int i = 0;
 	fSet->FindInt32(AUTO_AWAY, (int32 *)&i);
+	return i;
+}
+
+void
+WSettings::SetRegisterTime(int64 i)
+{
+	fSet->RemoveName(REGISTERTIME);
+	fSet->AddInt64(REGISTERTIME, i);
+}
+
+int64
+WSettings::GetRegisterTime()
+{
+	int64 i = GetCurrentTime64();
+	fSet->FindInt64(REGISTERTIME, &i);
 	return i;
 }
 

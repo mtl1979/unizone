@@ -9,7 +9,6 @@
 #include "settings.h"
 #include "debugimpl.h"
 #include "util/String.h"
-#include "lang.h"
 #include "platform.h"
 
 #include <qdir.h>

@@ -15,7 +15,6 @@
 #include "search.h"
 #include "gotourl.h"
 #include "util/StringTokenizer.h"
-#include "lang.h"					// <postmaster@raasu.org> 20020924
 
 #include <qapplication.h>
 
@@ -117,7 +116,7 @@ WinShareWindow::DisconnectedFromServer()
 	PRINT("DisconnectedFromServer()\n");
 
 	if (fSettings->GetError() && !fDisconnect) // Don't flood the user ;)
-		PrintError(tr(MSG_DISCONNECTED));
+		PrintError(tr("Disconnected from server."));
 
 	if (fDLWindow)
 		fDLWindow->KillLocalQueues();	// locally queued files will never connect to their peers when we get disconnected
@@ -223,18 +222,15 @@ WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int c)
 			{
 				// found user...
 				// <postmaster@raasu.org> 20020927 -- Added internationalization
-				QString txt = tr(MSG_NL_PRIVATECHAT).arg(StripURL((*it).second()->GetUserName()));
+				QString txt = tr("Private Chat With %1").arg(StripURL((*it).second()->GetUserName()));
 				// <postmaster@raasu.org> 20020924 -- Added ',1'
 				fPrivate->insertItem(txt, 1);
 				// <postmaster@raasu.org> 20020924 -- Added id 2
-				txt = tr(MSG_NL_LISTALLFILES);
-				fPrivate->insertItem(txt, 2);
+				fPrivate->insertItem(tr("List All Files"), 2);
 				// <postmaster@raasu.org> 20020926 -- Added id 3
-				txt = tr(MSG_NL_GETIPADDR);
-				fPrivate->insertItem(txt, 3);
+				fPrivate->insertItem(tr("Get IP Address"), 3);
 				// <postmaster@raasu.org> 20030307 -- Inserted new item as id 4, moved old as id 5
-				txt = tr(MSG_NL_GETADDRINFO);
-				fPrivate->insertItem(txt, 4);
+				fPrivate->insertItem(tr("Get Address Info"), 4);
 				txt = tr("Ping %1").arg(StripURL((*it).second()->GetUserName()));
 				fPrivate->insertItem(txt, 5);
 
@@ -273,7 +269,7 @@ WinShareWindow::PopupActivated(int id)
 		} 
 		else if (id == 3) 
 		{
-			QString qTemp = tr(MSG_USERHOST).arg(FixStringStr((*it).second()->GetUserName())).arg((*it).second()->GetUserHostName()).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
+			QString qTemp = tr("<font color=\"%3\">%1</font>'s IP address is %2.").arg(FixStringStr((*it).second()->GetUserName())).arg((*it).second()->GetUserHostName()).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
 			PrintSystem(qTemp,false);
 		}
 		else if (id == 4)
@@ -336,7 +332,7 @@ WinShareWindow::Preferences()
 		if (oldLogging && !fSettings->GetLogging())
 		{
 			if (fSettings->GetInfo())
-				PrintSystem("Logging disabled.");
+				PrintSystem(tr("Logging disabled."));
 			StopLogging();
 
 			pLock.lock();
@@ -347,7 +343,7 @@ WinShareWindow::Preferences()
 		else if (!oldLogging && fSettings->GetLogging())
 		{
 			if (fSettings->GetInfo())
-				PrintSystem("Logging enabled.");
+				PrintSystem(tr("Logging enabled."));
 			StartLogging();
 			pLock.lock();
 			for (WPrivIter privIter = fPrivateWindows.begin(); privIter != fPrivateWindows.end(); privIter++)
@@ -398,6 +394,13 @@ WinShareWindow::SearchWindowClosed()
 {
 	PRINT("Search window closed!\n");
 	fSearchWindow = NULL;
+}
+
+void
+WinShareWindow::ChannelsWindowClosed()
+{
+	PRINT("Channels window closed!\n");
+	fChannels = NULL;
 }
 
 void

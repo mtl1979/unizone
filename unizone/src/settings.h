@@ -37,6 +37,7 @@ using namespace muscle;
 #define FIREWALLED			"firewalled"
 #define BINKYNUKE			"binkynuke"
 #define BLOCKDISCONNECTED	"blockdisconnected"
+#define AUTOCLEAR			"autoclear"
 #define MULTICOLOR			"multicolor"
 #define CONNECTION			"connection"
 #define TIME_STAMPS			"timestamps"
@@ -62,6 +63,8 @@ using namespace muscle;
 
 #define ONCONN		"onconnect1"
 #define ONCONN2		"onconnect2"
+
+#define REGISTERTIME "registertime"
 
 #ifdef __linux__	/* Linux is our only configurable URL launcher */
 # define MAILTO_LAUNCHER	"mailtolauncher"
@@ -200,6 +203,8 @@ public:
 	bool GetBinkyNuke();
 	void SetBlockDisconnected(bool b);
 	bool GetBlockDisconnected();
+	void SetAutoClear(bool b);
+	bool GetAutoClear();
 	void SetMultiColor(bool m);
 	bool GetMultiColor();
 
@@ -227,6 +232,10 @@ public:
 	// auto away
 	void SetAutoAway(int i);	// index of time
 	int GetAutoAway();
+
+	// UniShare
+	void SetRegisterTime(int64 i); // Nick Registration Time
+	int64 GetRegisterTime();
 
 	// window flashing
 	enum

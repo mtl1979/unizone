@@ -1301,23 +1301,23 @@
                 </property>
             </widget>
             <widget>
-                <class>QLabel</class>
+                <class>QCheckBox</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>TextLabel1_2_3_3</cstring>
+                    <cstring>fBinkyNuke</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
                         <x>12</x>
-                        <y>143</y>
-                        <width>229</width>
-                        <height>22</height>
+                        <y>40</y>
+                        <width>170</width>
+                        <height>21</height>
                     </rect>
                 </property>
                 <property stdset="1">
                     <name>text</name>
-                    <string>Maximum Simultaneous Downloads:</string>
+                    <string>Block binkies?</string>
                 </property>
             </widget>
             <widget>
@@ -1348,6 +1348,46 @@
                 </property>
             </widget>
             <widget>
+                <class>QLabel</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>TextLabel1_2_3_3</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>12</x>
+                        <y>143</y>
+                        <width>229</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Maximum Simultaneous Downloads:</string>
+                </property>
+            </widget>
+            <widget>
+                <class>QCheckBox</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>fBlockDisconnected</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>12</x>
+                        <y>77</y>
+                        <width>170</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Block disconnected users?</string>
+                </property>
+            </widget>
+            <widget>
                 <class>QCheckBox</class>
                 <property stdset="1">
                     <name>name</name>
@@ -1371,40 +1411,20 @@
                 <class>QCheckBox</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>fBinkyNuke</cstring>
+                    <cstring>fAutoClear</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
                         <x>12</x>
-                        <y>40</y>
-                        <width>170</width>
+                        <y>176</y>
+                        <width>240</width>
                         <height>21</height>
                     </rect>
                 </property>
                 <property stdset="1">
                     <name>text</name>
-                    <string>Block binkies?</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fBlockDisconnected</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>12</x>
-                        <y>77</y>
-                        <width>170</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Block disconnected users?</string>
+                    <string>Auto Clear finished transfers?</string>
                 </property>
             </widget>
         </widget>

@@ -18,7 +18,6 @@ typedef hostent *LPHOSTENT;
 #include "formatting.h"
 #include "textevent.h"
 #include "version.h"
-#include "lang.h"				// <postmaster@raasu.org> 20020924
 #include "platform.h"			// <postmaster@raasu.org> 20021021
 								// For GetParameterString that will split user command parameters from string 
 								// containing both command and parameters, 
@@ -58,19 +57,19 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					else
 					{
 						if (fSettings->GetError())
-							PrintError(tr(MSG_SCAN_ERR1), false);
+							PrintError(tr("Already scanning!"), false);
 					}
 				}
 				else
 				{
 					if (fSettings->GetError())
-						PrintError(tr(MSG_NOTCONNECTED));
+						PrintError(tr("Not connected."));
 				}
 			}
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(tr(MSG_NOTSHARING));
+					PrintError(tr("File sharing not enabled."));
 			}
 		}
 		else if (CompareCommand(sendText, "/msg"))
@@ -103,7 +102,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(tr(MSG_NONICK));
+					PrintError(tr("No nickname passed."));
 			}
 		}
 		else if (	
@@ -125,7 +124,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(tr(MSG_NOMESSAGE));
+					PrintError(tr("No message to send."));
 			}
 		}
 		else if (	
@@ -147,7 +146,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(tr(MSG_NOMESSAGE));
+					PrintError(tr("No message to send."));
 			}
 		}
 		else if (sendText.left(2) == "//")	// used so that / commands can be printed
@@ -250,7 +249,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				fAwayMsg = msg;
 				if (fSettings->GetInfo())
-					PrintSystem(tr(MSG_AWAYMESSAGE).arg(fAwayMsg));
+					PrintSystem(tr("Away message set to %1.").arg(fAwayMsg));
 			}
 		}
 		else if (CompareCommand(sendText, "/away"))
@@ -267,7 +266,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				fHereMsg = msg;
 				if (fSettings->GetInfo())
-					PrintSystem(tr(MSG_HEREMESSAGE).arg(fHereMsg));
+					PrintSystem(tr("Here message set to %1.").arg(fHereMsg));
 			}
 		}
 		else if (CompareCommand(sendText, "/clear"))
@@ -286,7 +285,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		// <postmaster@raasu.org> 20021026
 		else if (CompareCommand(sendText, "/uptime"))
 		{
-			PrintSystem( tr(MSG_UPTIME).arg(GetUptimeString()) );
+			PrintSystem( tr("Uptime: %1").arg(GetUptimeString()) );
 		}
 		// <postmaster@raasu.org> 20021116
 		else if (CompareCommand(sendText, "/buptime"))
@@ -300,19 +299,19 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			if (fNetClient->IsInternalThreadRunning())	// are we connected?
 			{
-				PrintSystem( tr(MSG_LOGGED).arg(MakeHumanTime(GetCurrentTime64() - fLoginTime)) );
+				PrintSystem( tr("Logged In: %1").arg(MakeHumanTime(GetCurrentTime64() - fLoginTime)) );
 			}
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(tr(MSG_NOTCONNECTED));
+					PrintError(tr("Not connected."));
 			}		
 		}
 		// <postmaster@raasu.org> 20020929
 		else if (CompareCommand(sendText, "/users"))
 		{
 			int iUsers = fUsers->childCount() + 1; // <postmaster@raasu.org> 20021005 -- I think it's 1 for current user that needs to be added to get the total count
-			PrintSystem(tr(MSG_NUM_USERS).arg(iUsers));
+			PrintSystem(tr("Number of users logged in: %1").arg(iUsers));
 		}
 		else if (CompareCommand(sendText, "/priv"))
 		{
@@ -321,7 +320,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (users.length() > 0)
 					LaunchPrivate(users);
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/kick"))
 		{
@@ -334,7 +333,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/kickips"))
 		{
@@ -347,7 +346,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/addbans"))
 		{
@@ -360,7 +359,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/addipbans"))
 		{
@@ -373,7 +372,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/rembans"))
 		{
@@ -386,7 +385,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/remipbans"))
 		{
@@ -399,7 +398,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/require"))
 		{
@@ -493,7 +492,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (fSettings->GetInfo())
 			{
 				if (fIgnore == "")
-					PrintSystem("Ignore pattern cleared.");
+					PrintSystem(tr("Ignore pattern cleared."));
 				else
 					PrintSystem(tr("Ignore pattern set to: %1").arg(fIgnore));
 			}
@@ -506,9 +505,9 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			bSuccess = Ignore(user);
 
 			if (bSuccess)
-				PrintSystem("Ignore pattern updated.");
+				PrintSystem(tr("Ignore pattern updated."));
 			else if (fSettings->GetError())
-				PrintError("Error updating ignore pattern!");
+				PrintError( tr( "Error updating ignore pattern!" ) );
 		}
 		else if (CompareCommand(sendText, "/unignore"))
 		{
@@ -518,9 +517,9 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			bSuccess = UnIgnore(user);
 
 			if (bSuccess)
-				PrintSystem("Ignore pattern updated.");
+				PrintSystem(tr("Ignore pattern updated."));
 			else if (fSettings->GetError())
-				PrintError("Error updating ignore pattern!");
+				PrintError( tr( "Error updating ignore pattern!" ) );
 		}
 		else if (CompareCommand(sendText, "/blacklist"))
 		{
@@ -528,7 +527,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (fSettings->GetInfo())
 			{
 				if (fBlackList == "")
-					PrintSystem("Blacklist pattern cleared.");
+					PrintSystem(tr("Blacklist pattern cleared."));
 				else
 					PrintSystem(tr("Blacklist pattern set to: %1").arg(fBlackList));
 			}
@@ -541,9 +540,9 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			bSuccess = BlackList(user);
 
 			if (bSuccess)
-				PrintSystem("Blacklist pattern updated.");
+				PrintSystem(tr("Blacklist pattern updated."));
 			else if (fSettings->GetError())
-				PrintError("Error updating blacklist pattern!");
+				PrintError( tr( "Error updating blacklist pattern!" ) );
 		}
 		else if (CompareCommand(sendText, "/unblacklist"))
 		{
@@ -553,9 +552,9 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			bSuccess = UnBlackList(user);
 
 			if (bSuccess)
-				PrintSystem("Blacklist pattern updated.");
+				PrintSystem(tr("Blacklist pattern updated."));
 			else if (fSettings->GetError())
-				PrintError("Error updating blacklist pattern!");
+				PrintError( tr( "Error updating blacklist pattern!" ) );
 		}
 		else if (CompareCommand(sendText, "/autopriv"))
 		{
@@ -563,7 +562,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (fSettings->GetInfo())
 			{
 				if (fAutoPriv == "")
-					PrintSystem("Auto-private pattern cleared.");
+					PrintSystem(tr("Auto-private pattern cleared."));
 				else
 					PrintSystem(tr("Auto-private pattern set to: %1").arg(fAutoPriv));
 			}
@@ -576,9 +575,9 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			bSuccess = AutoPrivate(user);
 
 			if (bSuccess)
-				PrintSystem("Auto-private pattern updated.");
+				PrintSystem( tr( "Auto-private pattern updated." ) );
 			else if (fSettings->GetError())
-				PrintError("Error updating auto-private pattern!");
+				PrintError( tr( "Error updating auto-private pattern!" ) );
 		}
 		else if (CompareCommand(sendText, "/unautopriv"))
 		{
@@ -588,9 +587,9 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			bSuccess = UnAutoPrivate(user);
 
 			if (bSuccess)
-				PrintSystem("Auto-private pattern updated.");
+				PrintSystem( tr( "Auto-private pattern updated." ) );
 			else if (fSettings->GetError())
-				PrintError("Error updating auto-private pattern!");
+				PrintError( tr( "Error updating auto-private pattern!" ) );
 		}
 		else if (CompareCommand(sendText, "/chkuser"))
 		{
@@ -603,10 +602,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (ok && (u < fUserList->count()))
 					PrintSystem( tr("User %1: %2").arg(u).arg(fUserList->text(u)) );
 				else if (fSettings->GetError())
-					PrintError(tr(MSG_INVALID_INDEX));
+					PrintError(tr("Invalid index."));
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/remuser"))
 		{
@@ -622,10 +621,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					fUserList->removeItem(u);
 				}
 				else if (fSettings->GetError())
-					PrintError(tr(MSG_INVALID_INDEX));
+					PrintError(tr("Invalid index."));
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/chkstatus"))
 		{
@@ -638,10 +637,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (ok && (u < fStatusList->count()))
 					PrintSystem( tr("Status %1: %2").arg(u).arg(fStatusList->text(u)) );
 				else if (fSettings->GetError())
-					PrintError(tr(MSG_INVALID_INDEX));
+					PrintError(tr("Invalid index."));
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NO_INDEX));
+				PrintError(tr("No index specified."));
 		}
 		else if (CompareCommand(sendText, "/remstatus"))
 		{
@@ -657,10 +656,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					fStatusList->removeItem(u);
 				}
 				else if (fSettings->GetError())
-					PrintError(tr(MSG_INVALID_INDEX));
+					PrintError(tr("Invalid index."));
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NOUSERS));
+				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/chkserver"))
 		{
@@ -673,10 +672,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (ok && (u < fServerList->count()))
 					PrintSystem( tr("Server %1: %2").arg(u).arg(fServerList->text(u)) );
 				else if (fSettings->GetError())
-					PrintError(tr(MSG_INVALID_INDEX));
+					PrintError(tr("Invalid index."));
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NO_INDEX));
+				PrintError(tr("No index specified."));
 		}
 		else if (CompareCommand(sendText, "/remserver"))
 		{
@@ -692,16 +691,16 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					fServerList->removeItem(u);
 				}
 				else if (fSettings->GetError())
-					PrintError(tr(MSG_INVALID_INDEX));
+					PrintError(tr("Invalid index."));
 			}
 			else if (fSettings->GetError())
-				PrintError(tr(MSG_NO_INDEX));
+				PrintError(tr("No index specified."));
 		}
 		else if (CompareCommand(sendText, "/save"))
 		{
-			PrintSystem("Saving configuration...");
+			PrintSystem(tr("Saving configuration..."));
 			SaveSettings();
-			PrintSystem("Saved.");
+			PrintSystem(tr("Configuration saved."));
 		}
 		
 		else if (CompareCommand(sendText, "/dns"))
@@ -727,7 +726,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			tx = rx = 0;
 			tx2 = rx2 = 0;
-			PrintSystem("Transfer statistics cleared.");
+			PrintSystem(tr("Transfer statistics cleared."));
 		}
 		else if (CompareCommand(sendText, "/remote"))
 		{
@@ -770,13 +769,13 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				*reply = true;
 				// format an error string
 				sendText = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
-				sendText += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(tr(MSG_UNKNOWNCMD));
+				sendText += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(tr("Unknown command!"));
 				e->SetText(sendText);
 			}
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(tr(MSG_UNKNOWNCMD));
+					PrintError(tr("Unknown command!"));
 			}
 		}
 		else
@@ -856,7 +855,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 			if (!isping && !reply)
 			{
 				if (fSettings->GetError())
-					PrintError(tr(MSG_USERSNOTFOUND));
+					PrintError(tr("User(s) not found!"));
 			}
 			else if (!isping && reply)
 			{
@@ -865,7 +864,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 					*reply = true;
 					// this will put an error message in the private window
 					QString error = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
-					error += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg("User doesn't exist!\n");
+					error += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(tr("User doesn't exist!"));
 					text = error;
 				}
 			}
@@ -885,7 +884,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 				{
 					if (fSettings->GetInfo())
 					{
-						QString pingMsg = tr(MSG_PINGSENT).arg(sid).arg(FixStringStr(user()->GetUserName())).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
+						QString pingMsg = tr("Ping sent to user #%1 (a.k.a. <font color=\"%3\">%2</font>).").arg(sid).arg(FixStringStr(user()->GetUserName())).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
 						PrintSystem(pingMsg);
 					}
 					fNetClient->SendPing(sid);
@@ -925,7 +924,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 	else
 	{
 		if (fSettings->GetError())
-			PrintError(tr(MSG_NOUSERS));
+			PrintError(tr("No users passed."));
 	}
 }
 
@@ -979,7 +978,9 @@ WinShareWindow::HandleSignal()
 							UpdateUserList();
 							QCustomEvent * qce = new QCustomEvent(WinShareWindow::UpdatePrivateUsers);
 							if (qce)
+							{
 								QApplication::postEvent(this, qce);
+							}
 
 							break;
 						}
@@ -987,9 +988,9 @@ WinShareWindow::HandleSignal()
 						case PR_RESULT_ERRORACCESSDENIED:
 						{
 							PRINT("PR_RESULT_ERRORACCESSDENIED\n");
-							PrintError("Access Denied!!!");
+							PrintError( tr ( "Access Denied!!!" ) );
 							MessageRef subMsg;
-							QString action = "do that to";
+							QString action = tr( "do that to" );
 
 							String who;
 							if (next()->FindMessage(PR_NAME_REJECTED_MESSAGE, subMsg) == B_NO_ERROR)
@@ -998,11 +999,31 @@ WinShareWindow::HandleSignal()
 								{
 									switch(subMsg()->what)
 									{
-										case PR_COMMAND_KICK:			action = "kick";		break;
-										case PR_COMMAND_ADDBANS:		action = "ban";			break;
-										case PR_COMMAND_REMOVEBANS:		action = "unban";		break;
-										case PR_COMMAND_ADDREQUIRES:    action = "require";		break;
-										case PR_COMMAND_REMOVEREQUIRES: action = "unrequire";	break;
+										case PR_COMMAND_KICK:			
+											{
+												action = tr( "kick" );		
+												break;
+											}
+										case PR_COMMAND_ADDBANS:		
+											{
+												action = tr( "ban" );			
+												break;
+											}
+										case PR_COMMAND_REMOVEBANS:		
+											{
+												action = tr( "unban" );		
+												break;
+											}
+										case PR_COMMAND_ADDREQUIRES:    
+											{
+												action = tr( "require" );		
+												break;
+											}
+										case PR_COMMAND_REMOVEREQUIRES: 
+											{
+												action = tr( "unrequire" );	
+												break;
+											}
 									}
 									if (subMsg()->FindString(PR_NAME_KEYS, who) == B_NO_ERROR)
 									{
@@ -1112,7 +1133,7 @@ WinShareWindow::HandleSignal()
 					{
 						QString s;
 						if (CheckVersion(str.Cstr(), &s))
-							PrintSystem(tr(NAME MSG_NEWVERSION).arg(s));
+							PrintSystem(tr("Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.").arg(s));
 					}
 					break;
 				}
@@ -1276,7 +1297,7 @@ WinShareWindow::HandleMessage(Message * msg)
 			const char * session;		// from user (their session id)
 			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
 			const char * strTemp;
-			QString userName = tr(MSG_UNKNOWN);
+			QString userName = tr("Unknown");
 			
 			msg->FindString("session", &session);
 			msg->FindString("text", &strTemp);
@@ -1436,7 +1457,185 @@ WinShareWindow::HandleMessage(Message * msg)
 			}
 			break;
 		}
-		
+		case NetClient::ChannelText:
+			{
+			const char * session;		// from user (their session id)
+			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
+			QString channel;
+			const char * strTemp;
+			const char * strChannel;
+			QString userID = tr("Unknown");
+			
+			msg->FindString("session", &session);
+			msg->FindString("text", &strTemp);
+			msg->FindString("channel", &strChannel);
+			// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Latin-1
+			text = QString::fromUtf8(strTemp);
+			channel = QString::fromUtf8(strChannel);
+			
+			// get user info first
+			WUserRef user = fNetClient->FindUser(session);
+			if (user())
+			{
+				userID = user()->GetUserID();
+				emit NewChannelText(channel, userID, text);
+			}
+
+				break;
+			}
+		case NetClient::ClientConnected:
+			{
+				String repto;
+				String repname;
+				int64 rtime;
+				if (
+					(msg->FindString("session", repto) == B_OK) &&
+					(msg->FindInt64("registertime", &rtime) == B_OK) &&
+					(msg->FindString("name", repname) == B_OK)
+					)
+				{
+					if (rtime >= GetRegisterTime())
+					{
+						MessageRef col = GetMessageFromPool(NetClient::RegisterFail);
+						String to("/*/");
+						to += repto;
+						to += "/unishare";
+						col()->AddString(PR_NAME_KEYS, to);
+						col()->AddString("name", (const char *) GetUserName().utf8() );
+						col()->AddString("session", (const char *) GetUserID().utf8());
+						col()->AddInt64("registertime", GetRegisterTime() );
+						
+						fNetClient->SendMessageToSessions(col);
+					}
+				}
+				break;
+			}
+
+		case NetClient::RegisterFail:
+			{
+				String repto;
+				int64 rtime;
+				if (
+					(msg->FindString("session", repto) == B_OK) && 
+					(msg->FindInt64("registertime", &rtime) == B_OK)
+					)
+				{
+					if (rtime <= GetRegisterTime())
+					{
+						PrintError( tr("Nick collision with user #%1").arg(repto.Cstr()));
+					}
+				}
+				break;
+			}
+		case NetClient::ChannelCreated:
+			{
+				String channel, repto;
+				int64 rtime;
+				if (
+					(msg->FindString("session", repto) == B_OK) &&
+					(msg->FindString("channel", channel) == B_OK) &&
+					(msg->FindInt64("when", &rtime) == B_OK)
+					)
+				{
+					QString qOwner = QString::fromUtf8(repto.Cstr());
+					QString qChan = QString::fromUtf8(channel.Cstr());
+					emit ChannelCreated(qChan, qOwner, rtime);
+				}
+
+				break;
+			}
+		case NetClient::ChannelJoin:
+			{
+				String channel, repto;
+				if (
+					(msg->FindString("session", repto) == B_OK) && 
+					(msg->FindString("channel", channel) == B_OK)
+					)
+				{
+					QString qUser = QString::fromUtf8(repto.Cstr());
+					QString qChan = QString::fromUtf8(channel.Cstr());
+					emit ChannelJoin(qChan, qUser);
+				}
+				break;
+			}
+		case NetClient::ChannelPart:
+			{
+				String channel, repto;
+				if (
+					(msg->FindString("session", repto) == B_OK) && 
+					(msg->FindString("channel", channel) == B_OK)
+					)
+				{
+					QString qUser = QString::fromUtf8(repto.Cstr());
+					QString qChan = QString::fromUtf8(channel.Cstr());
+					emit ChannelPart(qChan, qUser);
+				}
+				break;
+			}
+		case NetClient::ChannelInvite:
+			{
+				String channel, repto, who;
+				if (
+					(msg->FindString("session", repto) == B_OK) &&
+					(msg->FindString("who", who) == B_OK) &&
+					(msg->FindString("channel", channel) == B_OK)
+					)
+				{
+					QString qUser = QString::fromUtf8(repto.Cstr());
+					QString qWho = QString::fromUtf8(who.Cstr());
+					QString qChan = QString::fromUtf8(channel.Cstr());
+					emit ChannelInvite(qChan, qUser, qWho);
+				}
+				break;
+			}
+		case NetClient::ChannelKick:
+			{
+				String channel, repto, who;
+				if (
+					(msg->FindString("session", repto) == B_OK) &&
+					(msg->FindString("who", who) == B_OK) &&
+					(msg->FindString("channel", channel) == B_OK)
+					)
+				{
+					QString qUser = QString::fromUtf8(repto.Cstr());
+					QString qWho = QString::fromUtf8(who.Cstr());
+					QString qChan = QString::fromUtf8(channel.Cstr());
+					emit ChannelKick(qChan, qUser, qWho);
+				}
+				break;
+			}
+		case NetClient::ChannelSetTopic:
+			{
+				String channel, repto, topic;
+				if (
+					(msg->FindString("session", repto) == B_OK) &&
+					(msg->FindString("topic", topic) == B_OK) && 
+					(msg->FindString("channel", channel) == B_OK)
+					)
+				{
+					QString qUser = QString::fromUtf8(repto.Cstr());
+					QString qTopic = QString::fromUtf8(topic.Cstr());
+					QString qChan = QString::fromUtf8(channel.Cstr());
+					emit ChannelTopic(qChan, qUser, qTopic);
+				}
+				break;
+			}
+		case NetClient::ChannelSetPublic:
+			{
+				String channel, repto;
+				bool pub;
+				if (
+					(msg->FindString("session", repto) == B_OK) &&
+					(msg->FindBool("public", &pub) == B_OK) &&
+					(msg->FindString("channel", channel) == B_OK)
+					)
+				{
+					QString qUser = QString::fromUtf8(repto.Cstr());
+					QString qChan = QString::fromUtf8(channel.Cstr());
+					emit ChannelPublic(qChan, qUser, pub);
+				}
+				break;
+			}
 		case NetClient::PING:
 			{
 				String repto;
@@ -1466,7 +1665,7 @@ WinShareWindow::HandleMessage(Message * msg)
 					msg->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
 					msg->RemoveName("version");
 					
-					QString version = tr(NAME " ");
+					QString version = tr("Unizone (English) ");
 #ifndef WIN32
 					version += "(Linux) ";
 #endif
@@ -1540,12 +1739,12 @@ WinShareWindow::Connect()
 		if (fNetClient->Connect(fServer) == B_OK)
 		{
 			if (fSettings->GetInfo())
-				PrintSystem(tr(MSG_CONNECTING).arg(fServer));
+				PrintSystem(tr("Connecting to server %1.").arg(fServer));
 		}
 		else
 		{
 			if (fSettings->GetInfo())
-				PrintSystem(tr(MSG_CONNECTFAIL));
+				PrintSystem(tr("Connection to server failed!"));
 		}
 	}
 	fLoginTime = GetCurrentTime64();
@@ -1563,7 +1762,7 @@ WinShareWindow::Disconnect()
 {
 	if (fReconnectTimer->isActive())
 	{
-		PrintSystem("Reconnect timer stopped");
+		PrintSystem(tr("Reconnect timer stopped"));
 		fReconnectTimer->stop();
 	}
 	fDisconnectFlag = true; // User disconnection
@@ -1608,7 +1807,7 @@ void
 WinShareWindow::ShowHelp(QString command)
 {
 	QString helpText	=	tr(
-							"\n" NAME " Command Reference\n"
+							"\nUnizone Command Reference\n"
 							"\n\t\t\t\t/action [action] - do something"
 							"\n\t\t\t\t/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)"
 							"\n\t\t\t\t/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)"
@@ -1639,7 +1838,7 @@ WinShareWindow::ShowHelp(QString command)
 							"\n\t\t\t\t/onconnect [command] - set or clear command to perform on successful connect"
 							"\n\t\t\t\t/ping [name or session ids] - ping other clients"
 							"\n\t\t\t\t/priv [name or session ids] - open private chat with these users added"
-							"\n\t\t\t\t/quit - quit " NAME
+							"\n\t\t\t\t/quit - quit Unizone"
 							"\n\t\t\t\t/remote [password] - set & view remote password"
 							"\n\t\t\t\t/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)"
 							"\n\t\t\t\t/remserver [index] - remove server from server list"
@@ -2291,7 +2490,7 @@ WinShareWindow::ListResumes()
 	rLock.lock();
 	WResumeIter it = fResumeMap.begin();
 	START_OUTPUT();
-	PrintSystem("Resume list:", true);
+	PrintSystem(tr("Resume list:"), true);
 	int i = 0;
 	while (it != fResumeMap.end())
 	{
@@ -2362,7 +2561,7 @@ WinShareWindow::GetAddressInfo(QString user)
 			if (!cmap.empty())
 			{
 				START_OUTPUT();
-				PrintSystem( "Connected users: ", true);
+				PrintSystem( tr("Connected users: "), true);
 
 				for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
 				{

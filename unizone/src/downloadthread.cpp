@@ -8,7 +8,6 @@
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "platform.h"	// <postmaster@raasu.org> 20021114
-#include "lang.h"		// <postmaster@raasu.org> 20030224
 #include <qdir.h>
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
@@ -245,7 +244,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 	String sid;
 	uint16 port;
 	bool disconnected = false;
-	
+
 	CTimer->stop();
 	
 	while (GetNextEventFromInternalThread(code, &next, &sid, &port) >= 0)
@@ -528,9 +527,16 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					break;
 				}
 				
-			case MTT_EVENT_SESSION_DISCONNECTED:
 			case MTT_EVENT_SERVER_EXITED:		// same handler for the both of these
 				{
+					PRINT("WDownloadThread::SignalOwner: MTT_EVENT_SERVER_EXITED\n");
+					// Fall through?
+					break;
+				}
+			case MTT_EVENT_SESSION_DISCONNECTED:
+				{
+					PRINT("WDownloadThread::SignalOwner: MTT_EVENT_SESSION_DISCONNECTED\n");
+
 					MessageRef dis;
 					if (fDownloading)
 					{

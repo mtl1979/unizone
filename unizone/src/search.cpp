@@ -9,7 +9,6 @@
 #include "settings.h"
 #include "downloadimpl.h"
 #include "searchitem.h"
-#include "lang.h"			// <postmaster@raasu.org> 20020924
 #include "platform.h"		// <postmaster@raasu.org> 20021114
 #include "combo.h"			// <postmaster@raasu.org> 20030218
 
@@ -26,14 +25,16 @@ struct WFileInfo
 const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
 
 WSearch::WSearch(NetClient * net, QWidget * parent)
-	: QDialog(parent, "WSearch" /* name */, false /* modal */, QDialog::WDestructiveClose| QWidget::WStyle_Minimize | 
+	: QDialog(parent, "WSearch" /* name */, false /* modal */, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
 			  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu /* flags */)
 {
 	fCurrentSearchPattern = "";
 	fIsRunning = false;
 
-	setCaption(tr(MSG_SW_CAPTION));
+	setCaption(tr("Search"));
 	// initialize GUI
+	resize(780, 500);
+
 	fMainBox = new QVGroupBox(this);
 	CHECK_PTR(fMainBox);
 
@@ -49,12 +50,12 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 
 	fSearchList = new QListView(fSearchBox);
 	CHECK_PTR(fSearchList);
-	fSearchList->addColumn(tr(MSG_SW_FILENAME));
-	fSearchList->addColumn(tr(MSG_SW_FILESIZE));
-	fSearchList->addColumn(tr(MSG_SW_FILETYPE));
-	fSearchList->addColumn(tr(MSG_SW_MODIFIED));
-	fSearchList->addColumn(tr(MSG_SW_PATH));
-	fSearchList->addColumn(tr(MSG_SW_USER));
+	fSearchList->addColumn(tr("File Name"));
+	fSearchList->addColumn(tr("File Size"));
+	fSearchList->addColumn(tr("File Type"));
+	fSearchList->addColumn(tr("Modified"));
+	fSearchList->addColumn(tr("Path"));
+	fSearchList->addColumn(tr("User"));
 
 	fSearchList->setColumnAlignment(WSearchListItem::FileSize, AlignRight); // <postmaster@raasu.org> 20021103
 	fSearchList->setColumnAlignment(WSearchListItem::Modified, AlignRight);
@@ -81,7 +82,7 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fSearchEdit->setEditable(true);
 	fSearchEdit->setMinimumWidth(this->width()*0.75);
 	fSearchLabel->setBuddy(fSearchEdit);
-	fSearchLabel->setText(tr(MSG_SW_CSEARCH));
+	fSearchLabel->setText(tr("Search:"));
 	
 	fDownload = new QPushButton(fButtonsBox);
 	CHECK_PTR(fDownload);
@@ -92,16 +93,14 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fStop = new QPushButton(fButtonsBox);
 	CHECK_PTR(fStop);
 
-	fDownload->setText(tr(MSG_SW_DOWNLOAD));
-	fClose->setText(tr(MSG_SW_CLOSE));
-	fClear->setText(tr(MSG_SW_CLEAR));
-	fStop->setText(tr(MSG_SW_STOP));
+	fDownload->setText(tr("Download"));
+	fClose->setText(tr("Close"));
+	fClear->setText(tr("Clear"));
+	fStop->setText(tr("Stop"));
 
 	fStatus = new QStatusBar(fMainBox);
 	CHECK_PTR(fStatus);
 	fStatus->setSizeGripEnabled(false);
-
-	resize(760, 500);
 
 	fNet = net;
 
@@ -126,7 +125,7 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fQueue = new Message();
 	CHECK_PTR(fQueue);
 
-	SetStatus(tr(MSG_IDLE));
+	SetStatus(tr("Idle."));
 
 	fSearchEdit->setFocus();
 }
@@ -205,8 +204,8 @@ WSearch::AddFile(const QString sid, const QString filename, bool firewalled, Mes
 				
 				// name, size, type, modified, path, user
 				QString qkind = QString::fromUtf8(kind.Cstr());
-				QString qsize = tr("%1").arg((int)size); 
-				QString qmod = tr("%1").arg(mod); // <postmaster@raasu.org> 20021126
+				QString qsize = QString::number((int)size); 
+				QString qmod = QString::number(mod); // <postmaster@raasu.org> 20021126
 				QString qpath = QString::fromUtf8(path.Cstr());
 				QString quser = user()->GetUserName();
 				
@@ -287,7 +286,7 @@ WSearch::StopSearch()
 		fUserRegExp.SetPattern("");
 	}
 	Unlock();
-	SetStatus(tr(MSG_IDLE));
+	SetStatus(tr("Idle."));
 }
 
 // This method locks the list, so be sure the mutex is unlocked before calling it!
@@ -325,7 +324,7 @@ WSearch::GoSearch()
 
 	if (gWin->fNetClient->IsInternalThreadRunning() == false)
 	{
-		fStatus->message(tr(MSG_NOTCONNECTED));
+		fStatus->message(tr("Not connected."));
 		return;
 	}
 
@@ -417,7 +416,7 @@ WSearch::StartQuery(QString sidRegExp, QString fileRegExp)
 	fNet->AddSubscription(tmp); // <postmaster@raasu.org> 20021026
 	Unlock();
 
-	SetStatus(tr(MSG_SEARCHING).arg(fileRegExp));
+	SetStatus(tr("Searching for: \"%1\".").arg(fileRegExp));
 }
 
 void
@@ -456,7 +455,7 @@ WSearch::DisconnectedFromServer()
 void
 WSearch::SetResultsMessage()
 {
-	fStatus->message(tr(MSG_WF_RESULTS).arg(fFileList.size()));
+	fStatus->message(tr("Results: %1").arg(fFileList.size()));
 }
 
 void

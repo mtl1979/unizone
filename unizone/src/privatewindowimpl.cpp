@@ -10,7 +10,6 @@
 #include "global.h"
 #include "settings.h"
 #include "util/String.h"
-#include "lang.h"				// <postmaster@raasu.org> 20020924
 #include "platform.h"
 #include "wpwevent.h"
 #include "nicklist.h"
@@ -50,13 +49,13 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	fPrivateUsers = new QListView(fSplit);
 	CHECK_PTR(fPrivateUsers);
 
-	fPrivateUsers->addColumn(tr(MSG_NL_NAME));
+	fPrivateUsers->addColumn(tr("Name"));
 	fPrivateUsers->addColumn(tr("ID"));
-	fPrivateUsers->addColumn(tr(MSG_NL_STATUS));
-	fPrivateUsers->addColumn(tr(MSG_NL_FILES));
-	fPrivateUsers->addColumn(tr(MSG_NL_CONNECTION));
-	fPrivateUsers->addColumn(tr(MSG_NL_LOAD));
-	fPrivateUsers->addColumn(tr(MSG_NL_CLIENT));		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
+	fPrivateUsers->addColumn(tr("Status"));
+	fPrivateUsers->addColumn(tr("Files"));
+	fPrivateUsers->addColumn(tr("Connection"));
+	fPrivateUsers->addColumn(tr("Load"));
+	fPrivateUsers->addColumn(tr("Client"));		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
 
 	fPrivateUsers->setColumnAlignment(WNickListItem::ID, AlignRight); // <postmaster@raasu.org> 20021005
 	fPrivateUsers->setColumnAlignment(WNickListItem::Files, AlignRight); // <postmaster@raasu.org> 20021005
@@ -101,7 +100,10 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 
 #ifdef WIN32
 	// <postmaster@raasu.org> 20021021 -- Use Unicode macro L"..."
-	fWinHandle = FindWindow(NULL, L"[Freeware] - Private");
+	QString title = tr ("[Freeware] - Private");
+	wchar_t * wtitle = qStringToWideChar(title);
+	fWinHandle = FindWindow(NULL, wtitle);
+	delete [] wtitle;
 	// <postmaster@raasu.org> 20020925
 	if (fWinHandle)
 	{
@@ -138,7 +140,7 @@ WPrivateWindow::DisconnectedFromServer()
 	PRINT("WPrivateWindow::Disconnected\n");
 	fUsers.clear();
 	if (gWin->fSettings->GetError())
-		PrintError(tr(MSG_DISCONNECTED));
+		PrintError(tr("Disconnected from server."));
 }
 
 void
@@ -159,9 +161,13 @@ WPrivateWindow::UserDisconnected(QString sid, QString name)
 
 		if (fUsers.empty())
 		{
-			if (QMessageBox::information(this, "Private Chat", "There are no longer any users in this private chat window."
-										 " Close window?", "Yes", "No") == 0)	// 0 is the index of "yes"
-										 done(QDialog::Accepted);
+			if (QMessageBox::information(this, tr( "Private Chat" ), 
+				tr( "There are no longer any users in this private chat window. Close window?"),
+				tr( "Yes" ), tr( "No" )) == 0)	
+				// 0 is the index of "yes"
+			{
+				done(QDialog::Accepted);
+			}
 		}
 	}
 }
@@ -308,7 +314,7 @@ WPrivateWindow::TabPressed(QString str)
 void
 WPrivateWindow::customEvent(QCustomEvent * event)
 {
-	PRINT("WPrivateWindow::Event\n");
+	PRINT("WPrivateWindow::customEvent\n");
 	switch (event->type())
 	{
 		case WPWEvent::TabCompleted:
@@ -344,7 +350,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 						if (sendTo.empty())
 						{
 							if (gWin->fSettings->GetError())
-								PrintError("User(s) not found!\n");
+								PrintError( tr( "User(s) not found!" ) );
 						}
 						else
 						{
@@ -357,7 +363,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 								if (user()->IsBot())
 								{
 									if (gWin->fSettings->GetError())
-										PrintError(tr("User #%1 (a.k.a. %2) is a bot!\n").arg(sid).arg(user()->GetUserName()));
+										PrintError(tr("User #%1 (a.k.a. %2) is a bot!").arg(sid).arg(user()->GetUserName()));
 									iter++;
 									continue;	// go on to next user
 								}
@@ -402,9 +408,13 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 						{
 							if (fUsers.empty())
 							{
-								if (QMessageBox::information(this, "Private Chat", "There are no longer any users in this private chat window."
-															 " Close window?", "Yes", "No") == 0)	// 0 is the index of "yes"
+								if (QMessageBox::information(this, tr( "Private Chat" ), 
+									tr( "There are no longer any users in this private chat window. Close window?"),
+									tr( "Yes"), tr( "No" )) == 0)	
+									// 0 is the index of "yes"
+								{
 									done(QDialog::Accepted);
+								}
 							}
 						}
 					}
@@ -513,7 +523,7 @@ WPrivateWindow::StartLogging()
 	if (!fLog.InitCheck())
 	{
 		if (gWin->fSettings->GetError())
-			PrintError("Failed to create private log.");
+			PrintError( tr( "Failed to create private log." ) );
 	}
 }
 
@@ -539,15 +549,12 @@ WPrivateWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int c)
 			{
 				// found user...
 				// <postmaster@raasu.org> 20021127 -- Remove user from private window
-				QString txt = tr(MSG_REMOVE);
 				// <postmaster@raasu.org> 20020924 -- Added ',1'
-				fPopup->insertItem(txt,1);
+				fPopup->insertItem(tr("Remove"), 1);
 				// <postmaster@raasu.org> 20020924 -- Added id 2
-				txt = tr(MSG_NL_LISTALLFILES);
-				fPopup->insertItem(txt,2);
+				fPopup->insertItem(tr("List All Files"), 2);
 				// <postmaster@raasu.org> 20020926 -- Added id 3
-				txt = tr(MSG_NL_GETIPADDR);
-				fPopup->insertItem(txt,3); 
+				fPopup->insertItem(tr("Get IP Address"), 3); 
 
 				fPopupUser = uid;
 				fPopup->popup(p);
@@ -576,7 +583,7 @@ WPrivateWindow::PopupActivated(int id)
 		} 
 		else if (id == 3) 
 		{
-			QString qTemp = tr(MSG_USERHOST).arg(FixStringStr((*it).second()->GetUserName())).arg((*it).second()->GetUserHostName()).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
+			QString qTemp = tr("<font color=\"%3\">%1</font>'s IP address is %2.").arg(FixStringStr((*it).second()->GetUserName())).arg((*it).second()->GetUserHostName()).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
 			PrintSystem(qTemp);
 		}
 	}

@@ -6,8 +6,9 @@
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 
-class MenuBar : public Qt
+class MenuBar : public QMenuBar
 {
+	Q_OBJECT
 public:
 	MenuBar(QWidget * parent = NULL);
 	~MenuBar();
@@ -16,11 +17,11 @@ public:
 	QPopupMenu * Edit() const { return fEdit; }
 	QPopupMenu * Help() const { return fHelp; }
 
-	QMenuBar * Bar() const { return fBar; }
+//	QMenuBar * Bar() const { return fBar; }
 
 private:
 	/* Menu bar */
-	QMenuBar * fBar;
+//	QMenuBar * fBar;
 
 	/* File menu */
 	QPopupMenu * fFile;

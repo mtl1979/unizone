@@ -1,8 +1,9 @@
 #include <qapplication.h>
 #include <qplatinumstyle.h>
+#include <qfile.h>
+#include <qfiledialog.h>
 #include "global.h"
 #include "debugimpl.h"
-#include "lang.h"				// <postmaster@raasu.org> 20020924
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,6 +71,45 @@ main( int argc, char** argv )
 	delete [] name;
 	name = NULL; // <postmaster@raasu.org> 20021027
 #endif
+	// Load language file
+	QTranslator qtr( 0 );
+	QFile lang("unizone.lng");
+	QString lfile;
+	if (!lang.exists())
+	{
+		lfile = QFileDialog::getOpenFileName( QString::null, "unizone_*.qm", NULL );
+		if (!lfile.isEmpty())
+		{
+			// Save selected language's translator filename
+			if ( lang.open(IO_WriteOnly) )
+			{
+				QCString clang = lfile.utf8();
+				lang.writeBlock(clang, clang.length());
+				lang.close();
+			}
+		}
+	}
+	// (Re-)load translator filename
+	if ( lang.open(IO_ReadOnly) ) 
+	{    
+		// file opened successfully
+		char * plang = (char *) malloc(255);
+		if (plang)
+		{
+			lang.readLine(plang, 255);
+			lfile = QString::fromUtf8(plang);
+			delete plang;
+		}
+		lang.close();
+    }
+	// Install translator ;)
+	if (!lfile.isEmpty())
+	{
+		qtr.load(lfile);
+		app.installTranslator( &qtr );
+	}
+	
+	// Set style
 	app.setStyle(new QPlatinumStyle);
 
 	WinShareWindow * window = new WinShareWindow(NULL);

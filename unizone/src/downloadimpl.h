@@ -35,7 +35,7 @@ class WDownload : public QDialog
 {
 	Q_OBJECT
 public:
-	WDownload(QString localID, WFileThread * sharedFiles);
+	WDownload(QWidget * parent, QString localID, WFileThread * sharedFiles);
 	virtual ~WDownload();
 
 	// ways to disguise data
@@ -74,6 +74,9 @@ public:
 	void KillLocalQueues();
 
 	void TransferCallBackRejected(QString qFrom, int64 timeLeft, uint32 port);
+
+	void SetLocalID(QString sid);
+
 
 protected:
 	virtual void customEvent(QCustomEvent *);
