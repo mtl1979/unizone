@@ -4,7 +4,7 @@
 #include <qobject.h>
 
 #include "util/String.h"
-#include "message/message.h"
+#include "message/Message.h"
 #include "qtsupport/QMessageTransceiverThread.h"
 #include "reflector/AbstractReflectSession.h"
 

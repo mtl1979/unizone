@@ -13,7 +13,7 @@ using std::list;
 using std::iterator;
 
 #include "util/Queue.h"
-#include "message/message.h"
+#include "message/Message.h"
 using namespace muscle;
 
 #include "scanevent.h"

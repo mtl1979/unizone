@@ -12,6 +12,8 @@
 #include "filethread.h"
 #include "debugimpl.h"
 
+#include <qapplication.h>
+
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	: QMessageTransceiverThread(owner), fOwner(owner), fShutdownFlag(optShutdownFlag) 
 { 

@@ -199,6 +199,7 @@ WString::setBuffer(wchar_t *buf)
 	buffer = buf;
 }
 
+#ifdef WIN32
 WString
 WString::upper() const 
 {
@@ -249,6 +250,7 @@ WString::reverse() const
 	}
 	return s2;
 }
+#endif
 
 int
 WString::length() const

@@ -1454,7 +1454,11 @@ WSettings::EmptyResumeList()
 void 
 WSettings::GetToolBarLayout(int toolbar, int & dock, int & index, bool & nl, int & extra)
 {
+#ifdef WIN32
 	dock = (int) QMainWindow::ToolBarDock::Top;
+#else
+	dock = (int) QMainWindow::Top;
+#endif
 	index = toolbar;
 
 	if (toolbar == 1)

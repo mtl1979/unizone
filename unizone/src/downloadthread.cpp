@@ -10,6 +10,7 @@
 #include "qtsupport/QMessageTransceiverThread.h"
 #include "debugimpl.h"
 
+#include <qapplication.h>
 #include <qdir.h>
 
 using namespace muscle;

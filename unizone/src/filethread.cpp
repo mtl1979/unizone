@@ -71,7 +71,11 @@ WFileThread::run()
 	while (!fPaths.IsEmpty())
 	{
 		Lock();
+#ifdef WIN32
 		SendInt(ScanEvent::Type::DirsLeft, fPaths.GetNumItems());
+#else
+		SendInt(ScanEvent::DirsLeft, fPaths.GetNumItems());
+#endif
 		fPaths.RemoveHead(path);
 		Unlock();
 		if (fShutdownFlag && *fShutdownFlag)
@@ -83,7 +87,11 @@ WFileThread::run()
 		msleep(30);
 		ParseDir(path);
 		iScannedDirs++;
+#ifdef WIN32
 		SendInt(ScanEvent::Type::ScannedDirs, iScannedDirs);
+#else
+		SendInt(ScanEvent::ScannedDirs, iScannedDirs);
+#endif
 	} 
 #ifdef WIN32
 	CoUninitialize();
@@ -109,7 +117,11 @@ WFileThread::ParseDir(const QString & d)
 	WString wD = d;
 	PRINT("Parsing directory %S\n", wD.getBuffer());
 
+#ifdef WIN32
 	SendString(ScanEvent::Type::ScanDirectory, d);
+#else
+	SendString(ScanEvent::ScanDirectory, d);
+#endif
 
 	// Directory doesn't exist?
 	if (!info->exists())
@@ -189,7 +201,11 @@ WFileThread::ScanFiles(const QString & directory)
 					}
 				}
 
+#ifdef WIN32
 				SendString(ScanEvent::Type::ScanFile, ndata);
+#else
+				SendString(ScanEvent::ScanFile, ndata);
+#endif
 
 				WString wData = ndata;
 				PRINT("\tChecking file %S\n", wData.getBuffer());
@@ -272,7 +288,11 @@ WFileThread::AddFile(const QString & filePath)
 					fFiles.AddTail(ref);
 					Unlock(); 
 					int n = fFiles.GetNumItems();
+#ifdef WIN32
 					SendInt(ScanEvent::Type::ScannedFiles, n);
+#else
+					SendInt(ScanEvent::ScannedFiles, n);
+#endif
 				}
 			}
 		}
@@ -509,7 +529,11 @@ WFileThread::GetSharedFile(int n, MessageRef & mref)
 void
 WFileThread::SendReset()
 {
+#ifdef WIN32
 	ScanEvent *se = new ScanEvent(ScanEvent::Type::Reset);
+#else
+	ScanEvent *se = new ScanEvent(ScanEvent::Reset);
+#endif
 	if (se)
 #if (QT_VERSION < 0x030000)
 		QThread::postEvent(fScanProgress, se);
@@ -521,7 +545,11 @@ WFileThread::SendReset()
 void
 WFileThread::SendString(ScanEvent::Type t, QString str)
 {
+#ifdef WIN32
 	ScanEvent *se = new ScanEvent(t, str);
+#else
+	ScanEvent *se = new ScanEvent(t, str);
+#endif
 	if (se)
 #if (QT_VERSION < 0x030000)
 		QThread::postEvent(fScanProgress, se);

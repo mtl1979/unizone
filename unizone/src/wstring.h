@@ -33,9 +33,11 @@ public:
 	WString(const QString &);
 	~WString();
 
+#ifdef WIN32
 	WString lower() const;
 	WString upper() const;
 	WString reverse() const;
+#endif
 
 	operator wchar_t *() const { return buffer; };
 	wchar_t *getBuffer() const { return buffer; };
