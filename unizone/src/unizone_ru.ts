@@ -3764,5 +3764,9 @@ Date: %4</translation>
         <source>/view - view picture on local machine</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Failed to create log file.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

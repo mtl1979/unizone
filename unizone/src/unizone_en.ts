@@ -3803,5 +3803,9 @@ Date: %4</translation>
         <source>/view - view picture on local machine</source>
         <translation>/view - view picture on local machine</translation>
     </message>
+    <message>
+        <source>Failed to create log file.</source>
+        <translation>Failed to create log file.</translation>
+    </message>
 </context>
 </TS>

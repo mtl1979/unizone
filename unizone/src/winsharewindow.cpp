@@ -2284,7 +2284,7 @@ WinShareWindow::StartLogging()
 	if (!fMainLog.InitCheck())
 	{
 		if (fSettings->GetError())
-            PrintError("Failed to create log file.");
+            PrintError( tr("Failed to create log file.") );
 	}
 }
 

@@ -3891,5 +3891,9 @@ Päiväys: %4</translation>
         <source>/view - view picture on local machine</source>
         <translation>/view - näytä kuva omalta koneeltasi</translation>
     </message>
+    <message>
+        <source>Failed to create log file.</source>
+        <translation>Lokitiedoston luominen epäonnistui.</translation>
+    </message>
 </context>
 </TS>
