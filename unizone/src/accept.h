@@ -8,7 +8,9 @@ using namespace muscle;
 #include <qobject.h>
 #include <qevent.h>
 
-#define DEFAULT_LISTEN_PORT 7000
+// #define DEFAULT_LISTEN_PORT 7000 
+// NOTE: Deprecated by WSettings::GetBasePort()
+
 #define LISTEN_PORT_RANGE 100
 
 class WAcceptThreadEvent : public QCustomEvent

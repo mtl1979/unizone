@@ -335,7 +335,10 @@ WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QStri
 		
 		// Detect uncommon remote port 
 		
-		if (!muscleInRange(remotePort, (uint32) DEFAULT_LISTEN_PORT, (uint32) (DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE)))
+		uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
+		uint32 pEnd = pStart + LISTEN_PORT_RANGE;
+
+		if (!muscleInRange(remotePort, pStart, pEnd))
 		{
 			for (x = 0; x < filecount; x++)
 				gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]));
@@ -406,7 +409,7 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 	ut->SetPacketSize(gWin->fSettings->GetPacketSize());
 	ut->SetUpload(remoteIP, port, fSharedFiles);
 	
-	if (GetNumUploads() < gWin->fSettings->GetMaxUploads())
+	if (GetNumUploads() < gWin->fSettings->GetMaxUploads() && !gWin->IsScanning())
 	{
 		PRINT("Not queued\n");
 		ut->SetLocallyQueued(false);
@@ -448,7 +451,7 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 	ut->SetPacketSize(gWin->fSettings->GetPacketSize());
 	ut->SetUpload(socket, remoteIP, fSharedFiles);
 	
-	if (GetNumUploads() < gWin->fSettings->GetMaxUploads())
+	if (GetNumUploads() < gWin->fSettings->GetMaxUploads() && !gWin->IsScanning())
 	{
 		PRINT("Not queued\n");
 		ut->SetLocallyQueued(false);
@@ -486,6 +489,11 @@ WDownload::DequeueULSessions()
 	if (gWin->fSettings->GetAutoClear())
 	{
 		ClearFinishedUL();
+	}
+
+	if (gWin->IsScanning())
+	{
+		return;
 	}
 
 	bool found = true;

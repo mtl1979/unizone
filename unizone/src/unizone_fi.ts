@@ -344,7 +344,7 @@ Versio %1</translation>
     <name>ChannelBase</name>
     <message>
         <source>Channel Window</source>
-        <translation type='obsolete'>Kanavaikkuna</translation>
+        <translation>Kanavaikkuna</translation>
     </message>
 </context>
 <context>
@@ -1243,111 +1243,111 @@ Päiväys: %4</translation>
     <name>WPrefsBase</name>
     <message>
         <source>Preferences</source>
-        <translation type='obsolete'>Asetukset</translation>
+        <translation>Asetukset</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type='obsolete'>OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type='obsolete'>Peruuta</translation>
+        <translation>Peruuta</translation>
     </message>
     <message>
         <source>Auto Away:</source>
-        <translation type='obsolete'>Automaattisesti pois:</translation>
+        <translation>Automaattisesti pois:</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation type='obsolete'>Ei päällä</translation>
+        <translation>Ei päällä</translation>
     </message>
     <message>
         <source>2 Minutes</source>
-        <translation type='obsolete'>2 Minuuttia</translation>
+        <translation>2 Minuuttia</translation>
     </message>
     <message>
         <source>5 Minutes</source>
-        <translation type='obsolete'>5 Minuuttia</translation>
+        <translation>5 Minuuttia</translation>
     </message>
     <message>
         <source>10 Minutes</source>
-        <translation type='obsolete'>10 Minuuttia</translation>
+        <translation>10 Minuuttia</translation>
     </message>
     <message>
         <source>15 Minutes</source>
-        <translation type='obsolete'>15 Minuuttia</translation>
+        <translation>15 Minuuttia</translation>
     </message>
     <message>
         <source>20 Minutes</source>
-        <translation type='obsolete'>20 Minuuttia</translation>
+        <translation>20 Minuuttia</translation>
     </message>
     <message>
         <source>30 Minutes</source>
-        <translation type='obsolete'>30 Minuuttia</translation>
+        <translation>30 Minuuttia</translation>
     </message>
     <message>
         <source>1 Hour</source>
-        <translation type='obsolete'>1 Tunti</translation>
+        <translation>1 Tunti</translation>
     </message>
     <message>
         <source>2 Hours</source>
-        <translation type='obsolete'>2 Tuntia</translation>
+        <translation>2 Tuntia</translation>
     </message>
     <message>
         <source>Multi-color ListViews</source>
-        <translation type='obsolete'>Moniväriset Luettelonäkymät</translation>
+        <translation>Moniväriset Luettelonäkymät</translation>
     </message>
     <message>
         <source>Enable Logging</source>
-        <translation type='obsolete'>Loki päällä</translation>
+        <translation>Loki päällä</translation>
     </message>
     <message>
         <source>Login On Startup</source>
-        <translation type='obsolete'>Kirjaudu alussa</translation>
+        <translation>Kirjaudu alussa</translation>
     </message>
     <message>
         <source>Check For New Versions</source>
-        <translation type='obsolete'>Tarkista uusi versio</translation>
+        <translation>Tarkista uusi versio</translation>
     </message>
     <message>
         <source>Auto Update Server List</source>
-        <translation type='obsolete'>Palvelinlistan automaattipäivitys</translation>
+        <translation>Palvelinlistan automaattipäivitys</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type='obsolete'>Yleiset</translation>
+        <translation>Yleiset</translation>
     </message>
     <message>
         <source>Upload Bandwidth:</source>
-        <translation type='obsolete'>Lähetysten kaista:</translation>
+        <translation>Lähetysten kaista:</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation type='obsolete'>300 baudia</translation>
+        <translation>300 baudia</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='obsolete'>14.4 kt/s</translation>
+        <translation>14.4 kt/s</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='obsolete'>28.8 kt/s</translation>
+        <translation>28.8 kt/s</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='obsolete'>36.6 kt/s</translation>
+        <translation>36.6 kt/s</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='obsolete'>57.6 kt/s</translation>
+        <translation>57.6 kt/s</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='obsolete'>ISDN-64k</translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='obsolete'>ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
@@ -1355,251 +1355,251 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='obsolete'>Kaapeli</translation>
+        <translation>Kaapeli</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='obsolete'>T1</translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='obsolete'>T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='obsolete'>OC-3</translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='obsolete'>OC-12</translation>
+        <translation>OC-12</translation>
     </message>
     <message>
         <source>I&apos;m Firewalled</source>
-        <translation type='obsolete'>Palomuurin takana</translation>
+        <translation>Palomuurin takana</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type='obsolete'>Yhteys</translation>
+        <translation>Yhteys</translation>
     </message>
     <message>
         <source>Warning Messages</source>
-        <translation type='obsolete'>Varoitusviestit</translation>
+        <translation>Varoitusviestit</translation>
     </message>
     <message>
         <source>Error Messages</source>
-        <translation type='obsolete'>Virheviestit</translation>
+        <translation>Virheviestit</translation>
     </message>
     <message>
         <source>Private Messages</source>
-        <translation type='obsolete'>Yksityisviestit</translation>
+        <translation>Yksityisviestit</translation>
     </message>
     <message>
         <source>User Events</source>
-        <translation type='obsolete'>Käyttäjän tapahtumat</translation>
+        <translation>Käyttäjän tapahtumat</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation type='obsolete'>Keskustelu</translation>
+        <translation>Keskustelu</translation>
     </message>
     <message>
         <source>Info Messages</source>
-        <translation type='obsolete'>Tiedoitukset</translation>
+        <translation>Tiedoitukset</translation>
     </message>
     <message>
         <source>Uploads</source>
-        <translation type='obsolete'>Lähetykset</translation>
+        <translation>Lähetykset</translation>
     </message>
     <message>
         <source>Time Stamps</source>
-        <translation type='obsolete'>Aikaleimat</translation>
+        <translation>Aikaleimat</translation>
     </message>
     <message>
         <source>Flash Window When Mentioned</source>
-        <translation type='obsolete'>Väläytä ikkunaa mainittaessa</translation>
+        <translation>Väläytä ikkunaa mainittaessa</translation>
     </message>
     <message>
         <source>Flash Private Windows</source>
-        <translation type='obsolete'>Väläytä yksityisikkunoita</translation>
+        <translation>Väläytä yksityisikkunoita</translation>
     </message>
     <message>
         <source>Font Size</source>
-        <translation type='obsolete'>Kirjasinkoko</translation>
+        <translation>Kirjasinkoko</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type='obsolete'>Näyttö</translation>
+        <translation>Näyttö</translation>
     </message>
     <message>
         <source>Local Name</source>
-        <translation type='obsolete'>Oma nimi</translation>
+        <translation>Oma nimi</translation>
     </message>
     <message>
         <source>Remote Name</source>
-        <translation type='obsolete'>Muiden nimi</translation>
+        <translation>Muiden nimi</translation>
     </message>
     <message>
         <source>Regular Text</source>
-        <translation type='obsolete'>Tavallinen teksti</translation>
+        <translation>Tavallinen teksti</translation>
     </message>
     <message>
         <source>System Text</source>
-        <translation type='obsolete'>Järjestelmä-teksti</translation>
+        <translation>Järjestelmä-teksti</translation>
     </message>
     <message>
         <source>Ping Text</source>
-        <translation type='obsolete'>Ping-teksti</translation>
+        <translation>Ping-teksti</translation>
     </message>
     <message>
         <source>Error Text</source>
-        <translation type='obsolete'>Virhe-teksti</translation>
+        <translation>Virhe-teksti</translation>
     </message>
     <message>
         <source>Error Message Text</source>
-        <translation type='obsolete'>Virheviestin teksti</translation>
+        <translation>Virheviestin teksti</translation>
     </message>
     <message>
         <source>Private Text</source>
-        <translation type='obsolete'>Yksityinen-teksti</translation>
+        <translation>Yksityinen-teksti</translation>
     </message>
     <message>
         <source>Action Text</source>
-        <translation type='obsolete'>Toiminta Teksti</translation>
+        <translation>Toiminta Teksti</translation>
     </message>
     <message>
         <source>URL Text</source>
-        <translation type='obsolete'>URL-teksti</translation>
+        <translation>URL-teksti</translation>
     </message>
     <message>
         <source>&apos;Name Said&apos; Text</source>
-        <translation type='obsolete'>&apos;Nimi Sanottu&apos; Teksti</translation>
+        <translation>&apos;Nimi Sanottu&apos; Teksti</translation>
     </message>
     <message>
         <source>Description:</source>
-        <translation type='obsolete'>Kuvaus:</translation>
+        <translation>Kuvaus:</translation>
     </message>
     <message>
         <source>Preview:</source>
-        <translation type='obsolete'>Esikatselu:</translation>
+        <translation>Esikatselu:</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation type='obsolete'>Muuta</translation>
+        <translation>Muuta</translation>
     </message>
     <message>
         <source>Colors</source>
-        <translation type='obsolete'>Värit</translation>
+        <translation>Värit</translation>
     </message>
     <message>
         <source>CDE</source>
-        <translation type='obsolete'>CDE</translation>
+        <translation>CDE</translation>
     </message>
     <message>
         <source>Motif</source>
-        <translation type='obsolete'>Motif</translation>
+        <translation>Motif</translation>
     </message>
     <message>
         <source>Motif Plus</source>
-        <translation type='obsolete'>Motif Plus</translation>
+        <translation>Motif Plus</translation>
     </message>
     <message>
         <source>Platinum</source>
-        <translation type='obsolete'>Platinum</translation>
+        <translation>Platinum</translation>
     </message>
     <message>
         <source>SGI</source>
-        <translation type='obsolete'>SGI</translation>
+        <translation>SGI</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation type='obsolete'>Windows</translation>
+        <translation>Windows</translation>
     </message>
     <message>
         <source>The selected style will be applied as soon as it is selected.</source>
-        <translation type='obsolete'>Valittu tyyli otetaan käyttöön heti, kun se on valittu.</translation>
+        <translation>Valittu tyyli otetaan käyttöön heti, kun se on valittu.</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type='obsolete'>Tyyli</translation>
+        <translation>Tyyli</translation>
     </message>
     <message>
         <source>1</source>
-        <translation type='obsolete'>1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation type='obsolete'>2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <source>3</source>
-        <translation type='obsolete'>3</translation>
+        <translation>3</translation>
     </message>
     <message>
         <source>4</source>
-        <translation type='obsolete'>4</translation>
+        <translation>4</translation>
     </message>
     <message>
         <source>5</source>
-        <translation type='obsolete'>5</translation>
+        <translation>5</translation>
     </message>
     <message>
         <source>10</source>
-        <translation type='obsolete'>10</translation>
+        <translation>10</translation>
     </message>
     <message>
         <source>15</source>
-        <translation type='obsolete'>15</translation>
+        <translation>15</translation>
     </message>
     <message>
         <source>20</source>
-        <translation type='obsolete'>20</translation>
+        <translation>20</translation>
     </message>
     <message>
         <source>30</source>
-        <translation type='obsolete'>30</translation>
+        <translation>30</translation>
     </message>
     <message>
         <source>Unlimited</source>
-        <translation type='obsolete'>Rajaton</translation>
+        <translation>Rajaton</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Downloads:</source>
-        <translation type='obsolete'>Samanaikaisia vastaanottoja enintään:</translation>
+        <translation>Samanaikaisia vastaanottoja enintään:</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Uploads:</source>
-        <translation type='obsolete'>Samanaikaisia lähetyksiä enintään:</translation>
+        <translation>Samanaikaisia lähetyksiä enintään:</translation>
     </message>
     <message>
         <source>File sharing enabled?</source>
-        <translation type='obsolete'>Tiedostojen jako päällä?</translation>
+        <translation>Tiedostojen jako päällä?</translation>
     </message>
     <message>
         <source>Block binkies?</source>
-        <translation type='obsolete'>Estä binkyjen imuroinnit?</translation>
+        <translation>Estä binkyjen imuroinnit?</translation>
     </message>
     <message>
         <source>Block disconnected users?</source>
-        <translation type='obsolete'>Estä poistuneiden imuroinnit?</translation>
+        <translation>Estä poistuneiden imuroinnit?</translation>
     </message>
     <message>
         <source>File Sharing</source>
-        <translation type='obsolete'>Tiedostojen jako</translation>
+        <translation>Tiedostojen jako</translation>
     </message>
     <message>
         <source>HTTP launcher:</source>
-        <translation type='obsolete'>HTTP-aukaisija:</translation>
+        <translation>HTTP-aukaisija:</translation>
     </message>
     <message>
         <source>FTP launcher:</source>
-        <translation type='obsolete'>FTP-aukaisija:</translation>
+        <translation>FTP-aukaisija:</translation>
     </message>
     <message>
         <source>Mailto: launcher:</source>
-        <translation type='obsolete'>Mailto:-aukaisija:</translation>
+        <translation>Mailto:-aukaisija:</translation>
     </message>
     <message>
         <source>URL Launching</source>
-        <translation type='obsolete'>URLien avaus</translation>
+        <translation>URLien avaus</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted)</source>
@@ -1607,87 +1607,87 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>No Limit</source>
-        <translation type='obsolete'>Ei Rajaa</translation>
+        <translation>Ei Rajaa</translation>
     </message>
     <message>
         <source>128 bytes</source>
-        <translation type='obsolete'>128 tavua</translation>
+        <translation>128 tavua</translation>
     </message>
     <message>
         <source>256 bytes</source>
-        <translation type='obsolete'>256 tavua</translation>
+        <translation>256 tavua</translation>
     </message>
     <message>
         <source>512 bytes</source>
-        <translation type='obsolete'>512 tavua</translation>
+        <translation>512 tavua</translation>
     </message>
     <message>
         <source>1 kB</source>
-        <translation type='obsolete'>1 kt</translation>
+        <translation>1 kt</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation type='obsolete'>2 kt</translation>
+        <translation>2 kt</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation type='obsolete'>4 kt</translation>
+        <translation>4 kt</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation type='obsolete'>8 kt</translation>
+        <translation>8 kt</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation type='obsolete'>16 kt</translation>
+        <translation>16 kt</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation type='obsolete'>32 kt</translation>
+        <translation>32 kt</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation type='obsolete'>64 kt</translation>
+        <translation>64 kt</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation type='obsolete'>128 kt</translation>
+        <translation>128 kt</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation type='obsolete'>256 kt</translation>
+        <translation>256 kt</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation type='obsolete'>512 kt</translation>
+        <translation>512 kt</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation type='obsolete'>1 Mt</translation>
+        <translation>1 Mt</translation>
     </message>
     <message>
         <source>2 MB</source>
-        <translation type='obsolete'>2 Mt</translation>
+        <translation>2 Mt</translation>
     </message>
     <message>
         <source>4 MB</source>
-        <translation type='obsolete'>4 Mt</translation>
+        <translation>4 Mt</translation>
     </message>
     <message>
         <source>8 MB</source>
-        <translation type='obsolete'>8 Mt</translation>
+        <translation>8 Mt</translation>
     </message>
     <message>
         <source>16 MB</source>
-        <translation type='obsolete'>16 Mt</translation>
+        <translation>16 Mt</translation>
     </message>
     <message>
         <source>32 MB</source>
-        <translation type='obsolete'>32 Mt</translation>
+        <translation>32 Mt</translation>
     </message>
     <message>
         <source>Chat:</source>
-        <translation type='obsolete'>Keskustelu:</translation>
+        <translation>Keskustelu:</translation>
     </message>
     <message>
         <source>Downloads (per download)</source>
@@ -1699,39 +1699,39 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Throttling</source>
-        <translation type='obsolete'>Rajoitukset</translation>
+        <translation>Rajoitukset</translation>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
-        <translation type='obsolete'>Poista automaattisesti valmiit siirrot?</translation>
+        <translation>Poista automaattisesti valmiit siirrot?</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='obsolete'>DSL-256k</translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='obsolete'>DSL-384k</translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='obsolete'>DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <source>Uploads (per upload):</source>
-        <translation type='obsolete'>Per lähetys:</translation>
+        <translation>Per lähetys:</translation>
     </message>
     <message>
         <source>Downloads (per download):</source>
-        <translation type='obsolete'>Per vastaanotto:</translation>
+        <translation>Per vastaanotto:</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted):</source>
-        <translation type='obsolete'>Per estetty:</translation>
+        <translation>Per estetty:</translation>
     </message>
     <message>
         <source>Default launcher:</source>
-        <translation type='obsolete'>Oletusaukaisija:</translation>
+        <translation>Oletusaukaisija:</translation>
     </message>
     <message>
         <source>Upload Packet Size</source>
@@ -1739,15 +1739,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Upload Packet Size:</source>
-        <translation type='obsolete'>Lähetyksen Pakettikoko:</translation>
+        <translation>Lähetyksen Pakettikoko:</translation>
     </message>
     <message>
         <source>Enable Sound Effects</source>
-        <translation type='obsolete'>Ääniefektit Päällä</translation>
+        <translation>Ääniefektit Päällä</translation>
     </message>
     <message>
         <source>Downloads</source>
-        <translation type='obsolete'>Lataukset</translation>
+        <translation>Lataukset</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue</source>
@@ -1759,23 +1759,31 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>5 kB</source>
-        <translation type='obsolete'>5 kt</translation>
+        <translation>5 kt</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation type='obsolete'>10 kt</translation>
+        <translation>10 kt</translation>
     </message>
     <message>
         <source>25 kB</source>
-        <translation type='obsolete'>25 kt</translation>
+        <translation>25 kt</translation>
     </message>
     <message>
         <source>50 kB</source>
-        <translation type='obsolete'>50 kt</translation>
+        <translation>50 kt</translation>
     </message>
     <message>
         <source>100 kB</source>
-        <translation type='obsolete'>100 kt</translation>
+        <translation>100 kt</translation>
+    </message>
+    <message>
+        <source>Base Port:</source>
+        <translation>Perusportti:</translation>
+    </message>
+    <message>
+        <source>Minimum File Size to Queue:</source>
+        <translation>Minimikoko Tiedostolle Jonossa:</translation>
     </message>
 </context>
 <context>
@@ -1883,7 +1891,7 @@ Päiväys: %4</translation>
     <name>WPrivateWindowBase</name>
     <message>
         <source>Private</source>
-        <translation type='obsolete'>Yksityinen</translation>
+        <translation>Yksityinen</translation>
     </message>
 </context>
 <context>

@@ -172,8 +172,8 @@
         <property stdset="1">
             <name>geometry</name>
             <rect>
-                <x>1</x>
-                <y>1</y>
+                <x>0</x>
+                <y>0</y>
                 <width>558</width>
                 <height>284</height>
             </rect>
@@ -1721,7 +1721,7 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout40</cstring>
+                    <cstring>Layout44</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
@@ -1745,7 +1745,7 @@
                         <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>Layout35</cstring>
+                            <cstring>Layout43</cstring>
                         </property>
                         <vbox>
                             <property stdset="1">
@@ -1766,6 +1766,69 @@
                                     <name>text</name>
                                     <string>File sharing enabled?</string>
                                 </property>
+                            </widget>
+                            <widget>
+                                <class>QLayoutWidget</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>Layout42</cstring>
+                                </property>
+                                <hbox>
+                                    <property stdset="1">
+                                        <name>margin</name>
+                                        <number>0</number>
+                                    </property>
+                                    <property stdset="1">
+                                        <name>spacing</name>
+                                        <number>6</number>
+                                    </property>
+                                    <widget>
+                                        <class>QLabel</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>TextLabel1_6</cstring>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>minimumSize</name>
+                                            <size>
+                                                <width>75</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property stdset="1">
+                                            <name>text</name>
+                                            <string>Base Port:</string>
+                                        </property>
+                                    </widget>
+                                    <spacer>
+                                        <property>
+                                            <name>name</name>
+                                            <cstring>Spacer35_2</cstring>
+                                        </property>
+                                        <property>
+                                            <name>orientation</name>
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                        <property>
+                                            <name>sizeType</name>
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property>
+                                            <name>sizeHint</name>
+                                            <size>
+                                                <width>20</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                    <widget>
+                                        <class>QLineEdit</class>
+                                        <property stdset="1">
+                                            <name>name</name>
+                                            <cstring>fBasePort</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
                             </widget>
                             <spacer>
                                 <property>
@@ -2132,7 +2195,7 @@
                                         </property>
                                         <property stdset="1">
                                             <name>text</name>
-                                            <string>Minimum File Size to Queue</string>
+                                            <string>Minimum File Size to Queue:</string>
                                         </property>
                                     </widget>
                                     <spacer>

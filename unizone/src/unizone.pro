@@ -2,6 +2,7 @@ HEADERS =       debugimpl.h \
 				version.h
 SOURCES =		aboutdlg.cpp \ 	
 				aboutdlgimpl.cpp \
+				channel.cpp \
 				channelimpl.cpp \
 				channels.cpp \
 				downloadimpl.cpp \
@@ -9,7 +10,9 @@ SOURCES =		aboutdlg.cpp \
 				menubar.cpp \
 				netclient.cpp \
 				platform.cpp \
+                prefs.cpp \
 				prefsimpl.cpp \
+                privatewindow.cpp \
 				privatewindowimpl.cpp \
 				ulistview.cpp \
                 winshare_channels.cpp \
@@ -18,11 +21,6 @@ SOURCES =		aboutdlg.cpp \
                 winshare_search.cpp \
 				winshare_slots.cpp \
                 winsharewindow.cpp
-
-INTERFACES = 	aboutdlg.ui \
-				channel.ui \
-				prefs.ui \
-				privatewindow.ui
 
 TRANSLATIONS =	unizone_en.ts \
 				unizone_fi.ts \

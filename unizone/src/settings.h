@@ -53,6 +53,7 @@ using namespace muscle;
 #define AUTO_AWAY			"autoaway"
 #define FLASH				"flash"
 #define SHARING_ENABLED		"sharingenabled"
+#define BASEPORT			"baseport"
 #define MAX_UPLOADS			"maxuploads"
 #define MAX_DOWNLOADS		"maxdownloads"
 #define PACKET_SIZE			"packetsize"
@@ -273,6 +274,9 @@ public:
 	// file sharing
 	bool GetSharingEnabled();
 	void SetSharingEnabled(bool b);
+
+	int GetBasePort();
+	void SetBasePort(int bp);
 
 	enum
 	{

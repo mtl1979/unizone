@@ -282,7 +282,7 @@ Version %1</translation>
     <name>ChannelBase</name>
     <message>
         <source>Channel Window</source>
-        <translation type='obsolete'>Channel Window</translation>
+        <translation>Channel Window</translation>
     </message>
 </context>
 <context>
@@ -1117,111 +1117,111 @@ Date: %4</translation>
     <name>WPrefsBase</name>
     <message>
         <source>Preferences</source>
-        <translation type='obsolete'>Настройки</translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type='obsolete'>OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type='obsolete'>Cancel</translation>
+        <translation>Cancel</translation>
     </message>
     <message>
         <source>Auto Away:</source>
-        <translation type='obsolete'>Auto Away:</translation>
+        <translation>Auto Away:</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation type='obsolete'>Disabled</translation>
+        <translation>Disabled</translation>
     </message>
     <message>
         <source>2 Minutes</source>
-        <translation type='obsolete'>2 </translation>
+        <translation>2 </translation>
     </message>
     <message>
         <source>5 Minutes</source>
-        <translation type='obsolete'>5 </translation>
+        <translation>5 </translation>
     </message>
     <message>
         <source>10 Minutes</source>
-        <translation type='obsolete'>10 </translation>
+        <translation>10 </translation>
     </message>
     <message>
         <source>15 Minutes</source>
-        <translation type='obsolete'>15 </translation>
+        <translation>15 </translation>
     </message>
     <message>
         <source>20 Minutes</source>
-        <translation type='obsolete'>20 </translation>
+        <translation>20 </translation>
     </message>
     <message>
         <source>30 Minutes</source>
-        <translation type='obsolete'>30 </translation>
+        <translation>30 </translation>
     </message>
     <message>
         <source>1 Hour</source>
-        <translation type='obsolete'>1 </translation>
+        <translation>1 </translation>
     </message>
     <message>
         <source>2 Hours</source>
-        <translation type='obsolete'>2 </translation>
+        <translation>2 </translation>
     </message>
     <message>
         <source>Multi-color ListViews</source>
-        <translation type='obsolete'>Multi-color ListViews</translation>
+        <translation>Multi-color ListViews</translation>
     </message>
     <message>
         <source>Enable Logging</source>
-        <translation type='obsolete'>Enable Logging</translation>
+        <translation>Enable Logging</translation>
     </message>
     <message>
         <source>Login On Startup</source>
-        <translation type='obsolete'>Login On Startup</translation>
+        <translation>Login On Startup</translation>
     </message>
     <message>
         <source>Check For New Versions</source>
-        <translation type='obsolete'>Check For New Versions</translation>
+        <translation>Check For New Versions</translation>
     </message>
     <message>
         <source>Auto Update Server List</source>
-        <translation type='obsolete'>Auto Update Server List</translation>
+        <translation>Auto Update Server List</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type='obsolete'>Основные</translation>
+        <translation>Основные</translation>
     </message>
     <message>
         <source>Upload Bandwidth:</source>
-        <translation type='obsolete'>Upload Bandwidth:</translation>
+        <translation>Upload Bandwidth:</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation type='obsolete'>300 baud</translation>
+        <translation>300 baud</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='obsolete'>14.4 kbps</translation>
+        <translation>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='obsolete'>28.8 kbps</translation>
+        <translation>28.8 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='obsolete'>36.6 kbps</translation>
+        <translation>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='obsolete'>57.6 kbps</translation>
+        <translation>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='obsolete'>ISDN-64k</translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='obsolete'>ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
@@ -1229,251 +1229,251 @@ Date: %4</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='obsolete'>Cable</translation>
+        <translation>Cable</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='obsolete'>T1</translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='obsolete'>T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='obsolete'>OC-3</translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='obsolete'>OC-12</translation>
+        <translation>OC-12</translation>
     </message>
     <message>
         <source>I&apos;m Firewalled</source>
-        <translation type='obsolete'>I&apos;m Firewalled</translation>
+        <translation>I&apos;m Firewalled</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type='obsolete'>Соединение</translation>
+        <translation>Connection</translation>
     </message>
     <message>
         <source>Warning Messages</source>
-        <translation type='obsolete'>Warning Messages</translation>
+        <translation>Warning Messages</translation>
     </message>
     <message>
         <source>Error Messages</source>
-        <translation type='obsolete'>Error Messages</translation>
+        <translation>Error Messages</translation>
     </message>
     <message>
         <source>Private Messages</source>
-        <translation type='obsolete'>Private Messages</translation>
+        <translation>Private Messages</translation>
     </message>
     <message>
         <source>User Events</source>
-        <translation type='obsolete'>User Events</translation>
+        <translation>User Events</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation type='obsolete'>Chat</translation>
+        <translation>Chat</translation>
     </message>
     <message>
         <source>Info Messages</source>
-        <translation type='obsolete'>Info Messages</translation>
+        <translation>Info Messages</translation>
     </message>
     <message>
         <source>Uploads</source>
-        <translation type='obsolete'>Uploads</translation>
+        <translation>Uploads</translation>
     </message>
     <message>
         <source>Time Stamps</source>
-        <translation type='obsolete'>Time Stamps</translation>
+        <translation>Time Stamps</translation>
     </message>
     <message>
         <source>Flash Window When Mentioned</source>
-        <translation type='obsolete'>Flash Window When Mentioned</translation>
+        <translation>Flash Window When Mentioned</translation>
     </message>
     <message>
         <source>Flash Private Windows</source>
-        <translation type='obsolete'>Flash Private Windows</translation>
+        <translation>Flash Private Windows</translation>
     </message>
     <message>
         <source>Font Size</source>
-        <translation type='obsolete'>Font Size</translation>
+        <translation>Font Size</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type='obsolete'>Экран</translation>
+        <translation>Экран</translation>
     </message>
     <message>
         <source>Local Name</source>
-        <translation type='obsolete'>Local Name</translation>
+        <translation>Local Name</translation>
     </message>
     <message>
         <source>Remote Name</source>
-        <translation type='obsolete'>Remote Name</translation>
+        <translation>Remote Name</translation>
     </message>
     <message>
         <source>Regular Text</source>
-        <translation type='obsolete'>Regular Text</translation>
+        <translation>Regular Text</translation>
     </message>
     <message>
         <source>System Text</source>
-        <translation type='obsolete'>System Text</translation>
+        <translation>System Text</translation>
     </message>
     <message>
         <source>Ping Text</source>
-        <translation type='obsolete'>Ping Text</translation>
+        <translation>Ping Text</translation>
     </message>
     <message>
         <source>Error Text</source>
-        <translation type='obsolete'>Error Text</translation>
+        <translation>Error Text</translation>
     </message>
     <message>
         <source>Error Message Text</source>
-        <translation type='obsolete'>Error Message Text</translation>
+        <translation>Error Message Text</translation>
     </message>
     <message>
         <source>Private Text</source>
-        <translation type='obsolete'>Private Text</translation>
+        <translation>Private Text</translation>
     </message>
     <message>
         <source>Action Text</source>
-        <translation type='obsolete'>Action Text</translation>
+        <translation>Action Text</translation>
     </message>
     <message>
         <source>URL Text</source>
-        <translation type='obsolete'>URL Text</translation>
+        <translation>URL Text</translation>
     </message>
     <message>
         <source>&apos;Name Said&apos; Text</source>
-        <translation type='obsolete'>&apos;Name Said&apos; Text</translation>
+        <translation>&apos;Name Said&apos; Text</translation>
     </message>
     <message>
         <source>Description:</source>
-        <translation type='obsolete'>Description:</translation>
+        <translation>Description:</translation>
     </message>
     <message>
         <source>Preview:</source>
-        <translation type='obsolete'>Preview:</translation>
+        <translation>Preview:</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation type='obsolete'>Change</translation>
+        <translation>Change</translation>
     </message>
     <message>
         <source>Colors</source>
-        <translation type='obsolete'>Цвета</translation>
+        <translation>Цвета</translation>
     </message>
     <message>
         <source>CDE</source>
-        <translation type='obsolete'>CDE</translation>
+        <translation>CDE</translation>
     </message>
     <message>
         <source>Motif</source>
-        <translation type='obsolete'>Motif</translation>
+        <translation>Motif</translation>
     </message>
     <message>
         <source>Motif Plus</source>
-        <translation type='obsolete'>Motif Plus</translation>
+        <translation>Motif Plus</translation>
     </message>
     <message>
         <source>Platinum</source>
-        <translation type='obsolete'>Platinum</translation>
+        <translation>Platinum</translation>
     </message>
     <message>
         <source>SGI</source>
-        <translation type='obsolete'>SGI</translation>
+        <translation>SGI</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation type='obsolete'>Windows</translation>
+        <translation>Windows</translation>
     </message>
     <message>
         <source>The selected style will be applied as soon as it is selected.</source>
-        <translation type='obsolete'>The selected style will be applied as soon as it is selected.</translation>
+        <translation>The selected style will be applied as soon as it is selected.</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type='obsolete'>Оформление</translation>
+        <translation>Оформление</translation>
     </message>
     <message>
         <source>1</source>
-        <translation type='obsolete'>1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation type='obsolete'>2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <source>3</source>
-        <translation type='obsolete'>3</translation>
+        <translation>3</translation>
     </message>
     <message>
         <source>4</source>
-        <translation type='obsolete'>4</translation>
+        <translation>4</translation>
     </message>
     <message>
         <source>5</source>
-        <translation type='obsolete'>5</translation>
+        <translation>5</translation>
     </message>
     <message>
         <source>10</source>
-        <translation type='obsolete'>10</translation>
+        <translation>10</translation>
     </message>
     <message>
         <source>15</source>
-        <translation type='obsolete'>15</translation>
+        <translation>15</translation>
     </message>
     <message>
         <source>20</source>
-        <translation type='obsolete'>20</translation>
+        <translation>20</translation>
     </message>
     <message>
         <source>30</source>
-        <translation type='obsolete'>30</translation>
+        <translation>30</translation>
     </message>
     <message>
         <source>Unlimited</source>
-        <translation type='obsolete'>Unlimited</translation>
+        <translation>Unlimited</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Downloads:</source>
-        <translation type='obsolete'>Maximum Simultaneous Downloads:</translation>
+        <translation>Maximum Simultaneous Downloads:</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Uploads:</source>
-        <translation type='obsolete'>Maximum Simultaneous Uploads:</translation>
+        <translation>Maximum Simultaneous Uploads:</translation>
     </message>
     <message>
         <source>File sharing enabled?</source>
-        <translation type='obsolete'>File sharing enabled?</translation>
+        <translation>File sharing enabled?</translation>
     </message>
     <message>
         <source>Block binkies?</source>
-        <translation type='obsolete'>Block binkies?</translation>
+        <translation>Block binkies?</translation>
     </message>
     <message>
         <source>Block disconnected users?</source>
-        <translation type='obsolete'>Block disconnected users?</translation>
+        <translation>Block disconnected users?</translation>
     </message>
     <message>
         <source>File Sharing</source>
-        <translation type='obsolete'>File Sharing</translation>
+        <translation>File Sharing</translation>
     </message>
     <message>
         <source>HTTP launcher:</source>
-        <translation type='obsolete'>HTTP launcher:</translation>
+        <translation>HTTP launcher:</translation>
     </message>
     <message>
         <source>FTP launcher:</source>
-        <translation type='obsolete'>FTP launcher:</translation>
+        <translation>FTP launcher:</translation>
     </message>
     <message>
         <source>Mailto: launcher:</source>
-        <translation type='obsolete'>Mailto: launcher:</translation>
+        <translation>Mailto: launcher:</translation>
     </message>
     <message>
         <source>URL Launching</source>
-        <translation type='obsolete'>URL Launching</translation>
+        <translation>URL Launching</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted)</source>
@@ -1481,87 +1481,87 @@ Date: %4</translation>
     </message>
     <message>
         <source>No Limit</source>
-        <translation type='obsolete'>No Limit</translation>
+        <translation>No Limit</translation>
     </message>
     <message>
         <source>128 bytes</source>
-        <translation type='obsolete'>128 bytes</translation>
+        <translation>128 bytes</translation>
     </message>
     <message>
         <source>256 bytes</source>
-        <translation type='obsolete'>256 bytes</translation>
+        <translation>256 bytes</translation>
     </message>
     <message>
         <source>512 bytes</source>
-        <translation type='obsolete'>512 bytes</translation>
+        <translation>512 bytes</translation>
     </message>
     <message>
         <source>1 kB</source>
-        <translation type='obsolete'>1 kB</translation>
+        <translation>1 kB</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation type='obsolete'>2 kB</translation>
+        <translation>2 kB</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation type='obsolete'>4 kB</translation>
+        <translation>4 kB</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation type='obsolete'>8 kB</translation>
+        <translation>8 kB</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation type='obsolete'>16 kB</translation>
+        <translation>16 kB</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation type='obsolete'>32 kB</translation>
+        <translation>32 kB</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation type='obsolete'>64 kB</translation>
+        <translation>64 kB</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation type='obsolete'>128 kB</translation>
+        <translation>128 kB</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation type='obsolete'>256 kB</translation>
+        <translation>256 kB</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation type='obsolete'>512 kB</translation>
+        <translation>512 kB</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation type='obsolete'>1 MB</translation>
+        <translation>1 MB</translation>
     </message>
     <message>
         <source>2 MB</source>
-        <translation type='obsolete'>2 MB</translation>
+        <translation>2 MB</translation>
     </message>
     <message>
         <source>4 MB</source>
-        <translation type='obsolete'>4 MB</translation>
+        <translation>4 MB</translation>
     </message>
     <message>
         <source>8 MB</source>
-        <translation type='obsolete'>8 MB</translation>
+        <translation>8 MB</translation>
     </message>
     <message>
         <source>16 MB</source>
-        <translation type='obsolete'>16 MB</translation>
+        <translation>16 MB</translation>
     </message>
     <message>
         <source>32 MB</source>
-        <translation type='obsolete'>32 MB</translation>
+        <translation>32 MB</translation>
     </message>
     <message>
         <source>Chat:</source>
-        <translation type='obsolete'>Chat:</translation>
+        <translation>Chat:</translation>
     </message>
     <message>
         <source>Downloads (per download)</source>
@@ -1573,39 +1573,39 @@ Date: %4</translation>
     </message>
     <message>
         <source>Throttling</source>
-        <translation type='obsolete'>Throttling</translation>
+        <translation>Throttling</translation>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
-        <translation type='obsolete'>Auto Clear finished transfers?</translation>
+        <translation>Auto Clear finished transfers?</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='obsolete'>DSL-256k</translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='obsolete'>DSL-384k</translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='obsolete'>DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <source>Uploads (per upload):</source>
-        <translation type='obsolete'>Uploads (per upload):</translation>
+        <translation>Uploads (per upload):</translation>
     </message>
     <message>
         <source>Downloads (per download):</source>
-        <translation type='obsolete'>Downloads (per download):</translation>
+        <translation>Downloads (per download):</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted):</source>
-        <translation type='obsolete'>Uploads (per blacklisted):</translation>
+        <translation>Uploads (per blacklisted):</translation>
     </message>
     <message>
         <source>Default launcher:</source>
-        <translation type='obsolete'></translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Upload Packet Size</source>
@@ -1613,15 +1613,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Upload Packet Size:</source>
-        <translation type='obsolete'></translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Enable Sound Effects</source>
-        <translation type='obsolete'></translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Downloads</source>
-        <translation type='obsolete'></translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Minimum File Size to Queue</source>
@@ -1633,23 +1633,31 @@ Date: %4</translation>
     </message>
     <message>
         <source>5 kB</source>
-        <translation type='obsolete'></translation>
+        <translation>5 kB</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation type='obsolete'></translation>
+        <translation>10 kB</translation>
     </message>
     <message>
         <source>25 kB</source>
-        <translation type='obsolete'></translation>
+        <translation>25 kB</translation>
     </message>
     <message>
         <source>50 kB</source>
-        <translation type='obsolete'></translation>
+        <translation>50 kB</translation>
     </message>
     <message>
         <source>100 kB</source>
-        <translation type='obsolete'>100 kB</translation>
+        <translation>100 kB</translation>
+    </message>
+    <message>
+        <source>Base Port:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Minimum File Size to Queue:</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -1752,7 +1760,7 @@ Date: %4</translation>
     <name>WPrivateWindowBase</name>
     <message>
         <source>Private</source>
-        <translation type='obsolete'>Private</translation>
+        <translation>Private</translation>
     </message>
 </context>
 <context>
@@ -2798,107 +2806,107 @@ Date: %4</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='unfinished'>Наименование</translation>
+        <translation>Наименование</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='unfinished'>Размер</translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='unfinished'>Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='unfinished'>Изменен</translation>
+        <translation>Изменен</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='unfinished'>Путь</translation>
+        <translation>Путь</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='unfinished'>Пользователь</translation>
+        <translation>Пользователь</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='unfinished'>Поиск:</translation>
+        <translation>Поиск:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='unfinished'>Скачать</translation>
+        <translation>Скачать</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='unfinished'>Очистить</translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='unfinished'>Остановить</translation>
+        <translation>Остановить</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='unfinished'>Idle.</translation>
+        <translation>Idle.</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type='unfinished'>Topic</translation>
+        <translation>Topic</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type='unfinished'>Users</translation>
+        <translation>Users</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type='unfinished'>Admins</translation>
+        <translation>Admins</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type='unfinished'>Public</translation>
+        <translation>Public</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type='unfinished'>&amp;Create</translation>
+        <translation>&amp;Create</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type='unfinished'>&amp;Join</translation>
+        <translation>&amp;Join</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation type='unfinished'>Chat</translation>
+        <translation>Chat</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type='unfinished'>Search</translation>
+        <translation>Search</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='unfinished'>Channels</translation>
+        <translation>Channels</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation type='unfinished'>Поиск: "%1".</translation>
+        <translation>Поиск: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='unfinished'>результатов: %1</translation>
+        <translation>результатов: %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='unfinished'>Create Channel</translation>
+        <translation>Create Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='unfinished'>Please enter channel name</translation>
+        <translation>Please enter channel name</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='unfinished'>User #%1 invited you to channel %2. Do you accept?</translation>
+        <translation>User #%1 invited you to channel %2. Do you accept?</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='unfinished'>User #%1 requested invite to channel %2. Do you?</translation>
+        <translation>User #%1 requested invite to channel %2. Do you?</translation>
     </message>
     <message>
         <source>Server version: %1</source>

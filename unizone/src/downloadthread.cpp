@@ -225,7 +225,10 @@ WDownloadThread::InitSession()
 		}
 		
 		status_t ret = B_OK;
-		for (int i = DEFAULT_LISTEN_PORT; i <= DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE; i++)
+		uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
+		uint32 pEnd = pStart + LISTEN_PORT_RANGE;
+
+		for (unsigned int i = pStart; i <= pEnd; i++)
 		{
 			if ((ret = PutAcceptFactory(i, factoryRef)) == B_OK)
 			{

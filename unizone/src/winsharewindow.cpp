@@ -240,7 +240,11 @@ WinShareWindow::StartAcceptThread()
 	// setup accept thread
 	fAccept = new WAcceptThread(this);
 	CHECK_PTR(fAccept);
-	for (uint16 i = DEFAULT_LISTEN_PORT; i <= DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE; i++)
+
+	uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
+	uint32 pEnd = pStart + LISTEN_PORT_RANGE;
+
+	for (uint16 i = pStart; i <= pEnd; i++)
 	{
 		// dynamically allocate a port if we can't get one of ours
 		if (fAccept->SetPort(i) == B_OK)
@@ -412,6 +416,9 @@ WinShareWindow::customEvent(QCustomEvent * event)
 						}
 					}
 					fFileScanThread->Unlock();
+					fScanning = false;
+					if (fDLWindow)
+						fDLWindow->DequeueULSessions();
 					PRINT("Done\n");
 				}
 				return;
@@ -496,6 +503,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 
 				fDisconnect = false;
 				fDisconnectCount = 0;
+				fScanning = true; // Fake that we are scanning, so uploads get queued until we scan the very first time.
 				return;
 			}
 			
@@ -1632,9 +1640,6 @@ WinShareWindow::LoadSettings()
 		}
 		rLock.unlock();
 
-		// UniShare
-
-		// fRegistered = fSettings->GetRegisterTime();
 	}
 	else	// file doesn't exist, or error
 	{
@@ -2266,6 +2271,8 @@ WinShareWindow::ScanShares(bool rescan)
 		}
 		return;
 	}
+
+	fScanning = true;
 
 	if (fSettings->GetInfo())
 	{

@@ -267,6 +267,7 @@ private:
 	bool fAway;
 	bool fPrintOutput;
 	bool fScrollDown;			// do we need to scroll the view down after an insertion?
+	bool fScanning;				// Is File Scan Thread active?
 
 	bool fDisconnect;			// true : disconnected prematurely
 	bool fDisconnectFlag;		// false: no disconnects
@@ -524,6 +525,8 @@ public:
 	void TranslateStatus(QString & s);
 	
 	WUserRef FindUser(QString user);
+
+	bool IsScanning() { return fScanning; }
 
 	WSettings * fSettings;	// for use by prefs
 	WDownload * fDLWindow;

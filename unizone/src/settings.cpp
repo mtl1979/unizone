@@ -794,6 +794,21 @@ WSettings::SetSharingEnabled(bool b)
 }
 
 int
+WSettings::GetBasePort()
+{
+	int i = 7000;
+	fSet->FindInt32(BASEPORT, (int32 *)&i);
+	return i;
+}
+
+void
+WSettings::SetBasePort(int bp)
+{
+	fSet->RemoveName(BASEPORT);
+	fSet->AddInt32(BASEPORT, (int32)bp);
+}
+
+int
 WSettings::GetMaxUploads()
 {
 	int i = Five;

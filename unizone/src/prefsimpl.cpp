@@ -249,6 +249,8 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fMinQueued->setCurrentItem( gWin->fSettings->GetMinQueued() );
 	
 	fLogging->setChecked(gWin->fSettings->GetLogging());
+
+	fBasePort->setText( QString::number( gWin->fSettings->GetBasePort() ) );
 }
 
 /*
@@ -385,6 +387,18 @@ WPrefs::OK()
 	gWin->fSettings->SetMinQueued( fMinQueued->currentItem() );
 	
 	gWin->fSettings->SetLogging(fLogging->isChecked());
+
+	bool o;
+	unsigned long bp;
+	bp = fBasePort->text().toULong(&o);
+	if (o)
+	{
+		gWin->fSettings->SetBasePort(bp);
+	}
+	else
+	{
+		gWin->fSettings->SetBasePort(7000);
+	}
 	// ok
 	accept();
 }
