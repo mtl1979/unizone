@@ -1127,7 +1127,7 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 					PRINT("Appending to chat\n");
 					if ( IsAction(txt, me) ) // simulate action?
 					{
-						chat = WFormat::Action().arg(WColors::Action).arg( fSettings->GetFontSize() );
+						chat = WFormat::Action();
 					}
 					else
 					{

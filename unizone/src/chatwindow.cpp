@@ -168,7 +168,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 void 
 ChatWindow::Action(const QString & name, const QString & msg)
 {
-	QString chat = WFormat::Action().arg(WColors::Action).arg(Settings()->GetFontSize());
+	QString chat = WFormat::Action();
 	QString nameText = FixStringStr(msg);
 	if (NameSaid(nameText) && Settings()->GetSounds())
 		QApplication::beep();
