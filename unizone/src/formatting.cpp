@@ -154,7 +154,10 @@ ParseChatText(const QString & str)
 		} 
 		else if (IsURL(qToken))
 		{
-			if ((qToken.lower().startsWith("beshare:") == false) && (qToken.startsWith("share:") == false))
+			if (
+				(qToken.lower().startsWith("beshare:") == false) && 
+				(qToken.lower().startsWith("share:") == false)
+				)
 			{
 				while (qToken.length() > 1)
 				{
