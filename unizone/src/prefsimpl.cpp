@@ -283,7 +283,7 @@ WPrefs::OK()
 
 	// save the colors
 	gWin->fSettings->EmptyColorList();
-	for (i = 0; i < 13; i++)
+	for (i = 0; i < WColors::NumColors; i++)
 		gWin->fSettings->AddColorItem(fColor[i]);
 
 	// save all the other stuff

@@ -5,6 +5,7 @@
 #endif
 
 #include "prefs.h"
+#include "colors.h"
 
 class WPrefs : public WPrefsBase
 { 
@@ -26,7 +27,7 @@ private:
 	void UpdateDescription(int);
 	
 	int fCurColorIndex;
-	QString fColor[13];
+	QString fColor[WColors::NumColors];
 };
 
 #endif // PREFS_H
