@@ -168,10 +168,6 @@ SOURCE=..\src\htmlview.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\icon.rc
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\Log.cpp
 # End Source File
 # Begin Source File
@@ -526,10 +522,6 @@ InputName=chattext
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\checkgroup.h
 # End Source File
 # Begin Source File
 
@@ -1031,6 +1023,10 @@ SOURCE=..\src\wstatusbar.h
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=..\src\icon.rc
+# End Source File
 # Begin Source File
 
 SOURCE=..\src\unizone.ico
