@@ -708,51 +708,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		}
 	}
 }
-/*
-void
-Channel::Action(const QString & name, const QString & msg)
-{
-	QString nameText = FixStringStr(msg);
-	if (gWin->NameSaid(nameText) && gWin->fSettings->GetSounds())
-		QApplication::beep();
 
-	QString chat = WFormat::Action().arg(WColors::Action).arg(gWin->fSettings->GetFontSize());
-	chat += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(FixStringStr(name) + " " + nameText);
-	PrintText(chat);
-}
-
-void
-Channel::CheckScrollState()
-{
-	QScrollBar * scroll = fChatText->verticalScrollBar();
-	PRINT("CHECKSCROLLSTATE: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
-	fScrollX = fChatText->contentsX();
-	fScrollY = fChatText->contentsY();
-	if (scroll->value() >= scroll->maxValue())
-		fScrollDown = true;
-	else
-		fScrollDown = false;
-}
-
-void
-Channel::UpdateTextView()
-{
-	if (fScrollDown)
-	{
-		fScrollY = fChatText->contentsHeight();
-	}
-	if (fScrollX != fChatText->contentsX() || fScrollY != fChatText->contentsY())
-	{
-		fChatText->setContentsPos(fScrollX, fScrollY);
-#ifndef WIN32
-		fChatText->repaintContents(
-								fChatText->contentsX(), fChatText->contentsY(),
-								fChatText->contentsWidth(), fChatText->contentsHeight(),
-								false);
-#endif
-	}
-}
-*/
 void
 Channel::UpdateTopic()
 {

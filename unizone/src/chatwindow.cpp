@@ -20,24 +20,27 @@ ChatWindow::~ChatWindow()
 {
 }
 
+#define InRange(a, b, c) ((a >= b) && (a <= c))
+
 bool 
 ChatWindow::NameSaid(QString & msg)
 {
-	String sname = StripURL((const char *) gWin->GetUserName().utf8()); // <postmaster@raasu.org> -- Don't use latin1 ()
-	const unsigned char * orig = (const unsigned char *)sname.Cstr();
-	const unsigned char * temp = orig;
+	QString sname = StripURL(gWin->GetUserName()); // <postmaster@raasu.org> -- Don't use latin1 ()
+	int temp = 0;
 	
-	while(((*temp >= 'A')&&(*temp <= 'Z'))||
-		((*temp >= 'a')&&(*temp <= 'z'))||
-		((*temp >= '0')&&(*temp <= '9'))||
-		(*temp == '_')||
-		(*temp >= 0x80))
+	while (
+		InRange(sname.at(temp), 'A', 'Z')||
+		InRange(sname.at(temp), 'a', 'z')||
+		InRange(sname.at(temp), '0', '9')||
+		(sname.at(temp) == '_')||
+		(sname.at(temp).unicode() >= 0x80)
+		)
 		temp++;
 	
-	if (temp > orig)
-		sname = sname.Substring(0, temp - orig);
+	if (temp > 0)
+		sname = sname.left(temp);
 	
-	sname = sname.ToUpperCase();
+	sname = sname.upper();
 	
 	bool bNameSaid = false;
 	bool bTemp;
@@ -65,10 +68,9 @@ ChatWindow::NameSaid(QString & msg)
 }
 
 bool 
-ChatWindow::NameSaid2(const String &sname, QString & msg, unsigned long index)
+ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 {
-	String itxt((const char *) msg.utf8()); // <postmaster@raasu.org> -- Don't use latin1 ()
-	itxt = itxt.ToUpperCase();
+	QString itxt = msg.upper(); // <postmaster@raasu.org> -- Don't use latin1 ()
 
 	int sred;
 	
@@ -76,44 +78,58 @@ ChatWindow::NameSaid2(const String &sname, QString & msg, unsigned long index)
 	// --> (-1) + 1 = 0 
 
 	if (index == 0)
-		sred = (itxt.StartsWith(sname)) ? 0 : -1;
+		sred = (itxt.startsWith(sname)) ? 0 : -1;
 	else
 		sred = -1;
 	
 	if (sred < 0)
 	{
-		sred = itxt.IndexOf(sname.Prepend(" "), index);
+		sred = itxt.find(" " + sname, index);
 		if (sred >= 0)
 			sred++;
 	}
 	if (sred >= 0)
 	{
-		unsigned int rlen = sname.Length();
+		unsigned int rlen = sname.length();
 
-		String temp = (const char *) gWin->GetUserName().utf8(); // <postmaster@raasu.org> 20021005 -- don't use latin1 ()
-		temp = temp.ToUpperCase();
-		PRINT("Comparing \"%s\" to \"%s\"\n", temp.Cstr(), itxt.Cstr());
-		const char * c1 = &itxt.Cstr()[sred + rlen];
-		const char * c2 = &temp.Cstr()[rlen];
+		QString temp = gWin->GetUserName().upper(); // <postmaster@raasu.org> 20021005 -- don't use latin1 ()
+		WString wTemp(temp);
+		WString wTxt(itxt);
+		PRINT("Comparing \"%S\" to \"%S\"\n", wTemp.getBuffer(), wTxt.getBuffer());
+		int c1 = sred + rlen;	// itxt
+		int c2 = rlen;			// temp
 
-		char an = c1[0];
-		char an2 = c1[1];
-
-        if (muscleInRange(an, 'A', 'Z'))
+		if (c1 < itxt.length())
 		{
-			if (an != 'S')  // allows pluralization without apostrophes though
+			QChar an = itxt.at(c1);
+			
+			if (InRange(an, 'A', 'Z'))
 			{
-				// Oops, don't trigger after all, to avoid the tim/time problem
-				return NameSaid2(sname, msg, sred + 1);
-			}
-			else if (muscleInRange(an2, 'A', 'Z'))
-			{
-				// 'S' must be last letter in word
-				return NameSaid2(sname, msg, sred + 1);
+				if (an != 'S')  // allows pluralization without apostrophes though
+				{
+					// Oops, don't trigger after all, to avoid the tim/time problem
+					return NameSaid2(sname, msg, sred + 1);
+				}
+				else
+				{
+					if ((c1 + 1) < itxt.length())
+					{
+						an = itxt.at(c1 + 1);
+						if (InRange(an, 'A', 'Z'))
+						{
+							// 'S' must be last letter in word
+							return NameSaid2(sname, msg, sred + 1);
+						}
+					}
+				}
 			}
 		}
 
-		while (c1 && c2 && (*c1 == *c2))
+		while (
+				(c1 < itxt.length()) && 
+				(c2 < temp.length()) && 
+				(itxt.at(c1) == temp.at(c2))
+			  )
 		{
 			c1++;
 			c2++;
@@ -126,19 +142,20 @@ ChatWindow::NameSaid2(const String &sname, QString & msg, unsigned long index)
 		output = "<font color=\"";
 		output += WColors::NameSaid;						// <postmaster@raasu.org> 20021005
 		output += "\">";
-		temp = StripURL((const char *) gWin->GetUserName().utf8());
-		if (rlen >= temp.Length()) rlen = temp.Length();
-		temp = temp.Substring(0, rlen);
-		output += QString::fromUtf8(temp.Cstr());
-		String itxt((const char *) msg.utf8());						// <postmaster@raasu.org> 20021005 -- Need to be in original case
-		String itxt1 = itxt.Substring(0,sred);
-		String itxt2 = itxt.Substring(sred+rlen);
+		temp = StripURL(gWin->GetUserName());
+		if (rlen >= temp.length()) 
+			rlen = temp.length();
+		temp = temp.left(rlen);
+		output += temp;
+		QString itxt = msg;						// <postmaster@raasu.org> 20021005 -- Need to be in original case
+		QString itxt1 = itxt.left(sred);
+		QString itxt2 = itxt.mid(sred+rlen);
 		QString smsg;
 		if (sred > 0)
-			smsg += QString::fromUtf8(itxt1.Cstr()); // <postmaster@raasu.org> 20021005 -- Don't use latin1 ()
+			smsg += itxt1;	// <postmaster@raasu.org> 20021005 -- Don't use latin1 ()
 		smsg += output;
 		smsg += "</font>";
-		smsg += QString::fromUtf8(itxt2.Cstr()); // <postmaster@raasu.org> 20021005
+		smsg += itxt2;		// <postmaster@raasu.org> 20021005
 
 		WString wMessage(smsg);
 		PRINT("Name said string: %S\n", wMessage.getBuffer());

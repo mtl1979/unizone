@@ -1512,53 +1512,6 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 	return false;
 }
 
-/*
-void
-WinShareWindow::Action(const QString & name, const QString & msg)
-{
-	QString chat = WFormat::Action().arg(WColors::Action).arg(fSettings->GetFontSize());
-	QString nameText = FixStringStr(msg);
-	if (NameSaid(nameText) && fSettings->GetSounds())
-		QApplication::beep();
-	chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(tr("%1 %2").arg(FixStringStr(name)).arg(nameText));
-
-	PrintText(chat);
-}
-
-void
-WinShareWindow::PrintError(const QString & error)
-{
-	if (fSettings->GetError())
-	{
-		QString e = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
-		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(error);
-
-		PrintText(e);
-	}
-}
-
-void
-WinShareWindow::PrintWarning(const QString & warning)
-{
-	if (fSettings->GetError())
-	{
-		QString e = WFormat::Warning().arg(WColors::Error).arg(fSettings->GetFontSize());
-		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(warning);
-
-		PrintText(e);
-	}
-}
-
-void
-WinShareWindow::PrintSystem(const QString & msg)
-{
-	QString s = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
-	s += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(ParseChatText(msg));
-
-	PrintText(s);
-}
-*/
-
 QString
 WinShareWindow::GetRemoteVersionString(const MessageRef msg)
 {

@@ -62,7 +62,7 @@ protected:
 #endif
 
 private:
-	bool NameSaid2(const String &sname, QString & msg, unsigned long index = 0); // Private version for recursing
+	bool NameSaid2(const QString &sname, QString & msg, unsigned long index = 0); // Private version for recursing
 	void CheckScrollState();
 	void UpdateTextView();		// moves the stuff in the chat screen so that the latest stuff is displayed
 
