@@ -220,8 +220,15 @@ WinShareWindow::IsFilterListed(const QString & pattern)
 	QString t;
 	while ((t = tok.GetNextToken()) != QString::null)
 	{
-		QRegExp qr(t.lower());
-		if ((pattern.lower().find(qr) >= 0) || (t.lower() == pattern.lower()))
+		t = t.lower();
+		QString p = pattern.lower();
+		if (t != p)
+		{
+			QRegExp qr(t);
+			if (p.find(qr) >= 0)
+				return true;
+		}
+		else
 			return true;
 	}
 	return false;
