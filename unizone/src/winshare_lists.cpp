@@ -6,6 +6,10 @@
 
 #include <qstringlist.h>
 
+#if (QT_VERSION >= 0x030000)
+#include <qregexp.h>
+#endif
+
 void RemoveFromList(QString &slist, const QString &entry)
 {
 	if (slist == entry)
