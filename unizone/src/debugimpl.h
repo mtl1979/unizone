@@ -61,7 +61,7 @@ inline void PRINT(const char *, ...)
 #define WASSERT(X, Y) \
 		if (!(X)) \
 		{ \
-			QString out = QObject::tr("Send this message to vitviper@magep.com! This message has also been dumped to 'assert.txt'." \
+			QString out = QObject::tr("Send this message to postmaster@raasu.org! This message has also been dumped to 'assert.txt'." \
 										"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(Y).arg(__LINE__).arg(__FILE__).arg(__DATE__); \
 			QFile f("assert.txt"); \
 			if (f.open(IO_WriteOnly)) \

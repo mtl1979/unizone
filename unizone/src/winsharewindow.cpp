@@ -160,10 +160,11 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	if (fSettings->GetInfo())
 	{
 		START_OUTPUT();
-		PrintSystem("Welcome to " NAME "! <b>THE</b> MUSCLE client for Windows and Linux!", true);
-		PrintSystem("Brought to you proudly by Vitaliy Mikitchenko.", true);
-		// <postmaster@raasu.org> 20020924
-		PrintSystem("Patched by Mika T. Lindqvist for multiple languages.", true);
+		PrintSystem("Welcome to " NAME "! <b>THE</b> MUSCLE client for Windows!", true);
+		// <postmaster@raasu.org> 20030225
+		PrintSystem("Copyright (C) 2002-2003 Mika T. Lindqvist.", true);
+		PrintSystem("Original idea by Vitaliy Mikitchenko.", true);
+		PrintSystem("Released to public use under LGPL.", true);
 		PrintSystem("Type /help for a command reference.", true);
 		END_OUTPUT();
 	}
