@@ -71,58 +71,44 @@ ScanProgress::customEvent(QCustomEvent *e)
 	{
 		switch ((int) se->type())
 		{
-#ifdef WIN32
-		case ScanEvent::Type::ScanDirectory:
-#else
-		case ScanEvent::ScanDirectory:
-#endif
+		case SET::ScanDirectory:
 			{
 				SetScanDirectory(se->text());
 				break;
 			}
-#ifdef WIN32
-		case ScanEvent::Type::ScanFile:
-#else
-		case ScanEvent::ScanFile:
-#endif
+		case SET::ScanFile:
 			{
 				SetScanFile(se->text());
 				break;
 			}
-#ifdef WIN32
-		case ScanEvent::Type::ScannedDirs:
-#else
-		case ScanEvent::ScannedDirs:
-#endif
+		case SET::ScannedDirs:
 			{
 				SetScannedDirs(se->number());
 				break;
 			}
-#ifdef WIN32
-		case ScanEvent::Type::ScannedFiles:
-#else
-		case ScanEvent::ScannedFiles:
-#endif
+		case SET::ScannedFiles:
 			{
 				SetScannedFiles(se->number());
 				break;
 			}
-#ifdef WIN32
-		case ScanEvent::Type::DirsLeft:
-#else
-		case ScanEvent::DirsLeft:
-#endif
+		case SET::DirsLeft:
 			{
 				SetDirsLeft(se->number());
 				break;
 			}
-#ifdef WIN32
-		case ScanEvent::Type::Reset:
-#else
-		case ScanEvent::Reset:
-#endif
+		case SET::Reset:
 			{
 				reset();
+				break;
+			}
+		case SET::Show:
+			{
+				show();
+				break;
+			}
+		case SET::Hide:
+			{
+				hide();
 				break;
 			}
 		}

@@ -32,40 +32,7 @@ NetClient::NetClient(QObject * owner)
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
 
-	// QMessageTransceiverThread
-
-	qmtt = new QMessageTransceiverThread(this);
-	CHECK_PTR(qmtt);
-
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
-			this, SLOT(MessageReceived(MessageRef, const String &)));
-
-	connect(qmtt, SIGNAL(SessionAttached(const String &)),
-			this, SLOT(SessionAttached(const String &)));
-	
-	connect(qmtt, SIGNAL(SessionDetached(const String &)),
-			this, SLOT(SessionDetached(const String &)));
-   
-	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
-			this, SLOT(SessionAccepted(const String &, uint16)));
-
-	connect(qmtt, SIGNAL(SessionConnected(const String &)),
-			this, SLOT(SessionConnected(const String &)));
-
-	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
-			this, SLOT(SessionDisconnected(const String &)));
-
-	connect(qmtt, SIGNAL(FactoryAttached(uint16)),
-			this, SLOT(FactoryAttached(uint16)));
-	
-	connect(qmtt, SIGNAL(FactoryDetached(uint16)),
-			this, SLOT(FactoryDetached(uint16)));
-
-	connect(qmtt, SIGNAL(ServerExited()),
-			this, SLOT(ServerExited()));
-
-	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
-			this, SLOT(OutputQueuesDrained(MessageRef)));
+	qmtt = NULL;
 }
 
 NetClient::~NetClient()
@@ -106,6 +73,42 @@ NetClient::Connect(const QString & server, uint16 port)
 			QApplication::postEvent(fOwner, wee);
 		return B_ERROR;
 	}
+
+	PRINT("Creating thread\n");
+	// QMessageTransceiverThread
+
+	qmtt = new QMessageTransceiverThread(this);
+	CHECK_PTR(qmtt);
+
+	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
+			this, SLOT(MessageReceived(MessageRef, const String &)));
+
+	connect(qmtt, SIGNAL(SessionAttached(const String &)),
+			this, SLOT(SessionAttached(const String &)));
+	
+	connect(qmtt, SIGNAL(SessionDetached(const String &)),
+			this, SLOT(SessionDetached(const String &)));
+   
+	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
+			this, SLOT(SessionAccepted(const String &, uint16)));
+
+	connect(qmtt, SIGNAL(SessionConnected(const String &)),
+			this, SLOT(SessionConnected(const String &)));
+
+	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
+			this, SLOT(SessionDisconnected(const String &)));
+
+	connect(qmtt, SIGNAL(FactoryAttached(uint16)),
+			this, SLOT(FactoryAttached(uint16)));
+	
+	connect(qmtt, SIGNAL(FactoryDetached(uint16)),
+			this, SLOT(FactoryDetached(uint16)));
+
+	connect(qmtt, SIGNAL(ServerExited()),
+			this, SLOT(ServerExited()));
+
+	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
+			this, SLOT(OutputQueuesDrained(MessageRef)));
 
 	PRINT("Starting thread\n");
 	if (qmtt->StartInternalThread() != B_NO_ERROR)
@@ -155,7 +158,7 @@ NetClient::Disconnect()
 	if (win)
 		win->setCaption("Unizone");
 	
-	if (qmtt->IsInternalThreadRunning()) 
+	if (IsConnected()) 
 	{
 		// Reset() implies ShutdownInternalThread();
 		//
@@ -743,7 +746,7 @@ NetClient::HandleParameters(MessageRef & next)
 void
 NetClient::SendChatText(const QString & target, const QString & text)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsConnected())
 	{
 		MessageRef chat(GetMessageFromPool(NEW_CHAT_TEXT));
 		if (chat())
@@ -764,7 +767,7 @@ NetClient::SendChatText(const QString & target, const QString & text)
 void
 NetClient::SendPicture(const QString & target, const ByteBufferRef &buffer, const QString &name)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsConnected())
 	{
 		MessageRef pic(GetMessageFromPool(NEW_PICTURE));
 		if (pic())
@@ -787,7 +790,7 @@ NetClient::SendPicture(const QString & target, const ByteBufferRef &buffer, cons
 void
 NetClient::SendPing(const QString & target)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsConnected())
 	{
 		MessageRef ping(GetMessageFromPool(PING));
 		if (ping())
@@ -808,7 +811,7 @@ NetClient::SetUserName(const QString & user)
 {
 	fUserName = user;
 	// change the user name
-	if (qmtt->IsInternalThreadRunning())
+	if (IsConnected())
 	{
 		WinShareWindow *win = dynamic_cast<WinShareWindow *>(fOwner);
 		if (win)
@@ -838,7 +841,7 @@ NetClient::SetUserName(const QString & user)
 void
 NetClient::SetUserStatus(const QString & status)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsConnected())
 	{
 		MessageRef ref(GetMessageFromPool());
 		if (ref())
@@ -852,7 +855,7 @@ NetClient::SetUserStatus(const QString & status)
 void
 NetClient::SetConnection(const QString & connection)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsConnected())
 	{
 		MessageRef ref(GetMessageFromPool());
 		if (ref())
@@ -870,7 +873,7 @@ NetClient::SetConnection(const QString & connection)
 void
 NetClient::SetNodeValue(const char * node, MessageRef & val, int priority)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsConnected())
 	{
 		MessageRef ref(GetMessageFromPool(PR_COMMAND_SETDATA));
 		if (ref())
@@ -884,7 +887,7 @@ NetClient::SetNodeValue(const char * node, MessageRef & val, int priority)
 void
 NetClient::SetFileCount(int32 count)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsConnected())
 	{
 		MessageRef fc(GetMessageFromPool());
 		if (fc())
@@ -898,7 +901,7 @@ NetClient::SetFileCount(int32 count)
 void
 NetClient::SetLoad(int32 num, int32 max)
 {
-	if (qmtt->IsInternalThreadRunning())
+	if (IsConnected())
 	{
 		MessageRef load(GetMessageFromPool());
 		if (load())
@@ -1123,36 +1126,44 @@ NetClient::OutputQueuesDrained(MessageRef /* ref */)
 {
  	PRINT("MTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
 
-	NetPacket np;
-	const char * optDistPath = NULL;
-	bool found = false;
-
-	if (packetbuf.GetNumItems() > 0)
+	if (IsConnected())
 	{
-		fPacketLock.lock();
-		packetbuf.RemoveHead(np);
-		fPacketLock.unlock();
-
-		found = true;
+		NetPacket np;
+		const char * optDistPath = NULL;
+		bool found = false;
+		
+		if (packetbuf.GetNumItems() > 0)
+		{
+			fPacketLock.lock();
+			PRINT("Messages in High Priority Queue: %lu\n", packetbuf.GetNumItems());
+			packetbuf.RemoveHead(np);
+			fPacketLock.unlock();
+			
+			found = true;
+		}
+		else if (lowpacketbuf.GetNumItems() > 0)
+		{
+			fLowPacketLock.lock();
+			PRINT("Messages in Low Priority Queue: %lu\n", lowpacketbuf.GetNumItems());
+			lowpacketbuf.RemoveHead(np);
+			fLowPacketLock.unlock();
+			found = true;
+		}
+		
+		if (np.path.Length() > 0)
+			optDistPath = np.path.Cstr();
+		
+		if (found)
+		{
+			qmtt->SendMessageToSessions(np.mref, optDistPath);
+			qmtt->RequestOutputQueuesDrainedNotification(GetMessageFromPool());
+		}
+		else
+		{
+			hasmessages = false;
+			PRINT("NO MESSAGES IN QUEUE!\n");
+		}
 	}
-	else if (lowpacketbuf.GetNumItems() > 0)
-	{
-		fLowPacketLock.lock();
-		lowpacketbuf.RemoveHead(np);
-		fLowPacketLock.unlock();
-		found = true;
-	}
-	
-	if (np.path.Length() > 0)
-		optDistPath = np.path.Cstr();
-
-	if (found)
-	{
-		qmtt->SendMessageToSessions(np.mref, optDistPath);
-		qmtt->RequestOutputQueuesDrainedNotification(GetMessageFromPool());
-	}
-	else
-		hasmessages = false;
 }
 
 void
@@ -1173,58 +1184,66 @@ NetClient::ServerExited()
 bool
 NetClient::IsConnected() const
 { 
-	return qmtt->IsInternalThreadRunning();
+	return qmtt ? qmtt->IsInternalThreadRunning() : false;
 }
 
 void
 NetClient::Reset()
 {
-	qmtt->Reset();
-	qmtt->WaitForInternalThreadToExit();
+	if (IsConnected())
+	{
+		qmtt->Reset();
+		qmtt->WaitForInternalThreadToExit();
+		qmtt->disconnect();
+		delete qmtt;
+		qmtt = NULL;
+	}
 }
 
 status_t 
 NetClient::SendMessageToSessions(MessageRef msgRef, int priority, const char * optDistPath)
 {
-	status_t ret;
+	status_t ret = B_ERROR;
 
-	NetPacket np;
-	np.mref = msgRef;
-	if (optDistPath)
-		np.path = optDistPath;
-
-	if (priority == 0) // low
+	if (IsConnected())
 	{
-		fLowPacketLock.lock();
-		ret = lowpacketbuf.AddTail(np);
-		fLowPacketLock.unlock();
+		NetPacket np;
+		np.mref = msgRef;
+		if (optDistPath)
+			np.path = optDistPath;
+		
+		if (priority == 0) // low
+		{
+			fLowPacketLock.lock();
+			ret = lowpacketbuf.AddTail(np);
+			fLowPacketLock.unlock();
+		}
+		else
+		{
+			fPacketLock.lock();
+			ret = packetbuf.AddTail(np);
+			fPacketLock.unlock();
+		}
+		
+		if (!hasmessages)
+			qmtt->RequestOutputQueuesDrainedNotification(GetMessageFromPool());
+		
+		if (ret == B_OK)
+			hasmessages = true;
 	}
-	else
-	{
-		fPacketLock.lock();
-		ret = packetbuf.AddTail(np);
-		fPacketLock.unlock();
-	}
-
-	if (!hasmessages)
-		qmtt->RequestOutputQueuesDrainedNotification(GetMessageFromPool());
-
-	if (ret == B_OK)
-		hasmessages = true;
-
 	return ret;
 }
 
 status_t 
 NetClient::SetOutgoingMessageEncoding(int32 encoding, const char * optDistPath)
 {
-	return qmtt->SetOutgoingMessageEncoding(encoding, optDistPath);
+	return qmtt ? qmtt->SetOutgoingMessageEncoding(encoding, optDistPath) : B_ERROR;
 }
 
 status_t 
 NetClient::WaitForInternalThreadToExit()
 {
-	return qmtt->WaitForInternalThreadToExit();
+	return qmtt ? qmtt->WaitForInternalThreadToExit() : B_ERROR;
 }
 
 void

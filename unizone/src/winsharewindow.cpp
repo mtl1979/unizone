@@ -2013,16 +2013,13 @@ void
 WinShareWindow::WaitOnFileThread(bool abort)
 {
 	fFileShutdownFlag = abort;
-	if (fFileScanThread->running())
+	if (fFileScanThread->IsInternalThreadRunning())
 	{
 		if (abort) 
 			fFilesScanned = false;
 
 		PrintSystem(tr("Waiting for file scan thread to finish..."));
-		while (fFileScanThread->running()) 
-		{
-			qApp->processEvents(300);
-		}
+		fFileScanThread->WaitForInternalThreadToExit();
 	}
 }
 
@@ -2408,7 +2405,7 @@ WinShareWindow::ScanShares(bool rescan)
 	WaitOnFileThread(rescan);
 
 	// already running?
-	if (fFileScanThread->running())
+	if (fFileScanThread->IsInternalThreadRunning())
 	{
 		if (fSettings->GetError())
 		{
@@ -2433,7 +2430,7 @@ WinShareWindow::ScanShares(bool rescan)
 	}
 
 	PRINT("Starting...\n");
-	fFileScanThread->start();
+	fFileScanThread->StartInternalThread();
 }
 
 int64

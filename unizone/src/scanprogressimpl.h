@@ -5,6 +5,12 @@
 
 #include "scanprogress.h"
 
+#ifdef WIN32
+# define SET ScanEvent::Type
+#else
+# define SET ScanEvent
+#endif
+
 
 
 class ScanProgress : public ScanProgressBase

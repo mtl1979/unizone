@@ -7,6 +7,7 @@
 
 #include <qthread.h>
 #include <qstring.h>
+#include <qobject.h>
 
 #include <list>
 using std::list;
@@ -14,6 +15,8 @@ using std::iterator;
 
 #include "util/Queue.h"
 #include "message/Message.h"
+#include "system/Thread.h"
+
 using namespace muscle;
 
 #include "scanevent.h"
@@ -26,7 +29,7 @@ class NetClient;
 
 // This class runs through a list of paths and parses each
 // directory for files to search
-class WFileThread : public QThread
+class WFileThread : public QObject, public Thread
 {
 public:
 	WFileThread(NetClient * net, QObject * owner, bool * optShutdownFlag = NULL);
@@ -43,14 +46,11 @@ public:
 
 	enum { ScanDone = 'fTsD' };
 
-	void Lock() 
-	{ 		
-		fLocker.lock(); 
-	}
-	void Unlock() { fLocker.unlock(); }
+	void Lock(); 
+	void Unlock(); 
 
 protected:
-	virtual void run();
+	virtual void InternalThreadEntry();
 
 private:
 //	bool fFired;
@@ -77,6 +77,8 @@ private:
 	void SendReset();
 	void SendString(ScanEvent::Type, const QString &);
 	void SendInt(ScanEvent::Type, int);
+	void SendShow();
+	void SendHide();
 
 	void UpdateFileCount();
 	void UpdateFileName(const QString &);

@@ -473,7 +473,7 @@ WPrefs::StyleSelected(int id)
 			gWin->fSettings->SetStyle(WinShareWindow::Motif);
 			break;
 		case 2:
-#if !defined(QT_NO_STYLE_MOTIF)
+#if !defined(QT_NO_STYLE_MOTIFPLUS)
 			qApp->setStyle(new QMotifPlusStyle);
 #endif
 			gWin->fSettings->SetStyle(WinShareWindow::MotifPlus);

@@ -72,7 +72,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				if (fNetClient->IsConnected())	// are we connected?
 				{
-					if (!fFileScanThread->running())
+					if (!fFileScanThread->IsInternalThreadRunning())
 					{
 						StartAcceptThread();
 						ScanShares(true);
@@ -1676,7 +1676,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			WUserRef user = fNetClient->FindUser(userID);
 			if (user())
 			{
-				userName = user()->GetUserName();
+				userName = user()->GetUserName().stripWhiteSpace();
 				if (!IsWhiteListed(user))
 				{ 
 					if (IsFilterListed(text))
@@ -2176,8 +2176,9 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					{
 						if ((msg()->FindString("time", sTime) == B_OK) && (msg()->FindString("zone", sZone) == B_OK))
 						{
+							QString userName = user()->GetUserName().stripWhiteSpace();
 							QString qstamp = tr("Current time: %1 %2").arg(QString::fromUtf8(sTime.Cstr())).arg(QString::fromUtf8(sZone.Cstr()));
-							QString qTime = WFormat::RemoteText(session, FixStringStr(user()->GetUserName()), qstamp);
+							QString qTime = WFormat::RemoteText(session, FixStringStr(userName), qstamp);
 							PrintText(qTime);
 						}
 					}

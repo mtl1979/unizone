@@ -14,7 +14,9 @@ public:
 		ScannedDirs,
 		ScannedFiles,
 		DirsLeft,
-		Reset
+		Reset,
+		Show,
+		Hide
 	};
 	ScanEvent(Type t, QString data) : QCustomEvent((int) t), fText(data) {}
 	ScanEvent(Type t, int data) : QCustomEvent((int) t) , fNumber(data) {}
