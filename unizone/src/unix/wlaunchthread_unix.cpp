@@ -4,6 +4,7 @@
 
 #include "wlaunchthread_unix.h"
 #include "wstring.h"
+#include "debugimpl.h"
 
 void
 WLaunchThread::InternalThreadEntry()

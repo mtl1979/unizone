@@ -113,7 +113,10 @@ void
 WHTMLView::appendText(const QString &newtext)
 {
 	PRINT("appendText\n");
-	BeforeShown();
+
+	if (fBuffer.length() == 0)
+		BeforeShown();	
+
 	QWidget *widget = topLevelWidget();
 	if (widget)
 	{
@@ -121,18 +124,24 @@ WHTMLView::appendText(const QString &newtext)
 		if (!widget->isVisible())
 		{
 			PRINT("appendText 2\n");
-			QString temp = text();
+			if (fBuffer.length() == 0)
+			{
+				fBuffer = text();
+			}
 			PRINT("appendText 3\n");
 			setText("");
+			if (fBuffer.length() > 0)
+			{
 #if (QT_VERSION >= 0x030000)
-			temp += "<br>";
+				fBuffer += "<br>";
 #else
-			temp += "\t";
+				fBuffer += "\t";
 #endif
+			}
 			PRINT("appendText 4\n");
-			temp += newtext;
+			fBuffer += newtext;
 			PRINT("appendText 5\n");
-			GotShown(temp);
+			GotShown(fBuffer);
 			PRINT("appendText OK\n");
 			return;
 		}
@@ -140,6 +149,11 @@ WHTMLView::appendText(const QString &newtext)
 	// fall through here...
 	{
 		PRINT("appendText: Calling append()\n");
+		if (fBuffer.length() > 0)
+		{
+			append(fBuffer);
+			fBuffer = "";
+		}
 		append(newtext);
 		PRINT("appendText: Calling UpdateTextView()\n");
 		UpdateTextView();
@@ -156,8 +170,11 @@ WHTMLView::BeforeShown()
 void
 WHTMLView::GotShown(const QString & txt)
 {
-	setText(ParseForShown(txt));
-	UpdateTextView();
+	if (fBuffer.length() == 0)
+	{
+		setText(ParseForShown(txt));
+		UpdateTextView();
+	}
 }
 
 void

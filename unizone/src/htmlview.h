@@ -31,6 +31,7 @@ protected:
 
 private:
 	QString fOldURL, fURL, fContext;
+	QString fBuffer;
 	int fScrollX, fScrollY;				// do we need to scroll the view down after an insertion?
 	bool fScrollDown;
 

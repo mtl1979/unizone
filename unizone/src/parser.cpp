@@ -13,11 +13,14 @@ ParseForShown(const QString & txt)
 {
 	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
 	QString out;
-	out = ParseForShownAux(txt);
+	if (txt.length() > 0)
+	{
+		out = ParseForShownAux(txt);
 
-	// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
-	if (out.right(4) == "<br>")
-		out.truncate(out.length() - 4);
+		// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
+		if (out.right(4) == "<br>")
+			out.truncate(out.length() - 4);
+	}
 	return out;
 }
 
