@@ -263,8 +263,7 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 			QString s;
 			if ( IsAction(msg, name) ) // simulate action?
 			{
-				s = WFormat::Action();
-				s += WFormat::Text(msg);
+				s = WFormat::Action(msg);
 			}
 			else
 			{

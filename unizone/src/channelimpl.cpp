@@ -624,8 +624,7 @@ Channel::SendChannelText(const QString & message)
 	QString name = FixStringStr(gWin->GetUserName());
 	QString msg = FixStringStr(message);
 	QString fmt;
-	fmt = WFormat::LocalName(fNet->LocalSessionID(), name);
-	fmt += WFormat::Text(msg);
+	fmt = WFormat::LocalText(fNet->LocalSessionID(), name, msg);
 	PrintText(fmt);
 }
 
@@ -663,8 +662,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 			name = FixStringStr(name);
 			QString message = FixStringStr(text);
 			QString fmt;
-			fmt = WFormat::LocalName(user, name);
-			fmt += WFormat::Text(message);
+			fmt = WFormat::LocalText(user, name, message);
 			PrintText(fmt);
 		}
 	}

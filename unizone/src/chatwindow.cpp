@@ -189,12 +189,10 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 void 
 ChatWindow::Action(const QString & name, const QString & msg)
 {
-	QString chat = WFormat::Action();
 	QString nameText = FixStringStr(msg);
 	if (NameSaid(nameText) && Settings()->GetSounds())
 		QApplication::beep();
-	QString text = QObject::tr("%1 %2").arg(FixStringStr(name)).arg(nameText);
-	chat += WFormat::Text(text);
+	QString chat = WFormat::Action(FixStringStr(name), nameText);
 
 	PrintText(chat);
 }

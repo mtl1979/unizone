@@ -782,7 +782,7 @@ Date: %4</source>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation type='unfinished'>%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
 </context>
 <context>
@@ -1229,15 +1229,15 @@ Date: %4</source>
     <name>WFormat</name>
     <message>
         <source>&lt;font size="%1"&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&lt;font color="%1"&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt; </source>
@@ -1245,15 +1245,15 @@ Date: %4</source>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;시스템:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>User #%1 is now connected.</source>
-        <translation type='unfinished'>#%1 님이 연결되었습니다.</translation>
+        <translation>#%1 님이 연결되었습니다.</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. &lt;font color="%2"&gt;</source>
@@ -1261,27 +1261,27 @@ Date: %4</source>
     </message>
     <message>
         <source>) has disconnected.</source>
-        <translation type='unfinished'></translation>
+        <translation>) 님의 연결이 해제되었습니다.</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type='unfinished'>User #%1 has disconnected.</translation>
+        <translation>사용자 #%1 님의 연결이 해제되었습니다.</translation>
     </message>
     <message>
         <source>User #%1 is now known as</source>
-        <translation type='unfinished'></translation>
+        <translation>사용자 #%1 님은</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
-        <translation type='unfinished'></translation>
+        <translation></translation>
     </message>
     <message>
         <source>nameless</source>
-        <translation type='unfinished'></translation>
+        <translation>nameless</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a.</source>
-        <translation type='unfinished'></translation>
+        <translation>사용자 #%1 (a.k.a.</translation>
     </message>
     <message>
         <source>) is now known as &lt;font color="%1"&gt;</source>
@@ -1297,11 +1297,11 @@ Date: %4</source>
     </message>
     <message>
         <source>&apos;s IP address is %1.</source>
-        <translation type='unfinished'></translation>
+        <translation>&apos;s 님의 IP 주소는 %1 입니다.</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='unfinished'>User #%1&apos;s IP address is %2.</translation>
+        <translation>사용자 #%1&apos;s I님의 IP 주소는 %2 입니다.</translation>
     </message>
     <message>
         <source>Ping returned in %3 milliseconds</source>
@@ -1313,11 +1313,11 @@ Date: %4</source>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;오류:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;경고:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>You are now </source>
@@ -1337,7 +1337,7 @@ Date: %4</source>
     </message>
     <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;행동:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. </source>
@@ -1345,35 +1345,60 @@ Date: %4</source>
     </message>
     <message>
         <source>) pinged you.</source>
-        <translation type='unfinished'></translation>
+        <translation>) 이 당신에게 ping을 보냈습니다.</translation>
     </message>
     <message>
         <source>) is now known as</source>
-        <translation type='unfinished'></translation>
+        <translation>)</translation>
     </message>
     <message>
         <source>Ping returned in %1 milliseconds</source>
-        <translation type='unfinished'></translation>
+        <translation>Ping %1 미리초 만에 돌아왔습니다</translation>
     </message>
     <message>
         <source>Uptime: %1, Logged on for %2</source>
-        <translation type='unfinished'></translation>
+        <translation>유지시간: %1, %2 에 로그온 되었음</translation>
     </message>
     <message>
         <source>You are now</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'>당신은 이제</translation>
     </message>
     <message>
         <source>Name changed to</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>) is now</source>
-        <translation type='unfinished'></translation>
+        <translation>) 님은 이제</translation>
     </message>
     <message>
         <source>Time request sent to</source>
-        <translation type='unfinished'></translation>
+        <translation>Time request sent to</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;is now known as&apos; suffix</comment>
+        <translation type='obsolete'>로 알려졌습니다.</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;is now nameless&apos; suffix</comment>
+        <translation type='obsolete'>.</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;is now&apos; suffix</comment>
+        <translation type='obsolete'>님입니다.</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;You are now&apos; suffix</comment>
+        <translation type='obsolete'>입니다.</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;Name changed to&apos; suffix</comment>
+        <translation type='obsolete'>로 이름이 변경됨.</translation>
     </message>
 </context>
 <context>
@@ -1471,19 +1496,19 @@ Date: %4</source>
     </message>
     <message>
         <source>This is the color of "Warning".</source>
-        <translation type='unfinished'></translation>
+        <translation>This is the color of "Warning".</translation>
     </message>
     <message>
         <source>This is the color of the text in warning messages.</source>
-        <translation type='unfinished'></translation>
+        <translation>This is the color of the text in warning messages.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Warning&lt;/b&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation>&lt;b&gt;Warning&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Warning text</source>
-        <translation type='unfinished'></translation>
+        <translation>Warning text</translation>
     </message>
 </context>
 <context>
@@ -2010,11 +2035,11 @@ Date: %4</source>
     </message>
     <message>
         <source>Warning Text</source>
-        <translation type='unfinished'></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Warning Message Text</source>
-        <translation type='unfinished'></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3296,7 +3321,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
+        <translation>Welcome to Unizone (Korean)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
@@ -3364,63 +3389,63 @@ Date: %4</source>
     </message>
     <message>
         <source>Whitelist pattern cleared.</source>
-        <translation type='unfinished'></translation>
+        <translation>Whitelist pattern cleared.</translation>
     </message>
     <message>
         <source>Whitelist pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Filter list pattern cleared.</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter list pattern cleared.</translation>
     </message>
     <message>
         <source>Filter list pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Whitelist pattern updated.</source>
-        <translation type='unfinished'></translation>
+        <translation>Whitelist pattern updated.</translation>
     </message>
     <message>
         <source>Error updating whitelist pattern!</source>
-        <translation type='unfinished'></translation>
+        <translation>Error updating whitelist pattern!</translation>
     </message>
     <message>
         <source>Filter list pattern updated.</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter list pattern updated.</translation>
     </message>
     <message>
         <source>Error updating filter list pattern!</source>
-        <translation type='unfinished'></translation>
+        <translation>Error updating filter list pattern!</translation>
     </message>
     <message>
         <source>Filter list pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Whitelist pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Whitelist pattern: %1</translation>
     </message>
     <message>
         <source>/addfilter [pattern] - update the word filter pattern</source>
-        <translation type='unfinished'></translation>
+        <translation>/addfilter [pattern] - update the word filter pattern</translation>
     </message>
     <message>
         <source>/addwhitelist [pattern] - update the whitelist pattern (can be a user name, or several names, or regular expression)</source>
-        <translation type='unfinished'></translation>
+        <translation>/addwhitelist [pattern] - update the whitelist pattern (can be a user name, or several names, or regular expression)</translation>
     </message>
     <message>
         <source>/filter [pattern] - set the word filter pattern</source>
-        <translation type='unfinished'></translation>
+        <translation>/filter [pattern] - set the word filter pattern</translation>
     </message>
     <message>
         <source>/unfilter [pattern] - remove pattern from word filters</source>
-        <translation type='unfinished'></translation>
+        <translation>/unfilter [pattern] - remove pattern from word filters</translation>
     </message>
     <message>
         <source>/unwhitelist [name] - remove name from whitelist</source>
-        <translation type='unfinished'></translation>
+        <translation>/unwhitelist [name] - remove name from whitelist</translation>
     </message>
     <message>
         <source>/whitelist - set the whitelist pattern</source>
@@ -3428,11 +3453,11 @@ Date: %4</source>
     </message>
     <message>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
-        <translation type='unfinished'></translation>
+        <translation>/whitelist [pattern] - set the whitelist pattern</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation type='unfinished'></translation>
+        <translation>Welcome to Unizone (Korean)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</translation>
     </message>
 </context>
 </TS>

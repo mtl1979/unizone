@@ -318,6 +318,12 @@ WinShareWindow::GoSearch()
 				}
 				it++;
 			}
+			if (ulist.Length() == 0)
+			{
+				SetSearchStatus(tr("User(s) not found!"));
+				fSearchLock.unlock();
+				return;
+			}
 			userExp	= ulist;
 		}
 

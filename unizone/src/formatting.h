@@ -18,8 +18,12 @@ class WFormat : private QObject
 public:
 	// formatting for:
 	//	(id) UserName
-	static QString LocalName(const QString &session, const QString &name);
+//	static QString LocalName(const QString &session, const QString &name);
+	static QString LocalText(const QString &session, const QString &name, const QString &text);
+
 	static QString RemoteName(const QString &session, const QString &name);
+	static QString RemoteText(const QString &session, const QString &name, const QString &text);
+	static QString RemoteWatch(const QString &session, const QString &name, const QString &text);
 
 	// text color...
 	static QString Text(const QString &text);
@@ -55,11 +59,15 @@ public:
 	static QString NameChanged(const QString &name);
 
 	// private messages
-	static QString SendPrivMsg(const QString &session, const QString &myname, const QString &othername);
+//	static QString SendPrivMsg(const QString &session, const QString &myname, const QString &othername);
+	static QString SendPrivMsg(const QString &session, const QString &myname, const QString &othername, const QString &text);
+
 	static QString ReceivePrivMsg(const QString &session, const QString &othername, const QString &text);
 
 	// action
-	static QString Action();
+//	static QString Action();
+	static QString Action(const QString &msg);
+	static QString Action(const QString &name, const QString &msg);
 
 	// URL -- <postmaster@raasu.org> 20020930,20040511
 	static QString URL(const QString &url);
@@ -71,6 +79,9 @@ public:
 
 	// UniShare
 	static QString TimeRequest(const QString &username);
+
+	static QString tr2(const char *s);					// Appends space if not empty
+	static QString tr3(const char *s, const char *c);	// Adds leading space if needed.
 };
 
 #endif	// FORMATTING_H

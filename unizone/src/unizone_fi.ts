@@ -1016,7 +1016,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation>%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
 </context>
 <context>
@@ -1483,7 +1483,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation>&lt;font color="%1" size="%2"&gt;</translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
@@ -1599,11 +1599,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>You are now</source>
-        <translation>Olet nyt</translation>
+        <translation type='obsolete'>Olet nyt</translation>
     </message>
     <message>
         <source>Name changed to</source>
-        <translation>Nimesi on nyt</translation>
+        <translation type='obsolete'>Nimesi on nyt</translation>
     </message>
     <message>
         <source>) is now</source>
@@ -1612,6 +1612,31 @@ Päiväys: %4</translation>
     <message>
         <source>Time request sent to</source>
         <translation>Aikapyyntö lähetetty käyttäjälle</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;is now known as&apos; suffix</comment>
+        <translation type='obsolete'>.</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;is now nameless&apos; suffix</comment>
+        <translation type='obsolete'>.</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;is now&apos; suffix</comment>
+        <translation type='obsolete'>.</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;You are now&apos; suffix</comment>
+        <translation type='obsolete'>.</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;Name changed to&apos; suffix</comment>
+        <translation type='obsolete'>.</translation>
     </message>
 </context>
 <context>

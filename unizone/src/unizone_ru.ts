@@ -894,7 +894,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation type='unfinished'>%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
 </context>
 <context>
@@ -1357,7 +1357,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
@@ -1473,11 +1473,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>You are now</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Name changed to</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>) is now</source>
@@ -1486,6 +1486,31 @@ Date: %4</translation>
     <message>
         <source>Time request sent to</source>
         <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;is now known as&apos; suffix</comment>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;is now nameless&apos; suffix</comment>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;is now&apos; suffix</comment>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;You are now&apos; suffix</comment>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>&apos;Name changed to&apos; suffix</comment>
+        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
