@@ -189,7 +189,7 @@ WinShareWindow::SplitQuery(const String &fileExp)
 {
 	// Test if all but one @ is escaped (don't change string length)
 	{
-		String temp = fileExp;
+		String temp(fileExp);
 		temp.Replace("\\@", "??");
 		if (temp.GetNumInstancesOf("@") == 1)
 		{
@@ -199,7 +199,6 @@ WinShareWindow::SplitQuery(const String &fileExp)
 	//
 	WUserMap &users = fNetClient->Users();
 	WUserIter it = users.begin();
-	String user;
 	if (fileExp.StartsWith("*@"))
 	{
 		return 1;
@@ -211,7 +210,7 @@ WinShareWindow::SplitQuery(const String &fileExp)
 	while (it != users.end())
 	{	
 		// User ID?
-		user = (const char *) (*it).first.utf8();
+		String user((const char *) (*it).first.utf8());
 		user = user.Prepend("@");
 		if (fileExp.EndsWith(user))
 		{
@@ -229,7 +228,7 @@ WinShareWindow::SplitQuery(const String &fileExp)
 			temp.truncate(temp.length() - name.length());
 			if (temp.right(1) == "@")
 			{
-				String tmp = (const char *) temp.utf8();
+				String tmp((const char *) temp.utf8());
 				return tmp.Length() - 1;
 			}
 		}

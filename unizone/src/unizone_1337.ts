@@ -3815,5 +3815,13 @@ Date: %4</translation>
         <source>Finished scanning shares.</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Memory used: %1 bytes</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/memory - show number of bytes Unizone is using memory</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

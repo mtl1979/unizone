@@ -338,7 +338,7 @@ WDownloadThread::InitSession()
 			SendReply(msg);
 
 		PRINT("Requesting tunnel...\n");
-		MessageRef req = GetMessageFromPool(NetClient::REQUEST_TUNNEL);
+		MessageRef req(GetMessageFromPool(NetClient::REQUEST_TUNNEL));
 		if (req())
 			SendMessageToSessions(req);
 
@@ -793,8 +793,9 @@ WDownloadThread::Accepted(int32 id)
 void
 WDownloadThread::Rejected()
 {
-	MessageRef rej = GetMessageFromPool(WDownload::TransferNotifyRejected);
-	MessageReceived(rej, _sessionID);
+	MessageRef rej(GetMessageFromPool(WDownload::TransferNotifyRejected));
+	if (rej())
+		MessageReceived(rej, _sessionID);
 }
 
 void
@@ -1367,7 +1368,7 @@ WDownloadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPa
 		}
 		else
 		{
-			MessageRef down = GetMessageFromPool(NetClient::TUNNEL_MESSAGE);
+			MessageRef down(GetMessageFromPool(NetClient::TUNNEL_MESSAGE));
 			if (down())
 			{
 				QString to("/*/");

@@ -25,11 +25,6 @@ typedef hostent *LPHOSTENT;
 #include "wstring.h"
 #include "gotourl.h"			// <postmaster@raasu.org> 20021116 -- for /shell
 #include "tokenizer.h"			// <postmaster@raasu.org> 20030902 -- for !remote
-#include <time.h>				//                                 -- for /time
-#include "util/TimeUtilityFunctions.h"
-#include "iogateway/PlainTextMessageIOGateway.h"
-#include "iogateway/MessageIOGateway.h"
-#include "util/StringTokenizer.h"
 #include "ulistview.h"
 #include "downloadimpl.h"
 #include "filethread.h"
@@ -39,6 +34,15 @@ typedef hostent *LPHOSTENT;
 #include "wstatusbar.h"
 #include "textevent.h"
 
+#include "util/TimeUtilityFunctions.h"
+#include "util/StringTokenizer.h"
+#include "iogateway/PlainTextMessageIOGateway.h"
+#include "iogateway/MessageIOGateway.h"
+#ifdef MUSCLE_ENABLE_MEMORY_TRACKING
+#include "system/GlobalMemoryAllocator.h"
+#endif
+
+#include <time.h>				//                                 -- for /time
 #include <qapplication.h>
 #include <qfiledialog.h>
 
@@ -575,7 +579,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					to += (const char *) tu()->GetUserID().utf8();
 					to += "/unishare";
 
-					MessageRef tire = GetMessageFromPool(TimeRequest);
+					MessageRef tire(GetMessageFromPool(TimeRequest));
 					if (tire())
 					{
 						tire()->AddString(PR_NAME_KEYS, to);
@@ -1031,6 +1035,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					PrintSystem( tr("2. %1").arg(fOnConnect2) );
 			}
 		}
+#ifdef MUSCLE_ENABLE_MEMORY_TRACKING
+		else if (CompareCommand(sendText, "/memory"))
+		{
+			PrintSystem(tr("Memory used: %1 bytes").arg(GetNumAllocatedBytes()));
+		}
+#endif
 		else if (CompareCommand(sendText, "/search"))
 		{
 			QString pattern = GetParameterString(sendText);
@@ -1510,7 +1520,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				if (IsIgnored(uref()->GetUserID(), true))
 				{
-					MessageRef rej = GetMessageFromPool(NetClient::REJECT_TUNNEL);
+					MessageRef rej(GetMessageFromPool(NetClient::REJECT_TUNNEL));
 					if (rej())
 					{
 						QString to("/*/");
@@ -1524,7 +1534,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				}
 				else
 				{
-					MessageRef acc = GetMessageFromPool(NetClient::ACCEPT_TUNNEL);
+					MessageRef acc(GetMessageFromPool(NetClient::ACCEPT_TUNNEL));
 					if (acc())
 					{
 						QString to("/*/");
@@ -1870,7 +1880,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					if (rtime >= GetRegisterTime())
 					{
-						MessageRef col = GetMessageFromPool(NetClient::RegisterFail);
+						MessageRef col(GetMessageFromPool(NetClient::RegisterFail));
 						String to("/*/");
 						to += repto;
 						to += "/unishare";
@@ -2132,7 +2142,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					else 
 						strcpy(zone, tzname[1]);
 
-					MessageRef tire = GetMessageFromPool(TimeReply);
+					MessageRef tire(GetMessageFromPool(TimeReply));
 					if (tire())
 					{
 						tire()->AddString(PR_NAME_KEYS, tostr);
@@ -2317,6 +2327,10 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/me [action] - /action synonym");
 	helpText			+=	"\n\t\t\t\t"; 
+#ifdef MUSCLE_ENABLE_MEMORY_TRACKING
+	helpText			+=	tr("/memory - show number of bytes Unizone is using memory");
+	helpText			+=	"\n\t\t\t\t"; 
+#endif
 	helpText			+=	tr("/msg [name] [message] - send a private message");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/nick [name] - change your user name");

@@ -3899,5 +3899,13 @@ Päiväys: %4</translation>
         <source>Finished scanning shares.</source>
         <translation>Jakojen tutkinta valmis.</translation>
     </message>
+    <message>
+        <source>Memory used: %1 bytes</source>
+        <translation>Muistia käytössä: %1 tavua</translation>
+    </message>
+    <message>
+        <source>/memory - show number of bytes Unizone is using memory</source>
+        <translation>/memory - näytä kuinka monta tavua muistia Unizone käyttää</translation>
+    </message>
 </context>
 </TS>

@@ -119,12 +119,11 @@ main( int argc, char** argv )
 	if ( lang.open(IO_ReadOnly) ) 
 	{    
 		// file opened successfully
-		char * plang = (char *) malloc(255);
-		if (plang)
+		String plang;
+		if (plang.Prealloc(255) == B_NO_ERROR)
 		{
-			lang.readLine(plang, 255);
-			lfile = QString::fromUtf8(plang);
-			delete plang;
+			lang.readLine((char *) plang.Cstr(), 255);
+			lfile = QString::fromUtf8(plang.Cstr());
 		}
 		lang.close();
     }

@@ -403,7 +403,7 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 								)
 							{
 								// Collide nick
-								MessageRef col = GetMessageFromPool(RegisterFail);
+								MessageRef col(GetMessageFromPool(RegisterFail));
 								if (col())
 								{
 									QString to("/*/");
@@ -471,10 +471,13 @@ NetClient::AddChannel(const QString &sid, const QString &channel)
 	}
 	else
 	{
-		emit ChannelAdded(channel, sid, GetCurrentTime64());
-		MessageRef mChannel = GetMessageFromPool();
-		mChannel()->AddBool((const char *) sid.utf8(), true);
-		fChannels()->AddMessage((const char *) channel.utf8(), mChannel);
+		MessageRef mChannel(GetMessageFromPool());
+		if (mChannel())
+		{
+			emit ChannelAdded(channel, sid, GetCurrentTime64());
+			mChannel()->AddBool((const char *) sid.utf8(), true);
+			fChannels()->AddMessage((const char *) channel.utf8(), mChannel);
+		}
 	}
 	fChannelLock.unlock();
 }

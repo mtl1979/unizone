@@ -172,11 +172,11 @@ WinShareWindow::CreateChannel()
 			UpdatePublic(it);
 
 			// Send Channel Data message
-			MessageRef cc = GetMessageFromPool(NetClient::ChannelData);
+			MessageRef cc(GetMessageFromPool(NetClient::ChannelData));
 			if (cc())
 			{
-				QString to("/*/*/unishare");
-				cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+				String to("/*/*/unishare");
+				cc()->AddString(PR_NAME_KEYS, to);
 				cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 				cc()->AddInt64("when", GetCurrentTime64());
 				cc()->AddString("channel", (const char *) text.utf8());
@@ -249,11 +249,11 @@ WinShareWindow::JoinChannel(const QString & channel)
 	if (!(*it).second->GetPublic()) // Needs invite?
 	{
 		// Send Channel Invite message
-		MessageRef cc = GetMessageFromPool(NetClient::ChannelInvite);
+		MessageRef cc(GetMessageFromPool(NetClient::ChannelInvite));
 		if (cc())
 		{
-			QString to("/*/*/unishare");
-			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			String to("/*/*/unishare");
+			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 			cc()->AddString("who", (const char *) GetUserID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
@@ -287,7 +287,7 @@ WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, i
 	else if (timecreated >= (*it).second->GetCreated())
 	{
 		// Send Channel Data message
-		MessageRef cc = GetMessageFromPool(NetClient::ChannelKick);
+		MessageRef cc(GetMessageFromPool(NetClient::ChannelKick));
 		if (cc())
 		{
 			QString to("/*/");
@@ -334,11 +334,11 @@ WinShareWindow::PartChannel(const QString & channel, const QString & user)
 {
 	if (user == GetUserID())
 	{
-		MessageRef cc = GetMessageFromPool(NetClient::ChannelPart);
+		MessageRef cc(GetMessageFromPool(NetClient::ChannelPart));
 		if (cc())
 		{
-			QString to("/*/*/unishare");
-			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			String to("/*/*/unishare");
+			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) channel.utf8());

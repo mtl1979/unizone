@@ -1534,7 +1534,7 @@ WSettings::SetToolBarLayout(int toolbar, int dock, int index, bool nl, int extra
 
 	fSet()->RemoveName(sToolBar);
 	
-	MessageRef mref = GetMessageFromPool();
+	MessageRef mref(GetMessageFromPool());
 	if (mref())
 	{
 		mref()->AddInt32("dock", dock);

@@ -64,7 +64,7 @@ ServerClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 void
 ServerClient::SessionConnected(const String & /* sessionID */)
 {
-	MessageRef msgref(new Message, NULL);
+	MessageRef msgref(GetMessageFromPool());
 	if (msgref())
 	{
 		msgref()->AddString(PR_NAME_TEXT_LINE, "GET /servers.txt HTTP/1.1\nUser-Agent: Unizone/1.2\nHost: beshare.tycomsystems.com\n\n");

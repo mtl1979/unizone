@@ -1445,7 +1445,7 @@ WUploadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath
 		}
 		else
 		{		
-			MessageRef up = GetMessageFromPool(NetClient::TUNNEL_MESSAGE);
+			MessageRef up(GetMessageFromPool(NetClient::TUNNEL_MESSAGE));
 			if (up())
 			{
 				QString to("/*/");

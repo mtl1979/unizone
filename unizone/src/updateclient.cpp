@@ -56,7 +56,7 @@ void
 UpdateClient::SessionConnected(const String & /* sessionID */)
 {
 	PRINT("Update thread connected\n");
-	MessageRef ref(new Message, NULL);
+	MessageRef ref(GetMessageFromPool());
 	if (ref())
 	{
 		ref()->AddString(PR_NAME_TEXT_LINE, "GET " UPDATE_FILE " HTTP/1.1\nUser-Agent: Unizone/1.2\nHost: " UPDATE_SERVER "\n\n");

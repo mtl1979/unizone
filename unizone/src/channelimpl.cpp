@@ -149,8 +149,8 @@ Channel::SetOwner(const QString & owner)
 		}
 		if (cc())
 		{
-			QString to("/*/*/unishare");
-			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			String to("/*/*/unishare");
+			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) fName.utf8());
@@ -166,11 +166,11 @@ Channel::SetTopic(const QString & topic)
 	if (fTopic != topic)
 	{
 		fTopic = topic;
-		MessageRef cc = GetMessageFromPool(NetClient::ChannelSetTopic);
+		MessageRef cc(GetMessageFromPool(NetClient::ChannelSetTopic));
 		if (cc())
 		{
-			QString to("/*/*/unishare");
-			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			String to("/*/*/unishare");
+			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) fName.utf8());
@@ -191,11 +191,11 @@ Channel::SetPublic(bool p)
 	if (fPublic != p)
 	{
 		fPublic = p;
-		MessageRef cc = GetMessageFromPool(NetClient::ChannelSetTopic);
+		MessageRef cc(GetMessageFromPool(NetClient::ChannelSetTopic));
 		if (cc())
 		{
-			QString to("/*/*/unishare");
-			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			String to("/*/*/unishare");
+			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 			cc()->AddInt64("when", GetCurrentTime64());
 			cc()->AddString("channel", (const char *) fName.utf8());
@@ -211,7 +211,7 @@ Channel::SetPublic(bool p)
 void
 Channel::Invite(const QString & user)
 {
-	MessageRef cc = GetMessageFromPool(NetClient::ChannelInvite);
+	MessageRef cc(GetMessageFromPool(NetClient::ChannelInvite));
 	if (cc())
 	{
 		QString to("/*/");
@@ -228,7 +228,7 @@ Channel::Invite(const QString & user)
 void
 Channel::Kick(const QString & user)
 {
-	MessageRef cc = GetMessageFromPool(NetClient::ChannelKick);
+	MessageRef cc(GetMessageFromPool(NetClient::ChannelKick));
 	if (cc())
 	{
 		QString to("/*/");
@@ -611,8 +611,8 @@ Channel::SendChannelText(const QString & message)
 		MessageRef chat(GetMessageFromPool(NetClient::ChannelText));
 		if (chat())
 		{
-			QString tostr = "/*/*/unishare";
-			chat()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
+			String tostr("/*/*/unishare");
+			chat()->AddString(PR_NAME_KEYS, tostr);
 			chat()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
 			chat()->AddString("channel", (const char *) fName.utf8());
 			chat()->AddString("text", (const char *) message.utf8());
@@ -621,8 +621,7 @@ Channel::SendChannelText(const QString & message)
 	}
 	QString name = FixStringStr(gWin->GetUserName());
 	QString msg = FixStringStr(message);
-	QString fmt;
-	fmt = WFormat::LocalText(fNet->LocalSessionID(), name, msg);
+	QString fmt = WFormat::LocalText(fNet->LocalSessionID(), name, msg);
 	PrintText(fmt);
 }
 
@@ -694,7 +693,7 @@ Channel::resizeEvent(QResizeEvent * e)
 void
 Channel::UpdateNode()
 {
-	MessageRef cc = GetMessageFromPool();
+	MessageRef cc(GetMessageFromPool());
 	if (cc())
 	{
 		QString admins = gWin->GetAdmins(fName);
