@@ -58,6 +58,7 @@ using namespace muscle;
 #define WATCH_PATTERN "watchpattern"
 #define IGNORE_PATTERN "ignorepattern"
 #define BLACKLIST "blacklist"
+#define AUTOPRIV "autopriv"
 
 #ifdef __linux__	/* Linux is our only configurable URL launcher */
 # define MAILTO_LAUNCHER "mailtolauncher"
@@ -257,6 +258,10 @@ public:
 	// blacklist pattern
 	QString GetBlackListPattern();
 	void SetBlackListPattern(QString p);
+
+	// auto-private pattern
+	QString GetAutoPrivatePattern();
+	void SetAutoPrivatePattern(QString p);
 
 #ifdef __linux__
 	QString GetFTPLauncher();

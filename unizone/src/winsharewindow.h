@@ -185,6 +185,7 @@ private:
 	QString fWatch;		// watch pattern
 	QString fIgnore;	// ignore pattern
 	QString fBlackList; // blacklist pattern
+	QString fAutoPriv;	// Auto-private pattern
 
 	uint64 tx,rx;		// transmit/receive statistics (cumulative)
 	uint64 tx2,rx2;		// in the beginning of session
@@ -196,6 +197,10 @@ private:
 	bool IsBlackListed(const WUser * user);
 	bool BlackList(QString & user);
 	bool UnBlackList(QString & user);
+
+	bool IsAutoPrivate(const WUser * user);
+	bool AutoPrivate(QString & user);
+	bool UnAutoPrivate(QString & user);
 
 	void Disconnect2();
 
@@ -310,6 +315,8 @@ public:
 	bool IsIgnored(QString & user, bool bTransfer = false);
 	bool IsBlackListedIP(QString & ip);
 	bool IsBlackListed(QString & user);
+	bool IsAutoPrivate(QString & user);
+	bool IsConnected(QString & user);
 	
 	void TranslateStatus(QString & s);
 	

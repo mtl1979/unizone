@@ -803,12 +803,26 @@ WSettings::GetBlackListPattern()
 }
 
 void
+WSettings::SetAutoPrivatePattern(QString p)
+{
+	fSet->RemoveName(AUTOPRIV);
+	fSet->AddString(AUTOPRIV, (const char *) p.utf8());
+}
+	
+QString
+WSettings::GetAutoPrivatePattern()
+{
+	String i = "";
+	fSet->FindString(AUTOPRIV, i);
+	return QString::fromUtf8(i.Cstr());
+}
+
+void
 WSettings::SetBlackListPattern(QString p)
 {
 	fSet->RemoveName(BLACKLIST);
 	fSet->AddString(BLACKLIST, (const char *) p.utf8());
 }
-	
 
 #ifdef __linux__
 void

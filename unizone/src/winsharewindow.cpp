@@ -1136,6 +1136,7 @@ WinShareWindow::LoadSettings()
 		fWatch = fSettings->GetWatchPattern();
 		fIgnore = fSettings->GetIgnorePattern();
 		fBlackList = fSettings->GetBlackListPattern();
+		fAutoPriv = fSettings->GetAutoPrivatePattern();
 
 		tx = fSettings->GetTransmitStats(); tx2 = tx;
 		rx = fSettings->GetReceiveStats(); rx2 = rx;
@@ -1159,6 +1160,7 @@ WinShareWindow::LoadSettings()
 		fWatch = "";
 		fIgnore = "";
 		fBlackList = "";
+		fAutoPriv = "";
 		tx = 0;
 		rx = 0;
 		tx2 = 0;
@@ -1224,10 +1226,11 @@ WinShareWindow::SaveSettings()
 	fSettings->SetAwayMsg(fAwayMsg);
 	fSettings->SetHereMsg(fHereMsg);
 
-	// watch, ignore & blacklist patterns
+	// watch, ignore, blacklist & auto-private patterns
 	fSettings->SetWatchPattern(fWatch);
 	fSettings->SetIgnorePattern(fIgnore);
 	fSettings->SetBlackListPattern(fBlackList);
+	fSettings->SetAutoPrivatePattern(fAutoPriv);
 
 	// transfer stats
 

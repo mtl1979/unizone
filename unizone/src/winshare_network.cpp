@@ -538,6 +538,41 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else if (fSettings->GetError())
 				PrintError("Error updating blacklist pattern!");
 		}
+		else if (CompareCommand(sendText, "/autopriv"))
+		{
+			fAutoPriv = GetParameterString(sendText);
+			if (fSettings->GetInfo())
+			{
+				if (fAutoPriv == "")
+					PrintSystem("Auto-private pattern cleared.");
+				else
+					PrintSystem(tr("Auto-private pattern set to: %1").arg(fAutoPriv));
+			}
+		}
+		else if (CompareCommand(sendText, "/addautopriv"))
+		{
+			bool bSuccess;
+			QString user = GetParameterString(sendText);
+
+			bSuccess = AutoPrivate(user);
+
+			if (bSuccess)
+				PrintSystem("Auto-private pattern updated.");
+			else if (fSettings->GetError())
+				PrintError("Error updating auto-private pattern!");
+		}
+		else if (CompareCommand(sendText, "/unautopriv"))
+		{
+			bool bSuccess;
+			QString user = GetParameterString(sendText);
+
+			bSuccess = UnAutoPrivate(user);
+
+			if (bSuccess)
+				PrintSystem("Auto-private pattern updated.");
+			else if (fSettings->GetError())
+				PrintError("Error updating auto-private pattern!");
+		}
 		else if (CompareCommand(sendText, "/chkuser"))
 		{
 			QString user = GetParameterString(sendText);
@@ -725,6 +760,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/showpatterns"))
 		{
+			PrintSystem( tr("Auto-private pattern: %1").arg(fAutoPriv) );
 			PrintSystem( tr("Blacklist pattern: %1").arg(fBlackList) );
 			PrintSystem( tr("Ignore pattern: %1").arg(fIgnore) );
 			PrintSystem( tr("Watch pattern: %1").arg(fWatch) );
@@ -1325,7 +1361,31 @@ WinShareWindow::HandleMessage(Message * msg)
 							pLock.unlock();
 							if (foundPriv)
 								return;
-							
+							else if ( IsAutoPrivate( QString(session) ) )
+							{
+								// Create new Private Window
+								WPrivateWindow * win = new WPrivateWindow(this, fNetClient);
+								if (win)
+								{
+									WUserRef pu = FindUser(session);
+									if (pu())
+									{
+										// Add user to private window
+										win->AddUser(pu);
+										// Send text to private window
+										win->PutChatText(session, text);
+										// Show newly created private window
+										win->show();
+										// ... and add it to list of private windows
+										WPrivPair p = MakePair(win);
+										pLock.lock();
+										fPrivateWindows.insert(p);
+										pLock.unlock();
+										return;
+									}
+								}
+							}
+
 							PRINT("Fixing nameText\n");
 							QString nameText = FixStringStr(text);
 							if (nameText.startsWith(FixStringStr(userName) + " ") || nameText.startsWith(FixStringStr(userName) + "'s ")) // simulate action?
@@ -1527,9 +1587,11 @@ WinShareWindow::ShowHelp()
 {
 	QString helpText	=	"\n" NAME " Command Reference\n"
 							"\n\t\t\t\t/action [action] - do something"
+							"\n\t\t\t\t/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)"
 							"\n\t\t\t\t/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)"
 							"\n\t\t\t\t/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)"
 							"\n\t\t\t\t/adduser [name or session ids] - add users to a private chat window (works in private windows only!)"
+							"\n\t\t\t\t/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)"
 							"\n\t\t\t\t/away - set away state (same as selecting away from the list)"
 							"\n\t\t\t\t/awaymsg - away message for away state (when /away is invoked)"
 							"\n\t\t\t\t/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)"
@@ -1569,6 +1631,7 @@ WinShareWindow::ShowHelp()
 							"\n\t\t\t\t/showstats - show transfer statistics"
 							"\n\t\t\t\t/status [status] - set status string"
 							"\n\t\t\t\t/time [gmt] - show local (or GMT) time"
+							"\n\t\t\t\t/unautopriv [name] - remove name from auto-private list"
 							"\n\t\t\t\t/unblacklist [name] - remove name from blacklist"
 							"\n\t\t\t\t/unignore [name] - remove name from ignore list"
 							"\n\t\t\t\t/uptime - show system uptime"
@@ -1590,6 +1653,7 @@ WinShareWindow::ShowHelp()
 							"\n\t\t\t\tas time goes on."
 #endif
 							"\n"
+							"\nAuto-private pattern : " + fAutoPriv +
 							"\nBlacklist pattern : " + fBlackList +
 							"\nIgnore pattern : " + fIgnore +
 							"\nWatch pattern : " + fWatch;
@@ -1645,6 +1709,58 @@ WinShareWindow::IsBlackListed(QString & user)
 		// Check user reference against blacklist
 		
 		return IsBlackListed(uref());
+	}
+	else
+	{
+		// Invalid reference!
+
+		return false;
+	}
+}
+
+bool
+WinShareWindow::IsAutoPrivate(QString & user)
+{
+	// Find the user record
+	//
+
+	WUserRef uref = fNetClient->FindUser(user);
+
+	// Valid user reference?
+	//
+
+	if (uref() != NULL)	
+	{
+		// Valid reference!
+	
+		// Check user reference against auto-private list
+		
+		return IsAutoPrivate(uref());
+	}
+	else
+	{
+		// Invalid reference!
+
+		return false;
+	}
+}
+
+bool
+WinShareWindow::IsConnected(QString & user)
+{
+	// Find the user record
+	//
+
+	WUserRef uref = FindUser(user);
+
+	// Valid user reference?
+	//
+
+	if (uref() != NULL)	
+	{
+		// Valid reference!
+	
+		return true;
 	}
 	else
 	{
@@ -1880,6 +1996,106 @@ WinShareWindow::UnIgnore(QString & user)
 		fIgnore = fIgnore.left(pos)+fIgnore.mid(len+pos);
 	}
 	return true;
+}
+
+bool
+WinShareWindow::IsAutoPrivate(const WUser * user)
+{
+	if (user == NULL) // Is the user still connected?
+		return false;
+
+	if (fAutoPriv == "") // No users in auto-private list?
+		return false;
+
+	return MatchUserFilter(user, (const char *) fAutoPriv.utf8());
+}
+
+// Append to auto-private list
+//
+
+bool
+WinShareWindow::AutoPrivate(QString & user)
+{
+	// Is user specified?
+	//
+	if (user == "")
+		return false;
+
+	// Already in auto-private list?
+	//
+	if (IsAutoPrivate(user))
+		return false;
+
+	// Append to auto-private list
+	//
+	if (fAutoPriv == "")
+		fAutoPriv = user;
+	else
+		fAutoPriv += user.prepend(",");
+	return true;
+}
+
+// Remove from auto-private list
+//
+
+bool
+WinShareWindow::UnAutoPrivate(QString & user)
+{
+	// Is user specified?
+	//
+	if (user == "")
+		return false;
+
+	// Is really in auto-private list?
+	//
+	if (fAutoPriv == user) // First and only?
+	{
+		fAutoPriv = "";
+		return true;
+	}
+
+	// First in list?
+
+	int pos = fAutoPriv.lower().startsWith(user.lower() + ",") ? 0 : -1 ; 
+
+	// Second or later in the list?
+
+	if (pos == -1)
+		pos = fAutoPriv.find("," + user + ",", 0, false); 
+	
+	// You need to add 1 to the length to strip extra comma too
+	
+	int len = user.length() + 1;
+	
+	// last in the list?
+
+	if (pos == -1)
+	{
+		if (fAutoPriv.lower().right(len) == ("," + user.lower()))
+		{
+			// Find last occurance (there is no endsWith in QString class)
+
+			pos = fAutoPriv.findRev("," + user, -1, false);
+		}
+	}
+
+	if (pos == -1)	
+	{
+		// Not in auto-private list!
+
+		return false;
+	}
+
+	if (pos == 0)
+	{
+		fAutoPriv = fAutoPriv.mid(len);
+	}
+	else
+	{
+		fAutoPriv = fAutoPriv.left(pos)+fAutoPriv.mid(len+pos);
+	}
+	return true;
+
 }
 
 WUserRef
