@@ -11,7 +11,7 @@ class ScanProgress : public ScanProgressBase
 {
 public:
 
-    ScanProgress(QObject * owner = 0, QWidget* parent = 0, 	const char* name = 0, bool modal = false, 
+    ScanProgress(QWidget* parent = 0, 	const char* name = 0, bool modal = false, 
 				WFlags fl = WStyle_Customize | WStyle_NormalBorder | WStyle_Title | 
 							WStyle_Minimize | WStyle_Maximize);
 	~ScanProgress();

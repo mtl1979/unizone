@@ -4,7 +4,7 @@
 #include "scanprogress.h"
 #include "scanevent.h"
 
-ScanProgress::ScanProgress(QObject * /* owner */, QWidget* parent, const char* name, bool modal, WFlags fl)
+ScanProgress::ScanProgress(QWidget* parent, const char* name, bool modal, WFlags fl)
 : ScanProgressBase(parent, name, modal, fl)
 {
 	if (!name)

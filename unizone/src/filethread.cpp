@@ -36,7 +36,7 @@ WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 	fOwner = owner;
 	fShutdownFlag = optShutdownFlag;
 
-	fScanProgress = new ScanProgress(gWin);
+	fScanProgress = new ScanProgress(dynamic_cast<QWidget *>(owner));
 	CHECK_PTR(fScanProgress);
 }
 
@@ -96,7 +96,7 @@ WFileThread::run()
 	CoUninitialize();
 #endif
 
-	fScanProgress->close();
+	fScanProgress->hide();
 
 	Lock();
 	fScannedDirs.Clear(true);
