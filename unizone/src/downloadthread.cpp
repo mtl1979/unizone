@@ -47,6 +47,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fRemotelyQueued = false;
 	fDisconnected = false;
 	fNegotiating = false;
+	fConnecting = false;
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fStartTime = 0;
@@ -711,6 +712,7 @@ WDownloadThread::SessionAccepted(const String &sessionID, uint16 /* port */)
 void
 WDownloadThread::SessionConnected(const String &sessionID)
 {
+	fConnecting = false;
 	CTimer->stop();
 
 	timerID = startTimer(10000);
@@ -1156,6 +1158,12 @@ WDownloadThread::IsActive() const
 	return fActive;
 }
 
+bool
+WDownloadThread::IsConnecting() const
+{
+	return fConnecting;
+}
+
 QString
 WDownloadThread::GetETA(uint64 cur, uint64 max, double rate)
 {
@@ -1345,5 +1353,6 @@ WDownloadThread::InitSessionAux()
 	fCurrentOffset = fFileSize = 0;
 	fFile = NULL;
 	fDownloading = false;
+	fConnecting = true;
 	CTimer->start(30000, true); // 30 seconds
 }

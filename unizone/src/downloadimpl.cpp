@@ -2529,9 +2529,19 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 			else
 			{
 				fDLPopup->setItemEnabled(ID_THROTTLE, true);
-				fDLPopup->setItemEnabled(ID_QUEUE, true);
 				fDLPopup->setItemEnabled(ID_RUN, false);
 				fDLPopup->setItemEnabled(ID_CANCEL, true);
+
+				// Still connecting?
+
+				if (pair.first->IsConnecting() == true)
+				{
+					fDLPopup->setItemEnabled(ID_QUEUE, false);
+				}
+				else
+				{
+					fDLPopup->setItemEnabled(ID_QUEUE, true);
+				}
 			}
 			
 			fDLPopup->setItemChecked(ID_QUEUE, pair.first->IsLocallyQueued());

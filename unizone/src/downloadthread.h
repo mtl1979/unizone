@@ -59,6 +59,8 @@ public:
 	bool IsFinished() const;
 	void SetFinished(bool b);
 
+	bool IsConnecting() const;
+
 	double GetCalculatedRate() const;
 	void SetMostRecentRate(double rate);
 	void SetPacketCount(double bytes);
@@ -146,6 +148,7 @@ protected:
 	bool fBlocked;
 	bool fFinished;
 	bool fNegotiating;
+	bool fConnecting;
 	volatile bool fDisconnected;
 	double fRate[MAX_RATE_COUNT];	// last 20 rates
 	int fRateCount;					// amount we have, 20 max
