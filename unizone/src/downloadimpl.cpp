@@ -166,6 +166,12 @@ WDownload::AddDownload(QString file, QString remoteSessionID,
 		if (remoteIP != "127.0.0.1")
 			gWin->PrintWarning(tr("Invalid address! Download address for file %1 replaced with %2, it might fail!").arg(file).arg(remoteIP), false);
 	}
+
+	// Detect uncommon remote port 
+
+	if (!muscleInRange(remotePort, (uint32) DEFAULT_LISTEN_PORT, (uint32) (DEFAULT_LISTEN_PORT + LISTEN_PORT_RANGE)))
+		gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(file), false);
+
 	if (fNumDownloads < gWin->fSettings->GetMaxDownloads())
 	{
 		PRINT("DLS (%d, %d)\n", fNumDownloads, gWin->fSettings->GetMaxDownloads());
