@@ -208,7 +208,11 @@ WFileThread::ScanFiles(const QString & directory)
 					}
 				}
 
-				files.AddTail(dir->absFilePath(ndata));
+				{
+					QString qfile = dir->absFilePath(ndata); 
+					files.AddTail(qfile);
+				}
+
 				i++;
 			}
 		}
@@ -321,27 +325,26 @@ WFileThread::ResolveLink(const QString & lnk)
 #ifdef WIN32
 #ifdef DEBUG2
 	{
-		WString wRet = ret;
+		WString wRet = lnk;
 		PRINT("\tResolving %S\n", wRet.getBuffer());
 	}
 #endif
 
 	if (lnk.right(4) == ".lnk")
 	{
-		QString ret = lnk;
-
 		PRINT("Is Link\n");
 		// we've got a link...
 		HRESULT hres;
 		// Unicode
 		IShellLink * psl;
-		WString wsz;
 		wchar_t szFile[MAX_PATH];
 		WIN32_FIND_DATA wfd;
 		
 		hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *)&psl);
 		if (SUCCEEDED(hres))
 		{
+			QString ret(lnk);
+
 			// Unicode version
 			PRINT("Created instance\n");
 			IPersistFile * ppf;
@@ -350,7 +353,8 @@ WFileThread::ResolveLink(const QString & lnk)
 			if (SUCCEEDED(hres))
 			{
 				PRINT("Got persistfile\n");
-				wsz = ret;		// <postmaster@raasu.org> -- Move type definition to start of function
+				WString wsz(ret);
+
 				hres = ppf->Load(wsz, STGM_READ);
 				if (SUCCEEDED(hres))
 				{
@@ -360,33 +364,33 @@ WFileThread::ResolveLink(const QString & lnk)
 					{
 						PRINT("Resolved\n");
 						hres = psl->GetPath(szFile, MAX_PATH, (WIN32_FIND_DATA *)&wfd, SLGP_UNCPRIORITY);
-						PRINT("GetPath() = %S\n",szFile);
-						if (!SUCCEEDED(hres))
-							MessageBoxA(gWin->GetHandle(), "GetPath() failed!", "Error", MB_OK);
-						ret = wideCharToQString(szFile);
+						if (SUCCEEDED(hres))
+						{
+							PRINT("GetPath() = %S\n", szFile);
+							ret = wideCharToQString(szFile);
+						}
+						else
+							MessageBox(gWin->GetHandle(), L"GetPath() failed!", L"Error", MB_OK);
 					}
 				}
 				
 				ppf->Release();
 			}
 			psl->Release();
+			return ret;
 		}
 		else
 		{
 			// Fallback to ANSI
-			ret = ResolveLinkA(lnk);
+			QString ret = ResolveLinkA(lnk);
+			{
+				WString wRet = ret;
+				PRINT("Resolved to: %S\n", wRet.getBuffer());
+			}
+			return ret;
 		}
-		{
-			WString wRet = ret;
-			PRINT("Resolved to: %S\n", wRet.getBuffer());
-		}
-		
-		return ret;
 	}
-	else
-		return lnk;
-
-
+	return lnk;
 #else
 	QFileInfo inf(lnk);
 	if (inf.isSymLink())
@@ -401,12 +405,8 @@ WFileThread::ResolveLink(const QString & lnk)
 QString
 WFileThread::ResolveLinkA(const QString & lnk)
 {
-	QString ret = lnk;
 #ifdef WIN32
 	HRESULT hres;
-	
-	// Unicode
-	WString wsz;
 	
 	// Ansi
 	IShellLinkA * psl;
@@ -417,15 +417,18 @@ WFileThread::ResolveLinkA(const QString & lnk)
 	if (SUCCEEDED(hres))
 	{
 		PRINT("Created instance\n");
+
 		IPersistFile * ppf;
-					
+		QString ret(lnk);
+
 		// IPersistFile is all UNICODE
 		hres = psl->QueryInterface(IID_IPersistFile, (void **)&ppf);
 		if (SUCCEEDED(hres))
 		{
 			PRINT("Got persistfile\n");
-			// <postmaster@raasu.org> -- Move type definition to start of function
-			wsz = lnk;		
+
+			// Unicode
+			WString wsz(lnk);
 			hres = ppf->Load(wsz, STGM_READ);
 			if (SUCCEEDED(hres))
 			{
@@ -435,19 +438,24 @@ WFileThread::ResolveLinkA(const QString & lnk)
 				{
 					PRINT("Resolved\n");
 					hres = psl->GetPath(szFile, MAX_PATH, (WIN32_FIND_DATAA *)&wfd, SLGP_UNCPRIORITY);
-					PRINT("GetPath() = %s\n",szFile);
-					if (!SUCCEEDED(hres))
+					if (SUCCEEDED(hres))
+					{
+						PRINT("GetPath() = %s\n",szFile);
+						ret = szFile;
+					}
+					else
+					{
 						MessageBoxA(gWin->GetHandle(), "GetPath() failed!", "Error", MB_OK);
-					ret = szFile;
+					}
 				}
-			}
-						
+			}						
 			ppf->Release();
 		}
 		psl->Release();
+		return ret;
 	}
 #endif
-	return ret;
+	return lnk;
 }
 
 // TODO: FIX THIS METHOD, make it MUCH faster! The current implementation is
@@ -504,6 +512,7 @@ WFileThread::EmptyList()
 {
 	Lock(); 
 	fFiles.Clear();
+	files.Clear();
 	Unlock(); 
 }
 
