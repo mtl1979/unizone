@@ -3496,5 +3496,9 @@ Päiväys: %4</translation>
         <source>&amp;lt;None&amp;gt;</source>
         <translation>&amp;lt;Ei Mitään&amp;gt;</translation>
     </message>
+    <message>
+        <source>/ip [user|host] - give information about host</source>
+        <translation>/ip [käyttäjä|osoite] - anna tiedot osoitteesta</translation>
+    </message>
 </context>
 </TS>

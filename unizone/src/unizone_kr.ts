@@ -3104,5 +3104,9 @@ Date: %4</source>
         <source>&amp;lt;None&amp;gt;</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>/ip [user|host] - give information about host</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

@@ -833,7 +833,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/dns"))
 		{
 			QString user = GetParameterString(sendText);
-			GetAddressInfo(user);
+			GetAddressInfo(user, true);
+		}
+		else if (CompareCommand(sendText, "/ip"))
+		{
+			QString user = GetParameterString(sendText);
+			GetAddressInfo(user, false);
 		}
 		else if (CompareCommand(sendText, "/showstats"))
 		{
@@ -1908,6 +1913,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/ip [user|host] - give information about host");
+	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/logged - show the time you have been logged in to a server");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/me [action] - /action synonym");
@@ -2749,7 +2756,7 @@ WinShareWindow::ClearResumes()
 }
 
 void
-WinShareWindow::PrintAddressInfo(const WUserRef & user)
+WinShareWindow::PrintAddressInfo(const WUserRef & user, bool verbose)
 {
 	QString addr, uname, uid;
 	QString out("");
@@ -2774,16 +2781,19 @@ WinShareWindow::PrintAddressInfo(const WUserRef & user)
 		out += "\n" + tr("User Name: %1").arg(uname);
 					
 		out += "\n" + tr("IP Address: %1").arg(host);
-					
-		if (user()->GetPort() != 0)
-			out += "\n" + tr("Port: %1").arg( user()->GetPort() );
-					
-		iaHost.s_addr = inet_addr(host);
-		lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
-					
-		if (lpHostEntry != NULL)
+		
+		if (verbose)
 		{
-			out += "\n" + tr("Host Name: %1").arg(lpHostEntry->h_name);
+			if (user()->GetPort() != 0)
+				out += "\n" + tr("Port: %1").arg( user()->GetPort() );
+					
+			iaHost.s_addr = inet_addr(host);
+			lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
+					
+			if (lpHostEntry != NULL)
+			{
+				out += "\n" + tr("Host Name: %1").arg(lpHostEntry->h_name);
+			}
 		}
 		FixString(out);
 		PrintSystem(out);
@@ -2795,7 +2805,7 @@ WinShareWindow::PrintAddressInfo(const WUserRef & user)
 }
 
 bool
-WinShareWindow::PrintAddressInfo(uint32 address)
+WinShareWindow::PrintAddressInfo(uint32 address, bool verbose)
 {
 	char host[16];
 	struct in_addr iaHost;	   // Internet address structure
@@ -2807,39 +2817,45 @@ WinShareWindow::PrintAddressInfo(uint32 address)
 	{
 		Inet_NtoA(address, host);
 					
-		out += "\n" + tr("Address info for %1:").arg(host);
-					
-//		out += "\n" + tr("IP Address: %1").arg(host);
-					
-		iaHost.s_addr = inet_addr(host);
-		lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
-					
-		if (lpHostEntry != NULL)
+		if (!verbose)
 		{
-			out += "\n" + tr("Host Name: %1").arg(lpHostEntry->h_name);
+			out += tr("IP Address: %1").arg(host);
 			found = true;
 		}
-					
-		// List all users from this ip
-						
-		WUserMap cmap;
-		fNetClient->FindUsersByIP(cmap, host);
-		if (!cmap.empty())
+		else
 		{
-			out += "\n" + tr("Connected users:");
-
-			for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
+			out += "\n" + tr("Address info for %1:").arg(host);
+				
+			iaHost.s_addr = inet_addr(host);
+			lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
+					
+			if (lpHostEntry != NULL)
 			{
-				if ( (*it).second() )
+				out += "\n" + tr("Host Name: %1").arg(lpHostEntry->h_name);
+				found = true;
+			}
+					
+			// List all users from this ip
+						
+			WUserMap cmap;
+			fNetClient->FindUsersByIP(cmap, host);
+			if (!cmap.empty())
+			{
+				out += "\n" + tr("Connected users:");
+
+				for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
 				{
-					QString uid = (*it).second()->GetUserID();
-					QString uname = (*it).second()->GetUserName();
-					uint32 port = (*it).second()->GetPort();
-					if (port != 0)
-						out += "\n" + tr("#%1 - %2 (port: %3)").arg(uid).arg(uname).arg(port);
-					else
-						out += "\n" + tr("#%1 - %2").arg(uid).arg(uname);
-					found = true;
+					if ( (*it).second() )
+					{
+						QString uid = (*it).second()->GetUserID();
+						QString uname = (*it).second()->GetUserName();
+						uint32 port = (*it).second()->GetPort();
+						if (port != 0)
+							out += "\n" + tr("#%1 - %2 (port: %3)").arg(uid).arg(uname).arg(port);
+						else
+							out += "\n" + tr("#%1 - %2").arg(uid).arg(uname);
+						found = true;
+					}
 				}
 			}
 		}
@@ -2853,7 +2869,7 @@ WinShareWindow::PrintAddressInfo(uint32 address)
 }
 
 void
-WinShareWindow::GetAddressInfo(const QString & user)
+WinShareWindow::GetAddressInfo(const QString & user, bool verbose)
 {
 	int numMatches;
 	WUserMap wmap;
@@ -2864,14 +2880,14 @@ WinShareWindow::GetAddressInfo(const QString & user)
 		WUserIter uiter = wmap.begin();
 		while (uiter != wmap.end())
 		{
-			PrintAddressInfo((*uiter).second);
+			PrintAddressInfo((*uiter).second, verbose);
 			uiter++;
 		}
 	}
 	else				// Try as hostname or ip address
 	{
 		address = GetHostByName(user.latin1());
-		if (!PrintAddressInfo(address) && fSettings->GetError())
+		if (!PrintAddressInfo(address, verbose) && fSettings->GetError())
 		{
 			PrintError(tr("No address info for %1").arg(user));
 		}

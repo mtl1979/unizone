@@ -454,9 +454,9 @@ private:
 	static bool ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
 	void Action(const QString & name, const QString & msg/*, bool batch = false*/);
-	void GetAddressInfo(const QString & user);
-	void PrintAddressInfo(const WUserRef & user);
-	bool PrintAddressInfo(uint32 address);
+	void GetAddressInfo(const QString & user, bool verbose = true);
+	void PrintAddressInfo(const WUserRef & user, bool verbose);
+	bool PrintAddressInfo(uint32 address, bool verbose);
 	
 	void ShowHelp(const QString & command = QString::null);
 
