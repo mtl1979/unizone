@@ -1,5 +1,5 @@
 #include "picviewerimpl.h"
-#include "support\MuscleSupport.h"
+#include "support/MuscleSupport.h"
 
 #include <qpushbutton.h>
 #include <qpixmap.h>
