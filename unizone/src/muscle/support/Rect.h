@@ -129,10 +129,13 @@ public:
    inline Rect operator&(Rect r) const 
    {
       Rect ret(*this);
-      if (ret.left()   < r.left())   ret.left()   = r.left();
-      if (ret.right()  > r.right())  ret.right()  = r.right();
-      if (ret.top()    < r.top())    ret.top()    = r.top();
-      if (ret.bottom() > r.bottom()) ret.bottom() = r.bottom();
+      if (this != &r)
+      {
+         if (ret.left()   < r.left())   ret.left()   = r.left();
+         if (ret.right()  > r.right())  ret.right()  = r.right();
+         if (ret.top()    < r.top())    ret.top()    = r.top();
+         if (ret.bottom() > r.bottom()) ret.bottom() = r.bottom();
+      }
       return ret;
    }
 
@@ -140,10 +143,13 @@ public:
    inline Rect operator|(Rect r) const 
    {
       Rect ret(*this);
-      if (r.left()   < ret.left())   ret.left()   = r.left();
-      if (r.right()  > ret.right())  ret.right()  = r.right();
-      if (r.top()    < ret.top())    ret.top()    = r.top();
-      if (r.bottom() > ret.bottom()) ret.bottom() = r.bottom();
+      if (this != &r)
+      {
+         if (r.left()   < ret.left())   ret.left()   = r.left();
+         if (r.right()  > ret.right())  ret.right()  = r.right();
+         if (r.top()    < ret.top())    ret.top()    = r.top();
+         if (r.bottom() > ret.bottom()) ret.bottom() = r.bottom();
+      }
       return ret;
    }
 

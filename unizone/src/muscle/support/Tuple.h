@@ -25,7 +25,7 @@ public:
    ~Tuple() {/* empty */}
 
    /** Assignment operator. */
-   Tuple & operator =(const Tuple & rhs) {for (int i=0; i<NumItems; i++) _items[i] = rhs._items[i]; return *this;}
+   Tuple & operator =(const Tuple & rhs) {if (this != &rhs) {for (int i=0; i<NumItems; i++) _items[i] = rhs._items[i];} return *this;}
 
    /** Assignment operator for copying data in from an appropriately-sized array. */
    Tuple & operator =(const ItemType values[NumItems]) {for (int i=0; i<NumItems; i++) (*this)[i] = values[i]; return *this;}
@@ -64,16 +64,16 @@ public:
    Tuple & operator >>=(int numPlaces) {ShiftValuesRight(numPlaces); return *this;}
 
    /** Returns true iff all indices in this object are equal to their counterparts in (rhs). */
-   bool operator ==(const Tuple & rhs) const {for (int i=0; i<NumItems; i++) if (_items[i] != rhs._items[i]) return false; return true;}
+   bool operator ==(const Tuple & rhs) const {if (this != &rhs) {for (int i=0; i<NumItems; i++) if (_items[i] != rhs._items[i]) return false;} return true;}
 
    /** Returns true iff any indices in this object are not equal to their counterparts in (rhs). */
    bool operator !=(const Tuple & rhs) const {return !(*this == rhs);}
 
    /** Comparison Operator.  Returns true if this string comes before (rhs) lexically. */
-   bool operator < (const Tuple &rhs) const {for (int i=0; i<NumItems; i++) {if (_items[i] < rhs._items[i]) return true; if (_items[i] > rhs._items[i]) return false;} return false;}
+   bool operator < (const Tuple &rhs) const {if (this != &rhs) {for (int i=0; i<NumItems; i++) {if (_items[i] < rhs._items[i]) return true; if (_items[i] > rhs._items[i]) return false;}} return false;}
 
    /** Comparison Operator.  Returns true if this string comes after (rhs) lexically. */
-   bool operator > (const Tuple &rhs) const {for (int i=0; i<NumItems; i++) {if (_items[i] > rhs._items[i]) return true; if (_items[i] < rhs._items[i]) return false;} return false;}
+   bool operator > (const Tuple &rhs) const {if (this != &rhs) {for (int i=0; i<NumItems; i++) {if (_items[i] > rhs._items[i]) return true; if (_items[i] < rhs._items[i]) return false;}} return false;}
 
    /** Comparison Operator.  Returns true if the two strings are equal, or this string comes before (rhs) lexically. */
    bool operator <=(const Tuple &rhs) const {return !(*this > rhs);}

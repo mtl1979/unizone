@@ -1,43 +1,5 @@
 /* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */
-
-/* 
-   This library was downloaded from: http://www.mike95.com 
- 
-   This library is copyright.  It may freely be used for personal purposes  
-   if the restriction listed below is adhered to. 
-       Author: Michael Olivero 
-       Email:  mike95@mike95.com 
- 
-   //=============================== 
-   //Start of Restriction Definition 
-   //=============================== 
-   Anyone can have full use of the library provided they keep this complete comment 
-   with the source.  Also I would like to ask if any changes are made to the 
-   code for efficiency reasons, please let me know so I may look into your change and 
-   likewise incorporate it into library.  If a suggestion makes it into the library, 
-   your credits will be added to this information. 
- 
-   Authors of Computer related books are welcome to include this source code as part 
-   of their publishing, provided credit the Author and make note of where the source 
-   code was obtained from: http://www.mike95.com 
-   //============================= 
-   //End of Restriction Definition 
-   //============================= 
- 
- 
-   Description: 
-   Visit http://www.mike95.com/c_plusplus/classes/JString/ 
-
-   This library avoids the need to use pointers to char or manual
-   memory manipulation while working with Strings.  This class has been
-   based on the Java String class, and thus has all of the Java public functionality 
-   with a few extras [replace()] needed for useful functionality.
- 
-   //The following people have contributed to the solution 
-   //of bugs in this library 
-   //===================================================== 
-   //Carl Pupa, email: pumacat@erols.com 
-*/
+/* This class was derived from the String class written by Michael Olivero (mike95@mike95.com) */
  
 #ifndef MuscleString_h
 #define MuscleString_h
@@ -59,8 +21,11 @@ class String : public Flattenable {
 public:
    /** Constructor.
     *  @param str If non-NULL, the initial value for this String.
+    *  @param maxLen If specified, the number of characters to place into
+    *                this String (not including the NUL terminator byte).
+    *                Default is to scan the string to determine the length.
     */
-   String(const char * str = NULL);
+   String(const char * str = NULL, int32 maxLen = -1);
 
    /** Copy Constructor. */
    String(const String & str);
@@ -69,73 +34,75 @@ public:
    virtual ~String() {if (_buffer != _smallBuffer) delete [] _buffer;}
 
    /** Assignment Operator. */
-   String & operator = (char val);
+   String & operator = (char val) {(void) SetCstr(&val, 1); return *this;}
+
+   /** Assignment Operator. 
+     * @param val Pointer to the C-style string to copy from.  May be NULL.
+     */
+   String & operator = (const char * val) {(void) SetCstr(val); return *this;}
 
    /** Assignment Operator. */
-   String & operator = (const char * val);
-
-   /** Assignment Operator. */
-   String & operator = (const String &rhs);
+   String & operator = (const String &rhs) {(void) SetCstr(rhs(), rhs.Length()); return *this;}
 
    /** Append Operator. 
     *  @param rhs A string to append to this string.
     */
-   String & operator +=(const String &rhs);
+   String & operator += (const String &rhs);
 
    /** Append Operator.
     *  @param ch A character to append to this string.
     */
-   String & operator +=(const char ch);
+   String & operator += (const char ch);
    
    /** Remove Operator. 
     *  @param rhs A substring to remove from this string;  the
     *             last instance of the substring will be cut out.
     *             If (rhs) is not found, there is no effect.
     */
-   String & operator -=(const String &rhs);
+   String & operator -= (const String &rhs);
 
    /** Remove Operator.
     *  @param ch A character to remove from this string;  the last
     *            instance of this char will be cut out.  If (ch) is
     *            not found, there is no effect.
     */
-   String & operator -=(const char ch);
+   String & operator -= (const char ch);
    
    /** Append 'Stream' Operator.
     *  @param rhs A String to append to this string.
     *  @return a non const String refrence to 'this' so you can chain appends.
     */
-   String & operator <<(const String& rhs);   
+   String & operator << (const String& rhs) {return (*this += rhs);}
 
    /** Append 'Stream' Operator.
     *  @param rhs A const char* to append to this string.
     *  @return a non const String refrence to 'this' so you can chain appends.
     */
-   String & operator <<(const char* rhs);   
+   String & operator << (const char* rhs) {return (*this += rhs);}
    
    /** Append 'Stream' Operator.
     *  @param rhs An int to append to this string.
     *  @return a non const String refrence to 'this' so you can chain appends.
     */
-   String & operator <<(int rhs);   
+   String & operator << (int rhs);   
 
    /** Append 'Stream' Operator.
     *  @param rhs A float to append to this string. Formatting is set at 2 decimals of precision.
     *  @return a non const String refrence to 'this' so you can chain appends.
     */
-   String & operator <<(float rhs);   
+   String & operator << (float rhs);   
 
    /** Append 'Stream' Operator.
     *  @param rhs A bool to append to this string. Converts to 'true' and 'false' strings appropriately.
     *  @return a non const String refrence to 'this' so you can chain appends.
     */
-   String & operator <<(bool rhs);
+   String & operator << (bool rhs);
 
    /** Comparison Operator.  Returns true if the two strings are equal (as determined by strcmp()) */
-   bool operator ==(const String &rhs) const;
+   bool operator == (const String &rhs) const;
 
    /** Comparison Operator.  Returns true if the two strings are not equal (as determined by strcmp()) */
-   bool operator !=(const String &rhs) const {return !(*this == rhs);}
+   bool operator != (const String &rhs) const {return !(*this == rhs);}
 
    /** Comparison Operator.  Returns true if this string comes before (rhs) lexically. */
    bool operator < (const String &rhs) const;
@@ -144,29 +111,29 @@ public:
    bool operator > (const String &rhs) const;
 
    /** Comparison Operator.  Returns true if the two strings are equal, or this string comes before (rhs) lexically. */
-   bool operator <=(const String &rhs) const;
+   bool operator <= (const String &rhs) const;
 
    /** Comparison Operator.  Returns true if the two strings are equal, or this string comes after (rhs) lexically. */
-   bool operator >=(const String &rhs) const;
+   bool operator >= (const String &rhs) const;
 
    /** Array Operator.  Used to get easy access to the characters that make up this string.
-    *  @param Index Index of the character to return.  Be sure to only use valid indices!
+    *  @param index Index of the character to return.  Be sure to only use valid indices!
     */
-   char operator [](uint32 Index) const;
+   char operator [] (uint32 index) const {verifyIndex(index); return _buffer[index];}
 
    /** Array Operator.  Used to get easy access to the characters that make up this string.
-    *  @param Index Index of the character to set.  Be sure to only use valid indices!
+    *  @param index Index of the character to set.  Be sure to only use valid indices!
     */
-   char & operator [](uint32 Index);
+   char & operator [] (uint32 index) {verifyIndex(index); return _buffer[index];}
 
    /** Returns the character at the (index)'th position in the string.
     *  @param index A value between 0 and (Length()-1), inclusive.
     *  @return A character value.
     */
-   char CharAt(uint32 index) const;
+   char CharAt(uint32 index) const {return operator[](index);}
  
    /** Compares this string to another string using strcmp() */
-   int CompareTo(const String &anotherString) const;
+   int CompareTo(const String &anotherString) const {return strcmp(Cstr(), anotherString.Cstr());}
 
    /** Returns a C-style pointer to our held character string. */
    const char * Cstr() const {return _buffer ? _buffer : "";}
@@ -174,31 +141,30 @@ public:
    /** Convenience synonym for Cstr(). */
    const char * operator()() const {return Cstr();}  
 
+   /** Sets our state from the given C-style string.
+     * @param str The new string to copy from.  If maxLen is negative, this may be NULL.
+     * @param maxLen If set, the number of characters to copy (not including the NUL
+     *               terminator byte).  By default, the number of characters is determined
+     *               automatically by scanning the string.
+     */
+   status_t SetCstr(const char * str, int32 maxLen = -1);
+
    /** Returns true iff this string ends with (suffix) */
    bool EndsWith(const String &suffix) const;
 
    /** Returns true iff this string is equal to (string), as determined by strcmp(). */
-   bool Equals(const String &string) const;
-
-   /** Returns the first index of (ch) in this string, or -1 if not found. */
-   int IndexOf(char ch) const;
+   bool Equals(const String & str) const {return (*this == str);}
 
    /** Returns the first index of (ch) in this string starting at or after (fromIndex), or -1 if not found. */
-   int IndexOf(char ch, uint32 fromIndex) const;
-
-   /** Returns the first index of substring (str) in this string, or -1 if not found. */
-   int IndexOf(const String &str) const;
+   int IndexOf(char ch, uint32 fromIndex = 0) const;
 
    /** Returns the first index of substring (str) in this string starting at or after (fromIndex), or -1 if not found. */
-   int IndexOf(const String &str, uint32 fromIndex) const;
-
-   /** Returns the last index of (ch) in this string. */
-   int LastIndexOf(char ch) const;
+   int IndexOf(const String &str, uint32 fromIndex = 0) const;
 
    /** Returns the last index of (ch) in this string starting at or after (fromIndex), or -1 if not found. */
-   int LastIndexOf(char ch, uint32 fromIndex) const;
+   int LastIndexOf(char ch, uint32 fromIndex = 0) const;
 
-   /** Returns the last index of substring (str) in this string, or -1 if not found. */
+   /** Returns the last index of substring (str) in this string */
    int LastIndexOf(const String &str) const;
 
    /** Returns the last index of substring (str) in this string starting at or after (fromIndex), or -1 if not found. */
@@ -220,10 +186,10 @@ public:
    bool StartsWith(const String &prefix, uint32 toffset) const; 
 
    /** Returns a string that consists of (str) prepended to this string.  Does not modify the String it is called on. */
-   String Prepend(const String & str) const;
+   String Prepend(const String & str) const {String ret = str; ret += *this; return ret;}
 
    /** Returns a string that consists of (str) appended to this string.  Does not modify the String it is called on. */
-   String Append(const String & str) const;
+   String Append(const String & str) const {String ret = *this; ret += str; return ret;}
 
    /** Returns a string that consists of only the last part of this string, starting with index (beginIndex).  Does not modify the string it is called on. */
    String Substring(uint32 beginIndex) const; 
@@ -296,11 +262,15 @@ public:
    /** Returns a hash code for this string */
    uint32 HashCode() const;
 
-   /** Replaces all instances of (oldChar) in this string with (newChar) */
-   void Replace(char oldChar, char newChar); 
+   /** Replaces all instances of (oldChar) in this string with (newChar).
+     * @returns B_NO_ERROR on success, or B_ERROR if no changes were necessary.
+     */
+   status_t Replace(char oldChar, char newChar); 
 
-   /** Replaces all instances of (match) in this string with (replace) */
-   void Replace(const String& match, const String& replace); 
+   /** Replaces all instances of (match) in this string with (replace).
+     * @returns B_NO_ERROR on success, or B_ERROR if no changes were necessary.
+     */
+   status_t Replace(const String& match, const String& replace); 
  
    /** Reverses the order of all characters in the string, so that e.g. "string" becomes "gnirts" */
    void Reverse();
@@ -313,7 +283,7 @@ public:
    /** Part of the Flattenable interface.
     *  @return B_STRING_TYPE
     */
-   virtual type_code       TypeCode() const {return B_STRING_TYPE;}
+   virtual type_code TypeCode() const {return B_STRING_TYPE;}
 
    /** Part of the Flattenable interface.
     *  @return Length()+1  (the +1 is for the terminating NUL byte)
@@ -374,64 +344,14 @@ public:
 /** A function for comparing (const char *)'s -- calls strcmp() */
 int CStringCompareFunc(const char * const &, const char * const &, void *);
 
-//Friend Functions
-//================
-
-inline const String operator+(const String & lhs, const String &rhs) 
-{
-   String ret(lhs);
-   ret += rhs;
-   return ret; 
-}
-
-inline const String operator+(const String & lhs, const char *rhs) 
-{
-   String ret(lhs);
-   ret += rhs;
-   return ret; 
-}
-
-inline const String operator+(const char * lhs, const String & rhs) 
-{
-   String ret(lhs);
-   ret += rhs;
-   return ret; 
-}
-
-inline const String operator+(const String & lhs, char rhs) 
-{
-   String ret(lhs);
-   ret += rhs;
-   return ret; 
-}
-
-inline const String operator-(const String & lhs, const String &rhs) 
-{
-   String ret(lhs);
-   ret -= rhs;
-   return ret; 
-}
-
-inline const String operator-(const String & lhs, const char *rhs) 
-{
-   String ret(lhs);
-   ret -= rhs;
-   return ret; 
-}
-
-inline const String operator-(const char *lhs, const String &rhs) 
-{
-   String ret(lhs);
-   ret -= rhs;
-   return ret; 
-}
-
-inline const String operator-(const String & lhs, char rhs) 
-{
-   String ret(lhs);
-   ret -= rhs;
-   return ret; 
-}
+inline String operator+(const String & lhs, const String &rhs)  {String ret(lhs); ret += rhs; return ret;}
+inline String operator+(const String & lhs, const char *rhs)    {String ret(lhs); ret += rhs; return ret;}
+inline String operator+(const char * lhs,   const String & rhs) {String ret(lhs); ret += rhs; return ret;}
+inline String operator+(const String & lhs, char rhs)           {String ret(lhs); ret += rhs; return ret;}
+inline String operator-(const String & lhs, const String &rhs)  {String ret(lhs); ret -= rhs; return ret;}
+inline String operator-(const String & lhs, const char *rhs)    {String ret(lhs); ret -= rhs; return ret;}
+inline String operator-(const char *lhs,    const String &rhs)  {String ret(lhs); ret -= rhs; return ret;}
+inline String operator-(const String & lhs, char rhs)           {String ret(lhs); ret -= rhs; return ret;}
 
 };  // end namespace muscle
 

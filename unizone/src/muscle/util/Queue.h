@@ -19,9 +19,9 @@ template <class ItemType> class Queue
 {
 public:
    /** Constructor.
-    *  @param initialSize Specifies how many slots to pre-allocate.  Defaults to (SMALL_QUEUE_SIZE).
+    *  @param initialSlots Specifies how many slots to pre-allocate.  Defaults to (SMALL_QUEUE_SIZE).
     */
-   Queue(uint32 initialSize = SMALL_QUEUE_SIZE);
+   Queue(uint32 initialSlots = SMALL_QUEUE_SIZE);
 
    /** Copy constructor. */
    Queue(const Queue& copyMe);
@@ -208,13 +208,17 @@ public:
      */
    ItemType * GetItemPointer(uint32 index) const {return GetItemAt(index);}
 
-   /** Makes sure there is enough space allocated for at least
-    *  (numItems) items.  You only need to call this if
-    *  you wish to minimize the number of data re-allocations done.
-    *  @param numItems the minimum amount of items to pre-allocate space for in the Queue.
+   /** Makes sure there is enough space allocated for at least (numSlots) items.  
+    *  You only need to call this if you wish to minimize the number of data re-allocations done,
+    *  or wish to add or remove a large number of default items at once (by specifying setNumItems=true).
+    *  @param numSlots the minimum amount of items to pre-allocate space for in the Queue.
+    *  @param setNumItems If true, the length of the Queue will be altered by adding or removing
+    *                     items to (from) the tail of the Queue until the Queue is the specified size.
+    *                     If false (the default), more slots may be pre-allocated, but the 
+    *                     number of items officially in the Queue remains the same as before.
     *  @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory)
     */
-   status_t EnsureSize(uint32 numItems);
+   status_t EnsureSize(uint32 numSlots, bool setNumItems = false);
 
    /** Returns the last index of the given (item), or -1 if (item) is
     *  not found in the list.  O(n) search time.
@@ -588,24 +592,22 @@ Clear()
 template <class ItemType>
 status_t 
 Queue<ItemType>::
-EnsureSize(uint32 size)
+EnsureSize(uint32 size, bool setNumItems)
 {
    if ((_queue == NULL)||(_queueSize < size))
    {
       const uint32 sqLen = ARRAYITEMS(_smallQueue);
-      uint32 newQLen = (size <= sqLen) ? sqLen : (size*2);  // if we're gonna do a new[], double it for later
+      uint32 newQLen = ((setNumItems)||(size <= sqLen)) ? muscleMax(sqLen,size) : (size*2);  // if we're gonna do an implicit new[], we might as well double it to avoid another reallocation later
       if (newQLen < _initialSize) newQLen = _initialSize;
 
       ItemType * newQueue = ((_queue == _smallQueue)||(newQLen > sqLen)) ? newnothrow ItemType[newQLen] : _smallQueue;
       if (newQueue == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
       if (newQueue == _smallQueue) newQLen = sqLen;
       
-      if (_itemCount > 0)
-      {
-         for (uint32 i=0; i<_itemCount; i++) (void) GetItemAt(i, newQueue[i]);
-         _headIndex = 0;
-         _tailIndex = _itemCount-1;
-      }
+      for (uint32 i=0; i<_itemCount; i++) (void) GetItemAt(i, newQueue[i]);  // we know that (_itemCount < size)
+      if (setNumItems) _itemCount = size;
+      _headIndex = 0;
+      _tailIndex = _itemCount-1;
 
       if (_queue == _smallQueue) 
       {
@@ -617,6 +619,8 @@ EnsureSize(uint32 size)
       _queue = newQueue;
       _queueSize = newQLen;
    }
+   else if (setNumItems) while(_itemCount > size) (void) RemoveTail();
+
    return B_NO_ERROR;
 }
 

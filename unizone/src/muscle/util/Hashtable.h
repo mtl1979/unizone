@@ -266,7 +266,7 @@ public:
    /** Returns true iff the table contains a mapping with the given key.  (O(1) search time) */
    bool ContainsKey(const KeyType& key) const;
 
-   /** Returns true iff the table contains a mapping with the given value.  (Note: O(n) search time) */
+   /** Returns true iff the table contains a mapping with the given value.  (O(n) search time) */
    bool ContainsValue(const ValueType& value) const;
 
    /** Returns the given key's position in the hashtable's linked list, or -1 if the key wasn't found.  O(n) count time (if the key exists, O(1) if it doesn't) */
@@ -277,7 +277,7 @@ public:
     *  @param setValue On success, the associated value is copied into this object.
     *  @return B_NO_ERROR on success, B_ERROR if their was no value found for the given key.
     */
-   status_t Get(const KeyType& key, ValueType& setValue) const; 
+   status_t GetValue(const KeyType& key, ValueType& setValue) const; 
 
    /** Retrieve a pointer to the associated value object for the given key.  (O(1) lookup time)
     *  @param key The key to use to look up a value.
@@ -285,7 +285,25 @@ public:
     *          or NULL of no object was found.  Note that this object is only
     *          guaranteed to remain valid as long as the Hashtable remains unchanged.
     */
-   ValueType * Get(const KeyType & key) const;
+   ValueType * GetValue(const KeyType & key) const;
+
+   /** Given a lookup key, returns the a copy of the actual key as held by the table.
+    *  This method is only useful in rare situations where the hashing or comparison
+    *  functions are such that lookupKeys and held keys are not guaranteed equivalent.
+    *  @param lookupKey The key used to look up the held key object.
+    *  @param setKey On success, the actual key held in the table is placed here.
+    *  @return B_NO_ERROR on success, or B_ERROR on failure.
+    */
+   status_t GetKey(const KeyType & lookupKey, KeyType & setKey) const;
+
+   /** Given a key, returns a pointer to the actual key object in this table that matches
+    *  that key, or NULL if there is no matching key.  This method is only useful in rare
+    *  situations where the hashing or comparison functions are such that lookup keys and
+    *  held keys are not guaranteed equivalent.
+    *  @param lookupKey The key used to look up the key object
+    *  @return A pointer to an internally held key object on success, or NULL on failure.
+    */
+   const KeyType * GetKey(const KeyType & lookupkey) const;
 
    /** Get an iterator for use with this table.
      * @param backwards Set this to true if you want to iterate through the item list backwards.  Defaults to false.
@@ -318,7 +336,9 @@ public:
     */
    status_t GetKeyAt(uint32 index, KeyType & retKey) const;
 
-   /** Places the given (key, value) mapping into the table.  Any previous entry with a key of (key) will be replaced.  (average O(1) insertion time)
+   /** Places the given (key, value) mapping into the table.  Any previous entry with a key of (key) will be replaced.  
+    *  (average O(1) insertion time, unless auto-sorting is enabled, in which case it becomes O(N) insertion time for
+    *  keys that are not already in the table)
     *  @param key The key that the new value is to be associated with.
     *  @param value The value to associate with the new key.
     *  @param setPreviousValue If there was a previously existing value associated with (key), it will be copied into this object.
@@ -327,7 +347,9 @@ public:
     */
    status_t Put(const KeyType& key, const ValueType& value, ValueType & setPreviousValue, bool * optSetReplaced = NULL);
 
-   /** Places the given (key, value) mapping into the table.  Any previous entry with a key of (key) will be replaced.  (average O(1) insertion time)
+   /** Places the given (key, value) mapping into the table.  Any previous entry with a key of (key) will be replaced. 
+    *  (average O(1) insertion time, unless auto-sorting is enabled, in which case it becomes O(N) insertion time for
+    *  keys that are not already in the table)
     *  @param key The key that the new value is to be associated with.
     *  @param value The value to associate with the new key.
     *  @return B_NO_ERROR If the operation succeeded, B_ERROR if it failed (out of memory?)
@@ -347,12 +369,13 @@ public:
     */
    status_t Remove(const KeyType& key, ValueType & setRemovedValue);
 
-   /** Removes all mappings from the hash table.  (O(n) clear time) */
+   /** Removes all mappings from the hash table.  (O(N) clear time) */
    void Clear();
 
    /** This method can be used to activate or deactivate auto-sorting on this Hashtable.
      * If active, auto-sorting ensures that whenever Put() is called, the new/updated item is
-     * moved to the correct place in the iterator traversal list.
+     * moved to the correct place in the iterator traversal list.  Note that using auto-sort
+     * means that Put() becomes an O(N) operation instead of O(1).
      * Default mode is AUTOSORT_DISABLED.
      * @param mode Either AUTOSORT_DISABLED, AUTOSORT_BY_KEY, or AUTOSORT_BY_VALUE.
      * @param sortNow If true, Sort() will be called to ensure that the table is in a sorted state.
@@ -456,24 +479,34 @@ public:
      *  <li>Else if the sort-by-key callback function is set, sort-by-key will be used.</li>
      *  <li>Else we return B_ERROR.</li>
      * </ol>
-     * Note that this sort algorithm is O(n^2), so it's not efficient for very large tables.
+     * This method uses a very efficient O(log(N)) MergeSort algorithm.
      * @return B_NO_ERROR on success, or B_ERROR if no sort method could be determined (as described above)
      */
    status_t Sort() {return SortByAux((_autoSortMode != AUTOSORT_BY_VALUE) ? _userKeyCompareFunc : NULL, (_autoSortMode != AUTOSORT_BY_KEY) ? _userValueCompareFunc : NULL, _compareCookie);}
 
    /** Forcefully sorts the iteration traversal list of this table using the given key comparison function.
-     * Note that the sort algorithm is O(n^2), so it's not efficient for very large tables.
+     * This method uses a very efficient O(log(N)) MergeSort algorithm.
      * @param func The key-comparison function to use.  (If NULL, this call becomes a no-op)
      * @param optCompareCookie Optional cookie to pass to func().
      */
    void SortByKey(KeyCompareFunc func, void * optCompareCookie = NULL) {(void) SortByAux(func, NULL, optCompareCookie);}
 
    /** Forcefully sorts the iteration traversal list of this table using the given value comparison function.
-     * Note that the sort algorithm is O(n^2), so it's not efficient for very large tables.
+     * This method uses a very efficient O(log(N)) MergeSort algorithm.
      * @param func The value-comparison function to use.  (If NULL, this call becomes a no-op)
      * @param optCompareCookie Optional cookie to func().
      */
    void SortByValue(ValueCompareFunc func, void * optCompareCookie = NULL) {(void) SortByAux(NULL, func, optCompareCookie);}
+
+   /** Synonym for GetValue(), retained for compatibility with old code.
+    *  @deprecated Use GetValue() instead
+    */
+   status_t Get(const KeyType& key, ValueType& setValue) const {return GetValue(key, setValue);}
+
+   /** Synonym for GetValue(), retained for compatibility with old code.
+    *  @deprecated Use GetValue() instead
+    */
+   ValueType * Get(const KeyType & key) const {return GetValue(key);}
 
 private:
    friend class HashtableIterator<KeyType, ValueType, HashFunctorType>;
@@ -481,29 +514,21 @@ private:
    class HashtableEntry
    {
    public:
-      HashtableEntry() : _next(NULL), _iterPrev(NULL), _iterNext(NULL), _valid(false)
-      {
-         // empty
-      }
- 
-      HashtableEntry(const HashtableEntry & rhs) : _iterPrev(NULL), _iterNext(NULL)
-      {
-         *this = rhs;
-      }
-
-      ~HashtableEntry()
-      {
-         // empty
-      }
+      HashtableEntry() : _next(NULL), _iterPrev(NULL), _iterNext(NULL), _valid(false) {/* empty */}
+      HashtableEntry(const HashtableEntry & rhs) : _iterPrev(NULL), _iterNext(NULL) {*this = rhs;}
+      ~HashtableEntry() {/* empty */}
 
       HashtableEntry & operator=(const HashtableEntry & rhs)
       {
-         _hash  = rhs._hash;
-         _key   = rhs._key;
-         _value = rhs._value;
-         _next  = rhs._next;
-         _valid = rhs._valid;
-         // DO NOT copy _iterPrev and _iterNext from rhs!  They must remain the same as before.
+         if (this != &rhs)
+         {
+            _hash  = rhs._hash;
+            _key   = rhs._key;
+            _value = rhs._value;
+            _next  = rhs._next;
+            _valid = rhs._valid;
+            // DO NOT copy _iterPrev and _iterNext from rhs!  They must remain the same as before.
+         }
          return * this;
       }
  
@@ -693,9 +718,9 @@ Hashtable<KeyType,ValueType,HashFunctorType>::GetKeyAt(uint32 index, KeyType & r
 
 template <class KeyType, class ValueType, class HashFunctorType>
 status_t
-Hashtable<KeyType,ValueType,HashFunctorType>::Get(const KeyType& key, ValueType & setValue) const
+Hashtable<KeyType,ValueType,HashFunctorType>::GetValue(const KeyType& key, ValueType & setValue) const
 {
-   ValueType * ptr = Get(key);
+   ValueType * ptr = GetValue(key);
    if (ptr)
    {
       setValue = *ptr;
@@ -706,11 +731,33 @@ Hashtable<KeyType,ValueType,HashFunctorType>::Get(const KeyType& key, ValueType 
 
 template <class KeyType, class ValueType, class HashFunctorType>
 ValueType *
-Hashtable<KeyType,ValueType,HashFunctorType>::Get(const KeyType& key) const
+Hashtable<KeyType,ValueType,HashFunctorType>::GetValue(const KeyType& key) const
 {
    HashtableEntry * e = GetEntry(key, NULL);
    return e ? &e->_value : NULL;
 }
+
+template <class KeyType, class ValueType, class HashFunctorType>
+const KeyType * 
+Hashtable<KeyType,ValueType,HashFunctorType>::GetKey(const KeyType& lookupKey) const
+{
+   HashtableEntry * e = GetEntry(lookupKey, NULL);
+   return e ? &e->_key : NULL;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t
+Hashtable<KeyType,ValueType,HashFunctorType>::GetKey(const KeyType& lookupKey, KeyType & setKey) const
+{
+   const KeyType * ptr = GetKey(lookupKey);
+   if (ptr)
+   {
+      setKey = *ptr;
+      return B_NO_ERROR;
+   }
+   else return B_ERROR;
+}
+
 
 template <class KeyType, class ValueType, class HashFunctorType>
 typename Hashtable<KeyType,ValueType,HashFunctorType>::HashtableEntry *
@@ -718,23 +765,23 @@ Hashtable<KeyType,ValueType,HashFunctorType>::GetEntry(const KeyType& key, Hasht
 {
    if (_table)
    {
-		uint32 hash = _functor(key);
-		HashtableEntry * e = &_table[hash % _tableSize];
-		if (e->_valid)
-		{
-			HashtableEntry * prev = NULL;
-			while(e)
-			{
-				if ((e->_hash == hash)&&((_userKeyCompareFunc) ? (_userKeyCompareFunc(e->_key, key, _compareCookie) == 0) : (e->_key == key))) 
-				{
-					if (optRetPrev) *optRetPrev = prev;
-					return e;
-				}
-				prev = e;
-				e = e->_next; 
-			}
-		}
+      uint32 hash = _functor(key);
+      HashtableEntry * e = &_table[hash % _tableSize];
+      if (e->_valid)
+      {
+         HashtableEntry * prev = NULL;
+         while(e)
+         {
+            if ((e->_hash == hash)&&((_userKeyCompareFunc) ? (_userKeyCompareFunc(e->_key, key, _compareCookie) == 0) : (e->_key == key))) 
+            {
+               if (optRetPrev) *optRetPrev = prev;
+               return e;
+            }
+            prev = e;
+            e = e->_next; 
+         }
       }
+   }
    return NULL;
 }
 
@@ -756,37 +803,64 @@ Hashtable<KeyType,ValueType,HashFunctorType>::CompareEntries(const HashtableEntr
    return optValueFunc ? optValueFunc(left._value, right._value, cookie) : (optKeyFunc ? optKeyFunc(left._key, right._key, cookie) : 0);
 }
 
+
+
+// Linked-list MergeSort adapted from Simon Tatham's C code at http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.c
 template <class KeyType, class ValueType, class HashFunctorType>
 status_t 
 Hashtable<KeyType,ValueType,HashFunctorType>::SortByAux(KeyCompareFunc optKeyFunc, ValueCompareFunc optValueFunc, void * cookie)
 {
    if ((optKeyFunc)||(optValueFunc))
    {
-      HashtableIterator<KeyType,ValueType,HashFunctorType> * saveIterList = _iterList;
-      _iterList = NULL;  // avoid modifying our iterators
-
-      // First, remove all the nodes from the iteration list and put them into our private list instead.  
-      HashtableEntry * privList = NULL;
-      while(_iterHead)
+      if (_iterHead)
       {
-         HashtableEntry * temp = _iterHead; // save since RemoveIterationEntry() will change _iterHead
-         RemoveIterationEntry(_iterHead);
-         temp->_iterNext = privList;
-         privList = temp;
+         for (uint32 mergeSize = 1; /* empty */; mergeSize *= 2)
+         {
+            HashtableEntry * p = _iterHead;
+            _iterHead = _iterTail = NULL;
+
+            uint32 numMerges = 0;  /* count number of merges we do in this pass */
+            while(p) 
+            {
+               numMerges++;  /* there exists a merge to be done */
+
+               /* step `mergeSize' places along from p */
+               HashtableEntry * q = p;
+               uint32 psize = 0;
+               for (uint32 i=0; i<mergeSize; i++) 
+               {
+                   psize++;
+                   q = q->_iterNext;
+                   if (!q) break;
+               }
+
+               /* now we have two lists; merge them */
+               for (uint32 qsize=mergeSize; ((psize > 0)||((qsize > 0)&&(q))); /* empty */) 
+               {
+                  HashtableEntry * e;
+
+                  /* decide whether next element of the merge comes from p or q */
+                       if (psize == 0)                                                {e = q; q = q->_iterNext; qsize--;}
+                  else if ((qsize == 0)||(!q))                                        {e = p; p = p->_iterNext; psize--;}
+                  else if (CompareEntries(*p,*q,optKeyFunc,optValueFunc,cookie) <= 0) {e = p; p = p->_iterNext; psize--;}
+                  else                                                                {e = q; q = q->_iterNext; qsize--;}
+
+                  /* append to our new more-sorted list */
+                  if (_iterTail) _iterTail->_iterNext = e;
+                            else _iterHead = e;
+                  e->_iterPrev = _iterTail;
+                  _iterTail = e;
+               }
+
+               p = q; /* now p has stepped `mergeSize' places along, and q has too */
+            }
+            _iterTail->_iterNext = NULL;
+            if (numMerges <= 1) return B_NO_ERROR;
+         }
       }
-
-      // Now we go through our list and add everything back using the given function, 
-      while(privList)
-      {
-         HashtableEntry * next = privList->_iterNext;
-         InsertSortedIterationEntry(privList, optKeyFunc, optValueFunc, cookie);
-         privList = next;
-      } 
-
-      _iterList = saveIterList;  // lastly restore our iterators
-      return B_NO_ERROR;
+      return B_NO_ERROR;  // it's easy to sort an empty list :^)
    }
-   else return B_ERROR;
+   return B_ERROR;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
@@ -1214,9 +1288,9 @@ Hashtable<KeyType,ValueType,HashFunctorType>::NextPrime(uint32 start) const
 {
    if (start % 2 == 0) start++;
    uint32 i;
-   for(; ; start += 2)
+   for (; ; start += 2)
    {
-      for(i = 3; i * i <= start; i += 2) if (start % i == 0) break;
+      for (i = 3; i * i <= start; i += 2) if (start % i == 0) break;
       if (i * i > start) return start;
    }
 }
@@ -1253,15 +1327,18 @@ template <class KeyType, class ValueType, class HashFunctorType>
 HashtableIterator<KeyType,ValueType,HashFunctorType> &
 HashtableIterator<KeyType,ValueType,HashFunctorType>:: operator=(const HashtableIterator<KeyType,ValueType,HashFunctorType> & rhs)
 {
-   if (_owner != rhs._owner)
+   if (this != &rhs)
    {
-      if (_owner) _owner->UnregisterIterator(this);
-      _owner = rhs._owner;
-      if (_owner) _owner->RegisterIterator(this);
+      if (_owner != rhs._owner)
+      {
+         if (_owner) _owner->UnregisterIterator(this);
+         _owner = rhs._owner;
+         if (_owner) _owner->RegisterIterator(this);
+      }
+      _backwards       = rhs._backwards;
+      _nextKeyCookie   = rhs._nextKeyCookie;
+      _nextValueCookie = rhs._nextValueCookie;
    }
-   _backwards       = rhs._backwards;
-   _nextKeyCookie   = rhs._nextKeyCookie;
-   _nextValueCookie = rhs._nextValueCookie;
    return *this;
 }
 

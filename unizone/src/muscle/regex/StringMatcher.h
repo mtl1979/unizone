@@ -5,6 +5,7 @@
 
 #include <sys/types.h>
 #include "util/RefCount.h"
+#include "util/String.h"
 
 #ifdef __BEOS__
 # if __POWERPC__
@@ -21,8 +22,6 @@
 #endif
 
 namespace muscle {
-
-class String;
 
 ////////////////////////////////////////////////////////////////////////////
 //
@@ -41,7 +40,7 @@ public:
    StringMatcher();
 
    /** A constructor that sets the given expression.  See SetPattern() for argument semantics. */
-   StringMatcher(const char * matchString, bool isSimpleFormat = true);
+   StringMatcher(const String & matchString, bool isSimpleFormat = true);
     
    /** Destructor */
    ~StringMatcher();
@@ -60,8 +59,16 @@ public:
     *                       instead of the simple syntax, set isSimpleFormat to false.
     * @return B_NO_ERROR on success, B_ERROR on error (e.g. expression wasn't parsable, or out of memory)
     */
-   status_t SetPattern(const char * expression, bool isSimpleFormat=true);
+   status_t SetPattern(const String & expression, bool isSimpleFormat=true);
     
+   /** Returns the pattern String as it was previously passed in to SetPattern() */
+   const String & GetPattern() const {return _pattern;}
+
+   /** Returns true iff this StringMatcher's pattern specifies exactly one possible string.
+    *  (i.e. the pattern is just plain old text, with no wildcards or other pattern matching logic specified)
+    */
+   bool IsPatternUnique() const {return (_hasRegexTokens == false)&&(_negate == false)&&(_rangeMin == MUSCLE_NO_LIMIT);}
+
    /** Returns true iff (string) is matched by the current expression.
     * @param string a string to match against using our current expression.
     * @return true iff (string) matches, false otherwise.
@@ -71,8 +78,9 @@ public:
    /** If set true, Match() will return the logical opposite of what
      * it would otherwise return; e.g. it will return true only when
      * the given string doesn't match the pattern.
-     * Default state is false.  Note that this flag can also be set
-     * or unset by calling SetPattern(..., true).
+     * Default state is false.  Note that this flag is also set by
+     * SetPattern(..., true), based on whether or not the pattern
+     * string starts with a tilde.
      */
    void SetNegate(bool negate) {_negate = negate;}
 
@@ -82,6 +90,8 @@ public:
 private:
    bool _regExpValid;
    bool _negate;
+   bool _hasRegexTokens;
+   String _pattern;
    regex_t _regExp;
    uint32 _rangeMin;
    uint32 _rangeMax;   
@@ -100,9 +110,10 @@ void EscapeRegexTokens(String & str);
  */
 bool HasRegexTokens(const char * str);
 
-/** Returns true iff (c) is a regular expression "special" char.
+/** Returns true iff (c) is a regular expression "special" char as far as StringMatchers are concerned.
  *  @param c an ASCII char
- *  @param isFirstCharInString true iff (c) is the first char in a pattern string.
+ *  @param isFirstCharInString true iff (c) is the first char in a pattern string.  (important because
+ *                                  StringMatchers recognize certain chars as special only if they are the first in the string)
  *  @return true iff (c) is a special regex char.
  */
 bool IsRegexToken(char c, bool isFirstCharInString);

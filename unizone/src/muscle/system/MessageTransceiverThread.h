@@ -352,7 +352,6 @@ public:
    /** Implemented to check our outgoing message queue to see if it's drained */
    virtual void Tick(uint64);
 
-protected:
    /** Returns a human-readable label for this session type:  "ThreadWorker" */
    virtual const char * GetTypeName() const {return "ThreadWorker";}
 
@@ -423,6 +422,9 @@ public:
    /** Returns the current default distribution path. */
    const String & GetDefaultDistributionPath() const {return _defaultDistributionPath;}
 
+   /** Returns a human-readable label for this session type:  "ThreadSupervisor" */
+   virtual const char * GetTypeName() const {return "ThreadSupervisor";}
+
 protected:
    /** Handles control messages received from the main thread. 
      * @param msg Reference to the message from the owner.
@@ -430,9 +432,6 @@ protected:
      * @returns B_NO_ERROR on success, or B_ERROR if the thread should go away.
      */
    virtual status_t MessageReceivedFromOwner(MessageRef msg, uint32 numLeft);
-
-   /** Returns a human-readable label for this session type:  "ThreadSupervisor" */
-   virtual const char * GetTypeName() const {return "ThreadSupervisor";}
 
 private:
    friend class MessageTransceiverThread;

@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.23"
+#define MUSCLE_VERSION_STRING "2.25"
 
 // Just declare the muscle namespace as existing.
 // If we ever decide to make the muscle namespace a superset
@@ -65,7 +65,7 @@ namespace muscle
 # define MCRASH_IMPL *((uint32*)NULL) = 0x666
 #endif
 
-#define MCRASH(msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); MCRASH_IMPL;}
+#define MCRASH(msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
 #define MASSERT(x,msg) {if(!(x)) MCRASH(msg)}
 #define MCHECKPOINT muscle::LogTime(muscle::MUSCLE_LOG_WARNING, "Reached checkpoint at %s:%i\n", __FILE__, __LINE__)
 

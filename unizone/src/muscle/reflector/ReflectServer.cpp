@@ -561,9 +561,9 @@ status_t ReflectServer :: ClearLameDucks()
          if (_sessions.ContainsKey(id))
          {
             duck->AboutToDetachFromServer();
-			if (_doLogging) LogTime(MUSCLE_LOG_INFO, "Closed %s [%s] to [%s]@%i (%lu left)\n", duck->GetTypeName(), id, duck->GetHostName(), duck->GetPort(), _sessions.GetNumItems()-1);
-			duck->_owner = NULL;
-			(void) _sessions.Remove(id);
+            if (_doLogging) LogTime(MUSCLE_LOG_INFO, "Closed %s [%s] to [%s]@%i (%lu left)\n", duck->GetTypeName(), id, duck->GetHostName(), duck->GetPort(), _sessions.GetNumItems()-1);
+            duck->_owner = NULL;
+            (void) _sessions.Remove(id);
          }
       }
    }

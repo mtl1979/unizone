@@ -53,7 +53,6 @@ public:
    /** Returns true iff our client's own messages will be bounced back to him.  */
    bool GetReflectToSelf() const;
 
-protected:
    /** Returns a human-readable label for our session type:  "Dumb Session" */
    virtual const char * GetTypeName() const {return "Dumb Session";}
 

@@ -208,6 +208,9 @@ public:
     */
    virtual DataIO * CreateDataIO(int socket);
 
+   /** Should return a pretty, human readable string identifying this class.  */
+   virtual const char * GetTypeName() const = 0;
+
 protected:
    /**
     * Adds a MessageRef to our gateway's outgoing message queue.
@@ -216,9 +219,6 @@ protected:
     * @return B_NO_ERROR on success, B_ERROR if out-of-memory.
     */
    virtual status_t AddOutgoingMessage(MessageRef ref);
-
-   /** Should return a pretty, human readable string identifying this class.  */
-   virtual const char * GetTypeName() const = 0;
 
    /** 
     * Convenience method:  Calls MessageReceivedFromSession() on all session

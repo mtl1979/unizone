@@ -1,21 +1,13 @@
 /* This file is Copyright 2002 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
-/******************************************* 
-   Downloaded from: http://www.mike95.com 
-   Copyright (c)1997 Michael Olivero 
-   All Rights Reserved 
-********************************************/ 
 #include "util/String.h"
 #include <stdarg.h>
 
 namespace muscle {
 
-//============
-//Constructors
-//============
-String::String(const char * str) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
+String::String(const char * str, int32 maxLen) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
 {
-   *this = str;
+   SetCstr(str, maxLen);
 }
 
 String::String(const String & str) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
@@ -23,67 +15,24 @@ String::String(const String & str) : Flattenable(), _buffer(NULL), _bufferLen(0)
    *this = str;
 }
 
-char
-String::CharAt(uint32 loc) const
+status_t
+String::SetCstr(const char * str, int32 maxLen)
 {
-   return operator[](loc);
-}
-
-int
-String::CompareTo(const String &s2) const
-{
-   return strcmp(Cstr(), s2.Cstr());
-}
-
-String &
-String::operator=(const char c)
-{
-   char buf[2] = {c, '\0'};
-   *this = buf;
-   return *this;
-}
-
-String &
-String::operator=(const String & rhs)
-{
-   if (this != &rhs)
+   if (maxLen < 0) maxLen = str ? strlen(str) : 0;
+   if (maxLen > 0)
    {
-      uint32 rhsLen = rhs.Length();
-      if (rhsLen > 0)
-      {
-         if (EnsureBufferSize(rhsLen+1, false) == B_NO_ERROR)
-         {
-            strcpy(_buffer, rhs.Cstr());
-            _length = rhsLen;
-         }
-      }
-      else
-      {
-         if (_buffer) _buffer[0] = '\0';
-         _length = 0;
-      }
-   }
-   return *this;
-}
-
-String &
-String::operator=(const char * val)
-{
-   if ((val)&&(val[0]))
-   {
-      int vlen = strlen(val);
-      if (EnsureBufferSize(vlen+1, false) == B_NO_ERROR)
-      {
-         strcpy(_buffer, val);
-         _length = vlen;
-      }
+      if (str[maxLen-1] != '\0') maxLen++;  // make room to add the NUL byte if necessary
+      if (EnsureBufferSize(maxLen, false) != B_NO_ERROR) return B_ERROR;
+      memcpy(_buffer, str, maxLen-1);
+      _buffer[maxLen-1] = '\0';
+      _length = maxLen-1;
    }
    else
    {
       if (_buffer) _buffer[0] = '\0';
       _length = 0;
    }
-   return *this;
+   return B_NO_ERROR;
 }
 
 String &
@@ -108,18 +57,6 @@ String::operator-=(const char aChar)
       (*this) += temp;
    }
    return *this;
-}
-
-String
-String :: Prepend(const String & str) const
-{
-   return str + (*this);
-}
-
-String 
-String :: Append(const String & str) const
-{
-   return (*this) + str;
 }
 
 String &
@@ -151,19 +88,6 @@ String::operator-=(const String &other)
    return *this;
 }
 
-
-String &
-String::operator<<(const String &rhs)
-{
-   return const_cast<String&>(*this += rhs);
-}
-
-String &
-String::operator<<(const char *rhs)
-{
-   return *this << String(rhs);
-}
-
 String &
 String::operator<<(int rhs)
 {
@@ -191,60 +115,37 @@ String::operator<<(bool rhs)
 bool
 String::operator==(const String &rhs) const
 {
-   if (Length() != rhs.Length()) return 0;
-   if (this == &rhs) return true; 
-   return (strcmp(Cstr(), rhs.Cstr()) == 0);
+   return (this == &rhs) ? true : ((Length() == rhs.Length()) ? (strcmp(Cstr(), rhs.Cstr()) == 0) : false);
 }
 
 bool
 String::operator<(const String &rhs) const
 {
-   return strcmp(Cstr(), rhs.Cstr()) < 0;
+   return (this == &rhs) ? false : (strcmp(Cstr(), rhs.Cstr()) < 0);
 }
 
 bool
 String::operator>(const String &rhs) const
 {
-   return strcmp(Cstr(), rhs.Cstr()) > 0;
+   return (this == &rhs) ? false : (strcmp(Cstr(), rhs.Cstr()) > 0);
 }
 
 bool
 String::operator<=(const String &rhs) const
 {
-   return strcmp(Cstr(), rhs.Cstr()) <= 0;
+   return (this == &rhs) ? true : (strcmp(Cstr(), rhs.Cstr()) <= 0);
 }
 
 bool
 String::operator>=(const String & rhs) const
 {
-   return strcmp(Cstr(), rhs.Cstr()) >= 0;
+   return (this == &rhs) ? true : (strcmp(Cstr(), rhs.Cstr()) >= 0);
 }
-
-char &
-String::operator[](uint32 Index)
-{
-   verifyIndex(Index);
-   return _buffer[Index];
-}
-
-char
-String::operator[](uint32 Index) const
-{
-   verifyIndex(Index);
-   return _buffer[Index];
-}
-
 
 bool
 String::EndsWith(const String &s2) const
 { 
    return (Length() < s2.Length()) ? false : (strcmp(Cstr()+(Length()-s2.Length()), s2.Cstr()) == 0); 
-}
-
-bool
-String::Equals(const String &s2) const
-{
-   return (*this == s2);
 }
 
 void
@@ -258,23 +159,31 @@ String::Reverse()
    }
 }
 
-void
+status_t
 String::Replace(char findChar, char replaceChar)
 {
+   status_t ret = B_ERROR;
    if ((_buffer)&&(findChar != replaceChar))
    {
       char * c = _buffer;
       while(*c)
       {
-         if (*c == findChar) *c = replaceChar;
+         if (*c == findChar) 
+         {
+            *c = replaceChar;
+            ret = B_NO_ERROR;
+         }
          c++;
       }
    }
+   return ret;
 }
    
-void
+status_t
 String::Replace(const String& match, const String& replace)
 {
+   status_t ret = B_ERROR;
+
    if (match != replace)
    {
       String temp(*this);
@@ -283,19 +192,18 @@ String::Replace(const String& match, const String& replace)
       int loc; 
       while ((loc = temp.IndexOf(match)) != -1)
       {
+         ret = B_NO_ERROR;
          newString += temp.Substring(0, loc);
          newString += replace;
          temp = temp.Substring(loc + match.Length());
       } 
-      newString += temp;
-      *this = newString;
+      if (ret == B_NO_ERROR) 
+      {
+         newString += temp;
+         *this = newString;
+      }
    }
-}
-
-int
-String::IndexOf(char temp) const
-{ 
-   return IndexOf(temp, 0);
+   return ret;
 }
 
 int
@@ -306,24 +214,10 @@ String::IndexOf(char ch, uint32 fromIndex) const
 }
 
 int
-String::IndexOf(const String &s2) const
-{
-   return IndexOf(s2, 0);
-}
-
-
-int
 String::IndexOf(const String &s2, uint32 fromIndex) const
 {
    const char *theFind = (fromIndex < Length()) ? strstr(Cstr()+fromIndex, s2.Cstr()) : NULL;
    return theFind ? (theFind - Cstr()) : -1;
-}
-
-
-int
-String::LastIndexOf(char theChar) const
-{
-   return LastIndexOf(theChar, 0);
 }
 
 int
@@ -433,11 +327,7 @@ void String :: Flatten(uint8 *buffer) const
 
 status_t String :: Unflatten(const uint8 *buf, uint32 size)
 {
-   const char * str = (const char *) buf;
-   if ((size == 0)||(str[size-1] != '\0')) return B_ERROR;
-
-   *this = str;
-   return B_NO_ERROR;  
+   return SetCstr((const char *)buf, (int32)size);
 }
 
 uint32 String :: HashCode() const

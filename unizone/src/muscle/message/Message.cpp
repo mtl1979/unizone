@@ -10,7 +10,7 @@ namespace muscle {
 static Message _emptyMessage;
 const Message & GetEmptyMessage() {return _emptyMessage;}
 
-static void DoIndents(uint32 num) {for (uint32 i=0; i<num; i++) printf(" ");}
+static void DoIndents(uint32 num, String & s) {for (uint32 i=0; i<num; i++) s += ' ';}
 
 static void ClearMsgFunc(Message * msg, void *) {msg->what = 0; msg->Clear();}
 static MessageRef::ItemPool _messagePool(100, ClearMsgFunc);
@@ -114,8 +114,8 @@ public:
    // Returns true iff this array should be included when flattening. 
    virtual bool IsFlattenable() const = 0;
 
-   // For debugging:  should dump our contents to stdout
-   virtual void PrintToStream(bool recurse, int indent) const = 0;
+   // For debugging:  returns a description of our contents as a String
+   virtual void AddToString(String & s, bool recurse, int indent) const = 0;
 
    // Returns true iff this array is identical to (rhs).  If (compareContents) is false,
    // only the array lengths and type codes are checked, not the data itself.
@@ -201,15 +201,8 @@ protected:
 class TagDataArray : public FixedSizeDataArray<GenericRef>
 {
 public:
-   TagDataArray() 
-   {
-      // empty
-   }
-
-   virtual ~TagDataArray() 
-   {
-      // empty
-   }
+   TagDataArray() {/* empty */}
+   virtual ~TagDataArray() {/* empty */}
 
    virtual void Flatten(uint8 *) const
    {
@@ -232,10 +225,16 @@ public:
    virtual bool IsFlattenable() const {return false;}
 
 protected:
-   virtual void PrintToStream(bool, int indent) const
+   virtual void AddToString(String & s, bool, int indent) const
    {
       uint32 numItems = GetNumItems();
-      for (uint32 i=0; i<numItems; i++) {DoIndents(indent); printf("    %lu. %p\n", i, _data.GetItemAt(i)->GetItemPointer());}
+      for (uint32 i=0; i<numItems; i++) 
+      {
+         DoIndents(indent,s); 
+         char buf[128]; 
+         sprintf(buf, "    %lu. %p\n", i, _data.GetItemAt(i)->GetItemPointer()); 
+         s += buf;
+      }
    }
 };
 DECLAREFIELDTYPE(TagDataArray);
@@ -291,11 +290,20 @@ public:
    virtual type_code TypeCode() const {return _typeCode;}
 
 protected:
-   virtual void PrintToStream(bool, int indent) const
+   virtual void AddToString(String & s, bool, int indent) const
    {
       uint32 numItems = GetNumItems();
-      for (uint32 i=0; i<numItems; i++) {DoIndents(indent); printf("    %lu. ", i); _data.GetItemAt(i)->PrintToStream();}
+      for (uint32 i=0; i<numItems; i++) 
+      {
+         DoIndents(indent,s); 
+         char buf[64]; 
+         sprintf(buf, "    %lu. ", i);  
+         s += buf;
+         AddItemToString(s, _data[i]);
+      }
    }
+
+   virtual void AddItemToString(String & s, const DataType & item) const = 0;
 
 private:
    type_code _typeCode;
@@ -345,11 +353,15 @@ protected:
 
    virtual const char * GetFormatString() const = 0;
 
-   virtual void PrintToStream(bool, int indent) const
+   virtual void AddToString(String & s, bool, int indent) const
    {
-      char temp[100];
       uint32 numItems = GetNumItems();
-      for (uint32 i=0; i<numItems; i++) {sprintf(temp, GetFormatString(), ItemAt(i)); DoIndents(indent); printf("    %lu. [%s]\n", i, temp);}
+      for (uint32 i=0; i<numItems; i++) 
+      {
+         DoIndents(indent,s); 
+         char temp1[100]; sprintf(temp1, GetFormatString(), ItemAt(i));
+         char temp2[150]; sprintf(temp2, "    %lu. [%s]\n", i, temp1);  s += temp2;
+      }
    }
 };
 
@@ -359,6 +371,12 @@ public:
    PointDataArray() {/* empty */}
    virtual ~PointDataArray() {/* empty */}
    virtual GenericRef Clone() const;
+   virtual void AddItemToString(String & s, const Point & p) const 
+   {
+      char buf[128]; 
+      sprintf(buf, "Point: %f %f\n", p.x(), p.y());
+      s += buf;
+   }
 };
 DECLAREFIELDTYPE(PointDataArray);
 
@@ -368,6 +386,12 @@ public:
    RectDataArray() {/* empty */}
    virtual ~RectDataArray() {/* empty */}
    virtual GenericRef Clone() const;
+   virtual void AddItemToString(String & s, const Rect & r) const 
+   {
+      char buf[256]; 
+      sprintf(buf, "Rect: leftTop=(%f,%f) rightBottom=(%f,%f)\n", r.left(), r.top(), r.right(), r.bottom());
+      s += buf;
+   }
 };
 DECLAREFIELDTYPE(RectDataArray);
 
@@ -720,42 +744,50 @@ public:
       return B_NO_ERROR;
    }
 
-   virtual void PrintToStream(bool, int indent) const
+   virtual void AddToString(String & s, bool, int indent) const
    {
       uint32 numItems = GetNumItems();
       for (uint32 i=0; i<numItems; i++)
       {
-         DoIndents(indent);
-         printf("    %lu. ", i);
+         DoIndents(indent,s);
+
+         char buf[100]; 
+         sprintf(buf, "    %lu. ", i);
+         s += buf;
 
          FlatCountable * fc = ItemAt(i)();
          ByteBuffer temp;
-         ByteBuffer * buf = dynamic_cast<ByteBuffer *>(fc);
-         if ((buf == NULL)&&(fc))
+         ByteBuffer * bb = dynamic_cast<ByteBuffer *>(fc);
+         if ((bb == NULL)&&(fc))
          {
             temp.SetNumBytes(fc->FlattenedSize(), false);
             if (temp())
             {
                fc->Flatten((uint8*)temp());
-               buf = &temp;
+               bb = &temp;
             }
          }
 
-         if (buf)
+         if (bb)
          {
-            printf("[flattenedSize=%lu] ", buf->GetNumBytes());
-            uint32 printBytes = muscleMin(buf->GetNumBytes(), (uint32)10);
+            sprintf(buf, "[flattenedSize=%lu] ", bb->GetNumBytes()); 
+            s += buf;
+            uint32 printBytes = muscleMin(bb->GetNumBytes(), (uint32)10);
             if (printBytes > 0)
             {
-               printf("[");
-               for (uint32 j=0; j<printBytes; j++) printf("%02x%s", ((const uint8*)(buf->GetBuffer()))[j], (j<printBytes-1)?" ":"");
-               if (printBytes > 10) printf(" ...");
-               printf("]");
+               s += '[';
+               for (uint32 j=0; j<printBytes; j++) 
+               {
+                  sprintf(buf, "%02x%s", ((const uint8*)(bb->GetBuffer()))[j], (j<printBytes-1)?" ":"");
+                  s += buf;
+               }
+               if (printBytes > 10) s += " ...";
+               s += ']';
             }
          }
-         else printf("[NULL]");
+         else s += "[NULL]";
 
-         printf("\n");
+         s += '\n';
       }
    }
 
@@ -812,12 +844,17 @@ public:
       return B_NO_ERROR;
    }
 
-   virtual void PrintToStream(bool recurse, int indent) const
+   virtual void AddToString(String & s, bool recurse, int indent) const
    {
       uint32 numItems = GetNumItems();
       for (uint32 i=0; i<numItems; i++)
       {
-         DoIndents(indent);  printf("    %lu. ", i);
+         DoIndents(indent,s);  
+
+         char buf[100]; 
+         sprintf(buf, "    %lu. ", i); 
+         s += buf;
+
          MessageRef * dataItem;
          uint32 itemSize = GetItemSize(i);
          if (FindDataItem(i, (const void **)&dataItem) == B_NO_ERROR)
@@ -825,13 +862,15 @@ public:
             Message * msg = dataItem->GetItemPointer();
             if (msg)
             {
-               char buf[5]; MakePrettyTypeCodeString(msg->what, buf);
-               printf("[what='%s' (%li/0x%lx), flattenedSize=%lu, numFields=%lu]\n", buf, msg->what, msg->what, itemSize, msg->CountNames());
-               if (recurse) msg->PrintToStream(recurse, indent+3);
+               char tcbuf[5]; MakePrettyTypeCodeString(msg->what, tcbuf);
+               sprintf(buf, "[what='%s' (%li/0x%lx), flattenedSize=%lu, numFields=%lu]\n", tcbuf, msg->what, msg->what, itemSize, msg->CountNames());
+               s += buf;
+
+               if (recurse) msg->AddToString(s, recurse, indent+3);
             }
-            else printf("[NULL]\n");
+            else s += "[NULL]\n";
          }
-         else printf("[<Error!>]\n");
+         else s += "[<Error!>]\n";
       }
    }
 
@@ -933,10 +972,18 @@ public:
 
    virtual GenericRef Clone() const;
 
-   virtual void PrintToStream(bool, int indent) const
+   virtual void AddToString(String & s, bool, int indent) const
    {
       uint32 numItems = GetNumItems();
-      for (uint32 i=0; i<numItems; i++) {DoIndents(indent); printf("    %lu. [%s]\n", i, ItemAt(i)());}
+      for (uint32 i=0; i<numItems; i++) 
+      {
+         DoIndents(indent,s); 
+         char buf[50]; 
+         sprintf(buf,"    %lu. [", i); 
+         s += buf;
+         s += ItemAt(i);
+         s += "]\n";
+      }
    }
 };
 DECLAREFIELDTYPE(StringDataArray);
@@ -1087,10 +1134,30 @@ bool Message :: IsEmpty() const
 
 void Message :: PrintToStream(bool recurse, int indent) const 
 {
+   String s;  
+   AddToString(s, recurse, indent);
+   printf("%s", s());
+}
+
+String Message :: ToString(bool recurse, int indent) const 
+{
+   String s;  
+   AddToString(s, recurse, indent);
+   return s;
+}
+
+void Message :: AddToString(String & s, bool recurse, int indent) const 
+{
+   String ret;
+
    char prettyTypeCodeBuf[5];
    MakePrettyTypeCodeString(what, prettyTypeCodeBuf);
 
-   DoIndents(indent); printf("Message:  this=%p, what='%s' (%li/0x%lx), entryCount=%li, flatSize=%lu\n", this, prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), (uint32)FlattenedSize());
+   char buf[150];
+   DoIndents(indent,s); 
+   sprintf(buf, "Message:  this=%p, what='%s' (%li/0x%lx), entryCount=%li, flatSize=%lu\n", this, prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), (uint32)FlattenedSize()); 
+   s += buf;
+
    HashtableIterator<String, GenericRef> it = _entries.GetIterator();
    const String * nextKey;
    while((nextKey = it.GetNextKey()) != NULL) 
@@ -1098,8 +1165,10 @@ void Message :: PrintToStream(bool recurse, int indent) const
        const AbstractDataArray * nextValue = (const AbstractDataArray *)((*it.GetNextValue())());
        type_code tc = nextValue->TypeCode();
        MakePrettyTypeCodeString(tc, prettyTypeCodeBuf);
-       DoIndents(indent); printf("  Entry: Name=[%s], GetNumItems()=%li, TypeCode()='%s' (%li) flatSize=%lu\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, (uint32)nextValue->FlattenedSize());
-       nextValue->PrintToStream(recurse, indent);
+       DoIndents(indent,s); 
+       sprintf(buf, "  Entry: Name=[%s], GetNumItems()=%li, TypeCode()='%s' (%li) flatSize=%lu\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, (uint32)nextValue->FlattenedSize()); 
+       s += buf;
+       nextValue->AddToString(s, recurse, indent);
    }
 }
 
@@ -1293,7 +1362,7 @@ status_t Message :: Unflatten(const uint8 *buffer, uint32 inputBufferBytes)
       uint32 eLength = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
       if (eLength > inputBufferBytes-readOffset) return B_ERROR;
    
-      AbstractDataArray * nextEntry = GetOrCreateArray(entryName.Cstr(), tc);
+      AbstractDataArray * nextEntry = GetOrCreateArray(entryName, tc);
       if (nextEntry == NULL) return B_ERROR;
 
       if (nextEntry->Unflatten(&buffer[readOffset], eLength) != B_NO_ERROR) 
@@ -2068,8 +2137,7 @@ status_t Message :: CopyFromImplementation(const Flattenable & copyFrom)
 
 bool Message :: operator == (const Message & rhs) const
 {
-   if (this == &rhs) return true;  // any Message is always equal to itself.
-   return ((what == rhs.what)&&(CountNames() == rhs.CountNames())&&(FieldsAreSubsetOf(rhs, false))&&(rhs.FieldsAreSubsetOf(*this, false))) ? FieldsAreSubsetOf(rhs, true) : false;
+   return ((this == &rhs)||((what == rhs.what)&&(CountNames() == rhs.CountNames())&&(FieldsAreSubsetOf(rhs, true))));
 }
 
 bool Message :: FieldsAreSubsetOf(const Message & rhs, bool compareContents) const

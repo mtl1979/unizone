@@ -215,6 +215,16 @@ public:
      */
    void PrintToStream(bool recursive = true, int indentLevel = 0) const;
 
+   /** Same as PrintToStream(), only the state of the Message is returned
+    *  as a String instead of being printed to stdout.
+    */
+   String ToString(bool recursive = true, int indentLevel = 0) const;
+
+   /** Same as ToString(), except the text is added to the given String instead
+    *  of being returned as a new String.
+    */
+   void AddToString(String & s, bool recursive = true, int indentLevel = 0) const;
+
    /** Renames a field.
     *  @param old_entry Field name to rename from.
     *  @param new_entry Field name to rename to.  If a field with this name already exists,
@@ -1009,9 +1019,18 @@ public:
     * message.  If (type) is B_ANY_TYPE, then all field names will be included
     * in the traversal.  Otherwise, only names of the given type will be included.
     * @param type Type of fields you wish to iterate over, or B_ANY_TYPE to iterate over all fields.
-    * @return A MessageFieldNameIterator object.
+    * @param backwards Set this to true if you prefer to iterate backwards, from the last field to the first.
     */
-   MessageFieldNameIterator GetFieldNameIterator(type_code type = B_ANY_TYPE) const {return MessageFieldNameIterator(_entries.GetIterator(), type);}
+   MessageFieldNameIterator GetFieldNameIterator(type_code type = B_ANY_TYPE, bool backwards = false) const {return MessageFieldNameIterator(_entries.GetIterator(backwards), type);}
+
+   /**
+    * As above, only starts the iteration at the given field name, instead of at the beginning
+    * or end of the list of field names.
+    * @param startFieldName the field name to start with.  If (startFieldName) isn't present, the iteration will be empty.
+    * @param type Type of fields you wish to iterate over, or B_ANY_TYPE to iterate over all fields.
+    * @param backwards Set this to true if you prefer to iterate backwards, from the last field to the first.
+    */
+   MessageFieldNameIterator GetFieldNameIteratorAt(const String & startFieldName, type_code type = B_ANY_TYPE, bool backwards = false) const {return MessageFieldNameIterator(_entries.GetIteratorAt(startFieldName, backwards), type);}
 
 protected:
    /** Overridden to copy directly if (copyTo) is a Message as well. */

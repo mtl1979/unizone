@@ -75,10 +75,10 @@ public:
    /** Drains the storage pools used by StorageReflectSessions, to recover memory */
    static void DrainPools();
 
-protected:
    /** Returns a human-readable label for this session type:  "Session" */
    virtual const char * GetTypeName() const {return "Session";}
 
+protected:
    class DataNode;
 
    /** Type for a Reference to a DataNode object */
@@ -154,9 +154,13 @@ protected:
 
       /** Generates and returns the full node path of this node (e.g. "/12.18.240.15/1234/beshare/files/joe").
         * @param retPath On success, this String will contain this node's absolute path.
+        * @param startDepth The depth at which the path should start.  Defaults to zero, meaning the full path.
+        *                   Values greater than zero will return a partial path (e.g. a startDepth of 1 in the
+        *                   above example would return "12.18.240.15/1234/beshare/files/joe", and a startDepth
+        *                   of 2 would return "1234/beshare/files/joe")
         * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
         */
-      status_t GetNodePath(String & retPath) const;
+      status_t GetNodePath(String & retPath, uint32 startDepth = 0) const;
 
       /** Returns the name of the node in our path at the (depth) level.
         * @param depth The node name we are interested in.  For example, 0 will return the name of the
@@ -168,8 +172,10 @@ protected:
       /** Replaces this node's payload message with that of (data).
        *  @data the new Message to associate with this node.
        *  @param optNotifyWith if non-NULL, this StorageReflectSession will be used to notify subscribers that this node's data has changed.
+       *  @param isBeingCreated Should be set true only if this is the first time SetData() was called on this node after its creation.
+       *                        Which is to say, this should almost always be false.
        */
-      void SetData(MessageRef data, StorageReflectSession * optNotifyWith);
+      void SetData(MessageRef data, StorageReflectSession * optNotifyWith, bool isBeingCreated);
 
       /** Returns a reference to this node's Message payload. */
       MessageRef GetData() const {return _data;}
@@ -202,6 +208,24 @@ protected:
 
       /** Destructor.   Don't use this, use StorageReflectSession::ReleaseDataNode() instead!  */
       ~DataNode();
+
+      /** Insert a new entry into our ordered-child list at the (nth) entry position.
+       *  Don't call this function unless you really know what you are doing!
+       *  @param insertIndex Offset into the array to insert at
+       *  @param optNotifyWith Session to use to inform everybody that the index has been changed.
+       *  @param key Name of an existing child of this node that should be associated with the given entry.
+       *             This child must not already be in the ordered-entry index!
+       *  @return B_NO_ERROR on success, or B_ERROR on failure (bad index or unknown child).
+       */
+      status_t InsertIndexEntryAt(uint32 insertIndex, StorageReflectSession * optNotifyWith, const char * key);
+
+      /** Removes the (nth) entry from our ordered-child index, if possible.
+       *  Don't call this function unless you really know what you are doing!
+       *  @param removeIndex Offset into the array to remove
+       *  @param optNotifyWith Session to use to inform everybody that the index has been changed.
+       *  @return B_NO_ERROR on success, or B_ERROR on failure.
+       */
+      status_t RemoveIndexEntryAt(uint32 removeIndex, StorageReflectSession * optNotifyWith);
 
    private:
       friend class StorageReflectSession;
@@ -320,8 +344,21 @@ protected:
       int GetMatchCount(DataNode & node, int nodeDepth) const;
 
    private:
-      int DoTraversalAux(PathMatchCallback cb, StorageReflectSession * This, DataNode & node, void * userData, int rootDepth);
+      // This little structy class is used to pass context data around more efficiently
+      class TraversalContext
+      {
+      public:
+         TraversalContext(PathMatchCallback cb, StorageReflectSession * This, void * userData, int rootDepth) : _cb(cb), _This(This), _userData(userData), _rootDepth(rootDepth) {/* empty */}
+
+         PathMatchCallback _cb;
+         StorageReflectSession * _This;
+         void * _userData;
+         int _rootDepth;
+      };
+
+      int DoTraversalAux(const TraversalContext & data, DataNode & node);
       bool PathMatches(DataNode & node, int whichPath, int rootDepth) const;
+      bool CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int & depth);
    };
 
    friend class StorageReflectSession::DataNode;
@@ -359,27 +396,40 @@ protected:
      */
    status_t CloneDataNodeSubtree(const StorageReflectSession::DataNode & sourceNode, const String & destPath);
 
-   /** Tells other sessions that we have modified (node).  */
-   virtual void NotifySubscribersThatNodeChanged(DataNode & node, bool isBeingRemoved);
+   /** Tells other sessions that we have modified (node) in our node subtree.
+    *  @param node The node that has been modfied.
+    *  @param oldData If the node is being modified, this argument contains the node's previously
+    *                 held data.  If it is being created, this is a NULL reference.  If the node
+    *                 is being destroyed, this will contain the node's current data.
+    *  @param isBeingRemoved If true, this node is about to go away.
+   */
+   virtual void NotifySubscribersThatNodeChanged(DataNode & node, MessageRef oldData, bool isBeingRemoved);
 
-   /** Tells other sessions that we have a new (node) available.  */
-   virtual void NotifySubscribersOfNewNode(DataNode & newNode);
-
-   /** Tells other sessions that we have changed the index of (node).  */
+   /** Tells other sessions that we have changed the index of (node) in our node subtree.
+    *  @param node The node whose index was changed.
+    *  @param op The INDEX_OP_* opcode of the change.  (Note that currently INDEX_OP_CLEARED is never used here)
+    *  @param index The index at which the operation took place (not defined for clear operations)
+    *  @param key The key of the operation (aka the name of the associated node)
+    */
    virtual void NotifySubscribersThatNodeIndexChanged(DataNode & node, char op, uint32 index, const char * key);
 
-   /** Called by NotifySubscribersOfNewNode to tell us that (node) has been modified.  */
-   virtual void NodeChanged(DataNode & node, bool isBeingRemoved);
-
-   /** Called by NotifySubscribersThatIndexChanged to tell us how (node)'s index has been modified.  */
-   virtual void NodeIndexChanged(DataNode & node, char op, uint32 index, const char * key);
-
-   /**
-    * Called by SetParent() to tell us that (node) has been created at a given location.
-    * We then respond by letting any matching subscriptions add their mark to the node.
-    * @param node the new Node that has been added to the database.
+   /** Called by NotifySubscribersThatNodeChanged(), to tell us that (node) has been 
+    *  created, modified, or is about to be destroyed.
+    *  @param node The node that was modified, created, or is about to be destroyed.
+    *  @param oldData If the node is being modified, this argument contains the node's previously
+    *                 held data.  If it is being created, this is a NULL reference.  If the node
+    *                 is being destroyed, this will contain the node's current data.
+    *  @param isBeingRemoved True iff this node is about to be destroyed.
     */
-   virtual void NodeCreated(DataNode & node);
+   virtual void NodeChanged(DataNode & node, MessageRef oldData, bool isBeingRemoved);
+
+   /** Called by NotifySubscribersThatIndexChanged() to tell us how (node)'s index has been modified.  
+    *  @param node The node whose index was changed.
+    *  @param op The INDEX_OP_* opcode of the change.  (Note that currently INDEX_OP_CLEARED is never used here)
+    *  @param index The index at which the operation took place (not defined for clear operations)
+    *  @param key The key of the operation (aka the name of the associated node)
+    */
+   virtual void NodeIndexChanged(DataNode & node, char op, uint32 index, const char * key);
 
    /**
     * Takes any messages that were created in the NodeChanged() callbacks and 
@@ -426,6 +476,11 @@ protected:
     * @return A pointer to the specified DataNode, or NULL if the node wasn't found.
     */
    DataNode * GetDataNode(const String & path) const;
+
+   /** Returns a reference to an empty Message.
+    *  Note that it is an error to modify the Message contained in this reference!
+    */
+   MessageRef GetBlankMessage() const;
 
    /** Traversal callback:  matching nodes are ref'd/unref'd with subscribed session IDs */
    int DoSubscribeRefCallback(DataNode & node, void * userData);
@@ -536,6 +591,20 @@ protected:
    DataNode & GetGlobalRoot() const {return *(_sharedData->_root);}
 
 private:
+   /**
+    * Called by SetParent() to tell us that (node) has been created at a given location.
+    * We then respond by letting any matching subscriptions add their mark to the node.
+    * Private because subclasses should override NodeChanged(), not this.
+    * @param node the new Node that has been added to the database.
+    */
+   void NodeCreated(DataNode & node);
+
+   /** Tells other sessions that we have a new node available.  
+    *  Private because subclasses should override NotifySubscriberThatNodeChanged(), not this.
+    *  @param newNode The newly available node.
+    */
+   void NotifySubscribersOfNewNode(DataNode & newNode);
+
    /** This class holds data that needs to be shared by all attached instances
      * of the StorageReflectSession class.  An instance of this class is stored
      * on demand in the central-state Message.

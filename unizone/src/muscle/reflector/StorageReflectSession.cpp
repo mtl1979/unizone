@@ -233,7 +233,7 @@ Cleanup()
 
 void 
 StorageReflectSession ::
-NotifySubscribersThatNodeChanged(DataNode & modifiedNode, bool isBeingRemoved)
+NotifySubscribersThatNodeChanged(DataNode & modifiedNode, MessageRef oldData, bool isBeingRemoved)
 {
    HashtableIterator<const char *, uint32> subIter = modifiedNode.GetSubscribers();
    const char * next;
@@ -241,7 +241,7 @@ NotifySubscribersThatNodeChanged(DataNode & modifiedNode, bool isBeingRemoved)
    {
       AbstractReflectSessionRef nRef = GetSession(next);
       StorageReflectSession * next = (StorageReflectSession *)(nRef.GetItemPointer());
-      if ((next)&&((next != this)||(GetReflectToSelf()))) next->NodeChanged(modifiedNode, isBeingRemoved);
+      if ((next)&&((next != this)||(GetReflectToSelf()))) next->NodeChanged(modifiedNode, oldData, isBeingRemoved);
    }
 }
 
@@ -274,7 +274,14 @@ NotifySubscribersOfNewNode(DataNode & newNode)
 
 void
 StorageReflectSession ::
-NodeChanged(DataNode & modifiedNode, bool isBeingRemoved)
+NodeCreated(DataNode & newNode)
+{
+   newNode.IncrementSubscriptionRefCount(GetSessionIDString(), _subscriptions.GetMatchCount(newNode, 0));
+}
+
+void
+StorageReflectSession ::
+NodeChanged(DataNode & modifiedNode, MessageRef /*oldData*/, bool isBeingRemoved)
 {
    if (GetSubscriptionsEnabled())
    {
@@ -313,13 +320,6 @@ NodeIndexChanged(DataNode & modifiedNode, char op, uint32 index, const char * ke
       else WARN_OUT_OF_MEMORY;
       // don't push subscription messages here.... it will be done elsewhere
    }
-}
-
-void
-StorageReflectSession ::
-NodeCreated(DataNode & newNode)
-{
-   newNode.IncrementSubscriptionRefCount(GetSessionIDString(), _subscriptions.GetMatchCount(newNode, 0));
 }
 
 status_t
@@ -368,7 +368,7 @@ SetDataNode(const String & nodePath, MessageRef dataMsgRef, bool overwrite, bool
          if ((slashPos < 0)&&(appendToIndex == false))
          {
             if ((node == NULL)||((overwrite == false)&&(node != allocedNode))) return B_ERROR;
-            node->SetData(dataMsgRef, quiet ? NULL : this);  // do this to trigger the changed-notification
+            node->SetData(dataMsgRef, quiet ? NULL : this, (node == allocedNode));  // do this to trigger the changed-notification
          }
          lastSlashPos = slashPos;
       }
@@ -455,7 +455,6 @@ MessageReceivedFromGateway(MessageRef msgRef)
             MessageRef reply = GetMessageFromPool(PR_RESULT_DATATREES);
             if ((reply())&&((id==NULL)||(reply()->AddString(PR_NAME_TREE_REQUEST_ID, id) == B_NO_ERROR)))
             {
-msg.PrintToStream();
                if (msg.HasName(PR_NAME_KEYS, B_STRING_TYPE)) 
                {
                   NodePathMatcher matcher;
@@ -1202,6 +1201,47 @@ InsertOrderedChild(MessageRef data, const char * optInsertBefore, StorageReflect
 
 status_t
 StorageReflectSession :: DataNode ::
+RemoveIndexEntryAt(uint32 removeIndex, StorageReflectSession * optNotifyWith)
+{
+   if ((_orderedIndex)&&(removeIndex < _orderedIndex->GetNumItems()))
+   {
+      String holdKey = (*_orderedIndex)[removeIndex];      // gotta make a temp copy here, or it's dangling pointer time
+      (void) _orderedIndex->RemoveItemAt(removeIndex);
+      if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYREMOVED, removeIndex, holdKey());
+      return B_NO_ERROR;
+   }
+   return B_ERROR;
+}
+
+status_t
+StorageReflectSession :: DataNode ::
+InsertIndexEntryAt(uint32 insertIndex, StorageReflectSession * notifyWithOnSetParent, const char * key)
+{
+   if (_children)
+   {
+      // Find a string matching (key) but that belongs to an actual child...
+      HashtableIterator<const char *, DataNodeRef> iter = _children->GetIterator();
+      const char * childKey;
+      if (_children->GetKey(key, childKey) == B_NO_ERROR)
+      {
+         if (_orderedIndex == NULL)
+         {
+            _orderedIndex = newnothrow Queue<const char *>;
+            if (_orderedIndex == NULL) WARN_OUT_OF_MEMORY; 
+         }
+         if ((_orderedIndex)&&(_orderedIndex->InsertItemAt(insertIndex, childKey) == B_NO_ERROR))
+         {
+            // Notify anyone monitoring this node that the ordered-index has been updated
+            notifyWithOnSetParent->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, insertIndex, childKey);
+            return B_NO_ERROR;
+         }
+      }
+   }
+   return B_ERROR;
+}
+
+status_t
+StorageReflectSession :: DataNode ::
 ReorderChild(const DataNode & child, const char * moveToBeforeThis, StorageReflectSession * optNotifyWith)
 {
    // Only do anything if we have an index, and the node isn't going to be moved to before itself (silly) and (child) can be removed from the index
@@ -1237,7 +1277,7 @@ StorageReflectSession :: DataNode ::
 PutChild(DataNodeRef & node, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyChangedData)
 {
    status_t ret = B_ERROR;
-   DataNode * child = node.GetItemPointer();
+   DataNode * child = node();
    if (child)
    {
       if (_children == NULL) 
@@ -1247,8 +1287,13 @@ PutChild(DataNodeRef & node, StorageReflectSession * optNotifyWithOnSetParent, S
          _children->SetKeyCompareFunction(CStringCompareFunc);
       }
       child->SetParent(this, optNotifyWithOnSetParent);
-      ret = _children->Put(child->_nodeName(), node);
-      if (optNotifyChangedData) optNotifyChangedData->NotifySubscribersThatNodeChanged(*child, false);
+      DataNodeRef oldNode;
+      ret = _children->Put(child->_nodeName(), node, oldNode);
+      if ((ret == B_NO_ERROR)&&(optNotifyChangedData))
+      {
+         MessageRef oldData; if (oldNode()) oldData = oldNode()->GetData();
+         optNotifyChangedData->NotifySubscribersThatNodeChanged(*child, oldData, false);
+      }
    }
    return ret;
 }
@@ -1291,7 +1336,7 @@ GetPathClause(uint32 depth) const
 
 status_t
 StorageReflectSession :: DataNode ::
-GetNodePath(String & retPath) const
+GetNodePath(String & retPath, uint32 startDepth) const
 {
    // Calculate node path and node depth
    if (_parent)
@@ -1299,46 +1344,51 @@ GetNodePath(String & retPath) const
       // Calculate the total length that our node path string will be
       uint32 pathLen = 0;
       {
+         uint32 d = _depth;
          const DataNode * node = this;
-         while(node->_parent) 
+         while((d-- >= startDepth)&&(node->_parent))
          {
             pathLen += 1 + node->_nodeName.Length();  // the 1 is for the slash
             node = node->_parent;
          }
       }
 
+      if ((pathLen > 0)&&(startDepth > 0)) pathLen--;  // for (startDepth>0), there will be no initial slash
+
       // Might as well make sure we have enough memory to return it, up front
       if (retPath.Prealloc(pathLen) != B_NO_ERROR) return B_ERROR;
 
-      char * aBuf = NULL;
-      const uint32 staticAllocSize = 256;
-      char sBuf[staticAllocSize];      // try to do this without a dynamic allocation...
-      if (pathLen >= staticAllocSize)  // but do a dynamic allocation if we have to (should be rare)
+      char * dynBuf = NULL;
+      const uint32 stackAllocSize = 256;
+      char stackBuf[stackAllocSize];      // try to do this without a dynamic allocation...
+      if (pathLen >= stackAllocSize)  // but do a dynamic allocation if we have to (should be rare)
       {
-         aBuf = newnothrow char[pathLen+1];
-         if (aBuf == NULL) 
+         dynBuf = newnothrow char[pathLen+1];
+         if (dynBuf == NULL) 
          { 
             WARN_OUT_OF_MEMORY; 
             return B_ERROR;
          }
       }
 
-      char * writeAt = (aBuf ? aBuf : sBuf) + pathLen;  // points to last char in buffer
+      char * writeAt = (dynBuf ? dynBuf : stackBuf) + pathLen;  // points to last char in buffer
       *writeAt = '\0';  // terminate the string first (!)
       const DataNode * node = this;
-      while(node->_parent)
+      uint32 d = _depth;
+      while((d >= startDepth)&&(node->_parent))
       {
          int len = node->_nodeName.Length();
          writeAt -= len;
          memcpy(writeAt, node->_nodeName(), len);
-         *(--writeAt) = '/';
+         if ((startDepth == 0)||(d > startDepth)) *(--writeAt) = '/';
          node = node->_parent;
+         d--;
       }
  
-      retPath = (aBuf ? aBuf : sBuf);
-      delete [] aBuf;
+      retPath = (dynBuf ? dynBuf : stackBuf);
+      delete [] dynBuf;
    }
-   else retPath = "";
+   else retPath = (startDepth == 0) ? "/" : "";
 
    return B_NO_ERROR;
 }
@@ -1353,10 +1403,6 @@ RemoveChild(const char * key, StorageReflectSession * optNotifyWith, bool recurs
       DataNode * child = childRef.GetItemPointer();
       if (child)
       {
-         if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeChanged(*child, true);
-
-         (void) RemoveIndexEntry(key, optNotifyWith);
-
          if (recurse)
          { 
             while(child->CountChildren() > 0)
@@ -1368,13 +1414,12 @@ RemoveChild(const char * key, StorageReflectSession * optNotifyWith, bool recurs
             }
          }
 
+         (void) RemoveIndexEntry(key, optNotifyWith);
+         if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeChanged(*child, child->GetData(), true);
+
          child->SetParent(NULL, optNotifyWith);
       }
-      if (optCurrentNodeCount) 
-      {
-//         MASSERT(*optCurrentNodeCount > 0, "RemoveChild:  node count was about to go negative!!");
-         (*optCurrentNodeCount)--;
-      }
+      if (optCurrentNodeCount) (*optCurrentNodeCount)--;
       _children->Remove(key, childRef);
       return B_NO_ERROR;
    }
@@ -1403,10 +1448,12 @@ RemoveIndexEntry(const char * key, StorageReflectSession * optNotifyWith)
 
 void
 StorageReflectSession :: DataNode ::   
-SetData(MessageRef data, StorageReflectSession * optNotifyWith)
+SetData(MessageRef data, StorageReflectSession * optNotifyWith, bool isBeingCreated)
 {
+   MessageRef oldData;
+   if (isBeingCreated == false) oldData = _data;
    _data = data;
-   if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeChanged(*this, false);
+   if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeChanged(*this, oldData, false);
 }
 
 StorageReflectSession :: DataNode ::
@@ -1462,82 +1509,139 @@ void
 StorageReflectSession :: NodePathMatcher ::
 DoTraversal(PathMatchCallback cb, StorageReflectSession * This, DataNode & node, void * userData)
 {
-   (void) DoTraversalAux(cb, This, node, userData, node.GetDepth());
+   (void) DoTraversalAux(TraversalContext(cb, This, userData, node.GetDepth()), node);
 }
 
 int 
 StorageReflectSession :: NodePathMatcher ::
-DoTraversalAux(PathMatchCallback cb, StorageReflectSession * This, DataNode & node, void * userData, int rootDepth)
+DoTraversalAux(const TraversalContext & data, DataNode & node)
 {
-   DataNodeRef nextChildRef;
-   DataNodeRefIterator it = node.GetChildIterator();
    int depth = node.GetDepth();
-   while(it.GetNextValue(nextChildRef) == B_NO_ERROR) 
+   bool parsersHaveWildcards = false;  // optimistic default
    {
-      DataNode * nextChild = nextChildRef.GetItemPointer();
-      if (nextChild)
+      // If none of our parsers are using wildcarding at our current level, we can use direct hash lookups (faster)
+      int numParsers = GetNumPaths();
+      for (int i=0; i<numParsers; i++)
       {
-         const char * nextChildName = nextChild->GetNodeName()();
-         bool matched  = false;  // set if we have called the callback on this child already
-         bool recursed = false;  // set if we have recursed to this child already
-
-         // Try all parsers and see if any of them match at this level
-         int numParsers = GetNumPaths();
-         for (int i=0; i<numParsers; i++)
+         const StringMatcherQueue * nextQueue = GetParserQueue(i);
+         if ((nextQueue)&&((int)nextQueue->GetNumItems() > depth-data._rootDepth))
          {
-            const StringMatcherQueue * nextQueue = GetParserQueue(i);
-            if (nextQueue)
+            StringMatcher * nextMatcher = nextQueue->GetItemAt(depth-data._rootDepth)->GetItemPointer();
+            if ((nextMatcher == NULL)||(nextMatcher->IsPatternUnique() == false))
             {
-               int numClausesInParser = nextQueue->GetNumItems();
-               if (numClausesInParser > depth-rootDepth)
-               {
-                  StringMatcher * nextMatcher = nextQueue->GetItemAt(depth-rootDepth)->GetItemPointer();
-                  if ((nextMatcher == NULL)||(nextMatcher->Match(nextChildName)))
-                  {
-                     // A match!  Now, depending on whether this match is the
-                     // last clause in the path or not, we either do the callback or descend.
-                     // But we make sure not to do either of these things more than once per node.
-                     if (depth == rootDepth+numClausesInParser-1)
-                     {
-                        if (matched == false)
-                        {
-                           // when there is more than one string being used to match,
-                           // it's possible that two or more strings can "conspire"
-                           // to match a node even though any given string doesn't match it.
-                           // For example, if we have the match-strings:
-                           //    /j*/k*
-                           //    /k*/j*
-                           // The node /jeremy/jenny would match, even though it isn't
-                           // specified by any of the subscription strings.  This is bad.
-                           // So for multiple match-strings, we do an additional check 
-                           // to make sure there is a NodePathMatcher for this node.
-                           if ((numParsers == 1)||(MatchesNode(*nextChild, rootDepth)))
-                           {
-                              int nextDepth = cb(This, *nextChild, userData);
-                              if (nextDepth < ((int)nextChild->GetDepth())-1) return nextDepth;
-                              matched = true;
-                              if (recursed) break;  // done both possibile actions, so be lazy
-                           }
-                        }
-                     }
-                     else
-                     {
-                        if (recursed == false)
-                        {
-                           // If we match a non-terminal clause in the path, recurse to the child.
-                           int nextDepth = DoTraversalAux(cb, This, *nextChild, userData, rootDepth);
-                           if (nextDepth < ((int)nextChild->GetDepth())-1) return nextDepth;
-                           recursed = true;
-                           if (matched) break;  // done both possible actions, so be lazy
-                        }
-                     }
-                  }
-               }
+               parsersHaveWildcards = true;  // Oops, there will be some pattern matching involved, gotta iterate
+               break;
             }
          }
       }
    }
+
+   if (parsersHaveWildcards)
+   {
+      // general case -- iterate over all children of our node and see if any match
+      DataNodeRef nextChildRef;
+      DataNodeRefIterator it = node.GetChildIterator();
+      while(it.GetNextValue(nextChildRef) == B_NO_ERROR) if (CheckChildForTraversal(data, nextChildRef(), depth)) return depth;
+   }
+   else
+   {
+      // optimized case -- since our parsers are all node-specific, we can do a single lookup for each,
+      // and avoid having to iterate over all the children of this node.
+      Queue<DataNode *> alreadyDid;  // To make sure we don't do the same child twice (could happen if two matchers are the same)
+      int numParsers = GetNumPaths();
+      for (int i=0; i<numParsers; i++)
+      {
+         const StringMatcherQueue * nextQueue = GetParserQueue(i);
+         if ((nextQueue)&&((int)nextQueue->GetNumItems() > depth-data._rootDepth))
+         {
+            const char * key = nextQueue->GetItemAt(depth-data._rootDepth)->GetItemPointer()->GetPattern()();
+            DataNodeRef nextChildRef;
+            if ((node.GetChild(key, nextChildRef) == B_NO_ERROR)&&(alreadyDid.IndexOf(nextChildRef()) == -1))
+            {
+               if (CheckChildForTraversal(data, nextChildRef(), depth)) return depth;
+               (void) alreadyDid.AddTail(nextChildRef());
+            }
+         }
+      }
+   }
+
    return node.GetDepth();
+}
+
+bool 
+StorageReflectSession :: NodePathMatcher ::
+CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int & depth)
+{
+   if (nextChild)
+   {
+      const char * nextChildName = nextChild->GetNodeName()();
+      bool matched  = false;  // set if we have called the callback on this child already
+      bool recursed = false;  // set if we have recursed to this child already
+
+      // Try all parsers and see if any of them match at this level
+      int numParsers = GetNumPaths();
+      for (int i=0; i<numParsers; i++)
+      {
+         const StringMatcherQueue * nextQueue = GetParserQueue(i);
+         if (nextQueue)
+         {
+            int numClausesInParser = nextQueue->GetNumItems();
+            if (numClausesInParser > depth-data._rootDepth)
+            {
+               const StringMatcher * nextMatcher = nextQueue->GetItemAt(depth-data._rootDepth)->GetItemPointer();
+               if ((nextMatcher == NULL)||(nextMatcher->Match(nextChildName)))
+               {
+                  // A match!  Now, depending on whether this match is the
+                  // last clause in the path or not, we either do the callback or descend.
+                  // But we make sure not to do either of these things more than once per node.
+                  if (depth == data._rootDepth+numClausesInParser-1)
+                  {
+                     if (matched == false)
+                     {
+                        // when there is more than one string being used to match,
+                        // it's possible that two or more strings can "conspire"
+                        // to match a node even though any given string doesn't match it.
+                        // For example, if we have the match-strings:
+                        //    /j*/k*
+                        //    /k*/j*
+                        // The node /jeremy/jenny would match, even though it isn't
+                        // specified by any of the subscription strings.  This is bad.
+                        // So for multiple match-strings, we do an additional check 
+                        // to make sure there is a NodePathMatcher for this node.
+                        if ((numParsers == 1)||(MatchesNode(*nextChild, data._rootDepth)))
+                        {
+                           int nextDepth = data._cb(data._This, *nextChild, data._userData);
+                           if (nextDepth < ((int)nextChild->GetDepth())-1) 
+                           {
+                              depth = nextDepth;
+                              return true;
+                           }
+                           matched = true;
+                           if (recursed) break;  // done both possible actions, so be lazy
+                        }
+                     }
+                  }
+                  else
+                  {
+                     if (recursed == false)
+                     {
+                        // If we match a non-terminal clause in the path, recurse to the child.
+                        int nextDepth = DoTraversalAux(data, *nextChild);
+                        if (nextDepth < ((int)nextChild->GetDepth())-1) 
+                        {
+                           depth = nextDepth;
+                           return true;
+                        }
+                        recursed = true;
+                        if (matched) break;  // done both possible actions, so be lazy
+                     }
+                  }
+               } 
+            }
+         }
+      }
+   }
+   return false;
 }
 
 StorageReflectSession::DataNode *
@@ -1641,6 +1745,19 @@ StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const Strin
          childPath += nextChildName;
          if (CloneDataNodeSubtree(*child, childPath) != B_NO_ERROR) return B_ERROR;
       }
+   }
+
+   // Lastly, if he has an index, make sure the clone ends up with an equivalent index
+   const Queue<const char *> * index = node.GetIndex();
+   if (index)
+   {
+      DataNode * clone = GetDataNode(destPath);
+      if (clone)
+      {
+         uint32 idxLen = index->GetNumItems();
+         for (uint32 i=0; i<idxLen; i++) if (clone->InsertIndexEntryAt(i, this, (*index)[i]) != B_NO_ERROR) return B_ERROR;
+      }
+      else return B_ERROR;
    }
 
    return B_NO_ERROR;
@@ -1747,6 +1864,11 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
       }
    }
    return B_NO_ERROR;   
+}
+
+MessageRef StorageReflectSession :: GetBlankMessage() const
+{
+   return _blankMessageRef;
 }
 
 };  // end namespace muscle

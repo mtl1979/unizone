@@ -9,12 +9,12 @@
 
 namespace muscle {
 
-StringMatcher::StringMatcher() : _regExpValid(false), _negate(false), _rangeMin(MUSCLE_NO_LIMIT), _rangeMax(MUSCLE_NO_LIMIT)
+StringMatcher::StringMatcher() : _regExpValid(false), _negate(false), _hasRegexTokens(false), _rangeMin(MUSCLE_NO_LIMIT), _rangeMax(MUSCLE_NO_LIMIT)
 {
    // empty
 } 
 
-StringMatcher :: StringMatcher(const char * str, bool simple) : _regExpValid(false), _negate(false)
+StringMatcher :: StringMatcher(const String & str, bool simple) : _regExpValid(false), _negate(false)
 {
    SetPattern(str, simple);
 }
@@ -24,10 +24,13 @@ StringMatcher :: ~StringMatcher()
    if (_regExpValid) regfree(&_regExp);
 }
 
-status_t StringMatcher::SetPattern(const char * str, bool isSimple) 
+status_t StringMatcher::SetPattern(const String & s, bool isSimple) 
 {
-   String pattern;
+   _pattern = s;
+   const char * str = _pattern();
+   _hasRegexTokens = HasRegexTokens(str);
 
+   String regexPattern;
    _rangeMin = _rangeMax = MUSCLE_NO_LIMIT;  // default to regular matching mode
    if (isSimple)
    {
@@ -60,7 +63,7 @@ status_t StringMatcher::SetPattern(const char * str, bool isSimple)
       {
          if ((str[0] == '\\')&&(str[1] == '<')) str++;  // special case escape of initial < for "\<15-23>"
 
-         pattern = "^(";
+         regexPattern = "^(";
 
          bool escapeMode = false;
          for (const char * ptr = str; *ptr != '\0'; ptr++)
@@ -73,16 +76,16 @@ status_t StringMatcher::SetPattern(const char * str, bool isSimple)
                switch(c)
                {
                   case ',':  c = '|';           break;  // commas are treated as union-bars
-                  case '.':  pattern += '\\';   break;  // dots are considered literals, so escape those
-                  case '*':  pattern += '.';    break;  // hmmm.
+                  case '.':  regexPattern += '\\';   break;  // dots are considered literals, so escape those
+                  case '*':  regexPattern += '.';    break;  // hmmm.
                   case '?':  c = '.';           break;  // question marks mean any-single-char
                   case '\\': escapeMode = true; break;  // don't transform the next character!
                }
             }
-            pattern += c;
+            regexPattern += c;
          }
-         if (escapeMode) pattern += '\\';  // just in case the user left a trailing backslash
-         pattern += ")$";
+         if (escapeMode) regexPattern += '\\';  // just in case the user left a trailing backslash
+         regexPattern += ")$";
       }
    }
 
@@ -96,7 +99,7 @@ status_t StringMatcher::SetPattern(const char * str, bool isSimple)
    // And compile the new one
    if (_rangeMin == MUSCLE_NO_LIMIT)
    {
-      _regExpValid = (regcomp(&_regExp, (pattern.Length() > 0) ? pattern.Cstr() : str, REG_EXTENDED) == 0);
+      _regExpValid = (regcomp(&_regExp, (regexPattern.Length() > 0) ? regexPattern.Cstr() : str, REG_EXTENDED) == 0);
       return _regExpValid ? B_NO_ERROR : B_ERROR;
    }
    else return B_NO_ERROR;  // for range queries, we don't need a valid regex

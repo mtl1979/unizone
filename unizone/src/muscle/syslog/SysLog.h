@@ -29,10 +29,13 @@ enum
 inline status_t Log(int, const char * fmt, ...) {va_list va; va_start(va, fmt); vprintf(fmt, va); va_end(va); return B_NO_ERROR;}
 
 // Minimalist version of LogTime(), just sends a tiny header and the output to stdout.
-inline status_t LogTime(int minLogLevel, const char * fmt, ...) {printf("%i: ", minLogLevel); va_list va; va_start(va, fmt); vprintf(fmt, va); va_end(va); return B_NO_ERROR;}
+inline status_t LogTime(int logLevel, const char * fmt, ...) {printf("%i: ", logLevel); va_list va; va_start(va, fmt); vprintf(fmt, va); va_end(va); return B_NO_ERROR;}
 
 // Minimumist version of LogFlush(), just flushes stdout
 inline status_t LogFlush() {fflush(stdout);}
+
+// Minimalist version of LogStackTrace(), just prints a dummy string
+inline status_t LogStackTrace() {printf("<stack trace omitted>\n");
 
 #else
 
@@ -74,25 +77,32 @@ status_t SetFileLogLevel(int loglevel);
 status_t SetConsoleLogLevel(int loglevel);
 
 /** Same semantics as printf, only outputs to the log file/console instead
- *  @param minLogLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
+ *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
  *  @fmt A printf-style format string (e.g. "hello %s\n").  Note that \n is NOT added for you.
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */
-status_t Log(int minLogLevel, const char * fmt, ...);
+status_t Log(int logLevel, const char * fmt, ...);
 
 /** Formatted.  Automagically prepends a timestamp and status string to your string.
  *  e.g. LogTime(MUSCLE_LOG_INFO, "Hello %s!", "world") would generate "[I 12/18 12:11:49] Hello world!"
- *  @param minLogLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
+ *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
  *  @fmt A printf-style format string (e.g. "hello %s\n").  Note that \n is NOT added for you.
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */
-status_t LogTime(int minLogLevel, const char * fmt, ...);
+status_t LogTime(int logLevel, const char * fmt, ...);
 
 /** Ensures that all previously logged output is actually sent.  That is, it simply 
  *  calls fflush() on any streams that we are logging to.
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */
 status_t LogFlush();
+
+/** Logs out a stack trace, if possible.  Returns B_ERROR if not.
+ *  @note Currently only works under Linux.
+ *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
+ *  @returns B_NO_ERROR on success, or B_ERROR if a stack trace couldn't be logged because the platform doesn't support it.
+ */
+status_t LogStackTrace(int logLevel);
 
 /** Returns a human-readable string for the given log level.
  *  @param logLevel A MUSCLE_LOG_* value

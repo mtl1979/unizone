@@ -31,7 +31,7 @@ public:
    virtual ~ByteBuffer() {Clear();}
 
    /** Assigment operator.  Copies the byte buffer from (rhs).  If there is an error copying (out of memory), we become an empty ByteBuffer. */
-   ByteBuffer &operator=(const ByteBuffer & rhs) {if (SetBuffer(rhs._numBytes, rhs._buffer) != B_NO_ERROR) Clear(); return *this;}
+   ByteBuffer &operator=(const ByteBuffer & rhs) {if ((this != &rhs)&&(SetBuffer(rhs._numBytes, rhs._buffer) != B_NO_ERROR)) Clear(); return *this;}
 
    /** Accessor.  Returns a pointer to our held buffer, or NULL if we are not currently holding a buffer. */
    void * GetBuffer() const {return _buffer;}
@@ -43,7 +43,7 @@ public:
    uint32 GetNumBytes() const {return _numBytes;}
 
    /** Returns true iff (rhs) is holding data that is byte-for-byte the same as our own data */
-   bool operator ==(const ByteBuffer &rhs) const {return (_numBytes == rhs._numBytes) ? (memcmp(_buffer, rhs._buffer, _numBytes) == 0) : false;}
+   bool operator ==(const ByteBuffer &rhs) const {return (this == &rhs) ? true : ((_numBytes == rhs._numBytes) ? (memcmp(_buffer, rhs._buffer, _numBytes) == 0) : false);}
 
    /** Returns true iff the data (rhs) is holding is different from our own (byte-for-byte). */
    bool operator !=(const ByteBuffer &rhs) const {return !(*this == rhs);}

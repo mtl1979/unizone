@@ -65,15 +65,15 @@ int Accept(int socket);
   * succeeded; if not, the connection failed.
   * @param hostIP 32-bit IP address to connect to (hostname isn't used as hostname lookups can't be made asynchronous AFAIK)
   * @param port Port to connect to.
-  * @param retIsReady On success, this bool is to true iff the socket is ready to use, or false to indicate that
-  *                   an asynchronous connection is in progress.
+  * @param retIsReady On success, this bool is set to true iff the socket is ready to use, or 
+  *                   false to indicate that an asynchronous connection is now in progress.
   * @return a non-negative sockfd which is in the process of connecting on success, or -1 on error.
   */
 int ConnectAsync(uint32 hostIP, uint16 port, bool & retIsReady);
 
 /** When a socket that was connecting asynchronously finally
-  * selects ready-for-write to indicate that the connect attempt
-  * has reached a conclusion, call this method.  It will finalize
+  * selects ready-for-write to indicate that the asynchronous connect 
+  * attempt has reached a conclusion, call this method.  It will finalize
   * the connection and make it ready for use.
   * @param socket The socket that was connecting asynchronously
   * @returns B_NO_ERROR if the connection is ready to use, or B_ERROR if the connect failed.

@@ -108,7 +108,7 @@ public:
    /** 
     * Convenience method for safely reading bytes from a byte buffer.  (Checks to avoid buffer overrun problems)
     * @param inBuf Flat buffer to read bytes from
-    * @param outputBufferBytes total size of the input buffer
+    * @param inputBufferBytes total size of the input buffer
     * @param readOffset Offset into buffer to read from.  Incremented by (blockSize) on success.
     * @param copyTo memory location to copy bytes to
     * @param blockSize number of bytes to copy

@@ -7,6 +7,10 @@
 #include "system/Mutex.h"
 #include "util/Hashtable.h"
 
+#ifdef __linux__
+# include <execinfo.h>
+#endif
+
 namespace muscle {
 
 // VC++ can't handle partial template specialization, so we'll do it explicitly here
@@ -309,6 +313,28 @@ status_t LogFlush()
       return B_NO_ERROR;
    }
    else return B_ERROR; 
+}
+
+status_t LogStackTrace(int ll)
+{
+#ifdef __linux__
+   const uint32 MAX_DEPTH = 64;
+   void *array[MAX_DEPTH];
+   size_t size = backtrace(array, MAX_DEPTH);
+   char ** strings = backtrace_symbols(array, size);
+   if (strings)
+   {
+      LogTime(ll, "--Stack trace follows (%zd frames):\n", size);
+      for (size_t i = 0; i < size; i++) LogTime(ll, "  %s\n", strings[i]);
+      LogTime(ll, "--End Stack trace\n");
+      free (strings);
+      return B_NO_ERROR;
+   }
+#else
+   (void) ll;  // shut the compiler up
+#endif
+
+   return B_ERROR;  // I don't know how to do this for other systems!
 }
 
 status_t Log(int ll, const char * fmt, ...)
