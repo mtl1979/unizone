@@ -64,7 +64,7 @@
 #define MSG_STATUS_BUSY		"busy"
 #define MSG_AT_WORK			"at work"
 #define MSG_AROUND			"around"
-
+#define MSG_SLEEPING		"sleeping"
 
 //
 // Menus

@@ -63,7 +63,7 @@
 #define MSG_STATUS_BUSY				"busy"
 #define MSG_AT_WORK					"at work"
 #define MSG_AROUND					"around"
-
+#define MSG_SLEEPING				"sleeping"
 
 #define MSG_ACCEPT_THREAD_READY		"Bereit und lausche an Port %1."
 #define MSG_ACCEPT_THREAD_FAILED	"Start der Befehlsfolge fehlgeschlagen!"

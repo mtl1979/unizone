@@ -1536,4 +1536,8 @@ WinShareWindow::TranslateStatus(QString & s)
 		{
 			s = MSG_AROUND;
 		}
+		else if (s == "sleeping")
+		{
+			s = MSG_SLEEPING;
+		}
 }

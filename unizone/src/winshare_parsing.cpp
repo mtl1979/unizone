@@ -45,7 +45,7 @@ WinShareWindow::MatchUserName(QString un, QString & result, const char * filter)
 				{
 					if (temp.at(i) != userName.at(i))
 					{
-						res = temp.left(i+1);
+						res = temp.left(i/*+1*/);
 						break;
 					}
 				}

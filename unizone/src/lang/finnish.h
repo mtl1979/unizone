@@ -66,6 +66,7 @@
 #define MSG_STATUS_BUSY		"kiireinen"
 #define MSG_AT_WORK			"töissä"
 #define MSG_AROUND			"ympärillä"
+#define MSG_SLEEPING		"nukkumassa"
 
 //
 // Menus
