@@ -23,6 +23,7 @@ typedef hostent *LPHOSTENT;
 #include "picviewerimpl.h"
 #include "util.h"
 #include "wstring.h"
+#include "wcrypt.h"
 #include "gotourl.h"			// <postmaster@raasu.org> 20021116 -- for /shell
 #include "tokenizer.h"			// <postmaster@raasu.org> 20030902 -- for !remote
 #include "ulistview.h"
@@ -95,7 +96,13 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/msg"))
 		{
-			SendPingOrMsg(sendText, false, reply);
+			SendPingOrMsg(sendText, false, reply, false);
+			if (reply && *reply)		// is reply wanted? and should it be sent?
+				e->SetText(sendText);	// modified by SendPingOrMsg();
+		}
+		else if (CompareCommand(sendText, "/emsg"))
+		{
+			SendPingOrMsg(sendText, false, reply, true);
 			if (reply && *reply)		// is reply wanted? and should it be sent?
 				e->SetText(sendText);	// modified by SendPingOrMsg();
 		}
@@ -1056,6 +1063,18 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (fNetClient->IsConnected())
 				SendChatText("*", qtext);
 		}
+		else if (CompareCommand(sendText, "/crypt"))
+		{
+			QString qtext = GetParameterString(sendText);
+			QString ctext = wencrypt2(qtext);
+			PrintSystem(ctext);
+		}
+		else if (CompareCommand(sendText, "/decrypt"))
+		{
+			QString qtext = GetParameterString(sendText);
+			QString dtext = wdecrypt2(qtext);
+			PrintSystem(dtext);
+		}
 		else if (CompareCommand(sendText, "/revsay"))
 		{
 			QString qtext = GetParameterString(sendText);
@@ -1256,9 +1275,9 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt)
 }
 
 void
-WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply)
+WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply, bool enc)
 {
-	fNetClient->SendChatText(sid, txt);
+	fNetClient->SendChatText(sid, txt, enc);
 	QString out = FixStringStr(txt);
 	if (sid == "*")	// not a global message?
 	{
@@ -1307,7 +1326,7 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 }
 
 void
-WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
+WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool enc)
 {
 	String targetStr, restOfString;
 	WUserSearchMap sendTo;
@@ -1365,7 +1384,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 				else
 				{
 					// the reply only has an effect when used with /msg
-					SendChatText(sid, sendText, user, reply);
+					SendChatText(sid, sendText, user, reply, enc);
 				}
 				iter++;
 				if (iter == sendTo.end())
@@ -1739,6 +1758,11 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
 				if (msg()->FindString("text", &strTemp) == B_OK)
 					text = QString::fromUtf8(strTemp);	
+				else if (msg()->FindString("enctext", &strTemp) == B_OK)
+				{
+					QString tmp = QString::fromUtf8(strTemp);
+					text = wdecrypt2(tmp);
+				}
 			}
 			
 			// get user info first

@@ -40,7 +40,7 @@ public:
 	void AddSubscriptionList(const String * str, bool q = false);
 	void RemoveSubscription(const String & str);
 	
-	void SendChatText(const QString &target, const QString &text);
+	void SendChatText(const QString &target, const QString &text, bool encoded = false);
 	void SendPing(const QString &target);
 	void SendPicture(const QString & target, const ByteBufferRef &buffer, const QString &name);
 	

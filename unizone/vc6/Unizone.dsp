@@ -458,6 +458,10 @@ SOURCE=..\src\version.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\wcrypt.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\werrorevent.cpp
 # End Source File
 # Begin Source File
@@ -2149,6 +2153,10 @@ SOURCE=..\src\util.h
 # Begin Source File
 
 SOURCE=..\src\version.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wcrypt.h
 # End Source File
 # Begin Source File
 

@@ -6,6 +6,7 @@
 #include "util.h"
 #include "wstring.h"
 #include "werrorevent.h"
+#include "wcrypt.h"
 
 #include <qapplication.h>
 #include "regex/PathMatcher.h"
@@ -752,7 +753,7 @@ NetClient::HandleParameters(MessageRef & next)
 }
 
 void
-NetClient::SendChatText(const QString & target, const QString & text)
+NetClient::SendChatText(const QString & target, const QString & text, bool enc)
 {
 	if (IsConnected())
 	{
@@ -764,7 +765,13 @@ NetClient::SendChatText(const QString & target, const QString & text)
 			tostr += "/beshare";
 			chat()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
 			chat()->AddString(PR_NAME_SESSION, (const char *) fSessionID.utf8());
-			chat()->AddString("text", (const char *) text.utf8());
+			if (enc)
+			{
+				QString tmp = wencrypt2(text);
+				chat()->AddString("enctext", (const char *) tmp.utf8());
+			}
+			else
+				chat()->AddString("text", (const char *) text.utf8());
 			if (target != "*")
 				chat()->AddBool("private", true);
 			SendMessageToSessions(chat);

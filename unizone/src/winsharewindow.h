@@ -145,7 +145,7 @@ public:
 	QString GetUserID() const; 
 
 	void SendChatText(const QString & sid, const QString & txt);
-	void SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply);
+	void SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply, bool enc);
 
 	static QString GetRemoteVersionString(const MessageRef);
 	// launches a search
@@ -451,7 +451,7 @@ private:
 
 	// stolen from BeShare :) thanx Jeremy
 	static bool ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
-	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL);
+	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL, bool enc = false);
 
 	void GetAddressInfo(const QString & user, bool verbose = true);
 	void PrintAddressInfo(const WUserRef & user, bool verbose);

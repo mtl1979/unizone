@@ -30,8 +30,13 @@ struct TTPInfo
 String TTPEncode(const String &);
 // Decodes returning text
 String TTPDecode(const String &);
+char * TTPDecode(const String &, uint32 *len);
+
 #if !defined(__BEOS__)
+QString TTPEncode(uint8 * orig, uint32 len);
+
 QString TTPDecode(const QString &);
+char * TTPDecode(const QString &, uint32 *len);
 #endif
 
 // convert hexadecimal code to character equivalent
@@ -41,5 +46,8 @@ QChar hextochar(const QString &);
 #endif
 // convert character to hexadecimal code
 String chartohex(const char);
+#if !defined(__BEOS__)
+QString chartohex(const QChar);
+#endif
 
 #endif
