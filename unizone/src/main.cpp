@@ -62,7 +62,7 @@ main( int argc, char** argv )
 		{
 			strncpy(chd, argv[0], wdir - argv[0]);
 			chd[wdir - argv[0]] = 0;
-			printf("Setting working directory to: %s\n", chd);
+			PRINT("Setting working directory to: %s\n", chd);
 			chdir(chd);
 			delete [] chd;
 		}
