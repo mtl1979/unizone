@@ -35,6 +35,7 @@ public:
 
 	operator wchar_t *() const { return buffer; };
 	wchar_t *getBuffer() const { return buffer; };
+	int length(); 
 	QString toQString() const;
 	WString &operator=(const wchar_t *);
 	WString &operator=(const WString &);

@@ -335,8 +335,8 @@ private:
 	QPopupMenu * fPrivate;		// private window popup
 
 	WPrivMap fPrivateWindows;	// private windows;
-	QMutex pLock;				// private window mutex
-	QMutex rLock;				// resume list mutex
+	mutable QMutex pLock;		// private window mutex
+	mutable QMutex rLock;		// resume list mutex
 
 	bool fGotResults;			// see if we got initial Search Results
 	bool fGotParams;			// see if the initial "Get Params" message was sent
@@ -395,6 +395,8 @@ private:
 	void ExecCommand(QString command);			// execute specified command
 
 	bool NameSaid2(String sname, QString & msg, unsigned long index = 0); // Private version for recursing
+
+	void SignalDownload(int);
 
 	QTimer * fAutoAway;
 	QTimer * fConnectTimer;
@@ -505,7 +507,7 @@ private:
 	QPushButton * fClearHistory;
 	WStatusBar * fStatus;
 	MessageRef fQueue;
-	QMutex fLock;		// to lock the list so only one method can be using it at a time
+	// mutable QMutex fLock;		// to lock the list so only one method can be using it at a time
 
 	QString fCurrentSearchPattern;
 	StringMatcher fFileRegExp, fUserRegExp;
@@ -523,10 +525,10 @@ private:
 	void QueueDownload(QString file, WUser * user);
 	void EmptyQueues();
 
-	void Lock() { fSearchLock.lock(); }
-	void Unlock() { fSearchLock.unlock(); }
+	// void Lock() { fSearchLock.lock(); }
+	// void Unlock() { fSearchLock.unlock(); }
 
-	QMutex fSearchLock;		// to lock the list so only one method can be using it at a time
+	mutable QMutex fSearchLock;		// to lock the list so only one method can be using it at a time
 
 	// UniShare
 

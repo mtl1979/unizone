@@ -7,6 +7,14 @@
 # include <pthread.h>
 #elif defined(QT_THREAD_SUPPORT)
 # include <qthread.h>
+   class MuscleQThread : public QThread
+   {
+   public:
+      MuscleQThread()  {/* empty */}  // _owner not set here, for VC++6 compatibility
+      virtual void run() {InternalThreadEntryAux();}
+   protected:
+	  virtual void InternalThreadEntryAux() = 0;
+   };
 #elif defined(__BEOS__)
 # include <kernel/OS.h>
 #elif defined(WIN32)
@@ -30,6 +38,9 @@ namespace muscle {
   * and for waiting for the thread to exit.
   */
 class Thread
+#ifdef QT_THREAD_SUPPORT
+: public MuscleQThread
+#endif
 {
 public:
    /** Constructor.  Does very little (in particular, the internal thread is not started here...
@@ -253,18 +264,6 @@ private:
 #if defined(MUSCLE_USE_PTHREADS)
    pthread_t _thread;
    static void * InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return NULL;}
-#elif defined(QT_THREAD_SUPPORT)
-   class MuscleQThread : public QThread
-   {
-   public:
-      MuscleQThread() : _owner(NULL) {/* empty */}  // _owner not set here, for VC++6 compatibility
-      virtual void run() {_owner->InternalThreadEntryAux();}
-      void SetOwner(Thread * owner) {_owner = owner;}
-   private:
-      Thread * _owner;
-   };
-   MuscleQThread _thread;
-   friend class MuscleQThread;
 #elif defined(__BEOS__)
    thread_id _thread;
    static int32 InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return 0;}

@@ -1013,6 +1013,10 @@ SOURCE=..\src\resource.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\scanevent.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\scanprogress.h
 # End Source File
 # Begin Source File

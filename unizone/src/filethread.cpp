@@ -11,6 +11,7 @@
 #include "util/String.h"
 #include "wstring.h"
 #include "scanprogressimpl.h"
+#include "scanevent.h"
 #include "netclient.h"
 
 #include <qdir.h>
@@ -29,18 +30,18 @@
 #endif
 
 WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
-	: QThread()
+	: QThread(), fLocker(true)
 {
 	fNet = net;
 	fOwner = owner;
 	fShutdownFlag = optShutdownFlag;
-	fScanProgress = new ScanProgress();
+
+	fScanProgress = new ScanProgress(fOwner);
 	CHECK_PTR(fScanProgress);
 }
 
 WFileThread::~WFileThread()
 {
-	delete fScanProgress;
 }
 
 void
@@ -59,6 +60,7 @@ WFileThread::run()
 	int iScannedDirs = 0;
 
 	fScanProgress->show();
+	SendReset(); 
 
 #ifdef WIN32
 	CoInitialize(NULL);
@@ -69,7 +71,7 @@ WFileThread::run()
 	while (!fPaths.IsEmpty())
 	{
 		Lock();
-		fScanProgress->SetDirsLeft(fPaths.GetNumItems());
+		SendInt(ScanEvent::Type::DirsLeft, fPaths.GetNumItems());
 		fPaths.RemoveHead(path);
 		Unlock();
 		if (fShutdownFlag && *fShutdownFlag)
@@ -78,15 +80,17 @@ WFileThread::run()
 			fPaths.Clear();
 			break;
 		}
+		msleep(30);
 		ParseDir(path);
 		iScannedDirs++;
-		fScanProgress->SetScannedDirs(iScannedDirs);
+		SendInt(ScanEvent::Type::ScannedDirs, iScannedDirs);
 	} 
 #ifdef WIN32
 	CoUninitialize();
 #endif
 
-	fScanProgress->hide();
+	fScanProgress->close();
+
 	Lock();
 	fScannedDirs.Clear();
 	Unlock();
@@ -105,7 +109,7 @@ WFileThread::ParseDir(const QString & d)
 	WString wD = d;
 	PRINT("Parsing directory %S\n", wD.getBuffer());
 
-	fScanProgress->SetScanDirectory(d);
+	SendString(ScanEvent::Type::ScanDirectory, d);
 
 	// Directory doesn't exist?
 	if (!info->exists())
@@ -185,7 +189,7 @@ WFileThread::ScanFiles(const QString & directory)
 					}
 				}
 
-				fScanProgress->SetScanFile(ndata);
+				SendString(ScanEvent::Type::ScanFile, ndata);
 
 				WString wData = ndata;
 				PRINT("\tChecking file %S\n", wData.getBuffer());
@@ -211,76 +215,70 @@ WFileThread::AddFile(const QString & filePath)
 	PRINT("Setting to filePath: %S\n", wFilePath.getBuffer());
 #endif
 	
-	QFileInfo * finfo = new QFileInfo(filePath);
-	CHECK_PTR(finfo);
+	UFileInfo * ufi = new UFileInfo(filePath);
+	CHECK_PTR(ufi);
+	ufi->Init();
 				
 #ifdef DEBUG2
 	PRINT("Set\n");
 #endif
 				
-	if (finfo->exists())
+	if (ufi->isValid())
 	{
 #ifdef DEBUG2
 		PRINT("Exists\n");
 #endif
-					
+		
 		// resolve symlink
-		QString ret = ResolveLink(finfo->filePath());
-
-		finfo->setFile(ret);
-					
+		QString gfn = ufi->getFullName();
+		QString ret = ResolveLink(gfn);
+		
+		ufi->setName(ret);
+		
 		// is this a directory?
-		if (finfo->isDir())
+		if (ufi->isDir())
 		{
 			Lock();
-			fPaths.AddTail(finfo->absFilePath());
+			fPaths.AddTail(ufi->getAbsPath());
 			Unlock();
 		}
 		else
 		{
-			UFileInfo * ufi = new UFileInfo(ret);
-			CHECK_PTR(ufi);
-
-			if (ufi->isValid())
+			MessageRef ref(GetMessageFromPool());
+			if (ref())
 			{
-				ufi->Init();
-				MessageRef ref(GetMessageFromPool());
-				if (ref())
+				QCString qcPath = ufi->getPath().utf8();
+				int64 size = ufi->getSize();
+				if (size > 0)
 				{
-					QCString qcPath = ufi->getPath().utf8();
-					int64 size = ufi->getSize();
-					if (size > 0)
-					{
-						ref()->AddInt32("beshare:Modification Time", ufi->getModificationTime());
-						ref()->AddString("beshare:Kind", (const char *) ufi->getMIMEType().utf8()); // give BeSharer's some relief
-						ref()->AddString("beshare:Path", (const char *) qcPath);
-						ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
-						ref()->AddInt64("beshare:File Size", size);
-						ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
-						ref()->AddString("beshare:File Name", (const char *) ufi->getName().utf8());
-						
-						QString nodePath;
-						if (fFired)
-							nodePath = "beshare/fires/";
-						else
-							nodePath = "beshare/files/";
-						
-						nodePath += ufi->getName();
-						
-						ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
-						Lock(); 
-						fFiles.AddTail(ref);
-						fScanProgress->SetScannedFiles(fFiles.GetNumItems());
-						Unlock(); 
-					}
+					ref()->AddInt32("beshare:Modification Time", ufi->getModificationTime());
+					ref()->AddString("beshare:Kind", (const char *) ufi->getMIMEType().utf8()); // give BeSharer's some relief
+					ref()->AddString("beshare:Path", (const char *) qcPath);
+					ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
+					ref()->AddInt64("beshare:File Size", size);
+					ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
+					ref()->AddString("beshare:File Name", (const char *) ufi->getName().utf8());
+					
+					QString nodePath;
+					if (fFired)
+						nodePath = "beshare/fires/";
+					else
+						nodePath = "beshare/files/";
+					
+					nodePath += ufi->getName();
+					
+					ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
+					Lock(); 
+					fFiles.AddTail(ref);
+					Unlock(); 
+					int n = fFiles.GetNumItems();
+					SendInt(ScanEvent::Type::ScannedFiles, n);
 				}
 			}
-			delete ufi;
-			ufi = NULL;
 		}
 	}
-	delete finfo;
-	finfo = NULL;
+	delete ufi;
+	ufi = NULL;
 }
 
 QString
@@ -450,11 +448,6 @@ WFileThread::CheckFile(const QString & file)
 bool
 WFileThread::FindFile(const QString & file, MessageRef & ref)
 {
-	while (gWin->IsScanning())
-	{
-		qApp->processEvents(300);
-	}
-
 	Lock();
 	for (int i = 0; i < fFiles.GetNumItems(); i++)
 	{
@@ -498,13 +491,37 @@ WFileThread::EmptyList()
 	Unlock(); 
 }
 
-MessageRef
-WFileThread::GetSharedFile(int n)
+void
+WFileThread::GetSharedFile(int n, MessageRef & mref)
 {
-	MessageRef mref;
+	Lock();
 	if (n >= 0 && n < fFiles.GetNumItems())
 	{
 		fFiles.GetItemAt(n, mref);
 	}
-	return mref;
+	Unlock();
+}
+
+void
+WFileThread::SendReset()
+{
+	ScanEvent *se = new ScanEvent(ScanEvent::Type::Reset);
+	if (se)
+		QThread::postEvent(fScanProgress, se);
+}
+
+void
+WFileThread::SendString(ScanEvent::Type t, QString str)
+{
+	ScanEvent *se = new ScanEvent(t, str);
+	if (se)
+		QThread::postEvent(fScanProgress, se);
+}
+
+void
+WFileThread::SendInt(ScanEvent::Type t, int i)
+{
+	ScanEvent *se = new ScanEvent(t, i);
+	if (se)
+		QThread::postEvent(fScanProgress, se);
 }

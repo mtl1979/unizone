@@ -4,17 +4,16 @@
 
 namespace muscle {
 
-static const uint32 QMTT_SIGNAL_EVENT = QEvent::MaxUser;
+static const uint32 QMTT_SIGNAL_EVENT = 8360447;  // why yes, this is a completely arbitrary number
 
-QMessageTransceiverThread :: QMessageTransceiverThread(QObject *parent)
-	: QObject(parent)
+QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const char * name) : QObject(parent, name)
 {
-   // empty
+   if (!name) setName( "QMessageTransceiverThread" );
 }
 
 QMessageTransceiverThread :: ~QMessageTransceiverThread()
 {
-   // empty
+   ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
 }
 
 status_t QMessageTransceiverThread :: SendMessageToSessions(MessageRef msgRef, const char * optDistPath)       

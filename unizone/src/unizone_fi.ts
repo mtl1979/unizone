@@ -1355,6 +1355,13 @@ Päiväys: %4</translation>
     </message>
 </context>
 <context>
+    <name>WGenericThread</name>
+    <message>
+        <source>Connection timed out!</source>
+        <translation>Yhteyden aikakatkaisu!</translation>
+    </message>
+</context>
+<context>
     <name>WPrefs</name>
     <message>
         <source>&lt;font color="%1"&gt;%2&lt;/font&gt;</source>
@@ -2191,7 +2198,7 @@ Päiväys: %4</translation>
     <name>WUploadThread</name>
     <message>
         <source>Your download has been blocked for %1 minute(s)!</source>
-        <translation>Imurointisi on estetty %1 minuutiksi!</translation>
+        <translation type='obsolete'>Imurointisi on estetty %1 minuutiksi!</translation>
     </message>
     <message>
         <source>User #%1</source>

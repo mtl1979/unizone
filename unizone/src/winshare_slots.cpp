@@ -343,6 +343,7 @@ WinShareWindow::Preferences()
 				fFileScanThread->EmptyList();
 				StopAcceptThread();
 				fNetClient->SetLoad(0, 0);
+				fScanning = false;
 			}
 			// this will also handle changes in firewall settings
 			if (fSettings->GetSharingEnabled())		
@@ -359,17 +360,21 @@ WinShareWindow::Preferences()
 			}
 			if (fDLWindow)
 			{
-				{
-					QCustomEvent *qce = new QCustomEvent(WDownload::DequeueDownloads);
-					if (qce) QApplication::postEvent(fDLWindow, qce);
-				}
-				{
-					QCustomEvent *qce = new QCustomEvent(WDownload::DequeueUploads);
-					if (qce) QApplication::postEvent(fDLWindow, qce);
-				}
+				SignalDownload(WDownload::DequeueDownloads);
+				SignalDownload(WDownload::DequeueUploads);
+			}			
+		}
+		else
+		{
+			if (oldSharing && !fSettings->GetSharingEnabled())	// if we were previously sharing and are not now.. remove old data
+			{
+				StopAcceptThread();
+				fScanning = false;
 			}
-
-			
+			if (!oldSharing && fSettings->GetSharingEnabled())
+			{
+				StartAcceptThread();
+			}
 		}
 
 		if (oldLogging && !fSettings->GetLogging())
@@ -556,4 +561,11 @@ WinShareWindow::CheckResumes(QString user)
 
 		fDLWindow->AddDownloadList(fFiles, fLFiles, u());
 	}
+}
+
+void
+WinShareWindow::SignalDownload(int type)
+{
+	QCustomEvent *qce = new QCustomEvent(type);
+	if (qce) QApplication::postEvent(fDLWindow, qce);
 }

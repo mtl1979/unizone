@@ -53,7 +53,7 @@ public slots:
 	void SessionDisconnected(const String &sessionID);
 
 protected:
-	QMutex fLockFile;
+	mutable QMutex fLockFile;
 	QFile * fFile;			// file on the HD
 	QString * fFileDl;		// file to dl
 	QString * fLocalFileDl; // local filenames for downloaded files
@@ -72,12 +72,15 @@ protected:
 	int32 fNumFiles, fCurFile;
 
 	virtual void SendReply(MessageRef &m);
+	virtual void timerEvent(QTimerEvent *);
 
 private:
 	QString UniqueName(QString file, int index); // build up unique name using 'file' and 'index'
 	String _sessionID;
 
 	bool InitSessionAux();
+
+	int timerID;
 };
 
 // subclass ThreadWorkerSessionFactory to do throttling

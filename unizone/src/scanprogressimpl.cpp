@@ -2,6 +2,7 @@
 
 #include "scanprogressimpl.h"
 #include "scanprogress.h"
+#include "scanevent.h"
 
 ScanProgress::ScanProgress(QObject * owner, QWidget* parent, const char* name, bool modal, WFlags fl)
 : ScanProgressBase(parent, name, modal, fl)
@@ -12,44 +13,94 @@ ScanProgress::ScanProgress(QObject * owner, QWidget* parent, const char* name, b
 
 ScanProgress::~ScanProgress()
 {
+	// empty
 }
 
 void
 ScanProgress::SetDirsLeft(int dl)
 {
-	fLock.lock();
-	fDirsLeft->setText(QString::number(dl));
-	fLock.unlock();
+	QString sdl;
+	sdl.setNum(dl);
+	fDirsLeft->setText(sdl);	
 }
 
 void
 ScanProgress::SetScanDirectory(const QString & dir)
 {
-	fLock.lock();
+	
 	fDirectory->setText(dir);
-	fLock.unlock();
 }
 
 void
 ScanProgress::SetScanFile(const QString & file)
 {
-	fLock.lock();
-	fFile->setText(file);
-	fLock.unlock();
+	fFile->setText(file);	
 }
 
 void
 ScanProgress::SetScannedDirs(int sd)
 {
-	fLock.lock();
-	fDirsScanned->setText(QString::number(sd));
-	fLock.unlock();
+	QString ssd;
+	ssd.setNum(sd); 
+	fDirsScanned->setText(ssd);
 }
 
 void
 ScanProgress::SetScannedFiles(int sf)
 {
-	fLock.lock();
-	fFilesScanned->setText(QString::number(sf));
-	fLock.unlock();
+	QString ssf;
+	ssf.setNum(sf);
+	fFilesScanned->setText(ssf);
+}
+
+void
+ScanProgress::reset()
+{
+	SetDirsLeft(0);
+	SetScanDirectory("-");
+	SetScanFile("-");
+	SetScannedDirs(0);
+	SetScannedFiles(0);
+}
+
+void
+ScanProgress::customEvent(QCustomEvent *e)
+{
+	ScanEvent * se = dynamic_cast<ScanEvent *>(e);
+	if (se)
+	{
+		switch ((int) se->type())
+		{
+		case ScanEvent::Type::ScanDirectory:
+			{
+				SetScanDirectory(se->text());
+				break;
+			}
+		case ScanEvent::Type::ScanFile:
+			{
+				SetScanFile(se->text());
+				break;
+			}
+		case ScanEvent::Type::ScannedDirs:
+			{
+				SetScannedDirs(se->number());
+				break;
+			}
+		case ScanEvent::Type::ScannedFiles:
+			{
+				SetScannedFiles(se->number());
+				break;
+			}
+		case ScanEvent::Type::DirsLeft:
+			{
+				SetDirsLeft(se->number());
+				break;
+			}
+		case ScanEvent::Type::Reset:
+			{
+				reset();
+				break;
+			}
+		}
+	}
 }

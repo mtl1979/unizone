@@ -24,7 +24,7 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 	if (fCurrentSearchPattern.isEmpty())
 		return;
 
-	Lock();
+	fSearchLock.lock();
 	// see if the filename matches our file regex
 	// AND that the session ID matches our session ID regex
 	if (fFileRegExp.Match((const char *) filename.utf8()))
@@ -49,13 +49,7 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 				file()->FindString("beshare:Path", path);
 				file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
 				file()->FindInt64("beshare:File Size", (int64 *)&size);
-/*
-				if (size == 0)	// Can't download files of size 0
-				{
-					Unlock();	// Don't forget to unlock ;)
-					return;
-				}
-*/
+
 				WFileInfo * info = new WFileInfo;
 				CHECK_PTR(info);
 				info->fiUser = user;
@@ -87,14 +81,14 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 		}
 		
 	}
-	Unlock();
+	fSearchLock.unlock();
 	SetResultsMessage();
 }
 
 void
 WinShareWindow::RemoveFile(const QString sid, const QString filename)
 {
-	Lock();
+	fSearchLock.lock();
 	PRINT("WSearch::RemoveFile\n");
 	// go through our multi map and find the item that matches the sid and filename
 	WFIIter iter = fFileList.begin();
@@ -119,14 +113,14 @@ WinShareWindow::RemoveFile(const QString sid, const QString filename)
 		// not found, continue looking
 		iter++;
 	}
-	Unlock();
+	fSearchLock.unlock();
 	SetResultsMessage();
 }
 
 void
 WinShareWindow::StopSearch()
 {
-	Lock();
+	fSearchLock.lock();
 	if (fCurrentSearchPattern != "")	// we actually have an old search pattern,
 	{
 		// cancel it
@@ -152,7 +146,7 @@ WinShareWindow::StopSearch()
 		fFileRegExp.SetPattern("");
 		fUserRegExp.SetPattern("");
 	}
-	Unlock();
+	fSearchLock.unlock();
 	SetSearchStatus(tr("Idle."));
 	SetSearchStatus("", 2);
 }
@@ -161,7 +155,7 @@ WinShareWindow::StopSearch()
 void
 WinShareWindow::ClearList()
 {
-	Lock();
+	fSearchLock.lock();
 	// go through and empty the list
 	WFIIter it = fFileList.begin();
 	while (it != fFileList.end())
@@ -175,7 +169,7 @@ WinShareWindow::ClearList()
 	}
 	// delete them NOW
 	fSearchList->clear();
-	Unlock();
+	fSearchLock.unlock();
 	SetSearchStatus("", 1);
 }
 
@@ -198,7 +192,7 @@ WinShareWindow::GoSearch()
 	// here we go with the new search pattern
 
 	// now we lock
-	Lock();
+	fSearchLock.lock();
 
 	// parse the string for the '@' if it exists
 	String fileExp(fSearchEdit->currentText().utf8());
@@ -262,7 +256,7 @@ WinShareWindow::GoSearch()
 	ConvertToRegex(fileExp);
 	MakeRegexCaseInsensitive(fileExp);
 	
-	Unlock();	// unlock before StartQuery();
+	fSearchLock.unlock();	// unlock before StartQuery();
 
 	StartQuery(userExp.Length() > 0 ? QString::fromUtf8(userExp.Cstr()) : "*", QString::fromUtf8(fileExp.Cstr()));
 }
@@ -270,7 +264,7 @@ WinShareWindow::GoSearch()
 void
 WinShareWindow::StartQuery(QString sidRegExp, QString fileRegExp)
 {
-	Lock();
+	fSearchLock.lock();
 	QString tmp = "SUBSCRIBE:/*/";
 	tmp += sidRegExp;
 	tmp += "/beshare/";
@@ -295,7 +289,7 @@ WinShareWindow::StartQuery(QString sidRegExp, QString fileRegExp)
 	// Test when initial results have been returned
 	fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_PING)); 
 
-	Unlock();
+	fSearchLock.unlock();
 
 	SetSearchStatus(tr("Searching for: \"%1\".").arg(fileRegExp));
 	SetSearchStatus(tr("active"), 2);
@@ -304,7 +298,7 @@ WinShareWindow::StartQuery(QString sidRegExp, QString fileRegExp)
 void
 WinShareWindow::Download()
 {
-	Lock();
+	fSearchLock.lock();
 	fDownload->setEnabled(false);
 	if (!fFileList.empty())
 	{
@@ -329,7 +323,7 @@ WinShareWindow::Download()
 	}
 	EmptyQueues();
 	fDownload->setEnabled(true);
-	Unlock();
+	fSearchLock.unlock();
 }
 
 void

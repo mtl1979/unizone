@@ -83,6 +83,10 @@ public:
 	// set column type for sorting
 	virtual void setColumnType(int c, WUniListItem::ColumnType ct);
 	virtual WUniListItem::ColumnType columnType(int c);
+
+	virtual void paintCell(QPainter *, const QColorGroup & cg, int column, int w,
+		int alignment);
+
 	
 private:
 	QString fKey[NUM_COLUMNS];

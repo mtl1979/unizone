@@ -14,7 +14,7 @@
 #include "zlib/ZLibUtilityFunctions.h"
 
 NetClient::NetClient(QObject * owner)
-: QObject(owner)
+: QObject(owner), fChannelLock(true)
 {
 	setName( "NetClient" );
 
@@ -25,6 +25,7 @@ NetClient::NetClient(QObject * owner)
 	fOldID = QString::null;
 	fSessionID = QString::null;
 	fUserName = QString::null;
+	timerID = 0;
 	fChannelLock.lock();
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
@@ -64,8 +65,6 @@ NetClient::~NetClient()
 	if (qmtt)
 	{
 		qmtt->WaitForInternalThreadToExit();
-//		delete qmtt;
-//		qmtt = NULL;
 	}
 }
 
@@ -955,6 +954,9 @@ void
 NetClient::SessionConnected(const String &sessionID)
 {
 	PRINT("MTT_EVENT_SESSION_CONNECTED\n");
+
+	timerID = startTimer(10000);
+
 	SendSignal(NetClient::SESSION_CONNECTED);
 	PRINT("Returning\n");
 }
@@ -963,6 +965,13 @@ void
 NetClient::SessionDisconnected(const String &sessionID)
 {
 	PRINT("MTT_EVENT_SESSION_DISCONNECTED\n");
+
+	if (timerID != 0) 
+	{
+		killTimer(timerID);
+		timerID = 0;
+	}
+
 	SendSignal(NetClient::DISCONNECTED);
 }
 
@@ -1056,4 +1065,17 @@ NetClient::SendSignal(int signal)
 	QCustomEvent *e = new QCustomEvent(signal);
 	if (e)
 		QThread::postEvent(gWin, e);
+}
+
+void
+NetClient::timerEvent(QTimerEvent *e)
+{
+	if (IsConnected())
+	{
+		MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
+		if ( nop() )
+		{
+			SendMessageToSessions(nop);
+		}
+	}
 }

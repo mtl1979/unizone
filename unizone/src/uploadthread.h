@@ -61,6 +61,8 @@ protected:
 	virtual void SendReply(MessageRef &m);
 	void SendQueuedNotification();
 	void SendRejectedNotification(bool);
+	virtual void timerEvent(QTimerEvent *);
+	bool event(QEvent *);
 
 private:
 	Queue<MessageRef> fUploads;
@@ -83,12 +85,23 @@ private:
 	bool fForced;						// did this transfer bypass queue?
 //	bool fInit;							// has InitSession() been postponed due file scan in progress
 
+	int timerID;
+
 	int32 fCurFile, fNumFiles;
 
 	String _sessionID;
 
 	void DoUpload();
 	bool InitSessionAux();
+	void TransferFileList(const MessageRef &);
+	void SignalUpload();
+
+	enum
+	{
+		UploadEvent = 'tsue'
+	};
+
+	MessageRef fSavedFileList;
 };
 
 

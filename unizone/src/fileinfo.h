@@ -10,7 +10,7 @@
 
 #include "support/MuscleSupport.h"
 
-class UFileInfo : private QFileInfo
+class UFileInfo
 {
 public:
 	UFileInfo(QFileInfo info);
@@ -20,17 +20,22 @@ public:
 	uint32 getModificationTime();
 	QString getMIMEType() const;
 	QString getPath() const;
+	QString getAbsPath() const;
 	QString getName() const;
+	void setName(const QString & n);
+	QString getFullName() const;
 	QString getExtension() const;
 	uint64 getSize();
 
 	bool isValid();
+	bool isDir();
 	void Init();
 
 private:
 	QString fFileName, fFullName;
 	QString fExtension;
 	QString fFilePath;
+	QString fAbsPath;
 	QString fMIMEType;
 	uint32 fModificationTime;
 	uint64 fSize;
@@ -41,6 +46,8 @@ private:
 	void InitExtension();
 	void InitSize();
 	void InitModificationTime();
+
+	QFileInfo *fFileInfo;
 };
 
 #endif

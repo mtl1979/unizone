@@ -1486,7 +1486,9 @@ int64
 WSettings::GetInstallID()
 {
 	srand(time(NULL));
-	int64 iid = (rand()*(ULONG_MAX/RAND_MAX)<<32)+(rand()*(ULONG_MAX/RAND_MAX));
+	uint64 i1 = rand()*(ULONG_MAX/RAND_MAX);
+	uint64 i2 = rand()*(ULONG_MAX/RAND_MAX);
+	int64 iid = (i1 << 32) + i2;
 	fSet()->FindInt64(INSTALLID, &iid);
 	return iid;
 }

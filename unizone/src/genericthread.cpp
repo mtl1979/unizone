@@ -13,7 +13,9 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 
 	setName( "WGenericThread" );
 
-	qmtt = NULL;
+	qmtt = new QMessageTransceiverThread(this);
+	CHECK_PTR(qmtt);
+
 	// Default status
 
 	if (!fShutdownFlag)					// Force use of Shutdown Flag
@@ -51,16 +53,7 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 WGenericThread::~WGenericThread()
 {
 	PRINT("WGenericThread dtor\n");
-
-	if (qmtt)
-	{
-		if (IsInternalThreadRunning()) 
-		{
-			qmtt->ShutdownInternalThread();
-		}
-//		delete qmtt;
-//		qmtt = NULL;
-	}
+//	qmtt->ShutdownInternalThread();
 	PRINT("WGenericThread dtor OK\n");
 }
 
@@ -363,14 +356,10 @@ void
 WGenericThread::Reset()
 {
 	PRINT("WGenericThread::Reset()\n");
-	PRINT("Disconnecting...\n");
 	if ( fShutdownFlag )
 		*fShutdownFlag = true;
-	if (qmtt)
-	{
-		qmtt->RemoveSessions();
-		qmtt->Reset();
-	}
+	qmtt->Reset();
+	qApp->processEvents();
 	PRINT("WGenericThread::Reset() OK\n");
 }
 
@@ -395,5 +384,22 @@ WGenericThread::RemoveSessions(const char * optDistPath)
 bool
 WGenericThread::IsLastFile()
 { 
-	return ((GetCurrentNum() + 1) >= GetNumFiles()); 
+	int c = GetCurrentNum() + 1;
+	int n = GetNumFiles();
+	return (c >= n); 
+}
+
+status_t
+WGenericThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
+{
+	if (qmtt)
+		return qmtt->SendMessageToSessions(msgRef, optDistPath);
+	else
+		return B_ERROR;
+}
+
+bool
+WGenericThread::event(QEvent * e)
+{
+	return QObject::event(e);
 }

@@ -45,12 +45,6 @@ main( int argc, char** argv )
 
 	RedirectDebugOutput();
 
-	// Set alternative codec if translation requires it
-
-#ifdef ALTCHARSET
-	app.setDefaultCodec( QTextCodec::codecForName(ALTCHARSET) );
-#endif
-
 	// Set alternative settings file if requested
 
 	if (argc > 1)

@@ -72,7 +72,7 @@ const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
 WinShareWindow * gWin = NULL;
 
 WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
-	: QMainWindow(parent, name, f | WPaintDesktop | WPaintClever), fMenus(NULL)
+	: QMainWindow(parent, name, f | WPaintDesktop | WPaintClever), fMenus(NULL), pLock(true), rLock(true), fSearchLock(true)
 {
 	if ( !name ) 
 		setName( "WinShareWindow" );
@@ -404,7 +404,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				CancelShares();
 				if (fSettings->GetSharingEnabled()) // Make sure sharing is enabled and fully functional
 				{
-					fFileScanThread->Lock();
+					// fFileScanThread->Lock();
 					if (fSettings->GetInfo())
 						PrintSystem(tr("Sharing %1 file(s).").arg(fFileScanThread->GetNumFiles()));
 					fNetClient->SetFileCount(fFileScanThread->GetNumFiles());
@@ -414,14 +414,14 @@ WinShareWindow::customEvent(QCustomEvent * event)
 
 					if (refScan())
 					{
-						
+						MessageRef mref;
 						for  (int n = 0; n < fFileScanThread->GetNumFiles(); n++)
 						{
 							// stop iterating if we are waiting for file scan thread to finish
 							if (fFileShutdownFlag)
 								break;
 							qApp->processEvents(300);
-							MessageRef mref = fFileScanThread->GetSharedFile(n); 
+							fFileScanThread->GetSharedFile(n, mref); 
 							String s;
 							if (mref())
 							{
@@ -462,12 +462,11 @@ WinShareWindow::customEvent(QCustomEvent * event)
 						}
 					}
 
-					fFileScanThread->Unlock();
+					// fFileScanThread->Unlock();
 					fScanning = false;
 					if (fDLWindow)
 					{
-						QCustomEvent *qce = new QCustomEvent(WDownload::DequeueUploads);
-						if (qce) QApplication::postEvent(fDLWindow, qce);
+						SignalDownload(WDownload::DequeueUploads);
 					}
 					PRINT("Done\n");
 				}
@@ -535,7 +534,11 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (fSettings->GetInfo())
 					PrintSystem(tr("Connected."));
 
-				fScanning = true; // Fake that we are scanning, so uploads get queued until we scan the very first time.
+				if ( fSettings->GetSharingEnabled() )
+				{
+					// Fake that we are scanning, so uploads get queued until we scan the very first time.
+					fScanning = true; 
+				}
 				return;
 			}
 			
@@ -1728,7 +1731,9 @@ WinShareWindow::LoadSettings()
 		tx2 = 0;
 		rx2 = 0;
 		srand(time(NULL));
-		fInstallID = (rand()*(ULONG_MAX/RAND_MAX)<<32)+(rand()*(ULONG_MAX/RAND_MAX));
+		uint64 i1 = rand()*(ULONG_MAX/RAND_MAX);
+		uint64 i2 = rand()*(ULONG_MAX/RAND_MAX);
+		fInstallID = (i1 << 32) + i2;
 	}
 
 	// Toolbar Layout

@@ -156,3 +156,12 @@ qStringToWideChar(const QString &str)
 		return NULL;
 	}
 }
+
+int
+WString::length()
+{ 
+	if (buffer) 
+		return wcslen(buffer);
+	else
+		return -1;
+}

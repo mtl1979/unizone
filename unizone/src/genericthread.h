@@ -10,6 +10,7 @@
 #include <qdatetime.h>
 #include <qobject.h>
 #include <qthread.h>
+#include <qguardedptr.h>
 
 #include "message/Message.h"
 #include "system/MessageTransceiverThread.h"
@@ -143,9 +144,6 @@ public slots:
    /** Emitted when the thread's internal ReflectServer object exits. */
    virtual void ServerExited() {}
 
-   /** Signal emitted when a TCP connection is completed.  */
-   virtual void SessionConnected() {}
-
    /** Emitted when the output-queues of the sessions specified in a previous call to 
      * RequestOutputQueuesDrainedNotification() have drained.  Note that this signal only 
      * gets emitted once per call to RequestOutputQueuesDrainedNotification();
@@ -163,6 +161,8 @@ public slots:
      * @param optFromFactory If a factory is relevant, this will be the factory's port number; else it will be zero.
      */
    virtual void InternalThreadEvent(uint32 code, MessageRef optMsg, const String & optFromSession, uint16 optFromfactory) {}
+
+   status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
 
 protected:
 	QObject * fOwner;
@@ -190,13 +190,16 @@ protected:
 	virtual void SendReply(MessageRef &m);
 	QString GetUserName(QString sid);
 	virtual bool InitSessionAux() = 0;
+	virtual void timerEvent(QTimerEvent *) = 0;
 
 	int fTXRate; // Current transfer throttling rate
 
 	QTimer * CTimer;					// Connect timer
 	QTimer * fBlockTimer;				// Blocked timer
 
-	QMessageTransceiverThread *qmtt;
+	QMessageTransceiverThread * qmtt;
+
+	bool event(QEvent *e);
 
 private:
 	void InitTransferRate();

@@ -14,7 +14,7 @@
 using namespace muscle;
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
-: WGenericThread(owner, optShutdownFlag) 
+: WGenericThread(owner, optShutdownFlag), fLockFile(true) 
 {
 	setName( "WDownloadThread" );
 	fFile = NULL; 
@@ -22,9 +22,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fLocalFileDl = NULL;
 	fNumFiles = -1;
 	fCurFile = -1;
-
-	qmtt = new QMessageTransceiverThread(this);
-	CHECK_PTR(qmtt);
+	timerID = 0;
 
 	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)), 
 			this, SLOT(MessageReceived(MessageRef, const String &)));
@@ -40,6 +38,12 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 
 WDownloadThread::~WDownloadThread()
 {
+	if (timerID != 0) 
+	{
+		killTimer(timerID);
+		timerID = 0;
+	}
+
 	if (fShutdownFlag && !*fShutdownFlag)
 	{
 		*fShutdownFlag = true;
@@ -346,9 +350,13 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 					delete fFile;
 					fFile = NULL;
 				}
+
+				if (IsLastFile()) fFinished = true;
+
 				MessageRef done(GetMessageFromPool(WGenericEvent::FileDone));
 				if (done())
 				{
+					
 					done()->AddBool("done", false);
 					if (fCurrentOffset < fFileSize) 			// hm... cut off short?
 					{					
@@ -471,6 +479,8 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 						{
 							delete fFile;
 							fFile = NULL;
+
+							if (IsLastFile()) fFinished = true;
 
 							status = GetMessageFromPool(WGenericEvent::FileDone);
 							if (status())
@@ -604,6 +614,8 @@ WDownloadThread::SessionConnected(const String &sessionID)
 {
 	CTimer->stop();
 
+	timerID = startTimer(10000);
+
 	_sessionID = sessionID;
 
 	MessageRef replyMsg(GetMessageFromPool(WGenericEvent::Connected));
@@ -663,7 +675,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 				{
 					if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
 					{
-						qmtt->ShutdownInternalThread();
+						// qmtt->ShutdownInternalThread();
 						break;
 					}
 					else	// ERROR?
@@ -712,6 +724,12 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 	{
 		fFinished = true;
 	}
+	
+	if (timerID != 0) 
+	{
+		killTimer(timerID);
+		timerID = 0;
+	}
 
 	MessageRef dis;
 	if (fDownloading)
@@ -729,6 +747,7 @@ WDownloadThread::SessionDisconnected(const String &sessionID)
 		{
 			if (IsLastFile())
 			{
+				fFinished = true;
 				dis = GetMessageFromPool(WGenericEvent::FileDone);
 				if (dis())
 				{
@@ -898,3 +917,15 @@ WDownloadThread::GetLocalFileName(int i)
 		return QString::null;
 }
 
+void
+WDownloadThread::timerEvent(QTimerEvent *e)
+{
+	if (IsInternalThreadRunning())
+	{
+		MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
+		if ( nop() )
+		{
+			SendMessageToSessions(nop);
+		}
+	}
+}

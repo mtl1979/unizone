@@ -21,12 +21,19 @@ class QAcceptSocketsThread : public QObject, public AcceptSocketsThread
    Q_OBJECT
 
 public:
-   /** Constructor. */
-   QAcceptSocketsThread(QObject *parent);
+   /** Constructor. 
+     * @param parent Passed on to the QObject constructor
+     * @param name Passed on to the QObject constructor
+     */
+   QAcceptSocketsThread(QObject * parent = NULL, const char * name = NULL);
 
    /** 
-    *  Destructor.  You will generally want to call ShutdownInternalThread()
-    *  before destroying this object.
+    *  Destructor.  This constructor will call ShutdownInternalThread() itself,
+    *  so you don't need to call ShutdownInternalThread() explicitly UNLESS you
+    *  have subclassed this class and overridden virtual methods that can get
+    *  called from the internal thread -- in that case you should call 
+    *  ShutdownInternalThread() yourself to avoid potential race conditions between
+    *  the internal thread and your own destructor method.
     */
    virtual ~QAcceptSocketsThread();
 

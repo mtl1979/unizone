@@ -28,7 +28,7 @@
  *  TRUE to construct a modal dialog.
  */
 WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent,  const char* name, bool modal, WFlags fl)
-    : WPrivateWindowBase(parent, name, modal, fl), fOwner(owner), fNet(net)
+    : WPrivateWindowBase(parent, name, modal, fl), fOwner(owner), fNet(net), fLock(true)
 {
 	if ( !name ) 
 		setName( "WPrivateWindow" );

@@ -23,6 +23,7 @@ using std::iterator;
 
 #include "transferlist.h"
 #include "transferitem.h"
+#include "debugimpl.h"
 
 class MD5Thread;
 class MD5Looper;
@@ -227,7 +228,12 @@ private:
 
 	void SendSignal(int signal);
 
-	QMutex fLock;
+	mutable QMutex fLock;
+	void Lock() 
+	{ 
+		fLock.lock(); 
+	}
+	void Unlock() { fLock.unlock(); }
 
 	bool fClearingUL, fClearingDL;
 

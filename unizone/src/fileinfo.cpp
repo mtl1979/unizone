@@ -18,16 +18,24 @@
 #include "wstring.h"
 #include "debugimpl.h"
 
-UFileInfo::UFileInfo(QFileInfo info) : QFileInfo(info)
+UFileInfo::UFileInfo(QFileInfo info)
 {
+	fFileInfo = new QFileInfo(info);
+	fModificationTime = time(NULL);
+	fSize = 0;
 }
 
-UFileInfo::UFileInfo(QString file) : QFileInfo(file)
+UFileInfo::UFileInfo(QString file)
 {
+	fFileInfo = new QFileInfo(file);
+	fModificationTime = time(NULL);
+	fSize = 0;
 }
 
 UFileInfo::~UFileInfo()
 {
+	if (fFileInfo)
+		delete fFileInfo;
 }
 
 void
@@ -79,38 +87,42 @@ UFileInfo::getMIMEType() const
 void
 UFileInfo::InitModificationTime()
 {
+	if ( isValid() )
+	{
 #ifdef WIN32
-	// Read the modification time
-	WString tFilePath = fFullName;
-
-	struct _stat fst;
-
-	int ret = _wstat(tFilePath.getBuffer(), &fst);
-	if (ret == 0)
-	{
-		fModificationTime = fst.st_mtime;
-	}
-	else
-	{
-		fModificationTime = time(NULL);
-	}
-
+		// Read the modification time
+		WString tFilePath = fFullName;
+		
+		struct _stat fst;
+		
+		int ret = _wstat(tFilePath.getBuffer(), &fst);
+		if (ret == 0)
+		{
+			fModificationTime = fst.st_mtime;
+		}
+		else
+		{
+			fModificationTime = time(NULL);
+		}
+		
 #else
-	struct stat fst;
-	// Encode the Unicode filename to local file system character set
-	const char * fname = (const char *) QFile::encodeName(fFullName); 
-	int ret = stat(fname, &fst);
-	if (ret == 0)
-	{
-		fModificationTime = fst.st_mtim.tv_sec;
+		struct stat fst;
+		// Encode the Unicode filename to local file system character set
+		const char * fname = (const char *) QFile::encodeName(fFullName); 
+		int ret = stat(fname, &fst);
+		if (ret == 0)
+		{
+			fModificationTime = fst.st_mtim.tv_sec;
+		}
+		else
+		{
+			fModificationTime = time(NULL);
+		}
+		return;
+#endif
 	}
 	else
-	{
 		fModificationTime = time(NULL);
-	}
-	return;
-#endif
-
 }
 
 uint32
@@ -133,7 +145,16 @@ UFileInfo::Init()
 void
 UFileInfo::InitPath()
 {
-	fFilePath = dirPath(true);
+	if (fFileInfo)
+	{
+		fFilePath = fFileInfo->dirPath(true);
+		fAbsPath = fFileInfo->absFilePath();
+	}
+	else
+	{
+		fFilePath = QString::null;
+		fAbsPath = QString::null;
+	}
 }
 
 QString
@@ -142,11 +163,25 @@ UFileInfo::getPath() const
 	return fFilePath;
 }
 
+QString
+UFileInfo::getAbsPath() const
+{
+	return fAbsPath;
+}
+
 void
 UFileInfo::InitName()
 {
-	fFileName = fileName();
-	fFullName = filePath();
+	if (fFileInfo)
+	{
+		fFileName = fFileInfo->fileName();
+		fFullName = fFileInfo->filePath();
+	}
+	else
+	{
+		fFileName = QString::null;
+		fFullName = QString::null;
+	}
 }
 
 QString
@@ -155,10 +190,19 @@ UFileInfo::getName() const
 	return fFileName;
 }
 
+QString
+UFileInfo::getFullName() const
+{
+	return fFullName;
+}
+
 void
 UFileInfo::InitExtension()
 {
-	fExtension = extension( false );
+	if (fFileInfo)
+		fExtension = fFileInfo->extension( false );
+	else
+		fExtension = QString::null;
 }
 
 QString
@@ -170,7 +214,10 @@ UFileInfo::getExtension() const
 void
 UFileInfo::InitSize()
 {
-	fSize = size();
+	if (fFileInfo)
+		fSize = fFileInfo->size();
+	else
+		fSize = 0;
 }
 
 uint64
@@ -182,5 +229,31 @@ UFileInfo::getSize()
 bool
 UFileInfo::isValid()
 {
-	return exists();	// non-existent file?
+	if (fFileInfo)
+		return fFileInfo->exists();	// non-existent file?
+	else
+		return false;
+}
+
+void
+UFileInfo::setName(const QString & n)
+{
+	if (fFileInfo)
+	{
+		delete fFileInfo;
+		fFileInfo = NULL;
+	}
+
+	fFileInfo = new QFileInfo(n);
+
+	Init();
+}
+
+bool
+UFileInfo::isDir()
+{
+	if (fFileInfo)
+		return fFileInfo->isDir();
+	else
+		return false;
 }

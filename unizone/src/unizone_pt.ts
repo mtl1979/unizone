@@ -1234,6 +1234,13 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>WGenericThread</name>
+    <message>
+        <source>Connection timed out!</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
     <name>WPrefs</name>
     <message>
         <source>&lt;font color="%1"&gt;%2&lt;/font&gt;</source>
@@ -2070,7 +2077,7 @@ Date: %4</translation>
     <name>WUploadThread</name>
     <message>
         <source>Your download has been blocked for %1 minute(s)!</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>User #%1</source>

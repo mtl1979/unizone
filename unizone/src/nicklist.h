@@ -55,7 +55,7 @@ public:
 	
 	// if more constructors are needed, they will be added later
 	
-	virtual void paintCell(QPainter *, const QColorGroup & cg, int column, int w,
+	virtual void paintCell(QPainter * p, const QColorGroup & cg, int column, int w,
 		int alignment);
 	
 };

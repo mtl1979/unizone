@@ -177,7 +177,12 @@ private:
 
 	void SendSignal(int signal);
 	
-	QMutex fChannelLock;
+	mutable QMutex fChannelLock;
+
+	int timerID;
+
+protected:
+	virtual void timerEvent(QTimerEvent *);
 
 public slots:
    /** Emitted when MessageReceived() is about to be emitted one or more times. */

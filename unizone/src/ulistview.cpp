@@ -463,3 +463,8 @@ WUniListItem::rowTextColor(int i)
 {
 	return RowTextColor[i];
 }
+void 
+WUniListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w, int alignment)
+{
+	QListViewItem::paintCell(p, cg, column, w, alignment);
+}

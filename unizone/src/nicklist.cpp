@@ -22,5 +22,5 @@ WNickListItem::WNickListItem(
 void
 WNickListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w, int alignment)
 {
-	QListViewItem::paintCell(p, cg, column, w, alignment);
+	WUniListItem::paintCell(p, cg, column, w, alignment);
 }

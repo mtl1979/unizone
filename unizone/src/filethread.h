@@ -15,10 +15,9 @@ using std::iterator;
 #include "util/Queue.h"
 #include "message/message.h"
 using namespace muscle;
-//using muscle::Queue;
 
-
-// #include "netclient.h"
+#include "scanevent.h"
+#include "debugimpl.h"
 
 class ScanProgress;
 class NetClient;
@@ -36,14 +35,16 @@ public:
 	int GetNumFiles() const;
 
 	Queue<MessageRef> & GetSharedFiles() { return fFiles; }
-	MessageRef GetSharedFile(int n);
+	void GetSharedFile(int n, MessageRef & mref);
 	bool FindFile(const QString & file, MessageRef & ref);
-//	bool IsRunning();
 	void EmptyList();
 
 	enum { ScanDone = 'fTsD' };
 
-	void Lock() { fLocker.lock(); }
+	void Lock() 
+	{ 		
+		fLocker.lock(); 
+	}
 	void Unlock() { fLocker.unlock(); }
 
 protected:
@@ -51,7 +52,6 @@ protected:
 
 private:
 	bool fFired;
-//	bool fRunning;
 	NetClient * fNet;
 	QObject * fOwner;
 	bool * fShutdownFlag;
@@ -63,22 +63,18 @@ private:
 											// returns true if the file already exists
 	void AddFile(const QString & filePath); // Add this file or (files in this) directory to scanned files
 
-	/*
-	struct FileInfo
-	{
-		uint32 fModificationTime;
-		QString fMIME;
-	};
-	*/
-
 	void ParseDir(const QString & d);
 	QString ResolveLink(const QString & lnk);
 	QString ResolveLinkA(const QString & lnk);	// Windows only
 	void ScanFiles(const QString & directory);
 
+	void SendReset();
+	void SendString(ScanEvent::Type, QString);
+	void SendInt(ScanEvent::Type, int);
+
 	ScanProgress * fScanProgress;
 
-	QMutex fLocker;
+	mutable QMutex fLocker;
 };
 
 #endif

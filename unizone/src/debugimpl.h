@@ -67,11 +67,14 @@ inline void PRINT(const char *, ...)
 #if defined(_DEBUG) || defined(BETA)
 
 #include <qmessagebox.h>
+#include <qstring.h>
+#include <qfile.h>
+
 #define WASSERT(X, Y) \
 		if (!(X)) \
 		{ \
 			QString out = QObject::tr("Send this message to postmaster@raasu.org! This message has also been dumped to 'assert.txt'." \
-										"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(tr(Y)).arg(__LINE__).arg(__FILE__).arg(__DATE__); \
+			"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(QObject::tr(Y)).arg(__LINE__).arg(__FILE__).arg(__DATE__); \
 			QFile f("assert.txt"); \
 			if (f.open(IO_WriteOnly)) \
 			{ \
