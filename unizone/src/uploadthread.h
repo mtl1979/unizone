@@ -70,6 +70,7 @@ private:
 	MessageRef fCurrentRef;
 	bool fWaitingForUploadToFinish;
 	bool fAccept;						// is this the accept version?
+	bool fForced;						// did this transfer bypass queue?
 
 	int32 fCurFile, fNumFiles;
 

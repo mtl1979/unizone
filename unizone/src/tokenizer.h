@@ -21,21 +21,30 @@ public:
    /** Returns the next token in the parsed string, or NULL if there are no more tokens left */
    QString GetNextToken()
    {
-      if (_seps.length()>0)
+      if (_seps.length() > 0)
       {
          // Move until first non-sep char
          while	(
-				(_next < _tokenizeMe.length()) &&
-			    (_seps.find(_tokenizeMe.at(_next)) >= 0)
+					(_next < _tokenizeMe.length()) &&
+					(_seps.find( _tokenizeMe.at(_next) ) >= 0)
 				) 
+		 {
 				_next++;
-         if (_next<_tokenizeMe.length())
+		 }
+         if (_next < _tokenizeMe.length())
          {
             QString ret = _tokenizeMe.mid(_next);
 			int prev = _next;
             // Move until next sep-char
-            while((_next<_tokenizeMe.length())&&(_seps.find(_tokenizeMe.at(_next)) < 0)) _next++;
-            if (_next<_tokenizeMe.length()) 
+            while	( 
+						(_next < _tokenizeMe.length()) && 
+						( _seps.find( _tokenizeMe.at(_next) ) < 0) 
+					)
+			{
+				_next++;
+			}
+
+            if (_next < _tokenizeMe.length()) 
             {
                ret = _tokenizeMe.mid(prev,_next-prev);
                _next++;
@@ -55,7 +64,7 @@ public:
     */
    QString GetRemainderOfString()
    {
-      if (_seps.length()>0)
+      if (_seps.length() > 0)
       {
          // Move until first non-sep char
          while((_next<_tokenizeMe.length())&&(_seps.find(_tokenizeMe.at(_next)) >= 0)) _next++;

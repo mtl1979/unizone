@@ -133,7 +133,7 @@ StripURL(const String & strip)
 				int right = strip.IndexOf(']');
 				if (right > left)	// make sure right is than greater left :D
 				{
-					String label = Trim(strip.Substring(left, right));
+					String label = strip.Substring(left, right).Trim();
 					if ((right + 1) < (int) strip.Length())
 					{
 						String rest = strip.Substring(right + 1);
@@ -149,7 +149,7 @@ StripURL(const String & strip)
 				}
 				else if (right == -1) // ']' is missing?
 				{
-					String label = Trim(strip.Substring(left));
+					String label = strip.Substring(left).Trim();
 					return label;
 				}
 			}
@@ -268,7 +268,7 @@ MakeSizeString(uint64 s)
 	result += postFix;
 	return result;	
 }
-
+/*
 String 
 Trim(String orig)
 { 
@@ -278,7 +278,7 @@ Trim(String orig)
    int32 endIdx;   for (endIdx   = len-1; endIdx>startIdx; endIdx--)   if (s[endIdx] != ' ')   break; 
    return orig.Substring((uint32)startIdx, (uint32)(endIdx+1)); 
 }
-
+*/
 
 int32
 BandwidthToBytes(QString connection)

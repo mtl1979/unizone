@@ -141,12 +141,12 @@ ParseChatText(const QString & str)
 		{
 			if (qToken.right(1) == "]")
 			{
-				qLabels.Tail() += qToken.left(qToken.length()-1);
+				qLabels.Tail() += qToken.left(qToken.length() - 1);
 				inLabel = false;
 			}
 			else if (qToken.find("]") >= 0)
 			{
-				qLabels.Tail() += qToken.left(qToken.find("]")-1);
+				qLabels.Tail() += qToken.left(qToken.find("]") - 1);
 				inLabel = false;
 			}
 			else 
@@ -177,7 +177,7 @@ ParseChatText(const QString & str)
 							if (qToken.right(1) == "<")
 								bInTag = false;
 
-							qToken = qToken.left(qToken.length() - 1);
+							qToken.truncate(qToken.length() - 1);
 						}
 
 						last = qToken.right(1);
@@ -199,7 +199,7 @@ ParseChatText(const QString & str)
 						break;
 					}
 					else
-						qToken = qToken.left(qToken.length() - 1);
+						qToken.truncate(qToken.length() - 1);
 				}
 			}
 			else
@@ -212,7 +212,7 @@ ParseChatText(const QString & str)
 					{
 						if (qToken.right(1) == "<")
 							bInTag = false;
-						qToken = qToken.left(qToken.length() - 1);
+						qToken.truncate(qToken.length() - 1);
 					}
 				}
 				if (
@@ -221,7 +221,7 @@ ParseChatText(const QString & str)
 					(qToken.right(1) == ":")
 					)
 				{
-					qToken = qToken.left(qToken.length() - 1);
+					qToken.truncate(qToken.length() - 1);
 				}
 			}
 			if (IsURL(qToken))
@@ -238,9 +238,9 @@ ParseChatText(const QString & str)
 			if (qToken.startsWith("[")) // Start of label?
 			{
 				if (qToken.right(1) == "]") 
-					qLabels.Tail() = qToken.mid(1, qToken.length()-2);
+					qLabels.Tail() = qToken.mid(1, qToken.length() - 2);
 				else if (qToken.find("]") >= 0)
-					qLabels.Tail() = qToken.mid(1, qToken.find("]")-1);
+					qLabels.Tail() = qToken.mid(1, qToken.find("]") - 1);
 				else
 				{
 					qLabels.Tail() += qToken.mid(1) + " ";

@@ -82,8 +82,8 @@ bool IsURL(const QString &);
 // Format a nice size string
 QString MakeSizeString(uint64 s);
 
-// Strip only spaces of, no other non-printable characters
-String Trim(String orig);
+// Strip only spaces off, no other non-printable characters
+// String Trim(String orig);
 
 // Convert Connection string to bytes per second
 int32 BandwidthToBytes(QString connection);

@@ -25,6 +25,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fActive = true;
 	fBlocked = false;
 	fTimeLeft = 0;
+	fForced = false;
 
 	CTimer = new QTimer(this, "Connect Timer");
 	CHECK_PTR(CTimer);
@@ -149,7 +150,7 @@ WUploadThread::SetLocallyQueued(bool b)
 	WGenericThread::SetLocallyQueued(b);
 	if (!b)
 	{
-		if (IsInternalThreadRunning())
+		if (IsInternalThreadRunning() && !fForced) // Don't need to start forced uploads ;) 
 		{
 			DoUpload();		// we can start now!
 		}
@@ -515,14 +516,20 @@ WUploadThread::SendRejectedNotification(bool direct)
 void 
 WUploadThread::DoUpload()
 {
-	if (fFile && IsLocallyQueued() && (fFileSize >= gWin->fSettings->GetMinQueuedSize()))		// not yet
+	// Small files get to bypass queue
+	if (IsLocallyQueued())
 	{
-		MessageRef lq(GetMessageFromPool(WGenericEvent::FileQueued));
-		if (lq())
+		if (fFile && (fFileSize >= gWin->fSettings->GetMinQueuedSize()))		// not yet
 		{
-			SendReply(lq);
+			fForced = false;
+			MessageRef lq(GetMessageFromPool(WGenericEvent::FileQueued));
+			if (lq())
+			{
+				SendReply(lq);
+			}
+			return;
 		}
-		return;
+		fForced = true;		// Set this here to avoid duplicate call to DoUpload()
 	}
 
 	if (IsBlocked())
@@ -551,75 +558,82 @@ WUploadThread::DoUpload()
 	if (fFile)
 	{
 		MessageRef uref(GetMessageFromPool(WDownload::TransferFileData));
-		const uint32 bufferSize = GetPacketSize() * 1024;	// think about doing this in a dynamic way (depending on connection)
-		uint8 * scratchBuffer;
-		if (uref() && uref()->AddData("data", B_RAW_TYPE, NULL, bufferSize) == B_OK &&
-			uref()->FindDataPointer("data", B_RAW_TYPE, (void **)&scratchBuffer, NULL) == B_OK)
+		if (uref())
 		{
-			int32 numBytes = fFile->readBlock((char *)scratchBuffer, bufferSize);
-			if (numBytes > 0)
+			// think about doing this in a dynamic way (depending on connection)
+			uint32 bufferSize = GetPacketSize() * 1024;	
+			uint8 * scratchBuffer;
+			if (uref()->AddData("data", B_RAW_TYPE, NULL, bufferSize) == B_OK &&
+				uref()->FindDataPointer("data", B_RAW_TYPE, (void **)&scratchBuffer, NULL) == B_OK)
 			{
-				// munge mode
-				if (fMungeMode != WDownload::MungeModeNone)
+				int32 numBytes = fFile->readBlock((char *)scratchBuffer, bufferSize);
+				if (numBytes > 0)
 				{
-					bool unknown = false;
-					switch (fMungeMode)
+					// munge mode
+					if (fMungeMode != WDownload::MungeModeNone)
 					{
-						case WDownload::MungeModeXOR:
+						bool unknown = false;
+						switch (fMungeMode)
 						{
-							for (int32 x = 0; x < numBytes; x++)
-								scratchBuffer[x] ^= 0xFF;
-							break;
-						}
-
+						case WDownload::MungeModeXOR:
+							{
+								for (int32 x = 0; x < numBytes; x++)
+									scratchBuffer[x] ^= 0xFF;
+								break;
+							}
+							
 						default:
 							unknown = true;
 							break;
+						}
+						if (!unknown)
+							uref()->AddInt32("mm", fMungeMode);
 					}
-					if (!unknown)
-						uref()->AddInt32("mm", fMungeMode);
-				}
-
-				// possibly do checksums here
-
-				if ((uint32)numBytes < bufferSize)
-				{
-					// aha, extra bytes must be removed!
-					uref()->AddData("temp", B_RAW_TYPE, scratchBuffer, numBytes);
-					uref()->Rename("temp", "data");
-				}
-				SendMessageToSessions(uref);
-				// NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before calling it!
-				fCurrentOffset += numBytes;
-				MessageRef drain(GetMessageFromPool());
-				if (drain())
-					RequestOutputQueuesDrainedNotification(drain);
-				MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));	// we'll use this event for sending as well
-				if (update())
-				{
-					update()->AddInt64("offset", fCurrentOffset);
-					update()->AddInt64("size", fFileSize);
-					update()->AddInt32("sent", numBytes);
-				
-					if (fCurrentOffset >= fFileSize)
+					
+					// possibly do checksums here
+					
+					if ((uint32)numBytes < bufferSize)
 					{
-						update()->AddBool("done", true);	// file done!
-						update()->AddString("file", (const char *) fFileUl.utf8());
+						// aha, extra bytes must be removed!
+						uref()->AddData("temp", B_RAW_TYPE, scratchBuffer, numBytes);
+						uref()->Rename("temp", "data");
 					}
-					SendReply(update);
-				}
-				return;
-			}
+					SendMessageToSessions(uref);
+					// NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before
+					//       calling it!
+					fCurrentOffset += numBytes;
+					MessageRef drain(GetMessageFromPool());
+					if (drain())
+						RequestOutputQueuesDrainedNotification(drain);
 
-			if (numBytes <= 0)
-			{
-				// next file
-				fFile->close();
-				delete fFile; 
-				fFile = NULL;
-				fCurrentOffset = fFileSize = 0;
-				DoUpload();
-				return;
+					// we'll use this event for sending as well
+					MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));	
+					if (update())
+					{
+						update()->AddInt64("offset", fCurrentOffset);
+						update()->AddInt64("size", fFileSize);
+						update()->AddInt32("sent", numBytes);
+						
+						if (fCurrentOffset >= fFileSize)
+						{
+							update()->AddBool("done", true);	// file done!
+							update()->AddString("file", (const char *) fFileUl.utf8());
+						}
+						SendReply(update);
+					}
+					return;
+				}
+				
+				if (numBytes <= 0)
+				{
+					// next file
+					fFile->close();
+					delete fFile; 
+					fFile = NULL;
+					fCurrentOffset = fFileSize = 0;
+					DoUpload();
+					return;
+				}
 			}
 		}
 	}
@@ -631,16 +645,24 @@ WUploadThread::DoUpload()
 			{
 				// grab the ref and remove it from the list
 				fUploads.RemoveHead(fCurrentRef);
-				Message * m = fCurrentRef.GetItemPointer();
+				Message * m = fCurrentRef();
 				String path, filename;
 				m->FindString("winshare:Path", path);
 				m->FindString("beshare:File Name", filename);
 				String filePath = path;
+
 				if (!filePath.EndsWith("/"))
 					filePath += "/";
+				
 				filePath += filename;
-				PRINT("WUploadThread::DoUpload: filePath = %s\n", filePath.Cstr()); // <postmaster@raasu.org> 20021023 -- Add additional debug message
+
 				fFileUl = QString::fromUtf8(filePath.Cstr());
+
+				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
+				wchar_t * wFileUl = qStringToWideChar(fFileUl); 
+				PRINT("WUploadThread::DoUpload: filePath = %S\n", wFileUl); 
+				delete [] wFileUl;
+				
 				fFile = new QFile(fFileUl);
 				CHECK_PTR(fFile);
 				if (!fFile->open(IO_ReadOnly))	// probably doesn't exist
@@ -662,21 +684,25 @@ WUploadThread::DoUpload()
 					}
 				}
 				// copy the message in our current file ref
-				MessageRef headRef(GetMessageFromPool(*( fCurrentRef() )));
-				headRef()->what = WDownload::TransferFileHeader;
-				headRef()->AddInt64("beshare:StartOffset", fCurrentOffset);
-				SendMessageToSessions(headRef);
+				Message * msg = fCurrentRef();
+				MessageRef headRef( GetMessageFromPool(*msg) );
+				if (headRef())
+				{
+					headRef()->what = WDownload::TransferFileHeader;
+					headRef()->AddInt64("beshare:StartOffset", fCurrentOffset);
+					SendMessageToSessions(headRef);
+				}
 
 				fCurFile++;
 
-				MessageRef msg(GetMessageFromPool(WGenericEvent::FileStarted));
-				if (msg())
+				MessageRef mref(GetMessageFromPool(WGenericEvent::FileStarted));
+				if (mref())
 				{
-					msg()->AddString("file", filePath.Cstr());
-					msg()->AddInt64("start", fCurrentOffset);
-					msg()->AddInt64("size", fFileSize);
-					msg()->AddString("user", (const char *) fRemoteSessionID.utf8());
-					SendReply(msg);
+					mref()->AddString("file", filePath.Cstr());
+					mref()->AddInt64("start", fCurrentOffset);
+					mref()->AddInt64("size", fFileSize);
+					mref()->AddString("user", (const char *) fRemoteSessionID.utf8());
+					SendReply(mref);
 				}
 
 				DoUpload();	// nested call

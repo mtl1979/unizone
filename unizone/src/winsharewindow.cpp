@@ -672,7 +672,8 @@ WinShareWindow::ServerChanged(const QString & newServer)
 {
 	fServer = newServer;
 	if (fServer.right(5) == ":2960")
-		fServer = fServer.left(fServer.length()-5); // strip default port
+		fServer.truncate(fServer.length() - 5); // strip default port
+
 	if (fNetClient->IsInternalThreadRunning())
 		Connect();
 }
@@ -1172,7 +1173,7 @@ WinShareWindow::MakeHumanTime(int64 time)
 	
 	if ((s.length() > 2) && (s.right(2) == ", "))
 	{
-		s = s.left(s.length()-2);
+		s.truncate(s.length() - 2);
 	}
 
 	int cp = s.findRev(", ");
@@ -1863,7 +1864,7 @@ WinShareWindow::MapIPsToNodes(const QString & pattern)
 	}
 	if (qResult.right(1) == ",") 
 	{
-		qResult = qResult.left(qResult.length()-1);
+		qResult.truncate(qResult.length() - 1);
 	}
 
 	wchar_t * wResult = qStringToWideChar(qResult);
@@ -1914,7 +1915,7 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 		}
 	if (qResult.right(1) == ",")
 	{
-		qResult = qResult.left(qResult.length()-1);
+		qResult.truncate(qResult.length() - 1);
 	}
 
 	wchar_t * wResult = qStringToWideChar(qResult);

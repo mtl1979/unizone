@@ -377,7 +377,7 @@ WUniListItem::text(int c) const
 		lMod = fKey[c].toLong();
 		result = ctime((const time_t *)&lMod);
 #ifdef WIN32
-		result = result.left(result.length()-1);
+		result.truncate(result.length() - 1);
 #endif
 		return result;
 		}

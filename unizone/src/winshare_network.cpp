@@ -287,7 +287,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString msg = GetParameterString(sendText);
 
-			if (msg.length()>0)
+			if (msg.length() > 0)
 			{
 				fAwayMsg = msg;
 				if (fSettings->GetInfo())
@@ -304,7 +304,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString msg = GetParameterString(sendText);
 
-			if (msg.length()>0)
+			if (msg.length() > 0)
 			{
 				fHereMsg = msg;
 				if (fSettings->GetInfo())

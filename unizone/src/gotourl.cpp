@@ -104,7 +104,7 @@ GotoURL(QString url)
 		u = u.mid(9);
 		if (u.right(1) == "/")
 		{
-			u = u.left(u.length() - 1);
+			u.truncate(u.length() - 1);
 		}
 		gWin->Connect(u);
 		return;
@@ -132,7 +132,7 @@ GotoURL(QString url)
 		u = u.mid( u.find(":") + 1 );
 		if (u.right(1) == "/")
 		{
-			u = u.left(u.length() - 1);
+			u.truncate(u.length() - 1);
 		}
 		t->SetURL( u );
 		t->fLauncher = gWin->fSettings->GetMailLauncher();
