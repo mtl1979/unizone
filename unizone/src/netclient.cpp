@@ -198,12 +198,15 @@ NetClient::FindUserByIPandPort(QString ip, uint32 port)
 {
 	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
 	{
-		if (
-			((*iter).second()->GetUserHostName() == ip) &&
-			((*iter).second()->GetPort() == port)
-			)
+		if ((*iter).second()->GetUserHostName() == ip)
 		{
-			return (*iter).second;
+			if (
+				(port == 0) || 
+				((*iter).second()->GetPort() == port)
+			)
+			{
+				return (*iter).second;
+			}
 		}
 	}
 	return WUserRef(NULL, NULL);

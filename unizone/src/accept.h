@@ -44,7 +44,12 @@ class WAcceptThread : public WMessenger
 {
 public:
 	WAcceptThread(QObject * owner) : WMessenger(owner, "WAcceptThread"), fOwner(owner) {ast = new WAcceptorThread(this);}
-	virtual ~WAcceptThread() { delete ast;}
+	virtual ~WAcceptThread() 
+	{ 
+		ast->ShutdownInternalThread(true);
+		delete ast;
+		ast = NULL;
+	}
 
 	// Forwarders for AcceptSocketsThread()
 	status_t SetPort(uint16 port, uint32 optFrom = 0) { return ast->SetPort(port, optFrom); }
