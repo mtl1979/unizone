@@ -7,8 +7,10 @@
 #include <qapplication.h>
 
 WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
-: fOwner(owner), fShutdownFlag(optShutdownFlag)
+: WMessenger(owner, NULL), fOwner(owner), fShutdownFlag(optShutdownFlag)
 {
+	setName( "WGenericThread" );
+
 	wmt = new WMessengerThread(this);
 	CHECK_PTR(wmt);
 

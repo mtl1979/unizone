@@ -14,7 +14,8 @@
 #include "iogateway/MessageIOGateway.h"
 #include "zlib/ZLibUtilityFunctions.h"
 
-NetClient::NetClient(QObject * owner)
+NetClient::NetClient(QObject * owner) 
+: WMessenger(owner, NULL)
 {
 	setName( "NetClient" );
 

@@ -224,6 +224,10 @@ SOURCE=..\src\moc_menubar.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\moc_messenger.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\moc_netclient.cpp
 # End Source File
 # Begin Source File
@@ -735,6 +739,35 @@ InputName=menubar
 # Begin Source File
 
 SOURCE=..\src\messenger.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\messenger.h
+InputName=messenger
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\messenger.h
+InputName=messenger
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

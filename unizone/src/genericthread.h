@@ -25,7 +25,7 @@ using namespace muscle;
 
 // ------------------------------------------------------------------------------------
 
-class WGenericThread : public QObject, public WMessenger /* MessageTransceiverThread */
+class WGenericThread : public WMessenger 
 {
 	Q_OBJECT
 public:

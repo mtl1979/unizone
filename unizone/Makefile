@@ -14,7 +14,7 @@ searchitem.o settings.o textevent.o transferitem.o ulistview.o \
 uploadthread.o user.o userlistitem.o winshare_network.o \
 winshare_parsing.o winshare_slots.o winsharewindow.o Log.o \
 htmlview.o channel.o channelinfo.o channelimpl.o \
-moc_channel.o wpwevent.o wstring.o \
+moc_channel.o wpwevent.o wstring.o moc_messenger.o \
 moc_channelimpl.o moc_menubar.o moc_ulistview.o \
 wstatusbar.o winshare_channels.o winshare_search.o
 VPATH = src
@@ -61,6 +61,9 @@ src/moc_genericthread.cpp: src/genericthread.h
 
 src/moc_htmlview.cpp: src/htmlview.h
 	moc src/htmlview.h -o src/moc_htmlview.cpp
+
+src/moc_messenger.cpp: src/messenger.h
+	moc src/messenger.h -o src/moc_messenger.cpp
 
 src/moc_netclient.cpp: src/netclient.h
 	moc src/netclient.h -o src/moc_netclient.cpp

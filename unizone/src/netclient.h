@@ -3,14 +3,14 @@
 
 
 #include "system/MessageTransceiverThread.h"
-#include "messenger.h"
-
-#include <qobject.h>
 using namespace muscle;
 
-#include "user.h"
+#include <qobject.h>
 
-class NetClient : public QObject, public WMessenger /* MessageTransceiverThread */
+#include "user.h"
+#include "messenger.h"
+
+class NetClient : public WMessenger 
 {
 	Q_OBJECT
 public:
