@@ -59,7 +59,14 @@ WHTMLView::showEvent(QShowEvent * /* event */)
 {
 #if (QT_VERSION < 0x030000)
 	BeforeShown();
-	QString txt = text();
+	QString txt;
+	if (fBuffer.length() > 0)
+	{
+		txt = fBuffer;
+		fBuffer = "";
+	}
+	else
+		txt = text();
 	setText("");
 	GotShown(txt);
 #endif
@@ -135,7 +142,7 @@ WHTMLView::appendText(const QString &newtext)
 #if (QT_VERSION >= 0x030000)
 				fBuffer += "<br>";
 #else
-				fBuffer += "\t";
+				fBuffer += "<br>";
 #endif
 			}
 			PRINT("appendText 4\n");
