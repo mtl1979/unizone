@@ -869,7 +869,8 @@ WDownload::genericEvent(WGenericEvent * g)
 				}
 				gt->SetFinished(true);
 				gt->SetActive(false);
-				gt->Reset();
+				if (gt->IsInternalThreadRunning())
+					gt->Reset();
 				QCustomEvent * qce = new QCustomEvent(DequeueUploads);
 				if (qce) QThread::postEvent(this, qce);
 			}
@@ -910,7 +911,8 @@ WDownload::genericEvent(WGenericEvent * g)
 						}
 					}
 				}
-				gt->Reset();
+				if (gt->IsInternalThreadRunning())
+					gt->Reset();
 				QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
 				if (qce) QThread::postEvent(this, qce);
 			}

@@ -459,19 +459,14 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					fFileScanThread->Unlock();
 					fScanning = false;
 					if (fDLWindow)
-						fDLWindow->DequeueULSessions();
+					{
+						QCustomEvent *qce = new QCustomEvent(WDownload::DequeueUploads);
+						if (qce) QApplication::postEvent(fDLWindow, qce);
+					}
 					PRINT("Done\n");
 				}
 				return;
 			}
-/*			
-		case NetClient::SignalEvent:
-			{
-				PRINT("SignalEvent\n");
-				HandleSignal();
-				return;
-			}
-*/
 		case NetClient::SESSION_ATTACHED:
 			{
 				PRINT("Received SessionAttached message\n");

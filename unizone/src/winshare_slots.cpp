@@ -336,8 +336,14 @@ WinShareWindow::Preferences()
 			}
 			if (fDLWindow)
 			{
-				fDLWindow->DequeueDLSessions();
-				fDLWindow->DequeueULSessions();
+				{
+					QCustomEvent *qce = new QCustomEvent(WDownload::DequeueDownloads);
+					if (qce) QApplication::postEvent(fDLWindow, qce);
+				}
+				{
+					QCustomEvent *qce = new QCustomEvent(WDownload::DequeueUploads);
+					if (qce) QApplication::postEvent(fDLWindow, qce);
+				}
 			}
 
 			

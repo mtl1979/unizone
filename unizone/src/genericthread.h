@@ -91,6 +91,11 @@ public:
 		qmtt->Reset();
 	}
 
+	bool IsInternalThreadRunning()
+	{
+		return qmtt->IsInternalThreadRunning();
+	}
+
 public slots:
 	void ConnectTimer(); // Connection timed out?
 	void BlockedTimer(); // blocking timed out?
