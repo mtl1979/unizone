@@ -114,8 +114,7 @@ status_t PathMatcher :: PutPathsFromMatcher(const PathMatcher & matcher)
 
 bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage) const
 {
-   uint32 leadSlashOffset = ((path[0]=='/')?1:0);
-   uint32 numClauses = GetPathDepth(path) + leadSlashOffset;
+   uint32 numClauses = GetPathDepth(path);
 
    HashtableIterator<String, PathMatcherEntry> iter = _entries.GetIterator();
    const PathMatcherEntry * nextValue;
@@ -126,10 +125,10 @@ bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage) c
       {
          bool matched = true;  // default
 
-         StringTokenizer tok(path, "/");
+         StringTokenizer tok(path+((path[0]=='/')?1:0), "/");
          for (uint32 j=0; j<numClauses; j++)
          {
-            const char * nextToken = (j<leadSlashOffset)?"":tok.GetNextToken();
+            const char * nextToken = tok();
             const StringMatcher * nextMatcher = nextSubscription->GetItemAt(j)->GetItemPointer();
             if ((nextToken == NULL)||((nextMatcher)&&(nextMatcher->Match(nextToken) == false))) 
             {
