@@ -1,0 +1,42 @@
+" QAccel::stringToKey" http://doc.trolltech.com/qaccel.html#7c073d
+" QTextCodec::locale" http://doc.trolltech.com/qtextcodec.html#75defa
+" QWidget" http://doc.trolltech.com/qwidget.html
+" sending comments and suggestions to its maintainer" mailto:jasmin@trolltech.com?subject=Translation tutorial
+"First tutorial" tt1.html
+"Hello, Latin World!" tt1.html
+"Internationalization with Qt" http://doc.trolltech.com/i18n.html
+"Internationalization with Qt." http://doc.trolltech.com/i18n.html
+"KDE project" http://www.kde.org
+"Main tutorial page" ttutorial.html
+"Next tutorial" tt2.html
+"Next tutorial" tt3.html
+"Previous tutorial" tt1.html
+"Previous tutorial" tt2.html
+"QObject" http://doc.trolltech.com/qobject.html
+"QTranslator" http://doc.trolltech.com/qtranslator.html
+"QWidget" http://doc.trolltech.com/qwidget.html
+"Qt Designer" http://www.trolltech.com/designer/
+"Troll Print 1.0 and 1.1" tt3.html
+"Two Custom Widgets" tt2.html
+"arrowpad.cpp" tt2-arrowpad-cpp.html
+"arrowpad.h" tt2-arrowpad-h.html
+"chapter three" tt3.html
+"chapter two" tt2.html
+"hello-world example from the Qt tutorial" http://doc.trolltech.com/t1.html
+"main.cpp" tt1-main-cpp.html
+"main.cpp" tt2-main-cpp.html
+"main.cpp" tt3-main-cpp.html
+"mainwindow.cpp" tt2-mainwindow-cpp.html
+"mainwindow.cpp" tt3-mainwindow-cpp.html
+"mainwindow.h" tt2-mainwindow-h.html
+"mainwindow.h" tt3-mainwindow-h.html
+"printpanel.cpp" tt3-printpanel-cpp.html
+"printpanel.h" tt3-printpanel-h.html
+"tmake" http://www.trolltech.com/freebies/tmake.html
+"tt1.pro" tt1-tt1-pro.html
+"tt2.pro" tt2-tt2-pro.html
+"tt3.pro" tt3-tt3-pro.html
+"tt3_pt.ts" tt3-tt3_pt-ts.html
+"tutorial 1" tt1.html
+"tutorial 2" tt2.html
+"tutorial 3" tt3.html

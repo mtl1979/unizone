@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><head><title>Translation Tutorial -  Chapter 1: Hello, Latin World!</title><style type="text/css"><!--
+h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { text-decoration: none; }
+body { background: white; color: black; }
+--></style></head><body bgcolor="#ffffff">
+<h1 align=center> Chapter 1: Hello, Latin World!</h1><br clear="all">
+<center><img src="tt1_en.png"
+alt="Screenshot of the English version of tutorial 1"></center>
+<p>
+The first program is a remake of the
+<a href="http://doc.trolltech.com/t1.html">hello-world example from
+the Qt tutorial</a>, with a Latin translation.  The screenshot above
+shows the English version. <pre>/****************************************************************
+**
+** Translation tutorial 1
+**
+****************************************************************/
+
+#include &lt;qapplication.h&gt;
+#include &lt;qpushbutton.h&gt;
+#include &lt;qtranslator.h&gt;
+
+int main( int argc, char **argv )
+{
+    QApplication a( argc, argv );
+
+    QTranslator tor( 0 );
+    tor.load( "tt1_la", "." );
+    a.installTranslator( &amp;tor );
+
+    QPushButton hello( QPushButton::tr("Hello world!"), 0 );
+
+    a.setMainWidget( &amp;hello );
+    hello.show();
+    return a.exec();
+}
+</pre>
+<p>
+<h2>Line by Line Walk-Through</h2>   <pre>
+    #include &lt;qtranslator.h&gt;
+</pre>
+<p>
+This line includes the definition of the
+<a href="http://doc.trolltech.com/qtranslator.html">QTranslator</a>
+class.  Objects of this class provide translations for user-visible
+text.  <pre>
+        QTranslator tor( 0 );
+</pre>
+<p>
+This creates a QTranslator object without a parent. <pre>
+        tor.load( "tt1_la", "." );
+</pre>
+<p>
+Here, we try to load a file called tt1_la.qm (the .qm file extension
+is implicit) that contains Latin translations for the source texts
+used in the program. <pre>
+        a.installTranslator( &amp;tor );
+</pre>
+<p>
+This adds the translations from tt1_la.qm to the pool of translations
+used by the program. <pre>
+        QPushButton hello( QPushButton::tr("Hello world!"), 0 );
+</pre>
+<p>
+This line creates a push button that displays "Hello world!".  If
+tt1_la.qm exists and contains a translation for "Hello world!", the
+translation appears; if not, the source text appears.
+<p>
+All classes that inherit
+<a href="http://doc.trolltech.com/qobject.html">QObject</a> have a
+tr() function.  Inside a member function of a QObject class, we would
+simply write tr("Hello world!") instead of
+QPushButton::tr("Hello world!") or QObject::tr("Hello world!").
+<p>
+<h2>Running the Application in English</h2>
+<p>
+If you run the program now, you will obtain a big push button labelled
+"Hello world!".  Since we still haven't made the file tt1_la.qm, the
+source text is shown.
+<p>
+<center><img src="tt1_en.png"
+alt="Screenshot of the English version of tutorial 1"></center>
+<p>
+<h2>Creating a Latin Message File</h2>
+<p>
+English is fun, but we now want to have a Latin version to please our
+Roman users.
+<p>
+The first step is to create a project file
+<a href="tt1-tt1-pro.html">tt1.pro</a> that lists all the source files
+for the project (<a href="tt1-main-cpp.html">main.cpp</a>).  The
+project file can be a
+<a href="http://www.trolltech.com/freebies/tmake.html">tmake</a>
+project file, or even an ordinary makefile.  Any file that contains   <pre>
+    SOURCES         = main.cpp
+    TRANSLATIONS    = tt1_la.ts
+</pre>
+<p>
+will do.  TRANSLATIONS specifies the message files we want to
+maintain.  In this example, we just maintain one set of translations,
+namely Latin.
+<p>
+Notice the file extension:  It is .ts, not .qm.  The .ts format
+(Translation Source format) is suited to developing programs and their
+translations, while the .qm format (Qt Message format) is much faster
+for running the finished application, but no good for developing it.
+In a nutshell, .ts files are text, much bigger than .qm, slower to
+read, and contain more information.  Because they are text, .ts files
+are easy to store in version control systems and send in email.
+<p>
+The next step is to run the <em>lupdate</em> utility.  It reads all
+the source and header files of the project (as specified by the
+HEADERS and SOURCES lines of the project file) and extracts the
+strings that appear in a tr() function call.  Then it updates the
+message files (tt1_la.ts in this case) to keep them in synch with the
+source code.
+<p>
+You can use <em>lupdate</em> at any time, as <em>lupdate</em> does not
+destroy any information.  For example, you can put it in the makefile,
+so the .ts files are updated whenever the source changes.
+<p>
+Try running <em>lupdate</em> right now, like this:
+<p>
+<pre>
+    lupdate tt1.pro
+</pre>
+<p>
+You should now have a file tt1_la.ts in the current directory,
+containing this:
+<p>
+<pre>
+    &lt;!DOCTYPE TS&gt;&lt;TS&gt;
+    &lt;codec&gt;iso8859-1&lt;/codec&gt;
+    &lt;context&gt;
+        &lt;name&gt;QPushButton&lt;/name&gt;
+        &lt;message&gt;
+            &lt;source&gt;Hello world!&lt;/source&gt;
+            &lt;translation type='unfinished'&gt;&lt;/translation&gt;
+        &lt;/message&gt;
+    &lt;/context&gt;
+    &lt;/TS&gt;
+</pre>
+<p>
+You don't need to understand this file.  It's an XML file, which is
+used since XML is both extensible and easy to program for.
+<p>
+<h2>Translating to Latin with Qt Linguist</h2>
+<p>
+We will use Qt Linguist to provide the translation.  (You can use any
+XML editor to do it, of course.)
+<p>
+To start Qt Linguist, type
+<p>
+<pre>
+    linguist tt1_la.ts
+</pre>
+<p>
+You should now see the text "QPushButton" on the left.  Double-click
+on it, then click on "Hello world!" and enter "Orbis, te saluto!"in
+the <em>Translation</em> field at the right.  Don't forget the
+exclamation mark!
+<p>
+Click on the <em>Finished</em> button and choose <em>Save</em> from the <em>File</em>
+menu.  The .ts file now contains
+<p>
+<pre>
+            &lt;translation&gt;Orbis, te saluto!&lt;/translation&gt;
+</pre>
+<p>
+instead of
+<p>
+<pre>
+            &lt;translation type='unfinished'&gt;&lt;/translation&gt;
+</pre>
+<p>
+<h2>Running the Application in Latin</h2>
+<p>
+To see the application running in Latin, we have to generate tt1_la.qm
+file from tt1_la.ts.  In the Qt Linguist, choose <em>Release...</em> from
+the <em>File</em> menu.  Once done, run the hello-world program again.  You
+should see "Orbis, te saluto!" on the push button.
+<p>
+<center><img src="tt1_la.png"
+alt="Screenshot of the Latin version of tutorial 1"></center>
+<p>
+You may now go on to <a href="tt2.html">chapter two</a>.
+<p>
+[<a href="tt2.html">Next tutorial</a>]
+[<a href="ttutorial.html">Main tutorial page</a>]
+

@@ -1,0 +1,943 @@
+/**********************************************************************
+**   Copyright (C) 2000 Trolltech AS.  All rights reserved.
+**
+**   ttutorial.doc
+**
+**   This file is part of Qt Linguist.
+**
+**   See the file LICENSE included in the distribution for the usage
+**   and distribution terms.
+**
+**   The file is provided AS IS with NO WARRANTY OF ANY KIND,
+**   INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+**   A PARTICULAR PURPOSE.
+**
+**********************************************************************/
+
+/*! \page ttutorial.html
+
+\title Translation Tutorial: The 3 Steps
+
+This tutorial explains how to translate your Qt applications using the
+Qt Linguist and its support tools.  We will develop three small
+applications, each explaining new aspects:
+
+<ol>
+<li> \link tt1.html Hello, Latin World!\endlink
+<li> \link tt2.html Two Custom Widgets\endlink
+<li> \link tt3.html Troll Print 1.0 and 1.1\endlink
+</ol>
+
+For more information about internationalization in general, see
+<a href="http://doc.trolltech.com/i18n.html">Internationalization with
+Qt.</a>
+
+*/
+
+
+------------------------------------------------------------------------------
+
+
+/*! \page tt1-main-cpp.html
+<title>
+Translation Tutorial - tt1/main.cpp
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt1.html tutorial 1\endlink:
+main.cpp</h1><br clear="all">
+<hr>
+\include tt1/main.cpp
+*/
+
+/*! \page tt1-tt1-pro.html
+<title>
+Translation Tutorial - tt1/tt1.pro
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt1.html tutorial 1\endlink:
+tt1.pro</h1><br clear="all">
+<hr>
+\include tt1/tt1.pro
+*/
+
+/*! \page tt1.html
+
+\title Chapter 1: Hello, Latin World!
+
+<center><img src="tt1_en.png"
+alt="Screenshot of the English version of tutorial 1"></center>
+
+The first program is a remake of the
+<a href="http://doc.trolltech.com/t1.html">hello-world example from
+the Qt tutorial</a>, with a Latin translation.  The screenshot above
+shows the English version.
+
+\include tt1/main.cpp
+
+<h2>Line by Line Walk-Through</h2>
+
+\dontinclude tt1/main.cpp
+
+\skip qtranslator
+\line qtranslator
+
+This line includes the definition of the
+<a href="http://doc.trolltech.com/qtranslator.html">QTranslator</a>
+class.  Objects of this class provide translations for user-visible
+text.
+
+\skip QTranslator
+\until tor
+
+This creates a QTranslator object without a parent.
+
+\line load
+
+Here, we try to load a file called tt1_la.qm (the .qm file extension
+is implicit) that contains Latin translations for the source texts
+used in the program.
+
+\line installTranslator
+
+This adds the translations from tt1_la.qm to the pool of translations
+used by the program.
+
+\line hello
+
+This line creates a push button that displays "Hello world!".  If
+tt1_la.qm exists and contains a translation for "Hello world!", the
+translation appears; if not, the source text appears.
+
+All classes that inherit
+<a href="http://doc.trolltech.com/qobject.html">QObject</a> have a
+tr() function.  Inside a member function of a QObject class, we would
+simply write tr("Hello world!") instead of
+QPushButton::tr("Hello world!") or QObject::tr("Hello world!").
+
+<h2>Running the Application in English</h2>
+
+If you run the program now, you will obtain a big push button labelled
+"Hello world!".  Since we still haven't made the file tt1_la.qm, the
+source text is shown.
+
+<center><img src="tt1_en.png"
+alt="Screenshot of the English version of tutorial 1"></center>
+
+<h2>Creating a Latin Message File</h2>
+
+English is fun, but we now want to have a Latin version to please our
+Roman users.
+
+The first step is to create a project file
+\link tt1-tt1-pro.html tt1.pro\endlink that lists all the source files
+for the project (\link tt1-main-cpp.html main.cpp\endlink).  The
+project file can be a
+<a href="http://www.trolltech.com/freebies/tmake.html">tmake</a>
+project file, or even an ordinary makefile.  Any file that contains
+
+\dontinclude tt1/tt1.pro
+
+\skip SOURCES
+\line SOURCES
+\skip TRANSLATIONS
+\line TRANSLATIONS
+
+will do.  TRANSLATIONS specifies the message files we want to
+maintain.  In this example, we just maintain one set of translations,
+namely Latin.
+
+Notice the file extension:  It is .ts, not .qm.  The .ts format
+(Translation Source format) is suited to developing programs and their
+translations, while the .qm format (Qt Message format) is much faster
+for running the finished application, but no good for developing it.
+In a nutshell, .ts files are text, much bigger than .qm, slower to
+read, and contain more information.  Because they are text, .ts files
+are easy to store in version control systems and send in email.
+
+The next step is to run the <em>lupdate</em> utility.  It reads all
+the source and header files of the project (as specified by the
+HEADERS and SOURCES lines of the project file) and extracts the
+strings that appear in a tr() function call.  Then it updates the
+message files (tt1_la.ts in this case) to keep them in synch with the
+source code.
+
+You can use <em>lupdate</em> at any time, as <em>lupdate</em> does not
+destroy any information.  For example, you can put it in the makefile,
+so the .ts files are updated whenever the source changes.
+
+Try running <em>lupdate</em> right now, like this:
+
+<pre>
+    lupdate tt1.pro
+</pre>
+
+You should now have a file tt1_la.ts in the current directory,
+containing this:
+
+<pre>
+    \<!DOCTYPE TS\>\<TS\>
+    \<codec\>iso8859-1\</codec\>
+    \<context\>
+        \<name\>QPushButton\</name\>
+        \<message\>
+            \<source\>Hello world!\</source\>
+            \<translation type='unfinished'\>\</translation\>
+        \</message\>
+    \</context\>
+    \</TS\>
+</pre>
+
+You don't need to understand this file.  It's an XML file, which is
+used since XML is both extensible and easy to program for.
+
+<h2>Translating to Latin with Qt Linguist</h2>
+
+We will use Qt Linguist to provide the translation.  (You can use any
+XML editor to do it, of course.)
+
+To start Qt Linguist, type
+
+<pre>
+    linguist tt1_la.ts
+</pre>
+
+You should now see the text "QPushButton" on the left.  Double-click
+on it, then click on "Hello world!" and enter "Orbis, te saluto!"in
+the <em>Translation</em> field at the right.  Don't forget the
+exclamation mark!
+
+Click on the \e Finished button and choose \e Save from the \e File
+menu.  The .ts file now contains
+
+<pre>
+            \<translation\>Orbis, te saluto!\</translation\>
+</pre>
+
+instead of
+
+<pre>
+            \<translation type='unfinished'\>\</translation\>
+</pre>
+
+<h2>Running the Application in Latin</h2>
+
+To see the application running in Latin, we have to generate tt1_la.qm
+file from tt1_la.ts.  In the Qt Linguist, choose \e Release... from
+the \e File menu.  Once done, run the hello-world program again.  You
+should see "Orbis, te saluto!" on the push button.
+
+<center><img src="tt1_la.png"
+alt="Screenshot of the Latin version of tutorial 1"></center>
+
+You may now go on to \link tt2.html chapter two \endlink.
+
+[\link tt2.html Next tutorial\endlink]
+[\link ttutorial.html Main tutorial page\endlink]
+
+*/
+
+
+------------------------------------------------------------------------------
+
+/*! \page tt2-arrowpad-h.html
+<title>
+Translation Tutorial - tt2/arrowpad.h
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt2.html tutorial 2\endlink:
+arrowpad.h</h1><br clear="all">
+<hr>
+\include tt2/arrowpad.h
+*/
+
+/*! \page tt2-arrowpad-cpp.html
+<title>
+Translation Tutorial - tt2/arrowpad.cpp
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt2.html tutorial 2\endlink:
+arrowpad.cpp</h1><br clear="all">
+<hr>
+\include tt2/arrowpad.cpp
+*/
+
+/*! \page tt2-mainwindow-h.html
+<title>
+Translation Tutorial - tt2/mainwindow.h
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt2.html tutorial 2\endlink:
+mainwindow.h</h1><br clear="all">
+<hr>
+\include tt2/mainwindow.h
+*/
+
+/*! \page tt2-mainwindow-cpp.html
+<title>
+Translation Tutorial - tt2/mainwindow.cpp
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt2.html tutorial 2\endlink:
+mainwindow.cpp</h1><br clear="all">
+<hr>
+\include tt2/mainwindow.cpp
+*/
+
+/*! \page tt2-main-cpp.html
+<title>
+Translation Tutorial - tt2/main.cpp
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt2.html tutorial 2\endlink:
+main.cpp</h1><br clear="all">
+<hr>
+\include tt2/main.cpp
+*/
+
+/*! \page tt2-tt2-pro.html
+<title>
+Translation Tutorial - tt2/tt2.pro
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt2.html tutorial 2\endlink:
+tt2.pro</h1><br clear="all">
+<hr>
+\include tt2/tt2.pro
+*/
+
+/*! \page tt2.html
+
+\title Chapter 2: Two Custom Widgets
+
+<center><img src="tt2_en.png"
+alt="Screenshot of the English version of tutorial 2"></center>
+
+We will now see a more complex example, with several contexts and
+several texts in each context.  And we'll learn what a context is.
+
+<ul>
+<li> \link tt2-arrowpad-h.html arrowpad.h\endlink contains the
+     definition of ArrowPad, a custom widget;
+<li> \link tt2-arrowpad-cpp.html arrowpad.cpp\endlink contains the
+     implementation of ArrowPad;
+<li> \link tt2-mainwindow-h.html mainwindow.h\endlink contains the
+     definition of MainWindow, a QMainWindow subclass;
+<li> \link tt2-mainwindow-cpp.html mainwindow.cpp\endlink contains the
+     implementation of MainWindow;
+<li> \link tt2-main-cpp.html main.cpp\endlink contains main().
+</ul>
+
+We will provide several translations, and define "several" as meaning
+"two".  Namely, we will provide a French and a Dutch translation.  The
+relevant lines of \link tt2-tt2-pro.html tt2.pro\endlink are
+
+\skip HEADERS
+\until tt2_nl.ts
+
+Now run <em>lupdate</em>.  You should get two identical message files
+(tt2_fr.ts and tt2_nl.ts).
+
+<h2>Line by Line Walk-Through</h2>
+
+<h3>\link tt2-arrowpad-h.html arrowpad.h\endlink</h3>
+
+\dontinclude tt2/arrowpad.h
+
+\skip QGrid
+\until Q_OBJECT
+
+ArrowPad is a subclass of
+<a href="http://doc.trolltech.com/qwidget.html">QWidget</a>.  On the
+screenshot above, the central widget with the four buttons is an
+ArrowPad.
+
+"ArrowPad" is also a context:  It is the context of the texts in the
+ArrowPad class.  The Q_OBJECT macro defines \c tr(x) in ArrowPad like
+this:
+
+<pre>
+    qApp->translate( "ArrowPad", x )
+</pre>
+
+Knowing which class each text occurs enables the Qt Linguist to show
+the right texts together, which in turn eases the translation of the
+program.
+
+<h3>\link tt2-arrowpad-cpp.html arrowpad.cpp\endlink</h3>
+
+\dontinclude tt2/arrowpad.cpp
+
+\skip skip
+\until Down
+\line skip
+
+Here, we use ArrowPad::tr() four times.
+
+<h3>\link tt2-mainwindow-h.html mainwindow.h\endlink</h3>
+
+\dontinclude tt2/mainwindow.h
+
+\skip QMainWindow
+\until Q_OBJECT
+
+In the screenshot above, the whole window is a MainWindow.  Here too,
+we use Q_OBJECT, so that MainWindow will become a context in the Qt
+Linguist.
+
+<h3>\link tt2-mainwindow-cpp.html mainwindow.cpp\endlink</h3>
+
+\dontinclude tt2/mainwindow.cpp
+
+\skip MainWindow::
+\until setCentralWidget
+
+In the MainWindow constructor, we create an ArrowPad.
+
+\line QPopupMenu
+\until stringToKey
+
+Here we call MainWindow::tr() twice.  Notice the use of
+<a href="http://doc.trolltech.com/qaccel.html#7c073d">
+QAccel::stringToKey</a>() to support different keys in other
+languages.  "Ctrl+Q" is a good choice for Quit in English, but a Dutch
+translator might want to use "Ctrl+A" (for Afsluiten) or a German
+translator "Strg+E" (for, strangely, Beenden).
+
+<h3>\link tt2-main-cpp.html main.cpp\endlink</h3>
+
+\dontinclude tt2/main.cpp
+
+\skip QTranslator
+\until installTranslator
+
+Here, we determine which translation to use according to the current
+locale. <a href="http://doc.trolltech.com/qtextcodec.html#75defa">
+QTextCodec::locale</a>() can be influenced by setting the
+<tt>LANG</tt> environment variable, among others.
+
+<h2>Translating to French and Dutch</h2>
+
+Let's translate the example application to French first.  Start Qt
+Linguist with tt2_fr.ts.  You should get the seven source texts
+("\&Up", "\&Left", etc.) grouped in two contexts ("ArrowPad" and
+"MainWindow").
+
+Now, enter the following translations:
+
+<ul>
+<li> ArrowPad
+     <ul>
+     <li> \&Up - \&Haut
+     <li> \&Left - \&Gauche
+     <li> \&Right - \&Droite
+     <li> \&Down - \&Bas
+     </ul>
+<li> MainWindow
+     <ul>
+     <li> E\&xit - \&Quitter
+     <li> Ctrl+Q - Ctrl+Q
+     <li> \&File - \&Fichier
+     </ul>
+</ul>
+
+(Use the "Finish \& Next" button to mark the current item as finished
+and to start editing an unfinished item.)
+
+Save the file and do the same for Dutch:
+
+<ul>
+<li> ArrodPad
+     <ul>
+     <li> \&Up - \&Boven
+     <li> \&Left - \&Links
+     <li> \&Right - \&Rechts
+     <li> \&Down - \&Onder
+     </ul>
+<li> MainWindow
+     <ul>
+     <li> E\&xit - \&Afsluiten
+     <li> Ctrl+Q - Ctrl+A
+     <li> File - \&Bestand
+     </ul>
+</ul>
+
+Now, we have to convert t1_fr.ts and t1_nl.ts into .qm files.  We
+could use Qt Linguist for that, as in chapter one, but then we would
+miss an opportunity to use the \e lrelease utility. \e lrelease
+produces .qm files from .ts files without user interaction.  It's
+chiefly meant for use in makefiles.
+
+Type
+
+<pre>
+    lrelease tt2.pro
+</pre>
+
+You should now have both tt2_fr.qm and tt2_nl.qm.  Set the
+<tt>LANG</tt> environment variable to <tt>fr</tt>.  In Unix,
+one of the two following commands should do it:
+
+<pre>
+    export LANG=fr
+    setenv LANG fr
+</pre>
+
+In Windows, either modify autoexec.bat or run
+
+<pre>
+    set LANG=fr
+</pre>
+
+When you run the program, you should now get
+
+<center><img src="tt2_fr.png"
+alt="Screenshot of the French version of tutorial 2"></center>
+
+Now, try the same with Dutch, by setting <tt>LANG=nl</tt>.  You should
+get
+
+<center><img src="tt2_nl.png"
+alt="Screenshot of the Dutch version of tutorial 2"></center>
+
+<h2>Exercices</h2>
+
+Remove the Q_OBJECT macro from the header files, run <em>lupdate</em>
+and look at the result in Qt Linguist.  What's different now?
+
+Set <tt>LANG=fr_CA</tt> (French Canada) and run the example program
+again.  Explain why the result is the same as with <tt>LANG=fr</tt>.
+
+Let's go on to \link tt3.html chapter three \endlink.
+
+[\link tt1.html Previous tutorial\endlink]
+[\link tt3.html Next tutorial\endlink]
+[\link ttutorial.html Main tutorial page\endlink]
+
+*/
+
+
+------------------------------------------------------------------------------
+
+
+/*! \page tt3-printpanel-h.html
+<title>
+Translation Tutorial - tt3/printpanel.h
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt3.html tutorial 3\endlink:
+printpanel.h</h1><br clear="all">
+<hr>
+\include tt3/printpanel.h
+*/
+
+/*! \page tt3-printpanel-cpp.html
+<title>
+Translation Tutorial - tt3/printpanel.cpp
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt3.html tutorial 3\endlink:
+printpanel.cpp</h1><br clear="all">
+<hr>
+\include tt3/printpanel.cpp
+*/
+
+/*! \page tt3-mainwindow-h.html
+<title>
+Translation Tutorial - tt3/mainwindow.h
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt3.html tutorial 3\endlink:
+mainwindow.h</h1><br clear="all">
+<hr>
+\include tt3/mainwindow.h
+*/
+
+/*! \page tt3-mainwindow-cpp.html
+<title>
+Translation Tutorial - tt3/mainwindow.cpp
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt3.html tutorial 3\endlink:
+mainwindow.cpp</h1><br clear="all">
+<hr>
+\include tt3/mainwindow.cpp
+*/
+
+/*! \page tt3-main-cpp.html
+<title>
+Translation Tutorial - tt3/main.cpp
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt3.html tutorial 3\endlink:
+main.cpp</h1><br clear="all">
+<hr>
+\include tt3/main.cpp
+*/
+
+/*! \page tt3-tt3-pro.html
+<title>
+Translation Tutorial - tt3/tt3.pro
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt3.html tutorial 3\endlink:
+tt3.pro</h1><br clear="all">
+<hr>
+\include tt3/tt3.pro
+*/
+
+/*! \page tt3-tt3_pt-ts.html
+<title>
+Translation Tutorial - tt3/tt3_pt.ts
+</title></head><body bgcolor="#ffffff">
+
+\postheader
+
+<h1 align=center>Source code for \link tt3.html tutorial 3\endlink:
+tt3_pt.ts</h1><br clear="all">
+<hr>
+\include tt3/tt3_pt.ts
+*/
+
+/*! \page tt3.html
+
+\title Chapter 3: Troll Print 1.0 and 1.1
+
+<center><img src="tt3_10_en.png"
+alt="Screenshot of Troll Print 1.0 (English)"></center>
+
+We will consider two releases of the same application: Troll Print 1.0
+and 1.1.  We will learn to reuse the translations of one release for
+the next release.  (In this chapter, you have to edit some source
+files.  It's probably best to copy all the files to a different
+directory and work there.)
+
+Troll Print is a silly example application that lets the user choose
+printer settings.  It comes in two versions: English and Portuguese.
+
+Version 1.0 consists of these files:
+
+<ul>
+<li> \link tt3-printpanel-h.html printpanel.h\endlink contains the
+     definition of PrintPanel;
+<li> \link tt3-printpanel-cpp.html printpanel.cpp\endlink contains the
+     implementation of PrintPanel;
+<li> \link tt3-mainwindow-h.html mainwindow.h\endlink contains the
+     definition of MainWindow;
+<li> \link tt3-mainwindow-cpp.html mainwindow.cpp\endlink contains the
+     implementation of MainWindow;
+<li> \link tt3-main-cpp.html main.cpp\endlink contains main();
+<li> \link tt3-tt3-pro.html tt3.pro\endlink is the <em>tmake</em>
+     project file.
+<li> \link tt3-tt3_pt-ts.html tt3_pt.ts\endlink is the Portuguese
+     message file.
+</ul>
+
+<h2>Line by Line Walk-Through</h2>
+
+<h3>\link tt3-printpanel-h.html printpanel.h\endlink</h3>
+
+\dontinclude tt3/printpanel.h
+
+\skip QVBox
+\until };
+
+PrintPanel is a <a href="http://doc.trolltech.com/qwidget.html">
+QWidget</a>.  It needs the Q_OBJECT macro for tr() to work properly.
+
+<h3>\link tt3-printpanel-cpp.html printpanel.cpp\endlink</h3>
+
+\dontinclude tt3/printpanel.cpp
+
+\skip setSpacing
+\skip /
+\line /
+\line lab
+\until /
+
+This code is commented out in Troll Print 1.0; you will enable it
+later, for Troll Print 1.1.
+
+\skip QHButtonGroup
+\until color
+\until toggle
+
+Notice the two occurrences of tr("Enabled") and of tr("Disabled") in
+PrintPanel.  The Qt Linguist will see that they are the same, and you
+only need to translate "Enabled" once.
+
+<h3>\link tt3-mainwindow-h.html mainwindow.h\endlink</h3>
+
+\dontinclude tt3/mainwindow.h
+
+\skip QMainWindow
+\until };
+
+Nothing out of the ordinary here.
+
+<h3>\link tt3-mainwindow-cpp.html mainwindow.cpp\endlink</h3>
+
+\dontinclude tt3/mainwindow.cpp
+
+\skip MainWindow::MainWindow
+\until setCaption
+
+The window caption, being text, is of course translated using tr().
+
+\skip file
+\line file
+\line insertItem
+\line stringToKey
+\line help
+\line about
+\line aboutQt
+\line insertItem
+\line insertSeparator
+\line insertItem
+
+The menus too are full of text that needs to be translated.
+
+<h3>\link tt3-main-cpp.html main.cpp\endlink</h3>
+
+\dontinclude tt3/main.cpp
+
+\skip QTranslator
+\until installTranslator
+
+Troll Print will try to respect the locale.
+
+<h2>Running Troll Print 1.0 in English and in Portuguese</h2>
+
+This time, you won't have to type in the translations, as the file
+\link tt3-tt3_pt-ts.html tt3_pt.ts\endlink is already provided.
+
+Set the environment variable <tt>LANG</tt> to <tt>pt</tt>.  Try
+running Troll Print now.  You should get the English version, as shown
+at the top of this page.  Now run <em>lrelease</em> and try again.
+You should see the Portuguese edition (Troll Imprimir 1.0):
+
+<center><img src="tt3_10_pt_bad.png"
+alt="Screenshot of Troll Imprimir 1.0 (Bad Portuguese)"></center>
+
+Something is wrong!  In good Portuguese, the second occurrence of
+"Enabled" should be "Ativadas", not "Ativado".  Same problem with
+"Disabled".  If you look at
+\link tt3-tt3_pt-ts.html tt3_pt.ts\endlink (using Qt Linguist,
+maybe), you will see that there is just one occurrence of "Enabled"
+and of "Disabled" in the message file, even though there are two in
+the source code.
+
+A common problem, but easily fixed.  Just go back to the source and
+add a comment as second argument to tr().  In
+\link tt3-printpanel-cpp.html printpanel.cpp\endlink, there are four
+lines to change.  Add the comment "two-sided" in the appropriate tr()
+calls:
+
+<pre>
+    but = new QRadioButton( tr("Enabled", "two-sided"), twoSided );
+    but = new QRadioButton( tr("Disabled", "two-sided"), twoSided );
+</pre>
+
+Add the comment "colors" in the appropriate tr() calls, a few lines
+later in the source code:
+
+<pre>
+    but = new QRadioButton( tr("Enabled", "colors"), colors );
+    but = new QRadioButton( tr("Disabled", "colors"), colors );
+</pre>
+
+Now run <em>lupdate</em> and open tt3_pt.ts in Qt Linguist.  You
+should now see two changes.
+
+First, the message file now contains three "Enabled", "Disabled" pairs.
+The first pair is marked "(obs.)"; that is, obsolete.  The second pair
+has "two-sided" as comment, and the third one has "colors".  (The
+comments are shown in the <em>Source text and comments</em> area of Qt
+Linguist.)
+
+Second, the translation text "Ativado" and "Desativado" is
+automatically provided for the new "Enabled" and "Disabled" texts.
+It's not correct, but it's a good starting point.
+
+Now, change the right "Ativado" into "Ativadas" and "Desativado" into
+"Desativadas", save and quit.  Run <em>lrelease</em> to obtain an
+up-to-date binary tt3_pt.qm file, and run Troll Print (or rather Troll
+Imprimir).
+
+<center><img src="tt3_10_pt_good.png"
+alt="Screenshot of Troll Imprimir 1.0 (Good Portuguese)"></center>
+
+Comments help distinguish between two otherwise identical source
+texts.  They are also useful in other cases to give clues to the
+translator.  Indeed, the contexts themselves, namely MainWindow and
+PrintPanel, can (and should) be commented, like this:
+<pre>
+    /* TRANSLATOR MainWindow
+
+       The whole application is a MainWindow.  If you go to
+       Help, About..., you will also see some text belonging to
+       MainWindow.
+    *&#47;
+
+    /* TRANSLATOR PrintPanel
+
+       The PrintPanel is the central part of the MainWindow.  It
+       shows some printing options.
+    *&#47;
+</pre>
+
+Try it!  Type these comments in some source files
+(\link tt3-mainwindow-cpp.html mainwindow.cpp\endlink and
+\link tt3-printpanel-cpp.html printpanel.cpp\endlink are appropriate
+places), run <em>lupdate</em> and start Qt Linguist.  You should see
+the comments in the <em>Source text and comments</em> area as you
+browse through the list of translated items.
+
+Sometimes, particularly with big programs, it can be really difficult
+for the translators to see their translations and check that they're
+correct.  Comments like this one help them:
+
+<pre>
+    /* TRANSLATOR ZClientErrorDialog
+
+       In the Edit menu, choose Client Specification and pick
+       the client Bartel Leendert van der Waerden.  Click on
+       Profile, then choose Start Processing.  You should now
+       see a window with the text "Error: Name too long!".  That
+       window is a ZClientErrorDialog.
+    *&#47;
+</pre>
+
+
+<h2>Troll Print 1.1</h2>
+
+Let's prepare a release 1.1 of Troll Print.  Start your favorite text
+editor and follow these steps:
+
+<ul>
+<li> Uncomment the two lines that create a QLabel with text
+     "\<b\>TROLL PRINT\</b\>" in
+     \link tt3-printpanel-cpp.html printpanel.cpp\endlink.
+<li> Word-crafting: Replace "2-sided" by "Two-sided" in
+     \link tt3-printpanel-cpp.html printpanel.cpp\endlink.
+<li> Replace "1.0" with "1.1" everywhere it occurs in
+     \link tt3-mainwindow-cpp.html mainwindow.cpp\endlink.
+<li> Update the copyright year to 1999-2000 in
+     \link tt3-mainwindow-cpp.html mainwindow.cpp\endlink.
+</ul>
+
+Once finished, run <em>lupdate</em>, then open tt3_pt.ts in Qt
+Linguist.  The following items are of special interest:
+
+<ul>
+<li> MainWindow
+     <ul>
+     <li> Troll Print 1.0 - obsolete
+     <li> About Troll Print 1.0 - obsolete
+     <li> Troll Print 1.0. Copyright 1999 Macroshaft, Inc. -
+	  obsolete
+     <li> Troll Print 1.1 - automatically translated as
+	  "Troll Imprimir 1.1"
+     <li> About Troll Print 1.1 - automatically translated as
+	  "Troll Imprimir 1.1"
+     <li> Troll Print 1.1.  Copyright 1999-2000 Macroshaft,
+	  Inc. - automatically translated as "Troll Imprimir 1.1.
+	  Copyright 1999-2000 Macroshaft, Inc."
+     </ul>
+<li> PrintPanel
+     <ul>
+     <li> 2-sided - obsolete
+     <li> \<b\>TROLL PRINT\</b\> - untranslated
+     <li> Two-sided - untranslated.
+     </ul>
+</ul>
+
+Notice that <em>lupdate</em> works hard behind the scene to make
+revisions easier.   Indeed, <em>lupdate</em> is quite smart about
+numbers.  (Not as smart as Euler, though.)
+
+Go over the translations in MainWindow and mark these as finished.
+Translate "\<b\>TROLL PRINT\</b\>" as "\<b\>TROLL IMPRIMIR\</b\>".
+When you're translating "Two-sided", press the "Next Guess" button to
+translate "Two-sided", but change "2" into "Dois".
+
+Save and quit, then run <em>lrelease</em>.  The Portuguese version
+should look like this:
+
+<center><img src="tt3_11_pt.png"
+alt="Screenshot of Troll Imprimir 1.1 (Portuguese)"></center>
+
+Click on "Ajuda" ("Help"), "Sobre..." ("About...").
+
+<center><img src="tt3_11_about_pt.png"
+alt="Screenshot of Troll Imprimir 1.1 (Portuguese)"></center>
+
+Click on "Ajuda" ("Help"), "Sobre Qt..." ("About Qt...").  Oops!
+That's in English.  Qt itself needs to be translated.  See
+<a href="http://doc.trolltech.com/i18n.html">Internationalization with
+Qt</a> for details.
+
+Now set <tt>LANG=whatever</tt> to get the full English version:
+
+<center><img src="tt3_11_en.png"
+alt="Screenshot of Troll Print 1.1 (English)"></center>
+
+<h2>Exercice</h2>
+
+Write an internationalized Hangman game and give it to the
+<a href="http://www.kde.org">KDE project</a>.
+
+<h2>Further Study</h2>
+
+Congratulations!  You are now ready to offer translated versions of
+your Qt applications.
+
+If you use <a href="http://www.trolltech.com/designer/">Qt
+Designer</a>, you will be happy to know that <em>lupdate</em>
+supports .ui files.  All you need is an INTERFACES line in the project
+file.
+
+Since you are among the first readers of this tutorial, please
+consider
+<a href="mailto:jasmin@trolltech.com?subject=Translation tutorial">
+sending comments and suggestions to its maintainer</a>, in the
+language of your choice.
+
+Since you are among the first readers of this tutorial, please
+consider
+<a href="mailto:jasmin@trolltech.com?subject=Translation tutorial">
+sending comments and suggestions to its maintainer</a>, in the
+language of your choice.
+
+[\link tt2.html Previous tutorial\endlink]
+[\link tt1.html First tutorial\endlink]
+[\link ttutorial.html Main tutorial page\endlink]
+
+*/

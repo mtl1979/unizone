@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><head><title>
+Translation Tutorial - tt1/main.cpp
+</title></head><body bgcolor="#ffffff">
+<p>
+<h1 align=center>Source code for <a href="tt1.html">tutorial 1</a>:
+main.cpp</h1><br clear="all">
+<hr> <pre>/****************************************************************
+**
+** Translation tutorial 1
+**
+****************************************************************/
+
+#include &lt;qapplication.h&gt;
+#include &lt;qpushbutton.h&gt;
+#include &lt;qtranslator.h&gt;
+
+int main( int argc, char **argv )
+{
+    QApplication a( argc, argv );
+
+    QTranslator tor( 0 );
+    tor.load( "tt1_la", "." );
+    a.installTranslator( &amp;tor );
+
+    QPushButton hello( QPushButton::tr("Hello world!"), 0 );
+
+    a.setMainWidget( &amp;hello );
+    hello.show();
+    return a.exec();
+}
+</pre>
+<p>
+
