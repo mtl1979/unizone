@@ -1941,19 +1941,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Empty Windows:</source>
-        <translation type='unfinished'></translation>
+        <translation>Empty Windows:</translation>
     </message>
     <message>
         <source>Do Nothing</source>
-        <translation type='unfinished'></translation>
+        <translation>Do Nothing</translation>
     </message>
     <message>
         <source>Prompt</source>
-        <translation type='unfinished'></translation>
+        <translation>Prompt</translation>
     </message>
     <message>
         <source>Automatically Close</source>
-        <translation type='unfinished'></translation>
+        <translation>Automatically Close</translation>
     </message>
 </context>
 <context>
@@ -2175,7 +2175,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Could not start internal thread!</source>
-        <translation type='unfinished'></translation>
+        <translation>Could not start internal thread!</translation>
     </message>
 </context>
 <context>
@@ -3378,7 +3378,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type='unfinished'></translation>
+        <translation>Initializing...</translation>
+    </message>
+    <message>
+        <source>On Connect: Do Nothing ;)</source>
+        <translation>On Connect: Do Nothing ;)</translation>
     </message>
 </context>
 </TS>

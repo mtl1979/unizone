@@ -3351,5 +3351,9 @@ Date: %4</translation>
         <source>Initializing...</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>On Connect: Do Nothing ;)</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

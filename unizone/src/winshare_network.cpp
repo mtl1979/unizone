@@ -839,9 +839,15 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			PrintSystem( tr("Blacklist pattern: %1").arg(fBlackList) );
 			PrintSystem( tr("Ignore pattern: %1").arg(fIgnore) );
 			PrintSystem( tr("Watch pattern: %1").arg(fWatch) );
-			PrintSystem( tr("On Connect:") );
-			PrintSystem( tr("1. %1").arg(fOnConnect) );
-			PrintSystem( tr("2. %1").arg(fOnConnect2) ); 
+			if (!fOnConnect.isEmpty())
+			{
+				PrintSystem( tr("On Connect:") );
+				PrintSystem( tr("1. %1").arg(fOnConnect) );
+				if (!fOnConnect2.isEmpty())
+					PrintSystem( tr("2. %1").arg(fOnConnect2) );
+			}
+			else
+				PrintSystem( tr("On Connect: Do Nothing ;)" ) );
 		}
 		else if (CompareCommand(sendText, "/clearstats"))
 		{
@@ -1953,11 +1959,23 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n"; 
 	helpText			+=	tr("Watch pattern: %1").arg(fWatch);
 	helpText			+=	"\n"; 
-	helpText			+=	tr("On Connect:");
-	helpText			+=	"\n"; 
-	helpText			+=	tr("1. %1").arg(fOnConnect);
-	helpText			+=	"\n"; 
-	helpText			+=	tr("2. %1").arg(fOnConnect2);
+	if (!fOnConnect.isEmpty())
+	{
+		helpText			+=	tr("On Connect:");
+		helpText			+=	"\n"; 
+		helpText			+=	tr("1. %1").arg(fOnConnect);
+		if (!fOnConnect2.isEmpty())
+		{
+			helpText			+=	"\n"; 
+			helpText			+=	tr("2. %1").arg(fOnConnect2);
+		}
+	}
+	else
+	{
+		helpText			+=	tr("On Connect: Do Nothing ;)");
+		helpText			+=	"\n"; 
+
+	}
 
 	QString str;
 	if (command.isEmpty())

@@ -3472,5 +3472,9 @@ Päiväys: %4</translation>
         <source>Initializing...</source>
         <translation>Alustetaan...</translation>
     </message>
+    <message>
+        <source>On Connect: Do Nothing ;)</source>
+        <translation>Yhdistäessä Tee: Ei Mitään ;)</translation>
+    </message>
 </context>
 </TS>
