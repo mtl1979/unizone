@@ -782,7 +782,7 @@ ReflectServer ::
 GetServerUptime() const
 {
    uint64 now = GetRunTime64();
-   return (_serverStartedAt >= now) ? (now - _serverStartedAt) : 0;
+   return (_serverStartedAt <= now) ? (now - _serverStartedAt) : 0;
 }
                         
 uint32 
