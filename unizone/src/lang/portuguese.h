@@ -86,7 +86,7 @@
 // Menu bar
 
 #define MSG_FILE			"&Arquivo"
-//#define MSG_AFILE			CTRL+Key_A
+//#define MSG_AFILE			ALT+Key_A
 #define MSG_EDIT			"&Editar"
 //#define MSG_AEDIT			CTRL+Key_E
 //#define MSG_OPTIONS			"&Opões"
@@ -121,7 +121,7 @@
 // Help menu
 
 #define MSG_ABOUT			"Sob&re "
-#define MSG_AABOUT			CTRL+Key_R
+#define MSG_AABOUT			Key_F12
 
 // Preferences window
 //

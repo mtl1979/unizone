@@ -114,7 +114,7 @@
 #define MSG_SEARCH			"Search"
 #define MSG_ASEARCH			CTRL+ALT+Key_S
 #define MSG_EXIT			"E&xit"
-#define MSG_AEXIT			CTRL+Key_X
+#define MSG_AEXIT			ALT+Key_X
 
 // Edit menu
 
@@ -124,7 +124,7 @@
 // Help menu
 
 #define MSG_ABOUT			"&About "
-#define MSG_AABOUT			CTRL+Key_A
+#define MSG_AABOUT			Key_F12
 
 // Preferences window
 //

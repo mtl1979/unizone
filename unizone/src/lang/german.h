@@ -120,12 +120,12 @@
 // Edit menu
 
 #define MSG_PREFERENCES         "&Einstellungen"
-#define MSG_APREFERENCES        CTRL+Shift+Key_E
+#define MSG_APREFERENCES        CTRL+SHIFT+Key_E
 
 // Help menu
 
 #define MSG_ABOUT               "&Über "
-#define MSG_AABOUT              CTRL+Key_U
+#define MSG_AABOUT              Key_F12
 
 // Preferences window
 //

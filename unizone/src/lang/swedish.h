@@ -85,7 +85,7 @@
 // Menu bar
 
 #define MSG_FILE			"&Arkiv"
-//#define MSG_AFILE			CTRL+Key_A
+//#define MSG_AFILE			ALT+Key_A
 #define MSG_EDIT			"Ä&ndra"
 //#define MSG_AEDIT			CTRL+Key_N
 //#define MSG_OPTIONS		"&Preferenser"
@@ -110,7 +110,7 @@
 #define MSG_SEARCH			"Sök"
 #define MSG_ASEARCH			CTRL+ALT+Key_S
 #define MSG_EXIT			"A&vsluta"
-#define MSG_AEXIT			CTRL+Key_V
+#define MSG_AEXIT			CTRL+SHIFT+Key_V
 
 // Edit menu
 
@@ -118,6 +118,9 @@
 #define MSG_APREFERENCES	CTRL+Key_I
 
 // Help menu
+
+#define MSG_ABOUT			"&Om "
+#define MSG_AABOUT			Key_F12
 
 // Preferences window
 //

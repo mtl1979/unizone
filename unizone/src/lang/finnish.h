@@ -105,7 +105,7 @@
 #define MSG_OPEN_SHARED		"Avaa &Jaetut-kansio"
 #define MSG_AOPEN_SHARED	CTRL+Key_J
 #define MSG_OPEN_DOWNLOAD	"Avaa &Vastaanotetut-kansio"
-#define MSG_AOPEN_DOWNLOAD	CTRL+Key_V
+#define MSG_AOPEN_DOWNLOAD	CTRL+SHIFT+Key_V
 #define MSG_OPEN_LOGFOLDER	"Avaa &Lokikansio"
 #define MSG_AOPEN_LOGFOLDER CTRL+Key_L
 #define MSG_CLEAR_CHATLOG	"Tyhjennä &Keskusteluloki"
@@ -123,7 +123,7 @@
 // Help menu
 
 #define MSG_ABOUT			"&Tietoja "
-#define MSG_AABOUT			CTRL+Key_T
+#define MSG_AABOUT			Key_F12
 
 //
 // Preferences

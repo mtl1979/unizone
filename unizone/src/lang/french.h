@@ -119,7 +119,7 @@
 // Help menu
 
 #define MSG_ABOUT		"&A propos "
-#define MSG_AABOUT		CTRL+Key_A
+#define MSG_AABOUT		Key_F12
 
 // Preferences window
 //
