@@ -2006,8 +2006,10 @@ WinShareWindow::IsIgnoredIP(const QString & ip)
 	WString wIP(ip);
 	PRINT("IsIgnoredIP(%S)\n", wIP.getBuffer());
 
+#ifdef DEBUG2
 	wIP = fIgnoreIP;
 	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
+#endif
 
 	return MatchFilter(ip, (const char *) fIgnoreIP.utf8());
 }
@@ -2031,8 +2033,10 @@ WinShareWindow::AddIPIgnore(const QString & ip)
 		fIgnoreIP += ip;
 	}
 
+#ifdef DEBUG2
 	wIP = fIgnoreIP;
 	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
+#endif
 
 	return true;
 
@@ -2050,7 +2054,9 @@ WinShareWindow::RemoveIPIgnore(const QString & ip)
 	if (fIgnoreIP == ip) // First and only?
 	{
 		fIgnoreIP = "";
+#ifdef DEBUG2
 		PRINT("IP IGNORE MASK CLEARED\n");
+#endif
 
 		return true;
 	}
@@ -2093,8 +2099,10 @@ WinShareWindow::RemoveIPIgnore(const QString & ip)
 		fIgnoreIP = fIgnoreIP.left(pos)+fIgnoreIP.mid(len+pos);
 	}
 
+#ifdef DEBUG2
 	wIP = fIgnoreIP;
 	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
+#endif
 
 	return true;
 }

@@ -850,7 +850,9 @@ NetClient::BeginMessageBatch()
 void
 NetClient::MessageReceived(MessageRef msg, const String &sessionID)
 {
+#ifdef DEBUG2
 	PRINT("MTT_EVENT_INCOMING_MESSAGE\n");
+#endif
 	if (msg())
 	{
 		switch (msg()->what)
@@ -871,7 +873,9 @@ NetClient::MessageReceived(MessageRef msg, const String &sessionID)
 
 			case PR_RESULT_DATAITEMS:
 			{
+#ifdef DEBUG2
 				PRINT("PR_RESULT_DATAITEMS\n");
+#endif
 				HandleResultMessage(msg);
 				
 				// add/remove all the users to the list view (if not there yet...)
@@ -940,7 +944,9 @@ NetClient::MessageReceived(MessageRef msg, const String &sessionID)
 
 			default:
 			{
+#ifdef DEBUG2
 				PRINT("Handling message\n");
+#endif
 				gWin->HandleMessage(msg);
 				break;
 			}

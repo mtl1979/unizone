@@ -1387,8 +1387,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 				(msg()->FindInt32("sent", (int32 *)&got) == B_OK)
 				)
 			{
-				PRINT("\tWUploadEvent::FileDataSent\n");
 #ifdef DEBUG2
+				PRINT("\tWUploadEvent::FileDataSent\n");
 # ifdef WIN32
 				PRINT("\tOffset: %I64u\n", offset);
 				PRINT("\tSize  : %I64u\n", size);
@@ -1461,7 +1461,9 @@ WDownload::uploadEvent(WUploadEvent *u)
 					item->setText(WTransferItem::Status, tr("Finished."));
 					item->setText(WTransferItem::ETA, "");
 				}
+#ifdef DEBUG2
 				PRINT("\tWUploadEvent::FileDataSent OK\n");
+#endif
 			}
 			break;
 		}
