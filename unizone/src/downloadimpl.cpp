@@ -1086,7 +1086,10 @@ WDownload::customEvent(QCustomEvent * e)
 							item->setText(WTransferItem::Status, tr("Finished."));
 							item->setText(WTransferItem::ETA, "");
 
-							if (msg()->FindString("file", mFile) == B_OK)
+							if (
+								(msg()->FindString("file", mFile) == B_OK) &&
+								gWin->fSettings->GetUploads()
+								)
 								gWin->PrintSystem( tr("%1 has finished downloading %2.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) , false);
 						}
 						
