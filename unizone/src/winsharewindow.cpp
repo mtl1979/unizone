@@ -448,7 +448,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					if (refScan())
 					{
 						MessageRef mref;
-						HashtableIterator<String, MessageRef> filesIter = fFileScanThread->GetSharedFiles().GetIterator();
+						HashtableIterator<String, QString> filesIter = fFileScanThread->GetSharedFiles().GetIterator();
 						while (filesIter.HasMoreKeys())
 						{
 							// stop iterating if we are waiting for file scan thread to finish
@@ -458,11 +458,12 @@ WinShareWindow::customEvent(QCustomEvent * event)
 							qApp->processEvents(300);
 
 							String s;
+							QString qFile;
 							MessageRef mref;
 							filesIter.GetNextKey(s);
-							filesIter.GetNextValue(mref);
+							filesIter.GetNextValue(qFile);
 							
-							if (mref())
+							if (mref() && fFileScanThread->FindFile(qFile, mref))
 							{
 								MakeNodePath(s);
 								uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));

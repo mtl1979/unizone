@@ -34,7 +34,7 @@ public:
 //	void SetFirewalled(bool f) { fFired = f; }
 	int GetNumFiles() const;
 
-	Hashtable<String, MessageRef> & GetSharedFiles() { return fFiles; }
+	Hashtable<String, QString> & GetSharedFiles() { return fFiles; }
 	void GetSharedFile(int n, MessageRef & mref);
 	bool FindFile(const QString & file, MessageRef & ref);
 	void EmptyList();
@@ -56,7 +56,7 @@ private:
 	QObject * fOwner;
 	bool * fShutdownFlag;
 	Queue<QString> fPaths;
-	Hashtable<String, MessageRef> fFiles;
+	Hashtable<String, QString> fFiles;
 	Hashtable<String, String> fScannedDirs;
 	Queue<QString> files;
 
@@ -69,6 +69,7 @@ private:
 	QString ResolveLink(const QString & lnk);
 	QString ResolveLinkA(const QString & lnk);	// Windows only
 	void ScanFiles(const QString & directory);
+	void GetInfo(const QString & file, MessageRef & mref);
 
 	void SendReset();
 	void SendString(ScanEvent::Type, const QString &);

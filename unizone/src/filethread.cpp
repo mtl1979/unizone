@@ -344,36 +344,23 @@ WFileThread::AddFile(const QString & filePath)
 	}
 	else
 	{
-		MessageRef ref(GetMessageFromPool());
-		if (ref())
+		int64 size = ufi.getSize();
+		if (size > 0)
 		{
-			QCString qcPath = ufi.getPath().utf8();
-			int64 size = ufi.getSize();
-			if (size > 0)
-			{
-				String file = (const char *) ufi.getName().utf8();
-				ref()->AddInt32("beshare:Modification Time", ufi.getModificationTime());
-				ref()->AddString("beshare:Kind", (const char *) ufi.getMIMEType().utf8()); // give BeSharer's some relief
-				ref()->AddString("beshare:Path", (const char *) qcPath);
-				// No actual need for winshare:Path, because the value of beshare:Path is exactly the same.
-				// ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
-				ref()->AddInt64("beshare:File Size", size);
-				ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
-				ref()->AddString("beshare:File Name", file);
-				
-				Lock(); 
-				fFiles.Put(file, ref);
-				Unlock(); 
-				int n = fFiles.GetNumItems();
-
+			String file = (const char *) ufi.getName().utf8();
+			
+			Lock(); 
+			fFiles.Put(file, filePath);
+			Unlock(); 
+			int n = fFiles.GetNumItems();
+			
 #ifdef WIN32
-				SendString(ScanEvent::Type::ScanFile, ufi.getName());
-				SendInt(ScanEvent::Type::ScannedFiles, n);
+			SendString(ScanEvent::Type::ScanFile, ufi.getName());
+			SendInt(ScanEvent::Type::ScannedFiles, n);
 #else
-				SendString(ScanEvent::ScanFile, ufi.getName());
-				SendInt(ScanEvent::ScannedFiles, n);
+			SendString(ScanEvent::ScanFile, ufi.getName());
+			SendInt(ScanEvent::ScannedFiles, n);
 #endif
-			}
 		}
 	}
 }
@@ -527,9 +514,9 @@ WFileThread::CheckFile(const QString & file)
 	bool ret = false;
 
 	String key = (const char *) file.utf8();
-	MessageRef mref;
+	QString qFile;
 
-	if (fFiles.Get(key, mref) == B_NO_ERROR)
+	if (fFiles.Get(key, qFile) == B_NO_ERROR)
 	{
 		ret = true;
 	}
@@ -544,16 +531,18 @@ WFileThread::FindFile(const QString & file, MessageRef & ref)
 	bool ret = false;
 
 	String key = (const char *) file.utf8();
-	MessageRef mref;
+	QString qFile;
+//	MessageRef mref;
 
-	if (fFiles.Get(key, mref) == B_NO_ERROR)
+	if (fFiles.Get(key, qFile) == B_NO_ERROR)
 	{
-		if ( mref() )
-		{
-			Message *msg = mref();
-			ref = GetMessageFromPool(*msg); // copy the message, don't pass a ref ;)
+		GetInfo(qFile, ref);
+//		if ( mref() )
+//		{
+//			Message *msg = mref();
+//			ref = GetMessageFromPool(*msg); // copy the message, don't pass a ref ;)
 			ret = true;
-		}
+//		}
 	}
 
 	Unlock();
@@ -570,7 +559,7 @@ void
 WFileThread::EmptyList()
 {
 	Lock(); 
-	fFiles.Clear();
+	fFiles.Clear(true);
 	files.Clear(true);
 	Unlock(); 
 }
@@ -582,8 +571,10 @@ WFileThread::GetSharedFile(int n, MessageRef & mref)
 	if (n >= 0 && n < fFiles.GetNumItems())
 	{
 		String key;
+		QString qFile;
 		fFiles.GetKeyAt(n, key);
-		fFiles.Get(key, mref);
+		fFiles.Get(key, qFile);
+		GetInfo(qFile, mref);
 	}
 	Unlock();
 }
@@ -629,4 +620,27 @@ WFileThread::SendInt(ScanEvent::Type t, int i)
 #else
 		QApplication::postEvent(fScanProgress, se);
 #endif
+}
+
+void
+WFileThread::GetInfo(const QString &file, MessageRef &mref)
+{
+	UFileInfo ufi(file);
+	if (ufi.isValid())
+	{
+		String _file = (const char *) ufi.getName().utf8();
+		String _path = (const char *) ufi.getPath().utf8();
+		int64 size = ufi.getSize();
+		
+		mref = GetMessageFromPool();
+		if ( mref() )
+		{
+			mref()->AddInt32("beshare:Modification Time", ufi.getModificationTime());
+			mref()->AddString("beshare:Kind", (const char *) ufi.getMIMEType().utf8()); // give BeSharer's some relief
+			mref()->AddString("beshare:Path", _path);
+			mref()->AddInt64("beshare:File Size", size);
+			mref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
+			mref()->AddString("beshare:File Name", _file);
+		}
+	}
 }
