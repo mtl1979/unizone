@@ -30,7 +30,7 @@ WLog::Close()
 	String logClose = "</BODY></HTML>";
 	if (fFile)
 	{
-		fFile->WriteBlock(logClose.Cstr(), logClose.Length());
+		LogString(logClose.Cstr(), false);
 		CloseFile(fFile);
 	}
 }
@@ -41,6 +41,7 @@ WLog::Create(LogType type, const QString &name)
 	int counter = 0;
 	time_t currentTime = time(NULL);
 	QString lt(asctime(localtime(&currentTime)));
+	lt.truncate(lt.find("\n"));
 	QString fullPath;
 
 	QString prepend = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html;charset=utf-8\"><TITLE>Log for: ";
@@ -55,7 +56,6 @@ WLog::Create(LogType type, const QString &name)
 	}
 	prepend += "</TITLE></HEAD><BODY BGCOLOR=\"#FFFFFF\">";
 	
-	lt.truncate(lt.find("\n"));
 	switch (type)
 	{
 	case LogMain: 
@@ -92,9 +92,7 @@ WLog::Create(LogType type, const QString &name)
 	{
 		if (fFile->Open(fullPath, IO_WriteOnly))
 		{
-			QCString out = prepend.utf8();
-			fFile->WriteBlock(out, out.length());
-			fFile->Flush();
+			LogString(prepend, false);
 		}
 		else
 		{
@@ -110,27 +108,29 @@ WLog::InitCheck() const
 	return fFile ? true : false;
 }
 
+const char * br = "<br>";
+#ifdef WIN32
+const char * lend = "\r\n";
+#else
+const char * lend = "\n";
+#endif
+
 void
-WLog::LogString(const char * txt)
+WLog::LogString(const char * txt, bool brk)
 {
-	String text(txt);
-	text += "<br>";
 	if (InitCheck())
 	{
-		fFile->WriteBlock(text.Cstr(), text.Length());
+		fFile->WriteBlock(txt, strlen(txt));
+		if (brk)
+			fFile->WriteBlock(br, strlen(br));
+		fFile->WriteBlock(lend, strlen(lend));
 		fFile->Flush();
 	}
 }
 
 void
-WLog::LogString(const QString & txt)
+WLog::LogString(const QString & txt, bool brk)
 {
-	QString out = txt;
-	out += "<br>";
-	QCString ctxt = out.utf8();
-	if (InitCheck())
-	{
-		fFile->WriteBlock(ctxt, ctxt.length());
-		fFile->Flush();
-	}
+	QCString ctxt = txt.utf8();
+	LogString((const char *) ctxt, brk);
 }

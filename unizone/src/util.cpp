@@ -96,6 +96,9 @@ ParseChatText(const QString & str)
 								bInTag = false;
 
 							qToken.truncate(qToken.length() - 1);
+
+							if (qToken.right(1) == ">") // another tag?
+								bInTag = true;
 						}
 
 						last = qToken.right(1);
@@ -131,6 +134,8 @@ ParseChatText(const QString & str)
 						if (qToken.right(1) == "<")
 							bInTag = false;
 						qToken.truncate(qToken.length() - 1);
+						if (qToken.right(1) == ">") // another tag?
+							bInTag = true;
 					}
 				}
 				// ...and ensure that URL doesn't end with a dot, comma or colon

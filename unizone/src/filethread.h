@@ -5,7 +5,7 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <qthread.h>
+// #include <qthread.h>
 #include <qstring.h>
 #include <qobject.h>
 
@@ -86,7 +86,7 @@ private:
 	ScanProgress * fScanProgress;
 #endif
 
-	mutable QMutex fLocker;
+	mutable Mutex fLocker;
 };
 
 #endif

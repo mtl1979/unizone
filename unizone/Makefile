@@ -33,6 +33,7 @@ SRCFILES = \
 	src/filethread.cpp \
 	src/formatting.cpp \
 	src/htmlview.cpp \
+	src/listthread.cpp \
 	src/main.cpp \
 	src/md5.cpp \
 	src/menubar.cpp \

@@ -21,8 +21,8 @@ public:
 	void Create(LogType = LogMain, const QString & = QString::null);
 	void Close();
 
-	void LogString(const char *);
-	void LogString(const QString &);
+	void LogString(const char *, bool);
+	void LogString(const QString &, bool);
 
 	// Returns true if the log is open and ready for use
 	bool InitCheck() const;

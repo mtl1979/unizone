@@ -28,6 +28,7 @@
 #include "zlib/ZLibUtilityFunctions.h"
 #include "settings.h"
 #include "filethread.h"
+#include "listthread.h"
 #include "tokenizer.h"								// <postmaster@raasu.org> 20021114
 #include "util.h"
 #include "wstring.h"
@@ -253,6 +254,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fFileScanThread = new WFileThread(fNetClient, this, &fFileShutdownFlag);
 	CHECK_PTR(fFileScanThread);
 
+	fListThread = new WListThread(fNetClient, fFileScanThread, this, &fFileShutdownFlag);
+	CHECK_PTR(fListThread);
+
 	fFileShutdownFlag = false;
 //	fScrollDown = true;
 	startTimer(1000);
@@ -414,6 +418,13 @@ WinShareWindow::Cleanup()
 		fFileScanThread = NULL; // <postmaster@raasu.org> 20021027
 	}
 
+	if (fListThread)
+	{
+		WaitOnListThread(true);
+		delete fListThread;
+		fListThread = NULL;
+	}
+
 	DeinitLaunchThread();
 
 	// Do these two after everything else
@@ -489,6 +500,16 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (fGotParams)
 					UpdateShares();
 				fFileScanThread->ShutdownInternalThread();
+				return;
+			}
+		case WListThread::ListDone:
+			{
+				fScanning = false;
+				if (fDLWindow)
+				{
+					SignalDownload(WDownload::DequeueUploads);
+				}
+				PRINT("Done sending file list\n");
 				return;
 			}
 		case NetClient::SESSION_ATTACHED:
@@ -2037,6 +2058,17 @@ WinShareWindow::WaitOnFileThread(bool abort)
 }
 
 void
+WinShareWindow::WaitOnListThread(bool abort)
+{
+	fFileShutdownFlag = abort;
+	if (fListThread->IsInternalThreadRunning())
+	{
+		PrintSystem(tr("Waiting for file list thread to finish..."));
+		fListThread->WaitForInternalThreadToExit();
+	}
+}
+
+void
 WinShareWindow::LaunchSearch(const QString & pattern)
 {
 	// (be)share://server/pattern
@@ -2488,13 +2520,13 @@ WinShareWindow::Window()
 void
 WinShareWindow::LogString(const QString &text)
 {
-	fMainLog.LogString(text);
+	fMainLog.LogString(text, true);
 }
 
 void
 WinShareWindow::LogString(const char *text)
 {
-	fMainLog.LogString(text);
+	fMainLog.LogString(text, true);
 }
 
 void
@@ -2504,81 +2536,7 @@ WinShareWindow::UpdateShares()
 	{
 		CancelShares();
 
-		fFileScanThread->Lock();
-		int numShares = fFileScanThread->GetNumFiles();
-		if (fSettings->GetInfo())
-			SendSystemEvent(tr("Sharing %1 file(s).").arg(numShares));
-		fNetClient->SetFileCount(numShares);
-		PRINT("Doing a scan of the returned files for uploading.\n");
-		int m = 0;
-		MessageRef refScan(GetMessageFromPool(PR_COMMAND_SETDATA));
-		
-		if (refScan())
-		{
-			MessageRef mref;
-			HashtableIterator<String, QString> filesIter = fFileScanThread->GetSharedFiles().GetIterator();
-			while (filesIter.HasMoreKeys())
-			{
-				// stop iterating if we are waiting for file scan thread to finish
-				if (fFileShutdownFlag)
-					break;
-				
-				qApp->processEvents(300);
-				
-				String s;
-				MessageRef mref;
-				filesIter.GetNextKey(s);
-				
-				if (fFileScanThread->FindFile(s, mref))
-				{
-					MakeNodePath(s);
-					uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
-					// Use encoded file attributes?
-					if (enc != 0)
-					{
-						MessageRef packed = DeflateMessage(mref, enc, true);
-						if (packed())
-						{
-							refScan()->AddMessage(s, packed);
-							m++;
-						}
-						else	
-						{
-							// Failed to pack the message?
-							refScan()->AddMessage(s, mref);
-							m++;
-						}
-					}
-					else
-					{
-						refScan()->AddMessage(s, mref);
-						m++;
-					}
-					if (m == 20)
-					{
-						m = 0;
-						fNetClient->SendMessageToSessions(refScan, 0);
-						refScan = GetMessageFromPool(PR_COMMAND_SETDATA);
-					}
-				}
-			}
-			if (refScan())
-			{
-				if (!refScan()->IsEmpty())
-				{
-					fNetClient->SendMessageToSessions(refScan, 0);
-					refScan.Reset();
-				}
-			}
-		}
-		
-		fFileScanThread->Unlock();
-		fScanning = false;
-		if (fDLWindow)
-		{
-			SignalDownload(WDownload::DequeueUploads);
-		}
-		PRINT("Done\n");
+		fListThread->StartInternalThread();
 	}				
 }
 

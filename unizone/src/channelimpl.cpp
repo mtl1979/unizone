@@ -782,13 +782,13 @@ Channel::Window()
 void
 Channel::LogString(const QString &str)
 {
-	fLog.LogString(str);
+	fLog.LogString(str, true);
 }
 
 void
 Channel::LogString(const char * str)
 {
-	fLog.LogString(str);
+	fLog.LogString(str, true);
 }
 
 void

@@ -19,9 +19,10 @@
 #include <string.h>
 #include <qevent.h>
 #include <qapplication.h>
+#include <qthread.h>
 
 WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
-	: QObject(owner), Thread(), fLocker(true)
+	: QObject(owner), Thread(), fLocker()
 {
 	fNet = net;
 	fOwner = owner;
@@ -526,11 +527,11 @@ WFileThread::UpdateFileCount()
 void
 WFileThread::Lock()
 {
-	fLocker.lock();
+	fLocker.Lock();
 }
 
 void
 WFileThread::Unlock()
 {
-	fLocker.unlock();
+	fLocker.Unlock();
 }

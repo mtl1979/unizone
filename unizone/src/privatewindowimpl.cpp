@@ -604,11 +604,11 @@ WPrivateWindow::Window()
 void
 WPrivateWindow::LogString(const QString & text)
 {
-	fLog.LogString(text);
+	fLog.LogString(text, true);
 }
 
 void
 WPrivateWindow::LogString(const char *text)
 {
-	fLog.LogString(text);
+	fLog.LogString(text, true);
 }

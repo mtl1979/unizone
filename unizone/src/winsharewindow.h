@@ -45,6 +45,7 @@ class WDownload;
 class ChannelInfo;
 class WSearchListItem;
 class WFileThread;
+class WListThread;
 class MenuBar;
 class WUniListView;
 class WHTMLView;
@@ -185,6 +186,8 @@ public:
 	//
 	void Connect(const QString & server);
 	void SetDelayedSearchPattern(const QString & pattern);
+
+	QString CurrentServer() { return fServer; }
 	
 	void TranslateStatus(QString & s);
 	
@@ -311,6 +314,7 @@ private:
 
 	mutable QAcceptSocketsThread * fAccept;
 	WFileThread * fFileScanThread;
+	WListThread * fListThread;
 	bool fFilesScanned;
 	bool fFileShutdownFlag;
 
@@ -488,6 +492,7 @@ private:
 	void EmptyUsers();
 	void SetAutoAwayTimer();
 	void WaitOnFileThread(bool);
+	void WaitOnListThread(bool);
 //	void CheckScrollState();
 
 	void StartLogging();
