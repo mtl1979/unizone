@@ -852,7 +852,6 @@ WinShareWindow::MakeHumanTime(int64 time)
 	if ((s.length() > 2) && (s.right(2) == ", "))
 	{
 		s = s.left(s.length()-2);
-		s += ".";
 	}
 
 	int cp = s.findRev(", ");
@@ -1505,7 +1504,7 @@ WinShareWindow::LaunchSearch(const QString & pattern)
 	// (be)share:pattern
 	if (!gWin->fSearchWindow)
 	{
-		gWin->fSearchWindow = new WSearch(gWin->fNetClient, gWin);
+		gWin->fSearchWindow = new WSearch(gWin->fNetClient, NULL);
 		CHECK_PTR(gWin->fSearchWindow);
 		gWin->fSearchWindow->show();
 		connect(gWin->fSearchWindow, SIGNAL(Closed()), gWin, SLOT(SearchWindowClosed()));
@@ -1566,7 +1565,7 @@ void
 WinShareWindow::LaunchPrivate(const QString & pattern)
 {
 	int iUsers = 0;
-	WPrivateWindow * window = new WPrivateWindow(this, fNetClient, this);
+	WPrivateWindow * window = new WPrivateWindow(this, fNetClient, NULL);
 	if (!window) 
 		return;
 	QString qItem;
@@ -1717,7 +1716,7 @@ WinShareWindow::OpenDownload()
 	if (!fDLWindow)
 	{
 		PRINT("New DL Window\n");
-		fDLWindow = new WDownload(this, fNetClient->LocalSessionID(), fFileScanThread);
+		fDLWindow = new WDownload(NULL, fNetClient->LocalSessionID(), fFileScanThread);
 		CHECK_PTR(fDLWindow);
 		
 		connect(fDLWindow, SIGNAL(FileFailed(QString, QString)), this, SLOT(FileFailed(QString, QString)));

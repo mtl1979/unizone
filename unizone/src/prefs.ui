@@ -1570,26 +1570,6 @@
                 <string>Throttling</string>
             </attribute>
             <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>TextLabel1_2_4_4</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>135</y>
-                        <width>160</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Uploads (per blacklisted)</string>
-                </property>
-            </widget>
-            <widget>
                 <class>QComboBox</class>
                 <item>
                     <property>
@@ -2157,26 +2137,6 @@
                 <class>QLabel</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>TextLabel1_2_4_3</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>95</y>
-                        <width>160</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Downloads (per download)</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
                     <cstring>TextLabel1_2_4_2</cstring>
                 </property>
                 <property stdset="1">
@@ -2190,7 +2150,47 @@
                 </property>
                 <property stdset="1">
                     <name>text</name>
-                    <string>Uploads (per upload)</string>
+                    <string>Uploads (per upload):</string>
+                </property>
+            </widget>
+            <widget>
+                <class>QLabel</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>TextLabel1_2_4_3</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>10</x>
+                        <y>95</y>
+                        <width>160</width>
+                        <height>30</height>
+                    </rect>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Downloads (per download):</string>
+                </property>
+            </widget>
+            <widget>
+                <class>QLabel</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>TextLabel1_2_4_4</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>10</x>
+                        <y>135</y>
+                        <width>160</width>
+                        <height>30</height>
+                    </rect>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Uploads (per blacklisted):</string>
                 </property>
             </widget>
         </widget>

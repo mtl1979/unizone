@@ -1810,7 +1810,11 @@ WDownload::ULPopupActivated(int id)
 		
 	case ID_BAN1H:
 		{
+#ifdef __LINUX__
 			gt->SetBlocked(true, 3600000000LL);
+#else
+			gt->SetBlocked(true, 3600000000L);
+#endif
 			break;
 		}
 

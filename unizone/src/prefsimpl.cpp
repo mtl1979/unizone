@@ -26,31 +26,31 @@
 #include <qtabwidget.h>
 
 const char * kColorDesc[11] = {	
-					QT_TR_NOOP( "This is the color of your user name." ), 
-					QT_TR_NOOP( "This is the color of other users' names." ),
-					QT_TR_NOOP( "This is the color of text sent by you and other users." ),
-					QT_TR_NOOP( "This is the color of \"System\"." ),
-					QT_TR_NOOP( "This is the color of the text in a ping response." ),
-					QT_TR_NOOP( "This is the color of \"Error\"." ),
-					QT_TR_NOOP( "This is the color of the text in error messages." ),
-					QT_TR_NOOP( "This is the color of private text." ),
-					QT_TR_NOOP( "This is the color of \"Action\"." ),
-					QT_TR_NOOP( "This is the color of URLs." ),
-					QT_TR_NOOP( "This is the color of your user name in text when someone says your name in the main chat." )
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name." ), 
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of other users' names." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of text sent by you and other users." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"System\"." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in a ping response." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Error\"." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in error messages." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of private text." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Action\"." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of URLs." ),
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name in text when someone says your name in the main chat." )
 								};
 
 const char * kSampleText[11] = {	
-									QT_TR_NOOP( "Username" ),
-									QT_TR_NOOP( "Remote User" ),
-									QT_TR_NOOP( "Sample text" ),
-									QT_TR_NOOP( "<b>System</b> " ),
-									QT_TR_NOOP( "Sample text" ),
-									QT_TR_NOOP( "<b>Error</b>" ),
-									QT_TR_NOOP( "Error text" ),
-									QT_TR_NOOP( "Private text" ),
-									QT_TR_NOOP( "<b>Action</b>" ),
-									QT_TR_NOOP( "<u>http://magep.com/</u>" ),
-									QT_TR_NOOP( "Username" )
+									QT_TRANSLATE_NOOP( "WPrefs", "Username" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "Remote User" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "Sample text" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "<b>System</b> " ),
+									QT_TRANSLATE_NOOP( "WPrefs", "Sample text" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "<b>Error</b>" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "Error text" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "Private text" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "<b>Action</b>" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "<u>http://magep.com/</u>" ),
+									QT_TRANSLATE_NOOP( "WPrefs", "Username" )
 								};
 
 /*

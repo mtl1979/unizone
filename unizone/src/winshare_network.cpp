@@ -1387,7 +1387,7 @@ WinShareWindow::HandleMessage(Message * msg)
 							else if ( IsAutoPrivate( QString(session) ) )
 							{
 								// Create new Private Window
-								WPrivateWindow * win = new WPrivateWindow(this, fNetClient, this);
+								WPrivateWindow * win = new WPrivateWindow(this, fNetClient, NULL);
 								if (win)
 								{
 									WUserRef pu = FindUser(session);
@@ -1665,7 +1665,8 @@ WinShareWindow::HandleMessage(Message * msg)
 					msg->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
 					msg->RemoveName("version");
 					
-					QString version = tr("Unizone (English) ");
+					QString version = tr("Unizone (English)");
+					version += " ";
 #ifndef WIN32
 					version += "(Linux) ";
 #endif
@@ -2561,7 +2562,7 @@ WinShareWindow::GetAddressInfo(QString user)
 			if (!cmap.empty())
 			{
 				START_OUTPUT();
-				PrintSystem( tr("Connected users: "), true);
+				PrintSystem( tr("Connected users:"), true);
 
 				for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
 				{
