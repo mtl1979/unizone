@@ -195,17 +195,46 @@ IsURL(const String & url)
 	if (
 		(url.StartsWithIgnoreCase("file://")) || 
 		(url.StartsWithIgnoreCase("http://")) ||
+		(url.StartsWithIgnoreCase("www.")) ||
 		(url.StartsWithIgnoreCase("https://")) ||
 		(url.StartsWithIgnoreCase("mailto:")) ||
-		(url.StartsWithIgnoreCase("ftp://")) || 
+		(url.StartsWithIgnoreCase("ftp://")) ||
+		(url.StartsWithIgnoreCase("ftp.")) ||
 		(url.StartsWithIgnoreCase("audio://")) ||
-		(url.StartsWithIgnoreCase("beshare:")) || 
+		(url.StartsWithIgnoreCase("beshare:")) ||
+		(url.StartsWithIgnoreCase("beshare.")) ||
+		(url.StartsWithIgnoreCase("server://")) ||
 		(url.StartsWithIgnoreCase("priv:")) ||
 		(url.StartsWithIgnoreCase("share:")) || 
-		(url.StartsWithIgnoreCase("mms://"))
+		(url.StartsWithIgnoreCase("mms://")) ||
+		(url.StartsWithIgnoreCase("irc://")) ||
+		(url.StartsWithIgnoreCase("irc."))
 		)
-		return true;
+	{
+		if (
+			!url.EndsWith("://") &&
+			(url.Length() > 9)
+			)
+		{
+			return true;
+		}
+	}
 	return false;
+}
+
+bool 
+IsURL(const char * url)
+{
+	String u(url);
+	return IsURL( u );
+}
+
+bool
+IsURL(const QString & url)
+{
+	QCString ur = url.utf8();
+	const char * u = (const char *) ur;
+	return IsURL( u );
 }
 
 QString 

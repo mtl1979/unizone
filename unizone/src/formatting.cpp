@@ -152,22 +152,7 @@ ParseChatText(const QString & str)
 			else 
 				qLabels.Tail() += qToken + " ";
 		} 
-		else if (
-			(qToken.lower().startsWith("file://")) || 
-			(qToken.lower().startsWith("http://")) ||
-			(qToken.lower().startsWith("www.")) ||
-			(qToken.lower().startsWith("https://")) || 
-			(qToken.lower().startsWith("mailto:"))||
-			(qToken.lower().startsWith("ftp://")) ||
-			(qToken.lower().startsWith("ftp.")) ||
-			(qToken.lower().startsWith("audio://")) ||
-			(qToken.lower().startsWith("mms://")) || // <postmaster@raasu.org> 20021116
-			(qToken.lower().startsWith("beshare:")) ||
-			(qToken.lower().startsWith("beshare.")) ||
-			(qToken.lower().startsWith("priv:")) ||
-			(qToken.lower().startsWith("share:"))
-			)
-			
+		else if (IsURL(qToken))
 		{
 			if ((qToken.lower().startsWith("beshare:") == false) && (qToken.startsWith("share:") == false))
 			{
@@ -236,12 +221,7 @@ ParseChatText(const QString & str)
 					qToken = qToken.left(qToken.length() - 1);
 				}
 			}
-			// Just a protocol prefix???
-			//
-			if (
-				(qToken.find(":") != -1) && 
-				(qToken.right(3) != "://")
-				) 
+			if (IsURL(qToken))
 			{
 				qUrls.AddTail(qToken);
 				qLabels.AddTail("");
@@ -290,9 +270,10 @@ ParseChatText(const QString & str)
 			// now the url...
 			QString urlfmt = WFormat::URL1.arg(WColors::URL).arg(gWin->fSettings->GetFontSize());
 			urlfmt += "<a href=\"";
-			if ( qUrl.startsWith("www.") ) urlfmt += "http://";
-			if ( qUrl.startsWith("ftp.") ) urlfmt += "ftp://";
-			if ( qUrl.startsWith("beshare.") ) urlfmt += "server://";
+			if ( qUrl.startsWith("www.") )		urlfmt += "http://";
+			if ( qUrl.startsWith("ftp.") )		urlfmt += "ftp://";
+			if ( qUrl.startsWith("beshare.") )	urlfmt += "server://";
+			if ( qUrl.startsWith("irc.") )		urlfmt += "irc://";
 			urlfmt += qUrl;
 			urlfmt += "\">";
 			// Display URL label or link address, if label doesn't exist

@@ -63,6 +63,8 @@ QString StripURL(const QString & u);
 
 // Is the specified string an URL?
 bool IsURL(const String &);
+bool IsURL(const char *); 
+bool IsURL(const QString &);
 
 // Format a nice size string
 QString MakeSizeString(uint64 s);

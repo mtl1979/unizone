@@ -261,7 +261,9 @@ WinShareWindow::NameSaid2(String sname, QString & msg, unsigned long index)
 		String itxt((const char *) msg.utf8());						// <postmaster@raasu.org> 20021005 -- Need to be in original case
 		String itxt1 = itxt.Substring(0,sred);
 		String itxt2 = itxt.Substring(sred+rlen);
-		QString smsg = QString::fromUtf8(itxt1.Cstr()); // <postmaster@raasu.org> 20021005 -- Don't use latin1 ()
+		QString smsg;
+		if (sred > 0)
+			smsg += QString::fromUtf8(itxt1.Cstr()); // <postmaster@raasu.org> 20021005 -- Don't use latin1 ()
 		smsg += output;
 		smsg += "</font>";
 		smsg += QString::fromUtf8(itxt2.Cstr()); // <postmaster@raasu.org> 20021005
