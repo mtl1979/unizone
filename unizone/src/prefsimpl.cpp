@@ -230,14 +230,18 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 
 	switch (gWin->fSettings->GetPacketSize())
 	{
-		case 4:
-			fPacketSize->setCurrentItem(0); break;
-		case 8:
-			fPacketSize->setCurrentItem(1); break;
-		case 16:
-			fPacketSize->setCurrentItem(2); break;
-		case 32:
-			fPacketSize->setCurrentItem(3); break;
+	case 1:
+		fPacketSize->setCurrentItem(0); break;
+	case 2:
+		fPacketSize->setCurrentItem(1); break;
+	case 4:
+		fPacketSize->setCurrentItem(2); break;
+	case 8:
+		fPacketSize->setCurrentItem(3); break;
+	case 16:
+		fPacketSize->setCurrentItem(4); break;
+	case 32:
+		fPacketSize->setCurrentItem(5); break;
 	}	
 	
 	fLogging->setChecked(gWin->fSettings->GetLogging());
@@ -359,12 +363,16 @@ WPrefs::OK()
 	switch (fPacketSize->currentItem())
 	{
 		case 0:
-			gWin->fSettings->SetPacketSize(4); break;
+			gWin->fSettings->SetPacketSize(1); break;
 		case 1:
-			gWin->fSettings->SetPacketSize(8); break;
+			gWin->fSettings->SetPacketSize(2); break;
 		case 2:
-			gWin->fSettings->SetPacketSize(16); break;
+			gWin->fSettings->SetPacketSize(4); break;
 		case 3:
+			gWin->fSettings->SetPacketSize(8); break;
+		case 4:
+			gWin->fSettings->SetPacketSize(16); break;
+		case 5:
 			gWin->fSettings->SetPacketSize(32); break;
 	}
 	

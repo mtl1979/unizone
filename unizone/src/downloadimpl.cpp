@@ -221,6 +221,8 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fULPacketMenu->setItemChecked(ID_PACKET8K, true);
 	fULPacket = ID_PACKET8K;
 
+	fULPacketMenu->insertItem(tr("1 kB"), ID_PACKET1K);
+	fULPacketMenu->insertItem(tr("2 kB"), ID_PACKET2K);
 	fULPacketMenu->insertItem(tr("4 kB"), ID_PACKET4K);
 	fULPacketMenu->insertItem(tr("8 kB"), ID_PACKET8K);
 	fULPacketMenu->insertItem(tr("16 kB"), ID_PACKET16K);
@@ -1004,8 +1006,8 @@ WDownload::customEvent(QCustomEvent * e)
 						
 						item->setText(WTransferItem::Status, tr("Downloading: [%1%]").arg(gt->ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, QString::number((int) offset));
-						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 50 ms?
-						if (secs > 0.05f)
+						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 100 ms?
+						if (secs > 0.1f)
 						{
 							gt->SetMostRecentRate(kps);
 							gt->fLastData.restart();
@@ -1061,8 +1063,8 @@ WDownload::customEvent(QCustomEvent * e)
 												
 						item->setText(WTransferItem::Status, tr("Uploading: [%1%]").arg(gt->ComputePercentString(offset, size)));
 						item->setText(WTransferItem::Received, QString::number((int) offset));
-						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 50 ms?
-						if (secs > 0.05f) 
+						// <postmaster@raasu.org> 20021104, 20030217 -- elapsed time > 100 ms?
+						if (secs > 0.1f) 
 						{
 							gt->SetMostRecentRate(kps);
 							gt->fLastData.restart();
@@ -1705,6 +1707,18 @@ WDownload::ULPopupActivated(int id)
 			break;
 		}
 
+	case ID_PACKET1K:
+		{
+			gt->SetPacketSize(1);
+			break;
+		}
+
+	case ID_PACKET2K:
+		{
+			gt->SetPacketSize(2);
+			break;
+		}
+
 	case ID_PACKET4K:
 		{
 			gt->SetPacketSize(4);
@@ -2015,6 +2029,16 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			
 			switch (fNewPacket)
 			{
+			case 1:
+				{
+					fULPacket = ID_PACKET1K;
+					break;
+				}
+			case 2:
+				{
+					fULPacket = ID_PACKET2K;
+					break;
+				}
 			case 4:
 				{
 					fULPacket = ID_PACKET4K;

@@ -1855,6 +1855,18 @@
                                         <item>
                                             <property>
                                                 <name>text</name>
+                                                <string>1 kB</string>
+                                            </property>
+                                        </item>
+                                        <item>
+                                            <property>
+                                                <name>text</name>
+                                                <string>2 kB</string>
+                                            </property>
+                                        </item>
+                                        <item>
+                                            <property>
+                                                <name>text</name>
                                                 <string>4 kB</string>
                                             </property>
                                         </item>
