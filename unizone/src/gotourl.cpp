@@ -97,8 +97,12 @@ GotoURL(QString url)
 	QString u = url.lower();
 	if (u.startsWith("server://"))
 	{
-		url = url.mid(9);
-		gWin->Connect(url);
+		u = u.mid(9);
+		if (u.right(1) == "/")
+		{
+			u = u.left(u.length() - 1);
+		}
+		gWin->Connect(u);
 		return;
 	}
 #ifdef WIN32
@@ -121,7 +125,12 @@ GotoURL(QString url)
 	}
 	else if (u.startsWith("mailto:"))
 	{
-		t->SetURL( u.mid( u.find(":") + 1 ) );
+		u = u.mid( u.find(":") + 1 );
+		if (u.right(1) == "/")
+		{
+			u = u.left(u.length() - 1);
+		}
+		t->SetURL( u );
 		t->fLauncher = gWin->fSettings->GetMailLauncher();
 	}
 	else
