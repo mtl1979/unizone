@@ -1355,14 +1355,17 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			
 			{
 				const char * session;		// from user (their session id)
+
+				if (msg()->FindString("session", &session) == B_OK)
+					userID = QString(session);
+			}
+
+			{
 				const char * strTemp;
 
-				msg()->FindString("session", &session);
-				msg()->FindString("text", &strTemp);
-				
 				// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
-				text = QString::fromUtf8(strTemp);
-				userID = QString(session);
+				if (msg()->FindString("text", &strTemp) == B_OK)
+					text = QString::fromUtf8(strTemp);	
 			}
 			
 			// get user info first
