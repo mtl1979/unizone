@@ -56,6 +56,7 @@ using namespace muscle;
 #define MAX_UPLOADS			"maxuploads"
 #define MAX_DOWNLOADS		"maxdownloads"
 #define PACKET_SIZE			"packetsize"
+#define MIN_QUEUED			"minqueued"
 #define FONT_SIZE			"fontsize"
 #define WATCH_PATTERN		"watchpattern"
 #define IGNORE_PATTERN		"ignorepattern"
@@ -360,6 +361,9 @@ public:
 	void SetBLLimit(int);
 	int GetPacketSize();
 	void SetPacketSize(int);
+	int GetMinQueued();
+	uint64 GetMinQueuedSize();
+	void SetMinQueued(int);
 	
 	static int ConvertToBytes(int);	// converts a limit constant into bytes
 	

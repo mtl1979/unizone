@@ -515,12 +515,15 @@ NetClient::HandleBeAddMessage(String nodePath, MessageRef ref)
 					{
 						QString oldname = user()->GetUserName();
 						user()->InitName(pmsg); 
-						emit UserNameChanged(sid, oldname, user()->GetUserName());
+						if (oldname != user()->GetUserName())
+							emit UserNameChanged(sid, oldname, user()->GetUserName());
 					}
 					else if (nodeName.lower().left(10) == "userstatus")
 					{
-						user()->InitStatus(pmsg); 
-						emit UserStatusChanged(sid, user()->GetUserName(), user()->GetStatus());
+						QString oldstatus = user()->GetStatus();
+						user()->InitStatus(pmsg);
+						if (oldstatus != user()->GetStatus())
+							emit UserStatusChanged(sid, user()->GetUserName(), user()->GetStatus());
 					}
 					else if (nodeName.lower().left(11) == "uploadstats")
 					{

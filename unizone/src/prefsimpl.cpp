@@ -244,7 +244,8 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 		fPacketSize->setCurrentItem(4); break;
 	case 32:
 		fPacketSize->setCurrentItem(5); break;
-	}	
+	}
+	fMinQueued->setCurrentItem( gWin->fSettings->GetMinQueued() );
 	
 	fLogging->setChecked(gWin->fSettings->GetLogging());
 }
@@ -379,6 +380,8 @@ WPrefs::OK()
 		case 5:
 			gWin->fSettings->SetPacketSize(32); break;
 	}
+
+	gWin->fSettings->SetMinQueued( fMinQueued->currentItem() );
 	
 	gWin->fSettings->SetLogging(fLogging->isChecked());
 	// ok

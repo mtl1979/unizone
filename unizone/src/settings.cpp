@@ -1080,6 +1080,71 @@ WSettings::SetPacketSize(int l)
 	fSet->AddInt32(PACKET_SIZE, l);
 }
 
+int
+WSettings::GetMinQueued()
+{
+	int i = 0;
+	fSet->FindInt32(MIN_QUEUED, (int32 *)&i);
+	return i;
+}
+
+uint64
+WSettings::GetMinQueuedSize()
+{
+	uint64 mqs = 0;
+	switch (GetMinQueued())
+	{
+	case 1:
+		{
+			mqs = 1024; 
+			break;
+		}
+	case 2: 
+		{
+			mqs = 2048; 
+			break;
+		}
+	case 3: 
+		{
+			mqs = 5120; 
+			break;
+		}
+	case 4: 
+		{
+			mqs = 10240; 
+			break;
+		}
+	case 5: 
+		{
+			mqs = 25600; 
+			break;
+		}
+	case 6:
+		{
+			mqs = 51200; 
+			break;
+		}
+	case 7:		
+		{
+			mqs = 1024000; 
+			break;
+		}
+	default:	
+		{
+			mqs = 0; 
+			break;
+		}
+	}
+	return mqs;
+}
+
+void
+WSettings::SetMinQueued(int l)
+{
+	fSet->RemoveName(MIN_QUEUED);
+	fSet->AddInt32(MIN_QUEUED, l);
+}
+
 uint64
 WSettings::GetTransmitStats()
 {

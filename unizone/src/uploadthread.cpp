@@ -515,7 +515,7 @@ WUploadThread::SendRejectedNotification(bool direct)
 void 
 WUploadThread::DoUpload()
 {
-	if (IsLocallyQueued())		// not yet
+	if (fFile && IsLocallyQueued() && (fFileSize >= gWin->fSettings->GetMinQueuedSize()))		// not yet
 	{
 		MessageRef lq(GetMessageFromPool(WGenericEvent::FileQueued));
 		if (lq())

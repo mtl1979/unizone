@@ -1572,6 +1572,34 @@ Date: %4</translation>
         <source>Downloads</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Minimum File Size to Queue</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>disabled</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>5 kB</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>10 kB</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>25 kB</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>50 kB</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>100 kB</source>
+        <translation type='unfinished'>100 kB</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>

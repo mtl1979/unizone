@@ -1698,6 +1698,34 @@ Päiväys: %4</translation>
         <source>Downloads</source>
         <translation>Lataukset</translation>
     </message>
+    <message>
+        <source>Minimum File Size to Queue</source>
+        <translation>Minimikoko Tiedostolle Jonossa</translation>
+    </message>
+    <message>
+        <source>disabled</source>
+        <translation type='obsolete'>Ei päällä</translation>
+    </message>
+    <message>
+        <source>5 kB</source>
+        <translation>5 kt</translation>
+    </message>
+    <message>
+        <source>10 kB</source>
+        <translation>10 kt</translation>
+    </message>
+    <message>
+        <source>25 kB</source>
+        <translation>25 kt</translation>
+    </message>
+    <message>
+        <source>50 kB</source>
+        <translation>50 kt</translation>
+    </message>
+    <message>
+        <source>100 kB</source>
+        <translation>100 kt</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>

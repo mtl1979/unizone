@@ -2194,14 +2194,10 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 			if (uit != fNetClient->Users().end())	// found our user
 			{
 				WUserRef user = (*uit).second;
-				
-				WFileInfo * info = new WFileInfo;
-				CHECK_PTR(info);
-				info->fiUser = user;
-				info->fiFilename = filename;
-				info->fiRef = file;
-				info->fiFirewalled = firewalled;
-				
+
+				// We need to check file properties before allocating new WFileInfo, saves time and one unnecessary
+				// delete command.
+
 				String path, kind;
 				int64 size = 0;
 				int32 mod = 0;
@@ -2210,13 +2206,26 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 				file()->FindString("beshare:Path", path);
 				file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
 				file()->FindInt64("beshare:File Size", (int64 *)&size);
-				
+
+				if (size == 0)	// Can't download files of size 0
+				{
+					Unlock();	// Don't forget to unlock ;)
+					return;
+				}
+
+				WFileInfo * info = new WFileInfo;
+				CHECK_PTR(info);
+				info->fiUser = user;
+				info->fiFilename = filename;
+				info->fiRef = file;
+				info->fiFirewalled = firewalled;
+								
 				// name, size, type, modified, path, user
-				QString qkind = QString::fromUtf8(kind.Cstr());
-				QString qsize = QString::number((int)size); 
-				QString qmod = QString::number(mod); // <postmaster@raasu.org> 20021126
-				QString qpath = QString::fromUtf8(path.Cstr());
-				QString quser = user()->GetUserName();
+				QString qkind	= QString::fromUtf8(kind.Cstr());
+				QString qsize	= QString::number((int)size); 
+				QString qmod	= QString::number(mod); // <postmaster@raasu.org> 20021126
+				QString qpath	= QString::fromUtf8(path.Cstr());
+				QString quser	= user()->GetUserName();
 				
 				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
 				CHECK_PTR(info->fiListItem);

@@ -278,7 +278,6 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							SendReply(q);
 						}
 						SetRemotelyQueued(true);
-						//CTimer->start(60000, true);
 						break;
 					}
 					
@@ -326,15 +325,16 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								}
 								SendReply(msg);
 							}
-							//fCurrentOffset = fFileSize = 0;
 							NextFile();
 						}
+
 						// fields:
 						//	String		beshare:File Name
 						//	Int64		beshare:File Size
 						//	String		beshare:From Session
 						//	String		beshare:Path
 						//	Int64		beshare:StartOffset
+
 						// I only care to get the size and name
 						String fname;
 						if (next()->FindInt64("beshare:File Size", (int64 *)&fFileSize) == B_OK && 
@@ -342,11 +342,11 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						{
 							QString outFile = "downloads/";
 							QString fixed;
-							// outFile += "/";
 							fixed = outFile;
 							outFile += QString::fromUtf8(fname.Cstr());
 							PRINT( "WDownloadThread::SignalOwner: %s\n",fname.Cstr() );
-							fixed += FixFileName(QString::fromUtf8(fname.Cstr()));	// we have a "fixed" filename that eliminates characters Windows does not support
+							// we have a "fixed" filename that eliminates characters Windows does not support
+							fixed += FixFileName(QString::fromUtf8(fname.Cstr()));	
 							
 							bool append = false;
 							
@@ -397,14 +397,9 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 									}
 									delete fFile2;
 									fFile2 = NULL;
-									// nf = QObject::tr("%1 %2").arg(fixed).arg(i++);
 									nf = UniqueName(fixed, i++);
 								}
-//								delete fFile;
-//								fFile = NULL; // <postmaster@raasu.org> 20021027
 								fixed = nf;
-//								fFile = new QFile(fixed);
-//								CHECK_PTR(fFile);
 							}
 							
 							fLocalFileDl[fCurFile] = fixed;
@@ -549,68 +544,67 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					}
 					
 					MessageRef neg(GetMessageFromPool(WDownload::TransferFileList));
-					if (!neg())
+					if (neg())
 					{
-						break;
-					}
-					for (int c = 0; c < fNumFiles; c++)
-					{
-						// check to see wether the file exists
-						QString outFile("downloads");
-						if (!(outFile.right(1) == "/"))
-							outFile += "/";
-						QString fixed = outFile;
-						outFile += fFileDl[c];
-						fixed += FixFileName(fFileDl[c]);
-						
-						if (QFile::exists(fixed))
+						for (int c = 0; c < fNumFiles; c++)
 						{
-							// get an MD5 hash code out of it
-							uint8 digest[MD5_DIGEST_SIZE];
-							uint64 fileOffset = 0;	// autodetect file size for offset
-							uint64 retBytesHashed = 0;
-							uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
+							// check to see wether the file exists
+							QString outFile("downloads");
+							if (!(outFile.right(1) == "/"))
+								outFile += "/";
+							QString fixed = outFile;
+							outFile += fFileDl[c];
+							fixed += FixFileName(fFileDl[c]);
 							
-							MessageRef hashMsg(GetMessageFromPool(WGenericEvent::FileHashing));
-							if (hashMsg())
+							if (QFile::exists(fixed))
 							{
-								hashMsg()->AddString("file", (const char *)fixed.utf8());
-								SendReply(hashMsg);
-							}
-							
-							if (HashFileMD5(fixed, fileOffset, bytesFromBack, retBytesHashed, digest, fShutdownFlag) == B_ERROR)
-							{
-								if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
+								// get an MD5 hash code out of it
+								uint8 digest[MD5_DIGEST_SIZE];
+								uint64 fileOffset = 0;	// autodetect file size for offset
+								uint64 retBytesHashed = 0;
+								uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
+								
+								MessageRef hashMsg(GetMessageFromPool(WGenericEvent::FileHashing));
+								if (hashMsg())
 								{
-									ShutdownInternalThread();
-									break;
+									hashMsg()->AddString("file", (const char *)fixed.utf8());
+									SendReply(hashMsg);
 								}
-								else	// ERROR?
+								
+								if (HashFileMD5(fixed, fileOffset, bytesFromBack, retBytesHashed, digest, fShutdownFlag) == B_ERROR)
 								{
-									MessageRef e(GetMessageFromPool(WGenericEvent::FileError));
-									if (e())
+									if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
 									{
-										e()->AddString("file", (const char *) outFile.utf8());
-										e()->AddString("why", "MD5 hashing failed! Can't resume.");
-										SendReply(e);
+										ShutdownInternalThread();
+										break;
+									}
+									else	// ERROR?
+									{
+										MessageRef e(GetMessageFromPool(WGenericEvent::FileError));
+										if (e())
+										{
+											e()->AddString("file", (const char *) outFile.utf8());
+											e()->AddString("why", "MD5 hashing failed! Can't resume.");
+											SendReply(e);
+										}
 									}
 								}
+								else
+								{
+									// aha! succeeded!
+									neg()->AddInt64("offsets", fileOffset);
+									
+									if (bytesFromBack > 0)
+										neg()->AddInt64("numbytes", retBytesHashed);
+									
+									neg()->AddData("md5", B_RAW_TYPE, digest, (fileOffset > 0) ? sizeof(digest) : 1);
+								}
 							}
-							else
-							{
-								// aha! succeeded!
-								neg()->AddInt64("offsets", fileOffset);
-								
-								if (bytesFromBack > 0)
-									neg()->AddInt64("numbytes", retBytesHashed);
-								
-								neg()->AddData("md5", B_RAW_TYPE, digest, (fileOffset > 0) ? sizeof(digest) : 1);
-							}
+							neg()->AddString("files", (const char *) fFileDl[c].utf8());
 						}
-						neg()->AddString("files", (const char *) fFileDl[c].utf8());
+						neg()->AddString("beshare:FromSession", (const char *) fLocalSession.utf8());
+						SendMessageToSessions(neg);
 					}
-					neg()->AddString("beshare:FromSession", (const char *) fLocalSession.utf8());
-					SendMessageToSessions(neg);
 					break;
 				}
 				
@@ -631,6 +625,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							if (dis())
 							{
 								dis()->AddBool("failed", true);
+								SendReply(dis);
 							}
 						}
 						else if (fCurrentOffset == fFileSize)
@@ -642,6 +637,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								{
 									dis()->AddBool("done", true);		
 									dis()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
+									SendReply(dis);
 								}
 							}
 							else
@@ -651,6 +647,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								if (dis())
 								{
 									dis()->AddBool("failed", true);
+									SendReply(dis);
 								}
 							}
 						}
@@ -664,6 +661,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								dis()->AddBool("failed", false);
 							else
 								dis()->AddBool("failed", true);
+							SendReply(dis);
 						}
 					}
 					
@@ -673,10 +671,6 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						fFile->close();
 						delete fFile; 
 						fFile = NULL;
-					}
-					if (dis())
-					{
-						SendReply(dis);
 					}
 					disconnected = true;
 					break;
@@ -692,12 +686,12 @@ WDownloadThread::UniqueName(QString file, int index)
 	int sp = file.findRev("/", -1); // Find last /
 	if (sp > -1)
 	{
-		tmp = file.left(sp + 1); // include slash
-		base = file.mid(sp + 1); // base filename
-		int d = base.find("."); // ...and find first dot
+		tmp = file.left(sp + 1);	// include slash
+		base = file.mid(sp + 1);	// base filename
+		int d = base.find(".");		// ...and find first dot
 		if (d > -1)
 		{
-			ext = base.mid(d); // ext contains also the dot
+			ext = base.mid(d);		// ext contains also the dot
 			base = base.left(d);
 			return tr("%1%2 %3%4").arg(tmp).arg(base).arg(index).arg(ext);
 		}
@@ -764,10 +758,9 @@ AbstractReflectSession *
 WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
 {
 	AbstractReflectSession * ref = ThreadWorkerSessionFactory::CreateSession(s);
-	if (ref && fLimit != /*WSettings::LimitNone*/ 0)
+	if (ref && fLimit != 0)
 	{
-		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(/*WSettings::ConvertToBytes(*/
-			fLimit/*)*/), NULL));
+		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(fLimit), NULL));
 	}
 	return ref;
 }
