@@ -397,17 +397,9 @@ GetServerPort(const QString & server)
 // Skip \ now, it's a special case
 bool IsRegexToken2(char c, bool isFirstCharInString)
 {
-   switch(c)
-   {
-     case '[': case ']': case '|': case '(': case ')':
-        return true;
-
-     case '<': case '~':   // these chars are only special if they are the first character in the string
-        return isFirstCharInString; 
-
-     default:
-        return false;
-   }
+   if ((c == '\\') || (c == '*') || (c == '?') || (c == ','))
+	   return false;
+   return IsRegexToken(c, isFirstCharInString);
 }
 
 // Converts basic wildcard pattern to valid regex
@@ -430,15 +422,17 @@ void ConvertToRegex(String & s)
 				ret += *n;
 				str++;
 			}
-			isFirst = false;	
 		}
 		else
 		{
 			if (IsRegexToken2(*str, isFirst)) ret += '\\';
-			isFirst = false;
 			ret += *str;
 			str++;
 		}
+
+		// reset
+		if (isFirst)
+			isFirst = false;
 	}
 	s = ret;
 }
