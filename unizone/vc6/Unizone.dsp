@@ -1722,12 +1722,11 @@ SOURCE=..\libjpeg\Release\qjpeg.dll
 # Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
 InputDir=\build\unizone\libjpeg\Release
 TargetDir=\build\unizone\vc6
-TargetName=Unizone
 InputPath=..\libjpeg\Release\qjpeg.dll
 InputName=qjpeg
 
 "$(TargetDir)\qjpeg.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(TargetName).dll"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
 
 # End Custom Build
 
@@ -1752,12 +1751,11 @@ SOURCE=..\libjpeg\Debug\qjpegd.dll
 # Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
 InputDir=\build\unizone\libjpeg\Debug
 TargetDir=\build\unizone\vc6
-TargetName=Unizoned
 InputPath=..\libjpeg\Debug\qjpegd.dll
 InputName=qjpegd
 
 "$(TargetDir)\qjpegd.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(TargetName).dll"
+	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
 
 # End Custom Build
 
@@ -1832,6 +1830,10 @@ SOURCE=..\src\unix\gotourl_unix.cpp
 SOURCE=..\src\unix\wlaunchthread_unix.cpp
 # PROP Exclude_From_Build 1
 # End Source File
+# End Group
+# Begin Group "Unix Headers"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\src\unix\wlaunchthread_unix.h

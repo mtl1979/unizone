@@ -1,4 +1,5 @@
 #include <qstring.h>
+#include <qapplication.h>
 
 #include "windows/wlaunchthread_win.h"
 #include "gotourl.h"
