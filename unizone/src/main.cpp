@@ -1,7 +1,4 @@
 #include <qapplication.h>
-#if !defined(QT_NO_STYLE_PLATINUM)
-#include <qplatinumstyle.h>
-#endif
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
@@ -78,6 +75,7 @@ main( int argc, char** argv )
 	muscle::CompleteSetupSystem fMuscle;
 
 	fStartTime = GetCurrentTime64();
+
 	QApplication app( argc, argv );
 
 	// Set alternative settings file if requested
@@ -131,11 +129,6 @@ main( int argc, char** argv )
 		app.installTranslator( &qtr );
 	}
 	
-#if !defined(QT_NO_STYLE_PLATINUM)
-	// Set style
-	app.setStyle(new QPlatinumStyle);
-#endif
-
 	WinShareWindow * window = new WinShareWindow(NULL);
 	CHECK_PTR(window);
 

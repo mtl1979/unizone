@@ -238,7 +238,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fFTPLauncher->setText(gWin->fSettings->GetFTPLauncher());
 	fDefaultLauncher->setText(gWin->fSettings->GetDefaultLauncher());
 #endif
-#ifdef QT_NO_STYLE
+#if defined(QT_NO_STYLE) || defined(DISABLE_STYLES)
 	fTabs->setTabEnabled(fStyle, false);
 #endif
 
@@ -440,6 +440,7 @@ WPrefs::StyleSelected(int id)
 	 * 4 - SGI
 	 * 5 - Windows
 	 */
+#ifndef DISABLE_STYLES
 	switch (id)
 	{
 		case 0:
@@ -481,6 +482,7 @@ WPrefs::StyleSelected(int id)
 		default:
 			break;		// unknown style
 	}
+#endif
 }
 
 void

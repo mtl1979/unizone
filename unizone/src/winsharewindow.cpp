@@ -1565,6 +1565,7 @@ WinShareWindow::LoadSettings()
 			fSearchEdit->setCurrentItem(i);
 
 		// load the style
+#ifndef DISABLE_STYLES
 		switch (fSettings->GetStyle())
 		{
 			case Motif:
@@ -1598,6 +1599,7 @@ WinShareWindow::LoadSettings()
 #endif
 				break;
 		}
+#endif
 
 		// load column sizes
 		for (i = 0; (size = fSettings->GetColumnItem(i)) > 0; i++)
@@ -1676,15 +1678,17 @@ WinShareWindow::LoadSettings()
 	}
 	else	// file doesn't exist, or error
 	{
-#if defined(WIN32)
+#ifndef DISABLE_STYLES
+# if defined(WIN32)
 #  if !defined(QT_NO_STYLE_WINDOWS)
 		qApp->setStyle(new QWindowsStyle);
 #  endif // !QT_NO_STYLE_WINDOWS
-#else
+# else
 #  if !defined(QT_NO_STYLE_MOTIF)
 		qApp->setStyle(new QMotifStyle);				
 #  endif // !QT_NO_STYLE_MOTIF
-#endif // WIN32	
+# endif // WIN32	
+#endif // DISABLE_STYLES
 
 		fAwayMsg = "away";
 		fHereMsg = "here";
