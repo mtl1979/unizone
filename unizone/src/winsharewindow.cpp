@@ -768,8 +768,7 @@ WinShareWindow::NameChanged(const QString & newName)
 	}
 	fNetClient->SetUserName(newName); // <postmaster@raasu.org> 20021011
 	QString status = WFormat::NameChanged(newName);
-	QString nameChanged = WFormat::SystemText(status); // <postmaster@raasu.org> 20021001
-	PrintText(nameChanged);
+	SendSystemEvent(status);
 	fUserName = newName;
 	// Make sure new user name has register time
 	if (fUserName != QString::null)
