@@ -1505,6 +1505,7 @@ WinShareWindow::LaunchSearch(const QString & pattern)
 			return;
 		}
 		// fall through
+		pattern = pattern.mid(2);
 	}
 	// (be)share:pattern
 	if (!gWin->fSearchWindow)

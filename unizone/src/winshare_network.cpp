@@ -1253,7 +1253,10 @@ WinShareWindow::HandleMessage(Message * msg)
 			// Execute OnConnect commands here, when all user information should be available
 
 			if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
+			{
 				ExecCommand(fOnConnect);
+				fOnConnect = QString::null;
+			}
 
 			if ((fOnConnect2 != QString::null) && fOnConnect2.length() > 2)
 			{
