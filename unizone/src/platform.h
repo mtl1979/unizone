@@ -24,9 +24,6 @@ using muscle::String;
 
 #endif // defined(BUILD_WIN98)
 
-// Get a registry key's value
-long GetRegKey( HKEY key, wchar_t *subkey, wchar_t *retdata, wchar_t value = NULL);
-
 // Flash window specified by fWinHandle
 void WFlashWindow(HWND fWinHandle);
 #endif // WIN32

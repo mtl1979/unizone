@@ -3727,5 +3727,9 @@ Date: %4</translation>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
         <translation>/whitelist [pattern] - set the whitelist pattern</translation>
     </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
+        <translation>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</translation>
+    </message>
 </context>
 </TS>

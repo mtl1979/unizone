@@ -3815,5 +3815,9 @@ Päiväys: %4</translation>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
         <translation>/whitelist [kaava] - aseta valkoisen listan kaava</translation>
     </message>
+    <message>
+        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
+        <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas QNX Neutrinolle!</translation>
+    </message>
 </context>
 </TS>

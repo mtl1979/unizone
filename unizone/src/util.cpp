@@ -5,6 +5,10 @@
 #include "winsharewindow.h"
 #include "settings.h"
 
+#ifdef DEBUG2
+#include "wstring.h"
+#endif
+
 #include "util/Queue.h"
 #include "regex/StringMatcher.h"
 using namespace muscle;
@@ -15,7 +19,6 @@ using namespace muscle;
 
 #include <qdatetime.h>
 #include <qdns.h>
-
 
 QString
 ParseChatText(const QString & str)
