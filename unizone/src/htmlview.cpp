@@ -9,6 +9,8 @@
 #include <qregexp.h>
 #endif
 
+#define MAX_BUFFER_SIZE 262144		// 256 kB
+
 WHTMLView::WHTMLView(QWidget * parent, const char * name)
 : QTextBrowser(parent, name)
 {
@@ -116,10 +118,48 @@ ParseForShown(const QString & txt)
 		out += line;
 	}
 #else
-	out = "";	// Text after processing linefeeds and TABs
-	int n = 0;  // Position of next TAB before text to be included
-	int n2 = 0;	// Start of actual text
-	int m = 0;	// Position of next TAB after text to be included
+	out = ParseForShownAux(txt);
+#endif
+
+	// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
+	if (out.right(4) == "<br>")
+		out.truncate(out.length() - 4);
+	return out;
+}
+
+QString
+ParseForShownAux(const QString &txt)
+{
+	QString out = "";	// Text after processing linefeeds and TABs
+	int n = 0;			// Position of next TAB before text to be included
+	int n2 = 0;			// Start of actual text
+	int m = 0;			// Position of next TAB after text to be included
+
+	// Remove any extra line breaks from the start of buffer
+	//
+
+	// Check for too big text
+	if (txt.length() > MAX_BUFFER_SIZE)
+	{
+		int n3;						// Position of next line break after buffer truncation
+		n2 = txt.length() - MAX_BUFFER_SIZE;
+		
+		// Find next line break
+
+		n3 = txt.find("<br>", n2);
+		if (n3 < 0)
+		{
+			n3 = txt.find('\t', n2);
+			if (n3 >= 0)
+			{
+				n2 = n3 + 1;
+			}
+		}
+		else
+		{
+			n2 = n3 + 4;
+		}
+	}
 
 	// Remove any extra line breaks from the start of buffer
 	//
@@ -172,11 +212,5 @@ ParseForShown(const QString & txt)
 	{
 		out = txt.mid(n2);
 	}
-#endif
-
-	// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
-	if (out.right(4) == "<br>")
-		out.truncate(out.length() - 4);
 	return out;
 }
-
