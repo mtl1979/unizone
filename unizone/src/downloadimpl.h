@@ -92,7 +92,7 @@ public:
 	void DequeueULSessions();
 	void KillLocalQueues();
 
-	void TransferCallBackRejected(QString qFrom, int64 timeLeft, uint32 port);
+	void TransferCallBackRejected(const QString &qFrom, int64 timeLeft, uint32 port);
 
 	void SetLocalID(QString sid);
 

@@ -2521,7 +2521,7 @@ WinShareWindow::FindUserByIPandPort(QString ip, uint32 port)
 
 
 bool
-WinShareWindow::Remote(String session, QString text)
+WinShareWindow::Remote(const String & session, const QString &text)
 {
 	QString qItem;
 	if (!text.startsWith("!remote"))	// Is a remote request?
@@ -2529,12 +2529,12 @@ WinShareWindow::Remote(String session, QString text)
 	if (fRemote.isEmpty())					// is remote control enabled?
 		return false;
 
-	text = text.mid(8);
-	int sp = text.find("\n");
-	QString pass = text.left(sp);
+	QString cmd = text.mid(8);
+	int sp = cmd.find("\n");
+	QString pass = cmd.left(sp);
 	if (pass != fRemote)
 		return false;
-	QStringTokenizer qTok(text.mid(sp+1),"\n");
+	QStringTokenizer qTok(cmd.mid(sp+1),"\n");
 	while ((qItem = qTok.GetNextToken()) != QString::null)
 	{
 		if (!qItem.lower().startsWith("/shell"))
@@ -2681,12 +2681,9 @@ WinShareWindow::PrintAddressInfo(uint32 address)
 void
 WinShareWindow::GetAddressInfo(const QString & user)
 {
-	QString uid = "";
-	QString addr;
 	int numMatches;
 	WUserMap wmap;
 	numMatches = FillUserMap(user, wmap);
-	// WUserRef uref = FindUser(user);
 	uint32 address = 0;
 	if (numMatches > 0)	// Found atleast one match in users
 	{
@@ -2708,7 +2705,7 @@ WinShareWindow::GetAddressInfo(const QString & user)
 }
 
 void
-WinShareWindow::ExecCommand(QString command)
+WinShareWindow::ExecCommand(const QString &command)
 {
 	WTextEvent * wte = new WTextEvent(command);
 	if (wte)
@@ -2719,7 +2716,7 @@ WinShareWindow::ExecCommand(QString command)
 }
 
 void
-WinShareWindow::TransferCallbackRejected(QString qFrom, int64 timeLeft, uint32 port)
+WinShareWindow::TransferCallbackRejected(const QString &qFrom, int64 timeLeft, uint32 port)
 {
 	if (!fDLWindow)
 		return;

@@ -375,7 +375,7 @@ private:
 
 	// UniShare
 
-	void TransferCallbackRejected(QString qFrom, int64 timeLeft, uint32 port);
+	void TransferCallbackRejected(const QString &qFrom, int64 timeLeft, uint32 port);
 	
 	bool IsIgnored(const WUser * user);
 	bool Ignore(QString & user);
@@ -389,17 +389,24 @@ private:
 	bool AutoPrivate(QString & user);
 	bool UnAutoPrivate(QString & user);
 
-	void Disconnect2();					// Internal disconnection handling
+	// Internal disconnection handling
+	void Disconnect2();					
 
-	void CheckResumes(QString user);	// Check if resume list contains downloads from 'user'
-	void ListResumes();					// List files waiting to be resumed
-	void ClearResumes();				// Clear the resume list
+	// Check if resume list contains downloads from 'user'
+	void CheckResumes(const QString &user);
+	// List files waiting to be resumed
+	void ListResumes();
+	// Clear the resume list
+	void ClearResumes();
 
-	bool Remote(String session, QString text);  // handle remote commands
-	QString fRemote;							// remote password
-	void ExecCommand(QString command);			// execute specified command
+	// handle remote commands
+	bool Remote(const String &session, const QString &text);
+	// remote password
+	QString fRemote;
+	// execute specified command
+	void ExecCommand(const QString &command);			
 
-	bool NameSaid2(String sname, QString & msg, unsigned long index = 0); // Private version for recursing
+	bool NameSaid2(const String &sname, QString & msg, unsigned long index = 0); // Private version for recursing
 
 	void SignalDownload(int);
 

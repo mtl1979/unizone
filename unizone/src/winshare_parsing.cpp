@@ -228,7 +228,7 @@ WinShareWindow::NameSaid(QString & msg)
 }
 
 bool
-WinShareWindow::NameSaid2(String sname, QString & msg, unsigned long index)
+WinShareWindow::NameSaid2(const String &sname, QString & msg, unsigned long index)
 {
 	String itxt((const char *) msg.utf8()); // <postmaster@raasu.org> -- Don't use latin1 ()
 	itxt = itxt.ToUpperCase();

@@ -525,7 +525,7 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
 //
 
 void 
-WinShareWindow::CheckResumes(QString user)
+WinShareWindow::CheckResumes(const QString &user)
 {
 	// No need to check if empty!
 	WString wUser = StripURL(user);

@@ -2955,7 +2955,7 @@ WDownload::UpdateDLRatings()
 }
 
 void
-WDownload::TransferCallBackRejected(QString qFrom, int64 timeLeft, uint32 port)
+WDownload::TransferCallBackRejected(const QString &qFrom, int64 timeLeft, uint32 port)
 {
 	Lock();
 	for (int i = 0; i < fDownloadList.GetNumItems(); i++)
