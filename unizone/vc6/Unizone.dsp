@@ -172,6 +172,10 @@ SOURCE=..\src\gotourl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\htmlview.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\icon.rc
 # End Source File
 # Begin Source File
