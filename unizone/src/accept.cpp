@@ -1,12 +1,12 @@
-#include "accept.h"
-
 #include <qapplication.h>
+
+#include "accept.h"
 
 void
 WAcceptThread::SignalOwner()
 {
 	MessageRef next;
-	while (GetNextReplyFromInternalThread(next) >= 0)
+	while (ast->GetNextReplyFromInternalThread(next) >= 0)
 	{
 		switch (next()->what)
 		{

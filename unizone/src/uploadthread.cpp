@@ -22,7 +22,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fNumFiles = -1;
 	fPort = 0;
 	fSocket = 0;
-	fActive = true;
+	fActive = false;
 	fBlocked = false;
 	fTimeLeft = 0;
 	fForced = false;
@@ -140,13 +140,23 @@ WUploadThread::SetLocallyQueued(bool b)
 	WGenericThread::SetLocallyQueued(b);
 	if (!b)
 	{
-		if (wmt->IsInternalThreadRunning() && !fForced) // Don't need to start forced uploads ;) 
+		if (wmt->IsInternalThreadRunning())  // Still connected?
 		{
-			DoUpload();		// we can start now!
+			// Don't need to start forced uploads ;)
+			if (!fForced)
+				DoUpload();		// we can start now!
 		}
-		else
+		else if (fActive)
 		{
 			Reset();
+			MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
+			if (fail())
+			{
+				fail()->AddString("why", "Connection reset by peer!");
+				SendReply(fail);
+			}
+			fActive = false;
+			fFinished = true;
 		}
 	}
 }
@@ -313,7 +323,6 @@ WUploadThread::SignalOwner()
 								if (!user.isEmpty())
 									fRemoteUser = user;
 							}
-							//fFileThread->Lock();
 
 							int i;
 							
@@ -381,7 +390,7 @@ WUploadThread::SignalOwner()
 								}
 							}
 							fNumFiles = i;
-							//fFileThread->Unlock();
+
 							fWaitingForUploadToFinish = false;
 							SendQueuedNotification();
 							// also send a message along to our GUI telling it what the first file is
@@ -521,6 +530,23 @@ WUploadThread::DoUpload()
 	if (fShutdownFlag && *fShutdownFlag)	// Do we need to interrupt?
 		return;
 
+	// Still connected?
+
+	if (!wmt->IsInternalThreadRunning())
+	{
+		MessageRef fail(GetMessageFromPool(WGenericEvent::ConnectFailed));
+		if (fail())
+		{
+			fail()->AddString("why", "Connection reset by peer!");
+			SendReply(fail);
+		}
+		fActive = false;
+		fFinished = true;
+		return;
+	}
+
+	fActive = true;
+
 	// Small files get to bypass queue
 	if (IsLocallyQueued())
 	{
@@ -615,6 +641,7 @@ WUploadThread::DoUpload()
 						uref()->Rename("temp", "data");
 					}
 					wmt->SendMessageToSessions(uref);
+
 					// NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before
 					//       calling it!
 					fCurrentOffset += numBytes;
