@@ -164,6 +164,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fFlashMain->hide();
 	fFlashPrivate->hide();
 #endif
+	fEmptyWindows->setCurrentItem(gWin->fSettings->GetEmptyWindows());
 
 	switch (gWin->fSettings->GetMaxDownloads())
 	{
@@ -313,6 +314,7 @@ WPrefs::OK()
 	if (fFlashPrivate->isChecked())
 		flags |= WSettings::FlashPriv;
 	gWin->fSettings->SetFlash(flags);
+	gWin->fSettings->SetEmptyWindows(fEmptyWindows->currentItem());
 
 	gWin->fSettings->SetSharingEnabled(fFileSharingEnabled->isChecked());
 

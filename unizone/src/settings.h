@@ -53,6 +53,7 @@ using namespace muscle;
 
 #define AUTO_AWAY			"autoaway"
 #define FLASH				"flash"
+#define EMPTYWIN			"emptywin"
 #define SHARING_ENABLED		"sharingenabled"
 #define BASEPORT			"baseport"
 #define PORTRANGE			"portrange"
@@ -278,6 +279,9 @@ public:
 
 	void SetFlash(int);	// set flash flags
 	int GetFlash();
+
+	void SetEmptyWindows(int); // What do we do if all users leave some window?
+	int GetEmptyWindows();
 	
 	// file sharing
 	bool GetSharingEnabled();

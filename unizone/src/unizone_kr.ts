@@ -1730,6 +1730,22 @@ Date: %4</source>
         <source>Number of Ports:</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Empty Windows:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Do Nothing</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Prompt</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Automatically Close</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>

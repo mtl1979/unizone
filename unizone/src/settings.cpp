@@ -793,6 +793,21 @@ WSettings::GetFlash()
 	return i;
 }
 
+void
+WSettings::SetEmptyWindows(int e)
+{
+	fSet()->RemoveName(EMPTYWIN);
+	fSet()->AddInt32(EMPTYWIN, (int32)e);
+}
+
+int
+WSettings::GetEmptyWindows()
+{
+	int i = 1;
+	fSet()->FindInt32(EMPTYWIN, (int32 *)&i);
+	return i;
+}
+
 bool
 WSettings::GetSharingEnabled()
 {

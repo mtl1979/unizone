@@ -170,16 +170,7 @@ WPrivateWindow::UserDisconnected(const QString &sid, const QString &name)
 		(*iter).second()->RemoveFromListView(fPrivateUsers);
 		fUsers.erase(iter);
 
-		if (fUsers.empty())
-		{
-			if (QMessageBox::information(this, tr( "Private Chat" ), 
-				tr( "There are no longer any users in this private chat window. Close window?"),
-				tr( "Yes" ), tr( "No" )) == 0)	
-				// 0 is the index of "yes"
-			{
-				done(QDialog::Accepted);
-			}
-		}
+		CheckEmpty();
 	}
 }
 
@@ -434,16 +425,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 						}
 						if (rem)	// check to see whether we have an empty list
 						{
-							if (fUsers.empty())
-							{
-								if (QMessageBox::information(this, tr( "Private Chat" ), 
-									tr( "There are no longer any users in this private chat window. Close window?"),
-									tr( "Yes"), tr( "No" )) == 0)	
-									// 0 is the index of "yes"
-								{
-									done(QDialog::Accepted);
-								}
-							}
+							CheckEmpty();
 						}
 					}
 				}
@@ -642,3 +624,29 @@ WPrivateWindow::UpdateUserList()
 	fLock.unlock();
 }
 
+void
+WPrivateWindow::CheckEmpty()
+{
+	if (fUsers.empty())
+	{
+		switch (gWin->fSettings->GetEmptyWindows())
+		{
+		case 0: break;
+		case 1:
+			{
+				if (QMessageBox::information(this, tr( "Private Chat" ), 
+					tr( "There are no longer any users in this private chat window. Close window?"),
+					tr( "Yes" ), tr( "No" )) == 0)	
+					// 0 is the index of "yes"
+				{
+					done(QDialog::Accepted);
+				}
+			}
+		case 2:
+			{
+				done(QDialog::Accepted);
+				break;
+			}
+		}
+	}
+}

@@ -2031,6 +2031,22 @@ Päiväys: %4</translation>
         <source>Number of Ports:</source>
         <translation>Porttien Määrä:</translation>
     </message>
+    <message>
+        <source>Empty Windows:</source>
+        <translation>Tyhjät Ikkunat:</translation>
+    </message>
+    <message>
+        <source>Do Nothing</source>
+        <translation>Anna Olla</translation>
+    </message>
+    <message>
+        <source>Prompt</source>
+        <translation>Kysy</translation>
+    </message>
+    <message>
+        <source>Automatically Close</source>
+        <translation>Sulje Automaattisesti</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>

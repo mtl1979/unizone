@@ -96,6 +96,8 @@ private:
 	void StartLogging();
 	void StopLogging();
 
+	void CheckEmpty();
+
 	friend class WinShareWindow;
 };
 
