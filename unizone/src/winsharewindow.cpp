@@ -658,7 +658,7 @@ void
 WinShareWindow::resizeEvent(QResizeEvent * event)
 {
 	QPoint qp(0, 0);
-	QSize qs(event->size().width(), 200);
+	QSize qs(event->size().width(), event->size().height());
 	fMainBox->setGeometry(QRect(qp, qs));
 	/*
 		if (fInfoPane)
