@@ -249,6 +249,8 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	connect(fUploads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 			this, SLOT(ULRightClicked(QListViewItem *, const QPoint &, int)));
 
+	fClearingDL = false;
+	fClearingUL = false;
 }
 
 WDownload::~WDownload()
@@ -308,7 +310,8 @@ WDownload::EmptyLists()
 		}
 	}
 	fLock.unlock();
-	UpdateLoad();	// do this to set a load of 0
+	// do this to set a load of 0
+	SendSignal(UpLoad);
 }
 
 void
@@ -364,7 +367,7 @@ WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QStri
 	fLock.lock();
 	fDownloadList.AddTail(p);
 	fLock.unlock();
-	UpdateDLRatings();
+	SendSignal(DLRatings);
 }
 
 void
@@ -442,8 +445,8 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 	fLock.lock();
 	fUploadList.AddTail(p);
 	fLock.unlock();
-	UpdateLoad();
-	UpdateULRatings();
+	SendSignal(UpLoad);
+	SendSignal(ULRatings);
 }
 
 void
@@ -485,8 +488,8 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 	fLock.lock();
 	fUploadList.AddTail(p);
 	fLock.unlock();
-	UpdateLoad();
-	UpdateULRatings();
+	SendSignal(UpLoad);
+	SendSignal(ULRatings);
 }
 
 void
@@ -495,8 +498,7 @@ WDownload::DequeueULSessions()
 	PRINT("WDownload::DequeueULSessions\n");
 	if (gWin->fSettings->GetAutoClear())
 	{
-		QCustomEvent * qce = new QCustomEvent(ClearUploads);
-		if (qce) QApplication::postEvent(this, qce);
+		SendSignal(ClearUploads);
 	}
 
 	if (gWin->IsScanning())
@@ -559,7 +561,7 @@ WDownload::DequeueULSessions()
 		if (!found)
 			break;
 	}
-	UpdateLoad();
+	SendSignal(UpLoad);
 	PRINT("WDownload::DequeueULSessions OK\n");
 }
 
@@ -569,8 +571,7 @@ WDownload::DequeueDLSessions()
 	PRINT("WDownload::DequeueDLSessions\n");
 	if (gWin->fSettings->GetAutoClear())
 	{
-		QCustomEvent * qce = new QCustomEvent(ClearDownloads);
-		if (qce) QApplication::postEvent(this, qce);
+		SendSignal(ClearDownloads);
 	}
 
 	bool found = true;
@@ -644,14 +645,16 @@ WDownload::DequeueDLSessions()
 void
 WDownload::customEvent(QCustomEvent * e)
 {
-	WGenericEvent * g = NULL;
 	int t = (int) e->type();
 	switch (t)
 	{
 	case WGenericEvent::Type:
 		{
-			g = dynamic_cast<WGenericEvent *>(e);
-			if (g) genericEvent(g);
+			WGenericEvent * g = dynamic_cast<WGenericEvent *>(e);
+			if (g)
+			{
+				genericEvent(g);
+			}
 			break;
 		}
 	case DequeueDownloads:
@@ -666,12 +669,35 @@ WDownload::customEvent(QCustomEvent * e)
 		}
 	case ClearDownloads:
 		{
-			ClearFinishedDL();
+			if (!fClearingDL)
+			{
+				fClearingDL = true;
+				ClearFinishedDL();
+			}
 			break;
 		}
 	case ClearUploads:
 		{
-			ClearFinishedUL();
+			if (!fClearingUL)
+			{
+				fClearingUL = true;
+				ClearFinishedUL();
+			}
+			break;
+		}
+	case DLRatings:
+		{
+			UpdateDLRatings();
+			break;
+		}
+	case ULRatings:
+		{
+			UpdateULRatings();
+			break;
+		}
+	case UpLoad:
+		{
+			UpdateLoad();
 			break;
 		}
 	}
@@ -847,8 +873,7 @@ WDownload::genericEvent(WGenericEvent * g)
 			gt->SetActive(false);
 			if (upload)
 			{
-				QCustomEvent * qce = new QCustomEvent(DequeueUploads);
-				if (qce) QApplication::postEvent(this, qce);
+				SendSignal(DequeueUploads);
 			}
 			else
 			{
@@ -859,8 +884,7 @@ WDownload::genericEvent(WGenericEvent * g)
 					emit FileFailed(qFile, qLFile, GetUserName(gt));
 				}
 				
-				QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
-				if (qce) QApplication::postEvent(this, qce);
+				SendSignal(DequeueDownloads);
 			}
 			break;
 		}
@@ -892,8 +916,7 @@ WDownload::genericEvent(WGenericEvent * g)
 				gt->SetFinished(true);
 				gt->SetActive(false);
 				gt->Reset();
-				QCustomEvent * qce = new QCustomEvent(DequeueUploads);
-				if (qce) QApplication::postEvent(this, qce);
+				SendSignal(DequeueUploads);
 			}
 			else
 			{
@@ -933,8 +956,7 @@ WDownload::genericEvent(WGenericEvent * g)
 					}
 				}
 				gt->Reset();
-				QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
-				if (qce) QApplication::postEvent(this, qce);
+				SendSignal(DequeueDownloads);
 			}
 			PRINT("\tWGenericEvent::Disconnected OK\n");
 			break;
@@ -952,8 +974,7 @@ WDownload::genericEvent(WGenericEvent * g)
 					if (gt->IsLastFile())
 					{
 						gt->RemoveSessions();
-						QCustomEvent * qce = new QCustomEvent(DequeueUploads);
-						if (qce) QApplication::postEvent(this, qce);
+						SendSignal(DequeueUploads);
 					}
 				}
 				else
@@ -1408,8 +1429,7 @@ WDownload::DLPopupActivated(int id)
 		
 	case ID_CLEAR:
 		{
-			QCustomEvent * qce = new QCustomEvent(ClearDownloads);
-			if (qce) QApplication::postEvent(this, qce);
+			SendSignal(ClearDownloads);
 			break;
 		}
 		
@@ -1422,8 +1442,7 @@ WDownload::DLPopupActivated(int id)
 			gt->SetActive(false);
 			gt->Reset();
 			fLock.unlock();
-			QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
-			if (qce) QApplication::postEvent(this, qce);
+			SendSignal(DequeueDownloads);
 			break;
 		}
 		
@@ -1588,7 +1607,7 @@ WDownload::DLPopupActivated(int id)
 		}
 			
 	}
-	UpdateDLRatings();
+	SendSignal(DLRatings);
 }
 
 void
@@ -1647,8 +1666,7 @@ WDownload::ULPopupActivated(int id)
 		
 	case ID_CLEAR:
 		{
-			QCustomEvent * qce = new QCustomEvent(ClearUploads);
-			if (qce) QApplication::postEvent(this, qce);
+			SendSignal(ClearUploads);
 			break;
 		}	
 
@@ -1661,8 +1679,7 @@ WDownload::ULPopupActivated(int id)
 			gt->SetActive(false);
 			gt->Reset();
 			fLock.unlock();
-			QCustomEvent * qce = new QCustomEvent(DequeueUploads);
-			if (qce) QApplication::postEvent(this, qce);
+			SendSignal(DequeueUploads);
 			break;
 		}
 				
@@ -1927,7 +1944,7 @@ WDownload::ULPopupActivated(int id)
 			break;
 		}
 	}
-	UpdateULRatings();
+	SendSignal(ULRatings);
 }
 
 void
@@ -2542,7 +2559,6 @@ WDownload::UpdateULRatings()
 	if ( fUploadList.IsEmpty() )
 		return;
 
-	int qr = 0;
 	fLock.lock();
 	for (int i = 0; i < fUploadList.GetNumItems(); i++)
 	{
@@ -2550,9 +2566,9 @@ WDownload::UpdateULRatings()
 		if (pair.second)
 		{
 			WString wFile = pair.second->text(WTransferItem::Filename);
-			PRINT("Item %d: %S\n", qr, wFile.getBuffer() );
+			PRINT("Item %d: %S\n", i, wFile.getBuffer() );
 
-			pair.second->setText(WTransferItem::QR, QString::number(qr++));
+			pair.second->setText(WTransferItem::QR, QString::number(i));
 		}
 	}
 	fUploads->triggerUpdate();
@@ -2631,7 +2647,9 @@ WDownload::ClearFinishedDL()
 		fLock.unlock();
 	}
 	
-	UpdateDLRatings();
+	SendSignal(DLRatings);
+
+	fClearingDL = false;
 
 	PRINT("\tWDownload::ClearFinishedDL OK\n");
 }
@@ -2665,7 +2683,9 @@ WDownload::ClearFinishedUL()
 		fLock.unlock();
 	}
 
-	UpdateULRatings();
+	SendSignal(ULRatings);
+
+	fClearingUL = false;
 
 	PRINT("\tWDownload::ClearFinishedUL OK\n");
 }
@@ -2755,5 +2775,13 @@ void
 WDownload::SetLocalID(QString sid)
 {
 	fLocalSID = sid;
+}
+
+void
+WDownload::SendSignal(int signal)
+{
+	QCustomEvent *qce = new QCustomEvent(signal);
+	if (qce) 
+			QApplication::postEvent(this, qce);
 }
 

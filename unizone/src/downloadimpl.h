@@ -71,7 +71,10 @@ public:
 		DequeueDownloads = QEvent::User + 11000,
 		DequeueUploads,
 		ClearDownloads,
-		ClearUploads
+		ClearUploads,
+		DLRatings,
+		ULRatings,
+		UpLoad
 	};
 
 	void AddDownload(QString * files, QString * lfiles, int32 numFiles, QString remoteSessionID, uint32 remotePort,
@@ -222,7 +225,11 @@ private:
 	// Get number of non-finished transfers (active or queued)
 	int GetUploadQueue();
 
+	void SendSignal(int signal);
+
 	QMutex fLock;
+
+	bool fClearingUL, fClearingDL;
 
 private slots:
 

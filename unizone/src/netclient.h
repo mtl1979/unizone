@@ -174,6 +174,8 @@ private:
 	
 	void AddChannel(QString sid, QString channel);
 	void RemoveChannel(QString sid, QString channel);
+
+	void SendSignal(int signal);
 	
 	QMutex fChannelLock;
 

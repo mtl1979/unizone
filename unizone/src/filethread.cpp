@@ -151,7 +151,7 @@ WFileThread::ParseDir(const QString & d)
 }
 
 void
-WFileThread::ScanFiles(QString directory)
+WFileThread::ScanFiles(const QString & directory)
 {
 	PRINT("Checking for directory existance\n");
 	QDir * dir = new QDir(directory);

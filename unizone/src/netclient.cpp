@@ -867,11 +867,7 @@ NetClient::MessageReceived(MessageRef msg, const String &sessionID)
 				// add/remove all the users to the list view (if not there yet...)
 				gWin->UpdateUserList();
 
-				QCustomEvent * qce = new QCustomEvent(WinShareWindow::UpdatePrivateUsers);
-				if (qce)
-				{
-					QThread::postEvent(gWin, qce);
-				}
+				SendSignal(WinShareWindow::UpdatePrivateUsers);
 
 				break;
 			}
@@ -952,18 +948,14 @@ void
 NetClient::SessionAttached(const String &sessionID)
 {
 	PRINT("MTT_EVENT_SESSION_ATTACHED\n");
-	QCustomEvent *e = new QCustomEvent(NetClient::SESSION_ATTACHED);
-	if (e)
-		QThread::postEvent(gWin, e);
+	SendSignal(NetClient::SESSION_ATTACHED);
 }
 
 void
 NetClient::SessionConnected(const String &sessionID)
 {
 	PRINT("MTT_EVENT_SESSION_CONNECTED\n");
-	QCustomEvent *e = new QCustomEvent(NetClient::SESSION_CONNECTED);
-	if (e)
-		QThread::postEvent(gWin, e);
+	SendSignal(NetClient::SESSION_CONNECTED);
 	PRINT("Returning\n");
 }
 
@@ -971,18 +963,14 @@ void
 NetClient::SessionDisconnected(const String &sessionID)
 {
 	PRINT("MTT_EVENT_SESSION_DISCONNECTED\n");
-	QCustomEvent *e = new QCustomEvent(NetClient::DISCONNECTED);
-	if (e)
-		QThread::postEvent(gWin, e);
+	SendSignal(NetClient::DISCONNECTED);
 }
 
 void
 NetClient::SessionDetached(const String &sessionID)
 {
 	PRINT("MTT_EVENT_SESSION_DETACHED\n");
-	QCustomEvent *e = new QCustomEvent(NetClient::DISCONNECTED);
-	if (e)
-		QThread::postEvent(this, e);
+	SendSignal(NetClient::DISCONNECTED);
 }
 
 void
@@ -1009,9 +997,7 @@ NetClient::ServerExited()
 	PRINT("MTT_EVENT_SERVER_EXITED\n");
 	// as you noticed... this message is sent by several MTT_EVENT_* events :)
 
-	QCustomEvent *e = new QCustomEvent(NetClient::DISCONNECTED);
-	if (e)
-		QThread::postEvent(gWin, e);
+	SendSignal(NetClient::DISCONNECTED);
 }
 
 void
@@ -1062,4 +1048,12 @@ NetClient::WaitForInternalThreadToExit()
 		return qmtt->WaitForInternalThreadToExit();
 	else
 		return B_ERROR;
+}
+
+void
+NetClient::SendSignal(int signal)
+{
+	QCustomEvent *e = new QCustomEvent(signal);
+	if (e)
+		QThread::postEvent(gWin, e);
 }
