@@ -279,6 +279,11 @@ WUploadThread::SignalOwner()
 								SendReply(ui);
 							}
 						}
+						bool c = false;
+						if (next()->FindBool("unishare:supports_compression", &c) == B_OK)
+						{
+							SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
+						}
 						break;
 					}
 					case WDownload::TransferFileList:

@@ -566,6 +566,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					{
 						comID()->AddString("beshare:FromUserName", (const char *) gWin->GetUserName().utf8());
 						comID()->AddString("beshare:FromSession", (const char *) gWin->GetUserID().utf8());
+						comID()->AddBool("unishare:supports_compression", true);
 						SendMessageToSessions(comID);
 					}
 					
