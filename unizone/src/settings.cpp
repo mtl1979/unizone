@@ -620,6 +620,18 @@ WSettings::GetUserEvents()
 }
 
 void
+WSettings::SetIPAddresses(bool b)
+{
+	SET_BOOL(IPADDRESSES, b);
+}
+
+bool
+WSettings::GetIPAddresses()
+{
+	GET_BOOL(IPADDRESSES, false);
+}
+
+void
 WSettings::SetUploads(bool b)
 {
 	SET_BOOL(UPLOADS, b);

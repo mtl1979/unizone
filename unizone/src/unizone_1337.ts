@@ -833,6 +833,14 @@ Date: %4</translation>
         <source>User #%1 is now nameless.</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation type='unfinished'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+    </message>
+    <message>
+        <source>User #%1&apos;s IP address is %2.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -1903,6 +1911,10 @@ Date: %4</translation>
         <source>500 kB</source>
         <translation type='obsolete'>500 kB</translation>
     </message>
+    <message>
+        <source>IP Addresses</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -1965,7 +1977,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>[Freeware] - Private</source>
@@ -2374,7 +2386,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>/ping %1</source>

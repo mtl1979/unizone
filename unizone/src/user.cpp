@@ -66,7 +66,7 @@ WUser::InitName(const MessageRef msg)
 	if (msg()->FindString("name", &name) == B_OK)
 		fUserName = QString::fromUtf8(name);
 	else
-		fUserName = "???";
+		fUserName = "?";
 
 	if (msg()->FindInt32("port", &port) == B_OK)
 		fPort = port;

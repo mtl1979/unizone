@@ -49,6 +49,7 @@ using namespace muscle;
 #define INFO				"info"
 #define WARNING				"warning"
 #define ERRORS				"errorS"
+#define IPADDRESSES			"ipaddr"
 
 #define AUTO_AWAY			"autoaway"
 #define FLASH				"flash"
@@ -239,6 +240,7 @@ public:
 	void SetWarning(bool b);
 	void SetError(bool b);
 	void SetSounds(bool b);
+	void SetIPAddresses(bool b);
 
 	bool GetTimeStamps();
 	bool GetUserEvents();
@@ -250,6 +252,7 @@ public:
 	bool GetWarning();
 	bool GetError();
 	bool GetSounds();
+	bool GetIPAddresses();
 
 	// auto away
 	void SetAutoAway(int i);	// index of time

@@ -2678,8 +2678,20 @@ WinShareWindow::EndMessageBatch()
 {
 	END_OUTPUT();
 }
+
 QString
 WinShareWindow::GetUserID() const
 { 
 	return fNetClient->LocalSessionID(); 
+}
+
+void
+WinShareWindow::UserHostName(QString sid, QString host)
+{
+	if (fSettings->GetIPAddresses())
+	{
+		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
+		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserIPAddress2().arg(sid).arg(host));
+		PrintText(system);
+	}
 }

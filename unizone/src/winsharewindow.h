@@ -233,6 +233,7 @@ public slots:
 	void UserDisconnected(QString, QString);
 	void DisconnectedFromServer();
 	void UserStatusChanged(QString, QString, QString);
+	void UserHostName(QString, QString);
 
 	// tab completion signal
 	void TabPressed(QString str);

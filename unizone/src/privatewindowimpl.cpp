@@ -597,7 +597,7 @@ WPrivateWindow::PopupActivated(int id)
 		} 
 		else if (id == 3) 
 		{
-			QString qTemp = tr("<font color=\"%3\">%1</font>'s IP address is %2.").arg(FixStringStr((*it).second()->GetUserName())).arg((*it).second()->GetUserHostName()).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
+			QString qTemp = WFormat::UserIPAddress().arg(FixStringStr((*it).second()->GetUserName())).arg((*it).second()->GetUserHostName()).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
 			PrintSystem(qTemp);
 		}
 	}

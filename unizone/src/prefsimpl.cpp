@@ -117,6 +117,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fWarning->setChecked(gWin->fSettings->GetWarning());
 	fError->setChecked(gWin->fSettings->GetError());
 	fSounds->setChecked(gWin->fSettings->GetSounds());
+	fIPAddresses->setChecked(gWin->fSettings->GetIPAddresses());
 	
 	switch (gWin->fSettings->GetStyle())
 	{
@@ -301,6 +302,7 @@ WPrefs::OK()
 	gWin->fSettings->SetWarning(fWarning->isChecked());
 	gWin->fSettings->SetError(fError->isChecked());
 	gWin->fSettings->SetSounds(fSounds->isChecked());
+	gWin->fSettings->SetIPAddresses(fIPAddresses->isChecked());
 
 	// flash settings
 	int flags = WSettings::FlashNone;

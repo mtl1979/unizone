@@ -823,11 +823,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type='unfinished'></translation>
+        <translation>User #%1 has disconnected.</translation>
     </message>
     <message>
         <source>User #%1 is now nameless.</source>
-        <translation type='unfinished'></translation>
+        <translation>User #%1 is now nameless.</translation>
+    </message>
+    <message>
+        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+    </message>
+    <message>
+        <source>User #%1&apos;s IP address is %2.</source>
+        <translation>User #%1&apos;s IP address is %2.</translation>
     </message>
 </context>
 <context>
@@ -1899,6 +1907,10 @@ Date: %4</translation>
         <source>500 kB</source>
         <translation type='obsolete'>500 kB</translation>
     </message>
+    <message>
+        <source>IP Addresses</source>
+        <translation>IP Addresses</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -1961,7 +1973,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>[Freeware] - Private</source>
@@ -2370,7 +2382,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>/ping %1</source>

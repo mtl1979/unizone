@@ -787,7 +787,7 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout42</cstring>
+                    <cstring>Layout41</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
@@ -811,7 +811,7 @@
                         <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>Layout36</cstring>
+                            <cstring>Layout40</cstring>
                         </property>
                         <vbox>
                             <property stdset="1">
@@ -875,6 +875,17 @@
                                 <property stdset="1">
                                     <name>text</name>
                                     <string>Chat</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fIPAddresses</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>IP Addresses</string>
                                 </property>
                             </widget>
                             <spacer>

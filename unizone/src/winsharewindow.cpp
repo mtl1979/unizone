@@ -116,6 +116,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 			SLOT(DisconnectedFromServer()));
 	connect(fNetClient, SIGNAL(UserStatusChanged(QString, QString, QString)), this,
 			SLOT(UserStatusChanged(QString, QString, QString)));
+	connect(fNetClient, SIGNAL(UserHostName(QString, QString)), this,
+			SLOT(UserHostName(QString, QString)));
 	connect(fInputText, SIGNAL(TabPressed(QString)), this, SLOT(TabPressed(QString)));
 	connect(fChatText, SIGNAL(URLClicked(const QString &)), this, SLOT(URLClicked(const QString &)));
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(AboutToQuit()));

@@ -71,6 +71,16 @@ QString WFormat::UserStatusChanged2()
 	return QObject::tr("User #%1 is now %2.");
 }
 
+QString WFormat::UserIPAddress()
+{
+	return QObject::tr("<font color=\"%3\">%1</font>'s IP address is %2.");
+}
+
+QString WFormat::UserIPAddress2()
+{
+	return QObject::tr("User #%1's IP address is %2.");
+}
+
 // ping formatting
 QString WFormat::PingText()
 {
@@ -81,7 +91,6 @@ QString WFormat::PingUptime()
 {
 	return QObject::tr("<font color=\"%1\" size=\"%2\"> (Uptime: %3, Logged on for %4)</font>");
 }
-
 
 // error format
 QString WFormat::Error()

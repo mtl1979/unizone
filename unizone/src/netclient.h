@@ -145,6 +145,7 @@ signals:
 	void DisconnectedFromServer();
 	void UserStatusChanged(QString id, QString name, QString status);
 	void UserIDChanged(QString oldid, QString newid);
+	void UserHostName(QString sid, QString hostname);
 	
 	void RemoveFile(const QString, const QString);
 	void AddFile(const QString, const QString, bool, MessageRef);

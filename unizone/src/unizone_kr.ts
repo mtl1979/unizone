@@ -680,6 +680,14 @@ Date: %4</source>
         <source>User #%1 is now nameless.</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation type='unfinished'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP 주소는 %2 입니다.</translation>
+    </message>
+    <message>
+        <source>User #%1&apos;s IP address is %2.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -1690,6 +1698,10 @@ Date: %4</source>
         <source>Default launcher:</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>IP Addresses</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -1779,7 +1791,7 @@ Date: %4</source>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt; 님의 IP 주소는 %2 입니다.</translation>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt; 님의 IP 주소는 %2 입니다.</translation>
     </message>
     <message>
         <source>Private</source>
@@ -2242,7 +2254,7 @@ Date: %4</source>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP 주소는 %2 입니다.</translation>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP 주소는 %2 입니다.</translation>
     </message>
     <message>
         <source>/ping %1</source>

@@ -551,6 +551,7 @@ NetClient::HandleBeAddMessage(String nodePath, MessageRef ref)
 						if (!user())	// couldn't create?
 							break;	// oh well
 						user()->SetUserHostName(hostName);
+						emit UserHostName(sid, hostName);
 					}
 					
 					QString nodeName = QString::fromUtf8(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()));

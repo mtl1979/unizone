@@ -917,6 +917,14 @@ Päiväys: %4</translation>
         <source>User #%1 is now nameless.</source>
         <translation>Käyttäjä #%1 on nyt nimetön.</translation>
     </message>
+    <message>
+        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
+    </message>
+    <message>
+        <source>User #%1&apos;s IP address is %2.</source>
+        <translation>Käyttäjän #%1 IP-osoite on %2.</translation>
+    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -1991,6 +1999,10 @@ Päiväys: %4</translation>
         <source>500 kB</source>
         <translation type='obsolete'>500 kt</translation>
     </message>
+    <message>
+        <source>IP Addresses</source>
+        <translation>IP-osoitteet</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -2053,7 +2065,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
     </message>
     <message>
         <source>[Freeware] - Private</source>
@@ -2462,7 +2474,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation>&lt;font color="%3"&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
     </message>
     <message>
         <source>/ping %1</source>

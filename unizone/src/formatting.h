@@ -34,6 +34,8 @@ public:
 	static QString UserNameChanged();
 	static QString UserStatusChanged();
 	static QString UserStatusChanged2();
+	static QString UserIPAddress();
+	static QString UserIPAddress2();
 
 	// ping formatting
 	static QString PingText();
