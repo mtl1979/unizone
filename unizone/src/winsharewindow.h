@@ -427,7 +427,10 @@ private:
 #endif
 
 	void InitGUI();
+	void InitToolbars();
+
 	void Cleanup();
+
 	void HandleSignal();
 	void SendChatText(WTextEvent *, bool * reply = NULL);
 
@@ -468,7 +471,6 @@ private:
 
 	QString MapUsersToIDs(const QString & pattern);
 	QString MapIPsToNodes(const QString & pattern);
-
 
 	// see if we were named...
 	bool NameSaid(QString & msg);	// msg will be syntaxed if needed
@@ -522,6 +524,7 @@ private:
 	QListView * ChannelList;
 	QPushButton * Create;
 	QPushButton * Join;
+
 	// Search Pane
 
 	QLabel * fSearchLabel;
@@ -533,7 +536,6 @@ private:
 	QPushButton * fClearHistory;
 	WStatusBar * fStatus;
 	MessageRef fQueue;
-	// mutable QMutex fLock;		// to lock the list so only one method can be using it at a time
 
 	QString fCurrentSearchPattern;
 	StringMatcher fFileRegExp, fUserRegExp;
@@ -551,14 +553,11 @@ private:
 	void QueueDownload(const QString & file, WUser * user);
 	void EmptyQueues();
 
-	// void Lock() { fSearchLock.lock(); }
-	// void Unlock() { fSearchLock.unlock(); }
-
 	mutable QMutex fSearchLock;		// to lock the list so only one method can be using it at a time
 
 	// UniShare
 
-	int64 GetRegisterTime() const { return GetRegisterTime( GetUserName() ); }
+	int64 GetRegisterTime() const;
 
 	// Channels
 
@@ -588,6 +587,8 @@ private:
 	QString GetAdmins(const QString & channel);
 
 	void SetTopic(const QString & channel, const QString & topic);
+
+	// Titanic Transfer Protocol
 
 	Queue<TTPInfo *> _ttpFiles;
 

@@ -65,6 +65,7 @@
 #endif
 
 #define CLUMP_CHAR '\1'
+#define NUM_TOOLBARS 4
 
 const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
 
@@ -183,10 +184,14 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	if (fSettings->GetLogging())
 		StartLogging();
 
-	fAway = false;
 	// check away status... as it is possible to close the program in away state
 	if (fStatusList->currentText().stripWhiteSpace().lower() == fAwayMsg.stripWhiteSpace().lower())
 		fAway = true;
+	else
+	{
+		fAway = false;
+		SetAutoAwayTimer();
+	}
 
 	if (fSettings->GetInfo())
 	{
@@ -206,14 +211,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 		EndMessageBatch();
 	}
 
-	if (!fAway)
-		SetAutoAwayTimer();
-
 #ifdef WIN32
 	// try to find our handle
-	QString title = "[Freeware] - ";
-	title += tr("Unizone");
-	WString wtitle(title);
+	WString wtitle("[Freeware] - Unizone");
 	fWinHandle = FindWindow(NULL, wtitle); 
 
 	if (fWinHandle)
@@ -227,9 +227,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	if (fSettings->GetSharingEnabled())
 		StartAcceptThread();
 
-
 	if (fSettings->GetMaximized())
 		showMaximized();
+
 	fFileScanThread = new WFileThread(fNetClient, this, &fFileShutdownFlag);
 	CHECK_PTR(fFileScanThread);
 
@@ -306,18 +306,19 @@ WinShareWindow::StartAcceptThread()
 void
 WinShareWindow::StopAcceptThread()
 {
-	if (!fAccept)
-		return;
-	// Reset port number to 0, which means not accepting and
-	// let the net client know the change
-	fNetClient->SetPort(0);						
-	// BUG FIX: Port not being set in certain occasions
-	fNetClient->SetUserName(fUserName);
-	
-	fAccept->ShutdownInternalThread();
-	fAccept->WaitForInternalThreadToExit();
-	delete fAccept;
-	fAccept = NULL;
+	if (fAccept)
+	{
+		// Reset port number to 0, which means not accepting and
+		// let the net client know the change
+		fNetClient->SetPort(0);						
+		// BUG FIX: Port not being set in certain occasions
+		fNetClient->SetUserName(fUserName);
+		
+		fAccept->ShutdownInternalThread();
+		fAccept->WaitForInternalThreadToExit();
+		delete fAccept;
+		fAccept = NULL;
+	}
 }
 
 WinShareWindow::~WinShareWindow()
@@ -406,11 +407,7 @@ void
 WinShareWindow::customEvent(QCustomEvent * event)
 {
 	PRINT("\tWinShareWindow::customEvent\n");
-	if (!fNetClient)		// do this to avoid bad crash
-	{
-		return;
-	}
-	else
+	if (fNetClient)		// do this to avoid bad crash
 	{
 		switch (event->type())
 		{
@@ -570,19 +567,17 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				fNetClient->SetConnection(fSettings->GetConnection());
 				fNetClient->SetFileCount(0);
 				if (fSettings->GetSharingEnabled())
+				{
 					fNetClient->SetLoad(0, fSettings->GetMaxUploads());
-				
+					// Fake that we are scanning, so uploads get queued until we scan the very first time.
+					fScanning = true; 
+				}
 				
 				fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_PING));
 				
 				if (fSettings->GetInfo())
 					PrintSystem(tr("Connected."));
 
-				if ( fSettings->GetSharingEnabled() )
-				{
-					// Fake that we are scanning, so uploads get queued until we scan the very first time.
-					fScanning = true; 
-				}
 				return;
 			}
 			
@@ -614,8 +609,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				WTextEvent * wte = dynamic_cast<WTextEvent *>(event);
 				if (wte)
 				{
-//					if ( IsConnected( wte->Text() ) )
-						CheckResumes( wte->Text() );
+					CheckResumes( wte->Text() );
 				}
 				return;
 			}
@@ -735,7 +729,7 @@ WinShareWindow::StatusChanged(const QString & newStatus)
 {
 	fNetClient->SetUserStatus(newStatus); // <postmaster@raasu.org> 20021001
 	fUserStatus = newStatus;
-	QString pstatus = fUserStatus;
+	QString pstatus(fUserStatus);
 	EscapeHTML(pstatus);
 
 	// <postmaster@raasu.org> 20020929,20030211
@@ -784,6 +778,7 @@ WinShareWindow::NameChanged(const QString & newName)
 void
 WinShareWindow::resizeEvent(QResizeEvent * event)
 {
+	QMainWindow::resizeEvent(event);
 }
 
 void
@@ -793,7 +788,7 @@ WinShareWindow::InitGUI()
 	QValueList<int> splitList;
 	splitList.append(4);
 	splitList.append(1);
-
+	//
 
 	fTBMenu = new QToolBar( this );
 	addToolBar( fTBMenu, tr( "Menubar" ), Top, FALSE );
@@ -1001,7 +996,6 @@ WinShareWindow::InitGUI()
 	connect(fClearHistory, SIGNAL(clicked()), this, SLOT(ClearHistory()));
 
 	fQueue = GetMessageFromPool();
-	//CHECK_PTR(fQueue);
 
 	SetSearchStatus(tr("Idle."));
 
@@ -1032,6 +1026,8 @@ WinShareWindow::InitGUI()
 	fChannelsTab->addColSpacing(4, 20);
 
 	ChannelList = new QListView( fChannelsWidget, "ChannelList" );
+	CHECK_PTR(ChannelList);
+
 	ChannelList->addColumn( tr( "Name" ) );
 	ChannelList->addColumn( tr( "Topic" ) );
 	ChannelList->addColumn( tr( "Users" ) );
@@ -1041,10 +1037,12 @@ WinShareWindow::InitGUI()
 	fChannelsTab->addMultiCellWidget(ChannelList, 0, 4, 0, 4);
 	
 	Create = new QPushButton( tr( "&Create" ), fChannelsWidget, "Create" );
+	CHECK_PTR(Create);
 
 	fChannelsTab->addWidget(Create, 6, 1);
 
 	Join = new QPushButton( tr( "&Join" ), fChannelsWidget, "Join" );
+	CHECK_PTR(Join);
 
 	fChannelsTab->addWidget(Join, 6, 3);
 
@@ -1091,8 +1089,8 @@ WinShareWindow::InitGUI()
 	// main splitter
 	fMainSplitter = new QSplitter(fMainWidget);
 	CHECK_PTR(fMainSplitter);
+
 	fMainTab->addMultiCellWidget(fMainSplitter, 0, 12, 0, 9);
-	// fMainSplitter->move(0, 200);
 
 	// user list
 	fUsersBox = new QHGroupBox(fMainSplitter);
@@ -1107,7 +1105,8 @@ WinShareWindow::InitGUI()
 	fUsers->addColumn(tr("Files"));
 	fUsers->addColumn(tr("Connection"));
 	fUsers->addColumn(tr("Load"));
-	fUsers->addColumn(tr("Client"));		// as of now... WinShare specific, WinShare pings all the users and parses the string for client info
+	// as of now... WinShare specific, WinShare pings all the users and parses the string for client info
+	fUsers->addColumn(tr("Client"));		
 	
 
 	fUsers->setColumnAlignment(WNickListItem::ID, AlignRight); // <postmaster@raasu.org> 20021005
@@ -1116,10 +1115,12 @@ WinShareWindow::InitGUI()
 
 	for (int column = 0; column < 6; column++)
 		fUsers->setColumnWidthMode(column, QListView::Manual);
+
 	// set the sort indicator to show
 	fUsers->setShowSortIndicator(true);
 	
 	fUsers->setAllColumnsShowFocus(true);
+
 	// left pane
 	fLeftPane = new QVGroupBox(fMainSplitter);
 	CHECK_PTR(fLeftPane);
@@ -1129,7 +1130,10 @@ WinShareWindow::InitGUI()
 
 	fMainSplitter->setSizes(splitList);
 
+	//
 	// chat widgets
+	//
+
 	// chat splitter first though...
 	fChatSplitter = new QSplitter(fLeftPane);
 	CHECK_PTR(fChatSplitter);
@@ -1139,8 +1143,11 @@ WinShareWindow::InitGUI()
 	CHECK_PTR(fChatText);
 	fChatText->setTextFormat(QTextView::RichText);
 
+	//
 	// fInputText is a QMultiLineEdit, but we create
 	// a WChatText for more advanced handling
+	//
+
 	fInputText = new WChatText(this, fChatSplitter);
 	CHECK_PTR(fInputText);
 	fInputText->setWordWrap(QMultiLineEdit::WidgetWidth);
@@ -1157,6 +1164,7 @@ WinShareWindow::InitGUI()
 
 	// setup some defaults
 	// <postmaster@raasu.org> 20020924
+
 	fUserList->insertItem("Unizone Binky");
 	fServerList->insertItem("beshare.tycomsystems.com");
 #ifdef BETA
@@ -1253,7 +1261,7 @@ WinShareWindow::UpdateTextView()
 void
 WinShareWindow::UpdateUserList()
 {
-	WUserMap/* & */users = fNetClient->Users();
+	WUserMap users = fNetClient->Users();
 
 	WUserIter it = users.begin();
 	while (it != users.end())
@@ -1387,7 +1395,6 @@ WinShareWindow::EndMessageBatch()
 void
 WinShareWindow::PrintText(const QString & str, bool)
 {
-//	static QString output("");
 	if (fSettings->GetTimeStamps())
 		fOutput += GetTimeStamp();
 
@@ -1545,7 +1552,6 @@ WinShareWindow::Action(const QString & name, const QString & msg, bool batch)
 	}
 	else
 	{
-		// CheckScrollState();
 		PrintText(chat);
 	}
 }
@@ -1563,7 +1569,6 @@ WinShareWindow::PrintError(const QString & error, bool batch)
 		}
 		else
 		{
-			// CheckScrollState();
 			PrintText(e);
 		}
 	}
@@ -1582,7 +1587,6 @@ WinShareWindow::PrintWarning(const QString & warning, bool batch)
 		}
 		else
 		{
-			// CheckScrollState();
 			PrintText(e);
 		}
 	}
@@ -1602,8 +1606,7 @@ WinShareWindow::PrintSystem(const QString & msg, bool batch)
 QString
 WinShareWindow::GetRemoteVersionString(const MessageRef msg)
 {
-
-	QString versionString = "?";
+	QString versionString("?");
 	const char * version;
 
 	if (msg()->FindString("version", &version) == B_OK)
@@ -1812,45 +1815,48 @@ WinShareWindow::LoadSettings()
 
 	// Toolbar Layout
 
-#define NUM_TOOLBARS 4
 
+	InitToolbars();
+}
+
+void
+WinShareWindow::InitToolbars()
+{
+	int	i;
+
+	int _dock[NUM_TOOLBARS];
+	int _index[NUM_TOOLBARS];
+	bool _nl[NUM_TOOLBARS];
+	int _extra[NUM_TOOLBARS];
+	
+	for (i = 0; i < NUM_TOOLBARS; i++)
+		fSettings->GetToolBarLayout(i, _dock[i], _index[i], _nl[i], _extra[i]); 
+	
+	// Start from dock position 0
+	// Start moving toolbars from index value of 0
+	
+	for (int d1 = 0; d1 < 7; d1++)			// dock position
 	{
-		int i;
-		int _dock[NUM_TOOLBARS];
-		int _index[NUM_TOOLBARS];
-		bool _nl[NUM_TOOLBARS];
-		int _extra[NUM_TOOLBARS];
-		
-		for (i = 0; i < NUM_TOOLBARS; i++)
-			fSettings->GetToolBarLayout(i, _dock[i], _index[i], _nl[i], _extra[i]); 
-		
-		// Start from dock position 0
-		// Start moving toolbars from index value of 0
-
-		for (int d1 = 0; d1 < 7; d1++)			// dock position
+		for (int ip = 0; ip < NUM_TOOLBARS; ip++)		// index position
 		{
-			for (int ip = 0; ip < NUM_TOOLBARS; ip++)		// index position
+			for (int i1 = 0; i1 < NUM_TOOLBARS; i1++)	// layout index
 			{
-				for (int i1 = 0; i1 < NUM_TOOLBARS; i1++)	// layout index
+				if ((_dock[i1] == d1) && (_index[i1] == ip))
 				{
-					if ((_dock[i1] == d1) && (_index[i1] == ip))
+					QToolBar * tb = NULL;
+					switch (i1)
 					{
-						QToolBar * tb = NULL;
-						switch (i1)
-						{
-						case 0: tb = fTBMenu;
-						case 1: tb = fTBServer;
-						case 2: tb = fTBNick;
-						case 3: tb = fTBStatus;
-						}
-						moveToolBar(tb, (QMainWindow::ToolBarDock) _dock[i1], _nl[i1], 3, _extra[i1]);
+					case 0: tb = fTBMenu;
+					case 1: tb = fTBServer;
+					case 2: tb = fTBNick;
+					case 3: tb = fTBStatus;
 					}
+					moveToolBar(tb, (QMainWindow::ToolBarDock) _dock[i1], _nl[i1], 3, _extra[i1]);
 				}
 			}
 		}
 	}
 }
-
 
 void
 WinShareWindow::SaveSettings()
@@ -2116,7 +2122,7 @@ WinShareWindow::LaunchSearch(const QString & pattern)
 QString
 WinShareWindow::MapIPsToNodes(const QString & pattern)
 {
-	QString qResult = "";
+	QString qResult("");
 	QString qItem;
 	QStringTokenizer qTok(qResult, ",");
 	while ((qItem = qTok.GetNextToken()) != QString::null)
@@ -2137,7 +2143,7 @@ WinShareWindow::MapIPsToNodes(const QString & pattern)
 QString 
 WinShareWindow::MapUsersToIDs(const QString & pattern)
 {
-	QString qResult = "";
+	QString qResult("");
 	WUserIter it = gWin->fNetClient->Users().begin();
 	QString qTemp = pattern;
 	QString qItem;
@@ -2190,7 +2196,7 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 void
 WinShareWindow::LaunchPrivate(const QString & pattern)
 {
-	QString users = pattern;
+	QString users(pattern);
 	if (users.startsWith("//"))
 	{
 		users = users.mid(2);
@@ -2504,6 +2510,12 @@ int64
 WinShareWindow::GetRegisterTime(const QString & nick) const
 { 
 	return fSettings->GetRegisterTime(nick); 
+}
+
+int64
+WinShareWindow::GetRegisterTime() const
+{ 
+	return fSettings->GetRegisterTime( GetUserName() ); 
 }
 
 void
