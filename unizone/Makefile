@@ -56,7 +56,6 @@ SRCFILES = \
 	src/version.cpp \
 	src/wcrypt.cpp \
 	src/werrorevent.cpp \
-	src/wfile.cpp \
 	src/winshare_channels.cpp \
 	src/winshare_lists.cpp \
 	src/winshare_network.cpp \
@@ -75,6 +74,7 @@ SRCFILES = \
 	src/unix/filethread_unix.cpp \
 	src/unix/gotourl_unix.cpp \
 	src/unix/mimedb.cpp \
+	src/unix/wfile.cpp \
 	src/unix/wfile_unix.cpp \
 	src/unix/wlaunchthread_unix.cpp
 
