@@ -2717,5 +2717,13 @@ Date: %4</translation>
         <source>/compression [level] - set or view message compression level</source>
         <translation>/compression [level] - set or view message compression level</translation>
     </message>
+    <message>
+        <source>Running: %1</source>
+        <translation>Running: %1</translation>
+    </message>
+    <message>
+        <source>/running - show time elapsed since you started Unizone</source>
+        <translation>/running - show time elapsed since you started Unizone</translation>
+    </message>
 </context>
 </TS>

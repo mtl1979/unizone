@@ -2,6 +2,7 @@
 #define HTMLVIEW_H
 
 #include <qtextbrowser.h>
+#include <qtooltip.h>
 
 #include "debugimpl.h"
 
@@ -14,6 +15,8 @@ public:
 	{
 		if (!name)
 			setName( "WHTMLView" );
+		fURL = fOldURL = QString::null;
+		connect( this, SIGNAL(highlighted(const QString &)), this, SLOT(URLSelected(const QString &)) );
 	}
 
 	virtual ~WHTMLView() {}
@@ -36,6 +39,19 @@ protected:
 		QTextBrowser::viewportMouseReleaseEvent(e);
 		PRINT("WHTMLView: Release\n");
 	}
+
+	virtual void viewportMouseMoveEvent(QMouseEvent * e)
+	{
+		if (fOldURL != fURL)
+		{
+			fOldURL = fURL;
+			QToolTip::remove(this);
+			if (fURL != QString::null)
+				QToolTip::add(this, fURL);
+		}
+		QTextBrowser::viewportMouseMoveEvent(e);
+		PRINT("WHTMLView: Move\n");
+	}
 	
 #ifndef WIN32
 	virtual void showEvent(QShowEvent * event)
@@ -45,6 +61,14 @@ protected:
 		emit GotShown(txt);
 	}
 #endif
+private:
+	QString fOldURL, fURL;
+
+private slots:
+	void URLSelected(const QString & url)
+	{
+		fURL = url;
+	}
 };
 
 #endif

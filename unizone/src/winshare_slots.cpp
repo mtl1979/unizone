@@ -207,6 +207,13 @@ WinShareWindow::URLSelected(const QString & href)
 }
 
 void
+WinShareWindow::DoubleClicked(QListViewItem * i)
+{
+	QString uid = i->text(1).stripWhiteSpace();
+	LaunchPrivate(uid);
+}
+
+void
 WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int c)
 {
 	// empty menu

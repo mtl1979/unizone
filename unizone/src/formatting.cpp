@@ -155,12 +155,15 @@ ParseChatText(const QString & str)
 		else if (
 			(qToken.lower().startsWith("file://")) || 
 			(qToken.lower().startsWith("http://")) ||
+			(qToken.lower().startsWith("www.")) ||
 			(qToken.lower().startsWith("https://")) || 
 			(qToken.lower().startsWith("mailto:"))||
-			(qToken.lower().startsWith("ftp://")) || 
+			(qToken.lower().startsWith("ftp://")) ||
+			(qToken.lower().startsWith("ftp.")) ||
 			(qToken.lower().startsWith("audio://")) ||
 			(qToken.lower().startsWith("mms://")) || // <postmaster@raasu.org> 20021116
-			(qToken.lower().startsWith("beshare:")) || 
+			(qToken.lower().startsWith("beshare:")) ||
+			(qToken.lower().startsWith("beshare.")) ||
 			(qToken.lower().startsWith("priv:")) ||
 			(qToken.lower().startsWith("share:"))
 			)
@@ -287,6 +290,9 @@ ParseChatText(const QString & str)
 			// now the url...
 			QString urlfmt = WFormat::URL1.arg(WColors::URL).arg(gWin->fSettings->GetFontSize());
 			urlfmt += "<a href=\"";
+			if ( qUrl.startsWith("www.") ) urlfmt += "http://";
+			if ( qUrl.startsWith("ftp.") ) urlfmt += "ftp://";
+			if ( qUrl.startsWith("beshare.") ) urlfmt += "server://";
 			urlfmt += qUrl;
 			urlfmt += "\">";
 			// Display URL label or link address, if label doesn't exist
@@ -335,7 +341,7 @@ ParseString(QString & str)
 	bool first = true;
 	for (int i = 0; i < (int)str.length(); i++)
 	{
-		// go through the string and chnage newlines to <br> (html)
+		// go through the string and change newlines to <br> (html)
 		if (str[i] == '\n')
 			str.replace(i, 1, "<br>");
 		else if (str[i] == ' ')

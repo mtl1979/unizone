@@ -95,6 +95,12 @@ GotoURL(QString url)
 {
 	PRINT("GotoURL() called\n");
 	QString u = url.lower();
+	if (u.startsWith("server://"))
+	{
+		url = url.mid(9);
+		gWin->Connect(url);
+		return;
+	}
 #ifdef WIN32
 	if (u.startsWith("audio"))		// <postmaster@raasu.org> 20021116
 	{

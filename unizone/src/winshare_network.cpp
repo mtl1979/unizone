@@ -13,6 +13,7 @@ typedef hostent *LPHOSTENT;
 #endif
 
 #include "winsharewindow.h"
+#include "global.h"
 #include "settings.h"
 #include "debugimpl.h"
 #include "formatting.h"
@@ -323,6 +324,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 				SetWatchPattern("");	// clear watch pattern
 		}
+		else if (CompareCommand(sendText, "/running"))
+		{
+			PrintSystem( tr("Running: %1").arg(MakeHumanTime(GetCurrentTime64() - GetStartTime())) );
+		}
 		// <postmaster@raasu.org> 20021026
 		else if (CompareCommand(sendText, "/uptime"))
 		{
@@ -383,7 +388,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (users.length() > 0)
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_KICK));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) users.utf8());
+				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
@@ -409,7 +414,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (users.length() > 0)
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDBANS));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) users.utf8());
+				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
@@ -435,7 +440,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (users.length() > 0)
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEBANS));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) users.utf8());
+				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
@@ -448,7 +453,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (mask.length() > 0)
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDREQUIRES));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) mask.utf8());
+				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(mask).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -459,7 +464,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (mask.length() > 0)
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEREQUIRES));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) mask.utf8());
+				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(mask).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -1936,6 +1941,19 @@ void
 WinShareWindow::Connect(QString server)
 {
 	fServer = server;
+	if (fServerList->currentText() != fServer)
+	{
+		GotUpdateCmd("addserver", fServer);
+		for (int i = 0; i < fServerList->count(); i++)
+		{
+			QString slist = fServerList->text(i).stripWhiteSpace();
+			if (slist.lower() == fServer.lower())
+			{
+				// found our server
+				fServerList->setCurrentItem(i);
+			}
+		}
+	}
 	Connect();
 }
 
@@ -2067,6 +2085,8 @@ WinShareWindow::ShowHelp(QString command)
 	helpText			+=	tr("/remuser [index] - remove nick from nick list");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/resumes - list files waiting to be resumed");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/running - show time elapsed since you started Unizone");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/save - saves settings (might be necessary after editing drop-down lists)");
 	helpText			+=	"\n\t\t\t\t"; 

@@ -114,6 +114,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	connect(fPrivate, SIGNAL(activated(int)), this, SLOT(PopupActivated(int)));
 	connect(fUsers, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 			this, SLOT(RightButtonClicked(QListViewItem *, const QPoint &, int)));
+	connect(fUsers, SIGNAL(doubleClicked(QListViewItem *)),
+			this, SLOT(DoubleClicked(QListViewItem *)));
 
 	LoadSettings();
 	// initialize local user
@@ -1537,7 +1539,26 @@ WinShareWindow::LaunchSearch(QString & pattern)
 	gWin->fSearchWindow->SetSearch(pattern);
 }
 
-QString WinShareWindow::MapUsersToIDs(const QString & pattern)
+QString
+WinShareWindow::MapIPsToNodes(const QString & pattern)
+{
+	QString qResult = "";
+	QString qItem;
+	QStringTokenizer qTok(qResult, ",");
+	while ((qItem = qTok.GetNextToken()) != QString::null)
+	{
+		qResult += "/" + qItem + "/*,";
+	}
+	if (qResult.right(1) == ",") 
+	{
+		qResult = qResult.left(qResult.length()-1);
+	}
+	PRINT("MapIPsToNodes: %S\n", qStringToWideChar(qResult));
+	return qResult;
+}
+
+QString 
+WinShareWindow::MapUsersToIDs(const QString & pattern)
 {
 	QString qResult = "";
 	WUserIter it = gWin->fNetClient->Users().begin();

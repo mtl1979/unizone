@@ -18,9 +18,18 @@
 #include <shlwapi.h>
 #endif
 
+int64 fStartTime;
+
+int64 GetStartTime()
+{
+	return fStartTime;
+}
+
+
 int 
 main( int argc, char** argv )
 {
+	fStartTime = GetCurrentTime64();
 	QApplication app( argc, argv );
 
 	// Set alternative codec if translation requires it

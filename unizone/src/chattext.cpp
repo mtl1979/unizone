@@ -64,8 +64,21 @@ WChatText::keyPressEvent(QKeyEvent * event)
 		{
 			QMultiLineEdit::keyPressEvent(event);
 		}
+		else if (event->state() & ControlButton)				
+		{
+			// First line
+			if (fCurLine > 0)
+			{
+				fCurLine = 0;
+				QString line;
+				fBuffer->GetItemAt(fCurLine, line);
+				setText(line);
+				setCursorPosition(9999, 9999);
+			}
+		}
 		else
 		{
+			// Previous line
 			if (fCurLine > 0)
 			{
 				fCurLine--;
@@ -82,8 +95,26 @@ WChatText::keyPressEvent(QKeyEvent * event)
 		{
 			QMultiLineEdit::keyPressEvent(event);
 		}
+		else if (event->state() & ControlButton)					
+		{
+			// Last line
+			if (fCurLine < (int)fBuffer->GetNumItems() - 2)
+			{
+				fCurLine = fBuffer->GetNumItems() - 1;
+				QString line;
+				fBuffer->GetItemAt(fCurLine, line);
+				setText(line);
+				setCursorPosition(9999, 9999);
+			}
+			else
+			{
+				fCurLine = fBuffer->GetNumItems();
+				setText("");
+			}
+		}
 		else
 		{
+			// Next line
 			if (fCurLine < (int)fBuffer->GetNumItems() - 1)
 			{
 				fCurLine++;

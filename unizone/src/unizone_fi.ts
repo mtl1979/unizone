@@ -2809,5 +2809,13 @@ Päiväys: %4</translation>
         <source>/compression [level] - set or view message compression level</source>
         <translation>/compression [taso] - asettaa tai näyttää viestien pakkaustason</translation>
     </message>
+    <message>
+        <source>Running: %1</source>
+        <translation>Käynnissä: %1</translation>
+    </message>
+    <message>
+        <source>/running - show time elapsed since you started Unizone</source>
+        <translation>/running - näyttää ajan, kuinka kauan Unizone on ollut käynnissä</translation>
+    </message>
 </context>
 </TS>

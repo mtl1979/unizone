@@ -9,4 +9,5 @@
 extern WinShareWindow * gWin;	// global window
 void SetSettingsFile(const char * sf);
 const char * GetSettingsFile();
+int64 GetStartTime();
 #endif

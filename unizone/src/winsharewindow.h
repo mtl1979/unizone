@@ -130,6 +130,7 @@ public slots:
 
 	// popup menu
 	void RightButtonClicked(QListViewItem *, const QPoint &, int);
+	void DoubleClicked(QListViewItem *);
 	void PopupActivated(int);
 
 	// auto away timer
@@ -303,6 +304,7 @@ private:
 	void GotUpdateCmd(const char * param, QString val);
 
 	QString MapUsersToIDs(const QString & pattern);
+	QString MapIPsToNodes(const QString & pattern);
 
 
 	// see if we were named...
