@@ -750,8 +750,8 @@ WinShareWindow::StatusChanged(const QString & newStatus)
 	TranslateStatus(pstatus);
 	//
 
-	PrintSystem(WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
-				WFormat::StatusChanged().arg(FixStringStr(pstatus))));
+	QString status = WFormat::StatusChanged( FixStringStr(pstatus) );
+	PrintSystem(WFormat::Text(status));
 }
 
 void
@@ -776,9 +776,8 @@ WinShareWindow::NameChanged(const QString & newName)
 		fSettings->SetRegisterTime(fUserName, nr);
 	}
 	fNetClient->SetUserName(newName); // <postmaster@raasu.org> 20021011
-	QString nameChanged = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
-	nameChanged += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(tr("Name changed to <font color=\"%2\">%1</font>.").
-		arg(FixStringStr(newName)).arg(WColors::LocalName)); // <postmaster@raasu.org> 20021001
+	QString status = WFormat::NameChanged(newName);
+	QString nameChanged = WFormat::SystemText(status); // <postmaster@raasu.org> 20021001
 	PrintText(nameChanged);
 	fUserName = newName;
 	// Make sure new user name has register time

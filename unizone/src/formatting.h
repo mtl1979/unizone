@@ -10,63 +10,64 @@
 
 #include "colors.h"
 #include "debugimpl.h"
+#include "support/MuscleSupport.h"
 
-class WFormat
+class WFormat : private QObject
 {
+	Q_OBJECT
 public:
 	// formatting for:
 	//	(id) UserName
-	static QString LocalName;
-	static QString RemoteName;
+	static QString LocalName(const QString &session, const QString &name);
+	static QString RemoteName(const QString &session, const QString &name);
 
 	// text color...
-	static QString Text;
+	static QString Text(const QString &text);
+	static QString Watch(const QString &text);
 
 	//    |
 	//   \ /
 	//	System: User #?? is now connected.
-	static QString SystemText();
-	static QString UserConnected();
-	static QString UserDisconnected();
-	static QString UserDisconnected2();
-	static QString UserNameChangedNoOld();
-	static QString UserNameChangedNoNew();
-	static QString UserNameChanged();
-	static QString UserStatusChanged();
-	static QString UserStatusChanged2();
-	static QString UserIPAddress();
-	static QString UserIPAddress2();
+	static QString SystemText(const QString &text);
+	static QString UserConnected(const QString &session);
+	static QString UserDisconnected(const QString &session, const QString &user);
+	static QString UserDisconnected2(const QString &session);
+	static QString UserNameChangedNoOld(const QString &session, const QString &name);
+	static QString UserNameChangedNoNew(const QString &session);
+	static QString UserNameChanged(const QString &session, const QString &oldname, const QString &newname);
+	static QString UserStatusChanged(const QString &session, const QString &user, const QString &status);
+	static QString UserStatusChanged2(const QString &session, const QString &status);
+	static QString UserIPAddress(const QString &user, const QString &ip);
+	static QString UserIPAddress2(const QString &session, const QString &ip);
 
 	// ping formatting
-	static QString PingText();
-	static QString PingUptime();
+	static QString PingText(int32 time, const QString &version);
+	static QString PingUptime(const QString &uptime, const QString &logged);
 
 	// error format
-	static QString Error();
-	// error text color (just regular text)
-	static QString ErrorMsg;
+	static QString Error(const QString &text);
 
 	// warning format
-	static QString Warning();
+	static QString Warning(const QString &text);
 
 	// local stuff
-	static QString StatusChanged();
+	static QString StatusChanged(const QString &status);
+	static QString NameChanged(const QString &name);
 
 	// private messages
-	static QString SendPrivMsg;
-	static QString ReceivePrivMsg;
+	static QString SendPrivMsg(const QString &session, const QString &myname, const QString &othername);
+	static QString ReceivePrivMsg(const QString &session, const QString &othername, const QString &text);
 
 	// action
 	static QString Action();
 
-	// URL -- <postmaster@raasu.org> 20020930
-	static QString URL1;
-	static QString URL2;
+	// URL -- <postmaster@raasu.org> 20020930,20040511
+	static QString URL(const QString &url);
 
 	// You got pinged
-	static QString GotPinged();
+	static QString GotPinged(const QString &session, const QString &name);
 
-	static QString TimeStamp;
+	static QString TimeStamp(const QString &stamp);
 };
 
 QString ParseChatText(const QString & str);		// this is a whole different type of

@@ -618,56 +618,11 @@ Channel::SendChannelText(const QString & message)
 	QString name = FixStringStr(gWin->GetUserName());
 	QString msg = FixStringStr(message);
 	QString fmt;
-	fmt = WFormat::LocalName.arg(WColors::LocalName).arg(gWin->fSettings->GetFontSize()).arg(fNet->LocalSessionID()).arg(name);
-	fmt += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);
+	fmt = WFormat::LocalName(fNet->LocalSessionID(), name);
+	fmt += WFormat::Text(msg);
 	PrintText(fmt);
 }
-/*
-void
-Channel::PrintText(const QString & str)
-{
-	QString output("");
 
-	// Check for timestamp
-	if (gWin->fSettings->GetTimeStamps())
-		output = GetTimeStamp();
-	output += str;
-
-#if (QT_VERSION < 0x030000)
-	if (fChatText->text().isEmpty())
-		fChatText->setText(output);
-	else
-#endif
-	{
-		CheckScrollState();
-		fChatText->append(
-#if (QT_VERSION < 0x030000)
-				"\t" + 
-#endif
-				output);
-	}
-	UpdateTextView();
-}
-
-void
-Channel::PrintSystem(const QString & msg)
-{
-	QString s = WFormat::SystemText().arg(WColors::System).arg(gWin->fSettings->GetFontSize()); // <postmaster@raasu.org> 20021127 -- Wrong order!!
-	s += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(ParseChatText((QString &)msg));
-	PrintText(s);
-}
-
-void
-Channel::PrintError(const QString & error)
-{
-	if (gWin->fSettings->GetError())
-	{
-		QString e = WFormat::Error().arg(WColors::Error).arg(gWin->fSettings->GetFontSize());
-		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(gWin->fSettings->GetFontSize()).arg(error);
-		PrintText(e);
-	}
-}
-*/
 void
 Channel::NewChannelText(const QString &channel, const QString &user, const QString &text)
 {
@@ -702,8 +657,8 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 			name = FixStringStr(name);
 			QString message = FixStringStr(text);
 			QString fmt;
-			fmt = WFormat::LocalName.arg(WColors::RemoteName).arg(gWin->fSettings->GetFontSize()).arg(user).arg(name);
-			fmt += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(message);
+			fmt = WFormat::LocalName(user, name);
+			fmt += WFormat::Text(message);
 			PrintText(fmt);
 		}
 	}
@@ -773,14 +728,14 @@ Channel::UserDisconnected(const QString &sid, const QString &name)
 			QString msg;
 			if (uname.isEmpty())
 			{
-				msg = WFormat::UserDisconnected2().arg(sid);
+				msg = WFormat::UserDisconnected2(sid);
 			}
 			else
 			{
 				// <postmaster@raasu.org> 20021112
-				msg = WFormat::UserDisconnected().arg(sid).arg(uname).arg(WColors::RemoteName); 
+				msg = WFormat::UserDisconnected(sid, uname); 
 			}
-			QString parse = WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);
+			QString parse = WFormat::Text(msg);
 			PrintSystem(parse);
 		}
 		(*iter).second()->RemoveFromListView(fChannelUsers);

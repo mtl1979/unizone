@@ -93,6 +93,78 @@
         <source>&lt;u&gt;http://magep.com/&lt;/u&gt;</source>
         <translation type='obsolete'>&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
+    <message>
+        <source>User #%1 (a.k.a.</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;font color="%1"&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>) is now </source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>User #%1 is now </source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&apos;s IP address is %1.</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>User #%1&apos;s IP address is %2.</source>
+        <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
+    </message>
+    <message>
+        <source>&lt;font color="%1" size="%2"&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>Ping returned in %3 milliseconds</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>Uptime: %1, Logged on for %2)</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Error:&lt;/b&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>You are now </source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>Name changed to &lt;font color="%1"&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;font size="%1"&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%1&lt;/b&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Action:&lt;/b&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>) pinged you.</source>
+        <translation type='obsolete'></translation>
+    </message>
 </context>
 <context>
     <name>AboutDlg</name>
@@ -637,59 +709,59 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
-        <translation>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Sistema:&lt;/b&gt; &lt;/font&gt;</translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Sistema:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
         <source>User #%1 is now connected.</source>
-        <translation>El usuario #%1 ha conectado.</translation>
+        <translation type='obsolete'>El usuario #%1 ha conectado.</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;) has disconnected.</source>
-        <translation>El usuario #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;) ha desconectado.</translation>
+        <translation type='obsolete'>El usuario #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;) ha desconectado.</translation>
     </message>
     <message>
         <source>User #%1 is now known as &lt;font color="%3"&gt;%2&lt;/font&gt;.</source>
-        <translation>El usuario #%1 es conocido como &lt;font color="%3"&gt;%2&lt;/font&gt;.</translation>
+        <translation type='obsolete'>El usuario #%1 es conocido como &lt;font color="%3"&gt;%2&lt;/font&gt;.</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) is now known as &lt;font color="%5"&gt;%3&lt;/font&gt;.</source>
-        <translation>El usuario #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) se renombra a &lt;font color="%5"&gt;%3&lt;/font&gt;.</translation>
+        <translation type='obsolete'>El usuario #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) se renombra a &lt;font color="%5"&gt;%3&lt;/font&gt;.</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) is now %3.</source>
-        <translation>El usuario #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) está %3.</translation>
+        <translation type='obsolete'>El usuario #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) está %3.</translation>
     </message>
     <message>
         <source>User #%1 is now %2.</source>
-        <translation>El usuario #%1 está %2.</translation>
+        <translation type='obsolete'>El usuario #%1 está %2.</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
-        <translation>&lt;font color="%1" size="%2"&gt;Respuesta a Ping en %3 milisegundos (%4)&lt;/font&gt;</translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;Respuesta a Ping en %3 milisegundos (%4)&lt;/font&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</source>
-        <translation>&lt;font color="%1" size="%2"&gt; (Uptime: %3, conectado por %4)&lt;/font&gt;</translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt; (Uptime: %3, conectado por %4)&lt;/font&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Error:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Error:&lt;/b&gt; &lt;/font&gt;</translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Error:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Warning:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation>&lt;font color=""%1"" size=""%2""&gt;&lt;b&gt;Aviso:&lt;/b&gt; &lt;/font&gt;</translation>
+        <translation type='obsolete'>&lt;font color=""%1"" size=""%2""&gt;&lt;b&gt;Aviso:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
         <source>You are now %1.</source>
-        <translation>Usted está %1.</translation>
+        <translation type='obsolete'>Usted está %1.</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Action:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation>&lt;font color=""%1"" size=""%2""&gt;&lt;b&gt;Acción:&lt;/b&gt; &lt;/font&gt;</translation>
+        <translation type='obsolete'>&lt;font color=""%1"" size=""%2""&gt;&lt;b&gt;Acción:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
         <source>&lt;font color="%1" size="%2"&gt;User #%3 (a.k.a. &lt;font color="%5"&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</source>
-        <translation>&lt;font color="%1" size="%2"&gt;El usuario #%3 (a.k.a. &lt;font color="%5"&gt;%4&lt;/font&gt;) le ha hecho ping.&lt;/font&gt;</translation>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;El usuario #%3 (a.k.a. &lt;font color="%5"&gt;%4&lt;/font&gt;) le ha hecho ping.&lt;/font&gt;</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
@@ -806,19 +878,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation>User #%1 has disconnected.</translation>
+        <translation type='obsolete'>User #%1 has disconnected.</translation>
     </message>
     <message>
         <source>User #%1 is now nameless.</source>
-        <translation>User #%1 is now nameless.</translation>
+        <translation type='obsolete'>User #%1 is now nameless.</translation>
     </message>
     <message>
         <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation>La direcciín IP de &lt;font color="%3"&gt;%1&lt;/font&gt; es %2.</translation>
+        <translation type='obsolete'>La direcciín IP de &lt;font color="%3"&gt;%1&lt;/font&gt; es %2.</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation>User #%1&apos;s IP address is %2.</translation>
+        <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>Reading directory...</source>
@@ -1268,6 +1340,153 @@ Date: %4</translation>
     <message>
         <source>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)</source>
         <translation>Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)</translation>
+    </message>
+</context>
+<context>
+    <name>WFormat</name>
+    <message>
+        <source>&lt;font size="%1"&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&lt;font color="%1"&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;(%1)&lt;/b&gt; </source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;font color="%1" size="%2"&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;System:&lt;/b&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User #%1 is now connected.</source>
+        <translation type='unfinished'>El usuario #%1 ha conectado.</translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a. &lt;font color="%2"&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>) has disconnected.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User #%1 has disconnected.</source>
+        <translation type='unfinished'>User #%1 has disconnected.</translation>
+    </message>
+    <message>
+        <source>User #%1 is now known as</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User #%1 is now</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>nameless</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>) is now known as &lt;font color="%1"&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>) is now </source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>User #%1 is now </source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&apos;s IP address is %1.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User #%1&apos;s IP address is %2.</source>
+        <translation type='unfinished'>User #%1&apos;s IP address is %2.</translation>
+    </message>
+    <message>
+        <source>Ping returned in %3 milliseconds</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>Uptime: %1, Logged on for %2)</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Error:&lt;/b&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>You are now </source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>Name changed to &lt;font color="%1"&gt;</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%1&lt;/b&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Action:&lt;/b&gt;</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a. </source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>) pinged you.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>) is now known as</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Ping returned in %1 milliseconds</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Uptime: %1, Logged on for %2</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>You are now</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Name changed to</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>) is now</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -2485,7 +2704,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Name changed to &lt;font color="%2"&gt;%1&lt;/font&gt;.</source>
-        <translation>Nombre cambiado a &lt;font color="%2"&gt;%1&lt;/font&gt;.</translation>
+        <translation type='obsolete'>Nombre cambiado a &lt;font color="%2"&gt;%1&lt;/font&gt;.</translation>
     </message>
     <message>
         <source>Server:</source>

@@ -521,14 +521,14 @@ GetTimeStamp()
 		_day = qDate;
 		qDate.prepend(" ");
 		qDate.prepend(QObject::tr("Date:", "Date"));
-		ret = WFormat::TimeStamp.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(qDate);
+		ret = WFormat::TimeStamp(qDate);
 		ret += "<br>";
 	}
 	
 	qCurTime.prepend("[");
 	qCurTime.append("] ");
 
-	ret += WFormat::TimeStamp.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(qCurTime);
+	ret += WFormat::TimeStamp(qCurTime);
 	return ret;
 }
 

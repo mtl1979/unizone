@@ -172,7 +172,8 @@ ChatWindow::Action(const QString & name, const QString & msg)
 	QString nameText = FixStringStr(msg);
 	if (NameSaid(nameText) && Settings()->GetSounds())
 		QApplication::beep();
-	chat += WFormat::Text.arg(WColors::Text).arg(Settings()->GetFontSize()).arg(QObject::tr("%1 %2").arg(FixStringStr(name)).arg(nameText));
+	QString text = QObject::tr("%1 %2").arg(FixStringStr(name)).arg(nameText);
+	chat += WFormat::Text(text);
 
 	PrintText(chat);
 }
@@ -208,8 +209,7 @@ ChatWindow::PrintText(const QString & str)
 void 
 ChatWindow::PrintSystem(const QString & msg)
 {
-	QString s = WFormat::SystemText().arg(WColors::System).arg(Settings()->GetFontSize());
-	s += WFormat::Text.arg(WColors::Text).arg(Settings()->GetFontSize()).arg(ParseChatText(msg));
+	QString s = WFormat::SystemText( ParseChatText(msg) );
 
 	PrintText(s);
 }
@@ -219,8 +219,7 @@ ChatWindow::PrintError(const QString & error)
 {
 	if (Settings()->GetError())
 	{
-		QString e = WFormat::Error().arg(WColors::Error).arg(Settings()->GetFontSize());
-		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(Settings()->GetFontSize()).arg(error);
+		QString e = WFormat::Error(error);
 
 		PrintText(e);
 	}
@@ -231,8 +230,7 @@ ChatWindow::PrintWarning(const QString & warning)
 {
 	if (Settings()->GetError())
 	{
-		QString e = WFormat::Warning().arg(WColors::Error).arg(Settings()->GetFontSize());
-		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(Settings()->GetFontSize()).arg(warning);
+		QString e = WFormat::Warning(warning);
 
 		PrintText(e);
 	}

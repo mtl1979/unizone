@@ -1057,8 +1057,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				*reply = true;
 				// format an error string
-				sendText = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
-				sendText += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(tr("Unknown command!"));
+				sendText = WFormat::Error( tr("Unknown command!") );
 				e->SetText(sendText);
 			}
 			else
@@ -1083,8 +1082,8 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt)
 	{
 		if (fSettings->GetChat())
 		{
-			QString chat = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(GetUserID()).arg(FixStringStr(GetUserName()));
-			chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
+			QString chat = WFormat::LocalName(GetUserID(), FixStringStr(GetUserName()));
+			chat += WFormat::Text(out);
 			PrintText(chat);
 		}
 	}
@@ -1106,8 +1105,8 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 	{
 		if (fSettings->GetChat())
 		{
-			QString chat = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(GetUserID()).arg(FixStringStr(GetUserName()));
-			chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
+			QString chat = WFormat::LocalName(GetUserID(), FixStringStr(GetUserName()));
+			chat += WFormat::Text(out);
 			PrintText(chat);
 		}
 	}
@@ -1132,10 +1131,9 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 					}
 					else
 					{
-						chat = WFormat::SendPrivMsg.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(GetUserID()).arg(
-									me).arg(other);
+						chat = WFormat::SendPrivMsg(GetUserID(), me, other);
 					}
-					chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(out);
+					chat += WFormat::Text(out);
 					PRINT("Printing\n");
 					PrintText(chat);
 				}
@@ -1178,9 +1176,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 				{
 					*reply = true;
 					// this will put an error message in the private window
-					QString error = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
-					error += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(tr("User doesn't exist!"));
-					text = error;
+					text = WFormat::Error(tr("User doesn't exist!"));
 				}
 			}
 		}
@@ -1214,7 +1210,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 				}
 				iter++;
 				if (iter == sendTo.end())
-					qsendtext =  sendText;
+					qsendtext = sendText;
 			}
 			if (!isping && reply)
 			{
@@ -1227,13 +1223,13 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 					QString fmt;
 					if (qsendtext.startsWith(name+" ") || qsendtext.startsWith(name + "'s ")) // simulate action?
 					{
-						fmt = WFormat::Action().arg(WColors::Action).arg(fSettings->GetFontSize());
+						fmt = WFormat::Action();
 					}
 					else
 					{
-						fmt = WFormat::LocalName.arg(WColors::LocalName).arg(fSettings->GetFontSize()).arg(GetUserID()).arg(name);
+						fmt = WFormat::LocalName(GetUserID(), name);
 					}
-					fmt += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(qsendtext);
+					fmt += WFormat::Text(qsendtext);
 					text = fmt;
 				}
 			}
@@ -1469,13 +1465,12 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							QString nameText = FixStringStr(text);
 							if (nameText.startsWith(FixStringStr(userName) + " ") || nameText.startsWith(FixStringStr(userName) + "'s ")) // simulate action?
 							{
-								chat = WFormat::Action().arg(WColors::Action).arg( fSettings->GetFontSize() );
-								chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameText);
+								chat = WFormat::Action();
+								chat += WFormat::Text(nameText);
 							}
 							else
 							{
-								chat = WFormat::ReceivePrivMsg.arg(WColors::RemoteName).arg(fSettings->GetFontSize()).arg(session).arg(FixStringStr(userName)).arg(
-									WColors::PrivText).arg(fSettings->GetFontSize()).arg(nameText);
+								chat = WFormat::ReceivePrivMsg(session, FixStringStr(userName), nameText);
 							}
 							if (fSettings->GetSounds())
 								QApplication::beep();
@@ -1496,16 +1491,16 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					{
 						if ( !IsIgnored(user) )
 						{
-							chat = WFormat::RemoteName.arg(WColors::RemoteName).arg(fSettings->GetFontSize()).arg(session).arg(FixStringStr(userName));
+							chat = WFormat::RemoteName(session, FixStringStr(userName));
 							PRINT("Fixing string\n");
 							QString nameText = FixStringStr(text);
 							PRINT("Name said\n");
 							if (NameSaid(nameText) && fSettings->GetSounds())
 								QApplication::beep();
 							if (MatchUserFilter(user, (const char *) fWatch.utf8()))
-								chat += WFormat::Text.arg(WColors::Watch).arg(fSettings->GetFontSize()).arg(nameText);
+								chat += WFormat::Watch(nameText);
 							else
-								chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameText);
+								chat += WFormat::Text(nameText);
 							PrintText(chat); 
 						}
 					}
@@ -1704,8 +1699,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						{
 							PRINT("Print ping\n");
 							WUserRef user = (*uit).second;
-							QString system = WFormat::GotPinged().arg(WColors::Text).arg(fSettings->GetFontSize()).arg(repto.Cstr()).arg(
-								FixStringStr(user()->GetUserName())).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
+							QString system = WFormat::GotPinged(repto.Cstr(), FixStringStr(user()->GetUserName())); // <postmaster@raasu.org> 20021112
 							PrintSystem(system);
 						}
 					}
@@ -1766,16 +1760,16 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						else
 						{
 							//QString pong = tr(fRemoteNameColor).arg(session).arg(user->GetUserName());
-							QString pong = WFormat::RemoteName.arg(WColors::RemoteName).arg(fSettings->GetFontSize()).arg(session).arg(FixStringStr(user()->GetUserName()));
+							QString pong = WFormat::RemoteName(session, FixStringStr(user()->GetUserName()));
 							int32 time = ((GetCurrentTime64() - when) / 10000L);
 							QString versionString = GetRemoteVersionString(msg);
 							
-							pong += WFormat::PingText().arg(WColors::Ping).arg(fSettings->GetFontSize()).arg(time).arg(versionString);
+							pong += WFormat::PingText(time, versionString);
 							
 							int64 uptime, onlinetime;
 							if ((msg()->FindInt64("uptime", &uptime) == B_OK) && (msg()->FindInt64("onlinetime", &onlinetime) == B_OK))
 							{
-								pong += WFormat::PingUptime().arg(WColors::Ping).arg(fSettings->GetFontSize()).arg(MakeHumanTime(uptime)).arg(MakeHumanTime(onlinetime));
+								pong += WFormat::PingUptime(MakeHumanTime(uptime), MakeHumanTime(onlinetime));
 							}
 							
 							PrintText(pong);
@@ -1836,7 +1830,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					WUserRef user = fNetClient->FindUser(session);
 					if (user())
 					{
-						QString qTime = WFormat::RemoteName.arg(WColors::RemoteName).arg(fSettings->GetFontSize()).arg(session).arg(FixStringStr(user()->GetUserName()));
+						QString qTime = WFormat::RemoteName(session, FixStringStr(user()->GetUserName()));
 						if ((msg()->FindString("time", sTime) == B_OK) && (msg()->FindString("zone", sZone) == B_OK))
 						{
 							qTime += tr("Current time: %1 %2").arg(sTime.Cstr()).arg(sZone.Cstr());
@@ -3268,8 +3262,8 @@ WinShareWindow::UserHostName(const QString &sid, const QString &host)
 {
 	if (fSettings->GetIPAddresses())
 	{
-		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
-		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserIPAddress2().arg(sid).arg(host));
+		QString ip = WFormat::UserIPAddress2(sid, host);
+		QString system = WFormat::SystemText(ip);
 		PrintText(system);
 	}
 }

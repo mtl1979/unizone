@@ -11,105 +11,240 @@
 
 using muscle::Queue;
 
+int 
+GetFontSize()
+{
+	return gWin->fSettings->GetFontSize();
+}
+
 // formatting for:
 //	(id) UserName
 
 // <postmaster@raasu.org> 20020930
+//
 // Change that ID is always in black and colon isn't part of nick ;)
 
-QString WFormat::LocalName  = "<font size=\"%2\"><b>(%3)</b> <font color=\"%1\"><b>%4</b></font>: </font>";
-QString WFormat::RemoteName = "<font size=\"%2\"><b>(%3)</b> <font color=\"%1\"><b>%4</b></font>: </font>";
+// <postmaster@raasu.org> 20040511
+//
+// We can't use tr() with URLs, it just doesn't work!!!
+// This includes user names and status texts
+
+QString 
+WFormat::LocalName(const QString &session, const QString &name)
+{
+	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
+	temp += tr("<b>(%1)</b>").arg(session);
+	temp += " ";
+	temp += tr("<font color=\"%1\">").arg(WColors::LocalName);
+	temp += "<b>";
+	temp += name; 
+	temp += "</b>";
+	temp += "</font>: </font>";
+	return temp;
+}
+
+QString 
+WFormat::RemoteName(const QString &session, const QString &name)
+{
+	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
+	temp += tr("<b>(%1)</b>").arg(session);
+	temp += " ";
+	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += "<b>" + name + "</b>";
+	temp += "</font>: </font>";
+	return temp;
+}
 
 // text color...
-QString WFormat::Text = "<font color=\"%1\" size=\"%2\">%3</font>";
+QString 
+WFormat::Text(const QString &text)
+{
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Text).arg(GetFontSize());
+	temp += text;
+	temp += "</font>";
+	return temp;
+}
+
+// watch color...
+QString
+WFormat::Watch(const QString &text)
+{
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Watch).arg(GetFontSize());
+	temp += text;
+	temp += "</font>";
+	return temp;
+}
 
 //    |
 //   \ /
 //	System: User #?? is now connected.
-QString WFormat::SystemText()
+QString 
+WFormat::SystemText(const QString &text)
 {
-	return QObject::tr("<font color=\"%1\" size=\"%2\"><b>System:</b> </font>");
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::System).arg(GetFontSize());
+	temp += tr("<b>System:</b>");
+	temp += " </font>";
+	temp += tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Text).arg(GetFontSize());
+	temp += text;
+	temp += "</font>";
+	return temp;
 }
 
-QString WFormat::UserConnected()
+QString WFormat::UserConnected(const QString &session)
 {
-	return QObject::tr("User #%1 is now connected.");
+	return tr("User #%1 is now connected.").arg(session);
 }
 
-QString WFormat::UserDisconnected()
+QString WFormat::UserDisconnected(const QString &session, const QString &user)
 {
-	return QObject::tr("User #%1 (a.k.a. <font color=\"%3\">%2</font>) has disconnected.");
+	QString temp = tr("User #%1 (a.k.a.").arg(session);
+	temp += " ";
+	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += user;
+	temp += "</font>";
+	temp += tr(") has disconnected.");
+	return temp;
 }
 
-QString WFormat::UserDisconnected2()
+QString WFormat::UserDisconnected2(const QString &session)
 {
-	return QObject::tr("User #%1 has disconnected.");
+	return tr("User #%1 has disconnected.").arg(session);
 }
 
-QString WFormat::UserNameChangedNoOld()
+QString WFormat::UserNameChangedNoOld(const QString &session, const QString &name)
 {
-	return QObject::tr("User #%1 is now known as <font color=\"%3\">%2</font>.");
+	QString temp = tr("User #%1 is now known as").arg(session);
+	temp += " ";
+	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += name;
+	temp += "</font>.";
+	return temp;
 }
 
-QString WFormat::UserNameChangedNoNew()
+QString WFormat::UserNameChangedNoNew(const QString &session)
 {
-	return QObject::tr("User #%1 is now nameless.");
+	QString temp = tr("User #%1 is now").arg(session);
+	temp += " ";
+	temp += tr("nameless");
+	temp += ".";
+	return temp;
 }
 
-QString WFormat::UserNameChanged()
+QString WFormat::UserNameChanged(const QString &session, const QString &oldname, const QString &newname)
 {
-	return QObject::tr("User #%1 (a.k.a. <font color=\"%4\">%2</font>) is now known as <font color=\"%5\">%3</font>.");
+	QString temp = tr("User #%1 (a.k.a.").arg(session);
+	temp += " ";
+	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += oldname;
+	temp += "</font>";
+	temp += tr(") is now known as");
+	temp += " ";
+	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += newname;
+	temp += "</font>.";
+	return temp;
 }
 
-QString WFormat::UserStatusChanged()
+QString WFormat::UserStatusChanged(const QString &session, const QString &user, const QString &status)
 {
-	return QObject::tr("User #%1 (a.k.a. <font color=\"%4\">%2</font>) is now %3.");
+	QString temp = tr("User #%1 (a.k.a.").arg(session);
+	temp += " ";
+	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += user;
+	temp += "</font>";
+	temp += tr(") is now");
+	temp += " ";
+	temp += status;
+	temp += ".";
+	return temp;
 }
 
-QString WFormat::UserStatusChanged2()
+QString WFormat::UserStatusChanged2(const QString &session, const QString &status)
 {
-	return QObject::tr("User #%1 is now %2.");
+	QString temp = tr("User #%1 is now").arg(session);
+	temp += " ";
+	temp += status;
+	temp += ".";
+	return temp;
 }
 
-QString WFormat::UserIPAddress()
+QString WFormat::UserIPAddress(const QString &user, const QString &ip)
 {
-	return QObject::tr("<font color=\"%3\">%1</font>'s IP address is %2.");
+	QString temp = tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += user;
+	temp += "</font>";
+	temp += tr("'s IP address is %1.").arg(ip);
+	return temp;
 }
 
-QString WFormat::UserIPAddress2()
+QString WFormat::UserIPAddress2(const QString &session, const QString &ip)
 {
-	return QObject::tr("User #%1's IP address is %2.");
+	return tr("User #%1's IP address is %2.").arg(session).arg(ip);
 }
 
 // ping formatting
-QString WFormat::PingText()
+QString WFormat::PingText(int32 time, const QString &version)
 {
-	return QObject::tr("<font color=\"%1\" size=\"%2\">Ping returned in %3 milliseconds (%4)</font>");
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Ping).arg(GetFontSize());
+	temp += tr("Ping returned in %1 milliseconds").arg(time);
+	temp += "(";
+	temp += "version";
+	temp += ")</font>";
+	return temp;
 }
 
-QString WFormat::PingUptime()
+QString WFormat::PingUptime(const QString &uptime, const QString &logged)
 {
-	return QObject::tr("<font color=\"%1\" size=\"%2\"> (Uptime: %3, Logged on for %4)</font>");
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Ping).arg(GetFontSize());
+	temp += tr("Uptime: %1, Logged on for %2").arg(uptime).arg(logged);
+	temp += "</font>";
+	return temp;
 }
 
 // error format
-QString WFormat::Error()
+QString WFormat::Error(const QString &text)
 {
-	return QObject::tr("<font color=\"%1\" size=\"%2\"><b>Error:</b></font> ");
+	int font = GetFontSize();
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Error).arg(font);
+	temp += tr("<b>Error:</b>");
+	temp += "</font> ";
+	temp += tr("<font color=\"%1\" size=\"%2\">").arg(WColors::ErrorMsg).arg(font);
+	temp += text;
+	temp += "</font>";
+	return temp;
 }
-
-// error text color (just regular text)
-QString WFormat::ErrorMsg = "<font color=\"%1\" size=\"%2\">%3</font>";
-
 // warning format
-QString WFormat::Warning()
+QString WFormat::Warning(const QString &text)
 {
-	return QObject::tr("<font color=\"%1\" size=\"%2\"><b>Warning:</b></font> ");
+	int font = GetFontSize();
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Error).arg(font);
+	temp += tr("<b>Warning:</b>");
+	temp += "</font> ";
+	temp += tr("<font color=\"%1\" size=\"%2\">").arg(WColors::ErrorMsg).arg(font);
+	temp += text;
+	temp += "</font>";
+	return temp;
 }
 
-QString WFormat::StatusChanged()
+QString 
+WFormat::StatusChanged(const QString &status)
 {
-	return QObject::tr("You are now %1.");
+	QString temp = tr("You are now");
+	temp += " ";
+	temp += status;
+	temp += ".";
+	return temp;
+}
+
+QString
+WFormat::NameChanged(const QString &name)
+{
+	QString temp = tr("Name changed to");
+	temp += " ";
+	temp += tr("<font color=\"%1\">").arg(WColors::LocalName);
+	temp += name;
+	temp += "</font>.";
+	return temp;
 }
 
 // priv messages
@@ -117,28 +252,79 @@ QString WFormat::StatusChanged()
 // <postmaster@raasu.org> 20020930,20030127 
 // Changed that ID is always black, uid in --
 
-QString WFormat::SendPrivMsg	= "<font size=\"%2\"><b>-%3-</b> <font color=\"%1\"><b>%4 -> (%5)</b></font>: </font>";	
-QString WFormat::ReceivePrivMsg = "<font size=\"%2\"><b>-%3-</b> <font color=\"%1\"><b>%4</b></font>: </font><font color=\"%5\" size=\"%6\">%7</font>";
+QString 
+WFormat::SendPrivMsg(const QString &session, const QString &myname, const QString &othername)
+{
+	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
+	temp += tr("<b>-%1-</b>").arg(session);
+	temp += "<b>";
+	temp += tr("<font color=\"%1\">").arg(WColors::LocalName);
+	temp += myname;
+	temp += "</font>";
+	temp += " -> (";
+	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += othername;
+	temp += "</font>";
+	temp += ")</b>: </font>";	
+	return temp;
+}
+
+QString WFormat::ReceivePrivMsg(const QString &session, const QString &othername, const QString &text)
+{
+	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
+	temp += tr("<b>-%1-</b>").arg(session);
+	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += tr("<b>%1</b>").arg(othername);
+	temp += "</font>: </font>";
+	temp += tr("<font color=\"%1\" size=\"%2\">").arg(WColors::PrivText).arg(GetFontSize());
+	temp += text;
+	temp += "</font>";
+	return temp;
+}
 
 QString WFormat::Action()
 {
-	return QObject::tr("<font color=\"%1\" size=\"%2\"><b>Action:</b></font> ");
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Action).arg(GetFontSize());
+	temp += tr("<b>Action:</b>");
+	temp += "</font> ";
+	return temp;
 }
 
 // <postmaster@raasu.org> 20020930
 // WFormat::URL Doesn't work because % is a valid character in URLs
 
-QString WFormat::URL1 = "<font color=\"%1\" size=\"%2\"><u>";
-QString WFormat::URL2 = "</u></font>";
-
-QString WFormat::GotPinged()
-{
-	return QObject::tr("<font color=\"%1\" size=\"%2\">User #%3 (a.k.a. <font color=\"%5\">%4</font>) pinged you.</font>");
+QString 
+WFormat::URL(const QString &url)
+{ 
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::URL).arg(GetFontSize());
+	temp += "<u>";
+	temp += url;
+	temp += "</u></font>";
+	return temp;
 }
 
-QString WFormat::TimeStamp = "<font color=\"%1\" size=\"%2\"><b>%3</b></font> ";
+QString WFormat::GotPinged(const QString &session, const QString &name)
+{
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Ping).arg(GetFontSize());
+	temp += tr("User #%1 (a.k.a.").arg(session);
+	temp += " ";
+	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
+	temp += name;
+	temp += "</font>";
+	temp += tr(") pinged you.");
+	temp += "</font>";
+	return temp;
+}
 
-
+QString 
+WFormat::TimeStamp(const QString &stamp)
+{
+	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Text).arg(GetFontSize());
+	temp += "<b>";
+	temp += stamp;
+	temp += "</b></font> ";
+	return temp;
+}
 
 QString
 ParseChatText(const QString & str)
@@ -299,14 +485,13 @@ ParseChatText(const QString & str)
 			}
 			
 			// now the url...
-			QString urlfmt = WFormat::URL1.arg(WColors::URL).arg(gWin->fSettings->GetFontSize());
-			urlfmt += "<a href=\"";
-			if ( qUrl.startsWith("www.") )		urlfmt += "http://";
-			if ( qUrl.startsWith("ftp.") )		urlfmt += "ftp://";
-			if ( qUrl.startsWith("beshare.") )	urlfmt += "server://";
-			if ( qUrl.startsWith("irc.") )		urlfmt += "irc://";
-			urlfmt += qUrl;
-			urlfmt += "\">";
+			QString urltmp = "<a href=\"";
+			if ( qUrl.startsWith("www.") )		urltmp += "http://";
+			if ( qUrl.startsWith("ftp.") )		urltmp += "ftp://";
+			if ( qUrl.startsWith("beshare.") )	urltmp += "server://";
+			if ( qUrl.startsWith("irc.") )		urltmp += "irc://";
+			urltmp += qUrl;
+			urltmp += "\">";
 			// Display URL label or link address, if label doesn't exist
 			int lb = qText.find("\n"); // check for \n between url and label (Not allowed!!!)
 			int le = qText.find(qLabel);
@@ -314,11 +499,11 @@ ParseChatText(const QString & str)
 				(qLabel.length() > 0) && 
 				((lb < 0) || (lb > le))
 				)
-				urlfmt += qLabel.stripWhiteSpace(); // remove surrounding spaces before adding
+				urltmp += qLabel.stripWhiteSpace(); // remove surrounding spaces before adding
 			else
-				urlfmt += qUrl; 		
-			urlfmt += "</a>";
-			urlfmt += WFormat::URL2;
+				urltmp += qUrl; 		
+			urltmp += "</a>";
+			QString urlfmt = WFormat::URL(urltmp);
 			output += urlfmt;
 			// strip url from original text
 			qText = qText.mid(qUrl.length());

@@ -161,14 +161,14 @@ WPrivateWindow::UserDisconnected(const QString &sid, const QString &name)
 			QString msg;
 			if (uname.isEmpty())
 			{
-				msg = WFormat::UserDisconnected2().arg(sid);
+				msg = WFormat::UserDisconnected2(sid);
 			}
 			else
 			{
 				// <postmaster@raasu.org> 20021112
-				msg = WFormat::UserDisconnected().arg(sid).arg(uname).arg(WColors::RemoteName); 
+				msg = WFormat::UserDisconnected(sid, uname); 
 			}
-			QString parse = WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);
+			QString parse = WFormat::Text(msg);
 			PrintSystem(parse);
 		}
 		(*iter).second()->RemoveFromListView(fPrivateUsers);
@@ -269,14 +269,12 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 			QString s;
 			if ( IsAction(msg, name) ) // simulate action?
 			{
-				s = WFormat::Action().arg(WColors::Action).arg( gWin->fSettings->GetFontSize() );
-				s += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);
+				s = WFormat::Action();
+				s += WFormat::Text(msg);
 			}
 			else
 			{
-				s = WFormat::ReceivePrivMsg.arg(WColors::RemoteName).arg(
-				gWin->fSettings->GetFontSize()).arg(fromsid).arg(name).arg(WColors::PrivText).arg(
-				gWin->fSettings->GetFontSize()).arg(msg);
+				s = WFormat::ReceivePrivMsg(fromsid, name, msg);
 			}
 			PrintText(s);
 			if (gWin->fSettings->GetSounds())
@@ -614,7 +612,9 @@ WPrivateWindow::PopupActivated(int id)
 		} 
 		else if (id == 3) 
 		{
-			QString qTemp = WFormat::UserIPAddress().arg(FixStringStr((*it).second()->GetUserName())).arg((*it).second()->GetUserHostName()).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
+			QString user = FixStringStr((*it).second()->GetUserName());
+			QString host = (*it).second()->GetUserHostName();
+			QString qTemp = WFormat::UserIPAddress(user, host); // <postmaster@raasu.org> 20021112
 			PrintSystem(qTemp);
 		}
 	}

@@ -71,7 +71,8 @@ WinShareWindow::UserConnected(const QString &sid)
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserConnected().arg(sid));
+		QString text = WFormat::UserConnected(sid);
+		QString system = WFormat::Text(text);
 		PrintSystem(system);
 	}
 	UpdateUserCount();
@@ -86,14 +87,14 @@ WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 		QString msg;
 		if (uname.isEmpty())
 		{
-			msg = WFormat::UserDisconnected2().arg(sid);
+			msg = WFormat::UserDisconnected2(sid);
 		}
 		else
 		{
 			// <postmaster@raasu.org> 20021112
-			msg = WFormat::UserDisconnected().arg(sid).arg(uname).arg(WColors::RemoteName); 
+			msg = WFormat::UserDisconnected(sid, uname); 
 		}
-		QString parse = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(msg);
+		QString parse = WFormat::Text(msg);
 		PrintSystem(parse);
 	}
 	UpdateUserCount();
@@ -111,19 +112,19 @@ WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QS
 		if (old != "?" && !old.isEmpty())
 		{
 			// <postmaster@raasu.org> 20021112, 20030622
-			nameformat = WFormat::UserNameChanged().arg(sid).arg(FixStringStr(old)).arg(FixStringStr(newname)).arg(WColors::RemoteName).arg(WColors::RemoteName);  
+			nameformat = WFormat::UserNameChanged(sid, FixStringStr(old), FixStringStr(newname));  
 		}
 		else if (newname == "?" || newname.isEmpty())
 		{
 			// <postmaster@raasu.org> 20030819
-			nameformat = WFormat::UserNameChangedNoNew().arg(sid);  
+			nameformat = WFormat::UserNameChangedNoNew(sid);  
 		}
 		else
 		{
 			// <postmaster@raasu.org> 20021112, 20030622
-			nameformat = WFormat::UserNameChangedNoOld().arg(sid).arg(FixStringStr(newname)).arg(WColors::RemoteName); 
+			nameformat = WFormat::UserNameChangedNoOld(sid, FixStringStr(newname)); 
 		}
-		system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameformat);
+		system = WFormat::Text(nameformat);
 		PrintSystem(system);
 	}
 	WTextEvent * wte = new WTextEvent(newname, WTextEvent::ResumeType);
@@ -182,17 +183,20 @@ WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QSt
 		QString status = s;
 		TranslateStatus(status);
 
+		if (status.isEmpty())
+			return;
+
 		if ((n == "?") || (n.isEmpty())) // Invalid user name?
 		{
 			// <postmaster@raasu.org> 20030214
-			nameformat = WFormat::UserStatusChanged2().arg(id).arg(FixStringStr(status)); 
+			nameformat = WFormat::UserStatusChanged2(id, FixStringStr(status)); 
 		}
 		else
 		{
 			// <postmaster@raasu.org> 20021112
-			nameformat = WFormat::UserStatusChanged().arg(id).arg(FixStringStr(n)).arg(FixStringStr(status)).arg(WColors::RemoteName); 
+			nameformat = WFormat::UserStatusChanged(id, FixStringStr(n), FixStringStr(status)); 
 		}
-		system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameformat);
+		system = WFormat::Text(nameformat);
 		PrintSystem(system);
 	}
 }
@@ -313,7 +317,7 @@ WinShareWindow::PopupActivated(int id)
 		} 
 		else if (id == 3) 
 		{
-			QString qTemp = WFormat::UserIPAddress().arg(FixStringStr((*it).second()->GetUserName())).arg((*it).second()->GetUserHostName()).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
+			QString qTemp = WFormat::UserIPAddress(FixStringStr((*it).second()->GetUserName()), (*it).second()->GetUserHostName()); // <postmaster@raasu.org> 20021112
 			PrintSystem(qTemp);
 		}
 		else if (id == 4)
