@@ -337,8 +337,8 @@ WinShareWindow::Preferences()
 			{
 				if (QMessageBox::information(this, tr( "File Scan" ), tr( "Scan your shared files now?" ), tr( "Yes" ), tr( "No" )) == 0)
 				{
-					ScanShares();
 					StartAcceptThread();
+					ScanShares();
 				}
 				fNetClient->SetLoad(0, fSettings->GetMaxUploads());
 			}

@@ -54,8 +54,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				{
 					if (!fFileScanThread->IsRunning())
 					{
-						ScanShares(true);
 						StartAcceptThread();
+						ScanShares(true);
 					}
 					else
 					{
@@ -1395,8 +1395,8 @@ WinShareWindow::HandleMessage(Message * msg)
 			PRINT("Checking...\n");
 			if (fSettings->GetSharingEnabled())
 			{
-				ScanShares();
 				StartAcceptThread();
+				ScanShares();
 			}
 			break;
 		}
