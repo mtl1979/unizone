@@ -906,9 +906,9 @@ WUploadThread::timerEvent(QTimerEvent *e)
 {
 	if (IsInternalThreadRunning())
 	{
-		if (fLocallyQueued || fBlocked)	
+		if ((fLocallyQueued && !fForced) || fBlocked)	
 		{
-			// Locally queued (or forced) or blocked transfer don't need idle check restricting
+			// Locally queued or blocked transfer don't need idle check restricting
 			MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
 			if ( nop() )
 			{
