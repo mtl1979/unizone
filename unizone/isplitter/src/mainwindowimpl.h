@@ -1,8 +1,12 @@
+#ifndef IMAGESPLITTER_H
+#define IMAGESPLITTER_H
+
 #include "mainwindow.h"
 
 class MenuBar;
 class QImage;
 class QString;
+class Preview;
 
 class ImageSplitter : public ImageSplitterBase
 {
@@ -10,13 +14,13 @@ class ImageSplitter : public ImageSplitterBase
 public:
 	ImageSplitter( QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
 	~ImageSplitter();
+	QImage *getImage() {return image;}
+	QString filename() {return fFilename;}
+
 
 protected slots:
-	void Preview();
-	void Save();
 	void Load();
 	void ClearImage();
-	void ClearPreview();
 	void Exit();
 
 protected:
@@ -24,9 +28,10 @@ protected:
 
 private:
 	QImage *image;
-	QString filename;
+	QString fFilename;
 	QString lastdir;
 	MenuBar * menuBar;
 
-	QPixmap * pixPreview;
+	Preview * fPreview;
 };
+#endif
