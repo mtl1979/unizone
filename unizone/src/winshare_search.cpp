@@ -201,7 +201,7 @@ WinShareWindow::GoSearch()
 	String userExp;
 
 	fileExp = fileExp.Trim();
-	int32 atIndex = fileExp.IndexOf('@');
+	int32 atIndex = fileExp.LastIndexOf('@');
 	if (atIndex >= 0)
 	{
 		if ((uint32)atIndex < fileExp.Length())
