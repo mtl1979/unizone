@@ -315,8 +315,7 @@ WinShareWindow::Preferences()
 				if (QMessageBox::information(this, tr( "File Scan" ), tr( "Scan your shared files now?" ), tr( "Yes" ), tr( "No" )) == 0)
 				{
 					ScanShares();
-					if (!fAccept)	// accept thread not running yet?
-						StartAcceptThread();
+					StartAcceptThread();
 				}
 				fNetClient->SetLoad(0, fSettings->GetMaxUploads());
 			}
@@ -369,7 +368,8 @@ WinShareWindow::ReconnectTimer()
 void
 WinShareWindow::SearchDialog()
 {
-	LaunchSearch("");
+	QString pattern = "";
+	LaunchSearch(pattern);
 }
 
 void

@@ -348,7 +348,7 @@ public:
 	static QString GetRemoteVersionString(const Message *);
 	static QString ParseForShown(const QString & str);	// parses the string during shown notifications from
 														// the HTML view (under Linux)
-	static void LaunchSearch(const QString & pattern);	// launches a search
+	static void LaunchSearch(QString & pattern);		// launches a search
 	void LaunchPrivate(const QString & pattern);		// launches a private window with multiple users in it
 	void UpdateTransmitStats(uint64 t);
 	void UpdateReceiveStats(uint64 r);

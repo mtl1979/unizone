@@ -1255,14 +1255,17 @@ WinShareWindow::HandleMessage(Message * msg)
 			if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
 			{
 				ExecCommand(fOnConnect);
-				fOnConnect = QString::null;
+				if (fOnConnect.startsWith("/search")) // only search one time, everything else should be persistent
+				{
+					fOnConnect = QString::null;
+				}
 			}
 
 			if ((fOnConnect2 != QString::null) && fOnConnect2.length() > 2)
 			{
+				ExecCommand(fOnConnect2);
 				fOnConnect = fOnConnect2;
 				fOnConnect2 = QString::null;
-				ExecCommand(fOnConnect);
 			}
 
 			// run the scan now (if needed)

@@ -218,6 +218,14 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 bool
 WinShareWindow::StartAcceptThread()
 {
+	if (fSettings->GetFirewalled())
+	{
+		if (fAccept)			// We don't need accept thread when we are firewalled.
+		{
+			StopAcceptThread();
+		}
+		return false;
+	}
 	// setup accept thread
 	fAccept = new WAcceptThread(this);
 	CHECK_PTR(fAccept);
@@ -260,6 +268,8 @@ WinShareWindow::StartAcceptThread()
 void
 WinShareWindow::StopAcceptThread()
 {
+	if (!fAccept)
+		return;
 	fAccept->ShutdownInternalThread();
 	fAccept->WaitForInternalThreadToExit();
 	delete fAccept;
@@ -1488,7 +1498,7 @@ WinShareWindow::WaitOnFileThread()
 }
 
 void
-WinShareWindow::LaunchSearch(const QString & pattern)
+WinShareWindow::LaunchSearch(QString & pattern)
 {
 	// (be)share://server/pattern
 	if (pattern.find("//") == 0)	
