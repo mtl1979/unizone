@@ -14,12 +14,14 @@ UFileInfo::UFileInfo(QFileInfo info)
 {
 	fInfo = new QFileInfo(info);
 	CHECK_PTR(fInfo);
+	Init();
 }
 
 UFileInfo::UFileInfo(QString file)
 {
 	fInfo = new QFileInfo(file);
 	CHECK_PTR(fInfo);
+	Init();
 }
 
 UFileInfo::~UFileInfo()
@@ -28,11 +30,14 @@ UFileInfo::~UFileInfo()
 		delete fInfo;
 }
 
-QString
-UFileInfo::getMIMEType() const
+void
+UFileInfo::InitMIMEType()
 {
 	if (!fInfo)
-		return QString::null;
+	{
+		fMIMEType = QString::null;
+		return;
+	}
 
 #ifdef WIN32
 	// Read the mime-type
@@ -62,18 +67,29 @@ UFileInfo::getMIMEType() const
 	}
 	delete [] tExt;
 	tExt = NULL; // <postmaster@raasu.org> 20021027
-	return mt;
+	fMIMEType = mt;
+	return;
 #else
-	return QString::null;
+	fMIMEType = QString::null;
+	return;
 #endif
 
 }
 
-uint32
-UFileInfo::getModificationTime()
+QString
+UFileInfo::getMIMEType() const
+{
+	return fMIMEType;
+}
+
+void
+UFileInfo::InitModificationTime()
 {
 	if (!fInfo)
-		return time(NULL);
+	{
+		fModificationTime = time(NULL);
+		return;
+	}
 
 #ifdef WIN32
 			// Read the modification time
@@ -108,47 +124,109 @@ UFileInfo::getModificationTime()
 				mtTime = time(NULL);
 
 			CloseHandle(fileHandle);
-			return mtTime;
+			fModificationTime = mtTime;
+			return;
 		}
 		else
-			return time(NULL);
+		{
+			fModificationTime = time(NULL);
+			return;
+		}
 
 #else
-		return time(NULL);
+		fModificationTime = time(NULL);
+		return;
 #endif
 
+}
+
+uint32
+UFileInfo::getModificationTime()
+{
+	return fModificationTime;
+}
+
+void
+UFileInfo::Init()
+{
+	InitPath();
+	InitName();
+	InitMIMEType();
+	InitSize();
+	InitModificationTime();
+}
+
+void
+UFileInfo::InitPath()
+{
+	if (!fInfo)
+	{
+		fFilePath = QString::null;
+	}
+	else
+	{
+		fFilePath = fInfo->dirPath(true);
+	}
+	return;
 }
 
 QString
 UFileInfo::getPath() const
 {
+	return fFilePath;
+}
+
+void
+UFileInfo::InitName()
+{
 	if (!fInfo)
-		return QString::null;
-	return fInfo->dirPath(true);
+	{
+		fFileName = QString::null;
+	}
+	else
+	{
+		fFileName = fInfo->fileName();
+	}
+	return;
 }
 
 QString
 UFileInfo::getName() const
 {
+	return fFileName;
+}
+
+void
+UFileInfo::InitSize()
+{
 	if (!fInfo)
-		return QString::null;
-	return fInfo->fileName();
+	{
+		fSize = -1;
+	}
+	else
+	{
+		fSize = fInfo->size();
+	}
+	return;
 }
 
 uint64
 UFileInfo::getSize()
 {
-	if (!fInfo)
-		return -1;
-	return fInfo->size();
+	return fSize;
 }
 
 bool
 UFileInfo::isValid()
 {
 	if (!fInfo)				// no valid object
+	{
 		return false;
+	}
+
 	if (!fInfo->exists())	// non-existent file
+	{
 		return false;
+	}
 	return true;
 }

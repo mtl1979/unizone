@@ -283,50 +283,6 @@
                 <class>QCheckBox</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>fMultiColor</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>180</y>
-                        <width>151</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Multi-color ListViews</string>
-                </property>
-                <property stdset="1">
-                    <name>checked</name>
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>fLogging</cstring>
-                </property>
-                <property stdset="1">
-                    <name>geometry</name>
-                    <rect>
-                        <x>10</x>
-                        <y>150</y>
-                        <width>100</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>Enable Logging</string>
-                </property>
-            </widget>
-            <widget>
-                <class>QCheckBox</class>
-                <property stdset="1">
-                    <name>name</name>
                     <cstring>fLoginStartup</cstring>
                 </property>
                 <property stdset="1">
@@ -347,6 +303,50 @@
                 <class>QCheckBox</class>
                 <property stdset="1">
                     <name>name</name>
+                    <cstring>fAutoUpdateServers</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>10</x>
+                        <y>60</y>
+                        <width>230</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Auto Update Server List</string>
+                </property>
+            </widget>
+            <widget>
+                <class>QCheckBox</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>fMultiColor</cstring>
+                </property>
+                <property stdset="1">
+                    <name>geometry</name>
+                    <rect>
+                        <x>10</x>
+                        <y>180</y>
+                        <width>230</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Multi-color ListViews</string>
+                </property>
+                <property stdset="1">
+                    <name>checked</name>
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget>
+                <class>QCheckBox</class>
+                <property stdset="1">
+                    <name>name</name>
                     <cstring>fNewVersions</cstring>
                 </property>
                 <property stdset="1">
@@ -354,7 +354,7 @@
                     <rect>
                         <x>10</x>
                         <y>90</y>
-                        <width>190</width>
+                        <width>230</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -367,20 +367,20 @@
                 <class>QCheckBox</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>fAutoUpdateServers</cstring>
+                    <cstring>fLogging</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
                         <x>10</x>
-                        <y>60</y>
-                        <width>180</width>
+                        <y>150</y>
+                        <width>210</width>
                         <height>20</height>
                     </rect>
                 </property>
                 <property stdset="1">
                     <name>text</name>
-                    <string>Auto Update Server List</string>
+                    <string>Enable Logging</string>
                 </property>
             </widget>
         </widget>

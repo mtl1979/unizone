@@ -134,8 +134,17 @@ void
 WUploadThread::SetLocallyQueued(bool b)
 {
 	WGenericThread::SetLocallyQueued(b);
-	if (!b && IsInternalThreadRunning())
-		DoUpload();		// we can start now!
+	if (!b)
+	{
+		if (IsInternalThreadRunning())
+		{
+			DoUpload();		// we can start now!
+		}
+		else
+		{
+			Reset();
+		}
+	}
 }
 
 void
