@@ -1379,7 +1379,6 @@ void BINClean(QString &in)
 		}
 		while (part.length() < 8) 
 			part = "0" + part;
-		qDebug(part.latin1());
 		tmp += part;
 		if ((in[s] != '0') && (in[s] != '1')) 
 			s++;
@@ -1395,7 +1394,6 @@ QString BINDecode(const QString &in)
 	for (int x = 0; x < in.length(); x += 8)
 	{
 		QString part = in.mid(x, 8);
-		qDebug(part.latin1());
 		int xx = 1;
 		int c = 0;
 		for (int y = 7; y > -1; y--)
