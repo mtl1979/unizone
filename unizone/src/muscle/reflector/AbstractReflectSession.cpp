@@ -279,4 +279,16 @@ BroadcastToAllFactories(MessageRef msgRef, void * userData, bool toSelf)
    }
 }
 
+int 
+AbstractReflectSession :: GetSessionSelectSocket() const
+{
+   const AbstractMessageIOGateway * gw = GetGateway();
+   if (gw)
+   {
+      const DataIO * io = gw->GetDataIO();
+      if (io) return io->GetSelectSocket();
+   }
+   return -1;
+}
+
 END_NAMESPACE(muscle);

@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.62"
+#define MUSCLE_VERSION_STRING "2.63"
 
 /* If we are in an environment where known assembly is available, make a note of that fact */
 #if defined(__GNUC__)
@@ -50,8 +50,8 @@
  */
 DECLARE_NAMESPACE(muscle);
 
-/* MIPS CPUs (e.g. on SGIs) can't stand non-aligned word reads, so we'll accomodate them by using memcpy() instead. */
-#ifdef MIPS
+/* these CPUs can't handle non-aligned word reads, so we'll accomodate them by using memcpy() instead. */
+#if defined(MIPS) || defined(mc68000) || defined(sparc) || defined(__sparc) || defined(m68k) || defined(__68k__) || defined(__sparc__)
 # define MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT
 #endif
 
@@ -75,7 +75,7 @@ DECLARE_NAMESPACE(muscle);
 #ifndef NEW_H_NOT_AVAILABLE
 # include <new>
 # ifndef MUSCLE_AVOID_NAMESPACES
-#  ifndef __MWERKS__  
+#  ifndef __MWERKS__
 using std::bad_alloc;
 using std::nothrow_t;
 using std::nothrow;
@@ -91,7 +91,7 @@ using std::set_new_handler;
 # ifdef MUSCLE_AVOID_NEWNOTHROW
 #  define newnothrow new
 # else
-#  define newnothrow new (nothrow) 
+#  define newnothrow new (nothrow)
 # endif
 #endif
 
@@ -123,7 +123,7 @@ using std::set_new_handler;
 #endif
 
 #ifdef MUSCLE_AVOID_ASSERTIONS
-# define MASSERT(x,msg) 
+# define MASSERT(x,msg)
 #else
 # define MASSERT(x,msg) {if(!(x)) MCRASH(msg)}
 #endif
@@ -188,7 +188,7 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
      typedef unsigned long long     uint64;
 #   endif
     typedef unsigned char           uchar;
-    typedef unsigned short          unichar;                   
+    typedef unsigned short          unichar;
     typedef int32                   status_t;
 #  endif  /* !MUSCLE_TYPES_PREDEFINED */
 # endif  /* !__ATHEOS__*/
@@ -245,11 +245,11 @@ template<typename T> inline T muscleSwapBytes(T swapMe)
    return retVal;
 }
 
-/* This template safely copies a value in from an untyped byte buffer to a typed value. 
+/* This template safely copies a value in from an untyped byte buffer to a typed value.
  * (Make sure MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT is defined if you are on a CPU
  * that doesn't like non-word-aligned data reads and writes)
  */
-template<typename T> inline void muscleCopyIn(T & dest, const void * source) 
+template<typename T> inline void muscleCopyIn(T & dest, const void * source)
 {
 #ifdef MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT
    memcpy(&dest, source, sizeof(dest));
@@ -262,7 +262,7 @@ template<typename T> inline void muscleCopyIn(T & dest, const void * source)
   * (Make sure MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT is defined if you are on a CPU
   *  that doesn't like non-word-aligned data reads and writes)
   */
-template<typename T> inline void muscleCopyOut(void * dest, const T & source) 
+template<typename T> inline void muscleCopyOut(void * dest, const T & source)
 {
 #ifdef MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT
    memcpy(dest, &source, sizeof(source));
@@ -301,21 +301,94 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
 #endif  /* __cplusplus */
 
 #ifndef __BEOS__
-# if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) || defined(__LITTLEENDIAN__) /* Cygwin is for Windows on x86, hence little endian */
-#  define LITTLE_ENDIAN 1234
-#  define BIG_ENDIAN    4321
-#  define BYTE_ORDER LITTLE_ENDIAN  
-# elif defined(__BIGENDIAN__)
-#  define LITTLE_ENDIAN 1234
-#  define BIG_ENDIAN    4321
-#  define BYTE_ORDER BIG_ENDIAN  
-# elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
-#  include <machine/endian.h>
-# elif defined(__osf__)
-#  include <sex.h>
-# else
-#  include <endian.h>  /* (non-standard) POSIX-ish include, defines BYTE_ORDER as LITTLE_ENDIAN or BIG_ENDIAN */
-# endif
+
+/*
+ * Copyright(c) 1983,   1989
+ *    The Regents of the University of California.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *      This product includes software developed by the University of
+ *      California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+/*
+ *      from nameser.h  8.1 (Berkeley) 6/2/93
+ *      $Id$
+ */
+
+#ifndef BYTE_ORDER
+  #if (BSD >= 199103)
+    #include <machine/endian.h>
+  #else
+    #ifdef linux
+      #include <endian.h>
+    #else
+      #define LITTLE_ENDIAN   1234    /* least-significant byte first (vax, pc) */
+      #define BIG_ENDIAN      4321    /* most-significant byte first (IBM, net) */
+
+      #if defined(vax) || defined(ns32000) || defined(sun386) || defined(i386) || \
+              defined(__i386) || defined(__ia64) || \
+              defined(MIPSEL) || defined(_MIPSEL) || defined(BIT_ZERO_ON_RIGHT) || \
+              defined(__alpha__) || defined(__alpha) || defined(__CYGWIN__) || \
+              defined(_M_IX86) || defined(__GNUWIN32__) || defined(__LITTLEENDIAN__) || \
+              (defined(__Lynx__) && defined(__x86__))
+        #define BYTE_ORDER      LITTLE_ENDIAN
+      #endif
+
+      #if defined(sel) || defined(pyr) || defined(mc68000) || defined(sparc) || \
+          defined(__sparc) || \
+          defined(is68k) || defined(tahoe) || defined(ibm032) || defined(ibm370) || \
+          defined(MIPSEB) || defined(_MIPSEB) || defined(_IBMR2) || defined(DGUX) ||\
+          defined(apollo) || defined(__convex__) || defined(_CRAY) || \
+          defined(__hppa) || defined(__hp9000) || \
+          defined(__hp9000s300) || defined(__hp9000s700) || \
+          defined(__hp3000s900) || defined(MPE) || \
+          defined(BIT_ZERO_ON_LEFT) || defined(m68k) || \
+              (defined(__Lynx__) && \
+              (defined(__68k__) || defined(__sparc__) || defined(__powerpc__)))
+        #define BYTE_ORDER      BIG_ENDIAN
+      #endif
+    #endif /* linux */
+  #endif /* BSD */
+#endif /* BYTE_ORDER */
+
+#if !defined(BYTE_ORDER) || (BYTE_ORDER != BIG_ENDIAN && BYTE_ORDER != LITTLE_ENDIAN) 
+        /*
+         * you must determine what the correct bit order is for
+         * your compiler - the next line is an intentional error
+         * which will force your compiles to bomb until you fix
+         * the above macros.
+         */
+        error "Undefined or invalid BYTE_ORDER";
+#endif
+
+//
+// End replacement code from Sun/University of California
+//
 # if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
 static inline uint16 MusclePowerPCSwapInt16(uint16 val)
 {
@@ -340,7 +413,7 @@ static inline float MusclePowerPCSwapFloat(float val)
 }
 static inline uint64 MusclePowerPCSwapInt64(uint64 val)
 {
-   return ((uint64)(MusclePowerPCSwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MusclePowerPCSwapInt32((uint32)(val&0xFFFFFFFF))))<<32);   
+   return ((uint64)(MusclePowerPCSwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MusclePowerPCSwapInt32((uint32)(val&0xFFFFFFFF))))<<32);
 }
 static inline double MusclePowerPCSwapDouble(double val)
 {
@@ -370,7 +443,7 @@ static inline float MuscleX86SwapFloat(float val)
 }
 static inline uint64 MuscleX86SwapInt64(uint64 val)
 {
-   return ((uint64)(MuscleX86SwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MuscleX86SwapInt32((uint32)(val&0xFFFFFFFF))))<<32);   
+   return ((uint64)(MuscleX86SwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MuscleX86SwapInt32((uint32)(val&0xFFFFFFFF))))<<32);
 }
 static inline double MuscleX86SwapDouble(double val)
 {
@@ -447,7 +520,7 @@ static inline double MuscleX86SwapDouble(double val)
       uint32 __bigEndian = B_HOST_TO_BENDIAN_INT32(typecode);       \
       memcpy(buf, (const char *)&__bigEndian, sizeof(__bigEndian)); \
       buf[sizeof(__bigEndian)] = '\0';                              \
-   }           
+   }
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -462,8 +535,8 @@ static inline double MuscleX86SwapDouble(double val)
 # include "syslog/SysLog.h"  /* for LogTime() */
 #endif  /* __cplusplus */
 
-/** Checks errno and returns true iff the last I/O operation 
-  * failed because it would have had to block otherwise. 
+/** Checks errno and returns true iff the last I/O operation
+  * failed because it would have had to block otherwise.
   * NOTE:  Returns int so that it will compile even in C environments where no bool type is defined.
   */
 static inline int PreviousOperationWouldBlock()
@@ -475,7 +548,7 @@ static inline int PreviousOperationWouldBlock()
 #endif
 }
 
-/** Checks errno and returns true iff the last I/O operation 
+/** Checks errno and returns true iff the last I/O operation
   * failed because it was interrupted by a signal or etc.
   * NOTE:  Returns int so that it will compile even in C environments where no bool type is defined.
   */

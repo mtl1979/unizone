@@ -436,7 +436,11 @@ status_t SetUDPSocketBroadcastEnabled(int sock, bool broadcast)
    if (sock < 0) return B_ERROR;
 
    int val = (broadcast ? 1 : 0);
+#ifdef BEOS_OLD_NETSERVER
+   return (setsockopt(sock, SOL_SOCKET, INADDR_BROADCAST, (char *) &val, sizeof(val)) == 0) ? B_NO_ERROR : B_ERROR;
+#else
    return (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (char *) &val, sizeof(val)) == 0) ? B_NO_ERROR : B_ERROR;
+#endif
 }
 
 status_t SetSocketNaglesAlgorithmEnabled(int sock, bool enabled)

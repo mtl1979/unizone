@@ -91,6 +91,20 @@ uint64 Atoull(const char * str);
 int64 Atoll(const char * str);
 
 /** Given a uint64 representing a time in microseconds since 1970,
+  * (e.g. as returned by GetCurrentTime64()), returns the same value
+  * as a set of more human-friendly units.
+  * @param timeUS a time in microseconds since 1970.
+  * @param retYear   On success, the year value (e.g. 2005) is placed here.
+  * @param retMonth  On success, the month value  (which ranges between 0 and 11, inclusive) is placed here.
+  * @param retDay    On success, the day value    (which ranges between 0 and 30, inclusive) is placed here.
+  * @param retHour   On success, the hour value   (which ranges between 0 and 23, inclusive) is placed here.
+  * @param retMinute On success, the minute value (which ranges between 0 and 59, inclusive) is placed here.
+  * @param retSecond On success, the second value (which ranges between 0 and 59, inclusive) is placed here.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth, int & retDay, int & retHour, int & retMinute, int & retSecond);
+
+/** Given a uint64 representing a time in microseconds since 1970,
   * (e.g. as returned by GetCurrentTime64()), returns an equivalent 
   * human-readable time/date string.  The format of the returned 
   * time string is "YYYY/MM/DD HH:MM:SS".

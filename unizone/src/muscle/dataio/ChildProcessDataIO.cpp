@@ -4,7 +4,7 @@
 
 #if defined(WIN32) || defined(__CYGWIN__)
 # include <process.h>  // for _beginthreadex()
-# define USE_WINDOWS_IMPLEMENTATION
+# define USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
 #else
 # include <errno.h>
 # include <fcntl.h>
@@ -28,7 +28,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
-#ifndef USE_WINDOWS_IMPLEMENTATION
+#ifndef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
 
 static int ptym_open(char *pts_name)
 {
@@ -128,45 +128,19 @@ static pid_t pty_fork(int *ptrfdm, char *slave_name, const struct termios *slave
       return pid;    /* parent returns pid of child */
    }
 }
-
 #endif
 
-ChildProcessDataIO :: ChildProcessDataIO(int argc, char ** argv, bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true)
-#ifndef USE_WINDOWS_IMPLEMENTATION
+ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true)
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
+   , _readFromStdout(INVALID_HANDLE_VALUE), _writeToStdin(INVALID_HANDLE_VALUE), _ioThread(NULL), _wakeupSignal(INVALID_HANDLE_VALUE), _childProcess(INVALID_HANDLE_VALUE), _childThread(INVALID_HANDLE_VALUE), _masterNotifySocket(-1), _slaveNotifySocket(-1), _requestThreadExit(false)
+#else
    , _handle(-1), _childPID(-1)
 #endif
 {
-#ifdef USE_WINDOWS_IMPLEMENTATION
-   DoWindowsInit();
-#endif
-   (void) LaunchChildProcess(muscleMax(0,argc), argv);
+   // empty
 }
 
-ChildProcessDataIO :: ChildProcessDataIO(const char * cmd, bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true)
-#ifndef USE_WINDOWS_IMPLEMENTATION
-   , _handle(-1), _childPID(-1)
-#endif
-{
-#ifdef USE_WINDOWS_IMPLEMENTATION
-   DoWindowsInit();
-#endif
-   (void) LaunchChildProcess(-1, cmd);
-}
-
-#ifdef USE_WINDOWS_IMPLEMENTATION
-void ChildProcessDataIO :: DoWindowsInit()
-{
-   _readFromStdout     = INVALID_HANDLE_VALUE;
-   _writeToStdin       = INVALID_HANDLE_VALUE;
-   _ioThread           = NULL;
-   _wakeupSignal       = INVALID_HANDLE_VALUE;
-   _childProcess       = INVALID_HANDLE_VALUE;
-   _childThread        = INVALID_HANDLE_VALUE;
-   _masterNotifySocket = -1;
-   _slaveNotifySocket  = -1;
-   _requestThreadExit  = false;
-}
-
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
 static void SafeCloseHandle(HANDLE & h)
 {
    if (h != INVALID_HANDLE_VALUE)
@@ -210,9 +184,9 @@ static status_t ParseLine(const String & line, Queue<String> & addTo)
    return B_NO_ERROR;
 }
 
-status_t ChildProcessDataIO :: LaunchChildProcess(int argc, const void * args)
+status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args)
 {
-#ifdef USE_WINDOWS_IMPLEMENTATION
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    SECURITY_ATTRIBUTES saAttr;
    {
       memset(&saAttr, 0, sizeof(saAttr));
@@ -372,6 +346,7 @@ status_t ChildProcessDataIO :: LaunchChildProcess(int argc, const void * args)
             {
                for (int i=0; i<argc; i++) newArgv[i] = (char *) argv[i]();
                newArgv[argc] = NULL;   // make sure it's terminated!
+               ChildProcessReadyToRun();
                ret = execvp(argv[0](), newArgv);
                delete [] newArgv;  // only executed if execvp() fails
             }
@@ -386,6 +361,7 @@ status_t ChildProcessDataIO :: LaunchChildProcess(int argc, const void * args)
          {
             memcpy(newArgv, argv, argc*sizeof(char *));
             newArgv[argc] = NULL;   // make sure it's terminated!
+            ChildProcessReadyToRun();
             int ret = execvp(argv[0], newArgv);
             delete [] newArgv;  // only executed if execvp() fails
             _exit(ret);
@@ -417,7 +393,7 @@ ChildProcessDataIO :: ~ChildProcessDataIO()
 
 bool ChildProcessDataIO :: IsChildProcessAvailable() const
 {
-#ifdef USE_WINDOWS_IMPLEMENTATION
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    return (_readFromStdout != INVALID_HANDLE_VALUE);
 #else
    return (_handle >= 0);
@@ -426,7 +402,7 @@ bool ChildProcessDataIO :: IsChildProcessAvailable() const
 
 void ChildProcessDataIO :: Close()
 {
-#ifdef USE_WINDOWS_IMPLEMENTATION
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    if (_ioThread != NULL)  // if this is valid, _wakeupSignal is guaranteed valid too
    {
       _requestThreadExit = true;                // set the "Please go away" flag
@@ -461,7 +437,7 @@ int32 ChildProcessDataIO :: Read(void *buf, uint32 len)
 {
    if (IsChildProcessAvailable())
    {
-#ifdef USE_WINDOWS_IMPLEMENTATION
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
       if (_blocking)
       {
          DWORD actual_read;
@@ -485,7 +461,7 @@ int32 ChildProcessDataIO :: Write(const void *buf, uint32 len)
 {
    if (IsChildProcessAvailable())
    {
-#ifdef USE_WINDOWS_IMPLEMENTATION
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
       if (_blocking)
       {
          DWORD actual_write;
@@ -509,9 +485,14 @@ void ChildProcessDataIO :: FlushOutput()
    // not implemented
 }
 
+void ChildProcessDataIO :: ChildProcessReadyToRun()
+{
+   // empty
+}
+
 int ChildProcessDataIO :: GetSelectSocket() const
 {
-#ifdef USE_WINDOWS_IMPLEMENTATION
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    return _blocking ? -1 : _masterNotifySocket;
 #else 
    return _handle;
@@ -523,7 +504,7 @@ void ChildProcessDataIO :: Shutdown()
    Close();
 }
 
-#ifdef USE_WINDOWS_IMPLEMENTATION
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
 
 const uint32 CHILD_BUFFER_SIZE = 1024;
 

@@ -253,30 +253,59 @@ int64 Atoll(const char * str)
 }
 
 
+status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth, int & retDay, int & retHour, int & retMinute, int & retSecond)
+{
+#ifdef WIN32
+   // Borland's localtime() function is buggy, so we'll use the Win32 API instead.
+   static const uint64 diffTime = ((uint64)116444736)*((uint64)1000000000); // *((uint64 *)(&f1970.ft));  // add (1970-1601) to convert to Windows time base
+   uint64 winTime = (timeUS*10) + diffTime;  // Convert to (100ns units)
+
+   FILETIME fileTime;
+   fileTime.dwHighDateTime = (DWORD) ((winTime>>32) & 0xFFFFFFFF);
+   fileTime.dwLowDateTime  = (DWORD) ((winTime>> 0) & 0xFFFFFFFF);
+   FILETIME localTime;
+   if (FileTimeToLocalFileTime(&fileTime, &localTime))
+   {
+      SYSTEMTIME st;
+      if (FileTimeToSystemTime(&localTime, &st)) 
+      {
+         retYear   = st.wYear;
+         retMonth  = st.wMonth-1;  // convert to zero-based units
+         retDay    = st.wDay-1;    // covnert to zero-based units
+         retHour   = st.wHour;
+         retMinute = st.wMinute;
+         retSecond = st.wSecond;
+         return B_NO_ERROR;
+      }
+   }
+#else
+   time_t timeS = (time_t) (timeUS/1000000);  // timeS is seconds since 1970
+   struct tm * ts = localtime(&timeS);
+   if (ts) 
+   {
+      retYear   = ts->tm_year+1900;
+      retMonth  = ts->tm_mon;
+      retDay    = ts->tm_mday-1;
+      retHour   = ts->tm_hour;
+      retMinute = ts->tm_min;
+      retSecond = ts->tm_sec;
+      return B_NO_ERROR;
+   }
+#endif
+
+   return B_ERROR;
+}
+
 String GetHumanReadableTimeString(uint64 timeUS)
 {
-   char buf[256] = ""; 
-   if (timeUS > 0)
+   int year, month, day, hour, minute, second;
+   if (GetHumanReadableTimeValues(timeUS, year, month, day, hour, minute, second) == B_NO_ERROR)
    {
-#ifdef WIN32
-      // Borland's localtime() function is buggy, so we'll use the Win32 API instead.
-      uint64 winTime = timeUS*10;  // Convert to (100ns units)
-      FILETIME fileTime;
-      fileTime.dwHighDateTime = (DWORD) ((winTime>>32) & 0xFFFFFFFF);
-      fileTime.dwLowDateTime  = (DWORD) ((winTime>> 0) & 0xFFFFFFFF);
-      FILETIME localTime;
-      if (FileTimeToLocalFileTime(&fileTime, &localTime))
-      {
-         SYSTEMTIME st;
-         if (FileTimeToSystemTime(&localTime, &st)) sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", st.wYear+(1970-1601), st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-      }
-#else
-      time_t timeS = (time_t) (timeUS/1000000);  // timeS is seconds since 1970
-      struct tm * ts = localtime(&timeS);
-      if (ts) sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", ts->tm_year+1900, ts->tm_mon+1, ts->tm_mday, ts->tm_hour, ts->tm_min, ts->tm_sec);
-#endif
+      char buf[256];
+      sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", year, month+1, day+1, hour, minute, second);
+      return String(buf);
    }
-   return String(buf);
+   return "";
 }
  
 uint64 ParseHumanReadableTimeString(const String & s)
@@ -288,19 +317,16 @@ uint64 ParseHumanReadableTimeString(const String & s)
    const char * hour   = tok();
    const char * minute = tok();
    const char * second = tok();
-   if ((month)&&(day)&&(year)&&(hour)&&(minute)&&(second))
-   {
-      struct tm temp;
-      temp.tm_sec  = atoi(second);
-      temp.tm_min  = atoi(minute);
-      temp.tm_hour = atoi(hour);
-      temp.tm_mday = atoi(day);
-      temp.tm_mon  = atoi(month)-1;
-      temp.tm_year = atoi(year)-1900;
-      time_t timeS = mktime(&temp);
-      return ((uint64)timeS)*1000000;
-   }
-   else return 0;
+
+   struct tm temp;
+   temp.tm_sec  = second ? atoi(second)    : 0;
+   temp.tm_min  = minute ? atoi(minute)    : 0;
+   temp.tm_hour = hour   ? atoi(hour)      : 0;
+   temp.tm_mday = day    ? atoi(day)       : 0;
+   temp.tm_mon  = month  ? atoi(month)-1   : 0;
+   temp.tm_year = year   ? atoi(year)-1900 : 0;
+   time_t timeS = mktime(&temp);
+   return ((uint64)timeS)*1000000;
 }
 
 /* Source code stolen from UNIX Network Programming, Volume 1

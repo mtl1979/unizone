@@ -100,12 +100,21 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
 {
    bool found = false;
    char buf[2048];  // scratch space
+#if defined(WIN32) && defined(UNICODE)
+   wchar_t wbuf[2048];
+#endif
+
    switch(whichPath)
    {
       case SYSTEM_PATH_CURRENT: // current working directory
       {
 #ifdef WIN32
+# if defined(UNICODE)
+         found = muscleInRange((int)GetCurrentDirectoryW(ARRAYITEMS(wbuf), wbuf), 1, (int)ARRAYITEMS(wbuf)-1);
+         if (found) found = muscleInRange((int)WideCharToMultiByte(CP_UTF8, 0, wbuf, ARRAYITEMS(wbuf), buf, sizeof(buf), NULL, NULL), 1, (int)ARRAYITEMS(wbuf)-1);
+# else
          found = muscleInRange((int)GetCurrentDirectoryA(sizeof(buf), buf), 1, (int)sizeof(buf)-1);
+# endif
 #else
          found = (getcwd(buf, sizeof(buf)) != NULL);
 #endif
@@ -116,13 +125,28 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
       case SYSTEM_PATH_EXECUTABLE: // executable's directory
       {
 #ifdef WIN32
+# if defined(UNICODE)
+         found = muscleInRange((int)GetModuleFileNameW(NULL, wbuf, ARRAYITEMS(wbuf)), (int)1, (int)ARRAYITEMS(wbuf)-1);
+         if (found)
+         {
+            // My own quick implementation of PathRemoveFileSpecW(wbuf)
+            // Since calling PathRemoveFileSpecW() causes link errors in Borland
+            int lastSlashIdx=-1;
+            for (int i=0; (wbuf[i] != 0); i++) {if (wbuf[i] == '\\') lastSlashIdx=i;}
+            if (lastSlashIdx >= 0) wbuf[lastSlashIdx] = 0;
+
+            found = muscleInRange((int)WideCharToMultiByte(CP_UTF8, 0, wbuf, ARRAYITEMS(wbuf), buf, sizeof(buf), NULL, NULL), 1, (int)ARRAYITEMS(wbuf)-1);
+            if (found) outStr = buf;
+         }
+# else
          found = muscleInRange((int)GetModuleFileNameA(NULL, buf, sizeof(buf)), (int)1, (int)sizeof(buf)-1);
          if (found) 
          {
             outStr = buf;
             int32 lastSlash = outStr.LastIndexOf(GetFilePathSeparator());
-            if (lastSlash >= 0) outStr= outStr.Substring(0, lastSlash+1);
+            if (lastSlash >= 0) outStr = outStr.Substring(0, lastSlash+1);
          }
+# endif
 #else
 # ifdef __APPLE__
          CFURLRef bundleURL = CFBundleCopyExecutableURL(CFBundleGetMainBundle());
@@ -134,12 +158,12 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
             outStr = bsdPath;
 
             int32 lastSlash = outStr.LastIndexOf(GetFilePathSeparator());
-            if (lastSlash >= 0) outStr= outStr.Substring(0, lastSlash+1);
+            if (lastSlash >= 0) outStr = outStr.Substring(0, lastSlash+1);
          }
          CFRelease(cfPath);
          CFRelease(bundleURL);
 # else
-         // NOT IMPLEMENTED YET!  (TODO: figure out how to find executabe folder under POSIX!)
+         // NOT IMPLEMENTED YET!  (TODO: figure out how to find executable folder under POSIX!)
 # endif
 #endif
       }
@@ -148,7 +172,12 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
       case SYSTEM_PATH_TEMPFILES:   // scratch directory
       {
 #ifdef WIN32
+# if defined(UNICODE)
+         found = muscleInRange((int)GetTempPathW(ARRAYITEMS(wbuf), wbuf), 1, (int)ARRAYITEMS(wbuf)-1);
+         if (found) found = muscleInRange((int)WideCharToMultiByte(CP_UTF8, 0, wbuf, ARRAYITEMS(wbuf), buf, sizeof(buf), NULL, NULL), 1, (int)ARRAYITEMS(wbuf)-1);
+# else
          found = muscleInRange((int)GetTempPathA(sizeof(buf), buf), 1, (int)sizeof(buf)-1);
+# endif
          if (found) outStr = buf;
 #else
          found = true;

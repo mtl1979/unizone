@@ -40,8 +40,21 @@ public:
      * when MUSCLE_USE_PTHREADS is defined; in that
      * case it will set up some mutexes for use
      * by the AtomicCounter class.
+     * @param muscleSingleThreadOnly If set to true, the MUSCLE code will assume that
+     *                      this process is going to be single-threaded, even if the 
+     *                      code was not compiled with the -DMUSCLE_SINGLE_THREAD_ONLY flag!
+     *                      This can be useful to gain a bit of extra efficiency, if you 
+     *                      need to compile your code to be multithread-capable but can 
+     *                      sometimes promise that this particular process will never 
+     *                      spawn multiple threads.
+     *                      If your code is NEVER multi-threaded, then it is more efficient to define
+     *                      -DMUSCLE_SINGLE_THREAD_ONLY in your Makefile, rather than setting this flag to false.
+     *                      If -DMUSCLE_SINGLE_THREAD_ONLY is set, then this argument is ignored.
+     *                      Note:  DON'T SET THIS TO FLAG TRUE UNLESS YOU REALLY KNOW WHAT YOU ARE DOING!
+     *                             If you're not sure, leave it set to false.  Most people won't need it,
+     *                             and leaving it false won't cause any problems.
      */
-   ThreadSetupSystem();
+   ThreadSetupSystem(bool muscleSingleThreadOnly = false);
 
    /** Destructor.  If MUSCLE_USE_PTHREADS is defined,
      * this will destroy the mutexes that were set up
@@ -119,8 +132,11 @@ public:
    /** Constructor.  No-op, but at this point both
      * a NetworkSetupSystem and ThreadSetupSystem
      * will be created. 
+     * @param muscleSingleThreadOnly Passed to the ThreadSetupSystem constructor.  
+     *                      See the ThreadSetupSystem documentation for details.
+     *                      (If you don't know what this flag is, leave it set to false!)
      */
-   CompleteSetupSystem() {/* empty */}
+   CompleteSetupSystem(bool muscleSingleThreadOnly = false) : _threads(muscleSingleThreadOnly) {/* empty */}
 
    /** Destructor.  All held subsystems get destroyed here. */
    ~CompleteSetupSystem() {/* empty */}

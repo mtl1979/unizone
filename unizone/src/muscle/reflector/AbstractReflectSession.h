@@ -297,6 +297,11 @@ protected:
    /** Returns true iff we are currently in the middle of an asynchronous TCP connection */
    bool IsConnectingAsync() const {return _connectingAsync;}
 
+   /** Convenience method:  Returns the file descriptor associated with this session's
+     * DataIO class, or -1 if there is none.
+     */
+   int GetSessionSelectSocket() const;
+
 private:
    void SetPolicyAux(PolicyRef & setRef, uint32 & setChunk, PolicyRef newRef, bool isInput);
 

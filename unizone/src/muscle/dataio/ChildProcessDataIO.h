@@ -20,23 +20,39 @@ class ChildProcessDataIO : public DataIO
 {
 public:
    /** Constructor.
-    *  @param argc for the child process.
-    *  @param argv for the child process.
     *  @param blocking If true, I/O will be blocking; else non-blocking.
+    *  @note that you will need to call LaunchChildProcess() to actually start the child process going.
     */
-   ChildProcessDataIO(int argc, char ** argv, bool blocking);
-
-   /** Constructor.
-    *  @param Command line for the child process (including any arguments)
-    *  @param blocking If true, I/O will be blocking; else non-blocking.
-    */
-   ChildProcessDataIO(const char * cmdline, bool blocking);
+   ChildProcessDataIO(bool blocking);
 
    /** Destructor */
    virtual ~ChildProcessDataIO();
    
+   /** Launch the child process.  Note that this method should only be called once!
+     * @param argc The argc variable to be passed to the child process
+     * @param argv The argv variable to be passed to the child process
+     * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
+     */
+   status_t LaunchChildProcess(int argc, char ** argv) {return LaunchChildProcessAux(muscleMax(0,argc), argv);}
+
+   /** As above, but the program name and all arguments are specified as a single string.
+     * @param cmdline String to launch the child process with
+     * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
+     */
+   status_t LaunchChildProcess(const char * cmd) {return LaunchChildProcessAux(-1, cmd);}
+
+   /** Read data from the child process's stdout stream. 
+     * @param buffer The read bytes will be placed here
+     * @param size Maximum number of bytes that may be placed into (buffer).
+     * @returns The number of bytes placed into (buffer), or a negative value if there was an error.
+     */
    virtual int32 Read(void * buffer, uint32 size);
 
+   /** Write data to the child process's stdin stream. 
+     * @param buffer The bytes to write to the child process's stdin.
+     * @param size Maximum number of bytes to read from (buffer) and written to the child process's stdin.
+     * @returns The number of bytes written, or a negative value if there was an error.
+     */
    virtual int32 Write(const void * buffer, uint32 size);
 
    /** Always returns B_ERROR, since you can't seek on a child process! */
@@ -75,16 +91,21 @@ public:
    void SetWaitForChildOnClose(bool wcoc) {_waitForChildOnClose = wcoc;}
    bool GetWaitForChildOnClose() const {return _waitForChildOnClose;}
 
+   /** Called within the child process, just before the child process's
+     * executable image is loaded in.  Default implementation is a no-op.
+     * @note This method is not called when running under Windows!
+     */
+   virtual void ChildProcessReadyToRun();
+
 private:
    void Close();
-   status_t LaunchChildProcess(int argc, const void * args);
+   status_t LaunchChildProcessAux(int argc, const void * argv);
 
    bool _blocking;
    bool _killChildOnClose;
    bool _waitForChildOnClose;
 
 #if defined(WIN32) || defined(CYGWIN)
-   void DoWindowsInit();
    void IOThreadEntry();
    void IOThreadAbort();
    static DWORD WINAPI IOThreadEntryFunc(LPVOID This) {((ChildProcessDataIO*)This)->IOThreadEntry(); return 0;}

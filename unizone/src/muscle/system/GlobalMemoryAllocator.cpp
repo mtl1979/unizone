@@ -158,8 +158,8 @@ void muscleFree(void * p)
 
       MemoryAllocator * ma = _globalAllocatorRef();
       if (ma) ma->AboutToFree(_currentlyAllocatedBytes, *s);
-
 //printf("-%lu = %lu\n", (uint32)*s, (uint32)_currentlyAllocatedBytes);
+
       free(s);
    }
 }

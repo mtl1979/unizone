@@ -15,7 +15,7 @@
 #endif
 
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
-# error "You're not allowed use the Thread class if you have the MUSCLE_SINGLE_THREAD_ONLY compiler constant is defined!"
+# error "You're not allowed use the Thread class if you have the MUSCLE_SINGLE_THREAD_ONLY compiler constant defined!"
 #endif
 
 BEGIN_NAMESPACE(muscle);

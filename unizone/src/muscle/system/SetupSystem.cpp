@@ -15,7 +15,11 @@
 #  include <sys/times.h>
 # elif defined(__QNX__)
 #  include <signal.h>
-#  include <sys/times.h>  
+#  include <sys/times.h>
+# elif defined(__sparc__) || defined(sun386)
+#  include <signal.h>
+#  include <sys/times.h>
+#  include <limits.h>
 # else
 #  include <sys/signal.h>  // changed signal.h to sys/signal.h to work with OS/X
 #  include <sys/times.h>
@@ -28,6 +32,12 @@
 #endif
 
 BEGIN_NAMESPACE(muscle);
+
+#ifdef MUSCLE_SINGLE_THREAD_ONLY
+bool _muscleSingleThreadOnly = true;
+#else
+bool _muscleSingleThreadOnly = false;
+#endif
 
 static Mutex * _muscleLock = NULL;
 Mutex * GetGlobalMuscleLock() {return _muscleLock;}
@@ -51,12 +61,18 @@ MathSetupSystem :: ~MathSetupSystem()
    // empty
 }
 
-ThreadSetupSystem :: ThreadSetupSystem()
+ThreadSetupSystem :: ThreadSetupSystem(bool muscleSingleThreadOnly)
 {
    if (++_threadSetupCount == 1)
    {
+#ifdef MUSCLE_SINGLE_THREAD_ONLY
+      (void) muscleSingleThreadOnly;  // shut the compiler up
+#else
+      _muscleSingleThreadOnly = muscleSingleThreadOnly;
+      if (_muscleSingleThreadOnly) _lock.Neuter();  // if we're single-thread, then this Mutex can be a no-op!
+#endif
       _muscleLock = &_lock;
-   
+
 #if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
       _atomicMutexes = newnothrow Mutex[MUTEX_POOL_SIZE];
       MASSERT(_atomicMutexes, "Couldn't allocate atomic mutexes!");
@@ -69,8 +85,7 @@ ThreadSetupSystem :: ~ThreadSetupSystem()
    if (--_threadSetupCount == 0)
    {
 #if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
-      delete [] _atomicMutexes;
-      _atomicMutexes = NULL;
+      delete [] _atomicMutexes; _atomicMutexes = NULL;
 #endif
       _muscleLock = NULL;
    }
@@ -95,8 +110,8 @@ NetworkSetupSystem :: NetworkSetupSystem()
    if (++_networkSetupCount == 1)
    {
 #ifdef WIN32
-      WORD versionWanted = MAKEWORD(1, 1); 
-      WSADATA wsaData; 
+      WORD versionWanted = MAKEWORD(1, 1);
+      WSADATA wsaData;
       int ret = WSAStartup(versionWanted, &wsaData);
       MASSERT((ret == 0), "NetworkSetupSystem:  Couldn't initialize Winsock!");
 #else
@@ -193,20 +208,20 @@ uint64 origRet = ret;
 /** Defined here since every MUSCLE program will have to include this file anyway... */
 uint64 GetCurrentTime64()
 {
-#ifdef WIN32
-   FILETIME now;
-   GetSystemTimeAsFileTime(&now); // sets (now) to hold time-since-1601 in units of 100 nanoseconds each
-
-   // combine and convert to microseconds since 1970
-   uint64 m = (((((uint64)now.dwHighDateTime)<<32)|((uint64)now.dwLowDateTime))/10);
-   static const uint64 oneDay = ((uint64)1000000)*((uint64)60)*((uint64)60)*((uint64)24);
-   static const uint64 oneYear = oneDay*((uint64)365);
-   return m - ((((uint64)(1970-1601))*oneYear) + (89*oneDay));  // why is the 89-day fudge factor necessary???
-#else
    struct timeval tv;
+#ifdef WIN32
+   union {
+     uint64 ns100; /*time since 1 Jan 1601 in 100ns units */ 
+     FILETIME ft; 
+   } now; 
+   GetSystemTimeAsFileTime(&now.ft);
+   static const uint64 TIME_DIFF = ((uint64)116444736)*((uint64)1000000000);
+   tv.tv_usec = (long)((now.ns100 / ((uint64)10)) % ((uint64)1000000)); 
+   tv.tv_sec  = (long)((now.ns100 - TIME_DIFF)    / ((uint64)10000000)); 
+#else
    gettimeofday(&tv, NULL);
-   return ConvertTimeValTo64(tv);
 #endif
+   return ConvertTimeValTo64(tv);
 }
 
 #endif

@@ -23,6 +23,10 @@
 
 BEGIN_NAMESPACE(muscle);
 
+// If false, then we must not assume that we are running in single-threaded mode.
+// This variable should be set by the ThreadSetupSystem constructor ONLY!
+extern bool _muscleSingleThreadOnly;
+
 /** This class is a platform-independent API for a recursive mutual exclusion semaphore (a.k.a mutex). 
   * Typically used to serialize the execution of critical sections in a multithreaded API 
   * (e.g. the MUSCLE ObjectPool or Thread classes)
@@ -34,42 +38,35 @@ public:
    /** Constructor */
    Mutex()
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
+      : _isEnabled(_muscleSingleThreadOnly == false)
 # if defined(MUSCLE_USE_PTHREADS)
       // empty
 # elif defined(QT_THREAD_SUPPORT)
-      : _locker(true)
+      , _locker(true)
 # elif defined(WIN32)
-      : _locker(CreateMutex(NULL, false, NULL))
+      , _locker(_isEnabled ? CreateMutex(NULL, false, NULL) : NULL)
 # elif defined(__ATHEOS__)
-      : _locker(NULL) 
+      , _locker(NULL) 
 # endif
 #endif
    {
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
+      if (_isEnabled)
+      {
 # if defined(MUSCLE_USE_PTHREADS)
-      pthread_mutexattr_t mutexattr;
-      pthread_mutexattr_init(&mutexattr);                              // Note:  If this code doesn't compile, then
-      pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);  // you may need to add -D_GNU_SOURCE to your
-      pthread_mutex_init(&_locker, &mutexattr);                        // Linux Makefile to enable it properly.
+         pthread_mutexattr_t mutexattr;
+         pthread_mutexattr_init(&mutexattr);                              // Note:  If this code doesn't compile, then
+         pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);  // you may need to add -D_GNU_SOURCE to your
+         pthread_mutex_init(&_locker, &mutexattr);                        // Linux Makefile to enable it properly.
 # endif
+      }
 #endif
    }
  
    /** Destructor.  If a Lock is destroyed while another thread is blocking in its Lock() method,
      * the results are undefined.
      */
-   ~Mutex() 
-   {
-#ifndef MUSCLE_SINGLE_THREAD_ONLY
-# if defined(MUSCLE_USE_PTHREADS)
-      pthread_mutex_destroy(&_locker);
-# elif defined(QT_THREAD_SUPPORT)
-      // do nothing
-# elif defined(WIN32)
-      CloseHandle(_locker);
-# endif
-#endif
-   }
+   ~Mutex() {Cleanup();}
 
    /** Attempts to lock the lock. 
      * Any thread that tries to Lock() this object while it is already locked by another thread
@@ -82,17 +79,20 @@ public:
    {
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
       return B_NO_ERROR;
-#elif defined(MUSCLE_USE_PTHREADS)
+#else
+      if (_isEnabled == false) return B_NO_ERROR;
+# if defined(MUSCLE_USE_PTHREADS)
       return (pthread_mutex_lock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
-#elif defined(QT_THREAD_SUPPORT)
+# elif defined(QT_THREAD_SUPPORT)
       _locker.lock();
       return B_NO_ERROR;
-#elif defined(__BEOS__)
+# elif defined(__BEOS__)
       return _locker.Lock() ? B_NO_ERROR : B_ERROR;
-#elif defined(WIN32)
+# elif defined(WIN32)
       return ((_locker)&&(WaitForSingleObject(_locker, INFINITE) == WAIT_FAILED)) ? B_ERROR : B_NO_ERROR;
-#elif defined(__ATHEOS__)
+# elif defined(__ATHEOS__)
       return _locker.Lock() ? B_ERROR : B_NO_ERROR;  // Is this correct?  Kurt's documentation sucks
+# endif
 #endif
    }
 
@@ -105,23 +105,48 @@ public:
    {
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
       return B_NO_ERROR;
-#elif defined(MUSCLE_USE_PTHREADS)
+#else
+      if (_isEnabled == false) return B_NO_ERROR;
+# if defined(MUSCLE_USE_PTHREADS)
       return (pthread_mutex_unlock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
-#elif defined(QT_THREAD_SUPPORT)
+# elif defined(QT_THREAD_SUPPORT)
       _locker.unlock();
       return B_NO_ERROR;
-#elif defined(__BEOS__)
+# elif defined(__BEOS__)
       _locker.Unlock();
       return B_NO_ERROR;
-#elif defined(WIN32)
+# elif defined(WIN32)
       return ((_locker)&&(ReleaseMutex(_locker))) ? B_NO_ERROR : B_ERROR;
-#elif defined(__ATHEOS__)
+# elif defined(__ATHEOS__)
       return _locker.Unlock() ? B_ERROR : B_NO_ERROR;  // Is this correct?  Kurt's documentation sucks
+# endif
 #endif
    }
 
+   /** Turns this Mutex into a no-op object.  Irreversible! */
+   void Neuter() {Cleanup();}
+
 private:
+   void Cleanup()
+   {
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
+      if (_isEnabled)
+      {
+# if defined(MUSCLE_USE_PTHREADS)
+         pthread_mutex_destroy(&_locker);
+# elif defined(QT_THREAD_SUPPORT)
+         // do nothing
+# elif defined(WIN32)
+         CloseHandle(_locker);
+# endif
+
+         _isEnabled = false;
+      }
+#endif
+   }
+
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+   bool _isEnabled;  // if false, this Mutex is a no-op
 # if defined(MUSCLE_USE_PTHREADS)
    mutable pthread_mutex_t _locker;
 # elif defined(QT_THREAD_SUPPORT)
@@ -144,8 +169,8 @@ private:
 #define PUNLOCK(name,pointer) _PUNLOCKimp(name,pointer,__FILE__,__LINE__)
 
 // don't call these directly -- call the PLOCK() and PUNLOCK() macros instead!
-static inline void _PLOCKimp(const char * n, const void * p, const char * f, int ln) {printf("%li plock p=%p [%s] %s:%i\n", pthread_self(), p, n, f, ln);}
-static inline void _PUNLOCKimp(const char * n, const void * p, const char * f, int ln) {printf("%li punlock p=%p [%s] %s:%i\n", pthread_self(), p, n, f, ln);}
+static inline void _PLOCKimp(const char * n, const void * p, const char * f, int ln) {printf("%li plock p=%p [%s] %s:%i\n", (int32)pthread_self(), p, n, f, ln);}
+static inline void _PUNLOCKimp(const char * n, const void * p, const char * f, int ln) {printf("%li punlock p=%p [%s] %s:%i\n", (int32)pthread_self(), p, n, f, ln);}
 #endif
 
 END_NAMESPACE(muscle);
