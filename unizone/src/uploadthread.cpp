@@ -898,7 +898,7 @@ WUploadThread::timerEvent(QTimerEvent *e)
 		}
 	}
 	// fall through
-	Reset();
+	ConnectTimer();
 }
 
 bool
