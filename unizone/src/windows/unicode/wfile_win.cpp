@@ -6,7 +6,7 @@
 
 WFile::WFile()
 {
-	file = NULL;
+	file = -1;
 }
 
 WFile::~WFile()
@@ -19,7 +19,7 @@ bool
 WFile::Open(const WString &name, int mode)
 {
 	file = _wopen(name.getBuffer(), mode);
-	return (file != NULL);
+	return (file != -1);
 }
 
 bool
@@ -35,7 +35,7 @@ void
 WFile::Close()
 {
 	_close(file);
-	file = NULL;
+	file = -1;
 }
 
 bool
