@@ -463,7 +463,7 @@ WUniListItem::text(int c) const
 			else
 				o = (double) ( (double) p / (double) q * 100.0f );
 			QString qp = fromLongLong(p);
-			QString qq = fromLongLong(p);
+			QString qq = fromLongLong(q);
 			QString qo; qo.sprintf("%3.2f %%", o);
 			result = "(" + qp + "/" + qq +") " + qo;
 		}
