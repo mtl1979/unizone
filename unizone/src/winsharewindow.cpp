@@ -322,9 +322,9 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				return;
 			}
 			
-		case WAcceptThread::Event::Type:
+		case WAcceptThreadEvent::Type:
 			{
-				WAcceptThread::Event * te = dynamic_cast<WAcceptThread::Event *>(event);
+				WAcceptThreadEvent * te = dynamic_cast<WAcceptThreadEvent *>(event);
 				if (te)
 				{
 					SocketHolderRef ref = te->Get();

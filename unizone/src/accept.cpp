@@ -18,7 +18,7 @@ WAcceptThread::SignalOwner()
 					SocketHolderRef sref(tag, NULL);
 					if (sref())
 					{
-						Event *e = new Event(sref);
+						WAcceptThreadEvent *e = new WAcceptThreadEvent(sref);
 						if (e)
 							QApplication::postEvent(fOwner, e);
 					}

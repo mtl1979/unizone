@@ -202,6 +202,10 @@ WFileThread::run()
 	CoUninitialize();
 #endif
 
+	Lock();
+	fScannedDirs.clear();
+	Unlock();
+
 	fRunning = false;
 	QCustomEvent *qce = new QCustomEvent(ScanDone);
 	if (qce)
@@ -447,7 +451,6 @@ WFileThread::EmptyList()
 {
 	Lock(); // test
 	fFiles.clear();
-	fScannedDirs.clear();
 	Unlock(); // test
 }
 /*
