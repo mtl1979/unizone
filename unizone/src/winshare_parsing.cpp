@@ -363,7 +363,9 @@ WinShareWindow::ParseForShown(const QString & txt)
 	QString out;
 	while ((next = tk.GetNextToken()) != QString::null)
 	{
+#if (QT_VERSION < 0x030100)
 		out += "<br>";	// replace our TAB
+#endif
 		out += next; 
 	}
 	return out;
