@@ -769,7 +769,7 @@ WinShareWindow::MakeHumanTime(int64 time)
 
 	if (days == 1)
 	{
-			s += "1 day, ";
+		s += "1 day, ";
 	}
 	else if (days > 1)
 	{
