@@ -261,9 +261,10 @@ WinShareWindow::StartAcceptThread()
 					END_OUTPUT();
 				}
 
-				fNetClient->SetPort(fAccept->GetPort());	// let the net client know our port
-				fNetClient->SetUserName(fUserName);			// BUG FIX: Port not being set in
-															// certain occasions
+				// let the net client know our port
+				fNetClient->SetPort(fAccept->GetPort());	
+				// BUG FIX: Port not being set in certain occasions
+				fNetClient->SetUserName(fUserName);			
 
 				return true;
 			}
@@ -273,12 +274,14 @@ WinShareWindow::StartAcceptThread()
 				PrintError(tr("Failed to start accept thread!"), true);
 				END_OUTPUT();
 				PRINT("Failed to start accept thread\n");
-				fSettings->SetSharingEnabled(false);
 			}
 		}
 		else
 			PRINT("Failed on port %d\n", i);
 	}
+	// Only disable file sharing if all port allocations fail.
+	fSettings->SetSharingEnabled(false);
+
 	StopAcceptThread();
 	return false;
 }
@@ -288,6 +291,12 @@ WinShareWindow::StopAcceptThread()
 {
 	if (!fAccept)
 		return;
+	// Reset port number to 0, which means not accepting and
+	// let the net client know the change
+	fNetClient->SetPort(0);						
+	// BUG FIX: Port not being set in certain occasions
+	fNetClient->SetUserName(fUserName);
+	
 	fAccept->ShutdownInternalThread();
 	fAccept->WaitForInternalThreadToExit();
 	delete fAccept;
@@ -1820,7 +1829,7 @@ WinShareWindow::WaitOnFileThread()
 	fFileShutdownFlag = true;
 	if (fFileScanThread->IsRunning())
 	{
-		PrintSystem(tr("Waiting for file scan thread to finish..."),false);
+		PrintSystem(tr("Waiting for file scan thread to finish..."), false);
 		while (fFileScanThread->IsRunning()) 
 		{
 			qApp->processEvents(300);
@@ -2139,6 +2148,7 @@ WinShareWindow::ScanShares(bool rescan)
 		return;
 	}
 
+	WaitOnFileThread();
 	// already running?
 	if (fFileScanThread->IsRunning())
 	{
