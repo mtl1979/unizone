@@ -1362,31 +1362,29 @@ WinShareWindow::MakeHumanTime(int64 time)
 void
 WinShareWindow::BeginMessageBatch()
 {
-#if (QT_VERSION < 0x030000)
-		fOutput = "\t";	// reset (we always start with a tab..., this is a linux bug workaround)
-#else
-		fOutput = "";
-#endif
+	fOutput = "";
 }
 
 void
 WinShareWindow::EndMessageBatch()
 {
-#if (QT_VERSION < 0x030000)
-	if (fOutput != "\t")	// do we have something?
-#else
 	if (!fOutput.isEmpty())
-#endif
 	{
+		/*
 		if (fOutput.right(4) == "<br>")
 			fOutput.truncate(fOutput.length() - 4);
+		*/
 
 		if (fChatText->text().isEmpty())
 			fChatText->setText(fOutput);
 		else
 		{
 			CheckScrollState();
-			fChatText->append(fOutput);
+			fChatText->append(
+#if (QT_VERSION < 0x030000)
+					"\t" +
+#endif
+					fOutput);
 		}
 
 		fMainLog.LogString(fOutput);

@@ -126,19 +126,43 @@ ParseForShown(const QString & txt)
 	}
 #else
 	out = "";
-	unsigned int n = 0;
+	int n = 0;
+	int m = 0;
+
 	// replace our TAB
-	while (n < txt.length())
+	n = txt.find('\t');
+
+	if (n >= 0)
 	{
-		if (txt.at(n) != '\t')
+		if (n > 0)
 		{
-			out += txt.at(n);
+			// copy everything before first TAB
+			out += txt.left(n);
+
+			// skip the TAB ;)
+			n++;
 		}
-		else
+
+		while (n < txt.length())
 		{
-			out += "<br>";
+			m = txt.find('\t', n);
+			if (m > n)
+			{
+				out += txt.mid(n, m - n);
+				out += "<br>";
+				n += m - n + 1;
+			}
+			else
+			{
+				// no more TAB characters
+				out += txt.mid(n);
+				n = txt.length();
+			}
 		}
-		n++;
+	}
+	else
+	{
+		out = txt;
 	}
 	// out.replace(QRegExp("\t"), "<br>");
 	// Remove any extra line breaks in start of buffer
