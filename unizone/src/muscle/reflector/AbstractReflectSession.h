@@ -100,8 +100,9 @@ public:
    /** Forces the disconnection of this session's TCP connection to its client.
     *  Calling this will cause ClientConnectionClosed() to be called, as if the
     *  TCP connection had been severed externally.
+    *  @returns the value that ClientConnectionClosed() returned.
     */
-   void DisconnectSession();
+   bool DisconnectSession();
 
    /**
     * Causes this session to be terminated (similar to EndSession(), 
@@ -161,7 +162,7 @@ public:
    void SetGateway(AbstractMessageIOGatewayRef ref) {_gateway = ref; _outputStallLimit = _gateway()?_gateway()->GetOutputStallLimit():MUSCLE_TIME_NEVER;}
 
    /**
-    * Returns a poitner to our internally held message IO gateway object, 
+    * Returns a pointer to our internally held message IO gateway object, 
     * or NULL reference if there is none.  The returned gateway remains 
     * the property of this session.
     */
@@ -313,6 +314,7 @@ private:
    uint32 _maxInputChunk;   // as determined by our Policy object
    uint32 _maxOutputChunk;  // and stored here for convenience
    uint64 _outputStallLimit;
+   bool _scratchReconnected; // scratch, watched by ReflectServer() during ClientConnectionClosed() calls.
 };
 
 // VC++ can't handle partial template specialization, so for VC++ we define this explicitely.

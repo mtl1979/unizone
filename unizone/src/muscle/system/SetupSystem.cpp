@@ -18,6 +18,11 @@
 # endif
 #endif
 
+#if defined(__BORLANDC__)
+# include <math.h>
+# include <float.h>
+#endif
+
 namespace muscle {
 
 static Mutex * _muscleLock = NULL;
@@ -29,6 +34,18 @@ static Mutex * _atomicMutexes = NULL;
 #endif
 
 static uint32 _threadSetupCount = 0;
+
+MathSetupSystem :: MathSetupSystem()
+{
+#if defined(__BORLANDC__)
+   _control87(MCW_EM,MCW_EM);  // disable floating point exceptions
+#endif
+}
+
+MathSetupSystem :: ~MathSetupSystem()
+{
+   // empty
+}
 
 ThreadSetupSystem :: ThreadSetupSystem()
 {

@@ -417,6 +417,9 @@ protected:
     */
     status_t SendMessageToMatchingSessions(MessageRef msgRef, const String & nodePath, QueryFilterRef filter, bool matchSelf);
 
+    /** This type is sometimes used when calling CloneDataNodeSubtree(). */
+    typedef MessageRef (*MessageReplaceFunc)(MessageRef oldRef, void *);
+
    /** Convenience method (used by some customized daemons) -- Given a source node and a destination path,
      * Make (path) a deep, recursive clone of (node).
      * @param sourceNode Reference to a DataNode to clone.
@@ -430,9 +433,14 @@ protected:
      *                         If false, it will be added using PutChild().
      * @param optInsertBefore If (addToTargetIndex) is true, this argument will be passed on to InsertOrderedChild().
      *                        Otherwise, this argument is ignored.
+     * @param optFunc If specified as non-NULL, this callback function will be called as a hook to adjust the data payloads of
+     *                the newly created node(s).  Note that this function should NOT modify any Message in place; rather it should
+     *                return a MessageRef to be used in the newly created nodes, which may be the passed-in MessageRef of the existing
+     *                node, or a newly created one.
+     * @param optFuncArg This argument is passed to (optFunc) as its second argument.
      * @return B_NO_ERROR on success, or B_ERROR on failure (may leave a partially cloned subtree on failure)
      */
-   status_t CloneDataNodeSubtree(const StorageReflectSession::DataNode & sourceNode, const String & destPath, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToTargetIndex=false, const char * optInsertBefore = NULL);
+   status_t CloneDataNodeSubtree(const StorageReflectSession::DataNode & sourceNode, const String & destPath, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToTargetIndex=false, const char * optInsertBefore = NULL, MessageReplaceFunc optFunc = NULL, void * optFuncArg = NULL);
 
    /** Tells other sessions that we have modified (node) in our node subtree.
     *  @param node The node that has been modfied.
@@ -571,8 +579,7 @@ protected:
    /** Returns a reference to the global root node of the database */
    DataNode & GetGlobalRoot() const {return *(_sharedData->_root);}
 
-   // The following macros declare node-visitor callback functions for our various tree-traversal methods 
-   // Note that each one declares both the named method and a static accessor method (name##Func).
+   /** Macro to declare the proper callback declarations for the message-passing callback.  */
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, PassMessageCallback);    /** Matching nodes are sent the given message.  */
 
 private:

@@ -64,7 +64,7 @@ public:
    /**
     * Adds a new session that uses the given socket for I/O.
     * @param ref New session to add to the server.
-    * @param socket The TCP socket that the new session will be using, or -1, if the new session has no TCP connection.
+    * @param socket The TCP socket that the new session should use, or -1, if the new session is to have no client connection.  Note that if the session already has a gateway and DataIO installed, then the DataIO's existing socket will be used instead, and this socket will be ignored.
     * @return B_NO_ERROR if the new session was added successfully, or B_ERROR if there was an error setting it up.
     */
    virtual status_t AddNewSession(AbstractReflectSessionRef ref, int socket);
@@ -150,11 +150,6 @@ public:
      */
    uint32 GetNumUsedBytes() const;
 
-   /** Returns the time at which the current cycle of the server's
-    *  event loop began.
-    */
-   inline uint64 GetCycleStartTime() const {return _cycleStartedAt;}
-
    /** Returns a reference to a table mapping IP addresses to custom strings...
      * This table may be examined or altered.  When a new connection is accepted,
      * the ReflectServer will consult this table for the address-level MUSCLE node's
@@ -195,8 +190,13 @@ protected:
    /** Called by a session to get itself removed & destroyed */
    void EndSession(AbstractReflectSession * which);
 
-   /** Called by a session to force its TCP connection to be closed */
-   void DisconnectSession(AbstractReflectSession * which);
+   /** Called by a session to force its TCP connection to be closed
+     * @ param which The session to force-disconnect.
+     * @ returns true iff the session has decided to terminate itself, or false if it decided to continue
+     *                hanging around the server even though its client connection has been severed.
+     * @see AbstractReflectSession::ClientConnectionClosed().
+     */
+   bool DisconnectSession(AbstractReflectSession * which);
 
 private:
    friend class AbstractReflectSession;
@@ -220,7 +220,6 @@ private:
    Hashtable<const char *, AbstractReflectSessionRef> _sessions;
    Queue<AbstractReflectSessionRef> _lameDuckSessions;  // sessions that are due to be removed
    bool _keepServerGoing;
-   uint64 _cycleStartedAt;
    uint64 _serverStartedAt;
    bool _doLogging;
 

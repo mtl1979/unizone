@@ -308,6 +308,12 @@ public:
    void Sort(ItemCompareFunc compareFunc, uint32 from=0, uint32 to = ((uint32)-1), void * optCookie = NULL);
 
    /**
+    *  Swaps our contents with the contents of (that), in an efficient manner.
+    *  @param that The queue whose contents are to be swapped with our own.
+    */
+   void SwapContents(Queue<ItemType> & that);
+
+   /**
     *  Goes through the array and removes every item that is equal to (val).
     *  @param val the item to look for and remove
     *  @return The number of instances of (val) that were found and removed during this operation.
@@ -345,6 +351,7 @@ public:
 
 private:
    const ItemType * GetArrayPointerAux(uint32 whichArray, uint32 & retLength) const;
+   void SwapContentsAux(Queue<ItemType> & that);
 
    inline uint32 NextIndex(uint32 idx) const {return (idx >= _queueSize-1) ? 0 : idx+1;}
    inline uint32 PrevIndex(uint32 idx) const {return (idx == 0) ? _queueSize-1 : idx-1;}
@@ -547,7 +554,6 @@ RemoveTail(ItemType & returnItem)
    return RemoveTail();
 }
 
-
 template <class ItemType>
 status_t 
 Queue<ItemType>::
@@ -664,9 +670,9 @@ void
 Queue<ItemType>::
 Clear(bool releaseCachedBuffers)
 {
-   if (releaseCachedBuffers)
+   if ((releaseCachedBuffers)&&(_queue != _smallQueue))
    {
-      if (_queue != _smallQueue) delete [] _queue;
+      delete [] _queue;
       _queue = NULL;
       _queueSize = 0;
       _itemCount = 0;
@@ -975,6 +981,71 @@ Queue<ItemType> :: GetArrayPointerAux(uint32 whichArray, uint32 & retLength) con
       }
    }
    return NULL;
+}
+
+template <class ItemType>
+void
+Queue<ItemType>::SwapContents(Queue<ItemType> & that)
+{
+   bool thisSmall = (_queue == _smallQueue);
+   bool thatSmall = (that._queue == that._smallQueue);
+
+   if ((thisSmall)&&(thatSmall))
+   {
+      // First, move any extra items from the longer queue to the shorter one...
+      uint32 commonSize = muscleMin(GetNumItems(), that.GetNumItems());
+      int32 sizeDiff    = ((int32)GetNumItems())-((int32)that.GetNumItems());
+      Queue<ItemType> & copyTo   = (sizeDiff > 0) ? that : *this;
+      Queue<ItemType> & copyFrom = (sizeDiff > 0) ? *this : that;
+      (void) copyTo.AddTail(copyFrom, commonSize);   // guaranteed not to fail
+      (void) copyFrom.EnsureSize(commonSize, true);  // remove the copied items from (copyFrom)
+
+      // Then just swap the elements that are present in both arrays
+      for (uint32 i=0; i<commonSize; i++) muscleSwap((*this)[i], that[i]);
+   }
+   else if (thisSmall) SwapContentsAux(that);
+   else if (thatSmall) that.SwapContentsAux(*this);
+   else
+   {
+      // this case is easy, we can just swizzle the pointers around
+      muscleSwap(_queue,     that._queue);
+      muscleSwap(_queueSize, that._queueSize);
+      muscleSwap(_headIndex, that._headIndex);
+      muscleSwap(_tailIndex, that._tailIndex);
+      muscleSwap(_itemCount, that._itemCount);
+   }
+}
+
+template <class ItemType>
+void
+Queue<ItemType>::SwapContentsAux(Queue<ItemType> & largeThat)
+{
+   // First, copy over our (small) contents to his static buffer
+   uint32 ni = GetNumItems();
+   for (int32 i=0; i<ni; i++) largeThat._smallQueue[i] = (*this)[i];
+
+   // Now adopt his dynamic buffer
+   _queue     = largeThat._queue;
+   _queueSize = largeThat._queueSize;
+   _headIndex = largeThat._headIndex;
+   _tailIndex = largeThat._tailIndex;
+   
+   // And point him back at his static buffer
+   if (ni > 0)
+   {
+      largeThat._queue     = largeThat._smallQueue;
+      largeThat._queueSize = ARRAYITEMS(largeThat._smallQueue);
+      largeThat._headIndex = 0;
+      largeThat._tailIndex = ni-1;
+   }
+   else
+   {
+      largeThat._queue     = NULL;
+      largeThat._queueSize = 0;
+      // headIndex and tailIndex are undefined in this case anyway
+   }
+   
+   muscleSwap(_itemCount, largeThat._itemCount);
 }
 
 };  // end namespace muscle

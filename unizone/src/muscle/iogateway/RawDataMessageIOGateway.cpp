@@ -95,7 +95,7 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
                // This buffer is full... forward it on to the user, and start receiving the next one.
                receiver.CallMessageReceivedFromGateway(_recvMsgRef);
                _recvMsgRef.Reset();
-               int32 subRet = DoInputImplementation(receiver, maxBytes-bytesRead);
+               int32 subRet = IsSuggestedTimeSliceExpired() ? 0 : DoInputImplementation(receiver, maxBytes-bytesRead);
                return (subRet >= 0) ? (ret+subRet) : -1;
             }
          }

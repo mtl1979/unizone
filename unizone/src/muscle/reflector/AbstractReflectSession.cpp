@@ -88,6 +88,7 @@ Reconnect()
             _gateway()->SetDataIO(DataIORef(io, NULL));
             if (isReady) AsyncConnectCompleted();
                     else _connectingAsync = true;
+            _scratchReconnected = true;   // tells ReflectServer() not to shut down our new IO!
             return B_NO_ERROR;
          }
          else closesocket(socket);
@@ -182,12 +183,12 @@ EndSession()
    _owner->EndSession(this);
 }
 
-void
+bool
 AbstractReflectSession ::
 DisconnectSession()
 {
    MASSERT(IsAttachedToServer(), "Can't call DisconnectSession() while not attached to the server");
-   _owner->DisconnectSession(this);
+   return _owner->DisconnectSession(this);
 }
 
 String

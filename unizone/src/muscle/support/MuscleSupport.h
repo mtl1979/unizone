@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.45"
+#define MUSCLE_VERSION_STRING "2.46"
 
 // Just declare the muscle namespace as existing.
 // If we ever decide to make the muscle namespace a superset
@@ -233,6 +233,9 @@ template<typename T> inline T muscleAbs(const T & arg) {return (arg<0)?(-arg):ar
 
 /** Rounds the given float to the nearest integer value. */
 inline int muscleRintf(float f) {return (f>=0.0f) ? ((int)(f+0.5f)) : -((int)((-f)+0.5f));}
+
+/** Returns -1 if the value is less than zero, +1 if it is greater than zero, or 0 otherwise. */
+template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((arg>0)?1:0);}
 
 #ifndef __BEOS__
 # if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) // Cygwin is for Windows on x86, hence little endian

@@ -160,14 +160,6 @@ RemoveAcceptFactory(uint16 port)
    return _owner->RemoveAcceptFactory(port);
 }
 
-uint64
-ServerComponent ::
-GetCycleStartTime() const
-{
-   MASSERT(_owner, "Can't call GetCycleStartTime() while not attached to the server");
-   return _owner->GetCycleStartTime();
-}
-
 void 
 ServerComponent ::
 MessageReceivedFromSession(AbstractReflectSession &, MessageRef, void *)

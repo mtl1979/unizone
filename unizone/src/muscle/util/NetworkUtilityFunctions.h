@@ -67,6 +67,20 @@ int Accept(int socket);
  */
 int32 ReceiveData(int socket, void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO);
 
+/** Identical to ReceiveData(), except that this function's logic is adjusted to handle UDP semantics properly. 
+ *  @param socket The socket to read from.
+ *  @param buffer Buffer to write the bytes into.
+ *  @param bufferSizeBytes Number of bytes in the buffer.
+ *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
+ *  @param optRetFromIP If set to non-NULL, then on success the uint32 this parameter points to will be filled in
+ *                      with the IP address that the received data came from.  Defaults to NULL.
+ *  @param optRetFromPort If set to non-NULL, then on success the uint16 this parameter points to will be filled in
+ *                      with the source port that the received data came from.  Defaults to NULL.
+ *  @return The number of bytes read into (buffer), or a negative value if there was an error.
+ *          Note that this value may be smaller than (bufferSizeBytes).
+ */
+int32 ReceiveDataUDP(int socket, void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO, uint32 * optRetFromIP = NULL, uint16 * optRetFromPort = NULL);
+
 /** Transmits as many bytes as possible from the given buffer over the given socket.
  *  @param socket The socket to transmit over.
  *  @param buffer Buffer to read the outgoing bytes from.
@@ -76,6 +90,20 @@ int32 ReceiveData(int socket, void * buffer, uint32 bufferSizeBytes, bool socket
  *          Note that this value may be smaller than (bufferSizeBytes).
  */
 int32 SendData(int socket, const void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO);
+
+/** Similar to SendData(), except that this function's logic is adjusted to handle UDP semantics properly.
+ *  @param socket The socket to transmit over.
+ *  @param buffer Buffer to read the outgoing bytes from.
+ *  @param bufferSizeBytes Number of bytes to send.
+ *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
+ *  @param optDestIP If set to non-zero, the data will be sent to the given IP address.  Otherwise it will
+ *                   be sent to the socket's current IP address (see SetUDPSocketTarget()).  Defaults to zero.
+ *  @param destPort If set to non-zero, the data will be sent to the specified port.  Otherwise it will
+ *                  be sent to the socket's current destination port (see SetUDPSocketTarget()).  Defaults to zero.
+ *  @return The number of bytes sent from (buffer), or a negative value if there was an error.
+ *          Note that this value may be smaller than (bufferSizeBytes).
+ */
+int32 SendDataUDP(int socket, const void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO, uint32 optDestIP = 0, uint16 destPort = 0);
 
 /** This function initiates a non-blocking connection to the given host IP address and port.
   * It will return the created socket, which may or may not be fully connected yet.
@@ -99,6 +127,12 @@ int ConnectAsync(uint32 hostIP, uint16 port, bool & retIsReady);
   * the connection and make it ready for use.
   * @param socket The socket that was connecting asynchronously
   * @returns B_NO_ERROR if the connection is ready to use, or B_ERROR if the connect failed.
+  * @note Under Windows, select() won't return ready-for-write if the connection fails... instead
+  *       it will select-notify for your socket on the exceptions fd_set (if you provided one).
+  *       Once this happens, there is no need to call FinalizeAsyncConnect() -- the fact that the
+  *       socket notified on the exceptions fd_set is enough for you to know the asynchronous connection
+  *       failed.  Successful asynchronous connect()s do exhibit the standard (select ready-for-write)
+  *       behaviour, though.
   */
 status_t FinalizeAsyncConnect(int socket);
 
@@ -144,32 +178,6 @@ uint32 Inet_AtoN(const char * buf);
  *  @return The IP address on success, or 0 on failure (such as if the socket isn't valid and connected).
  */
 uint32 GetPeerIPAddress(int socket);
-
-/** Calls fork(), setsid(), chdir(), umask(), etc, to fork an independent daemon process.
- *  Also closes all open file descriptors.
- *  Note that this function will call exit() on the parent process if successful,
- *  and thus won't ever return in that process. 
- *  @param optNewDir If specified, the daemon will chdir() to the directory specified here.
- *  @param optOutputTo Where to redirect stderr and stdout to.  Defaults to "/dev/null".
- *                     If set to NULL, or if the output device can't be opened, output
- *                     will not be rerouted.
- *  @param createOutputFileIfNecessary if set true, and (optOutputTo) can't be opened,
- *                                     (optOutputTo) will be created.
- *  @return B_NO_ERROR on success (the child process will see this), B_ERROR on failure.
- */
-status_t BecomeDaemonProcess(const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = false);
-
-/** Same as BecomeDaemonProcess(), except that the parent process returns as well as the child process.  
- *  @param returningAsParent Set to true on return of the parent process, or false on return of the child process.
- *  @param optNewDir If specified, the child will chdir() to the directory specified here.
- *  @param optOutputTo Where to redirect stderr and stdout to.  Defaults to "/dev/null".
- *                     If set to NULL, or if the output device can't be opened, output
- *                     will not be rerouted.
- *  @param createOutputFileIfNecessary if set true, and (optOutputTo) can't be opened,
- *                                     (optOutputTo) will be created.
- *  @return B_NO_ERROR (twice!) on success, B_ERROR on failure.
- */ 
-status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = false);
 
 /** Creates a pair of sockets that are connected to each other,
  *  so that any bytes you pass into one socket come out the other socket.
@@ -237,6 +245,45 @@ void SetLocalHostIPOverride(uint32 ip);
   * unless you previously called SetLocalHostIPOverride() with that address.
   */
 uint32 GetLocalHostIPOverride();
+
+/** Creates and returns a socket that can be used for UDP communications.
+ *  Returns a negative value on error, or a non-negative socket handle on
+ *  success.  You'll probably want to call BindUDPSocket() or SetUDPSocketTarget()
+ *  after calling this method.  When you are done with the socket, be sure to
+ *  call CloseSocket() on it.
+ */
+int CreateUDPSocket();
+
+/** Attempts to given UDP socket to the given port.  
+ *  @param sock The UDP socket (previously created by CreateUDPSocket())
+ *  @param port UDP port ID to bind the socket to.  If zero, the system will choose a port ID.
+ *  @param optRetPort if non-NULL, then on successful return the value this pointer points to will contain
+ *                    the port ID that the socket was bound to.  Defaults to NULL.
+ *  @param optFrom If non-zero, then the socket will be bound in such a way that only data
+ *                 packets from this IP address will be accepted.  Defaults to zero.
+ *  @returns B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t BindUDPSocket(int sock, uint16 port, uint16 * optRetPort = NULL, uint32 optFrom = 0);
+
+/** Set the target/destination address for a UDP socket.  After successful return
+ *  of this function, any data that is written to the UDP socket will be sent to this
+ *  IP address and port.  This function is guaranteed to return quickly.
+ *  @param sock The UDP socket to send to (previously created by CreateUDPSocket()).
+ *  @param remoteIP Remote IP address that data should be sent to.
+ *  @param remotePort Remote UDP port ID that data should be sent to.
+ *  @returns B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t SetUDPSocketTarget(int sock, uint32 remoteIP, uint16 remotePort);
+
+/** As above, except that the remote host is specified by hostname instead of IP address.
+ *  Note that this function may take involve a DNS lookup, and so may take a significant
+ *  amount of time to complete.
+ *  @param sock The UDP socket to send to (previously created by CreateUDPSocket()).
+ *  @param remoteHostName Name of remote host (e.g. "www.mycomputer.com" or "132.239.50.8")
+ *  @param remotePort Remote UDP port ID that data should be sent to.
+ *  @returns B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t SetUDPSocketTarget(int sock, const char * remoteHostName, uint16 remotePort);
 
 };  // end namespace muscle
 

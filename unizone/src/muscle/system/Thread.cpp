@@ -221,12 +221,11 @@ int32 Thread :: WaitForNextMessageAux(int whichThread, MessageRef & ref, uint64 
 
 void Thread :: InternalThreadEntry()
 {
-   MessageRef msgRef;
-   int32 numLeft;
-   while((numLeft = WaitForNextMessageFromOwner(msgRef)) >= 0)
+   while(true)
    {
-      if (MessageReceivedFromOwner(msgRef, numLeft) == B_NO_ERROR) msgRef.Reset();  // free up the memory now, in case we wait for a long time
-                                                              else break;
+      MessageRef msgRef;
+      int32 numLeft = WaitForNextMessageFromOwner(msgRef);
+      if ((numLeft >= 0)&&(MessageReceivedFromOwner(msgRef, numLeft) != B_NO_ERROR)) break;
    } 
 }
 

@@ -74,7 +74,7 @@ DoOutputImplementation(uint32 maxBytes)
                return sentBytes;  // nothing more to send, so we're done!
             }
 
-            const Message * nextSendMsg = nextRef.GetItemPointer();
+            const Message * nextSendMsg = nextRef();
             if (nextSendMsg)
             {
                if (_aboutToFlattenCallback) _aboutToFlattenCallback(nextRef, _aboutToFlattenCallbackData);
@@ -107,9 +107,12 @@ int32
 MessageIOGateway ::
 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes)
 {
+   bool firstTime = true;  // always go at least once, to avoid live-lock
    int32 readBytes = 0;
-   while((maxBytes > 0)&&(IsHosed() == false))
+   while((maxBytes > 0)&&(IsHosed() == false)&&((firstTime)||(IsSuggestedTimeSliceExpired() == false)))
    {
+      firstTime = false;
+
       if (_recvHeaderBuffer._buffer() == NULL)
       {
          _recvHeaderBuffer._offset = 0;

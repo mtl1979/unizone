@@ -228,6 +228,9 @@ public:
    /** Returns an version of this string that has all leading and trailing whitespace removed.  Does not modify the string it is called on. */
    String Trim() const;  
 
+   /** Swaps the state of this string with (swapWithMe).  Very efficient since little or no data copying is required. */
+   void SwapContents(String & swapWithMe);
+
    /** Like CompareTo(), but case insensitive. */
    int CompareToIgnoreCase(const String &s) const             {return ToLowerCase().CompareTo(s.ToLowerCase());}
 
@@ -271,14 +274,19 @@ public:
    uint32 HashCode() const;
 
    /** Replaces all instances of (oldChar) in this string with (newChar).
-     * @returns B_NO_ERROR on success, or B_ERROR if no changes were necessary.
+     * @param replaceMe The character to search for.
+     * @param withMe The character to replace all occurrences of (replaceMe) with.
+     * @returns The number of characters that were successfully replaced.
      */
-   status_t Replace(char oldChar, char newChar); 
+   uint32 Replace(char replaceMe, char withMe); 
 
-   /** Replaces all instances of (match) in this string with (replace).
-     * @returns B_NO_ERROR on success, or B_ERROR if no changes were necessary.
+   /** Replaces all instances of (replaceMe) in this string with (withMe).
+     * @param replaceMe The substring to search for.
+     * @param withMe The substring to replace all occurrences of (replaceMe) with.
+     * @returns The number of substrings that were successfully replaced, or -1
+     *          if the operation failed (out of memory, or (replaceMe) was of length zero)
      */
-   status_t Replace(const String& match, const String& replace); 
+   int32 Replace(const String & replaceMe, const String & withMe); 
  
    /** Reverses the order of all characters in the string, so that e.g. "string" becomes "gnirts" */
    void Reverse();
@@ -333,14 +341,32 @@ public:
      * @returns a new String with the appropriate tokens replaced.
      */
    String Arg(int8 value,   const char * fmt = "%i")   const;
+
+   /** As above, but for uint8 values. */
    String Arg(uint8 value,  const char * fmt = "%u")   const;
+
+   /** As above, but for int16 values. */
    String Arg(int16 value,  const char * fmt = "%i")   const;
+
+   /** As above, but for uint16 values. */
    String Arg(uint16 value, const char * fmt = "%u")   const;
+
+   /** As above, but for int32 values. */
    String Arg(int32 value,  const char * fmt = "%li")  const;
+
+   /** As above, but for uint32 values. */
    String Arg(uint32 value, const char * fmt = "%lu")  const;
+
+   /** As above, but for int64 values. */
    String Arg(int64 value,  const char * fmt = INT64_FORMAT_SPEC) const;
+
+   /** As above, but for uint64 values. */
    String Arg(uint64 value, const char * fmt = UINT64_FORMAT_SPEC) const;
+
+   /** As above, but for double values. */
    String Arg(double value, const char * fmt = "%f")   const;
+
+   /** As above, but for string values. */
    String Arg(const String & value) const;
 
 private:

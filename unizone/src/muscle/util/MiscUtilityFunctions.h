@@ -39,6 +39,21 @@ status_t ParseFile(FILE * file, Message & addTo);
  */
 status_t ParseArg(const String & arg, Message & addTo);
 
+/** Looks for some globally useful startup arguments in the (args)
+ *  Message and handles them by calling the appropriate setup routines.  
+ *  Recognized arguments currently include the following:
+ *     daemon              -- Non-Windows only:  Run this process in the background
+ *     localhost=ip        -- Treat connections from localhost as if they were coming from (ip)
+ *     display=levelstr    -- Set the stdout output display filter level to (levelstr)
+ *     log=levelstr        -- Set the output log filter level to (levelstr)
+ *     nice[=niceLevel]    -- Linux/OSX only: makes this process nicer (i.e. lower priority)
+ *     mean[=meanLevel]    -- Linux/OSX only: makes this process meaner (i.e. higher priority)
+ *     realtime[=priority] -- Linux only: makes this process real-time (requires root access)
+ *     console             -- Windows only:  open a DOS box to display this window's output
+ *  @param args an arguments Message, as produced by ParseArgs() or ParseFile() or etc.
+ */
+void HandleStandardDaemonArgs(const Message & args);
+
 /** Given an ASCII representation of a non-negative number, 
  *  returns that number as a uint64. 
  */
@@ -63,6 +78,32 @@ String GetHumanReadableTimeString(uint64 timeVal);
   * @returns The equivalent time value, or zero on failure.
   */
 uint64 ParseHumanReadableTimeString(const String & str);
+
+/** Calls fork(), setsid(), chdir(), umask(), etc, to fork an independent daemon process.
+ *  Also closes all open file descriptors.
+ *  Note that this function will call exit() on the parent process if successful,
+ *  and thus won't ever return in that process. 
+ *  @param optNewDir If specified, the daemon will chdir() to the directory specified here.
+ *  @param optOutputTo Where to redirect stderr and stdout to.  Defaults to "/dev/null".
+ *                     If set to NULL, or if the output device can't be opened, output
+ *                     will not be rerouted.
+ *  @param createOutputFileIfNecessary if set true, and (optOutputTo) can't be opened,
+ *                                     (optOutputTo) will be created.
+ *  @return B_NO_ERROR on success (the child process will see this), B_ERROR on failure.
+ */
+status_t BecomeDaemonProcess(const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = false);
+
+/** Same as BecomeDaemonProcess(), except that the parent process returns as well as the child process.  
+ *  @param returningAsParent Set to true on return of the parent process, or false on return of the child process.
+ *  @param optNewDir If specified, the child will chdir() to the directory specified here.
+ *  @param optOutputTo Where to redirect stderr and stdout to.  Defaults to "/dev/null".
+ *                     If set to NULL, or if the output device can't be opened, output
+ *                     will not be rerouted.
+ *  @param createOutputFileIfNecessary if set true, and (optOutputTo) can't be opened,
+ *                                     (optOutputTo) will be created.
+ *  @return B_NO_ERROR (twice!) on success, B_ERROR on failure.
+ */ 
+status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = false);
 
 };  // end namespace muscle
 

@@ -29,8 +29,6 @@
 # endif
 #endif
 
-#include <fcntl.h>
-#include <signal.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -48,6 +46,83 @@ static uint32 _customLocalhostIP = 0;  // disabled by default
 
 void SetLocalHostIPOverride(uint32 ip) {_customLocalhostIP = ip;}
 uint32 GetLocalHostIPOverride() {return _customLocalhostIP;}
+
+/** Creates and returns a socket that can be used for UDP communications.
+ *  Returns a negative value on error, or a non-negative socket handle on
+ *  success.  You'll probably want to call BindUDPSocket() or SetUDPSocketTarget()
+ *  after calling this method.  When you are done with the socket, be sure to
+ *  call CloseSocket() on it.
+ */
+int CreateUDPSocket()
+{
+   return socket(AF_INET, SOCK_DGRAM, 0);
+}
+
+/** Attempts to given UDP socket to the given port.  
+ *  @param sock The UDP socket (previously created by CreateUDPSocket())
+ *  @param port UDP port ID to bind the socket to.  If zero, the system will choose a port ID.
+ *  @param optRetPort if non-NULL, then on successful return the value this pointer points to will contain
+ *                    the port ID that the socket was bound to.
+ *  @param optFrom If non-zero, then the socket will be bound in such a way that only data
+ *                 packets from this IP address will be accepted.
+ *  @returns B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t BindUDPSocket(int sock, uint16 port, uint16 * optRetPort, uint32 optFrom)
+{
+   struct sockaddr_in saSocket;
+   memset(&saSocket, 0, sizeof(saSocket));
+   saSocket.sin_family      = AF_INET;
+   saSocket.sin_addr.s_addr = htonl(optFrom ? optFrom : INADDR_ANY);
+   saSocket.sin_port        = htons(port);
+
+   if (bind(sock, (struct sockaddr *) &saSocket, sizeof(saSocket)) == 0)
+   {
+      if (optRetPort)
+      {
+         net_length_t len = sizeof(saSocket);
+         if (getsockname(sock, (struct sockaddr *)&saSocket, &len) == 0)
+         {
+            *optRetPort = (uint16) ntohs(saSocket.sin_port);
+            return B_NO_ERROR;
+         }
+         else return B_ERROR;
+      }
+      return B_NO_ERROR;
+   }
+   else return B_ERROR;
+}
+
+/** Set the target/destination address for a UDP socket.  After successful return
+ *  of this function, any data that is written to the UDP socket will be sent to this
+ *  IP address and port.  This function is guaranteed to return quickly.
+ *  @param sock The UDP socket to send to (previously created by CreateUDPSocket()).
+ *  @param remoteIP Remote IP address that data should be sent to.
+ *  @param remotePort Remote UDP port ID that data should be sent to.
+ *  @returns B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t SetUDPSocketTarget(int sock, uint32 remoteIP, uint16 remotePort)
+{
+   struct sockaddr_in saAddr;
+   memset(&saAddr, 0, sizeof(saAddr));
+   saAddr.sin_family      = AF_INET;
+   saAddr.sin_port        = htons(remotePort);
+   saAddr.sin_addr.s_addr = htonl(remoteIP);
+   return (connect(sock, (struct sockaddr *) &saAddr, sizeof(saAddr)) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+/** As above, except that the remote host is specified by hostname instead of IP address.
+ *  Note that this function may take involve a DNS lookup, and so may take a significant
+ *  amount of time to complete.
+ *  @param sock The UDP socket to send to (previously created by CreateUDPSocket()).
+ *  @param remoteHostName Name of remote host (e.g. "www.mycomputer.com" or "132.239.50.8")
+ *  @param remotePort Remote UDP port ID that data should be sent to.
+ *  @returns B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t SetUDPSocketTarget(int sock, const char * remoteHostName, uint16 remotePort)
+{
+   uint32 hostIP = GetHostByName(remoteHostName);
+   return (hostIP) ? SetUDPSocketTarget(sock, hostIP, remotePort) : B_ERROR;
+}
 
 int CreateAcceptingSocket(uint16 port, int maxbacklog, uint16 * optRetPort, uint32 optFrom)
 {
@@ -80,24 +155,76 @@ int CreateAcceptingSocket(uint16 port, int maxbacklog, uint16 * optRetPort, uint
    return -1;
 }
 
-void CloseSocket(int socket)
+void CloseSocket(int sock)
 {
-   if (socket >= 0) closesocket(socket);  // a little bit silly, perhaps...
+   if (sock >= 0) closesocket(sock);  // a little bit silly, perhaps...
 }
 
-int32 ReceiveData(int socket, void * buffer, uint32 size, bool bm)
+int32 ReceiveData(int sock, void * buffer, uint32 size, bool bm)
 {
-   return (socket >= 0) ? ConvertReturnValueToMuscleSemantics(recv(socket, (char *)buffer, size, 0L), size, bm) : -1;
+   return (sock >= 0) ? ConvertReturnValueToMuscleSemantics(recv(sock, (char *)buffer, size, 0L), size, bm) : -1;
 }
 
-int32 SendData(int socket, const void * buffer, uint32 size, bool bm)
+int32 ReceiveDataUDP(int sock, void * buffer, uint32 size, bool bm, uint32 * optFromIP, uint16 * optFromPort)
 {
-   return (socket >= 0) ? ConvertReturnValueToMuscleSemantics(send(socket, (const char *)buffer, size, 0L), size, bm) : -1;
+   if (sock >= 0)
+   {
+      int r;
+      if ((optFromIP)||(optFromPort))
+      {
+         struct sockaddr_in fromAddr;
+         net_length_t fromAddrLen = sizeof(fromAddr);
+         r = recvfrom(sock, (char *)buffer, size, 0L, (struct sockaddr *) &fromAddr, &fromAddrLen);
+         if (r >= 0)
+         {
+            if (optFromIP)   *optFromIP   = ntohl(fromAddr.sin_addr.s_addr);
+            if (optFromPort) *optFromPort = ntohs(fromAddr.sin_port);
+         }
+      }
+      else r = recv(sock, (char *)buffer, size, 0L);
+
+      if (r == 0) return 0;  // for UDP, zero is a valid recv() size, since there is no EOS
+      return ConvertReturnValueToMuscleSemantics(r, size, bm);
+   }
+   else return -1;
 }
 
-status_t ShutdownSocket(int socket, bool dRecv, bool dSend)
+int32 SendData(int sock, const void * buffer, uint32 size, bool bm)
 {
-   if (socket < 0) return B_ERROR;
+   return (sock >= 0) ? ConvertReturnValueToMuscleSemantics(send(sock, (const char *)buffer, size, 0L), size, bm) : -1;
+}
+
+int32 SendDataUDP(int sock, const void * buffer, uint32 size, bool bm, uint32 optToIP, uint16 optToPort)
+{
+   if (sock >= 0)
+   {
+       int s;
+       if ((optToIP)||(optToPort))
+       {
+          struct sockaddr_in toAddr;
+          if ((optToIP == 0)||(optToPort == 0))
+          {
+             // Fill in the values with our socket's current target-values, as defaults
+             net_length_t length = sizeof(sockaddr_in);
+             if (getpeername(sock, (struct sockaddr *)&toAddr, &length) != 0) return -1;
+          }
+          else memset(&toAddr, 0, sizeof(toAddr));
+
+          if (optToIP)   toAddr.sin_addr.s_addr = htonl(optToIP);
+          if (optToPort) toAddr.sin_port        = htons(optToPort);
+          s = sendto(sock, (const char *)buffer, size, 0L, (struct sockaddr *)&toAddr, sizeof(toAddr));
+       }
+       else s = send(sock, (const char *)buffer, size, 0L);
+
+       if (s == 0) return 0;  // for UDP, zero is a valid send() size, since there is no EOS
+       return ConvertReturnValueToMuscleSemantics(s, size, bm);
+   }
+   else return -1;
+}
+
+status_t ShutdownSocket(int sock, bool dRecv, bool dSend)
+{
+   if (sock < 0) return B_ERROR;
    if ((dRecv == false)&&(dSend == false)) return B_NO_ERROR;  // there's nothing we need to do!
 
    // Since these constants aren't defined everywhere, I'll define my own:
@@ -105,14 +232,14 @@ status_t ShutdownSocket(int socket, bool dRecv, bool dSend)
    const int MUSCLE_SHUT_WR   = 1;
    const int MUSCLE_SHUT_RDWR = 2;
 
-   return (shutdown(socket, dRecv?(dSend?MUSCLE_SHUT_RDWR:MUSCLE_SHUT_RD):MUSCLE_SHUT_WR) == 0) ? B_NO_ERROR : B_ERROR;
+   return (shutdown(sock, dRecv?(dSend?MUSCLE_SHUT_RDWR:MUSCLE_SHUT_RD):MUSCLE_SHUT_WR) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
-int Accept(int socket)
+int Accept(int sock)
 {
    struct sockaddr_in saSocket;
    net_length_t nLen = sizeof(saSocket);
-   return (socket >= 0) ? accept(socket, (struct sockaddr *)&saSocket, &nLen) : -1;
+   return (sock >= 0) ? accept(sock, (struct sockaddr *)&saSocket, &nLen) : -1;
 }
 
 int Connect(const char * hostName, uint16 port, const char * debugTitle, bool errorsOnly) 
@@ -228,101 +355,20 @@ uint32 Inet_AtoN(const char * buf)
    return ret;
 }
 
-uint32 GetPeerIPAddress(int socket)
+uint32 GetPeerIPAddress(int sock)
 {
    uint32 ipAddress = 0;
-   if (socket >= 0)
+   if (sock >= 0)
    {
       struct sockaddr_in saTempAdd;
       net_length_t length = sizeof(sockaddr_in);
-      if (getpeername(socket, (struct sockaddr *)&saTempAdd, &length) == 0)
+      if (getpeername(sock, (struct sockaddr *)&saTempAdd, &length) == 0)
       {
          ipAddress = ntohl(saTempAdd.sin_addr.s_addr);
          if ((ipAddress == localhostIP)&&(_customLocalhostIP > 0)) ipAddress = _customLocalhostIP;
       }
    }
    return ipAddress;
-}
-
-/* Source code stolen from UNIX Network Programming, Volume 1
- * Comments from the Unix FAQ
- */
-#ifdef WIN32
-status_t SpawnDaemonProcess(bool &, const char *, const char *, bool) 
-{ 
-   return B_ERROR;  // Win32 can't do this trick, he's too lame  :^(
-}
-#else
-status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir, const char * optOutputTo, bool createIfNecessary)
-{
-   // Here are the steps to become a daemon:
-   // 1. fork() so the parent can exit, this returns control to the command line or shell invoking
-   //    your program. This step is required so that the new process is guaranteed not to be a process
-   //    group leader. The next step, setsid(), fails if you're a process group leader.
-   pid_t pid = fork();
-   if (pid < 0) return B_ERROR;
-   if (pid > 0) 
-   {
-      returningAsParent = true;
-      return B_NO_ERROR;
-   }
-   else returningAsParent = false; 
-
-   // 2. setsid() to become a process group and session group leader. Since a controlling terminal is
-   //    associated with a session, and this new session has not yet acquired a controlling terminal
-   //    our process now has no controlling terminal, which is a Good Thing for daemons.
-   setsid();
-
-   // 3. fork() again so the parent, (the session group leader), can exit. This means that we, as a
-   //    non-session group leader, can never regain a controlling terminal.
-   signal(SIGHUP, SIG_IGN);
-   pid = fork();
-   if (pid < 0) return B_ERROR;
-   if (pid > 0) exit(0);
-
-   // 4. chdir("/") can ensure that our process doesn't keep any directory in use. Failure to do this
-   //    could make it so that an administrator couldn't unmount a filesystem, because it was our
-   //    current directory. [Equivalently, we could change to any directory containing files important
-   //    to the daemon's operation.]
-   if (optNewDir) chdir(optNewDir);
-
-   // 5. umask(0) so that we have complete control over the permissions of anything we write.
-   //    We don't know what umask we may have inherited. [This step is optional]
-   umask(0);
-
-   // 6. close() fds 0, 1, and 2. This releases the standard in, out, and error we inherited from our parent
-   //    process. We have no way of knowing where these fds might have been redirected to. Note that many
-   //    daemons use sysconf() to determine the limit _SC_OPEN_MAX. _SC_OPEN_MAX tells you the maximun open
-   //    files/process. Then in a loop, the daemon can close all possible file descriptors. You have to
-   //    decide if you need to do this or not. If you think that there might be file-descriptors open you should
-   //    close them, since there's a limit on number of concurrent file descriptors.
-   // 7. Establish new open descriptors for stdin, stdout and stderr. Even if you don't plan to use them,
-   //    it is still a good idea to have them open. The precise handling of these is a matter of taste;
-   //    if you have a logfile, for example, you might wish to open it as stdout or stderr, and open `/dev/null'
-   //    as stdin; alternatively, you could open `/dev/console' as stderr and/or stdout, and `/dev/null' as stdin,
-   //    or any other combination that makes sense for your particular daemon.
-   int nullfd = open("/dev/null", O_RDWR);
-   if (nullfd >= 0) dup2(nullfd, STDIN_FILENO);
-
-   int outfd = -1;
-   if (optOutputTo) 
-   {
-      outfd = open(optOutputTo, O_WRONLY | (createIfNecessary ? O_CREAT : 0));
-      if (outfd < 0) LogTime(MUSCLE_LOG_ERROR, "BecomeDaemonProcess():  Couldn't open %s to redirect stdout, stderr\n", optOutputTo);
-   }
-   if (outfd >= 0) dup2(outfd, STDOUT_FILENO);
-   if (outfd >= 0) dup2(outfd, STDERR_FILENO);
-
-   return B_NO_ERROR;
-}
-#endif
-
-status_t BecomeDaemonProcess(const char * optNewDir, const char * optOutputTo, bool createIfNecessary)
-{
-   bool isParent;
-   status_t ret = SpawnDaemonProcess(isParent, optNewDir, optOutputTo, createIfNecessary);
-   if ((ret == B_NO_ERROR)&&(isParent)) exit(0);
-   return ret;
 }
 
 /* See the header file for description of what this does */
@@ -356,36 +402,36 @@ status_t CreateConnectedSocketPair(int & socket1, int & socket2, bool blocking, 
    return B_ERROR;
 }
 
-status_t SetSocketBlockingEnabled(int socket, bool blocking)
+status_t SetSocketBlockingEnabled(int sock, bool blocking)
 {
-   if (socket < 0) return B_ERROR;
+   if (sock < 0) return B_ERROR;
 
 #ifdef WIN32
    unsigned long mode = blocking ? 0 : 1;
-   return (ioctlsocket(socket, FIONBIO, &mode) == 0) ? B_NO_ERROR : B_ERROR;
+   return (ioctlsocket(sock, FIONBIO, &mode) == 0) ? B_NO_ERROR : B_ERROR;
 #else
 # ifdef BEOS_OLD_NETSERVER
    long b = blocking ? 0 : 1; 
-   return (setsockopt(socket, SOL_SOCKET, SO_NONBLOCK, &b, sizeof(b)) == 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(sock, SOL_SOCKET, SO_NONBLOCK, &b, sizeof(b)) == 0) ? B_NO_ERROR : B_ERROR;
 # else
-   int flags = fcntl(socket, F_GETFL, 0);
+   int flags = fcntl(sock, F_GETFL, 0);
    if (flags < 0) return B_ERROR;
    flags = blocking ? (flags&~O_NONBLOCK) : (flags|O_NONBLOCK);
-   return (fcntl(socket, F_SETFL, flags) == 0) ? B_NO_ERROR : B_ERROR;
+   return (fcntl(sock, F_SETFL, flags) == 0) ? B_NO_ERROR : B_ERROR;
 # endif
 #endif
 }
 
-status_t SetSocketNaglesAlgorithmEnabled(int socket, bool enabled)
+status_t SetSocketNaglesAlgorithmEnabled(int sock, bool enabled)
 {
-   if (socket < 0) return B_ERROR;
+   if (sock < 0) return B_ERROR;
 
 #ifdef BEOS_OLD_NETSERVER
    (void) enabled;  // prevent 'unused var' warning
    return B_ERROR;  // old networking stack doesn't support this flag
 #else
    int enableNoDelay = enabled ? 0 : 1;
-   return (setsockopt(socket, IPPROTO_TCP, TCP_NODELAY, (char *) &enableNoDelay, sizeof(enableNoDelay)) >= 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *) &enableNoDelay, sizeof(enableNoDelay)) >= 0) ? B_NO_ERROR : B_ERROR;
 #endif
 }
 
@@ -406,9 +452,9 @@ status_t Snooze64(uint64 micros)
 #endif
 }
 
-status_t FinalizeAsyncConnect(int socket)
+status_t FinalizeAsyncConnect(int sock)
 {
-   if (socket < 0) return B_ERROR;
+   if (sock < 0) return B_ERROR;
 
 #ifdef BEOS_OLD_NETSERVER
    // net_server and BONE behave COMPLETELY differently as far as finalizing async connects
@@ -427,29 +473,41 @@ status_t FinalizeAsyncConnect(int socket)
       // net_server just HAS to do things differently from everyone else :^P
       struct sockaddr_in junk;
       memset(&junk, 0, sizeof(junk));
-      return (connect(socket, (struct sockaddr *) &junk, sizeof(junk)) == 0) ? B_NO_ERROR : B_ERROR;
+      return (connect(sock, (struct sockaddr *) &junk, sizeof(junk)) == 0) ? B_NO_ERROR : B_ERROR;
    }
 #endif
 
    // For most platforms (including BONE), the code below is all we need
    char junk;
-   return (send(socket, &junk, 0, 0L) == 0) ? B_NO_ERROR : B_ERROR;
+   return (send(sock, &junk, 0, 0L) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
-status_t SetSocketSendBufferSize(int socket, uint32 sendBufferSizeBytes)
+status_t SetSocketSendBufferSize(int sock, uint32 sendBufferSizeBytes)
 {
-   if (socket < 0) return B_ERROR;
+#ifdef BEOS_OLD_NETSERVER
+   (void) sock;
+   (void) sendBufferSizeBytes;
+   return B_ERROR;  // not supported!
+#else
+   if (sock < 0) return B_ERROR;
 
    int iSize = (int) sendBufferSizeBytes;
-   return (setsockopt(socket, SOL_SOCKET, SO_SNDBUF, (char *)&iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *)&iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
+#endif
 }
 
-status_t SetSocketReceiveBufferSize(int socket, uint32 receiveBufferSizeBytes)
+status_t SetSocketReceiveBufferSize(int sock, uint32 receiveBufferSizeBytes)
 {
-   if (socket < 0) return B_ERROR;
+#ifdef BEOS_OLD_NETSERVER
+   (void) sock;
+   (void) receiveBufferSizeBytes;
+   return B_ERROR;  // not supported!
+#else
+   if (sock < 0) return B_ERROR;
 
    int iSize = (int) receiveBufferSizeBytes;
-   return (setsockopt(socket, SOL_SOCKET, SO_RCVBUF, (char *)&iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *)&iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
+#endif
 }
 
 };  // end namespace muscle

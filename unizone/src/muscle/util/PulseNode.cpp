@@ -4,7 +4,7 @@
 
 namespace muscle {
 
-PulseNode :: PulseNode() : _parent(NULL), _nextPulseAtValid(false), _nextPulseAt(MUSCLE_TIME_NEVER), _localPulseAtValid(false), _localPulseAt(MUSCLE_TIME_NEVER)
+PulseNode :: PulseNode() : _parent(NULL), _nextPulseAtValid(false), _nextPulseAt(MUSCLE_TIME_NEVER), _localPulseAtValid(false), _localPulseAt(MUSCLE_TIME_NEVER), _cycleStartedAt(0), _maxTimeSlice(MUSCLE_TIME_NEVER), _timeSlicingSuggested(false)
 {
    // empty
 }

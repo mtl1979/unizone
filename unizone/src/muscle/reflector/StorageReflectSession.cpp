@@ -1919,10 +1919,14 @@ JettisonOutgoingResults(const NodePathMatcher * matcher)
 }
 
 status_t
-StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const String & destPath, bool allowOverwriteData, bool allowCreateNode, bool quiet, bool addToTargetIndex, const char * optInsertBefore)
+StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const String & destPath, bool allowOverwriteData, bool allowCreateNode, bool quiet, bool addToTargetIndex, const char * optInsertBefore, MessageReplaceFunc optFunc, void * funcArg)
 {
-   // First clone the given node
-   if (SetDataNode(destPath, node.GetData(), allowOverwriteData, allowCreateNode, quiet, addToTargetIndex, optInsertBefore) != B_NO_ERROR) return B_ERROR;
+   // First clone the given node, using optional message-payload-replacement callback
+   {
+      MessageRef payload = node.GetData();
+      if (optFunc) payload = optFunc(payload, funcArg);
+      if ((payload() == NULL)||(SetDataNode(destPath, payload, allowOverwriteData, allowCreateNode, quiet, addToTargetIndex, optInsertBefore) != B_NO_ERROR)) return B_ERROR;
+   }
 
    // Then clone all of his children
    DataNodeRefIterator iter = node.GetChildIterator();
@@ -1938,7 +1942,7 @@ StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const Strin
          childPath += nextChildName;
 
          // Note that we don't deal with the index-cloning here; we do it separately (below) instead, for efficiency
-         if (CloneDataNodeSubtree(*child, childPath, false, true, quiet, false, NULL) != B_NO_ERROR) return B_ERROR;
+         if (CloneDataNodeSubtree(*child, childPath, false, true, quiet, false, NULL, optFunc, funcArg) != B_NO_ERROR) return B_ERROR;
       }
    }
 

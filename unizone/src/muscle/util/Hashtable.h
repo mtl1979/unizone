@@ -26,6 +26,7 @@ static const uint32 MUSCLE_HASHTABLE_INVALID_HASH_CODE = (uint32)-1;
 template <class T> class HashFunctor
 {
 public:
+   /** Default implementation just casts the key to a uint32 to get the hash value. */
    uint32 operator () (const T x) const {return (uint32) x;}
 };
 
@@ -130,18 +131,46 @@ public:
     */
    ValueType * PeekNextValue() const;
 
-   /** Convenience method -- equivalent to calling GetNextKey() and GetNextValue(). */
+   /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
+     * @param setKey on success, this parameter will contain the next key in the iteration.
+     * @param setKey on success, this parameter will contain the next value in the iteration.
+     * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
+     */
    status_t GetNextKeyAndValue(KeyType & setKey, ValueType & setValue);
 
-   /** Convenience method -- equivalent to calling GetNextKey() and GetNextValue(). */
+   /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
+     * @param setKey on success, this parameter will contain the next key in the iteration.
+     * @param setKey on success, this pointer will point to the next value in the iteration.
+     * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
+     */
    status_t GetNextKeyAndValue(KeyType & setKey, ValueType * & setValuePtr);
+
+   /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
+     * @param setKey on success, this parameter will contain the next key in the iteration.
+     * @param setKey on success, this pointer will point to the next value in the iteration.
+     * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
+     */
    status_t GetNextKeyAndValue(KeyType & setKey, const ValueType * & setValuePtr);
 
-   /** Convenience method -- equivalent to calling GetNextKey() and GetNextValue(). */
+   /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
+     * @param setKey on success, this pointer will point to the next key in the iteration.
+     * @param setKey on success, this parameter will contain the next value in the iteration.
+     * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
+     */
    status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, ValueType & setValue);
 
-   /** Convenience method -- equivalent to calling GetNextKey() and GetNextValue(). */
+   /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
+     * @param setKey on success, this pointer will point to the next key in the iteration.
+     * @param setKey on success, this pointer will point to the next value in the iteration.
+     * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
+     */
    status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, ValueType * & setValuePtr);
+
+   /** Convenience method -- equivalent to calling both GetNextKey() and GetNextValue(). 
+     * @param setKey on success, this pointer will point to the next key in the iteration.
+     * @param setKey on success, this pointer will point to the next value in the iteration.
+     * @returns B_NO_ERROR if values were written into (setKey) and (setValue), or B_ERROR if the iteration is complete.
+     */
    status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, const ValueType * & setValuePtr);
 
 private:

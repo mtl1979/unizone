@@ -11,7 +11,10 @@ namespace muscle {
 class PulseNode;
 class PulseNodeManager;
 
-/** Interface class for any object that can schedule Pulse() calls for itself via the ReflectServer. */
+/** Interface class for any object that can schedule Pulse() calls for itself via 
+ *  its PulseNodeManager.   (Typically the PulseNodeManager role is played by
+ *  the ReflectServer class)
+ */
 class PulseNode
 {
 public:
@@ -89,6 +92,32 @@ public:
     */
    uint64 GetScheduledPulseTime() const {return _localPulseAt;}
 
+   /** Returns the run-time at which the PulseNodeManager started calling our callbacks.
+    *  Useful for any object that wants to limit the maximum duration of its timeslice
+    *  in the PulseNodeManager's event loop.
+    */
+   uint64 GetCycleStartTime() const {return _cycleStartedAt;}
+
+   /** Sets the maximum number of microseconds that this class should allow its callback
+    *  methods to execute for (relative to the cycle start time, as shown above).  Note 
+    *  that this value is merely a suggestion;  it remains up to the subclass's callback 
+    *  methods to ensure that the suggestion is actually followed.
+    *  @param maxUsecs Maximum number of microseconds that the time slice should last for.
+    *                  If set to MUSCLE_TIME_NEVER, that indicates that there is no suggested limit.
+    */
+   void SetSuggestedMaximumTimeSlice(uint64 maxUsecs) {_maxTimeSlice = maxUsecs; _timeSlicingSuggested = (_maxTimeSlice != MUSCLE_TIME_NEVER);}
+
+   /** Returns the current suggested maximum duration of our time slice, or MUSCLE_TIME_NEVER
+    *  if there is no suggested limit.  Default value is MUSCLE_TIME_NEVER.
+    */
+   uint64 GetSuggestedMaximumTimeSlice() const {return _maxTimeSlice;}
+
+   /** Convenience method -- returns true iff the current value of the run-time 
+    *  clock (GetRunTime64()) indicates that our suggested time slice has expired.  
+    *  This method is cheap to call often.
+    */
+   bool IsSuggestedTimeSliceExpired() const {return _timeSlicingSuggested ? (GetRunTime64() >= _cycleStartedAt+_maxTimeSlice) : false;}
+
 protected:
    /**
     * Sets a flag to indicate that GetPulseTime() to be called on this object.
@@ -111,6 +140,9 @@ private:
    // Invalidates our cached cumulative pulse time, and recurses to our parent (if any).
    void InvalidateGroupPulseTime();
 
+   // Sets the cycle-started-at time for this object, as returned by GetCycleStartTime().
+   void SetCycleStartTime(uint64 st) {_cycleStartedAt = st;}
+
    PulseNode * _parent;
 
    bool _nextPulseAtValid;
@@ -119,7 +151,11 @@ private:
    bool _localPulseAtValid;
    uint64 _localPulseAt;    // when this object wants its next Pulse() call
 
+   uint64 _cycleStartedAt;  // time when the PulseNodeManager started serving us.
    Hashtable<PulseNode *, bool> _children;
+
+   uint64 _maxTimeSlice;
+   bool _timeSlicingSuggested;
 
    friend class PulseNodeManager;
 };
@@ -139,10 +175,13 @@ public:
 
 protected:
    /** Passes the call on through to the given PulseNode */
-   inline void CallGetPulseTimeAux(PulseNode & p, uint64 now, uint64 & spt) {p.GetPulseTimeAux(now, spt);}
+   inline void CallGetPulseTimeAux(PulseNode & p, uint64 now, uint64 & spt) const {p.GetPulseTimeAux(now, spt);}
 
    /** Passes the call on through to the given PulseNode */
-   inline void CallPulseAux(PulseNode & p, uint64 now) {p.PulseAux(now);}
+   inline void CallPulseAux(PulseNode & p, uint64 now) const {p.PulseAux(now);}
+
+   /** Passes the call on through to the given PulseNode */
+   inline void CallSetCycleStartTime(PulseNode & p, uint64 now) const {p.SetCycleStartTime(now);}
 };
 
 };  // end namespace muscle

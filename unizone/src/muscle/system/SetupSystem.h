@@ -84,6 +84,23 @@ public:
    virtual ~NetworkSetupSystem();
 };
 
+/** This SetupSystem handles initializing the system's 
+  * math routines as necessary.
+  */
+class MathSetupSystem : public SetupSystem
+{
+public:
+   /** Constructor.  Under Borland C++, this constructor
+     * disables floating point exceptions so that if they
+     * occur, they won't crash the program.  It's a no-op
+     * for all other environments.
+     */
+   MathSetupSystem();
+
+   /** Destructor.  A no-op.  */
+   virtual ~MathSetupSystem();
+};
+
 /** This class is a global setup/tear-down class;
   * It contains one member variable of each of the
   * other SetupSystem classes, so that when you instantiate
@@ -110,7 +127,8 @@ public:
 
 private: 
    NetworkSetupSystem _network;
-   ThreadSetupSystem _threads;
+   ThreadSetupSystem  _threads;
+   MathSetupSystem    _math;
 };
 
 /** Returns a pointer to a process-wide Mutex, or NULL if that Mutex

@@ -170,10 +170,10 @@ String::Reverse()
    }
 }
 
-status_t
+uint32
 String::Replace(char findChar, char replaceChar)
 {
-   status_t ret = B_ERROR;
+   uint32 ret = 0; 
    if ((_buffer)&&(findChar != replaceChar))
    {
       char * c = _buffer;
@@ -182,7 +182,7 @@ String::Replace(char findChar, char replaceChar)
          if (*c == findChar) 
          {
             *c = replaceChar;
-            ret = B_NO_ERROR;
+            ret++;
          }
          c++;
       }
@@ -190,32 +190,100 @@ String::Replace(char findChar, char replaceChar)
    return ret;
 }
    
-status_t
-String::Replace(const String& match, const String& replace)
+int32
+String::Replace(const String & replaceMe, const String & withMe)
 {
-   status_t ret = B_ERROR;
+   if (replaceMe.Length() == 0) return -1;  // can't replace an empty string, that's silly!
+   if (replaceMe == withMe) return GetNumInstancesOf(replaceMe);  // no changes necessary!
 
-   if (match != replace)
+   String temp;
+   int32 perInstanceDelta = ((int32)withMe.Length())-((int32)replaceMe.Length());
+   if (perInstanceDelta > 0)
    {
-      String temp(*this);
-      String newString;
+      // If we are replacing a shorter string with a longer string, we'll have to do a copy-and-swap
+      uint32 numInstances = GetNumInstancesOf(replaceMe);
+      if (numInstances == 0) return 0;  // no changes necessary!
+      if (temp.Prealloc(Length()+(perInstanceDelta*numInstances)) != B_NO_ERROR) return -1;
+   }
 
-      int loc;
-      while ((loc = temp.IndexOf(match)) != -1)
+   // This code works for both the in-place and the copy-over modes!
+   int32 ret = 0;
+   const char * readPtr = Cstr();
+   char * writePtr = (perInstanceDelta > 0) ? temp._buffer : NULL;
+   while(1)
+   {
+      char * nextReplaceMe = strstr((char *) readPtr, (char *) replaceMe());
+      if (nextReplaceMe)
       {
-         ret = B_NO_ERROR;
-         newString += temp.Substring(0, loc);
-         newString += replace;
-         temp = temp.Substring(loc + match.Length());
+         ret++;
+         if (writePtr)
+         {
+            uint32 numBytes = nextReplaceMe-readPtr;
+            if (perInstanceDelta != 0) memmove(writePtr, readPtr, numBytes);
+            writePtr += numBytes;
+         }
+         else writePtr = nextReplaceMe;
+
+         memcpy(writePtr, withMe(), withMe.Length());
+         readPtr  = nextReplaceMe + replaceMe.Length();
+         writePtr += withMe.Length();
       }
-      if (ret == B_NO_ERROR)
+      else
       {
-         newString += temp;
-         *this = newString;
+         if (writePtr)
+         {
+            // Finish up
+            uint32 numBytes = Cstr()+Length()-readPtr;
+            if (perInstanceDelta != 0) memmove(writePtr, readPtr, numBytes);
+            writePtr += numBytes;
+            *writePtr = '\0';
+            if (perInstanceDelta > 0) 
+            {
+               temp._length = writePtr-temp();
+               SwapContents(temp);
+            }
+            else _length = writePtr-Cstr();
+         }
+         return ret;
       }
    }
-   return ret;
 }
+
+void
+String::SwapContents(String & s)
+{
+   bool thisSmall = (  _buffer ==   _smallBuffer);
+   bool sSmall    = (s._buffer == s._smallBuffer);
+
+   if ((sSmall)&&(thisSmall))
+   {
+      for (int32 i=muscleMax(_length, s._length)+1; i>=0; i--) muscleSwap(_smallBuffer[i], s._smallBuffer[i]);
+   }
+   else if (thisSmall)
+   {
+      _buffer      = s._buffer;
+      _bufferLen   = s._bufferLen;
+      s._buffer    = s._smallBuffer;
+      s._bufferLen = sizeof(s._smallBuffer);
+      memcpy(s._smallBuffer, _smallBuffer, _length+1);
+   }
+   else if (sSmall)
+   {
+      s._buffer    = _buffer;
+      s._bufferLen = _bufferLen;
+      _buffer      = _smallBuffer;
+      _bufferLen   = sizeof(_smallBuffer);
+      memcpy(_smallBuffer, s._smallBuffer, s._length+1);
+   }
+   else
+   {
+      muscleSwap(_buffer,    s._buffer);
+      muscleSwap(_bufferLen, s._bufferLen);
+   }
+
+   muscleSwap(_length, s._length);   // always do this
+}
+
 
 int
 String::IndexOf(char ch, uint32 fromIndex) const

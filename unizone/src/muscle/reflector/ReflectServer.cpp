@@ -25,20 +25,23 @@ AddNewSession(AbstractReflectSessionRef ref, int s)
    {
       AbstractMessageIOGatewayRef gatewayRef = newSession->GetGatewayRef();
       if (gatewayRef() == NULL) gatewayRef.SetRef(newSession->CreateGateway(), NULL);
-      if (gatewayRef())
+      if (gatewayRef())  // don't combine these ifs!
       {
-         // create the new DataIO for the gateway; this must always be done on the fly
-         // since it depends on the socket being used.
-         DataIO * io = newSession->CreateDataIO(s);
-         if (io) 
+         if (gatewayRef()->GetDataIO() == NULL)
          {
-            // success!
-            gatewayRef()->SetDataIO(DataIORef(io, NULL));
-            newSession->SetGateway(gatewayRef);
+            // create the new DataIO for the gateway; this must always be done on the fly
+            // since it depends on the socket being used.
+            DataIO * io = newSession->CreateDataIO(s);
+            if (io) 
+            {
+               // success!
+               gatewayRef()->SetDataIO(DataIORef(io, NULL));
+               newSession->SetGateway(gatewayRef);
+            }
+            else {newSession->_owner = NULL; return B_ERROR;}
          }
-         else return B_ERROR;
       }
-      else return B_ERROR;
+      else {newSession->_owner = NULL; return B_ERROR;}
    }
 
    // Set our hostname (IP address) string if it isn't already set
@@ -55,7 +58,10 @@ AddNewSession(AbstractReflectSessionRef ref, int s)
       else newSession->_hostName = newSession->GetDefaultHostName();
    }
 
-   return AddNewSession(ref);
+        if (AddNewSession(ref) == B_NO_ERROR) return B_NO_ERROR;
+   else if (newSession) newSession->_owner = NULL;
+
+   return B_ERROR;
 }
 
 status_t
@@ -111,7 +117,7 @@ AddNewSession(AbstractReflectSessionRef ref)
 }
 
 
-ReflectServer :: ReflectServer(MemoryAllocator * optMemoryUsageTracker) : _keepServerGoing(true), _cycleStartedAt(0), _serverStartedAt(0), _doLogging(true), _watchMemUsage(optMemoryUsageTracker)
+ReflectServer :: ReflectServer(MemoryAllocator * optMemoryUsageTracker) : _keepServerGoing(true), _serverStartedAt(0), _doLogging(true), _watchMemUsage(optMemoryUsageTracker)
 {
    // make sure _lameDuckSessions has plenty of memory available in advance (we need might need it in a tight spot later!)
    _lameDuckSessions.EnsureSize(256);
@@ -175,11 +181,12 @@ CheckPolicy(Hashtable<PolicyRef, bool> & policies, PolicyRef policyRef, const Po
    if (p)
    {
       // Any policy that is found attached to a session goes into our temporary policy set
-      (void) policies.Put(policyRef, true);
+       policies.Put(policyRef, true);
 
       // If the session is ready, and BeginIO() hasn't been called on this policy already, do so now
       if ((ph.GetSession())&&(p->_hasBegun == false))
       {
+         CallSetCycleStartTime(*p, now);
          p->BeginIO(now); 
          p->_hasBegun = true;
       }
@@ -243,8 +250,14 @@ ServerProcessLoop()
    Hashtable<PolicyRef, bool> policies;
    fd_set readSet;
    fd_set writeSet;
+#ifdef WIN32
+   fd_set exceptionSet;
+#endif
+
    while(ClearLameDucks() == B_NO_ERROR)
    {
+      fd_set * exceptionSetPtr = NULL;  // set to point to exceptionSet if we should be watching for exceptions
+
       // Initialize our fd sets of events-to-watch-for
       FD_ZERO(&readSet);
       FD_ZERO(&writeSet);
@@ -255,7 +268,7 @@ ServerProcessLoop()
       {
          const uint64 now = GetRunTime64(); // nothing in this scope is supposed to take a significant amount of time to execute, so just calculate this once
 
-         // Set up the session-acceptors and their associated session-factories
+         // Set up the session factories so we can be notified when a new connection is received
          if (_factories.GetNumItems() > 0)
          {
             HashtableIterator<uint16, ReflectSessionFactoryRef> iter = _factories.GetIterator();
@@ -264,9 +277,12 @@ ServerProcessLoop()
             {
                ReflectSessionFactory * factory = (*next)();
                int nextAcceptSocket = factory->_socket;
-               FD_SET(nextAcceptSocket, &readSet);
-               if (nextAcceptSocket > maxSocket) maxSocket = nextAcceptSocket;
-               if (factory) CallGetPulseTimeAux(*factory, now, nextPulseAt);
+               if (nextAcceptSocket >= 0)
+               {
+                  FD_SET(nextAcceptSocket, &readSet);
+                  if (nextAcceptSocket > maxSocket) maxSocket = nextAcceptSocket;
+               }
+               CallGetPulseTimeAux(*factory, now, nextPulseAt);
             }
          }
 
@@ -292,6 +308,16 @@ ServerProcessLoop()
                         {
                            in  = false;
                            out = true;  // so we can watch for the async-connect event
+
+#ifdef WIN32
+                           // Under windows, failed asynchronous connect()'s are communicated via the exceptions fd_set
+                           if (exceptionSetPtr == NULL)
+                           {
+                              FD_ZERO(&exceptionSet);
+                              exceptionSetPtr = &exceptionSet;
+                           }
+                           FD_SET(sessionSocket, &exceptionSet);
+#endif
                         }
                         else
                         {
@@ -362,7 +388,7 @@ ServerProcessLoop()
          }
 
          // We sleep here until the next I/O or pulse event becomes ready
-         if ((select(maxSocket+1, (maxSocket >= 0) ? &readSet : NULL, (maxSocket >= 0) ? &writeSet : NULL, NULL, (nextPulseAt == MUSCLE_TIME_NEVER) ? NULL : &waitTime) < 0)&&(PreviousOperationWasInterrupted() == false))
+         if ((select(maxSocket+1, (maxSocket >= 0) ? &readSet : NULL, (maxSocket >= 0) ? &writeSet : NULL, exceptionSetPtr, (nextPulseAt == MUSCLE_TIME_NEVER) ? NULL : &waitTime) < 0)&&(PreviousOperationWasInterrupted() == false))
          {
             if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "select() failed, aborting!\n");
             ClearLameDucks();
@@ -370,8 +396,8 @@ ServerProcessLoop()
          }
       }
 
-      // Each cycle officially "starts" as soon as select() returns
-      _cycleStartedAt = GetRunTime64();
+      // Each event-loop cycle officially "starts" as soon as select() returns
+      CallSetCycleStartTime(*this, GetRunTime64());
 
       // Before we do any session I/O, make sure there hasn't been a generalized memory failure
       CheckForOutOfMemory(AbstractReflectSessionRef());
@@ -387,10 +413,15 @@ ServerProcessLoop()
             {
                if (_watchMemUsage) (void) _watchMemUsage->SetAllocationHasFailed(false);  // (session)'s responsibility for starts here!  If we run out of mem on his watch, he's history
 
-               CallPulseAux(*session, GetRunTime64());
+               CallSetCycleStartTime(*session, GetRunTime64());
+               CallPulseAux(*session, session->GetCycleStartTime());
                {
                   AbstractMessageIOGateway * gateway = session->GetGateway();
-                  if (gateway) CallPulseAux(*gateway, GetRunTime64());
+                  if (gateway) 
+                  {
+                     CallSetCycleStartTime(*gateway, GetRunTime64());
+                     CallPulseAux(*gateway, gateway->GetCycleStartTime());
+                  }
                }
 
                int socket = GetSocketFor(session);
@@ -432,17 +463,14 @@ ServerProcessLoop()
                         if ((p)&&(wroteBytes >= 0)) p->BytesTransferred(PolicyHolder(session, false), (uint32)wroteBytes);
                      }
                   }
+#ifdef WIN32
+                  if ((exceptionSetPtr)&&(FD_ISSET(socket, exceptionSetPtr))) wroteBytes = -1;  // async connect() failed!
+#endif
+
                   if ((readBytes < 0)||(wroteBytes < 0))
                   {
                      bool wasConnecting = session->_connectingAsync;
-                     session->_connectingAsync = false;
-
-                     if (session->ClientConnectionClosed()) AddLameDuckSession(sessionRef);
-                     else
-                     {
-                        if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "Connection for %s %s.\n", session->GetSessionDescriptionString()(), wasConnecting?"failed":"was severed");
-                        ShutdownIOFor(session);
-                     }
+                     if ((DisconnectSession(session) == false)&&(_doLogging)) LogTime(MUSCLE_LOG_DEBUG, "Connection for %s %s.\n", session->GetSessionDescriptionString()(), wasConnecting?"failed":"was severed");
                   }
                   else if (session->_lastByteOutputAt > 0)
                   {
@@ -452,8 +480,7 @@ ServerProcessLoop()
                      else if (now-session->_lastByteOutputAt > session->_outputStallLimit)
                      {
                         if (_doLogging) LogTime(MUSCLE_LOG_WARNING, "Connection for %s timed out (output stall).\n", session->GetSessionDescriptionString()());
-                        if (session->ClientConnectionClosed()) AddLameDuckSession(sessionRef);
-                                                          else ShutdownIOFor(session); 
+                        (void) DisconnectSession(session);
                      }
                   }
                }
@@ -490,18 +517,6 @@ ServerProcessLoop()
 
          // Pulse the Server
          CallPulseAux(*this, GetRunTime64());
-
-         // Pulse the session-factories
-         if (_factories.GetNumItems() > 0)
-         {
-            HashtableIterator<uint16, ReflectSessionFactoryRef> iter = _factories.GetIterator();
-            ReflectSessionFactoryRef * acc;
-            while((acc = iter.GetNextValue()) != NULL)
-            {
-               ReflectSessionFactory * factory = acc->GetItemPointer();
-               if (factory) CallPulseAux(*factory, GetRunTime64());
-            }
-         }
       }
       policies.Clear();
 
@@ -513,8 +528,12 @@ ServerProcessLoop()
          ReflectSessionFactoryRef * acc;
          while(iter.GetNextKeyAndValue(port, acc) == B_NO_ERROR)
          {
-            int acceptSocket = (*acc)()->_socket;
-            if (FD_ISSET(acceptSocket, &readSet)) (void) DoAccept(port, acceptSocket, (*acc)());
+            ReflectSessionFactory * factory = acc->GetItemPointer();
+            CallSetCycleStartTime(*factory, GetRunTime64());
+            CallPulseAux(*factory, factory->GetCycleStartTime());
+
+            int acceptSocket = factory->_socket;
+            if (FD_ISSET(acceptSocket, &readSet)) (void) DoAccept(port, acceptSocket, factory);
          }
       }
    }
@@ -667,11 +686,16 @@ ReplaceSession(AbstractReflectSessionRef newSessionRef, AbstractReflectSession *
    }
 }
 
-void ReflectServer :: DisconnectSession(AbstractReflectSession * session)
+bool ReflectServer :: DisconnectSession(AbstractReflectSession * session)
 {
-   session->_connectingAsync = false;
-   if (session->ClientConnectionClosed()) AddLameDuckSession(session);
-                                     else ShutdownIOFor(session);
+   session->_connectingAsync    = false;  // he's not connecting anymore, by gum!
+   session->_scratchReconnected = false;  // if the session calls Reconnect() this will be set to true below
+
+   bool ret = session->ClientConnectionClosed(); 
+        if (ret) AddLameDuckSession(session);
+   else if (session->_scratchReconnected == false) ShutdownIOFor(session);
+
+   return ret;
 }
 
 void
