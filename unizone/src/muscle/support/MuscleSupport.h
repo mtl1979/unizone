@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.63"
+#define MUSCLE_VERSION_STRING "2.64"
 
 /* If we are in an environment where known assembly is available, make a note of that fact */
 #if defined(__GNUC__)
@@ -21,6 +21,10 @@
 # elif defined(__i386__)
 #  define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
 # endif
+#endif
+
+#if defined(_MSC_VER) && defined(_X86_)
+# define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
 #endif
 
 #ifndef __cplusplus
@@ -393,22 +397,22 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
 static inline uint16 MusclePowerPCSwapInt16(uint16 val)
 {
    uint16 a;
-   volatile uint16 * addr = &a;
-   __asm__ __volatile__("sthbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
+   uint16 * addr = &a;
+   __asm__ ("sthbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
    return a;
 }
 static inline uint32 MusclePowerPCSwapInt32(uint32 val)
 {
    uint32 a;
-   volatile uint32 * addr = &a;
-   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
+   uint32 * addr = &a;
+   __asm__ ("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
    return a;
 }
 static inline float MusclePowerPCSwapFloat(float val)
 {
    float a;
-   volatile float * addr = &a;
-   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
+   float * addr = &a;
+   __asm__ ("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
    return a;
 }
 static inline uint64 MusclePowerPCSwapInt64(uint64 val)
@@ -428,27 +432,75 @@ static inline double MusclePowerPCSwapDouble(double val)
 # elif defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
 static inline uint16 MuscleX86SwapInt16(uint16 val)
 {
-   __asm__ __volatile__ ("xchgb %b0,%h0" : "=q" (val) : "0" (val));
+#ifdef _MSC_VER
+   __asm {
+      mov ax, val;
+      xchg al, ah;
+      mov val, ax;
+   };
+#else
+   __asm__ ("xchgb %b0,%h0" : "=q" (val) : "0" (val));
+#endif
    return val;
 }
 static inline uint32 MuscleX86SwapInt32(uint32 val)
 {
-   __asm__ __volatile__ ("bswap %0" : "+r" (val));
+#ifdef _MSC_VER
+   __asm {
+      mov eax, val;
+      bswap eax;
+      mov val, eax;
+   };
+#else
+   __asm__ ("bswap %0" : "+r" (val));
+#endif
    return val;
 }
 static inline float MuscleX86SwapFloat(float val)
 {
-   __asm__ __volatile__ ("bswap %0" : "+r" (val));
+#ifdef _MSC_VER
+   __asm {
+      mov eax, val;
+      bswap eax;
+      mov val, eax;
+   };
+#else
+   __asm__ ("bswap %0" : "+r" (val));
+#endif
    return val;
 }
 static inline uint64 MuscleX86SwapInt64(uint64 val)
 {
+#ifdef _MSC_VER
+   __asm {
+      mov eax, DWORD PTR val;
+      mov edx, DWORD PTR val + 4;
+      bswap eax;
+      bswap edx;
+      mov DWORD PTR val, edx;
+      mov DWORD PTR val + 4, eax;
+   };
+   return val;
+#else
    return ((uint64)(MuscleX86SwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MuscleX86SwapInt32((uint32)(val&0xFFFFFFFF))))<<32);
+#endif
 }
 static inline double MuscleX86SwapDouble(double val)
 {
+#ifdef _MSC_VER
+   __asm {
+      mov eax, DWORD PTR val;
+      mov edx, DWORD PTR val + 4;
+      bswap eax;
+      bswap edx;
+      mov DWORD PTR val, edx;
+      mov DWORD PTR val + 4, eax;
+   };
+   return val;
+#else
    uint64 v64 = MuscleX86SwapInt64(*((uint64 *)&val));
    return *((double *)&v64);
+#endif
 }
 #  define B_SWAP_DOUBLE(arg)   MuscleX86SwapDouble((double)(arg))
 #  define B_SWAP_FLOAT(arg)    MuscleX86SwapFloat((float)(arg))

@@ -57,7 +57,7 @@ WFileThread::ResolveLink(const QString & lnk) const
 				if (SUCCEEDED(hres))
 				{
 					PRINT("Loaded\n");
-					hres = psl->Resolve(gWin->GetHandle(), SLR_ANY_MATCH);
+					hres = psl->Resolve(gWin->GetHandle(), SLR_NO_UI | SLR_ANY_MATCH);
 					if (SUCCEEDED(hres))
 					{
 						PRINT("Resolved\n");

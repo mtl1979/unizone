@@ -523,6 +523,8 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				}
 
 				setStatus( tr( "Negotiating..." ) );
+				// Start timer again to detect stale negotiation...
+				fConnectTimer->start(60000);
 				fDisconnect = false;
 				fDisconnectFlag = false;
 				fDisconnectCount = 0;
@@ -555,7 +557,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				fNetClient->SendMessageToSessions(askref);
 				
 				if (fSettings->GetInfo())
-					SendSystemEvent(tr("Connected."));
+					SendSystemEvent(tr("Negotiating..."));
 
 				return;
 			}

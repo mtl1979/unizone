@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -56,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 muscle.lib zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
+# ADD LINK32 zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
@@ -73,7 +73,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -179,6 +179,19 @@ SOURCE=..\src\channel.cpp
 # Begin Source File
 
 SOURCE=..\src\channelimpl.cpp
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# SUBTRACT CPP /D "MUSCLE_USE_X86_INLINE_ASSEMBLY"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -3445,6 +3458,386 @@ SOURCE=..\src\moc_uploadthread.cpp
 # Begin Source File
 
 SOURCE=..\src\moc_winsharewindow.cpp
+# End Source File
+# End Group
+# Begin Group "MUSCLE Headers"
+
+# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\AbstractMessageIOGateway.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\AbstractReflectSession.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\AbstractSessionIOPolicy.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\AcceptSocketsThread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\AtomicCounter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\ByteBuffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\dataio\DataIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\DumbReflectSession.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\dataio\FileDataIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\FilterSessionFactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\FlatCountable.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\Flattenable.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\GlobalMemoryAllocator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\Hashtable.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\syslog\LogCallback.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\MemoryAllocator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\dataio\MemoryBufferDataIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\message\Message.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\MessageIOGateway.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\MessageTransceiverThread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\MiscUtilityFunctions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\MuscleSupport.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\Mutex.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\NetworkUtilityFunctions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\dataio\NullDataIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\ObjectPool.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\PathMatcher.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\PlainTextMessageIOGateway.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\Point.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\PulseNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\QueryFilter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\Queue.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\RateLimitSessionIOPolicy.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\RawDataMessageIOGateway.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\Rect.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\RefCount.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\ReflectServer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\ServerComponent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\SetupSystem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\SignalMessageIOGateway.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\SocketHolder.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\StorageReflectConstants.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\StorageReflectSession.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\String.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\StringMatcher.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\StringTokenizer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\syslog\SysLog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\SystemInfo.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\dataio\TCPSocketDataIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\Thread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\TimeUtilityFunctions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\Tuple.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibCodec.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibDataIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibUtilityFunctions.h
+# End Source File
+# End Group
+# Begin Group "MUSCLE Sources"
+
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\AbstractMessageIOGateway.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\AbstractReflectSession.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\AcceptSocketsThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\ByteBuffer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\DumbReflectSession.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\FilterSessionFactory.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\GlobalMemoryAllocator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\MemoryAllocator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\message\Message.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\MessageIOGateway.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\MessageTransceiverThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\MiscUtilityFunctions.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\NetworkUtilityFunctions.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\PathMatcher.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\PlainTextMessageIOGateway.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\PulseNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\QueryFilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\RateLimitSessionIOPolicy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\RawDataMessageIOGateway.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\ReflectServer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\ServerComponent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\SetupSystem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\StorageReflectSession.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\String.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\StringMatcher.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\syslog\SysLog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\SystemInfo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\Thread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibCodec.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibDataIO.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibUtilityFunctions.cpp
+# End Source File
+# End Group
+# Begin Group "MUSCLE MOC Sources"
+
+# PROP Default_Filter "cpp"
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\moc_QAcceptSocketsThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\qtsupport\moc_QMessageTransceiverThread.cpp
 # End Source File
 # End Group
 # End Target

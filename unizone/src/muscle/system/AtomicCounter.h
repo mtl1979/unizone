@@ -67,7 +67,15 @@ public:
 #elif defined(MUSCLE_SINGLE_THREAD_ONLY) 
       ++_count;
 #elif defined(WIN32) 
+# if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
+      volatile int * p = &_count;
+      __asm {
+              mov eax, p;
+              lock inc DWORD PTR [eax];
+      };
+# else
       (void) InterlockedIncrement(&_count);
+# endif
 #elif defined(__ATHEOS__) 
       (void) atomic_add(&_count,1);
 #elif defined(__BEOS__) 
@@ -107,7 +115,18 @@ public:
 #elif defined(MUSCLE_SINGLE_THREAD_ONLY) 
       return (--_count == 0);
 #elif defined(WIN32) 
+# if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
+      bool isZero;
+      volatile int * p = &_count;
+      __asm {
+         mov eax, p;
+         lock dec DWORD PTR [eax];
+         sete isZero;
+      };
+      return isZero;
+# else
       return (InterlockedDecrement(&_count) == 0);
+# endif
 #elif defined(__ATHEOS__) 
       return (atomic_add(&_count,-1)==1);
 #elif defined(__BEOS__) 
@@ -150,7 +169,11 @@ private:
 #elif defined(__ATHEOS__)
    atomic_t _count;
 #elif defined(WIN32)
+# if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
+   volatile int _count;
+# else
    long _count;
+# endif
 #elif defined(__BEOS__)
 # if defined(B_BEOS_VERSION_5)
    vint32 _count;

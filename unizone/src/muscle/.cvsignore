@@ -16,3 +16,11 @@ server
 test
 vc++
 winsupport
+stringtokenizer
+client
+hashtable
+netutil
+pool
+queue
+refcount
+string

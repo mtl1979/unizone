@@ -19,7 +19,9 @@ public:
 		BeAddMessage,
 		BeRemoveMessage,
 		UniAddMessage,
-		UniRemoveMessage
+		UniRemoveMessage,
+		UnknownAddMessage,
+		UnknownRemoveMessage
 	};
 
 	WMessageEvent(int, const String &);

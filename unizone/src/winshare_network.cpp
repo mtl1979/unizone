@@ -3079,6 +3079,10 @@ WinShareWindow::UpdateUserCount()
 {
 	if (fNetClient->IsConnected())
 	{
+		// We have negotiated successfully ;)
+		if (fConnectTimer->isActive())
+			fConnectTimer->stop();
+
 		uint n = fUsers->childCount() + 1;
 		if (n > fMaxUsers)
 			fMaxUsers = n;
@@ -3097,12 +3101,16 @@ WinShareWindow::GotParams(MessageRef &msg)
 {
 	int32 enc;
 	fGotParams = true;
+
+	SendSystemEvent(tr("Connected."));
+	
 	if (msg()->FindInt32(PR_NAME_REPLY_ENCODING, &enc) == B_NO_ERROR)
 		setStatus(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
 	
 	setStatus(tr( "Logging in...") );
 	// get a list of users
 	static String subscriptionList[] = {
+		"SUBSCRIBE:/*/*",			// Get hold of zombie users :(
 		"SUBSCRIBE:beshare",		// base BeShare node
 		"SUBSCRIBE:beshare/*",		// all user info :)
 		"SUBSCRIBE:unishare/*",		// all unishare-specific user data
