@@ -475,14 +475,28 @@ OSPair Systems[] = {
 	{"Windows", QT_TRANSLATE_NOOP("WUser", "Windows")},		
 	{"Linux", QT_TRANSLATE_NOOP("WUser", "Linux")},
 	{"FreeBSD", QT_TRANSLATE_NOOP("WUser", "FreeBSD")},
+	{"OpenBSD", QT_TRANSLATE_NOOP("WUser", "OpenBSD")},
+	{"NetBSD", QT_TRANSLATE_NOOP("WUser", "NetBSD")},
 	{"BeOS", QT_TRANSLATE_NOOP("WUser", "BeOS")},
 	{"MacOS", QT_TRANSLATE_NOOP("WUser", "Mac OS")},
 	{"Mac OS", QT_TRANSLATE_NOOP("WUser", "Mac OS")},	
 	{"QNX", QT_TRANSLATE_NOOP("WUser", "QNX")},
+	{"OS/2", QT_TRANSLATE_NOOP("WUser", "OS/2")},
+	{"SunOS", QT_TRANSLATE_NOOP("WUser", "SunOS")},
+	{"AtheOS", QT_TRANSLATE_NOOP("WUser", "AtheOS")},
+	{"Tru64", QT_TRANSLATE_NOOP("WUser", "Tru64")},
+	{"Irix", QT_TRANSLATE_NOOP("WUser", "Irix")},
+	{"AIX", QT_TRANSLATE_NOOP("WUser", "AIX")},
+	{"Sequent", QT_TRANSLATE_NOOP("WUser", "Sequent")},
+	{"OpenServer", QT_TRANSLATE_NOOP("WUser", "OpenServer")},
+	{"HPUX", QT_TRANSLATE_NOOP("WUser", "HPUX")},
+	{"Solaris", QT_TRANSLATE_NOOP("WUser", "Solaris")},
+	{"UnixWare", QT_TRANSLATE_NOOP("WUser", "UnixWare")},
+	// Known clients
 	{"BeShare", QT_TRANSLATE_NOOP("WUser", "BeOS")},
 	{"WinShare", QT_TRANSLATE_NOOP("WUser", "Windows")},
 	{"LinShare", QT_TRANSLATE_NOOP("WUser", "Linux")},
-	{"OS/2", QT_TRANSLATE_NOOP("WUser", "OS/2")},
+	// End of list marker ;)
 	{NULL, NULL}
 };
 
