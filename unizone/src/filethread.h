@@ -36,7 +36,7 @@ public:
 
 	Hashtable<String, QString> & GetSharedFiles() { return fFiles; }
 	void GetSharedFile(int n, MessageRef & mref);
-	bool FindFile(const QString & file, MessageRef & ref);
+	bool FindFile(const String & file, MessageRef & ref);
 	void EmptyList();
 
 	enum { ScanDone = 'fTsD' };
@@ -69,11 +69,14 @@ private:
 	QString ResolveLink(const QString & lnk);
 	QString ResolveLinkA(const QString & lnk);	// Windows only
 	void ScanFiles(const QString & directory);
-	void GetInfo(const QString & file, MessageRef & mref);
+	bool GetInfo(const QString & file, MessageRef & mref);
 
 	void SendReset();
 	void SendString(ScanEvent::Type, const QString &);
 	void SendInt(ScanEvent::Type, int);
+
+	void UpdateFileCount();
+	void UpdateFileName(const QString &);
 
 	ScanProgress * fScanProgress;
 

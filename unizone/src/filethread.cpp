@@ -85,7 +85,6 @@ WFileThread::run()
 #else
 		SendInt(ScanEvent::DirsLeft, fPaths.GetNumItems());
 #endif
-//		fPaths.RemoveHead(path);
 		Unlock();
 		if (fShutdownFlag && *fShutdownFlag)
 		{
@@ -286,8 +285,6 @@ WFileThread::ScanFiles(const QString & directory)
 		QString file;
 		while (files.RemoveHead(file) == B_NO_ERROR)
 		{
-//			files.RemoveHead(file);
-			
 			{
 				WString wData(file);
 				PRINT("\tChecking file %S\n", wData.getBuffer());
@@ -308,59 +305,55 @@ WFileThread::AddFile(const QString & filePath)
 	PRINT("Setting to filePath: %S\n", wFilePath.getBuffer());
 #endif
 	
-	UFileInfo ufi(filePath);
+	UFileInfo *ufi = new UFileInfo(filePath);
 				
-#ifdef DEBUG2
-	PRINT("Set\n");
-#endif
-				
-	if (ufi.isValid())
+	if (ufi)
 	{
 #ifdef DEBUG2
-		PRINT("Exists\n");
+		PRINT("Set\n");
 #endif
 		
-		// resolve symlink
-		QString gfn = ufi.getFullName();
-		QString ret = ResolveLink(gfn);
-		
-		if (gfn != ret) 
+		if (ufi->isValid())
 		{
-			files.AddTail(ret);
-			return;
-		}
-	}
-	else
-	{
-		return;
-	}
+#ifdef DEBUG2
+			PRINT("Exists\n");
+#endif
+			
+			// resolve symlink
+			QString gfn = ufi->getFullName();
+			QString ret = ResolveLink(gfn);
+			
+			if (gfn == ret) 
+			{
+				// is this a directory?
+				if (ufi->isDir())
+				{
+					Lock();
+					fPaths.AddTail(ufi->getAbsPath());
+					Unlock();
+				}
+				else
+				{
+					int64 size = ufi->getSize();
+					if (size > 0)
+					{
+						QString name = ufi->getName();
+						String file = (const char *) name.utf8();
+						
+						Lock(); 
+						fFiles.Put(file, filePath);
+						Unlock(); 
 
-	// is this a directory?
-	if (ufi.isDir())
-	{
-		Lock();
-		fPaths.AddTail(ufi.getAbsPath());
-		Unlock();
-	}
-	else
-	{
-		int64 size = ufi.getSize();
-		if (size > 0)
-		{
-			String file = (const char *) ufi.getName().utf8();
-			
-			Lock(); 
-			fFiles.Put(file, filePath);
-			Unlock(); 
-			int n = fFiles.GetNumItems();
-			
-#ifdef WIN32
-			SendString(ScanEvent::Type::ScanFile, ufi.getName());
-			SendInt(ScanEvent::Type::ScannedFiles, n);
-#else
-			SendString(ScanEvent::ScanFile, ufi.getName());
-			SendInt(ScanEvent::ScannedFiles, n);
-#endif
+						UpdateFileCount();
+						UpdateFileName(name);
+					}
+				}
+			}
+			else
+			{
+				files.AddTail(ret);
+			}
+			delete ufi;
 		}
 	}
 }
@@ -504,8 +497,6 @@ WFileThread::ResolveLinkA(const QString & lnk)
 	return lnk;
 }
 
-// TODO: FIX THIS METHOD, make it MUCH faster! The current implementation is
-// VERY slow!
 bool
 WFileThread::CheckFile(const QString & file)
 {
@@ -525,24 +516,19 @@ WFileThread::CheckFile(const QString & file)
 }
 
 bool
-WFileThread::FindFile(const QString & file, MessageRef & ref)
+WFileThread::FindFile(const String & file, MessageRef & ref)
 {
 	Lock();
 	bool ret = false;
 
-	String key = (const char *) file.utf8();
 	QString qFile;
-//	MessageRef mref;
 
-	if (fFiles.Get(key, qFile) == B_NO_ERROR)
+	if (fFiles.Get(file, qFile) == B_NO_ERROR)
 	{
-		GetInfo(qFile, ref);
-//		if ( mref() )
-//		{
-//			Message *msg = mref();
-//			ref = GetMessageFromPool(*msg); // copy the message, don't pass a ref ;)
+		if (GetInfo(qFile, ref))
+		{
 			ret = true;
-//		}
+		}
 	}
 
 	Unlock();
@@ -622,9 +608,10 @@ WFileThread::SendInt(ScanEvent::Type t, int i)
 #endif
 }
 
-void
+bool
 WFileThread::GetInfo(const QString &file, MessageRef &mref)
 {
+	bool ret = false;
 	UFileInfo ufi(file);
 	if (ufi.isValid())
 	{
@@ -641,6 +628,30 @@ WFileThread::GetInfo(const QString &file, MessageRef &mref)
 			mref()->AddInt64("beshare:File Size", size);
 			mref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
 			mref()->AddString("beshare:File Name", _file);
+			ret = true;
 		}
 	}
+	return ret;
+}
+
+void
+WFileThread::UpdateFileName(const QString &file)
+{
+#ifdef WIN32
+	SendString(ScanEvent::Type::ScanFile, file);
+#else
+	SendString(ScanEvent::ScanFile, file);
+#endif
+}
+
+void
+WFileThread::UpdateFileCount()
+{
+	int n = fFiles.GetNumItems();
+	
+#ifdef WIN32
+	SendInt(ScanEvent::Type::ScannedFiles, n);
+#else
+	SendInt(ScanEvent::ScannedFiles, n);
+#endif
 }

@@ -458,12 +458,12 @@ WinShareWindow::customEvent(QCustomEvent * event)
 							qApp->processEvents(300);
 
 							String s;
-							QString qFile;
+							// QString qFile;
 							MessageRef mref;
 							filesIter.GetNextKey(s);
-							filesIter.GetNextValue(qFile);
+							// filesIter.GetNextValue(qFile);
 							
-							if (mref() && fFileScanThread->FindFile(qFile, mref))
+							if (fFileScanThread->FindFile(s, mref))
 							{
 								MakeNodePath(s);
 								uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
