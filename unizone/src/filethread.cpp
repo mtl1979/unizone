@@ -167,6 +167,7 @@ void
 WFileThread::ScanFiles(const QString & directory)
 {
 	PRINT("Checking for directory existance\n");
+	Queue<QString> files;
 	QDir * dir = new QDir(directory);
 	CHECK_PTR(dir);
 	if (dir->exists())	// double check
@@ -207,20 +208,31 @@ WFileThread::ScanFiles(const QString & directory)
 				SendString(ScanEvent::ScanFile, ndata);
 #endif
 
-				WString wData = ndata;
-				PRINT("\tChecking file %S\n", wData.getBuffer());
-
-				QString filePath = dir->absFilePath(ndata);
-
-				AddFile(filePath);
-
-				msleep(30);
+				files.AddTail(dir->absFilePath(ndata));
 				i++;
 			}
 		}
 	}
 	delete dir;
 	dir = NULL;
+
+	if (!files.IsEmpty())
+	{
+		QString file;
+		while (files.GetNumItems() > 0)
+		{
+			files.RemoveHead(file);
+			
+			{
+				WString wData = file;
+				PRINT("\tChecking file %S\n", wData.getBuffer());
+			}
+
+			AddFile(file);
+
+			msleep(30);
+		}
+	}
 }
 
 void
@@ -231,74 +243,80 @@ WFileThread::AddFile(const QString & filePath)
 	PRINT("Setting to filePath: %S\n", wFilePath.getBuffer());
 #endif
 	
-	UFileInfo * ufi = new UFileInfo(filePath);
-	CHECK_PTR(ufi);
-	ufi->Init();
+	UFileInfo ufi(filePath);
 				
 #ifdef DEBUG2
 	PRINT("Set\n");
 #endif
 				
-	if (ufi->isValid())
+	if (ufi.isValid())
 	{
+		ufi.Init();
 #ifdef DEBUG2
 		PRINT("Exists\n");
 #endif
 		
 		// resolve symlink
-		QString gfn = ufi->getFullName();
+		QString gfn = ufi.getFullName();
 		QString ret = ResolveLink(gfn);
 		
-		ufi->setName(ret);
-		
-		// is this a directory?
-		if (ufi->isDir())
+		if (gfn != ret) 
 		{
-			Lock();
-			fPaths.AddTail(ufi->getAbsPath());
-			Unlock();
+			AddFile(ret);
+			return;
 		}
-		else
+	}
+	else
+	{
+		return;
+	}
+
+	ufi.Init();
+	// is this a directory?
+	if (ufi.isDir())
+	{
+		Lock();
+		fPaths.AddTail(ufi.getAbsPath());
+		Unlock();
+	}
+	else
+	{
+		MessageRef ref(GetMessageFromPool());
+		if (ref())
 		{
-			MessageRef ref(GetMessageFromPool());
-			if (ref())
+			QCString qcPath = ufi.getPath().utf8();
+			int64 size = ufi.getSize();
+			if (size > 0)
 			{
-				QCString qcPath = ufi->getPath().utf8();
-				int64 size = ufi->getSize();
-				if (size > 0)
-				{
-					ref()->AddInt32("beshare:Modification Time", ufi->getModificationTime());
-					ref()->AddString("beshare:Kind", (const char *) ufi->getMIMEType().utf8()); // give BeSharer's some relief
-					ref()->AddString("beshare:Path", (const char *) qcPath);
-					ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
-					ref()->AddInt64("beshare:File Size", size);
-					ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
-					ref()->AddString("beshare:File Name", (const char *) ufi->getName().utf8());
-					
-					QString nodePath;
-					if (fFired)
-						nodePath = "beshare/fires/";
-					else
-						nodePath = "beshare/files/";
-					
-					nodePath += ufi->getName();
-					
-					ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
-					Lock(); 
-					fFiles.AddTail(ref);
-					Unlock(); 
-					int n = fFiles.GetNumItems();
+				ref()->AddInt32("beshare:Modification Time", ufi.getModificationTime());
+				ref()->AddString("beshare:Kind", (const char *) ufi.getMIMEType().utf8()); // give BeSharer's some relief
+				ref()->AddString("beshare:Path", (const char *) qcPath);
+				ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
+				ref()->AddInt64("beshare:File Size", size);
+				ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
+				ref()->AddString("beshare:File Name", (const char *) ufi.getName().utf8());
+				
+				QString nodePath;
+				if (fFired)
+					nodePath = "beshare/fires/";
+				else
+					nodePath = "beshare/files/";
+				
+				nodePath += ufi.getName();
+				
+				ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
+				Lock(); 
+				fFiles.AddTail(ref);
+				Unlock(); 
+				int n = fFiles.GetNumItems();
 #ifdef WIN32
-					SendInt(ScanEvent::Type::ScannedFiles, n);
+				SendInt(ScanEvent::Type::ScannedFiles, n);
 #else
-					SendInt(ScanEvent::ScannedFiles, n);
+				SendInt(ScanEvent::ScannedFiles, n);
 #endif
-				}
 			}
 		}
 	}
-	delete ufi;
-	ufi = NULL;
 }
 
 QString

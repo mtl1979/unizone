@@ -246,7 +246,7 @@ UFileInfo::setName(const QString & n)
 
 	fFileInfo = new QFileInfo(n);
 
-	Init();
+//	Init();
 }
 
 bool
