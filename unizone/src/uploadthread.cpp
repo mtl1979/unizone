@@ -775,7 +775,7 @@ WUploadThread::DoUpload()
 				fUploads.RemoveHead(fCurrentRef);
 				Message * m = fCurrentRef();
 				String path, filename;
-				m->FindString("winshare:Path", path);
+				m->FindString("beshare:Path", path);
 				m->FindString("beshare:File Name", filename);
 				String filePath = path;
 
@@ -1049,7 +1049,7 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 						
 						// figure the path to our requested file
 						String path, filename;
-						fileRef()->FindString("winshare:Path", path);
+						fileRef()->FindString("beshare:Path", path);
 						fileRef()->FindString("beshare:File Name", filename);
 						
 						String filePath = path;
@@ -1101,7 +1101,7 @@ WUploadThread::TransferFileList(const MessageRef & msg)
 		uint64 filesize;
 		MessageRef fref;
 		fUploads.GetItemAt(0, fref);
-		if (fref()->FindString("winshare:Path", &path) == B_OK &&
+		if (fref()->FindString("beshare:Path", &path) == B_OK &&
 			fref()->FindString("beshare:File Name", &filename) == B_OK &&
 			fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
 		{

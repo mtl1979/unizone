@@ -291,7 +291,8 @@ WFileThread::AddFile(const QString & filePath)
 				ref()->AddInt32("beshare:Modification Time", ufi.getModificationTime());
 				ref()->AddString("beshare:Kind", (const char *) ufi.getMIMEType().utf8()); // give BeSharer's some relief
 				ref()->AddString("beshare:Path", (const char *) qcPath);
-				ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
+				// No actual need for winshare:Path, because the value of beshare:Path is exactly the same.
+				// ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
 				ref()->AddInt64("beshare:File Size", size);
 				ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
 				ref()->AddString("beshare:File Name", (const char *) ufi.getName().utf8());
