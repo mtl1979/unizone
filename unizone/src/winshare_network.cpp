@@ -1136,6 +1136,72 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					PrintError( tr( "User(s) not found!" ) );
 			}
 		}
+		else if (CompareCommand(sendText, "/temp"))
+		{
+			QString value = GetParameterString(sendText);
+			QString from("C");
+			if (value.find(" ") > -1)
+			{
+				from = value.mid(value.find(" ") + 1, 1).upper();
+				value.truncate(value.find(" "));
+			}
+			bool ok = false;
+			double val = value.toDouble(&ok);
+			QString fr("Celsius");
+			if (ok)
+			{
+				double cv, cf, ck;
+				if (from == "C")
+				{
+					cv = val;
+					cf = (val * 9/5) + 32;
+					ck = val + 273.15;
+				}
+				else if (from == "F")
+				{
+					fr = "Fahrenheit";
+					cv = (val - 32) * 5/9;
+					cf = val;
+					ck = cv + 273.15;
+				}
+				else if (from == "K")
+				{
+					fr = "Kelvin";
+					cv = val - 273.15;
+					cf = (cv * 9/5) + 32;
+					ck = val;
+				}
+				else
+				{
+					PrintError(tr("Bad Conversion!"));
+					return;
+				};
+				QString out("<br>");
+				out += tr("%1 degrees in %2 is:").arg(val).arg(fr);
+				if (from != "C")
+				{
+					out += "<br>";
+					out += tr("%1 degrees Celsius").arg(cv);
+				}
+				if (from != "F")
+				{
+					out += "<br>";
+					out += tr("%1 degrees Fahrenheit").arg(cf);
+				}
+				if (from != "K")
+				{
+					out += "<br>";
+					out += tr("%1 degrees Kelvin").arg(ck);
+				}
+				PrintSystem(out);
+			}
+			else
+			{
+				PrintError(tr("Bad Conversion!"));
+				return;
+			};
+		}
+
 
 		//
 		// add more commands BEFORE this one
@@ -2391,6 +2457,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/showstats - show transfer statistics");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/status [status] - set status string");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/temp [temperature] [C|F|K] - convert between temperature units");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/time [gmt] - show local (or GMT) time");
 	helpText			+=	"\n\t\t\t\t"; 
