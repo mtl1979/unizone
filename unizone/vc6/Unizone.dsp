@@ -734,6 +734,10 @@ InputName=menubar
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\messenger.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\netclient.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
