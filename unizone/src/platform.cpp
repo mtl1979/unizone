@@ -560,13 +560,13 @@ void MakeNodePath(String &file)
 	{
 		if (gWin->fSettings->GetFirewalled())
 		{
-			file.Prepend("fires/");
+			file = file.Prepend("fires/");
 		}
 		else
 		{
-			file.Prepend("files/");
+			file = file.Prepend("files/");
 		}
-		file.Prepend("beshare/");
+		file = file.Prepend("beshare/");
 	}
 }
 
