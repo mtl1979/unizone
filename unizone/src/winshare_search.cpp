@@ -48,13 +48,13 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 				file()->FindString("beshare:Path", path);
 				file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
 				file()->FindInt64("beshare:File Size", (int64 *)&size);
-
+/*
 				if (size == 0)	// Can't download files of size 0
 				{
 					Unlock();	// Don't forget to unlock ;)
 					return;
 				}
-
+*/
 				WFileInfo * info = new WFileInfo;
 				CHECK_PTR(info);
 				info->fiUser = user;

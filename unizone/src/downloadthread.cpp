@@ -519,7 +519,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 											update()->AddInt32("got", numBytes);
 										}
 										
-										if (fCurrentOffset >= fFileSize)
+										if ((fFileSize != 0) && (fCurrentOffset >= fFileSize))
 										{
 											if (update())
 											{

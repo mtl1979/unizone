@@ -339,10 +339,7 @@ WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QStri
 		
 		// Detect uncommon remote port 
 		
-		uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
-		uint32 pEnd = pStart + LISTEN_PORT_RANGE;
-
-		if (!muscleInRange(remotePort, pStart, pEnd))
+		if (!muscleInRange(remotePort, (uint32) 1, (uint32) 65535))
 		{
 			for (x = 0; x < filecount; x++)
 				gWin->PrintWarning(tr("Download port for file %1 might be out of range, it might fail!").arg(files[x]));
