@@ -48,22 +48,6 @@ WFormat::tr3(const QString &s)
 // We can't use tr() with URLs, it just doesn't work!!!
 // This includes user names and status texts
 
-/*
-QString 
-WFormat::LocalName(const QString &session, const QString &name)
-{
-	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
-	temp += tr("<b>(%1)</b>").arg(session);
-	temp += " ";
-	temp += tr("<font color=\"%1\">").arg(WColors::LocalName);
-	temp += "<b>";
-	temp += name; 
-	temp += "</b>";
-	temp += "</font>: </font>";
-	return temp.stripWhiteSpace();
-}
-*/
-
 QString
 WFormat::LocalText(const QString &session, const QString &name, const QString &text)
 {
@@ -343,32 +327,6 @@ WFormat::NameChanged(const QString &name)
 // <postmaster@raasu.org> 20020930,20030127 
 // Changed that ID is always black, uid in --
 
-/*
-QString 
-WFormat::SendPrivMsg(const QString &session, const QString &myname, const QString &othername)
-{
-	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
-	temp += "-";
-	temp += "<b>";
-	temp += session;
-	temp += "</b>";
-	temp += "- ";
-	temp += tr("<font color=\"%1\">").arg(WColors::LocalName);
-	temp += "<b>";
-	temp += myname;
-	temp += "</b>";
-	temp += "</font>";
-	temp += " -> ";
-	temp += tr("<font color=\"%1\">").arg(WColors::RemoteName);
-	temp += "<b>";
-	temp += othername;
-	temp += "</b>";
-	temp += "</font>";
-	temp += ": </font>";	
-	return temp.stripWhiteSpace();
-}
-*/
-
 QString
 WFormat::SendPrivMsg(const QString &session, const QString &myname, const QString &othername, const QString &text)
 {
@@ -415,16 +373,6 @@ QString WFormat::ReceivePrivMsg(const QString &session, const QString &othername
 	temp += "</font></font>";
 	return temp.stripWhiteSpace();
 }
-
-/*
-QString WFormat::Action()
-{
-	QString temp = tr("<font color=\"%1\" size=\"%2\">").arg(WColors::Action).arg(GetFontSize());
-	temp += tr("<b>Action:</b>");
-	temp += "</font> ";
-	return temp;
-}
-*/
 
 QString
 WFormat::Action(const QString &msg)

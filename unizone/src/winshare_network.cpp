@@ -592,7 +592,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 						{
 							// QString userid = tu()->GetUserID();
 							QString username = tu()->GetUserName();
-							QString treqMsg = WFormat::TimeRequest(username);
+							QString treqMsg = WFormat::TimeRequest(FixStringStr(username));
 							PrintSystem(treqMsg);
 						}
 
