@@ -563,6 +563,9 @@ WUploadThread::DoUpload()
 		return;
 	}
 
+	if (fStartTime == 0)
+		fStartTime = GetRunTime64();
+
 	if (fFile)
 	{
 		MessageRef uref(GetMessageFromPool(WDownload::TransferFileData));

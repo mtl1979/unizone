@@ -1184,6 +1184,10 @@ Päiväys: %4</translation>
         <source>Downloading %1 from %2.</source>
         <translation>Ladataan tiedostoa %1 käyttäjältä %2.</translation>
     </message>
+    <message>
+        <source>Elapsed</source>
+        <translation>Kulunut</translation>
+    </message>
 </context>
 <context>
     <name>WPrefs</name>

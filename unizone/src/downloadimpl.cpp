@@ -57,6 +57,7 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fDownloads->addColumn(tr("Total"));
 	fDownloads->addColumn(tr("Rate"));
 	fDownloads->addColumn(tr("ETA"));
+	fDownloads->addColumn(tr("Elapsed"));
 	fDownloads->addColumn(tr("User"));
 	fDownloads->addColumn(tr("Index"));
 	fDownloads->addColumn(tr("QR"));
@@ -65,6 +66,7 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fDownloads->setColumnAlignment(WTransferItem::Total, AlignRight);		// 
 	fDownloads->setColumnAlignment(WTransferItem::Rate, AlignRight);		// 
 	fDownloads->setColumnAlignment(WTransferItem::ETA, AlignRight);			// 
+	fDownloads->setColumnAlignment(WTransferItem::Elapsed, AlignRight);		// 20030729
 	fDownloads->setColumnAlignment(WTransferItem::QR, AlignRight);			// 20030310
 	
 	fDownloads->setAllColumnsShowFocus(true);
@@ -80,6 +82,7 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fUploads->addColumn(tr("Total"));
 	fUploads->addColumn(tr("Rate"));
 	fUploads->addColumn(tr("ETA"));
+	fUploads->addColumn(tr("Elapsed"));
 	fUploads->addColumn(tr("User"));
 	fUploads->addColumn(tr("Index"));
 	fUploads->addColumn(tr("QR"));
@@ -88,6 +91,7 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fUploads->setColumnAlignment(WTransferItem::Total, AlignRight);		// 
 	fUploads->setColumnAlignment(WTransferItem::Rate, AlignRight);		// 
 	fUploads->setColumnAlignment(WTransferItem::ETA, AlignRight);		//
+	fUploads->setColumnAlignment(WTransferItem::Elapsed, AlignRight);	// 20030729
 	fUploads->setColumnAlignment(WTransferItem::QR, AlignRight);		// 20030310
 	
 	fUploads->setAllColumnsShowFocus(true);
@@ -312,7 +316,7 @@ WDownload::AddDownload(QString * files, QString * lfiles, int32 filecount, QStri
 	
 	WTPair p;
 	p.first = nt;
-	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "");
+	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
 	CHECK_PTR(p.second);
 
 	
@@ -424,7 +428,7 @@ WDownload::AddUpload(QString remoteIP, uint32 port)
 	ut->InitSession();
 	WTPair p;
 	p.first = ut;
-	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "");
+	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
 	CHECK_PTR(p.second);
 	
 	if (ut->IsLocallyQueued())
@@ -467,7 +471,7 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool queued)
 
 	WTPair p;
 	p.first = ut;
-	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "");
+	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
 	CHECK_PTR(p.second);
 
 	if (ut->IsLocallyQueued())
@@ -715,6 +719,7 @@ WDownload::customEvent(QCustomEvent * e)
 					item->setText(WTransferItem::Status, tr("Queued."));
 					item->setText(WTransferItem::Rate, "0.0");
 					item->setText(WTransferItem::ETA, "");
+					item->setText(WTransferItem::Elapsed, "");
 
 				}
 				else
@@ -722,6 +727,7 @@ WDownload::customEvent(QCustomEvent * e)
 					item->setText(WTransferItem::Status, tr("Remotely Queued."));
 					item->setText(WTransferItem::Rate, "0.0");
 					item->setText(WTransferItem::ETA, "");
+					item->setText(WTransferItem::Elapsed, "");
 				}
 				break;
 			}
@@ -741,6 +747,8 @@ WDownload::customEvent(QCustomEvent * e)
 				}
 				item->setText(WTransferItem::Rate, "0.0");
 				item->setText(WTransferItem::ETA, "");
+				item->setText(WTransferItem::Elapsed, "");
+
 				break;
 			}
 			
@@ -849,6 +857,7 @@ WDownload::customEvent(QCustomEvent * e)
 						item->setText(WTransferItem::Status, tr("Manually Queued."));
 						item->setText(WTransferItem::Rate, "0.0");
 						item->setText(WTransferItem::ETA, "");
+						item->setText(WTransferItem::Elapsed, "");
 					}
 					else
 					{
@@ -1056,6 +1065,17 @@ WDownload::customEvent(QCustomEvent * e)
 						}
 						// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
 						double gcr = gt->GetCalculatedRate();
+
+						uint64 _fileStarted = gt->GetStartTime();
+						if (_fileStarted != 0)
+						{
+							uint64 _now = GetRunTime64();
+							if (_now >= _fileStarted)
+							{
+								uint64 _elapsed = (_now - _fileStarted) / 1000000;	// convert microseconds to seconds
+								item->setText(WTransferItem::Elapsed, QString::number((ulong) _elapsed));
+							}
+						}
 						
 						item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
 						
@@ -1122,6 +1142,18 @@ WDownload::customEvent(QCustomEvent * e)
 						
 						// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
 						double gcr = gt->GetCalculatedRate();
+
+						uint64 _fileStarted = gt->GetStartTime();
+						if (_fileStarted != 0)
+						{
+							uint64 _now = GetRunTime64();
+							if (_now >= _fileStarted)
+							{
+								uint64 _elapsed = (_now - _fileStarted) / 1000000;	// convert microseconds to seconds
+								item->setText(WTransferItem::Elapsed, QString::number((ulong) _elapsed));
+							}
+						}
+
 						
 						item->setText(WTransferItem::ETA, gt->GetETA(offset / 1024, size / 1024, gcr));
 						

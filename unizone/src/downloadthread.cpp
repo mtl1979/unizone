@@ -321,6 +321,9 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					{
 						if (IsRemotelyQueued())
 							SetRemotelyQueued(false);
+
+						if (fStartTime == 0)
+							fStartTime = GetRunTime64();
 						
 						if (IsBlocked())
 							SetBlocked(false);
@@ -487,13 +490,16 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					case WDownload::TransferFileData:
 						{
 							PRINT("\tWDownload::TransferFileData\n");
+
 							if (IsRemotelyQueued())
 								SetRemotelyQueued(false);
 							
 							if (IsBlocked())
 								SetBlocked(false);
 							
-							
+							if (fStartTime == 0)
+								fStartTime = GetRunTime64();
+
 							if (fDownloading)
 							{
 								uint8 * data;

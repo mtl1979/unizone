@@ -60,6 +60,7 @@ public:
 	void SetPacketCount(double bytes);
 
 	QString GetETA(uint64 cur, uint64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
+	uint64	GetStartTime() { return fStartTime; }
 
 
 //	QString ComputeSizeString(int64 offset) const;
@@ -109,6 +110,7 @@ protected:
 	int fETACount;					// amount we have, 5 max
 	double fPackets;				// amount of ultrafast 8 kB packets transfered
 	int64 fTimeLeft;
+	uint64 fStartTime;				// Time elapsed since this session started
 	int fPacket;
 
 	void SetMostRecentETA(uint32 eta);

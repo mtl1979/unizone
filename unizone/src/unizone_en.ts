@@ -1092,6 +1092,10 @@ Date: %4</translation>
         <source>Downloading %1 from %2.</source>
         <translation>Downloading %1 from %2.</translation>
     </message>
+    <message>
+        <source>Elapsed</source>
+        <translation>Elapsed</translation>
+    </message>
 </context>
 <context>
     <name>WPrefs</name>

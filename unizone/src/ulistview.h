@@ -28,7 +28,8 @@ public:
 		Time						// Time expressed in seconds
 	} ;
 
-#define NUM_ROW_COLORS 10
+#define NUM_ROW_COLORS	10
+#define NUM_COLUMNS		10
 	
 	WUniListItem(QListView * parent) 
 		: QListViewItem(parent) 
@@ -58,7 +59,8 @@ public:
 		QString b = QString::null, QString c = QString::null, 
 		QString d = QString::null, QString e = QString::null, 
 		QString f = QString::null, QString g = QString::null, 
-		QString h = QString::null, QString i = QString::null);
+		QString h = QString::null, QString i = QString::null,
+		QString j = QString::null);
 	
 	// if more constructors are needed, they will be added later
 	
@@ -83,8 +85,8 @@ public:
 	virtual WUniListItem::ColumnType columnType(int c);
 	
 private:
-	QString fKey[9];
-	WUniListItem::ColumnType UColumnType[9];
+	QString fKey[NUM_COLUMNS];
+	WUniListItem::ColumnType UColumnType[NUM_COLUMNS];
 	QColor RowBaseColor[NUM_ROW_COLORS];
 	QColor RowTextColor[NUM_ROW_COLORS];
 

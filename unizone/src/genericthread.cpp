@@ -19,6 +19,7 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	fPackets = 0;
 	fTXRate = 0;
 	fTimeLeft = 0;
+	fStartTime = 0;
 	fPacket = 8;
 	InitTransferRate();
 	InitTransferETA();
@@ -65,7 +66,11 @@ void
 WGenericThread::SetLocallyQueued(bool b)
 {
 	fLocallyQueued = b;
-	if (!b)
+	if (b)
+	{
+		fStartTime = 0;
+	}
+	else
 	{
 		fLastData.restart();
 	}
@@ -118,6 +123,7 @@ WGenericThread::SetBlocked(bool b, int64 timeLeft)
 	if (b)
 	{
 		fTimeLeft = timeLeft;
+		fStartTime = 0;
 	}
 	else
 	{
