@@ -720,6 +720,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					PrintSystem( tr("Address info for %1:").arg(user), false);
 
 				PrintSystem( tr("IP Address: %1").arg(host.Cstr()), false);
+
+				if (uid != "")
+					PrintSystem( tr("Port: %1").arg( uref()->GetPort() ), false);
+
 				iaHost.s_addr = inet_addr(host.Cstr());
 				lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
 				
@@ -740,7 +744,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					{
 						if ( (*it).second() )
 						{
-							PrintSystem( tr("#%1 - %2").arg( (*it).second()->GetUserID() ).arg( (*it).second()->GetUserName() ), true);
+							PrintSystem( tr("#%1 - %2 (port: %3)").arg( (*it).second()->GetUserID() ).arg( (*it).second()->GetUserName() ).arg( (*it).second()->GetPort() ), true);
 						}
 					}
 					END_OUTPUT();
