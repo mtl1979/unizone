@@ -502,7 +502,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 								if (m == 20)
 								{
 									m = 0;
-									fNetClient->SendMessageToSessions(refScan);
+									fNetClient->SendMessageToSessions(refScan, 0);
 									refScan = GetMessageFromPool(PR_COMMAND_SETDATA);
 								}
 							}
@@ -511,7 +511,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 						{
 							if (!refScan()->IsEmpty())
 							{
-								fNetClient->SendMessageToSessions(refScan);
+								fNetClient->SendMessageToSessions(refScan, 0);
 								refScan.Reset();
 							}
 						}

@@ -26,6 +26,7 @@ NetClient::NetClient(QObject * owner)
 	fSessionID = QString::null;
 	fUserName = QString::null;
 	timerID = 0;
+	hasmessages = false;
 	fChannelLock.lock();
 	fChannels = GetMessageFromPool();
 	fChannelLock.unlock();
@@ -815,13 +816,13 @@ NetClient::SetConnection(const QString & connection)
 }
 
 void
-NetClient::SetNodeValue(const char * node, MessageRef & val)
+NetClient::SetNodeValue(const char * node, MessageRef & val, int priority)
 {
 	MessageRef ref(GetMessageFromPool(PR_COMMAND_SETDATA));
 	if (ref())
 	{
 		ref()->AddMessage(node, val);
-		SendMessageToSessions(ref);
+		SendMessageToSessions(ref, priority);
 	}
 }
 
@@ -1004,6 +1005,14 @@ NetClient::SessionDisconnected(const String & /* sessionID */)
 		timerID = 0;
 	}
 
+	fPacketLock.lock();
+	packetbuf.Clear();
+	fPacketLock.unlock();
+
+	fLowPacketLock.lock();
+	lowpacketbuf.Clear();
+	fLowPacketLock.unlock();
+
 	SendSignal(NetClient::DISCONNECTED);
 }
 
@@ -1037,6 +1046,37 @@ void
 NetClient::OutputQueuesDrained(MessageRef /* ref */)
 {
  	PRINT("MTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
+
+	NetPacket np;
+	const char * optDistPath = NULL;
+	bool found = false;
+
+	if (packetbuf.GetNumItems() > 0)
+	{
+		fPacketLock.lock();
+		packetbuf.RemoveHead(np);
+		fPacketLock.unlock();
+
+		found = true;
+	}
+	else if (lowpacketbuf.GetNumItems() > 0)
+	{
+		fLowPacketLock.lock();
+		lowpacketbuf.RemoveHead(np);
+		fLowPacketLock.unlock();
+		found = true;
+	}
+	
+	if (np.path.Length() > 0)
+		optDistPath = np.path.Cstr();
+
+	if (found)
+	{
+		qmtt->SendMessageToSessions(np.mref, optDistPath);
+		qmtt->RequestOutputQueuesDrainedNotification(GetMessageFromPool());
+	}
+	else
+		hasmessages = false;
 }
 
 void
@@ -1067,9 +1107,35 @@ NetClient::Reset()
 }
 
 status_t 
-NetClient::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
+NetClient::SendMessageToSessions(MessageRef msgRef, int priority, const char * optDistPath)
 {
-	return qmtt->SendMessageToSessions(msgRef, optDistPath);
+	status_t ret;
+
+	NetPacket np;
+	np.mref = msgRef;
+	if (optDistPath)
+		np.path = optDistPath;
+
+	if (priority == 0) // low
+	{
+		fLowPacketLock.lock();
+		ret = lowpacketbuf.AddTail(np);
+		fLowPacketLock.unlock();
+	}
+	else
+	{
+		fPacketLock.lock();
+		ret = packetbuf.AddTail(np);
+		fPacketLock.unlock();
+	}
+
+	if (!hasmessages)
+		qmtt->RequestOutputQueuesDrainedNotification(GetMessageFromPool());
+
+	if (ret == B_OK)
+		hasmessages = true;
+
+	return ret;
 }
 
 status_t 

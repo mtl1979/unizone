@@ -2,16 +2,23 @@
 #define NETCLIENT_H
 
 
-// #include "system/MessageTransceiverThread.h"
 #include "qtsupport/QMessageTransceiverThread.h"
 
 #include "support/MuscleSupport.h"
+#include "util/Queue.h"
 
 using namespace muscle;
 
 #include <qobject.h>
 
 #include "user.h"
+
+struct NetPacket
+{
+	MessageRef mref;
+	String path;
+};
+
 class NetClient : public QObject 
 {
 	Q_OBJECT
@@ -42,8 +49,8 @@ public:
 	void SetFileCount(int32 count);
 	void SetLoad(int32 num, int32 max);
 	
-	status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
-	void SetNodeValue(const char * node, MessageRef & val); // set the Message of a node
+	status_t SendMessageToSessions(MessageRef msgRef, int priority = 100, const char * optDistPath = NULL);
+	void SetNodeValue(const char * node, MessageRef & val, int priority = 100); // set the Message of a node
 	
 	QString * GetChannelList();
 	int GetChannelCount();
@@ -181,6 +188,12 @@ private:
 	int timerID;
 
 	QMessageTransceiverThread *qmtt;
+	Queue<NetPacket> packetbuf;
+	Queue<NetPacket> lowpacketbuf;
+
+	QMutex fPacketLock;
+	QMutex fLowPacketLock;
+	bool hasmessages;
 
 private slots:
 
