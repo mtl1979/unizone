@@ -238,7 +238,7 @@ WHTMLView::UpdateScrollState()
 
 	if (fScrollX != contentsX() || fScrollY != contentsY())
 	{
-		setContentsPos(fScrollX, fScrollY);
+		setContentsPos(fScrollX, QMIN(fScrollY, contentsHeight()));
 #ifndef WIN32	// linux only... (FreeBSD???)
 		repaintContents(
 							contentsX(), contentsY(),
