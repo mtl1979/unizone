@@ -190,7 +190,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (newStatus.length() > 0)
 			{
 				QString ns = newStatus.stripWhiteSpace();
-				bool found = false;
+//				bool found = false;
 
 				int i;	// this way we know which one was found
 
@@ -199,20 +199,15 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					QString status = fStatusList->text(i).stripWhiteSpace();
 					if (status.lower() == ns.lower())
 					{
-						found = true;
-						break;
+						fStatusList->setCurrentItem(i);
+						StatusChanged(fStatusList->currentText());
+						return;
 					}
 				}
-				if (!found)
-				{
-					fStatusList->insertItem(ns, 0); // <postmaster@raasu.org> 20021005
-					StatusChanged(ns);
-				}
-				else
-				{
-					fStatusList->setCurrentItem(i);
-					StatusChanged(fStatusList->currentText());
-				}
+
+				fStatusList->insertItem(ns, 0); // <postmaster@raasu.org> 20021005
+				fStatusList->setCurrentItem(0);
+				StatusChanged(ns);
 			}
 		}
 		else if (CompareCommand(sendText, "/serverinfo"))
@@ -224,25 +219,25 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			QString server = GetParameterString(sendText);
 
 			if (server.length() > 0)
-				{
-					QString serverStr = server.stripWhiteSpace();
+			{
+				QString serverStr = server.stripWhiteSpace();
 
-					// the easy way to add the server to the list...
-					// this will check for duplicates
-					GotUpdateCmd("addserver", serverStr.latin1());	
-					// now find our server
-					for (int i = 0; i < fServerList->count(); i++)
+				// the easy way to add the server to the list...
+				// this will check for duplicates
+				GotUpdateCmd("addserver", serverStr.latin1());	
+				// now find our server
+				for (int i = 0; i < fServerList->count(); i++)
+				{
+					QString slist = fServerList->text(i).stripWhiteSpace();
+					if (slist.lower() == serverStr.lower())
 					{
-						QString slist = fServerList->text(i).stripWhiteSpace();
-						if (slist.lower() == serverStr.lower())
-						{
-							// found our server
-							fServerList->setCurrentItem(i);
-							ServerChanged(fServerList->currentText());
-						}
+						// found our server
+						fServerList->setCurrentItem(i);
+						ServerChanged(fServerList->currentText());
+						return;
 					}
 				}
-			
+			}
 		}
 		else if (CompareCommand(sendText, "/connect"))
 		{
