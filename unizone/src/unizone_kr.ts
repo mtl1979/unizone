@@ -187,7 +187,7 @@ Version %1</source>
     </message>
     <message>
         <source>Failed to create channel log.</source>
-        <translation type='unfinished'></translation>
+        <translation>Failed to create channel log.</translation>
     </message>
 </context>
 <context>
@@ -1320,7 +1320,7 @@ Date: %4</source>
     </message>
     <message>
         <source>is a bot!</source>
-        <translation type='unfinished'></translation>
+        <translation>is a bot!</translation>
     </message>
     <message>
         <source>was removed from the private chat window.</source>
@@ -1357,31 +1357,31 @@ Date: %4</source>
     <name>WPicViewerBase</name>
     <message>
         <source>Picture Viewer</source>
-        <translation type='unfinished'></translation>
+        <translation>Picture Viewer</translation>
     </message>
     <message>
         <source>No File</source>
-        <translation type='unfinished'></translation>
+        <translation>No File</translation>
     </message>
     <message>
         <source>First</source>
-        <translation type='unfinished'></translation>
+        <translation>First</translation>
     </message>
     <message>
         <source>Previous</source>
-        <translation type='unfinished'></translation>
+        <translation>Previous</translation>
     </message>
     <message>
         <source>1/1</source>
-        <translation type='unfinished'>1/1</translation>
+        <translation>1/1</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation type='unfinished'></translation>
+        <translation>Next</translation>
     </message>
     <message>
         <source>Last</source>
-        <translation type='unfinished'></translation>
+        <translation>Last</translation>
     </message>
 </context>
 <context>
@@ -2019,7 +2019,7 @@ Date: %4</source>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='unfinished'>DSL-1M</translation>
+        <translation>DSL-1M</translation>
     </message>
 </context>
 <context>
@@ -2126,11 +2126,11 @@ Date: %4</source>
     </message>
     <message>
         <source>Encryption enabled.</source>
-        <translation type='unfinished'></translation>
+        <translation>Encryption enabled.</translation>
     </message>
     <message>
         <source>Encryption disabled.</source>
-        <translation type='unfinished'></translation>
+        <translation>Encryption disabled.</translation>
     </message>
 </context>
 <context>
@@ -3430,31 +3430,31 @@ Date: %4</source>
     </message>
     <message>
         <source>Invalid nickname!</source>
-        <translation type='unfinished'></translation>
+        <translation>Invalid nickname!</translation>
     </message>
     <message>
         <source>/picture [name or session ids] - send picture to other clients</source>
-        <translation type='unfinished'></translation>
+        <translation>/picture [name or session ids] - send picture to other clients</translation>
     </message>
     <message>
         <source>/view - view picture on local machine</source>
-        <translation type='unfinished'></translation>
+        <translation>/view - view picture on local machine</translation>
     </message>
     <message>
         <source>Failed to create log file.</source>
-        <translation type='unfinished'></translation>
+        <translation>Failed to create log file.</translation>
     </message>
     <message>
         <source>Finished scanning shares.</source>
-        <translation type='unfinished'></translation>
+        <translation>Finished scanning shares.</translation>
     </message>
     <message>
         <source>Memory used: %1 bytes</source>
-        <translation type='unfinished'></translation>
+        <translation>Memory used: %1 bytes</translation>
     </message>
     <message>
         <source>/memory - show number of bytes Unizone is using memory</source>
-        <translation type='unfinished'></translation>
+        <translation>/memory - show number of bytes Unizone is using memory</translation>
     </message>
     <message>
         <source>Copyright (C) %1 Mika T. Lindqvist.</source>
@@ -3462,27 +3462,27 @@ Date: %4</source>
     </message>
     <message>
         <source>Bad Conversion!</source>
-        <translation type='unfinished'></translation>
+        <translation>Bad Conversion!</translation>
     </message>
     <message>
         <source>%1 degrees in %2 is:</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees in %2 is:</translation>
     </message>
     <message>
         <source>%1 degrees Celsius</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Celsius</translation>
     </message>
     <message>
         <source>%1 degrees Fahrenheit</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Fahrenheit</translation>
     </message>
     <message>
         <source>%1 degrees Kelvin</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Kelvin</translation>
     </message>
     <message>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
-        <translation type='unfinished'></translation>
+        <translation>/temp [temperature] [C|F|K] - convert between temperature units</translation>
     </message>
 </context>
 </TS>

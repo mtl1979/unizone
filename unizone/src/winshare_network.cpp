@@ -119,6 +119,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 						PrintError(tr("Invalid nickname!"));
 					return;
 				}
+				if (name.find('\n') >= 0)
+				{
+					if (fSettings->GetError())
+						PrintError(tr("Invalid nickname!"));
+					return;
+				}
 				NameChanged(name);
 				// see if it exists in the list yet...
 				for (int i = 0; i < fUserList->count(); i++)
