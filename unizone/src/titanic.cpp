@@ -112,7 +112,7 @@ hextochar(const String &orig)
 QString
 chartohex(const QChar c)
 {
-	if (c.unicode() < 65536)
+	if (c.unicode() < 256)
 	{
 		char h[3];	// Include NULL terminator ;)
 		sprintf(h,"%02x", (c & 0xFF));
@@ -121,7 +121,7 @@ chartohex(const QChar c)
 	else
 	{
 		char h[5];
-		sprintf(h,"%05x", c.unicode());
+		sprintf(h,"%04x", c.unicode());
 		return QString(h);
 	}
 }
