@@ -14,6 +14,8 @@
 
 #include "reflector/StorageReflectConstants.h"
 
+#define LT WLog::LogType
+
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags /* fl */)
 : ChannelBase(/* parent */ NULL, name, modal, QDialog::WDestructiveClose | QWidget::WStyle_Minimize | 
 			  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu /* flags */),
@@ -30,7 +32,11 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fParent = parent;
 	if (fName != QString::null)
 	{
-		setCaption( tr("Channel Window - %1").arg(fName) );
+		QString title = tr("Channel Window - %1").arg(fName);
+		setCaption( title );
+#ifdef WIN32
+		FindWindowHandle( title );
+#endif
 		fActive = gWin->IsPublic(fName);
 	}
 	fSplit = new QSplitter(Vertical, this);
@@ -62,9 +68,9 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fChannelUsers->addColumn(tr("Load"));
 	fChannelUsers->addColumn(tr("Client"));		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
 
-	fChannelUsers->setColumnAlignment(WNickListItem::ID, AlignRight); // <postmaster@raasu.org> 20021005
-	fChannelUsers->setColumnAlignment(WNickListItem::Files, AlignRight); // <postmaster@raasu.org> 20021005
-	fChannelUsers->setColumnAlignment(WNickListItem::Load, AlignRight); // <postmaster@raasu.org> 20021005
+	fChannelUsers->setColumnAlignment(WNickListItem::ID, AlignRight);		// <postmaster@raasu.org> 20021005
+	fChannelUsers->setColumnAlignment(WNickListItem::Files, AlignRight);	// <postmaster@raasu.org> 20021005
+	fChannelUsers->setColumnAlignment(WNickListItem::Load, AlignRight);		// <postmaster@raasu.org> 20021005
 
 	for (int column = 0; column < 6; column++)
 		fChannelUsers->setColumnWidthMode(column, QListView::Manual);
@@ -120,11 +126,15 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	connect(fNet, SIGNAL(UserDisconnected(const QString &, const QString &)), 
 			this, SLOT(UserDisconnected(const QString &, const QString &)));
 
+	if (Settings()->GetLogging())
+		StartLogging();
+
 	UpdateNode();
 }
 
 Channel::~Channel()
 {
+	StopLogging();
 	gWin->PartChannel(fName, fNet->LocalSessionID());
 }
 
@@ -664,8 +674,10 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 			QString name = uref()->GetUserName();
 			name = FixStringStr(name);
 			QString message = FixStringStr(text);
+			if (NameSaid(message) && Settings()->GetSounds())
+				QApplication::beep();
 			QString fmt;
-			fmt = WFormat::LocalText(user, name, message);
+			fmt = WFormat::RemoteText(user, name, message);
 			PrintText(fmt);
 		}
 	}
@@ -770,13 +782,32 @@ Channel::Window()
 }
 
 void
-Channel::LogString(const QString &)
+Channel::LogString(const QString &str)
 {
+	fLog.LogString(str);
 }
 
 void
-Channel::LogString(const char *)
+Channel::LogString(const char * str)
 {
+	fLog.LogString(str);
+}
+
+void
+Channel::StartLogging()
+{
+	fLog.Create(LT::LogChannel, fName);	// create a private chat log
+	if (!fLog.InitCheck())
+	{
+		if (gWin->fSettings->GetError())
+			PrintError( tr( "Failed to create channel log." ) );
+	}
+}
+
+void
+Channel::StopLogging()
+{
+	fLog.Close();
 }
 
 

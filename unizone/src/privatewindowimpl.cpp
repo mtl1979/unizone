@@ -2,6 +2,7 @@
 #include <windows.h>
 #pragma warning(disable: 4786)
 #endif
+#define LT WLog::LogType
 
 #include "privatewindowimpl.h"
 #include "gotourl.h"
@@ -106,7 +107,7 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	FindWindowHandle( tr("Private") );
 #endif
 
-	if (gWin->fSettings->GetLogging())
+	if (Settings()->GetLogging())
 		StartLogging();
 }
 
@@ -134,7 +135,7 @@ WPrivateWindow::DisconnectedFromServer()
 {
 	PRINT("WPrivateWindow::Disconnected\n");
 	fUsers.clear();
-	if (gWin->fSettings->GetError())
+	if (Settings()->GetError())
 		PrintError(tr("Disconnected from server."));
 }
 
@@ -144,7 +145,7 @@ WPrivateWindow::UserDisconnected(const QString &sid, const QString &name)
 	WUserIter iter = fUsers.find(sid);
 	if (iter != fUsers.end())
 	{
-		if (gWin->fSettings->GetUserEvents())
+		if (Settings()->GetUserEvents())
 		{
 			QString uname = FixStringStr(name);
 			QString msg;
@@ -196,12 +197,13 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 
 	if (it != fUsers.end())
 	{
-		if (gWin->fSettings->GetPrivate())
+		if (Settings()->GetPrivate())
 		{
 			QString msg = FixStringStr(message);
 			QString name = (*it).second()->GetUserName();
 			FixString(name);
-			(void) NameSaid(msg);
+			if (NameSaid(msg) && Settings()->GetSounds())
+				QApplication::beep();
 			QString s;
 			if ( IsAction(msg, name) ) // simulate action?
 			{
@@ -212,12 +214,12 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 				s = WFormat::ReceivePrivMsg(fromsid, name, msg);
 			}
 			PrintText(s);
-			if (gWin->fSettings->GetSounds())
+			if (Settings()->GetSounds())
 				QApplication::beep();
 			// <postmaster@raasu.org> 20021021 -- Fix Window Flashing on older API's
 #ifdef WIN32
 			// flash away!
-			if (fWinHandle && !this->isActiveWindow() && (gWin->fSettings->GetFlash() & WSettings::FlashPriv))	// got the handle... AND not active? AND user wants us to flash
+			if (fWinHandle && !this->isActiveWindow() && (Settings()->GetFlash() & WSettings::FlashPriv))	// got the handle... AND not active? AND user wants us to flash
 			{
 				WFlashWindow(fWinHandle); // flash
 			}
@@ -308,7 +310,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 						WUserRef user;
 						if (sendTo.empty())
 						{
-							if (gWin->fSettings->GetError())
+							if (Settings()->GetError())
 								PrintError( tr( "User(s) not found!" ) );
 						}
 						else
@@ -321,7 +323,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 								// see if the user is a bot...
 								if (user()->IsBot())
 								{
-									if (gWin->fSettings->GetError())
+									if (Settings()->GetError())
 										PrintError(WFormat::PrivateIsBot(sid, user()->GetUserName()));
 									iter++;
 									continue;	// go on to next user
@@ -336,7 +338,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 										WUserRef found = (*uit).second;
 										if (found()->GetUserID() == sid)
 										{
-											if (gWin->fSettings->GetUserEvents())
+											if (Settings()->GetUserEvents())
 												PrintError(tr("User #%1 (a.k.a %2) is already in this private window!").arg(sid).arg(user()->GetUserName()));
 
 											talking = true;
@@ -352,7 +354,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 									if (foundIt != fUsers.end())
 									{
 										(*foundIt).second()->RemoveFromListView(fPrivateUsers);
-										if (gWin->fSettings->GetUserEvents())
+										if (Settings()->GetUserEvents())
 										{
 											PrintSystem(WFormat::PrivateRemoved((*foundIt).second()->GetUserID(), (*foundIt).second()->GetUserName()));
 										}
@@ -447,10 +449,10 @@ WPrivateWindow::resizeEvent(QResizeEvent * e)
 void
 WPrivateWindow::StartLogging()
 {
-	fLog.Create(true);	// create a private chat log
+	fLog.Create(LT::LogPrivate);	// create a private chat log
 	if (!fLog.InitCheck())
 	{
-		if (gWin->fSettings->GetError())
+		if (Settings()->GetError())
 			PrintError( tr( "Failed to create private log." ) );
 	}
 }
@@ -537,7 +539,7 @@ WPrivateWindow::CheckEmpty()
 {
 	if (fUsers.empty())
 	{
-		switch (gWin->fSettings->GetEmptyWindows())
+		switch (Settings()->GetEmptyWindows())
 		{
 		case 0: break;
 		case 1:

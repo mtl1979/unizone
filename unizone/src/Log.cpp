@@ -8,6 +8,8 @@
 #include <util/String.h>
 using muscle::String;
 
+#include <qregexp.h>
+
 WLog::WLog()
 {
 	fFile = NULL;
@@ -31,25 +33,42 @@ WLog::Close()
 }
 
 void
-WLog::Create(bool priv)
+WLog::Create(LogType type, const QString &name)
 {
 	int counter = 0;
 	time_t currentTime = time(NULL);
-	String lt(asctime(localtime(&currentTime)));
-	String fullPath;
+	QString lt(asctime(localtime(&currentTime)));
+	QString fullPath;
 
-	String prepend = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html;charset=utf-8\"><TITLE>Log for: ";
+	QString prepend = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html;charset=utf-8\"><TITLE>Log for: ";
 	prepend += lt;
-	if (priv)
+	if (type == LogPrivate)
 		prepend += " (Private)";
+	else if (type == LogChannel)
+	{
+		prepend += " (Channel &quot;";
+		prepend += name;
+		prepend += "&quot;)";
+	}
 	prepend += "</TITLE></HEAD><BODY BGCOLOR=\"#FFFFFF\">";
 	
-	lt.Replace(" ", "_");
-	lt.Replace(":", ".");
-	lt = lt.Substring(0, "\n");
-	if (priv)
-		lt = lt.Prepend("private_");
-	lt = lt.Prepend("logs/");
+	lt.truncate(lt.find("\n"));
+	switch (type)
+	{
+	case LogMain: 
+		break;
+	case LogPrivate:
+		lt = lt.prepend("private_");
+		break;
+	case LogChannel:
+		lt = lt.prepend("_");
+		lt = lt.prepend(name);
+		lt = lt.prepend("channel_");
+		break;
+	}
+	lt = lt.replace(QRegExp(" "), "_");
+	lt = FixFileName(lt);
+	lt = lt.prepend("logs/");
 	fullPath = lt + ".html";
 	
 	// Delete old log
@@ -57,21 +76,22 @@ WLog::Create(bool priv)
 		Close();
 
 	// create a new one
-	fFile = new QFile(fullPath.Cstr());
+	fFile = new QFile(fullPath);
 	CHECK_PTR(fFile);
 	while (fFile->exists())	// to avoid name conflicts (very possible!)
 	{
 		counter++;
 		fullPath = lt + "_";
-		fullPath << counter;
+		fullPath += QString::number(counter);
 		fullPath += ".html";
-		fFile->setName(fullPath.Cstr());
+		fFile->setName(fullPath);
 	}
 	if (fFile)
 	{
 		if (fFile->open(IO_WriteOnly))
 		{
-			fFile->writeBlock(prepend.Cstr(), prepend.Length());
+			QCString out = prepend.utf8();
+			fFile->writeBlock(out, out.length());
 			fFile->flush();
 		}
 		else

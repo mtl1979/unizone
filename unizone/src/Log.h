@@ -6,12 +6,18 @@
 class WLog
 {
 public:
+
+	enum LogType {
+		LogMain,
+		LogPrivate,
+		LogChannel
+	};
 	// Constructor. Does nothing.
 	WLog();
 	// Destructor. If current log is open, it closes it.
 	~WLog();
 
-	void Create(bool = false);
+	void Create(LogType = LogMain, const QString & = QString::null);
 	void Close();
 
 	void LogString(const char *);

@@ -16,6 +16,7 @@
 #include "chatwindow.h"
 #include "htmlview.h"
 #include "user.h"
+#include "Log.h"
 
 class NetClient;
 
@@ -55,14 +56,19 @@ private:
 	WUserMap fAdmins;
 	bool fActive, fPublic;
 
+	WLog fLog;
+
 	void SendChannelText(const QString & message);
 
 	void UpdateNode();
 
 	WUserRef FindUser(const QString & user);
 
+	void StartLogging();
+	void StopLogging();
 	void LogString(const char *);
 	void LogString(const QString &);
+
 	QWidget *Window();
 
 public slots:
