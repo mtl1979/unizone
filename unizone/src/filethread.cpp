@@ -202,12 +202,6 @@ WFileThread::ScanFiles(const QString & directory)
 					}
 				}
 
-#ifdef WIN32
-				SendString(ScanEvent::Type::ScanFile, ndata);
-#else
-				SendString(ScanEvent::ScanFile, ndata);
-#endif
-
 				files.AddTail(dir->absFilePath(ndata));
 				i++;
 			}
@@ -309,9 +303,12 @@ WFileThread::AddFile(const QString & filePath)
 				fFiles.AddTail(ref);
 				Unlock(); 
 				int n = fFiles.GetNumItems();
+
 #ifdef WIN32
+				SendString(ScanEvent::Type::ScanFile, ufi.getName());
 				SendInt(ScanEvent::Type::ScannedFiles, n);
 #else
+				SendString(ScanEvent::ScanFile, ufi.getName());
 				SendInt(ScanEvent::ScannedFiles, n);
 #endif
 			}
