@@ -120,7 +120,7 @@ public:
 
    /** Returns true iff the all index values in the given range match those of the given Tuple 
      * @param matchAgainst The Tuple to do a partial index value match against
-     * @param startIndex The first index to match on.  Values that are less than zero will be capped to zero.  Defaults to zero.
+     * @param startIndex The first index to match on.  Defaults to zero.
      * @param endIndex The last index to match on, plus one.  Values that are greater than the number of items in the tuple will
      *                 be capped to (the number of items in the tuple).  Defaults to ((uint32)-1).
      * @return true iff all indices in the range are equal, else false.
@@ -134,7 +134,7 @@ public:
 
    /** Sets all items in the range [startItem, endItem] (inclusive) to (value).
      * @param value The value to set items to.
-     * @param startIndex The first index to set.  Values that are less than zero will be capped to zero.  Defaults to zero.
+     * @param startIndex The first index to set.  Defaults to zero.
      * @param endIndex The last index to set, plus one.  Values that are greater than the number of items in the tuple will
      *                 be capped to (the number of items in the tuple).  Defaults to ((uint32)-1).
      * @return true iff all indices in the range are equal, else false.
@@ -145,9 +145,32 @@ public:
       for (uint32 i=startItem; i<endItem; i++) _items[i] = value;
    }
 
+   /** Replaces all instances of (replaceMe) with (withMe) 
+     * @param replaceMe Value to be replaced
+     * @param withMe Value to replace instances of (replaceMe) with.
+     * @param startIndex The first index to process.  Defaults to zero.
+     * @param endIndex The last index to process, plus one.  Values that are greater than the number of items in the tuple will
+     *                 be capped to (the number of items in the tuple).  Defaults to ((uint32)-1).
+     * @returns The number of substitutions that were made.
+     */
+   uint32 Replace(const ItemType & replaceMe, const ItemType & withMe, uint32 startItem = 0, uint32 endItem = ((uint32)-1))
+   {
+      uint32 count = 0;
+      if (endItem > NumItems) endItem = NumItems;
+      for (uint32 i=startItem; i<endItem; i++) 
+      {
+         if (_items[i] == replaceMe) 
+         {
+            items[i] = withMe;
+            count++;
+         }
+      }
+      return count;
+   }
+
    /** Sets all items in the range [startItem, endItem] (inclusive) to be equal to their counterparts in (rhs).
      * @param rhs The tuple to copy from.
-     * @param startIndex The first index to set.  Values that are less than zero will be capped to zero.  Defaults to zero.
+     * @param startIndex The first index to set.  Defaults to zero.
      * @param endIndex The last index to set, plus one.  Values that are greater than the number of items in the tuple will
      *                 be capped to (the number of items in the tuple).  Defaults to ((uint32)-1).
      * @return true iff all indices in the range are equal, else false.
