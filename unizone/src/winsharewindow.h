@@ -36,7 +36,7 @@
 #include "filethread.h"
 #include "combo.h"
 #include "searchitem.h"
-#include "channelinfo.h"
+// #include "channelinfo.h"
 // #include "search.h"
 #include "Log.h"
 
@@ -50,6 +50,8 @@
 using std::pair;
 using std::multimap;
 using std::iterator;
+
+class ChannelInfo;
 
 struct WFileInfo
 {
@@ -96,6 +98,7 @@ MakePair(const QString s, WFileInfo * fi)
 class WTextEvent;
 class WChatText;
 class WSettings;
+class WStatusBar;
 
 class WinShareWindow : public QMainWindow
 {
@@ -210,6 +213,7 @@ private slots:
 	void StopSearch();
 	void ClearList();
 	void Download();
+	void ClearHistory();
 
 	void AddFile(const QString, const QString, bool, MessageRef);
 	void RemoveFile(const QString, const QString);
@@ -254,6 +258,7 @@ private:
 	QMutex rLock;				// resume list mutex
 
 
+	bool fGotResults;	// see if we got initial Search Results
 	bool fGotParams;	// see if the initial "Get Params" message was sent
 	bool fAway;
 	bool fPrintOutput;
@@ -425,7 +430,8 @@ private:
 	// QPushButton * fClose;
 	QPushButton * fClear;
 	QPushButton * fStop;
-	QStatusBar * fStatus;
+	QPushButton * fClearHistory;
+	WStatusBar * fStatus;
 	Message * fQueue;
 	QMutex fLock;		// to lock the list so only one method can be using it at a time
 
@@ -439,7 +445,7 @@ private:
 
 	void StartQuery(QString sidRegExp, QString fileRegExp);
 	void SetResultsMessage();
-	void SetSearchStatus(const QString & status);
+	void SetSearchStatus(const QString & status, int index = 0);
 	void SetSearch(QString pattern);
 
 	void QueueDownload(QString file, WUser * user);

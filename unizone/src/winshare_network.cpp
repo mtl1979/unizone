@@ -1372,31 +1372,39 @@ WinShareWindow::HandleMessage(Message * msg)
 		// shares are scanned on startup (during connect to server)
 	case PR_RESULT_PONG:
 		{
-			// Execute OnConnect commands here, when all user information should be available
-
-			if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
+			if (fGotResults)
 			{
-				ExecCommand(fOnConnect);
-				if (fOnConnect.startsWith("/search")) // only search one time, everything else should be persistent
+				// Execute OnConnect commands here, when all user information should be available
+				
+				if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
 				{
-					fOnConnect = QString::null;
+					ExecCommand(fOnConnect);
+					if (fOnConnect.startsWith("/search")) // only search one time, everything else should be persistent
+					{
+						fOnConnect = QString::null;
+					}
+				}
+				
+				if ((fOnConnect2 != QString::null) && fOnConnect2.length() > 2)
+				{
+					ExecCommand(fOnConnect2);
+					fOnConnect = fOnConnect2;
+					fOnConnect2 = QString::null;
+				}
+				
+				// run the scan now (if needed)
+				// begin the file scan thread
+				PRINT("Checking...\n");
+				if (fSettings->GetSharingEnabled())
+				{
+					StartAcceptThread();
+					ScanShares();
 				}
 			}
-
-			if ((fOnConnect2 != QString::null) && fOnConnect2.length() > 2)
+			else
 			{
-				ExecCommand(fOnConnect2);
-				fOnConnect = fOnConnect2;
-				fOnConnect2 = QString::null;
-			}
-
-			// run the scan now (if needed)
-			// begin the file scan thread
-			PRINT("Checking...\n");
-			if (fSettings->GetSharingEnabled())
-			{
-				StartAcceptThread();
-				ScanShares();
+				SetSearchStatus(tr("passive"), 2);
+				fGotResults = true;
 			}
 			break;
 		}
@@ -1925,6 +1933,7 @@ void
 WinShareWindow::Connect()
 {
 	fGotParams = false;
+	fGotResults = true;
 	if (fNetClient)
 	{
 		WaitOnFileThread();	// make sure our scan thread is dead

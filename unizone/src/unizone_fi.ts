@@ -3005,5 +3005,17 @@ Päiväys: %4</translation>
         <source>On Connect: %1</source>
         <translation>Yhdistäessä tee: %1</translation>
     </message>
+    <message>
+        <source>passive</source>
+        <translation>passiivinen</translation>
+    </message>
+    <message>
+        <source>active</source>
+        <translation>aktiivinen</translation>
+    </message>
+    <message>
+        <source>Clear History</source>
+        <translation>Tyhjennä Historia</translation>
+    </message>
 </context>
 </TS>

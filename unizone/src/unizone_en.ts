@@ -2913,5 +2913,17 @@ Date: %4</translation>
         <source>On Connect: %1</source>
         <translation>On Connect: %1</translation>
     </message>
+    <message>
+        <source>passive</source>
+        <translation>passive</translation>
+    </message>
+    <message>
+        <source>active</source>
+        <translation>active</translation>
+    </message>
+    <message>
+        <source>Clear History</source>
+        <translation>Clear History</translation>
+    </message>
 </context>
 </TS>

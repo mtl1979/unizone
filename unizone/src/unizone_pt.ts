@@ -2884,5 +2884,17 @@ Date: %4</translation>
         <source>On Connect: %1</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>passive</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>active</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Clear History</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>
