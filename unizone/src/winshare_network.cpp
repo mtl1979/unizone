@@ -720,7 +720,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/showstats"))
 		{
-			PrintSystem( tr("Uploaded %1, downloaded %2").arg(MakeSizeString(tx)).arg(MakeSizeString(rx)) );
+			PrintSystem( tr("Uploaded: This session %1, total %2").arg(MakeSizeString(tx-tx2)).arg(MakeSizeString(tx)) );
+			PrintSystem( tr("Downloaded: This session %1, total %2").arg(MakeSizeString(rx-rx2)).arg(MakeSizeString(rx)) );
 		}
 		else if (CompareCommand(sendText, "/showpatterns"))
 		{
@@ -731,6 +732,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/clearstats"))
 		{
 			tx = rx = 0;
+			tx2 = rx2 = 0;
 			PrintSystem("Transfer statistics cleared.");
 		}
 		else if (CompareCommand(sendText, "/remote"))
@@ -1201,7 +1203,7 @@ WinShareWindow::HandleMessage(Message * msg)
 			PRINT("Checking...\n");
 			if (fSettings->GetSharingEnabled())
 			{
-				PrintSystem("Scanning shares...");
+				PrintSystem(MSG_SCANSHARES);
 				PRINT("Setting list...\n");
 				fFileScanThread->SetList(fSettings->GetSharedDirs());
 				fFileScanThread->SetFirewalled(fSettings->GetFirewalled());

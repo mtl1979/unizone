@@ -50,6 +50,7 @@
 #define MSG_USERSNOTFOUND			"Benutzer nicht gefunden!"
 #define MSG_PINGSENT				"Ping gesendet an Benutzer #%1 (a.k.a. <font color=\"%3\">%2</font>)."
 #define MSG_NEWVERSION				" %1 ist erhältlich bei http://ozone-o3.net ."
+#define MSG_SCANSHARES				"Scanning shares..."
 #define MSG_SHARECOUNT				" %1 anteilige Dateie(n)."
 #define MSG_NAMECHANGED				"Name geändert zu <font color=\"%2\">%1</font>."
 #define MSG_UNKNOWN                 "Unbekannt"

@@ -49,6 +49,7 @@
 #define MSG_USERSNOTFOUND   "Utilisateur(s) introuvable(s)!"
 #define MSG_PINGSENT		"Ping envoyé à l'utilisateur #%1 (a.k.a. <font color=\"%3\">%2</font>)."
 #define MSG_NEWVERSION		" %1 est disponible sur http://www.raasu.org/tools/windows/."
+#define MSG_SCANSHARES		"Scanning shares..."
 #define MSG_SHARECOUNT		"Partageant %1 file(s)."
 #define MSG_NAMECHANGED		"Nom changé à <font color=\"%2\">%1</font>."
 #define MSG_UNKNOWN			"Inconnu"

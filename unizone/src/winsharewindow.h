@@ -186,7 +186,8 @@ private:
 	QString fIgnore;	// ignore pattern
 	QString fBlackList; // blacklist pattern
 
-	uint64 tx,rx;		// transmit/receive statistics
+	uint64 tx,rx;		// transmit/receive statistics (cumulative)
+	uint64 tx2,rx2;		// in the beginning of session
 
 	bool IsIgnored(const WUser * user);
 	bool Ignore(QString & user);

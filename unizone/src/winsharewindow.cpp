@@ -1137,8 +1137,8 @@ WinShareWindow::LoadSettings()
 		fIgnore = fSettings->GetIgnorePattern();
 		fBlackList = fSettings->GetBlackListPattern();
 
-		tx = fSettings->GetTransmitStats();
-		rx = fSettings->GetReceiveStats();
+		tx = fSettings->GetTransmitStats(); tx2 = tx;
+		rx = fSettings->GetReceiveStats(); rx2 = rx;
 		
 		fUsers->setSorting(fSettings->GetNickListSortColumn(), fSettings->GetNickListSortAscending());
 
@@ -1161,6 +1161,8 @@ WinShareWindow::LoadSettings()
 		fBlackList = "";
 		tx = 0;
 		rx = 0;
+		tx2 = 0;
+		rx2 = 0;
 	}
 }
 
@@ -1316,14 +1318,17 @@ void
 WinShareWindow::WaitOnFileThread()
 {
 	fFileShutdownFlag = true;
-	fFileScanThread->Lock();
 	if (fFileScanThread->IsRunning())
 	{
 		PrintSystem(MSG_WAIT_FOR_FST,false);
-		while (fFileScanThread->IsRunning())
-			fFileScanThread->wait();
+		while (fFileScanThread->IsRunning()) 
+		{
+			//fFileScanThread->Lock();
+			//fFileScanThread->wait();
+			//fFileScanThread->Unlock();
+			qApp->processEvents(300);
+		}
 	}
-	fFileScanThread->Unlock();
 }
 
 void

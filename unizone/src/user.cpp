@@ -87,6 +87,18 @@ WUser::InitName(const Message * msg)
 
 	msg->FindBool("supports_partial_hashing", &fPartial);   // NEW 11/7/2002 partial resumes
 
+	// <postmaster@raasu.org> 20020213 -- Fix for download troubles when no files shared
+	//
+	bool b;
+
+	if (msg->FindBool("firewalled", &b) == B_OK)
+	{
+		PRINT("WUser: %s firewalled", (b ? "Is" : "Isn't"));
+		SetFirewalled(b);
+	}
+
+	//
+
 	PRINT("WUser: %s is a %s with installid %d on port %d\n", fUserName.latin1(), (fBot ? "bot" : "user"), 
 																fInstallID, fPort);
 }

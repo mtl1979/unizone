@@ -53,6 +53,7 @@
 #define MSG_USERSNOTFOUND   "Käyttäjää(-jiä) ei löytynyt!"
 #define MSG_PINGSENT		"Ping lähetetty käyttäjälle #%1, eli <font color=\"%3\">%2</font>."
 #define MSG_NEWVERSION		" %1 on ilmestynyt osoitteessa http://www.raasu.org/tools/windows/."
+#define MSG_SCANSHARES		"Tutkitaan jaot..."
 #define MSG_SHARECOUNT		"%1 tiedosto(a) jaettuna."
 #define MSG_NAMECHANGED		"Nimesi on nyt <font color=\"%2\">%1</font>."
 #define	MSG_UNKNOWN			"Tuntematon"

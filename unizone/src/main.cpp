@@ -50,18 +50,18 @@ main( int argc, char** argv )
 #else
 	// we have to use some windows api to get our path...
 	// <postmaster@raasu.org> 20021022 -- use wchar_t instead of TCHAR to follow common typedef across source files
-	wchar_t * name = new wchar_t[260];	// default size for Win32 filenames is 260
-	if (GetModuleFileName(NULL,		/* current apps module */
-							name,	/* buffer */
-							260		/* buffer length */
-							))
+	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
+	if (GetModuleFileName(NULL,				/* current apps module */
+							name,			/* buffer */
+							MAX_PATH		/* buffer length */
+							) != 0)
 	{
-		PRINT("Module filename: %S\n",name);
+		PRINT("Module filename: %S\n", name);
 		PathRemoveFileSpec(name);
-		PRINT("Setting working directory to: %S\n",name);
+		PRINT("Setting working directory to: %S\n", name);
 		SetCurrentDirectory(name);
 	}
-	delete name;
+	delete [] name;
 	name = NULL; // <postmaster@raasu.org> 20021027
 #endif
 	app.setStyle(new QPlatinumStyle);
