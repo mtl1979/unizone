@@ -74,9 +74,6 @@ private:
 
 	int32 fCurFile, fNumFiles;
 
-	QTimer * CTimer;					// Connect timer
-	QTimer * fBlockTimer;				// Blocked timer
-
 	void DoUpload();
 };
 

@@ -23,6 +23,16 @@ WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	fPacket = 8;
 	InitTransferRate();
 	InitTransferETA();
+
+	CTimer = new QTimer(this, "Connect Timer");
+	CHECK_PTR(CTimer);
+
+	connect( CTimer , SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
+	
+	fBlockTimer = new QTimer(this, "Blocked Timer");
+	CHECK_PTR(fBlockTimer);
+
+	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
 }
 
 WGenericThread::~WGenericThread()

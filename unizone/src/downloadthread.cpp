@@ -21,9 +21,6 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fLocalFileDl = NULL;
 	fNumFiles = -1;
 	fCurFile = -1;
-	CTimer = new QTimer(this, "Connect Timer");
-	CHECK_PTR(CTimer);
-	connect( CTimer , SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
 }
 
 WDownloadThread::~WDownloadThread()

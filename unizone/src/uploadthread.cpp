@@ -26,16 +26,6 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fBlocked = false;
 	fTimeLeft = 0;
 	fForced = false;
-
-	CTimer = new QTimer(this, "Connect Timer");
-	CHECK_PTR(CTimer);
-
-	connect( CTimer , SIGNAL(timeout()), this, SLOT(ConnectTimer()) );
-	
-	fBlockTimer = new QTimer(this, "Blocked Timer");
-	CHECK_PTR(fBlockTimer);
-
-	connect( fBlockTimer, SIGNAL(timeout()), this, SLOT(BlockedTimer()) );
 }
 
 WUploadThread::~WUploadThread()

@@ -120,6 +120,9 @@ protected:
 
 	int fTXRate; // Current transfer throttling rate
 
+	QTimer * CTimer;					// Connect timer
+	QTimer * fBlockTimer;				// Blocked timer
+
 private:
 	void InitTransferRate();
 	void InitTransferETA();

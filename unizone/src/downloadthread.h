@@ -69,7 +69,6 @@ protected:
 	virtual void SignalOwner();
 private:
 	QString UniqueName(QString file, int index); // build up unique name using 'file' and 'index'
-	QTimer * CTimer; // Connect timer
 
 };
 
