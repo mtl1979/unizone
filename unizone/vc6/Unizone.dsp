@@ -410,6 +410,14 @@ SOURCE=..\src\wstatusbar.cpp
 
 SOURCE=..\src\wstring.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\src\wsystemevent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wwarningevent.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -1307,7 +1315,15 @@ SOURCE=..\src\wstring.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\wsystemevent.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\wuploadevent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wwarningevent.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

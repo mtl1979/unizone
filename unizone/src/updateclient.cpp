@@ -7,6 +7,8 @@
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 
+#include <qapplication.h>
+
 UpdateClient::UpdateClient(QObject *owner)
 : QObject(owner)
 {
@@ -41,7 +43,7 @@ UpdateClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 	for (int i = 0; msg()->FindString(PR_NAME_TEXT_LINE, i, str) == B_OK; i++)
 	{
 		QString s;
-		if (CheckVersion(str.Cstr(), &s))
+		if (CheckVersion(str, &s))
 		{
 			WSystemEvent *wse = new WSystemEvent(tr("Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.").arg(s));
 			if (wse)
@@ -81,10 +83,10 @@ UpdateClient::Disconnect()
 }
 
 bool
-UpdateClient::CheckVersion(const char * buf, QString * version)
+UpdateClient::CheckVersion(const String & buf, QString * version)
 {
 	int maj, min, rev, build;
-	int ret = sscanf(buf, "%d,%d,%d,%d", &maj, &min, &rev, &build);
+	int ret = sscanf(buf.Cstr(), "%d,%d,%d,%d", &maj, &min, &rev, &build);
 	PRINT("CheckVersion: ret == %d\n", ret);
 	if (ret == 4)	// we want 4 return values
 	{
