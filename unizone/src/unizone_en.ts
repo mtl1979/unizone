@@ -3348,5 +3348,13 @@ Date: %4</translation>
         <source>User Name: %1</source>
         <translation>User Name: %1</translation>
     </message>
+    <message>
+        <source>/reverse [text] - say text in reverse</source>
+        <translation>/reverse [text] - say text in reverse</translation>
+    </message>
+    <message>
+        <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
+        <translation>/revsay [nick]: [text] - say text reversed but prefix with nick</translation>
+    </message>
 </context>
 </TS>

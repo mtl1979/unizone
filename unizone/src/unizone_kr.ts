@@ -3048,5 +3048,13 @@ Date: %4</source>
         <source>User Name: %1</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>/reverse [text] - say text in reverse</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

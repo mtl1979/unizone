@@ -3440,5 +3440,13 @@ Päiväys: %4</translation>
         <source>User Name: %1</source>
         <translation>Käyttäjän Nimi: %1</translation>
     </message>
+    <message>
+        <source>/reverse [text] - say text in reverse</source>
+        <translation>/reverse [teksti] - sanoo tekstin takaperin</translation>
+    </message>
+    <message>
+        <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
+        <translation>/revsay [nimi]: [teksti] - sanoo tekstin takaperin, mutta jättää nimen oikeinpäin eteen</translation>
+    </message>
 </context>
 </TS>

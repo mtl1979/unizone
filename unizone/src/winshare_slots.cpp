@@ -459,12 +459,8 @@ WinShareWindow::GotShown(const QString & txt)
 void
 WinShareWindow::AboutToQuit()
 {
-	WaitOnFileThread();
-	if (fDLWindow)			
-	{
-		fDLWindow->EmptyLists();
-	}
-	SaveSettings();
+	Cleanup();
+
 	QApplication::exit(0);
 }
 

@@ -322,6 +322,14 @@ WinShareWindow::StopAcceptThread()
 
 WinShareWindow::~WinShareWindow()
 {
+	Cleanup();
+
+	QApplication::exit(0);
+}
+
+void
+WinShareWindow::Cleanup()
+{
 	// Search Pane
 
 	StopSearch();
@@ -342,43 +350,57 @@ WinShareWindow::~WinShareWindow()
 	// all the NetClients get deleted by Qt
 	// since they are QObject's
 
-	fUpdateThread->Reset();
-	fUpdateThread = NULL;
-
-	fServerThread->Reset();
-	fServerThread = NULL;
-
-	fNetClient->Reset();
-	fNetClient = NULL;
-
-
-	delete fMenus;
-	fMenus = NULL;
-
-	if (fDLWindow)
+	if (fUpdateThread)
 	{
-		fDLWindow->EmptyLists();
+		fUpdateThread->Reset();
+		fUpdateThread = NULL;
 	}
 
-	PRINT("Saving settings\n");
-	SaveSettings();
-	delete fSettings;
-	fSettings = NULL; // <postmaster@raasu.org> 20021027
-
-	WaitOnFileThread();
-	delete fFileScanThread;
-	fFileScanThread = NULL; // <postmaster@raasu.org> 20021027
+	if (fServerThread)
+	{
+		fServerThread->Reset();
+		fServerThread = NULL;
+	}
 
 	if (fAccept)
 	{
 		StopAcceptThread();
 	}
 
+	if (fNetClient)
+	{
+		fNetClient->Reset();
+		fNetClient = NULL;
+	}
+
+	if (fMenus)
+	{
+		delete fMenus;
+		fMenus = NULL;
+	}
+
+	if (fDLWindow)
+	{
+		fDLWindow->EmptyLists();
+	}
+
+	if (fSettings)
+	{
+		PRINT("Saving settings\n");
+		SaveSettings();
+		delete fSettings;
+		fSettings = NULL; // <postmaster@raasu.org> 20021027
+	}
+
+	if (fFileScanThread)
+	{
+		WaitOnFileThread();
+		delete fFileScanThread;
+		fFileScanThread = NULL; // <postmaster@raasu.org> 20021027
+	}
+
 	StopLogging();
-
-	QApplication::exit(0);
 }
-
 
 void
 WinShareWindow::customEvent(QCustomEvent * event)

@@ -426,6 +426,7 @@ private:
 #endif
 
 	void InitGUI();
+	void Cleanup();
 	void HandleSignal();
 	void SendChatText(WTextEvent *, bool * reply = NULL);
 

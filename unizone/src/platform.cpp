@@ -515,9 +515,8 @@ GetTimeStamp()
 		ret += "<br>";
 	}
 	
-	//qCurTime = qCurTime.prepend(qMonth);
-	qCurTime = qCurTime.prepend("[");
-	qCurTime = qCurTime.append("] ");
+	qCurTime.prepend("[");
+	qCurTime.append("] ");
 
 	ret += WFormat::TimeStamp.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(qCurTime);
 	return ret;
@@ -539,3 +538,18 @@ ComputePercentString(int64 cur, int64 max)
 	return ret;
 }
 
+
+void
+Reverse(QString &text)
+{
+	int start = 0;
+	int end = text.length() - 1;
+	while (start < end)
+	{
+		QChar c = text[end];
+		text[end] = text[start];
+		text[start] = c;
+		start++;
+		end--;
+	}
+}

@@ -91,4 +91,7 @@ QString GetTimeStamp();
 // Calculate percentage and return string representation
 QString ComputePercentString(int64 cur, int64 max);
 
+// Reverse string
+void Reverse(QString &text);
+
 #endif // PLATFORM_H

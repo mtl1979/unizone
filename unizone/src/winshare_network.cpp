@@ -890,6 +890,30 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			QString pattern = GetParameterString(sendText);
 			LaunchSearch(pattern);
 		}
+		else if (CompareCommand(sendText, "/reverse"))
+		{
+			QString qtext = GetParameterString(sendText);
+			Reverse(qtext);
+			SendChatText("*", qtext);
+		}
+		else if (CompareCommand(sendText, "/revsay"))
+		{
+			QString qtext = GetParameterString(sendText);
+			int cp = qtext.find(": ");
+			if (cp >= 0)
+			{
+				QString who = qtext.left(cp);
+				qtext = qtext.mid(cp + 2);
+				Reverse(qtext);
+				qtext.prepend(": ");
+				qtext.prepend(who);
+			}
+			else
+			{
+				Reverse(qtext);
+			}
+			SendChatText("*", qtext);
+		}
 		// add more commands BEFORE this one
 
 		else if (sendText.left(1) == "/")
@@ -1834,6 +1858,10 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/remuser [index] - remove nick from nick list");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/resumes - list files waiting to be resumed");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/reverse [text] - say text in reverse");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/revsay [nick]: [text] - say text reversed but prefix with nick");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/running - show time elapsed since you started Unizone");
 	helpText			+=	"\n\t\t\t\t"; 
