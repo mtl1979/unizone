@@ -8,6 +8,9 @@
 #include <string.h>
 #include <qmessagebox.h>
 #include <qfont.h>
+#ifdef ALTCHARSET
+#include <qtextcodec.h>
+#endif
 
 #ifdef WIN32
 #include <windows.h>
@@ -25,6 +28,11 @@ int
 main( int argc, char** argv )
 {
 	QApplication app( argc, argv );
+
+#ifdef ALTCHARSET
+	app.setDefaultCodec( QTextCodec::codecForName(ALTCHARSET) );
+#endif
+
 	// first set our working directory (linux only... Windows already does it for us :))
 
 	if (argc > 1)

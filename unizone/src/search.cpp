@@ -32,7 +32,7 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fCurrentSearchPattern = "";
 	fIsRunning = false;
 
-	setCaption(MSG_SEARCH);
+	setCaption(tr(MSG_SEARCH));
 	// initialize GUI
 	fMainBox = new QVGroupBox(this);
 	CHECK_PTR(fMainBox);
@@ -49,14 +49,14 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 
 	fSearchList = new QListView(fSearchBox);
 	CHECK_PTR(fSearchList);
-	fSearchList->addColumn(MSG_SW_FILENAME);
-	fSearchList->addColumn(MSG_SW_FILESIZE);
-	fSearchList->setColumnAlignment(1, AlignRight); // <postmaster@raasu.org> 20021103
+	fSearchList->addColumn(tr(MSG_SW_FILENAME));
+	fSearchList->addColumn(tr(MSG_SW_FILESIZE));
+	fSearchList->addColumn(tr(MSG_SW_FILETYPE));
+	fSearchList->addColumn(tr(MSG_SW_MODIFIED));
+	fSearchList->addColumn(tr(MSG_SW_PATH));
+	fSearchList->addColumn(tr(MSG_SW_USER));
 
-	fSearchList->addColumn(MSG_SW_FILETYPE);
-	fSearchList->addColumn(MSG_SW_MODIFIED);
-	fSearchList->addColumn(MSG_SW_PATH);
-	fSearchList->addColumn(MSG_SW_USER);
+	fSearchList->setColumnAlignment(1, AlignRight); // <postmaster@raasu.org> 20021103
 
 	fSearchList->setShowSortIndicator(true);
 	fSearchList->setAllColumnsShowFocus(true);
@@ -78,7 +78,7 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fSearchEdit->setEditable(true);
 	fSearchEdit->setMinimumWidth(this->width()*0.75);
 	fSearchLabel->setBuddy(fSearchEdit);
-	fSearchLabel->setText(MSG_SW_CSEARCH);
+	fSearchLabel->setText(tr(MSG_SW_CSEARCH));
 	
 	fDownload = new QPushButton(fButtonsBox);
 	CHECK_PTR(fDownload);
@@ -89,10 +89,10 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	fStop = new QPushButton(fButtonsBox);
 	CHECK_PTR(fStop);
 
-	fDownload->setText(MSG_SW_DOWNLOAD);
-	fClose->setText(MSG_SW_CLOSE);
-	fClear->setText(MSG_SW_CLEAR);
-	fStop->setText(MSG_SW_STOP);
+	fDownload->setText(tr(MSG_SW_DOWNLOAD));
+	fClose->setText(tr(MSG_SW_CLOSE));
+	fClear->setText(tr(MSG_SW_CLEAR));
+	fStop->setText(tr(MSG_SW_STOP));
 
 	fStatus = new QStatusBar(fMainBox);
 	CHECK_PTR(fStatus);
@@ -120,7 +120,7 @@ WSearch::WSearch(NetClient * net, QWidget * parent)
 	connect(fDownload, SIGNAL(clicked()), this, SLOT(Download()));
 	connect(fNet, SIGNAL(DisconnectedFromServer()), this, SLOT(DisconnectedFromServer()));
 
-	SetStatus(MSG_IDLE);
+	SetStatus(tr(MSG_IDLE));
 
 	fSearchEdit->setFocus();
 }
@@ -274,7 +274,7 @@ WSearch::StopSearch()
 		fUserRegExp.SetPattern("");
 	}
 	Unlock();
-	SetStatus(MSG_IDLE);
+	SetStatus(tr(MSG_IDLE));
 }
 
 // This method locks the list, so be sure the mutex is unlocked before calling it!
@@ -312,7 +312,7 @@ WSearch::GoSearch()
 
 	if (gWin->fNetClient->IsInternalThreadRunning() == false)
 	{
-		fStatus->message(MSG_NOTCONNECTED);
+		fStatus->message(tr(MSG_NOTCONNECTED));
 		return;
 	}
 

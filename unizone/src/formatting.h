@@ -25,42 +25,42 @@ public:
 	//    |
 	//   \ /
 	//	System: User #?? is now connected.
-	static QString SystemText;
-	static QString UserConnected;
-	static QString UserDisconnected;
-	static QString UserNameChangedNoOld;
-	static QString UserNameChanged;
-	static QString UserStatusChanged;
-	static QString UserStatusChanged2;
+	static QString SystemText();
+	static QString UserConnected();
+	static QString UserDisconnected();
+	static QString UserNameChangedNoOld();
+	static QString UserNameChanged();
+	static QString UserStatusChanged();
+	static QString UserStatusChanged2();
 
 	// ping formatting
-	static QString PingText;
-	static QString PingUptime;
+	static QString PingText();
+	static QString PingUptime();
 
 	// error format
-	static QString Error;
+	static QString Error();
 	// error text color (just regular text)
 	static QString ErrorMsg;
 
 	// warning format
-	static QString Warning;
+	static QString Warning();
 
 	// local stuff
-	static QString StatusChanged;
+	static QString StatusChanged();
 
 	// private messages
 	static QString SendPrivMsg;
 	static QString ReceivePrivMsg;
 
 	// action
-	static QString Action;
+	static QString Action();
 
 	// URL -- <postmaster@raasu.org> 20020930
 	static QString URL1;
 	static QString URL2;
 
 	// You got pinged
-	static QString GotPinged;
+	static QString GotPinged();
 
 	static QString TimeStamp;
 };

@@ -15,6 +15,8 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 		: WGenericThread(owner, optShutdownFlag) 
 {
 	fFile = NULL; 
+	CTimer = new QTimer(this, "Connect Timer");
+	connect( CTimer , SIGNAL(timeout()), SLOT(ConnectTimer()) );
 }
 
 WDownloadThread::~WDownloadThread()
@@ -101,6 +103,7 @@ WDownloadThread::InitSession()
 				fDownloading = false;
 				Message * msg = new Message(WGenericEvent::ConnectInProgress);
 				SendReply(msg);
+				CTimer->start(60000, true);
 				return true;
 			}
 			else
@@ -169,6 +172,8 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 	String sid;
 	uint16 port;
 	bool disconnected = false;
+
+	CTimer->stop();
 
 	while (GetNextEventFromInternalThread(code, &next, &sid, &port) >= 0)
 	{
@@ -456,7 +461,7 @@ WDownloadThread::UniqueName(QString file, int index)
 		int d = base.find("."); // ...and find first dot
 		if (d > -1)
 		{
-			ext = base.mid(d); // ext contains also the dot;
+			ext = base.mid(d); // ext contains also the dot
 			base = base.left(d);
 			return tr("%1%2 %3%4").arg(tmp).arg(base).arg(index).arg(ext);
 		}
@@ -465,6 +470,16 @@ WDownloadThread::UniqueName(QString file, int index)
 	}
 	WASSERT(true, "Invalid download path!");
 	return QString::null;
+}
+
+void
+WDownloadThread::ConnectTimer()
+{
+	Reset();
+	Message * msg = new Message(WGenericEvent::ConnectFailed);
+	msg->AddString("why", "Connection timed out!");
+	msg->AddBool("retry", true);
+	SendReply(msg);
 }
 
 // -----------------------------------------------------------------------------

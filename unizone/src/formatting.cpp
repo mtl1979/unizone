@@ -27,27 +27,72 @@ QString WFormat::Text = "<font color=\"%1\" size=\"%2\">%3</font>";
 //    |
 //   \ /
 //	System: User #?? is now connected.
-QString WFormat::SystemText				= MSG_WF_SYSTEMTEXT;
-QString WFormat::UserConnected			= MSG_WF_USERCONNECTED;
-QString WFormat::UserDisconnected		= MSG_WF_USERDISCONNECTED;
-QString WFormat::UserNameChangedNoOld	= MSG_WF_USERNAMECHANGENO;
-QString WFormat::UserNameChanged		= MSG_WF_USERNAMECHANGED;
-QString WFormat::UserStatusChanged		= MSG_WF_USERSTATUSCHANGE;
-QString WFormat::UserStatusChanged2		= MSG_WF_USERSTATUSCHANGE2;
+QString WFormat::SystemText()
+{
+	return QObject::tr(MSG_WF_SYSTEMTEXT);
+}
+
+QString WFormat::UserConnected()
+{
+	return QObject::tr(MSG_WF_USERCONNECTED);
+}
+
+QString WFormat::UserDisconnected()
+{
+	return QObject::tr(MSG_WF_USERDISCONNECTED);
+}
+
+QString WFormat::UserNameChangedNoOld()
+{
+	return QObject::tr(MSG_WF_USERNAMECHANGENO);
+}
+
+QString WFormat::UserNameChanged()
+{
+	return QObject::tr(MSG_WF_USERNAMECHANGED);
+}
+
+QString WFormat::UserStatusChanged()
+{
+	return QObject::tr(MSG_WF_USERSTATUSCHANGE);
+}
+
+QString WFormat::UserStatusChanged2()
+{
+	return QObject::tr(MSG_WF_USERSTATUSCHANGE2);
+}
 
 // ping formatting
-QString WFormat::PingText	= MSG_WF_PINGTEXT;
-QString WFormat::PingUptime = MSG_WF_PINGUPTIME;
+QString WFormat::PingText()
+{
+	return QObject::tr(MSG_WF_PINGTEXT);
+}
+
+QString WFormat::PingUptime()
+{
+	return QObject::tr(MSG_WF_PINGUPTIME);
+}
+
 
 // error format
-QString WFormat::Error = MSG_WF_ERROR;
+QString WFormat::Error()
+{
+	return QObject::tr(MSG_WF_ERROR);
+}
+
 // error text color (just regular text)
 QString WFormat::ErrorMsg = "<font color=\"%1\" size=\"%2\">%3</font>";
 
 // warning format
-QString WFormat::Warning = MSG_WF_WARNING;
+QString WFormat::Warning()
+{
+	return QObject::tr(MSG_WF_WARNING);
+}
 
-QString WFormat::StatusChanged = MSG_WF_STATUSCHANGED;
+QString WFormat::StatusChanged()
+{
+	return QObject::tr(MSG_WF_STATUSCHANGED);
+}
 
 // priv messages
 
@@ -57,14 +102,22 @@ QString WFormat::StatusChanged = MSG_WF_STATUSCHANGED;
 QString WFormat::SendPrivMsg	= "<font size=\"%2\"><b>-%3-</b> <font color=\"%1\"><b>%4 -> (%5)</b></font>: </font>";	
 QString WFormat::ReceivePrivMsg = "<font size=\"%2\"><b>-%3-</b> <font color=\"%1\"><b>%4</b></font>: </font><font color=\"%5\" size=\"%6\">%7</font>";
 
-QString WFormat::Action = MSG_WF_ACTION;
+QString WFormat::Action()
+{
+	return QObject::tr(MSG_WF_ACTION);
+}
 
 // <postmaster@raasu.org> 20020930
 // WFormat::URL Doesn't work because % is a valid character in URLs
 
 QString WFormat::URL1 = "<font color=\"%1\" size=\"%2\"><u>";
 QString WFormat::URL2 = "</u></font>";
-QString WFormat::GotPinged = MSG_WF_GOTPINGED;
+
+QString WFormat::GotPinged()
+{
+	return QObject::tr(MSG_WF_GOTPINGED);
+}
+
 QString WFormat::TimeStamp = "<font color=\"%1\" size=\"%2\"><b>%3</b></font> ";
 
 

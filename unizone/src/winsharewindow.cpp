@@ -160,7 +160,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	if (fSettings->GetInfo())
 	{
 		START_OUTPUT();
-		PrintSystem("Welcome to " NAME "! <b>THE</b> MUSCLE client for Windows!", true);
+		PrintSystem(tr("Welcome to " NAME "! <b>THE</b> MUSCLE client for Windows!"), true);
 		// <postmaster@raasu.org> 20030225
 		PrintSystem("Copyright (C) 2002-2003 Mika T. Lindqvist.", true);
 		PrintSystem("Original idea by Vitaliy Mikitchenko.", true);
@@ -377,7 +377,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				fNetClient->SendMessageToSessions(MessageRef(new Message(PR_COMMAND_PING), NULL));
 				
 				if (fSettings->GetInfo())
-					PrintSystem(MSG_CONNECTED);
+					PrintSystem(tr(MSG_CONNECTED));
 
 				if (fReconnectTimer->isActive())
 				{
@@ -519,7 +519,7 @@ WinShareWindow::StatusChanged(const QString & newStatus)
 	//
 
 	PrintSystem(WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
-				WFormat::StatusChanged.arg(FixStringStr(pstatus))));
+				WFormat::StatusChanged().arg(FixStringStr(pstatus))));
 }
 
 void
@@ -536,7 +536,7 @@ void
 WinShareWindow::NameChanged(const QString & newName)
 {
 	fNetClient->SetUserName(newName); // <postmaster@raasu.org> 20021011
-	QString nameChanged = WFormat::SystemText.arg(WColors::System).arg(fSettings->GetFontSize());
+	QString nameChanged = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 	nameChanged += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(tr(MSG_NAMECHANGED).
 		arg(FixStringStr(newName)).arg(WColors::LocalName)); // <postmaster@raasu.org> 20021001
 	PrintText(nameChanged);
@@ -575,21 +575,21 @@ WinShareWindow::InitGUI()
 	// setup combo/labels
 	// we define the combos as QComboBox, but use WComboBox for 
 	// messaging purposes :)
-	fServerLabel = new QLabel(MSG_CSERVER, fInfoPane);
+	fServerLabel = new QLabel(tr(MSG_CSERVER), fInfoPane);
 	CHECK_PTR(fServerLabel);
 	fServerList = new WComboBox(this, fInfoPane, "fServerList");
 	CHECK_PTR(fServerList);
 	fServerList->setEditable(true);
 	fServerLabel->setBuddy(fServerList);
 
-	fUserLabel = new QLabel(MSG_CNICK, fInfoPane);
+	fUserLabel = new QLabel(tr(MSG_CNICK), fInfoPane);
 	CHECK_PTR(fUserLabel);
 	fUserList = new WComboBox(this, fInfoPane, "fUserList");
 	CHECK_PTR(fUserList);
 	fUserList->setEditable(true);
 	fUserLabel->setBuddy(fUserList);
 
-	fStatusLabel = new QLabel(MSG_CSTATUS, fInfoPane);
+	fStatusLabel = new QLabel(tr(MSG_CSTATUS), fInfoPane);
 	CHECK_PTR(fStatusLabel);
 	fStatusList = new WComboBox(this, fInfoPane, "fStatusList");
 	CHECK_PTR(fStatusList);
@@ -608,13 +608,13 @@ WinShareWindow::InitGUI()
 	fUsers = new WUniListView(fUsersBox);
 	CHECK_PTR(fUsers);
 	// initialize the list view
-	fUsers->addColumn(MSG_NL_NAME);
-	fUsers->addColumn("ID");
-	fUsers->addColumn(MSG_NL_STATUS);
-	fUsers->addColumn(MSG_NL_FILES);
-	fUsers->addColumn(MSG_NL_CONNECTION);
-	fUsers->addColumn(MSG_NL_LOAD);
-	fUsers->addColumn(MSG_NL_CLIENT);		// as of now... WinShare specific, WinShare pings all the users and parses the string for client info
+	fUsers->addColumn(tr(MSG_NL_NAME));
+	fUsers->addColumn(tr("ID"));
+	fUsers->addColumn(tr(MSG_NL_STATUS));
+	fUsers->addColumn(tr(MSG_NL_FILES));
+	fUsers->addColumn(tr(MSG_NL_CONNECTION));
+	fUsers->addColumn(tr(MSG_NL_LOAD));
+	fUsers->addColumn(tr(MSG_NL_CLIENT));		// as of now... WinShare specific, WinShare pings all the users and parses the string for client info
 	
 
 	fUsers->setColumnAlignment(1, AlignRight); // <postmaster@raasu.org> 20021005
@@ -960,7 +960,7 @@ WinShareWindow::ParseUserTargets(QString text, WUserSearchMap & sendTo, String &
 void
 WinShareWindow::Action(const QString & name, const QString & msg, bool batch)
 {
-	QString chat = WFormat::Action.arg(WColors::Action).arg(fSettings->GetFontSize());
+	QString chat = WFormat::Action().arg(WColors::Action).arg(fSettings->GetFontSize());
 	QString nameText = FixStringStr(msg);
 	if (NameSaid(nameText))
 		QApplication::beep();
@@ -981,7 +981,7 @@ WinShareWindow::PrintError(const QString & error, bool batch)
 {
 	if (fSettings->GetError())
 	{
-		QString e = WFormat::Error.arg(WColors::Error).arg(fSettings->GetFontSize());
+		QString e = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
 		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(error);
 		if (batch)
 		{
@@ -1000,7 +1000,7 @@ WinShareWindow::PrintWarning(const QString & warning, bool batch)
 {
 	if (fSettings->GetError())
 	{
-		QString e = WFormat::Warning.arg(WColors::Error).arg(fSettings->GetFontSize());
+		QString e = WFormat::Warning().arg(WColors::Error).arg(fSettings->GetFontSize());
 		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(warning);
 		if (batch)
 		{
@@ -1017,7 +1017,7 @@ WinShareWindow::PrintWarning(const QString & warning, bool batch)
 void
 WinShareWindow::PrintSystem(const QString & msg, bool batch)
 {
-	QString s = WFormat::SystemText.arg(WColors::System).arg(fSettings->GetFontSize());
+	QString s = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 	s += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(ParseChatText((QString &)msg));
 	if (batch)
 		PrintText(s, false);
@@ -1037,10 +1037,10 @@ WinShareWindow::GetRemoteVersionString(const Message * msg)
 		if (version[0] > '0' && version[0] <= '9')
 		{
 			versionString = "BeShare v";
-			versionString += version;
+			versionString += QString::fromUtf8(version);
 		}
 		else
-			versionString = version;
+			versionString = QString::fromUtf8(version);
 	}					
 	return versionString;
 }
@@ -1375,7 +1375,7 @@ WinShareWindow::WaitOnFileThread()
 	fFileShutdownFlag = true;
 	if (fFileScanThread->IsRunning())
 	{
-		PrintSystem(MSG_WAIT_FOR_FST,false);
+		PrintSystem(tr(MSG_WAIT_FOR_FST),false);
 		while (fFileScanThread->IsRunning()) 
 		{
 			//fFileScanThread->Lock();
@@ -1569,31 +1569,31 @@ WinShareWindow::TranslateStatus(QString & s)
 {
 		if (s == "here")
 		{
-			s = MSG_HERE;
+			s = tr(MSG_HERE);
 		}
 		else if (s == "away")
 		{
-			s = MSG_AWAY;
+			s = tr(MSG_AWAY);
 		}
 		else if (s == "idle")
 		{
-			s = MSG_STATUS_IDLE;
+			s = tr(MSG_STATUS_IDLE);
 		}
 		else if (s == "busy")
 		{
-			s = MSG_STATUS_BUSY;
+			s = tr(MSG_STATUS_BUSY);
 		}
 		else if (s == "at work")
 		{
-			s = MSG_AT_WORK;
+			s = tr(MSG_AT_WORK);
 		}
 		else if (s == "around")
 		{
-			s = MSG_AROUND;
+			s = tr(MSG_AROUND);
 		}
 		else if (s == "sleeping")
 		{
-			s = MSG_SLEEPING;
+			s = tr(MSG_SLEEPING);
 		}
 }
 

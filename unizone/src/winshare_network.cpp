@@ -45,22 +45,22 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (fNetClient->IsInternalThreadRunning())	// are we connected?
 				{
 					if (fSettings->GetInfo())
-						PrintSystem(MSG_RESCAN);
+						PrintSystem(tr(MSG_RESCAN));
 					if (!fFileScanThread->IsRunning())
 						fFileScanThread->start();
 					else
-						PrintError(MSG_SCAN_ERR1,false);
+						PrintError(tr(MSG_SCAN_ERR1), false);
 				}
 				else
 				{
 					if (fSettings->GetError())
-						PrintError(MSG_NOTCONNECTED);
+						PrintError(tr(MSG_NOTCONNECTED));
 				}
 			}
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(MSG_NOTSHARING);
+					PrintError(tr(MSG_NOTSHARING));
 			}
 		}
 		else if (CompareCommand(sendText, "/msg"))
@@ -93,7 +93,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(MSG_NONICK);
+					PrintError(tr(MSG_NONICK));
 			}
 		}
 		else if (	
@@ -115,7 +115,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(MSG_NOMESSAGE);
+					PrintError(tr(MSG_NOMESSAGE));
 			}
 		}
 		else if (	
@@ -137,7 +137,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(MSG_NOMESSAGE);
+					PrintError(tr(MSG_NOMESSAGE));
 			}
 		}
 		else if (sendText.left(2) == "//")	// used so that / commands can be printed
@@ -301,7 +301,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (users.length() > 0)
 					LaunchPrivate(users);
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/kick"))
 		{
@@ -314,7 +314,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/kickips"))
 		{
@@ -327,7 +327,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/addbans"))
 		{
@@ -340,7 +340,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/addipbans"))
 		{
@@ -353,7 +353,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/rembans"))
 		{
@@ -366,7 +366,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/remipbans"))
 		{
@@ -379,7 +379,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendMessageToSessions(mrf);
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/require"))
 		{
@@ -585,10 +585,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (ok && (u < fUserList->count()))
 					PrintSystem( tr("User %1: %2").arg(u).arg(fUserList->text(u)) );
 				else if (fSettings->GetError())
-					PrintError(MSG_INVALID_INDEX);
+					PrintError(tr(MSG_INVALID_INDEX));
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/remuser"))
 		{
@@ -604,10 +604,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					fUserList->removeItem(u);
 				}
 				else if (fSettings->GetError())
-					PrintError(MSG_INVALID_INDEX);
+					PrintError(tr(MSG_INVALID_INDEX));
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/chkstatus"))
 		{
@@ -620,10 +620,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (ok && (u < fStatusList->count()))
 					PrintSystem( tr("Status %1: %2").arg(u).arg(fStatusList->text(u)) );
 				else if (fSettings->GetError())
-					PrintError(MSG_INVALID_INDEX);
+					PrintError(tr(MSG_INVALID_INDEX));
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NO_INDEX);
+				PrintError(tr(MSG_NO_INDEX));
 		}
 		else if (CompareCommand(sendText, "/remstatus"))
 		{
@@ -639,10 +639,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					fStatusList->removeItem(u);
 				}
 				else if (fSettings->GetError())
-					PrintError(MSG_INVALID_INDEX);
+					PrintError(tr(MSG_INVALID_INDEX));
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NOUSERS);
+				PrintError(tr(MSG_NOUSERS));
 		}
 		else if (CompareCommand(sendText, "/chkserver"))
 		{
@@ -655,10 +655,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (ok && (u < fServerList->count()))
 					PrintSystem( tr("Server %1: %2").arg(u).arg(fServerList->text(u)) );
 				else if (fSettings->GetError())
-					PrintError(MSG_INVALID_INDEX);
+					PrintError(tr(MSG_INVALID_INDEX));
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NO_INDEX);
+				PrintError(tr(MSG_NO_INDEX));
 		}
 		else if (CompareCommand(sendText, "/remserver"))
 		{
@@ -674,10 +674,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					fServerList->removeItem(u);
 				}
 				else if (fSettings->GetError())
-					PrintError(MSG_INVALID_INDEX);
+					PrintError(tr(MSG_INVALID_INDEX));
 			}
 			else if (fSettings->GetError())
-				PrintError(MSG_NO_INDEX);
+				PrintError(tr(MSG_NO_INDEX));
 		}
 		else if (CompareCommand(sendText, "/save"))
 		{
@@ -807,14 +807,14 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				*reply = true;
 				// format an error string
-				sendText = WFormat::Error.arg(WColors::Error).arg(fSettings->GetFontSize());
-				sendText += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(MSG_UNKNOWNCMD);
+				sendText = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
+				sendText += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg(tr(MSG_UNKNOWNCMD));
 				e->SetText(sendText);
 			}
 			else
 			{
 				if (fSettings->GetError())
-					PrintError(MSG_UNKNOWNCMD);
+					PrintError(tr(MSG_UNKNOWNCMD));
 			}
 		}
 		else
@@ -842,7 +842,7 @@ WinShareWindow::SendChatText(QString sid, QString txt, WUserRef priv, bool * rep
 					PRINT("Appending to chat\n");
 					if (txt.startsWith(FixStringStr(GetUserName()) + " ") || txt.startsWith(FixStringStr(GetUserName()) + "'s ")) // simulate action?
 					{
-						chat = WFormat::Action.arg(WColors::Action).arg( fSettings->GetFontSize() );
+						chat = WFormat::Action().arg(WColors::Action).arg( fSettings->GetFontSize() );
 						chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(txt);
 					}
 					else
@@ -894,7 +894,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 			if (!isping && !reply)
 			{
 				if (fSettings->GetError())
-					PrintError(MSG_USERSNOTFOUND);
+					PrintError(tr(MSG_USERSNOTFOUND));
 			}
 			else if (!isping && reply)
 			{
@@ -902,7 +902,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 				{
 					*reply = true;
 					// this will put an error message in the private window
-					QString error = WFormat::Error.arg(WColors::Error).arg(fSettings->GetFontSize());
+					QString error = WFormat::Error().arg(WColors::Error).arg(fSettings->GetFontSize());
 					error += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(fSettings->GetFontSize()).arg("User doesn't exist!\n");
 					text = error;
 				}
@@ -948,7 +948,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 					QString fmt;
 					if (qsendtext.startsWith(name+" ") || qsendtext.startsWith(name + "'s ")) // simulate action?
 					{
-						fmt = WFormat::Action.arg(WColors::Action).arg(fSettings->GetFontSize());
+						fmt = WFormat::Action().arg(WColors::Action).arg(fSettings->GetFontSize());
 					}
 					else
 					{
@@ -963,7 +963,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply)
 	else
 	{
 		if (fSettings->GetError())
-			PrintError(MSG_NOUSERS);
+			PrintError(tr(MSG_NOUSERS));
 	}
 }
 
@@ -1255,7 +1255,7 @@ WinShareWindow::HandleMessage(Message * msg)
 			PRINT("Checking...\n");
 			if (fSettings->GetSharingEnabled())
 			{
-				PrintSystem(MSG_SCANSHARES);
+				PrintSystem(tr(MSG_SCANSHARES));
 				//PRINT("Setting list...\n");
 				//fFileScanThread->SetList(fSettings->GetSharedDirs());
 				fFileScanThread->SetFirewalled(fSettings->GetFirewalled());
@@ -1291,7 +1291,7 @@ WinShareWindow::HandleMessage(Message * msg)
 			const char * session;		// from user (their session id)
 			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
 			const char * strTemp;
-			QString userName = MSG_UNKNOWN;
+			QString userName = tr(MSG_UNKNOWN);
 			
 			msg->FindString("session", &session);
 			msg->FindString("text", &strTemp);
@@ -1407,7 +1407,7 @@ WinShareWindow::HandleMessage(Message * msg)
 							QString nameText = FixStringStr(text);
 							if (nameText.startsWith(FixStringStr(userName) + " ") || nameText.startsWith(FixStringStr(userName) + "'s ")) // simulate action?
 							{
-								chat = WFormat::Action.arg(WColors::Action).arg( fSettings->GetFontSize() );
+								chat = WFormat::Action().arg(WColors::Action).arg( fSettings->GetFontSize() );
 								chat += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(nameText);
 							}
 							else
@@ -1464,7 +1464,7 @@ WinShareWindow::HandleMessage(Message * msg)
 						{
 							PRINT("Print ping\n");
 							WUserRef user = (*uit).second;
-							QString system = WFormat::GotPinged.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(repto.Cstr()).arg(
+							QString system = WFormat::GotPinged().arg(WColors::Text).arg(fSettings->GetFontSize()).arg(repto.Cstr()).arg(
 								FixStringStr(user()->GetUserName())).arg(WColors::RemoteName); // <postmaster@raasu.org> 20021112
 							PrintSystem(system, true);
 						}
@@ -1481,7 +1481,7 @@ WinShareWindow::HandleMessage(Message * msg)
 					msg->AddString("session", (const char *) fNetClient->LocalSessionID().utf8());
 					msg->RemoveName("version");
 					
-					String version(NAME " ");
+					QString version = tr(NAME " ");
 #ifndef WIN32
 					version += "(Linux) ";
 #endif
@@ -1491,7 +1491,7 @@ WinShareWindow::HandleMessage(Message * msg)
 					// <postmaster@raasu.org> 20021231 -- and for Linux ;)
 					int64 fUptime = GetUptime();
 					int64 fOnlineTime = GetCurrentTime64() - fLoginTime;
-					msg->AddString("version", version);
+					msg->AddString("version", (const char *) version.utf8());
 					msg->RemoveName("uptime");
 					msg->AddInt64("uptime", fUptime);
 					msg->RemoveName("onlinetime");
@@ -1527,12 +1527,12 @@ WinShareWindow::HandleMessage(Message * msg)
 							int32 time = ((GetCurrentTime64() - when) / 10000L);
 							QString versionString = GetRemoteVersionString(msg);
 							
-							pong += WFormat::PingText.arg(WColors::Ping).arg(fSettings->GetFontSize()).arg(time).arg(versionString);
+							pong += WFormat::PingText().arg(WColors::Ping).arg(fSettings->GetFontSize()).arg(time).arg(versionString);
 							
 							int64 uptime, onlinetime;
 							if ((msg->FindInt64("uptime", &uptime) == B_OK) && (msg->FindInt64("onlinetime", &onlinetime) == B_OK))
 							{
-								pong += WFormat::PingUptime.arg(WColors::Ping).arg(fSettings->GetFontSize()).arg(MakeHumanTime(uptime)).arg(MakeHumanTime(onlinetime));
+								pong += WFormat::PingUptime().arg(WColors::Ping).arg(fSettings->GetFontSize()).arg(MakeHumanTime(uptime)).arg(MakeHumanTime(onlinetime));
 							}
 							
 							PrintText(pong, false);
@@ -1560,7 +1560,7 @@ WinShareWindow::Connect()
 		else
 		{
 			if (fSettings->GetInfo())
-				PrintSystem(MSG_CONNECTFAIL);
+				PrintSystem(tr(MSG_CONNECTFAIL));
 		}
 	}
 	fLoginTime = GetCurrentTime64();

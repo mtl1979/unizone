@@ -70,7 +70,16 @@
 #include "lang/french.h"
 
 #endif
-// End French Strings  -- LoLL Addon --
+
+//
+// Russian Strings -- Sauron_RU
+//
+
+#if (MSG_LANG == 7)
+
+#include "lang/russian.h"
+
+#endif
 
 //
 // End of language translations

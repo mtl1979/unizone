@@ -6,6 +6,7 @@
 #include <qfile.h>
 #include <qstring.h>
 #include <qthread.h>
+#include <qtimer.h>
 #include <time.h>
 
 class WDownloadThread : public WGenericThread
@@ -29,6 +30,9 @@ public:
 	// this will also send a message to show the dialog, so do not do it yourself
 	bool InitSession();
 
+public slots:
+	void ConnectTimer(); // Connection timed out?
+
 protected:
 	QMutex fLockFile;
 	QFile * fFile;		// file on the HD
@@ -51,6 +55,8 @@ protected:
 	virtual void SignalOwner();
 private:
 	QString UniqueName(QString file, int index); // build up unique name using 'file' and 'index'
+	QTimer * CTimer; // Connect timer
+
 
 };
 

@@ -47,13 +47,13 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 
 	// user list
 	fPrivateUsers = new QListView(fSplit);
-	fPrivateUsers->addColumn(MSG_NL_NAME);
-	fPrivateUsers->addColumn("ID");
-	fPrivateUsers->addColumn(MSG_NL_STATUS);
-	fPrivateUsers->addColumn(MSG_NL_FILES);
-	fPrivateUsers->addColumn(MSG_NL_CONNECTION);
-	fPrivateUsers->addColumn(MSG_NL_LOAD);
-	fPrivateUsers->addColumn(MSG_NL_CLIENT);		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
+	fPrivateUsers->addColumn(tr(MSG_NL_NAME));
+	fPrivateUsers->addColumn(tr("ID"));
+	fPrivateUsers->addColumn(tr(MSG_NL_STATUS));
+	fPrivateUsers->addColumn(tr(MSG_NL_FILES));
+	fPrivateUsers->addColumn(tr(MSG_NL_CONNECTION));
+	fPrivateUsers->addColumn(tr(MSG_NL_LOAD));
+	fPrivateUsers->addColumn(tr(MSG_NL_CLIENT));		// as of now... winshare specific, WinShare pings all the users and parses the string for client info
 
 	fPrivateUsers->setColumnAlignment(1, AlignRight); // <postmaster@raasu.org> 20021005
 	fPrivateUsers->setColumnAlignment(3, AlignRight); // <postmaster@raasu.org> 20021005
@@ -133,7 +133,7 @@ WPrivateWindow::DisconnectedFromServer()
 	PRINT("WPrivateWindow::Disconnected\n");
 	fUsers.clear();
 	if (gWin->fSettings->GetError())
-		PrintError(MSG_DISCONNECTED);
+		PrintError(tr(MSG_DISCONNECTED));
 }
 
 void
@@ -145,7 +145,7 @@ WPrivateWindow::UserDisconnected(QString sid, QString name)
 		if (gWin->fSettings->GetUserEvents())
 		{
 			QString parse = WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg( 
-				WFormat::UserDisconnected.arg(sid).arg(FixStringStr(name)).arg(WColors::RemoteName) 
+				WFormat::UserDisconnected().arg(sid).arg(FixStringStr(name)).arg(WColors::RemoteName) 
 				); // <postmaster@raasu.org> 20021112
 			PrintSystem(parse);
 		}
@@ -215,7 +215,7 @@ WPrivateWindow::PrintText(const QString & str)
 void
 WPrivateWindow::PrintSystem(const QString & msg)
 {
-	QString s = WFormat::SystemText.arg(WColors::System).arg(gWin->fSettings->GetFontSize()); // <postmaster@raasu.org> 20021127 -- Wrong order!!
+	QString s = WFormat::SystemText().arg(WColors::System).arg(gWin->fSettings->GetFontSize()); // <postmaster@raasu.org> 20021127 -- Wrong order!!
 	s += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(ParseChatText((QString &)msg));
 	PrintText(s);
 }
@@ -235,7 +235,7 @@ WPrivateWindow::PutChatText(QString fromsid, QString msg)
 			QString s;
 			if (msg.startsWith(name + " ") || msg.startsWith(name + "'s ")) // simulate action?
 			{
-				s = WFormat::Action.arg(WColors::Action).arg( gWin->fSettings->GetFontSize() );
+				s = WFormat::Action().arg(WColors::Action).arg( gWin->fSettings->GetFontSize() );
 				s += WFormat::Text.arg(WColors::Text).arg(gWin->fSettings->GetFontSize()).arg(msg);
 			}
 			else
@@ -477,7 +477,7 @@ WPrivateWindow::PrintError(const QString & error)
 {
 	if (gWin->fSettings->GetError())
 	{
-		QString e = WFormat::Error.arg(WColors::Error).arg(gWin->fSettings->GetFontSize());
+		QString e = WFormat::Error().arg(WColors::Error).arg(gWin->fSettings->GetFontSize());
 		e += WFormat::ErrorMsg.arg(WColors::ErrorMsg).arg(gWin->fSettings->GetFontSize()).arg(error);
 		PrintText(e);
 	}

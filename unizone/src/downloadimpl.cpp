@@ -52,13 +52,13 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	CHECK_PTR(fBoxD);
 	fDownloads = new QListView(fBoxD);
 	CHECK_PTR(fDownloads);
-	fDownloads->addColumn(MSG_TX_STATUS);
-	fDownloads->addColumn(MSG_TX_FILENAME);
-	fDownloads->addColumn(MSG_TX_RECEIVED);
-	fDownloads->addColumn(MSG_TX_TOTAL);
-	fDownloads->addColumn(MSG_TX_RATE);
-	fDownloads->addColumn(MSG_TX_ETA);
-	fDownloads->addColumn(MSG_TX_USER);
+	fDownloads->addColumn(tr(MSG_TX_STATUS));
+	fDownloads->addColumn(tr(MSG_TX_FILENAME));
+	fDownloads->addColumn(tr(MSG_TX_RECEIVED));
+	fDownloads->addColumn(tr(MSG_TX_TOTAL));
+	fDownloads->addColumn(tr(MSG_TX_RATE));
+	fDownloads->addColumn(tr(MSG_TX_ETA));
+	fDownloads->addColumn(tr(MSG_TX_USER));
 	
 	fDownloads->setColumnAlignment(2, AlignRight); // <postmaster@raasu.org> 20021213
 	fDownloads->setColumnAlignment(3, AlignRight); // 
@@ -69,7 +69,7 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	
 	fCancelD = new QPushButton(fBoxD);
 	CHECK_PTR(fCancelD);
-	fCancelD->setText(MSG_CANCEL);
+	fCancelD->setText(tr(MSG_CANCEL));
 	connect(fCancelD, SIGNAL(clicked()), this, SLOT(CancelDL()));
 	
 	fBoxU = new QVBox(fMainSplit);
@@ -77,13 +77,13 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 	
 	fUploads = new QListView(fBoxU);
 	CHECK_PTR(fUploads);
-	fUploads->addColumn(MSG_TX_STATUS);
-	fUploads->addColumn(MSG_TX_FILENAME);
-	fUploads->addColumn(MSG_TX_SENT);
-	fUploads->addColumn(MSG_TX_TOTAL);
-	fUploads->addColumn(MSG_TX_RATE);
-	fUploads->addColumn(MSG_TX_ETA);
-	fUploads->addColumn(MSG_TX_USER);
+	fUploads->addColumn(tr(MSG_TX_STATUS));
+	fUploads->addColumn(tr(MSG_TX_FILENAME));
+	fUploads->addColumn(tr(MSG_TX_SENT));
+	fUploads->addColumn(tr(MSG_TX_TOTAL));
+	fUploads->addColumn(tr(MSG_TX_RATE));
+	fUploads->addColumn(tr(MSG_TX_ETA));
+	fUploads->addColumn(tr(MSG_TX_USER));
 	
 	fUploads->setColumnAlignment(WTransferItem::Received, AlignRight);	// <postmaster@raasu.org> 20021213
 	fUploads->setColumnAlignment(WTransferItem::Total, AlignRight);		// 
@@ -97,19 +97,19 @@ WDownload::WDownload(QString localID, WFileThread * ft)
 
 	fCancelU = new QPushButton(fButtonsU);
 	CHECK_PTR(fCancelU);
-	fCancelU->setText(MSG_CANCEL);
+	fCancelU->setText(tr(MSG_CANCEL));
 	connect(fCancelU, SIGNAL(clicked()), this, SLOT(CancelUL()));
 
 	fUnblockU = new QPushButton(fButtonsU);
 	CHECK_PTR(fUnblockU);
-	fUnblockU->setText(MSG_TOGGLE_BLOCK);
+	fUnblockU->setText(tr(MSG_TOGGLE_BLOCK));
 	connect(fUnblockU, SIGNAL(clicked()), this, SLOT(UnblockUL()));
 
 	connect(gWin->fNetClient, SIGNAL(UserDisconnected(QString, QString)), this,
 			SLOT(UserDisconnected(QString, QString)));
 
 	
-	setCaption(MSG_TX_CAPTION);
+	setCaption(tr(MSG_TX_CAPTION));
 	fNumUploads = fNumDownloads = 0;
 }
 
@@ -451,7 +451,8 @@ WDownload::customEvent(QCustomEvent * e)
 			
 		case WGenericEvent::ConnectFailed:
 			{
-				String why;
+				String why, mFile;
+				bool b;
 				msg->FindString("why", why);
 				item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(why.Cstr()));
 				delete (*foundIt).second;
@@ -465,6 +466,17 @@ WDownload::customEvent(QCustomEvent * e)
 				}
 				else
 				{
+					if (
+						(msg->FindBool("retry", &b) == B_OK) &&
+						(msg->FindString("file", mFile) == B_OK)
+						)
+					{
+						if (b)
+						{
+							QString qFile = QString::fromUtf8(mFile.Cstr());
+							emit FileFailed(qFile, gt->GetRemoteUser());
+						}
+					}
 					DecreaseCount(gt, fNumDownloads, false);
 					fLock.lock();
 					fDownloadList.erase(foundIt);

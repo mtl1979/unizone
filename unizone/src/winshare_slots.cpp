@@ -61,8 +61,8 @@ WinShareWindow::UserConnected(QString sid)
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString system = WFormat::SystemText.arg(WColors::System).arg(fSettings->GetFontSize());
-		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserConnected.arg(sid));
+		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
+		system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserConnected().arg(sid));
 		PrintText(system);
 	}
 }
@@ -73,7 +73,7 @@ WinShareWindow::UserDisconnected(QString sid, QString name)
 	{
 		QString system;
 
-		system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserDisconnected.arg(sid).arg(FixStringStr(name)).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112
+		system = WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserDisconnected().arg(sid).arg(FixStringStr(name)).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112
 		PrintSystem(system);
 	}
 }
@@ -83,12 +83,12 @@ WinShareWindow::UserNameChanged(QString sid, QString old, QString newname)
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString system = WFormat::SystemText.arg(WColors::System).arg(fSettings->GetFontSize());
+		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 
 		if (old != "?" && old.length() > 0)
-			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserNameChanged.arg(sid).arg(FixStringStr(old)).arg(FixStringStr(newname)).arg(WColors::RemoteName).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112 
+			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserNameChanged().arg(sid).arg(FixStringStr(old)).arg(FixStringStr(newname)).arg(WColors::RemoteName).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112 
 		else
-			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserNameChangedNoOld.arg(sid).arg(FixStringStr(newname)).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112
+			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(WFormat::UserNameChangedNoOld().arg(sid).arg(FixStringStr(newname)).arg(WColors::RemoteName)); // <postmaster@raasu.org> 20021112
 		PrintText(system);
 	}
 	CheckResumes(newname);
@@ -114,7 +114,7 @@ WinShareWindow::DisconnectedFromServer()
 	PRINT("DisconnectedFromServer()\n");
 
 	if (fSettings->GetError() && !fDisconnect) // Don't flood the user ;)
-		PrintError(MSG_DISCONNECTED);
+		PrintError(tr(MSG_DISCONNECTED));
 
 	if (fDLWindow)
 		fDLWindow->KillLocalQueues();	// locally queued files will never connect to their peers when we get disconnected
@@ -133,7 +133,7 @@ WinShareWindow::UserStatusChanged(QString id, QString n, QString s)
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString system = WFormat::SystemText.arg(WColors::System).arg(fSettings->GetFontSize());
+		QString system = WFormat::SystemText().arg(WColors::System).arg(fSettings->GetFontSize());
 
 		// <postmaster@raasu.org> 20020929,20030211,20030214
 
@@ -143,14 +143,14 @@ WinShareWindow::UserStatusChanged(QString id, QString n, QString s)
 		{
 			// <postmaster@raasu.org> 20030214
 			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
-				WFormat::UserStatusChanged2.arg(id).arg(FixStringStr(s)) 
+				WFormat::UserStatusChanged2().arg(id).arg(FixStringStr(s)) 
 				);	
 		}
 		else
 		{
 			// <postmaster@raasu.org> 20021112
 			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
-				WFormat::UserStatusChanged.arg(id).arg(FixStringStr(n)).arg(FixStringStr(s)).arg(WColors::RemoteName) 
+				WFormat::UserStatusChanged().arg(id).arg(FixStringStr(n)).arg(FixStringStr(s)).arg(WColors::RemoteName) 
 				); 
 		}
 		PrintText(system);
