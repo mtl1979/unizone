@@ -9,8 +9,10 @@
 #ifndef INT64
 # ifdef WIN32
 #  define INT64 __int64
+#  define UINT64 unsigned __int64
 # else
 #  define INT64 long long
+#  define UINT64 unsigned long long
 # endif
 #endif
 
@@ -35,7 +37,7 @@ public:
 
 	bool Seek(INT64);
 	bool At(INT64);
-	INT64 Size();
+	UINT64 Size();
 private:
 	int TranslateMode(int);
 	int file;

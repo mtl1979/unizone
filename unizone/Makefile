@@ -5,7 +5,7 @@ INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/unix -Isrc/muscle \
 GCCOPTFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT \
 	-DNDEBUG -DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
 ifeq ($(OSTYPE), linux)
-GCCOPTFLAGS += -DLINUX
+GCCOPTFLAGS += -DLINUX -D__USE_LARGEFILE_64
 endif
 CXXFLAGS = -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 LFLAGS =
@@ -25,7 +25,7 @@ OBJFILES = \
 	serverclient.o titanic.o wlaunchthread_unix.o mimedb.o \
 	QMessageTransceiverThread.o QAcceptSocketsThread.o \
 	chatwindow.o wsystemevent.o wwarningevent.o werrorevent.o \
-	version.o parser.o wcrypt.o
+	version.o parser.o wcrypt.o wfile.o wfile_unix.o
 
 MOC_OBJFILES = \
 	moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \

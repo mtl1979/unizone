@@ -1,8 +1,10 @@
 #include "wfile.h"
 #include "wstring.h"
 
-#include <io.h>
+#include <unistd.h>
 #include <fcntl.h>
+#include <linux/fd.h>
+#include <sys/ioctl.h>
 
 WFile::WFile()
 {
@@ -18,7 +20,7 @@ WFile::~WFile()
 bool
 WFile::Open(const WString &name, int mode)
 {
-	file = _wopen(name.getBuffer(), mode);
+	file = open64((const char *) name, mode);
 	return (file != -1);
 }
 
@@ -26,7 +28,7 @@ bool
 WFile::Open(const QString &name, int mode)
 {
 	WString wname(name);
-	wname.replace(L'/', L'\\');
+	wname.replace(L'\\', L'/');
 	int fmode = TranslateMode(mode);
 	return Open(wname, fmode);
 }
@@ -34,7 +36,7 @@ WFile::Open(const QString &name, int mode)
 void
 WFile::Close()
 {
-	_close(file);
+	close(file);
 	file = -1;
 }
 
@@ -42,33 +44,27 @@ bool
 WFile::Exists(const QString &name)
 {
 	WString wname(name);
-	wname.replace(L'/', L'\\');
+	wname.replace(L'\\', L'/');
 	return WFile::Exists(wname);
 };
 
 bool
 WFile::Exists(const WString &name)
 {
-	FILE * f = _wfopen(name, L"r");
-	bool ret = false;
-	if (f)
-	{
-		fclose(f);
-		ret = true;
-	}
-	return ret;
+	int ret = access((const char *) name, F_OK);
+	return (ret == 0);
 }
 
 bool
 WFile::Seek(INT64 pos)
 {
-	return (_lseeki64(file, pos, SEEK_SET) == pos);
+	return (lseek64(file, pos, SEEK_SET) == pos);
 }
 
 bool
 WFile::At(INT64 pos)
 {
-	return (_telli64(file) == pos);
+	return (lseek64(file, 0, SEEK_CUR) == pos);
 }
 
 int
@@ -86,11 +82,14 @@ WFile::WriteBlock(const void *buf, int size)
 void
 WFile::Flush()
 {
-	_commit(file);
+	ioctl(file, FDFLUSH);
 }
 
 UINT64
 WFile::Size()
 {
-	return _filelengthi64(file);
+	INT64 pos = lseek64(file, 0, SEEK_CUR);
+	INT64 length = lseek64(file, 0, SEEK_END);
+	(void) lseek64(file, pos, SEEK_SET);
+	return length;
 }

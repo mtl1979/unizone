@@ -1,6 +1,15 @@
 #include <fcntl.h>
 #include "wfile.h"
 
+#ifndef WIN32
+#define _O_RDONLY O_RDONLY
+#define _O_WRONLY O_WRONLY
+#define _O_RDWR O_RDWR
+#define _O_CREAT O_CREAT
+#define _O_APPEND O_APPEND
+#define _O_TRUNC O_TRUNC
+#endif
+
 int
 WFile::TranslateMode(int mode)
 {
