@@ -354,7 +354,7 @@ GetCommandString(const QString & qCommand)
 	int sPos2 = qCommand2.find("/"); // Is / first letter?
 	if ((sPos > 0) && (sPos2 == 0))
 	{
-		qCommand2 = qCommand2.left(sPos);
+		qCommand2.truncate(sPos);
 	}
 	return qCommand2;
 }

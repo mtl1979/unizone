@@ -20,17 +20,15 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 {
 	int matchCount = 0;
 	WUserIter iter = fNetClient->Users().begin();
-	WUserRef user;
-	QString res = result;
-	//QString qUn = QString::fromUtf8(un);
+//	QString res = result;
 
 	QString oldName("");
 	while (iter != fNetClient->Users().end())
 	{
-		user = (*iter).second;
+		WUserRef user = (*iter).second;
 		QString userName = StripURL(user()->GetUserName().lower().stripWhiteSpace());
 		if (((filter == NULL) || (MatchUserFilter(user, filter))) &&
-			(userName.startsWith(un)))
+			(userName.startsWith(un.lower())))
 		{
 			// Only count different nicks
 			if (oldName != userName)
@@ -41,19 +39,18 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 
 			if (matchCount == 1)
 			{
-				res = StripURL(user()->GetUserName());
+				result = StripURL(user()->GetUserName());
 			}
 			else
 			{
-				PRINT("WinShareWindow::MatchUserName: Multiple matches\n");
 				// multiple matches
-				QString temp = res.lower();
+				PRINT("WinShareWindow::MatchUserName: Multiple matches\n");
 
-				for (uint32 i = 0; i < temp.length(); i++)
+				for (uint32 i = 0; i < result.length(); i++)
 				{
-					if (temp.at(i) != userName.at(i))
+					if (result.at(i).lower() != userName.at(i))
 					{
-						res = temp.left(i);
+						result.truncate(i);
 						break;
 					}
 				}
@@ -63,11 +60,10 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 	}
 
 #ifdef _DEBUG
-	WString wUser(res);
+	WString wUser(result);
 	PRINT("WinShareWindow::MatchUserName: Result %S\n", wUser.getBuffer());
 #endif
 
-	result = res;
 	return matchCount;
 }
 
@@ -102,10 +98,8 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const char * filter)
 				}
 			}
 			
-			QString qUser = user()->GetUserName().lower();
-			qUser = StripURL(qUser);
-			String userName = (const char *) qUser.utf8();
-			userName = userName.Trim();
+			QString qUser = StripURL(user()->GetUserName().lower());
+			String userName = (const char *) qUser.stripWhiteSpace().utf8();
 			
 			if (userName.Length() > 0)
 			{
@@ -135,24 +129,21 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const char * filter)
 bool
 WinShareWindow::DoTabCompletion(const QString & origText, QString & result, const char * filter)
 {
-	// Do it all in lower case, for case insensitivity
-	QString text(origText.lower());
-
-	// Compile a list of pointers to beginnings-of-words in the user's chat string
+	// Compile a list of indexes to beginnings-of-words in the user's chat string
 	Queue<int> words;
 	bool inSpace = true;
 	unsigned int next = 0;
-	while(next < text.length() )
+	while(next < origText.length() )
 	{
 		if (inSpace)
 		{
-		 if ((text.at(next) != ' ')&&(text.at(next) != '\t'))
+		 if ((origText.at(next) != ' ')&&(origText.at(next) != '\t'))
 		 {
 			words.AddTail(next);
 			inSpace = false;
 		 }
 		}
-		else if ((text.at(next) == ' ')||(text.at(next) == '\t')) inSpace = true;
+		else if ((origText.at(next) == ' ')||(origText.at(next) == '\t')) inSpace = true;
 
 		next++;
 	}
@@ -167,7 +158,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 		QString qres;
 
 		PRINT("Matching\n");
-		int numMatches = MatchUserName(text.mid(words[i]), qres, filter);
+		int numMatches = MatchUserName(origText.mid(words[i]), qres, filter);
 		PRINT("Match complete\n");
 		if (numMatches == 1)
 		{

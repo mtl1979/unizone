@@ -305,7 +305,7 @@ NetClient::HandleBeRemoveMessage(const String & nodePath)
 	if (pd >= BESHARE_HOME_DEPTH)
 	{
 		QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-		sid = sid.left( sid.find('/') );
+		sid.truncate( sid.find('/') );
 		
 		switch (pd)
 		{
@@ -332,20 +332,20 @@ NetClient::HandleUniRemoveMessage(const String & nodePath)
 	if (pd >= USER_NAME_DEPTH)
 	{
 		QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-		sid = sid.left( sid.find('/') );
+		sid.truncate( sid.find('/') );
 		
 		switch (pd)
 		{
 		case CHANNEL_DEPTH:
 			{
 				QString cdata = QString::fromUtf8(GetPathClause(CHANNELDATA_DEPTH, nodePath.Cstr()));
-				cdata = cdata.left( cdata.find('/') );
+				cdata.truncate( cdata.find('/') );
 				if (cdata == "channeldata")
 				{
 					QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
 					if (channel.find('/') >= 0)
 					{
-						channel = channel.left( channel.find('/') );
+						channel.truncate( channel.find('/') );
 					}
 					if (!channel.isEmpty())
 					{
@@ -372,7 +372,7 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
 		{
 			QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
-			sid = sid.left( sid.find('/') );
+			sid.truncate( sid.find('/') );
 			
 			switch (pd)
 			{
@@ -380,7 +380,7 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 				{
 					PRINT("UniShare: PathDepth == USER_NAME_DEPTH\n");
 					QString nodeName = QString::fromUtf8(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()));
-					if (nodeName.lower().left(10) == "serverinfo")
+					if (nodeName.lower() == "serverinfo")
 					{
 						int64 rtime;
 						String user, newid, oldid;
@@ -423,13 +423,13 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 				{
 					PRINT("UniShare: PathDepth == CHANNEL_DEPTH\n");
 					cdata = QString::fromUtf8(GetPathClause(CHANNELDATA_DEPTH, nodePath.Cstr()));
-					cdata = cdata.left( cdata.find('/') );
+					cdata.truncate( cdata.find('/') );
 					if (cdata == "channeldata")
 					{
 						QString channel = QString::fromUtf8(GetPathClause(CHANNEL_DEPTH, nodePath.Cstr()));
 						if (channel.find('/') >= 0)
 						{
-							channel = channel.left( channel.find('/') );
+							channel.truncate( channel.find('/') );
 						}
 						if (!channel.isEmpty())
 						{
@@ -571,14 +571,14 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
 		{
 			QString sid = GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr());
-			sid = sid.left(sid.find('/'));
+			sid.truncate(sid.find('/'));
 			switch (pd)
 			{
 			case USER_NAME_DEPTH:
 				{
 					const char * host = GetPathClause(NetClient::HOST_NAME_DEPTH, nodePath.Cstr());
 					QString hostName = QString::fromUtf8(host);
-					hostName = hostName.left(hostName.find('/'));
+					hostName.truncate(hostName.find('/'));
 					
 					WUserRef user = FindUser(sid);
 					if (!user())	// doesn't exist
@@ -591,37 +591,37 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 					}
 					
 					QString nodeName = QString::fromUtf8(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()));
-					if (nodeName.lower().left(4) == "name")
+					if (nodeName.lower() == "name")
 					{
 						QString oldname = user()->GetUserName();
 						user()->InitName(tmpRef); 
 						if (oldname != user()->GetUserName())
 							emit UserNameChanged(sid, oldname, user()->GetUserName());
 					}
-					else if (nodeName.lower().left(10) == "userstatus")
+					else if (nodeName.lower() == "userstatus")
 					{
 						QString oldstatus = user()->GetStatus();
 						user()->InitStatus(tmpRef);
 						if (oldstatus != user()->GetStatus())
 							emit UserStatusChanged(sid, user()->GetUserName(), user()->GetStatus());
 					}
-					else if (nodeName.lower().left(11) == "uploadstats")
+					else if (nodeName.lower() == "uploadstats")
 					{
 						user()->InitUploadStats(tmpRef);
 					}
-					else if (nodeName.lower().left(9) == "bandwidth")
+					else if (nodeName.lower() == "bandwidth")
 					{
 						user()->InitBandwidth(tmpRef);
 					}
-					else if (nodeName.lower().left(9) == "filecount")
+					else if (nodeName.lower() == "filecount")
 					{
 						user()->InitFileCount(tmpRef);
 					}
-					else if (nodeName.lower().left(5) == "fires")
+					else if (nodeName.lower() == "fires")
 					{
 						user()->SetFirewalled(true);
 					}
-					else if (nodeName.lower().left(5) == "files")
+					else if (nodeName.lower() == "files")
 					{
 						user()->SetFirewalled(false);
 					}
@@ -652,7 +652,7 @@ NetClient::HandleResultMessage(MessageRef & ref)
 	for (int i = 0; (ref()->FindString(PR_NAME_REMOVED_DATAITEMS, i, nodePath) == B_OK); i++)
 	{
 		QString prot = GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr());
-		prot = prot.left( prot.find('/') );
+		prot.truncate( prot.find('/') );
 		if (prot == "beshare")
 		{
 			HandleBeRemoveMessage(nodePath);
@@ -668,7 +668,7 @@ NetClient::HandleResultMessage(MessageRef & ref)
 	while (iter.GetNextFieldName(nodePath) == B_OK)
 	{
 		QString prot = GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr());
-		prot = prot.left( prot.find('/') );
+		prot.truncate( prot.find('/') );
 		if (prot == "beshare")
 		{
 			HandleBeAddMessage(nodePath, ref);
@@ -846,11 +846,10 @@ NetClient::SetUserStatus(const QString & status)
 void
 NetClient::SetConnection(const QString & connection)
 {
-	int32 bps;
 	MessageRef ref(GetMessageFromPool());
 	if (ref())
 	{
-		bps = BandwidthToBytes(connection);
+		int32 bps = BandwidthToBytes(connection);
 
 		ref()->AddString("label", (const char *) connection.utf8());
 		ref()->AddInt32("bps", bps);
@@ -874,8 +873,11 @@ void
 NetClient::SetFileCount(int32 count)
 {
 	MessageRef fc(GetMessageFromPool());
-	fc()->AddInt32("filecount", count);
-	SetNodeValue("beshare/filecount", fc);
+	if (fc())
+	{
+		fc()->AddInt32("filecount", count);
+		SetNodeValue("beshare/filecount", fc);
+	}
 }
 
 void

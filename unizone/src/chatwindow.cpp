@@ -42,7 +42,7 @@ ChatWindow::NameSaid(QString & msg)
 		temp++;
 	
 	if (temp > 0)
-		sname = sname.left(temp);
+		sname.truncate(temp);
 	
 	sname = sname.upper();
 	
@@ -160,7 +160,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		temp = StripURL(gWin->GetUserName());
 		if (rlen >= temp.length()) 
 			rlen = temp.length();
-		temp = temp.left(rlen);
+		temp.truncate(rlen);
 		output += temp;
 		QString itxt = msg;						// <postmaster@raasu.org> 20021005 -- Need to be in original case
 		QString itxt1 = itxt.left(sred);

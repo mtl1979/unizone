@@ -2017,7 +2017,7 @@ WinShareWindow::LaunchSearch(const QString & pattern)
 		if (sp > -1)
 		{
 			QString qPattern = qServer.mid(sp + 1);	// get everything after /
-			qServer = qServer.left(sp);				// get everything before /
+			qServer.truncate(sp);					// get everything before /
 			gWin->SetDelayedSearchPattern(qPattern);
 			gWin->Connect(qServer);
 			return;

@@ -2496,7 +2496,7 @@ WinShareWindow::ShowHelp(const QString & command)
 				{
 					found = true;
 					
-					chelp = chelp.left(j);
+					chelp.truncate(j);
 										
 					str += "\n";
 					str += chelp;
