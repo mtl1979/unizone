@@ -256,13 +256,7 @@ WUploadThread::SetLocallyQueued(bool b)
 		{
 			// fActive   == true
 			// fFinished == false
-			Reset();
-			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
-			if (fail())
-			{
-				fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
-				SendReply(fail);
-			}
+			ConnectTimer();
 		}
 	}
 }
@@ -597,13 +591,7 @@ WUploadThread::DoUpload()
 	PRINT("WUploadThread::DoUpload\n");
 	if (fShutdownFlag && *fShutdownFlag)	// Do we need to interrupt?
 	{
-		SetFinished(true);
-		MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
-		if (fail())
-		{
-			fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
-			SendReply(fail);
-		}
+		ConnectTimer();
 		return;
 	}
 
@@ -611,13 +599,7 @@ WUploadThread::DoUpload()
 
 	if (!IsInternalThreadRunning())
 	{
-		SetFinished(true);
-		MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
-		if (fail())
-		{
-			fail()->AddString("why", QT_TR_NOOP( "Connection reset by peer!" ));
-			SendReply(fail);
-		}
+		ConnectTimer();
 		return;
 	}
 

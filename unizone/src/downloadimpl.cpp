@@ -1244,7 +1244,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 			msg()->FindString("why", why);
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
 
-			ut->SetFinished(true);
+			// ut->SetFinished(true);
 			ut->Reset();
 			
 			if (gWin->fSettings->GetAutoClear())
