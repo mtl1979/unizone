@@ -15,7 +15,8 @@ uploadthread.o user.o userlistitem.o winshare_network.o \
 winshare_parsing.o winshare_slots.o winsharewindow.o Log.o \
 htmlview.o channel.o channelinfo.o channelimpl.o \
 moc_channel.o wpwevent.o \
-moc_channelimpl.o moc_menubar.o moc_ulistview.o
+moc_channelimpl.o moc_menubar.o moc_ulistview.o \
+wstatusbar.o winshare_channels.o winshare_search.o
 VPATH = src
 CXXFLAGS = -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 TRANSLATIONS = unizone_de.qm unizone_en.qm unizone_es.qm unizone_fi.qm \
