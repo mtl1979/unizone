@@ -1060,7 +1060,7 @@ NetClient::SendSignal(int signal)
 {
 	QCustomEvent *e = new QCustomEvent(signal);
 	if (e)
-		QThread::postEvent(gWin, e);
+		QApplication::postEvent(gWin, e);
 }
 
 void

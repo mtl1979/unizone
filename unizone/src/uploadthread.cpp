@@ -897,6 +897,7 @@ WUploadThread::timerEvent(QTimerEvent *e)
 	}
 	else
 	{
+		fFinished = true;
 		Reset();
 	}
 }

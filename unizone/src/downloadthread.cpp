@@ -977,6 +977,7 @@ WDownloadThread::timerEvent(QTimerEvent *e)
 	}
 	else
 	{
+		fFinished = true;
 		Reset();
 	}
 }

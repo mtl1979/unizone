@@ -97,7 +97,7 @@ WFileThread::run()
 
 	QCustomEvent *qce = new QCustomEvent(ScanDone);
 	if (qce)
-		postEvent(fOwner, qce);
+		QApplication::postEvent(fOwner, qce);
 }
 
 void
@@ -508,7 +508,7 @@ WFileThread::SendReset()
 {
 	ScanEvent *se = new ScanEvent(ScanEvent::Type::Reset);
 	if (se)
-		QThread::postEvent(fScanProgress, se);
+		QApplication::postEvent(fScanProgress, se);
 }
 
 void
@@ -516,7 +516,7 @@ WFileThread::SendString(ScanEvent::Type t, QString str)
 {
 	ScanEvent *se = new ScanEvent(t, str);
 	if (se)
-		QThread::postEvent(fScanProgress, se);
+		QApplication::postEvent(fScanProgress, se);
 }
 
 void
@@ -524,5 +524,5 @@ WFileThread::SendInt(ScanEvent::Type t, int i)
 {
 	ScanEvent *se = new ScanEvent(t, i);
 	if (se)
-		QThread::postEvent(fScanProgress, se);
+		QApplication::postEvent(fScanProgress, se);
 }
