@@ -2,7 +2,7 @@ GCCOPTFLAGS = -I$(QTDIR)/include -DQT_THREAD_SUPPORT -Isrc -DNDEBUG -DNAME=\"Uni
 LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
-OBJFILES = aboutdlg.o aboutdlgimpl.o accept.o botitem.o chattext.o \
+OBJFILES = aboutdlg.o aboutdlgimpl.o botitem.o chattext.o \
 colors.o combo.o downloadimpl.o downloadthread.o fileinfo.o \
 filethread.o formatting.o genericthread.o gotourl.o main.o md5.o \
 menubar.o moc_aboutdlg.o moc_aboutdlgimpl.o moc_chattext.o moc_combo.o \
@@ -14,17 +14,36 @@ searchitem.o settings.o textevent.o transferitem.o ulistview.o \
 uploadthread.o user.o userlistitem.o winshare_network.o \
 winshare_parsing.o winshare_slots.o winsharewindow.o Log.o \
 htmlview.o channel.o channelinfo.o channelimpl.o \
-moc_channel.o wpwevent.o wstring.o moc_messenger.o \
+moc_channel.o wpwevent.o wstring.o \
 moc_channelimpl.o moc_menubar.o moc_ulistview.o \
-wstatusbar.o winshare_channels.o winshare_search.o
+wstatusbar.o winshare_channels.o winshare_search.o \
+updateclient.o serverclient.o \
+moc_updateclient.o moc_serverclient.o
+
+QT_OBJFILES = moc_QMessageTransceiverThread.o moc_QAcceptSocketsThread.o \
+QMessageTransceiverThread.o QAcceptSocketsThread.o
 VPATH = src
+QT_VPATH = src/muscle/qtsupport
 SRCFILES=$(addprefix $(VPATH)/,$(addsuffix .cpp,$(basename $(OBJFILES))))
+QT_SRCFILES=$(addprefix $(QT_VPATH)/,$(addsuffix .cpp,$(basename $(QT_OBJFILES))))
 CXXFLAGS = -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 
 all : depends $(EXECUTABLES) translations
 
-Unizone : $(OBJFILES) ./linux/muscle.a
-	$(CXX) $(LFLAGS) $(LIBS) -o $@ $(OBJFILES) ./linux/muscle.a
+Unizone : $(OBJFILES) $(QT_OBJFILES) ./linux/muscle.a
+	$(CXX) $(LFLAGS) $(LIBS) -o $@ $(OBJFILES) $(QT_OBJFILES) ./linux/muscle.a
+
+moc_QMessageTransceiverThread.o : src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+QMessageTransceiverThread.o : src/muscle/qtsupport/QMessageTransceiverThread.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+moc_QAcceptSocketsThread.o : src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+QAcceptSocketsThread.o : src/muscle/qtsupport/QAcceptSocketsThread.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 linux/muscle.a : linux/Makefile
 	$(MAKE) -C linux -f Makefile
@@ -34,66 +53,82 @@ translations : src/Makefile
 
 depends: .depends
 
-.depends: $(SRCFILES)
-	$(CXX) $(CXXFLAGS) -MM $(SRCFILES) > .depends
+.depends: .depends1 .depends2
+	cat .depends1 > .depends
+	cat .depends2 >> .depends
+ 
+.depends1: $(SRCFILES)
+	$(CXX) $(CXXFLAGS) -MM $(SRCFILES) > .depends1
+
+.depends2: $(QT_SRCFILES)
+	$(CXX) $(CXXFLAGS) -MM $(QT_SRCFILES) > .depends2
 
 .PHONY=translations depends
 
 # stuff for moc
 
 src/moc_aboutdlg.cpp: src/aboutdlg.h
-	moc src/aboutdlg.h -o src/moc_aboutdlg.cpp
+	moc $< -o $@
 
 src/moc_aboutdlgimpl.cpp: src/aboutdlgimpl.h
-	moc src/aboutdlgimpl.h -o src/moc_aboutdlgimpl.cpp
+	moc $< -o $@
 
 src/moc_chattext.cpp: src/chattext.h
-	moc src/chattext.h -o src/moc_chattext.cpp
+	moc $< -o $@
 
 src/moc_combo.cpp: src/combo.h
-	moc src/combo.h -o src/moc_combo.cpp
+	moc $< -o $@
 
 src/moc_downloadimpl.cpp: src/downloadimpl.h
-	moc src/downloadimpl.h -o src/moc_downloadimpl.cpp
+	moc $< -o $@
 
 src/moc_genericthread.cpp: src/genericthread.h
-	moc src/genericthread.h -o src/moc_genericthread.cpp
+	moc $< -o $@
 
 src/moc_htmlview.cpp: src/htmlview.h
-	moc src/htmlview.h -o src/moc_htmlview.cpp
-
-src/moc_messenger.cpp: src/messenger.h
-	moc src/messenger.h -o src/moc_messenger.cpp
+	moc $< -o $@
 
 src/moc_netclient.cpp: src/netclient.h
-	moc src/netclient.h -o src/moc_netclient.cpp
+	moc $< -o $@
 
 src/moc_prefs.cpp: src/prefs.h
-	moc src/prefs.h -o src/moc_prefs.cpp
+	moc $< -o $@
 
 src/moc_prefsimpl.cpp: src/prefsimpl.h
-	moc src/prefsimpl.h -o src/moc_prefsimpl.cpp
+	moc $< -o $@
 
 src/moc_privatewindow.cpp: src/privatewindow.h
-	moc src/privatewindow.h -o src/moc_privatewindow.cpp
+	moc $< -o $@
 
 src/moc_privatewindowimpl.cpp: src/privatewindowimpl.h
-	moc src/privatewindowimpl.h -o src/moc_privatewindowimpl.cpp
+	moc $< -o $@
+
+src/moc_serverclient.cpp: src/serverclient.h
+	moc $< -o $@
+
+src/moc_updateclient.cpp: src/updateclient.h
+	moc $< -o $@
 
 src/moc_winsharewindow.cpp: src/winsharewindow.h
-	moc src/winsharewindow.h -o src/moc_winsharewindow.cpp
+	mo$< -o $@cpp
 
 src/moc_channel.cpp: src/channel.h
-	moc src/channel.h -o src/moc_channel.cpp
+	moc $< -o $@
 
 src/moc_channelimpl.cpp: src/channelimpl.h
-	moc src/channelimpl.h -o src/moc_channelimpl.cpp
+	moc $< -o $@
 
 src/moc_menubar.cpp: src/menubar.h
-	moc src/menubar.h -o src/moc_menubar.cpp
+	moc $< -o $@
 
 src/moc_ulistview.cpp: src/ulistview.h
-	moc src/ulistview.h -o src/moc_ulistview.cpp
+	moc $< -o $@
+
+src/muscle/qtsupport/moc_QAcceptSocketsThread.cpp: src/muscle/qtsupport/QAcceptSocketsThread.h
+	moc $< -o $@
+
+src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp: src/muscle/qtsupport/QMessageTransceiverThread.h
+	moc $< -o $@
 
 # stuff for uic
 src/privatewindow.h: src/privatewindow.ui
