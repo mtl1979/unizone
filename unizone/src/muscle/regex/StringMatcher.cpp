@@ -77,11 +77,11 @@ status_t StringMatcher::SetPattern(const String & s, bool isSimple)
             {
                switch(c)
                {
-                  case ',':  c = '|';           break;  // commas are treated as union-bars
-                  case '.':  regexPattern += '\\';   break;  // dots are considered literals, so escape those
-                  case '*':  regexPattern += '.';    break;  // hmmm.
-                  case '?':  c = '.';           break;  // question marks mean any-single-char
-                  case '\\': escapeMode = true; break;  // don't transform the next character!
+                  case ',':  c = '|';              break;  // commas are treated as union-bars
+                  case '.':  regexPattern += '\\'; break;  // dots are considered literals, so escape those
+                  case '*':  regexPattern += '.';  break;  // hmmm.
+                  case '?':  c = '.';              break;  // question marks mean any-single-char
+                  case '\\': escapeMode = true;    break;  // don't transform the next character!
                }
             }
             regexPattern += c;
@@ -129,14 +129,16 @@ bool IsRegexToken(char c, bool isFirstCharInString)
 {
    switch(c)
    {
-     case '[': case ']': case '*': case '?': case '\\': case ',': case '|': case '(': case ')': case '+':
+      // muscle 2.50:  fixed to match exactly the chars specified in muscle/rege/regex/regcomp.c
+      case '[': case ']': case '*': case '?': case '\\': case ',': case '|': case '(': case ')':
+      case '=': case '^': case '+': case '$': case '{':  case '}': case ':': case '-':
         return true;
 
-     case '<': case '~':   // these chars are only special if they are the first character in the string
-        return isFirstCharInString; 
-
-     default:
-        return false;
+      case '<': case '~':   // these chars are only special if they are the first character in the string
+         return isFirstCharInString; 
+ 
+      default:
+         return false;
    }
 }
 

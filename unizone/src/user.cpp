@@ -5,7 +5,7 @@
 #include "botitem.h"
 #include "userlistitem.h"
 #include "regex/PathMatcher.h"
-#include "platform.h"			// <postmaster@raasu.org> 20021114
+#include "util.h"
 #include "wstring.h"
 #include "winsharewindow.h"
 

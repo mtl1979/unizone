@@ -8,7 +8,7 @@
 #include "formatting.h"
 #include "nicklist.h"
 #include "textevent.h"
-#include "platform.h"
+#include "util.h"
 #include "wstring.h"
 #include "netclient.h"
 

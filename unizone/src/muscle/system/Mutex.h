@@ -35,7 +35,7 @@ public:
    Mutex()
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
 # if defined(MUSCLE_USE_PTHREADS)
-      : _lockCount(0)
+      // empty
 # elif defined(QT_THREAD_SUPPORT)
       : _locker(true)
 # elif defined(WIN32)
@@ -47,7 +47,10 @@ public:
    {
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
 # if defined(MUSCLE_USE_PTHREADS)
-      pthread_mutex_init(&_locker, NULL);
+      pthread_mutexattr_t mutexattr;
+      pthread_mutexattr_init(&mutexattr);                              // Note:  If this code doesn't compile, then
+      pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);  // you may need to add -D_GNU_SOURCE to your
+      pthread_mutex_init(&_locker, &mutexattr);                        // Linux Makefile to enable it properly.
 # endif
 #endif
    }
@@ -80,14 +83,7 @@ public:
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
       return B_NO_ERROR;
 #elif defined(MUSCLE_USE_PTHREADS)
-      pthread_t self = pthread_self();
-      if ((_lockCount == 0)||(!pthread_equal(_lockHolder,self))) // note: assumes (_lockCount==0) is atomic
-      {
-         if (pthread_mutex_lock(&_locker) == 0) _lockHolder = self;
-                                           else return B_ERROR;
-      }
-      _lockCount++;
-      return B_NO_ERROR;
+      return (pthread_mutex_lock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
 #elif defined(QT_THREAD_SUPPORT)
       _locker.lock();
       return B_NO_ERROR;
@@ -110,7 +106,7 @@ public:
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
       return B_NO_ERROR;
 #elif defined(MUSCLE_USE_PTHREADS)
-      return ((pthread_equal(_lockHolder,pthread_self()))&&((--_lockCount > 0)||(pthread_mutex_unlock(&_locker) == 0))) ? B_NO_ERROR : B_ERROR;
+      return (pthread_mutex_unlock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
 #elif defined(QT_THREAD_SUPPORT)
       _locker.unlock();
       return B_NO_ERROR;
@@ -127,9 +123,7 @@ public:
 private:
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
 # if defined(MUSCLE_USE_PTHREADS)
-   mutable pthread_mutex_t _locker;  // gotta do some extra work to make the mutex
-   mutable int _lockCount;           // recursive, since pthreads doesn't support
-   mutable pthread_t _lockHolder;    // recursive mutexes directly (at least, not portably)
+   mutable pthread_mutex_t _locker;
 # elif defined(QT_THREAD_SUPPORT)
    mutable QMutex _locker;
 # elif defined(__BEOS__)

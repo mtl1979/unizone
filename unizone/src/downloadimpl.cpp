@@ -32,7 +32,8 @@ using std::iterator;
 #include "wstring.h"
 #include "transferitem.h"
 #include "gotourl.h"
-#include "platform.h"
+// #include "platform.h"
+#include "util.h"
 #include "netclient.h"
 
 // ----------------------------------------------------------------------------------------------

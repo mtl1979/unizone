@@ -4,7 +4,7 @@
 #include "downloadimpl.h"
 #include "settings.h"
 #include "wstatusbar.h"
-#include "platform.h"
+#include "util.h"
 #include "wstring.h"
 #include "searchitem.h"
 #include "netclient.h"

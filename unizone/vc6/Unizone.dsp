@@ -216,6 +216,10 @@ SOURCE=..\src\moc_downloadthread.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\moc_formatting.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\moc_htmlview.cpp
 # End Source File
 # Begin Source File
@@ -364,7 +368,15 @@ SOURCE=..\src\userlistitem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\util.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\winshare_channels.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\winshare_lists.cpp
 # End Source File
 # Begin Source File
 
@@ -701,6 +713,35 @@ SOURCE=..\src\filethread.h
 # Begin Source File
 
 SOURCE=..\src\formatting.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\formatting.h
+InputName=formatting
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\formatting.h
+InputName=formatting
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1206,6 +1247,10 @@ SOURCE=..\src\user.h
 # Begin Source File
 
 SOURCE=..\src\userlistitem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\util.h
 # End Source File
 # Begin Source File
 

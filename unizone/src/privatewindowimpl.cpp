@@ -11,6 +11,7 @@
 #include "settings.h"
 #include "util/String.h"
 #include "platform.h"
+#include "util.h"
 #include "wstring.h"
 #include "wpwevent.h"
 #include "nicklist.h"

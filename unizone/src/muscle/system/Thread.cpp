@@ -251,14 +251,14 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
             {
                for (uint32 i=0; i<ARRAYITEMS(sets); i++)
                {
-                  const Hashtable<int, int> & t = tsd._socketSets[i];
+                  const Hashtable<int, bool> & t = tsd._socketSets[i];
                   if ((i == SOCKET_SET_READ)||(t.GetNumItems() > 0))
                   {
                      psets[i] = &sets[i];
                      FD_ZERO(psets[i]);
                      if (t.GetNumItems() > 0)
                      {
-                        HashtableIterator<int, int> iter = t.GetIterator();
+                        HashtableIterator<int, bool> iter = t.GetIterator();
                         int nextSocket;
                         while(iter.GetNextKey(nextSocket) == B_NO_ERROR) 
                         {
@@ -275,13 +275,13 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
             {
                for (uint32 j=0; j<ARRAYITEMS(psets); j++)
                {
-                  Hashtable<int, int> & t = tsd._socketSets[j];
+                  Hashtable<int, bool> & t = tsd._socketSets[j];
                   if ((psets[j])&&(t.GetNumItems() > 0))
                   {
                      int nextSocket;
-                     int * nextValue;
-                     HashtableIterator<int, int> iter = t.GetIterator();
-                     while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket, psets[j]);
+                     bool * nextValue;
+                     HashtableIterator<int, bool> iter = t.GetIterator();
+                     while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket, psets[j]) ? true : false;
                   }
                }
 

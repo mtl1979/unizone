@@ -3,7 +3,7 @@
 #include "global.h"
 #include "debugimpl.h"
 #include "settings.h"
-#include "platform.h"			// <postmaster@raasu.org> 20021114
+#include "util.h"
 #include "wstring.h"
 
 #include <qapplication.h>

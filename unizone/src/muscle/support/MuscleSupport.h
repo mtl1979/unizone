@@ -12,7 +12,16 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.49b"
+#define MUSCLE_VERSION_STRING "2.50b"
+
+// If we are in an environment where known assembly is available, make a note of that fact
+#if defined(__GNUC__)
+# if (defined(__PPC__) || defined(__APPLE__))
+#  define MUSCLE_USE_POWERPC_INLINE_ASSEMBLY 1
+# elif defined(__i386__)
+#  define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
+# endif
+#endif
 
 // Since certain antique compilers don't support namespaces, we
 // do all namespace-related declarations via macros which can
@@ -267,11 +276,109 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
 # else
 #  include <endian.h>  // (non-standard) POSIX-ish include, defines BYTE_ORDER as LITTLE_ENDIAN or BIG_ENDIAN
 # endif
-# define B_SWAP_DOUBLE(arg)   muscleSwapBytes((double)(arg))
-# define B_SWAP_FLOAT(arg)    muscleSwapBytes((float)(arg))
-# define B_SWAP_INT64(arg)    muscleSwapBytes((uint64)(arg))
-# define B_SWAP_INT32(arg)    muscleSwapBytes((uint32)(arg))
-# define B_SWAP_INT16(arg)    muscleSwapBytes((uint16)(arg))
+# if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
+inline uint16 MusclePowerPCSwapInt16(uint16 val)
+{
+   uint16 a;
+   volatile uint16 * addr = &a;
+   __asm__ __volatile__("sthbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
+   return a;
+}
+inline uint32 MusclePowerPCSwapInt32(uint32 val)
+{
+   uint32 a;
+   volatile uint32 * addr = &a;
+   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
+   return a;
+}
+inline float MusclePowerPCSwapFloat(float val)
+{
+   float a;
+   volatile float * addr = &a;
+   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
+   return a;
+}
+inline uint64 MusclePowerPCSwapInt64(uint64 val)
+{
+   uint64 a;
+   volatile uint32 * inLo  = (uint32 *) &val;
+   volatile uint32 * outLo = (uint32 *) &a;
+   volatile uint32 * inHi  = (inLo+1);
+   volatile uint32 * outHi = (outLo+1);
+   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*outLo) : "r" (*inHi), "r" (outLo));
+   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*outHi) : "r" (*inLo), "r" (outHi));
+   return a;
+}
+inline double MusclePowerPCSwapDouble(double val)
+{
+   double a;
+   volatile float * inLo  = (float *) &val;
+   volatile float * outLo = (float *) &a;
+   volatile float * inHi  = (inLo+1);
+   volatile float * outHi = (outLo+1);
+   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*outLo) : "r" (*inHi), "r" (outLo));
+   __asm__ __volatile__("stwbrx %1,0,%2" : "=m" (*outHi) : "r" (*inLo), "r" (outHi));
+   return a;
+}
+#  define B_SWAP_DOUBLE(arg)   MusclePowerPCSwapDouble((double)(arg))
+#  define B_SWAP_FLOAT(arg)    MusclePowerPCSwapFloat((float)(arg))
+#  define B_SWAP_INT64(arg)    MusclePowerPCSwapInt64((uint64)(arg))
+#  define B_SWAP_INT32(arg)    MusclePowerPCSwapInt32((uint32)(arg))
+#  define B_SWAP_INT16(arg)    MusclePowerPCSwapInt16((uint16)(arg))
+# elif defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
+inline uint16 MuscleX86SwapInt16(uint16 val)
+{
+   __asm__ __volatile__ ("xchgb %b0,%h0" : "=q" (val) : "0" (val));
+   return val;
+}
+inline uint32 MuscleX86SwapInt32(uint32 val)
+{
+   __asm__ __volatile__ ("bswap %0" : "=r" (val) : "0" (val));
+   return val;
+}
+inline float MuscleX86SwapFloat(float val)
+{
+   __asm__ __volatile__ ("bswap %0" : "=r" (val) : "0" (val));
+   return val;
+}
+inline uint64 MuscleX86SwapInt64(uint64 val)
+{
+   uint64 a;
+   volatile uint32 * inLo  = (uint32 *) &val;
+   volatile uint32 * outLo = (uint32 *) &a;
+   volatile uint32 * inHi  = (inLo+1);
+   volatile uint32 * outHi = (outLo+1);
+   __asm__ __volatile__ ("bswap %0" : "=r" (*inLo) : "0" (*inLo));
+   __asm__ __volatile__ ("bswap %0" : "=r" (*inHi) : "0" (*inHi));
+   *outHi = *inLo;
+   *outLo = *inHi;
+   return a;
+}
+inline double MuscleX86SwapDouble(double val)
+{
+   double a;
+   volatile float * inLo  = (float *) &val;
+   volatile float * outLo = (float *) &a;
+   volatile float * inHi  = (inLo+1);
+   volatile float * outHi = (outLo+1);
+   __asm__ __volatile__ ("bswap %0" : "=r" (*inLo) : "0" (*inLo));
+   __asm__ __volatile__ ("bswap %0" : "=r" (*inHi) : "0" (*inHi));
+   *outHi = *inLo;
+   *outLo = *inHi;
+   return a;
+}
+#  define B_SWAP_DOUBLE(arg)   MuscleX86SwapDouble((double)(arg))
+#  define B_SWAP_FLOAT(arg)    MuscleX86SwapFloat((float)(arg))
+#  define B_SWAP_INT64(arg)    MuscleX86SwapInt64((uint64)(arg))
+#  define B_SWAP_INT32(arg)    MuscleX86SwapInt32((uint32)(arg))
+#  define B_SWAP_INT16(arg)    MuscleX86SwapInt16((uint16)(arg))
+# else
+#  define B_SWAP_DOUBLE(arg)   muscleSwapBytes((double)(arg))
+#  define B_SWAP_FLOAT(arg)    muscleSwapBytes((float)(arg))
+#  define B_SWAP_INT64(arg)    muscleSwapBytes((uint64)(arg))
+#  define B_SWAP_INT32(arg)    muscleSwapBytes((uint32)(arg))
+#  define B_SWAP_INT16(arg)    muscleSwapBytes((uint16)(arg))
+# endif
 # if BYTE_ORDER == LITTLE_ENDIAN
 #  define B_HOST_IS_LENDIAN 1
 #  define B_HOST_IS_BENDIAN 0

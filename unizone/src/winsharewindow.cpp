@@ -22,7 +22,7 @@
 #include "settings.h"
 #include "filethread.h"
 #include "tokenizer.h"								// <postmaster@raasu.org> 20021114
-#include "platform.h"
+#include "util.h"
 #include "wstring.h"
 #include "nicklist.h"
 #include "searchitem.h"

@@ -4,6 +4,7 @@
 
 #include "chatwindow.h"
 #include "platform.h"
+#include "util.h"
 #include "global.h"
 #include "winsharewindow.h"
 #include "settings.h"

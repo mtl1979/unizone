@@ -9,7 +9,7 @@
 #include "settings.h"
 #include "formatting.h"
 #include "netclient.h"
-#include "platform.h"
+#include "util.h"
 #include "wstring.h"
 #include "tokenizer.h" // <postmaster@raasu.org> 20021128
 

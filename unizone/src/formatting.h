@@ -68,17 +68,9 @@ public:
 	static QString GotPinged(const QString &session, const QString &name);
 
 	static QString TimeStamp(const QString &stamp);
+
+	// UniShare
+	static QString TimeRequest(const QString &username);
 };
-
-QString ParseChatText(const QString & str);		// this is a whole different type of
-												// parse... it looks for URL's etc.
-void ParseString(QString & str);
-QString ParseStringStr(const QString & str);
-
-void EscapeHTML(QString & str);					// RUN THIS BEFORE ParseString()
-QString EscapeHTMLStr(const QString & str);
-
-void FixString(QString & str);
-QString FixStringStr(const QString & str);
 
 #endif	// FORMATTING_H

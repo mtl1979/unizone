@@ -5,7 +5,7 @@
 #include "md5.h"
 #include "global.h"
 #include "settings.h"
-#include "platform.h"
+#include "util.h"
 #include "debugimpl.h"
 
 #include "iogateway/MessageIOGateway.h"

@@ -4,7 +4,7 @@
 #include "ulistview.h"
 #include "settings.h"
 #include "debugimpl.h"
-#include "platform.h"
+#include "util.h"
 #include "wstring.h"
 
 WUniListItem::WUniListItem(

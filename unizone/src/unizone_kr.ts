@@ -331,79 +331,79 @@ Version %1</source>
     <name>Date</name>
     <message>
         <source>Jan</source>
-        <translation>Jan</translation>
+        <translation type='obsolete'>Jan</translation>
     </message>
     <message>
         <source>Feb</source>
-        <translation>Feb</translation>
+        <translation type='obsolete'>Feb</translation>
     </message>
     <message>
         <source>Mar</source>
-        <translation>Mar</translation>
+        <translation type='obsolete'>Mar</translation>
     </message>
     <message>
         <source>Apr</source>
-        <translation>Apr</translation>
+        <translation type='obsolete'>Apr</translation>
     </message>
     <message>
         <source>May</source>
-        <translation>May</translation>
+        <translation type='obsolete'>May</translation>
     </message>
     <message>
         <source>Jun</source>
-        <translation>Jun</translation>
+        <translation type='obsolete'>Jun</translation>
     </message>
     <message>
         <source>Jul</source>
-        <translation>Jul</translation>
+        <translation type='obsolete'>Jul</translation>
     </message>
     <message>
         <source>Aug</source>
-        <translation>Aug</translation>
+        <translation type='obsolete'>Aug</translation>
     </message>
     <message>
         <source>Sep</source>
-        <translation>Sep</translation>
+        <translation type='obsolete'>Sep</translation>
     </message>
     <message>
         <source>Oct</source>
-        <translation>Oct</translation>
+        <translation type='obsolete'>Oct</translation>
     </message>
     <message>
         <source>Nov</source>
-        <translation>Nov</translation>
+        <translation type='obsolete'>Nov</translation>
     </message>
     <message>
         <source>Dec</source>
-        <translation>Dec</translation>
+        <translation type='obsolete'>Dec</translation>
     </message>
     <message>
         <source>Mon</source>
-        <translation>Mon</translation>
+        <translation type='obsolete'>Mon</translation>
     </message>
     <message>
         <source>Tue</source>
-        <translation>Tue</translation>
+        <translation type='obsolete'>Tue</translation>
     </message>
     <message>
         <source>Wed</source>
-        <translation>Wed</translation>
+        <translation type='obsolete'>Wed</translation>
     </message>
     <message>
         <source>Thu</source>
-        <translation>Thu</translation>
+        <translation type='obsolete'>Thu</translation>
     </message>
     <message>
         <source>Fri</source>
-        <translation>Fri</translation>
+        <translation type='obsolete'>Fri</translation>
     </message>
     <message>
         <source>Sat</source>
-        <translation>Sat</translation>
+        <translation type='obsolete'>Sat</translation>
     </message>
     <message>
         <source>Sun</source>
-        <translation>Sun</translation>
+        <translation type='obsolete'>Sun</translation>
     </message>
 </context>
 <context>
@@ -656,72 +656,72 @@ Date: %4</source>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation>14.4 kbps</translation>
+        <translation type='obsolete'>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation>28.8 kbps</translation>
+        <translation type='obsolete'>28.8 kbps</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation>33.6 kbps</translation>
+        <translation type='obsolete'>33.6 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation>36.6 kbps</translation>
+        <translation type='obsolete'>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation>57.6 kbps</translation>
+        <translation type='obsolete'>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation>ISDN-64k</translation>
+        <translation type='obsolete'>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation>ISDN-128k</translation>
+        <translation type='obsolete'>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation>DSL-256k</translation>
+        <translation type='obsolete'>DSL-256k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation>DSL</translation>
+        <translation type='obsolete'>DSL</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation>DSL-384k</translation>
+        <translation type='obsolete'>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation>DSL-512k</translation>
+        <translation type='obsolete'>DSL-512k</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation>Cable</translation>
+        <translation type='obsolete'>Cable</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation>T1</translation>
+        <translation type='obsolete'>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation>T3</translation>
+        <translation type='obsolete'>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation>OC-3</translation>
+        <translation type='obsolete'>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation>OC-12</translation>
+        <translation type='obsolete'>OC-12</translation>
     </message>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation>Date:</translation>
+        <translation type='obsolete'>Date:</translation>
     </message>
     <message>
         <source>B</source>
@@ -1369,6 +1369,10 @@ Date: %4</source>
     </message>
     <message>
         <source>) is now</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Time request sent to</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -2856,7 +2860,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
-        <translation>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
+        <translation type='obsolete'>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
         <source>Unizone version: %1</source>

@@ -16,10 +16,10 @@ OBJFILES = \
 	netclient.o nicklist.o platform.o prefs.o prefsimpl.o \
 	privatewindow.o privatewindowimpl.o searchitem.o settings.o \
 	textevent.o transferitem.o ulistview.o uploadthread.o user.o \
-	userlistitem.o winshare_network.o winshare_parsing.o \
+	userlistitem.o winshare_lists.o winshare_network.o winshare_parsing.o \
 	winshare_slots.o winsharewindow.o Log.o htmlview.o channel.o \
 	channelinfo.o channelimpl.o wpwevent.o wstring.o wstatusbar.o \
-	winshare_channels.o winshare_search.o updateclient.o \
+	winshare_channels.o winshare_search.o updateclient.o util.o \
 	serverclient.o titanic.o scanprogress.o scanprogressimpl.o \
 	QMessageTransceiverThread.o QAcceptSocketsThread.o \
 	chatwindow.o

@@ -11,7 +11,7 @@
 #include "wstring.h"
 #include "filethread.h"
 #include "debugimpl.h"
-#include "platform.h"
+#include "util.h"
 
 #include <qapplication.h>
 

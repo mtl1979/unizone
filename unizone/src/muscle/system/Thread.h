@@ -189,7 +189,7 @@ public:
     *  @param socketSet SOCKET_SET_* indicating which socket-set to return a reference to.
     *  @note This method should only be called from the main thread!
     */
-   Hashtable<int, int> & GetOwnerSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_OWNER]._socketSets[socketSet];}
+   Hashtable<int, bool> & GetOwnerSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_OWNER]._socketSets[socketSet];}
 
    /** As above, but returns a read-only reference. */
    const Hashtable<int, bool> & GetOwnerSocketSet(uint32 socketSet) const;
@@ -321,7 +321,7 @@ protected:
     *  @param socketSet SOCKET_SET_* indicating which socket-set to return a reference to.
     *  @note This method should only be called from the internal thread!
     */
-   Hashtable<int, int> & GetInternalSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_INTERNAL]._socketSets[socketSet];}
+   Hashtable<int, bool> & GetInternalSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_INTERNAL]._socketSets[socketSet];}
 
    /** As above, but returns a read-only reference. */
    const Hashtable<int, bool> & GetInternalSocketSet(uint32 socketSet) const;
@@ -339,7 +339,7 @@ private:
       int _messageSocket;
       bool _closeMessageSocket;
       Queue<MessageRef> _messages;
-      Hashtable<int, int> _socketSets[NUM_SOCKET_SETS];
+      Hashtable<int, bool> _socketSets[NUM_SOCKET_SETS];
    };
 
    status_t StartInternalThreadAux();

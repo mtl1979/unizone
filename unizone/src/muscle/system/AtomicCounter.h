@@ -18,10 +18,8 @@
 #   include <kernel/OS.h>
 #  elif defined(WIN32)
 #   include <windows.h>
-#  elif (defined(__PPC__) || defined(__APPLE__)) && defined(__GNUC__)
-#   define MUSCLE_USE_POWERPC_INLINE_ASSEMBLY 1
-#  elif defined(__i386__) && defined(__GNUC__)
-#   define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
+#  elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) || defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
+    // empty
 #  elif defined(MUSCLE_USE_PTHREADS) || defined(QT_THREAD_SUPPORT)
 #   define MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS 1
 BEGIN_NAMESPACE(muscle);
