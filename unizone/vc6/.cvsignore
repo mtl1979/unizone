@@ -11,3 +11,4 @@ regex___Win32_Debug
 zlib___Win32_Debug
 regex___Win32_Release
 zlib___Win32_Release
+*.dll
