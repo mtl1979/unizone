@@ -13,18 +13,18 @@
 class WNickListItem : public WUniListItem
 {
 public:
-enum 
-{
-	Name,
-	ID,
-	Status,
-	Files,
-	Connection,
-	Load,
-	Client,
-	NumColumns
-};
-
+	enum 
+	{
+		Name,
+			ID,
+			Status,
+			Files,
+			Connection,
+			Load,
+			Client,
+			NumColumns
+	};
+	
 	WNickListItem(QListView * parent) 
 		: WUniListItem(parent) 
 	{
@@ -50,14 +50,14 @@ enum
 	}
 	
 	WNickListItem(QListView * parent, QString a, QString b = QString::null,
-				QString c = QString::null, QString d = QString::null,
-				QString e = QString::null, QString f = QString::null,
-				QString g = QString::null, QString h = QString::null );
-
+		QString c = QString::null, QString d = QString::null,
+		QString e = QString::null, QString f = QString::null,
+		QString g = QString::null, QString h = QString::null );
+	
 	// if more constructors are needed, they will be added later
-
+	
 	virtual void paintCell(QPainter *, const QColorGroup & cg, int column, int w,
-							int alignment);
+		int alignment);
 	
 };
 

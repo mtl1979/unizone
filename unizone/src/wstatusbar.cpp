@@ -32,7 +32,7 @@ WStatusBar::~WStatusBar()
 void
 WStatusBar::setText(QString text, unsigned int index)
 {
-	if ((index >= 0) && (index < fColumns))
+	if (index < fColumns)
 	{
 		fLabels[index] = text;
 		QString t = checkText(text, index);
@@ -44,7 +44,7 @@ QString
 WStatusBar::text(unsigned int index)
 {
 	QString ret = QString::null;
-	if ((index >= 0) && (index < fColumns))
+	if (index < fColumns)
 		ret = fLabels[index];
 	return ret;
 }
