@@ -281,16 +281,25 @@ void
 NetClient::HandleBeRemoveMessage(const String & nodePath)
 {
 	int pd = GetPathDepth(nodePath.Cstr());
-	if (pd >= USER_NAME_DEPTH)
+	if (pd >= BESHARE_HOME_DEPTH)
 	{
 		QString sid = QString::fromUtf8(GetPathClause(SESSION_ID_DEPTH, nodePath.Cstr()));
 		sid = sid.mid(0, sid.find('/') );
 		
 		switch (pd)
 		{
+        case BESHARE_HOME_DEPTH:
+			{
+				if (strncmp(GetPathClause(BESHARE_HOME_DEPTH, nodePath.Cstr()), "beshare", 7) == 0)
+					RemoveUser(sid);
+				break;
+			}
+
 		case USER_NAME_DEPTH:
 			{
-				if (!strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "name", 4))
+                if ((strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "name", 4) == 0) ||
+                    (strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "userstatus", 10) == 0) ||
+                    (strncmp(GetPathClause(USER_NAME_DEPTH, nodePath.Cstr()), "bandwidth", 9) == 0))
 				{
 					// user removed
 					RemoveUser(sid);
@@ -555,7 +564,8 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 			{
 			case USER_NAME_DEPTH:
 				{
-					QString hostName = QString::fromUtf8(GetPathClause(NetClient::HOST_NAME_DEPTH, nodePath.Cstr()));
+					const char * host = GetPathClause(NetClient::HOST_NAME_DEPTH, nodePath.Cstr());
+					QString hostName = QString::fromUtf8(host);
 					hostName = hostName.left(hostName.find('/'));
 					
 					WUserRef user = FindUser(sid);
