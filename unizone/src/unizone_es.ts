@@ -788,6 +788,45 @@ Date: %4</translation>
         <source>GB/s</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>%1.%2.%3 build %4</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
+    <name>ScanProgressBase</name>
+    <message>
+        <source>Scan Progress</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Current directory:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Current file:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Files scanned:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation type='unfinished'>0</translation>
+    </message>
+    <message>
+        <source>Directories scanned:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Directories left:</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>UpdateClient</name>
@@ -2034,7 +2073,7 @@ Date: %4</translation>
     <name>WinShare</name>
     <message>
         <source>%d.%d.%d build %d</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>

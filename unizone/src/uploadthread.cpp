@@ -9,11 +9,13 @@
 #include "settings.h"
 #include "md5.h"
 #include "wstring.h"
+#include "filethread.h"
 #include "debugimpl.h"
 
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	: WGenericThread(owner, optShutdownFlag) 
 { 
+	PRINT("WUploadThread ctor\n");
 	setName( "WUploadThread" );
 	fFile = NULL; 
 	fFileUl = QString::null;
@@ -43,6 +45,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 
 WUploadThread::~WUploadThread()
 {
+	PRINT("WUploadThread dtor\n");
 	if (fFile)
 	{
 		fFile->close();
@@ -76,6 +79,7 @@ WUploadThread::SetUpload(QString remoteIP, uint32 remotePort, WFileThread * ft)
 void 
 WUploadThread::InitSession()
 {
+	PRINT("WUploadThread::InitSession\n");
 	AbstractReflectSessionRef limit;
 
 	// First check if IP is blacklisted or ignored
@@ -293,10 +297,12 @@ WUploadThread::SessionDisconnected(const String &sessionID)
 void
 WUploadThread::MessageReceived(MessageRef msg, const String &sessionID)
 {
+	PRINT("WUploadThread::MessageReceived\n");
 	switch (msg()->what)
 	{
 		case WDownload::TransferCommandPeerID:
 		{
+			PRINT("WDownload::TransferCommandPeerID\n");
 			const char * name, * id;
 			if (msg()->FindString("beshare:FromUserName", &name) ==  B_OK &&
 				msg()->FindString("beshare:FromSession", &id) == B_OK)
@@ -334,6 +340,7 @@ WUploadThread::MessageReceived(MessageRef msg, const String &sessionID)
 	
 		case WDownload::TransferFileList:
 		{
+			PRINT("WDownload::TransferFileList\n");
 			const char * file;
 			if (msg()->FindString("files", &file) == B_OK)
 			{
@@ -473,7 +480,7 @@ WUploadThread::OutputQueuesDrained(MessageRef msg)
 		PRINT("\tfWaiting\n");
 		PRINT("\t\tSending message\n");
 
-		MessageRef msg(GetMessageFromPool(WGenericEvent::Disconnected));
+		MessageRef msg(GetMessageFromPool(WGenericEvent::FileDone));
 		if (msg())
 		{
 			msg()->AddBool("done", true);
@@ -481,6 +488,7 @@ WUploadThread::OutputQueuesDrained(MessageRef msg)
 			PRINT("\t\tSending...\n");
 			SendReply(msg);
 			PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
+			fFinished = true;
 		}
 		else
 		{
@@ -557,6 +565,7 @@ WUploadThread::SendRejectedNotification(bool direct)
 void 
 WUploadThread::DoUpload()
 {
+	PRINT("WUploadThread::DoUpload\n");
 	if (fShutdownFlag && *fShutdownFlag)	// Do we need to interrupt?
 		return;
 

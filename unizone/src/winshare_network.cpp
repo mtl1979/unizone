@@ -18,7 +18,6 @@ typedef hostent *LPHOSTENT;
 #include "debugimpl.h"
 #include "formatting.h"
 #include "textevent.h"
-// #include "version.h"
 #include "platform.h"			// <postmaster@raasu.org> 20021021
 								// For GetParameterString that will split user command parameters from string 
 								// containing both command and parameters, 
@@ -33,6 +32,7 @@ typedef hostent *LPHOSTENT;
 #include "util/StringTokenizer.h"
 #include "ulistview.h"
 #include "downloadimpl.h"
+#include "filethread.h"
 
 #include <qapplication.h>
 
@@ -1181,7 +1181,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				bool priv;
 				if (msg()->FindBool("private", &priv) == B_OK)	// is it private?
 				{
-#ifndef NONUKE
+#if !defined(NONUKE) && defined(NDEBUG)
 /*
 ** This feature isn't intended to tease any users, it will be only used if some user violates server rules
 ** and doesn't follow the advises that server administrators or author of this program gives

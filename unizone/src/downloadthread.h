@@ -23,11 +23,10 @@ public:
 	int32 GetNumFiles() { return fNumFiles; }
 
 	QFile * GetFile() const { return fFile; }
-	QString GetCurrentFile() { return fFileDl[fCurFile]; }
-	QString GetCurrentLocalFile() { return fLocalFileDl[fCurFile]; }
-	QString GetFileName(int i) { return fFileDl[i]; }
-	QString GetLocalFileName(int i) { return fLocalFileDl[i]; }
-
+	QString GetCurrentFile();
+	QString GetCurrentLocalFile();
+	QString GetFileName(int i);
+	QString GetLocalFileName(int i);
 
 	static QString FixFileName(const QString & fixMe);
 

@@ -89,6 +89,7 @@ public:
 	void Reset()
 	{
 		qmtt->Reset();
+		qmtt->WaitForInternalThreadToExit();
 	}
 
 	bool IsInternalThreadRunning()

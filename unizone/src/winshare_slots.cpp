@@ -21,6 +21,7 @@
 #include "downloadimpl.h"
 #include "platform.h"
 #include "wstring.h"
+#include "filethread.h"
 
 void
 WinShareWindow::Exit()

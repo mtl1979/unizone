@@ -9,7 +9,7 @@
 #include "muscle/message/Message.h"
 using namespace muscle;
 
-#include "filethread.h"	// for WStrList
+// #include "filethread.h"	// for WStrList
 
 #include <qvaluelist.h>
 

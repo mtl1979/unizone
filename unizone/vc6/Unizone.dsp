@@ -248,6 +248,10 @@ SOURCE=..\src\muscle\qtsupport\moc_QMessageTransceiverThread.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\moc_scanprogress.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\moc_serverclient.cpp
 # End Source File
 # Begin Source File
@@ -297,6 +301,14 @@ SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.cpp
 # Begin Source File
 
 SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\scanprogress.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\scanprogressimpl.cpp
 # End Source File
 # Begin Source File
 
@@ -1001,6 +1013,14 @@ SOURCE=..\src\resource.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\scanprogress.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\scanprogressimpl.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\searchitem.h
 # End Source File
 # Begin Source File
@@ -1390,6 +1410,10 @@ BuildCmds= \
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\scanprogress.ui
 # End Source File
 # End Group
 # End Target

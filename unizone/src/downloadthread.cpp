@@ -326,7 +326,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 						
 			if (fDownloading)	// this shouldn't happen yet... we only request a single file at a time
 			{
-				fDownloading = false;
+				//fDownloading = false;
 				if (fFile)	// in case it was not closed when it was received
 				{
 					fFile->close();
@@ -439,16 +439,36 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 
 				if (fFile->open((append ? IO_Append | IO_WriteOnly : IO_WriteOnly)))
 				{
-					status = GetMessageFromPool(WGenericEvent::FileStarted);
-					if (status())
+					if (fFileSize != 0)
 					{
-						status()->AddString("file", (const char *) fixed.utf8());
-						status()->AddInt64("start", fCurrentOffset);
-						status()->AddInt64("size", fFileSize);
-						status()->AddString("user", (const char *) fFromSession.utf8());
-						SendReply(status);
+						if (fCurrentOffset != fFileSize)
+						{
+							status = GetMessageFromPool(WGenericEvent::FileStarted);
+							if (status())
+							{
+								status()->AddString("file", (const char *) fixed.utf8());
+								status()->AddInt64("start", fCurrentOffset);
+								status()->AddInt64("size", fFileSize);
+								status()->AddString("user", (const char *) fFromSession.utf8());
+								SendReply(status);
+							}
+							fDownloading = true;
+						}
+						else
+						{
+							delete fFile;
+							fFile = NULL;
+
+							status = GetMessageFromPool(WGenericEvent::FileDone);
+							if (status())
+							{
+								status()->AddBool("done", false);
+								status()->AddString("file", (const char *) fixed.utf8());
+								SendReply(status);
+							}
+							NextFile();
+						}
 					}
-					fDownloading = true;
 				}
 				else
 				{
@@ -493,7 +513,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 			if (fStartTime == 0)
 				fStartTime = GetRunTime64();
 							
-			if (fDownloading)
+			if (fDownloading && fFile)
 			{
 				uint8 * data;
 				size_t numBytes;
@@ -527,7 +547,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 							fFile->close();
 							delete fFile; 
 							fFile = NULL;
-							fDownloading = false;
+							//fDownloading = false;
 							NextFile();
 						}
 						
@@ -550,10 +570,7 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & sessionID)
 							SendReply(error);
 						}
 						Reset();
-						fDownloading = false;
-						fFile->close();
-						delete fFile; 
-						fFile = NULL;
+						NextFile();
 					}
 				}
 			}
@@ -770,6 +787,7 @@ void WDownloadThread::NextFile()
 	fCurFile++;
 	if (fCurFile == fNumFiles)
 		fCurFile = -1;
+	fDownloading = false;
 }
 
 void
@@ -824,5 +842,42 @@ WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
 		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(fLimit), NULL));
 	}
 	return ref;
+}
+
+
+QString
+WDownloadThread::GetCurrentFile()
+{
+	if (fCurFile > -1 && fCurFile < fNumFiles)
+		return fFileDl[fCurFile];
+	else
+		return QString::null;
+}
+
+QString
+WDownloadThread::GetCurrentLocalFile()
+{ 
+	if (fCurFile > -1 && fCurFile < fNumFiles)
+		return fLocalFileDl[fCurFile]; 
+	else
+		return QString::null;
+}
+
+QString
+WDownloadThread::GetFileName(int i)
+ { 
+	if (i > -1 && i < fNumFiles)
+		return fFileDl[i]; 
+	else
+		return QString::null;
+}
+
+QString
+WDownloadThread::GetLocalFileName(int i)
+ {
+	if (i > -1 && i < fNumFiles)
+		return fLocalFileDl[i]; 
+	else
+		return QString::null;
 }
 

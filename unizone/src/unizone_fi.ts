@@ -905,6 +905,45 @@ Päiväys: %4</translation>
         <source>GB/s</source>
         <translation>Gt/s</translation>
     </message>
+    <message>
+        <source>%1.%2.%3 build %4</source>
+        <translation>%1.%2.%3 luonti %4</translation>
+    </message>
+</context>
+<context>
+    <name>ScanProgressBase</name>
+    <message>
+        <source>Scan Progress</source>
+        <translation>Haun Tilanne</translation>
+    </message>
+    <message>
+        <source>Current directory:</source>
+        <translation>Nykyinen hakemisto:</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <source>Current file:</source>
+        <translation>Nykyinen tiedosto:</translation>
+    </message>
+    <message>
+        <source>Files scanned:</source>
+        <translation>Tiedostoja löydetty:</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>Directories scanned:</source>
+        <translation>Hakemistoja tutkittu:</translation>
+    </message>
+    <message>
+        <source>Directories left:</source>
+        <translation>Hakemistoja jäljellä:</translation>
+    </message>
 </context>
 <context>
     <name>UpdateClient</name>
@@ -2155,7 +2194,7 @@ Päiväys: %4</translation>
     <name>WinShare</name>
     <message>
         <source>%d.%d.%d build %d</source>
-        <translation>%d.%d.%d luonti %d</translation>
+        <translation type='obsolete'>%d.%d.%d luonti %d</translation>
     </message>
 </context>
 <context>

@@ -10,6 +10,7 @@
 #include "debugimpl.h"
 #include "util/String.h"
 #include "wstring.h"
+#include "scanprogressimpl.h"
 
 #include <qdir.h>
 #include <qstringlist.h>
@@ -26,6 +27,21 @@
 #include <shlobj.h>
 #endif
 
+WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
+	: QThread()
+{
+	fNet = net;
+	fOwner = owner;
+	fShutdownFlag = optShutdownFlag;
+	fRunning = false;
+	fScanProgress = new ScanProgress();
+	CHECK_PTR(fScanProgress);
+}
+
+WFileThread::~WFileThread()
+{
+	delete fScanProgress;
+}
 
 void
 WFileThread::run()
@@ -42,6 +58,9 @@ WFileThread::run()
 	fScannedDirs.Clear();
 	fPaths.Clear();
 	Unlock(); // test
+	int iScannedDirs = 0;
+
+	fScanProgress->show();
 
 #ifdef WIN32
 	CoInitialize(NULL);
@@ -53,6 +72,7 @@ WFileThread::run()
 	{
 		Lock();
 		fPaths.RemoveHead(path);
+		fScanProgress->SetDirsLeft(fPaths.GetNumItems());
 		Unlock();
 		if (fShutdownFlag && *fShutdownFlag)
 		{
@@ -61,11 +81,14 @@ WFileThread::run()
 			break;
 		}
 		ParseDir(path);
+		iScannedDirs++;
+		fScanProgress->SetScannedDirs(iScannedDirs);
 	} 
 #ifdef WIN32
 	CoUninitialize();
 #endif
 
+	fScanProgress->hide();
 	Lock();
 	fScannedDirs.Clear();
 	Unlock();
@@ -84,6 +107,8 @@ WFileThread::ParseDir(const QString & d)
 
 	WString wD = d;
 	PRINT("Parsing directory %S\n", wD.getBuffer());
+
+	fScanProgress->SetScanDirectory(d);
 
 	// Directory doesn't exist?
 	if (!info->exists())
@@ -162,12 +187,16 @@ WFileThread::ScanFiles(QString directory)
 					}
 				}
 
+				fScanProgress->SetScanFile(ndata);
+
 				WString wData = ndata;
 				PRINT("\tChecking file %S\n", wData.getBuffer());
 
 				QString filePath = dir->absFilePath(ndata);
 
 				AddFile(filePath);
+
+				msleep(30);
 				i++;
 			}
 		}
@@ -240,6 +269,7 @@ WFileThread::AddFile(const QString & filePath)
 					ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
 					Lock(); // test
 					fFiles.AddTail(ref);
+					fScanProgress->SetScannedFiles(fFiles.GetNumItems());
 					Unlock(); // test
 				}
 			}

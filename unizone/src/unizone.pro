@@ -7,6 +7,7 @@ SOURCES =		aboutdlg.cpp \
 				downloadimpl.cpp \
 				downloadthread.cpp \
 				formatting.cpp \
+				main.cpp \
 				menubar.cpp \
 				netclient.cpp \
 				platform.cpp \
@@ -14,6 +15,7 @@ SOURCES =		aboutdlg.cpp \
 				prefsimpl.cpp \
                 privatewindow.cpp \
 				privatewindowimpl.cpp \
+				scanprogress.cpp \
 				serverclient.cpp \
 				ulistview.cpp \
 				updateclient.cpp \

@@ -33,10 +33,8 @@ int64 GetStartTime()
 QString
 WinShareVersionString()
 {
-	static char version[50];
-	const char * format = QT_TRANSLATE_NOOP( "WinShare", "%d.%d.%d build %d");
-	sprintf(version, format, kMajor, kMinor, kPatch, kBuild);
-	return QObject::tr(version);
+	QString version = QObject::tr("%1.%2.%3 build %4").arg(kMajor).arg(kMinor).arg(kPatch).arg(kBuild);
+	return version;
 }
 
 int 

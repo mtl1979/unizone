@@ -40,8 +40,7 @@ bool QAcceptSocketsThread :: event(QEvent * event)
                GenericRef tag;
                if (next()->FindTag(AST_NAME_SOCKET, tag) == B_NO_ERROR)
                {
-                  SocketHolderRef sref;
-		  sref.SetFromGeneric(tag);
+                  SocketHolderRef sref(tag, false);
                   if (sref()) emit ConnectionAccepted(sref);
                }
             }

@@ -21,7 +21,7 @@ using std::iterator;
 #include <qvbox.h>
 #include <qpopupmenu.h>
 
-#include "filethread.h"
+#include "transferlist.h"
 #include "transferitem.h"
 
 class MD5Thread;
@@ -30,6 +30,8 @@ class WGenericThread;
 class WGenericEvent;
 class WDownloadThread;
 class WUploadThread;
+class WFileThread;
+class WUser;
 
 // This class needs to be able to handle downloads AND uploads
 class WDownload : public QDialog
@@ -67,7 +69,9 @@ public:
 	enum
 	{
 		DequeueDownloads = QEvent::User + 11000,
-		DequeueUploads
+		DequeueUploads,
+		ClearDownloads,
+		ClearUploads
 	};
 
 	void AddDownload(QString * files, QString * lfiles, int32 numFiles, QString remoteSessionID, uint32 remotePort,
@@ -101,9 +105,6 @@ private:
 	typedef map<MD5Thread *, bool> MD5List;
 	typedef pair<MD5Thread *, bool> MD5Pair;
 	typedef MD5List::iterator MD5Iter;
-	typedef pair<WGenericThread *, WTransferItem *> WTPair;
-	typedef list<WTPair> WTList;
-	typedef WTList::iterator WTIter;
 
 	WTList fDownloadList;
 	WTList fUploadList;

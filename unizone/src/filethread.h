@@ -17,10 +17,7 @@ using muscle::Queue;
 
 #include "netclient.h"
 
-//typedef list<QString> WStrList;
-//typedef WStrList::iterator WStrListIter;
-//typedef list<MessageRef> WMsgList;
-//typedef WMsgList::iterator WMsgListIter;
+class ScanProgress;
 
 
 // This class runs through a list of paths and parses each
@@ -28,10 +25,9 @@ using muscle::Queue;
 class WFileThread : public QThread
 {
 public:
-	WFileThread(NetClient * net, QObject * owner, bool * optShutdownFlag = NULL)
-		: QThread(), fNet(net), fOwner(owner), fShutdownFlag(optShutdownFlag) {fRunning = false;}
+	WFileThread(NetClient * net, QObject * owner, bool * optShutdownFlag = NULL);
 
-	virtual ~WFileThread() {}
+	virtual ~WFileThread();
 
 	void SetFirewalled(bool f) { fFired = f; }
 	int GetNumFiles() const;
@@ -76,6 +72,8 @@ private:
 	QString ResolveLink(const QString & lnk);
 	QString ResolveLinkA(const QString & lnk);	// Windows only
 	void ScanFiles(QString directory);
+
+	ScanProgress * fScanProgress;
 
 	QMutex fLocker;
 };

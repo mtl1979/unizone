@@ -6,7 +6,7 @@
 #endif
 
 #include "genericthread.h"
-#include "filethread.h"
+// #include "filethread.h"
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 
@@ -14,6 +14,7 @@
 #include <qstring.h>
 #include <qfile.h>
 
+class WFileThread;
 
 /** This is my wonderful file upload thread. It handles starting the
   *	connection remote peer and transfering a file to him.

@@ -495,7 +495,8 @@ WDownload::DequeueULSessions()
 {
 	if (gWin->fSettings->GetAutoClear())
 	{
-		ClearFinishedUL();
+		QCustomEvent * qce = new QCustomEvent(ClearUploads);
+		if (qce) QApplication::postEvent(this, qce);
 	}
 
 	if (gWin->IsScanning())
@@ -564,7 +565,8 @@ WDownload::DequeueDLSessions()
 {
 	if (gWin->fSettings->GetAutoClear())
 	{
-		ClearFinishedDL();
+		QCustomEvent * qce = new QCustomEvent(ClearDownloads);
+		if (qce) QApplication::postEvent(this, qce);
 	}
 
 	bool found = true;
@@ -652,6 +654,16 @@ WDownload::customEvent(QCustomEvent * e)
 	case DequeueUploads:
 		{
 			DequeueULSessions();
+			break;
+		}
+	case ClearDownloads:
+		{
+			ClearFinishedDL();
+			break;
+		}
+	case ClearUploads:
+		{
+			ClearFinishedUL();
 			break;
 		}
 	}
@@ -826,7 +838,7 @@ WDownload::genericEvent(WGenericEvent * g)
 			if (upload)
 			{
 				QCustomEvent * qce = new QCustomEvent(DequeueUploads);
-				if (qce) QThread::postEvent(this, qce);
+				if (qce) QApplication::postEvent(this, qce);
 			}
 			else
 			{
@@ -838,7 +850,7 @@ WDownload::genericEvent(WGenericEvent * g)
 				}
 				
 				QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
-				if (qce) QThread::postEvent(this, qce);
+				if (qce) QApplication::postEvent(this, qce);
 			}
 			break;
 		}
@@ -872,7 +884,7 @@ WDownload::genericEvent(WGenericEvent * g)
 				if (gt->IsInternalThreadRunning())
 					gt->Reset();
 				QCustomEvent * qce = new QCustomEvent(DequeueUploads);
-				if (qce) QThread::postEvent(this, qce);
+				if (qce) QApplication::postEvent(this, qce);
 			}
 			else
 			{
@@ -914,7 +926,7 @@ WDownload::genericEvent(WGenericEvent * g)
 				if (gt->IsInternalThreadRunning())
 					gt->Reset();
 				QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
-				if (qce) QThread::postEvent(this, qce);
+				if (qce) QApplication::postEvent(this, qce);
 			}
 			break;
 		}
@@ -926,11 +938,17 @@ WDownload::genericEvent(WGenericEvent * g)
 			if (msg()->FindBool("done", &d) == B_OK)
 			{
 				PRINT("\tFound done\n");
-				if (!upload)
+				if (upload)
+				{
+					gt->Reset();
+					QCustomEvent * qce = new QCustomEvent(DequeueUploads);
+					if (qce) QApplication::postEvent(this, qce);
+				}
+				else
 				{
 					PRINT("\tIs download\n");
 					QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
-					if (qce) QThread::postEvent(this, qce);
+					if (qce) QApplication::postEvent(this, qce);
 				}
 				item->setText(WTransferItem::Status, tr("Finished."));
 				item->setText(WTransferItem::ETA, "");
@@ -1122,6 +1140,11 @@ WDownload::genericEvent(WGenericEvent * g)
 							)
 						{
 							gWin->PrintSystem( tr("Finished downloading %2 from %1.").arg(gt->GetRemoteUser()).arg( QString::fromUtf8(mFile.Cstr()) ) );
+						}
+						if (gt->IsFinished())
+						{
+							QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
+							if (qce) QApplication::postEvent(this, qce);
 						}
 					}
 					PRINT("\tWGenericEvent::FileDataReceived OK\n");
@@ -1364,7 +1387,8 @@ WDownload::DLPopupActivated(int id)
 		
 	case ID_CLEAR:
 		{
-			ClearFinishedDL();
+			QCustomEvent * qce = new QCustomEvent(ClearDownloads);
+			if (qce) QApplication::postEvent(this, qce);
 			break;
 		}
 		
@@ -1378,7 +1402,7 @@ WDownload::DLPopupActivated(int id)
 			gt->Reset();
 			fLock.unlock();
 			QCustomEvent * qce = new QCustomEvent(DequeueDownloads);
-			if (qce) QThread::postEvent(this, qce);
+			if (qce) QApplication::postEvent(this, qce);
 			break;
 		}
 		
@@ -1597,7 +1621,8 @@ WDownload::ULPopupActivated(int id)
 		
 	case ID_CLEAR:
 		{
-			ClearFinishedUL();
+			QCustomEvent * qce = new QCustomEvent(ClearUploads);
+			if (qce) QApplication::postEvent(this, qce);
 			break;
 		}	
 
@@ -1611,7 +1636,7 @@ WDownload::ULPopupActivated(int id)
 			gt->Reset();
 			fLock.unlock();
 			QCustomEvent * qce = new QCustomEvent(DequeueUploads);
-			if (qce) QThread::postEvent(this, qce);
+			if (qce) QApplication::postEvent(this, qce);
 			break;
 		}
 				
@@ -2553,6 +2578,8 @@ WDownload::TransferCallBackRejected(QString qFrom, int64 timeLeft, uint32 port)
 void
 WDownload::ClearFinishedDL()
 {
+	PRINT("\tWDownload::ClearFinishedDL\n");
+
 	fLock.lock();
 	WTIter it = fDownloadList.begin();
 	while (it != fDownloadList.end())
@@ -2563,7 +2590,9 @@ WDownload::ClearFinishedDL()
 		{
 			// found finished item, erase it
 			if ((*it).first)
+			{
 				(*it).first->Reset();
+			}
 			delete (*it).first;
 			delete (*it).second;
 			fDownloadList.erase(it);
@@ -2576,12 +2605,16 @@ WDownload::ClearFinishedDL()
 		}
 	}
 	fLock.unlock();
+
+	PRINT("\tWDownload::ClearFinishedDL OK\n");
 }
 
 // Clear all finished uploads from listview
 void
 WDownload::ClearFinishedUL()
 {
+	PRINT("\tWDownload::ClearFinishedUL\n");
+
 	fLock.lock();
 	WTIter it = fUploadList.begin();
 	while (it != fUploadList.end())
@@ -2605,6 +2638,7 @@ WDownload::ClearFinishedUL()
 		}
 	}
 	fLock.unlock();
+	PRINT("\tWDownload::ClearFinishedUL OK\n");
 }
 
 int
@@ -2616,7 +2650,8 @@ WDownload::GetNumDownloads()
 		return n;
 
 	fLock.lock();
-	for (WTIter it = fDownloadList.begin(); it != fDownloadList.end(); it++)
+	WTIter it = fDownloadList.begin();
+	while (it != fDownloadList.end())
 	{
 		if ((*it).first)
 		{
@@ -2630,6 +2665,7 @@ WDownload::GetNumDownloads()
 				n++;
 			}
 		}
+		it++;
 	}
 	fLock.unlock();
 	return n;
@@ -2644,7 +2680,8 @@ WDownload::GetNumUploads()
 		return n;
 
 	fLock.lock();
-	for (WTIter it = fUploadList.begin(); it != fUploadList.end(); it++)
+	WTIter it = fUploadList.begin();
+	while (it != fUploadList.end())
 	{
 		if ((*it).first)
 		{
@@ -2657,6 +2694,7 @@ WDownload::GetNumUploads()
 				n++;
 			}
 		}
+		it++;
 	}
 	fLock.unlock();
 	return n;
@@ -2667,10 +2705,11 @@ WDownload::GetUploadQueue()
 {
 	PRINT("\tWDownload::GetUploadQueue\n");
 	int n = 0;
-	if (!fUploadList.empty() )
+	if ( !fUploadList.empty() )
 	{
 		fLock.lock();
-		for (WTIter it = fUploadList.begin(); it != fUploadList.end(); it++)
+		WTIter it = fUploadList.begin();
+		while (it != fUploadList.end())
 		{
 			if ((*it).first)
 			{
@@ -2681,6 +2720,7 @@ WDownload::GetUploadQueue()
 					n++;
 				}
 			}
+			it++;
 		}
 		fLock.unlock();
 	}
