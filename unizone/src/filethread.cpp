@@ -141,66 +141,11 @@ WFileThread::ScanFiles(QString directory)
 				if (((*i) == ".") || ((*i) == "..") || ((*i).right(4) == ".md5"))
 					continue;
 
-				PRINT("\tChecking file %S\n", qStringToWideChar(i.node->data));
-				QString filePath = dir->absFilePath(i.node->data);
-				PRINT("Setting to filePath: %S\n", qStringToWideChar(filePath));
+				QString ndata = i.node->data;
+				PRINT("\tChecking file %S\n", qStringToWideChar(ndata));
+				QString filePath = dir->absFilePath(ndata);
 
-				QFileInfo * finfo = new QFileInfo(filePath);
-				CHECK_PTR(finfo);
-
-				PRINT("Set\n");
-				
-				if (finfo->exists())
-				{
-					PRINT("Exists\n");
-
-					// resolve symlink
-					QString ret = ResolveLink(finfo->filePath());
-					PRINT("Resolved to: %S\n", qStringToWideChar(ret));
-					finfo->setFile(ret);
-
-					// is this a directory?
-					if (finfo->isDir())
-					{
-						Lock();
-						fPaths.AddTail(finfo->absFilePath());
-						Unlock();
-					}
-					else
-					{
-						UFileInfo * ufi = new UFileInfo(ret);
-						CHECK_PTR(ufi);
-						if (ufi->isValid())
-						{
-							MessageRef ref(GetMessageFromPool());
-							QCString qcPath = ufi->getPath().utf8();
-							ref()->AddInt32("beshare:Modification Time", ufi->getModificationTime());
-							ref()->AddString("beshare:Kind", (const char *) ufi->getMIMEType().utf8());	// give BeSharer's some relief
-							ref()->AddString("beshare:Path", (const char *) qcPath);
-							ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
-							ref()->AddInt64("beshare:File Size", ufi->getSize());
-							ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
-							ref()->AddString("beshare:File Name", (const char *) ufi->getName().utf8());
-							
-							QString nodePath;
-							if (fFired)
-								nodePath = "beshare/fires/";
-							else
-								nodePath = "beshare/files/";
-
-							nodePath += ufi->getName();
-							
-							ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
-							Lock(); // test
-							fFiles.insert(fFiles.end(), ref);
-							Unlock(); // test
-						}
-						delete ufi;
-						ufi = NULL;
-					}
-				}
-				delete finfo;
-				finfo = NULL;
+				AddFile(filePath);
 			}
 		}
 	}
@@ -208,13 +153,80 @@ WFileThread::ScanFiles(QString directory)
 	dir = NULL;
 }
 
+void
+WFileThread::AddFile(const QString & filePath)
+{
+	PRINT("Setting to filePath: %S\n", qStringToWideChar(filePath));
+	
+	QFileInfo * finfo = new QFileInfo(filePath);
+	CHECK_PTR(finfo);
+				
+	PRINT("Set\n");
+				
+	if (finfo->exists())
+	{
+		PRINT("Exists\n");
+					
+		// resolve symlink
+		QString ret = ResolveLink(finfo->filePath());
+		PRINT("Resolved to: %S\n", qStringToWideChar(ret));
+		finfo->setFile(ret);
+					
+		// is this a directory?
+		if (finfo->isDir())
+		{
+			Lock();
+			fPaths.AddTail(finfo->absFilePath());
+			Unlock();
+		}
+		else
+		{
+			UFileInfo * ufi = new UFileInfo(ret);
+			CHECK_PTR(ufi);
+
+			if (ufi->isValid())
+			{
+				MessageRef ref(GetMessageFromPool());
+				if (ref())
+				{
+					QCString qcPath = ufi->getPath().utf8();
+					ref()->AddInt32("beshare:Modification Time", ufi->getModificationTime());
+					ref()->AddString("beshare:Kind", (const char *) ufi->getMIMEType().utf8()); // give BeSharer's some relief
+					ref()->AddString("beshare:Path", (const char *) qcPath);
+					ref()->AddString("winshare:Path", (const char *) qcPath);	// secret path
+					ref()->AddInt64("beshare:File Size", ufi->getSize());
+					ref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
+					ref()->AddString("beshare:File Name", (const char *) ufi->getName().utf8());
+							
+					QString nodePath;
+					if (fFired)
+						nodePath = "beshare/fires/";
+					else
+						nodePath = "beshare/files/";
+							
+					nodePath += ufi->getName();
+							
+					ref()->AddString("secret:NodePath", (const char *) nodePath.utf8());	// hehe, secret :)
+					Lock(); // test
+					fFiles.insert(fFiles.end(), ref);
+					Unlock(); // test
+				}
+			}
+			delete ufi;
+			ufi = NULL;
+		}
+	}
+	delete finfo;
+	finfo = NULL;
+}
+
 QString
 WFileThread::ResolveLink(const QString & lnk)
 {
 #ifdef WIN32
 	QString ret = lnk;
-	PRINT("\tResolving %S\n", qStringToWideChar(lnk));
-	if (lnk.contains(".lnk") > 0)
+	PRINT("\tResolving %S\n", qStringToWideChar(ret));
+	if (ret.contains(".lnk") > 0)
 	{
 		PRINT("Is Link\n");
 		// we've got a link...
@@ -236,7 +248,7 @@ WFileThread::ResolveLink(const QString & lnk)
 			if (SUCCEEDED(hres))
 			{
 				PRINT("Got persistfile\n");
-				wsz = qStringToWideChar(lnk);		// <postmaster@raasu.org> -- Move type definition to start of function
+				wsz = qStringToWideChar(ret);		// <postmaster@raasu.org> -- Move type definition to start of function
 				hres = ppf->Load(wsz, STGM_READ);
 				if (SUCCEEDED(hres))
 				{
@@ -395,91 +407,6 @@ WFileThread::EmptyList()
 	Unlock(); // test
 }
 
-/*
-bool
-WFileThread::GetFileInfo(QFileInfo * file, FileInfo * info)
-{
-
-	if (info)
-	{
-#ifdef WIN32
-		// Read the mime-type
-		HKEY hkey;
-		DWORD type;
-		char key[MAX_PATH];
-		DWORD dsize = MAX_PATH;
-		QString ext = ".";
-		ext += file->extension();
-		wchar_t * tExt = qStringToWideChar(ext);
-		if (RegOpenKey(HKEY_CLASSES_ROOT, tExt, &hkey) == ERROR_SUCCESS)
-		{
-			LONG ret;
-			// <postmaster@raasu.org> -- Don't use Unicode (wide-char) functions for char[] and char *
-			if ((ret = RegQueryValueExA(hkey, "Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
-			{
-				PRINT("Read key: %s\n", key);
-				info->fMIME = key;
-			}
-			else
-			{
-				PRINT("Error: %d [0x%08x]\n", ret, ret);
-			}
-			RegCloseKey(hkey);
-		}
-		delete [] tExt;
-		tExt = NULL; // <postmaster@raasu.org> 20021027 
-		// Read the modification time
-		// The FILETIME structure is a 64-bit value representing the number of 100-nanosecond intervals since January 1, 1601 (UTC).
-		FILETIME ftime;
-		// The time functions included in the C run-time use the time_t type to represent the number of seconds elapsed since midnight, January 1, 1970.
-		uint32 mtTime; // <postmaster@raasu.org> 20021230
-		uint64 ftTime; // 
-		HANDLE fileHandle;
-		wchar_t * tFilePath = qStringToWideChar( file->filePath() );
-		fileHandle = CreateFile(tFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		delete [] tFilePath;
-		tFilePath = NULL; // <postmaster@raasu.org> 20021027
-		if (fileHandle)
-		{
-			PRINT("File opened!\n");
-			if (GetFileTime(fileHandle, NULL, NULL, &ftime))
-			{
-				ftTime = (uint64)
-					(
-					(((uint64)ftime.dwHighDateTime) << 32) + 
-					((uint64)ftime.dwLowDateTime) 
-					);
-				ftTime -= 116444736000000000; 
-				// = 11644473600 seconds
-				// = 134774 days
-				// = 369 years + 89 (leap) days
-				mtTime = (uint32)(ftTime  / 10000000);	// converted to seconds
-				info->fModificationTime = mtTime;
-				PRINT("Got time: %d\n", info->fModificationTime);
-				if (info->fModificationTime < 0)	// negative? wow...
-				{
-					PRINT("Negative?\n");
-					info->fModificationTime = time(NULL);
-				}
-			}
-			else
-				info->fModificationTime = time(NULL);
-
-			CloseHandle(fileHandle);
-		}
-		else
-			info->fModificationTime = time(NULL);
-
-		return true;
-#else
-		info->fModificationTime = time(NULL);
-        info->fMIME = "";
-        return true;
-#endif
-	}
-	return false;
-}
-*/
 bool
 WFileThread::IsRunning()
 {

@@ -61,11 +61,15 @@ private:
 
 	bool CheckFile(const QString & file);	// checks whether this file has been found or not
 											// returns true if the file already exists
+	void AddFile(const QString & filePath); // Add this file or (files in this) directory to scanned files
+
+	/*
 	struct FileInfo
 	{
 		uint32 fModificationTime;
 		QString fMIME;
 	};
+	*/
 
 	void ParseDir(const QString & d);
 	QString ResolveLink(const QString & lnk);
