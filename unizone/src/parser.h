@@ -7,4 +7,5 @@
 QString ParseForShown(const QString & txt);
 QString ParseForShownAux(const QString &txt);
 int ParseBufferSize();
+void TrimBuffer(QString &txt);
 #endif

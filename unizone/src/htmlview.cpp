@@ -65,17 +65,19 @@ WHTMLView::showEvent(QShowEvent *)
 	fScrollDown = true;
 	fScrollY = 0;
 //  -----------------------
-	QString txt;
 	fLock.Lock();
 	if (fBuffer.length() > 0)
 	{
-		txt = ParseForShown(fBuffer);
+		TrimBuffer(fBuffer);
+		setText(ParseForShown(fBuffer));
 		fBuffer = "";
 	}
 	else
-		txt = ParseForShown(text());
-	setText("");
-	setText(txt);
+	{
+		QString txt(text());
+		TrimBuffer(txt);
+		setText(ParseForShown(txt));
+	}
 	fLock.Unlock();
 	UpdateScrollState();
 #endif

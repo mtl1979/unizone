@@ -8,82 +8,84 @@ ParseBufferSize()
 	return MAX_BUFFER_SIZE;
 }
 
-QString
-ParseForShown(const QString & txt)
+void
+TrimBuffer(QString &txt)
 {
-	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
-	QString out;
-	if (txt.length() > 0)
-	{
-		out = ParseForShownAux(txt);
-
-		// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
-		if (out.right(4) == "<br>")
-			out.truncate(out.length() - 4);
-	}
-	return out;
-}
-
-QString
-ParseForShownAux(const QString &txt)
-{
-	int n = 0;			// Position of next TAB before text to be included
-	int n2 = 0;			// Start of actual text
-	int m = 0;			// Position of next TAB after text to be included
-
-	// Remove any extra line breaks from the start of buffer
-	//
-
 	// Check for too big text
 	if (txt.length() > MAX_BUFFER_SIZE)
 	{
-		int n3;						// Position of next line break after buffer truncation
-		n2 = txt.length() - MAX_BUFFER_SIZE;
+		int n2 = txt.length() - MAX_BUFFER_SIZE;	// Start of text
+		int n3 = n2;								// Position of next line break after buffer truncation
 		
 		// Find next line break
-
-		n3 = txt.find("<br>", n2);
-		if (n3 < 0)
+		while (n3 < (int) txt.length())
 		{
-			n3 = txt.find('\t', n2);
-			if (n3 >= 0)
+			if (txt.mid(n3, 4) == "<br>")
+			{
+				n2 = n3 + 4;
+				break;
+			}
+			else if (txt.mid(n3,1) == "\t")
 			{
 				n2 = n3 + 1;
 			}
+			n3++;
 		}
-		else
-		{
-			n2 = n3 + 4;
-		}
+		txt = txt.mid(n2);
 	}
 
 	// Remove any extra line breaks from the start of buffer
 	//
 
-	while (n2 < (int) txt.length())
+	while (txt.length() > 0)
 	{
-		if (txt.mid(n2, 4) == "<br>")
+		if (txt.left(4) == "<br>")
 		{
-			n2 += 4;
+			txt = txt.mid(4);
 		}
-		else if (txt.mid(n2, 1) == "\t")
+		else if (txt.left(1) == "\t")
 		{
-			n2++;
+			txt = txt.mid(1);
 		}
 		else
 		{
 			break; // Found start of actual text
 		}
 	}
+}
 
-	n = txt.find('\t', n2);
-
-	if (n > n2)
+QString
+ParseForShown(const QString & txt)
+{
+	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
+	if (txt.length() > 0)
 	{
-		QString out((QChar *) NULL, MAX_BUFFER_SIZE);	// Text after processing linefeeds and TABs, preallocate
+		QString out = ParseForShownAux(txt);
 
-		// copy everything before first TAB (after any extra line breaks stripped from the beginning)
-		out = txt.mid(n2, n - n2);
+		// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
+		if (out.right(4) == "<br>")
+			out.truncate(out.length() - 4);
+		return out;
+	}
+	return txt;
+}
+
+QString
+ParseForShownAux(const QString &txt)
+{
+	int n;				// Position of next TAB before text to be included
+	int m = 0;			// Position of next TAB after text to be included
+
+	n = txt.find('\t');
+
+	if (n >= 0)
+	{
+		int s = ((txt.length() / 256) + 1);
+		s *= 256;
+		QString out((QChar *) NULL, s);	// Text after processing linefeeds and TABs, preallocate
+
+		// copy everything before first TAB
+		out = txt.left(n);
 
 		// skip the TAB ;)
 		n++;
@@ -105,10 +107,6 @@ ParseForShownAux(const QString &txt)
 			}
 		}
 		return out;
-	}
-	else
-	{
-		return txt.mid(n2);
 	}
 	return txt;
 }
