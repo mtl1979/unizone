@@ -57,7 +57,7 @@ private:
 	bool * fShutdownFlag;
 	Queue<QString> fPaths;
 	Hashtable<String, MessageRef> fFiles;
-	Queue<QString> fScannedDirs;
+	Hashtable<String, String> fScannedDirs;
 	Queue<QString> files;
 
 	bool CheckFile(const QString & file);	// checks whether this file has been found or not
@@ -65,6 +65,7 @@ private:
 	void AddFile(const QString & filePath); // Add this file or (files in this) directory to scanned files
 
 	void ParseDir(const QString & d);
+	status_t ParseDirAux(QString &);
 	QString ResolveLink(const QString & lnk);
 	QString ResolveLinkA(const QString & lnk);	// Windows only
 	void ScanFiles(const QString & directory);

@@ -54,7 +54,7 @@ WFileThread::run()
 	PRINT("Clearing list\n");
 	EmptyList();
 	Lock(); 
-	fScannedDirs.Clear();
+	fScannedDirs.Clear(true);
 	fPaths.Clear();
 	Unlock(); 
 	int iScannedDirs = 0;
@@ -100,7 +100,8 @@ WFileThread::run()
 	fScanProgress->close();
 
 	Lock();
-	fScannedDirs.Clear();
+	fScannedDirs.Clear(true);
+	files.Clear(true);
 	Unlock();
 
 	QCustomEvent *qce = new QCustomEvent(ScanDone);
@@ -111,9 +112,6 @@ WFileThread::run()
 void
 WFileThread::ParseDir(const QString & d)
 {
-	QFileInfo * info = new QFileInfo(d);
-	CHECK_PTR(info);
-
 	WString wD = d;
 	PRINT("Parsing directory %S\n", wD.getBuffer());
 
@@ -123,45 +121,64 @@ WFileThread::ParseDir(const QString & d)
 	SendString(ScanEvent::ScanDirectory, d);
 #endif
 
+	QString dir(d);
+
+	if (ParseDirAux(dir) != B_NO_ERROR)
+	{		
+		ScanFiles(dir);		
+	}
+}
+
+// Check if directory has already been scanned...
+status_t
+WFileThread::ParseDirAux(QString &dir)
+{
+	status_t ret = B_NO_ERROR;
+	
+	QFileInfo info(dir);
+	
 	// Directory doesn't exist?
-	if (!info->exists())
-	{
-		delete info;
-		return;
-	}
-
-	PRINT("Exists\n");
-
-	// Read the symlink
-	while (info->isSymLink())
-		info->setFile(info->readLink());
-
-	PRINT("Symlinks resolved\n");
-	if (!info->isDir())
-	{
-		delete info;
-		return;	// not a directory?
-	}
-
-	Lock();
-	for ( int n = 0; n < fScannedDirs.GetNumItems(); n++ )
-	{
-		QString path;
-		fScannedDirs.GetItemAt(n, path);
-		if (path == info->absFilePath())
+	if (info.exists())
+	{		
+		PRINT("Exists\n");
+		
+#ifndef WIN32
+		// Read the symlink
+		
+		while (info.isSymLink())
 		{
+			info.setFile(info.readLink());
+		}
+		
+		PRINT("Symlinks resolved\n");
+#endif
+		
+		if (info.isDir()) // Directory?
+		{
+			dir = info.absFilePath();
+			String d = (const char *) dir.utf8();
+
+			Lock();
+
+			{
+				String path;
+				ret = fScannedDirs.Get(d, path);
+			}
+
 			Unlock();
-			delete info;
-			return; // Already scanned!!!
+
+			if (ret != B_NO_ERROR)
+			{
+				// Add to checked dirs
+				Lock();
+				fScannedDirs.Put(d, d); 
+				Unlock();
+			}
 		}
 	}
-
-	fScannedDirs.AddTail(info->absFilePath()); // Add to checked dirs
-	Unlock();
-
-	ScanFiles(info->absFilePath());
-	delete info;
+	return ret;
 }
+
 
 void
 WFileThread::ScanFiles(const QString & directory)
@@ -512,7 +529,7 @@ WFileThread::EmptyList()
 {
 	Lock(); 
 	fFiles.Clear();
-	files.Clear();
+	files.Clear(true);
 	Unlock(); 
 }
 
