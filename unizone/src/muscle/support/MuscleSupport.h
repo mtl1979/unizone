@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.51b"
+#define MUSCLE_VERSION_STRING "2.51"
 
 // If we are in an environment where known assembly is available, make a note of that fact
 #if defined(__GNUC__)
@@ -267,11 +267,15 @@ inline int muscleRintf(float f) {return (f>=0.0f) ? ((int)(f+0.5f)) : -((int)((-
 template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((arg>0)?1:0);}
 
 #ifndef __BEOS__
-# if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) || defined(__LITTLEENDIAN__) // Cygwin is for Windows on x86, hence little endian
+# if defined(__CYGWIN__) || defined(_M_IX86) || defined(__GNUWIN32__) || defined(__LITTLEENDIAN__) // Cygwin is for Windows on x86, hence little endian  
 #  define LITTLE_ENDIAN 1234
 #  define BIG_ENDIAN    4321
 #  define BYTE_ORDER LITTLE_ENDIAN  
-# elif defined(__FreeBSD__) || defined(__APPLE__)
+# elif defined(__BIGENDIAN__)
+#  define LITTLE_ENDIAN 1234
+#  define BIG_ENDIAN    4321
+#  define BYTE_ORDER BIG_ENDIAN  
+# elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
 #  include <machine/endian.h>
 # else
 #  include <endian.h>  // (non-standard) POSIX-ish include, defines BYTE_ORDER as LITTLE_ENDIAN or BIG_ENDIAN

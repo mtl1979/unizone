@@ -14,7 +14,7 @@
 #  include <sys/times.h>
 # elif defined(__QNX__)
 #  include <signal.h>
-#  include <sys/times.h>
+#  include <sys/times.h>  
 # else
 #  include <sys/signal.h>  // changed signal.h to sys/signal.h to work with OS/X
 #  include <sys/times.h>
