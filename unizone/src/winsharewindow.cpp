@@ -90,6 +90,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 	fDisconnectCount = 0;	// Initialize disconnection count
 	fDisconnect = false;	// No premature disconnection yet
+	fDisconnectFlag = false; // User hasn't disconnected manually yet.
 	
 	fNetClient = new NetClient(this);
 	CHECK_PTR(fNetClient);
@@ -1991,10 +1992,10 @@ void
 WinShareWindow::WaitOnFileThread()
 {
 	fFileShutdownFlag = true;
-	if (fFileScanThread->IsRunning())
+	if (fFileScanThread->running())
 	{
 		PrintSystem(tr("Waiting for file scan thread to finish..."));
-		while (fFileScanThread->IsRunning()) 
+		while (fFileScanThread->running()) 
 		{
 			qApp->processEvents(300);
 		}
@@ -2326,7 +2327,7 @@ WinShareWindow::ScanShares(bool rescan)
 
 	WaitOnFileThread();
 	// already running?
-	if (fFileScanThread->IsRunning())
+	if (fFileScanThread->running())
 	{
 		if (fSettings->GetError())
 		{

@@ -38,7 +38,7 @@ public:
 	Queue<MessageRef> & GetSharedFiles() { return fFiles; }
 	MessageRef GetSharedFile(int n);
 	bool FindFile(const QString & file, MessageRef & ref);
-	bool IsRunning();
+//	bool IsRunning();
 	void EmptyList();
 
 	enum { ScanDone = 'fTsD' };
@@ -51,7 +51,7 @@ protected:
 
 private:
 	bool fFired;
-	bool fRunning;
+//	bool fRunning;
 	NetClient * fNet;
 	QObject * fOwner;
 	bool * fShutdownFlag;

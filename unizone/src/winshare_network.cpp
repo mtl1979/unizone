@@ -58,7 +58,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				if (fNetClient->IsConnected())	// are we connected?
 				{
-					if (!fFileScanThread->IsRunning())
+					if (!fFileScanThread->running())
 					{
 						StartAcceptThread();
 						ScanShares(true);

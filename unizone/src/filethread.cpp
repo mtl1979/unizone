@@ -34,7 +34,7 @@ WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 	fNet = net;
 	fOwner = owner;
 	fShutdownFlag = optShutdownFlag;
-	fRunning = false;
+//	fRunning = false;
 	fScanProgress = new ScanProgress();
 	CHECK_PTR(fScanProgress);
 }
@@ -48,14 +48,14 @@ void
 WFileThread::run()
 {
 	// reset our shutdown flag
-	fRunning = true;
+//	fRunning = true;
 	if (fShutdownFlag)
 		*fShutdownFlag = false;
 
 	PRINT("Clearing list\n");
 	EmptyList();
 	Lock(); // test
-	fFiles.Clear();
+//	fFiles.Clear();
 	fScannedDirs.Clear();
 	fPaths.Clear();
 	Unlock(); // test
@@ -72,8 +72,8 @@ WFileThread::run()
 	while (!fPaths.IsEmpty())
 	{
 		Lock();
-		fPaths.RemoveHead(path);
 		fScanProgress->SetDirsLeft(fPaths.GetNumItems());
+		fPaths.RemoveHead(path);
 		Unlock();
 		if (fShutdownFlag && *fShutdownFlag)
 		{
@@ -94,7 +94,7 @@ WFileThread::run()
 	fScannedDirs.Clear();
 	Unlock();
 
-	fRunning = false;
+//	fRunning = false;
 	QCustomEvent *qce = new QCustomEvent(ScanDone);
 	if (qce)
 		postEvent(fOwner, qce);
@@ -488,11 +488,13 @@ WFileThread::EmptyList()
 	Unlock(); // test
 }
 
+/*
 bool
 WFileThread::IsRunning()
 {
 	return fRunning;
 }
+*/
 
 MessageRef
 WFileThread::GetSharedFile(int n)
