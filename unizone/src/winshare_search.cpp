@@ -20,7 +20,7 @@ WinShareWindow::AddFile(const QString sid, const QString filename, bool firewall
 	PRINT("ADDFILE: filename=%S (%s) [%S]\n", wFileName.getBuffer(), firewalled ? "firewalled" : "hackable", wSID.getBuffer());
 
 	// Workaround for StringMatcher bug (for now!)
-	if (fCurrentSearchPattern == "")
+	if (fCurrentSearchPattern.isEmpty())
 		return;
 
 	Lock();
@@ -181,8 +181,7 @@ WinShareWindow::GoSearch()
 	StopSearch();	// these methods lock
 	ClearList();
 
-	// here we go with the new search pattern
-	if (fSearchEdit->currentText().stripWhiteSpace() == "")	// no search string
+	if (fSearchEdit->currentText().stripWhiteSpace().isEmpty())	// no search string
 		return;
 
 	if (fNetClient->IsInternalThreadRunning() == false)
@@ -190,6 +189,8 @@ WinShareWindow::GoSearch()
 		fStatus->message(tr("Not connected."));
 		return;
 	}
+
+	// here we go with the new search pattern
 
 	// now we lock
 	Lock();

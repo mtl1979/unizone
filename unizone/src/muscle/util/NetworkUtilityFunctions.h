@@ -15,6 +15,10 @@
 # include <sys/socket.h>
 #endif
 
+#ifdef BONE
+# include <sys/select.h>  // sikosis at bebits.com says this is necessary... hmm.
+#endif
+
 #include <errno.h>
 
 namespace muscle {

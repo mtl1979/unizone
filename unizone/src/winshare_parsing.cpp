@@ -387,7 +387,7 @@ WinShareWindow::SetWatchPattern(QString pattern)
 	fWatch = pattern;
 	if (fSettings->GetInfo())
 	{
-		if (fWatch == "")	// no pattern?
+		if (fWatch.isEmpty())	// no pattern?
 			PrintSystem(tr("Watch pattern cleared."));
 		else
 			PrintSystem(tr("Watch pattern set to %1.").arg(pattern));

@@ -5,7 +5,7 @@
 
 namespace muscle {
 
-DebugTimer :: DebugTimer(const String & title, uint32 startMode, int debugLevel) : _currentMode(startMode+1), _title(title), _debugLevel(debugLevel), _enableLog(true)
+DebugTimer :: DebugTimer(const String & title, uint64 mlt, uint32 startMode, int debugLevel) : _currentMode(startMode+1), _title(title), _minLogTime(mlt), _debugLevel(debugLevel), _enableLog(true)
 {
    SetMode(startMode);
    _startTime = MUSCLE_DEBUG_TIMER_CLOCK;  // re-set it here so that we don't count the Hashtable initialization!
@@ -25,8 +25,11 @@ DebugTimer :: ~DebugTimer()
       uint64 nextTime;
       while((iter.GetNextKey(nextMode) == B_NO_ERROR)&&(iter.GetNextValue(nextTime) == B_NO_ERROR)) 
       {
-         if (nextTime >= 1000) LogTime(_debugLevel, "%s: mode %lu: %llu milliseconds elapsed\n", _title(), nextMode, nextTime/1000);
-                          else LogTime(_debugLevel, "%s: mode %lu: %llu microseconds elapsed\n", _title(), nextMode, nextTime);
+         if (nextTime >= _minLogTime)
+         {
+            if (nextTime >= 1000) LogTime(_debugLevel, "%s: mode %lu: %llu milliseconds elapsed\n", _title(), nextMode, nextTime/1000);
+                             else LogTime(_debugLevel, "%s: mode %lu: %llu microseconds elapsed\n", _title(), nextMode, nextTime);
+         }
       }
    }
 }

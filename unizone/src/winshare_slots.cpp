@@ -155,7 +155,7 @@ WinShareWindow::UserStatusChanged(QString id, QString n, QString s)
 
 		TranslateStatus(s);
 
-		if ((n == "?") || (n == "")) // Invalid user name?
+		if ((n == "?") || (n.isEmpty())) // Invalid user name?
 		{
 			// <postmaster@raasu.org> 20030214
 			system += WFormat::Text.arg(WColors::Text).arg(fSettings->GetFontSize()).arg(
@@ -377,7 +377,22 @@ WinShareWindow::AutoAwayTimer()
 void
 WinShareWindow::ReconnectTimer()
 {
+	PRINT("WinShareWindow::ReconnectTimer()\n");
 	Connect();
+}
+
+void
+WinShareWindow::ConnectTimer()
+{
+	PRINT("WinShareWindow::ConnectTimer()\n");
+
+	if (fSettings->GetInfo())
+		PrintSystem(tr("Connection to server failed!"));
+
+	// Schedule reconnect attempt
+	QCustomEvent * recon = new QCustomEvent(WinShareWindow::ConnectRetry);
+	if (recon)
+		QApplication::postEvent(this, recon);
 }
 
 void

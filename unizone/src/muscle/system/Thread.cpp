@@ -8,6 +8,10 @@
 # include <process.h>  // for _beginthreadex()
 #endif
 
+#ifdef MUSCLE_SINGLE_THREAD_ONLY
+# error "You're not allowed use the Thread class if you have the MUSCLE_SINGLE_THREAD_ONLY compiler constant is defined!"
+#endif
+
 namespace muscle {
 
 Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)

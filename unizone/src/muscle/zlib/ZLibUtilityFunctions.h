@@ -17,16 +17,17 @@ namespace muscle {
  *  The returned Message is guaranteed to have the same 'what' code as the passed-in Message.
  *  If there is an error (out of memory?), a NULL reference is returned.
  *  @param msgRef The Message to create a compact version of.
- *  @param force If true, we will return a compressed Message even if the compressed Message's
- *               size is bigger than that of the original(!).  Otherwise, we'll return the
- *               original Message if the compression didn't help any.  Defaults to false.
+ *  @param msgRef Reference to the newly generated compressed Message, or to the passed
+ *                in Message, or a NULL reference on failure.
  *  @param compressionLevel The level of ZLib compression to use when creating the
  *                          compressed Message.  Should be between 0 (no compression)
  *                          and 9 (maximum compression).  Default value is 6.
- *  @param msgRef Reference to the newly generated compressed Message, or to the passed
- *                in Message, or a NULL reference on failure.
+ *  @param force If true, we will return a compressed Message even if the compressed Message's
+ *               size is bigger than that of the original(!).  Otherwise, we'll return the
+ *               original Message if the compression didn't actually make the Message's flattened
+ *               size smaller.  Defaults to true.
  */
-MessageRef DeflateMessage(MessageRef msgRef, bool force=false, int compressionLevel = 6);
+MessageRef DeflateMessage(MessageRef msgRef, int compressionLevel = 6, bool force=true);
 
 /** Examines the given Message, and if it is a Message in compressed form (i.e. one
  *  that was previously created by DeflateMessage()), creates and returns the

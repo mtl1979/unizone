@@ -178,6 +178,8 @@ public slots:
 	// auto away timer
 	void AutoAwayTimer();
 
+	// connect timer
+	void ConnectTimer();
 	// reconnect timer
 	void ReconnectTimer();
 
@@ -317,6 +319,7 @@ private:
 	bool NameSaid2(String sname, QString & msg, unsigned long index = 0); // Private version for recursing
 
 	QTimer * fAutoAway;
+	QTimer * fConnectTimer;
 	QTimer * fReconnectTimer;
 
 	WLog fMainLog;

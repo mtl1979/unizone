@@ -59,7 +59,13 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, QStr
 	fCurFile = 0;
 	fIP = fromIP;
 	fFromSession = fromSession;
-	fFromUser = GetUserName(fFromSession);
+	
+	QString user = GetUserName(fFromSession);
+	if (user.isEmpty())
+		fFromUser = fFromSession;
+	else
+		fFromUser = user;
+
 	fLocalSession = localSession;
 	fPort = remotePort;
 	fFirewalled = firewalled;
@@ -356,7 +362,9 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							if (next()->FindString("beshare:FromSession", session) == B_OK)
 							{
 								fFromSession = QString::fromUtf8(session.Cstr());
-								fFromUser = GetUserName(fFromSession);
+								QString user = GetUserName(fFromSession);
+								if (!user.isEmpty())
+									fFromUser = user; 
 							}
 							// QString outFile = "downloads/";
 							QString fixed;

@@ -512,7 +512,7 @@ public:
 
    virtual uint32 TypeCode() const {return B_INT64_TYPE;}
 
-#ifdef __MWERKS__
+#if defined(__MWERKS__) || defined(WIN32)
    virtual const char * GetFormatString() const {return "%Li";}
 #else
    virtual const char * GetFormatString() const {return "%lli";}

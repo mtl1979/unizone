@@ -24,49 +24,49 @@ static ZLibCodec * GetZLibCodec(int level)
    return codecs[level];
 }
 
-MessageRef DeflateMessage(MessageRef msgRef, bool force, int compressionLevel)
+MessageRef DeflateMessage(MessageRef msgRef, int compressionLevel, bool force)
 {
-   Mutex * m = GetGlobalMuscleLock();
-   if ((m)&&(m->Lock() == B_NO_ERROR))  // serialize so that it's thread safe!
+   if ((msgRef())&&(msgRef()->HasName(ZLIB_FIELD_NAME) == false))
    {
-      if ((msgRef())&&(msgRef()->HasName(ZLIB_FIELD_NAME) == false))
+      uint32 inflatedSize = msgRef()->FlattenedSize();
+      MessageRef defMsg = GetMessageFromPool(msgRef()->what);
+      ByteBufferRef buf = GetByteBufferFromPool(inflatedSize);
+
+      if ((defMsg())&&(buf()))
       {
-         ZLibCodec * codec = GetZLibCodec(compressionLevel);
-         if (codec)
+         msgRef()->Flatten(buf()->GetBuffer());
+
+         Mutex * m = GetGlobalMuscleLock();
+         if ((m)&&(m->Lock() == B_NO_ERROR))  // serialize so that it's thread safe!
          {
-            uint32 unflattenedSize = msgRef()->FlattenedSize();
-            MessageRef defMsg = GetMessageFromPool(msgRef()->what);
-            ByteBufferRef buf = GetByteBufferFromPool(unflattenedSize);
-            if ((defMsg())&&(buf()))
+            ZLibCodec * codec = GetZLibCodec(compressionLevel);
+            if (codec)
             {
-               msgRef()->Flatten(buf()->GetBuffer());
                buf = codec->Deflate(*buf(), true);
                if ((buf())&&(defMsg()->AddFlat(ZLIB_FIELD_NAME, FlatCountableRef(buf.GetGeneric(), false)) == B_NO_ERROR)) 
                {
                   m->Unlock();
-                  return ((force)||(defMsg()->FlattenedSize() < unflattenedSize)) ? defMsg : msgRef;
+                  return ((force)||(defMsg()->FlattenedSize() < inflatedSize)) ? defMsg : msgRef;
                }
             }
+            m->Unlock();
          }
-         msgRef.Reset();  // notify the user that an error occurred
       }
-      m->Unlock();
+      msgRef.Reset();  // notify the caller that an error occurred
    }
    return msgRef;
 }
 
 MessageRef InflateMessage(MessageRef msgRef)
 {
-   Mutex * m = GetGlobalMuscleLock();
-   if ((m)&&(m->Lock() == B_NO_ERROR))  // serialize so that it's thread safe!
+   FlatCountableRef fcRef;
+   if ((msgRef())&&(msgRef()->FindFlat(ZLIB_FIELD_NAME, fcRef) == B_NO_ERROR))
    {
-if (msgRef()) (void) msgRef()->Rename("_zlib6", ZLIB_FIELD_NAME); // XXX temporary hack to retain compatibility with my 6/19 CueStation build... will be removed in a few days!
-
-      FlatCountableRef fcRef;
-      if ((msgRef())&&(msgRef()->FindFlat(ZLIB_FIELD_NAME, fcRef) == B_NO_ERROR))
+      ByteBufferRef buf(fcRef.GetGeneric(), false);
+      if (buf())
       {
-         ByteBufferRef buf(fcRef.GetGeneric(), false);
-         if (buf())
+         Mutex * m = GetGlobalMuscleLock();
+         if ((m)&&(m->Lock() == B_NO_ERROR))  // serialize so that it's thread safe!
          {
             ZLibCodec * codec = GetZLibCodec(6);  // doesn't matter which one we use, any one can inflate anything
             if (codec)
@@ -82,10 +82,10 @@ if (msgRef()) (void) msgRef()->Rename("_zlib6", ZLIB_FIELD_NAME); // XXX tempora
                   }
                }
             }
+            m->Unlock();
          }
-         msgRef.Reset();  // notify the user that an error occurred
       }
-      m->Unlock();
+      msgRef.Reset();  // notify the caller that an error occurred
    }
    return msgRef;
 }

@@ -275,7 +275,7 @@ NetClient::HandleUniRemoveMessage(String nodePath)
 					{
 						channel = channel.mid(0, channel.find('/') );
 					}
-					if (channel != "")
+					if (!channel.isEmpty())
 					{
 						// user parted channel
 						RemoveChannel(sid, channel);
@@ -357,7 +357,7 @@ NetClient::HandleUniAddMessage(String nodePath, MessageRef ref)
 						{
 							channel = channel.mid(0, channel.find('/') );
 						}
-						if (channel != "")
+						if (!channel.isEmpty())
 						{
 							// user joined channel
 							AddChannel(sid, channel);

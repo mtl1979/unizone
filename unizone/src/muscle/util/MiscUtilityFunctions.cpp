@@ -1,6 +1,7 @@
 /* This file is Copyright 2003 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include "util/MiscUtilityFunctions.h"
+#include "util/StringTokenizer.h"
 
 namespace muscle {
 
@@ -78,5 +79,54 @@ uint64 Atoull(const char * str)
    return ret;
 }
 
-};  // end namespace muscle
+String GetHumanReadableTimeString(uint64 timeUS)
+{
+   char buf[256] = ""; 
+   if (timeUS > 0)
+   {
+#ifdef WIN32
+      // Borland's localtime() function is buggy, so we'll use the Win32 API instead.
+      uint64 winTime = timeUS*10;  // Convert to (100ns units)
+      FILETIME fileTime;
+      fileTime.dwHighDateTime = (DWORD) ((winTime>>32) & 0xFFFFFFFF);
+      fileTime.dwLowDateTime  = (DWORD) ((winTime>> 0) & 0xFFFFFFFF);
+      FILETIME localTime;
+      if (FileTimeToLocalFileTime(&fileTime, &localTime))
+      {
+         SYSTEMTIME st;
+         if (FileTimeToSystemTime(&localTime, &st)) sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+      }
+#else
+   time_t timeS = (time_t) (timeUS/1000000);  // timeS is seconds since 1970
+   struct tm * ts = localtime(&timeS);
+   if (ts) sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", ts->tm_year+1900, ts->tm_mon+1, ts->tm_mday, ts->tm_hour, ts->tm_min, ts->tm_sec);
+#endif
+   }
+   return buf;
+}
+ 
+uint64 ParseHumanReadableTimeString(const String & s)
+{
+   StringTokenizer tok(s(), "/: ");
+   const char * year   = tok();
+   const char * month  = tok();
+   const char * day    = tok();
+   const char * hour   = tok();
+   const char * minute = tok();
+   const char * second = tok();
+   if ((month)&&(day)&&(year)&&(hour)&&(minute)&&(second))
+   {
+      struct tm temp;
+      temp.tm_sec  = atoi(second);
+      temp.tm_min  = atoi(minute);
+      temp.tm_hour = atoi(hour);
+      temp.tm_mday = atoi(day);
+      temp.tm_mon  = atoi(month)-1;
+      temp.tm_year = atoi(year)-1900;
+      time_t timeS = mktime(&temp);
+      return ((uint64)timeS)*1000000;
+   }
+   else return 0;
+}
 
+};  // end namespace muscle

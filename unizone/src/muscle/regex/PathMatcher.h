@@ -66,9 +66,12 @@ private:
    QueryFilterRef _filter;
 };
 
-/** This class is used to do efficient regex-pattern-matching of one or more query strings (e.g. "/.*./.*./j*remy/fries*") 
-  * against various path strings (e.g. "/12.18.240.15/123/jeremy/friesner").  A given path string is said to 'match'
+/** This class is used to do efficient regex-pattern-matching of one or more query strings (e.g. ".*./.*./j*remy/fries*") 
+  * against various path strings (e.g. "12.18.240.15/123/jeremy/friesner").  A given path string is said to 'match'
   * if it matches at least one of the query strings added to this object.
+  * Note that the search strings are always treated as relative paths -- if you pass in a search string with
+  * a leading slash, then it will be interpeted as a relative query with the first level of the query looking
+  * for nodes with name "".
   * As of MUSCLE 2.40, this class also supports QueryFilter objects, so that only nodes whose Messages match the
   * criteria of the QueryFilter are considered to match the query.  This filtering is optional -- specify a null
   * QueryFilterRef to disable it.
@@ -85,8 +88,11 @@ public:
    /** Removes all path nodes from this object */
    void Clear() {_entries.Clear(); _numFilters = 0;}
 
-   /** Parses the given query string (e.g. "/12.18.240.15/1234/beshare/j*") to this PathMatcher's set of query strings.
-    *  @param wildpath a string of form "/x/y/z/...", representing a pattern-matching function.
+   /** Parses the given query string (e.g. "12.18.240.15/1234/beshare/j*") to this PathMatcher's set of query strings.
+    *  Note that the search strings are always treated as relative paths -- if you pass in a search string with
+    *  a leading slash, then it will be interpeted as a relative query with the first level of the query looking
+    *  for nodes with name "".
+    *  @param wildpath a string of form "x/y/z/...", representing a pattern-matching function.
     *  @param filter Reference to a QueryFilter object to use to filter Messages that match our path.  If the 
     *                reference is a NULL reference, then no filtering will be done.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory.

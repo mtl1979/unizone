@@ -487,6 +487,12 @@ public:
     */
    status_t EnsureSize(uint32 newTableSize);
 
+   /** Returns the number of table-slots that we currently have allocated.  Since we often
+    *  pre-allocate slots to avoid unnecessary reallocations, this number will usually be
+    *  greater than the value returned by GetNumItems().  It will never be less than that value.
+    */
+   uint32 GetNumAllocatedSlots() const {return _tableSize;}
+
 private:
    friend class HashtableIterator<KeyType, ValueType, HashFunctorType>;
 

@@ -610,7 +610,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			fIgnore = GetParameterString(sendText);
 			if (fSettings->GetInfo())
 			{
-				if (fIgnore == "")
+				if (fIgnore.isEmpty())
 					PrintSystem(tr("Ignore pattern cleared."));
 				else
 					PrintSystem(tr("Ignore pattern set to: %1").arg(fIgnore));
@@ -645,7 +645,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			fBlackList = GetParameterString(sendText);
 			if (fSettings->GetInfo())
 			{
-				if (fBlackList == "")
+				if (fBlackList.isEmpty())
 					PrintSystem(tr("Blacklist pattern cleared."));
 				else
 					PrintSystem(tr("Blacklist pattern set to: %1").arg(fBlackList));
@@ -680,7 +680,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			fAutoPriv = GetParameterString(sendText);
 			if (fSettings->GetInfo())
 			{
-				if (fAutoPriv == "")
+				if (fAutoPriv.isEmpty())
 					PrintSystem(tr("Auto-private pattern cleared."));
 				else
 					PrintSystem(tr("Auto-private pattern set to: %1").arg(fAutoPriv));
@@ -849,7 +849,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/remote"))
 		{
 			QString p = GetParameterString(sendText);
-			if (p == "")
+			if (p.isEmpty())
 				PrintSystem( tr("Remote password: %1").arg(fRemote) );
 			else
 			{
@@ -1936,6 +1936,9 @@ WinShareWindow::Connect()
 	{
 		WaitOnFileThread();	// make sure our scan thread is dead
 		fNetClient->Disconnect();
+
+		fConnectTimer->start(60000, true); // 1 minute
+		
 		if (fNetClient->Connect(fServer) == B_OK)
 		{
 			if (fSettings->GetInfo())
@@ -1986,12 +1989,8 @@ WinShareWindow::Disconnect()
 void
 WinShareWindow::Disconnect2()
 {
-	/*
-	if ((fDisconnectCount == 0) && !fDisconnectFlag)
-	{
-		fDisconnectFlag = true; // User disconnection
-	}
-	*/
+	if (fConnectTimer->isActive())
+		fConnectTimer->stop();
 
 	WaitOnFileThread();
 
@@ -2176,7 +2175,12 @@ WinShareWindow::ShowHelp(QString command)
 	helpText			+=	tr("On Connect 2: %1").arg(fOnConnect2);
 
 	QString str;
-	if ((command != QString::null) && (command != ""))
+	if (command.isEmpty())
+	{
+		str = ParseStringStr(helpText);
+		PrintSystem(str);
+	}
+	else
 	{
 		QString cmd = "\t/" + command + " ";
 		int i = helpText.find(cmd);
@@ -2204,8 +2208,6 @@ WinShareWindow::ShowHelp(QString command)
 			PrintError(tr("Command %1 not found").arg(command));
 		}
 	}
-	str = ParseStringStr(helpText);
-	PrintSystem(str);
 }
 
 bool
@@ -2231,7 +2233,7 @@ WinShareWindow::AddIPIgnore(QString ip)
 
 	// Append to ignore list
 	//
-	if (fIgnoreIP == "")
+	if (fIgnoreIP.isEmpty())
 		fIgnoreIP = ip;
 	else
 		fIgnoreIP += ip.prepend(",");
@@ -2327,7 +2329,7 @@ WinShareWindow::IsBlackListed(const WUser * user)
 	if (user == NULL) // Is the user still connected?
 		return false;
 
-	if (fBlackList == "") // No users in blacklist?
+	if (fBlackList.isEmpty()) // No users in blacklist?
 		return false;
 
 	return MatchUserFilter(user, (const char *) fBlackList.utf8());
@@ -2418,7 +2420,7 @@ WinShareWindow::IsIgnored(const WUser * user)
 	if (user == NULL) // Is the user still connected?
 		return false;
 
-	if (fIgnore == "") // No users in ignore list?
+	if (fIgnore.isEmpty()) // No users in ignore list?
 		return false;
 
 	return MatchUserFilter(user, (const char *) fIgnore.utf8());
@@ -2484,7 +2486,7 @@ WinShareWindow::BlackList(QString & user)
 {
 	// Is user specified?
 	//
-	if (user == "")
+	if (user.isEmpty())
 		return false;
 
 	// Already blacklisted?
@@ -2494,7 +2496,7 @@ WinShareWindow::BlackList(QString & user)
 
 	// Append to blacklist
 	//
-	if (fBlackList == "")
+	if (fBlackList.isEmpty())
 		fBlackList = user;
 	else
 		fBlackList += user.prepend(",");
@@ -2509,7 +2511,7 @@ WinShareWindow::UnBlackList(QString & user)
 {
 	// Is user specified?
 	//
-	if (user == "")
+	if (user.isEmpty())
 		return false;
 
 	// Is really blacklisted?
@@ -2572,7 +2574,7 @@ WinShareWindow::Ignore(QString & user)
 {
 	// Is user specified?
 	//
-	if (user == "")
+	if (user.isEmpty())
 		return false;
 
 	// Already ignored?
@@ -2598,7 +2600,7 @@ WinShareWindow::UnIgnore(QString & user)
 {
 	// Is user specified?
 	//
-	if (user == "")
+	if (user.isEmpty())
 		return false;
 
 	// Is really ignored?
@@ -2658,7 +2660,7 @@ WinShareWindow::IsAutoPrivate(const WUser * user)
 	if (user == NULL) // Is the user still connected?
 		return false;
 
-	if (fAutoPriv == "") // No users in auto-private list?
+	if (fAutoPriv.isEmpty()) // No users in auto-private list?
 		return false;
 
 	return MatchUserFilter(user, (const char *) fAutoPriv.utf8());
@@ -2672,7 +2674,7 @@ WinShareWindow::AutoPrivate(QString & user)
 {
 	// Is user specified?
 	//
-	if (user == "")
+	if (user.isEmpty())
 		return false;
 
 	// Already in auto-private list?
@@ -2682,7 +2684,7 @@ WinShareWindow::AutoPrivate(QString & user)
 
 	// Append to auto-private list
 	//
-	if (fAutoPriv == "")
+	if (fAutoPriv.isEmpty())
 		fAutoPriv = user;
 	else
 		fAutoPriv += user.prepend(",");
@@ -2697,7 +2699,7 @@ WinShareWindow::UnAutoPrivate(QString & user)
 {
 	// Is user specified?
 	//
-	if (user == "")
+	if (user.isEmpty())
 		return false;
 
 	// Is really in auto-private list?
@@ -2772,7 +2774,7 @@ WinShareWindow::Remote(String session, QString text)
 	QString qItem;
 	if (!text.startsWith("!remote"))	// Is a remote request?
 		return false;
-	if (fRemote == "")					// is remote control enabled?
+	if (fRemote.isEmpty())					// is remote control enabled?
 		return false;
 
 	text = text.mid(8);
@@ -2844,14 +2846,14 @@ WinShareWindow::GetAddressInfo(QString user)
 	{
 		Inet_NtoA(address, host);
 					
-		if (uid != "")
+		if (!uid.isEmpty())
 			PrintSystem( tr("Address info for user #%1 (%2):").arg(uid).arg(user));
 		else
 			PrintSystem( tr("Address info for %1:").arg(user));
 					
 		PrintSystem( tr("IP Address: %1").arg(host));
 					
-		if (uid != "")
+		if (!uid.isEmpty())
 			PrintSystem( tr("Port: %1").arg( uref()->GetPort() ));
 					
 		iaHost.s_addr = inet_addr(host);
@@ -2862,7 +2864,7 @@ WinShareWindow::GetAddressInfo(QString user)
 			PrintSystem( tr("Host Name: %1").arg(lpHostEntry->h_name));
 		}
 					
-		if (uid == "")
+		if (uid.isEmpty())
 		{
 			// List all users from this ip
 						

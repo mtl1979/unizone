@@ -44,6 +44,23 @@ status_t ParseArg(const String & arg, Message & addTo);
  */
 uint64 Atoull(const char * str);
 
+/** Given a uint64 representing a time in microseconds since 1970,
+  * (e.g. as returned by GetCurrentTime64()), returns an equivalent 
+  * human-readable time/date string.  The format of the returned 
+  * time string is "YYYY/MM/DD HH:MM:SS".
+  * @param timeVal a time in microseconds since 1970.
+  * @returns The equivalent ASCII string, or "" on failure.
+  */
+String GetHumanReadableTimeString(uint64 timeVal);
+
+/** Does the inverse operation of GetHumanReadableTimeString():
+  * Given a time string of the format "YYYY/MM/DD HH:MM:SS",
+  * returns the equivalent time value in microseconds since 1970.
+  * @param an ASCII string representing a time.
+  * @returns The equivalent time value, or zero on failure.
+  */
+uint64 ParseHumanReadableTimeString(const String & str);
+
 };  // end namespace muscle
 
 #endif

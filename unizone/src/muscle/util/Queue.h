@@ -382,7 +382,7 @@ Queue<ItemType>::operator ==(const Queue& rhs) const
    if (this == &rhs) return true;
    if (GetNumItems() != rhs.GetNumItems()) return false;
 
-   for (int i = GetNumItems()-1; i>=0; i--) if ((*this)[i] != rhs[i]) return false;
+   for (int i = GetNumItems()-1; i>=0; i--) if (((*this)[i] == rhs[i]) == false) return false;
 
    return true;
 }
@@ -677,7 +677,7 @@ EnsureSize(uint32 size, bool setNumItems)
    if ((_queue == NULL)||(_queueSize < size))
    {
       const uint32 sqLen = ARRAYITEMS(_smallQueue);
-      uint32 newQLen = muscleMax(_initialSize, ((setNumItems)||(size <= sqLen)) ? muscleMax(sqLen,size) : (size*2));  // if we're gonna do an implicit new[], we might as well double it to avoid another reallocation later
+      uint32 newQLen = muscleMax(_initialSize, ((setNumItems)||(size <= sqLen)) ? muscleMax(sqLen,size) : size);
 
       ItemType * newQueue = ((_queue == _smallQueue)||(newQLen > sqLen)) ? newnothrow ItemType[newQLen] : _smallQueue;
       if (newQueue == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}

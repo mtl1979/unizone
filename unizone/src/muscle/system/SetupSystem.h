@@ -19,10 +19,15 @@ class AtomicCounter;
   */
 class SetupSystem
 {
-public:
-   /** Default constructor, a no-op */
+protected:
+   /** Default constructor, a no-op.
+    *  It's protected because you should never instantiate a SetupSystem object alone;
+    *  it should always be subclassed to.  (consider it an abstract base class, except
+    *  without any pure virtuals defined)
+   */
    SetupSystem() {/* empty */}
   
+public:
    /** Virtual destructor to keep C++ honest */
    virtual ~SetupSystem() {/* empty */}
 };

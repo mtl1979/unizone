@@ -264,7 +264,12 @@ WUploadThread::SignalOwner()
 							next()->FindString("beshare:FromSession", &id) == B_OK)
 						{
 							fRemoteSessionID = QString::fromUtf8(id);
-							fRemoteUser = QString::fromUtf8(name);
+							
+							QString user = QString::fromUtf8(name);
+							if (user.isEmpty())
+								fRemoteUser = GetUserName(fRemoteSessionID);
+							else
+								fRemoteUser = user; 
 
 							if (gWin->IsIgnored(fRemoteSessionID, true))
 							{
@@ -300,12 +305,13 @@ WUploadThread::SignalOwner()
 
 							if (next()->FindString("beshare:FromSession", sid) == B_OK)
 								fRemoteSessionID = QString::fromUtf8(sid.Cstr());
-//							else
-//								fRemoteSessionID = "";
 							
 							if (next()->FindString("beshare:FromUserName", name) ==  B_OK)
-								fRemoteUser = QString::fromUtf8(name.Cstr());
-
+							{
+								QString user = QString::fromUtf8(name.Cstr());
+								if (!user.isEmpty())
+									fRemoteUser = user;
+							}
 							//fFileThread->Lock();
 
 							int i;

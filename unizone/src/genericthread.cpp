@@ -263,7 +263,7 @@ QString
 WGenericThread::GetUserName(QString sid)
 {
 	WUserRef uref = gWin->FindUser(sid);
-	QString ret;
+	QString ret = sid;
 	if (uref())
 		ret = uref()->GetUserName();
 	return ret;

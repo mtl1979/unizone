@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.41b"
+#define MUSCLE_VERSION_STRING "2.42"
 
 // Just declare the muscle namespace as existing.
 // If we ever decide to make the muscle namespace a superset

@@ -363,7 +363,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 		case WinShareWindow::ConnectRetry:
 			{
 				PRINT("\tWinShareWindow::ConnectRetry\n");
-				if (!fNetClient->IsInternalThreadRunning() && !fReconnectTimer->isActive())
+				if (!fReconnectTimer->isActive())
 				{
 					// Connect();
 					PrintSystem(tr( "Reconnecting in 1 minute!" ));
@@ -457,6 +457,21 @@ WinShareWindow::customEvent(QCustomEvent * event)
 			{
 				PRINT("Received SessionConnected message\n");
 
+				// Stop timers first, so if we get reconnect event while we are negotiating it will be discarded
+				if (fReconnectTimer->isActive())
+				{
+					PrintSystem(tr("Reconnect timer stopped"));
+					fReconnectTimer->stop();
+				}
+
+				if (fConnectTimer->isActive())
+				{
+					fConnectTimer->stop();
+				}
+
+				fDisconnect = false;
+				fDisconnectCount = 0;
+
 				// Set Outgoing Message Encoding
 				uint32 enc = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer));
 				fNetClient->SetOutgoingMessageEncoding( enc );
@@ -495,14 +510,6 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (fSettings->GetInfo())
 					PrintSystem(tr("Connected."));
 
-				if (fReconnectTimer->isActive())
-				{
-					PrintSystem(tr("Reconnect timer stopped"));
-					fReconnectTimer->stop();
-				}
-
-				fDisconnect = false;
-				fDisconnectCount = 0;
 				fScanning = true; // Fake that we are scanning, so uploads get queued until we scan the very first time.
 				return;
 			}
@@ -1096,6 +1103,11 @@ WinShareWindow::InitGUI()
 	fAutoAway = new QTimer;
 	CHECK_PTR(fAutoAway);
 	connect(fAutoAway, SIGNAL(timeout()), this, SLOT(AutoAwayTimer()));
+
+	// setup connect timer
+	fConnectTimer = new QTimer;
+	CHECK_PTR(fConnectTimer);
+	connect(fConnectTimer, SIGNAL(timeout()), this, SLOT(ConnectTimer()));
 
 	// setup autoconnect timer
 	fReconnectTimer = new QTimer;
