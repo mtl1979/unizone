@@ -1,16 +1,15 @@
-Debug Release muscle___Win32_Debug Unizone___Win32_English Unizone___Win32_French Unizone___Win32_German Unizone___Win32_Portuguese
-muscle.lib muscled.lib Unizone.ncb Unizone.opt Unizone.plg muscle.plg Unizoned.ilk
+Debug Release 
+Debug_ANSI Release_ANSI
+muscle___Win32_Debug muscle___Win32_Release 
+muscle___Win32_Debug_ANSI muscle___Win32_Release_ANSI
+regex___Win32_Debug regex___Win32_Release
+regex___Win32_Debug_ANSI regex___Win32_Release_ANSI
+zlib___Win32_Debug zlib___Win32_Release
+zlib___Win32_Debug_ANSI zlib___Win32_Release_ANSI
 downloads logs shared
 settings.ini stdout.txt
-Unizone___Win32_Russian
-Unizone___Win32_Swedish
-Unizone___Win32_Spanish
 unizone.lng unicows.lib
 assert.txt
-regex___Win32_Debug
-zlib___Win32_Debug
-regex___Win32_Release
-zlib___Win32_Release
 *.dll
 *.lib
 *.plg
@@ -20,11 +19,5 @@ zlib___Win32_Release
 *.pdb
 *.bsc
 *.exe
-Unizone___Win32_Debug_ANSI
-muscle___Win32_Debug_ANSI
-regex___Win32_Debug_ANSI
-zlib___Win32_Debug_ANSI
-Unizone___Win32_Release_ANSI
-muscle___Win32_Release_ANSI
-regex___Win32_Release_ANSI
-zlib___Win32_Release_ANSI
+*.ncb
+*.opt
