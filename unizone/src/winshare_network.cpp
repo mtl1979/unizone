@@ -1640,9 +1640,7 @@ WinShareWindow::ShowHelp(QString command)
 							"\n\t\t\t\t/search [pattern] - open search window"
 							"\n\t\t\t\t/server [server] - set the current server"
 							"\n\t\t\t\t/serverinfo - check status of server"
-#ifdef WIN32
 							"\n\t\t\t\t/shell [command] - execute command"
-#endif
 							"\n\t\t\t\t/showpatterns - show auto-private, blacklist, ignore and watch patterns"
 							"\n\t\t\t\t/showstats - show transfer statistics"
 							"\n\t\t\t\t/status [status] - set status string"
