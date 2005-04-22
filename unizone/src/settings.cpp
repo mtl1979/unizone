@@ -1000,6 +1000,20 @@ WSettings::GetAutoPrivatePattern() const
 }
 
 void
+WSettings::SetPMRedirect(const QString & p)
+{
+	fSet()->ReplaceString(true, PM_REDIRECT, (const char *) p.utf8());
+}
+
+QString
+WSettings::GetPMRedirect() const
+{
+	String i = "";
+	fSet()->FindString(PM_REDIRECT, i);
+	return QString::fromUtf8(i.Cstr());
+}
+
+void
 WSettings::SetBlackListPattern(const QString & p)
 {
 	fSet()->ReplaceString(true,BLACKLIST, (const char *) p.utf8());

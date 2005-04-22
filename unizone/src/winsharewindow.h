@@ -365,6 +365,7 @@ private:
 	QString fWhiteList;			// whilelist pattern
 	QString fFilterList;		// wordfilter pattern
 	QString fAutoPriv;			// Auto-private pattern
+	QString fPMRedirect;		// Private Message redirection
 	QString fOnConnect;			// On connect perform this command
 	QString fOnConnect2;		// On connect perform this too ;)
 

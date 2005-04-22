@@ -109,7 +109,7 @@ status_t ParseConnectArg(const Message & args, const String & fn, String & retHo
       int32 colIdx = retHost.IndexOf(':');
       if (colIdx >= 0)
       {
-         uint16 p = atoi(retHost()+colIdx+1);
+         uint16 p = (uint16) atoi(retHost()+colIdx+1);
          if (p > 0) retPort = p;
          retHost = retHost.Substring(0, colIdx);
       }
@@ -123,7 +123,7 @@ status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
    const char * v;
    if (args.FindString(fn, &v) == B_NO_ERROR)
    {
-      uint16 r = atoi(v);
+      uint16 r = (uint16) atoi(v);
       if (r > 0)
       {
          retPort = r;
@@ -253,34 +253,37 @@ int64 Atoll(const char * str)
 }
 
 
-status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth, int & retDay, int & retHour, int & retMinute, int & retSecond)
+status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth, int & retDay, int & retHour, int & retMinute, int & retSecond, uint32 timeType)
 {
 #ifdef WIN32
    // Borland's localtime() function is buggy, so we'll use the Win32 API instead.
-   static const uint64 diffTime = ((uint64)116444736)*((uint64)1000000000); // *((uint64 *)(&f1970.ft));  // add (1970-1601) to convert to Windows time base
+   static const uint64 diffTime = ((uint64)116444736)*((uint64)1000000000); // add (1970-1601) to convert to Windows time base
    uint64 winTime = (timeUS*10) + diffTime;  // Convert to (100ns units)
 
    FILETIME fileTime;
    fileTime.dwHighDateTime = (DWORD) ((winTime>>32) & 0xFFFFFFFF);
    fileTime.dwLowDateTime  = (DWORD) ((winTime>> 0) & 0xFFFFFFFF);
-   FILETIME localTime;
-   if (FileTimeToLocalFileTime(&fileTime, &localTime))
+
+   SYSTEMTIME st;
+   if (FileTimeToSystemTime(&fileTime, &st)) 
    {
-      SYSTEMTIME st;
-      if (FileTimeToSystemTime(&localTime, &st)) 
+      if (timeType == MUSCLE_TIMEZONE_UTC)
       {
-         retYear   = st.wYear;
-         retMonth  = st.wMonth-1;  // convert to zero-based units
-         retDay    = st.wDay-1;    // covnert to zero-based units
-         retHour   = st.wHour;
-         retMinute = st.wMinute;
-         retSecond = st.wSecond;
-         return B_NO_ERROR;
+         TIME_ZONE_INFORMATION tzi;
+         if ((GetTimeZoneInformation(&tzi) == TIME_ZONE_ID_INVALID)||(SystemTimeToTzSpecificLocalTime(&tzi, &st, &st) == false)) return B_ERROR;
       }
+
+      retYear   = st.wYear;
+      retMonth  = st.wMonth-1;  // convert to zero-based units
+      retDay    = st.wDay-1;    // covnert to zero-based units
+      retHour   = st.wHour;
+      retMinute = st.wMinute;
+      retSecond = st.wSecond;
+      return B_NO_ERROR;
    }
 #else
    time_t timeS = (time_t) (timeUS/1000000);  // timeS is seconds since 1970
-   struct tm * ts = localtime(&timeS);
+   struct tm * ts = (timeType == MUSCLE_TIMEZONE_UTC) ? localtime(&timeS) : gmtime(&timeS);  // only convert if it isn't already local
    if (ts) 
    {
       retYear   = ts->tm_year+1900;
@@ -296,10 +299,10 @@ status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth
    return B_ERROR;
 }
 
-String GetHumanReadableTimeString(uint64 timeUS)
+String GetHumanReadableTimeString(uint64 timeUS, uint32 timeType)
 {
    int year, month, day, hour, minute, second;
-   if (GetHumanReadableTimeValues(timeUS, year, month, day, hour, minute, second) == B_NO_ERROR)
+   if (GetHumanReadableTimeValues(timeUS, year, month, day, hour, minute, second, timeType) == B_NO_ERROR)
    {
       char buf[256];
       sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", year, month+1, day+1, hour, minute, second);
@@ -308,7 +311,11 @@ String GetHumanReadableTimeString(uint64 timeUS)
    return "";
 }
  
-uint64 ParseHumanReadableTimeString(const String & s)
+#ifdef WIN32
+extern uint64 __Win32FileTimeToMuscleTime(const FILETIME & ft);  // from SetupSystem.cpp
+#endif
+
+uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
 {
    StringTokenizer tok(s(), "/: ");
    const char * year   = tok();
@@ -318,15 +325,59 @@ uint64 ParseHumanReadableTimeString(const String & s)
    const char * minute = tok();
    const char * second = tok();
 
-   struct tm temp;
-   temp.tm_sec  = second ? atoi(second)    : 0;
-   temp.tm_min  = minute ? atoi(minute)    : 0;
-   temp.tm_hour = hour   ? atoi(hour)      : 0;
-   temp.tm_mday = day    ? atoi(day)       : 0;
-   temp.tm_mon  = month  ? atoi(month)-1   : 0;
-   temp.tm_year = year   ? atoi(year)-1900 : 0;
-   time_t timeS = mktime(&temp);
+#ifdef WIN32
+   SYSTEMTIME st; memset(&st, 0, sizeof(st));
+   st.wYear      = (WORD) (year   ? atoi(year)   : 0);
+   st.wMonth     = (WORD) (month  ? atoi(month)  : 0);
+   st.wDay       = (WORD) (day    ? atoi(day)    : 0);
+   st.wHour      = (WORD) (hour   ? atoi(hour)   : 0);
+   st.wMinute    = (WORD) (minute ? atoi(minute) : 0);
+   st.wSecond    = (WORD) (second ? atoi(second) : 0);
+
+   if (timeType == MUSCLE_TIMEZONE_UTC)
+   {
+      TIME_ZONE_INFORMATION tzi;
+      if (GetTimeZoneInformation(&tzi) != TIME_ZONE_ID_INVALID) 
+      {
+#if defined(__BORLANDC__) || (defined(_MSC_VER) && (_MSC_VER <= 1200))
+         // Some compilers' headers don't have this call, so we have to do it the hard way
+         HMODULE lib = LoadLibrary(TEXT("kernel32.dll"));
+         if (lib)
+         {
+#if defined(_MSC_VER)
+            typedef BOOL (*TzSpecificLocalTimeToSystemTimeProc) (IN LPTIME_ZONE_INFORMATION lpTimeZoneInformation, IN LPSYSTEMTIME lpLocalTime, OUT LPSYSTEMTIME lpUniversalTime);
+#else
+            typedef WINBASEAPI BOOL WINAPI (*TzSpecificLocalTimeToSystemTimeProc) (IN LPTIME_ZONE_INFORMATION lpTimeZoneInformation, IN LPSYSTEMTIME lpLocalTime, OUT LPSYSTEMTIME lpUniversalTime);
+#endif
+
+            TzSpecificLocalTimeToSystemTimeProc tzProc = (TzSpecificLocalTimeToSystemTimeProc) GetProcAddress(lib, "TzSpecificLocalTimeToSystemTime");
+            if (tzProc) tzProc(&tzi, &st, &st);
+            if (lib != NULL) FreeLibrary(lib);
+         }
+#else
+         (void) TzSpecificLocalTimeToSystemTime(&tzi, &st, &st);
+#endif
+      }
+   }
+
+   FILETIME fileTime;
+   return (SystemTimeToFileTime(&st, &fileTime)) ? __Win32FileTimeToMuscleTime(fileTime) : 0;
+#else
+   struct tm st; memset(&st, 0, sizeof(st));
+   st.tm_sec  = second ? atoi(second)    : 0;
+   st.tm_min  = minute ? atoi(minute)    : 0;
+   st.tm_hour = hour   ? atoi(hour)      : 0;
+   st.tm_mday = day    ? atoi(day)       : 0;
+   st.tm_mon  = month  ? atoi(month)-1   : 0;
+   st.tm_year = year   ? atoi(year)-1900 : 0;
+   time_t timeS = mktime(&st);
+   if (timeType == MUSCLE_TIMEZONE_LOCAL)
+   {
+      struct tm * t = localtime(&timeS);
+      if (t) timeS += t->tm_gmtoff;
+   }
    return ((uint64)timeS)*1000000;
+#endif
 }
 
 /* Source code stolen from UNIX Network Programming, Volume 1

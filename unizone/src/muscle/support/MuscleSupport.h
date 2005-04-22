@@ -14,6 +14,15 @@
 
 #define MUSCLE_VERSION_STRING "2.64"
 
+// Define this if the default FD_SETSIZE is too small for you (i.e. under Windows it's only 64)
+#if defined(MUSCLE_FD_SETSIZE)
+# if defined(FD_SETSIZE)
+#  error "MuscleSupport.h:  Can't redefine FD_SETSIZE, someone else has already defined it!  You need to include MuscleSupport.h before including any other header files that define FD_SETSIZE."
+# else
+#  define FD_SETSIZE MUSCLE_FD_SETSIZE
+# endif
+#endif
+
 /* If we are in an environment where known assembly is available, make a note of that fact */
 #if defined(__GNUC__)
 # if (defined(__PPC__) || defined(__APPLE__))

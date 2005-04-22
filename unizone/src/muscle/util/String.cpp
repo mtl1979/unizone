@@ -34,7 +34,8 @@ String::SetFromString(const String & s, uint32 firstChar, uint32 afterLastChar)
    if (len > 0)
    {
       if (EnsureBufferSize(len+1, false) != B_NO_ERROR) return B_ERROR;
-      memcpy(_buffer, s()+firstChar, len);
+      if (&s == this) memmove(_buffer, s()+firstChar, len);
+                 else memcpy( _buffer, s()+firstChar, len);
       _buffer[len] = '\0';
       _length = len;
    }
@@ -56,7 +57,8 @@ String::SetCstr(const char * str, uint32 maxLen)
    {
       if (str[maxLen-1] != '\0') maxLen++;  // make room to add the NUL byte if necessary
       if (EnsureBufferSize(maxLen, false) != B_NO_ERROR) return B_ERROR;
-      memcpy(_buffer, str, maxLen-1);
+      if (muscleInRange((char *)str, _buffer, &_buffer[_length])) memmove(_buffer, str, maxLen-1);
+                                                             else memcpy(_buffer, str, maxLen-1);
       _buffer[maxLen-1] = '\0';
       _length = maxLen-1;
    }
@@ -95,7 +97,7 @@ String::operator+=(const String &other)
    uint32 otherLen = other.Length();
    if ((otherLen > 0)&&(EnsureBufferSize(Length() + otherLen + 1, true) == B_NO_ERROR))
    {
-      memcpy(&_buffer[_length], other.Cstr(), other.Length()+1);
+      memcpy(&_buffer[_length], other(), other.Length()+1);
       _length += otherLen;
    }
    return *this;
@@ -111,7 +113,7 @@ String::operator-=(const String &other)
       if (idx >= 0)
       {
          String temp = Substring(idx+other.Length());
-         (*this) = this->Substring(0, idx);
+         (*this) = Substring(0, idx);
          (*this) += temp;
       }
    }
@@ -270,36 +272,39 @@ String::Replace(const String & replaceMe, const String & withMe)
 void
 String::SwapContents(String & s)
 {
-   bool thisSmall = (  _buffer ==   _smallBuffer);
-   bool sSmall    = (s._buffer == s._smallBuffer);
+   if (&s != this)
+   {
+      bool thisSmall = (  _buffer ==   _smallBuffer);
+      bool sSmall    = (s._buffer == s._smallBuffer);
 
-   if ((sSmall)&&(thisSmall))
-   {
-      for (int32 i=muscleMax(_length, s._length); i>=0; i--) muscleSwap(_smallBuffer[i], s._smallBuffer[i]);
-   }
-   else if (thisSmall)
-   {
-      _buffer      = s._buffer;
-      _bufferLen   = s._bufferLen;
-      s._buffer    = s._smallBuffer;
-      s._bufferLen = sizeof(s._smallBuffer);
-      memcpy(s._smallBuffer, _smallBuffer, _length+1);
-   }
-   else if (sSmall)
-   {
-      s._buffer    = _buffer;
-      s._bufferLen = _bufferLen;
-      _buffer      = _smallBuffer;
-      _bufferLen   = sizeof(_smallBuffer);
-      memcpy(_smallBuffer, s._smallBuffer, s._length+1);
-   }
-   else
-   {
-      muscleSwap(_buffer,    s._buffer);
-      muscleSwap(_bufferLen, s._bufferLen);
-   }
+      if ((sSmall)&&(thisSmall))
+      {
+         for (int32 i=muscleMax(_length, s._length); i>=0; i--) muscleSwap(_smallBuffer[i], s._smallBuffer[i]);
+      }
+      else if (thisSmall)
+      {
+         _buffer      = s._buffer;
+         _bufferLen   = s._bufferLen;
+         s._buffer    = s._smallBuffer;
+         s._bufferLen = sizeof(s._smallBuffer);
+         memcpy(s._smallBuffer, _smallBuffer, _length+1);
+      }
+      else if (sSmall)
+      {
+         s._buffer    = _buffer;
+         s._bufferLen = _bufferLen;
+         _buffer      = _smallBuffer;
+         _bufferLen   = sizeof(_smallBuffer);
+         memcpy(_smallBuffer, s._smallBuffer, s._length+1);
+      }
+      else
+      {
+         muscleSwap(_buffer,    s._buffer);
+         muscleSwap(_bufferLen, s._bufferLen);
+      }
 
-   muscleSwap(_length, s._length);   // always do this
+      muscleSwap(_length, s._length);   // always do this
+   }
 }
 
 
@@ -379,7 +384,7 @@ String::Substring(uint32 beginIndex, const String & markerString) const
 String
 String::ToLowerCase() const
 {
-   String ret(_buffer);
+   String ret(*this);
    if (ret._buffer) for (uint32 i=0; i<ret.Length(); i++) ret._buffer[i] = (char)tolower(ret._buffer[i]);
    return ret;
 }
@@ -387,7 +392,7 @@ String::ToLowerCase() const
 String
 String::ToUpperCase() const
 {
-   String ret(_buffer);
+   String ret(*this);
    if (ret._buffer) for (uint32 i=0; i<ret.Length(); i++) ret._buffer[i] = (char)toupper(ret._buffer[i]);
    return ret;
 }

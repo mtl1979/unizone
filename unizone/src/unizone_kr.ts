@@ -2313,7 +2313,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Encryption is %1.</source>
-        <translation type='unfinished'></translation>
+        <translation>Encryption is %1.</translation>
     </message>
 </context>
 <context>
@@ -2507,7 +2507,7 @@ Date: %4</source>
     </message>
     <message>
         <source>BeOS</source>
-        <translation type='unfinished'></translation>
+        <translation>비오에스</translation>
     </message>
     <message>
         <source>Mac OS</source>
@@ -3818,19 +3818,19 @@ Date: %4</source>
     </message>
     <message>
         <source>Encrypted: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Encrypted: %1</translation>
     </message>
     <message>
         <source>Decrypted: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Decrypted: %1</translation>
     </message>
     <message>
         <source>Decoded: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Decoded: %1</translation>
     </message>
     <message>
         <source>Encoded: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Encoded: %1</translation>
     </message>
     <message>
         <source>/crypt - encrypt text and display it as hexadecimal data</source>
@@ -3882,7 +3882,7 @@ Date: %4</source>
     </message>
     <message>
         <source>zlib version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>zlib version: %1</translation>
     </message>
     <message>
         <source>/octdecode - decode octal data and display it</source>

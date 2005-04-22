@@ -597,37 +597,42 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			}
 			else
 			{
-				WUserRef tu = FindUser(tuser);
-				if (tu())
+				WUserMap umap;
+				int uc = FillUserMap(tuser, umap);
+				if (uc > 0)
 				{
-					String to("/*/");
-					to += (const char *) tu()->GetUserID().utf8();
-					to += "/unishare";
-
-					MessageRef tire(GetMessageFromPool(TimeRequest));
-					if (tire())
+					for (WUserIter iter = umap.begin(); iter != umap.end(); iter++)
 					{
-						tire()->AddString(PR_NAME_KEYS, to);
-						tire()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
-						if (command == "gmt")
-						{
-							tire()->AddBool("gmt", true);
-						}
-						if (fSettings->GetInfo())
-						{
-							QString username = tu()->GetUserName();
-							QString treqMsg = WFormat::TimeRequest(tu()->GetUserID(), FixStringStr(username));
-							PrintSystem(treqMsg);
-						}
+						WUserRef tu = (*iter).second;
+						String to("/*/");
+						to += (const char *) tu()->GetUserID().utf8();
+						to += "/unishare";
 
-						fNetClient->SendMessageToSessions(tire);
-					}		
+						MessageRef tire(GetMessageFromPool(TimeRequest));
+						if (tire())
+						{
+							tire()->AddString(PR_NAME_KEYS, to);
+							tire()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
+							if (command == "gmt")
+							{
+								tire()->AddBool("gmt", true);
+							}
+							if (fSettings->GetInfo())
+							{
+								QString username = tu()->GetUserName();
+								QString treqMsg = WFormat::TimeRequest(tu()->GetUserID(), FixStringStr(username));
+								PrintSystem(treqMsg);
+							}
+						
+							fNetClient->SendMessageToSessions(tire);
+						}		
+					}
 				}
 				else // Invalid user?
 				{
 					if (fSettings->GetError())
 						PrintError(tr("User(s) not found!"));
-
+	
 				}
 			}
 		}
@@ -810,6 +815,17 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					PrintSystem(tr("Auto-private pattern set to: %1").arg(fAutoPriv));
 			}
 		}
+		else if (CompareCommand(sendText, "/redirect"))
+		{
+			fPMRedirect = GetParameterString(sendText);
+			if (fSettings->GetInfo())
+			{
+				if (fPMRedirect.isEmpty())
+					PrintSystem(tr("Private Message redirect pattern cleared."));
+				else
+					PrintSystem(tr("Private Message redirect pattern set to: %1").arg(fPMRedirect));
+			}
+		}
 		else if (CompareCommand(sendText, "/addautopriv"))
 		{
 			bool bSuccess;
@@ -971,6 +987,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 
 			PrintSystem( tr("Auto-private pattern: %1").arg(temp) );
 			
+			// Private Message redirection
+
+			temp = CheckIfEmpty(fPMRedirect, qNone);
+
+			PrintSystem( tr("Private Message redirect pattern: %1").arg(temp) );
+
 			// Black List
 			//
 			temp = CheckIfEmpty(fBlackList, qNone);
@@ -1556,89 +1578,107 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 						
 			if (fSettings->GetPrivate())	// and are we accepting private msgs?
 			{
-				if ( !IsIgnored(userName) )
+				if ( IsIgnored(userName) )
 				{
-					bool foundPriv = false;
-					// see if one of the session IDs is in one of the private windows...
-					pLock.lock();
-					for (WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); it++)
-					{
-						WPrivateWindow * win = (*it).first;
-						WUserMap & winusers = win->GetUsers();
-			
-						for (WUserIter uit = winusers.begin(); uit != winusers.end(); uit++)
-						{
-							WUserRef user = (*uit).second;
-							if (user()->GetUserID() == userID)
-							{
-								WChatEvent *wce = new WChatEvent(userID, text);
-								if (wce)
-									QApplication::postEvent(win, wce);
-								
-								//										win->PutChatText(userID, text);
-								foundPriv = true;
-								// continue... this user may be in multiple windows... :)
-							}
-						}
-					}
-					pLock.unlock();
-	
-					if (foundPriv)
-						return;
-					else if ( IsAutoPrivate( userID ) )
-					{
-						WUserRef pu = FindUser(userID);
-						if (pu())
-						{
-							// Create new Private Window
-							WPrivateWindow * win = new WPrivateWindow(this, fNetClient, NULL);
-							if (win)
-							{
-								// Add user to private window
-								win->AddUser(pu);
-						
-								// Send text to private window
-								WChatEvent *wce = new WChatEvent(userID, text);
-								if (wce)
-									QApplication::postEvent(win, wce);
-					
-								// Show newly created private window
-								WPWEvent *wpw = new WPWEvent(WPWEvent::Created);
-								if (wpw)
-									QApplication::postEvent(win, wpw);
-							
-								// ... and add it to list of private windows
-								WPrivPair p = MakePair(win);
-								pLock.lock();
-								fPrivateWindows.insert(p);
-								pLock.unlock();
-								return;
-							}
-						}
-					}
-								
-					PRINT("Fixing nameText\n");
-					QString nameText = FixStringStr(text);
-					if (nameText.startsWith(FixStringStr(userName) + " ") || nameText.startsWith(FixStringStr(userName) + "'s ")) // simulate action?
-					{
-						chat = WFormat::Action(nameText);
-					}
-					else
-					{
-						chat = WFormat::ReceivePrivMsg(userID, FixStringStr(userName), nameText);
-					}
-				
-					if (fSettings->GetSounds())
-						QApplication::beep();
-#ifdef WIN32
-					if (fWinHandle && !this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashPriv))	// if we have a valid handle AND we are not active AND the user wants to flash
-					{
-						WFlashWindow(fWinHandle);
-					}
-#endif // WIN32
-								
-					TextEvent(this, chat, WTextEvent::ChatTextEvent); 
+					return;
 				}
+
+				if ( !fPMRedirect.isEmpty() )
+				{
+					WUserRef pu = FindUser(userID);
+					if (pu())
+					{
+						QString rt("/msg ");
+						rt += fPMRedirect;
+						rt += " <";
+						rt += pu()->GetUserName();
+						rt += "> :";
+						rt += text;
+						ExecCommand(rt);
+						return;
+					}
+				}
+				bool foundPriv = false;
+				// see if one of the session IDs is in one of the private windows...
+				pLock.lock();
+				for (WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); it++)
+				{
+					WPrivateWindow * win = (*it).first;
+					WUserMap & winusers = win->GetUsers();
+					
+					for (WUserIter uit = winusers.begin(); uit != winusers.end(); uit++)
+					{
+						WUserRef user = (*uit).second;
+						if (user()->GetUserID() == userID)
+						{
+							WChatEvent *wce = new WChatEvent(userID, text);
+							if (wce)
+								QApplication::postEvent(win, wce);
+							
+							//										win->PutChatText(userID, text);
+							foundPriv = true;
+							// continue... this user may be in multiple windows... :)
+						}
+					}
+				}
+				pLock.unlock();
+				
+				if (foundPriv)
+					return;
+				else if ( IsAutoPrivate( userID ) )
+				{
+					WUserRef pu = FindUser(userID);
+					if (pu())
+					{
+						// Create new Private Window
+						WPrivateWindow * win = new WPrivateWindow(this, fNetClient, NULL);
+						if (win)
+						{
+							// Add user to private window
+							win->AddUser(pu);
+							
+							// Send text to private window
+							WChatEvent *wce = new WChatEvent(userID, text);
+							if (wce)
+								QApplication::postEvent(win, wce);
+							
+							// Show newly created private window
+							WPWEvent *wpw = new WPWEvent(WPWEvent::Created);
+							if (wpw)
+								QApplication::postEvent(win, wpw);
+							
+							// ... and add it to list of private windows
+							WPrivPair p = MakePair(win);
+							pLock.lock();
+							fPrivateWindows.insert(p);
+							pLock.unlock();
+							return;
+						}
+					}
+				}
+				
+				PRINT("Fixing nameText\n");
+				QString nameText = FixStringStr(text);
+				if (nameText.startsWith(FixStringStr(userName) + " ") || nameText.startsWith(FixStringStr(userName) + "'s ")) // simulate action?
+				{
+					chat = WFormat::Action(nameText);
+				}
+				else
+				{
+					chat = WFormat::ReceivePrivMsg(userID, FixStringStr(userName), nameText);
+				}
+				
+				if (fSettings->GetSounds())
+					QApplication::beep();
+#ifdef WIN32
+				if (fWinHandle && !this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashPriv))	// if we have a valid handle AND we are not active AND the user wants to flash
+				{
+					WFlashWindow(fWinHandle);
+				}
+#endif // WIN32
+				
+				TextEvent(this, chat, WTextEvent::ChatTextEvent); 
+				
 			}
 		}
 		else
@@ -2567,6 +2607,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/quit - quit Unizone");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/redirect [nick] - Redirect all private messages to another user"); 
+	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/remote [password] - set & view remote password");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)");
@@ -2661,6 +2703,10 @@ WinShareWindow::ShowHelp(const QString & command)
 	temp = CheckIfEmpty(fAutoPriv, qNone);
 	helpText			+=	tr("Auto-private pattern: %1").arg(temp);
 	helpText			+=	"\n"; 
+
+	temp = CheckIfEmpty(fPMRedirect, qNone);
+	helpText			+=	tr("Private Message redirect pattern: %1").arg(temp);
+	helpText			+=	"\n";
 	
 	temp = CheckIfEmpty(fBlackList, qNone);
 	helpText			+=	tr("Blacklist pattern: %1").arg(temp);

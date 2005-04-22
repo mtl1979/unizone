@@ -92,34 +92,51 @@ int64 Atoll(const char * str);
 
 /** Given a uint64 representing a time in microseconds since 1970,
   * (e.g. as returned by GetCurrentTime64()), returns the same value
-  * as a set of more human-friendly units.
-  * @param timeUS a time in microseconds since 1970.
+  * as a set of more human-friendly units.  
+  *
+  * @param timeUS a time in microseconds since 1970.  Note that the interpretation of this value depends on
+  *               the value passed in to the (timeType) argument.
   * @param retYear   On success, the year value (e.g. 2005) is placed here.
   * @param retMonth  On success, the month value  (which ranges between 0 and 11, inclusive) is placed here.
   * @param retDay    On success, the day value    (which ranges between 0 and 30, inclusive) is placed here.
   * @param retHour   On success, the hour value   (which ranges between 0 and 23, inclusive) is placed here.
   * @param retMinute On success, the minute value (which ranges between 0 and 59, inclusive) is placed here.
   * @param retSecond On success, the second value (which ranges between 0 and 59, inclusive) is placed here.
+  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then (timeUS) will be interpreted as being in UTC, 
+  *                 and will be converted to the local time zone as part of the conversion process.  If set to 
+  *                 MUSCLE_TIMEZONE_LOCAL, on the other hand, then (timeUS) will be assumed to be already 
+  *                 in the local time zone, and no time zone conversion will be done.
+  *                 Note that the values returned are ALWAYS in reference to local time 
+  *                 zone -- the (timeType) argument governs how (timeUS) should be interpreted.  
+  *                 (timeType) does NOT control the meaning of the return values.
   * @returns B_NO_ERROR on success, or B_ERROR on failure.
   */
-status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth, int & retDay, int & retHour, int & retMinute, int & retSecond);
+status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth, int & retDay, int & retHour, int & retMinute, int & retSecond, uint32 timeType = MUSCLE_TIMEZONE_UTC);
 
 /** Given a uint64 representing a time in microseconds since 1970,
   * (e.g. as returned by GetCurrentTime64()), returns an equivalent 
   * human-readable time/date string.  The format of the returned 
   * time string is "YYYY/MM/DD HH:MM:SS".
-  * @param timeVal a time in microseconds since 1970.
+  * @param timeUS a time in microseconds since 1970.  Note that the interpretation of this value depends on
+  *               the value passed in to the (timeType) argument.
+  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then (timeUS) will be interpreted as being in UTC, 
+  *                 and will be converted to the local time zone as part of the conversion process.  If set to 
+  *                 MUSCLE_TIMEZONE_LOCAL, on the other hand, then (timeUS) will be assumed to be already 
+  *                 in the local time zone, and no time zone conversion will be done.
   * @returns The equivalent ASCII string, or "" on failure.
   */
-String GetHumanReadableTimeString(uint64 timeVal);
+String GetHumanReadableTimeString(uint64 timeVal, uint32 timeType = MUSCLE_TIMEZONE_UTC);
 
 /** Does the inverse operation of GetHumanReadableTimeString():
   * Given a time string of the format "YYYY/MM/DD HH:MM:SS",
   * returns the equivalent time value in microseconds since 1970.
   * @param an ASCII string representing a time.
+  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then the returned value will be UTC. 
+  *                 If set to MUSCLE_TIMEZONE_LOCAL, on the other hand, then the returned value will
+  *                 be expressed as a time of the local time zone.
   * @returns The equivalent time value, or zero on failure.
   */
-uint64 ParseHumanReadableTimeString(const String & str);
+uint64 ParseHumanReadableTimeString(const String & str, uint32 timeType = MUSCLE_TIMEZONE_UTC);
 
 /** Calls fork(), setsid(), chdir(), umask(), etc, to fork an independent daemon process.
  *  Also closes all open file descriptors.

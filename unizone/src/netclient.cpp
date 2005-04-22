@@ -293,7 +293,7 @@ NetClient::CreateUser(const QString & sessionID)
 	WUserRef nref(n, NULL);
 	if (n)
 	{
-		n->SetUserID(sessionID);
+//		n->SetUserID(sessionID);
 		WUserPair pair = MakePair(sessionID, nref);
 
 		fUsers.insert(pair);

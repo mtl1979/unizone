@@ -3,6 +3,8 @@
 #ifndef MuscleThread_h
 #define MuscleThread_h
 
+#include "support/MuscleSupport.h"  // first to avoid MUSCLE_FD_SETSIZE ordering problems
+
 #if defined(MUSCLE_USE_CLONE)
 # include <sched.h>
 # include "util/ByteBuffer.h"

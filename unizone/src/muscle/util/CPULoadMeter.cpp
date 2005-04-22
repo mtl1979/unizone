@@ -11,12 +11,16 @@
 BEGIN_NAMESPACE(muscle);
 
 #ifdef WIN32
+# ifndef USE_KERNEL32_DLL_FOR_GETSYSTEMTIMES
+#  include <Windows.h>
+#  include <winbase.h>
+# endif
 static uint64 FileTimeToInt64(const FILETIME & ft) {return (((uint64)(ft.dwHighDateTime))<<32)|((uint64)ft.dwLowDateTime);}
 #endif
 
 CPULoadMeter :: CPULoadMeter() : _previousTotalTicks(0), _previousIdleTicks(0)
 {
-#ifdef WIN32
+#ifdef USE_KERNEL32_DLL_FOR_GETSYSTEMTIMES
    // Gotta dynamically load this system call, because the Borland headers doesn't know about it.  :^P
    _winKernelLib = LoadLibrary(TEXT("kernel32.dll"));
    if (_winKernelLib) _getSystemTimesProc = (GetSystemTimesProc) GetProcAddress(_winKernelLib, "GetSystemTimes");
@@ -25,7 +29,7 @@ CPULoadMeter :: CPULoadMeter() : _previousTotalTicks(0), _previousIdleTicks(0)
 
 CPULoadMeter :: ~CPULoadMeter()
 {
-#ifdef WIN32
+#ifdef USE_KERNEL32_DLL_FOR_GETSYSTEMTIMES
    if (_winKernelLib != NULL) FreeLibrary(_winKernelLib);
 #endif
 }
@@ -66,11 +70,18 @@ float CPULoadMeter :: GetCPULoad()
       fclose(fpIn);
    }
 #elif WIN32
+# ifdef USE_KERNEL32_DLL_FOR_GETSYSTEMTIMES
    if (_getSystemTimesProc)
    {
       FILETIME idleTime, kernelTime, userTime;
       if (_getSystemTimesProc(&idleTime, &kernelTime, &userTime)) sysLoadPercentage = CalculateCPULoad(FileTimeToInt64(idleTime), FileTimeToInt64(kernelTime)+FileTimeToInt64(userTime));
    }
+# else
+   {  // keep these variables local
+      FILETIME idleTime, kernelTime, userTime;
+      if (GetSystemTimes(&idleTime, &kernelTime, &userTime)) sysLoadPercentage = CalculateCPULoad(FileTimeToInt64(idleTime), FileTimeToInt64(kernelTime)+FileTimeToInt64(userTime));
+   }
+# endif
 #elif __APPLE__
    host_cpu_load_info_data_t cpuinfo;
    mach_msg_type_number_t count = HOST_CPU_LOAD_INFO_COUNT;

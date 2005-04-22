@@ -27,7 +27,7 @@ uint32 CStringHashFunc(const char * str);
 
 class String;
 
-/** A character string class, similar to Java's java.lang.String */
+/** A character string class.  Represents a dynamically resizable NUL-terminated string. */
 class String : public Flattenable {
 public:
    /** Constructor.
@@ -182,11 +182,17 @@ public:
      */
    status_t SetFromString(const String & str, uint32 firstChar = 0, uint32 maxLen = ((uint32)-1));
 
+   /** Returns true iff this string starts with (prefix) */
+   bool EndsWith(char c) const {return (_length > 0)&&(_buffer[_length-1] == c);}
+
    /** Returns true iff this string ends with (suffix) */
    bool EndsWith(const String &suffix) const;
 
    /** Returns true iff this string is equal to (string), as determined by strcmp(). */
    bool Equals(const String & str) const {return (*this == str);}
+
+   /** Returns true iff this string contains a single character (c). */
+   bool Equals(char c) const {return (_length == 1)&&(_buffer[0] == c);}
 
    /** Returns the first index of (ch) in this string starting at or after (fromIndex), or -1 if not found. */
    int IndexOf(char ch, uint32 fromIndex = 0) const;
@@ -211,6 +217,9 @@ public:
 
    /** Returns the number of instances of (substring) in this string. */
    uint32 GetNumInstancesOf(const String & substring) const;
+
+   /** Returns true iff this string starts with (prefix) */
+   bool StartsWith(char c) const {return (_length > 0)&&(_buffer[0] == c);}
 
    /** Returns true iff this string starts with (prefix) */
    bool StartsWith(const String &prefix) const;
@@ -268,10 +277,16 @@ public:
    int CompareToIgnoreCase(const String &s) const             {return ToLowerCase().CompareTo(s.ToLowerCase());}
 
    /** Like EndsWith(), but case insensitive. */
+   bool EndsWithIgnoreCase(char c) const                      {return (_length > 0)&&(tolower(_buffer[_length-1]) == tolower(c));}
+
+   /** Like EndsWith(), but case insensitive. */
    bool EndsWithIgnoreCase(const String &s) const             {return ToLowerCase().EndsWith(s.ToLowerCase());}
 
    /** Like Equals(), but case insensitive. */
    bool EqualsIgnoreCase(const String &s) const               {return ToLowerCase().Equals(s.ToLowerCase());}
+
+   /** Like Equals(), but case insensitive. */
+   bool EqualsIgnoreCase(char c) const                        {return (_length==1)&&(tolower(_buffer[0])==tolower(c));}
 
    /** Like IndexOf(), but case insensitive. */
    int IndexOfIgnoreCase(const String &s) const               {return ToLowerCase().IndexOf(s.ToLowerCase());}
@@ -296,6 +311,9 @@ public:
 
    /** Like LastIndexOf(), but case insensitive. */
    int LastIndexOfIgnoreCase(char ch, uint32 f) const         {return ToLowerCase().LastIndexOf((char)tolower(ch),f);}
+
+   /** Like EndsWith(), but case insensitive. */
+   bool StartsWithIgnoreCase(char c) const                    {return (_length > 0)&&(tolower(_buffer[0]) == tolower(c));}
 
    /** Like StartsWith(), but case insensitive. */
    bool StartsWithIgnoreCase(const String &s) const           {return ToLowerCase().StartsWith(s.ToLowerCase());}

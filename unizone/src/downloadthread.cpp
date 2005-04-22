@@ -168,13 +168,11 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, cons
 		QString dlFile;
 		if (fLocalFileDl[0] == QString::null)
 		{
-			dlFile =  "downloads/";
-			dlFile += fFileDl[0];
+			fLocalFileDl[0] = MakePath("downloads", FixFileName(fFileDl[0]));
 		}
-		else
-		{
-			dlFile = fLocalFileDl[0];
-		}
+
+		dlFile = fLocalFileDl[0];
+
 		msg()->AddString("file", (const char *) dlFile.utf8());
 		msg()->AddString("user", (const char *) fromSession.utf8());
 		SendReply(msg);	// send the init message to our owner
@@ -218,13 +216,11 @@ WDownloadThread::SetFile(QString *files, QString *lfiles, int32 numFiles, const 
 		QString dlFile;
 		if (fLocalFileDl[0] == QString::null)
 		{
-			dlFile =  "downloads/";
-			dlFile += fFileDl[0];
+			fLocalFileDl[0] = MakePath("downloads", FixFileName(fFileDl[0]));
 		}
-		else
-		{
-			dlFile = fLocalFileDl[0];
-		}
+
+		dlFile = fLocalFileDl[0];
+
 		msg()->AddString("file", (const char *) dlFile.utf8());
 		msg()->AddString("user", (const char *) fFromSession.utf8());
 		SendReply(msg);	// send the init message to our owner
@@ -494,14 +490,11 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 						
 				if (fLocalFileDl[fCurFile] == QString::null)
 				{
-					fixed = "downloads/";
 					// we have a "fixed" filename that eliminates characters Windows does not support
-					fixed += FixFileName(QString::fromUtf8(fname.Cstr()));
+					fLocalFileDl[fCurFile] = MakePath("downloads", FixFileName(QString::fromUtf8(fname.Cstr())));
 				}
-				else
-				{
-					fixed = fLocalFileDl[fCurFile];
-				}
+
+				fixed = fLocalFileDl[fCurFile];
 							
 				bool append = false;
 							

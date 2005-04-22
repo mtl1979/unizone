@@ -1607,6 +1607,7 @@ WinShareWindow::LoadSettings()
 		fWhiteList = fSettings->GetWhiteListPattern();
 		fFilterList = fSettings->GetFilterListPattern();
 		fAutoPriv = fSettings->GetAutoPrivatePattern();
+		fPMRedirect = fSettings->GetPMRedirect();
 
 		fOnConnect = fSettings->GetOnConnect();
 		fOnConnect2 = fSettings->GetOnConnect2();
@@ -1657,6 +1658,7 @@ WinShareWindow::LoadSettings()
 		fWhiteList = "Atrus, Bubbles";
 		fFilterList = "";
 		fAutoPriv = "";
+		fPMRedirect = "";
 		fOnConnect = "";
 		fOnConnect2 = "";
 		if (fUserName != QString::null)
@@ -1818,6 +1820,7 @@ WinShareWindow::SaveSettings()
 	fSettings->SetWhiteListPattern(fWhiteList);
 	fSettings->SetFilterListPattern(fFilterList);
 	fSettings->SetAutoPrivatePattern(fAutoPriv);
+	fSettings->SetPMRedirect(fPMRedirect);
 
 	// on connect
 

@@ -402,9 +402,15 @@ protected:
     *  @param retSessions A table that will on return contain the set of matching sessions, keyed by their session ID strings.
     *                     Make sure you have called SetKeyCompareFunction(CStringCompareFunc) on this table!
     *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
+    *  @param maxResults Maximum number of matching sessions to returns.  Defaults to MUSCLE_NO_LIMIT.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-    status_t FindMatchingSessions(const String & nodePath, QueryFilterRef filter, Hashtable<const char *, AbstractReflectSessionRef> & retSessions, bool matchSelf) const;
+    status_t FindMatchingSessions(const String & nodePath, QueryFilterRef filter, Hashtable<const char *, AbstractReflectSessionRef> & retSessions, bool matchSelf, uint32 maxResults = MUSCLE_NO_LIMIT) const;
+
+    /** Convenience method:  Same as FindMatchingsession(), but finds only the first matching session.  
+      * Returns a reference to the first matching session on success, or a NULL reference on failue.
+      */
+    AbstractReflectSessionRef FindMatchingSession(const String & nodePath, QueryFilterRef filter, bool matchSelf) const;
 
    /** Convenience method:  Passes the given Message on to the sessions who match the given nodePath.
     *  (that is, any sessions who have nodes that match (nodePath) will have their MessageReceivedFromSession()

@@ -172,7 +172,6 @@ uint64 GetRunTime64()
                {
                   LogTime(MUSCLE_LOG_WARNING, "QueryPerformanceCounter() is buggy, reverting to timeGetTime() method instead!\n");
                   _brokenQPCOffset = (_lastCheckQPCTime-_lastCheckGetTime);
-uint64 origRet = ret;
                   ret = (((uint64)timeGetTime())*1000) + _brokenQPCOffset;
                }
             }
@@ -205,25 +204,50 @@ uint64 origRet = ret;
 #endif
 }
 
-/** Defined here since every MUSCLE program will have to include this file anyway... */
-uint64 GetCurrentTime64()
-{
-   struct timeval tv;
 #ifdef WIN32
+// Broken out so ParseHumanReadableTimeValues() can use it also
+uint64 __Win32FileTimeToMuscleTime(const FILETIME & ft)
+{
    union {
      uint64 ns100; /*time since 1 Jan 1601 in 100ns units */ 
      FILETIME ft; 
-   } now; 
-   GetSystemTimeAsFileTime(&now.ft);
+   } theTime; 
+   theTime.ft = ft;
+
    static const uint64 TIME_DIFF = ((uint64)116444736)*((uint64)1000000000);
-   tv.tv_usec = (long)((now.ns100 / ((uint64)10)) % ((uint64)1000000)); 
-   tv.tv_sec  = (long)((now.ns100 - TIME_DIFF)    / ((uint64)10000000)); 
-#else
-   gettimeofday(&tv, NULL);
-#endif
+   struct timeval tv;
+   tv.tv_usec = (long)((theTime.ns100 / ((uint64)10)) % ((uint64)1000000)); 
+   tv.tv_sec  = (long)((theTime.ns100 - TIME_DIFF)    / ((uint64)10000000)); 
    return ConvertTimeValTo64(tv);
 }
-
 #endif
+
+#endif  /* !__BEOS__ */
+
+/** Defined here since every MUSCLE program will have to include this file anyway... */
+uint64 GetCurrentTime64(uint32 timeType)
+{
+#ifdef WIN32
+   FILETIME ft;
+   GetSystemTimeAsFileTime(&ft);
+   if (timeType == MUSCLE_TIMEZONE_LOCAL) (void) FileTimeToLocalFileTime(&ft, &ft);
+   return __Win32FileTimeToMuscleTime(ft);
+#else
+# ifdef __BEOS__
+   uint64 ret = real_time_clock_usecs();
+# else
+   struct timeval tv;
+   gettimeofday(&tv, NULL);
+   uint64 ret = ConvertTimeValTo64(tv);
+# endif
+   if (timeType == MUSCLE_TIMEZONE_LOCAL)
+   {
+      time_t now = time(NULL);
+      struct tm * ltc = localtime(&now);
+      if (ltc) ret += ((int64)ltc->tm_gmtoff)*((int64)1000000);
+   }
+   return ret;
+#endif
+}
 
 END_NAMESPACE(muscle);

@@ -81,9 +81,9 @@ public:
    /** Attempts to set this reference by downcasting the reference in the provided GenericRef.
      * If the downcast cannot be done (via dynamic_cast) then we become a NULL reference.
      * @param ref The generic reference to set ourselves from.
-     * @param junk This parameter is ignored (it's only here to disambiguate constructors)
+     * @param junk This parameter is ignored; it is just here to disambiguate constructors.
      */
-   Ref(const GenericRef & ref, bool /*junk*/) : _item(NULL), _recycler(NULL), _doRefCount(true) {(void) SetFromGeneric(ref);}
+   Ref(const GenericRef & ref, bool junk) : _item(NULL), _recycler(NULL), _doRefCount(true) {(void) junk; (void) SetFromGeneric(ref);}
 
    /** Unreferences the held data item.  If this is the last Ref that
     *  references the held data item, the data item will be deleted or recycled at this time.
@@ -202,6 +202,17 @@ public:
          SetRef(typedItem, genericRef.GetItemRecycler(), genericRef.IsRefCounting());
       }
       return B_NO_ERROR;
+   }
+
+   /** Same as SetFromGeneric(), but uses a static_cast instead of a dynamic_cast to
+     * do the type conversion.  This is faster that SetFromGeneric(), but it is up to
+     * the user's code to guarantee that the conversion is valid.  If (genericRef)
+     * references an object of the wrong type, undefined behaviour (read: crashing)
+     * will likely occur.
+     */
+   inline void SetFromGenericUnchecked(const GenericRef & genericRef)
+   {
+      SetRef(static_cast<Item *>(genericRef()), genericRef.GetItemRecycler(), genericRef.IsRefCounting());
    }
 
 private:

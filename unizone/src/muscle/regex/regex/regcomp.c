@@ -1240,6 +1240,8 @@ mcinvert(p, cs)
 register struct parse *p;
 register cset *cs;
 {
+	(void) p;  /* avoid compiler warnings */
+	(void) cs; /* avoid compiler warnings */
 	assert(cs->multis == NULL);	/* xxx */
 }
 

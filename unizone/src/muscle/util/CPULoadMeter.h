@@ -34,6 +34,14 @@ private:
    uint64 _previousIdleTicks;
 
 #ifdef WIN32
+# if (defined(_MSC_VER) && _MSC_VER >= 1300)
+// we will use the statically linked version
+# else
+#  define USE_KERNEL32_DLL_FOR_GETSYSTEMTIMES 1
+# endif
+#endif
+
+#ifdef USE_KERNEL32_DLL_FOR_GETSYSTEMTIMES
    typedef WINBASEAPI BOOL WINAPI (*GetSystemTimesProc) (OUT LPFILETIME t1, OUT LPFILETIME t2, OUT LPFILETIME t3);
    GetSystemTimesProc _getSystemTimesProc;
    HMODULE _winKernelLib;

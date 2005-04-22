@@ -105,11 +105,15 @@ ParseChatText(const QString & str)
 						last = qToken.at(qToken.length() - 1);
 					}
 
-					// <postmaster@raasu.org> 20030203 
-					// Fix for BeBook file: urls
+					// <postmaster@raasu.org> Apr 11th 2004 
+					// Make sure there is same amount of ( and ) characters
 					//
-					if (qToken.right(2) == "()") 
-						break;
+
+					if (qToken.right(1) == ")")
+					{
+						if (qToken.contains("(") == qToken.contains(")"))
+							break;
+					}
 
 					if 	(
 						muscleInRange(last.unicode(), (unichar) '0', (unichar) '9') ||

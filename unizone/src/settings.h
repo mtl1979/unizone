@@ -67,6 +67,7 @@ using namespace muscle;
 #define WHITELIST			"whitelist"
 #define FILTERLIST			"filterlist"
 #define AUTOPRIV			"autopriv"
+#define PM_REDIRECT			"pmredir"
 
 #define ONCONN		"onconnect1"
 #define ONCONN2		"onconnect2"
@@ -350,6 +351,10 @@ public:
 	// auto-private pattern
 	QString GetAutoPrivatePattern() const;
 	void SetAutoPrivatePattern(const QString & p);
+
+	// private message redirection
+	QString GetPMRedirect() const;
+	void SetPMRedirect(const QString & p);
 
 #if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__) || defined(__QNX__)
 	QString GetFTPLauncher() const;

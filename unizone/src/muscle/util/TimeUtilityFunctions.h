@@ -7,10 +7,7 @@
 
 #include "support/MuscleSupport.h"
 
-#ifdef WIN32
-# include <windows.h>
-# include <winsock.h>
-#else
+#ifndef WIN32
 # include <sys/time.h>
 #endif
 
@@ -82,22 +79,28 @@ inline void SubtractTimeVal(struct timeval & subtractFromThis, const struct time
    }
 }
 
+/** timestamp types used by GetCurrentTime64(), etc */
+enum {
+   MUSCLE_TIMEZONE_UTC = 0, // Universal Co-ordinated Time (formerly Greenwhich Mean Time)
+   MUSCLE_TIMEZONE_LOCAL    // Host machine's local time (depends on local time zone settings)
+};
+
 /** Returns the current real-time clock time as a uint64.  The returned value is expressed
  *  as microseconds since the beginning of the year 1970.
+ *  @param timeType if left as MUSCLE_TIMEZONE_UTC (the default), the value returned will be the current UTC time.  
+ *                  If set to MUSCLE_TIMEZONE_LOCAL, on the other hand, the returned value will include the proper 
+ *                  offset to make the time be the current time as expressed in this machine's local time zone.
+ *                  For any other value, the behaviour of this function is undefined.
  *  @note that the values returned by this function are NOT guaranteed to be monotonically increasing!
  *        Events like leap seconds, the user changing the system time, or even the OS tweaking the system
  *        time automatically to eliminate clock drift may cause this value to decrease occasionally!
  *        If you need a time value that is guaranteed to never decrease, you may want to call GetRunTime64() instead.
  */
-#ifdef __BEOS__
-inline uint64 GetCurrentTime64() {return real_time_clock_usecs();}
-#else
-uint64 GetCurrentTime64();
-#endif
+uint64 GetCurrentTime64(uint32 timeType=MUSCLE_TIMEZONE_UTC);
 
 /** Returns a current time value, in microseconds, that is guaranteed never to decrease.  The absolute
  *  values returned by this call are undefined, so you should only use it for measuring relative time
- *  (i.e. how much time has passed between two events).  For a "real time clock" type of result with
+ *  (i.e. how much time has passed between two events).  For a "wall clock" type of result with
  *  a well-defined time-base, you can call GetCurrentTime64() instead.
  */
 #ifdef __BEOS__

@@ -856,13 +856,22 @@ void StorageReflectSession :: UpdateDefaultMessageRoute()
 class FindMatchingSessionsData
 {
 public:
-   FindMatchingSessionsData(Hashtable<const char *, AbstractReflectSessionRef> & results) : _results(results), _ret(B_NO_ERROR) {/* empty */}
+   FindMatchingSessionsData(Hashtable<const char *, AbstractReflectSessionRef> & results, uint32 maxResults) : _results(results), _ret(B_NO_ERROR), _maxResults(maxResults) {/* empty */}
 
    Hashtable<const char *, AbstractReflectSessionRef> & _results;
    status_t _ret;
+   uint32 _maxResults;
 };
 
-status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, QueryFilterRef filter, Hashtable<const char *, AbstractReflectSessionRef> & retSessions, bool includeSelf) const
+AbstractReflectSessionRef StorageReflectSession :: FindMatchingSession(const String & nodePath, QueryFilterRef filter, bool matchSelf) const
+{
+   AbstractReflectSessionRef ret;
+   Hashtable<const char *, AbstractReflectSessionRef> results;
+   if (FindMatchingSessions(nodePath, filter, results, matchSelf, 1) == B_NO_ERROR) (void) results.GetIterator().GetNextValue(ret);
+   return ret;
+}
+
+status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, QueryFilterRef filter, Hashtable<const char *, AbstractReflectSessionRef> & retSessions, bool includeSelf, uint32 maxResults) const
 {
    status_t ret = B_NO_ERROR;
 
@@ -880,7 +889,7 @@ status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, 
       NodePathMatcher matcher;
       if (matcher.PutPathString(s, filter) == B_NO_ERROR)
       {
-         FindMatchingSessionsData data(retSessions);
+         FindMatchingSessionsData data(retSessions, maxResults);
          matcher.DoTraversal((PathMatchCallback)FindSessionsCallbackFunc, const_cast<StorageReflectSession*>(this), GetGlobalRoot(), true, &data);
          ret = data._ret;
       }
@@ -1084,7 +1093,7 @@ FindSessionsCallback(DataNode & node, void * userData)
       data->_ret = B_ERROR;  // Oops, out of memory!
       return -1;  // abort now
    }
-   else return 2; // This causes the traversal to immediately skip to the next session
+   else return (data->_results.GetNumItems() == data->_maxResults) ? -1 : 2; // This causes the traversal to immediately skip to the next session
 }
 
 int

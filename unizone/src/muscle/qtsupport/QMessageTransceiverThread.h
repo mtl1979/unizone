@@ -3,6 +3,8 @@
 #ifndef MuscleQMessageTransceiverThread_h
 #define MuscleQMessageTransceiverThread_h
 
+#include "support/MuscleSupport.h"  // first avoid ordering problems with MUSCLE_FD_SETSIZE
+
 #include <qobject.h>
 #include <qthread.h>
 #include "system/MessageTransceiverThread.h"
@@ -126,6 +128,13 @@ public slots:
     * @return B_NO_ERROR on success, B_ERROR if out of memory.
     */
    status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
+
+   /** Parses through the incoming-events queue and emits signals as appropriate.
+     * Typically this method is called when appropriate by the event() method,
+     * so you don't need to call it yourself unless you are handling event notification
+     * in some custom fashion.
+     */
+   virtual void HandleQueuedIncomingEvents();
 
 protected:
    /** Overridden to send a QEvent */

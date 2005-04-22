@@ -33,41 +33,46 @@ bool QMessageTransceiverThread :: event(QEvent * event)
 {
    if (event->type() == QMTT_SIGNAL_EVENT)
    {
-      uint32 code;
-      MessageRef next;
-      String sessionID;
-      uint16 port;
-      bool seenIncomingMessage = false;
-
-      // Check for any new messages from our internal thread
-      while(GetNextEventFromInternalThread(code, &next, &sessionID, &port) >= 0)
-      {
-         switch(code)
-         {
-            case MTT_EVENT_INCOMING_MESSAGE:      
-               if (seenIncomingMessage == false)
-               {
-                  seenIncomingMessage = true;
-                  emit BeginMessageBatch();
-               }
-               emit MessageReceived(next, sessionID); 
-            break;
-            case MTT_EVENT_SESSION_ACCEPTED:      emit SessionAccepted(sessionID, port); break;
-            case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached(sessionID);       break;
-            case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(sessionID);      break;
-            case MTT_EVENT_SESSION_DISCONNECTED:  emit SessionDisconnected(sessionID);   break;
-            case MTT_EVENT_SESSION_DETACHED:      emit SessionDetached(sessionID);       break;
-            case MTT_EVENT_FACTORY_ATTACHED:      emit FactoryAttached(port);            break;
-            case MTT_EVENT_FACTORY_DETACHED:      emit FactoryDetached(port);            break;
-            case MTT_EVENT_OUTPUT_QUEUES_DRAINED: emit OutputQueuesDrained(next);        break;
-            case MTT_EVENT_SERVER_EXITED:         emit ServerExited();                   break;
-         }
-         emit InternalThreadEvent(code, next, sessionID, port);  // these get emitted for any event
-      }
-      if (seenIncomingMessage) emit EndMessageBatch();
+      HandleQueuedIncomingEvents();
       return true;
    }
    else return QObject::event(event);
+}
+
+void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
+{
+   uint32 code;
+   MessageRef next;
+   String sessionID;
+   uint16 port;
+   bool seenIncomingMessage = false;
+
+   // Check for any new messages from our internal thread
+   while(GetNextEventFromInternalThread(code, &next, &sessionID, &port) >= 0)
+   {
+      switch(code)
+      {
+         case MTT_EVENT_INCOMING_MESSAGE:      
+            if (seenIncomingMessage == false)
+            {
+               seenIncomingMessage = true;
+               emit BeginMessageBatch();
+            }
+            emit MessageReceived(next, sessionID); 
+         break;
+         case MTT_EVENT_SESSION_ACCEPTED:      emit SessionAccepted(sessionID, port); break;
+         case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached(sessionID);       break;
+         case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(sessionID);      break;
+         case MTT_EVENT_SESSION_DISCONNECTED:  emit SessionDisconnected(sessionID);   break;
+         case MTT_EVENT_SESSION_DETACHED:      emit SessionDetached(sessionID);       break;
+         case MTT_EVENT_FACTORY_ATTACHED:      emit FactoryAttached(port);            break;
+         case MTT_EVENT_FACTORY_DETACHED:      emit FactoryDetached(port);            break;
+         case MTT_EVENT_OUTPUT_QUEUES_DRAINED: emit OutputQueuesDrained(next);        break;
+         case MTT_EVENT_SERVER_EXITED:         emit ServerExited();                   break;
+      }
+      emit InternalThreadEvent(code, next, sessionID, port);  // these get emitted for any event
+   }
+   if (seenIncomingMessage) emit EndMessageBatch();
 }
 
 END_NAMESPACE(muscle);

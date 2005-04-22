@@ -119,6 +119,12 @@ WHTMLView::append(const QString &newtext)
 	PRINT("WHTMLView::append()\n");
 #if (QT_VERSION < 0x030000)
 	fLock.Lock();
+	if (fBuffer.length() > 0)
+	{
+		TrimBuffer(fBuffer);
+		setText(ParseForShown(fBuffer));
+		fBuffer = "";
+	}
 	if (text().length() == 0)
 	{
 		setText(newtext);
@@ -156,8 +162,8 @@ WHTMLView::appendText(const QString &newtext)
 			if (fBuffer.length() == 0)
 			{
 				fBuffer = text();
+				setText("");
 			}
-			setText("");
 			PRINT("appendText 3\n");
 			if (fBuffer.length() > 0)
 			{
@@ -175,17 +181,20 @@ WHTMLView::appendText(const QString &newtext)
 	{
 		PRINT("appendText: Calling CheckScrollState()\n");
 		sendMessage(CheckMessage);
-		PRINT("appendText: Calling append(fBuffer)\n");
+		fLock.Lock();
 		if (fBuffer.length() > 0)
 		{
+			PRINT("appendText: Calling append(fBuffer)\n");
 			MessageRef mref = GetMessageFromPool();
 			if (mref())
 			{
-				mref()->AddString("text", (const char *) fBuffer.utf8());
+				TrimBuffer(fBuffer);
+				mref()->AddString("text", (const char *) ParseForShown(fBuffer).utf8());
 				sendMessage(AppendMessage, mref);
 			}
 			fBuffer = "";
 		}
+		fLock.Unlock();
 		PRINT("appendText: Calling append(newtext)\n");
 		MessageRef mref = GetMessageFromPool();
 		if (mref())
