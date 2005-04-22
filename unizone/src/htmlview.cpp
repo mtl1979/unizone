@@ -61,24 +61,29 @@ void
 WHTMLView::showEvent(QShowEvent *)
 {
 #if (QT_VERSION < 0x030000)
+	QString txt;
+
 //	Force scrolling down...
 	fScrollDown = true;
 	fScrollY = 0;
 //  -----------------------
 	fLock.Lock();
+
 	if (fBuffer.length() > 0)
 	{
-		TrimBuffer(fBuffer);
-		setText(ParseForShown(fBuffer));
+		txt = fBuffer;
 		fBuffer = "";
 	}
 	else
 	{
-		QString txt(text());
-		TrimBuffer(txt);
-		setText(ParseForShown(txt));
+		txt = text();
 	}
+
+	TrimBuffer(txt);
+	setText(ParseForShown(txt));
+
 	fLock.Unlock();
+
 	UpdateScrollState();
 #endif
 }
@@ -119,12 +124,7 @@ WHTMLView::append(const QString &newtext)
 	PRINT("WHTMLView::append()\n");
 #if (QT_VERSION < 0x030000)
 	fLock.Lock();
-	if (fBuffer.length() > 0)
-	{
-		TrimBuffer(fBuffer);
-		setText(ParseForShown(fBuffer));
-		fBuffer = "";
-	}
+
 	if (text().length() == 0)
 	{
 		setText(newtext);
@@ -135,6 +135,7 @@ WHTMLView::append(const QString &newtext)
 		tmp += newtext;
 		QTextBrowser::append(tmp);
 	}
+
 	fLock.Unlock();
 #else
 	fLock.Lock();
@@ -180,30 +181,28 @@ WHTMLView::appendText(const QString &newtext)
 	// fall through here...
 	{
 		PRINT("appendText: Calling CheckScrollState()\n");
-		sendMessage(CheckMessage);
+		CheckScrollState();
+
+		// Use temporary variable to minimize time being locked.
+		QString tmp;
 		fLock.Lock();
 		if (fBuffer.length() > 0)
 		{
-			PRINT("appendText: Calling append(fBuffer)\n");
-			MessageRef mref = GetMessageFromPool();
-			if (mref())
-			{
-				TrimBuffer(fBuffer);
-				mref()->AddString("text", (const char *) ParseForShown(fBuffer).utf8());
-				sendMessage(AppendMessage, mref);
-			}
+			tmp = fBuffer;
 			fBuffer = "";
 		}
 		fLock.Unlock();
-		PRINT("appendText: Calling append(newtext)\n");
-		MessageRef mref = GetMessageFromPool();
-		if (mref())
+
+		if (tmp.length() > 0)
 		{
-			mref()->AddString("text", (const char *) newtext.utf8());
-			sendMessage(AppendMessage, mref);
+			PRINT("appendText: Calling append(fBuffer)\n");
+			append(tmp);
 		}
+
+		PRINT("appendText: Calling append(newtext)\n");
+		append(newtext);
 		PRINT("appendText: Calling UpdateScrollState()\n");
-		sendMessage(ScrollMessage);
+		UpdateScrollState();
 	}
 	PRINT("appendText OK\n");
 }
@@ -283,34 +282,3 @@ WHTMLView::UpdateScrollState()
 	}
 }
 
-bool
-WHTMLView::event(QEvent *event)
-{
-	if (event->type() == (int) WMessageEvent::MessageEventType)
-	{
-		WMessageEvent *wme = dynamic_cast<WMessageEvent *>(event);
-		if (wme)
-		{
-			if (wme->MessageType() == CheckMessage)
-			{
-				CheckScrollState();
-				return true;
-			}
-			else if (wme->MessageType() == AppendMessage)
-			{
-				const char *text;
-				MessageRef mref = wme->Message();
-				mref()->FindString("text", &text);
-				QString qtext = QString::fromUtf8(text);
-				append(qtext);
-				return true;
-			}
-			else if (wme->MessageType() == ScrollMessage)
-			{
-				UpdateScrollState();
-				return true;
-			}
-		}
-	}
-	return QTextBrowser::event(event);
-}

@@ -20,14 +20,6 @@ public:
 	virtual QString context() const { return fContext; }
 	virtual void clear();
 
-	enum
-	{
-		CheckMessage = 'wHcM',
-		AppendMessage,
-		ScrollMessage
-	};
-
-
 signals:
 	void URLClicked(const QString & url);
 
@@ -37,8 +29,6 @@ protected:
 	virtual void viewportMouseMoveEvent(QMouseEvent * e);
 	
 	virtual void showEvent(QShowEvent * event);
-
-	virtual bool event(QEvent * event);
 
 private:
 	QString fOldURL, fURL, fContext;
