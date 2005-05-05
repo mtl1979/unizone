@@ -238,11 +238,6 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 		PrintSystem(tr("Type /help for a command reference."));
 	}
 
-#ifdef WIN32
-	// try to find our handle
-	FindWindowHandle("Unizone");
-#endif
-
 	// setup accept thread
 	if (fSettings->GetSharingEnabled())
 		StartAcceptThread();

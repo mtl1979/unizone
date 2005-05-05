@@ -32,9 +32,6 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	{
 		QString title = tr("Channel Window - %1").arg(fName);
 		setCaption( title );
-#ifdef WIN32
-		FindWindowHandle( title );
-#endif
 		fActive = gWin->IsPublic(fName);
 	}
 	fSplit = new QSplitter(Vertical, this);

@@ -72,9 +72,9 @@ ChatWindow::NameSaid(QString & msg)
 		else
 			type = WSettings::FlashPriv;
 
-		if (fWinHandle && !Window()->isActiveWindow() && (Settings()->GetFlash() & type))	// if we have a valid handle AND we are not active AND the user wants to flash
+		if (!Window()->isActiveWindow() && (Settings()->GetFlash() & type))	// if we have a valid handle AND we are not active AND the user wants to flash
 		{
-			WFlashWindow(fWinHandle); // flash our window
+			WFlashWindow(Window()->winId()); // flash our window
 		}
 #endif // WIN32
 	}
@@ -246,28 +246,6 @@ ChatWindow::Settings()
 {
 	return gWin->fSettings;
 }
-
-#ifdef WIN32
-void
-ChatWindow::FindWindowHandle(const QString &title)
-{
-	WString wtitle(title);
-	fWinHandle = FindWindow(NULL, wtitle);
-
-	if (!fWinHandle)
-	{
-		QString temp("[Freeware] - ");
-		temp += title;
-		wtitle = temp;
-		fWinHandle = FindWindow(NULL, wtitle);
-	}
-	// <postmaster@raasu.org> 20020925
-	if (fWinHandle)
-	{
-		PRINT("ChatWindow: Got Handle!\n");
-	}
-}
-#endif
 
 void
 ChatWindow::InitUserList(QListView *lv)

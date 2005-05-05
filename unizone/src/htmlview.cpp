@@ -189,18 +189,15 @@ WHTMLView::appendText(const QString &newtext)
 		if (fBuffer.length() > 0)
 		{
 			tmp = fBuffer;
+			tmp += "<br>";
 			fBuffer = "";
 		}
 		fLock.Unlock();
 
-		if (tmp.length() > 0)
-		{
-			PRINT("appendText: Calling append(fBuffer)\n");
-			append(tmp);
-		}
+		tmp += newtext;
 
-		PRINT("appendText: Calling append(newtext)\n");
-		append(newtext);
+		PRINT("appendText: Calling append(tmp)\n");
+		append(tmp);
 		PRINT("appendText: Calling UpdateScrollState()\n");
 		UpdateScrollState();
 	}

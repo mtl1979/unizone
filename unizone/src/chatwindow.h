@@ -44,19 +44,9 @@ public:
 
 	QString FormatNameSaid(const QString & msg); // Check and format message for Name Said...
 
-#ifdef WIN32
-	HWND GetHandle() { return fWinHandle; }
-#endif
-
 protected:
 
 	WHTMLView * fChatText;
-
-#ifdef WIN32					// if the OS is Windows,
-	void FindWindowHandle(const QString &title);
-
-	HWND fWinHandle;			// handle to our window for flashing
-#endif
 
 	void InitUserList(QListView * lv);
 

@@ -84,10 +84,6 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
 
-#ifdef WIN32
-	FindWindowHandle( tr("Private") );
-#endif
-
 	if (Settings()->GetLogging())
 		StartLogging();
 }
@@ -197,9 +193,9 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 			// <postmaster@raasu.org> 20021021 -- Fix Window Flashing on older API's
 #ifdef WIN32
 			// flash away!
-			if (fWinHandle && !this->isActiveWindow() && (Settings()->GetFlash() & WSettings::FlashPriv))	// got the handle... AND not active? AND user wants us to flash
+			if (!this->isActiveWindow() && (Settings()->GetFlash() & WSettings::FlashPriv))	// got the handle... AND not active? AND user wants us to flash
 			{
-				WFlashWindow(fWinHandle); // flash
+				WFlashWindow(winId()); // flash
 			}
 #endif // WIN32
 		}

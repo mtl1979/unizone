@@ -3900,5 +3900,25 @@ Date: %4</source>
         <source>Negotiating...</source>
         <translation type='unfinished'>교섭중...</translation>
     </message>
+    <message>
+        <source>Private Message redirect pattern cleared.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Private Message redirect pattern set to: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Private Message redirect pattern: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/redirect [nick] - Redirect all private messages to another user</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Unizone - User #%1 on %2</source>
+        <translation type='unfinished'>Unizone - %2 의 사용자 #%1</translation>
+    </message>
 </context>
 </TS>

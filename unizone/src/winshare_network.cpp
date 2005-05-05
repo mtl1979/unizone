@@ -1671,9 +1671,9 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				if (fSettings->GetSounds())
 					QApplication::beep();
 #ifdef WIN32
-				if (fWinHandle && !this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashPriv))	// if we have a valid handle AND we are not active AND the user wants to flash
+				if (!this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashPriv))	// if we have a valid handle AND we are not active AND the user wants to flash
 				{
-					WFlashWindow(fWinHandle);
+					WFlashWindow(winId()); // flash
 				}
 #endif // WIN32
 				
