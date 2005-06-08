@@ -5,7 +5,9 @@
 // that uses this DLL. This way any other project whose source files include this file see 
 // QJPEG_API functions as being imported from a DLL, wheras this DLL sees symbols
 // defined with this macro as being exported.
-#ifdef QJPEG_EXPORTS
+#if defined(QJPEG_STATIC)
+#define QJPEG_API
+#elif defined(QJPEG_EXPORTS)
 #define QJPEG_API __declspec(dllexport)
 #else
 #define QJPEG_API __declspec(dllimport)
