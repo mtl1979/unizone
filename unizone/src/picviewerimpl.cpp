@@ -66,6 +66,8 @@ WPicViewer::eventFilter( QObject *o, QEvent *e )
 		case QEvent::MouseButtonRelease:
 			mouseReleaseEvent((QMouseEvent *) e);
 			return true;
+		default: 
+			break; // empty
 		}
 	}
 	return false;

@@ -459,7 +459,7 @@ WSearch::GoSearch()
 			if (!HasRegexTokens(userExp))
 			{
 				bool nonNumericFound = false;
-				int x = 0;
+				unsigned int x = 0;
 				while (x < userExp.length())
 				{
 					if ((userExp[x] != ',') && !muscleInRange((QChar) userExp[x], (QChar) '0', (QChar) '9'))
@@ -527,7 +527,7 @@ QString
 Simplify(const QString &str)
 {
 	QString ret;
-	int x = 0;
+	unsigned int x = 0;
 	while (x < str.length())
 	{
 		if (str.mid(x, 1) == "\\")

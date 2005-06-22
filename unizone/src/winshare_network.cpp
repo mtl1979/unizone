@@ -1452,7 +1452,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 		{
 			QString qsendtext;
 			WUserRef user;
-			for (int qi = 0; qi < sendTo.GetNumItems(); qi++)
+			for (unsigned int qi = 0; qi < sendTo.GetNumItems(); qi++)
 			{
 #ifdef _DEBUG
 				WString wUser(sendTo[qi].first()->GetUserName());

@@ -8,7 +8,7 @@
 # endif
 # define PRINT2 PRINT
 #else
-# define PRINT2 
+inline void PRINT2(const char *, ...) {}
 #endif
 
 #ifdef _DEBUG

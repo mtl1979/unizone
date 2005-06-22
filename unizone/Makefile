@@ -394,10 +394,10 @@ src/channel.cpp: src/channel.h src/channel.ui
 
 clean-aux:
 	@rm -f *.o *.a $(EXECUTABLES)
-	@rm -f $(OBJFILES) $(MUSCLE_OBJFILES)
-	@rm -f $(MOC_SRCFILES) $(MOC_OBJFILES)
-	@rm -f $(MUSCLEMOC_SRCFILES) $(MUSCLEMOC_OBJFILES)
-	@rm -f $(UIC_SRCFILES) $(UIC_OBJFILES)
+	@find src -name \*.o | xargs rm
+	@rm -f $(MOC_SRCFILES)
+	@rm -f $(MUSCLEMOC_SRCFILES)
+	@rm -f $(UIC_SRCFILES)
 	@rm -f $(UIC_HEADERS)
 	@rm -f core.*
 clean :

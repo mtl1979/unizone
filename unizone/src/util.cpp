@@ -812,7 +812,7 @@ void ConvertToRegex(String & s)
 
 void ConvertToRegex(QString & s, bool simple)
 {
-	int x = 0;	
+	unsigned int x = 0;	
 	QString ret;
 	
 	bool isFirst = true;
@@ -853,7 +853,7 @@ void ConvertToRegex(QString & s, bool simple)
 bool HasRegexTokens(const QString & str)
 {
    bool isFirst = true;
-   int x = 0;
+   unsigned int x = 0;
    while(x < str.length())
    {
       if (IsRegexToken2(str[x], isFirst)) return true;

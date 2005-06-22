@@ -36,6 +36,8 @@ WSearchListItem::text(int c) const
 		tmp.replace(QRegExp("\r\n"), " ");
 		tmp.replace(QRegExp("\r"), " ");
 		tmp.replace(QRegExp("\n"), " ");
+	default: 
+		break; // empty
 	};
 	return tmp;
 }

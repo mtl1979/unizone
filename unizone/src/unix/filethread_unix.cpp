@@ -7,7 +7,7 @@ QString
 WFileThread::ResolveLink(const QString & lnk) const
 {
 	QFileInfo * info = new QFileInfo(lnk);
-	if (inf.isSymLink())
+	if (info->isSymLink())
 	{
 		QString ret = info->readLink();
 		delete info;

@@ -10,6 +10,7 @@
 #include <qstring.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qregexp.h>
 #include <map>
 
 #include "user.h"
