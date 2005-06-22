@@ -28,4 +28,12 @@ using muscle::String;
 void WFlashWindow(HWND fWinHandle);
 #endif // WIN32
 
+// RedHat Linux 8.x doesn't seem to define __LINUX__
+
+#if defined(linux) || defined(LINUX)
+#  if !defined(__LINUX__)
+#    define __LINUX__
+#  endif
+#endif
+
 #endif // PLATFORM_H

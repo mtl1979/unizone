@@ -1,3 +1,6 @@
+#ifndef WSTATUSBAR_H
+#define WSTATUSBAR_H
+
 #include <qstatusbar.h>
 #include <qlabel.h>
 #include <qwidget.h>
@@ -20,3 +23,5 @@ private:
 
 	QString checkText(const QString & text, unsigned int index);
 };
+
+#endif

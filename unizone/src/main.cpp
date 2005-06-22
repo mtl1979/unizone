@@ -80,9 +80,24 @@ main( int argc, char** argv )
 
 	// Set alternative settings file if requested
 
-	if (argc > 1)
+	int a = 1;
+	while (a < argc)
 	{
-		SetSettingsFile(argv[1]);
+		if (strcmp(argv[a], "--settings") == 0)
+		{
+			a++;
+			SetSettingsFile(argv[a]);
+		}
+		else if (strcmp(argv[a], "--font") == 0)
+		{
+			a++;
+			int fs = atoi(argv[a]);
+			QFont font = app.font();
+			font.setPointSize(fs);
+			app.setFont(font);
+		}
+
+		a++;
 	}
 
 	// Set our working directory

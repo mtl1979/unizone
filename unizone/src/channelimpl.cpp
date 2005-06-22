@@ -32,7 +32,7 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	{
 		QString title = tr("Channel Window - %1").arg(fName);
 		setCaption( title );
-		fActive = gWin->IsPublic(fName);
+		fActive = gWin->fChannels->IsPublic(fName);
 	}
 	fSplit = new QSplitter(Vertical, this);
 	CHECK_PTR(fSplit);
@@ -110,7 +110,7 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 Channel::~Channel()
 {
 	StopLogging();
-	gWin->PartChannel(fName, fNet->LocalSessionID());
+	gWin->fChannels->PartChannel(fName, fNet->LocalSessionID());
 }
 
 void
@@ -161,7 +161,7 @@ Channel::SetTopic(const QString & topic)
 		fTopicEdit->setText(topic);
 		UpdateNode();
 		PrintSystem( tr( "Topic set to %1." ).arg(fTopicEdit->text() ) );
-		gWin->SetTopic(fName, topic);
+		gWin->fChannels->SetTopic(fName, topic);
 	}
 	
 }
@@ -184,7 +184,7 @@ Channel::SetPublic(bool p)
 			fNet->SendMessageToSessions(cc);
 			UpdateNode();
 		}
-		gWin->SetPublic(fName, p);
+		gWin->fChannels->SetPublic(fName, p);
 		PrintSystem( tr("Channel is now %1.").arg(p ? tr( "public" ) : tr( "private" ) ) );
 	}	
 }
@@ -221,7 +221,7 @@ Channel::Kick(const QString & user)
 		cc()->AddString("channel", (const char *) fName.utf8());
 		fNet->SendMessageToSessions(cc);
 	}
-	gWin->PartChannel(fName, user);
+	gWin->fChannels->PartChannel(fName, user);
 }
 
 void
@@ -341,7 +341,7 @@ Channel::customEvent(QCustomEvent * event)
 					PrintSystem(tr( "List of channel admins:" ));
 					for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
 					{
-						if ( gWin->IsAdmin(fName, (*iter).second()->GetUserID()) )
+						if ( gWin->fChannels->IsAdmin(fName, (*iter).second()->GetUserID()) )
 						{
 							PrintSystem( (*iter).second()->GetUserID() + " - " + (*iter).second()->GetUserName() );
 						}
@@ -351,7 +351,7 @@ Channel::customEvent(QCustomEvent * event)
 				// Change channel topic
 				else if (wte->Text().lower().startsWith("/topic "))
 				{
-					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
 						QString qTemp = GetParameterString(wte->Text());
 						SetTopic(qTemp);
@@ -366,7 +366,7 @@ Channel::customEvent(QCustomEvent * event)
 				// Set Channel to Public mode
 				else if (wte->Text().lower().startsWith("/public"))
 				{
-					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 						SetPublic(true);
 					else
 					{
@@ -378,7 +378,7 @@ Channel::customEvent(QCustomEvent * event)
 				// Set Channel to Private mode
 				else if (wte->Text().lower().startsWith("/private"))
 				{
-					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 						SetPublic(false);	
 					else
 					{
@@ -390,13 +390,13 @@ Channel::customEvent(QCustomEvent * event)
 				// Add admin
 				else if (wte->Text().lower().startsWith("/op "))
 				{
-					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
 						QString user = GetParameterString(wte->Text());
 						if (user.length() > 0)
 						{
 							if (gWin->IsConnected(user))
-								gWin->AddAdmin(fName, user);
+								gWin->fChannels->AddAdmin(fName, user);
 							else
 							{
 								if (gWin->fSettings->GetError())
@@ -416,13 +416,13 @@ Channel::customEvent(QCustomEvent * event)
 				// Remove admin
 				else if (wte->Text().lower().startsWith("/deop "))
 				{
-					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
 						QString user = GetParameterString(wte->Text());
 						if (user.length() > 0)
 						{
 							if (gWin->IsConnected(user))
-								gWin->RemoveAdmin(fName, user);
+								gWin->fChannels->RemoveAdmin(fName, user);
 							else
 							{
 								if (gWin->fSettings->GetError())
@@ -442,7 +442,7 @@ Channel::customEvent(QCustomEvent * event)
 				// Invite or Kick users
 				else if (wte->Text().lower().startsWith("/invite "))
 				{
-					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
 						QString qTemp = GetParameterString(wte->Text());
 						if (qTemp.length() > 0)
@@ -486,7 +486,7 @@ Channel::customEvent(QCustomEvent * event)
 				}
 				else if (wte->Text().lower().startsWith("/kick "))
 				{
-					if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
 						QString qTemp = GetParameterString(wte->Text());
 						if (qTemp.length() > 0)
@@ -640,7 +640,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 void
 Channel::UpdateTopic()
 {
-	if ( gWin->IsAdmin(fName, fNet->LocalSessionID()) )
+	if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 	{
 		SetTopic( fTopicEdit->text() );
 	}	
@@ -668,7 +668,7 @@ Channel::UpdateNode()
 	MessageRef cc(GetMessageFromPool());
 	if (cc())
 	{
-		QString admins = gWin->GetAdmins(fName);
+		QString admins = gWin->fChannels->GetAdmins(fName);
 		cc()->AddString("owner", (const char *) fOwner.utf8());
 		cc()->AddString("topic", (const char *) fTopic.utf8());
 		cc()->AddString("admins", (const char *) admins.utf8());

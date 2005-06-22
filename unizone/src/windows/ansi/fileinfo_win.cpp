@@ -23,9 +23,7 @@ UFileInfo::InitMIMEType()
 		LONG ret;
 		if ((ret = RegQueryValueExA(hkey, "Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
 		{
-#ifdef DEBUG2
-			PRINT("Read key: %s\n", key);
-#endif
+			PRINT2("Read key: %s\n", key);
 			mt = QString::fromLocal8Bit(key);
 		}
 		else

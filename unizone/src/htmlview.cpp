@@ -7,10 +7,7 @@
 
 #include <qapplication.h>
 #include <qtooltip.h>
-
-#if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
-#endif
 
 WHTMLView::WHTMLView(QWidget * parent, const char * name)
 : QTextBrowser(parent, name)
@@ -26,24 +23,22 @@ WHTMLView::WHTMLView(QWidget * parent, const char * name)
 void
 WHTMLView::viewportMousePressEvent(QMouseEvent * e)
 {
+	PRINT2("WHTMLView: Press\n");
 	QTextBrowser::viewportMousePressEvent(e);
-#ifdef DEBUG2
-	PRINT("WHTMLView: Press\n");
-#endif
 }
 
 void
 WHTMLView::viewportMouseReleaseEvent(QMouseEvent * e)
 {
+	PRINT2("WHTMLView: Release\n");
 	QTextBrowser::viewportMouseReleaseEvent(e);
-#ifdef DEBUG2
-	PRINT("WHTMLView: Release\n");
-#endif
 }
 
 void
 WHTMLView::viewportMouseMoveEvent(QMouseEvent * e)
 {
+	PRINT2("WHTMLView: Move\n");
+	// Tooltip
 	if (fOldURL != fURL)
 	{
 		fOldURL = fURL;
@@ -52,40 +47,69 @@ WHTMLView::viewportMouseMoveEvent(QMouseEvent * e)
 			QToolTip::add(this, fURL);
 	}
 	QTextBrowser::viewportMouseMoveEvent(e);
-#ifdef DEBUG2
-	PRINT("WHTMLView: Move\n");
+}
+
+void
+WHTMLView::hideEvent(QHideEvent * e)
+{
+	PRINT("WHTMLView::hideEvent()\n");
+#if (QT_VERSION < 0x030000)
+
+	fLock.Lock();
+	
+	QString tmp;
+	
+	if (fBuffer.isEmpty())
+	{
+		fBuffer = text();
+		setText("");
+	}
+	
+	qDebug("fBuffer length = %i (hide)", fBuffer.length());
+	fLock.Unlock();
+	
 #endif
+	QTextBrowser::hideEvent(e);
+	PRINT("WHTMLView::hideEvent() OK\n");
 }
 
 void 
-WHTMLView::showEvent(QShowEvent *)
+WHTMLView::showEvent(QShowEvent * e)
 {
+	PRINT("WHTMLView::showEvent()\n");
 #if (QT_VERSION < 0x030000)
+
+	fLock.Lock();
+
 	QString txt;
 
 //	Force scrolling down...
 	fScrollDown = true;
 	fScrollY = 0;
 //  -----------------------
-	fLock.Lock();
+	qDebug("fBuffer length = %i (show)", fBuffer.length());
 
-	if (fBuffer.length() > 0)
-	{
-		txt = fBuffer;
-		fBuffer = "";
-	}
-	else
+	if (fBuffer.isEmpty())
 	{
 		txt = text();
 	}
+	else
+	{
+		txt = fBuffer;
+		fBuffer = QString::null;
+	}
 
 	TrimBuffer(txt);
-	setText(ParseForShown(txt));
+	txt = ParseForShown(txt);
+	qDebug("txt length = %i (show)", txt.length());
+	setText(txt);
 
 	fLock.Unlock();
 
 	UpdateScrollState();
 #endif
+	QTextBrowser::showEvent(e);
+	PRINT("WHTMLView::showEvent() OK\n");
 }
 
 void 
@@ -119,30 +143,30 @@ WHTMLView::setSource( const QString & name )
 }
 
 void
-WHTMLView::append(const QString &newtext)
+WHTMLView::_append(const QString &newtext)
 {
-	PRINT("WHTMLView::append()\n");
-#if (QT_VERSION < 0x030000)
+	PRINT("WHTMLView::_append()\n");
 	fLock.Lock();
 
-	if (text().length() == 0)
+#if (QT_VERSION < 0x030000)
+	if (text().isEmpty())
 	{
+		PRINT("Calling setText()\n");
 		setText(newtext);
 	}
 	else
 	{
 		QString tmp("\t");
 		tmp += newtext;
-		QTextBrowser::append(tmp);
+		PRINT("Calling append()\n");
+		append(tmp);
 	}
+#else
+	append(newtext);
+#endif
 
 	fLock.Unlock();
-#else
-	fLock.Lock();
-	QTextBrowser::append(newtext);
-	fLock.Unlock();
-#endif
-	PRINT("WHTMLView::append() OK\n");
+	PRINT("WHTMLView::_append() OK\n");
 }
 
 void
@@ -163,7 +187,8 @@ WHTMLView::appendText(const QString &newtext)
 			if (fBuffer.length() == 0)
 			{
 				fBuffer = text();
-				setText("");
+				if (!fBuffer.isEmpty())
+					setText("");
 			}
 			PRINT("appendText 3\n");
 			if (fBuffer.length() > 0)
@@ -186,18 +211,25 @@ WHTMLView::appendText(const QString &newtext)
 		// Use temporary variable to minimize time being locked.
 		QString tmp;
 		fLock.Lock();
-		if (fBuffer.length() > 0)
+		if (!fBuffer.isEmpty())
 		{
 			tmp = fBuffer;
-			tmp += "<br>";
-			fBuffer = "";
+			fBuffer = QString::null;
 		}
 		fLock.Unlock();
 
-		tmp += newtext;
+		if (!tmp.isEmpty())
+		{
+			tmp += "<br>";
+			tmp += newtext;
+		}
+		else
+			tmp = newtext;
 
-		PRINT("appendText: Calling append(tmp)\n");
-		append(tmp);
+		PRINT("appendText: Calling TrimBuffer(tmp)\n");
+		TrimBuffer(tmp);
+		PRINT("appendText: Calling _append(tmp)\n");
+		_append(tmp);
 		PRINT("appendText: Calling UpdateScrollState()\n");
 		UpdateScrollState();
 	}
@@ -209,7 +241,7 @@ WHTMLView::clear()
 {
 	PRINT("WHTMLView::clear()\n");
 	fLock.Lock();
-	fBuffer = "";
+	fBuffer = QString::null;
 	fScrollY = -1;
 	setText("");
 	fLock.Unlock();
@@ -220,11 +252,9 @@ void
 WHTMLView::CheckScrollState()
 {
 	QScrollBar * scroll = verticalScrollBar();
-#ifdef DEBUG2
-	PRINT("CheckScrollState: ContentsX = %d, ContentsY = %d\n", fChatText->contentsX(),		fChatText->contentsY());
-	PRINT("CheckScrollState: ContentsW = %d, ContentsH = %d\n", fChatText->contentsWidth(),	fChatText->contentsHeight());
-	PRINT("CheckScrollState: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
-#endif
+	PRINT2("CheckScrollState: ContentsX = %d, ContentsY = %d\n", contentsX(),		contentsY());
+	PRINT2("CheckScrollState: ContentsW = %d, ContentsH = %d\n", contentsWidth(),	contentsHeight());
+	PRINT2("CheckScrollState: value = %d, maxValue = %d, minValue = %d\n", scroll->value(), scroll->maxValue(), scroll->minValue());
 	fScrollX = contentsX();
 	if (scroll->value() >= scroll->maxValue())
 	{
@@ -268,12 +298,12 @@ WHTMLView::UpdateScrollState()
 	if (fScrollX > contentsX() || fScrollY > contentsY())
 	{
 		setContentsPos(fScrollX, QMIN(fScrollY, contentsHeight()));
-#ifndef WIN32	// linux only... (FreeBSD, QNX???)
+//#ifndef WIN32	// linux only... (FreeBSD, QNX???)
 		repaintContents(
 							contentsX(), contentsY(),
 							contentsWidth(), contentsHeight(),
 							false);
-#endif
+//#endif
 		if (fScrollY <= contentsHeight())
 			fScrollY = -1;
 	}

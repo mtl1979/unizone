@@ -27,8 +27,9 @@ protected:
 	virtual void viewportMousePressEvent(QMouseEvent * e);
 	virtual void viewportMouseReleaseEvent(QMouseEvent * e);
 	virtual void viewportMouseMoveEvent(QMouseEvent * e);
-	
+
 	virtual void showEvent(QShowEvent * event);
+	virtual void hideEvent(QHideEvent * event);
 
 private:
 	QString fOldURL, fURL, fContext;
@@ -41,7 +42,7 @@ private:
 	void CheckScrollState();
 	void UpdateScrollState();
 
-	virtual void append( const QString & text);
+	void _append( const QString & text);
 	void sendMessage(int type, MessageRef msg);
 	void sendMessage(int type);
 

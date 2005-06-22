@@ -4,7 +4,7 @@
 QString
 TTPEncode(const QByteArray & orig, unsigned long len)
 {
-	QCString temp("");
+	QCString temp;
 	QCString c;
 	for (unsigned int x = 0; x < len; x++)
 	{
@@ -18,7 +18,7 @@ QString
 TTPEncode(const QString &orig)
 {
 	QCString temp = orig.utf8();
-	QCString out("");
+	QCString out;
 	QCString c;
 	for (unsigned int x = 0; x < strlen(temp); x++)
 	{
@@ -32,8 +32,8 @@ QString
 TTPDecode(const QString &orig)
 {
 	if ((orig.length() % 2) != 0)
-		return QString("");
-	QCString temp("");
+		return QString::null;
+	QCString temp;
 	for (unsigned int x = 0; x < orig.length(); x += 2)
 	{
 		QString tmp = orig.mid(x,2);

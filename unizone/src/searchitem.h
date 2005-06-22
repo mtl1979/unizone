@@ -50,6 +50,7 @@ public:
 		QString h = QString::null 
 		);
 	// if more constructors are needed, they will be added later
+	virtual QString text(int c) const;
 
 };
 

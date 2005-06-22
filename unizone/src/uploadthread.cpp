@@ -532,9 +532,7 @@ WUploadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 void
 WUploadThread::OutputQueuesDrained(MessageRef /* msg */)
 {
-#ifdef DEBUG2
-	PRINT("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
-#endif
+	PRINT2("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
 
 	fIdles = 0;
 

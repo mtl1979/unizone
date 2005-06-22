@@ -78,9 +78,8 @@ using namespace muscle;
 
 #define MAXUSERS "maxusr_"		// Prefix
 
-/* Linux was our only configurable URL launcher */
-/* Now let's try it with FreeBSD and QNX too        */
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__) || defined(__QNX__)	
+/* Configurable URL launcher */
+#ifndef WIN32	
 # define MAILTO_LAUNCHER	"mailtolauncher"
 # define HTTP_LAUNCHER		"httplauncher"
 # define FTP_LAUNCHER		"ftplauncher"
@@ -356,7 +355,7 @@ public:
 	QString GetPMRedirect() const;
 	void SetPMRedirect(const QString & p);
 
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__) || defined(__QNX__)
+#ifndef WIN32
 	QString GetFTPLauncher() const;
 	void SetFTPLauncher(const QString & l);
 

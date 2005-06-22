@@ -244,7 +244,12 @@ uint64 GetCurrentTime64(uint32 timeType)
    {
       time_t now = time(NULL);
       struct tm * ltc = localtime(&now);
-      if (ltc) ret += ((int64)ltc->tm_gmtoff)*((int64)1000000);
+	  if (ltc) 
+#if defined(__sun) && defined(__SVR4)
+		  ret += ((int64)(ltc->tm_isdst == 1)?altzone:timezone)*((int64)10000000);
+#else
+		  ret += ((int64)ltc->tm_gmtoff)*((int64)1000000);
+#endif
    }
    return ret;
 #endif

@@ -48,15 +48,15 @@
         <class>QLayoutWidget</class>
         <property stdset="1">
             <name>name</name>
-            <cstring>Layout3</cstring>
+            <cstring>Layout5</cstring>
         </property>
         <property stdset="1">
             <name>geometry</name>
             <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>400</width>
-                <height>200</height>
+                <width>397</width>
+                <height>197</height>
             </rect>
         </property>
         <vbox>
@@ -189,7 +189,7 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout1</cstring>
+                    <cstring>Layout4</cstring>
                 </property>
                 <hbox>
                     <property stdset="1">
@@ -244,6 +244,27 @@
                             <bool>true</bool>
                         </property>
                     </widget>
+                    <spacer>
+                        <property>
+                            <name>name</name>
+                            <cstring>Spacer2</cstring>
+                        </property>
+                        <property>
+                            <name>orientation</name>
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property>
+                            <name>sizeType</name>
+                            <enum>Expanding</enum>
+                        </property>
+                        <property>
+                            <name>sizeHint</name>
+                            <size>
+                                <width>20</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
                 </hbox>
             </widget>
         </vbox>

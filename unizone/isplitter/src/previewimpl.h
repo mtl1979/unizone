@@ -7,6 +7,7 @@
 
 class QImage;
 class QString;
+class QPoint;
 
 class Preview : public QWidget
 {
@@ -26,9 +27,18 @@ protected slots:
 
 protected:
 	void resizeEvent(QResizeEvent *e);
+	bool eventFilter( QObject *o, QEvent *e );
+	void mousePressEvent(QMouseEvent *e);
+	void mouseMoveEvent(QMouseEvent *e);
+	void mouseReleaseEvent(QMouseEvent *e);
+	void startDrag();
+
 	friend class ImageSplitter;
 	void ClearPreview();
 	void ShowImage(QImage *);
+
+	bool dragging;
+	QPoint startPos;
 
     QGridLayout* GridLayout;
 

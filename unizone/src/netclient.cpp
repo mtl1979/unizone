@@ -23,7 +23,7 @@
 WinShareWindow * GetWindow(QObject *);
 
 NetClient::NetClient(QObject * owner)
-: QObject(owner), fChannelLock(true)
+: QObject(owner)
 {
 	setName( "NetClient" );
 
@@ -38,9 +38,9 @@ NetClient::NetClient(QObject * owner)
 	hasmessages = false;
 	fLoggedIn = false;
 	fLoginTime = 0;
-	fChannelLock.lock();
+	fChannelLock.Lock();
 	fChannels = GetMessageFromPool();
-	fChannelLock.unlock();
+	fChannelLock.Unlock();
 
 	qmtt = NULL;
 }
@@ -72,17 +72,6 @@ NetClient::Connect(const QString & server, uint16 port)
 {
 	PRINT("NetClient::Connect()\n");
 	Disconnect();
-
-	if (fUserName.find(QString("binky"), 0, false) >= 0)
-	{
-		WinShareWindow *win = GetWindow(this);
-		if (win)
-		{
-			win->SendErrorEvent(tr("You must change your nickname before connecting!"));
-			win->SendErrorEvent(tr("We prefer that none of the nicknames contain word 'binky'."));
-		}
-		return B_ERROR;
-	}
 
 	PRINT("Creating thread\n");
 	// QMessageTransceiverThread
@@ -196,12 +185,12 @@ NetClient::LocalSessionID() const
 }
 
 void
-NetClient::AddSubscription(const String & str, bool q)
+NetClient::AddSubscription(const QString & str, bool q)
 {
 	MessageRef ref(GetMessageFromPool(PR_COMMAND_SETPARAMETERS));
 	if (ref())
 	{
-		ref()->AddBool(str, true);		// true doesn't mean anything
+		ref()->AddBool((const char *) str.utf8(), true);		// true doesn't mean anything
 		if (q)
 			ref()->AddBool(PR_NAME_SUBSCRIBE_QUIETLY, true);		// no initial response
 		SendMessageToSessions(ref);
@@ -224,12 +213,12 @@ NetClient::AddSubscriptionList(const String * slist, bool q)
 }
 
 void
-NetClient::RemoveSubscription(const String & str)
+NetClient::RemoveSubscription(const QString & str)
 {
 	MessageRef ref(GetMessageFromPool(PR_COMMAND_REMOVEPARAMETERS));
 	if (ref())
 	{
-		ref()->AddString(PR_NAME_KEYS, str);
+		ref()->AddString(PR_NAME_KEYS, (const char *) str.utf8());
 		SendMessageToSessions(ref);
 	}
 }
@@ -237,8 +226,7 @@ NetClient::RemoveSubscription(const String & str)
 bool
 NetClient::ExistUser(const QString & sessionID)
 {
-	QString id = sessionID;
-	if (fUsers.find(id) != fUsers.end())
+	if (fUsers.find(sessionID) != fUsers.end())
 		return true;
 	return false;
 }
@@ -246,8 +234,7 @@ NetClient::ExistUser(const QString & sessionID)
 WUserRef
 NetClient::FindUser(const QString & sessionID)
 {
-	QString id = sessionID;
-	WUserIter iter = fUsers.find(id);
+	WUserIter iter = fUsers.find(sessionID);
 	if (iter != fUsers.end())
 		return (*iter).second;
 	return WUserRef(NULL, NULL);
@@ -293,7 +280,6 @@ NetClient::CreateUser(const QString & sessionID)
 	WUserRef nref(n, NULL);
 	if (n)
 	{
-//		n->SetUserID(sessionID);
 		WUserPair pair = MakePair(sessionID, nref);
 
 		fUsers.insert(pair);
@@ -475,7 +461,7 @@ void
 NetClient::AddChannel(const QString &sid, const QString &channel)
 {
 	MessageRef mChannel;
-	fChannelLock.lock();
+	fChannelLock.Lock();
 	if ( fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
 		mChannel()->AddBool((const char *) sid.utf8(), true);
@@ -490,14 +476,14 @@ NetClient::AddChannel(const QString &sid, const QString &channel)
 			fChannels()->AddMessage((const char *) channel.utf8(), mChannel);
 		}
 	}
-	fChannelLock.unlock();
+	fChannelLock.Unlock();
 }
 
 void
 NetClient::RemoveChannel(const QString &sid, const QString &channel)
 {
 	MessageRef mChannel;
-	fChannelLock.lock();
+	fChannelLock.Lock();
 	if ( fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
 		mChannel()->RemoveName((const char *) sid.utf8());
@@ -507,13 +493,13 @@ NetClient::RemoveChannel(const QString &sid, const QString &channel)
 			fChannels()->RemoveName((const char *) channel.utf8());
 		}
 	}
-	fChannelLock.unlock();
+	fChannelLock.Unlock();
 }
 
 QString *
 NetClient::GetChannelList()
 {
-	fChannelLock.lock();
+	fChannelLock.Lock();
 	int n = fChannels()->CountNames(B_MESSAGE_TYPE);
 	QString * qChannels = new QString[n];
 	int i = 0;
@@ -523,7 +509,7 @@ NetClient::GetChannelList()
 	{
 		qChannels[i++] = QString::fromUtf8(channel.Cstr());
 	}
-	fChannelLock.unlock();
+	fChannelLock.Unlock();
 	return qChannels;
 }
 
@@ -531,7 +517,7 @@ QString *
 NetClient::GetChannelUsers(const QString & channel)
 {
 	MessageRef mChannel;
-	fChannelLock.lock();
+	fChannelLock.Lock();
 	QString * users = NULL;
 	if (fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
@@ -545,30 +531,30 @@ NetClient::GetChannelUsers(const QString & channel)
 			users[i++] = QString::fromUtf8(user.Cstr());
 		}
 	}
-	fChannelLock.unlock();
+	fChannelLock.Unlock();
 	return users;
 }
 
 int
 NetClient::GetChannelCount()
 {
-	fChannelLock.lock();
+	fChannelLock.Lock();
 	int n = fChannels()->CountNames(B_MESSAGE_TYPE);
-	fChannelLock.unlock();
+	fChannelLock.Unlock();
 	return n;
 }
 
 int
 NetClient::GetUserCount(const QString & channel)
 {
-	fChannelLock.lock();
+	fChannelLock.Lock();
 	int n = 0;
 	MessageRef mChannel;
 	if (fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
 		n = mChannel()->CountNames(B_BOOL_TYPE);
 	}
-	fChannelLock.unlock();
+	fChannelLock.Unlock();
 	return n;
 }
 
@@ -579,21 +565,17 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 	String sid = GetPathClauseString(SESSION_ID_DEPTH, nodePath.Cstr());
 	QString qsid(sid.Cstr());
 
+	WUserRef user = FindUser(qsid);
+	if (!user())	// doesn't exist
+		user = CreateUser(qsid);
+
 	if (pd == BESHARE_HOME_DEPTH)
 	{
 		String host = GetPathClauseString(NetClient::HOST_NAME_DEPTH, nodePath.Cstr());
 		QString hostName = QString::fromUtf8(host.Cstr());
 		
-		WUserRef user = FindUser(qsid);
-		if (!user())	// doesn't exist
-		{
-			user = CreateUser(qsid);
-			if (user())	// created?
-			{
-				user()->SetUserHostName(hostName);
-				emit UserHostName(qsid, hostName);
-			}
-		}
+		user()->SetUserHostName(hostName);
+		emit UserHostName(qsid, hostName);
 	}
 	else if (pd >= USER_NAME_DEPTH)
 	{
@@ -607,47 +589,43 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 			{
 			case USER_NAME_DEPTH:
 				{
-					WUserRef user = FindUser(qsid);
-					if (user())	// found?
+					String nodeName = GetPathClauseString(USER_NAME_DEPTH, nodePath.Cstr());
+					if (nodeName.EqualsIgnoreCase("name"))
 					{
-						String nodeName = GetPathClauseString(USER_NAME_DEPTH, nodePath.Cstr());
-						if (nodeName.EqualsIgnoreCase("name"))
-						{
-							QString oldname = user()->GetUserName();
-							user()->InitName(tmpRef); 
-							if (oldname != user()->GetUserName())
-								emit UserNameChanged(qsid, oldname, user()->GetUserName());
-						}
-						else if (nodeName.EqualsIgnoreCase("userstatus"))
-						{
-							QString oldstatus = user()->GetStatus();
-							user()->InitStatus(tmpRef);
-							if (oldstatus != user()->GetStatus())
-								emit UserStatusChanged(qsid, user()->GetUserName(), user()->GetStatus());
-						}
-						else if (nodeName.EqualsIgnoreCase("uploadstats"))
-						{
-							user()->InitUploadStats(tmpRef);
-						}
-						else if (nodeName.EqualsIgnoreCase("bandwidth"))
-						{
-							user()->InitBandwidth(tmpRef);
-						}
-						else if (nodeName.EqualsIgnoreCase("filecount"))
-						{
-							user()->InitFileCount(tmpRef);
-						}
-						else if (nodeName.EqualsIgnoreCase("fires"))
-						{
-							user()->SetFirewalled(true);
-						}
-						else if (nodeName.EqualsIgnoreCase("files"))
-						{
-							user()->SetFirewalled(false);
-						}
-						
-						TextEvent(fOwner, qsid, WTextEvent::UserUpdateEvent);
+						QString oldname = user()->GetUserName();
+						user()->InitName(tmpRef); 
+						if (oldname != user()->GetUserName())
+							emit UserNameChanged(qsid, oldname, user()->GetUserName());
 					}
+					else if (nodeName.EqualsIgnoreCase("userstatus"))
+					{
+						QString oldstatus = user()->GetStatus();
+						user()->InitStatus(tmpRef);
+						if (oldstatus != user()->GetStatus())
+							emit UserStatusChanged(qsid, user()->GetUserName(), user()->GetStatus());
+					}
+					else if (nodeName.EqualsIgnoreCase("uploadstats"))
+					{
+						user()->InitUploadStats(tmpRef);
+					}
+					else if (nodeName.EqualsIgnoreCase("bandwidth"))
+					{
+						user()->InitBandwidth(tmpRef);
+					}
+					else if (nodeName.EqualsIgnoreCase("filecount"))
+					{
+						user()->InitFileCount(tmpRef);
+					}
+					else if (nodeName.EqualsIgnoreCase("fires"))
+					{
+						user()->SetFirewalled(true);
+					}
+					else if (nodeName.EqualsIgnoreCase("files"))
+					{
+						user()->SetFirewalled(false);
+					}
+					
+					TextEvent(fOwner, qsid, WTextEvent::UserUpdateEvent);
 				}
 				break;
 				
@@ -978,9 +956,7 @@ NetClient::GetServerIP() const
 void
 NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 {
-#ifdef DEBUG2
-	PRINT("MTT_EVENT_INCOMING_MESSAGE\n");
-#endif
+	PRINT2("MTT_EVENT_INCOMING_MESSAGE\n");
 	if (msg())
 	{
 		switch (msg()->what)
@@ -1005,9 +981,7 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 
 			case PR_RESULT_DATAITEMS:
 			{
-#ifdef DEBUG2
-				PRINT("PR_RESULT_DATAITEMS\n");
-#endif
+				PRINT2("PR_RESULT_DATAITEMS\n");
 				HandleResultMessage(msg);
 				
 				break;
@@ -1075,9 +1049,7 @@ NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
 
 			default:
 			{
-#ifdef DEBUG2
-				PRINT("Handling message\n");
-#endif
+				PRINT2("Handling message\n");
 				::SendEvent(fOwner, WMessageEvent::HandleMessage, msg);
 				break;
 			}
@@ -1144,7 +1116,7 @@ NetClient::FactoryDetached(uint16 /* port */)
 void
 NetClient::OutputQueuesDrained(MessageRef /* ref */)
 {
- 	PRINT("MTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
+ 	PRINT2("MTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
 
 	if (IsConnected())
 	{
@@ -1154,19 +1126,19 @@ NetClient::OutputQueuesDrained(MessageRef /* ref */)
 		
 		if (packetbuf.GetNumItems() > 0)
 		{
-			fPacketLock.lock();
-			PRINT("Messages in High Priority Queue: %lu\n", packetbuf.GetNumItems());
+			fPacketLock.Lock();
+			PRINT2("Messages in High Priority Queue: %lu\n", packetbuf.GetNumItems());
 			packetbuf.RemoveHead(np);
-			fPacketLock.unlock();
+			fPacketLock.Unlock();
 			
 			found = true;
 		}
 		else if (lowpacketbuf.GetNumItems() > 0)
 		{
-			fLowPacketLock.lock();
-			PRINT("Messages in Low Priority Queue: %lu\n", lowpacketbuf.GetNumItems());
+			fLowPacketLock.Lock();
+			PRINT2("Messages in Low Priority Queue: %lu\n", lowpacketbuf.GetNumItems());
 			lowpacketbuf.RemoveHead(np);
-			fLowPacketLock.unlock();
+			fLowPacketLock.Unlock();
 			found = true;
 		}
 		
@@ -1207,13 +1179,13 @@ NetClient::Cleanup()
 		timerID = 0;
 	}
 
-	fPacketLock.lock();
+	fPacketLock.Lock();
 	packetbuf.Clear();
-	fPacketLock.unlock();
+	fPacketLock.Unlock();
 
-	fLowPacketLock.lock();
+	fLowPacketLock.Lock();
 	lowpacketbuf.Clear();
-	fLowPacketLock.unlock();
+	fLowPacketLock.Unlock();
 
 	hasmessages = false;
 }
@@ -1255,15 +1227,15 @@ NetClient::SendMessageToSessions(MessageRef msgRef, int priority, const char * o
 		
 		if (priority == 0) // low
 		{
-			fLowPacketLock.lock();
+			fLowPacketLock.Lock();
 			ret = lowpacketbuf.AddTail(np);
-			fLowPacketLock.unlock();
+			fLowPacketLock.Unlock();
 		}
 		else
 		{
-			fPacketLock.lock();
+			fPacketLock.Lock();
 			ret = packetbuf.AddTail(np);
-			fPacketLock.unlock();
+			fPacketLock.Unlock();
 		}
 		
 		if (!hasmessages)

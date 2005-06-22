@@ -195,10 +195,9 @@ void HandleStandardDaemonArgs(const Message & args)
 
       if (effectiveLevel)
       {
-         // cued isn't as time-critical as the other daemons, so he'll defer to them
          errno = 0;  // the only reliable way to check for an error here :^P
          (void) nice(effectiveLevel);
-         if (errno != 0) LogTime(MUSCLE_LOG_ERROR, "Process nice(%li) failed (access denied?)\n", effectiveLevel);
+         if (errno != 0) LogTime(MUSCLE_LOG_WARNING, "Couldn't change process execution priority to %li.\n", effectiveLevel);
                     else LogTime(MUSCLE_LOG_INFO, "Process is now %s (niceLevel=%i)\n", (effectiveLevel<0)?"mean":"nice", effectiveLevel);
       }
    }
@@ -374,7 +373,12 @@ uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
    if (timeType == MUSCLE_TIMEZONE_LOCAL)
    {
       struct tm * t = localtime(&timeS);
-      if (t) timeS += t->tm_gmtoff;
+	  if (t) 
+#if defined(__sun) && defined(__SVR4)
+		  timeS += (t->tm_isdst == 1)?altzone:timezone;
+#else
+		  timeS += t->tm_gmtoff;
+#endif
    }
    return ((uint64)timeS)*1000000;
 #endif

@@ -29,6 +29,7 @@ SRCFILES = \
 	src/botitem.cpp \
 	src/channelinfo.cpp \
 	src/channelimpl.cpp \
+	src/channels.cpp \
 	src/chatevent.cpp \
 	src/chattext.cpp \
 	src/chatwindow.cpp \
@@ -36,6 +37,7 @@ SRCFILES = \
 	src/debugimpl.cpp \
 	src/downloadimpl.cpp \
 	src/downloadthread.cpp \
+	src/downloadqueue.cpp \
 	src/downloadworker.cpp \
 	src/events.cpp \
 	src/fileinfo.cpp \
@@ -54,6 +56,7 @@ SRCFILES = \
 	src/platform.cpp \
 	src/prefsimpl.cpp \
 	src/privatewindowimpl.cpp \
+	src/search.cpp \
 	src/searchitem.cpp \
 	src/serverclient.cpp \
 	src/settings.cpp \
@@ -69,11 +72,9 @@ SRCFILES = \
 	src/version.cpp \
 	src/wcrypt.cpp \
 	src/werrorevent.cpp \
-	src/winshare_channels.cpp \
 	src/winshare_lists.cpp \
 	src/winshare_network.cpp \
 	src/winshare_parsing.cpp \
-	src/winshare_search.cpp \
 	src/winshare_slots.cpp \
 	src/winsharewindow.cpp \
 	src/wmessageevent.cpp \
@@ -96,6 +97,7 @@ MOC_SRCFILES = \
 	src/moc_aboutdlgimpl.cpp \
 	src/moc_channel.cpp \
 	src/moc_channelimpl.cpp \
+	src/moc_channels.cpp \
 	src/moc_chattext.cpp \
 	src/moc_combo.cpp \
 	src/moc_downloadimpl.cpp \
@@ -112,6 +114,7 @@ MOC_SRCFILES = \
 	src/moc_prefsimpl.cpp \
 	src/moc_privatewindow.cpp \
 	src/moc_privatewindowimpl.cpp \
+	src/moc_search.cpp \
 	src/moc_serverclient.cpp \
 	src/moc_ulistview.cpp \
 	src/moc_updateclient.cpp \
@@ -240,6 +243,10 @@ src/moc_aboutdlgimpl.cpp: src/aboutdlgimpl.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
 
+src/moc_channels.cpp: src/channels.h
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
+
 src/moc_chattext.cpp: src/chattext.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
@@ -297,6 +304,10 @@ src/moc_privatewindow.cpp: src/privatewindow.h
 	@$(MOC) $< -o $@
 
 src/moc_privatewindowimpl.cpp: src/privatewindowimpl.h
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
+
+src/moc_search.cpp: src/search.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
 

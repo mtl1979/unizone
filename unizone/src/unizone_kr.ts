@@ -201,31 +201,59 @@ Version %1</source>
     <name>Channels</name>
     <message>
         <source>Yes</source>
-        <translation type='obsolete'>예</translation>
+        <translation type='unfinished'>예</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type='obsolete'>아니오</translation>
+        <translation type='unfinished'>아니오</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='obsolete'>채널 만들기</translation>
+        <translation type='unfinished'>채널 만들기</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='obsolete'>채널 이름을 입력하여 주십시요.</translation>
+        <translation type='unfinished'>채널 이름을 입력하여 주십시요</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='obsolete'>채널</translation>
+        <translation type='unfinished'>채널</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='obsolete'>사용자 #%1 님이 채널 %2 로 당신을 초대하셨습니다. 허락하시겠습니까?</translation>
+        <translation type='unfinished'>사용자 #%1 님이 채널 %2 로 당신을 초대하셨습니다. 허락하시겠습니까?</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='obsolete'>사용자 #%1 님이 채널 %2로 초대를 요청하셨습니다. 응답하시겠습니까?</translation>
+        <translation type='unfinished'>사용자 #%1 님이 채널 %2로 초대를 요청하셨습니다. 응답하시겠습니까?</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type='unfinished'>이름</translation>
+    </message>
+    <message>
+        <source>Topic</source>
+        <translation type='unfinished'>주제</translation>
+    </message>
+    <message>
+        <source>Users</source>
+        <translation type='unfinished'>사용자</translation>
+    </message>
+    <message>
+        <source>Admins</source>
+        <translation type='unfinished'>관리자</translation>
+    </message>
+    <message>
+        <source>Public</source>
+        <translation type='unfinished'>일반</translation>
+    </message>
+    <message>
+        <source>&amp;Create</source>
+        <translation type='unfinished'>만들기(&amp;C)</translation>
+    </message>
+    <message>
+        <source>&amp;Join</source>
+        <translation type='unfinished'>참가하기(&amp;J)</translation>
     </message>
 </context>
 <context>
@@ -563,7 +591,7 @@ Date: %4</source>
     </message>
     <message>
         <source>F10</source>
-        <translation type='obsolete'>F10</translation>
+        <translation type='unfinished'>F10</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
@@ -596,6 +624,18 @@ Date: %4</source>
     <message>
         <source>&amp;Help</source>
         <translation>도움말(&amp;H)</translation>
+    </message>
+    <message>
+        <source>&amp;Channels</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>ALT+F</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -2293,7 +2333,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Private</source>
-        <translation>비밀</translation>
+        <translation type='obsolete'>비밀</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is a bot!</source>
@@ -2327,39 +2367,39 @@ Date: %4</source>
     <name>WSearch</name>
     <message>
         <source>Search</source>
-        <translation type='obsolete'>찾기</translation>
+        <translation type='unfinished'>찾기</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='obsolete'>파일명</translation>
+        <translation type='unfinished'>파일명</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='obsolete'>크기</translation>
+        <translation type='unfinished'>크기</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='obsolete'>형식</translation>
+        <translation type='unfinished'>형식</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='obsolete'>수정</translation>
+        <translation type='unfinished'>수정</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='obsolete'>경로</translation>
+        <translation type='unfinished'>경로</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='obsolete'>사용자</translation>
+        <translation type='unfinished'>사용자</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='obsolete'>검색:</translation>
+        <translation type='unfinished'>검색:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='obsolete'>다운로드</translation>
+        <translation type='unfinished'>다운로드</translation>
     </message>
     <message>
         <source>Close</source>
@@ -2367,27 +2407,43 @@ Date: %4</source>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='obsolete'>비우기</translation>
+        <translation type='unfinished'>비우기</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='obsolete'>중단</translation>
+        <translation type='unfinished'>중단</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='obsolete'>대기.</translation>
+        <translation type='unfinished'>대기.</translation>
     </message>
     <message>
         <source>Not connected.</source>
-        <translation type='obsolete'>연결되지 않았습니다.</translation>
+        <translation type='unfinished'>연결되지 않았습니다.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation type='obsolete'>찾는 중: "%1".</translation>
+        <translation type='unfinished'>찾는 중: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='obsolete'>결과: %1</translation>
+        <translation type='unfinished'>결과: %1</translation>
+    </message>
+    <message>
+        <source>Clear History</source>
+        <translation type='unfinished'>Clear History</translation>
+    </message>
+    <message>
+        <source>User(s) not found!</source>
+        <translation type='unfinished'>사용자를 찾을 수 없습니다!</translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
+        <translation type='unfinished'>Initializing...</translation>
+    </message>
+    <message>
+        <source>active</source>
+        <translation type='unfinished'>active</translation>
     </message>
 </context>
 <context>
@@ -3002,7 +3058,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Name</source>
-        <translation>이름</translation>
+        <translation type='obsolete'>이름</translation>
     </message>
     <message>
         <source>ID</source>
@@ -3134,23 +3190,23 @@ Date: %4</source>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation>채널 만들기</translation>
+        <translation type='obsolete'>채널 만들기</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation>채널 이름을 입력하여 주십시요</translation>
+        <translation type='obsolete'>채널 이름을 입력하여 주십시요</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation>채널</translation>
+        <translation type='obsolete'>채널</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation>사용자 #%1 님이 채널 %2 로 당신을 초대하셨습니다. 허락하시겠습니까?</translation>
+        <translation type='obsolete'>사용자 #%1 님이 채널 %2 로 당신을 초대하셨습니다. 허락하시겠습니까?</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation>사용자 #%1 님이 채널 %2로 초대를 요청하셨습니다. 응답하시겠습니까?</translation>
+        <translation type='obsolete'>사용자 #%1 님이 채널 %2로 초대를 요청하셨습니다. 응답하시겠습니까?</translation>
     </message>
     <message>
         <source>Server version: %1</source>
@@ -3502,19 +3558,19 @@ Date: %4</source>
     </message>
     <message>
         <source>Idle.</source>
-        <translation>대기.</translation>
+        <translation type='obsolete'>대기.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation>찾는 중: "%1".</translation>
+        <translation type='obsolete'>찾는 중: "%1".</translation>
     </message>
     <message>
         <source>active</source>
-        <translation>active</translation>
+        <translation type='obsolete'>active</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation>결과: %1</translation>
+        <translation type='obsolete'>결과: %1</translation>
     </message>
     <message>
         <source>File Scan</source>
@@ -3546,71 +3602,71 @@ Date: %4</source>
     </message>
     <message>
         <source>File Name</source>
-        <translation>파일명</translation>
+        <translation type='obsolete'>파일명</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation>크기</translation>
+        <translation type='obsolete'>크기</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation>형식</translation>
+        <translation type='obsolete'>형식</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation>수정</translation>
+        <translation type='obsolete'>수정</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation>경로</translation>
+        <translation type='obsolete'>경로</translation>
     </message>
     <message>
         <source>User</source>
-        <translation>사용자</translation>
+        <translation type='obsolete'>사용자</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation>검색:</translation>
+        <translation type='obsolete'>검색:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation>다운로드</translation>
+        <translation type='obsolete'>다운로드</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation>중단</translation>
+        <translation type='obsolete'>중단</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation>비우기</translation>
+        <translation type='obsolete'>비우기</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation>Clear History</translation>
+        <translation type='obsolete'>Clear History</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation>주제</translation>
+        <translation type='obsolete'>주제</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation>사용자</translation>
+        <translation type='obsolete'>사용자</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation>관리자</translation>
+        <translation type='obsolete'>관리자</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation>일반</translation>
+        <translation type='obsolete'>일반</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation>만들기(&amp;C)</translation>
+        <translation type='obsolete'>만들기(&amp;C)</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation>참가하기(&amp;J)</translation>
+        <translation type='obsolete'>참가하기(&amp;J)</translation>
     </message>
     <message>
         <source>Testing Unizone (English)</source>
@@ -3618,11 +3674,11 @@ Date: %4</source>
     </message>
     <message>
         <source>Chat</source>
-        <translation>대화</translation>
+        <translation type='obsolete'>대화</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation>찾기</translation>
+        <translation type='obsolete'>찾기</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
@@ -3674,7 +3730,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation>Initializing...</translation>
+        <translation type='obsolete'>Initializing...</translation>
     </message>
     <message>
         <source>On Connect: Do Nothing ;)</source>
@@ -3919,6 +3975,10 @@ Date: %4</source>
     <message>
         <source>Unizone - User #%1 on %2</source>
         <translation type='unfinished'>Unizone - %2 의 사용자 #%1</translation>
+    </message>
+    <message>
+        <source>Qt version: %1</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>

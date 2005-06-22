@@ -45,9 +45,9 @@ public:
 	bool IsLoggedIn() const { return fLoggedIn; }
 	uint64 LoginTime() const { return fLoginTime; }
 	
-	void AddSubscription(const String & str, bool q = false);	// if "q" is true, u won't get an initial response
+	void AddSubscription(const QString & str, bool q = false);	// if "q" is true, u won't get an initial response
 	void AddSubscriptionList(const String * str, bool q = false);
-	void RemoveSubscription(const String & str);
+	void RemoveSubscription(const QString & str);
 	
 	void SendChatText(const QString &target, const QString &text, bool encoded = false);
 	void SendPing(const QString &target);
@@ -205,7 +205,7 @@ private:
 
 	void Cleanup();
 
-	mutable QMutex fChannelLock;
+	mutable Mutex fChannelLock;
 
 	int timerID;
 
@@ -213,8 +213,8 @@ private:
 	Queue<NetPacket> packetbuf;
 	Queue<NetPacket> lowpacketbuf;
 
-	QMutex fPacketLock;
-	QMutex fLowPacketLock;
+	Mutex fPacketLock;
+	Mutex fLowPacketLock;
 	bool hasmessages, fLoggedIn;
 	uint64 fLoginTime;
 

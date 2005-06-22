@@ -6,22 +6,20 @@
 #include "settings.h"
 #include "util.h"
 
-#if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
-#endif
 
 bool
 WinShareWindow::IsIgnoredIP(const QString & ip)
 {
-#ifdef _DEBUG
-	WString wIP(ip);
-	PRINT("IsIgnoredIP(%S)\n", wIP.getBuffer());
-#endif
+	{
+		WString wIP(ip);
+		PRINT("IsIgnoredIP(%S)\n", wIP.getBuffer());
+	}
 
-#ifdef DEBUG2
-	wIP = fIgnoreIP;
-	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
-#endif
+	{
+		WString wIP(fIgnoreIP);
+		PRINT2("IP IGNORE MASK: %S\n", wIP.getBuffer());
+	}
 
 	return MatchFilter(ip, fIgnoreIP);
 }
@@ -29,10 +27,10 @@ WinShareWindow::IsIgnoredIP(const QString & ip)
 bool
 WinShareWindow::AddIPIgnore(const QString & ip)
 {
-#ifdef _DEBUG
-	WString wIP(ip);
-	PRINT("AddIPIgnore(%S)\n", wIP.getBuffer());
-#endif
+	{
+		WString wIP(ip);
+		PRINT("AddIPIgnore(%S)\n", wIP.getBuffer());
+	}
 
 	if ( IsIgnoredIP(ip) )
 		return false;
@@ -42,10 +40,10 @@ WinShareWindow::AddIPIgnore(const QString & ip)
 
 	AddToList(fIgnoreIP, ip);
 
-#ifdef DEBUG2
-	wIP = fIgnoreIP;
-	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
-#endif
+	{
+		WString wIP(fIgnoreIP);
+		PRINT2("IP IGNORE MASK: %S\n", wIP.getBuffer());
+	}
 
 	return true;
 
@@ -54,30 +52,28 @@ WinShareWindow::AddIPIgnore(const QString & ip)
 bool
 WinShareWindow::RemoveIPIgnore(const QString & ip)
 {
-#ifdef _DEBUG
-	WString wIP(ip);
-	PRINT("RemoveIPIgnore(%S)\n", wIP.getBuffer());
-#endif
+	{
+		WString wIP(ip);
+		PRINT("RemoveIPIgnore(%S)\n", wIP.getBuffer());
+	}
 
 	if ( !IsIgnoredIP(ip) )
 		return false;
 
 	if (fIgnoreIP == ip) // First and only?
 	{
-		fIgnoreIP = "";
-#ifdef DEBUG2
-		PRINT("IP IGNORE MASK CLEARED\n");
-#endif
+		fIgnoreIP = QString::null;
+		PRINT2("IP IGNORE MASK CLEARED\n");
 
 		return true;
 	}
 
 	RemoveFromList(fIgnoreIP, ip);
 
-#ifdef DEBUG2
-	wIP = fIgnoreIP;
-	PRINT("IP IGNORE MASK: %S\n", wIP.getBuffer());
-#endif
+	{
+		WString wIP(fIgnoreIP);
+		PRINT2("IP IGNORE MASK: %S\n", wIP.getBuffer());
+	}
 
 	return true;
 }

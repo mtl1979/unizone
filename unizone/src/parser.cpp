@@ -28,6 +28,7 @@ TrimBuffer(QString &txt)
 			else if (txt.mid(n3,1) == "\t")
 			{
 				n2 = n3 + 1;
+				break;
 			}
 			n3++;
 		}
@@ -57,7 +58,6 @@ TrimBuffer(QString &txt)
 QString
 ParseForShown(const QString & txt)
 {
-	// <postmaster@raasu.org> 20021005,20021128 -- Don't use latin1(), use QStringTokenizer ;)
 	if (txt.length() > 0)
 	{
 		QString out = ParseForShownAux(txt);

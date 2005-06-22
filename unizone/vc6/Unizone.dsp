@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "NDEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -56,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
@@ -73,7 +73,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "_DEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "DISABLE_OBJECT_POOLING" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"Debug/Unizoned.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
@@ -103,7 +103,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
 # SUBTRACT BASE CPP /X /YX
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -115,7 +115,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug"
 # SUBTRACT BASE LINK32 /incremental:no
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegad.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug_ANSI" /libpath:"muscle___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug_ANSI" /libpath:"muscle___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
@@ -134,7 +134,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
 # SUBTRACT BASE CPP /X
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -146,7 +146,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 muscle.lib zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release"
 # SUBTRACT BASE LINK32 /pdb:none /incremental:yes
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpega.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizonea.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release_ANSI" /libpath:"muscle___Win32_Release_ANSI" /libpath:"regex___Win32_Release_ANSI" /libpath:"zlib___Win32_Release_ANSI"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizonea.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Release_ANSI" /libpath:"muscle___Win32_Release_ANSI" /libpath:"regex___Win32_Release_ANSI" /libpath:"zlib___Win32_Release_ANSI"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ENDIF 
@@ -199,6 +199,10 @@ SOURCE=..\src\channelinfo.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\channels.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\chatevent.cpp
 # End Source File
 # Begin Source File
@@ -220,6 +224,10 @@ SOURCE=..\src\debugimpl.cpp
 # Begin Source File
 
 SOURCE=..\src\downloadimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\downloadqueue.cpp
 # End Source File
 # Begin Source File
 
@@ -319,6 +327,10 @@ SOURCE=..\src\scanprogressimpl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\search.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\searchitem.cpp
 # End Source File
 # Begin Source File
@@ -383,10 +395,6 @@ SOURCE=..\src\windows\wfile.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\winshare_channels.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\winshare_lists.cpp
 # End Source File
 # Begin Source File
@@ -396,10 +404,6 @@ SOURCE=..\src\winshare_network.cpp
 # Begin Source File
 
 SOURCE=..\src\winshare_parsing.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\winshare_search.cpp
 # End Source File
 # Begin Source File
 
@@ -691,6 +695,65 @@ SOURCE=..\src\channelinfo.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\channels.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\channels.h
+InputName=channels
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\channels.h
+InputName=channels
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\channels.h
+InputName=channels
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\channels.h
+InputName=channels
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\chatevent.h
 # End Source File
 # Begin Source File
@@ -887,6 +950,10 @@ InputName=downloadimpl
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\downloadqueue.h
 # End Source File
 # Begin Source File
 
@@ -1786,6 +1853,65 @@ InputName=scanprogress
 # Begin Source File
 
 SOURCE=..\src\scanprogressimpl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\search.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\search.h
+InputName=search
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\search.h
+InputName=search
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\search.h
+InputName=search
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\search.h
+InputName=search
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -2733,149 +2859,6 @@ BuildCmds= \
 
 # End Source File
 # End Group
-# Begin Group "DLL files"
-
-# PROP Default_Filter "dll"
-# Begin Source File
-
-SOURCE=..\libjpeg\Release\qjpeg.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=\build\unizone\libjpeg\Release
-TargetDir=\build\unizone\vc6
-InputPath=..\libjpeg\Release\qjpeg.dll
-InputName=qjpeg
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Exclude_From_Build 1
-# PROP Ignore_Default_Tool 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\libjpeg\Release_ANSI\qjpega.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=\build\unizone\libjpeg\Release_ANSI
-TargetDir=\build\unizone\vc6
-InputPath=..\libjpeg\Release_ANSI\qjpega.dll
-InputName=qjpega
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\libjpeg\Debug_ANSI\qjpegad.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=\build\unizone\libjpeg\Debug_ANSI
-TargetDir=\build\unizone\vc6
-InputPath=..\libjpeg\Debug_ANSI\qjpegad.dll
-InputName=qjpegad
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\libjpeg\Debug\qjpegd.dll
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=\build\unizone\libjpeg\Debug
-TargetDir=\build\unizone\vc6
-InputPath=..\libjpeg\Debug\qjpegd.dll
-InputName=qjpegd
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Exclude_From_Build 1
-# PROP Ignore_Default_Tool 1
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# End Group
 # Begin Group "ANSI"
 
 # PROP Default_Filter ""
@@ -3111,6 +3094,10 @@ SOURCE=..\src\moc_channelimpl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\moc_channels.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\moc_chattext.cpp
 # End Source File
 # Begin Source File
@@ -3176,6 +3163,10 @@ SOURCE=..\src\moc_privatewindowimpl.cpp
 # Begin Source File
 
 SOURCE=..\src\moc_scanprogress.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_search.cpp
 # End Source File
 # Begin Source File
 
@@ -3716,6 +3707,250 @@ SOURCE=..\src\muscle\zlib\zlib\zlib.h
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\zutil.h
+# End Source File
+# End Group
+# Begin Group "qjpeg Sources"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\libjpeg\jcapimin.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcapistd.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jccoefct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jccolor.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcdctmgr.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jchuff.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcinit.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcmainct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcmarker.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcmaster.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcomapi.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcparam.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcphuff.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcprepct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jcsample.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jctrans.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdapimin.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdapistd.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdatadst.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdatasrc.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdcoefct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdcolor.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdct.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jddctmgr.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdhuff.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdhuff.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdinput.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdmainct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdmarker.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdmaster.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdmerge.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdphuff.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdpostct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdsample.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdtrans.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jerror.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jfdctflt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jfdctfst.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jfdctint.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jidctflt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jidctfst.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jidctint.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jidctred.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jmemmgr.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jmemnobs.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jpegio.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jquant1.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jquant2.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jutils.c
+# End Source File
+# End Group
+# Begin Group "qjpeg Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\libjpeg\jchuff.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jconfig.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jerror.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jinclude.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jmemsys.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jmorecfg.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jpegint.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jpegio.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jpeglib.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jversion.h
 # End Source File
 # End Group
 # End Target

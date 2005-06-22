@@ -1,5 +1,7 @@
 #include "searchitem.h"
 
+#include <qregexp.h>
+
 WSearchListItem::WSearchListItem(	
 								 QListView * parent,
 								 QString a, QString b, QString c, QString d,
@@ -19,4 +21,21 @@ WSearchListItem::WSearchListItem(
 	setColumnType(FileType, String_NoCase);
 	setColumnType(Modified, Date);
 	setColumnType(User, String_NoCase_Stripped);
+}
+
+QString 
+WSearchListItem::text(int c) const
+{
+	QString tmp = WUniListItem::text(c);
+	switch (columnType(c))
+	{
+	case String_NoCase:
+	case String_NoCase_Stripped:
+	case String_Cased:
+	case String_Cased_Stripped:
+		tmp.replace(QRegExp("\r\n"), " ");
+		tmp.replace(QRegExp("\r"), " ");
+		tmp.replace(QRegExp("\n"), " ");
+	};
+	return tmp;
 }

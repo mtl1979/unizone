@@ -7,6 +7,7 @@ class MenuBar;
 class QImage;
 class QString;
 class Preview;
+class QPoint;
 
 class ImageSplitter : public ImageSplitterBase
 {
@@ -16,7 +17,7 @@ public:
 	~ImageSplitter();
 	QImage *getImage() {return image;}
 	QString filename() {return fFilename;}
-
+	void Load(const QString &filename);
 
 protected slots:
 	void Load();
@@ -25,6 +26,14 @@ protected slots:
 
 protected:
 	void resizeEvent(QResizeEvent *e);
+	void dragEnterEvent(QDragEnterEvent* event);
+	void dropEvent(QDropEvent* event);
+	void mousePressEvent(QMouseEvent *e);
+	void mouseMoveEvent(QMouseEvent *e);
+	void mouseReleaseEvent(QMouseEvent *e);
+	bool eventFilter( QObject *o, QEvent *e );
+	void startDrag();
+
 	void SaveSettings();
 
 private:
@@ -34,5 +43,8 @@ private:
 	MenuBar * menuBar;
 
 	Preview * fPreview;
+
+	bool dragging;
+	QPoint startPos;
 };
 #endif

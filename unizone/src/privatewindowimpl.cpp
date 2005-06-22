@@ -30,7 +30,7 @@
  */
 WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent,  const char* name, bool modal, WFlags fl)
     : WPrivateWindowBase(parent, name, modal, fl),
-	ChatWindow(PrivateType), fLock(true)
+	ChatWindow(PrivateType)
 {
 	fOwner = owner;
 	fNet = net;
@@ -95,10 +95,10 @@ WPrivateWindow::~WPrivateWindow()
 {
 	StopLogging();
     // no need to delete child widgets, Qt does it all for us
-	fLock.lock();
+	fLock.Lock();
 	for (WUserIter it = fUsers.begin(); it != fUsers.end(); it++)
 		(*it).second()->RemoveFromListView(fPrivateUsers);
-	fLock.unlock();
+	fLock.Unlock();
 	WPWEvent *closed = new WPWEvent(WPWEvent::Closed, "");
 	if (closed)
 	{
@@ -206,7 +206,7 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 void
 WPrivateWindow::AddUser(const WUserRef & user)
 {
-	fLock.lock();
+	fLock.Lock();
 	WUserIter it = fUsers.find(user()->GetUserID());
 	if (it == fUsers.end())
 	{
@@ -214,22 +214,22 @@ WPrivateWindow::AddUser(const WUserRef & user)
 		fUsers.insert(p);
 		user()->AddToListView(fPrivateUsers);
 	}
-	fLock.unlock();
+	fLock.Unlock();
 }
 
 bool
 WPrivateWindow::RemUser(const WUserRef & user)
 {
-	fLock.lock();
+	fLock.Lock();
 	WUserIter it = fUsers.find(user()->GetUserID());
 	if (it == fUsers.end())
 	{
-		fLock.unlock();
+		fLock.Unlock();
 		return false;
 	}
 	(*it).second()->RemoveFromListView(fPrivateUsers);
 	fUsers.erase(it);
-	fLock.unlock();
+	fLock.Unlock();
 	return true;
 }
 
@@ -282,25 +282,24 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 				{
 					bool rem = stxt.lower().startsWith("/adduser ") ? false : true;
 
-					String targetStr, restOfString;
+					QString targetStr, restOfString;
 					WUserSearchMap sendTo;
 					QString qTemp = GetParameterString(wte->Text());
 
 					if (WinShareWindow::ParseUserTargets(qTemp, sendTo, targetStr, restOfString, fNet))
 					{
 						// got some users
-						WUserSearchIter iter = sendTo.begin();
 						WUserRef user;
-						if (sendTo.empty())
+						if (sendTo.IsEmpty())
 						{
 							if (Settings()->GetError())
 								PrintError( tr( "User(s) not found!" ) );
 						}
 						else
 						{
-							while (iter != sendTo.end())
+							for (int qi = 0; qi < sendTo.GetNumItems(); qi++)
 							{
-								user = (*iter).second.user;
+								user = sendTo[qi].first;
 								QString sid = user()->GetUserID();
 
 								// see if the user is a bot...
@@ -308,7 +307,6 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 								{
 									if (Settings()->GetError())
 										PrintError(WFormat::PrivateIsBot(sid, user()->GetUserName()));
-									iter++;
 									continue;	// go on to next user
 								}
 
@@ -344,7 +342,6 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 										fUsers.erase(foundIt);
 									}
 								}
-								iter++;
 							}
 						}
 						if (rem)	// check to see whether we have an empty list

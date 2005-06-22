@@ -40,7 +40,7 @@ WLog::Create(LogType type, const QString &name)
 {
 	int counter = 0;
 	time_t currentTime = time(NULL);
-	QString lt(asctime(localtime(&currentTime)));
+	QString lt = QString::fromLocal8Bit( asctime( localtime(&currentTime) ) );
 	lt.truncate(lt.find("\n"));
 	QString fullPath;
 
@@ -61,17 +61,17 @@ WLog::Create(LogType type, const QString &name)
 	case LogMain: 
 		break;
 	case LogPrivate:
-		lt = lt.prepend("private_");
+		lt.prepend("private_");
 		break;
 	case LogChannel:
-		lt = lt.prepend("_");
-		lt = lt.prepend(name);
-		lt = lt.prepend("channel_");
+		lt.prepend("_");
+		lt.prepend(name);
+		lt.prepend("channel_");
 		break;
 	}
-	lt = lt.replace(QRegExp(" "), "_");
+	lt.replace(QRegExp(" "), "_");
 	lt = FixFileName(lt);
-	lt = lt.prepend("logs/");
+	lt.prepend("logs/");
 	fullPath = lt + ".html";
 	
 	// Delete old log

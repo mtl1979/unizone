@@ -9,6 +9,11 @@
 
 using namespace muscle;
 
+#if defined(__sun) && defined(__SVR4)
+# include <sys/types.h>
+# include <sys/ddi.h>
+#endif
+
 Hashtable<String, String> mimeDB;
 
 void ReadDB(const char *file)

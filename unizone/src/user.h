@@ -12,6 +12,7 @@ using std::iterator;
 
 #include "message/Message.h"
 #include "util/RefCount.h"
+#include "util/Queue.h"
 using namespace muscle;
 
 #include <qstring.h>
@@ -32,7 +33,6 @@ public:
 	// <postmaster@raasu.org> 20021001
 	void SetUserName(const QString & name);
 	void SetStatus(const QString & s); 
-	void SetUserID(const QString & id);
 	void SetUserHostName(const QString & h);
 	
 	void SetCurUploads(uint32 c);
@@ -137,14 +137,6 @@ private:
 
 typedef Ref<WUser> WUserRef;
 
-/** Used for name matching for /ping's and /msg's etc
-  */
-typedef struct
-{
-	WUserRef user;
-	QString text;
-} WUserSearch;
-
 
 /** The map is in the following format:
   *	The key QString, is /host/sessionid
@@ -154,9 +146,8 @@ typedef map<QString, WUserRef> WUserMap;
 typedef pair<QString, WUserRef> WUserPair;
 typedef WUserMap::iterator WUserIter;
 
-typedef map<QString, WUserSearch> WUserSearchMap;
-typedef pair<QString, WUserSearch> WUserSearchPair;
-typedef WUserSearchMap::iterator WUserSearchIter;
+typedef pair<WUserRef, QString> WUserSearchPair;
+typedef Queue<WUserSearchPair> WUserSearchMap;
 
 inline WUserPair
 MakePair(const QString & s, const WUserRef & w)
@@ -168,18 +159,13 @@ MakePair(const QString & s, const WUserRef & w)
 }
 
 inline WUserSearchPair
-MakePair(const QString & s, const WUserRef & w, const QString &txt)
+MakePair(const WUserRef & w, const QString &txt)
 {
-	WUserSearch wus;
-	wus.user = w;
-	wus.text = txt;
-
 	WUserSearchPair p;
-	p.first = s;
-	p.second = wus;
+	p.first = w;
+	p.second = txt;
 	return p;
 }
-
 
 
 #endif

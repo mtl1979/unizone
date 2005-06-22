@@ -198,7 +198,7 @@ ChatWindow::Action(const QString & name, const QString & msg)
 void 
 ChatWindow::PrintText(const QString & str)
 {
-	QString out("");
+	QString out;
 	if (Settings()->GetTimeStamps())
 		out = GetTimeStamp();
 
@@ -270,6 +270,8 @@ ChatWindow::InitUserList(QListView *lv)
 	lv->setShowSortIndicator(true);
 
 	lv->setAllColumnsShowFocus(true);
+
+	lv->setAcceptDrops(true);
 }
 
 QString

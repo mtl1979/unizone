@@ -6,21 +6,6 @@
 
 BEGIN_NAMESPACE(muscle);
 
-String::String(const char * str, uint32 maxLen) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
-{
-   (void) SetCstr(str, maxLen);
-}
-
-String::String(const String & str) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
-{
-   (void) SetFromString(str);
-}
-
-String::String(const String & str, uint32 beginIndex, uint32 endIndex) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0)
-{
-   (void) SetFromString(str, beginIndex, endIndex);
-}
-
 String :: ~String() 
 {
    if (_buffer != _smallBuffer) muscleFree(_buffer);
@@ -68,17 +53,6 @@ String::SetCstr(const char * str, uint32 maxLen)
 }
 
 String &
-String::operator+=(const char aChar)
-{
-   if (EnsureBufferSize(Length()+2, true) == B_NO_ERROR)
-   {
-      _buffer[_length++] = aChar;
-      _buffer[_length]   = '\0';
-   }
-   return *this;
-}
-
-String &
 String::operator-=(const char aChar)
 {
    int idx = LastIndexOf(aChar);
@@ -99,6 +73,23 @@ String::operator+=(const String &other)
    {
       memcpy(&_buffer[_length], other(), other.Length()+1);
       _length += otherLen;
+   }
+   return *this;
+}
+
+String &
+String::operator+=(const char * other)
+{
+   if (other == NULL) other = "";
+   uint32 otherLen = strlen(other);
+   if (otherLen > 0)
+   {
+           if (muscleInRange(other, (const char *)_buffer, (const char *)(_buffer+_length))) return operator+=(String(other));  // avoid self-entanglement
+      else if (EnsureBufferSize(Length() + otherLen + 1, true) == B_NO_ERROR)
+      {
+         memcpy(&_buffer[_length], other, otherLen+1);
+         _length += otherLen;
+      }
    }
    return *this;
 }
@@ -143,42 +134,6 @@ String::operator<<(bool rhs)
    return *this << val;
 }
  
-bool
-String::operator==(const String &rhs) const
-{
-   return (this == &rhs) ? true : ((Length() == rhs.Length()) ? (strcmp(Cstr(), rhs.Cstr()) == 0) : false);
-}
-
-bool
-String::operator<(const String &rhs) const
-{
-   return (this == &rhs) ? false : (strcmp(Cstr(), rhs.Cstr()) < 0);
-}
-
-bool
-String::operator>(const String &rhs) const
-{
-   return (this == &rhs) ? false : (strcmp(Cstr(), rhs.Cstr()) > 0);
-}
-
-bool
-String::operator<=(const String &rhs) const
-{
-   return (this == &rhs) ? true : (strcmp(Cstr(), rhs.Cstr()) <= 0);
-}
-
-bool
-String::operator>=(const String & rhs) const
-{
-   return (this == &rhs) ? true : (strcmp(Cstr(), rhs.Cstr()) >= 0);
-}
-
-bool
-String::EndsWith(const String &s2) const
-{ 
-   return (Length() < s2.Length()) ? false : (strcmp(Cstr()+(Length()-s2.Length()), s2.Cstr()) == 0); 
-}
-
 void
 String::Reverse()
 {
@@ -267,6 +222,7 @@ String::Replace(const String & replaceMe, const String & withMe)
          return ret;
       }
    }
+   return ret;  // just to shut the compiler up; we never actually get here
 }
 
 void
@@ -307,34 +263,6 @@ String::SwapContents(String & s)
    }
 }
 
-
-int
-String::IndexOf(char ch, uint32 fromIndex) const
-{
-   const char * temp = (fromIndex < Length()) ? strchr(Cstr()+fromIndex, ch) : NULL; 
-   return temp ? (temp - Cstr()) : -1; 
-}
-
-int
-String::IndexOf(const String &s2, uint32 fromIndex) const
-{
-   const char * temp = (fromIndex < Length()) ? strstr(Cstr()+fromIndex, s2()) : NULL;
-   return temp ? (temp - Cstr()) : -1;
-}
-
-int
-String::LastIndexOf(char ch, uint32 fromIndex) const
-{
-   const char * lio = (fromIndex < Length()) ? strrchr(Cstr()+fromIndex, ch) : NULL;
-   return lio ? (lio - Cstr()) : -1;
-}
-
-int
-String::LastIndexOf(const String &s2) const
-{
-   return (s2.Length() <= Length()) ? LastIndexOf(s2, Length() - s2.Length()) : -1;
-}
-
 int
 String::LastIndexOf(const String &s2, uint32 fromIndex) const
 {
@@ -344,41 +272,15 @@ String::LastIndexOf(const String &s2, uint32 fromIndex) const
    return -1;
 }
 
-bool
-String::StartsWith(const String &s2) const
+int
+String::LastIndexOf(const char * s2, uint32 fromIndex) const
 {
-   return (Length() < s2.Length()) ? false : StartsWith(s2, 0); 
-} 
- 
-bool 
-String::StartsWith(const String &s2, uint32 offset) const 
-{
-   return (offset > Length() - s2.Length()) ? false : (strncmp(Cstr()+offset, s2.Cstr(), s2.Length()) == 0); 
-}
-
-String
-String::Substring(uint32 beginIndex) const
-{
-   return String(*this, beginIndex);
-}
-
-String
-String::Substring(uint32 beginIndex, uint32 endIndex) const
-{
-   return String(*this, beginIndex, endIndex);
-}
-
-String
-String::Substring(const String & markerString) const
-{
-   int idx = LastIndexOf(markerString);
-   return (idx >= 0) ? String(*this, idx+markerString.Length()) : *this;
-}
-
-String
-String::Substring(uint32 beginIndex, const String & markerString) const
-{
-   return String(*this, beginIndex, (uint32) IndexOf(markerString, beginIndex));
+   if (s2 == NULL) s2 = "";
+   uint32 s2Len = strlen(s2);
+   if (s2Len == 0) return Length()-1;
+   if (fromIndex >= Length()) return -1;
+   for (int i=fromIndex; i>=0; i--) if (strncmp(Cstr()+i, s2, s2Len) == 0) return i;
+   return -1;
 }
 
 String
@@ -445,6 +347,24 @@ uint32 String :: GetNumInstancesOf(const String & substring) const
    return ret;
 }
 
+uint32 String :: GetNumInstancesOf(const char * substring) const
+{
+   if (substring == NULL) substring = "";
+   uint32 ret = 0;
+   uint32 substringLength = strlen(substring);
+   if (substringLength > 0)
+   {
+      uint32 lastIdx = 0;
+      int32 idx;
+      while((idx = IndexOf(substring, lastIdx)) >= 0)
+      {
+         ret++;
+         lastIdx = idx + substringLength;
+      }
+   }
+   return ret;
+}
+
 String String :: Prepend(const String & str, uint32 count) const
 {
    String ret;
@@ -472,6 +392,39 @@ String String :: Prepend(const String & str, uint32 count) const
    return ret;
 }
 
+String String :: Prepend(const char * str, uint32 count) const
+{
+   if (muscleInRange(str, (const char *)_buffer, (const char *)(_buffer+Length()))) return Prepend(String(str), count);  // avoid self-entanglement!
+   else
+   {
+      if (str == NULL) str = "";
+      uint32 sLen = strlen(str);
+      String ret;
+      uint32 newLen = (count*sLen)+Length();
+      if (ret.Prealloc(newLen) == B_NO_ERROR)
+      {
+         char * b = ret._buffer;
+
+         if (sLen > 0)
+         {
+            for (uint32 i=0; i<count; i++)
+            {
+               memcpy(b, str, sLen);
+               b += sLen;
+            }
+         }
+         if (Length() > 0)
+         {
+            memcpy(b, Cstr(), Length()); 
+            b += Length();
+         }
+         ret._length = (b-ret._buffer);
+         ret._buffer[ret._length] = '\0';   // terminate the string
+      }
+      return ret;
+   }
+}
+
 String String :: Append(const String & str, uint32 count) const
 {
    String ret;
@@ -496,6 +449,38 @@ String String :: Append(const String & str, uint32 count) const
       ret._buffer[ret._length] = '\0';   // terminate the string
    }
    return ret;
+}
+
+String String :: Append(const char * str, uint32 count) const
+{
+   if (muscleInRange(str, (const char *)_buffer, (const char *)(_buffer+Length()))) return Append(String(str), count);  // avoid self-entanglement!
+   else
+   {
+      if (str == NULL) str = "";
+      uint32 sLen = strlen(str);
+      String ret;
+      uint32 newLen = Length()+(count*sLen);
+      if (ret.Prealloc(newLen) == B_NO_ERROR)
+      {
+         char * b = ret._buffer;
+         if (Length() > 0)
+         {
+            memcpy(b, Cstr(), Length()); 
+            b += Length();
+         }
+         if (sLen > 0)
+         {
+            for (uint32 i=0; i<count; i++)
+            {
+               memcpy(b, str, sLen);
+               b += sLen;
+            }
+         }
+         ret._length = (b-ret._buffer);
+         ret._buffer[ret._length] = '\0';   // terminate the string
+      }
+      return ret;
+   }
 }
 
 // This method tries to ensure that at least (newBufLen) chars
@@ -595,6 +580,7 @@ String String :: Arg(int64  value, const char * fmt) const {ARG_IMPLEMENTATION;}
 String String :: Arg(uint64 value, const char * fmt) const {ARG_IMPLEMENTATION;}
 String String :: Arg(double value, const char * fmt) const {ARG_IMPLEMENTATION;}
 String String :: Arg(const String & value)           const {return ArgAux(value());}
+String String :: Arg(const char * value)             const {return ArgAux(value);}
 
 String String :: ArgAux(const char * buf) const
 {

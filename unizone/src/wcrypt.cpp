@@ -3,7 +3,7 @@
 
 #if defined(WIN32)
 #  include <windows.h>
-#elif defined(LINUX) || defined(__LINUX__)
+#else
 #  include <netinet/in.h>
 #endif
 

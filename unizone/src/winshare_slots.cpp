@@ -144,7 +144,7 @@ WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QS
 void
 WinShareWindow::DisconnectedFromServer()
 {
-	StopSearch();
+	fSearch->StopSearch();
 	fDisconnectCount++;
 
 	setStatus(tr( "Not connected." ), 0);
@@ -225,7 +225,7 @@ WinShareWindow::TabPressed(const QString &str)
 {
 	PRINT("Wow, tab received\n");
 	QString result;
-	if (DoTabCompletion(str, result, NULL))
+	if (DoTabCompletion(str, result))
 	{
 		fInputText->setText(result);
 		fInputText->gotoEnd();
@@ -326,9 +326,9 @@ WinShareWindow::PopupActivated(int id)
 			// it's a map... but so far, there is no need for a key
 			// as i just iterate through the list
 			WPrivPair p = MakePair(window);
-			pLock.lock();
+			pLock.Lock();
 			fPrivateWindows.insert(p);
-			pLock.unlock();
+			pLock.Unlock();
 		} 
 		else if (id == 2) 
 		{
@@ -417,20 +417,20 @@ WinShareWindow::Preferences()
 				SystemEvent(this, tr("Logging disabled."));
 			StopLogging();
 
-			pLock.lock();
+			pLock.Lock();
 			for (WPrivIter privIter = fPrivateWindows.begin(); privIter != fPrivateWindows.end(); privIter++)
 				(*privIter).first->StopLogging();
-			pLock.unlock();
+			pLock.Unlock();
 		}
 		else if (!oldLogging && fSettings->GetLogging())
 		{
 			if (fSettings->GetInfo())
 				SystemEvent(this, tr("Logging enabled."));
 			StartLogging();
-			pLock.lock();
+			pLock.Lock();
 			for (WPrivIter privIter = fPrivateWindows.begin(); privIter != fPrivateWindows.end(); privIter++)
 				(*privIter).first->StartLogging();
-			pLock.unlock();
+			pLock.Unlock();
 		}
 	}
 }
@@ -507,7 +507,7 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
 	wri.fLocalName = lfile;
 
 	WResumePair wrp = MakePair(user, wri);
-	rLock.lock();
+	rLock.Lock();
 	if (!fResumeMap.empty())
 	{
 		// Check if file is already in the resume list
@@ -519,13 +519,13 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
 				((*iter).first == user)
 				)
 			{
-				rLock.unlock();
+				rLock.Unlock();
 				return;
 			}
 		}
 	}
 	fResumeMap.insert(wrp);
-	rLock.unlock();
+	rLock.Unlock();
 }
 
 // Check username against resume list
@@ -548,7 +548,7 @@ WinShareWindow::CheckResumes(const QString &user)
 	if (u() == NULL)
 		return;
 
-	rLock.lock();
+	rLock.Lock();
 
 	Queue<QString> fFiles;
 	Queue<QString> fLFiles;
@@ -578,7 +578,7 @@ WinShareWindow::CheckResumes(const QString &user)
 		else
 			it++;
 	}
-	rLock.unlock();
+	rLock.Unlock();
 	if (fFiles.GetNumItems() > 0)
 	{
 		FixString(out);

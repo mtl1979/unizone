@@ -33,8 +33,10 @@ MenuBar::MenuBar(QWidget * handler, QWidget * parent) : QMenuBar(parent)
 	fWindows = new QPopupMenu(this);
 	CHECK_PTR(fWindows);
 
+	fWindows->insertItem(tr("&Channels"), handler, SLOT(OpenChannels()), QAccel::stringToKey(tr("F10")));
 	fWindows->insertItem(tr("&Downloads"), handler, SLOT(OpenDownloads()), QAccel::stringToKey(tr("F11")));
-
+	fWindows->insertItem(tr("&Search"), handler, SLOT(OpenSearch()), QAccel::stringToKey(tr("ALT+F")));
+	fWindows->insertItem(tr("Picture Viewer"), handler, SLOT(OpenViewer()), QAccel::stringToKey(tr("F9")));
 	// help menu
 	fHelp = new QPopupMenu(this);
 	CHECK_PTR(fHelp);

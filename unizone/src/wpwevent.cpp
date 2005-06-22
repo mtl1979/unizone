@@ -1,5 +1,6 @@
 #include "wpwevent.h"
 #include "user.h"
+#include "util.h"
 #include "privatewindowimpl.h"
 #include "debugimpl.h"
 #include "wstring.h"
@@ -21,18 +22,21 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 		}
 		else
 		{
-			QString smsg = msg;
+			QString smsg(msg);
 			if (smsg.startsWith("//"))
 				smsg.replace(0, 2, "/");
 			if (fEncrypted)
 				fMsg = "/emsg ";
 			else
 				fMsg = "/msg ";
+
+			QString tusers;
 			for (WUserIter it = users.begin(); it != users.end(); it++)
 			{
-				fMsg += (*it).second()->GetUserID();
-				fMsg += ",";
+				AddToList(tusers, (*it).second()->GetUserID());
 			}
+			
+			fMsg += tusers;
 			fMsg.truncate(fMsg.length() - 1);
 			fMsg += " ";
 			fMsg += smsg;
@@ -59,4 +63,5 @@ WPWEvent::WPWEvent(int type, const QString & msg)
 WPWEvent::WPWEvent(int type)
 		: QCustomEvent(type)
 {
+	fEncrypted = false;
 }

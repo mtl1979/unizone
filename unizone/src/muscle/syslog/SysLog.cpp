@@ -188,7 +188,7 @@ static status_t LockLog()
    Mutex * ml = GetGlobalMuscleLock();
    if (ml == NULL)
    {
-      printf("Please instantiate a CompleteSetupSystem object on the stack before doing any logging (at beginning of main() is preferred)");
+      printf("Please instantiate a CompleteSetupSystem object on the stack before doing any logging (at beginning of main() is preferred)\n");
       exit(10);
    }
    return ml->Lock();

@@ -38,7 +38,11 @@
 #if defined(__amd64__)
 typedef socklen_t net_length_t;
 #elif defined(__BEOS__) || defined(__APPLE__) || defined(__CYGWIN__) || defined(WIN32) || defined(__QNX__) || defined(__osf__)
+# ifdef _SOCKLEN_T
+typedef socklen_t net_length_t;
+# else
 typedef int net_length_t;
+# endif
 #else
 typedef size_t net_length_t;
 #endif

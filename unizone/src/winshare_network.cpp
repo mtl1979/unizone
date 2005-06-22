@@ -51,10 +51,7 @@ typedef hostent *LPHOSTENT;
 #include <time.h>				//                                 -- for /time
 #include <qapplication.h>
 #include <qfiledialog.h>
-
-#if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
-#endif
 
 void
 WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
@@ -129,18 +126,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					return;
 				}
 				NameChanged(name);
-				// see if it exists in the list yet...
-				for (int i = 0; i < fUserList->count(); i++)
-				{
-					if ( name == fUserList->text(i) )	// found match?
-					{
-						fUserList->setCurrentItem(i);
-						return;
-					}
-				}
-				// otherwise, insert
-				fUserList->insertItem(name, 0);
-				fUserList->setCurrentItem(0);
 			}
 			else
 			{
@@ -206,10 +191,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/clearline"))
 		{
 			fInputText->ClearBuffer();
-			pLock.lock();
+			pLock.Lock();
 			for (WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); it++)
 				(*it).first->ClearBuffer();
-			pLock.unlock();
+			pLock.Unlock();
 		}
 		else if (CompareCommand(sendText, "/quit"))
 		{
@@ -1066,6 +1051,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			PrintSystem(tr("Unizone version: %1").arg(WinShareVersionString()));
 			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING));
 			PrintSystem(tr("zlib version: %1").arg(ZLIB_VERSION));
+			PrintSystem(tr("Qt version: %1").arg(qVersion()));
 		}
 		else if (CompareCommand(sendText, "/onconnect"))
 		{
@@ -1201,6 +1187,37 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				}
 			}
 		}
+		else if (CompareCommand(sendText, "/screenshot"))
+		{
+			QString base = GetParameterString(sendText);
+			if (base.isEmpty())
+			{
+				time_t currentTime = time(NULL);
+				QString lt = QString::fromLocal8Bit( asctime( localtime(&currentTime) ) );
+				lt.truncate(lt.find("\n"));
+
+				base = "desktop ";
+				base += lt;
+			}
+
+			QString fname = "shared/";
+			fname += base;
+			fname += ".jpg";
+			fname = FixFileName(fname);
+
+			QWidget * desk = QApplication::desktop();
+			QPixmap pmap = QPixmap::grabWindow(desk->winId());
+			pmap.save(fname, "JPEG");
+			if (fPicViewer->LoadImage(fname))
+			{
+				fPicViewer->show();
+			}
+			else
+			{
+				GotoURL(fname);
+			}
+			SendPicture("*", fname);
+		}
 		else if (CompareCommand(sendText, "/picture"))
 		{
 			QString users = GetParameterString(sendText);
@@ -1227,21 +1244,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				
 				if (!file.isEmpty())
 				{
-					QFile fFile(file);
-					if (fFile.open(IO_ReadOnly))
-					{
-						ByteBufferRef buf = GetByteBufferFromPool();
-						if (buf())
-						{
-							if (buf()->SetNumBytes(fFile.size(), false) == B_OK)
-							{
-								fFile.readBlock((char *) buf()->GetBuffer(), fFile.size());
-								fFile.close();
-								QFileInfo info(file);
-								fNetClient->SendPicture(list, buf, info.fileName());
-							}
-						}
-					}
+					SendPicture(list, file);
 				}
 			}
 			else
@@ -1420,7 +1423,7 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 void
 WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool enc)
 {
-	String targetStr, restOfString;
+	QString targetStr, restOfString;
 	WUserSearchMap sendTo;
 	QString sText;
 	// <postmaster@raasu.org> 20021026
@@ -1428,10 +1431,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 
 	if (ParseUserTargets(sText, sendTo, targetStr, restOfString, fNetClient))
 	{
-		WUserSearchIter iter = sendTo.begin();
-		WUserRef user;
-
-		if (sendTo.empty())
+		if (sendTo.IsEmpty())
 		{
 			if (!isping && !reply)
 			{
@@ -1451,18 +1451,19 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 		else
 		{
 			QString qsendtext;
-			while (iter != sendTo.end())
+			WUserRef user;
+			for (int qi = 0; qi < sendTo.GetNumItems(); qi++)
 			{
 #ifdef _DEBUG
-				WString wUser((*iter).second.user()->GetUserName());
-				WString wText((*iter).second.text);
+				WString wUser(sendTo[qi].first()->GetUserName());
+				WString wText(sendTo[qi].second);
 				PRINT("Found user %S and rest of text %S\n", wUser.getBuffer(), wText.getBuffer());
 #endif
 
-				user = (*iter).second.user;
+				user = sendTo[qi].first;
 
 				QString sid = user()->GetUserID();
-				QString sendText = (*iter).second.text;
+				QString sendText = sendTo[qi].second;
 
 				if (isping)
 				{
@@ -1478,8 +1479,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 					// the reply only has an effect when used with /msg
 					SendChatText(sid, sendText, user, reply, enc);
 				}
-				iter++;
-				if (iter == sendTo.end())
+				if (qi == sendTo.GetNumItems() - 1)
 					qsendtext = sendText;
 			}
 			if (!isping && reply)
@@ -1600,7 +1600,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				}
 				bool foundPriv = false;
 				// see if one of the session IDs is in one of the private windows...
-				pLock.lock();
+				pLock.Lock();
 				for (WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); it++)
 				{
 					WPrivateWindow * win = (*it).first;
@@ -1621,7 +1621,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 						}
 					}
 				}
-				pLock.unlock();
+				pLock.Unlock();
 				
 				if (foundPriv)
 					return;
@@ -1649,9 +1649,9 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 							
 							// ... and add it to list of private windows
 							WPrivPair p = MakePair(win);
-							pLock.lock();
+							pLock.Lock();
 							fPrivateWindows.insert(p);
-							pLock.unlock();
+							pLock.Unlock();
 							return;
 						}
 					}
@@ -1733,7 +1733,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		// shares are scanned on startup (during connect to server)
 	case PR_RESULT_PONG:
 		{
-			if (fGotResults)
+			if (fSearch->GotResults())
 			{
 				UpdateUserCount();
 				// Execute OnConnect commands here, when all user information should be available
@@ -1772,8 +1772,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			}
 			else
 			{
-				SetSearchStatus(tr("passive"), 2);
-				fGotResults = true;
+				fSearch->SetSearchStatus(tr("passive"), 2);
+				fSearch->SetGotResults(true);
 			}
 			break;
 		}
@@ -2082,7 +2082,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					msg()->FindString("text", &strTemp);
 					msg()->FindString("channel", &strChannel);
 			
-					// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Latin-1
+					// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
 					text = QString::fromUtf8(strTemp);
 					channel = QString::fromUtf8(strChannel);
 					userID = QString(session);
@@ -2163,7 +2163,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString qOwner = QString::fromUtf8(repto.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					ChannelCreated(qChan, qOwner, rtime);
+					fChannels->ChannelCreated(qChan, qOwner, rtime);
 				}
 
 				break;
@@ -2178,7 +2178,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					ChannelJoin(qChan, qUser);
+					fChannels->ChannelJoin(qChan, qUser);
 				}
 				break;
 			}
@@ -2192,7 +2192,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					ChannelPart(qChan, qUser);
+					fChannels->ChannelPart(qChan, qUser);
 				}
 				break;
 			}
@@ -2208,7 +2208,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qWho = QString::fromUtf8(who.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					ChannelInvite(qChan, qUser, qWho);
+					fChannels->ChannelInvite(qChan, qUser, qWho);
 				}
 				break;
 			}
@@ -2224,7 +2224,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qWho = QString::fromUtf8(who.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					ChannelKick(qChan, qUser, qWho);
+					fChannels->ChannelKick(qChan, qUser, qWho);
 				}
 				break;
 			}
@@ -2240,7 +2240,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qTopic = QString::fromUtf8(topic.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					ChannelTopic(qChan, qUser, qTopic);
+					fChannels->ChannelTopic(qChan, qUser, qTopic);
 				}
 				break;
 			}
@@ -2256,7 +2256,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					QString qUser = QString::fromUtf8(repto.Cstr());
 					QString qChan = QString::fromUtf8(channel.Cstr());
-					ChannelPublic(qChan, qUser, pub);
+					fChannels->ChannelPublic(qChan, qUser, pub);
 				}
 				break;
 			}
@@ -2265,6 +2265,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				String repto;
 				if (msg()->FindString(PR_NAME_SESSION, repto) == B_OK)
 				{
+					int64 sent;
+					(void) msg()->FindInt64("when", &sent);
 					WUserIter uit = fNetClient->Users().find(QString::fromUtf8(repto.Cstr()));
 					if (uit != fNetClient->Users().end())
 					{
@@ -2282,9 +2284,12 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						String tostr("/*/");
 						tostr += repto;
 						tostr += "/beshare";
+
+						int currTime = GetCurrentTime64();
 					
 						rep()->AddString(PR_NAME_KEYS, tostr);
 						rep()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
+						rep()->AddInt64("when", sent);
 					
 						QString version = tr("Unizone (English)");
 						version += " (";
@@ -2295,7 +2300,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						// <postmaster@raasu.org> 20021025 -- Added uptime calculating for Windows
 						// <postmaster@raasu.org> 20021231 -- and for Linux ;)
 						uint64 fUptime = GetUptime();
-						uint64 fOnlineTime = GetCurrentTime64() - fNetClient->LoginTime();
+						uint64 fOnlineTime = currTime - fNetClient->LoginTime();
 						rep()->AddString("version", (const char *) version.utf8());
 						rep()->AddInt64("uptime", (int64) fUptime);
 						rep()->AddInt64("onlinetime", (int64) fOnlineTime);
@@ -2421,18 +2426,30 @@ WinShareWindow::HandleMessage(MessageRef msg)
 void
 WinShareWindow::Connect()
 {
+	if (fUserName.find(QString("binky"), 0, false) >= 0)
+	{
+		SendErrorEvent(tr("You must change your nickname before connecting!"));
+		SendErrorEvent(tr("We prefer that none of the nicknames contain word 'binky'."));
+		return;
+	}
+
+	if (fUserList->currentText() != fUserName)
+		NameChanged(fUserName);
+
 	fGotParams = false;
-	fGotResults = true;
+	fSearch->SetGotResults(true);
 	if (fNetClient)
 	{
 		WaitOnFileThread(false);	// make sure our scan thread is dead
 		Disconnect();
-		fMaxUsers = fSettings->GetMaxUsers(GetServerName(fServer), GetServerPort(fServer));
-		fNetClient->SetUserName(GetUserName()); // We need this for binkies
+		QString sname = GetServerName(fServer);
+		uint16 sport = GetServerPort(fServer);
+		fMaxUsers = fSettings->GetMaxUsers(sname, sport);
+		fNetClient->SetUserName(fUserName); // We need this for binkies
 
 		fConnectTimer->start(60000, true); // 1 minute
 		
-		if (fNetClient->Connect(fServer) == B_OK)
+		if (fNetClient->Connect(sname, sport) == B_OK)
 		{
 			if (fSettings->GetInfo())
 				SendSystemEvent(tr("Connecting to server %1.").arg(fServer));
@@ -2631,6 +2648,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/scan - rescan shared directory");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/screenshot - grab screenshot and save to file");
+	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/search [pattern] - open search window");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/server [server] - set the current server");
@@ -2820,13 +2839,21 @@ WinShareWindow::IsConnected(const QString & user)
 WUserRef
 WinShareWindow::FindUser(const QString & user)
 {
+	// Why do we need this block?
+	WUserRef ref = fNetClient->FindUser(user);
+	if (ref())
+		return ref;
+	// -------------------------------------------
+
 	WUserMap & umap = fNetClient->Users();
-	for (WUserIter iter = umap.begin(); iter != umap.end(); iter++)
+	WUserIter iter = umap.begin();
+	while (iter != umap.end())
 	{
 		if (MatchUserFilter((*iter).second, user))
 		{
 			return (*iter).second;
 		}
+		iter++;
 	}
 	return WUserRef(NULL, NULL);
 }
@@ -2887,7 +2914,7 @@ WinShareWindow::ListResumes()
 {
 	QString out;
 
-	rLock.lock();
+	rLock.Lock();
 	WResumeIter it = fResumeMap.begin();
 	out = "\n" + tr("Resume list:");
 	int i = 0;
@@ -2906,7 +2933,7 @@ WinShareWindow::ListResumes()
 	}
 	out += "\n" + tr("Total: %1 files").arg(i);
 	FixString(out);
-	rLock.unlock();
+	rLock.Unlock();
 
 	PrintSystem(out);
 }
@@ -2914,17 +2941,17 @@ WinShareWindow::ListResumes()
 void
 WinShareWindow::ClearResumes()
 {
-	rLock.lock();
+	rLock.Lock();
 	fResumeMap.clear();
 	PrintSystem(tr("Cleared resume list."));
-	rLock.unlock();
+	rLock.Unlock();
 }
 
 void
 WinShareWindow::PrintAddressInfo(const WUserRef & user, bool verbose)
 {
 	QString addr, uname, uid;
-	QString out("");
+	QString out;
 	uint32 address = 0;
 	char host[16];
 	struct in_addr iaHost;	   // Internet address structure
@@ -2975,7 +3002,7 @@ WinShareWindow::PrintAddressInfo(uint32 address, bool verbose)
 	char host[16];
 	struct in_addr iaHost;	   // Internet address structure
 	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
-	QString out("");
+	QString out;
 	bool found = false;
 
 	if (address > 0)
@@ -3155,8 +3182,8 @@ WinShareWindow::GotParams(MessageRef &msg)
 	PRINT("Uploading public data\n");
 
 	fNetClient->AddSubscriptionList(subscriptionList); 
-	fNetClient->SetUserName(GetUserName());
-	fNetClient->SetUserStatus(GetStatus());
+	fNetClient->SetUserName(fUserName);
+	fNetClient->SetUserStatus(fUserStatus);
 	fNetClient->SetConnection(fSettings->GetConnection());
 	fNetClient->SetFileCount(0);
 	
@@ -3172,4 +3199,24 @@ WinShareWindow::GotParams(MessageRef &msg)
 	}
 				
 	fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_PING));			
+}
+
+void
+WinShareWindow::SendPicture(const QString &target, const QString &file)
+{
+	QFile fFile(file);
+	if (fFile.open(IO_ReadOnly))
+	{
+		ByteBufferRef buf = GetByteBufferFromPool();
+		if (buf())
+		{
+			if (buf()->SetNumBytes(fFile.size(), false) == B_OK)
+			{
+				fFile.readBlock((char *) buf()->GetBuffer(), fFile.size());
+				fFile.close();
+				QFileInfo info(file);
+				fNetClient->SendPicture(target, buf, info.fileName());
+			}
+		}
+	}	
 }

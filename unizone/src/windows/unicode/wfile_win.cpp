@@ -3,6 +3,7 @@
 
 #include <io.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 
 WFile::WFile()
 {
@@ -18,7 +19,7 @@ WFile::~WFile()
 bool
 WFile::Open(const WString &name, int mode)
 {
-	file = _wopen(name.getBuffer(), mode);
+	file = _wopen(name.getBuffer(), mode, (mode & _O_CREAT) ? _S_IREAD | _S_IWRITE : 0);
 	return (file != -1);
 }
 

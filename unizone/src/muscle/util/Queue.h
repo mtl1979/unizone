@@ -334,6 +334,18 @@ public:
     */
    status_t RemoveLastInstanceOf(const ItemType & val);
 
+   /** Returns true iff the first item in our queue is equal to (prefix). */
+   bool StartsWith(const ItemType & prefix) const {return ((GetNumItems()>0)&&(Head() == prefix));}
+
+   /** Returns true iff the (prefixQueue) is a prefix of this queue. */
+   bool StartsWith(const Queue<ItemType> & prefixQueue) const;
+
+   /** Returns true iff the last item in our queue is equal to (prefix). */
+   bool EndsWith(const ItemType & prefix) const {return ((GetNumItems()>0)&&(Tail() == prefix));}
+
+   /** Returns true iff the (prefixQueue) is a suffix of this queue. */
+   bool EndsWith(const Queue<ItemType> & prefixQueue) const;
+
    /**
     *  Returns a pointer to the nth internally-held contiguous-Item-sub-array, to allow efficient
     *  array-style access to groups of items in this Queue.  In the current implementation 
@@ -1046,6 +1058,26 @@ Queue<ItemType>::SwapContentsAux(Queue<ItemType> & largeThat)
    }
    
    muscleSwap(_itemCount, largeThat._itemCount);
+}
+
+template <class ItemType>
+bool
+Queue<ItemType>::StartsWith(const Queue<ItemType> & prefixQueue) const
+{
+   if (prefixQueue.GetNumItems() > GetNumItems()) return false;
+   uint32 prefixQueueLen = prefixQueue.GetNumItems();
+   for (uint32 i=0; i<prefixQueueLen; i++) if (!(prefixQueue[i] == (*this)[i])) return false;
+   return true;
+}
+
+template <class ItemType>
+bool
+Queue<ItemType>::EndsWith(const Queue<ItemType> & suffixQueue) const
+{
+   if (prefixQueue.GetNumItems() > GetNumItems()) return false;
+   int32 lastToCheck = GetNumItems()-prefixQueue.GetNumItems();
+   for (int32 i=GetNumItems()-1; i>=lastToCheck; i--) if (!(prefixQueue[i] == (*this)[i])) return false;
+   return true;
 }
 
 END_NAMESPACE(muscle);

@@ -1059,7 +1059,7 @@ WSettings::SetOnConnect2(const QString & s)
 	fSet()->ReplaceString(true, ONCONN2, (const char *) s.utf8());
 }
 
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	|| defined(__QNX__)
+#ifndef WIN32
 void
 WSettings::SetFTPLauncher(const QString & l)
 {

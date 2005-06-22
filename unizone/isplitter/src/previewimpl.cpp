@@ -1,5 +1,7 @@
 #include "previewimpl.h"
 #include "mainwindowimpl.h"
+
+#include <qapplication.h>
 #include <qpushbutton.h>
 #include <qfileinfo.h>
 #include <qimage.h>
@@ -8,6 +10,7 @@
 #include <qlayout.h>
 #include <qmessagebox.h>
 #include <qwmatrix.h>
+#include <qdragobject.h>
 
 Preview::Preview(QWidget* parent, const char* name, WFlags fl)
 :QWidget(parent, name, fl)
@@ -80,6 +83,7 @@ Preview::Preview(QWidget* parent, const char* name, WFlags fl)
     pxlPreview->setFrameShape( QLabel::Box );
     pxlPreview->setMargin( 1 );
     pxlPreview->setScaledContents( TRUE );
+	pxlPreview->installEventFilter(this);
 
     GridLayout->addMultiCellWidget( pxlPreview, 1, 1, 0, 2 );
 
@@ -91,6 +95,8 @@ Preview::Preview(QWidget* parent, const char* name, WFlags fl)
 	connect(SaveButton, SIGNAL(clicked()), this, SLOT(Save()));
 	Splitter = NULL;
 	pixPreview = NULL;
+
+	dragging = false;
 }
 
 Preview::~Preview()
@@ -271,6 +277,73 @@ Preview::PreviewImage()
 	}
 }
 
+bool
+Preview::eventFilter( QObject *o, QEvent *e )
+{
+	if (o == pxlPreview)
+	{
+		switch(e->type())
+		{
+		case QEvent::MouseButtonPress:
+			mousePressEvent((QMouseEvent *) e);
+			return true;
+		case QEvent::MouseMove:
+			mouseMoveEvent((QMouseEvent *) e);
+			return true;
+		case QEvent::MouseButtonRelease:
+			mouseReleaseEvent((QMouseEvent *) e);
+			return true;
+		}
+	}
+	return false;
+}
+
+void
+Preview::mousePressEvent(QMouseEvent *e)
+{
+	if (e->button() & LeftButton)
+	{
+		qDebug("Started dragging...\n");
+		dragging = true;
+	}
+	QWidget::mousePressEvent(e);
+}
+
+void
+Preview::mouseMoveEvent(QMouseEvent *e)
+{
+	if (dragging)
+	{
+		QPoint currPos = e->pos();
+		if ( ( startPos - currPos ).manhattanLength() > QApplication::startDragDistance() )
+			startDrag();
+	}
+	QWidget::mouseMoveEvent(e);
+}
+
+void
+Preview::mouseReleaseEvent(QMouseEvent *e)
+{
+	if (dragging)
+	{
+		qDebug("Stopped dragging...\n");
+		dragging = false;
+	}
+	QWidget::mouseReleaseEvent(e);
+}
+
+void 
+Preview::startDrag()
+{
+	if (pixPreview)
+	{
+		QImage img;
+		img = *pixPreview;
+		QImageDrag *d = new QImageDrag(img, this);
+		d->dragCopy();
+	}
+}
+
 void
 Preview::Save()
 {
@@ -326,20 +399,5 @@ Preview::resizeEvent(QResizeEvent *e)
 {
 	QSize s = e->size();
 	GridLayout->setGeometry(QRect(0, 0, s.width(), s.height()));
-	/*
-	QWidget * lwidget = dynamic_cast<QWidget *>(Layout23->parent());
-	if (lwidget)
-	{
-		QRect r = lwidget->geometry();
-		s.setHeight(s.height() - r.top());
-
-		if (pxlPreview)
-		{
-			pxlPreview->setMaximumWidth(s.width() - 20);
-			pxlPreview->setMaximumHeight(s.height() - 20);
-		}
-		lwidget->resize(s);
-	}
-	*/
 	QWidget::resizeEvent(e);
 }

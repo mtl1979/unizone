@@ -326,7 +326,7 @@ status_t RS232DataIO :: GetAvailableSerialPortNames(Queue<String> & retList)
          if (IOServiceGetMatchingServices(masterPort, classesToMatch, &serialPortIterator) == KERN_SUCCESS)
          {
             io_object_t modemService;
-            while((modemService = IOIteratorNext(serialPortIterator)) != NULL)
+            while((modemService = IOIteratorNext(serialPortIterator)) != MACH_PORT_NULL)
             {
                CFTypeRef bsdPathAsCFString = IORegistryEntryCreateCFProperty(modemService, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, 0);
                if (bsdPathAsCFString)

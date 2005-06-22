@@ -24,10 +24,11 @@
 
 #include "privatewindowimpl.h"
 #include "qtsupport/QAcceptSocketsThread.h"
-#include "regex/StringMatcher.h"
 #include "support/MuscleSupport.h"
 #include "user.h"
 #include "chatwindow.h"
+#include "search.h"
+#include "channels.h"
 #include "titanic.h"
 
 using namespace muscle;
@@ -53,17 +54,8 @@ class NetClient;
 class ServerClient;
 class UpdateClient;
 class WPicViewer;
-
-
-struct WFileInfo
-{
-	WUserRef fiUser;
-	QString fiFilename;
-	uint64 fiSize;
-	MessageRef fiRef;
-	bool fiFirewalled;
-	WSearchListItem * fiListItem;	// the list view item this file is tied to
-};
+class QRegExp;
+class DownloadQueue;
 
 struct WResumeInfo
 {
@@ -75,14 +67,6 @@ typedef pair<QString, WResumeInfo> WResumePair;
 typedef multimap<QString, WResumeInfo> WResumeMap;
 typedef WResumeMap::iterator WResumeIter;
 
-typedef multimap<QString, WFileInfo *> WFIMap;
-typedef pair<QString, WFileInfo *> WFIPair;
-typedef WFIMap::iterator WFIIter;
-
-typedef pair<QString, ChannelInfo *> WChannelPair;
-typedef multimap<QString, ChannelInfo *> WChannelMap;
-typedef WChannelMap::iterator WChannelIter;
-
 inline 
 WResumePair
 MakePair(const QString & f, const WResumeInfo & u)
@@ -90,17 +74,6 @@ MakePair(const QString & f, const WResumeInfo & u)
 	WResumePair p;
 	p.first = f;
 	p.second = u;
-	return p;
-}
-
-// quick inline method to generate a pair
-inline
-WFIPair 
-MakePair(const QString & s, WFileInfo * fi)
-{
-	WFIPair p;
-	p.first = s;
-	p.second = fi;
 	return p;
 }
 
@@ -196,6 +169,8 @@ public:
 
 	WSettings * fSettings;	// for use by prefs
 	WDownload * fDLWindow;
+	WSearch * fSearch;
+	Channels * fChannels;
 
 	// UniShare
 	int64 GetRegisterTime(const QString & nick) const; 
@@ -212,6 +187,9 @@ public:
 	void SendSystemEvent(const QString &message);
 	void SendErrorEvent(const QString &message);
 	void SendWarningEvent(const QString &message);
+
+	void SendPicture(const QString &target, const QString &file);
+	bool FindSharedFile(QString &file);
 
 public slots:
 	/** File Menu **/
@@ -230,7 +208,10 @@ public slots:
 	void Preferences();
 
 	/*** Windows Menu ***/
+	void OpenChannels();
 	void OpenDownloads();
+	void OpenSearch();
+	void OpenViewer();
 
 	/*** Help Menu ***/
 	void AboutWinShare();
@@ -268,14 +249,6 @@ public slots:
 	void FileFailed(const QString &, const QString &, const QString &); // from WDownload
 	void FileInterrupted(const QString &, const QString &, const QString &);
 
-	// Channels
-	void ChannelAdded(const QString &, const QString &, int64);
-	void ChannelAdmins(const QString &, const QString &, const QString &);
-	void ChannelTopic(const QString &, const QString &, const QString &);
-	void ChannelPublic(const QString &, const QString &, bool);
-	void ChannelOwner(const QString &, const QString &, const QString &);
-	void UserIDChanged(const QString &, const QString &);
-
 protected:
 	virtual void customEvent(QCustomEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
@@ -283,21 +256,6 @@ protected:
 	virtual void timerEvent(QTimerEvent *event);
 
 private slots:
-	void GoSearch();
-	void StopSearch();
-	void ClearList();
-	void Download();
-	void ClearHistory();
-
-	// Search
-
-	void AddFile(const QString &, const QString &, bool, MessageRef);
-	void RemoveFile(const QString &, const QString &);
-
-	// Channels
-
-	void CreateChannel();
-	void JoinChannel();
 
 	// Accept Thread
 	void ConnectionAccepted(SocketHolderRef socketRef);
@@ -343,10 +301,12 @@ private:
 	QPopupMenu * fPrivate;		// private window popup
 
 	WPrivMap fPrivateWindows;	// private windows;
-	mutable QMutex pLock;		// private window mutex
-	mutable QMutex rLock;		// resume list mutex
+	mutable Mutex pLock;		// private window mutex
+	mutable Mutex rLock;		// resume list mutex
 
-	bool fGotResults;			// see if we got initial Search Results
+	mutable Mutex fTTPLock;	// TTP list mutex
+
+//	bool fGotResults;			// see if we got initial Search Results
 	bool fGotParams;			// see if the initial "Get Params" message was sent
 	bool fAway;
 	bool fScanning;				// Is File Scan Thread active?
@@ -454,7 +414,7 @@ private:
 	void setStatus(const QString & s, unsigned int i = 0);
 
 	// stolen from BeShare :) thanx Jeremy
-	static bool ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net);
+	static bool ParseUserTargets(const QString & text, WUserSearchMap & sendTo, QString & setTargetStr, QString & setRestOfString, NetClient * net);
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL, bool enc = false);
 
 	void GetAddressInfo(const QString & user, bool verbose = true);
@@ -464,13 +424,13 @@ private:
 	void ShowHelp(const QString & command = QString::null);
 
 	// parsing stuff...
-	bool MatchUserFilter(const WUserRef & user, const char * filter);
+//	bool MatchUserFilter(const WUserRef & user, const char * filter);
 	bool MatchUserFilter(const WUserRef & user, const QString & filter);
-	bool MatchFilter(const QString & user, const char * filter);
+//	bool MatchFilter(const QString & user, const char * filter);
 	bool MatchFilter(const QString & user, const QString & filter);
 
-	int MatchUserName(const QString & un, QString & result, const char * filter);
-	bool DoTabCompletion(const QString & origText, QString & result, const char * filter);
+	int MatchUserName(const QString & un, QString & result, const QString & filter);
+	bool DoTabCompletion(const QString & origText, QString & result);
 
 	QString MapUsersToIDs(const QString & pattern);
 	QString MapIPsToNodes(const QString & pattern);
@@ -500,6 +460,7 @@ private:
 	QString GetUptimeString();
 	uint64 GetUptime();
 
+	friend class DownloadQueue;
 	void OpenDownload();
 
 	friend class WPrivateWindow;
@@ -511,7 +472,7 @@ private:
 	WResumeMap fResumeMap;
 
 	QGridLayout * fMainBox;
-	QTabWidget * fTabs;
+//	QTabWidget * fTabs;
 	
 	QWidget * fMainWidget;
 	QGridLayout * fMainTab;
@@ -519,80 +480,14 @@ private:
 	// splits user list and the rest of the window
 	QSplitter * fMainSplitter;	
 
-	QWidget * fSearchWidget;
-	QGridLayout * fSearchTab;
+//	QWidget * fSearchWidget;
 	
-	QWidget * fChannelsWidget;
-	QGridLayout * fChannelsTab;
-	QListView * ChannelList;
-	QPushButton * Create;
-	QPushButton * Join;
-
-	// Search Pane
-
-	QLabel * fSearchLabel;
-	WComboBox * fSearchEdit;
-	WUniListView * fSearchList;
-	QPushButton * fDownload;
-	QPushButton * fClear;
-	QPushButton * fStop;
-	QPushButton * fClearHistory;
-	WStatusBar * fStatus;
-	MessageRef fQueue;
-
-	String fCurrentSearchPattern;
-	StringMatcher fFileRegExp, fUserRegExp;
-	String fFileRegExpStr, fUserRegExpStr;
-
-	bool fIsRunning;
-
-	WFIMap fFileList;
 
 	uint32 fMaxUsers;
 
-	void StartQuery(const String & sidRegExp, const String & fileRegExp);
-	int SplitQuery(const String &fileExp);
-	void SetResultsMessage();
-	void SetSearchStatus(const QString & status, int index = 0);
-	void SetSearch(const QString & pattern);
-
-	void QueueDownload(const QString & file, const WUserRef & user);
-	void EmptyQueues();
-
-	mutable QMutex fSearchLock;		// to lock the list so only one method can be using it at a time
-	uint64 fQueryBytes;
 	// UniShare
 
 	int64 GetRegisterTime() const;
-
-	// Channels
-
-	void ChannelCreated(const QString &, const QString &, uint64);
-	void ChannelJoin(const QString &, const QString &);
-	void ChannelPart(const QString &, const QString &);
-	void ChannelInvite(const QString &, const QString &, const QString &);
-	void ChannelKick(const QString &, const QString &, const QString &);
-
-	WChannelMap fChannels;
-
-	void UpdateAdmins(WChannelIter iter);
-	void UpdateUsers(WChannelIter iter);
-	void UpdateTopic(WChannelIter iter);
-	void UpdatePublic(WChannelIter iter);
-	void JoinChannel(const QString &channel);
-
-	bool IsOwner(const QString & channel, const QString & user);
-	bool IsPublic(const QString & channel);
-	void SetPublic(const QString & channel, bool pub);
-
-	void PartChannel(const QString & channel, const QString & user);
-
-	bool IsAdmin(const QString & channel, const QString & user);
-	void AddAdmin(const QString & channel, const QString & user);
-	void RemoveAdmin(const QString & channel, const QString & user);
-	QString GetAdmins(const QString & channel);
-
-	void SetTopic(const QString & channel, const QString & topic);
 
 	// Titanic Transfer Protocol
 
@@ -600,7 +495,6 @@ private:
 
 signals:
 	void UpdatePrivateUserLists();
-	void ChannelAdminsChanged(const QString &, const QString &);
 	void NewChannelText(const QString &, const QString &, const QString &);
 };
 

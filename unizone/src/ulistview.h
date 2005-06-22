@@ -131,6 +131,9 @@ public:
 		return _sortAscending; 
 	}
 	
+protected:
+	void dragEnterEvent(QDragEnterEvent* event);
+	void dropEvent(QDropEvent* event);
 private:
 	int _sortColumn;
 	bool _sortAscending;

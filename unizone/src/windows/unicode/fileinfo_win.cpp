@@ -25,9 +25,7 @@ UFileInfo::InitMIMEType()
 		LONG ret;
 		if ((ret = RegQueryValueEx(hkey, L"Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
 		{
-#ifdef DEBUG2
-			PRINT("Read key: %S\n", key);
-#endif
+			PRINT2("Read key: %S\n", key);
 			mt = wideCharToQString(key);
 		}
 		else

@@ -16,7 +16,7 @@ AbstractReflectSession ::
 AbstractReflectSession() : _port(0), _connectingAsync(false), _asyncConnectIP(0), _asyncConnectPort(0), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER)
 {
    Mutex * ml = GetGlobalMuscleLock();
-   MASSERT(ml, "Please instantiate a CompleteSetupSystem object on the stack before creating any session objects (at beginning of main() is preferred)") 
+   MASSERT(ml, "Please instantiate a CompleteSetupSystem object on the stack before creating any session objects (at beginning of main() is preferred)\n");
    if (ml->Lock() == B_NO_ERROR) 
    {
       sprintf(_idString, "%lu", _idCounter++);  

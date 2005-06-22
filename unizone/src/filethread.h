@@ -66,6 +66,8 @@ private:
 
 	void ParseDir(const QString & d);
 	status_t ParseDirAux(QString &);
+
+	friend class WinShareWindow;
 	QString ResolveLink(const QString & lnk) const;
 
 	void ScanFiles(const QString & directory);

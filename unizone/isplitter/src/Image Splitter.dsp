@@ -40,9 +40,10 @@ RSC=rc.exe
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "UNICODE" /D "QT_DLL" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "UNICODE" /D "QT_DLL" /D "QJPEG_STATIC" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40b /d "NDEBUG"
@@ -52,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /machine:I386 /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Release"
 
 !ELSEIF  "$(CFG)" == "Image Splitter - Win32 Debug"
 
@@ -65,9 +66,10 @@ LINK32=link.exe
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "UNICODE" /D "QT_DLL" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "UNICODE" /D "QT_DLL" /D "QJPEG_STATIC" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40b /d "_DEBUG"
@@ -77,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Debug"
 
 !ENDIF 
 
@@ -312,60 +314,256 @@ BuildCmds= \
 
 # End Source File
 # End Group
-# Begin Group "DLL files"
+# Begin Group "qjpeg Source Files"
 
-# PROP Default_Filter "dll"
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\libjpeg\Release\qjpeg.dll
-
-!IF  "$(CFG)" == "Image Splitter - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=\build\unizone\libjpeg\Release
-TargetDir=.\Release
-InputPath=..\..\libjpeg\Release\qjpeg.dll
-InputName=qjpeg
-
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Image Splitter - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-# PROP Ignore_Default_Tool 1
-
-!ENDIF 
-
+SOURCE=..\..\libjpeg\jcapimin.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\libjpeg\Debug\qjpegd.dll
+SOURCE=..\..\libjpeg\jcapistd.c
+# End Source File
+# Begin Source File
 
-!IF  "$(CFG)" == "Image Splitter - Win32 Release"
+SOURCE=..\..\libjpeg\jccoefct.c
+# End Source File
+# Begin Source File
 
-# PROP Exclude_From_Build 1
-# PROP Ignore_Default_Tool 1
+SOURCE=..\..\libjpeg\jccolor.c
+# End Source File
+# Begin Source File
 
-!ELSEIF  "$(CFG)" == "Image Splitter - Win32 Debug"
+SOURCE=..\..\libjpeg\jcdctmgr.c
+# End Source File
+# Begin Source File
 
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Copying $(InputName).dll from $(InputDir) to $(TargetDir)
-InputDir=\build\unizone\libjpeg\Debug
-TargetDir=.\Debug
-InputPath=..\..\libjpeg\Debug\qjpegd.dll
-InputName=qjpegd
+SOURCE=..\..\libjpeg\jchuff.c
+# End Source File
+# Begin Source File
 
-"$(TargetDir)\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).dll" "$(TargetDir)\$(InputName).dll"
+SOURCE=..\..\libjpeg\jcinit.c
+# End Source File
+# Begin Source File
 
-# End Custom Build
+SOURCE=..\..\libjpeg\jcmainct.c
+# End Source File
+# Begin Source File
 
-!ENDIF 
+SOURCE=..\..\libjpeg\jcmarker.c
+# End Source File
+# Begin Source File
 
+SOURCE=..\..\libjpeg\jcmaster.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jcomapi.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jconfig.cfg
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jcparam.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jcphuff.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jcprepct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jcsample.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jctrans.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdapimin.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdapistd.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdatadst.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdatasrc.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdcoefct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdcolor.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jddctmgr.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdhuff.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdinput.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdmainct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdmarker.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdmaster.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdmerge.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdphuff.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdpostct.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdsample.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdtrans.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jerror.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jfdctflt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jfdctfst.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jfdctint.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jidctflt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jidctfst.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jidctint.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jidctred.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jmemmgr.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jmemnobs.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jpegio.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jquant1.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jquant2.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jutils.c
+# End Source File
+# End Group
+# Begin Group "qjpeg Header Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jchuff.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jconfig.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdct.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jdhuff.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jerror.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jinclude.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jmemsys.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jmorecfg.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jpegint.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jpegio.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jpeglib.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\jversion.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\libjpeg\qjpeg.h
 # End Source File
 # End Group
 # End Target

@@ -3,6 +3,7 @@
 
 #include <io.h>
 #include <windows.h>
+#include <sys/stat.h>
 
 void ConvertFileName(wchar_t *in, int ilen, char * out, int olen)
 {
@@ -28,7 +29,7 @@ WFile::Open(const WString &name, int mode)
 {
 	char cname[MAX_PATH];
 	ConvertFileName(name, wcslen(name), cname, MAX_PATH - 1);
-	file = _open(cname, mode);
+	file = _open(cname, mode, (mode & _O_CREAT) ? _S_IREAD | _S_IWRITE : 0);
 	return (file != -1);
 }
 

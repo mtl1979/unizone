@@ -124,6 +124,10 @@ WFileThread::ParseDirAux(QString &dir)
 {
 	status_t ret = B_NO_ERROR;
 	
+	dir = ResolveLink(dir);
+
+	PRINT("Symlinks resolved\n");
+
 	QFileInfo *info = new QFileInfo(dir);
 	
 	if (info)
@@ -132,20 +136,7 @@ WFileThread::ParseDirAux(QString &dir)
 		if (info->exists())
 		{		
 			PRINT("Exists\n");
-			
-#ifndef WIN32
-			// Read the symlink
-			
-			while (info->isSymLink())
-			{
-				QString l = info->readLink();
-				delete info;
-				return ParseDirAux(l);
-			}
-			
-			PRINT("Symlinks resolved\n");
-#endif
-			
+						
 			if (info->isDir()) // Directory?
 			{
 				dir = info->absFilePath();
@@ -286,24 +277,18 @@ WFileThread::ScanFiles(const QString & directory)
 void
 WFileThread::AddFile(const QString & filePath)
 {
-#ifdef DEBUG2
-	WString wFilePath(filePath);
-	PRINT("Setting to filePath: %S\n", wFilePath.getBuffer());
-#endif
+	WString wfilePath(filePath);
+	PRINT2("Setting to filePath: %S\n", wfilePath.getBuffer());	
 	
 	UFileInfo *ufi = new UFileInfo(filePath);
 				
 	if (ufi)
 	{
-#ifdef DEBUG2
-		PRINT("Set\n");
-#endif
+		PRINT2("Set\n");
 		
 		if (ufi->isValid())
 		{
-#ifdef DEBUG2
-			PRINT("Exists\n");
-#endif
+			PRINT2("Exists\n");
 			
 			// resolve symlink
 			QString gfn = ufi->getFullName();

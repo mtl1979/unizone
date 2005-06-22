@@ -6,6 +6,9 @@
 # ifndef _DEBUG
 #  define _DEBUG
 # endif
+# define PRINT2 PRINT
+#else
+# define PRINT2 
 #endif
 
 #ifdef _DEBUG
@@ -19,9 +22,7 @@ void CleanupDebug();
 #else
 
 // Empty inline to eliminate debug output
-inline void PRINT(const char *, ...)
-{
-}
+inline void PRINT(const char *, ...) {}
 # define RedirectDebugOutput()
 # define CleanupDebug()
 # define POPUP(X)

@@ -4,6 +4,7 @@
 
 #include "aboutdlgimpl.h"
 #include "downloadimpl.h"
+#include "downloadqueue.h"
 #include "winsharewindow.h"
 #include "events.h"
 #include "version.h"
@@ -22,7 +23,6 @@
 #include "combo.h"
 #include "menubar.h"
 #include "util/StringTokenizer.h"
-#include "regex/StringMatcher.h"
 #include "iogateway/PlainTextMessageIOGateway.h"
 #include "system/SystemInfo.h"
 #include "zlib/ZLibUtilityFunctions.h"
@@ -72,6 +72,7 @@
 #include <qdir.h>
 #include <qinputdialog.h>
 #include <qtoolbar.h>
+#include <qregexp.h>
 
 #ifdef WIN32
 #include <objbase.h>
@@ -85,18 +86,17 @@
 #include <sys/time.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>
+#elif defined(__sun) && defined(__SVR4)
+#include <utmpx.h>
 #endif
 
 #define NUM_TOOLBARS 4
-
-const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
-
 
 WinShareWindow * gWin = NULL;
 
 WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	: QMainWindow(parent, name, f | WPaintDesktop | WPaintClever),  
-	ChatWindow(MainType), pLock(true), rLock(true), fSearchLock(true)
+	ChatWindow(MainType)
 {
 	fMenus = NULL;
 
@@ -111,10 +111,9 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fFileScanThread = NULL;
 	fFilesScanned = false;
 	fMaxUsers = 0;
-	fQueryBytes = 0;
-	fPicViewer = new WPicViewer(this);
+	fPicViewer = new WPicViewer(NULL);
 	CHECK_PTR(fPicViewer);
-	
+
 	InitLaunchThread();
 
 	fUpdateThread = new UpdateClient(this);
@@ -127,6 +126,12 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fNetClient = new NetClient(this);
 	CHECK_PTR(fNetClient);
 
+	fChannels = new Channels(NULL, fNetClient);
+	CHECK_PTR(fChannels);
+
+	fSearch = new WSearch(NULL, fNetClient);
+	CHECK_PTR(fSearch);
+	
 	fServerThread = new ServerClient(this);
 	CHECK_PTR(fServerThread);
 
@@ -350,13 +355,6 @@ WinShareWindow::~WinShareWindow()
 void
 WinShareWindow::Cleanup()
 {
-	// Search Pane
-
-	StopSearch();
-	ClearList();
-
-	fIsRunning = false;
-
 	if (_ttpFiles.GetNumItems() > 0)
 	{
 		TTPInfo * ttpInfo;
@@ -397,6 +395,11 @@ WinShareWindow::Cleanup()
 	{
 		delete fMenus;
 		fMenus = NULL;
+	}
+
+	if (fSearch)
+	{
+		fSearch->Cleanup();
 	}
 
 	if (fDLWindow)
@@ -544,7 +547,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				
 
 				fGotParams = false; // set to false here :)
-				fGotResults = true; // fake that we got results, as there is no search yet.
+				fSearch->SetGotResults(true); // fake that we got results, as there is no search yet.
 				// send a message out to the server asking for our parameters
 				MessageRef askref(GetMessageFromPool(PR_COMMAND_GETPARAMETERS));
 				fNetClient->SendMessageToSessions(askref);
@@ -655,7 +658,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (wpe)
 				{
 					QString res;
-					if (DoTabCompletion(wpe->GetText(), res, NULL))
+					if (DoTabCompletion(wpe->GetText(), res))
 					{
 						WPWEvent *wpw = new WPWEvent(WPWEvent::TabCompleted, res);
 						if (wpw)
@@ -671,14 +674,14 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				WPWEvent * wpe = dynamic_cast<WPWEvent *>(event);
 				if (wpe)
 				{
-					pLock.lock();
+					pLock.Lock();
 					WPrivIter it = fPrivateWindows.find((WPrivateWindow * const)wpe->SendTo());
 					if (it != fPrivateWindows.end())
 					{
 						fPrivateWindows.erase(it);
 						PRINT("Removed\n");
 					}
-					pLock.unlock();
+					pLock.Unlock();
 				}
 				return;
 			}
@@ -738,12 +741,6 @@ WinShareWindow::HandleComboEvent(WTextEvent * e)
 			PRINT("Received text change event from Server combo\n");
 			ServerChanged(txt);
 		}
-		else if (sender == fSearchEdit)
-		{
-			PRINT("Received text change event from Search combo\n");
-			GoSearch();
-		}
-
 	}
 }
 
@@ -779,20 +776,35 @@ WinShareWindow::NameChanged(const QString & newName)
 {
 	int64 nr;
 	// Make sure old user name has register time
-	if (fUserName != QString::null)
+	if (!fUserName.isEmpty())
 	{
 		nr = fSettings->GetRegisterTime(fUserName);
 		fSettings->SetRegisterTime(fUserName, nr);
 	}
-	fNetClient->SetUserName(newName); // <postmaster@raasu.org> 20021011
-	QString status = WFormat::NameChanged(newName);
-	SendSystemEvent(status);
-	fUserName = newName;
-	// Make sure new user name has register time
-	if (fUserName != QString::null)
+	if (!newName.isEmpty())
 	{
+		if (newName != fUserName)
+		{
+			QString status = WFormat::NameChanged(newName);
+			SendSystemEvent(status);
+			fUserName = newName;
+		}
+		fNetClient->SetUserName(newName); // <postmaster@raasu.org> 20021011
+		// Make sure new user name has register time
 		nr = fSettings->GetRegisterTime(fUserName);
 		fSettings->SetRegisterTime(fUserName, nr);
+		// see if it exists in the list yet...
+		for (int i = 0; i < fUserList->count(); i++)
+		{
+			if ( newName == fUserList->text(i) )	// found match?
+			{
+				fUserList->setCurrentItem(i);
+				return;
+			}
+		}
+		// otherwise, insert
+		fUserList->insertItem(newName, 0);
+		fUserList->setCurrentItem(0);
 	}
 }
 
@@ -875,241 +887,14 @@ WinShareWindow::InitGUI()
 	fStatusList->setEditable(true);
 	fStatusLabel->setBuddy(fStatusList);
 
-	//
-	
-	fTabs = new QTabWidget(this);
-	CHECK_PTR(fTabs);
-
-	setCentralWidget(fTabs);
-
-	// Initialize variables for Search Pane
-
-	fCurrentSearchPattern = "";
-	fIsRunning = false;
-	
-	// Create the Search Pane
-	
-	fSearchWidget = new QWidget(fTabs, "Search Widget");
-	CHECK_PTR(fSearchWidget);
-
-	fSearchTab = new QGridLayout(fSearchWidget, 14, 10, 0, -1, "Search Tab");
-	CHECK_PTR(fSearchTab);
-
-	fSearchTab->addColSpacing(1, 20);
-	fSearchTab->addColSpacing(3, 20);
-	fSearchTab->addColSpacing(5, 20);
-	fSearchTab->addColSpacing(7, 20);
-	fSearchTab->addColSpacing(9, 20);
-
-	fSearchTab->addRowSpacing(0, 5);
-	fSearchTab->addRowSpacing(2, 20);
-	fSearchTab->addRowSpacing(12, 20);
-
-	fSearchTab->setRowStretch(0, 0);	// Least significant
-	fSearchTab->setRowStretch(1, 1);
-	fSearchTab->setRowStretch(2, 1);
-	fSearchTab->setRowStretch(3, 2);	// 3 to 9, most significant
-	fSearchTab->setRowStretch(4, 2);
-	fSearchTab->setRowStretch(5, 2);
-	fSearchTab->setRowStretch(6, 2);
-	fSearchTab->setRowStretch(7, 2);
-	fSearchTab->setRowStretch(8, 2);
-	fSearchTab->setRowStretch(9, 2);
-	fSearchTab->setRowStretch(10, 1);
-	fSearchTab->setRowStretch(11, 1);
-	fSearchTab->setRowStretch(12, 0);	// Least significant
-	fSearchTab->setRowStretch(13, 1);
-
-	// Results ListView
-	
-	fSearchList = new WUniListView(fSearchWidget);
-	CHECK_PTR(fSearchList);
-
-	fSearchList->addColumn(tr("File Name"));
-	fSearchList->addColumn(tr("File Size"));
-	fSearchList->addColumn(tr("File Type"));
-	fSearchList->addColumn(tr("Modified"));
-	fSearchList->addColumn(tr("Path"));
-	fSearchList->addColumn(tr("User"));
-
-	fSearchList->setColumnAlignment(WSearchListItem::FileSize, AlignRight); // <postmaster@raasu.org> 20021103
-	fSearchList->setColumnAlignment(WSearchListItem::Modified, AlignRight);
-
-	fSearchList->setShowSortIndicator(true);
-	fSearchList->setAllColumnsShowFocus(true);
-
-	int i;
-
-	for (i = 0; i < 6; i++)
-	{
-		fSearchList->setColumnWidthMode(i, QListView::Manual);
-		fSearchList->setColumnWidth(i, kListSizes[i]);
-	}
-
-	fSearchList->setSelectionMode(QListView::Extended);
-
-	fSearchTab->addMultiCellWidget(fSearchList, 3, 9, 0, 9);
-
-	// Status Bar
-
-	fStatus = new WStatusBar(fSearchWidget);
-	CHECK_PTR(fStatus);
-	fStatus->setSizeGripEnabled(false);
-
-	fSearchTab->addMultiCellWidget(fStatus, 13, 13, 0, 9);
-
-	// Search Query Label
-
-	fSearchLabel = new QLabel(fSearchWidget);
-	CHECK_PTR(fSearchLabel);
-
-	fSearchTab->addMultiCellWidget(fSearchLabel, 1, 1, 0, 3); 
-
-	// Search Query Combo Box
-
-	fSearchEdit = new WComboBox(this, fSearchWidget, "fSearchEdit");
-	CHECK_PTR(fSearchEdit);
-
-	fSearchEdit->setEditable(true);
-	fSearchEdit->setMinimumWidth((int) (this->width()*0.75));
-	fSearchEdit->setDuplicatesEnabled(false);
-	fSearchEdit->setAutoCompletion(true);
-
-	fSearchLabel->setBuddy(fSearchEdit);
-	fSearchLabel->setText(tr("Search:"));
-
-	fSearchTab->addMultiCellWidget(fSearchEdit, 1, 1, 4, 9);
-	
-	// Download Button
-
-	fDownload = new QPushButton(tr("Download"), fSearchWidget);
-	CHECK_PTR(fDownload);
-
-	fSearchTab->addMultiCellWidget(fDownload, 10, 10, 0, 2);
-
-	// Stop Button
-
-	fStop = new QPushButton(tr("Stop"), fSearchWidget);
-	CHECK_PTR(fStop);
-
-	fSearchTab->addMultiCellWidget(fStop, 10, 10, 4, 6);
-
-	// Clear Button
-
-	fClear = new QPushButton(tr("Clear"), fSearchWidget);
-	CHECK_PTR(fClear);
-
-	fSearchTab->addMultiCellWidget(fClear, 10, 10, 8, 9);
-
-	// Clear History Button
-
-	fClearHistory = new QPushButton(tr("Clear History"), fSearchWidget);
-	CHECK_PTR(fClearHistory);
-
-	fSearchTab->addMultiCellWidget(fClearHistory, 11, 11, 8, 9);
-
-	// connect up slots
-
-	connect(fNetClient, SIGNAL(AddFile(const QString &, const QString &, bool, MessageRef)), 
-			this, SLOT(AddFile(const QString &, const QString &, bool, MessageRef)));
-	connect(fNetClient, SIGNAL(RemoveFile(const QString &, const QString &)), 
-			this, SLOT(RemoveFile(const QString &, const QString &)));
-
-	connect(fClear, SIGNAL(clicked()), this, SLOT(ClearList()));
-	connect(fStop, SIGNAL(clicked()), this, SLOT(StopSearch()));
-	connect(fDownload, SIGNAL(clicked()), this, SLOT(Download()));
-	connect(fClearHistory, SIGNAL(clicked()), this, SLOT(ClearHistory()));
-
-	fQueue = GetMessageFromPool();
-
-	SetSearchStatus(tr("Idle."));
-
-	//
-	// End of Search Pane
-	//
-
-	// Create the Channels Pane
-
-	fChannelsWidget = new QWidget(fTabs, "Channels Widget");
-	CHECK_PTR(fChannelsWidget);
-
-	QGridLayout * fChannelsTab = new QGridLayout(fChannelsWidget, 7, 5, 0, -1, "Channels Tab");
-	CHECK_PTR(fChannelsTab);
-
-	fChannelsTab->addRowSpacing(5, 20);
-
-	fChannelsTab->setRowStretch(0, 2);
-	fChannelsTab->setRowStretch(1, 2);
-	fChannelsTab->setRowStretch(2, 2);
-	fChannelsTab->setRowStretch(3, 2);
-	fChannelsTab->setRowStretch(4, 2);
-	fChannelsTab->setRowStretch(5, 0);
-	fChannelsTab->setRowStretch(6, 1);
-
-	fChannelsTab->addColSpacing(0, 20);
-	fChannelsTab->addColSpacing(2, 20);
-	fChannelsTab->addColSpacing(4, 20);
-
-	ChannelList = new QListView( fChannelsWidget, "ChannelList" );
-	CHECK_PTR(ChannelList);
-
-	ChannelList->addColumn( tr( "Name" ) );
-	ChannelList->addColumn( tr( "Topic" ) );
-	ChannelList->addColumn( tr( "Users" ) );
-	ChannelList->addColumn( tr( "Admins" ) );
-	ChannelList->addColumn( tr( "Public" ) );
-
-	fChannelsTab->addMultiCellWidget(ChannelList, 0, 4, 0, 4);
-	
-	Create = new QPushButton( tr( "&Create" ), fChannelsWidget, "Create" );
-	CHECK_PTR(Create);
-
-	fChannelsTab->addWidget(Create, 6, 1);
-
-	Join = new QPushButton( tr( "&Join" ), fChannelsWidget, "Join" );
-	CHECK_PTR(Join);
-
-	fChannelsTab->addWidget(Join, 6, 3);
-
-	connect( 
-		fNetClient, SIGNAL(ChannelAdded(const QString &, const QString &, int64)), 
-		this, SLOT(ChannelAdded(const QString &, const QString &, int64)) 
-		);
-	connect(
-		fNetClient, SIGNAL(ChannelTopic(const QString &, const QString &, const QString &)),
-		this, SLOT(ChannelTopic(const QString &, const QString &, const QString &))
-		);
-	connect(
-		fNetClient, SIGNAL(ChannelOwner(const QString &, const QString &, const QString &)),
-		this, SLOT(ChannelOwner(const QString &, const QString &, const QString &))
-		);
-	connect(
-		fNetClient, SIGNAL(ChannelPublic(const QString &, const QString &, bool)),
-		this, SLOT(ChannelPublic(const QString &, const QString &, bool))
-		);
-	connect(
-		fNetClient, SIGNAL(ChannelAdmins(const QString &, const QString &, const QString &)),
-		this, SLOT(ChannelAdmins(const QString &, const QString &, const QString &))
-		);
-	connect(
-		fNetClient, SIGNAL(UserIDChanged(const QString &, const QString &)),
-		this, SLOT(UserIDChanged(const QString &, const QString &))
-		);
-
-	// Window widget events
-	connect(Create, SIGNAL(clicked()), this, SLOT(CreateChannel()));
-	connect(Join, SIGNAL(clicked()), this, SLOT(JoinChannel()));
-
-	//
-	// End of Channels Pane
-	//
-
 	// chat widget
-	fMainWidget = new QWidget(fTabs);
+	fMainWidget = new QWidget(this);
 	CHECK_PTR(fMainWidget);
 
+	setCentralWidget(fMainWidget);
+
 	fMainTab = new QGridLayout(fMainWidget, 14, 10, 0, -1, "Chat Tab");
-	CHECK_PTR(fSearchTab);
+	CHECK_PTR(fMainTab);
 
 	// main splitter
 	fMainSplitter = new QSplitter(fMainWidget);
@@ -1192,7 +977,8 @@ WinShareWindow::InitGUI()
 	fServerList->setMinimumWidth(75);
 
 	fGotParams = false;
-	fGotResults = true;
+
+	fSearch->SetGotResults(true);
 
 	// setup autoaway timer
 	fAutoAway = new QTimer;
@@ -1208,12 +994,6 @@ WinShareWindow::InitGUI()
 	fReconnectTimer = new QTimer;
 	CHECK_PTR(fReconnectTimer);
 	connect(fReconnectTimer, SIGNAL(timeout()), this, SLOT(ReconnectTimer()));
-
-	// Insert tabs
-
-	fTabs->insertTab(fMainWidget, tr("Chat"));
-	fTabs->insertTab(fSearchWidget, tr("Search"));
-	fTabs->insertTab(fChannelsWidget, tr("Channels"));
 }
 
 QString
@@ -1337,32 +1117,33 @@ WinShareWindow::MakeHumanTime(uint64 time)
 }
 
 bool
-WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, String & setTargetStr, String & setRestOfString, NetClient * net)
+WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, QString & setTargetStr, QString & setRestOfString, NetClient * net)
 {
-	StringTokenizer wholeStringTok((const char *) text.utf8(), " ");
-	String restOfString2(wholeStringTok.GetRemainderOfString());
-	const char * w2 = wholeStringTok.GetNextToken();
-	if (w2)
+	QStringTokenizer wholeStringTok(text, " ");
+	QString restOfString2(wholeStringTok.GetRemainderOfString());
+	QString w2 = wholeStringTok.GetNextToken();
+	if (w2 != QString::null)
 	{
 		setTargetStr = w2;
 
 		setRestOfString = wholeStringTok.GetRemainderOfString();
 
-		StringTokenizer tok(w2, ",");
-		Queue<String> clauses;
-		const char * next;
-		while((next = tok.GetNextToken()) != NULL)
-			clauses.AddTail(String(next).Trim());
+		QStringTokenizer tok(w2, ",");
+		Queue<QString> clauses;
+		QString next;
+		while((next = tok.GetNextToken()) != QString::null)
+			clauses.AddTail(next.stripWhiteSpace());
 	
 		// find users by session id
 		for (int i = clauses.GetNumItems() - 1; i >= 0; i--)
 		{
-			WUserRef user = net->FindUser( QString::fromUtf8( clauses[i].Cstr() ) );
-			PRINT("Checking for user %s\n", clauses[i].Cstr());
+			WUserRef user = net->FindUser( clauses[i] );
+			WString wcls(clauses[i]);
+			PRINT2("Checking for user %S\n", wcls.getBuffer());
 			if (user() != NULL)
 			{
-				WUserSearchPair pair = MakePair(QString::fromUtf8(clauses[i].Cstr()), user, QString::fromUtf8(setRestOfString.Cstr())); // <postmaster@raasu.org> 20021007
-				sendTo.insert(pair);
+				WUserSearchPair pair = MakePair(user, setRestOfString); // <postmaster@raasu.org> 20021007
+				sendTo.AddTail(pair);
 				clauses.RemoveItemAt(i);
 			}
 		}
@@ -1370,11 +1151,10 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 		PRINT("Checking using usernames\n");
 		for (int j = clauses.GetNumItems() - 1; j >= 0; j--)
 		{
-			String tstr(clauses[j]);
-			tstr.Trim();
+			QString tstr(clauses[j]);
+			tstr = tstr.stripWhiteSpace().lower();
 			ConvertToRegex(tstr);
-			MakeRegexCaseInsensitive(tstr);
-			StringMatcher sm(tstr.Cstr());
+			QRegExp qr(tstr, false);
 
 			bool foundMatches = false;
 			WUserRef user;
@@ -1382,13 +1162,13 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 			while (iter != net->Users().end())
 			{
 				user = (*iter).second;
-				String userName = String((const char *) user()->GetUserName().utf8()).Trim();
+				QString userName = user()->GetUserName().stripWhiteSpace();
 				userName = StripURL(userName);
 
-				if (userName.Length() > 0 && sm.Match(userName.Cstr()))
+				if (userName.length() > 0 && userName.find(qr) >= 0)
 				{
-					WUserSearchPair pair = MakePair(user()->GetUserID(), user, QString::fromUtf8(setRestOfString.Cstr())); // <postmaster@raasu.org> 20021007
-					sendTo.insert(pair);
+					WUserSearchPair pair = MakePair(user, setRestOfString); // <postmaster@raasu.org> 20021007
+					sendTo.AddTail(pair);
 					foundMatches = true;
 				}
 				iter++;
@@ -1402,7 +1182,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 
 		PRINT("Checking using tab stuff\n");
 		// still no items?
-		if (sendTo.empty())
+		if (sendTo.IsEmpty())
 		{
 			// tab-completion thingy :)
 			WUserRef user;
@@ -1410,17 +1190,17 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 			while (iter != net->Users().end())
 			{
 				user = (*iter).second;
-				QCString uName = user()->GetUserName().utf8();
-				String userName = String((const char *) uName).Trim();
+				QString uName = user()->GetUserName();
+				QString userName = uName.stripWhiteSpace();
 				userName = StripURL(userName);
 
-				if (userName.Length() > 0 && restOfString2.StartsWith(userName))
+				if (userName.length() > 0 && restOfString2.startsWith(userName))
 				{
 					PRINT("Found\n");
-					WUserSearchPair pair = MakePair(user()->GetUserID(), user,
-													QString::fromUtf8(restOfString2.Substring(userName.Length()).Cstr()));
-					sendTo.insert(pair);
-					setTargetStr = (const char *) uName;
+					WUserSearchPair pair = MakePair(user,
+													restOfString2.mid(userName.length()));
+					sendTo.AddTail(pair);
+					setTargetStr = uName;
 				}
 				iter++;
 			}
@@ -1457,7 +1237,7 @@ WinShareWindow::LoadSettings()
 		fServerList->clear();
 		fStatusList->clear();
 		fUserList->clear();
-		fSearchEdit->clear();
+		fSearch->LoadSettings();
 
 		int i;
 		int size;
@@ -1509,13 +1289,6 @@ WinShareWindow::LoadSettings()
 		}
 		ci = fStatusList->currentItem();
 		fUserStatus = fStatusList->text(ci);
-
-		// load query history
-		for (i = 0; (str = gWin->fSettings->GetQueryItem(i)) != QString::null; i++)
-			fSearchEdit->insertItem(str, i);
-		i = fSettings->GetCurrentQueryItem();
-		if (i < fSearchEdit->count())
-			fSearchEdit->setCurrentItem(i);
 
 		// load the style
 #ifndef DISABLE_STYLES
@@ -1611,13 +1384,12 @@ WinShareWindow::LoadSettings()
 		rx = fSettings->GetReceiveStats(); rx2 = rx;
 		
 		fUsers->setSorting(fSettings->GetNickListSortColumn(), fSettings->GetNickListSortAscending());
-		fSearchList->setSorting(fSettings->GetSearchListSortColumn(), fSettings->GetSearchListSortAscending());
 
 		fRemote = fSettings->GetRemotePassword();
 
 		// Load resume list
 
-		rLock.lock();
+		rLock.Lock();
 		fResumeMap.clear();
 
 		for (i = 0; i <= fSettings->GetResumeCount(); i++)
@@ -1626,7 +1398,7 @@ WinShareWindow::LoadSettings()
 			if (fSettings->GetResumeItem(i, wrp))
 				fResumeMap.insert(wrp);
 		}
-		rLock.unlock();
+		rLock.Unlock();
 
 		fInstallID = fSettings->GetInstallID();
 	}
@@ -1646,21 +1418,23 @@ WinShareWindow::LoadSettings()
 
 		fAwayMsg = "away";
 		fHereMsg = "here";
-		fWatch = "";
-		fIgnore = "";
-		fIgnoreIP = "";
-		fBlackList = "";
+		fWatch = QString::null;
+		fIgnore = QString::null;
+		fIgnoreIP = QString::null;
+		fBlackList = QString::null;
 		fWhiteList = "Atrus, Bubbles";
-		fFilterList = "";
-		fAutoPriv = "";
-		fPMRedirect = "";
-		fOnConnect = "";
-		fOnConnect2 = "";
+		fFilterList = QString::null;
+		fAutoPriv = QString::null;
+		fPMRedirect = QString::null;
+		fOnConnect = QString::null;
+		fOnConnect2 = QString::null;
+
 		if (fUserName != QString::null)
 		{
 			int64 rn = fSettings->GetRegisterTime(fUserName);
 			fSettings->SetRegisterTime(fUserName, rn);
 		}
+
 		tx = 0;
 		rx = 0;
 		tx2 = 0;
@@ -1724,7 +1498,6 @@ WinShareWindow::SaveSettings()
 	fSettings->EmptyServerList();
 	fSettings->EmptyStatusList();
 	fSettings->EmptyUserList();
-	fSettings->EmptyQueryList();
 	// don't worry about the color list, prefs does it
 	
 	// save server list
@@ -1772,17 +1545,7 @@ WinShareWindow::SaveSettings()
 
 	// save query history
 
-	for (i = 0; i < fSearchEdit->count(); i++)
-	{
-		QString qQuery = fSearchEdit->text(i).stripWhiteSpace();
-		fSettings->AddQueryItem(qQuery);
-
-#ifdef _DEBUG
-		WString wQuery(qQuery);
-		PRINT("Saved query %S\n", wQuery.getBuffer());
-#endif
-	}
-	fSettings->SetCurrentQueryItem(fSearchEdit->currentItem());
+	fSearch->SaveSettings();
 
 	// don't worry about style, Prefs does it for us
 	
@@ -1832,11 +1595,6 @@ WinShareWindow::SaveSettings()
 	fSettings->SetNickListSortColumn(fUsers->sortColumn());
 	fSettings->SetNickListSortAscending(fUsers->sortAscending());
 
-	// search query list sort settings
-
-	fSettings->SetSearchListSortColumn(fSearchList->sortColumn());
-	fSettings->SetSearchListSortAscending(fSearchList->sortAscending());
-
 	// remote control
 
 	fSettings->SetRemotePassword(fRemote);
@@ -1849,7 +1607,7 @@ WinShareWindow::SaveSettings()
 
 	// Save resume list
 
-	rLock.lock();
+	rLock.Lock();
 	fSettings->EmptyResumeList();
 
 	i = 0;
@@ -1861,7 +1619,7 @@ WinShareWindow::SaveSettings()
 		wri++;
 		i++;
 	}
-	rLock.unlock();
+	rLock.Unlock();
 	fSettings->SetResumeCount(i);
 
 	// UniShare
@@ -2005,26 +1763,24 @@ WinShareWindow::LaunchSearch(const QString & pattern)
 			gWin->Connect(qServer);
 			return;
 		}
-		gWin->SetSearch(pattern.mid(2));
+		gWin->fSearch->SetSearch(pattern.mid(2));
+		gWin->fSearch->show();
 		return;
 	}
 	// (be)share:pattern
-	gWin->SetSearch(pattern);
+	gWin->fSearch->SetSearch(pattern);
+	gWin->fSearch->show();
 }
 
 QString
 WinShareWindow::MapIPsToNodes(const QString & pattern)
 {
-	QString qResult("");
+	QString qResult;
 	QString qItem;
 	QStringTokenizer qTok(pattern, ",");
 	while ((qItem = qTok.GetNextToken()) != QString::null)
 	{
-		qResult += "/" + qItem + "/*,";
-	}
-	if (qResult.right(1) == ",") 
-	{
-		qResult.truncate(qResult.length() - 1);
+		AddToList(qResult, "/" + qItem + "/*");
 	}
 
 #ifdef _DEBUG
@@ -2040,43 +1796,22 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 {
 	QString qResult("");
 	WUserIter it = gWin->fNetClient->Users().begin();
-	QString qTemp = pattern;
 	QString qItem;
-	int cPos;
-	while (qTemp.length() > 0)
-		{
-			cPos = qTemp.find(",");
-			if (cPos < 1) 
-			{ 
-				cPos = qTemp.length()+1;
-			}
-
-			qItem = qTemp.left(cPos-1);
-
-			if (qItem.find("*") > 0) // Space in username? (replaced with '*' for BeShare compatibility)
-			{
-				for (unsigned int i = 0; i < qItem.length(); i++)
-				{
-					if (qItem[i] == '*')
-						qItem.replace(i,1," ");
-				}
-			}
-		
-			while (it != gWin->fNetClient->Users().end())
-			{
-				if (((*it).second()->GetUserID() == qItem) || ((*it).second()->GetUserName().lower() == qItem.lower()))
-				{
-					qResult += "/"+(*it).second()->GetUserHostName()+"/";
-					qResult += (*it).second()->GetUserID()+",";
-					break;
-				}
-				it++;
-			}
-			qTemp = qTemp.mid(cPos+1);
-		}
-	if (qResult.right(1) == ",")
+	QStringTokenizer tok(pattern, ",");
+	while ((qItem = tok.GetNextToken()) != QString::null)
 	{
-		qResult.truncate(qResult.length() - 1);
+		// Space in username? (replaced with '*' for BeShare compatibility)
+		qItem.replace(QRegExp("*"), " ");
+		
+		while (it != gWin->fNetClient->Users().end())
+		{
+			if (((*it).second()->GetUserID() == qItem) || ((*it).second()->GetUserName().lower() == qItem.lower()))
+			{
+				AddToList(qResult, "/"+(*it).second()->GetUserHostName() + "/" + (*it).second()->GetUserID());
+				break;
+			}
+			it++;
+		}
 	}
 
 #ifdef _DEBUG
@@ -2099,23 +1834,19 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 		users = users.mid(2);
 	}
 	int iUsers = 0;
+
 	WPrivateWindow * window = new WPrivateWindow(this, fNetClient, NULL);
 	if (!window) 
 		return;
+
 	QString qItem;
 	QStringTokenizer qTok(users,",");
 	
 	while ((qItem = qTok.GetNextToken()) != QString::null)
 	{
-		if (qItem.find("*") > 0) // Space in username? (replaced with '*' for BeShare compatibility)
-		{
-			for (unsigned int i = 0; i < qItem.length(); i++)
-			{
-				if (qItem[i] == '*')
-					qItem.replace(i,1," ");
-			}
-		}
-		
+		// Space in username? (replaced with '*' for BeShare compatibility)
+		qItem.replace(QRegExp("*"), " ");
+
 		WUserIter it = gWin->fNetClient->Users().begin();
 		
 		while (it != gWin->fNetClient->Users().end())
@@ -2138,9 +1869,9 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 	// it's a map... but so far, there is no need for a key
 	// as I just iterate through the list
 	WPrivPair p = MakePair(window);
-	pLock.lock();
+	pLock.Lock();
 	gWin->fPrivateWindows.insert(p);
-	pLock.unlock();
+	pLock.Unlock();
 }
 
 void
@@ -2171,11 +1902,13 @@ WinShareWindow::StartQueue(const QString &session)
 	if (_ttpFiles.GetNumItems() > 0)
 	{
 		WUserRef user = FindUser(session);
+		DownloadQueue fQueue;
+
 		if (user() == NULL)
 			return;
 
 		unsigned int i = 0;
-		fSearchLock.lock();
+		fTTPLock.Lock();
 		while (_ttpFiles.GetNumItems() > 0)
 		{
 			TTPInfo * ttpInfo = NULL;
@@ -2184,7 +1917,7 @@ WinShareWindow::StartQueue(const QString &session)
 			{
 				if (ttpInfo->bot == session)
 				{
-					QueueDownload(ttpInfo->file, user);
+					fQueue.addItem(ttpInfo->file, user);
 					_ttpFiles.RemoveItemAt(i);
 					SendSystemEvent(tr("Downloading file %1 from user #%2.").arg( ttpInfo->file ).arg(session));
 				}
@@ -2193,8 +1926,8 @@ WinShareWindow::StartQueue(const QString &session)
 					break;
 			}
 		}
-		EmptyQueues();
-		fSearchLock.unlock();
+		fQueue.run();
+		fTTPLock.Unlock();
 	}
 }
 
@@ -2271,6 +2004,26 @@ WinShareWindow::GetUptime()
 		uptime *= 1000000L;
 	}
 	return uptime;
+#elif defined(__sun) && defined(__SVR4) // SunOS <edayan@optonline.net>
+	uint64 boottime = 0;
+	uint64 upTime = 0;
+	struct utmpx *utxent;
+
+	setutxent();
+	while ((utxent = getutxent())) {
+		if (! strcmp("system boot", utxent->ut_line)) {
+			bootTime = utxent->ut_tv.tv_sec;
+			endutxent();
+			break;
+		}
+	}
+
+	if (bootTime != 0) {
+		int currentTime = time(NULL);
+		upTime = (currentTime - bootTime) * 1000000L;
+	}
+
+	return upTime;
 #else
 # error "Uptime not implemented for your OS"
 #endif
@@ -2340,6 +2093,33 @@ WinShareWindow::OpenDownloads()
 		fDLWindow->hide();
 	else
 		OpenDownload();
+}
+
+void
+WinShareWindow::OpenSearch()
+{
+	if (fSearch->isHidden())
+		fSearch->show();
+	else
+		fSearch->hide();
+}
+
+void
+WinShareWindow::OpenViewer()
+{
+	if (fPicViewer->isHidden())
+		fPicViewer->show();
+	else
+		fPicViewer->hide();
+}
+
+void
+WinShareWindow::OpenChannels()
+{
+	if (fChannels->isHidden())
+		fChannels->show();
+	else
+		fChannels->hide();
 }
 
 void
@@ -2413,22 +2193,7 @@ WinShareWindow::GetRegisterTime() const
 void
 WinShareWindow::keyPressEvent(QKeyEvent *event)
 {
-	if (event->key() == Key_F12 && event->state() & ControlButton)
-	{
-		int c = fTabs->currentPageIndex();
-		c++;
-		if (c > 2) c = 0;
-		fTabs->setCurrentPage(c);
-	}
-	else if (event->key() == Key_F11 && event->state() & ControlButton)
-	{
-		int c = fTabs->currentPageIndex();
-		c--;
-		if (c < 0) c = 2;
-		fTabs->setCurrentPage(c);
-	}
-	else
-		QMainWindow::keyPressEvent(event);
+	QMainWindow::keyPressEvent(event);
 }
 
 QWidget *
@@ -2500,4 +2265,54 @@ void
 WinShareWindow::SendWarningEvent(const QString &message)
 {
 	WarningEvent(this, message);
+}
+
+bool
+WinShareWindow::FindSharedFile(QString & file)
+{
+	bool found = false;
+	QString res;
+
+	fFileScanThread->Lock();
+	file = fFileScanThread->ResolveLink(file);
+
+	MessageRef ref;
+	for (int n = 0; n < fFileScanThread->GetNumFiles(); n++)
+	{
+		fFileScanThread->GetSharedFile(n, ref);
+		QFileInfo info(file);
+		String spath, sfile;
+		QString qpath, qfile; 
+		if ((ref()->FindString("beshare:Path", spath) == B_OK) &&
+			(ref()->FindString("beshare:File Name", sfile) == B_OK)
+			)
+		{
+			qpath = QString::fromUtf8(spath.Cstr());
+			qfile = QString::fromUtf8(sfile.Cstr());
+
+			if (
+#ifdef WIN32
+				(qpath.lower() == info.dirPath(true).lower()) &&
+				(qfile.lower() == info.fileName().lower())
+#else
+				(qpath == info.dirPath(true)) && 
+				(qfile == info.fileName())
+#endif
+				) 
+			{
+				res = info.fileName();
+				ConvertToRegex(res, true);
+				res.replace(QRegExp(" "), "?");
+				found = true;
+				break;
+			}
+		}
+	}
+
+	fFileScanThread->Unlock();
+
+	if (found)
+		file = res;
+
+	return found;
 }

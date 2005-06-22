@@ -6,6 +6,7 @@
 #endif
 
 #include <qimage.h>
+#include <qdragobject.h>
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qlayout.h>
@@ -13,10 +14,13 @@
 #include <qapplication.h>
 #include <qfile.h>
 #include <qstring.h>
+#include <qtabwidget.h>
 
 ImageSplitter::ImageSplitter( QWidget* parent, const char* name, WFlags fl)
-: ImageSplitterBase(parent, name, fl)
+: ImageSplitterBase(parent, name, fl | WMouseNoMask)
 {
+	dragging = false;
+
 	image = NULL;
 	QString filename = QString::null;
 	lastdir = QString::null;
@@ -35,6 +39,9 @@ ImageSplitter::ImageSplitter( QWidget* parent, const char* name, WFlags fl)
 	CHECK_PTR(fPreview);
 	fPreview->setOwner(this);
 
+	setAcceptDrops(true);
+	pxlCollage->installEventFilter(this);
+
 	// Use our copy of JPEG IO if Qt doesn't have it ;)
 #ifdef WIN32
 	InitJpegIO();
@@ -42,6 +49,92 @@ ImageSplitter::ImageSplitter( QWidget* parent, const char* name, WFlags fl)
 
 	ClearImage();
 };
+
+void 
+ImageSplitter::dragEnterEvent(QDragEnterEvent* event)
+{
+    event->accept( QUriDrag::canDecode(event));
+	ImageSplitterBase::dragEnterEvent(event);
+}
+
+bool
+ImageSplitter::eventFilter( QObject *o, QEvent *e )
+{
+	if (o == pxlCollage)
+	{
+		switch(e->type())
+		{
+		case QEvent::MouseButtonPress:
+			mousePressEvent((QMouseEvent *) e);
+			return true;
+		case QEvent::MouseMove:
+			mouseMoveEvent((QMouseEvent *) e);
+			return true;
+		case QEvent::MouseButtonRelease:
+			mouseReleaseEvent((QMouseEvent *) e);
+			return true;
+		}
+	}
+	return false;
+}
+
+void 
+ImageSplitter::dropEvent(QDropEvent* event)
+{
+    QStringList list;
+	
+    if ( QUriDrag::decodeLocalFiles(event, list) ) {
+		QString filename = list[0];
+		Load(filename);
+    }
+}
+
+void
+ImageSplitter::mousePressEvent(QMouseEvent *e)
+{
+	if (e->button() & LeftButton)
+	{
+		qDebug("Started dragging...\n");
+		dragging = true;
+	}
+	ImageSplitterBase::mousePressEvent(e);
+}
+
+void
+ImageSplitter::mouseMoveEvent(QMouseEvent *e)
+{
+	if (dragging)
+	{
+		QPoint currPos = e->pos();
+		if ( ( startPos - currPos ).manhattanLength() > QApplication::startDragDistance() )
+			startDrag();
+	}
+	ImageSplitterBase::mouseMoveEvent(e);
+}
+
+void
+ImageSplitter::mouseReleaseEvent(QMouseEvent *e)
+{
+	if (dragging)
+	{
+		qDebug("Stopped dragging...\n");
+		dragging = false;
+	}
+	ImageSplitterBase::mouseReleaseEvent(e);
+}
+
+void 
+ImageSplitter::startDrag()
+{
+	if (fFilename != QString::null)
+	{
+		QStringList list;
+		list.append(fFilename);
+		QUriDrag *d = new QUriDrag(this);
+		d->setFilenames(list);
+		d->dragCopy();
+	}
+}
 
 void
 ImageSplitter::SaveSettings()
@@ -63,26 +156,40 @@ ImageSplitter:: ~ImageSplitter()
 void
 ImageSplitter::Load()
 {
-	fFilename = QFileDialog::getOpenFileName ( lastdir, "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
-	if (!fFilename.isEmpty())
+	QString filename = QFileDialog::getOpenFileName ( lastdir, "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
+	if (!filename.isEmpty())
+	{
+		Load(filename);
+	}
+}
+
+void
+ImageSplitter::Load(const QString &filename)
+{
+	QImage * img = new QImage();
+	if (img->load(filename))
 	{
 		ClearImage();
-		image = new QImage();
-		if (image->load(fFilename))
-		{
-			QPixmap pixCollage;
-			pixCollage = *image;
-			pxlCollage->setPixmap(pixCollage);
-			fPreview->ShowImage(image);
-			fPreview->show();
-		}
+
+		image = img;
+		fFilename = filename;
+
+		QPixmap pixCollage;
+		pixCollage = *image;
+		pxlCollage->setPixmap(pixCollage);
+		fPreview->ShowImage(image);
+		fPreview->show();
+
 		QFileInfo info(fFilename);
 		lastdir = info.dirPath();
 
 		setCaption( fFilename );
-	}
-}
 
+		TabWidget2->showPage(tab);
+	}
+	else
+		delete img;
+}
 
 void
 ImageSplitter::ClearImage()

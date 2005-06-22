@@ -364,7 +364,7 @@ WPrefs::OK()
 
 	gWin->fSettings->SetFontSize(fFontSize->value());
 
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)	
+#ifndef WIN32	
 	// save our launcher settings
 	gWin->fSettings->SetMailLauncher(fMailtoLauncher->text());
 	gWin->fSettings->SetHTTPLauncher(fHTTPLauncher->text());

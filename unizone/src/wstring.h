@@ -5,23 +5,15 @@
 
 #ifdef WIN32
 #  include <windows.h>
+#else
+// For Unicode support on Linux or FreeBSD???
+#  include <wchar.h>
+#  include <stdlib.h>
 #endif
+
+#include <platform.h>
 
 class QString;
-
-// RedHat Linux 8.x doesn't seem to define __LINUX__
-
-#if defined(linux) || defined(LINUX)
-#  if !defined(__LINUX__)
-#    define __LINUX__
-#  endif
-#endif
-
-// For Unicode support on Linux or FreeBSD???
-#if defined(__LINUX__) || defined(__FreeBSD__) || defined(__QNX__)
-#include <wchar.h>
-#include <stdlib.h>
-#endif
 
 // Converts array of wchar_t to QString
 QString wideCharToQString(const wchar_t *wide);

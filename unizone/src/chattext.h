@@ -26,6 +26,8 @@ signals:
 
 protected:
 	virtual void keyPressEvent(QKeyEvent * event);
+	virtual void dropEvent(QDropEvent* event);
+
 	void AddLine(const QString &);
 
 private:

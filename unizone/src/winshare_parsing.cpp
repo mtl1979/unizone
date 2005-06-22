@@ -14,26 +14,28 @@
 #include "tokenizer.h" // <postmaster@raasu.org> 20021128
 
 #include <qapplication.h>
+#include <qregexp.h>
 
 int
-WinShareWindow::MatchUserName(const QString & un, QString & result, const char * filter)
+WinShareWindow::MatchUserName(const QString & un, QString & result, const QString & filter)
 {
 	int matchCount = 0;
+	QString oldName;
+
 	WUserIter iter = fNetClient->Users().begin();
 
-	QString oldName("");
 	while (iter != fNetClient->Users().end())
 	{
 		WUserRef user = (*iter).second;
 		QString userName = StripURL(user()->GetUserName().lower().stripWhiteSpace());
-		if (((filter == NULL) || (MatchUserFilter(user, filter))) &&
+		if (((filter == QString::null) || (MatchUserFilter(user, filter))) &&
 			(userName.startsWith(un.lower())))
 		{
 			// Only count different nicks
 			if (oldName != userName)
 				matchCount++;
 
-			if (oldName == "")
+			if (oldName.isEmpty())
 				oldName = userName;
 
 			if (matchCount == 1)
@@ -66,29 +68,26 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const char *
 	return matchCount;
 }
 
-bool
-WinShareWindow::MatchUserFilter(const WUserRef & user, const QString & filter)
-{
-	return MatchUserFilter(user, (const char *) filter.lower().utf8());
-}
 
 bool
-WinShareWindow::MatchUserFilter(const WUserRef & user, const char * filter)
+WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 {
-	if (filter && user())
+	if (!filter.isEmpty() && user())
 	{
-		StringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
-		const char * n;
-		while((n = idTok.GetNextToken()) != NULL)
+		QStringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
+		QString n;
+		while((n = idTok.GetNextToken()) != QString::null)
 		{
-			String next = StripURL(n);
-			next = next.Trim();
+			QString next = StripURL(n);
+			next = next.stripWhiteSpace();
 			
-			String userID = (const char *) user()->GetUserID().utf8();
-			PRINT("MatchUserFilter: UserID = %s\n", userID.Cstr());
-			PRINT("MatchUserFilter: next   = %s\n", next.Cstr());
+			QString userID = user()->GetUserID();
+			WString wuid(userID);
+			WString wnxt(next);
+			PRINT2("MatchUserFilter: UserID = %S\n", wuid.getBuffer());
+			PRINT2("MatchUserFilter: next   = %S\n", wnxt.getBuffer());
 			
-			if (userID.Length() > 0)
+			if (userID.length() > 0)
 			{
 				// Is this item our user's session ID?
 				if (userID == next)
@@ -98,9 +97,9 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const char * filter)
 			}
 			
 			QString qUser = StripURL(user()->GetUserName().lower());
-			String userName = (const char *) qUser.stripWhiteSpace().utf8();
+			QString userName = qUser.stripWhiteSpace();
 			
-			if (userName.Length() > 0)
+			if (userName.length() > 0)
 			{
 				if (userName == next)	// Is this item our user's name?
 				{
@@ -110,11 +109,12 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const char * filter)
 				{
 					// Does this item (interpreted as a regex) match our user's name?
 					ConvertToRegex(next);
-					MakeRegexCaseInsensitive(next);
-					StringMatcher sm(next.Cstr());
-					PRINT("MatchUserFilter: UserName = %s\n", userName.Cstr());
-					PRINT("MatchUserFilter: next = %s\n", next.Cstr());
-					if (sm.Match(userName.Cstr()))
+					QRegExp qr(next, false);
+					WString wusr(userName);
+					WString wnxt(next);
+					PRINT2("MatchUserFilter: UserName = %S\n", wusr.getBuffer());
+					PRINT2("MatchUserFilter: next = %S\n", wnxt.getBuffer());
+					if (userName.find(qr) >= 0)
 					{
 						return true;
 					}
@@ -126,7 +126,7 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const char * filter)
 }
 
 bool
-WinShareWindow::DoTabCompletion(const QString & origText, QString & result, const char * filter)
+WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 {
 	// Compile a list of indexes to beginnings-of-words in the user's chat string
 	Queue<int> words;
@@ -157,7 +157,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 		QString qres;
 
 		PRINT("Matching\n");
-		int numMatches = MatchUserName(origText.mid(words[i]), qres, filter);
+		int numMatches = MatchUserName(origText.mid(words[i]), qres, QString::null);
 		PRINT("Match complete\n");
 		if (numMatches == 1)
 		{
@@ -180,7 +180,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result, cons
 			backupMatchString = qres;		// found several matches; keep trying for a single
 			backupStartAt = matchAt;        // but we'll use this if nothing else
 		}
-		matchString = matchString.prepend(" ");
+		matchString.prepend(" ");
 	}
 
 	if (startAt == -1)
@@ -283,30 +283,31 @@ WinShareWindow::SetWatchPattern(const QString &pattern)
 	}
 }
 
+/*
 bool
 WinShareWindow::MatchFilter(const QString & user, const QString & filter)
 {
 	return MatchFilter(user, (const char *) filter.lower().utf8());
 }
+*/
 
 bool
-WinShareWindow::MatchFilter(const QString & user, const char * filter)
+WinShareWindow::MatchFilter(const QString & user, const QString & filter)
 {
-	if (filter && (user.length() > 0))
+	if (!filter.isEmpty() && (user.length() > 0))
 	{
-		StringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
-		const char * n;
-		while((n = idTok.GetNextToken()) != NULL)
+		QStringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
+		QString n;
+		while((n = idTok.GetNextToken()) != QString::null)
 		{
-			String next(n);
-			next = next.Trim();
+			QString next(n);
+			next = next.stripWhiteSpace();
 			
 			// Does this item (interpreted as a regex) match our user's name?
 			ConvertToRegex(next);
-			MakeRegexCaseInsensitive(next);
-			StringMatcher sm(next.Cstr());
-			String userName = String((const char *) user.lower().utf8()).Trim();
-			if ((userName.Length() > 0) && sm.Match(userName.Cstr()))
+			QRegExp qr(next, false);
+			QString userName = user.stripWhiteSpace();
+			if ((userName.length() > 0) && userName.find(qr) >= 0)
 			{
 				return true;
 			}

@@ -38,8 +38,7 @@ using std::iterator;
 
 WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 : QDialog(parent, "WDownload", false, /* QWidget::WDestructiveClose |*/ QWidget::WStyle_Minimize |
-		  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu),
-		  fLock(true)
+		  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu)
 {
 	resize(450, 265); // <postmaster@raasu.org> 20020927 Changed from 250 to 265
 	fSharedFiles = ft;
@@ -1236,11 +1235,9 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				)
 			{
 				PRINT("\tWGenericEvent::FileDataReceived\n");
-#ifdef DEBUG2
-				PRINT("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
-				PRINT("\tSize  : " UINT64_FORMAT_SPEC "\n", size);
-				PRINT("\tGot   : %lu\n", got);
-#endif
+				PRINT2("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
+				PRINT2("\tSize  : " UINT64_FORMAT_SPEC "\n", size);
+				PRINT2("\tGot   : %lu\n", got);
 				gWin->UpdateReceiveStats(got);
 				
 				double secs = 0.0f;
@@ -1573,12 +1570,10 @@ WDownload::uploadEvent(WUploadEvent *u)
 				(msg()->FindInt32("sent", (int32 *)&got) == B_OK)
 				)
 			{
-#ifdef DEBUG2
-				PRINT("\tWUploadEvent::FileDataSent\n");
-				PRINT("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
-				PRINT("\tSize  : " UINT64_FORMAT_SPEC "\n", size);
-				PRINT("\tSent  : %lu\n", got);
-#endif
+				PRINT2("\tWUploadEvent::FileDataSent\n");
+				PRINT2("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
+				PRINT2("\tSize  : " UINT64_FORMAT_SPEC "\n", size);
+				PRINT2("\tSent  : %lu\n", got);
 				gWin->UpdateTransmitStats(got);
 				
 				double secs = 0.0f;
@@ -1642,9 +1637,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 					item->setText(WTransferItem::Status, tr("Finished."));
 					item->setText(WTransferItem::ETA, "");
 				}
-#ifdef DEBUG2
-				PRINT("\tWUploadEvent::FileDataSent OK\n");
-#endif
+				PRINT2("\tWUploadEvent::FileDataSent OK\n");
 			}
 			break;
 		}
@@ -2311,10 +2304,10 @@ WDownload::ULPopupActivated(int id)
 		
 	case ID_BAN1H:
 		{
-#if defined(__LINUX__) || defined(linux) || defined(__FreeBSD__)
-			ut->SetBlocked(true, 3600000000LL);
-#else
+#ifdef WIN32
 			ut->SetBlocked(true, 3600000000UL);
+#else
+			ut->SetBlocked(true, 3600000000LL);
 #endif
 			break;
 		}
@@ -3372,12 +3365,12 @@ WDownload::resizeEvent(QResizeEvent * e)
 void 
 WDownload::Lock() 
 { 
-	fLock.lock(); 
+	fLock.Lock(); 
 }
 
 void 
 WDownload::Unlock() 
 { 
-	fLock.unlock(); 
+	fLock.Unlock(); 
 }
 

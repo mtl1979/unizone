@@ -27,6 +27,14 @@ public slots:
 
 protected:
 	void resizeEvent(QResizeEvent * e);
+	void dragEnterEvent(QDragEnterEvent* event);
+	void dropEvent(QDropEvent* event);
+	void startDrag();
+	void mousePressEvent(QMouseEvent *e);
+	void mouseMoveEvent(QMouseEvent *e);
+	void mouseReleaseEvent(QMouseEvent *e);
+	bool eventFilter( QObject *o, QEvent *e );
+
 
 private:
 	bool LoadImage(const ByteBufferRef &buffer, const QString &format);
@@ -39,6 +47,9 @@ private:
 	Queue<ByteBufferRef> fImages;
 	Queue<QString> fFiles;
 	Queue<QString> fFormats;
+
+	bool dragging;
+	QPoint startPos;
 };
 
 #endif

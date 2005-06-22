@@ -113,18 +113,17 @@ WUser::InitName(MessageRef msg)
 
 	//
 
-#ifdef _DEBUG
-	WString wUser(fUserName);
-	if (GetFirewalled())
-		PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC "\n",
-			wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID);
-	else
-		PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC " on port %lu\n",
-			wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID, fPort);
-#endif
-
 	if (msg()->FindString("host_os", &hostos) == B_OK)
 		fHostOS = QString::fromUtf8(hostos);
+
+#ifdef _DEBUG
+	WString wUser(fUserName);
+	PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC,
+		wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID);
+	if (!GetFirewalled())
+		PRINT(" on port %lu\n", fPort);
+	PRINT("\n");	
+#endif
 }
 
 void
@@ -179,9 +178,8 @@ WUser::InitBandwidth(MessageRef msg)
 			else if (strcmp(l, "Unknown") == 0)
 				fBandwidthLabel = qApp->translate("Connection", "Unknown");
 			else
-				fBandwidthLabel = qApp->translate("Connection", l);
-				fBandwidthLabel.append(",");
-				fBandwidthLabel.append(QString::number(bps));
+				AddToList(fBandwidthLabel, qApp->translate("Connection", l));
+				AddToList(fBandwidthLabel, QString::number(bps));
 		}
 	}
 #ifdef _DEBUG
@@ -209,19 +207,17 @@ WUser::AddToListView(QListView * view)
 	WListIter it = fLists.find(view);
 
 	QString qUpload;
-	qUpload = QString::number(fCurUploads);
-	qUpload += ",";
-	qUpload += QString::number(fMaxUploads);
+	AddToList(qUpload, QString::number(fCurUploads));
+	AddToList(qUpload, QString::number(fMaxUploads));
 	//
-	char strFileCount[10];
-	sprintf(strFileCount,"%6lu",fFileCount);
+	QString strFileCount = QString::number(fFileCount).rightJustify(6);
 	if (it == fLists.end())	// not found? create a new item
 	{
 		WListPair pair;
 		QListViewItem *item;
 		if (!fBot)
 		{
-			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, QString::fromLatin1(strFileCount), 
+			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
 								fBandwidthLabel, qUpload, fClient, fHostOS);
 			CHECK_PTR(item);
 			pair = MakeListPair(view, item);
@@ -229,7 +225,7 @@ WUser::AddToListView(QListView * view)
 		}
 		else
 		{
-			item = new WBotItem(view, fUserName, fUserID, fUserStatus, QString::fromLatin1(strFileCount), 
+			item = new WBotItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
 								fBandwidthLabel, qUpload, fClient, fHostOS);
 			CHECK_PTR(item);
 			pair = MakeListPair(view, item);
@@ -263,11 +259,9 @@ WUser::AddToListView(QListView * view)
 			item->setText(WNickListItem::Status, fUserStatus);
 		}
 
-		QString chk = QString::fromLatin1(strFileCount);
-
-		if (item->text(WNickListItem::Files) != chk)
+		if (item->text(WNickListItem::Files) != strFileCount)
 		{
-			item->setText(WNickListItem::Files, chk);
+			item->setText(WNickListItem::Files, strFileCount);
 		}
 
 		if (item->text(WNickListItem::Connection) != fBandwidthLabel)
@@ -368,12 +362,6 @@ WUser::SetStatus(const QString & s)
 {
 	fUserStatus = s; 
 } 
-	
-void 
-WUser::SetUserID(const QString & id) 
-{ 
-	fUserID = id; 
-}
 
 void 
 WUser::SetUserHostName(const QString & h) 

@@ -1,6 +1,7 @@
 #include "channelinfo.h"
 #include "channelimpl.h"
 #include "tokenizer.h"
+#include "util.h"
 
 ChannelInfo::ChannelInfo(const QString &name, const QString &owner)
 {
@@ -120,17 +121,16 @@ ChannelInfo::RemoveAdmin(const QString & user)
 QString
 ChannelInfo::GetAdmins() const
 {
-	QString adm = QString::null;
+	QString adm;
 	int n = fAdmins.GetNumItems();
 	if (n > 0)
 	{
 		int i = 0;
 		while (i < n)
 		{
-			adm += "," + fAdmins[i];
+			AddToList(adm, fAdmins[i]);
 			i++;
 		}
-		adm = adm.mid(1);
 	}
 	return adm;
 }
@@ -138,17 +138,16 @@ ChannelInfo::GetAdmins() const
 QString
 ChannelInfo::GetUsers() const
 {
-	QString usr = QString::null;
+	QString usr;
 	int n = fUsers.GetNumItems();
 	if (n > 0)
 	{
 		int i = 0;
 		while (i < n)
 		{
-			usr += "," + fUsers[i];
+			AddToList(usr, fUsers[i]);
 			i++;
 		}
-		usr = usr.mid(1);
 	}
 	return usr;
 }

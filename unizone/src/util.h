@@ -69,6 +69,8 @@ uint16 GetServerPort(const QString & server);
 
 // Convert simple wildcard pattern to regex
 void ConvertToRegex(String & s);
+void ConvertToRegex(QString & s, bool simple = false);
+bool HasRegexTokens(const QString & s);
 
 // Localize Month Names
 QString TranslateMonth(const QString & m);
@@ -136,4 +138,5 @@ void AddToList(String &slist, const String &entry);
 
 void RemoveFromList(QString &slist, const QString &entry);
 void RemoveFromList(String &slist, const String &entry);
+
 #endif

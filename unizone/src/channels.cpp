@@ -1,3 +1,4 @@
+#include "channels.h"
 #include "winsharewindow.h"
 #include "channelinfo.h"
 #include "channelimpl.h"
@@ -9,9 +10,98 @@
 
 #include <qinputdialog.h>
 #include <qmessagebox.h>
+#include <qpushbutton.h>
+
+Channels::Channels(QWidget *parent, NetClient *fNet)
+:QDialog(parent, "Channels", false, WStyle_SysMenu | WStyle_Minimize | WStyle_Maximize | WStyle_Title)
+{
+	setCaption(tr("Channels"));
+
+	fNetClient = fNet;
+
+	// Create the Channels Pane
+
+//	fChannelsWidget = new QWidget(this, "Channels Widget");
+//	CHECK_PTR(fChannelsWidget);
+
+	QGridLayout * fChannelsTab = new QGridLayout(this, 7, 5, 0, -1, "Channels Tab");
+	CHECK_PTR(fChannelsTab);
+
+	fChannelsTab->addRowSpacing(5, 20);
+
+	fChannelsTab->setRowStretch(0, 2);
+	fChannelsTab->setRowStretch(1, 2);
+	fChannelsTab->setRowStretch(2, 2);
+	fChannelsTab->setRowStretch(3, 2);
+	fChannelsTab->setRowStretch(4, 2);
+	fChannelsTab->setRowStretch(5, 0);
+	fChannelsTab->setRowStretch(6, 1);
+
+	fChannelsTab->addColSpacing(0, 20);
+	fChannelsTab->addColSpacing(2, 20);
+	fChannelsTab->addColSpacing(4, 20);
+
+	ChannelList = new QListView( this, "ChannelList" );
+	CHECK_PTR(ChannelList);
+
+	ChannelList->addColumn( tr( "Name" ) );
+	ChannelList->addColumn( tr( "Topic" ) );
+	ChannelList->addColumn( tr( "Users" ) );
+	ChannelList->addColumn( tr( "Admins" ) );
+	ChannelList->addColumn( tr( "Public" ) );
+
+	fChannelsTab->addMultiCellWidget(ChannelList, 0, 4, 0, 4);
+	
+	Create = new QPushButton( tr( "&Create" ), this, "Create" );
+	CHECK_PTR(Create);
+
+	fChannelsTab->addWidget(Create, 6, 1);
+
+	Join = new QPushButton( tr( "&Join" ), this, "Join" );
+	CHECK_PTR(Join);
+
+	fChannelsTab->addWidget(Join, 6, 3);
+
+	connect( 
+		fNetClient, SIGNAL(ChannelAdded(const QString &, const QString &, int64)), 
+		this, SLOT(ChannelAdded(const QString &, const QString &, int64)) 
+		);
+	connect(
+		fNetClient, SIGNAL(ChannelTopic(const QString &, const QString &, const QString &)),
+		this, SLOT(ChannelTopic(const QString &, const QString &, const QString &))
+		);
+	connect(
+		fNetClient, SIGNAL(ChannelOwner(const QString &, const QString &, const QString &)),
+		this, SLOT(ChannelOwner(const QString &, const QString &, const QString &))
+		);
+	connect(
+		fNetClient, SIGNAL(ChannelPublic(const QString &, const QString &, bool)),
+		this, SLOT(ChannelPublic(const QString &, const QString &, bool))
+		);
+	connect(
+		fNetClient, SIGNAL(ChannelAdmins(const QString &, const QString &, const QString &)),
+		this, SLOT(ChannelAdmins(const QString &, const QString &, const QString &))
+		);
+	connect(
+		fNetClient, SIGNAL(UserIDChanged(const QString &, const QString &)),
+		this, SLOT(UserIDChanged(const QString &, const QString &))
+		);
+
+	// Window widget events
+	connect(Create, SIGNAL(clicked()), this, SLOT(CreateChannel()));
+	connect(Join, SIGNAL(clicked()), this, SLOT(JoinChannel()));
+
+	//
+	// End of Channels Pane
+	//
+}
+
+Channels::~Channels()
+{
+}
 
 void
-WinShareWindow::ChannelAdmins(const QString &channel, const QString &sid, const QString &admins)
+Channels::ChannelAdmins(const QString &channel, const QString &sid, const QString &admins)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -25,7 +115,7 @@ WinShareWindow::ChannelAdmins(const QString &channel, const QString &sid, const 
 }
 
 bool
-WinShareWindow::IsAdmin(const QString & channel, const QString & user)
+Channels::IsAdmin(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -36,7 +126,7 @@ WinShareWindow::IsAdmin(const QString & channel, const QString & user)
 }
 
 bool
-WinShareWindow::IsOwner(const QString & channel, const QString & user)
+Channels::IsOwner(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -47,7 +137,7 @@ WinShareWindow::IsOwner(const QString & channel, const QString & user)
 }
 
 bool
-WinShareWindow::IsPublic(const QString & channel)
+Channels::IsPublic(const QString & channel)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -58,7 +148,7 @@ WinShareWindow::IsPublic(const QString & channel)
 }
 
 void
-WinShareWindow::ChannelAdded(const QString &channel, const QString &sid, int64 timecreated)
+Channels::ChannelAdded(const QString &channel, const QString &sid, int64 timecreated)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter == fChannels.end())
@@ -91,7 +181,7 @@ WinShareWindow::ChannelAdded(const QString &channel, const QString &sid, int64 t
 }
 
 void
-WinShareWindow::UpdateAdmins(WChannelIter iter)
+Channels::UpdateAdmins(WChannelIter iter)
 {
 	QListViewItem *item = (*iter).second->GetItem();
 	if (item)
@@ -100,7 +190,7 @@ WinShareWindow::UpdateAdmins(WChannelIter iter)
 }
 
 void
-WinShareWindow::UpdateUsers(WChannelIter iter)
+Channels::UpdateUsers(WChannelIter iter)
 {
 	QListViewItem *item = (*iter).second->GetItem();
 	int n = (*iter).second->NumUsers();
@@ -109,7 +199,7 @@ WinShareWindow::UpdateUsers(WChannelIter iter)
 }
 
 void
-WinShareWindow::UpdateTopic(WChannelIter iter)
+Channels::UpdateTopic(WChannelIter iter)
 {
 	QListViewItem *item = (*iter).second->GetItem();
 	if (item)
@@ -117,7 +207,7 @@ WinShareWindow::UpdateTopic(WChannelIter iter)
 }
 
 void
-WinShareWindow::UpdatePublic(WChannelIter iter)
+Channels::UpdatePublic(WChannelIter iter)
 {
 	QListViewItem *item = (*iter).second->GetItem();
 	if (item)
@@ -125,7 +215,7 @@ WinShareWindow::UpdatePublic(WChannelIter iter)
 }
 
 void
-WinShareWindow::CreateChannel()
+Channels::CreateChannel()
 {
 	if (!fNetClient->IsConnected())
 	{
@@ -151,7 +241,7 @@ WinShareWindow::CreateChannel()
 			// Create Channel
 			WChannelPair wcp;
 			wcp.first = text;
-			wcp.second = new ChannelInfo(text, GetUserID());
+			wcp.second = new ChannelInfo(text, gWin->GetUserID());
 			fChannels.insert(fChannels.end(), wcp);
 
 			it = fChannels.find(text);
@@ -161,11 +251,11 @@ WinShareWindow::CreateChannel()
 			// Create Window item
 			Channel * win = new Channel(this, fNetClient, text);
 			wcp.second->SetWindow(win);
-			wcp.second->AddUser(GetUserID());
-			win->SetOwner(GetUserID());
+			wcp.second->AddUser(gWin->GetUserID());
+			win->SetOwner(gWin->GetUserID());
 			win->show();
 
-			ChannelAdmins(text, GetUserID(), GetUserID());
+			ChannelAdmins(text, gWin->GetUserID(), gWin->GetUserID());
 			UpdateUsers(it);
 			UpdatePublic(it);
 
@@ -175,7 +265,7 @@ WinShareWindow::CreateChannel()
 			{
 				String to("/*/*/unishare");
 				cc()->AddString(PR_NAME_KEYS, to);
-				cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
+				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
 				cc()->AddInt64("when", (int64) GetCurrentTime64());
 				cc()->AddString("channel", (const char *) text.utf8());
 				fNetClient->SendMessageToSessions(cc);
@@ -189,7 +279,7 @@ WinShareWindow::CreateChannel()
 }
 
 void
-WinShareWindow::JoinChannel()
+Channels::JoinChannel()
 {
 	QListViewItem *item = ChannelList->selectedItem();
 	if (!item)
@@ -199,7 +289,7 @@ WinShareWindow::JoinChannel()
 }
 
 void
-WinShareWindow::JoinChannel(const QString & channel)
+Channels::JoinChannel(const QString & channel)
 {
 	WChannelIter it = fChannels.find(channel);
 	Channel * win;
@@ -235,7 +325,7 @@ WinShareWindow::JoinChannel(const QString & channel)
 		delete [] user;
 	}
 	
-	(*it).second->AddUser(GetUserID());
+	(*it).second->AddUser(gWin->GetUserID());
 	win->SetOwner((*it).second->GetOwner());
 	win->SetTopic((*it).second->GetTopic());
 	win->SetPublic((*it).second->GetPublic());
@@ -252,8 +342,8 @@ WinShareWindow::JoinChannel(const QString & channel)
 		{
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
-			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
-			cc()->AddString("who", (const char *) GetUserID().utf8());
+			cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
+			cc()->AddString("who", (const char *) gWin->GetUserID().utf8());
 			cc()->AddInt64("when", (int64) GetCurrentTime64());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
@@ -262,7 +352,7 @@ WinShareWindow::JoinChannel(const QString & channel)
 }
 
 void
-WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, uint64 timecreated)
+Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 timecreated)
 {
 	WChannelIter it = fChannels.find(channel);
 	if (it == fChannels.end())
@@ -270,7 +360,7 @@ WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, u
 		// Create Channel
 		WChannelPair wcp;
 		wcp.first = channel;
-		wcp.second = new ChannelInfo(channel, GetUserID());
+		wcp.second = new ChannelInfo(channel, gWin->GetUserID());
 		fChannels.insert(fChannels.end(), wcp);
 
 		it = fChannels.find(channel);
@@ -292,7 +382,7 @@ WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, u
 			to += owner;
 			to += "/unishare";
 			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
+			cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
 			cc()->AddInt64("when", (int64) (*it).second->GetCreated());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
@@ -306,7 +396,7 @@ WinShareWindow::ChannelCreated(const QString & channel, const QString & owner, u
 }
 
 void
-WinShareWindow::ChannelJoin(const QString & channel, const QString & user)
+Channels::ChannelJoin(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -317,7 +407,7 @@ WinShareWindow::ChannelJoin(const QString & channel, const QString & user)
 }
 
 void
-WinShareWindow::ChannelPart(const QString & channel, const QString & user)
+Channels::ChannelPart(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -328,16 +418,16 @@ WinShareWindow::ChannelPart(const QString & channel, const QString & user)
 }
 
 void
-WinShareWindow::PartChannel(const QString & channel, const QString & user)
+Channels::PartChannel(const QString & channel, const QString & user)
 {
-	if (user == GetUserID())
+	if (user == gWin->GetUserID())
 	{
 		MessageRef cc(GetMessageFromPool(NetClient::ChannelPart));
 		if (cc())
 		{
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
-			cc()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
+			cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
 			cc()->AddInt64("when", (int64) GetCurrentTime64());
 			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
@@ -348,7 +438,7 @@ WinShareWindow::PartChannel(const QString & channel, const QString & user)
 	if (iter != fChannels.end())
 	{
 		// Make sure we don't have a stale window reference, so we can re-join later
-		if (user == GetUserID())
+		if (user == gWin->GetUserID())
 		{
 			(*iter).second->SetWindow(NULL);
 		}
@@ -363,7 +453,7 @@ WinShareWindow::PartChannel(const QString & channel, const QString & user)
 }
 
 void
-WinShareWindow::AddAdmin(const QString & channel, const QString & user)
+Channels::AddAdmin(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -378,7 +468,7 @@ WinShareWindow::AddAdmin(const QString & channel, const QString & user)
 }
 
 void
-WinShareWindow::RemoveAdmin(const QString & channel, const QString & user)
+Channels::RemoveAdmin(const QString & channel, const QString & user)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -393,7 +483,7 @@ WinShareWindow::RemoveAdmin(const QString & channel, const QString & user)
 }
 
 QString
-WinShareWindow::GetAdmins(const QString & channel)
+Channels::GetAdmins(const QString & channel)
 {
 	QString adm = QString::null;
 	WChannelIter iter = fChannels.find(channel);
@@ -405,7 +495,7 @@ WinShareWindow::GetAdmins(const QString & channel)
 }
 
 void
-WinShareWindow::SetTopic(const QString & channel, const QString & topic)
+Channels::SetTopic(const QString & channel, const QString & topic)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -416,7 +506,7 @@ WinShareWindow::SetTopic(const QString & channel, const QString & topic)
 }
 
 void
-WinShareWindow::SetPublic(const QString & channel, bool pub)
+Channels::SetPublic(const QString & channel, bool pub)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (iter != fChannels.end())
@@ -427,12 +517,12 @@ WinShareWindow::SetPublic(const QString & channel, bool pub)
 }
 
 void
-WinShareWindow::ChannelInvite(const QString & channel, const QString & user, const QString & who)
+Channels::ChannelInvite(const QString & channel, const QString & user, const QString & who)
 {
 	WChannelIter iter = fChannels.find(channel);
 	// We need to have existing channel to be able to check for admin status
 	if (
-		(who == GetUserID()) && 
+		(who == gWin->GetUserID()) && 
 		(iter == fChannels.end())
 		)
 	{
@@ -442,7 +532,7 @@ WinShareWindow::ChannelInvite(const QString & channel, const QString & user, con
 
 	if (IsAdmin(channel, user))
 	{
-		if (who == GetUserID())
+		if (who == gWin->GetUserID())
 		{
 			// Got invited
 			if (!(*iter).second->GetWindow())
@@ -463,7 +553,7 @@ WinShareWindow::ChannelInvite(const QString & channel, const QString & user, con
 			}
 			(*iter).second->GetWindow()->SetActive(true);
 		}
-		else if ( IsAdmin(channel, GetUserID()) && (*iter).second->GetWindow() )
+		else if ( IsAdmin(channel, gWin->GetUserID()) && (*iter).second->GetWindow() )
 		{
 			// User requested invite from us
 			if (QMessageBox::information(this, tr( "Channels" ), 
@@ -477,12 +567,12 @@ WinShareWindow::ChannelInvite(const QString & channel, const QString & user, con
 }
 
 void
-WinShareWindow::ChannelKick(const QString &channel, const QString &user, const QString &who)
+Channels::ChannelKick(const QString &channel, const QString &user, const QString &who)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (IsAdmin(channel, user))
 	{
-		if (who == GetUserID())
+		if (who == gWin->GetUserID())
 		{
 			// Got kicked
 			if ( (iter != fChannels.end()) && (*iter).second->GetWindow() )
@@ -494,7 +584,7 @@ WinShareWindow::ChannelKick(const QString &channel, const QString &user, const Q
 }
 
 void
-WinShareWindow::ChannelTopic(const QString &channel, const QString &user, const QString &topic)
+Channels::ChannelTopic(const QString &channel, const QString &user, const QString &topic)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (IsAdmin(channel, user))
@@ -516,7 +606,7 @@ WinShareWindow::ChannelTopic(const QString &channel, const QString &user, const 
 }
 
 void
-WinShareWindow::ChannelOwner(const QString &channel, const QString &user, const QString &owner)
+Channels::ChannelOwner(const QString &channel, const QString &user, const QString &owner)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (IsAdmin(channel, user))
@@ -537,7 +627,7 @@ WinShareWindow::ChannelOwner(const QString &channel, const QString &user, const 
 }
 
 void
-WinShareWindow::ChannelPublic(const QString &channel, const QString &user, bool pub)
+Channels::ChannelPublic(const QString &channel, const QString &user, bool pub)
 {
 	WChannelIter iter = fChannels.find(channel);
 	if (IsAdmin(channel, user))
@@ -554,7 +644,7 @@ WinShareWindow::ChannelPublic(const QString &channel, const QString &user, bool 
 }
 
 void
-WinShareWindow::UserIDChanged(const QString &oldid, const QString &newid)
+Channels::UserIDChanged(const QString &oldid, const QString &newid)
 {
 	for (WChannelIter iter = fChannels.begin(); iter != fChannels.end(); iter++)
 	{
@@ -576,13 +666,13 @@ WinShareWindow::UserIDChanged(const QString &oldid, const QString &newid)
 		(*iter).second->RemoveUser(oldid);
 		(*iter).second->AddUser(newid);
 #ifdef _DEBUG
-		WString wMyID(GetUserID());
+		WString wMyID(gWin->GetUserID());
 		WString wOldID(oldid);
 		WString wNewID(newid);
 		PRINT("UserIDChanged, myid = %S, old = %S, new = %S\n", wMyID.getBuffer(), wOldID.getBuffer(), wNewID.getBuffer());
 #endif
 
-		if (newid == GetUserID())
+		if (newid == gWin->GetUserID())
 		{
 			// Our ID got changed
 			if ((*iter).second->GetWindow())

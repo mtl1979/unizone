@@ -1,7 +1,8 @@
-SOURCES =			aboutdlg.cpp \
+SOURCES =		aboutdlg.cpp \
 				aboutdlgimpl.cpp \
 				channel.cpp \
 				channelimpl.cpp \
+				channels.cpp \
 				chatwindow.cpp \
 				debugimpl.cpp \
 				downloadimpl.cpp \
@@ -14,11 +15,12 @@ SOURCES =			aboutdlg.cpp \
 				netclient.cpp \
 				picviewer.cpp \
 				platform.cpp \
-                		prefs.cpp \
+                prefs.cpp \
 				prefsimpl.cpp \
-                		privatewindow.cpp \
+                privatewindow.cpp \
 				privatewindowimpl.cpp \
 				scanprogress.cpp \
+				search.cpp \
 				serverclient.cpp \
 				settings.cpp \
 				ulistview.cpp \
@@ -27,14 +29,12 @@ SOURCES =			aboutdlg.cpp \
 				user.cpp \
 				util.cpp \
 				version.cpp \
-                		winshare_channels.cpp \
 				winshare_parsing.cpp \
 				winshare_network.cpp \
-                		winshare_search.cpp \
 				winshare_slots.cpp \
-                		winsharewindow.cpp
+                winsharewindow.cpp
 
-TRANSLATIONS =			unizone_en.ts \
+TRANSLATIONS =	unizone_en.ts \
 				unizone_fi.ts \
 				unizone_fr.ts \
 				unizone_de.ts \

@@ -306,31 +306,59 @@ Version %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='obsolete'>Create Channel</translation>
+        <translation type='unfinished'>Create Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='obsolete'>Please enter channel name</translation>
+        <translation type='unfinished'>Please enter channel name</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type='obsolete'>Yes</translation>
+        <translation type='unfinished'>Yes</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type='obsolete'>No</translation>
+        <translation type='unfinished'>No</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='obsolete'>Channels</translation>
+        <translation type='unfinished'>Channels</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='obsolete'>User #%1 requested invite to channel %2. Do you?</translation>
+        <translation type='unfinished'>User #%1 requested invite to channel %2. Do you?</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='obsolete'>User #%1 invited you to channel %2. Do you accept?</translation>
+        <translation type='unfinished'>User #%1 invited you to channel %2. Do you accept?</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type='unfinished'>Nome</translation>
+    </message>
+    <message>
+        <source>Topic</source>
+        <translation type='unfinished'>Topic</translation>
+    </message>
+    <message>
+        <source>Users</source>
+        <translation type='unfinished'>Usuários</translation>
+    </message>
+    <message>
+        <source>Admins</source>
+        <translation type='unfinished'>Admins</translation>
+    </message>
+    <message>
+        <source>Public</source>
+        <translation type='unfinished'>Public</translation>
+    </message>
+    <message>
+        <source>&amp;Create</source>
+        <translation type='unfinished'>&amp;Create</translation>
+    </message>
+    <message>
+        <source>&amp;Join</source>
+        <translation type='unfinished'>&amp;Join</translation>
     </message>
 </context>
 <context>
@@ -696,7 +724,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation type='obsolete'>F10</translation>
+        <translation type='unfinished'>F10</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
@@ -705,6 +733,18 @@ Date: %4</translation>
     <message>
         <source>&amp;Window</source>
         <translation>&amp;Window</translation>
+    </message>
+    <message>
+        <source>&amp;Channels</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>ALT+F</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -2437,7 +2477,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Private</source>
-        <translation>Private</translation>
+        <translation type='obsolete'>Private</translation>
     </message>
     <message>
         <source>Encryption enabled.</source>
@@ -2463,39 +2503,39 @@ Date: %4</translation>
     <name>WSearch</name>
     <message>
         <source>Search</source>
-        <translation type='obsolete'>Pesquisar</translation>
+        <translation type='unfinished'>Pesquisar</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='obsolete'>Nome do Arquivo</translation>
+        <translation type='unfinished'>Nome do Arquivo</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='obsolete'>Tamanho do Arquivo</translation>
+        <translation type='unfinished'>Tamanho do Arquivo</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='obsolete'>Tipo</translation>
+        <translation type='unfinished'>Tipo</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='obsolete'>Modificado</translation>
+        <translation type='unfinished'>Modificado</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='obsolete'>Caminho</translation>
+        <translation type='unfinished'>Caminho</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='obsolete'>Usuário</translation>
+        <translation type='unfinished'>Usuário</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='obsolete'>Pesquisa:</translation>
+        <translation type='unfinished'>Pesquisa:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='obsolete'>Download</translation>
+        <translation type='unfinished'>Download</translation>
     </message>
     <message>
         <source>Close</source>
@@ -2503,15 +2543,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='obsolete'>Limpar</translation>
+        <translation type='unfinished'>Limpar</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='obsolete'>Parar</translation>
+        <translation type='unfinished'>Parar</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='obsolete'>Ocioso.</translation>
+        <translation type='unfinished'>Ocioso.</translation>
     </message>
     <message>
         <source>%1</source>
@@ -2519,15 +2559,31 @@ Date: %4</translation>
     </message>
     <message>
         <source>Not connected.</source>
-        <translation type='obsolete'>Desconectado.</translation>
+        <translation type='unfinished'>Desconectado.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation type='obsolete'>Procurando por: "%1".</translation>
+        <translation type='unfinished'>Procurando por: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='obsolete'>Resultados: %1</translation>
+        <translation type='unfinished'>Resultados: %1</translation>
+    </message>
+    <message>
+        <source>Clear History</source>
+        <translation type='unfinished'>Clear History</translation>
+    </message>
+    <message>
+        <source>User(s) not found!</source>
+        <translation type='unfinished'>Usuário(s) não encontrado(s)!</translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
+        <translation type='unfinished'>Initializing...</translation>
+    </message>
+    <message>
+        <source>active</source>
+        <translation type='unfinished'>active</translation>
     </message>
 </context>
 <context>
@@ -3035,7 +3091,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nome</translation>
+        <translation type='obsolete'>Nome</translation>
     </message>
     <message>
         <source>ID</source>
@@ -3651,107 +3707,107 @@ Date: %4</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation>Nome do Arquivo</translation>
+        <translation type='obsolete'>Nome do Arquivo</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation>Tamanho do Arquivo</translation>
+        <translation type='obsolete'>Tamanho do Arquivo</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation>Tipo</translation>
+        <translation type='obsolete'>Tipo</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation>Modificado</translation>
+        <translation type='obsolete'>Modificado</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation>Caminho</translation>
+        <translation type='obsolete'>Caminho</translation>
     </message>
     <message>
         <source>User</source>
-        <translation>Usuário</translation>
+        <translation type='obsolete'>Usuário</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation>Pesquisa:</translation>
+        <translation type='obsolete'>Pesquisa:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation>Download</translation>
+        <translation type='obsolete'>Download</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation>Limpar</translation>
+        <translation type='obsolete'>Limpar</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation>Parar</translation>
+        <translation type='obsolete'>Parar</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation>Ocioso.</translation>
+        <translation type='obsolete'>Ocioso.</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation>Topic</translation>
+        <translation type='obsolete'>Topic</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation>Usuários</translation>
+        <translation type='obsolete'>Usuários</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation>Admins</translation>
+        <translation type='obsolete'>Admins</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation>Public</translation>
+        <translation type='obsolete'>Public</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation>&amp;Create</translation>
+        <translation type='obsolete'>&amp;Create</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation>&amp;Join</translation>
+        <translation type='obsolete'>&amp;Join</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation>Conversação</translation>
+        <translation type='obsolete'>Conversação</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation>Pesquisar</translation>
+        <translation type='obsolete'>Pesquisar</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation>Channels</translation>
+        <translation type='obsolete'>Channels</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation>Procurando por: "%1".</translation>
+        <translation type='obsolete'>Procurando por: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation>Resultados: %1</translation>
+        <translation type='obsolete'>Resultados: %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation>Create Channel</translation>
+        <translation type='obsolete'>Create Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation>Please enter channel name</translation>
+        <translation type='obsolete'>Please enter channel name</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation>User #%1 invited you to channel %2. Do you accept?</translation>
+        <translation type='obsolete'>User #%1 invited you to channel %2. Do you accept?</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation>User #%1 requested invite to channel %2. Do you?</translation>
+        <translation type='obsolete'>User #%1 requested invite to channel %2. Do you?</translation>
     </message>
     <message>
         <source>Server version: %1</source>
@@ -3783,11 +3839,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>active</source>
-        <translation>active</translation>
+        <translation type='obsolete'>active</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation>Clear History</translation>
+        <translation type='obsolete'>Clear History</translation>
     </message>
     <message>
         <source>- Local File: %1</source>
@@ -3867,7 +3923,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation>Initializing...</translation>
+        <translation type='obsolete'>Initializing...</translation>
     </message>
     <message>
         <source>On Connect: Do Nothing ;)</source>
@@ -4112,6 +4168,10 @@ Date: %4</translation>
     <message>
         <source>Unizone - User #%1 on %2</source>
         <translation type='unfinished'>Unizone - User #%1 on %2</translation>
+    </message>
+    <message>
+        <source>Qt version: %1</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 </TS>

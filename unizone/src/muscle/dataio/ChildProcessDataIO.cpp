@@ -583,10 +583,7 @@ void ChildProcessDataIO :: IOThreadEntry()
          // to check for events on the pipe using WaitForMultipleObjects().
          // It may be worth it to use named pipes some day to get around this...
          int evt = WaitForMultipleObjects(ARRAYITEMS(events)-(childProcessExited?1:0), events, false, 250)-WAIT_OBJECT_0;
-         if (evt == 0)
-         {
-            childProcessExited = true;
-         }
+         if (evt == 1) childProcessExited = true;
 
          int32 numBytesToRead;
          while((numBytesToRead = sizeof(inBuf._buf)-inBuf._length) > 0)

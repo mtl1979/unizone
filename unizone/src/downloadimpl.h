@@ -242,7 +242,7 @@ private:
 
 	void SendSignal(int signal);
 
-	mutable QMutex fLock;
+	mutable Mutex fLock;
 	void Lock(); 
 	void Unlock();
 

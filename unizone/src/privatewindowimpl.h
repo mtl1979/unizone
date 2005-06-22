@@ -41,8 +41,8 @@ public:
 
 	void ClearBuffer() { fInputText->ClearBuffer(); }
 
-	void Lock() { fLock.lock(); }
-	void Unlock() { fLock.unlock(); }
+	void Lock() { fLock.Lock(); }
+	void Unlock() { fLock.Unlock(); }
 
 protected:
 	virtual void customEvent(QCustomEvent * event);
@@ -60,7 +60,7 @@ private slots:
 
 
 private:
-	mutable QMutex fLock;
+	mutable Mutex fLock;
 	QObject * fOwner;
 	NetClient * fNet;
 	QListView * fPrivateUsers;

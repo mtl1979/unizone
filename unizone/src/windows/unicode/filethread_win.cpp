@@ -17,12 +17,10 @@
 QString
 WFileThread::ResolveLink(const QString & lnk) const
 {
-#ifdef DEBUG2
 	{
 		WString wRet(lnk);
-		PRINT("\tResolving %S\n", wRet.getBuffer());
+		PRINT2("\tResolving %S\n", wRet.getBuffer());
 	}
-#endif // DEBUG2
 	
 	if (lnk.right(4) == ".lnk")
 	{

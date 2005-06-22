@@ -9,20 +9,13 @@
 #include "winsharewindow.h"
 #include "settings.h"
 #include "wfile.h"
-
-#ifdef DEBUG2
 #include "wstring.h"
-#endif
 
 #include "util/Queue.h"
 #include "util/StringTokenizer.h"
-#include "regex/StringMatcher.h"
 using namespace muscle;
 
-#if (QT_VERSION >= 0x030000)
 #include <qregexp.h>
-#endif
-
 #include <qapplication.h>
 #include <qdns.h>
 #include <qfile.h>
@@ -192,7 +185,7 @@ ParseChatText(const QString & str)
 	
 	if (qUrls.GetNumItems() > 0)
 	{
-		QString output = "";
+		QString output = QString::null;
 		
 		QString qUrl;
 		QString qLabel;
@@ -264,12 +257,12 @@ ParseString(QString & str)
 	while (str.right(1) == "\n")
 		str.truncate(str.length() - 1);
 
+	// go through the string and change newlines to <br> (html)
+	str.replace(QRegExp("\n"), "<br>");
+
 	for (unsigned int i = 0; i < str.length(); i++)
 	{
-		// go through the string and change newlines to <br> (html)
-		if (str[i] == '\n')	
-			str.replace(i, 1, "<br>");
-		else if (str[i] == ' ')
+		if (str[i] == ' ')
 		{
 			if (space)
 			{
@@ -321,13 +314,8 @@ void
 EscapeHTML(QString & str)
 {
 	// we don't want to show html...
-	for (unsigned int i = 0; i < str.length(); i++)
-	{
-		if (str[i] == '<')
-			str.replace(i, 1, "&lt;");
-		else if (str[i] == '>')
-			str.replace(i, 1, "&gt;");
-	}
+	str.replace(QRegExp("<"), "&lt;");
+	str.replace(QRegExp(">"), "&gt;");
 }
 
 QString
@@ -359,7 +347,7 @@ FixString(QString & str)
 QString 
 GetParameterString(const QString & qCommand)
 {
-	QString qParameters = "";
+	QString qParameters;
 	int sPos = qCommand.find(" ")+1;
 	if (sPos > 0)
 	{
@@ -390,12 +378,10 @@ bool
 CompareCommand(const QString & qCommand, const QString & cCommand)
 {
 	QString com = GetCommandString(qCommand);
-#ifdef DEBUG2
 	WString wCommand(com);
 	WString wCommand2(cCommand);
-	PRINT("Compare String: qCommand=\'%S\'\n", wCommand.getBuffer());
-	PRINT("                cCommand=\'%S\'\n", wCommand2.getBuffer());
-#endif
+	PRINT2("Compare String: qCommand=\'%S\'\n", wCommand.getBuffer());
+	PRINT2("                cCommand=\'%S\'\n", wCommand2.getBuffer());
 	return ((com == cCommand) ? true : false);
 }
 
@@ -554,40 +540,14 @@ const char * urlPrefix[] = {
 bool
 IsURL(const String & url)
 {
-	String u = url.ToLowerCase();
-	
-	// Add default protocol prefixes
-	
-	if (u.StartsWith("www."))		
-		u = u.Prepend("http://");
-	if (u.StartsWith("ftp."))		
-		u = u.Prepend("ftp://");
-	if (u.StartsWith("beshare.") && u.Length() > 12)	
-		u = u.Prepend("server://");
-	if (u.StartsWith("irc."))		
-		u = u.Prepend("irc://");
-	
-	if (u.Length() > 9)
-	{
-		const char *prefix;
-		for (unsigned int i = 0; (prefix = urlPrefix[i]) != NULL; i++)
-		{
-			if (u.StartsWith(prefix))
-			{
-				if (!u.EndsWith("://"))
-				{
-					return true;
-				}
-			}
-		}
-	}
-	return false;
+	QString u = QString::fromUtf8( url.Cstr() );
+	return IsURL( u );
 }
 
 bool 
 IsURL(const char * url)
 {
-	String u(url);
+	QString u = QString::fromUtf8(url);
 	return IsURL( u );
 }
 
@@ -599,13 +559,13 @@ IsURL(const QString & url)
 	// Add default protocol prefixes
 
 	if (u.startsWith("www.") && !u.startsWith("www.."))		
-		u = u.prepend("http://");
+		u.prepend("http://");
 	if (u.startsWith("ftp.") && !u.startsWith("ftp.."))		
-		u = u.prepend("ftp://");
+		u.prepend("ftp://");
 	if ((u.startsWith("beshare.") && !u.startsWith("beshare..")) && u.length() > 12)	
-		u = u.prepend("server://");
+		u.prepend("server://");
 	if (u.startsWith("irc.") && !u.startsWith("irc.."))		
-		u = u.prepend("irc://");
+		u.prepend("irc://");
 
 	if (u.length() > 9)
 	{
@@ -714,9 +674,8 @@ BandwidthToBytes(const QString & connection)
 			}
 		} while (bw.bw != ULONG_MAX);
 	}
-#ifdef DEBUG2
-	PRINT("Connection = '%S', bps = %lu\n", WString(conn).getBuffer(), bps);
-#endif
+	WString wconn(conn);
+	PRINT2("Connection = '%S', bps = %lu\n", wconn.getBuffer(), bps);
 	return bps;
 }
 
@@ -794,11 +753,25 @@ GetServerPort(const QString & server)
 
 // Is reserved regex token, but isn't wildcard token (* or ? or ,)
 // Skip \ now, it's a special case
+bool IsRegexToken2(QChar c, bool isFirstCharInString)
+{
+   switch(c)
+   {
+      case '[': case ']': case '|': case '(': case ')': case '=': case '^': case '+': case '$': case '{':  case '}': 
+	  case ':': case '-': case '.':
+        return true;
+
+      case '<': case '~':   // these chars are only special if they are the first character in the string
+         return isFirstCharInString; 
+ 
+      default:
+         return false;
+   }
+}
+
 bool IsRegexToken2(char c, bool isFirstCharInString)
 {
-   if ((c == '\\') || (c == '*') || (c == '?') || (c == ','))
-	   return false;
-   return IsRegexToken(c, isFirstCharInString);
+	return IsRegexToken2(QChar(c), isFirstCharInString);
 }
 
 // Converts basic wildcard pattern to valid regex
@@ -825,7 +798,7 @@ void ConvertToRegex(String & s)
 		}
 		else
 		{
-			if (IsRegexToken2(*str, isFirst)) ret += '\\';
+			if (IsRegexToken2(*str, false)) ret += '\\';
 			ret += *str;
 			str++;
 		}
@@ -835,6 +808,64 @@ void ConvertToRegex(String & s)
 			isFirst = false;
 	}
 	s = ret;
+}
+
+void ConvertToRegex(QString & s, bool simple)
+{
+	int x = 0;	
+	QString ret;
+	
+	bool isFirst = true;
+	while(x < s.length())
+	{
+		if (s[x] == '\\')			// skip \c
+		{
+			if (x + 1 < s.length())
+			{
+				if (s[x + 1] != '@')	// convert \@ to @
+					ret += s[x];
+				x++;
+				ret += s[x];
+			}
+		}
+		else if (s[x] == '*')
+		{
+			ret += simple ? "*" : ".*";
+		}
+		else if (s[x] == '?')
+		{
+			ret += simple ? "?" : ".";
+		}
+		else
+		{
+			if (IsRegexToken2(s[x], false)) ret += '\\';
+			ret += s[x];
+		}
+
+		x++;
+		// reset
+		if (isFirst)
+			isFirst = false;
+	}
+	s = ret;
+}
+
+bool HasRegexTokens(const QString & str)
+{
+   bool isFirst = true;
+   int x = 0;
+   while(x < str.length())
+   {
+      if (IsRegexToken2(str[x], isFirst)) return true;
+	  else if (str[x] == "*") return true;
+	  else if (str[x] == "?") return true;
+      else 
+      {
+         x++;
+         isFirst = false;
+      }
+   }
+   return false;
 }
 
 const char * MonthNames[12] = {
@@ -927,9 +958,9 @@ GetTimeStamp2()
 QString
 GetTimeStamp()
 {
-	static QString _day = "";
+	static QString _day = QString::null;
 	
-	QString ret = "";
+	QString ret;
 	QString qCurTime;
 	// Is this first time today?
 
@@ -945,8 +976,7 @@ GetTimeStamp()
 	}
 	
 	qCurTime = GetTimeStampAux(stamp);
-	qCurTime.prepend("[");
-	qCurTime.append("] ");
+	qCurTime.prepend("[").append("] ");
 
 	ret += WFormat::TimeStamp(qCurTime);
 	return ret;
@@ -1187,7 +1217,7 @@ fromULongLong(const uint64 &in)
 	while (tmp > 0)
 	{
 		n = tmp % 10;
-		out = out.prepend(QChar(n + '0'));
+		out.prepend(QChar(n + '0'));
 		tmp /= 10;
 	}
 	return out;
@@ -1210,12 +1240,12 @@ hexFromULongLong(const uint64 &in, unsigned int length)
 		while (tmp > 0)
 		{
 			n = tmp % 16;
-			out = out.prepend(QChar(n + ((n < 10) ? '0' : 55)));
+			out.prepend(QChar(n + ((n < 10) ? '0' : 55)));
 			tmp /= 16;
 		}
 	}
 	while (out.length() < length) 
-		out = out.prepend("0");
+		out.prepend("0");
 	return out;
 }
 
@@ -1267,12 +1297,12 @@ QString fromLongLong(const int64 &in)
 	while (tmp > 0)
 	{
 		n = tmp % 10;
-		out = out.prepend(QChar(n + '0'));
+		out.prepend(QChar(n + '0'));
 		tmp /= 10;
 	}
 	
 	if (negate)
-		out = out.prepend("-");
+		out.prepend("-");
 
 	return out;
 }
@@ -1320,7 +1350,7 @@ void RemoveFromList(QString &slist, const QString &entry)
 {
 	if (slist == entry)
 	{
-		slist = "";
+		slist = QString::null;
 		return;
 	}
 
@@ -1394,7 +1424,7 @@ void BINClean(QString &in)
 					break;
 			}
 		}
-		part = "";
+		part = QString::null;
 		p = 0;
 		while (p < 8)
 		{
@@ -1410,7 +1440,7 @@ void BINClean(QString &in)
 		if (p > 0)
 		{
 			while (part.length() < 8) 
-				part = part.prepend("0");
+				part.prepend("0");
 			tmp += part;
 		}
 	}
@@ -1439,7 +1469,7 @@ void OCTClean(QString &in)
 					break;
 			}
 		}
-		part = "";
+		part = QString::null;
 		p = 0;
 		while (p < 3)
 		{
@@ -1455,7 +1485,7 @@ void OCTClean(QString &in)
 		if (p > 0)
 		{
 			while (part.length() < 3) 
-				part = part.prepend("0");
+				part.prepend("0");
 			tmp += part;
 		}
 	}
@@ -1492,13 +1522,13 @@ QString BINEncode(const QString &in)
 	for (unsigned int x = 0; x < temp.length(); x++)
 	{
 		unsigned char c = temp.at(x);
-		part = "";
+		part = QString::null;
 		for (int xx = 0; xx < 8; xx++)
 		{
 			if (c % 2 == 1)
-				part = part.prepend("1");
+				part.prepend("1");
 			else
-				part = part.prepend("0");
+				part.prepend("0");
 			c /= 2;
 		}
 		out += part;
@@ -1535,13 +1565,14 @@ QString OCTEncode(const QString &in)
 	for (unsigned int x = 0; x < temp.length(); x++)
 	{
 		unsigned char c = temp.at(x);
-		part = "";
+		part = QString::null;
 		for (int xx = 0; xx < 3; xx++)
 		{
-			part = part.prepend('0' + (c % 7));
+			part.prepend('0' + (c % 7));
 			c /= 7;
 		}
 		out += part;
 	}
 	return out;
 }
+

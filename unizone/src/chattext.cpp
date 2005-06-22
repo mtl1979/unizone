@@ -1,8 +1,16 @@
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include "chattext.h"
 #include "textevent.h"
 #include "debugimpl.h"
+#include "global.h"
+#include "util.h"
+#include "winsharewindow.h"
 
 #include <qapplication.h>
+#include <qdragobject.h>
 
 #define DEFAULT_SIZE 10
 #define MAX_SIZE 100
@@ -193,4 +201,36 @@ WChatText::AddLine(const QString &line)
 		fCurLine = 0;
 	fBuffer->AddTail(line);
 	fLock.Unlock();
+}
+
+void
+WChatText::dropEvent(QDropEvent* event)
+{
+    QStringList list;
+	QString files;
+	QString uid = gWin->GetUserID();
+
+	if (!uid.isEmpty())
+	{
+	
+    if ( QUriDrag::decodeLocalFiles(event, list) ) {
+		QStringList::Iterator iter = list.begin();
+		while (iter != list.end())
+		{
+			QString filename = *iter;
+			if (gWin->FindSharedFile(filename))
+				AddToList(files, filename);
+			iter++;
+		}
+		if (!files.isEmpty())
+		{
+			files.prepend("beshare:");
+			files.append("@");
+			files.append(uid);
+			insert(files);
+		}
+		return;
+    }
+	}
+	QMultiLineEdit::dropEvent(event);
 }

@@ -1,13 +1,19 @@
 // Universal List View class (C) 2002 FieldNet Association / Team UniShare
 // Released under Lesser GPL as in LGPL.TXT in source root folder
 
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include "ulistview.h"
 #include "settings.h"
 #include "debugimpl.h"
 #include "util.h"
 #include "wstring.h"
+#include "global.h"
 
 #include <qapplication.h>
+#include <qdragobject.h>
 
 WUniListItem::WUniListItem(
 						   QListView * parent, 
@@ -379,14 +385,12 @@ WUniListItem::text(int c) const
 		{
 			result.sprintf("%.2f ", n);
 			result += postFix;
-#ifdef DEBUG2
-			WString res(result);
-			PRINT("UListView::text : %S\n", res.getBuffer());
-#endif
+			WString wres(result);
+			PRINT2("UListView::text : %S\n", wres.getBuffer());
 		}
 		else
 		{
-			result = "";
+			result = QString::null;
 		}
 		
 		return result;
@@ -436,7 +440,7 @@ WUniListItem::text(int c) const
 		}
 		else
 		{
-			result = "";
+			result = QString::null;
 		}
 		
 		return result;
@@ -492,7 +496,7 @@ WUniListItem::text(int c) const
 		else
 		{
 			// Don't show 0:00:00
-			result = "";
+			result = QString::null;
 		}
 		
 		return result;
@@ -551,8 +555,41 @@ WUniListItem::rowTextColor(int i) const
 {
 	return RowTextColor[i];
 }
+
 void 
 WUniListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w, int alignment)
 {
 	QListViewItem::paintCell(p, cg, column, w, alignment);
+}
+
+void
+WUniListView::dragEnterEvent(QDragEnterEvent* event)
+{
+    event->accept( QUriDrag::canDecode(event) );
+}
+
+void
+WUniListView::dropEvent(QDropEvent* event)
+{
+    QStringList list;
+	
+    if ( QUriDrag::decodeLocalFiles(event, list) ) 
+	{
+		QStringList::Iterator it = list.begin();
+		QPoint p = event->pos();
+		QPoint q = viewport()->mapFromParent(p);
+		QListViewItem *li = itemAt(q);
+		while (it != list.end())
+		{
+			QString filename = *it;
+			const char * fmt = QImageIO::imageFormat(filename);
+			QImage img;
+			if (img.load(filename, fmt))
+			{
+				PRINT("Sending picture \"%S\" to \"%S\"...\n", WString(filename).getBuffer(), WString(li->text(1)).getBuffer());
+				gWin->SendPicture(li->text(1), filename);
+			}
+			it++;
+		}
+    }
 }
