@@ -339,59 +339,59 @@ Version %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='unfinished'>Create Channel</translation>
+        <translation>Create Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='unfinished'>Please enter channel name</translation>
+        <translation>Please enter channel name</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type='unfinished'>Yes</translation>
+        <translation>Yes</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type='unfinished'>No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='unfinished'>Channels</translation>
+        <translation>Channels</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='unfinished'>User #%1 requested invite to channel %2. Do you?</translation>
+        <translation>User #%1 requested invite to channel %2. Do you?</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='unfinished'>User #%1 invited you to channel %2. Do you accept?</translation>
+        <translation>User #%1 invited you to channel %2. Do you accept?</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type='unfinished'>Name</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type='unfinished'>Topic</translation>
+        <translation>Topic</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type='unfinished'>Users</translation>
+        <translation>Users</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type='unfinished'>Admins</translation>
+        <translation>Admins</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type='unfinished'>Public</translation>
+        <translation>Public</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type='unfinished'>&amp;Create</translation>
+        <translation>&amp;Create</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type='unfinished'>&amp;Join</translation>
+        <translation>&amp;Join</translation>
     </message>
 </context>
 <context>
@@ -757,7 +757,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation type='unfinished'>F10</translation>
+        <translation>F10</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
@@ -769,15 +769,23 @@ Date: %4</translation>
     </message>
     <message>
         <source>&amp;Channels</source>
-        <translation type='unfinished'></translation>
+        <translation>&amp;Channels</translation>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation type='unfinished'></translation>
+        <translation>&amp;Search</translation>
     </message>
     <message>
         <source>ALT+F</source>
-        <translation type='unfinished'></translation>
+        <translation>ALT+F</translation>
+    </message>
+    <message>
+        <source>Picture Viewer</source>
+        <translation>Picture Viewer</translation>
+    </message>
+    <message>
+        <source>F9</source>
+        <translation>F9</translation>
     </message>
 </context>
 <context>
@@ -824,11 +832,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation>You must change your nickname before connecting!</translation>
+        <translation type='obsolete'>You must change your nickname before connecting!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
+        <translation type='obsolete'>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
     </message>
 </context>
 <context>
@@ -1559,7 +1567,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation>User #%1 has disconnected.</translation>
+        <translation type='obsolete'>User #%1 has disconnected.</translation>
     </message>
     <message>
         <source>User #%1 is now known as</source>
@@ -2606,39 +2614,39 @@ Date: %4</translation>
     <name>WSearch</name>
     <message>
         <source>Search</source>
-        <translation type='unfinished'>Search</translation>
+        <translation>Search</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='unfinished'>File Name</translation>
+        <translation>File Name</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='unfinished'>File Size</translation>
+        <translation>File Size</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='unfinished'>File Type</translation>
+        <translation>File Type</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='unfinished'>Modified</translation>
+        <translation>Modified</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='unfinished'>Path</translation>
+        <translation>Path</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='unfinished'>User</translation>
+        <translation>User</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='unfinished'>Search:</translation>
+        <translation>Search:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='unfinished'>Download</translation>
+        <translation>Download</translation>
     </message>
     <message>
         <source>Close</source>
@@ -2646,15 +2654,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='unfinished'>Clear</translation>
+        <translation>Clear</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='unfinished'>Stop</translation>
+        <translation>Stop</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='unfinished'>Idle.</translation>
+        <translation>Idle.</translation>
     </message>
     <message>
         <source>%1</source>
@@ -2662,31 +2670,31 @@ Date: %4</translation>
     </message>
     <message>
         <source>Not connected.</source>
-        <translation type='unfinished'>Not connected.</translation>
+        <translation>Not connected.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation type='unfinished'>Searching for: "%1".</translation>
+        <translation>Searching for: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='unfinished'>Results: %1</translation>
+        <translation>Results: %1</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation type='unfinished'>Clear History</translation>
+        <translation>Clear History</translation>
     </message>
     <message>
         <source>User(s) not found!</source>
-        <translation type='unfinished'>User(s) not found!</translation>
+        <translation>User(s) not found!</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type='unfinished'>Initializing...</translation>
+        <translation>Initializing...</translation>
     </message>
     <message>
         <source>active</source>
-        <translation type='unfinished'>active</translation>
+        <translation>active</translation>
     </message>
 </context>
 <context>
@@ -4322,6 +4330,18 @@ Date: %4</translation>
     <message>
         <source>Qt version: %1</source>
         <translation>Qt version: %1</translation>
+    </message>
+    <message>
+        <source>You must change your nickname before connecting!</source>
+        <translation>You must change your nickname before connecting!</translation>
+    </message>
+    <message>
+        <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
+        <translation>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
+    </message>
+    <message>
+        <source>/screenshot - grab screenshot and save to file</source>
+        <translation>/screenshot - grab screenshot and save to file</translation>
     </message>
 </context>
 </TS>

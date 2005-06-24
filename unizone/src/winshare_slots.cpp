@@ -91,16 +91,7 @@ WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
 	if (fSettings->GetUserEvents())
 	{
 		QString uname = FixStringStr(name);
-		QString msg;
-		if (uname.isEmpty())
-		{
-			msg = WFormat::UserDisconnected2(sid);
-		}
-		else
-		{
-			// <postmaster@raasu.org> 20021112
-			msg = WFormat::UserDisconnected(sid, uname); 
-		}
+		QString msg = WFormat::UserDisconnected(sid, uname); 
 		QString parse = WFormat::Text(msg);
 		SystemEvent(this, parse);
 	}
@@ -195,16 +186,8 @@ WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QSt
 		if (status.isEmpty())
 			return;
 
-		if ((n == qApp->translate("WUser", "Unknown")) || (n.isEmpty())) // Invalid user name?
-		{
-			// <postmaster@raasu.org> 20030214
-			nameformat = WFormat::UserStatusChanged2(id, FixStringStr(status)); 
-		}
-		else
-		{
-			// <postmaster@raasu.org> 20021112
-			nameformat = WFormat::UserStatusChanged(id, FixStringStr(n), FixStringStr(status)); 
-		}
+		// <postmaster@raasu.org> 20021112
+		nameformat = WFormat::UserStatusChanged(id, FixStringStr(n), FixStringStr(status)); 
 		system = WFormat::Text(nameformat);
 		SystemEvent(this, system);
 	}

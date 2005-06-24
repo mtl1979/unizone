@@ -823,6 +823,14 @@ Päiväys: %4</translation>
         <source>ALT+F</source>
         <translation>ALT+F</translation>
     </message>
+    <message>
+        <source>Picture Viewer</source>
+        <translation>Kuvien Katselu</translation>
+    </message>
+    <message>
+        <source>F9</source>
+        <translation>F9</translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -868,11 +876,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation>Sinun täytyy vaihtaa käyttäjänimesi ennen yhteyden muodostamista!</translation>
+        <translation type='obsolete'>Sinun täytyy vaihtaa käyttäjänimesi ennen yhteyden muodostamista!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation>Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
+        <translation type='obsolete'>Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
     </message>
 </context>
 <context>
@@ -1671,7 +1679,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation>Käyttäjä #%1 on poistunut.</translation>
+        <translation type='obsolete'>Käyttäjä #%1 on poistunut.</translation>
     </message>
     <message>
         <source>User #%1 is now known as</source>
@@ -4458,6 +4466,18 @@ Päiväys: %4</translation>
     <message>
         <source>Qt version: %1</source>
         <translation>Qt versio: %1</translation>
+    </message>
+    <message>
+        <source>You must change your nickname before connecting!</source>
+        <translation>Sinun täytyy vaihtaa käyttäjänimesi ennen yhteyden muodostamista!</translation>
+    </message>
+    <message>
+        <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
+        <translation>Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
+    </message>
+    <message>
+        <source>/screenshot - grab screenshot and save to file</source>
+        <translation>/screenshot - ota ruudunkaappaus ja tallenna tiedostoon</translation>
     </message>
 </context>
 </TS>

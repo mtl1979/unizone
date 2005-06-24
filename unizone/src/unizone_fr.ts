@@ -746,6 +746,14 @@ Date: %4</translation>
         <source>ALT+F</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Picture Viewer</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>F9</source>
+        <translation type='unfinished'>F9</translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -791,11 +799,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation>You must change your nickname before connecting!</translation>
+        <translation type='obsolete'>You must change your nickname before connecting!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
+        <translation type='obsolete'>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
     </message>
 </context>
 <context>
@@ -1506,7 +1514,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation>Utilisateur #%1 est déconnecté.</translation>
+        <translation type='obsolete'>Utilisateur #%1 est déconnecté.</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
@@ -4166,6 +4174,18 @@ Date: %4</translation>
     </message>
     <message>
         <source>Qt version: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>You must change your nickname before connecting!</source>
+        <translation type='unfinished'>You must change your nickname before connecting!</translation>
+    </message>
+    <message>
+        <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
+        <translation type='unfinished'>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
+    </message>
+    <message>
+        <source>/screenshot - grab screenshot and save to file</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

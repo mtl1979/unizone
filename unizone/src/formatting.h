@@ -35,12 +35,10 @@ public:
 	static QString SystemText(const QString &text);
 	static QString UserConnected(const QString &session);
 	static QString UserDisconnected(const QString &session, const QString &user);
-	static QString UserDisconnected2(const QString &session);
 	static QString UserNameChangedNoOld(const QString &session, const QString &name);
 	static QString UserNameChangedNoNew(const QString &session);
 	static QString UserNameChanged(const QString &session, const QString &oldname, const QString &newname);
 	static QString UserStatusChanged(const QString &session, const QString &user, const QString &status);
-	static QString UserStatusChanged2(const QString &session, const QString &status);
 	static QString UserIPAddress(const QString &user, const QString &ip);
 	static QString UserIPAddress2(const QString &session, const QString &ip);
 

@@ -814,6 +814,14 @@ Date: %4</translation>
         <source>ALT+F</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Picture Viewer</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>F9</source>
+        <translation type='unfinished'>F9</translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -859,11 +867,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation>Sie müssen Ihren Nickname vor dem Verbinden ändern!</translation>
+        <translation type='obsolete'>Sie müssen Ihren Nickname vor dem Verbinden ändern!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation>Keiner der Nicknames sollte &apos;binky&apos; enthalten.</translation>
+        <translation type='obsolete'>Keiner der Nicknames sollte &apos;binky&apos; enthalten.</translation>
     </message>
 </context>
 <context>
@@ -1590,7 +1598,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation>Benutzer #%1 hat die Verbindung getrennt.</translation>
+        <translation type='obsolete'>Benutzer #%1 hat die Verbindung getrennt.</translation>
     </message>
     <message>
         <source>User #%1 is now known as</source>
@@ -4372,6 +4380,18 @@ Date: %4</translation>
     </message>
     <message>
         <source>Qt version: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>You must change your nickname before connecting!</source>
+        <translation type='unfinished'>Sie müssen Ihren Nickname vor dem Verbinden ändern!</translation>
+    </message>
+    <message>
+        <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
+        <translation type='unfinished'>Keiner der Nicknames sollte &apos;binky&apos; enthalten.</translation>
+    </message>
+    <message>
+        <source>/screenshot - grab screenshot and save to file</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

@@ -698,16 +698,7 @@ Channel::UserDisconnected(const QString &sid, const QString &name)
 		if (gWin->fSettings->GetUserEvents())
 		{
 			QString uname = FixStringStr(name);
-			QString msg;
-			if (uname.isEmpty())
-			{
-				msg = WFormat::UserDisconnected2(sid);
-			}
-			else
-			{
-				// <postmaster@raasu.org> 20021112
-				msg = WFormat::UserDisconnected(sid, uname); 
-			}
+			QString msg = WFormat::UserDisconnected(sid, uname); 
 			QString parse = WFormat::Text(msg);
 			PrintSystem(parse);
 		}

@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include "formatting.h"
 #include "platform.h"       // <postmaster@raasu.org> 20021114
 #include "settings.h"		//
@@ -7,10 +11,6 @@
 #ifndef QT_NO_TRANSLATION
 #include <qapplication.h>
 #endif
-#endif
-
-#ifdef WIN32
-#pragma warning(disable: 4786)
 #endif
 
 int 
@@ -28,8 +28,7 @@ GetColor(int c)
 QString
 WFormat::tr2(const char *s)
 {
-	QString temp;
-	temp = tr(s).stripWhiteSpace();
+	QString temp = tr(s).stripWhiteSpace();
 
 	if (temp.length() > 0)
 	{
@@ -46,6 +45,17 @@ WFormat::tr3(const QString &s)
 		return temp.prepend(" ");
 	else
 		return QString(".");
+}
+
+bool
+CheckName(const QString &name)
+{
+	QString temp = name.stripWhiteSpace();
+	if (temp.isEmpty())
+		return false;
+	if (temp == qApp->translate("WUser", "Unknown"))
+		return false;
+	return true;
 }
 
 // formatting for:
@@ -85,12 +95,16 @@ WFormat::RemoteName(const QString &session, const QString &name)
 {
 	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
 	temp += tr("<b>(%1)</b>").arg(session);
-	temp += " ";
-	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
-	temp += "<b>";
-	temp += name.stripWhiteSpace();
-	temp += "</b>";
-	temp += "</font>: </font>";
+	if (CheckName(name))
+	{
+		temp += " ";
+		temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
+		temp += "<b>";
+		temp += name.stripWhiteSpace();
+		temp += "</b>";
+		temp += "</font>";
+	}
+	temp += ": </font>";
 	return temp.stripWhiteSpace();
 }
 
@@ -101,15 +115,15 @@ WFormat::RemoteText(const QString &session, const QString &name, const QString &
 	temp += "<b>(";
 	temp += session;
 	temp += ")</b>";
-	if (name.stripWhiteSpace().length() > 0)
+	if (CheckName(name))
 	{
 		temp += " ";
 		temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
 		temp += "<b>";
 		temp += name.stripWhiteSpace();
 		temp += "</b>";
+		temp += "</font>";
 	}
-	temp += "</font>";
 	temp += ": ";
 	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::Text));
 	temp += text;
@@ -125,15 +139,15 @@ WFormat::RemoteWatch(const QString &session, const QString &name, const QString 
 	temp += "<b>(";
 	temp += session;
 	temp += ")</b>";
-	if (name.stripWhiteSpace().length() > 0)
+	if (CheckName(name))
 	{
 		temp += " ";
 		temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
 		temp += "<b>";
 		temp += name.stripWhiteSpace();
 		temp += "</b>";
+		temp += "</font>";
 	}
-	temp += "</font>";
 	temp += ": ";
 	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::Watch));
 	temp += text;
@@ -200,20 +214,21 @@ QString WFormat::UserConnected(const QString &session)
 
 QString WFormat::UserDisconnected(const QString &session, const QString &user)
 {
-	QString temp = tr("User #%1 (a.k.a").arg(session);
-	temp += " ";
-	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
-	temp += user.stripWhiteSpace();
-	temp += "</font>";
-	temp += tr(")", "aka suffix");
+	QString temp;
+	if (CheckName(user))
+	{
+		temp  = tr("User #%1 (a.k.a").arg(session);
+		temp += " ";
+		temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
+		temp += user.stripWhiteSpace();
+		temp += "</font>";
+		temp += tr(")", "aka suffix");
+	}
+	else
+		temp  = tr("User #%1").arg(session);
 	temp += " ";
 	temp += tr("has disconnected.");
 	return temp.stripWhiteSpace();
-}
-
-QString WFormat::UserDisconnected2(const QString &session)
-{
-	return tr("User #%1 has disconnected.").arg(session);
 }
 
 QString WFormat::UserNameChangedNoOld(const QString &session, const QString &name)
@@ -258,25 +273,22 @@ QString WFormat::UserNameChanged(const QString &session, const QString &oldname,
 
 QString WFormat::UserStatusChanged(const QString &session, const QString &user, const QString &status)
 {
-	QString temp = tr("User #%1 (a.k.a").arg(session);
-	temp += " ";
-	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
-	temp += user.stripWhiteSpace();
-	temp += "</font>";
-	temp += tr(")", "aka suffix");
+	QString temp;
+	if (CheckName(user))
+	{
+		temp  = tr("User #%1 (a.k.a").arg(session);
+		temp += " ";
+		temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
+		temp += user.stripWhiteSpace();
+		temp += "</font>";
+		temp += tr(")", "aka suffix");
+	}
+	else
+		temp  = tr("User #%1").arg(session);
 	temp += " ";
 	temp += tr("is now");
 	temp += " ";
 	temp += status;		// No need to strip spaces, it was done before translating status...
-	temp += tr3(tr(".", "'is now' suffix"));
-	return temp.stripWhiteSpace();
-}
-
-QString WFormat::UserStatusChanged2(const QString &session, const QString &status)
-{
-	QString temp = tr("User #%1 is now").arg(session);
-	temp += " ";
-	temp += status;		// No need to strip spaces, it was done before translating status
 	temp += tr3(tr(".", "'is now' suffix"));
 	return temp.stripWhiteSpace();
 }
@@ -296,10 +308,10 @@ QString WFormat::UserIPAddress(const QString &user, const QString &ip)
 QString WFormat::UserIPAddress2(const QString &session, const QString &ip)
 {
 	QString temp = tr2(QT_TRANSLATE_NOOP("WFormat", "ip_prefix"));
-	if (temp.length() > 0)
-		temp += tr("user #%1").arg(session);
-	else
+	if (temp.isEmpty())
 		temp += tr("User #%1").arg(session);
+	else
+		temp += tr("user #%1").arg(session);
 	temp += tr("'s IP address is %1.").arg(ip);
 	return temp.stripWhiteSpace();
 }
@@ -392,10 +404,10 @@ WFormat::SendPrivMsg(const QString &session, const QString &myname, const QStrin
 	temp += " -> ";
 	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
 	temp += "<b>";
-	if (othername.stripWhiteSpace().length() > 0)
+	if (CheckName(othername))
 		temp += othername.stripWhiteSpace();
 	else
-		temp += tr("nameless");
+		temp += qApp->translate("WUser", "Unknown");
 	temp += "</b>";
 	temp += "</font>";
 	temp += ": ";
@@ -416,10 +428,10 @@ QString WFormat::ReceivePrivMsg(const QString &session, const QString &othername
 	temp += "- ";
 	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
 	temp += "<b>";
-	if (othername.stripWhiteSpace().length() > 0)
+	if (CheckName(othername))
 		temp += othername.stripWhiteSpace();
 	else
-		temp += tr("nameless");
+		temp += qApp->translate("WUser", "Unknown");
 	temp += "</b>";
 	temp += "</font>: ";
 	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::PrivText));
@@ -467,7 +479,7 @@ QString WFormat::GotPinged(const QString &session, const QString &name)
 {
 	QString temp = tr("<font size=\"%1\">").arg(GetFontSize());
 	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::Ping));
-	if (name.stripWhiteSpace().length() > 0)
+	if (CheckName(name))
 	{
 		temp += tr("User #%1 (a.k.a").arg(session);
 		temp += " ";
@@ -489,7 +501,7 @@ WFormat::PingSent(const QString &session, const QString &name)
 {
 	QString temp = tr("Ping sent to");
 	temp += " ";
-	if (name.stripWhiteSpace().length() > 0)
+	if (CheckName(name))
 	{
 		temp += tr("user #%1 (a.k.a","Ping sent to user...").arg(session);
 		temp += " ";
@@ -521,7 +533,7 @@ WFormat::TimeRequest(const QString &session, const QString &username)
 {
 	QString temp = tr("Time request sent to");
 	temp += " ";
-	if (username.stripWhiteSpace().length() > 0)
+	if (CheckName(username))
 	{
 		temp += tr("user #%1 (a.k.a","Ping sent to user...").arg(session);
 		temp += " ";
@@ -541,7 +553,7 @@ QString
 WFormat::PrivateIsBot(const QString &session, const QString &name)
 {
 	QString temp;
-	if (name.stripWhiteSpace().length() > 0)
+	if (CheckName(name))
 	{
 		temp = tr("User #%1 (a.k.a").arg(session);
 		temp += name.stripWhiteSpace();
@@ -558,7 +570,7 @@ QString
 WFormat::PrivateRemoved(const QString &session, const QString &name)
 {
 	QString temp;
-	if (name.stripWhiteSpace().length() > 0)
+	if (CheckName(name))
 	{
 		temp = tr("User #%1 (a.k.a").arg(session);
 		temp += name.stripWhiteSpace();

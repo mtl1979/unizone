@@ -779,6 +779,14 @@ Date: %4</translation>
         <source>ALT+F</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Picture Viewer</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>F9</source>
+        <translation type='unfinished'>F9</translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -824,11 +832,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation>You must change your nickname before connecting!</translation>
+        <translation type='obsolete'>You must change your nickname before connecting!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation>&apos;binky&apos; stinkz. We don&apos;t like binkiez.</translation>
+        <translation type='obsolete'>&apos;binky&apos; stinkz. We don&apos;t like binkiez.</translation>
     </message>
 </context>
 <context>
@@ -1551,7 +1559,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation>Loser #%1 has closed the pipe.</translation>
+        <translation type='obsolete'>Loser #%1 has closed the pipe.</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
@@ -4266,6 +4274,18 @@ Date: %4</translation>
     </message>
     <message>
         <source>Qt version: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>You must change your nickname before connecting!</source>
+        <translation type='unfinished'>You must change your nickname before connecting!</translation>
+    </message>
+    <message>
+        <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
+        <translation type='unfinished'>&apos;binky&apos; stinkz. We don&apos;t like binkiez.</translation>
+    </message>
+    <message>
+        <source>/screenshot - grab screenshot and save to file</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
