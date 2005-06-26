@@ -5,7 +5,7 @@ LUPDATE=$(QTDIR)/bin/lupdate
 LRELEASE=$(QTDIR)/bin/lrelease
 all : translations
 
--include unizone_unix.pro
+-include unizone.pro
 
 QMFILES = $(addsuffix .qm,$(basename $(TRANSLATIONS)))
 
@@ -24,11 +24,13 @@ prefs.cpp : prefs.ui
 privatewindow.cpp : privatewindow.ui
 	@$(MAKE) -C .. src/privatewindow.cpp
 
-unizone_unix.pro : unizone.pro $(SOURCES) $(HEADERS)
-	@sed 's/scanprogress.cpp//' < unizone.pro > $@
+scanprogress.cpp : scanprogress.ui
+	@$(MAKE) -C .. src/scanprogress.cpp
+
+unizone.pro : $(SOURCES) $(HEADERS)
 	@$(LUPDATE) $@	
 
-%.ts : unizone_unix.pro
+%.ts : unizone.pro
  
 translations : $(QMFILES)
 

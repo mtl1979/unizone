@@ -392,6 +392,14 @@ src/channel.cpp: src/channel.h src/channel.ui
 	@echo Creating $@ ...
 	@$(UIC) -impl channel.h src/channel.ui -o src/channel.cpp
 
+src/scanprogress.h: src/scanprogress.ui
+	@echo Creating $@ ...
+	@$(UIC) src/scanprogress.ui -o src/scanprogress.h
+
+src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
+	@echo Creating $@ ...
+	@$(UIC) -impl scanprogress.h src/scanprogress.ui -o src/scanprogress.cpp
+
 clean-aux:
 	@rm -f *.o *.a $(EXECUTABLES)
 	@find src -name \*.o | xargs rm
