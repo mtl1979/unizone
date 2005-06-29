@@ -7,11 +7,7 @@
 #include "settings.h"		//
 #include "global.h"			// <postmaster@raasu.org> 20021217
 
-#if (QT_VERSION < 0x030000)
-#ifndef QT_NO_TRANSLATION
 #include <qapplication.h>
-#endif
-#endif
 
 int 
 GetFontSize()

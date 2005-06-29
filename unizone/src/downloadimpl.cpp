@@ -1023,11 +1023,14 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			msg()->FindString("why", why);
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
 			dt->SetFinished(true);
-			for (int n = dt->GetCurrentNum(); n < dt->GetNumFiles(); n++)
+			if (dt->GetCurrentNum() > -1)
 			{
-				QString qFile = dt->GetFileName(n);
-				QString qLFile = dt->GetLocalFileName(n);
-				emit FileFailed(qFile, qLFile, dt->GetRemoteUser());
+				for (int n = dt->GetCurrentNum(); n < dt->GetNumFiles(); n++)
+				{
+					QString qFile = dt->GetFileName(n);
+					QString qLFile = dt->GetLocalFileName(n);
+					emit FileFailed(qFile, qLFile, dt->GetRemoteUser());
+				}
 			}
 			dt->Reset();
 			if (gWin->fSettings->GetAutoClear())
