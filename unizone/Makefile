@@ -216,22 +216,27 @@ depends: .depends
 .depends1: $(UIC_SRCFILES)
 	@echo Building dependencies \(1/5\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends1
+	@for x in $(UIC_SRCFILES); do ./findfile.sh .depends1 $$x; done
 
 .depends2: $(SRCFILES)
 	@echo Building dependencies \(2/5\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends2
+	@for x in $(SRCFILES); do ./findfile.sh .depends2 $$x; done
 
 .depends3: $(MOC_SRCFILES)
 	@echo Building dependencies \(3/5\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends3
+	@for x in $(MOC_SRCFILES); do ./findfile.sh .depends3 $$x; done
 
 .depends4: $(MUSCLE_SRCFILES)
 	@echo Building dependencies \(4/5\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends4
+	@for x in $(MUSCLE_SRCFILES); do ./findfile.sh .depends4 $$x; done
 
 .depends5: $(MUSCLEMOC_SRCFILES)
 	@echo Building dependencies \(5/5\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends5
+	@for x in $(MUSCLEMOC_SRCFILES); do ./findfile.sh .depends5 $$x; done
 
 # stuff for moc
 

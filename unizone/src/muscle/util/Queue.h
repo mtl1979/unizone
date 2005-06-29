@@ -1074,9 +1074,9 @@ template <class ItemType>
 bool
 Queue<ItemType>::EndsWith(const Queue<ItemType> & suffixQueue) const
 {
-   if (prefixQueue.GetNumItems() > GetNumItems()) return false;
-   int32 lastToCheck = GetNumItems()-prefixQueue.GetNumItems();
-   for (int32 i=GetNumItems()-1; i>=lastToCheck; i--) if (!(prefixQueue[i] == (*this)[i])) return false;
+   if (suffixQueue.GetNumItems() > GetNumItems()) return false;
+   int32 lastToCheck = GetNumItems()-suffixQueue.GetNumItems();
+   for (int32 i=GetNumItems()-1; i>=lastToCheck; i--) if (!(suffixQueue[i] == (*this)[i])) return false;
    return true;
 }
 
