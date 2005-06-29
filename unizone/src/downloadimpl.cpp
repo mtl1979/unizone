@@ -1070,7 +1070,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				if ((msg()->FindBool("failed", &f) == B_OK) && f)
 				{
 					// "failed" == true only, if the transfer has failed
-					if (dt->GetCurrentNum() != -1)
+					if (dt->GetCurrentNum() > -1)
 					{
 						for (int n = dt->GetCurrentNum(); n < dt->GetNumFiles(); n++)
 						{

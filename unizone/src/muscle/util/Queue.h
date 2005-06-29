@@ -344,7 +344,7 @@ public:
    bool EndsWith(const ItemType & prefix) const {return ((GetNumItems()>0)&&(Tail() == prefix));}
 
    /** Returns true iff the (prefixQueue) is a suffix of this queue. */
-   bool EndsWith(const Queue<ItemType> & prefixQueue) const;
+   bool EndsWith(const Queue<ItemType> & suffixQueue) const;
 
    /**
     *  Returns a pointer to the nth internally-held contiguous-Item-sub-array, to allow efficient
