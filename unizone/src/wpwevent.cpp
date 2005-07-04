@@ -40,7 +40,6 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 			}
 			
 			fMsg += tusers;
-			fMsg.truncate(fMsg.length() - 1);
 			fMsg += " ";
 			fMsg += smsg;
 			
