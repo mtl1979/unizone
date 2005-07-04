@@ -28,6 +28,7 @@ public:
 private:
 
 	QMessageTransceiverThread *qmtt;
+	String fHostName;
 
 private slots:
 

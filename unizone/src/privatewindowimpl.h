@@ -50,7 +50,7 @@ protected:
 
 private slots:
 	void URLClicked(const QString &);	// url clicked
-	void UserDisconnected(const QString &, const QString &);	// we need to remove user from internal list
+	void UserDisconnected(const WUserRef);	// we need to remove user from internal list
 	void DisconnectedFromServer();
 	void TabPressed(const QString &);
 

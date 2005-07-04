@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <qstring.h>
+#include "wfile.h"
 
 #define byteSwap(buf, words)	// we're little endian (linux & windows on intel hardware)
 								// so we don't need this
@@ -203,10 +204,10 @@ status_t
 HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retBytesHashed,
 			uint8 * returnDigest, volatile bool * optShutdownFlag)
 {
-	QFile file(entry); // UNICODE !!!
-	if (!file.open(IO_ReadOnly))
+	WFile file; // UNICODE !!!
+	if (!file.Open(entry, IO_ReadOnly))
 		return B_ERROR;
-	uint64 size = (uint64)file.size();
+	uint64 size = file.Size();
 	if (len > 0 && size < len)
 		return B_ERROR;
 
@@ -225,12 +226,12 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
         {
 			if ((offset + len) > size)
 				return B_ERROR;
-            file.at(offset);
+            file.Seek(offset);
         }
         else
         {
 			if (offset < size)
-				file.at(size - offset);
+				file.Seek(size - offset);
             bytesLeft = (offset < size) ? offset : size;
         }
     }
@@ -238,14 +239,14 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
 	MD5Init(&ctx);
 	uint64 numRead;
 	retBytesHashed = 0;
-	while ((numRead = file.readBlock((char *)buf, (bytesLeft < bufSize) ? bytesLeft : bufSize)) > 0)
+	while ((numRead = file.ReadBlock((char *)buf, (bytesLeft < bufSize) ? bytesLeft : bufSize)) > 0)
 	{
 		retBytesHashed += numRead;
 
 		if (optShutdownFlag && *optShutdownFlag)
 		{
 			delete [] buf;
-			file.close();
+			file.Close();
 			return B_ERROR;
 		}
 
@@ -262,7 +263,7 @@ HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retByte
 		}
 	}
 	delete [] buf;
-	file.close();
+	file.Close();
 
 	if (bytesLeft > 0)
 		return B_ERROR;		// file not long enough?

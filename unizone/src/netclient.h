@@ -141,9 +141,13 @@ public:
 	void HandleResultMessage(MessageRef & ref);
 	
 	bool ExistUser(const QString &sid);
-	// this is idential to ExistUser() in that it will return
-	// NULL (ExistUser() returns false) if the user is not found, but unlike
-	// ExistUser(), it will return a pointer to the found user.
+	/*
+	 *
+	 * This is identical to ExistUser() in that it will return
+	 * NULL (ExistUser() returns false) if the user is not found, but unlike
+	 * ExistUser(), it will return a pointer to the found user.
+	 *
+	 */
 	WUserRef FindUser(const QString &sid);
 	// Find users by IP address
 	void FindUsersByIP(WUserMap & umap, const QString &ip);
@@ -163,16 +167,16 @@ public:
 	status_t WaitForInternalThreadToExit();
 
 signals:
-	void UserDisconnected(const QString &, const QString &);
-	void UserConnected(const QString &);
-	void UserNameChanged(const QString &, const QString &, const QString &);
+	void UserDisconnected(const WUserRef);
+	void UserConnected(const WUserRef);
+	void UserNameChanged(const WUserRef, const QString &, const QString &);
 	void DisconnectedFromServer();
-	void UserStatusChanged(const QString &, const QString &, const QString &);
+	void UserStatusChanged(const WUserRef, const QString &, const QString &);
 	void UserIDChanged(const QString &, const QString &);
-	void UserHostName(const QString &, const QString &);
+	void UserHostName(const WUserRef, const QString &);
 	
-	void RemoveFile(const QString &, const QString &);
-	void AddFile(const QString &, const QString &, bool, MessageRef);
+	void RemoveFile(const WUserRef, const QString &);
+	void AddFile(const WUserRef, const QString &, bool, MessageRef);
 	
 	void ChannelTopic(const QString &, const QString &, const QString &);
 	void ChannelAdmins(const QString &, const QString &, const QString &);

@@ -326,23 +326,6 @@ WUser::RemoveFromListView(QListView * view)
 }
 
 void
-WUser::PingResponse(MessageRef msg)
-{
-	fNeedPing = false;
-	SetClient(WinShareWindow::GetRemoteVersionString(msg));
-
-	// go through each item in the list and update the client
-	for (WListIter it = fLists.begin(); it != fLists.end(); it++)
-	{
-		QListViewItem * item = (*it).second;
-		if (item->text(WNickListItem::Client) != fClient)
-		{
-			item->setText(WNickListItem::Client, fClient);
-		}
-	}
-}
-
-void
 WUser::SetFirewalled(bool f)
 {
 	if (!fBot)
@@ -490,6 +473,9 @@ OSPair Systems[] = {
 void
 WUser::SetClient(const QString &s)
 {
+	if (fNeedPing)
+		fNeedPing = false;
+
 	fClient = s;
 	if (fHostOS == QString::null)
 	{

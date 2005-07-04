@@ -37,6 +37,7 @@ private:
 	bool CheckVersion(const String &, QString * = NULL);
 
 	QMessageTransceiverThread *qmtt;
+	String fHostName;
 };
 
 #endif

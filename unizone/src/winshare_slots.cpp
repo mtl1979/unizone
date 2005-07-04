@@ -71,39 +71,38 @@ WinShareWindow::AboutWinShare()
 // user slots
 
 void
-WinShareWindow::UserConnected(const QString &sid)
+WinShareWindow::UserConnected(const WUserRef uref)
 {
+	QString sid = uref()->GetUserID();
 	if (fSettings->GetUserEvents())
 	{
 		QString text = WFormat::UserConnected(sid);
 		QString system = WFormat::Text(text);
 		SendSystemEvent(system);
 	}
-	WUserRef uref = fNetClient->FindUser(sid);
-	if (uref())
-		uref()->AddToListView(fUsers);
+	uref()->AddToListView(fUsers);
 	UpdateUserCount();
 }
 	
 void
-WinShareWindow::UserDisconnected(const QString &sid, const QString &name)
+WinShareWindow::UserDisconnected(const WUserRef uref)
 {
 	if (fSettings->GetUserEvents())
 	{
+		QString name = uref()->GetUserName();
+		QString sid = uref()->GetUserID();
 		QString uname = FixStringStr(name);
 		QString msg = WFormat::UserDisconnected(sid, uname); 
 		QString parse = WFormat::Text(msg);
 		SystemEvent(this, parse);
 	}
-	WUserRef uref = FindUser(sid);
-	if (uref())
-		uref()->RemoveFromListView(fUsers);
 	UpdateUserCount();
 }
 
 void
-WinShareWindow::UserNameChanged(const QString &sid, const QString &old, const QString &newname)
+WinShareWindow::UserNameChanged(const WUserRef uref, const QString &old, const QString &newname)
 {
+	QString sid = uref()->GetUserID();
 	if (fSettings->GetUserEvents())
 	{
 		QString system;
@@ -171,10 +170,12 @@ WinShareWindow::DisconnectedFromServer()
 }
 
 void
-WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QString &s)
+WinShareWindow::UserStatusChanged(const WUserRef uref, const QString &n, const QString &s)
 {
 	if (fSettings->GetUserEvents())
 	{
+		QString id = uref()->GetUserID();
+
 		QString system;
 		QString nameformat;
 
@@ -194,8 +195,9 @@ WinShareWindow::UserStatusChanged(const QString &id, const QString &n, const QSt
 }
 
 void
-WinShareWindow::UserHostName(const QString &sid, const QString &host)
+WinShareWindow::UserHostName(const WUserRef uref, const QString &host)
 {
+	QString sid = uref()->GetUserID();
 	if (fSettings->GetIPAddresses())
 	{
 		QString ip = WFormat::UserIPAddress2(sid, host);
@@ -267,14 +269,16 @@ WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c
 	if (i)
 	{
 		QString uid = i->text(1).stripWhiteSpace();		// session ID
-		WUserIter it = fNetClient->Users().begin();
-		while (it != fNetClient->Users().end())
+		WUserIter it = fNetClient->Users().GetIterator();
+		while (it.HasMoreValues())
 		{
-			if ((*it).second()->GetUserID() == uid)
+			WUserRef uref;
+			it.GetNextValue(uref);
+			if (uref()->GetUserID() == uid)
 			{
 				// found user...
 				// <postmaster@raasu.org> 20020927 -- Added internationalization
-				QString txt = tr("Private Chat With %1").arg(StripURL((*it).second()->GetUserName()));
+				QString txt = tr("Private Chat With %1").arg(StripURL(uref()->GetUserName()));
 				// <postmaster@raasu.org> 20020924 -- Added ',1'
 				fPrivate->insertItem(txt, 1);
 				// <postmaster@raasu.org> 20020924 -- Added id 2
@@ -283,13 +287,12 @@ WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c
 				fPrivate->insertItem(tr("Get IP Address"), 3);
 				// <postmaster@raasu.org> 20030307 -- Inserted new item as id 4, moved old as id 5
 				fPrivate->insertItem(tr("Get Address Info"), 4);
-				txt = tr("Ping %1").arg(StripURL((*it).second()->GetUserName()));
+				txt = tr("Ping %1").arg(StripURL(uref()->GetUserName()));
 				fPrivate->insertItem(txt, 5);
 
 				fPopupUser = uid;
 				fPrivate->popup(p);
 			}
-			it++;
 		}
 	}
 }
@@ -298,13 +301,13 @@ void
 WinShareWindow::PopupActivated(int id)
 {
 	// <postmaster@raasu.org> 20020924 -- Add id detection
-	WUserIter it = fNetClient->Users().find(fPopupUser);
-	if (it != fNetClient->Users().end())
+	WUserRef uref = fNetClient->FindUser(fPopupUser);
+	if (uref())
 	{
 		if (id == 1) {
 			WPrivateWindow * window = new WPrivateWindow(this, fNetClient, NULL);
 			CHECK_PTR(window);
-			window->AddUser((*it).second);
+			window->AddUser(uref);
 			window->show();
 			// it's a map... but so far, there is no need for a key
 			// as i just iterate through the list
@@ -316,22 +319,22 @@ WinShareWindow::PopupActivated(int id)
 		else if (id == 2) 
 		{
 			QString qPattern = "*@";
-			qPattern += (*it).second()->GetUserID();
+			qPattern += uref()->GetUserID();
 			WinShareWindow::LaunchSearch(qPattern);
 		} 
 		else if (id == 3) 
 		{
-			QString qTemp = WFormat::UserIPAddress(FixStringStr((*it).second()->GetUserName()), (*it).second()->GetUserHostName()); // <postmaster@raasu.org> 20021112
+			QString qTemp = WFormat::UserIPAddress(FixStringStr(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
 			SystemEvent(this, qTemp);
 		}
 		else if (id == 4)
 		{
-			GetAddressInfo((*it).second()->GetUserID());
+			GetAddressInfo(uref()->GetUserID());
 		}
 		else if (id == 5)
 		{
 			QString pingMsg("/ping ");
-			pingMsg += (*it).second()->GetUserID();
+			pingMsg += uref()->GetUserID();
 			SendPingOrMsg(pingMsg, true);
 		}
 

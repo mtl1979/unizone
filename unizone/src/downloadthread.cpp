@@ -288,7 +288,7 @@ WDownloadThread::InitSession()
 				connectRef = ref;
 			}
 			
-			String sIP = (const char *) fIP.utf8(); // <postmaster@raasu.org> 20021026
+			uint32 sIP = GetHostByName(fIP); // <postmaster@raasu.org> 20021026
 			if (qmtt->AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
 			{
 				InitSessionAux();
@@ -519,11 +519,11 @@ WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 					}
 				}
 							
-				if (QFile::exists(fixed) && !append)	// create a new file name
+				if (WFile::Exists(fixed) && !append)	// create a new file name
 				{
 					QString nf = fixed;
 					int i = 1;
-					while (QFile::exists(nf))
+					while (WFile::Exists(nf))
 					{
 						// Check file size again, because it might have changed
 						WFile* fFile2 = new WFile();
@@ -813,7 +813,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 			uint64 retBytesHashed = 0;
 			uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
 
-			if (QFile::exists(fLocalFileDl[c]))
+			if (WFile::Exists(fLocalFileDl[c]))
 			{								
 				MessageRef hashMsg(GetMessageFromPool(WDownloadEvent::FileHashing));
 				if (hashMsg())
@@ -1261,6 +1261,12 @@ void
 WDownloadThread::SetFinished(bool b)
 {
 	fFinished = b;
+
+	if (b && timerID)
+	{
+		killTimer(timerID);
+		timerID = 0;
+	}	
 }
 
 void

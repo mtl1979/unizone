@@ -54,8 +54,6 @@ WListThread::InternalThreadEntry()
 			if (fShutdownFlag && *fShutdownFlag)
 				break;
 			
-			//				qApp->processEvents(300);
-			
 			String s;
 			MessageRef mref;
 			filesIter.GetNextKey(s);

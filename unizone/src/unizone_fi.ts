@@ -1864,7 +1864,7 @@ Päiväys: %4</translation>
     <message>
         <source>user #%1</source>
         <comment>Ping sent to user...</comment>
-        <translation>käyttäjä #%1</translation>
+        <translation>käyttäjälle #%1</translation>
     </message>
 </context>
 <context>

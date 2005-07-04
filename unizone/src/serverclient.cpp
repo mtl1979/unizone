@@ -2,6 +2,8 @@
 #include "debugimpl.h"
 #include "global.h"
 #include "winsharewindow.h"
+#include "version.h"
+
 #include "iogateway/PlainTextMessageIOGateway.h"
 #include "qtsupport/QMessageTransceiverThread.h"
 #include "util/StringTokenizer.h"
@@ -67,7 +69,14 @@ ServerClient::SessionConnected(const String & /* sessionID */)
 	MessageRef msgref(GetMessageFromPool());
 	if (msgref())
 	{
-		msgref()->AddString(PR_NAME_TEXT_LINE, "GET /servers.txt HTTP/1.1\nUser-Agent: Unizone/1.2\nHost: beshare.tycomsystems.com\n\n");
+		String cmd("GET /servers.txt HTTP/1.1\nUser-Agent: Unizone/");
+		cmd += UZ_MajorVersion();
+		cmd += ".";
+		cmd += UZ_MinorVersion();
+		cmd += "\nHost: ";
+		cmd += fHostName;
+		cmd += "\n\n";
+		msgref()->AddString(PR_NAME_TEXT_LINE, cmd);
 		qmtt->SendMessageToSessions(msgref);
 	}
 }
@@ -75,6 +84,7 @@ ServerClient::SessionConnected(const String & /* sessionID */)
 void
 ServerClient::SessionDetached(const String & /* sessionID */)
 {
+	fHostName = "";
 	Reset();
 }
 
@@ -84,6 +94,7 @@ ServerClient::Disconnect()
 	PRINT("DISCONNECT\n");
 	if (qmtt->IsInternalThreadRunning()) 
 	{
+		fHostName = "";
 		Reset(); 
 	}
 }
@@ -97,6 +108,7 @@ ServerClient::StartInternalThread()
 status_t 
 ServerClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
 {
+	fHostName = targetHostName;
 	return qmtt->AddNewConnectSession(targetHostName, port, optSessionRef);
 }
 

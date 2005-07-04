@@ -30,7 +30,7 @@ class WDownloadThread : public QObject
 {
 	Q_OBJECT
 public:
-	// This thread will throw events to this owner to udpate it's GUI
+	// This thread will throw events to this owner to update its GUI
 	WDownloadThread(QObject * owner, bool * optShutdownFlag = NULL);
 	~WDownloadThread();
 

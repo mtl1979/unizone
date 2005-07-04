@@ -21,9 +21,6 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 
 	// Create the Channels Pane
 
-//	fChannelsWidget = new QWidget(this, "Channels Widget");
-//	CHECK_PTR(fChannelsWidget);
-
 	QGridLayout * fChannelsTab = new QGridLayout(this, 7, 5, 0, -1, "Channels Tab");
 	CHECK_PTR(fChannelsTab);
 

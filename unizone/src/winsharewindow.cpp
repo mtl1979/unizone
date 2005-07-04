@@ -143,18 +143,18 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	resize(800, 600);
 	InitGUI();
 
-	connect(fNetClient, SIGNAL(UserDisconnected(const QString &, const QString &)), 
-			this, SLOT(UserDisconnected(const QString &, const QString &)));
-	connect(fNetClient, SIGNAL(UserConnected(const QString &)), 
-			this, SLOT(UserConnected(const QString &)));
-	connect(fNetClient, SIGNAL(UserNameChanged(const QString &, const QString &, const QString &)), 
-			this, SLOT(UserNameChanged(const QString &, const QString &, const QString &)));
+	connect(fNetClient, SIGNAL(UserDisconnected(const WUserRef)), 
+			this, SLOT(UserDisconnected(const WUserRef)));
+	connect(fNetClient, SIGNAL(UserConnected(const WUserRef)), 
+			this, SLOT(UserConnected(const WUserRef)));
+	connect(fNetClient, SIGNAL(UserNameChanged(const WUserRef, const QString &, const QString &)), 
+			this, SLOT(UserNameChanged(const WUserRef, const QString &, const QString &)));
 	connect(fNetClient, SIGNAL(DisconnectedFromServer()), 
 			this, SLOT(DisconnectedFromServer()));
-	connect(fNetClient, SIGNAL(UserStatusChanged(const QString &, const QString &, const QString &)), 
-			this, SLOT(UserStatusChanged(const QString &, const QString &, const QString &)));
-	connect(fNetClient, SIGNAL(UserHostName(const QString &, const QString &)), 
-			this, SLOT(UserHostName(const QString &, const QString &)));
+	connect(fNetClient, SIGNAL(UserStatusChanged(const WUserRef, const QString &, const QString &)), 
+			this, SLOT(UserStatusChanged(const WUserRef, const QString &, const QString &)));
+	connect(fNetClient, SIGNAL(UserHostName(const WUserRef, const QString &)), 
+			this, SLOT(UserHostName(const WUserRef, const QString &)));
 	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
 	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
@@ -835,9 +835,13 @@ WinShareWindow::InitGUI()
 	setDockEnabled( fTBMenu, Right, FALSE );
 
 
-	// setup combo/labels
-	// we define the combos as QComboBox, but use WComboBox for 
-	// messaging purposes :)
+	/*
+	 * Setup combo/labels
+	 *
+	 * We define the combos as QComboBox, but use WComboBox for 
+	 * messaging purposes :)
+	 *
+	 */
 
 	// Server
 	//
@@ -921,9 +925,11 @@ WinShareWindow::InitGUI()
 
 	fMainSplitter->setSizes(splitList);
 
-	//
-	// chat widgets
-	//
+	/*
+	 *
+	 * chat widgets
+	 *
+	 */
 
 	// chat splitter first though...
 	fChatSplitter = new QSplitter(fLeftPane);
@@ -934,10 +940,12 @@ WinShareWindow::InitGUI()
 	CHECK_PTR(fChatText);
 	fChatText->setTextFormat(QTextView::RichText);
 
-	//
-	// fInputText is a QMultiLineEdit, but we create
-	// a WChatText for more advanced handling
-	//
+	/*
+	 *
+	 * fInputText is a QMultiLineEdit, but we create
+	 * a WChatText for more advanced handling
+	 *
+	 */
 
 	fInputText = new WChatText(this, fChatSplitter);
 	CHECK_PTR(fInputText);
@@ -1157,11 +1165,11 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 			QRegExp qr(tstr, false);
 
 			bool foundMatches = false;
-			WUserRef user;
-			WUserIter iter = net->Users().begin();
-			while (iter != net->Users().end())
+			WUserIter iter = net->Users().GetIterator();
+			while (iter.HasMoreValues())
 			{
-				user = (*iter).second;
+				WUserRef user;
+				iter.GetNextValue(user);
 				QString userName = user()->GetUserName().stripWhiteSpace();
 				userName = StripURL(userName);
 
@@ -1171,7 +1179,6 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 					sendTo.AddTail(pair);
 					foundMatches = true;
 				}
-				iter++;
 			}
 			if (foundMatches)
 			{
@@ -1185,11 +1192,11 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 		if (sendTo.IsEmpty())
 		{
 			// tab-completion thingy :)
-			WUserRef user;
-			WUserIter iter = net->Users().begin();
-			while (iter != net->Users().end())
+			WUserIter iter = net->Users().GetIterator();
+			while (iter.HasMoreValues())
 			{
-				user = (*iter).second;
+				WUserRef user;
+				iter.GetNextValue(user);
 				QString uName = user()->GetUserName();
 				QString userName = uName.stripWhiteSpace();
 				userName = StripURL(userName);
@@ -1202,7 +1209,6 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 					sendTo.AddTail(pair);
 					setTargetStr = uName;
 				}
-				iter++;
 			}
 		}
 		return true;
@@ -1795,22 +1801,23 @@ QString
 WinShareWindow::MapUsersToIDs(const QString & pattern)
 {
 	QString qResult("");
-	WUserIter it = gWin->fNetClient->Users().begin();
 	QString qItem;
 	QStringTokenizer tok(pattern, ",");
 	while ((qItem = tok.GetNextToken()) != QString::null)
 	{
+		WUserIter it = gWin->fNetClient->Users().GetIterator();
 		// Space in username? (replaced with '*' for BeShare compatibility)
 		qItem.replace(QRegExp("*"), " ");
 		
-		while (it != gWin->fNetClient->Users().end())
+		while (it.HasMoreValues())
 		{
-			if (((*it).second()->GetUserID() == qItem) || ((*it).second()->GetUserName().lower() == qItem.lower()))
+			WUserRef uref;
+			it.GetNextValue(uref);
+			if ((uref()->GetUserID() == qItem) || (uref()->GetUserName().lower() == qItem.lower()))
 			{
-				AddToList(qResult, "/"+(*it).second()->GetUserHostName() + "/" + (*it).second()->GetUserID());
+				AddToList(qResult, "/"+uref()->GetUserHostName() + "/" + uref()->GetUserID());
 				break;
 			}
-			it++;
 		}
 	}
 
@@ -1847,17 +1854,19 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 		// Space in username? (replaced with '*' for BeShare compatibility)
 		qItem.replace(QRegExp("*"), " ");
 
-		WUserIter it = gWin->fNetClient->Users().begin();
+		WUserIter it = gWin->fNetClient->Users().GetIterator();
 		
-		while (it != gWin->fNetClient->Users().end())
+		while (it.HasMoreValues())
 		{
-			if (((*it).second()->GetUserID() == qItem) || (StripURL((*it).second()->GetUserName().lower()) == StripURL(qItem.lower())))
+			WUserRef uref;
+			it.GetNextValue(uref);
+			if ((uref()->GetUserID() == qItem) || 
+				(StripURL(uref()->GetUserName().lower()) == StripURL(qItem.lower())))
 			{
-				window->AddUser((*it).second);
+				window->AddUser(uref);
 				iUsers++;
 				break;
 			}
-			it++;
 		}
 	}
 	if (iUsers == 0) // No valid users?

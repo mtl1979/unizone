@@ -166,11 +166,13 @@ NetClient::Disconnect()
 		PRINT("RESETING\n");
 		Reset(); 
 		PRINT("DELETING USERS\n");
-		WUserIter it = fUsers.begin();
-		while (it != fUsers.end())
+		WUserIter it = fUsers.GetIterator();
+		while (it.HasMoreValues())
 		{
-			RemoveUser((*it).second);
-			it = fUsers.begin();
+			WUserRef uref;
+			it.GetNextValue(uref);
+			RemoveUser(uref);
+			it = fUsers.GetIterator();
 		}
 		PRINT("EMITTING DisconnectedFromServer()\n");
 		emit DisconnectedFromServer();
@@ -226,29 +228,32 @@ NetClient::RemoveSubscription(const QString & str)
 bool
 NetClient::ExistUser(const QString & sessionID)
 {
-	if (fUsers.find(sessionID) != fUsers.end())
-		return true;
-	return false;
+	uint32 uid = sessionID.toULong(NULL);
+	return fUsers.ContainsKey(uid);
 }
 
 WUserRef
 NetClient::FindUser(const QString & sessionID)
 {
-	WUserIter iter = fUsers.find(sessionID);
-	if (iter != fUsers.end())
-		return (*iter).second;
+	uint32 uid = sessionID.toULong(NULL);
+	WUserRef found;
+	if (fUsers.GetValue(uid, found) == B_NO_ERROR)
+		return found;
 	return WUserRef(NULL, NULL);
 }
 
 void 
 NetClient::FindUsersByIP(WUserMap & umap, const QString & ip)
 {
-	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
+	WUserIter iter = fUsers.GetIterator();
+	while ( iter.HasMoreValues())
 	{
-		if ((*iter).second()->GetUserHostName() == ip)
+		WUserRef uref;
+		iter.GetNextValue(uref);
+		if (uref()->GetUserHostName() == ip)
 		{
-			WUserPair p = MakePair((*iter).second()->GetUserID(), (*iter).second);
-			umap.insert(p);
+			uint32 uid = uref()->GetUserID().toULong();
+			umap.Put(uid, uref);
 		}
 	}
 }
@@ -256,16 +261,19 @@ NetClient::FindUsersByIP(WUserMap & umap, const QString & ip)
 WUserRef
 NetClient::FindUserByIPandPort(const QString & ip, uint32 port)
 {
-	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
+	WUserIter iter = fUsers.GetIterator();
+	while (iter.HasMoreValues())
 	{
-		if ((*iter).second()->GetUserHostName() == ip)
+		WUserRef found;
+		iter.GetNextValue(found);
+		if (found()->GetUserHostName() == ip)
 		{
 			if (
 				(port == 0) || 
-				((*iter).second()->GetPort() == port)
+				(found()->GetPort() == port)
 			)
 			{
-				return (*iter).second;
+				return found;
 			}
 		}
 	}
@@ -280,10 +288,10 @@ NetClient::CreateUser(const QString & sessionID)
 	WUserRef nref(n, NULL);
 	if (n)
 	{
-		WUserPair pair = MakePair(sessionID, nref);
+		uint32 uid = sessionID.toULong(NULL);
 
-		fUsers.insert(pair);
-		emit UserConnected(pair.first);
+		fUsers.Put(uid, nref);
+		emit UserConnected(nref);
 	}
 	return nref;	// NULL, or a valid user
 }
@@ -291,10 +299,11 @@ NetClient::CreateUser(const QString & sessionID)
 void
 NetClient::RemoveUser(const QString & sessionID)
 {
-	WUserIter iter = fUsers.find(sessionID);
-	if (iter != fUsers.end())
+	uint32 uid = sessionID.toULong(NULL);
+	WUserRef uref;
+	if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
 	{
-		RemoveUser((*iter).second);
+		RemoveUser(uref);
 	}
 }
 
@@ -303,12 +312,11 @@ NetClient::RemoveUser(const WUserRef user)
 {
 	if (user())
 	{
-		QString uid = user()->GetUserID();
-		QString uname = user()->GetUserName();
+		uint32 uid = user()->GetUserID().toULong(NULL);
 		PRINT("NetClient::RemoveUser: Signaling...\n");
-		emit UserDisconnected(uid, uname);
+		emit UserDisconnected(user);
 		PRINT("NetClient::RemoveUser: Erasing\n");
-		fUsers.erase(uid);
+		fUsers.Remove(uid);
 		PRINT("NetClient::RemoveUser: Done\n");
 	}
 }
@@ -319,7 +327,11 @@ NetClient::HandleBeRemoveMessage(const String & nodePath)
 	int pd = GetPathDepth(nodePath.Cstr());
 	String sid = GetPathClauseString(SESSION_ID_DEPTH, nodePath.Cstr());
 	QString qsid(sid.Cstr());
+#ifdef DEBUG2
 	if (pd == SESSION_ID_DEPTH)
+#else
+	if (pd == BESHARE_HOME_DEPTH)
+#endif
 	{
 		RemoveUser(qsid);
 	}
@@ -327,7 +339,8 @@ NetClient::HandleBeRemoveMessage(const String & nodePath)
 	{
 		String fileName = GetPathClauseString(FILE_INFO_DEPTH, nodePath.Cstr());
 		QString qfile = QString::fromUtf8(fileName.Cstr());
-		emit RemoveFile(qsid, qfile);
+		WUserRef uref = FindUser(qsid);
+		emit RemoveFile(uref, qfile);
 	}
 }
 
@@ -569,22 +582,33 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 	if (!user())	// doesn't exist
 		user = CreateUser(qsid);
 
-	if (pd == BESHARE_HOME_DEPTH)
+#ifdef DEBUG2
+	if (pd >= BESHARE_HOME_DEPTH)
+	{
+		String ct = GetPathClauseString(NetClient::BESHARE_HOME_DEPTH, nodePath.Cstr());
+		if (ct != "beshare")
+			PRINT("Unknown protocol: %s, node path = %s\n", ct.Cstr(), nodePath.Cstr());
+	}
+#endif
+
+	if (pd >= HOST_NAME_DEPTH)
 	{
 		String host = GetPathClauseString(NetClient::HOST_NAME_DEPTH, nodePath.Cstr());
 		QString hostName = QString::fromUtf8(host.Cstr());
-		
-		user()->SetUserHostName(hostName);
-		emit UserHostName(qsid, hostName);
+
+		if (hostName != user()->GetUserHostName())
+		{
+			user()->SetUserHostName(hostName);
+			emit UserHostName(user, hostName);
+		}
 	}
-	else if (pd >= USER_NAME_DEPTH)
+	
+	if (pd >= USER_NAME_DEPTH)
 	{
 		MessageRef tmpRef;
 
 		if (ref()->FindMessage(nodePath.Cstr(), tmpRef) == B_OK)
 		{
-			String sid = GetPathClauseString(SESSION_ID_DEPTH, nodePath.Cstr());
-			QString qsid(sid.Cstr());
 			switch (pd)
 			{
 			case USER_NAME_DEPTH:
@@ -595,14 +619,14 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 						QString oldname = user()->GetUserName();
 						user()->InitName(tmpRef); 
 						if (oldname != user()->GetUserName())
-							emit UserNameChanged(qsid, oldname, user()->GetUserName());
+							emit UserNameChanged(user, oldname, user()->GetUserName());
 					}
 					else if (nodeName.EqualsIgnoreCase("userstatus"))
 					{
 						QString oldstatus = user()->GetStatus();
 						user()->InitStatus(tmpRef);
 						if (oldstatus != user()->GetStatus())
-							emit UserStatusChanged(qsid, user()->GetUserName(), user()->GetStatus());
+							emit UserStatusChanged(user, user()->GetUserName(), user()->GetStatus());
 					}
 					else if (nodeName.EqualsIgnoreCase("uploadstats"))
 					{
@@ -636,7 +660,7 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 					
 					MessageRef unpacked = InflateMessage(tmpRef);
 					if (unpacked())
-						emit AddFile(qsid, qfile, (GetPathClause(USER_NAME_DEPTH, nodePath.Cstr())[2] == 'r')? true : false, unpacked);
+						emit AddFile(user, qfile, (GetPathClause(USER_NAME_DEPTH, nodePath.Cstr())[2] == 'r')? true : false, unpacked);
 					break;
 				}
 			}
@@ -1162,7 +1186,6 @@ void
 NetClient::ServerExited()
 {
 	PRINT("MTT_EVENT_SERVER_EXITED\n");
-	// as you noticed... this message is sent by several MTT_EVENT_* events :)
 
 	Cleanup();
 

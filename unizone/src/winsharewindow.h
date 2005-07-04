@@ -120,7 +120,7 @@ public:
 	void SendChatText(const QString & sid, const QString & txt);
 	void SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply, bool enc);
 
-	static QString GetRemoteVersionString(MessageRef);
+	QString GetRemoteVersionString(MessageRef);
 	// launches a search
 	static void LaunchSearch(const QString & pattern);	
 	// launches a private window with multiple users in it
@@ -217,12 +217,12 @@ public slots:
 	void AboutWinShare();
 
 	// user connection/disconnection messages
-	void UserNameChanged(const QString &, const QString &, const QString &);
-	void UserConnected(const QString &);
-	void UserDisconnected(const QString &, const QString &);
+	void UserNameChanged(const WUserRef, const QString &, const QString &);
+	void UserConnected(const WUserRef);
+	void UserDisconnected(const WUserRef);
 	void DisconnectedFromServer();
-	void UserStatusChanged(const QString &, const QString &, const QString &);
-	void UserHostName(const QString &, const QString &);
+	void UserStatusChanged(const WUserRef, const QString &, const QString &);
+	void UserHostName(const WUserRef, const QString &);
 
 	// tab completion signal
 	void TabPressed(const QString &);
@@ -306,7 +306,6 @@ private:
 
 	mutable Mutex fTTPLock;	// TTP list mutex
 
-//	bool fGotResults;			// see if we got initial Search Results
 	bool fGotParams;			// see if the initial "Get Params" message was sent
 	bool fAway;
 	bool fScanning;				// Is File Scan Thread active?
@@ -424,9 +423,7 @@ private:
 	void ShowHelp(const QString & command = QString::null);
 
 	// parsing stuff...
-//	bool MatchUserFilter(const WUserRef & user, const char * filter);
 	bool MatchUserFilter(const WUserRef & user, const QString & filter);
-//	bool MatchFilter(const QString & user, const char * filter);
 	bool MatchFilter(const QString & user, const QString & filter);
 
 	int MatchUserName(const QString & un, QString & result, const QString & filter);
@@ -445,7 +442,6 @@ private:
 	void SetAutoAwayTimer();
 	void WaitOnFileThread(bool);
 	void WaitOnListThread(bool);
-//	void CheckScrollState();
 
 	void StartLogging();
 	void StopLogging();
@@ -472,16 +468,12 @@ private:
 	WResumeMap fResumeMap;
 
 	QGridLayout * fMainBox;
-//	QTabWidget * fTabs;
 	
 	QWidget * fMainWidget;
 	QGridLayout * fMainTab;
 	
 	// splits user list and the rest of the window
 	QSplitter * fMainSplitter;	
-
-//	QWidget * fSearchWidget;
-	
 
 	uint32 fMaxUsers;
 

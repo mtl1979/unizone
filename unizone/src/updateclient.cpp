@@ -57,7 +57,14 @@ UpdateClient::SessionConnected(const String & /* sessionID */)
 	MessageRef ref(GetMessageFromPool());
 	if (ref())
 	{
-		ref()->AddString(PR_NAME_TEXT_LINE, "GET " UPDATE_FILE " HTTP/1.1\nUser-Agent: Unizone/1.2\nHost: " UPDATE_SERVER "\n\n");
+		String cmd("GET " UPDATE_FILE " HTTP/1.1\nUser-Agent: Unizone/");
+		cmd += UZ_MajorVersion();
+		cmd += ".";
+		cmd += UZ_MinorVersion();
+		cmd += "\nHost: ";
+		cmd += fHostName;
+		cmd += "\n\n";
+		ref()->AddString(PR_NAME_TEXT_LINE, cmd);
 		qmtt->SendMessageToSessions(ref);
 	}
 }
@@ -66,6 +73,7 @@ void
 UpdateClient::SessionDetached(const String & /* sessionID */)
 {
 	PRINT("Update thread disconnected\n");
+	fHostName = "";
 	Reset();
 }
 
@@ -75,6 +83,7 @@ UpdateClient::Disconnect()
 	PRINT("DISCONNECT\n");
 	if (qmtt->IsInternalThreadRunning()) 
 	{
+		fHostName = "";
 		Reset(); 
 	}
 }
@@ -132,6 +141,7 @@ UpdateClient::StartInternalThread()
 status_t 
 UpdateClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
 {
+	fHostName = targetHostName;
 	return qmtt->AddNewConnectSession(targetHostName, port, optSessionRef);
 }
 

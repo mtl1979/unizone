@@ -74,7 +74,6 @@ private:
 public slots:
 	void TabPressed(const QString &);
 	void URLClicked(const QString &);
-//	void UpdateUserList();
 	void UpdateTopic();
 	void NewChannelText(const QString &, const QString &, const QString &);
 	void ChannelAdminsChanged(const QString &, const QString &);

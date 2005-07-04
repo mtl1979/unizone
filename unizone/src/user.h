@@ -76,7 +76,6 @@ public:
 	void InitBandwidth(MessageRef msg);
 	void InitFileCount(MessageRef msg);
 	
-	void PingResponse(MessageRef msg);
 	void AddToListView(QListView * view);
 	void RemoveFromListView(QListView * view = NULL);	// if NULL, remove from all list views
 
@@ -138,25 +137,11 @@ private:
 typedef Ref<WUser> WUserRef;
 
 
-/** The map is in the following format:
-  *	The key QString, is /host/sessionid
-  * The value is its WUser clas
-  */
-typedef map<QString, WUserRef> WUserMap;
-typedef pair<QString, WUserRef> WUserPair;
-typedef WUserMap::iterator WUserIter;
+typedef Hashtable<uint32, WUserRef> WUserMap;
+typedef HashtableIterator<uint32, WUserRef> WUserIter;
 
 typedef pair<WUserRef, QString> WUserSearchPair;
 typedef Queue<WUserSearchPair> WUserSearchMap;
-
-inline WUserPair
-MakePair(const QString & s, const WUserRef & w)
-{
-	WUserPair p;
-	p.first = s;
-	p.second = w;
-	return p;
-}
 
 inline WUserSearchPair
 MakePair(const WUserRef & w, const QString &txt)

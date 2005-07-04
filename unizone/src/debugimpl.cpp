@@ -8,7 +8,7 @@
 #include <qmultilineedit.h>
 #include <qmessagebox.h>
 #include <qstring.h>
-#include <qfile.h>
+#include "wfile.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,12 +59,12 @@ WAssert(bool test, const char *message, int line, const char *file, const char *
 	{ 
 		QString out = qApp->translate("Debug", "Send this message to postmaster@raasu.org! This message has also been dumped to 'assert.txt'." 
 			"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(qApp->translate("Debug", message)).arg(line).arg(file).arg(date); 
-		QFile f("assert.txt");
-		if (f.open(IO_WriteOnly)) 
+		WFile f;
+		if (f.Open("assert.txt", IO_WriteOnly)) 
 		{ 
 			QCString tmp = out.local8Bit();
-			f.writeBlock(tmp, tmp.length()); 
-			f.close(); 
+			f.WriteBlock(tmp, tmp.length()); 
+			f.Close(); 
 		} 
 		WPopup(out);
 	}

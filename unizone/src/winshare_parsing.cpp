@@ -22,11 +22,12 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 	int matchCount = 0;
 	QString oldName;
 
-	WUserIter iter = fNetClient->Users().begin();
+	WUserIter iter = fNetClient->Users().GetIterator();
 
-	while (iter != fNetClient->Users().end())
+	while (iter.HasMoreValues())
 	{
-		WUserRef user = (*iter).second;
+		WUserRef user;
+		iter.GetNextValue(user);
 		QString userName = StripURL(user()->GetUserName().lower().stripWhiteSpace());
 		if (((filter == QString::null) || (MatchUserFilter(user, filter))) &&
 			(userName.startsWith(un.lower())))
@@ -57,7 +58,6 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 				}
 			}
 		}
-		iter++;
 	}
 
 #ifdef _DEBUG
@@ -320,19 +320,18 @@ int
 WinShareWindow::FillUserMap(const QString & filter, WUserMap & wmap)
 {
 	int matchCount = 0;
-	WUserIter iter = fNetClient->Users().begin();
-	WUserRef user;
+	WUserIter iter = fNetClient->Users().GetIterator();
 
-	while (iter != fNetClient->Users().end())
+	while (iter.HasMoreValues())
 	{
-		user = (*iter).second;
+		WUserRef user;
+		iter.GetNextValue(user);
 		if ( MatchUserFilter(user, filter) )
 		{
-			WUserPair wpair = MakePair(user()->GetUserID(), user);
-			wmap.insert(wmap.end(), wpair);
+			uint32 uid = user()->GetUserID().toULong();
+			wmap.Put(uid, user);
 			matchCount++;
 		}
-		iter++;
 	}
 	return matchCount;
 }

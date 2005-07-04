@@ -1,5 +1,6 @@
 #include "mimedb.h"
 #include "debugimpl.h"
+#include "wfile.h"
 #include "util/String.h"
 #include "util/Hashtable.h"
 #include "util/StringTokenizer.h"
@@ -19,21 +20,21 @@ Hashtable<String, String> mimeDB;
 void ReadDB(const char *file)
 {
 	QString fn = QFile::decodeName(file);
-	if (!QFile::exists(fn))
+	if (!WFile::Exists(fn))
 		return;
-	QFile f(fn);
+	WFile f;
 	PRINT("Opening MIME db %s...\n", file);
-	bool b = f.open(IO_ReadOnly);
+	bool b = f.Open(fn, IO_ReadOnly);
 	PRINT("Ok.\n");
 	if (b)
 	{
 		char buf[255];
 		PRINT("Entering loop...\n");
-		while (!f.atEnd())
+		while (!f.AtEnd())
 		{
 			PRINT("Reading entry...\n");
 			bzero(buf, 255);
-			int nc = f.readLine(buf, 255);
+			int nc = f.ReadLine(buf, 255);
 			PRINT("Ok, %i characters.\n", nc);
 
 			char *com = strchr(buf, '#');
@@ -56,7 +57,7 @@ void ReadDB(const char *file)
 			}
 		}
 	}
-	f.close();
+	f.Close();
 	PRINT("Closed MIME db %s.\n", file);
 }
 

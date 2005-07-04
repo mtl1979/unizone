@@ -386,7 +386,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		// <postmaster@raasu.org> 20020929
 		else if (CompareCommand(sendText, "/users"))
 		{
-
 			// <postmaster@raasu.org> 20021005 -- I think it's 1 for current user that needs to be added to get the total count
 			uint iUsers = fUsers->childCount() + 1;  
 			if (iUsers > fMaxUsers)
@@ -586,9 +585,11 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				int uc = FillUserMap(tuser, umap);
 				if (uc > 0)
 				{
-					for (WUserIter iter = umap.begin(); iter != umap.end(); iter++)
+					WUserIter iter = umap.GetIterator();
+					while (iter.HasMoreValues())
 					{
-						WUserRef tu = (*iter).second;
+						WUserRef tu;
+						iter.GetNextValue(tu);
 						String to("/*/");
 						to += (const char *) tu()->GetUserID().utf8();
 						to += "/unishare";
@@ -1233,11 +1234,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (numMatches > 0)	// Found atleast one match in users
 			{
 				QString list;
-				WUserIter uiter = wmap.begin();
-				while (uiter != wmap.end())
+				WUserIter uiter = wmap.GetIterator();
+				while (uiter.HasMoreValues())
 				{
-					AddToList(list, (*uiter).first);
-					uiter++;
+					WUserRef uref;
+					uiter.GetNextValue(uref);
+					AddToList(list, uref()->GetUserID());
 				}
 				
 				QString file = QFileDialog::getOpenFileName ( "downloads/", "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
@@ -1320,9 +1322,11 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 
 
-		//
-		// add more commands BEFORE this one
-		//
+		/*
+		 *
+		 * add more commands BEFORE this one
+		 *
+		 */
 
 		else if (sendText.left(1) == "/")
 		{
@@ -1606,9 +1610,11 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 					WPrivateWindow * win = (*it).first;
 					WUserMap & winusers = win->GetUsers();
 					
-					for (WUserIter uit = winusers.begin(); uit != winusers.end(); uit++)
+					WUserIter uit = winusers.GetIterator();
+					while ( uit.HasMoreValues() )
 					{
-						WUserRef user = (*uit).second;
+						WUserRef user;
+						uit.GetNextValue(user);
 						if (user()->GetUserID() == userID)
 						{
 							WChatEvent *wce = new WChatEvent(userID, text);
@@ -1729,8 +1735,12 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			}
 			break;
 		}
-		// Putting the scan here seems to fix the crash when 
-		// shares are scanned on startup (during connect to server)
+		/*
+		 *
+		 * Putting the scan here seems to fix the crash when 
+		 * shares are scanned on startup (during connect to server)
+		 *
+		 */
 	case PR_RESULT_PONG:
 		{
 			if (fSearch->GotResults())
@@ -1852,11 +1862,12 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			break;
 		}
 	/* Tunneled transfers:
-	//
-	// my_id     = message sender's tunnel id
-	// tunnel_id = message recipient's tunnel id
-	// upload    = true, if sender thinks it's his/her upload...
-	*/
+	 *
+	 * my_id     = message sender's tunnel id
+	 * tunnel_id = message recipient's tunnel id
+	 * upload    = true, if sender thinks it's his/her upload...
+	 *
+	 */
 	case NetClient::REQUEST_TUNNEL:
 		{
 			PRINT("\tREQUEST_TUNNEL\n");
@@ -2012,6 +2023,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			QString text;		// <postmaster@raasu.org> 20021001 -- UTF-8 decoding needs this
 			QString userID;
 
+#ifdef DEBUG2
 			int32 fcount = 0;
 
 			{
@@ -2020,6 +2032,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				if (msg()->FindInt32("fail_count", &f) == B_OK)
 					fcount = f;
 			}
+#endif
 			
 			{
 				const char * session;		// from user (their session id)
@@ -2031,6 +2044,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			// get user info first
 			WUserRef user = fNetClient->FindUser(userID);
 
+#ifdef DEBUG2
 			if (user() == NULL)
 			{
 				fcount++;
@@ -2038,6 +2052,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				if (fcount == 15)
 					user = fNetClient->CreateUser(userID);
 			}
+#endif
 					
 			if (user())
 			{
@@ -2063,8 +2078,10 @@ WinShareWindow::HandleMessage(MessageRef msg)
 
 				HandleChatText(user, text, priv);
 			}
+#ifdef DEBUG2
 			else
 				SendEvent(this, WMessageEvent::HandleMessage, msg);
+#endif
 			break;
 		}
 		case NetClient::ChannelText:
@@ -2267,13 +2284,12 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				{
 					int64 sent;
 					(void) msg()->FindInt64("when", &sent);
-					WUserIter uit = fNetClient->Users().find(QString::fromUtf8(repto.Cstr()));
-					if (uit != fNetClient->Users().end())
+					WUserRef user = fNetClient->FindUser(QString::fromUtf8(repto.Cstr()));
+					if (user())
 					{
 						if (fSettings->GetInfo())
 						{
 							PRINT("Print ping\n");
-							WUserRef user = (*uit).second;
 							QString system = WFormat::GotPinged(repto.Cstr(), FixStringStr(user()->GetUserName())); // <postmaster@raasu.org> 20021112
 							SendSystemEvent(system);
 						}
@@ -2326,15 +2342,17 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					WUserRef user = fNetClient->FindUser(session);
 					if (user())
 					{
+						QString versionString = GetRemoteVersionString(msg);
+
 						if (user()->NeedPing())
 						{
-							user()->PingResponse(msg);
+							user()->SetClient(versionString);
+							user()->UpdateListViews();
 						}
 						else
 						{
 							QString pre = WFormat::RemoteName(session, FixStringStr(user()->GetUserName()));
 							uint32 time = ((GetCurrentTime64() - when) / 10000L);
-							QString versionString = GetRemoteVersionString(msg);
 							
 							QString pong(pre);
 							pong += WFormat::PingText(time, versionString);
@@ -2452,7 +2470,7 @@ WinShareWindow::Connect()
 		if (fNetClient->Connect(sname, sport) == B_OK)
 		{
 			if (fSettings->GetInfo())
-				SendSystemEvent(tr("Connecting to server %1.").arg(fServer));
+				SendSystemEvent(tr("Connecting to server %1.").arg("server://" + fServer + " [" + fServer + "]"));
 		}
 		else
 		{
@@ -2846,14 +2864,15 @@ WinShareWindow::FindUser(const QString & user)
 	// -------------------------------------------
 
 	WUserMap & umap = fNetClient->Users();
-	WUserIter iter = umap.begin();
-	while (iter != umap.end())
+	WUserIter iter = umap.GetIterator();
+	while (iter.HasMoreValues())
 	{
-		if (MatchUserFilter((*iter).second, user))
+		WUserRef uref;
+		iter.GetNextValue(uref);
+		if (MatchUserFilter(uref, user))
 		{
-			return (*iter).second;
+			return uref;
 		}
-		iter++;
 	}
 	return WUserRef(NULL, NULL);
 }
@@ -3031,17 +3050,20 @@ WinShareWindow::PrintAddressInfo(uint32 address, bool verbose)
 						
 			WUserMap cmap;
 			fNetClient->FindUsersByIP(cmap, host);
-			if (!cmap.empty())
+			if (!cmap.IsEmpty())
 			{
 				out += "\n" + tr("Connected users:");
 
-				for (WUserIter it = cmap.begin(); it != cmap.end(); it++)
+				WUserIter it = cmap.GetIterator();
+				while ( it.HasMoreValues() )
 				{
-					if ( (*it).second() )
+					WUserRef uref;
+					it.GetNextValue(uref);
+					if ( uref() )
 					{
-						QString uid = (*it).second()->GetUserID();
-						QString uname = (*it).second()->GetUserName();
-						uint32 port = (*it).second()->GetPort();
+						QString uid = uref()->GetUserID();
+						QString uname = uref()->GetUserName();
+						uint32 port = uref()->GetPort();
 						if (port != 0)
 							out += "\n" + tr("#%1 - %2 (port: %3)").arg(uid).arg(uname).arg(port);
 						else
@@ -3069,11 +3091,12 @@ WinShareWindow::GetAddressInfo(const QString & user, bool verbose)
 	uint32 address = 0;
 	if (numMatches > 0)	// Found atleast one match in users
 	{
-		WUserIter uiter = wmap.begin();
-		while (uiter != wmap.end())
+		WUserIter uiter = wmap.GetIterator();
+		while (uiter.HasMoreValues())
 		{
-			PrintAddressInfo((*uiter).second, verbose);
-			uiter++;
+			WUserRef uref;
+			uiter.GetNextValue(uref);
+			PrintAddressInfo(uref, verbose);
 		}
 	}
 	else				// Try as hostname or ip address
@@ -3171,7 +3194,10 @@ WinShareWindow::GotParams(MessageRef &msg)
 	setStatus(tr( "Logging in...") );
 	// get a list of users
 	static String subscriptionList[] = {
+#ifdef DEBUG2
 		"SUBSCRIBE:/*/*",			// Get hold of zombie users :(
+		"SUBSCRIBE:/*/*/*",
+#endif
 		"SUBSCRIBE:beshare",		// base BeShare node
 		"SUBSCRIBE:beshare/*",		// all user info :)
 		"SUBSCRIBE:unishare/*",		// all unishare-specific user data
@@ -3204,16 +3230,16 @@ WinShareWindow::GotParams(MessageRef &msg)
 void
 WinShareWindow::SendPicture(const QString &target, const QString &file)
 {
-	QFile fFile(file);
-	if (fFile.open(IO_ReadOnly))
+	WFile fFile;
+	if (fFile.Open(file, IO_ReadOnly))
 	{
 		ByteBufferRef buf = GetByteBufferFromPool();
 		if (buf())
 		{
-			if (buf()->SetNumBytes(fFile.size(), false) == B_OK)
+			if (buf()->SetNumBytes(fFile.Size(), false) == B_OK)
 			{
-				fFile.readBlock((char *) buf()->GetBuffer(), fFile.size());
-				fFile.close();
+				fFile.ReadBlock((char *) buf()->GetBuffer(), fFile.Size());
+				fFile.Close();
 				QFileInfo info(file);
 				fNetClient->SendPicture(target, buf, info.fileName());
 			}

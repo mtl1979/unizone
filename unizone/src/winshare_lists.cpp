@@ -84,11 +84,14 @@ WinShareWindow::IsBlackListedIP(const QString & ip)
 	WUserMap umap;
 	fNetClient->FindUsersByIP(umap, ip);
 
-	for (WUserIter iter = umap.begin(); iter != umap.end(); iter++)
+	WUserIter iter = umap.GetIterator();
+	while (iter.HasMoreValues())
 	{
-		if ((*iter).second() != NULL)
+		WUserRef uref;
+		iter.GetNextValue(uref);
+		if (uref())
 		{
-			if ( IsBlackListed((*iter).second) )
+			if ( IsBlackListed(uref) )
 				return true;
 		}
 	}

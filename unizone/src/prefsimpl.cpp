@@ -172,7 +172,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	else
 		fFlashPrivate->setChecked(false);
 #else
-	// Linux and FreeBSD don't get this nifty feature
+	// Linux, FreeBSD, QNX and SunOS/Solaris don't get this nifty feature
 	fFlashMain->hide();
 	fFlashPrivate->hide();
 #endif

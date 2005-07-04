@@ -31,9 +31,12 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 				fMsg = "/msg ";
 
 			QString tusers;
-			for (WUserIter it = users.begin(); it != users.end(); it++)
+			WUserIter it = users.GetIterator();
+			while (it.HasMoreValues())
 			{
-				AddToList(tusers, (*it).second()->GetUserID());
+				WUserRef uref;
+				it.GetNextValue(uref);
+				AddToList(tusers, uref()->GetUserID());
 			}
 			
 			fMsg += tusers;

@@ -255,14 +255,13 @@ Channel::URLClicked(const QString & url)
 void
 Channel::AddUser(const QString & user)
 {
-	WUserIter it = fUsers.find(user);
-	if (it == fUsers.end())
+	uint32 uid = user.toULong(NULL);
+	WUserRef uref;
+	if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
 	{
-		WUserRef uref = gWin->FindUser(user);
 		if (uref() && !uref()->IsBot())
 		{
-			WUserPair p = MakePair(user, uref);
-			fUsers.insert(p);
+			fUsers.Put(uid, uref);
 			uref()->AddToListView(fChannelUsers);
 		}
 	}
@@ -271,13 +270,14 @@ Channel::AddUser(const QString & user)
 bool
 Channel::RemUser(const QString & user)
 {
-	WUserIter it = fUsers.find(user);
-	if (it == fUsers.end())
+	uint32 uid = user.toULong(NULL);
+	WUserRef uref;
+	if (fUsers.GetValue(uid, uref) == B_ERROR)
 	{
 		return false;
 	}
-	(*it).second()->RemoveFromListView(fChannelUsers);
-	fUsers.erase(it);
+	uref()->RemoveFromListView(fChannelUsers);
+	fUsers.Remove(uid);
 	return true;
 }
 
@@ -339,11 +339,14 @@ Channel::customEvent(QCustomEvent * event)
 				else if (wte->Text().lower().startsWith("/listadmins"))
 				{
 					PrintSystem(tr( "List of channel admins:" ));
-					for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
+					WUserIter iter = fUsers.GetIterator();
+					while (iter.HasMoreValues())
 					{
-						if ( gWin->fChannels->IsAdmin(fName, (*iter).second()->GetUserID()) )
+						WUserRef uref;
+						iter.GetNextValue(uref);
+						if ( gWin->fChannels->IsAdmin(fName, uref()->GetUserID()) )
 						{
-							PrintSystem( (*iter).second()->GetUserID() + " - " + (*iter).second()->GetUserName() );
+							PrintSystem( uref()->GetUserID() + " - " + uref()->GetUserName() );
 						}
 					}
 
@@ -452,9 +455,11 @@ Channel::customEvent(QCustomEvent * event)
 							WUserRef uref = FindUser(qTemp);
 							if (uref())
 							{
-								for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
+								WUserIter uit = fUsers.GetIterator();
+								while ( uit.HasMoreValues())
 								{
-									WUserRef found = (*uit).second;
+									WUserRef found;
+									uit.GetNextValue(found);
 									if (found() == uref())
 									{
 										if (gWin->fSettings->GetUserEvents())
@@ -496,9 +501,11 @@ Channel::customEvent(QCustomEvent * event)
 							WUserRef uref = FindUser(qTemp);
 							if (uref())
 							{
-								for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
+								WUserIter uit = fUsers.GetIterator();
+								while (uit.HasMoreValues())
 								{
-									WUserRef found = (*uit).second;
+									WUserRef found;
+									uit.GetNextValue(found);
 									
 #ifdef _DEBUG
 									WString wUser1(found()->GetUserID());
@@ -692,8 +699,9 @@ Channel::ChannelAdminsChanged(const QString &channel, const QString &admins)
 void
 Channel::UserDisconnected(const QString &sid, const QString &name)
 {
-	WUserIter iter = fUsers.find(sid);
-	if (iter != fUsers.end())
+	uint32 uid = sid.toULong(NULL);
+	WUserRef user;
+	if (fUsers.GetValue(uid, user) == B_NO_ERROR)
 	{
 		if (gWin->fSettings->GetUserEvents())
 		{
@@ -702,19 +710,21 @@ Channel::UserDisconnected(const QString &sid, const QString &name)
 			QString parse = WFormat::Text(msg);
 			PrintSystem(parse);
 		}
-		(*iter).second()->RemoveFromListView(fChannelUsers);
-		fUsers.erase(iter);
+		user()->RemoveFromListView(fChannelUsers);
+		fUsers.Remove(uid);
 	}
 }
 
 WUserRef
 Channel::FindUser(const QString & user)
 {
-	for (WUserIter iter = fUsers.begin(); iter != fUsers.end(); iter++)
+	uint32 uid = user.toULong(NULL);
+	WUserRef found;
+	if (fUsers.GetValue(uid, found) == B_NO_ERROR)
 	{
-		if (gWin->MatchUserFilter((*iter).second, user))
+		if (gWin->MatchUserFilter(found, user))
 		{
-			return (*iter).second;
+			return found;
 		}
 	}
 	return WUserRef(NULL, NULL);

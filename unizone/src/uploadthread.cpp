@@ -200,7 +200,7 @@ WUploadThread::InitSession()
 	else if (fAccept)
 	{
 		// <postmaster@raasu.org> 20021026
-		const String sRemoteIP = (const char *) fStrRemoteIP.utf8(); 
+		uint32 sRemoteIP = GetHostByName(fStrRemoteIP); 
 		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) != B_OK)
 		{
 			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
@@ -1362,6 +1362,11 @@ void
 WUploadThread::SetFinished(bool b)
 {
 	fFinished = b;
+	if (b && timerID)
+	{
+		killTimer(timerID);
+		timerID = 0;
+	}
 }
 
 int

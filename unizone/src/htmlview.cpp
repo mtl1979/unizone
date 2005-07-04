@@ -53,7 +53,7 @@ void
 WHTMLView::hideEvent(QHideEvent * e)
 {
 	PRINT("WHTMLView::hideEvent()\n");
-#if (QT_VERSION < 0x030000)
+#if (QT_VERSION < 0x030000) && defined(DEBUG2)
 
 	fLock.Lock();
 	
@@ -61,11 +61,10 @@ WHTMLView::hideEvent(QHideEvent * e)
 	
 	if (fBuffer.isEmpty())
 	{
-		fBuffer = text();
+		fBuffer = TrimBuffer(text());
 		setText("");
 	}
 	
-	qDebug("fBuffer length = %i (hide)", fBuffer.length());
 	fLock.Unlock();
 	
 #endif
@@ -87,21 +86,25 @@ WHTMLView::showEvent(QShowEvent * e)
 	fScrollDown = true;
 	fScrollY = 0;
 //  -----------------------
-	qDebug("fBuffer length = %i (show)", fBuffer.length());
-
 	if (fBuffer.isEmpty())
 	{
 		txt = text();
 	}
 	else
 	{
-		txt = fBuffer;
+#ifndef DEBUG2
+		if (!text().isEmpty())
+		{
+			txt = text();
+			txt += "<br>";
+		}
+#endif
+		txt += fBuffer;
 		fBuffer = QString::null;
 	}
 
-	TrimBuffer(txt);
+	txt = TrimBuffer(txt);
 	txt = ParseForShown(txt);
-	qDebug("txt length = %i (show)", txt.length());
 	setText(txt);
 
 	fLock.Unlock();
@@ -152,7 +155,7 @@ WHTMLView::_append(const QString &newtext)
 	if (text().isEmpty())
 	{
 		PRINT("Calling setText()\n");
-		setText(newtext);
+		setText(TrimBuffer(newtext));
 	}
 	else
 	{
@@ -184,14 +187,16 @@ WHTMLView::appendText(const QString &newtext)
 			// Synchronize
 			fLock.Lock();
 			CheckScrollState();	
-			if (fBuffer.length() == 0)
+#ifdef DEBUG2
+			if (fBuffer.isEmpty())
 			{
 				fBuffer = text();
 				if (!fBuffer.isEmpty())
 					setText("");
 			}
+#endif
 			PRINT("appendText 3\n");
-			if (fBuffer.length() > 0)
+			if (!fBuffer.isEmpty())
 			{
 				fBuffer += "<br>";
 			}
@@ -226,8 +231,6 @@ WHTMLView::appendText(const QString &newtext)
 		else
 			tmp = newtext;
 
-		PRINT("appendText: Calling TrimBuffer(tmp)\n");
-		TrimBuffer(tmp);
 		PRINT("appendText: Calling _append(tmp)\n");
 		_append(tmp);
 		PRINT("appendText: Calling UpdateScrollState()\n");
@@ -269,22 +272,6 @@ WHTMLView::CheckScrollState()
 }
 
 void
-WHTMLView::sendMessage(int type, MessageRef msg)
-{
-	WMessageEvent *wme = new WMessageEvent(type, msg);
-	if (wme)
-		QApplication::postEvent(this, wme);
-}
-
-void
-WHTMLView::sendMessage(int type)
-{
-	WMessageEvent *wme = new WMessageEvent(type);
-	if (wme)
-		QApplication::postEvent(this, wme);
-}
-
-void
 WHTMLView::UpdateScrollState()
 {
 	// if we don't have previous state saved, let's scroll to bottom
@@ -298,12 +285,10 @@ WHTMLView::UpdateScrollState()
 	if (fScrollX > contentsX() || fScrollY > contentsY())
 	{
 		setContentsPos(fScrollX, QMIN(fScrollY, contentsHeight()));
-//#ifndef WIN32	// linux only... (FreeBSD, QNX???)
 		repaintContents(
 							contentsX(), contentsY(),
 							contentsWidth(), contentsHeight(),
 							false);
-//#endif
 		if (fScrollY <= contentsHeight())
 			fScrollY = -1;
 	}

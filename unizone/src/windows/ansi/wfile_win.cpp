@@ -4,6 +4,7 @@
 #include <io.h>
 #include <windows.h>
 #include <sys/stat.h>
+#include <limits.h>
 
 void ConvertFileName(wchar_t *in, int ilen, char * out, int olen)
 {
@@ -85,14 +86,73 @@ WFile::At(INT64 pos)
 }
 
 int
-WFile::ReadBlock(void *buf, int size)
+WFile::ReadBlock(void *buf, INT64 size)
 {
+	if (size > LONG_MAX)
+	{
+		char *b = (char *) buf;
+		int numbytes = 0;
+		while (size > 0)
+		{
+			int nb = read(file, b, (size > LONG_MAX) ? LONG_MAX : size);
+			if (nb == 0)
+				break;
+			numbytes += nb;
+			size -= nb;
+			b += nb;
+		}
+		return numbytes;
+	}
 	return read(file, buf, size);
 }
 
-int
-WFile::WriteBlock(const void *buf, int size)
+int 
+WFile::ReadLine(char *buf, int size)
 {
+	int numbytes = 0;
+	while (size-- > 0)
+	{
+		char c;
+		if (read(file, &c, 1) == 1)
+		{
+			numbytes++;
+			*buf++ = c;
+			if (c == 13)
+			{
+				if (read(file, &c, 1) == 1)
+				{
+					numbytes++;
+					*buf++ = c;
+					if (c == 10)
+						break;
+				}
+			}
+		}
+		else
+			break;
+	}
+	*buf = 0;
+	return numbytes;
+}
+
+int
+WFile::WriteBlock(const void *buf, INT64 size)
+{
+	if (size > LONG_MAX)
+	{
+		const char *b = (const char *) buf;
+		int numbytes = 0;
+		while (size > 0)
+		{
+			int nb = write(file, b, (size > LONG_MAX) ? LONG_MAX : size);
+			if (nb == 0)
+				break;
+			numbytes += nb;
+			size -= nb;
+			b += nb;
+		}
+		return numbytes;
+	}
 	return write(file, buf, size);
 }
 

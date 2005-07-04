@@ -1,6 +1,7 @@
 #include "settings.h"
 #include "colors.h"
 #include "global.h"
+#include "wfile.h"
 #include "iogateway/MessageIOGateway.h"
 
 #include <qapplication.h>
@@ -432,25 +433,25 @@ bool
 WSettings::Load()
 {
 	bool ret = false;
-	QFile file(GetSettingsFile());
-	if (file.open(IO_Raw | IO_ReadOnly))
+	WFile file;
+	if (file.Open(GetSettingsFile(), IO_Raw | IO_ReadOnly))
 	{
-		uint8 * buffer = new uint8[file.size()];
+		uint8 * buffer = new uint8[file.Size()];
 		if (buffer)
 		{
-			if (file.readBlock((char *)buffer, file.size()) < (long) file.size())
+			if (file.ReadBlock((char *)buffer, file.Size()) < file.Size())
 			{
 				QMessageBox::warning(NULL, qApp->translate( "WSettings", "Read Error" ), qApp->translate( "WSettings", "Unable to read data from file!" ), qApp->translate( "WSettings", "Bummer" ));
 			}
 			else
 			{
 				// reload settings
-				fSet()->Unflatten(buffer, file.size());
+				fSet()->Unflatten(buffer, file.Size());
 				ret = true;
 			}
 			delete [] buffer;
 		}
-		file.close();
+		file.Close();
 	}
 	return ret;
 }
@@ -459,18 +460,18 @@ bool
 WSettings::Save()
 {
 	bool ret = false;;
-	QFile file(GetSettingsFile());
-	if (file.open(IO_Raw | IO_WriteOnly))
+	WFile file;
+	if (file.Open(GetSettingsFile(), IO_Raw | IO_WriteOnly))
 	{
 		uint8 * buffer = new uint8[fSet()->FlattenedSize()];
 		if (buffer)
 		{
 			fSet()->Flatten(buffer);
-			file.writeBlock((const char *)buffer, fSet()->FlattenedSize());
+			file.WriteBlock((const char *)buffer, fSet()->FlattenedSize());
 			delete [] buffer;
 			ret = true;
 		}
-		file.close();
+		file.Close();
 	}
 	else
 	{

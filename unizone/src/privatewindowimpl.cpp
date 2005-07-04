@@ -75,8 +75,8 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	connect(fPrivateUsers, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 			this, SLOT(RightButtonClicked(QListViewItem *, const QPoint &, int)));
 
-	connect(fNet, SIGNAL(UserDisconnected(const QString &, const QString &)), 
-			this, SLOT(UserDisconnected(const QString &, const QString &)));
+	connect(fNet, SIGNAL(UserDisconnected(const WUserRef)), 
+			this, SLOT(UserDisconnected(const WUserRef)));
 	connect(fNet, SIGNAL(DisconnectedFromServer()), 
 			this, SLOT(DisconnectedFromServer()));
 	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
@@ -96,8 +96,13 @@ WPrivateWindow::~WPrivateWindow()
 	StopLogging();
     // no need to delete child widgets, Qt does it all for us
 	fLock.Lock();
-	for (WUserIter it = fUsers.begin(); it != fUsers.end(); it++)
-		(*it).second()->RemoveFromListView(fPrivateUsers);
+	WUserIter it = fUsers.GetIterator();
+	while ( it.HasMoreValues() )
+	{
+		WUserRef uref;
+		it.GetNextValue(uref);
+		uref()->RemoveFromListView(fPrivateUsers);
+	}
 	fLock.Unlock();
 	WPWEvent *closed = new WPWEvent(WPWEvent::Closed, "");
 	if (closed)
@@ -111,26 +116,27 @@ void
 WPrivateWindow::DisconnectedFromServer()
 {
 	PRINT("WPrivateWindow::Disconnected\n");
-	fUsers.clear();
+	fUsers.Clear();
 	if (Settings()->GetError())
 		PrintError(tr("Disconnected from server."));
 }
 
 void
-WPrivateWindow::UserDisconnected(const QString &sid, const QString &name)
+WPrivateWindow::UserDisconnected(const WUserRef uref)
 {
-	WUserIter iter = fUsers.find(sid);
-	if (iter != fUsers.end())
+	uint32 uid = uref()->GetUserID().toULong(NULL);
+	QString name = uref()->GetUserName();
+	if (fUsers.ContainsKey(uid))
 	{
 		if (Settings()->GetUserEvents())
 		{
 			QString uname = FixStringStr(name);
-			QString msg = WFormat::UserDisconnected(sid, uname); 
+			QString msg = WFormat::UserDisconnected(uref()->GetUserID(), uname); 
 			QString parse = WFormat::Text(msg);
 			PrintSystem(parse);
 		}
-		(*iter).second()->RemoveFromListView(fPrivateUsers);
-		fUsers.erase(iter);
+		uref()->RemoveFromListView(fPrivateUsers);
+		fUsers.Remove(uid);
 
 		CheckEmpty();
 	}
@@ -163,11 +169,12 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 {
 	if (Settings()->GetPrivate())
 	{
-		WUserIter it = fUsers.find(fromsid);
+		uint32 uid = fromsid.toULong(NULL);
+		WUserRef uref;
 		
-		if (it != fUsers.end())
+		if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
 		{
-			QString name = (*it).second()->GetUserName();
+			QString name = uref()->GetUserName();
 			FixString(name);
 			QString s;
 			if ( IsAction(message, name) ) // simulate action?
@@ -198,11 +205,10 @@ void
 WPrivateWindow::AddUser(const WUserRef & user)
 {
 	fLock.Lock();
-	WUserIter it = fUsers.find(user()->GetUserID());
-	if (it == fUsers.end())
+	uint32 uid = user()->GetUserID().toULong(NULL);
+	if (!fUsers.ContainsKey(uid))
 	{
-		WUserPair p = MakePair(user()->GetUserID(), user);
-		fUsers.insert(p);
+		fUsers.Put(uid, user);
 		user()->AddToListView(fPrivateUsers);
 	}
 	fLock.Unlock();
@@ -212,14 +218,14 @@ bool
 WPrivateWindow::RemUser(const WUserRef & user)
 {
 	fLock.Lock();
-	WUserIter it = fUsers.find(user()->GetUserID());
-	if (it == fUsers.end())
+	uint32 uid = user()->GetUserID().toULong(NULL);
+	if (!fUsers.ContainsKey(uid))
 	{
 		fLock.Unlock();
 		return false;
 	}
-	(*it).second()->RemoveFromListView(fPrivateUsers);
-	fUsers.erase(it);
+	user()->RemoveFromListView(fPrivateUsers);
+	fUsers.Remove(uid);
 	fLock.Unlock();
 	return true;
 }
@@ -305,9 +311,11 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 								{
 									// see if the user is already in the list
 									bool talking = false;
-									for (WUserIter uit = fUsers.begin(); uit != fUsers.end(); uit++)
+									WUserIter uit = fUsers.GetIterator();
+									while ( uit.HasMoreValues() )
 									{
-										WUserRef found = (*uit).second;
+										WUserRef found;
+										uit.GetNextValue(found);
 										if (found()->GetUserID() == sid)
 										{
 											if (Settings()->GetUserEvents())
@@ -322,15 +330,15 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 								}
 								else
 								{
-									WUserIter foundIt = fUsers.find(user()->GetUserID());	// get the user
-									if (foundIt != fUsers.end())
+									uint32 uid = user()->GetUserID().toULong(NULL);
+									if (fUsers.ContainsKey(uid))
 									{
-										(*foundIt).second()->RemoveFromListView(fPrivateUsers);
+										user()->RemoveFromListView(fPrivateUsers);
 										if (Settings()->GetUserEvents())
 										{
-											PrintSystem(WFormat::PrivateRemoved((*foundIt).second()->GetUserID(), (*foundIt).second()->GetUserName()));
+											PrintSystem(WFormat::PrivateRemoved(user()->GetUserID(), user()->GetUserName()));
 										}
-										fUsers.erase(foundIt);
+										fUsers.Remove(uid);
 									}
 								}
 							}
@@ -467,10 +475,12 @@ WPrivateWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c
 	if (i)
 	{
 		QString uid = i->text(1);		// session ID
-		WUserIter it = fNet->Users().begin();
-		while (it != fNet->Users().end())
+		WUserIter it = fNet->Users().GetIterator();
+		while (it.HasMoreValues())
 		{
-			if ((*it).second()->GetUserID() == uid)
+			WUserRef uref;
+			it.GetNextValue(uref);
+			if (uref()->GetUserID() == uid)
 			{
 				// found user...
 				// <postmaster@raasu.org> 20021127 -- Remove user from private window
@@ -484,7 +494,6 @@ WPrivateWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c
 				fPopupUser = uid;
 				fPopup->popup(p);
 			}
-			it++;
 		}
 	}
 }
@@ -493,23 +502,23 @@ void
 WPrivateWindow::PopupActivated(int id)
 {
 	// <postmaster@raasu.org> 20020924 -- Add id detection
-	WUserIter it = fNet->Users().find(fPopupUser);
-	if (it != fNet->Users().end())
+	WUserRef uref = fNet->FindUser(fPopupUser);
+	if (uref())
 	{
 		if (id == 1) 
 		{
-			RemUser((*it).second);
+			RemUser(uref);
 		}
 		else if (id == 2) 
 		{
 			QString qPattern = "*@";
-			qPattern += (*it).second()->GetUserID();
+			qPattern += uref()->GetUserID();
 			WinShareWindow::LaunchSearch(qPattern);
 		} 
 		else if (id == 3) 
 		{
-			QString user = FixStringStr((*it).second()->GetUserName());
-			QString host = (*it).second()->GetUserHostName();
+			QString user = FixStringStr(uref()->GetUserName());
+			QString host = uref()->GetUserHostName();
 			QString qTemp = WFormat::UserIPAddress(user, host); // <postmaster@raasu.org> 20021112
 			PrintSystem(qTemp);
 		}
@@ -519,7 +528,7 @@ WPrivateWindow::PopupActivated(int id)
 void
 WPrivateWindow::CheckEmpty()
 {
-	if (fUsers.empty())
+	if (fUsers.IsEmpty())
 	{
 		switch (Settings()->GetEmptyWindows())
 		{

@@ -58,9 +58,6 @@ public:
 	void SetSearchStatus(const QString & status, int index = 0);
 	void SetSearch(const QString & pattern);
 
-//	void QueueDownload(const QString & file, const WUserRef & user);
-//	void EmptyQueues();
-
 	void LoadSettings();
 	void SaveSettings();
 
@@ -112,8 +109,8 @@ public slots:
 	void StopSearch();
 
 private slots:
-	void AddFile(const QString &, const QString &, bool, MessageRef);
-	void RemoveFile(const QString &, const QString &);
+	void AddFile(const WUserRef, const QString &, bool, MessageRef);
+	void RemoveFile(const WUserRef, const QString &);
 
 	void GoSearch();
 	void ClearList();

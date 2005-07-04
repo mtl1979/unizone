@@ -43,8 +43,6 @@ private:
 	void UpdateScrollState();
 
 	void _append( const QString & text);
-	void sendMessage(int type, MessageRef msg);
-	void sendMessage(int type);
 
 private slots:
 	void URLSelected(const QString & url);

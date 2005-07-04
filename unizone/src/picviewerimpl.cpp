@@ -16,6 +16,7 @@
 
 #include "util.h"
 #include "debugimpl.h"
+#include "wfile.h"
 
 WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, WFlags fl)
 : WPicViewerBase(parent, name, modal, fl)
@@ -152,7 +153,7 @@ WPicViewer::LoadImage(const QString &file)
 	QImage fImage;
 	const char * fmt = QImageIO::imageFormat(file);
 	ByteBufferRef buf = GetByteBufferFromPool();
-	QFile f(file);
+	WFile f;
 	int oldpos = -1;
 	for (unsigned int x = 0; x < fFiles.GetNumItems(); x++)
 	{
@@ -162,11 +163,11 @@ WPicViewer::LoadImage(const QString &file)
 			break;
 		}
 	}
-	if (f.open(IO_ReadOnly))
+	if (f.Open(file, IO_ReadOnly))
 	{
-		if (buf()->SetNumBytes(f.size(), false) == B_OK)
+		if (buf()->SetNumBytes(f.Size(), false) == B_OK)
 		{
-			if (f.readBlock((char *) buf()->GetBuffer(), f.size()) == (int) f.size())
+			if (f.ReadBlock((char *) buf()->GetBuffer(), f.Size()) == f.Size())
 			{
 				if (ret = LoadImage(buf, fmt))
 				{
@@ -187,7 +188,7 @@ WPicViewer::LoadImage(const QString &file)
 				}
 			}
 		}
-		f.close();
+		f.Close();
 	}
 	return ret;
 }

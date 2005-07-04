@@ -17,6 +17,7 @@
 #include "global.h"
 #include "debugimpl.h"
 #include "winsharewindow.h"
+#include "wfile.h"
 
 #include "util/TimeUtilityFunctions.h"
 #include "system/SetupSystem.h"
@@ -110,31 +111,31 @@ main( int argc, char** argv )
 
 	// Load language file
 	QTranslator qtr( 0 );
-	QFile lang("unizone.lng");
+	WFile lang;
 	QString lfile;
-	if (!lang.exists())
+	if (!WFile::Exists("unizone.lng"))
 	{
 		lfile = QFileDialog::getOpenFileName( QString::null, "unizone_*.qm", NULL );
 		if (!lfile.isEmpty())
 		{
 			// Save selected language's translator filename
-			if ( lang.open(IO_WriteOnly) )
+			if ( lang.Open("unizone.lng", IO_WriteOnly) )
 			{
 				QCString clang = lfile.utf8();
-				lang.writeBlock(clang, clang.length());
-				lang.close();
+				lang.WriteBlock(clang, clang.length());
+				lang.Close();
 			}
 		}
 	}
 
 	// (Re-)load translator filename
-	if ( lang.open(IO_ReadOnly) ) 
+	if ( lang.Open("unizone.lng", IO_ReadOnly) ) 
 	{    
 		// file opened successfully
 		QByteArray plang(256);
-		lang.readLine(plang.data(), 255);
+		lang.ReadLine(plang.data(), 255);
 		lfile = QString::fromUtf8(plang);
-		lang.close();
+		lang.Close();
     }
 
 	// Install translator ;)

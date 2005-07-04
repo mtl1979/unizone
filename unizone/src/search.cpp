@@ -159,10 +159,10 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 
 	// connect up slots
 
-	connect(fNetClient, SIGNAL(AddFile(const QString &, const QString &, bool, MessageRef)), 
-			this, SLOT(AddFile(const QString &, const QString &, bool, MessageRef)));
-	connect(fNetClient, SIGNAL(RemoveFile(const QString &, const QString &)), 
-			this, SLOT(RemoveFile(const QString &, const QString &)));
+	connect(fNetClient, SIGNAL(AddFile(const WUserRef, const QString &, bool, MessageRef)), 
+			this, SLOT(AddFile(const WUserRef, const QString &, bool, MessageRef)));
+	connect(fNetClient, SIGNAL(RemoveFile(const WUserRef, const QString &)), 
+			this, SLOT(RemoveFile(const WUserRef, const QString &)));
 
 	connect(fClear, SIGNAL(clicked()), this, SLOT(ClearList()));
 	connect(fStop, SIGNAL(clicked()), this, SLOT(StopSearch()));
@@ -191,11 +191,13 @@ WSearch::Cleanup()
 }
 
 void
-WSearch::AddFile(const QString &sid, const QString &filename, bool firewalled, MessageRef file)
+WSearch::AddFile(const WUserRef user, const QString &filename, bool firewalled, MessageRef file)
 {
 	PRINT("ADDFILE called\n");
 	
 #ifdef _DEBUG
+	QString sid = user()->GetUserID();
+
 	WString wFileName(filename);
 	WString wSID(sid);
 	PRINT("ADDFILE: filename=%S (%s) [%S]\n", wFileName.getBuffer(), firewalled ? "firewalled" : "hackable", wSID.getBuffer());
@@ -214,68 +216,64 @@ WSearch::AddFile(const QString &sid, const QString &filename, bool firewalled, M
 		if ((sid.find(fUserRegExp) >= 0) != fUserRegExpNeg)
 		{
 			// yes!
-			WUserRef user = gWin->FindUser(sid);
-			if (user() != NULL)	// found our user
+			
+			/*
+			 *
+			 * a) Both aren't firewalled or
+			 * b) Only one is firewalled or
+			 * c) Both are firewalled but other party supports tunneling
+			 *
+			 */
+			if (!firewalled || !gWin->fSettings->GetFirewalled() || user()->GetTunneling())
 			{
-				// Both aren't firewalled or
-				// Only one is firewalled or
-				// Both are firewalled but other party supports tunneling
-				if (!firewalled || !gWin->fSettings->GetFirewalled() || user()->GetTunneling())
-				{
-					
-					// We need to check file properties before allocating new WFileInfo, saves time and one unnecessary
-					// delete command.
-					
-					String path, kind;
-					uint64 size = 0;
-					int32 mod = 0;
-					
-					file()->FindString("beshare:Kind", kind);
-					file()->FindString("beshare:Path", path);
-					file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
-					file()->FindInt64("beshare:File Size", (int64 *)&size);
-					
-					WFileInfo * info = new WFileInfo;
-					CHECK_PTR(info);
-					info->fiUser = user;
-					info->fiFilename = filename;
-					info->fiSize = size;
-					info->fiRef = file;
-					info->fiFirewalled = firewalled;
-
-					fQueryBytes += size;
-					
-					// name, size, type, modified, path, user
-					QString qkind	= QString::fromUtf8(kind.Cstr());
-					QString qsize	= fromULongLong(size); 
-					QString qmod	= QString::number(mod); // <postmaster@raasu.org> 20021126
-					QString qpath	= QString::fromUtf8(path.Cstr());
-					QString quser	= user()->GetUserName();
-					
-					info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
-					CHECK_PTR(info->fiListItem);
-					
+				String path, kind;
+				uint64 size = 0;
+				int32 mod = 0;
+				
+				file()->FindString("beshare:Kind", kind);
+				file()->FindString("beshare:Path", path);
+				file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
+				file()->FindInt64("beshare:File Size", (int64 *)&size);
+				
+				WFileInfo * info = new WFileInfo;
+				CHECK_PTR(info);
+				info->fiUser = user;
+				info->fiFilename = filename;
+				info->fiSize = size;
+				info->fiRef = file;
+				info->fiFirewalled = firewalled;
+				
+				fQueryBytes += size;
+				
+				// name, size, type, modified, path, user
+				QString qkind	= QString::fromUtf8(kind.Cstr());
+				QString qsize	= fromULongLong(size); 
+				QString qmod	= QString::number(mod); // <postmaster@raasu.org> 20021126
+				QString qpath	= QString::fromUtf8(path.Cstr());
+				QString quser	= user()->GetUserName();
+				
+				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
+				CHECK_PTR(info->fiListItem);
+				
 #ifdef WIN32
-					PRINT("Setting key to %I64i\n", size);
+				PRINT("Setting key to %I64i\n", size);
 #else
-					PRINT("Setting key to %lli\n", size);
+				PRINT("Setting key to %lli\n", size);
 #endif
-					
-					// The map is based on _filename's_, not session ID's.
-					// And as filename's can be duplicate, we use a multimap
-					WFIPair pair = MakePair(filename, info);
-					fFileList.insert(fFileList.end(), pair);
-				}
+				
+				// The map is based on _filenames_, not session ID's.
+				// And as filename's can be duplicate, we use a multimap
+				WFIPair pair = MakePair(filename, info);
+				fFileList.insert(fFileList.end(), pair);
 			}
-		}
-		
+		}		
 	}
 	fSearchLock.Unlock();
 	SetResultsMessage();
 }
 
 void
-WSearch::RemoveFile(const QString &sid, const QString &filename)
+WSearch::RemoveFile(const WUserRef user, const QString &filename)
 {
 	fSearchLock.Lock();
 	PRINT("WSearch::RemoveFile\n");
@@ -283,7 +281,10 @@ WSearch::RemoveFile(const QString &sid, const QString &filename)
 	WFIIter iter = fFileList.begin();
 	WFileInfo * info;
 
+
 #ifdef _DEBUG
+	QString sid = user()->GetUserID();
+
 	WString wSID(sid);
 	WString wFilename(filename);
 	PRINT("Sid = %S, filename = %S\n", wSID.getBuffer(), wFilename.getBuffer());
@@ -322,9 +323,9 @@ WSearch::StopSearch()
 		MessageRef cancel(GetMessageFromPool(PR_COMMAND_JETTISONRESULTS));
 		if (cancel())
 		{
-			// since "fCurrentSearchPattern" is in a /*/*/beshare/fi*es/*
-			// pattern, if I grab the third '/' and add one, that is my
-			// cancel PR_NAME_KEYS
+			// /*/*/beshare/fi*es/*
+			//      ^---- cancel PR_NAME_KEYS
+
 			// <postmaster@raasu.org> 20021023 -- Use temporary variable to help debugging
 			{
 				QString tmp;
@@ -383,7 +384,7 @@ WSearch::SplitQuery(const QString &fileExp)
 	}
 	//
 	WUserMap &users = fNetClient->Users();
-	WUserIter it = users.begin();
+	WUserIter it = users.GetIterator();
 	if (fileExp.startsWith("*@"))
 	{
 		return 1;
@@ -392,20 +393,22 @@ WSearch::SplitQuery(const QString &fileExp)
 	{
 		return fileExp.findRev("@");
 	}
-	while (it != users.end())
-	{	
+	while (it.HasMoreValues())
+	{
+		WUserRef uref;
+		it.GetNextValue(uref);
 		// User ID?
-		QString user((*it).first);
+		QString user(uref()->GetUserID());
 		user.prepend("@");
 		if (fileExp.right(user.length()) == user)
 		{
 			return fileExp.findRev(user);
 		}
 		// User Name?
-		QString name = (*it).second()->GetUserName().lower();
-		name = StripURL(name);
+		QString name = uref()->GetUserName().lower();
+		name = StripURL(name).stripWhiteSpace();
 
-		// Convert fileExp to Unicode and try to compare end of it against stripped user name
+		// Compare end of fileExp against stripped user name
 		
 		QString temp = fileExp;
 		if (temp.right(name.length()).lower() == name)
@@ -416,7 +419,6 @@ WSearch::SplitQuery(const QString &fileExp)
 				return temp.length() - 1;
 			}
 		}
-		it++;
 	}
 	// No exact match?
 	return fileExp.findRev("@");
@@ -475,12 +477,12 @@ WSearch::GoSearch()
 			ConvertToRegex(userExp);
 			QRegExp qr(userExp, false);
 			WUserMap & users = fNetClient->Users();
-			WUserIter it = users.begin();
-			WUserRef user;
+			WUserIter it = users.GetIterator();
 			QString ulist;
-			while (it != users.end())
+			while (it.HasMoreValues())
 			{
-				user = (*it).second;
+				WUserRef user;
+				it.GetNextValue(user);
 				QString username = StripURL(user()->GetUserName());
 				QString userid = user()->GetUserID();
 				if (username.find(qr) >= 0)
@@ -491,9 +493,8 @@ WSearch::GoSearch()
 				{
 					AddToList(ulist, userid);
 				}
-				it++;
 			}
-			if (ulist.length() == 0)
+			if (ulist.isEmpty())
 			{
 				SetSearchStatus(tr("User(s) not found!"));
 				fSearchLock.Unlock();
@@ -510,17 +511,24 @@ WSearch::GoSearch()
 			fileExp = QString::null;
 	}
 
-	if (!HasRegexTokens(fileExp) && (!userExp.isEmpty() || !fileExp.isEmpty()))
-		fileExp.prepend("*").append("*");
+	if (!fileExp.isEmpty())
+	{
+		if (!HasRegexTokens(fileExp))
+			fileExp.prepend("*").append("*");
 
-	fileExp.replace(QRegExp("/"), "?");
-	userExp.replace(QRegExp("/"), "?");
+		fileExp.replace(QRegExp("/"), "?");
 
-	ConvertToRegex(fileExp);
-	
+		ConvertToRegex(fileExp);	
+	}
+
+	if (!userExp.isEmpty())
+	{
+		userExp.replace(QRegExp("/"), "?");
+	}
+
 	fSearchLock.Unlock();	// unlock before StartQuery();
 
-	StartQuery(userExp.length() > 0 ? userExp : ".*", fileExp);
+	StartQuery(userExp.isEmpty() ? ".*" : userExp, fileExp.isEmpty() ? ".*" : fileExp);
 }
 
 QString
@@ -530,7 +538,7 @@ Simplify(const QString &str)
 	unsigned int x = 0;
 	while (x < str.length())
 	{
-		if (str.mid(x, 1) == "\\")
+		if (str[x] == "\\")
 		{
 			ret += str.mid(x, 2);
 			x += 2;
@@ -540,9 +548,17 @@ Simplify(const QString &str)
 			ret += "*";
 			x += 2;
 		}
-		else if (str.mid(x, 1) == ".")
+		else if (str[x] == ".")
 		{
 			ret += "?";
+			x++;
+		}
+		else if (str[x].upper() != str[x].lower())
+		{
+			ret += "[";
+			ret += str[x].lower();
+			ret += str[x].upper();
+			ret += "]";
 			x++;
 		}
 		else
@@ -575,9 +591,11 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 	fUserRegExpNeg = sidRegExp[0] == "~";
 	fUserRegExpStr = fUserRegExpNeg ? sidRegExp.mid(1) : sidRegExp;
 	fUserRegExp.setPattern(fUserRegExpStr);
+	fUserRegExp.setCaseSensitive(false);
 	fFileRegExpNeg = fileRegExp[0] == "~";
 	fFileRegExpStr = fFileRegExpNeg ? fileRegExp.mid(1) : fileRegExp;
 	fFileRegExp.setPattern(fFileRegExpStr);
+	fFileRegExp.setCaseSensitive(false);
 
 	if (!fGotResults)
 	{
@@ -656,7 +674,6 @@ WSearch::SetSearchStatus(const QString & status, int index)
 void
 WSearch::SetSearch(const QString & pattern)
 {
-//	fTabs->showPage(fSearchWidget);
 	// Is already on history?
 	for (int i = 0; i < fSearchEdit->count(); i++)
 	{

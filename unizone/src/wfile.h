@@ -32,11 +32,14 @@ public:
 	static bool Exists(const WString &);
 
 	void Flush();
-	int ReadBlock(void *, int);
-	int WriteBlock(const void *, int);
+	int ReadBlock(void *, INT64);
+	int WriteBlock(const void *, INT64);
+
+	int ReadLine(char *, int);
 
 	bool Seek(INT64);
 	bool At(INT64);
+	bool AtEnd() {return At(Size());}
 	UINT64 Size();
 private:
 	int TranslateMode(int);

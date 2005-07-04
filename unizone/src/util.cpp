@@ -21,18 +21,6 @@ using namespace muscle;
 #include <qfile.h>
 #include <qstringlist.h>
 
-#include <limits.h>
-
-#if !defined(UINT64_MAX)
-# if defined(_UI64_MAX)
-#  define UINT64_MAX _UI64_MAX
-# elif defined(ULLONG_MAX)
-#  define UINT64_MAX ULLONG_MAX
-# else
-#  define UINT64_MAX 18446744073709551615ULL
-# endif
-#endif
-
 QString
 ParseChatText(const QString & str)
 {
@@ -1154,15 +1142,15 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 	QString path("downloads/");
 	path += FixFileName(file);
 	QString nf = path;
-	while (QFile::exists(nf)) 
+	while (WFile::Exists(nf)) 
 	{
 		nf = UniqueName(path, n++);
 	}
-	QFile fFile(nf);
-	if (fFile.open(IO_WriteOnly))
+	WFile fFile;
+	if (fFile.Open(nf, IO_WriteOnly))
 	{
-		unsigned int bytes = fFile.writeBlock((char *) buf()->GetBuffer(), buf()->GetNumBytes());
-		fFile.close();
+		uint64 bytes = fFile.WriteBlock((char *) buf()->GetBuffer(), buf()->GetNumBytes());
+		fFile.Close();
 		if (bytes == buf()->GetNumBytes())
 		{
 			file = nf;
@@ -1309,12 +1297,9 @@ QString fromLongLong(const int64 &in)
 
 QString hexFromLongLong(const int64 &in, unsigned int length)
 {
-	if (in == -1)
-		return hexFromULongLong(UINT64_MAX, length);
-	else if ( in < -1)
-		return hexFromULongLong(UINT64_MAX + (in + 1), length);
-	else
-		return hexFromULongLong((uint64) in, length);
+	uint64 i;
+	memcpy(&i, &in, sizeof(int64));
+	return hexFromULongLong(i, length);
 }
 
 void
