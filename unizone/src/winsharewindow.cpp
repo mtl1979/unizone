@@ -1173,7 +1173,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				QString userName = user()->GetUserName().stripWhiteSpace();
 				userName = StripURL(userName);
 
-				if (userName.length() > 0 && userName.find(qr) >= 0)
+				if (userName.length() > 0 && Match(userName, qr) >= 0)
 				{
 					WUserSearchPair pair = MakePair(user, setRestOfString); // <postmaster@raasu.org> 20021007
 					sendTo.AddTail(pair);

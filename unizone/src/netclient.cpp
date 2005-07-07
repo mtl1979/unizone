@@ -228,17 +228,25 @@ NetClient::RemoveSubscription(const QString & str)
 bool
 NetClient::ExistUser(const QString & sessionID)
 {
-	uint32 uid = sessionID.toULong(NULL);
-	return fUsers.ContainsKey(uid);
+	bool ok;
+	uint32 uid = sessionID.toULong(&ok);
+	if (ok)
+		return fUsers.ContainsKey(uid);
+	else
+		return false;
 }
 
 WUserRef
 NetClient::FindUser(const QString & sessionID)
 {
-	uint32 uid = sessionID.toULong(NULL);
-	WUserRef found;
-	if (fUsers.GetValue(uid, found) == B_NO_ERROR)
-		return found;
+	bool ok;
+	uint32 uid = sessionID.toULong(&ok);
+	if (ok)
+	{
+		WUserRef found;
+		if (fUsers.GetValue(uid, found) == B_NO_ERROR)
+			return found;
+	}
 	return WUserRef(NULL, NULL);
 }
 
@@ -284,26 +292,34 @@ NetClient::FindUserByIPandPort(const QString & ip, uint32 port)
 WUserRef
 NetClient::CreateUser(const QString & sessionID)
 {
-	WUser * n = new WUser(sessionID);
-	WUserRef nref(n, NULL);
-	if (n)
+	bool ok;
+	uint32 uid = sessionID.toULong(&ok);
+	if (ok)
 	{
-		uint32 uid = sessionID.toULong(NULL);
-
-		fUsers.Put(uid, nref);
-		emit UserConnected(nref);
+		WUser * n = new WUser(sessionID);
+		if (n)
+		{
+			WUserRef nref(n, NULL);
+			fUsers.Put(uid, nref);
+			emit UserConnected(nref);
+			return nref;
+		}
 	}
-	return nref;	// NULL, or a valid user
+	return WUserRef(NULL, NULL);	
 }
 
 void
 NetClient::RemoveUser(const QString & sessionID)
 {
-	uint32 uid = sessionID.toULong(NULL);
-	WUserRef uref;
-	if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
+	bool ok;
+	uint32 uid = sessionID.toULong(&ok);
+	if (ok)
 	{
-		RemoveUser(uref);
+		WUserRef uref;
+		if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
+		{
+			RemoveUser(uref);
+		}
 	}
 }
 
@@ -312,12 +328,16 @@ NetClient::RemoveUser(const WUserRef user)
 {
 	if (user())
 	{
-		uint32 uid = user()->GetUserID().toULong(NULL);
-		PRINT("NetClient::RemoveUser: Signaling...\n");
-		emit UserDisconnected(user);
-		PRINT("NetClient::RemoveUser: Erasing\n");
-		fUsers.Remove(uid);
-		PRINT("NetClient::RemoveUser: Done\n");
+		bool ok;
+		uint32 uid = user()->GetUserID().toULong(&ok);
+		if (ok)
+		{
+			PRINT("NetClient::RemoveUser: Signaling...\n");
+			emit UserDisconnected(user);
+			PRINT("NetClient::RemoveUser: Erasing\n");
+			fUsers.Remove(uid);
+			PRINT("NetClient::RemoveUser: Done\n");
+		}
 	}
 }
 

@@ -255,14 +255,18 @@ Channel::URLClicked(const QString & url)
 void
 Channel::AddUser(const QString & user)
 {
-	uint32 uid = user.toULong(NULL);
-	WUserRef uref;
-	if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
+	bool ok;
+	uint32 uid = user.toULong(&ok);
+	if (ok)
 	{
-		if (uref() && !uref()->IsBot())
+		WUserRef uref;
+		if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
 		{
-			fUsers.Put(uid, uref);
-			uref()->AddToListView(fChannelUsers);
+			if (uref() && !uref()->IsBot())
+			{
+				fUsers.Put(uid, uref);
+				uref()->AddToListView(fChannelUsers);
+			}
 		}
 	}
 }
@@ -270,15 +274,21 @@ Channel::AddUser(const QString & user)
 bool
 Channel::RemUser(const QString & user)
 {
-	uint32 uid = user.toULong(NULL);
-	WUserRef uref;
-	if (fUsers.GetValue(uid, uref) == B_ERROR)
+	bool ok;
+	uint32 uid = user.toULong(&ok);
+	if (ok)
 	{
-		return false;
+		WUserRef uref;
+		if (fUsers.GetValue(uid, uref) == B_ERROR)
+		{
+			return false;
+		}
+		uref()->RemoveFromListView(fChannelUsers);
+		fUsers.Remove(uid);
+		return true;
 	}
-	uref()->RemoveFromListView(fChannelUsers);
-	fUsers.Remove(uid);
-	return true;
+	else
+		return false;
 }
 
 void
@@ -699,32 +709,40 @@ Channel::ChannelAdminsChanged(const QString &channel, const QString &admins)
 void
 Channel::UserDisconnected(const QString &sid, const QString &name)
 {
-	uint32 uid = sid.toULong(NULL);
-	WUserRef user;
-	if (fUsers.GetValue(uid, user) == B_NO_ERROR)
+	bool ok;
+	uint32 uid = sid.toULong(&ok);
+	if (ok)
 	{
-		if (gWin->fSettings->GetUserEvents())
+		WUserRef user;
+		if (fUsers.GetValue(uid, user) == B_NO_ERROR)
 		{
-			QString uname = FixStringStr(name);
-			QString msg = WFormat::UserDisconnected(sid, uname); 
-			QString parse = WFormat::Text(msg);
-			PrintSystem(parse);
+			if (gWin->fSettings->GetUserEvents())
+			{
+				QString uname = FixStringStr(name);
+				QString msg = WFormat::UserDisconnected(sid, uname); 
+				QString parse = WFormat::Text(msg);
+				PrintSystem(parse);
+			}
+			user()->RemoveFromListView(fChannelUsers);
+			fUsers.Remove(uid);
 		}
-		user()->RemoveFromListView(fChannelUsers);
-		fUsers.Remove(uid);
 	}
 }
 
 WUserRef
 Channel::FindUser(const QString & user)
 {
-	uint32 uid = user.toULong(NULL);
-	WUserRef found;
-	if (fUsers.GetValue(uid, found) == B_NO_ERROR)
+	bool ok;
+	uint32 uid = user.toULong(&ok);
+	if (ok)
 	{
-		if (gWin->MatchUserFilter(found, user))
+		WUserRef found;
+		if (fUsers.GetValue(uid, found) == B_NO_ERROR)
 		{
-			return found;
+			if (gWin->MatchUserFilter(found, user))
+			{
+				return found;
+			}
 		}
 	}
 	return WUserRef(NULL, NULL);

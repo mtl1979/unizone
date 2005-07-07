@@ -124,21 +124,25 @@ WPrivateWindow::DisconnectedFromServer()
 void
 WPrivateWindow::UserDisconnected(const WUserRef uref)
 {
-	uint32 uid = uref()->GetUserID().toULong(NULL);
-	QString name = uref()->GetUserName();
-	if (fUsers.ContainsKey(uid))
+	bool ok;
+	uint32 uid = uref()->GetUserID().toULong(&ok);
+	if (ok)
 	{
-		if (Settings()->GetUserEvents())
+		QString name = uref()->GetUserName();
+		if (fUsers.ContainsKey(uid))
 		{
-			QString uname = FixStringStr(name);
-			QString msg = WFormat::UserDisconnected(uref()->GetUserID(), uname); 
-			QString parse = WFormat::Text(msg);
-			PrintSystem(parse);
+			if (Settings()->GetUserEvents())
+			{
+				QString uname = FixStringStr(name);
+				QString msg = WFormat::UserDisconnected(uref()->GetUserID(), uname); 
+				QString parse = WFormat::Text(msg);
+				PrintSystem(parse);
+			}
+			uref()->RemoveFromListView(fPrivateUsers);
+			fUsers.Remove(uid);
+			
+			CheckEmpty();
 		}
-		uref()->RemoveFromListView(fPrivateUsers);
-		fUsers.Remove(uid);
-
-		CheckEmpty();
 	}
 }
 
@@ -169,33 +173,37 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 {
 	if (Settings()->GetPrivate())
 	{
-		uint32 uid = fromsid.toULong(NULL);
-		WUserRef uref;
-		
-		if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
+		bool ok;
+		uint32 uid = fromsid.toULong(&ok);
+		if (ok)
 		{
-			QString name = uref()->GetUserName();
-			FixString(name);
-			QString s;
-			if ( IsAction(message, name) ) // simulate action?
+			WUserRef uref;
+			
+			if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
 			{
-				s = WFormat::Action(FormatNameSaid(message));
-			}
-			else
-			{
-				s = WFormat::ReceivePrivMsg(fromsid, name, FormatNameSaid(message));
-			}
-			PrintText(s);
-			if (Settings()->GetSounds())
-				QApplication::beep();
-			// <postmaster@raasu.org> 20021021 -- Fix Window Flashing on older API's
+				QString name = uref()->GetUserName();
+				FixString(name);
+				QString s;
+				if ( IsAction(message, name) ) // simulate action?
+				{
+					s = WFormat::Action(FormatNameSaid(message));
+				}
+				else
+				{
+					s = WFormat::ReceivePrivMsg(fromsid, name, FormatNameSaid(message));
+				}
+				PrintText(s);
+				if (Settings()->GetSounds())
+					QApplication::beep();
+				// <postmaster@raasu.org> 20021021 -- Fix Window Flashing on older API's
 #ifdef WIN32
-			// flash away!
-			if (!this->isActiveWindow() && (Settings()->GetFlash() & WSettings::FlashPriv))	// got the handle... AND not active? AND user wants us to flash
-			{
-				WFlashWindow(winId()); // flash
-			}
+				// flash away!
+				if (!this->isActiveWindow() && (Settings()->GetFlash() & WSettings::FlashPriv))	// got the handle... AND not active? AND user wants us to flash
+				{
+					WFlashWindow(winId()); // flash
+				}
 #endif // WIN32
+			}
 		}
 	}
 }
@@ -205,11 +213,15 @@ void
 WPrivateWindow::AddUser(const WUserRef & user)
 {
 	fLock.Lock();
-	uint32 uid = user()->GetUserID().toULong(NULL);
-	if (!fUsers.ContainsKey(uid))
+	bool ok;
+	uint32 uid = user()->GetUserID().toULong(&ok);
+	if (ok)
 	{
-		fUsers.Put(uid, user);
-		user()->AddToListView(fPrivateUsers);
+		if (!fUsers.ContainsKey(uid))
+		{
+			fUsers.Put(uid, user);
+			user()->AddToListView(fPrivateUsers);
+		}
 	}
 	fLock.Unlock();
 }
@@ -218,16 +230,21 @@ bool
 WPrivateWindow::RemUser(const WUserRef & user)
 {
 	fLock.Lock();
-	uint32 uid = user()->GetUserID().toULong(NULL);
-	if (!fUsers.ContainsKey(uid))
+	bool ok;
+	uint32 uid = user()->GetUserID().toULong(&ok);
+	if (ok)
 	{
+		if (!fUsers.ContainsKey(uid))
+		{
+			fLock.Unlock();
+			return false;
+		}
+		user()->RemoveFromListView(fPrivateUsers);
+		fUsers.Remove(uid);
 		fLock.Unlock();
-		return false;
+		return true;
 	}
-	user()->RemoveFromListView(fPrivateUsers);
-	fUsers.Remove(uid);
-	fLock.Unlock();
-	return true;
+	return false;
 }
 
 void
@@ -330,15 +347,19 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 								}
 								else
 								{
-									uint32 uid = user()->GetUserID().toULong(NULL);
-									if (fUsers.ContainsKey(uid))
+									bool ok;
+									uint32 uid = user()->GetUserID().toULong(&ok);
+									if (ok)
 									{
-										user()->RemoveFromListView(fPrivateUsers);
-										if (Settings()->GetUserEvents())
+										if (fUsers.ContainsKey(uid))
 										{
-											PrintSystem(WFormat::PrivateRemoved(user()->GetUserID(), user()->GetUserName()));
+											user()->RemoveFromListView(fPrivateUsers);
+											if (Settings()->GetUserEvents())
+											{
+												PrintSystem(WFormat::PrivateRemoved(user()->GetUserID(), user()->GetUserName()));
+											}
+											fUsers.Remove(uid);
 										}
-										fUsers.Remove(uid);
 									}
 								}
 							}

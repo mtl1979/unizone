@@ -114,7 +114,7 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 					WString wnxt(next);
 					PRINT2("MatchUserFilter: UserName = %S\n", wusr.getBuffer());
 					PRINT2("MatchUserFilter: next = %S\n", wnxt.getBuffer());
-					if (userName.find(qr) >= 0)
+					if (Match(userName, qr) >= 0)
 					{
 						return true;
 					}
@@ -307,7 +307,7 @@ WinShareWindow::MatchFilter(const QString & user, const QString & filter)
 			ConvertToRegex(next);
 			QRegExp qr(next, false);
 			QString userName = user.stripWhiteSpace();
-			if ((userName.length() > 0) && userName.find(qr) >= 0)
+			if ((userName.length() > 0) && Match(userName, qr) >= 0)
 			{
 				return true;
 			}

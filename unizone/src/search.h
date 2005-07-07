@@ -72,6 +72,8 @@ protected:
 	{
 		fGotResults = b;
 	}
+
+	void SetSearchPassive();
 	
 private:
 	mutable Mutex fSearchLock;		// to lock the list so only one method can be using it at a time
@@ -101,6 +103,8 @@ private:
 	WFIMap fFileList;
 
 	NetClient * fNetClient;
+
+	bool fPending;
 
 	void HandleComboEvent(WTextEvent * e);
 	void customEvent(QCustomEvent * qce);

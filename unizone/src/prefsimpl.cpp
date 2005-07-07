@@ -399,25 +399,13 @@ WPrefs::OK()
 
 	bool o;
 	unsigned long bp,pr;
+
 	bp = fBasePort->text().toULong(&o);
-	if (o)
-	{
-		gWin->fSettings->SetBasePort(bp);
-	}
-	else
-	{
-		gWin->fSettings->SetBasePort(7000);
-	}
+	gWin->fSettings->SetBasePort(o ? bp : 7000);
 
 	pr = fPortRange->text().toULong(&o);
-	if (o)
-	{
-		gWin->fSettings->SetPortRange(pr);
-	}
-	else
-	{
-		gWin->fSettings->SetPortRange(100);
-	}
+	gWin->fSettings->SetPortRange(o ? pr : 100);
+
 	// ok
 	accept();
 }

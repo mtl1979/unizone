@@ -1782,8 +1782,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			}
 			else
 			{
-				fSearch->SetSearchStatus(tr("passive"), 2);
-				fSearch->SetGotResults(true);
+				fSearch->SetSearchPassive();
 			}
 			break;
 		}

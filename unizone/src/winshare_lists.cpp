@@ -191,7 +191,7 @@ WinShareWindow::IsFilterListed(const QString & pattern)
 		if (t != p)
 		{
 			QRegExp qr(t);
-			if (p.find(qr) >= 0)
+			if (Match(p, qr) >= 0)
 				return true;
 		}
 		else

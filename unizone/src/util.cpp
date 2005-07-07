@@ -1561,3 +1561,21 @@ QString OCTEncode(const QString &in)
 	return out;
 }
 
+int 
+Match(const QString &string, const QRegExp &exp)
+{
+	QString str;
+	QRegExp e;
+	if (exp.caseSensitive())
+	{
+		str = string;
+		e = exp;
+	}
+	else
+	{
+		str = string.lower();
+		e.setPattern(exp.pattern().lower());
+	}
+	return str.find(e);
+}
+

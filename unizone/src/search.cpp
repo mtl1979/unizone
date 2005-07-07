@@ -38,6 +38,7 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	fNetClient = fNet;
 	fQueryBytes = 0;
 	fFileRegExpNeg = fUserRegExpNeg = false;
+	fPending = false;
 	
 	// Create the Search Pane
 	
@@ -210,10 +211,10 @@ WSearch::AddFile(const WUserRef user, const QString &filename, bool firewalled, 
 	fSearchLock.Lock();
 	// see if the filename matches our file regex
 	// AND that the session ID matches our session ID regex
-	if ((filename.find(fFileRegExp) >= 0) != fFileRegExpNeg)
+	if ((Match(filename, fFileRegExp) >= 0) != fFileRegExpNeg)
 	{
 		PRINT("ADDFILE: file Regex ok\n");
-		if ((sid.find(fUserRegExp) >= 0) != fUserRegExpNeg)
+		if ((Match(sid, fUserRegExp) >= 0) != fUserRegExpNeg)
 		{
 			// yes!
 			
@@ -446,11 +447,12 @@ WSearch::GoSearch()
 	// now we lock
 	fSearchLock.Lock();
 
-	// parse the string for the '@' if it exists
 	QString fileExp(pattern);
 	QString userExp;
 
 	fileExp = fileExp.stripWhiteSpace();
+
+	// parse the string for the '@' if it exists
 	int32 atIndex = SplitQuery(fileExp);
 	if (atIndex >= 0)
 	{
@@ -555,10 +557,22 @@ Simplify(const QString &str)
 		}
 		else if (str[x].upper() != str[x].lower())
 		{
-			ret += "[";
-			ret += str[x].lower();
-			ret += str[x].upper();
-			ret += "]";
+			if ((str[x].lower() < (QChar) 128) && (str.lower() < (QChar) 128))
+			{
+				ret += "[";
+				ret += str[x].lower();
+				ret += str[x].upper();
+				ret += "]";
+			}
+			else
+			{
+				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
+				ret += "(";
+				ret += str[x].lower();
+				ret += "|";
+				ret += str[x].upper();
+				ret += ")";
+			}
 			x++;
 		}
 		else
@@ -600,13 +614,12 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 	if (!fGotResults)
 	{
 		SetSearchStatus(tr("Initializing..."));
-		while (!fGotResults)
-		{
-			qApp->processEvents();
-		}
+		fPending = true;
+		return;
 	}
 
 	fGotResults = false;
+	fPending = false;
 
 	fNetClient->AddSubscription(tmp); // <postmaster@raasu.org> 20021026
 	// Test when initial results have been returned
@@ -767,4 +780,16 @@ WSearch::SaveSettings()
 
 	gWin->fSettings->SetSearchListSortColumn(fSearchList->sortColumn());
 	gWin->fSettings->SetSearchListSortAscending(fSearchList->sortAscending());
+}
+
+void
+WSearch::SetSearchPassive()
+{
+	SetSearchStatus(tr("passive"), 2);
+	SetGotResults(true);
+	if (fPending)
+	{
+		fPending = false;
+		GoSearch();
+	}
 }
