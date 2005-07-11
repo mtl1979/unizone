@@ -2696,6 +2696,10 @@ Date: %4</translation>
         <source>active</source>
         <translation>active</translation>
     </message>
+    <message>
+        <source>passive</source>
+        <translation type='unfinished'>passive</translation>
+    </message>
 </context>
 <context>
     <name>WSettings</name>
@@ -3993,7 +3997,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation>passive</translation>
+        <translation type='obsolete'>passive</translation>
     </message>
     <message>
         <source>active</source>

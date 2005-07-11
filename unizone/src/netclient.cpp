@@ -155,6 +155,8 @@ NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
 	fLoggedIn = false;
+	fLoginTime = 0;
+
 	if (IsConnected()) 
 	{
 		WinShareWindow *win = GetWindow(this);

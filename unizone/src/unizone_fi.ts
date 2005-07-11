@@ -2828,6 +2828,10 @@ Päiväys: %4</translation>
         <source>active</source>
         <translation>aktiivinen</translation>
     </message>
+    <message>
+        <source>passive</source>
+        <translation type='unfinished'>passiivinen</translation>
+    </message>
 </context>
 <context>
     <name>WSettings</name>
@@ -4125,7 +4129,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation>passiivinen</translation>
+        <translation type='obsolete'>passiivinen</translation>
     </message>
     <message>
         <source>active</source>
@@ -4341,7 +4345,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 degrees in %2 is:</source>
-        <translation>%1 astetta yksikössä %2 on:</translation>
+        <translation>%1 astetta %2-asteikolla on:</translation>
     </message>
     <message>
         <source>%1 degrees Celsius</source>

@@ -2300,7 +2300,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						tostr += repto;
 						tostr += "/beshare";
 
-						int currTime = GetCurrentTime64();
+						int64 currTime = GetCurrentTime64();
 					
 						rep()->AddString(PR_NAME_KEYS, tostr);
 						rep()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
@@ -2315,7 +2315,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						// <postmaster@raasu.org> 20021025 -- Added uptime calculating for Windows
 						// <postmaster@raasu.org> 20021231 -- and for Linux ;)
 						uint64 fUptime = GetUptime();
-						uint64 fOnlineTime = currTime - fNetClient->LoginTime();
+						uint64 fLoginTime = fNetClient->LoginTime();
+						uint64 fOnlineTime = fLoginTime ? currTime - fLoginTime : 0;
 						rep()->AddString("version", (const char *) version.utf8());
 						rep()->AddInt64("uptime", (int64) fUptime);
 						rep()->AddInt64("onlinetime", (int64) fOnlineTime);
