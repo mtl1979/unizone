@@ -196,9 +196,9 @@ WSearch::AddFile(const WUserRef user, const QString &filename, bool firewalled, 
 {
 	PRINT("ADDFILE called\n");
 	
-#ifdef _DEBUG
 	QString sid = user()->GetUserID();
 
+#ifdef _DEBUG
 	WString wFileName(filename);
 	WString wSID(sid);
 	PRINT("ADDFILE: filename=%S (%s) [%S]\n", wFileName.getBuffer(), firewalled ? "firewalled" : "hackable", wSID.getBuffer());
@@ -282,10 +282,9 @@ WSearch::RemoveFile(const WUserRef user, const QString &filename)
 	WFIIter iter = fFileList.begin();
 	WFileInfo * info;
 
-
-#ifdef _DEBUG
 	QString sid = user()->GetUserID();
 
+#ifdef _DEBUG
 	WString wSID(sid);
 	WString wFilename(filename);
 	PRINT("Sid = %S, filename = %S\n", wSID.getBuffer(), wFilename.getBuffer());
