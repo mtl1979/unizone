@@ -439,7 +439,7 @@ WSettings::Load()
 		uint8 * buffer = new uint8[file.Size()];
 		if (buffer)
 		{
-			if (file.ReadBlock((char *)buffer, file.Size()) < file.Size())
+			if (file.ReadBlock((char *)buffer, file.Size()) < (int64) file.Size())
 			{
 				QMessageBox::warning(NULL, qApp->translate( "WSettings", "Read Error" ), qApp->translate( "WSettings", "Unable to read data from file!" ), qApp->translate( "WSettings", "Bummer" ));
 			}
