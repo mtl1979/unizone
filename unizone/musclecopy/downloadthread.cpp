@@ -552,9 +552,9 @@ WDownloadThread::SetRate(int rate)
 {
 	WGenericThread::SetRate(rate);
 	if (rate != 0)
-		SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
 	else
-		SetNewInputPolicy(PolicyRef(NULL, NULL));
+		SetNewInputPolicy(PolicyRef(NULL));
 }
 
 void
@@ -562,9 +562,9 @@ WDownloadThread::SetRate(int rate, AbstractReflectSessionRef ref)
 {
 	WGenericThread::SetRate(rate, ref);
 	if (rate != 0)
-		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
 	else
-		ref()->SetInputPolicy(PolicyRef(NULL, NULL));
+		ref()->SetInputPolicy(PolicyRef(NULL));
 }
 
 
@@ -596,8 +596,7 @@ WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
 	AbstractReflectSession * ref = ThreadWorkerSessionFactory::CreateSession(s);
 	if (ref && fLimit != /*WSettings::LimitNone*/ 0)
 	{
-		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(/*WSettings::ConvertToBytes(*/
-			fLimit/*)*/), NULL));
+		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(	fLimit )));
 	}
 	return ref;
 }

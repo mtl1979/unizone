@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src\muscle" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src\muscle" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40b /d "_DEBUG"
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib ..\vc6\muscled.lib  ..\vc6\regexd.lib ..\vc6\zlibd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /pdbtype:sept /libpath:"$(QTDIR)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /pdbtype:sept /libpath:"$(QTDIR)\lib"
 
 !ENDIF 
 
@@ -291,6 +291,399 @@ BuildCmds= \
 
 !ENDIF 
 
+# End Source File
+# End Group
+# Begin Group "MUSCLE Source Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\AbstractMessageIOGateway.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\AbstractReflectSession.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\ByteBuffer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\DumbReflectSession.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\message\Message.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\MessageIOGateway.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\MessageTransceiverThread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\NetworkUtilityFunctions.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\PathMatcher.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\PulseNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\QueryFilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\RateLimitSessionIOPolicy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\ReflectServer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\ServerComponent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\SetupSystem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\StorageReflectSession.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\String.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\StringMatcher.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\syslog\SysLog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\Thread.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibCodec.cpp
+# End Source File
+# End Group
+# Begin Group "regex Source Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regcomp.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regexec.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regfree.c
+# End Source File
+# End Group
+# Begin Group "zlib Source Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\adler32.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\compress.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\crc32.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\deflate.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inffast.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inflate.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inftrees.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\trees.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\zutil.c
+# End Source File
+# End Group
+# Begin Group "MUSCLE Header Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\AbstractMessageIOGateway.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\AbstractReflectSession.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\AbstractSessionIOPolicy.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\AtomicCounter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\ByteBuffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\dataio\DataIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\DumbReflectSession.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\FlatCountable.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\Flattenable.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\GlobalMemoryAllocator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\Hashtable.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\syslog\LogCallback.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\MemoryAllocator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\message\Message.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\MessageIOGateway.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\MessageTransceiverThread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\MuscleSupport.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\Mutex.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\NetworkUtilityFunctions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\ObjectPool.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\PathMatcher.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\Point.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\PulseNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\RateLimitSessionIOPolicy.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\Rect.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\RefCount.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\ReflectServer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\ServerComponent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\SetupSystem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\iogateway\SignalMessageIOGateway.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\SocketHolder.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\StorageReflectConstants.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\reflector\StorageReflectSession.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\StringMatcher.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\StringTokenizer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\syslog\SysLog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\dataio\TCPSocketDataIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\system\Thread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\util\TimeUtilityFunctions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\support\Tuple.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\ZLibCodec.h
+# End Source File
+# End Group
+# Begin Group "regex Header Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\engine.c
+
+!IF  "$(CFG)" == "MuscleCopy - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "MuscleCopy - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\engine.ih
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regcomp.ih
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regex.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regex2.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\utils.h
+# End Source File
+# End Group
+# Begin Group "zlib Header Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\crc32.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\deflate.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inffast.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inffixed.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inflate.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inftrees.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\trees.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\zconf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\zlib.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\zutil.h
 # End Source File
 # End Group
 # End Target

@@ -4,8 +4,18 @@
 #include <string.h>
 #include <qstring.h>
 
+#if BYTE_ORDER == LITTLE_ENDIAN
 #define byteSwap(buf, words)	// we're little endian (linux & windows on intel hardware)
 								// so we don't need this
+#else
+void byteSwap(unsigned int *buf, unsigned int words)
+{
+	for (unsigned int x = 0; x < words; x++)
+	{
+		buf[x] = B_SWAP_INT32(buf[x]);
+	}
+}
+#endif
 
 /*
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious initialization constants.
