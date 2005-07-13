@@ -1711,7 +1711,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='obsolete'>Käyttäjän #%1 IP-osoite on %2.</translation>
+        <translation>Käyttäjän #%1 IP-osoite on %2.</translation>
     </message>
     <message>
         <source>Uptime: %1, Logged on for %2)</source>
@@ -1845,7 +1845,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>user #%1</source>
-        <translation>käyttäjä #%1</translation>
+        <translation type='obsolete'>käyttäjä #%1</translation>
     </message>
     <message>
         <source>ip_prefix</source>
@@ -2830,7 +2830,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation type='unfinished'>passiivinen</translation>
+        <translation>passiivinen</translation>
     </message>
 </context>
 <context>

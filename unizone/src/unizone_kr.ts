@@ -201,59 +201,59 @@ Version %1</source>
     <name>Channels</name>
     <message>
         <source>Yes</source>
-        <translation type='unfinished'>예</translation>
+        <translation>예</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type='unfinished'>아니오</translation>
+        <translation>아니오</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='unfinished'>채널 만들기</translation>
+        <translation>채널 만들기</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='unfinished'>채널 이름을 입력하여 주십시요</translation>
+        <translation>채널 이름을 입력하여 주십시요</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='unfinished'>채널</translation>
+        <translation>채널</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='unfinished'>사용자 #%1 님이 채널 %2 로 당신을 초대하셨습니다. 허락하시겠습니까?</translation>
+        <translation>사용자 #%1 님이 채널 %2 로 당신을 초대하셨습니다. 허락하시겠습니까?</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='unfinished'>사용자 #%1 님이 채널 %2로 초대를 요청하셨습니다. 응답하시겠습니까?</translation>
+        <translation>사용자 #%1 님이 채널 %2로 초대를 요청하셨습니다. 응답하시겠습니까?</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type='unfinished'>이름</translation>
+        <translation>이름</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type='unfinished'>주제</translation>
+        <translation>주제</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type='unfinished'>사용자</translation>
+        <translation>사용자</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type='unfinished'>관리자</translation>
+        <translation>관리자</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type='unfinished'>일반</translation>
+        <translation>일반</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type='unfinished'>만들기(&amp;C)</translation>
+        <translation>만들기(&amp;C)</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type='unfinished'>참가하기(&amp;J)</translation>
+        <translation>참가하기(&amp;J)</translation>
     </message>
 </context>
 <context>
@@ -591,7 +591,7 @@ Date: %4</source>
     </message>
     <message>
         <source>F10</source>
-        <translation type='unfinished'>F10</translation>
+        <translation>F10</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
@@ -635,15 +635,15 @@ Date: %4</source>
     </message>
     <message>
         <source>ALT+F</source>
-        <translation type='unfinished'></translation>
+        <translation>ALT+F</translation>
     </message>
     <message>
         <source>Picture Viewer</source>
-        <translation type='unfinished'>Picture Viewer</translation>
+        <translation>Picture Viewer</translation>
     </message>
     <message>
         <source>F9</source>
-        <translation type='unfinished'>F9</translation>
+        <translation>F9</translation>
     </message>
 </context>
 <context>
@@ -1433,7 +1433,7 @@ Date: %4</source>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='obsolete'>사용자 #%1&apos;s I님의 IP 주소는 %2 입니다.</translation>
+        <translation>사용자 #%1&apos;s 님의 IP 주소는 %2 입니다.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
@@ -1551,7 +1551,7 @@ Date: %4</source>
     </message>
     <message>
         <source>user #%1</source>
-        <translation>사용자 #%1</translation>
+        <translation type='obsolete'>사용자 #%1</translation>
     </message>
     <message>
         <source>ip_prefix</source>
@@ -2375,39 +2375,39 @@ Date: %4</source>
     <name>WSearch</name>
     <message>
         <source>Search</source>
-        <translation type='unfinished'>찾기</translation>
+        <translation>찾기</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='unfinished'>파일명</translation>
+        <translation>파일명</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='unfinished'>크기</translation>
+        <translation>크기</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='unfinished'>형식</translation>
+        <translation>형식</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='unfinished'>수정</translation>
+        <translation>수정</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='unfinished'>경로</translation>
+        <translation>경로</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='unfinished'>사용자</translation>
+        <translation>사용자</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='unfinished'>검색:</translation>
+        <translation>검색:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='unfinished'>다운로드</translation>
+        <translation>다운로드</translation>
     </message>
     <message>
         <source>Close</source>
@@ -2415,47 +2415,47 @@ Date: %4</source>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='unfinished'>비우기</translation>
+        <translation>비우기</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='unfinished'>중단</translation>
+        <translation>중단</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='unfinished'>대기.</translation>
+        <translation>대기.</translation>
     </message>
     <message>
         <source>Not connected.</source>
-        <translation type='unfinished'>연결되지 않았습니다.</translation>
+        <translation>연결되지 않았습니다.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation type='unfinished'>찾는 중: "%1".</translation>
+        <translation>찾는 중: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='unfinished'>결과: %1</translation>
+        <translation>결과: %1</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation type='unfinished'>Clear History</translation>
+        <translation>Clear History</translation>
     </message>
     <message>
         <source>User(s) not found!</source>
-        <translation type='unfinished'>사용자를 찾을 수 없습니다!</translation>
+        <translation>사용자를 찾을 수 없습니다!</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type='unfinished'>Initializing...</translation>
+        <translation>Initializing...</translation>
     </message>
     <message>
         <source>active</source>
-        <translation type='unfinished'>active</translation>
+        <translation>active</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation type='unfinished'>passive</translation>
+        <translation>passive</translation>
     </message>
 </context>
 <context>
@@ -3966,7 +3966,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Negotiating...</source>
-        <translation type='unfinished'>교섭중...</translation>
+        <translation>교섭중...</translation>
     </message>
     <message>
         <source>Private Message redirect pattern cleared.</source>
@@ -3986,7 +3986,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Unizone - User #%1 on %2</source>
-        <translation type='unfinished'>Unizone - %2 의 사용자 #%1</translation>
+        <translation>Unizone - %2 의 사용자 #%1</translation>
     </message>
     <message>
         <source>Qt version: %1</source>
@@ -3994,11 +3994,11 @@ Date: %4</source>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation type='unfinished'>You must change your nickname before connecting!</translation>
+        <translation>You must change your nickname before connecting!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation type='unfinished'>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
+        <translation>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
     </message>
     <message>
         <source>/screenshot - grab screenshot and save to file</source>

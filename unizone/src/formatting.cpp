@@ -303,12 +303,8 @@ QString WFormat::UserIPAddress(const QString &user, const QString &ip)
 
 QString WFormat::UserIPAddress2(const QString &session, const QString &ip)
 {
-	QString temp = tr2(QT_TRANSLATE_NOOP("WFormat", "ip_prefix"));
-	if (temp.isEmpty())
-		temp += tr("User #%1").arg(session);
-	else
-		temp += tr("user #%1").arg(session);
-	temp += tr("'s IP address is %1.").arg(ip);
+	QString temp;
+	temp += tr("User #%1's IP address is %2.").arg(session).arg(ip);
 	return temp.stripWhiteSpace();
 }
 

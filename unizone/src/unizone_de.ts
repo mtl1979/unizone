@@ -1634,7 +1634,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='obsolete'>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
+        <translation type='unfinished'>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
         <source>Ping returned in %3 milliseconds</source>
@@ -1776,7 +1776,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>user #%1</source>
-        <translation>Benutzer #%1</translation>
+        <translation type='obsolete'>Benutzer #%1</translation>
     </message>
     <message>
         <source>ip_prefix</source>

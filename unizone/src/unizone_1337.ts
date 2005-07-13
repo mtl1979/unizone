@@ -1575,7 +1575,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='obsolete'>Loser #%1&apos;s IP address is %2.</translation>
+        <translation type='unfinished'>Loser #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
@@ -1677,7 +1677,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>user #%1</source>
-        <translation>loser #%1</translation>
+        <translation type='obsolete'>loser #%1</translation>
     </message>
     <message>
         <source>ip_prefix</source>
