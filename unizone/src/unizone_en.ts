@@ -1599,7 +1599,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='unfinished'>User #%1&apos;s IP address is %2.</translation>
+        <translation>User #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
@@ -2698,7 +2698,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation type='unfinished'>passive</translation>
+        <translation>passive</translation>
     </message>
 </context>
 <context>
