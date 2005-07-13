@@ -181,8 +181,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	// run the thread here
 	if (fSettings->GetAutoUpdateServers())
 	{
-		AbstractReflectSessionRef scref(new ThreadWorkerSession(), NULL);
-		scref()->SetGateway(AbstractMessageIOGatewayRef(new PlainTextMessageIOGateway, NULL));
+		AbstractReflectSessionRef scref(new ThreadWorkerSession());
+		scref()->SetGateway(AbstractMessageIOGatewayRef(new PlainTextMessageIOGateway));
 		if (fServerThread->StartInternalThread() == B_OK)
 		{
 			PRINT("Server check thread started\n");
@@ -199,8 +199,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	// version check thread
 	if (fSettings->GetCheckNewVersions())
 	{
-		AbstractReflectSessionRef psref(new ThreadWorkerSession(), NULL);
-		psref()->SetGateway(AbstractMessageIOGatewayRef(new PlainTextMessageIOGateway, NULL));
+		AbstractReflectSessionRef psref(new ThreadWorkerSession());
+		psref()->SetGateway(AbstractMessageIOGatewayRef(new PlainTextMessageIOGateway));
 		if (fUpdateThread->StartInternalThread() == B_OK)
 		{
 			PRINT("Update thread started\n");

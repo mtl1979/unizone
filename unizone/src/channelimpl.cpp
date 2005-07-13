@@ -748,7 +748,7 @@ Channel::FindUser(const QString & user)
 			}
 		}
 	}
-	return WUserRef(NULL, NULL);
+	return WUserRef(NULL);
 }
 
 QWidget *

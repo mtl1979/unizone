@@ -173,16 +173,16 @@ WUploadThread::InitSession()
 
 	if (gWin->IsBlackListedIP(fStrRemoteIP) && (gWin->fSettings->GetBLLimit() != WSettings::LimitNone))
 	{
-		AbstractReflectSessionRef ref(new ThreadWorkerSession, NULL);
-		ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
+		AbstractReflectSessionRef ref(new ThreadWorkerSession);
+		ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
 		SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetBLLimit()), ref);
 
 		limit = ref;
 	}
 	else if (gWin->fSettings->GetULLimit() != WSettings::LimitNone)
 	{
-		AbstractReflectSessionRef ref(new ThreadWorkerSession, NULL);
-		ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
+		AbstractReflectSessionRef ref(new ThreadWorkerSession);
+		ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
 		SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetULLimit()), ref);
 		limit = ref;
 	}
@@ -930,9 +930,9 @@ WUploadThread::SetRate(int rate)
 	if (!fTunneled)
 	{
 		if (rate != 0)
-			qmtt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+			qmtt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
 		else
-			qmtt->SetNewOutputPolicy(PolicyRef(NULL, NULL));
+			qmtt->SetNewOutputPolicy(PolicyRef(NULL));
 	}
 }
 
@@ -941,9 +941,9 @@ WUploadThread::SetRate(int rate, AbstractReflectSessionRef & ref)
 {
 	fTXRate = rate;
 	if (rate != 0)
-		ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
 	else
-		ref()->SetOutputPolicy(PolicyRef(NULL, NULL));
+		ref()->SetOutputPolicy(PolicyRef(NULL));
 }
 
 QString

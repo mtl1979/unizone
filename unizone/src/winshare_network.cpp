@@ -2874,7 +2874,7 @@ WinShareWindow::FindUser(const QString & user)
 			return uref;
 		}
 	}
-	return WUserRef(NULL, NULL);
+	return WUserRef(NULL);
 }
 
 WUserRef 
@@ -2886,7 +2886,7 @@ WinShareWindow::FindUserByIPandPort(const QString & ip, uint32 port)
 	}
 	else
 	{
-		return WUserRef(NULL, NULL);
+		return WUserRef(NULL);
 	}
 }
 

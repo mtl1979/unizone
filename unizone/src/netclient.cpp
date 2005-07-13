@@ -133,12 +133,12 @@ NetClient::Connect(const QString & server, uint16 port)
 		}
 		else
 		{
-			AbstractReflectSessionRef ref(new ThreadWorkerSession(), NULL);
-			ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
+			AbstractReflectSessionRef ref(new ThreadWorkerSession());
+			ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
 			ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
-				win->fSettings->GetChatLimit())), NULL));
+				win->fSettings->GetChatLimit()))));
 			ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
-				win->fSettings->GetChatLimit())), NULL));
+				win->fSettings->GetChatLimit()))));
 			if (qmtt->AddNewConnectSession(ResolveAddress(server), port, ref) != B_NO_ERROR)
 			{
 				return B_ERROR;
@@ -249,7 +249,7 @@ NetClient::FindUser(const QString & sessionID)
 		if (fUsers.GetValue(uid, found) == B_NO_ERROR)
 			return found;
 	}
-	return WUserRef(NULL, NULL);
+	return WUserRef(NULL);
 }
 
 void 
@@ -287,7 +287,7 @@ NetClient::FindUserByIPandPort(const QString & ip, uint32 port)
 			}
 		}
 	}
-	return WUserRef(NULL, NULL);
+	return WUserRef(NULL);
 }
 
 // will insert into list if successful
@@ -301,13 +301,13 @@ NetClient::CreateUser(const QString & sessionID)
 		WUser * n = new WUser(sessionID);
 		if (n)
 		{
-			WUserRef nref(n, NULL);
+			WUserRef nref(n);
 			fUsers.Put(uid, nref);
 			emit UserConnected(nref);
 			return nref;
 		}
 	}
-	return WUserRef(NULL, NULL);	
+	return WUserRef(NULL);	
 }
 
 void

@@ -277,16 +277,16 @@ WDownloadThread::InitSession()
 			
 			if (gWin->fSettings->GetDLLimit() != WSettings::LimitNone)
 			{
-				AbstractReflectSessionRef ref(new ThreadWorkerSession(), NULL);
-				ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
+				AbstractReflectSessionRef ref(new ThreadWorkerSession());
+				ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
 				SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetDLLimit()), ref);
 				
 				connectRef = ref;
 			}
 			else if (GetRate() != 0) // Reset transfer throttling on resume
 			{
-				AbstractReflectSessionRef ref(new ThreadWorkerSession(), NULL);
-				ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway(), NULL));
+				AbstractReflectSessionRef ref(new ThreadWorkerSession());
+				ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
 				ResetRate(ref);
 				
 				connectRef = ref;
@@ -343,16 +343,16 @@ WDownloadThread::InitSession()
 		if (gWin->fSettings->GetDLLimit() != WSettings::LimitNone)	// throttling?
 		{
 			fTXRate = gWin->fSettings->ConvertToBytes( gWin->fSettings->GetDLLimit() );
-			factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(fTXRate), NULL);
+			factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(fTXRate));
 		}
 		else if (GetRate() != 0)
 		{
-			factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(GetRate()), NULL);
+			factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(GetRate()));
 		}
 		else
 		{
 			fTXRate = 0;
-			factoryRef = ReflectSessionFactoryRef(new ThreadWorkerSessionFactory(), NULL);
+			factoryRef = ReflectSessionFactoryRef(new ThreadWorkerSessionFactory());
 		}
 		
 		status_t ret = B_OK;
@@ -957,9 +957,9 @@ WDownloadThread::SetRate(int rate)
 {
 	fTXRate = rate;
 	if (rate != 0)
-		qmtt->SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		qmtt->SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
 	else
-		qmtt->SetNewInputPolicy(PolicyRef(NULL, NULL));
+		qmtt->SetNewInputPolicy(PolicyRef(NULL));
 }
 
 void
@@ -967,9 +967,9 @@ WDownloadThread::SetRate(int rate, AbstractReflectSessionRef & ref)
 {
 	fTXRate = rate;
 	if (rate != 0)
-		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate), NULL));
+		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
 	else
-		ref()->SetInputPolicy(PolicyRef(NULL, NULL));
+		ref()->SetInputPolicy(PolicyRef(NULL));
 }
 
 
