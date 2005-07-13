@@ -9,7 +9,7 @@ static const uint32 QMTT_SIGNAL_EVENT = 8360447;  // why yes, this is a complete
 
 QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const char * name) : QObject(parent, name)
 {
-   // empty
+   if (!name) setName("QMessageTransceiverThread");
 }
 
 QMessageTransceiverThread :: ~QMessageTransceiverThread()
@@ -17,7 +17,7 @@ QMessageTransceiverThread :: ~QMessageTransceiverThread()
    ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
 }
 
-status_t QMessageTransceiverThread :: SendMessageToSessions(MessageRef msgRef, const char * optDistPath)       
+status_t QMessageTransceiverThread :: SendMessageToSessions(const MessageRef & msgRef, const char * optDistPath)       
 {
    return MessageTransceiverThread :: SendMessageToSessions(msgRef, optDistPath);
 }

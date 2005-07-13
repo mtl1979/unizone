@@ -46,6 +46,8 @@ float CPULoadMeter :: CalculateCPULoad(uint64 idleTicks, uint64 totalTicks)
 
 float CPULoadMeter :: GetCPULoad()
 {
+   TCHECKPOINT;
+
    float sysLoadPercentage = -1.0f;  // default (aka unset)
 
 #ifdef __linux__

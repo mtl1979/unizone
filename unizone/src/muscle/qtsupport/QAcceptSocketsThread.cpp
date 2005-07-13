@@ -9,7 +9,7 @@ static const uint32 QMTT_SIGNAL_EVENT = 8360446;  // why yes, this is a complete
 
 QAcceptSocketsThread :: QAcceptSocketsThread(QObject * parent, const char * name) : QObject(parent, name)
 {
-   // empty
+   if (!name) setName("QAcceptSocketsThread");
 }
 
 QAcceptSocketsThread :: ~QAcceptSocketsThread()

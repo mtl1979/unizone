@@ -71,13 +71,10 @@ public:
    virtual void AboutToDetachFromServer();
 
    /** Called when a new message is received from our IO gateway. */
-   virtual void MessageReceivedFromGateway(MessageRef msg, void * userData);
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
 
    /** Overridden to call PushSubscriptionMessages() */
-   virtual void AfterMessageReceivedFromGateway(MessageRef msg, void * userData);
-
-   /** Drains the storage pools used by StorageReflectSessions, to recover memory */
-   static void DrainPools();
+   virtual void AfterMessageReceivedFromGateway(const MessageRef & msg, void * userData);
 
    /** Returns a human-readable label for this session type:  "Session" */
    virtual const char * GetTypeName() const {return "Session";}
@@ -114,7 +111,7 @@ protected:
        * @param optAddNewChildren If non-NULL, any newly formed nodes will be added to this hashtable, keyed on their absolute node path.
        * @return B_NO_ERROR on success, B_ERROR if out of memory
        */
-      status_t InsertOrderedChild(MessageRef data, const char * optInsertBefore, const char * optNodeName, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyWithOnChangedData, Hashtable<String, DataNodeRef> * optAddNewChildren);
+      status_t InsertOrderedChild(const MessageRef & data, const char * optInsertBefore, const char * optNodeName, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyWithOnChangedData, Hashtable<String, DataNodeRef> * optAddNewChildren);
  
       /** 
        * Moves the given node (which must be a child of ours) to be just before the node named
@@ -180,7 +177,7 @@ protected:
        *  @param isBeingCreated Should be set true only if this is the first time SetData() was called on this node after its creation.
        *                        Which is to say, this should almost always be false.
        */
-      void SetData(MessageRef data, StorageReflectSession * optNotifyWith, bool isBeingCreated);
+      void SetData(const MessageRef & data, StorageReflectSession * optNotifyWith, bool isBeingCreated);
 
       /** Returns a reference to this node's Message payload. */
       MessageRef GetData() const {return _data;}
@@ -235,7 +232,7 @@ protected:
    private:
       friend class StorageReflectSession;
 
-      void Init(const char * nodeName, MessageRef initialValue);
+      void Init(const char * nodeName, const MessageRef & initialValue);
       void SetParent(DataNode * _parent, StorageReflectSession * optNotifyWith);
       status_t RemoveIndexEntry(const char * key, StorageReflectSession * optNotifyWith);
 
@@ -262,7 +259,7 @@ protected:
     *                        If NULL, the new node will be appended to the end of the index.  If (addToIndex) is false, this argument is ignored.
     * @return B_NO_ERROR on success, or B_ERROR on failure.
     */
-   virtual status_t SetDataNode(const String & nodePath, MessageRef dataMsgRef, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToIndex=false, const char *optInsertBefore=NULL);
+   virtual status_t SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToIndex=false, const char *optInsertBefore=NULL);
 
    /** Remove all nodes that match (nodePath).
     *  @param nodePath A relative path indicating node(s) to remove.  Wildcarding is okay.
@@ -271,7 +268,7 @@ protected:
     *  @param quiet If set to true, subscriber's won't be updated regarding this change to the database
     *  @return B_NO_ERROR on success, or B_ERROR on failure.
     */
-   virtual status_t RemoveDataNodes(const String & nodePath, QueryFilterRef filterRef = QueryFilterRef(), bool quiet = false);
+   virtual status_t RemoveDataNodes(const String & nodePath, const QueryFilterRef & filterRef = QueryFilterRef(), bool quiet = false);
 
    /**
     * Recursively saves a given subtree of the node database into the given Message object, for safe-keeping.
@@ -303,7 +300,7 @@ protected:
      * @param optRetNewNodes If non-NULL, any newly-created DataNodes will be adde to this table for your inspection.
      * @returns B_NO_ERROR on success, or B_ERROR on failure.
      */
-   virtual status_t InsertOrderedData(MessageRef insertMsg, Hashtable<String, DataNodeRef> * optRetNewNodes);
+   virtual status_t InsertOrderedData(const MessageRef & insertMsg, Hashtable<String, DataNodeRef> * optRetNewNodes);
 
    /**
     * This typedef represents the proper signature of a node-tree traversal callback function.
@@ -388,7 +385,7 @@ protected:
     * Returns the given Message to our client, inside an error message
     * with the given error code.
     */
-   void BounceMessage(uint32 errorCode, MessageRef msgRef);
+   void BounceMessage(uint32 errorCode, const MessageRef & msgRef);
 
    /** Removes our nodes from the tree and removes our subscriptions from our neighbors.  Called by the destructor.
      */
@@ -405,12 +402,12 @@ protected:
     *  @param maxResults Maximum number of matching sessions to returns.  Defaults to MUSCLE_NO_LIMIT.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-    status_t FindMatchingSessions(const String & nodePath, QueryFilterRef filter, Hashtable<const char *, AbstractReflectSessionRef> & retSessions, bool matchSelf, uint32 maxResults = MUSCLE_NO_LIMIT) const;
+    status_t FindMatchingSessions(const String & nodePath, const QueryFilterRef & filter, Hashtable<const char *, AbstractReflectSessionRef> & retSessions, bool matchSelf, uint32 maxResults = MUSCLE_NO_LIMIT) const;
 
     /** Convenience method:  Same as FindMatchingsession(), but finds only the first matching session.  
       * Returns a reference to the first matching session on success, or a NULL reference on failue.
       */
-    AbstractReflectSessionRef FindMatchingSession(const String & nodePath, QueryFilterRef filter, bool matchSelf) const;
+    AbstractReflectSessionRef FindMatchingSession(const String & nodePath, const QueryFilterRef & filter, bool matchSelf) const;
 
    /** Convenience method:  Passes the given Message on to the sessions who match the given nodePath.
     *  (that is, any sessions who have nodes that match (nodePath) will have their MessageReceivedFromSession()
@@ -422,10 +419,10 @@ protected:
     *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-    status_t SendMessageToMatchingSessions(MessageRef msgRef, const String & nodePath, QueryFilterRef filter, bool matchSelf);
+    status_t SendMessageToMatchingSessions(const MessageRef & msgRef, const String & nodePath, const QueryFilterRef & filter, bool matchSelf);
 
     /** This type is sometimes used when calling CloneDataNodeSubtree(). */
-    typedef MessageRef (*MessageReplaceFunc)(MessageRef oldRef, void *);
+    typedef MessageRef (*MessageReplaceFunc)(const MessageRef & oldRef, void *);
 
    /** Convenience method (used by some customized daemons) -- Given a source node and a destination path,
      * Make (path) a deep, recursive clone of (node).
@@ -456,7 +453,7 @@ protected:
     *                 is being destroyed, this will contain the node's current data.
     *  @param isBeingRemoved If true, this node is about to go away.
    */
-   virtual void NotifySubscribersThatNodeChanged(DataNode & node, MessageRef oldData, bool isBeingRemoved);
+   virtual void NotifySubscribersThatNodeChanged(DataNode & node, const MessageRef & oldData, bool isBeingRemoved);
 
    /** Tells other sessions that we have changed the index of (node) in our node subtree.
     *  @param node The node whose index was changed.
@@ -474,7 +471,7 @@ protected:
     *                 is being destroyed, this will contain the node's current data.
     *  @param isBeingRemoved True iff this node is about to be destroyed.
     */
-   virtual void NodeChanged(DataNode & node, MessageRef oldData, bool isBeingRemoved);
+   virtual void NodeChanged(DataNode & node, const MessageRef & oldData, bool isBeingRemoved);
 
    /** Called by NotifySubscribersThatIndexChanged() to tell us how (node)'s index has been modified.  
     *  @param node The node whose index was changed.
@@ -544,7 +541,7 @@ protected:
     * @param initialValue The Message payload to be given to the new DataNode that will be created.
     * @return A pointer to the new DataNode (caller assumes responsibility for it), or NULL if out of memory.
     */
-   DataNode * GetNewDataNode(const char * nodeName, MessageRef initialValue);
+   DataNode * GetNewDataNode(const char * nodeName, const MessageRef & initialValue);
 
    /**
     * Call this when you are done with a DataNode, instead of the DataNode destructor.
@@ -592,7 +589,7 @@ protected:
 private:
    void NodeChangedAux(DataNode & modifiedNode, bool isBeingRemoved);
    void UpdateDefaultMessageRoute();
-   int PassMessageCallbackAux(DataNode & node, MessageRef msgRef, bool matchSelfOkay);
+   int PassMessageCallbackAux(DataNode & node, const MessageRef & msgRef, bool matchSelfOkay);
 
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, KickClientCallback);     /** Sessions of matching nodes are EndSession()'d  */
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, InsertOrderedDataCallback); /** Matching nodes have ordered data inserted into them as child nodes */

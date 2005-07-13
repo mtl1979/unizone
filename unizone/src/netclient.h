@@ -60,8 +60,8 @@ public:
 	void SetFileCount(int32 count);
 	void SetLoad(int32 num, int32 max);
 	
-	status_t SendMessageToSessions(MessageRef msgRef, int priority = 100, const char * optDistPath = NULL);
-	void SetNodeValue(const char * node, MessageRef & val, int priority = 100); // set the Message of a node
+	status_t SendMessageToSessions(const MessageRef & msgRef, int priority = 100, const char * optDistPath = NULL);
+	void SetNodeValue(const char * node, const MessageRef & val, int priority = 100); // set the Message of a node
 	
 	QString * GetChannelList();
 	int GetChannelCount();
@@ -137,8 +137,8 @@ public:
 	QString LocalSessionID() const;
 	
 	
-	void HandleParameters(MessageRef & next);
-	void HandleResultMessage(MessageRef & ref);
+	void HandleParameters(const MessageRef & next);
+	void HandleResultMessage(const MessageRef & ref);
 	
 	bool ExistUser(const QString &sid);
 	/*
@@ -156,7 +156,7 @@ public:
 	WUserRef CreateUser(const QString &sessionID);
 	// deletes a user, including removing from the list view
 	void RemoveUser(const QString &sessionID);
-	void RemoveUser(const WUserRef user);
+	void RemoveUser(const WUserRef & user);
 	
 	WUserMap & Users() { return fUsers; }
 	
@@ -167,16 +167,16 @@ public:
 	status_t WaitForInternalThreadToExit();
 
 signals:
-	void UserDisconnected(const WUserRef);
-	void UserConnected(const WUserRef);
-	void UserNameChanged(const WUserRef, const QString &, const QString &);
+	void UserDisconnected(const WUserRef &);
+	void UserConnected(const WUserRef &);
+	void UserNameChanged(const WUserRef &, const QString &, const QString &);
 	void DisconnectedFromServer();
-	void UserStatusChanged(const WUserRef, const QString &, const QString &);
+	void UserStatusChanged(const WUserRef &, const QString &, const QString &);
 	void UserIDChanged(const QString &, const QString &);
-	void UserHostName(const WUserRef, const QString &);
+	void UserHostName(const WUserRef &, const QString &);
 	
-	void RemoveFile(const WUserRef, const QString &);
-	void AddFile(const WUserRef, const QString &, bool, MessageRef);
+	void RemoveFile(const WUserRef &, const QString &);
+	void AddFile(const WUserRef &, const QString &, bool, MessageRef);
 	
 	void ChannelTopic(const QString &, const QString &, const QString &);
 	void ChannelAdmins(const QString &, const QString &, const QString &);
@@ -224,7 +224,7 @@ private:
 
 private slots:
 
-	void MessageReceived(MessageRef msg, const String & sessionID);
+	void MessageReceived(const MessageRef & msg, const String & sessionID);
 
 	void SessionAttached(const String & sessionID);
 	void SessionDetached(const String & sessionID);
@@ -239,7 +239,7 @@ private slots:
 
 	void ServerExited();
 
-	void OutputQueuesDrained(MessageRef ref);
+	void OutputQueuesDrained(const MessageRef & ref);
 
 protected:
 

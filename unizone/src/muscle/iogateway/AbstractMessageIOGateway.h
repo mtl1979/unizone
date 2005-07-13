@@ -31,7 +31,7 @@ public:
     *  @param userData This is a miscellaneous value that may be used by some gateways for various purposes.
     *                  Or it may be ignored if the MessageRef is sufficient.
     */
-   void CallMessageReceivedFromGateway(MessageRef msg, void * userData = NULL)
+   void CallMessageReceivedFromGateway(const MessageRef & msg, void * userData = NULL)
    {
       if ((_doInputCount > 0)&&(_inBatch == false))
       {
@@ -47,7 +47,7 @@ protected:
     *  @param msg Reference to the new Message to process.
     *  @param userData This is a miscellaneous value that may be used by some gateways for various purposes.
     */
-   virtual void MessageReceivedFromGateway(MessageRef msg, void * userData) = 0;
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData) = 0;
 
    /** Called after each call to MessageReceivedFromGateway().  Useful when there
     *  is something that needs to be done after the subclass has finished its
@@ -56,7 +56,7 @@ protected:
     *  @param msg MessageRef containing the Message that was just passed to MessageReceivedFromGateway()
     *  @param userData userData value that was just passed to MessageReceivedFromGateway()
     */
-   virtual void AfterMessageReceivedFromGateway(MessageRef, void * /*userData*/) {/* empty */}
+   virtual void AfterMessageReceivedFromGateway(const MessageRef &, void * /*userData*/) {/* empty */}
 
    /** This method will be called just before MessageReceivedFromGateway() and AfterMessageReceivedFromGateway()
     *  are called one or more times.  Default implementation is a no-op.
@@ -97,7 +97,7 @@ public:
    QueueGatewayMessageReceiver() {/* empty */}
 
 protected:
-   virtual void MessageReceivedFromGateway(MessageRef msg, void * /*userData*/) {(void) AddTail(msg);}
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * /*userData*/) {(void) AddTail(msg);}
 };
 
 /**
@@ -210,7 +210,7 @@ public:
    /** Installs (ref) as the DataIO object we will use for our I/O.
      * Typically called by the ReflectServer object.
      */
-   void SetDataIO(DataIORef ref) {_ioRef = ref;}
+   void SetDataIO(const DataIORef & ref) {_ioRef = ref;}
 
    /** Accessor for our held DataIO object */
    DataIO * GetDataIO() const {return _ioRef();}

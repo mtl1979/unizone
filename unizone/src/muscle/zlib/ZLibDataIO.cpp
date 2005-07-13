@@ -24,7 +24,7 @@ ZLibDataIO :: ZLibDataIO(int compressionLevel) : _compressionLevel(compressionLe
    SetSlaveIO(DataIORef());
 }
 
-ZLibDataIO :: ZLibDataIO(DataIORef slaveIO, int compressionLevel) : _compressionLevel(compressionLevel)
+ZLibDataIO :: ZLibDataIO(const DataIORef & slaveIO, int compressionLevel) : _compressionLevel(compressionLevel)
 {
    Init();
    SetSlaveIO(slaveIO);
@@ -76,7 +76,7 @@ void ZLibDataIO :: Init()
    _sendToSlave = _deflatedBuf;
 }
 
-void ZLibDataIO :: SetSlaveIO(DataIORef dio)
+void ZLibDataIO :: SetSlaveIO(const DataIORef & dio)
 {
    CleanupZLib();
    Init();

@@ -79,8 +79,8 @@ NetClient::Connect(const QString & server, uint16 port)
 	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
-			this, SLOT(MessageReceived(MessageRef, const String &)));
+	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
+			this, SLOT(MessageReceived(const MessageRef &, const String &)));
 
 	connect(qmtt, SIGNAL(SessionAttached(const String &)),
 			this, SLOT(SessionAttached(const String &)));
@@ -106,8 +106,8 @@ NetClient::Connect(const QString & server, uint16 port)
 	connect(qmtt, SIGNAL(ServerExited()),
 			this, SLOT(ServerExited()));
 
-	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
-			this, SLOT(OutputQueuesDrained(MessageRef)));
+	connect(qmtt, SIGNAL(OutputQueuesDrained(const MessageRef &)),
+			this, SLOT(OutputQueuesDrained(const MessageRef &)));
 
 	PRINT("Starting thread\n");
 	if (qmtt->StartInternalThread() != B_NO_ERROR)
@@ -326,7 +326,7 @@ NetClient::RemoveUser(const QString & sessionID)
 }
 
 void
-NetClient::RemoveUser(const WUserRef user)
+NetClient::RemoveUser(const WUserRef & user)
 {
 	if (user())
 	{
@@ -691,7 +691,7 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 }
 
 void
-NetClient::HandleResultMessage(MessageRef & ref)
+NetClient::HandleResultMessage(const MessageRef & ref)
 {
 	String nodePath;
 	// remove all the items that need to be removed
@@ -735,7 +735,7 @@ NetClient::HandleResultMessage(MessageRef & ref)
 }
 
 void
-NetClient::HandleParameters(MessageRef & next)
+NetClient::HandleParameters(const MessageRef & next)
 {
 	PRINT("PR_RESULT_PARAMETERS received\n");
 
@@ -940,7 +940,7 @@ NetClient::SetConnection(const QString & connection)
 }
 
 void
-NetClient::SetNodeValue(const char * node, MessageRef & val, int priority)
+NetClient::SetNodeValue(const char * node, const MessageRef & val, int priority)
 {
 	if (IsConnected())
 	{
@@ -1000,7 +1000,7 @@ NetClient::GetServerIP() const
 // ----
 
 void
-NetClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
+NetClient::MessageReceived(const MessageRef &msg, const String & /* sessionID */)
 {
 	PRINT2("MTT_EVENT_INCOMING_MESSAGE\n");
 	if (msg())
@@ -1160,7 +1160,7 @@ NetClient::FactoryDetached(uint16 /* port */)
 }
 
 void
-NetClient::OutputQueuesDrained(MessageRef /* ref */)
+NetClient::OutputQueuesDrained(const MessageRef &/* ref */)
 {
  	PRINT2("MTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
 
@@ -1259,7 +1259,7 @@ NetClient::Reset()
 }
 
 status_t 
-NetClient::SendMessageToSessions(MessageRef msgRef, int priority, const char * optDistPath)
+NetClient::SendMessageToSessions(const MessageRef & msgRef, int priority, const char * optDistPath)
 {
 	status_t ret = B_ERROR;
 

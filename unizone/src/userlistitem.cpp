@@ -1,15 +1,15 @@
 // Universal List View class (C) 2002 FieldNet Association / Team UniShare
 // Released under Lesser GPL as in LGPL.TXT in source root folder
 
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include <qpainter.h>
 
 #include "userlistitem.h"
 #include "global.h"			// defines gWin
 #include "settings.h"		// defines WSettings and gWin->fSettings's type
-
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
 
 WUserListItem::WUserListItem(
 							 QListView * parent, 

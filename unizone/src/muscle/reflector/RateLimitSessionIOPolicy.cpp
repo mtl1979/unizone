@@ -59,6 +59,7 @@ void
 RateLimitSessionIOPolicy ::
 Pulse(uint64 now, uint64)
 {
+   TCHECKPOINT;
    UpdateTransferTally(now);
 }
 

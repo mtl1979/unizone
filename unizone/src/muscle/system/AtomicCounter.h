@@ -161,6 +161,20 @@ public:
 #endif 
    }
 
+   /** Returns the current value of this counter.
+     * Be careful when using this function in multithreaded
+     * environments, it can easily lead to race conditions
+     * if you don't know what you are doing!
+     */
+   int32 GetCount() const {return (int32) _count;}
+
+   /** Sets the current value of this counter.
+     * Be careful when using this function in multithreaded
+     * environments, it can easily lead to race conditions
+     * if you don't know what you are doing!
+     */
+   void SetCount(int32 c) {_count = c;}
+
 private:
 #if defined(MUSCLE_CUSTOM_ATOMIC_TYPE)
    MUSCLE_CUSTOM_ATOMIC_TYPE _count; 

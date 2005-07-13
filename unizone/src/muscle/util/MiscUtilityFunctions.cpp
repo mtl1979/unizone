@@ -23,6 +23,8 @@ BEGIN_NAMESPACE(muscle);
 
 status_t ParseArg(const String & a, Message & addTo)
 {
+   TCHECKPOINT;
+
    // Remove any initial dashes
    String argName = a.Trim();
    while(argName.StartsWith("-")) argName = argName.Substring(1);
@@ -39,6 +41,8 @@ status_t ParseArg(const String & a, Message & addTo)
 
 status_t ParseArgs(const String & line, Message & addTo)
 {
+   TCHECKPOINT;
+
    const String trimmed = line.Trim();
    uint32 len = trimmed.Length();
 
@@ -79,8 +83,10 @@ status_t ParseArgs(int argc, char ** argv, Message & addTo)
 
 status_t ParseFile(FILE * fpIn, Message & addTo)
 {
+   TCHECKPOINT;
+
    const int bufSize = 2048;
-   char * buf = newnothrow char[bufSize];
+   char * buf = newnothrow_array(char, bufSize);
    if (buf)
    {
       status_t ret = B_NO_ERROR;
@@ -104,6 +110,8 @@ status_t ParseFile(FILE * fpIn, Message & addTo)
 
 status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort)
 {
+   TCHECKPOINT;
+
    if (args.FindString(fn, retHost) == B_NO_ERROR)
    {
       int32 colIdx = retHost.IndexOf(':');
@@ -120,6 +128,8 @@ status_t ParseConnectArg(const Message & args, const String & fn, String & retHo
 
 status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
 {
+   TCHECKPOINT;
+
    const char * v;
    if (args.FindString(fn, &v) == B_NO_ERROR)
    {
@@ -135,6 +145,8 @@ status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
 
 void HandleStandardDaemonArgs(const Message & args)
 {
+   TCHECKPOINT;
+
    // Do this first, so that the stuff below will affect the right process.
    const char * n;
    if (args.FindString("daemon", &n) == B_NO_ERROR)
@@ -222,6 +234,8 @@ void HandleStandardDaemonArgs(const Message & args)
   */
 uint64 Atoull(const char * str)
 {
+   TCHECKPOINT;
+
    uint64 base = 1;
    uint64 ret  = 0;
 
@@ -240,6 +254,8 @@ uint64 Atoull(const char * str)
 
 int64 Atoll(const char * str)
 {
+   TCHECKPOINT;
+
    bool negative = false;
    const char * s = str;
    while((*s)&&(muscleInRange(*s, '0', '9') == false))
@@ -254,6 +270,8 @@ int64 Atoll(const char * str)
 
 status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth, int & retDay, int & retHour, int & retMinute, int & retSecond, uint32 timeType)
 {
+   TCHECKPOINT;
+
 #ifdef WIN32
    // Borland's localtime() function is buggy, so we'll use the Win32 API instead.
    static const uint64 diffTime = ((uint64)116444736)*((uint64)1000000000); // add (1970-1601) to convert to Windows time base
@@ -300,6 +318,8 @@ status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth
 
 String GetHumanReadableTimeString(uint64 timeUS, uint32 timeType)
 {
+   TCHECKPOINT;
+
    int year, month, day, hour, minute, second;
    if (GetHumanReadableTimeValues(timeUS, year, month, day, hour, minute, second, timeType) == B_NO_ERROR)
    {
@@ -316,6 +336,8 @@ extern uint64 __Win32FileTimeToMuscleTime(const FILETIME & ft);  // from SetupSy
 
 uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
 {
+   TCHECKPOINT;
+
    StringTokenizer tok(s(), "/: ");
    const char * year   = tok();
    const char * month  = tok();
@@ -395,6 +417,8 @@ status_t SpawnDaemonProcess(bool &, const char *, const char *, bool)
 #else
 status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir, const char * optOutputTo, bool createIfNecessary)
 {
+   TCHECKPOINT;
+
    // Here are the steps to become a daemon:
    // 1. fork() so the parent can exit, this returns control to the command line or shell invoking
    //    your program. This step is required so that the new process is guaranteed not to be a process
@@ -467,6 +491,8 @@ status_t BecomeDaemonProcess(const char * optNewDir, const char * optOutputTo, b
 
 void RemoveANSISequences(String & s)
 {
+   TCHECKPOINT;
+
    static const char _escapeBuf[] = {0x1B, '[', '\0'};
    static String _escape; if (_escape.Length() == 0) _escape = _escapeBuf;
 
@@ -496,6 +522,5 @@ void RemoveANSISequences(String & s)
       else break;
    }
 }
-
 
 END_NAMESPACE(muscle);

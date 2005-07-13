@@ -71,7 +71,7 @@ WinShareWindow::AboutWinShare()
 // user slots
 
 void
-WinShareWindow::UserConnected(const WUserRef uref)
+WinShareWindow::UserConnected(const WUserRef & uref)
 {
 	QString sid = uref()->GetUserID();
 	if (fSettings->GetUserEvents())
@@ -85,7 +85,7 @@ WinShareWindow::UserConnected(const WUserRef uref)
 }
 	
 void
-WinShareWindow::UserDisconnected(const WUserRef uref)
+WinShareWindow::UserDisconnected(const WUserRef & uref)
 {
 	if (fSettings->GetUserEvents())
 	{
@@ -96,11 +96,12 @@ WinShareWindow::UserDisconnected(const WUserRef uref)
 		QString parse = WFormat::Text(msg);
 		SystemEvent(this, parse);
 	}
+	uref()->RemoveFromListView(fUsers);
 	UpdateUserCount();
 }
 
 void
-WinShareWindow::UserNameChanged(const WUserRef uref, const QString &old, const QString &newname)
+WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const QString &newname)
 {
 	QString sid = uref()->GetUserID();
 	if (fSettings->GetUserEvents())
@@ -170,7 +171,7 @@ WinShareWindow::DisconnectedFromServer()
 }
 
 void
-WinShareWindow::UserStatusChanged(const WUserRef uref, const QString &n, const QString &s)
+WinShareWindow::UserStatusChanged(const WUserRef & uref, const QString &n, const QString &s)
 {
 	if (fSettings->GetUserEvents())
 	{
@@ -195,7 +196,7 @@ WinShareWindow::UserStatusChanged(const WUserRef uref, const QString &n, const Q
 }
 
 void
-WinShareWindow::UserHostName(const WUserRef uref, const QString &host)
+WinShareWindow::UserHostName(const WUserRef & uref, const QString &host)
 {
 	QString sid = uref()->GetUserID();
 	if (fSettings->GetIPAddresses())

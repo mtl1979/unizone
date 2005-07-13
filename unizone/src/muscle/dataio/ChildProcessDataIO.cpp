@@ -58,7 +58,21 @@ static int ptym_open(char *pts_name)
          }
 
          pts_name[5] = 't';  /* change "pty" to "tty" */
-         return fdm ;        /* got it, return fd of master */
+
+         // Make sure we have permission to open the associated tty also.  Note that we can't just 
+         // open(pts_name) to see if it works, and then close it again, since that seems to break
+         // the functionality.  Apparently the tty assumes it will only be opened once?
+         struct stat s;         
+         if (stat(pts_name, &s) == 0)
+         {
+            mode_t m = s.st_mode;
+            if ((                          (m & (S_IROTH|S_IWOTH)) == (S_IROTH|S_IWOTH))  || 
+                ((getegid() == s.st_gid)&&((m & (S_IRGRP|S_IWGRP)) == (S_IRGRP|S_IWGRP))) || 
+                ((geteuid() == s.st_uid)&&((m & (S_IRUSR|S_IWUSR)) == (S_IRUSR|S_IWUSR)))) return fdm;  // success!
+         }
+         
+         pts_name[5] = 'p';  /* oops!  Change it back */
+         close(fdm);
       }
    }
    return -1;      /* out of pty devices */
@@ -76,51 +90,61 @@ static int ptys_open(int fdm, char *pts_name)
    if (fds < 0) 
    {
       close(fdm);
-      return(-1);
+      return -1;
    }
-   return(fds);
+   return fds;
 }
 
-static pid_t pty_fork(int *ptrfdm, char *slave_name, const struct termios *slave_termios, const struct winsize *slave_winsize)
+static pid_t pty_fork(int *ptrfdm, char *slave_name, const struct termios *slave_termios, const struct winsize *slave_winsize, bool & success)
 {
+   success = true;
    char pts_name[20];
 
    int fdm = ptym_open(pts_name);
    if (fdm < 0) 
    {
-      fprintf(stderr, "can't open master pty %s: (%s)\n", pts_name, strerror(errno));
+      LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() can't open master pty %s: (%s)\n", pts_name, strerror(errno));
       return -1;
    }
    if (slave_name) strcpy(slave_name, pts_name);   /* return name of slave */
 
    pid_t pid = fork();
-        if (pid < 0) return -1;
+   if (pid < 0) 
+   {
+      success = false;
+      return -1;
+   }
    else if (pid == 0) 
    {
       /* child */
-      if (setsid() < 0) fprintf(stderr, "setsid error: %s\n", strerror(errno));
+      if (setsid() < 0) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() setsid error: %s\n", strerror(errno));
 
       /* SVR4 acquires controlling terminal on open() */
       int fds = ptys_open(fdm, pts_name);
-      if (fds < 0) fprintf(stderr, "can't open slave pty: %s\n", strerror(errno));
       close(fdm);      /* all done with master in child */
-
+      if (fds < 0)
+      {
+         LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() can't open slave pty: %s on [%i, %s]\n", strerror(errno), fdm, pts_name);
+         success = false;
+         return 0;   // gotta return zero to indicate we are the child process!  Failure is indicated via separate success param
+      }
+       
 #if defined(TIOCSCTTY) && !defined(CIBAUD)
       /* 44BSD way to acquire controlling terminal */
       /* !CIBAUD to avoid doing this under SunOS */
-      if (ioctl(fds, TIOCSCTTY, (char *) 0) < 0) fprintf(stderr, "TIOCSCTTY error: %s\n", strerror(errno));
+      if (ioctl(fds, TIOCSCTTY, (char *) 0) < 0) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() TIOCSCTTY error: %s\n", strerror(errno));
 #endif
 
       /* set slave's termios and window size */
-      if ((slave_termios)&&(tcsetattr(fds, TCSANOW, slave_termios) < 0)) fprintf(stderr, "tcsetattr error on slave pty: %s\n", strerror(errno));
-      if ((slave_winsize)&&(ioctl(fds, TIOCSWINSZ,  slave_winsize) < 0)) fprintf(stderr, "TIOCSWINSZ error on slave pty: %s\n", strerror(errno));
+      if ((slave_termios)&&(tcsetattr(fds, TCSANOW, slave_termios) < 0)) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() tcsetattr error on slave pty: %s\n", strerror(errno));
+      if ((slave_winsize)&&(ioctl(fds, TIOCSWINSZ,  slave_winsize) < 0)) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  TIOCSWINSZ error on slave pty: %s\n", strerror(errno));
 
       /* slave becomes stdin/stdout/stderr of child */
-      if (dup2(fds, STDIN_FILENO)  != STDIN_FILENO)  fprintf(stderr, "dup2 error to stdin: %s\n", strerror(errno));
-      if (dup2(fds, STDOUT_FILENO) != STDOUT_FILENO) fprintf(stderr, "dup2 error to stdout: %s\n", strerror(errno));
+      if (dup2(fds, STDIN_FILENO)  != STDIN_FILENO)  LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  dup2 error to stdin: %s\n", strerror(errno));
+      if (dup2(fds, STDOUT_FILENO) != STDOUT_FILENO) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  dup2 error to stdout: %s\n", strerror(errno));
       if (fds > STDERR_FILENO) close(fds);
-      return(0);      /* child returns 0 just like fork() */
-   } 
+      return 0;      /* child returns 0 just like fork() */
+   }
    else 
    {
       /* parent */
@@ -154,6 +178,8 @@ static void SafeCloseHandle(HANDLE & h)
 // Parses a command line into a list of argv-style tokens
 static status_t ParseLine(const String & line, Queue<String> & addTo)
 {
+   TCHECKPOINT;
+
    const String trimmed = line.Trim();
    uint32 len = trimmed.Length();
 
@@ -186,6 +212,8 @@ static status_t ParseLine(const String & line, Queue<String> & addTo)
 
 status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args)
 {
+   TCHECKPOINT;
+
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    SECURITY_ATTRIBUTES saAttr;
    {
@@ -318,10 +346,13 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
    }
 
    int ptySock;
-   pid_t pid = pty_fork(&ptySock, NULL, &orig_termios, &size);
+   bool success;
+   pid_t pid = pty_fork(&ptySock, NULL, &orig_termios, &size, success);
         if (pid < 0) return -1;  // fork failure!
    else if (pid == 0)
    {
+      (void) signal(SIGHUP, SIG_DFL);  // FogBugz #2918
+
       // we are the child process -- turn off echo and execute the command
       struct termios stermios; 
       if (tcgetattr(STDIN_FILENO, &stermios) < 0) LogTime(MUSCLE_LOG_DEBUG, "tcgetattr error: %s\n", strerror(errno)); 
@@ -341,7 +372,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
          if (ParseLine((const char *)args, argv) == B_NO_ERROR)
          {
             argc = argv.GetNumItems();
-            char ** newArgv = newnothrow (char *)[argc+1];
+            char ** newArgv = newnothrow_array(char *, argc+1);
             if (newArgv)
             {
                for (int i=0; i<argc; i++) newArgv[i] = (char *) argv[i]();
@@ -356,7 +387,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
       else
       {
          const char ** argv = (const char **) args;
-         char ** newArgv = newnothrow (char *)[argc+1];
+         char ** newArgv = newnothrow_array(char *, argc+1);
          if (newArgv)
          {
             memcpy(newArgv, argv, argc*sizeof(char *));
@@ -388,6 +419,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
 
 ChildProcessDataIO :: ~ChildProcessDataIO()
 {
+   TCHECKPOINT;
    Close();
 }
 
@@ -402,6 +434,8 @@ bool ChildProcessDataIO :: IsChildProcessAvailable() const
 
 void ChildProcessDataIO :: Close()
 {
+   TCHECKPOINT;
+
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    if (_ioThread != NULL)  // if this is valid, _wakeupSignal is guaranteed valid too
    {
@@ -435,6 +469,8 @@ void ChildProcessDataIO :: Close()
 
 int32 ChildProcessDataIO :: Read(void *buf, uint32 len)
 {
+   TCHECKPOINT;
+
    if (IsChildProcessAvailable())
    {
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
@@ -459,6 +495,8 @@ int32 ChildProcessDataIO :: Read(void *buf, uint32 len)
 
 int32 ChildProcessDataIO :: Write(const void *buf, uint32 len)
 {
+   TCHECKPOINT;
+
    if (IsChildProcessAvailable())
    {
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION

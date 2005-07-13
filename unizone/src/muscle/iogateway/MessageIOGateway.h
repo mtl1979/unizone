@@ -32,7 +32,7 @@ enum {
 };
 
 /** Callback function type for flatten/unflatten notification callbacks */
-typedef void (*MessageFlattenedCallback)(MessageRef msgRef, void * userData);
+typedef void (*MessageFlattenedCallback)(const MessageRef & msgRef, void * userData);
 
 /**
  * A "gateway" object that knows how to send/receive Messages over a wire, via a provided DataIO object. 
@@ -134,7 +134,7 @@ protected:
     *         or a NULL reference on failure.
     * The default implementation uses msg.Flatten() and then (optionally) ZLib compression to produce the bytes.
     */
-   virtual ByteBufferRef FlattenMessage(MessageRef msgRef, uint8 * header) const;
+   virtual ByteBufferRef FlattenMessage(const MessageRef & msgRef, uint8 * header) const;
 
    /**
     * Unflattens a specified ByteBuffer object back into a MessageRef object.
@@ -146,7 +146,7 @@ protected:
     * The default implementation uses (optional) ZLib decompression (depending on the header bytes)
     * and then msg.Unflatten() to produce the Message.
     */
-   virtual MessageRef UnflattenMessage(ByteBufferRef bufRef, const uint8 * header) const;
+   virtual MessageRef UnflattenMessage(const ByteBufferRef & bufRef, const uint8 * header) const;
  
    /**
     * Returns the size of the pre-flattened-message header section, in bytes.

@@ -30,6 +30,8 @@ MessageIOGateway :: ~MessageIOGateway()
 status_t 
 MessageIOGateway :: SendData(TransferBuffer & buf, int32 & sentBytes, uint32 & maxBytes)
 {
+   TCHECKPOINT;
+
    const ByteBuffer * bb = buf._buffer();
    if (bb)
    {
@@ -59,6 +61,8 @@ int32
 MessageIOGateway ::
 DoOutputImplementation(uint32 maxBytes)
 {
+   TCHECKPOINT;
+
    int32 sentBytes = 0;
    while((maxBytes > 0)&&(IsHosed() == false))
    {
@@ -107,6 +111,8 @@ int32
 MessageIOGateway ::
 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes)
 {
+   TCHECKPOINT;
+
    bool firstTime = true;  // always go at least once, to avoid live-lock
    int32 readBytes = 0;
    while((maxBytes > 0)&&(IsHosed() == false)&&((firstTime)||(IsSuggestedTimeSliceExpired() == false)))
@@ -161,6 +167,8 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
 status_t 
 MessageIOGateway :: ReadData(TransferBuffer & buf, int32 & readBytes, uint32 & maxBytes)
 {
+   TCHECKPOINT;
+
    ByteBuffer * bb = buf._buffer();
    if (bb)
    {
@@ -189,6 +197,8 @@ ZLibCodec *
 MessageIOGateway ::
 GetCodec(int32 newEncoding, ZLibCodec * & setCodec) const
 {
+   TCHECKPOINT;
+
    if (muscleInRange(newEncoding, (int32)MUSCLE_MESSAGE_ENCODING_ZLIB_1, (int32)MUSCLE_MESSAGE_ENCODING_ZLIB_9))
    {
       int newLevel = (newEncoding-MUSCLE_MESSAGE_ENCODING_ZLIB_1)+1;
@@ -206,8 +216,10 @@ GetCodec(int32 newEncoding, ZLibCodec * & setCodec) const
 
 ByteBufferRef 
 MessageIOGateway ::
-FlattenMessage(MessageRef msgRef, uint8 * headerBuf) const
+FlattenMessage(const MessageRef & msgRef, uint8 * headerBuf) const
 {
+   TCHECKPOINT;
+
    ByteBufferRef ret;
    if (msgRef())
    {
@@ -248,8 +260,10 @@ FlattenMessage(MessageRef msgRef, uint8 * headerBuf) const
 
 MessageRef 
 MessageIOGateway ::
-UnflattenMessage(ByteBufferRef bufRef, const uint8 * headerBuf) const
+UnflattenMessage(const ByteBufferRef & bufRef, const uint8 * headerBuf) const
 {
+   TCHECKPOINT;
+
    MessageRef ret;
    if (bufRef())
    {
@@ -260,14 +274,22 @@ UnflattenMessage(ByteBufferRef bufRef, const uint8 * headerBuf) const
          if (B_LENDIAN_TO_HOST_INT32(lhb[0]) != bufRef()->GetNumBytes()) return MessageRef();
 
          int32 encoding = B_LENDIAN_TO_HOST_INT32(lhb[1]);
+
+         const ByteBuffer * bb = bufRef();  // default; may be changed below
+
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
+         ByteBufferRef expRef;  // must be declared outside the brackets below!
          ZLibCodec * enc = GetCodec(encoding, _recvCodec);
-         if (enc) bufRef = enc->Inflate(*bufRef());
+         if (enc) 
+         {
+            expRef = enc->Inflate(*bb);
+            if (expRef()) bb = expRef();
+         }
 #else
-         if (encoding != MUSCLE_MESSAGE_ENCODING_DEFAULT) bufRef.Reset();
+         if (encoding != MUSCLE_MESSAGE_ENCODING_DEFAULT) bb = NULL;
 #endif
 
-         if ((bufRef() == NULL)||(ret()->Unflatten(bufRef()->GetBuffer(), bufRef()->GetNumBytes()) != B_NO_ERROR)) ret.Reset();
+         if ((bb == NULL)||(ret()->Unflatten(bb->GetBuffer(), bb->GetNumBytes()) != B_NO_ERROR)) ret.Reset();
       }
    }
    return ret;
@@ -301,6 +323,8 @@ void
 MessageIOGateway ::
 Reset()
 {
+   TCHECKPOINT;
+
    AbstractMessageIOGateway::Reset();
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING

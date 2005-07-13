@@ -102,13 +102,13 @@ public:
 	void Reset();
 	bool IsInternalThreadRunning();
 	status_t RemoveSessions(const char * optDistPath = NULL);
-	status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
+	status_t SendMessageToSessions(const MessageRef & msgRef, const char * optDistPath = NULL);
 
 private slots:
 	void ConnectTimer(); // Connection timed out?
 	void BlockedTimer(); // Blocking timed out?
 
-	void MessageReceived(MessageRef msg, const String & sessionID);
+	void MessageReceived(const MessageRef & msg, const String & sessionID);
 
 	void SessionAccepted(const String &sessionID, uint16 port);
 	void SessionDetached(const String &sessionID);
@@ -123,7 +123,7 @@ protected:
 
 	friend class WDownload;
 
-	void MessageReceived(MessageRef msg) { MessageReceived(msg, _sessionID); }
+	void MessageReceived(const MessageRef &msg) { MessageReceived(msg, _sessionID); }
 
 	mutable Mutex fLockFile;
 	WFile * fFile;			// file on the HD

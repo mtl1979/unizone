@@ -16,34 +16,32 @@ static void ClearMsgFunc(Message * msg, void *) {msg->what = 0; msg->Clear();}
 static MessageRef::ItemPool _messagePool(100, ClearMsgFunc);
 MessageRef::ItemPool * GetMessagePool() {return &_messagePool;}
 
-#define DECLARECLONE(X)                           \
-   GenericRef X :: Clone() const                  \
-   {                                              \
-      GenericRef ref(NEWFIELD(X), FIELDPOOL(X));  \
-      if (ref()) *((X*)ref()) = *this;            \
-      return ref;                                 \
+#define DECLARECLONE(X)                \
+   GenericRef X :: Clone() const       \
+   {                                   \
+      GenericRef ref(NEWFIELD(X));     \
+      if (ref()) *((X*)ref()) = *this; \
+      return ref;                      \
    }
 
 #ifdef MUSCLE_DISABLE_MESSAGE_FIELD_POOLS
-# define FIELDPOOL(X) NULL
 # define NEWFIELD(X)  newnothrow X
 # define DECLAREFIELDTYPE(X) DECLARECLONE(X)
 #else
-# define FIELDPOOL(X) (&_pool##X)
 # define NEWFIELD(X)  _pool##X.ObtainObject()
 # define DECLAREFIELDTYPE(X) static void Clear##X(X * obj, void *) {obj->Clear(obj->GetNumItems() > 100);} static ObjectPool<X> _pool##X(100, Clear##X); DECLARECLONE(X)
 #endif
 
 MessageRef GetMessageFromPool(uint32 what)
 {
-   MessageRef ref(_messagePool.ObtainObject(), &_messagePool);
+   MessageRef ref(_messagePool.ObtainObject());
    if (ref()) ref()->what = what;
    return ref;
 }
 
 MessageRef GetMessageFromPool(const Message & copyMe)
 {
-   MessageRef ref(_messagePool.ObtainObject(), &_messagePool);
+   MessageRef ref(_messagePool.ObtainObject());
    if (ref()) *(ref()) = copyMe;
    return ref;
 }
@@ -1062,6 +1060,8 @@ Message :: ~Message()
 
 Message & Message :: operator=(const Message &rhs) 
 {
+   TCHECKPOINT;
+
    if (this != &rhs)
    {
       Clear();
@@ -1122,6 +1122,8 @@ String Message :: ToString(bool recurse, int indent) const
 
 void Message :: AddToString(String & s, bool recurse, int indent) const 
 {
+   TCHECKPOINT;
+
    String ret;
 
    char prettyTypeCodeBuf[5];
@@ -1163,6 +1165,8 @@ GenericRef Message :: GetArrayRef(const String & arrayName, uint32 tc) const
 
 AbstractDataArray * Message :: GetOrCreateArray(const String & arrayName, uint32 tc)
 {
+   TCHECKPOINT;
+
    {
       AbstractDataArray * nextEntry = GetArray(arrayName, tc);
       if (nextEntry) return nextEntry;
@@ -1176,21 +1180,21 @@ AbstractDataArray * Message :: GetOrCreateArray(const String & arrayName, uint32
    GenericRef newEntry;
    switch(tc)
    {
-      case B_BOOL_TYPE:    newEntry.SetRef(NEWFIELD(BoolDataArray),    FIELDPOOL(BoolDataArray));    break;
-      case B_DOUBLE_TYPE:  newEntry.SetRef(NEWFIELD(DoubleDataArray),  FIELDPOOL(DoubleDataArray));  break;
-      case B_POINTER_TYPE: newEntry.SetRef(NEWFIELD(PointerDataArray), FIELDPOOL(PointerDataArray)); break;
-      case B_POINT_TYPE:   newEntry.SetRef(NEWFIELD(PointDataArray),   FIELDPOOL(PointDataArray));   break;
-      case B_RECT_TYPE:    newEntry.SetRef(NEWFIELD(RectDataArray),    FIELDPOOL(RectDataArray));    break;
-      case B_FLOAT_TYPE:   newEntry.SetRef(NEWFIELD(FloatDataArray),   FIELDPOOL(FloatDataArray));   break;
-      case B_INT64_TYPE:   newEntry.SetRef(NEWFIELD(Int64DataArray),   FIELDPOOL(Int64DataArray));   break;
-      case B_INT32_TYPE:   newEntry.SetRef(NEWFIELD(Int32DataArray),   FIELDPOOL(Int32DataArray));   break;
-      case B_INT16_TYPE:   newEntry.SetRef(NEWFIELD(Int16DataArray),   FIELDPOOL(Int16DataArray));   break;
-      case B_INT8_TYPE:    newEntry.SetRef(NEWFIELD(Int8DataArray),    FIELDPOOL(Int8DataArray));    break;
-      case B_MESSAGE_TYPE: newEntry.SetRef(NEWFIELD(MessageDataArray), FIELDPOOL(MessageDataArray)); break;
-      case B_STRING_TYPE:  newEntry.SetRef(NEWFIELD(StringDataArray),  FIELDPOOL(StringDataArray));  break;
-      case B_TAG_TYPE:     newEntry.SetRef(NEWFIELD(TagDataArray),     FIELDPOOL(TagDataArray));     break;
+      case B_BOOL_TYPE:    newEntry.SetRef(NEWFIELD(BoolDataArray));    break;
+      case B_DOUBLE_TYPE:  newEntry.SetRef(NEWFIELD(DoubleDataArray));  break;
+      case B_POINTER_TYPE: newEntry.SetRef(NEWFIELD(PointerDataArray)); break;
+      case B_POINT_TYPE:   newEntry.SetRef(NEWFIELD(PointDataArray));   break;
+      case B_RECT_TYPE:    newEntry.SetRef(NEWFIELD(RectDataArray));    break;
+      case B_FLOAT_TYPE:   newEntry.SetRef(NEWFIELD(FloatDataArray));   break;
+      case B_INT64_TYPE:   newEntry.SetRef(NEWFIELD(Int64DataArray));   break;
+      case B_INT32_TYPE:   newEntry.SetRef(NEWFIELD(Int32DataArray));   break;
+      case B_INT16_TYPE:   newEntry.SetRef(NEWFIELD(Int16DataArray));   break;
+      case B_INT8_TYPE:    newEntry.SetRef(NEWFIELD(Int8DataArray));    break;
+      case B_MESSAGE_TYPE: newEntry.SetRef(NEWFIELD(MessageDataArray)); break;
+      case B_STRING_TYPE:  newEntry.SetRef(NEWFIELD(StringDataArray));  break;
+      case B_TAG_TYPE:     newEntry.SetRef(NEWFIELD(TagDataArray));     break;
       default:             
-         newEntry.SetRef(NEWFIELD(ByteBufferDataArray), FIELDPOOL(ByteBufferDataArray));
+         newEntry.SetRef(NEWFIELD(ByteBufferDataArray));
          if (newEntry()) ((ByteBufferDataArray*)newEntry())->SetTypeCode(tc);
          break;
    }
@@ -1228,6 +1232,8 @@ uint32 Message :: FlattenedSize() const
 
 void Message :: Flatten(uint8 *buffer) const 
 {
+   TCHECKPOINT;
+
    // Format:  0. Protocol revision number (4 bytes, always set to CURRENT_PROTOCOL_VERSION)
    //          1. 'what' code (4 bytes)
    //          2. Number of entries (4 bytes)
@@ -1294,6 +1300,8 @@ void Message :: Flatten(uint8 *buffer) const
 
 status_t Message :: Unflatten(const uint8 *buffer, uint32 inputBufferBytes) 
 {
+   TCHECKPOINT;
+
    Clear();
 
    uint32 readOffset = 0;
@@ -1360,7 +1368,7 @@ status_t Message :: AddFlatBuffer(const String & name, const Flattenable & flat,
    return B_ERROR;
 }
 
-status_t Message :: AddFlatRef(const String & name, FlatCountableRef ref, uint32 tc, bool prepend)
+status_t Message :: AddFlatRef(const String & name, const FlatCountableRef & ref, uint32 tc, bool prepend)
 {
    AbstractDataArray * array = GetOrCreateArray(name, tc);
    return (array) ? (prepend ? array->PrependDataItem(&ref, sizeof(ref)) : array->AddDataItem(&ref, sizeof(ref))) : B_ERROR;
@@ -1434,14 +1442,14 @@ status_t Message :: AddRect(const String &name, const Rect & rect)
    return array ? array->AddDataItem(&rect, sizeof(rect)) : B_ERROR;
 }
 
-status_t Message :: AddTag(const String &name, GenericRef tag)
+status_t Message :: AddTag(const String &name, const GenericRef & tag)
 {
    if (tag() == NULL) return B_ERROR;
    AbstractDataArray * array = GetOrCreateArray(name, B_TAG_TYPE);
    return array ? array->AddDataItem(&tag, sizeof(tag)) : B_ERROR;
 }
 
-status_t Message :: AddMessage(const String & name, MessageRef ref)
+status_t Message :: AddMessage(const String & name, const MessageRef & ref)
 {
    if (ref() == NULL) return B_ERROR;
    AbstractDataArray * array = GetOrCreateArray(name, B_MESSAGE_TYPE);
@@ -1458,7 +1466,7 @@ status_t Message :: AddFlat(const String &name, const Flattenable &obj)
    }
 }
 
-status_t Message :: AddFlat(const String &name, FlatCountableRef ref) 
+status_t Message :: AddFlat(const String &name, const FlatCountableRef & ref) 
 {
    FlatCountable * fc = ref();
    if (fc)
@@ -1578,6 +1586,8 @@ status_t Message :: FindString(const String &name, uint32 index, String & str) c
 
 status_t Message :: FindFlat(const String & name, uint32 index, Flattenable & flat) const
 {
+   TCHECKPOINT;
+
    const AbstractDataArray * ada = GetArray(name, B_ANY_TYPE);
    if ((ada)&&(index < ada->GetNumItems()))
    {
@@ -1622,8 +1632,10 @@ status_t Message :: FindFlat(const String & name, uint32 index, Flattenable & fl
    return B_ERROR;
 }
 
-status_t Message :: FindFlat(const String &name, uint32 index, FlatCountableRef &ref) const
+status_t Message :: FindFlat(const String &name, uint32 index, FlatCountableRef & ref) const
 {
+   TCHECKPOINT;
+
    const AbstractDataArray * array = GetArray(name, B_ANY_TYPE);
    if ((array)&&(index < array->GetNumItems()))
    {
@@ -1641,6 +1653,8 @@ status_t Message :: FindFlat(const String &name, uint32 index, FlatCountableRef 
 
 status_t Message :: FindData(const String & name, uint32 tc, uint32 index, const void ** data, uint32 * setSize) const
 {
+   TCHECKPOINT;
+
    const AbstractDataArray * array = GetArray(name, tc);
    if ((array)&&(array->FindDataItem(index, data) == B_NO_ERROR))
    {
@@ -1840,7 +1854,7 @@ status_t Message :: ReplaceRect(bool okayToAdd, const String &name, uint32 index
    return array ? array->ReplaceDataItem(index, &rect, sizeof(rect)) : B_ERROR;
 }
 
-status_t Message :: ReplaceTag(bool okayToAdd, const String &name, uint32 index, const GenericRef tag) 
+status_t Message :: ReplaceTag(bool okayToAdd, const String &name, uint32 index, const GenericRef & tag) 
 {
    if (tag() == NULL) return B_ERROR;
    AbstractDataArray * array = GetArray(name, B_TAG_TYPE);
@@ -1848,7 +1862,7 @@ status_t Message :: ReplaceTag(bool okayToAdd, const String &name, uint32 index,
    return array ? array->ReplaceDataItem(index, &tag, sizeof(tag)) : B_ERROR;
 }
 
-status_t Message :: ReplaceMessage(bool okayToAdd, const String & name, uint32 index, MessageRef msgRef)
+status_t Message :: ReplaceMessage(bool okayToAdd, const String & name, uint32 index, const MessageRef & msgRef)
 {
    if (msgRef() == NULL) return B_ERROR;
    AbstractDataArray * array = GetArray(name, B_MESSAGE_TYPE);
@@ -1873,7 +1887,7 @@ status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index
    }
 }
 
-status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index, FlatCountableRef ref) 
+status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index, const FlatCountableRef & ref) 
 {
    const FlatCountable * fc = ref();
    if (fc)
@@ -1903,6 +1917,8 @@ status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index
 
 status_t Message :: ReplaceData(bool okayToAdd, const String &name, uint32 type, uint32 index, const void *data, uint32 numBytes) 
 {
+   TCHECKPOINT;
+
    if (type == B_STRING_TYPE) 
    {   
       String temp((const char *)data);  // temp to avoid gcc optimizer bug
@@ -2042,14 +2058,14 @@ status_t Message :: PrependRect(const String &name, const Rect & rect)
    return array ? array->PrependDataItem(&rect, sizeof(rect)) : B_ERROR;
 }
 
-status_t Message :: PrependTag(const String &name, GenericRef tag) 
+status_t Message :: PrependTag(const String &name, const GenericRef & tag) 
 {
    if (tag() == NULL) return B_ERROR;
    AbstractDataArray * array = GetOrCreateArray(name, B_TAG_TYPE);
    return array ? array->PrependDataItem(&tag, sizeof(tag)) : B_ERROR;
 }
 
-status_t Message :: PrependMessage(const String & name, MessageRef ref)
+status_t Message :: PrependMessage(const String & name, const MessageRef & ref)
 {
    if (ref() == NULL) return B_ERROR;
    AbstractDataArray * array = GetOrCreateArray(name, B_MESSAGE_TYPE);
@@ -2066,7 +2082,7 @@ status_t Message :: PrependFlat(const String &name, const Flattenable &obj)
    }
 }
 
-status_t Message :: PrependFlat(const String &name, FlatCountableRef ref)
+status_t Message :: PrependFlat(const String & name, const FlatCountableRef & ref)
 {
    FlatCountable * fc = ref();
    if (fc)
@@ -2111,6 +2127,8 @@ bool Message :: operator == (const Message & rhs) const
 
 bool Message :: FieldsAreSubsetOf(const Message & rhs, bool compareContents) const
 {
+   TCHECKPOINT;
+
    // Returns true iff every one of our fields has a like-named, liked-typed, equal-length field in (rhs).
    HashtableIterator<String, GenericRef> iter(_entries);
    const String * nextKey;

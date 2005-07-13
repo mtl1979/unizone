@@ -19,6 +19,11 @@ BEGIN_NAMESPACE(muscle);
 class AbstractObjectGenerator
 {
 public:
+   AbstractObjectGenerator() {/* empty */}
+
+   /** Virtual dtor to keep C++ honest */
+   virtual ~AbstractObjectGenerator() {/* empty */}
+
    /** Should be implemented to pass through to ObtainObject(). 
      * Useful for handling different types of ObjectPool interchangably.
      * Note that the caller is responsible for deleting or recycling
@@ -33,12 +38,35 @@ public:
 class AbstractObjectRecycler
 {
 public:
+   /** Default constructor.  Registers us with the global recyclers list. */
+   AbstractObjectRecycler();
+
+   /** Default destructor.  Unregisters us from the global recyclers list. */
+   virtual ~AbstractObjectRecycler();
+
    /** Should be implemented to downcast (obj) to the correct type,
      * and recycle it (typically by calling ReleaseObject().
      * @param obj Pointer to the object to recycle.  Must point to an object of the correct type.
      *            May be NULL, in which case this method is a no-op.
      */
    virtual void RecycleObject(void * obj) = 0;
+
+   /** Should be implemented to destroy all objects we have cached and
+     * return the number of objects that were destroyed.
+     */
+   virtual uint32 FlushCachedObjects() = 0;
+
+   /** Walks the linked list of all AbstractObjectRecyclers, calling
+     * FlushCachedObjects() on each one, until all cached objects have been destroyed.
+     * This method is called by the SetupSystem destructor, to ensure that
+     * all objects have been deleted before main() returns, so that shutdown
+     * ordering issues do not cause bad memory writes, etc.
+     */
+   static void GlobalFlushAllCachedObjects();
+
+private:
+   AbstractObjectRecycler * _prev;
+   AbstractObjectRecycler * _next;
 };
 
 /** This class is just here to usefully tie together the object generating and
@@ -100,7 +128,8 @@ public:
    {
 #ifdef DISABLE_OBJECT_POOLING
       Object * ret = newnothrow Object;
-      if (ret == NULL) WARN_OUT_OF_MEMORY;
+      if (ret) ret->SetManager(this);
+          else WARN_OUT_OF_MEMORY;
       return ret;
 #else
       Object * ret = NULL;
@@ -114,6 +143,7 @@ public:
       if (ret == NULL) ret = newnothrow Object;
       if (ret)
       {
+         ret->SetManager(this);
          if (_initObjectFunc) _initObjectFunc(ret, _initObjectUserData);
       }
       else WARN_OUT_OF_MEMORY;
@@ -195,14 +225,19 @@ public:
       else return B_ERROR;
    }
 
+   /** Implemented to call Drain() and return the number of objects drained. */
+   virtual uint32 FlushCachedObjects() {uint32 ret = 0; (void) Drain(&ret); return ret;}
+
    /** Removes all "spare" objects from the pool and deletes them. 
      * This method is thread-safe.
+     * @param optSetNumDrained If non-NULL, this value will be set to the number of objects destroyed.
      * @returns B_NO_ERROR on success, or B_ERROR if it couldn't lock it's lock for some reason.
      */
-   status_t Drain()
+   status_t Drain(uint32 * optSetNumDrained = NULL)
    {
       if (_mutex.Lock() == B_NO_ERROR)
       {
+         if (optSetNumDrained) *optSetNumDrained = _pool.GetNumItems();
          for (int i=_pool.GetNumItems()-1; i>=0; i--) delete _pool[i];
          _pool.Clear();
          (void) _mutex.Unlock();

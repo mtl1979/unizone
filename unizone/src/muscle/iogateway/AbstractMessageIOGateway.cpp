@@ -35,7 +35,7 @@ EnsureBufferSize(uint8 ** bufPtr, uint32 * bufSize, uint32 desiredSize, uint32 c
 
    if ((oldBuffer == NULL)||(oldBufSize < desiredSize))
    {
-      uint8 * newBuffer = newnothrow uint8[desiredSize];
+      uint8 * newBuffer = newnothrow_array(uint8, desiredSize);
       if (newBuffer == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
 
       *bufPtr  = newBuffer;

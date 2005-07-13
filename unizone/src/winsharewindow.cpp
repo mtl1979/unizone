@@ -143,18 +143,18 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	resize(800, 600);
 	InitGUI();
 
-	connect(fNetClient, SIGNAL(UserDisconnected(const WUserRef)), 
-			this, SLOT(UserDisconnected(const WUserRef)));
-	connect(fNetClient, SIGNAL(UserConnected(const WUserRef)), 
-			this, SLOT(UserConnected(const WUserRef)));
-	connect(fNetClient, SIGNAL(UserNameChanged(const WUserRef, const QString &, const QString &)), 
-			this, SLOT(UserNameChanged(const WUserRef, const QString &, const QString &)));
+	connect(fNetClient, SIGNAL(UserDisconnected(const WUserRef &)), 
+			this, SLOT(UserDisconnected(const WUserRef &)));
+	connect(fNetClient, SIGNAL(UserConnected(const WUserRef &)), 
+			this, SLOT(UserConnected(const WUserRef &)));
+	connect(fNetClient, SIGNAL(UserNameChanged(const WUserRef &, const QString &, const QString &)), 
+			this, SLOT(UserNameChanged(const WUserRef &, const QString &, const QString &)));
 	connect(fNetClient, SIGNAL(DisconnectedFromServer()), 
 			this, SLOT(DisconnectedFromServer()));
-	connect(fNetClient, SIGNAL(UserStatusChanged(const WUserRef, const QString &, const QString &)), 
-			this, SLOT(UserStatusChanged(const WUserRef, const QString &, const QString &)));
-	connect(fNetClient, SIGNAL(UserHostName(const WUserRef, const QString &)), 
-			this, SLOT(UserHostName(const WUserRef, const QString &)));
+	connect(fNetClient, SIGNAL(UserStatusChanged(const WUserRef &, const QString &, const QString &)), 
+			this, SLOT(UserStatusChanged(const WUserRef &, const QString &, const QString &)));
+	connect(fNetClient, SIGNAL(UserHostName(const WUserRef &, const QString &)), 
+			this, SLOT(UserHostName(const WUserRef &, const QString &)));
 	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
 			this, SLOT(TabPressed(const QString &)));
 	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
@@ -286,8 +286,8 @@ WinShareWindow::StartAcceptThread()
 	fAccept = new QAcceptSocketsThread(this);
 	CHECK_PTR(fAccept);
 
-	connect(fAccept, SIGNAL(ConnectionAccepted(SocketHolderRef)), 
-			this, SLOT(ConnectionAccepted(SocketHolderRef)));
+	connect(fAccept, SIGNAL(ConnectionAccepted(const SocketHolderRef &)), 
+			this, SLOT(ConnectionAccepted(const SocketHolderRef &)));
 
 	uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
 	uint32 pEnd = pStart + (uint32) gWin->fSettings->GetPortRange() - 1;

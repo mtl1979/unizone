@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include "wmessageevent.h"
 
 WMessageEvent::WMessageEvent(int mt, const String &from)

@@ -28,7 +28,7 @@ DumbReflectSession ::
 // Called when a new message is received from our IO gateway.  We forward it on to all our server-side neighbors.
 void 
 DumbReflectSession :: 
-MessageReceivedFromGateway(MessageRef msgRef, void *) 
+MessageReceivedFromGateway(const MessageRef & msgRef, void *) 
 {
    BroadcastToAllSessions(msgRef, NULL, _reflectToSelf);
 }
@@ -36,7 +36,7 @@ MessageReceivedFromGateway(MessageRef msgRef, void *)
 // Called when a new message is sent to us by one of our server-side neighbors.  We forward it on to our client.
 void 
 DumbReflectSession :: 
-MessageReceivedFromSession(AbstractReflectSession & /*from*/, MessageRef msg, void * /*userData*/) 
+MessageReceivedFromSession(AbstractReflectSession & /*from*/, const MessageRef & msg, void * /*userData*/) 
 {
    (void) AddOutgoingMessage(msg);
 }

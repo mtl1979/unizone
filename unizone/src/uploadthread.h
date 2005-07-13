@@ -106,7 +106,7 @@ public:
 	void Reset();
 	bool IsInternalThreadRunning();
 	status_t RemoveSessions(const char * optDistPath = NULL);
-	status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
+	status_t SendMessageToSessions(const MessageRef & msgRef, const char * optDistPath = NULL);
 
 private slots:
 
@@ -115,8 +115,8 @@ private slots:
 
 	// --------------------------------------------------------------------------------------------
 
-	void MessageReceived(MessageRef msg, const String &sessionID);
-	void OutputQueuesDrained(MessageRef msg);
+	void MessageReceived(const MessageRef & msg, const String &sessionID);
+	void OutputQueuesDrained(const MessageRef & msg);
 	
 	void SessionConnected(const String &sessionID);
 	void SessionDisconnected(const String &sessionID);

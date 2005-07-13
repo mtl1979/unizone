@@ -23,7 +23,7 @@ public:
    /** Constructor
      * @param signalMessage The message to send out when we have read some incoming data.
      */
-   SignalMessageIOGateway(MessageRef signalMessage) : _signalMessage(signalMessage) {/* empty */}
+   SignalMessageIOGateway(const MessageRef & signalMessage) : _signalMessage(signalMessage) {/* empty */}
 
    /** Destructor */
    virtual ~SignalMessageIOGateway() {/* empty */}
@@ -35,7 +35,7 @@ public:
    MessageRef GetSignalMessage() const {return _signalMessage;}
 
    /** Sets our current signal message reference. */
-   void SetSignalMessage(MessageRef r) {_signalMessage = r;}
+   void SetSignalMessage(const MessageRef & r) {_signalMessage = r;}
 
 protected:
    /** DoOutput is a no-op for this gateway... all messages are simply eaten and dropped. */

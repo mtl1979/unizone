@@ -263,7 +263,10 @@ int CreateUDPSocket();
  *  @param optRetPort if non-NULL, then on successful return the value this pointer points to will contain
  *                    the port ID that the socket was bound to.  Defaults to NULL.
  *  @param optFrom If non-zero, then the socket will be bound in such a way that only data
- *                 packets from this IP address will be accepted.  Defaults to zero.
+ *                 packets addressed to this IP address will be accepted.  Defaults to zero,
+ *                 meaning that packets addressed to any of this machine's IP addresses will
+ *                 be accepted.  (This parameter is typically only useful on machines with
+ *                 multiple IP addresses) 
  *  @returns B_NO_ERROR on success, or B_ERROR on failure.
  */
 status_t BindUDPSocket(int sock, uint16 port, uint16 * optRetPort = NULL, uint32 optFrom = 0);

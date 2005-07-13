@@ -1,6 +1,9 @@
 /* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
 
 #include "system/SetupSystem.h"
+#include "support/Flattenable.h"
+#include "dataio/DataIO.h"
+#include "util/ObjectPool.h"
 
 #ifdef WIN32
 # include <windows.h>
@@ -74,7 +77,7 @@ ThreadSetupSystem :: ThreadSetupSystem(bool muscleSingleThreadOnly)
       _muscleLock = &_lock;
 
 #if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
-      _atomicMutexes = newnothrow Mutex[MUTEX_POOL_SIZE];
+      _atomicMutexes = newnothrow_array(Mutex, MUTEX_POOL_SIZE);
       MASSERT(_atomicMutexes, "Couldn't allocate atomic mutexes!");
 #endif
    }
@@ -130,6 +133,11 @@ NetworkSetupSystem :: ~NetworkSetupSystem()
    }
 }
 
+#if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined (MUSCLE_POWERPC_TIMEBASE_HZ)
+static inline uint32 get_tbl() {uint32 tbl; asm volatile("mftb %0"  : "=r" (tbl) :); return tbl;}
+static inline uint32 get_tbu() {uint32 tbu; asm volatile("mftbu %0" : "=r" (tbu) :); return tbu;}
+#endif
+
 // For BeOS, this is an in-line function, defined in util/TimeUtilityFunctions.h
 #ifndef __BEOS__
 
@@ -137,9 +145,13 @@ NetworkSetupSystem :: ~NetworkSetupSystem()
 uint64 GetRunTime64()
 {
 #ifdef WIN32
+   TCHECKPOINT;
+
    static Mutex _rtMutex;
    if (_rtMutex.Lock() == B_NO_ERROR)
    {
+      TCHECKPOINT;
+
       static int64 _brokenQPCOffset = 0;
       uint64 ret = 0;
       if (_brokenQPCOffset != 0) ret = (((uint64)timeGetTime())*1000) + _brokenQPCOffset;
@@ -161,7 +173,7 @@ uint64 GetRunTime64()
             ret = (curTicks.QuadPart*1000000)/_ticksPerSecond;
 
             // Hack-around for evil Windows/hardware bug in QueryPerformanceCounter().
-            // see http://support.microsoft.com:80/support/kb/articles/Q274/3/23.ASP&NoWebContent=1
+            // see http://support.microsoft.com/default.aspx?scid=kb;en-us;274323
             static uint64 _lastCheckGetTime = 0;
             static uint64 _lastCheckQPCTime = 0;
             if (_lastCheckGetTime > 0)
@@ -184,14 +196,21 @@ uint64 GetRunTime64()
    }
 
    // fallback method: convert milliseconds to microseconds -- will wrap after 49.7 days, doh!
+   TCHECKPOINT;
    return (((uint64)timeGetTime())*1000);
 #else
 # if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined (MUSCLE_POWERPC_TIMEBASE_HZ)
-   // http://lists.linuxppc.org/linuxppc-embedded/200110/msg00338.html
-   uint32 hiWord, loWord, wrapCheck;
-   __asm__ __volatile__("0:; mftbu %0; mftb %1; mftbu %2; cmpw %0,%2; bne 0" : "=&r" (hiWord), "=&r" (loWord), "=&r" (wrapCheck));
-   return (((((uint64)hiWord)<<32)|((uint64)loWord))*((uint64)1000000))/((uint64)MUSCLE_POWERPC_TIMEBASE_HZ);
+   TCHECKPOINT;
+   while(1)
+   {
+      uint32 hi1 = get_tbu();
+      uint32 low = get_tbl();
+      uint32 hi2 = get_tbu();
+      if (hi1 == hi2) return (((((uint64)hi1)<<32)|((uint64)low))*((uint64)1000000))/((uint64)MUSCLE_POWERPC_TIMEBASE_HZ); 
+   }
 # else
+   TCHECKPOINT;
+
    // default method:  use POSIX commands
    static clock_t _ticksPerSecond = 0;
 
@@ -246,13 +265,206 @@ uint64 GetCurrentTime64(uint32 timeType)
       struct tm * ltc = localtime(&now);
 	  if (ltc) 
 #if defined(__sun) && defined(__SVR4)
-		  ret += ((int64)(ltc->tm_isdst == 1)?altzone:timezone)*((int64)10000000);
+		  ret += ((int64)(ltc->tm_isdst == 1)?altzone:timezone)*((int64)1000000);
 #else
 		  ret += ((int64)ltc->tm_gmtoff)*((int64)1000000);
 #endif
    }
    return ret;
 #endif
+}
+
+#if MUSCLE_TRACE_CHECKPOINTS > 0
+static volatile uint32 _defaultTraceLocation[MUSCLE_TRACE_CHECKPOINTS];
+volatile uint32 * _muscleTraceValues = _defaultTraceLocation;
+uint32 _muscleNextTraceValueIndex = 0;
+
+void SetTraceValuesLocation(volatile uint32 * location)
+{
+   _muscleTraceValues = location ? location : _defaultTraceLocation;
+   _muscleNextTraceValueIndex = 0; 
+   for (uint32 i=0; i<MUSCLE_TRACE_CHECKPOINTS; i++) _muscleTraceValues[i] = 0;
+}
+#endif
+
+static AbstractObjectRecycler * _firstRecycler = NULL;
+
+AbstractObjectRecycler :: AbstractObjectRecycler()
+{
+   Mutex * m = GetGlobalMuscleLock();
+   if ((m)&&(m->Lock() != B_NO_ERROR)) m = NULL;
+
+   // Append us to the front of the linked list
+   if (_firstRecycler) _firstRecycler->_prev = this;
+   _prev = NULL;
+   _next = _firstRecycler;
+   _firstRecycler = this;
+   
+   if (m) m->Unlock();
+}
+
+AbstractObjectRecycler :: ~AbstractObjectRecycler()
+{
+   Mutex * m = GetGlobalMuscleLock();
+   if ((m)&&(m->Lock() != B_NO_ERROR)) m = NULL;
+
+   // Remove us from the linked list
+   if (_prev) _prev->_next = _next;
+   if (_next) _next->_prev = _prev;
+   if (_firstRecycler == this) _firstRecycler = _next;
+
+   if (m) m->Unlock();
+}
+
+void AbstractObjectRecycler :: GlobalFlushAllCachedObjects()
+{
+   Mutex * m = GetGlobalMuscleLock();
+   if ((m)&&(m->Lock() != B_NO_ERROR)) m = NULL;
+
+   // We restart at the head of the list anytime anything is flushed,
+   // for safety.  When we get to the end of the list, everything has
+   // been flushed.
+   AbstractObjectRecycler * r = _firstRecycler;
+   while(r) r = (r->FlushCachedObjects() > 0) ? _firstRecycler : r->_next;
+
+   if (m) m->Unlock();
+}
+
+CompleteSetupSystem :: ~CompleteSetupSystem()
+{
+   AbstractObjectRecycler::GlobalFlushAllCachedObjects();
+}
+
+uint32 DataIO :: WriteFully(const void * buffer, uint32 size)
+{
+   const uint8 * b = (const uint8 *)buffer;
+   const uint8 * firstInvalidByte = b+size;
+   while(b < firstInvalidByte)
+   {
+      int32 bytesWritten = Write(b, firstInvalidByte-b);
+      if (bytesWritten <= 0) break;
+      b += bytesWritten;
+   }
+   return (b-((const uint8 *)buffer));
+}
+
+uint32 DataIO :: ReadFully(void * buffer, uint32 size)
+{
+   uint8 * b = (uint8 *) buffer;
+   uint8 * firstInvalidByte = b+size;
+   while(b < firstInvalidByte)
+   {
+      int32 bytesRead = Read(b, firstInvalidByte-b);
+      if (bytesRead <= 0) break;
+      b += bytesRead;
+   }
+   return (b-((const uint8 *)buffer));
+}
+
+int64 DataIO :: GetLength()
+{
+   int64 origPos = GetPosition();
+   if ((origPos >= 0)&&(Seek(0, IO_SEEK_END) == B_NO_ERROR))
+   {
+      int64 ret = GetPosition();
+      if (Seek(origPos, IO_SEEK_SET) == B_NO_ERROR) return ret;
+   }
+   return -1;  // error!
+}
+
+status_t Flattenable :: FlattenToDataIO(DataIO & outputStream, bool addSizeHeader) const
+{
+   uint8 smallBuf[256];
+   uint8 * bigBuf = NULL;
+   uint32 fs = FlattenedSize();
+   uint32 bufSize = fs+(addSizeHeader?sizeof(uint32):0);
+
+   uint8 * b;
+   if (bufSize<=ARRAYITEMS(smallBuf)) b = smallBuf;
+   else
+   {
+      b = bigBuf = newnothrow_array(uint8, bufSize);
+      if (bigBuf == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
+   }
+
+   // Populate the buffer
+   if (addSizeHeader)
+   {
+      muscleCopyOut(b, B_HOST_TO_LENDIAN_INT32(fs));
+      Flatten(b+sizeof(uint32));
+   }
+   else Flatten(b);
+
+   // And finally, write out the buffer
+   status_t ret = (outputStream.WriteFully(b, fs) == fs) ? B_NO_ERROR : B_ERROR;
+   delete [] bigBuf;
+   return ret;
+}
+
+status_t Flattenable :: UnflattenFromDataIO(DataIO & inputStream, int32 optReadSize, uint32 optMaxReadSize)
+{
+   uint32 readSize = (uint32) optReadSize;
+   if (optReadSize < 0)
+   {
+      uint32 leSize;
+      if (inputStream.ReadFully(&leSize, sizeof(leSize)) != sizeof(leSize)) return B_ERROR;
+      readSize = (uint32) B_LENDIAN_TO_HOST_INT32(leSize);
+      if (readSize > optMaxReadSize) return B_ERROR;
+   }
+
+   uint8 smallBuf[256];
+   uint8 * bigBuf = NULL;
+   uint8 * b;
+   if (readSize<=ARRAYITEMS(smallBuf)) b = smallBuf;
+   else
+   {
+      b = bigBuf = newnothrow_array(uint8, readSize);
+      if (bigBuf == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
+   }
+
+   status_t ret = (inputStream.ReadFully(b, readSize) == readSize) ? Unflatten(b, readSize) : B_ERROR;
+   delete [] bigBuf;
+   return ret;
+}
+
+status_t Flattenable :: CopyToImplementation(Flattenable & copyTo) const
+{
+   uint8 smallBuf[256];
+   uint8 * bigBuf = NULL;
+   uint32 flatSize = FlattenedSize();
+   if (flatSize > ARRAYITEMS(smallBuf))
+   {
+      bigBuf = newnothrow_array(uint8, flatSize);
+      if (bigBuf == NULL)
+      {
+         WARN_OUT_OF_MEMORY;
+         return B_ERROR;
+      }
+   }
+   Flatten(bigBuf ? bigBuf : smallBuf);
+   status_t ret = copyTo.Unflatten(bigBuf ? bigBuf : smallBuf, flatSize);
+   delete [] bigBuf;
+   return ret;
+}
+
+status_t Flattenable :: CopyFromImplementation(const Flattenable & copyFrom)
+{
+   uint8 smallBuf[256];
+   uint8 * bigBuf = NULL;
+   uint32 flatSize = copyFrom.FlattenedSize();
+   if (flatSize > ARRAYITEMS(smallBuf))
+   {
+      bigBuf = newnothrow_array(uint8, flatSize);
+      if (bigBuf == NULL)
+      {
+         WARN_OUT_OF_MEMORY;
+         return B_ERROR;
+      }
+   }
+   copyFrom.Flatten(bigBuf ? bigBuf : smallBuf);
+   status_t ret = Unflatten(bigBuf ? bigBuf : smallBuf, flatSize);
+   delete [] bigBuf;
+   return ret;
 }
 
 END_NAMESPACE(muscle);

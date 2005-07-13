@@ -20,6 +20,8 @@ int32
 PlainTextMessageIOGateway ::
 DoOutputImplementation(uint32 maxBytes)
 {
+   TCHECKPOINT;
+
    const Message * msg = _currentSendingMessage();
    if (msg == NULL)
    {
@@ -64,41 +66,35 @@ DoOutputImplementation(uint32 maxBytes)
 
 MessageRef
 PlainTextMessageIOGateway ::
-AddIncomingText(MessageRef inMsg, const char * s)
+AddIncomingText(const MessageRef & inMsg, const char * s)
 {
-   if (inMsg() == NULL) inMsg = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
-   if (inMsg())
+   MessageRef ret = inMsg;
+   if (ret() == NULL) ret = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
+   if (ret())
    {
       if (_incomingText.Length() > 0)
       {
-         (void) inMsg()->AddString(PR_NAME_TEXT_LINE, _incomingText.Append(s));
+         (void) ret()->AddString(PR_NAME_TEXT_LINE, _incomingText.Append(s));
          _incomingText = "";
       }
-      else (void) inMsg()->AddString(PR_NAME_TEXT_LINE, s);
+      else (void) ret()->AddString(PR_NAME_TEXT_LINE, s);
    }
-   return inMsg;
+   return ret;
 }
 
 int32
 PlainTextMessageIOGateway ::
 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes)
 {
+   TCHECKPOINT;
+
    int32 ret = 0;
    const int tempBufSize = 2048;
    char buf[tempBufSize];
    int32 bytesRead = GetDataIO()->Read(buf, muscleMin(maxBytes, (uint32)(sizeof(buf)-1)));
    if (bytesRead < 0)
    {
-      if (_incomingText.Length() > 0)
-      {
-         MessageRef inMsg = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
-         if (inMsg())
-         {
-            (void) inMsg()->AddString(PR_NAME_TEXT_LINE, _incomingText);
-            _incomingText = "";
-            receiver.CallMessageReceivedFromGateway(inMsg);
-         }
-      }
+      FlushInput(receiver);
       return -1;
    }
    if (bytesRead > 0)
@@ -122,11 +118,25 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
       if (beginAt < bytesRead)
       {
          if (_flushPartialIncomingLines) inMsg = AddIncomingText(inMsg, &buf[beginAt]);
-                                         _incomingText += &buf[beginAt];
+                                    else _incomingText += &buf[beginAt];
       }
       if (inMsg()) receiver.CallMessageReceivedFromGateway(inMsg);
    }
    return ret;
+}
+
+void 
+PlainTextMessageIOGateway :: FlushInput(AbstractGatewayMessageReceiver & receiver)
+{
+   if (_incomingText.Length() > 0)
+   {
+      MessageRef inMsg = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
+      if ((inMsg())&&(inMsg()->AddString(PR_NAME_TEXT_LINE, _incomingText) == B_NO_ERROR))
+      {
+         _incomingText = "";
+         receiver.CallMessageReceivedFromGateway(inMsg);
+      }
+   }
 }
 
 bool
@@ -140,6 +150,8 @@ void
 PlainTextMessageIOGateway ::
 Reset()
 {
+   TCHECKPOINT;
+
    AbstractMessageIOGateway::Reset();
    _currentSendingMessage.Reset();
    _currentSendText = "";

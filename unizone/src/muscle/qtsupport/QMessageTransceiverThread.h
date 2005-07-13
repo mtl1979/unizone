@@ -53,7 +53,7 @@ signals:
      * @param msg Reference to the Message that was received.
      * @param sessionID Session ID string of the session that received the message
      */
-   void MessageReceived(MessageRef msg, const String & sessionID);
+   void MessageReceived(const MessageRef & msg, const String & sessionID);
 
    /** Emitted when we are done emitting MessageReceived, for the time being. */
    void EndMessageBatch();
@@ -105,7 +105,7 @@ signals:
      * it is not emitted spontaneously.
      * @param ref MessageRef that you previously specified in RequestOutputQueuesDrainedNotification().
      */
-   void OutputQueuesDrained(MessageRef ref);
+   void OutputQueuesDrained(const MessageRef & ref);
 
    /** This signal is called for all events send by the internal thread.  You can use this
      * to catch custom events that don't have their own signal defined above, or if you want to
@@ -115,7 +115,7 @@ signals:
      * @param optFromSession If a session ID is relevant, this is the session ID; else it will be "".
      * @param optFromFactory If a factory is relevant, this will be the factory's port number; else it will be zero.
      */
-   void InternalThreadEvent(uint32 code, MessageRef optMsg, const String & optFromSession, uint16 optFromFactory);
+   void InternalThreadEvent(uint32 code, const MessageRef & optMsg, const String & optFromSession, uint16 optFromFactory);
 
 public slots:
    /**
@@ -127,7 +127,7 @@ public slots:
     *                    path will receive the Message.  Otherwise all sessions will receive the Message.
     * @return B_NO_ERROR on success, B_ERROR if out of memory.
     */
-   status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
+   status_t SendMessageToSessions(const MessageRef & msgRef, const char * optDistPath = NULL);
 
    /** Parses through the incoming-events queue and emits signals as appropriate.
      * Typically this method is called when appropriate by the event() method,

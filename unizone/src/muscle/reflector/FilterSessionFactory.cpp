@@ -5,7 +5,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
-FilterSessionFactory :: FilterSessionFactory(ReflectSessionFactoryRef slaveRef, uint32 msph, uint32 tms) : _slaveRef(slaveRef), _tempLogFor(NULL), _maxSessionsPerHost(msph), _totalMaxSessions(tms)
+FilterSessionFactory :: FilterSessionFactory(const ReflectSessionFactoryRef & slaveRef, uint32 msph, uint32 tms) : _slaveRef(slaveRef), _tempLogFor(NULL), _maxSessionsPerHost(msph), _totalMaxSessions(tms)
 {
    // empty
 }
@@ -17,6 +17,8 @@ FilterSessionFactory :: ~FilterSessionFactory()
 
 AbstractReflectSession * FilterSessionFactory:: CreateSession(const String & clientHostIP)
 {
+   TCHECKPOINT;
+
    if (GetNumSessions() >= _totalMaxSessions)
    {
       LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] refused (all %lu sessions slots are in use).\n", clientHostIP(), _totalMaxSessions);
@@ -86,8 +88,10 @@ AbstractReflectSession * FilterSessionFactory:: CreateSession(const String & cli
    return ret;
 }
 
-void FilterSessionFactory :: MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msgRef, void *)
+void FilterSessionFactory :: MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msgRef, void *)
 {
+   TCHECKPOINT;
+
    const Message * msg = msgRef();
    if (msg)
    {
@@ -109,8 +113,10 @@ void FilterSessionFactory :: MessageReceivedFromSession(AbstractReflectSession &
    
 status_t FilterSessionFactory :: PutBanPattern(const char * banPattern)
 {
+   TCHECKPOINT;
+
    if (_bans.ContainsKey(banPattern)) return B_NO_ERROR;
-   StringMatcherRef newMatcherRef(newnothrow StringMatcher(banPattern), NULL);
+   StringMatcherRef newMatcherRef(newnothrow StringMatcher(banPattern));
    if (newMatcherRef())
    {
       if (_bans.Put(banPattern, newMatcherRef) == B_NO_ERROR) 
@@ -126,8 +132,10 @@ status_t FilterSessionFactory :: PutBanPattern(const char * banPattern)
 
 status_t FilterSessionFactory :: PutRequirePattern(const char * requirePattern)
 {
+   TCHECKPOINT;
+
    if (_requires.ContainsKey(requirePattern)) return B_NO_ERROR;
-   StringMatcherRef newMatcherRef(newnothrow StringMatcher(requirePattern), NULL);
+   StringMatcherRef newMatcherRef(newnothrow StringMatcher(requirePattern));
    if (newMatcherRef())
    {
       if (_requires.Put(requirePattern, newMatcherRef) == B_NO_ERROR) 

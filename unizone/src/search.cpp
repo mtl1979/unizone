@@ -160,10 +160,10 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 
 	// connect up slots
 
-	connect(fNetClient, SIGNAL(AddFile(const WUserRef, const QString &, bool, MessageRef)), 
-			this, SLOT(AddFile(const WUserRef, const QString &, bool, MessageRef)));
-	connect(fNetClient, SIGNAL(RemoveFile(const WUserRef, const QString &)), 
-			this, SLOT(RemoveFile(const WUserRef, const QString &)));
+	connect(fNetClient, SIGNAL(AddFile(const WUserRef &, const QString &, bool, MessageRef)), 
+			this, SLOT(AddFile(const WUserRef &, const QString &, bool, MessageRef)));
+	connect(fNetClient, SIGNAL(RemoveFile(const WUserRef &, const QString &)), 
+			this, SLOT(RemoveFile(const WUserRef &, const QString &)));
 
 	connect(fClear, SIGNAL(clicked()), this, SLOT(ClearList()));
 	connect(fStop, SIGNAL(clicked()), this, SLOT(StopSearch()));
@@ -192,7 +192,7 @@ WSearch::Cleanup()
 }
 
 void
-WSearch::AddFile(const WUserRef user, const QString &filename, bool firewalled, MessageRef file)
+WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled, MessageRef file)
 {
 	PRINT("ADDFILE called\n");
 	
@@ -274,7 +274,7 @@ WSearch::AddFile(const WUserRef user, const QString &filename, bool firewalled, 
 }
 
 void
-WSearch::RemoveFile(const WUserRef user, const QString &filename)
+WSearch::RemoveFile(const WUserRef &user, const QString &filename)
 {
 	fSearchLock.Lock();
 	PRINT("WSearch::RemoveFile\n");

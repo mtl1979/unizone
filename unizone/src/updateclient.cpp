@@ -19,8 +19,8 @@ UpdateClient::UpdateClient(QObject *owner)
 	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
-			this, SLOT(MessageReceived(MessageRef, const String &)));
+	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
+			this, SLOT(MessageReceived(const MessageRef &, const String &)));
 
 	connect(qmtt, SIGNAL(SessionConnected(const String &)),
 			this, SLOT(SessionConnected(const String &)));
@@ -35,7 +35,7 @@ UpdateClient::~UpdateClient()
 }
 
 void
-UpdateClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
+UpdateClient::MessageReceived(const MessageRef & msg, const String & /* sessionID */)
 {
 	PRINT("Update thread received a message\n");
 	String str;

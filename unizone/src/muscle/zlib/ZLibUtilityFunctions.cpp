@@ -24,70 +24,65 @@ static ZLibCodec * GetZLibCodec(int level)
    return codecs[level];
 }
 
-MessageRef DeflateMessage(MessageRef msgRef, int compressionLevel, bool force)
+MessageRef DeflateMessage(const MessageRef & msgRef, int compressionLevel, bool force)
 {
+   TCHECKPOINT;
+
+   MessageRef ret;
    if ((msgRef())&&(msgRef()->HasName(MUSCLE_ZLIB_FIELD_NAME_STRING) == false))
    {
-      uint32 inflatedSize = msgRef()->FlattenedSize();
       MessageRef defMsg = GetMessageFromPool(msgRef()->what);
-      ByteBufferRef buf = GetByteBufferFromPool(inflatedSize);
-
+      ByteBufferRef buf = msgRef()->FlattenToByteBuffer();
       if ((defMsg())&&(buf()))
       {
-         msgRef()->Flatten(buf()->GetBuffer());
-
          Mutex * m = GetGlobalMuscleLock();
          if ((m)&&(m->Lock() == B_NO_ERROR))  // serialize so that it's thread safe!
          {
             ZLibCodec * codec = GetZLibCodec(compressionLevel);
-            if (codec)
-            {
-               buf = codec->Deflate(*buf(), true);
-               if ((buf())&&(defMsg()->AddFlat(MUSCLE_ZLIB_FIELD_NAME_STRING, FlatCountableRef(buf.GetGeneric(), false)) == B_NO_ERROR)) 
-               {
-                  m->Unlock();
-                  return ((force)||(defMsg()->FlattenedSize() < inflatedSize)) ? defMsg : msgRef;
-               }
-            }
+            if (codec) buf = codec->Deflate(*buf(), true);
+                  else buf.Reset();
             m->Unlock();
+
+            if ((buf())&&(defMsg()->AddFlat(MUSCLE_ZLIB_FIELD_NAME_STRING, FlatCountableRef(buf.GetGeneric(), false)) == B_NO_ERROR)) ret = ((force)||(defMsg()->FlattenedSize() < msgRef()->FlattenedSize())) ? defMsg : msgRef;
          }
       }
-      msgRef.Reset();  // notify the caller that an error occurred
    }
-   return msgRef;
+   else ret = msgRef;
+
+   return ret;
 }
 
-MessageRef InflateMessage(MessageRef msgRef)
+MessageRef InflateMessage(const MessageRef & msgRef)
 {
+   TCHECKPOINT;
+
+   MessageRef ret;
    FlatCountableRef fcRef;
    if ((msgRef())&&(msgRef()->FindFlat(MUSCLE_ZLIB_FIELD_NAME_STRING, fcRef) == B_NO_ERROR))
    {
       ByteBufferRef buf(fcRef.GetGeneric(), false);
       if (buf())
       {
+         MessageRef infMsg = GetMessageFromPool();
          Mutex * m = GetGlobalMuscleLock();
-         if ((m)&&(m->Lock() == B_NO_ERROR))  // serialize so that it's thread safe!
+         if ((infMsg())&&(m)&&(m->Lock() == B_NO_ERROR))  // serialize so that it's thread safe!
          {
-            ZLibCodec * codec = GetZLibCodec(6);  // doesn't matter which one we use, any one can inflate anything
-            if (codec)
-            {
-               buf = codec->Inflate(*buf());
-               if (buf())
-               {
-                  MessageRef infMsg = GetMessageFromPool(msgRef()->what);
-                  if ((infMsg())&&(infMsg()->Unflatten(buf()->GetBuffer(), buf()->GetNumBytes()) == B_NO_ERROR)) 
-                  {
-                     m->Unlock();
-                     return infMsg;
-                  }
-               }
-            }
+            ZLibCodec * codec = GetZLibCodec(6);  // doesn't matter which compression level we use, all of them can inflate anything
+            if (codec) buf = codec->Inflate(*buf());
+                  else buf.Reset();
             m->Unlock();
+
+            if ((buf())&&(infMsg()->Unflatten(buf()->GetBuffer(), buf()->GetNumBytes()) == B_NO_ERROR)) 
+            {
+               infMsg()->what = msgRef()->what;  // do this after Unflatten(), so that the outer 'what' is the one that gets used
+               ret = infMsg;
+            }
          }
       }
-      msgRef.Reset();  // notify the caller that an error occurred
    }
-   return msgRef;
+   else ret = msgRef;
+
+   return ret;
 }
 
 END_NAMESPACE(muscle);

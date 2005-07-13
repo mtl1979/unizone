@@ -46,7 +46,7 @@ public:
      * @param parser Reference to the list of StringMatcher objects that represent our wildcarded path.
      * @param filter Optional reference to the QueryFilter object that filters matching nodes by content.
      */
-   PathMatcherEntry(StringMatcherQueueRef parser, QueryFilterRef filter) : _parser(parser), _filter(filter) {/* empty */}
+   PathMatcherEntry(const StringMatcherQueueRef & parser, const QueryFilterRef & filter) : _parser(parser), _filter(filter) {/* empty */}
 
    /** Returns a reference to our list of StringMatchers. */
    StringMatcherQueueRef GetParser() const {return _parser;}
@@ -97,7 +97,7 @@ public:
     *                reference is a NULL reference, then no filtering will be done.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory.
     */
-   status_t PutPathString(const String & path, QueryFilterRef filter);
+   status_t PutPathString(const String & path, const QueryFilterRef & filter);
 
    /** Adds all of (matcher)'s StringMatchers to this matcher */
    status_t PutPathsFromMatcher(const PathMatcher & matcher);
@@ -120,7 +120,7 @@ public:
     *                no additional filtering is necessary.
     *  @return B_NO_ERROR on success, or B_ERROR if out of memory.
     */
-   status_t PutPathFromString(const String & path, QueryFilterRef filter, const char * optPrependIfNoLeadingSlash);
+   status_t PutPathFromString(const String & path, const QueryFilterRef & filter, const char * optPrependIfNoLeadingSlash);
 
    /** Removes the given path string and its associated StringMatchers from this matcher.
     *  @param wildpath the path string to remove
@@ -155,6 +155,8 @@ private:
    Hashtable<String, PathMatcherEntry> _entries;
    uint32 _numFilters;  // count how many filters are installed; so we can optimize when there are none
 };
+
+typedef Ref<PathMatcher> PathMatcherRef;
 
 
 /** Returns a pointer into (path) after the (depth)'th '/' char

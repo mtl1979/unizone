@@ -24,7 +24,7 @@ public:
       int tlen = strlen(tokenizeMe);
       int slen = strlen(separators);
  
-      char * temp = newnothrow char[slen + 1 + tlen + 1];
+      char * temp = newnothrow_array(char, slen+1+tlen+1);
       if (temp)
       {
          strcpy(temp, separators);

@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include "downloadthread.h"
 #include "downloadworker.h"
 #include "downloadimpl.h"
@@ -74,8 +78,8 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
-			this, SLOT(MessageReceived(MessageRef, const String &)));
+	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
+			this, SLOT(MessageReceived(const MessageRef &, const String &)));
 
 	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
 			this, SLOT(SessionAccepted(const String &, uint16)));
@@ -398,7 +402,7 @@ WDownloadThread::SendReply(MessageRef &m)
 }
 
 void 
-WDownloadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
+WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessionID */)
 {
 	fIdles = 0;
 
@@ -1304,7 +1308,7 @@ WDownloadThread::GetUserName(const QString & sid) const
 }
 
 status_t
-WDownloadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
+WDownloadThread::SendMessageToSessions(const MessageRef & msgRef, const char * optDistPath)
 {
 	if (fTunneled)
 	{

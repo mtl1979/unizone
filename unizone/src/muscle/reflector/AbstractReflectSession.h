@@ -44,7 +44,7 @@ protected:
     * @param msgRef a reference to the Message you wish to broadcast
     * @param userData any userData value you care to include.  Defaults to NULL.
     */
-   void BroadcastToAllSessions(MessageRef msgRef, void * userData = NULL);
+   void BroadcastToAllSessions(const MessageRef & msgRef, void * userData = NULL);
 
    /** 
     * Convenience method:  Calls MessageReceivedFromFactory() on all session-factory
@@ -54,7 +54,7 @@ protected:
     * @param userData any userData value you care to include.  Defaults to NULL.
     * @param includeSelf Whether or not MessageReceivedFromFactory() should be called on 'this' factory.  Defaults to true.
     */
-   void BroadcastToAllFactories(MessageRef msgRef, void * userData = NULL, bool includeSelf = true);
+   void BroadcastToAllFactories(const MessageRef & msgRef, void * userData = NULL, bool includeSelf = true);
 
 private:  
    friend class ReflectServer;  // sets _port and _socket directly
@@ -111,7 +111,7 @@ public:
     * @param newSession the new session object that is to take the place of this one.
     * @return B_NO_ERROR on success, B_ERROR if the new session refused to be attached.
     */
-   status_t ReplaceSession(AbstractReflectSessionRef newSession);
+   status_t ReplaceSession(const AbstractReflectSessionRef & newSession);
 
    /**
     * Called when the TCP connection to our client is broken.
@@ -135,7 +135,7 @@ public:
     * @param newPolicy Reference to the new policy to use to control the incoming byte stream
     *                  for this session.  May be a NULL reference if you just want to remove the existing policy.
     */
-   void SetInputPolicy(PolicyRef newPolicy);
+   void SetInputPolicy(const PolicyRef & newPolicy);
    
    /** Returns a reference to the current input policy for this session.  
      * May be a NULL reference, if there is no input policy installed (which is the default state)
@@ -147,7 +147,7 @@ public:
     * @param newPolicy Reference to the new policy to use to control the outgoing byte stream
     *                 for this session.  May be a NULL reference if you just want to remove the existing policy.
     */
-   void SetOutputPolicy(PolicyRef newPolicy);
+   void SetOutputPolicy(const PolicyRef & newPolicy);
    
    /** Returns a reference to the current output policy for this session.  May be a NULL reference. 
      * May be a NULL reference, if there is no output policy installed (which is the default state)
@@ -159,7 +159,7 @@ public:
      * to set our gateway for us when we are attached.
      * @param ref Reference to the I/O gateway to use, or a NULL reference to remove any gateway we have.
      */
-   void SetGateway(AbstractMessageIOGatewayRef ref) {_gateway = ref; _outputStallLimit = _gateway()?_gateway()->GetOutputStallLimit():MUSCLE_TIME_NEVER;}
+   void SetGateway(const AbstractMessageIOGatewayRef & ref) {_gateway = ref; _outputStallLimit = _gateway()?_gateway()->GetOutputStallLimit():MUSCLE_TIME_NEVER;}
 
    /**
     * Returns a pointer to our internally held message IO gateway object, 
@@ -256,7 +256,7 @@ protected:
     * @param ref Reference to a Message to send to our client.
     * @return B_NO_ERROR on success, B_ERROR if out-of-memory.
     */
-   virtual status_t AddOutgoingMessage(MessageRef ref);
+   virtual status_t AddOutgoingMessage(const MessageRef & ref);
 
    /** 
     * Convenience method:  Calls MessageReceivedFromSession() on all session
@@ -267,7 +267,7 @@ protected:
     * @param includeSelf Whether or not MessageReceivedFromSession() should be called on 'this' session.  Defaults to true.
     * @see GetSessions(), AddNewSession(), GetSession()
     */
-   void BroadcastToAllSessions(MessageRef msgRef, void * userData = NULL, bool includeSelf = true);
+   void BroadcastToAllSessions(const MessageRef & msgRef, void * userData = NULL, bool includeSelf = true);
 
    /** 
     * Convenience method:  Calls MessageReceivedFromSession() on all installed
@@ -277,7 +277,7 @@ protected:
     * @param userData any userData value you care to include.  Defaults to NULL.
     * @see GetFactories(), PutFactory(), GetFactory()
     */
-   void BroadcastToAllFactories(MessageRef msgRef, void * userData = NULL);
+   void BroadcastToAllFactories(const MessageRef & msgRef, void * userData = NULL);
 
    /**
     * Closes this session's current TCP connection (if any), and creates a new
@@ -303,7 +303,7 @@ protected:
    int GetSessionSelectSocket() const;
 
 private:
-   void SetPolicyAux(PolicyRef & setRef, uint32 & setChunk, PolicyRef newRef, bool isInput);
+   void SetPolicyAux(PolicyRef & setRef, uint32 & setChunk, const PolicyRef & newRef, bool isInput);
 
    friend class ReflectServer;
    char _idString[32];

@@ -310,7 +310,7 @@ public:
     *  @param msgRef Reference to the Message to add
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t AddMessage(const String & name, MessageRef msgRef); 
+   status_t AddMessage(const String & name, const MessageRef & msgRef); 
 
    /** Adds a new pointer value to the Message.
     *  @param name Name of the field to add (or add to)
@@ -346,7 +346,7 @@ public:
     *  @param ref The FlatCountable reference to add
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t AddFlat(const String & name, FlatCountableRef ref);
+   status_t AddFlat(const String & name, const FlatCountableRef & ref);
 
    /** Adds a new ephemeral-tag-item to this Message.  Tags are references to arbitrary 
     *  ref-countable C++ objects;  They can be added to a Message as a matter of convenience 
@@ -356,7 +356,7 @@ public:
     *  @param tagRef Reference to the tag object to add.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t AddTag(const String & name, GenericRef tagRef);
+   status_t AddTag(const String & name, const GenericRef & tagRef);
 
    /** Generic method, capable of adding any type of data to the Message.
     *  @param name Name of the field to add (or add to)
@@ -450,7 +450,7 @@ public:
     *  @param msgRef Reference to the Message to add or prepend
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t PrependMessage(const String & name, MessageRef msgRef); 
+   status_t PrependMessage(const String & name, const MessageRef & msgRef); 
 
    /** Prepends a new pointer value to the beginning of a field array in the Message.
     *  @param name Name of the field to add (or prepend to)
@@ -487,7 +487,7 @@ public:
     *  @param flatRef FlatCountable reference to prepend
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t PrependFlat(const String & name, FlatCountableRef flatRef);
+   status_t PrependFlat(const String & name, const FlatCountableRef & flatRef);
 
    /** Prepends a new ephemeral-tag-item to this Message.  Tags are references to arbitrary 
     *  ref-countable C++ objects;  They can be added to a Message as a matter of convenience 
@@ -497,7 +497,7 @@ public:
     *  @param tagRef Reference to the tag object to add or prepend.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t PrependTag(const String & name, GenericRef tagRef);
+   status_t PrependTag(const String & name, const GenericRef & tagRef);
 
    /** Generic method, capable of prepending any type of data to the Message.
     *  @param name Name of the field to add (or add to)
@@ -905,10 +905,10 @@ public:
     *  @param msgRef The new Message value to put overwrite the old Message with.
     *  @return B_NO_ERROR on success, or B_ERROR if the field wasn't found, or if (index) wasn't a valid index, or out of memory.
     */
-   status_t ReplaceMessage(bool okayToAdd, const String & name, uint32 index, MessageRef msgRef);
+   status_t ReplaceMessage(bool okayToAdd, const String & name, uint32 index, const MessageRef & msgRef);
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t ReplaceMessage(bool okayToAdd, const String & name, MessageRef msgRef) {return ReplaceMessage(okayToAdd, name, 0, msgRef);}
+   status_t ReplaceMessage(bool okayToAdd, const String & name, const MessageRef & msgRef) {return ReplaceMessage(okayToAdd, name, 0, msgRef);}
 
    /** Replace a flattened object in an existing Message field with a new object.
     *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
@@ -929,7 +929,7 @@ public:
     *  @param ref The new FlatCountableRef put overwrite the old reference with.
     *  @return B_NO_ERROR on success, or B_ERROR if the field wasn't found, or if (index) wasn't a valid index, or out of memory.
     */
-   status_t ReplaceFlat(bool okayToAdd, const String & name, uint32 index, FlatCountableRef ref);
+   status_t ReplaceFlat(bool okayToAdd, const String & name, uint32 index, const FlatCountableRef & ref);
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
    status_t ReplaceFlat(bool okayToAdd, const String & name, FlatCountableRef &ref) {return ReplaceFlat(okayToAdd, name, 0, ref);}
@@ -941,10 +941,10 @@ public:
     *  @param tag The new tag reference to overwrite the old tag reference with.
     *  @return B_NO_ERROR on success, or B_ERROR if the field wasn't found, or if (index) wasn't a valid index, or out of memory.
     */
-   status_t ReplaceTag(bool okayToAdd, const String & name, uint32 index, GenericRef tag);
+   status_t ReplaceTag(bool okayToAdd, const String & name, uint32 index, const GenericRef & tag);
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t ReplaceTag(bool okayToAdd, const String & name, GenericRef tag) {return ReplaceTag(okayToAdd, name, 0, tag);}
+   status_t ReplaceTag(bool okayToAdd, const String & name, const GenericRef & tag) {return ReplaceTag(okayToAdd, name, 0, tag);}
 
    /** Replace one entry in a field of any type.
     *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
@@ -1040,7 +1040,7 @@ private:
    AbstractDataArray * GetOrCreateArray(const String & arrayName, uint32 tc);
 
    status_t AddFlatBuffer(const String & name, const Flattenable & flat, uint32 etc, bool prepend);
-   status_t AddFlatRef(const String & name, FlatCountableRef flat, uint32 etc, bool prepend);
+   status_t AddFlatRef(const String & name, const FlatCountableRef & flat, uint32 etc, bool prepend);
    status_t AddDataAux(const String & name, const void * data, uint32 size, uint32 etc, bool prepend);
 
    status_t FindFlatAux(const String & name, uint32 index, Flattenable & flat) const;

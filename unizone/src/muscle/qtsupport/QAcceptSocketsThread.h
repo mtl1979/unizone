@@ -44,7 +44,7 @@ signals:
      * @param socketRef Reference to the newly accepted socket.  You may assume ownership of
      *                  the socket if you wish, or not.
      */
-   void ConnectionAccepted(SocketHolderRef socketRef);
+   void ConnectionAccepted(const SocketHolderRef & socketRef);
 
 protected:
    /** Overridden to send a QEvent */

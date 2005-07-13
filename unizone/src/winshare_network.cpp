@@ -3129,13 +3129,13 @@ WinShareWindow::TransferCallbackRejected(const QString &qFrom, int64 timeLeft, u
 }
 
 void
-WinShareWindow::SendRejectedNotification(MessageRef rej)
+WinShareWindow::SendRejectedNotification(const MessageRef & rej)
 {
 	fNetClient->SendMessageToSessions(rej);
 }
 
 void
-WinShareWindow::ConnectionAccepted(SocketHolderRef socketRef)
+WinShareWindow::ConnectionAccepted(const SocketHolderRef &socketRef)
 {
 	PRINT("\tWinShareWindow::ConnectionAccepted\n");
 	int socket = socketRef() ? (socketRef()->ReleaseSocket()) : -1;
@@ -3181,7 +3181,7 @@ WinShareWindow::UpdateUserCount()
 }
 
 void
-WinShareWindow::GotParams(MessageRef &msg)
+WinShareWindow::GotParams(const MessageRef &msg)
 {
 	int32 enc;
 	fGotParams = true;

@@ -90,7 +90,7 @@ GetFactory(uint16 port) const
 
 status_t
 ServerComponent ::
-AddNewSession(AbstractReflectSessionRef ref, int socket)
+AddNewSession(const AbstractReflectSessionRef & ref, int socket)
 {
    MASSERT(_owner, "Can't call AddNewSession() while not attached to the server");
    return _owner->AddNewSession(ref, socket);
@@ -98,7 +98,7 @@ AddNewSession(AbstractReflectSessionRef ref, int socket)
 
 status_t
 ServerComponent ::
-AddNewConnectSession(AbstractReflectSessionRef ref, uint32 ip, uint16 port)
+AddNewConnectSession(const AbstractReflectSessionRef & ref, uint32 ip, uint16 port)
 {
    MASSERT(_owner, "Can't call AddNewConnectSession() while not attached to the server");
    return _owner->AddNewConnectSession(ref, ip, port);
@@ -146,7 +146,7 @@ GetNumUsedBytes() const
 
 status_t
 ServerComponent ::
-PutAcceptFactory(uint16 port, ReflectSessionFactoryRef factoryRef) 
+PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef) 
 {
    MASSERT(_owner, "Can't call PutAcceptFactory() while not attached to the server");
    return _owner->PutAcceptFactory(port, factoryRef);
@@ -162,14 +162,14 @@ RemoveAcceptFactory(uint16 port)
 
 void 
 ServerComponent ::
-MessageReceivedFromSession(AbstractReflectSession &, MessageRef, void *)
+MessageReceivedFromSession(AbstractReflectSession &, const MessageRef &, void *)
 {
    // empty
 }
 
 void 
 ServerComponent ::
-MessageReceivedFromFactory(ReflectSessionFactory &, MessageRef, void * )
+MessageReceivedFromFactory(ReflectSessionFactory &, const MessageRef &, void * )
 {
    // empty
 }

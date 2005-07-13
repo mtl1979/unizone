@@ -40,7 +40,7 @@ size_t ProxyMemoryAllocator :: GetNumAvailableBytes(size_t currentlyAllocated) c
 }
 
 
-UsageLimitProxyMemoryAllocator :: UsageLimitProxyMemoryAllocator(MemoryAllocatorRef slaveRef, size_t maxBytes) : ProxyMemoryAllocator(slaveRef), _maxBytes(maxBytes)
+UsageLimitProxyMemoryAllocator :: UsageLimitProxyMemoryAllocator(const MemoryAllocatorRef & slaveRef, size_t maxBytes) : ProxyMemoryAllocator(slaveRef), _maxBytes(maxBytes)
 {
    // empty
 }

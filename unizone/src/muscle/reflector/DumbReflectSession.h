@@ -30,14 +30,14 @@ public:
    /** Destructor. */
    virtual ~DumbReflectSession();
 
-   virtual void MessageReceivedFromGateway(MessageRef msg, void * userData);
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
 
    /** Called when a message is sent to us by another session (possibly this one).  
     *  @param from The session that is sending us the message.
     *  @param msg Reference to the message that we are receiving.
     *  @param userData This is a user value whose semantics are defined by the subclass.
     */
-   virtual void MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msg, void * userData);
+   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
 
    /**
     * Set this true to enable self-reflection:  if true, messages

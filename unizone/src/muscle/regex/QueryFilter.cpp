@@ -398,7 +398,7 @@ QueryFilterRef InstantiateQueryFilter(uint32 typeCode)
       default:                            return QueryFilterRef();  /* unknown type code! */
    }
    if (f == NULL) WARN_OUT_OF_MEMORY;
-   return QueryFilterRef(f, NULL);
+   return QueryFilterRef(f);
 }
 
 QueryFilterRef InstantiateQueryFilter(const Message & msg)

@@ -168,6 +168,8 @@ String::Replace(char findChar, char replaceChar)
 int32
 String::Replace(const String & replaceMe, const String & withMe)
 {
+   TCHECKPOINT;
+
    if (replaceMe.Length() == 0) return -1;  // can't replace an empty string, that's silly!
    if (replaceMe == withMe) return GetNumInstancesOf(replaceMe);  // no changes necessary!
 
@@ -228,6 +230,8 @@ String::Replace(const String & replaceMe, const String & withMe)
 void
 String::SwapContents(String & s)
 {
+   TCHECKPOINT;
+
    if (&s != this)
    {
       bool thisSmall = (  _buffer ==   _smallBuffer);
@@ -266,6 +270,8 @@ String::SwapContents(String & s)
 int
 String::LastIndexOf(const String &s2, uint32 fromIndex) const
 {
+   TCHECKPOINT;
+
    if (s2.Length() == 0) return Length()-1;
    if (fromIndex >= Length()) return -1;
    for (int i=fromIndex; i>=0; i--) if (strncmp(Cstr()+i, s2.Cstr(), s2.Length()) == 0) return i;
@@ -275,6 +281,8 @@ String::LastIndexOf(const String &s2, uint32 fromIndex) const
 int
 String::LastIndexOf(const char * s2, uint32 fromIndex) const
 {
+   TCHECKPOINT;
+
    if (s2 == NULL) s2 = "";
    uint32 s2Len = strlen(s2);
    if (s2Len == 0) return Length()-1;
@@ -302,6 +310,8 @@ String::ToUpperCase() const
 String 
 String::Trim() const 
 { 
+   TCHECKPOINT;
+
    int32 len = (int32) Length();
    const char * s = Cstr();
    int32 startIdx; for (startIdx = 0;     startIdx<len;    startIdx++) if (!IsSpaceChar(s[startIdx])) break; 
@@ -333,6 +343,8 @@ uint32 String :: GetNumInstancesOf(char ch) const
 
 uint32 String :: GetNumInstancesOf(const String & substring) const
 {
+   TCHECKPOINT;
+
    uint32 ret = 0;
    if (substring.Length() > 0)
    {
@@ -349,6 +361,8 @@ uint32 String :: GetNumInstancesOf(const String & substring) const
 
 uint32 String :: GetNumInstancesOf(const char * substring) const
 {
+   TCHECKPOINT;
+
    if (substring == NULL) substring = "";
    uint32 ret = 0;
    uint32 substringLength = strlen(substring);
@@ -367,6 +381,8 @@ uint32 String :: GetNumInstancesOf(const char * substring) const
 
 String String :: Prepend(const String & str, uint32 count) const
 {
+   TCHECKPOINT;
+
    String ret;
    uint32 newLen = (count*str.Length())+Length();
    if (ret.Prealloc(newLen) == B_NO_ERROR)
@@ -394,6 +410,8 @@ String String :: Prepend(const String & str, uint32 count) const
 
 String String :: Prepend(const char * str, uint32 count) const
 {
+   TCHECKPOINT;
+
    if (muscleInRange(str, (const char *)_buffer, (const char *)(_buffer+Length()))) return Prepend(String(str), count);  // avoid self-entanglement!
    else
    {
@@ -427,6 +445,8 @@ String String :: Prepend(const char * str, uint32 count) const
 
 String String :: Append(const String & str, uint32 count) const
 {
+   TCHECKPOINT;
+
    String ret;
    uint32 newLen = Length()+(count*str.Length());
    if (ret.Prealloc(newLen) == B_NO_ERROR)
@@ -453,6 +473,8 @@ String String :: Append(const String & str, uint32 count) const
 
 String String :: Append(const char * str, uint32 count) const
 {
+   TCHECKPOINT;
+
    if (muscleInRange(str, (const char *)_buffer, (const char *)(_buffer+Length()))) return Append(String(str), count);  // avoid self-entanglement!
    else
    {
@@ -584,6 +606,8 @@ String String :: Arg(const char * value)             const {return ArgAux(value)
 
 String String :: ArgAux(const char * buf) const
 {
+   TCHECKPOINT;
+
    int32 lowestArg = -1;
    const char * s = Cstr();
    while(*s != '\0')

@@ -323,7 +323,7 @@ public:
      * @param child2 Second argument to the operation
      * @param isAnd If true, the operation will be an 'and' operation.  Otherwise it will be an 'or' operation.
      */
-   AndOrQueryFilter(QueryFilterRef child1, QueryFilterRef child2, bool isAnd) : _minMatches(isAnd ? ((uint32)-1) : 1)
+   AndOrQueryFilter(const QueryFilterRef & child1, const QueryFilterRef & child2, bool isAnd) : _minMatches(isAnd ? ((uint32)-1) : 1)
    {
       GetChildren().AddTail(child1);
       GetChildren().AddTail(child2);
@@ -364,7 +364,7 @@ public:
    /** Convenience constructor for simple unary 'not' operation.
      * @param child Child whose logic we should negate.  This child is added to our child list, and the MaxMatchCount is set to zero. 
      */
-   NandNotQueryFilter(QueryFilterRef child) : _maxMatches(0)
+   NandNotQueryFilter(const QueryFilterRef & child) : _maxMatches(0)
    {
       GetChildren().AddTail(child);
    }
@@ -373,7 +373,7 @@ public:
      * @param child1 First argument to the operation
      * @param child2 Second argument to the operation
      */
-   NandNotQueryFilter(QueryFilterRef child1, QueryFilterRef child2) : _maxMatches(1)
+   NandNotQueryFilter(const QueryFilterRef & child1, const QueryFilterRef & child2) : _maxMatches(1)
    {
       GetChildren().AddTail(child1);
       GetChildren().AddTail(child2);
@@ -410,7 +410,7 @@ public:
      * @param child1 First argument to the operation
      * @param child2 Second argument to the operation
      */
-   XorQueryFilter(QueryFilterRef child1, QueryFilterRef child2)
+   XorQueryFilter(const QueryFilterRef & child1, const QueryFilterRef & child2)
    {
       GetChildren().AddTail(child1);
       GetChildren().AddTail(child2);
@@ -434,7 +434,7 @@ public:
      * @param fieldName Name of the field in the Message to look at
      * @param index Index of the item within the field to look at.  Defaults to zero (i.e. the first item)
      */
-   MessageQueryFilter(QueryFilterRef childFilter, const String & fieldName, uint32 index = 0) : ValueQueryFilter(fieldName, index), _childFilter(childFilter) {/* empty */}
+   MessageQueryFilter(const QueryFilterRef & childFilter, const String & fieldName, uint32 index = 0) : ValueQueryFilter(fieldName, index), _childFilter(childFilter) {/* empty */}
 
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
@@ -444,7 +444,7 @@ public:
    /** Set the sub-filter to use on the target's sub-Message.
      * @param childFilter Filter to use, or a NULL reference to indicate that any sub-Message found should match. 
      */
-   void SetChildFilter(QueryFilterRef childFilter) {_childFilter = childFilter;}
+   void SetChildFilter(const QueryFilterRef & childFilter) {_childFilter = childFilter;}
 
    /** Returns our current sub-filter as set in our constructor or in SetChildFilter() */
    QueryFilterRef GetChildFilter() const {return _childFilter;}
@@ -545,7 +545,7 @@ public:
      * @param typeCode Typecode to look for in the target Message.  Default is B_ANY_TYPE, indicating that any type code is acceptable.
      * @param index Optional index of the item within the field.  Defaults to zero.
      */
-   RawDataQueryFilter(const String & fieldName, uint8 op, ByteBufferRef value, uint32 typeCode = B_ANY_TYPE, uint32 index = 0) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _typeCode(typeCode) {/* empty */}
+   RawDataQueryFilter(const String & fieldName, uint8 op, const ByteBufferRef & value, uint32 typeCode = B_ANY_TYPE, uint32 index = 0) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _typeCode(typeCode) {/* empty */}
 
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
@@ -563,7 +563,7 @@ public:
    /** Set the value to compare against.
      * @param value The new value.
      */
-   void SetValue(ByteBufferRef value) {_value = value;}
+   void SetValue(const ByteBufferRef & value) {_value = value;}
 
    /** Sets the type code that we will look for in the target Message.
      * @param typeCode the type code to look for.  Use B_ANY_TYPE to indicate that you don't care what the type code is.

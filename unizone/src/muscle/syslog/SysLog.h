@@ -21,6 +21,15 @@ enum
    NUM_MUSCLE_LOGLEVELS
 }; 
 
+/** This is similar to LogStackTrace(), except that the stack trace is printed directly
+  * to stdout instead of via calls to Log() and LogTime().  This call is handy when you
+  * need to print a stack trace in situations where the log isn't available.
+  * @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
+  *                 64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.
+  * @note This function is currently only implemented under Linux; for other OS's, this function is a no-op.
+  */
+status_t PrintStackTrace(uint32 maxDepth = 64);
+
 // Define this constant in your Makefile (i.e. -DMUSCLE_DISABLE_LOGGING) to turn all the
 // Log commands into no-ops.
 #ifdef MUSCLE_DISABLE_LOGGING
@@ -36,7 +45,7 @@ inline status_t LogTime(int, const char *, ...) {return B_NO_ERROR;}
 inline status_t LogFlush() {return B_NO_ERROR;}
 
 // No-op implementation of LogStackTrace()
-inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO) {(void) level; return B_NO_ERROR;}
+inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO, uint32 maxLevel=64) {(void) level; (void) maxLevel; return B_NO_ERROR;}
 
 #else
 
@@ -55,7 +64,7 @@ inline status_t LogTime(int logLevel, const char * fmt, ...) {printf("%i: ", log
 inline status_t LogFlush() {fflush(stdout); return B_NO_ERROR;}
 
 // Minimalist version of LogStackTrace(), just prints a dummy string
-inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO) {(void) level; printf("<stack trace omitted>\n"); return B_NO_ERROR;}
+inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO, uint32 maxDepth = 64) {(void) level; (void) maxDepth; printf("<stack trace omitted>\n"); return B_NO_ERROR;}
 
 # endif
 #endif
@@ -130,9 +139,11 @@ status_t LogFlush();
 /** Logs out a stack trace, if possible.  Returns B_ERROR if not.
  *  @note Currently only works under Linux, and then only if -rdynamic is specified as a compile flag.
  *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
+ *  @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
+ *                  64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.
  *  @returns B_NO_ERROR on success, or B_ERROR if a stack trace couldn't be logged because the platform doesn't support it.
  */
-status_t LogStackTrace(int logLevel = MUSCLE_LOG_INFO);
+status_t LogStackTrace(int logLevel = MUSCLE_LOG_INFO, uint32 maxDepth = 64);
 
 /** Returns a human-readable string for the given log level.
  *  @param logLevel A MUSCLE_LOG_* value

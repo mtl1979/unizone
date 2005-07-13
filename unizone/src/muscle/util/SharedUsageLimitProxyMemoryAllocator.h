@@ -32,7 +32,7 @@ public:
      * @param maxBytes The maximum number of bytes that may be allocated, in aggregate, by all the process
      *                 in the group.  This value should be the same for all process in a given group.
      */
-   SharedUsageLimitProxyMemoryAllocator(const char * groupKey, int32 memberID, uint32 groupSize, MemoryAllocatorRef slaveRef, size_t maxBytes);
+   SharedUsageLimitProxyMemoryAllocator(const char * groupKey, int32 memberID, uint32 groupSize, const MemoryAllocatorRef & slaveRef, size_t maxBytes);
 
    /** Destructor.  */
    virtual ~SharedUsageLimitProxyMemoryAllocator();

@@ -17,25 +17,46 @@ class RefCountable
 {
 public:
    /** Default constructor.  Refcount begins at zero. */
-   RefCountable() {/* empty */}
+   RefCountable() : _manager(NULL) {/* empty */}
 
-   /** Copy constructor -- does NOT copy the refcount! */
-   RefCountable(const RefCountable &) {/* empty */}
+   /** Copy constructor -- ref count is deliberately not copied! */
+   RefCountable(const RefCountable & r) : _manager(r._manager) {/* empty */}
 
    /** Virtual destructor, to keep C++ honest.  Don't remove this unless you like crashing */
    virtual ~RefCountable() {/* empty */}
 
-   /** Assigment operator.  Implemented as a no-op; does NOT copy the refcount! */
+   /** Assigment operator.  deliberately implemented as a no-op! */
    inline RefCountable &operator=(const RefCountable &) {return *this;}
 
-   /** Increments the counter and returns true iff the new value is zero. */
+   /** Increments the counter and returns true iff the new value is zero.  Thread safe. */
    inline void IncrementRefCount() const {_refCount.AtomicIncrement();}
 
-   /** Decrements the counter and returns true iff the new value is zero. */
+   /** Decrements the counter and returns true iff the new value is zero.  Thread safe. */
    inline bool DecrementRefCount() const {return _refCount.AtomicDecrement();}
+
+   /** Sets the recycle-pointer for this object.  If set to non-NULL, this pointer
+     * is used by the ObjectPool class to recycle this object when it is no longer
+     * in use, so as to avoid the overhead of having to delete it and re-create it
+     * later on.  The RefCountable class itself does nothing with this pointer.
+     * Default value is NULL. 
+     * @param manager Pointer to the new recyler object to use, or NULL to use
+     *                no recyler.  No ownership relationship is implied!
+     */
+   void SetManager(AbstractObjectManager * manager) {_manager = manager;}
+
+   /** Returns this object's current recyler pointer. */
+   AbstractObjectManager * GetManager() const {return _manager;}
+   
+   /** Returns this object's current reference count.  Note that
+     * the value returned by this method is volatile in multithreaded
+     * environments, so it may already be wrong by the time it is returned.
+     * Be careful!
+     */
+   uint32 GetRefCount() const {return _refCount.GetCount();}
 
 private:
    mutable AtomicCounter _refCount;
+   AbstractObjectManager * _manager;
 };
 
 template <class Item> class Ref;  // forward reference
@@ -56,13 +77,12 @@ public:
     *  Default constructor.
     *  Creates a NULL reference (suitable for later initialization with SetRef(), or the assignment operator)
     */
-   Ref() : _item(NULL), _recycler(NULL), _doRefCount(true) {/* empty */}
+   Ref() : _item(NULL), _doRefCount(true) {/* empty */}
 
    /** 
      * Creates a new reference-count for the given item.
      * Once referenced, (item) will be automatically deleted (or recycled) when the last Ref that references it goes away.
      * @param item A dynamically allocated object that the Ref class will assume responsibility for deleting.  May be NULL.
-     * @param recycler An optional AbstractObjectRecycler to use to recycle the object when we're done with it.  May be NULL.
      * @param doRefCount If set false, then this Ref will not do any ref-counting on (item); rather it
      *                   just acts as a fancy version of a normal C++ pointer.  Specifically, it will not 
      *                   modify the object's reference count, nor will it ever delete the object.  
@@ -71,19 +91,19 @@ public:
      *                   But if you do that, it allows the possibility of the object going away while
      *                   other Refs are still using it, so be careful!
      */
-   Ref(Item * item, AbstractObjectRecycler * recycler, bool doRefCount = true) : _item(item), _recycler(recycler), _doRefCount(doRefCount) {RefItem();} 
+   Ref(Item * item, bool doRefCount = true) : _item(item), _doRefCount(doRefCount) {RefItem();} 
 
    /** Copy constructor.  Creates an additional reference to the object referenced by (copyMe).
     *  The referenced object won't be deleted until ALL Refs that reference it are gone.
     */
-   Ref(const Ref & copyMe) : _item(NULL), _recycler(NULL), _doRefCount(true) {*this = copyMe;}
+   Ref(const Ref & copyMe) : _item(NULL), _doRefCount(true) {*this = copyMe;}
 
    /** Attempts to set this reference by downcasting the reference in the provided GenericRef.
      * If the downcast cannot be done (via dynamic_cast) then we become a NULL reference.
      * @param ref The generic reference to set ourselves from.
      * @param junk This parameter is ignored; it is just here to disambiguate constructors.
      */
-   Ref(const GenericRef & ref, bool junk) : _item(NULL), _recycler(NULL), _doRefCount(true) {(void) junk; (void) SetFromGeneric(ref);}
+   Ref(const GenericRef & ref, bool junk) : _item(NULL), _doRefCount(true) {(void) junk; (void) SetFromGeneric(ref);}
 
    /** Unreferences the held data item.  If this is the last Ref that
     *  references the held data item, the data item will be deleted or recycled at this time.
@@ -95,7 +115,6 @@ public:
      * (in fact the assignment operator just calls this method)
      * @param item A dynamically allocated object that this Ref object will assume responsibility for deleting.
      *             May be NULL, in which case the effect is just to unreference the current item.
-     * @param recycler An optional ObjectPool to recycle the object into.  May be NULL.
      * @param doRefCount If set false, then this Ref will not do any ref-counting on (item); rather it
      *                   just acts as a fancy version of a normal C++ pointer.  Specifically, it will not 
      *                   modify the object's reference count, nor will it ever delete the object.  
@@ -104,7 +123,7 @@ public:
      *                   But if you do that, it allows the possibility of the object going away while
      *                   other Refs are still using it, so be careful!
      */
-   void SetRef(Item * item, AbstractObjectRecycler * recycler, bool doRefCount = true)
+   void SetRef(Item * item, bool doRefCount = true)
    {
       if (item == _item)
       {
@@ -123,23 +142,21 @@ public:
                _doRefCount = false;
             } 
          }
-         _recycler = recycler;
       }
       else
       {
          // switch items
          UnrefItem();
           _item       = item;
-          _recycler   = recycler;
           _doRefCount = doRefCount;
          RefItem();
       }
    }
 
    /** Assigment operator.
-    *  Unreferences the previous held data item, and adds a reference to the the data item of (r).
+    *  Unreferences the previous held data item, and adds a reference to the the data item of (rhs).
     */
-   inline Ref &operator=(const Ref &r) {if (this != &r) SetRef(r._item, r._recycler, r._doRefCount); return *this;}
+   inline Ref &operator=(const Ref & rhs) {if (this != &rhs) SetRef(rhs._item, rhs._doRefCount); return *this;}
 
    /** Returns true iff both Refs are referencing the same data. */
    bool operator ==(const Ref &rhs) const {return _item == rhs._item;}
@@ -171,12 +188,8 @@ public:
    void SwapContents(Ref & swapWith)
    {
       muscleSwap(_item,       swapWith._item); 
-      muscleSwap(_recycler,   swapWith._recycler);
       muscleSwap(_doRefCount, swapWith._doRefCount);
    }
-
-   /** Returns this Ref's recycler object (may be NULL). */
-   AbstractObjectRecycler * GetItemRecycler() const {return _recycler;}
 
    /** Returns true iff we are refcounting our held object, or false
      * if we are merely pointing to it (see constructor documentation for details)
@@ -184,7 +197,7 @@ public:
    bool IsRefCounting() const {return _doRefCount;}
 
    /** Convenience method:  Returns a GenericRef object referencing the same RefCountable as this typed ref. */
-   GenericRef GetGeneric() const {return GenericRef(_item, _recycler, _doRefCount);}
+   GenericRef GetGeneric() const {return GenericRef(_item, _doRefCount);}
 
    /** Convenience method; attempts to set this typed Ref to be referencing the same item as the given GenericRef.  
      * If the conversion cannot be done, our state will remain unchanged.
@@ -199,7 +212,7 @@ public:
       {
          Item * typedItem = dynamic_cast<Item *>(genericItem);
          if (typedItem == NULL) return B_ERROR;
-         SetRef(typedItem, genericRef.GetItemRecycler(), genericRef.IsRefCounting());
+         SetRef(typedItem, genericRef.IsRefCounting());
       }
       return B_NO_ERROR;
    }
@@ -212,7 +225,55 @@ public:
      */
    inline void SetFromGenericUnchecked(const GenericRef & genericRef)
    {
-      SetRef(static_cast<Item *>(genericRef()), genericRef.GetItemRecycler(), genericRef.IsRefCounting());
+      SetRef(static_cast<Item *>(genericRef()), genericRef.IsRefCounting());
+   }
+
+   /** Returns true only if we are certain that no other Refs are pointing
+     * at the same RefCountable object that we are.  If this Ref's do-reference-counting
+     * flag is false, then this method will always return false, since we can't
+     * be sure about sharing unless we are reference counting.  If this Ref is
+     * a NULL Ref, then this method will return true.
+     */
+   bool IsRefPrivate() const
+   {
+      return ((_item == NULL)||((_doRefCount)&&(_item->GetRefCount() == 1)));
+   }
+
+   /** This method will check our referenced object to see if there is any
+     * chance that it is shared by other Ref objects.  If it is, it will
+     * make a copy of the referenced object and set this Ref to reference 
+     * the copy instead of the original.  The upshot of this is that once
+     * this method returns B_NO_ERROR, you can safely modify the referenced
+     * object without having to worry about race conditions caused by sharing
+     * data with other threads.  This method is thread safe -- it may occasionally
+     * make a copy that wasn't strictly necessary, but it will never fail to
+     * make a copy when making a copy is necessary.
+     * @returns B_NO_ERROR on success (i.e. the object was successfully copied,
+     *                     or a copy turned out to be unnecessary), or B_ERROR
+     *                     on failure (i.e. out of memory)
+     * @note Don't use this method with MessageRefs in a multi-threaded
+     *       application.  Currently copying of Message objects isn't
+     *       thread-safe, so using this method to copy Message objects in
+     *       a non-serialized manner will cause your app to occasionally crash.
+     */
+   status_t EnsureRefIsPrivate()
+   {
+      if (IsRefPrivate() == false)
+      {
+         AbstractObjectManager * m = _item->GetManager();
+         Item * newItem = m ? static_cast<Item *>(m->ObtainObjectGeneric()) : newnothrow Item;
+         if (newItem) 
+         {
+            *newItem = *_item;
+            SetRef(newItem);
+         }
+         else 
+         { 
+            WARN_OUT_OF_MEMORY;
+            return B_ERROR;
+         }
+      }
+      return B_NO_ERROR;
    }
 
 private:
@@ -223,15 +284,15 @@ private:
       {
          if ((_doRefCount)&&(_item->DecrementRefCount()))
          {
-            if (_recycler) _recycler->RecycleObject(_item);
-                      else delete _item;
+            AbstractObjectManager * m = _item->GetManager();
+            if (m) m->RecycleObject(_item);
+              else delete _item;
          }
          _item = NULL;
       }
    }
    
    Item * _item; 
-   AbstractObjectRecycler * _recycler;
    bool _doRefCount;
 };
 

@@ -18,6 +18,7 @@
 # ifdef __MWERKS__
 #  ifdef MUSCLE_ENABLE_MEMORY_TRACKING
 #   undef MUSCLE_ENABLE_MEMORY_TRACKING
+#   undef MUSCLE_ENABLE_MEMORY_PARANOIA
 #  endif
 # endif
 #endif
@@ -46,121 +47,240 @@
 
 BEGIN_NAMESPACE(muscle);
 
+# if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
+
+// Functions for converting user-visible pointers (etc) to our internal implementation and back
+#  define MEMORY_PARANOIA_ALLOCATED_GARBAGE_VALUE   (0x55)
+#  define MEMORY_PARANOIA_DEALLOCATED_GARBAGE_VALUE (0x66)
+
+static inline uint32    CONVERT_USER_TO_INTERNAL_SIZE(uint32 uNumBytes) {return (uNumBytes+(sizeof(size_t)+(2*MUSCLE_ENABLE_MEMORY_PARANOIA*sizeof(size_t *))));}
+static inline uint32    CONVERT_INTERNAL_TO_USER_SIZE(uint32 iNumBytes) {return (iNumBytes-(sizeof(size_t)+(2*MUSCLE_ENABLE_MEMORY_PARANOIA*sizeof(size_t *))));}
+static inline size_t *  CONVERT_USER_TO_INTERNAL_POINTER(void * uptr)   {return (((size_t*)uptr)-(1+MUSCLE_ENABLE_MEMORY_PARANOIA));}
+static inline void   *  CONVERT_INTERNAL_TO_USER_POINTER(size_t * iptr) {return ((void *)(iptr+1+MUSCLE_ENABLE_MEMORY_PARANOIA));}
+static inline size_t ** CONVERT_INTERNAL_TO_FRONT_GUARD(size_t * iptr)  {return ((size_t **)(((size_t*)iptr)+1));}
+static inline size_t ** CONVERT_INTERNAL_TO_REAR_GUARD(size_t * iptr)   {return ((size_t **)((((char *)iptr)+(*iptr))-(MUSCLE_ENABLE_MEMORY_PARANOIA*sizeof(size_t *))));}
+
+status_t MemoryParanoiaCheckBuffer(void * userPtr, bool crashIfInvalid)
+{
+   if (userPtr)
+   {
+      size_t * internalPtr = CONVERT_USER_TO_INTERNAL_POINTER(userPtr);
+      size_t ** frontRead  = CONVERT_INTERNAL_TO_FRONT_GUARD(internalPtr);
+      size_t ** rearRead   = CONVERT_INTERNAL_TO_REAR_GUARD(internalPtr);
+      size_t userBufLen    = CONVERT_INTERNAL_TO_USER_SIZE(*internalPtr);
+
+      bool foundCorruption = false;
+      for (int i=0; i<MUSCLE_ENABLE_MEMORY_PARANOIA; i++)
+      {
+         const size_t * expectedFrontVal = internalPtr+i;
+         const size_t * expectedRearVal  = internalPtr+i+MUSCLE_ENABLE_MEMORY_PARANOIA;
+
+         if (frontRead[i] != expectedFrontVal)
+         {
+            foundCorruption = true;
+            TCHECKPOINT;
+            printf("MEMORY GUARD CORRUPTION (%i words before front): buffer (%p,%lu) (userptr=%p,%lu) expected %p, got %p!\n", (MUSCLE_ENABLE_MEMORY_PARANOIA-i), internalPtr, (uint32)(*internalPtr), userPtr, (uint32)userBufLen, expectedFrontVal, frontRead[i]);
+         }
+         if (rearRead[i] != expectedRearVal)
+         {
+            foundCorruption = true;
+            TCHECKPOINT;
+            printf("MEMORY GUARD CORRUPTION (%i words after rear):   buffer (%p,%u) (userptr=%p,%u) expected %p, got %p!\n", i+1, internalPtr, *internalPtr, userPtr, userBufLen, expectedRearVal, rearRead[i]);
+         }
+      }
+      if (foundCorruption) 
+      {
+         printf("CORRUPTED MEMORY BUFFER CONTENTS ARE (including %i front-guards and %i rear-guards of %u bytes each):\n", MUSCLE_ENABLE_MEMORY_PARANOIA, MUSCLE_ENABLE_MEMORY_PARANOIA, sizeof(size_t *));
+         for (size_t i=0; i<*internalPtr; i++) printf("%02x ", ((char *)internalPtr)[i]); printf("\n");
+         if (crashIfInvalid) 
+         {
+            fflush(stdout);
+            MCRASH("MEMORY PARANOIA:  MEMORY CORRUPTION DETECTED!");
+         }
+         return B_ERROR;
+      }
+   }
+   return B_NO_ERROR;
+}
+
+static void MemoryParanoiaPrepareBuffer(size_t * internalPtr, uint32 oldSize)
+{
+   size_t ** frontWrite = CONVERT_INTERNAL_TO_FRONT_GUARD(internalPtr);
+   size_t ** rearWrite  = CONVERT_INTERNAL_TO_REAR_GUARD(internalPtr);
+   for (int i=0; i<MUSCLE_ENABLE_MEMORY_PARANOIA; i++) 
+   {
+      frontWrite[i] = internalPtr+i;
+      rearWrite[i]  = internalPtr+i+MUSCLE_ENABLE_MEMORY_PARANOIA;
+   }
+
+   uint32 newSize = CONVERT_INTERNAL_TO_USER_SIZE(*internalPtr);
+   if (newSize > oldSize) memset(((char *)CONVERT_INTERNAL_TO_USER_POINTER(internalPtr))+oldSize, MEMORY_PARANOIA_ALLOCATED_GARBAGE_VALUE, newSize-oldSize);
+}
+
+# else
+
+// Without memory paranoia, here are the conversion functions used for plain old memory usage tracking
+static inline uint32    CONVERT_USER_TO_INTERNAL_SIZE(uint32 uNumBytes) {return (uNumBytes+sizeof(size_t));}
+static inline uint32    CONVERT_INTERNAL_TO_USER_SIZE(uint32 iNumBytes) {return (iNumBytes-sizeof(size_t));}
+static inline size_t *  CONVERT_USER_TO_INTERNAL_POINTER(void * uptr)   {return (((size_t*)uptr)-1);}
+static inline void   *  CONVERT_INTERNAL_TO_USER_POINTER(size_t * iptr) {return ((void *)(iptr+1));}
+
+# endif
+
 static MemoryAllocatorRef _globalAllocatorRef;
 
-void SetCPlusPlusGlobalMemoryAllocator(MemoryAllocatorRef maRef) {_globalAllocatorRef = maRef;}
+void SetCPlusPlusGlobalMemoryAllocator(const MemoryAllocatorRef & maRef) {_globalAllocatorRef = maRef;}
 MemoryAllocatorRef GetCPlusPlusGlobalMemoryAllocator() {return _globalAllocatorRef;}
 
 static size_t _currentlyAllocatedBytes = 0;  // Running tally of how many bytes our process has allocated
 
 size_t GetNumAllocatedBytes() {return _currentlyAllocatedBytes;}
 
-void * muscleAlloc(size_t s, bool retryOnFailure)
+void * muscleAlloc(size_t userSize, bool retryOnFailure)
 {
    USING_NAMESPACE(muscle);
 
-   size_t allocSize = s + sizeof(size_t);  // requested size, plus extra bytes for our tag
+   size_t internalSize = CONVERT_USER_TO_INTERNAL_SIZE(userSize);
    bool mallocFailed = false;
 
-   void * ret = NULL;
+   void * userPtr = NULL;
    MemoryAllocator * ma = _globalAllocatorRef();
-   if ((ma == NULL)||(ma->AboutToAllocate(_currentlyAllocatedBytes, allocSize) == B_NO_ERROR))
+   if ((ma == NULL)||(ma->AboutToAllocate(_currentlyAllocatedBytes, internalSize) == B_NO_ERROR))
    {
-      size_t * a = (size_t *) malloc(allocSize);
-      if (a)
+      size_t * internalPtr = (size_t *) malloc(internalSize);
+      if (internalPtr)
       {
-         *a = allocSize;  // our little header tag so that muscleFree() will know how big the allocation was
-         _currentlyAllocatedBytes += allocSize;
-//printf("+%lu = %lu\n", (uint32)allocSize, (uint32)_currentlyAllocatedBytes);
-         ret = (void *)(a+1);  // user doesn't want to see the header tag, of course
+         *internalPtr = internalSize;  // our little header tag so that muscleFree() will know how big the allocation was
+         _currentlyAllocatedBytes += internalSize;
+//printf("+%lu = %lu\n", (uint32)internalSize, (uint32)_currentlyAllocatedBytes);
+
+#if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
+         MemoryParanoiaPrepareBuffer(internalPtr, 0);
+#endif
+         userPtr = CONVERT_INTERNAL_TO_USER_POINTER(internalPtr);
       }
       else mallocFailed = true;
    }
-   if ((ma)&&(ret == NULL)) 
+   if ((ma)&&(userPtr == NULL)) 
    {
+      printf("muscleAlloc:  allocation failure (tried to allocate %lu internal bytes / %lu user bytes)\n", (uint32)internalSize, (uint32)userSize);
+
       ma->SetAllocationHasFailed(true);
-      ma->AllocationFailed(_currentlyAllocatedBytes, allocSize);
+      ma->AllocationFailed(_currentlyAllocatedBytes, internalSize);
 
       // Maybe the AllocationFailed() method was able to free up some memory; so we'll try it one more time
       // That way we might be able to recover without interrupting the operation that was in progress.
-      if ((mallocFailed)&&(retryOnFailure)) ret = muscleAlloc(s, false);
+      if ((mallocFailed)&&(retryOnFailure)) userPtr = muscleAlloc(userSize, false);
    }
-   return ret;
+
+   return userPtr;
 }
 
-void * muscleRealloc(void * ptr, size_t s, bool retryOnFailure)
+void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
 {
    USING_NAMESPACE(muscle);
 
-        if (ptr == NULL) return muscleAlloc(s, retryOnFailure);
-   else if (s   == 0)
+#if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
+   TCHECKPOINT;
+   (void) MemoryParanoiaCheckBuffer(oldUserPtr);
+#endif
+
+        if (oldUserPtr == NULL) return muscleAlloc(newUserSize, retryOnFailure);
+   else if (newUserSize == 0)
    {
-      muscleFree(ptr);
+      muscleFree(oldUserPtr);
       return NULL;
    }
 
-   size_t allocSize = s + sizeof(size_t); // requested size, plus extra bytes for our tag
-   size_t * oldPtr = (((size_t*)ptr)-1);  // how much we already have allocated, including tag bytes
-   if (allocSize == *oldPtr) return ptr;  // same size as before?  Then we are already done!
+   size_t newInternalSize  = CONVERT_USER_TO_INTERNAL_SIZE(newUserSize);
+   size_t * oldInternalPtr = CONVERT_USER_TO_INTERNAL_POINTER(oldUserPtr);
+   size_t oldInternalSize  = *oldInternalPtr;
+   if (newInternalSize == oldInternalSize) return oldUserPtr;  // same size as before?  Then we are already done!
 
-   void * ret = NULL;
+   void * newUserPtr = NULL;
    bool reallocFailed = false;
    MemoryAllocator * ma = _globalAllocatorRef();
-   if (allocSize > *oldPtr)
+   size_t oldUserSize = CONVERT_INTERNAL_TO_USER_SIZE(oldInternalSize);
+   if (newInternalSize > oldInternalSize)
    {
-      size_t growBy = allocSize-*oldPtr;
+      size_t growBy = newInternalSize-oldInternalSize;
       if ((ma == NULL)||(ma->AboutToAllocate(_currentlyAllocatedBytes, growBy) == B_NO_ERROR))
       {
-         size_t * a = (size_t *) realloc(oldPtr, allocSize);
-         if (a)
+         size_t * newInternalPtr = (size_t *) realloc(oldInternalPtr, newInternalSize);
+         if (newInternalPtr)
          {
-            *a = allocSize;  // our little header tag so that muscleFree() will know how big the allocation was
             _currentlyAllocatedBytes += growBy;  // only reflect the newly-allocated bytes
-//printf("r+%lu(->%lu) = %lu\n", (uint32)growBy, (uint32)allocSize, (uint32)_currentlyAllocatedBytes);
-            ret = (void *)(a+1);  // user doesn't want to see the header tag, of course
+            *newInternalPtr = newInternalSize;  // our little header tag so that muscleFree() will know how big the allocation was
+            newUserPtr = CONVERT_INTERNAL_TO_USER_POINTER(newInternalPtr);
+//printf("r+%lu(->%lu) = %lu\n", (uint32)growBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes);
+
+#if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
+            MemoryParanoiaPrepareBuffer(newInternalPtr, oldUserSize);
+#endif
          }
          else reallocFailed = true;
       }
-      if ((ma)&&(ret == NULL)) 
+      if ((ma)&&(newUserPtr == NULL)) 
       {
+         printf("muscleRealloc:  reallocation failure (tried to grow %lu->%lu internal bytes / %lu->%lu user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
+         fflush(stdout);  // make sure this message gets out!
+
          ma->SetAllocationHasFailed(true);
          ma->AllocationFailed(_currentlyAllocatedBytes, growBy);
 
          // Maybe the AllocationFailed() method was able to free up some memory; so we'll try it one more time
          // That way we might be able to recover without interrupting the operation that was in progress.
-         if ((reallocFailed)&&(retryOnFailure)) ret = muscleRealloc(ptr, s, false);
+         if ((reallocFailed)&&(retryOnFailure)) newUserPtr = muscleRealloc(oldUserPtr, newUserSize, false);
       }
    }
    else
    {
-      size_t shrinkBy = *oldPtr-allocSize;
+      size_t shrinkBy = oldInternalSize-newInternalSize;
       if (ma) ma->AboutToFree(_currentlyAllocatedBytes, shrinkBy);
-      size_t * a = (size_t *) realloc(oldPtr, allocSize);
-      if (a)
+      size_t * newInternalPtr = (size_t *) realloc(oldInternalPtr, newInternalSize);
+      if (newInternalPtr)
       {
-         *a = allocSize;  // our little header tag so that muscleFree() will know how big the allocation is now
+         *newInternalPtr = newInternalSize;  // our little header tag so that muscleFree() will know how big the allocation is now
          _currentlyAllocatedBytes -= shrinkBy;
-//printf("r-%lu(->%lu) = %lu\n", (uint32)shrinkBy, (uint32)allocSize, (uint32)_currentlyAllocatedBytes);
-         ret = (void *)(a+1);  // use doesn't see the header tag though
+//printf("r-%lu(->%lu) = %lu\n", (uint32)shrinkBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes);
+
+#if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
+         MemoryParanoiaPrepareBuffer(newInternalPtr, ((uint32)-1));
+#endif
+         newUserPtr = CONVERT_INTERNAL_TO_USER_POINTER(newInternalPtr);
       }
-      else ret = ptr;  // I guess the best thing to do is just send back the old pointer?  Not sure what to do here.
+      else 
+      {
+         newUserPtr = oldUserPtr;  // I guess the best thing to do is just send back the old pointer?  Not sure what to do here.
+         printf("muscleRealloc:  reallocation failure (tried to shrink %lu->%lu internal bytes / %lu->%lu user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
+         fflush(stdout);  // make sure this message gets out!
+      }
    }
-   return ret;
+   return newUserPtr;
 }
 
-void muscleFree(void * p)
+void muscleFree(void * userPtr)
 {
    USING_NAMESPACE(muscle);
-   if (p)
+   if (userPtr)
    {
-      size_t * s = (((size_t*)p)-1);
-      _currentlyAllocatedBytes -= *s;
+#if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
+      TCHECKPOINT;
+      MemoryParanoiaCheckBuffer(userPtr);
+#endif
+
+      size_t * internalPtr = CONVERT_USER_TO_INTERNAL_POINTER(userPtr);
+      _currentlyAllocatedBytes -= *internalPtr;
 
       MemoryAllocator * ma = _globalAllocatorRef();
-      if (ma) ma->AboutToFree(_currentlyAllocatedBytes, *s);
-//printf("-%lu = %lu\n", (uint32)*s, (uint32)_currentlyAllocatedBytes);
+      if (ma) ma->AboutToFree(_currentlyAllocatedBytes, *internalPtr);
+//printf("-%lu = %lu\n", (uint32)*internalPtr, (uint32)_currentlyAllocatedBytes);
 
-      free(s);
+#if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
+      memset(internalPtr, MEMORY_PARANOIA_DEALLOCATED_GARBAGE_VALUE, *internalPtr);  // make it obvious this memory was freed by munging it
+#endif
+
+      free(internalPtr);
    }
 }
 
@@ -193,4 +313,9 @@ void * operator new[](size_t s, nothrow_t const &) THROW LPAREN RPAREN {USING_NA
 void operator delete(  void * p) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); muscleFree(p);}
 void operator delete[](void * p) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); muscleFree(p);}
 
+#else
+# if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
+#  error "If you want to enable MUSCLE_ENABLE_MEMORY_PARANOIA, you must define MUSCLE_ENABLE_MEMORY_TRACKING also!"
+# endif
+status_t MemoryParanoiaCheckBuffer(void *, bool) {return B_NO_ERROR;}
 #endif

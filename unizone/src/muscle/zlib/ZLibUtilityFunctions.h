@@ -27,7 +27,7 @@ BEGIN_NAMESPACE(muscle);
  *               original Message if the compression didn't actually make the Message's flattened
  *               size smaller.  Defaults to true.
  */
-MessageRef DeflateMessage(MessageRef msgRef, int compressionLevel = 6, bool force=true);
+MessageRef DeflateMessage(const MessageRef & msgRef, int compressionLevel = 6, bool force=true);
 
 /** Examines the given Message, and if it is a Message in compressed form (i.e. one
  *  that was previously created by DeflateMessage()), creates and returns the
@@ -38,7 +38,7 @@ MessageRef DeflateMessage(MessageRef msgRef, int compressionLevel = 6, bool forc
  *  @param msgRef Message to examine and make an uncompressed equivalent of.
  *  @return Reference to an uncompressed Message on success, or a NULL reference on failure.
  */
-MessageRef InflateMessage(MessageRef msgRef);
+MessageRef InflateMessage(const MessageRef & msgRef);
 
 // This is the field name that we store deflated data into
 #define MUSCLE_ZLIB_FIELD_NAME "_zlib"

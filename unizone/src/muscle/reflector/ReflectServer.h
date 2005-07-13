@@ -46,7 +46,7 @@ public:
     *  @param sessionFactoryRef Reference to a factory object that can generate new sessions when needed.
     *  @return B_NO_ERROR on success, B_ERROR on failure (couldn't bind to socket?)
     */
-   virtual status_t PutAcceptFactory(uint16 port, ReflectSessionFactoryRef sessionFactoryRef);
+   virtual status_t PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & sessionFactoryRef);
     
    /** Remove a listening port callback that was previously added by PutAcceptFactory().
     *  @param port whose callback should be removed.  If (port) is set to zero, all callbacks will be removed.
@@ -67,7 +67,7 @@ public:
     * @param socket The TCP socket that the new session should use, or -1, if the new session is to have no client connection.  Note that if the session already has a gateway and DataIO installed, then the DataIO's existing socket will be used instead, and this socket will be ignored.
     * @return B_NO_ERROR if the new session was added successfully, or B_ERROR if there was an error setting it up.
     */
-   virtual status_t AddNewSession(AbstractReflectSessionRef ref, int socket);
+   virtual status_t AddNewSession(const AbstractReflectSessionRef & ref, int socket);
 
    /**
     * Like AddNewSession(), only creates a session that connects asynchronously to
@@ -82,7 +82,7 @@ public:
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error
     *                    (out-of-memory, or the connect attempt failed immediately)
     */
-   status_t AddNewConnectSession(AbstractReflectSessionRef ref, uint32 targetIPAddress, uint16 port); 
+   status_t AddNewConnectSession(const AbstractReflectSessionRef & ref, uint32 targetIPAddress, uint16 port); 
 
    /**
     * Should be called just before the ReflectServer is to be destroyed.
@@ -161,6 +161,15 @@ public:
    /** Read-only implementation of the above */
    const Hashtable<uint32, String> & GetAddressRemappingTable() const {return _remapIPs;}
 
+   /** If you wish to have a Control-C cause your server to gracefully exit, instead of rudely just
+     * killing your server process, you can call this method to enable a signal handler that
+     * will catch the interrupt signal and cause this ReflectServer's ServerProcessLoop() to exit cleanly.
+     * Note that this function is currently implemented only under Linux and OS/X; under other operating 
+     * systems it will just always return B_ERROR.
+     * @param enabled If true, managed signal handling will be enabled; if false, it will be disabled.
+     */
+   status_t SetSignalHandlingEnabled(bool enabled);
+
 protected:
    /**
     * This version of AddNewSession (which is called by the previous 
@@ -169,12 +178,12 @@ protected:
     * @param ref The new session to add.
     * @return B_NO_ERROR if the new session was added successfully, or B_ERROR if there was an error setting it up.
     */
-   virtual status_t AddNewSession(AbstractReflectSessionRef ref);
+   virtual status_t AddNewSession(const AbstractReflectSessionRef & ref);
 
    /** Called by a session to send a message to its factory.  
      * @see AbstractReflectSession::SendMessageToFactory() for details.
      */
-   status_t SendMessageToFactory(AbstractReflectSession * session, MessageRef msgRef, void * userData);
+   status_t SendMessageToFactory(AbstractReflectSession * session, const MessageRef & msgRef, void * userData);
 
    /**
     * Called by a session to get itself replaced (the
@@ -185,7 +194,7 @@ protected:
     * B_ERROR is returned, then this call is guaranteed not to
     * have had any effect on the old session.
     */
-   status_t ReplaceSession(AbstractReflectSessionRef newSession, AbstractReflectSession * replaceThisOne);
+   status_t ReplaceSession(const AbstractReflectSessionRef & newSession, AbstractReflectSession * replaceThisOne);
 
    /** Called by a session to get itself removed & destroyed */
    void EndSession(AbstractReflectSession * which);
@@ -201,17 +210,17 @@ protected:
 private:
    friend class AbstractReflectSession;
    void CleanupSockets(Queue<int> & list);  // utility method
-   void AddLameDuckSession(AbstractReflectSessionRef whoRef);
+   void AddLameDuckSession(const AbstractReflectSessionRef & whoRef);
    void AddLameDuckSession(AbstractReflectSession * who);  // convenience method ... less efficient
    void ShutdownIOFor(AbstractReflectSession * session);
    status_t ClearLameDucks();  // returns B_NO_ERROR if the server should keep going, or B_ERROR otherwise
    void DumpBoggedSessions();
-   void RemoveAcceptFactoryAux(ReflectSessionFactoryRef ref);
-   status_t FinalizeAsyncConnect(AbstractReflectSessionRef ref);
+   void RemoveAcceptFactoryAux(const ReflectSessionFactoryRef & ref);
+   status_t FinalizeAsyncConnect(const AbstractReflectSessionRef & ref);
    status_t DoAccept(uint16 port, int acceptSocket, ReflectSessionFactory * optFactory);
-   uint32 CheckPolicy(Hashtable<PolicyRef, bool> & policies, PolicyRef policyRef, const PolicyHolder & ph, uint64 now) const;
+   uint32 CheckPolicy(Hashtable<PolicyRef, bool> & policies, const PolicyRef & policyRef, const PolicyHolder & ph, uint64 now) const;
    int GetSocketFor(AbstractReflectSession * session) const;
-   void CheckForOutOfMemory(AbstractReflectSessionRef optSessionRef);
+   void CheckForOutOfMemory(const AbstractReflectSessionRef & optSessionRef);
 
    Hashtable<uint16, ReflectSessionFactoryRef> _factories;
    Queue<ReflectSessionFactoryRef> _lameDuckFactories;  // for delayed-deletion of factories when they go away
@@ -228,6 +237,13 @@ private:
 
    MemoryAllocator * _watchMemUsage; 
 };
+
+/** Returns true iff any signals were caught by the signal handler since the last time
+  * SetSignalHandlingEnabled() was called.  Will always return false if SetSignalHandlingEnabled()
+  * was never called.  Only implemented under Linux; under other operating systems it will
+  * always just return false.
+  */
+bool WasSignalCaught();
 
 END_NAMESPACE(muscle);
 

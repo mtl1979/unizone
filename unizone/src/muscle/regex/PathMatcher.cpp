@@ -35,14 +35,16 @@ status_t PathMatcher :: RemovePathString(const String & wildpath)
    return B_ERROR;
 }
 
-status_t PathMatcher :: PutPathString(const String & path, QueryFilterRef filter)
+status_t PathMatcher :: PutPathString(const String & path, const QueryFilterRef & filter)
 {
+   TCHECKPOINT;
+
    if (path.Length() > 0) 
    {
       StringMatcherQueue * newQ = GetStringMatcherQueuePool()->ObtainObject();
       if (newQ)
       {
-         StringMatcherQueueRef qRef(newQ, GetStringMatcherQueuePool());
+         StringMatcherQueueRef qRef(newQ);
 
          StringMatcherRef::ItemPool * smPool = GetStringMatcherPool();
          String temp;
@@ -55,7 +57,7 @@ status_t PathMatcher :: PutPathString(const String & path, QueryFilterRef filter
             StringMatcherRef smRef;
             if (strcmp(temp(), "*"))
             {
-               smRef.SetRef(smPool->ObtainObject(), smPool);
+               smRef.SetRef(smPool->ObtainObject());
                if ((smRef() == NULL)||(smRef()->SetPattern(temp()) != B_NO_ERROR)) return B_ERROR;
             }
             if (newQ->AddTail(smRef) != B_NO_ERROR) return B_ERROR;
@@ -73,6 +75,8 @@ status_t PathMatcher :: PutPathString(const String & path, QueryFilterRef filter
 
 status_t PathMatcher :: PutPathsFromMessage(const char * pathFieldName, const char * optFilterFieldName, const Message & msg, const char * prependIfNoLeadingSlash)
 {
+   TCHECKPOINT;
+
    status_t ret = B_NO_ERROR;
 
    QueryFilterRef filter;  // declared here so that queries can "bleed down" the list without being specified multiple times
@@ -89,7 +93,7 @@ status_t PathMatcher :: PutPathsFromMessage(const char * pathFieldName, const ch
    return ret;
 }
 
-status_t PathMatcher :: PutPathFromString(const String & str, QueryFilterRef filter, const char * prependIfNoLeadingSlash)
+status_t PathMatcher :: PutPathFromString(const String & str, const QueryFilterRef & filter, const char * prependIfNoLeadingSlash)
 {
    String s = str;
    AdjustStringPrefix(s, prependIfNoLeadingSlash);
@@ -98,6 +102,8 @@ status_t PathMatcher :: PutPathFromString(const String & str, QueryFilterRef fil
 
 status_t PathMatcher :: PutPathsFromMatcher(const PathMatcher & matcher)
 {
+   TCHECKPOINT;
+
    HashtableIterator<String, PathMatcherEntry> iter(matcher.GetEntries());
    const String * nextKey;
    const PathMatcherEntry * nextValue;
@@ -114,6 +120,8 @@ status_t PathMatcher :: PutPathsFromMatcher(const PathMatcher & matcher)
 
 bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage) const
 {
+   TCHECKPOINT;
+
    uint32 numClauses = GetPathDepth(path);
 
    HashtableIterator<String, PathMatcherEntry> iter(_entries);

@@ -78,13 +78,13 @@ private:
 /** Add a custom LogCallback object to the global log callbacks set.
  *  @param cbRef Reference to a LogCallback object. 
  */
-status_t PutLogCallback(LogCallbackRef cbRef);
+status_t PutLogCallback(const LogCallbackRef & cbRef);
 
 /** Removes the given callback from our list.  
  *  @param cbRef Reference of the LogCallback to remove from the callback list.
  *  @returns B_NO_ERROR on success, or B_ERROR if the given callback wasn't found, or the lock couldn't be locked.
  */
-status_t RemoveLogCallback(LogCallbackRef cbRef);
+status_t RemoveLogCallback(const LogCallbackRef & cbRef);
 
 /** Removes all log callbacks from the callback set
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.

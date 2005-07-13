@@ -113,8 +113,8 @@ public slots:
 	void StopSearch();
 
 private slots:
-	void AddFile(const WUserRef, const QString &, bool, MessageRef);
-	void RemoveFile(const WUserRef, const QString &);
+	void AddFile(const WUserRef &, const QString &, bool, MessageRef);
+	void RemoveFile(const WUserRef &, const QString &);
 
 	void GoSearch();
 	void ClearList();

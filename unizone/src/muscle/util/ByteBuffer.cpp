@@ -20,6 +20,8 @@ status_t ByteBuffer :: SetBuffer(uint32 numBytes, const uint8 * buffer)
 
 status_t ByteBuffer :: SetNumBytes(uint32 newNumBytes, bool retainData)
 {
+   TCHECKPOINT;
+
    if (newNumBytes > _numAllocatedBytes)
    {
       if (retainData)
@@ -60,6 +62,8 @@ status_t ByteBuffer :: SetNumBytes(uint32 newNumBytes, bool retainData)
 
 status_t ByteBuffer :: FreeExtraBytes()
 {
+   TCHECKPOINT;
+
    if (_numValidBytes < _numAllocatedBytes)
    {
       uint8 * newBuf = (uint8 *) (_allocStrategy ? _allocStrategy->Realloc(_buffer, _numValidBytes, _numAllocatedBytes, true) : muscleRealloc(_buffer, _numValidBytes));
@@ -102,20 +106,43 @@ ByteBufferRef::ItemPool * GetByteBufferPool() {return &_bufferPool;}
 
 ByteBufferRef GetByteBufferFromPool(uint32 numBytes, const uint8 * optBuffer)
 {
-   ByteBufferRef ref(_bufferPool.ObtainObject(), &_bufferPool);
+   ByteBufferRef ref(_bufferPool.ObtainObject());
    if ((ref())&&(ref()->SetBuffer(numBytes, optBuffer) != B_NO_ERROR)) ref.Reset();  // return NULL ref on out-of-memory
    return ref;
 }
 
 ByteBufferRef GetByteBufferFromPool(const ByteBuffer & copyMe)
 {
-   ByteBufferRef ref(_bufferPool.ObtainObject(), &_bufferPool);
+   ByteBufferRef ref(_bufferPool.ObtainObject());
    if (ref())
    {
       *(ref()) = copyMe;
       if ((copyMe())&&((*ref())() == NULL)) ref.Reset();  // return NULL ref on out-of-memory
    }
    return ref;
+}
+
+// These Flattenable methods are implemented here so that if you don't use them, you
+// don't need to include ByteBuffer.o in your Makefile.  If you do use them, then you
+// needed to include ByteBuffer.o in your Makefile anyway.
+
+Ref<ByteBuffer> Flattenable :: FlattenToByteBuffer() const
+{
+   ByteBufferRef bufRef = GetByteBufferFromPool(FlattenedSize());
+   if (bufRef()) Flatten(bufRef()->GetBuffer());
+   return bufRef;
+}
+
+status_t Flattenable :: FlattenToByteBuffer(ByteBuffer & outBuf) const
+{
+   if (outBuf.SetNumBytes(FlattenedSize(), false) != B_NO_ERROR) return B_ERROR;
+   Flatten(outBuf.GetBuffer());
+   return B_NO_ERROR;
+}
+
+status_t Flattenable :: UnflattenFromByteBuffer(const ByteBuffer & buf) 
+{
+   return Unflatten(buf.GetBuffer(), buf.GetNumBytes());
 }
 
 END_NAMESPACE(muscle);

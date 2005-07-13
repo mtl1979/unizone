@@ -25,7 +25,7 @@ public:
      * @param totalMaxSessions If set, this is the maximum number of simultaneous connections
      *                         we will allow to be in existence on the server at one time.
      */
-   FilterSessionFactory(ReflectSessionFactoryRef slaveRef, uint32 maxSessionsPerHost = MUSCLE_NO_LIMIT, uint32 totalMaxSessions = MUSCLE_NO_LIMIT);
+   FilterSessionFactory(const ReflectSessionFactoryRef & slaveRef, uint32 maxSessionsPerHost = MUSCLE_NO_LIMIT, uint32 totalMaxSessions = MUSCLE_NO_LIMIT);
 
    /** Destructor */
    virtual ~FilterSessionFactory();
@@ -38,7 +38,7 @@ public:
    virtual AbstractReflectSession * CreateSession(const String & remoteIP);
 
    /** Implemented to handle PR_COMMAND_(ADD/REMOVE)(BANS/REQUIRES) messages from our sessions */
-   virtual void MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msgRef, void * userData);       
+   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msgRef, void * userData);       
    /** Add a new ban pattern to our set of ban patterns 
      * @param banPattern Pattern to match against (e.g. "192.168.0.*")
      * @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
@@ -78,10 +78,10 @@ public:
    void RemoveMatchingRequirePatterns(const char * exp);
 
    /** Sets the input-bandwidth-allocation policy to apply to sessions that we create */
-   void SetInputPolicy(PolicyRef ref) {_inputPolicyRef = ref;}
+   void SetInputPolicy(const PolicyRef & ref) {_inputPolicyRef = ref;}
 
    /** Sets the output-bandwidth-allocation policy to apply to sessions that we create */
-   void SetOutputPolicy(PolicyRef ref) {_outputPolicyRef = ref;}
+   void SetOutputPolicy(const PolicyRef & ref) {_outputPolicyRef = ref;}
 
    /** Sets the new max-sessions-per-host limit -- i.e. how many sessions from any given IP address
      * may be connected to our server concurrently.

@@ -76,7 +76,7 @@ void AcceptSocketsThread :: InternalThreadEntry()
          int newSocket = Accept(_acceptSocket);
          if (newSocket >= 0)
          {
-            SocketHolderRef ref(newnothrow SocketHolder(newSocket), NULL);
+            SocketHolderRef ref(newnothrow SocketHolder(newSocket));
             MessageRef msg(GetMessageFromPool(AST_EVENT_NEW_SOCKET_ACCEPTED));
             msg()->AddTag(AST_NAME_SOCKET, ref.GetGeneric());
             (void) SendMessageToOwner(msg);

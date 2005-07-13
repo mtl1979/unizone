@@ -46,12 +46,17 @@ public:
    /** Returns the flush-partial-incoming-lines value, as set by SetFlushPartialIncomingLines(). */
    bool GetFlushPartialIncomingLines() const {return _flushPartialIncomingLines;}
 
+   /** Force any pending input to be immediately flushed out
+     * @param receiver The object to call MessageReceivedFromGateway() on, if necessary.
+     */
+   void FlushInput(AbstractGatewayMessageReceiver & receiver);
+
 protected:
    virtual int32 DoOutputImplementation(uint32 maxBytes = MUSCLE_NO_LIMIT);
    virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT);
 
 private:
-   MessageRef AddIncomingText(MessageRef msg, const char * s);
+   MessageRef AddIncomingText(const MessageRef & msg, const char * s);
 
    MessageRef _currentSendingMessage;
    String _currentSendText;

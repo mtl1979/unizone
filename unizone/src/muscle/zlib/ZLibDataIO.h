@@ -28,7 +28,7 @@ public:
      * @param compressionLevel how much to compress outgoing data.  0 is no
      *                         compression 9 is maximum compression.  Default is 6.
      */
-   ZLibDataIO(DataIORef slaveIO, int compressionLevel = 6);
+   ZLibDataIO(const DataIORef & slaveIO, int compressionLevel = 6);
 
    /** Destructor */
    virtual ~ZLibDataIO();
@@ -51,7 +51,7 @@ public:
    DataIORef GetSlaveIO() const {return _slaveIO;}
 
    /** Sets our slave DataIO object, and resets our state. */
-   void SetSlaveIO(DataIORef ref);
+   void SetSlaveIO(const DataIORef & ref);
 
 private:
    void Init();

@@ -87,6 +87,8 @@ public:
    /** Returns an iterator that can be used to iterate over our set of child PulseNodes. */
    HashtableIterator<PulseNode *, bool> GetPulseChildrenIterator() const {return _children.GetIterator();}
 
+   const Hashtable<PulseNode *, bool> & GetChildren() const {return _children;}
+
    /** Returns when this object wants its call to Pulse() scheduled next, or MUSCLE_TIME_NEVER 
     *  if it has no call to Pulse() currently scheduled. 
     */

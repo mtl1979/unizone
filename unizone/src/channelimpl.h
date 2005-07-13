@@ -77,7 +77,7 @@ public slots:
 	void UpdateTopic();
 	void NewChannelText(const QString &, const QString &, const QString &);
 	void ChannelAdminsChanged(const QString &, const QString &);
-	void UserDisconnected(const QString &, const QString &);
+	void UserDisconnected(const WUserRef &);
 
 };
 

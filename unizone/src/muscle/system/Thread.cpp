@@ -164,17 +164,17 @@ void Thread :: ShutdownInternalThread(bool waitForThread)
    }
 }
 
-status_t Thread :: SendMessageToInternalThread(MessageRef ref) 
+status_t Thread :: SendMessageToInternalThread(const MessageRef & ref) 
 {
    return SendMessageAux(MESSAGE_THREAD_INTERNAL, ref);
 }
 
-status_t Thread :: SendMessageToOwner(MessageRef ref)
+status_t Thread :: SendMessageToOwner(const MessageRef & ref)
 {
    return SendMessageAux(MESSAGE_THREAD_OWNER, ref);
 }
 
-status_t Thread :: SendMessageAux(int whichQueue, MessageRef replyRef)
+status_t Thread :: SendMessageAux(int whichQueue, const MessageRef & replyRef)
 {
    status_t ret = B_ERROR;
    ThreadSpecificData & tsd = _threadData[whichQueue];
@@ -312,7 +312,7 @@ void Thread :: InternalThreadEntry()
    } 
 }
 
-status_t Thread :: MessageReceivedFromOwner(MessageRef ref, uint32)
+status_t Thread :: MessageReceivedFromOwner(const MessageRef & ref, uint32)
 {
    return ref() ? B_NO_ERROR : B_ERROR;
 }

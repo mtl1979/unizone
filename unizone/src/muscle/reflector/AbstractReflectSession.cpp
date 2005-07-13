@@ -15,6 +15,8 @@ static uint32 _idCounter = 0L;
 AbstractReflectSession ::
 AbstractReflectSession() : _port(0), _connectingAsync(false), _asyncConnectIP(0), _asyncConnectPort(0), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER)
 {
+   TCHECKPOINT;
+
    Mutex * ml = GetGlobalMuscleLock();
    MASSERT(ml, "Please instantiate a CompleteSetupSystem object on the stack before creating any session objects (at beginning of main() is preferred)\n");
    if (ml->Lock() == B_NO_ERROR) 
@@ -32,6 +34,8 @@ AbstractReflectSession() : _port(0), _connectingAsync(false), _asyncConnectIP(0)
 AbstractReflectSession ::
 ~AbstractReflectSession() 
 {
+   TCHECKPOINT;
+
    SetInputPolicy(PolicyRef());   // make sure the input policy knows we're going away
    SetOutputPolicy(PolicyRef());  // make sure the output policy knows we're going away
 }
@@ -61,7 +65,7 @@ GetSessionIDString() const
 
 status_t 
 AbstractReflectSession ::
-AddOutgoingMessage(MessageRef ref) 
+AddOutgoingMessage(const MessageRef & ref) 
 {
    MASSERT(IsAttachedToServer(), "Can't call AddOutgoingMessage() while not attached to the server");
    return (_gateway()) ? _gateway()->AddOutgoingMessage(ref) : B_ERROR;
@@ -71,6 +75,8 @@ status_t
 AbstractReflectSession ::
 Reconnect()
 {
+   TCHECKPOINT;
+
    MASSERT(IsAttachedToServer(), "Can't call Reconnect() while not attached to the server");
    if ((_asyncConnectIP > 0)&&(_gateway()))
    {
@@ -85,7 +91,7 @@ Reconnect()
          DataIO * io = CreateDataIO(socket);
          if (io)
          {
-            _gateway()->SetDataIO(DataIORef(io, NULL));
+            _gateway()->SetDataIO(DataIORef(io));
             if (isReady) AsyncConnectCompleted();
                     else _connectingAsync = true;
             _scratchReconnected = true;   // tells ReflectServer() not to shut down our new IO!
@@ -124,8 +130,10 @@ ClientConnectionClosed()
 
 void
 AbstractReflectSession ::
-BroadcastToAllSessions(MessageRef msgRef, void * userData, bool toSelf)
+BroadcastToAllSessions(const MessageRef & msgRef, void * userData, bool toSelf)
 {
+   TCHECKPOINT;
+
    HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
    AbstractReflectSessionRef * next;
    while((next = iter.GetNextValue()) != NULL)
@@ -137,8 +145,10 @@ BroadcastToAllSessions(MessageRef msgRef, void * userData, bool toSelf)
 
 void
 AbstractReflectSession ::
-BroadcastToAllFactories(MessageRef msgRef, void * userData)
+BroadcastToAllFactories(const MessageRef & msgRef, void * userData)
 {
+   TCHECKPOINT;
+
    HashtableIterator<uint16, ReflectSessionFactoryRef> iter = GetFactories();
    ReflectSessionFactoryRef * next;
    while((next = iter.GetNextValue()) != NULL)
@@ -153,10 +163,12 @@ void AbstractReflectSession :: AsyncConnectCompleted()
    // empty
 }
 
-void AbstractReflectSession :: SetInputPolicy(PolicyRef newRef) {SetPolicyAux(_inputPolicyRef, _maxInputChunk, newRef, true);}
-void AbstractReflectSession :: SetOutputPolicy(PolicyRef newRef) {SetPolicyAux(_outputPolicyRef, _maxOutputChunk, newRef, true);}
-void AbstractReflectSession :: SetPolicyAux(PolicyRef & myRef, uint32 & chunk, PolicyRef newRef, bool isInput)
+void AbstractReflectSession :: SetInputPolicy(const PolicyRef & newRef) {SetPolicyAux(_inputPolicyRef, _maxInputChunk, newRef, true);}
+void AbstractReflectSession :: SetOutputPolicy(const PolicyRef & newRef) {SetPolicyAux(_outputPolicyRef, _maxOutputChunk, newRef, true);}
+void AbstractReflectSession :: SetPolicyAux(PolicyRef & myRef, uint32 & chunk, const PolicyRef & newRef, bool isInput)
 {
+   TCHECKPOINT;
+
    if (newRef != myRef)
    {
       PolicyHolder ph(this, isInput);
@@ -169,7 +181,7 @@ void AbstractReflectSession :: SetPolicyAux(PolicyRef & myRef, uint32 & chunk, P
 
 status_t
 AbstractReflectSession ::
-ReplaceSession(AbstractReflectSessionRef replaceMeWithThis)
+ReplaceSession(const AbstractReflectSessionRef & replaceMeWithThis)
 {
    MASSERT(IsAttachedToServer(), "Can't call ReplaceSession() while not attached to the server");
    return _owner->ReplaceSession(replaceMeWithThis, this);
@@ -238,6 +250,8 @@ int32
 AbstractReflectSession ::
 DoOutput(uint32 maxBytes)
 {
+   TCHECKPOINT;
+
    return _gateway() ? _gateway()->DoOutput(maxBytes) : 0;
 }
 
@@ -255,8 +269,10 @@ ReflectSessionFactory ::
 
 void
 ReflectSessionFactory ::
-BroadcastToAllSessions(MessageRef msgRef, void * userData)
+BroadcastToAllSessions(const MessageRef & msgRef, void * userData)
 {
+   TCHECKPOINT;
+
    HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
    AbstractReflectSessionRef * next;
    while((next = iter.GetNextValue()) != NULL)
@@ -268,8 +284,10 @@ BroadcastToAllSessions(MessageRef msgRef, void * userData)
 
 void
 ReflectSessionFactory ::
-BroadcastToAllFactories(MessageRef msgRef, void * userData, bool toSelf)
+BroadcastToAllFactories(const MessageRef & msgRef, void * userData, bool toSelf)
 {
+   TCHECKPOINT;
+
    HashtableIterator<uint16, ReflectSessionFactoryRef> iter = GetFactories();
    ReflectSessionFactoryRef * next;
    while((next = iter.GetNextValue()) != NULL)

@@ -20,6 +20,8 @@ int32
 RawDataMessageIOGateway ::
 DoOutputImplementation(uint32 maxBytes)
 {
+   TCHECKPOINT;
+
    const Message * msg = _sendMsgRef();
    if (msg == NULL) 
    {
@@ -61,6 +63,8 @@ int32
 RawDataMessageIOGateway ::
 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes)
 {
+   TCHECKPOINT;
+
    int32 ret = 0;
    Message * inMsg = _recvMsgRef();
    if (_minChunkSize > 0)
@@ -109,7 +113,7 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
          // demand-allocate a scratch buffer
          const uint32 maxScratchSpaceSize = 8192;  // we probably won't ever get more than this much at once anyway
          _recvScratchSpaceSize = (_maxChunkSize < maxScratchSpaceSize) ? _maxChunkSize : maxScratchSpaceSize;
-         _recvScratchSpace = newnothrow uint8[_recvScratchSpaceSize];
+         _recvScratchSpace = newnothrow_array(uint8, _recvScratchSpaceSize);
          if (_recvScratchSpace == NULL)
          {
             WARN_OUT_OF_MEMORY;
@@ -141,6 +145,8 @@ void
 RawDataMessageIOGateway ::
 Reset()
 {
+   TCHECKPOINT;
+
    AbstractMessageIOGateway::Reset();
    _sendMsgRef.Reset();
    _recvMsgRef.Reset();

@@ -93,7 +93,7 @@ public:
      * @param msg Reference to the message that is to be given to the internal thread. 
      * @return B_NO_ERROR on success, or B_ERROR on failure (out of memory)
      */
-   virtual status_t SendMessageToInternalThread(MessageRef msg);
+   virtual status_t SendMessageToInternalThread(const MessageRef & msg);
 
    /** This method attempts to retrieve the next reply message that has been
      * sent back to the main thread by the internal thread (via SendMessageToOwner()).
@@ -220,7 +220,7 @@ protected:
      * @return B_NO_ERROR if you wish to continue processing, or B_ERROR if you wish to
      *                    terminate the internal thread and go away.
      */
-   virtual status_t MessageReceivedFromOwner(MessageRef msgRef, uint32 numLeft);
+   virtual status_t MessageReceivedFromOwner(const MessageRef & msgRef, uint32 numLeft);
 
    /** May be called by the internal thread to send a Message back to the owning thread.
      * Puts the given MessageRef into the replies queue, and then calls SignalOwner()
@@ -228,7 +228,7 @@ protected:
      * @param replyRef MessageRef to send back to the owning thread.
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
      */
-   status_t SendMessageToOwner(MessageRef replyRef);
+   status_t SendMessageToOwner(const MessageRef & replyRef);
 
    /** You may override this method to be your Thread's execution entry point.  
      * Default implementation runs in a loop calling WaitForNextMessageFromOwner() and
@@ -350,7 +350,7 @@ private:
    status_t StartInternalThreadAux();
    int GetThreadWakeupSocketAux(ThreadSpecificData & tsd);
    int32 WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref, uint64 wakeupTime = MUSCLE_TIME_NEVER);
-   status_t SendMessageAux(int whichQueue, MessageRef ref);
+   status_t SendMessageAux(int whichQueue, const MessageRef & ref);
    void SignalAux(int whichSocket);
    void InternalThreadEntryAux();
 

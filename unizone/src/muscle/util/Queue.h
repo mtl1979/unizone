@@ -340,10 +340,10 @@ public:
    /** Returns true iff the (prefixQueue) is a prefix of this queue. */
    bool StartsWith(const Queue<ItemType> & prefixQueue) const;
 
-   /** Returns true iff the last item in our queue is equal to (prefix). */
-   bool EndsWith(const ItemType & prefix) const {return ((GetNumItems()>0)&&(Tail() == prefix));}
+   /** Returns true iff the last item in our queue is equal to (suffix). */
+   bool EndsWith(const ItemType & suffix) const {return ((GetNumItems()>0)&&(Tail() == suffix));}
 
-   /** Returns true iff the (prefixQueue) is a suffix of this queue. */
+   /** Returns true iff the (suffixQueue) is a suffix of this queue. */
    bool EndsWith(const Queue<ItemType> & suffixQueue) const;
 
    /**
@@ -703,7 +703,7 @@ EnsureSize(uint32 size, bool setNumItems, uint32 extraPreallocs)
       uint32 temp    = size + extraPreallocs;
       uint32 newQLen = muscleMax(_initialSize, ((setNumItems)||(temp <= sqLen)) ? muscleMax(sqLen,temp) : temp);
 
-      ItemType * newQueue = ((_queue == _smallQueue)||(newQLen > sqLen)) ? newnothrow ItemType[newQLen] : _smallQueue;
+      ItemType * newQueue = ((_queue == _smallQueue)||(newQLen > sqLen)) ? newnothrow_array(ItemType,newQLen) : _smallQueue;
       if (newQueue == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
       if (newQueue == _smallQueue) newQLen = sqLen;
       

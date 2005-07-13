@@ -88,6 +88,12 @@ public:
     * If this DataIO is usable with select(), this method should return
     * the socket FD to select on to watch this DataIO.  If it isn't usable
     * with select, then this method should return -1.
+    *
+    * Note that the only thing you are allowed to do with the returned file descriptor
+    * is pass it to select().  For all other operations, use the appropriate
+    * methods in the DataIO interface.  If you attempt to do any other I/O operations
+    * on this file descriptor directly, the results are non-portable and undefined 
+    * and will probably break your program.
     */
    virtual int GetSelectSocket() const = 0;
 
@@ -121,6 +127,34 @@ public:
     *            implementation is a no-op.
     */
    virtual void WriteBufferedOutput() {/* empty */}
+
+   /** Convenience method:  Calls Write() in a loop until the entire buffer is written, or
+     * until an error occurs.  This method should only be used in conjunction with 
+     * blocking I/O; it will not work reliably with non-blocking I/O.
+     * @param buffer Pointer to the first byte of the buffer to write.
+     * @param size Number of bytes to write
+     * @return The number of bytes that were actually written.  On success,
+     *         This will be equal to (size).  On failure, it will be a smaller value.
+     */
+   uint32 WriteFully(const void * buffer, uint32 size);
+   
+   /** Convenience method:  Calls Read() in a loop until the entire buffer is written, or
+     * until an error occurs.  This method should only be used in conjunction with 
+     * blocking I/O; it will not work reliably with non-blocking I/O.
+     * @param buffer Pointer to the first byte of the buffer to read.
+     * @param size Number of bytes to read
+     * @return The number of bytes that were actually read.  On success,
+     *         This will be equal to (size).  On failure, it will be a smaller value.
+     */
+   uint32 ReadFully(void * buffer, uint32 size);
+
+   /** Convenience method:  Determines the length of this DataIO stream by Seek()'ing
+     * to the end of the stream, recording the current seek position, and then
+     * Seek()'ing back to the previous position in the stream.  Of course this only
+     * works with DataIOs that support seeking and have a fixed length.
+     * @returns The total length of this DataIO in bytes, or -1 on error.
+     */
+   virtual int64 GetLength();
 };
 
 typedef Ref<DataIO> DataIORef;

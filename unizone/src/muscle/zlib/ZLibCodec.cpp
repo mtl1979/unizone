@@ -19,6 +19,8 @@ static void muscleZLibFree(void *, void * address) {USING_NAMESPACE(muscle); mus
 
 ZLibCodec :: ZLibCodec(int compressionLevel) : _compressionLevel(muscleClamp(compressionLevel, 0, 9))
 {
+   TCHECKPOINT;
+
    InitStream(_inflater);
    _inflateOkay = (inflateInit(&_inflater) == Z_OK);
 
@@ -28,6 +30,8 @@ ZLibCodec :: ZLibCodec(int compressionLevel) : _compressionLevel(muscleClamp(com
 
 ZLibCodec :: ~ZLibCodec()
 {
+   TCHECKPOINT;
+
    if (_inflateOkay)
    {
       inflateEnd(&_inflater);
@@ -61,6 +65,8 @@ static const uint32 ZLIB_CODEC_HEADER_SIZE  = sizeof(uint32)+sizeof(uint32);  //
 
 ByteBufferRef ZLibCodec :: Deflate(const ByteBuffer & rawData, bool independent)
 {
+   TCHECKPOINT;
+
    ByteBufferRef ret; 
    const uint8 * rawBytes = rawData.GetBuffer();
    uint32 numRaw = rawData.GetNumBytes();
@@ -105,6 +111,8 @@ ByteBufferRef ZLibCodec :: Deflate(const ByteBuffer & rawData, bool independent)
 
 int32 ZLibCodec :: GetInflatedSize(const ByteBuffer & compressedData, bool * optRetIsIndependent) const
 {
+   TCHECKPOINT;
+
    const uint8 * compBytes = compressedData.GetBuffer();
    if ((compBytes)&&(compressedData.GetNumBytes() >= ZLIB_CODEC_HEADER_SIZE))
    {
@@ -121,6 +129,8 @@ int32 ZLibCodec :: GetInflatedSize(const ByteBuffer & compressedData, bool * opt
 
 ByteBufferRef ZLibCodec :: Inflate(const ByteBuffer & compressedData)
 {
+   TCHECKPOINT;
+
    ByteBufferRef ret;
 
    bool independent;

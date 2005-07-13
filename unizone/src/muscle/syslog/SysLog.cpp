@@ -13,6 +13,30 @@
 
 BEGIN_NAMESPACE(muscle);
 
+status_t PrintStackTrace(uint32 maxDepth)
+{
+   TCHECKPOINT;
+
+#ifdef __linux__
+   const uint32 MAX_DEPTH = 256;
+   void *array[MAX_DEPTH];
+   size_t size = backtrace(array, muscleMin(maxDepth, MAX_DEPTH));
+   char ** strings = backtrace_symbols(array, size);
+   if (strings)
+   {
+      printf("--Stack trace follows (%zd frames):\n", size);
+      for (size_t i = 0; i < size; i++) printf("  %s\n", strings[i]);
+      printf("--End Stack trace\n");
+      free(strings);
+      return B_NO_ERROR;
+   }
+#else
+   (void) maxDepth;  // shut the compiler up
+#endif
+
+   return B_ERROR;  // I don't know how to do this for other systems!
+}
+
 #ifndef MUSCLE_INLINE_LOGGING
 
 // VC++ can't handle partial template specialization, so we'll do it explicitly here
@@ -116,6 +140,8 @@ LogLineCallback :: ~LogLineCallback()
 
 void LogLineCallback :: Log(time_t when, int logLevel, const char * format, va_list argList)
 {
+   TCHECKPOINT;
+
    // Generate the new text
 #ifdef __MWERKS__
    int bytesAttempted = vsprintf(_writeTo, format, argList);  // BeOS/PPC doesn't know vsnprintf :^P
@@ -167,6 +193,8 @@ void LogLineCallback :: Log(time_t when, int logLevel, const char * format, va_l
  
 void LogLineCallback :: Flush()
 {
+   TCHECKPOINT;
+
    if (_writeTo > _buf)
    {
       LogLine(_lastLogWhen, _lastLogLevel, _buf);
@@ -299,6 +327,8 @@ void GetStandardLogLinePreamble(char * buf, int logLevel, time_t when)
 
 status_t LogTime(int ll, const char * fmt, ...)
 {
+   TCHECKPOINT;
+
    if (LockLog() == B_NO_ERROR)
    {
       if (_inLogCall == false)
@@ -321,9 +351,8 @@ status_t LogTime(int ll, const char * fmt, ...)
             DO_LOGGING(n);
          }
          _inLogCall = false;
-
-         (void) UnlockLog();
       }
+      (void) UnlockLog();
 
       return B_NO_ERROR;
    }
@@ -332,6 +361,8 @@ status_t LogTime(int ll, const char * fmt, ...)
 
 status_t LogFlush()
 {
+   TCHECKPOINT;
+
    if (LockLog() == B_NO_ERROR)
    {
       HashtableIterator<LogCallbackRef, bool> iter(_logCallbacks);
@@ -343,23 +374,26 @@ status_t LogFlush()
    else return B_ERROR; 
 }
 
-status_t LogStackTrace(int ll)
+status_t LogStackTrace(int ll, uint32 maxDepth)
 {
+   TCHECKPOINT;
+
 #ifdef __linux__
-   const uint32 MAX_DEPTH = 64;
+   const uint32 MAX_DEPTH = 256;
    void *array[MAX_DEPTH];
-   size_t size = backtrace(array, MAX_DEPTH);
+   size_t size = backtrace(array, muscleMin(maxDepth, MAX_DEPTH));
    char ** strings = backtrace_symbols(array, size);
    if (strings)
    {
       LogTime(ll, "--Stack trace follows (%zd frames):\n", size);
       for (size_t i = 0; i < size; i++) LogTime(ll, "  %s\n", strings[i]);
       LogTime(ll, "--End Stack trace\n");
-      free (strings);
+      free(strings);
       return B_NO_ERROR;
    }
 #else
-   (void) ll;  // shut the compiler up
+   (void) ll;        // shut the compiler up
+   (void) maxDepth;  // shut the compiler up
 #endif
 
    return B_ERROR;  // I don't know how to do this for other systems!
@@ -367,6 +401,8 @@ status_t LogStackTrace(int ll)
 
 status_t Log(int ll, const char * fmt, ...)
 {
+   TCHECKPOINT;
+
    if (LockLog() == B_NO_ERROR)
    {
       if (_inLogCall == false)
@@ -377,15 +413,14 @@ status_t Log(int ll, const char * fmt, ...)
             DO_LOGGING(n);
          }
          _inLogCall = false;
-
-         (void) UnlockLog();
       }
+      (void) UnlockLog();
       return B_NO_ERROR;
    }
    else return B_ERROR;
 }
 
-status_t PutLogCallback(LogCallbackRef cb)
+status_t PutLogCallback(const LogCallbackRef & cb)
 {
    status_t ret = B_ERROR;
    if (LockLog() == B_NO_ERROR)
@@ -407,13 +442,13 @@ status_t ClearLogCallbacks()
    return ret;
 }
 
-status_t RemoveLogCallback(LogCallbackRef cb)
+status_t RemoveLogCallback(const LogCallbackRef & cb)
 {
    status_t ret = B_ERROR;
    if (LockLog() == B_NO_ERROR)
    {
       ret = _logCallbacks.Remove(cb);
-      UnlockLog();
+      (void) UnlockLog();
    }
    return ret;
 }

@@ -78,7 +78,7 @@ public:
      * @param slaveRef Reference to another MemoryAllocator that we will pass all our method calls on through to.
      *                 If (slaveRef) is NULL, default behaviour (always allow, no-op failures) will be used.
      */
-   ProxyMemoryAllocator(MemoryAllocatorRef slaveRef) : _slaveRef(slaveRef) {/* empty */}
+   ProxyMemoryAllocator(const MemoryAllocatorRef & slaveRef) : _slaveRef(slaveRef) {/* empty */}
 
    /** Destructor */
    virtual ~ProxyMemoryAllocator() {/* empty */}
@@ -105,7 +105,7 @@ public:
      * @param maxBytes The maximum number of bytes that we will allow (slave) to allocate.  Defaults to no limit.
      *                 This value may be reset later using SetMaxNumBytes().
      */
-   UsageLimitProxyMemoryAllocator(MemoryAllocatorRef slaveRef, size_t maxBytes = MUSCLE_NO_LIMIT);
+   UsageLimitProxyMemoryAllocator(const MemoryAllocatorRef & slaveRef, size_t maxBytes = MUSCLE_NO_LIMIT);
 
    /** Destructor.  */
    virtual ~UsageLimitProxyMemoryAllocator();
@@ -179,7 +179,7 @@ public:
    /** Constructor.  
      * @param slaveRef Reference to a sub-MemoryAllocator whose methods we will call through to.
      */
-   AutoCleanupProxyMemoryAllocator(MemoryAllocatorRef slaveRef) : ProxyMemoryAllocator(slaveRef) {/* empty */}
+   AutoCleanupProxyMemoryAllocator(const MemoryAllocatorRef & slaveRef) : ProxyMemoryAllocator(slaveRef) {/* empty */}
 
    /** Destructor.  Calls ClearCallbacks(). */
    virtual ~AutoCleanupProxyMemoryAllocator() {/* empty */}

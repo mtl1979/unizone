@@ -70,7 +70,7 @@ public:
    /** Returns a socket that can be select()'d on for notifications of read/write availability.
     *  Even works under Windows (in non-blocking mode, anyway), despite Microsoft's best efforts 
     *  to make such a thing impossible :^P Note that you should only use this socket with select(); 
-    *  to read or write to/from the serial port, call Read() and Write() instead.
+    *  to read or write to/from the child process, call Read() and Write() instead.
     */
    virtual int GetSelectSocket() const;
 

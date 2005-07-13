@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include "serverclient.h"
 #include "debugimpl.h"
 #include "global.h"
@@ -20,8 +24,8 @@ ServerClient::ServerClient(QObject *owner)
 	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
-			this, SLOT(MessageReceived(MessageRef, const String &)));
+	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
+			this, SLOT(MessageReceived(const MessageRef &, const String &)));
 
 	connect(qmtt, SIGNAL(SessionConnected(const String &)),
 			this, SLOT(SessionConnected(const String &)));
@@ -36,7 +40,7 @@ ServerClient::~ServerClient()
 }
 
 void
-ServerClient::MessageReceived(MessageRef msg, const String & /* sessionID */)
+ServerClient::MessageReceived(const MessageRef & msg, const String & /* sessionID */)
 {
 	if (msg())
 	{

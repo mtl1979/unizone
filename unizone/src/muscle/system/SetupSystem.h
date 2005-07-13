@@ -138,8 +138,10 @@ public:
      */
    CompleteSetupSystem(bool muscleSingleThreadOnly = false) : _threads(muscleSingleThreadOnly) {/* empty */}
 
-   /** Destructor.  All held subsystems get destroyed here. */
-   ~CompleteSetupSystem() {/* empty */}
+   /** Destructor.  Calls AbstractObjectRecycler::GlobalFlushAllCachedObjects() to ensure
+     * that objects don't get recycled after their object pools have been deleted.
+     */
+   ~CompleteSetupSystem();
 
 private: 
    NetworkSetupSystem _network;

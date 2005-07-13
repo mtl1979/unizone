@@ -90,7 +90,7 @@ public:
      *                    If left as NULL, the default distribution path will be used.
      * @returns B_NO_ERROR if the message was enqueued successfully, or B_ERROR if out-of-memory
      */
-   virtual status_t SendMessageToSessions(MessageRef msgRef, const char * optDistPath = NULL);
+   virtual status_t SendMessageToSessions(const MessageRef & msgRef, const char * optDistPath = NULL);
 
    /**
      * Adds a new session that will use the given socket for its I/O.
@@ -107,7 +107,7 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */  
-   virtual status_t AddNewSession(int socket, AbstractReflectSessionRef optSessionRef);
+   virtual status_t AddNewSession(int socket, const AbstractReflectSessionRef & optSessionRef);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
    status_t AddNewSession(int socket) {return AddNewSession(socket, AbstractReflectSessionRef());}
@@ -127,7 +127,7 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t AddNewConnectSession(uint32 targetIPAddress, uint16 port, AbstractReflectSessionRef optSessionRef);
+   virtual status_t AddNewConnectSession(uint32 targetIPAddress, uint16 port, const AbstractReflectSessionRef & optSessionRef);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
    status_t AddNewConnectSession(uint32 targetIPAddress, uint16 port) {return AddNewConnectSession(targetIPAddress, port, AbstractReflectSessionRef());}
@@ -147,7 +147,7 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef);
+   virtual status_t AddNewConnectSession(const String & targetHostName, uint16 port, const AbstractReflectSessionRef & optSessionRef);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
    status_t AddNewConnectSession(const String & targetHostName, uint16 port) {return AddNewConnectSession(targetHostName, port, AbstractReflectSessionRef());}
@@ -165,7 +165,7 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the put command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t PutAcceptFactory(uint16 port, ReflectSessionFactoryRef optFactoryRef);
+   virtual status_t PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & optFactoryRef);
 
    /** Convenience method -- calls the above method with a NULL factory reference. */
    status_t PutAcceptFactory(uint16 port) {return PutAcceptFactory(port, ReflectSessionFactoryRef());}
@@ -249,7 +249,7 @@ public:
      * @returns B_NO_ERROR on success (in which case an MTT_EVENT_OUTPUT_QUEUES_DRAINED event will be
      *          forthcoming) or B_ERROR on error (out of memory).
      */
-   status_t RequestOutputQueuesDrainedNotification(MessageRef notificationMsg, const char * optDistPath = NULL, DrainTag * optDrainTag = NULL);
+   status_t RequestOutputQueuesDrainedNotification(const MessageRef & notificationMsg, const char * optDistPath = NULL, DrainTag * optDrainTag = NULL);
 
    /**
      * Tells the specified worker session(s) to install a new input IOPolicy.
@@ -261,7 +261,7 @@ public:
      *                    A NULL path (the default) means affect all worker sessions.
      * @return B_NO_ERROR on success, or B_ERROR on failure.
      */
-   status_t SetNewInputPolicy(PolicyRef pref, const char * optDistPath = NULL);
+   status_t SetNewInputPolicy(const PolicyRef & pref, const char * optDistPath = NULL);
 
    /**
      * Tells the specified worker session(s) to install a new output IOPolicy.
@@ -273,7 +273,7 @@ public:
      *                    A NULL path (the default) means affect all worker sessions.
      * @return B_NO_ERROR on success, or B_ERROR on failure.
      */
-   status_t SetNewOutputPolicy(PolicyRef pref, const char * optDistPath = NULL);
+   status_t SetNewOutputPolicy(const PolicyRef & pref, const char * optDistPath = NULL);
 
    /**
      * Tells the specified worker session(s) to switch to a different message encoding 
@@ -327,8 +327,8 @@ protected:
 private:
    friend class ThreadSupervisorSession;
    status_t EnsureServerAllocated();
-   status_t SendAddNewSessionMessage(AbstractReflectSessionRef sessionRef, int socket, const char * hostName, uint32 hostIP, uint16 port);
-   status_t SetNewPolicyAux(uint32 what, PolicyRef pref, const char * optDistPath);
+   status_t SendAddNewSessionMessage(const AbstractReflectSessionRef & sessionRef, int socket, const char * hostName, uint32 hostIP, uint16 port);
+   status_t SetNewPolicyAux(uint32 what, const PolicyRef & pref, const char * optDistPath);
 
    ReflectServer * _server;
    String _defaultDistributionPath;
@@ -360,10 +360,10 @@ public:
    virtual void AsyncConnectCompleted();
 
    /** Overridden to wrap incoming messages and pass them along to our supervisor session */
-   virtual void MessageReceivedFromGateway(MessageRef msg, void * userData);
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
 
    /** Overriden to handle messages from our supervisor session */
-   virtual void MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msg, void * userData);
+   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
 
    /** Returns a human-readable label for this session type:  "ThreadWorker" */
    virtual const char * GetTypeName() const {return "ThreadWorker";}
@@ -414,13 +414,13 @@ public:
    /** Overridden to deal with the MessageTransceiverThread.  If you are subclassing
      * ThreadSupervisorSession, don't override this method; override MessageReceivedFromOwner() instead.
      */
-   virtual void MessageReceivedFromGateway(MessageRef msg, void * userData);
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
 
    /** Overridden to handle messages coming from the ThreadWorkerSessions. */
-   virtual void MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msg, void * userData);
+   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
 
    /** Overriden to handle messages from factories */
-   virtual void MessageReceivedFromFactory(ReflectSessionFactory & from, MessageRef msg, void * userData);
+   virtual void MessageReceivedFromFactory(ReflectSessionFactory & from, const MessageRef & msg, void * userData);
 
    /** Overridden to end the server (and hence, the thread) if our connection to the thread is broken. 
      * (this shouldn't ever happen, but just in case...)
@@ -447,15 +447,15 @@ protected:
      * @param numLeft Number of messages still pending in the message queue
      * @returns B_NO_ERROR on success, or B_ERROR if the thread should go away.
      */
-   virtual status_t MessageReceivedFromOwner(MessageRef msg, uint32 numLeft);
+   virtual status_t MessageReceivedFromOwner(const MessageRef & msg, uint32 numLeft);
 
 private:
    friend class MessageTransceiverThread;
    friend class DrainTag;
 
    void DrainTagIsBeingDeleted(DrainTag * tag);
-   void DistributeMessageToWorkers(MessageRef distMsg);
-   status_t AddNewWorkerConnectSession(AbstractReflectSessionRef sessionRef, uint32 hostIP, uint16 port);
+   void DistributeMessageToWorkers(const MessageRef & distMsg);
+   status_t AddNewWorkerConnectSession(const AbstractReflectSessionRef & sessionRef, uint32 hostIP, uint16 port);
 
    Hashtable<DrainTag *, bool> _drainTags;
    String _defaultDistributionPath;
@@ -483,7 +483,7 @@ private:
 
    void SetNotify(ThreadSupervisorSession * notify) {_notify = notify;}
    MessageRef GetReplyMessage() const {return _replyRef;}
-   void SetReplyMessage(MessageRef ref) {_replyRef = ref;}
+   void SetReplyMessage(const MessageRef & ref) {_replyRef = ref;}
 
    ThreadSupervisorSession * _notify;
    MessageRef _replyRef;

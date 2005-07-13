@@ -13,8 +13,12 @@
 
 #include <string.h>
 #include "support/MuscleSupport.h"
+#include "dataio/DataIO.h"
+#include "util/RefCount.h"
 
 BEGIN_NAMESPACE(muscle);
+
+class ByteBuffer;  // forward reference to avoid chicken-and-egg problems
 
 /** This class is an interface representing an object that knows how
  *  to save itself into an array of bytes, and recover its state from
@@ -122,6 +126,49 @@ public:
       return B_NO_ERROR;
    };
 
+   /** Convenience method.  Flattens this object into the supplied ByteBuffer object. 
+     * @param outBuf the ByteBuffer to dump our flattened bytes into.  
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
+     */
+   status_t FlattenToByteBuffer(ByteBuffer & outBuf) const;
+
+   /** Convenience method.  Unflattens this object from the supplied ByteBuffer object.
+     * @param buf The ByteBuffer to unflatten from.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure.
+     */
+   status_t UnflattenFromByteBuffer(const ByteBuffer & buf);
+
+   /** Convenience method.  Allocated an appropriately sized ByteBuffer object via GetByteBufferFromPool(), Flatten()s
+     * this object into the byte buffer, and returns the resulting ByteBufferRef.  Returns a NULL reference on failure (out of memory?)
+     */ 
+   Ref<ByteBuffer> FlattenToByteBuffer() const;
+
+   /** Convenience method.  Flattens this object to the given DataIO object.
+     * @param io The DataIO object to send our flattened data to.  This DataIO should be in blocking I/O mode; this method won't work reliably
+     *                      if used with non-blocking I/O.
+     * @param addSizeHeader If true, we will prefix our flattened data with a four-byte little-endian uint32 indicating the number of bytes
+     *                      of flattened data that we are going to write.  If false, then the buffer size will need to be determined by
+     *                      the reading code by some other means.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure.
+     */
+   status_t FlattenToDataIO(DataIO & outputStream, bool addSizeHeader) const;
+
+   /** Convenience method.  Flattens this object from the given DataIO object.
+     * @param inputStream the DataIO object to read data from.  This DataIO should be in blocking I/O mode; this method won't work reliably
+     *                    if used with non-blocking I/O.
+     * @param optReadSize If non-negative, this many bytes will be read from (inputStream).  If set to -1, then the first four
+     *                    bytes read from the stream will be used to determine how many more bytes should be read from the stream.
+     *                    If the data was created with Flatten(io, true), then set this parameter to -1.
+     * @param optMaxReadSize An optional value indicating the largest number of bytes that should be read by this call.
+     *                       This value is only used if (optReadSize) is negative.  If (optReadSize) is negative and
+     *                       the first four bytes read from (inputStream) are greater than this value, then this method
+     *                       will return B_ERROR instead of trying to read that many bytes.  This can be useful if you
+     *                       want to prevent the possibility of huge buffers being allocated due to malicious or corrupted
+     *                       size headers.  Defaults to MUSCLE_NO_LIMIT, meaning that no size limit is enforced.
+     * @returns B_NO_ERROR if the data was correctly read, or B_ERROR otherwise.
+     */
+   status_t UnflattenFromDataIO(DataIO & inputStream, int32 optReadSize, uint32 optMaxReadSize = MUSCLE_NO_LIMIT);
+
 protected:
    /** 
     *  Called by CopyTo().  Sets (copyTo) to set from this Flattenable, if possible. 
@@ -131,28 +178,10 @@ protected:
     *  a more efficient implementation when possible.
     *  @param copyTo Object to make into the equivalent of this object.  (copyTo)
     *                May be any subclass of Flattenable, but has been pre-screened by CopyTo()
-    *                to make sure it's not (&this), and that is allows our type code.
+    *                to make sure it's not (*this), and that it allows our type code.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out-of-memory, etc)
     */
-   virtual status_t CopyToImplementation(Flattenable & copyTo) const
-   {
-      uint8 smallBuf[256];
-      uint8 * bigBuf = NULL;
-      uint32 flatSize = FlattenedSize();
-      if (flatSize > ARRAYITEMS(smallBuf)) 
-      {
-         bigBuf = newnothrow uint8[flatSize];
-         if (bigBuf == NULL)
-         {
-            WARN_OUT_OF_MEMORY;
-            return B_ERROR;
-         }
-      }
-      Flatten(bigBuf ? bigBuf : smallBuf);
-      status_t ret = copyTo.Unflatten(bigBuf ? bigBuf : smallBuf, flatSize);
-      delete [] bigBuf;
-      return ret;
-   }
+   virtual status_t CopyToImplementation(Flattenable & copyTo) const;
 
    /** 
     *  Called by CopyFrom().  Sets our state from (copyFrom) if possible. 
@@ -162,28 +191,10 @@ protected:
     *  a more efficient implementation when possible.
     *  @param copyFrom Object to set this object's state from.
     *                  May be any subclass of Flattenable, but has been pre-screened by CopyFrom()
-    *                  to make sure it's not (&this), and that we allow its type code.
+    *                  to make sure it's not (*this), and that we allow its type code.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out-of-memory, etc)
     */
-   virtual status_t CopyFromImplementation(const Flattenable & copyFrom)
-   {
-      uint8 smallBuf[256];
-      uint8 * bigBuf = NULL;
-      uint32 flatSize = copyFrom.FlattenedSize();
-      if (flatSize > ARRAYITEMS(smallBuf)) 
-      {
-         bigBuf = newnothrow uint8[flatSize];
-         if (bigBuf == NULL)
-         {
-            WARN_OUT_OF_MEMORY;
-            return B_ERROR;
-         }
-      }
-      copyFrom.Flatten(bigBuf ? bigBuf : smallBuf);
-      status_t ret = Unflatten(bigBuf ? bigBuf : smallBuf, flatSize);
-      delete [] bigBuf;
-      return ret;
-   }
+   virtual status_t CopyFromImplementation(const Flattenable & copyFrom);
 };
 
 /*-------------------------------------------------------------*/

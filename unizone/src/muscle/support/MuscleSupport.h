@@ -12,9 +12,9 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "2.65"
+#define MUSCLE_VERSION_STRING "3.00"
 
-// Define this if the default FD_SETSIZE is too small for you (i.e. under Windows it's only 64)
+/* Define this if the default FD_SETSIZE is too small for you (i.e. under Windows it's only 64) */
 #if defined(MUSCLE_FD_SETSIZE)
 # if defined(FD_SETSIZE)
 #  error "MuscleSupport.h:  Can't redefine FD_SETSIZE, someone else has already defined it!  You need to include MuscleSupport.h before including any other header files that define FD_SETSIZE."
@@ -284,20 +284,54 @@ template<typename T> inline void muscleCopyOut(void * dest, const T & source)
 #endif
 }
 
+/** This macro should be used instead of "newnothrow T[count]".  It works the 
+  * same, except that it hacks around an ugly bug in gcc 3.x where newnothrow 
+  * would return ((T*)0x4) on memory failure instead of NULL.
+  * See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=10300
+  */
+#if __GNUC__ == 3
+template <typename T> inline T * broken_gcc_newnothrow_array(size_t count)
+{
+   T * ret = newnothrow T[count];
+   return (ret <= (T *)(sizeof(void *))) ? NULL : ret;
+}
+# define newnothrow_array(T, count) broken_gcc_newnothrow_array<T>(count)
+#else
+# define newnothrow_array(T, count) newnothrow T[count]
+#endif
+
+/** Returns the smallest of the two arguments */
+template<typename T> inline const T & muscleMin(const T & p1, const T & p2) {return (p1 < p2) ? p1 : p2;}
+
+/** Returns the smallest of the three arguments */
+template<typename T> inline const T & muscleMin(const T & p1, const T & p2, const T & p3) {return muscleMin(p3, muscleMin(p1, p2));}
+
+/** Returns the smallest of the four arguments */
+template<typename T> inline const T & muscleMin(const T & p1, const T & p2, const T & p3, const T & p4) {return muscleMin(p3, p4, muscleMin(p1, p2));}
+
+/** Returns the smallest of the five arguments */
+template<typename T> inline const T & muscleMin(const T & p1, const T & p2, const T & p3, const T & p4, const T & p5) {return muscleMin(p3, p4, p5, muscleMin(p1, p2));}
+
+/** Returns the largest of the two arguments */
+template<typename T> inline const T & muscleMax(const T & p1, const T & p2) {return (p1 < p2) ? p2 : p1;}
+
+/** Returns the largest of the three arguments */
+template<typename T> inline const T & muscleMax(const T & p1, const T & p2, const T & p3) {return muscleMax(p3, muscleMax(p1, p2));}
+
+/** Returns the largest of the four arguments */
+template<typename T> inline const T & muscleMax(const T & p1, const T & p2, const T & p3, const T & p4) {return muscleMax(p3, p4, muscleMax(p1, p2));}
+
+/** Returns the largest of the five arguments */
+template<typename T> inline const T & muscleMax(const T & p1, const T & p2, const T & p3, const T & p4, const T & p5) {return muscleMax(p3, p4, p5, muscleMax(p1, p2));}
+
 /** Swaps the two arguments */
-template<typename T> inline void muscleSwap(T& p1, T& p2) {T t = p1; p1 = p2; p2 = t;}
-
-/** Returns the smaller of the two arguments */
-template<typename T> inline const T & muscleMin(const T& p1, const T& p2) {return (p1 < p2) ? p1 : p2;}
-
-/** Returns the larger of the two arguments */
-template<typename T> inline const T & muscleMax(const T& p1, const T& p2) {return (p1 < p2) ? p2 : p1;}
+template<typename T> inline void muscleSwap(T & p1, T & p2) {T t = p1; p1 = p2; p2 = t;}
 
 /** Returns the value nearest to (v) that is still in the range [lo, hi]. */
-template<typename T> inline const T & muscleClamp(const T & v, const T& lo, const T& hi) {return (v < lo) ? lo : ((v > hi) ? hi : v);}
+template<typename T> inline const T & muscleClamp(const T & v, const T & lo, const T & hi) {return (v < lo) ? lo : ((v > hi) ? hi : v);}
 
 /** Returns true iff (v) is in the range [lo,hi]. */
-template<typename T> inline bool muscleInRange(const T & v, const T& lo, const T& hi) {return ((v >= lo)&&(v <= hi));}
+template<typename T> inline bool muscleInRange(const T & v, const T & lo, const T & hi) {return ((v >= lo)&&(v <= hi));}
 
 /** Returns -1 if arg1 is larger, or 1 if arg2 is larger, or 0 if they are equal. */
 template<typename T> inline int muscleCompare(const T & arg1, const T & arg2) {return (arg1>arg2) ? 1 : ((arg1<arg2) ? -1 : 0);}
@@ -399,9 +433,7 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
         error "Undefined or invalid BYTE_ORDER";
 #endif
 
-//
-// End replacement code from Sun/University of California
-//
+/* End replacement code from Sun/University of California */
 # if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
 static inline uint16 MusclePowerPCSwapInt16(uint16 val)
 {
@@ -636,5 +668,65 @@ static inline int32 ConvertReturnValueToMuscleSemantics(int origRet, uint32 maxS
    int32 retForBlocking = ((origRet > 0)||(maxSize == 0)) ? origRet : -1;
    return blocking ? retForBlocking : ((origRet<0)&&((PreviousOperationWouldBlock())||(PreviousOperationWasInterrupted()))) ? 0 : retForBlocking;
 }
+
+BEGIN_NAMESPACE(muscle);
+
+#if MUSCLE_TRACE_CHECKPOINTS > 0
+
+/** Exposed as an implementation detail.  Please ignore! */
+extern volatile uint32 * _muscleTraceValues;
+
+/** Exposed as an implementation detail.  Please ignore! */
+extern uint32 _muscleNextTraceValueIndex;
+
+/** Sets the location of the trace-checkpoints array to store trace checkpoints into.
+  * @param location A pointer to an array of at least (MUSCLE_TRACE_CHECKPOINTS) uint32s, or NULL.
+  *                 If NULL (or if this function is never called), the default array will be used.
+  */
+void SetTraceValuesLocation(volatile uint32 * location);
+
+/** Set this process's current trace value to (v).  This can be used as a primitive debugging tool, to determine
+  * where this process was last seen executing -- useful for determining where the process is spinning at.
+  * @note this function is a no-op if MUSCLE_TRACE_CHECKPOINTS is not defined to a value greater than zero.
+  */
+static inline void StoreTraceValue(uint32 v) 
+{
+   _muscleTraceValues[_muscleNextTraceValueIndex] = v;  /* store the current value */
+   _muscleNextTraceValueIndex                     = (_muscleNextTraceValueIndex+1)%MUSCLE_TRACE_CHECKPOINTS; /* move the pointer */
+   _muscleTraceValues[_muscleNextTraceValueIndex] = ((uint32)-1);  /* mark the next position with a special tag to show that it's next */
+}
+
+/** Returns a pointer to the first value in the trace-values array. */
+static inline const volatile uint32 * GetTraceValues() {return _muscleTraceValues;}
+
+/** A macro for automatically setting a trace checkpoint value based on current code location. 
+  * The value will be the two characters of the function or file name, left-shifted by 16 bits, 
+  * and then OR'd together with the current line number.  This should give the debugging person a 
+  * fairly good clue as to where the checkpoint was located, while still being very cheap to implement.
+  *
+  * @note This function will be a no-op unless MUSCLE_TRACE_CHECKPOINTS is defined to be greater than zero.
+  */
+#if defined(__GNUC__)
+#define TCHECKPOINT                                   \
+{                                                     \
+   const char * d = __FUNCTION__;                     \
+   StoreTraceValue((d[0]<<24)|(d[1]<<16)|(__LINE__)); \
+}
+#else
+#define TCHECKPOINT                                   \
+{                                                     \
+   const char * d = __FILE__;                         \
+   StoreTraceValue((d[0]<<24)|(d[1]<<16)|(__LINE__)); \
+}
+#endif
+
+#else
+/* no-op implementations for when we aren't using the trace facility */
+static inline void SetTraceValuesLocation(volatile uint32 * location) {(void) location;}  /* named param is necessary for C compatibility */
+static inline void StoreTraceValue(uint32 v) {(void) v;}  /* named param is necessary for C compatibility */
+#define TCHECKPOINT {/* empty */}
+#endif
+
+END_NAMESPACE(muscle);
 
 #endif /* _MUSCLE_SUPPORT_H */

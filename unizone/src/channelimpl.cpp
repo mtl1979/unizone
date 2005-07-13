@@ -98,8 +98,8 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 
 	connect(gWin, SIGNAL(NewChannelText(const QString &, const QString &, const QString &)),
 			this, SLOT(NewChannelText(const QString &, const QString &, const QString &)));
-	connect(fNet, SIGNAL(UserDisconnected(const QString &, const QString &)), 
-			this, SLOT(UserDisconnected(const QString &, const QString &)));
+	connect(fNet, SIGNAL(UserDisconnected(const WUserRef &)), 
+			this, SLOT(UserDisconnected(const WUserRef &)));
 
 	if (Settings()->GetLogging())
 		StartLogging();
@@ -707,14 +707,17 @@ Channel::ChannelAdminsChanged(const QString &channel, const QString &admins)
 }
 
 void
-Channel::UserDisconnected(const QString &sid, const QString &name)
+Channel::UserDisconnected(const WUserRef &user)
 {
+	QString sid = user()->GetUserID();
+	QString name = user()->GetUserName();
+
 	bool ok;
 	uint32 uid = sid.toULong(&ok);
 	if (ok)
 	{
-		WUserRef user;
-		if (fUsers.GetValue(uid, user) == B_NO_ERROR)
+//		WUserRef user;
+		if (fUsers.ContainsKey(uid))
 		{
 			if (gWin->fSettings->GetUserEvents())
 			{

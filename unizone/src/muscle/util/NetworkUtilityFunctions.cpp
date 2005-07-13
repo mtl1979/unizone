@@ -387,6 +387,8 @@ uint32 GetPeerIPAddress(int sock)
 /* See the header file for description of what this does */
 status_t CreateConnectedSocketPair(int & socket1, int & socket2, bool blocking, bool useNagles)
 {
+   TCHECKPOINT;
+
    uint16 port;
    socket1 = CreateAcceptingSocket(0, 1, &port, localhostIP);
    if (socket1 >= 0)
@@ -479,6 +481,8 @@ status_t Snooze64(uint64 micros)
 
 status_t FinalizeAsyncConnect(int sock)
 {
+   TCHECKPOINT;
+
    if (sock < 0) return B_ERROR;
 
 #ifdef BEOS_OLD_NETSERVER

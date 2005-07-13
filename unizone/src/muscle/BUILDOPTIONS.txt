@@ -1,0 +1,79 @@
+muscled should compile fine with nothing more than a "make", but
+if you feel like hacking around, here is a list of some 
+compile-time constants that you can define in the CXXFLAGS variable
+of your Makefile to alter muscle's behaviour:
+
+-DMUSCLE_ENABLE_MEMORY_PARANOIA=N 
+   Put N overwrite-guards before and after each malloc() buffer, watch them for memory corruption
+
+-DMUSCLE_SINGLE_THREAD_ONLY 
+   makes Mutexes be no-ops
+
+-DMUSCLE_NO_EXCEPTIONS 
+   tells muscle that exceptions won't be used
+
+-DMUSCLE_ENABLE_MEMORY_TRACKING 
+   enables system memory usage management
+
+-DMUSCLE_AVOID_ASSERTIONS 
+   makes MASSERT statements into no-ops
+
+-DMUSCLE_ENABLE_ZLIB_ENCODING 
+   enables support for zlib compression of Messages
+
+-DMUSCLE_TRACE_CHECKPOINTS=N 
+   enable TCHECKPOINT tracing of last N checkpoints
+
+-DMUSCLE_DISABLE_MESSAGE_FIELD_POOLS 
+   turn off Object pooling for Message field objects; helpful for debugging
+
+-DMUSCLE_MAX_OUTPUT_CHUNK=N 
+   tell muscled not to send() more than N bytes of output per call
+
+-DMUSCLE_AVOID_NAMESPACES 
+   make muscle source code namespace-free, for old compilers
+
+-DMUSCLE_INLINE_LOGGING 
+   turn Log(), LogTime(), etc into simple printf() passthroughs
+
+-DMUSCLE_DISABLE_LOGGING 
+   turn Log(), LogTime(), etc into no-ops
+
+-DMUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS 
+   Use Mutexes to simulate atomic inc/dec operations; useful if no other method is available
+
+-DMUSCLE_POWERPC_TIMEBASE_HZ=N 
+   Use mftb/mftbu for GetRunTime64() calls.  N is the frequency at which the register is incremented
+
+-DMUSCLE_USE_CLONE 
+   Use Linux's clone() function to spawn threads, instead of pthreads.  Doesn't work.  :^(
+
+-DMUSCLE_USE_PTHREADS 
+   Use pthreads for thread operations
+
+-DMUSCLE_DEFAULT_TCP_STALL_TIMEOUT=N 
+   Number of microseconds to wait for a client to read TCP data before 
+   giving up and closing his connection (defaults to 20 minutes' worth)
+
+-DMUSCLE_FD_SETSIZE=N 
+   Redefine the fd_setsize to another value (useful under Windows, where the default setsize is a measly 64)
+
+-DMUSCLE_CPU_REQUIRES_DATA_ALIGNMENT 
+   Tell muscle that this CPU can't handle non-aligned integer data reads/writes (e.g. Sparc)
+
+-DMUSCLE_AVOID_NEWNOTHROW 
+   Turns newnothrow into an equivalent for "new", instead of "new (nothrow)"
+
+-DMUSCLE_CUSTOM_ATOMIC_TYPE 
+   Use custom callback functions to implement atomic inc/dec
+
+-DMUSCLE_HASHTABLE_DEFAULT_CAPACITY=X 
+   Number of value slots to initially pre-allocate in a Hashtable, by default (defaults to 7)
+   Note that the pre-allocation is done the first time an object is Put() into the Hashtable.
+   A new, empty Hashtable will have no pre-allocated slots.
+
+-DSMALL_QUEUE_SIZE=N
+   Number of value slots to initially pre-allocate in a Queue, by default.  (defaults to 3)
+
+-DSMALL_MUSCLE_STRING_LENGTH=N 
+   strings <= this length will be stored inline in the String object to avoid a malloc()... default is 7

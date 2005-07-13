@@ -73,11 +73,11 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	qmtt = new QMessageTransceiverThread(this);
 	CHECK_PTR(qmtt);
 
-	connect(qmtt, SIGNAL(MessageReceived(MessageRef, const String &)),
-			this, SLOT(MessageReceived(MessageRef, const String &)));
+	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
+			this, SLOT(MessageReceived(const MessageRef &, const String &)));
 
-	connect(qmtt, SIGNAL(OutputQueuesDrained(MessageRef)),
-			this, SLOT(OutputQueuesDrained(MessageRef)));
+	connect(qmtt, SIGNAL(OutputQueuesDrained(const MessageRef &)),
+			this, SLOT(OutputQueuesDrained(const MessageRef &)));
 	
 	connect(qmtt, SIGNAL(SessionConnected(const String &)),
 			this, SLOT(SessionConnected(const String &)));
@@ -463,7 +463,7 @@ WUploadThread::SessionDisconnected(const String & /* sessionID */)
 }
 
 void
-WUploadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
+WUploadThread::MessageReceived(const MessageRef & msg, const String & /* sessionID */)
 {
 	PRINT("WUploadThread::MessageReceived\n");
 	switch (msg()->what)
@@ -530,7 +530,7 @@ WUploadThread::MessageReceived(MessageRef msg, const String & /* sessionID */)
 }
 
 void
-WUploadThread::OutputQueuesDrained(MessageRef /* msg */)
+WUploadThread::OutputQueuesDrained(const MessageRef &/* msg */)
 {
 	PRINT2("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
 
@@ -1409,7 +1409,7 @@ WUploadThread::GetUserName(const QString & sid) const
 }
 
 status_t
-WUploadThread::SendMessageToSessions(MessageRef msgRef, const char * optDistPath)
+WUploadThread::SendMessageToSessions(const MessageRef & msgRef, const char * optDistPath)
 {
 	if (fTunneled)
 	{

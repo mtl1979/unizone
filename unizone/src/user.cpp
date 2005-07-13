@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning(disable: 4786)
+#endif
+
 #include "user.h"
 #include "netclient.h"
 #include "debugimpl.h"

@@ -65,7 +65,7 @@ public:
     *                 (For StorageReflectSessions, this value, if non-NULL, is a pointer to the
     *                  DataNode in this Session's node subtree that was matched by the paths in (msg))
     */
-   virtual void MessageReceivedFromSession(AbstractReflectSession & from, MessageRef msg, void * userData);
+   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
 
    /**
     * Called when a message is sent to us by a ReflectSessionFactory object.
@@ -74,7 +74,7 @@ public:
     * @param msg A reference to the message that was sent.
     * @param userData Additional data whose semantics are determined by the sending subclass.
     */
-   virtual void MessageReceivedFromFactory(ReflectSessionFactory & from, MessageRef msg, void * userData);
+   virtual void MessageReceivedFromFactory(ReflectSessionFactory & from, const MessageRef & msg, void * userData);
 
    /** Returns true if we are attached to the ReflectServer object, false if we are not.  */
    bool IsAttachedToServer() const {return (_owner != NULL);}
@@ -93,7 +93,7 @@ protected:
    uint32 GetNumUsedBytes() const;
 
    /** Passes through to ReflectServer::PutAcceptFactory() */
-   status_t PutAcceptFactory(uint16 port, ReflectSessionFactoryRef factoryRef);
+   status_t PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef);
 
    /** Passes through to ReflectServer::RemoveAcceptFactory() */
    status_t RemoveAcceptFactory(uint16 port);
@@ -119,7 +119,7 @@ protected:
     * @param socket the socket descriptor associated with the new session, or -1.
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error.
     */
-   status_t AddNewSession(AbstractReflectSessionRef session, int socket);
+   status_t AddNewSession(const AbstractReflectSessionRef & session, int socket);
 
    /**
     * Like AddNewSession(), only creates a session that connects asynchronously to
@@ -134,7 +134,7 @@ protected:
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error 
     *                    (out-of-memory or the connect attempt failed immediately).
     */
-   status_t AddNewConnectSession(AbstractReflectSessionRef session, uint32 targetIPAddress, uint16 port);
+   status_t AddNewConnectSession(const AbstractReflectSessionRef & session, uint32 targetIPAddress, uint16 port);
 
    /** Returns an object that can be used to iterate over all the sessions currently connected to our ReflectServer.  */
    HashtableIterator<const char *, AbstractReflectSessionRef> GetSessions() const;

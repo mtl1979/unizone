@@ -28,6 +28,8 @@ StringMatcher :: ~StringMatcher()
 
 status_t StringMatcher::SetPattern(const String & s, bool isSimple) 
 {
+   TCHECKPOINT;
+
    _pattern = s;
    const char * str = _pattern();
    _hasRegexTokens = HasRegexTokens(str);
@@ -110,6 +112,8 @@ status_t StringMatcher::SetPattern(const String & s, bool isSimple)
 
 bool StringMatcher::Match(const char * const str) const
 {
+   TCHECKPOINT;
+
    bool ret = false;  // pessimistic default
 
    if (_rangeMin == MUSCLE_NO_LIMIT)
@@ -144,6 +148,8 @@ bool IsRegexToken(char c, bool isFirstCharInString)
 
 void EscapeRegexTokens(String & s, const char * optTokens)
 {
+   TCHECKPOINT;
+
    const char * str = s.Cstr();
 
    String ret;
@@ -176,6 +182,8 @@ bool HasRegexTokens(const char * str)
 
 bool MakeRegexCaseInsensitive(String & str)
 {
+   TCHECKPOINT;
+
    bool changed = false;
    String ret;
    for (uint32 i=0; i<str.Length(); i++)

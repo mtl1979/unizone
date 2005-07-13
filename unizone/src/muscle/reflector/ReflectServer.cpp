@@ -1,5 +1,9 @@
 /* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */  
 
+#if defined(__linux__) || defined(__APPLE__)
+# include <signal.h>
+#endif
+
 #include "reflector/ReflectServer.h"
 #include "reflector/StorageReflectConstants.h"
 #include "util/NetworkUtilityFunctions.h"
@@ -9,12 +13,17 @@
 # include "system/GlobalMemoryAllocator.h"
 #endif
 
+static volatile bool _signalCaught = false;
+void MuscleSignalHandlerCallbackFunc(int /*signum*/) {_signalCaught = true;}
+
 BEGIN_NAMESPACE(muscle);
 
 status_t
 ReflectServer ::
-AddNewSession(AbstractReflectSessionRef ref, int s)
+AddNewSession(const AbstractReflectSessionRef & ref, int s)
 {
+   TCHECKPOINT;
+
    AbstractReflectSession * newSession = ref();
    if (newSession == NULL) return B_ERROR;
 
@@ -24,7 +33,7 @@ AddNewSession(AbstractReflectSessionRef ref, int s)
    if (s >= 0)
    {
       AbstractMessageIOGatewayRef gatewayRef = newSession->GetGatewayRef();
-      if (gatewayRef() == NULL) gatewayRef.SetRef(newSession->CreateGateway(), NULL);
+      if (gatewayRef() == NULL) gatewayRef.SetRef(newSession->CreateGateway());
       if (gatewayRef())  // don't combine these ifs!
       {
          if (gatewayRef()->GetDataIO() == NULL)
@@ -35,7 +44,7 @@ AddNewSession(AbstractReflectSessionRef ref, int s)
             if (io) 
             {
                // success!
-               gatewayRef()->SetDataIO(DataIORef(io, NULL));
+               gatewayRef()->SetDataIO(DataIORef(io));
                newSession->SetGateway(gatewayRef);
             }
             else {newSession->_owner = NULL; return B_ERROR;}
@@ -43,6 +52,8 @@ AddNewSession(AbstractReflectSessionRef ref, int s)
       }
       else {newSession->_owner = NULL; return B_ERROR;}
    }
+
+   TCHECKPOINT;
 
    // Set our hostname (IP address) string if it isn't already set
    if (newSession->_hostName.Length() == 0)
@@ -61,12 +72,14 @@ AddNewSession(AbstractReflectSessionRef ref, int s)
         if (AddNewSession(ref) == B_NO_ERROR) return B_NO_ERROR;
    else if (newSession) newSession->_owner = NULL;
 
+   TCHECKPOINT;
+
    return B_ERROR;
 }
 
 status_t
 ReflectServer ::
-AddNewConnectSession(AbstractReflectSessionRef ref, uint32 destIP, uint16 port)
+AddNewConnectSession(const AbstractReflectSessionRef & ref, uint32 destIP, uint16 port)
 {
    AbstractReflectSession * session = ref();
    if (session)
@@ -93,7 +106,7 @@ AddNewConnectSession(AbstractReflectSessionRef ref, uint32 destIP, uint16 port)
 
 status_t
 ReflectServer ::
-AddNewSession(AbstractReflectSessionRef ref)
+AddNewSession(const AbstractReflectSessionRef & ref)
 {
    AbstractReflectSession * newSession = ref();
    if ((newSession)&&(_sessions.Put(newSession->GetSessionIDString(), ref) == B_NO_ERROR))
@@ -175,7 +188,7 @@ GetServerName() const
 /** Makes sure the given policy has its BeginIO() called, if necessary, and returns it */
 uint32
 ReflectServer :: 
-CheckPolicy(Hashtable<PolicyRef, bool> & policies, PolicyRef policyRef, const PolicyHolder & ph, uint64 now) const
+CheckPolicy(Hashtable<PolicyRef, bool> & policies, const PolicyRef & policyRef, const PolicyHolder & ph, uint64 now) const
 {
    AbstractSessionIOPolicy * p = policyRef();
    if (p)
@@ -194,7 +207,7 @@ CheckPolicy(Hashtable<PolicyRef, bool> & policies, PolicyRef policyRef, const Po
    return ((ph.GetSession())&&((p == NULL)||(p->OkayToTransfer(ph)))) ? MUSCLE_NO_LIMIT : 0;
 }
 
-void ReflectServer :: CheckForOutOfMemory(AbstractReflectSessionRef optSessionRef)
+void ReflectServer :: CheckForOutOfMemory(const AbstractReflectSessionRef & optSessionRef)
 {
    if ((_watchMemUsage)&&(_watchMemUsage->HasAllocationFailed()))
    {
@@ -214,6 +227,8 @@ status_t
 ReflectServer ::
 ServerProcessLoop()
 {
+   TCHECKPOINT;
+
    _serverStartedAt = GetRunTime64();
 
    if (_doLogging)
@@ -227,6 +242,8 @@ ServerProcessLoop()
       if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "Server:  ReadyToRun() failed, aborting.\n");
       return B_ERROR;
    }
+
+   TCHECKPOINT;
 
    // Print an informative startup message
    if (_doLogging)
@@ -256,6 +273,8 @@ ServerProcessLoop()
 
    while(ClearLameDucks() == B_NO_ERROR)
    {
+      TCHECKPOINT;
+
       fd_set * exceptionSetPtr = NULL;  // set to point to exceptionSet if we should be watching for exceptions
 
       // Initialize our fd sets of events-to-watch-for
@@ -267,6 +286,8 @@ ServerProcessLoop()
       // Set up fd set entries and Pulse() timing info for all our different components
       {
          const uint64 now = GetRunTime64(); // nothing in this scope is supposed to take a significant amount of time to execute, so just calculate this once
+
+         TCHECKPOINT;
 
          // Set up the session factories so we can be notified when a new connection is received
          if (_factories.GetNumItems() > 0)
@@ -285,6 +306,8 @@ ServerProcessLoop()
                CallGetPulseTimeAux(*factory, now, nextPulseAt);
             }
          }
+
+         TCHECKPOINT;
 
          // Set up the sessions, their associated IO-gateways, and their IOPolicies
          if (_sessions.GetNumItems() > 0)
@@ -337,14 +360,20 @@ ServerProcessLoop()
 
                         if (((in)||(out))&&(sessionSocket > maxSocket)) maxSocket = sessionSocket;
                      }
+                     TCHECKPOINT;
                      CallGetPulseTimeAux(*g, now, nextPulseAt);
+                     TCHECKPOINT;
                   }
+                  TCHECKPOINT;
                   CallGetPulseTimeAux(*session, now, nextPulseAt);
+                  TCHECKPOINT;
                }
             }
          }
 
+         TCHECKPOINT;
          CallGetPulseTimeAux(*this, now, nextPulseAt);
+         TCHECKPOINT;
 
          // Set up the Session IO Policies
          if (policies.GetNumItems() > 0)
@@ -369,12 +398,16 @@ ServerProcessLoop()
 
             // Now that all is prepared, calculate all the policies' wakeup times
             {
+               TCHECKPOINT;
                HashtableIterator<PolicyRef, bool> iter(policies);
                const PolicyRef * next;
                while((next = iter.GetNextKey()) != NULL) CallGetPulseTimeAux(*(next->GetItemPointer()), now, nextPulseAt);
+               TCHECKPOINT;
             }
          }
       }
+
+      TCHECKPOINT;
 
       // This block is the center of the MUSCLE server's universe -- where we wait for the next event, inside select()
       {
@@ -387,20 +420,39 @@ ServerProcessLoop()
             Convert64ToTimeVal(waitTime64, waitTime);
          }
 
-         // We sleep here until the next I/O or pulse event becomes ready
-         if ((select(maxSocket+1, (maxSocket >= 0) ? &readSet : NULL, (maxSocket >= 0) ? &writeSet : NULL, exceptionSetPtr, (nextPulseAt == MUSCLE_TIME_NEVER) ? NULL : &waitTime) < 0)&&(PreviousOperationWasInterrupted() == false))
+#ifdef WIN32
+         if (maxSocket < 0)
          {
-            if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "select() failed, aborting!\n");
-            ClearLameDucks();
-            return B_ERROR;
+            TCHECKPOINT;
+
+            // Stupid Win32 can't handle it when all three fd_sets are empty!
+            // So we have to do some special-case logic for that scenario here
+            Sleep((nextPulseAt == MUSCLE_TIME_NEVER) ? INFINITE : ((waitTime.tv_sec*1000)+(waitTime.tv_usec/1000)));
+         }
+         else
+#endif
+         {
+            TCHECKPOINT;
+
+            // We sleep here until the next I/O or pulse event becomes ready
+            if ((select(maxSocket+1, (maxSocket >= 0) ? &readSet : NULL, (maxSocket >= 0) ? &writeSet : NULL, exceptionSetPtr, (nextPulseAt == MUSCLE_TIME_NEVER) ? NULL : &waitTime) < 0)&&(PreviousOperationWasInterrupted() == false))
+            {
+               if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "select() failed, aborting!\n");
+               ClearLameDucks();
+               return B_ERROR;
+            }
          }
       }
 
       // Each event-loop cycle officially "starts" as soon as select() returns
       CallSetCycleStartTime(*this, GetRunTime64());
 
+      TCHECKPOINT;
+
       // Before we do any session I/O, make sure there hasn't been a generalized memory failure
       CheckForOutOfMemory(AbstractReflectSessionRef());
+
+      TCHECKPOINT;
 
       // Do I/O for each of our attached sessions
       {
@@ -408,21 +460,30 @@ ServerProcessLoop()
          HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
          while(iter.GetNextValue(sessionRef) == B_NO_ERROR)
          {
+            TCHECKPOINT;
+
             AbstractReflectSession * session = sessionRef();
             if (session)
             {
                if (_watchMemUsage) (void) _watchMemUsage->SetAllocationHasFailed(false);  // (session)'s responsibility for starts here!  If we run out of mem on his watch, he's history
 
+               TCHECKPOINT;
+
                CallSetCycleStartTime(*session, GetRunTime64());
+               TCHECKPOINT;
                CallPulseAux(*session, session->GetCycleStartTime());
                {
                   AbstractMessageIOGateway * gateway = session->GetGateway();
                   if (gateway) 
                   {
+                     TCHECKPOINT;
+
                      CallSetCycleStartTime(*gateway, GetRunTime64());
                      CallPulseAux(*gateway, gateway->GetCycleStartTime());
                   }
                }
+
+               TCHECKPOINT;
 
                int socket = GetSocketFor(session);
                if (socket >= 0)
@@ -434,6 +495,9 @@ ServerProcessLoop()
                      AbstractSessionIOPolicy * p = session->GetInputPolicy()();
                      if ((p)&&(readBytes >= 0)) p->BytesTransferred(PolicyHolder(session, true), (uint32)readBytes);
                   }
+
+                  TCHECKPOINT;
+
                   if (FD_ISSET(socket, &writeSet))
                   {
                      if (session->_connectingAsync) wroteBytes = (FinalizeAsyncConnect(sessionRef) == B_NO_ERROR) ? 0 : -1;
@@ -467,6 +531,8 @@ ServerProcessLoop()
                   if ((exceptionSetPtr)&&(FD_ISSET(socket, exceptionSetPtr))) wroteBytes = -1;  // async connect() failed!
 #endif
 
+                  TCHECKPOINT;
+
                   if ((readBytes < 0)||(wroteBytes < 0))
                   {
                      bool wasConnecting = session->_connectingAsync;
@@ -485,9 +551,12 @@ ServerProcessLoop()
                   }
                }
             }
+            TCHECKPOINT;
             CheckForOutOfMemory(sessionRef);  // if the session caused a memory error, give him the boot
          }
       }
+
+      TCHECKPOINT;
 
       // Pulse() our other PulseNode objects, as necessary
       {
@@ -520,8 +589,10 @@ ServerProcessLoop()
       }
       policies.Clear();
 
+      TCHECKPOINT;
+
       // Lastly, check our accepting ports to see if anyone is trying to connect...
-      if (_factories.GetNumItems() > 0)
+      if ((_signalCaught == false)&&(_factories.GetNumItems() > 0))  // for some reason Accept() hangs once a signal is caught!?
       {
          HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
          uint16 port;
@@ -536,8 +607,15 @@ ServerProcessLoop()
             if (FD_ISSET(acceptSocket, &readSet)) (void) DoAccept(port, acceptSocket, factory);
          }
       }
+
+      TCHECKPOINT;
    }
+
+   TCHECKPOINT;
+
    (void) ClearLameDucks();  // get rid of any leftover ducks
+
+   TCHECKPOINT;
    return B_NO_ERROR;
 }
 
@@ -589,7 +667,7 @@ status_t ReflectServer :: DoAccept(uint16 port, int acceptSocket, ReflectSession
       {
          char ipbuf[16]; Inet_NtoA(remoteIP, ipbuf);
          String remoteIPString = ipbuf;
-         AbstractReflectSessionRef newSessionRef(optFactory ? optFactory->CreateSession(remoteIPString) : NULL, NULL);
+         AbstractReflectSessionRef newSessionRef(optFactory ? optFactory->CreateSession(remoteIPString) : NULL);
          if (newSessionRef())
          {
             newSessionRef()->_port = port;
@@ -608,6 +686,8 @@ status_t ReflectServer :: DoAccept(uint16 port, int acceptSocket, ReflectSession
 
 void ReflectServer :: DumpBoggedSessions()
 {
+   TCHECKPOINT;
+
    // New for v1.82:  also find anyone whose outgoing message queue is getting too large.
    //                 (where "too large", for now, is more than 5 megabytes)
    // This could happen if someone has a really slow Internet connection, or has decided to
@@ -660,8 +740,10 @@ GetFactory(uint16 port) const
 
 status_t
 ReflectServer ::
-ReplaceSession(AbstractReflectSessionRef newSessionRef, AbstractReflectSession * oldSession)
+ReplaceSession(const AbstractReflectSessionRef & newSessionRef, AbstractReflectSession * oldSession)
 {
+   TCHECKPOINT;
+
    // move the gateway from the old session to the new one...
    AbstractReflectSession * newSession = newSessionRef();
    if (newSession == NULL) return B_ERROR;
@@ -721,7 +803,7 @@ EndServer()
 
 status_t
 ReflectServer ::
-PutAcceptFactory(uint16 port, ReflectSessionFactoryRef factoryRef)
+PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef)
 {
    (void) RemoveAcceptFactory(port); // Get rid of any previous acceptor on this port...
 
@@ -751,7 +833,7 @@ PutAcceptFactory(uint16 port, ReflectSessionFactoryRef factoryRef)
 
 void
 ReflectServer ::
-RemoveAcceptFactoryAux(ReflectSessionFactoryRef ref)
+RemoveAcceptFactoryAux(const ReflectSessionFactoryRef & ref)
 {
    ReflectSessionFactory * factory = ref();
    if (factory) 
@@ -793,7 +875,7 @@ RemoveAcceptFactory(uint16 port)
 
 status_t 
 ReflectServer :: 
-FinalizeAsyncConnect(AbstractReflectSessionRef ref)
+FinalizeAsyncConnect(const AbstractReflectSessionRef & ref)
 {
    AbstractReflectSession * session = ref();
 #ifdef MUSCLE_AVOID_NAMESPACES
@@ -843,7 +925,7 @@ GetNumUsedBytes() const
 }
 
 void
-ReflectServer :: AddLameDuckSession(AbstractReflectSessionRef ref)
+ReflectServer :: AddLameDuckSession(const AbstractReflectSessionRef & ref)
 {
    if ((_lameDuckSessions.IndexOf(ref) < 0)&&(_lameDuckSessions.AddTail(ref) != B_NO_ERROR)&&(_doLogging)) LogTime(MUSCLE_LOG_CRITICALERROR, "Server:  AddLameDuckSession() failed, I'm REALLY in trouble!  Aggh!\n");
 }
@@ -852,6 +934,8 @@ void
 ReflectServer ::
 AddLameDuckSession(AbstractReflectSession * who)
 {
+   TCHECKPOINT;
+
    AbstractReflectSessionRef * lRef; 
    HashtableIterator<const char *, AbstractReflectSessionRef> xiter = GetSessions();
    while((lRef = xiter.GetNextValue()) != NULL)
@@ -877,5 +961,78 @@ ReflectServer :: GetSocketFor(AbstractReflectSession * session) const
    return -1;         
 }
 
+class SignalHandler : public PulseNode
+{
+public:
+   SignalHandler() : _server(NULL) {/* empty */}
+
+   virtual uint64 GetPulseTime(uint64 now, uint64)
+   {
+#if defined(__linux__) || defined(__APPLE__)
+      return _server ? (_signalCaught ? 0 : (now+1000000)) : MUSCLE_TIME_NEVER;
+#else
+      (void) now;
+      return MUSCLE_TIME_NEVER;
+#endif
+   }
+
+   virtual void Pulse(uint64, uint64)
+   {
+      if ((_signalCaught)&&(_server))
+      {
+         LogTime(MUSCLE_LOG_INFO, "SignalHandler:  Signal caught, shutting down server!\n");
+         _server->EndServer();
+      }
+   }
+
+   void SetServer(ReflectServer * s) {_server = s;}
+   ReflectServer * GetServer() const {return _server;}
+
+private:
+   ReflectServer * _server;
+};
+static SignalHandler _signalHandler;
+
+status_t ReflectServer :: SetSignalHandlingEnabled(bool enabled)
+{
+   _signalCaught = false;
+
+#if defined(__linux__) || defined(__APPLE__)
+   struct sigaction newact;
+   sigemptyset(&newact.sa_mask);           /*no other signals blocked*/
+   newact.sa_flags=0;                      /*no special options*/
+
+   if (enabled)
+   {
+      if (_signalHandler.GetServer() == NULL)
+      {
+         newact.sa_handler = MuscleSignalHandlerCallbackFunc;  /*set the new handler*/
+         if (sigaction(SIGINT,  &newact, NULL) == -1) LogTime(MUSCLE_LOG_WARNING, "Couldn't install SIGINT signal handler\n");
+         if (sigaction(SIGTERM, &newact, NULL) == -1) LogTime(MUSCLE_LOG_WARNING, "Couldn't install SIGTERM signal handler\n");
+         if (sigaction(SIGHUP,  &newact, NULL) == -1) LogTime(MUSCLE_LOG_WARNING, "Couldn't install SIGHUP signal handler\n");
+      }
+      _signalHandler.SetServer(this);
+      PutPulseChild(&_signalHandler);
+   }
+   else
+   {
+      RemovePulseChild(&_signalHandler);
+      if (_signalHandler.GetServer())
+      {
+         newact.sa_handler = NULL;
+         (void) sigaction(SIGINT,  NULL, NULL);
+         (void) sigaction(SIGTERM, NULL, NULL);
+         (void) sigaction(SIGHUP,  NULL, NULL);
+      }
+      _signalHandler.SetServer(NULL);
+   }
+   return B_NO_ERROR;
+#else
+   (void) enabled;
+   return B_ERROR;
+#endif
+}
+
+bool WasSignalCaught() {return _signalCaught;}
 
 END_NAMESPACE(muscle);

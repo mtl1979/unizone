@@ -31,7 +31,11 @@ void PulseNode :: InvalidateGroupPulseTime()
    if (_nextPulseAtValid)
    {
       _nextPulseAtValid = false;
-      if (_parent) _parent->InvalidateGroupPulseTime(); // tell our parent one of his kids has changed
+      if (_parent) 
+      {
+         TCHECKPOINT;
+         _parent->InvalidateGroupPulseTime(); // tell our parent one of his kids has changed
+      }
    }
 }
 
@@ -39,6 +43,7 @@ void PulseNode :: InvalidatePulseTime(bool clearPrevResult)
 {
    if (_localPulseAtValid) 
    {
+      TCHECKPOINT;
       _localPulseAtValid = false;
       if (clearPrevResult) _localPulseAt = MUSCLE_TIME_NEVER;
       InvalidateGroupPulseTime();
@@ -47,6 +52,8 @@ void PulseNode :: InvalidatePulseTime(bool clearPrevResult)
 
 void PulseNode :: GetPulseTimeAux(uint64 now, uint64 & minPulseTime)
 {
+   TCHECKPOINT;
+
    if (_localPulseAtValid == false)
    {
       _localPulseAt = GetPulseTime(now, _localPulseAt);
@@ -57,31 +64,55 @@ void PulseNode :: GetPulseTimeAux(uint64 now, uint64 & minPulseTime)
       _nextPulseAt = _localPulseAt;
       if (_children.GetNumItems() > 0)
       {
+         TCHECKPOINT;
+
          HashtableIterator<PulseNode *, bool> iter(_children);
          PulseNode * nextKey;
-         while(iter.GetNextKey(nextKey) == B_NO_ERROR) nextKey->GetPulseTimeAux(now, _nextPulseAt);
+         while(iter.GetNextKey(nextKey) == B_NO_ERROR) 
+         {
+            TCHECKPOINT;
+            nextKey->GetPulseTimeAux(now, _nextPulseAt);
+            TCHECKPOINT;
+         }
+
+         TCHECKPOINT;
       }
       _nextPulseAtValid = true;
    }
    if (minPulseTime > _nextPulseAt) minPulseTime = _nextPulseAt;
+
+   TCHECKPOINT;
 }
 
 void PulseNode :: PulseAux(uint64 now)
 {
+   TCHECKPOINT;
+
    if (now >= _nextPulseAt)
    {
       if (now >= _localPulseAt)
       {
+         TCHECKPOINT;
          Pulse(now, _localPulseAt);
+         TCHECKPOINT;
          InvalidatePulseTime(false);
+         TCHECKPOINT;
       }
       if (_children.GetNumItems() > 0)
       {
+         TCHECKPOINT;
          HashtableIterator<PulseNode *, bool> iter(_children);
          PulseNode * nextKey;
-         while(iter.GetNextKey(nextKey) == B_NO_ERROR) nextKey->PulseAux(now);
+         while(iter.GetNextKey(nextKey) == B_NO_ERROR) 
+         {
+            TCHECKPOINT;
+            nextKey->PulseAux(now);
+            TCHECKPOINT;
+         }
       }
    }
+
+   TCHECKPOINT;
 }
 
 status_t PulseNode :: PutPulseChild(PulseNode * child)

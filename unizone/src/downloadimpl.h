@@ -255,7 +255,7 @@ private slots:
 	void ULRightClicked(QListViewItem *, const QPoint &, int);
 
 public slots:
-	void UserDisconnected(const QString &, const QString &);
+	void UserDisconnected(const WUserRef &);
 
 signals:
 	// Parameter 1 = Remote File Name, Parameter 2 = Local File Name, Parameter 3 = User Name

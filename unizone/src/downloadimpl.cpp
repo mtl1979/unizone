@@ -97,8 +97,8 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	
 	fUploads->setAllColumnsShowFocus(true);
 	
-	connect(netClient(), SIGNAL(UserDisconnected(const QString &, const QString &)), 
-			this, SLOT(UserDisconnected(const QString &, const QString &)));
+	connect(netClient(), SIGNAL(UserDisconnected(const WUserRef &)), 
+			this, SLOT(UserDisconnected(const WUserRef &)));
 	
 	
 	setCaption(tr("File Transfers"));
@@ -1738,8 +1738,9 @@ WDownload::UpdateLoad()
 *
 */
 void
-WDownload::UserDisconnected(const QString &sid, const QString & /* name */)
+WDownload::UserDisconnected(const WUserRef & uref)
 {
+	QString sid = uref()->GetUserID();
 	unsigned int i;
 	Lock();
 	for (i = 0; i < fUploadList.GetNumItems(); i++)

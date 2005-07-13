@@ -146,7 +146,7 @@ public:
 	bool IsAutoPrivate(const QString & user);
 	bool IsConnected(const QString & user);
 
-	void SendRejectedNotification(MessageRef rej);
+	void SendRejectedNotification(const MessageRef &rej);
 
 	// To use delayed search:
 	// ----------------------
@@ -175,7 +175,7 @@ public:
 	// UniShare
 	int64 GetRegisterTime(const QString & nick) const; 
 
-	void GotParams(MessageRef &);
+	void GotParams(const MessageRef &);
 	bool GotParams() { return fGotParams; }
 
 	void GotUpdateCmd(const QString & param, const QString & val);
@@ -217,12 +217,12 @@ public slots:
 	void AboutWinShare();
 
 	// user connection/disconnection messages
-	void UserNameChanged(const WUserRef, const QString &, const QString &);
-	void UserConnected(const WUserRef);
-	void UserDisconnected(const WUserRef);
+	void UserNameChanged(const WUserRef &, const QString &, const QString &);
+	void UserConnected(const WUserRef &);
+	void UserDisconnected(const WUserRef &);
 	void DisconnectedFromServer();
-	void UserStatusChanged(const WUserRef, const QString &, const QString &);
-	void UserHostName(const WUserRef, const QString &);
+	void UserStatusChanged(const WUserRef &, const QString &, const QString &);
+	void UserHostName(const WUserRef &, const QString &);
 
 	// tab completion signal
 	void TabPressed(const QString &);
@@ -258,7 +258,7 @@ protected:
 private slots:
 
 	// Accept Thread
-	void ConnectionAccepted(SocketHolderRef socketRef);
+	void ConnectionAccepted(const SocketHolderRef &socketRef);
 
 private:
 	friend class WDownload;
