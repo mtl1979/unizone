@@ -303,8 +303,7 @@ QString WFormat::UserIPAddress(const QString &user, const QString &ip)
 
 QString WFormat::UserIPAddress2(const QString &session, const QString &ip)
 {
-	QString temp;
-	temp += tr("User #%1's IP address is %2.").arg(session).arg(ip);
+	QString temp = tr("User #%1's IP address is %2.").arg(session).arg(ip);
 	return temp.stripWhiteSpace();
 }
 
