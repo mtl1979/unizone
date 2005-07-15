@@ -310,11 +310,8 @@ WinShareWindow::PopupActivated(int id)
 			CHECK_PTR(window);
 			window->AddUser(uref);
 			window->show();
-			// it's a map... but so far, there is no need for a key
-			// as i just iterate through the list
-			WPrivPair p = MakePair(window);
 			pLock.Lock();
-			fPrivateWindows.insert(p);
+			fPrivateWindows.AddTail(window);
 			pLock.Unlock();
 		} 
 		else if (id == 2) 
@@ -405,8 +402,8 @@ WinShareWindow::Preferences()
 			StopLogging();
 
 			pLock.Lock();
-			for (WPrivIter privIter = fPrivateWindows.begin(); privIter != fPrivateWindows.end(); privIter++)
-				(*privIter).first->StopLogging();
+			for (unsigned int i = 0; i < fPrivateWindows.GetNumItems(); i++)
+				fPrivateWindows[i]->StopLogging();
 			pLock.Unlock();
 		}
 		else if (!oldLogging && fSettings->GetLogging())
@@ -415,8 +412,8 @@ WinShareWindow::Preferences()
 				SystemEvent(this, tr("Logging enabled."));
 			StartLogging();
 			pLock.Lock();
-			for (WPrivIter privIter = fPrivateWindows.begin(); privIter != fPrivateWindows.end(); privIter++)
-				(*privIter).first->StartLogging();
+			for (unsigned int i = 0; i < fPrivateWindows.GetNumItems(); i++)
+				fPrivateWindows[i]->StartLogging();
 			pLock.Unlock();
 		}
 	}

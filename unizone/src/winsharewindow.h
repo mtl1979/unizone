@@ -300,7 +300,7 @@ private:
 	QString fPopupUser;
 	QPopupMenu * fPrivate;		// private window popup
 
-	WPrivMap fPrivateWindows;	// private windows;
+	Queue<WPrivateWindow *> fPrivateWindows;	// private windows;
 	mutable Mutex pLock;		// private window mutex
 	mutable Mutex rLock;		// resume list mutex
 

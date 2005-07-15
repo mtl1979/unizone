@@ -192,8 +192,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			fInputText->ClearBuffer();
 			pLock.Lock();
-			for (WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); it++)
-				(*it).first->ClearBuffer();
+			for (unsigned int i = 0; i < fPrivateWindows.GetNumItems(); i++)
+				fPrivateWindows[i]->ClearBuffer();
 			pLock.Unlock();
 		}
 		else if (CompareCommand(sendText, "/quit"))
@@ -1605,9 +1605,9 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				bool foundPriv = false;
 				// see if one of the session IDs is in one of the private windows...
 				pLock.Lock();
-				for (WPrivIter it = fPrivateWindows.begin(); it != fPrivateWindows.end(); it++)
+				for (unsigned int i = 0; i < fPrivateWindows.GetNumItems(); i++)
 				{
-					WPrivateWindow * win = (*it).first;
+					WPrivateWindow * win = fPrivateWindows[i];
 					WUserMap & winusers = win->GetUsers();
 					
 					WUserIter uit = winusers.GetIterator();
@@ -1654,9 +1654,8 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 								QApplication::postEvent(win, wpw);
 							
 							// ... and add it to list of private windows
-							WPrivPair p = MakePair(win);
 							pLock.Lock();
-							fPrivateWindows.insert(p);
+							fPrivateWindows.AddTail(win);
 							pLock.Unlock();
 							return;
 						}

@@ -436,20 +436,19 @@ WSettings::Load()
 	WFile file;
 	if (file.Open(GetSettingsFile(), IO_Raw | IO_ReadOnly))
 	{
-		uint8 * buffer = new uint8[file.Size()];
-		if (buffer)
+		ByteBufferRef buffer = GetByteBufferFromPool();
+		if (buffer()->SetNumBytes((uint32) file.Size(), false) == B_NO_ERROR)
 		{
-			if (file.ReadBlock((char *)buffer, file.Size()) < (int64) file.Size())
+			if (file.ReadBlock((char *)buffer()->GetBuffer(), file.Size()) < (int64) file.Size())
 			{
 				QMessageBox::warning(NULL, qApp->translate( "WSettings", "Read Error" ), qApp->translate( "WSettings", "Unable to read data from file!" ), qApp->translate( "WSettings", "Bummer" ));
 			}
 			else
 			{
 				// reload settings
-				fSet()->Unflatten(buffer, file.Size());
+				fSet()->Unflatten(buffer()->GetBuffer(), (uint32) file.Size());
 				ret = true;
 			}
-			delete [] buffer;
 		}
 		file.Close();
 	}
@@ -1527,7 +1526,7 @@ WSettings::GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl,
 	extra = -1;
 
 	String sToolBar = "toolbar";
-	sToolBar += toolbar;
+	sToolBar << toolbar;
 
 	MessageRef mref;
 	if (fSet()->FindMessage(sToolBar, mref) == B_OK)
@@ -1543,7 +1542,7 @@ void
 WSettings::SetToolBarLayout(int toolbar, int32 dock, int32 index, bool nl, int32 extra)
 {
 	String sToolBar = "toolbar";
-	sToolBar += toolbar;
+	sToolBar << toolbar;
 
 	fSet()->RemoveName(sToolBar);
 	

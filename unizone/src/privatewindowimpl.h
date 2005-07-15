@@ -87,17 +87,4 @@ private:
 	QWidget *Window();
 };
 
-typedef map<WPrivateWindow *, WPrivateWindow *> WPrivMap;
-typedef WPrivMap::iterator WPrivIter;
-typedef pair<WPrivateWindow *, WPrivateWindow *> WPrivPair;
-
-inline WPrivPair
-MakePair(WPrivateWindow * t)
-{
-	WPrivPair p;
-	p.first = t;
-	p.second = t;
-	return p;
-}
-
 #endif // PRIVATEWINDOW_H

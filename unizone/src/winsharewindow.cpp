@@ -675,11 +675,14 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				if (wpe)
 				{
 					pLock.Lock();
-					WPrivIter it = fPrivateWindows.find((WPrivateWindow * const)wpe->SendTo());
-					if (it != fPrivateWindows.end())
+					for (unsigned int i = 0; i < fPrivateWindows.GetNumItems(); i++)
 					{
-						fPrivateWindows.erase(it);
-						PRINT("Removed\n");
+						if (fPrivateWindows[i] == wpe->SendTo())
+						{
+							fPrivateWindows.RemoveItemAt(i);
+							PRINT("Removed\n");
+							break;
+						}
 					}
 					pLock.Unlock();
 				}
@@ -1875,11 +1878,8 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 		return;
 	}
 	window->show();
-	// it's a map... but so far, there is no need for a key
-	// as I just iterate through the list
-	WPrivPair p = MakePair(window);
 	pLock.Lock();
-	gWin->fPrivateWindows.insert(p);
+	gWin->fPrivateWindows.AddTail(window);
 	pLock.Unlock();
 }
 
