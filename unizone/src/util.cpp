@@ -1306,11 +1306,11 @@ void
 AddToList(String & slist, const String &item)
 {
 	if (slist.Length() == 0)
-		slist = item;
+		slist = item.Trim();
 	else
 	{
 		slist += ",";
-		slist += item;
+		slist += item.Trim();
 	}
 }
 
@@ -1323,17 +1323,17 @@ AddToList(String & slist, const char *item)
 void AddToList(QString &slist, const QString &entry)
 {
 	if (slist.isEmpty())
-		slist = entry;
+		slist = entry.stripWhiteSpace();
 	else
 	{
 		slist += ",";
-		slist += entry;
+		slist += entry.stripWhiteSpace();
 	}
 }
 
 void RemoveFromList(QString &slist, const QString &entry)
 {
-	if (slist == entry)
+	if (slist == entry.stripWhiteSpace())
 	{
 		slist = QString::null;
 		return;
@@ -1343,7 +1343,7 @@ void RemoveFromList(QString &slist, const QString &entry)
 	QStringList::Iterator iter = list.begin();
 	while (iter != list.end())
 	{
-		if ((*iter).lower() == entry.lower())
+		if ((*iter).lower() == entry.stripWhiteSpace().lower())
 		{
 			list.remove(iter);
 			break;
@@ -1355,7 +1355,7 @@ void RemoveFromList(QString &slist, const QString &entry)
 
 void RemoveFromList(String &slist, const String &entry)
 {
-	if (slist == entry)
+	if (slist == entry.Trim())
 	{
 		slist = "";
 		return;
@@ -1366,7 +1366,7 @@ void RemoveFromList(String &slist, const String &entry)
 	const char * tmp;
 	while ((tmp = tok.GetNextToken()) != NULL)
 	{
-		if (!entry.EqualsIgnoreCase(tmp))
+		if (!entry.Trim().EqualsIgnoreCase(tmp))
 			AddToList(out, tmp);
 	}
 	slist = out;
