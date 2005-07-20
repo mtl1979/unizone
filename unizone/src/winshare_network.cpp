@@ -1083,9 +1083,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/reverse"))
 		{
 			QString qtext = GetParameterString(sendText);
-			Reverse(qtext);
-			if (fNetClient->IsConnected())
-				SendChatText("*", qtext);
+			if (!qtext.isEmpty())
+			{
+				Reverse(qtext);
+				if (fNetClient->IsConnected())
+					SendChatText("*", qtext);
+			}
 		}
 		else if (CompareCommand(sendText, "/crypt"))
 		{
@@ -1170,8 +1173,11 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				Reverse(qtext);
 			}
-			if (fNetClient->IsConnected())
-				SendChatText("*", qtext);
+			if (!qtext.isEmpty())
+			{
+				if (fNetClient->IsConnected())
+					SendChatText("*", qtext);
+			}
 		}
 		else if (CompareCommand(sendText, "/view"))
 		{
