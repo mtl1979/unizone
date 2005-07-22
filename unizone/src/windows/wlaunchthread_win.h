@@ -1,7 +1,6 @@
 #ifndef WLAUNCHTHREAD_WIN_H
 #define WLAUNCHTHREAD_WIN_H
 
-// #include <qthread.h>
 #include <qstring.h>
 #include "system/Thread.h"
 
