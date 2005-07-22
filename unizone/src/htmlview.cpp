@@ -18,6 +18,7 @@ WHTMLView::WHTMLView(QWidget * parent, const char * name)
 	fScrollY = -1;
 	fScrollDown = true;
 	connect( this, SIGNAL(highlighted(const QString &)), this, SLOT(URLSelected(const QString &)) );
+	startTimer(1000);
 }
 
 void
@@ -294,3 +295,19 @@ WHTMLView::UpdateScrollState()
 	}
 }
 
+void
+WHTMLView::timerEvent(QTimerEvent *)
+{
+	// Workaround for skipped QShowEvents
+	fLock.Lock();
+	if (!fBuffer.isEmpty())
+	{
+		QWidget *widget = topLevelWidget();
+		if (widget && widget->isVisible())
+		{
+			_append(fBuffer);
+			fBuffer = QString::null;
+		}
+	}
+	fLock.Unlock();
+}

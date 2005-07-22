@@ -31,6 +31,8 @@ protected:
 	virtual void showEvent(QShowEvent * event);
 	virtual void hideEvent(QHideEvent * event);
 
+	virtual void timerEvent(QTimerEvent * event);
+
 private:
 	QString fOldURL, fURL, fContext;
 	QString fBuffer;
