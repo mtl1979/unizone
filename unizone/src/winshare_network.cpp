@@ -1051,7 +1051,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			PrintSystem(tr("Unizone version: %1").arg(WinShareVersionString()));
 			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING));
-			PrintSystem(tr("zlib version: %1").arg(ZLIB_VERSION));
+			PrintSystem(tr("zlib version: %1").arg(zlibVersion()));
 			PrintSystem(tr("Qt version: %1").arg(qVersion()));
 		}
 		else if (CompareCommand(sendText, "/onconnect"))

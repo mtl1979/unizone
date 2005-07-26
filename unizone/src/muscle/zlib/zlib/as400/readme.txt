@@ -1,4 +1,4 @@
-        ZLIB version 1.2.2 for AS400 installation instructions
+        ZLIB version 1.2.3 for AS400 installation instructions
 
 I) From an AS400 *SAVF file:
 
@@ -109,4 +109,3 @@ Notes:  For AS400 ILE RPG programmers, a /copy member defining the ZLIB
                 text data code conversions must be done explicitely.
 
         Always open zipped files in binary mode.
-
