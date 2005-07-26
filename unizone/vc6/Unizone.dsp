@@ -2320,6 +2320,10 @@ SOURCE=..\src\icon.rc
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\icon2.ico
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\unizone.ico
 # End Source File
 # Begin Source File
@@ -3315,10 +3319,120 @@ SOURCE=..\src\muscle\util\PulseNode.h
 # Begin Source File
 
 SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputName=QAcceptSocketsThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputName=QAcceptSocketsThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputName=QAcceptSocketsThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputName=QAcceptSocketsThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputName=QMessageTransceiverThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputName=QMessageTransceiverThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputName=QMessageTransceiverThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\muscle\qtsupport
+InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputName=QMessageTransceiverThread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -3626,14 +3740,6 @@ SOURCE=..\src\muscle\zlib\zlib\gzio.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\infblock.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\zlib\zlib\infcodes.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\muscle\zlib\zlib\inffast.c
 # End Source File
 # Begin Source File
@@ -3643,10 +3749,6 @@ SOURCE=..\src\muscle\zlib\zlib\inflate.c
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\inftrees.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\zlib\zlib\infutil.c
 # End Source File
 # Begin Source File
 
@@ -3670,14 +3772,6 @@ SOURCE=..\src\muscle\zlib\zlib\deflate.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\infblock.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\zlib\zlib\infcodes.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\muscle\zlib\zlib\inffast.h
 # End Source File
 # Begin Source File
@@ -3687,10 +3781,6 @@ SOURCE=..\src\muscle\zlib\zlib\inffixed.h
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\inftrees.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\muscle\zlib\zlib\infutil.h
 # End Source File
 # Begin Source File
 
