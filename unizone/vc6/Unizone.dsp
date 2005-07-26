@@ -3892,19 +3892,11 @@ SOURCE=..\libjpeg\jdcolor.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdct.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\libjpeg\jddctmgr.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\libjpeg\jdhuff.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\libjpeg\jdhuff.h
 # End Source File
 # Begin Source File
 
@@ -4009,6 +4001,14 @@ SOURCE=..\libjpeg\jchuff.h
 # Begin Source File
 
 SOURCE=..\libjpeg\jconfig.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdct.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\libjpeg\jdhuff.h
 # End Source File
 # Begin Source File
 
