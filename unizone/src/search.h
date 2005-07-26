@@ -90,6 +90,7 @@ private:
 	WComboBox * fSearchEdit;
 	WUniListView * fSearchList;
 	QPushButton * fDownload;
+	QPushButton * fDownloadAll;
 	QPushButton * fClear;
 	QPushButton * fStop;
 	QPushButton * fClearHistory;
@@ -119,6 +120,7 @@ private slots:
 	void GoSearch();
 	void ClearList();
 	void Download();
+	void DownloadAll();
 	void ClearHistory();
 
 };

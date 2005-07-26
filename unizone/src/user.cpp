@@ -486,9 +486,16 @@ WUser::SetClient(const QString &s)
 		OSPair p;
 		for (unsigned int n = 0; (p = Systems[n]).id != NULL; n++)
 		{
-			if (s.contains(p.id, false) > 0)
+			int pos;
+			if ((pos = s.find(p.id, 0, false)) >= 0)
 			{
 				fHostOS = qApp->translate("WUser", p.tag);
+				// try to strip host os from client string
+				if ((pos > 0) && (fClient[pos-1] == '('))
+				{
+					fClient.truncate(pos - 1);
+					fClient = fClient.stripWhiteSpace();
+				}
 				break;
 			}
 		}

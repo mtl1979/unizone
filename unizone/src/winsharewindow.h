@@ -200,17 +200,24 @@ public slots:
 	void OpenDownloadsFolder();
 	void OpenLogsFolder();
 		/* Sep */
-	void ClearChatLog();
+	void OpenSearch();
 		/* Sep */
 	void Exit();
 
+	/** Search... Menu **/
+	void SearchMusic();
+	void SearchVideos();
+	void SearchPictures();
+	void SearchImages();
+
 	/** Edit Menu **/
+	void ClearChatLog();
+		/* Sep */
 	void Preferences();
 
 	/*** Windows Menu ***/
 	void OpenChannels();
 	void OpenDownloads();
-	void OpenSearch();
 	void OpenViewer();
 
 	/*** Help Menu ***/

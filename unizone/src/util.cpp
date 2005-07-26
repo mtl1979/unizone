@@ -824,6 +824,10 @@ void ConvertToRegex(QString & s, bool simple)
 		{
 			ret += simple ? "?" : ".";
 		}
+		else if (s[x] == ',')
+		{
+			ret += "|";
+		}
 		else
 		{
 			if (IsRegexToken2(s[x], false)) ret += '\\';
@@ -1576,6 +1580,21 @@ Match(const QString &string, const QRegExp &exp)
 		str = string.lower();
 		e.setPattern(exp.pattern().lower());
 	}
+#if (QT_VERSION < 0x030000)
+	if (e.pattern().contains("|"))
+	{
+		QStringTokenizer tok(e.pattern(), "|");
+		QString t;
+		while ((t = tok.GetNextToken()) != QString::null)
+		{
+			QRegExp r(t);
+			int ret = str.find(r);
+			if (ret >= 0)
+				return ret;
+		}
+		return -1;
+	}
+#endif
 	return str.find(e);
 }
 

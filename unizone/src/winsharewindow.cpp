@@ -2113,6 +2113,38 @@ WinShareWindow::OpenSearch()
 		fSearch->hide();
 }
 
+void 
+WinShareWindow::SearchMusic()
+{
+	OpenSearch();
+	fSearch->SetSearch("*.mp3,*.ogg,*.wma,*.wav");
+	fSearch->GoSearch();
+}
+
+void 
+WinShareWindow::SearchVideos()
+{
+	OpenSearch();
+	fSearch->SetSearch("*.mpg,*.mpeg,*.m2v,*.vob,*.avi,*.wmv,*.asf");
+	fSearch->GoSearch();
+}
+
+void 
+WinShareWindow::SearchPictures()
+{
+	OpenSearch();
+	fSearch->SetSearch("*.jpg,*.jpeg,*.png,*.gif,*.bmp,*.tga");
+	fSearch->GoSearch();
+}
+	
+void 
+WinShareWindow::SearchImages()
+{
+	OpenSearch();
+	fSearch->SetSearch("*.iso,*.be,*.ccd");
+	fSearch->GoSearch();
+}
+
 void
 WinShareWindow::OpenViewer()
 {

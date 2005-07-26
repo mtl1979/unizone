@@ -754,6 +754,26 @@ Date: %4</translation>
         <source>F9</source>
         <translation type='unfinished'>F9</translation>
     </message>
+    <message>
+        <source>Music</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Videos</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Pictures</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Disk Images</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Search...</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -2591,6 +2611,10 @@ Date: %4</translation>
     <message>
         <source>passive</source>
         <translation type='unfinished'>passive</translation>
+    </message>
+    <message>
+        <source>Download All</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

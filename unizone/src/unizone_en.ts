@@ -787,6 +787,26 @@ Date: %4</translation>
         <source>F9</source>
         <translation>F9</translation>
     </message>
+    <message>
+        <source>Music</source>
+        <translation>Music</translation>
+    </message>
+    <message>
+        <source>Videos</source>
+        <translation>Videos</translation>
+    </message>
+    <message>
+        <source>Pictures</source>
+        <translation>Pictures</translation>
+    </message>
+    <message>
+        <source>Disk Images</source>
+        <translation>Disk Images</translation>
+    </message>
+    <message>
+        <source>Search...</source>
+        <translation>Search...</translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -2699,6 +2719,10 @@ Date: %4</translation>
     <message>
         <source>passive</source>
         <translation>passive</translation>
+    </message>
+    <message>
+        <source>Download All</source>
+        <translation>Download All</translation>
     </message>
 </context>
 <context>

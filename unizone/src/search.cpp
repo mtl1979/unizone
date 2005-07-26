@@ -137,6 +137,13 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 
 	fSearchTab->addMultiCellWidget(fDownload, 10, 10, 0, 2);
 
+	// Download All Button
+
+	fDownloadAll = new QPushButton(tr("Download All"), this);
+	CHECK_PTR(fDownloadAll);
+
+	fSearchTab->addMultiCellWidget(fDownloadAll, 11, 11, 0, 2);
+
 	// Stop Button
 
 	fStop = new QPushButton(tr("Stop"), this);
@@ -168,6 +175,7 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	connect(fClear, SIGNAL(clicked()), this, SLOT(ClearList()));
 	connect(fStop, SIGNAL(clicked()), this, SLOT(StopSearch()));
 	connect(fDownload, SIGNAL(clicked()), this, SLOT(Download()));
+	connect(fDownloadAll, SIGNAL(clicked()), this, SLOT(DownloadAll()));
 	connect(fClearHistory, SIGNAL(clicked()), this, SLOT(ClearHistory()));
 
 	SetSearchStatus(tr("Idle."));
@@ -383,40 +391,40 @@ WSearch::SplitQuery(const QString &fileExp)
 		}
 	}
 	//
-	WUserMap &users = fNetClient->Users();
-	WUserIter it = users.GetIterator();
 	if (fileExp.startsWith("*@"))
 	{
-		return 1;
+		return fileExp.find("@");
 	}
 	if (fileExp.right(2) == "@*")
 	{
 		return fileExp.findRev("@");
 	}
-	while (it.HasMoreValues())
-	{
-		WUserRef uref;
-		it.GetNextValue(uref);
-		// User ID?
-		QString user(uref()->GetUserID());
-		user.prepend("@");
-		if (fileExp.right(user.length()) == user)
-		{
-			return fileExp.findRev(user);
-		}
-		// User Name?
-		QString name = uref()->GetUserName().lower();
-		name = StripURL(name).stripWhiteSpace();
 
-		// Compare end of fileExp against stripped user name
+	{
+		WUserMap &users = fNetClient->Users();
+		WUserIter it = users.GetIterator();
 		
-		QString temp = fileExp;
-		if (temp.right(name.length()).lower() == name)
+		while (it.HasMoreValues())
 		{
-			temp.truncate(temp.length() - name.length());
-			if (temp.right(1) == "@")
+			WUserRef uref;
+			it.GetNextValue(uref);
+			// User ID?
+			QString user(uref()->GetUserID());
+			user.prepend("@");
+			if (fileExp.right(user.length()) == user)
 			{
-				return temp.length() - 1;
+				return fileExp.findRev(user);
+			}
+			// User Name?
+			QString name = uref()->GetUserName().lower();
+			name = StripURL(name).stripWhiteSpace();
+			name.prepend("@");
+			
+			// Compare end of fileExp against stripped user name
+			
+			if (fileExp.right(name.length()).lower() == name)
+			{
+				return fileExp.findRev(name);
 			}
 		}
 	}
@@ -554,6 +562,11 @@ Simplify(const QString &str)
 			ret += "?";
 			x++;
 		}
+		else if (str[x] == "|")
+		{
+			ret += ",";
+			x++;
+		}
 		else if (str[x].upper() != str[x].lower())
 		{
 			if ((str[x].lower() < (QChar) 128) && (str.lower() < (QChar) 128))
@@ -626,7 +639,7 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 
 	fSearchLock.Unlock();
 
-	SetSearchStatus(tr("Searching for: \"%1\".").arg(fileRegExp));
+	SetSearchStatus(tr("Searching for: \"%1\".").arg(Simplify(fileRegExp)));
 	SetSearchStatus(tr("active"), 2);
 }
 
@@ -654,10 +667,41 @@ WSearch::Download()
 			if (fi->fiListItem->isSelected())
 			{
 				PRINT("DOWNLOAD: Found item\n");
-				WUserRef user = fi->fiUser;
 				
-				fQueue.addItem(fi->fiFilename, user);
+				fQueue.addItem(fi->fiFilename, fi->fiUser);
 			}					
+			it++;
+		}
+
+		fQueue.run();
+		fDownload->setEnabled(true);
+	}
+	fSearchLock.Unlock();
+}
+
+void
+WSearch::DownloadAll()
+{
+	fSearchLock.Lock();
+	if (!fFileList.empty())
+	{
+		fDownload->setEnabled(false);
+		DownloadQueue fQueue;
+
+		WFIIter it = fFileList.begin();
+		
+		while (it != fFileList.end())
+		{
+			WFileInfo * fi = (*it).second;
+
+#ifdef _DEBUG
+			WString wFile = fi->fiListItem->text(0);
+			WString wUser = fi->fiListItem->text(5);
+			PRINT("Checking: %S, %S\n", wFile.getBuffer(), wUser.getBuffer());
+#endif
+
+			fQueue.addItem(fi->fiFilename, fi->fiUser);
+
 			it++;
 		}
 

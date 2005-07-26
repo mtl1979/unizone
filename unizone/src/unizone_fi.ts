@@ -831,6 +831,26 @@ Päiväys: %4</translation>
         <source>F9</source>
         <translation>F9</translation>
     </message>
+    <message>
+        <source>Music</source>
+        <translation>Musiikkia</translation>
+    </message>
+    <message>
+        <source>Videos</source>
+        <translation>Videoita</translation>
+    </message>
+    <message>
+        <source>Pictures</source>
+        <translation>Kuvia</translation>
+    </message>
+    <message>
+        <source>Disk Images</source>
+        <translation>Levyimageja</translation>
+    </message>
+    <message>
+        <source>Search...</source>
+        <translation>Etsi...</translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -2831,6 +2851,10 @@ Päiväys: %4</translation>
     <message>
         <source>passive</source>
         <translation>passiivinen</translation>
+    </message>
+    <message>
+        <source>Download All</source>
+        <translation>Lataa Kaikki</translation>
     </message>
 </context>
 <context>
