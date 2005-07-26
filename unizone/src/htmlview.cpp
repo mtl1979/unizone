@@ -305,8 +305,10 @@ WHTMLView::timerEvent(QTimerEvent *)
 		QWidget *widget = topLevelWidget();
 		if (widget && widget->isVisible())
 		{
+			CheckScrollState();
 			_append(fBuffer);
 			fBuffer = QString::null;
+			UpdateScrollState();
 		}
 	}
 	fLock.Unlock();
