@@ -4,6 +4,7 @@
 #include <io.h>
 #include <windows.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <limits.h>
 
 void ConvertFileName(wchar_t *in, int ilen, char * out, int olen)
