@@ -3714,6 +3714,14 @@ SOURCE=..\src\muscle\regex\regex\regfree.c
 
 SOURCE=..\src\muscle\regex\regex\regex.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\regex2.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\regex\regex\utils.h
+# End Source File
 # End Group
 # Begin Group "zlib Sources"
 
@@ -3721,51 +3729,364 @@ SOURCE=..\src\muscle\regex\regex\regex.h
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\adler32.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\compress.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\crc32.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\deflate.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Assembling...
+IntDir=.\Release
+InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+InputName=gvmat32
+
+"$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	ml.exe /nologo /c /coff /Cx /Fo"$(IntDir)\$(InputName).obj" "$(InputPath)"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Assembling...
+IntDir=.\Debug
+InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+InputName=gvmat32
+
+"$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	ml.exe /nologo /c /coff /Cx /Zi /Fo"$(IntDir)\$(InputName).obj" "$(InputPath)"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Assembling...
+IntDir=.\Debug_ANSI
+InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+InputName=gvmat32
+
+"$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	ml.exe /nologo /c /coff /Cx /Zi /Fo"$(IntDir)\$(InputName).obj" "$(InputPath)"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Assembling...
+IntDir=.\Release_ANSI
+InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+InputName=gvmat32
+
+"$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	ml.exe /nologo /c /coff /Cx /Fo"$(IntDir)\$(InputName).obj" "$(InputPath)"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32c.c
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV"
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\gzio.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\inffast.c
+SOURCE=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Assembling...
+IntDir=.\Release
+InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+InputName=inffas32
+
+"$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	ml.exe /nologo /c /coff /Cx /Fo"$(IntDir)\$(InputName).obj" "$(InputPath)"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Assembling...
+IntDir=.\Debug
+InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+InputName=inffas32
+
+"$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	ml.exe /nologo /c /coff /Cx /Zi /Fo"$(IntDir)\$(InputName).obj" "$(InputPath)"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Assembling...
+IntDir=.\Debug_ANSI
+InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+InputName=inffas32
+
+"$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	ml.exe /nologo /c /coff /Cx /Zi /Fo"$(IntDir)\$(InputName).obj" "$(InputPath)"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Assembling...
+IntDir=.\Release_ANSI
+InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+InputName=inffas32
+
+"$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	ml.exe /nologo /c /coff /Cx /Fo"$(IntDir)\$(InputName).obj" "$(InputPath)"
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\inflate.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\inftrees.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\trees.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\uncompr.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\zutil.c
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# ADD CPP /I "..\src\muscle\zlib\zlib"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "zlib Headers"
 
 # PROP Default_Filter ".h"
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\crc32.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\deflate.h
@@ -3777,6 +4098,10 @@ SOURCE=..\src\muscle\zlib\zlib\inffast.h
 # Begin Source File
 
 SOURCE=..\src\muscle\zlib\zlib\inffixed.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\muscle\zlib\zlib\inflate.h
 # End Source File
 # Begin Source File
 
