@@ -71,6 +71,10 @@ WUniListItem::key(int c, bool /* asc */) const
 	int32 bw;
 	QString result, q1, q2;
 
+#ifdef _DEBUG
+	WString wres;
+#endif
+
 	switch (UColumnType[c])
 	{
 	case Number:
@@ -81,7 +85,8 @@ WUniListItem::key(int c, bool /* asc */) const
 		{
 			result = fKey[c];
 #ifdef _DEBUG
-			PRINT("\tRESULT STARTS AS\t %S\n", GetBuffer(result));
+			wres = result;
+			PRINT("\tRESULT STARTS AS\t %S\n", wres.getBuffer());
 #endif
 
 			bool ok;
@@ -91,7 +96,8 @@ WUniListItem::key(int c, bool /* asc */) const
 				// convert our number to hexadecimal! what a thought, huh?
 				result = hexFromLongLong(n, 16);
 #ifdef _DEBUG
-				PRINT("\tRESULT IS %S\n", GetBuffer(result));
+				wres = result;
+				PRINT("\tRESULT IS %S\n", wres.getBuffer());
 #endif
 			}
 			return result;
@@ -100,7 +106,8 @@ WUniListItem::key(int c, bool /* asc */) const
 		{
 			result = fKey[c];
 #ifdef _DEBUG
-			PRINT("\tRESULT STARTS AS\t %S\n", GetBuffer(result));
+			wres = result;
+			PRINT("\tRESULT STARTS AS\t %S\n", wres.getBuffer());
 #endif
 
 			bool ok;
@@ -110,7 +117,8 @@ WUniListItem::key(int c, bool /* asc */) const
 				// convert our number to hexadecimal! what a thought, huh?
 				result = hexFromLongLong(n, 16);
 #ifdef _DEBUG
-				PRINT("\tRESULT IS %S\n", GetBuffer(result));
+				wres = result;
+				PRINT("\tRESULT IS %S\n", wres.getBuffer());
 #endif
 			}
 			return result;
@@ -325,6 +333,11 @@ WUniListItem::text(int c) const
 	long lMod;
 	uint32 secs, min, hours;
 	bool ok;
+
+#ifdef _DEBUG
+	WString wres;
+#endif
+
 	switch (UColumnType[c])
 	{
 	case String_NoCase_Stripped:
@@ -379,7 +392,8 @@ WUniListItem::text(int c) const
 		{
 			result.sprintf("%.2f ", n);
 			result += postFix;
-			PRINT2("UListView::text : %S\n", GetBuffer(result));
+			wres = result;
+			PRINT2("UListView::text : %S\n", wres.getBuffer());
 		}
 		else
 		{
@@ -579,7 +593,9 @@ WUniListView::dropEvent(QDropEvent* event)
 			QImage img;
 			if (img.load(filename, fmt))
 			{
-				PRINT("Sending picture \"%S\" to \"%S\"...\n", GetBuffer(filename), GetBuffer(li->text(1)));
+				WString wfile(filename);
+				WString wuser(li->text(1));
+				PRINT("Sending picture \"%S\" to \"%S\"...\n", wfile.getBuffer(), wuser.getBuffer());
 				gWin->SendPicture(li->text(1), filename);
 			}
 			it++;

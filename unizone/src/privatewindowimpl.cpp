@@ -75,8 +75,8 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	connect(fPrivateUsers, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 			this, SLOT(RightButtonClicked(QListViewItem *, const QPoint &, int)));
 
-	connect(fNet, SIGNAL(UserDisconnected(const WUserRef)), 
-			this, SLOT(UserDisconnected(const WUserRef)));
+	connect(fNet, SIGNAL(UserDisconnected(const WUserRef &)), 
+			this, SLOT(UserDisconnected(const WUserRef &)));
 	connect(fNet, SIGNAL(DisconnectedFromServer()), 
 			this, SLOT(DisconnectedFromServer()));
 	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
@@ -378,7 +378,8 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 #ifdef _DEBUG
-					PRINT("\t\t%S\n", GetBuffer(message));
+					WString wmessage(message);
+					PRINT("\t\t%S\n", wmessage.getBuffer());
 #endif
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
@@ -396,7 +397,8 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 #ifdef _DEBUG
-					PRINT("\t\t%S\n", GetBuffer(message));
+					WString wmessage(message);
+					PRINT("\t\t%S\n", wmessage.getBuffer());
 #endif
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);

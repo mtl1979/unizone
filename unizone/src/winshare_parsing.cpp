@@ -61,7 +61,8 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 	}
 
 #ifdef _DEBUG
-	PRINT("WinShareWindow::MatchUserName: Result %S\n", GetBuffer(result));
+	WString wres(result);
+	PRINT("WinShareWindow::MatchUserName: Result %S\n", wres.getBuffer());
 #endif
 
 	return matchCount;
@@ -81,8 +82,12 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 			next = next.stripWhiteSpace();
 			
 			QString userID = user()->GetUserID();
-			PRINT2("MatchUserFilter: UserID = %S\n", GetBuffer(userID));
-			PRINT2("MatchUserFilter: next   = %S\n", GetBuffer(next));
+#ifdef DEBUG2
+			WString wuid(userID);
+			WString wnext(next);
+			PRINT2("MatchUserFilter: UserID = %S\n", wuid.getBuffer());
+			PRINT2("MatchUserFilter: next   = %S\n", wnext.getBuffer());
+#endif
 			
 			if (!userID.isEmpty())
 			{
@@ -107,8 +112,12 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 					// Does this item (interpreted as a regex) match our user's name?
 					ConvertToRegex(next);
 					QRegExp qr(next, false);
-					PRINT2("MatchUserFilter: UserName = %S\n", GetBuffer(userName));
-					PRINT2("MatchUserFilter: next = %S\n", GetBuffer(next));
+#ifdef DEBUG2
+					WString wuser(userName);
+					wnext = next;
+					PRINT2("MatchUserFilter: UserName = %S\n", wuser.getBuffer());
+					PRINT2("MatchUserFilter: next = %S\n", wnext.getBuffer());
+#endif
 					if (Match(userName, qr) >= 0)
 					{
 						return true;
@@ -151,13 +160,18 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 		int matchAt = words[i];
 		QString qres;
 
+#ifdef _DEBUG
+		WString wres;
+#endif
+
 		PRINT("Matching\n");
 		int numMatches = MatchUserName(origText.mid(words[i]), qres, QString::null);
 		PRINT("Match complete\n");
 		if (numMatches == 1)
 		{
 #ifdef _DEBUG
-			PRINT("Found match %S\n", GetBuffer(qres));
+			wres = qres;
+			PRINT("Found match %S\n", wres.getBuffer());
 #endif
 
 			matchString = qres;  // found a unique match!  We're done!
@@ -167,7 +181,8 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 		else if (numMatches > 1)
 		{
 #ifdef _DEBUG
-			PRINT("Found multiple matches %S\n", GetBuffer(qres));
+			wres = qres;
+			PRINT("Found multiple matches %S\n", qres);
 #endif
 
 			backupMatchString = qres;		// found several matches; keep trying for a single

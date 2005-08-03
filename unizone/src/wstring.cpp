@@ -138,8 +138,9 @@ WString::operator+=(const QString &str)
 		wchar_t *buf2 = new wchar_t[newlen];
 		if (buf2)
 		{
+			WString s2(str);
 			wcscpy(buf2, buffer);
-			wcscat(buf2, GetBuffer(str));
+			wcscat(buf2, s2.getBuffer());
 			setBuffer(buf2);
 		}
 	}
@@ -166,7 +167,8 @@ WString::operator!=(const WString &str)
 bool 
 WString::operator!=(const QString &str)
 {
-	bool b = (wcscmp(buffer, GetBuffer(str)) != 0);
+	WString s2(str);
+	bool b = (wcscmp(buffer, s2.getBuffer()) != 0);
 	return b;
 }
 
@@ -186,7 +188,8 @@ WString::operator==(const WString &str)
 bool 
 WString::operator==(const QString &str)
 {
-	bool b = (wcscmp(buffer, GetBuffer(str)) == 0);
+	WString s2(str);
+	bool b = (wcscmp(buffer, s2.getBuffer()) == 0);
 	return b;
 }
 

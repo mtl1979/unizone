@@ -27,7 +27,8 @@ WLaunchThread::GotoURL(const QString & url, const QString & browser)
 	launch += "\"";
 
 #ifdef _DEBUG
-	PRINT("Launching %S\n", GetBuffer(launch));
+	WString wlaunch(launch);
+	PRINT("Launching %S\n", wlaunch.getBuffer());
 #endif
 
 	system(launch);

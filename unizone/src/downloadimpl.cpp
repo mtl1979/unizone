@@ -1174,8 +1174,10 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				QString uname = GetUserName(dt);
 				
 #ifdef _DEBUG
-				PRINT("USER ID  : %S\n", GetBuffer(QString::fromUtf8(user.Cstr())));
-				PRINT("USER NAME: %S\n", GetBuffer(uname));
+				WString wuid(user.Cstr());
+				WString wname(uname);
+				PRINT("USER ID  : %S\n", wuid.getBuffer());
+				PRINT("USER NAME: %S\n", wname.getBuffer());
 #endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
@@ -1215,7 +1217,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
-			PRINT("WGenericEvent::FileError: File %S\n", GetBuffer(QString::fromUtf8(file.Cstr()))); 
+			WString wfile(file.Cstr());
+			PRINT("WGenericEvent::FileError: File %S\n", wfile.getBuffer()); 
 #endif
 			break;
 		}
@@ -1506,8 +1509,10 @@ WDownload::uploadEvent(WUploadEvent *u)
 				QString uname = GetUserName(ut);
 				
 #ifdef _DEBUG
-				PRINT("USER ID  : %S\n", GetBuffer(QString::fromUtf8(user.Cstr())));
-				PRINT("USER NAME: %S\n", GetBuffer(uname));
+				WString wuid(user.Cstr());
+				WString wname(uname);
+				PRINT("USER ID  : %S\n", wuid.getBuffer());
+				PRINT("USER NAME: %S\n", wname.getBuffer());
 #endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
@@ -1547,7 +1552,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 			item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
-			PRINT("WGenericEvent::FileError: File %S\n", GetBuffer(QString::fromUtf8(file.Cstr()))); 
+			WString wfile(file.Cstr());
+			PRINT("WGenericEvent::FileError: File %S\n", wfile.getBuffer()); 
 #endif
 			break;
 		}
@@ -3110,9 +3116,9 @@ WDownload::UpdateULRatings()
 		if (pair.second)
 		{
 #ifdef _DEBUG
-			QString qFile(pair.second->text(WTransferItem::Filename));
-			if (qFile.length() > 0)
-				PRINT("Item %d: %S\n", i, GetBuffer(qFile) );
+			WString wFile(pair.second->text(WTransferItem::Filename));
+			if (wFile.length() > 0)
+				PRINT("Item %d: %S\n", i, wFile.getBuffer() );
 			else
 				PRINT("Item %d\n", i);
 #endif

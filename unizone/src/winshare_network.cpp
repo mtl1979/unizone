@@ -1507,7 +1507,9 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 				QString sendText = sendTo[qi].second;
 
 #ifdef _DEBUG
-				PRINT("Found user %S and rest of text %S\n", GetBuffer(user()->GetUserName()), GetBuffer(sendText));
+				WString wuser(user()->GetUserName());
+				WString wtext(sendText);
+				PRINT("Found user %S and rest of text %S\n", wuser.getBuffer(), wtext.getBuffer());
 #endif
 
 				if (isping)

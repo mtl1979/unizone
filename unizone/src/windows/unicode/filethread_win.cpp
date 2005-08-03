@@ -17,7 +17,10 @@
 QString
 WFileThread::ResolveLink(const QString & lnk) const
 {
-	PRINT2("\tResolving %S\n", GetBuffer(lnk));
+#ifdef DEBUG2
+	WString wlnk(lnk);
+	PRINT2("\tResolving %S\n", wlnk.getBuffer());
+#endif
 	
 	if (lnk.right(4) == ".lnk")
 	{
@@ -44,7 +47,8 @@ WFileThread::ResolveLink(const QString & lnk) const
 			{
 				PRINT("Got persistfile\n");
 				
-				hres = ppf->Load(GetBuffer(ret), STGM_READ);
+				WString wret(ret);
+				hres = ppf->Load(wret.getBuffer(), STGM_READ);
 				if (SUCCEEDED(hres))
 				{
 					PRINT("Loaded\n");
@@ -67,7 +71,8 @@ WFileThread::ResolveLink(const QString & lnk) const
 			}
 			psl->Release();
 #ifdef _DEBUG
-			PRINT("Resolved to: %S\n", GetBuffer(ret));
+			WString wret(ret);
+			PRINT("Resolved to: %S\n", wret.getBuffer());
 #endif
 			return ret;
 		}	

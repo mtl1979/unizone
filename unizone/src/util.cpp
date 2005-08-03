@@ -369,8 +369,12 @@ bool
 CompareCommand(const QString & qCommand, const QString & cCommand)
 {
 	QString com = GetCommandString(qCommand);
-	PRINT2("Compare String: qCommand=\'%S\'\n", GetBuffer(com));
-	PRINT2("                cCommand=\'%S\'\n", GetBuffer(cCommand));
+#ifdef DEBUG2
+	WString c1(com);
+	WString c2(cCommand);
+	PRINT2("Compare String: qCommand=\'%S\'\n", c1.getBuffer());
+	PRINT2("                cCommand=\'%S\'\n", c2.getBuffer());
+#endif
 	return ((com == cCommand) ? true : false);
 }
 
@@ -663,7 +667,10 @@ BandwidthToBytes(const QString & connection)
 			}
 		} while (bw.bw != ULONG_MAX);
 	}
-	PRINT2("Connection = '%S', bps = %lu\n", GetBuffer(conn), bps);
+#ifdef DEBUG2
+	WString wconn(conn);
+	PRINT2("Connection = '%S', bps = %lu\n", wconn.getBuffer(), bps);
+#endif
 	return bps;
 }
 

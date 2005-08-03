@@ -827,7 +827,8 @@ WUploadThread::DoUpload()
 
 #ifdef _DEBUG
 				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
-				PRINT("WUploadThread::DoUpload: filePath = %S\n", GetBuffer(fFileUl)); 
+				WString wul(fFileUl);
+				PRINT("WUploadThread::DoUpload: filePath = %S\n", wul.getBuffer()); 
 #endif
 				
 				fFile = new WFile();

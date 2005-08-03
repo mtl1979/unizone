@@ -16,9 +16,10 @@ WLaunchThread::InternalThreadEntry()
 bool 
 WLaunchThread::GotoURL(const QString & url, int showcmd)
 {
-	PRINT("GotoURL: url = %S\n", GetBuffer(url));
+	WString wurl(url);
+	PRINT("GotoURL: url = %S\n", wurl.getBuffer());
 
-    if ((long)ShellExecuteW(NULL, NULL, GetBuffer(url), NULL, NULL, showcmd) > 32)
+    if ((long)ShellExecuteW(NULL, NULL, wurl.getBuffer(), NULL, NULL, showcmd) > 32)
         return true;
 
     return false;

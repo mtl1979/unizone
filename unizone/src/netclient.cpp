@@ -786,7 +786,8 @@ NetClient::HandleParameters(const MessageRef & next)
 			}
 
 #ifdef _DEBUG
-			PRINT("My ID is: %S\n", GetBuffer(fSessionID));
+			WString wsession(fSessionID);
+			PRINT("My ID is: %S\n", wsession.getBuffer());
 #endif
 
 			if (win)

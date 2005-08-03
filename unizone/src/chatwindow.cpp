@@ -116,7 +116,9 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		QString temp = gWin->GetUserName().upper(); 
 
 #ifdef _DEBUG
-		PRINT("Comparing \"%S\" to \"%S\"\n", GetBuffer(temp), GetBuffer(itxt));
+		WString wtemp(temp);
+		WString wtxt(itxt);
+		PRINT("Comparing \"%S\" to \"%S\"\n", wtemp.getBuffer(), wtxt.getBuffer());
 #endif
 
 		unsigned int c1 = sred + rlen;	// itxt
@@ -176,7 +178,8 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		smsg += itxt2;		// <postmaster@raasu.org> 20021005
 
 #ifdef _DEBUG
-		PRINT("Name said string: %S\n", GetBuffer(smsg));
+		WString wmsg(smsg);
+		PRINT("Name said string: %S\n", wmsg.getBuffer());
 #endif
 
 		msg = smsg;

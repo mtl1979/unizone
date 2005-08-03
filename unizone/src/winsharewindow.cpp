@@ -621,7 +621,8 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					WTextEvent te("");
 
 #ifdef _DEBUG
-					PRINT("wpe->GetText() = %S\n", GetBuffer(wpe->GetText()));
+					WString wtext(wpe->GetText());
+					PRINT("wpe->GetText() = %S\n", wtext.getBuffer());
 #endif
 
 					te.SetText(wpe->GetText());
@@ -630,7 +631,8 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					{
 						bool rep = false;
 #ifdef _DEBUG
-						PRINT("Sending the following text to SendChatText %S\n", GetBuffer(te.Text()));
+						wtext = te.Text();
+						PRINT("Sending the following text to SendChatText %S\n", wtext.getBuffer());
 #endif
 
 						SendChatText(&te, &rep);
@@ -1147,7 +1149,10 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 		for (int i = clauses.GetNumItems() - 1; i >= 0; i--)
 		{
 			WUserRef user = net->FindUser( clauses[i] );
-			PRINT2("Checking for user %S\n", GetBuffer(clauses[i]));
+#ifdef DEBUG2
+			WString wuser(clauses[i]);
+			PRINT2("Checking for user %S\n", wuser.getBuffer());
+#endif
 
 			if (user() != NULL)
 			{
@@ -1364,13 +1369,15 @@ WinShareWindow::LoadSettings()
 		fAwayMsg = fSettings->GetAwayMsg();
 
 #ifdef _DEBUG
-		PRINT("Away Msg: %S\n", GetBuffer(fAwayMsg));
+		WString waway(fAwayMsg);
+		PRINT("Away Msg: %S\n", waway.getBuffer());
 #endif
 		
 		fHereMsg = fSettings->GetHereMsg();
 
 #ifdef _DEBUG
-		PRINT("Here Msg: %S\n", GetBuffer(fHereMsg));
+		WString where(fHereMsg);
+		PRINT("Here Msg: %S\n", where.getBuffer());
 #endif
 
 		fWatch = fSettings->GetWatchPattern();
@@ -1514,7 +1521,8 @@ WinShareWindow::SaveSettings()
 		fSettings->AddServerItem(qServer);
 
 #ifdef _DEBUG
-		PRINT("Saved server %S\n", GetBuffer(qServer));
+		WString wserver(qServer);
+		PRINT("Saved server %S\n", wserver.getBuffer());
 #endif
 	}
 	fSettings->SetCurrentServerItem(fServerList->currentItem());
@@ -1527,7 +1535,8 @@ WinShareWindow::SaveSettings()
 		fSettings->AddUserItem(qUser);
 
 #ifdef _DEBUG
-		PRINT("Saved user %S\n", GetBuffer(qUser));
+		WString wuser(qUser);
+		PRINT("Saved user %S\n", wuser.getBuffer());
 #endif
 	}
 	fSettings->SetCurrentUserItem(fUserList->currentItem());
@@ -1540,7 +1549,8 @@ WinShareWindow::SaveSettings()
 		fSettings->AddStatusItem(qStatus);
 
 #ifdef _DEBUG
-		PRINT("Saved status %S\n", GetBuffer(qStatus));
+		WString wstatus(qStatus);
+		PRINT("Saved status %S\n", wstatus.getBuffer());
 #endif
 	}
 	fSettings->SetCurrentStatusItem(fStatusList->currentItem());
@@ -1786,7 +1796,8 @@ WinShareWindow::MapIPsToNodes(const QString & pattern)
 	}
 
 #ifdef _DEBUG
-	PRINT("MapIPsToNodes: %S\n", GetBuffer(qResult));
+	WString wres(qResult);
+	PRINT("MapIPsToNodes: %S\n", wres.getBuffer());
 #endif
 
 	return qResult;
@@ -1817,7 +1828,8 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 	}
 
 #ifdef _DEBUG
-	PRINT("MapUsersToIDs: %S\n", GetBuffer(qResult));
+	WString wres(qResult);
+	PRINT("MapUsersToIDs: %S\n", wres.getBuffer());
 #endif
 
 	return qResult;

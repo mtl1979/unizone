@@ -532,8 +532,10 @@ Channel::customEvent(QCustomEvent * event)
 									uit.GetNextValue(found);
 									
 #ifdef _DEBUG
-									PRINT("found - UserID = %S\n", GetBuffer(found()->GetUserID()));
-									PRINT("uref  - UserID = %S\n", GetBuffer(uref()->GetUserID()));
+									WString wuid1(found()->GetUserID());
+									WString wuid2(uref()->GetUserID());
+									PRINT("found - UserID = %S\n", wuid1.getBuffer());
+									PRINT("uref  - UserID = %S\n", wuid2.getBuffer());
 #endif
 									
 									if (found()->GetUserID() == uref()->GetUserID())
@@ -568,7 +570,8 @@ Channel::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 #ifdef _DEBUG
-					PRINT("\t\t%S\n", GetBuffer(message));
+					WString wmessage(message);
+					PRINT("\t\t%S\n", wmessage.getBuffer());
 #endif
 					
 					SendChannelText(message);
@@ -582,7 +585,8 @@ Channel::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 #ifdef _DEBUG
-					PRINT("\t\t%S\n", GetBuffer(message));
+					WString wmessage(message);
+					PRINT("\t\t%S\n", wmessage.getBuffer());
 #endif
 					
 					SendChannelText(message);
