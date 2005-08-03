@@ -61,8 +61,7 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 	}
 
 #ifdef _DEBUG
-	WString wUser(result);
-	PRINT("WinShareWindow::MatchUserName: Result %S\n", wUser.getBuffer());
+	PRINT("WinShareWindow::MatchUserName: Result %S\n", GetBuffer(result));
 #endif
 
 	return matchCount;
@@ -82,12 +81,10 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 			next = next.stripWhiteSpace();
 			
 			QString userID = user()->GetUserID();
-			WString wuid(userID);
-			WString wnxt(next);
-			PRINT2("MatchUserFilter: UserID = %S\n", wuid.getBuffer());
-			PRINT2("MatchUserFilter: next   = %S\n", wnxt.getBuffer());
+			PRINT2("MatchUserFilter: UserID = %S\n", GetBuffer(userID));
+			PRINT2("MatchUserFilter: next   = %S\n", GetBuffer(next));
 			
-			if (userID.length() > 0)
+			if (!userID.isEmpty())
 			{
 				// Is this item our user's session ID?
 				if (userID == next)
@@ -99,7 +96,7 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 			QString qUser = StripURL(user()->GetUserName().lower());
 			QString userName = qUser.stripWhiteSpace();
 			
-			if (userName.length() > 0)
+			if (!userName.isEmpty())
 			{
 				if (userName == next)	// Is this item our user's name?
 				{
@@ -110,10 +107,8 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 					// Does this item (interpreted as a regex) match our user's name?
 					ConvertToRegex(next);
 					QRegExp qr(next, false);
-					WString wusr(userName);
-					WString wnxt(next);
-					PRINT2("MatchUserFilter: UserName = %S\n", wusr.getBuffer());
-					PRINT2("MatchUserFilter: next = %S\n", wnxt.getBuffer());
+					PRINT2("MatchUserFilter: UserName = %S\n", GetBuffer(userName));
+					PRINT2("MatchUserFilter: next = %S\n", GetBuffer(next));
 					if (Match(userName, qr) >= 0)
 					{
 						return true;
@@ -162,8 +157,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 		if (numMatches == 1)
 		{
 #ifdef _DEBUG
-			WString wResult(qres);
-			PRINT("Found match %S\n", wResult.getBuffer());
+			PRINT("Found match %S\n", GetBuffer(qres));
 #endif
 
 			matchString = qres;  // found a unique match!  We're done!
@@ -173,8 +167,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 		else if (numMatches > 1)
 		{
 #ifdef _DEBUG
-			WString wResult(qres);
-			PRINT("Found multiple matches %S\n", wResult.getBuffer());
+			PRINT("Found multiple matches %S\n", GetBuffer(qres));
 #endif
 
 			backupMatchString = qres;		// found several matches; keep trying for a single
@@ -203,7 +196,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 void
 WinShareWindow::GotUpdateCmd(const QString & key, const QString & value)
 {
-	if (value.length() > 0)
+	if (!value.isEmpty())
 	{
 		QString server = value.lower().stripWhiteSpace();
 
@@ -283,18 +276,10 @@ WinShareWindow::SetWatchPattern(const QString &pattern)
 	}
 }
 
-/*
 bool
 WinShareWindow::MatchFilter(const QString & user, const QString & filter)
 {
-	return MatchFilter(user, (const char *) filter.lower().utf8());
-}
-*/
-
-bool
-WinShareWindow::MatchFilter(const QString & user, const QString & filter)
-{
-	if (!filter.isEmpty() && (user.length() > 0))
+	if (!filter.isEmpty() && !user.isEmpty())
 	{
 		QStringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
 		QString n;
@@ -307,7 +292,7 @@ WinShareWindow::MatchFilter(const QString & user, const QString & filter)
 			ConvertToRegex(next);
 			QRegExp qr(next, false);
 			QString userName = user.stripWhiteSpace();
-			if ((userName.length() > 0) && Match(userName, qr) >= 0)
+			if (!userName.isEmpty() && Match(userName, qr) >= 0)
 			{
 				return true;
 			}

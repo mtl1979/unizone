@@ -11,15 +11,8 @@
 bool
 WinShareWindow::IsIgnoredIP(const QString & ip)
 {
-	{
-		WString wIP(ip);
-		PRINT("IsIgnoredIP(%S)\n", wIP.getBuffer());
-	}
-
-	{
-		WString wIP(fIgnoreIP);
-		PRINT2("IP IGNORE MASK: %S\n", wIP.getBuffer());
-	}
+	PRINT("IsIgnoredIP(%S)\n", GetBuffer(ip));
+	PRINT2("IP IGNORE MASK: %S\n", GetBuffer(fIgnoreIP));
 
 	return MatchFilter(ip, fIgnoreIP);
 }
@@ -27,10 +20,7 @@ WinShareWindow::IsIgnoredIP(const QString & ip)
 bool
 WinShareWindow::AddIPIgnore(const QString & ip)
 {
-	{
-		WString wIP(ip);
-		PRINT("AddIPIgnore(%S)\n", wIP.getBuffer());
-	}
+	PRINT("AddIPIgnore(%S)\n", GetBuffer(ip));
 
 	if ( IsIgnoredIP(ip) )
 		return false;
@@ -40,10 +30,7 @@ WinShareWindow::AddIPIgnore(const QString & ip)
 
 	AddToList(fIgnoreIP, ip);
 
-	{
-		WString wIP(fIgnoreIP);
-		PRINT2("IP IGNORE MASK: %S\n", wIP.getBuffer());
-	}
+	PRINT2("IP IGNORE MASK: %S\n", GetBuffer(fIgnoreIP));
 
 	return true;
 
@@ -52,10 +39,7 @@ WinShareWindow::AddIPIgnore(const QString & ip)
 bool
 WinShareWindow::RemoveIPIgnore(const QString & ip)
 {
-	{
-		WString wIP(ip);
-		PRINT("RemoveIPIgnore(%S)\n", wIP.getBuffer());
-	}
+	PRINT("RemoveIPIgnore(%S)\n", GetBuffer(ip));
 
 	if ( !IsIgnoredIP(ip) )
 		return false;
@@ -70,10 +54,7 @@ WinShareWindow::RemoveIPIgnore(const QString & ip)
 
 	RemoveFromList(fIgnoreIP, ip);
 
-	{
-		WString wIP(fIgnoreIP);
-		PRINT2("IP IGNORE MASK: %S\n", wIP.getBuffer());
-	}
+	PRINT2("IP IGNORE MASK: %S\n", GetBuffer(fIgnoreIP));
 
 	return true;
 }

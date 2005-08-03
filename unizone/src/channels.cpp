@@ -307,8 +307,7 @@ Channels::JoinChannel(const QString & channel)
 	
 	// Send user list to window
 #ifdef _DEBUG
-	WString wUsers((*it).second->GetUsers());
-	PRINT("JoinChannel: GetUsers = %S\n", wUsers.getBuffer());
+	PRINT("JoinChannel: GetUsers = %S\n", GetBuffer((*it).second->GetUsers()));
 #endif
 	int n = fNetClient->GetUserCount(channel);
 	if (n > 0)
@@ -663,10 +662,7 @@ Channels::UserIDChanged(const QString &oldid, const QString &newid)
 		(*iter).second->RemoveUser(oldid);
 		(*iter).second->AddUser(newid);
 #ifdef _DEBUG
-		WString wMyID(gWin->GetUserID());
-		WString wOldID(oldid);
-		WString wNewID(newid);
-		PRINT("UserIDChanged, myid = %S, old = %S, new = %S\n", wMyID.getBuffer(), wOldID.getBuffer(), wNewID.getBuffer());
+		PRINT("UserIDChanged, myid = %S, old = %S, new = %S\n", GetBuffer(gWin->GetUserID()), GetBuffer(oldid), GetBuffer(newid));
 #endif
 
 		if (newid == gWin->GetUserID())

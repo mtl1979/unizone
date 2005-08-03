@@ -147,7 +147,7 @@ WUploadThread::SetUpload(const QString & remoteIP, uint32 remotePort, WFileThrea
 }
 
 void
-WUploadThread::SetUpload(const QString & userID, int32 remoteID, WFileThread * ft)
+WUploadThread::SetUpload(const QString & userID, int64 remoteID, WFileThread * ft)
 {
 	fTunneled = true;
 	fFileThread = ft;
@@ -827,8 +827,7 @@ WUploadThread::DoUpload()
 
 #ifdef _DEBUG
 				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
-				WString wFileUl(fFileUl); 
-				PRINT("WUploadThread::DoUpload: filePath = %S\n", wFileUl.getBuffer()); 
+				PRINT("WUploadThread::DoUpload: filePath = %S\n", GetBuffer(fFileUl)); 
 #endif
 				
 				fFile = new WFile();
@@ -1439,7 +1438,7 @@ WUploadThread::SendMessageToSessions(const MessageRef & msgRef, const char * opt
 				up()->AddString(PR_NAME_SESSION, "");
 				up()->AddMessage("message", msgRef);
 				up()->AddBool("upload", true);
-				up()->AddInt32("tunnel_id", hisID);
+				up()->AddInt64("tunnel_id", hisID);
 				return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(up);
 			}
 			else

@@ -45,7 +45,7 @@ public:
 
 	void SetUpload(int socket, uint32 remoteIP, WFileThread * ft);
 	void SetUpload(const QString & remoteIP, uint32 remotePort, WFileThread * ft);
-	void SetUpload(const QString & userID, int32 hisID, WFileThread * ft); // Tunneled
+	void SetUpload(const QString & userID, int64 hisID, WFileThread * ft); // Tunneled
 
 	bool InitSession();
 
@@ -197,7 +197,7 @@ private:
 
 	QMessageTransceiverThread *qmtt;
 
-	int32 hisID;
+	int64 hisID;
 	bool fTunneled;
 
 	void DoUpload();

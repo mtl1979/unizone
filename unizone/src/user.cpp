@@ -121,12 +121,12 @@ WUser::InitName(MessageRef msg)
 		fHostOS = QString::fromUtf8(hostos);
 
 #ifdef _DEBUG
-	WString wUser(fUserName);
 	PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC,
-		wUser.getBuffer(), (fBot ? "bot" : "user"), fInstallID);
+		GetBuffer(fUserName), (fBot ? "bot" : "user"), fInstallID);
 	if (!GetFirewalled())
 		PRINT(" on port %lu\n", fPort);
-	PRINT("\n");	
+	else
+		PRINT("\n");	
 #endif
 }
 
@@ -138,9 +138,7 @@ WUser::InitStatus(MessageRef msg)
 		fUserStatus = QString::fromUtf8(status);
 
 #ifdef _DEBUG
-	WString wUser(fUserName);
-	WString wStatus(fUserStatus);
-	PRINT("WUser: %S with status %S\n", wUser.getBuffer(), wStatus.getBuffer());
+	PRINT("WUser: %S with status %S\n", GetBuffer(fUserName), GetBuffer(fUserStatus));
 #endif
 }
 
@@ -153,8 +151,7 @@ WUser::InitUploadStats(MessageRef msg)
 	if (msg()->FindInt32("max", (int32 *)&m) == B_OK)
 		fMaxUploads = m;
 #ifdef _DEBUG
-	WString wUser(fUserName);
-	PRINT("WUser: %S with %d of %d uploads going\n", wUser.getBuffer(), fCurUploads, fMaxUploads);
+	PRINT("WUser: %S with %d of %d uploads going\n", GetBuffer(fUserName), fCurUploads, fMaxUploads);
 #endif
 }
 
@@ -187,9 +184,7 @@ WUser::InitBandwidth(MessageRef msg)
 		}
 	}
 #ifdef _DEBUG
-	WString wUser(fUserName);
-	WString wBandwidth(fBandwidthLabel);
-	PRINT("WUser: %S with label %S and bps %d\n", wUser.getBuffer(), wBandwidth.getBuffer(), fBandwidthBPS);
+	PRINT("WUser: %S with label %S and bps %d\n", GetBuffer(fUserName), GetBuffer(fBandwidthLabel), fBandwidthBPS);
 #endif
 }
 
@@ -200,8 +195,7 @@ WUser::InitFileCount(MessageRef msg)
 	if (msg()->FindInt32("filecount", &fc) == B_OK)
 		fFileCount = fc;
 #ifdef _DEBUG
-	WString wUser(fUserName);
-	PRINT("WUser: %S with filecount %d\n", wUser.getBuffer(), fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
+	PRINT("WUser: %S with filecount %d\n", GetBuffer(fUserName), fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo
 #endif
 }
 

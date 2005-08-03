@@ -32,27 +32,26 @@ wencrypt(const QString &in, unsigned long * outlen)
 	for (unsigned int i = 0; i < tmp.length(); i += 4)
 	{
 		QCString buf = tmp.mid(i, 4);
-		if (buf.length() == 4)
+		switch (buf.length())
 		{
+		case 4:
 			out.at(n++) = (QChar) (buf.at(3) ^ mask[0]);
 			out.at(n++) = (QChar) (buf.at(1) ^ mask[2]);
 			out.at(n++) = (QChar) (buf.at(2) ^ mask[1]);
 			out.at(n++) = (QChar) (buf.at(0) ^ mask[3]);
-		}
-		if (buf.length() == 3)
-		{
+			break;
+		case 3:
 			out.at(n++) = (QChar) (buf.at(1) ^ mask[2]);
 			out.at(n++) = (QChar) (buf.at(2) ^ mask[1]);
 			out.at(n++) = (QChar) (buf.at(0) ^ mask[3]);
-		}
-		if (buf.length() == 2)
-		{
+			break;
+		case 2:
 			out.at(n++) = (QChar) (buf.at(1) ^ mask[1]);
 			out.at(n++) = (QChar) (buf.at(0) ^ mask[3]);
-		}
-		if (buf.length() == 1)
-		{
+			break;
+		case 1:
 			out.at(n++) = (QChar) (buf.at(0) ^ mask[3]);
+			break;
 		}
 	}
 	
@@ -84,27 +83,26 @@ wdecrypt(const QByteArray &in, unsigned long inlen)
 	{
 		int numleft = inlen - i;
 		int l2 = (numleft > 4) ? 4 : numleft;
-		if (l2 == 4)
+		switch (l2)
 		{
+		case 4:
 			buf.at(i-1) = (QChar) (in.at(i) ^ mask[0]);
 			buf.at(i-2) = (QChar) (in.at(i + 2) ^ mask[1]);
 			buf.at(i-3) = (QChar) (in.at(i + 1) ^ mask[2]);
 			buf.at(i-4) = (QChar) (in.at(i + 3) ^ mask[3]);
-		}
-		if (l2 == 3)
-		{
+			break;
+		case 3:
 			buf.at(i-2) = (QChar) (in.at(i + 1) ^ mask[1]);
 			buf.at(i-3) = (QChar) (in.at(i) ^ mask[2]);
 			buf.at(i-4) = (QChar) (in.at(i + 2) ^ mask[3]);
-		}
-		if (l2 == 2)
-		{
+			break;
+		case 2:
 			buf.at(i-3) = (QChar) (in.at(i) ^ mask[1]);
 			buf.at(i-4) = (QChar) (in.at(i + 1) ^ mask[3]);
-		}
-		if (l2 == 1)
-		{
+			break;
+		case 1:
 			buf.at(i-4) = (QChar) (in.at(i) ^ mask[3]);
+			break;
 		}
 	}
 	QString out = QString::fromUtf8(buf);

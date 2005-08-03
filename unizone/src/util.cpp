@@ -126,7 +126,7 @@ ParseChatText(const QString & str)
 				}
 				// ...and ensure that URL doesn't end with a dot, comma or colon
 				bool cont = true;
-				while ((qToken.length() > 0) && cont)
+				while (!qToken.isEmpty() && cont)
 				{
 					unsigned int pos = qToken.length() - 1;
 					switch ((QChar) qToken.at(pos))
@@ -199,20 +199,17 @@ ParseChatText(const QString & str)
 			// Display URL label or link address, if label doesn't exist
 			int lb = qText.find("\n"); // check for \n between url and label (Not allowed!!!)
 			int le = qText.find(qLabel);
-			if (
-				(qLabel.length() > 0) && 
-				!muscleInRange(lb, 0, le)
-				)
-				urltmp += qLabel.stripWhiteSpace(); // remove surrounding spaces before adding
-			else
+			if ( qLabel.isEmpty() || muscleInRange(lb, 0, le) )
 				urltmp += qUrl; 		
+			else
+				urltmp += qLabel.stripWhiteSpace(); // remove surrounding spaces before adding
 			urltmp += "</a>";
 			QString urlfmt = WFormat::URL(urltmp);
 			output += urlfmt;
 			// strip url from original text
 			qText = qText.mid(qUrl.length());
 			// strip label from original text, if exists
-			if (qLabel.length() > 0)
+			if (!qLabel.isEmpty())
 			{
 				lb = qText.find("\n");
 				le = qText.find("]");
@@ -226,7 +223,7 @@ ParseChatText(const QString & str)
 			
 		}
 		// Still text left?
-		if (qText.length() > 0)
+		if (!qText.isEmpty())
 			output += qText;
 		
 		return output;		// <postmaster@raasu.org> 20021107,20021114 -- Return modified string
@@ -244,9 +241,6 @@ ParseString(QString & str)
 	// Remove trailing line feeds
 	while (str.right(1) == "\n")
 		str.truncate(str.length() - 1);
-
-	// go through the string and change newlines to <br> (html)
-	str.replace(QRegExp("\n"), "<br>");
 
 	for (unsigned int i = 0; i < str.length(); i++)
 	{
@@ -269,6 +263,15 @@ ParseString(QString & str)
 			space = false;
 		else if (str[i] == '>')
 			space = true;
+		else if (str[i] == '\n')
+		{
+			// change newlines to <br> (html)
+			if (space)
+			{
+				str.replace(i, 1, "<br>");
+				i += 3;
+			}
+		}
 		else if (str[i] == '\t')
 		{
 			if (space)
@@ -366,10 +369,8 @@ bool
 CompareCommand(const QString & qCommand, const QString & cCommand)
 {
 	QString com = GetCommandString(qCommand);
-	WString wCommand(com);
-	WString wCommand2(cCommand);
-	PRINT2("Compare String: qCommand=\'%S\'\n", wCommand.getBuffer());
-	PRINT2("                cCommand=\'%S\'\n", wCommand2.getBuffer());
+	PRINT2("Compare String: qCommand=\'%S\'\n", GetBuffer(com));
+	PRINT2("                cCommand=\'%S\'\n", GetBuffer(cCommand));
 	return ((com == cCommand) ? true : false);
 }
 
@@ -662,8 +663,7 @@ BandwidthToBytes(const QString & connection)
 			}
 		} while (bw.bw != ULONG_MAX);
 	}
-	WString wconn(conn);
-	PRINT2("Connection = '%S', bps = %lu\n", wconn.getBuffer(), bps);
+	PRINT2("Connection = '%S', bps = %lu\n", GetBuffer(conn), bps);
 	return bps;
 }
 
@@ -1035,7 +1035,7 @@ String MakePath(const String &dir, const String &file)
 QString MakePath(const QString &dir, const QString &file)
 {
 	QString ret(dir);
-	if (!(ret.right(1) == "/"))
+	if (ret.right(1) != "/")
 		ret += "/";
 
 	ret += file;
@@ -1404,7 +1404,7 @@ void BINClean(QString &in)
 			// avoid looping out of string...
 			if (s == in.length())
 			{
-				if (tmp.length() == 0) 
+				if (tmp.isEmpty()) 
 				{
 					in = QString::null;
 					return;
@@ -1449,7 +1449,7 @@ void OCTClean(QString &in)
 			// avoid looping out of string...
 			if (s == in.length())
 			{
-				if (tmp.length() == 0) 
+				if (tmp.isEmpty()) 
 				{
 					in = QString::null;
 					return;
@@ -1598,3 +1598,12 @@ Match(const QString &string, const QRegExp &exp)
 	return str.find(e);
 }
 
+int64
+ConvertPtr(void *ptr)
+{
+#if defined(WIN64) || defined(__osf__) || defined(__amd64__)
+		return (int64) ptr;
+#else
+		return (int64) (int32) ptr;
+#endif
+}

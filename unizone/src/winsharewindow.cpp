@@ -621,8 +621,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					WTextEvent te("");
 
 #ifdef _DEBUG
-					WString wText(wpe->GetText());
-					PRINT("wpe->GetText() = %S\n", wText.getBuffer());
+					PRINT("wpe->GetText() = %S\n", GetBuffer(wpe->GetText()));
 #endif
 
 					te.SetText(wpe->GetText());
@@ -631,8 +630,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 					{
 						bool rep = false;
 #ifdef _DEBUG
-						wText = te.Text();
-						PRINT("Sending the following text to SendChatText %S\n", wText.getBuffer());
+						PRINT("Sending the following text to SendChatText %S\n", GetBuffer(te.Text()));
 #endif
 
 						SendChatText(&te, &rep);
@@ -1149,8 +1147,8 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 		for (int i = clauses.GetNumItems() - 1; i >= 0; i--)
 		{
 			WUserRef user = net->FindUser( clauses[i] );
-			WString wcls(clauses[i]);
-			PRINT2("Checking for user %S\n", wcls.getBuffer());
+			PRINT2("Checking for user %S\n", GetBuffer(clauses[i]));
+
 			if (user() != NULL)
 			{
 				WUserSearchPair pair = MakePair(user, setRestOfString); // <postmaster@raasu.org> 20021007
@@ -1176,7 +1174,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				QString userName = user()->GetUserName().stripWhiteSpace();
 				userName = StripURL(userName);
 
-				if (userName.length() > 0 && Match(userName, qr) >= 0)
+				if (!userName.isEmpty() && Match(userName, qr) >= 0)
 				{
 					WUserSearchPair pair = MakePair(user, setRestOfString); // <postmaster@raasu.org> 20021007
 					sendTo.AddTail(pair);
@@ -1204,7 +1202,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				QString userName = uName.stripWhiteSpace();
 				userName = StripURL(userName);
 
-				if (userName.length() > 0 && restOfString2.startsWith(userName))
+				if (!userName.isEmpty() && restOfString2.startsWith(userName))
 				{
 					PRINT("Found\n");
 					WUserSearchPair pair = MakePair(user,
@@ -1227,7 +1225,7 @@ WinShareWindow::GetRemoteVersionString(MessageRef msg)
 
 	if (msg()->FindString("version", &version) == B_OK)
 	{
-		if (version[0] > '0' && version[0] <= '9')
+		if (muscleInRange(version[0], '0', '9'))
 		{
 			versionString = "BeShare ";
 			versionString += QString::fromUtf8(version);
@@ -1366,15 +1364,13 @@ WinShareWindow::LoadSettings()
 		fAwayMsg = fSettings->GetAwayMsg();
 
 #ifdef _DEBUG
-		WString wAwayMsg(fAwayMsg);
-		PRINT("Away Msg: %S\n", wAwayMsg.getBuffer());
+		PRINT("Away Msg: %S\n", GetBuffer(fAwayMsg));
 #endif
 		
 		fHereMsg = fSettings->GetHereMsg();
 
 #ifdef _DEBUG
-		WString wHereMsg(fHereMsg);
-		PRINT("Here Msg: %S\n", wHereMsg.getBuffer());
+		PRINT("Here Msg: %S\n", GetBuffer(fHereMsg));
 #endif
 
 		fWatch = fSettings->GetWatchPattern();
@@ -1518,8 +1514,7 @@ WinShareWindow::SaveSettings()
 		fSettings->AddServerItem(qServer);
 
 #ifdef _DEBUG
-		WString wServer(qServer);
-		PRINT("Saved server %S\n", wServer.getBuffer());
+		PRINT("Saved server %S\n", GetBuffer(qServer));
 #endif
 	}
 	fSettings->SetCurrentServerItem(fServerList->currentItem());
@@ -1532,8 +1527,7 @@ WinShareWindow::SaveSettings()
 		fSettings->AddUserItem(qUser);
 
 #ifdef _DEBUG
-		WString wUser(qUser);
-		PRINT("Saved user %S\n", wUser.getBuffer());
+		PRINT("Saved user %S\n", GetBuffer(qUser));
 #endif
 	}
 	fSettings->SetCurrentUserItem(fUserList->currentItem());
@@ -1546,8 +1540,7 @@ WinShareWindow::SaveSettings()
 		fSettings->AddStatusItem(qStatus);
 
 #ifdef _DEBUG
-		WString wStatus(qStatus);
-		PRINT("Saved status %S\n", wStatus.getBuffer());
+		PRINT("Saved status %S\n", GetBuffer(qStatus));
 #endif
 	}
 	fSettings->SetCurrentStatusItem(fStatusList->currentItem());
@@ -1793,8 +1786,7 @@ WinShareWindow::MapIPsToNodes(const QString & pattern)
 	}
 
 #ifdef _DEBUG
-	WString wResult(qResult);
-	PRINT("MapIPsToNodes: %S\n", wResult.getBuffer());
+	PRINT("MapIPsToNodes: %S\n", GetBuffer(qResult));
 #endif
 
 	return qResult;
@@ -1825,8 +1817,7 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 	}
 
 #ifdef _DEBUG
-	WString wResult(qResult);
-	PRINT("MapUsersToIDs: %S\n", wResult.getBuffer());
+	PRINT("MapUsersToIDs: %S\n", GetBuffer(qResult));
 #endif
 
 	return qResult;

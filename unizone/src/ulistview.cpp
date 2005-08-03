@@ -70,9 +70,7 @@ WUniListItem::key(int c, bool /* asc */) const
 	int64 n, m;
 	int32 bw;
 	QString result, q1, q2;
-#ifdef _DEBUG
-	WString wResult;
-#endif
+
 	switch (UColumnType[c])
 	{
 	case Number:
@@ -83,8 +81,7 @@ WUniListItem::key(int c, bool /* asc */) const
 		{
 			result = fKey[c];
 #ifdef _DEBUG
-			wResult = result;
-			PRINT("\tRESULT STARTS AS\t %S\n", wResult.getBuffer());
+			PRINT("\tRESULT STARTS AS\t %S\n", GetBuffer(result));
 #endif
 
 			bool ok;
@@ -94,8 +91,7 @@ WUniListItem::key(int c, bool /* asc */) const
 				// convert our number to hexadecimal! what a thought, huh?
 				result = hexFromLongLong(n, 16);
 #ifdef _DEBUG
-				wResult = result;
-				PRINT("\tRESULT IS %S\n", wResult.getBuffer());
+				PRINT("\tRESULT IS %S\n", GetBuffer(result));
 #endif
 			}
 			return result;
@@ -104,8 +100,7 @@ WUniListItem::key(int c, bool /* asc */) const
 		{
 			result = fKey[c];
 #ifdef _DEBUG
-			wResult = result;
-			PRINT("\tRESULT STARTS AS\t %S\n", wResult.getBuffer());
+			PRINT("\tRESULT STARTS AS\t %S\n", GetBuffer(result));
 #endif
 
 			bool ok;
@@ -115,8 +110,7 @@ WUniListItem::key(int c, bool /* asc */) const
 				// convert our number to hexadecimal! what a thought, huh?
 				result = hexFromLongLong(n, 16);
 #ifdef _DEBUG
-				wResult = result;
-				PRINT("\tRESULT IS %S\n", wResult.getBuffer());
+				PRINT("\tRESULT IS %S\n", GetBuffer(result));
 #endif
 			}
 			return result;
@@ -385,8 +379,7 @@ WUniListItem::text(int c) const
 		{
 			result.sprintf("%.2f ", n);
 			result += postFix;
-			WString wres(result);
-			PRINT2("UListView::text : %S\n", wres.getBuffer());
+			PRINT2("UListView::text : %S\n", GetBuffer(result));
 		}
 		else
 		{
@@ -586,7 +579,7 @@ WUniListView::dropEvent(QDropEvent* event)
 			QImage img;
 			if (img.load(filename, fmt))
 			{
-				PRINT("Sending picture \"%S\" to \"%S\"...\n", WString(filename).getBuffer(), WString(li->text(1)).getBuffer());
+				PRINT("Sending picture \"%S\" to \"%S\"...\n", GetBuffer(filename), GetBuffer(li->text(1)));
 				gWin->SendPicture(li->text(1), filename);
 			}
 			it++;

@@ -102,8 +102,7 @@ void
 WFileThread::ParseDir(const QString & d)
 {
 #ifdef _DEBUG
-	WString wD(d);
-	PRINT("Parsing directory %S\n", wD.getBuffer());
+	PRINT("Parsing directory %S\n", GetBuffer(d));
 #endif
 
 #ifdef WIN32
@@ -262,10 +261,7 @@ WFileThread::ScanFiles(const QString & directory)
 			}
 
 #ifdef _DEBUG
-			{
-				WString wData(file);
-				PRINT("\tChecking file %S\n", wData.getBuffer());
-			}
+			PRINT("\tChecking file %S\n", GetBuffer(file));
 #endif
 
 			AddFile(file);
@@ -277,8 +273,7 @@ WFileThread::ScanFiles(const QString & directory)
 void
 WFileThread::AddFile(const QString & filePath)
 {
-	WString wfilePath(filePath);
-	PRINT2("Setting to filePath: %S\n", wfilePath.getBuffer());	
+	PRINT2("Setting to filePath: %S\n", GetBuffer(filePath));	
 	
 	UFileInfo *ufi = new UFileInfo(filePath);
 				

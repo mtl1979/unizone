@@ -67,4 +67,5 @@ private:
 	void free();						// Free internal buffer
 };
 
+inline wchar_t * GetBuffer(const QString &str) {return (wchar_t *) str.unicode();}
 #endif

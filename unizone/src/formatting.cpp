@@ -26,7 +26,7 @@ WFormat::tr2(const char *s)
 {
 	QString temp = tr(s).stripWhiteSpace();
 
-	if (temp.length() > 0)
+	if (!temp.isEmpty())
 	{
 		temp += " ";
 	}

@@ -431,7 +431,7 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, co
 }
 
 bool
-WDownload::CreateTunnel(const QString & userID, int32 hisID, void * & myID)
+WDownload::CreateTunnel(const QString & userID, int64 hisID, void * & myID)
 {
 	PRINT("WDownload::CreateTunnel(QString, void *, void * &)\n");
 	WUploadThread * ut = new WUploadThread(this);
@@ -506,7 +506,7 @@ WDownload::CreateTunnel(QString *files, QString *lfiles, int32 numFiles, const W
 }
 
 void
-WDownload::TunnelAccepted(int32 myID, int32 hisID)
+WDownload::TunnelAccepted(int64 myID, int64 hisID)
 {
 	bool success = false;
 	
@@ -516,7 +516,7 @@ WDownload::TunnelAccepted(int32 myID, int32 hisID)
 	{
 		DLPair p;
 		fDownloadList.GetItemAt(i, p);
-		if ((int32) p.first == myID)
+		if (ConvertPtr(p.first) == myID)
 		{
 			p.first->Accepted(hisID);
 			success = true;
@@ -533,7 +533,7 @@ WDownload::TunnelAccepted(int32 myID, int32 hisID)
 }
 
 void
-WDownload::TunnelRejected(int32 myID)
+WDownload::TunnelRejected(int64 myID)
 {
 	bool success = false;
 	
@@ -543,7 +543,7 @@ WDownload::TunnelRejected(int32 myID)
 	{
 		DLPair p;
 		fDownloadList.GetItemAt(i, p);
-		if ((int32) p.first == myID)
+		if (ConvertPtr(p.first) == myID)
 		{
 			p.first->Rejected();
 			success = true;
@@ -560,7 +560,7 @@ WDownload::TunnelRejected(int32 myID)
 }
 
 void 
-WDownload::TunnelMessage(int32 myID, MessageRef tmsg, bool download)
+WDownload::TunnelMessage(int64 myID, MessageRef tmsg, bool download)
 {
 	if (download)
 	{
@@ -571,7 +571,7 @@ WDownload::TunnelMessage(int32 myID, MessageRef tmsg, bool download)
 		{
 			DLPair p;
 			fDownloadList.GetItemAt(i, p);
-			if ((int32) p.first == myID)
+			if (ConvertPtr(p.first) == myID)
 			{
 				p.first->MessageReceived(tmsg);
 				break;
@@ -589,7 +589,7 @@ WDownload::TunnelMessage(int32 myID, MessageRef tmsg, bool download)
 		{
 			ULPair p;
 			fUploadList.GetItemAt(i, p);
-			if ((int32) p.first == myID)
+			if (ConvertPtr(p.first) == myID)
 			{
 				p.first->MessageReceived(tmsg);
 				break;
@@ -1174,10 +1174,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				QString uname = GetUserName(dt);
 				
 #ifdef _DEBUG
-				WString wID(QString::fromUtf8(user.Cstr()));
-				WString wUser(uname);
-				PRINT("USER ID  : %S\n", wID.getBuffer());
-				PRINT("USER NAME: %S\n", wUser.getBuffer());
+				PRINT("USER ID  : %S\n", GetBuffer(QString::fromUtf8(user.Cstr())));
+				PRINT("USER NAME: %S\n", GetBuffer(uname));
 #endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
@@ -1217,9 +1215,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
-			// <postmaster@raasu.org> 20030815 -- Use WString for Unicode
-			WString wf(QString::fromUtf8(file.Cstr()));
-			PRINT("WGenericEvent::FileError: File %S\n", wf.getBuffer()); 
+			PRINT("WGenericEvent::FileError: File %S\n", GetBuffer(QString::fromUtf8(file.Cstr()))); 
 #endif
 			break;
 		}
@@ -1510,10 +1506,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 				QString uname = GetUserName(ut);
 				
 #ifdef _DEBUG
-				WString wID(QString::fromUtf8(user.Cstr()));
-				WString wUser(uname);
-				PRINT("USER ID  : %S\n", wID.getBuffer());
-				PRINT("USER NAME: %S\n", wUser.getBuffer());
+				PRINT("USER ID  : %S\n", GetBuffer(QString::fromUtf8(user.Cstr())));
+				PRINT("USER NAME: %S\n", GetBuffer(uname));
 #endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
@@ -1553,9 +1547,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 			item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
-			// <postmaster@raasu.org> 20030815 -- Use WString for Unicode
-			WString wf(QString::fromUtf8(file.Cstr()));
-			PRINT("WGenericEvent::FileError: File %S\n", wf.getBuffer()); 
+			PRINT("WGenericEvent::FileError: File %S\n", GetBuffer(QString::fromUtf8(file.Cstr()))); 
 #endif
 			break;
 		}
@@ -2915,7 +2907,7 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 			int n = pair.first->GetNumFiles();
 			for (int r = 0; r < n; r++)
 			{
-				if (pair.first->GetLocalFileName(r) != QString::null)
+				if (!pair.first->GetLocalFileName(r).isEmpty())
 					fDLRunMenu->insertItem(pair.first->GetLocalFileName(r), ID_RUN+1+r);
 			}
 			fDLPopup->popup(p);
@@ -3118,9 +3110,9 @@ WDownload::UpdateULRatings()
 		if (pair.second)
 		{
 #ifdef _DEBUG
-			WString wFile(pair.second->text(WTransferItem::Filename));
-			if (wFile.length() > 0)
-				PRINT("Item %d: %S\n", i, wFile.getBuffer() );
+			QString qFile(pair.second->text(WTransferItem::Filename));
+			if (qFile.length() > 0)
+				PRINT("Item %d: %S\n", i, GetBuffer(qFile) );
 			else
 				PRINT("Item %d\n", i);
 #endif

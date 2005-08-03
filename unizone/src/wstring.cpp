@@ -96,8 +96,7 @@ WString::operator+=(const wchar_t *str)
 		{
 			wcscpy(buf2, buffer);
 			wcscat(buf2, str);
-			free();
-			buffer = buf2;
+			setBuffer(buf2);
 		}
 	}
 	else // No string to append to
@@ -120,8 +119,7 @@ WString::operator+=(const WString &str)
 		{
 			wcscpy(buf2, buffer);
 			wcscat(buf2, str.getBuffer());
-			free();
-			buffer = buf2;
+			setBuffer(buf2);
 		}
 	}
 	else // No string to append to
@@ -137,14 +135,12 @@ WString::operator+=(const QString &str)
 	if (length() != -1)
 	{
 		int newlen = length() + str.length() + 1;
-		WString s2(str);
 		wchar_t *buf2 = new wchar_t[newlen];
 		if (buf2)
 		{
 			wcscpy(buf2, buffer);
-			wcscat(buf2, s2.getBuffer());
-			free();
-			buffer = buf2;
+			wcscat(buf2, GetBuffer(str));
+			setBuffer(buf2);
 		}
 	}
 	else // No string to append to
@@ -170,9 +166,7 @@ WString::operator!=(const WString &str)
 bool 
 WString::operator!=(const QString &str)
 {
-	WString s2(str);
-	wchar_t *buf2 = s2;
-	bool b = (wcscmp(buffer, buf2) != 0);
+	bool b = (wcscmp(buffer, GetBuffer(str)) != 0);
 	return b;
 }
 
@@ -192,9 +186,7 @@ WString::operator==(const WString &str)
 bool 
 WString::operator==(const QString &str)
 {
-	WString s2(str);
-	wchar_t *buf2 = s2;
-	bool b = (wcscmp(buffer, buf2) == 0);
+	bool b = (wcscmp(buffer, GetBuffer(str)) == 0);
 	return b;
 }
 
@@ -345,8 +337,12 @@ qStringToWideChar(const QString &str)
 	wchar_t *result = new wchar_t[str.length() + 1];
 	if (result)
 	{
+#ifdef QT_QSTRING_UCS_4
 		for (unsigned int i = 0; i < str.length(); ++i)
 			result[i] = str.at(i).unicode();
+#else
+		memcpy(result, str.unicode(), str.length() * 2);
+#endif
 		result[str.length()] = 0;
 		return result;
 	}

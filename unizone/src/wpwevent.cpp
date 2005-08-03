@@ -44,8 +44,7 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 			fMsg += smsg;
 			
 #ifdef _DEBUG
-			WString wText(fMsg);
-			PRINT("Sending text: %S\n", wText.getBuffer());
+			PRINT("Sending text: %S\n", GetBuffer(fMsg));
 #endif
 		}
 	}

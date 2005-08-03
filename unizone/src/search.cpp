@@ -207,13 +207,11 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 	QString sid = user()->GetUserID();
 
 #ifdef _DEBUG
-	WString wFileName(filename);
-	WString wSID(sid);
-	PRINT("ADDFILE: filename=%S (%s) [%S]\n", wFileName.getBuffer(), firewalled ? "firewalled" : "hackable", wSID.getBuffer());
+	PRINT("ADDFILE: filename=%S (%s) [%S]\n", GetBuffer(filename), firewalled ? "firewalled" : "hackable", GetBuffer(sid));
 #endif
 
 	// Workaround for StringMatcher bug (for now!)
-	if (fCurrentSearchPattern.length() == 0)
+	if (fCurrentSearchPattern.isEmpty())
 		return;
 
 	fSearchLock.Lock();
@@ -293,9 +291,7 @@ WSearch::RemoveFile(const WUserRef &user, const QString &filename)
 	QString sid = user()->GetUserID();
 
 #ifdef _DEBUG
-	WString wSID(sid);
-	WString wFilename(filename);
-	PRINT("Sid = %S, filename = %S\n", wSID.getBuffer(), wFilename.getBuffer());
+	PRINT("Sid = %S, filename = %S\n", GetBuffer(sid), GetBuffer(filename));
 #endif
 
 	while (iter != fFileList.end())
@@ -608,10 +604,7 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 	// <postmaster@raasu.org> 20021023 -- Fixed typo
 
 #ifdef _DEBUG
-	WString wCurrentSearchPattern(fCurrentSearchPattern);
-	WString wSIDRegExp(sidRegExp);
-	WString wFileRegExp(fileRegExp);
-	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", wCurrentSearchPattern.getBuffer(), wSIDRegExp.getBuffer(), wFileRegExp.getBuffer());
+	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", GetBuffer(fCurrentSearchPattern), GetBuffer(sidRegExp), GetBuffer(fileRegExp));
 #endif
 
 	fUserRegExpNeg = sidRegExp[0] == "~";
@@ -659,9 +652,7 @@ WSearch::Download()
 			WFileInfo * fi = (*it).second;
 
 #ifdef _DEBUG
-			WString wFile = fi->fiListItem->text(0);
-			WString wUser = fi->fiListItem->text(5);
-			PRINT("Checking: %S, %S\n", wFile.getBuffer(), wUser.getBuffer());
+			PRINT("Checking: %S, %S\n", GetBuffer(fi->fiListItem->text(0)), GetBuffer(fi->fiListItem->text(5)));
 #endif
 
 			if (fi->fiListItem->isSelected())
@@ -695,9 +686,7 @@ WSearch::DownloadAll()
 			WFileInfo * fi = (*it).second;
 
 #ifdef _DEBUG
-			WString wFile = fi->fiListItem->text(0);
-			WString wUser = fi->fiListItem->text(5);
-			PRINT("Checking: %S, %S\n", wFile.getBuffer(), wUser.getBuffer());
+			PRINT("Checking: %S, %S\n", GetBuffer(fi->fiListItem->text(0)), GetBuffer(fi->fiListItem->text(5)));
 #endif
 
 			fQueue.addItem(fi->fiFilename, fi->fiUser);
@@ -813,8 +802,7 @@ WSearch::SaveSettings()
 		gWin->fSettings->AddQueryItem(qQuery);
 
 #ifdef _DEBUG
-		WString wQuery(qQuery);
-		PRINT("Saved query %S\n", wQuery.getBuffer());
+		PRINT("Saved query %S\n", GetBuffer(qQuery));
 #endif
 	}
 	gWin->fSettings->SetCurrentQueryItem(fSearchEdit->currentItem());

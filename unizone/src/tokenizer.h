@@ -21,7 +21,7 @@ public:
    /** Returns the next token in the parsed string, or NULL if there are no more tokens left */
    QString GetNextToken()
    {
-      if (_seps.length() > 0)
+      if (!_seps.isEmpty())
       {
          // Move until first non-sep char
          while	(
@@ -64,7 +64,7 @@ public:
     */
    QString GetRemainderOfString()
    {
-      if (_seps.length() > 0)
+      if (!_seps.isEmpty())
       {
          // Move until first non-sep char
          while((_next<_tokenizeMe.length())&&(_seps.find(_tokenizeMe.at(_next)) >= 0)) _next++;

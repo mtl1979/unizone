@@ -33,7 +33,7 @@ MD5Init(struct MD5Context *ctx)
    ctx->bytes[1] = 0;
 
    // bugfix (dammit) -- jaf
-   for (size_t i=0; i<sizeof(ctx->in)/sizeof(ctx->in[0]); i++) ctx->in[i] = 0;
+   memset(ctx->in, 0, sizeof(ctx->in));
 }
 
 /*

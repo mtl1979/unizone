@@ -406,7 +406,12 @@ Channel::customEvent(QCustomEvent * event)
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
 						QString user = GetParameterString(wte->Text());
-						if (user.length() > 0)
+						if (user.isEmpty())
+						{
+							if (gWin->fSettings->GetError())
+								PrintError(tr("No users passed."));
+						}
+						else
 						{
 							if (gWin->IsConnected(user))
 								gWin->fChannels->AddAdmin(fName, user);
@@ -416,8 +421,6 @@ Channel::customEvent(QCustomEvent * event)
 									PrintError( tr( "User(s) not found!" ) );
 							}
 						}
-						else if (gWin->fSettings->GetError())
-							PrintError(tr("No users passed."));
 					}
 					else
 					{
@@ -432,7 +435,12 @@ Channel::customEvent(QCustomEvent * event)
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
 						QString user = GetParameterString(wte->Text());
-						if (user.length() > 0)
+						if (user.isEmpty())
+						{
+							if (gWin->fSettings->GetError())
+								PrintError(tr("No users passed."));
+						}
+						else
 						{
 							if (gWin->IsConnected(user))
 								gWin->fChannels->RemoveAdmin(fName, user);
@@ -442,8 +450,6 @@ Channel::customEvent(QCustomEvent * event)
 									PrintError( tr( "User(s) not found!" ) );
 							}
 						}
-						else if (gWin->fSettings->GetError())
-							PrintError(tr("No users passed."));
 					}
 					else
 					{
@@ -458,7 +464,12 @@ Channel::customEvent(QCustomEvent * event)
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
 						QString qTemp = GetParameterString(wte->Text());
-						if (qTemp.length() > 0)
+						if (qTemp.isEmpty())
+						{
+							if (gWin->fSettings->GetError())
+								PrintError(tr("No users passed."));	
+						}
+						else
 						{
 							// see if the user is already in the list
 							bool talking = false;
@@ -489,8 +500,6 @@ Channel::customEvent(QCustomEvent * event)
 								Invite(uref()->GetUserID());	// the EASY way :)
 							}
 						}
-						else if (gWin->fSettings->GetError())
-							PrintError(tr("No users passed."));			
 					}
 					else
 					{
@@ -504,7 +513,12 @@ Channel::customEvent(QCustomEvent * event)
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
 						QString qTemp = GetParameterString(wte->Text());
-						if (qTemp.length() > 0)
+						if (qTemp.isEmpty())
+						{												
+							if (gWin->fSettings->GetError())
+								PrintError(tr("No users passed."));
+						}
+						else
 						{
 							// see if the user is already in the list
 							bool f = false;
@@ -518,10 +532,8 @@ Channel::customEvent(QCustomEvent * event)
 									uit.GetNextValue(found);
 									
 #ifdef _DEBUG
-									WString wUser1(found()->GetUserID());
-									WString wUser2(uref()->GetUserID());
-									PRINT("found - UserID = %S\n", wUser1.getBuffer());
-									PRINT("uref  - UserID = %S\n", wUser2.getBuffer());
+									PRINT("found - UserID = %S\n", GetBuffer(found()->GetUserID()));
+									PRINT("uref  - UserID = %S\n", GetBuffer(uref()->GetUserID()));
 #endif
 									
 									if (found()->GetUserID() == uref()->GetUserID())
@@ -539,9 +551,7 @@ Channel::customEvent(QCustomEvent * event)
 									PrintError( tr( "User(s) not found!" ) );
 							}
 						}
-						else if (gWin->fSettings->GetError())
-							PrintError(tr("No users passed."));			
-					}
+					}	
 					else
 					{
 						// Need to be admin
@@ -558,8 +568,7 @@ Channel::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 #ifdef _DEBUG
-					WString wMessage(message);
-					PRINT("\t\t%S\n", wMessage.getBuffer());
+					PRINT("\t\t%S\n", GetBuffer(message));
 #endif
 					
 					SendChannelText(message);
@@ -573,8 +582,7 @@ Channel::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 #ifdef _DEBUG
-					WString wMessage(message);
-					PRINT("\t\t%S\n", wMessage.getBuffer());
+					PRINT("\t\t%S\n", GetBuffer(message));
 #endif
 					
 					SendChannelText(message);
@@ -628,7 +636,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		if ( !gWin->IsIgnored((QString &) user) )
 		{
 			QString msg = GetParameterString(text);
-			if ((msg.length() > 0) && gWin->fSettings->GetChat())
+			if (!msg.isEmpty() && gWin->fSettings->GetChat())
 				Action(user + "'s", msg);
 		}
 	}
@@ -637,7 +645,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		if ( !gWin->IsIgnored((QString &) user) )
 		{
 			QString msg = GetParameterString(text);
-			if ((msg.length() > 0) && gWin->fSettings->GetChat())
+			if (!msg.isEmpty() && gWin->fSettings->GetChat())
 				Action(user, msg);
 		}
 	}

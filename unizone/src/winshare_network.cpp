@@ -111,7 +111,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			// user name change
 			QString name = GetParameterString(sendText);
 			// <postmaster@raasu.org> 20021001
-			if (name.length() > 0)
+			if (name.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No nickname passed."));
+			}
+			else
 			{
 				if (name.find(QString("binky"), 0, false) >= 0)
 				{
@@ -127,11 +132,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				}
 				NameChanged(name);
 			}
-			else
-			{
-				if (fSettings->GetError())
-					PrintError(tr("No nickname passed."));
-			}
 		}
 		else if (	
 					(CompareCommand(sendText, "/me's")) || 
@@ -140,7 +140,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString msg = GetParameterString(sendText);
 			
-			if (msg.length() > 0)
+			if (msg.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No message to send."));
+			}
+			else
 			{
 				QString send = "/me's ";
 				send += msg;
@@ -149,11 +154,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (fSettings->GetChat())
 					Action(GetUserName() + "'s", msg);
             }
-			else
-			{
-				if (fSettings->GetError())
-					PrintError(tr("No message to send."));
-			}
 		}
 		else if (	
 					(CompareCommand(sendText, "/me")) || 
@@ -162,7 +162,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString msg = GetParameterString(sendText);
 
-			if (msg.length() > 0)
+			if (msg.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No message to send."));
+			}
+			else
 			{
 				QString send = "/me ";	// we don't want /action sent
 				send += msg;
@@ -170,11 +175,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				fNetClient->SendChatText("*", send);
 				if (fSettings->GetChat())
 					Action(GetUserName(), msg);
-			}
-			else
-			{
-				if (fSettings->GetError())
-					PrintError(tr("No message to send."));
 			}
 		}
 		else if (sendText.left(2) == "//")	// used so that / commands can be printed
@@ -205,7 +205,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			// change our status
 			QString newStatus = GetParameterString(sendText);
 
-			if (newStatus.length() > 0)
+			if (!newStatus.isEmpty())
 			{
 				QString ns = newStatus.stripWhiteSpace();
 
@@ -235,7 +235,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString server = GetParameterString(sendText);
 
-			if (server.length() > 0)
+			if (!server.isEmpty())
 			{
 				QString serverStr = server.stripWhiteSpace();
 
@@ -264,7 +264,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString enc = GetParameterString(sendText);
 			uint32 _en = fSettings->GetEncoding(GetServerName(fServer), GetServerPort(fServer)); // Current value
-			if (enc.length() > 0)
+			if (enc.isEmpty())
+			{
+				if (fSettings->GetInfo())
+					PrintSystem(tr("Current compression: %1").arg(_en - MUSCLE_MESSAGE_ENCODING_DEFAULT));
+			}
+			else
 			{
 				bool b;
 				_en = enc.toULong(&b);
@@ -304,11 +309,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 						PrintError(tr("Invalid compression!"));
 				}
 			}
-			else
-			{
-				if (fSettings->GetInfo())
-					PrintSystem(tr("Current compression: %1").arg(_en - MUSCLE_MESSAGE_ENCODING_DEFAULT));
-			}
 		}
 		else if (CompareCommand(sendText, "/disconnect"))
 		{
@@ -318,7 +318,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString msg = GetParameterString(sendText);
 
-			if (msg.length() > 0)
+			if (!msg.isEmpty())
 			{
 				fAwayMsg = msg;
 				if (fSettings->GetInfo())
@@ -335,7 +335,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString msg = GetParameterString(sendText);
 
-			if (msg.length() > 0)
+			if (!msg.isEmpty())
 			{
 				fHereMsg = msg;
 				if (fSettings->GetInfo())
@@ -350,10 +350,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString users = GetParameterString(sendText);
 
-			if (users.length() > 0)
-				SetWatchPattern(users);
-			else
+			if (users.isEmpty())
 				SetWatchPattern("");	// clear watch pattern
+			else
+				SetWatchPattern(users);
 		}
 		else if (CompareCommand(sendText, "/running"))
 		{
@@ -397,94 +397,115 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString users = GetParameterString(sendText);
 
-			if (users.length() > 0)
-					LaunchPrivate(users);
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
+			if (users.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else
+				LaunchPrivate(users);
 		}
 		else if (CompareCommand(sendText, "/kick"))
 		{
 			QString users = GetParameterString(sendText);
 
-			if (users.length() > 0)
+			if (users.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else 
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_KICK));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapUsersToIDs(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/kickips"))
 		{
 			QString users = GetParameterString(sendText);
 
-			if (users.length() > 0)
+			if (users.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_KICK));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/addbans"))
 		{
 			QString users = GetParameterString(sendText);
 
-			if (users.length() > 0)
+			if (users.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDBANS));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapUsersToIDs(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/addipbans"))
 		{
 			QString users = GetParameterString(sendText);
 
-			if (users.length() > 0)
+			if (users.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDBANS));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/rembans"))
 		{
 			QString users = GetParameterString(sendText);
 
-			if (users.length() > 0)
+			if (users.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEBANS));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapUsersToIDs(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/remipbans"))
 		{
 			QString users = GetParameterString(sendText);
 
-			if (users.length() > 0)
+			if (users.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEBANS));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(users).utf8());
 				fNetClient->SendMessageToSessions(mrf);
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/require"))
 		{
 			QString mask = GetParameterString(sendText);
 
-			if (mask.length() > 0)
+			if (!mask.isEmpty())
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDREQUIRES));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(mask).utf8());
@@ -495,7 +516,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString mask = GetParameterString(sendText);
 
-			if (mask.length() > 0)
+			if (!mask.isEmpty())
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEREQUIRES));
 				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(mask).utf8());
@@ -507,7 +528,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString command = GetParameterString(sendText);
 
-			if (command.length() > 0)
+			if (!command.isEmpty())
 			{
 				RunCommand(command);
 			}
@@ -521,7 +542,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			char zone[64];
 			QString tuser = QString::null;
 
-			if ((command.length() > 0) && (command != "gmt")) // User name?
+			if (!command.isEmpty() && (command != "gmt")) // User name?
 			{
 				int rpos;
 				if (command.left(1) == "'")
@@ -840,7 +861,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (user.length() > 0)
+			if (user.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -849,14 +875,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				else if (fSettings->GetError())
 					PrintError(tr("Invalid index."));
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/remuser"))
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (user.length() > 0)
+			if (!user.isEmpty())
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -875,7 +899,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (user.length() > 0)
+			if (!user.isEmpty())
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -891,7 +915,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (user.length() > 0)
+			if (!user.isEmpty())
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -910,7 +934,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (user.length() > 0)
+			if (!user.isEmpty())
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -926,7 +950,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (user.length() > 0)
+			if (!user.isEmpty())
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -1078,7 +1102,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/search"))
 		{
 			QString pattern = GetParameterString(sendText);
-			LaunchSearch(pattern);
+			if (!pattern.isEmpty())
+				LaunchSearch(pattern);
 		}
 		else if (CompareCommand(sendText, "/reverse"))
 		{
@@ -1093,42 +1118,51 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/crypt"))
 		{
 			QString qtext = GetParameterString(sendText);
-			QString ctext = wencrypt2(qtext);
-			PrintSystem(tr("Encrypted: %1").arg(ctext));
+			if (!qtext.isEmpty())
+			{
+				QString ctext = wencrypt2(qtext);
+				PrintSystem(tr("Encrypted: %1").arg(ctext));
+			}
 		}
 		else if (CompareCommand(sendText, "/decrypt"))
 		{
 			QString qtext = GetParameterString(sendText);
-			QString dtext = wdecrypt2(qtext);
-			if (dtext.length() > 0)
-				PrintSystem(tr("Decrypted: %1").arg(dtext));
+			if (!qtext.isEmpty())
+			{
+				QString dtext = wdecrypt2(qtext);
+				if (!dtext.isEmpty())
+					PrintSystem(tr("Decrypted: %1").arg(dtext));
+			}
 		}
 		else if (CompareCommand(sendText, "/hexdecode"))
 		{
 			QString qtext = GetParameterString(sendText);
 			HEXClean(qtext);
-			if (qtext != QString::null)
+			if (!qtext.isEmpty())
 			{
 				QString out = TTPDecode(qtext);
-				if (out.length() > 0)
+				if (!out.isEmpty())
 					PrintSystem(tr("Decoded: %1").arg(out));
 			}
 		}
 		else if (CompareCommand(sendText, "/hexencode"))
 		{
 			QString qtext = GetParameterString(sendText);
-			QString out = TTPEncode(qtext);
-			if (out.length() > 0)
-				PrintSystem(tr("Encoded: %1").arg(out));
+			if (!qtext.isEmpty())
+			{
+				QString out = TTPEncode(qtext);
+				if (!out.isEmpty())
+					PrintSystem(tr("Encoded: %1").arg(out));
+			}
 		}
 		else if (CompareCommand(sendText, "/bindecode"))
 		{
 			QString qtext = GetParameterString(sendText);
 			BINClean(qtext);
-			if (qtext != QString::null)
+			if (!qtext.isEmpty())
 			{
 				QString out = BINDecode(qtext);
-				if (out.length() > 0)
+				if (!out.isEmpty())
 					PrintSystem(tr("Decoded: %1").arg(out));
 			}
 		}
@@ -1136,45 +1170,48 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString qtext = GetParameterString(sendText);
 			QString out = BINEncode(qtext);
-			if (out.length() > 0)
+			if (!out.isEmpty())
 				PrintSystem(tr("Encoded: %1").arg(out));
 		}
 		else if (CompareCommand(sendText, "/octdecode"))
 		{
 			QString qtext = GetParameterString(sendText);
 			OCTClean(qtext);
-			if (qtext != QString::null)
+			if (!qtext.isEmpty())
 			{
 				QString out = OCTDecode(qtext);
-				if (out.length() > 0)
+				if (!out.isEmpty())
 					PrintSystem(tr("Decoded: %1").arg(out));
 			}
 		}
 		else if (CompareCommand(sendText, "/octencode"))
 		{
 			QString qtext = GetParameterString(sendText);
-			QString out = OCTEncode(qtext);
-			if (out.length() > 0)
-				PrintSystem(tr("Encoded: %1").arg(out));
+			if (!qtext.isEmpty())
+			{
+				QString out = OCTEncode(qtext);
+				if (!out.isEmpty())
+					PrintSystem(tr("Encoded: %1").arg(out));
+			}
 		}
 		else if (CompareCommand(sendText, "/revsay"))
 		{
 			QString qtext = GetParameterString(sendText);
-			int cp = qtext.find(": ");
-			if (cp >= 0)
-			{
-				QString who = qtext.left(cp + 2);
-				QString rtext = qtext.mid(cp + 2);
-				Reverse(rtext);
-				qtext = who;
-				qtext += rtext;
-			}
-			else
-			{
-				Reverse(qtext);
-			}
 			if (!qtext.isEmpty())
 			{
+				int cp = qtext.find(": ");
+				if (cp >= 0)
+				{
+					QString who = qtext.left(cp + 2);
+					QString rtext = qtext.mid(cp + 2);
+					Reverse(rtext);
+					qtext = who;
+					qtext += rtext;
+				}
+				else
+				{
+					Reverse(qtext);
+				}
 				if (fNetClient->IsConnected())
 					SendChatText("*", qtext);
 			}
@@ -1461,19 +1498,17 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 		else
 		{
 			QString qsendtext;
-			WUserRef user;
+
 			for (unsigned int qi = 0; qi < sendTo.GetNumItems(); qi++)
 			{
-#ifdef _DEBUG
-				WString wUser(sendTo[qi].first()->GetUserName());
-				WString wText(sendTo[qi].second);
-				PRINT("Found user %S and rest of text %S\n", wUser.getBuffer(), wText.getBuffer());
-#endif
-
-				user = sendTo[qi].first;
+				WUserRef user = sendTo[qi].first;
 
 				QString sid = user()->GetUserID();
 				QString sendText = sendTo[qi].second;
+
+#ifdef _DEBUG
+				PRINT("Found user %S and rest of text %S\n", GetBuffer(user()->GetUserName()), GetBuffer(sendText));
+#endif
 
 				if (isping)
 				{
@@ -1546,13 +1581,13 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 	if ( text.lower().left(6) == "/me's " )
 	{
 		QString msg = GetParameterString(text);
-		if ((msg.length() > 0) && fSettings->GetChat())
+		if (!msg.isEmpty() && fSettings->GetChat())
 			Action(userName + "'s", msg);
 	}
 	else if (text.lower().left(4) == "/me ")
 	{
 		QString msg = GetParameterString(text);
-		if ((msg.length() > 0) && fSettings->GetChat())
+		if (!msg.isEmpty() && fSettings->GetChat())
 			Action(userName, msg);
 	}
 	else	// regular message
@@ -1877,7 +1912,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			PRINT("\tREQUEST_TUNNEL\n");
 
 			QString userID;
-			int32 hisID;
+			int64 hisID;
 			
 			{
 				const char * session;		// from user (their session id)
@@ -1886,7 +1921,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					userID = QString(session);
 			}
 
-			msg()->FindInt32("my_id", &hisID);
+			msg()->FindInt64("my_id", &hisID);
 
 			WUserRef uref = FindUser(userID);
 
@@ -1902,7 +1937,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						to += "/beshare";
 						rej()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 						rej()->AddString(PR_NAME_SESSION, (const char *) fNetClient->LocalSessionID().utf8());
-						rej()->AddInt32("tunnel_id", (int32) hisID);
+						rej()->AddInt64("tunnel_id", (int64) hisID);
 						fNetClient->SendMessageToSessions(rej);
 					}
 				}
@@ -1920,8 +1955,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						OpenDownload();
 						if (fDLWindow->CreateTunnel(userID, hisID, tunnelID))
 						{
-							acc()->AddInt32("tunnel_id", (int32) hisID);
-							acc()->AddInt32("my_id", (int32) tunnelID);
+							acc()->AddInt64("tunnel_id", (int64) hisID);
+							acc()->AddInt64("my_id", (int64) ConvertPtr(tunnelID));
 							fNetClient->SendMessageToSessions(acc);
 						}
 					}
@@ -1935,8 +1970,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			PRINT("\tACCEPT_TUNNEL\n");
 
 			QString userID;
-			int32 hisID;
-			int32 myID;
+			int64 hisID;
+			int64 myID;
 			
 			{
 				const char * session;		// from user (their session id)
@@ -1945,8 +1980,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					userID = QString(session);
 			}
 
-			msg()->FindInt32("my_id", &hisID);
-			msg()->FindInt32("tunnel_id", &myID);
+			msg()->FindInt64("my_id", &hisID);
+			msg()->FindInt64("tunnel_id", &myID);
 
 			WUserRef uref = FindUser(userID);
 
@@ -1965,7 +2000,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			PRINT("\tREJECT_TUNNEL\n");
 
 			QString userID;
-			int32 myID;
+			int64 myID;
 			
 			{
 				const char * session;		// from user (their session id)
@@ -1974,7 +2009,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					userID = QString(session);
 			}
 
-			msg()->FindInt32("tunnel_id", &myID);
+			msg()->FindInt64("tunnel_id", &myID);
 
 			WUserRef uref = FindUser(userID);
 
@@ -1993,7 +2028,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			PRINT("\tTUNNEL_MESSAGE\n");
 
 			QString userID;
-			int32 myID;
+			int64 myID;
 			bool upload = false;
 			MessageRef tmsg;
 			
@@ -2004,7 +2039,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					userID = QString(session);
 			}
 
-			msg()->FindInt32("tunnel_id", &myID);
+			msg()->FindInt64("tunnel_id", &myID);
 
 			msg()->FindBool("upload", &upload);
 			msg()->FindMessage("message", tmsg);

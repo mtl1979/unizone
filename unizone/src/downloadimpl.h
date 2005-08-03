@@ -88,13 +88,13 @@ public:
 	void AddUpload(const QString & remoteIP, uint32 port);
 
 	// Upload tunnel
-	bool CreateTunnel(const QString & userID, int32 hisID, void * &myID);
+	bool CreateTunnel(const QString & userID, int64 hisID, void * &myID);
 	// Download tunnel
 	bool CreateTunnel(QString * files, QString * lfiles, int32 numFiles, const WUserRef & remoteUser);
-	void TunnelAccepted(int32 myID, int32 hisID);
-	void TunnelRejected(int32 myID);
+	void TunnelAccepted(int64 myID, int64 hisID);
+	void TunnelRejected(int64 myID);
 
-	void TunnelMessage(int32 myID, MessageRef tmsg, bool download);
+	void TunnelMessage(int64 myID, MessageRef tmsg, bool download);
 
 	void DequeueDLSessions();
 	void DequeueULSessions();

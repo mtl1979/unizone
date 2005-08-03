@@ -62,7 +62,7 @@ public:
 
 	bool IsTunneled() const { return fTunneled; }
 
-	void Accepted(int32 hisID);
+	void Accepted(int64 hisID);
 	void Rejected();
 
 	double GetCalculatedRate() const;
@@ -182,7 +182,7 @@ protected:
 private:
 	String _sessionID;
 
-	int32 hisID;
+	int64 hisID;
 
 	int timerID;
 

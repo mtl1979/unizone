@@ -121,8 +121,7 @@ WHTMLView::URLSelected(const QString & url)
 {
 	fURL = url;
 #ifdef _DEBUG
-	WString wURL(url);
-	PRINT("WHTMLView: URLSelected: %S\n", wURL.getBuffer());
+	PRINT("WHTMLView: URLSelected: %S\n", GetBuffer(url));
 #endif
 }
 
@@ -140,8 +139,7 @@ WHTMLView::setSource( const QString & name )
 		}
 	}
 #ifdef _DEBUG
-	WString wContext(fContext);
-	PRINT("WHTMLView: setSource: %S\n", wContext.getBuffer());
+	PRINT("WHTMLView: setSource: %S\n", GetBuffer(fContext));
 #endif
 	emit URLClicked( fContext );
 }

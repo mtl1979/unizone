@@ -128,7 +128,7 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 		system = WFormat::Text(nameformat);
 		SystemEvent(this, system);
 	}
-	if (newname.length() > 0)
+	if (!newname.isEmpty())
 		TextEvent(this, newname, WTextEvent::ResumeType);
 }
 
@@ -218,8 +218,7 @@ WinShareWindow::TabPressed(const QString &str)
 		PRINT("Returned true\n");
 	}
 #ifdef _DEBUG
-	WString wResult(result);
-	PRINT("Tab completion result: %S\n", wResult.getBuffer());
+	PRINT("Tab completion result: %S\n", GetBuffer(result));
 #endif
 }
 
@@ -305,35 +304,46 @@ WinShareWindow::PopupActivated(int id)
 	WUserRef uref = fNetClient->FindUser(fPopupUser);
 	if (uref())
 	{
-		if (id == 1) {
-			WPrivateWindow * window = new WPrivateWindow(this, fNetClient, NULL);
-			CHECK_PTR(window);
-			window->AddUser(uref);
-			window->show();
-			pLock.Lock();
-			fPrivateWindows.AddTail(window);
-			pLock.Unlock();
-		} 
-		else if (id == 2) 
+		switch (id)
 		{
-			QString qPattern = "*@";
-			qPattern += uref()->GetUserID();
-			WinShareWindow::LaunchSearch(qPattern);
-		} 
-		else if (id == 3) 
-		{
-			QString qTemp = WFormat::UserIPAddress(FixStringStr(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
-			SystemEvent(this, qTemp);
-		}
-		else if (id == 4)
-		{
-			GetAddressInfo(uref()->GetUserID());
-		}
-		else if (id == 5)
-		{
-			QString pingMsg("/ping ");
-			pingMsg += uref()->GetUserID();
-			SendPingOrMsg(pingMsg, true);
+			
+		case 1:
+			{
+				WPrivateWindow * window = new WPrivateWindow(this, fNetClient, NULL);
+				CHECK_PTR(window);
+				window->AddUser(uref);
+				window->show();
+				pLock.Lock();
+				fPrivateWindows.AddTail(window);
+				pLock.Unlock();
+			} 
+			break;
+		case 2: 
+			{
+				QString qPattern = "*@";
+				qPattern += uref()->GetUserID();
+				WinShareWindow::LaunchSearch(qPattern);
+			} 
+			break;
+		case 3: 
+			{
+				QString qTemp = WFormat::UserIPAddress(FixStringStr(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
+				SystemEvent(this, qTemp);
+			}
+			break;
+		case 4:
+			{
+				GetAddressInfo(uref()->GetUserID());
+			}
+			break;
+		case 5:
+			{
+				QString pingMsg("/ping ");
+				pingMsg += uref()->GetUserID();
+				SendPingOrMsg(pingMsg, true);
+			}
+			break;
+
 		}
 
 	}
@@ -519,8 +529,7 @@ void
 WinShareWindow::CheckResumes(const QString &user)
 {
 #ifdef _DEBUG
-	WString wUser(StripURL(user));
-	PRINT("CheckResumes: user   = %S\n", wUser.getBuffer());
+	PRINT("CheckResumes: user   = %S\n", GetBuffer(StripURL(user)));
 #endif
 
 	// No need to check if empty!
@@ -542,8 +551,7 @@ WinShareWindow::CheckResumes(const QString &user)
 	while (it != fResumeMap.end())
 	{
 #ifdef _DEBUG
-		WString wSecond(StripURL((*it).first));
-		PRINT("CheckResumes: user = %S\n", wSecond.getBuffer());
+		PRINT("CheckResumes: user = %S\n", GetBuffer(StripURL((*it).first)));
 #endif
 
 		if (StripURL((*it).first) == StripURL(user))

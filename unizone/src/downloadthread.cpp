@@ -758,7 +758,7 @@ WDownloadThread::SessionAccepted(const String &sessionID, uint16 /* port */)
 }
 
 void
-WDownloadThread::Accepted(int32 id)
+WDownloadThread::Accepted(int64 id)
 {
 	hisID = id;
 	SessionConnected((const char *) fFromSession.utf8());
@@ -1335,7 +1335,7 @@ WDownloadThread::SendMessageToSessions(const MessageRef & msgRef, const char * o
 				down()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 				down()->AddString(PR_NAME_SESSION, "");
 				down()->AddMessage("message", msgRef);
-				down()->AddInt32("tunnel_id", (int32) hisID);
+				down()->AddInt64("tunnel_id", (int64) hisID);
 				return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(down);
 			}
 			else

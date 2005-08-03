@@ -378,8 +378,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 #ifdef _DEBUG
-					WString wMessage(message);
-					PRINT("\t\t%S\n", wMessage.getBuffer());
+					PRINT("\t\t%S\n", GetBuffer(message));
 #endif
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);
@@ -397,8 +396,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
 					
 #ifdef _DEBUG
-					WString wMessage(message);
-					PRINT("\t\t%S\n", wMessage.getBuffer());
+					PRINT("\t\t%S\n", GetBuffer(message));
 #endif
 					
 					WPWEvent *e = new WPWEvent(WPWEvent::TextEvent, fUsers, message);

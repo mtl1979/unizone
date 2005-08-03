@@ -141,4 +141,6 @@ void RemoveFromList(String &slist, const String &entry);
 
 int Match(const QString &string, const QRegExp &exp);
 
+int64 ConvertPtr(void *);
+
 #endif

@@ -17,8 +17,7 @@ bool
 WLaunchThread::GotoURL(const QString & url, int showcmd)
 {
 #ifdef _DEBUG
-	WString tUrl(url);
-	PRINT("GotoURL: tUrl = %S\n",tUrl.getBuffer());
+	PRINT("GotoURL: tUrl = %S\n", GetBuffer(url));
 #endif
 
 	if ((long)ShellExecuteA(NULL, NULL, (const char *) url.local8Bit(), NULL, NULL, showcmd) > 32)
