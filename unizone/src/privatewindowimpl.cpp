@@ -122,7 +122,7 @@ WPrivateWindow::DisconnectedFromServer()
 }
 
 void
-WPrivateWindow::UserDisconnected(const WUserRef uref)
+WPrivateWindow::UserDisconnected(const WUserRef & uref)
 {
 	bool ok;
 	uint32 uid = uref()->GetUserID().toULong(&ok);
