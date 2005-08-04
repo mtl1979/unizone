@@ -293,6 +293,7 @@ WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c
 
 				fPopupUser = uid;
 				fPrivate->popup(p);
+				break;
 			}
 		}
 	}

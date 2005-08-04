@@ -514,6 +514,7 @@ WPrivateWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c
 
 				fPopupUser = uid;
 				fPopup->popup(p);
+				break;
 			}
 		}
 	}
