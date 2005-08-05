@@ -2,12 +2,11 @@
 
 #include "wstring.h"
 
-char * utfbuf = NULL;
-int utflen = 0;
-
 WString::WString()
 {
 	buffer = NULL;
+	utfbuf = NULL;
+	utflen = 0;
 }
 
 WString::WString(const wchar_t *str)
@@ -16,11 +15,15 @@ WString::WString(const wchar_t *str)
 	buffer = new wchar_t[len+1];
 	if (buffer)
 		wcscpy(buffer, str);
+	utfbuf = NULL;
+	utflen = 0;
 }
 
 WString::WString(const QString &str)
 {
 	buffer = qStringToWideChar(str);
+	utfbuf = NULL;
+	utflen = 0;
 }
 
 WString::WString(const char * str)
@@ -34,6 +37,8 @@ WString::WString(const char * str)
 	buffer = new wchar_t[len+1];
 	(void) mbstowcs(buffer, str, len);
 #endif
+	utfbuf = NULL;
+	utflen = 0;
 }
 
 WString::~WString()
@@ -65,14 +70,13 @@ WString::operator=(const wchar_t *str)
 WString &
 WString::operator=(const WString &str)
 {
-	wchar_t * buf2 = str;
 	free();
-	if (buf2)
+	if (str.getBuffer())
 	{
-		int len = wcslen(buf2);
+		int len = str.length();
 		buffer = new wchar_t[len+1];
 		if (buffer)
-			wcscpy(buffer, buf2);
+			wcscpy(buffer, str.getBuffer());
 	}
 	return *this;
 }
@@ -160,8 +164,7 @@ WString::operator!=(const wchar_t *str)
 bool 
 WString::operator!=(const WString &str)
 {
-	wchar_t *buf2 = str;
-	return (wcscmp(buffer, buf2) != 0);
+	return (wcscmp(buffer, str.getBuffer()) != 0);
 }
 
 bool 
@@ -181,8 +184,7 @@ WString::operator==(const wchar_t *str)
 bool 
 WString::operator==(const WString &str)
 {
-	wchar_t *buf2 = str;
-	return (wcscmp(buffer, buf2) == 0);
+	return (wcscmp(buffer, str.getBuffer()) == 0);
 }
 
 bool 

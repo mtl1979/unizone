@@ -65,5 +65,8 @@ protected:
 private:
 	wchar_t *buffer;
 	void free();						// Free internal buffer
+
+	mutable char * utfbuf;
+	mutable int utflen;
 };
 #endif
