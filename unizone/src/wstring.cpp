@@ -236,7 +236,6 @@ WString::setBuffer(wchar_t *buf)
 	buffer = buf;
 }
 
-#ifdef WIN32
 WString
 WString::upper() const 
 {
@@ -247,7 +246,12 @@ WString::upper() const
 		buf2 = wcsdup(buffer);
 		if (buf2)
 		{
+#ifdef WIN32
 			buf2 = wcsupr(buf2);
+#else
+			for (unsigned int y = 0; y < wcslen(buf2); y++)
+				buf2[y] = towupper( buf2[y] );
+#endif
 			s2.setBuffer(buf2);
 		}
 	}
@@ -264,7 +268,12 @@ WString::lower() const
 		buf2 = wcsdup(buffer);
 		if (buf2)
 		{
+#ifdef WIN32
 			buf2 = wcslwr(buf2);
+#else
+			for (unsigned int y = 0; y < wcslen(buf2); y++)
+				buf2[y] = towlower( buf2[y] );
+#endif
 			s2.setBuffer(buf2);
 		}
 	}
@@ -281,13 +290,24 @@ WString::reverse() const
 		buf2 = wcsdup(buffer);
 		if (buf2)
 		{
+#ifdef WIN32
 			buf2 = wcsrev(buf2);
+#else
+			unsigned int start = 0;
+			unsigned int end = wcslen(buf2) - 1;
+			while (start < end)
+			{
+				wchar_t temp = buf2[start];
+				buf2[start] = buf2[end];
+				buf2[end] = temp;
+				start++; end--;
+			}; 
+#endif
 			s2.setBuffer(buf2);
 		}
 	}
 	return s2;
 }
-#endif
 
 int
 WString::length() const
@@ -304,12 +324,12 @@ WString::replace(wchar_t in, wchar_t out)
 	if (buffer)
 	{
 		wchar_t *b = buffer;
-		do
+		while (*b != 0)
 		{
 			if (*b == in)
 				*b = out;
 			b++;
-		} while (*b != 0);
+		}; 
 	}
 }
 
