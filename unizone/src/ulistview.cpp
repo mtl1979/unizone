@@ -392,8 +392,10 @@ WUniListItem::text(int c) const
 		{
 			result.sprintf("%.2f ", n);
 			result += postFix;
+#ifdef DEBUG2
 			wres = result;
 			PRINT2("UListView::text : %S\n", wres.getBuffer());
+#endif
 		}
 		else
 		{
@@ -485,7 +487,7 @@ WUniListItem::text(int c) const
 	case Date:
 		{
 		lMod = fKey[c].toLong();
-		result = ctime((const time_t *)&lMod);
+		result = QString::fromLocal8Bit( ctime((const time_t *)&lMod) );
 		result.truncate(result.length() - 1);
 		return result;
 		}

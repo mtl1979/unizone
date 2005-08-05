@@ -906,7 +906,7 @@ QString
 InitTimeStamp()
 {
 	time_t currentTime = time(NULL);
-	return QString::fromLocal8Bit(asctime(localtime(&currentTime)));
+	return QString::fromLocal8Bit( ctime(&currentTime) );
 }
 
 QString

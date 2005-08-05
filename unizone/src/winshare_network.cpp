@@ -1237,7 +1237,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (base.isEmpty())
 			{
 				time_t currentTime = time(NULL);
-				QString lt = QString::fromLocal8Bit( asctime( localtime(&currentTime) ) );
+				QString lt = QString::fromLocal8Bit( ctime( &currentTime) );
 				lt.truncate(lt.find("\n"));
 
 				base = "desktop ";
