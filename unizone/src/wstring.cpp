@@ -362,7 +362,7 @@ qStringToWideChar(const QString &str)
 	wchar_t *result = new wchar_t[str.length() + 1];
 	if (result)
 	{
-#ifdef QT_QSTRING_UCS_4
+#if defined(QT_QSTRING_UCS_4) || !defined(WIN32)
 		for (unsigned int i = 0; i < str.length(); ++i)
 			result[i] = str.at(i).unicode();
 #else
