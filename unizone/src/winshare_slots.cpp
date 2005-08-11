@@ -77,8 +77,7 @@ WinShareWindow::UserConnected(const WUserRef & uref)
 	if (fSettings->GetUserEvents())
 	{
 		QString text = WFormat::UserConnected(sid);
-		QString system = WFormat::Text(text);
-		SendSystemEvent(system);
+		SendSystemEvent(text);
 	}
 	uref()->AddToListView(fUsers);
 	UpdateUserCount();
@@ -90,8 +89,7 @@ WinShareWindow::UserDisconnected(const WUserRef & uref)
 	if (fSettings->GetUserEvents())
 	{
 		QString msg = WFormat::UserDisconnected(uref()->GetUserID(), FixString(uref()->GetUserName())); 
-		QString parse = WFormat::Text(msg);
-		SendSystemEvent(parse);
+		SendSystemEvent(msg);
 	}
 	uref()->RemoveFromListView(fUsers);
 	UpdateUserCount();
@@ -122,8 +120,7 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 			// <postmaster@raasu.org> 20021112, 20030622
 			nameformat = WFormat::UserNameChanged(sid, FixString(old), FixString(newname));  
 		}
-		system = WFormat::Text(nameformat);
-		SendSystemEvent(system);
+		SendSystemEvent(nameformat);
 	}
 	if (!newname.isEmpty())
 		SendTextEvent(newname, WTextEvent::ResumeType);
@@ -181,8 +178,7 @@ WinShareWindow::UserStatusChanged(const WUserRef & uref, const QString &n, const
 
 		// <postmaster@raasu.org> 20021112
 		QString nameformat = WFormat::UserStatusChanged(uref()->GetUserID(), FixString(n), FixString(status)); 
-		QString system = WFormat::Text(nameformat);
-		SendSystemEvent(system);
+		SendSystemEvent(nameformat);
 	}
 }
 

@@ -1,5 +1,6 @@
 #include "updateclient.h"
 #include "debugimpl.h"
+#include "events.h"
 #include "global.h"
 #include "winsharewindow.h"
 #include "version.h"
@@ -45,7 +46,7 @@ UpdateClient::MessageReceived(const MessageRef & msg, const String & /* sessionI
 		QString s;
 		if (CheckVersion(str, &s))
 		{
-			gWin->SendSystemEvent(tr("Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.").arg(s));
+			SystemEvent(gWin, tr("Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.").arg(s));
 		}
 	}
 }

@@ -754,7 +754,7 @@ WinShareWindow::StatusChanged(const QString & newStatus)
 	fUserStatus = newStatus;
 
 	QString status = WFormat::StatusChanged( FixString( TranslateStatus( EscapeHTML(fUserStatus) ) ) );
-	PrintSystem(WFormat::Text(status));
+	PrintSystem(status);
 }
 
 void

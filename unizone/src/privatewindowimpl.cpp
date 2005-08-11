@@ -134,8 +134,7 @@ WPrivateWindow::UserDisconnected(const WUserRef & uref)
 			if (Settings()->GetUserEvents())
 			{
 				QString msg = WFormat::UserDisconnected(uref()->GetUserID(), FixString(name)); 
-				QString parse = WFormat::Text(msg);
-				PrintSystem(parse);
+				PrintSystem(msg);
 			}
 			uref()->RemoveFromListView(fPrivateUsers);
 			fUsers.Remove(uid);

@@ -5,6 +5,7 @@
 #include "downloadthread.h"
 #include "downloadworker.h"
 #include "downloadimpl.h"
+#include "events.h"
 #include "netclient.h"
 #include "wdownloadevent.h"
 #include "wsystemevent.h"
@@ -584,7 +585,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 
 							if (gWin->fSettings->GetDownloads())
 							{
-								gWin->SendSystemEvent( tr("Downloading %1 from %2.").arg( fFileDl[fCurFile] ).arg( GetRemoteUser() ) );
+								SystemEvent( gWin, tr("Downloading %1 from %2.").arg( fFileDl[fCurFile] ).arg( GetRemoteUser() ) );
 							}
 
 							fDownloading = true;
@@ -710,7 +711,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 
 							if (gWin->fSettings->GetDownloads())
 							{
-								gWin->SendSystemEvent( tr("Finished downloading %2 from %1.").arg( GetRemoteUser() ).arg( fFileDl[fCurFile] ) );
+								SystemEvent( gWin, tr("Finished downloading %2 from %1.").arg( GetRemoteUser() ).arg( fFileDl[fCurFile] ) );
 							}
 
 							CloseFile(fFile);

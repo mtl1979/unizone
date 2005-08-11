@@ -728,8 +728,7 @@ Channel::UserDisconnected(const WUserRef &user)
 			if (gWin->fSettings->GetUserEvents())
 			{
 				QString msg = WFormat::UserDisconnected(sid, FixString(user()->GetUserName())); 
-				QString parse = WFormat::Text(msg);
-				PrintSystem(parse);
+				PrintSystem(msg);
 			}
 			user()->RemoveFromListView(fChannelUsers);
 			fUsers.Remove(uid);

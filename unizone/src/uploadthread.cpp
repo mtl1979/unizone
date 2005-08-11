@@ -7,6 +7,7 @@
 #include "wsystemevent.h"
 #include "global.h"
 #include "downloadimpl.h"
+#include "events.h"
 #include "settings.h"
 #include "netclient.h"
 #include "md5.h"
@@ -786,7 +787,7 @@ WUploadThread::DoUpload()
 
 							if (gWin->fSettings->GetUploads())
 							{
-								gWin->SendSystemEvent( tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+								SystemEvent( gWin, tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
 							}
 						}
 						SendReply(update);
@@ -879,7 +880,7 @@ WUploadThread::DoUpload()
 
 				if (gWin->fSettings->GetUploads())
 				{
-					gWin->SendSystemEvent( tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+					SystemEvent( gWin, tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
 				}
 
 				// nested call
