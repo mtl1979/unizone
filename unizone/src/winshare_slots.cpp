@@ -89,12 +89,9 @@ WinShareWindow::UserDisconnected(const WUserRef & uref)
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString name = uref()->GetUserName();
-		QString sid = uref()->GetUserID();
-		QString uname = FixStringStr(name);
-		QString msg = WFormat::UserDisconnected(sid, uname); 
+		QString msg = WFormat::UserDisconnected(uref()->GetUserID(), FixString(uref()->GetUserName())); 
 		QString parse = WFormat::Text(msg);
-		SystemEvent(this, parse);
+		SendSystemEvent(parse);
 	}
 	uref()->RemoveFromListView(fUsers);
 	UpdateUserCount();
@@ -110,12 +107,12 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 
 		// <postmaster@raasu.org> 20030622
 		QString nameformat;
-		if (old != qApp->translate("WUser", "Unknown") && !old.isEmpty())
+		if (!CheckName(old))
 		{
 			// <postmaster@raasu.org> 20021112, 20030622
-			nameformat = WFormat::UserNameChanged(sid, FixStringStr(old), FixStringStr(newname));  
+			nameformat = WFormat::UserNameChangedNoOld(sid, FixString(newname)); 
 		}
-		else if (newname == qApp->translate("WUser", "Unknown") || newname.isEmpty())
+		else if (!CheckName(newname))
 		{
 			// <postmaster@raasu.org> 20030819
 			nameformat = WFormat::UserNameChangedNoNew(sid);  
@@ -123,13 +120,13 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 		else
 		{
 			// <postmaster@raasu.org> 20021112, 20030622
-			nameformat = WFormat::UserNameChangedNoOld(sid, FixStringStr(newname)); 
+			nameformat = WFormat::UserNameChanged(sid, FixString(old), FixString(newname));  
 		}
 		system = WFormat::Text(nameformat);
-		SystemEvent(this, system);
+		SendSystemEvent(system);
 	}
 	if (!newname.isEmpty())
-		TextEvent(this, newname, WTextEvent::ResumeType);
+		SendTextEvent(newname, WTextEvent::ResumeType);
 }
 
 void
@@ -175,23 +172,17 @@ WinShareWindow::UserStatusChanged(const WUserRef & uref, const QString &n, const
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString id = uref()->GetUserID();
-
-		QString system;
-		QString nameformat;
-
 		// <postmaster@raasu.org> 20020929,20030211,20030214
 		// <postmaster@raasu.org> 20041229 -- Strip extra spaces before trying to translate
-		QString status = s.stripWhiteSpace();
-		TranslateStatus(status);
+		QString status = TranslateStatus(s.stripWhiteSpace());
 
 		if (status.isEmpty())
 			return;
 
 		// <postmaster@raasu.org> 20021112
-		nameformat = WFormat::UserStatusChanged(id, FixStringStr(n), FixStringStr(status)); 
-		system = WFormat::Text(nameformat);
-		SystemEvent(this, system);
+		QString nameformat = WFormat::UserStatusChanged(uref()->GetUserID(), FixString(n), FixString(status)); 
+		QString system = WFormat::Text(nameformat);
+		SendSystemEvent(system);
 	}
 }
 
@@ -202,7 +193,7 @@ WinShareWindow::UserHostName(const WUserRef & uref, const QString &host)
 	if (fSettings->GetIPAddresses())
 	{
 		QString ip = WFormat::UserIPAddress2(sid, host);
-		SystemEvent(this, ip);
+		SendSystemEvent(ip);
 	}
 }
 
@@ -270,31 +261,28 @@ WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c
 	if (i)
 	{
 		QString uid = i->text(1).stripWhiteSpace();		// session ID
-		WUserIter it = fNetClient->Users().GetIterator();
-		while (it.HasMoreValues())
+		bool ok;
+		uint32 sid = uid.toULong(&ok);
+		WUserMap & umap = fNetClient->Users();
+		if (umap.ContainsKey(sid))
 		{
 			WUserRef uref;
-			it.GetNextValue(uref);
-			if (uref()->GetUserID() == uid)
-			{
-				// found user...
-				// <postmaster@raasu.org> 20020927 -- Added internationalization
-				QString txt = tr("Private Chat With %1").arg(StripURL(uref()->GetUserName()));
-				// <postmaster@raasu.org> 20020924 -- Added ',1'
-				fPrivate->insertItem(txt, 1);
-				// <postmaster@raasu.org> 20020924 -- Added id 2
-				fPrivate->insertItem(tr("List All Files"), 2);
-				// <postmaster@raasu.org> 20020926 -- Added id 3
-				fPrivate->insertItem(tr("Get IP Address"), 3);
-				// <postmaster@raasu.org> 20030307 -- Inserted new item as id 4, moved old as id 5
-				fPrivate->insertItem(tr("Get Address Info"), 4);
-				txt = tr("Ping %1").arg(StripURL(uref()->GetUserName()));
-				fPrivate->insertItem(txt, 5);
-
-				fPopupUser = uid;
-				fPrivate->popup(p);
-				break;
-			}
+			umap.Get(sid, uref);
+			// <postmaster@raasu.org> 20020927 -- Added internationalization
+			QString txt = tr("Private Chat With %1").arg(StripURL(uref()->GetUserName()));
+			// <postmaster@raasu.org> 20020924 -- Added ',1'
+			fPrivate->insertItem(txt, 1);
+			// <postmaster@raasu.org> 20020924 -- Added id 2
+			fPrivate->insertItem(tr("List All Files"), 2);
+			// <postmaster@raasu.org> 20020926 -- Added id 3
+			fPrivate->insertItem(tr("Get IP Address"), 3);
+			// <postmaster@raasu.org> 20030307 -- Inserted new item as id 4, moved old as id 5
+			fPrivate->insertItem(tr("Get Address Info"), 4);
+			txt = tr("Ping %1").arg(StripURL(uref()->GetUserName()));
+			fPrivate->insertItem(txt, 5);
+			
+			fPopupUser = uid;
+			fPrivate->popup(p);
 		}
 	}
 }
@@ -329,8 +317,8 @@ WinShareWindow::PopupActivated(int id)
 			break;
 		case 3: 
 			{
-				QString qTemp = WFormat::UserIPAddress(FixStringStr(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
-				SystemEvent(this, qTemp);
+				QString qTemp = WFormat::UserIPAddress(FixString(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
+				SendSystemEvent(qTemp);
 			}
 			break;
 		case 4:
@@ -410,7 +398,7 @@ WinShareWindow::Preferences()
 		if (oldLogging && !fSettings->GetLogging())
 		{
 			if (fSettings->GetInfo())
-				SystemEvent(this, tr("Logging disabled."));
+				SendSystemEvent(tr("Logging disabled."));
 			StopLogging();
 
 			pLock.Lock();
@@ -421,7 +409,7 @@ WinShareWindow::Preferences()
 		else if (!oldLogging && fSettings->GetLogging())
 		{
 			if (fSettings->GetInfo())
-				SystemEvent(this, tr("Logging enabled."));
+				SendSystemEvent(tr("Logging enabled."));
 			StartLogging();
 			pLock.Lock();
 			for (unsigned int i = 0; i < fPrivateWindows.GetNumItems(); i++)
@@ -453,7 +441,7 @@ WinShareWindow::ConnectTimer()
 	fNetClient->Disconnect();
 
 	if (fSettings->GetInfo())
-		SystemEvent(this, tr("Connection to server failed!"));
+		SendSystemEvent(tr("Connection to server failed!"));
 
 	// Schedule reconnect attempt
 	QCustomEvent * recon = new QCustomEvent(WinShareWindow::ConnectRetry);
@@ -489,7 +477,7 @@ WinShareWindow::FileFailed(const QString &file, const QString &lfile, const QStr
 {
 	FileInterrupted(file, lfile, user);
 
-	TextEvent(this, user, WTextEvent::ResumeType);
+	SendTextEvent(user, WTextEvent::ResumeType);
 }
 
 // Insert interrupted download to resume list
@@ -577,8 +565,7 @@ WinShareWindow::CheckResumes(const QString &user)
 	rLock.Unlock();
 	if (fFiles.GetNumItems() > 0)
 	{
-		FixString(out);
-		SystemEvent(this, out);
+		SendSystemEvent(FixString(out));
 		// Make sure File Transfers window is open
 
 		OpenDownload(); 

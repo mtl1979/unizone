@@ -133,8 +133,7 @@ WPrivateWindow::UserDisconnected(const WUserRef & uref)
 		{
 			if (Settings()->GetUserEvents())
 			{
-				QString uname = FixStringStr(name);
-				QString msg = WFormat::UserDisconnected(uref()->GetUserID(), uname); 
+				QString msg = WFormat::UserDisconnected(uref()->GetUserID(), FixString(name)); 
 				QString parse = WFormat::Text(msg);
 				PrintSystem(parse);
 			}
@@ -181,8 +180,7 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 			
 			if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
 			{
-				QString name = uref()->GetUserName();
-				FixString(name);
+				QString name = FixString(uref()->GetUserName());
 				QString s;
 				if ( IsAction(message, name) ) // simulate action?
 				{
@@ -496,26 +494,23 @@ WPrivateWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c
 	if (i)
 	{
 		QString uid = i->text(1);		// session ID
-		WUserIter it = fNet->Users().GetIterator();
-		while (it.HasMoreValues())
+		bool ok;
+		uint32 sid = uid.toULong(&ok);
+		WUserMap & umap = fNet->Users();
+		if (umap.ContainsKey(sid))
 		{
 			WUserRef uref;
-			it.GetNextValue(uref);
-			if (uref()->GetUserID() == uid)
-			{
-				// found user...
-				// <postmaster@raasu.org> 20021127 -- Remove user from private window
-				// <postmaster@raasu.org> 20020924 -- Added ',1'
-				fPopup->insertItem(tr("Remove"), 1);
-				// <postmaster@raasu.org> 20020924 -- Added id 2
-				fPopup->insertItem(tr("List All Files"), 2);
-				// <postmaster@raasu.org> 20020926 -- Added id 3
-				fPopup->insertItem(tr("Get IP Address"), 3); 
-
-				fPopupUser = uid;
-				fPopup->popup(p);
-				break;
-			}
+			umap.Get(sid, uref);
+			// <postmaster@raasu.org> 20021127 -- Remove user from private window
+			// <postmaster@raasu.org> 20020924 -- Added ',1'
+			fPopup->insertItem(tr("Remove"), 1);
+			// <postmaster@raasu.org> 20020924 -- Added id 2
+			fPopup->insertItem(tr("List All Files"), 2);
+			// <postmaster@raasu.org> 20020926 -- Added id 3
+			fPopup->insertItem(tr("Get IP Address"), 3); 
+			
+			fPopupUser = uid;
+			fPopup->popup(p);
 		}
 	}
 }
@@ -539,9 +534,7 @@ WPrivateWindow::PopupActivated(int id)
 		} 
 		else if (id == 3) 
 		{
-			QString user = FixStringStr(uref()->GetUserName());
-			QString host = uref()->GetUserHostName();
-			QString qTemp = WFormat::UserIPAddress(user, host); // <postmaster@raasu.org> 20021112
+			QString qTemp = WFormat::UserIPAddress(FixString(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
 			PrintSystem(qTemp);
 		}
 	}

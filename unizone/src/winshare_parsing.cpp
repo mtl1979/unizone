@@ -98,8 +98,7 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 				}
 			}
 			
-			QString qUser = StripURL(user()->GetUserName().lower());
-			QString userName = qUser.stripWhiteSpace();
+			QString userName = StripURL(user()->GetUserName().lower()).stripWhiteSpace();
 			
 			if (!userName.isEmpty())
 			{
@@ -300,8 +299,7 @@ WinShareWindow::MatchFilter(const QString & user, const QString & filter)
 		QString n;
 		while((n = idTok.GetNextToken()) != QString::null)
 		{
-			QString next(n);
-			next = next.stripWhiteSpace();
+			QString next(n.stripWhiteSpace());
 			
 			// Does this item (interpreted as a regex) match our user's name?
 			ConvertToRegex(next);

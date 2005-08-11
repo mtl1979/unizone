@@ -85,4 +85,6 @@ public:
 	static QString tr3(const QString &s);	// Adds leading space if needed.
 };
 
+bool CheckName(const QString &name);
+
 #endif	// FORMATTING_H

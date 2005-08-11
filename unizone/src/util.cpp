@@ -232,17 +232,19 @@ ParseChatText(const QString & str)
 		return str; 		// <postmaster@raasu.org> 20021107 -- Return unmodified 
 }
 
-void
-ParseString(QString & str)
+QString
+ParseString(const QString & str)
 {
+	QString s;
 	bool space = true;
 	bool first = false; // make first always be &nbsp;
 
+	unsigned int len = str.length();
 	// Remove trailing line feeds
-	while (str.right(1) == "\n")
-		str.truncate(str.length() - 1);
+	while (str[len - 1] == '\n')
+		len--;
 
-	for (unsigned int i = 0; i < str.length(); i++)
+	for (unsigned int i = 0; i < len; i++)
 	{
 		if (str[i] == ' ')
 		{
@@ -250,27 +252,44 @@ ParseString(QString & str)
 			{
 				// alternate inserting non-breaking space and real space
 				if (first)
-					first = false;
+					s += " ";
 				else 
-				{
-					str.replace(i, 1, "&nbsp;");
-					i += 5;
-					first = true;
-				}
+					s += "&nbsp;";
+				first = !first;
 			}
+			else
+				s += " ";
 		}
 		else if (str[i] == '<')
+		{
 			space = false;
+			s += "<";
+		}
 		else if (str[i] == '>')
+		{
 			space = true;
+			s += ">";
+		}
 		else if (str[i] == '\n')
 		{
 			// change newlines to <br> (html)
 			if (space)
-			{
-				str.replace(i, 1, "<br>");
-				i += 3;
-			}
+				s += "<br>";
+			else
+				s += "\n";
+		}
+		else if (str.mid(i,2) == "\r\n")
+		{
+			if (!space)
+				s += "\r\n";
+		}
+		else if (str[i] == '\r') // Only 13
+		{
+			// change single carriage returns to <br> (html)
+			if (space)
+				s += "<br>";
+			else
+				s += "\r";
 		}
 		else if (str[i] == '\t')
 		{
@@ -278,61 +297,47 @@ ParseString(QString & str)
 			{
 				// <postmaster@raasu.org> 20030623 -- follow 'first' used in spaces here too...
 				if (first)
-					str.replace(i, 1, " &nbsp; &nbsp;");
+					s += " &nbsp; &nbsp;";
 				else
-					str.replace(i, 1, "&nbsp; &nbsp; ");
-
-				i += 12;
+					s += "&nbsp; &nbsp; ";
 			}
+			else
+				s += "\t";
+		}
+		else if (( (unichar) str[i] ) < 32) 			// control character?
+		{
+			// Do Nothing!
 		}
 		else
 		{	
 			// other character
 			first = true;	
+			s += str[i];
 		}
 	}
-}
-
-QString
-ParseStringStr(const QString & str)
-{
-	QString s = str;
-	ParseString(s);
-	return s;
-}
-
-void
-EscapeHTML(QString & str)
-{
-	// we don't want to show html...
-	str.replace(QRegExp("<"), "&lt;");
-	str.replace(QRegExp(">"), "&gt;");
-}
-
-QString
-EscapeHTMLStr(const QString & str)
-{
-	QString s = str;
-	EscapeHTML(s);
 	return s;
 }
 
 QString
-FixStringStr(const QString & str)
+EscapeHTML(const QString & str)
 {
-	QString s = str;
-	EscapeHTML(s);
-	s = ParseChatText(s);
-	ParseString(s);
+	QString s;
+	for (unsigned int i = 0; i < str.length(); i++)
+	{
+		if (str[i] == '<')
+			s += "&lt;";
+		else if (str[i] == '>')
+			s += "&gt;";
+		else
+			s += str[i];
+	}
 	return s;
 }
 
-void
-FixString(QString & str)
+QString
+FixString(const QString & str)
 {
-	EscapeHTML(str);
-	str = ParseChatText(str);
-	ParseString(str);
+	return ParseString(ParseChatText(EscapeHTML(str.stripWhiteSpace())));
 }
 
 QString 
@@ -884,7 +889,7 @@ const char * MonthNames[12] = {
 
 QString TranslateMonth(const QString & m)
 {
-	return qApp->translate("Date", m.local8Bit());
+	return qApp->translate("Date", m.utf8());
 }
 
 const char * DayNames[7] = {
@@ -899,7 +904,7 @@ const char * DayNames[7] = {
 
 QString TranslateDay(const QString & d)
 {
-	return qApp->translate("Date", d.local8Bit());
+	return qApp->translate("Date", d.utf8());
 }
 
 QString

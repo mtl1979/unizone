@@ -51,6 +51,8 @@ CheckName(const QString &name)
 		return false;
 	if (temp == qApp->translate("WUser", "Unknown"))
 		return false;
+	if (temp == "Unknown")
+		return false;
 	return true;
 }
 

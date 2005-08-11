@@ -752,14 +752,8 @@ WinShareWindow::StatusChanged(const QString & newStatus)
 {
 	fNetClient->SetUserStatus(newStatus); // <postmaster@raasu.org> 20021001
 	fUserStatus = newStatus;
-	QString pstatus(fUserStatus);
-	EscapeHTML(pstatus);
 
-	// <postmaster@raasu.org> 20020929,20030211
-	TranslateStatus(pstatus);
-	//
-
-	QString status = WFormat::StatusChanged( FixStringStr(pstatus) );
+	QString status = WFormat::StatusChanged( FixString( TranslateStatus( EscapeHTML(fUserStatus) ) ) );
 	PrintSystem(WFormat::Text(status));
 }
 
@@ -1176,8 +1170,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 			{
 				WUserRef user;
 				iter.GetNextValue(user);
-				QString userName = user()->GetUserName().stripWhiteSpace();
-				userName = StripURL(userName);
+				QString userName = StripURL(user()->GetUserName().stripWhiteSpace());
 
 				if (!userName.isEmpty() && Match(userName, qr) >= 0)
 				{
@@ -1204,8 +1197,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				WUserRef user;
 				iter.GetNextValue(user);
 				QString uName = user()->GetUserName();
-				QString userName = uName.stripWhiteSpace();
-				userName = StripURL(userName);
+				QString userName = StripURL(uName.stripWhiteSpace());
 
 				if (!userName.isEmpty() && restOfString2.startsWith(userName))
 				{
@@ -2065,19 +2057,17 @@ const char * statusList[] = {
 	NULL
 };
 
-void
-WinShareWindow::TranslateStatus(QString & s)
+QString
+WinShareWindow::TranslateStatus(const QString & s)
 {
 	QString st = s.lower();
 	const char *t;
 	for (unsigned int x = 0; (t = statusList[x]) != NULL; x++)
 	{
 		if (st == t)
-		{
-			s = tr(t);
-			break;
-		}
+			return tr(t);
 	}
+	return s;
 }
 
 void 
@@ -2291,6 +2281,12 @@ WinShareWindow::timerEvent(QTimerEvent *)
 			setCaption(tmp);
 		}
 	}
+}
+
+void
+WinShareWindow::SendTextEvent(const QString &text, WTextEvent::Type t)
+{
+	TextEvent(this, text, t);
 }
 
 void

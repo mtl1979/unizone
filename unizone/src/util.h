@@ -15,16 +15,15 @@ class WFile;
 
 using namespace muscle;
 
-QString ParseChatText(const QString & str);		// this is a whole different type of
-												// parse... it looks for URL's etc.
-void ParseString(QString & str);
-QString ParseStringStr(const QString & str);
+// this is a whole different type of parse... it looks for URL's etc.
+QString ParseChatText(const QString & str);		
 
-void EscapeHTML(QString & str);					// RUN THIS BEFORE ParseString()
-QString EscapeHTMLStr(const QString & str);
+QString ParseString(const QString & str);
 
-void FixString(QString & str);
-QString FixStringStr(const QString & str);
+// RUN THIS BEFORE ParseString()
+QString EscapeHTML(const QString & str);
+
+QString FixString(const QString & str);
 
 //
 // <postmaster@raasu.org> 20021021

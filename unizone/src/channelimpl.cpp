@@ -342,8 +342,7 @@ Channel::customEvent(QCustomEvent * event)
 					help		+=	tr("/public - set channel to public mode");
 					help		+=	"\n\t\t\t\t"; 
 					help		+=	tr("/topic [topic] - change the channel topic");
-					ParseString(help);
-					PrintSystem(help);
+					PrintSystem(ParseString(help));
 				}
 				// Give a list of channel admins
 				else if (wte->Text().lower().startsWith("/listadmins"))
@@ -622,9 +621,7 @@ Channel::SendChannelText(const QString & message)
 			fNet->SendMessageToSessions(chat);
 		}
 	}
-	QString name = FixStringStr(gWin->GetUserName());
-	QString msg = FixStringStr(message);
-	QString fmt = WFormat::LocalText(fNet->LocalSessionID(), name, msg);
+	QString fmt = WFormat::LocalText(fNet->LocalSessionID(), FixString(gWin->GetUserName()), FixString(message));
 	PrintText(fmt);
 }
 
@@ -635,7 +632,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		return;
 	if (!fActive)
 		return;
-	if ( text.lower().left(6) == "/me's " )
+	if ( CompareCommand(text, "/me's") )
 	{
 		if ( !gWin->IsIgnored((QString &) user) )
 		{
@@ -644,7 +641,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 				Action(user + "'s", msg);
 		}
 	}
-	else if (text.lower().left(4) == "/me ")
+	else if ( CompareCommand(text, "/me ") )
 	{
 		if ( !gWin->IsIgnored((QString &) user) )
 		{
@@ -658,9 +655,8 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		WUserRef uref = FindUser(user);
 		if (uref())
 		{
-			QString name = uref()->GetUserName();
 			// NOTE: Can't use FixString(text)
-			QString fmt = WFormat::RemoteText(user, FixStringStr(name), FormatNameSaid(text));
+			QString fmt = WFormat::RemoteText(user, FixString(uref()->GetUserName()), FormatNameSaid(text));
 			PrintText(fmt);
 		}
 	}
@@ -722,19 +718,16 @@ void
 Channel::UserDisconnected(const WUserRef &user)
 {
 	QString sid = user()->GetUserID();
-	QString name = user()->GetUserName();
 
 	bool ok;
 	uint32 uid = sid.toULong(&ok);
 	if (ok)
 	{
-//		WUserRef user;
 		if (fUsers.ContainsKey(uid))
 		{
 			if (gWin->fSettings->GetUserEvents())
 			{
-				QString uname = FixStringStr(name);
-				QString msg = WFormat::UserDisconnected(sid, uname); 
+				QString msg = WFormat::UserDisconnected(sid, FixString(user()->GetUserName())); 
 				QString parse = WFormat::Text(msg);
 				PrintSystem(parse);
 			}

@@ -159,7 +159,7 @@ public:
 
 	QString CurrentServer() { return fServer; }
 	
-	void TranslateStatus(QString & s);
+	QString TranslateStatus(const QString & s);
 	
 	WUserRef FindUser(const QString & user);
 	WUserRef FindUserByIPandPort(const QString & ip, uint32 port);
@@ -184,6 +184,7 @@ public:
 	void LogString(const QString &);
 	QWidget *Window();
 
+	void SendTextEvent(const QString &text, WTextEvent::Type t);
 	void SendSystemEvent(const QString &message);
 	void SendErrorEvent(const QString &message);
 	void SendWarningEvent(const QString &message);

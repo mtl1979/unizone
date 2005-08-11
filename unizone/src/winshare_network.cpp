@@ -626,8 +626,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 							}
 							if (fSettings->GetInfo())
 							{
-								QString username = tu()->GetUserName();
-								QString treqMsg = WFormat::TimeRequest(tu()->GetUserID(), FixStringStr(username));
+								QString treqMsg = WFormat::TimeRequest(tu()->GetUserID(), FixString(tu()->GetUserName()));
 								PrintSystem(treqMsg);
 							}
 						
@@ -1398,12 +1397,11 @@ void
 WinShareWindow::SendChatText(const QString & sid, const QString & txt)
 {
 	fNetClient->SendChatText(sid, txt);
-	QString out = FixStringStr(txt);
 	if (sid == "*")	// global message?
 	{
 		if (fSettings->GetChat())
 		{
-			QString chat = WFormat::LocalText(GetUserID(), FixStringStr(GetUserName()), out);
+			QString chat = WFormat::LocalText(GetUserID(), FixString(GetUserName()), FixString(txt));
 			PrintText(chat);
 		}
 	}
@@ -1420,12 +1418,12 @@ void
 WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply, bool enc)
 {
 	fNetClient->SendChatText(sid, txt, enc);
-	QString out = FixStringStr(txt);
+	QString out = FixString(txt);
 	if (sid == "*")	// not a global message?
 	{
 		if (fSettings->GetChat())
 		{
-			QString chat = WFormat::LocalText(GetUserID(), FixStringStr(GetUserName()), out);
+			QString chat = WFormat::LocalText(GetUserID(), FixString(GetUserName()), out);
 			PrintText(chat);
 		}
 	}
@@ -1439,10 +1437,7 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 				if (fSettings->GetPrivate())	// do we take private messages?
 				{
 					QString chat;
-					QString me = GetUserName();
-					FixString(me);
-					QString other = priv()->GetUserName();
-					FixString(other);
+					QString me = FixString(GetUserName());
 					PRINT("Appending to chat\n");
 					if ( IsAction(txt, me) ) // simulate action?
 					{
@@ -1450,7 +1445,7 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 					}
 					else
 					{
-						chat = WFormat::SendPrivMsg(GetUserID(), me, other, out);
+						chat = WFormat::SendPrivMsg(GetUserID(), me, FixString(priv()->GetUserName()), out);
 					}
 					PRINT("Printing\n");
 					PrintText(chat);
@@ -1516,7 +1511,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 				{
 					if (fSettings->GetInfo())
 					{
-						QString pingMsg = WFormat::PingSent(sid, FixStringStr(user()->GetUserName())); // <postmaster@raasu.org> 20021112
+						QString pingMsg = WFormat::PingSent(sid, FixString(user()->GetUserName())); // <postmaster@raasu.org> 20021112
 						PrintSystem(pingMsg);
 					}
 					fNetClient->SendPing(sid);
@@ -1535,10 +1530,10 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 				{
 					*reply = true;
 					// format a wonderful string for our private window
-					QString name = FixStringStr(GetUserName());
-					qsendtext = FixStringStr(qsendtext);
+					QString name = FixString(GetUserName());
+					qsendtext = FixString(qsendtext);
 					QString fmt;
-					if (qsendtext.startsWith(name+" ") || qsendtext.startsWith(name + "'s ")) // simulate action?
+					if (IsAction(qsendtext, name)) // simulate action?
 					{
 						fmt = WFormat::Action(qsendtext);
 					}
@@ -1706,14 +1701,15 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				}
 				
 				PRINT("Fixing nameText\n");
-				QString nameText = FixStringStr(text);
-				if (nameText.startsWith(FixStringStr(userName) + " ") || nameText.startsWith(FixStringStr(userName) + "'s ")) // simulate action?
+				QString nameText = FixString(text);
+				QString uname = FixString(userName);
+				if (IsAction(nameText, uname)) // simulate action?
 				{
 					chat = WFormat::Action(nameText);
 				}
 				else
 				{
-					chat = WFormat::ReceivePrivMsg(userID, FixStringStr(userName), nameText);
+					chat = WFormat::ReceivePrivMsg(userID, uname, nameText);
 				}
 				
 				if (fSettings->GetSounds())
@@ -1725,7 +1721,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				}
 #endif // WIN32
 				
-				TextEvent(this, chat, WTextEvent::ChatTextEvent); 
+				SendTextEvent(chat, WTextEvent::ChatTextEvent); 
 				
 			}
 		}
@@ -1736,11 +1732,11 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 			
 				PRINT("Name said\n");
 				if (MatchUserFilter(from, fWatch))
-					chat += WFormat::RemoteWatch(userID, FixStringStr(userName), FormatNameSaid(text));
+					chat += WFormat::RemoteWatch(userID, FixString(userName), FormatNameSaid(text));
 				else
-					chat += WFormat::RemoteText(userID, FixStringStr(userName), FormatNameSaid(text));
+					chat += WFormat::RemoteText(userID, FixString(userName), FormatNameSaid(text));
 		
-				TextEvent(this, chat, WTextEvent::ChatTextEvent); 
+				SendTextEvent(chat, WTextEvent::ChatTextEvent); 
 			}
 		}
 	}
@@ -2331,7 +2327,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						if (fSettings->GetInfo())
 						{
 							PRINT("Print ping\n");
-							QString system = WFormat::GotPinged(repto.Cstr(), FixStringStr(user()->GetUserName())); // <postmaster@raasu.org> 20021112
+							QString system = WFormat::GotPinged(repto.Cstr(), FixString(user()->GetUserName())); // <postmaster@raasu.org> 20021112
 							SendSystemEvent(system);
 						}
 					}
@@ -2393,7 +2389,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						}
 						else
 						{
-							QString pre = WFormat::RemoteName(session, FixStringStr(user()->GetUserName()));
+							QString pre = WFormat::RemoteName(session, FixString(user()->GetUserName()));
 							uint32 time = ((GetCurrentTime64() - when) / 10000L);
 							
 							QString pong(pre);
@@ -2471,9 +2467,9 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					{
 						if ((msg()->FindString("time", sTime) == B_OK) && (msg()->FindString("zone", sZone) == B_OK))
 						{
-							QString userName = user()->GetUserName().stripWhiteSpace();
+							QString & userName = user()->GetUserName();
 							QString qstamp = tr("Current time: %1 %2").arg(QString::fromUtf8(sTime.Cstr())).arg(QString::fromUtf8(sZone.Cstr()));
-							QString qTime = WFormat::RemoteText(session, FixStringStr(userName), qstamp);
+							QString qTime = WFormat::RemoteText(session, FixString(userName), qstamp);
 							PrintText(qTime);
 						}
 					}
@@ -2816,14 +2812,13 @@ WinShareWindow::ShowHelp(const QString & command)
 		}
 	}
 
-	QString str;
 	if (command.isEmpty())
 	{
-		str = ParseStringStr(helpText);
-		PrintSystem(str);
+		PrintSystem(ParseString(helpText));
 	}
 	else
 	{
+		QString str;
 		QString cmd = "\t/" + command + " ";
 		int s = 0;
 		bool found = false;
@@ -2859,8 +2854,7 @@ WinShareWindow::ShowHelp(const QString & command)
 		}
 		if (found)
 		{
-			ParseString(str);
-			PrintSystem(str);
+			PrintSystem(ParseString(str));
 		}
 		else
 		{
@@ -2993,10 +2987,9 @@ WinShareWindow::ListResumes()
 		it++;
 	}
 	out += "\n" + tr("Total: %1 files").arg(i);
-	FixString(out);
 	rLock.Unlock();
 
-	PrintSystem(out);
+	PrintSystem(FixString(out));
 }
 
 void
@@ -3048,8 +3041,7 @@ WinShareWindow::PrintAddressInfo(const WUserRef & user, bool verbose)
 				out += "\n" + tr("Host Name: %1").arg(lpHostEntry->h_name);
 			}
 		}
-		FixString(out);
-		PrintSystem(out);
+		PrintSystem(FixString(out));
 	}					
 	else if (fSettings->GetError())
 	{
@@ -3117,8 +3109,7 @@ WinShareWindow::PrintAddressInfo(uint32 address, bool verbose)
 		}
 		if (found)
 		{
-			FixString(out);
-			PrintSystem(out);
+			PrintSystem(FixString(out));
 		}
 	}
 	return found;

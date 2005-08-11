@@ -62,7 +62,7 @@ WAssert(bool test, const char *message, int line, const char *file, const char *
 		WFile f;
 		if (f.Open("assert.txt", IO_WriteOnly)) 
 		{ 
-			QCString tmp = out.local8Bit();
+			QCString tmp = out.utf8();
 			f.WriteBlock(tmp, tmp.length()); 
 			f.Close(); 
 		} 
