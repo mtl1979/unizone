@@ -324,7 +324,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 											user()->RemoveFromListView(fPrivateUsers);
 											if (Settings()->GetUserEvents())
 											{
-												PrintSystem(WFormat::PrivateRemoved(user()->GetUserID(), user()->GetUserName()));
+												PrintSystem(WFormat::PrivateRemoved(user()->GetUserID(), FixString(user()->GetUserName())));
 											}
 											fUsers.Remove(uid);
 										}
@@ -356,9 +356,9 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 												if (Settings()->GetError())
 												{
 													if (ref()->IsBot())
-														PrintError(WFormat::PrivateIsBot(ref()->GetUserID(), ref()->GetUserName()));
+														PrintError(WFormat::PrivateIsBot(ref()->GetUserID(), FixString(ref()->GetUserName())));
 													else
-														PrintError(WFormat::PrivateIsBot(sid, user()->GetUserName()));
+														PrintError(WFormat::PrivateIsBot(sid, FixString(user()->GetUserName())));
 												}
 												err = true;
 												break;

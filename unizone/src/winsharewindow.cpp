@@ -753,7 +753,7 @@ WinShareWindow::StatusChanged(const QString & newStatus)
 	fNetClient->SetUserStatus(newStatus); // <postmaster@raasu.org> 20021001
 	fUserStatus = newStatus;
 
-	QString status = WFormat::StatusChanged( FixString( TranslateStatus( EscapeHTML(fUserStatus) ) ) );
+	QString status = WFormat::StatusChanged( FixString( TranslateStatus( fUserStatus ) ) );
 	PrintSystem(status);
 }
 
@@ -782,7 +782,7 @@ WinShareWindow::NameChanged(const QString & newName)
 	{
 		if (newName != fUserName)
 		{
-			QString status = WFormat::NameChanged(newName);
+			QString status = WFormat::NameChanged(FixString(newName));
 			SendSystemEvent(status);
 			fUserName = newName;
 		}
