@@ -549,7 +549,10 @@ WFormat::PrivateIsBot(const QString &session, const QString &name)
 	if (CheckName(name))
 	{
 		temp = tr("User #%1 (a.k.a").arg(session);
+		temp += " ";
+		temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
 		temp += name.stripWhiteSpace();
+		temp += "</font>";
 		temp += tr(")", "aka suffix");
 	}
 	else
@@ -566,7 +569,10 @@ WFormat::PrivateRemoved(const QString &session, const QString &name)
 	if (CheckName(name))
 	{
 		temp = tr("User #%1 (a.k.a").arg(session);
+		temp += " ";
+		temp += tr("<font color=\"%1\">").arg(GetColor(WColors::RemoteName));
 		temp += name.stripWhiteSpace();
+		temp += "</font>";
 		temp += tr(")", "aka suffix");
 	}
 	else
