@@ -291,7 +291,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 				if (CompareCommand(stxt, "/adduser") ||
 					CompareCommand(stxt, "/removeuser"))
 				{
-					bool rem = stxt.lower().startsWith("/adduser ") ? false : true;
+					bool rem = CompareCommand(stxt, "/removeuser");
 
 					QString targetStr, restOfString;
 					WUserSearchMap sendTo;
@@ -313,39 +313,10 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 								user = sendTo[qi].first;
 								QString sid = user()->GetUserID();
 
-								// see if the user is a bot...
-								if (user()->IsBot())
-								{
-									if (Settings()->GetError())
-										PrintError(WFormat::PrivateIsBot(sid, user()->GetUserName()));
-									continue;	// go on to next user
-								}
-
-								if (!rem)	// add a new user
-								{
-									// see if the user is already in the list
-									bool talking = false;
-									WUserIter uit = fUsers.GetIterator();
-									while ( uit.HasMoreValues() )
-									{
-										WUserRef found;
-										uit.GetNextValue(found);
-										if (found()->GetUserID() == sid)
-										{
-											if (Settings()->GetUserEvents())
-												PrintError(tr("User #%1 (a.k.a %2) is already in this private window!").arg(sid).arg(user()->GetUserName()));
-
-											talking = true;
-											break;	// done...
-										}
-									}
-									if (!talking)	// user not yet in list? add
-										AddUser(user);	// the EASY way :)
-								}
-								else
+								if (rem)	
 								{
 									bool ok;
-									uint32 uid = user()->GetUserID().toULong(&ok);
+									uint32 uid = sid.toULong(&ok);
 									if (ok)
 									{
 										if (fUsers.ContainsKey(uid))
@@ -357,6 +328,44 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 											}
 											fUsers.Remove(uid);
 										}
+									}
+								}
+								else // add a new user
+								{
+									// see if the user is already in the list
+									bool ok;
+									uint32 id = sid.toULong(&ok); 
+									if ( ok && fUsers.ContainsKey(id) )
+									{
+										WUserRef found;
+										fUsers.Get(id, found);
+										if (Settings()->GetUserEvents())
+											PrintError(tr("User #%1 (a.k.a %2) is already in this private window!").arg(sid).arg(user()->GetUserName()));
+
+									}
+									else	// user not yet in list? 
+									{
+										WUserIter it = fUsers.GetIterator();
+										bool err = false;
+										while (it.HasMoreValues())
+										{
+											WUserRef ref;
+											it.GetNextValue(ref);
+											if (ref()->IsBot() != user()->IsBot())
+											{
+												if (Settings()->GetError())
+												{
+													if (ref()->IsBot())
+														PrintError(WFormat::PrivateIsBot(ref()->GetUserID(), ref()->GetUserName()));
+													else
+														PrintError(WFormat::PrivateIsBot(sid, user()->GetUserName()));
+												}
+												err = true;
+												break;
+											}
+										}
+										if (!err)		// No error -> add ;)	
+											AddUser(user);	// the EASY way :)
 									}
 								}
 							}
