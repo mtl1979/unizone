@@ -2467,7 +2467,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					{
 						if ((msg()->FindString("time", sTime) == B_OK) && (msg()->FindString("zone", sZone) == B_OK))
 						{
-							QString & userName = user()->GetUserName();
+							QString userName = user()->GetUserName();
 							QString qstamp = tr("Current time: %1 %2").arg(QString::fromUtf8(sTime.Cstr())).arg(QString::fromUtf8(sZone.Cstr()));
 							QString qTime = WFormat::RemoteText(session, FixString(userName), qstamp);
 							PrintText(qTime);
