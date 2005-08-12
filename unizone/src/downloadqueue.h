@@ -15,7 +15,7 @@ public:
 	DownloadQueue();
 	~DownloadQueue();
 
-	void DownloadQueue::addItem(const QString & file, const WUserRef & user);
+	void addItem(const QString & file, const WUserRef & user);
 	void run();
 private:
 	MessageRef fQueue;
