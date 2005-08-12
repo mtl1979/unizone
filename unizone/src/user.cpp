@@ -480,25 +480,25 @@ WUser::SetClient(const QString &s)
 {
 	if (fNeedPing)
 		fNeedPing = false;
-
+	
 	fClient = s;
-	if (fHostOS == QString::null)
+	OSPair p;
+	for (unsigned int n = 0; (p = Systems[n]).id != NULL; n++)
 	{
-		OSPair p;
-		for (unsigned int n = 0; (p = Systems[n]).id != NULL; n++)
+		int pos;
+		if ((pos = s.find(p.id, 0, false)) >= 0)
 		{
-			int pos;
-			if ((pos = s.find(p.id, 0, false)) >= 0)
+			if (fHostOS == QString::null)
 			{
 				fHostOS = qApp->translate("WUser", p.tag);
-				// try to strip host os from client string
-				if ((pos > 0) && (fClient[pos-1] == '('))
-				{
-					fClient.truncate(pos - 1);
-					fClient = fClient.stripWhiteSpace();
-				}
-				break;
 			}
+			// try to strip host os from client string
+			if ((pos > 0) && (fClient[pos-1] == '('))
+			{
+				fClient.truncate(pos - 1);
+				fClient = fClient.stripWhiteSpace();
+			}
+			break;
 		}
 	}
 }
