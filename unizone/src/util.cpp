@@ -304,7 +304,7 @@ ParseString(const QString & str)
 			else
 				s += "\t";
 		}
-		else if (( (unichar) str[i] ) < 32) 			// control character?
+		else if (( (unichar) str[i].unicode() ) < 32) 			// control character?
 		{
 			// Do Nothing!
 		}
