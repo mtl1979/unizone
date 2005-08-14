@@ -374,59 +374,59 @@ Version %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='unfinished'>Erzeuge Channel</translation>
+        <translation>Erzeuge Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='unfinished'>Bitte den Namen des Channels eingeben</translation>
+        <translation>Bitte den Namen des Channels eingeben</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type='unfinished'>Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type='unfinished'>Nein</translation>
+        <translation>Nein</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='unfinished'>Channels</translation>
+        <translation>Channels</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='unfinished'>Benutzer #%1 fragt nach Einladung zum Channel %2. Was nun?</translation>
+        <translation>Benutzer #%1 fragt nach Einladung zum Channel %2. Was nun?</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='unfinished'>Benutzer #%1 lädt Dich ein zum Channel %2. Akzeptieren?</translation>
+        <translation>Benutzer #%1 lädt Dich ein zum Channel %2. Akzeptieren?</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type='unfinished'>Name</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type='unfinished'>Thema</translation>
+        <translation>Thema</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type='unfinished'>Benutzer</translation>
+        <translation>Benutzer</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type='unfinished'>Admins</translation>
+        <translation>Admins</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type='unfinished'>Publik</translation>
+        <translation>Publik</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type='unfinished'>&amp;Erstellen</translation>
+        <translation>&amp;Erstellen</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type='unfinished'>&amp;Anschließen</translation>
+        <translation>&amp;Anschließen</translation>
     </message>
 </context>
 <context>
@@ -658,14 +658,14 @@ Version %1</translation>
     </message>
     <message>
         <source>Date:</source>
-        <translation type='unfinished'>Datum:</translation>
+        <translation>Datum:</translation>
     </message>
 </context>
 <context>
     <name>Debug</name>
     <message>
         <source>Unizone (English)</source>
-        <translation type='unfinished'>Unizone (Deutsch)</translation>
+        <translation>Unizone (Deutsch)</translation>
     </message>
     <message>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
@@ -675,7 +675,7 @@ Version %1</translation>
 Line %2
 File %3
 Date: %4</source>
-        <translation type='unfinished'>Sende diese Nachricht an postmaster@raasu.org! Diese Nachricht sollte &apos;assert.txt&apos;  genannt werden!
+        <translation>Sende diese Nachricht an postmaster@raasu.org! Diese Nachricht sollte &apos;assert.txt&apos;  genannt werden!
 
 %1
 
@@ -792,7 +792,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation type='unfinished'>F10</translation>
+        <translation>F10</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
@@ -820,7 +820,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>F9</source>
-        <translation type='unfinished'>F9</translation>
+        <translation>F9</translation>
     </message>
     <message>
         <source>Music</source>
@@ -1173,7 +1173,7 @@ Date: %4</translation>
     <name>Version</name>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='unfinished'>%1.%2.%3 build %4</translation>
+        <translation>%1.%2.%3 build %4</translation>
     </message>
 </context>
 <context>
@@ -1520,7 +1520,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation type='unfinished'>%1 auf %2</translation>
+        <translation>%1 auf %2</translation>
     </message>
 </context>
 <context>
@@ -1654,7 +1654,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='unfinished'>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
+        <translation>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
         <source>Ping returned in %3 milliseconds</source>
@@ -1815,7 +1815,7 @@ Date: %4</translation>
     <message>
         <source>user #%1</source>
         <comment>Ping sent to user...</comment>
-        <translation type='unfinished'>Benutzer #%1</translation>
+        <translation>Benutzer #%1</translation>
     </message>
 </context>
 <context>
@@ -1852,7 +1852,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>1/1</source>
-        <translation type='unfinished'>1/1</translation>
+        <translation>1/1</translation>
     </message>
     <message>
         <source>Next</source>
@@ -2546,7 +2546,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='unfinished'>DSL-1M</translation>
+        <translation>DSL-1M</translation>
     </message>
 </context>
 <context>
@@ -2663,7 +2663,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Encryption is %1.</source>
-        <translation type='unfinished'></translation>
+        <translation>Encryption is %1.</translation>
     </message>
 </context>
 <context>
@@ -2677,39 +2677,39 @@ Date: %4</translation>
     <name>WSearch</name>
     <message>
         <source>Search</source>
-        <translation type='unfinished'>Suche</translation>
+        <translation>Suche</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='unfinished'>Datei Name</translation>
+        <translation>Datei Name</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='unfinished'>Datei Größe</translation>
+        <translation>Datei Größe</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='unfinished'>Datei Typ</translation>
+        <translation>Datei Typ</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='unfinished'>Geändert</translation>
+        <translation>Geändert</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='unfinished'>Pfad</translation>
+        <translation>Pfad</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='unfinished'>Benutzer</translation>
+        <translation>Benutzer</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='unfinished'>Suche:</translation>
+        <translation>Suche:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='unfinished'>Download</translation>
+        <translation>Download</translation>
     </message>
     <message>
         <source>Close</source>
@@ -2717,15 +2717,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='unfinished'>Löschen</translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='unfinished'>Stop</translation>
+        <translation>Stop</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='unfinished'>Bereit.</translation>
+        <translation>Bereit.</translation>
     </message>
     <message>
         <source>%1</source>
@@ -2733,35 +2733,35 @@ Date: %4</translation>
     </message>
     <message>
         <source>Not connected.</source>
-        <translation type='unfinished'>Nicht verbunden.</translation>
+        <translation>Nicht verbunden.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation type='unfinished'>Suche nach: "%1".</translation>
+        <translation>Suche nach: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='unfinished'>Ergebnisse: %1</translation>
+        <translation>Ergebnisse: %1</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation type='unfinished'>Historie löschen</translation>
+        <translation>Historie löschen</translation>
     </message>
     <message>
         <source>User(s) not found!</source>
-        <translation type='unfinished'>Benutzer nicht gefunden!</translation>
+        <translation>Benutzer nicht gefunden!</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type='unfinished'>Initialisieren...</translation>
+        <translation>Initialisieren...</translation>
     </message>
     <message>
         <source>active</source>
-        <translation type='unfinished'>activ</translation>
+        <translation>activ</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation type='unfinished'>passiv</translation>
+        <translation>passiv</translation>
     </message>
     <message>
         <source>Download All</source>
@@ -2795,43 +2795,43 @@ Date: %4</translation>
     <name>WUniListItem</name>
     <message>
         <source>B</source>
-        <translation type='unfinished'>B</translation>
+        <translation>B</translation>
     </message>
     <message>
         <source>TB</source>
-        <translation type='unfinished'>TB</translation>
+        <translation>TB</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation type='unfinished'>GB</translation>
+        <translation>GB</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation type='unfinished'>MB</translation>
+        <translation>MB</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation type='unfinished'>kB</translation>
+        <translation>kB</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation type='unfinished'>B/s</translation>
+        <translation>B/s</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation type='unfinished'>TB/s</translation>
+        <translation>TB/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation type='unfinished'>GB/s</translation>
+        <translation>GB/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation type='unfinished'>MB/s</translation>
+        <translation>MB/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation type='unfinished'>kB/s</translation>
+        <translation>kB/s</translation>
     </message>
 </context>
 <context>
@@ -2877,11 +2877,11 @@ Date: %4</translation>
     <name>WUser</name>
     <message>
         <source>Unknown</source>
-        <translation type='unfinished'>Unbekannt</translation>
+        <translation>Unbekannt</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation type='unfinished'>Redmont</translation>
+        <translation>Redmont</translation>
     </message>
     <message>
         <source>Linux</source>
@@ -4268,7 +4268,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Memory used: %1 bytes</source>
-        <translation type='unfinished'></translation>
+        <translation>Memory used: %1 bytes</translation>
     </message>
     <message>
         <source>/memory - show number of bytes Unizone is using memory</source>
@@ -4284,19 +4284,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 degrees in %2 is:</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees in %2 is:</translation>
     </message>
     <message>
         <source>%1 degrees Celsius</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Celsius</translation>
     </message>
     <message>
         <source>%1 degrees Fahrenheit</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Fahrenheit</translation>
     </message>
     <message>
         <source>%1 degrees Kelvin</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Kelvin</translation>
     </message>
     <message>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
@@ -4304,19 +4304,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Encrypted: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Encrypted: %1</translation>
     </message>
     <message>
         <source>Decrypted: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Decrypted: %1</translation>
     </message>
     <message>
         <source>Decoded: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Decoded: %1</translation>
     </message>
     <message>
         <source>Encoded: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Encoded: %1</translation>
     </message>
     <message>
         <source>/crypt - encrypt text and display it as hexadecimal data</source>
@@ -4368,7 +4368,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>zlib version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>zlib version: %1</translation>
     </message>
     <message>
         <source>/octdecode - decode octal data and display it</source>
@@ -4384,7 +4384,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Negotiating...</source>
-        <translation type='unfinished'>Verhandle...</translation>
+        <translation>Verhandle...</translation>
     </message>
     <message>
         <source>Private Message redirect pattern cleared.</source>
@@ -4392,11 +4392,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Private Message redirect pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Private Message redirect pattern set to: %1</translation>
     </message>
     <message>
         <source>Private Message redirect pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Private Message redirect pattern: %1</translation>
     </message>
     <message>
         <source>/redirect [nick] - Redirect all private messages to another user</source>
@@ -4404,19 +4404,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone - User #%1 on %2</source>
-        <translation type='unfinished'>Unizone - Benutzer #%1 auf %2</translation>
+        <translation>Unizone - Benutzer #%1 auf %2</translation>
     </message>
     <message>
         <source>Qt version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Qt version: %1</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation type='unfinished'>Sie müssen Ihren Nickname vor dem Verbinden ändern!</translation>
+        <translation>Sie müssen Ihren Nickname vor dem Verbinden ändern!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation type='unfinished'>Keiner der Nicknames sollte &apos;binky&apos; enthalten.</translation>
+        <translation>Keiner der Nicknames sollte &apos;binky&apos; enthalten.</translation>
     </message>
     <message>
         <source>/screenshot - grab screenshot and save to file</source>

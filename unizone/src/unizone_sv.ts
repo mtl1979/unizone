@@ -334,7 +334,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type='unfinished'>Namn</translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <source>Topic</source>
@@ -342,7 +342,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type='unfinished'>Användrarna</translation>
+        <translation>Användrarna</translation>
     </message>
     <message>
         <source>Admins</source>
@@ -507,7 +507,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type='unfinished'></translation>
+        <translation>Okänt</translation>
     </message>
 </context>
 <context>
@@ -590,14 +590,14 @@ Version %1</translation>
     </message>
     <message>
         <source>Date:</source>
-        <translation type='unfinished'>Datum:</translation>
+        <translation>Datum:</translation>
     </message>
 </context>
 <context>
     <name>Debug</name>
     <message>
         <source>Unizone (English)</source>
-        <translation type='unfinished'>Unizone (Svenska)</translation>
+        <translation>Unizone (Svenska)</translation>
     </message>
     <message>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
@@ -607,7 +607,7 @@ Version %1</translation>
 Line %2
 File %3
 Date: %4</source>
-        <translation type='unfinished'>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
+        <translation>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
 
 %1
 
@@ -724,7 +724,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation type='unfinished'>F10</translation>
+        <translation>F10</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
@@ -752,7 +752,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>F9</source>
-        <translation type='unfinished'>F9</translation>
+        <translation>F9</translation>
     </message>
     <message>
         <source>Music</source>
@@ -1105,7 +1105,7 @@ Date: %4</translation>
     <name>Version</name>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='unfinished'>%1.%2.%3 build %4</translation>
+        <translation>%1.%2.%3 build %4</translation>
     </message>
 </context>
 <context>
@@ -1452,7 +1452,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation type='unfinished'>%1 of %2</translation>
+        <translation>%1 of %2</translation>
     </message>
 </context>
 <context>
@@ -1506,7 +1506,7 @@ Date: %4</translation>
     <name>WFileThread</name>
     <message>
         <source>Reading directory...</source>
-        <translation type='unfinished'>Reading directory...</translation>
+        <translation>Reading directory...</translation>
     </message>
 </context>
 <context>
@@ -1549,7 +1549,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='unfinished'>User #%1&apos;s IP address is %2.</translation>
+        <translation>User #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
@@ -1670,7 +1670,7 @@ Date: %4</translation>
     <message>
         <source>user #%1</source>
         <comment>Ping sent to user...</comment>
-        <translation type='unfinished'>användare #%1</translation>
+        <translation>användare #%1</translation>
     </message>
 </context>
 <context>
@@ -1700,7 +1700,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>1/1</source>
-        <translation type='unfinished'>1/1</translation>
+        <translation>1/1</translation>
     </message>
     <message>
         <source>Next</source>
@@ -2390,7 +2390,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='unfinished'>DSL-1M</translation>
+        <translation>DSL-1M</translation>
     </message>
 </context>
 <context>
@@ -2507,7 +2507,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Encryption is %1.</source>
-        <translation type='unfinished'></translation>
+        <translation>Encryption is %1.</translation>
     </message>
 </context>
 <context>
@@ -2521,39 +2521,39 @@ Date: %4</translation>
     <name>WSearch</name>
     <message>
         <source>Search</source>
-        <translation type='unfinished'>Sök</translation>
+        <translation>Sök</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='unfinished'>Filnamn</translation>
+        <translation>Filnamn</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='unfinished'>Filstorlek</translation>
+        <translation>Filstorlek</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='unfinished'>Filtyp</translation>
+        <translation>Filtyp</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='unfinished'>Ändrad</translation>
+        <translation>Ändrad</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='unfinished'>Sökväg</translation>
+        <translation>Sökväg</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='unfinished'>Användare</translation>
+        <translation>Användare</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='unfinished'>Sök:</translation>
+        <translation>Sök:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='unfinished'>Ladda ner</translation>
+        <translation>Ladda ner</translation>
     </message>
     <message>
         <source>Close</source>
@@ -2561,15 +2561,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='unfinished'>Rensa</translation>
+        <translation>Rensa</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='unfinished'>Stoppa</translation>
+        <translation>Stoppa</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='unfinished'>Ledig.</translation>
+        <translation>Ledig.</translation>
     </message>
     <message>
         <source>%1</source>
@@ -2577,15 +2577,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Not connected.</source>
-        <translation type='unfinished'>Inte anslutat.</translation>
+        <translation>Inte anslutat.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation type='unfinished'>Sökas: "%1".</translation>
+        <translation>Sökas: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='unfinished'>Resultat visade: %1</translation>
+        <translation>Resultat visade: %1</translation>
     </message>
     <message>
         <source>Clear History</source>
@@ -2593,7 +2593,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User(s) not found!</source>
-        <translation type='unfinished'>Användaren(-rna) finns inte!</translation>
+        <translation>Användaren(-rna) finns inte!</translation>
     </message>
     <message>
         <source>Initializing...</source>
@@ -2639,43 +2639,43 @@ Date: %4</translation>
     <name>WUniListItem</name>
     <message>
         <source>B</source>
-        <translation type='unfinished'>B</translation>
+        <translation>B</translation>
     </message>
     <message>
         <source>TB</source>
-        <translation type='unfinished'>TB</translation>
+        <translation>TB</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation type='unfinished'>GB</translation>
+        <translation>GB</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation type='unfinished'>MB</translation>
+        <translation>MB</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation type='unfinished'>kB</translation>
+        <translation>kB</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation type='unfinished'>B/s</translation>
+        <translation>B/s</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation type='unfinished'>TB/s</translation>
+        <translation>TB/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation type='unfinished'>GB/s</translation>
+        <translation>GB/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation type='unfinished'>MB/s</translation>
+        <translation>MB/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation type='unfinished'>kB/s</translation>
+        <translation>kB/s</translation>
     </message>
 </context>
 <context>
@@ -2713,83 +2713,83 @@ Date: %4</translation>
     <name>WUser</name>
     <message>
         <source>Unknown</source>
-        <translation type='unfinished'>Okänt</translation>
+        <translation>Okänt</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation type='unfinished'>Windows</translation>
+        <translation>Windows</translation>
     </message>
     <message>
         <source>Linux</source>
-        <translation type='unfinished'></translation>
+        <translation>Linux</translation>
     </message>
     <message>
         <source>FreeBSD</source>
-        <translation type='unfinished'></translation>
+        <translation>FreeBSD</translation>
     </message>
     <message>
         <source>BeOS</source>
-        <translation type='unfinished'></translation>
+        <translation>BeOS</translation>
     </message>
     <message>
         <source>Mac OS</source>
-        <translation type='unfinished'></translation>
+        <translation>Mac OS</translation>
     </message>
     <message>
         <source>QNX</source>
-        <translation type='unfinished'></translation>
+        <translation>QNX</translation>
     </message>
     <message>
         <source>OS/2</source>
-        <translation type='unfinished'></translation>
+        <translation>OS/2</translation>
     </message>
     <message>
         <source>OpenBSD</source>
-        <translation type='unfinished'></translation>
+        <translation>OpenBSD</translation>
     </message>
     <message>
         <source>NetBSD</source>
-        <translation type='unfinished'></translation>
+        <translation>NetBSD</translation>
     </message>
     <message>
         <source>SunOS</source>
-        <translation type='unfinished'></translation>
+        <translation>SunOS</translation>
     </message>
     <message>
         <source>AtheOS</source>
-        <translation type='unfinished'></translation>
+        <translation>AtheOS</translation>
     </message>
     <message>
         <source>Tru64</source>
-        <translation type='unfinished'></translation>
+        <translation>Tru64</translation>
     </message>
     <message>
         <source>Irix</source>
-        <translation type='unfinished'></translation>
+        <translation>Irix</translation>
     </message>
     <message>
         <source>AIX</source>
-        <translation type='unfinished'></translation>
+        <translation>AIX</translation>
     </message>
     <message>
         <source>Sequent</source>
-        <translation type='unfinished'></translation>
+        <translation>Sequent</translation>
     </message>
     <message>
         <source>OpenServer</source>
-        <translation type='unfinished'></translation>
+        <translation>OpenServer</translation>
     </message>
     <message>
         <source>HPUX</source>
-        <translation type='unfinished'></translation>
+        <translation>HPUX</translation>
     </message>
     <message>
         <source>Solaris</source>
-        <translation type='unfinished'></translation>
+        <translation>Solaris</translation>
     </message>
     <message>
         <source>UnixWare</source>
-        <translation type='unfinished'></translation>
+        <translation>UnixWare</translation>
     </message>
 </context>
 <context>
@@ -3969,7 +3969,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Whitelist pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Whitelist pattern set to: %1</translation>
     </message>
     <message>
         <source>Filter list pattern cleared.</source>
@@ -3977,7 +3977,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Filter list pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter list pattern set to: %1</translation>
     </message>
     <message>
         <source>Whitelist pattern updated.</source>
@@ -3997,11 +3997,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Filter list pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter list pattern: %1</translation>
     </message>
     <message>
         <source>Whitelist pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Whitelist pattern: %1</translation>
     </message>
     <message>
         <source>/addfilter [pattern] - update the word filter pattern</source>
@@ -4057,7 +4057,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Memory used: %1 bytes</source>
-        <translation type='unfinished'></translation>
+        <translation>Memory used: %1 bytes</translation>
     </message>
     <message>
         <source>/memory - show number of bytes Unizone is using memory</source>
@@ -4073,19 +4073,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 degrees in %2 is:</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees in %2 is:</translation>
     </message>
     <message>
         <source>%1 degrees Celsius</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Celsius</translation>
     </message>
     <message>
         <source>%1 degrees Fahrenheit</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Fahrenheit</translation>
     </message>
     <message>
         <source>%1 degrees Kelvin</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Kelvin</translation>
     </message>
     <message>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
@@ -4093,19 +4093,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Encrypted: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Encrypted: %1</translation>
     </message>
     <message>
         <source>Decrypted: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Decrypted: %1</translation>
     </message>
     <message>
         <source>Decoded: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Decoded: %1</translation>
     </message>
     <message>
         <source>Encoded: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Encoded: %1</translation>
     </message>
     <message>
         <source>/crypt - encrypt text and display it as hexadecimal data</source>
@@ -4157,7 +4157,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>zlib version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>zlib version: %1</translation>
     </message>
     <message>
         <source>/octdecode - decode octal data and display it</source>
@@ -4181,11 +4181,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Private Message redirect pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Private Message redirect pattern set to: %1</translation>
     </message>
     <message>
         <source>Private Message redirect pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Private Message redirect pattern: %1</translation>
     </message>
     <message>
         <source>/redirect [nick] - Redirect all private messages to another user</source>
@@ -4193,11 +4193,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone - User #%1 on %2</source>
-        <translation type='unfinished'>Unizone - User #%1 on %2</translation>
+        <translation>Unizone - User #%1 on %2</translation>
     </message>
     <message>
         <source>Qt version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Qt version: %1</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>

@@ -326,39 +326,39 @@ Version %1</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='unfinished'>User #%1 requested invite to channel %2. Do you?</translation>
+        <translation>User #%1 requested invite to channel %2. Do you?</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='unfinished'>User #%1 invited you to channel %2. Do you accept?</translation>
+        <translation>User #%1 invited you to channel %2. Do you accept?</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type='unfinished'>Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type='unfinished'>Topic</translation>
+        <translation>Topic</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type='unfinished'>Usuarios</translation>
+        <translation>Usuarios</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type='unfinished'>Admins</translation>
+        <translation>Admins</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type='unfinished'>Public</translation>
+        <translation>Public</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type='unfinished'>&amp;Create</translation>
+        <translation>&amp;Create</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type='unfinished'>&amp;Join</translation>
+        <translation>&amp;Join</translation>
     </message>
 </context>
 <context>
@@ -590,14 +590,14 @@ Version %1</translation>
     </message>
     <message>
         <source>Date:</source>
-        <translation type='unfinished'>Date:</translation>
+        <translation>Date:</translation>
     </message>
 </context>
 <context>
     <name>Debug</name>
     <message>
         <source>Unizone (English)</source>
-        <translation type='unfinished'>Unizone (Español)</translation>
+        <translation>Unizone (Español)</translation>
     </message>
     <message>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
@@ -607,7 +607,7 @@ Version %1</translation>
 Line %2
 File %3
 Date: %4</source>
-        <translation type='unfinished'>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
+        <translation>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
 
 %1
 
@@ -724,7 +724,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation type='unfinished'>SHIFT+F10</translation>
+        <translation>SHIFT+F10</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
@@ -752,7 +752,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>F9</source>
-        <translation type='unfinished'>SHIFT+F9</translation>
+        <translation>SHIFT+F9</translation>
     </message>
     <message>
         <source>Music</source>
@@ -1105,7 +1105,7 @@ Date: %4</translation>
     <name>Version</name>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='unfinished'>%1.%2.%3 build %4</translation>
+        <translation>%1.%2.%3 build %4</translation>
     </message>
 </context>
 <context>
@@ -1452,7 +1452,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation type='unfinished'>%1 of %2</translation>
+        <translation>%1 of %2</translation>
     </message>
 </context>
 <context>
@@ -1550,7 +1550,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='unfinished'>User #%1&apos;s IP address is %2.</translation>
+        <translation>User #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
@@ -1680,7 +1680,7 @@ Date: %4</translation>
     <message>
         <source>user #%1</source>
         <comment>Ping sent to user...</comment>
-        <translation type='unfinished'>el usuario #%1</translation>
+        <translation>el usuario #%1</translation>
     </message>
 </context>
 <context>
@@ -1710,7 +1710,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>1/1</source>
-        <translation type='unfinished'>1/1</translation>
+        <translation>1/1</translation>
     </message>
     <message>
         <source>Next</source>
@@ -2400,7 +2400,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='unfinished'>DSL-1M</translation>
+        <translation>DSL-1M</translation>
     </message>
 </context>
 <context>
@@ -2531,39 +2531,39 @@ Date: %4</translation>
     <name>WSearch</name>
     <message>
         <source>Search</source>
-        <translation type='unfinished'>Buscar</translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='unfinished'>Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='unfinished'>Tamaño</translation>
+        <translation>Tamaño</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='unfinished'>Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='unfinished'>Modificado</translation>
+        <translation>Modificado</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='unfinished'>Directorio</translation>
+        <translation>Directorio</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='unfinished'>Usuario</translation>
+        <translation>Usuario</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='unfinished'>Buscar:</translation>
+        <translation>Buscar:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='unfinished'>Descarga</translation>
+        <translation>Descarga</translation>
     </message>
     <message>
         <source>Close</source>
@@ -2571,15 +2571,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='unfinished'>Limpiar</translation>
+        <translation>Limpiar</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='unfinished'>Detener</translation>
+        <translation>Detener</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='unfinished'>Idle.</translation>
+        <translation>Idle.</translation>
     </message>
     <message>
         <source>%1</source>
@@ -2587,35 +2587,35 @@ Date: %4</translation>
     </message>
     <message>
         <source>Not connected.</source>
-        <translation type='unfinished'>No conectado.</translation>
+        <translation>No conectado.</translation>
     </message>
     <message>
         <source>Searching for: "%1".</source>
-        <translation type='unfinished'>Buscando: "%1".</translation>
+        <translation>Buscando: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='unfinished'>Resultados: %1</translation>
+        <translation>Resultados: %1</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation type='unfinished'>Clear History</translation>
+        <translation>Clear History</translation>
     </message>
     <message>
         <source>User(s) not found!</source>
-        <translation type='unfinished'>Usuario no introducido!</translation>
+        <translation>Usuario no introducido!</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type='unfinished'>Initializing...</translation>
+        <translation>Initializing...</translation>
     </message>
     <message>
         <source>active</source>
-        <translation type='unfinished'>active</translation>
+        <translation>active</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation type='unfinished'>passive</translation>
+        <translation>passive</translation>
     </message>
     <message>
         <source>Download All</source>
@@ -2649,43 +2649,43 @@ Date: %4</translation>
     <name>WUniListItem</name>
     <message>
         <source>B</source>
-        <translation type='unfinished'>B</translation>
+        <translation>B</translation>
     </message>
     <message>
         <source>TB</source>
-        <translation type='unfinished'>TB</translation>
+        <translation>TB</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation type='unfinished'>GB</translation>
+        <translation>GB</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation type='unfinished'>MB</translation>
+        <translation>MB</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation type='unfinished'>kB</translation>
+        <translation>kB</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation type='unfinished'>B/s</translation>
+        <translation>B/s</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation type='unfinished'>TB/s</translation>
+        <translation>TB/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation type='unfinished'>GB/s</translation>
+        <translation>GB/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation type='unfinished'>MB/s</translation>
+        <translation>MB/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation type='unfinished'>kB/s</translation>
+        <translation>kB/s</translation>
     </message>
 </context>
 <context>
@@ -2723,11 +2723,11 @@ Date: %4</translation>
     <name>WUser</name>
     <message>
         <source>Unknown</source>
-        <translation type='unfinished'>Desconocido</translation>
+        <translation>Desconocido</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation type='unfinished'>Windows</translation>
+        <translation>Windows</translation>
     </message>
     <message>
         <source>Linux</source>
@@ -3979,7 +3979,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Whitelist pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Whitelist pattern set to: %1</translation>
     </message>
     <message>
         <source>Filter list pattern cleared.</source>
@@ -3987,7 +3987,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Filter list pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter list pattern set to: %1</translation>
     </message>
     <message>
         <source>Whitelist pattern updated.</source>
@@ -4007,11 +4007,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Filter list pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Filter list pattern: %1</translation>
     </message>
     <message>
         <source>Whitelist pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Whitelist pattern: %1</translation>
     </message>
     <message>
         <source>/addfilter [pattern] - update the word filter pattern</source>
@@ -4067,7 +4067,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Memory used: %1 bytes</source>
-        <translation type='unfinished'></translation>
+        <translation>Memory used: %1 bytes</translation>
     </message>
     <message>
         <source>/memory - show number of bytes Unizone is using memory</source>
@@ -4083,19 +4083,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 degrees in %2 is:</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees in %2 is:</translation>
     </message>
     <message>
         <source>%1 degrees Celsius</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Celsius</translation>
     </message>
     <message>
         <source>%1 degrees Fahrenheit</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Fahrenheit</translation>
     </message>
     <message>
         <source>%1 degrees Kelvin</source>
-        <translation type='unfinished'></translation>
+        <translation>%1 degrees Kelvin</translation>
     </message>
     <message>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
@@ -4103,19 +4103,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>Encrypted: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Encrypted: %1</translation>
     </message>
     <message>
         <source>Decrypted: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Decrypted: %1</translation>
     </message>
     <message>
         <source>Decoded: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Decoded: %1</translation>
     </message>
     <message>
         <source>Encoded: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Encoded: %1</translation>
     </message>
     <message>
         <source>/crypt - encrypt text and display it as hexadecimal data</source>
@@ -4167,7 +4167,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>zlib version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>zlib version: %1</translation>
     </message>
     <message>
         <source>/octdecode - decode octal data and display it</source>
@@ -4183,7 +4183,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Negotiating...</source>
-        <translation type='unfinished'>Negotiating...</translation>
+        <translation>Negotiating...</translation>
     </message>
     <message>
         <source>Private Message redirect pattern cleared.</source>
@@ -4191,11 +4191,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Private Message redirect pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Private Message redirect pattern set to: %1</translation>
     </message>
     <message>
         <source>Private Message redirect pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Private Message redirect pattern: %1</translation>
     </message>
     <message>
         <source>/redirect [nick] - Redirect all private messages to another user</source>
@@ -4203,11 +4203,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone - User #%1 on %2</source>
-        <translation type='unfinished'>Unizone - User #%1 on %2</translation>
+        <translation>Unizone - User #%1 on %2</translation>
     </message>
     <message>
         <source>Qt version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Qt version: %1</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>

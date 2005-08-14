@@ -3998,11 +3998,11 @@ Date: %4</source>
     </message>
     <message>
         <source>Private Message redirect pattern set to: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Private Message redirect pattern set to: %1</translation>
     </message>
     <message>
         <source>Private Message redirect pattern: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Private Message redirect pattern: %1</translation>
     </message>
     <message>
         <source>/redirect [nick] - Redirect all private messages to another user</source>
@@ -4014,7 +4014,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Qt version: %1</source>
-        <translation type='unfinished'></translation>
+        <translation>Qt version: %1</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
