@@ -267,9 +267,13 @@ int CreateUDPSocket();
  *                 meaning that packets addressed to any of this machine's IP addresses will
  *                 be accepted.  (This parameter is typically only useful on machines with
  *                 multiple IP addresses) 
+ *  @param allowShared If set to true, the port will be set up so that multiple processes
+ *                     can bind to it simultaneously.  This is useful for sockets that are 
+ *                     to be receiving broadcast UDP packets, since then you can run multiple
+ *                     UDP broadcast receivers on a single computer. 
  *  @returns B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t BindUDPSocket(int sock, uint16 port, uint16 * optRetPort = NULL, uint32 optFrom = 0);
+status_t BindUDPSocket(int sock, uint16 port, uint16 * optRetPort = NULL, uint32 optFrom = 0, bool allowShared = false);
 
 /** Set the target/destination address for a UDP socket.  After successful return
  *  of this function, any data that is written to the UDP socket will be sent to this

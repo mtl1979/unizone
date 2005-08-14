@@ -251,7 +251,15 @@ public:
    Hashtable(const Hashtable<KeyType,ValueType,HashFunctorType> & rhs);
 
    /** Assignment operator. */
-   Hashtable<KeyType,ValueType,HashFunctorType> & operator=(const Hashtable<KeyType,ValueType,HashFunctorType> & rhs);
+   Hashtable<KeyType,ValueType,HashFunctorType> & operator= (const Hashtable<KeyType,ValueType,HashFunctorType> & rhs);
+
+   /** Equality operator.  Returns true iff both hash tables contains the same set of keys and values.
+     * Note that the ordering of the keys is NOT taken into account!
+     */
+   bool operator== (const Hashtable<KeyType,ValueType,HashFunctorType> & rhs) const;
+
+   /** Returns the opposite of the equality operator. */
+   bool operator!= (const Hashtable<KeyType,ValueType,HashFunctorType> & rhs) const {return !(*this == rhs);}
 
    /** Destructor. */
    ~Hashtable();
@@ -655,106 +663,7 @@ private:
       HashtableEntry* _mappedFrom;
    };
 
-public:
-void DumpDebugInfo(FILE * fpOut) const
-{
-   fprintf(fpOut, "JEREMY'S HASHTABLE DEBUG DUMP!  this=%p\n", this); fflush(fpOut);
-
-   fprintf(fpOut, "_initialCapacity = %lu\n", _initialCapacity);
-   fprintf(fpOut, "_count           = %lu\n", _count);
-   fprintf(fpOut, "_tableSize       = %lu\n", _tableSize);
-   fprintf(fpOut, "_table           = %p\n",  _table);
-   fprintf(fpOut, "_iterHead        = %p\n",  _iterHead);
-   fprintf(fpOut, "_iterTail        = %p\n",  _iterTail);
-   fprintf(fpOut, "_freeHead        = %p\n",  _freeHead);
-   fprintf(fpOut, "_userKeyCompFunc = %p\n",  _userKeyCompareFunc);
-   fprintf(fpOut, "_userValCompFunc = %p\n",  _userValueCompareFunc);
-   fprintf(fpOut, "_autoSortMode    = %i\n",  _autoSortMode);
-   fprintf(fpOut, "_compareCookie   = %p\n",  _compareCookie);
-   fflush(fpOut);
-
-   fprintf(fpOut, "\n\nWalking the entry list forward...\n");  fflush(fpOut);
-   {
-      HashtableEntry * iter = _iterHead;
-      uint32 maxCount = 1000;
-      while((iter)&&(--maxCount > 0))
-      {
-         fprintf(fpOut, "  iter=%p\n", iter);
-         iter = iter->_iterNext;
-         fflush(fpOut);
-      }
-      fprintf(fpOut, "  forward iteration complete (%lu)\n", maxCount);
-      fflush(fpOut);
-   }
-
-   fprintf(fpOut, "\n\nWalking the entry list backward...\n");  fflush(fpOut);
-   {
-      HashtableEntry * iter = _iterTail;
-      uint32 maxCount = 1000;
-      while((iter)&&(--maxCount > 0))
-      {
-         fprintf(fpOut, "  iter=%p\n", iter);
-         iter = iter->_iterPrev;
-         fflush(fpOut);
-      }
-      fprintf(fpOut, "  reverse iteration complete (%lu)\n", maxCount);
-      fflush(fpOut);
-   }
-
-   fprintf(fpOut, "\n\nWalking the free list...\n");  fflush(fpOut);
-   {
-      HashtableEntry * iter = _freeHead;
-      uint32 maxCount = 1000;
-      while((iter)&&(--maxCount > 0))
-      {
-         fprintf(fpOut, "  iter=%p\n", iter);
-         iter = iter->_bucketNext;
-         fflush(fpOut);
-      }
-      fprintf(fpOut, "  free list iteration complete (%lu)\n", maxCount);
-      fflush(fpOut);
-   }
-
-   fprintf(fpOut, "\n\nScanning the buckets...\n");  fflush(fpOut);
-   {
-      for (uint32 i=0; i<_tableSize; i++)
-      {
-         HashtableEntry * e = &_table[i];
-         fprintf(fpOut, "   Checking slot %lu/%lu e=%p (mapTo=%p, mapFrom=%p) IsBucketHead=%i\n", i, _tableSize, e, e->GetMapTo(), e->GetMappedFrom(), IsBucketHead(e)); fflush(fpOut);
-         if (IsBucketHead(e))
-         {
-            fprintf(fpOut, "    Scanning bucket at %lu/%lu (%p)\n", i, _tableSize, e);
-            {
-               HashtableEntry * iter = e;
-               uint32 maxCount = 1000;
-               while((iter)&&(--maxCount > 0))
-               {
-                  fprintf(fpOut, "         iter=%p\n", iter);
-                  iter = iter->_bucketNext;
-                  fflush(fpOut);
-               }
-               fprintf(fpOut, "    iteration of bucket list complete (%lu)\n", maxCount);
-               fflush(fpOut);
-            }
-         }
-      }
-   }
-
-   fprintf(fpOut, "\n\nPrinting the maps...\n");  fflush(fpOut);
-   {
-      for (uint32 i=0; i<_tableSize; i++)
-      {
-         HashtableEntry * e  = &_table[i];
-         HashtableEntry * to = e->GetMapTo();
-         HashtableEntry * fr = e->GetMappedFrom();
-         fprintf(fpOut, "  entry %lu/%lu:  e=%p to=%p fr=%p hash=%lu %s\n", i, _tableSize, e, to, fr, e->_hash, IsBucketHead(e)?"HEAD":"");
-      }
-   }
-
-   fprintf(fpOut, "\n\nData dump complete!\n");  fflush(fpOut);
-}
 private:
-
    // Auxilliary methods
    HashtableEntry * PutAux(uint32 hash, const KeyType& key, const ValueType& value, ValueType * optSetPreviousValue, bool * optReplacedFlag);
    status_t RemoveAux(const KeyType& key, ValueType * setRemovedValue);
@@ -861,6 +770,25 @@ operator=(const Hashtable<KeyType, ValueType, HashFunctorType> & rhs)
       }
    }
    return *this;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+bool
+Hashtable<KeyType, ValueType, HashFunctorType> ::
+operator==(const Hashtable<KeyType, ValueType, HashFunctorType> & rhs) const
+{
+   if (this == &rhs) return true;
+   if (GetNumItems() != rhs.GetNumItems()) return false;
+
+   HashtableIterator<KeyType, ValueType, HashFunctorType> iter(*this);
+   const KeyType * myNextKey;
+   const ValueType * myNextValue;
+   while(iter.GetNextKeyAndValue(myNextKey, myNextValue) == B_NO_ERROR)
+   {
+      const ValueType * hisNextValue = rhs.Get(*myNextKey);
+      if ((hisNextValue == NULL)||(*hisNextValue != *myNextValue)) return false;
+   }
+   return true;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>

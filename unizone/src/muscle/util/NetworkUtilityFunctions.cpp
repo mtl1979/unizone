@@ -54,28 +54,22 @@ static uint32 _customLocalhostIP = 0;  // disabled by default
 void SetLocalHostIPOverride(uint32 ip) {_customLocalhostIP = ip;}
 uint32 GetLocalHostIPOverride() {return _customLocalhostIP;}
 
-/** Creates and returns a socket that can be used for UDP communications.
- *  Returns a negative value on error, or a non-negative socket handle on
- *  success.  You'll probably want to call BindUDPSocket() or SetUDPSocketTarget()
- *  after calling this method.  When you are done with the socket, be sure to
- *  call CloseSocket() on it.
- */
 int CreateUDPSocket()
 {
    return socket(AF_INET, SOCK_DGRAM, 0);
 }
 
-/** Attempts to given UDP socket to the given port.  
- *  @param sock The UDP socket (previously created by CreateUDPSocket())
- *  @param port UDP port ID to bind the socket to.  If zero, the system will choose a port ID.
- *  @param optRetPort if non-NULL, then on successful return the value this pointer points to will contain
- *                    the port ID that the socket was bound to.
- *  @param optFrom If non-zero, then the socket will be bound in such a way that only data
- *                 packets from this IP address will be accepted.
- *  @returns B_NO_ERROR on success, or B_ERROR on failure.
- */
-status_t BindUDPSocket(int sock, uint16 port, uint16 * optRetPort, uint32 optFrom)
+status_t BindUDPSocket(int sock, uint16 port, uint16 * optRetPort, uint32 optFrom, bool allowShared)
 {
+   if (allowShared)
+   {
+      int one = 1;
+      setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *) &one, sizeof(one));
+#ifdef __APPLE__
+      setsockopt(sock, SOL_SOCKET, SO_REUSEPORT, (const char *) &one, sizeof(one));
+#endif
+   }
+
    struct sockaddr_in saSocket;
    memset(&saSocket, 0, sizeof(saSocket));
    saSocket.sin_family      = AF_INET;
@@ -99,14 +93,6 @@ status_t BindUDPSocket(int sock, uint16 port, uint16 * optRetPort, uint32 optFro
    else return B_ERROR;
 }
 
-/** Set the target/destination address for a UDP socket.  After successful return
- *  of this function, any data that is written to the UDP socket will be sent to this
- *  IP address and port.  This function is guaranteed to return quickly.
- *  @param sock The UDP socket to send to (previously created by CreateUDPSocket()).
- *  @param remoteIP Remote IP address that data should be sent to.
- *  @param remotePort Remote UDP port ID that data should be sent to.
- *  @returns B_NO_ERROR on success, or B_ERROR on failure.
- */
 status_t SetUDPSocketTarget(int sock, uint32 remoteIP, uint16 remotePort)
 {
    struct sockaddr_in saAddr;
@@ -117,14 +103,6 @@ status_t SetUDPSocketTarget(int sock, uint32 remoteIP, uint16 remotePort)
    return (connect(sock, (struct sockaddr *) &saAddr, sizeof(saAddr)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
-/** As above, except that the remote host is specified by hostname instead of IP address.
- *  Note that this function may take involve a DNS lookup, and so may take a significant
- *  amount of time to complete.
- *  @param sock The UDP socket to send to (previously created by CreateUDPSocket()).
- *  @param remoteHostName Name of remote host (e.g. "www.mycomputer.com" or "132.239.50.8")
- *  @param remotePort Remote UDP port ID that data should be sent to.
- *  @returns B_NO_ERROR on success, or B_ERROR on failure.
- */
 status_t SetUDPSocketTarget(int sock, const char * remoteHostName, uint16 remotePort)
 {
    uint32 hostIP = GetHostByName(remoteHostName);

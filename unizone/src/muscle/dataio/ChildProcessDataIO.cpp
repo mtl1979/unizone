@@ -2,6 +2,13 @@
 
 #include "dataio/ChildProcessDataIO.h"
 
+// BeOS doesn't include the tty default stuff
+#ifndef MUSCLE_AVOID_TTYDEFS
+# if defined(__BEOS__)
+#  define MUSCLE_AVOID_TTYDEFS 1
+# endif
+#endif
+
 #if defined(WIN32) || defined(__CYGWIN__)
 # include <process.h>  // for _beginthreadex()
 # define USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
@@ -17,6 +24,9 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+#ifndef TTYDEFCHARS
+# define TTYDEFCHARS 1 // to enable declaration of ttydefchars array in sys/ttydefaults.h
+#endif
 # include <termios.h>
 # include <unistd.h>
 # include <sys/ioctl.h>
@@ -296,54 +306,20 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
    struct termios orig_termios;
    struct winsize size;
    if (tcgetattr(STDIN_FILENO, &orig_termios) < 0)
-   {
-      // Fill in reasonable default values so that this will still work...
+   {  
+      // Fill in reasonable default values so that this can still work...
       // Note that I got these values empirically by running wtrxd from the shell...
-      orig_termios.c_iflag  = 0x300;
-      orig_termios.c_oflag  = 0x40003;
-      orig_termios.c_cflag  = 0xb0f;
-      orig_termios.c_lflag  = 0x5cf;
-      orig_termios.c_cc[0]  = 0x3;
-      orig_termios.c_cc[1]  = 0x1c;
-      orig_termios.c_cc[2]  = 0x7f;
-      orig_termios.c_cc[3]  = 0x15;
-      orig_termios.c_cc[4]  = 0x4;
-      orig_termios.c_cc[5]  = 0x1;
-      orig_termios.c_cc[6]  = 0x0;
-      orig_termios.c_cc[7]  = 0x0;
-      orig_termios.c_cc[8]  = 0x0;
-      orig_termios.c_cc[9]  = 0x0;
-      orig_termios.c_cc[10] = 0x17;
-      orig_termios.c_cc[11] = 0x12;
-      orig_termios.c_cc[12] = 0x1a;
-      orig_termios.c_cc[13] = 0x11;
-      orig_termios.c_cc[14] = 0x13;
-      orig_termios.c_cc[15] = 0x16;
-      orig_termios.c_cc[16] = 0x15;
-      orig_termios.c_cc[17] = 0x0;
-      orig_termios.c_cc[18] = 0x0;
-      orig_termios.c_cc[19] = 0x0;
-      orig_termios.c_cc[20] = 0x0;
-      orig_termios.c_cc[21] = 0x0;
-      orig_termios.c_cc[22] = 0x0;
-      orig_termios.c_cc[23] = 0x0;
-      orig_termios.c_cc[24] = 0x0;
-      orig_termios.c_cc[25] = 0x0;
-      orig_termios.c_cc[26] = 0x0;
-      orig_termios.c_cc[27] = 0x0;
-      orig_termios.c_cc[28] = 0x0;
-      orig_termios.c_cc[29] = 0x0;
-      orig_termios.c_cc[30] = 0x0;
-      orig_termios.c_cc[31] = 0x0;
+      memset(&orig_termios, 0, sizeof(orig_termios));
+#ifndef MUSCLE_AVOID_TTYDEFS
+      orig_termios.c_iflag = TTYDEF_IFLAG;
+      orig_termios.c_oflag = TTYDEF_OFLAG;
+      orig_termios.c_lflag = TTYDEF_LFLAG;
+      orig_termios.c_cflag = TTYDEF_CFLAG;
+      for (uint32 i=0; i<ARRAYITEMS(orig_termios.c_cc); i++) orig_termios.c_cc[i] = 0;
+      for (uint32 j=0; j<ARRAYITEMS(ttydefchars); j++) orig_termios.c_cc[j] = ttydefchars[j];
+#endif
    }
-   if (ioctl(STDIN_FILENO, TIOCGWINSZ, (char *) &size) < 0)
-   {
-      // Fill in reasonable default values so that this will still work...
-      size.ws_row    = 0;
-      size.ws_col    = 0;
-      size.ws_xpixel = 0;
-      size.ws_ypixel = 0;
-   }
+   if (ioctl(STDIN_FILENO, TIOCGWINSZ, (char *) &size) < 0) memset(&size, 0, sizeof(size));
 
    int ptySock;
    bool success;

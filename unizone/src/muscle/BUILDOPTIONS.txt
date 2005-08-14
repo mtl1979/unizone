@@ -77,3 +77,7 @@ of your Makefile to alter muscle's behaviour:
 
 -DSMALL_MUSCLE_STRING_LENGTH=N 
    strings <= this length will be stored inline in the String object to avoid a malloc()... default is 7
+
+-DMUSCLE_AVOID_TTYDEFS
+   Tells ChildProcessDataIO.cpp not to try to use the TTYDEF_* constants,
+   since they are not defined in some environments (e.g. BeOS)

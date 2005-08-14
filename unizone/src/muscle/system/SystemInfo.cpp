@@ -163,7 +163,17 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
          CFRelease(cfPath);
          CFRelease(bundleURL);
 # else
-         // NOT IMPLEMENTED YET!  (TODO: figure out how to find executable folder under POSIX!)
+         // For Linux, anyway, we can try to find out our pid's executable via the /proc filesystem
+         // And it can't hurt to at least try it under other OS's, anyway...
+         char linkName[64]; sprintf(linkName, "/proc/%i/exe", getpid());
+         char linkVal[1024];
+         if (readlink(linkName, linkVal, sizeof(linkVal)) >= 0)
+         {
+            char * lastSlash = strrchr(linkVal, '/');  // cut out the executable name, we only want the dir
+            if (lastSlash) *lastSlash = '\0';
+            found = true;
+            outStr = linkVal;
+         }
 # endif
 #endif
       }
