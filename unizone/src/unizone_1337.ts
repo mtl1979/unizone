@@ -540,7 +540,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type='unfinished'></translation>
+        <translation>Unknown</translation>
     </message>
 </context>
 <context>
@@ -1080,10 +1080,6 @@ Date: %4</translation>
         <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
-        <source>DSL-1M</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>TB</source>
         <translation type='obsolete'>TB</translation>
     </message>
@@ -1556,7 +1552,6 @@ Date: %4</translation>
 </context>
 <context>
     <name>WFormat</name>
-    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation>&lt;font size="%1"&gt;</translation>
@@ -4131,10 +4126,6 @@ Date: %4</translation>
     <message>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>wandering</source>

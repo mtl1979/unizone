@@ -1552,7 +1552,6 @@ Date: %4</translation>
 </context>
 <context>
     <name>WFormat</name>
-    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation>&lt;font size="%1"&gt;</translation>
@@ -3254,10 +3253,6 @@ Date: %4</translation>
     <message>
         <source>Status</source>
         <translation type='obsolete'>Status</translation>
-    </message>
-    <message>
-        <source>Files</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Connection</source>

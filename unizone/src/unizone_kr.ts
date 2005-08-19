@@ -1402,7 +1402,6 @@ Date: %4</source>
 </context>
 <context>
     <name>WFormat</name>
-    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation>&lt;font size="%1"&gt;</translation>

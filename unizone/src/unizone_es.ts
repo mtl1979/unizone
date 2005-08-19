@@ -507,7 +507,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type='unfinished'></translation>
+        <translation>Desconocido</translation>
     </message>
 </context>
 <context>
@@ -1511,7 +1511,6 @@ Date: %4</translation>
 </context>
 <context>
     <name>WFormat</name>
-    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation>&lt;font size="%1"&gt;</translation>

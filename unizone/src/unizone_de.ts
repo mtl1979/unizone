@@ -575,7 +575,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type='unfinished'></translation>
+        <translation>Unbekannt</translation>
     </message>
 </context>
 <context>
@@ -1111,10 +1111,6 @@ Date: %4</translation>
         <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
-        <source>DSL-1M</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>TB</source>
         <translation type='obsolete'>TB</translation>
     </message>
@@ -1579,7 +1575,6 @@ Date: %4</translation>
 </context>
 <context>
     <name>WFormat</name>
-    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation>&lt;font size="%1"&gt;</translation>

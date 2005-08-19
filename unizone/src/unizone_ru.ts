@@ -434,19 +434,19 @@ Version %1</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>28.8 kbps</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>33.6 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='unfinished'></translation>
+        <translation>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
@@ -454,7 +454,7 @@ Version %1</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='unfinished'></translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
@@ -462,7 +462,7 @@ Version %1</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='unfinished'></translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL</source>
@@ -470,7 +470,7 @@ Version %1</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='unfinished'></translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
@@ -486,7 +486,7 @@ Version %1</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='unfinished'></translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
@@ -494,7 +494,7 @@ Version %1</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='unfinished'></translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
@@ -502,7 +502,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type='unfinished'></translation>
+        <translation>Unknown</translation>
     </message>
 </context>
 <context>
@@ -1041,14 +1041,6 @@ Date: %4</translation>
         <source>DSL-1M</source>
         <translation type='obsolete'>DSL-1M</translation>
     </message>
-    <message>
-        <source>TB</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>TB/s</source>
-        <translation type='obsolete'></translation>
-    </message>
 </context>
 <context>
     <name>ScanProgressBase</name>
@@ -1506,7 +1498,6 @@ Date: %4</translation>
 </context>
 <context>
     <name>WFormat</name>
-    <comment>IP address prefix</comment>
     <message>
         <source>&lt;font size="%1"&gt;</source>
         <translation>&lt;font size="%1"&gt;</translation>
@@ -1636,10 +1627,6 @@ Date: %4</translation>
     <message>
         <source>User #%1</source>
         <translation>User #%1</translation>
-    </message>
-    <message>
-        <source>user #%1</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>ip_prefix</source>

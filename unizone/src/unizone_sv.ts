@@ -1043,10 +1043,6 @@ Date: %4</translation>
         <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
-        <source>DSL-1M</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>TB</source>
         <translation type='obsolete'>TB</translation>
     </message>
@@ -4026,10 +4022,6 @@ Date: %4</translation>
     <message>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>wandering</source>
