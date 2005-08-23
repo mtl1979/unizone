@@ -514,6 +514,11 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 			{
 				qmtt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
 			}
+
+			int32 pps = GetPacketSize();
+			
+			if ((msg()->FindInt32("unishare:preferred_packet_size", &pps) == B_OK) && (pps < GetPacketSize()))
+				SetPacketSize(pps);
 			break;
 		}
 	

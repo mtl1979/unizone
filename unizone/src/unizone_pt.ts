@@ -1168,95 +1168,95 @@ Date: %4</translation>
     </message>
     <message>
         <source>64 bytes</source>
-        <translation>64 bytes</translation>
+        <translation type='obsolete'>64 bytes</translation>
     </message>
     <message>
         <source>128 bytes</source>
-        <translation>128 bytes</translation>
+        <translation type='obsolete'>128 bytes</translation>
     </message>
     <message>
         <source>512 bytes</source>
-        <translation>512 bytes</translation>
+        <translation type='obsolete'>512 bytes</translation>
     </message>
     <message>
         <source>1 kB</source>
-        <translation>1 kB</translation>
+        <translation type='obsolete'>1 kB</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation>2 kB</translation>
+        <translation type='obsolete'>2 kB</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation>4 kB</translation>
+        <translation type='obsolete'>4 kB</translation>
     </message>
     <message>
         <source>6 kB</source>
-        <translation>6 kB</translation>
+        <translation type='obsolete'>6 kB</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation>8 kB</translation>
+        <translation type='obsolete'>8 kB</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation>10 kB</translation>
+        <translation type='obsolete'>10 kB</translation>
     </message>
     <message>
         <source>12 kB</source>
-        <translation>12 kB</translation>
+        <translation type='obsolete'>12 kB</translation>
     </message>
     <message>
         <source>14 kB</source>
-        <translation>14 kB</translation>
+        <translation type='obsolete'>14 kB</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation>16 kB</translation>
+        <translation type='obsolete'>16 kB</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation>32 kB</translation>
+        <translation type='obsolete'>32 kB</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation>64 kB</translation>
+        <translation type='obsolete'>64 kB</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation>128 kB</translation>
+        <translation type='obsolete'>128 kB</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation>256 kB</translation>
+        <translation type='obsolete'>256 kB</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation>512 kB</translation>
+        <translation type='obsolete'>512 kB</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation>1 MB</translation>
+        <translation type='obsolete'>1 MB</translation>
     </message>
     <message>
         <source>2 MB</source>
-        <translation>2 MB</translation>
+        <translation type='obsolete'>2 MB</translation>
     </message>
     <message>
         <source>4 MB</source>
-        <translation>4 MB</translation>
+        <translation type='obsolete'>4 MB</translation>
     </message>
     <message>
         <source>8 MB</source>
-        <translation>8 MB</translation>
+        <translation type='obsolete'>8 MB</translation>
     </message>
     <message>
         <source>16 MB</source>
-        <translation>16 MB</translation>
+        <translation type='obsolete'>16 MB</translation>
     </message>
     <message>
         <source>32 MB</source>
-        <translation>32 MB</translation>
+        <translation type='obsolete'>32 MB</translation>
     </message>
     <message>
         <source>Throttle</source>
@@ -1280,7 +1280,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>256 bytes</source>
-        <translation>256 bytes</translation>
+        <translation type='obsolete'>256 bytes</translation>
     </message>
     <message>
         <source>Unbanned</source>
@@ -1292,23 +1292,23 @@ Date: %4</translation>
     </message>
     <message>
         <source>2 minutes</source>
-        <translation>2 minutes</translation>
+        <translation type='obsolete'>2 minutes</translation>
     </message>
     <message>
         <source>5 minutes</source>
-        <translation>5 minutes</translation>
+        <translation type='obsolete'>5 minutes</translation>
     </message>
     <message>
         <source>10 minutes</source>
-        <translation>10 minutes</translation>
+        <translation type='obsolete'>10 minutes</translation>
     </message>
     <message>
         <source>15 minutes</source>
-        <translation>15 minutes</translation>
+        <translation type='obsolete'>15 minutes</translation>
     </message>
     <message>
         <source>30 minutes</source>
-        <translation>30 minutes</translation>
+        <translation type='obsolete'>30 minutes</translation>
     </message>
     <message>
         <source>1 hour</source>
@@ -1453,6 +1453,22 @@ Date: %4</translation>
     <message>
         <source>%1 of %2</source>
         <translation>%1 of %2</translation>
+    </message>
+    <message>
+        <source>%1 bytes</source>
+        <translation>%1 bytes</translation>
+    </message>
+    <message>
+        <source>%1 kB</source>
+        <translation>%1 kB</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation>%1 MB</translation>
+    </message>
+    <message>
+        <source>%1 minutes</source>
+        <translation>%1 minutes</translation>
     </message>
 </context>
 <context>

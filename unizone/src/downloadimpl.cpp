@@ -119,30 +119,30 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fDLThrottleMenu->setItemChecked(ID_NO_LIMIT, true);
 	fDLThrottle = ID_NO_LIMIT;
 	
-	fDLThrottleMenu->insertItem(tr( "64 bytes" ), ID_64);
-	fDLThrottleMenu->insertItem(tr( "128 bytes" ), ID_128);
-	fDLThrottleMenu->insertItem(tr( "256 bytes" ), ID_256);
-	fDLThrottleMenu->insertItem(tr( "512 bytes" ), ID_512);
-	fDLThrottleMenu->insertItem(tr( "1 kB" ), ID_1KB);
-	fDLThrottleMenu->insertItem(tr( "2 kB" ), ID_2KB);
-	fDLThrottleMenu->insertItem(tr( "4 kB" ), ID_4KB);
-	fDLThrottleMenu->insertItem(tr( "6 kB" ), ID_6KB);
-	fDLThrottleMenu->insertItem(tr( "8 kB" ), ID_8KB);
-	fDLThrottleMenu->insertItem(tr( "10 kB" ), ID_10KB);
-	fDLThrottleMenu->insertItem(tr( "12 kB" ), ID_12KB);
-	fDLThrottleMenu->insertItem(tr( "14 kB" ), ID_14KB);
-	fDLThrottleMenu->insertItem(tr( "16 kB" ), ID_16KB);
-	fDLThrottleMenu->insertItem(tr( "32 kB" ), ID_32KB);
-	fDLThrottleMenu->insertItem(tr( "64 kB" ), ID_64KB);
-	fDLThrottleMenu->insertItem(tr( "128 kB" ), ID_128KB);
-	fDLThrottleMenu->insertItem(tr( "256 kB" ), ID_256KB);
-	fDLThrottleMenu->insertItem(tr( "512 kB" ), ID_512KB);
-	fDLThrottleMenu->insertItem(tr( "1 MB" ), ID_1MB);
-	fDLThrottleMenu->insertItem(tr( "2 MB" ), ID_2MB);
-	fDLThrottleMenu->insertItem(tr( "4 MB" ), ID_4MB);
-	fDLThrottleMenu->insertItem(tr( "8 MB" ), ID_8MB);
-	fDLThrottleMenu->insertItem(tr( "16 MB" ), ID_16MB);
-	fDLThrottleMenu->insertItem(tr( "32 MB" ), ID_32MB);
+	fDLThrottleMenu->insertItem(tr( "%1 bytes" ).arg(64), ID_64);
+	fDLThrottleMenu->insertItem(tr( "%1 bytes" ).arg(128), ID_128);
+	fDLThrottleMenu->insertItem(tr( "%1 bytes" ).arg(256), ID_256);
+	fDLThrottleMenu->insertItem(tr( "%1 bytes" ).arg(512), ID_512);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(1), ID_1KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(2), ID_2KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(4), ID_4KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(6), ID_6KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(8), ID_8KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(10), ID_10KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(12), ID_12KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(14), ID_14KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(16), ID_16KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(32), ID_32KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(64), ID_64KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(128), ID_128KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(256), ID_256KB);
+	fDLThrottleMenu->insertItem(tr( "%1 kB" ).arg(512), ID_512KB);
+	fDLThrottleMenu->insertItem(tr( "%1 MB" ).arg(1), ID_1MB);
+	fDLThrottleMenu->insertItem(tr( "%1 MB" ).arg(2), ID_2MB);
+	fDLThrottleMenu->insertItem(tr( "%1 MB" ).arg(4), ID_4MB);
+	fDLThrottleMenu->insertItem(tr( "%1 MB" ).arg(8), ID_8MB);
+	fDLThrottleMenu->insertItem(tr( "%1 MB" ).arg(16), ID_16MB);
+	fDLThrottleMenu->insertItem(tr( "%1 MB" ).arg(32), ID_32MB);
 	
 	fDLRunMenu = new QPopupMenu(fDLPopup, "Run Popup");
 	CHECK_PTR(fDLRunMenu);
@@ -180,30 +180,30 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fULThrottleMenu->setItemChecked(ID_NO_LIMIT, true);
 	fULThrottle = ID_NO_LIMIT;
 	
-	fULThrottleMenu->insertItem(tr( "64 bytes" ), ID_64);
-	fULThrottleMenu->insertItem(tr( "128 bytes" ), ID_128);
-	fULThrottleMenu->insertItem(tr( "256 bytes" ), ID_256);
-	fULThrottleMenu->insertItem(tr( "512 bytes" ), ID_512);
-	fULThrottleMenu->insertItem(tr( "1 kB" ), ID_1KB);
-	fULThrottleMenu->insertItem(tr( "2 kB" ), ID_2KB);
-	fULThrottleMenu->insertItem(tr( "4 kB" ), ID_4KB);
-	fULThrottleMenu->insertItem(tr( "6 kB" ), ID_6KB);
-	fULThrottleMenu->insertItem(tr( "8 kB" ), ID_8KB);
-	fULThrottleMenu->insertItem(tr( "10 kB" ), ID_10KB);
-	fULThrottleMenu->insertItem(tr( "12 kB" ), ID_12KB);
-	fULThrottleMenu->insertItem(tr( "14 kB" ), ID_14KB);
-	fULThrottleMenu->insertItem(tr( "16 kB" ), ID_16KB);
-	fULThrottleMenu->insertItem(tr( "32 kB" ), ID_32KB);
-	fULThrottleMenu->insertItem(tr( "64 kB" ), ID_64KB);
-	fULThrottleMenu->insertItem(tr( "128 kB" ), ID_128KB);
-	fULThrottleMenu->insertItem(tr( "256 kB" ), ID_256KB);
-	fULThrottleMenu->insertItem(tr( "512 kB" ), ID_512KB);
-	fULThrottleMenu->insertItem(tr( "1 MB" ), ID_1MB);
-	fULThrottleMenu->insertItem(tr( "2 MB" ), ID_2MB);
-	fULThrottleMenu->insertItem(tr( "4 MB" ), ID_4MB);
-	fULThrottleMenu->insertItem(tr( "8 MB" ), ID_8MB);
-	fULThrottleMenu->insertItem(tr( "16 MB" ), ID_16MB);
-	fULThrottleMenu->insertItem(tr( "32 MB" ), ID_32MB);
+	fULThrottleMenu->insertItem(tr( "%1 bytes" ).arg(64), ID_64);
+	fULThrottleMenu->insertItem(tr( "%1 bytes" ).arg(128), ID_128);
+	fULThrottleMenu->insertItem(tr( "%1 bytes" ).arg(256), ID_256);
+	fULThrottleMenu->insertItem(tr( "%1 bytes" ).arg(512), ID_512);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(1), ID_1KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(2), ID_2KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(4), ID_4KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(6), ID_6KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(8), ID_8KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(10), ID_10KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(12), ID_12KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(14), ID_14KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(16), ID_16KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(32), ID_32KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(64), ID_64KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(128), ID_128KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(256), ID_256KB);
+	fULThrottleMenu->insertItem(tr( "%1 kB" ).arg(512), ID_512KB);
+	fULThrottleMenu->insertItem(tr( "%1 MB" ).arg(1), ID_1MB);
+	fULThrottleMenu->insertItem(tr( "%1 MB" ).arg(2), ID_2MB);
+	fULThrottleMenu->insertItem(tr( "%1 MB" ).arg(4), ID_4MB);
+	fULThrottleMenu->insertItem(tr( "%1 MB" ).arg(8), ID_8MB);
+	fULThrottleMenu->insertItem(tr( "%1 MB" ).arg(16), ID_16MB);
+	fULThrottleMenu->insertItem(tr( "%1 MB" ).arg(32), ID_32MB);
 	
 	fULBanMenu = new QPopupMenu(fULPopup, "Ban Popup");
 	CHECK_PTR(fULBanMenu);
@@ -213,11 +213,11 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fULBan = ID_UNBAN;
 	
 	fULBanMenu->insertItem(tr("1 minute"), ID_BAN1);
-	fULBanMenu->insertItem(tr("2 minutes"), ID_BAN2);
-	fULBanMenu->insertItem(tr("5 minutes"), ID_BAN5);
-	fULBanMenu->insertItem(tr("10 minutes"), ID_BAN10);
-	fULBanMenu->insertItem(tr("15 minutes"), ID_BAN15);
-	fULBanMenu->insertItem(tr("30 minutes"), ID_BAN30);
+	fULBanMenu->insertItem(tr("%1 minutes").arg(2), ID_BAN2);
+	fULBanMenu->insertItem(tr("%1 minutes").arg(5), ID_BAN5);
+	fULBanMenu->insertItem(tr("%1 minutes").arg(10), ID_BAN10);
+	fULBanMenu->insertItem(tr("%1 minutes").arg(15), ID_BAN15);
+	fULBanMenu->insertItem(tr("%1 minutes").arg(30), ID_BAN30);
 	fULBanMenu->insertItem(tr("1 hour"), ID_BAN1H);
 	fULBanMenu->insertItem(tr("Infinite"), ID_BANINF);
 	
@@ -227,12 +227,17 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fULPacketMenu->setItemChecked(ID_PACKET8K, true);
 	fULPacket = ID_PACKET8K;
 	
-	fULPacketMenu->insertItem(tr("1 kB"), ID_PACKET1K);
-	fULPacketMenu->insertItem(tr("2 kB"), ID_PACKET2K);
-	fULPacketMenu->insertItem(tr("4 kB"), ID_PACKET4K);
-	fULPacketMenu->insertItem(tr("8 kB"), ID_PACKET8K);
-	fULPacketMenu->insertItem(tr("16 kB"), ID_PACKET16K);
-	fULPacketMenu->insertItem(tr("32 kB"), ID_PACKET32K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(1), ID_PACKET1K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(2), ID_PACKET2K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(4), ID_PACKET4K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(8), ID_PACKET8K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(16), ID_PACKET16K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(32), ID_PACKET32K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(64), ID_PACKET64K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(128), ID_PACKET128K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(256), ID_PACKET256K);
+	fULPacketMenu->insertItem(tr("%1 kB").arg(512), ID_PACKET512K);
+	fULPacketMenu->insertItem(tr("%1 MB").arg(1), ID_PACKET1M);
 	
 	fULPopup->insertItem(tr("Move Up"), ID_MOVEUP);
 	fULPopup->insertItem(tr("Move Down"), ID_MOVEDOWN);
@@ -2355,6 +2360,36 @@ WDownload::ULPopupActivated(int id)
 			ut->SetPacketSize(32);
 			break;
 		}
+
+	case ID_PACKET64K:
+		{
+			ut->SetPacketSize(64);
+			break;
+		}
+
+	case ID_PACKET128K:
+		{
+			ut->SetPacketSize(128);
+			break;
+		}
+		
+	case ID_PACKET256K:
+		{
+			ut->SetPacketSize(256);
+			break;
+		}
+
+	case ID_PACKET512K:
+		{
+			ut->SetPacketSize(512);
+			break;
+		}
+
+	case ID_PACKET1M:
+		{
+			ut->SetPacketSize(1024);
+			break;
+		}
 		
 	case ID_IGNORE:
 		{
@@ -2677,6 +2712,31 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			case 32:
 				{
 					fULPacket = ID_PACKET32K;
+					break;
+				}
+			case 64:
+				{
+					fULPacket = ID_PACKET64K;
+					break;
+				}
+			case 128:
+				{
+					fULPacket = ID_PACKET128K;
+					break;
+				}
+			case 256:
+				{
+					fULPacket = ID_PACKET256K;
+					break;
+				}
+			case 512:
+				{
+					fULPacket = ID_PACKET512K;
+					break;
+				}
+			case 1024:
+				{
+					fULPacket = ID_PACKET1M;
 					break;
 				}
 			}

@@ -261,6 +261,16 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 		fPacketSize->setCurrentItem(4); break;
 	case 32:
 		fPacketSize->setCurrentItem(5); break;
+	case 64:
+		fPacketSize->setCurrentItem(6); break;
+	case 128:
+		fPacketSize->setCurrentItem(7); break;
+	case 256:
+		fPacketSize->setCurrentItem(8); break;
+	case 512:
+		fPacketSize->setCurrentItem(9); break;
+	case 1024:
+		fPacketSize->setCurrentItem(10); break;
 	}
 	fMinQueued->setCurrentItem( gWin->fSettings->GetMinQueued() );
 	
@@ -391,6 +401,16 @@ WPrefs::OK()
 			gWin->fSettings->SetPacketSize(16); break;
 		case 5:
 			gWin->fSettings->SetPacketSize(32); break;
+		case 6:
+			gWin->fSettings->SetPacketSize(64); break;
+		case 7:
+			gWin->fSettings->SetPacketSize(128); break;
+		case 8:
+			gWin->fSettings->SetPacketSize(256); break;
+		case 9:
+			gWin->fSettings->SetPacketSize(512); break;
+		case 10:
+			gWin->fSettings->SetPacketSize(1024); break;
 	}
 
 	gWin->fSettings->SetMinQueued( fMinQueued->currentItem() );

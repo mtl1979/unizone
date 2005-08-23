@@ -1305,11 +1305,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>64 bytes</source>
-        <translation>64 tavua</translation>
+        <translation type='obsolete'>64 tavua</translation>
     </message>
     <message>
         <source>128 bytes</source>
-        <translation>128 tavua</translation>
+        <translation type='obsolete'>128 tavua</translation>
     </message>
     <message>
         <source>256 byres</source>
@@ -1317,87 +1317,87 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>512 bytes</source>
-        <translation>512 tavua</translation>
+        <translation type='obsolete'>512 tavua</translation>
     </message>
     <message>
         <source>1 kB</source>
-        <translation>1 kt</translation>
+        <translation type='obsolete'>1 kt</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation>2 kt</translation>
+        <translation type='obsolete'>2 kt</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation>4 kt</translation>
+        <translation type='obsolete'>4 kt</translation>
     </message>
     <message>
         <source>6 kB</source>
-        <translation>6 kt</translation>
+        <translation type='obsolete'>6 kt</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation>8 kt</translation>
+        <translation type='obsolete'>8 kt</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation>10 kt</translation>
+        <translation type='obsolete'>10 kt</translation>
     </message>
     <message>
         <source>12 kB</source>
-        <translation>12 kt</translation>
+        <translation type='obsolete'>12 kt</translation>
     </message>
     <message>
         <source>14 kB</source>
-        <translation>14 kt</translation>
+        <translation type='obsolete'>14 kt</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation>16 kt</translation>
+        <translation type='obsolete'>16 kt</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation>32 kt</translation>
+        <translation type='obsolete'>32 kt</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation>64 kt</translation>
+        <translation type='obsolete'>64 kt</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation>128 kt</translation>
+        <translation type='obsolete'>128 kt</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation>256 kt</translation>
+        <translation type='obsolete'>256 kt</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation>512 kt</translation>
+        <translation type='obsolete'>512 kt</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation>1 Mt</translation>
+        <translation type='obsolete'>1 Mt</translation>
     </message>
     <message>
         <source>2 MB</source>
-        <translation>2 Mt</translation>
+        <translation type='obsolete'>2 Mt</translation>
     </message>
     <message>
         <source>4 MB</source>
-        <translation>4 Mt</translation>
+        <translation type='obsolete'>4 Mt</translation>
     </message>
     <message>
         <source>8 MB</source>
-        <translation>8 Mt</translation>
+        <translation type='obsolete'>8 Mt</translation>
     </message>
     <message>
         <source>16 MB</source>
-        <translation>16 Mt</translation>
+        <translation type='obsolete'>16 Mt</translation>
     </message>
     <message>
         <source>32 MB</source>
-        <translation>32 Mt</translation>
+        <translation type='obsolete'>32 Mt</translation>
     </message>
     <message>
         <source>Throttle</source>
@@ -1421,7 +1421,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>256 bytes</source>
-        <translation>256 tavua</translation>
+        <translation type='obsolete'>256 tavua</translation>
     </message>
     <message>
         <source>Unbanned</source>
@@ -1433,23 +1433,23 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>2 minutes</source>
-        <translation>2 minuuttia</translation>
+        <translation type='obsolete'>2 minuuttia</translation>
     </message>
     <message>
         <source>5 minutes</source>
-        <translation>5 minuuttia</translation>
+        <translation type='obsolete'>5 minuuttia</translation>
     </message>
     <message>
         <source>10 minutes</source>
-        <translation>10 minuuttia</translation>
+        <translation type='obsolete'>10 minuuttia</translation>
     </message>
     <message>
         <source>15 minutes</source>
-        <translation>15 minuuttia</translation>
+        <translation type='obsolete'>15 minuuttia</translation>
     </message>
     <message>
         <source>30 minutes</source>
-        <translation>30 minuuttia</translation>
+        <translation type='obsolete'>30 minuuttia</translation>
     </message>
     <message>
         <source>1 hour</source>
@@ -1598,6 +1598,22 @@ Päiväys: %4</translation>
     <message>
         <source>%1 of %2</source>
         <translation>%1/%2</translation>
+    </message>
+    <message>
+        <source>%1 bytes</source>
+        <translation>%1 tavua</translation>
+    </message>
+    <message>
+        <source>%1 kB</source>
+        <translation>%1 kt</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation>%1 Mt</translation>
+    </message>
+    <message>
+        <source>%1 minutes</source>
+        <translation>%1 minuuttia</translation>
     </message>
 </context>
 <context>
