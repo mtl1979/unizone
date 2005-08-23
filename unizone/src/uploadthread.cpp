@@ -1097,7 +1097,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 						for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
 							myDigest[j] = 'x';
 						
-						if (msg()->FindInt64("numbytes", (int64 *)&readLen) == B_OK)
+						if ((msg()->FindInt64("numbytes", i, (int64 *)&readLen) == B_OK) && (readLen > 0))
 						{
 							PRINT("\t\tULT: peer requested partial resume\n");
 							uint64 temp = readLen;

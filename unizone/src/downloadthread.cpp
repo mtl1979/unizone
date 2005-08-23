@@ -845,10 +845,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 				}
 			}
 			neg()->AddInt64("offsets", fileOffset);
-								
-			if (bytesFromBack > 0)
-				neg()->AddInt64("numbytes", retBytesHashed);
-									
+			neg()->AddInt64("numbytes", retBytesHashed);
 			neg()->AddData("md5", B_RAW_TYPE, digest, (fileOffset > 0) ? sizeof(digest) : 1);
 			neg()->AddString("files", (const char *) fFileDl[c].utf8());
 		}
