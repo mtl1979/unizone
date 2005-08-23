@@ -1125,11 +1125,10 @@ WUploadThread::TransferFileList(MessageRef msg)
 						}
 						
 						// Hash
-						uint64 retBytesHashed = 0;
 						
 						QString qFile = QString::fromUtf8(file.Cstr());
 						
-						if (HashFileMD5(qFile, offset, readLen, retBytesHashed, myDigest, fShutdownFlag) == B_OK && 
+						if (HashFileMD5(qFile, offset, readLen, NULL, myDigest, fShutdownFlag) == B_OK && 
 							memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
 						{
 							// put this into our message ref

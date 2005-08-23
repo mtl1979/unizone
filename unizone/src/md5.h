@@ -30,7 +30,7 @@ void MD5Transform(UWORD32 buf[4], UWORD32 const in[16]);
  * and returned in (len).
  * If (optShutdownFlag) is specified, we will abort if we see it get set to true.
  */
-status_t HashFileMD5(const QString & file, uint64 & len, uint64 offset, uint64 & retBytesHashed,
+status_t HashFileMD5(const QString & file, uint64 & len, uint64 offset, uint64 * retBytesHashed,
 					 uint8 * returnDigest, volatile bool * optShutdownFlag);
 
 #endif

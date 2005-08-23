@@ -826,7 +826,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 					SendReply(hashMsg);
 				}
 								
-				if (HashFileMD5(fLocalFileDl[c], fileOffset, bytesFromBack, retBytesHashed, digest, fShutdownFlag) == B_ERROR)
+				if (HashFileMD5(fLocalFileDl[c], fileOffset, bytesFromBack, &retBytesHashed, digest, fShutdownFlag) == B_ERROR)
 				{
 					if (fShutdownFlag && *fShutdownFlag)	// were told to quit?
 					{

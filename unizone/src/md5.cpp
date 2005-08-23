@@ -5,11 +5,15 @@
 #include <qstring.h>
 #include "wfile.h"
 
+#include "util/ByteBuffer.h"
+
+using namespace muscle;
+
 #if BYTE_ORDER == LITTLE_ENDIAN
 #define byteSwap(buf, words)	// we're little endian (linux & windows on intel hardware)
 								// so we don't need this
 #else
-void byteSwap(unsigned int *buf, unsigned int words)
+void byteSwap(UWORD32 *buf, unsigned int words)
 {
 	for (unsigned int x = 0; x < words; x++)
 	{
@@ -106,7 +110,7 @@ MD5Final(md5byte digest[16], struct MD5Context *ctx)
 
    byteSwap(ctx->buf, 4);
    memcpy(digest, ctx->buf, 16);
-   memset(ctx, 0, sizeof(ctx));   /* In case it's sensitive */
+   memset(ctx, 0, sizeof(*ctx));   /* In case it's sensitive */
 }
 
 /* The four core functions - F1 is optimized somewhat */
@@ -211,77 +215,82 @@ MD5Transform(UWORD32 buf[4], UWORD32 const in[16])
 
 
 status_t 
-HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 & retBytesHashed,
+HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 * retBytesHashed,
 			uint8 * returnDigest, volatile bool * optShutdownFlag)
 {
+	uint64 bytesHashed = 0;
 	WFile file; // UNICODE !!!
-	if (!file.Open(entry, IO_ReadOnly))
-		return B_ERROR;
-	uint64 size = file.Size();
-	if (len > 0 && size < len)
-		return B_ERROR;
-
-	for (int i = 0; i < 16; i++)
-		returnDigest[i] = 0;
-
-	const uint32 bufSize = 256 * 1024;
-	struct MD5Context ctx;
-	unsigned char * buf = new unsigned char[bufSize];
-	CHECK_PTR(buf);
-	uint64 bytesLeft = (len > 0) ? len : size;
-
-	if (offset > 0)
-    {
-		if (len > 0)
-        {
-			if ((offset + len) > size)
-				return B_ERROR;
-            file.Seek(offset);
-        }
-        else
-        {
-			if (offset < size)
-				file.Seek(size - offset);
-            bytesLeft = (offset < size) ? offset : size;
-        }
-    }
-
-	MD5Init(&ctx);
-	uint64 numRead;
-	retBytesHashed = 0;
-	while ((numRead = file.ReadBlock((char *)buf, (bytesLeft < bufSize) ? bytesLeft : bufSize)) > 0)
+	if (file.Open(entry, IO_ReadOnly))
 	{
-		retBytesHashed += numRead;
-
-		if (optShutdownFlag && *optShutdownFlag)
-		{
-			delete [] buf;
-			file.Close();
+		uint64 size = file.Size();
+		if (len > 0 && size < len)
 			return B_ERROR;
-		}
-
-		if (numRead < bytesLeft)
+		
+		memset(returnDigest, 0, 16);
+		
+		struct MD5Context ctx;
+		ByteBufferRef buf = GetByteBufferFromPool(256 * 1024);
+		if (buf())
 		{
-			bytesLeft -= numRead;
-			MD5Update(&ctx, buf, numRead);
-		}
-		else
-		{
-			MD5Update(&ctx, buf, bytesLeft);
-			bytesLeft = 0;
-			break;
+			uint64 bytesLeft = (len > 0) ? len : size;
+			
+			if (offset > 0)
+			{
+				if (len > 0)
+				{
+					if ((offset + len) > size)
+						return B_ERROR;
+					file.Seek(offset);
+				}
+				else
+				{
+					bytesLeft = muscleMin(offset, size);
+					if (offset < size)
+					{
+						file.Seek(size - offset);
+					}
+				}
+			}
+			
+			MD5Init(&ctx);
+			uint64 numRead;
+			while ((numRead = file.ReadBlock((char *)buf()->GetBuffer(), muscleMin(bytesLeft, (uint64) buf()->GetNumBytes()))) > 0)
+			{
+				bytesHashed += numRead;
+				
+				if (optShutdownFlag && *optShutdownFlag)
+				{
+					file.Close();
+					return B_ERROR;
+				}
+				
+				MD5Update(&ctx, buf()->GetBuffer(), muscleMin(numRead, bytesLeft));
+				
+				if (numRead < bytesLeft)
+				{
+					bytesLeft -= numRead;
+				}
+				else
+				{
+					bytesLeft = 0;
+					break;
+				}
+			}
+			file.Close();
+			
+			if (bytesLeft > 0)
+				return B_ERROR;		// file not long enough?
+			
+			MD5Final(returnDigest, &ctx);
+			
+			if (len == 0)
+				len = size;
+			
+			if (retBytesHashed)
+				*retBytesHashed = bytesHashed;
+			
+			return B_OK;
 		}
 	}
-	delete [] buf;
-	file.Close();
-
-	if (bytesLeft > 0)
-		return B_ERROR;		// file not long enough?
-
-	MD5Final(returnDigest, &ctx);
-
-	if (len == 0)
-		len = size;
-	
-	return B_OK;
+	return B_ERROR;	// Out of memory?
 }
