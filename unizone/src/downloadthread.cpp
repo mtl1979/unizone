@@ -811,8 +811,6 @@ WDownloadThread::SessionConnected(const String &sessionID)
 				fLocalFileDl[c] = MakePath("downloads", FixFileName(fFileDl[c]));
 			}
 
-			QString outFile(MakePath("downloads", fFileDl[c]));
-							
 			// get an MD5 hash code out of it
 			uint8 digest[MD5_DIGEST_SIZE];
 			uint64 fileOffset = 0;	// autodetect file size for offset
@@ -839,7 +837,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 						MessageRef e(GetMessageFromPool(WDownloadEvent::FileError));
 						if (e())
 						{
-							e()->AddString("file", (const char *) outFile.utf8());
+							e()->AddString("file", (const char *) fLocalFileDl[c].utf8());
 							e()->AddString("why", QT_TR_NOOP( "MD5 hashing failed! Can't resume." ));
 							SendReply(e);
 						}
