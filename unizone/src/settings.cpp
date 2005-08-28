@@ -1511,7 +1511,7 @@ WSettings::EmptyResumeList()
 void 
 WSettings::GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl, int32 & extra) const
 {
-#ifdef WIN32
+#if (QT_VERSION < 0x030000)
 	dock = (int) QMainWindow::ToolBarDock::Top;
 #else
 	dock = (int) QMainWindow::Top;
