@@ -1215,6 +1215,50 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					SendChatText("*", qtext);
 			}
 		}
+		else if (CompareCommand(sendText, "/binsay"))
+		{
+			QString qtext = GetParameterString(sendText);
+			if (!qtext.isEmpty())
+			{
+				int cp = qtext.find(": ");
+				if (cp >= 0)
+				{
+					QString who = qtext.left(cp + 2);
+					QString btext = qtext.mid(cp + 2);
+					btext = BINEncode(btext);
+					qtext = who;
+					qtext += btext;
+				}
+				else
+				{
+					qtext = BINEncode(qtext);
+				}
+				if (fNetClient->IsConnected())
+					SendChatText("*", qtext);
+			}
+		}
+		else if (CompareCommand(sendText, "/hexsay"))
+		{
+			QString qtext = GetParameterString(sendText);
+			if (!qtext.isEmpty())
+			{
+				int cp = qtext.find(": ");
+				if (cp >= 0)
+				{
+					QString who = qtext.left(cp + 2);
+					QString htext = qtext.mid(cp + 2);
+					htext = TTPEncode(htext);
+					qtext = who;
+					qtext += htext;
+				}
+				else
+				{
+					qtext = TTPEncode(qtext);
+				}
+				if (fNetClient->IsConnected())
+					SendChatText("*", qtext);			
+			}
+		}
 		else if (CompareCommand(sendText, "/view"))
 		{
 			QString file = QFileDialog::getOpenFileName ( "downloads/", "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
@@ -2604,6 +2648,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/binencode - encode as binary data and display it");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/binsay [nick]: [text] - say text in binary but prefix with nick");
+	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/btime [gmt] - Broadcast and show local (or GMT) time");
@@ -2649,6 +2695,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/hexdecode - decode hexadecimal data and display it");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/hexencode - encode as hexadecimal data and display it");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 
