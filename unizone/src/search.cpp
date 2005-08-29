@@ -121,7 +121,7 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	CHECK_PTR(fSearchEdit);
 
 	fSearchEdit->setEditable(true);
-	fSearchEdit->setMinimumWidth((int) (this->width()*0.75));
+	fSearchEdit->setMinimumWidth(lrint(((double) this->width())*0.75));
 	fSearchEdit->setDuplicatesEnabled(false);
 	fSearchEdit->setAutoCompletion(true);
 
