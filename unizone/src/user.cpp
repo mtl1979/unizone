@@ -483,6 +483,10 @@ WUser::SetClient(const QString &s)
 	
 	fClient = s;
 	OSPair p;
+
+	if (s.contains("/Java")) // BeShare 1.xx/Java isn't (always) BeOS
+		return;
+
 	for (unsigned int n = 0; (p = Systems[n]).id != NULL; n++)
 	{
 		int pos;
