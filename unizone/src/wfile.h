@@ -32,8 +32,8 @@ public:
 	static bool Exists(const WString &);
 
 	void Flush();
-	int ReadBlock(void *, INT64);
-	int WriteBlock(const void *, INT64);
+	int ReadBlock(void *, UINT64);
+	int WriteBlock(const void *, UINT64);
 
 	int ReadLine(char *, int);
 

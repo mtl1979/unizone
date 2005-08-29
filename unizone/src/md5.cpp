@@ -215,14 +215,14 @@ MD5Transform(UWORD32 buf[4], UWORD32 const in[16])
 
 
 status_t 
-HashFileMD5(const QString & entry, uint64 & len, uint64 offset, uint64 * retBytesHashed,
+HashFileMD5(const QString & entry, int64 & len, int64 offset, uint64 * retBytesHashed,
 			uint8 * returnDigest, volatile bool * optShutdownFlag)
 {
 	uint64 bytesHashed = 0;
 	WFile file; // UNICODE !!!
 	if (file.Open(entry, IO_ReadOnly))
 	{
-		uint64 size = file.Size();
+		int64 size = file.Size();
 		if (len > 0 && size < len)
 			return B_ERROR;
 		

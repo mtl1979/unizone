@@ -74,7 +74,7 @@ WFile::At(INT64 pos)
 }
 
 int
-WFile::ReadBlock(void *buf, int64 size)
+WFile::ReadBlock(void *buf, UINT64 size)
 {
 	if (size > LONG_MAX)
 	{
@@ -103,17 +103,19 @@ WFile::ReadLine(char *buf, int size)
 		char c;
 		if (read(file, &c, 1) == 1)
 		{
-			numbytes++;
-			*buf++ = c;
 			if (c == 13)
 			{
 				if (read(file, &c, 1) == 1)
 				{
-					numbytes++;
-					*buf++ = c;
-					if (c == 10)
-						break;
+					if (c != 10)
+						_lseeki64(file, -1, SEEK_CUR); // Rewind one byte.
 				}
+				break;
+			}
+			else
+			{
+				numbytes++;
+				*buf++ = c;
 			}
 		}
 		else
@@ -124,7 +126,7 @@ WFile::ReadLine(char *buf, int size)
 }
 
 int
-WFile::WriteBlock(const void *buf, int64 size)
+WFile::WriteBlock(const void *buf, UINT64 size)
 {
 	if (size > LONG_MAX)
 	{

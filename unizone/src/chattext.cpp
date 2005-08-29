@@ -109,7 +109,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 		else if (event->state() & ControlButton)					
 		{
 			// Last line
-			if (fCurLine < (int)fBuffer->GetNumItems() - 2)
+			if (fCurLine < fBuffer->GetNumItems() - 2)
 			{
 				fCurLine = fBuffer->GetNumItems() - 1;
 				QString line;
@@ -126,7 +126,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 		else
 		{
 			// Next line
-			if (fCurLine < (int)fBuffer->GetNumItems() - 1)
+			if (fCurLine < fBuffer->GetNumItems() - 1)
 			{
 				fCurLine++;
 				QString line;
@@ -171,10 +171,10 @@ void
 WChatText::AddLine(const QString &line)
 {
 	QString junk;
-	int l = 0;
+	unsigned int l = 0;
 	fLock.Lock();
 	// Remove duplicate entries
-	while (l < (int) fBuffer->GetNumItems())
+	while (l < fBuffer->GetNumItems())
 	{
 		fBuffer->GetItemAt(l, junk);
 		if (junk == line)
@@ -188,7 +188,7 @@ WChatText::AddLine(const QString &line)
 			l++;
 		}
 
-		if (l >= (int) fBuffer->GetNumItems())
+		if (l >= fBuffer->GetNumItems())
 			break;
 	}
 	// Remove enough old entries, so total amount after adding this line will not exceed MAX_SIZE

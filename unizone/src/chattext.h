@@ -34,7 +34,7 @@ private:
 	Queue<QString> * fBuffer;	// line buffer
 	QObject * fTarget;
 	Mutex fLock;
-	int fCurLine;				// which line in the buffer?
+	unsigned int fCurLine;				// which line in the buffer?
 };
 
 #endif	// CHATTEXT_H
