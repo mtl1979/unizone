@@ -1230,14 +1230,14 @@ WDownload::downloadEvent(WDownloadEvent * d)
 		
 	case WDownloadEvent::FileDataReceived:
 		{
-			uint64 offset, size;
+			int64 offset, size;
 			bool done;
 			String mFile;
 			uint32 got;
 			
 			if (
-				(msg()->FindInt64("offset", (int64 *)&offset) == B_OK) && 
-				(msg()->FindInt64("size", (int64 *)&size) == B_OK) &&
+				(msg()->FindInt64("offset", &offset) == B_OK) && 
+				(msg()->FindInt64("size", &size) == B_OK) &&
 				(msg()->FindInt32("got", (int32 *)&got) == B_OK)
 				)
 			{
@@ -1565,7 +1565,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 		
 	case WUploadEvent::FileDataSent:
 		{
-			uint64 offset, size;
+			int64 offset, size;
 			bool done;
 			String mFile;
 			uint32 got;
@@ -2679,7 +2679,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			}
 			fULBanMenu->setItemChecked(fULBan, true);
 			
-			int fNewPacket = pair.first->GetPacketSize();
+			int fNewPacket = lrint(pair.first->GetPacketSize());
 			fULPacketMenu->setItemChecked(fULPacket, false);
 			
 			switch (fNewPacket)

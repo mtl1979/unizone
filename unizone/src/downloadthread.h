@@ -69,7 +69,7 @@ public:
 	void SetMostRecentRate(double rate);
 	void SetPacketCount(double bytes);
 
-	QString GetETA(uint64 cur, uint64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
+	QString GetETA(int64 cur, int64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
 	uint64	GetStartTime() { return fStartTime; }
 
 	void SetFile(QString * files, QString * lfiles, int32 numFiles, const QString & fromIP, const QString & fromSession,
@@ -97,6 +97,8 @@ public:
 	void ResetRate() { SetRate(fTXRate); }
 	void ResetRate(AbstractReflectSessionRef & ref) { SetRate(fTXRate, ref); }
 
+	void SetPacketSize(double s);		// Set/get packet size in kB
+	double GetPacketSize();
 	// forwarders
 
 	void Reset();
@@ -135,8 +137,8 @@ protected:
 	QString fLocalSession;	// our session ID
 	uint32 fPort;			// port of the remote client (the one it's listening on)
 	int32 fAcceptingOn;		// port we're accepting on in case the user is firewalled
-	uint64 fCurrentOffset;	// current offset in the file
-	uint64 fFileSize;		// the file size
+	int64 fCurrentOffset;	// current offset in the file
+	int64 fFileSize;		// the file size
 	time_t fCurrentFileStartTime;
 	bool fDownloading;
 	bool fFirewalled;
@@ -164,10 +166,10 @@ protected:
 	int fRateCount;					// amount we have, 20 max
 	uint32 fETA[MAX_ETA_COUNT];		// last 5 ETA's
 	int fETACount;					// amount we have, 5 max
-	double fPackets;				// amount of ultrafast 8 kB packets transfered
+	double fPackets;				// amount of ultrafast packets transfered
 	int64 fTimeLeft;
 	uint64 fStartTime;				// Time elapsed since this session started
-	int fPacket;
+	double fPacket;
 
 	void SetMostRecentETA(uint32 eta);
 	uint32 ComputeETA() const;

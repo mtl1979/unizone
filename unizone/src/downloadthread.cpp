@@ -11,6 +11,7 @@
 #include "wsystemevent.h"
 #include "md5.h"
 #include "global.h"
+#include "platform.h"
 #include "settings.h"
 #include "util.h"
 #include "debugimpl.h"
@@ -59,7 +60,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fStartTime = 0;
-	fPacket = 8;
+	fPacket = 8.0f;
 	fIdles = 0;
 	InitTransferRate();
 	InitTransferETA();
@@ -685,10 +686,12 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 
 
 					// check munge-mode here... not yet
-					if (fFile->WriteBlock((const char *)data, (uint)numBytes) == (int)numBytes)
+					if (fFile->WriteBlock((const char *)data, numBytes) == numBytes)
 					{
 						fFile->Flush();
 						fCurrentOffset += numBytes;
+
+						SetPacketSize((double) numBytes / 1024.0f);
 
 						MessageRef update(GetMessageFromPool(WDownloadEvent::FileDataReceived));
 						if (update())
@@ -796,7 +799,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 		comID()->AddString("beshare:FromUserName", (const char *) gWin->GetUserName().utf8());
 		comID()->AddString("beshare:FromSession", (const char *) gWin->GetUserID().utf8());
 		comID()->AddBool("unishare:supports_compression", true);
-		comID()->AddInt32("unishare:preferred_packet_size", (int32) gWin->fSettings->GetPacketSize());
+		comID()->AddInt32("unishare:preferred_packet_size", (int32) (gWin->fSettings->GetPacketSize() * 1024));
 		SendMessageToSessions(comID);
 	}
 					
@@ -813,9 +816,9 @@ WDownloadThread::SessionConnected(const String &sessionID)
 
 			// get an MD5 hash code out of it
 			uint8 digest[MD5_DIGEST_SIZE];
-			uint64 fileOffset = 0;	// autodetect file size for offset
+			int64 fileOffset = 0;	// autodetect file size for offset
 			uint64 retBytesHashed = 0;
-			uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
+			int64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
 
 			if (WFile::Exists(fLocalFileDl[c]))
 			{								
@@ -1103,7 +1106,7 @@ WDownloadThread::InitTransferRate()
 	}
 
 	fRateCount = 0;
-	fPackets = 0;
+	fPackets = 0.0f;
 }
 
 void
@@ -1185,14 +1188,14 @@ WDownloadThread::IsConnecting() const
 }
 
 QString
-WDownloadThread::GetETA(uint64 cur, uint64 max, double rate)
+WDownloadThread::GetETA(int64 cur, int64 max, double rate)
 {
 	if (rate < 0)
 		rate = GetCalculatedRate();
 	// d = r * t
 	// t = d / r
-	uint64 left = max - cur;	// amount left
-	uint32 secs = (uint32)((double)(int64)left / rate);
+	int64 left = max - cur;	// amount left
+	uint32 secs = lrint( (double)left / rate );
 
 	SetMostRecentETA(secs);
 	secs = ComputeETA();
@@ -1222,7 +1225,24 @@ WDownloadThread::GetCalculatedRate() const
 void 
 WDownloadThread::SetPacketCount(double bytes)
 {
-	fPackets += bytes / ((double) fPacket) ;
+	fPackets += bytes / fPacket;
+}
+
+void
+WDownloadThread::SetPacketSize(double s)
+{
+	if (s != fPacket)
+	{
+		if (fPackets > 0.0f)
+			fPackets *= fPacket / s;	// Adjust Packet Count
+		fPacket = s;
+	}
+}
+
+double
+WDownloadThread::GetPacketSize()
+{
+	return fPacket;
 }
 
 void

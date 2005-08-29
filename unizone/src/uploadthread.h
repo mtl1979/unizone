@@ -75,7 +75,7 @@ public:
 	void SetMostRecentRate(double rate);
 	void SetPacketCount(double bytes);
 
-	QString GetETA(uint64 cur, uint64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
+	QString GetETA(int64 cur, int64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
 	uint64	GetStartTime() { return fStartTime; }
 
 	QString GetRemoteID() const {return fRemoteSessionID;}
@@ -96,8 +96,8 @@ public:
 	virtual void ResetRate() { SetRate(fTXRate); }
 	virtual void ResetRate(AbstractReflectSessionRef & ref) { SetRate(fTXRate, ref); }
 
-	void SetPacketSize(int s);		// Set/get packet size in kB
-	int GetPacketSize();
+	void SetPacketSize(double s);		// Set/get packet size in kB
+	double GetPacketSize();
 
 	int GetBanTime();
 
@@ -152,10 +152,10 @@ protected:
 	int fRateCount;					// amount we have, 20 max
 	uint32 fETA[MAX_ETA_COUNT];		// last 5 ETA's
 	int fETACount;					// amount we have, 5 max
-	double fPackets;				// amount of ultrafast 8 kB packets transfered
+	double fPackets;				// amount of ultrafast packets transfered
 	int64 fTimeLeft;
 	uint64 fStartTime;				// Time elapsed since this session started
-	int fPacket;
+	double fPacket;
 
 	void SetMostRecentETA(uint32 eta);
 	uint32 ComputeETA() const;
@@ -176,8 +176,8 @@ private:
 	uint32 fPort;						// port for accept version
 	uint32 fIdles;						// idle packets sent between real packets
 	int fSocket;
-	uint64 fFileSize;
-	uint64 fCurrentOffset;
+	int64 fFileSize;
+	int64 fCurrentOffset;
 	int fMungeMode;
 	QString fRemoteSessionID;
 	QString fRemoteUser;

@@ -53,7 +53,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fStartTime = 0;
-	fPacket = 8;
+	fPacket = 8.0f;
 	fIdles = 0;
 
 	InitTransferRate();
@@ -515,10 +515,10 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 				qmtt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
 			}
 
-			int32 pps = GetPacketSize();
+			int32 pps = lrint(GetPacketSize()*1024.0f);
 			
-			if ((msg()->FindInt32("unishare:preferred_packet_size", &pps) == B_OK) && (pps < GetPacketSize()))
-				SetPacketSize(pps);
+			if ((msg()->FindInt32("unishare:preferred_packet_size", &pps) == B_OK) && (pps < lrint(GetPacketSize()*1024)))
+				SetPacketSize(pps/1024.0f);
 			break;
 		}
 	
@@ -723,7 +723,7 @@ WUploadThread::DoUpload()
 		if (uref())
 		{
 			// think about doing this in a dynamic way (depending on connection)
-			uint32 bufferSize = GetPacketSize() * 1024;	
+			uint32 bufferSize = lrint(GetPacketSize() * 1024.0f);	
 			uint8 * scratchBuffer;
 			int32 numBytes;
 			if (uref()->AddData("data", B_RAW_TYPE, NULL, bufferSize) == B_OK &&
@@ -849,7 +849,7 @@ WUploadThread::DoUpload()
 				// got our file!
 				fFileSize = fFile->Size();
 				fCurrentOffset = 0;	// from the start
-				if (fCurrentRef()->FindInt64("secret:offset", (int64 *)&fCurrentOffset) == B_OK)
+				if (fCurrentRef()->FindInt64("secret:offset", &fCurrentOffset) == B_OK)
 				{
 					if (!fFile->Seek(fCurrentOffset)) // <postmaster@raasu.org> 20021026
 					{
@@ -1083,16 +1083,16 @@ WUploadThread::TransferFileList(MessageRef msg)
 					fileRef()->RemoveName("secret:offset");
 					
 					// see if we need to add them
-					uint64 offset = 0L;
+					int64 offset = 0L;
 					const uint8 * hisDigest = NULL;
 					uint32 numBytes = 0L;
-					if (msg()->FindInt64("offsets", i, (int64 *)&offset) == B_OK &&
+					if (msg()->FindInt64("offsets", i, &offset) == B_OK &&
 						msg()->FindData("md5", B_RAW_TYPE, i, (const void **)&hisDigest, (uint32 *)&numBytes) == B_OK && 
 						numBytes == MD5_DIGEST_SIZE)
 					{
 						uint8 myDigest[MD5_DIGEST_SIZE];
-						uint64 readLen = 0;
-						uint64 onSuccessOffset = offset;
+						int64 readLen = 0;
+						int64 onSuccessOffset = offset;
 						
 						for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
 							myDigest[j] = 'x';
@@ -1221,7 +1221,7 @@ WUploadThread::InitTransferRate()
 	}
 
 	fRateCount = 0;
-	fPackets = 0;
+	fPackets = 0.0f;
 }
 
 void
@@ -1248,13 +1248,12 @@ WUploadThread::Reset()
 }
 
 void
-WUploadThread::SetPacketSize(int s)
+WUploadThread::SetPacketSize(double s)
 {
-	// Clear Rate and ETA counts because changing the Packet Size between two estimate recalculations causes miscalculation
 	if (fPacket != s)
 	{
-		fRateCount = 0;
-		fETACount = 0;
+		if (fPackets > 0.0f)
+			fPackets *= fPacket / s;	// Adjust Packet Count
 		fPacket = s;
 	}	
 }
@@ -1290,14 +1289,14 @@ WUploadThread::IsBlocked() const
 }
 
 QString
-WUploadThread::GetETA(uint64 cur, uint64 max, double rate)
+WUploadThread::GetETA(int64 cur, int64 max, double rate)
 {
 	if (rate < 0)
 		rate = GetCalculatedRate();
 	// d = r * t
 	// t = d / r
-	uint64 left = max - cur;	// amount left
-	uint32 secs = (uint32)((double)(int64)left / rate);
+	int64 left = max - cur;	// amount left
+	uint32 secs = lrint( (double)left / rate );
 
 	SetMostRecentETA(secs);
 	secs = ComputeETA();
@@ -1374,7 +1373,7 @@ WUploadThread::SetFinished(bool b)
 	}
 }
 
-int
+double
 WUploadThread::GetPacketSize()
 {
 	return fPacket;
