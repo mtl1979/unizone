@@ -95,10 +95,13 @@ WFile::ReadLine(char *buf, int size)
 		char c;
 		if (read(file, &c, 1) == 1)
 		{
-			numbytes++;
-			*buf++ = c;
 			if (c == 10)
 				break;
+			else
+			{
+				numbytes++;
+				*buf++ = c;
+			}
 		}
 		else
 			break;
