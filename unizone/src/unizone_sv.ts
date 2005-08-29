@@ -1295,10 +1295,6 @@ Date: %4</translation>
         <translation type='obsolete'>5 minutes</translation>
     </message>
     <message>
-        <source>10 minutes</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>15 minutes</source>
         <translation type='obsolete'>15 minutes</translation>
     </message>
