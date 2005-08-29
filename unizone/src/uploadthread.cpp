@@ -515,10 +515,10 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 				qmtt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
 			}
 
-			int32 pps = lrint(GetPacketSize()*1024.0f);
+			int32 pps = lrint(GetPacketSize() * 1024.0f);
 			
-			if ((msg()->FindInt32("unishare:preferred_packet_size", &pps) == B_OK) && (pps < lrint(GetPacketSize()*1024)))
-				SetPacketSize(pps/1024.0f);
+			if ((msg()->FindInt32("unishare:preferred_packet_size", &pps) == B_OK) && (pps < lrint(GetPacketSize() * 1024.0f)))
+				SetPacketSize((double) pps / 1024.0f);
 			break;
 		}
 	
