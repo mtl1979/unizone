@@ -98,4 +98,8 @@ void WFlashWindow(HWND fWinHandle);
 #define lrintf(x) ((int) x)
 #endif
 
+#if !defined(ssize_t)
+typedef int ssize_t;
+#endif
+
 #endif // PLATFORM_H
