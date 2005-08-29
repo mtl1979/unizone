@@ -4522,5 +4522,13 @@ Päiväys: %4</translation>
         <source>/screenshot - grab screenshot and save to file</source>
         <translation>/screenshot - ota ruudunkaappaus ja tallenna tiedostoon</translation>
     </message>
+    <message>
+        <source>/binsay [nick]: [text] - say text in binary but prefix with nick</source>
+        <translation>/binsay [nimi]: [teksti] - sanoo tekstin binäärisenä, mutta jättää nimen oikeinpäin eteen</translation>
+    </message>
+    <message>
+        <source>/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick</source>
+        <translation>/hexsay [nimi]: [teksti] - sanoo tekstin heksadesimaalisena, mutta jättää nimen oikeinpäin eteen</translation>
+    </message>
 </context>
 </TS>

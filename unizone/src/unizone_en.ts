@@ -4382,5 +4382,13 @@ Date: %4</translation>
         <source>/screenshot - grab screenshot and save to file</source>
         <translation>/screenshot - grab screenshot and save to file</translation>
     </message>
+    <message>
+        <source>/binsay [nick]: [text] - say text in binary but prefix with nick</source>
+        <translation>/binsay [nick]: [text] - say text in binary but prefix with nick</translation>
+    </message>
+    <message>
+        <source>/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick</source>
+        <translation>/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick</translation>
+    </message>
 </context>
 </TS>

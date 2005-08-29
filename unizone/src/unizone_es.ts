@@ -4236,5 +4236,13 @@ Date: %4</translation>
         <source>/screenshot - grab screenshot and save to file</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>/binsay [nick]: [text] - say text in binary but prefix with nick</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>
