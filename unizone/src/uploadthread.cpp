@@ -515,9 +515,10 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 				qmtt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
 			}
 
-			int32 pps = lrint(GetPacketSize() * 1024.0f);
+			double dpps = GetPacketSize() * 1024.0f;
+			int32 pps = lrint(dpps);
 			
-			if ((msg()->FindInt32("unishare:preferred_packet_size", &pps) == B_OK) && (pps < lrint(GetPacketSize() * 1024.0f)))
+			if ((msg()->FindInt32("unishare:preferred_packet_size", &pps) == B_OK) && (pps < lrint(dpps)))
 				SetPacketSize((double) pps / 1024.0f);
 			break;
 		}
@@ -723,7 +724,8 @@ WUploadThread::DoUpload()
 		if (uref())
 		{
 			// think about doing this in a dynamic way (depending on connection)
-			uint32 bufferSize = lrint(GetPacketSize() * 1024.0f);	
+			double dpps = GetPacketSize() * 1024.0f;
+			uint32 bufferSize = lrint(dpps);	
 			uint8 * scratchBuffer;
 			int32 numBytes;
 			if (uref()->AddData("data", B_RAW_TYPE, NULL, bufferSize) == B_OK &&
@@ -1083,7 +1085,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 					fileRef()->RemoveName("secret:offset");
 					
 					// see if we need to add them
-					uint64 offset = 0L;
+					int64 offset = 0L;
 					const uint8 * hisDigest = NULL;
 					uint32 numBytes = 0L;
 					if (msg()->FindInt64("offsets", i, (int64 *) &offset) == B_OK &&
@@ -1092,7 +1094,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 					{
 						uint8 myDigest[MD5_DIGEST_SIZE];
 						uint64 readLen = 0;
-						uint64 onSuccessOffset = offset;
+						int64 onSuccessOffset = offset;
 						
 						for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
 							myDigest[j] = 'x';
@@ -1296,7 +1298,8 @@ WUploadThread::GetETA(int64 cur, int64 max, double rate)
 	// d = r * t
 	// t = d / r
 	int64 left = max - cur;	// amount left
-	uint32 secs = lrint( (double)left / rate );
+	double dsecs = (double) left / rate;
+	uint32 secs = lrint( dsecs );
 
 	SetMostRecentETA(secs);
 	secs = ComputeETA();

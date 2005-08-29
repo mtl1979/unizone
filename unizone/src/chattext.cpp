@@ -195,10 +195,9 @@ WChatText::AddLine(const QString &line)
 	while (fBuffer->GetNumItems() >= MAX_SIZE)
 	{
 		fBuffer->RemoveHead(junk);
-		fCurLine--;
+		if (fCurLine > 0) 
+			fCurLine--;
 	}
-	if (fCurLine < 0)
-		fCurLine = 0;
 	fBuffer->AddTail(line);
 	fLock.Unlock();
 }

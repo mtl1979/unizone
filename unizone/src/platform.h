@@ -36,22 +36,13 @@ void WFlashWindow(HWND fWinHandle);
 #  endif
 #endif
 
-#ifdef __LINUX__
-	#define	_ISOC9X_SOURCE	1
-	#define _ISOC99_SOURCE	1
+#include	<math.h>
 
-	#define	__USE_ISOC9X	1
-	#define	__USE_ISOC99	1
-
-	#include	<math.h>
-#ifdef lrint
-#define HAVE_LRINT
-#endif
+#if defined(lrint)
+#  define HAVE_LRINT
 #elif defined(_MSC_VER) && defined(_X86_)
 
 	// http://mega-nerd.com/FPcast/float_cast.h
-
-	#include	<math.h>
 
 	/*	Win32 doesn't seem to have these functions. 
 	**	Therefore implement inline versions of these functions here.

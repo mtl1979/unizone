@@ -816,7 +816,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 
 			// get an MD5 hash code out of it
 			uint8 digest[MD5_DIGEST_SIZE];
-			uint64 fileOffset = 0;	// autodetect file size for offset
+			int64 fileOffset = 0;	// autodetect file size for offset
 			uint64 retBytesHashed = 0;
 			int64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
 
@@ -1195,7 +1195,8 @@ WDownloadThread::GetETA(int64 cur, int64 max, double rate)
 	// d = r * t
 	// t = d / r
 	int64 left = max - cur;	// amount left
-	uint32 secs = lrint( (double)left / rate );
+	double dsecs = (double) left / rate;
+	uint32 secs = lrint( dsecs );
 
 	SetMostRecentETA(secs);
 	secs = ComputeETA();

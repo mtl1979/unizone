@@ -66,7 +66,7 @@ WFile::At(INT64 pos)
 }
 
 int
-WFile::ReadBlock(void *buf, INT64 size)
+WFile::ReadBlock(void *buf, UINT64 size)
 {
 	if (size > LONG_MAX)
 	{
@@ -108,7 +108,7 @@ WFile::ReadLine(char *buf, int size)
 }
 
 int
-WFile::WriteBlock(const void *buf, INT64 size)
+WFile::WriteBlock(const void *buf, UINT64 size)
 {
 	if (size > LONG_MAX)
 	{
