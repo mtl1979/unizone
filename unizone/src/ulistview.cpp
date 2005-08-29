@@ -111,7 +111,7 @@ WUniListItem::key(int c, bool /* asc */) const
 #endif
 
 			bool ok;
-			n = (uint64) result.toDouble(&ok); // We need to convert from double to long long
+			n = llrint(result.toDouble(&ok)); // We need to convert from double to long long
 			if (ok)
 			{
 				// convert our number to hexadecimal! what a thought, huh?
@@ -141,7 +141,7 @@ WUniListItem::key(int c, bool /* asc */) const
 					o = m;
 				else
 				{
-					o = (int) (double) ( (double) n / (double) m * 10000.0f );
+					o = lrint((double) ( (double) n / (double) m * 10000.0f ));
 					o = o * 100 + m;
 				}
 				result.sprintf("0x%08x", o);
@@ -236,7 +236,7 @@ WUniListItem::item(int c)
 		}
 	case TransferSpeed:
 		{
-		n = (int64) fKey[c].toDouble();
+		n = llrint(fKey[c].toDouble());
 		return n;
 		}
 	case TransferLoad:
@@ -263,7 +263,7 @@ WUniListItem::item(int c)
 			}
 			else
 			{
-				o = (int) (double) ( (double) n / (double) m * 10000.0f );
+				o = llrint((double) ( (double) n / (double) m * 10000.0f ));
 				o = o * 100 + m;
 			}
 			return o;
@@ -334,7 +334,7 @@ WUniListItem::text(int c) const
 	uint32 secs, min, hours;
 	bool ok;
 
-#ifdef _DEBUG
+#ifdef DEBUG2
 	WString wres;
 #endif
 
@@ -595,9 +595,11 @@ WUniListView::dropEvent(QDropEvent* event)
 			QImage img;
 			if (img.load(filename, fmt))
 			{
+#ifdef _DEBUG
 				WString wfile(filename);
 				WString wuser(li->text(1));
 				PRINT("Sending picture \"%S\" to \"%S\"...\n", wfile.getBuffer(), wuser.getBuffer());
+#endif
 				gWin->SendPicture(li->text(1), filename);
 			}
 			it++;

@@ -36,4 +36,75 @@ void WFlashWindow(HWND fWinHandle);
 #  endif
 #endif
 
+#ifdef __LINUX__
+	#define	_ISOC9X_SOURCE	1
+	#define _ISOC99_SOURCE	1
+
+	#define	__USE_ISOC9X	1
+	#define	__USE_ISOC99	1
+
+	#include	<math.h>
+#ifdef lrint
+#define HAVE_LRINT
+#endif
+#elif defined(_MSC_VER) && defined(_X86_)
+
+	// http://mega-nerd.com/FPcast/float_cast.h
+
+	#include	<math.h>
+
+	/*	Win32 doesn't seem to have these functions. 
+	**	Therefore implement inline versions of these functions here.
+	*/
+	
+	__inline long int 
+	lrint (double flt)
+	{	
+		int intgr;
+
+		_asm
+		{	
+			fld flt
+			fistp intgr
+		} ;
+			
+		return intgr ;
+	} 
+
+	__inline int64
+	llrint (double flt)
+	{
+		int64 intgr;
+
+		_asm
+		{	
+			fld flt
+			fistp intgr
+		} ;
+
+		return intgr ;
+	}
+
+	__inline long int 
+	lrintf (float flt)
+	{	
+		int intgr;
+
+		_asm
+		{	
+			fld flt
+			fistp intgr
+		} ;
+			
+		return intgr ;
+	}
+#define HAVE_LRINT
+#endif
+
+#ifndef HAVE_LRINT
+#define lrint(x) ((int) x)
+#define llrint(x) ((int64) x)
+#define lrintf(x) ((int) x)
+#endif
+
 #endif // PLATFORM_H
