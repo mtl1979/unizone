@@ -404,7 +404,7 @@ public:
 	int32 GetPacketSize() const;
 	void SetPacketSize(int32);
 	int32 GetMinQueued() const;
-	uint64 GetMinQueuedSize();
+	int64 GetMinQueuedSize();
 	void SetMinQueued(int32);
 	
 	static int ConvertToBytes(int);	// converts a limit constant into bytes

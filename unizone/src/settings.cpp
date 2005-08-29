@@ -1195,10 +1195,10 @@ WSettings::GetMinQueued() const
 	return i;
 }
 
-uint64
+int64
 WSettings::GetMinQueuedSize()
 {
-	uint64 mqs = 0;
+	int64 mqs = 0;
 	switch (GetMinQueued())
 	{
 	case 1:

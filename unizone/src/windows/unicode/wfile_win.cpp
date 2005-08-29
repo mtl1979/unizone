@@ -150,7 +150,7 @@ WFile::Flush()
 	_commit(file);
 }
 
-UINT64
+INT64
 WFile::Size()
 {
 	return _filelengthi64(file);

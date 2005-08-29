@@ -653,7 +653,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 			if (fDownloading && fFile)
 			{
 				uint8 * data;
-				size_t numBytes;
+				ssize_t numBytes;
 
 				if (msg()->FindDataPointer("data", B_RAW_TYPE, (void **)&data, (uint32 *)&numBytes) == B_OK)
 				{
@@ -816,7 +816,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 
 			// get an MD5 hash code out of it
 			uint8 digest[MD5_DIGEST_SIZE];
-			int64 fileOffset = 0;	// autodetect file size for offset
+			uint64 fileOffset = 0;	// autodetect file size for offset
 			uint64 retBytesHashed = 0;
 			int64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
 

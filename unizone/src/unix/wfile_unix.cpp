@@ -134,7 +134,7 @@ WFile::Flush()
 	(void) fsync(file);
 }
 
-UINT64
+INT64
 WFile::Size()
 {
 	INT64 pos = lseek64(file, 0, SEEK_CUR);

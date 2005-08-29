@@ -40,7 +40,7 @@ public:
 	bool Seek(INT64);
 	bool At(INT64);
 	bool AtEnd() {return At(Size());}
-	UINT64 Size();
+	INT64 Size();
 private:
 	int TranslateMode(int);
 	int file;

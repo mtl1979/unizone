@@ -1083,16 +1083,16 @@ WUploadThread::TransferFileList(MessageRef msg)
 					fileRef()->RemoveName("secret:offset");
 					
 					// see if we need to add them
-					int64 offset = 0L;
+					uint64 offset = 0L;
 					const uint8 * hisDigest = NULL;
 					uint32 numBytes = 0L;
-					if (msg()->FindInt64("offsets", i, &offset) == B_OK &&
+					if (msg()->FindInt64("offsets", i, (int64 *) &offset) == B_OK &&
 						msg()->FindData("md5", B_RAW_TYPE, i, (const void **)&hisDigest, (uint32 *)&numBytes) == B_OK && 
 						numBytes == MD5_DIGEST_SIZE)
 					{
 						uint8 myDigest[MD5_DIGEST_SIZE];
-						int64 readLen = 0;
-						int64 onSuccessOffset = offset;
+						uint64 readLen = 0;
+						uint64 onSuccessOffset = offset;
 						
 						for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
 							myDigest[j] = 'x';
@@ -1100,7 +1100,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 						if ((msg()->FindInt64("numbytes", i, (int64 *)&readLen) == B_OK) && (readLen > 0))
 						{
 							PRINT("\t\tULT: peer requested partial resume\n");
-							uint64 temp = readLen;
+							int64 temp = readLen;
 							readLen = offset - readLen; // readLen is now the seekTo value
 							offset = temp;				// offset is now the numBytes value
 						}
@@ -1132,7 +1132,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 							memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
 						{
 							// put this into our message ref
-							fileRef()->AddInt64("secret:offset", onSuccessOffset);
+							fileRef()->AddInt64("secret:offset", (int64) onSuccessOffset);
 						}
 					}
 					
@@ -1172,7 +1172,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 				}
 				else
 				{
-					uint64 filesize;
+					int64 filesize;
 					if (fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
 					{
 						if (filesize < gWin->fSettings->GetMinQueuedSize())
