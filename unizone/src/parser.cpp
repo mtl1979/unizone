@@ -1,7 +1,8 @@
 #include "parser.h"
 #include "tokenizer.h"
+#include "util.h"							// for endsWith()
 
-#define MAX_BUFFER_SIZE 262144		// 256 kB
+static const int MAX_BUFFER_SIZE = 262144;	// 256 kB
 
 int
 ParseBufferSize()
@@ -71,7 +72,7 @@ ParseForShown(const QString & txt)
 		QString out = ParseForShownAux(txt);
 
 		// <postmaster@raasu.org> 20030721 -- Strip off trailing line break, we don't need it
-		if (out.right(4) == "<br>")
+		if (endsWith(out, "<br>"))
 			out.truncate(out.length() - 4);
 		return out;
 	}

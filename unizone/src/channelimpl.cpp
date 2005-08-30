@@ -242,7 +242,7 @@ Channel::URLClicked(const QString & url)
 	if (url != QString::null)
 	{
 		// <postmaster@raasu.org> 20021021 -- Use lower() to eliminate not matching because of mixed casing
-		if (url.lower().startsWith("beshare:") || url.lower().startsWith("share:"))
+		if (startsWith(url, "beshare:", false) || startsWith(url,"share:", false))
 		{
 			QString surl = url.mid(url.find(":") + 1);
 			WinShareWindow::LaunchSearch(surl);
@@ -314,7 +314,7 @@ Channel::customEvent(QCustomEvent * event)
 			if (wte)
 			{
 				// Give a list of available commands
-				if (wte->Text().lower().startsWith("/help"))
+				if (CompareCommand(wte->Text(), "/help"))
 				{
 					QString help("\n");
 					help		+=	tr("Channel command reference:");
@@ -345,7 +345,7 @@ Channel::customEvent(QCustomEvent * event)
 					PrintSystem(ParseString(help));
 				}
 				// Give a list of channel admins
-				else if (wte->Text().lower().startsWith("/listadmins"))
+				else if (CompareCommand(wte->Text(), "/listadmins"))
 				{
 					PrintSystem(tr( "List of channel admins:" ));
 					WUserIter iter = fUsers.GetIterator();
@@ -361,7 +361,7 @@ Channel::customEvent(QCustomEvent * event)
 
 				}
 				// Change channel topic
-				else if (wte->Text().lower().startsWith("/topic "))
+				else if (CompareCommand(wte->Text(), "/topic"))
 				{
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
@@ -376,7 +376,7 @@ Channel::customEvent(QCustomEvent * event)
 					}
 				}
 				// Set Channel to Public mode
-				else if (wte->Text().lower().startsWith("/public"))
+				else if (CompareCommand(wte->Text(), "/public"))
 				{
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 						SetPublic(true);
@@ -388,7 +388,7 @@ Channel::customEvent(QCustomEvent * event)
 					}
 				}
 				// Set Channel to Private mode
-				else if (wte->Text().lower().startsWith("/private"))
+				else if (CompareCommand(wte->Text(), "/private"))
 				{
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 						SetPublic(false);	
@@ -400,7 +400,7 @@ Channel::customEvent(QCustomEvent * event)
 					}				
 				}
 				// Add admin
-				else if (wte->Text().lower().startsWith("/op "))
+				else if (CompareCommand(wte->Text(), "/op"))
 				{
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
@@ -429,7 +429,7 @@ Channel::customEvent(QCustomEvent * event)
 					}
 				}
 				// Remove admin
-				else if (wte->Text().lower().startsWith("/deop "))
+				else if (CompareCommand(wte->Text(), "/deop"))
 				{
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
@@ -458,7 +458,7 @@ Channel::customEvent(QCustomEvent * event)
 					}
 				}
 				// Invite or Kick users
-				else if (wte->Text().lower().startsWith("/invite "))
+				else if (CompareCommand(wte->Text(), "/invite"))
 				{
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
@@ -507,7 +507,7 @@ Channel::customEvent(QCustomEvent * event)
 							PrintError( tr( "Not allowed!" ) );
 					}
 				}
-				else if (wte->Text().lower().startsWith("/kick "))
+				else if (CompareCommand(wte->Text(), "/kick"))
 				{
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 					{
@@ -560,8 +560,8 @@ Channel::customEvent(QCustomEvent * event)
 							PrintError( tr( "Not allowed!" ) );
 					}
 				}
-				else if (wte->Text().lower().startsWith("/action's ") ||
-						wte->Text().lower().startsWith("/me's "))
+				else if (CompareCommand(wte->Text(), "/action's") ||
+						CompareCommand(wte->Text(), "/me's"))
 				{
 					QString stxt(wte->Text());
 					QString message = gWin->GetUserName();
@@ -575,8 +575,8 @@ Channel::customEvent(QCustomEvent * event)
 					
 					SendChannelText(message);
 				}
-				else if (wte->Text().lower().startsWith("/action ") ||
-						wte->Text().lower().startsWith("/me "))
+				else if (CompareCommand(wte->Text(), "/action") ||
+						CompareCommand(wte->Text(), "/me"))
 				{
 					QString stxt(wte->Text());
 					QString message = gWin->GetUserName();
@@ -590,7 +590,7 @@ Channel::customEvent(QCustomEvent * event)
 					
 					SendChannelText(message);
 				}
-				else if (wte->Text().lower().startsWith("/clear"))
+				else if (CompareCommand(wte->Text(), "/clear"))
 				{
 					fChatText->clear();	// empty the text
 				}

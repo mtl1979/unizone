@@ -11,6 +11,7 @@
 #include "settings.h"
 #include "wstring.h"
 #include "global.h"
+#include "util.h"					// for endsWith()
 
 WLaunchThread * fLaunchThread = NULL;
 
@@ -18,22 +19,22 @@ void
 GotoURL(const QString & url)
 {
 	PRINT("GotoURL() called\n");
-	QString u = url.lower();
+	QString u = url;
 	QString address;
-	if (u.startsWith("server://"))
+	if (startsWith(u, "server://", false))
 	{
 		address = url.mid(9);
-		if (address.right(1) == "/")
+		if (endsWith(address, "/"))
 		{
 			address.truncate(address.length() - 1);
 		}
 		gWin->Connect(address);
 		return;
 	}
-	else if (u.startsWith("mailto:"))
+	else if (startsWith(u, "mailto:", false))
 	{
 		address = url.mid( url.find(":") + 1 );
-		if (address.right(1) == "/")
+		if (endsWith(address, "/"))
 		{
 			address.truncate(address.length() - 1);
 		}
@@ -47,15 +48,15 @@ GotoURL(const QString & url)
 	if (fLaunchThread->IsInternalThreadRunning())
 		fLaunchThread->WaitForInternalThreadToExit();
 	fLaunchThread->SetURL(address);
-	if (u.startsWith("http"))	// also includes 'https'
+	if (startsWith(u, "http", false))	// also includes 'https'
 	{
 		fLaunchThread->SetLauncher(gWin->fSettings->GetHTTPLauncher());
 	}
-	else if (u.startsWith("ftp"))
+	else if (startsWith(u, "ftp", false))
 	{
 		fLaunchThread->SetLauncher(gWin->fSettings->GetFTPLauncher());
 	}
-	else if (u.startsWith("mailto:"))
+	else if (startsWith(u, "mailto:", false))
 	{
 		fLaunchThread->SetLauncher(gWin->fSettings->GetMailLauncher());
 	}

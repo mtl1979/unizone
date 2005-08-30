@@ -6,7 +6,7 @@
 #include "platform.h"       // <postmaster@raasu.org> 20021114
 #include "settings.h"		//
 #include "global.h"			// <postmaster@raasu.org> 20021217
-
+#include "util.h"			// for startsWith()
 #include <qapplication.h>
 
 int 
@@ -47,7 +47,7 @@ QString
 FormatUserName(const QString &name, const QString &color)
 {
 	QString out;
-	if (name.startsWith("<font"))
+	if (startsWith(name, "<font"))
 	{
 		int e = name.find("</font>");
 		if (e == (int) name.length() - 7)

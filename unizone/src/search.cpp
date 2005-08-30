@@ -392,11 +392,12 @@ WSearch::SplitQuery(const QString &fileExp)
 		}
 	}
 	//
-	if (fileExp.startsWith("*@"))
+	if (startsWith(fileExp, "*@"))
 	{
 		return fileExp.find("@");
 	}
-	if (fileExp.right(2) == "@*")
+
+	if (endsWith(fileExp, "@*"))
 	{
 		return fileExp.findRev("@");
 	}
@@ -412,11 +413,7 @@ WSearch::SplitQuery(const QString &fileExp)
 			// User ID?
 			QString user(uref()->GetUserID());
 			user.prepend("@");
-#if (QT_VERSION >= 0x030000)
-			if (fileExp.endsWith(user))
-#else
-			if (fileExp.right(user.length()) == user)
-#endif
+			if (endsWith(fileExp, user))
 			{
 				return fileExp.findRev(user);
 			}
@@ -427,11 +424,7 @@ WSearch::SplitQuery(const QString &fileExp)
 			
 			// Compare end of fileExp against stripped user name
 			
-#if (QT_VERSION >= 0x030200)
-			if (fileExp.endsWith(name, false))
-#else
-			if (fileExp.right(name.length()).lower() == name)
-#endif
+			if (endsWith(fileExp, name, false))
 			{
 				return fileExp.length() - name.length();
 			}

@@ -11,6 +11,7 @@
 #include "wstring.h"
 #include "winsharewindow.h"
 #include "global.h"
+#include "util.h"				// for endsWith()
 
 // Unicode version of ResolveLink for Windows 2000 and newer
 // IShellLinkW is only supported on Windows 2000 and later
@@ -22,7 +23,7 @@ WFileThread::ResolveLink(const QString & lnk) const
 	PRINT2("\tResolving %S\n", wlnk.getBuffer());
 #endif
 	
-	if (lnk.right(4) == ".lnk")
+	if (endsWith(lnk, ".lnk"))
 	{
 		// we've got a link...
 		PRINT("Is Link\n");

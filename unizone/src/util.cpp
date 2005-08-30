@@ -39,7 +39,7 @@ ParseChatText(const QString & str)
 		
 		if (inLabel)			// label contains space(s) ???
 		{
-			if (qToken.right(1) == "]")
+			if (endsWith(qToken, "]"))
 			{
 				qLabels.Tail() += qToken.left(qToken.length() - 1);
 				inLabel = false;
@@ -55,72 +55,20 @@ ParseChatText(const QString & str)
 		else if (IsURL(qToken))
 		{
 			if (
-				(qToken.lower().startsWith("beshare:") == false) && 
-				(qToken.lower().startsWith("share:") == false)
+				(startsWith(qToken, "beshare:", false)) || 
+				(startsWith(qToken, "share:", false))
 				)
 			{
-				while (qToken.length() > 1)
-				{
-					QCharRef last = qToken.at(qToken.length() - 1);
-					
-					// <postmaster@raasu.org> 20021012,20021114,20030203
-					//
-
-					if (last == '>')					
-					{
-						bInTag = true;
-
-						// Skip html tags that are just after the url
-						//
-						while (bInTag)
-						{
-							if (qToken.right(1) == "<")
-								bInTag = false;
-
-							qToken.truncate(qToken.length() - 1);
-
-							if (qToken.right(1) == ">") // another tag?
-								bInTag = true;
-						}
-
-						last = qToken.at(qToken.length() - 1);
-					}
-
-					// <postmaster@raasu.org> Apr 11th 2004 
-					// Make sure there is same amount of ( and ) characters
-					//
-
-					if (qToken.right(1) == ")")
-					{
-						if (qToken.contains("(") == qToken.contains(")"))
-							break;
-					}
-
-					if 	(
-						muscleInRange(last.unicode(), (unichar) '0', (unichar) '9') ||
-						muscleInRange(last.unicode(), (unichar) 'a', (unichar) 'z') ||
-						muscleInRange(last.unicode(), (unichar) 'A', (unichar) 'Z') ||
-						(last == '/')
-						)
-					{
-						break;
-					}
-					else
-						qToken.truncate(qToken.length() - 1);
-				}
-			}
-			else
-			{
 				// Remove html tag after the url...
-				if (qToken.right(1) == ">")
+				if (endsWith(qToken, ">"))
 				{
 					bool bInTag = true;
 					while (bInTag)
 					{
-						if (qToken.right(1) == "<")
+						if (endsWith(qToken, "<"))
 							bInTag = false;
 						qToken.truncate(qToken.length() - 1);
-						if (qToken.right(1) == ">") // another tag?
+						if (endsWith(qToken, ">"))
 							bInTag = true;
 					}
 				}
@@ -142,6 +90,59 @@ ParseChatText(const QString & str)
 					}
 				}
 			}
+			else
+			{
+				while (qToken.length() > 1)
+				{
+					QCharRef last = qToken.at(qToken.length() - 1);
+					
+					// <postmaster@raasu.org> 20021012,20021114,20030203
+					//
+
+					if (last == '>')					
+					{
+						bInTag = true;
+
+						// Skip html tags that are just after the url
+						//
+						while (bInTag)
+						{
+							if (endsWith(qToken, "<"))
+								bInTag = false;
+
+							qToken.truncate(qToken.length() - 1);
+							
+							// another tag?
+							if (endsWith(qToken, ">"))
+								bInTag = true;
+						}
+
+						last = qToken.at(qToken.length() - 1);
+					}
+
+					// <postmaster@raasu.org> Apr 11th 2004 
+					// Make sure there is same amount of ( and ) characters
+					//
+
+					if (endsWith(qToken, ")"))
+					{
+						if (qToken.contains("(") == qToken.contains(")"))
+							break;
+					}
+
+					if 	(
+						muscleInRange(last.unicode(), (unichar) '0', (unichar) '9') ||
+						muscleInRange(last.unicode(), (unichar) 'a', (unichar) 'z') ||
+						muscleInRange(last.unicode(), (unichar) 'A', (unichar) 'Z') ||
+						(last == '/')
+						)
+					{
+						break;
+					}
+					else
+						qToken.truncate(qToken.length() - 1);
+				}
+			}
 			if (IsURL(qToken))
 			{
 				qUrls.AddTail(qToken);
@@ -153,9 +154,9 @@ ParseChatText(const QString & str)
 		{
 			lastWasURL = false; // clear in all cases, might contain trash between url and possible label
 			
-			if (qToken.startsWith("[")) // Start of label?
+			if (startsWith(qToken, "[")) // Start of label?
 			{
-				if (qToken.right(1) == "]") 
+				if (endsWith(qToken, "]")) 
 					qLabels.Tail() = qToken.mid(1, qToken.length() - 2);
 				else if (qToken.find("]") >= 0)
 					qLabels.Tail() = qToken.mid(1, qToken.find("]") - 1);
@@ -190,10 +191,10 @@ ParseChatText(const QString & str)
 			
 			// now the url...
 			QString urltmp = "<a href=\"";
-			if ( qUrl.startsWith("www.") )		urltmp += "http://";
-			if ( qUrl.startsWith("ftp.") )		urltmp += "ftp://";
-			if ( qUrl.startsWith("beshare.") )	urltmp += "server://";
-			if ( qUrl.startsWith("irc.") )		urltmp += "irc://";
+			if ( startsWith(qUrl, "www.") )		urltmp += "http://";
+			if ( startsWith(qUrl, "ftp.") )		urltmp += "ftp://";
+			if ( startsWith(qUrl, "beshare.") )	urltmp += "server://";
+			if ( startsWith(qUrl, "irc.") )		urltmp += "irc://";
 			urltmp += qUrl;
 			urltmp += "\">";
 			// Display URL label or link address, if label doesn't exist
@@ -216,7 +217,7 @@ ParseChatText(const QString & str)
 				if (!muscleInRange(lb, 0, le))
 				{
 					qText = qText.mid(le + 1);
-					if (qText.left(1) == "]")	// Fix for ']' in end of label
+					if (startsWith(qText, "]"))	// Fix for ']' in end of label
 						qText = qText.mid(1);
 				}
 			}
@@ -362,8 +363,7 @@ GetCommandString(const QString & qCommand)
 {
 	QString qCommand2 = qCommand.lower();
 	int sPos = qCommand2.find(" ");  // parameters should follow after <space> so they should be stripped off
-	int sPos2 = qCommand2.find("/"); // Is / first letter?
-	if ((sPos > 0) && (sPos2 == 0))
+	if ((sPos > 0) && startsWith(qCommand2, "/")) // Is / first letter?
 	{
 		qCommand2.truncate(sPos);
 	}
@@ -467,7 +467,7 @@ StripURL(const QString & u)
 					if ((right + 1) < (int) u.length())
 					{
 						QString rest = u.mid(right + 1);
-						if (rest.startsWith(" "))
+						if (startsWith(rest, " "))
 						{
 							label += " ";
 							rest = rest.mid(1);
@@ -552,17 +552,17 @@ IsURL(const char * url)
 bool
 IsURL(const QString & url)
 {
-	QString u = url.lower();
+	QString u = url;
 
 	// Add default protocol prefixes
 
-	if (u.startsWith("www.") && !u.startsWith("www.."))		
+	if (startsWith(u, "www.", false) && !startsWith(u, "www..", false))		
 		u.prepend("http://");
-	if (u.startsWith("ftp.") && !u.startsWith("ftp.."))		
+	if (startsWith(u, "ftp.", false) && !startsWith(u, "ftp..", false))		
 		u.prepend("ftp://");
-	if ((u.startsWith("beshare.") && !u.startsWith("beshare..")) && u.length() > 12)	
+	if ((startsWith(u, "beshare.", false) && !startsWith(u, "beshare..", false)) && u.length() > 12)	
 		u.prepend("server://");
-	if (u.startsWith("irc.") && !u.startsWith("irc.."))		
+	if (startsWith(u, "irc.", false) && !startsWith(u, "irc..", false))		
 		u.prepend("irc://");
 
 	if (u.length() > 9)
@@ -570,9 +570,9 @@ IsURL(const QString & url)
 		const char *prefix;
 		for (unsigned int i = 0; (prefix = urlPrefix[i]) != NULL; i++)
 		{
-			if (u.startsWith(prefix))
+			if (startsWith(u, prefix, false))
 			{
-				if (u.right(3) != "://")
+				if (!endsWith(u, "://"))
 				{
 					return true;
 				}
@@ -1047,7 +1047,7 @@ String MakePath(const String &dir, const String &file)
 QString MakePath(const QString &dir, const QString &file)
 {
 	QString ret(dir);
-	if (ret.right(1) != "/")
+	if (!endsWith(ret, "/"))
 		ret += "/";
 
 	ret += file;
@@ -1065,10 +1065,10 @@ IsAction(const QString &text, const QString &user)
 {
 	bool ret = false;
 
-	if (text.startsWith(user + " "))
+	if (startsWith(text, user + " "))
 		ret = true;
 
-	if (text.startsWith(user + "'s "))
+	if (startsWith(text, user + "'s "))
 		ret = true;
 
 	return ret;
@@ -1617,5 +1617,50 @@ ConvertPtr(void *ptr)
 		return (int64) ptr;
 #else
 		return (int64) (int32) ptr;
+#endif
+}
+
+bool
+startsWith(const QString &str1, const QString &str2, bool cs)
+{
+	if (cs)
+		return str1.startsWith(str2);
+	else
+#if (QT_VERSION >= 0x030200)
+		return str1.startsWith(str2, cs);
+#else
+	{
+		if (str1.length() < str2.length()) 
+			return false;
+		for (unsigned int p = 0; p < str2.length())
+			if (str1.at(p).lower() != str2.at(p).lower())
+				return false;
+		return true;
+	}
+#endif
+}
+
+bool
+endsWith(const QString &str1, const QString &str2, bool cs)
+{
+	if (cs)
+#if (QT_VERSION < 0x030000)
+		return (str1.right(str2.length()) == str2);
+#else
+		return str1.endsWith(str2);
+#endif
+	else
+#if (QT_VERSION < 0x030200)
+	{
+		int pos = str1.length() - str2.length();
+		if (pos < 0) 
+			return false;
+		for (unsigned int p = 0; p < str2.length())
+			if (str1.at(pos + p).lower() != str2.at(p).lower())
+				return false;
+		return true;
+	}
+#else
+		return str1.endsWith(str2, false);
 #endif
 }

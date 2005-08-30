@@ -90,7 +90,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 	// Check only on first iteration to avoid infinite loop, when sred = -1 and recursive call adds +1 
 	// --> (-1) + 1 = 0 
 
-	if ((index == 0) && (itxt.startsWith(sname)))
+	if ((index == 0) && (startsWith(itxt, sname)))
 		sred = 0;
 	else
 	{

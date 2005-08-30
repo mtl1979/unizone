@@ -15,7 +15,7 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 		fWant = true;	// this way we'll get an error string in the private window if
 		// an invalid command is used
 		// everything is stuck into one string
-		if (msg[0] == '/' && !msg.startsWith("//"))
+		if (msg[0] == '/' && !startsWith(msg, "//"))
 		{
 			// just forward the message
 			fMsg = msg;
@@ -23,7 +23,7 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 		else
 		{
 			QString smsg(msg);
-			if (smsg.startsWith("//"))
+			if (startsWith(smsg, "//"))
 				smsg.replace(0, 2, "/");
 			if (fEncrypted)
 				fMsg = "/emsg ";

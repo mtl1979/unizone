@@ -151,12 +151,13 @@ WPrivateWindow::URLClicked(const QString & url)
 	{
 		QString surl;
 		// <postmaster@raasu.org> 20021021 -- Use lower() to eliminate not matching because of mixed casing
-		if (url.lower().startsWith("beshare:") || url.lower().startsWith("share:"))
+		if (startsWith(url, "beshare:", false) || 
+			startsWith(url, "share:", false))
 		{
 			surl = url.mid(url.find(":") + 1);
 			WinShareWindow::LaunchSearch(surl);
 		}
-		else if (url.lower().startsWith("ttp://"))	// <postmaster@raasu.org> 20030911
+		else if (startsWith(url, "ttp://", false))	// <postmaster@raasu.org> 20030911
 		{
 			surl = url.mid(url.find(":") + 3);		// skip ://
 			WinShareWindow::QueueFile(surl);

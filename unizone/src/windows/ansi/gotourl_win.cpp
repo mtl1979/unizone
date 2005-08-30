@@ -15,19 +15,19 @@ void
 GotoURL(const QString & url)
 {
 	PRINT("GotoURL() called\n");
-	QString u = url.lower();
+	QString u = url;
 	QString address;
-	if (u.startsWith("server://"))
+	if (startsWith(u, "server://", false))
 	{
 		address = url.mid(9);
-		if (address.right(1) == "/")
+		if (endsWith(address, "/"))
 		{
 			address.truncate(address.length() - 1);
 		}
 		gWin->Connect(address);
 		return;
 	}
-	else if (u.startsWith("audio"))		// <postmaster@raasu.org> 20021116
+	else if (startsWith(u, "audio", false))		// <postmaster@raasu.org> 20021116
 	{
 		address = "mms" + url.mid(5);
 	}

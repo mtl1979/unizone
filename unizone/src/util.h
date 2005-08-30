@@ -142,4 +142,6 @@ int Match(const QString &string, const QRegExp &exp);
 
 int64 ConvertPtr(void *);
 
+bool startsWith(const QString &str1, const QString &str2, bool cs = true);
+bool endsWith(const QString &str1, const QString &str2, bool cs = true);
 #endif

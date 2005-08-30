@@ -28,9 +28,9 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 	{
 		WUserRef user;
 		iter.GetNextValue(user);
-		QString userName = StripURL(user()->GetUserName().lower().stripWhiteSpace());
+		QString userName = StripURL(user()->GetUserName().stripWhiteSpace());
 		if (((filter == QString::null) || (MatchUserFilter(user, filter))) &&
-			(userName.startsWith(un.lower())))
+			(startsWith(userName, un, false)))
 		{
 			// Only count different nicks
 			if (oldName != userName)
@@ -41,7 +41,7 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 
 			if (matchCount == 1)
 			{
-				result = StripURL(user()->GetUserName().stripWhiteSpace());
+				result = userName;
 			}
 			else
 			{
@@ -50,7 +50,7 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 
 				for (uint32 i = 0; i < result.length(); i++)
 				{
-					if (result.at(i).lower() != userName.at(i))
+					if (result.at(i).lower() != userName.at(i).lower())
 					{
 						result.truncate(i);
 						break;

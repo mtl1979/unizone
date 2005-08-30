@@ -221,17 +221,17 @@ WinShareWindow::URLClicked(const QString & url)
 		// added .lower() to all comparisons
 		//
 		QString surl;	// for LaunchSearch() and LaunchPrivate() 
-		if (url.lower().startsWith("beshare:") || url.lower().startsWith("share:"))
+		if (startsWith(url, "beshare:", false) || startsWith(url, "share:", false))
 		{
 			surl = url.mid(url.find(":") + 1);
 			LaunchSearch(surl);
 		}
-		else if (url.lower().startsWith("priv:"))	// <postmaster@raasu.org> 20021013
+		else if (startsWith(url, "priv:", false))	// <postmaster@raasu.org> 20021013
 		{
 			surl = url.mid(url.find(":") + 1);
 			LaunchPrivate(surl);
 		}
-		else if (url.lower().startsWith("ttp://"))	// <postmaster@raasu.org> 20030911
+		else if (startsWith(url, "ttp://", false))	// <postmaster@raasu.org> 20030911
 		{
 			surl = url.mid(url.find(":") + 3);		// skip ://
 			QueueFile(surl);

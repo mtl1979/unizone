@@ -177,7 +177,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					Action(GetUserName(), msg);
 			}
 		}
-		else if (sendText.left(2) == "//")	// used so that / commands can be printed
+		else if (startsWith(sendText, "//"))	// used so that / commands can be printed
 		{
 			sendText.replace(0, 2, "/");
 			SendChatText("*", sendText);
@@ -545,7 +545,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (!command.isEmpty() && (command != "gmt")) // User name?
 			{
 				int rpos;
-				if (command.left(1) == "'")
+				if (startsWith(command, "'"))
 				{
 					rpos = command.find("'",1);
 					if (rpos >= 0)
@@ -1414,7 +1414,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		 *
 		 */
 
-		else if (sendText.left(1) == "/")
+		else if (startsWith(sendText, "/"))
 		{
 			// unknown command...
 			if (reply)
@@ -1619,13 +1619,13 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 	}
 				
 	// check for / commands
-	if ( text.lower().left(6) == "/me's " )
+	if ( CompareCommand(text, "/me's") )
 	{
 		QString msg = GetParameterString(text);
 		if (!msg.isEmpty() && fSettings->GetChat())
 			Action(userName + "'s", msg);
 	}
-	else if (text.lower().left(4) == "/me ")
+	else if ( CompareCommand(text, "/me ") )
 	{
 		QString msg = GetParameterString(text);
 		if (!msg.isEmpty() && fSettings->GetChat())
@@ -1833,7 +1833,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
 				{
 					ExecCommand(fOnConnect);
-					if (fOnConnect.startsWith("/search")) // only search one time, everything else should be persistent
+					if (startsWith(fOnConnect, "/search")) // only search one time, everything else should be persistent
 					{
 						fOnConnect = QString::null;
 					}
@@ -2978,36 +2978,38 @@ WinShareWindow::FindUserByIPandPort(const QString & ip, uint32 port)
 bool
 WinShareWindow::Remote(const QString & /* session */, const QString &text)
 {
-	QString qItem;
-	if (!text.startsWith("!remote"))	// Is a remote request?
-		return false;
-	if (fRemote.isEmpty())					// is remote control enabled?
-		return false;
-
-	QString cmd = text.mid(8);
-
-	// try to parse password...
-	int sp = cmd.find("\n");
-	
-	if (sp == -1) 
-		return false;
-
-	QString pass = cmd.left(sp);
-	
-	// Correct password?
-	if (pass != fRemote)
-		return false;
-
-	// Parse for commands...
-	QStringTokenizer qTok(cmd.mid(sp+1),"\n");
-	while ((qItem = qTok.GetNextToken()) != QString::null)
+	if (startsWith(text, "!remote"))	// Is a remote request?
 	{
-		if (!qItem.lower().startsWith("/shell"))
+		if (fRemote.isEmpty())					// is remote control enabled?
+			return false;
+		
+		QString cmd = text.mid(8);
+		
+		// try to parse password...
+		int sp = cmd.find("\n");
+		
+		if (sp == -1) 
+			return false;
+		
+		QString pass = cmd.left(sp);
+		
+		// Correct password?
+		if (pass != fRemote)
+			return false;
+		
+		// Parse for commands...
+		QStringTokenizer qTok(cmd.mid(sp+1),"\n");
+		QString qItem;
+		while ((qItem = qTok.GetNextToken()) != QString::null)
 		{
-			ExecCommand(qItem);
+			if (!startsWith(qItem, "/shell", false))
+			{
+				ExecCommand(qItem);
+			}
 		}
+		return true;
 	}
-	return true;
+	return false;
 }
 
 // List files waiting to be resumed

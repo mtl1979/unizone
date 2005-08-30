@@ -13,6 +13,7 @@
 #endif
 #include "scanevent.h"
 #include "netclient.h"
+#include "util.h"		// for startsWith()/endsWith()
 
 #include <qdir.h>
 #include <qstringlist.h>
@@ -224,13 +225,16 @@ WFileThread::ScanFiles(const QString & directory)
 
 				if (!skip && (ndata.length() > 4))
 				{
-					if (ndata.right(4) == ".md5")
+					if (endsWith(ndata, ".md5"))
 					{
 						skip = true;
 					}
 					else if (ndata.length() > 12)
 					{
-						if (ndata.left(8) == "AlbumArt" && ndata.right(4) == ".jpg")
+						if (
+							startsWith(ndata, "AlbumArt") &&
+							endsWith(ndata, ".jpg")
+							)
 						{
 							skip = true;
 						}
