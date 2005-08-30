@@ -2,9 +2,9 @@
 #include "tokenizer.h"
 #include "util.h"							// for endsWith()
 
-static const int MAX_BUFFER_SIZE = 262144;	// 256 kB
+static const unsigned int MAX_BUFFER_SIZE = 262144;	// 256 kB
 
-int
+unsigned int
 ParseBufferSize()
 {
 	return MAX_BUFFER_SIZE;
