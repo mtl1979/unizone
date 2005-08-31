@@ -14,7 +14,7 @@ class WPicViewer : public WPicViewerBase
 {
 	Q_OBJECT
 public:
-	WPicViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = QWidget::WStyle_Customize | QWidget::WStyle_NormalBorder | QWidget::WStyle_SysMenu | QWidget::WStyle_MinMax );
+	WPicViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = QWidget::WStyle_Customize | QWidget::WStyle_NormalBorder | QWidget::WStyle_SysMenu | QWidget::WStyle_MinMax | QWidget::WStyle_Title);
 	~WPicViewer();
 
 	bool LoadImage(const QString &file);
@@ -42,6 +42,8 @@ private:
 	void DrawImage(const QPixmap &image);
 
 	void UpdatePosition(int pos);
+	void UpdateName();
+	void scalePixmap(const QPixmap * image, int &width, int &height);
 
 	int cFile, nFiles;
 	Queue<ByteBufferRef> fImages;
