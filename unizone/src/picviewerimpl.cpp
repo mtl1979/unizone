@@ -306,11 +306,11 @@ WPicViewer::scalePixmap(const QPixmap * image, int &width, int &height)
 	int oldw = image->width();
 	int oldh = image->height();
 	double ratio = (double) oldw / (double) oldh;
-	int neww = pxlPixmap->height() * ratio;
+	int neww = lrint((double) ((double) pxlPixmap->height() * ratio));
 	if (neww > pxlPixmap->width())
 	{
 		width = pxlPixmap->width();
-		height = pxlPixmap->width() / ratio;
+		height = lrint((double) ((double) pxlPixmap->width() / ratio));
 	}
 	else
 	{
