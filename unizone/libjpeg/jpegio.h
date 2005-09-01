@@ -41,6 +41,8 @@
 #include <qglobal.h>
 #include "qjpeg.h"
 
+#if (QT_VERSION < 0x030000) || defined(QT_NO_IMAGEIO_JPEG)
 QJPEG_API extern void InitJpegIO();
+#endif
 
 #endif

@@ -41,7 +41,7 @@
 
 #include "qimage.h"
 
-// #ifndef QT_NO_IMAGEIO_JPEG
+#if (QT_VERSION < 0x030000) || defined(QT_NO_IMAGEIO_JPEG)
 
 #include "qiodevice.h"
 #include "qjpegio.h"
@@ -595,4 +595,4 @@ QJPEG_API void InitJpegIO()
     QImageIO::defineIOHandler("JPEG", "^\377\330\377", 0, read_jpeg_image, write_jpeg_image);
 }
 
-// #endif
+#endif
