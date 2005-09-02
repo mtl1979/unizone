@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"Debug/Unizoned.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt3.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
@@ -352,6 +352,10 @@ SOURCE=..\src\titanic.cpp
 # Begin Source File
 
 SOURCE=..\src\transferitem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\uenv.cpp
 # End Source File
 # Begin Source File
 
@@ -2001,6 +2005,10 @@ SOURCE=..\src\transferitem.h
 # Begin Source File
 
 SOURCE=..\src\transferlist.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\uenv.h
 # End Source File
 # Begin Source File
 
