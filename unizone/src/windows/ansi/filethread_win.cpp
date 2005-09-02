@@ -12,7 +12,7 @@
 #include "wstring.h"
 #include "winsharewindow.h"
 #include "global.h"
-#include "utils.h"				// for endsWith()
+#include "util.h"				// for endsWith()
 
 // ANSI version of ResolveLink for Windows 95, 98 & ME and Microsoft Unicode Layer
 // IShellLinkW is not supported on Windows 95, 98 or ME
