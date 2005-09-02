@@ -949,6 +949,8 @@ GetDateStampAux(const QString &stamp)
 	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);
 
 	// Strip Day
+	if (qCurTime[0] == ' ')
+		qCurTime = qCurTime.mid(1);
 	QString qDay = qCurTime.left(qCurTime.find(" "));
 	return qDOW + " " + qMonth + " " + qDay + " " + qYear;
 }
