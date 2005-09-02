@@ -271,10 +271,6 @@ Status::customEvent(QCustomEvent *e)
 						if (msg()->FindBool("done", &done) == B_OK)
 						{
 							setCaption(tr("File finished."));
-							
-							if (msg()->FindString("file", mFile) == B_OK)
-							{
-							}
 						}
 					}
 				}
