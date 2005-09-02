@@ -8,6 +8,7 @@
 #include "settings.h"
 #include "wstring.h"
 #include "global.h"
+#include "util.h"
 
 WLaunchThread * fLaunchThread = NULL;
 

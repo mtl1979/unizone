@@ -9,10 +9,12 @@
 
 void ConvertFileName(wchar_t *in, int ilen, char * out, int olen)
 {
+	int len;
 	if (AreFileApisANSI())
-		WideCharToMultiByte(CP_ACP, 0, in, ilen, out, olen, NULL, NULL);
+		len = WideCharToMultiByte(CP_ACP, 0, in, ilen, out, olen, NULL, NULL);
 	else
-		WideCharToMultiByte(CP_OEMCP, 0, in, ilen, out, olen, NULL, NULL);
+		len = WideCharToMultiByte(CP_OEMCP, 0, in, ilen, out, olen, NULL, NULL);
+	out[len] = 0;
 }
 
 WFile::WFile()

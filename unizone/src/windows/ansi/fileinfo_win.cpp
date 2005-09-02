@@ -17,7 +17,8 @@ UFileInfo::InitMIMEType()
 
 	QString ext(".");
 	ext += getExtension();
-	const char * cext = (const char *) ext.local8Bit();
+	QCString qcext = ext.local8Bit();
+	const char * cext = (const char *) qcext;
 	if (RegOpenKeyA(HKEY_CLASSES_ROOT, cext, &hkey) == ERROR_SUCCESS)
 	{
 		LONG ret;
@@ -42,7 +43,8 @@ UFileInfo::InitModificationTime()
 	if ( isValid() )
 	{
 		// Read the modification time
-		const char * cFilePath = QFile::encodeName(fFullName);
+		QCString qcFilePath = QFile::encodeName(fFullName);
+		const char * cFilePath = (const char *) qcFilePath;
 		
 		struct _stat fst;
 		
