@@ -157,7 +157,8 @@ main( int argc, char** argv )
 		}
 		else
 		{
-			qt_lang = MakePath(qfi.dirPath(), qt_lang);
+			// Try using same directory as Unizones translations
+			qt_lang = MakePath(qfi.dirPath(true), qt_lang);
 		}
 
 		QTranslator qtr2( 0 );
