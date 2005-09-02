@@ -18,6 +18,8 @@
 #include "debugimpl.h"
 #include "winsharewindow.h"
 #include "wfile.h"
+#include "util.h"
+#include "uenv.h"
 
 #include "util/TimeUtilityFunctions.h"
 #include "system/SetupSystem.h"
@@ -141,8 +143,26 @@ main( int argc, char** argv )
 	// Install translator ;)
 	if (!lfile.isEmpty())
 	{
-		qtr.load(lfile);
-		app.installTranslator( &qtr );
+		if (qtr.load(lfile))
+			app.installTranslator( &qtr );
+
+		// Qt's own translator file
+		QFileInfo qfi(lfile);
+		QString qt_lang = qfi.fileName().replace("isplitter", "qt");
+		QString qtdir = EnvironmentVariable("QTDIR");
+		if (qtdir != QString::null)
+		{
+			QString tr_dir = MakePath(EnvironmentVariable("QTDIR"), "translations");
+			qt_lang = MakePath(tr_dir, qt_lang);
+		}
+		else
+		{
+			qt_lang = MakePath(qfi.dirPath(), qt_lang);
+		}
+
+		QTranslator qtr2( 0 );
+		if (qtr2.load(qt_lang))
+			app.installTranslator( &qtr2 );
 	}
 	
 	WinShareWindow * window = new WinShareWindow(NULL);

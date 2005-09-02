@@ -19,6 +19,7 @@ using namespace muscle;
 #include <qapplication.h>
 #include <qdns.h>
 #include <qfile.h>
+#include <qdir.h>
 #include <qstringlist.h>
 
 QString
@@ -1046,9 +1047,9 @@ String MakePath(const String &dir, const String &file)
 
 QString MakePath(const QString &dir, const QString &file)
 {
-	QString ret(dir);
-	if (!endsWith(ret, "/"))
-		ret += "/";
+	QString ret = QDir::convertSeparators(dir);
+	if (!endsWith(ret, QChar(QDir::separator())))
+		ret += QDir::separator();
 
 	ret += file;
 
