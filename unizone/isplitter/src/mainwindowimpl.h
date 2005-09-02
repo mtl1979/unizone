@@ -34,6 +34,7 @@ protected:
 	bool eventFilter( QObject *o, QEvent *e );
 	void startDrag();
 
+	void LoadSettings();
 	void SaveSettings();
 
 private:
@@ -46,5 +47,7 @@ private:
 
 	bool dragging;
 	QPoint startPos;
+
+	void scalePixmap(const QPixmap * image, int &width, int &height);
 };
 #endif

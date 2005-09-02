@@ -12,6 +12,39 @@
 #include <qwmatrix.h>
 #include <qdragobject.h>
 
+static const unsigned char erase_xpm_data[] = {
+    0x2f,0x2a,0x20,0x58,0x50,0x4d,0x20,0x2a,0x2f,0x0d,0x0a,0x73,0x74,0x61,
+    0x74,0x69,0x63,0x20,0x63,0x68,0x61,0x72,0x20,0x2a,0x65,0x72,0x61,0x73,
+    0x65,0x5b,0x5d,0x3d,0x7b,0x0d,0x0a,0x22,0x31,0x36,0x20,0x31,0x36,0x20,
+    0x32,0x20,0x31,0x22,0x2c,0x0d,0x0a,0x22,0x23,0x20,0x63,0x20,0x23,0x30,
+    0x30,0x30,0x30,0x30,0x30,0x22,0x2c,0x0d,0x0a,0x22,0x2e,0x20,0x63,0x20,
+    0x23,0x66,0x66,0x66,0x66,0x66,0x66,0x22,0x2c,0x0d,0x0a,0x22,0x2e,0x2e,
+    0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x23,
+    0x22,0x2c,0x0d,0x0a,0x22,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x23,
+    0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x22,0x2c,0x0d,0x0a,0x22,0x2e,0x2e,
+    0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x23,
+    0x22,0x2c,0x0d,0x0a,0x22,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x23,
+    0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x22,0x2c,0x0d,0x0a,0x22,0x2e,0x2e,
+    0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x23,
+    0x22,0x2c,0x0d,0x0a,0x22,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x23,
+    0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x22,0x2c,0x0d,0x0a,0x22,0x2e,0x2e,
+    0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x23,
+    0x22,0x2c,0x0d,0x0a,0x22,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x23,
+    0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x22,0x2c,0x0d,0x0a,0x22,0x23,0x23,
+    0x23,0x23,0x23,0x23,0x23,0x23,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,
+    0x22,0x2c,0x0d,0x0a,0x22,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x2e,
+    0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x22,0x2c,0x0d,0x0a,0x22,0x23,0x23,
+    0x23,0x23,0x23,0x23,0x23,0x23,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,
+    0x22,0x2c,0x0d,0x0a,0x22,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x2e,
+    0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x22,0x2c,0x0d,0x0a,0x22,0x23,0x23,
+    0x23,0x23,0x23,0x23,0x23,0x23,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,
+    0x22,0x2c,0x0d,0x0a,0x22,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x2e,
+    0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x22,0x2c,0x0d,0x0a,0x22,0x23,0x23,
+    0x23,0x23,0x23,0x23,0x23,0x23,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,
+    0x22,0x2c,0x0d,0x0a,0x22,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x23,0x2e,
+    0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x22,0x7d,0x3b,0x0d,0x0a
+};
+
 Preview::Preview(QWidget* parent, const char* name, WFlags fl)
 :QWidget(parent, name, fl)
 {
@@ -30,64 +63,34 @@ Preview::Preview(QWidget* parent, const char* name, WFlags fl)
 
     GridLayout->addWidget( SaveButton, 0, 2 );
 
-    pxlPreview = new QLabel( this, "pxlPreview" );
+	PreviewWidget = new QWidget(this, "PreviewWidget");
+
+    pxlPreview = new QLabel( PreviewWidget, "pxlPreview" );
     pxlPreview->setMinimumSize( QSize( 32, 32 ) );
-    QPalette pal;
-    QColorGroup cg;
-    cg.setColor( QColorGroup::Foreground, black );
-    cg.setColor( QColorGroup::Button, QColor( 236, 233, 216) );
-    cg.setColor( QColorGroup::Light, white );
-    cg.setColor( QColorGroup::Midlight, QColor( 245, 244, 235) );
-    cg.setColor( QColorGroup::Dark, QColor( 118, 116, 108) );
-    cg.setColor( QColorGroup::Mid, QColor( 157, 155, 143) );
-    cg.setColor( QColorGroup::Text, black );
-    cg.setColor( QColorGroup::BrightText, white );
-    cg.setColor( QColorGroup::ButtonText, black );
-    cg.setColor( QColorGroup::Base, white );
-    cg.setColor( QColorGroup::Background, white );
-    cg.setColor( QColorGroup::Shadow, black );
-    cg.setColor( QColorGroup::Highlight, QColor( 49, 106, 197) );
-    cg.setColor( QColorGroup::HighlightedText, white );
-    pal.setActive( cg );
-    cg.setColor( QColorGroup::Foreground, black );
-    cg.setColor( QColorGroup::Button, QColor( 236, 233, 216) );
-    cg.setColor( QColorGroup::Light, white );
-    cg.setColor( QColorGroup::Midlight, QColor( 255, 254, 249) );
-    cg.setColor( QColorGroup::Dark, QColor( 118, 116, 108) );
-    cg.setColor( QColorGroup::Mid, QColor( 157, 155, 143) );
-    cg.setColor( QColorGroup::Text, black );
-    cg.setColor( QColorGroup::BrightText, white );
-    cg.setColor( QColorGroup::ButtonText, black );
-    cg.setColor( QColorGroup::Base, white );
-    cg.setColor( QColorGroup::Background, white );
-    cg.setColor( QColorGroup::Shadow, black );
-    cg.setColor( QColorGroup::Highlight, QColor( 49, 106, 197) );
-    cg.setColor( QColorGroup::HighlightedText, white );
-    pal.setInactive( cg );
-    cg.setColor( QColorGroup::Foreground, QColor( 128, 128, 128) );
-    cg.setColor( QColorGroup::Button, QColor( 236, 233, 216) );
-    cg.setColor( QColorGroup::Light, white );
-    cg.setColor( QColorGroup::Midlight, QColor( 255, 254, 249) );
-    cg.setColor( QColorGroup::Dark, QColor( 118, 116, 108) );
-    cg.setColor( QColorGroup::Mid, QColor( 157, 155, 143) );
-    cg.setColor( QColorGroup::Text, black );
-    cg.setColor( QColorGroup::BrightText, white );
-    cg.setColor( QColorGroup::ButtonText, QColor( 128, 128, 128) );
-    cg.setColor( QColorGroup::Base, white );
-    cg.setColor( QColorGroup::Background, white );
-    cg.setColor( QColorGroup::Shadow, black );
-    cg.setColor( QColorGroup::Highlight, QColor( 49, 106, 197) );
-    cg.setColor( QColorGroup::HighlightedText, white );
-    pal.setDisabled( cg );
-    pxlPreview->setPalette( pal );
-    pxlPreview->setFrameShape( QLabel::Box );
-    pxlPreview->setMargin( 1 );
-    pxlPreview->setScaledContents( TRUE );
+    pxlPreview->setFrameShape( QLabel::NoFrame );
+    pxlPreview->setMargin( 0 );
+    pxlPreview->setScaledContents( FALSE );
+	pxlPreview->setAlignment(AlignVCenter | AlignHCenter);
 	pxlPreview->installEventFilter(this);
+	pxlPreview->setBackgroundMode(NoBackground);
+	pxlPreview->hide();
 
-    GridLayout->addMultiCellWidget( pxlPreview, 1, 1, 0, 2 );
+	//
+	// Create erase pixmap
+	//
+	QPixmap erase;
+	if (erase.loadFromData(erase_xpm_data, sizeof(erase_xpm_data), "XPM"))
+		PreviewWidget->setBackgroundPixmap(erase);
+	//
+    GridLayout->addMultiCellWidget( PreviewWidget, 1, 1, 0, 2 );
 
-    PreviewButton = new QPushButton( this, "PreviewButton" );
+	// Center
+	int pw = (PreviewWidget->width() - pxlPreview->width()) / 2;
+	int ph = (PreviewWidget->height() - pxlPreview->height()) / 2;
+	pxlPreview->move(pw, ph);
+
+    
+	PreviewButton = new QPushButton( this, "PreviewButton" );
     PreviewButton->setText( tr( "Preview" ) );
 
     GridLayout->addWidget( PreviewButton, 0, 0 );
@@ -95,6 +98,7 @@ Preview::Preview(QWidget* parent, const char* name, WFlags fl)
 	connect(SaveButton, SIGNAL(clicked()), this, SLOT(Save()));
 	Splitter = NULL;
 	pixPreview = NULL;
+	image = NULL;
 
 	dragging = false;
 }
@@ -137,9 +141,29 @@ bool clamp(T & a, const T b, const T c)
 }
 
 void
+Preview::scalePixmap(const QPixmap * image, int &width, int &height)
+{
+	int oldw = image->width();
+	int oldh = image->height();
+	double ratio = (double) oldw / (double) oldh;
+	int neww = PreviewWidget->height() * ratio;
+	if (neww > PreviewWidget->width())
+	{
+		width = PreviewWidget->width();
+		height = PreviewWidget->width() / ratio;
+	}
+	else
+	{
+		width = neww;
+		height = PreviewWidget->height();
+	}
+}
+
+void
 Preview::PreviewImage()
 {
-	ClearPreview();
+	if (!image)
+		return;
 
 	int originalWidth = image->width();
 	int originalHeight = image->height();
@@ -205,48 +229,48 @@ Preview::PreviewImage()
 	//
 	//  Make sure we don't get 'divide by zero' error
 	//
-
+		
 	if (collageSizeX == 0) 
 	{ 
 		collageSizeX = 1;
 		Splitter->CollageSizeX->setText("1");
 	}
-
+		
 	if (collageSizeY == 0) 
 	{
 		collageSizeY = 1;
 		Splitter->CollageSizeY->setText("1");
 	}
-
+		
 	if (clamp(collageIndexX, 0, collageSizeX - 1))
 		Splitter->OffsetIndexX->setText(QString::number(collageIndexX));
-
+		
 	if (clamp(collageIndexY, 0, collageSizeY - 1))
 		Splitter->OffsetIndexY->setText(QString::number(collageIndexY));
-	
+		
 	//
 	// Calculate subimage dimensions
 	//
-
+	
 	originalWidth -= collageOffsetTopX + collageOffsetBottomX;
 	originalHeight -= collageOffsetTopY + collageOffsetBottomY;
 	int subOffsetX = (originalWidth / collageSizeX) * collageIndexX + imageOffsetTopX + collageOffsetTopX;
 	int subOffsetY = (originalHeight / collageSizeY) * collageIndexY + imageOffsetTopY + collageOffsetTopY;
 	int subWidth = (originalWidth / collageSizeX) - imageOffsetTopX - imageOffsetBottomX;
 	int subHeight = (originalHeight / collageSizeY) - imageOffsetTopY - imageOffsetBottomY;
-
+		
 	// Rotate original
-
+		
 	QImage timg;
 	{
-		QPixmap *pm = new QPixmap(image->size());
-		if (pm)
+		if (imageRotate == 0)
 		{
-			if (imageRotate == 0)
-			{
-				timg = *image;
-			}
-			else
+			timg = *image;
+		}
+		else
+		{
+			QPixmap *pm = new QPixmap(image->size());
+			if (pm)
 			{
 				pm->convertFromImage(*image);
 				QWMatrix wm;
@@ -256,24 +280,36 @@ Preview::PreviewImage()
 			delete pm;
 		}
 	}
-
+		
 	//
 	// Generate subimage
 	//
-
+		
 	QImage imgPreview = timg.copy(subOffsetX, subOffsetY, subWidth, subHeight, 0);
 	pixPreview = new QPixmap(imgPreview.size());
 	if (pixPreview)
 	{
-		pixPreview->convertFromImage(imgPreview);
-		
 		//
 		// Last Step: Draw It!
 		//
-		
-		pxlPreview->setPixmap(*pixPreview);
-//		PreviewButton->setEnabled(true);
+			
+		pxlPreview->show();
+		int w, h;
+		scalePixmap(pixPreview, w, h);
+		QImage nimg = imgPreview.smoothScale(w, h);
+		pixPreview->convertFromImage(imgPreview);
+		//
+		QPixmap tmpPreview = nimg;	// Use temporary pixmap, so we don't save scaled pixmap
+		pxlPreview->resize(w, h);
+		// Center
+		int ww = PreviewWidget->width();
+		int wh = PreviewWidget->height();
+		int pw = (PreviewWidget->width() - pxlPreview->width()) / 2;
+		int ph = (PreviewWidget->height() - pxlPreview->height()) / 2;
+		pxlPreview->move(pw, ph);
+		pxlPreview->setPixmap( tmpPreview );
 		SaveButton->setEnabled(true);
+		setCaption(tr("Preview") + " - " + tr("%1 x %2").arg(imgPreview.width()).arg(imgPreview.height()));
 	}
 }
 
@@ -347,7 +383,7 @@ Preview::startDrag()
 void
 Preview::Save()
 {
-	Preview();
+	PreviewImage();
 
 	if (pixPreview)
 	{
@@ -378,7 +414,6 @@ Preview::Save()
 void
 Preview::ClearPreview()
 {
-//	PreviewButton->setEnabled(false);
 	SaveButton->setEnabled(false);
 
 	if (pixPreview)
@@ -388,10 +423,11 @@ Preview::ClearPreview()
 	}
 
 	{
-		QPixmap empty(150, 150);
-		empty.fill(Qt::white);
-		pxlPreview->setPixmap(empty);
+//		pxlPreview->clear();
+		pxlPreview->hide();
 	}
+
+	setCaption(tr("Preview"));
 }
 
 void
@@ -399,5 +435,10 @@ Preview::resizeEvent(QResizeEvent *e)
 {
 	QSize s = e->size();
 	GridLayout->setGeometry(QRect(0, 0, s.width(), s.height()));
+	if (pxlPreview->pixmap())
+	{
+		PreviewImage();
+	}
 	QWidget::resizeEvent(e);
 }
+

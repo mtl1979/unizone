@@ -8,6 +8,7 @@
 class QImage;
 class QString;
 class QPoint;
+class QPushButton;
 
 class Preview : public QWidget
 {
@@ -41,10 +42,13 @@ protected:
 	QPoint startPos;
 
     QGridLayout* GridLayout;
+	QWidget* PreviewWidget;
 
 private:
 	QImage * image;
 	QPixmap * pixPreview;
 	ImageSplitter * Splitter;
+
+	void scalePixmap(const QPixmap * image, int &width, int &height);
 };
 #endif

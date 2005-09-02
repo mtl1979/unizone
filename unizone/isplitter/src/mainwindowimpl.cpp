@@ -22,18 +22,11 @@ ImageSplitter::ImageSplitter( QWidget* parent, const char* name, WFlags fl)
 	dragging = false;
 
 	image = NULL;
-	QString filename = QString::null;
-	lastdir = QString::null;
-	QFile qf("isplitter.ini");
-	if (qf.open(IO_ReadOnly))
-	{
-		QByteArray temp(256);
-		if (qf.readLine(temp.data(), 255) > 0)
-			lastdir = QString::fromUtf8(temp);
-		qf.close();
-	}
+
 	menuBar = new MenuBar(this);
 	CHECK_PTR(menuBar);
+
+	LoadSettings();
 
 	fPreview = new Preview(NULL);
 	CHECK_PTR(fPreview);
@@ -43,7 +36,7 @@ ImageSplitter::ImageSplitter( QWidget* parent, const char* name, WFlags fl)
 	pxlCollage->installEventFilter(this);
 
 	// Use our copy of JPEG IO if Qt doesn't have it ;)
-#ifdef WIN32
+#if (QT_VERSION < 0x030000) || defined(QT_NO_IMAGEIO_JPEG)
 	InitJpegIO();
 #endif
 
@@ -137,6 +130,21 @@ ImageSplitter::startDrag()
 }
 
 void
+ImageSplitter::LoadSettings()
+{
+	QString filename = QString::null;
+	lastdir = QString::null;
+	QFile qf("isplitter.ini");
+	if (qf.open(IO_ReadOnly))
+	{
+		QByteArray temp(256);
+		if (qf.readLine(temp.data(), 255) > 0)
+			lastdir = QString::fromUtf8(temp);
+		qf.close();
+	}
+}
+
+void
 ImageSplitter::SaveSettings()
 {
 	QFile qf("isplitter.ini");
@@ -164,6 +172,25 @@ ImageSplitter::Load()
 }
 
 void
+ImageSplitter::scalePixmap(const QPixmap * image, int &width, int &height)
+{
+	int oldw = image->width();
+	int oldh = image->height();
+	double ratio = (double) oldw / (double) oldh;
+	int neww = pxlCollage->height() * ratio;
+	if (neww > pxlCollage->width())
+	{
+		width = pxlCollage->width();
+		height = pxlCollage->width() / ratio;
+	}
+	else
+	{
+		width = neww;
+		height = pxlCollage->height();
+	}
+}
+
+void
 ImageSplitter::Load(const QString &filename)
 {
 	QImage * img = new QImage();
@@ -174,8 +201,12 @@ ImageSplitter::Load(const QString &filename)
 		image = img;
 		fFilename = filename;
 
-		QPixmap pixCollage;
-		pixCollage = *image;
+		QPixmap temp(*image);
+		int w, h;
+		scalePixmap(&temp, w, h);
+		QImage nimg = image->smoothScale(w, h);
+		QPixmap pixCollage = nimg;
+
 		pxlCollage->setPixmap(pixCollage);
 		fPreview->ShowImage(image);
 		fPreview->show();
@@ -183,7 +214,7 @@ ImageSplitter::Load(const QString &filename)
 		QFileInfo info(fFilename);
 		lastdir = info.dirPath();
 
-		setCaption( fFilename );
+		setCaption( tr("Image Splitter") + " - " + QDir::convertSeparators(fFilename) );
 
 		TabWidget2->showPage(tab);
 	}
@@ -200,11 +231,7 @@ ImageSplitter::ClearImage()
 		image = NULL;
 	}
 
-	{
-		QPixmap empty(pxlCollage->width(), pxlCollage->height());
-		empty.fill(Qt::white);
-		pxlCollage->setPixmap(empty);
-	}
+	pxlCollage->clear();
 	
     setCaption( tr( "Image Splitter" ) );
 
@@ -238,26 +265,5 @@ ImageSplitter::Exit()
 void
 ImageSplitter::resizeEvent(QResizeEvent *e)
 {
-/*
-	QSize s = e->size();
-	QWidget * lwidget = dynamic_cast<QWidget *>(Layout27->parent());
-	if (lwidget)
-	{
-		QRect r = lwidget->geometry();
-		s.setHeight(s.height() - r.top());
-
-		if (pxlCollage)
-		{
-			pxlCollage->setMaximumWidth(s.width() / 2 - 20);
-			pxlCollage->setMaximumHeight(s.height());
-		}
-		if (pxlPreview)
-		{
-			pxlPreview->setMaximumWidth(s.width() / 2 - 20);
-			pxlPreview->setMaximumHeight(s.height() / 3);
-		}
-		lwidget->resize(s);
-	}
-*/
 	ImageSplitterBase::resizeEvent(e);
 }
