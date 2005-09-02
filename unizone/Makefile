@@ -63,6 +63,7 @@ SRCFILES = \
 	src/textevent.cpp \
 	src/titanic.cpp \
 	src/transferitem.cpp \
+	src/uenv.cpp \
 	src/ulistview.cpp \
 	src/updateclient.cpp \
 	src/uploadthread.cpp \
