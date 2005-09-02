@@ -17,6 +17,7 @@
 #include "util.h"
 
 #include <qapplication.h>
+#include <qdir.h>
 
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag) 
@@ -794,7 +795,7 @@ WUploadThread::DoUpload()
 
 							if (gWin->fSettings->GetUploads())
 							{
-								SystemEvent( gWin, tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+								SystemEvent( gWin, tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( QDir::convertSeparators(fFileUl) ) );
 							}
 						}
 						SendReply(update);
@@ -887,7 +888,7 @@ WUploadThread::DoUpload()
 
 				if (gWin->fSettings->GetUploads())
 				{
-					SystemEvent( gWin, tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( fFileUl ) );
+					SystemEvent( gWin, tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( QDir::convertSeparators(fFileUl) ) );
 				}
 
 				// nested call
@@ -1066,7 +1067,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 			if (!user.isEmpty())
 				fRemoteUser = user;
 		}
-		else
+		else if (fRemoteUser == QString::null)
 		{
 			fRemoteUser = GetUserName(fRemoteSessionID);
 		}
@@ -1523,4 +1524,13 @@ WUploadThread::NextFile()
 	// next file
 	CloseFile(fFile);
 	fCurrentOffset = fFileSize = 0;
+}
+
+QString 
+WUploadThread::GetRemoteIP() const 
+{
+	if (fStrRemoteIP != "127.0.0.1")
+		return fStrRemoteIP;
+	else
+		return gWin->GetLocalIP();
 }

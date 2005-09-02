@@ -1439,3 +1439,12 @@ WDownloadThread::InitSessionAux()
 	fConnecting = true;
 	CTimer->start(30000, true); // 30 seconds
 }
+
+QString 
+WDownloadThread::GetRemoteIP() const 
+{
+	if (fIP != "127.0.0.1")
+		return fIP;
+	else
+		return gWin->GetLocalIP();
+}

@@ -88,7 +88,7 @@ public:
 
 	QString GetRemoteID() const { return fFromSession; }
 	QString GetRemoteUser() const { return fFromUser; }
-	QString GetRemoteIP() const { return fIP; }
+	QString GetRemoteIP() const;
 	uint32 GetRemotePort() const{ return fPort; }
 
 	int GetRate() const { return fTXRate; }

@@ -34,6 +34,7 @@ NetClient::NetClient(QObject * owner)
 	fOldID = QString::null;
 	fSessionID = QString::null;
 	fUserName = QString::null;
+	fLocalIP = QString::null;
 	timerID = 0;
 	hasmessages = false;
 	fLoggedIn = false;
@@ -752,6 +753,7 @@ NetClient::HandleParameters(const MessageRef & next)
 		{
 			fOldID = fSessionID;
 			fSessionID = id.Cstr();
+			fLocalIP = myip.Cstr();
 			fLoggedIn = true;
 			fLoginTime = GetCurrentTime64();
 

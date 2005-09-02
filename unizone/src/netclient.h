@@ -41,6 +41,7 @@ public:
 	QString GetServerIP() const;					// Get current server IP address
 	uint32 GetServerPort() const { return fServerPort; } // Get current server port number
 	
+	QString GetLocalIP() const { return fLocalIP; }
 	bool IsConnected() const;
 	bool IsLoggedIn() const { return fLoggedIn; }
 	uint64 LoginTime() const { return fLoginTime; }
@@ -187,6 +188,7 @@ signals:
 private:
 	uint32 fPort, fServerPort;
 	QString fSessionID, fServer;
+	QString fLocalIP;
 	QString fOldID; 		// Old id for persistent channel admin/owner state
 	QString fUserName;
 	QObject * fOwner;

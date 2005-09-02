@@ -80,7 +80,7 @@ public:
 
 	QString GetRemoteID() const {return fRemoteSessionID;}
 	QString GetRemoteUser() const; 
-	QString GetRemoteIP() const {return fStrRemoteIP;}
+	QString GetRemoteIP() const;
 	uint32 GetRemotePort() const {return fPort;}
 	QString GetCurrentFile() const {return fFileUl;}
 	QString GetFileName(unsigned int i) const;

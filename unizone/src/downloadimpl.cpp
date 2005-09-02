@@ -942,7 +942,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				(msg()->FindString("user", &user) == B_OK)
 				)
 			{
-				item->setText(WTransferItem::Filename, QString::fromUtf8(filename));
+				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8(filename) ));
 				item->setText(WTransferItem::User, GetUserName(dt));
 				item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 			}
@@ -1186,7 +1186,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 #endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
-				item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
+				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8( file.Cstr() ) ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
 				// rec, total, rate
 				item->setText(WTransferItem::Received, fromULongLong(start));
 				item->setText(WTransferItem::Total, fromULongLong(size));
@@ -1217,7 +1217,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			String file;
 			msg()->FindString("why", why);
 			if (msg()->FindString("file", file) == B_OK)
-				item->setText(WTransferItem::Filename, QString::fromUtf8(file.Cstr()) );
+				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8( file.Cstr() ) ) );
 			item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
 			item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 #ifdef _DEBUG
@@ -1367,7 +1367,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 				(msg()->FindString("user", &user) == B_OK)
 				)
 			{
-				item->setText(WTransferItem::Filename, QString::fromUtf8(filename));
+				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8(filename) ) );
 				item->setText(WTransferItem::User, GetUserName(ut));
 				item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 			}
@@ -1521,7 +1521,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 #endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
-				item->setText(WTransferItem::Filename, QString::fromUtf8( file.Cstr() ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
+				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8( file.Cstr() ) ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
 				// rec, total, rate
 				item->setText(WTransferItem::Received, fromULongLong(start));
 				item->setText(WTransferItem::Total, fromULongLong(size));
@@ -1552,7 +1552,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 			String file;
 			msg()->FindString("why", why);
 			if (msg()->FindString("file", file) == B_OK)
-				item->setText(WTransferItem::Filename, QString::fromUtf8(file.Cstr()) );
+				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8( file.Cstr() ) ) );
 			item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
 			item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 #ifdef _DEBUG
@@ -3176,7 +3176,7 @@ WDownload::UpdateULRatings()
 		if (pair.second)
 		{
 #ifdef _DEBUG
-			WString wFile(pair.second->text(WTransferItem::Filename));
+			WString wFile(pair.first->GetCurrentFile());
 			if (wFile.length() > 0)
 				PRINT("Item %d: %S\n", i, wFile.getBuffer() );
 			else

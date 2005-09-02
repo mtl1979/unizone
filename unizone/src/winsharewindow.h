@@ -116,6 +116,7 @@ public:
 	QString GetServer() const;
 	QString GetStatus() const;
 	QString GetUserID() const; 
+	QString GetLocalIP() const;
 
 	void SendChatText(const QString & sid, const QString & txt);
 	void SendChatText(const QString & sid, const QString & txt, const WUserRef & priv, bool * reply, bool enc);

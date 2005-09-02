@@ -3329,3 +3329,9 @@ WinShareWindow::SendPicture(const QString &target, const QString &file)
 		}
 	}	
 }
+
+QString
+WinShareWindow::GetLocalIP() const
+{
+	return fNetClient->IsConnected() ? fNetClient->GetLocalIP() : QString::null;
+}
