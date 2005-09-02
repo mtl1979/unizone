@@ -1,6 +1,13 @@
 <!DOCTYPE TS><TS>
 <codec>utf-8</codec>
 <context>
+    <name>ImageSplitter</name>
+    <message>
+        <source>Image Splitter</source>
+        <translation>Kuvanpilkkoja</translation>
+    </message>
+</context>
+<context>
     <name>ImageSplitterBase</name>
     <message>
         <source>Image Splitter</source>
@@ -40,11 +47,11 @@
     </message>
     <message>
         <source>Preview</source>
-        <translation>Esikatselu</translation>
+        <translation type='obsolete'>Esikatselu</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Tallenna</translation>
+        <translation type='obsolete'>Tallenna</translation>
     </message>
     <message>
         <source>Collage Offset:</source>
@@ -57,6 +64,14 @@
     <message>
         <source>Image</source>
         <translation>Kuva</translation>
+    </message>
+    <message>
+        <source>Rotate</source>
+        <translation>Käännä</translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation>Muunna</translation>
     </message>
 </context>
 <context>

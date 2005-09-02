@@ -1,6 +1,13 @@
 <!DOCTYPE TS><TS>
 <codec>utf-8</codec>
 <context>
+    <name>ImageSplitter</name>
+    <message>
+        <source>Image Splitter</source>
+        <translation>Image Splitter</translation>
+    </message>
+</context>
+<context>
     <name>ImageSplitterBase</name>
     <message>
         <source>Image Splitter</source>
@@ -40,23 +47,31 @@
     </message>
     <message>
         <source>Preview</source>
-        <translation>Preview</translation>
+        <translation type='obsolete'>Preview</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Save</translation>
+        <translation type='obsolete'>Save</translation>
     </message>
     <message>
         <source>Collage Offset:</source>
-        <translation type='unfinished'></translation>
+        <translation>Collage Offset:</translation>
     </message>
     <message>
         <source>Collage</source>
-        <translation type='unfinished'></translation>
+        <translation>Collage</translation>
     </message>
     <message>
         <source>Image</source>
-        <translation type='unfinished'></translation>
+        <translation>Image</translation>
+    </message>
+    <message>
+        <source>Rotate</source>
+        <translation>Rotate</translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation>Transform</translation>
     </message>
 </context>
 <context>
