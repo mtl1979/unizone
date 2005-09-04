@@ -1463,7 +1463,7 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 {
 	fNetClient->SendChatText(sid, txt, enc);
 	QString out = FixString(txt);
-	if (sid == "*")	// not a global message?
+	if (sid == "*")	// global message?
 	{
 		if (fSettings->GetChat())
 		{
@@ -1625,7 +1625,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 		if (!msg.isEmpty() && fSettings->GetChat())
 			Action(userName + "'s", msg);
 	}
-	else if ( CompareCommand(text, "/me ") )
+	else if ( CompareCommand(text, "/me") )
 	{
 		QString msg = GetParameterString(text);
 		if (!msg.isEmpty() && fSettings->GetChat())
