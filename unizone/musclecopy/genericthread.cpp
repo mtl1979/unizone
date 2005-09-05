@@ -29,19 +29,6 @@ WGenericThread::~WGenericThread()
 {
 	WaitForInternalThreadToExit();
 }
-/*
-bool
-WGenericThread::IsQueued() const
-{
-	return fQueued;
-}
-
-void
-WGenericThread::SetQueued(bool b)
-{
-	fQueued = b;
-}
-*/
 
 bool
 WGenericThread::IsManuallyQueued() const
@@ -192,39 +179,6 @@ WGenericThread::GetCalculatedRate() const
 	return rate;
 }
 
-/*
-QString
-WGenericThread::ComputeSizeString(int64 offset) const
-{
-	float size = 0;
-	QString pre;
-	
-	if (offset > 1024)	// > 1 kB?
-	{
-#ifdef VC7
-		size = (float)((double)offset / 1024.0);
-#else
-		size = (float)((int)offset / 1024);
-#endif
-		pre = "kB";		// <postmaster@raasu.org> 20021024 -- It's kB, not KB!
-		if (size > 1024)	// > 1 MB?
-		{
-			size /= 1024.0f;
-			pre = "MB";
-
-			if (size > 1024) // > 1 GB?
-			{
-				size /= 1024.0f;
-				pre = "GB";
-			}
-		}
-
-		return QObject::tr("%1 %2").arg(size).arg(pre);
-	}
-	return QObject::tr("%1 %2").arg((int)offset).arg("bytes");
-}
-*/
-
 QString
 WGenericThread::GetETA(uint64 cur, uint64 max, double rate)
 {
@@ -237,12 +191,7 @@ WGenericThread::GetETA(uint64 cur, uint64 max, double rate)
 
 	SetMostRecentETA(secs);
 	secs = ComputeETA();
-/*	
-	uint32 min = secs / 60; secs = secs % 60;
-	uint32 hours = min / 60; min = min % 60;
-*/	
 	QString ret;
-//	ret.sprintf("%d:%.2d:%.2d", hours, min, secs);
 	ret.setNum(secs);
 	return ret;
 }
@@ -300,7 +249,6 @@ WGenericThread::ConnectTimer()
 	Reset();
 	MessageRef msg(GetMessageFromPool(WGenericEvent::ConnectFailed));
 	msg()->AddString("why", "Connection timed out!");
-	// msg()->AddBool("retry", true);
 	SendReply(msg);
 }
 

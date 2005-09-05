@@ -31,10 +31,7 @@ public:
 	virtual ~WGenericThread();
 
 	QTime fLastData;		// public time to keep control of the last time we got some data
-/*
-	bool IsQueued() const;
-	virtual void SetQueued(bool b);
-*/
+
 	bool IsManuallyQueued() const;
 	virtual void SetManuallyQueued(bool b);
 
@@ -61,8 +58,6 @@ public:
 
 	QString GetETA(uint64 cur, uint64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
 
-
-//	QString ComputeSizeString(int64 offset) const;
 	QString ComputePercentString(int64 cur, int64 max);
 
 	virtual QString GetRemoteID() { return QString::null; }
@@ -92,7 +87,6 @@ public slots:
 protected:
 	QObject * fOwner;
 	bool * fShutdownFlag;
-	//bool fQueued;
 	bool fManuallyQueued;
 	bool fLocallyQueued;
 	bool fRemotelyQueued;			// only usable in downloads

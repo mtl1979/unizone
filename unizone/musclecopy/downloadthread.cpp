@@ -198,7 +198,6 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						MessageRef q(GetMessageFromPool(WGenericEvent::FileQueued));
 						SendReply(q);
 						SetRemotelyQueued(true);
-						//CTimer->start(60000, true);
 						break;
 					}
 					
@@ -238,7 +237,6 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								msg()->AddBool("error", true);
 							}
 							SendReply(msg);
-							//fCurrentOffset = fFileSize = 0;
 							NextFile();
 						}
 						// fields:
@@ -252,11 +250,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						if (next()->FindInt64("beshare:File Size", (int64 *)&fFileSize) == B_OK && 
 							next()->FindString("beshare:File Name", fname) == B_OK)
 						{
-							QString outFile = "downloads/";
-							QString fixed;
-							// outFile += "/";
-							fixed = outFile;
-							outFile += QString::fromUtf8(fname.Cstr());
+							QString fixed("downloads/");
 							fixed += FixFileName(QString::fromUtf8(fname.Cstr()));	// we have a "fixed" filename that eliminates characters Windows does not support
 							
 							bool append = false;
@@ -289,13 +283,8 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								QString nf = fixed;
 								int i = 1;
 								while (WFile::Exists(nf))
-									// nf = QObject::tr("%1 %2").arg(fixed).arg(i++);
 									nf = UniqueName(fixed, i++);
-//								delete fFile;
-//								fFile = NULL; // <postmaster@raasu.org> 20021027
 								fixed = nf;
-//								fFile = new QFile(fixed);
-//								CHECK_PTR(fFile);
 							}
 							
 							fLocalFileDl[GetCurrentNum()] = fixed;
@@ -315,7 +304,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								// ERROR!
 								disconnected = true;	// we're done
 								msg = MessageRef(GetMessageFromPool(WGenericEvent::FileError));
-								msg()->AddString("file", (const char *) outFile.utf8());
+								msg()->AddString("file", (const char *) fixed.utf8());
 								msg()->AddString("why", "Critical error: Could not create file!");
 								delete fFile;
 								fFile = NULL;
@@ -370,7 +359,6 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 											NextFile();
 										}
 										SendReply(update);
-										//CTimer->start(30000, true); // 30 seconds
 									}
 									else
 									{

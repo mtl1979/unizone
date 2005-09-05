@@ -264,9 +264,6 @@ Status::customEvent(QCustomEvent *e)
 						{
 							gt->SetPacketCount(gotk);
 						}
-						// <postmaster@raasu.org> 20021026 -- Too slow transfer rate?
-						// double gcr = gt->GetCalculatedRate();
-						
 						
 						if (msg()->FindBool("done", &done) == B_OK)
 						{

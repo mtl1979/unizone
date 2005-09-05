@@ -1,6 +1,5 @@
 #include <qapplication.h>
 #include <qplatinumstyle.h>
-//#include <qfile.h>
 #include <qfiledialog.h>
 #include <stdio.h>
 #include <stdlib.h>
