@@ -5,7 +5,7 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <qfile.h>
+#include <qstring.h>
 #include <sys/types.h>
 #include <support/MuscleSupport.h>
 

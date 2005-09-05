@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src\muscle" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\src" /I "..\src\muscle" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40b /d "_DEBUG"
@@ -125,6 +125,18 @@ SOURCE=.\status.cpp
 # Begin Source File
 
 SOURCE=.\statusimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\windows\wfile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\windows\unicode\wfile_win.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wstring.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -239,7 +251,15 @@ InputName=statusimpl
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\wfile.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\wgenericevent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wstring.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

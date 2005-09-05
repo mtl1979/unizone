@@ -2,8 +2,8 @@
 #define DOWNLOADTHREAD_H
 
 #include "genericthread.h"
+#include "wfile.h"
 
-#include <qfile.h>
 #include <qstring.h>
 #include <qthread.h>
 #include <qtimer.h>
@@ -21,7 +21,7 @@ public:
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
 
-	QFile * GetFile() const { return fFile; }
+	WFile * GetFile() const { return fFile; }
 	QString GetCurrentFile() { return fFileDl[fCurFile]; }
 	QString GetFileName(int i) { return fFileDl[i]; }
 	QString GetLocalFileName(int i) { return fLocalFileDl[i]; }
@@ -44,7 +44,7 @@ public:
 
 protected:
 	QMutex fLockFile;
-	QFile * fFile;			// file on the HD
+	WFile * fFile;			// file on the HD
 	QString * fFileDl;		// file to dl
 	QString * fLocalFileDl; // local filenames for downloaded files
 	QString fIP;			// ip address of remote client

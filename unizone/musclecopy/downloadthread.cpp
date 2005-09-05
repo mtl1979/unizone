@@ -2,6 +2,7 @@
 #include "statusimpl.h"
 #include "wgenericevent.h"
 #include "md5.h"
+#include "wfile.h"
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include <qdir.h>
@@ -24,7 +25,7 @@ WDownloadThread::~WDownloadThread()
 {
 	if (fFile)
 	{
-		fFile->close();
+		fFile->Close();
 		delete fFile;
 	}
 	
@@ -226,7 +227,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							fDownloading = false;
 							if (fFile)	// in case it was not closed when it was received
 							{
-								fFile->close();
+								fFile->Close();
 								delete fFile;
 								fFile = NULL;
 							}
@@ -263,13 +264,13 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 							if (next()->FindInt64("beshare:StartOffset", (int64 *)&fCurrentOffset) == B_OK &&
 								fCurrentOffset > 0)
 							{
-								fFile = new QFile(fixed);
+								fFile = new WFile();
 								CHECK_PTR(fFile);
-								if (fFile->open(IO_ReadOnly))
+								if (fFile->Open(fixed, IO_ReadOnly))
 								{
-									if (fFile->size() == fCurrentOffset)	// sizes match up?
+									if (fFile->Size() == fCurrentOffset)	// sizes match up?
 										append = true;
-									fFile->close();
+									fFile->Close();
 								}
 								delete fFile;
 								fFile = NULL;
@@ -281,25 +282,25 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 									cd.mkdir("downloads");
 							}
 							
-							fFile = new QFile(fixed);	// fixed filename again
+							fFile = new WFile();	// fixed filename again
 							CHECK_PTR(fFile);
-							if (fFile->exists() && !append)	// create a new file name
+							if (WFile::Exists(fixed) && !append)	// create a new file name
 							{
 								QString nf = fixed;
 								int i = 1;
-								while (QFile::exists(nf))
+								while (WFile::Exists(nf))
 									// nf = QObject::tr("%1 %2").arg(fixed).arg(i++);
 									nf = UniqueName(fixed, i++);
-								delete fFile;
-								fFile = NULL; // <postmaster@raasu.org> 20021027
+//								delete fFile;
+//								fFile = NULL; // <postmaster@raasu.org> 20021027
 								fixed = nf;
-								fFile = new QFile(fixed);
-								CHECK_PTR(fFile);
+//								fFile = new QFile(fixed);
+//								CHECK_PTR(fFile);
 							}
 							
 							fLocalFileDl[GetCurrentNum()] = fixed;
 							MessageRef msg;
-							if (fFile->open((append ? IO_Append | IO_WriteOnly : IO_WriteOnly)))
+							if (fFile->Open(fixed, (append ? IO_Append | IO_WriteOnly : IO_WriteOnly)))
 							{
 								msg = MessageRef(GetMessageFromPool(WGenericEvent::FileStarted));
 								msg()->AddString("file", (const char *) fixed.utf8());
@@ -349,7 +350,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 								{
 									
 									// check munge-mode here... not yet
-									if (fFile->writeBlock((const char *)data, (uint)numBytes) == (int)numBytes)
+									if (fFile->WriteBlock((const char *)data, (uint)numBytes) == (int)numBytes)
 									{
 										MessageRef update(GetMessageFromPool(WGenericEvent::FileDataReceived));
 										fCurrentOffset += numBytes;
@@ -362,7 +363,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 											update()->AddBool("done", true);	// file done!
 											if (fCurFile != -1)
 												update()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
-											fFile->close();
+											fFile->Close();
 											delete fFile; 
 											fFile = NULL;
 											fDownloading = false;
@@ -379,7 +380,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 										SendReply(error);
 										Reset();
 										fDownloading = false;
-										fFile->close();
+										fFile->Close();
 										delete fFile; 
 										fFile = NULL;
 									}
@@ -415,13 +416,13 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 						outFile += fFileDl[c];
 						fixed += FixFileName(fFileDl[c]);
 						
+						uint8 digest[MD5_DIGEST_SIZE];
 						uint64 fileOffset = 0;	// autodetect file size for offset
 						uint64 retBytesHashed = 0;
 
-						if (QFile::exists(fixed))
+						if (WFile::Exists(fixed))
 						{
 							// get an MD5 hash code out of it
-							uint8 digest[MD5_DIGEST_SIZE];
 							uint64 bytesFromBack = fPartial ? PARTIAL_RESUME_SIZE : 0;
 							
 							MessageRef hashMsg(GetMessageFromPool(WGenericEvent::FileHashing));
@@ -498,7 +499,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 					fDownloading = false;
 					if (fFile != NULL)
 					{
-						fFile->close();
+						fFile->Close();
 						delete fFile; 
 						fFile = NULL;
 					}
