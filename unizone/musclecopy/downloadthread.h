@@ -53,8 +53,8 @@ protected:
 	//QString fLocalSession;	// our session ID
 	uint32 fPort;			// port of the remote client (the one it's listening on)
 	int32 fAcceptingOn;		// port we're accepting on in case the user is firewalled
-	uint64 fCurrentOffset;	// current offset in the file
-	uint64 fFileSize;		// the file size
+	int64 fCurrentOffset;		// current offset in the file
+	int64 fFileSize;		// the file size
 	time_t fCurrentFileStartTime;
 	bool fDownloading;
 	bool fFirewalled;

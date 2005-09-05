@@ -1,3 +1,10 @@
+GCCOPTFLAGS =
+KERNEL_NAME := $(shell uname -s || true)
+
+ifeq ($(KERNEL_NAME), Linux)
+GCCOPTFLAGS += -DLINUX -D__USE_LARGEFILE_64
+endif
+
 all: musclecopy
 MUSCLEDIR = ../src/muscle
 UICFILES = \
@@ -11,7 +18,12 @@ SRCFILES = \
 	genericthread.cpp \
 	main.cpp \
 	md5.cpp \
-	statusimpl.cpp \
+	statusimpl.cpp
+
+COMMON_SRCFILES = \
+	../src/unix/wfile.cpp \
+	../src/unix/wfile_unix.cpp \
+	../src/wstring.cpp
 
 MOC_SRCFILES = \
 	moc_genericthread.cpp \
@@ -43,18 +55,19 @@ MUSCLE_SRCFILES = \
 	$(MUSCLEDIR)/zlib/ZLibCodec.cpp
 
 LIBS = -L$(QTDIR)/lib -lqt-mt
-INCLUDES = -I$(QTDIR)/include -I$(MUSCLEDIR) -I.
-CXXFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING -Wall -W -Wno-multichar -Wno-deprecated
+INCLUDES = -I$(QTDIR)/include -I$(MUSCLEDIR) -I. -I../src
+CXXFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 
 UIC_OBJFILES = $(addsuffix .o,$(basename $(UIC_SRCFILES)))
 MOC_OBJFILES = $(addsuffix .o,$(basename $(MOC_SRCFILES)))
 OBJFILES = $(addsuffix .o,$(basename $(SRCFILES)))
 MUSCLE_OBJFILES = $(addsuffix .o,$(basename $(MUSCLE_SRCFILES)))
+COMMON_OBJFILES = $(addsuffix .o,$(basename $(COMMON_SRCFILES)))
 
 MOC=$(QTDIR)/bin/moc
 UIC=$(QTDIR)/bin/uic
 
-musclecopy: $(OBJFILES) $(UIC_OBJFILES) $(MOC_OBJFILES) $(MUSCLE_OBJFILES)
+musclecopy: $(OBJFILES) $(UIC_OBJFILES) $(MOC_OBJFILES) $(MUSCLE_OBJFILES) $(COMMON_OBJFILES)
 	$(CXX) $(LIBS) -o $@ $^
 
 moc_genericthread.cpp : genericthread.h
@@ -74,7 +87,7 @@ status.cpp : status.h status.ui
 
 depends: .depends
 
-.depends: $(UIC_SRCFILES) $(MOC_SRCFILES) $(SRCFILES) $(MUSCLE_SRCFILES)
+.depends: $(UIC_SRCFILES) $(MOC_SRCFILES) $(SRCFILES) $(MUSCLE_SRCFILES) $(COMMON_SRCFILES)
 	$(CXX) $(CXXFLAGS) -MM $^ > .depends
 
 clean:
