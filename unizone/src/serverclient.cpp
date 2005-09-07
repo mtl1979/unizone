@@ -7,6 +7,7 @@
 #include "global.h"
 #include "winsharewindow.h"
 #include "version.h"
+#include "resolver.h"
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 #include "qtsupport/QMessageTransceiverThread.h"
@@ -113,7 +114,7 @@ status_t
 ServerClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
 {
 	fHostName = targetHostName;
-	return qmtt->AddNewConnectSession(targetHostName, port, optSessionRef);
+	return qmtt->AddNewConnectSession(ResolveAddress(targetHostName), port, optSessionRef);
 }
 
 void 

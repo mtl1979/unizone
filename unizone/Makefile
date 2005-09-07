@@ -56,6 +56,7 @@ SRCFILES = \
 	src/platform.cpp \
 	src/prefsimpl.cpp \
 	src/privatewindowimpl.cpp \
+	src/resolver.cpp \
 	src/search.cpp \
 	src/searchitem.cpp \
 	src/serverclient.cpp \

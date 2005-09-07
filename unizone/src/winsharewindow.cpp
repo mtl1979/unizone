@@ -40,6 +40,7 @@
 #include "serverclient.h"
 #include "updateclient.h"
 #include "gotourl.h"
+#include "resolver.h"
 
 #include <qapplication.h>
 #include <qstylesheet.h>
@@ -181,6 +182,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	// run the thread here
 	if (fSettings->GetAutoUpdateServers())
 	{
+		PrintSystem(tr("Updating server list..."));
 		AbstractReflectSessionRef scref(new ThreadWorkerSession());
 		scref()->SetGateway(AbstractMessageIOGatewayRef(new PlainTextMessageIOGateway));
 		if (fServerThread->StartInternalThread() == B_OK)
@@ -199,6 +201,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	// version check thread
 	if (fSettings->GetCheckNewVersions())
 	{
+		PrintSystem(tr("Checking for updates..."));
 		AbstractReflectSessionRef psref(new ThreadWorkerSession());
 		psref()->SetGateway(AbstractMessageIOGatewayRef(new PlainTextMessageIOGateway));
 		if (fUpdateThread->StartInternalThread() == B_OK)

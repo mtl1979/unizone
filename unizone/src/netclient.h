@@ -19,13 +19,6 @@ struct NetPacket
 	String path;
 };
 
-struct NetAddress
-{
-	uint32 ip;
-	QString address;
-	uint64 lastcheck;
-};
-
 class NetClient : public QObject 
 {
 	Q_OBJECT
@@ -205,9 +198,6 @@ private:
 	void RemoveChannel(const QString &sid, const QString &channel);
 
 	void SendSignal(int signal);
-
-	uint32 ResolveAddress(const QString &address);
-	Queue<NetAddress> fAddressCache;
 
 	void Cleanup();
 

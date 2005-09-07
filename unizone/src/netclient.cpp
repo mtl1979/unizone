@@ -9,6 +9,7 @@
 #include "werrorevent.h"
 #include "wmessageevent.h"
 #include "wcrypt.h"
+#include "resolver.h"
 
 #include <qapplication.h>
 
@@ -1369,44 +1370,6 @@ NetClient::event(QEvent * e)
 	}
 	else
 		return QObject::event(e);
-}
-
-// Expire in 1 hour
-#ifdef WIN32
-# define EXPIRETIME 3600000000UI64
-#else
-# define EXPIRETIME 3600000000ULL
-#endif
-
-uint32
-NetClient::ResolveAddress(const QString &address)
-{
-	NetAddress na;
-	if (fAddressCache.GetNumItems() > 0)
-	{
-		unsigned int i = 0;
-		do
-		{
-			na = fAddressCache[i];
-			if (na.address == address)
-			{
-				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME) 
-					return na.ip;
-				else
-				{
-					na.ip = GetHostByName(address);
-					na.lastcheck = GetCurrentTime64();
-					fAddressCache.ReplaceItemAt(i, na);
-					return na.ip;
-				}
-			}
-			i++;
-		} while (i < fAddressCache.GetNumItems());
-	}
-	na.address = address;
-	na.ip = GetHostByName(address);
-	fAddressCache.AddTail(na);
-	return na.ip;
 }
 
 WinShareWindow *
