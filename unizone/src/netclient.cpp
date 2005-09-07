@@ -991,7 +991,7 @@ NetClient::GetServerIP() const
 	QString ip = "0.0.0.0";
 	uint32 address;
 	char host[16];
-	address = GetHostByName(fServer);
+	address = ResolveAddress(fServer);
 	if (address > 0)
 	{
 		Inet_NtoA(address, host);

@@ -15,6 +15,7 @@
 #include "filethread.h"
 #include "debugimpl.h"
 #include "util.h"
+#include "resolver.h"
 
 #include <qapplication.h>
 #include <qdir.h>
@@ -202,7 +203,7 @@ WUploadThread::InitSession()
 	else if (fAccept)
 	{
 		// <postmaster@raasu.org> 20021026
-		uint32 sRemoteIP = GetHostByName(fStrRemoteIP); 
+		uint32 sRemoteIP = ResolveAddress(fStrRemoteIP); 
 		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) != B_OK)
 		{
 			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));

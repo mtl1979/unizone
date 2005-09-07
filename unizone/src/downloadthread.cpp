@@ -15,6 +15,7 @@
 #include "settings.h"
 #include "util.h"
 #include "debugimpl.h"
+#include "resolver.h"
 
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
@@ -294,7 +295,7 @@ WDownloadThread::InitSession()
 				connectRef = ref;
 			}
 			
-			uint32 sIP = GetHostByName(fIP); // <postmaster@raasu.org> 20021026
+			uint32 sIP = ResolveAddress(fIP); // <postmaster@raasu.org> 20021026
 			if (qmtt->AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
 			{
 				InitSessionAux();

@@ -32,6 +32,7 @@ typedef hostent *LPHOSTENT;
 #include "serverclient.h"
 #include "updateclient.h"
 #include "wstatusbar.h"
+#include "resolver.h"
 
 #include "events.h"
 #include "chatevent.h"
@@ -3063,7 +3064,7 @@ WinShareWindow::PrintAddressInfo(const WUserRef & user, bool verbose)
 
 	if (user() != NULL)
 	{
-		address = GetHostByName(user()->GetUserHostName());
+		address = ResolveAddress(user()->GetUserHostName());
 		addr = user()->GetUserHostName();
 		uname = user()->GetUserName();
 		uid = user()->GetUserID();
@@ -3184,7 +3185,7 @@ WinShareWindow::GetAddressInfo(const QString & user, bool verbose)
 	}
 	else				// Try as hostname or ip address
 	{
-		address = GetHostByName(user);
+		address = ResolveAddress(user);
 		if (!PrintAddressInfo(address, verbose) && fSettings->GetError())
 		{
 			PrintError(tr("No address info for %1").arg(user));
