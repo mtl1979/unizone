@@ -195,6 +195,8 @@ qtcheck.out : $(QTDIR)/lib/libqt-mt.so
 	@mv -f qtcheck.tmp qtcheck.out
 	@sed -n 's/.*so\.\([[0-9]\.]*\)/\1/p' qtcheck.out
 
+$(MOC_SRCFILES) $(MUSCLEMOC_SRCFILES) $(UIC_SRCFILES) $(UIC_HEADERS) : qtcheck.out
+
 Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(MUSCLEMOC_OBJFILES) $(UIC_OBJFILES)
 	@echo Linking $@ ...
 	@$(CXX) $(LFLAGS) $(LIBS) -o $@ $^
@@ -208,7 +210,7 @@ translations : src/Makefile
 
 depends: .depends
 
-.depends: qtcheck.out .depends1 .depends2 .depends3 .depends4 .depends5
+.depends: .depends1 .depends2 .depends3 .depends4 .depends5
 	@cat .depends1 > .depends
 	@cat .depends2 >> .depends
 	@cat .depends3 >> .depends
@@ -422,7 +424,7 @@ clean :
 distclean :
 	@$(MAKE) -C src -f Makefile distclean
 	@$(MAKE) clean-aux
-	@rm -f .depends .depends[1-5] 
+	@rm -f .depends .depends[1-5] qtcheck.out
 
 # DO NOT DELETE
 
