@@ -4244,5 +4244,13 @@ Date: %4</translation>
         <source>/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Updating server list...</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Checking for updates...</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

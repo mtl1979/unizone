@@ -1,117 +1,117 @@
 <!DOCTYPE TS><TS>
-<codec>utf-8</codec>
+<defaultcodec>utf-8</defaultcodec>
 <context>
     <name></name>
     <message>
         <source>Unizone (English)</source>
-        <translation type='obsolete'>Unizone (English)</translation>
+        <translation type="obsolete">Unizone (English)</translation>
     </message>
     <message>
         <source>This is the color of your user name.</source>
-        <translation type='obsolete'>This is the color of your user name.</translation>
+        <translation type="obsolete">This is the color of your user name.</translation>
     </message>
     <message>
         <source>This is the color of other users&apos; names.</source>
-        <translation type='obsolete'>This is the color of other users&apos; names.</translation>
+        <translation type="obsolete">This is the color of other users&apos; names.</translation>
     </message>
     <message>
         <source>This is the color of text sent by you and other users.</source>
-        <translation type='obsolete'>This is the color of text sent by you and other users.</translation>
+        <translation type="obsolete">This is the color of text sent by you and other users.</translation>
     </message>
     <message>
-        <source>This is the color of "System".</source>
-        <translation type='obsolete'>This is the color of "System".</translation>
+        <source>This is the color of &quot;System&quot;.</source>
+        <translation type="obsolete">This is the color of &quot;System&quot;.</translation>
     </message>
     <message>
         <source>This is the color of the text in a ping response.</source>
-        <translation type='obsolete'>This is the color of the text in a ping response.</translation>
+        <translation type="obsolete">This is the color of the text in a ping response.</translation>
     </message>
     <message>
-        <source>This is the color of "Error".</source>
-        <translation type='obsolete'>This is the color of "Error".</translation>
+        <source>This is the color of &quot;Error&quot;.</source>
+        <translation type="obsolete">This is the color of &quot;Error&quot;.</translation>
     </message>
     <message>
         <source>This is the color of the text in error messages.</source>
-        <translation type='obsolete'>This is the color of the text in error messages.</translation>
+        <translation type="obsolete">This is the color of the text in error messages.</translation>
     </message>
     <message>
         <source>This is the color of private text.</source>
-        <translation type='obsolete'>This is the color of private text.</translation>
+        <translation type="obsolete">This is the color of private text.</translation>
     </message>
     <message>
-        <source>This is the color of "Action".</source>
-        <translation type='obsolete'>This is the color of "Action".</translation>
+        <source>This is the color of &quot;Action&quot;.</source>
+        <translation type="obsolete">This is the color of &quot;Action&quot;.</translation>
     </message>
     <message>
         <source>This is the color of URLs.</source>
-        <translation type='obsolete'>This is the color of URLs.</translation>
+        <translation type="obsolete">This is the color of URLs.</translation>
     </message>
     <message>
         <source>This is the color of your user name in text when someone says your name in the main chat.</source>
-        <translation type='obsolete'>This is the color of your user name in text when someone says your name in the main chat.</translation>
+        <translation type="obsolete">This is the color of your user name in text when someone says your name in the main chat.</translation>
     </message>
 </context>
 <context>
     <name>@default</name>
     <message>
         <source>Unizone (English)</source>
-        <translation type='obsolete'>Unizone (English)</translation>
+        <translation type="obsolete">Unizone (English)</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation type='obsolete'>Username</translation>
+        <translation type="obsolete">Username</translation>
     </message>
     <message>
         <source>Remote User</source>
-        <translation type='obsolete'>Remote User</translation>
+        <translation type="obsolete">Remote User</translation>
     </message>
     <message>
         <source>Sample text</source>
-        <translation type='obsolete'>Sample text</translation>
+        <translation type="obsolete">Sample text</translation>
     </message>
     <message>
         <source>&lt;b&gt;System&lt;/b&gt; </source>
-        <translation type='obsolete'>&lt;b&gt;System&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;System&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error&lt;/b&gt;</source>
-        <translation type='obsolete'>&lt;b&gt;Error&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Error&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Error text</source>
-        <translation type='obsolete'>Error text</translation>
+        <translation type="obsolete">Error text</translation>
     </message>
     <message>
         <source>Private text</source>
-        <translation type='obsolete'>Private text</translation>
+        <translation type="obsolete">Private text</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action&lt;/b&gt;</source>
-        <translation type='obsolete'>&lt;b&gt;Action&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Action&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;u&gt;http://magep.com/&lt;/u&gt;</source>
-        <translation type='obsolete'>&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
+        <translation type="obsolete">&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type='obsolete'>%1</translation>
+        <translation type="obsolete">%1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='obsolete'>Create Channel</translation>
+        <translation type="obsolete">Create Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='obsolete'>Please enter channel name</translation>
+        <translation type="obsolete">Please enter channel name</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='obsolete'>Channels</translation>
+        <translation type="obsolete">Channels</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
+        <translation type="obsolete">User #%1&apos;s IP address is %2.</translation>
     </message>
 </context>
 <context>
@@ -155,7 +155,7 @@ Version %1</translation>
     </message>
     <message>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
-        <translation type='obsolete'>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</translation>
+        <translation type="obsolete">Unizone is Copyright (C) 2003 by Mika T. Lindqvist</translation>
     </message>
 </context>
 <context>
@@ -170,31 +170,31 @@ Version %1</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type='obsolete'>Name</translation>
+        <translation type="obsolete">Name</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type='obsolete'>ID</translation>
+        <translation type="obsolete">ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type='obsolete'>Status</translation>
+        <translation type="obsolete">Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation type='obsolete'>Files</translation>
+        <translation type="obsolete">Files</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type='obsolete'>Connection</translation>
+        <translation type="obsolete">Connection</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation type='obsolete'>Load</translation>
+        <translation type="obsolete">Load</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation type='obsolete'>Client</translation>
+        <translation type="obsolete">Client</translation>
     </message>
     <message>
         <source>Topic set to %1.</source>
@@ -215,29 +215,29 @@ Version %1</translation>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!
 </source>
-        <translation type='obsolete'>User #%1 (a.k.a. %2) is a bot!</translation>
+        <translation type="obsolete">User #%1 (a.k.a. %2) is a bot!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is already in this private window!</source>
-        <translation type='obsolete'>User #%1 (a.k.a %2) is already in this private window!</translation>
+        <translation type="obsolete">User #%1 (a.k.a %2) is already in this private window!</translation>
     </message>
     <message>
         <source>Channel Window</source>
-        <translation type='obsolete'>Channel Window</translation>
+        <translation type="obsolete">Channel Window</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation type='obsolete'>%1 %2</translation>
+        <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
         <source>Not allowed!
 </source>
-        <translation type='obsolete'>Not allowed!</translation>
+        <translation type="obsolete">Not allowed!</translation>
     </message>
     <message>
         <source>User(s) not found!
 </source>
-        <translation type='obsolete'>User(s) not found!</translation>
+        <translation type="obsolete">User(s) not found!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is already in this channel window!</source>
@@ -261,7 +261,7 @@ Version %1</translation>
     </message>
     <message>
         <source>%1 - %2</source>
-        <translation type='obsolete'>%1 - %2</translation>
+        <translation type="obsolete">%1 - %2</translation>
     </message>
     <message>
         <source>You got kicked off from this channel!</source>
@@ -335,7 +335,7 @@ Version %1</translation>
     <name>Channels</name>
     <message>
         <source>%1</source>
-        <translation type='obsolete'>%1</translation>
+        <translation type="obsolete">%1</translation>
     </message>
     <message>
         <source>Create Channel</source>
@@ -398,35 +398,35 @@ Version %1</translation>
     <name>ChannelsBase</name>
     <message>
         <source>Channels</source>
-        <translation type='obsolete'>Channels</translation>
+        <translation type="obsolete">Channels</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type='obsolete'>Name</translation>
+        <translation type="obsolete">Name</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type='obsolete'>Topic</translation>
+        <translation type="obsolete">Topic</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type='obsolete'>Users</translation>
+        <translation type="obsolete">Users</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type='obsolete'>Admins</translation>
+        <translation type="obsolete">Admins</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type='obsolete'>Public</translation>
+        <translation type="obsolete">Public</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type='obsolete'>&amp;Create</translation>
+        <translation type="obsolete">&amp;Create</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type='obsolete'>&amp;Join</translation>
+        <translation type="obsolete">&amp;Join</translation>
     </message>
 </context>
 <context>
@@ -677,11 +677,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type='obsolete'>Search</translation>
+        <translation type="obsolete">Search</translation>
     </message>
     <message>
         <source>Open C&amp;hannels Window</source>
-        <translation type='obsolete'>Open C&amp;hannels Window</translation>
+        <translation type="obsolete">Open C&amp;hannels Window</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
@@ -733,7 +733,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>ALT+S</source>
-        <translation type='obsolete'>ALT+S</translation>
+        <translation type="obsolete">ALT+S</translation>
     </message>
     <message>
         <source>F11</source>
@@ -753,7 +753,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>C&amp;hannels</source>
-        <translation type='obsolete'>C&amp;hannels</translation>
+        <translation type="obsolete">C&amp;hannels</translation>
     </message>
     <message>
         <source>F10</source>
@@ -852,11 +852,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation type='obsolete'>You must change your nickname before connecting!</translation>
+        <translation type="obsolete">You must change your nickname before connecting!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation type='obsolete'>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
+        <translation type="obsolete">We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
     </message>
 </context>
 <context>
@@ -869,7 +869,7 @@ Date: %4</translation>
 Line %2
 File %3
 Date: %4</source>
-        <translation type='obsolete'>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
+        <translation type="obsolete">Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
 
 %1
 
@@ -879,213 +879,213 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation type='obsolete'>%1 of %2</translation>
+        <translation type="obsolete">%1 of %2</translation>
     </message>
     <message>
-        <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
-        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
+        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
         <source>User #%1 is now connected.</source>
-        <translation type='obsolete'>User #%1 is now connected.</translation>
+        <translation type="obsolete">User #%1 is now connected.</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;) has disconnected.</source>
-        <translation type='obsolete'>User #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;) has disconnected.</translation>
+        <source>User #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;) has disconnected.</source>
+        <translation type="obsolete">User #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;) has disconnected.</translation>
     </message>
     <message>
-        <source>User #%1 is now known as &lt;font color="%3"&gt;%2&lt;/font&gt;.</source>
-        <translation type='obsolete'>User #%1 is now known as &lt;font color="%3"&gt;%2&lt;/font&gt;.</translation>
+        <source>User #%1 is now known as &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</source>
+        <translation type="obsolete">User #%1 is now known as &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) is now known as &lt;font color="%5"&gt;%3&lt;/font&gt;.</source>
-        <translation type='obsolete'>User #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) is now known as &lt;font color="%5"&gt;%3&lt;/font&gt;.</translation>
+        <source>User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now known as &lt;font color=&quot;%5&quot;&gt;%3&lt;/font&gt;.</source>
+        <translation type="obsolete">User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now known as &lt;font color=&quot;%5&quot;&gt;%3&lt;/font&gt;.</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) is now %3.</source>
-        <translation type='obsolete'>User #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) is now %3.</translation>
+        <source>User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now %3.</source>
+        <translation type="obsolete">User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now %3.</translation>
     </message>
     <message>
         <source>User #%1 is now %2.</source>
-        <translation type='obsolete'>User #%1 is now %2.</translation>
+        <translation type="obsolete">User #%1 is now %2.</translation>
     </message>
     <message>
-        <source>&lt;font color="%1" size="%2"&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
-        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
+        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color="%1" size="%2"&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</source>
-        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</source>
+        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Error:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Error:&lt;/b&gt; &lt;/font&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Error:&lt;/b&gt;&lt;/font&gt; </source>
+        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Error:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Warning:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Warning:&lt;/b&gt; &lt;/font&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Warning:&lt;/b&gt;&lt;/font&gt; </source>
+        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Warning:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
         <source>You are now %1.</source>
-        <translation type='obsolete'>You are now %1.</translation>
+        <translation type="obsolete">You are now %1.</translation>
     </message>
     <message>
-        <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Action:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Action:&lt;/b&gt; &lt;/font&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Action:&lt;/b&gt;&lt;/font&gt; </source>
+        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Action:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color="%1" size="%2"&gt;User #%3 (a.k.a. &lt;font color="%5"&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</source>
-        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;User #%3 (a.k.a. &lt;font color="%5"&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;User #%3 (a.k.a. &lt;font color=&quot;%5&quot;&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</source>
+        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;User #%3 (a.k.a. &lt;font color=&quot;%5&quot;&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='obsolete'>14.4 kbps</translation>
+        <translation type="obsolete">14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='obsolete'>28.8 kbps</translation>
+        <translation type="obsolete">28.8 kbps</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation type='obsolete'>33.6 kbps</translation>
+        <translation type="obsolete">33.6 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='obsolete'>36.6 kbps</translation>
+        <translation type="obsolete">36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='obsolete'>57.6 kbps</translation>
+        <translation type="obsolete">57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='obsolete'>ISDN-64k</translation>
+        <translation type="obsolete">ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='obsolete'>ISDN-128k</translation>
+        <translation type="obsolete">ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type='obsolete'>DSL</translation>
+        <translation type="obsolete">DSL</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='obsolete'>Cable</translation>
+        <translation type="obsolete">Cable</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='obsolete'>T1</translation>
+        <translation type="obsolete">T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='obsolete'>T3</translation>
+        <translation type="obsolete">T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='obsolete'>OC-3</translation>
+        <translation type="obsolete">OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='obsolete'>OC-12</translation>
+        <translation type="obsolete">OC-12</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation type='obsolete'>300 baud</translation>
+        <translation type="obsolete">300 baud</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='obsolete'>DSL-256k</translation>
+        <translation type="obsolete">DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='obsolete'>DSL-384k</translation>
+        <translation type="obsolete">DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='obsolete'>DSL-512k</translation>
+        <translation type="obsolete">DSL-512k</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
-        <translation type='obsolete'>Unizone (English)</translation>
+        <translation type="obsolete">Unizone (English)</translation>
     </message>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation type='obsolete'>Date:</translation>
+        <translation type="obsolete">Date:</translation>
     </message>
     <message>
         <source>B</source>
-        <translation type='obsolete'>B</translation>
+        <translation type="obsolete">B</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation type='obsolete'>kB</translation>
+        <translation type="obsolete">kB</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation type='obsolete'>MB</translation>
+        <translation type="obsolete">MB</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation type='obsolete'>GB</translation>
+        <translation type="obsolete">GB</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation type='obsolete'>B/s</translation>
+        <translation type="obsolete">B/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation type='obsolete'>kB/s</translation>
+        <translation type="obsolete">kB/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation type='obsolete'>MB/s</translation>
+        <translation type="obsolete">MB/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation type='obsolete'>GB/s</translation>
+        <translation type="obsolete">GB/s</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='obsolete'>%1.%2.%3 build %4</translation>
+        <translation type="obsolete">%1.%2.%3 build %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type='obsolete'>User #%1 has disconnected.</translation>
+        <translation type="obsolete">User #%1 has disconnected.</translation>
     </message>
     <message>
         <source>User #%1 is now nameless.</source>
-        <translation type='obsolete'>User #%1 is now nameless.</translation>
+        <translation type="obsolete">User #%1 is now nameless.</translation>
     </message>
     <message>
-        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+        <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type='obsolete'>User #%1&apos;s IP address is %2.</translation>
+        <translation type="obsolete">User #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
-        <translation type='obsolete'>Reading directory...</translation>
+        <translation type="obsolete">Reading directory...</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation type='obsolete'>%1 %2</translation>
+        <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='obsolete'>DSL-1M</translation>
+        <translation type="obsolete">DSL-1M</translation>
     </message>
     <message>
         <source>TB</source>
-        <translation type='obsolete'>TB</translation>
+        <translation type="obsolete">TB</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation type='obsolete'>TB/s</translation>
+        <translation type="obsolete">TB/s</translation>
     </message>
 </context>
 <context>
@@ -1201,95 +1201,95 @@ Date: %4</translation>
     </message>
     <message>
         <source>64 bytes</source>
-        <translation type='obsolete'>64 bytes</translation>
+        <translation type="obsolete">64 bytes</translation>
     </message>
     <message>
         <source>128 bytes</source>
-        <translation type='obsolete'>128 bytes</translation>
+        <translation type="obsolete">128 bytes</translation>
     </message>
     <message>
         <source>512 bytes</source>
-        <translation type='obsolete'>512 bytes</translation>
+        <translation type="obsolete">512 bytes</translation>
     </message>
     <message>
         <source>1 kB</source>
-        <translation type='obsolete'>1 kB</translation>
+        <translation type="obsolete">1 kB</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation type='obsolete'>2 kB</translation>
+        <translation type="obsolete">2 kB</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation type='obsolete'>4 kB</translation>
+        <translation type="obsolete">4 kB</translation>
     </message>
     <message>
         <source>6 kB</source>
-        <translation type='obsolete'>6 kB</translation>
+        <translation type="obsolete">6 kB</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation type='obsolete'>8 kB</translation>
+        <translation type="obsolete">8 kB</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation type='obsolete'>10 kB</translation>
+        <translation type="obsolete">10 kB</translation>
     </message>
     <message>
         <source>12 kB</source>
-        <translation type='obsolete'>12 kB</translation>
+        <translation type="obsolete">12 kB</translation>
     </message>
     <message>
         <source>14 kB</source>
-        <translation type='obsolete'>14 kB</translation>
+        <translation type="obsolete">14 kB</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation type='obsolete'>16 kB</translation>
+        <translation type="obsolete">16 kB</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation type='obsolete'>32 kB</translation>
+        <translation type="obsolete">32 kB</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation type='obsolete'>64 kB</translation>
+        <translation type="obsolete">64 kB</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation type='obsolete'>128 kB</translation>
+        <translation type="obsolete">128 kB</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation type='obsolete'>256 kB</translation>
+        <translation type="obsolete">256 kB</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation type='obsolete'>512 kB</translation>
+        <translation type="obsolete">512 kB</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation type='obsolete'>1 MB</translation>
+        <translation type="obsolete">1 MB</translation>
     </message>
     <message>
         <source>2 MB</source>
-        <translation type='obsolete'>2 MB</translation>
+        <translation type="obsolete">2 MB</translation>
     </message>
     <message>
         <source>4 MB</source>
-        <translation type='obsolete'>4 MB</translation>
+        <translation type="obsolete">4 MB</translation>
     </message>
     <message>
         <source>8 MB</source>
-        <translation type='obsolete'>8 MB</translation>
+        <translation type="obsolete">8 MB</translation>
     </message>
     <message>
         <source>16 MB</source>
-        <translation type='obsolete'>16 MB</translation>
+        <translation type="obsolete">16 MB</translation>
     </message>
     <message>
         <source>32 MB</source>
-        <translation type='obsolete'>32 MB</translation>
+        <translation type="obsolete">32 MB</translation>
     </message>
     <message>
         <source>Throttle</source>
@@ -1313,7 +1313,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>256 bytes</source>
-        <translation type='obsolete'>256 bytes</translation>
+        <translation type="obsolete">256 bytes</translation>
     </message>
     <message>
         <source>Unbanned</source>
@@ -1325,23 +1325,23 @@ Date: %4</translation>
     </message>
     <message>
         <source>2 minutes</source>
-        <translation type='obsolete'>2 minutes</translation>
+        <translation type="obsolete">2 minutes</translation>
     </message>
     <message>
         <source>5 minutes</source>
-        <translation type='obsolete'>5 minutes</translation>
+        <translation type="obsolete">5 minutes</translation>
     </message>
     <message>
         <source>10 minutes</source>
-        <translation type='obsolete'>10 minutes</translation>
+        <translation type="obsolete">10 minutes</translation>
     </message>
     <message>
         <source>15 minutes</source>
-        <translation type='obsolete'>15 minutes</translation>
+        <translation type="obsolete">15 minutes</translation>
     </message>
     <message>
         <source>30 minutes</source>
-        <translation type='obsolete'>30 minutes</translation>
+        <translation type="obsolete">30 minutes</translation>
     </message>
     <message>
         <source>1 hour</source>
@@ -1369,7 +1369,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type='obsolete'>%1</translation>
+        <translation type="obsolete">%1</translation>
     </message>
     <message>
         <source>Blocked for %1 minute(s).</source>
@@ -1381,7 +1381,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 is downloading %2.</source>
-        <translation type='obsolete'>%1 is downloading %2.</translation>
+        <translation type="obsolete">%1 is downloading %2.</translation>
     </message>
     <message>
         <source>Error: %1</source>
@@ -1393,7 +1393,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Finished downloading %2 from %1.</source>
-        <translation type='obsolete'>Finished downloading %2 from %1.</translation>
+        <translation type="obsolete">Finished downloading %2 from %1.</translation>
     </message>
     <message>
         <source>Uploading: [%1%]</source>
@@ -1401,7 +1401,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
-        <translation type='obsolete'>%1 has finished downloading %2.</translation>
+        <translation type="obsolete">%1 has finished downloading %2.</translation>
     </message>
     <message>
         <source>Locally Queued.</source>
@@ -1477,7 +1477,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
-        <translation type='obsolete'>Downloading %1 from %2.</translation>
+        <translation type="obsolete">Downloading %1 from %2.</translation>
     </message>
     <message>
         <source>Elapsed</source>
@@ -1512,11 +1512,11 @@ Date: %4</translation>
     <name>WDownloadThread</name>
     <message>
         <source>%1%2 %3%4</source>
-        <translation type='obsolete'>%1%2 %3%4</translation>
+        <translation type="obsolete">%1%2 %3%4</translation>
     </message>
     <message>
         <source>%1%2 %3</source>
-        <translation type='obsolete'>%1%2 %3</translation>
+        <translation type="obsolete">%1%2 %3</translation>
     </message>
     <message>
         <source>Could not add new connect session!</source>
@@ -1569,24 +1569,24 @@ Date: %4</translation>
 <context>
     <name>WFormat</name>
     <message>
-        <source>&lt;font size="%1"&gt;</source>
-        <translation>&lt;font size="%1"&gt;</translation>
+        <source>&lt;font size=&quot;%1&quot;&gt;</source>
+        <translation>&lt;font size=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
         <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color="%1"&gt;</source>
-        <translation>&lt;font color="%1"&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot;&gt;</source>
+        <translation>&lt;font color=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt; </source>
-        <translation type='obsolete'>&lt;b&gt;(%1)&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color="%1" size="%2"&gt;</source>
-        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</source>
+        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
@@ -1598,15 +1598,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>) has disconnected.</source>
-        <translation type='obsolete'>) has disconnected.</translation>
+        <translation type="obsolete">) has disconnected.</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type='obsolete'>User #%1 has disconnected.</translation>
+        <translation type="obsolete">User #%1 has disconnected.</translation>
     </message>
     <message>
         <source>User #%1 is now known as</source>
-        <translation type='obsolete'>User #%1 is now known as</translation>
+        <translation type="obsolete">User #%1 is now known as</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
@@ -1618,15 +1618,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a.</source>
-        <translation type='obsolete'>User #%1 (a.k.a.</translation>
+        <translation type="obsolete">User #%1 (a.k.a.</translation>
     </message>
     <message>
         <source>) is now </source>
-        <translation type='obsolete'>) is now</translation>
+        <translation type="obsolete">) is now</translation>
     </message>
     <message>
         <source>User #%1 is now </source>
-        <translation type='obsolete'>User #%1 is now</translation>
+        <translation type="obsolete">User #%1 is now</translation>
     </message>
     <message>
         <source>&apos;s IP address is %1.</source>
@@ -1646,11 +1646,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type='obsolete'>&lt;b&gt;-%1-&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;-%1-&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type='obsolete'>&lt;b&gt;%1&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
@@ -1658,11 +1658,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>) pinged you.</source>
-        <translation type='obsolete'>) pinged you.</translation>
+        <translation type="obsolete">) pinged you.</translation>
     </message>
     <message>
         <source>) is now known as</source>
-        <translation type='obsolete'>) is now known as</translation>
+        <translation type="obsolete">) is now known as</translation>
     </message>
     <message>
         <source>Ping returned in %1 milliseconds</source>
@@ -1682,7 +1682,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>) is now</source>
-        <translation type='obsolete'>) is now</translation>
+        <translation type="obsolete">) is now</translation>
     </message>
     <message>
         <source>Time request sent to</source>
@@ -1756,11 +1756,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>user #%1 (a.k.a</source>
-        <translation type='obsolete'>user #%1 (a.k.a</translation>
+        <translation type="obsolete">user #%1 (a.k.a</translation>
     </message>
     <message>
         <source>user #%1</source>
-        <translation type='obsolete'>user #%1</translation>
+        <translation type="obsolete">user #%1</translation>
     </message>
     <message>
         <source>ip_prefix</source>
@@ -1786,7 +1786,7 @@ Date: %4</translation>
     <name>WGenericThread</name>
     <message>
         <source>Connection timed out!</source>
-        <translation type='obsolete'>Connection timed out!</translation>
+        <translation type="obsolete">Connection timed out!</translation>
     </message>
 </context>
 <context>
@@ -1830,8 +1830,8 @@ Date: %4</translation>
 <context>
     <name>WPrefs</name>
     <message>
-        <source>&lt;font color="%1"&gt;%2&lt;/font&gt;</source>
-        <translation>&lt;font color="%1"&gt;%2&lt;/font&gt;</translation>
+        <source>&lt;font color=&quot;%1&quot;&gt;%2&lt;/font&gt;</source>
+        <translation>&lt;font color=&quot;%1&quot;&gt;%2&lt;/font&gt;</translation>
     </message>
     <message>
         <source>This is the color of your user name.</source>
@@ -1846,16 +1846,16 @@ Date: %4</translation>
         <translation>This is the color of text sent by you and other users.</translation>
     </message>
     <message>
-        <source>This is the color of "System".</source>
-        <translation>This is the color of "System".</translation>
+        <source>This is the color of &quot;System&quot;.</source>
+        <translation>This is the color of &quot;System&quot;.</translation>
     </message>
     <message>
         <source>This is the color of the text in a ping response.</source>
         <translation>This is the color of the text in a ping response.</translation>
     </message>
     <message>
-        <source>This is the color of "Error".</source>
-        <translation>This is the color of "Error".</translation>
+        <source>This is the color of &quot;Error&quot;.</source>
+        <translation>This is the color of &quot;Error&quot;.</translation>
     </message>
     <message>
         <source>This is the color of the text in error messages.</source>
@@ -1866,8 +1866,8 @@ Date: %4</translation>
         <translation>This is the color of private text.</translation>
     </message>
     <message>
-        <source>This is the color of "Action".</source>
-        <translation>This is the color of "Action".</translation>
+        <source>This is the color of &quot;Action&quot;.</source>
+        <translation>This is the color of &quot;Action&quot;.</translation>
     </message>
     <message>
         <source>This is the color of URLs.</source>
@@ -1914,8 +1914,8 @@ Date: %4</translation>
         <translation>&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
     <message>
-        <source>This is the color of "Warning".</source>
-        <translation>This is the color of "Warning".</translation>
+        <source>This is the color of &quot;Warning&quot;.</source>
+        <translation>This is the color of &quot;Warning&quot;.</translation>
     </message>
     <message>
         <source>This is the color of the text in warning messages.</source>
@@ -2042,7 +2042,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type='obsolete'>DSL</translation>
+        <translation type="obsolete">DSL</translation>
     </message>
     <message>
         <source>Cable</source>
@@ -2294,7 +2294,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted)</source>
-        <translation type='obsolete'>Uploads (per blacklisted)</translation>
+        <translation type="obsolete">Uploads (per blacklisted)</translation>
     </message>
     <message>
         <source>No Limit</source>
@@ -2382,11 +2382,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Downloads (per download)</source>
-        <translation type='obsolete'>Downloads (per download)</translation>
+        <translation type="obsolete">Downloads (per download)</translation>
     </message>
     <message>
         <source>Uploads (per upload)</source>
-        <translation type='obsolete'>Uploads (per upload)</translation>
+        <translation type="obsolete">Uploads (per upload)</translation>
     </message>
     <message>
         <source>Throttling</source>
@@ -2426,7 +2426,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Upload Packet Size</source>
-        <translation type='obsolete'>Upload Packet Size</translation>
+        <translation type="obsolete">Upload Packet Size</translation>
     </message>
     <message>
         <source>Upload Packet Size:</source>
@@ -2442,27 +2442,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue</source>
-        <translation type='obsolete'>Minimum File Size to Queue</translation>
+        <translation type="obsolete">Minimum File Size to Queue</translation>
     </message>
     <message>
         <source>5 kB</source>
-        <translation type='obsolete'>5 kB</translation>
+        <translation type="obsolete">5 kB</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation type='obsolete'>10 kB</translation>
+        <translation type="obsolete">10 kB</translation>
     </message>
     <message>
         <source>25 kB</source>
-        <translation type='obsolete'>25 kB</translation>
+        <translation type="obsolete">25 kB</translation>
     </message>
     <message>
         <source>50 kB</source>
-        <translation type='obsolete'>50 kB</translation>
+        <translation type="obsolete">50 kB</translation>
     </message>
     <message>
         <source>100 kB</source>
-        <translation type='obsolete'>100 kB</translation>
+        <translation type="obsolete">100 kB</translation>
     </message>
     <message>
         <source>Base Port:</source>
@@ -2474,15 +2474,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>200 kB</source>
-        <translation type='obsolete'>200 kB</translation>
+        <translation type="obsolete">200 kB</translation>
     </message>
     <message>
         <source>250 kB</source>
-        <translation type='obsolete'>250 kB</translation>
+        <translation type="obsolete">250 kB</translation>
     </message>
     <message>
         <source>500 kB</source>
-        <translation type='obsolete'>500 kB</translation>
+        <translation type="obsolete">500 kB</translation>
     </message>
     <message>
         <source>IP Addresses</source>
@@ -2525,31 +2525,31 @@ Date: %4</translation>
     <name>WPrivateWindow</name>
     <message>
         <source>Name</source>
-        <translation type='obsolete'>Name</translation>
+        <translation type="obsolete">Name</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type='obsolete'>ID</translation>
+        <translation type="obsolete">ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type='obsolete'>Status</translation>
+        <translation type="obsolete">Status</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation type='obsolete'>Files</translation>
+        <translation type="obsolete">Files</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type='obsolete'>Connection</translation>
+        <translation type="obsolete">Connection</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation type='obsolete'>Load</translation>
+        <translation type="obsolete">Load</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation type='obsolete'>Client</translation>
+        <translation type="obsolete">Client</translation>
     </message>
     <message>
         <source>Disconnected from server.</source>
@@ -2558,7 +2558,7 @@ Date: %4</translation>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!
 </source>
-        <translation type='obsolete'>User #%1 (a.k.a. %2) is a bot!</translation>
+        <translation type="obsolete">User #%1 (a.k.a. %2) is a bot!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is already in this private window!</source>
@@ -2566,7 +2566,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) was removed from the private chat window.</source>
-        <translation type='obsolete'>User #%1 (a.k.a. %2) was removed from the private chat window.</translation>
+        <translation type="obsolete">User #%1 (a.k.a. %2) was removed from the private chat window.</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -2581,12 +2581,12 @@ Date: %4</translation>
         <translation>Get IP Address</translation>
     </message>
     <message>
-        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+        <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>[Freeware] - Private</source>
-        <translation type='obsolete'>[Freeware] - Private</translation>
+        <translation type="obsolete">[Freeware] - Private</translation>
     </message>
     <message>
         <source>Private Chat</source>
@@ -2607,7 +2607,7 @@ Date: %4</translation>
     <message>
         <source>User(s) not found!
 </source>
-        <translation type='obsolete'>User(s) not found!</translation>
+        <translation type="obsolete">User(s) not found!</translation>
     </message>
     <message>
         <source>Failed to create private log.</source>
@@ -2619,11 +2619,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
-        <translation type='obsolete'>User #%1 (a.k.a. %2) is a bot!</translation>
+        <translation type="obsolete">User #%1 (a.k.a. %2) is a bot!</translation>
     </message>
     <message>
         <source>Private</source>
-        <translation type='obsolete'>Private</translation>
+        <translation type="obsolete">Private</translation>
     </message>
     <message>
         <source>Encryption enabled.</source>
@@ -2685,7 +2685,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type='obsolete'>Close</translation>
+        <translation type="obsolete">Close</translation>
     </message>
     <message>
         <source>Clear</source>
@@ -2701,15 +2701,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type='obsolete'>%1</translation>
+        <translation type="obsolete">%1</translation>
     </message>
     <message>
         <source>Not connected.</source>
         <translation>Not connected.</translation>
     </message>
     <message>
-        <source>Searching for: "%1".</source>
-        <translation>Searching for: "%1".</translation>
+        <source>Searching for: &quot;%1&quot;.</source>
+        <translation>Searching for: &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Results: %1</source>
@@ -2810,7 +2810,7 @@ Date: %4</translation>
     <name>WUploadThread</name>
     <message>
         <source>Your download has been blocked for %1 minute(s)!</source>
-        <translation type='obsolete'>Your download has been blocked for %1 minute(s)!</translation>
+        <translation type="obsolete">Your download has been blocked for %1 minute(s)!</translation>
     </message>
     <message>
         <source>User #%1</source>
@@ -2826,7 +2826,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Connection reset by peer!</source>
-        <translation type='obsolete'>Connection reset by peer!</translation>
+        <translation type="obsolete">Connection reset by peer!</translation>
     </message>
     <message>
         <source>Connection timed out!</source>
@@ -2932,7 +2932,7 @@ Date: %4</translation>
     <name>WinShare</name>
     <message>
         <source>%d.%d.%d build %d</source>
-        <translation type='obsolete'>%d.%d.%d build %d</translation>
+        <translation type="obsolete">%d.%d.%d build %d</translation>
     </message>
 </context>
 <context>
@@ -2976,7 +2976,7 @@ Date: %4</translation>
     <message>
         <source>Number of users logged in: %1
 </source>
-        <translation type='obsolete'>Number of users logged in: %1</translation>
+        <translation type="obsolete">Number of users logged in: %1</translation>
     </message>
     <message>
         <source>No users passed.</source>
@@ -3056,11 +3056,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>On connect: %1</source>
-        <translation type='obsolete'>On connect: %1</translation>
+        <translation type="obsolete">On connect: %1</translation>
     </message>
     <message>
         <source>On connect 2: %1</source>
-        <translation type='obsolete'>On connect 2: %1</translation>
+        <translation type="obsolete">On connect 2: %1</translation>
     </message>
     <message>
         <source>Remote password: %1</source>
@@ -3072,7 +3072,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone version: %1.%2.%3 build %4</source>
-        <translation type='obsolete'>Unizone version: %1.%2.%3 build %4</translation>
+        <translation type="obsolete">Unizone version: %1.%2.%3 build %4</translation>
     </message>
     <message>
         <source>MUSCLE version: %1</source>
@@ -3080,7 +3080,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>On connect do: %1</source>
-        <translation type='obsolete'>On connect do: %1</translation>
+        <translation type="obsolete">On connect do: %1</translation>
     </message>
     <message>
         <source>Unknown command!</source>
@@ -3091,24 +3091,24 @@ Date: %4</translation>
         <translation>User(s) not found!</translation>
     </message>
     <message>
-        <source>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
-        <translation type='obsolete'>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
+        <source>Ping sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</source>
+        <translation type="obsolete">Ping sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
-        <translation type='obsolete'>You are not allowed to %1 [%2]</translation>
+        <translation type="obsolete">You are not allowed to %1 [%2]</translation>
     </message>
     <message>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
-        <translation type='obsolete'>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</translation>
+        <translation type="obsolete">Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type='obsolete'>Unknown</translation>
+        <translation type="obsolete">Unknown</translation>
     </message>
     <message>
         <source>Unizone (English) </source>
-        <translation type='obsolete'>Unizone (English)</translation>
+        <translation type="obsolete">Unizone (English)</translation>
     </message>
     <message>
         <source>Connecting to server %1.</source>
@@ -3132,7 +3132,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Address info for user #%1 (%2):</source>
-        <translation type='obsolete'>Address info for user #%1 (%2):</translation>
+        <translation type="obsolete">Address info for user #%1 (%2):</translation>
     </message>
     <message>
         <source>Address info for %1:</source>
@@ -3160,7 +3160,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>No address info for %1 or %2</source>
-        <translation type='obsolete'>No address info for %1 or %2</translation>
+        <translation type="obsolete">No address info for %1 or %2</translation>
     </message>
     <message>
         <source>No address info for %1</source>
@@ -3191,12 +3191,12 @@ Date: %4</translation>
         <translation>Ping %1</translation>
     </message>
     <message>
-        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
+        <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</translation>
     </message>
     <message>
         <source>/ping %1</source>
-        <translation type='obsolete'>/ping %1</translation>
+        <translation type="obsolete">/ping %1</translation>
     </message>
     <message>
         <source>Trying to resume file %1 from user %2</source>
@@ -3204,11 +3204,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</source>
-        <translation type='obsolete'>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</translation>
+        <translation type="obsolete">Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</source>
-        <translation type='obsolete'>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</translation>
+        <translation type="obsolete">Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</translation>
     </message>
     <message>
         <source>Original idea by Vitaliy Mikitchenko.</source>
@@ -3232,7 +3232,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Sharing %1 file(s).</source>
-        <translation type='obsolete'>Sharing %1 file(s).</translation>
+        <translation type="obsolete">Sharing %1 file(s).</translation>
     </message>
     <message>
         <source>Connected.</source>
@@ -3243,8 +3243,8 @@ Date: %4</translation>
         <translation>Reconnect timer stopped</translation>
     </message>
     <message>
-        <source>Name changed to &lt;font color="%2"&gt;%1&lt;/font&gt;.</source>
-        <translation type='obsolete'>Name changed to &lt;font color="%2"&gt;%1&lt;/font&gt;.</translation>
+        <source>Name changed to &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</source>
+        <translation type="obsolete">Name changed to &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</translation>
     </message>
     <message>
         <source>Server:</source>
@@ -3260,79 +3260,79 @@ Date: %4</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type='obsolete'>Name</translation>
+        <translation type="obsolete">Name</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type='obsolete'>ID</translation>
+        <translation type="obsolete">ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type='obsolete'>Status</translation>
+        <translation type="obsolete">Status</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type='obsolete'>Connection</translation>
+        <translation type="obsolete">Connection</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation type='obsolete'>Load</translation>
+        <translation type="obsolete">Load</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation type='obsolete'>Client</translation>
+        <translation type="obsolete">Client</translation>
     </message>
     <message>
         <source>Testing Unizone (English) </source>
-        <translation type='obsolete'>Testing Unizone (English)</translation>
+        <translation type="obsolete">Testing Unizone (English)</translation>
     </message>
     <message>
         <source>1 week, </source>
-        <translation type='obsolete'>1 week,</translation>
+        <translation type="obsolete">1 week,</translation>
     </message>
     <message>
         <source>%1 weeks, </source>
-        <translation type='obsolete'>%1 weeks,</translation>
+        <translation type="obsolete">%1 weeks,</translation>
     </message>
     <message>
         <source>1 day, </source>
-        <translation type='obsolete'>1 day,</translation>
+        <translation type="obsolete">1 day,</translation>
     </message>
     <message>
         <source>%1 days, </source>
-        <translation type='obsolete'>%1 days,</translation>
+        <translation type="obsolete">%1 days,</translation>
     </message>
     <message>
         <source>1 hour, </source>
-        <translation type='obsolete'>1 hour,</translation>
+        <translation type="obsolete">1 hour,</translation>
     </message>
     <message>
         <source>%1 hours, </source>
-        <translation type='obsolete'>%1 hours,</translation>
+        <translation type="obsolete">%1 hours,</translation>
     </message>
     <message>
         <source>1 minute, </source>
-        <translation type='obsolete'>1 minute,</translation>
+        <translation type="obsolete">1 minute,</translation>
     </message>
     <message>
         <source>%1 minutes, </source>
-        <translation type='obsolete'>%1 minutes,</translation>
+        <translation type="obsolete">%1 minutes,</translation>
     </message>
     <message>
         <source>1 second, </source>
-        <translation type='obsolete'>1 second,</translation>
+        <translation type="obsolete">1 second,</translation>
     </message>
     <message>
         <source>%1 seconds, </source>
-        <translation type='obsolete'>%1 seconds,</translation>
+        <translation type="obsolete">%1 seconds,</translation>
     </message>
     <message>
         <source> and </source>
-        <translation type='obsolete'>and</translation>
+        <translation type="obsolete">and</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation type='obsolete'>%1 %2</translation>
+        <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
         <source>Waiting for file scan thread to finish...</source>
@@ -3340,7 +3340,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type='obsolete'>%1</translation>
+        <translation type="obsolete">%1</translation>
     </message>
     <message>
         <source>here</source>
@@ -3372,7 +3372,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>/search %1</source>
-        <translation type='obsolete'>/search %1</translation>
+        <translation type="obsolete">/search %1</translation>
     </message>
     <message>
         <source>Rescanning shared files...</source>
@@ -3388,7 +3388,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>[Freeware] - Unizone</source>
-        <translation type='obsolete'>[Freeware] - Unizone</translation>
+        <translation type="obsolete">[Freeware] - Unizone</translation>
     </message>
     <message>
         <source>Ignore pattern cleared.</source>
@@ -3440,31 +3440,31 @@ Date: %4</translation>
     </message>
     <message>
         <source>Access Denied!!!</source>
-        <translation type='obsolete'>Access Denied!!!</translation>
+        <translation type="obsolete">Access Denied!!!</translation>
     </message>
     <message>
         <source>do that to</source>
-        <translation type='obsolete'>do that to</translation>
+        <translation type="obsolete">do that to</translation>
     </message>
     <message>
         <source>kick</source>
-        <translation type='obsolete'>kick</translation>
+        <translation type="obsolete">kick</translation>
     </message>
     <message>
         <source>ban</source>
-        <translation type='obsolete'>ban</translation>
+        <translation type="obsolete">ban</translation>
     </message>
     <message>
         <source>unban</source>
-        <translation type='obsolete'>unban</translation>
+        <translation type="obsolete">unban</translation>
     </message>
     <message>
         <source>require</source>
-        <translation type='obsolete'>require</translation>
+        <translation type="obsolete">require</translation>
     </message>
     <message>
         <source>unrequire</source>
-        <translation type='obsolete'>unrequire</translation>
+        <translation type="obsolete">unrequire</translation>
     </message>
     <message>
         <source>Resume list:</source>
@@ -3472,7 +3472,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Connected users: </source>
-        <translation type='obsolete'>Connected users:</translation>
+        <translation type="obsolete">Connected users:</translation>
     </message>
     <message>
         <source>Logging disabled.</source>
@@ -3484,7 +3484,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Copyright (C) 2002-2003 Mika T. Lindqvist.</source>
-        <translation type='obsolete'>Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
+        <translation type="obsolete">Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
     </message>
     <message>
         <source>Number of users logged in: %1</source>
@@ -3832,27 +3832,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>Auto-private pattern : %1</source>
-        <translation type='obsolete'>Auto-private pattern : %1</translation>
+        <translation type="obsolete">Auto-private pattern : %1</translation>
     </message>
     <message>
         <source>Blacklist pattern : %1</source>
-        <translation type='obsolete'>Blacklist pattern : %1</translation>
+        <translation type="obsolete">Blacklist pattern : %1</translation>
     </message>
     <message>
         <source>Ignore pattern : %1</source>
-        <translation type='obsolete'>Ignore pattern : %1</translation>
+        <translation type="obsolete">Ignore pattern : %1</translation>
     </message>
     <message>
         <source>Watch pattern : %1</source>
-        <translation type='obsolete'>Watch pattern : %1</translation>
+        <translation type="obsolete">Watch pattern : %1</translation>
     </message>
     <message>
         <source>On Connect : %1</source>
-        <translation type='obsolete'>On Connect : %1</translation>
+        <translation type="obsolete">On Connect : %1</translation>
     </message>
     <message>
         <source>On Connect 2: %1</source>
-        <translation type='obsolete'>On Connect 2: %1</translation>
+        <translation type="obsolete">On Connect 2: %1</translation>
     </message>
     <message>
         <source>Help for %1:</source>
@@ -3863,8 +3863,8 @@ Date: %4</translation>
         <translation>Reconnecting in 1 minute!</translation>
     </message>
     <message>
-        <source>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
-        <translation type='obsolete'>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</translation>
+        <source>Time request sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</source>
+        <translation type="obsolete">Time request sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
         <source>/time [nick] [gmt] - request time stamp from other user</source>
@@ -3896,107 +3896,107 @@ Date: %4</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type='obsolete'>File Name</translation>
+        <translation type="obsolete">File Name</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type='obsolete'>File Size</translation>
+        <translation type="obsolete">File Size</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type='obsolete'>File Type</translation>
+        <translation type="obsolete">File Type</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type='obsolete'>Modified</translation>
+        <translation type="obsolete">Modified</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type='obsolete'>Path</translation>
+        <translation type="obsolete">Path</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='obsolete'>User</translation>
+        <translation type="obsolete">User</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type='obsolete'>Search:</translation>
+        <translation type="obsolete">Search:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type='obsolete'>Download</translation>
+        <translation type="obsolete">Download</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type='obsolete'>Clear</translation>
+        <translation type="obsolete">Clear</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type='obsolete'>Stop</translation>
+        <translation type="obsolete">Stop</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type='obsolete'>Idle.</translation>
+        <translation type="obsolete">Idle.</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type='obsolete'>Topic</translation>
+        <translation type="obsolete">Topic</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type='obsolete'>Users</translation>
+        <translation type="obsolete">Users</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type='obsolete'>Admins</translation>
+        <translation type="obsolete">Admins</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type='obsolete'>Public</translation>
+        <translation type="obsolete">Public</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type='obsolete'>&amp;Create</translation>
+        <translation type="obsolete">&amp;Create</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type='obsolete'>&amp;Join</translation>
+        <translation type="obsolete">&amp;Join</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation type='obsolete'>Chat</translation>
+        <translation type="obsolete">Chat</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type='obsolete'>Search</translation>
+        <translation type="obsolete">Search</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type='obsolete'>Channels</translation>
+        <translation type="obsolete">Channels</translation>
     </message>
     <message>
-        <source>Searching for: "%1".</source>
-        <translation type='obsolete'>Searching for: "%1".</translation>
+        <source>Searching for: &quot;%1&quot;.</source>
+        <translation type="obsolete">Searching for: &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type='obsolete'>Results: %1</translation>
+        <translation type="obsolete">Results: %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type='obsolete'>Create Channel</translation>
+        <translation type="obsolete">Create Channel</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type='obsolete'>Please enter channel name</translation>
+        <translation type="obsolete">Please enter channel name</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type='obsolete'>User #%1 invited you to channel %2. Do you accept?</translation>
+        <translation type="obsolete">User #%1 invited you to channel %2. Do you accept?</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type='obsolete'>User #%1 requested invite to channel %2. Do you?</translation>
+        <translation type="obsolete">User #%1 requested invite to channel %2. Do you?</translation>
     </message>
     <message>
         <source>Server version: %1</source>
@@ -4024,23 +4024,23 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type='obsolete'>%1.%2.%3 build %4</translation>
+        <translation type="obsolete">%1.%2.%3 build %4</translation>
     </message>
     <message>
         <source>On Connect: %1</source>
-        <translation type='obsolete'>On Connect: %1</translation>
+        <translation type="obsolete">On Connect: %1</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation type='obsolete'>passive</translation>
+        <translation type="obsolete">passive</translation>
     </message>
     <message>
         <source>active</source>
-        <translation type='obsolete'>active</translation>
+        <translation type="obsolete">active</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation type='obsolete'>Clear History</translation>
+        <translation type="obsolete">Clear History</translation>
     </message>
     <message>
         <source>- Local File: %1</source>
@@ -4068,11 +4068,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone</source>
-        <translation type='obsolete'>Unizone</translation>
+        <translation type="obsolete">Unizone</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation type='obsolete'>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
+        <translation type="obsolete">Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
@@ -4120,7 +4120,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type='obsolete'>Initializing...</translation>
+        <translation type="obsolete">Initializing...</translation>
     </message>
     <message>
         <source>On Connect: Do Nothing ;)</source>
@@ -4200,7 +4200,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation type='obsolete'>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</translation>
+        <translation type="obsolete">Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</translation>
     </message>
     <message>
         <source>wandering</source>
@@ -4304,7 +4304,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
-        <translation type='obsolete'>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</translation>
+        <translation type="obsolete">Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)!</source>
@@ -4389,6 +4389,14 @@ Date: %4</translation>
     <message>
         <source>/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick</source>
         <translation>/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick</translation>
+    </message>
+    <message>
+        <source>Updating server list...</source>
+        <translation>Updating server list...</translation>
+    </message>
+    <message>
+        <source>Checking for updates...</source>
+        <translation>Checking for updates...</translation>
     </message>
 </context>
 </TS>
