@@ -3,13 +3,6 @@
 
 #ifdef WIN32
 #pragma warning(disable: 4786)
-#else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-typedef hostent *LPHOSTENT;
 #endif
 
 #include "winsharewindow.h"
@@ -3059,8 +3052,6 @@ WinShareWindow::PrintAddressInfo(const WUserRef & user, bool verbose)
 	QString out;
 	uint32 address = 0;
 	char host[16];
-	struct in_addr iaHost;	   // Internet address structure
-	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 
 	if (user() != NULL)
 	{
@@ -3084,12 +3075,10 @@ WinShareWindow::PrintAddressInfo(const WUserRef & user, bool verbose)
 			if (user()->GetPort() != 0)
 				out += "\n" + tr("Port: %1").arg( user()->GetPort() );
 					
-			iaHost.s_addr = inet_addr(host);
-			lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
-					
-			if (lpHostEntry != NULL)
+			QString qhost = ResolveHost(address);
+			if (qhost != QString::null)
 			{
-				out += "\n" + tr("Host Name: %1").arg(lpHostEntry->h_name);
+				out += "\n" + tr("Host Name: %1").arg(qhost);
 			}
 		}
 		PrintSystem(FixString(out));
@@ -3104,8 +3093,6 @@ bool
 WinShareWindow::PrintAddressInfo(uint32 address, bool verbose)
 {
 	char host[16];
-	struct in_addr iaHost;	   // Internet address structure
-	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 	QString out;
 	bool found = false;
 
@@ -3122,12 +3109,10 @@ WinShareWindow::PrintAddressInfo(uint32 address, bool verbose)
 		{
 			out += "\n" + tr("Address info for %1:").arg(host);
 				
-			iaHost.s_addr = inet_addr(host);
-			lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
-					
-			if (lpHostEntry != NULL)
+			QString qhost = ResolveHost(address);
+			if (qhost != QString::null)
 			{
-				out += "\n" + tr("Host Name: %1").arg(lpHostEntry->h_name);
+				out += "\n" + tr("Host Name: %1").arg(qhost);
 				found = true;
 			}
 					

@@ -9,4 +9,6 @@ using muscle::String;
 uint32 ResolveAddress(const QString &address);
 uint32 ResolveAddress(const String &address);
 
+QString ResolveHost(uint32 ip);
+
 #endif
