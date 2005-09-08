@@ -2984,115 +2984,115 @@
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>128 bytes</string>
+                                        <string>128 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>256 bytes</string>
+                                        <string>256 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>512 bytes</string>
+                                        <string>512 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>1 kB</string>
+                                        <string>1 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>2 kB</string>
+                                        <string>2 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>4 kB</string>
+                                        <string>4 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>8 kB</string>
+                                        <string>8 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>16 kB</string>
+                                        <string>16 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>32 kB</string>
+                                        <string>32 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>64 kB</string>
+                                        <string>64 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>128 kB</string>
+                                        <string>128 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>256 kB</string>
+                                        <string>256 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>512 kB</string>
+                                        <string>512 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>1 MB</string>
+                                        <string>1 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>2 MB</string>
+                                        <string>2 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>4 MB</string>
+                                        <string>4 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>8 MB</string>
+                                        <string>8 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>16 MB</string>
+                                        <string>16 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>32 MB</string>
+                                        <string>32 MB/s</string>
                                     </property>
                                 </item>
                                 <property stdset="1">
@@ -3188,115 +3188,115 @@
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>128 bytes</string>
+                                        <string>128 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>256 bytes</string>
+                                        <string>256 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>512 bytes</string>
+                                        <string>512 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>1 kB</string>
+                                        <string>1 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>2 kB</string>
+                                        <string>2 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>4 kB</string>
+                                        <string>4 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>8 kB</string>
+                                        <string>8 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>16 kB</string>
+                                        <string>16 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>32 kB</string>
+                                        <string>32 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>64 kB</string>
+                                        <string>64 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>128 kB</string>
+                                        <string>128 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>256 kB</string>
+                                        <string>256 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>512 kB</string>
+                                        <string>512 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>1 MB</string>
+                                        <string>1 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>2 MB</string>
+                                        <string>2 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>4 MB</string>
+                                        <string>4 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>8 MB</string>
+                                        <string>8 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>16 MB</string>
+                                        <string>16 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>32 MB</string>
+                                        <string>32 MB/s</string>
                                     </property>
                                 </item>
                                 <property stdset="1">
@@ -3371,115 +3371,115 @@
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>128 bytes</string>
+                                        <string>128 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>256 bytes</string>
+                                        <string>256 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>512 bytes</string>
+                                        <string>512 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>1 kB</string>
+                                        <string>1 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>2 kB</string>
+                                        <string>2 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>4 kB</string>
+                                        <string>4 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>8 kB</string>
+                                        <string>8 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>16 kB</string>
+                                        <string>16 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>32 kB</string>
+                                        <string>32 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>64 kB</string>
+                                        <string>64 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>128 kB</string>
+                                        <string>128 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>256 kB</string>
+                                        <string>256 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>512 kB</string>
+                                        <string>512 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>1 MB</string>
+                                        <string>1 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>2 MB</string>
+                                        <string>2 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>4 MB</string>
+                                        <string>4 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>8 MB</string>
+                                        <string>8 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>16 MB</string>
+                                        <string>16 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>32 MB</string>
+                                        <string>32 MB/s</string>
                                     </property>
                                 </item>
                                 <property stdset="1">
@@ -3568,115 +3568,115 @@
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>128 bytes</string>
+                                        <string>128 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>256 bytes</string>
+                                        <string>256 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>512 bytes</string>
+                                        <string>512 B/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>1 kB</string>
+                                        <string>1 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>2 kB</string>
+                                        <string>2 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>4 kB</string>
+                                        <string>4 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>8 kB</string>
+                                        <string>8 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>16 kB</string>
+                                        <string>16 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>32 kB</string>
+                                        <string>32 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>64 kB</string>
+                                        <string>64 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>128 kB</string>
+                                        <string>128 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>256 kB</string>
+                                        <string>256 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>512 kB</string>
+                                        <string>512 kB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>1 MB</string>
+                                        <string>1 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>2 MB</string>
+                                        <string>2 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>4 MB</string>
+                                        <string>4 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>8 MB</string>
+                                        <string>8 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>16 MB</string>
+                                        <string>16 MB/s</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property>
                                         <name>text</name>
-                                        <string>32 MB</string>
+                                        <string>32 MB/s</string>
                                     </property>
                                 </item>
                                 <property stdset="1">

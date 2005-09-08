@@ -1452,7 +1452,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 bytes</source>
-        <translation>%1 octets</translation>
+        <translation type='obsolete'>%1 octets</translation>
     </message>
     <message>
         <source>%1 kB</source>
@@ -1465,6 +1465,18 @@ Date: %4</translation>
     <message>
         <source>%1 minutes</source>
         <translation>%1 minutes</translation>
+    </message>
+    <message>
+        <source>%1 B/s</source>
+        <translation>%1 o/s</translation>
+    </message>
+    <message>
+        <source>%1 kB/s</source>
+        <translation>%1 ko/s</translation>
+    </message>
+    <message>
+        <source>%1 MB/s</source>
+        <translation>%1 Mo/s</translation>
     </message>
 </context>
 <context>
@@ -2198,15 +2210,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>128 bytes</source>
-        <translation>128 octets</translation>
+        <translation type='obsolete'>128 octets</translation>
     </message>
     <message>
         <source>256 bytes</source>
-        <translation>256 octets</translation>
+        <translation type='obsolete'>256 octets</translation>
     </message>
     <message>
         <source>512 bytes</source>
-        <translation>512 octets</translation>
+        <translation type='obsolete'>512 octets</translation>
     </message>
     <message>
         <source>1 kB</source>
@@ -2254,23 +2266,23 @@ Date: %4</translation>
     </message>
     <message>
         <source>2 MB</source>
-        <translation>2 Mo</translation>
+        <translation type='obsolete'>2 Mo</translation>
     </message>
     <message>
         <source>4 MB</source>
-        <translation>4 Mo</translation>
+        <translation type='obsolete'>4 Mo</translation>
     </message>
     <message>
         <source>8 MB</source>
-        <translation>8 Mo</translation>
+        <translation type='obsolete'>8 Mo</translation>
     </message>
     <message>
         <source>16 MB</source>
-        <translation>16 Mo</translation>
+        <translation type='obsolete'>16 Mo</translation>
     </message>
     <message>
         <source>32 MB</source>
-        <translation>32 Mo</translation>
+        <translation type='obsolete'>32 Mo</translation>
     </message>
     <message>
         <source>Chat:</source>
@@ -2407,6 +2419,82 @@ Date: %4</translation>
     <message>
         <source>DSL-1M</source>
         <translation>DSL-1M</translation>
+    </message>
+    <message>
+        <source>128 B/s</source>
+        <translation>128 o/s</translation>
+    </message>
+    <message>
+        <source>256 B/s</source>
+        <translation>256 o/s</translation>
+    </message>
+    <message>
+        <source>512 B/s</source>
+        <translation>512 o/s</translation>
+    </message>
+    <message>
+        <source>1 kB/s</source>
+        <translation>1 ko/s</translation>
+    </message>
+    <message>
+        <source>2 kB/s</source>
+        <translation>2 ko/s</translation>
+    </message>
+    <message>
+        <source>4 kB/s</source>
+        <translation>4 ko/s</translation>
+    </message>
+    <message>
+        <source>8 kB/s</source>
+        <translation>8 ko/s</translation>
+    </message>
+    <message>
+        <source>16 kB/s</source>
+        <translation>16 ko/s</translation>
+    </message>
+    <message>
+        <source>32 kB/s</source>
+        <translation>32 ko/s</translation>
+    </message>
+    <message>
+        <source>64 kB/s</source>
+        <translation>64 ko/s</translation>
+    </message>
+    <message>
+        <source>128 kB/s</source>
+        <translation>128 ko/s</translation>
+    </message>
+    <message>
+        <source>256 kB/s</source>
+        <translation>256 ko/s</translation>
+    </message>
+    <message>
+        <source>512 kB/s</source>
+        <translation>512 ko/s</translation>
+    </message>
+    <message>
+        <source>1 MB/s</source>
+        <translation>1 Mo/s</translation>
+    </message>
+    <message>
+        <source>2 MB/s</source>
+        <translation>2 Mo/s</translation>
+    </message>
+    <message>
+        <source>4 MB/s</source>
+        <translation>4 Mo/s</translation>
+    </message>
+    <message>
+        <source>8 MB/s</source>
+        <translation>8 Mo/s</translation>
+    </message>
+    <message>
+        <source>16 MB/s</source>
+        <translation>16 Mo/s</translation>
+    </message>
+    <message>
+        <source>32 MB/s</source>
+        <translation>32 Mo/s</translation>
     </message>
 </context>
 <context>

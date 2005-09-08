@@ -1,145 +1,145 @@
 <!DOCTYPE TS><TS>
-<defaultcodec>utf-8</defaultcodec>
+<codec>utf-8</codec>
 <context>
     <name></name>
     <message>
         <source>Unizone (English)</source>
-        <translation type="obsolete">Unizone (Suomi)</translation>
+        <translation type='obsolete'>Unizone (Suomi)</translation>
     </message>
     <message>
         <source>This is the color of your user name.</source>
-        <translation type="obsolete">Oman käyttäjänimen väri.</translation>
+        <translation type='obsolete'>Oman käyttäjänimen väri.</translation>
     </message>
     <message>
         <source>This is the color of other users&apos; names.</source>
-        <translation type="obsolete">Muiden nimien väri.</translation>
+        <translation type='obsolete'>Muiden nimien väri.</translation>
     </message>
     <message>
         <source>This is the color of text sent by you and other users.</source>
-        <translation type="obsolete">Sinun ja muiden käyttäjien tekstin väri.</translation>
+        <translation type='obsolete'>Sinun ja muiden käyttäjien tekstin väri.</translation>
     </message>
     <message>
-        <source>This is the color of &quot;System&quot;.</source>
-        <translation type="obsolete">Tämä on tekstin &quot;Järjestelmä&quot; väri.</translation>
+        <source>This is the color of "System".</source>
+        <translation type='obsolete'>Tämä on tekstin "Järjestelmä" väri.</translation>
     </message>
     <message>
         <source>This is the color of the text in a ping response.</source>
-        <translation type="obsolete">Ping-vastauksen väri.</translation>
+        <translation type='obsolete'>Ping-vastauksen väri.</translation>
     </message>
     <message>
-        <source>This is the color of &quot;Error&quot;.</source>
-        <translation type="obsolete">Tekstin &quot;Virhe&quot; väri.</translation>
+        <source>This is the color of "Error".</source>
+        <translation type='obsolete'>Tekstin "Virhe" väri.</translation>
     </message>
     <message>
         <source>This is the color of the text in error messages.</source>
-        <translation type="obsolete">Virheviestien tekstin väri.</translation>
+        <translation type='obsolete'>Virheviestien tekstin väri.</translation>
     </message>
     <message>
         <source>This is the color of private text.</source>
-        <translation type="obsolete">Yksityisen tekstin väri.</translation>
+        <translation type='obsolete'>Yksityisen tekstin väri.</translation>
     </message>
     <message>
-        <source>This is the color of &quot;Action&quot;.</source>
-        <translation type="obsolete">Tekstin &quot;Toiminta&quot; väri.</translation>
+        <source>This is the color of "Action".</source>
+        <translation type='obsolete'>Tekstin "Toiminta" väri.</translation>
     </message>
     <message>
         <source>This is the color of URLs.</source>
-        <translation type="obsolete">URLien väri.</translation>
+        <translation type='obsolete'>URLien väri.</translation>
     </message>
     <message>
         <source>This is the color of your user name in text when someone says your name in the main chat.</source>
-        <translation type="obsolete">Tämä on sinun käyttäjänimesi väri, kun joku sanoo sen pääkeskustelussa.</translation>
+        <translation type='obsolete'>Tämä on sinun käyttäjänimesi väri, kun joku sanoo sen pääkeskustelussa.</translation>
     </message>
 </context>
 <context>
     <name>@default</name>
     <message>
         <source>Unizone (English)</source>
-        <translation type="obsolete">Unizone (Suomi)</translation>
+        <translation type='obsolete'>Unizone (Suomi)</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation type="obsolete">Käyttäjänimi</translation>
+        <translation type='obsolete'>Käyttäjänimi</translation>
     </message>
     <message>
         <source>Remote User</source>
-        <translation type="obsolete">Etäkäyttäjän nimi</translation>
+        <translation type='obsolete'>Etäkäyttäjän nimi</translation>
     </message>
     <message>
         <source>Sample text</source>
-        <translation type="obsolete">Esimerkkiteksti</translation>
+        <translation type='obsolete'>Esimerkkiteksti</translation>
     </message>
     <message>
         <source>&lt;b&gt;System&lt;/b&gt; </source>
-        <translation type="obsolete">&lt;b&gt;Järjestelmä&lt;/b&gt;</translation>
+        <translation type='obsolete'>&lt;b&gt;Järjestelmä&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Virhe&lt;/b&gt;</translation>
+        <translation type='obsolete'>&lt;b&gt;Virhe&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Error text</source>
-        <translation type="obsolete">Virheteksti</translation>
+        <translation type='obsolete'>Virheteksti</translation>
     </message>
     <message>
         <source>Private text</source>
-        <translation type="obsolete">Yksityinen teksti</translation>
+        <translation type='obsolete'>Yksityinen teksti</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Toiminta&lt;/b&gt;</translation>
+        <translation type='obsolete'>&lt;b&gt;Toiminta&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;u&gt;http://magep.com/&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
+        <translation type='obsolete'>&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="obsolete">%1</translation>
+        <translation type='obsolete'>%1</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="obsolete">Kyllä</translation>
+        <translation type='obsolete'>Kyllä</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="obsolete">Ei</translation>
+        <translation type='obsolete'>Ei</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type="obsolete">Luo Kanava</translation>
+        <translation type='obsolete'>Luo Kanava</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type="obsolete">Anna kanavan nimi</translation>
+        <translation type='obsolete'>Anna kanavan nimi</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="obsolete">Kanavat</translation>
+        <translation type='obsolete'>Kanavat</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type="obsolete">Käyttäjä #%1 pyysi kutsua kanavalle %2. Haluatko antaa?</translation>
+        <translation type='obsolete'>Käyttäjä #%1 pyysi kutsua kanavalle %2. Haluatko antaa?</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a.</source>
-        <translation type="obsolete">Käyttäjä #%1, eli</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot;&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot;&gt;</translation>
+        <source>&lt;font color="%1"&gt;</source>
+        <translation type='obsolete'>&lt;font color="%1"&gt;</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type="obsolete">Käyttäjän #%1 IP-osoite on %2.</translation>
+        <translation type='obsolete'>Käyttäjän #%1 IP-osoite on %2.</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</translation>
+        <source>&lt;font color="%1" size="%2"&gt;</source>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;</translation>
     </message>
     <message>
-        <source>&lt;font size=&quot;%1&quot;&gt;</source>
-        <translation type="obsolete">&lt;font size=&quot;%1&quot;&gt;</translation>
+        <source>&lt;font size="%1"&gt;</source>
+        <translation type='obsolete'>&lt;font size="%1"&gt;</translation>
     </message>
 </context>
 <context>
@@ -183,7 +183,7 @@ Versio %1</translation>
     </message>
     <message>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
-        <translation type="obsolete">Unizone on (C) 2003 Mika T. Lindqvist</translation>
+        <translation type='obsolete'>Unizone on (C) 2003 Mika T. Lindqvist</translation>
     </message>
 </context>
 <context>
@@ -198,31 +198,31 @@ Versio %1</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
+        <translation type='obsolete'>Nimi</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="obsolete">ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type="obsolete">Tila</translation>
+        <translation type='obsolete'>Tila</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation type="obsolete">Tiedostoja</translation>
+        <translation type='obsolete'>Tiedostoja</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type="obsolete">Yhteys</translation>
+        <translation type='obsolete'>Yhteys</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation type="obsolete">Kuorma</translation>
+        <translation type='obsolete'>Kuorma</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation type="obsolete">Ohjelma</translation>
+        <translation type='obsolete'>Ohjelma</translation>
     </message>
     <message>
         <source>Topic set to %1.</source>
@@ -243,45 +243,45 @@ Versio %1</translation>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!
 </source>
-        <translation type="obsolete">Käyttäjä #%1, eli %2, on botti!</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, on botti!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is already in this private window!</source>
-        <translation type="obsolete">Käyttäjä #%1, eli %2, on jo tässä yksityisikkunassa!</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, on jo tässä yksityisikkunassa!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) was removed from the channel window.</source>
-        <translation type="obsolete">Käyttäjä #%1, eli %2, poistettiin kanavaikkunasta.</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, poistettiin kanavaikkunasta.</translation>
     </message>
     <message>
         <source>Channel Window</source>
-        <translation type="obsolete">Kanavaikkuna</translation>
+        <translation type='obsolete'>Kanavaikkuna</translation>
     </message>
     <message>
         <source>There are no longer any users in this channel window. Close window?</source>
-        <translation type="obsolete">Kaikki käyttäjät ovat poistuneet. Suljetaanko ikkuna?</translation>
+        <translation type='obsolete'>Kaikki käyttäjät ovat poistuneet. Suljetaanko ikkuna?</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="obsolete">Kyllä</translation>
+        <translation type='obsolete'>Kyllä</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="obsolete">Ei</translation>
+        <translation type='obsolete'>Ei</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation type="obsolete">%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
         <source>Not allowed!
 </source>
-        <translation type="obsolete">Ei sallittu!</translation>
+        <translation type='obsolete'>Ei sallittu!</translation>
     </message>
     <message>
         <source>User(s) not found!
 </source>
-        <translation type="obsolete">Käyttäjää(-jiä) ei löytynyt!</translation>
+        <translation type='obsolete'>Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is already in this channel window!</source>
@@ -305,7 +305,7 @@ Versio %1</translation>
     </message>
     <message>
         <source>%1 - %2</source>
-        <translation type="obsolete">%1 - %2</translation>
+        <translation type='obsolete'>%1 - %2</translation>
     </message>
     <message>
         <source>You got kicked off from this channel!</source>
@@ -379,7 +379,7 @@ Versio %1</translation>
     <name>Channels</name>
     <message>
         <source>%1</source>
-        <translation type="obsolete">%1</translation>
+        <translation type='obsolete'>%1</translation>
     </message>
     <message>
         <source>Create Channel</source>
@@ -442,35 +442,35 @@ Versio %1</translation>
     <name>ChannelsBase</name>
     <message>
         <source>Channels</source>
-        <translation type="obsolete">Kanavat</translation>
+        <translation type='obsolete'>Kanavat</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
+        <translation type='obsolete'>Nimi</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type="obsolete">Aihe</translation>
+        <translation type='obsolete'>Aihe</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type="obsolete">Käyttäjiä</translation>
+        <translation type='obsolete'>Käyttäjiä</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type="obsolete">Valvojia</translation>
+        <translation type='obsolete'>Valvojia</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type="obsolete">Yleinen</translation>
+        <translation type='obsolete'>Yleinen</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type="obsolete">&amp;Luo</translation>
+        <translation type='obsolete'>&amp;Luo</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type="obsolete">Lii&amp;ty</translation>
+        <translation type='obsolete'>Lii&amp;ty</translation>
     </message>
 </context>
 <context>
@@ -721,11 +721,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="obsolete">Etsi</translation>
+        <translation type='obsolete'>Etsi</translation>
     </message>
     <message>
         <source>Open C&amp;hannels Window</source>
-        <translation type="obsolete">Avaa &amp;Kanavat-ikkuna</translation>
+        <translation type='obsolete'>Avaa &amp;Kanavat-ikkuna</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
@@ -777,7 +777,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>ALT+S</source>
-        <translation type="obsolete">ALT+S</translation>
+        <translation type='obsolete'>ALT+S</translation>
     </message>
     <message>
         <source>F11</source>
@@ -797,7 +797,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>C&amp;hannels</source>
-        <translation type="obsolete">&amp;Kanavat</translation>
+        <translation type='obsolete'>&amp;Kanavat</translation>
     </message>
     <message>
         <source>F10</source>
@@ -896,11 +896,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>You must change your nickname before connecting!</source>
-        <translation type="obsolete">Sinun täytyy vaihtaa käyttäjänimesi ennen yhteyden muodostamista!</translation>
+        <translation type='obsolete'>Sinun täytyy vaihtaa käyttäjänimesi ennen yhteyden muodostamista!</translation>
     </message>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
-        <translation type="obsolete">Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
+        <translation type='obsolete'>Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
     </message>
 </context>
 <context>
@@ -913,7 +913,7 @@ Päiväys: %4</translation>
 Line %2
 File %3
 Date: %4</source>
-        <translation type="obsolete">Lähetä tämä viesti osoitteeseen postmaster@raasu.org! Tämä viesti on myös tallennettu tiedostoon &apos;assert.txt&apos;.
+        <translation type='obsolete'>Lähetä tämä viesti osoitteeseen postmaster@raasu.org! Tämä viesti on myös tallennettu tiedostoon &apos;assert.txt&apos;.
 
 %1
 
@@ -923,273 +923,273 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation type="obsolete">%1/%2</translation>
+        <translation type='obsolete'>%1/%2</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Järjestelmä:&lt;/b&gt; &lt;/font&gt;</translation>
+        <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Järjestelmä:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
         <source>User #%1 is now connected.</source>
-        <translation type="obsolete">Käyttäjä #%1 on nyt linjoilla.</translation>
+        <translation type='obsolete'>Käyttäjä #%1 on nyt linjoilla.</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;) has disconnected.</source>
-        <translation type="obsolete">Käyttäjä #%1, eli &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;, on poistunut.</translation>
+        <source>User #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;) has disconnected.</source>
+        <translation type='obsolete'>Käyttäjä #%1, eli &lt;font color="%3"&gt;%2&lt;/font&gt;, on poistunut.</translation>
     </message>
     <message>
-        <source>User #%1 is now known as &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</source>
-        <translation type="obsolete">Käyttäjä #%1 on nyt nimeltään &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</translation>
+        <source>User #%1 is now known as &lt;font color="%3"&gt;%2&lt;/font&gt;.</source>
+        <translation type='obsolete'>Käyttäjä #%1 on nyt nimeltään &lt;font color="%3"&gt;%2&lt;/font&gt;.</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now known as &lt;font color=&quot;%5&quot;&gt;%3&lt;/font&gt;.</source>
-        <translation type="obsolete">Käyttäjä #%1, eli &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;, on nyt nimeltään &lt;font color=&quot;%5&quot;&gt;%3&lt;/font&gt;.</translation>
+        <source>User #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) is now known as &lt;font color="%5"&gt;%3&lt;/font&gt;.</source>
+        <translation type='obsolete'>Käyttäjä #%1, eli &lt;font color="%4"&gt;%2&lt;/font&gt;, on nyt nimeltään &lt;font color="%5"&gt;%3&lt;/font&gt;.</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now %3.</source>
-        <translation type="obsolete">Käyttäjä #%1, eli &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;, on nyt %3.</translation>
+        <source>User #%1 (a.k.a. &lt;font color="%4"&gt;%2&lt;/font&gt;) is now %3.</source>
+        <translation type='obsolete'>Käyttäjä #%1, eli &lt;font color="%4"&gt;%2&lt;/font&gt;, on nyt %3.</translation>
     </message>
     <message>
         <source>User #%1 is now %2.</source>
-        <translation type="obsolete">Käyttäjä #%1 on nyt %2.</translation>
+        <translation type='obsolete'>Käyttäjä #%1 on nyt %2.</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Ping palasi %3 millisekunnissa (%4)&lt;/font&gt;</translation>
+        <source>&lt;font color="%1" size="%2"&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;Ping palasi %3 millisekunnissa (%4)&lt;/font&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt; (Käynnissä: %3, Kirjautuneena %4)&lt;/font&gt;</translation>
+        <source>&lt;font color="%1" size="%2"&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</source>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt; (Käynnissä: %3, Kirjautuneena %4)&lt;/font&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Error:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Virhe:&lt;/b&gt; &lt;/font&gt;</translation>
+        <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Error:&lt;/b&gt;&lt;/font&gt; </source>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Virhe:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Warning:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Varoitus:&lt;/b&gt; &lt;/font&gt;</translation>
+        <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Warning:&lt;/b&gt;&lt;/font&gt; </source>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Varoitus:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
         <source>You are now %1.</source>
-        <translation type="obsolete">Olet nyt %1.</translation>
+        <translation type='obsolete'>Olet nyt %1.</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Action:&lt;/b&gt;&lt;/font&gt; </source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Toiminta:&lt;/b&gt; &lt;/font&gt;</translation>
+        <source>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Action:&lt;/b&gt;&lt;/font&gt; </source>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;&lt;b&gt;Toiminta:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;User #%3 (a.k.a. &lt;font color=&quot;%5&quot;&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Käyttäjä #%3, eli &lt;font color=&quot;%5&quot;&gt;%4&lt;/font&gt;, pingasi sinua.&lt;/font&gt;</translation>
+        <source>&lt;font color="%1" size="%2"&gt;User #%3 (a.k.a. &lt;font color="%5"&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</source>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;Käyttäjä #%3, eli &lt;font color="%5"&gt;%4&lt;/font&gt;, pingasi sinua.&lt;/font&gt;</translation>
     </message>
     <message>
         <source>&amp;Connect</source>
-        <translation type="obsolete">&amp;Yhdistä</translation>
+        <translation type='obsolete'>&amp;Yhdistä</translation>
     </message>
     <message>
         <source>&amp;Disconnect</source>
-        <translation type="obsolete">&amp;Katkaise</translation>
+        <translation type='obsolete'>&amp;Katkaise</translation>
     </message>
     <message>
         <source>Open &amp;Shared Folder</source>
-        <translation type="obsolete">Avaa &amp;Jaetut-kansio</translation>
+        <translation type='obsolete'>Avaa &amp;Jaetut-kansio</translation>
     </message>
     <message>
         <source>Open &amp;Downloads Folder</source>
-        <translation type="obsolete">Avaa &amp;Vastaanotetut-kansio</translation>
+        <translation type='obsolete'>Avaa &amp;Vastaanotetut-kansio</translation>
     </message>
     <message>
         <source>Open &amp;Logs Folder</source>
-        <translation type="obsolete">Avaa &amp;Lokikansio</translation>
+        <translation type='obsolete'>Avaa &amp;Lokikansio</translation>
     </message>
     <message>
         <source>Cl&amp;ear Chat Log</source>
-        <translation type="obsolete">Tyhjennä &amp;Keskusteluloki</translation>
+        <translation type='obsolete'>Tyhjennä &amp;Keskusteluloki</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="obsolete">Etsi</translation>
+        <translation type='obsolete'>Etsi</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation type="obsolete">&amp;Poistu</translation>
+        <translation type='obsolete'>&amp;Poistu</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation type="obsolete">A&amp;setukset</translation>
+        <translation type='obsolete'>A&amp;setukset</translation>
     </message>
     <message>
         <source>&amp;About Unizone (English) %1</source>
-        <translation type="obsolete">&amp;Tietoja ohjelmasta Unizone (Suomi) %1</translation>
+        <translation type='obsolete'>&amp;Tietoja ohjelmasta Unizone (Suomi) %1</translation>
     </message>
     <message>
         <source>&amp;File</source>
-        <translation type="obsolete">&amp;Tiedosto</translation>
+        <translation type='obsolete'>&amp;Tiedosto</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="obsolete">&amp;Muokkaa</translation>
+        <translation type='obsolete'>&amp;Muokkaa</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Ohje</translation>
+        <translation type='obsolete'>&amp;Ohje</translation>
     </message>
     <message>
         <source>Unizone - User #%1 on %2</source>
-        <translation type="obsolete">Unizone - Käyttäjä #%1 palvelimella %2</translation>
+        <translation type='obsolete'>Unizone - Käyttäjä #%1 palvelimella %2</translation>
     </message>
     <message>
         <source>Open C&amp;hannels Window</source>
-        <translation type="obsolete">Avaa &amp;Kanavat-ikkuna</translation>
+        <translation type='obsolete'>Avaa &amp;Kanavat-ikkuna</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type="obsolete">14.4 kt/s</translation>
+        <translation type='obsolete'>14.4 kt/s</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type="obsolete">28.8 kt/s</translation>
+        <translation type='obsolete'>28.8 kt/s</translation>
     </message>
     <message>
         <source>33.6 kbps</source>
-        <translation type="obsolete">33.6 kt/s</translation>
+        <translation type='obsolete'>33.6 kt/s</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type="obsolete">36.6 kt/s</translation>
+        <translation type='obsolete'>36.6 kt/s</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type="obsolete">57.6 kt/s</translation>
+        <translation type='obsolete'>57.6 kt/s</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type="obsolete">ISDN-64k</translation>
+        <translation type='obsolete'>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type="obsolete">ISDN-128k</translation>
+        <translation type='obsolete'>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type="obsolete">DSL</translation>
+        <translation type='obsolete'>DSL</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type="obsolete">Kaapeli</translation>
+        <translation type='obsolete'>Kaapeli</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type="obsolete">T1</translation>
+        <translation type='obsolete'>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type="obsolete">T3</translation>
+        <translation type='obsolete'>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type="obsolete">OC-3</translation>
+        <translation type='obsolete'>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type="obsolete">OC-12</translation>
+        <translation type='obsolete'>OC-12</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation type="obsolete">300 baudia</translation>
+        <translation type='obsolete'>300 baudia</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type="obsolete">DSL-256k</translation>
+        <translation type='obsolete'>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type="obsolete">DSL-384k</translation>
+        <translation type='obsolete'>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type="obsolete">DSL-512k</translation>
+        <translation type='obsolete'>DSL-512k</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
-        <translation type="obsolete">Unizone (Suomi)</translation>
+        <translation type='obsolete'>Unizone (Suomi)</translation>
     </message>
     <message>
         <source>Date:</source>
         <comment>Date</comment>
-        <translation type="obsolete">Päiväys:</translation>
+        <translation type='obsolete'>Päiväys:</translation>
     </message>
     <message>
         <source>B</source>
-        <translation type="obsolete">t</translation>
+        <translation type='obsolete'>t</translation>
     </message>
     <message>
         <source>kB</source>
-        <translation type="obsolete">kt</translation>
+        <translation type='obsolete'>kt</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation type="obsolete">Mt</translation>
+        <translation type='obsolete'>Mt</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation type="obsolete">Gt</translation>
+        <translation type='obsolete'>Gt</translation>
     </message>
     <message>
         <source>B/s</source>
-        <translation type="obsolete">t/s</translation>
+        <translation type='obsolete'>t/s</translation>
     </message>
     <message>
         <source>kB/s</source>
-        <translation type="obsolete">kt/s</translation>
+        <translation type='obsolete'>kt/s</translation>
     </message>
     <message>
         <source>MB/s</source>
-        <translation type="obsolete">Mt/s</translation>
+        <translation type='obsolete'>Mt/s</translation>
     </message>
     <message>
         <source>GB/s</source>
-        <translation type="obsolete">Gt/s</translation>
+        <translation type='obsolete'>Gt/s</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type="obsolete">%1.%2.%3 luonti %4</translation>
+        <translation type='obsolete'>%1.%2.%3 luonti %4</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type="obsolete">Käyttäjä #%1 on poistunut.</translation>
+        <translation type='obsolete'>Käyttäjä #%1 on poistunut.</translation>
     </message>
     <message>
         <source>User #%1 is now nameless.</source>
-        <translation type="obsolete">Käyttäjä #%1 on nyt nimetön.</translation>
+        <translation type='obsolete'>Käyttäjä #%1 on nyt nimetön.</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
+        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
     </message>
     <message>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type="obsolete">Käyttäjän #%1 IP-osoite on %2.</translation>
+        <translation type='obsolete'>Käyttäjän #%1 IP-osoite on %2.</translation>
     </message>
     <message>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
-        <translation type="obsolete">Luetaan hakemistoa...</translation>
+        <translation type='obsolete'>Luetaan hakemistoa...</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation type="obsolete">%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type="obsolete">DSL-1M</translation>
+        <translation type='obsolete'>DSL-1M</translation>
     </message>
     <message>
         <source>TB</source>
-        <translation type="obsolete">Tt</translation>
+        <translation type='obsolete'>Tt</translation>
     </message>
     <message>
         <source>TB/s</source>
-        <translation type="obsolete">Tt/s</translation>
+        <translation type='obsolete'>Tt/s</translation>
     </message>
 </context>
 <context>
@@ -1305,99 +1305,99 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>64 bytes</source>
-        <translation type="obsolete">64 tavua</translation>
+        <translation type='obsolete'>64 tavua</translation>
     </message>
     <message>
         <source>128 bytes</source>
-        <translation type="obsolete">128 tavua</translation>
+        <translation type='obsolete'>128 tavua</translation>
     </message>
     <message>
         <source>256 byres</source>
-        <translation type="obsolete">256 tavua</translation>
+        <translation type='obsolete'>256 tavua</translation>
     </message>
     <message>
         <source>512 bytes</source>
-        <translation type="obsolete">512 tavua</translation>
+        <translation type='obsolete'>512 tavua</translation>
     </message>
     <message>
         <source>1 kB</source>
-        <translation type="obsolete">1 kt</translation>
+        <translation type='obsolete'>1 kt</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation type="obsolete">2 kt</translation>
+        <translation type='obsolete'>2 kt</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation type="obsolete">4 kt</translation>
+        <translation type='obsolete'>4 kt</translation>
     </message>
     <message>
         <source>6 kB</source>
-        <translation type="obsolete">6 kt</translation>
+        <translation type='obsolete'>6 kt</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation type="obsolete">8 kt</translation>
+        <translation type='obsolete'>8 kt</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation type="obsolete">10 kt</translation>
+        <translation type='obsolete'>10 kt</translation>
     </message>
     <message>
         <source>12 kB</source>
-        <translation type="obsolete">12 kt</translation>
+        <translation type='obsolete'>12 kt</translation>
     </message>
     <message>
         <source>14 kB</source>
-        <translation type="obsolete">14 kt</translation>
+        <translation type='obsolete'>14 kt</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation type="obsolete">16 kt</translation>
+        <translation type='obsolete'>16 kt</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation type="obsolete">32 kt</translation>
+        <translation type='obsolete'>32 kt</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation type="obsolete">64 kt</translation>
+        <translation type='obsolete'>64 kt</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation type="obsolete">128 kt</translation>
+        <translation type='obsolete'>128 kt</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation type="obsolete">256 kt</translation>
+        <translation type='obsolete'>256 kt</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation type="obsolete">512 kt</translation>
+        <translation type='obsolete'>512 kt</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation type="obsolete">1 Mt</translation>
+        <translation type='obsolete'>1 Mt</translation>
     </message>
     <message>
         <source>2 MB</source>
-        <translation type="obsolete">2 Mt</translation>
+        <translation type='obsolete'>2 Mt</translation>
     </message>
     <message>
         <source>4 MB</source>
-        <translation type="obsolete">4 Mt</translation>
+        <translation type='obsolete'>4 Mt</translation>
     </message>
     <message>
         <source>8 MB</source>
-        <translation type="obsolete">8 Mt</translation>
+        <translation type='obsolete'>8 Mt</translation>
     </message>
     <message>
         <source>16 MB</source>
-        <translation type="obsolete">16 Mt</translation>
+        <translation type='obsolete'>16 Mt</translation>
     </message>
     <message>
         <source>32 MB</source>
-        <translation type="obsolete">32 Mt</translation>
+        <translation type='obsolete'>32 Mt</translation>
     </message>
     <message>
         <source>Throttle</source>
@@ -1421,7 +1421,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>256 bytes</source>
-        <translation type="obsolete">256 tavua</translation>
+        <translation type='obsolete'>256 tavua</translation>
     </message>
     <message>
         <source>Unbanned</source>
@@ -1433,23 +1433,23 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>2 minutes</source>
-        <translation type="obsolete">2 minuuttia</translation>
+        <translation type='obsolete'>2 minuuttia</translation>
     </message>
     <message>
         <source>5 minutes</source>
-        <translation type="obsolete">5 minuuttia</translation>
+        <translation type='obsolete'>5 minuuttia</translation>
     </message>
     <message>
         <source>10 minutes</source>
-        <translation type="obsolete">10 minuuttia</translation>
+        <translation type='obsolete'>10 minuuttia</translation>
     </message>
     <message>
         <source>15 minutes</source>
-        <translation type="obsolete">15 minuuttia</translation>
+        <translation type='obsolete'>15 minuuttia</translation>
     </message>
     <message>
         <source>30 minutes</source>
-        <translation type="obsolete">30 minuuttia</translation>
+        <translation type='obsolete'>30 minuuttia</translation>
     </message>
     <message>
         <source>1 hour</source>
@@ -1477,7 +1477,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="obsolete">%1</translation>
+        <translation type='obsolete'>%1</translation>
     </message>
     <message>
         <source>Blocked for %1 minute(s).</source>
@@ -1489,7 +1489,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 is downloading %2.</source>
-        <translation type="obsolete">%1 lataa tiedostoa %2.</translation>
+        <translation type='obsolete'>%1 lataa tiedostoa %2.</translation>
     </message>
     <message>
         <source>Error: %1</source>
@@ -1501,7 +1501,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Finished downloading %2 from %1.</source>
-        <translation type="obsolete">Tiedoston %2 lataaminen käyttäjältä %1 on valmis.</translation>
+        <translation type='obsolete'>Tiedoston %2 lataaminen käyttäjältä %1 on valmis.</translation>
     </message>
     <message>
         <source>Uploading: [%1%]</source>
@@ -1509,7 +1509,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
-        <translation type="obsolete">%1 on saanut valmiiksi tiedoston %2 lataamisen.</translation>
+        <translation type='obsolete'>%1 on saanut valmiiksi tiedoston %2 lataamisen.</translation>
     </message>
     <message>
         <source>Locally Queued.</source>
@@ -1585,7 +1585,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
-        <translation type="obsolete">Ladataan tiedostoa %1 käyttäjältä %2.</translation>
+        <translation type='obsolete'>Ladataan tiedostoa %1 käyttäjältä %2.</translation>
     </message>
     <message>
         <source>Elapsed</source>
@@ -1601,7 +1601,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 bytes</source>
-        <translation>%1 tavua</translation>
+        <translation type='obsolete'>%1 tavua</translation>
     </message>
     <message>
         <source>%1 kB</source>
@@ -1615,16 +1615,28 @@ Päiväys: %4</translation>
         <source>%1 minutes</source>
         <translation>%1 minuuttia</translation>
     </message>
+    <message>
+        <source>%1 B/s</source>
+        <translation>%1 t/s</translation>
+    </message>
+    <message>
+        <source>%1 kB/s</source>
+        <translation>%1 kt/s</translation>
+    </message>
+    <message>
+        <source>%1 MB/s</source>
+        <translation>%1 Mt/s</translation>
+    </message>
 </context>
 <context>
     <name>WDownloadThread</name>
     <message>
         <source>%1%2 %3%4</source>
-        <translation type="obsolete">%1%2 %3%4</translation>
+        <translation type='obsolete'>%1%2 %3%4</translation>
     </message>
     <message>
         <source>%1%2 %3</source>
-        <translation type="obsolete">%1%2 %3</translation>
+        <translation type='obsolete'>%1%2 %3</translation>
     </message>
     <message>
         <source>Could not add new connect session!</source>
@@ -1677,24 +1689,24 @@ Päiväys: %4</translation>
 <context>
     <name>WFormat</name>
     <message>
-        <source>&lt;font size=&quot;%1&quot;&gt;</source>
-        <translation>&lt;font size=&quot;%1&quot;&gt;</translation>
+        <source>&lt;font size="%1"&gt;</source>
+        <translation>&lt;font size="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
         <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot;&gt;</source>
-        <translation>&lt;font color=&quot;%1&quot;&gt;</translation>
+        <source>&lt;font color="%1"&gt;</source>
+        <translation>&lt;font color="%1"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1)&lt;/b&gt; </source>
-        <translation type="obsolete">&lt;b&gt;(%1)&lt;/b&gt;</translation>
+        <translation type='obsolete'>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</translation>
+        <source>&lt;font color="%1" size="%2"&gt;</source>
+        <translation type='obsolete'>&lt;font color="%1" size="%2"&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
@@ -1705,20 +1717,20 @@ Päiväys: %4</translation>
         <translation>Käyttäjä #%1 on nyt linjoilla.</translation>
     </message>
     <message>
-        <source>User #%1 (a.k.a. &lt;font color=&quot;%2&quot;&gt;</source>
-        <translation type="obsolete">Käyttäjä #%1, eli &lt;font color=&quot;%2&quot;&gt;</translation>
+        <source>User #%1 (a.k.a. &lt;font color="%2"&gt;</source>
+        <translation type='obsolete'>Käyttäjä #%1, eli &lt;font color="%2"&gt;</translation>
     </message>
     <message>
         <source>) has disconnected.</source>
-        <translation type="obsolete">, on poistunut.</translation>
+        <translation type='obsolete'>, on poistunut.</translation>
     </message>
     <message>
         <source>User #%1 has disconnected.</source>
-        <translation type="obsolete">Käyttäjä #%1 on poistunut.</translation>
+        <translation type='obsolete'>Käyttäjä #%1 on poistunut.</translation>
     </message>
     <message>
         <source>User #%1 is now known as</source>
-        <translation type="obsolete">Käyttäjä #%1 on nyt nimeltään</translation>
+        <translation type='obsolete'>Käyttäjä #%1 on nyt nimeltään</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
@@ -1730,15 +1742,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a.</source>
-        <translation type="obsolete">Käyttäjä #%1, eli</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli</translation>
     </message>
     <message>
         <source>) is now </source>
-        <translation type="obsolete">, on nyt</translation>
+        <translation type='obsolete'>, on nyt</translation>
     </message>
     <message>
         <source>User #%1 is now </source>
-        <translation type="obsolete">Käyttäjä #%1 on</translation>
+        <translation type='obsolete'>Käyttäjä #%1 on</translation>
     </message>
     <message>
         <source>&apos;s IP address is %1.</source>
@@ -1750,7 +1762,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Uptime: %1, Logged on for %2)</source>
-        <translation type="obsolete">Käynnissä: %1, Kirjautuneena %4</translation>
+        <translation type='obsolete'>Käynnissä: %1, Kirjautuneena %4</translation>
     </message>
     <message>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
@@ -1762,19 +1774,19 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>You are now </source>
-        <translation type="obsolete">Olet nyt</translation>
+        <translation type='obsolete'>Olet nyt</translation>
     </message>
     <message>
-        <source>Name changed to &lt;font color=&quot;%1&quot;&gt;</source>
-        <translation type="obsolete">Nimesi on nyt &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</translation>
+        <source>Name changed to &lt;font color="%1"&gt;</source>
+        <translation type='obsolete'>Nimesi on nyt &lt;font color="%2"&gt;%1&lt;/font&gt;.</translation>
     </message>
     <message>
         <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;-%1-&lt;/b&gt;</translation>
+        <translation type='obsolete'>&lt;b&gt;-%1-&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt;</translation>
+        <translation type='obsolete'>&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
@@ -1782,11 +1794,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>) pinged you.</source>
-        <translation type="obsolete">, pingasi sinua.</translation>
+        <translation type='obsolete'>, pingasi sinua.</translation>
     </message>
     <message>
         <source>) is now known as</source>
-        <translation type="obsolete">, on nyt nimeltään</translation>
+        <translation type='obsolete'>, on nyt nimeltään</translation>
     </message>
     <message>
         <source>Ping returned in %1 milliseconds</source>
@@ -1806,7 +1818,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>) is now</source>
-        <translation type="obsolete">, on nyt</translation>
+        <translation type='obsolete'>, on nyt</translation>
     </message>
     <message>
         <source>Time request sent to</source>
@@ -1880,7 +1892,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>user #%1</source>
-        <translation type="obsolete">käyttäjä #%1</translation>
+        <translation type='obsolete'>käyttäjä #%1</translation>
     </message>
     <message>
         <source>ip_prefix</source>
@@ -1906,7 +1918,7 @@ Päiväys: %4</translation>
     <name>WGenericThread</name>
     <message>
         <source>Connection timed out!</source>
-        <translation type="obsolete">Yhteyden aikakatkaisu!</translation>
+        <translation type='obsolete'>Yhteyden aikakatkaisu!</translation>
     </message>
 </context>
 <context>
@@ -1950,8 +1962,8 @@ Päiväys: %4</translation>
 <context>
     <name>WPrefs</name>
     <message>
-        <source>&lt;font color=&quot;%1&quot;&gt;%2&lt;/font&gt;</source>
-        <translation>&lt;font color=&quot;%1&quot;&gt;%2&lt;/font&gt;</translation>
+        <source>&lt;font color="%1"&gt;%2&lt;/font&gt;</source>
+        <translation>&lt;font color="%1"&gt;%2&lt;/font&gt;</translation>
     </message>
     <message>
         <source>This is the color of your user name.</source>
@@ -1966,16 +1978,16 @@ Päiväys: %4</translation>
         <translation>Sinun ja muiden käyttäjien tekstin väri.</translation>
     </message>
     <message>
-        <source>This is the color of &quot;System&quot;.</source>
-        <translation>Tämä on tekstin &quot;Järjestelmä&quot; väri.</translation>
+        <source>This is the color of "System".</source>
+        <translation>Tämä on tekstin "Järjestelmä" väri.</translation>
     </message>
     <message>
         <source>This is the color of the text in a ping response.</source>
         <translation>Ping-vastauksen väri.</translation>
     </message>
     <message>
-        <source>This is the color of &quot;Error&quot;.</source>
-        <translation>Tekstin &quot;Virhe&quot; väri.</translation>
+        <source>This is the color of "Error".</source>
+        <translation>Tekstin "Virhe" väri.</translation>
     </message>
     <message>
         <source>This is the color of the text in error messages.</source>
@@ -1986,8 +1998,8 @@ Päiväys: %4</translation>
         <translation>Yksityisen tekstin väri.</translation>
     </message>
     <message>
-        <source>This is the color of &quot;Action&quot;.</source>
-        <translation>Tekstin &quot;Toiminta&quot; väri.</translation>
+        <source>This is the color of "Action".</source>
+        <translation>Tekstin "Toiminta" väri.</translation>
     </message>
     <message>
         <source>This is the color of URLs.</source>
@@ -2034,8 +2046,8 @@ Päiväys: %4</translation>
         <translation>&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
     <message>
-        <source>This is the color of &quot;Warning&quot;.</source>
-        <translation>Tekstin &quot;Varoitus&quot; väri.</translation>
+        <source>This is the color of "Warning".</source>
+        <translation>Tekstin "Varoitus" väri.</translation>
     </message>
     <message>
         <source>This is the color of the text in warning messages.</source>
@@ -2162,7 +2174,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>DSL</source>
-        <translation type="obsolete">DSL</translation>
+        <translation type='obsolete'>DSL</translation>
     </message>
     <message>
         <source>Cable</source>
@@ -2414,7 +2426,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted)</source>
-        <translation type="obsolete">Per estetty:</translation>
+        <translation type='obsolete'>Per estetty:</translation>
     </message>
     <message>
         <source>No Limit</source>
@@ -2422,15 +2434,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>128 bytes</source>
-        <translation>128 tavua</translation>
+        <translation type='obsolete'>128 tavua</translation>
     </message>
     <message>
         <source>256 bytes</source>
-        <translation>256 tavua</translation>
+        <translation type='obsolete'>256 tavua</translation>
     </message>
     <message>
         <source>512 bytes</source>
-        <translation>512 tavua</translation>
+        <translation type='obsolete'>512 tavua</translation>
     </message>
     <message>
         <source>1 kB</source>
@@ -2478,23 +2490,23 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>2 MB</source>
-        <translation>2 Mt</translation>
+        <translation type='obsolete'>2 Mt</translation>
     </message>
     <message>
         <source>4 MB</source>
-        <translation>4 Mt</translation>
+        <translation type='obsolete'>4 Mt</translation>
     </message>
     <message>
         <source>8 MB</source>
-        <translation>8 Mt</translation>
+        <translation type='obsolete'>8 Mt</translation>
     </message>
     <message>
         <source>16 MB</source>
-        <translation>16 Mt</translation>
+        <translation type='obsolete'>16 Mt</translation>
     </message>
     <message>
         <source>32 MB</source>
-        <translation>32 Mt</translation>
+        <translation type='obsolete'>32 Mt</translation>
     </message>
     <message>
         <source>Chat:</source>
@@ -2502,11 +2514,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Downloads (per download)</source>
-        <translation type="obsolete">Per vastaanotto:</translation>
+        <translation type='obsolete'>Per vastaanotto:</translation>
     </message>
     <message>
         <source>Uploads (per upload)</source>
-        <translation type="obsolete">Per lähetys:</translation>
+        <translation type='obsolete'>Per lähetys:</translation>
     </message>
     <message>
         <source>Throttling</source>
@@ -2546,7 +2558,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Upload Packet Size</source>
-        <translation type="obsolete">Lähetyksen pakettikoko</translation>
+        <translation type='obsolete'>Lähetyksen pakettikoko</translation>
     </message>
     <message>
         <source>Upload Packet Size:</source>
@@ -2562,31 +2574,31 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue</source>
-        <translation type="obsolete">Minimikoko Tiedostolle Jonossa</translation>
+        <translation type='obsolete'>Minimikoko Tiedostolle Jonossa</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">Ei päällä</translation>
+        <translation type='obsolete'>Ei päällä</translation>
     </message>
     <message>
         <source>5 kB</source>
-        <translation type="obsolete">5 kt</translation>
+        <translation type='obsolete'>5 kt</translation>
     </message>
     <message>
         <source>10 kB</source>
-        <translation type="obsolete">10 kt</translation>
+        <translation type='obsolete'>10 kt</translation>
     </message>
     <message>
         <source>25 kB</source>
-        <translation type="obsolete">25 kt</translation>
+        <translation type='obsolete'>25 kt</translation>
     </message>
     <message>
         <source>50 kB</source>
-        <translation type="obsolete">50 kt</translation>
+        <translation type='obsolete'>50 kt</translation>
     </message>
     <message>
         <source>100 kB</source>
-        <translation type="obsolete">100 kt</translation>
+        <translation type='obsolete'>100 kt</translation>
     </message>
     <message>
         <source>Base Port:</source>
@@ -2598,15 +2610,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>200 kB</source>
-        <translation type="obsolete">200 kt</translation>
+        <translation type='obsolete'>200 kt</translation>
     </message>
     <message>
         <source>250 kB</source>
-        <translation type="obsolete">250 kt</translation>
+        <translation type='obsolete'>250 kt</translation>
     </message>
     <message>
         <source>500 kB</source>
-        <translation type="obsolete">500 kt</translation>
+        <translation type='obsolete'>500 kt</translation>
     </message>
     <message>
         <source>IP Addresses</source>
@@ -2644,36 +2656,112 @@ Päiväys: %4</translation>
         <source>DSL-1M</source>
         <translation>DSL-1M</translation>
     </message>
+    <message>
+        <source>128 B/s</source>
+        <translation>128 t/s</translation>
+    </message>
+    <message>
+        <source>256 B/s</source>
+        <translation>256 t/s</translation>
+    </message>
+    <message>
+        <source>512 B/s</source>
+        <translation>512 t/s</translation>
+    </message>
+    <message>
+        <source>1 kB/s</source>
+        <translation>1 kt/s</translation>
+    </message>
+    <message>
+        <source>2 kB/s</source>
+        <translation>2 kt/s</translation>
+    </message>
+    <message>
+        <source>4 kB/s</source>
+        <translation>4 kt/s</translation>
+    </message>
+    <message>
+        <source>8 kB/s</source>
+        <translation>8 kt/s</translation>
+    </message>
+    <message>
+        <source>16 kB/s</source>
+        <translation>16 kt/s</translation>
+    </message>
+    <message>
+        <source>32 kB/s</source>
+        <translation>32 kt/s</translation>
+    </message>
+    <message>
+        <source>64 kB/s</source>
+        <translation>64 kt/s</translation>
+    </message>
+    <message>
+        <source>128 kB/s</source>
+        <translation>128 kt/s</translation>
+    </message>
+    <message>
+        <source>256 kB/s</source>
+        <translation>256 kt/s</translation>
+    </message>
+    <message>
+        <source>512 kB/s</source>
+        <translation>512 kt/s</translation>
+    </message>
+    <message>
+        <source>1 MB/s</source>
+        <translation>1 Mt/s</translation>
+    </message>
+    <message>
+        <source>2 MB/s</source>
+        <translation>2 Mt/s</translation>
+    </message>
+    <message>
+        <source>4 MB/s</source>
+        <translation>4 Mt/s</translation>
+    </message>
+    <message>
+        <source>8 MB/s</source>
+        <translation>8 Mt/s</translation>
+    </message>
+    <message>
+        <source>16 MB/s</source>
+        <translation>16 Mt/s</translation>
+    </message>
+    <message>
+        <source>32 MB/s</source>
+        <translation>32 Mt/s</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
     <message>
         <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
+        <translation type='obsolete'>Nimi</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="obsolete">ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type="obsolete">Tila</translation>
+        <translation type='obsolete'>Tila</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation type="obsolete">Tiedostoja</translation>
+        <translation type='obsolete'>Tiedostoja</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type="obsolete">Yhteys</translation>
+        <translation type='obsolete'>Yhteys</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation type="obsolete">Kuorma</translation>
+        <translation type='obsolete'>Kuorma</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation type="obsolete">Ohjelma</translation>
+        <translation type='obsolete'>Ohjelma</translation>
     </message>
     <message>
         <source>Disconnected from server.</source>
@@ -2682,7 +2770,7 @@ Päiväys: %4</translation>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!
 </source>
-        <translation type="obsolete">Käyttäjä #%1, eli %2, on botti!</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, on botti!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is already in this private window!</source>
@@ -2690,7 +2778,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) was removed from the private chat window.</source>
-        <translation type="obsolete">Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -2705,12 +2793,12 @@ Päiväys: %4</translation>
         <translation>Hae IP-osoite</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
+        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
     </message>
     <message>
         <source>[Freeware] - Private</source>
-        <translation type="obsolete">[Freeware] - Yksityinen</translation>
+        <translation type='obsolete'>[Freeware] - Yksityinen</translation>
     </message>
     <message>
         <source>Private Chat</source>
@@ -2731,7 +2819,7 @@ Päiväys: %4</translation>
     <message>
         <source>User(s) not found!
 </source>
-        <translation type="obsolete">Käyttäjää(-jiä) ei löytynyt!</translation>
+        <translation type='obsolete'>Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
     <message>
         <source>Failed to create private log.</source>
@@ -2743,19 +2831,19 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
-        <translation type="obsolete">Käyttäjä #%1, eli %2, on botti!</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, on botti!</translation>
     </message>
     <message>
         <source>Private</source>
-        <translation type="obsolete">Yksityinen</translation>
+        <translation type='obsolete'>Yksityinen</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) is a bot!</source>
-        <translation type="obsolete">Käyttäjä #%1, eli %2, on botti!</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, on botti!</translation>
     </message>
     <message>
         <source>User #%1 (a.k.a %2) was removed from the private chat window.</source>
-        <translation type="obsolete">Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
+        <translation type='obsolete'>Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
     </message>
     <message>
         <source>Encryption enabled.</source>
@@ -2817,7 +2905,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="obsolete">Sulje</translation>
+        <translation type='obsolete'>Sulje</translation>
     </message>
     <message>
         <source>Clear</source>
@@ -2833,15 +2921,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="obsolete">%1</translation>
+        <translation type='obsolete'>%1</translation>
     </message>
     <message>
         <source>Not connected.</source>
         <translation>Ei yhdistetty.</translation>
     </message>
     <message>
-        <source>Searching for: &quot;%1&quot;.</source>
-        <translation>Etsitään: &quot;%1&quot;.</translation>
+        <source>Searching for: "%1".</source>
+        <translation>Etsitään: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
@@ -2942,7 +3030,7 @@ Päiväys: %4</translation>
     <name>WUploadThread</name>
     <message>
         <source>Your download has been blocked for %1 minute(s)!</source>
-        <translation type="obsolete">Imurointisi on estetty %1 minuutiksi!</translation>
+        <translation type='obsolete'>Imurointisi on estetty %1 minuutiksi!</translation>
     </message>
     <message>
         <source>User #%1</source>
@@ -2958,7 +3046,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Connection reset by peer!</source>
-        <translation type="obsolete">Yhteys katkesi ennenaikaisesti!</translation>
+        <translation type='obsolete'>Yhteys katkesi ennenaikaisesti!</translation>
     </message>
     <message>
         <source>Connection timed out!</source>
@@ -3064,7 +3152,7 @@ Päiväys: %4</translation>
     <name>WinShare</name>
     <message>
         <source>%d.%d.%d build %d</source>
-        <translation type="obsolete">%d.%d.%d luonti %d</translation>
+        <translation type='obsolete'>%d.%d.%d luonti %d</translation>
     </message>
 </context>
 <context>
@@ -3108,7 +3196,7 @@ Päiväys: %4</translation>
     <message>
         <source>Number of users logged in: %1
 </source>
-        <translation type="obsolete">Käyttäjiä kirjautuneena: %1</translation>
+        <translation type='obsolete'>Käyttäjiä kirjautuneena: %1</translation>
     </message>
     <message>
         <source>No users passed.</source>
@@ -3188,11 +3276,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>On connect: %1</source>
-        <translation type="obsolete">Yhdistäessä tee: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee: %1</translation>
     </message>
     <message>
         <source>On connect 2: %1</source>
-        <translation type="obsolete">Yhdistäessä tee myös: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee myös: %1</translation>
     </message>
     <message>
         <source>Remote password: %1</source>
@@ -3204,7 +3292,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Unizone version: %1.%2.%3 build %4</source>
-        <translation type="obsolete">Unizone versio: %1.%2.%3 luonti %4</translation>
+        <translation type='obsolete'>Unizone versio: %1.%2.%3 luonti %4</translation>
     </message>
     <message>
         <source>MUSCLE version: %1</source>
@@ -3212,7 +3300,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>On connect do: %1</source>
-        <translation type="obsolete">Yhdistäessä tee: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee: %1</translation>
     </message>
     <message>
         <source>Unknown command!</source>
@@ -3223,24 +3311,24 @@ Päiväys: %4</translation>
         <translation>Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
     <message>
-        <source>Ping sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</source>
-        <translation type="obsolete">Ping lähetetty käyttäjälle #%1, eli &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</translation>
+        <source>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
+        <translation type='obsolete'>Ping lähetetty käyttäjälle #%1, eli &lt;font color="%3"&gt;%2&lt;/font&gt;.</translation>
     </message>
     <message>
         <source>You are not allowed to %1 [%2]</source>
-        <translation type="obsolete">Ei ole sallittua, että</translation>
+        <translation type='obsolete'>Ei ole sallittua, että</translation>
     </message>
     <message>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
-        <translation type="obsolete">Unizone (Suomi) %1 on ilmestynyt osoitteessa http://www.raasu.org/tools/windows/.</translation>
+        <translation type='obsolete'>Unizone (Suomi) %1 on ilmestynyt osoitteessa http://www.raasu.org/tools/windows/.</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="obsolete">Tuntematon</translation>
+        <translation type='obsolete'>Tuntematon</translation>
     </message>
     <message>
         <source>Unizone (English) </source>
-        <translation type="obsolete">Unizone (Suomi)</translation>
+        <translation type='obsolete'>Unizone (Suomi)</translation>
     </message>
     <message>
         <source>Connecting to server %1.</source>
@@ -3264,7 +3352,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Address info for user #%1 (%2):</source>
-        <translation type="obsolete">Osoitetiedot käyttäjälle #%1 (%2):</translation>
+        <translation type='obsolete'>Osoitetiedot käyttäjälle #%1 (%2):</translation>
     </message>
     <message>
         <source>Address info for %1:</source>
@@ -3292,7 +3380,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>No address info for %1 or %2</source>
-        <translation type="obsolete">Ei löytynyt osoitetietoa %1 tai %2</translation>
+        <translation type='obsolete'>Ei löytynyt osoitetietoa %1 tai %2</translation>
     </message>
     <message>
         <source>No address info for %1</source>
@@ -3323,12 +3411,12 @@ Päiväys: %4</translation>
         <translation>Pingaa %1</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
-        <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
+        <source>&lt;font color="%3"&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
+        <translation type='obsolete'>&lt;font color="%3"&gt;%1&lt;/font&gt;:n IP-osoite on %2.</translation>
     </message>
     <message>
         <source>/ping %1</source>
-        <translation type="obsolete">/ping %1</translation>
+        <translation type='obsolete'>/ping %1</translation>
     </message>
     <message>
         <source>Trying to resume file %1 from user %2</source>
@@ -3336,11 +3424,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</source>
-        <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas Windowsille!</translation>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas Windowsille!</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</source>
-        <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas Linuxille!</translation>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas Linuxille!</translation>
     </message>
     <message>
         <source>Original idea by Vitaliy Mikitchenko.</source>
@@ -3364,7 +3452,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Sharing %1 file(s).</source>
-        <translation type="obsolete">%1 tiedosto(a) jaossa.</translation>
+        <translation type='obsolete'>%1 tiedosto(a) jaossa.</translation>
     </message>
     <message>
         <source>Connected.</source>
@@ -3375,8 +3463,8 @@ Päiväys: %4</translation>
         <translation>Uudelleenyhdistämisen ajastin pysäytetty</translation>
     </message>
     <message>
-        <source>Name changed to &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</source>
-        <translation type="obsolete">Nimesi on nyt &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</translation>
+        <source>Name changed to &lt;font color="%2"&gt;%1&lt;/font&gt;.</source>
+        <translation type='obsolete'>Nimesi on nyt &lt;font color="%2"&gt;%1&lt;/font&gt;.</translation>
     </message>
     <message>
         <source>Server:</source>
@@ -3392,83 +3480,83 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
+        <translation type='obsolete'>Nimi</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="obsolete">ID</translation>
+        <translation type='obsolete'>ID</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type="obsolete">Tila</translation>
+        <translation type='obsolete'>Tila</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation type="obsolete">Tiedostoja</translation>
+        <translation type='obsolete'>Tiedostoja</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type="obsolete">Yhteys</translation>
+        <translation type='obsolete'>Yhteys</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation type="obsolete">Kuorma</translation>
+        <translation type='obsolete'>Kuorma</translation>
     </message>
     <message>
         <source>Client</source>
-        <translation type="obsolete">Ohjelma</translation>
+        <translation type='obsolete'>Ohjelma</translation>
     </message>
     <message>
         <source>Testing Unizone (English) </source>
-        <translation type="obsolete">Testataan Unizone (Suomi)</translation>
+        <translation type='obsolete'>Testataan Unizone (Suomi)</translation>
     </message>
     <message>
         <source>1 week, </source>
-        <translation type="obsolete">1 viikko,</translation>
+        <translation type='obsolete'>1 viikko,</translation>
     </message>
     <message>
         <source>%1 weeks, </source>
-        <translation type="obsolete">%1 viikkoa,</translation>
+        <translation type='obsolete'>%1 viikkoa,</translation>
     </message>
     <message>
         <source>1 day, </source>
-        <translation type="obsolete">1 päivä,</translation>
+        <translation type='obsolete'>1 päivä,</translation>
     </message>
     <message>
         <source>%1 days, </source>
-        <translation type="obsolete">%1 päivää,</translation>
+        <translation type='obsolete'>%1 päivää,</translation>
     </message>
     <message>
         <source>1 hour, </source>
-        <translation type="obsolete">1 tunti,</translation>
+        <translation type='obsolete'>1 tunti,</translation>
     </message>
     <message>
         <source>%1 hours, </source>
-        <translation type="obsolete">%1 tuntia,</translation>
+        <translation type='obsolete'>%1 tuntia,</translation>
     </message>
     <message>
         <source>1 minute, </source>
-        <translation type="obsolete">1 minuutti,</translation>
+        <translation type='obsolete'>1 minuutti,</translation>
     </message>
     <message>
         <source>%1 minutes, </source>
-        <translation type="obsolete">%1 minuuttia,</translation>
+        <translation type='obsolete'>%1 minuuttia,</translation>
     </message>
     <message>
         <source>1 second, </source>
-        <translation type="obsolete">1 sekunti,</translation>
+        <translation type='obsolete'>1 sekunti,</translation>
     </message>
     <message>
         <source>%1 seconds, </source>
-        <translation type="obsolete">%1 sekuntia,</translation>
+        <translation type='obsolete'>%1 sekuntia,</translation>
     </message>
     <message>
         <source> and </source>
-        <translation type="obsolete">ja</translation>
+        <translation type='obsolete'>ja</translation>
     </message>
     <message>
         <source>%1 %2</source>
-        <translation type="obsolete">%1 %2</translation>
+        <translation type='obsolete'>%1 %2</translation>
     </message>
     <message>
         <source>Waiting for file scan thread to finish...</source>
@@ -3476,7 +3564,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="obsolete">%1</translation>
+        <translation type='obsolete'>%1</translation>
     </message>
     <message>
         <source>here</source>
@@ -3508,7 +3596,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>/search %1</source>
-        <translation type="obsolete">/search %1</translation>
+        <translation type='obsolete'>/search %1</translation>
     </message>
     <message>
         <source>Rescanning shared files...</source>
@@ -3524,7 +3612,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>[Freeware] - Unizone</source>
-        <translation type="obsolete">[Freeware] - Unizone</translation>
+        <translation type='obsolete'>[Freeware] - Unizone</translation>
     </message>
     <message>
         <source>Ignore pattern cleared.</source>
@@ -3576,31 +3664,31 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Access Denied!!!</source>
-        <translation type="obsolete">Pääsy Evätty!!!</translation>
+        <translation type='obsolete'>Pääsy Evätty!!!</translation>
     </message>
     <message>
         <source>do that to</source>
-        <translation type="obsolete">tehdä</translation>
+        <translation type='obsolete'>tehdä</translation>
     </message>
     <message>
         <source>kick</source>
-        <translation type="obsolete">potkaiset</translation>
+        <translation type='obsolete'>potkaiset</translation>
     </message>
     <message>
         <source>ban</source>
-        <translation type="obsolete">bannaat</translation>
+        <translation type='obsolete'>bannaat</translation>
     </message>
     <message>
         <source>unban</source>
-        <translation type="obsolete">poistat bannauksen</translation>
+        <translation type='obsolete'>poistat bannauksen</translation>
     </message>
     <message>
         <source>require</source>
-        <translation type="obsolete">lisäät vaatimuksen</translation>
+        <translation type='obsolete'>lisäät vaatimuksen</translation>
     </message>
     <message>
         <source>unrequire</source>
-        <translation type="obsolete">poistat vaatimuksen</translation>
+        <translation type='obsolete'>poistat vaatimuksen</translation>
     </message>
     <message>
         <source>Resume list:</source>
@@ -3608,7 +3696,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Connected users: </source>
-        <translation type="obsolete">Kytkeytyneet käyttäjät:</translation>
+        <translation type='obsolete'>Kytkeytyneet käyttäjät:</translation>
     </message>
     <message>
         <source>Logging disabled.</source>
@@ -3620,7 +3708,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Copyright (C) 2002-2003 Mika T. Lindqvist.</source>
-        <translation type="obsolete">Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
+        <translation type='obsolete'>Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
     </message>
     <message>
         <source>Number of users logged in: %1</source>
@@ -3968,27 +4056,27 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Auto-private pattern : %1</source>
-        <translation type="obsolete">Automaattisen keskustelun kaava : %1</translation>
+        <translation type='obsolete'>Automaattisen keskustelun kaava : %1</translation>
     </message>
     <message>
         <source>Blacklist pattern : %1</source>
-        <translation type="obsolete">Mustan listan kaava : %1</translation>
+        <translation type='obsolete'>Mustan listan kaava : %1</translation>
     </message>
     <message>
         <source>Ignore pattern : %1</source>
-        <translation type="obsolete">Ignore-kaava : %1</translation>
+        <translation type='obsolete'>Ignore-kaava : %1</translation>
     </message>
     <message>
         <source>Watch pattern : %1</source>
-        <translation type="obsolete">Seurantakaava : %1</translation>
+        <translation type='obsolete'>Seurantakaava : %1</translation>
     </message>
     <message>
         <source>On Connect : %1</source>
-        <translation type="obsolete">Yhdistäessä tee : %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee : %1</translation>
     </message>
     <message>
         <source>On Connect 2: %1</source>
-        <translation type="obsolete">Yhdistäessä tee myös: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee myös: %1</translation>
     </message>
     <message>
         <source>Help for %1:</source>
@@ -3999,8 +4087,8 @@ Päiväys: %4</translation>
         <translation>Yhdistetään uudelleen 1 minuutin kuluttua!</translation>
     </message>
     <message>
-        <source>Time request sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</source>
-        <translation type="obsolete">Aikapyyntö lähetetty käyttäjälle #%1, eli &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</translation>
+        <source>Time request sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
+        <translation type='obsolete'>Aikapyyntö lähetetty käyttäjälle #%1, eli &lt;font color="%3"&gt;%2&lt;/font&gt;.</translation>
     </message>
     <message>
         <source>/time [nick] [gmt] - request time stamp from other user</source>
@@ -4032,107 +4120,107 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="obsolete">Nimi</translation>
+        <translation type='obsolete'>Nimi</translation>
     </message>
     <message>
         <source>File Size</source>
-        <translation type="obsolete">Koko</translation>
+        <translation type='obsolete'>Koko</translation>
     </message>
     <message>
         <source>File Type</source>
-        <translation type="obsolete">Tyyppi</translation>
+        <translation type='obsolete'>Tyyppi</translation>
     </message>
     <message>
         <source>Modified</source>
-        <translation type="obsolete">Muokattu</translation>
+        <translation type='obsolete'>Muokattu</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type="obsolete">Polku</translation>
+        <translation type='obsolete'>Polku</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="obsolete">Käyttäjä</translation>
+        <translation type='obsolete'>Käyttäjä</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="obsolete">Etsi:</translation>
+        <translation type='obsolete'>Etsi:</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type="obsolete">Lataa</translation>
+        <translation type='obsolete'>Lataa</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="obsolete">Tyhjennä</translation>
+        <translation type='obsolete'>Tyhjennä</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type="obsolete">Pysäytä</translation>
+        <translation type='obsolete'>Pysäytä</translation>
     </message>
     <message>
         <source>Idle.</source>
-        <translation type="obsolete">Vapaa.</translation>
+        <translation type='obsolete'>Vapaa.</translation>
     </message>
     <message>
         <source>Topic</source>
-        <translation type="obsolete">Aihe</translation>
+        <translation type='obsolete'>Aihe</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type="obsolete">Käyttäjiä</translation>
+        <translation type='obsolete'>Käyttäjiä</translation>
     </message>
     <message>
         <source>Admins</source>
-        <translation type="obsolete">Valvojia</translation>
+        <translation type='obsolete'>Valvojia</translation>
     </message>
     <message>
         <source>Public</source>
-        <translation type="obsolete">Yleinen</translation>
+        <translation type='obsolete'>Yleinen</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation type="obsolete">&amp;Luo</translation>
+        <translation type='obsolete'>&amp;Luo</translation>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type="obsolete">Lii&amp;ty</translation>
+        <translation type='obsolete'>Lii&amp;ty</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation type="obsolete">Keskustelu</translation>
+        <translation type='obsolete'>Keskustelu</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="obsolete">Etsi</translation>
+        <translation type='obsolete'>Etsi</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="obsolete">Kanavat</translation>
+        <translation type='obsolete'>Kanavat</translation>
     </message>
     <message>
-        <source>Searching for: &quot;%1&quot;.</source>
-        <translation type="obsolete">Etsitään: &quot;%1&quot;.</translation>
+        <source>Searching for: "%1".</source>
+        <translation type='obsolete'>Etsitään: "%1".</translation>
     </message>
     <message>
         <source>Results: %1</source>
-        <translation type="obsolete">Tuloksia: %1</translation>
+        <translation type='obsolete'>Tuloksia: %1</translation>
     </message>
     <message>
         <source>Create Channel</source>
-        <translation type="obsolete">Luo Kanava</translation>
+        <translation type='obsolete'>Luo Kanava</translation>
     </message>
     <message>
         <source>Please enter channel name</source>
-        <translation type="obsolete">Anna kanavan nimi</translation>
+        <translation type='obsolete'>Anna kanavan nimi</translation>
     </message>
     <message>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
-        <translation type="obsolete">Käyttäjä #%1 kutsui sinut kanavalle %2. Otatko kutsun vastaan?</translation>
+        <translation type='obsolete'>Käyttäjä #%1 kutsui sinut kanavalle %2. Otatko kutsun vastaan?</translation>
     </message>
     <message>
         <source>User #%1 requested invite to channel %2. Do you?</source>
-        <translation type="obsolete">Käyttäjä #%1 pyysi kutsua kanavalle %2. Haluatko antaa?</translation>
+        <translation type='obsolete'>Käyttäjä #%1 pyysi kutsua kanavalle %2. Haluatko antaa?</translation>
     </message>
     <message>
         <source>Server version: %1</source>
@@ -4160,23 +4248,23 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1.%2.%3 build %4</source>
-        <translation type="obsolete">%1.%2.%3 luonti %4</translation>
+        <translation type='obsolete'>%1.%2.%3 luonti %4</translation>
     </message>
     <message>
         <source>On Connect: %1</source>
-        <translation type="obsolete">Yhdistäessä tee: %1</translation>
+        <translation type='obsolete'>Yhdistäessä tee: %1</translation>
     </message>
     <message>
         <source>passive</source>
-        <translation type="obsolete">passiivinen</translation>
+        <translation type='obsolete'>passiivinen</translation>
     </message>
     <message>
         <source>active</source>
-        <translation type="obsolete">aktiivinen</translation>
+        <translation type='obsolete'>aktiivinen</translation>
     </message>
     <message>
         <source>Clear History</source>
-        <translation type="obsolete">Tyhjennä Historia</translation>
+        <translation type='obsolete'>Tyhjennä Historia</translation>
     </message>
     <message>
         <source>- Local File: %1</source>
@@ -4204,11 +4292,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Unizone</source>
-        <translation type="obsolete">Unizone</translation>
+        <translation type='obsolete'>Unizone</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
-        <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas FreeBSD:lle!</translation>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas FreeBSD:lle!</translation>
     </message>
     <message>
         <source>/clearresumes - clear all pending resumes</source>
@@ -4220,7 +4308,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>On connect:</source>
-        <translation type="obsolete">Yhdistäessä tee:</translation>
+        <translation type='obsolete'>Yhdistäessä tee:</translation>
     </message>
     <message>
         <source>1. %1</source>
@@ -4260,7 +4348,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">Alustetaan...</translation>
+        <translation type='obsolete'>Alustetaan...</translation>
     </message>
     <message>
         <source>On Connect: Do Nothing ;)</source>
@@ -4340,7 +4428,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
-        <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas QNX Neutrinolle!</translation>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas QNX Neutrinolle!</translation>
     </message>
     <message>
         <source>wandering</source>
@@ -4444,7 +4532,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
-        <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas %1:lle!</translation>
+        <translation type='obsolete'>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas %1:lle!</translation>
     </message>
     <message>
         <source>Welcome to Unizone (English)!</source>
