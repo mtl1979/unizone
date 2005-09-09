@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -18,6 +19,7 @@
 #include "debugimpl.h"
 #include "winsharewindow.h"
 #include "wfile.h"
+#include "wstring.h"
 #include "util.h"
 #include "uenv.h"
 
@@ -50,11 +52,11 @@ SetWorkingDirectory(const char *app)
 		}
 	}
 }
-#else
+#elif defined(UNICODE)
 SetWorkingDirectory()
 {
 	// we have to use some windows api to get our path...
-	TCHAR * name = new TCHAR[MAX_PATH];	// maximum size for Win32 filenames
+	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
 	CHECK_PTR(name);
 	if (GetModuleFileName(NULL,				/* current apps module */
 							name,			/* buffer */
@@ -64,6 +66,25 @@ SetWorkingDirectory()
 		PRINT("Module filename: %S\n", name);
 		PathRemoveFileSpec(name);
 		PRINT("Setting working directory to: %S\n", name);
+		SetCurrentDirectory(name);
+	}
+	delete [] name;
+	name = NULL; // <postmaster@raasu.org> 20021027
+}
+#else
+SetWorkingDirectory()
+{
+	// we have to use some windows api to get our path...
+	char * name = new char[MAX_PATH];	// maximum size for Win32 filenames
+	CHECK_PTR(name);
+	if (GetModuleFileName(NULL,				/* current apps module */
+							name,			/* buffer */
+							MAX_PATH		/* buffer length */
+							) != 0)
+	{
+		PRINT("Module filename: %s\n", name);
+		PathRemoveFileSpec(name);
+		PRINT("Setting working directory to: %s\n", name);
 		SetCurrentDirectory(name);
 	}
 	delete [] name;
@@ -115,13 +136,13 @@ main( int argc, char** argv )
 	QTranslator qtr( 0 );
 	WFile lang;
 	QString lfile;
-	if (!WFile::Exists("unizone.lng"))
+	if (!WFile::Exists(L"unizone.lng"))
 	{
 		lfile = QFileDialog::getOpenFileName( QString::null, "unizone_*.qm", NULL );
 		if (!lfile.isEmpty())
 		{
 			// Save selected language's translator filename
-			if ( lang.Open("unizone.lng", IO_WriteOnly) )
+			if ( lang.Open(L"unizone.lng", IO_WriteOnly) )
 			{
 				QCString clang = lfile.utf8();
 				lang.WriteBlock(clang, clang.length());
@@ -131,12 +152,12 @@ main( int argc, char** argv )
 	}
 
 	// (Re-)load translator filename
-	if ( lang.Open("unizone.lng", IO_ReadOnly) ) 
+	if ( lang.Open(L"unizone.lng", O_RDONLY | O_BINARY) ) 
 	{    
 		// file opened successfully
 		QByteArray plang(256);
 		lang.ReadLine(plang.data(), 255);
-		lfile = QString::fromUtf8(plang);
+		lfile = QString::fromUtf8(plang.data());
 		lang.Close();
     }
 
@@ -144,18 +165,26 @@ main( int argc, char** argv )
 	if (!lfile.isEmpty())
 	{
 		if (qtr.load(lfile))
+		{
+#ifdef DEBUG
+			WString wfile(lfile);
+			PRINT("Loaded translation %S\n", wfile.getBuffer());
+#endif
 			app.installTranslator( &qtr );
-
+		}
 		// Qt's own translator file
 		QFileInfo qfi(lfile);
-		QString qt_lang = qfi.fileName().replace("isplitter", "qt");
+		QString langfile = qfi.fileName().replace("unizone", "qt");
+		QString qt_lang = QString::null;
 		QString qtdir = EnvironmentVariable("QTDIR");
 		if (qtdir != QString::null)
 		{
 			QString tr_dir = MakePath(EnvironmentVariable("QTDIR"), "translations");
-			qt_lang = MakePath(tr_dir, qt_lang);
+			qt_lang = MakePath(tr_dir, langfile);
+			if (!WFile::Exists(qt_lang))
+				qt_lang = QString::null;
 		}
-		else
+		if (qt_lang == QString::null)
 		{
 			// Try using same directory as Unizones translations
 			qt_lang = MakePath(qfi.dirPath(true), qt_lang);
@@ -163,7 +192,13 @@ main( int argc, char** argv )
 
 		QTranslator qtr2( 0 );
 		if (qtr2.load(qt_lang))
+		{
+#ifdef DEBUG
+			WString wfile(qt_lang);
+			PRINT("Loaded translation %S\n", wfile.getBuffer());
+#endif
 			app.installTranslator( &qtr2 );
+		}
 	}
 	
 	WinShareWindow * window = new WinShareWindow(NULL);
