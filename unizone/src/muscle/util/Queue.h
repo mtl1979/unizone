@@ -39,16 +39,11 @@ public:
    /** Returns the negation of the equality operator */
    bool operator!=(const Queue &rhs) const {return !(*this == rhs);}
 
-   /** Appends a default-constructed item to the end of the queue.  Queue size grows by one.
-    *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
-    */
-   status_t AddTail() {ItemType blank = ItemType(); return AddTail(blank);}
-
    /** Appends (item) to the end of the queue.  Queue size grows by one.
     *  @param item The item to append. 
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddTail(const ItemType & item);
+   status_t AddTail(const ItemType & item = ItemType());
 
    /** Appends some or all items in (queue) to the end of our queue.  Queue size
     *  grows by (queue.GetNumItems()).
@@ -72,16 +67,11 @@ public:
     */
    status_t AddTail(const ItemType * items, uint32 numItems);
 
-   /** Prepends a default-constructed item to the head of the queue.  Queue size grows by one.
-    *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
-    */
-   status_t AddHead() {ItemType blank = ItemType(); return AddHead(blank);}
-
    /** Prepends (item) to the head of the queue.  Queue size grows by one.
     *  @param item The item to prepend. 
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddHead(const ItemType &item);
+   status_t AddHead(const ItemType &item = ItemType());
 
    /** Concatenates (queue) to the head of our queue.
     *  Our queue size grows by (queue.GetNumItems()).
@@ -159,29 +149,14 @@ public:
     */
    ItemType * GetItemAt(uint32 index) const;
 
-   /** Replaces the (index)'th item in the queue with a default-constructed item.
-    *  @param index Which item to replace--can range from zero 
-    *               (head of the queue) to (GetNumItems()-1) (tail of the queue).
-    *  @return B_NO_ERROR on success, B_ERROR on failure (e.g. bad index)
-    */
-   status_t ReplaceItemAt(uint32 index) {ItemType blank = ItemType(); return ReplaceItemAt(index, blank);}
- 
    /** Replaces the (index)'th item in the queue with (newItem).
     *  @param index Which item to replace--can range from zero 
     *               (head of the queue) to (GetNumItems()-1) (tail of the queue).
     *  @param newItem The item to place into the queue at the (index)'th position.
     *  @return B_NO_ERROR on success, B_ERROR on failure (e.g. bad index)
     */
-   status_t ReplaceItemAt(uint32 index, const ItemType & newItem);
+   status_t ReplaceItemAt(uint32 index, const ItemType & newItem = ItemType());
  
-   /** Inserts a default-constructed item into the (nth) slot in the array.  InsertItemAt(0)
-    *  is the same as AddHead(item), InsertItemAt(GetNumItems()) is the same
-    *  as AddTail(item).  Other positions will involve an O(n) shifting of contents.
-    *  @param index The position at which to insert the new item.
-    *  @return B_NO_ERROR on success, B_ERROR on failure (i.e. bad index).
-    */
-   status_t InsertItemAt(uint32 index) {ItemType blank = ItemType(); return InsertItemAt(index, blank);}
-   
    /** Inserts (item) into the (nth) slot in the array.  InsertItemAt(0)
     *  is the same as AddHead(item), InsertItemAt(GetNumItems()) is the same
     *  as AddTail(item).  Other positions will involve an O(n) shifting of contents.
@@ -189,7 +164,7 @@ public:
     *  @param newItem The item to insert into the queue.
     *  @return B_NO_ERROR on success, B_ERROR on failure (i.e. bad index).
     */
-   status_t InsertItemAt(uint32 index, const ItemType & newItem);
+   status_t InsertItemAt(uint32 index, const ItemType & newItem = ItemType());
    
    /** Removes all items from the queue. 
     *  @param releaseCachedBuffers If true, we will immediately free any buffers that we may be holding.  Otherwise
@@ -551,8 +526,7 @@ RemoveHead()
    int oldHeadIndex = _headIndex;
    _headIndex = NextIndex(_headIndex);
    _itemCount--;
-   ItemType blank = ItemType();
-   _queue[oldHeadIndex] = blank;  // this must be done last, as queue state must be coherent when we do this
+   _queue[oldHeadIndex] = ItemType();  // this must be done last, as queue state must be coherent when we do this
    return B_NO_ERROR;
 }
 
@@ -575,8 +549,7 @@ RemoveTail()
    int removedItemIndex = _tailIndex;
    _tailIndex = PrevIndex(_tailIndex);
    _itemCount--;
-   ItemType blank = ItemType();
-   _queue[removedItemIndex] = blank;  // this must be done last, as queue state must be coherent when we do this
+   _queue[removedItemIndex] = ItemType();  // this must be done last, as queue state must be coherent when we do this
    return B_NO_ERROR;
 }
 
@@ -636,8 +609,7 @@ RemoveItemAt(uint32 index)
    }
 
    _itemCount--;
-   ItemType blank = ItemType();
-   _queue[indexToClear] = blank;  // this must be done last, as queue state must be coherent when we do this
+   _queue[indexToClear] = ItemType();  // this must be done last, as queue state must be coherent when we do this
    return B_NO_ERROR; 
 }
 

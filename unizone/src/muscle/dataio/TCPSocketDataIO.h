@@ -27,9 +27,9 @@ public:
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
-   TCPSocketDataIO(int sockfd, bool blocking) : _sockfd(sockfd), _naglesEnabled(true), _stallLimit(MUSCLE_DEFAULT_TCP_STALL_TIMEOUT)
+   TCPSocketDataIO(int sockfd, bool blocking) : _sockfd(sockfd), _blocking(true), _naglesEnabled(true), _stallLimit(MUSCLE_DEFAULT_TCP_STALL_TIMEOUT)
    {
-      SetBlockingIOEnabled(blocking);
+      (void) SetBlockingIOEnabled(blocking);
    }
 
    /** Destructor.

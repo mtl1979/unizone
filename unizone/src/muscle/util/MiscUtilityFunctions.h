@@ -25,6 +25,15 @@ status_t ParseArgs(int argc, char ** argv, Message & addTo);
  *  instead of from the arguments vector.  The file may contain
  *  comments that are prepended with a hash symbol (#); these
  *  will be safely ignored.
+ *
+ *  Also, the file may contain special lines beginning with the
+ *  keyword "begin" or "end".  These lines delineate a sub-section,
+ *  which will show up in (addTo) as a sub-Message.  This can
+ *  be useful for expressing hierarchical data.  The "begin" line
+ *  may optionally contain the name to store the sub-Message under; 
+ *  if no name is present, the sub-Message will be added with name "".
+ *  Multiple sub-sections with the same name are supported.
+ *
  *  @param file File pointer to read from.  This file must be
  *              opened for reading, and will not be fclosed() by this function.
   * @param addTo The message to add the arguments to

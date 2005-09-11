@@ -467,4 +467,34 @@ status_t Flattenable :: CopyFromImplementation(const Flattenable & copyFrom)
    return ret;
 }
 
+void Inet_NtoA(uint32 addr, char * ipbuf)
+{
+   sprintf(ipbuf, "%li.%li.%li.%li", (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
+}
+
+uint32 Inet_AtoN(const char * buf)
+{
+   // net_server inexplicably doesn't have this function; so I'll just fake it
+   uint32 ret = 0;
+   int shift = 24;  // fill out the MSB first
+   bool startQuad = true;
+   while((shift >= 0)&&(*buf))
+   {
+      if (startQuad)
+      {
+         uint8 quad = (uint8) atoi(buf);
+         ret |= (((uint32)quad) << shift);
+         shift -= 8;
+      }
+      startQuad = (*buf == '.');
+      buf++;
+   }
+   return ret;
+}
+
+static uint32 _customLocalhostIP = 0;  // disabled by default
+
+void SetLocalHostIPOverride(uint32 ip) {_customLocalhostIP = ip;}
+uint32 GetLocalHostIPOverride() {return _customLocalhostIP;}
+
 END_NAMESPACE(muscle);

@@ -49,11 +49,6 @@ typedef size_t net_length_t;
 
 BEGIN_NAMESPACE(muscle);
 
-static uint32 _customLocalhostIP = 0;  // disabled by default
-
-void SetLocalHostIPOverride(uint32 ip) {_customLocalhostIP = ip;}
-uint32 GetLocalHostIPOverride() {return _customLocalhostIP;}
-
 int CreateUDPSocket()
 {
    return socket(AF_INET, SOCK_DGRAM, 0);
@@ -228,10 +223,10 @@ int Accept(int sock)
    return (sock >= 0) ? accept(sock, (struct sockaddr *)&saSocket, &nLen) : -1;
 }
 
-int Connect(const char * hostName, uint16 port, const char * debugTitle, bool errorsOnly) 
+int Connect(const char * hostName, uint16 port, const char * debugTitle, bool errorsOnly, uint64 maxConnectTime) 
 {
    uint32 hostIP = GetHostByName(hostName);
-   if (hostIP > 0) return Connect(hostIP, port, hostName, debugTitle, errorsOnly);
+   if (hostIP > 0) return Connect(hostIP, port, hostName, debugTitle, errorsOnly, maxConnectTime);
    else 
    {
       if (debugTitle) LogTime(MUSCLE_LOG_INFO, "%s: hostname lookup for [%s] failed!\n", debugTitle, hostName);
@@ -239,7 +234,7 @@ int Connect(const char * hostName, uint16 port, const char * debugTitle, bool er
    }
 }
 
-int Connect(uint32 hostIP, uint16 port, const char * optDebugHostName, const char * debugTitle, bool errorsOnly)
+int Connect(uint32 hostIP, uint16 port, const char * optDebugHostName, const char * debugTitle, bool errorsOnly, uint64 maxConnectTime)
 {
    char ipbuf[16]; Inet_NtoA(hostIP, ipbuf);
 
@@ -249,16 +244,56 @@ int Connect(uint32 hostIP, uint16 port, const char * optDebugHostName, const cha
       LogFlush();
    }
 
-   struct sockaddr_in saAddr;
-   memset(&saAddr, 0, sizeof(saAddr));
-   saAddr.sin_family      = AF_INET;
-   saAddr.sin_port        = htons(port);
-   saAddr.sin_addr.s_addr = htonl(hostIP);
-
-   int s = socket(AF_INET, SOCK_STREAM, 0);
+   bool socketIsReady = false;
+   int s = (maxConnectTime == MUSCLE_TIME_NEVER) ? socket(AF_INET, SOCK_STREAM, 0) : ConnectAsync(hostIP, port, socketIsReady);
    if (s >= 0)
    {
-      if (connect(s, (struct sockaddr *) &saAddr, sizeof(saAddr)) >= 0)
+      int ret = -1;
+      if (maxConnectTime == MUSCLE_TIME_NEVER) 
+      {
+         struct sockaddr_in saAddr;
+         memset(&saAddr, 0, sizeof(saAddr));
+         saAddr.sin_family      = AF_INET;
+         saAddr.sin_port        = htons(port);
+         saAddr.sin_addr.s_addr = htonl(hostIP);
+         ret = connect(s, (struct sockaddr *) &saAddr, sizeof(saAddr));
+      }
+      else
+      {
+         if (socketIsReady) ret = 0;  // immediate success, yay!
+         else
+         {
+            // The harder case:  the user doesn't want the Connect() call to take more than so many microseconds.
+            // For this, we'll need to go into non-blocking mode and run a select() loop to get the desired behaviour!
+            const uint64 deadline = GetRunTime64()+maxConnectTime;
+            fd_set * exceptSetPointer = NULL;
+            fd_set writeSet;
+#ifdef WIN32
+            fd_set exceptSet;  // Under Windows, failed asynchronous connect()'s are communicated via the exceptions fd_set
+            exceptSetPointer = &exceptSet;
+#endif
+            uint64 now;
+            while((now = GetRunTime64()) < deadline)
+            {
+               FD_ZERO(&writeSet); FD_SET(s, &writeSet);
+               if (exceptSetPointer) {FD_ZERO(exceptSetPointer); FD_SET(s, exceptSetPointer);}
+
+               struct timeval timeVal; Convert64ToTimeVal(deadline-now, timeVal);
+               if ((select(s+1, NULL, &writeSet, exceptSetPointer, &timeVal) < 0)&&(PreviousOperationWasInterrupted() == false)) break;  // error out!
+               else
+               {
+                  if ((exceptSetPointer)&&(FD_ISSET(s, exceptSetPointer))) break;  // Win32:  failed async connect detected!
+                  if (FD_ISSET(s, &writeSet))
+                  {
+                     if ((FinalizeAsyncConnect(s) == B_NO_ERROR)&&(SetSocketBlockingEnabled(s, true) == B_NO_ERROR)) ret = 0;
+                     break;
+                  }
+               }
+            }
+         }
+      }
+
+      if (ret == 0)
       {
          if ((debugTitle)&&(errorsOnly == false)) Log(MUSCLE_LOG_INFO, "Connected!\n");
          return s;
@@ -288,7 +323,7 @@ uint32 GetHostByName(const char * name)
    }
    else ret = ntohl(ret);
 
-   if ((ret == localhostIP)&&(_customLocalhostIP > 0)) ret = _customLocalhostIP;
+   if ((ret == localhostIP)&&(GetLocalHostIPOverride() > 0)) ret = GetLocalHostIPOverride();
    return ret;
 }
 
@@ -321,31 +356,6 @@ int ConnectAsync(uint32 hostIP, uint16 port, bool & retIsReady)
    return -1;
 }
 
-void Inet_NtoA(uint32 addr, char * ipbuf)
-{
-   sprintf(ipbuf, "%li.%li.%li.%li", (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
-}
-
-uint32 Inet_AtoN(const char * buf)
-{
-   // net_server inexplicably doesn't have this function; so I'll just fake it
-   uint32 ret = 0;
-   int shift = 24;  // fill out the MSB first
-   bool startQuad = true;
-   while((shift >= 0)&&(*buf))
-   {
-      if (startQuad)
-      {
-         uint8 quad = (uint8) atoi(buf);
-         ret |= (((uint32)quad) << shift);
-         shift -= 8;
-      }
-      startQuad = (*buf == '.');
-      buf++;
-   }
-   return ret;
-}
-
 uint32 GetPeerIPAddress(int sock)
 {
    uint32 ipAddress = 0;
@@ -356,7 +366,7 @@ uint32 GetPeerIPAddress(int sock)
       if (getpeername(sock, (struct sockaddr *)&saTempAdd, &length) == 0)
       {
          ipAddress = ntohl(saTempAdd.sin_addr.s_addr);
-         if ((ipAddress == localhostIP)&&(_customLocalhostIP > 0)) ipAddress = _customLocalhostIP;
+         if ((ipAddress == localhostIP)&&(GetLocalHostIPOverride() > 0)) ipAddress = GetLocalHostIPOverride();
       }
    }
    return ipAddress;

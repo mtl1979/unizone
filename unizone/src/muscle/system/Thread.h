@@ -5,10 +5,7 @@
 
 #include "support/MuscleSupport.h"  // first to avoid MUSCLE_FD_SETSIZE ordering problems
 
-#if defined(MUSCLE_USE_CLONE)
-# include <sched.h>
-# include "util/ByteBuffer.h"
-#elif defined(MUSCLE_USE_PTHREADS)
+#if defined(MUSCLE_USE_PTHREADS)
 # include <pthread.h>
 #elif defined(WIN32)
 # include <windows.h>
@@ -199,17 +196,6 @@ public:
    /** As above, but returns a read-only reference. */
    const Hashtable<int, bool> & GetOwnerSocketSet(uint32 socketSet) const;
 
-#if defined(MUSCLE_USE_CLONE)
-   /** Set the parameters that should be passed to the Linux clone() function by StartInternalThread().
-    *  If you want to customize these parameters, you should call this method before calling StartInternalThread().
-    *  @note This method is only available if MUSCLE_USE_CLONE and MUSCLE_USE_PTHREADS have been defined.
-    *  @param flags bitchord to pass to clone().  If this method isn't called, the default bitchord is CLONE_FILES|CLONE_VM.
-    *               See the Linux clone() man page for details.
-    *  @param stackSize Size of the child thread's stack, in bytes.  Default value is 32768 bytes.
-    */
-   void SetCloneParameters(int flags, uint32 stackSize = 32768) {_cloneFlags = flags; _cloneStackSize = stackSize;}
-#endif
-
 protected:
    /** If you are using the default implementation of InternalThreadEntry(), then this
      * method will be called whenever a new MessageRef is received by the internal thread.
@@ -367,13 +353,7 @@ private:
    bool _threadRunning;
    Mutex _signalLock;
 
-#if defined(MUSCLE_USE_CLONE)
-   static int * InternalThreadEntryFunc(void * This) {(void)((Thread *)This)->InternalThreadEntryAux(); return 0;}
-   int _clonePID;
-   int _cloneFlags;
-   uint32 _cloneStackSize;
-   ByteBuffer _cloneStack;
-#elif defined(MUSCLE_USE_PTHREADS)
+#if defined(MUSCLE_USE_PTHREADS)
    pthread_t _thread;
    static void * InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return NULL;}
 #elif defined(WIN32)

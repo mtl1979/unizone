@@ -536,7 +536,7 @@ public:
     *  @param defValue The value to auto-place in the Hashtable if (key) isn't found.
     *  @returns a Pointer to the retrieved or placed value.
     */
-   ValueType * GetOrPut(const KeyType & key, const ValueType & defValue)
+   ValueType * GetOrPut(const KeyType & key, const ValueType & defValue = ValueType())
    {
       ValueType * ret = Get(key);
       if ((ret == NULL)&&(Put(key, defValue) == B_NO_ERROR)) ret = Get(key);
@@ -1347,9 +1347,7 @@ Hashtable<KeyType,ValueType,HashFunctorType>::RemoveAux(const KeyType& key, Valu
          e->GetMappedFrom()->SwapMaps(next->GetMappedFrom());
       }
 
-      KeyType   blankKey = KeyType();
-      ValueType blankVal = ValueType();
-      e->ReturnToFreeList(blankKey, blankVal, &_freeHead);
+      e->ReturnToFreeList(KeyType(), ValueType(), &_freeHead);
 
       _count--;
       return B_NO_ERROR;

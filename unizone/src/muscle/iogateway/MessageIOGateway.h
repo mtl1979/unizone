@@ -235,7 +235,7 @@ private:
 // Bytes in single quotes represent ASCII characters, bytes without quotes
 // means literal decimal byte values.  (E.g. '2' means 50 decimal, 2 means 2 decimal)
 //
-// All occurences of '0' here indicate the ASCII digit zero (decimal 48), not the letter O.
+// All occurrences of '0' here indicate the ASCII digit zero (decimal 48), not the letter O.
 //
 // The bytes shown here should be sent across the TCP socket in 
 // 'normal reading order': left to right, top to bottom.

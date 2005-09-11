@@ -38,9 +38,12 @@ uint32 GetHostByName(const char * name);
  * @param port The port number to connect to.
  * @param debugTitle If non-NULL, debug output to stdout will be enabled and debug output will be prefaced by this string.
  * @param debugOutputOnErrorsOnly if true, debug output will be printed only if an error condition occurs.
+ * @param maxConnectTime The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
+ *                       (the default) then no particular time limit will be enforced, and it will be left up to the operating system
+ *                       to decide when the attempt should time out.
  * @return the non-negative sockfd if the connection is successful, -1 if the connection attempt failed.
  */
-int Connect(const char * hostName, uint16 port, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true);
+int Connect(const char * hostName, uint16 port, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectTime = MUSCLE_TIME_NEVER);
 
 /** Mostly as above, only with the target IP address specified numerically, rather than as an ASCII string. 
  *  This version of connect will never do a DNS lookup.
@@ -49,9 +52,12 @@ int Connect(const char * hostName, uint16 port, const char * debugTitle = NULL, 
  * @param debugHostName If non-NULL, we'll print this host name out when reporting errors.  It isn't used for networking purposes, though.
  * @param debugTitle If non-NULL, debug output to stdout will be enabled and debug output will be prefaced by this string.
  * @param debugOutputOnErrorsOnly if true, debug output will be printed only if an error condition occurs.
+ * @param maxConnectTime The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
+ *                       (the default) then no particular time limit will be enforced, and it will be left up to the operating system
+ *                       to decide when the attempt should time out.
  * @return the non-negative sockfd if the connection is successful, -1 if the connection attempt failed.
  */
-int Connect(uint32 hostIP, uint16 port, const char * debugHostName = NULL, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true);
+int Connect(uint32 hostIP, uint16 port, const char * debugHostName = NULL, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectTime = MUSCLE_TIME_NEVER);
 
 /** Convenience function for accepting a TCP connection on a given socket.  Has the same semantics as accept().
  *  (This is somewhat better than calling accept() directly, as certain cross-platform issues get transparently taken care of)

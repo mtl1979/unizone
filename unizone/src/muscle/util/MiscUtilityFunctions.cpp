@@ -33,10 +33,17 @@ status_t ParseArg(const String & a, Message & addTo)
    String argValue;
    if (equalsAt >= 0)
    {
-      argValue = argName.Substring(equalsAt+1).Trim();
-      argName  = argName.Substring(0, equalsAt).Trim();
+      argValue = argName.Substring(equalsAt+1).Trim();  // this must be first!
+      argName  = argName.Substring(0, equalsAt).Trim().ToLowerCase();
    }
-   return (argName.Length() > 0) ? addTo.AddString(argName.ToLowerCase()(), argValue) : B_NO_ERROR;
+   if (argName.Length() > 0)
+   { 
+      // Don't allow the parsing to fail just because the user specified a section name the same as a param name!
+      uint32 tc;
+      if ((addTo.GetInfo(argName, &tc) == B_NO_ERROR)&&(tc != B_STRING_TYPE)) (void) addTo.RemoveName(argName);
+      return addTo.AddString(argName, argValue);
+   }
+   else return B_NO_ERROR;
 }
 
 status_t ParseArgs(const String & line, Message & addTo)
@@ -81,6 +88,36 @@ status_t ParseArgs(int argc, char ** argv, Message & addTo)
    return B_NO_ERROR;
 }
 
+static status_t ParseFileAux(FILE * fpIn, Message & addTo, char * buf, uint32 bufSize)
+{
+   status_t ret = B_NO_ERROR;
+   while(fgets(buf, bufSize, fpIn))
+   {
+      String checkForSection(buf);
+      checkForSection = checkForSection.Trim().ToLowerCase();
+      if ((checkForSection == "begin")||(checkForSection.StartsWith("begin ")))
+      {
+         checkForSection = checkForSection.Substring(6).Trim();
+         int32 hashIdx = checkForSection.IndexOf('#');
+         if (hashIdx >= 0) checkForSection = checkForSection.Substring(0, hashIdx).Trim();
+         
+         // Don't allow the parsing to fail just because the user specified a section name the same as a param name!
+         uint32 tc;
+         if ((addTo.GetInfo(checkForSection, &tc) == B_NO_ERROR)&&(tc != B_MESSAGE_TYPE)) (void) addTo.RemoveName(checkForSection);
+
+         MessageRef subMsg = GetMessageFromPool();
+         if ((subMsg() == NULL)||(addTo.AddMessage(checkForSection, subMsg) != B_NO_ERROR)||(ParseFileAux(fpIn, *subMsg(), buf, bufSize) != B_NO_ERROR)) return B_ERROR;
+      }
+      else if ((checkForSection == "end")||(checkForSection.StartsWith("end "))) return B_NO_ERROR;
+      else if (ParseArgs(buf, addTo) != B_NO_ERROR)
+      {
+         ret = B_ERROR;
+         break;
+      }
+   }
+   return ret;
+}
+
 status_t ParseFile(FILE * fpIn, Message & addTo)
 {
    TCHECKPOINT;
@@ -89,19 +126,11 @@ status_t ParseFile(FILE * fpIn, Message & addTo)
    char * buf = newnothrow_array(char, bufSize);
    if (buf)
    {
-      status_t ret = B_NO_ERROR;
-      while(fgets(buf, bufSize, fpIn))
-      {
-         if (ParseArgs(buf, addTo) != B_NO_ERROR)
-         {
-            ret = B_ERROR;
-            break;
-         }
-      }
+      status_t ret = ParseFileAux(fpIn, addTo, buf, bufSize);
       delete [] buf;
       return ret;
    }
-   else
+   else 
    {
       WARN_OUT_OF_MEMORY;
       return B_ERROR;
