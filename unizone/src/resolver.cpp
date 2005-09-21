@@ -57,6 +57,55 @@ ParseIP4(const QString &address, uint32 &result)
     return false;
 }
 
+void
+UpdateEntry(NetAddress &na, LPHOSTENT lpHostEntry)
+{
+	if (lpHostEntry)
+	{
+		char **p;
+		QString aliases;
+
+		na.address = QString::fromLocal8Bit(lpHostEntry->h_name);
+		na.lastcheck = GetCurrentTime64();
+	
+		for (p = lpHostEntry->h_aliases; *p != NULL; p++)
+		{
+			AddToList(aliases, QString::fromLocal8Bit(*p));
+		}
+		na.aliases = aliases;
+	}
+	else
+		na.address = QString::null;
+}
+
+void
+UpdateEntry(NetAddress &na, uint32 ip)
+{
+	char host[16];
+	struct in_addr iaHost;	   // Internet address structure
+	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
+	
+	Inet_NtoA(ip, host);
+
+	na.ip = ip;					// We need to remember to initialize this
+
+	iaHost.s_addr = inet_addr(host);
+	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
+	UpdateEntry(na, lpHostEntry);
+}
+
+void
+ResolveAliasesAux(NetAddress &na, uint32 ip)
+{
+	UpdateEntry(na, ip);
+	if (na.address == QString::null)
+	{
+		// Safe defaults
+		na.lastcheck = 0;
+		na.aliases = QString::null;
+	}
+}
+
 uint32
 ResolveAddress(const QString &address)
 {
@@ -92,7 +141,7 @@ ResolveAddress(const QString &address)
 					if (res != 0)	// Do not cache failures
 					{
 						na.address = ResolveHost(res);		// Double check
-						na.aliases = ResolveAliases(res);
+						ResolveAliasesAux(na, res);
 						na.ip = res;						// For dynamic dns
 						if ((address != na.address) && !Contains(na.aliases, address))
 							AddToList(na.aliases, address);
@@ -109,29 +158,12 @@ ResolveAddress(const QString &address)
 
 	if (res != 0)						// Do not cache failures
 	{
-		na.ip = res;
-		na.address = ResolveHost(res);
-		na.aliases = ResolveAliases(res);
+		ResolveAliasesAux(na, res);
 		if ((na.address != address) && !Contains(na.aliases, address))
 			AddToList(na.aliases, address);
 		fAddressCache.AddTail(na);
 	}
 	return res;
-}
-
-void
-UpdateEntry(NetAddress &na, LPHOSTENT lpHostEntry)
-{
-	char **p;
-	QString aliases;
-
-	na.address = QString::fromLocal8Bit(lpHostEntry->h_name);
-	na.lastcheck = GetCurrentTime64();
-	for (p = lpHostEntry->h_aliases; *p != NULL; p++)
-	{
-		AddToList(aliases, QString::fromLocal8Bit(*p));
-	}
-	na.aliases = aliases;
 }
 
 uint32
@@ -197,13 +229,6 @@ ResolveHost(uint32 ip)
 QString
 ResolveAliases(uint32 ip)
 {
-	char host[16];
-	QString aliases;
-	struct in_addr iaHost;	   // Internet address structure
-	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
-	
-	Inet_NtoA(ip, host);
-
 	//
 	NetAddress na;
 
@@ -218,11 +243,9 @@ ResolveAliases(uint32 ip)
 					return na.aliases;
 				else
 				{
-					iaHost.s_addr = inet_addr(host);
-					lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
-					if (lpHostEntry)
+					UpdateEntry(na, ip);
+					if (na.address != QString::null)
 					{
-						UpdateEntry(na, lpHostEntry);
 						fAddressCache.ReplaceItemAt(i, na);
 					}
 					return na.aliases;
@@ -233,14 +256,7 @@ ResolveAliases(uint32 ip)
 
 	//
 
-	iaHost.s_addr = inet_addr(host);
-	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
-	if (lpHostEntry)
-	{
-		na.ip = ip;
-		UpdateEntry(na, lpHostEntry);
-		fAddressCache.AddTail(na);
-		return na.aliases;
-	}
-	return aliases;
+	ResolveAliasesAux(na, ip);
+	fAddressCache.AddTail(na);
+	return na.aliases;
 }
