@@ -134,6 +134,7 @@ WinShareWindow::DisconnectedFromServer()
 
 	setStatus(tr( "Not connected." ), 0);
 	setStatus( QString::null, 1);
+	setStatus( QString::null, 2);
 	
 	if ((fDisconnectCount == 1) && (!fDisconnectFlag))
 	{
@@ -437,6 +438,8 @@ WinShareWindow::ConnectTimer()
 	fNetClient->Disconnect();
 
 	setStatus(tr( "Not connected." ), 0);
+	setStatus( QString::null, 1);
+	setStatus( QString::null, 2);
 
 	if (fSettings->GetInfo())
 		SendSystemEvent(tr("Connection to server failed!"));
