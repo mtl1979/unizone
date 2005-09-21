@@ -142,7 +142,6 @@ ResolveAddress(const QString &address)
 					{
 						na.address = ResolveHost(res);		// Double check
 						ResolveAliasesAux(na, res);
-						na.ip = res;						// For dynamic dns
 						if ((address != na.address) && !Contains(na.aliases, address))
 							AddToList(na.aliases, address);
 						na.lastcheck = GetCurrentTime64();
