@@ -52,7 +52,7 @@ WFileThread::ResolveLink(const QString & lnk) const
 				hres = ppf->Load(wret.getBuffer(), STGM_READ);
 				if (SUCCEEDED(hres))
 				{
-					PRINT("Loaded\n");
+					PRINT("Loaded %S\n", wret.getBuffer());
 					hres = psl->Resolve(gWin->winId(), SLR_NO_UI | SLR_ANY_MATCH);
 					if (SUCCEEDED(hres))
 					{

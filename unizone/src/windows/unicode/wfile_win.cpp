@@ -51,7 +51,7 @@ WFile::Exists(const QString &name)
 bool
 WFile::Exists(const WString &name)
 {
-	FILE * f = _wfopen(name, L"r");
+	FILE * f = _wfopen(name.getBuffer(), L"r");
 	bool ret = false;
 	if (f)
 	{
@@ -97,7 +97,7 @@ WFile::ReadBlock(void *buf, UINT64 size)
 int 
 WFile::ReadLine(char *buf, int size)
 {
-	int numbytes;
+	int numbytes = 0;
 	while (size-- > 0)
 	{
 		char c;
