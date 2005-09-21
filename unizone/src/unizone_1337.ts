@@ -4427,5 +4427,13 @@ Date: %4</translation>
         <source>Checking for updates...</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type='unfinished'>Opening Pipe...</translation>
+    </message>
+    <message>
+        <source>Aliases: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

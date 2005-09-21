@@ -138,6 +138,8 @@ void AddToList(String &slist, const String &entry);
 void RemoveFromList(QString &slist, const QString &entry);
 void RemoveFromList(String &slist, const String &entry);
 
+bool Contains(const QString &slist, const QString &entry); 
+
 int Match(const QString &string, const QRegExp &exp);
 
 int64 ConvertPtr(void *);

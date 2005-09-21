@@ -4147,5 +4147,13 @@ Date: %4</source>
         <source>Checking for updates...</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type='unfinished'>연결 중...</translation>
+    </message>
+    <message>
+        <source>Aliases: %1</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>

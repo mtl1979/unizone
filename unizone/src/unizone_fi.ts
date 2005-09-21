@@ -4626,5 +4626,13 @@ Päiväys: %4</translation>
         <source>Checking for updates...</source>
         <translation>Tarkistetaan päivityksiä...</translation>
     </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Yhdistetään...</translation>
+    </message>
+    <message>
+        <source>Aliases: %1</source>
+        <translation>Aliakset: %1</translation>
+    </message>
 </context>
 </TS>

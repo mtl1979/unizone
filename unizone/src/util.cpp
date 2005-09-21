@@ -660,7 +660,7 @@ BandwidthToBytes(const QString & connection)
 	{
 		ConPair bw;
 		int n = 0;
-		do
+		while (bw.bw != ULONG_MAX)
 		{
 			bw = Bandwidths[n++];
 			if (
@@ -671,7 +671,7 @@ BandwidthToBytes(const QString & connection)
 				bps = bw.bw;
 				break;
 			}
-		} while (bw.bw != ULONG_MAX);
+		};
 	}
 #ifdef DEBUG2
 	WString wconn(conn);
@@ -1391,6 +1391,19 @@ void RemoveFromList(String &slist, const String &entry)
 	slist = out;
 }
 
+bool
+Contains(const QString &slist, const QString &entry)
+{
+	QStringTokenizer tok(slist,",");
+	QString t;
+	while ((t = tok.GetNextToken()) != QString::null)
+	{
+		if (t == entry)
+			return true;
+	}
+	return false;
+}
+
 void HEXClean(QString &in)
 {
 	QString tmp;
@@ -1635,7 +1648,7 @@ startsWith(const QString &str1, const QString &str2, bool cs)
 	{
 		if (str1.length() < str2.length()) 
 			return false;
-		for (unsigned int p = 0; p < str2.length())
+		for (unsigned int p = 0; p < str2.length(); p++)
 			if (str1.at(p).lower() != str2.at(p).lower())
 				return false;
 		return true;
@@ -1658,7 +1671,7 @@ endsWith(const QString &str1, const QString &str2, bool cs)
 		int pos = str1.length() - str2.length();
 		if (pos < 0) 
 			return false;
-		for (unsigned int p = 0; p < str2.length())
+		for (unsigned int p = 0; p < str2.length(); p++)
 			if (str1.at(pos + p).lower() != str2.at(p).lower())
 				return false;
 		return true;

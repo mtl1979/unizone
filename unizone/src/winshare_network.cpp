@@ -1069,7 +1069,11 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			PrintSystem(tr("Unizone version: %1").arg(WinShareVersionString()));
 			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING));
 			PrintSystem(tr("zlib version: %1").arg(zlibVersion()));
-			PrintSystem(tr("Qt version: %1").arg(qVersion()));
+			PrintSystem(tr("Qt version: %1").arg(qVersion() 
+#if (QT_VERSION >= 0x030000)
+				+ QString(" ") + QString( qt_winunicode ? "(unicode)" : "(ansi)" )
+#endif
+				));
 		}
 		else if (CompareCommand(sendText, "/onconnect"))
 		{
@@ -2547,6 +2551,7 @@ WinShareWindow::Connect()
 		{
 			if (fSettings->GetInfo())
 				SendSystemEvent(tr("Connecting to server %1.").arg("server://" + fServer + " [" + fServer + "]"));
+			setStatus(tr("Connecting..."), 0);
 		}
 		else
 		{
@@ -3080,6 +3085,13 @@ WinShareWindow::PrintAddressInfo(const WUserRef & user, bool verbose)
 			{
 				out += "\n" + tr("Host Name: %1").arg(qhost);
 			}
+
+			QString aliases = ResolveAliases(address);
+			if (!aliases.isEmpty())
+			{
+				aliases.replace(QRegExp(","), " ");
+				out += "\n" + tr("Aliases: %1").arg(aliases);
+			}
 		}
 		PrintSystem(FixString(out));
 	}					
@@ -3113,6 +3125,16 @@ WinShareWindow::PrintAddressInfo(uint32 address, bool verbose)
 			if (qhost != QString::null)
 			{
 				out += "\n" + tr("Host Name: %1").arg(qhost);
+				found = true;
+			}
+
+			QString aliases = ResolveAliases(address);
+
+			if (!aliases.isEmpty())
+			{	
+				aliases.replace(QRegExp(","), " ");
+
+				out += "\n" + tr("Aliases: %1").arg(aliases);
 				found = true;
 			}
 					
@@ -3260,7 +3282,7 @@ WinShareWindow::GotParams(const MessageRef &msg)
 	if (msg()->FindInt32(PR_NAME_REPLY_ENCODING, &enc) == B_NO_ERROR)
 		setStatus(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
 	
-	setStatus(tr( "Logging in...") );
+	setStatus(tr( "Logging in..."), 0);
 	// get a list of users
 	static String subscriptionList[] = {
 #ifdef DEBUG2

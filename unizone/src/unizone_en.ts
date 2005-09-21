@@ -4486,5 +4486,13 @@ Date: %4</translation>
         <source>Checking for updates...</source>
         <translation>Checking for updates...</translation>
     </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Connecting...</translation>
+    </message>
+    <message>
+        <source>Aliases: %1</source>
+        <translation>Aliases: %1</translation>
+    </message>
 </context>
 </TS>
