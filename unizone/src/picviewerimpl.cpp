@@ -69,6 +69,8 @@ WPicViewer::eventFilter( QObject *o, QEvent *e )
 		case QEvent::MouseButtonRelease:
 			mouseReleaseEvent((QMouseEvent *) e);
 			return true;
+		case QEvent::Drop:
+			dropEvent((QDropEvent *) e);
 		default: 
 			break; // empty
 		}
@@ -327,9 +329,13 @@ WPicViewer::DrawImage(const QPixmap &image)
 	scalePixmap(&image, w, h);
 	QImage oimg = image.convertToImage();
 	QImage nimg = oimg.smoothScale(w, h);
-	pxlPixmap->setPixmap( QPixmap(nimg) );
-	//
-	UpdateName();
+	QPixmap temp;
+	if (temp.convertFromImage(nimg))
+	{
+		pxlPixmap->setPixmap( temp );
+		//
+		UpdateName();
+	}
 }
 
 void
@@ -345,7 +351,9 @@ WPicViewer::resizeEvent(QResizeEvent *e)
 		scalePixmap(pxlPixmap->pixmap(), w, h);
 		QImage oimg = pxlPixmap->pixmap()->convertToImage();
 		QImage nimg = oimg.smoothScale(w, h);
-		pxlPixmap->setPixmap( QPixmap(nimg) );
+		QPixmap temp;
+		if (temp.convertFromImage(nimg))
+			pxlPixmap->setPixmap( temp );
 	}
 	//
 	UpdateName();
