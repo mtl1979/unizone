@@ -329,6 +329,9 @@ Preview::eventFilter( QObject *o, QEvent *e )
 		case QEvent::MouseButtonRelease:
 			mouseReleaseEvent((QMouseEvent *) e);
 			return true;
+		case QEvent::Drop:
+			dropEvent(QDropEvent *) e);
+			return true;
 		}
 	}
 	return false;

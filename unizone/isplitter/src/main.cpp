@@ -66,17 +66,20 @@ main( int argc, char** argv )
 
 		// Qt's own translator file
 		QFileInfo qfi(lfile);
-		QString qt_lang = qfi.fileName().replace("isplitter", "qt");
+		QString langfile = qfi.fileName().replace("isplitter", "qt");
+		QString qt_lang = QString::null;
 		QString qtdir = EnvironmentVariable("QTDIR");
 		if (qtdir != QString::null)
 		{
-			QString tr_dir = MakePath(EnvironmentVariable("QTDIR"), "translations");
-			qt_lang = MakePath(tr_dir, qt_lang);
+			QString tr_dir = MakePath(qtdir, "translations");
+			qt_lang = MakePath(tr_dir, langfile);
+			if (!QFile::exists(qt_lang))
+				qt_lang = QString::null;
 		}
-		else
+		if (qt_lang == QString::null)
 		{
 			// Try using same directory as Image Splitters translations
-			qt_lang = MakePath(qfi.dirPath(true), qt_lang);
+			qt_lang = MakePath(qfi.dirPath(true), langfile);
 		}
 
 #if (QT_VERSION >= 0x030000)
