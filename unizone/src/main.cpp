@@ -174,7 +174,7 @@ main( int argc, char** argv )
 		}
 		// Qt's own translator file
 		QFileInfo qfi(lfile);
-		QString langfile = qfi.fileName().replace("unizone", "qt");
+		QString langfile = qfi.fileName().replace(QRegExp("unizone"), "qt");
 		QString qt_lang = QString::null;
 		QString qtdir = EnvironmentVariable("QTDIR");
 		if (qtdir != QString::null)
