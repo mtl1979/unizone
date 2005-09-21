@@ -20,6 +20,7 @@ WChatText::WChatText(QObject * target, QWidget * parent)
 {
 	fBuffer = new Queue<QString>(DEFAULT_SIZE);
 	fCurLine = 0;
+	setAcceptDrops(true);
 }
 
 WChatText::~WChatText()
@@ -210,26 +211,32 @@ WChatText::dropEvent(QDropEvent* event)
 	QString uid = gWin->GetUserID();
 
 	if (!uid.isEmpty())
-	{
-	
-    if ( QUriDrag::decodeLocalFiles(event, list) ) {
-		QStringList::Iterator iter = list.begin();
-		while (iter != list.end())
-		{
-			QString filename = *iter;
-			if (gWin->FindSharedFile(filename))
-				AddToList(files, filename);
-			iter++;
+	{	
+		if ( QUriDrag::decodeLocalFiles(event, list) ) {
+			QStringList::Iterator iter = list.begin();
+			while (iter != list.end())
+			{
+				QString filename = *iter;
+				if (gWin->FindSharedFile(filename))
+					AddToList(files, filename);
+				iter++;
+			}
+			if (!files.isEmpty())
+			{
+				files.prepend("beshare:");
+				files.append("@");
+				files.append(uid);
+				insert(files);
+			}
+			return;
 		}
-		if (!files.isEmpty())
-		{
-			files.prepend("beshare:");
-			files.append("@");
-			files.append(uid);
-			insert(files);
-		}
-		return;
-    }
 	}
 	QMultiLineEdit::dropEvent(event);
 }
+
+void 
+WChatText::dragEnterEvent(QDragEnterEvent* event)
+{
+    event->accept( QUriDrag::canDecode(event) || QTextDrag::canDecode(event));
+}
+
