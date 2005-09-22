@@ -71,6 +71,7 @@ WPicViewer::eventFilter( QObject *o, QEvent *e )
 			return true;
 		case QEvent::Drop:
 			dropEvent((QDropEvent *) e);
+			return true;
 		default: 
 			break; // empty
 		}
