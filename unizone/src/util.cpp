@@ -660,9 +660,8 @@ BandwidthToBytes(const QString & connection)
 	{
 		ConPair bw;
 		int n = 0;
-		while (bw.bw != ULONG_MAX)
+		while ((bw = Bandwidths[n++]).bw != ULONG_MAX)
 		{
-			bw = Bandwidths[n++];
 			if (
 				( conn == bw.id ) || 
 				( conn == qApp->translate("Connection", bw.id) )

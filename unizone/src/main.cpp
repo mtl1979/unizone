@@ -152,7 +152,13 @@ main( int argc, char** argv )
 	}
 
 	// (Re-)load translator filename
-	if ( lang.Open(L"unizone.lng", O_RDONLY | O_BINARY) ) 
+	if ( lang.Open(L"unizone.lng",
+#if defined(WIN32)
+		O_RDONLY | O_BINARY
+#else
+		O_RDONLY
+#endif
+		) )
 	{    
 		// file opened successfully
 		QByteArray plang(256);

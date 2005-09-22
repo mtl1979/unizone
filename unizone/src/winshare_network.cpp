@@ -1070,7 +1070,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING));
 			PrintSystem(tr("zlib version: %1").arg(zlibVersion()));
 			PrintSystem(tr("Qt version: %1").arg(qVersion() 
-#if (QT_VERSION >= 0x030000)
+#if (QT_VERSION >= 0x030000) && defined(WIN32)
 				+ QString(" ") + QString( qt_winunicode ? "(unicode)" : "(ansi)" )
 #endif
 				));
