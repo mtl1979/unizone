@@ -1814,7 +1814,8 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 		{
 			WUserRef uref;
 			it.GetNextValue(uref);
-			if ((uref()->GetUserID() == qItem) || (uref()->GetUserName().lower() == qItem.lower()))
+			if ((uref()->GetUserID() == qItem) || 
+				(StripURL(uref()->GetUserName().lower()) == StripURL(qItem.lower())))
 			{
 				AddToList(qResult, "/"+uref()->GetUserHostName() + "/" + uref()->GetUserID());
 				break;
