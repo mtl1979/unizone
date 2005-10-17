@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "3.02"
+#define MUSCLE_VERSION_STRING "3.03"
 
 /* Define this if the default FD_SETSIZE is too small for you (i.e. under Windows it's only 64) */
 #if defined(MUSCLE_FD_SETSIZE)

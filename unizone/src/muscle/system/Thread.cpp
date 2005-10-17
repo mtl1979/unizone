@@ -4,7 +4,7 @@
 #include "util/NetworkUtilityFunctions.h"
 #include "dataio/TCPSocketDataIO.h"  // to get the proper #includes for recv()'ing
 
-#if defined(WIN32)
+#if defined(MUSCLE_PREFER_WIN32_OVER_QT)
 # include <process.h>  // for _beginthreadex()
 #endif
 
@@ -18,7 +18,7 @@ Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
 {
 #if defined(MUSCLE_USE_PTHREADS)
    // do nothing
-#elif defined(WIN32)
+#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
    // do nothing
 #elif defined(QT_THREAD_SUPPORT)
    _thread.SetOwner(this);
@@ -84,7 +84,7 @@ status_t Thread :: StartInternalThreadAux()
 
 #if defined(MUSCLE_USE_PTHREADS)
       if (pthread_create(&_thread, NULL, InternalThreadEntryFunc, this) == 0) return B_NO_ERROR;
-#elif defined(WIN32)
+#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       typedef unsigned (__stdcall *PTHREAD_START) (void *);
       if ((_thread = (HANDLE)_beginthreadex(NULL, 0, (PTHREAD_START)InternalThreadEntryFunc, this, 0, (unsigned *)&_threadID)) != NULL) return B_NO_ERROR;
 #elif defined(QT_THREAD_SUPPORT)
@@ -124,7 +124,7 @@ bool Thread :: IsCallerInternalThread() const
 
 #if defined(MUSCLE_USE_PTHREADS)
    return pthread_equal(pthread_self(), _thread);
-#elif defined(WIN32)
+#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
    return (_threadID == GetCurrentThreadId());
 #elif defined(QT_THREAD_SUPPORT)
    return (QThread::currentThread() == _internalThreadHandle);
@@ -305,7 +305,7 @@ status_t Thread :: WaitForInternalThreadToExit()
    {
 #if defined(MUSCLE_USE_PTHREADS)
       (void) pthread_join(_thread, NULL);
-#elif defined(WIN32)
+#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       (void) WaitForSingleObject(_thread, INFINITE);
       ::CloseHandle(_thread);  // Raymond Dahlberg's fix for handle-leak problem
 #elif defined(QT_THREAD_SUPPORT)

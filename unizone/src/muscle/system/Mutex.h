@@ -4,18 +4,25 @@
 #define MuscleMutex_h
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
+# if defined(WIN32)
+#  if defined(QT_THREAD_SUPPORT) && defined(MUSCLE_PREFER_QT_OVER_WIN32)
+    /* empty - we don't have to do anything for this case. */
+#  else
+#   define MUSCLE_PREFER_WIN32_OVER_QT
+#  endif
+# endif
 # if defined(MUSCLE_USE_PTHREADS)
 #  include <pthread.h>
+# elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+#  include <windows.h>
 # elif defined(QT_THREAD_SUPPORT)
 #  include <qthread.h>
 # elif defined(__BEOS__)
 #  include <support/Locker.h>
-# elif defined(WIN32)
-#  include <windows.h>
 # elif defined(__ATHEOS__)
 #  include <util/locker.h>
 # else
-#  error "Lock:  threading support not implemented for this platform.  You'll need to add code to the MUSCLE Lock class for your platform, or add -DMUSCLE_SINGLE_THREAD_ONLY to your build line if your program is single-threaded or for some other reason doesn't need to worry about locking"
+#  error "Mutex:  threading support not implemented for this platform.  You'll need to add code to the MUSCLE Mutex class for your platform, or add -DMUSCLE_SINGLE_THREAD_ONLY to your build line if your program is single-threaded or for some other reason doesn't need to worry about locking"
 # endif
 #endif
 
@@ -41,10 +48,10 @@ public:
       : _isEnabled(_muscleSingleThreadOnly == false)
 # if defined(MUSCLE_USE_PTHREADS)
       // empty
+# elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+      , _locker(_isEnabled ? CreateMutex(NULL, false, NULL) : NULL)
 # elif defined(QT_THREAD_SUPPORT)
       , _locker(true)
-# elif defined(WIN32)
-      , _locker(_isEnabled ? CreateMutex(NULL, false, NULL) : NULL)
 # elif defined(__ATHEOS__)
       , _locker(NULL) 
 # endif
@@ -63,7 +70,7 @@ public:
 #endif
    }
  
-   /** Destructor.  If a Lock is destroyed while another thread is blocking in its Lock() method,
+   /** Destructor.  If a Mutex is destroyed while another thread is blocking in its Lock() method,
      * the results are undefined.
      */
    ~Mutex() {Cleanup();}
@@ -83,13 +90,13 @@ public:
       if (_isEnabled == false) return B_NO_ERROR;
 # if defined(MUSCLE_USE_PTHREADS)
       return (pthread_mutex_lock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
+# elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+      return ((_locker)&&(WaitForSingleObject(_locker, INFINITE) == WAIT_FAILED)) ? B_ERROR : B_NO_ERROR;
 # elif defined(QT_THREAD_SUPPORT)
       _locker.lock();
       return B_NO_ERROR;
 # elif defined(__BEOS__)
       return _locker.Lock() ? B_NO_ERROR : B_ERROR;
-# elif defined(WIN32)
-      return ((_locker)&&(WaitForSingleObject(_locker, INFINITE) == WAIT_FAILED)) ? B_ERROR : B_NO_ERROR;
 # elif defined(__ATHEOS__)
       return _locker.Lock() ? B_ERROR : B_NO_ERROR;  // Is this correct?  Kurt's documentation sucks
 # endif
@@ -109,14 +116,14 @@ public:
       if (_isEnabled == false) return B_NO_ERROR;
 # if defined(MUSCLE_USE_PTHREADS)
       return (pthread_mutex_unlock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
+# elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+      return ((_locker)&&(ReleaseMutex(_locker))) ? B_NO_ERROR : B_ERROR;
 # elif defined(QT_THREAD_SUPPORT)
       _locker.unlock();
       return B_NO_ERROR;
 # elif defined(__BEOS__)
       _locker.Unlock();
       return B_NO_ERROR;
-# elif defined(WIN32)
-      return ((_locker)&&(ReleaseMutex(_locker))) ? B_NO_ERROR : B_ERROR;
 # elif defined(__ATHEOS__)
       return _locker.Unlock() ? B_ERROR : B_NO_ERROR;  // Is this correct?  Kurt's documentation sucks
 # endif
@@ -134,10 +141,10 @@ private:
       {
 # if defined(MUSCLE_USE_PTHREADS)
          pthread_mutex_destroy(&_locker);
+# elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+         CloseHandle(_locker);
 # elif defined(QT_THREAD_SUPPORT)
          // do nothing
-# elif defined(WIN32)
-         CloseHandle(_locker);
 # endif
 
          _isEnabled = false;
@@ -149,12 +156,12 @@ private:
    bool _isEnabled;  // if false, this Mutex is a no-op
 # if defined(MUSCLE_USE_PTHREADS)
    mutable pthread_mutex_t _locker;
+# elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+   mutable HANDLE _locker;
 # elif defined(QT_THREAD_SUPPORT)
    mutable QMutex _locker;
 # elif defined(__BEOS__)
    mutable BLocker _locker;
-# elif defined(WIN32)
-   mutable HANDLE _locker;
 # elif defined(__ATHEOS__)
    mutable os::Locker _locker;
 # endif

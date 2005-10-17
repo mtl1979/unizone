@@ -249,7 +249,14 @@ ServerProcessLoop()
    if (_doLogging)
    {
       int numFuncs = _factories.GetNumItems();
-      LogTime(MUSCLE_LOG_DEBUG, "%s Server is active", GetServerName()); 
+      uint32 myIP = GetLocalIPAddress();
+      if (myIP > 0)
+      {
+         char bbuf[16]; Inet_NtoA(myIP, bbuf);
+         LogTime(MUSCLE_LOG_DEBUG, "%s Server is active on %s", GetServerName(), bbuf); 
+      }
+      else LogTime(MUSCLE_LOG_DEBUG, "%s Server is active", GetServerName()); 
+
       if (numFuncs > 0)
       {
          Log(MUSCLE_LOG_DEBUG, " and listening on port%s ", (numFuncs > 1) ? "s" : "");

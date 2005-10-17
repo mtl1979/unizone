@@ -110,8 +110,9 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
       {
 #ifdef WIN32
 # if defined(UNICODE)
-         found = muscleInRange((int)GetCurrentDirectoryW(ARRAYITEMS(wbuf), wbuf), 1, (int)ARRAYITEMS(wbuf)-1);
-         if (found) found = muscleInRange((int)WideCharToMultiByte(CP_UTF8, 0, wbuf, ARRAYITEMS(wbuf), buf, sizeof(buf), NULL, NULL), 1, (int)ARRAYITEMS(wbuf)-1);
+         DWORD dirLen = GetCurrentDirectoryW(ARRAYITEMS(wbuf), wbuf);
+         found = muscleInRange((int)dirLen, 1, (int)ARRAYITEMS(wbuf)-1);
+         if (found) found = muscleInRange((int)WideCharToMultiByte(CP_UTF8, 0, wbuf, dirLen, buf, sizeof(buf), NULL, NULL), 1, (int)ARRAYITEMS(buf)-1);
 # else
          found = muscleInRange((int)GetCurrentDirectoryA(sizeof(buf), buf), 1, (int)sizeof(buf)-1);
 # endif
@@ -126,7 +127,8 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
       {
 #ifdef WIN32
 # if defined(UNICODE)
-         found = muscleInRange((int)GetModuleFileNameW(NULL, wbuf, ARRAYITEMS(wbuf)), (int)1, (int)ARRAYITEMS(wbuf)-1);
+         DWORD moduleNameLen = GetModuleFileNameW(NULL, wbuf, ARRAYITEMS(wbuf));
+         found = muscleInRange((int)moduleNameLen, (int)1, (int)ARRAYITEMS(wbuf)-1);
          if (found)
          {
             // My own quick implementation of PathRemoveFileSpecW(wbuf)
@@ -135,7 +137,7 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
             for (int i=0; (wbuf[i] != 0); i++) {if (wbuf[i] == '\\') lastSlashIdx=i;}
             if (lastSlashIdx >= 0) wbuf[lastSlashIdx] = 0;
 
-            found = muscleInRange((int)WideCharToMultiByte(CP_UTF8, 0, wbuf, ARRAYITEMS(wbuf), buf, sizeof(buf), NULL, NULL), 1, (int)ARRAYITEMS(wbuf)-1);
+            found = muscleInRange((int)WideCharToMultiByte(CP_UTF8, 0, wbuf, moduleNameLen, buf, sizeof(buf), NULL, NULL), 1, (int)ARRAYITEMS(buf)-1);
             if (found) outStr = buf;
          }
 # else
@@ -152,7 +154,7 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
          CFURLRef bundleURL = CFBundleCopyExecutableURL(CFBundleGetMainBundle());
          CFStringRef cfPath = CFURLCopyFileSystemPath(bundleURL, kCFURLPOSIXPathStyle);
          char bsdPath[2048];
-         if (CFStringGetCString((CFStringRef)cfPath, bsdPath, sizeof(bsdPath), kCFStringEncodingASCII))
+         if (CFStringGetCString((CFStringRef)cfPath, bsdPath, sizeof(bsdPath), kCFStringEncodingUTF8))
          {
             found = true;
             outStr = bsdPath;
@@ -183,8 +185,9 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
       {
 #ifdef WIN32
 # if defined(UNICODE)
-         found = muscleInRange((int)GetTempPathW(ARRAYITEMS(wbuf), wbuf), 1, (int)ARRAYITEMS(wbuf)-1);
-         if (found) found = muscleInRange((int)WideCharToMultiByte(CP_UTF8, 0, wbuf, ARRAYITEMS(wbuf), buf, sizeof(buf), NULL, NULL), 1, (int)ARRAYITEMS(wbuf)-1);
+         DWORD dirLen = GetTempPathW(ARRAYITEMS(wbuf), wbuf);
+         found = muscleInRange((int)dirLen, 1, (int)ARRAYITEMS(wbuf)-1);
+         if (found) found = muscleInRange((int)WideCharToMultiByte(CP_UTF8, 0, wbuf, dirLen, buf, sizeof(buf), NULL, NULL), 1, (int)ARRAYITEMS(buf)-1);
 # else
          found = muscleInRange((int)GetTempPathA(sizeof(buf), buf), 1, (int)sizeof(buf)-1);
 # endif

@@ -242,7 +242,7 @@ status_t SetSocketReceiveBufferSize(int socket, uint32 receiveBufferSizeBytes);
  */
 status_t Snooze64(uint64 microseconds);
 
-/** Set a user-specified IP address to return from GetHostByName() and GetPeerAddress() instead of 127.0.0.1.
+/** Set a user-specified IP address to return from GetHostByName() and GetPeerIPAddress() instead of 127.0.0.1.
   * Note that this function <b>does not</b> change the computer's IP address -- it merely changes what
   * the aforementioned functions will report.
   * @param ip New IP address to return instead of 127.0.0.1, or 0 to disable this override.
@@ -254,6 +254,16 @@ void SetLocalHostIPOverride(uint32 ip);
   * unless you previously called SetLocalHostIPOverride() with that address.
   */
 uint32 GetLocalHostIPOverride();
+
+/** Returns the local machine's IP address as a 32-bit integer, or zero if the nth local
+  * IP address could not be determined for some reason.  This method will never return
+  * the loopback address (127.0.0.1)
+  * @param which Index of the IP address to return.  It's only necessary to set this
+  *              argument to non-zero if you want to handle cases where there is more
+  *              than one local IP address. 
+  * @returns The local IP address, or zero if the (nth) local IP address could not be found.
+  */ 
+uint32 GetLocalIPAddress(uint32 which = 0);
 
 /** Creates and returns a socket that can be used for UDP communications.
  *  Returns a negative value on error, or a non-negative socket handle on

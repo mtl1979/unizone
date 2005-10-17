@@ -157,7 +157,7 @@ public:
 #elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
       return (DoMutexAtomicIncrement(&_count, -1) == 0);
 #else
-# error "No atomic decrement supplied for this OS!  Add your own here in RefCount.h, or put -DMUSCLE_SINGLE_THREAD_ONLY in your Makefile if you won't be using multithreading, or define MUSCLE_CUSTOM_ATOMIC_TYPE and supply your own atomic functions in your source code." 
+# error "No atomic decrement supplied for this OS!  Add your own here in AtomicCounter.h, or put -DMUSCLE_SINGLE_THREAD_ONLY in your Makefile if you won't be using multithreading, or define MUSCLE_CUSTOM_ATOMIC_TYPE and supply your own atomic functions in your source code." 
 #endif 
    }
 

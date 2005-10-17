@@ -133,6 +133,8 @@ AttachedToServer()
    if (hostNode == NULL) {Cleanup(); return B_ERROR;}
    if (hostNode->HasChild(sessionid)) LogTime(MUSCLE_LOG_WARNING, "WARNING:  Non-unique session id [%s] being overwritten!\n", sessionid);
 
+   SetSessionRootPath(String(hostname).Prepend("/") + "/" + sessionid);
+
    DataNode * sessionNode = GetNewDataNode(sessionid, _blankMessageRef);
    if (sessionNode)
    {

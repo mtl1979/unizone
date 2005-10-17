@@ -249,6 +249,9 @@ public:
     */
    uint16 GetAsyncConnectPort() const {return _asyncConnectPort;}
 
+   /** Returns the node path of the node representing this session (e.g. "/192.168.1.105/17") */
+   virtual const String & GetSessionRootPath() const {return _sessionRootPath;}
+
 protected:
    /**
     * Adds a MessageRef to our gateway's outgoing message queue.
@@ -302,6 +305,9 @@ protected:
      */
    int GetSessionSelectSocket() const;
 
+   /** Set by StorageReflectSession::AttachedToServer() */
+   void SetSessionRootPath(const String & p) {_sessionRootPath = p;}
+
 private:
    void SetPolicyAux(PolicyRef & setRef, uint32 & setChunk, const PolicyRef & newRef, bool isInput);
 
@@ -320,6 +326,7 @@ private:
    uint32 _maxOutputChunk;  // and stored here for convenience
    uint64 _outputStallLimit;
    bool _scratchReconnected; // scratch, watched by ReflectServer() during ClientConnectionClosed() calls.
+   String _sessionRootPath;
 };
 
 // VC++ can't handle partial template specialization, so for VC++ we define this explicitely.

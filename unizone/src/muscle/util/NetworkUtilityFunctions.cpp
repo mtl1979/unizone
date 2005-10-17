@@ -323,7 +323,11 @@ uint32 GetHostByName(const char * name)
    }
    else ret = ntohl(ret);
 
-   if ((ret == localhostIP)&&(GetLocalHostIPOverride() > 0)) ret = GetLocalHostIPOverride();
+   if (ret == localhostIP) 
+   {
+      uint32 altRet = (GetLocalHostIPOverride() > 0) ? GetLocalHostIPOverride() : GetLocalIPAddress();
+      if (altRet > 0) ret = altRet;
+   }
    return ret;
 }
 
@@ -366,7 +370,11 @@ uint32 GetPeerIPAddress(int sock)
       if (getpeername(sock, (struct sockaddr *)&saTempAdd, &length) == 0)
       {
          ipAddress = ntohl(saTempAdd.sin_addr.s_addr);
-         if ((ipAddress == localhostIP)&&(GetLocalHostIPOverride() > 0)) ipAddress = GetLocalHostIPOverride();
+         if (ipAddress == localhostIP) 
+         {
+            uint32 altRet = (GetLocalHostIPOverride() > 0) ? GetLocalHostIPOverride() : GetLocalIPAddress();
+            if (altRet > 0) ipAddress = altRet;
+         }
       }
    }
    return ipAddress;
@@ -525,6 +533,26 @@ status_t SetSocketReceiveBufferSize(int sock, uint32 receiveBufferSizeBytes)
    int iSize = (int) receiveBufferSizeBytes;
    return (setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *)&iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
 #endif
+}
+
+uint32 GetLocalIPAddress(uint32 which)
+{
+   char ac[512];
+   if (gethostname(ac, sizeof(ac)) >= 0)
+   {
+      struct hostent *phe = gethostbyname(ac);
+      if (phe)
+      {
+         for (int i = 0; phe->h_addr_list[i] != 0; ++i)
+         {
+            struct in_addr addr;
+            memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
+            uint32 ip = ntohl(addr.s_addr);
+            if ((ip != 0)&&(ip != localhostIP)&&(which-- == 0)) return ip;
+         }
+      }
+   }
+   return 0;  // failure
 }
 
 END_NAMESPACE(muscle);

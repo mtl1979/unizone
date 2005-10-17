@@ -96,9 +96,6 @@ signals:
    /** Emitted when the thread's internal ReflectServer object exits. */
    void ServerExited();
 
-   /** Signal emitted when a TCP connection is completed.  */
-   void SessionConnected();
-
    /** Emitted when the output-queues of the sessions specified in a previous call to 
      * RequestOutputQueuesDrainedNotification() have drained.  Note that this signal only 
      * gets emitted once per call to RequestOutputQueuesDrainedNotification();

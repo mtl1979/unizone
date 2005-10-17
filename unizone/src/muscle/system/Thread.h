@@ -4,10 +4,13 @@
 #define MuscleThread_h
 
 #include "support/MuscleSupport.h"  // first to avoid MUSCLE_FD_SETSIZE ordering problems
+#include "system/Mutex.h"           // needed first, for MUSCLE_PREFER_QT_OVER_WIN32 logic
+#include "message/Message.h"
+#include "util/Queue.h"
 
 #if defined(MUSCLE_USE_PTHREADS)
 # include <pthread.h>
-#elif defined(WIN32)
+#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
 # include <windows.h>
 #elif defined(QT_THREAD_SUPPORT)
 # include <qthread.h>
@@ -23,10 +26,6 @@
 #else
 # error "Thread:  threading support not implemented for this platform.  You'll need to add support for your platform to the MUSCLE Lock and Thread classes for your OS before you can use the Thread class here (or define MUSCLE_USE_PTHREADS or QT_THREAD_SUPPORT to use those threading APIs, respectively)."
 #endif
-
-#include "system/Mutex.h"
-#include "message/Message.h"
-#include "util/Queue.h"
 
 BEGIN_NAMESPACE(muscle);
 
@@ -356,7 +355,7 @@ private:
 #if defined(MUSCLE_USE_PTHREADS)
    pthread_t _thread;
    static void * InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return NULL;}
-#elif defined(WIN32)
+#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
    HANDLE _thread;
    DWORD _threadID;
    static DWORD WINAPI InternalThreadEntryFunc(LPVOID This) {((Thread*)This)->InternalThreadEntryAux(); return 0;}

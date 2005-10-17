@@ -10,6 +10,7 @@ BEGIN_NAMESPACE(muscle);
 
 class ThreadSupervisorSession;
 class ThreadWorkerSession;
+class ThreadWorkerSessionFactory;
 class DrainTag;
 
 /** These are reply codes returned by MessageTransceiverThread::GetNextEventFromInternalThread() 
@@ -52,7 +53,7 @@ enum {
 #define MTT_NAME_HOSTNAME    "host"  // field containing an ASCII hostname or IP address
 #define MTT_NAME_PORT        "port"  // field containing an int16 port number
 #define MTT_NAME_SESSION     "sess"  // field containing an AbstractReflectSession tag
-#define MTT_NAME_FROMSESSION "sfrm"  // field containing the name of the session this message is from
+#define MTT_NAME_FROMSESSION "sfrm"  // field containing the root path of the session this message is from (e.g. "192.168.1.103/17")
 #define MTT_NAME_FACTORY     "fact"  // field containing a ReflectSessionFactory tag
 #define MTT_NAME_DRAIN_TAG   "dtag"  // field containing a DrainTag reference
 #define MTT_NAME_POLICY_TAG  "ptag"  // field containing an IOPolicy reference
@@ -227,8 +228,8 @@ public:
      * @param optRetMsgRef If non-NULL, on success the MessageRef this argument points to is written into so that
      *                     it references a Message associated with the event.  This is mainly used with the 
      *                     MTT_EVENT_INCOMING_MESSAGE event code.
-     * @param optFromSession If non-NULL, the string that this argument points to will be have the session ID string 
-     *                       of the relevant session written into it.
+     * @param optFromSession If non-NULL, the string that this argument points to will be have the root node path of
+     *                       the relevant session written into it (e.g. "/192.168.1.105/17").
      * @param optFromPort If non-NULL, the uint16 that this arguments points will have the port number of the 
      *                    relevant factory written into it.
      * @returns The number of events left in the event queue (after our having removed one) on success, or -1 on failure.
@@ -372,7 +373,9 @@ public:
    virtual int32 DoOutput(uint32 maxBytes);
 
 private:
+   friend class ThreadWorkerSessionFactory;
    Queue<MessageRef> _drainedNotifiers;
+   bool _sendAcceptedMessage;
 };
 
 /** A factory class that returns new ThreadWorkerSession objects. */
@@ -388,8 +391,20 @@ public:
    /** Overridden to send a message back to the user */
    virtual void AboutToDetachFromServer();
 
-   /** Returns a new ThreadWorkerSession object, or NULL on failure. */
+   /** Implemented to call CreateThreadWorkerSession() to create
+     * a new session, and on success to send a MTT_EVENT_SESSION_ACCEPTED
+     * Message back to the main thread.  Subclasses that wish to
+     * to have this factory class return a different type of
+     * session object should override CreateThreadWorkerSession(const String &)
+     * instead of this method.
+     */
    virtual AbstractReflectSession * CreateSession(const String &);
+
+   /** Default implementation returns a new ThreadWorkerSession object.
+     * Subclasses may override this method to return a different type of
+     * object, as long as the returned object is a subclass of ThreadWorkerSession.
+     */
+   virtual ThreadWorkerSession * CreateThreadWorkerSession(const String &);
 };
 
 /** This is the session that acts as the main thread's agent inside the MessageTransceiverThread's

@@ -323,18 +323,18 @@ void ThreadWorkerSessionFactory :: AboutToDetachFromServer()
    StorageReflectSessionFactory::AboutToDetachFromServer();
 }
 
-AbstractReflectSession * ThreadWorkerSessionFactory :: CreateSession(const String &)
+ThreadWorkerSession * ThreadWorkerSessionFactory :: CreateThreadWorkerSession(const String &)
 {
-   ThreadWorkerSession * ret = newnothrow ThreadWorkerSession();
+   return newnothrow ThreadWorkerSession();
+}
+
+AbstractReflectSession * ThreadWorkerSessionFactory :: CreateSession(const String & s)
+{
+   ThreadWorkerSession * ret = CreateThreadWorkerSession(s);
    if ((ret)&&(SetMaxIncomingMessageSizeFor(ret) == B_NO_ERROR))
    {
-      MessageRef notify(GetMessageFromPool(MTT_EVENT_SESSION_ACCEPTED));
-      if (notify()) 
-      {
-         notify()->AddString(MTT_NAME_FROMSESSION, ret->GetSessionIDString());
-         BroadcastToAllSessions(notify);
-         return ret;
-      }
+      ret->_sendAcceptedMessage = true;  // gotta send the MTT_EVENT_SESSION_ACCEPTED Message from within AttachedToServer()
+      return ret;
    }
    else WARN_OUT_OF_MEMORY;
 
@@ -352,7 +352,7 @@ void MessageTransceiverThread :: InternalThreadEntry()
    SendMessageToOwner(GetMessageFromPool(MTT_EVENT_SERVER_EXITED));
 }
 
-ThreadWorkerSession :: ThreadWorkerSession()
+ThreadWorkerSession :: ThreadWorkerSession() : _sendAcceptedMessage(false)
 {
    // empty
 }
@@ -372,6 +372,11 @@ status_t ThreadWorkerSession :: AttachedToServer()
 {
    if (StorageReflectSession::AttachedToServer() == B_NO_ERROR)
    {
+      if (_sendAcceptedMessage)
+      {
+         _sendAcceptedMessage = false;
+         BroadcastToAllSessions(GetMessageFromPool(MTT_EVENT_SESSION_ACCEPTED));
+      }
       BroadcastToAllSessions(GetMessageFromPool(MTT_EVENT_SESSION_ATTACHED));
       return B_NO_ERROR;
    }
@@ -524,7 +529,7 @@ void ThreadSupervisorSession :: MessageReceivedFromGateway(const MessageRef &, v
 
 void ThreadSupervisorSession :: MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msgRef, void *)
 {
-   if (msgRef()) msgRef()->AddString(MTT_NAME_FROMSESSION, from.GetSessionIDString());
+   if (msgRef()) msgRef()->AddString(MTT_NAME_FROMSESSION, from.GetSessionRootPath());
    _mtt->SendMessageToOwner(msgRef);
 }
 
