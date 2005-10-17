@@ -323,6 +323,10 @@ SOURCE=..\src\resolver.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\resolverthread.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\scanprogress.cpp
 # End Source File
 # Begin Source File
@@ -1797,6 +1801,65 @@ SOURCE=..\src\resolver.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\resolverthread.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\resolverthread.h
+InputName=resolverthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\resolverthread.h
+InputName=resolverthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\resolverthread.h
+InputName=resolverthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\resolverthread.h
+InputName=resolverthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\resource.h
 # End Source File
 # Begin Source File
@@ -3179,6 +3242,10 @@ SOURCE=..\src\moc_privatewindow.cpp
 # Begin Source File
 
 SOURCE=..\src\moc_privatewindowimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_resolverthread.cpp
 # End Source File
 # Begin Source File
 

@@ -57,6 +57,7 @@ SRCFILES = \
 	src/prefsimpl.cpp \
 	src/privatewindowimpl.cpp \
 	src/resolver.cpp \
+	src/resolverthread.cpp \
 	src/search.cpp \
 	src/searchitem.cpp \
 	src/serverclient.cpp \
@@ -116,6 +117,7 @@ MOC_SRCFILES = \
 	src/moc_prefsimpl.cpp \
 	src/moc_privatewindow.cpp \
 	src/moc_privatewindowimpl.cpp \
+	src/moc_resolverthread.cpp \
 	src/moc_search.cpp \
 	src/moc_serverclient.cpp \
 	src/moc_ulistview.cpp \
@@ -313,6 +315,10 @@ src/moc_privatewindow.cpp: src/privatewindow.h
 	@$(MOC) $< -o $@
 
 src/moc_privatewindowimpl.cpp: src/privatewindowimpl.h
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
+
+src/moc_resolverthread.cpp: src/resolverthread.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
 

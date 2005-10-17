@@ -8,12 +8,12 @@ CFG=Unizone - Win32 Debug ANSI
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "Unizone.mak".
+!MESSAGE NMAKE /f "Unizone-qt2.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "Unizone.mak" CFG="Unizone - Win32 Debug ANSI"
+!MESSAGE NMAKE /f "Unizone-qt2.mak" CFG="Unizone - Win32 Debug ANSI"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -320,6 +320,10 @@ SOURCE=..\src\privatewindowimpl.cpp
 # Begin Source File
 
 SOURCE=..\src\resolver.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\resolverthread.cpp
 # End Source File
 # Begin Source File
 
@@ -1797,6 +1801,61 @@ SOURCE=..\src\resolver.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\resolverthread.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\resolverthread.h
+InputName=resolverthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\resolverthread.h
+InputName=resolverthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\resolverthread.h
+InputName=resolverthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\src\resolverthread.h
+InputName=resolverthread
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\resource.h
 # End Source File
 # Begin Source File
@@ -3179,6 +3238,10 @@ SOURCE=..\src\moc_privatewindow.cpp
 # Begin Source File
 
 SOURCE=..\src\moc_privatewindowimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\moc_resolverthread.cpp
 # End Source File
 # Begin Source File
 
