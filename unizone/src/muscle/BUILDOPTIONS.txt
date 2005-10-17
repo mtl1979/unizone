@@ -3,6 +3,10 @@ if you feel like hacking around, here is a list of some
 compile-time constants that you can define in the CXXFLAGS variable
 of your Makefile to alter muscle's behaviour:
 
+-DMUSCLE_PREFER_QT_OVER_WIN32
+   Tell the Muscle Thread/Mutex/etc classes to prefer to use Qt Threading APIs over Win32 calls
+   when both are available.  (By default, Win32 calls are preferred)
+
 -DMUSCLE_ENABLE_MEMORY_PARANOIA=N 
    Put N overwrite-guards before and after each malloc() buffer, watch them for memory corruption
 
