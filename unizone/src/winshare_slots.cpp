@@ -441,8 +441,8 @@ WinShareWindow::ConnectTimer()
 	setStatus( QString::null, 1);
 	setStatus( QString::null, 2);
 
-	if (fSettings->GetInfo())
-		SendSystemEvent(tr("Connection to server failed!"));
+	if (fSettings->GetError())
+		SendErrorEvent(tr("Connection to server failed!"));
 
 	// Schedule reconnect attempt
 	QCustomEvent * recon = new QCustomEvent(WinShareWindow::ConnectRetry);
@@ -526,6 +526,9 @@ WinShareWindow::CheckResumes(const QString &user)
 
 	// No need to check if empty!
 	if (fResumeMap.empty()) 
+		return;
+
+	if (!fResumeEnabled)
 		return;
 
 	WUserRef u = FindUser(user);

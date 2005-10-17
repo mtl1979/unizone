@@ -25,7 +25,7 @@
 #include "serverclient.h"
 #include "updateclient.h"
 #include "wstatusbar.h"
-#include "resolver.h"
+#include "resolverthread.h"
 
 #include "events.h"
 #include "chatevent.h"
@@ -1060,9 +1060,32 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			ListResumes();
 		}
+		else if (CompareCommand(sendText, "/stopresume"))
+		{
+			QString p = GetParameterString(sendText);
+			if (!p.isEmpty())
+			{
+				bool ok;
+				int index = p.toInt(&ok);
+				if (ok)
+				{
+					KillResume(index);
+				}
+				else if (fSettings->GetError())
+				{
+					PrintError(tr("Invalid index."));
+				}
+
+			}
+		}
 		else if (CompareCommand(sendText, "/clearresumes"))
 		{
 			ClearResumes();
+		}
+		else if (CompareCommand(sendText, "/pauseresumes"))
+		{
+			fResumeEnabled = !fResumeEnabled;
+			PrintSystem(tr("Resuming files is %1.").arg(fResumeEnabled ? tr("enabled") : tr("disabled")));
 		}
 		else if (CompareCommand(sendText, "/version"))
 		{
@@ -2555,8 +2578,8 @@ WinShareWindow::Connect()
 		}
 		else
 		{
-			if (fSettings->GetInfo())
-				SendSystemEvent(tr("Connection to server failed!"));
+			if (fSettings->GetError())
+				SendErrorEvent(tr("Connection to server failed!"));
 		}
 	}
 }
@@ -2719,6 +2742,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/onconnect [command] - set or clear command to perform on successful connect");
 	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/pauseresumes - toggle resuming of file transfers");
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/picture [name or session ids] - send picture to other clients");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/ping [name or session ids] - ping other clients");
@@ -2766,6 +2791,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/showstats - show transfer statistics");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/status [status] - set status string");
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/stopresume [index] - stop resuming file");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/temp [temperature] [C|F|K] - convert between temperature units");
 	helpText			+=	"\n\t\t\t\t"; 
@@ -3042,6 +3069,29 @@ WinShareWindow::ListResumes()
 }
 
 void
+WinShareWindow::KillResume(int index)
+{
+	rLock.Lock();
+	bool found = false;
+	WResumeIter it = fResumeMap.begin();
+	int i = 0;
+	while (it != fResumeMap.end())
+	{
+		if (i == index)
+		{
+			PrintSystem(tr("Removed file '%1' from resume list.").arg((*it).second.fRemoteName));
+			fResumeMap.erase(it);
+			found = true;
+			break;
+		}
+		it++; i++;
+	}
+	rLock.Unlock();
+	if (!found && fSettings->GetError())
+		PrintError(tr("Invalid index."));
+}
+
+void
 WinShareWindow::ClearResumes()
 {
 	rLock.Lock();
@@ -3051,153 +3101,9 @@ WinShareWindow::ClearResumes()
 }
 
 void
-WinShareWindow::PrintAddressInfo(const WUserRef & user, bool verbose)
-{
-	QString addr, uname, uid;
-	QString out;
-	uint32 address = 0;
-	char host[16];
-
-	if (user() != NULL)
-	{
-		address = ResolveAddress(user()->GetUserHostName());
-		addr = user()->GetUserHostName();
-		uname = user()->GetUserName();
-		uid = user()->GetUserID();
-	}
-
-	if (address > 0)
-	{
-		Inet_NtoA(address, host);
-					
-		out += "\n" + tr("Address info for user #%1:").arg(uid);
-		out += "\n" + tr("User Name: %1").arg(uname);
-					
-		out += "\n" + tr("IP Address: %1").arg(host);
-		
-		if (verbose)
-		{
-			if (user()->GetPort() != 0)
-				out += "\n" + tr("Port: %1").arg( user()->GetPort() );
-					
-			QString qhost = ResolveHost(address);
-			if (qhost != QString::null)
-			{
-				out += "\n" + tr("Host Name: %1").arg(qhost);
-			}
-
-			QString aliases = ResolveAliases(address);
-			if (!aliases.isEmpty())
-			{
-				aliases.replace(QRegExp(","), " ");
-				out += "\n" + tr("Aliases: %1").arg(aliases);
-			}
-		}
-		PrintSystem(FixString(out));
-	}					
-	else if (fSettings->GetError())
-	{
-		PrintError(tr("No address info for %1").arg(uname));
-	}
-}
-
-bool
-WinShareWindow::PrintAddressInfo(uint32 address, bool verbose)
-{
-	char host[16];
-	QString out;
-	bool found = false;
-
-	if (address > 0)
-	{
-		Inet_NtoA(address, host);
-					
-		if (!verbose)
-		{
-			out += tr("IP Address: %1").arg(host);
-			found = true;
-		}
-		else
-		{
-			out += "\n" + tr("Address info for %1:").arg(host);
-				
-			QString qhost = ResolveHost(address);
-			if (qhost != QString::null)
-			{
-				out += "\n" + tr("Host Name: %1").arg(qhost);
-				found = true;
-			}
-
-			QString aliases = ResolveAliases(address);
-
-			if (!aliases.isEmpty())
-			{	
-				aliases.replace(QRegExp(","), " ");
-
-				out += "\n" + tr("Aliases: %1").arg(aliases);
-				found = true;
-			}
-					
-			// List all users from this ip
-						
-			WUserMap cmap;
-			fNetClient->FindUsersByIP(cmap, host);
-			if (!cmap.IsEmpty())
-			{
-				out += "\n" + tr("Connected users:");
-
-				WUserIter it = cmap.GetIterator();
-				while ( it.HasMoreValues() )
-				{
-					WUserRef uref;
-					it.GetNextValue(uref);
-					if ( uref() )
-					{
-						QString uid = uref()->GetUserID();
-						QString uname = uref()->GetUserName();
-						uint32 port = uref()->GetPort();
-						if (port != 0)
-							out += "\n" + tr("#%1 - %2 (port: %3)").arg(uid).arg(uname).arg(port);
-						else
-							out += "\n" + tr("#%1 - %2").arg(uid).arg(uname);
-						found = true;
-					}
-				}
-			}
-		}
-		if (found)
-		{
-			PrintSystem(FixString(out));
-		}
-	}
-	return found;
-}
-
-void
 WinShareWindow::GetAddressInfo(const QString & user, bool verbose)
 {
-	int numMatches;
-	WUserMap wmap;
-	numMatches = FillUserMap(user, wmap);
-	uint32 address = 0;
-	if (numMatches > 0)	// Found atleast one match in users
-	{
-		WUserIter uiter = wmap.GetIterator();
-		while (uiter.HasMoreValues())
-		{
-			WUserRef uref;
-			uiter.GetNextValue(uref);
-			PrintAddressInfo(uref, verbose);
-		}
-	}
-	else				// Try as hostname or ip address
-	{
-		address = ResolveAddress(user);
-		if (!PrintAddressInfo(address, verbose) && fSettings->GetError())
-		{
-			PrintError(tr("No address info for %1").arg(user));
-		}
-	}				
+	fResolverThread->Query(user, verbose);
 }
 
 void

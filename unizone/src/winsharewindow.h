@@ -56,6 +56,7 @@ class UpdateClient;
 class WPicViewer;
 class QRegExp;
 class DownloadQueue;
+class ResolverThread;
 
 struct WResumeInfo
 {
@@ -271,6 +272,7 @@ private slots:
 
 private:
 	friend class WDownload;
+	friend class ResolverThread;
 
 	mutable NetClient * fNetClient;
 	mutable ServerClient * fServerThread;	// used to get latest servers from beshare.tycomsystems.com
@@ -279,8 +281,10 @@ private:
 	mutable QAcceptSocketsThread * fAccept;
 	WFileThread * fFileScanThread;
 	WListThread * fListThread;
+	ResolverThread * fResolverThread;
 	bool fFilesScanned;
 	bool fFileShutdownFlag;
+	bool fResumeEnabled;
 
 	MenuBar * fMenus;
 
@@ -377,6 +381,8 @@ private:
 	void CheckResumes(const QString &user);
 	// List files waiting to be resumed
 	void ListResumes();
+	// Remove file from resume list
+	void KillResume(int index);
 	// Clear the resume list
 	void ClearResumes();
 
@@ -426,9 +432,7 @@ private:
 	void SendPingOrMsg(QString & text, bool isping, bool * reply = NULL, bool enc = false);
 
 	void GetAddressInfo(const QString & user, bool verbose = true);
-	void PrintAddressInfo(const WUserRef & user, bool verbose);
-	bool PrintAddressInfo(uint32 address, bool verbose);
-	
+
 	void ShowHelp(const QString & command = QString::null);
 
 	// parsing stuff...

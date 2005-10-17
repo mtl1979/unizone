@@ -4494,5 +4494,29 @@ Date: %4</translation>
         <source>Aliases: %1</source>
         <translation>Aliases: %1</translation>
     </message>
+    <message>
+        <source>Resuming files is %1.</source>
+        <translation>Resuming files is %1.</translation>
+    </message>
+    <message>
+        <source>enabled</source>
+        <translation>enabled</translation>
+    </message>
+    <message>
+        <source>disabled</source>
+        <translation>disabled</translation>
+    </message>
+    <message>
+        <source>/pauseresumes - toggle resuming of file transfers</source>
+        <translation>/pauseresumes - toggle resuming of file transfers</translation>
+    </message>
+    <message>
+        <source>/stopresume [index] - stop resuming file</source>
+        <translation>/stopresume [index] - stop resuming file</translation>
+    </message>
+    <message>
+        <source>Removed file &apos;%1&apos; from resume list.</source>
+        <translation>Removed file &apos;%1&apos; from resume list.</translation>
+    </message>
 </context>
 </TS>

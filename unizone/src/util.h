@@ -15,6 +15,8 @@ class WFile;
 
 using namespace muscle;
 
+#include <qregexp.h>
+
 // this is a whole different type of parse... it looks for URL's etc.
 QString ParseChatText(const QString & str);		
 

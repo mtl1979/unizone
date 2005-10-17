@@ -19,6 +19,7 @@ SOURCES =		aboutdlg.cpp \
 				prefsimpl.cpp \
                 privatewindow.cpp \
 				privatewindowimpl.cpp \
+				resolverthread.cpp \
 				scanprogress.cpp \
 				search.cpp \
 				serverclient.cpp \

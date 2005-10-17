@@ -29,6 +29,7 @@
 #include "settings.h"
 #include "filethread.h"
 #include "listthread.h"
+#include "resolverthread.h"
 #include "tokenizer.h"								// <postmaster@raasu.org> 20021114
 #include "util.h"
 #include "wstring.h"
@@ -123,6 +124,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fDisconnectCount = 0;	// Initialize disconnection count
 	fDisconnect = false;	// No premature disconnection yet
 	fDisconnectFlag = false; // User hasn't disconnected manually yet.
+	fResumeEnabled = true;
 	
 	fNetClient = new NetClient(this);
 	CHECK_PTR(fNetClient);
@@ -258,6 +260,11 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 	fListThread = new WListThread(fNetClient, fFileScanThread, this, &fFileShutdownFlag);
 	CHECK_PTR(fListThread);
+
+	fResolverThread = new ResolverThread(&fFileShutdownFlag);
+	CHECK_PTR(fResolverThread);
+
+	fResolverThread->start();
 
 	fFileShutdownFlag = false;
 	startTimer(1000);
@@ -425,6 +432,12 @@ WinShareWindow::Cleanup()
 	}
 
 	DeinitLaunchThread();
+
+	if (fResolverThread)
+	{
+		fResolverThread->wakeup();
+		fResolverThread = NULL;
+	}
 
 	// Do these two after everything else
 

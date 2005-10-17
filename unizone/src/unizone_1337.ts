@@ -4435,5 +4435,29 @@ Date: %4</translation>
         <source>Aliases: %1</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Resuming files is %1.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>enabled</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>disabled</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/pauseresumes - toggle resuming of file transfers</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/stopresume [index] - stop resuming file</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Removed file &apos;%1&apos; from resume list.</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>
