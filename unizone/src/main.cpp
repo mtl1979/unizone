@@ -101,6 +101,8 @@ main( int argc, char** argv )
 	fStartTime = GetCurrentTime64();
 
 	QApplication app( argc, argv );
+	QTranslator qtr( 0 );
+	QTranslator qtr2( 0 );
 
 	// Set alternative settings file if requested
 
@@ -133,7 +135,6 @@ main( int argc, char** argv )
 #endif
 
 	// Load language file
-	QTranslator qtr( 0 );
 	WFile lang;
 	QString lfile;
 	if (!WFile::Exists(L"unizone.lng"))
@@ -170,13 +171,16 @@ main( int argc, char** argv )
 	// Install translator ;)
 	if (!lfile.isEmpty())
 	{
-		if (qtr.load(lfile))
+		if (WFile::Exists(lfile))
 		{
+			if (qtr.load(lfile))
+			{
 #ifdef DEBUG
-			WString wfile(lfile);
-			PRINT("Loaded translation %S\n", wfile.getBuffer());
+				WString wfile(lfile);
+				PRINT("Loaded translation %S\n", wfile.getBuffer());
 #endif
-			app.installTranslator( &qtr );
+				app.installTranslator( &qtr );
+			}
 		}
 		// Qt's own translator file
 		QFileInfo qfi(lfile);
@@ -185,7 +189,7 @@ main( int argc, char** argv )
 		QString qtdir = EnvironmentVariable("QTDIR");
 		if (qtdir != QString::null)
 		{
-			QString tr_dir = MakePath(EnvironmentVariable("QTDIR"), "translations");
+			QString tr_dir = MakePath(qtdir, "translations");
 			qt_lang = MakePath(tr_dir, langfile);
 			if (!WFile::Exists(qt_lang))
 				qt_lang = QString::null;
@@ -193,17 +197,22 @@ main( int argc, char** argv )
 		if (qt_lang == QString::null)
 		{
 			// Try using same directory as Unizones translations
-			qt_lang = MakePath(qfi.dirPath(true), qt_lang);
+			qt_lang = MakePath(qfi.dirPath(true), langfile);
 		}
 
-		QTranslator qtr2( 0 );
-		if (qtr2.load(qt_lang))
+		if (!qt_lang.isEmpty())
 		{
+			if (WFile::Exists(qt_lang))
+			{
+				if (qtr2.load(qt_lang))
+				{
 #ifdef DEBUG
-			WString wfile(qt_lang);
-			PRINT("Loaded translation %S\n", wfile.getBuffer());
+					WString wfile(qt_lang);
+					PRINT("Loaded translation %S\n", wfile.getBuffer());
 #endif
-			app.installTranslator( &qtr2 );
+					app.installTranslator( &qtr2 );
+				}
+			}
 		}
 	}
 	
