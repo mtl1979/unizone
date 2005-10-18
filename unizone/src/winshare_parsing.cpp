@@ -72,7 +72,10 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 bool
 WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 {
-	if (!filter.isEmpty() && user())
+	if (filter.isEmpty())
+		return false;
+
+	if (user())
 	{
 		QStringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
 		QString n;
@@ -89,38 +92,33 @@ WinShareWindow::MatchUserFilter(const WUserRef & user, const QString &filter)
 			PRINT2("MatchUserFilter: next   = %S\n", wnext.getBuffer());
 #endif
 			
-			if (!userID.isEmpty())
+			// Is this item our user's session ID?
+			if (userID == next)
 			{
-				// Is this item our user's session ID?
-				if (userID == next)
-				{
-					return true;
-				}
+				return true;
 			}
 			
 			QString userName = StripURL(user()->GetUserName().lower()).stripWhiteSpace();
 			
+			if (userName == next)	// Is this item our user's name?
+			{
+				return true;
+			}
+
 			if (!userName.isEmpty())
 			{
-				if (userName == next)	// Is this item our user's name?
+				// Does this item (interpreted as a regex) match our user's name?
+				ConvertToRegex(next);
+				QRegExp qr(next, false);
+#ifdef DEBUG2
+				WString wuser(userName);
+				wnext = next;
+				PRINT2("MatchUserFilter: UserName = %S\n", wuser.getBuffer());
+				PRINT2("MatchUserFilter: next = %S\n", wnext.getBuffer());
+#endif
+				if (Match(userName, qr) >= 0)
 				{
 					return true;
-				}
-				else 
-				{
-					// Does this item (interpreted as a regex) match our user's name?
-					ConvertToRegex(next);
-					QRegExp qr(next, false);
-#ifdef DEBUG2
-					WString wuser(userName);
-					wnext = next;
-					PRINT2("MatchUserFilter: UserName = %S\n", wuser.getBuffer());
-					PRINT2("MatchUserFilter: next = %S\n", wnext.getBuffer());
-#endif
-					if (Match(userName, qr) >= 0)
-					{
-						return true;
-					}
 				}
 			}
 		}
@@ -210,39 +208,39 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 void
 WinShareWindow::GotUpdateCmd(const QString & key, const QString & value)
 {
-	if (!value.isEmpty())
+	if (value.isEmpty())
+		return;
+	
+	QString server = value.lower().stripWhiteSpace();
+	
+	// you can also compare against "version", but that is beshare specific
+	if (key == "addserver")
 	{
-		QString server = value.lower().stripWhiteSpace();
-
-		// you can also compare against "version", but that is beshare specific
-		if (key == "addserver")
+		bool exists = false;
+		// see if the server exists yet...
+		for (int i = 0; i < fServerList->count(); i++)
 		{
-			bool exists = false;
-			// see if the server exists yet...
-			for (int i = 0; i < fServerList->count(); i++)
+			QString s = fServerList->text(i).lower().stripWhiteSpace();
+			if (s == server)
 			{
-				QString s = fServerList->text(i).lower().stripWhiteSpace();
-				if (s == server)
-				{
-					exists = true;
-					break;
-				}
+				exists = true;
+				break;
 			}
-			if (!exists)
-				fServerList->insertItem(server);
 		}
-		else if (key == "removeserver")
+		if (!exists)
+			fServerList->insertItem(server);
+	}
+	else if (key == "removeserver")
+	{
+		// try to find the server
+		for (int i = 0; i < fServerList->count(); i++)
 		{
-			// try to find the server
-			for (int i = 0; i < fServerList->count(); i++)
+			QString s = fServerList->text(i).lower().stripWhiteSpace();
+			if (s == server)
 			{
-				QString s = fServerList->text(i).lower().stripWhiteSpace();
-				if (s == server)
-				{
-					// wipe the guy out
-					fServerList->removeItem(i);
-					i--;	// go down one...
-				}
+				// wipe the guy out
+				fServerList->removeItem(i);
+				i--;	// go down one...
 			}
 		}
 	}
@@ -293,22 +291,25 @@ WinShareWindow::SetWatchPattern(const QString &pattern)
 bool
 WinShareWindow::MatchFilter(const QString & user, const QString & filter)
 {
-	if (!filter.isEmpty() && !user.isEmpty())
+	if (filter.isEmpty())
+		return false;
+	
+	if (user.isEmpty())
+		return false;
+	
+	QStringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
+	QString n;
+	while((n = idTok.GetNextToken()) != QString::null)
 	{
-		QStringTokenizer idTok(filter, ","); // identifiers may be separated by commas (but not spaces, as those may be parts of the users' names!)
-		QString n;
-		while((n = idTok.GetNextToken()) != QString::null)
+		QString next(n.stripWhiteSpace());
+		
+		// Does this item (interpreted as a regex) match our user's name?
+		ConvertToRegex(next);
+		QRegExp qr(next, false);
+		QString userName = user.stripWhiteSpace();
+		if (!userName.isEmpty() && Match(userName, qr) >= 0)
 		{
-			QString next(n.stripWhiteSpace());
-			
-			// Does this item (interpreted as a regex) match our user's name?
-			ConvertToRegex(next);
-			QRegExp qr(next, false);
-			QString userName = user.stripWhiteSpace();
-			if (!userName.isEmpty() && Match(userName, qr) >= 0)
-			{
-				return true;
-			}
+			return true;
 		}
 	}
 	return false;

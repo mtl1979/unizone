@@ -408,23 +408,23 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, co
 	while ((fQueue.RemoveHead(tmp) == B_NO_ERROR) && (fLQueue.RemoveHead(tmp2) == B_NO_ERROR))
 	{
 		// Remote name
-		if (!tmp.isEmpty()) 
-		{
-			qFiles[n] = tmp;
-		}
-		else
+		if (tmp.isEmpty()) 
 		{
 			qFiles[n] = QString::null;
 		}
+		else
+		{
+			qFiles[n] = tmp;
+		}
 		
 		// Local name
-		if (!tmp2.isEmpty())
+		if (tmp2.isEmpty())
 		{
-			qLFiles[n] = tmp2;
+			qLFiles[n] = QString::null;
 		}
 		else
 		{
-			qLFiles[n] = QString::null;
+			qLFiles[n] = tmp2;
 		}
 		
 		n++;
@@ -1822,17 +1822,17 @@ WDownload::DLPopupActivated(int id)
 	{
 	case ID_QUEUE:
 		{
-			if (!dt->IsLocallyQueued())
-			{
-				dt->SetLocallyQueued(true);
-				dt->SetManuallyQueued(true);
-				dt->Reset();
-			}
-			else
+			if (dt->IsLocallyQueued())
 			{
 				dt->SetLocallyQueued(false);
 				dt->SetManuallyQueued(false);
 				dt->InitSession();
+			}
+			else
+			{
+				dt->SetLocallyQueued(true);
+				dt->SetManuallyQueued(true);
+				dt->Reset();
 			}
 			break;
 		}
@@ -2066,15 +2066,15 @@ WDownload::ULPopupActivated(int id)
 	{
 	case ID_QUEUE:
 		{
-			if (!ut->IsLocallyQueued())
-			{
-				ut->SetLocallyQueued(true);
-				ut->SetManuallyQueued(true);
-			}
-			else
+			if (ut->IsLocallyQueued())
 			{
 				ut->SetLocallyQueued(false);
 				ut->SetManuallyQueued(false);
+			}
+			else
+			{
+				ut->SetLocallyQueued(true);
+				ut->SetManuallyQueued(true);
 			}
 			break;
 		}

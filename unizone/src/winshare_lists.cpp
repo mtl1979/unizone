@@ -361,12 +361,13 @@ WinShareWindow::UnBlackList(const QString & user)
 	// Is really blacklisted?
 	//
 
-	if (!IsBlackListed(user))
-		return false;
+	if (IsBlackListed(user))
+	{
+		RemoveFromList(fBlackList, user);
+		return true;
+	}
 
-	RemoveFromList(fBlackList, user);
-
-	return true;
+	return false;
 }
 
 bool
@@ -380,12 +381,13 @@ WinShareWindow::UnWhiteList(const QString & user)
 	// Is really whitelisted?
 	//
 
-	if (!IsWhiteListed(user))
-		return false;
+	if (IsWhiteListed(user))
+	{
+		RemoveFromList(fWhiteList, user);
+		return true;
+	}
 
-	RemoveFromList(fWhiteList, user);
-
-	return true;
+	return false;
 }
 
 bool
@@ -399,12 +401,13 @@ WinShareWindow::UnFilterList(const QString & pattern)
 	// Is really in filter list?
 	//
 
-	if (!IsFilterListed(pattern))
-		return false;
+	if (IsFilterListed(pattern))
+	{
+		RemoveFromList(fFilterList, pattern);
+		return true;
+	}
 
-	RemoveFromList(fFilterList, pattern);
-
-	return true;
+	return false;
 }
 
 // Append to ignore list
@@ -443,12 +446,13 @@ WinShareWindow::UnIgnore(const QString & user)
 	// Is really ignored?
 	//
 
-	if (!IsIgnored(user, true, false))
-		return false;
+	if (IsIgnored(user, true, false))
+	{
+		RemoveFromList(fIgnore, user);
+		return true;
+	}
 
-	RemoveFromList(fIgnore, user);
-
-	return true;
+	return false;
 }
 
 bool
@@ -498,10 +502,11 @@ WinShareWindow::UnAutoPrivate(const QString & user)
 	// Is really in auto-private list?
 	//
 
-	if (!IsAutoPrivate(user))
-		return false;
+	if (IsAutoPrivate(user))
+	{
+		RemoveFromList(fAutoPriv, user);
+		return true;
+	}
 
-	RemoveFromList(fAutoPriv, user);
-
-	return true;
+	return false;
 }

@@ -1015,14 +1015,15 @@ NetClient::MessageReceived(const MessageRef &msg, const String & /* sessionID */
 				WinShareWindow *win = GetWindow(this);
 				if (win)
 				{
-					if (!win->GotParams())
+					if (win->GotParams())
+					{	
+						// a /serverinfo was sent
+						::SendEvent(fOwner, WMessageEvent::ServerParametersMessage, msg);
+					}
+					else
 					{
 						HandleParameters(msg);
 						win->GotParams(msg);
-					}
-					else	// a /serverinfo was sent
-					{
-						::SendEvent(fOwner, WMessageEvent::ServerParametersMessage, msg);
 					}
 				}
 				break;

@@ -65,20 +65,19 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				if (fNetClient->IsConnected())	// are we connected?
 				{
-					if (!fFileScanThread->IsInternalThreadRunning())
-					{
-						StartAcceptThread();
-						ScanShares(true);
-					}
-					else
+					if (fFileScanThread->IsInternalThreadRunning())
 					{
 						if (fSettings->GetError())
 							PrintError(tr("Already scanning!"));
 					}
+					else
+					{
+						StartAcceptThread();
+						ScanShares(true);
+					}
 				}
-				else
+				else if (fSettings->GetError())
 				{
-					if (fSettings->GetError())
 						PrintError(tr("Not connected."));
 				}
 			}
@@ -873,7 +872,12 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (!user.isEmpty())
+			if (user.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -885,14 +889,17 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				else if (fSettings->GetError())
 					PrintError(tr("Invalid index."));
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/chkstatus"))
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (!user.isEmpty())
+			if (user.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No index specified."));
+			}
+			else
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -901,14 +908,17 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				else if (fSettings->GetError())
 					PrintError(tr("Invalid index."));
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No index specified."));
 		}
 		else if (CompareCommand(sendText, "/remstatus"))
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (!user.isEmpty())
+			if (user.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No users passed."));
+			}
+			else
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -920,14 +930,17 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				else if (fSettings->GetError())
 					PrintError(tr("Invalid index."));
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No users passed."));
 		}
 		else if (CompareCommand(sendText, "/chkserver"))
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (!user.isEmpty())
+			if (user.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No index specified."));
+			}
+			else
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -936,14 +949,17 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				else if (fSettings->GetError())
 					PrintError(tr("Invalid index."));
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No index specified."));
 		}
 		else if (CompareCommand(sendText, "/remserver"))
 		{
 			QString user = GetParameterString(sendText);
 			
-			if (!user.isEmpty())
+			if (user.isEmpty())
+			{
+				if (fSettings->GetError())
+					PrintError(tr("No index specified."));
+			}
+			else
 			{
 				bool ok;
 				int u = user.toInt(&ok);
@@ -955,8 +971,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				else if (fSettings->GetError())
 					PrintError(tr("Invalid index."));
 			}
-			else if (fSettings->GetError())
-				PrintError(tr("No index specified."));
 		}
 		else if (CompareCommand(sendText, "/save"))
 		{
@@ -1540,18 +1554,21 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 	{
 		if (sendTo.IsEmpty())
 		{
-			if (!isping && !reply)
+			if (!isping)
 			{
-				if (fSettings->GetError())
-					PrintError(tr("User(s) not found!"));
-			}
-			else if (!isping && reply)
-			{
-				if (fSettings->GetError())
+				if (reply)
 				{
-					*reply = true;
-					// this will put an error message in the private window
-					text = WFormat::Error(tr("User doesn't exist!"));
+					if (fSettings->GetError())
+					{
+						*reply = true;
+						// this will put an error message in the private window
+						text = WFormat::Error(tr("User(s) not found!"));
+					}
+				}
+				else
+				{
+					if (fSettings->GetError())
+						PrintError(tr("User(s) not found!"));
 				}
 			}
 		}
@@ -1877,10 +1894,10 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					fFileScanThread->Lock();
 					int numShares = fFileScanThread->GetNumFiles();
 					fFileScanThread->Unlock();
-					if (!fFilesScanned || (numShares == 0))
-						ScanShares();
-					else
+					if (fFilesScanned && (numShares > 0))
 						UpdateShares();
+					else
+						ScanShares();
 				}
 			}
 			else
@@ -2436,39 +2453,39 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				const char * session;
 				uint64 when;
 				
-				if (!fSettings->GetInfo())
-					return;
-				
-				if ((msg()->FindString(PR_NAME_SESSION, &session) == B_OK) && 
-					(msg()->FindInt64("when", (int64 *) &when) == B_OK))
+				if (fSettings->GetInfo())
 				{
-					WUserRef user = fNetClient->FindUser(session);
-					if (user())
+					if ((msg()->FindString(PR_NAME_SESSION, &session) == B_OK) && 
+						(msg()->FindInt64("when", (int64 *) &when) == B_OK))
 					{
-						QString versionString = GetRemoteVersionString(msg);
-
-						if (user()->NeedPing())
+						WUserRef user = fNetClient->FindUser(session);
+						if (user())
 						{
-							user()->SetClient(versionString);
-							user()->UpdateListViews();
-						}
-						else
-						{
-							QString pre = WFormat::RemoteName(session, FixString(user()->GetUserName()));
-							uint32 time = ((GetCurrentTime64() - when) / 10000L);
+							QString versionString = GetRemoteVersionString(msg);
 							
-							QString pong(pre);
-							pong += WFormat::PingText(time, versionString);
-							PrintText(pong);
-							
-							uint64 uptime, onlinetime;
-							if ((msg()->FindInt64("uptime", (int64 *) &uptime) == B_OK) && 
-								(msg()->FindInt64("onlinetime", (int64 *) &onlinetime) == B_OK))
+							if (user()->NeedPing())
 							{
-								pong = pre;
-								pong += WFormat::PingUptime(MakeHumanTime(uptime), MakeHumanTime(onlinetime));
-							
+								user()->SetClient(versionString);
+								user()->UpdateListViews();
+							}
+							else
+							{
+								QString pre = WFormat::RemoteName(session, FixString(user()->GetUserName()));
+								uint32 time = ((GetCurrentTime64() - when) / 10000L);
+								
+								QString pong(pre);
+								pong += WFormat::PingText(time, versionString);
 								PrintText(pong);
+								
+								uint64 uptime, onlinetime;
+								if ((msg()->FindInt64("uptime", (int64 *) &uptime) == B_OK) && 
+									(msg()->FindInt64("onlinetime", (int64 *) &onlinetime) == B_OK))
+								{
+									pong = pre;
+									pong += WFormat::PingUptime(MakeHumanTime(uptime), MakeHumanTime(onlinetime));
+									
+									PrintText(pong);
+								}
 							}
 						}
 					}
@@ -3120,9 +3137,8 @@ WinShareWindow::ExecCommand(const QString &command)
 void
 WinShareWindow::TransferCallbackRejected(const QString &qFrom, int64 timeLeft, uint32 port)
 {
-	if (!fDLWindow)
-		return;
-	fDLWindow->TransferCallBackRejected(qFrom, timeLeft, port);
+	if (fDLWindow)
+		fDLWindow->TransferCallBackRejected(qFrom, timeLeft, port);
 }
 
 void

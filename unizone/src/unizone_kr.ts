@@ -947,6 +947,53 @@ Date: %4</source>
     </message>
 </context>
 <context>
+    <name>ResolverThread</name>
+    <message>
+        <source>Address info for user #%1:</source>
+        <translation>Address info for user #%1:</translation>
+    </message>
+    <message>
+        <source>User Name: %1</source>
+        <translation>User Name: %1</translation>
+    </message>
+    <message>
+        <source>IP Address: %1</source>
+        <translation>IP 주소: %1</translation>
+    </message>
+    <message>
+        <source>Port: %1</source>
+        <translation>포트: %1</translation>
+    </message>
+    <message>
+        <source>Host Name: %1</source>
+        <translation>호스트명: %1</translation>
+    </message>
+    <message>
+        <source>Aliases: %1</source>
+        <translation>Aliases: %1</translation>
+    </message>
+    <message>
+        <source>No address info for %1</source>
+        <translation>%1 의 주소 정보가 없습니다</translation>
+    </message>
+    <message>
+        <source>Address info for %1:</source>
+        <translation>%1 의 주소 정보:</translation>
+    </message>
+    <message>
+        <source>Connected users:</source>
+        <translation>연결된 사용자:</translation>
+    </message>
+    <message>
+        <source>#%1 - %2</source>
+        <translation>#%1 - %2</translation>
+    </message>
+    <message>
+        <source>(port: %1)</source>
+        <translation>(포트: %1)</translation>
+    </message>
+</context>
+<context>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
@@ -3057,31 +3104,31 @@ Date: %4</source>
     </message>
     <message>
         <source>Address info for %1:</source>
-        <translation>%1 의 주소 정보:</translation>
+        <translation type='obsolete'>%1 의 주소 정보:</translation>
     </message>
     <message>
         <source>IP Address: %1</source>
-        <translation>IP 주소: %1</translation>
+        <translation type='obsolete'>IP 주소: %1</translation>
     </message>
     <message>
         <source>Port: %1</source>
-        <translation>포트: %1</translation>
+        <translation type='obsolete'>포트: %1</translation>
     </message>
     <message>
         <source>Host Name: %1</source>
-        <translation>호스트명: %1</translation>
+        <translation type='obsolete'>호스트명: %1</translation>
     </message>
     <message>
         <source>Connected users:</source>
-        <translation>연결된 사용자:</translation>
+        <translation type='obsolete'>연결된 사용자:</translation>
     </message>
     <message>
         <source>#%1 - %2 (port: %3)</source>
-        <translation>#%1 - %2 (포트: %3)</translation>
+        <translation type='obsolete'>#%1 - %2 (포트: %3)</translation>
     </message>
     <message>
         <source>#%1 - %2</source>
-        <translation>#%1 - %2</translation>
+        <translation type='obsolete'>#%1 - %2</translation>
     </message>
     <message>
         <source>No address info for %1 or %2</source>
@@ -3089,7 +3136,7 @@ Date: %4</source>
     </message>
     <message>
         <source>No address info for %1</source>
-        <translation>%1 의 주소 정보가 없습니다</translation>
+        <translation type='obsolete'>%1 의 주소 정보가 없습니다</translation>
     </message>
     <message>
         <source>Disconnected from server.</source>
@@ -3853,11 +3900,11 @@ Date: %4</source>
     </message>
     <message>
         <source>Address info for user #%1:</source>
-        <translation>Address info for user #%1:</translation>
+        <translation type='obsolete'>Address info for user #%1:</translation>
     </message>
     <message>
         <source>User Name: %1</source>
-        <translation>User Name: %1</translation>
+        <translation type='obsolete'>User Name: %1</translation>
     </message>
     <message>
         <source>/reverse [text] - say text in reverse</source>
@@ -4153,7 +4200,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Aliases: %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Resuming files is %1.</source>

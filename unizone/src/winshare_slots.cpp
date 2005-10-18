@@ -105,25 +105,31 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 
 		// <postmaster@raasu.org> 20030622
 		QString nameformat;
-		if (!CheckName(old))
+		if (CheckName(old))
 		{
-			// <postmaster@raasu.org> 20021112, 20030622
-			nameformat = WFormat::UserNameChangedNoOld(sid, FixString(newname)); 
-		}
-		else if (!CheckName(newname))
-		{
-			// <postmaster@raasu.org> 20030819
-			nameformat = WFormat::UserNameChangedNoNew(sid);  
+			if (CheckName(newname))
+			{
+				// <postmaster@raasu.org> 20021112, 20030622
+				nameformat = WFormat::UserNameChanged(sid, FixString(old), FixString(newname));  
+			}
+			else
+			{
+				// <postmaster@raasu.org> 20030819
+				nameformat = WFormat::UserNameChangedNoNew(sid);  
+			}
 		}
 		else
 		{
 			// <postmaster@raasu.org> 20021112, 20030622
-			nameformat = WFormat::UserNameChanged(sid, FixString(old), FixString(newname));  
+			nameformat = WFormat::UserNameChangedNoOld(sid, FixString(newname)); 
 		}
 		SendSystemEvent(nameformat);
 	}
-	if (!newname.isEmpty())
-		SendTextEvent(newname, WTextEvent::ResumeType);
+
+	if (newname.isEmpty())
+		return;
+
+	SendTextEvent(newname, WTextEvent::ResumeType);
 }
 
 void
@@ -374,13 +380,15 @@ WinShareWindow::Preferences()
 			if ((oldSharing == false) || (oldFirewalled != fSettings->GetFirewalled()))
 			{
 					StartAcceptThread();
-					if (!fFilesScanned)
+					if (fFilesScanned)
 					{
-						if (QMessageBox::information(this, tr( "File Scan" ), tr( "Scan your shared files now?" ), tr( "Yes" ), tr( "No" )) == 0)
-							ScanShares();
+						if (fNetClient->IsConnected())
+							UpdateShares();
 					}
-					else if (fNetClient->IsConnected())
-						UpdateShares();
+					else if (QMessageBox::information(this, tr( "File Scan" ), tr( "Scan your shared files now?" ), tr( "Yes" ), tr( "No" )) == 0)
+					{
+						ScanShares();
+					}
 			}
 			if (fNetClient->IsConnected())
 				fNetClient->SetLoad(0, fSettings->GetMaxUploads());
@@ -408,6 +416,7 @@ WinShareWindow::Preferences()
 			if (fSettings->GetInfo())
 				SendSystemEvent(tr("Logging enabled."));
 			StartLogging();
+
 			pLock.Lock();
 			for (unsigned int i = 0; i < fPrivateWindows.GetNumItems(); i++)
 				fPrivateWindows[i]->StartLogging();

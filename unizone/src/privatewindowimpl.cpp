@@ -232,16 +232,15 @@ WPrivateWindow::RemUser(const WUserRef & user)
 	uint32 uid = user()->GetUserID().toULong(&ok);
 	if (ok)
 	{
-		if (!fUsers.ContainsKey(uid))
+		if (fUsers.ContainsKey(uid))
 		{
+			user()->RemoveFromListView(fPrivateUsers);
+			fUsers.Remove(uid);
 			fLock.Unlock();
-			return false;
+			return true;
 		}
-		user()->RemoveFromListView(fPrivateUsers);
-		fUsers.Remove(uid);
-		fLock.Unlock();
-		return true;
 	}
+	fLock.Unlock();
 	return false;
 }
 

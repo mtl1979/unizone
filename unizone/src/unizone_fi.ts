@@ -1193,6 +1193,57 @@ Päiväys: %4</translation>
     </message>
 </context>
 <context>
+    <name>ResolverThread</name>
+    <message>
+        <source>Address info for user #%1:</source>
+        <translation>Osoitetiedot käyttäjälle #%1:</translation>
+    </message>
+    <message>
+        <source>User Name: %1</source>
+        <translation>Käyttäjän Nimi: %1</translation>
+    </message>
+    <message>
+        <source>IP Address: %1</source>
+        <translation>IP-osoite: %1</translation>
+    </message>
+    <message>
+        <source>Port: %1</source>
+        <translation>Portti: %1</translation>
+    </message>
+    <message>
+        <source>Host Name: %1</source>
+        <translation>Koneen Nimi: %1</translation>
+    </message>
+    <message>
+        <source>Aliases: %1</source>
+        <translation>Aliakset: %1</translation>
+    </message>
+    <message>
+        <source>No address info for %1</source>
+        <translation>Ei löytynyt osoitetietoa %1</translation>
+    </message>
+    <message>
+        <source>Address info for %1:</source>
+        <translation>Osoitetiedot %1:</translation>
+    </message>
+    <message>
+        <source>Connected users:</source>
+        <translation>Kytkeytyneet käyttäjät:</translation>
+    </message>
+    <message>
+        <source>#%1 - %2</source>
+        <translation>#%1 - %2</translation>
+    </message>
+    <message>
+        <source>(port: %3)</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>(port: %1)</source>
+        <translation>(portti: %1)</translation>
+    </message>
+</context>
+<context>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
@@ -3356,27 +3407,27 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Address info for %1:</source>
-        <translation>Osoitetiedot %1:</translation>
+        <translation type='obsolete'>Osoitetiedot %1:</translation>
     </message>
     <message>
         <source>IP Address: %1</source>
-        <translation>IP-osoite: %1</translation>
+        <translation type='obsolete'>IP-osoite: %1</translation>
     </message>
     <message>
         <source>Port: %1</source>
-        <translation>Portti: %1</translation>
+        <translation type='obsolete'>Portti: %1</translation>
     </message>
     <message>
         <source>Host Name: %1</source>
-        <translation>Koneen Nimi: %1</translation>
+        <translation type='obsolete'>Koneen Nimi: %1</translation>
     </message>
     <message>
         <source>#%1 - %2 (port: %3)</source>
-        <translation>#%1 - %2 (portti: %3)</translation>
+        <translation type='obsolete'>#%1 - %2 (portti: %3)</translation>
     </message>
     <message>
         <source>#%1 - %2</source>
-        <translation>#%1 - %2</translation>
+        <translation type='obsolete'>#%1 - %2</translation>
     </message>
     <message>
         <source>No address info for %1 or %2</source>
@@ -3384,7 +3435,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>No address info for %1</source>
-        <translation>Ei löytynyt osoitetietoa %1</translation>
+        <translation type='obsolete'>Ei löytynyt osoitetietoa %1</translation>
     </message>
     <message>
         <source>Disconnected from server.</source>
@@ -3764,7 +3815,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Connected users:</source>
-        <translation>Kytkeytyneet käyttäjät:</translation>
+        <translation type='obsolete'>Kytkeytyneet käyttäjät:</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
@@ -4332,11 +4383,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Address info for user #%1:</source>
-        <translation>Osoitetiedot käyttäjälle #%1:</translation>
+        <translation type='obsolete'>Osoitetiedot käyttäjälle #%1:</translation>
     </message>
     <message>
         <source>User Name: %1</source>
-        <translation>Käyttäjän Nimi: %1</translation>
+        <translation type='obsolete'>Käyttäjän Nimi: %1</translation>
     </message>
     <message>
         <source>/reverse [text] - say text in reverse</source>
@@ -4632,7 +4683,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Aliases: %1</source>
-        <translation>Aliakset: %1</translation>
+        <translation type='obsolete'>Aliakset: %1</translation>
     </message>
     <message>
         <source>Resuming files is %1.</source>

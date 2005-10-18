@@ -242,10 +242,9 @@ WDownloadThread::InitSession()
 	{
 		return false;
 	}
-
+	
 	if (fCurFile > 0) // Resuming
 	{
-
 		// Reinitialize file list
 		QString * temp = new QString[fNumFiles-fCurFile];
 		QString * temp2 = new QString[fNumFiles-fCurFile];
@@ -272,8 +271,71 @@ WDownloadThread::InitSession()
 		}
 	}
 	
-	if (!fFirewalled)	// the remote user is not firewalled?
+	if (fFirewalled)	
 	{
+		// he is firewalled?
+		if (fTunneled)
+		{
+			// he supports tunnels ;)
+			InitSessionAux();
+			
+			MessageRef msg(GetMessageFromPool(WDownloadEvent::ConnectInProgress));
+			if (msg())
+				SendReply(msg);
+			
+			PRINT("Requesting tunnel...\n");
+			MessageRef req(GetMessageFromPool(NetClient::REQUEST_TUNNEL));
+			if (req())
+				SendMessageToSessions(req);
+			
+			return true;
+		}
+		else
+		{
+			ReflectSessionFactoryRef factoryRef;
+			if (gWin->fSettings->GetDLLimit() != WSettings::LimitNone)	// throttling?
+			{
+				fTXRate = gWin->fSettings->ConvertToBytes( gWin->fSettings->GetDLLimit() );
+				factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(fTXRate));
+			}
+			else if (GetRate() != 0)
+			{
+				factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(GetRate()));
+			}
+			else
+			{
+				fTXRate = 0;
+				factoryRef = ReflectSessionFactoryRef(new ThreadWorkerSessionFactory());
+			}
+			
+			status_t ret = B_OK;
+			uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
+			uint32 pEnd = pStart + (uint32) gWin->fSettings->GetPortRange() - 1;
+			
+			for (unsigned int i = pStart; i <= pEnd; i++)
+			{
+				if ((ret = qmtt->PutAcceptFactory(i, factoryRef)) == B_OK)
+				{
+					fAcceptingOn = factoryRef()->GetPort();
+					if (qmtt->StartInternalThread())
+					{
+						InitSessionAux();
+						MessageRef cnt(GetMessageFromPool(WDownloadEvent::ConnectBackRequest));
+						if (cnt())
+						{
+							cnt()->AddString(PR_NAME_SESSION, (const char *) fFromSession.utf8());
+							cnt()->AddInt32("port", fAcceptingOn);
+							SendReply(cnt);
+						}
+						return true;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		// the remote user is not firewalled?
 		if (qmtt->StartInternalThread() == B_OK)
 		{
 			AbstractReflectSessionRef connectRef;
@@ -323,65 +385,6 @@ WDownloadThread::InitSession()
 				msg()->AddString("why", QT_TR_NOOP( "Failed to start internal thread!" ));
 				SendReply(msg);
 			}
-		}
-	}
-	else if (fTunneled)
-	{
-		InitSessionAux();
-
-		MessageRef msg(GetMessageFromPool(WDownloadEvent::ConnectInProgress));
-		if (msg())
-			SendReply(msg);
-
-		PRINT("Requesting tunnel...\n");
-		MessageRef req(GetMessageFromPool(NetClient::REQUEST_TUNNEL));
-		if (req())
-			SendMessageToSessions(req);
-
-		return true;
-	}
-	else	// he is firewalled?
-	{
-		ReflectSessionFactoryRef factoryRef;
-		if (gWin->fSettings->GetDLLimit() != WSettings::LimitNone)	// throttling?
-		{
-			fTXRate = gWin->fSettings->ConvertToBytes( gWin->fSettings->GetDLLimit() );
-			factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(fTXRate));
-		}
-		else if (GetRate() != 0)
-		{
-			factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(GetRate()));
-		}
-		else
-		{
-			fTXRate = 0;
-			factoryRef = ReflectSessionFactoryRef(new ThreadWorkerSessionFactory());
-		}
-		
-		status_t ret = B_OK;
-		uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
-		uint32 pEnd = pStart + (uint32) gWin->fSettings->GetPortRange() - 1;
-
-		for (unsigned int i = pStart; i <= pEnd; i++)
-		{
-			if ((ret = qmtt->PutAcceptFactory(i, factoryRef)) == B_OK)
-			{
-				fAcceptingOn = factoryRef()->GetPort();
-				ret = qmtt->StartInternalThread();
-				break;
-			}
-		}
-		if (ret == B_OK)
-		{
-			InitSessionAux();
-			MessageRef cnt(GetMessageFromPool(WDownloadEvent::ConnectBackRequest));
-			if (cnt())
-			{
-				cnt()->AddString(PR_NAME_SESSION, (const char *) fFromSession.utf8());
-				cnt()->AddInt32("port", fAcceptingOn);
-				SendReply(cnt);
-			}
-			return true;
 		}
 	}
 	return false;

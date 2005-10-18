@@ -1056,6 +1056,53 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>ResolverThread</name>
+    <message>
+        <source>Address info for user #%1:</source>
+        <translation>Address info for user #%1:</translation>
+    </message>
+    <message>
+        <source>User Name: %1</source>
+        <translation>User Name: %1</translation>
+    </message>
+    <message>
+        <source>IP Address: %1</source>
+        <translation>IP Address: %1</translation>
+    </message>
+    <message>
+        <source>Port: %1</source>
+        <translation>Port: %1</translation>
+    </message>
+    <message>
+        <source>Host Name: %1</source>
+        <translation>Host Name: %1</translation>
+    </message>
+    <message>
+        <source>Aliases: %1</source>
+        <translation>Aliases: %1</translation>
+    </message>
+    <message>
+        <source>No address info for %1</source>
+        <translation>No address info for %1</translation>
+    </message>
+    <message>
+        <source>Address info for %1:</source>
+        <translation>Address info for %1:</translation>
+    </message>
+    <message>
+        <source>Connected users:</source>
+        <translation>Connected users:</translation>
+    </message>
+    <message>
+        <source>#%1 - %2</source>
+        <translation>#%1 - %2</translation>
+    </message>
+    <message>
+        <source>(port: %1)</source>
+        <translation>(port: %1)</translation>
+    </message>
+</context>
+<context>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
@@ -3106,27 +3153,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>Address info for %1:</source>
-        <translation>Address info for %1:</translation>
+        <translation type='obsolete'>Address info for %1:</translation>
     </message>
     <message>
         <source>IP Address: %1</source>
-        <translation>IP Address: %1</translation>
+        <translation type='obsolete'>IP Address: %1</translation>
     </message>
     <message>
         <source>Port: %1</source>
-        <translation>Port: %1</translation>
+        <translation type='obsolete'>Port: %1</translation>
     </message>
     <message>
         <source>Host Name: %1</source>
-        <translation>Host Name: %1</translation>
+        <translation type='obsolete'>Host Name: %1</translation>
     </message>
     <message>
         <source>#%1 - %2 (port: %3)</source>
-        <translation>#%1 - %2 (port: %3)</translation>
+        <translation type='obsolete'>#%1 - %2 (port: %3)</translation>
     </message>
     <message>
         <source>#%1 - %2</source>
-        <translation>#%1 - %2</translation>
+        <translation type='obsolete'>#%1 - %2</translation>
     </message>
     <message>
         <source>No address info for %1 or %2</source>
@@ -3134,7 +3181,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>No address info for %1</source>
-        <translation>No address info for %1</translation>
+        <translation type='obsolete'>No address info for %1</translation>
     </message>
     <message>
         <source>Disconnected from server.</source>
@@ -3514,7 +3561,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Connected users:</source>
-        <translation>Connected users:</translation>
+        <translation type='obsolete'>Connected users:</translation>
     </message>
     <message>
         <source>Unizone (English)</source>
@@ -4046,11 +4093,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Address info for user #%1:</source>
-        <translation>Address info for user #%1:</translation>
+        <translation type='obsolete'>Address info for user #%1:</translation>
     </message>
     <message>
         <source>User Name: %1</source>
-        <translation>User Name: %1</translation>
+        <translation type='obsolete'>User Name: %1</translation>
     </message>
     <message>
         <source>/reverse [text] - say text in reverse</source>
@@ -4346,7 +4393,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Aliases: %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Resuming files is %1.</source>

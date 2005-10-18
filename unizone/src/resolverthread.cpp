@@ -67,7 +67,7 @@ ResolverThread::PrintAddressInfo(const WUserRef &user, bool verbose)
 				out += "\n" + tr("Port: %1").arg( user()->GetPort() );
 					
 			QString qhost = ResolveHost(address);
-			if (qhost != QString::null)
+			if (!qhost.isEmpty())
 			{
 				out += "\n" + tr("Host Name: %1").arg(qhost);
 			}
@@ -98,12 +98,7 @@ ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
 	{
 		Inet_NtoA(address, host);
 					
-		if (!verbose)
-		{
-			out += tr("IP Address: %1").arg(host);
-			found = true;
-		}
-		else
+		if (verbose)
 		{
 			out += "\n" + tr("Address info for %1:").arg(host);
 				
@@ -128,7 +123,7 @@ ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
 						
 			WUserMap cmap;
 			gWin->fNetClient->FindUsersByIP(cmap, host);
-			if (!cmap.IsEmpty())
+			if (cmap.GetNumItems() > 0)
 			{
 				out += "\n" + tr("Connected users:");
 
@@ -142,14 +137,21 @@ ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
 						QString uid = uref()->GetUserID();
 						QString uname = uref()->GetUserName();
 						uint32 port = uref()->GetPort();
+						out += "\n" + tr("#%1 - %2").arg(uid).arg(uname);
 						if (port != 0)
-							out += "\n" + tr("#%1 - %2 (port: %3)").arg(uid).arg(uname).arg(port);
-						else
-							out += "\n" + tr("#%1 - %2").arg(uid).arg(uname);
+						{	
+							out += " ";
+							out += tr("(port: %1)").arg(port);
+						}
 						found = true;
 					}
 				}
 			}
+		}
+		else
+		{
+			out += tr("IP Address: %1").arg(host);
+			found = true;
 		}
 		if (found)
 		{

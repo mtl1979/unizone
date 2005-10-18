@@ -31,13 +31,16 @@ WComboBox::SendEvent(const QString & str)
 	WTextEvent *e = new WTextEvent(str, WTextEvent::ComboType); // <postmaster@raasu.org> 20021012
 	if (e)
 	{
-		if (!e->Valid())
+		if (e->Valid())
+		{
+			e->setData((void *)this);
+			QApplication::postEvent(fOwner, e);
+		}
+		else
 		{
 			delete e;
 			e = NULL;
 			return;
 		}
-		e->setData((void *)this);
-		QApplication::postEvent(fOwner, e);
 	}
 }

@@ -279,10 +279,11 @@ void
 Channels::JoinChannel()
 {
 	QListViewItem *item = ChannelList->selectedItem();
-	if (!item)
-		return;
-	QString text = item->text(0); // Get Channel name
-	JoinChannel(text);
+	if (item)
+	{
+		QString text = item->text(0); // Get Channel name
+		JoinChannel(text);
+	}
 }
 
 void
@@ -290,7 +291,11 @@ Channels::JoinChannel(const QString & channel)
 {
 	WChannelIter it = fChannels.find(channel);
 	Channel * win;
-	if (!(*it).second->GetWindow())
+	if ((*it).second->GetWindow())
+	{
+		win = (*it).second->GetWindow();
+	}
+	else
 	{
 		//
 		// Create Channel Window
@@ -299,10 +304,6 @@ Channels::JoinChannel(const QString & channel)
 		// Create Window item
 		win = new Channel(this, fNetClient, channel);
 		(*it).second->SetWindow(win);
-	}
-	else
-	{
-		win = (*it).second->GetWindow();
 	}
 	
 	// Send user list to window

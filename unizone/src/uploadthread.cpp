@@ -1169,12 +1169,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 			if (fref()->FindString("beshare:Path", path) == B_OK &&
 				fref()->FindString("beshare:File Name", filename) == B_OK)
 			{
-				if (!IsLocallyQueued())
-				{
-					SignalUpload();
-					return;
-				}
-				else
+				if (IsLocallyQueued())
 				{
 					int64 filesize;
 					if (fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
@@ -1185,6 +1180,11 @@ WUploadThread::TransferFileList(MessageRef msg)
 							return;
 						}
 					}
+				}
+				else
+				{
+					SignalUpload();
+					return;
 				}
 				
 				String firstFile = MakePath(path, filename);

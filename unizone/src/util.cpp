@@ -1595,6 +1595,9 @@ QString OCTEncode(const QString &in)
 int 
 Match(const QString &string, const QRegExp &exp)
 {
+	if (string.isEmpty())
+		return -1;
+
 	QString str;
 	QRegExp e;
 	if (exp.caseSensitive())

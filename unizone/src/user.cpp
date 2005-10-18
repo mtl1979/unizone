@@ -124,10 +124,10 @@ WUser::InitName(MessageRef msg)
 	WString wuser(fUserName);
 	PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC,
 		wuser.getBuffer(), (fBot ? "bot" : "user"), fInstallID);
-	if (!GetFirewalled())
-		PRINT(" on port %lu\n", fPort);
-	else
+	if (GetFirewalled())
 		PRINT("\n");	
+	else
+		PRINT(" on port %lu\n", fPort);
 #endif
 }
 
@@ -220,20 +220,20 @@ WUser::AddToListView(QListView * view)
 	{
 		WListPair pair;
 		QListViewItem *item;
-		if (!fBot)
+		if (fBot)
+		{
+			item = new WBotItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
+								fBandwidthLabel, qUpload, fClient, fHostOS);
+			CHECK_PTR(item);
+			pair = MakeListPair(view, item);
+		}
+		else
 		{
 			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
 								fBandwidthLabel, qUpload, fClient, fHostOS);
 			CHECK_PTR(item);
 			pair = MakeListPair(view, item);
 			((WUserListItem *)(pair.second))->SetFirewalled(fFirewalled);
-		}
-		else
-		{
-			item = new WBotItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
-								fBandwidthLabel, qUpload, fClient, fHostOS);
-			CHECK_PTR(item);
-			pair = MakeListPair(view, item);
 		}
 		fLists.insert(pair);
 	}

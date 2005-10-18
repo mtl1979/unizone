@@ -634,7 +634,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		return;
 	if ( CompareCommand(text, "/me's") )
 	{
-		if ( !gWin->IsIgnored((QString &) user) )
+		if ( !gWin->IsIgnored(user) )
 		{
 			QString msg = GetParameterString(text);
 			if (!msg.isEmpty() && gWin->fSettings->GetChat())

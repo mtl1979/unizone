@@ -1188,7 +1188,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				iter.GetNextValue(user);
 				QString userName = StripURL(user()->GetUserName().stripWhiteSpace());
 
-				if (!userName.isEmpty() && Match(userName, qr) >= 0)
+				if (Match(userName, qr) >= 0)
 				{
 					WUserSearchPair pair = MakePair(user, setRestOfString); // <postmaster@raasu.org> 20021007
 					sendTo.AddTail(pair);
@@ -2032,7 +2032,7 @@ WinShareWindow::GetUptime()
 
 	setutxent();
 	while ((utxent = getutxent())) {
-		if (! strcmp("system boot", utxent->ut_line)) {
+		if (strcmp("system boot", utxent->ut_line) == 0) {
 			bootTime = utxent->ut_tv.tv_sec;
 			endutxent();
 			break;
