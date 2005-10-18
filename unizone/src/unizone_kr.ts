@@ -567,7 +567,7 @@ Date: %4</source>
     </message>
     <message>
         <source>ALT+S</source>
-        <translation type='obsolete'>ALT+S</translation>
+        <translation>ALT+S</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
@@ -587,7 +587,7 @@ Date: %4</source>
     </message>
     <message>
         <source>C&amp;hannels</source>
-        <translation type='obsolete'>채널(&amp;h)</translation>
+        <translation>채널(&amp;h)</translation>
     </message>
     <message>
         <source>F10</source>
@@ -627,15 +627,15 @@ Date: %4</source>
     </message>
     <message>
         <source>&amp;Channels</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'>&amp;Channels</translation>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation type='unfinished'></translation>
+        <translation>찾아보기 (&amp;S)</translation>
     </message>
     <message>
         <source>ALT+F</source>
-        <translation>ALT+F</translation>
+        <translation type='obsolete'>ALT+F</translation>
     </message>
     <message>
         <source>Picture Viewer</source>
@@ -647,23 +647,23 @@ Date: %4</source>
     </message>
     <message>
         <source>Music</source>
-        <translation type='unfinished'></translation>
+        <translation>Music</translation>
     </message>
     <message>
         <source>Videos</source>
-        <translation type='unfinished'></translation>
+        <translation>Videos</translation>
     </message>
     <message>
         <source>Pictures</source>
-        <translation type='unfinished'></translation>
+        <translation>Pictures</translation>
     </message>
     <message>
         <source>Disk Images</source>
-        <translation type='unfinished'></translation>
+        <translation>Disk Images</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type='unfinished'></translation>
+        <translation>찾아보기...</translation>
     </message>
 </context>
 <context>
@@ -2629,7 +2629,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Download All</source>
-        <translation type='unfinished'></translation>
+        <translation>Download All</translation>
     </message>
 </context>
 <context>
@@ -3016,7 +3016,7 @@ Date: %4</source>
     </message>
     <message>
         <source>User doesn&apos;t exist!</source>
-        <translation>사용자가 존재하지 않습니다!</translation>
+        <translation type='obsolete'>사용자가 존재하지 않습니다!</translation>
     </message>
     <message>
         <source>Ping sent to user #%1 (a.k.a. &lt;font color="%3"&gt;%2&lt;/font&gt;).</source>
@@ -4188,15 +4188,15 @@ Date: %4</source>
     </message>
     <message>
         <source>Updating server list...</source>
-        <translation type='unfinished'></translation>
+        <translation>Updating server list...</translation>
     </message>
     <message>
         <source>Checking for updates...</source>
-        <translation type='unfinished'></translation>
+        <translation>Checking for updates...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type='unfinished'>연결 중...</translation>
+        <translation>연결 중...</translation>
     </message>
     <message>
         <source>Aliases: %1</source>

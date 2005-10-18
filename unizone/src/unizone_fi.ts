@@ -777,7 +777,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>ALT+S</source>
-        <translation type='obsolete'>ALT+S</translation>
+        <translation>ALT+S</translation>
     </message>
     <message>
         <source>F11</source>
@@ -797,7 +797,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>C&amp;hannels</source>
-        <translation type='obsolete'>&amp;Kanavat</translation>
+        <translation>&amp;Kanavat</translation>
     </message>
     <message>
         <source>F10</source>
@@ -813,7 +813,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>&amp;Channels</source>
-        <translation>&amp;Kanavat</translation>
+        <translation type='obsolete'>&amp;Kanavat</translation>
     </message>
     <message>
         <source>&amp;Search</source>
@@ -821,7 +821,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>ALT+F</source>
-        <translation>ALT+F</translation>
+        <translation type='obsolete'>ALT+F</translation>
     </message>
     <message>
         <source>Picture Viewer</source>
@@ -3767,7 +3767,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>User doesn&apos;t exist!</source>
-        <translation>Käyttäjää ei ole olemassa!</translation>
+        <translation type='obsolete'>Käyttäjää ei ole olemassa!</translation>
     </message>
     <message>
         <source>1 week</source>

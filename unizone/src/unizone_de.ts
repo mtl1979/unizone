@@ -768,7 +768,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>ALT+S</source>
-        <translation type='obsolete'>STRG+ALT+S</translation>
+        <translation>STRG+ALT+S</translation>
     </message>
     <message>
         <source>F11</source>
@@ -788,7 +788,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>C&amp;hannels</source>
-        <translation type='obsolete'>C&amp;hannel</translation>
+        <translation>C&amp;hannel</translation>
     </message>
     <message>
         <source>F10</source>
@@ -804,15 +804,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>&amp;Channels</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation type='unfinished'></translation>
+        <translation>&amp;Suche</translation>
     </message>
     <message>
         <source>ALT+F</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Picture Viewer</source>
@@ -3670,7 +3670,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User doesn&apos;t exist!</source>
-        <translation>Benutzer existiert nicht!</translation>
+        <translation type='obsolete'>Benutzer existiert nicht!</translation>
     </message>
     <message>
         <source>1 week</source>

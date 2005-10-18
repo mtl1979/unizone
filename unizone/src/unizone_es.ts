@@ -700,7 +700,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>ALT+S</source>
-        <translation type='obsolete'>CTRL+ALT+B</translation>
+        <translation>CTRL+ALT+B</translation>
     </message>
     <message>
         <source>F11</source>
@@ -720,7 +720,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>C&amp;hannels</source>
-        <translation type='obsolete'>C&amp;hannels</translation>
+        <translation>C&amp;hannels</translation>
     </message>
     <message>
         <source>F10</source>
@@ -736,15 +736,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>&amp;Channels</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation type='unfinished'></translation>
+        <translation>&amp;Buscar</translation>
     </message>
     <message>
         <source>ALT+F</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Picture Viewer</source>
@@ -3517,7 +3517,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>User doesn&apos;t exist!</source>
-        <translation>User doesn&apos;t exist!</translation>
+        <translation type='obsolete'>User doesn&apos;t exist!</translation>
     </message>
     <message>
         <source>1 week</source>
