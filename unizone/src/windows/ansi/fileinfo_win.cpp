@@ -33,6 +33,52 @@ UFileInfo::InitMIMEType()
 		}
 		RegCloseKey(hkey);
 	}
+	if (mt == QString::null)
+	{
+		HKEY hk1, hk2, hk3, hk4;
+		if (RegOpenKeyA(HKEY_CLASSES_ROOT, "MIME", &hk1) == ERROR_SUCCESS)
+		{
+			if (RegOpenKeyA(hk1, "Database", &hk2) == ERROR_SUCCESS)
+			{
+				if (RegOpenKeyA(hk2, "Content Type", &hk3) == ERROR_SUCCESS)
+				{
+					DWORD numkeys;
+					if (RegQueryInfoKeyA(hk3, NULL, NULL, NULL, &numkeys, NULL, NULL, NULL, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
+					{
+						for (DWORD keys = 0; keys < numkeys; keys++)
+						{
+							bool found = false;
+							char lname[MAX_PATH];
+							dsize = MAX_PATH;
+							if (RegEnumKeyA(hk3, keys, lname, dsize) == ERROR_SUCCESS)
+							{
+								if (RegOpenKeyA(hk3, lname, &hk4) == ERROR_SUCCESS)
+								{
+									char lext[MAX_PATH];
+									dsize = MAX_PATH;
+									if (RegQueryValueExA(hk4, "Extension", NULL, &type, (LPBYTE) lext, &dsize) == ERROR_SUCCESS)
+									{
+										if (strcmp(lext, cext) == 0)
+										{
+											PRINT("Read key: %s\n", lname);
+											mt = QString::fromLocal8Bit(lname);
+											found = true;
+										}
+									}
+									RegCloseKey(hk4);
+								}
+							}
+							if (found)
+								break;
+						}
+					}
+					RegCloseKey(hk3);
+				}
+				RegCloseKey(hk2);
+			}
+			RegCloseKey(hk1);
+		}
+	}
 	fMIMEType = mt;
 	return;
 }
