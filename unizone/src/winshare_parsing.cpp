@@ -157,35 +157,32 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 		int matchAt = words[i];
 		QString qres;
 
-#ifdef _DEBUG
-		WString wres;
-#endif
-
 		PRINT("Matching\n");
 		int numMatches = MatchUserName(origText.mid(words[i]), qres, QString::null);
 		PRINT("Match complete\n");
 		if (numMatches == 1)
 		{
 #ifdef _DEBUG
-			wres = qres;
+			WString wres(qres);
 			PRINT("Found match %S\n", wres.getBuffer());
 #endif
 
-			matchString = qres;  // found a unique match!  We're done!
+			matchString = qres;  // found a unique match
 			startAt = matchAt;
-			break;
+//			break;				 // Try to find longest possible match
 		}
 		else if (numMatches > 1)
 		{
 #ifdef _DEBUG
-			wres = qres;
+			WString wres(qres);
 			PRINT("Found multiple matches %S\n", qres);
 #endif
 
 			backupMatchString = qres;		// found several matches; keep trying for a single
 			backupStartAt = matchAt;        // but we'll use this if nothing else
 		}
-		matchString.prepend(" ");
+		if (matchString[0] != ' ')
+			matchString.prepend(" ");
 	}
 
 	if (startAt == -1)
@@ -198,7 +195,10 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 	if (startAt != -1)
 	{
 		QString returnCompletedText(origText.left(startAt));
-		returnCompletedText += matchString;
+		if (matchString[0] == ' ')
+			returnCompletedText += matchString.mid(1);
+		else
+			returnCompletedText += matchString;
 		result = returnCompletedText;
 		return true;
 	}
