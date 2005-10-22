@@ -1235,10 +1235,6 @@ Päiväys: %4</translation>
         <translation>#%1 - %2</translation>
     </message>
     <message>
-        <source>(port: %3)</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>(port: %1)</source>
         <translation>(portti: %1)</translation>
     </message>

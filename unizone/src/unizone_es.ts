@@ -735,16 +735,8 @@ Date: %4</translation>
         <translation>&amp;Window</translation>
     </message>
     <message>
-        <source>&amp;Channels</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;Buscar</translation>
-    </message>
-    <message>
-        <source>ALT+F</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Picture Viewer</source>
@@ -1096,10 +1088,6 @@ Date: %4</translation>
     <message>
         <source>#%1 - %2</source>
         <translation>#%1 - %2</translation>
-    </message>
-    <message>
-        <source>(port: %3)</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>(port: %1)</source>
@@ -4394,10 +4382,6 @@ Date: %4</translation>
     <message>
         <source>Connecting...</source>
         <translation type='unfinished'>Connecting...</translation>
-    </message>
-    <message>
-        <source>Aliases: %1</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Resuming files is %1.</source>

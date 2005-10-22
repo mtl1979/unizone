@@ -4199,10 +4199,6 @@ Date: %4</source>
         <translation>연결 중...</translation>
     </message>
     <message>
-        <source>Aliases: %1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>Resuming files is %1.</source>
         <translation type='unfinished'></translation>
     </message>

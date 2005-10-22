@@ -803,16 +803,8 @@ Date: %4</translation>
         <translation>&amp;Fenster</translation>
     </message>
     <message>
-        <source>&amp;Channels</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;Suche</translation>
-    </message>
-    <message>
-        <source>ALT+F</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Picture Viewer</source>
@@ -4587,10 +4579,6 @@ Date: %4</translation>
     <message>
         <source>Connecting...</source>
         <translation type='unfinished'>Verbinde...</translation>
-    </message>
-    <message>
-        <source>Aliases: %1</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Resuming files is %1.</source>

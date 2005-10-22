@@ -768,16 +768,8 @@ Date: %4</translation>
         <translation>&amp;Windoze</translation>
     </message>
     <message>
-        <source>&amp;Channels</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;Search</translation>
-    </message>
-    <message>
-        <source>ALT+F</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Picture Viewer</source>
@@ -1800,7 +1792,7 @@ Date: %4</translation>
     <name>WPicViewerBase</name>
     <message>
         <source>Picture Viewer</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>Pr0n Viewer</translation>
     </message>
     <message>
         <source>No File</source>
@@ -4477,10 +4469,6 @@ Date: %4</translation>
     <message>
         <source>Connecting...</source>
         <translation type='unfinished'>Opening Pipe...</translation>
-    </message>
-    <message>
-        <source>Aliases: %1</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Resuming files is %1.</source>
