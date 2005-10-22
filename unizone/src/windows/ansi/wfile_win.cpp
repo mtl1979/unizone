@@ -32,8 +32,12 @@ bool
 WFile::Open(const WString &name, int mode)
 {
 	char cname[MAX_PATH];
-	ConvertFileName(name, wcslen(name), cname, MAX_PATH - 1);
-	file = _open(cname, mode, (mode & _O_CREAT) ? _S_IREAD | _S_IWRITE : 0);
+	file = -1;
+	if (name.getBuffer() != NULL)
+	{
+		ConvertFileName(name, wcslen(name), cname, MAX_PATH - 1);
+		file = _open(cname, mode, (mode & _O_CREAT) ? _S_IREAD | _S_IWRITE : 0);
+	}
 	return (file != -1);
 }
 
@@ -65,13 +69,16 @@ bool
 WFile::Exists(const WString &name)
 {
 	char cname[MAX_PATH];
-	ConvertFileName(name, wcslen(name), cname, MAX_PATH - 1);
-	FILE * f = fopen(cname, "r");
 	bool ret = false;
-	if (f)
+	if (name.getBuffer() != NULL)
 	{
-		fclose(f);
-		ret = true;
+		ConvertFileName(name, wcslen(name), cname, MAX_PATH - 1);
+		FILE * f = fopen(cname, "r");
+		if (f)
+		{
+			fclose(f);
+			ret = true;
+		}
 	}
 	return ret;
 }

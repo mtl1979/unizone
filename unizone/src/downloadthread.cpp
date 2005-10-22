@@ -48,7 +48,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fNumFiles = -1;
 	fCurFile = -2;
 	timerID = 0;
-	fActive = true;
+	fActive = false;
 	fBlocked = false;
 	fFinished = false;
 	fManuallyQueued = false;
@@ -1441,6 +1441,7 @@ WDownloadThread::InitSessionAux()
 	fFile = NULL;
 	fDownloading = false;
 	fConnecting = true;
+	fActive = true;
 	CTimer->start(30000, true); // 30 seconds
 }
 

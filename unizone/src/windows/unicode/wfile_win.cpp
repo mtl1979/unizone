@@ -51,12 +51,15 @@ WFile::Exists(const QString &name)
 bool
 WFile::Exists(const WString &name)
 {
-	FILE * f = _wfopen(name.getBuffer(), L"r");
 	bool ret = false;
-	if (f)
+	if (name.getBuffer() != NULL)
 	{
-		fclose(f);
-		ret = true;
+		FILE * f = _wfopen(name.getBuffer(), L"r");
+		if (f)
+		{
+			fclose(f);
+			ret = true;
+		}
 	}
 	return ret;
 }

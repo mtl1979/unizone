@@ -18,7 +18,9 @@ WFile::~WFile()
 bool
 WFile::Open(const WString &name, int mode)
 {
-	file = open64((const char *) name, mode);
+	file = -1;
+	if (name.getBuffer() != NULL)
+		file = open64((const char *) name, mode);
 	return (file != -1);
 }
 
@@ -49,7 +51,9 @@ WFile::Exists(const QString &name)
 bool
 WFile::Exists(const WString &name)
 {
-	int ret = access((const char *) name, F_OK);
+	int ret = -1;
+	if (name.getBuffer() != NULL)
+		ret = access((const char *) name, F_OK);
 	return (ret == 0);
 }
 
