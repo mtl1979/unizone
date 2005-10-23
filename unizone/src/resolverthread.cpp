@@ -10,7 +10,7 @@
 #include <qapplication.h>
 
 ResolverThread::ResolverThread(bool * shutdownflag)
-: QThread(), QObject()
+: QObject(), QThread()
 {
 	fShutdownFlag = shutdownflag;
 	if (*shutdownflag)
