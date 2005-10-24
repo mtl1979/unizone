@@ -39,6 +39,10 @@ protected:
 	virtual void customEvent(QCustomEvent *);
 	virtual void resizeEvent(QResizeEvent * e);
 
+	friend class Channels;
+	void StartLogging();
+	void StopLogging();
+
 private:
 	NetClient * fNet;
 	QString fTopic, fOwner, fName, fStrAdmins;
@@ -64,8 +68,6 @@ private:
 
 	WUserRef FindUser(const QString & user);
 
-	void StartLogging();
-	void StopLogging();
 	void LogString(const char *);
 	void LogString(const QString &);
 

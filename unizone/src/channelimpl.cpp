@@ -776,7 +776,7 @@ Channel::LogString(const char * str)
 void
 Channel::StartLogging()
 {
-	fLog.Create(WLog::LogChannel, fName);	// create a private chat log
+	fLog.Create(WLog::LogChannel, fName);	// create a channel log
 	if (!fLog.InitCheck())
 	{
 		if (gWin->fSettings->GetError())

@@ -399,23 +399,29 @@ WinShareWindow::Preferences()
 		{
 			if (fSettings->GetInfo())
 				SendSystemEvent(tr("Logging disabled."));
+
 			StopLogging();
 
 			pLock.Lock();
 			for (unsigned int i = 0; i < fPrivateWindows.GetNumItems(); i++)
 				fPrivateWindows[i]->StopLogging();
 			pLock.Unlock();
+
+			fChannels->StartLogging();
 		}
 		else if (!oldLogging && fSettings->GetLogging())
 		{
 			if (fSettings->GetInfo())
 				SendSystemEvent(tr("Logging enabled."));
+
 			StartLogging();
 
 			pLock.Lock();
 			for (unsigned int i = 0; i < fPrivateWindows.GetNumItems(); i++)
 				fPrivateWindows[i]->StartLogging();
 			pLock.Unlock();
+
+			fChannels->StopLogging();
 		}
 	}
 }

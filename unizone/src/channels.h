@@ -45,6 +45,9 @@ public:
 
 	void SetTopic(const QString & channel, const QString & topic);
 
+	void StartLogging();
+	void StopLogging();
+
 protected:
 	friend class WinShareWindow;
 

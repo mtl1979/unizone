@@ -681,3 +681,27 @@ Channels::UserIDChanged(const QString &oldid, const QString &newid)
 		}
 	}
 }
+
+void
+Channels::StartLogging()
+{
+	WChannelIter iter = fChannels.begin();
+	while (iter != fChannels.end())
+	{
+		Channel * chn = (*iter).second->GetWindow();
+		if (chn)
+			chn->StartLogging();
+	}
+}
+
+void
+Channels::StopLogging()
+{
+	WChannelIter iter = fChannels.begin();
+	while (iter != fChannels.end())
+	{
+		Channel * chn = (*iter).second->GetWindow();
+		if (chn)
+			chn->StopLogging();
+	}
+}
