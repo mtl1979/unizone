@@ -105,23 +105,23 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 
 		// <postmaster@raasu.org> 20030622
 		QString nameformat;
-		if (CheckName(old))
+		if (CheckName(newname))
 		{
-			if (CheckName(newname))
+			if (CheckName(old))
 			{
 				// <postmaster@raasu.org> 20021112, 20030622
 				nameformat = WFormat::UserNameChanged(sid, FixString(old), FixString(newname));  
 			}
 			else
 			{
-				// <postmaster@raasu.org> 20030819
-				nameformat = WFormat::UserNameChangedNoNew(sid);  
+				// <postmaster@raasu.org> 20021112, 20030622
+				nameformat = WFormat::UserNameChangedNoOld(sid, FixString(newname)); 
 			}
 		}
 		else
 		{
-			// <postmaster@raasu.org> 20021112, 20030622
-			nameformat = WFormat::UserNameChangedNoOld(sid, FixString(newname)); 
+			// <postmaster@raasu.org> 20030819
+			nameformat = WFormat::UserNameChangedNoNew(sid);  
 		}
 		SendSystemEvent(nameformat);
 	}
