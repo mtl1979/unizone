@@ -98,12 +98,10 @@ WinShareWindow::UserDisconnected(const WUserRef & uref)
 void
 WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const QString &newname)
 {
-	QString sid = uref()->GetUserID();
 	if (fSettings->GetUserEvents())
 	{
-		QString system;
-
 		// <postmaster@raasu.org> 20030622
+		QString sid = uref()->GetUserID();
 		QString nameformat;
 		if (CheckName(newname))
 		{
@@ -117,19 +115,16 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 				// <postmaster@raasu.org> 20021112, 20030622
 				nameformat = WFormat::UserNameChangedNoOld(sid, FixString(newname)); 
 			}
+			SendSystemEvent(nameformat);
+			SendTextEvent(newname, WTextEvent::ResumeType);
 		}
 		else
 		{
 			// <postmaster@raasu.org> 20030819
 			nameformat = WFormat::UserNameChangedNoNew(sid);  
+			SendSystemEvent(nameformat);
 		}
-		SendSystemEvent(nameformat);
 	}
-
-	if (newname.isEmpty())
-		return;
-
-	SendTextEvent(newname, WTextEvent::ResumeType);
 }
 
 void
