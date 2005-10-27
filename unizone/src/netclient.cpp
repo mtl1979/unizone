@@ -247,9 +247,13 @@ NetClient::FindUser(const QString & sessionID)
 	uint32 uid = sessionID.toULong(&ok);
 	if (ok)
 	{
-		WUserRef found;
-		if (fUsers.GetValue(uid, found) == B_NO_ERROR)
-			return found;
+		// Make sure it's an exact match...
+		if (QString::number(uid) == sessionID)
+		{
+			WUserRef found;
+			if (fUsers.GetValue(uid, found) == B_NO_ERROR)
+				return found;
+		}
 	}
 	return WUserRef(NULL);
 }
