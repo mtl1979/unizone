@@ -316,9 +316,9 @@ WDownloadThread::InitSession()
 			{
 				if ((ret = qmtt->PutAcceptFactory(i, factoryRef)) == B_OK)
 				{
-					fAcceptingOn = factoryRef()->GetPort();
-					if (qmtt->StartInternalThread())
+					if (qmtt->StartInternalThread() == B_OK)
 					{
+						fAcceptingOn = factoryRef()->GetPort();
 						InitSessionAux();
 						MessageRef cnt(GetMessageFromPool(WDownloadEvent::ConnectBackRequest));
 						if (cnt())
@@ -328,6 +328,10 @@ WDownloadThread::InitSession()
 							SendReply(cnt);
 						}
 						return true;
+					}
+					else
+					{
+						qmtt->RemoveAcceptFactory(i);
 					}
 				}
 			}
@@ -761,7 +765,7 @@ void
 WDownloadThread::SessionAccepted(const String &sessionID, uint16 /* port */)
 {
 	// no need to accept anymore
-	qmtt->RemoveAcceptFactory(0);		
+	qmtt->RemoveAcceptFactory(fAcceptingOn);
 	SessionConnected(sessionID);
 }
 
