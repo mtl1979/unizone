@@ -143,7 +143,13 @@ main( int argc, char** argv )
 		if (!lfile.isEmpty())
 		{
 			// Save selected language's translator filename
-			if ( lang.Open(L"unizone.lng", IO_WriteOnly) )
+			if ( lang.Open(L"unizone.lng", 
+#ifdef WIN32
+				O_WRONLY | O_CREAT | O_BINARY
+#else
+				O_WRONLY | O_CREAT
+#endif 
+			   ) )
 			{
 				QCString clang = lfile.utf8();
 				lang.WriteBlock(clang, clang.length());
