@@ -61,6 +61,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fStartTime = 0;
+	fAcceptingOn = 0;
 	fPacket = 8.0f;
 	fIdles = 0;
 	InitTransferRate();
