@@ -24,9 +24,10 @@ int
 main( int argc, char** argv )
 {
 	QApplication app( argc, argv );
+	QTranslator qtr( 0 );
+	QTranslator qtr2( 0 );
 
 	// Load language file
-	QTranslator qtr( 0 );
 	QFile lang("isplitter.lng");
 	QString lfile;
 	if (!lang.exists())
@@ -58,12 +59,16 @@ main( int argc, char** argv )
 	// Install translator ;)
 	if (!lfile.isEmpty())
 	{
+		if (QFile::exists(lfile))
+		{
+			if (qtr.load(lfile))
+			{
 #if (QT_VERSION >= 0x030000)
-		qDebug("Application Translation File: %S", QDir::convertSeparators(lfile).ucs2());
+				qDebug("Application Translation File: %S", QDir::convertSeparators(lfile).ucs2());
 #endif
-		if (qtr.load(lfile))
-			app.installTranslator( &qtr );
-
+				app.installTranslator( &qtr );
+			}
+		}
 		// Qt's own translator file
 		QFileInfo qfi(lfile);
 		QString langfile = qfi.fileName().replace("isplitter", "qt");
@@ -82,12 +87,16 @@ main( int argc, char** argv )
 			qt_lang = MakePath(qfi.dirPath(true), langfile);
 		}
 
+		if (QFile::exists(qt_lang))
+		{
+			if (qtr2.load(qt_lang))
+			{
 #if (QT_VERSION >= 0x030000)
-		qDebug("Qt Translation File: %S", qt_lang.ucs2());
+				qDebug("Qt Translation File: %S", qt_lang.ucs2());
 #endif
-		QTranslator qtr2( 0 );
-		if (qtr2.load(qt_lang))
-			app.installTranslator( &qtr2 );
+				app.installTranslator( &qtr2 );
+			}
+		}
 	}
 	
 #if !defined(QT_NO_STYLE_PLATINUM)

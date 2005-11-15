@@ -280,6 +280,10 @@ SOURCE=..\..\src\uenv.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
+SOURCE=.\isplitter.pro
+# End Source File
+# Begin Source File
+
 SOURCE=.\mainwindow.ui
 
 !IF  "$(CFG)" == "Image Splitter - Win32 Release"

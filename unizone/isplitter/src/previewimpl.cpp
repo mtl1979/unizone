@@ -141,11 +141,9 @@ bool clamp(T & a, const T b, const T c)
 }
 
 void
-Preview::scalePixmap(const QPixmap * image, int &width, int &height)
+Preview::scalePixmap(double oldw, double oldh, int &width, int &height)
 {
-	int oldw = image->width();
-	int oldh = image->height();
-	double ratio = (double) oldw / (double) oldh;
+	double ratio = oldw / oldh;
 	int neww = PreviewWidget->height() * ratio;
 	if (neww > PreviewWidget->width())
 	{
@@ -226,6 +224,10 @@ Preview::PreviewImage()
 	if (!valid)
 		return;
 
+	double imageScale = Splitter->ImageScale->text().toDouble(&valid);
+	if (!valid)
+		return;
+
 	//
 	//  Make sure we don't get 'divide by zero' error
 	//
@@ -286,7 +288,19 @@ Preview::PreviewImage()
 	//
 		
 	QImage imgPreview = timg.copy(subOffsetX, subOffsetY, subWidth, subHeight, 0);
-	pixPreview = new QPixmap(imgPreview.size());
+
+	double nh, nw;
+	if (imageScale != 100.0f)
+	{
+		nw = ((double) imgPreview.width() * imageScale)/100.0f;
+		nh = ((double) imgPreview.height() * imageScale)/100.0f;
+	}
+	else
+	{
+		nw = imgPreview.width();
+		nh = imgPreview.height();
+	}
+	pixPreview = new QPixmap(QSize(nw, nh));
 	if (pixPreview)
 	{
 		//
@@ -295,11 +309,23 @@ Preview::PreviewImage()
 			
 		pxlPreview->show();
 		int w, h;
-		scalePixmap(pixPreview, w, h);
-		QImage nimg = imgPreview.smoothScale(w, h);
-		pixPreview->convertFromImage(imgPreview);
+		scalePixmap(nw, nh, w, h);
+		if (imageScale != 100.0f)
+		{
+			QImage simg = imgPreview.smoothScale(nw, nh);
+			pixPreview->convertFromImage(simg);
+		}
+		else
+		{
+			pixPreview->convertFromImage(imgPreview);
+		}
 		//
-		QPixmap tmpPreview = nimg;	// Use temporary pixmap, so we don't save scaled pixmap
+		QPixmap tmpPreview;
+		{
+			// Use temporary pixmap, so we don't save scaled pixmap
+			QImage nimg = imgPreview.smoothScale(w, h);
+			tmpPreview = nimg;	
+		}
 		pxlPreview->resize(w, h);
 		// Center
 		int ww = PreviewWidget->width();
@@ -309,7 +335,7 @@ Preview::PreviewImage()
 		pxlPreview->move(pw, ph);
 		pxlPreview->setPixmap( tmpPreview );
 		SaveButton->setEnabled(true);
-		setCaption(tr("Preview") + " - " + tr("%1 x %2").arg(imgPreview.width()).arg(imgPreview.height()));
+		setCaption(tr("Preview") + " - " + tr("%1 x %2").arg(pixPreview->width()).arg(pixPreview->height()));
 	}
 }
 
@@ -330,7 +356,7 @@ Preview::eventFilter( QObject *o, QEvent *e )
 			mouseReleaseEvent((QMouseEvent *) e);
 			return true;
 		case QEvent::Drop:
-			dropEvent(QDropEvent *) e);
+			dropEvent((QDropEvent *) e);
 			return true;
 		}
 	}

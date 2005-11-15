@@ -73,6 +73,18 @@
         <source>Transform</source>
         <translation>Transform</translation>
     </message>
+    <message>
+        <source>%</source>
+        <translation>%</translation>
+    </message>
+    <message>
+        <source>100</source>
+        <translation>100</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation>Scale</translation>
+    </message>
 </context>
 <context>
     <name>MenuBar</name>
@@ -99,6 +111,25 @@
     <message>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
+    </message>
+</context>
+<context>
+    <name>Preview</name>
+    <message>
+        <source>Preview</source>
+        <translation>Preview</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>Save</translation>
+    </message>
+    <message>
+        <source>%1 x %2</source>
+        <translation>%1 x %2</translation>
+    </message>
+    <message>
+        <source>Unable to save output!</source>
+        <translation>Unable to save output!</translation>
     </message>
 </context>
 </TS>

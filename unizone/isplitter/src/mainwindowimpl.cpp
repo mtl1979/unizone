@@ -254,6 +254,9 @@ ImageSplitter::ClearImage()
 	ImageOffsetBottomX->setText("0");
 	ImageOffsetBottomY->setText("0");
 	//
+	ImageRotate->setText("0");
+	ImageScale->setText("100");
+	//
 	fPreview->ClearPreview();
 	fPreview->hide();
 }

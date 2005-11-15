@@ -73,6 +73,18 @@
         <source>Transform</source>
         <translation>Muunna</translation>
     </message>
+    <message>
+        <source>%</source>
+        <translation>%</translation>
+    </message>
+    <message>
+        <source>100</source>
+        <translation>100</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation>Skaalaa</translation>
+    </message>
 </context>
 <context>
     <name>MenuBar</name>
@@ -99,6 +111,25 @@
     <message>
         <source>&amp;File</source>
         <translation>&amp;Tiedosto</translation>
+    </message>
+</context>
+<context>
+    <name>Preview</name>
+    <message>
+        <source>Preview</source>
+        <translation>Esikatselu</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>Tallenna</translation>
+    </message>
+    <message>
+        <source>%1 x %2</source>
+        <translation>%1 x %2</translation>
+    </message>
+    <message>
+        <source>Unable to save output!</source>
+        <translation>Ei voitu tallentaa kuvaa!</translation>
     </message>
 </context>
 </TS>
