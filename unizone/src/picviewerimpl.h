@@ -37,18 +37,17 @@ protected:
 
 
 private:
-	bool LoadImage(const ByteBufferRef &buffer, const QString &format);
+	bool LoadImage(const ByteBufferRef &buffer, const char *format, QImage &image);
 	bool LoadImage(int pos);
-	void DrawImage(const QPixmap &image);
+	void DrawImage(const QImage &image);
 
 	void UpdatePosition(int pos);
 	void UpdateName();
-	void scalePixmap(const QPixmap * image, int &width, int &height);
+	QImage scaleImage(const QImage &image);
 
 	int cFile, nFiles;
-	Queue<ByteBufferRef> fImages;
+	Queue<QImage> fImages;
 	Queue<QString> fFiles;
-	Queue<QString> fFormats;
 
 	bool dragging;
 	QPoint startPos;

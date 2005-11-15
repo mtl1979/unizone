@@ -44,13 +44,15 @@ WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, WFlags fl)
 
 	setAcceptDrops(TRUE);
 	pxlPixmap->installEventFilter(this);
+
+	cFile = 0;
+	nFiles = 0;
 }
 
 WPicViewer::~WPicViewer()
 {
 	fImages.Clear();
 	fFiles.Clear();
-	fFormats.Clear();
 }
 
 bool
@@ -172,22 +174,20 @@ WPicViewer::LoadImage(const QString &file)
 	{
 		if (buf()->SetNumBytes(f.Size(), false) == B_OK)
 		{
-			if (f.ReadBlock((char *) buf()->GetBuffer(), f.Size()) == (int64) f.Size())
+			if (f.ReadBlock((char *) buf()->GetBuffer(), f.Size()) == f.Size())
 			{
-				if (ret = LoadImage(buf, fmt))
+				if (ret = LoadImage(buf, fmt, fImage))
 				{
 					if (oldpos == -1)
 					{
-						fImages.AddTail(buf);
+						fImages.AddTail(fImage);
 						fFiles.AddTail(file);
-						fFormats.AddTail(QString::fromLocal8Bit(fmt));
-						UpdatePosition(fImages.GetNumItems() - 1);
+						UpdatePosition(nFiles);
 					}
 					else
 					{
-						fImages.ReplaceItemAt(oldpos, buf);
+						fImages.ReplaceItemAt(oldpos, fImage);
 						fFiles.ReplaceItemAt(oldpos, file);
-						fFormats.ReplaceItemAt(oldpos, QString::fromLocal8Bit(fmt));
 						UpdatePosition(oldpos);
 					}
 				}
@@ -199,13 +199,12 @@ WPicViewer::LoadImage(const QString &file)
 }
 
 bool
-WPicViewer::LoadImage(const ByteBufferRef &buffer, const QString &fmt)
+WPicViewer::LoadImage(const ByteBufferRef &buffer, const char *fmt, QImage &image)
 {
 	bool ret;
-	QPixmap fImage;
-	ret = fImage.loadFromData(buffer()->GetBuffer(),buffer()->GetNumBytes(), fmt.local8Bit());
+	ret = image.loadFromData(buffer()->GetBuffer(),buffer()->GetNumBytes(), fmt);
 	if (ret)
-		DrawImage(fImage);
+		DrawImage(image);
 	return ret;
 }
 
@@ -254,7 +253,7 @@ void
 WPicViewer::UpdatePosition(int pos)
 {
 	nFiles = fImages.GetNumItems();
-	cFile = muscleClamp(pos, 0, (int) (fImages.GetNumItems() - 1));
+	cFile = muscleClamp(pos, 0, (int) (nFiles - 1));
 	btnFirst->setEnabled(pos == 0 ? false : true);
 	btnPrevious->setEnabled(pos == 0 ? false : true);
 	btnNext->setEnabled((cFile + 1) != nFiles ? true : false);
@@ -267,16 +266,15 @@ WPicViewer::UpdatePosition(int pos)
 bool
 WPicViewer::LoadImage(int pos)
 {
-	bool ret = false;
-	ByteBufferRef fBuffer;
-	QString fFormat;
 	cFile = pos;
-	if ((fImages.GetItemAt(pos, fBuffer) == B_OK) && (fFormats.GetItemAt(pos, fFormat) == B_OK))
+	QImage image;
+	if ((fImages.GetItemAt(pos, image) == B_OK))
 	{
-		ret = LoadImage(fBuffer, fFormat);
+		DrawImage(image);
 		UpdatePosition(pos);
+		return true;
 	}
-	return ret;
+	return false;
 }
 
 void
@@ -288,13 +286,13 @@ WPicViewer::FirstImage()
 void
 WPicViewer::PreviousImage()
 {
-	(void) LoadImage(--cFile);
+	(void) LoadImage(cFile - 1);
 }
 
 void
 WPicViewer::NextImage()
 {
-	(void) LoadImage(++cFile);
+	(void) LoadImage(cFile + 1);
 }
 
 void
@@ -303,11 +301,12 @@ WPicViewer::LastImage()
 	(void) LoadImage(nFiles - 1);
 }
 
-void
-WPicViewer::scalePixmap(const QPixmap * image, int &width, int &height)
+QImage
+WPicViewer::scaleImage(const QImage & image)
 {
-	int oldw = image->width();
-	int oldh = image->height();
+	int width, height;
+	int oldw = image.width();
+	int oldh = image.height();
 	double ratio = (double) oldw / (double) oldh;
 	int neww = lrint((double) ((double) pxlPixmap->height() * ratio));
 	if (neww > pxlPixmap->width())
@@ -320,16 +319,14 @@ WPicViewer::scalePixmap(const QPixmap * image, int &width, int &height)
 		width = neww;
 		height = pxlPixmap->height();
 	}
+	return image.smoothScale(width, height);
 }
 
 void
-WPicViewer::DrawImage(const QPixmap &image)
+WPicViewer::DrawImage(const QImage &image)
 {
-	// Scale Pixmap to fit whole area
-	int w, h;
-	scalePixmap(&image, w, h);
-	QImage oimg = image.convertToImage();
-	QImage nimg = oimg.smoothScale(w, h);
+	// Scale image to fit whole area
+	QImage nimg = scaleImage(image);
 	QPixmap temp;
 	if (temp.convertFromImage(nimg))
 	{
@@ -345,18 +342,15 @@ WPicViewer::resizeEvent(QResizeEvent *e)
 	QWidget * lwidget = dynamic_cast<QWidget *>(Layout5->parent());
 	if (lwidget)
 		lwidget->resize(e->size());
-	// Scale Pixmap to fit whole area
+	//
 	if (pxlPixmap->pixmap())
 	{
-		int w, h;
-		scalePixmap(pxlPixmap->pixmap(), w, h);
-		QImage oimg = pxlPixmap->pixmap()->convertToImage();
-		QImage nimg = oimg.smoothScale(w, h);
-		QPixmap temp;
-		if (temp.convertFromImage(nimg))
-			pxlPixmap->setPixmap( temp );
+		QImage fImage;
+		if (fImages.GetItemAt(cFile, fImage) == B_OK)
+		{
+			DrawImage(fImage);		
+		}
 	}
 	//
-	UpdateName();
 	WPicViewerBase::resizeEvent(e);
 }
