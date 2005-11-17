@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>659</width>
+            <width>670</width>
             <height>558</height>
         </rect>
     </property>
@@ -21,6 +21,13 @@
             <hsizetype>3</hsizetype>
             <vsizetype>3</vsizetype>
         </sizepolicy>
+    </property>
+    <property stdset="1">
+        <name>minimumSize</name>
+        <size>
+            <width>100</width>
+            <height>150</height>
+        </size>
     </property>
     <property stdset="1">
         <name>caption</name>
@@ -42,7 +49,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>670</width>
-                <height>550</height>
+                <height>558</height>
             </rect>
         </property>
         <grid>
@@ -54,22 +61,22 @@
                 <name>spacing</name>
                 <number>6</number>
             </property>
-            <widget row="2"  column="3" >
+            <widget row="2"  column="4" >
                 <class>QPushButton</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>btnNext</cstring>
+                    <cstring>btnOpen</cstring>
                 </property>
                 <property stdset="1">
                     <name>text</name>
-                    <string>Next</string>
+                    <string>Open</string>
                 </property>
                 <property stdset="1">
                     <name>autoResize</name>
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget row="2"  column="4" >
+            <widget row="2"  column="6" >
                 <class>QPushButton</class>
                 <property stdset="1">
                     <name>name</name>
@@ -84,64 +91,7 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget row="0"  column="0"  rowspan="1"  colspan="5" >
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>txtFile</cstring>
-                </property>
-                <property stdset="1">
-                    <name>sizePolicy</name>
-                    <sizepolicy>
-                        <hsizetype>5</hsizetype>
-                        <vsizetype>0</vsizetype>
-                    </sizepolicy>
-                </property>
-                <property stdset="1">
-                    <name>minimumSize</name>
-                    <size>
-                        <width>0</width>
-                        <height>32</height>
-                    </size>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>No File</string>
-                </property>
-                <property stdset="1">
-                    <name>alignment</name>
-                    <set>AlignCenter</set>
-                </property>
-                <property>
-                    <name>hAlign</name>
-                </property>
-            </widget>
-            <widget row="2"  column="2" >
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>txtItems</cstring>
-                </property>
-                <property stdset="1">
-                    <name>sizePolicy</name>
-                    <sizepolicy>
-                        <hsizetype>5</hsizetype>
-                        <vsizetype>5</vsizetype>
-                    </sizepolicy>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>1/1</string>
-                </property>
-                <property stdset="1">
-                    <name>alignment</name>
-                    <set>AlignCenter</set>
-                </property>
-                <property>
-                    <name>hAlign</name>
-                </property>
-            </widget>
-            <widget row="1"  column="0"  rowspan="1"  colspan="5" >
+            <widget row="1"  column="0"  rowspan="1"  colspan="7" >
                 <class>QLabel</class>
                 <property stdset="1">
                     <name>name</name>
@@ -183,6 +133,36 @@
                     <name>wordwrap</name>
                 </property>
             </widget>
+            <widget row="2"  column="0" >
+                <class>QPushButton</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>btnFirst</cstring>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>First</string>
+                </property>
+                <property stdset="1">
+                    <name>autoResize</name>
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget row="2"  column="5" >
+                <class>QPushButton</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>btnNext</cstring>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>Next</string>
+                </property>
+                <property stdset="1">
+                    <name>autoResize</name>
+                    <bool>true</bool>
+                </property>
+            </widget>
             <widget row="2"  column="1" >
                 <class>QPushButton</class>
                 <property stdset="1">
@@ -198,19 +178,76 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget row="2"  column="0" >
+            <widget row="2"  column="2" >
                 <class>QPushButton</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>btnFirst</cstring>
+                    <cstring>btnClose</cstring>
                 </property>
                 <property stdset="1">
                     <name>text</name>
-                    <string>First</string>
+                    <string>Close</string>
                 </property>
                 <property stdset="1">
                     <name>autoResize</name>
                     <bool>true</bool>
+                </property>
+            </widget>
+            <widget row="0"  column="0"  rowspan="1"  colspan="7" >
+                <class>QLabel</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>txtFile</cstring>
+                </property>
+                <property stdset="1">
+                    <name>sizePolicy</name>
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>0</vsizetype>
+                    </sizepolicy>
+                </property>
+                <property stdset="1">
+                    <name>minimumSize</name>
+                    <size>
+                        <width>0</width>
+                        <height>32</height>
+                    </size>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>No File</string>
+                </property>
+                <property stdset="1">
+                    <name>alignment</name>
+                    <set>AlignCenter</set>
+                </property>
+                <property>
+                    <name>hAlign</name>
+                </property>
+            </widget>
+            <widget row="2"  column="3" >
+                <class>QLabel</class>
+                <property stdset="1">
+                    <name>name</name>
+                    <cstring>txtItems</cstring>
+                </property>
+                <property stdset="1">
+                    <name>sizePolicy</name>
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>5</vsizetype>
+                    </sizepolicy>
+                </property>
+                <property stdset="1">
+                    <name>text</name>
+                    <string>No File</string>
+                </property>
+                <property stdset="1">
+                    <name>alignment</name>
+                    <set>AlignCenter</set>
+                </property>
+                <property>
+                    <name>hAlign</name>
                 </property>
             </widget>
         </grid>

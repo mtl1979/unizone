@@ -24,6 +24,8 @@ public slots:
 	void PreviousImage();
 	void NextImage();
 	void LastImage();
+	void OpenImage();
+	void CloseImage();
 
 protected:
 	void resizeEvent(QResizeEvent * e);

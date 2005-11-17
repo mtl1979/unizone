@@ -1995,7 +1995,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>1/1</source>
-        <translation>1/1</translation>
+        <translation type='obsolete'>1/1</translation>
     </message>
     <message>
         <source>Next</source>
@@ -2004,6 +2004,14 @@ Päiväys: %4</translation>
     <message>
         <source>Last</source>
         <translation>Viimeinen</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation>Avaa</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Sulje</translation>
     </message>
 </context>
 <context>

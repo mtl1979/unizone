@@ -1296,17 +1296,25 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/view"))
 		{
-			QString file = QFileDialog::getOpenFileName ( "downloads/", "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
-			if (!file.isEmpty())
+			QStringList files = QFileDialog::getOpenFileNames ( "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", "downloads/", this);
+			if (!files.isEmpty())
 			{
-				if (fPicViewer->LoadImage(file))
+				QStringList::Iterator iter = files.begin();
+				bool ok = false;
+				while (iter != files.end())
 				{
+					if (fPicViewer->LoadImage(*iter))
+					{
+						ok = true;
+					}
+					else
+					{
+						GotoURL(*iter);
+					}
+					iter++;
+				}
+				if (ok)
 					fPicViewer->show();
-				}
-				else
-				{
-					GotoURL(file);
-				}
 			}
 		}
 		else if (CompareCommand(sendText, "/screenshot"))

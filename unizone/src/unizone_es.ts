@@ -1776,7 +1776,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>1/1</source>
-        <translation>1/1</translation>
+        <translation type='obsolete'>1/1</translation>
     </message>
     <message>
         <source>Next</source>
@@ -1785,6 +1785,14 @@ Date: %4</translation>
     <message>
         <source>Last</source>
         <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type='unfinished'>Cerrar</translation>
     </message>
 </context>
 <context>

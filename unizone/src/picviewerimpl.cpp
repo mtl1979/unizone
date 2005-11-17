@@ -8,6 +8,7 @@
 #include <qimage.h>
 #include <qlayout.h>
 #include <qfile.h>
+#include <qfiledialog.h>
 #include <qdragobject.h>
 #include <qurl.h>
 #include <qdir.h>
@@ -28,14 +29,18 @@ WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, WFlags fl)
 
 	dragging = false;
 
-	connect(btnFirst, SIGNAL(pressed()), this, SLOT(FirstImage()));
-	connect(btnPrevious, SIGNAL(pressed()), this, SLOT(PreviousImage()));
-	connect(btnNext, SIGNAL(pressed()), this, SLOT(NextImage()));
-	connect(btnLast, SIGNAL(pressed()), this, SLOT(LastImage()));
+	connect(btnFirst, SIGNAL(clicked()), this, SLOT(FirstImage()));
+	connect(btnPrevious, SIGNAL(clicked()), this, SLOT(PreviousImage()));
+	connect(btnNext, SIGNAL(clicked()), this, SLOT(NextImage()));
+	connect(btnLast, SIGNAL(clicked()), this, SLOT(LastImage()));
+	connect(btnOpen, SIGNAL(clicked()), this, SLOT(OpenImage()));
+	connect(btnClose, SIGNAL(clicked()), this, SLOT(CloseImage()));
+
 	btnFirst->setEnabled(false);
 	btnPrevious->setEnabled(false);
 	btnNext->setEnabled(false);
 	btnLast->setEnabled(false);
+	btnClose->setEnabled(false);
 
 	// Use our copy of JPEG IO if Qt doesn't have it ;)
 #if (QT_VERSION < 0x030000) || defined(QT_NO_IMAGEIO_JPEG)
@@ -247,6 +252,8 @@ WPicViewer::UpdateName()
 			}
 		}
 	}
+	else
+		txtFile->setText(tr("No File"));
 }
 
 void
@@ -258,8 +265,12 @@ WPicViewer::UpdatePosition(int pos)
 	btnPrevious->setEnabled(pos == 0 ? false : true);
 	btnNext->setEnabled((cFile + 1) != nFiles ? true : false);
 	btnLast->setEnabled((cFile + 1) != nFiles ? true : false);
+	btnClose->setEnabled(nFiles == 0 ? false : true);
 
-	txtItems->setText(tr("%1/%2").arg(cFile + 1).arg(nFiles));
+	if (nFiles > 0)
+		txtItems->setText(tr("%1/%2").arg(cFile + 1).arg(nFiles));
+	else
+		txtItems->setText(tr("No File"));
 	UpdateName();
 }
 
@@ -353,4 +364,36 @@ WPicViewer::resizeEvent(QResizeEvent *e)
 	}
 	//
 	WPicViewerBase::resizeEvent(e);
+}
+
+void
+WPicViewer::CloseImage()
+{
+	if (nFiles != 0)
+	{
+		fImages.RemoveItemAt(cFile);
+		fFiles.RemoveItemAt(cFile);
+		nFiles--;
+		if (nFiles == 0)
+		{
+			pxlPixmap->clear();
+			UpdatePosition(0);
+		}
+		else
+		{
+			LoadImage(muscleClamp(cFile, 0, (nFiles - 1)));
+		}
+	}
+}
+
+void
+WPicViewer::OpenImage()
+{
+	QStringList files = QFileDialog::getOpenFileNames ( "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", "downloads/", this);
+	if (!files.isEmpty())
+	{
+		QStringList::Iterator iter = files.begin();
+		while (iter != files.end())
+			(void) LoadImage(*iter++);
+	}
 }
