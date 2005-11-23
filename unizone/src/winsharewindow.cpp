@@ -2360,6 +2360,7 @@ WinShareWindow::FindSharedFile(QString & file)
 				res = info.fileName();
 				ConvertToRegex(res, true);
 				res.replace(QRegExp(" "), "?");
+				res.replace(QRegExp("@"), "?");		// Try to avoid @ in filenames
 				found = true;
 				break;
 			}

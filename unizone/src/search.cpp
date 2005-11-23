@@ -385,10 +385,15 @@ WSearch::SplitQuery(const QString &fileExp)
 	// Test if all but one @ is escaped (don't change string length)
 	{
 		QString temp(fileExp);
-		temp.replace(QRegExp("\\@"), "??");
+		temp.replace(QRegExp("\\\\@"), "??");
 		if (temp.contains("@") == 1)
 		{
 			return temp.find("@");
+		}
+		else if ((temp.contains("@") == 0) &&
+			(fileExp.contains("\\@") > 0)) // Don't try to split if only escaped @'s
+		{
+			return -1;
 		}
 	}
 	//
@@ -463,7 +468,14 @@ WSearch::GoSearch()
 
 	// parse the string for the '@' if it exists
 	int32 atIndex = SplitQuery(fileExp);
-	if (atIndex >= 0)
+
+	if (atIndex == 0)
+	{
+		atIndex++;
+		fileExp.prepend("*");
+	}
+
+	if (atIndex > 0)
 	{
 		if ((uint32)atIndex < fileExp.length())
 		{
@@ -514,12 +526,7 @@ WSearch::GoSearch()
 			userExp	= ulist;
 		}
 
-		if (atIndex > 0)
-		{
-			fileExp = fileExp.left(atIndex);
-		}
-		else
-			fileExp = QString::null;
+		fileExp = fileExp.left(atIndex);
 	}
 
 	if (!fileExp.isEmpty())
@@ -618,6 +625,7 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 
 	fUserRegExpNeg = sidRegExp[0] == "~";
 	fUserRegExpStr = fUserRegExpNeg ? sidRegExp.mid(1) : sidRegExp;
+	fUserRegExpStr.replace(QRegExp(","), "|");
 	fUserRegExp.setPattern(fUserRegExpStr);
 	fUserRegExp.setCaseSensitive(false);
 	fFileRegExpNeg = fileRegExp[0] == "~";
