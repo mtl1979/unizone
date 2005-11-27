@@ -60,12 +60,12 @@ UpdateClient::SessionConnected(const String & /* sessionID */)
 	if (ref())
 	{
 		String cmd("GET " UPDATE_FILE " HTTP/1.1\nUser-Agent: Unizone/");
-		cmd += UZ_MajorVersion();
-		cmd += ".";
-		cmd += UZ_MinorVersion();
-		cmd += "\nHost: ";
-		cmd += fHostName;
-		cmd += "\n\n";
+		cmd << UZ_MajorVersion();
+		cmd << ".";
+		cmd << UZ_MinorVersion();
+		cmd << "\nHost: ";
+		cmd << fHostName;
+		cmd << "\n\n";
 		ref()->AddString(PR_NAME_TEXT_LINE, cmd);
 		qmtt->SendMessageToSessions(ref);
 	}

@@ -2655,10 +2655,6 @@ WinShareWindow::Disconnect2()
 	{
 		fNetClient->Disconnect();
 	}
-	fUpdateThread->Disconnect();
-	// just in case..
-	fServerThread->Disconnect();
-	
 }
 
 void

@@ -75,12 +75,12 @@ ServerClient::SessionConnected(const String & /* sessionID */)
 	if (msgref())
 	{
 		String cmd("GET /servers.txt HTTP/1.1\nUser-Agent: Unizone/");
-		cmd += UZ_MajorVersion();
-		cmd += ".";
-		cmd += UZ_MinorVersion();
-		cmd += "\nHost: ";
-		cmd += fHostName;
-		cmd += "\n\n";
+		cmd << UZ_MajorVersion();
+		cmd << ".";
+		cmd << UZ_MinorVersion();
+		cmd << "\nHost: ";
+		cmd << fHostName;
+		cmd << "\n\n";
 		msgref()->AddString(PR_NAME_TEXT_LINE, cmd);
 		qmtt->SendMessageToSessions(msgref);
 	}
