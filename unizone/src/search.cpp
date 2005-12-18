@@ -207,6 +207,8 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 	
 	QString sid = user()->GetUserID();
 
+	RemoveFile(user, filename);
+
 #ifdef _DEBUG
 	WString wfile(filename);
 	WString wsid(sid);
