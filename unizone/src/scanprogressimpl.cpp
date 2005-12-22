@@ -1,4 +1,5 @@
 #include <qlabel.h>
+#include <qdir.h>
 
 #include "scanprogressimpl.h"
 #include "scanprogress.h"
@@ -28,7 +29,7 @@ void
 ScanProgress::SetScanDirectory(const QString & dir)
 {
 	
-	fDirectory->setText(dir);
+	fDirectory->setText(QDir::convertSeparators(dir));
 }
 
 void
