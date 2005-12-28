@@ -103,6 +103,17 @@
 #define NUM_TOOLBARS 4
 #endif
 
+enum
+{
+	UID_INVALID = -1,
+#ifndef __APPLE__
+	UID_MENUBAR,
+#endif
+	UID_SERVERBAR,
+	UID_NICKBAR,
+	UID_STATUSBAR
+};
+
 WinShareWindow * gWin = NULL;
 
 WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
@@ -1519,16 +1530,12 @@ WinShareWindow::InitToolbars()
 					QToolBar * tb = NULL;
 					switch (i1)
 					{
-#ifdef __APPLE__
-					case 0: tb = fTBServer;
-					case 1: tb = fTBNick;
-					case 2: tb = fTBStatus;
-#else
-					case 0: tb = fTBMenu;
-					case 1: tb = fTBServer;
-					case 2: tb = fTBNick;
-					case 3: tb = fTBStatus;
+#ifndef __APPLE__
+					case UID_MENUBAR:	tb = fTBMenu;
 #endif
+					case UID_SERVERBAR:	tb = fTBServer;
+					case UID_NICKBAR:	tb = fTBNick;
+					case UID_STATUSBAR:	tb = fTBStatus;
 					}
 					moveToolBar(tb, (QMainWindow::ToolBarDock) _dock[i1], _nl[i1], 3, _extra[i1]);
 				}
@@ -1682,29 +1689,18 @@ WinShareWindow::SaveSettings()
 	int _dock, _index, _extra;
 	bool _nl;
 
-#ifdef __APPLE__
-	getLocation(fTBServer, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
-	fSettings->SetToolBarLayout(0, _dock, _index, _nl, _extra);
-
-	getLocation(fTBNick, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
-	fSettings->SetToolBarLayout(1, _dock, _index, _nl, _extra);
-
-	getLocation(fTBStatus, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
-	fSettings->SetToolBarLayout(2, _dock, _index, _nl, _extra);
-#else
+#ifndef __APPLE__
 	getLocation(fTBMenu, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
-	fSettings->SetToolBarLayout(0, _dock, _index, _nl, _extra);
-
+	fSettings->SetToolBarLayout(UID_MENUBAR, _dock, _index, _nl, _extra);
+#endif
 	getLocation(fTBServer, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
-	fSettings->SetToolBarLayout(1, _dock, _index, _nl, _extra);
+	fSettings->SetToolBarLayout(UID_SERVERBAR, _dock, _index, _nl, _extra);
 
 	getLocation(fTBNick, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
-	fSettings->SetToolBarLayout(2, _dock, _index, _nl, _extra);
+	fSettings->SetToolBarLayout(UID_NICKBAR, _dock, _index, _nl, _extra);
 
 	getLocation(fTBStatus, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
-	fSettings->SetToolBarLayout(3, _dock, _index, _nl, _extra);
-#endif
-
+	fSettings->SetToolBarLayout(UID_STATUSBAR, _dock, _index, _nl, _extra);
 
 	fSettings->SetInstallID(fInstallID);
 
