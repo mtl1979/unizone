@@ -822,11 +822,11 @@ Date: %4</translation>
     <name>QMenuBar</name>
     <message>
         <source>Preference</source>
-        <translation type='unfinished'></translation>
+        <translation>Preférences</translation>
     </message>
     <message>
         <source>About</source>
-        <translation type='unfinished'></translation>
+        <translation>A propos</translation>
     </message>
 </context>
 <context>
@@ -2556,7 +2556,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Aqua</source>
-        <translation type='unfinished'></translation>
+        <translation>Aqua</translation>
     </message>
 </context>
 <context>

@@ -721,11 +721,11 @@ Date: %4</source>
     <name>QMenuBar</name>
     <message>
         <source>Preference</source>
-        <translation type='unfinished'></translation>
+        <translation>설정</translation>
     </message>
     <message>
         <source>About</source>
-        <translation type='unfinished'></translation>
+        <translation>대하여</translation>
     </message>
 </context>
 <context>
@@ -2439,7 +2439,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Aqua</source>
-        <translation type='unfinished'></translation>
+        <translation>Aqua</translation>
     </message>
 </context>
 <context>

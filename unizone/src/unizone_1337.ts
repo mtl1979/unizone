@@ -855,11 +855,11 @@ Date: %4</translation>
     <name>QMenuBar</name>
     <message>
         <source>Preference</source>
-        <translation type='unfinished'></translation>
+        <translation>Gurus Only</translation>
     </message>
     <message>
         <source>About</source>
-        <translation type='unfinished'></translation>
+        <translation>Guru Gallery</translation>
     </message>
 </context>
 <context>
@@ -1803,7 +1803,7 @@ Date: %4</translation>
     <name>WPicViewerBase</name>
     <message>
         <source>Picture Viewer</source>
-        <translation type='unfinished'>Pr0n Viewer</translation>
+        <translation>Pr0n Viewer</translation>
     </message>
     <message>
         <source>No File</source>
@@ -1835,7 +1835,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type='unfinished'>Close</translation>
+        <translation>Close</translation>
     </message>
 </context>
 <context>
@@ -2609,7 +2609,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Aqua</source>
-        <translation type='unfinished'></translation>
+        <translation>Aqua</translation>
     </message>
 </context>
 <context>
