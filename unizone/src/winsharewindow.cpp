@@ -28,8 +28,10 @@
 #if !defined(QT_NO_STYLE_SGI)
 #include <qsgistyle.h>
 #endif
-#if !defined(QT_NO_STYLE_MAC)
-#include <qmacstyle_mac.h>
+#if defined(__APPLE__)
+# if !defined(QT_NO_STYLE_MAC)
+#  include <qmacstyle_mac.h>
+# endif
 #endif
 #include <qcstring.h>
 #include <qtextcodec.h>
@@ -1348,8 +1350,10 @@ WinShareWindow::LoadSettings()
 #endif
 				break;
 			case Mac:
-#if !defined(QT_NO_STYLE_MAC)
+#if defined(__APPLE__)
+# if !defined(QT_NO_STYLE_MAC)
 				qApp->setStyle(new QMacStyle);
+# endif
 #endif
 				break;
 		}

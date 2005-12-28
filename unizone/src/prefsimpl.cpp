@@ -20,8 +20,10 @@
 #if !defined(QT_NO_STYLE_SGI)
 #include <qsgistyle.h>
 #endif
-#if !defined(QT_NO_STYLE_MAC)
-#include <qmacstyle_mac.h>
+#if defined(__APPLE__)
+# if !defined(QT_NO_STYLE_MAC)
+#  include <qmacstyle_mac.h>
+# endif
 #endif
 #include <qcolordialog.h>
 #include <qpushbutton.h>
@@ -497,8 +499,10 @@ WPrefs::StyleSelected(int id)
 			gWin->fSettings->SetStyle(WinShareWindow::Windows);
 			break;
 		case 6:
-#if !defined(QT_NO_STYLE_MAC)
+#if defined(__APPLE__)
+# if !defined(QT_NO_STYLE_MAC)
 			qApp->setStyle(new QMacStyle);
+# endif
 #endif
 			gWin->fSettings->SetStyle(WinShareWindow::Mac);
 			break;
