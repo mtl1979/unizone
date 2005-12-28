@@ -12,6 +12,10 @@
 #  include <stdlib.h>
 #endif
 
+#ifdef __APPLE__
+wchar_t *wcsdup(const wchar_t *);
+#endif
+
 #include <platform.h>
 
 class QString;

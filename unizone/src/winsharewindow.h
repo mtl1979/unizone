@@ -97,7 +97,8 @@ public:
 		Platinum,
 		CDE,
 		MotifPlus,
-		SGI
+		SGI,
+		Mac
 	};
 
 	// Events

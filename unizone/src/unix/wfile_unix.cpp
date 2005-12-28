@@ -20,7 +20,11 @@ WFile::Open(const WString &name, int mode)
 {
 	file = -1;
 	if (name.getBuffer() != NULL)
+#ifdef __APPLE__
+		file = open((const char *) name, mode, (mode & O_CREAT) ? S_IRUSR | S_IWUSR : 0);
+#else
 		file = open64((const char *) name, mode);
+#endif
 	return (file != -1);
 }
 
@@ -60,13 +64,21 @@ WFile::Exists(const WString &name)
 bool
 WFile::Seek(INT64 pos)
 {
+#ifdef __APPLE__
+	return (lseek(file, pos, SEEK_SET) == pos);
+#else
 	return (lseek64(file, pos, SEEK_SET) == pos);
+#endif
 }
 
 bool
 WFile::At(INT64 pos)
 {
+#ifdef __APPLE__
+	return (lseek(file, 0, SEEK_CUR) == pos);
+#else
 	return (lseek64(file, 0, SEEK_CUR) == pos);
+#endif
 }
 
 int
@@ -144,8 +156,14 @@ WFile::Flush()
 INT64
 WFile::Size()
 {
+#ifdef __APPLE__
+	INT64 pos = lseek(file, 0, SEEK_CUR);
+	INT64 length = lseek(file, 0, SEEK_END);
+	(void) lseek(file, pos, SEEK_SET);
+#else
 	INT64 pos = lseek64(file, 0, SEEK_CUR);
 	INT64 length = lseek64(file, 0, SEEK_END);
 	(void) lseek64(file, pos, SEEK_SET);
+#endif
 	return length;
 }

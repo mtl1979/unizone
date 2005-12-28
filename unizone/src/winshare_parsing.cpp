@@ -2,6 +2,9 @@
 #include <windows.h>
 #endif
 
+#include <qapplication.h>
+#include <qregexp.h>
+
 #include "winsharewindow.h"
 #include "global.h"
 #include "util/StringTokenizer.h"
@@ -12,9 +15,6 @@
 #include "util.h"
 #include "wstring.h"
 #include "tokenizer.h" // <postmaster@raasu.org> 20021128
-
-#include <qapplication.h>
-#include <qregexp.h>
 
 int
 WinShareWindow::MatchUserName(const QString & un, QString & result, const QString & filter)

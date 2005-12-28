@@ -2,6 +2,42 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+#include <qstylesheet.h>
+#include <qfile.h>
+#include <qmessagebox.h>
+#include <qimage.h>
+#if !defined(QT_NO_STYLE_MOTIF)
+#include <qmotifstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_WINDOWS)
+#include <qwindowsstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_PLATINUM)
+#include <qplatinumstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_CDE)
+#include <qcdestyle.h>
+#endif
+#if !defined(QT_NO_STYLE_INTERLACE)
+#include <qinterlacestyle.h>
+#endif
+#if !defined(QT_NO_STYLE_MOTIF)
+#include <qmotifplusstyle.h>
+#endif
+#if !defined(QT_NO_STYLE_SGI)
+#include <qsgistyle.h>
+#endif
+#if !defined(QT_NO_STYLE_MAC)
+#include <qmacstyle_mac.h>
+#endif
+#include <qcstring.h>
+#include <qtextcodec.h>
+#include <qdir.h>
+#include <qinputdialog.h>
+#include <qtoolbar.h>
+#include <qregexp.h>
+
 #include "aboutdlgimpl.h"
 #include "downloadimpl.h"
 #include "downloadqueue.h"
@@ -43,39 +79,6 @@
 #include "gotourl.h"
 #include "resolver.h"
 
-#include <qapplication.h>
-#include <qstylesheet.h>
-#include <qfile.h>
-#include <qmessagebox.h>
-#include <qimage.h>
-#if !defined(QT_NO_STYLE_MOTIF)
-#include <qmotifstyle.h>
-#endif
-#if !defined(QT_NO_STYLE_WINDOWS)
-#include <qwindowsstyle.h>
-#endif
-#if !defined(QT_NO_STYLE_PLATINUM)
-#include <qplatinumstyle.h>
-#endif
-#if !defined(QT_NO_STYLE_CDE)
-#include <qcdestyle.h>
-#endif
-#if !defined(QT_NO_STYLE_INTERLACE)
-#include <qinterlacestyle.h>
-#endif
-#if !defined(QT_NO_STYLE_MOTIF)
-#include <qmotifplusstyle.h>
-#endif
-#if !defined(QT_NO_STYLE_SGI)
-#include <qsgistyle.h>
-#endif
-#include <qcstring.h>
-#include <qtextcodec.h>
-#include <qdir.h>
-#include <qinputdialog.h>
-#include <qtoolbar.h>
-#include <qregexp.h>
-
 #ifdef WIN32
 #include <objbase.h>
 #endif
@@ -84,7 +87,7 @@
 
 #if defined(__LINUX__) || defined(linux) 
 #include <sys/sysinfo.h>
-#elif defined(__FreeBSD__) || defined(__QNX__)
+#elif defined(__FreeBSD__) || defined(__QNX__) || defined(__APPLE__)
 #include <sys/time.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>
@@ -1344,6 +1347,11 @@ WinShareWindow::LoadSettings()
 				qApp->setStyle(new QSGIStyle);
 #endif
 				break;
+			case Mac:
+#if !defined(QT_NO_STYLE_MAC)
+				qApp->setStyle(new QMacStyle);
+#endif
+				break;
 		}
 #endif
 
@@ -2008,7 +2016,7 @@ WinShareWindow::GetUptime()
 	uint64 uptime = sinfo.uptime;
 	uptime *= 1000000L;
 	return uptime;
-#elif defined(__FreeBSD__) || defined(__QNX__)
+#elif defined(__FreeBSD__) || defined(__QNX__) || defined(__APPLE__)
 	uint64 uptime = 0;
 	struct timeval boottime;
 	time_t now;

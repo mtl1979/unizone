@@ -5,6 +5,10 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+#include <qfiledialog.h>
+#include <qregexp.h>
+
 #include "winsharewindow.h"
 #include "global.h"
 #include "version.h"
@@ -43,9 +47,6 @@
 #include "system/SystemInfo.h"
 
 #include <time.h>				//                                 -- for /time
-#include <qapplication.h>
-#include <qfiledialog.h>
-#include <qregexp.h>
 
 void
 WinShareWindow::SendChatText(WTextEvent * e, bool * reply)

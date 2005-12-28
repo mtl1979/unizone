@@ -5,6 +5,12 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+#include <qobject.h>
+#include <qstring.h>
+#include <qfile.h>
+#include <qdatetime.h>
+
 #include "wfile.h"
 
 #include "iogateway/MessageIOGateway.h"
@@ -14,11 +20,6 @@
 #include "qtsupport/QMessageTransceiverThread.h"
 
 using namespace muscle;
-
-#include <qobject.h>
-#include <qstring.h>
-#include <qfile.h>
-#include <qdatetime.h>
 
 class WFileThread;
 

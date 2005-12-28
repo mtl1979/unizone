@@ -2,6 +2,13 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+#include <qregexp.h>
+#include <qdns.h>
+#include <qfile.h>
+#include <qdir.h>
+#include <qstringlist.h>
+
 #include "util.h"
 #include "tokenizer.h"
 #include "formatting.h"
@@ -14,13 +21,6 @@
 #include "util/Queue.h"
 #include "util/StringTokenizer.h"
 using namespace muscle;
-
-#include <qregexp.h>
-#include <qapplication.h>
-#include <qdns.h>
-#include <qfile.h>
-#include <qdir.h>
-#include <qstringlist.h>
 
 QString
 ParseChatText(const QString & str)

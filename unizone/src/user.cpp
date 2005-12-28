@@ -2,6 +2,10 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+#include <qlistview.h>
+#include <qstring.h>
+
 #include "user.h"
 #include "netclient.h"
 #include "debugimpl.h"
@@ -12,11 +16,6 @@
 #include "util.h"
 #include "wstring.h"
 #include "winsharewindow.h"
-
-#include <qapplication.h>
-#include <qlistview.h>
-#include <qstring.h>
-
 
 WUser::WUser(const QString & sid)
 {

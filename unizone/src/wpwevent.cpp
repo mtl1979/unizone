@@ -1,3 +1,5 @@
+#include <qapplication.h>
+
 #include "wpwevent.h"
 #include "user.h"
 #include "util.h"

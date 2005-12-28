@@ -2,6 +2,8 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qdir.h>
+
 #include "uploadthread.h"
 #include "wuploadevent.h"
 #include "wsystemevent.h"
@@ -16,9 +18,6 @@
 #include "debugimpl.h"
 #include "util.h"
 #include "resolver.h"
-
-#include <qapplication.h>
-#include <qdir.h>
 
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag) 
