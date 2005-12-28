@@ -851,6 +851,14 @@ Päiväys: %4</translation>
         <source>Search...</source>
         <translation>Etsi...</translation>
     </message>
+    <message>
+        <source>Preference</source>
+        <translation type='obsolete'>Asetukse</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation type='obsolete'>Tietoja</translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -901,6 +909,17 @@ Päiväys: %4</translation>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
         <translation type='obsolete'>Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
+    </message>
+</context>
+<context>
+    <name>QMenuBar</name>
+    <message>
+        <source>Preference</source>
+        <translation>Asetukse</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>Tietoja</translation>
     </message>
 </context>
 <context>
@@ -2786,6 +2805,10 @@ Päiväys: %4</translation>
     <message>
         <source>32 MB/s</source>
         <translation>32 Mt/s</translation>
+    </message>
+    <message>
+        <source>Aqua</source>
+        <translation>Aqua</translation>
     </message>
 </context>
 <context>

@@ -293,7 +293,9 @@ private:
 
 	// Toolbars
 
+#ifndef __APPLE__
 	QToolBar * fTBMenu;
+#endif
 	QToolBar * fTBNick;
 	QToolBar * fTBServer;
 	QToolBar * fTBStatus;

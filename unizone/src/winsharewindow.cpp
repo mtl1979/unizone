@@ -97,7 +97,11 @@
 #include <utmpx.h>
 #endif
 
+#ifdef __APPLE__
+#define NUM_TOOLBARS 3
+#else
 #define NUM_TOOLBARS 4
+#endif
 
 WinShareWindow * gWin = NULL;
 
@@ -841,17 +845,22 @@ WinShareWindow::InitGUI()
 	splitList.append(1);
 	//
 
+#ifndef __APPLE__
 	fTBMenu = new QToolBar( this );
 	CHECK_PTR(fTBMenu);
 	addToolBar( fTBMenu, tr( "Menubar" ), Top, FALSE );
 
 	fMenus = new MenuBar(this, fTBMenu);
+#else
+	fMenus = new MenuBar(this, this);
+#endif
 	CHECK_PTR(fMenus);
 
+#ifndef __APPLE__
 	fTBMenu->setStretchableWidget( fMenus );
 	setDockEnabled( fTBMenu, Left, FALSE );
 	setDockEnabled( fTBMenu, Right, FALSE );
-
+#endif
 
 	/*
 	 * Setup combo/labels
@@ -1510,10 +1519,16 @@ WinShareWindow::InitToolbars()
 					QToolBar * tb = NULL;
 					switch (i1)
 					{
+#ifdef __APPLE__
+					case 0: tb = fTBServer;
+					case 1: tb = fTBNick;
+					case 2: tb = fTBStatus;
+#else
 					case 0: tb = fTBMenu;
 					case 1: tb = fTBServer;
 					case 2: tb = fTBNick;
 					case 3: tb = fTBStatus;
+#endif
 					}
 					moveToolBar(tb, (QMainWindow::ToolBarDock) _dock[i1], _nl[i1], 3, _extra[i1]);
 				}
@@ -1667,6 +1682,16 @@ WinShareWindow::SaveSettings()
 	int _dock, _index, _extra;
 	bool _nl;
 
+#ifdef __APPLE__
+	getLocation(fTBServer, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
+	fSettings->SetToolBarLayout(0, _dock, _index, _nl, _extra);
+
+	getLocation(fTBNick, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
+	fSettings->SetToolBarLayout(1, _dock, _index, _nl, _extra);
+
+	getLocation(fTBStatus, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
+	fSettings->SetToolBarLayout(2, _dock, _index, _nl, _extra);
+#else
 	getLocation(fTBMenu, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
 	fSettings->SetToolBarLayout(0, _dock, _index, _nl, _extra);
 
@@ -1678,6 +1703,8 @@ WinShareWindow::SaveSettings()
 
 	getLocation(fTBStatus, (QMainWindow::ToolBarDock &) _dock, _index, _nl, _extra);
 	fSettings->SetToolBarLayout(3, _dock, _index, _nl, _extra);
+#endif
+
 
 	fSettings->SetInstallID(fInstallID);
 

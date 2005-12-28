@@ -185,6 +185,7 @@ all : package translations
 
 dirs :
 	@echo Creating directories ...
+	@rm -rf Unizone.app
 	@mkdir -p Unizone.app/Contents/MacOS
 
 package : dirs

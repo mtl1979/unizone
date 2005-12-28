@@ -814,6 +814,17 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>QMenuBar</name>
+    <message>
+        <source>Preference</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
@@ -2525,6 +2536,10 @@ Date: %4</translation>
     <message>
         <source>32 MB/s</source>
         <translation>32 MB/s</translation>
+    </message>
+    <message>
+        <source>Aqua</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

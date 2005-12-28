@@ -718,6 +718,17 @@ Date: %4</source>
     </message>
 </context>
 <context>
+    <name>QMenuBar</name>
+    <message>
+        <source>Preference</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Unizone (English)</source>
@@ -2425,6 +2436,10 @@ Date: %4</source>
     <message>
         <source>32 MB/s</source>
         <translation>32 MB/s</translation>
+    </message>
+    <message>
+        <source>Aqua</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

@@ -4,6 +4,12 @@
 #include <qapplication.h>
 #include <qaccel.h>
 
+const char *appleItems[] = {
+	QT_TRANSLATE_NOOP("QMenuBar", "Preference"),
+        QT_TRANSLATE_NOOP("QMenuBar", "About"),
+        NULL
+};
+
 MenuBar::MenuBar(QWidget * handler, QWidget * parent) : QMenuBar(parent)
 {
 	// create search... menu
