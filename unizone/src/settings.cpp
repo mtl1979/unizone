@@ -1,12 +1,12 @@
+#include <qapplication.h>
+#include <qfile.h>
+#include <qmessagebox.h>
+
 #include "settings.h"
 #include "colors.h"
 #include "global.h"
 #include "wfile.h"
 #include "iogateway/MessageIOGateway.h"
-
-#include <qapplication.h>
-#include <qfile.h>
-#include <qmessagebox.h>
 
 const char * SettingsFile; // name of settings file, default depends on host os
 
@@ -17,6 +17,8 @@ GetSettingsFile()
 	{
 #ifdef WIN32
 		SettingsFile = "settings.ini";
+#elif defined(__APPLE__)
+		SettingsFile = "../../../.unizone_settings";
 #else
 		SettingsFile = ".unizone_settings";
 #endif

@@ -5,6 +5,15 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+#include <qfile.h>
+#include <qdialog.h>
+#include <qlistview.h>
+#include <qsplitter.h>
+#include <qpushbutton.h>
+#include <qvbox.h>
+#include <qpopupmenu.h>
+
 #include <system/MessageTransceiverThread.h>
 #include <util/Queue.h>
 using namespace muscle;
@@ -13,14 +22,6 @@ using namespace muscle;
 using std::map;
 using std::pair;
 using std::iterator;
-
-#include <qfile.h>
-#include <qdialog.h>
-#include <qlistview.h>
-#include <qsplitter.h>
-#include <qpushbutton.h>
-#include <qvbox.h>
-#include <qpopupmenu.h>
 
 #include "transferlist.h"
 #include "debugimpl.h"

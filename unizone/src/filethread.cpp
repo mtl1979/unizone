@@ -2,6 +2,11 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qdir.h>
+#include <qstringlist.h>
+#include <string.h>
+#include <qevent.h>
+
 #include "filethread.h"
 #include "fileinfo.h"
 #include "settings.h"
@@ -14,12 +19,6 @@
 #include "scanevent.h"
 #include "netclient.h"
 #include "util.h"		// for startsWith()/endsWith()
-
-#include <qdir.h>
-#include <qstringlist.h>
-#include <string.h>
-#include <qevent.h>
-#include <qapplication.h>
 
 WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 	: QObject(owner), Thread(), fLocker()

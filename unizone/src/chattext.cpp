@@ -2,6 +2,8 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qdragobject.h>
+
 #include "chattext.h"
 #include "textevent.h"
 #include "debugimpl.h"
@@ -9,8 +11,6 @@
 #include "util.h"
 #include "winsharewindow.h"
 
-#include <qapplication.h>
-#include <qdragobject.h>
 
 #define DEFAULT_SIZE 10
 #define MAX_SIZE 100

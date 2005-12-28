@@ -5,6 +5,7 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
 #include <qstring.h>
 #include <qobject.h>
 

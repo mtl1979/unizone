@@ -7,8 +7,6 @@
 #include "util.h"			// For FixString
 #include "netclient.h"		// For FindUsersByIP
 
-#include <qapplication.h>
-
 ResolverThread::ResolverThread(bool * shutdownflag)
 : QObject(), QThread()
 {

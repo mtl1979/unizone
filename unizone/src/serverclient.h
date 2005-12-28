@@ -1,6 +1,7 @@
 #ifndef SERVERCLIENT
 #define SERVERCLIENT
 
+#include <qapplication.h>
 #include <qobject.h>
 
 #include "util/String.h"

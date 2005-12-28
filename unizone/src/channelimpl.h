@@ -5,6 +5,7 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
 #include <qsplitter.h>
 #include <qhgroupbox.h>
 #include <qlabel.h>

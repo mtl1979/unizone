@@ -98,8 +98,12 @@ void WFlashWindow(HWND fWinHandle);
 #define lrintf(x) ((int) x)
 #endif
 
-#if !defined(ssize_t)
+#if defined(__APPLE__)
+# include <string.h>
+#else
+# if !defined(ssize_t)
 typedef int ssize_t;
+# endif
 #endif
 
 #endif // PLATFORM_H

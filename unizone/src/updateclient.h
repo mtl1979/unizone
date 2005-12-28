@@ -1,6 +1,7 @@
 #ifndef UPDATECLIENT
 #define UPDATECLIENT
 
+#include <qapplication.h>
 #include <qobject.h>
 
 #include "qtsupport/QMessageTransceiverThread.h"

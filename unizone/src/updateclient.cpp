@@ -9,8 +9,6 @@
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 
-#include <qapplication.h>
-
 UpdateClient::UpdateClient(QObject *owner)
 : QObject(owner)
 {

@@ -1,6 +1,8 @@
 #ifndef DOWNLOADQUEUE_H
 #define DOWNLOADQUEUE_H
 
+#include <qapplication.h>
+
 #include "user.h"
 #include "message/Message.h"
 #include "system/Mutex.h"

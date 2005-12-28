@@ -1,13 +1,12 @@
+#include <qtooltip.h>
+#include <qregexp.h>
+
 #include "htmlview.h"
 #include "tokenizer.h"
 #include "wstring.h"
 #include "debugimpl.h"
 #include "parser.h"
 #include "wmessageevent.h"
-
-#include <qapplication.h>
-#include <qtooltip.h>
-#include <qregexp.h>
 
 WHTMLView::WHTMLView(QWidget * parent, const char * name)
 : QTextBrowser(parent, name)

@@ -5,7 +5,7 @@
 #pragma warning(disable: 4786)
 #endif
 
-
+#include <qapplication.h>
 #include <qdialog.h>
 #include <qstring.h>
 #include <qlabel.h>

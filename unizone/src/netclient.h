@@ -1,9 +1,9 @@
 #ifndef NETCLIENT_H
 #define NETCLIENT_H
 
+#include <qapplication.h>
 
 #include "qtsupport/QMessageTransceiverThread.h"
-
 #include "support/MuscleSupport.h"
 #include "util/Queue.h"
 

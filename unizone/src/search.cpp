@@ -1,5 +1,4 @@
 #include <qpushbutton.h>
-#include <qapplication.h>
 
 #include "search.h"
 #include "netclient.h"

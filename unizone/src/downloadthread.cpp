@@ -2,6 +2,8 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qdir.h>
+
 #include "downloadthread.h"
 #include "downloadworker.h"
 #include "downloadimpl.h"
@@ -20,9 +22,6 @@
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "qtsupport/QMessageTransceiverThread.h"
-
-#include <qapplication.h>
-#include <qdir.h>
 
 using namespace muscle;
 

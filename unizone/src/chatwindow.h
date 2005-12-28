@@ -1,12 +1,12 @@
 #ifndef CHATWINDOW_H
 #define CHATWINDOW_H
 
+#include <qstring.h>
+#include <qwidget.h>
+
 #include "util/String.h"
 
 #include "htmlview.h"
-
-#include <qstring.h>
-#include <qwidget.h>
 
 #ifdef WIN32
 #pragma warning(disable: 4786)

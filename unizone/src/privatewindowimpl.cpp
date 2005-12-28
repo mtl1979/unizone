@@ -3,6 +3,9 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+#include <qmessagebox.h>
+
 #include "privatewindowimpl.h"
 #include "gotourl.h"
 #include "formatting.h"
@@ -17,9 +20,6 @@
 #include "wpwevent.h"
 #include "nicklist.h"
 #include "netclient.h"
-
-#include <qapplication.h>
-#include <qmessagebox.h>
 
 /* 
  *  Constructs a privatewindow which is a child of 'parent', with the 

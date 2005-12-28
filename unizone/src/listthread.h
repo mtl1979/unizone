@@ -1,6 +1,7 @@
 #ifndef LISTTHREAD_H
 #define LISTTHREAD_H
 
+#include <qapplication.h>
 #include <qobject.h>
 
 #include "system/Thread.h"

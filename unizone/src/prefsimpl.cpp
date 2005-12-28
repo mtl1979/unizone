@@ -1,10 +1,4 @@
-#include "prefsimpl.h"
-#include "prefs.h"
-#include "global.h"
-#include "settings.h"
-#include "colors.h"
-#include "debugimpl.h"
-
+#include <qapplication.h>
 #if !defined(QT_NO_STYLE_MOTIF)
 #include <qmotifstyle.h>
 #endif
@@ -26,7 +20,9 @@
 #if !defined(QT_NO_STYLE_SGI)
 #include <qsgistyle.h>
 #endif
-#include <qapplication.h>
+#if !defined(QT_NO_STYLE_MAC)
+#include <qmacstyle_mac.h>
+#endif
 #include <qcolordialog.h>
 #include <qpushbutton.h>
 #include <qlistbox.h>
@@ -38,6 +34,14 @@
 #include <qstringlist.h>
 #include <qtabwidget.h>
 #include <qlineedit.h>
+
+#include "prefsimpl.h"
+#include "prefs.h"
+#include "global.h"
+#include "settings.h"
+#include "colors.h"
+#include "debugimpl.h"
+
 
 const char * kColorDesc[13] = {	
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name." ), 
@@ -154,6 +158,10 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 
 		case WinShareWindow::WindowsStyle:
 			fStyleList->setCurrentItem(5);
+			break;
+
+		case WinShareWindow::Mac:
+			fStyleList->setCurrentItem(6);
 			break;
 	}
 
@@ -447,6 +455,7 @@ WPrefs::StyleSelected(int id)
 	 * 3 - Platinum
 	 * 4 - SGI
 	 * 5 - Windows
+	 * 6 - Aqua
 	 */
 #ifndef DISABLE_STYLES
 	switch (id)
@@ -486,6 +495,12 @@ WPrefs::StyleSelected(int id)
 			qApp->setStyle(new QWindowsStyle);
 #endif
 			gWin->fSettings->SetStyle(WinShareWindow::Windows);
+			break;
+		case 6:
+#if !defined(QT_NO_STYLE_MAC)
+			qApp->setStyle(new QMacStyle);
+#endif
+			gWin->fSettings->SetStyle(WinShareWindow::Mac);
 			break;
 		default:
 			break;		// unknown style

@@ -11,8 +11,6 @@
 #include "wcrypt.h"
 #include "resolver.h"
 
-#include <qapplication.h>
-
 #include "regex/PathMatcher.h"
 #include "util/TimeUtilityFunctions.h"
 #include "reflector/RateLimitSessionIOPolicy.h"

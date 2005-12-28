@@ -1687,6 +1687,12 @@
                                 <string>Windows</string>
                             </property>
                         </item>
+                        <item>
+                            <property>
+                                <name>text</name>
+                                <string>Aqua</string>
+                            </property>
+                        </item>
                         <property stdset="1">
                             <name>name</name>
                             <cstring>fStyleList</cstring>

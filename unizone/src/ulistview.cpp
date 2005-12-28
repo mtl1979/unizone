@@ -5,15 +5,15 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+#include <qdragobject.h>
+
 #include "ulistview.h"
 #include "settings.h"
 #include "debugimpl.h"
 #include "util.h"
 #include "wstring.h"
 #include "global.h"
-
-#include <qapplication.h>
-#include <qdragobject.h>
 
 WUniListItem::WUniListItem(
 						   QListView * parent, 

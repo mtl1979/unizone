@@ -1,6 +1,7 @@
 #ifndef CHATTEXT_H
 #define CHATTEXT_H
 
+#include <qapplication.h>
 #include <qmultilineedit.h>
 
 #include "util/Queue.h"

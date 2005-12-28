@@ -1,5 +1,3 @@
-#include <qapplication.h>
-
 #include "channelimpl.h"
 #include "global.h"
 #include "wpwevent.h"

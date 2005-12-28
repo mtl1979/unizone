@@ -1,13 +1,14 @@
 #ifndef RESOLVERTHREAD_H
 #define RESOLVERTHREAD_H
 
-#include "user.h"
-
-#include "util/Queue.h"
-
+#include <qapplication.h>
 #include <qstring.h>
 #include <qobject.h>
 #include <qthread.h>
+
+#include "user.h"
+
+#include "util/Queue.h"
 
 using namespace muscle;
 

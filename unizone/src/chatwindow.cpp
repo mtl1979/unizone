@@ -2,6 +2,9 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+#include <qdragobject.h>
+
 #include "chatwindow.h"
 #include "nicklist.h"
 #include "platform.h"
@@ -12,8 +15,6 @@
 #include "colors.h"
 #include "wstring.h"
 #include "formatting.h"
-
-#include <qapplication.h>
 
 ChatWindow::ChatWindow(ChatType type)
 {

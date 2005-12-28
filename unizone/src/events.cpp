@@ -1,12 +1,11 @@
-#include "events.h"
+#include <qapplication.h>
 
+#include "events.h"
 #include "debugimpl.h"
 #include "wsystemevent.h"
 #include "werrorevent.h"
 #include "wmessageevent.h"
 #include "wwarningevent.h"
-
-#include <qapplication.h>
 
 void
 SystemEvent(QObject *target, const QString &text)

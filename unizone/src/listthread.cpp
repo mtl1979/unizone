@@ -1,8 +1,6 @@
-#include <qapplication.h>
-
+#include "listthread.h"
 #include "events.h"
 #include "filethread.h"
-#include "listthread.h"
 #include "netclient.h"
 #include "settings.h"
 #include "util.h"

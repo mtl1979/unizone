@@ -2,12 +2,13 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
+
 #include "formatting.h"
 #include "platform.h"       // <postmaster@raasu.org> 20021114
 #include "settings.h"		//
 #include "global.h"			// <postmaster@raasu.org> 20021217
 #include "util.h"			// for startsWith()
-#include <qapplication.h>
 
 int 
 GetFontSize()

@@ -1,15 +1,17 @@
 #ifndef DOWNLOADTHREAD_H
 #define DOWNLOADTHREAD_H
 
+#include <qapplication.h>
+#include <qfile.h>
+#include <qstring.h>
+#include <qdatetime.h>
+#include <qtimer.h>
+
 #include "downloadthread.h"
 #include "qtsupport/QMessageTransceiverThread.h"
 #include "user.h"
 #include "wfile.h"
 
-#include <qfile.h>
-#include <qstring.h>
-#include <qdatetime.h>
-#include <qtimer.h>
 #include <time.h>
 
 #include "message/Message.h"
