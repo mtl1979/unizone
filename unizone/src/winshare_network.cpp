@@ -112,7 +112,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			}
 			else
 			{
-				if (name.find(QString("binky"), 0, false) >= 0)
+				if (BinkyCheck(name))
 				{
 					if (fSettings->GetError())
 						PrintError(tr("Invalid nickname!"));
@@ -2573,7 +2573,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 void
 WinShareWindow::Connect()
 {
-	if (fUserName.find(QString("binky"), 0, false) >= 0)
+	if (BinkyCheck(fUserName))
 	{
 		SendErrorEvent(tr("You must change your nickname before connecting!"));
 		SendErrorEvent(tr("We prefer that none of the nicknames contain word 'binky'."));

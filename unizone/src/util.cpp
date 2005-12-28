@@ -1682,3 +1682,12 @@ endsWith(const QString &str1, const QString &str2, bool cs)
 		return str1.endsWith(str2, false);
 #endif
 }
+
+bool BinkyCheck(const QString &user)
+{
+	if (user.find(QString("binky"), 0, false) >= 0)
+		return true;
+	if (user.find(QString("yknib"), 0, false) >= 0)
+		return true;
+	return false;
+}
