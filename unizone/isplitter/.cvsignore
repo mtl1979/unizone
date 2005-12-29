@@ -2,4 +2,5 @@ isplitter.opt
 isplitter.ncb
 isplitter
 .depends
-
+ImageSplitter.app
+isplitter.lng

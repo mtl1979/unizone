@@ -180,15 +180,16 @@ ImageSplitter::scalePixmap(const QPixmap * image, int &width, int &height)
 	int oldw = image->width();
 	int oldh = image->height();
 	double ratio = (double) oldw / (double) oldh;
-	int neww = pxlCollage->height() * ratio;
+	double neww = pxlCollage->height() * ratio;
 	if (neww > pxlCollage->width())
 	{
 		width = pxlCollage->width();
-		height = pxlCollage->width() / ratio;
+		double dh = pxlCollage->width() / ratio;
+		height = lrint(dh);
 	}
 	else
 	{
-		width = neww;
+		width = lrint(neww);
 		height = pxlCollage->height();
 	}
 }

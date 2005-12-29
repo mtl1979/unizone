@@ -144,15 +144,16 @@ void
 Preview::scalePixmap(double oldw, double oldh, int &width, int &height)
 {
 	double ratio = oldw / oldh;
-	int neww = PreviewWidget->height() * ratio;
+	double neww = PreviewWidget->height() * ratio;
 	if (neww > PreviewWidget->width())
 	{
 		width = PreviewWidget->width();
-		height = PreviewWidget->width() / ratio;
+		double dh = PreviewWidget->width() / ratio;
+		height = lrint(dh);
 	}
 	else
 	{
-		width = neww;
+		width = lrint(neww);
 		height = PreviewWidget->height();
 	}
 }
@@ -300,7 +301,7 @@ Preview::PreviewImage()
 		nw = imgPreview.width();
 		nh = imgPreview.height();
 	}
-	pixPreview = new QPixmap(QSize(nw, nh));
+	pixPreview = new QPixmap(QSize(lrint(nw), lrint(nh)));
 	if (pixPreview)
 	{
 		//
@@ -312,7 +313,7 @@ Preview::PreviewImage()
 		scalePixmap(nw, nh, w, h);
 		if (imageScale != 100.0f)
 		{
-			QImage simg = imgPreview.smoothScale(nw, nh);
+			QImage simg = imgPreview.smoothScale(lrint(nw), lrint(nh));
 			pixPreview->convertFromImage(simg);
 		}
 		else
