@@ -1,7 +1,8 @@
-#include "genericthread.h"
-#include "wgenericevent.h"
 #include <qapplication.h>
 #include <qthread.h>
+
+#include "genericthread.h"
+#include "wgenericevent.h"
 
 WGenericThread::WGenericThread(QObject * owner, bool * optShutdownFlag)
 	: MessageTransceiverThread(), fOwner(owner), fShutdownFlag(optShutdownFlag)

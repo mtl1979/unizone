@@ -5,6 +5,7 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <qapplication.h>
 #include <qevent.h>
 #include <qthread.h>
 #include <qdatetime.h>
