@@ -13,7 +13,8 @@ SRCFILES = \
 	src/main.cpp \
 	src/mainwindowimpl.cpp \
 	src/menubar.cpp \
-	src/previewimpl.cpp
+	src/previewimpl.cpp \
+	../src/uenv.cpp
 
 MOC_SRCFILES = \
 	src/moc_mainwindow.cpp \
@@ -22,7 +23,7 @@ MOC_SRCFILES = \
 	src/moc_previewimpl.cpp
 
 LIBS = -L$(QTDIR)/lib -lqt-mt
-INCLUDES = -I$(QTDIR)/include -Isrc -I.
+INCLUDES = -I$(QTDIR)/include -I../src -Isrc -I.
 CXXFLAGS = $(INCLUDES)
 VPATH = src
 
