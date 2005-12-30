@@ -210,9 +210,11 @@ WChatText::dropEvent(QDropEvent* event)
 	QString files;
 	QString uid = gWin->GetUserID();
 
+	printf("in dropEvent()\n");
 	if (!uid.isEmpty())
 	{	
-		if ( QUriDrag::decodeLocalFiles(event, list) ) {
+		if ( QUriDrag::decodeLocalFiles(event, list) ) 
+		{
 			QStringList::Iterator iter = list.begin();
 			while (iter != list.end())
 			{
