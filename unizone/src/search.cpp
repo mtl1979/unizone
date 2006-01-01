@@ -15,14 +15,17 @@
 const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
 
 // quick inline method to generate a pair
+
 inline
-WFIPair 
-MakePair(const QString & s, WFileInfo * fi)
+String 
+MakeKey(const QString & a, const QString &b)
 {
-	WFIPair p;
-	p.first = s;
-	p.second = fi;
-	return p;
+	String out;
+	QString temp(a);
+	temp += "@";
+	temp += b;
+	out = (const char *) temp.utf8();
+	return out;
 }
 
 WSearch::WSearch(QWidget * parent, NetClient * fNet)
@@ -272,10 +275,7 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 				PRINT("Setting key to %lli\n", size);
 #endif
 				
-				// The map is based on _filenames_, not session ID's.
-				// And as filename's can be duplicate, we use a multimap
-				WFIPair pair = MakePair(filename, info);
-				fFileList.insert(fFileList.end(), pair);
+				fFileList.Put(MakeKey(filename, sid), info);
 			}
 		}		
 	}
@@ -289,7 +289,6 @@ WSearch::RemoveFile(const WUserRef &user, const QString &filename)
 	fSearchLock.Lock();
 	PRINT("WSearch::RemoveFile\n");
 	// go through our multi map and find the item that matches the sid and filename
-	WFIIter iter = fFileList.begin();
 	WFileInfo * info;
 
 	QString sid = user()->GetUserID();
@@ -300,21 +299,15 @@ WSearch::RemoveFile(const WUserRef &user, const QString &filename)
 	PRINT("Sid = %S, filename = %S\n", wsid.getBuffer(), wfile.getBuffer());
 #endif
 
-	while (iter != fFileList.end())
+	String key = MakeKey(filename, sid);
+	if (fFileList.GetValue(key, info) == B_OK)
 	{
-		info = (*iter).second;
-		if (info->fiFilename == filename && info->fiUser()->GetUserID() == sid)	// we found it
-		{
-			fQueryBytes -= info->fiSize;
-			delete info->fiListItem;	// remove it from the list view
-			delete info;
-			info = NULL; // <postmaster@raasu.org> 20021027
+		fQueryBytes -= info->fiSize;
+		delete info->fiListItem;	// remove it from the list view
+		delete info;
+		info = NULL; // <postmaster@raasu.org> 20021027
 
-			fFileList.erase(iter);
-			break;	// break from the loop
-		}
-		// not found, continue looking
-		iter++;
+		fFileList.Remove(key);
 	}
 	fSearchLock.Unlock();
 	SetResultsMessage();
@@ -363,15 +356,15 @@ WSearch::ClearList()
 {
 	fSearchLock.Lock();
 	// go through and empty the list
-	WFIIter it = fFileList.begin();
-	while (it != fFileList.end())
+	WFileInfo * info;
+	String key;
+	HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator();
+	while ((iter.GetNextKey(key) == B_OK) && (iter.GetNextValue(info) == B_OK))
 	{
-		WFileInfo * info = (*it).second;
 		// don't delete the list items here
 		delete info;
 		info = NULL; // <postmaster@raasu.org> 20021027
-		fFileList.erase(it);
-		it = fFileList.begin();
+		fFileList.Remove(key);
 	}
 	// delete them NOW
 	fSearchList->clear();
@@ -658,17 +651,17 @@ void
 WSearch::Download()
 {
 	fSearchLock.Lock();
-	if (!fFileList.empty())
+	if (!fFileList.IsEmpty())
 	{
 		fDownload->setEnabled(false);
 		DownloadQueue fQueue;
 
-		WFIIter it = fFileList.begin();
-		
-		while (it != fFileList.end())
-		{
-			WFileInfo * fi = (*it).second;
+		WFileInfo * fi;
 
+		HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator();
+		
+		while (iter.GetNextValue(fi) == B_OK)
+		{
 #ifdef _DEBUG
 			WString w0(fi->fiListItem->text(0));
 			WString w5(fi->fiListItem->text(5));
@@ -681,7 +674,6 @@ WSearch::Download()
 				
 				fQueue.addItem(fi->fiFilename, fi->fiUser);
 			}					
-			it++;
 		}
 
 		fQueue.run();
@@ -694,17 +686,16 @@ void
 WSearch::DownloadAll()
 {
 	fSearchLock.Lock();
-	if (!fFileList.empty())
+	if (!fFileList.IsEmpty())
 	{
 		fDownload->setEnabled(false);
 		DownloadQueue fQueue;
 
-		WFIIter it = fFileList.begin();
+		WFileInfo * fi;
+		HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator();
 		
-		while (it != fFileList.end())
+		while (iter.GetNextValue(fi) == B_OK)
 		{
-			WFileInfo * fi = (*it).second;
-
 #ifdef _DEBUG
 			WString w0(fi->fiListItem->text(0));
 			WString w5(fi->fiListItem->text(5));
@@ -713,7 +704,6 @@ WSearch::DownloadAll()
 
 			fQueue.addItem(fi->fiFilename, fi->fiUser);
 
-			it++;
 		}
 
 		fQueue.run();
@@ -725,7 +715,7 @@ WSearch::DownloadAll()
 void
 WSearch::SetResultsMessage()
 {
-	QString qmsg = tr("Results: %1").arg(fFileList.size());
+	QString qmsg = tr("Results: %1").arg(fFileList.GetNumItems());
 	qmsg += " (";
 	qmsg += MakeSizeString(fQueryBytes);
 	qmsg += ")";

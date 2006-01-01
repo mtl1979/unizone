@@ -11,7 +11,6 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qregexp.h>
-#include <map>
 
 #include "user.h"
 #include "combo.h"
@@ -21,6 +20,7 @@
 #include "textevent.h"
 #include "message/Message.h"
 #include "support/MuscleSupport.h"
+#include "util/Hashtable.h"
 
 using namespace muscle;
 using std::map;
@@ -38,10 +38,6 @@ struct WFileInfo
 	bool fiFirewalled;
 	WSearchListItem * fiListItem;	// the list view item this file is tied to
 };
-
-typedef multimap<QString, WFileInfo *> WFIMap;
-typedef pair<QString, WFileInfo *> WFIPair;
-typedef WFIMap::iterator WFIIter;
 
 class WSearch : public QDialog
 {
@@ -101,7 +97,7 @@ private:
 	bool fFileRegExpNeg, fUserRegExpNeg;
 	QString fFileRegExpStr, fUserRegExpStr;
 
-	WFIMap fFileList;
+	Hashtable<String, WFileInfo *> fFileList;
 
 	NetClient * fNetClient;
 
