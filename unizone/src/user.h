@@ -5,11 +5,6 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <map>
-using std::map;
-using std::pair;
-using std::iterator;
-
 #include "message/Message.h"
 #include "util/RefCount.h"
 #include "util/Queue.h"
@@ -114,24 +109,16 @@ private:
 
 	//
 
-	typedef map<QListView *, QListViewItem *> WListMap;	// holds a list of QListView/QListViewItem pairs
-	typedef WListMap::iterator WListIter;
-	typedef pair<QListView *, QListViewItem *> WListPair;
-	typedef pair<QString, QString> QStringPair;
-
-	Queue<QStringPair> fLastLines;						// holds last lines for channels
-
-	WListMap fLists;
-
-	// private inline method for generating a pair<>
-	WListPair 
-	MakeListPair(QListView * v, QListViewItem * i)
+	typedef struct WLastLines
 	{
-		WListPair p;
-		p.first = v;
-		p.second = i;
-		return p;
-	}
+		QString channel;
+		QString line;
+	} WLastLines;
+
+	Queue<WLastLines> fLastLines;						// holds last lines for channels
+
+	Hashtable<QListView *, QListViewItem *> fLists;
+
 };
 
 typedef Ref<WUser> WUserRef;
@@ -140,18 +127,13 @@ typedef Ref<WUser> WUserRef;
 typedef Hashtable<uint32, WUserRef> WUserMap;
 typedef HashtableIterator<uint32, WUserRef> WUserIter;
 
-typedef pair<WUserRef, QString> WUserSearchPair;
-typedef Queue<WUserSearchPair> WUserSearchMap;
-
-inline WUserSearchPair
-MakePair(const WUserRef & w, const QString &txt)
+typedef struct WUserSearchPair
 {
-	WUserSearchPair p;
-	p.first = w;
-	p.second = txt;
-	return p;
-}
+	WUserRef user;
+	QString string;
+} WUserSearchPair;
 
+typedef Queue<WUserSearchPair> WUserSearchMap;
 
 #endif
 

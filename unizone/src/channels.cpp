@@ -12,6 +12,13 @@
 #include <qmessagebox.h>
 #include <qpushbutton.h>
 
+String
+MakeKey(const QString &a)
+{
+	String out = (const char *) a.utf8();
+	return out;
+}
+
 Channels::Channels(QWidget *parent, NetClient *fNet)
 :QDialog(parent, "Channels", false, WStyle_SysMenu | WStyle_Minimize | WStyle_Maximize | WStyle_Title)
 {
@@ -100,13 +107,13 @@ Channels::~Channels()
 void
 Channels::ChannelAdmins(const QString &channel, const QString &sid, const QString &admins)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	ChannelInfo * info;
+	if (fChannels.GetValue(MakeKey(channel), info) == B_OK)
 	{
-		if ( (*iter).second->IsAdmin(sid) )
+		if ( info->IsAdmin(sid) )
 		{
-			if ( (*iter).second->SetAdmins(admins) )
-				UpdateAdmins(iter);
+			if ( info->SetAdmins(admins) )
+				UpdateAdmins(channel, info);
 		}
 	}
 }
@@ -114,10 +121,10 @@ Channels::ChannelAdmins(const QString &channel, const QString &sid, const QStrin
 bool
 Channels::IsAdmin(const QString & channel, const QString & user)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	ChannelInfo * info;
+	if (fChannels.GetValue(MakeKey(channel), info) == B_OK)
 	{
-		return (*iter).second->IsAdmin(user);
+		return info->IsAdmin(user);
 	}
 	return false;
 }
@@ -125,10 +132,10 @@ Channels::IsAdmin(const QString & channel, const QString & user)
 bool
 Channels::IsOwner(const QString & channel, const QString & user)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	ChannelInfo * info;
+	if (fChannels.GetValue(MakeKey(channel), info) == B_OK)
 	{
-		return (*iter).second->IsOwner(user);
+		return info->IsOwner(user);
 	}
 	return false;
 }
@@ -136,10 +143,10 @@ Channels::IsOwner(const QString & channel, const QString & user)
 bool
 Channels::IsPublic(const QString & channel)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	ChannelInfo * info;
+	if (fChannels.GetValue(MakeKey(channel), info) == B_OK)
 	{
-		return (*iter).second->GetPublic();
+		return info->GetPublic();
 	}
 	return false;
 }
@@ -147,68 +154,68 @@ Channels::IsPublic(const QString & channel)
 void
 Channels::ChannelAdded(const QString &channel, const QString &sid, int64 timecreated)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter == fChannels.end())
+	ChannelInfo * info;
+	if (fChannels.GetValue(MakeKey(channel), info) != B_OK)
 	{
-		WChannelPair wcp;
-		wcp.first = channel;
-		wcp.second = new ChannelInfo(channel, sid);
-		fChannels.insert(fChannels.end(), wcp);
-		iter = fChannels.find(channel);
+		String key = MakeKey(channel);
+		info = new ChannelInfo(channel, sid);
+		fChannels.Put(key, info);
 		// Create ListView Item
 		QListViewItem * item = new QListViewItem(ChannelList, channel, "", "", "", "");
-		wcp.second->SetItem(item);
-		wcp.second->SetCreated(timecreated);
+		info->SetItem(item);
+		info->SetCreated(timecreated);
 	}
-	(*iter).second->AddUser(sid);
+	info->AddUser(sid);
 	// Send user list to window
-	QStringTokenizer tok((*iter).second->GetUsers(), ",");
-	QString next;
-	while ((next = tok.GetNextToken()) != QString::null)
+	if ( info->GetWindow() )
 	{
-		if ( (*iter).second->GetWindow() )
+		QStringTokenizer tok(info->GetUsers(), ",");
+		QString next;
+		while ((next = tok.GetNextToken()) != QString::null)
 		{
-			(*iter).second->GetWindow()->AddUser(next);
+			info->GetWindow()->AddUser(next);
 		}
 	}
-	UpdateAdmins(iter);
-	UpdateTopic(iter);
-	UpdateUsers(iter);
-	UpdatePublic(iter);
+	UpdateAdmins(channel, info);
+	UpdateTopic(info);
+	UpdateUsers(info);
+	UpdatePublic(info);
 }
 
 void
-Channels::UpdateAdmins(WChannelIter iter)
+Channels::UpdateAdmins(const QString &channel, ChannelInfo * info)
 {
-	QListViewItem *item = (*iter).second->GetItem();
+	QListViewItem *item = info->GetItem();
 	if (item)
-		item->setText(3, QString::number( (*iter).second->NumAdmins() ));
-	emit ChannelAdminsChanged((*iter).first, (*iter).second->GetAdmins());
+		item->setText(3, QString::number( info->NumAdmins() ));
+	emit ChannelAdminsChanged(channel, info->GetAdmins());
 }
 
 void
-Channels::UpdateUsers(WChannelIter iter)
+Channels::UpdateUsers(ChannelInfo * info)
 {
-	QListViewItem *item = (*iter).second->GetItem();
-	int n = (*iter).second->NumUsers();
+	QListViewItem *item = info->GetItem();
 	if (item)
+	{
+		int n = info->NumUsers();
 		item->setText(2, QString::number( n ));
+	}
 }
 
 void
-Channels::UpdateTopic(WChannelIter iter)
+Channels::UpdateTopic(ChannelInfo * info)
 {
-	QListViewItem *item = (*iter).second->GetItem();
+	QListViewItem *item = info->GetItem();
 	if (item)
-		item->setText(1, (*iter).second->GetTopic() );
+		item->setText(1, info->GetTopic() );
 }
 
 void
-Channels::UpdatePublic(WChannelIter iter)
+Channels::UpdatePublic(ChannelInfo * info)
 {
-	QListViewItem *item = (*iter).second->GetItem();
+	QListViewItem *item = info->GetItem();
 	if (item)
-		item->setText(4, (*iter).second->GetPublic() ? tr( "Yes" ) : tr( "No" ) );
+		item->setText(4, info->GetPublic() ? tr( "Yes" ) : tr( "No" ) );
 }
 
 void
@@ -221,7 +228,7 @@ Channels::CreateChannel()
 	}
 
 	bool ok = FALSE;
-	QString text = QInputDialog::getText( 
+	QString channel = QInputDialog::getText( 
 		tr( "Create Channel" ), 
 		tr( "Please enter channel name" ),
 #if (QT_VERSION >= 0x030000)
@@ -229,32 +236,29 @@ Channels::CreateChannel()
 #endif
 		QString::null, &ok, this 
 		);
-	if ( ok && !text.isEmpty() )
+	if ( ok && !channel.isEmpty() )
 	{
 		// user entered something and pressed ok
-		WChannelIter it = fChannels.find(text);
-		if (it == fChannels.end())
+		String key = MakeKey(channel);
+		if (!fChannels.ContainsKey(key))
 		{
 			// Create Channel
-			WChannelPair wcp;
-			wcp.first = text;
-			wcp.second = new ChannelInfo(text, gWin->GetUserID());
-			fChannels.insert(fChannels.end(), wcp);
+			ChannelInfo * info = new ChannelInfo(channel, gWin->GetUserID());
+			fChannels.Put(key, info);
 
-			it = fChannels.find(text);
 			// Create ListView item
-			QListViewItem * item = new QListViewItem(ChannelList, text, "", "", "", "");
-			wcp.second->SetItem(item);
+			QListViewItem * item = new QListViewItem(ChannelList, channel, "", "", "", "");
+			info->SetItem(item);
 			// Create Window item
-			Channel * win = new Channel(this, fNetClient, text);
-			wcp.second->SetWindow(win);
-			wcp.second->AddUser(gWin->GetUserID());
+			Channel * win = new Channel(this, fNetClient, channel);
+			info->SetWindow(win);
+			info->AddUser(gWin->GetUserID());
 			win->SetOwner(gWin->GetUserID());
 			win->show();
 
-			ChannelAdmins(text, gWin->GetUserID(), gWin->GetUserID());
-			UpdateUsers(it);
-			UpdatePublic(it);
+			ChannelAdmins(channel, gWin->GetUserID(), gWin->GetUserID());
+			UpdateUsers(info);
+			UpdatePublic(info);
 
 			// Send Channel Data message
 			MessageRef cc(GetMessageFromPool(NetClient::ChannelData));
@@ -264,7 +268,7 @@ Channels::CreateChannel()
 				cc()->AddString(PR_NAME_KEYS, to);
 				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
 				cc()->AddInt64("when", (int64) GetCurrentTime64());
-				cc()->AddString("channel", (const char *) text.utf8());
+				cc()->AddString("channel", key);
 				fNetClient->SendMessageToSessions(cc);
 			}
 		}
@@ -289,135 +293,143 @@ Channels::JoinChannel()
 void
 Channels::JoinChannel(const QString & channel)
 {
-	WChannelIter it = fChannels.find(channel);
-	Channel * win;
-	if ((*it).second->GetWindow())
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		win = (*it).second->GetWindow();
-	}
-	else
-	{
-		//
-		// Create Channel Window
-		//
+		Channel * win;
+		if (info->GetWindow())
+		{
+			win = info->GetWindow();
+		}
+		else
+		{
+			//
+			// Create Channel Window
+			//
+			
+			// Create Window item
+			win = new Channel(this, fNetClient, channel);
+			info->SetWindow(win);
+		}
 		
-		// Create Window item
-		win = new Channel(this, fNetClient, channel);
-		(*it).second->SetWindow(win);
-	}
-	
-	// Send user list to window
+		// Send user list to window
 #ifdef _DEBUG
-	WString wusers((*it).second->GetUsers());
-	PRINT("JoinChannel: GetUsers = %S\n", wusers.getBuffer());
+		WString wusers(info->GetUsers());
+		PRINT("JoinChannel: GetUsers = %S\n", wusers.getBuffer());
 #endif
-	int n = fNetClient->GetUserCount(channel);
-	if (n > 0)
-	{
-		int i = 0;
-		QString * user = fNetClient->GetChannelUsers(channel);
-		while (i < n)
+		int n = fNetClient->GetUserCount(channel);
+		if (n > 0)
 		{
-			(*it).second->GetWindow()->AddUser(user[i++]);
+			int i = 0;
+			QString * user = fNetClient->GetChannelUsers(channel);
+			while (i < n)
+			{
+				info->GetWindow()->AddUser(user[i++]);
+			}
+			delete [] user;
 		}
-		delete [] user;
+		
+		info->AddUser(gWin->GetUserID());
+		win->SetOwner(info->GetOwner());
+		win->SetTopic(info->GetTopic());
+		win->SetPublic(info->GetPublic());
+		win->show();
+		
+		UpdateUsers(info);
+		UpdatePublic(info);
+		
+		if (!info->GetPublic()) // Needs invite?
+		{
+			// Send Channel Invite message
+			MessageRef cc(GetMessageFromPool(NetClient::ChannelInvite));
+			if (cc())
+			{
+				String to("/*/*/unishare");
+				cc()->AddString(PR_NAME_KEYS, to);
+				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
+				cc()->AddString("who", (const char *) gWin->GetUserID().utf8());
+				cc()->AddInt64("when", (int64) GetCurrentTime64());
+				cc()->AddString("channel", key);
+				fNetClient->SendMessageToSessions(cc);
+			}
+		}	
 	}
-	
-	(*it).second->AddUser(gWin->GetUserID());
-	win->SetOwner((*it).second->GetOwner());
-	win->SetTopic((*it).second->GetTopic());
-	win->SetPublic((*it).second->GetPublic());
-	win->show();
-	
-	UpdateUsers(it);
-	UpdatePublic(it);
-	
-	if (!(*it).second->GetPublic()) // Needs invite?
-	{
-		// Send Channel Invite message
-		MessageRef cc(GetMessageFromPool(NetClient::ChannelInvite));
-		if (cc())
-		{
-			String to("/*/*/unishare");
-			cc()->AddString(PR_NAME_KEYS, to);
-			cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
-			cc()->AddString("who", (const char *) gWin->GetUserID().utf8());
-			cc()->AddInt64("when", (int64) GetCurrentTime64());
-			cc()->AddString("channel", (const char *) channel.utf8());
-			fNetClient->SendMessageToSessions(cc);
-		}
-	}	
 }
 
 void
 Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 timecreated)
 {
-	WChannelIter it = fChannels.find(channel);
-	if (it == fChannels.end())
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		// Create Channel
-		WChannelPair wcp;
-		wcp.first = channel;
-		wcp.second = new ChannelInfo(channel, gWin->GetUserID());
-		fChannels.insert(fChannels.end(), wcp);
-
-		it = fChannels.find(channel);
-		// Create ListView item
-		QListViewItem * item = new QListViewItem(ChannelList, channel, "", "", "", "");
-		wcp.second->SetItem(item);
-		ChannelAdmins(owner, channel, owner);
-		ChannelJoin(channel, owner);
-		UpdatePublic(it);
-		UpdateUsers(it);
-	}
-	else if (timecreated >= (*it).second->GetCreated())
-	{
-		// Send Channel Data message
-		MessageRef cc(GetMessageFromPool(NetClient::ChannelKick));
-		if (cc())
+		if (timecreated >= info->GetCreated())
 		{
-			QString to("/*/");
-			to += owner;
-			to += "/unishare";
-			cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
-			cc()->AddInt64("when", (int64) (*it).second->GetCreated());
-			cc()->AddString("channel", (const char *) channel.utf8());
-			fNetClient->SendMessageToSessions(cc);
+			// Send Channel Data message
+			MessageRef cc(GetMessageFromPool(NetClient::ChannelKick));
+			if (cc())
+			{
+				QString to("/*/");
+				to += owner;
+				to += "/unishare";
+				cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
+				cc()->AddInt64("when", (int64) info->GetCreated());
+				cc()->AddString("channel", key);
+				fNetClient->SendMessageToSessions(cc);
+			}
 		}
+		else
+		{
+			info->SetCreated(timecreated);
+			info->SetOwner(owner);
+		}	
 	}
 	else
 	{
-		(*it).second->SetCreated(timecreated);
-		(*it).second->SetOwner(owner);
+		// Create Channel
+		ChannelInfo *info = new ChannelInfo(channel, gWin->GetUserID());
+		fChannels.Put(key, info);
+
+		// Create ListView item
+		QListViewItem * item = new QListViewItem(ChannelList, channel, "", "", "", "");
+		info->SetItem(item);
+		ChannelAdmins(owner, channel, owner);
+		ChannelJoin(channel, owner);
+		UpdatePublic(info);
+		UpdateUsers(info);
 	}
 }
 
 void
 Channels::ChannelJoin(const QString & channel, const QString & user)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		(*iter).second->AddUser(user);
-		UpdateUsers(iter);
+		info->AddUser(user);
+		UpdateUsers(info);
 	}
 }
 
 void
 Channels::ChannelPart(const QString & channel, const QString & user)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		(*iter).second->RemoveUser(user);
-		UpdateUsers(iter);
+		info->RemoveUser(user);
+		UpdateUsers(info);
 	}
 }
 
 void
 Channels::PartChannel(const QString & channel, const QString & user)
 {
+	String key = MakeKey(channel);
 	if (user == gWin->GetUserID())
 	{
 		MessageRef cc(GetMessageFromPool(NetClient::ChannelPart));
@@ -427,25 +439,25 @@ Channels::PartChannel(const QString & channel, const QString & user)
 			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
 			cc()->AddInt64("when", (int64) GetCurrentTime64());
-			cc()->AddString("channel", (const char *) channel.utf8());
+			cc()->AddString("channel", key);
 			fNetClient->SendMessageToSessions(cc);
 		}
 	}
 
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
 		// Make sure we don't have a stale window reference, so we can re-join later
 		if (user == gWin->GetUserID())
 		{
-			(*iter).second->SetWindow(NULL);
+			info->SetWindow(NULL);
 		}
-		(*iter).second->RemoveUser(user);
-		UpdateUsers(iter);
-		if ((*iter).second->NumUsers() == 0)
+		info->RemoveUser(user);
+		UpdateUsers(info);
+		if (info->NumUsers() == 0)
 		{
-			delete (*iter).second;
-			fChannels.erase(iter);
+			delete info;
+			fChannels.Remove(key);
 		}
 	}
 }
@@ -453,14 +465,15 @@ Channels::PartChannel(const QString & channel, const QString & user)
 void
 Channels::AddAdmin(const QString & channel, const QString & user)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
 		WUserRef uref = gWin->FindUser(user);
 		if (uref())
 		{
-			(*iter).second->AddAdmin(uref()->GetUserID());
-			UpdateAdmins(iter);
+			info->AddAdmin(uref()->GetUserID());
+			UpdateAdmins(channel, info);
 		}
 	}
 }
@@ -468,14 +481,15 @@ Channels::AddAdmin(const QString & channel, const QString & user)
 void
 Channels::RemoveAdmin(const QString & channel, const QString & user)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
 		WUserRef uref = gWin->FindUser(user);
 		if (uref())
 		{
-			(*iter).second->RemoveAdmin(uref()->GetUserID());
-			UpdateAdmins(iter);
+			info->RemoveAdmin(uref()->GetUserID());
+			UpdateAdmins(channel, info);
 		}
 	}
 }
@@ -484,10 +498,11 @@ QString
 Channels::GetAdmins(const QString & channel)
 {
 	QString adm = QString::null;
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		adm = (*iter).second->GetAdmins();
+		adm = info->GetAdmins();
 	}
 	return adm;
 }
@@ -495,70 +510,75 @@ Channels::GetAdmins(const QString & channel)
 void
 Channels::SetTopic(const QString & channel, const QString & topic)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		(*iter).second->SetTopic(topic);
-		UpdateTopic(iter);
+		info->SetTopic(topic);
+		UpdateTopic(info);
 	}
 }
 
 void
 Channels::SetPublic(const QString & channel, bool pub)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (iter != fChannels.end())
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		(*iter).second->SetPublic(pub);
-		UpdatePublic(iter);
+		info->SetPublic(pub);
+		UpdatePublic(info);
 	}
 }
 
 void
 Channels::ChannelInvite(const QString & channel, const QString & user, const QString & who)
 {
-	WChannelIter iter = fChannels.find(channel);
-	// We need to have existing channel to be able to check for admin status
-	if (
-		(who == gWin->GetUserID()) && 
-		(iter == fChannels.end())
-		)
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (!fChannels.ContainsKey(key))
 	{
-		ChannelAdded(channel, user, GetCurrentTime64());
-		iter = fChannels.find(channel);
-	}
-
-	if (IsAdmin(channel, user))
-	{
+		// We need to have existing channel to be able to check for admin status
 		if (who == gWin->GetUserID())
 		{
-			// Got invited
-			if (!(*iter).second->GetWindow())
+			ChannelAdded(channel, user, GetCurrentTime64());
+		}
+	}
+
+	if (fChannels.GetValue(key, info) == B_OK)
+	{
+		if (IsAdmin(channel, user))
+		{
+			if (who == gWin->GetUserID())
 			{
+				// Got invited
+				if (!info->GetWindow())
+				{
+					if (QMessageBox::information(this, tr( "Channels" ), 
+						tr( "User #%1 invited you to channel %2." " Do you accept?").arg(user).arg(channel),
+						tr( "Yes" ), tr( "No" )) == 0)	// 0 is the index of "yes"
+					{
+						Channel * win = new Channel(this, fNetClient, channel);
+						win->SetOwner(info->GetOwner());
+						info->SetWindow(win);
+						win->show();
+					}
+					else
+					{
+						return;
+					}
+				}
+				info->GetWindow()->SetActive(true);
+			}
+			else if ( IsAdmin(channel, gWin->GetUserID()) && info->GetWindow() )
+			{
+				// User requested invite from us
 				if (QMessageBox::information(this, tr( "Channels" ), 
-					tr( "User #%1 invited you to channel %2." " Do you accept?").arg(user).arg(channel),
+					tr( "User #%1 requested invite to channel %2." " Do you?").arg(user).arg(channel),
 					tr( "Yes" ), tr( "No" )) == 0)	// 0 is the index of "yes"
 				{
-					Channel * win = new Channel(this, fNetClient, channel);
-					win->SetOwner((*iter).second->GetOwner());
-					(*iter).second->SetWindow(win);
-					win->show();
+					info->GetWindow()->Invite(user);
 				}
-				else
-				{
-					return;
-				}
-			}
-			(*iter).second->GetWindow()->SetActive(true);
-		}
-		else if ( IsAdmin(channel, gWin->GetUserID()) && (*iter).second->GetWindow() )
-		{
-			// User requested invite from us
-			if (QMessageBox::information(this, tr( "Channels" ), 
-				tr( "User #%1 requested invite to channel %2." " Do you?").arg(user).arg(channel),
-				tr( "Yes" ), tr( "No" )) == 0)	// 0 is the index of "yes"
-			{
-				(*iter).second->GetWindow()->Invite(user);
 			}
 		}
 	}
@@ -567,15 +587,19 @@ Channels::ChannelInvite(const QString & channel, const QString & user, const QSt
 void
 Channels::ChannelKick(const QString &channel, const QString &user, const QString &who)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (IsAdmin(channel, user))
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		if (who == gWin->GetUserID())
+		if (IsAdmin(channel, user))
 		{
-			// Got kicked
-			if ( (iter != fChannels.end()) && (*iter).second->GetWindow() )
+			if (who == gWin->GetUserID())
 			{
-				(*iter).second->GetWindow()->SetActive(false);
+				// Got kicked
+				if ( info->GetWindow() )
+				{
+					info->GetWindow()->SetActive(false);
+				}
 			}
 		}
 	}
@@ -584,20 +608,21 @@ Channels::ChannelKick(const QString &channel, const QString &user, const QString
 void
 Channels::ChannelTopic(const QString &channel, const QString &user, const QString &topic)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (IsAdmin(channel, user))
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		// Topic changed
-		if (iter != fChannels.end())
+		if (IsAdmin(channel, user))
 		{
-			if ( (*iter).second->GetWindow() )
+			// Topic changed
+			if ( info->GetWindow() )
 			{
-				(*iter).second->GetWindow()->SetTopic(topic);
+				info->GetWindow()->SetTopic(topic);
 			}
 			else
 			{
-				(*iter).second->SetTopic(topic);
-				UpdateTopic(iter);
+				info->SetTopic(topic);
+				UpdateTopic(info);
 			}
 		}
 	}
@@ -606,19 +631,20 @@ Channels::ChannelTopic(const QString &channel, const QString &user, const QStrin
 void
 Channels::ChannelOwner(const QString &channel, const QString &user, const QString &owner)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (IsAdmin(channel, user))
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		// Owner changed
-		if (iter != fChannels.end())
+		if (IsAdmin(channel, user))
 		{
-			if ( (*iter).second->GetWindow() )
+			// Owner changed
+			if ( info->GetWindow() )
 			{
-				(*iter).second->GetWindow()->SetOwner(owner);
+				info->GetWindow()->SetOwner(owner);
 			}
 			else
 			{
-				(*iter).second->SetOwner(owner);
+				info->SetOwner(owner);
 			}
 		}
 	}
@@ -627,15 +653,16 @@ Channels::ChannelOwner(const QString &channel, const QString &user, const QStrin
 void
 Channels::ChannelPublic(const QString &channel, const QString &user, bool pub)
 {
-	WChannelIter iter = fChannels.find(channel);
-	if (IsAdmin(channel, user))
+	String key = MakeKey(channel);
+	ChannelInfo * info;
+	if (fChannels.GetValue(key, info) == B_OK)
 	{
-		// Public/Private changed
-		if (iter != fChannels.end())
+		if (IsAdmin(channel, user))
 		{
-			if ( (*iter).second->GetWindow() )
+			// Public/Private changed
+			if ( info->GetWindow() )
 			{
-				(*iter).second->GetWindow()->SetPublic(pub);
+				info->GetWindow()->SetPublic(pub);
 			}
 		}
 	}
@@ -644,25 +671,29 @@ Channels::ChannelPublic(const QString &channel, const QString &user, bool pub)
 void
 Channels::UserIDChanged(const QString &oldid, const QString &newid)
 {
-	for (WChannelIter iter = fChannels.begin(); iter != fChannels.end(); iter++)
+	WChannelIter iter = fChannels.GetIterator();
+	ChannelInfo *info;
+	String key;
+	while ((iter.GetNextKey(key) == B_OK) && (iter.GetNextValue(info) == B_OK))
 	{
-		if (IsOwner((*iter).first, oldid))
+		QString channel = QString::fromUtf8(key.Cstr());
+		if (IsOwner(channel, oldid))
 		{
 			// Owner changed
-			(*iter).second->SetOwner(newid);
-			if ((*iter).second->GetWindow())
+			info->SetOwner(newid);
+			if (info->GetWindow())
 			{
-				(*iter).second->GetWindow()->SetOwner(newid);
+				info->GetWindow()->SetOwner(newid);
 			}
 		}
-		if (IsAdmin((*iter).first, oldid))
+		if (IsAdmin(channel, oldid))
 		{
 			// Admin re-entered
-			(*iter).second->RemoveAdmin(oldid);
-			(*iter).second->AddAdmin(newid);
+			info->RemoveAdmin(oldid);
+			info->AddAdmin(newid);
 		}
-		(*iter).second->RemoveUser(oldid);
-		(*iter).second->AddUser(newid);
+		info->RemoveUser(oldid);
+		info->AddUser(newid);
 #ifdef _DEBUG
 		WString wuid(gWin->GetUserID());
 		WString wold(oldid);
@@ -673,10 +704,10 @@ Channels::UserIDChanged(const QString &oldid, const QString &newid)
 		if (newid == gWin->GetUserID())
 		{
 			// Our ID got changed
-			if ((*iter).second->GetWindow())
+			if (info->GetWindow())
 			{
 				// We need window
-				JoinChannel((*iter).first);
+				JoinChannel(channel);
 			}
 		}
 	}
@@ -685,10 +716,11 @@ Channels::UserIDChanged(const QString &oldid, const QString &newid)
 void
 Channels::StartLogging()
 {
-	WChannelIter iter = fChannels.begin();
-	while (iter != fChannels.end())
+	WChannelIter iter = fChannels.GetIterator();
+	ChannelInfo * info;
+	while (iter.GetNextValue(info) == B_OK)
 	{
-		Channel * chn = (*iter).second->GetWindow();
+		Channel * chn = info->GetWindow();
 		if (chn)
 			chn->StartLogging();
 	}
@@ -697,10 +729,11 @@ Channels::StartLogging()
 void
 Channels::StopLogging()
 {
-	WChannelIter iter = fChannels.begin();
-	while (iter != fChannels.end())
+	WChannelIter iter = fChannels.GetIterator();
+	ChannelInfo * info;
+	while (iter.GetNextValue(info) == B_OK)
 	{
-		Channel * chn = (*iter).second->GetWindow();
+		Channel * chn = info->GetWindow();
 		if (chn)
 			chn->StopLogging();
 	}

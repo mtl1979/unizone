@@ -10,20 +10,16 @@
 #include <qlistview.h>
 #include <channelinfo.h>
 
-#include <map>
-using std::map;
-using std::multimap;
-using std::pair;
-
 #include "support/MuscleSupport.h"
+#include "util/Hashtable.h"
+#include "util/String.h"
 
 using namespace muscle;
 
 class NetClient;
 
-typedef pair<QString, ChannelInfo *> WChannelPair;
-typedef multimap<QString, ChannelInfo *> WChannelMap;
-typedef WChannelMap::iterator WChannelIter;
+typedef Hashtable<String, ChannelInfo *> WChannelMap;
+typedef HashtableIterator<String, ChannelInfo *> WChannelIter;
 
 class Channels : public QDialog
 {
@@ -71,10 +67,10 @@ private:
 
 	WChannelMap fChannels;
 
-	void UpdateAdmins(WChannelIter iter);
-	void UpdateUsers(WChannelIter iter);
-	void UpdateTopic(WChannelIter iter);
-	void UpdatePublic(WChannelIter iter);
+	void UpdateAdmins(const QString &channel, ChannelInfo * info);
+	void UpdateUsers(ChannelInfo * info);
+	void UpdateTopic(ChannelInfo * info);
+	void UpdatePublic(ChannelInfo * info);
 	void JoinChannel(const QString &channel);
 
 public slots:

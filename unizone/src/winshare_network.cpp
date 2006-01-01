@@ -1587,10 +1587,10 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 
 			for (unsigned int qi = 0; qi < sendTo.GetNumItems(); qi++)
 			{
-				WUserRef user = sendTo[qi].first;
+				WUserRef user = sendTo[qi].user;
 
 				QString sid = user()->GetUserID();
-				QString sendText = sendTo[qi].second;
+				QString sendText = sendTo[qi].string;
 
 #ifdef _DEBUG
 				WString wuser(user()->GetUserName());
@@ -3068,21 +3068,19 @@ WinShareWindow::ListResumes()
 	QString out;
 
 	rLock.Lock();
-	WResumeIter it = fResumeMap.begin();
 	out = "\n" + tr("Resume list:");
 	int i = 0;
-	while (it != fResumeMap.end())
+	for (unsigned int x = 0; x < fResumeMap.GetNumItems(); x++)
 	{
-		if ((*it).first != QString::null)
+		if (fResumeMap[x].user != QString::null)
 		{
-			out += "\n" + tr("File %1: (%2) from %3").arg(i).arg((*it).second.fRemoteName).arg((*it).first);
-			if ((*it).second.fLocalName != QString::null)
+			out += "\n" + tr("File %1: (%2) from %3").arg(i).arg(fResumeMap[x].info.fRemoteName).arg(fResumeMap[x].user);
+			if (fResumeMap[x].info.fLocalName != QString::null)
 			{
-				out += "\n" + tr("- Local File: %1").arg((*it).second.fLocalName);
+				out += "\n" + tr("- Local File: %1").arg(fResumeMap[x].info.fLocalName);
 			}
 			i++;
 		}
-		it++;
 	}
 	out += "\n" + tr("Total: %1 files").arg(i);
 	rLock.Unlock();
@@ -3091,22 +3089,16 @@ WinShareWindow::ListResumes()
 }
 
 void
-WinShareWindow::KillResume(int index)
+WinShareWindow::KillResume(uint32 index)
 {
 	rLock.Lock();
-	bool found = false;
-	WResumeIter it = fResumeMap.begin();
-	int i = 0;
-	while (it != fResumeMap.end())
+	bool found = muscleInRange(index, 0UL, (fResumeMap.GetNumItems() - 1));
+	if ((index >= 0) && (index < fResumeMap.GetNumItems()))
 	{
-		if (i == index)
-		{
-			PrintSystem(tr("Removed file '%1' from resume list.").arg((*it).second.fRemoteName));
-			fResumeMap.erase(it);
-			found = true;
-			break;
-		}
-		it++; i++;
+		WResumePair p;
+		fResumeMap.GetItemAt(index, p);
+		PrintSystem(tr("Removed file '%1' from resume list.").arg(p.info.fRemoteName));
+		fResumeMap.RemoveItemAt(index);
 	}
 	rLock.Unlock();
 	if (!found && fSettings->GetError())
@@ -3117,7 +3109,7 @@ void
 WinShareWindow::ClearResumes()
 {
 	rLock.Lock();
-	fResumeMap.clear();
+	fResumeMap.Clear();
 	PrintSystem(tr("Cleared resume list."));
 	rLock.Unlock();
 }

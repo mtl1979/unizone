@@ -1457,9 +1457,9 @@ WSettings::GetCurrentQueryItem() const
 void 
 WSettings::AddResumeItem(WResumePair wrp)
 {
-	fSet()->AddString(RESUMEUSER, (const char *) wrp.first.utf8());
-	fSet()->AddString(RESUMEFILE, (const char *) wrp.second.fRemoteName.utf8());
-	fSet()->AddString(RESUMEFIL2, (const char *) wrp.second.fLocalName.utf8());
+	fSet()->AddString(RESUMEUSER, (const char *) wrp.user.utf8());
+	fSet()->AddString(RESUMEFILE, (const char *) wrp.info.fRemoteName.utf8());
+	fSet()->AddString(RESUMEFIL2, (const char *) wrp.info.fLocalName.utf8());
 }
 
 bool 
@@ -1472,16 +1472,16 @@ WSettings::GetResumeItem(int index, WResumePair & wrp) const
 		(fSet()->FindString(RESUMEUSER, index, user) == B_OK)
 		)
 	{
-		wrp.first = QString::fromUtf8(user.Cstr());
-		wrp.second.fRemoteName = QString::fromUtf8(file.Cstr());
+		wrp.user = QString::fromUtf8(user.Cstr());
+		wrp.info.fRemoteName = QString::fromUtf8(file.Cstr());
 
 		// For backwards compatibility don't require entry for local file name
 		//
 
 		if (fSet()->FindString(RESUMEFIL2, index, file) == B_OK)
-			wrp.second.fLocalName = QString::fromUtf8(file.Cstr());
+			wrp.info.fLocalName = QString::fromUtf8(file.Cstr());
 		else
-			wrp.second.fLocalName = QString::null;
+			wrp.info.fLocalName = QString::null;
 
 		return true;
 	}

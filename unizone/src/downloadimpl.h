@@ -18,11 +18,6 @@
 #include <util/Queue.h>
 using namespace muscle;
 
-#include <map>
-using std::map;
-using std::pair;
-using std::iterator;
-
 #include "transferlist.h"
 #include "debugimpl.h"
 

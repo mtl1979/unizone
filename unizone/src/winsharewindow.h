@@ -36,11 +36,6 @@ using namespace muscle;
 #define UPDATE_SERVER "www.raasu.org"
 #define UPDATE_FILE "/tools/windows/version.txt"
 
-#include <map>
-using std::pair;
-using std::multimap;
-using std::iterator;
-
 class WDownload;
 class ChannelInfo;
 class WSearchListItem;
@@ -64,19 +59,13 @@ struct WResumeInfo
 	QString fLocalName;
 };
 
-typedef pair<QString, WResumeInfo> WResumePair;
-typedef multimap<QString, WResumeInfo> WResumeMap;
-typedef WResumeMap::iterator WResumeIter;
-
-inline 
-WResumePair
-MakePair(const QString & f, const WResumeInfo & u)
+typedef struct WResumePair
 {
-	WResumePair p;
-	p.first = f;
-	p.second = u;
-	return p;
-}
+	QString user;
+	WResumeInfo info;
+} WResumePair;
+
+typedef Queue<WResumePair> WResumeMap;
 
 class WTextEvent;
 class WChatText;
@@ -385,7 +374,7 @@ private:
 	// List files waiting to be resumed
 	void ListResumes();
 	// Remove file from resume list
-	void KillResume(int index);
+	void KillResume(uint32 index);
 	// Clear the resume list
 	void ClearResumes();
 

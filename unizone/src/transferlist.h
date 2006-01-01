@@ -12,10 +12,18 @@
 using std::pair;
 using std::list;
 
-typedef pair<WDownloadThread *, WTransferItem *> DLPair;
+typedef struct DLPair
+{
+	WDownloadThread * thread;
+	WTransferItem * item;
+} DLPair;
 typedef Queue<DLPair> DLList;
 
-typedef pair<WUploadThread *, WTransferItem *> ULPair;
+typedef struct ULPai
+{
+	WUploadThread * thread;
+	WTransferItem * item;
+} ULPair;
 typedef Queue<ULPair> ULList;
 
 #endif

@@ -1191,7 +1191,9 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 
 			if (user() != NULL)
 			{
-				WUserSearchPair pair = MakePair(user, setRestOfString); // <postmaster@raasu.org> 20021007
+				WUserSearchPair pair;
+				pair.user = user;
+				pair.string = setRestOfString; // <postmaster@raasu.org> 20021007
 				sendTo.AddTail(pair);
 				clauses.RemoveItemAt(i);
 			}
@@ -1215,7 +1217,9 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 
 				if (Match(userName, qr) >= 0)
 				{
-					WUserSearchPair pair = MakePair(user, setRestOfString); // <postmaster@raasu.org> 20021007
+					WUserSearchPair pair;
+					pair.user = user;
+					pair.string = setRestOfString; // <postmaster@raasu.org> 20021007
 					sendTo.AddTail(pair);
 					foundMatches = true;
 				}
@@ -1243,8 +1247,9 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				if (!userName.isEmpty() && startsWith(restOfString2, userName))
 				{
 					PRINT("Found\n");
-					WUserSearchPair pair = MakePair(user,
-													restOfString2.mid(userName.length()));
+					WUserSearchPair pair;
+					pair.user = user;
+					pair.string = restOfString2.mid( userName.length() );
 					sendTo.AddTail(pair);
 					setTargetStr = uName;
 				}
@@ -1442,13 +1447,13 @@ WinShareWindow::LoadSettings()
 		// Load resume list
 
 		rLock.Lock();
-		fResumeMap.clear();
+		fResumeMap.Clear();
 
 		for (i = 0; i <= fSettings->GetResumeCount(); i++)
 		{
 			WResumePair wrp;
 			if (fSettings->GetResumeItem(i, wrp))
-				fResumeMap.insert(wrp);
+				fResumeMap.AddTail(wrp);
 		}
 		rLock.Unlock();
 
@@ -1664,17 +1669,13 @@ WinShareWindow::SaveSettings()
 	rLock.Lock();
 	fSettings->EmptyResumeList();
 
-	i = 0;
-
-	WResumeIter wri = fResumeMap.begin();
-	while ( wri != fResumeMap.end() )
+	for ( unsigned int x = 0; x < fResumeMap.GetNumItems(); x++ )
 	{
-		fSettings->AddResumeItem((*wri));
-		wri++;
+		fSettings->AddResumeItem(fResumeMap[x]);
 		i++;
 	}
 	rLock.Unlock();
-	fSettings->SetResumeCount(i);
+	fSettings->SetResumeCount(fResumeMap.GetNumItems());
 
 	// UniShare
 

@@ -208,38 +208,15 @@ WUser::InitFileCount(MessageRef msg)
 void
 WUser::AddToListView(QListView * view)
 {
-	WListIter it = fLists.find(view);
+	QListViewItem * item;
 
 	QString qUpload;
 	AddToList(qUpload, QString::number(fCurUploads));
 	AddToList(qUpload, QString::number(fMaxUploads));
 	//
 	QString strFileCount = QString::number(fFileCount).rightJustify(6);
-	if (it == fLists.end())	// not found? create a new item
+	if (fLists.GetValue(view, item) == B_OK)
 	{
-		WListPair pair;
-		QListViewItem *item;
-		if (fBot)
-		{
-			item = new WBotItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
-								fBandwidthLabel, qUpload, fClient, fHostOS);
-			CHECK_PTR(item);
-			pair = MakeListPair(view, item);
-		}
-		else
-		{
-			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
-								fBandwidthLabel, qUpload, fClient, fHostOS);
-			CHECK_PTR(item);
-			pair = MakeListPair(view, item);
-			((WUserListItem *)(pair.second))->SetFirewalled(fFirewalled);
-		}
-		fLists.insert(pair);
-	}
-	else
-	{
-
-		QListViewItem * item = (*it).second;
 		// if we've been created... then we should update our list item if needed
 		if (!IsBot())
 		{
@@ -288,43 +265,60 @@ WUser::AddToListView(QListView * view)
 			item->setText(WNickListItem::HostOS, fHostOS);
 		}
 	}
+	else
+	{
+		// not found? create a new item
+		if (fBot)
+		{
+			item = new WBotItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
+								fBandwidthLabel, qUpload, fClient, fHostOS);
+			CHECK_PTR(item);
+		}
+		else
+		{
+			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
+								fBandwidthLabel, qUpload, fClient, fHostOS);
+			CHECK_PTR(item);
+			((WUserListItem *)(item))->SetFirewalled(fFirewalled);
+		}
+		fLists.Put(view,item);
+	}
 }
 
 void
 WUser::UpdateListViews()
 {
-	WListIter it = fLists.begin();
-	while (it != fLists.end())
+	HashtableIterator<QListView *, QListViewItem *> iter = fLists.GetIterator();
+	QListView *view;
+	while (iter.GetNextKey(view) == B_OK)
 	{
-		AddToListView((*it++).first);
+		AddToListView(view);
 	}
 }
 
 void
 WUser::RemoveFromListView(QListView * view)
 {
+	QListViewItem * item;
 	if (view)		// remove from the passed view only
 	{
-		WListIter it = fLists.find(view);
-		if (it != fLists.end())
+		if (fLists.GetValue(view, item) == B_OK)
 		{
-			QListViewItem * item = (*it).second;
 			delete item;
 			item = NULL; // <postmaster@raasu.org> 20021027
-			fLists.erase(it);
+			fLists.Remove(view);
 		}
 	}
 	else
 	{
 		// remove from all views
-		WListIter it = fLists.begin();
-		while (it != fLists.end())
+		HashtableIterator<QListView *, QListViewItem *> iter = fLists.GetIterator();
+		while ((iter.GetNextKey(view) == B_OK) && (iter.GetNextValue(item) == B_OK))
 		{
 			PRINT("Deleting item\n");
-			delete (*it).second;
+			delete item;
 			PRINT("Done\n");
-			fLists.erase(it);
-			it = fLists.begin();
+			fLists.Remove(view);
 		}
 	}
 }
@@ -394,9 +388,9 @@ WUser::GetLastLine(const QString & channel) const
 {
 	for (unsigned int n = 0; n < fLastLines.GetNumItems(); n++)
 	{
-		QStringPair sp = fLastLines[n];
-		if (sp.first == channel)
-			return sp.second;
+		WLastLines sp = fLastLines[n];
+		if (sp.channel == channel)
+			return sp.line;
 	}
 	return QString::null;
 }
@@ -404,16 +398,16 @@ WUser::GetLastLine(const QString & channel) const
 void
 WUser::SetLastLine(const QString & channel, const QString &line)
 {
-	QStringPair sp;
+	WLastLines sp;
 
 	// Replace old entry if exists
 
 	for (unsigned int n = 0; n < fLastLines.GetNumItems(); n++)
 	{
 		sp = fLastLines[n];
-		if (sp.first == channel)
+		if (sp.channel == channel)
 		{
-			sp.second = line;
+			sp.line = line;
 			fLastLines.ReplaceItemAt(n, sp);
 			return;
 		}
@@ -421,8 +415,8 @@ WUser::SetLastLine(const QString & channel, const QString &line)
 	
 	// No entry yet?
 
-	sp.first = channel;
-	sp.second = line;
+	sp.channel = channel;
+	sp.line = line;
 	fLastLines.AddTail(sp);
 }
 

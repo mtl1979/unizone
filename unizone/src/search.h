@@ -23,9 +23,6 @@
 #include "util/Hashtable.h"
 
 using namespace muscle;
-using std::map;
-using std::multimap;
-using std::pair;
 
 class NetClient;
 

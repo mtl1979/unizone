@@ -501,17 +501,20 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
 	wri.fRemoteName = file;
 	wri.fLocalName = lfile;
 
-	WResumePair wrp = MakePair(user, wri);
+	WResumePair wrp;
+	wrp.user = user;
+	wrp.info = wri;
+
 	rLock.Lock();
-	if (!fResumeMap.empty())
+	if (!fResumeMap.IsEmpty())
 	{
 		// Check if file is already in the resume list
-		for (WResumeIter iter = fResumeMap.begin(); iter != fResumeMap.end(); iter++)
+		for (unsigned int x = 0; x < fResumeMap.GetNumItems(); x++)
 		{
 			if (
-				((*iter).second.fRemoteName == file) &&
-				((*iter).second.fLocalName == lfile) &&
-				((*iter).first == user)
+				(fResumeMap[x].info.fRemoteName == file) &&
+				(fResumeMap[x].info.fLocalName == lfile) &&
+				(fResumeMap[x].user == user)
 				)
 			{
 				rLock.Unlock();
@@ -519,7 +522,7 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
 			}
 		}
 	}
-	fResumeMap.insert(wrp);
+	fResumeMap.AddTail(wrp);
 	rLock.Unlock();
 }
 
@@ -535,7 +538,7 @@ WinShareWindow::CheckResumes(const QString &user)
 #endif
 
 	// No need to check if empty!
-	if (fResumeMap.empty()) 
+	if (fResumeMap.IsEmpty()) 
 		return;
 
 	if (!fResumeEnabled)
@@ -552,29 +555,28 @@ WinShareWindow::CheckResumes(const QString &user)
 	Queue<QString> fLFiles;
 	QString out;
 	
-	WResumeIter it = fResumeMap.begin();
-	while (it != fResumeMap.end())
+	unsigned int x = 0;
+	while (x < fResumeMap.GetNumItems())
 	{
 #ifdef _DEBUG
-		wuser = StripURL((*it).first);
+		wuser = StripURL(fResumeMap[x].user);
 		PRINT("CheckResumes: user = %S\n", wuser.getBuffer());
 #endif
 
-		if (StripURL((*it).first) == StripURL(user))
+		if (StripURL(fResumeMap[x].user) == StripURL(user))
 		{
 			// User name matches
 
 			if (fSettings->GetDownloads())
 			{
-				out += "\n" + tr("Trying to resume file %1 from user %2").arg((*it).second.fRemoteName).arg(user);
+				out += "\n" + tr("Trying to resume file %1 from user %2").arg(fResumeMap[x].info.fRemoteName).arg(user);
 			}
-			fFiles.AddTail((*it).second.fRemoteName);
-			fLFiles.AddTail((*it).second.fLocalName);
-			fResumeMap.erase(it);
-			it = fResumeMap.begin(); // start from beginning
+			fFiles.AddTail(fResumeMap[x].info.fRemoteName);
+			fLFiles.AddTail(fResumeMap[x].info.fLocalName);
+			fResumeMap.RemoveItemAt(x);
 		}
 		else
-			it++;
+			x++;
 	}
 	rLock.Unlock();
 	if (fFiles.GetNumItems() > 0)

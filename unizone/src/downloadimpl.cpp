@@ -281,26 +281,26 @@ WDownload::EmptyDownloads()
 	while (fDownloadList.RemoveHead(pair) == B_NO_ERROR)
 	{
 		// Put all files in resume list
-		if (pair.first)
+		if (pair.thread)
 		{
-			int n = pair.first->GetCurrentNum();
+			int n = pair.thread->GetCurrentNum();
 			
 			if (n > -1) 
 			{
-				for (int i = n; i < pair.first->GetNumFiles(); i++)
+				for (int i = n; i < pair.thread->GetNumFiles(); i++)
 				{
-					emit FileInterrupted(pair.first->GetFileName(i), pair.first->GetLocalFileName(i), pair.first->GetRemoteUser());
+					emit FileInterrupted(pair.thread->GetFileName(i), pair.thread->GetLocalFileName(i), pair.thread->GetRemoteUser());
 				}
 			}
 			PRINT("Reseting download\n");
-			pair.first->Reset();
+			pair.thread->Reset();
 			PRINT("Deleting download\n");
-			delete pair.first;
+			delete pair.thread;
 		}
-		if (pair.second)
+		if (pair.item)
 		{
 			PRINT("Deleting item\n");
-			delete pair.second;
+			delete pair.item;
 		}
 	}
 	Unlock();
@@ -314,17 +314,17 @@ WDownload::EmptyUploads()
 	ULPair pair;
 	while (fUploadList.RemoveHead(pair) == B_NO_ERROR)
 	{
-		if (pair.first)
+		if (pair.thread)
 		{
 			PRINT("Reseting upload\n");
-			pair.first->Reset();
+			pair.thread->Reset();
 			PRINT("Deleting upload\n");
-			delete pair.first;
+			delete pair.thread;
 		}
-		if (pair.second)
+		if (pair.item)
 		{
 			PRINT("Deleting item\n");
-			delete pair.second;
+			delete pair.item;
 		}
 	}
 	Unlock();
@@ -375,9 +375,9 @@ WDownload::AddDownload(QString * files, QString * lfiles,
 	nt->SetFile(files, lfiles, filecount, ip, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
 	
 	DLPair p;
-	p.first = nt;
-	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
-	CHECK_PTR(p.second);
+	p.thread = nt;
+	p.item = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.item);
 		
 	if (GetNumDownloads() < gWin->fSettings->GetMaxDownloads())
 	{
@@ -387,7 +387,7 @@ WDownload::AddDownload(QString * files, QString * lfiles,
 	else
 	{
 		nt->SetLocallyQueued(true);
-		p.second->setText(WTransferItem::Status, tr("Locally Queued."));
+		p.item->setText(WTransferItem::Status, tr("Locally Queued."));
 	}
 	Lock();
 	fDownloadList.AddTail(p);
@@ -462,14 +462,14 @@ WDownload::CreateTunnel(const QString & userID, int64 hisID, void * & myID)
 	PRINT("Init session\n");
 	ut->InitSession();
 	ULPair p;
-	p.first = ut;
-	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
-	CHECK_PTR(p.second);
+	p.thread = ut;
+	p.item = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.item);
 	
 	if (ut->IsLocallyQueued())
 	{
 		PRINT("IsQueued\n");
-		p.second->setText(WTransferItem::Status, tr("Queued."));
+		p.item->setText(WTransferItem::Status, tr("Queued."));
 	}
 	PRINT("Inserting\n");
 	Lock();
@@ -489,9 +489,9 @@ WDownload::CreateTunnel(QString *files, QString *lfiles, int32 numFiles, const W
 	nt->SetFile(files, lfiles, numFiles, user);
 	
 	DLPair p;
-	p.first = nt;
-	p.second = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
-	CHECK_PTR(p.second);
+	p.thread = nt;
+	p.item = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.item);
 		
 	if (GetNumDownloads() < gWin->fSettings->GetMaxDownloads())
 	{
@@ -501,7 +501,7 @@ WDownload::CreateTunnel(QString *files, QString *lfiles, int32 numFiles, const W
 	else
 	{
 		nt->SetLocallyQueued(true);
-		p.second->setText(WTransferItem::Status, tr("Locally Queued."));
+		p.item->setText(WTransferItem::Status, tr("Locally Queued."));
 	}
 	Lock();
 	fDownloadList.AddTail(p);
@@ -521,9 +521,9 @@ WDownload::TunnelAccepted(int64 myID, int64 hisID)
 	{
 		DLPair p;
 		fDownloadList.GetItemAt(i, p);
-		if (ConvertPtr(p.first) == myID)
+		if (ConvertPtr(p.thread) == myID)
 		{
-			p.first->Accepted(hisID);
+			p.thread->Accepted(hisID);
 			success = true;
 			break;
 		}
@@ -548,9 +548,9 @@ WDownload::TunnelRejected(int64 myID)
 	{
 		DLPair p;
 		fDownloadList.GetItemAt(i, p);
-		if (ConvertPtr(p.first) == myID)
+		if (ConvertPtr(p.thread) == myID)
 		{
-			p.first->Rejected();
+			p.thread->Rejected();
 			success = true;
 			break;
 		}
@@ -576,9 +576,9 @@ WDownload::TunnelMessage(int64 myID, MessageRef tmsg, bool download)
 		{
 			DLPair p;
 			fDownloadList.GetItemAt(i, p);
-			if (ConvertPtr(p.first) == myID)
+			if (ConvertPtr(p.thread) == myID)
 			{
-				p.first->MessageReceived(tmsg);
+				p.thread->MessageReceived(tmsg);
 				break;
 			}
 		}
@@ -594,9 +594,9 @@ WDownload::TunnelMessage(int64 myID, MessageRef tmsg, bool download)
 		{
 			ULPair p;
 			fUploadList.GetItemAt(i, p);
-			if (ConvertPtr(p.first) == myID)
+			if (ConvertPtr(p.thread) == myID)
 			{
-				p.first->MessageReceived(tmsg);
+				p.thread->MessageReceived(tmsg);
 				break;
 			}
 		}
@@ -630,14 +630,14 @@ WDownload::AddUpload(const QString & remoteIP, uint32 port)
 	PRINT("Init session\n");
 	ut->InitSession();
 	ULPair p;
-	p.first = ut;
-	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
-	CHECK_PTR(p.second);
+	p.thread = ut;
+	p.item = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.item);
 	
 	if (ut->IsLocallyQueued())
 	{
 		PRINT("IsQueued\n");
-		p.second->setText(WTransferItem::Status, tr("Queued."));
+		p.item->setText(WTransferItem::Status, tr("Queued."));
 	}
 	PRINT("Inserting\n");
 	Lock();
@@ -673,14 +673,14 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool /* queued */)
 	ut->InitSession();
 	
 	ULPair p;
-	p.first = ut;
-	p.second = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
-	CHECK_PTR(p.second);
+	p.thread = ut;
+	p.item = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
+	CHECK_PTR(p.item);
 	
 	if (ut->IsLocallyQueued())
 	{
 		PRINT("IsQueued\n");
-		p.second->setText(WTransferItem::Status, tr("Queued."));
+		p.item->setText(WTransferItem::Status, tr("Queued."));
 	}
 	PRINT("Inserting\n");
 	Lock();
@@ -705,20 +705,20 @@ WDownload::DequeueULSessions()
 	{
 		ULPair pair;
 		fUploadList.GetItemAt(i, pair);
-		if (pair.first)
+		if (pair.thread)
 		{
 			if (
-				(pair.first->IsLocallyQueued() == false) && 
-				(pair.first->IsBlocked() == false) && 
-				(pair.first->IsActive() == true) &&
-				(pair.first->IsFinished() == false)
+				(pair.thread->IsLocallyQueued() == false) && 
+				(pair.thread->IsBlocked() == false) && 
+				(pair.thread->IsActive() == true) &&
+				(pair.thread->IsFinished() == false)
 				)
 				numNotQueued++;
 		}
 		
-		if (pair.second)
+		if (pair.item)
 		{
-			pair.second->setText(WTransferItem::QR, QString::number(i));
+			pair.item->setText(WTransferItem::QR, QString::number(i));
 		}
 	}
 	Unlock();
@@ -731,16 +731,16 @@ WDownload::DequeueULSessions()
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(i, pair);
-			if (pair.first)
+			if (pair.thread)
 			{
 				if (
-					(pair.first->IsLocallyQueued() == true) && 
-					(pair.first->IsManuallyQueued() == false) &&
-					(pair.first->IsFinished() == false)
+					(pair.thread->IsLocallyQueued() == true) && 
+					(pair.thread->IsManuallyQueued() == false) &&
+					(pair.thread->IsFinished() == false)
 					)
 				{
 					found = true;
-					pair.first->SetLocallyQueued(false);
+					pair.thread->SetLocallyQueued(false);
 					numNotQueued++;
 				}
 			}
@@ -779,11 +779,11 @@ WDownload::DequeueDLSessions()
 	{
 		DLPair pair;
 		fDownloadList.GetItemAt(i, pair);
-		if (pair.first)
+		if (pair.thread)
 		{
 			if (
-				(pair.first->IsLocallyQueued() == false) && 
-				(pair.first->IsActive() == true)
+				(pair.thread->IsLocallyQueued() == false) && 
+				(pair.thread->IsActive() == true)
 				)
 			{
 				// not queued, not finished?
@@ -791,9 +791,9 @@ WDownload::DequeueDLSessions()
 			}
 		}
 		
-		if (pair.second)
+		if (pair.item)
 		{
-			pair.second->setText(WTransferItem::QR, QString::number(qr++));
+			pair.item->setText(WTransferItem::QR, QString::number(qr++));
 		}
 		
 	}
@@ -807,17 +807,17 @@ WDownload::DequeueDLSessions()
 		{
 			DLPair pair;
 			fDownloadList.GetItemAt(i, pair);
-			if (pair.first)
+			if (pair.thread)
 			{
 				if (
-					(pair.first->IsLocallyQueued() == true) && 
-					(pair.first->IsManuallyQueued() == false) &&
-					(pair.first->IsFinished() == false)
+					(pair.thread->IsLocallyQueued() == true) && 
+					(pair.thread->IsManuallyQueued() == false) &&
+					(pair.thread->IsFinished() == false)
 					)
 				{
 					found = true;
-					pair.first->SetLocallyQueued(false);
-					pair.first->InitSession();
+					pair.thread->SetLocallyQueued(false);
+					pair.thread->InitSession();
 					numNotQueued++;
 				}
 			}
@@ -899,7 +899,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	MessageRef msg = d->Msg();
 	WDownloadThread * dt = NULL;
 	WTransferItem * item = NULL;
-	DLPair foundIt;
+	DLPair download;
 	
 	if (!msg())
 		return; // Invalid MessageRef!
@@ -913,11 +913,11 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	Lock();
 	for (unsigned int i = 0; i < fDownloadList.GetNumItems(); i++)
 	{
-		fDownloadList.GetItemAt(i, foundIt);
-		if (foundIt.first == dt)
+		fDownloadList.GetItemAt(i, download);
+		if (download.thread == dt)
 		{
 			// found our thread
-			item = foundIt.second;
+			item = download.item;
 			PRINT("\t\tFound dl!!!\n");
 			break;
 		}
@@ -1324,7 +1324,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 	MessageRef msg = u->Msg();
 	WUploadThread * ut = NULL;
 	WTransferItem * item = NULL;
-	ULPair foundIt;
+	ULPair upload;
 	
 	if (!msg())
 		return; // Invalid MessageRef!
@@ -1338,11 +1338,11 @@ WDownload::uploadEvent(WUploadEvent *u)
 	Lock();
 	for (unsigned int i = 0; i < fUploadList.GetNumItems(); i++)
 	{
-		fUploadList.GetItemAt(i, foundIt);
-		if (foundIt.first == ut)
+		fUploadList.GetItemAt(i, upload);
+		if (upload.thread == ut)
 		{
 			// found our thread
-			item = foundIt.second;
+			item = upload.item;
 			PRINT("\t\tFound ul!!!\n");
 			break;
 		}
@@ -1668,25 +1668,25 @@ WDownload::KillLocalQueues()
 	{
 		DLPair pair;
 		fDownloadList.GetItemAt(j, pair);
-		if (pair.first)
+		if (pair.thread)
 		{
-			if (pair.first->IsLocallyQueued())	// found queued item?
+			if (pair.thread->IsLocallyQueued())	// found queued item?
 			{
 				// Put all files in resume list
-				int n = pair.first->GetCurrentNum();
+				int n = pair.thread->GetCurrentNum();
 				
 				if (n > -1) 
 				{
-					for (int i = n; i < pair.first->GetNumFiles(); i++)
+					for (int i = n; i < pair.thread->GetNumFiles(); i++)
 					{
-						emit FileInterrupted(pair.first->GetFileName(i), pair.first->GetLocalFileName(i), pair.first->GetRemoteUser());
+						emit FileInterrupted(pair.thread->GetFileName(i), pair.thread->GetLocalFileName(i), pair.thread->GetRemoteUser());
 					}
 				}
 				
 				// free it
-				delete pair.second;
-				pair.first->Reset();
-				delete pair.first;
+				delete pair.item;
+				pair.thread->Reset();
+				delete pair.thread;
 				fDownloadList.RemoveItemAt(j);
 			}
 			else
@@ -1750,24 +1750,24 @@ WDownload::UserDisconnected(const WUserRef & uref)
 	{
 		ULPair pair;
 		fUploadList.GetItemAt(i, pair);
-		if (pair.first)
+		if (pair.thread)
 		{
-			if (pair.first->GetRemoteID() == sid)
+			if (pair.thread->GetRemoteID() == sid)
 			{
 				if (gWin->fSettings->GetBlockDisconnected())
 				{
 					// Only block transfers that are active
 					if (
-						(pair.first->IsBlocked() == false) &&
-						(pair.first->IsActive() == true)
+						(pair.thread->IsBlocked() == false) &&
+						(pair.thread->IsActive() == true)
 						)
 					{
-						pair.first->SetBlocked(true);
-						pair.first->Reset();
+						pair.thread->SetBlocked(true);
+						pair.thread->Reset();
 					}
 				}
-				if (pair.first->IsTunneled())
-					pair.first->Reset();
+				if (pair.thread->IsTunneled())
+					pair.thread->Reset();
 			}
 		}
 	}
@@ -1777,12 +1777,12 @@ WDownload::UserDisconnected(const WUserRef & uref)
 	{
 		DLPair pair;
 		fDownloadList.GetItemAt(i, pair);
-		if (pair.first)
+		if (pair.thread)
 		{
-			if (pair.first->GetRemoteID() == sid)
+			if (pair.thread->GetRemoteID() == sid)
 			{
-				if (pair.first->IsTunneled())
-					pair.first->Reset();
+				if (pair.thread->IsTunneled())
+					pair.thread->Reset();
 			}
 		}
 	}
@@ -1815,7 +1815,7 @@ WDownload::DLPopupActivated(int id)
 		return;
 	}
 	
-	dt = pair.first;
+	dt = pair.thread;
 	WASSERT(dt != NULL, "Download Thread is invalid!");
 	
 	switch (id)
@@ -2059,7 +2059,7 @@ WDownload::ULPopupActivated(int id)
 		return;
 	}
 	
-	ut = pair.first;
+	ut = pair.thread;
 	WASSERT(ut != NULL, "Upload Thread is invalid!");
 	
 	switch (id)
@@ -2423,7 +2423,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(index, pair);
-			if ( !pair.first )
+			if ( !pair.thread )
 			{
 				PRINT("Generic Thread is invalid!");
 				return;
@@ -2433,7 +2433,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			
 			// Not Locally Queued
 			
-			if (pair.first->IsLocallyQueued() == false)
+			if (pair.thread->IsLocallyQueued() == false)
 			{
 				fULPopup->setItemEnabled(ID_MOVEUP, false);
 				fULPopup->setItemEnabled(ID_MOVEDOWN, false);
@@ -2446,7 +2446,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			
 			// Already finished
 			
-			if (pair.first->IsFinished() == true)
+			if (pair.thread->IsFinished() == true)
 			{
 				fULPopup->setItemEnabled(ID_QUEUE, false);
 				fULPopup->setItemEnabled(ID_BLOCK, false);
@@ -2458,7 +2458,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			{
 				fULPopup->setItemEnabled(ID_QUEUE, true);
 				fULPopup->setItemEnabled(ID_BLOCK, true);
-				if (pair.first->IsTunneled() == false)
+				if (pair.thread->IsTunneled() == false)
 					fULPopup->setItemEnabled(ID_THROTTLE, true);
 				else
 					fULPopup->setItemEnabled(ID_THROTTLE, false);
@@ -2466,9 +2466,9 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 				fULPopup->setItemEnabled(ID_CANCEL, true);
 			}
 			
-			fULPopup->setItemChecked(ID_QUEUE, pair.first->IsLocallyQueued());
-			fULPopup->setItemChecked(ID_IGNORE, gWin->IsIgnoredIP( pair.first->GetRemoteIP() ));
-			int fNewRate = pair.first->GetRate();
+			fULPopup->setItemChecked(ID_QUEUE, pair.thread->IsLocallyQueued());
+			fULPopup->setItemChecked(ID_IGNORE, gWin->IsIgnoredIP( pair.thread->GetRemoteIP() ));
+			int fNewRate = pair.thread->GetRate();
 			fULThrottleMenu->setItemChecked(fULThrottle, false);
 			
 			switch (fNewRate)
@@ -2626,7 +2626,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			
 			fULThrottleMenu->setItemChecked(fULThrottle, true);
 			
-			int fNewBan = pair.first->GetBanTime();
+			int fNewBan = pair.thread->GetBanTime();
 			fULBanMenu->setItemChecked(fULBan, false);
 			
 			switch (fNewBan)
@@ -2679,7 +2679,7 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			}
 			fULBanMenu->setItemChecked(fULBan, true);
 			
-			int fNewPacket = lrint(pair.first->GetPacketSize());
+			int fNewPacket = lrint(pair.thread->GetPacketSize());
 			fULPacketMenu->setItemChecked(fULPacket, false);
 			
 			switch (fNewPacket)
@@ -2759,7 +2759,7 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 		{
 			DLPair pair;
 			fDownloadList.GetItemAt(index, pair);
-			if ( !pair.first )
+			if ( !pair.thread )
 			{
 				PRINT("Generic Thread is invalid!");
 				return;
@@ -2769,7 +2769,7 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 			
 			// Not Locally Queued
 			
-			if (pair.first->IsLocallyQueued() == false)
+			if (pair.thread->IsLocallyQueued() == false)
 			{
 				fDLPopup->setItemEnabled(ID_MOVEUP, false);
 				fDLPopup->setItemEnabled(ID_MOVEDOWN, false);
@@ -2782,7 +2782,7 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 			
 			// Already finished
 			
-			if (pair.first->IsFinished() == true)
+			if (pair.thread->IsFinished() == true)
 			{
 				fDLPopup->setItemEnabled(ID_THROTTLE, false);
 				fDLPopup->setItemEnabled(ID_QUEUE, false);
@@ -2791,7 +2791,7 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 			}
 			else
 			{
-				if (pair.first->IsTunneled() == false)
+				if (pair.thread->IsTunneled() == false)
 					fDLPopup->setItemEnabled(ID_THROTTLE, true);
 				else
 					fDLPopup->setItemEnabled(ID_THROTTLE, false);
@@ -2800,7 +2800,7 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 
 				// Still connecting?
 
-				if (pair.first->IsConnecting() == true)
+				if (pair.thread->IsConnecting() == true)
 				{
 					fDLPopup->setItemEnabled(ID_QUEUE, false);
 				}
@@ -2810,8 +2810,8 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 				}
 			}
 			
-			fDLPopup->setItemChecked(ID_QUEUE, pair.first->IsLocallyQueued());
-			int fNewRate = pair.first->GetRate();
+			fDLPopup->setItemChecked(ID_QUEUE, pair.thread->IsLocallyQueued());
+			int fNewRate = pair.thread->GetRate();
 			fDLThrottleMenu->setItemChecked(fDLThrottle, false);
 			switch (fNewRate)
 			{
@@ -2970,11 +2970,11 @@ WDownload::DLRightClicked(QListViewItem * item, const QPoint & p, int)
 			// Add "Run..." items...
 			
 			fDLRunMenu->clear();
-			int n = pair.first->GetNumFiles();
+			int n = pair.thread->GetNumFiles();
 			for (int r = 0; r < n; r++)
 			{
-				if (!pair.first->GetLocalFileName(r).isEmpty())
-					fDLRunMenu->insertItem(pair.first->GetLocalFileName(r), ID_RUN+1+r);
+				if (!pair.thread->GetLocalFileName(r).isEmpty())
+					fDLRunMenu->insertItem(pair.thread->GetLocalFileName(r), ID_RUN+1+r);
 			}
 			fDLPopup->popup(p);
 		}
@@ -2993,7 +2993,7 @@ WDownload::FindDLItem(unsigned int & index, QListViewItem * s)
 	{
 		DLPair p;
 		fDownloadList.GetItemAt(i, p);
-		if (p.second == s)
+		if (p.item == s)
 		{
 			index = i;
 			success = true;
@@ -3022,7 +3022,7 @@ WDownload::FindULItem(unsigned int & index, QListViewItem * s)
 	{
 		ULPair p;
 		fUploadList.GetItemAt(i, p);
-		if (p.second == s)
+		if (p.item == s)
 		{
 			index = i;
 			success = true;
@@ -3059,7 +3059,7 @@ WDownload::DLMoveUp(unsigned int index)
 		index2--;
 		DLPair p;
 		fDownloadList.GetItemAt(index2, p);
-		if (p.first->IsLocallyQueued())
+		if (p.thread->IsLocallyQueued())
 			break;
 	}
 	fDownloadList.InsertItemAt(index2, wp);
@@ -3087,7 +3087,7 @@ WDownload::ULMoveUp(unsigned int index)
 		index2--;
 		ULPair p;
 		fUploadList.GetItemAt(index2, p);
-		if (p.first->IsLocallyQueued())
+		if (p.thread->IsLocallyQueued())
 			break;
 	}
 	fUploadList.InsertItemAt(index2, wp);
@@ -3115,7 +3115,7 @@ WDownload::DLMoveDown(unsigned int index)
 		index2++;
 		DLPair p;
 		fDownloadList.GetItemAt(index2, p);
-		if (p.first->IsLocallyQueued())
+		if (p.thread->IsLocallyQueued())
 			break;
 	}
 	
@@ -3146,7 +3146,7 @@ WDownload::ULMoveDown(unsigned int index)
 		index2++;
 		ULPair p;
 		fUploadList.GetItemAt(index2, p);
-		if (p.first->IsLocallyQueued())
+		if (p.thread->IsLocallyQueued())
 			break;
 	}
 	
@@ -3173,17 +3173,17 @@ WDownload::UpdateULRatings()
 	{
 		ULPair pair;
 		fUploadList.GetItemAt(i, pair);
-		if (pair.second)
+		if (pair.item)
 		{
 #ifdef _DEBUG
-			WString wFile(pair.first->GetCurrentFile());
+			WString wFile(pair.thread->GetCurrentFile());
 			if (wFile.length() > 0)
 				PRINT("Item %d: %S\n", i, wFile.getBuffer() );
 			else
 				PRINT("Item %d\n", i);
 #endif
 			
-			pair.second->setText(WTransferItem::QR, QString::number(i));
+			pair.item->setText(WTransferItem::QR, QString::number(i));
 		}
 	}
 	Unlock();
@@ -3206,9 +3206,9 @@ WDownload::UpdateDLRatings()
 	{
 		DLPair pair;
 		fDownloadList.GetItemAt(i, pair);
-		if (pair.second)
+		if (pair.item)
 		{
-			pair.second->setText(WTransferItem::QR, QString::number(i));
+			pair.item->setText(WTransferItem::QR, QString::number(i));
 		}
 	}
 	Unlock();
@@ -3224,15 +3224,15 @@ WDownload::TransferCallBackRejected(const QString &qFrom, int64 timeLeft, uint32
 	{
 		DLPair pair;
 		fDownloadList.GetItemAt(i, pair);
-		if (pair.first)
+		if (pair.thread)
 		{
 			if (
-				(pair.first->IsActive() == false) &&
-				(pair.first->GetRemoteUser() == qFrom) && 
-				(pair.first->GetRemotePort() == port)
+				(pair.thread->IsActive() == false) &&
+				(pair.thread->GetRemoteUser() == qFrom) && 
+				(pair.thread->GetRemotePort() == port)
 				)
 			{
-				pair.first->SetBlocked(true, timeLeft);
+				pair.thread->SetBlocked(true, timeLeft);
 				break;
 			}
 		}
@@ -3254,15 +3254,15 @@ WDownload::ClearFinishedDL()
 		{
 			DLPair pair;
 			fDownloadList.GetItemAt(i, pair);
-			if ((pair.first->IsFinished() == true) && (pair.first->IsManuallyQueued() == false))
+			if ((pair.thread->IsFinished() == true) && (pair.thread->IsManuallyQueued() == false))
 			{
 				// found finished item, erase it
 				fDownloadList.RemoveItemAt(i);
 				
 				// free resources
-				pair.first->Reset();
-				delete pair.first;
-				delete pair.second;
+				pair.thread->Reset();
+				delete pair.thread;
+				delete pair.item;
 			}
 			else
 			{
@@ -3291,14 +3291,14 @@ WDownload::ClearFinishedUL()
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(i, pair);
-			if (pair.first->IsFinished() == true)
+			if (pair.thread->IsFinished() == true)
 			{
 				// found finished item, erase it
 				fUploadList.RemoveItemAt(i);
 				// free resources
-				pair.first->Reset();
-				delete pair.first;
-				delete pair.second;
+				pair.thread->Reset();
+				delete pair.thread;
+				delete pair.item;
 			}
 			else
 			{
@@ -3325,13 +3325,13 @@ WDownload::GetNumDownloads()
 		{
 			DLPair pair;
 			fDownloadList.GetItemAt(i, pair);
-			if (pair.first)
+			if (pair.thread)
 			{
 				if (
-					(pair.first->IsLocallyQueued() == false) &&
-					(pair.first->IsRemotelyQueued() == false) &&
-					(pair.first->IsBlocked() == false) &&
-					(pair.first->IsFinished() == false)
+					(pair.thread->IsLocallyQueued() == false) &&
+					(pair.thread->IsRemotelyQueued() == false) &&
+					(pair.thread->IsBlocked() == false) &&
+					(pair.thread->IsFinished() == false)
 					)
 				{
 					n++;
@@ -3355,12 +3355,12 @@ WDownload::GetNumUploads()
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(i, pair);
-			if (pair.first)
+			if (pair.thread)
 			{
 				if (
-					(pair.first->IsLocallyQueued() == false) &&
-					(pair.first->IsBlocked() == false) &&
-					(pair.first->IsFinished() == false)
+					(pair.thread->IsLocallyQueued() == false) &&
+					(pair.thread->IsBlocked() == false) &&
+					(pair.thread->IsFinished() == false)
 					)
 				{
 					n++;
@@ -3384,9 +3384,9 @@ WDownload::GetUploadQueue()
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(i, pair);
-			if (pair.first)
+			if (pair.thread)
 			{
-				if ((pair.first->IsFinished() == false) && (pair.first->IsBlocked() == false))
+				if ((pair.thread->IsFinished() == false) && (pair.thread->IsBlocked() == false))
 				{
 					n++;
 				}

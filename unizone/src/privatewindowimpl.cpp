@@ -310,7 +310,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 						{
 							for (unsigned int qi = 0; qi < sendTo.GetNumItems(); qi++)
 							{
-								user = sendTo[qi].first;
+								user = sendTo[qi].user;
 								QString sid = user()->GetUserID();
 
 								if (rem)	
