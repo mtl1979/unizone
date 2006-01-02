@@ -1081,7 +1081,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (!p.isEmpty())
 			{
 				bool ok;
-				int index = p.toInt(&ok);
+				unsigned int index = p.toUInt(&ok);
 				if (ok)
 				{
 					KillResume(index);
@@ -3093,7 +3093,7 @@ WinShareWindow::KillResume(uint32 index)
 {
 	rLock.Lock();
 	bool found = muscleInRange(index, 0UL, (fResumeMap.GetNumItems() - 1));
-	if ((index >= 0) && (index < fResumeMap.GetNumItems()))
+	if (index < fResumeMap.GetNumItems())
 	{
 		WResumePair p;
 		fResumeMap.GetItemAt(index, p);

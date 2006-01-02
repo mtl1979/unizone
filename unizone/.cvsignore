@@ -9,3 +9,4 @@ core.*
 qtcheck.out
 stdout.txt
 Unizone.app
+.DS_Store ._Unizone .gdb_history
