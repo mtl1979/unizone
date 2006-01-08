@@ -1215,7 +1215,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				iter.GetNextValue(user);
 				QString userName = StripURL(user()->GetUserName().stripWhiteSpace());
 
-				if (Match(userName, qr) >= 0)
+				if (Match(userName, qr) == 0)
 				{
 					WUserSearchPair pair;
 					pair.user = user;
