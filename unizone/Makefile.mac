@@ -18,8 +18,8 @@ LIBS = -L$(QTDIR)/lib -lqt-mt -lz -framework Carbon -framework CoreFoundation -f
 
 CC=cc -arch i386 -arch ppc
 CXX=c++ -arch i386 -arch ppc
-CFLAGS = $(DEBUGCFLAGS) -pipe -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
-CXXFLAGS = $(CFLAGS) -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING
+CFLAGS = $(DEBUGCFLAGS) -pipe -Wall -W -Wno-multichar $(GCCOPTFLAGS)
+CXXFLAGS = $(CFLAGS) -Wno-deprecated -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING
 LFLAGS = -headerpad_max_install_names -prebind
 EXECUTABLES = Unizone.app/Contents/MacOS/Unizone
 SRCFILES = \

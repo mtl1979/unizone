@@ -1,5 +1,7 @@
 #include "wutil.h"
 
+#include <string.h>
+
 #ifdef __APPLE__
 wchar_t *wcsdup(const wchar_t *s)
 {

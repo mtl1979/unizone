@@ -1,7 +1,11 @@
 #ifndef WUTIL_H
 #define WUTIL_H
 
+#ifdef _cplusplus
 class QString;
+#endif
+
+#include "platform.h"
 
 #ifdef WIN32
 #  include <windows.h>
@@ -12,14 +16,14 @@ class QString;
 #  include <stdlib.h>
 #endif
 
-#include "platform.h"
-
-#ifdef _cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif 
 
 #ifdef __APPLE__
 wchar_t *wcsdup(const wchar_t *);
+wchar_t *wcslwr(wchar_t *);
+wchar_t *wcsupr(wchar_t *);
 #endif
 
 // Replace all instances of 'in' with 'out'
@@ -31,14 +35,15 @@ void wcopy(wchar_t *dest, const wchar_t *src, size_t len);
 // Reverse 'len' characters of 'src' to 'dest'
 void wreverse(wchar_t *dest, const wchar_t *src, ssize_t len);
 
+#ifdef __cplusplus
+}
+
 // Converts array of wchar_t to QString
 QString wideCharToQString(const wchar_t *wide);
 
 // Converts QString to pointer to array of wchar_t, pointer must be deleted when not needed anymore
 wchar_t *qStringToWideChar(const QString &str);
 
-#ifdef _cplusplus
-}
 #endif 
 
 #endif

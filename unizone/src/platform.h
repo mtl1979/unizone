@@ -5,12 +5,14 @@
 #pragma warning(disable: 4786)
 #endif
 
-class QString;
+// class QString;
 
+#ifdef __cplusplus
 #include "wstring.h"
 #include "util/String.h"
 
 using muscle::String;
+#endif
 
 #ifdef WIN32
 

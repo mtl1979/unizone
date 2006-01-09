@@ -1,6 +1,7 @@
 #include <qstring.h>
 
 #include "wutil.h"
+#include "support/MuscleSupport.h"
 
 #if defined(QT_QSTRING_UCS_4)
 # if defined(wcsncpy)
@@ -16,7 +17,7 @@ void wcopy(wchar_t *dest, const wchar_t *src, size_t len)
 		dest[x] = src[x];
 	dest[len] = 0;
 }
-# endif
+# endif // wcsncpy
 #else
 void wcopy(wchar_t *dest, const wchar_t *src, size_t len)
 {
@@ -40,10 +41,9 @@ void wcopy(wchar_t *dest, const wchar_t *src, size_t len)
 		len--;
 	}
 }
-#endif // wcsncpy
 #endif // QT_QSTRING_UCS_4
 
-void wcat(wchar_t *dest, wchar_t *src, size_t pos)
+void wcat(wchar_t *dest, const wchar_t *src, size_t pos)
 {
 	dest += pos;
 	wcopy(dest, src, wcslen(src));
