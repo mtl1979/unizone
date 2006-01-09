@@ -224,6 +224,8 @@ WFormat::SystemText(const QString &text)
 	temp += "</font>";
 	temp += " ";
 	temp += tr("<font color=\"%1\">").arg(GetColor(WColors::Text));
+	if (text.contains("<br>"))
+		temp += "<br>";
 	temp += text;
 	temp += "</font>";
 	temp += "</font>";

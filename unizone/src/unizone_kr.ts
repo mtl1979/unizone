@@ -3119,7 +3119,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Total: %1 files</source>
-        <translation>전체: %1 개의 파일</translation>
+        <translation type='obsolete'>전체: %1 개의 파일</translation>
     </message>
     <message>
         <source>Address info for user #%1 (%2)</source>
@@ -4243,6 +4243,18 @@ Date: %4</source>
     </message>
     <message>
         <source>Removed file &apos;%1&apos; from resume list.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Total:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>1 file</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 files</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

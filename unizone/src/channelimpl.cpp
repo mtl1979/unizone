@@ -314,7 +314,7 @@ Channel::customEvent(QCustomEvent * event)
 				// Give a list of available commands
 				if (CompareCommand(wte->Text(), "/help"))
 				{
-					QString help("\n");
+					QString help;
 					help		+=	tr("Channel command reference:");
 					help		+=	"\n\n\t\t\t\t";
 					help		+=	tr("/action [action] - do something");

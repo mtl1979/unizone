@@ -6,6 +6,7 @@
 #include "fileinfo.h"
 #include "debugimpl.h"
 #include "wstring.h"
+#include "wutil.h"
 
 void
 UFileInfo::InitMIMEType()

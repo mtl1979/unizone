@@ -2664,7 +2664,7 @@ WinShareWindow::ShowHelp(const QString & command)
 	QString temp;
 	QString qNone = tr("&lt;None&gt;");
 
-	QString helpText	=	"\n";
+	QString helpText;
 	helpText			+=	tr("Unizone Command Reference");
 	helpText			+=	"\n";
 	helpText			+=	"\n\t\t\t\t"; 
@@ -2925,7 +2925,6 @@ WinShareWindow::ShowHelp(const QString & command)
 			{
 				if (s == 0)		// First one?
 				{
-					str = "\n"; 
 					str += tr("Help for %1:").arg(command);
 					str += "\n";
 				}
@@ -3068,7 +3067,7 @@ WinShareWindow::ListResumes()
 	QString out;
 
 	rLock.Lock();
-	out = "\n" + tr("Resume list:");
+	out = tr("Resume list:");
 	int i = 0;
 	for (unsigned int x = 0; x < fResumeMap.GetNumItems(); x++)
 	{
@@ -3082,7 +3081,13 @@ WinShareWindow::ListResumes()
 			i++;
 		}
 	}
-	out += "\n" + tr("Total: %1 files").arg(i);
+	out += "\n";
+	out += tr("Total:");
+	out += " ";
+	if (i == 1)
+		out += tr("1 file");
+	else
+		out += tr("%1 files").arg(i);
 	rLock.Unlock();
 
 	PrintSystem(FixString(out));

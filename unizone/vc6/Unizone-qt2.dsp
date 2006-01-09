@@ -447,6 +447,10 @@ SOURCE=..\src\wsystemevent.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\windows\wutil_msvc.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\wwarningevent.cpp
 # End Source File
 # End Group
@@ -2380,6 +2384,10 @@ SOURCE=..\src\wsystemevent.h
 # Begin Source File
 
 SOURCE=..\src\wuploadevent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wutil.h
 # End Source File
 # Begin Source File
 

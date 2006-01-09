@@ -5,7 +5,8 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <qstring.h>
+class QString;
+
 #include "wstring.h"
 #include "util/String.h"
 
@@ -48,47 +49,58 @@ void WFlashWindow(HWND fWinHandle);
 	**	Therefore implement inline versions of these functions here.
 	*/
 	
-	__inline long int 
+	inline __declspec(naked) int 
 	lrint (double flt)
 	{	
 		int intgr;
 
 		_asm
 		{	
+			push ebp
+			mov ebp, esp
 			fld flt
 			fistp intgr
+			mov eax, intgr
+			pop ebp
+			ret
 		} ;
-			
-		return intgr ;
 	} 
 
-	__inline int64
+	inline __declspec(naked) int64
 	llrint (double flt)
 	{
 		int64 intgr;
 
 		_asm
 		{	
+			push ebp
+			mov ebp, esp
 			fld flt
 			fistp intgr
+			mov edx, DWORD PTR intgr
+			mov eax, DWORD PTR intgr + 4
+			pop ebp
+			ret
 		} ;
-
-		return intgr ;
 	}
 
-	__inline long int 
+	inline __declspec(naked) int 
 	lrintf (float flt)
 	{	
 		int intgr;
 
 		_asm
 		{	
+			push ebp
+			mov ebp, esp
 			fld flt
 			fistp intgr
+			mov eax, intgr
+			pop ebp
+			ret
 		} ;
-			
-		return intgr ;
 	}
+
 #define HAVE_LRINT
 #endif
 

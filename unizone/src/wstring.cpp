@@ -1,6 +1,7 @@
 #include <qstring.h>
 
 #include "wstring.h"
+#include "wutil.h"
 
 WString::WString()
 {
@@ -14,7 +15,7 @@ WString::WString(const wchar_t *str)
 	int len = wcslen(str);
 	buffer = new wchar_t[len+1];
 	if (buffer)
-		wcscpy(buffer, str);
+		wcopy(buffer, str, len);
 	utfbuf = NULL;
 	utflen = 0;
 }
@@ -64,7 +65,7 @@ WString::operator=(const wchar_t *str)
 		int len = wcslen(str);
 		buffer = new wchar_t[len+1];
 		if (buffer)
-			wcscpy(buffer, str);
+			wcopy(buffer, str, len);
 	}
 	return *this;
 }
@@ -78,7 +79,7 @@ WString::operator=(const WString &str)
 		int len = str.length();
 		buffer = new wchar_t[len+1];
 		if (buffer)
-			wcscpy(buffer, str.getBuffer());
+			wcopy(buffer, str.getBuffer(), len);
 	}
 	return *this;
 }
@@ -96,20 +97,22 @@ WString::operator+=(const wchar_t *str)
 {
 	if (length() != -1)
 	{
-		int newlen = length() + wcslen(str) + 1;
+		int oldlen = length();
+		int newlen = oldlen + wcslen(str) + 1;
 		wchar_t *buf2 = new wchar_t[newlen];
 		if (buf2)
 		{
-			wcscpy(buf2, buffer);
-			wcscat(buf2, str);
+			wcopy(buf2, buffer, oldlen);
+			wcat(buf2, str, oldlen);
 			setBuffer(buf2);
 		}
 	}
 	else // No string to append to
 	{
-		buffer = new wchar_t[wcslen(str) + 1];
+		int newlen = wcslen(str);
+		buffer = new wchar_t[newlen + 1];
 		if (buffer)
-			wcscpy(buffer, str);
+			wcopy(buffer, str, newlen);
 	}
 	return *this;
 }
@@ -119,12 +122,13 @@ WString::operator+=(const WString &str)
 {
 	if (length() != -1)
 	{
-		int newlen = length() + str.length() + 1;
+		int oldlen = length();
+		int newlen = oldlen + str.length() + 1;
 		wchar_t *buf2 = new wchar_t[newlen];
 		if (buf2)
 		{
-			wcscpy(buf2, buffer);
-			wcscat(buf2, str.getBuffer());
+			wcopy(buf2, buffer, oldlen);
+			wcat(buf2, str.getBuffer(), oldlen);
 			setBuffer(buf2);
 		}
 	}
@@ -140,13 +144,14 @@ WString::operator+=(const QString &str)
 {
 	if (length() != -1)
 	{
-		int newlen = length() + str.length() + 1;
+		int oldlen = length();
+		int newlen = oldlen + str.length() + 1;
 		wchar_t *buf2 = new wchar_t[newlen];
 		if (buf2)
 		{
 			WString s2(str);
-			wcscpy(buf2, buffer);
-			wcscat(buf2, s2.getBuffer());
+			wcopy(buf2, buffer, oldlen);
+			wcat(buf2, s2.getBuffer(), oldlen);
 			setBuffer(buf2);
 		}
 	}
@@ -248,12 +253,7 @@ WString::upper() const
 		buf2 = wcsdup(buffer);
 		if (buf2)
 		{
-#ifdef WIN32
 			buf2 = wcsupr(buf2);
-#else
-			for (unsigned int y = 0; y < wcslen(buf2); y++)
-				buf2[y] = towupper( buf2[y] );
-#endif
 			s2.setBuffer(buf2);
 		}
 	}
@@ -270,12 +270,7 @@ WString::lower() const
 		buf2 = wcsdup(buffer);
 		if (buf2)
 		{
-#ifdef WIN32
 			buf2 = wcslwr(buf2);
-#else
-			for (unsigned int y = 0; y < wcslen(buf2); y++)
-				buf2[y] = towlower( buf2[y] );
-#endif
 			s2.setBuffer(buf2);
 		}
 	}
@@ -289,24 +284,10 @@ WString::reverse() const
 	if (buffer)
 	{
 		wchar_t *buf2;
-		buf2 = wcsdup(buffer);
-		if (buf2)
-		{
-#ifdef WIN32
-			buf2 = wcsrev(buf2);
-#else
-			unsigned int start = 0;
-			unsigned int end = wcslen(buf2) - 1;
-			while (start < end)
-			{
-				wchar_t temp = buf2[start];
-				buf2[start] = buf2[end];
-				buf2[end] = temp;
-				start++; end--;
-			}; 
-#endif
-			s2.setBuffer(buf2);
-		}
+		int len = wcslen(buffer);
+		buf2 = new wchar_t[len + 1];
+		wreverse(buf2, buffer, len);
+		s2.setBuffer(buf2);
 	}
 	return s2;
 }
@@ -323,69 +304,6 @@ WString::length() const
 void
 WString::replace(wchar_t in, wchar_t out)
 {
-	if (buffer)
-	{
-		wchar_t *b = buffer;
-		while (*b != 0)
-		{
-			if (*b == in)
-				*b = out;
-			b++;
-		}; 
-	}
+	wreplace(buffer, in, out);
 }
 
-/*
- *
- *  Conversion functions
- *
- */
-
-QString 
-wideCharToQString(const wchar_t *wide)
-{
-    QString result;
-#ifdef WIN32
-    result.setUnicodeCodes(wide, lstrlenW(wide));
-#else
-    result.setUnicodeCodes((const ushort *) wide, wcslen(wide));
-#endif
-    return result;
-}
-
-wchar_t *
-qStringToWideChar(const QString &str)
-{
-   	if (str.isNull())
-	{
-       	return NULL;
-	}
-
-	wchar_t *result = new wchar_t[str.length() + 1];
-	if (result)
-	{
-#if defined(QT_QSTRING_UCS_4) || !defined(WIN32)
-		for (unsigned int i = 0; i < str.length(); ++i)
-			result[i] = str.at(i).unicode();
-#else
-		memcpy(result, str.unicode(), str.length() * 2);
-#endif
-		result[str.length()] = 0;
-		return result;
-	}
-	else
-	{
-		return NULL;
-	}
-}
-
-#ifdef __APPLE__
-wchar_t *wcsdup(const wchar_t *s)
-{
-	size_t len = (wcslen(s) + 1) * sizeof(wchar_t);
-	wchar_t *n = (wchar_t *) malloc(len);
-	if (n == NULL) return NULL;
-	
-	return (wchar_t *) memcpy(n, (void *) s, len);		
-}
-#endif

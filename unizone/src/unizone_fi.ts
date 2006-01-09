@@ -3426,7 +3426,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Total: %1 files</source>
-        <translation>Yhteensä: %1 tiedostoa</translation>
+        <translation type='obsolete'>Yhteensä: %1 tiedostoa</translation>
     </message>
     <message>
         <source>Address info for user #%1 (%2):</source>
@@ -4735,6 +4735,18 @@ Päiväys: %4</translation>
     <message>
         <source>Removed file &apos;%1&apos; from resume list.</source>
         <translation>Tiedosto &apos;%1&apos; poistettu jatkettavien tiedostojen luettelosta.</translation>
+    </message>
+    <message>
+        <source>Total:</source>
+        <translation>Yhteensä:</translation>
+    </message>
+    <message>
+        <source>1 file</source>
+        <translation>1 tiedosto</translation>
+    </message>
+    <message>
+        <source>%1 files</source>
+        <translation>%1 tiedostoa</translation>
     </message>
 </context>
 </TS>

@@ -12,19 +12,9 @@
 #  include <stdlib.h>
 #endif
 
-#ifdef __APPLE__
-wchar_t *wcsdup(const wchar_t *);
-#endif
-
 #include <platform.h>
 
 class QString;
-
-// Converts array of wchar_t to QString
-QString wideCharToQString(const wchar_t *wide);
-
-// Converts QString to pointer to array of wchar_t, pointer must be deleted when not needed anymore
-wchar_t *qStringToWideChar(const QString &str);
 
 class WString
 {

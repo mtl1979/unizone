@@ -569,7 +569,9 @@ WinShareWindow::CheckResumes(const QString &user)
 
 			if (fSettings->GetDownloads())
 			{
-				out += "\n" + tr("Trying to resume file %1 from user %2").arg(fResumeMap[x].info.fRemoteName).arg(user);
+				if (!out.isEmpty())
+					out += "\n";
+				out += tr("Trying to resume file %1 from user %2").arg(fResumeMap[x].info.fRemoteName).arg(user);
 			}
 			fFiles.AddTail(fResumeMap[x].info.fRemoteName);
 			fLFiles.AddTail(fResumeMap[x].info.fLocalName);

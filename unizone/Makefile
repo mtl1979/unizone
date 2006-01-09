@@ -93,7 +93,8 @@ SRCFILES = \
 	src/unix/mimedb.cpp \
 	src/unix/wfile.cpp \
 	src/unix/wfile_unix.cpp \
-	src/unix/wlaunchthread_unix.cpp
+	src/unix/wlaunchthread_unix.cpp \
+	src/unix/wutil_unix.cpp
 
 MOC_SRCFILES = \
 	src/moc_aboutdlg.cpp \

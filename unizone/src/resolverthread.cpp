@@ -54,7 +54,7 @@ ResolverThread::PrintAddressInfo(const WUserRef &user, bool verbose)
 	{
 		Inet_NtoA(address, host);
 					
-		out += "\n" + tr("Address info for user #%1:").arg(uid);
+		out += tr("Address info for user #%1:").arg(uid);
 		out += "\n" + tr("User Name: %1").arg(uname);
 					
 		out += "\n" + tr("IP Address: %1").arg(host);
@@ -98,7 +98,7 @@ ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
 					
 		if (verbose)
 		{
-			out += "\n" + tr("Address info for %1:").arg(host);
+			out += tr("Address info for %1:").arg(host);
 				
 			QString qhost = ResolveHost(address);
 			if (qhost != QString::null)

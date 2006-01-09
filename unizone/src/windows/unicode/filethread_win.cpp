@@ -9,6 +9,7 @@
 
 #include "filethread.h"
 #include "wstring.h"
+#include "wutil.h"
 #include "winsharewindow.h"
 #include "global.h"
 #include "util.h"				// for endsWith()
