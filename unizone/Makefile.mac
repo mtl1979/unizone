@@ -89,10 +89,12 @@ SRCFILES = \
 	src/unix/filethread_unix.cpp \
 	src/unix/gotourl_unix.cpp \
 	src/unix/mimedb.cpp \
+	src/unix/wcsdup.c \
+	src/unix/wcslwr.c \
+	src/unix/wcsupr.c \
 	src/unix/wfile.cpp \
 	src/unix/wfile_unix.cpp \
 	src/unix/wlaunchthread_unix.cpp \
-	src/unix/wcsdup.c \
 	src/unix/wutil_unix.cpp
 
 MOC_SRCFILES = \

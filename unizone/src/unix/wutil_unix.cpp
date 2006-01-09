@@ -74,27 +74,7 @@ void wreplace(wchar_t *buffer, wchar_t in, wchar_t out)
 		}; 
 	}
 }
-wchar_t *wcsupr(wchar_t *s)
-{
-	wchar_t *b = s;
-	while (*b != 0)
-	{
-		*b = towupper( *b );
-		b++;
-	}
-	return s;
-}
 
-wchar_t *wcslwr(wchar_t *s)
-{
-	wchar_t *b = s;
-	while (*b != 0)
-	{
-		*b = towlower( *b );
-		b++;
-	}
-	return s;
-}
 /*
 *
 *  Conversion functions

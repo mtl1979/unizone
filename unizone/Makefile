@@ -3,24 +3,25 @@ ifeq ($(DEBUG), )
 endif
 
 ifeq ($(DEBUG), 0)
-  DEBUGCXXFLAGS = -DNDEBUG
+  DEBUGCFLAGS = -DNDEBUG
 else 
-  DEBUGCXXFLAGS = -g -D_DEBUG 
+  DEBUGCFLAGS = -g -D_DEBUG 
 endif
 
 INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/unix -Isrc/muscle \
 	-Isrc/muscle/message -Isrc/muscle/iogateway \
 	-Isrc/muscle/reflector -Isrc/muscle/regex -Isrc/muscle/util \
 	-Isrc/muscle/syslog -Isrc/muscle/system
-GCCOPTFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT \
-	-DBETA -DQT_DLL -DMUSCLE_ENABLE_ZLIB_ENCODING -O2
+GCCOPTFLAGS = $(INCLUDES)  \
+	-DBETA -DQT_DLL -O2
 KERNEL_NAME := $(shell uname -s || true)
 
 ifeq ($(KERNEL_NAME), Linux)
 GCCOPTFLAGS += -DLINUX -D__USE_LARGEFILE_64
 endif
 
-CXXFLAGS = $(DEBUGCXXFLAGS) -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
+CFLAGS = $(DEBUGCFLAGS) -Wall -W -Wno-multichar  $(GCCOPTFLAGS)
+CXXFLAGS = $(CFLAGS) -Wno-deprecated -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING
 LFLAGS =
 LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
@@ -91,6 +92,8 @@ SRCFILES = \
 	src/unix/filethread_unix.cpp \
 	src/unix/gotourl_unix.cpp \
 	src/unix/mimedb.cpp \
+	src/unix/wcslwr.c \
+	src/unix/wcsupr.c \
 	src/unix/wfile.cpp \
 	src/unix/wfile_unix.cpp \
 	src/unix/wlaunchthread_unix.cpp \
@@ -207,6 +210,10 @@ Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(MUSCLEMOC_OBJFILES) $
 %.o : %.cpp
 	@echo Compiling $< ...
 	@$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o : %.c
+	@echo Compiling $< ...
+	@$(CC) $(CFLAGS) -c -o $@ $<
 
 translations : src/Makefile
 	@$(MAKE) -C src -f Makefile
