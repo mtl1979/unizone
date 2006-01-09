@@ -81,15 +81,12 @@ UpdateEntry(NetAddress &na, LPHOSTENT lpHostEntry)
 void
 UpdateEntry(NetAddress &na, uint32 ip)
 {
-	char host[16];
 	struct in_addr iaHost;	   // Internet address structure
 	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 	
-	Inet_NtoA(ip, host);
-
 	na.ip = ip;					// We need to remember to initialize this
 
-	iaHost.s_addr = inet_addr(host);
+	iaHost.s_addr = htonl(ip);
 	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
 	UpdateEntry(na, lpHostEntry);
 }
@@ -174,12 +171,9 @@ ResolveAddress(const String &address)
 QString
 ResolveHost(uint32 ip)
 {
-	char host[16];
 	struct in_addr iaHost;	   // Internet address structure
 	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 	
-	Inet_NtoA(ip, host);
-
 	//
 	NetAddress na;
 
@@ -195,7 +189,7 @@ ResolveHost(uint32 ip)
 					if (!na.address.isEmpty())
 						return na.address;
 				}
-				iaHost.s_addr = inet_addr(host);
+				iaHost.s_addr = htonl(ip);
 				lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
 				
 				if (!lpHostEntry)
@@ -218,7 +212,7 @@ ResolveHost(uint32 ip)
 
 	//
 
-	iaHost.s_addr = inet_addr(host);
+	iaHost.s_addr = htonl(ip);
 	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
 	if (lpHostEntry)
 		return QString::fromLocal8Bit(lpHostEntry->h_name);
