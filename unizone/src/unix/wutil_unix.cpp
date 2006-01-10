@@ -3,45 +3,20 @@
 #include "wutil.h"
 #include "support/MuscleSupport.h"
 
-#if defined(QT_QSTRING_UCS_4)
-# if defined(wcsncpy)
+#if defined(wcsncpy)
 void wcopy(wchar_t *dest, const wchar_t *src, size_t len)
 {
 	wcsncpy(dest, src, len);
 	dest[len] = 0;
 }
-# else
+#else
 void wcopy(wchar_t *dest, const wchar_t *src, size_t len)
 {
 	for (unsigned int x = 0; x < len; x++)
 		dest[x] = src[x];
 	dest[len] = 0;
 }
-# endif // wcsncpy
-#else
-void wcopy(wchar_t *dest, const wchar_t *src, size_t len)
-{
-	dest[len] = 0;
-	if (len == 0) return;
-	len--;
-	if ((len % 2) == 0)
-	{
-		dest[len] = src[len];
-		if (len == 0) return;
-		len--;
-	}
-	len--;
-	const uint32 *s = (const uint32 *) src;
-	uint32 *d = (uint32 *) dest;
-	len /= 2;
-	while (1)
-	{
-		d[len] = s[len];
-		if (len == 0) return;
-		len--;
-	}
-}
-#endif // QT_QSTRING_UCS_4
+#endif // wcsncpy
 
 void wcat(wchar_t *dest, const wchar_t *src, size_t pos)
 {
@@ -85,7 +60,7 @@ QString
 wideCharToQString(const wchar_t *wide)
 {
     QString result;
-    result.setUnicodeCodes((const ushort *) wide, wcslen(wide));
+    result.setUnicodeCodes((const ushort *) wide, wcslen(wide) * (sizeof(wchar_t) / 2));
     return result;
 }
 
