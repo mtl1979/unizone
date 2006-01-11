@@ -21,8 +21,11 @@ SRCFILES = \
 	statusimpl.cpp
 
 COMMON_SRCFILES = \
+	../src/unix/wcslwr.c \
+	../src/unix/wcsupr.c \
 	../src/unix/wfile.cpp \
 	../src/unix/wfile_unix.cpp \
+	../src/unix/wutil_unix.cpp \
 	../src/wstring.cpp
 
 MOC_SRCFILES = \
@@ -57,6 +60,7 @@ MUSCLE_SRCFILES = \
 LIBS = -L$(QTDIR)/lib -lqt-mt
 INCLUDES = -I$(QTDIR)/include -I$(MUSCLEDIR) -I. -I../src
 CXXFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
+CFLAGS = $(INCLUDES) -Wall -W -Wno-multichar $(GCCOPTFLAGS)
 
 UIC_OBJFILES = $(addsuffix .o,$(basename $(UIC_SRCFILES)))
 MOC_OBJFILES = $(addsuffix .o,$(basename $(MOC_SRCFILES)))
@@ -93,6 +97,7 @@ depends: .depends
 clean:
 	rm -f musclecopy
 	rm -f $(OBJFILES) $(MUSCLE_OBJFILES)
+	rm -f $(COMMON_OBJFILES)
 	rm -f $(UIC_SRCFILES) $(UIC_HEADERS) $(UIC_OBJFILES)
 	rm -f $(MOC_SRCFILES) $(MOC_OBJFILES)
 

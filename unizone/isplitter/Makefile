@@ -23,8 +23,8 @@ MOC_SRCFILES = \
 	src/moc_previewimpl.cpp
 
 LIBS = -L$(QTDIR)/lib -lqt-mt
-INCLUDES = -I$(QTDIR)/include -I../src -Isrc -I.
-CXXFLAGS = $(INCLUDES)
+INCLUDES = -I$(QTDIR)/include -I../src -I../src/muscle -Isrc -I.
+CXXFLAGS = $(INCLUDES) -DMUSCLE_SINGLE_THREAD_ONLY
 VPATH = src
 
 UIC_OBJFILES = $(addsuffix .o,$(basename $(UIC_SRCFILES)))

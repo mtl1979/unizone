@@ -9,6 +9,7 @@ class QImage;
 class QString;
 class QPoint;
 class QPushButton;
+class ImageSplitter;
 
 class Preview : public QWidget
 {
