@@ -134,6 +134,10 @@ SOURCE=..\..\src\uenv.cpp
 
 SOURCE=..\..\src\wstring.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\windows\wutil_msvc.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 

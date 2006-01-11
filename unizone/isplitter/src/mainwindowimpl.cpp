@@ -1,6 +1,7 @@
 #include "mainwindowimpl.h"
 #include "previewimpl.h"
 #include "menubar.h"
+#include "platform.h"
 #ifdef WIN32
 #include "jpegio.h"
 #endif
