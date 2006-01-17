@@ -49,9 +49,6 @@ of your Makefile to alter muscle's behaviour:
 -DMUSCLE_POWERPC_TIMEBASE_HZ=N 
    Use mftb/mftbu for GetRunTime64() calls.  N is the frequency at which the register is incremented
 
--DMUSCLE_USE_CLONE 
-   Use Linux's clone() function to spawn threads, instead of pthreads.  Doesn't work.  :^(
-
 -DMUSCLE_USE_PTHREADS 
    Use pthreads for thread operations
 

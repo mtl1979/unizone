@@ -244,7 +244,7 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
                      FD_ZERO(psets[i]);
                      if (t.GetNumItems() > 0)
                      {
-                        HashtableIterator<int, bool> iter(t);
+                        HashtableIterator<int, bool> iter(t, HTIT_FLAG_NOREGISTER);
                         int nextSocket;
                         while(iter.GetNextKey(nextSocket) == B_NO_ERROR) 
                         {
@@ -266,7 +266,7 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
                   {
                      int nextSocket;
                      bool * nextValue;
-                     HashtableIterator<int, bool> iter(t);
+                     HashtableIterator<int, bool> iter(t, HTIT_FLAG_NOREGISTER);
                      while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket, psets[j]) ? true : false;  // ternary operator used to shut VC++ warnings up
                   }
                }

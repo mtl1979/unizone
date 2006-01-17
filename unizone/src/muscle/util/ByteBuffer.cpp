@@ -77,9 +77,6 @@ status_t ByteBuffer :: FreeExtraBytes()
    return B_NO_ERROR;
 }
 
-/** Overridden to unflatten directly from our buffer, for added efficiency */
-status_t ByteBuffer :: CopyToImplementation(Flattenable & copyTo) const {return copyTo.Unflatten(_buffer, _numValidBytes);}
-   
 /** Overridden to set our buffer directly from (copyFrom)'s Flatten() method */
 status_t ByteBuffer :: CopyFromImplementation(const Flattenable & copyFrom)
 {

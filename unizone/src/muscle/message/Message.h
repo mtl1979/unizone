@@ -64,13 +64,13 @@ public:
    /** Default constructor.   
     *  Creates an "empty" iterator;  Use the assignment operator to turn the iterator into something useful.
     */
-   MessageFieldNameIterator();
+   MessageFieldNameIterator() : _typeCode(B_ANY_TYPE) {/* empty */}
 
    /** Destructor. */
-   ~MessageFieldNameIterator();
+   ~MessageFieldNameIterator() {/* empty */}
 
    /** Returns true iff there are more field names available to be traversed.  */
-   bool HasMoreFieldNames() const;
+   bool HasMoreFieldNames() const {return (PeekNextFieldNameString() != NULL);}
 
    /**
     *  Places the next field name into (name) and bumps the iterator position.
@@ -117,7 +117,7 @@ public:
 
 private:
    friend class Message;
-   MessageFieldNameIterator(const HashtableIterator<String, GenericRef> & iter, uint32 tc);
+   MessageFieldNameIterator(const HashtableIterator<String, GenericRef> & iter, uint32 tc) : HashtableIterator<String, GenericRef>(iter), _typeCode(tc) {/* empty */}
 
    uint32 _typeCode;
 };
@@ -143,18 +143,18 @@ public:
    uint32 what;
 
    /** Default Constructor. */
-   Message();
+   Message() : what(0) {/* empty */}
 
    /** Constructor.
     *  @param what The 'what' member variable will be set to the value you specify here.
     */
-   Message(uint32 what);
+   Message(uint32 what) : what(what) {/* empty */}
 
    /** Copy Constructor. */
-   Message(const Message & copyMe);
+   Message(const Message & copyMe) : FlatCountable() {*this = copyMe;}
 
    /** Destructor. */
-   virtual ~Message();
+   virtual ~Message() {/* empty */}
 
    /** Assignment operator. */
    Message &operator=(const Message &msg);
@@ -177,14 +177,20 @@ public:
     */
    status_t GetInfo(const String & name, uint32 *type, uint32 *c = NULL, bool *fixed_size = NULL) const;
 
-   /** Returns the number of field names of the given type that are present in the Message.
+   /** Returns the number of fields of the given type that are present in the Message.
     *  @param type The type of field to count, or B_ANY_TYPE to count all field types.
     *  @return The number of matching fields
     */
    uint32 CountNames(uint32 type = B_ANY_TYPE) const;
 
+   /** Returns true if there are any fields of the given type in the Message.
+    *  @param type The type of field to check for, or B_ANY_TYPE to check for any field type.
+    *  @return True iff any fields of the given type exist.
+    */
+   bool HasNames(uint32 type = B_ANY_TYPE) const {return (CountNames(type) > 0);}
+
    /** @return true iff there are no fields in this Message. */
-   bool IsEmpty() const;
+   bool IsEmpty() const {return (_entries.GetNumItems() == 0);}
 
    /** Prints debug info describing the contents of this Message to stdout. 
      * @param recursive if true, we will call PrintToStream() recursively on any held messages also.   Defaults to true.
@@ -1007,23 +1013,24 @@ public:
     * message.  If (type) is B_ANY_TYPE, then all field names will be included
     * in the traversal.  Otherwise, only names of the given type will be included.
     * @param type Type of fields you wish to iterate over, or B_ANY_TYPE to iterate over all fields.
-    * @param backwards Set this to true if you prefer to iterate backwards, from the last field to the first.
+    * @param flags Bitchord of HTIT_FLAG_* flags you want to use to affect the iteration behaviour.
+    *              This bitchord will get passed on to the underlying HashtableIterator.  Defaults
+    *              to zero, which provides the default behaviour.
     */
-   MessageFieldNameIterator GetFieldNameIterator(uint32 type = B_ANY_TYPE, bool backwards = false) const {return MessageFieldNameIterator(_entries.GetIterator(backwards), type);}
+   MessageFieldNameIterator GetFieldNameIterator(uint32 type = B_ANY_TYPE, uint32 flags = 0) const {return MessageFieldNameIterator(_entries.GetIterator(flags), type);}
 
    /**
     * As above, only starts the iteration at the given field name, instead of at the beginning
     * or end of the list of field names.
     * @param startFieldName the field name to start with.  If (startFieldName) isn't present, the iteration will be empty.
     * @param type Type of fields you wish to iterate over, or B_ANY_TYPE to iterate over all fields.
-    * @param backwards Set this to true if you prefer to iterate backwards, from the last field to the first.
+    * @param flags Bitchord of HTIT_FLAG_* flags you want to use to affect the iteration behaviour.
+    *              This bitchord will get passed on to the underlying HashtableIterator.  Defaults
+    *              to zero, which provides the default behaviour.
     */
-   MessageFieldNameIterator GetFieldNameIteratorAt(const String & startFieldName, uint32 type = B_ANY_TYPE, bool backwards = false) const {return MessageFieldNameIterator(_entries.GetIteratorAt(startFieldName, backwards), type);}
+   MessageFieldNameIterator GetFieldNameIteratorAt(const String & startFieldName, uint32 type = B_ANY_TYPE, uint32 flags = 0) const {return MessageFieldNameIterator(_entries.GetIteratorAt(startFieldName, flags), type);}
 
 protected:
-   /** Overridden to copy directly if (copyTo) is a Message as well. */
-   virtual status_t CopyToImplementation(Flattenable & copyTo) const;
-
    /** Overridden to copy directly if (copyFrom) is a Message as well. */
    virtual status_t CopyFromImplementation(const Flattenable & copyFrom);
 

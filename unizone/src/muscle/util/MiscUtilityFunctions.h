@@ -178,6 +178,24 @@ status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir = N
   */
 void RemoveANSISequences(String & s);
 
+/** Convenience function.  Given a buffer of arbitrary data, returns a nybble-ized String
+  * that represents that same data using only the ASCII characters 'A' through 'P.  The
+  * returned String will be twice the length of the passed-in buffer, and the original
+  * data can be recovered from the String by calling DenybbleizeData().
+  * @param buf The data to nybbleize
+  * @param retString On success, the nybbleized String is written here.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t NybbleizeData(const ByteBuffer & buf, String & retString);
+
+/** Convenience function.  Given a String that was produced by NybblizedData(),
+  * returns the eqivalent ByteBuffer.
+  * @param nybbleizedText The String to de-nybbleize
+  * @param retBuf On success, the de-nybbleized data is written here.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t DenybbleizeData(const String & nybbleizedText, ByteBuffer & retBuf);
+
 END_NAMESPACE(muscle);
 
 #endif

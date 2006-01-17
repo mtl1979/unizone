@@ -33,7 +33,7 @@ public:
     *  @param size Number of bytes in the buffer (ignored).
     *  @return (size).
     */
-   virtual int32 Write(const void * /*buffer*/, uint32 size) {return _shutdown ? -1 : size;}
+   virtual int32 Write(const void * /*buffer*/, uint32 size) {return _shutdown ? -1 : (int32)size;}
 
    /**
     *  This method always returns B_ERROR.

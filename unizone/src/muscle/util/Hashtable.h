@@ -32,6 +32,15 @@ public:
 
 template <class KeyType, class ValueType, class HashFunctorType> class Hashtable;  // forward declaration
 
+/** These flags can be passed to the HashtableIterator constructor (or to the GetIterator()/GetIteratorAt() 
+  * functions in the Hashtable class) to modify the iterator's behaviour.
+  */
+enum {
+   HTIT_FLAG_BACKWARDS  = (1<<0), // iterate backwards.  Conveniently equal to ((bool)true), for backwards compatibility with old code
+   HTIT_FLAG_NOREGISTER = (1<<1), // don't register with Hashtable object, for thread-safety (at the expense of modification-safety)
+   NUM_HTIT_FLAGS = 2             // number of HTIT_FLAG_* constants that have been defined
+};
+
 /**
  * This class is an iterator object, used for iterating over the set
  * of keys or values in a Hashtable.  Note that the Hashtable
@@ -63,11 +72,19 @@ public:
    /** Copy Constructor. */
    HashtableIterator(const HashtableIterator<KeyType, ValueType, HashFunctorType> & rhs);
 
-   /** Convenience Constructor -- makes an iterator equivalent to the value returned by table.GetIterator().  */
-   HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, bool backwards = false);
+   /** Convenience Constructor -- makes an iterator equivalent to the value returned by table.GetIterator().  
+     * @param table the Hashtable to iterate over.
+     * @param flags A bit-chord of HTIT_FLAG_* constants (see above).  Defaults to zero for default behaviour.
+     */
+   HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, uint32 flags = 0);
 
-   /** Convenience Constructor -- makes an iterator equivalent to the value returned by table.GetIteratorAt().  */
-   HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, const KeyType & startAt, bool backwards);
+   /** Convenience Constructor -- makes an iterator equivalent to the value returned by table.GetIteratorAt().  
+     * @param table the Hashtable to iterate over.
+     * @param startAt the first key that should be returned by the iteration.  If (startAt) is not in the table,
+     *                the iterator will not return any results.
+     * @param flags A bit-chord of HTIT_FLAG_* constants (see above).  Defaults to zero for default behaviour.
+     */
+   HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, const KeyType & startAt, uint32 flags);
 
    /** Destructor */
    ~HashtableIterator();
@@ -180,8 +197,6 @@ public:
    status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, const ValueType * & setValuePtr);
 
 private:
-   void SetOwner(const Hashtable<KeyType,ValueType,HashFunctorType> * optTable);
-
    /** The Hashtable class needs access to our internals to do the iteration operation */
    friend class Hashtable<KeyType, ValueType, HashFunctorType>;
 
@@ -189,7 +204,7 @@ private:
 
    void * _nextKeyCookie;
    void * _nextValueCookie;
-   bool _backwards;
+   uint32 _flags;
 
    HashtableIterator<KeyType, ValueType, HashFunctorType> * _prevIter;  // for the doubly linked list so that the table can notify us if it is modified
    HashtableIterator<KeyType, ValueType, HashFunctorType> * _nextIter;  // for the doubly linked list so that the table can notify us if it is modified
@@ -268,7 +283,10 @@ public:
    uint32 GetNumItems() const {return _count;}
 
    /** Convenience method;  Returns true iff the table is empty (i.e. if GetNumItems() is zero). */
-   bool IsEmpty() const {return _count == 0;}
+   bool IsEmpty() const {return (_count == 0);}
+
+   /** Convenience method;  Returns true iff the table is non-empty (i.e. if GetNumItems() is non-zero). */
+   bool HasItems() const {return (_count > 0);}
 
    /** Returns true iff the table contains a mapping with the given key.  (O(1) search time) */
    bool ContainsKey(const KeyType& key) const {return ((_count>0)&&(GetEntry(ComputeHash(key), key) != NULL));}
@@ -313,27 +331,24 @@ public:
    const KeyType * GetKey(const KeyType & lookupKey) const;
 
    /** Get an iterator for use with this table.
-     * @param backwards Set this to true if you want to iterate through the item list backwards.  Defaults to false.
-     * @return an iterator object that can be used to examine the items in the hash table. 
+     * @param flags A bit-chord of HTIT_FLAG_* constants (see above).  Defaults to zero, for default behaviour.
+     * @return an iterator object that can be used to examine the items in the hash table, starting at
+     *         the specified key.  If the specified key is not in this table, an empty iterator will be returned.
      */
-   HashtableIterator<KeyType,ValueType,HashFunctorType> GetIterator(bool backwards = false) const 
+   HashtableIterator<KeyType,ValueType,HashFunctorType> GetIterator(uint32 flags = 0) const 
    {
-      HashtableIterator<KeyType,ValueType,HashFunctorType> ret; 
-      InitializeIterator(ret, backwards);
-      return ret;
+      return HashtableIterator<KeyType,ValueType,HashFunctorType>(*this, flags); 
    }
 
    /** Get an iterator for use with this table, starting at the given entry.
      * @param startAt The key in this table to start the iteration at.
-     * @param backwards Set this to true if you want to iterate through the item list backwards.  Defaults to false.
+     * @param flags A bit-chord of HTIT_FLAG_* constants (see above).  Defaults to zero, for default behaviour.
      * @return an iterator object that can be used to examine the items in the hash table, starting at
      *         the specified key.  If the specified key is not in this table, an empty iterator will be returned.
      */
-   HashtableIterator<KeyType,ValueType,HashFunctorType> GetIteratorAt(const KeyType & startAt, bool backwards = false) const 
+   HashtableIterator<KeyType,ValueType,HashFunctorType> GetIteratorAt(const KeyType & startAt, uint32 flags = 0) const 
    {
-      HashtableIterator<KeyType,ValueType,HashFunctorType> ret;
-      InitializeIteratorAt(ret, startAt, backwards);
-      return ret;
+      return HashtableIterator<KeyType,ValueType,HashFunctorType>(*this, startAt, flags);
    }
 
    /** Returns a pointer to the (index)'th key in this Hashtable.
@@ -523,9 +538,7 @@ public:
     */
    status_t Get(const KeyType& key, ValueType& setValue) const {return GetValue(key, setValue);}
 
-   /** Synonym for GetValue(), retained for compatibility with old code.
-    *  @deprecated Use GetValue() instead
-    */
+   /** Convenience synonym for GetValue() */
    ValueType * Get(const KeyType & key) const {return GetValue(key);}
 
    /** Convenience method -- returns a pointer to the value specified by (key),
@@ -542,6 +555,18 @@ public:
       if ((ret == NULL)&&(Put(key, defValue) == B_NO_ERROR)) ret = Get(key);
       return ret;
    }
+
+   /** Convenience method.  Returns a pointer to the first key in our iteration list, or NULL if the table is empty. */
+   const KeyType * GetFirstKey() const {return _iterHead ? &_iterHead->_key : NULL;}
+
+   /** Convenience method.  Returns a pointer to the last key in our iteration list, or NULL if the table is empty. */
+   const KeyType * GetLastKey() const {return _iterTail ? &_iterTail->_key : NULL;}
+
+   /** Convenience method.  Returns a pointer to the last value in our iteration list, or NULL if the table is empty. */
+   ValueType * GetFirstValue() const {return _iterHead ? &_iterHead->_value : NULL;}
+
+   /** Convenience method.  Returns a pointer to the last value in our iteration list, or NULL if the table is empty. */
+   ValueType * GetLastValue() const {return _iterTail ? &_iterTail->_value : NULL;}
 
    /** This method resizes the Hashtable larger if necessary, so that it has at least (newTableSize)
     *  entries in it.  It is not necessary to call this method, but if you know in advance how many
@@ -564,17 +589,15 @@ private:
    /** Our hashtable iterator class needs access to our internals to register itself with us. */
    friend class HashtableIterator<KeyType, ValueType, HashFunctorType>;
 
-   void InitializeIterator(HashtableIterator<KeyType,ValueType,HashFunctorType> & iter, bool backwards) const
+   void InitializeIterator(HashtableIterator<KeyType,ValueType,HashFunctorType> & iter) const
    {
-      iter.SetOwner(this);
-      iter._backwards     = backwards;
-      iter._nextKeyCookie = iter._nextValueCookie = (backwards ? _iterTail : _iterHead);
+      RegisterIterator(&iter);
+      iter._nextKeyCookie = iter._nextValueCookie = ((iter._flags & HTIT_FLAG_BACKWARDS) ? _iterTail : _iterHead);
    }
 
-   void InitializeIteratorAt(HashtableIterator<KeyType,ValueType,HashFunctorType> & iter, const KeyType & startAt, bool backwards) const
+   void InitializeIteratorAt(HashtableIterator<KeyType,ValueType,HashFunctorType> & iter, const KeyType & startAt) const
    {
-      iter.SetOwner(this);
-      iter._backwards     = backwards;
+      RegisterIterator(&iter);
       iter._nextKeyCookie = iter._nextValueCookie = ((_count>0)?GetEntry(ComputeHash(startAt), startAt):NULL);
    }
 
@@ -689,28 +712,36 @@ private:
    // HashtableIterator's private API
    void RegisterIterator(HashtableIterator<KeyType,ValueType,HashFunctorType> * iter) const
    {
-      // add him to the head of our linked list of iterators
-      iter->_prevIter = NULL;
-      iter->_nextIter = _iterList;  
-      if (_iterList) _iterList->_prevIter = iter;
-      _iterList = iter;
+      if (iter->_flags & HTIT_FLAG_NOREGISTER) iter->_prevIter = iter->_nextIter = NULL;
+      else
+      {
+         // add him to the head of our linked list of iterators
+         iter->_prevIter = NULL;
+         iter->_nextIter = _iterList;  
+         if (_iterList) _iterList->_prevIter = iter;
+         _iterList = iter;
+      }
    }
 
    void UnregisterIterator(HashtableIterator<KeyType,ValueType,HashFunctorType> * iter) const
    {
-      if (iter->_prevIter) iter->_prevIter->_nextIter = iter->_nextIter;
-      if (iter->_nextIter) iter->_nextIter->_prevIter = iter->_prevIter;
-      if (iter == _iterList) _iterList = iter->_nextIter;
-      iter->_prevIter = iter->_nextIter = NULL;
+      if (iter->_flags & HTIT_FLAG_NOREGISTER) iter->_prevIter = iter->_nextIter = NULL;
+      else
+      {
+         if (iter->_prevIter) iter->_prevIter->_nextIter = iter->_nextIter;
+         if (iter->_nextIter) iter->_nextIter->_prevIter = iter->_prevIter;
+         if (iter == _iterList) _iterList = iter->_nextIter;
+         iter->_prevIter = iter->_nextIter = NULL;
+      }
    }
 
    KeyType * GetKeyFromCookie(void * c) const {return c ? &(((HashtableEntry *)c)->_key) : NULL;}
    ValueType * GetValueFromCookie(void * c) const  {return c ? &(((HashtableEntry *)c)->_value) : NULL;}
 
-   void IterateCookie(void ** c, bool backwards) const 
+   void IterateCookie(void ** c, uint32 flags) const 
    {
       HashtableEntry * entry = *((HashtableEntry **)c);
-      *c = entry ? (backwards ? entry->_iterPrev : entry->_iterNext) : NULL;
+      *c = entry ? ((flags & HTIT_FLAG_BACKWARDS) ? entry->_iterPrev : entry->_iterNext) : NULL;
    }
 
    uint32 NextPrime(uint32 start) const;
@@ -1414,27 +1445,27 @@ Hashtable<KeyType,ValueType,HashFunctorType>::NextPrime(uint32 start) const
 //===============================================================
 
 template <class KeyType, class ValueType, class HashFunctorType>
-HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator() : _nextKeyCookie(NULL), _nextValueCookie(NULL), _owner(NULL)
+HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator() : _nextKeyCookie(NULL), _nextValueCookie(NULL), _flags(0), _owner(NULL)
 {
    // empty
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
-HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const HashtableIterator<KeyType, ValueType, HashFunctorType> & rhs) : _owner(NULL)
+HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const HashtableIterator<KeyType, ValueType, HashFunctorType> & rhs) : _flags(0), _owner(NULL)
 {
    *this = rhs;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
-HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, bool backwards) : _owner(NULL)
+HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, uint32 flags) : _flags(flags), _owner(&table)
 {
-   table.InitializeIterator(*this, backwards);
+   table.InitializeIterator(*this);
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
-HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, const KeyType & startAt, bool backwards) : _owner(NULL)
+HashtableIterator<KeyType, ValueType, HashFunctorType>::HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, const KeyType & startAt, uint32 flags) : _flags(flags), _owner(&table)
 {
-   table.InitializeIteratorAt(*this, startAt, backwards);
+   table.InitializeIteratorAt(*this, startAt);
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
@@ -1444,25 +1475,16 @@ HashtableIterator<KeyType, ValueType, HashFunctorType>::~HashtableIterator()
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
-void
-HashtableIterator<KeyType,ValueType,HashFunctorType>::SetOwner(const Hashtable<KeyType,ValueType,HashFunctorType> * table)
-{
-   if (_owner != table)
-   {
-      if (_owner) _owner->UnregisterIterator(this);
-      _owner = table;
-      if (_owner) _owner->RegisterIterator(this);
-   }
-}
-
-template <class KeyType, class ValueType, class HashFunctorType>
 HashtableIterator<KeyType,ValueType,HashFunctorType> &
 HashtableIterator<KeyType,ValueType,HashFunctorType>:: operator=(const HashtableIterator<KeyType,ValueType,HashFunctorType> & rhs)
 {
    if (this != &rhs)
    {
-      SetOwner(rhs._owner);
-      _backwards       = rhs._backwards;
+      if (_owner) _owner->UnregisterIterator(this);
+      _flags = rhs._flags;   // must be done while unregistered, in case NOREGISTER flag changes state
+      _owner = rhs._owner;
+      if (_owner) _owner->RegisterIterator(this);
+
       _nextKeyCookie   = rhs._nextKeyCookie;
       _nextValueCookie = rhs._nextValueCookie;
    }
@@ -1529,7 +1551,7 @@ HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextValue()
    ValueType * val = PeekNextValue();
    if (val)
    {
-      _owner->IterateCookie(&_nextValueCookie, _backwards);
+      _owner->IterateCookie(&_nextValueCookie, _flags);
       return val;
    }
    return NULL;
@@ -1542,7 +1564,7 @@ HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKey()
    const KeyType * ret = PeekNextKey();
    if (ret)
    {
-      _owner->IterateCookie(&_nextKeyCookie, _backwards);
+      _owner->IterateCookie(&_nextKeyCookie, _flags);
       return ret;
    }
    return NULL;

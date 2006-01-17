@@ -68,7 +68,7 @@ public:
     *  Causes (copyTo)'s state to set from this Flattenable, if possible. 
     *  Default implementation is not very efficient, since it has to flatten
     *  this object into a byte buffer, and then unflatten the bytes back into 
-    *  (copyTo).  However, you can override CopyToImplementation() to provide 
+    *  (copyTo).  However, you can override CopyFromImplementation() to provide 
     *  a more efficient implementation when possible.
     *  @param copyTo Object to make into the equivalent of this object.  (copyTo)
     *                May be any subclass of Flattenable.
@@ -76,7 +76,7 @@ public:
     */
    status_t CopyTo(Flattenable & copyTo) const 
    {
-      return (this == &copyTo) ? B_NO_ERROR : ((copyTo.AllowsTypeCode(TypeCode())) ? CopyToImplementation(copyTo) : B_ERROR);
+      return (this == &copyTo) ? B_NO_ERROR : ((copyTo.AllowsTypeCode(TypeCode())) ? copyTo.CopyFromImplementation(*this) : B_ERROR);
    }
 
    /** 
@@ -99,7 +99,7 @@ public:
     * Writes data consecutively into a byte buffer.  The output buffer is
     * assumed to be large enough to hold the data.
     * @param outBuf Flat buffer to write to
-    * @param writeOffset Offset into buffer to read from.  Incremented by (blockSize) on success.
+    * @param writeOffset Offset into buffer to write to.  Incremented by (blockSize) on success.
     * @param copyFrom memory location to copy bytes from
     * @param blockSize number of bytes to copy
     */
@@ -171,27 +171,15 @@ public:
 
 protected:
    /** 
-    *  Called by CopyTo().  Sets (copyTo) to set from this Flattenable, if possible. 
-    *  Default implementation is not very efficient, since it has to flatten
-    *  this object into a byte buffer, and then unflatten the bytes back into 
-    *  (copyTo).  However, you can override CopyToImplementation() to provide 
-    *  a more efficient implementation when possible.
-    *  @param copyTo Object to make into the equivalent of this object.  (copyTo)
-    *                May be any subclass of Flattenable, but has been pre-screened by CopyTo()
-    *                to make sure it's not (*this), and that it allows our type code.
-    *  @return B_NO_ERROR on success, or B_ERROR on failure (out-of-memory, etc)
-    */
-   virtual status_t CopyToImplementation(Flattenable & copyTo) const;
-
-   /** 
-    *  Called by CopyFrom().  Sets our state from (copyFrom) if possible. 
-    *  Default implementation is not very efficient, since it has to flatten
-    *  (copyFrom) into a byte buffer, and then unflatten the bytes back into 
-    *  (this).  However, you can override CopyToImplementation() to provide 
-    *  a more efficient implementation when possible.
+    *  Called by CopyFrom() and CopyTo().  Sets our state from (copyFrom) if 
+    *  possible.  Default implementation is not very efficient, since it has 
+    *  to flatten (copyFrom) into a byte buffer, and then unflatten the bytes 
+    *  back into (this).  However, you can override CopyFromImplementation() 
+    *  to provide a more efficient implementation when possible.
     *  @param copyFrom Object to set this object's state from.
-    *                  May be any subclass of Flattenable, but has been pre-screened by CopyFrom()
-    *                  to make sure it's not (*this), and that we allow its type code.
+    *                  May be any subclass of Flattenable, but it has been 
+    *                  pre-screened by CopyFrom() (or CopyTo()) to make sure 
+    *                  it's not (*this), and that we allow its type code.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out-of-memory, etc)
     */
    virtual status_t CopyFromImplementation(const Flattenable & copyFrom);

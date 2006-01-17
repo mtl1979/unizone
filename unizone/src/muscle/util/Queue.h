@@ -181,8 +181,11 @@ public:
     */
    uint32 GetNumAllocatedItemSlots() const {return _queueSize;}
 
-   /** Returns true iff their are no items in the queue. */
+   /** Convenience method:  Returns true iff there are no items in the queue. */
    bool IsEmpty() const {return (_itemCount == 0);}
+
+   /** Convenience method:  Returns true iff there is at least one item in the queue. */
+   bool HasItems() const {return (_itemCount > 0);}
 
    /** Returns a read-only reference the head item in the queue.  You must not call this when the queue is empty! */
    const ItemType & Head() const {return *GetItemAt(0);}

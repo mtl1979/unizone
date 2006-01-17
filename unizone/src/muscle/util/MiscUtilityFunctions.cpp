@@ -15,6 +15,7 @@
 # include <sched.h>
 #endif
 
+#include "util/ByteBuffer.h"
 #include "util/MiscUtilityFunctions.h"
 #include "util/NetworkUtilityFunctions.h"
 #include "util/StringTokenizer.h"
@@ -423,13 +424,8 @@ uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
    time_t timeS = mktime(&st);
    if (timeType == MUSCLE_TIMEZONE_LOCAL)
    {
-      struct tm * t = localtime(&timeS);
-	  if (t) 
-#if defined(__sun) && defined(__SVR4)
-		  timeS += (t->tm_isdst == 1)?altzone:timezone;
-#else
-		  timeS += t->tm_gmtoff;
-#endif
+      struct tm * t = gmtime(&timeS);
+      if (t) timeS += (timeS-mktime(t));  
    }
    return ((uint64)timeS)*1000000;
 #endif
@@ -550,6 +546,38 @@ void RemoveANSISequences(String & s)
       }
       else break;
    }
+}
+
+status_t NybbleizeData(const ByteBuffer & buf, String & retString)
+{
+   uint32 numBytes = buf.GetNumBytes();
+
+   if (retString.Prealloc(numBytes*2) != B_NO_ERROR) return B_ERROR;
+
+   retString.Clear();
+   const uint8 * b = buf.GetBuffer();
+   for (uint32 i=0; i<numBytes; i++)
+   {
+      uint8 c = b[i];
+      retString += ((c>>0)&0x0F)+'A';
+      retString += ((c>>4)&0x0F)+'A';
+   }
+   return B_NO_ERROR;
+}
+
+status_t DenybbleizeData(const String & nybbleizedText, ByteBuffer & retBuf)
+{
+   uint32 numBytes = nybbleizedText.Length();
+   if (retBuf.SetNumBytes(numBytes/2, false) != B_NO_ERROR) return B_ERROR;
+
+   uint8 * b = retBuf.GetBuffer();
+   for (uint32 i=0; i<numBytes; i+=2)
+   {
+      char c1 = nybbleizedText[i+0];
+      char c2 = nybbleizedText[i+1];
+      *b++ = ((c1-'A')<<0)|((c2-'A')<<4);
+   }
+   return B_NO_ERROR;
 }
 
 END_NAMESPACE(muscle);

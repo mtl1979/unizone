@@ -137,9 +137,6 @@ public:
    IMemoryAllocationStrategy * GetMemoryAllocationStrategy() const {return _allocStrategy;}
 
 protected:
-   /** Overridden to unflatten directly from our buffer, for added efficiency */
-   virtual status_t CopyToImplementation(Flattenable & copyTo) const;
-   
    /** Overridden to set our buffer directly from (copyFrom)'s Flatten() method */
    virtual status_t CopyFromImplementation(const Flattenable & copyFrom);
 

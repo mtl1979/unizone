@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "3.03"
+#define MUSCLE_VERSION_STRING "3.10"
 
 /* Define this if the default FD_SETSIZE is too small for you (i.e. under Windows it's only 64) */
 #if defined(MUSCLE_FD_SETSIZE)
@@ -384,7 +384,6 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
 
 /*
  *      from nameser.h  8.1 (Berkeley) 6/2/93
- *      $Id$
  */
 
 #ifndef BYTE_ORDER
@@ -430,10 +429,11 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
          * which will force your compiles to bomb until you fix
          * the above macros.
          */
-        error "Undefined or invalid BYTE_ORDER";
+#       error "Undefined or invalid BYTE_ORDER -- you will need to modify MuscleSupport.h to correct this";
 #endif
 
 /* End replacement code from Sun/University of California */
+
 # if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
 static inline uint16 MusclePowerPCSwapInt16(uint16 val)
 {

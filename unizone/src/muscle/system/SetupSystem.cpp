@@ -19,7 +19,7 @@
 # elif defined(__QNX__)
 #  include <signal.h>
 #  include <sys/times.h>
-# elif defined(__sparc__) || defined(sun386)
+# elif defined(SUN) || defined(__sparc__) || defined(sun386)
 #  include <signal.h>
 #  include <sys/times.h>
 #  include <limits.h>
@@ -206,7 +206,12 @@ uint64 GetRunTime64()
       uint32 hi1 = get_tbu();
       uint32 low = get_tbl();
       uint32 hi2 = get_tbu();
-      if (hi1 == hi2) return (((((uint64)hi1)<<32)|((uint64)low))*((uint64)1000000))/((uint64)MUSCLE_POWERPC_TIMEBASE_HZ); 
+      if (hi1 == hi2) 
+      {
+         // FogBugz #3199
+         uint64 cycles = ((((uint64)hi1)<<32)|((uint64)low));
+         return ((cycles/MUSCLE_POWERPC_TIMEBASE_HZ)*1000000)+(((cycles%MUSCLE_POWERPC_TIMEBASE_HZ)*((uint64)1000000))/MUSCLE_POWERPC_TIMEBASE_HZ);
+      }
    }
 # else
    TCHECKPOINT;
@@ -262,13 +267,8 @@ uint64 GetCurrentTime64(uint32 timeType)
    if (timeType == MUSCLE_TIMEZONE_LOCAL)
    {
       time_t now = time(NULL);
-      struct tm * ltc = localtime(&now);
-	  if (ltc) 
-#if defined(__sun) && defined(__SVR4)
-		  ret += ((int64)(ltc->tm_isdst == 1)?altzone:timezone)*((int64)1000000);
-#else
-		  ret += ((int64)ltc->tm_gmtoff)*((int64)1000000);
-#endif
+      struct tm * tm = gmtime(&now);
+      if (tm) ret += ((int64)now-mktime(tm))*((int64)1000000);
    }
    return ret;
 #endif
@@ -423,26 +423,6 @@ status_t Flattenable :: UnflattenFromDataIO(DataIO & inputStream, int32 optReadS
    }
 
    status_t ret = (inputStream.ReadFully(b, readSize) == readSize) ? Unflatten(b, readSize) : B_ERROR;
-   delete [] bigBuf;
-   return ret;
-}
-
-status_t Flattenable :: CopyToImplementation(Flattenable & copyTo) const
-{
-   uint8 smallBuf[256];
-   uint8 * bigBuf = NULL;
-   uint32 flatSize = FlattenedSize();
-   if (flatSize > ARRAYITEMS(smallBuf))
-   {
-      bigBuf = newnothrow_array(uint8, flatSize);
-      if (bigBuf == NULL)
-      {
-         WARN_OUT_OF_MEMORY;
-         return B_ERROR;
-      }
-   }
-   Flatten(bigBuf ? bigBuf : smallBuf);
-   status_t ret = copyTo.Unflatten(bigBuf ? bigBuf : smallBuf, flatSize);
    delete [] bigBuf;
    return ret;
 }
