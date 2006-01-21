@@ -1425,8 +1425,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					PrintError(tr("Bad Conversion!"));
 					return;
 				};
-				QString out("<br>");
-				out += tr("%1 degrees in %2 is:").arg(val).arg(fr);
+				QString out;
+				out = tr("%1 degrees in %2 is:").arg(val).arg(fr);
 				if (from != "C")
 				{
 					out += "<br>";
