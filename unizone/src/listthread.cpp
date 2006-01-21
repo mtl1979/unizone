@@ -45,7 +45,7 @@ WListThread::InternalThreadEntry()
 	if (refScan())
 	{
 		MessageRef mref;
-		HashtableIterator<String, QString> filesIter = fFileScanThread->GetSharedFiles().GetIterator();
+		HashtableIterator<String, QString> filesIter = fFileScanThread->GetSharedFilesIterator(HTIT_FLAG_NOREGISTER);
 		while (filesIter.HasMoreKeys())
 		{
 			// stop iterating if we are waiting for file scan thread to finish

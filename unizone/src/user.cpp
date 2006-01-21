@@ -288,7 +288,7 @@ WUser::AddToListView(QListView * view)
 void
 WUser::UpdateListViews()
 {
-	HashtableIterator<QListView *, QListViewItem *> iter = fLists.GetIterator();
+	HashtableIterator<QListView *, QListViewItem *> iter = fLists.GetIterator(HTIT_FLAG_NOREGISTER);
 	QListView *view;
 	while (iter.GetNextKey(view) == B_OK)
 	{
@@ -312,7 +312,7 @@ WUser::RemoveFromListView(QListView * view)
 	else
 	{
 		// remove from all views
-		HashtableIterator<QListView *, QListViewItem *> iter = fLists.GetIterator();
+		HashtableIterator<QListView *, QListViewItem *> iter = fLists.GetIterator(HTIT_FLAG_BACKWARDS);
 		while ((iter.GetNextKey(view) == B_OK) && (iter.GetNextValue(item) == B_OK))
 		{
 			PRINT("Deleting item\n");

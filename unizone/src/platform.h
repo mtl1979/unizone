@@ -5,16 +5,8 @@
 #pragma warning(disable: 4786)
 #endif
 
-// class QString;
-
-#ifdef __cplusplus
-#include "wstring.h"
-#include "util/String.h"
-
-using muscle::String;
-#endif
-
 #ifdef WIN32
+#include <windows.h>
 
 #if defined(BUILD_WIN98)
 
@@ -43,7 +35,7 @@ void WFlashWindow(HWND fWinHandle);
 
 #if defined(lrint)
 #  define HAVE_LRINT
-#elif defined(_MSC_VER) && defined(_X86_)
+#elif defined(_MSC_VER) && defined(_M_IX86)
 
 	// http://mega-nerd.com/FPcast/float_cast.h
 
@@ -68,10 +60,10 @@ void WFlashWindow(HWND fWinHandle);
 		} ;
 	} 
 
-	inline __declspec(naked) int64
+	inline __declspec(naked) __int64
 	llrint (double flt)
 	{
-		int64 intgr;
+		__int64 intgr;
 
 		_asm
 		{	

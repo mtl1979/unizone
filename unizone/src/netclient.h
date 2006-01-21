@@ -153,6 +153,7 @@ public:
 	void RemoveUser(const WUserRef & user);
 	
 	WUserMap & Users() { return fUsers; }
+	WUserIter UsersIterator(uint32 flags) { return fUsers.GetIterator(flags); }
 	
 	// forwarders
 

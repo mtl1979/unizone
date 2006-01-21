@@ -83,7 +83,7 @@ WinShareWindow::IsBlackListedIP(const QString & ip)
 	WUserMap umap;
 	fNetClient->FindUsersByIP(umap, ip);
 
-	WUserIter iter = umap.GetIterator();
+	WUserIter iter = umap.GetIterator(HTIT_FLAG_NOREGISTER);
 	while (iter.HasMoreValues())
 	{
 		WUserRef uref;

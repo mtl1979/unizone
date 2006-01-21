@@ -671,7 +671,7 @@ Channels::ChannelPublic(const QString &channel, const QString &user, bool pub)
 void
 Channels::UserIDChanged(const QString &oldid, const QString &newid)
 {
-	WChannelIter iter = fChannels.GetIterator();
+	WChannelIter iter = fChannels.GetIterator(HTIT_FLAG_NOREGISTER);
 	ChannelInfo *info;
 	String key;
 	while ((iter.GetNextKey(key) == B_OK) && (iter.GetNextValue(info) == B_OK))
@@ -716,7 +716,7 @@ Channels::UserIDChanged(const QString &oldid, const QString &newid)
 void
 Channels::StartLogging()
 {
-	WChannelIter iter = fChannels.GetIterator();
+	WChannelIter iter = fChannels.GetIterator(HTIT_FLAG_NOREGISTER);
 	ChannelInfo * info;
 	while (iter.GetNextValue(info) == B_OK)
 	{
@@ -729,7 +729,7 @@ Channels::StartLogging()
 void
 Channels::StopLogging()
 {
-	WChannelIter iter = fChannels.GetIterator();
+	WChannelIter iter = fChannels.GetIterator(HTIT_FLAG_NOREGISTER);
 	ChannelInfo * info;
 	while (iter.GetNextValue(info) == B_OK)
 	{

@@ -2,7 +2,7 @@
 
 #include "wutil.h"
 
-#if defined(_X86_)
+#if defined(_M_IX86)
 void __declspec(naked) 
 wcopy (wchar_t *dest, const wchar_t *src, size_t len)
 {
@@ -170,7 +170,7 @@ qStringToWideChar(const QString &str)
 	wchar_t *result = new wchar_t[str.length() + 1];
 	if (result)
 	{
-		wcopy(result, (uint16 *) str.unicode(), str.length());
+		wcopy(result, (unsigned short *) str.unicode(), str.length());
 		return result;
 	}
 	else

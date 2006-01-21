@@ -358,7 +358,7 @@ WSearch::ClearList()
 	// go through and empty the list
 	WFileInfo * info;
 	String key;
-	HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator();
+	HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_BACKWARDS);
 	while ((iter.GetNextKey(key) == B_OK) && (iter.GetNextValue(info) == B_OK))
 	{
 		// don't delete the list items here
@@ -403,7 +403,7 @@ WSearch::SplitQuery(const QString &fileExp)
 
 	{
 		WUserMap &users = fNetClient->Users();
-		WUserIter it = users.GetIterator();
+		WUserIter it = users.GetIterator(HTIT_FLAG_NOREGISTER);
 		
 		while (it.HasMoreValues())
 		{
@@ -494,7 +494,7 @@ WSearch::GoSearch()
 			ConvertToRegex(userExp);
 			QRegExp qr(userExp, false);
 			WUserMap & users = fNetClient->Users();
-			WUserIter it = users.GetIterator();
+			WUserIter it = users.GetIterator(HTIT_FLAG_NOREGISTER);
 			QString ulist;
 			while (it.HasMoreValues())
 			{
@@ -658,7 +658,7 @@ WSearch::Download()
 
 		WFileInfo * fi;
 
-		HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator();
+		HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
 		
 		while (iter.GetNextValue(fi) == B_OK)
 		{
@@ -692,7 +692,7 @@ WSearch::DownloadAll()
 		DownloadQueue fQueue;
 
 		WFileInfo * fi;
-		HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator();
+		HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
 		
 		while (iter.GetNextValue(fi) == B_OK)
 		{

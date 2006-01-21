@@ -125,7 +125,7 @@ ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
 			{
 				out += "\n" + tr("Connected users:");
 
-				WUserIter it = cmap.GetIterator();
+				WUserIter it = cmap.GetIterator(HTIT_FLAG_NOREGISTER);
 				while ( it.HasMoreValues() )
 				{
 					WUserRef uref;
@@ -169,7 +169,7 @@ ResolverThread::QueryEntry(const QString &user, bool verbose)
 	if (numMatches > 0)	
 	{
 		// Found atleast one match in users
-		WUserIter uiter = wmap.GetIterator();
+		WUserIter uiter = wmap.GetIterator(HTIT_FLAG_NOREGISTER);
 		while (uiter.HasMoreValues())
 		{
 			WUserRef uref;

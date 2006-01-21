@@ -81,16 +81,16 @@ WFile::At(INT64 pos)
 #endif
 }
 
-int
+INT64
 WFile::ReadBlock(void *buf, UINT64 size)
 {
-	if (size > LONG_MAX)
+	if (size > INT_MAX)
 	{
 		char * b = (char *) buf;
-		int numbytes = 0;
+		INT64 numbytes = 0;
 		while (size > 0)
 		{
-			int nb = read(file, b, (size > LONG_MAX) ? LONG_MAX : size);
+			int nb = read(file, b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
 			if (nb == 0)
 				break;
 			numbytes += nb;
@@ -99,7 +99,7 @@ WFile::ReadBlock(void *buf, UINT64 size)
 		}
 		return numbytes;
 	}
-	return read(file, buf, size);
+	return read(file, buf, (unsigned int) size);
 }
 
 int 
@@ -126,16 +126,16 @@ WFile::ReadLine(char *buf, int size)
 	return numbytes;
 }
 
-int
+INT64
 WFile::WriteBlock(const void *buf, UINT64 size)
 {
-	if (size > LONG_MAX)
+	if (size > INT_MAX)
 	{
 		const char *b = (const char *) buf;
-		int numbytes = 0;
+		INT64 numbytes = 0;
 		while (size > 0)
 		{
-			int nb = write(file, b, (size > LONG_MAX) ? LONG_MAX : size);
+			int nb = write(file, b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
 			if (nb == 0)
 				break;
 			numbytes += nb;
@@ -144,7 +144,7 @@ WFile::WriteBlock(const void *buf, UINT64 size)
 		}
 		return numbytes;
 	}
-	return write(file, buf, size);
+	return write(file, buf, (unsigned int) size);
 }
 
 void

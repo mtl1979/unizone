@@ -22,7 +22,7 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 	int matchCount = 0;
 	QString oldName;
 
-	WUserIter iter = fNetClient->Users().GetIterator();
+	WUserIter iter = fNetClient->UsersIterator(HTIT_FLAG_NOREGISTER);
 
 	while (iter.HasMoreValues())
 	{
@@ -319,7 +319,7 @@ int
 WinShareWindow::FillUserMap(const QString & filter, WUserMap & wmap)
 {
 	int matchCount = 0;
-	WUserIter iter = fNetClient->Users().GetIterator();
+	WUserIter iter = fNetClient->UsersIterator(HTIT_FLAG_NOREGISTER);
 
 	while (iter.HasMoreValues())
 	{

@@ -40,6 +40,7 @@ public:
 	int GetNumFiles() const;
 
 	Hashtable<String, QString> & GetSharedFiles() { return fFiles; }
+	HashtableIterator<String, QString> GetSharedFilesIterator(uint32 flags) { return fFiles.GetIterator(flags); }
 	void GetSharedFile(unsigned int n, MessageRef & mref);
 	bool FindFile(const String & file, MessageRef & ref);
 	void EmptyList();

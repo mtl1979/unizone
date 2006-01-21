@@ -96,7 +96,7 @@ WPrivateWindow::~WPrivateWindow()
 	StopLogging();
     // no need to delete child widgets, Qt does it all for us
 	fLock.Lock();
-	WUserIter it = fUsers.GetIterator();
+	WUserIter it = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
 	while ( it.HasMoreValues() )
 	{
 		WUserRef uref;
@@ -345,7 +345,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 									}
 									else	// user not yet in list? 
 									{
-										WUserIter it = fUsers.GetIterator();
+										WUserIter it = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
 										bool err = false;
 										while (it.HasMoreValues())
 										{

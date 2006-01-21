@@ -32,8 +32,10 @@
 # endif
 #endif
 
-#if defined(_MSC_VER) && defined(_X86_)
-# define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
+#if defined(_MSC_VER) 
+# if defined(_M_IX86)
+#  define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
+# endif
 #endif
 
 #ifndef __cplusplus

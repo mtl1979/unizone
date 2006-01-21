@@ -1,7 +1,7 @@
 #include "platform.h"
-#include "debugimpl.h"
+// #include "debugimpl.h"
 
-#include <qstring.h>
+// #include <qstring.h>
 
 #ifdef WIN32
 #include <windows.h>

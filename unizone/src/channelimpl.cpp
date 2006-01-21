@@ -346,7 +346,7 @@ Channel::customEvent(QCustomEvent * event)
 				else if (CompareCommand(wte->Text(), "/listadmins"))
 				{
 					PrintSystem(tr( "List of channel admins:" ));
-					WUserIter iter = fUsers.GetIterator();
+					WUserIter iter = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
 					while (iter.HasMoreValues())
 					{
 						WUserRef uref;
@@ -473,7 +473,7 @@ Channel::customEvent(QCustomEvent * event)
 							WUserRef uref = FindUser(qTemp);
 							if (uref())
 							{
-								WUserIter uit = fUsers.GetIterator();
+								WUserIter uit = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
 								while ( uit.HasMoreValues())
 								{
 									WUserRef found;
@@ -522,7 +522,7 @@ Channel::customEvent(QCustomEvent * event)
 							WUserRef uref = FindUser(qTemp);
 							if (uref())
 							{
-								WUserIter uit = fUsers.GetIterator();
+								WUserIter uit = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
 								while (uit.HasMoreValues())
 								{
 									WUserRef found;

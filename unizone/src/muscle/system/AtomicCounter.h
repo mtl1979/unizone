@@ -68,10 +68,8 @@ public:
       ++_count;
 #elif defined(WIN32) 
 # if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
-      volatile int * p = &_count;
       __asm {
-              mov eax, p;
-              lock inc DWORD PTR [eax];
+            lock inc DWORD PTR [ecx]; // &_count is already in ecx ;)
       };
 # else
       (void) InterlockedIncrement(&_count);
@@ -117,10 +115,8 @@ public:
 #elif defined(WIN32) 
 # if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
       bool isZero;
-      volatile int * p = &_count;
       __asm {
-         mov eax, p;
-         lock dec DWORD PTR [eax];
+         lock dec DWORD PTR [ecx];	// &_count is already in ecx ;)
          sete isZero;
       };
       return isZero;

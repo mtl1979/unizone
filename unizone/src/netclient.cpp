@@ -168,13 +168,13 @@ NetClient::Disconnect()
 		PRINT("RESETING\n");
 		Reset(); 
 		PRINT("DELETING USERS\n");
-		WUserIter it = fUsers.GetIterator();
+		WUserIter it = fUsers.GetIterator(HTIT_FLAG_BACKWARDS);
 		while (it.HasMoreValues())
 		{
 			WUserRef uref;
 			it.GetNextValue(uref);
 			RemoveUser(uref);
-			it = fUsers.GetIterator();
+//			it = fUsers.GetIterator();
 		}
 		PRINT("EMITTING DisconnectedFromServer()\n");
 		emit DisconnectedFromServer();
@@ -259,7 +259,7 @@ NetClient::FindUser(const QString & sessionID)
 void 
 NetClient::FindUsersByIP(WUserMap & umap, const QString & ip)
 {
-	WUserIter iter = fUsers.GetIterator();
+	WUserIter iter = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
 	while ( iter.HasMoreValues())
 	{
 		WUserRef uref;
@@ -275,7 +275,7 @@ NetClient::FindUsersByIP(WUserMap & umap, const QString & ip)
 WUserRef
 NetClient::FindUserByIPandPort(const QString & ip, uint32 port)
 {
-	WUserIter iter = fUsers.GetIterator();
+	WUserIter iter = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
 	while (iter.HasMoreValues())
 	{
 		WUserRef found;

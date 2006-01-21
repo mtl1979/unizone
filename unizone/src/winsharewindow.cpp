@@ -1208,7 +1208,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 			QRegExp qr(tstr, false);
 
 			bool foundMatches = false;
-			WUserIter iter = net->Users().GetIterator();
+			WUserIter iter = net->UsersIterator(HTIT_FLAG_NOREGISTER);
 			while (iter.HasMoreValues())
 			{
 				WUserRef user;
@@ -1236,7 +1236,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 		if (sendTo.IsEmpty())
 		{
 			// tab-completion thingy :)
-			WUserIter iter = net->Users().GetIterator();
+			WUserIter iter = net->UsersIterator(HTIT_FLAG_NOREGISTER);
 			while (iter.HasMoreValues())
 			{
 				WUserRef user;
@@ -1855,7 +1855,7 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 	QStringTokenizer tok(pattern, ",");
 	while ((qItem = tok.GetNextToken()) != QString::null)
 	{
-		WUserIter it = gWin->fNetClient->Users().GetIterator();
+		WUserIter it = gWin->fNetClient->UsersIterator(HTIT_FLAG_NOREGISTER);
 		// Space in username? (replaced with '*' for BeShare compatibility)
 		qItem.replace(QRegExp("*"), " ");
 		
@@ -1905,7 +1905,7 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 		// Space in username? (replaced with '*' for BeShare compatibility)
 		qItem.replace(QRegExp("*"), " ");
 
-		WUserIter it = gWin->fNetClient->Users().GetIterator();
+		WUserIter it = gWin->fNetClient->UsersIterator(HTIT_FLAG_NOREGISTER);
 		
 		while (it.HasMoreValues())
 		{

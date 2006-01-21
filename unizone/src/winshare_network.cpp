@@ -600,7 +600,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				int uc = FillUserMap(tuser, umap);
 				if (uc > 0)
 				{
-					WUserIter iter = umap.GetIterator();
+					WUserIter iter = umap.GetIterator(HTIT_FLAG_NOREGISTER);
 					while (iter.HasMoreValues())
 					{
 						WUserRef tu;
@@ -1364,7 +1364,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (numMatches > 0)	// Found atleast one match in users
 			{
 				QString list;
-				WUserIter uiter = wmap.GetIterator();
+				WUserIter uiter = wmap.GetIterator(HTIT_FLAG_NOREGISTER);
 				while (uiter.HasMoreValues())
 				{
 					WUserRef uref;
@@ -1739,7 +1739,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 					WPrivateWindow * win = fPrivateWindows[i];
 					WUserMap & winusers = win->GetUsers();
 					
-					WUserIter uit = winusers.GetIterator();
+					WUserIter uit = winusers.GetIterator(HTIT_FLAG_NOREGISTER);
 					while ( uit.HasMoreValues() )
 					{
 						WUserRef user;
@@ -2995,7 +2995,7 @@ WinShareWindow::FindUser(const QString & user)
 	// -------------------------------------------
 
 	WUserMap & umap = fNetClient->Users();
-	WUserIter iter = umap.GetIterator();
+	WUserIter iter = umap.GetIterator(HTIT_FLAG_NOREGISTER);
 	while (iter.HasMoreValues())
 	{
 		WUserRef uref;

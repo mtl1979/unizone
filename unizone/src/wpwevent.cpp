@@ -33,7 +33,7 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 				fMsg = "/msg ";
 
 			QString tusers;
-			WUserIter it = users.GetIterator();
+			WUserIter it = users.GetIterator(HTIT_FLAG_NOREGISTER);
 			while (it.HasMoreValues())
 			{
 				WUserRef uref;
