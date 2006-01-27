@@ -8,12 +8,12 @@ CFG=Unizone - Win32 Debug ANSI
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "Unizone-qt2.mak".
+!MESSAGE NMAKE /f "Unizone.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "Unizone-qt2.mak" CFG="Unizone - Win32 Debug ANSI"
+!MESSAGE NMAKE /f "Unizone.mak" CFG="Unizone - Win32 Debug ANSI"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "NDEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -56,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"c:\qt\lib" /libpath:"..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"c:\qt\lib" /libpath:"..\..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
@@ -73,7 +73,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "_DEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "DISABLE_OBJECT_POOLING" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "_MBCS" /D "UNICODE" /D "DISABLE_OBJECT_POOLING" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"Debug/Unizoned.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"c:\qt\lib" /libpath:"..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"c:\qt\lib" /libpath:"..\..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
@@ -101,9 +101,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug_ANSI"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
 # SUBTRACT BASE CPP /X /YX
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -113,9 +113,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo /o"Debug/Unizoned.bsc"
 # ADD BSC32 /nologo /o"Debug_ANSI/Unizonead.bsc"
 LINK32=link.exe
-# ADD BASE LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"c:\qt\lib" /libpath:"..\libjpeg\Debug"
+# ADD BASE LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"c:\qt\lib" /libpath:"..\..\libjpeg\Debug"
 # SUBTRACT BASE LINK32 /incremental:no
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"c:\qt\lib" /libpath:"..\libjpeg\Debug_ANSI" /libpath:"muscle___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"c:\qt\lib" /libpath:"..\..\libjpeg\Debug_ANSI" /libpath:"muscle___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
@@ -132,9 +132,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Release_ANSI"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt\include" /I "..\src" /I "..\src\muscle" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
 # SUBTRACT BASE CPP /X
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt\include" /I "..\src" /I "..\src\muscle" /I "..\src\muscle\regex\regex" /I "..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -162,296 +162,283 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\src\aboutdlg.cpp
+SOURCE=..\..\src\aboutdlg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\aboutdlgimpl.cpp
+SOURCE=..\..\src\aboutdlgimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\botitem.cpp
+SOURCE=..\..\src\botitem.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channel.cpp
+SOURCE=..\..\src\channel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channelimpl.cpp
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# SUBTRACT CPP /D "MUSCLE_USE_X86_INLINE_ASSEMBLY"
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-!ENDIF 
-
+SOURCE=..\..\src\channelimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channelinfo.cpp
+SOURCE=..\..\src\channelinfo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channels.cpp
+SOURCE=..\..\src\channels.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\chatevent.cpp
+SOURCE=..\..\src\chatevent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\chattext.cpp
+SOURCE=..\..\src\chattext.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\chatwindow.cpp
+SOURCE=..\..\src\chatwindow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\combo.cpp
+SOURCE=..\..\src\combo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\debugimpl.cpp
+SOURCE=..\..\src\debugimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\downloadimpl.cpp
+SOURCE=..\..\src\downloadimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\downloadqueue.cpp
+SOURCE=..\..\src\downloadqueue.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\downloadthread.cpp
+SOURCE=..\..\src\downloadthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\downloadworker.cpp
+SOURCE=..\..\src\downloadworker.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\events.cpp
+SOURCE=..\..\src\events.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\fileinfo.cpp
+SOURCE=..\..\src\fileinfo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\filethread.cpp
+SOURCE=..\..\src\filethread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\formatting.cpp
+SOURCE=..\..\src\formatting.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\htmlview.cpp
+SOURCE=..\..\src\htmlview.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\listthread.cpp
+SOURCE=..\..\src\listthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\Log.cpp
+SOURCE=..\..\src\Log.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\main.cpp
+SOURCE=..\..\src\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\md5.cpp
+SOURCE=..\..\src\md5.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\menubar.cpp
+SOURCE=..\..\src\menubar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\netclient.cpp
+SOURCE=..\..\src\netclient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\nicklist.cpp
+SOURCE=..\..\src\nicklist.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\parser.cpp
+SOURCE=..\..\src\parser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\picviewer.cpp
+SOURCE=..\..\src\picviewer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\picviewerimpl.cpp
+SOURCE=..\..\src\picviewerimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\platform.cpp
+SOURCE=..\..\src\platform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\prefs.cpp
+SOURCE=..\..\src\prefs.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\prefsimpl.cpp
+SOURCE=..\..\src\prefsimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\privatewindow.cpp
+SOURCE=..\..\src\privatewindow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\privatewindowimpl.cpp
+SOURCE=..\..\src\privatewindowimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\resolver.cpp
+SOURCE=..\..\src\resolver.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\resolverthread.cpp
+SOURCE=..\..\src\resolverthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\scanprogress.cpp
+SOURCE=..\..\src\scanprogress.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\scanprogressimpl.cpp
+SOURCE=..\..\src\scanprogressimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\search.cpp
+SOURCE=..\..\src\search.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\searchitem.cpp
+SOURCE=..\..\src\searchitem.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\serverclient.cpp
+SOURCE=..\..\src\serverclient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\settings.cpp
+SOURCE=..\..\src\settings.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\textevent.cpp
+SOURCE=..\..\src\textevent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\titanic.cpp
+SOURCE=..\..\src\titanic.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\transferitem.cpp
+SOURCE=..\..\src\transferitem.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\uenv.cpp
+SOURCE=..\..\src\uenv.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ulistview.cpp
+SOURCE=..\..\src\ulistview.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\updateclient.cpp
+SOURCE=..\..\src\updateclient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\uploadthread.cpp
+SOURCE=..\..\src\uploadthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\user.cpp
+SOURCE=..\..\src\user.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\userlistitem.cpp
+SOURCE=..\..\src\userlistitem.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\util.cpp
+SOURCE=..\..\src\util.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\version.cpp
+SOURCE=..\..\src\version.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wcrypt.cpp
+SOURCE=..\..\src\wcrypt.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\werrorevent.cpp
+SOURCE=..\..\src\werrorevent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\wfile.cpp
+SOURCE=..\..\src\windows\wfile.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\winshare_lists.cpp
+SOURCE=..\..\src\winshare_lists.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\winshare_network.cpp
+SOURCE=..\..\src\winshare_network.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\winshare_parsing.cpp
+SOURCE=..\..\src\winshare_parsing.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\winshare_slots.cpp
+SOURCE=..\..\src\winshare_slots.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\winsharewindow.cpp
+SOURCE=..\..\src\winsharewindow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wmessageevent.cpp
+SOURCE=..\..\src\wmessageevent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wpwevent.cpp
+SOURCE=..\..\src\wpwevent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wstatusbar.cpp
+SOURCE=..\..\src\wstatusbar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wstring.cpp
+SOURCE=..\..\src\wstring.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wsystemevent.cpp
+SOURCE=..\..\src\wsystemevent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\wutil_msvc.cpp
+SOURCE=..\..\src\windows\wutil_msvc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wwarningevent.cpp
+SOURCE=..\..\src\wwarningevent.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -459,14 +446,14 @@ SOURCE=..\src\wwarningevent.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\src\aboutdlg.h
+SOURCE=..\..\src\aboutdlg.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlg.h
+InputPath=..\..\src\aboutdlg.h
 InputName=aboutdlg
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -479,7 +466,7 @@ InputName=aboutdlg
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlg.h
+InputPath=..\..\src\aboutdlg.h
 InputName=aboutdlg
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -493,7 +480,7 @@ InputName=aboutdlg
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlg.h
+InputPath=..\..\src\aboutdlg.h
 InputName=aboutdlg
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -507,7 +494,7 @@ InputName=aboutdlg
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlg.h
+InputPath=..\..\src\aboutdlg.h
 InputName=aboutdlg
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -520,14 +507,14 @@ InputName=aboutdlg
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\aboutdlgimpl.h
+SOURCE=..\..\src\aboutdlgimpl.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlgimpl.h
+InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -540,7 +527,7 @@ InputName=aboutdlgimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlgimpl.h
+InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -554,7 +541,7 @@ InputName=aboutdlgimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlgimpl.h
+InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -568,7 +555,7 @@ InputName=aboutdlgimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlgimpl.h
+InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -581,18 +568,18 @@ InputName=aboutdlgimpl
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\botitem.h
+SOURCE=..\..\src\botitem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channel.h
+SOURCE=..\..\src\channel.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channel.h
+InputPath=..\..\src\channel.h
 InputName=channel
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -605,7 +592,7 @@ InputName=channel
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channel.h
+InputPath=..\..\src\channel.h
 InputName=channel
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -619,7 +606,7 @@ InputName=channel
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channel.h
+InputPath=..\..\src\channel.h
 InputName=channel
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -633,7 +620,7 @@ InputName=channel
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channel.h
+InputPath=..\..\src\channel.h
 InputName=channel
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -646,14 +633,14 @@ InputName=channel
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channelimpl.h
+SOURCE=..\..\src\channelimpl.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channelimpl.h
+InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -666,7 +653,7 @@ InputName=channelimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channelimpl.h
+InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -680,7 +667,7 @@ InputName=channelimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channelimpl.h
+InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -694,7 +681,7 @@ InputName=channelimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channelimpl.h
+InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -707,18 +694,18 @@ InputName=channelimpl
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channelinfo.h
+SOURCE=..\..\src\channelinfo.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channels.h
+SOURCE=..\..\src\channels.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channels.h
+InputPath=..\..\src\channels.h
 InputName=channels
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -731,7 +718,7 @@ InputName=channels
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channels.h
+InputPath=..\..\src\channels.h
 InputName=channels
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -744,7 +731,7 @@ InputName=channels
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channels.h
+InputPath=..\..\src\channels.h
 InputName=channels
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -757,7 +744,7 @@ InputName=channels
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\channels.h
+InputPath=..\..\src\channels.h
 InputName=channels
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -770,18 +757,18 @@ InputName=channels
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\chatevent.h
+SOURCE=..\..\src\chatevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\chattext.h
+SOURCE=..\..\src\chattext.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\chattext.h
+InputPath=..\..\src\chattext.h
 InputName=chattext
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -794,7 +781,7 @@ InputName=chattext
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\chattext.h
+InputPath=..\..\src\chattext.h
 InputName=chattext
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -808,7 +795,7 @@ InputName=chattext
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\chattext.h
+InputPath=..\..\src\chattext.h
 InputName=chattext
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -822,7 +809,7 @@ InputName=chattext
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\chattext.h
+InputPath=..\..\src\chattext.h
 InputName=chattext
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -835,22 +822,22 @@ InputName=chattext
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\chatwindow.h
+SOURCE=..\..\src\chatwindow.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\colors.h
+SOURCE=..\..\src\colors.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\combo.h
+SOURCE=..\..\src\combo.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\combo.h
+InputPath=..\..\src\combo.h
 InputName=combo
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -863,7 +850,7 @@ InputName=combo
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\combo.h
+InputPath=..\..\src\combo.h
 InputName=combo
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -877,7 +864,7 @@ InputName=combo
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\combo.h
+InputPath=..\..\src\combo.h
 InputName=combo
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -891,7 +878,7 @@ InputName=combo
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\combo.h
+InputPath=..\..\src\combo.h
 InputName=combo
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -904,18 +891,18 @@ InputName=combo
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\debugimpl.h
+SOURCE=..\..\src\debugimpl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\downloadimpl.h
+SOURCE=..\..\src\downloadimpl.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\downloadimpl.h
+InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -928,7 +915,7 @@ InputName=downloadimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\downloadimpl.h
+InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -942,7 +929,7 @@ InputName=downloadimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\downloadimpl.h
+InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -956,7 +943,7 @@ InputName=downloadimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\downloadimpl.h
+InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -969,18 +956,18 @@ InputName=downloadimpl
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\downloadqueue.h
+SOURCE=..\..\src\downloadqueue.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\downloadthread.h
+SOURCE=..\..\src\downloadthread.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\downloadthread.h
+InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -993,7 +980,7 @@ InputName=downloadthread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\downloadthread.h
+InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1007,7 +994,7 @@ InputName=downloadthread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\downloadthread.h
+InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1021,7 +1008,7 @@ InputName=downloadthread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\downloadthread.h
+InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1034,26 +1021,26 @@ InputName=downloadthread
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\downloadworker.h
+SOURCE=..\..\src\downloadworker.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\events.h
+SOURCE=..\..\src\events.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\fileinfo.h
+SOURCE=..\..\src\fileinfo.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\filethread.h
+SOURCE=..\..\src\filethread.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\filethread.h
+InputPath=..\..\src\filethread.h
 InputName=filethread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1066,7 +1053,7 @@ InputName=filethread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\filethread.h
+InputPath=..\..\src\filethread.h
 InputName=filethread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1079,7 +1066,7 @@ InputName=filethread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\filethread.h
+InputPath=..\..\src\filethread.h
 InputName=filethread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1092,7 +1079,7 @@ InputName=filethread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\filethread.h
+InputPath=..\..\src\filethread.h
 InputName=filethread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1105,14 +1092,14 @@ InputName=filethread
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\formatting.h
+SOURCE=..\..\src\formatting.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\formatting.h
+InputPath=..\..\src\formatting.h
 InputName=formatting
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1125,7 +1112,7 @@ InputName=formatting
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\formatting.h
+InputPath=..\..\src\formatting.h
 InputName=formatting
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1139,7 +1126,7 @@ InputName=formatting
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\formatting.h
+InputPath=..\..\src\formatting.h
 InputName=formatting
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1153,7 +1140,7 @@ InputName=formatting
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\formatting.h
+InputPath=..\..\src\formatting.h
 InputName=formatting
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1166,22 +1153,22 @@ InputName=formatting
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\global.h
+SOURCE=..\..\src\global.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gotourl.h
+SOURCE=..\..\src\gotourl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\htmlview.h
+SOURCE=..\..\src\htmlview.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\htmlview.h
+InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1194,7 +1181,7 @@ InputName=htmlview
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\htmlview.h
+InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1208,7 +1195,7 @@ InputName=htmlview
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\htmlview.h
+InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1222,7 +1209,7 @@ InputName=htmlview
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\htmlview.h
+InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1235,14 +1222,14 @@ InputName=htmlview
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\listthread.h
+SOURCE=..\..\src\listthread.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\listthread.h
+InputPath=..\..\src\listthread.h
 InputName=listthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1255,7 +1242,7 @@ InputName=listthread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\listthread.h
+InputPath=..\..\src\listthread.h
 InputName=listthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1268,7 +1255,7 @@ InputName=listthread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\listthread.h
+InputPath=..\..\src\listthread.h
 InputName=listthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1281,7 +1268,7 @@ InputName=listthread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\listthread.h
+InputPath=..\..\src\listthread.h
 InputName=listthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1294,22 +1281,22 @@ InputName=listthread
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\Log.h
+SOURCE=..\..\src\Log.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\md5.h
+SOURCE=..\..\src\md5.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\menubar.h
+SOURCE=..\..\src\menubar.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\menubar.h
+InputPath=..\..\src\menubar.h
 InputName=menubar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1322,7 +1309,7 @@ InputName=menubar
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\menubar.h
+InputPath=..\..\src\menubar.h
 InputName=menubar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1336,7 +1323,7 @@ InputName=menubar
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\menubar.h
+InputPath=..\..\src\menubar.h
 InputName=menubar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1350,7 +1337,7 @@ InputName=menubar
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\menubar.h
+InputPath=..\..\src\menubar.h
 InputName=menubar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1363,14 +1350,14 @@ InputName=menubar
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\netclient.h
+SOURCE=..\..\src\netclient.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\netclient.h
+InputPath=..\..\src\netclient.h
 InputName=netclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1383,7 +1370,7 @@ InputName=netclient
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\netclient.h
+InputPath=..\..\src\netclient.h
 InputName=netclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1397,7 +1384,7 @@ InputName=netclient
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\netclient.h
+InputPath=..\..\src\netclient.h
 InputName=netclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1411,7 +1398,7 @@ InputName=netclient
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\netclient.h
+InputPath=..\..\src\netclient.h
 InputName=netclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1424,22 +1411,22 @@ InputName=netclient
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\nicklist.h
+SOURCE=..\..\src\nicklist.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\parser.h
+SOURCE=..\..\src\parser.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\picviewer.h
+SOURCE=..\..\src\picviewer.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewer.h
+InputPath=..\..\src\picviewer.h
 InputName=picviewer
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1452,7 +1439,7 @@ InputName=picviewer
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewer.h
+InputPath=..\..\src\picviewer.h
 InputName=picviewer
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1466,7 +1453,7 @@ InputName=picviewer
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewer.h
+InputPath=..\..\src\picviewer.h
 InputName=picviewer
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1480,7 +1467,7 @@ InputName=picviewer
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewer.h
+InputPath=..\..\src\picviewer.h
 InputName=picviewer
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1493,14 +1480,14 @@ InputName=picviewer
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\picviewerimpl.h
+SOURCE=..\..\src\picviewerimpl.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewerimpl.h
+InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1513,7 +1500,7 @@ InputName=picviewerimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewerimpl.h
+InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1527,7 +1514,7 @@ InputName=picviewerimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewerimpl.h
+InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1540,7 +1527,7 @@ InputName=picviewerimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewerimpl.h
+InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1553,18 +1540,18 @@ InputName=picviewerimpl
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\platform.h
+SOURCE=..\..\src\platform.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\prefs.h
+SOURCE=..\..\src\prefs.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefs.h
+InputPath=..\..\src\prefs.h
 InputName=prefs
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1577,7 +1564,7 @@ InputName=prefs
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefs.h
+InputPath=..\..\src\prefs.h
 InputName=prefs
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1591,7 +1578,7 @@ InputName=prefs
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefs.h
+InputPath=..\..\src\prefs.h
 InputName=prefs
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1605,7 +1592,7 @@ InputName=prefs
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefs.h
+InputPath=..\..\src\prefs.h
 InputName=prefs
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1618,14 +1605,14 @@ InputName=prefs
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\prefsimpl.h
+SOURCE=..\..\src\prefsimpl.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefsimpl.h
+InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1638,7 +1625,7 @@ InputName=prefsimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefsimpl.h
+InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1652,7 +1639,7 @@ InputName=prefsimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefsimpl.h
+InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1666,7 +1653,7 @@ InputName=prefsimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefsimpl.h
+InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1679,14 +1666,14 @@ InputName=prefsimpl
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\privatewindow.h
+SOURCE=..\..\src\privatewindow.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindow.h
+InputPath=..\..\src\privatewindow.h
 InputName=privatewindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1699,7 +1686,7 @@ InputName=privatewindow
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindow.h
+InputPath=..\..\src\privatewindow.h
 InputName=privatewindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1713,7 +1700,7 @@ InputName=privatewindow
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindow.h
+InputPath=..\..\src\privatewindow.h
 InputName=privatewindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1727,7 +1714,7 @@ InputName=privatewindow
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindow.h
+InputPath=..\..\src\privatewindow.h
 InputName=privatewindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1740,14 +1727,14 @@ InputName=privatewindow
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\privatewindowimpl.h
+SOURCE=..\..\src\privatewindowimpl.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindowimpl.h
+InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1760,7 +1747,7 @@ InputName=privatewindowimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindowimpl.h
+InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1774,7 +1761,7 @@ InputName=privatewindowimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindowimpl.h
+InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1788,7 +1775,7 @@ InputName=privatewindowimpl
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindowimpl.h
+InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1801,17 +1788,17 @@ InputName=privatewindowimpl
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\resolver.h
+SOURCE=..\..\src\resolver.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\resolverthread.h
+SOURCE=..\..\src\resolverthread.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\resolverthread.h
+InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1823,7 +1810,7 @@ InputName=resolverthread
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\resolverthread.h
+InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1835,7 +1822,7 @@ InputName=resolverthread
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\resolverthread.h
+InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1847,7 +1834,7 @@ InputName=resolverthread
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\resolverthread.h
+InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1860,22 +1847,22 @@ InputName=resolverthread
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\resource.h
+SOURCE=..\..\src\resource.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\scanevent.h
+SOURCE=..\..\src\scanevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\scanprogress.h
+SOURCE=..\..\src\scanprogress.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\scanprogress.h
+InputPath=..\..\src\scanprogress.h
 InputName=scanprogress
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1888,7 +1875,7 @@ InputName=scanprogress
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\scanprogress.h
+InputPath=..\..\src\scanprogress.h
 InputName=scanprogress
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1901,7 +1888,7 @@ InputName=scanprogress
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\scanprogress.h
+InputPath=..\..\src\scanprogress.h
 InputName=scanprogress
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1914,7 +1901,7 @@ InputName=scanprogress
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\scanprogress.h
+InputPath=..\..\src\scanprogress.h
 InputName=scanprogress
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1927,18 +1914,18 @@ InputName=scanprogress
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\scanprogressimpl.h
+SOURCE=..\..\src\scanprogressimpl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\search.h
+SOURCE=..\..\src\search.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\search.h
+InputPath=..\..\src\search.h
 InputName=search
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1951,7 +1938,7 @@ InputName=search
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\search.h
+InputPath=..\..\src\search.h
 InputName=search
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1964,7 +1951,7 @@ InputName=search
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\search.h
+InputPath=..\..\src\search.h
 InputName=search
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1977,7 +1964,7 @@ InputName=search
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\search.h
+InputPath=..\..\src\search.h
 InputName=search
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1990,18 +1977,18 @@ InputName=search
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\searchitem.h
+SOURCE=..\..\src\searchitem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\serverclient.h
+SOURCE=..\..\src\serverclient.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\serverclient.h
+InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2014,7 +2001,7 @@ InputName=serverclient
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\serverclient.h
+InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2028,7 +2015,7 @@ InputName=serverclient
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\serverclient.h
+InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2042,7 +2029,7 @@ InputName=serverclient
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\serverclient.h
+InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2055,42 +2042,42 @@ InputName=serverclient
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\settings.h
+SOURCE=..\..\src\settings.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\textevent.h
+SOURCE=..\..\src\textevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\titanic.h
+SOURCE=..\..\src\titanic.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\tokenizer.h
+SOURCE=..\..\src\tokenizer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\transferitem.h
+SOURCE=..\..\src\transferitem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\transferlist.h
+SOURCE=..\..\src\transferlist.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\uenv.h
+SOURCE=..\..\src\uenv.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ulistview.h
+SOURCE=..\..\src\ulistview.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\ulistview.h
+InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2103,7 +2090,7 @@ InputName=ulistview
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\ulistview.h
+InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2117,7 +2104,7 @@ InputName=ulistview
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\ulistview.h
+InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2131,7 +2118,7 @@ InputName=ulistview
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\ulistview.h
+InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2144,14 +2131,14 @@ InputName=ulistview
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\updateclient.h
+SOURCE=..\..\src\updateclient.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\updateclient.h
+InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2164,7 +2151,7 @@ InputName=updateclient
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\updateclient.h
+InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2178,7 +2165,7 @@ InputName=updateclient
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\updateclient.h
+InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2192,7 +2179,7 @@ InputName=updateclient
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\updateclient.h
+InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2205,14 +2192,14 @@ InputName=updateclient
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\uploadthread.h
+SOURCE=..\..\src\uploadthread.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\uploadthread.h
+InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2225,7 +2212,7 @@ InputName=uploadthread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\uploadthread.h
+InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2239,7 +2226,7 @@ InputName=uploadthread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\uploadthread.h
+InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2253,7 +2240,7 @@ InputName=uploadthread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\uploadthread.h
+InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2266,46 +2253,46 @@ InputName=uploadthread
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\user.h
+SOURCE=..\..\src\user.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\userlistitem.h
+SOURCE=..\..\src\userlistitem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\util.h
+SOURCE=..\..\src\util.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\version.h
+SOURCE=..\..\src\version.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wcrypt.h
+SOURCE=..\..\src\wcrypt.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wdownloadevent.h
+SOURCE=..\..\src\wdownloadevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\werrorevent.h
+SOURCE=..\..\src\werrorevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wfile.h
+SOURCE=..\..\src\wfile.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\winsharewindow.h
+SOURCE=..\..\src\winsharewindow.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\winsharewindow.h
+InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2318,7 +2305,7 @@ InputName=winsharewindow
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\winsharewindow.h
+InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2332,7 +2319,7 @@ InputName=winsharewindow
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\winsharewindow.h
+InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2346,7 +2333,7 @@ InputName=winsharewindow
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src
-InputPath=..\src\winsharewindow.h
+InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -2359,39 +2346,39 @@ InputName=winsharewindow
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\wlaunchthread_win.h
+SOURCE=..\..\src\windows\wlaunchthread_win.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wmessageevent.h
+SOURCE=..\..\src\wmessageevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wpwevent.h
+SOURCE=..\..\src\wpwevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wstatusbar.h
+SOURCE=..\..\src\wstatusbar.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wstring.h
+SOURCE=..\..\src\wstring.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wsystemevent.h
+SOURCE=..\..\src\wsystemevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wuploadevent.h
+SOURCE=..\..\src\wuploadevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wutil.h
+SOURCE=..\..\src\wutil.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wwarningevent.h
+SOURCE=..\..\src\wwarningevent.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
@@ -2399,19 +2386,19 @@ SOURCE=..\src\wwarningevent.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=..\src\icon.rc
+SOURCE=..\..\src\icon.rc
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\icon2.ico
+SOURCE=..\..\src\icon2.ico
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\unizone.ico
+SOURCE=..\..\src\unizone.ico
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\unizone.pro
+SOURCE=..\..\src\unizone.pro
 # End Source File
 # End Group
 # Begin Group "UI files"
@@ -2419,14 +2406,14 @@ SOURCE=..\src\unizone.pro
 # PROP Default_Filter "ui"
 # Begin Source File
 
-SOURCE=..\src\aboutdlg.ui
+SOURCE=..\..\src\aboutdlg.ui
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlg.ui
+InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
 BuildCmds= \
@@ -2446,7 +2433,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlg.ui
+InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
 BuildCmds= \
@@ -2467,7 +2454,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlg.ui
+InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
 BuildCmds= \
@@ -2488,7 +2475,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\aboutdlg.ui
+InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
 BuildCmds= \
@@ -2508,14 +2495,14 @@ BuildCmds= \
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\channel.ui
+SOURCE=..\..\src\channel.ui
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\channel.ui
+InputPath=..\..\src\channel.ui
 InputName=channel
 
 BuildCmds= \
@@ -2535,7 +2522,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\channel.ui
+InputPath=..\..\src\channel.ui
 InputName=channel
 
 BuildCmds= \
@@ -2556,7 +2543,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\channel.ui
+InputPath=..\..\src\channel.ui
 InputName=channel
 
 BuildCmds= \
@@ -2577,7 +2564,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\channel.ui
+InputPath=..\..\src\channel.ui
 InputName=channel
 
 BuildCmds= \
@@ -2597,14 +2584,14 @@ BuildCmds= \
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\picviewer.ui
+SOURCE=..\..\src\picviewer.ui
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewer.ui
+InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
 BuildCmds= \
@@ -2624,7 +2611,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewer.ui
+InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
 BuildCmds= \
@@ -2645,7 +2632,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewer.ui
+InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
 BuildCmds= \
@@ -2666,7 +2653,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\picviewer.ui
+InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
 BuildCmds= \
@@ -2686,14 +2673,14 @@ BuildCmds= \
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\prefs.ui
+SOURCE=..\..\src\prefs.ui
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefs.ui
+InputPath=..\..\src\prefs.ui
 InputName=prefs
 
 BuildCmds= \
@@ -2713,7 +2700,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefs.ui
+InputPath=..\..\src\prefs.ui
 InputName=prefs
 
 BuildCmds= \
@@ -2734,7 +2721,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefs.ui
+InputPath=..\..\src\prefs.ui
 InputName=prefs
 
 BuildCmds= \
@@ -2755,7 +2742,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\prefs.ui
+InputPath=..\..\src\prefs.ui
 InputName=prefs
 
 BuildCmds= \
@@ -2775,14 +2762,14 @@ BuildCmds= \
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\privatewindow.ui
+SOURCE=..\..\src\privatewindow.ui
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindow.ui
+InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
 BuildCmds= \
@@ -2802,7 +2789,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindow.ui
+InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
 BuildCmds= \
@@ -2823,7 +2810,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindow.ui
+InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
 BuildCmds= \
@@ -2844,7 +2831,7 @@ BuildCmds= \
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\privatewindow.ui
+InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
 BuildCmds= \
@@ -2864,13 +2851,13 @@ BuildCmds= \
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\scanprogress.ui
+SOURCE=..\..\src\scanprogress.ui
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\scanprogress.ui
+InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
 BuildCmds= \
@@ -2889,7 +2876,7 @@ BuildCmds= \
 
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\scanprogress.ui
+InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
 BuildCmds= \
@@ -2908,7 +2895,7 @@ BuildCmds= \
 
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\scanprogress.ui
+InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
 BuildCmds= \
@@ -2927,7 +2914,7 @@ BuildCmds= \
 
 # Begin Custom Build - Uic'ing $(InputName).ui ...
 InputDir=\build\unizone\src
-InputPath=..\src\scanprogress.ui
+InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
 BuildCmds= \
@@ -2951,7 +2938,7 @@ BuildCmds= \
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\src\windows\ansi\fileinfo_win.cpp
+SOURCE=..\..\src\windows\ansi\fileinfo_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -2974,7 +2961,7 @@ SOURCE=..\src\windows\ansi\fileinfo_win.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\ansi\filethread_win.cpp
+SOURCE=..\..\src\windows\ansi\filethread_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -2997,7 +2984,7 @@ SOURCE=..\src\windows\ansi\filethread_win.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\ansi\gotourl_win.cpp
+SOURCE=..\..\src\windows\ansi\gotourl_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -3020,7 +3007,7 @@ SOURCE=..\src\windows\ansi\gotourl_win.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\ansi\wfile_win.cpp
+SOURCE=..\..\src\windows\ansi\wfile_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -3039,7 +3026,7 @@ SOURCE=..\src\windows\ansi\wfile_win.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\ansi\wlaunchthread_win.cpp
+SOURCE=..\..\src\windows\ansi\wlaunchthread_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -3066,7 +3053,7 @@ SOURCE=..\src\windows\ansi\wlaunchthread_win.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\src\windows\unicode\fileinfo_win.cpp
+SOURCE=..\..\src\windows\unicode\fileinfo_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -3085,7 +3072,7 @@ SOURCE=..\src\windows\unicode\fileinfo_win.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\unicode\filethread_win.cpp
+SOURCE=..\..\src\windows\unicode\filethread_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -3104,7 +3091,7 @@ SOURCE=..\src\windows\unicode\filethread_win.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\unicode\gotourl_win.cpp
+SOURCE=..\..\src\windows\unicode\gotourl_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -3123,7 +3110,7 @@ SOURCE=..\src\windows\unicode\gotourl_win.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\unicode\wfile_win.cpp
+SOURCE=..\..\src\windows\unicode\wfile_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -3142,7 +3129,7 @@ SOURCE=..\src\windows\unicode\wfile_win.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\windows\unicode\wlaunchthread_win.cpp
+SOURCE=..\..\src\windows\unicode\wlaunchthread_win.cpp
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
@@ -3165,119 +3152,119 @@ SOURCE=..\src\windows\unicode\wlaunchthread_win.cpp
 # PROP Default_Filter "cpp"
 # Begin Source File
 
-SOURCE=..\src\moc_aboutdlg.cpp
+SOURCE=..\..\src\moc_aboutdlg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_aboutdlgimpl.cpp
+SOURCE=..\..\src\moc_aboutdlgimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_channel.cpp
+SOURCE=..\..\src\moc_channel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_channelimpl.cpp
+SOURCE=..\..\src\moc_channelimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_channels.cpp
+SOURCE=..\..\src\moc_channels.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_chattext.cpp
+SOURCE=..\..\src\moc_chattext.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_combo.cpp
+SOURCE=..\..\src\moc_combo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_downloadimpl.cpp
+SOURCE=..\..\src\moc_downloadimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_downloadthread.cpp
+SOURCE=..\..\src\moc_downloadthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_filethread.cpp
+SOURCE=..\..\src\moc_filethread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_formatting.cpp
+SOURCE=..\..\src\moc_formatting.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_htmlview.cpp
+SOURCE=..\..\src\moc_htmlview.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_listthread.cpp
+SOURCE=..\..\src\moc_listthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_menubar.cpp
+SOURCE=..\..\src\moc_menubar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_netclient.cpp
+SOURCE=..\..\src\moc_netclient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_picviewer.cpp
+SOURCE=..\..\src\moc_picviewer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_picviewerimpl.cpp
+SOURCE=..\..\src\moc_picviewerimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_prefs.cpp
+SOURCE=..\..\src\moc_prefs.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_prefsimpl.cpp
+SOURCE=..\..\src\moc_prefsimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_privatewindow.cpp
+SOURCE=..\..\src\moc_privatewindow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_privatewindowimpl.cpp
+SOURCE=..\..\src\moc_privatewindowimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_resolverthread.cpp
+SOURCE=..\..\src\moc_resolverthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_scanprogress.cpp
+SOURCE=..\..\src\moc_scanprogress.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_search.cpp
+SOURCE=..\..\src\moc_search.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_serverclient.cpp
+SOURCE=..\..\src\moc_serverclient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_ulistview.cpp
+SOURCE=..\..\src\moc_ulistview.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_updateclient.cpp
+SOURCE=..\..\src\moc_updateclient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_uploadthread.cpp
+SOURCE=..\..\src\moc_uploadthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\moc_winsharewindow.cpp
+SOURCE=..\..\src\moc_winsharewindow.cpp
 # End Source File
 # End Group
 # Begin Group "MUSCLE Headers"
@@ -3285,134 +3272,134 @@ SOURCE=..\src\moc_winsharewindow.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\src\muscle\iogateway\AbstractMessageIOGateway.h
+SOURCE=..\..\src\muscle\iogateway\AbstractMessageIOGateway.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\AbstractReflectSession.h
+SOURCE=..\..\src\muscle\reflector\AbstractReflectSession.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\AbstractSessionIOPolicy.h
+SOURCE=..\..\src\muscle\reflector\AbstractSessionIOPolicy.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\AcceptSocketsThread.h
+SOURCE=..\..\src\muscle\system\AcceptSocketsThread.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\AtomicCounter.h
+SOURCE=..\..\src\muscle\system\AtomicCounter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\ByteBuffer.h
+SOURCE=..\..\src\muscle\util\ByteBuffer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\dataio\DataIO.h
+SOURCE=..\..\src\muscle\dataio\DataIO.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\DumbReflectSession.h
+SOURCE=..\..\src\muscle\reflector\DumbReflectSession.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\dataio\FileDataIO.h
+SOURCE=..\..\src\muscle\dataio\FileDataIO.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\FilterSessionFactory.h
+SOURCE=..\..\src\muscle\reflector\FilterSessionFactory.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\FlatCountable.h
+SOURCE=..\..\src\muscle\util\FlatCountable.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\support\Flattenable.h
+SOURCE=..\..\src\muscle\support\Flattenable.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\GlobalMemoryAllocator.h
+SOURCE=..\..\src\muscle\system\GlobalMemoryAllocator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\Hashtable.h
+SOURCE=..\..\src\muscle\util\Hashtable.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\syslog\LogCallback.h
+SOURCE=..\..\src\muscle\syslog\LogCallback.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\MemoryAllocator.h
+SOURCE=..\..\src\muscle\util\MemoryAllocator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\dataio\MemoryBufferDataIO.h
+SOURCE=..\..\src\muscle\dataio\MemoryBufferDataIO.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\message\Message.h
+SOURCE=..\..\src\muscle\message\Message.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\iogateway\MessageIOGateway.h
+SOURCE=..\..\src\muscle\iogateway\MessageIOGateway.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\MessageTransceiverThread.h
+SOURCE=..\..\src\muscle\system\MessageTransceiverThread.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\MiscUtilityFunctions.h
+SOURCE=..\..\src\muscle\util\MiscUtilityFunctions.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\support\MuscleSupport.h
+SOURCE=..\..\src\muscle\support\MuscleSupport.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\Mutex.h
+SOURCE=..\..\src\muscle\system\Mutex.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\NetworkUtilityFunctions.h
+SOURCE=..\..\src\muscle\util\NetworkUtilityFunctions.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\dataio\NullDataIO.h
+SOURCE=..\..\src\muscle\dataio\NullDataIO.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\ObjectPool.h
+SOURCE=..\..\src\muscle\util\ObjectPool.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\PathMatcher.h
+SOURCE=..\..\src\muscle\regex\PathMatcher.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\iogateway\PlainTextMessageIOGateway.h
+SOURCE=..\..\src\muscle\iogateway\PlainTextMessageIOGateway.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\support\Point.h
+SOURCE=..\..\src\muscle\support\Point.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\PulseNode.h
+SOURCE=..\..\src\muscle\util\PulseNode.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+SOURCE=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3425,7 +3412,7 @@ InputName=QAcceptSocketsThread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3438,7 +3425,7 @@ InputName=QAcceptSocketsThread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3451,7 +3438,7 @@ InputName=QAcceptSocketsThread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QAcceptSocketsThread.h
+InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3464,14 +3451,14 @@ InputName=QAcceptSocketsThread
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+SOURCE=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3484,7 +3471,7 @@ InputName=QMessageTransceiverThread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3497,7 +3484,7 @@ InputName=QMessageTransceiverThread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3510,7 +3497,7 @@ InputName=QMessageTransceiverThread
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=\build\unizone\src\muscle\qtsupport
-InputPath=..\src\muscle\qtsupport\QMessageTransceiverThread.h
+InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3523,103 +3510,103 @@ InputName=QMessageTransceiverThread
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\QueryFilter.h
+SOURCE=..\..\src\muscle\regex\QueryFilter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\Queue.h
+SOURCE=..\..\src\muscle\util\Queue.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\RateLimitSessionIOPolicy.h
+SOURCE=..\..\src\muscle\reflector\RateLimitSessionIOPolicy.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\iogateway\RawDataMessageIOGateway.h
+SOURCE=..\..\src\muscle\iogateway\RawDataMessageIOGateway.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\support\Rect.h
+SOURCE=..\..\src\muscle\support\Rect.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\RefCount.h
+SOURCE=..\..\src\muscle\util\RefCount.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\ReflectServer.h
+SOURCE=..\..\src\muscle\reflector\ReflectServer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\ServerComponent.h
+SOURCE=..\..\src\muscle\reflector\ServerComponent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\SetupSystem.h
+SOURCE=..\..\src\muscle\system\SetupSystem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\iogateway\SignalMessageIOGateway.h
+SOURCE=..\..\src\muscle\iogateway\SignalMessageIOGateway.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\SocketHolder.h
+SOURCE=..\..\src\muscle\util\SocketHolder.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\StorageReflectConstants.h
+SOURCE=..\..\src\muscle\reflector\StorageReflectConstants.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\StorageReflectSession.h
+SOURCE=..\..\src\muscle\reflector\StorageReflectSession.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\String.h
+SOURCE=..\..\src\muscle\util\String.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\StringMatcher.h
+SOURCE=..\..\src\muscle\regex\StringMatcher.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\StringTokenizer.h
+SOURCE=..\..\src\muscle\util\StringTokenizer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\syslog\SysLog.h
+SOURCE=..\..\src\muscle\syslog\SysLog.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\SystemInfo.h
+SOURCE=..\..\src\muscle\system\SystemInfo.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\dataio\TCPSocketDataIO.h
+SOURCE=..\..\src\muscle\dataio\TCPSocketDataIO.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\Thread.h
+SOURCE=..\..\src\muscle\system\Thread.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\TimeUtilityFunctions.h
+SOURCE=..\..\src\muscle\util\TimeUtilityFunctions.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\support\Tuple.h
+SOURCE=..\..\src\muscle\support\Tuple.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\ZLibCodec.h
+SOURCE=..\..\src\muscle\zlib\ZLibCodec.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\ZLibDataIO.h
+SOURCE=..\..\src\muscle\zlib\ZLibDataIO.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\ZLibUtilityFunctions.h
+SOURCE=..\..\src\muscle\zlib\ZLibUtilityFunctions.h
 # End Source File
 # End Group
 # Begin Group "MUSCLE Sources"
@@ -3627,135 +3614,135 @@ SOURCE=..\src\muscle\zlib\ZLibUtilityFunctions.h
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\src\muscle\iogateway\AbstractMessageIOGateway.cpp
+SOURCE=..\..\src\muscle\iogateway\AbstractMessageIOGateway.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\AbstractReflectSession.cpp
+SOURCE=..\..\src\muscle\reflector\AbstractReflectSession.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\AcceptSocketsThread.cpp
+SOURCE=..\..\src\muscle\system\AcceptSocketsThread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\ByteBuffer.cpp
+SOURCE=..\..\src\muscle\util\ByteBuffer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\DumbReflectSession.cpp
+SOURCE=..\..\src\muscle\reflector\DumbReflectSession.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\FilterSessionFactory.cpp
+SOURCE=..\..\src\muscle\reflector\FilterSessionFactory.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\GlobalMemoryAllocator.cpp
+SOURCE=..\..\src\muscle\system\GlobalMemoryAllocator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\MemoryAllocator.cpp
+SOURCE=..\..\src\muscle\util\MemoryAllocator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\message\Message.cpp
+SOURCE=..\..\src\muscle\message\Message.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\iogateway\MessageIOGateway.cpp
+SOURCE=..\..\src\muscle\iogateway\MessageIOGateway.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\MessageTransceiverThread.cpp
+SOURCE=..\..\src\muscle\system\MessageTransceiverThread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\MiscUtilityFunctions.cpp
+SOURCE=..\..\src\muscle\util\MiscUtilityFunctions.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\NetworkUtilityFunctions.cpp
+SOURCE=..\..\src\muscle\util\NetworkUtilityFunctions.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\PathMatcher.cpp
+SOURCE=..\..\src\muscle\regex\PathMatcher.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\iogateway\PlainTextMessageIOGateway.cpp
+SOURCE=..\..\src\muscle\iogateway\PlainTextMessageIOGateway.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\PulseNode.cpp
+SOURCE=..\..\src\muscle\util\PulseNode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\qtsupport\QAcceptSocketsThread.cpp
+SOURCE=..\..\src\muscle\qtsupport\QAcceptSocketsThread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\qtsupport\QMessageTransceiverThread.cpp
+SOURCE=..\..\src\muscle\qtsupport\QMessageTransceiverThread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\QueryFilter.cpp
+SOURCE=..\..\src\muscle\regex\QueryFilter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\RateLimitSessionIOPolicy.cpp
+SOURCE=..\..\src\muscle\reflector\RateLimitSessionIOPolicy.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\iogateway\RawDataMessageIOGateway.cpp
+SOURCE=..\..\src\muscle\iogateway\RawDataMessageIOGateway.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\ReflectServer.cpp
+SOURCE=..\..\src\muscle\reflector\ReflectServer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\ServerComponent.cpp
+SOURCE=..\..\src\muscle\reflector\ServerComponent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\SetupSystem.cpp
+SOURCE=..\..\src\muscle\system\SetupSystem.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\reflector\StorageReflectSession.cpp
+SOURCE=..\..\src\muscle\reflector\StorageReflectSession.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\util\String.cpp
+SOURCE=..\..\src\muscle\util\String.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\StringMatcher.cpp
+SOURCE=..\..\src\muscle\regex\StringMatcher.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\syslog\SysLog.cpp
+SOURCE=..\..\src\muscle\syslog\SysLog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\SystemInfo.cpp
+SOURCE=..\..\src\muscle\system\SystemInfo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\system\Thread.cpp
+SOURCE=..\..\src\muscle\system\Thread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\ZLibCodec.cpp
+SOURCE=..\..\src\muscle\zlib\ZLibCodec.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\ZLibDataIO.cpp
+SOURCE=..\..\src\muscle\zlib\ZLibDataIO.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\ZLibUtilityFunctions.cpp
+SOURCE=..\..\src\muscle\zlib\ZLibUtilityFunctions.cpp
 # End Source File
 # End Group
 # Begin Group "MUSCLE MOC Sources"
@@ -3763,11 +3750,11 @@ SOURCE=..\src\muscle\zlib\ZLibUtilityFunctions.cpp
 # PROP Default_Filter "cpp"
 # Begin Source File
 
-SOURCE=..\src\muscle\qtsupport\moc_QAcceptSocketsThread.cpp
+SOURCE=..\..\src\muscle\qtsupport\moc_QAcceptSocketsThread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\qtsupport\moc_QMessageTransceiverThread.cpp
+SOURCE=..\..\src\muscle\qtsupport\moc_QMessageTransceiverThread.cpp
 # End Source File
 # End Group
 # Begin Group "regex Sources"
@@ -3775,23 +3762,23 @@ SOURCE=..\src\muscle\qtsupport\moc_QMessageTransceiverThread.cpp
 # PROP Default_Filter ".c"
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\regex\debug.c
+SOURCE=..\..\src\muscle\regex\regex\debug.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\regex\regcomp.c
+SOURCE=..\..\src\muscle\regex\regex\regcomp.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\regex\regerror.c
+SOURCE=..\..\src\muscle\regex\regex\regerror.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\regex\regexec.c
+SOURCE=..\..\src\muscle\regex\regex\regexec.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\regex\regfree.c
+SOURCE=..\..\src\muscle\regex\regex\regfree.c
 # End Source File
 # End Group
 # Begin Group "regex Headers"
@@ -3799,15 +3786,15 @@ SOURCE=..\src\muscle\regex\regex\regfree.c
 # PROP Default_Filter ".h"
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\regex\regex.h
+SOURCE=..\..\src\muscle\regex\regex\regex.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\regex\regex2.h
+SOURCE=..\..\src\muscle\regex\regex\regex2.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\regex\regex\utils.h
+SOURCE=..\..\src\muscle\regex\regex\utils.h
 # End Source File
 # End Group
 # Begin Group "zlib Sources"
@@ -3815,106 +3802,106 @@ SOURCE=..\src\muscle\regex\regex\utils.h
 # PROP Default_Filter ".c"
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\adler32.c
+SOURCE=..\..\src\muscle\zlib\zlib\adler32.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\compress.c
+SOURCE=..\..\src\muscle\zlib\zlib\compress.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\crc32.c
+SOURCE=..\..\src\muscle\zlib\zlib\crc32.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\deflate.c
+SOURCE=..\..\src\muscle\zlib\zlib\deflate.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV"
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+SOURCE=..\..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Assembling...
 IntDir=.\Release
-InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+InputPath=..\..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
 InputName=gvmat32
 
 "$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3927,7 +3914,7 @@ InputName=gvmat32
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Assembling...
 IntDir=.\Debug
-InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+InputPath=..\..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
 InputName=gvmat32
 
 "$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3940,7 +3927,7 @@ InputName=gvmat32
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Assembling...
 IntDir=.\Debug_ANSI
-InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+InputPath=..\..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
 InputName=gvmat32
 
 "$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3953,7 +3940,7 @@ InputName=gvmat32
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Assembling...
 IntDir=.\Release_ANSI
-InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
+InputPath=..\..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32.asm
 InputName=gvmat32
 
 "$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -3966,42 +3953,42 @@ InputName=gvmat32
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32c.c
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV"
+SOURCE=..\..\src\muscle\zlib\zlib\contrib\masmx86\gvmat32c.c
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV"
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\gzio.c
+SOURCE=..\..\src\muscle\zlib\zlib\gzio.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+SOURCE=..\..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Assembling...
 IntDir=.\Release
-InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+InputPath=..\..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
 InputName=inffas32
 
 "$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -4014,7 +4001,7 @@ InputName=inffas32
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Assembling...
 IntDir=.\Debug
-InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+InputPath=..\..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
 InputName=inffas32
 
 "$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -4027,7 +4014,7 @@ InputName=inffas32
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Assembling...
 IntDir=.\Debug_ANSI
-InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+InputPath=..\..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
 InputName=inffas32
 
 "$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -4040,7 +4027,7 @@ InputName=inffas32
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Assembling...
 IntDir=.\Release_ANSI
-InputPath=..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
+InputPath=..\..\src\muscle\zlib\zlib\contrib\masmx86\inffas32.asm
 InputName=inffas32
 
 "$(IntDir)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -4053,115 +4040,115 @@ InputName=inffas32
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\inflate.c
+SOURCE=..\..\src\muscle\zlib\zlib\inflate.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\inftrees.c
+SOURCE=..\..\src\muscle\zlib\zlib\inftrees.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\trees.c
+SOURCE=..\..\src\muscle\zlib\zlib\trees.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\uncompr.c
+SOURCE=..\..\src\muscle\zlib\zlib\uncompr.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\zutil.c
+SOURCE=..\..\src\muscle\zlib\zlib\zutil.c
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib" /D "ASMV" /D "ASMINF"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
-# ADD CPP /I "..\src\muscle\zlib\zlib"
+# ADD CPP /I "..\..\src\muscle\zlib\zlib"
 
 !ENDIF 
 
@@ -4172,43 +4159,43 @@ SOURCE=..\src\muscle\zlib\zlib\zutil.c
 # PROP Default_Filter ".h"
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\crc32.h
+SOURCE=..\..\src\muscle\zlib\zlib\crc32.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\deflate.h
+SOURCE=..\..\src\muscle\zlib\zlib\deflate.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\inffast.h
+SOURCE=..\..\src\muscle\zlib\zlib\inffast.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\inffixed.h
+SOURCE=..\..\src\muscle\zlib\zlib\inffixed.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\inflate.h
+SOURCE=..\..\src\muscle\zlib\zlib\inflate.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\inftrees.h
+SOURCE=..\..\src\muscle\zlib\zlib\inftrees.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\trees.h
+SOURCE=..\..\src\muscle\zlib\zlib\trees.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\zconf.h
+SOURCE=..\..\src\muscle\zlib\zlib\zconf.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\zlib.h
+SOURCE=..\..\src\muscle\zlib\zlib\zlib.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\muscle\zlib\zlib\zutil.h
+SOURCE=..\..\src\muscle\zlib\zlib\zutil.h
 # End Source File
 # End Group
 # Begin Group "qjpeg Sources"
@@ -4216,191 +4203,191 @@ SOURCE=..\src\muscle\zlib\zlib\zutil.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\libjpeg\jcapimin.c
+SOURCE=..\..\libjpeg\jcapimin.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcapistd.c
+SOURCE=..\..\libjpeg\jcapistd.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jccoefct.c
+SOURCE=..\..\libjpeg\jccoefct.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jccolor.c
+SOURCE=..\..\libjpeg\jccolor.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcdctmgr.c
+SOURCE=..\..\libjpeg\jcdctmgr.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jchuff.c
+SOURCE=..\..\libjpeg\jchuff.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcinit.c
+SOURCE=..\..\libjpeg\jcinit.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcmainct.c
+SOURCE=..\..\libjpeg\jcmainct.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcmarker.c
+SOURCE=..\..\libjpeg\jcmarker.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcmaster.c
+SOURCE=..\..\libjpeg\jcmaster.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcomapi.c
+SOURCE=..\..\libjpeg\jcomapi.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcparam.c
+SOURCE=..\..\libjpeg\jcparam.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcphuff.c
+SOURCE=..\..\libjpeg\jcphuff.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcprepct.c
+SOURCE=..\..\libjpeg\jcprepct.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jcsample.c
+SOURCE=..\..\libjpeg\jcsample.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jctrans.c
+SOURCE=..\..\libjpeg\jctrans.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdapimin.c
+SOURCE=..\..\libjpeg\jdapimin.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdapistd.c
+SOURCE=..\..\libjpeg\jdapistd.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdatadst.c
+SOURCE=..\..\libjpeg\jdatadst.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdatasrc.c
+SOURCE=..\..\libjpeg\jdatasrc.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdcoefct.c
+SOURCE=..\..\libjpeg\jdcoefct.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdcolor.c
+SOURCE=..\..\libjpeg\jdcolor.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jddctmgr.c
+SOURCE=..\..\libjpeg\jddctmgr.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdhuff.c
+SOURCE=..\..\libjpeg\jdhuff.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdinput.c
+SOURCE=..\..\libjpeg\jdinput.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdmainct.c
+SOURCE=..\..\libjpeg\jdmainct.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdmarker.c
+SOURCE=..\..\libjpeg\jdmarker.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdmaster.c
+SOURCE=..\..\libjpeg\jdmaster.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdmerge.c
+SOURCE=..\..\libjpeg\jdmerge.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdphuff.c
+SOURCE=..\..\libjpeg\jdphuff.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdpostct.c
+SOURCE=..\..\libjpeg\jdpostct.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdsample.c
+SOURCE=..\..\libjpeg\jdsample.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdtrans.c
+SOURCE=..\..\libjpeg\jdtrans.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jerror.c
+SOURCE=..\..\libjpeg\jerror.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jfdctflt.c
+SOURCE=..\..\libjpeg\jfdctflt.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jfdctfst.c
+SOURCE=..\..\libjpeg\jfdctfst.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jfdctint.c
+SOURCE=..\..\libjpeg\jfdctint.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jidctflt.c
+SOURCE=..\..\libjpeg\jidctflt.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jidctfst.c
+SOURCE=..\..\libjpeg\jidctfst.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jidctint.c
+SOURCE=..\..\libjpeg\jidctint.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jidctred.c
+SOURCE=..\..\libjpeg\jidctred.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jmemmgr.c
+SOURCE=..\..\libjpeg\jmemmgr.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jmemnobs.c
+SOURCE=..\..\libjpeg\jmemnobs.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jpegio.cpp
+SOURCE=..\..\libjpeg\jpegio.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jquant1.c
+SOURCE=..\..\libjpeg\jquant1.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jquant2.c
+SOURCE=..\..\libjpeg\jquant2.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jutils.c
+SOURCE=..\..\libjpeg\jutils.c
 # End Source File
 # End Group
 # Begin Group "qjpeg Headers"
@@ -4408,51 +4395,51 @@ SOURCE=..\libjpeg\jutils.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\libjpeg\jchuff.h
+SOURCE=..\..\libjpeg\jchuff.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jconfig.h
+SOURCE=..\..\libjpeg\jconfig.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdct.h
+SOURCE=..\..\libjpeg\jdct.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jdhuff.h
+SOURCE=..\..\libjpeg\jdhuff.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jerror.h
+SOURCE=..\..\libjpeg\jerror.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jinclude.h
+SOURCE=..\..\libjpeg\jinclude.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jmemsys.h
+SOURCE=..\..\libjpeg\jmemsys.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jmorecfg.h
+SOURCE=..\..\libjpeg\jmorecfg.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jpegint.h
+SOURCE=..\..\libjpeg\jpegint.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jpegio.h
+SOURCE=..\..\libjpeg\jpegio.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jpeglib.h
+SOURCE=..\..\libjpeg\jpeglib.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\libjpeg\jversion.h
+SOURCE=..\..\libjpeg\jversion.h
 # End Source File
 # End Group
 # End Target

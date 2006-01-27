@@ -1,4 +1,4 @@
-moc_*.cpp 
+moc_*.cpp moc3_*.cpp
 aboutdlg.cpp aboutdlg.h
 channel.cpp channel.h
 channels.cpp channels.h
@@ -6,9 +6,7 @@ icon.aps
 prefs.cpp prefs.h
 privatewindow.cpp privatewindow.h
 *.qm
-scanprogress.h
-scanprogress.cpp
-picviewer.cpp
-picviewer.h
+scanprogress.h scanprogress.cpp
+picviewer.cpp picviewer.h
 unizone_unix.pro
 .DS_Store
