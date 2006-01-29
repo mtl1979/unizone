@@ -1138,7 +1138,7 @@ QString
 UniqueName(const QString & file, int index)
 {
 	QString tmp, base, ext;
-	int sp = file.findRev("/", -1); // Find last /
+	int sp = file.findRev(QDir::separator(), -1); // Find last /
 	if (sp > -1)
 	{
 		tmp = file.left(sp + 1);			// include slash
@@ -1149,7 +1149,7 @@ UniqueName(const QString & file, int index)
 		out += base;
 		return out;
 	}
-	WASSERT(true, "Invalid download path!");
+	WASSERT(false, "Invalid download path!");
 	return QString::null;
 }
 
@@ -1157,9 +1157,8 @@ void
 SavePicture(QString &file, const ByteBufferRef &buf)
 {
 	int n = 1;
-	QString path("downloads/");
-	path += FixFileName(file);
-	QString nf = path;
+	QString path = MakePath("downloads", FixFileName(file));
+	QString nf(path);
 	while (WFile::Exists(nf)) 
 	{
 		nf = UniqueName(path, n++);
