@@ -104,7 +104,7 @@ WPrivateWindow::~WPrivateWindow()
 		uref()->RemoveFromListView(fPrivateUsers);
 	}
 	fLock.Unlock();
-	WPWEvent *closed = new WPWEvent(WPWEvent::Closed, "");
+	WPWEvent *closed = new WPWEvent(WPWEvent::Closed);
 	if (closed)
 	{
 		closed->SetSendTo(this);

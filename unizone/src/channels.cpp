@@ -161,7 +161,7 @@ Channels::ChannelAdded(const QString &channel, const QString &sid, int64 timecre
 		info = new ChannelInfo(channel, sid);
 		fChannels.Put(key, info);
 		// Create ListView Item
-		QListViewItem * item = new QListViewItem(ChannelList, channel, "", "", "", "");
+		QListViewItem * item = new QListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
 		info->SetItem(item);
 		info->SetCreated(timecreated);
 	}
@@ -247,7 +247,7 @@ Channels::CreateChannel()
 			fChannels.Put(key, info);
 
 			// Create ListView item
-			QListViewItem * item = new QListViewItem(ChannelList, channel, "", "", "", "");
+			QListViewItem * item = new QListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
 			info->SetItem(item);
 			// Create Window item
 			Channel * win = new Channel(this, fNetClient, channel);
@@ -393,7 +393,7 @@ Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 
 		fChannels.Put(key, info);
 
 		// Create ListView item
-		QListViewItem * item = new QListViewItem(ChannelList, channel, "", "", "", "");
+		QListViewItem * item = new QListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
 		info->SetItem(item);
 		ChannelAdmins(owner, channel, owner);
 		ChannelJoin(channel, owner);

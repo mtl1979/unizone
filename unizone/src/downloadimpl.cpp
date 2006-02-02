@@ -376,7 +376,7 @@ WDownload::AddDownload(QString * files, QString * lfiles,
 	
 	DLPair p;
 	p.thread = nt;
-	p.item = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
+	p.item = new WTransferItem(fDownloads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
 	CHECK_PTR(p.item);
 		
 	if (GetNumDownloads() < gWin->fSettings->GetMaxDownloads())
@@ -463,7 +463,7 @@ WDownload::CreateTunnel(const QString & userID, int64 hisID, void * & myID)
 	ut->InitSession();
 	ULPair p;
 	p.thread = ut;
-	p.item = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
+	p.item = new WTransferItem(fUploads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
 	CHECK_PTR(p.item);
 	
 	if (ut->IsLocallyQueued())
@@ -490,7 +490,7 @@ WDownload::CreateTunnel(QString *files, QString *lfiles, int32 numFiles, const W
 	
 	DLPair p;
 	p.thread = nt;
-	p.item = new WTransferItem(fDownloads, "", "", "", "", "", "", "", "", "", "");
+	p.item = new WTransferItem(fDownloads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
 	CHECK_PTR(p.item);
 		
 	if (GetNumDownloads() < gWin->fSettings->GetMaxDownloads())
@@ -631,7 +631,7 @@ WDownload::AddUpload(const QString & remoteIP, uint32 port)
 	ut->InitSession();
 	ULPair p;
 	p.thread = ut;
-	p.item = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
+	p.item = new WTransferItem(fUploads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
 	CHECK_PTR(p.item);
 	
 	if (ut->IsLocallyQueued())
@@ -674,7 +674,7 @@ WDownload::AddUpload(int socket, uint32 remoteIP, bool /* queued */)
 	
 	ULPair p;
 	p.thread = ut;
-	p.item = new WTransferItem(fUploads, "", "", "", "", "", "", "", "", "", "");
+	p.item = new WTransferItem(fUploads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
 	CHECK_PTR(p.item);
 	
 	if (ut->IsLocallyQueued())
@@ -954,8 +954,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			PRINT("\tWDownloadEvent::FileQueued\n");
 			item->setText(WTransferItem::Status, tr("Remotely Queued."));
 			item->setText(WTransferItem::Rate, "0.0");
-			item->setText(WTransferItem::ETA, "");
-			item->setText(WTransferItem::Elapsed, "");
+			item->setText(WTransferItem::ETA, QString::null);
+			item->setText(WTransferItem::Elapsed, QString::null);
 			break;
 		}
 		
@@ -973,8 +973,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				item->setText(WTransferItem::Status, tr("Blocked for %1 minute(s).").arg((int) (timeLeft/60000000)));
 			}
 			item->setText(WTransferItem::Rate, "0.0");
-			item->setText(WTransferItem::ETA, "");
-			item->setText(WTransferItem::Elapsed, "");
+			item->setText(WTransferItem::ETA, QString::null);
+			item->setText(WTransferItem::Elapsed, QString::null);
 			
 			break;
 		}
@@ -1064,8 +1064,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			{
 				item->setText(WTransferItem::Status, tr("Manually Queued."));
 				item->setText(WTransferItem::Rate, "0.0");
-				item->setText(WTransferItem::ETA, "");
-				item->setText(WTransferItem::Elapsed, "");
+				item->setText(WTransferItem::ETA, QString::null);
+				item->setText(WTransferItem::Elapsed, QString::null);
 			}
 			else
 			{
@@ -1088,7 +1088,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				else
 				{
 					item->setText(WTransferItem::Status, tr("Finished."));
-					item->setText(WTransferItem::ETA, "");
+					item->setText(WTransferItem::ETA, QString::null);
 				}
 			}
 			dt->Reset();
@@ -1121,16 +1121,16 @@ WDownload::downloadEvent(WDownloadEvent * d)
 					}
 				}
 				item->setText(WTransferItem::Status, tr("Finished."));
-				item->setText(WTransferItem::ETA, "");
+				item->setText(WTransferItem::ETA, QString::null);
 			}
 			else
 			{
 				item->setText(WTransferItem::Status, tr("Waiting..."));
 				item->setText(WTransferItem::Filename, tr("Waiting for next file..."));
-				item->setText(WTransferItem::Received, "");
-				item->setText(WTransferItem::Total, "");
+				item->setText(WTransferItem::Received, QString::null);
+				item->setText(WTransferItem::Total, QString::null);
 				item->setText(WTransferItem::Rate, "0.0");
-				item->setText(WTransferItem::ETA, "");
+				item->setText(WTransferItem::ETA, QString::null);
 				// don't erase the user name
 			}
 			PRINT("\tWDownloadEvent::FileDone OK\n");
@@ -1191,7 +1191,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				item->setText(WTransferItem::Received, fromULongLong(start));
 				item->setText(WTransferItem::Total, fromULongLong(size));
 				item->setText(WTransferItem::Rate, "0.0");
-				item->setText(WTransferItem::ETA, "");
+				item->setText(WTransferItem::ETA, QString::null);
 				item->setText(WTransferItem::User, uname);
 				item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 			}
@@ -1304,7 +1304,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				if (msg()->FindBool("done", &done) == B_OK)
 				{
 					item->setText(WTransferItem::Status, tr("File finished."));
-					item->setText(WTransferItem::ETA, "");
+					item->setText(WTransferItem::ETA, QString::null);
 					
 					if (dt->IsFinished())
 					{
@@ -1379,8 +1379,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 			PRINT("\tWUploadEvent::FileQueued\n");
 			item->setText(WTransferItem::Status, tr("Queued."));
 			item->setText(WTransferItem::Rate, "0.0");
-			item->setText(WTransferItem::ETA, "");
-			item->setText(WTransferItem::Elapsed, "");
+			item->setText(WTransferItem::ETA, QString::null);
+			item->setText(WTransferItem::Elapsed, QString::null);
 			break;
 		}
 		
@@ -1398,8 +1398,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 				item->setText(WTransferItem::Status, tr("Blocked for %1 minute(s).").arg((int) (timeLeft/60000000)));
 			}
 			item->setText(WTransferItem::Rate, "0.0");
-			item->setText(WTransferItem::ETA, "");
-			item->setText(WTransferItem::Elapsed, "");
+			item->setText(WTransferItem::ETA, QString::null);
+			item->setText(WTransferItem::Elapsed, QString::null);
 
 			if (gWin->fSettings->GetAutoClear())
 			{
@@ -1453,7 +1453,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::Disconnected:
 		{
 			PRINT("\tWUploadEvent::Disconnected\n");
-			item->setText(WTransferItem::ETA, "");
+			item->setText(WTransferItem::ETA, QString::null);
 		
 			bool f;
 			if ((msg()->FindBool("failed", &f) == B_OK) && f)
@@ -1490,7 +1490,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 					ut->Reset();
 				}
 				item->setText(WTransferItem::Status, tr("Finished."));
-				item->setText(WTransferItem::ETA, "");
+				item->setText(WTransferItem::ETA, QString::null);
 			}
 			PRINT("\tWUploadEvent::FileDone OK\n");
 			break;
@@ -1526,7 +1526,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 				item->setText(WTransferItem::Received, fromULongLong(start));
 				item->setText(WTransferItem::Total, fromULongLong(size));
 				item->setText(WTransferItem::Rate, "0.0");
-				item->setText(WTransferItem::ETA, "");
+				item->setText(WTransferItem::ETA, QString::null);
 				item->setText(WTransferItem::User, uname);
 				item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 			}
@@ -1641,7 +1641,7 @@ WDownload::uploadEvent(WUploadEvent *u)
 				if (msg()->FindBool("done", &done) == B_OK)
 				{
 					item->setText(WTransferItem::Status, tr("Finished."));
-					item->setText(WTransferItem::ETA, "");
+					item->setText(WTransferItem::ETA, QString::null);
 				}
 				PRINT2("\tWUploadEvent::FileDataSent OK\n");
 			}

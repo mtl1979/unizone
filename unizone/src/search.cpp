@@ -347,7 +347,7 @@ WSearch::StopSearch()
 	}
 	fSearchLock.Unlock();
 	SetSearchStatus(tr("Idle."));
-	SetSearchStatus("", 2);
+	SetSearchStatus(QString::null, 2);
 }
 
 // This method locks the list, so be sure the mutex is unlocked before calling it!
@@ -370,7 +370,7 @@ WSearch::ClearList()
 	fSearchList->clear();
 	fQueryBytes = 0;
 	fSearchLock.Unlock();
-	SetSearchStatus("", 1);
+	SetSearchStatus(QString::null, 1);
 }
 
 int

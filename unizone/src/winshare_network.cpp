@@ -345,7 +345,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			QString users = GetParameterString(sendText);
 
 			if (users.isEmpty())
-				SetWatchPattern("");	// clear watch pattern
+				SetWatchPattern(QString::null);	// clear watch pattern
 			else
 				SetWatchPattern(users);
 		}
@@ -1297,7 +1297,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/view"))
 		{
-			QStringList files = QFileDialog::getOpenFileNames ( "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", "downloads/", this);
+			QStringList files = QFileDialog::getOpenFileNames ( imageFormats(), downloadDir(), this);
 			if (!files.isEmpty())
 			{
 				QStringList::Iterator iter = files.begin();
@@ -1372,7 +1372,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					AddToList(list, uref()->GetUserID());
 				}
 				
-				QString file = QFileDialog::getOpenFileName ( "downloads/", "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
+				QString file = QFileDialog::getOpenFileName ( downloadDir(), imageFormats(), this);
 				
 				if (!file.isEmpty())
 				{

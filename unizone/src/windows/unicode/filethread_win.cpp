@@ -1,4 +1,5 @@
 #include <qstring.h>
+#include <qdir.h>
 #include <windows.h>
 #include <shellapi.h>
 # ifdef VC7
@@ -20,7 +21,7 @@ QString
 WFileThread::ResolveLink(const QString & lnk) const
 {
 #ifdef DEBUG2
-	WString wlnk(lnk);
+	WString wlnk(QDir::convertSeparators(lnk));
 	PRINT2("\tResolving %S\n", wlnk.getBuffer());
 #endif
 	
@@ -49,7 +50,7 @@ WFileThread::ResolveLink(const QString & lnk) const
 			{
 				PRINT("Got persistfile\n");
 				
-				WString wret(ret);
+				WString wret(QDir::convertSeparators(ret));
 				hres = ppf->Load(wret.getBuffer(), STGM_READ);
 				if (SUCCEEDED(hres))
 				{
@@ -73,7 +74,7 @@ WFileThread::ResolveLink(const QString & lnk) const
 			}
 			psl->Release();
 #ifdef _DEBUG
-			WString wret(ret);
+			WString wret(QDir::convertSeparators(ret));
 			PRINT("Resolved to: %S\n", wret.getBuffer());
 #endif
 			return ret;

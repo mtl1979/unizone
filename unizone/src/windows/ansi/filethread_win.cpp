@@ -1,4 +1,5 @@
 #include <qstring.h>
+#include <qdir.h>
 #include <windows.h>
 #include <shellapi.h>
 # ifdef VC7
@@ -19,7 +20,7 @@
 QString
 WFileThread::ResolveLink(const QString & lnk) const
 {
-	WString wlnk(lnk);
+	WString wlnk(QDir::convertSeparators(lnk));
 #ifdef DEBUG2
 	PRINT2("\tResolving %S\n", wlnk.getBuffer());
 #endif

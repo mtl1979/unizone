@@ -62,7 +62,7 @@ WHTMLView::hideEvent(QHideEvent * e)
 	if (fBuffer.isEmpty())
 	{
 		fBuffer = TrimBuffer(text());
-		setText("");
+		setText(QString::null);
 	}
 	
 	fLock.Unlock();
@@ -195,7 +195,7 @@ WHTMLView::appendText(const QString &newtext)
 			{
 				fBuffer = text();
 				if (!fBuffer.isEmpty())
-					setText("");
+					setText(QString::null);
 			}
 #endif
 			PRINT("appendText 3\n");
@@ -249,7 +249,7 @@ WHTMLView::clear()
 	fLock.Lock();
 	fBuffer = QString::null;
 	fScrollY = -1;
-	setText("");
+	setText(QString::null);
 	fLock.Unlock();
 	PRINT("WHTMLView::clear() OK\n");
 }

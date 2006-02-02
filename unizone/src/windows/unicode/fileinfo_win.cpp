@@ -11,7 +11,7 @@
 void
 UFileInfo::InitMIMEType()
 {
-		// Read the mime-type
+	// Read the mime-type
 	HKEY hkey;
 	DWORD type;
 	wchar_t key[MAX_PATH];
@@ -26,12 +26,13 @@ UFileInfo::InitMIMEType()
 		LONG ret;
 		if ((ret = RegQueryValueEx(hkey, L"Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
 		{
-			PRINT2("Read key: %S\n", key);
+			PRINT2("\tRead key: %S\n", key);
 			mt = wideCharToQString(key);
 		}
 		else
 		{
-			PRINT("Error: %d [0x%08x]\n", ret, ret);
+			PRINT("\tFailed reading key: %S\\Content Type\n", tExt);
+			PRINT("\t\tError: %d [0x%08x]\n", ret, ret);
 		}
 		RegCloseKey(hkey);
 	}
@@ -62,7 +63,7 @@ UFileInfo::InitMIMEType()
 									{
 										if (wcscmp(lext, tExt) == 0)
 										{
-											PRINT("Read key: %S\n", lname);
+											PRINT2("\tRead key: %S\n", lname);
 											mt = wideCharToQString(lname);
 											found = true;
 										}

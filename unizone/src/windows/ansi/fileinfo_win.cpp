@@ -24,12 +24,13 @@ UFileInfo::InitMIMEType()
 		LONG ret;
 		if ((ret = RegQueryValueExA(hkey, "Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
 		{
-			PRINT2("Read key: %s\n", key);
+			PRINT2("\tRead key: %s\n", key);
 			mt = QString::fromLocal8Bit(key);
 		}
 		else
 		{
-			PRINT("Error: %d [0x%08x]\n", ret, ret);
+			PRINT("\tFailed reading key: %s\\Content Type\n", cext);
+			PRINT("\t\tError: %d [0x%08x]\n", ret, ret);
 		}
 		RegCloseKey(hkey);
 	}
@@ -60,7 +61,7 @@ UFileInfo::InitMIMEType()
 									{
 										if (strcmp(lext, cext) == 0)
 										{
-											PRINT("Read key: %s\n", lname);
+											PRINT2("\tRead key: %s\n", lname);
 											mt = QString::fromLocal8Bit(lname);
 											found = true;
 										}

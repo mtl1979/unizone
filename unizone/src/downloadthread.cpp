@@ -175,7 +175,7 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, cons
 		QString dlFile;
 		if (fLocalFileDl[0] == QString::null)
 		{
-			fLocalFileDl[0] = MakePath("downloads", FixFileName(fFileDl[0]));
+			fLocalFileDl[0] = MakePath(downloadDir(), FixFileName(fFileDl[0]));
 		}
 
 		dlFile = fLocalFileDl[0];
@@ -223,7 +223,7 @@ WDownloadThread::SetFile(QString *files, QString *lfiles, int32 numFiles, const 
 		QString dlFile;
 		if (fLocalFileDl[0] == QString::null)
 		{
-			fLocalFileDl[0] = MakePath("downloads", FixFileName(fFileDl[0]));
+			fLocalFileDl[0] = MakePath(downloadDir(), FixFileName(fFileDl[0]));
 		}
 
 		dlFile = fLocalFileDl[0];
@@ -505,7 +505,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 				if (fLocalFileDl[fCurFile] == QString::null)
 				{
 					// we have a "fixed" filename that eliminates characters Windows does not support
-					fLocalFileDl[fCurFile] = MakePath("downloads", FixFileName(QString::fromUtf8(fname.Cstr())));
+					fLocalFileDl[fCurFile] = MakePath(downloadDir(), FixFileName(QString::fromUtf8(fname.Cstr())));
 				}
 
 				fixed = fLocalFileDl[fCurFile];
@@ -819,7 +819,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 			// check to see wether the file exists
 			if (fLocalFileDl[c] == QString:: null)
 			{
-				fLocalFileDl[c] = MakePath("downloads", FixFileName(fFileDl[c]));
+				fLocalFileDl[c] = MakePath(downloadDir(), FixFileName(fFileDl[c]));
 			}
 
 			// get an MD5 hash code out of it

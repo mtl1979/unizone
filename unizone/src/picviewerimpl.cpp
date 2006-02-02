@@ -389,7 +389,7 @@ WPicViewer::CloseImage()
 void
 WPicViewer::OpenImage()
 {
-	QStringList files = QFileDialog::getOpenFileNames ( "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", "downloads/", this);
+	QStringList files = QFileDialog::getOpenFileNames ( imageFormats(), downloadDir(), this);
 	if (!files.isEmpty())
 	{
 		QStringList::Iterator iter = files.begin();

@@ -60,7 +60,7 @@ ServerClient::MessageReceived(const MessageRef & msg, const String & /* sessionI
 				{
 					const char * val = tok.GetRemainderOfString();
 					QString qkey = QString::fromUtf8(param).stripWhiteSpace();
-					QString qval = val ? QString::fromUtf8(val).stripWhiteSpace() : "";
+					QString qval = val ? QString::fromUtf8(val).stripWhiteSpace() : QString::null;
 					gWin->GotUpdateCmd(qkey, qval);
 				}
 			}

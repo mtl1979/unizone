@@ -1,5 +1,12 @@
 #include "textevent.h"
 
+WTextEvent::WTextEvent(int type)
+: QCustomEvent(type), fValid(false)
+{
+	// empty
+	fEncrypted = false;
+}
+
 WTextEvent::WTextEvent(const QString & text, int type)
 : QCustomEvent(type), fValid(false)
 {

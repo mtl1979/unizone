@@ -534,7 +534,7 @@ WinShareWindow::CheckResumes(const QString &user)
 {
 #ifdef _DEBUG
 	WString wuser(StripURL(user));
-	PRINT("CheckResumes: user   = %S\n", wuser.getBuffer());
+	PRINT("CheckResumes: user = %S\n", wuser.getBuffer());
 #endif
 
 	// No need to check if empty!

@@ -21,6 +21,7 @@ public:
 		UserUpdateEvent
 	};
 
+	WTextEvent(int type = TextType);
 	WTextEvent(const QString & text, int type = TextType);
 	virtual ~WTextEvent();
 

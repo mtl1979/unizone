@@ -654,7 +654,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				WPWEvent * wpe = dynamic_cast<WPWEvent *>(event);
 				if (wpe)
 				{
-					WTextEvent te("");
+					WTextEvent te;
 
 #ifdef _DEBUG
 					WString wtext(wpe->GetText());
@@ -2021,10 +2021,13 @@ WinShareWindow::CancelShares()
 void
 WinShareWindow::CreateDirectories()
 {
-	QDir dir("./");
-	dir.mkdir("shared");
-	dir.mkdir("downloads");
-	dir.mkdir("logs");
+	QDir dir = QDir::current();
+	if (!dir.exists("shared"))
+		dir.mkdir("shared");
+	if (!dir.exists("downloads"))
+		dir.mkdir("downloads");
+	if (!dir.exists("logs"))
+		dir.mkdir("logs");
 }
 
 QString
@@ -2179,7 +2182,7 @@ void
 WinShareWindow::SearchPictures()
 {
 	OpenSearch();
-	fSearch->SetSearch("*.jpg,*.jpeg,*.png,*.gif,*.bmp,*.tga");
+	fSearch->SetSearch(imageFormats());
 	fSearch->GoSearch();
 }
 	

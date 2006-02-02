@@ -182,7 +182,7 @@ main( int argc, char** argv )
 			if (qtr.load(lfile))
 			{
 #ifdef DEBUG
-				WString wfile(lfile);
+				WString wfile(QDir::convertSeparators(lfile));
 				PRINT("Loaded translation %S\n", wfile.getBuffer());
 #endif
 				app.installTranslator( &qtr );
@@ -213,7 +213,7 @@ main( int argc, char** argv )
 				if (qtr2.load(qt_lang))
 				{
 #ifdef DEBUG
-					WString wfile(qt_lang);
+					WString wfile(QDir::convertSeparators(qt_lang));
 					PRINT("Loaded translation %S\n", wfile.getBuffer());
 #endif
 					app.installTranslator( &qtr2 );

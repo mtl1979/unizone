@@ -61,7 +61,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 				PRINT("Lines %d\n", fCurLine);
 			}
 			fCurLine = fBuffer->GetNumItems();	// reset
-			setText("");
+			setText(QString::null);
 		}
 	}
 	else if (event->key() == Key_Tab)
@@ -121,7 +121,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 			else
 			{
 				fCurLine = fBuffer->GetNumItems();
-				setText("");
+				setText(QString::null);
 			}
 		}
 		else
@@ -138,13 +138,13 @@ WChatText::keyPressEvent(QKeyEvent * event)
 			else
 			{
 				fCurLine = fBuffer->GetNumItems();
-				setText("");
+				setText(QString::null);
 			}
 		}
 	}
 	else if (event->key() == Key_Escape)
 	{
-		setText("");
+		setText(QString::null);
 		fCurLine = fBuffer->GetNumItems();
 	}
 	else

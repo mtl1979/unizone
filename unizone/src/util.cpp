@@ -27,7 +27,7 @@ ParseChatText(const QString & str)
 {
 	// <postmaster@raasu.org> 20021106,20021114 -- Added support for URL labels, uses QStringTokenizer now ;)
 	Queue<QString> qUrls;
-	Queue<QString> qLabels;  // in this list, "" means no label
+	Queue<QString> qLabels;  // in this list, null means no label
 	
 	QString qText = str;
 	bool lastWasURL = false, inLabel = false;
@@ -147,7 +147,7 @@ ParseChatText(const QString & str)
 			if (IsURL(qToken))
 			{
 				qUrls.AddTail(qToken);
-				qLabels.AddTail("");
+				qLabels.AddTail(QString::null);
 				lastWasURL = true;
 			}
 		}
@@ -1157,7 +1157,7 @@ void
 SavePicture(QString &file, const ByteBufferRef &buf)
 {
 	int n = 1;
-	QString path = MakePath("downloads", FixFileName(file));
+	QString path = MakePath(downloadDir(), FixFileName(file));
 	QString nf(path);
 	while (WFile::Exists(nf)) 
 	{
@@ -1689,4 +1689,22 @@ bool BinkyCheck(const QString &user)
 	if (user.find(QString("yknib"), 0, false) >= 0)
 		return true;
 	return false;
+}
+
+QString downloadDir()
+{
+	static QString out;
+	if (out.isEmpty())
+	{
+		out = "downloads";
+		out += QDir::separator();
+	}
+	return out;
+}
+
+QString _imageFormats = "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif";
+
+QString imageFormats()
+{
+	return _imageFormats;
 }

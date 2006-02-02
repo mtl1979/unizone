@@ -110,7 +110,7 @@ void
 WFileThread::ParseDir(const QString & d)
 {
 #ifdef _DEBUG
-	WString wd(d);
+	WString wd(QDir::convertSeparators(d));
 	PRINT("Parsing directory %S\n", wd.getBuffer());
 #endif
 
@@ -273,7 +273,7 @@ WFileThread::ScanFiles(const QString & directory)
 			}
 
 #ifdef _DEBUG
-			WString wfile(file);
+			WString wfile(QDir::convertSeparators(file));
 			PRINT("\tChecking file %S\n", wfile.getBuffer());
 #endif
 
