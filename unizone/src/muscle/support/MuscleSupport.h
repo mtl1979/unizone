@@ -477,13 +477,13 @@ static inline double MusclePowerPCSwapDouble(double val)
 static __declspec(naked) inline uint16 MuscleX86SwapInt16(uint16 val)
 {
    __asm {
-	  push ebp;
-	  mov ebp, esp;
+      push ebp;
+      mov ebp, esp;
       mov ax, val;
       xchg al, ah;
       mov val, ax;
-	  pop ebp;
-	  ret;
+      pop ebp;
+      ret;
    };
 }
 #else
@@ -498,13 +498,13 @@ static inline uint16 MuscleX86SwapInt16(uint16 val)
 static __declspec(naked) inline uint32 MuscleX86SwapInt32(uint32 val)
 {
    __asm {
-	  push ebp;
-	  mov ebp, esp;
+      push ebp;
+      mov ebp, esp;
       mov eax, val;
       bswap eax;
       mov val, eax;
-	  pop ebp;
-	  ret;
+      pop ebp;
+      ret;
    };
 }
 #else
@@ -519,13 +519,13 @@ static inline uint32 MuscleX86SwapInt32(uint32 val)
 static inline __declspec(naked) float MuscleX86SwapFloat(float val)
 {
    __asm {
-	  push ebp;
-	  mov ebp, esp;
+      push ebp;
+      mov ebp, esp;
       mov eax, val;
       bswap eax;
       mov val, eax;
-	  pop ebp;
-	  ret
+      pop ebp;
+      ret;
    };
 }
 #else
@@ -540,23 +540,30 @@ static inline float MuscleX86SwapFloat(float val)
 static inline __declspec(naked) uint64 MuscleX86SwapInt64(uint64 val)
 {
    __asm {
-	  push ebp;
-	  mov ebp, esp;
+      push ebp;
+      mov ebp, esp;
       mov eax, DWORD PTR val;
       mov edx, DWORD PTR val + 4;
       bswap eax;
       bswap edx;
- 	  mov DWORD PTR val, edx;
+      mov DWORD PTR val, edx;
       mov DWORD PTR val + 4, eax;
-      xchg eax, edx
-	  pop ebp;
-	  ret;
+      xchg eax, edx;
+      pop ebp;
+      ret;
    };
 }
 #else
 static inline uint64 MuscleX86SwapInt64(uint64 val)
 {
-   return ((uint64)(MuscleX86SwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MuscleX86SwapInt32((uint32)(val&0xFFFFFFFF))))<<32);
+   __asm__ __volatile__ (
+            "bswap %%eax\n"
+            "bswap %%edx\n"
+            "xchgl %%eax, %%edx\n"
+            : "=A" (val)
+            : "0" (val)
+   );
+   return val;
 }
 #endif
 
@@ -564,24 +571,30 @@ static inline uint64 MuscleX86SwapInt64(uint64 val)
 static inline __declspec(naked) double MuscleX86SwapDouble(double val)
 {
    __asm {
-	  push ebp;
-	  mov ebp, esp;
+      push ebp;
+      mov ebp, esp;
       mov eax, DWORD PTR val;
       mov edx, DWORD PTR val + 4;
       bswap eax;
       bswap edx;
       mov DWORD PTR val, edx;
       mov DWORD PTR val + 4, eax;
-      xchg eax, edx
-	  pop ebp;
-	  ret;
+      xchg eax, edx;
+      pop ebp;
+      ret;
    };
 }
 #else
 static inline double MuscleX86SwapDouble(double val)
 {
-   uint64 v64 = MuscleX86SwapInt64(*((uint64 *)&val));
-   return *((double *)&v64);
+   __asm__ __volatile__ (
+            "bswap %%eax\n"
+            "bswap %%edx\n"
+            "xchgl %%eax, %%edx\n"
+            : "=A" (val)
+            : "0" (val)
+   );
+   return val;
 }
 #endif
 #  define B_SWAP_DOUBLE(arg)   MuscleX86SwapDouble((double)(arg))
