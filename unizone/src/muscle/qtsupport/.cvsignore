@@ -1,2 +1,1 @@
-moc_QAcceptSocketsThread.cpp
-moc_QMessageTransceiverThread.cpp
+moc_*.cpp moc3_*.cpp
