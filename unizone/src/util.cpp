@@ -1708,3 +1708,38 @@ QString imageFormats()
 {
 	return _imageFormats;
 }
+
+QString WikiEscape(const QString &page)
+{
+	QCString out;
+	QCString in = page.utf8();
+	for (unsigned x = 0; x < in.length(); x++)
+	{
+		QChar c = in.at(x);
+		     if ((c >= '0') && (c <= '9')) out += c;
+		else if ((c >= 'a') && (c <= 'z')) out += c;
+		else if ((c >= 'A') && (c <= 'Z')) out += c;
+		else if ((c == '_') || (c == ' ')) out += '_';
+		else    out += "%" + chartohex(c);
+	}
+	return out;
+}
+
+QString URLEscape(const QString &page)
+{
+	QCString out;
+	QCString in = page.utf8();
+	for (unsigned x = 0; x < in.length(); x++)
+	{
+		QChar c = in.at(x);
+		     if ((c >= '0') && (c <= '9')) out += c;
+		else if ((c >= 'a') && (c <= 'z')) out += c;
+		else if ((c >= 'A') && (c <= 'Z')) out += c;
+		else if (c == '_') out += '_';
+		else    out += "%" + chartohex(c);
+	}
+	return out;
+}
+
+
+

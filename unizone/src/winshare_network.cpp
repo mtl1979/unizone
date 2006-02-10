@@ -527,6 +527,30 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				RunCommand(command);
 			}
 		}
+		else if (CompareCommand(sendText, "/wiki"))
+		{
+			QString address("http://en.wikipedia.org/wiki/");
+			QString page = GetParameterString(sendText);
+
+			if (!page.isEmpty())
+			{
+				page = WikiEscape(page);
+				address += page;
+				RunCommand(address);
+			}
+		}
+		else if (CompareCommand(sendText, "/google"))
+		{
+			QString address("http://www.google.com/search?q=");
+			QString page = GetParameterString(sendText);
+
+			if (!page.isEmpty())
+			{
+				page = URLEscape(page);
+				address += page;
+				RunCommand(address);
+			}
+		}
 		else if (CompareCommand(sendText, "/time"))
 		{
 			QString command = GetParameterString(sendText).lower();
@@ -2732,6 +2756,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=  tr("/filter [pattern] - set the word filter pattern");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/google [string] - open entry in Google");
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/help [command] - show help for command (no '/' in front of command) or show this help text if no command given.");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/heremsg - message for here state");
@@ -2843,6 +2869,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=  tr("/whitelist [pattern] - set the whitelist pattern");
+	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/wiki [string] - open entry in Wikipedia");
 	helpText			+=	"\n\n";
 	helpText			+=	tr("Admin Command Reference");
 	helpText			+=	"\n";

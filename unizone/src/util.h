@@ -153,4 +153,7 @@ bool BinkyCheck(const QString &user);
 
 QString downloadDir();
 QString imageFormats();
+
+QString WikiEscape(const QString &page);
+QString URLEscape(const QString &page);
 #endif
