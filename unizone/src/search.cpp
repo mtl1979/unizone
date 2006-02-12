@@ -240,12 +240,12 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 			 */
 			if (!firewalled || !gWin->fSettings->GetFirewalled() || user()->GetTunneling())
 			{
-				String path, kind;
+				QString qpath, qkind;
 				uint64 size = 0;
 				int32 mod = 0;
 				
-				file()->FindString("beshare:Kind", kind);
-				file()->FindString("beshare:Path", path);
+				GetStringFromMessage(file, "beshare:Kind", qkind);
+				GetStringFromMessage(file, "beshare:Path", qpath);
 				file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
 				file()->FindInt64("beshare:File Size", (int64 *)&size);
 				
@@ -259,11 +259,8 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 				
 				fQueryBytes += size;
 				
-				// name, size, type, modified, path, user
-				QString qkind	= QString::fromUtf8(kind.Cstr());
 				QString qsize	= fromULongLong(size); 
 				QString qmod	= QString::number(mod); // <postmaster@raasu.org> 20021126
-				QString qpath	= QString::fromUtf8(path.Cstr());
 				QString quser	= user()->GetUserName();
 				
 				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);

@@ -936,13 +936,14 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::Init:
 		{
 			PRINT("\tWDownloadEvent::Init\n");
-			const char * filename, * user;
+			QString filename;
+			QString user;		// unused
 			if (
-				(msg()->FindString("file", &filename) == B_OK) && 
-				(msg()->FindString("user", &user) == B_OK)
+				(GetStringFromMessage(msg, "file", filename) == B_OK) && 
+				(GetStringFromMessage(msg, "user", user) == B_OK)
 				)
 			{
-				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8(filename) ));
+				item->setText(WTransferItem::Filename, QDir::convertSeparators( filename ));
 				item->setText(WTransferItem::User, GetUserName(dt));
 				item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 			}
@@ -1164,29 +1165,30 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::FileStarted:
 		{
 			PRINT("\tWDownloadEvent::FileStarted\n");
-			String file;
+			QString file;
 			uint64 start;
 			uint64 size;
-			String user;
+			QString user;
 			
 			if (
-				(msg()->FindString("file", file) == B_OK) && 
+				(GetStringFromMessage(msg, "file", file) == B_OK) && 
+				(GetStringFromMessage(msg, "user", user) == B_OK) &&
 				(msg()->FindInt64("start", (int64 *)&start) == B_OK) &&
-				(msg()->FindInt64("size", (int64 *)&size) == B_OK) && 
-				(msg()->FindString("user", user) == B_OK)
+				(msg()->FindInt64("size", (int64 *)&size) == B_OK) 
 				)
 			{
+				file = QDir::convertSeparators(file);
 				QString uname = GetUserName(dt);
 				
 #ifdef _DEBUG
-				WString wuid(user.Cstr());
+				WString wuid(user);
 				WString wname(uname);
 				PRINT("USER ID  : %S\n", wuid.getBuffer());
 				PRINT("USER NAME: %S\n", wname.getBuffer());
 #endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
-				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8( file.Cstr() ) ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
+				item->setText(WTransferItem::Filename, file); // <postmaster@raasu.org> 20021023 -- Unicode fix
 				// rec, total, rate
 				item->setText(WTransferItem::Received, fromULongLong(start));
 				item->setText(WTransferItem::Total, fromULongLong(size));
@@ -1202,8 +1204,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::UpdateUI:
 		{
 			PRINT("\tWDownloadEvent::UpdateUI\n");
-			const char * id;
-			if (msg()->FindString("id", &id) == B_OK)
+			QString id;	// unused
+			if (GetStringFromMessage(msg, "id", id) == B_OK)
 			{
 				item->setText(WTransferItem::User, GetUserName(dt));
 			}
@@ -1214,15 +1216,18 @@ WDownload::downloadEvent(WDownloadEvent * d)
 		{
 			PRINT("\tWDownloadEvent::FileError\n");
 			String why;
-			String file;
+			QString file;
 			msg()->FindString("why", why);
-			if (msg()->FindString("file", file) == B_OK)
-				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8( file.Cstr() ) ) );
+			if (GetStringFromMessage(msg, "file", file) == B_OK)
+			{
+				file = QDir::convertSeparators(file);
+				item->setText(WTransferItem::Filename, file);
+			}
 			item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
 			item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
-			WString wfile(file.Cstr());
+			WString wfile(file);
 			PRINT("WGenericEvent::FileError: File %S\n", wfile.getBuffer()); 
 #endif
 			break;
@@ -1361,13 +1366,14 @@ WDownload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::Init:
 		{
 			PRINT("\tWUploadEvent::Init\n");
-			const char * filename, * user;
+			QString filename, user;
 			if (
-				(msg()->FindString("file", &filename) == B_OK) && 
-				(msg()->FindString("user", &user) == B_OK)
+				(GetStringFromMessage(msg, "file", filename) == B_OK) && 
+				(GetStringFromMessage(msg, "user", user) == B_OK)
 				)
 			{
-				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8(filename) ) );
+				filename = QDir::convertSeparators(filename);
+				item->setText(WTransferItem::Filename, filename);
 				item->setText(WTransferItem::User, GetUserName(ut));
 				item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 			}
@@ -1499,29 +1505,29 @@ WDownload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::FileStarted:
 		{
 			PRINT("\tWUploadEvent::FileStarted\n");
-			String file;
+			QString file, user;
 			uint64 start;
 			uint64 size;
-			String user;
 			
 			if (
-				(msg()->FindString("file", file) == B_OK) && 
+				(GetStringFromMessage(msg, "file", file) == B_OK) && 
+				(GetStringFromMessage(msg, "user", user) == B_OK) &&
 				(msg()->FindInt64("start", (int64 *)&start) == B_OK) &&
-				(msg()->FindInt64("size", (int64 *)&size) == B_OK) && 
-				(msg()->FindString("user", user) == B_OK)
+				(msg()->FindInt64("size", (int64 *)&size) == B_OK)
 				)
 			{
+				file = QDir::convertSeparators(file);
 				QString uname = GetUserName(ut);
 				
 #ifdef _DEBUG
-				WString wuid(user.Cstr());
+				WString wuid(user);
 				WString wname(uname);
 				PRINT("USER ID  : %S\n", wuid.getBuffer());
 				PRINT("USER NAME: %S\n", wname.getBuffer());
 #endif
 				
 				item->setText(WTransferItem::Status, tr("Waiting for stream..."));
-				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8( file.Cstr() ) ) ); // <postmaster@raasu.org> 20021023 -- Unicode fix
+				item->setText(WTransferItem::Filename, file); // <postmaster@raasu.org> 20021023 -- Unicode fix
 				// rec, total, rate
 				item->setText(WTransferItem::Received, fromULongLong(start));
 				item->setText(WTransferItem::Total, fromULongLong(size));
@@ -1537,8 +1543,8 @@ WDownload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::UpdateUI:
 		{
 			PRINT("\tWUploadEvent::UpdateUI\n");
-			const char * id;
-			if (msg()->FindString("id", &id) == B_OK)
+			QString id; // unused
+			if (GetStringFromMessage(msg, "id", id) == B_OK)
 			{
 				item->setText(WTransferItem::User, GetUserName(ut));
 			}
@@ -1549,15 +1555,18 @@ WDownload::uploadEvent(WUploadEvent *u)
 		{
 			PRINT("\tWUploadEvent::FileError\n");
 			String why;
-			String file;
+			QString file;
 			msg()->FindString("why", why);
-			if (msg()->FindString("file", file) == B_OK)
-				item->setText(WTransferItem::Filename, QDir::convertSeparators( QString::fromUtf8( file.Cstr() ) ) );
+			if (GetStringFromMessage(msg, "file", file) == B_OK)
+			{
+				file = QDir::convertSeparators(file);
+				item->setText(WTransferItem::Filename, file);
+			}
 			item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
 			item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
-			WString wfile(file.Cstr());
+			WString wfile(file);
 			PRINT("WGenericEvent::FileError: File %S\n", wfile.getBuffer()); 
 #endif
 			break;

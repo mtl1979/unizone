@@ -1741,5 +1741,43 @@ QString URLEscape(const QString &page)
 	return out;
 }
 
+status_t 
+GetStringFromMessage(const MessageRef &msg, const String key, QString &value)
+{
+	const char * val;
+	status_t ret = msg()->FindString(key, &val);
+	if (ret == B_OK)
+		value = QString::fromUtf8(val);
+	return ret;
+}
 
+status_t 
+GetStringFromMessage(const MessageRef &msg, const String key, uint32 index, QString &value)
+{
+	const char * val;
+	status_t ret = msg()->FindString(key, index, &val);
+	if (ret == B_OK)
+		value = QString::fromUtf8(val);
+	return ret;
+}
+
+status_t 
+GetInt32FromMessage(const MessageRef &msg, const String key, int32 &value)
+{
+	int32 val;
+	status_t ret = msg()->FindInt32(key,&val);
+	if (ret == B_OK)
+		value = val;
+	return ret;
+}
+
+status_t 
+GetUInt32FromMessage(const MessageRef &msg, const String key, uint32 &value)
+{
+	uint32 val;
+	status_t ret = msg()->FindInt32(key, (int32 *) &val);
+	if (ret == B_OK)
+		value = val;
+	return ret;
+}
 

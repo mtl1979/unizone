@@ -1,4 +1,4 @@
-moc_*.cpp moc3_*.cpp
+moc_*.cpp
 aboutdlg.cpp aboutdlg.h
 channel.cpp channel.h
 channels.cpp channels.h
@@ -10,3 +10,5 @@ scanprogress.h scanprogress.cpp
 picviewer.cpp picviewer.h
 unizone_unix.pro
 .DS_Store
+qt3
+qt2

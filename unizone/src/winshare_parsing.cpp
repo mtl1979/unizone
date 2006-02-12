@@ -251,8 +251,8 @@ WinShareWindow::ServerParametersReceived(MessageRef msg)
 {
 	if (fSettings->GetInfo())
 	{
-		const char * serverVersion;
-		if (msg()->FindString(PR_NAME_SERVER_VERSION, &serverVersion) == B_OK)
+		QString serverVersion;
+		if (GetStringFromMessage(msg, PR_NAME_SERVER_VERSION, serverVersion) == B_OK)
 			SendSystemEvent(tr("Server version: %1").arg(serverVersion));
 
 		int64 serverUptime;
@@ -260,7 +260,7 @@ WinShareWindow::ServerParametersReceived(MessageRef msg)
 			SendSystemEvent(tr("Server uptime: %1").arg(MakeHumanTime(serverUptime)));
 
 		// reuse old string
-		if (msg()->FindString(PR_NAME_SESSION_ROOT, &serverVersion) == B_OK)
+		if (GetStringFromMessage(msg, PR_NAME_SESSION_ROOT, serverVersion) == B_OK)
 			SendSystemEvent(tr("Session root: %1").arg(serverVersion));
 
 		int64 memA, memU;

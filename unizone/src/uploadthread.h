@@ -179,7 +179,7 @@ private:
 	int fSocket;
 	int64 fFileSize;
 	int64 fCurrentOffset;
-	int fMungeMode;
+	int32 fMungeMode;
 	QString fRemoteSessionID;
 	QString fRemoteUser;
 	QString fFileUl;

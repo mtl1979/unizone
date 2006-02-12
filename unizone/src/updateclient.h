@@ -35,7 +35,7 @@ private slots:
 
 private:
 
-	bool CheckVersion(const String &, QString * = NULL);
+	bool CheckVersion(const QString &, QString * = NULL);
 
 	QMessageTransceiverThread *qmtt;
 	String fHostName;

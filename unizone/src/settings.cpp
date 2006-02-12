@@ -6,6 +6,7 @@
 #include "colors.h"
 #include "global.h"
 #include "wfile.h"
+#include "util.h"
 #include "iogateway/MessageIOGateway.h"
 
 const char * SettingsFile; // name of settings file, default depends on host os
@@ -24,6 +25,24 @@ GetSettingsFile()
 #endif
 	}
 	return SettingsFile;
+}
+
+QString
+GetStringItem(const MessageRef &msg, const char * key, uint32 index)
+{
+	QString str;
+	if (GetStringFromMessage(msg, key, index, str) == B_OK)
+		return str;
+	return QString::null;
+}
+
+QString
+GetStringItem(const MessageRef &msg, const char * key)
+{
+	QString str;
+	if (GetStringFromMessage(msg, key, str) == B_OK)
+		return str;
+	return QString::null;
 }
 
 void
@@ -51,10 +70,7 @@ WSettings::AddServerItem(const QString & str)
 QString
 WSettings::GetServerItem(int index) const
 {
-	String str;
-	if (fSet()->FindString(SERVER_LIST, index, str) == B_OK)
-		return QString::fromUtf8(str.Cstr());
-	return QString::null;
+	return GetStringItem(fSet, SERVER_LIST, index);
 }
 
 QString
@@ -100,10 +116,7 @@ WSettings::AddUserItem(const QString & str)
 QString
 WSettings::GetUserItem(int index) const
 {
-	String str;
-	if (fSet()->FindString(USER_LIST, index, str) == B_OK)
-		return QString::fromUtf8(str.Cstr());
-	return QString::null;
+	return GetStringItem(fSet, USER_LIST, index);
 }
 
 QString
@@ -149,10 +162,7 @@ WSettings::AddStatusItem(const QString & str)
 QString
 WSettings::GetStatusItem(int index) const
 {
-	String str;
-	if (fSet()->FindString(STATUS_LIST, index, str) == B_OK)
-		return QString::fromUtf8(str.Cstr());
-	return QString::null;
+	return GetStringItem(fSet, STATUS_LIST, index);
 }
 
 QString
@@ -352,17 +362,17 @@ WSettings::SetHereMsg(const QString & here)
 QString
 WSettings::GetAwayMsg() const
 {
-	String str("away");	// default
-	fSet()->FindString(AWAY_MSG, str);
-	return QString::fromUtf8(str.Cstr());
+	QString str("away");	// default
+	GetStringFromMessage(fSet, AWAY_MSG, str);
+	return str;
 }
 
 QString
 WSettings::GetHereMsg() const
 {
-	String str("here");
-	fSet()->FindString(HERE_MSG, str);
-	return QString::fromUtf8(str.Cstr());
+	QString str("here");
+	GetStringFromMessage(fSet, HERE_MSG, str);
+	return str;
 }
 
 // colors
@@ -375,9 +385,9 @@ WSettings::AddColorItem(const QString & c)
 QString
 WSettings::GetColorItem(int index) const
 {
-	String str;
-	if (fSet()->FindString(COLORS, index, str) == B_OK)
-		return QString::fromUtf8(str.Cstr());
+	QString str;
+	if (GetStringFromMessage(fSet, COLORS, index, str) == B_OK)
+		return str;
 	// Default values
 	switch (index)
 	{
@@ -592,11 +602,11 @@ WSettings::SetConnection(const QString & str)
 QString
 WSettings::GetConnection() const
 {
-	String str;
-	fSet()->FindString(CONNECTION, str);
-	if (str.Length() == 0)
+	QString str;
+	GetStringFromMessage(fSet, CONNECTION, str);
+	if (str.isEmpty())
 		return qApp->translate("Connection", "Unknown");
-	return QString::fromUtf8(str.Cstr());
+	return str;
 }
 
 void 
@@ -924,9 +934,7 @@ WSettings::SetFontSize(int32 f)
 QString
 WSettings::GetWatchPattern() const
 {
-	String w = "";
-	fSet()->FindString(WATCH_PATTERN, w);
-	return QString::fromUtf8(w.Cstr());
+	return GetStringItem(fSet, WATCH_PATTERN);
 }
 
 void
@@ -938,9 +946,7 @@ WSettings::SetWatchPattern(const QString & p)
 QString
 WSettings::GetIgnorePattern() const
 {
-	String i = "";
-	fSet()->FindString(IGNORE_PATTERN, i);
-	return QString::fromUtf8(i.Cstr());
+	return GetStringItem(fSet, IGNORE_PATTERN);
 }
 
 void
@@ -952,9 +958,7 @@ WSettings::SetIgnorePattern(const QString & p)
 QString
 WSettings::GetIPIgnorePattern() const
 {
-	String i = "";
-	fSet()->FindString(IPIGNORE_PATTERN, i);
-	return QString::fromUtf8(i.Cstr());
+	return GetStringItem(fSet, IPIGNORE_PATTERN);
 }
 
 void
@@ -966,25 +970,19 @@ WSettings::SetIPIgnorePattern(const QString & p)
 QString
 WSettings::GetBlackListPattern() const
 {
-	String i = "";
-	fSet()->FindString(BLACKLIST, i);
-	return QString::fromUtf8(i.Cstr());
+	return GetStringItem(fSet, BLACKLIST);
 }
 
 QString
 WSettings::GetWhiteListPattern() const
 {
-	String i = "";
-	fSet()->FindString(WHITELIST, i);
-	return QString::fromUtf8(i.Cstr());
+	return GetStringItem(fSet, WHITELIST);
 }
 
 QString
 WSettings::GetFilterListPattern() const
 {
-	String i = "";
-	fSet()->FindString(FILTERLIST, i);
-	return QString::fromUtf8(i.Cstr());
+	return GetStringItem(fSet, FILTERLIST);
 }
 
 void
@@ -996,9 +994,7 @@ WSettings::SetAutoPrivatePattern(const QString & p)
 QString
 WSettings::GetAutoPrivatePattern() const
 {
-	String i = "";
-	fSet()->FindString(AUTOPRIV, i);
-	return QString::fromUtf8(i.Cstr());
+	return GetStringItem(fSet, AUTOPRIV);
 }
 
 void
@@ -1010,9 +1006,7 @@ WSettings::SetPMRedirect(const QString & p)
 QString
 WSettings::GetPMRedirect() const
 {
-	String i = "";
-	fSet()->FindString(PM_REDIRECT, i);
-	return QString::fromUtf8(i.Cstr());
+	return GetStringItem(fSet, PM_REDIRECT);
 }
 
 void
@@ -1036,9 +1030,7 @@ WSettings::SetFilterListPattern(const QString & p)
 QString
 WSettings::GetOnConnect() const
 {
-	String i = "";
-	fSet()->FindString(ONCONN, i);
-	return QString::fromUtf8(i.Cstr());
+	return GetStringItem(fSet, ONCONN);
 }
 
 void
@@ -1050,9 +1042,7 @@ WSettings::SetOnConnect(const QString & s)
 QString
 WSettings::GetOnConnect2() const
 {
-	String i = "";
-	fSet()->FindString(ONCONN2, i);
-	return QString::fromUtf8(i.Cstr());
+	return GetStringItem(fSet, ONCONN2);
 }
 
 void
@@ -1089,33 +1079,33 @@ WSettings::SetDefaultLauncher(const QString & l)
 QString
 WSettings::GetFTPLauncher() const
 {
-	String s = "konqueror";	// the default for everything is konqueror
-	fSet()->FindString(FTP_LAUNCHER, s);
-	return QString::fromUtf8(s.Cstr());
+	QString s("konqueror");	// the default for everything is konqueror
+	GetStringFromMessage(fSet, FTP_LAUNCHER, s);
+	return s;
 }
 
 QString
 WSettings::GetMailLauncher() const
 {
-	String s = "konqueror";
-	fSet()->FindString(MAILTO_LAUNCHER, s);
-	return QString::fromUtf8(s.Cstr());
+	QString s("konqueror");
+	GetStringFromMessage(fSet, MAILTO_LAUNCHER, s);
+	return s;
 }
 
 QString
 WSettings::GetHTTPLauncher() const
 {
-	String s = "konqueror";
-	fSet()->FindString(HTTP_LAUNCHER, s);
-	return QString::fromUtf8(s.Cstr());
+	QString s("konqueror");
+	GetStringFromMessage(fSet, HTTP_LAUNCHER, s);
+	return s;
 }
 
 QString
 WSettings::GetDefaultLauncher() const
 {
-	String s = "konqueror";
-	fSet()->FindString(DEFAULT_LAUNCHER, s);
-	return QString::fromUtf8(s.Cstr());
+	QString s("konqueror");
+	GetStringFromMessage(fSet, DEFAULT_LAUNCHER, s);
+	return s;
 }
 #endif
 
@@ -1414,9 +1404,7 @@ WSettings::SetRemotePassword(const QString & pw)
 QString
 WSettings::GetRemotePassword() const
 {
-	String pw = "";
-	fSet()->FindString(REMOTEPASSWORD, pw);
-	return QString::fromUtf8(pw.Cstr());
+	return GetStringItem(fSet, REMOTEPASSWORD);
 }
 
 void
@@ -1428,10 +1416,7 @@ WSettings::AddQueryItem(const QString & str)
 QString
 WSettings::GetQueryItem(int index) const
 {
-	String str;
-	if (fSet()->FindString(QUERY_LIST, index, str) == B_OK)
-		return QString::fromUtf8(str.Cstr());
-	return QString::null;
+	return GetStringItem(fSet, QUERY_LIST, index);
 }
 
 void
@@ -1465,21 +1450,20 @@ WSettings::AddResumeItem(WResumePair wrp)
 bool 
 WSettings::GetResumeItem(int index, WResumePair & wrp) const
 {
-	String file;
-	String user;
+	QString file, user;
 	if (
-		(fSet()->FindString(RESUMEFILE, index, file) == B_OK) &&
-		(fSet()->FindString(RESUMEUSER, index, user) == B_OK)
+		(GetStringFromMessage(fSet, RESUMEFILE, index, file) == B_OK) &&
+		(GetStringFromMessage(fSet, RESUMEUSER, index, user) == B_OK)
 		)
 	{
-		wrp.user = QString::fromUtf8(user.Cstr());
-		wrp.info.fRemoteName = QString::fromUtf8(file.Cstr());
+		wrp.user = user;
+		wrp.info.fRemoteName = file;
 
 		// For backwards compatibility don't require entry for local file name
 		//
 
-		if (fSet()->FindString(RESUMEFIL2, index, file) == B_OK)
-			wrp.info.fLocalName = QString::fromUtf8(file.Cstr());
+		if (GetStringFromMessage(fSet, RESUMEFIL2, index, file) == B_OK)
+			wrp.info.fLocalName = file;
 		else
 			wrp.info.fLocalName = QString::null;
 

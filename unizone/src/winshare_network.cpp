@@ -551,6 +551,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				RunCommand(address);
 			}
 		}
+			
 		else if (CompareCommand(sendText, "/time"))
 		{
 			QString command = GetParameterString(sendText).lower();
@@ -1864,27 +1865,25 @@ WinShareWindow::HandleMessage(MessageRef msg)
 	{
 	case TTP_START_QUEUE:
 		{
-			const char * from;
-			if (msg()->FindString(PR_NAME_SESSION, &from) == B_NO_ERROR)
+			QString from;
+			if (GetStringFromMessage(msg(), PR_NAME_SESSION, from) == B_NO_ERROR)
 			{
-				QString qFrom = from;
-				StartQueue(qFrom);
+				StartQueue(from);
 			}
 			break;
 		}
 	case WDownload::TransferNotifyRejected:
 		{
-			const char * from;
+			QString from;
 			uint32 port;
 			if (
-				(msg()->FindString(PR_NAME_SESSION, &from) == B_NO_ERROR) &&
+				(GetStringFromMessage(msg, PR_NAME_SESSION, from) == B_NO_ERROR) &&
 				(msg()->FindInt32("port", (int32 *) &port) == B_NO_ERROR)
 				)
 			{
-				QString qFrom = QString::fromUtf8(from);
 				uint64 timeLeft = (uint64) -1;
 				(void) msg()->FindInt64("timeleft", (int64 *)&timeLeft);
-				TransferCallbackRejected(qFrom, timeLeft, port);
+				TransferCallbackRejected(from, timeLeft, port);
 			}
 			break;
 		}
@@ -1965,19 +1964,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			QString userID;
 			QString file;
 			
-			{
-				const char * session;		// from user (their session id)
-
-				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
-					userID = QString(session);
-			}
-
-			{
-				const char * name;			// original name of picture
-
-				if (msg()->FindString("name", &name) == B_OK)
-					file = QString::fromUtf8(name);
-			}
+			GetStringFromMessage(msg, PR_NAME_SESSION, userID); // from user (their session id)
+			GetStringFromMessage(msg, "name", file);			// original name of picture
 
 			WUserRef user = fNetClient->FindUser(userID);
 			if (user())
@@ -2027,12 +2015,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			QString userID;
 			int64 hisID;
 			
-			{
-				const char * session;		// from user (their session id)
-
-				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
-					userID = QString(session);
-			}
+			GetStringFromMessage(msg, PR_NAME_SESSION, userID);		// from user (their session id)
 
 			msg()->FindInt64("my_id", &hisID);
 
@@ -2086,12 +2069,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			int64 hisID;
 			int64 myID;
 			
-			{
-				const char * session;		// from user (their session id)
-
-				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
-					userID = QString(session);
-			}
+			GetStringFromMessage(msg, PR_NAME_SESSION, userID);		// from user (their session id)
 
 			msg()->FindInt64("my_id", &hisID);
 			msg()->FindInt64("tunnel_id", &myID);
@@ -2115,12 +2093,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			QString userID;
 			int64 myID;
 			
-			{
-				const char * session;		// from user (their session id)
-
-				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
-					userID = QString(session);
-			}
+			GetStringFromMessage(msg, PR_NAME_SESSION, userID);		// from user (their session id)
 
 			msg()->FindInt64("tunnel_id", &myID);
 
@@ -2145,12 +2118,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			bool upload = false;
 			MessageRef tmsg;
 			
-			{
-				const char * session;		// from user (their session id)
-
-				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
-					userID = QString(session);
-			}
+			GetStringFromMessage(msg, PR_NAME_SESSION, userID);		// from user (their session id)
 
 			msg()->FindInt64("tunnel_id", &myID);
 
@@ -2178,20 +2146,10 @@ WinShareWindow::HandleMessage(MessageRef msg)
 #ifdef DEBUG2
 			int32 fcount = 0;
 
-			{
-				int32 f;
-
-				if (msg()->FindInt32("fail_count", &f) == B_OK)
-					fcount = f;
-			}
+			GetInt32FromMessage(msg, "fail_count", fcount);
 #endif
 			
-			{
-				const char * session;		// from user (their session id)
-				
-				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
-					userID = QString(session);
-			}
+			GetStringFromMessage(msg, PR_NAME_SESSION, userID);		// from user (their session id)
 			
 			// get user info first
 			WUserRef user = fNetClient->FindUser(userID);
@@ -2242,20 +2200,9 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				QString channel;
 				QString userID;
 
-				{
-					const char * session;		// from user (their session id)
-					const char * strTemp;
-					const char * strChannel;
-			
-					msg()->FindString(PR_NAME_SESSION, &session);
-					msg()->FindString("text", &strTemp);
-					msg()->FindString("channel", &strChannel);
-			
-					// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
-					text = QString::fromUtf8(strTemp);
-					channel = QString::fromUtf8(strChannel);
-					userID = QString(session);
-				}
+				GetStringFromMessage(msg, PR_NAME_SESSION, userID); // from user (their session id)
+				GetStringFromMessage(msg, "text", text);
+				GetStringFromMessage(msg, "channel", channel);
 			
 				// get user info first
 				WUserRef user = fNetClient->FindUser(userID);
@@ -2322,16 +2269,14 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			}
 		case NetClient::ChannelCreated:
 			{
-				String channel, repto;
+				QString qChan, qOwner;
 				uint64 rtime;
 				if (
-					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
-					(msg()->FindString("channel", channel) == B_OK) &&
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qOwner) == B_OK) &&
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
 					(msg()->FindInt64("when", (int64 *) &rtime) == B_OK)
 					)
 				{
-					QString qOwner = QString::fromUtf8(repto.Cstr());
-					QString qChan = QString::fromUtf8(channel.Cstr());
 					fChannels->ChannelCreated(qChan, qOwner, rtime);
 				}
 
@@ -2339,92 +2284,77 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			}
 		case NetClient::ChannelJoin:
 			{
-				String channel, repto;
+				QString qChan, qUser;
 				if (
-					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) && 
-					(msg()->FindString("channel", channel) == B_OK)
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) && 
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
 					)
 				{
-					QString qUser = QString::fromUtf8(repto.Cstr());
-					QString qChan = QString::fromUtf8(channel.Cstr());
 					fChannels->ChannelJoin(qChan, qUser);
 				}
 				break;
 			}
 		case NetClient::ChannelPart:
 			{
-				String channel, repto;
+				QString qChan, qUser;
 				if (
-					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) && 
-					(msg()->FindString("channel", channel) == B_OK)
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) && 
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
 					)
 				{
-					QString qUser = QString::fromUtf8(repto.Cstr());
-					QString qChan = QString::fromUtf8(channel.Cstr());
 					fChannels->ChannelPart(qChan, qUser);
 				}
 				break;
 			}
 		case NetClient::ChannelInvite:
 			{
-				String channel, repto, who;
+				QString qChan, qUser, qWho;
 				if (
-					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
-					(msg()->FindString("who", who) == B_OK) &&
-					(msg()->FindString("channel", channel) == B_OK)
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
+					(GetStringFromMessage(msg, "who", qWho) == B_OK) &&
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
 					)
 				{
-					QString qUser = QString::fromUtf8(repto.Cstr());
-					QString qWho = QString::fromUtf8(who.Cstr());
-					QString qChan = QString::fromUtf8(channel.Cstr());
 					fChannels->ChannelInvite(qChan, qUser, qWho);
 				}
 				break;
 			}
 		case NetClient::ChannelKick:
 			{
-				String channel, repto, who;
+				QString qChan, qUser, qWho;
 				if (
-					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
-					(msg()->FindString("who", who) == B_OK) &&
-					(msg()->FindString("channel", channel) == B_OK)
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
+					(GetStringFromMessage(msg, "who", qWho) == B_OK) &&
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
 					)
 				{
-					QString qUser = QString::fromUtf8(repto.Cstr());
-					QString qWho = QString::fromUtf8(who.Cstr());
-					QString qChan = QString::fromUtf8(channel.Cstr());
 					fChannels->ChannelKick(qChan, qUser, qWho);
 				}
 				break;
 			}
 		case NetClient::ChannelSetTopic:
 			{
-				String channel, repto, topic;
+				QString qChan, qUser, qTopic;
 				if (
-					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
-					(msg()->FindString("topic", topic) == B_OK) && 
-					(msg()->FindString("channel", channel) == B_OK)
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
+					(GetStringFromMessage(msg, "topic", qTopic) == B_OK) && 
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
 					)
 				{
-					QString qUser = QString::fromUtf8(repto.Cstr());
-					QString qTopic = QString::fromUtf8(topic.Cstr());
-					QString qChan = QString::fromUtf8(channel.Cstr());
 					fChannels->ChannelTopic(qChan, qUser, qTopic);
 				}
 				break;
 			}
 		case NetClient::ChannelSetPublic:
 			{
-				String channel, repto;
+				QString qChan, qUser;
 				bool pub;
 				if (
-					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
-					(msg()->FindBool("public", &pub) == B_OK) &&
-					(msg()->FindString("channel", channel) == B_OK)
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
+					(msg()->FindBool("public", &pub) == B_OK) 
 					)
 				{
-					QString qUser = QString::fromUtf8(repto.Cstr());
-					QString qChan = QString::fromUtf8(channel.Cstr());
 					fChannels->ChannelPublic(qChan, qUser, pub);
 				}
 				break;
@@ -2483,12 +2413,12 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			// response to our ping
 		case NetClient::PONG:
 			{
-				const char * session;
+				QString session;
 				uint64 when;
 				
 				if (fSettings->GetInfo())
 				{
-					if ((msg()->FindString(PR_NAME_SESSION, &session) == B_OK) && 
+					if ((GetStringFromMessage(msg, PR_NAME_SESSION, session) == B_OK) && 
 						(msg()->FindInt64("when", (int64 *) &when) == B_OK))
 					{
 						WUserRef user = fNetClient->FindUser(session);
@@ -2573,17 +2503,20 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			}
 		case TimeReply: // Reply to TimeRequest
 			{
-				String sTime, sZone;
-				const char * session;
-				if (msg()->FindString(PR_NAME_SESSION, &session) == B_OK)
+				QString qTime, qZone;
+				QString session;
+				if (GetStringFromMessage(msg, PR_NAME_SESSION, session) == B_OK)
 				{
 					WUserRef user = fNetClient->FindUser(session);
 					if (user())
 					{
-						if ((msg()->FindString("time", sTime) == B_OK) && (msg()->FindString("zone", sZone) == B_OK))
+						if (
+							(GetStringFromMessage(msg, "time", qTime) == B_OK) && 
+							(GetStringFromMessage(msg, "zone", qZone) == B_OK)
+							)
 						{
 							QString userName = user()->GetUserName();
-							QString qstamp = tr("Current time: %1 %2").arg(QString::fromUtf8(sTime.Cstr())).arg(QString::fromUtf8(sZone.Cstr()));
+							QString qstamp = tr("Current time: %1 %2").arg(qTime).arg(qZone);
 							QString qTime = WFormat::RemoteText(session, FixString(userName), qstamp);
 							PrintText(qTime);
 						}
@@ -2891,13 +2824,13 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/unrequire [ips] - remove require mask");
 #if defined(BETA) || defined(_DEBUG)
-	helpText			+=	"\n\n\t\t\t\t"; 
+	helpText			+=	"\n";
+	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("The list of commands is being worked on. More will be added");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("as time goes on.");
 #endif
-	helpText			+=	"\n";
-	helpText			+=	"\n"; 
+	helpText			+=	"\n\n";
 
 	temp = CheckIfEmpty(fAutoPriv, qNone);
 	helpText			+=	tr("Auto-private pattern: %1").arg(temp);

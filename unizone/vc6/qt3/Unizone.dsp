@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -56,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt3.lib qtmain.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt3.lib qtmain.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"c:\qt3\lib" /libpath:"..\..\libjpeg\Release" /libpath:"muscle___Win32_Release" /libpath:"regex___Win32_Release" /libpath:"zlib___Win32_Release"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
@@ -73,7 +73,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "DISABLE_OBJECT_POOLING" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "DISABLE_OBJECT_POOLING" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"Debug/Unizoned.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt3.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt3.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"c:\qt3\lib" /libpath:"..\..\libjpeg\Debug" /libpath:"muscle___Win32_Debug" /libpath:"regex___Win32_Debug" /libpath:"zlib___Win32_Debug"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
@@ -101,9 +101,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug_ANSI"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
 # SUBTRACT BASE CPP /X /YX
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -113,9 +113,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo /o"Debug/Unizoned.bsc"
 # ADD BSC32 /nologo /o"Debug_ANSI/Unizonead.bsc"
 LINK32=link.exe
-# ADD BASE LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Debug"
+# ADD BASE LINK32 winspool.lib odbc32.lib odbccp32.lib muscled.lib zlibd.lib regexd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpegd.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizoned.exe" /pdbtype:sept /libpath:"c:\qt3\lib" /libpath:"..\..\libjpeg\Debug"
 # SUBTRACT BASE LINK32 /incremental:no
-# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt3.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Debug_ANSI" /libpath:"muscle___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI"
+# ADD LINK32 winspool.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt3.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /out:"Unizonead.exe" /pdbtype:sept /libpath:"c:\qt3\lib" /libpath:"..\..\libjpeg\Debug_ANSI" /libpath:"muscle___Win32_Debug_ANSI" /libpath:"regex___Win32_Debug_ANSI" /libpath:"zlib___Win32_Debug_ANSI"
 # SUBTRACT LINK32 /incremental:no
 
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
@@ -132,9 +132,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Release_ANSI"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
 # SUBTRACT BASE CPP /X
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -144,9 +144,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo /o"Release_ANSI/Unizonea.bsc"
 LINK32=link.exe
-# ADD BASE LINK32 muscle.lib zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Release"
+# ADD BASE LINK32 muscle.lib zlib.lib regex.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib qjpeg.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizone.exe" /libpath:"c:\qt3\lib" /libpath:"..\..\libjpeg\Release"
 # SUBTRACT BASE LINK32 /pdb:none /incremental:yes
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt3.lib qtmain.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizonea.exe" /libpath:"$(QTDIR)\lib" /libpath:"..\..\libjpeg\Release_ANSI" /libpath:"muscle___Win32_Release_ANSI" /libpath:"regex___Win32_Release_ANSI" /libpath:"zlib___Win32_Release_ANSI"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib wsock32.lib winmm.lib qt-mt3.lib qtmain.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Unizonea.exe" /libpath:"c:\qt3\lib" /libpath:"..\..\libjpeg\Release_ANSI" /libpath:"muscle___Win32_Release_ANSI" /libpath:"regex___Win32_Release_ANSI" /libpath:"zlib___Win32_Release_ANSI"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ENDIF 
@@ -459,18 +459,18 @@ SOURCE=..\..\src\wwarningevent.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\src\aboutdlg.h
+SOURCE=..\..\src\qt3\aboutdlg.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\aboutdlg.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\aboutdlg.h
 InputName=aboutdlg
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -478,12 +478,12 @@ InputName=aboutdlg
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\aboutdlg.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\aboutdlg.h
 InputName=aboutdlg
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -492,12 +492,12 @@ InputName=aboutdlg
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\aboutdlg.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\aboutdlg.h
 InputName=aboutdlg
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -506,12 +506,12 @@ InputName=aboutdlg
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\aboutdlg.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\aboutdlg.h
 InputName=aboutdlg
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -530,8 +530,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -543,8 +543,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -557,8 +557,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -571,8 +571,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -585,18 +585,18 @@ SOURCE=..\..\src\botitem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\channel.h
+SOURCE=..\..\src\qt3\channel.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\channel.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\channel.h
 InputName=channel
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -604,12 +604,12 @@ InputName=channel
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\channel.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\channel.h
 InputName=channel
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -618,12 +618,12 @@ InputName=channel
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\channel.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\channel.h
 InputName=channel
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -632,12 +632,12 @@ InputName=channel
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\channel.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\channel.h
 InputName=channel
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -656,8 +656,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -669,8 +669,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -683,8 +683,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -697,8 +697,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -721,8 +721,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\channels.h
 InputName=channels
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -734,8 +734,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\channels.h
 InputName=channels
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -747,8 +747,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\channels.h
 InputName=channels
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -760,8 +760,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\channels.h
 InputName=channels
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -784,8 +784,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\chattext.h
 InputName=chattext
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -797,8 +797,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\chattext.h
 InputName=chattext
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -811,8 +811,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\chattext.h
 InputName=chattext
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -825,8 +825,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\chattext.h
 InputName=chattext
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -853,8 +853,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\combo.h
 InputName=combo
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -866,8 +866,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\combo.h
 InputName=combo
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -880,8 +880,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\combo.h
 InputName=combo
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -894,8 +894,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\combo.h
 InputName=combo
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -918,8 +918,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -931,8 +931,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -945,8 +945,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -959,8 +959,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -983,8 +983,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -996,8 +996,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1010,8 +1010,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1024,8 +1024,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1056,8 +1056,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\filethread.h
 InputName=filethread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1069,8 +1069,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\filethread.h
 InputName=filethread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1082,8 +1082,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\filethread.h
 InputName=filethread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1095,8 +1095,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\filethread.h
 InputName=filethread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1115,8 +1115,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\formatting.h
 InputName=formatting
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1128,8 +1128,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\formatting.h
 InputName=formatting
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1142,8 +1142,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\formatting.h
 InputName=formatting
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1156,8 +1156,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\formatting.h
 InputName=formatting
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1184,8 +1184,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1197,8 +1197,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1211,8 +1211,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1225,8 +1225,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1245,8 +1245,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\listthread.h
 InputName=listthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1258,8 +1258,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\listthread.h
 InputName=listthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1271,8 +1271,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\listthread.h
 InputName=listthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1284,8 +1284,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\listthread.h
 InputName=listthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1312,8 +1312,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1325,8 +1325,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1339,8 +1339,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1353,8 +1353,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1373,8 +1373,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\netclient.h
 InputName=netclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1386,8 +1386,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\netclient.h
 InputName=netclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1400,8 +1400,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\netclient.h
 InputName=netclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1414,8 +1414,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\netclient.h
 InputName=netclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1432,18 +1432,18 @@ SOURCE=..\..\src\parser.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\picviewer.h
+SOURCE=..\..\src\qt3\picviewer.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\picviewer.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\picviewer.h
 InputName=picviewer
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1451,12 +1451,12 @@ InputName=picviewer
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\picviewer.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\picviewer.h
 InputName=picviewer
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1465,12 +1465,12 @@ InputName=picviewer
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\picviewer.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\picviewer.h
 InputName=picviewer
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1479,12 +1479,12 @@ InputName=picviewer
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\picviewer.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\picviewer.h
 InputName=picviewer
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1503,8 +1503,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1516,8 +1516,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1530,8 +1530,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1543,8 +1543,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1567,8 +1567,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\prefs.h
 InputName=prefs
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1580,8 +1580,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\prefs.h
 InputName=prefs
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1594,8 +1594,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\prefs.h
 InputName=prefs
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1608,8 +1608,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\prefs.h
 InputName=prefs
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1628,8 +1628,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1641,8 +1641,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1655,8 +1655,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1669,8 +1669,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1679,18 +1679,18 @@ InputName=prefsimpl
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\privatewindow.h
+SOURCE=..\..\src\qt3\privatewindow.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\privatewindow.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\privatewindow.h
 InputName=privatewindow
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1698,12 +1698,12 @@ InputName=privatewindow
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\privatewindow.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\privatewindow.h
 InputName=privatewindow
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1712,12 +1712,12 @@ InputName=privatewindow
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\privatewindow.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\privatewindow.h
 InputName=privatewindow
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1726,12 +1726,12 @@ InputName=privatewindow
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\privatewindow.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\privatewindow.h
 InputName=privatewindow
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1750,8 +1750,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1763,8 +1763,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1777,8 +1777,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1791,8 +1791,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1815,8 +1815,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1828,8 +1828,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1841,8 +1841,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1854,8 +1854,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1872,18 +1872,18 @@ SOURCE=..\..\src\scanevent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\scanprogress.h
+SOURCE=..\..\src\qt3\scanprogress.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\scanprogress.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\scanprogress.h
 InputName=scanprogress
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1891,12 +1891,12 @@ InputName=scanprogress
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\scanprogress.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\scanprogress.h
 InputName=scanprogress
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1904,12 +1904,12 @@ InputName=scanprogress
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\scanprogress.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\scanprogress.h
 InputName=scanprogress
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1917,12 +1917,12 @@ InputName=scanprogress
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\scanprogress.h
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\scanprogress.h
 InputName=scanprogress
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1945,8 +1945,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\search.h
 InputName=search
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1958,8 +1958,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\search.h
 InputName=search
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1971,8 +1971,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\search.h
 InputName=search
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -1984,8 +1984,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\search.h
 InputName=search
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2008,8 +2008,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2021,8 +2021,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2035,8 +2035,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2049,8 +2049,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2097,8 +2097,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2110,8 +2110,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2124,8 +2124,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2138,8 +2138,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2158,8 +2158,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2171,8 +2171,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2185,8 +2185,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2199,8 +2199,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2219,8 +2219,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2232,8 +2232,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2246,8 +2246,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2260,8 +2260,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2312,8 +2312,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2325,8 +2325,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2339,8 +2339,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2353,8 +2353,8 @@ InputDir=\build\unizone\src
 InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2430,14 +2430,14 @@ InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2450,14 +2450,14 @@ InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2471,14 +2471,14 @@ InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2492,14 +2492,14 @@ InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2519,14 +2519,14 @@ InputPath=..\..\src\channel.ui
 InputName=channel
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2539,14 +2539,14 @@ InputPath=..\..\src\channel.ui
 InputName=channel
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2560,14 +2560,14 @@ InputPath=..\..\src\channel.ui
 InputName=channel
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2581,14 +2581,14 @@ InputPath=..\..\src\channel.ui
 InputName=channel
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2608,14 +2608,14 @@ InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2628,14 +2628,14 @@ InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2649,14 +2649,14 @@ InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2670,14 +2670,14 @@ InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2697,14 +2697,14 @@ InputPath=..\..\src\prefs.ui
 InputName=prefs
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2717,14 +2717,14 @@ InputPath=..\..\src\prefs.ui
 InputName=prefs
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2738,14 +2738,14 @@ InputPath=..\..\src\prefs.ui
 InputName=prefs
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2759,14 +2759,14 @@ InputPath=..\..\src\prefs.ui
 InputName=prefs
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2786,14 +2786,14 @@ InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2806,14 +2806,14 @@ InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2827,14 +2827,14 @@ InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2848,14 +2848,14 @@ InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2874,14 +2874,14 @@ InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2893,14 +2893,14 @@ InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2912,14 +2912,14 @@ InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -2931,14 +2931,14 @@ InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	c:\qt3\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	c:\qt3\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -3165,119 +3165,119 @@ SOURCE=..\..\src\windows\unicode\wlaunchthread_win.cpp
 # PROP Default_Filter "cpp"
 # Begin Source File
 
-SOURCE=..\..\src\moc3_aboutdlg.cpp
+SOURCE=..\..\src\qt3\moc_aboutdlg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_aboutdlgimpl.cpp
+SOURCE=..\..\src\qt3\moc_aboutdlgimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_channel.cpp
+SOURCE=..\..\src\qt3\moc_channel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_channelimpl.cpp
+SOURCE=..\..\src\qt3\moc_channelimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_channels.cpp
+SOURCE=..\..\src\qt3\moc_channels.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_chattext.cpp
+SOURCE=..\..\src\qt3\moc_chattext.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_combo.cpp
+SOURCE=..\..\src\qt3\moc_combo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_downloadimpl.cpp
+SOURCE=..\..\src\qt3\moc_downloadimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_downloadthread.cpp
+SOURCE=..\..\src\qt3\moc_downloadthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_filethread.cpp
+SOURCE=..\..\src\qt3\moc_filethread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_formatting.cpp
+SOURCE=..\..\src\qt3\moc_formatting.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_htmlview.cpp
+SOURCE=..\..\src\qt3\moc_htmlview.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_listthread.cpp
+SOURCE=..\..\src\qt3\moc_listthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_menubar.cpp
+SOURCE=..\..\src\qt3\moc_menubar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_netclient.cpp
+SOURCE=..\..\src\qt3\moc_netclient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_picviewer.cpp
+SOURCE=..\..\src\qt3\moc_picviewer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_picviewerimpl.cpp
+SOURCE=..\..\src\qt3\moc_picviewerimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_prefs.cpp
+SOURCE=..\..\src\qt3\moc_prefs.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_prefsimpl.cpp
+SOURCE=..\..\src\qt3\moc_prefsimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_privatewindow.cpp
+SOURCE=..\..\src\qt3\moc_privatewindow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_privatewindowimpl.cpp
+SOURCE=..\..\src\qt3\moc_privatewindowimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_resolverthread.cpp
+SOURCE=..\..\src\qt3\moc_resolverthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_scanprogress.cpp
+SOURCE=..\..\src\qt3\moc_scanprogress.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_search.cpp
+SOURCE=..\..\src\qt3\moc_search.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_serverclient.cpp
+SOURCE=..\..\src\qt3\moc_serverclient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_ulistview.cpp
+SOURCE=..\..\src\qt3\moc_ulistview.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_updateclient.cpp
+SOURCE=..\..\src\qt3\moc_updateclient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_uploadthread.cpp
+SOURCE=..\..\src\qt3\moc_uploadthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\moc3_winsharewindow.cpp
+SOURCE=..\..\src\qt3\moc_winsharewindow.cpp
 # End Source File
 # End Group
 # Begin Group "MUSCLE Headers"
@@ -3415,8 +3415,8 @@ InputDir=\build\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -3428,8 +3428,8 @@ InputDir=\build\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -3441,8 +3441,8 @@ InputDir=\build\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -3454,8 +3454,8 @@ InputDir=\build\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -3474,8 +3474,8 @@ InputDir=\build\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -3487,8 +3487,8 @@ InputDir=\build\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -3500,8 +3500,8 @@ InputDir=\build\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -3513,8 +3513,8 @@ InputDir=\build\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
-"$(InputDir)\moc3_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc3_$(InputName).cpp
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -3763,11 +3763,11 @@ SOURCE=..\..\src\muscle\zlib\ZLibUtilityFunctions.cpp
 # PROP Default_Filter "cpp"
 # Begin Source File
 
-SOURCE=..\..\src\muscle\qtsupport\moc3_QAcceptSocketsThread.cpp
+SOURCE=..\..\src\muscle\qtsupport\qt3\moc_QAcceptSocketsThread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\muscle\qtsupport\moc3_QMessageTransceiverThread.cpp
+SOURCE=..\..\src\muscle\qtsupport\qt3\moc_QMessageTransceiverThread.cpp
 # End Source File
 # End Group
 # Begin Group "regex Sources"

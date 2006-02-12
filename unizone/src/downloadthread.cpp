@@ -488,13 +488,13 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 			//	Int64		beshare:StartOffset
 						
 			// I only care to get the size and name
-			String fname, session;
+			// String fname, session;
+			QString fname;
 			if ((msg()->FindInt64("beshare:File Size", (int64 *)&fFileSize) == B_OK) && 
-				(msg()->FindString("beshare:File Name", fname) == B_OK))
+				(GetStringFromMessage(msg, "beshare:File Name", fname) == B_OK))
 			{
-				if (msg()->FindString("beshare:FromSession", session) == B_OK)
+				if (GetStringFromMessage(msg, "beshare:FromSession", fFromSession) == B_OK)
 				{
-					fFromSession = QString::fromUtf8(session.Cstr());
 					QString user = GetUserName(fFromSession);
 					if (!user.isEmpty())
 						fFromUser = user; 
@@ -505,7 +505,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 				if (fLocalFileDl[fCurFile] == QString::null)
 				{
 					// we have a "fixed" filename that eliminates characters Windows does not support
-					fLocalFileDl[fCurFile] = MakePath(downloadDir(), FixFileName(QString::fromUtf8(fname.Cstr())));
+					fLocalFileDl[fCurFile] = MakePath(downloadDir(), FixFileName(fname));
 				}
 
 				fixed = fLocalFileDl[fCurFile];

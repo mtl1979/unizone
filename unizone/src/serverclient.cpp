@@ -8,10 +8,12 @@
 #include "winsharewindow.h"
 #include "version.h"
 #include "resolver.h"
+#include "tokenizer.h"
+#include "util.h"
+#include "wstring.h"
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 #include "qtsupport/QMessageTransceiverThread.h"
-#include "util/StringTokenizer.h"
 
 using namespace muscle;
 
@@ -45,22 +47,25 @@ ServerClient::MessageReceived(const MessageRef & msg, const String & /* sessionI
 {
 	if (msg())
 	{
-		String nstr;
-		for (int i = 0; msg()->FindString(PR_NAME_TEXT_LINE, i, nstr) == B_OK; i++)
+		QString nstr;
+		for (int i = 0; GetStringFromMessage(msg, PR_NAME_TEXT_LINE, i, nstr) == B_OK; i++)
 		{
-			PRINT("UPDATESERVER: %s\n", nstr.Cstr());
-			int hind = nstr.IndexOf("#");
+#ifdef _DEBUG
+			WString wstr(nstr);
+			PRINT("UPDATESERVER: %S\n", wstr.getBuffer());
+#endif
+			int hind = nstr.find("#");
 			if (hind >= 0)
-				nstr = nstr.Substring(0, hind);
-			if (nstr.StartsWith("beshare_"))
+				nstr.truncate(hind);
+			if (nstr.startsWith("beshare_"))
 			{
-				StringTokenizer tok(nstr() + 8, "=");
-				const char * param = tok.GetNextToken();
-				if (param)
+				QStringTokenizer tok(nstr.mid(8), "=");
+				QString param = tok.GetNextToken();
+				if (!param.isEmpty())
 				{
-					const char * val = tok.GetRemainderOfString();
-					QString qkey = QString::fromUtf8(param).stripWhiteSpace();
-					QString qval = val ? QString::fromUtf8(val).stripWhiteSpace() : QString::null;
+					QString val = tok.GetRemainderOfString();
+					QString qkey = param.stripWhiteSpace();
+					QString qval = val.isEmpty() ? QString::null : val.stripWhiteSpace();
 					gWin->GotUpdateCmd(qkey, qval);
 				}
 			}

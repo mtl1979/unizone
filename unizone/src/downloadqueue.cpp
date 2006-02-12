@@ -3,6 +3,7 @@
 #include "winsharewindow.h"
 #include "settings.h"
 #include "downloadimpl.h"
+#include "util.h"
 
 DownloadQueue::DownloadQueue()
 {
@@ -32,7 +33,7 @@ DownloadQueue::addItem(const QString & file, const WUserRef & user)
 void
 DownloadQueue::run()
 {
-	String mUser, mFile;
+	String mUser;
 	QString user;
 	QString * files;
 	WUserRef u;
@@ -51,8 +52,7 @@ DownloadQueue::run()
 			mUser = mUser.Prepend("_");
 			for (int32 i = 0; i < numItems; i++)
 			{
-				fQueue()->FindString(mUser, i, mFile);
-				files[i] = QString::fromUtf8(mFile.Cstr());
+				GetStringFromMessage(fQueue, mUser, i, files[i]);
 			}
 			gWin->OpenDownload();
 			if (u()->GetFirewalled() && u()->GetTunneling() && gWin->fSettings->GetFirewalled())

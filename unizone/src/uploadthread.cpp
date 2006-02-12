@@ -1051,19 +1051,15 @@ WUploadThread::TransferFileList(MessageRef msg)
 			return;
 		}
 		
-		String sid, name;
-		int32 mm;
-		if (msg()->FindInt32("mm", &mm) == B_OK)
-			fMungeMode = mm;
-		else
+		QString user;
+
+		if (GetInt32FromMessage(msg, "mm", fMungeMode) != B_OK)
 			fMungeMode = WDownload::MungeModeNone;
 		
-		if (msg()->FindString("beshare:FromSession", sid) == B_OK)
-			fRemoteSessionID = QString::fromUtf8(sid.Cstr());
+		GetStringFromMessage(msg, "beshare:FromSession", fRemoteSessionID);
 		
-		if (msg()->FindString("beshare:FromUserName", name) ==  B_OK)
+		if (GetStringFromMessage(msg, "beshare:FromUserName", user) ==  B_OK)
 		{
-			QString user = QString::fromUtf8(name.Cstr());
 			if (!user.isEmpty())
 				fRemoteUser = user;
 		}

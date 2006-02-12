@@ -12,6 +12,7 @@ class WFile;
 
 #include "util/String.h"
 #include "util/ByteBuffer.h"
+#include "message/Message.h"
 
 using namespace muscle;
 
@@ -156,4 +157,9 @@ QString imageFormats();
 
 QString WikiEscape(const QString &page);
 QString URLEscape(const QString &page);
+
+status_t GetStringFromMessage(const MessageRef &msg, const String key, QString &value);
+status_t GetStringFromMessage(const MessageRef &msg, const String key, uint32 index, QString &value);
+status_t GetInt32FromMessage(const MessageRef &msg, const String key, int32 &value);
+status_t GetUInt32FromMessage(const MessageRef &msg, const String key, uint32 &value);
 #endif

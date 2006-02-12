@@ -6,6 +6,12 @@
 #include "version.h"
 #include "wsystemevent.h"
 #include "resolver.h"
+#include "util.h"
+#include "wstring.h"
+
+#ifdef WIN32
+#include "windows\vsscanf.h"
+#endif
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 
@@ -38,9 +44,9 @@ void
 UpdateClient::MessageReceived(const MessageRef & msg, const String & /* sessionID */)
 {
 	PRINT("Update thread received a message\n");
-	String str;
+	QString str;
 
-	for (int i = 0; msg()->FindString(PR_NAME_TEXT_LINE, i, str) == B_OK; i++)
+	for (int i = 0; GetStringFromMessage(msg, PR_NAME_TEXT_LINE, i, str) == B_OK; i++)
 	{
 		QString s;
 		if (CheckVersion(str, &s))
@@ -88,8 +94,20 @@ UpdateClient::Disconnect()
 	}
 }
 
+int qscanf(const QString &str, const wchar_t *fmt, ...)
+{
+	WString w(str);
+	va_list a;
+	va_start(a, fmt);
+#ifdef WIN32
+	return vwsscanf(w.getBuffer(), fmt, a);
+#else
+	return vswscanf(w.getBuffer(), fmt, a);
+#endif
+}
+
 bool
-UpdateClient::CheckVersion(const String & buf, QString * version)
+UpdateClient::CheckVersion(const QString & buf, QString * version)
 {
 	int maj, min, rev, build;
 	int kMajor, kMinor, kPatch, kBuild;
@@ -97,7 +115,7 @@ UpdateClient::CheckVersion(const String & buf, QString * version)
 	kMinor = UZ_MinorVersion();
 	kPatch = UZ_Patch();
 	kBuild = UZ_Build();
-	int ret = sscanf(buf.Cstr(), "%d,%d,%d,%d", &maj, &min, &rev, &build);
+	int ret = qscanf(buf, L"%d,%d,%d,%d", &maj, &min, &rev, &build);
 	PRINT("CheckVersion: ret == %d\n", ret);
 	if (ret == 4)	// we want 4 return values
 	{

@@ -47,10 +47,7 @@ WUser::~WUser()
 void
 WUser::InitName(MessageRef msg)
 {
-	uint32 port;
-	const char * name;
-	const char * vname, * vnum;	// version
-	const char * hostos;
+	QString vname, vnum;	// version
 	bool isbot;
 	uint64 installID;
 
@@ -70,17 +67,15 @@ WUser::InitName(MessageRef msg)
 	else
 		fInstallID = installID;
 
-	if (msg()->FindString("name", &name) == B_OK)
-		fUserName = QString::fromUtf8(name);
-
-	if (msg()->FindInt32("port", (int32 *) &port) == B_OK)
-		fPort = port;
-	else
+	GetStringFromMessage(msg, "name", fUserName);
+	
+	if (GetUInt32FromMessage(msg, "port", fPort) != B_OK)
 		fPort = 0;
 
-	if ((msg()->FindString("version_name", &vname) == B_OK) && (msg()->FindString("version_num", &vnum) == B_OK))
+	if ((GetStringFromMessage(msg, "version_name", vname) == B_OK) && 
+		(GetStringFromMessage(msg, "version_num", vnum) == B_OK))
 	{
-		String vt(vname);
+		QString vt(vname);
 		vt += " ";
 		vt += vnum;
 		SetClient(vt);
@@ -106,9 +101,9 @@ WUser::InitName(MessageRef msg)
 		PRINT("WUser: %s firewalled\n", (b ? "Is" : "Isn't"));
 	}
 
-	if (!b && (port > 32767))
+	if (!b && (fPort > 32767))
 	{
-		PRINT("WUser: invalid port (%lu), assuming firewalled!\n", port);
+		PRINT("WUser: invalid port (%lu), assuming firewalled!\n", fPort);
 		SetFirewalled(true);
 	}
 	else
@@ -116,8 +111,7 @@ WUser::InitName(MessageRef msg)
 
 	//
 
-	if (msg()->FindString("host_os", &hostos) == B_OK)
-		fHostOS = QString::fromUtf8(hostos);
+	GetStringFromMessage(msg, "host_os", fHostOS);
 
 #ifdef _DEBUG
 	WString wuser(fUserName);
@@ -147,11 +141,9 @@ WUser::InitStatus(MessageRef msg)
 void
 WUser::InitUploadStats(MessageRef msg)
 {
-	int32 c, m;
-	if (msg()->FindInt32("cur", (int32 *)&c) == B_OK)
-		fCurUploads = c;
-	if (msg()->FindInt32("max", (int32 *)&m) == B_OK)
-		fMaxUploads = m;
+	GetUInt32FromMessage(msg, "cur", fCurUploads);
+	GetUInt32FromMessage(msg, "max", fMaxUploads);
+
 #ifdef _DEBUG
 	WString wuser(fUserName);
 	PRINT("WUser: %S with %d of %d uploads going\n", wuser.getBuffer(), fCurUploads, fMaxUploads);
@@ -162,13 +154,12 @@ void
 WUser::InitBandwidth(MessageRef msg)
 {
 	const char * l;
-	uint32 bps = 0;
+	fBandwidthBPS = 0;
 
-	if (msg()->FindInt32("bps", (int32 *)&bps) == B_OK)
-		fBandwidthBPS = bps;
+	GetUInt32FromMessage(msg, "bps", fBandwidthBPS);
 
-	if (bps != 0)
-		fBandwidthLabel = BandwidthToString(bps);
+	if (fBandwidthBPS != 0)
+		fBandwidthLabel = BandwidthToString(fBandwidthBPS);
 
 	if (fBandwidthLabel == "Unknown")
 		fBandwidthLabel == qApp->translate("Connection", "Unknown");
@@ -183,7 +174,7 @@ WUser::InitBandwidth(MessageRef msg)
 				fBandwidthLabel = qApp->translate("Connection", "Unknown");
 			else
 				AddToList(fBandwidthLabel, qApp->translate("Connection", l));
-				AddToList(fBandwidthLabel, QString::number(bps));
+				AddToList(fBandwidthLabel, QString::number(fBandwidthBPS));
 		}
 	}
 #ifdef _DEBUG
@@ -196,9 +187,8 @@ WUser::InitBandwidth(MessageRef msg)
 void
 WUser::InitFileCount(MessageRef msg)
 {
-	int32 fc;
-	if (msg()->FindInt32("filecount", &fc) == B_OK)
-		fFileCount = fc;
+	GetInt32FromMessage(msg, "filecount", fFileCount);
+
 #ifdef _DEBUG
 	WString wuser(fUserName);
 	PRINT("WUser: %S with filecount %d\n", wuser.getBuffer(), fFileCount); // <postmaster@raasu.org> 20021022 -- Fixed typo

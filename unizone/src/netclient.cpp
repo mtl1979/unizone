@@ -424,23 +424,20 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 					if (nodeName.EqualsIgnoreCase("serverinfo"))
 					{
 						int64 rtime;
-						String user, newid, oldid;
+						QString user, newid, oldid;
 						tmpRef()->FindInt64("registertime", &rtime);
-						tmpRef()->FindString("user", user);
-						tmpRef()->FindString(PR_NAME_SESSION, newid);
-						QString qUser = QString::fromUtf8(user.Cstr());
-						if (tmpRef()->FindString("oldid", oldid) == B_OK)
+						GetStringFromMessage(tmpRef, "user", user);
+						GetStringFromMessage(tmpRef, PR_NAME_SESSION, newid);
+						if (GetStringFromMessage(tmpRef, "oldid", oldid) == B_OK)
 						{
-							QString nid = QString::fromUtf8(newid.Cstr());
-							QString oid = QString::fromUtf8(oldid.Cstr());
-							emit UserIDChanged(oid, nid);
+							emit UserIDChanged(oldid, newid);
 						}
 						WinShareWindow *win = GetWindow(this);
 						if (win)
 						{
 							if (
-								( win->GetUserName() == qUser ) &&
-								( win->GetRegisterTime(qUser) <= rtime )
+								( win->GetUserName() == user ) &&
+								( win->GetRegisterTime(user) <= rtime )
 								)
 							{
 								// Collide nick
@@ -471,14 +468,14 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 						{
 							// user joined channel
 							AddChannel(qsid, channel);
-							String topic, owner, admins;
+							QString topic, owner, admins;
 							bool pub;
-							if (tmpRef()->FindString("owner", owner) == B_OK)
-								emit ChannelOwner(channel, qsid, QString::fromUtf8(owner.Cstr()));
-							if (tmpRef()->FindString("admins", admins) == B_OK)
-								emit ChannelAdmins(channel, qsid, QString::fromUtf8(admins.Cstr()));
-							if (tmpRef()->FindString("topic", topic) == B_OK)
-								emit ChannelTopic(channel, qsid, QString::fromUtf8(topic.Cstr()));
+							if (GetStringFromMessage(tmpRef, "owner", owner) == B_OK)
+								emit ChannelOwner(channel, qsid, owner);
+							if (GetStringFromMessage(tmpRef, "admins", admins) == B_OK)
+								emit ChannelAdmins(channel, qsid, admins);
+							if (GetStringFromMessage(tmpRef, "topic", topic) == B_OK)
+								emit ChannelTopic(channel, qsid, topic);
 							if (tmpRef()->FindBool("public", &pub) == B_OK)
 								emit ChannelPublic(channel, qsid, pub);
 						}
@@ -1049,7 +1046,7 @@ NetClient::MessageReceived(const MessageRef &msg, const String & /* sessionID */
 				MessageRef subMsg;
 				QString action = tr( "do that to" );
 
-				String who;
+				QString who;
 				if (msg()->FindMessage(PR_NAME_REJECTED_MESSAGE, subMsg) == B_NO_ERROR)
 				{
 					if (subMsg())
@@ -1087,12 +1084,11 @@ NetClient::MessageReceived(const MessageRef &msg, const String & /* sessionID */
 							}
 						}
 					
-						if (subMsg()->FindString(PR_NAME_KEYS, who) == B_NO_ERROR)
+						if (GetStringFromMessage(subMsg, PR_NAME_KEYS, who) == B_NO_ERROR)
 						{
-							QString qWho = QString::fromUtf8(who.Cstr());
 							WinShareWindow *win = GetWindow(this);
 							if (win)
-								win->SendErrorEvent( tr("You are not allowed to %1 [%2]").arg(action).arg(qWho) );
+								win->SendErrorEvent( tr("You are not allowed to %1 [%2]").arg(action).arg(who) );
 						}
 					}
 				}

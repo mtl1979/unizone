@@ -12,7 +12,7 @@
 #ifdef WIN32
 #include <windows.h>
 #include <shlwapi.h>
-#include <tchar.h>
+#include "windows/imports.h"
 #endif
 
 #include "global.h"
@@ -95,6 +95,9 @@ SetWorkingDirectory()
 int 
 main( int argc, char** argv )
 {
+#ifdef WIN32
+	LoadCRT();
+#endif
 	RedirectDebugOutput();
 	muscle::CompleteSetupSystem fMuscle;
 
@@ -232,6 +235,9 @@ main( int argc, char** argv )
 	int ret = app.exec();
 
 	CleanupDebug();
+#ifdef WIN32
+	UnloadCRT();
+#endif
 
 	return ret;
 }

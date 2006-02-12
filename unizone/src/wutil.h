@@ -1,7 +1,7 @@
 #ifndef WUTIL_H
 #define WUTIL_H
 
-#ifdef _cplusplus
+#ifdef __cplusplus
 class QString;
 #endif
 
