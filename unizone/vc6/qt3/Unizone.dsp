@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\qt3" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -73,7 +73,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "DISABLE_OBJECT_POOLING" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\qt3" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "_MBCS" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "DISABLE_OBJECT_POOLING" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -103,7 +103,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_OBJECT_POOLING" /FR /FD /GZ /c
 # SUBTRACT BASE CPP /X /YX
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\qt3" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /FR /FD /GZ /c
 # SUBTRACT CPP /X /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -134,7 +134,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "UNICODE" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "ZLIB_USEDLL" /D "REGEX_USEDLL" /D "DISABLE_TUNNELING" /Fr /YX /FD /c
 # SUBTRACT BASE CPP /X
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\qt3\include" /I "..\..\src" /I "..\..\src\qt3" /I "..\..\src\muscle" /I "..\..\src\muscle\regex\regex" /I "..\..\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "BETA" /D "QT_NO_ASCII_CAST" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /D "QJPEG_STATIC" /Fr /YX /FD /c
 # SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -162,19 +162,11 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\aboutdlg.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\aboutdlgimpl.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\botitem.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\channel.cpp
 # End Source File
 # Begin Source File
 
@@ -291,10 +283,6 @@ SOURCE=..\..\src\parser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\picviewer.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\picviewerimpl.cpp
 # End Source File
 # Begin Source File
@@ -303,15 +291,7 @@ SOURCE=..\..\src\platform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\prefs.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\prefsimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\privatewindow.cpp
 # End Source File
 # Begin Source File
 
@@ -324,10 +304,6 @@ SOURCE=..\..\src\resolver.cpp
 # Begin Source File
 
 SOURCE=..\..\src\resolverthread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\scanprogress.cpp
 # End Source File
 # Begin Source File
 
@@ -459,67 +435,6 @@ SOURCE=..\..\src\wwarningevent.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\src\qt3\aboutdlg.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\aboutdlg.h
-InputName=aboutdlg
-
-"$(InputDir)\qt3\moc$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\aboutdlg.h
-InputName=aboutdlg
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\aboutdlg.h
-InputName=aboutdlg
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\aboutdlg.h
-InputName=aboutdlg
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\aboutdlgimpl.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
@@ -582,67 +497,6 @@ InputName=aboutdlgimpl
 # Begin Source File
 
 SOURCE=..\..\src\botitem.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\qt3\channel.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\channel.h
-InputName=channel
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\channel.h
-InputName=channel
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\channel.h
-InputName=channel
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\channel.h
-InputName=channel
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -1432,67 +1286,6 @@ SOURCE=..\..\src\parser.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\qt3\picviewer.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\picviewer.h
-InputName=picviewer
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\picviewer.h
-InputName=picviewer
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\picviewer.h
-InputName=picviewer
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\picviewer.h
-InputName=picviewer
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\picviewerimpl.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
@@ -1557,67 +1350,6 @@ SOURCE=..\..\src\platform.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\prefs.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\prefs.h
-InputName=prefs
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\prefs.h
-InputName=prefs
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\prefs.h
-InputName=prefs
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
-InputPath=..\..\src\prefs.h
-InputName=prefs
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\prefsimpl.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
@@ -1668,67 +1400,6 @@ InputName=prefsimpl
 InputDir=\build\unizone\src
 InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\qt3\privatewindow.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\privatewindow.h
-InputName=privatewindow
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\privatewindow.h
-InputName=privatewindow
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\privatewindow.h
-InputName=privatewindow
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP BASE Ignore_Default_Tool 1
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\privatewindow.h
-InputName=privatewindow
 
 "$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
@@ -1869,65 +1540,6 @@ SOURCE=..\..\src\resource.h
 # Begin Source File
 
 SOURCE=..\..\src\scanevent.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\qt3\scanprogress.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\scanprogress.h
-InputName=scanprogress
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\scanprogress.h
-InputName=scanprogress
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\scanprogress.h
-InputName=scanprogress
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt3
-InputPath=..\..\src\qt3\scanprogress.h
-InputName=scanprogress
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -4453,6 +4065,436 @@ SOURCE=..\..\libjpeg\jpeglib.h
 # Begin Source File
 
 SOURCE=..\..\libjpeg\jversion.h
+# End Source File
+# End Group
+# Begin Group "UIC Sources"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\qt3\aboutdlg.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\channel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\picviewer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\prefs.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\privatewindow.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\scanprogress.cpp
+# End Source File
+# End Group
+# Begin Group "UIC Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\qt3\aboutdlg.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\aboutdlg.h
+InputName=aboutdlg
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\aboutdlg.h
+InputName=aboutdlg
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\aboutdlg.h
+InputName=aboutdlg
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\aboutdlg.h
+InputName=aboutdlg
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\channel.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\channel.h
+InputName=channel
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\channel.h
+InputName=channel
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\channel.h
+InputName=channel
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\channel.h
+InputName=channel
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\picviewer.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\picviewer.h
+InputName=picviewer
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\picviewer.h
+InputName=picviewer
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\picviewer.h
+InputName=picviewer
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\picviewer.h
+InputName=picviewer
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\prefs.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\prefs.h
+InputName=prefs
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\prefs.h
+InputName=prefs
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\prefs.h
+InputName=prefs
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\prefs.h
+InputName=prefs
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\privatewindow.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\privatewindow.h
+InputName=privatewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\privatewindow.h
+InputName=privatewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\privatewindow.h
+InputName=privatewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP BASE Ignore_Default_Tool 1
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\privatewindow.h
+InputName=privatewindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\scanprogress.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\scanprogress.h
+InputName=scanprogress
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\scanprogress.h
+InputName=scanprogress
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\scanprogress.h
+InputName=scanprogress
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src\qt3
+InputPath=..\..\src\qt3\scanprogress.h
+InputName=scanprogress
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Group "CRT Sources"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\windows\_filwbuf.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\windows\_getbuf.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\windows\imports.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\windows\vsscanf.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\windows\vwsscanf.c
+# End Source File
+# End Group
+# Begin Group "CRT Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\windows\imports.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\windows\vsscanf.h
 # End Source File
 # End Group
 # End Target
