@@ -61,26 +61,26 @@ static struct rerr {
  */
 /* ARGSUSED */
 size_t
-regerror(errcode, preg, errbuf, errbuf_size)
-int errcode;
+regerror(regerrcode, preg, errbuf, errbuf_size)
+int regerrcode;
 const regex_t *preg;
 char *errbuf;
 size_t errbuf_size;
 {
 	register struct rerr *r;
 	register size_t len;
-	register int target = errcode &~ REG_ITOA;
+	register int target = regerrcode &~ REG_ITOA;
 	register char *s;
 	char convbuf[50];
 
-	if (errcode == REG_ATOI)
+	if (regerrcode == REG_ATOI)
 		s = regatoi(preg, convbuf);
 	else {
 		for (r = rerrs; r->code >= 0; r++)
 			if (r->code == target)
 				break;
 	
-		if (errcode&REG_ITOA) {
+		if (regerrcode&REG_ITOA) {
 			if (r->code >= 0)
 				(void) strcpy(convbuf, r->name);
 			else

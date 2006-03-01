@@ -69,7 +69,9 @@ public:
       if ((_sockfd >= 0)&&(_naglesEnabled))
       {
          SetSocketNaglesAlgorithmEnabled(_sockfd, false);
-         (void) SendData(_sockfd, NULL, 0, _blocking);  // Force immediate buffer flush!
+#ifndef __linux__
+         (void) SendData(_sockfd, NULL, 0, _blocking);  // Force immediate buffer flush (not necessary under Linux)
+#endif
          SetSocketNaglesAlgorithmEnabled(_sockfd, true);
       }
    }

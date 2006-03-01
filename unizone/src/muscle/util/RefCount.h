@@ -300,12 +300,12 @@ template <class T> class HashFunctor;
 
 // VC++ can't handle partial template specialization, so don't let it see this
 // For VC++, you'll have to write an explicit HashFunctor.  Sucks, eh?
-#ifndef _MSC_VER
+#if _MSC_VER > 1200 || !defined(_MSC_VER)
 template <class Item>
 class HashFunctor<Ref<Item> >
 {
 public:
-   uint32 operator () (const Ref<Item> & ref) const {return (uint32) ref();}
+   uint32 operator()(const Ref<Item> & ref) const {return ((uint32)((unsigned long)ref()));}  // double-cast for AMD64
 };
 #endif
 

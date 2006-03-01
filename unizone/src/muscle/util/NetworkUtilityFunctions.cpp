@@ -35,7 +35,7 @@
 
 // On some OS's, calls like accept() take an int* rather than a uint32*
 // So I define net_length_t to avoid having to #ifdef all my code
-#if defined(__amd64__)
+#if defined(__amd64__) || defined(BSD)
 typedef socklen_t net_length_t;
 #elif defined(__BEOS__) || defined(__APPLE__) || defined(__CYGWIN__) || defined(WIN32) || defined(__QNX__) || defined(__osf__)
 # ifdef _SOCKLEN_T

@@ -27,7 +27,7 @@ template <class T> class HashFunctor
 {
 public:
    /** Default implementation just casts the key to a uint32 to get the hash value. */
-   uint32 operator () (const T x) const {return (uint32) x;}
+   uint32 operator()(const T x) const {return (uint32)((unsigned long)x);}  // double-cast for AMD64
 };
 
 template <class KeyType, class ValueType, class HashFunctorType> class Hashtable;  // forward declaration

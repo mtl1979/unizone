@@ -31,7 +31,7 @@ public:
    bool IsAsInput() const {return _asInput;}
 
    /** Returns a decent hash code for this object */
-   uint32 HashCode() const {return ((uint32)_session)+(_asInput?1:0);}
+   uint32 HashCode() const {return ((uint32)((unsigned long)_session))+(_asInput?1:0);}  // double-cast for AMD64
 
    /** Equality operator;  returns true iff (rhs) has the same two settings as we do */
    bool operator == (const PolicyHolder & rhs) {return ((rhs._session == _session)&&(rhs._asInput == _asInput));}
