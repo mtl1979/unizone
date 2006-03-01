@@ -196,6 +196,26 @@ ImageSplitter::scalePixmap(const QPixmap * image, int &width, int &height)
 }
 
 void
+ImageSplitter::scaleImage(const QImage * image, int &width, int &height)
+{
+	int oldw = image->width();
+	int oldh = image->height();
+	double ratio = (double) oldw / (double) oldh;
+	double neww = pxlCollage->height() * ratio;
+	if (neww > pxlCollage->width())
+	{
+		width = pxlCollage->width();
+		double dh = pxlCollage->width() / ratio;
+		height = lrint(dh);
+	}
+	else
+	{
+		width = lrint(neww);
+		height = pxlCollage->height();
+	}
+}
+
+void
 ImageSplitter::Load(const QString &filename)
 {
 	QImage * img = new QImage();
@@ -206,11 +226,11 @@ ImageSplitter::Load(const QString &filename)
 		image = img;
 		fFilename = filename;
 
-		QPixmap temp(*image);
 		int w, h;
-		scalePixmap(&temp, w, h);
+		scaleImage(image, w, h);
 		QImage nimg = image->smoothScale(w, h);
-		QPixmap pixCollage = nimg;
+		QPixmap pixCollage;
+		pixCollage.convertFromImage(nimg);
 
 		pxlCollage->setPixmap(pixCollage);
 		fPreview->ShowImage(image);

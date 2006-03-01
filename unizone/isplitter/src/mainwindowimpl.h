@@ -49,5 +49,6 @@ private:
 	QPoint startPos;
 
 	void scalePixmap(const QPixmap * image, int &width, int &height);
+	void scaleImage(const QImage * image, int &width, int &height);
 };
 #endif

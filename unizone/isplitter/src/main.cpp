@@ -4,15 +4,41 @@
 #include <qapplication.h>
 #include <qfile.h>
 #include <qfiledialog.h>
+#include <qregexp.h>
 
 #if !defined(QT_NO_STYLE_PLATINUM)
 # include <qplatinumstyle.h>
 #endif
 
+bool
+endsWith(const QString &str1, const QString &str2, bool cs = true)
+{
+	if (cs)
+#if (QT_VERSION < 0x030000)
+		return (str1.right(str2.length()) == str2);
+#else
+		return str1.endsWith(str2);
+#endif
+	else
+#if (QT_VERSION < 0x030200)
+	{
+		int pos = str1.length() - str2.length();
+		if (pos < 0) 
+			return false;
+		for (unsigned int p = 0; p < str2.length(); p++)
+			if (str1.at(pos + p).lower() != str2.at(p).lower())
+				return false;
+		return true;
+	}
+#else
+		return str1.endsWith(str2, false);
+#endif
+}
+
 QString MakePath(const QString &dir, const QString &file)
 {
 	QString ret = QDir::convertSeparators(dir);
-	if (!ret.endsWith(QChar(QDir::separator())))
+	if (!endsWith(ret, QChar(QDir::separator())))
 		ret += QDir::separator();
 
 	ret += file;
@@ -71,7 +97,7 @@ main( int argc, char** argv )
 		}
 		// Qt's own translator file
 		QFileInfo qfi(lfile);
-		QString langfile = qfi.fileName().replace("isplitter", "qt");
+		QString langfile = qfi.fileName().replace(QRegExp("isplitter"), "qt");
 		QString qt_lang = QString::null;
 		QString qtdir = EnvironmentVariable("QTDIR");
 		if (qtdir != QString::null)

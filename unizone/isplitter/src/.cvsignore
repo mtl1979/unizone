@@ -1,6 +1,4 @@
-moc_mainwindow.cpp
-moc_mainwindowimpl.cpp
-moc_menubar.cpp
+moc_*.cpp
 isplitter_en.qm
 isplitter_fi.qm
 mainwindow.cpp
@@ -9,8 +7,8 @@ Image\ Splitter.plg
 Debug
 Release
 isplitter.lng
-moc_previewimpl.cpp
 preview.cpp
 preview.h
-moc_preview.cpp
 isplitter.ini
+qt3
+qt2
