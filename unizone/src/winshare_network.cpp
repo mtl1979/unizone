@@ -25,6 +25,7 @@
 #include "ulistview.h"
 #include "downloadimpl.h"
 #include "filethread.h"
+#include "acronymclient.h"
 #include "netclient.h"
 #include "serverclient.h"
 #include "updateclient.h"
@@ -549,6 +550,14 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				page = URLEscape(page);
 				address += page;
 				RunCommand(address);
+			}
+		}
+		else if (CompareCommand(sendText, "/acronym"))
+		{
+			QString acronym = GetParameterString(sendText);
+			if (!acronym.isEmpty())
+			{
+				QueryAcronym(acronym);
 			}
 		}
 			
@@ -2624,6 +2633,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	QString helpText;
 	helpText			+=	tr("Unizone Command Reference");
 	helpText			+=	"\n";
+	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	tr("/acronym [acronym] - search for definitions of acronym");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/action [action] - do something");
 	helpText			+=	"\n\t\t\t\t"; 
