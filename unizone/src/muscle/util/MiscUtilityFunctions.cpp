@@ -580,4 +580,11 @@ status_t DenybbleizeData(const String & nybbleizedText, ByteBuffer & retBuf)
    return B_NO_ERROR;
 }
 
+String Inet_NtoA(uint32 ipAddress)
+{
+   char buf[16];
+   Inet_NtoA(ipAddress, buf);
+   return String(buf);
+}
+
 END_NAMESPACE(muscle);

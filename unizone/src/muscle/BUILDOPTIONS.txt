@@ -7,6 +7,10 @@ of your Makefile to alter muscle's behaviour:
    Tell the Muscle Thread/Mutex/etc classes to prefer to use Qt Threading APIs over Win32 calls
    when both are available.  (By default, Win32 calls are preferred)
 
+-DMUSCLE_PREFER_QT_OVER_WIN32
+   Tell the Muscle Thread/Mutex/etc classes to prefer to use Qt Threading APIs over Win32 calls
+   when both are available.  (By default, Win32 calls are preferred)
+
 -DMUSCLE_ENABLE_MEMORY_PARANOIA=N 
    Put N overwrite-guards before and after each malloc() buffer, watch them for memory corruption
 

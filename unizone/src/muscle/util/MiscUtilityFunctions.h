@@ -196,6 +196,11 @@ status_t NybbleizeData(const ByteBuffer & buf, String & retString);
   */
 status_t DenybbleizeData(const String & nybbleizedText, ByteBuffer & retBuf);
 
+/** A more convenient version of Inet_Ntoa().  Given an IP address, returns a String
+  * representation of that address (e.g. "192.168.0.1").
+  */
+String Inet_NtoA(uint32 ipAddress);
+
 END_NAMESPACE(muscle);
 
 #endif
