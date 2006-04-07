@@ -9,6 +9,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
+class DataNode;
 class StringMatcher;
 
 /** Enumeration of QueryFilter type codes for the included QueryFilter classes */
@@ -66,9 +67,10 @@ public:
 
    /** Must be implemented to return true iff (msg) matches the criterion.
      * @param msg the Message to check
+     * @param optNode The DataNode object the matching is being done on, or NULL if the DataNode is not available.
      * @returns true iff the Messages matches, else false.
      */
-   virtual bool Matches(const Message & msg) const = 0;
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const = 0;
 
    /** Returns true iff we can be instantiated using a Message with the given
      * 'what' code.  Default implementation returns true iff (what) equals the
@@ -79,19 +81,6 @@ public:
 
 /** Type for a reference to a queue of StringMatcher objects. */
 typedef Ref<QueryFilter> QueryFilterRef;
-
-/** Attempts to create and return a QueryFilter object from the given typeCode.
-  * @param typeCode One of the QUERY_FILTER_TYPE_* values enumerated above.
-  * @returns Reference to the new QueryFilter object on success, or a NULL reference on failure.
-  */
-QueryFilterRef InstantiateQueryFilter(uint32 typeCode);
-
-/** Attempts to create, populate, and return a QueryFilter object from the given Message.
-  * @param msg A Message object that was previously filled out by the SaveToArchive() method
-  *            of a QueryFilter object.
-  * @returns Reference to the new QueryFilter object on success, or a NULL reference on failure.
-  */
-QueryFilterRef InstantiateQueryFilter(const Message & msg);
 
 /** This filter tests the 'what' value of the Message. */
 class WhatCodeQueryFilter : public QueryFilter
@@ -110,7 +99,7 @@ public:
 
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
-   virtual bool Matches(const Message & msg) const {return muscleInRange(msg.what, _minWhatCode, _maxWhatCode);}
+   virtual bool Matches(const Message & msg, const DataNode *) const {return muscleInRange(msg.what, _minWhatCode, _maxWhatCode);}
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_WHATCODE;}
 
 private:
@@ -170,7 +159,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_VALUEEXISTS;}
-   virtual bool Matches(const Message & msg) const {const void * junk; return (msg.FindData(GetFieldName(), _typeCode, &junk, NULL) == B_NO_ERROR);}
+   virtual bool Matches(const Message & msg, const DataNode *) const {const void * junk; return (msg.FindData(GetFieldName(), _typeCode, &junk, NULL) == B_NO_ERROR);}
 
    /** Sets the type code that we will look for in the target Message.
      * @param typeCode the type code to look for.  Use B_ANY_TYPE to indicate that you don't care what the type code is.
@@ -224,7 +213,7 @@ public:
 
    virtual uint32 TypeCode() const {return ClassTypeCode;}
 
-   virtual bool Matches(const Message & msg) const
+   virtual bool Matches(const Message & msg, const DataNode *) const
    {
       bool ret = false;
       DataType * temp;
@@ -332,7 +321,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_ANDOR;}
-   virtual bool Matches(const Message & msg) const;
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
 
    /** Set the minimum number of children that must match the target Message in order for this
      * filter to match the target Message.  If the specified number is greater than the number of
@@ -382,7 +371,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_NANDNOT;}
-   virtual bool Matches(const Message & msg) const;
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
 
    /** Set the maximum number of children that may match the target Message in order for this
      * filter to match the target Message.  If the specified number is greater than the number of
@@ -417,7 +406,7 @@ public:
    }
 
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_XOR;}
-   virtual bool Matches(const Message & msg) const;
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
 };
 
 /** This class matches iff the specified sub-Message exists in our target Message,
@@ -439,7 +428,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_MESSAGE;}
-   virtual bool Matches(const Message & msg) const;
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
 
    /** Set the sub-filter to use on the target's sub-Message.
      * @param childFilter Filter to use, or a NULL reference to indicate that any sub-Message found should match. 
@@ -474,7 +463,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_STRING;}
-   virtual bool Matches(const Message & msg) const;
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
 
    /** Set the operator to use.  
      * @param op One of the OP_* values enumerated below.
@@ -550,7 +539,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_RAWDATA;}
-   virtual bool Matches(const Message & msg) const;
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
 
    /** Set the operator to use.  
      * @param op One of the OP_* values enumerated below.
@@ -601,6 +590,61 @@ private:
    uint8 _op;
    uint32 _typeCode;
 };
+
+/** Interface for any object that knows how to instantiate QueryFilter objects */
+class QueryFilterFactory : public RefCountable
+{
+public:
+   QueryFilterFactory() {/* empty */}
+   virtual ~QueryFilterFactory() {/* empty */}
+
+   /** Attempts to create and return a QueryFilter object from the given typeCode.
+     * @param typeCode One of the QUERY_FILTER_TYPE_* values enumerated above.
+     * @returns Reference to the new QueryFilter object on success, or a NULL reference on failure.
+     */
+   virtual QueryFilterRef CreateQueryFilter(uint32 typeCode) const = 0;
+
+   /** Convenience method:  Attempts to create, populate, and return a QueryFilter object from 
+     *                      the given Message, by first calling CreateQueryFilter(msg.what),
+     *                      and then calling SetFromArchive(msg) on the return QueryFilter object.
+     * @param msg A Message object that was previously filled out by the SaveToArchive() method
+     *            of a QueryFilter object.
+     * @returns Reference to the new QueryFilter object on success, or a NULL reference on failure.
+     * @note Do not override this method in subclasses; override CreateQueryFilter(uint32) instead.
+     */
+   QueryFilterRef CreateQueryFilter(const Message & msg) const;
+};
+
+/** This class is MUSCLE's built-in implementation of a QueryFilterFactory.
+  * It knows how to create all of the filter types listed in the QUERY_FILTER_TYPE_*
+  * enum above.
+  */
+class MuscleQueryFilterFactory : public QueryFilterFactory
+{
+public:
+   MuscleQueryFilterFactory() {/* empty */}
+
+   virtual QueryFilterRef CreateQueryFilter(uint32 typeCode) const;
+};
+
+/** Type for a reference to a queue of StringMatcher objects. */
+typedef Ref<QueryFilterFactory> QueryFilterFactoryRef;
+
+/** Returns a reference to the globally installed QueryFilterFactory object
+  * that is used to create QueryFilter objects.  This method is guaranteed
+  * never to return a NULL reference -- even if you call 
+  * SetglobalQueryFilterFactory(QueryFilterFactoryRef()), this method
+  * will fall back to returning a reference to a MuscleQueryFilterFactory
+  * object (which is also what it does by default).
+  */
+QueryFilterFactoryRef GetGlobalQueryFilterFactory();
+
+/** Call this method if you want to install a custom QueryFilterFactory
+  * object as the global QueryFilterFactory.  Calling this method with
+  * a NULL reference will revert the system back to using the default
+  * MuscleQueryFilterFactory object.
+  */
+void SetGlobalQueryFilterFactory(const QueryFilterFactoryRef & newFactory);
 
 END_NAMESPACE(muscle);
 

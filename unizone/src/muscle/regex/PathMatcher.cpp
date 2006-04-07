@@ -86,7 +86,7 @@ status_t PathMatcher :: PutPathsFromMessage(const char * pathFieldName, const ch
       if (optFilterFieldName)
       {
          MessageRef filterMsgRef;
-         if (msg.FindMessage(optFilterFieldName, i, filterMsgRef) == B_NO_ERROR) filter = InstantiateQueryFilter(*filterMsgRef());
+         if (msg.FindMessage(optFilterFieldName, i, filterMsgRef) == B_NO_ERROR) filter = GetGlobalQueryFilterFactory()()->CreateQueryFilter(*filterMsgRef());
       }
       if (PutPathFromString(str, filter, prependIfNoLeadingSlash) != B_NO_ERROR) ret = B_ERROR;
    }
@@ -118,7 +118,7 @@ status_t PathMatcher :: PutPathsFromMatcher(const PathMatcher & matcher)
    return B_NO_ERROR;
 }
 
-bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage) const
+bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage, const DataNode * optNode) const
 {
    TCHECKPOINT;
 
@@ -148,7 +148,7 @@ bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage) c
          if (matched) 
          {
             const QueryFilter * filter = nextValue->GetFilter()();
-            if ((filter == NULL)||(optMessage == NULL)||(filter->Matches(*optMessage))) return true;
+            if ((filter == NULL)||(optMessage == NULL)||(filter->Matches(*optMessage, optNode))) return true;
          }
       }
    }

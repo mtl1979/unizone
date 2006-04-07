@@ -55,10 +55,10 @@ public:
    QueryFilterRef GetFilter() const {return _filter;}
 
    /** Returns true iff we our filter matches the given Message, or if either (optMsg) or our filter is NULL. */
-   bool FilterMatches(const Message * optMsg) const
+   bool FilterMatches(const Message * optMsg, const DataNode * optNode) const
    {
       const QueryFilter * filter = GetFilter()();
-      return ((filter == NULL)||(optMsg == NULL)||(filter->Matches(*optMsg)));
+      return ((filter == NULL)||(optMsg == NULL)||(filter->Matches(*optMsg, optNode)));
    }
 
 private:
@@ -132,8 +132,9 @@ public:
     * Returns true iff the given fully qualified path string matches our query.
     * @param path the path string to check to see if it matches
     * @param optMessage if non-NULL, this Message will be tested by the QueryFilter objects.
+    * @param optNode this DataNode pointer will be passed to the QueryFilter objects.
     */
-   bool MatchesPath(const char * path, const Message * optMessage) const;
+   bool MatchesPath(const char * path, const Message * optMessage, const DataNode * optNode) const;
     
    /**
     * Utility method.

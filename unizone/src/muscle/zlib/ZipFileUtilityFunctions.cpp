@@ -125,7 +125,7 @@ static status_t ReadZipFileAux(zipFile zf, Message & msg, char * nameBuf, uint32
             else
             {
                ByteBufferRef bufRef = GetByteBufferFromPool(fileInfo.uncompressed_size);
-               if ((bufRef() == NULL)||(unzReadCurrentFile(zf, bufRef()->GetBuffer(), bufRef()->GetNumBytes()) != bufRef()->GetNumBytes())) return B_ERROR;
+               if ((bufRef() == NULL)||(unzReadCurrentFile(zf, bufRef()->GetBuffer(), bufRef()->GetNumBytes()) != (int32)bufRef()->GetNumBytes())) return B_ERROR;
 
                if (m->AddFlat(fn, FlatCountableRef(bufRef.GetGeneric(), true)) != B_NO_ERROR) return B_ERROR;
             }

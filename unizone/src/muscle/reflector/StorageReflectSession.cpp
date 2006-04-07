@@ -13,10 +13,11 @@ BEGIN_NAMESPACE(muscle);
 static Message _blankMessage;
 static MessageRef _blankMessageRef(&_blankMessage, false);
 
+static void ResetNodeFunc(DataNode * node, void * /*userData*/) {node->Reset();}
+static DataNodeRef::ItemPool _nodePool(100, ResetNodeFunc);
+
 // field under which we file our shared data in the central-state message
 static const String SRS_SHARED_DATA = "srs_shared";
-
-StorageReflectSession::DataNodeRef::ItemPool StorageReflectSession::_nodePool(100, ResetNodeFunc);
 
 StorageReflectSessionFactory :: StorageReflectSessionFactory() : _maxIncomingMessageSize(MUSCLE_NO_LIMIT)
 {
@@ -438,7 +439,7 @@ SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwri
    return B_NO_ERROR;
 }
 
-StorageReflectSession :: DataNode *
+DataNode *
 StorageReflectSession ::
 GetDataNode(const String & nodePath) const
 {
@@ -591,7 +592,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                {
                   QueryFilterRef filter;
                   MessageRef filterMsgRef;
-                  if (msg.FindMessage(fn, filterMsgRef) == B_NO_ERROR) filter = InstantiateQueryFilter(*filterMsgRef());
+                  if (msg.FindMessage(fn, filterMsgRef) == B_NO_ERROR) filter = GetGlobalQueryFilterFactory()()->CreateQueryFilter(*filterMsgRef());
                   
                   const char * path = &fn[10];
                   String fixPath(path);
@@ -617,11 +618,12 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                      NodePathMatcher temp;
                      if ((temp.PutPathString(fixPath, QueryFilterRef()) == B_NO_ERROR)&&(_subscriptions.PutPathString(fixPath, filter) == B_NO_ERROR)) temp.DoTraversal((PathMatchCallback)DoSubscribeRefCallbackFunc, this, GetGlobalRoot(), false, (void *)1L);
                   }
-                  if (subscribeQuietly == false) 
+                  if ((subscribeQuietly == false)&&(getMsg.AddString(PR_NAME_KEYS, path) == B_NO_ERROR))
                   {
-                     getMsg.AddString(PR_NAME_KEYS, path);
-                     if (filterMsgRef() == NULL) filterMsgRef = GetMessageFromPool();  // separate for Borland
-                     if (filterMsgRef()) getMsg.AddMessage(PR_NAME_FILTERS, filterMsgRef);
+                     // We have to have a filter message to match each string, to prevent "bleed-down" of earlier
+                     // filters matching later strings.  So add a dummy filter Message if we don't have an actual one.
+                     if (filterMsgRef() == NULL) filterMsgRef.SetRef(const_cast<Message *>(&GetEmptyMessage()), false);
+                     (void) getMsg.AddMessage(PR_NAME_FILTERS, filterMsgRef);
                   }
                }
                else if (strcmp(fn, PR_NAME_REFLECT_TO_SELF) == 0)
@@ -1203,8 +1205,8 @@ ChangeQueryFilterCallback(DataNode & node, void * ud)
    const QueryFilter * oldFilter = (const QueryFilter *) args[0];
    const QueryFilter * newFilter = (const QueryFilter *) args[1];
    const Message * msg = node.GetData()();
-   bool oldMatches = ((msg == NULL)||(oldFilter == NULL)||(oldFilter->Matches(*msg)));
-   bool newMatches = ((msg == NULL)||(newFilter == NULL)||(newFilter->Matches(*msg)));
+   bool oldMatches = ((msg == NULL)||(oldFilter == NULL)||(oldFilter->Matches(*msg, &node)));
+   bool newMatches = ((msg == NULL)||(newFilter == NULL)||(newFilter->Matches(*msg, &node)));
    if (oldMatches != newMatches) NodeChangedAux(node, oldMatches);
    return node.GetDepth();  // continue traversal as usual
 }
@@ -1340,413 +1342,6 @@ ReorderDataCallback(DataNode & node, void * userData)
    return node.GetDepth();
 }
 
-
-StorageReflectSession :: DataNode ::
-DataNode() : _children(NULL), _orderedIndex(NULL), _orderedCounter(0L)
-{
-   _subscribers.SetKeyCompareFunction(CStringCompareFunc);
-}
-
-void 
-StorageReflectSession :: DataNode ::
-Init(const char * name, const MessageRef & initData)
-{
-   _nodeName = name;
-   _parent   = NULL;
-   _depth    = 0;
-   _data     = initData;
-}
-
-void
-StorageReflectSession :: DataNode ::
-Reset()
-{
-   TCHECKPOINT;
-
-   if (_children) _children->Clear();
-   if (_orderedIndex) _orderedIndex->Clear();
-   _subscribers.Clear();
-   _parent = NULL;
-   _depth = 0;
-   _data.Reset();
-}
-
-void
-StorageReflectSession :: DataNode :: 
-IncrementSubscriptionRefCount(const char * sessionID, long delta)
-{
-   TCHECKPOINT;
-
-   if (delta > 0)
-   {
-      uint32 res = 0;
-      (void) _subscribers.Get(sessionID, res);
-      (void) _subscribers.Put(sessionID, res+delta);  // I'm not sure how to cleanly handle out-of-mem here??  --jaf
-   }
-   else if (delta < 0)
-   {
-      uint32 res = 0;
-      if (_subscribers.Get(sessionID, res) == B_NO_ERROR)
-      {
-         uint32 decBy = (uint32) -delta;
-         if (decBy >= res) _subscribers.Remove(sessionID);
-                      else (void) _subscribers.Put(sessionID, res - decBy);  // out-of-mem shouldn't be possible
-      }
-   }
-}
-
-HashtableIterator<const char *, uint32> 
-StorageReflectSession :: DataNode ::
-GetSubscribers() const
-{
-   return _subscribers.GetIterator();
-}
-
-status_t
-StorageReflectSession :: DataNode ::
-InsertOrderedChild(const MessageRef & data, const char * optInsertBefore, const char * optNodeName, StorageReflectSession * notifyWithOnSetParent, StorageReflectSession * optNotifyChangedData, Hashtable<String, DataNodeRef> * optRetAdded)
-{
-   TCHECKPOINT;
-
-   if (_orderedIndex == NULL)
-   {
-      _orderedIndex = newnothrow Queue<const char *>;
-      if (_orderedIndex == NULL)
-      {
-         WARN_OUT_OF_MEMORY; 
-         return B_ERROR;
-      }
-   }
-
-   // Find a unique ID string for our new kid
-   char temp[50];
-   if (optNodeName == NULL)
-   {
-      while(true)
-      {
-         sprintf(temp, "I%lu", _orderedCounter++);
-         if (HasChild(temp) == false) break;
-      }
-   }
-
-   DataNode * newNode = notifyWithOnSetParent->GetNewDataNode(optNodeName ? optNodeName : temp, data);
-   if (newNode == NULL)
-   {
-      WARN_OUT_OF_MEMORY; 
-      return B_ERROR;
-   }
-   DataNodeRef dref(newNode);
-
-   uint32 insertIndex = _orderedIndex->GetNumItems();  // default to end of index
-   if ((optInsertBefore)&&(optInsertBefore[0] == 'I'))  // only 'I''s could be in our index!
-   {
-      for (int i=_orderedIndex->GetNumItems()-1; i>=0; i--) 
-      {
-         if (strcmp(optInsertBefore, (*_orderedIndex)[i]) == 0)
-         {
-            insertIndex = i;
-            break;
-         }
-      }
-   }
- 
-   // Update the index
-   if (PutChild(dref, notifyWithOnSetParent, optNotifyChangedData) == B_NO_ERROR)
-   {
-      if (_orderedIndex->InsertItemAt(insertIndex, newNode->GetNodeName()()) == B_NO_ERROR)
-      {
-         String np;
-         if ((optRetAdded)&&(newNode->GetNodePath(np) == B_NO_ERROR)) (void) optRetAdded->Put(np, dref);
-
-         // Notify anyone monitoring this node that the ordered-index has been updated
-         notifyWithOnSetParent->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, insertIndex, newNode->GetNodeName()());
-         return B_NO_ERROR;
-      }
-      else RemoveChild(dref()->GetNodeName()(), notifyWithOnSetParent, false, NULL);  // undo!
-   }
-   return B_ERROR;
-}
-
-status_t
-StorageReflectSession :: DataNode ::
-RemoveIndexEntryAt(uint32 removeIndex, StorageReflectSession * optNotifyWith)
-{
-   TCHECKPOINT;
-
-   if ((_orderedIndex)&&(removeIndex < _orderedIndex->GetNumItems()))
-   {
-      String holdKey = (*_orderedIndex)[removeIndex];      // gotta make a temp copy here, or it's dangling pointer time
-      (void) _orderedIndex->RemoveItemAt(removeIndex);
-      if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYREMOVED, removeIndex, holdKey());
-      return B_NO_ERROR;
-   }
-   return B_ERROR;
-}
-
-status_t
-StorageReflectSession :: DataNode ::
-InsertIndexEntryAt(uint32 insertIndex, StorageReflectSession * notifyWithOnSetParent, const char * key)
-{
-   TCHECKPOINT;
-
-   if (_children)
-   {
-      // Find a string matching (key) but that belongs to an actual child...
-      HashtableIterator<const char *, DataNodeRef> iter(*_children);
-      const char * childKey;
-      if (_children->GetKey(key, childKey) == B_NO_ERROR)
-      {
-         if (_orderedIndex == NULL)
-         {
-            _orderedIndex = newnothrow Queue<const char *>;
-            if (_orderedIndex == NULL) WARN_OUT_OF_MEMORY; 
-         }
-         if ((_orderedIndex)&&(_orderedIndex->InsertItemAt(insertIndex, childKey) == B_NO_ERROR))
-         {
-            // Notify anyone monitoring this node that the ordered-index has been updated
-            notifyWithOnSetParent->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, insertIndex, childKey);
-            return B_NO_ERROR;
-         }
-      }
-   }
-   return B_ERROR;
-}
-
-status_t
-StorageReflectSession :: DataNode ::
-ReorderChild(const DataNode & child, const char * moveToBeforeThis, StorageReflectSession * optNotifyWith)
-{
-   TCHECKPOINT;
-
-   // Only do anything if we have an index, and the node isn't going to be moved to before itself (silly) and (child) can be removed from the index
-   if ((_orderedIndex)&&((moveToBeforeThis == NULL)||(strcmp(moveToBeforeThis, child.GetNodeName()())))&&(RemoveIndexEntry(child.GetNodeName()(), optNotifyWith) == B_NO_ERROR))
-   {
-      // Then re-add him to the index at the appropriate point
-      uint32 targetIndex = _orderedIndex->GetNumItems();  // default to end of index
-      if ((moveToBeforeThis)&&(HasChild(moveToBeforeThis)))
-      {
-         for (int i=_orderedIndex->GetNumItems()-1; i>=0; i--) 
-         { 
-            if (strcmp((*_orderedIndex)[i], moveToBeforeThis) == 0)
-            {
-               targetIndex = i;
-               break; 
-            }
-         }
-      }
-
-      // Now add the child back into the index at his new position
-      if (_orderedIndex->InsertItemAt(targetIndex, child.GetNodeName()()) == B_NO_ERROR)
-      {
-         // Notify anyone monitoring this node that the ordered-index has been updated
-         if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, targetIndex, child.GetNodeName()());
-         return B_NO_ERROR;
-      }
-   }
-   return B_ERROR;
-}
-
-status_t
-StorageReflectSession :: DataNode ::
-PutChild(DataNodeRef & node, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyChangedData)
-{
-   TCHECKPOINT;
-
-   status_t ret = B_ERROR;
-   DataNode * child = node();
-   if (child)
-   {
-      if (_children == NULL) 
-      {
-         _children = newnothrow Hashtable<const char *, DataNodeRef>;
-         if (_children == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
-         _children->SetKeyCompareFunction(CStringCompareFunc);
-      }
-      child->SetParent(this, optNotifyWithOnSetParent);
-      DataNodeRef oldNode;
-      ret = _children->Put(child->_nodeName(), node, oldNode);
-      if ((ret == B_NO_ERROR)&&(optNotifyChangedData))
-      {
-         MessageRef oldData; if (oldNode()) oldData = oldNode()->GetData();
-         optNotifyChangedData->NotifySubscribersThatNodeChanged(*child, oldData, false);
-      }
-   }
-   return ret;
-}
-
-void
-StorageReflectSession :: DataNode ::
-SetParent(DataNode * parent, StorageReflectSession * optNotifyWith)
-{
-   TCHECKPOINT;
-
-   if ((_parent)&&(parent)) LogTime(MUSCLE_LOG_WARNING, "Warning, overwriting previous parent of node [%s]\n", GetNodeName()());
-   _parent = parent;
-   if (_parent == NULL) _subscribers.Clear();
-
-   // Calculate our node's depth into the tree
-   _depth = 0;
-   if (_parent)
-   {
-      // Calculate the total length that our node path string will be
-      const DataNode * node = this;
-      while(node->_parent) 
-      {
-         _depth++;
-         node = node->_parent;
-      }
-      if (optNotifyWith) optNotifyWith->NotifySubscribersOfNewNode(*this);
-   }
-}
-
-const char *
-StorageReflectSession :: DataNode ::
-GetPathClause(uint32 depth) const
-{
-   if (depth <= _depth)
-   {
-      const DataNode * node = this;
-      for (uint32 i=depth; i<_depth; i++) if (node) node = node->_parent;
-      if (node) return node->GetNodeName()();
-   }
-   return NULL;
-}
-
-status_t
-StorageReflectSession :: DataNode ::
-GetNodePath(String & retPath, uint32 startDepth) const
-{
-   TCHECKPOINT;
-
-   // Calculate node path and node depth
-   if (_parent)
-   {
-      // Calculate the total length that our node path string will be
-      uint32 pathLen = 0;
-      {
-         uint32 d = _depth;
-         const DataNode * node = this;
-         while((d-- >= startDepth)&&(node->_parent))
-         {
-            pathLen += 1 + node->_nodeName.Length();  // the 1 is for the slash
-            node = node->_parent;
-         }
-      }
-
-      if ((pathLen > 0)&&(startDepth > 0)) pathLen--;  // for (startDepth>0), there will be no initial slash
-
-      // Might as well make sure we have enough memory to return it, up front
-      if (retPath.Prealloc(pathLen) != B_NO_ERROR) return B_ERROR;
-
-      char * dynBuf = NULL;
-      const uint32 stackAllocSize = 256;
-      char stackBuf[stackAllocSize];      // try to do this without a dynamic allocation...
-      if (pathLen >= stackAllocSize)  // but do a dynamic allocation if we have to (should be rare)
-      {
-         dynBuf = newnothrow_array(char, pathLen+1);
-         if (dynBuf == NULL) 
-         { 
-            WARN_OUT_OF_MEMORY; 
-            return B_ERROR;
-         }
-      }
-
-      char * writeAt = (dynBuf ? dynBuf : stackBuf) + pathLen;  // points to last char in buffer
-      *writeAt = '\0';  // terminate the string first (!)
-      const DataNode * node = this;
-      uint32 d = _depth;
-      while((d >= startDepth)&&(node->_parent))
-      {
-         int len = node->_nodeName.Length();
-         writeAt -= len;
-         memcpy(writeAt, node->_nodeName(), len);
-         if ((startDepth == 0)||(d > startDepth)) *(--writeAt) = '/';
-         node = node->_parent;
-         d--;
-      }
- 
-      retPath = (dynBuf ? dynBuf : stackBuf);
-      delete [] dynBuf;
-   }
-   else retPath = (startDepth == 0) ? "/" : "";
-
-   return B_NO_ERROR;
-}
-
-status_t
-StorageReflectSession :: DataNode ::   
-RemoveChild(const char * key, StorageReflectSession * optNotifyWith, bool recurse, uint32 * optCurrentNodeCount)
-{
-   TCHECKPOINT;
-
-   DataNodeRef childRef;
-   if ((_children)&&(_children->Get(key, childRef) == B_NO_ERROR))
-   {
-      DataNode * child = childRef.GetItemPointer();
-      if (child)
-      {
-         if (recurse)
-         { 
-            while(child->CountChildren() > 0)
-            {
-               DataNodeRefIterator it = child->GetChildIterator();
-               const char * name;
-               it.GetNextKey(name);
-               child->RemoveChild(name, optNotifyWith, recurse, optCurrentNodeCount);
-            }
-         }
-
-         (void) RemoveIndexEntry(key, optNotifyWith);
-         if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeChanged(*child, child->GetData(), true);
-
-         child->SetParent(NULL, optNotifyWith);
-      }
-      if (optCurrentNodeCount) (*optCurrentNodeCount)--;
-      _children->Remove(key, childRef);
-      return B_NO_ERROR;
-   }
-   return B_ERROR;
-}
-
-status_t
-StorageReflectSession :: DataNode ::
-RemoveIndexEntry(const char * key, StorageReflectSession * optNotifyWith)
-{
-   TCHECKPOINT;
-
-   // Update our ordered-node index & notify everyone about the change
-   if ((_orderedIndex)&&(key[0] == 'I'))  // if it doesn't start with I, we know it's not part of our ordered-index!
-   {
-      for (int i=_orderedIndex->GetNumItems()-1; i>=0; i--)
-      {
-         if (strcmp(key, (*_orderedIndex)[i]) == 0)
-         {
-            _orderedIndex->RemoveItemAt(i);
-            if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYREMOVED, i, key);
-            return B_NO_ERROR;
-         }
-      }
-   }
-   return B_ERROR;
-}
-
-void
-StorageReflectSession :: DataNode ::   
-SetData(const MessageRef & data, StorageReflectSession * optNotifyWith, bool isBeingCreated)
-{
-   MessageRef oldData;
-   if (isBeingCreated == false) oldData = _data;
-   _data = data;
-   if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeChanged(*this, oldData, false);
-}
-
-StorageReflectSession :: DataNode ::
-~DataNode() 
-{
-   delete _children;
-   delete _orderedIndex;
-}
-
 bool
 StorageReflectSession :: NodePathMatcher ::
 MatchesNode(DataNode & node, const Message * optData, int rootDepth) const
@@ -1791,7 +1386,7 @@ PathMatches(DataNode & node, const Message * optData, const PathMatcherEntry & e
             break; 
          }
       }
-      if (match) return entry.FilterMatches(optData);
+      if (match) return entry.FilterMatches(optData, &node);
    }
    return false;
 }
@@ -1943,7 +1538,7 @@ CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int 
    return false;
 }
 
-StorageReflectSession::DataNode *
+DataNode *
 StorageReflectSession ::
 GetNewDataNode(const char * name, const MessageRef & initialValue)
 {
@@ -2011,8 +1606,8 @@ JettisonOutgoingResults(const NodePathMatcher * matcher)
                const char * rname;
                while(msg->FindString(PR_NAME_REMOVED_DATAITEMS, nextr, &rname) == B_NO_ERROR)
                {
-                  if (matcher->MatchesPath(rname, NULL)) msg->RemoveData(PR_NAME_REMOVED_DATAITEMS, nextr);
-                                                    else nextr++;
+                  if (matcher->MatchesPath(rname, NULL, NULL)) msg->RemoveData(PR_NAME_REMOVED_DATAITEMS, nextr);
+                                                          else nextr++;
                }
    
                // Remove all matching items from the Message.  (Yes, the iterator can handle this!  :^))
@@ -2025,11 +1620,11 @@ JettisonOutgoingResults(const NodePathMatcher * matcher)
                      MessageRef nextSubMsgRef;
                      for (uint32 j=0; msg->FindMessage(nextFieldName, j, nextSubMsgRef) == B_NO_ERROR; /* empty */)
                      {
-                        if (matcher->MatchesPath(nextFieldName, nextSubMsgRef())) msg->RemoveData(nextFieldName, 0);
-                                                                             else j++;
+                        if (matcher->MatchesPath(nextFieldName, nextSubMsgRef(), NULL)) msg->RemoveData(nextFieldName, 0);
+                                                                                   else j++;
                      }
                   }
-                  else if (matcher->MatchesPath(nextFieldName, NULL)) msg->RemoveName(nextFieldName);
+                  else if (matcher->MatchesPath(nextFieldName, NULL, NULL)) msg->RemoveName(nextFieldName);
                }
             }
             else msg->Clear();

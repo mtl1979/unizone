@@ -12,7 +12,9 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "3.11"
+#define MUSCLE_VERSION_STRING "3.20"
+
+#include <string.h>  /* for memcpy() */
 
 /* Define this if the default FD_SETSIZE is too small for you (i.e. under Windows it's only 64) */
 #if defined(MUSCLE_FD_SETSIZE)
@@ -464,8 +466,13 @@ static inline uint64 MusclePowerPCSwapInt64(uint64 val)
 }
 static inline double MusclePowerPCSwapDouble(double val)
 {
-   uint64 v64 = MusclePowerPCSwapInt64(*((uint64 *)&val));
-   return *((double *)&v64);
+   union {
+      double _dv;
+      uint64 _iv;
+   } u;
+   u._dv = val;
+   u._iv = MusclePowerPCSwapInt64(u._iv);
+   return u._dv;
 }
 #  define B_SWAP_DOUBLE(arg)   MusclePowerPCSwapDouble((double)(arg))
 #  define B_SWAP_FLOAT(arg)    MusclePowerPCSwapFloat((float)(arg))

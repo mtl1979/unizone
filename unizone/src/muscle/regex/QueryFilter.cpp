@@ -87,7 +87,7 @@ status_t MultiQueryFilter :: SetFromArchive(const Message & archive)
    MessageRef next;
    for (uint32 i=0; archive.FindMessage("kid", i, next) == B_NO_ERROR; i++)
    {
-      QueryFilterRef kid = InstantiateQueryFilter(*next());
+      QueryFilterRef kid = GetGlobalQueryFilterFactory()()->CreateQueryFilter(*next());
       if ((kid() == NULL)||(_children.AddTail(kid) != B_NO_ERROR)) return B_ERROR;
    }
    return B_NO_ERROR;
@@ -106,7 +106,7 @@ status_t AndOrQueryFilter :: SetFromArchive(const Message & archive)
    return B_NO_ERROR;
 }
 
-bool AndOrQueryFilter :: Matches(const Message & msg) const
+bool AndOrQueryFilter :: Matches(const Message & msg, const DataNode * optNode) const
 {
    const Queue<QueryFilterRef> & kids = GetChildren();
    uint32 numKids = kids.GetNumItems();
@@ -115,7 +115,7 @@ bool AndOrQueryFilter :: Matches(const Message & msg) const
    for (uint32 i=0; i<numKids; i++)
    {
       const QueryFilter * next = kids[i]();
-      if ((next)&&(next->Matches(msg))&&(++matchCount == threshold)) return true;
+      if ((next)&&(next->Matches(msg, optNode))&&(++matchCount == threshold)) return true;
    }
    return false;
 }
@@ -133,7 +133,7 @@ status_t NandNotQueryFilter :: SetFromArchive(const Message & archive)
    return B_NO_ERROR;
 }
 
-bool NandNotQueryFilter :: Matches(const Message & msg) const
+bool NandNotQueryFilter :: Matches(const Message & msg, const DataNode * optNode) const
 {
    const Queue<QueryFilterRef> & kids = GetChildren();
    uint32 numKids = kids.GetNumItems();
@@ -142,12 +142,12 @@ bool NandNotQueryFilter :: Matches(const Message & msg) const
    for (uint32 i=0; i<numKids; i++)
    {
       const QueryFilter * next = kids[i]();
-      if ((next)&&(next->Matches(msg))&&(++matchCount > threshold)) return false;
+      if ((next)&&(next->Matches(msg, optNode))&&(++matchCount > threshold)) return false;
    }
    return (matchCount < numKids);
 }
 
-bool XorQueryFilter :: Matches(const Message & msg) const
+bool XorQueryFilter :: Matches(const Message & msg, const DataNode * optNode) const
 {
    const Queue<QueryFilterRef> & kids = GetChildren();
    uint32 numKids = kids.GetNumItems();
@@ -155,7 +155,7 @@ bool XorQueryFilter :: Matches(const Message & msg) const
    for (uint32 i=0; i<numKids; i++)
    {
       const QueryFilter * next = kids[i]();
-      if ((next)&&(next->Matches(msg))) matchCount++;
+      if ((next)&&(next->Matches(msg, optNode))) matchCount++;
    }
    return ((matchCount % 2) != 0) ? true : false;
 }
@@ -178,7 +178,7 @@ status_t MessageQueryFilter :: SetFromArchive(const Message & archive)
    MessageRef subMsg;
    if (archive.FindMessage("kid", subMsg) == B_NO_ERROR)
    {
-      _childFilter = InstantiateQueryFilter(*subMsg());
+      _childFilter = GetGlobalQueryFilterFactory()()->CreateQueryFilter(*subMsg());
       if (_childFilter() == NULL) return B_ERROR;
    }
    else _childFilter.Reset();
@@ -186,10 +186,10 @@ status_t MessageQueryFilter :: SetFromArchive(const Message & archive)
    return B_NO_ERROR;
 }
 
-bool MessageQueryFilter :: Matches(const Message & msg) const
+bool MessageQueryFilter :: Matches(const Message & msg, const DataNode * optNode) const
 {
    MessageRef subMsg;
-   return (msg.FindMessage(GetFieldName(), GetIndex(), subMsg) == B_NO_ERROR) ? ((_childFilter() == NULL)||(_childFilter()->Matches(*subMsg()))) : false;
+   return (msg.FindMessage(GetFieldName(), GetIndex(), subMsg) == B_NO_ERROR) ? ((_childFilter() == NULL)||(_childFilter()->Matches(*subMsg(), optNode))) : false;
 }
 
 status_t StringQueryFilter :: SaveToArchive(Message & archive) const
@@ -203,7 +203,7 @@ status_t StringQueryFilter :: SetFromArchive(const Message & archive)
    return ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&(archive.FindString("val", _value) == B_NO_ERROR)) ? archive.FindInt8("op", (int8*)&_op) : B_ERROR;
 }
 
-bool StringQueryFilter :: Matches(const Message & msg) const
+bool StringQueryFilter :: Matches(const Message & msg, const DataNode *) const
 {
    String s;
    if (msg.FindString(GetFieldName(), GetIndex(), s) == B_NO_ERROR)
@@ -298,7 +298,7 @@ status_t RawDataQueryFilter :: SetFromArchive(const Message & archive)
    return B_NO_ERROR;
 }
 
-bool RawDataQueryFilter :: Matches(const Message & msg) const
+bool RawDataQueryFilter :: Matches(const Message & msg, const DataNode *) const
 {
    const uint8 * hisBytes;
    uint32 hisNumBytes;
@@ -373,7 +373,14 @@ const uint8 * RawDataQueryFilter :: Memmem(const uint8 * lookIn, uint32 numLookI
    return NULL;
 }
 
-QueryFilterRef InstantiateQueryFilter(uint32 typeCode)
+QueryFilterRef QueryFilterFactory :: CreateQueryFilter(const Message & msg) const
+{
+   QueryFilterRef ret = CreateQueryFilter(msg.what);
+   if ((ret())&&(ret()->SetFromArchive(msg) != B_NO_ERROR)) ret.Reset();
+   return ret;
+}
+
+QueryFilterRef MuscleQueryFilterFactory :: CreateQueryFilter(uint32 typeCode) const
 {
    QueryFilter * f = NULL;
    switch(typeCode)
@@ -401,11 +408,18 @@ QueryFilterRef InstantiateQueryFilter(uint32 typeCode)
    return QueryFilterRef(f);
 }
 
-QueryFilterRef InstantiateQueryFilter(const Message & msg)
+static MuscleQueryFilterFactory _defaultQueryFilterFactory;
+static QueryFilterFactoryRef _customQueryFilterFactoryRef;
+
+QueryFilterFactoryRef GetGlobalQueryFilterFactory()
 {
-   QueryFilterRef ret = InstantiateQueryFilter(msg.what);
-   if ((ret())&&(ret()->SetFromArchive(msg) != B_NO_ERROR)) ret.Reset();
-   return ret;
+   if (_customQueryFilterFactoryRef()) return _customQueryFilterFactoryRef;
+                                  else return QueryFilterFactoryRef(&_defaultQueryFilterFactory, false);   
+}
+
+void SetGlobalQueryFilterFactory(const QueryFilterFactoryRef & newFactory)
+{
+   _customQueryFilterFactoryRef = newFactory;
 }
 
 END_NAMESPACE(muscle);

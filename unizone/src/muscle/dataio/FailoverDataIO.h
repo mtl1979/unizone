@@ -14,6 +14,9 @@ class FailoverDataIO;
 class IFailoverNotifyTarget
 {
 public:
+   IFailoverNotifyTarget() {/* empty */}
+   virtual ~IFailoverNotifyTarget() {/* empty */}
+
    /** Called by a FailoverDataIO object when a failover occurs.
      * @param source The calling FailoverDataIO object.
      */

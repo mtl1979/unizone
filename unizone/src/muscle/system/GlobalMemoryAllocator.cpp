@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "system/GlobalMemoryAllocator.h"
+#include "system/SetupSystem.h"  // for GetGlobalMuscleLock()
 
 // Metrowerk's compiler crashes at run-time if this memory-tracking
 // code is enabled.  I haven't been able to figure out why (everything
@@ -145,6 +146,16 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
 
    void * userPtr = NULL;
    MemoryAllocator * ma = _globalAllocatorRef();
+
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+   Mutex * glock = ma ? GetGlobalMuscleLock() : NULL;
+   if ((glock)&&(glock->Lock() != B_NO_ERROR))
+   {
+      printf("Error, muscleAlloc() couldn't lock the global muscle lock!\n");
+      return NULL;  // serialize access to (ma)
+   }
+#endif
+
    if ((ma == NULL)||(ma->AboutToAllocate(_currentlyAllocatedBytes, internalSize) == B_NO_ERROR))
    {
       size_t * internalPtr = (size_t *) malloc(internalSize);
@@ -173,6 +184,10 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
       if ((mallocFailed)&&(retryOnFailure)) userPtr = muscleAlloc(userSize, false);
    }
 
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+   if (glock) (void) glock->Unlock();
+#endif
+
    return userPtr;
 }
 
@@ -200,6 +215,16 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
    void * newUserPtr = NULL;
    bool reallocFailed = false;
    MemoryAllocator * ma = _globalAllocatorRef();
+
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+   Mutex * glock = ma ? GetGlobalMuscleLock() : NULL;
+   if ((glock)&&(glock->Lock() != B_NO_ERROR)) 
+   {
+      printf("Error, muscleRealloc() couldn't lock the global muscle lock!\n");
+      return NULL;  // serialize access to (ma)
+   }
+#endif
+
    size_t oldUserSize = CONVERT_INTERNAL_TO_USER_SIZE(oldInternalSize);
    if (newInternalSize > oldInternalSize)
    {
@@ -256,6 +281,11 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
          fflush(stdout);  // make sure this message gets out!
       }
    }
+
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+   if (glock) (void) glock->Unlock();
+#endif
+
    return newUserPtr;
 }
 
@@ -269,12 +299,26 @@ void muscleFree(void * userPtr)
       MemoryParanoiaCheckBuffer(userPtr);
 #endif
 
+      MemoryAllocator * ma = _globalAllocatorRef();
+
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+      Mutex * glock = ma ? GetGlobalMuscleLock() : NULL;
+      if ((glock)&&(glock->Lock() != B_NO_ERROR)) 
+      {
+         printf("Error, muscleFree() couldn't lock the global muscle lock!!!\n");
+         return;  // serialize access to (ma)
+      }
+#endif
+
       size_t * internalPtr = CONVERT_USER_TO_INTERNAL_POINTER(userPtr);
       _currentlyAllocatedBytes -= *internalPtr;
 
-      MemoryAllocator * ma = _globalAllocatorRef();
       if (ma) ma->AboutToFree(_currentlyAllocatedBytes, *internalPtr);
 //printf("-%lu = %lu\n", (uint32)*internalPtr, (uint32)_currentlyAllocatedBytes);
+
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+      if (glock) (void) glock->Unlock();
+#endif
 
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
       memset(internalPtr, MEMORY_PARANOIA_DEALLOCATED_GARBAGE_VALUE, *internalPtr);  // make it obvious this memory was freed by munging it

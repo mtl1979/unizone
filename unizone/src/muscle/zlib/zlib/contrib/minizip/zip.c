@@ -189,12 +189,14 @@ local void init_linkedlist(ll)
     ll->first_block = ll->last_block = NULL;
 }
 
+#ifdef DEFINED_BUT_NOT_USED_SO_COMMENTED_OUT_TO_AVOID_COMPILER_WARNING_JAF
 local void free_linkedlist(ll)
     linkedlist_data* ll;
 {
     free_datablock(ll->first_block);
     ll->first_block = ll->last_block = NULL;
 }
+#endif
 
 
 local int add_data_in_datablock(ll,buf,len)
