@@ -293,7 +293,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 		ScanShares();
 
 	if (fSettings->GetLoginOnStartup())
-		Connect();	// this is the LAST thing to do
+		ExecCommand("/connect");	// this is the LAST thing to do
 
 }
 bool
@@ -800,7 +800,7 @@ WinShareWindow::ServerChanged(const QString & newServer)
 	if (endsWith(fServer, ":2960"))
 		fServer.truncate(fServer.length() - 5); // strip default port
 
-	if (fNetClient->IsConnected())
+	if (fNetClient->IsConnected() || fReconnectTimer->isActive())
 		Connect();
 }
 
