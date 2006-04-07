@@ -2914,6 +2914,10 @@ SOURCE=..\..\src\muscle\dataio\DataIO.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\muscle\reflector\DataNode.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\muscle\reflector\DumbReflectSession.h
 # End Source File
 # Begin Source File
@@ -3241,6 +3245,10 @@ SOURCE=..\..\src\muscle\system\AcceptSocketsThread.cpp
 # Begin Source File
 
 SOURCE=..\..\src\muscle\util\ByteBuffer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\muscle\reflector\DataNode.cpp
 # End Source File
 # Begin Source File
 

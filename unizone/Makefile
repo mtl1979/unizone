@@ -144,6 +144,7 @@ MUSCLE_SRCFILES = \
 	src/muscle/iogateway/RawDataMessageIOGateway.cpp \
 	src/muscle/message/Message.cpp \
 	src/muscle/reflector/AbstractReflectSession.cpp \
+	src/muscle/reflector/DataNode.cpp \
 	src/muscle/reflector/DumbReflectSession.cpp \
 	src/muscle/reflector/FilterSessionFactory.cpp \
 	src/muscle/reflector/RateLimitSessionIOPolicy.cpp \
