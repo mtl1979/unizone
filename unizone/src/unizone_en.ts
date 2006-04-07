@@ -4600,5 +4600,13 @@ Date: %4</translation>
         <source>%1 files</source>
         <translation>%1 files</translation>
     </message>
+    <message>
+        <source>/google [string] - open entry in Google</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>/wiki [string] - open entry in Wikipedia</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>
