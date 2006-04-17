@@ -142,7 +142,7 @@ AcronymClient::Reset()
 void
 AcronymClient::ParseLine(const QString &line)
 {
-	if (line.contains("<td valign=\"middle\" width=\"70%\" bgcolor=\"#DAEBF9\">"))
+	if (line.contains("<td valign=\"middle\" width=\"70"))
 	{
 		QString out(fAcronym);
 		out += ": ";
