@@ -4608,5 +4608,9 @@ Date: %4</translation>
         <source>/wiki [string] - open entry in Wikipedia</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>/acronym [acronym] - search for definitions of acronym</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 </TS>
