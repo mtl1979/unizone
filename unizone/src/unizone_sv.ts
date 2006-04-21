@@ -143,6 +143,17 @@ Version %1</translation>
     </message>
 </context>
 <context>
+    <name>AcronymClient</name>
+    <message>
+        <source>Too many queries!</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>No matches found for "%1".</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
     <name>Channel</name>
     <message>
         <source>Channel Window - %1</source>
@@ -2549,6 +2560,18 @@ Date: %4</translation>
     <message>
         <source>Aqua</source>
         <translation>Aqua</translation>
+    </message>
+    <message>
+        <source>HTTP Proxy:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation type='unfinished'>0</translation>
     </message>
 </context>
 <context>

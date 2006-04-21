@@ -125,6 +125,9 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 		}
 	}
 
+	fHTTPproxy->setText(gWin->fSettings->GetHTTPProxy());
+	fHTTPport->setText(QString::number(gWin->fSettings->GetHTTPPort()));
+
 	fTimeStamps->setChecked(gWin->fSettings->GetTimeStamps());
 	fUserEvents->setChecked(gWin->fSettings->GetUserEvents());
 	fUploads->setChecked(gWin->fSettings->GetUploads());
@@ -314,6 +317,8 @@ WPrefs::OK()
 	gWin->fSettings->SetCheckNewVersions(fNewVersions->isChecked());
 	gWin->fSettings->SetLoginOnStartup(fLoginStartup->isChecked());
 	gWin->fSettings->SetConnection(fBandwidth->currentText());
+	gWin->fSettings->SetHTTPProxy(fHTTPproxy->text());
+	gWin->fSettings->SetHTTPPort(fHTTPport->text().toUInt());
 	gWin->fSettings->SetFirewalled(fFireWalled->isChecked());
 	gWin->fSettings->SetBinkyNuke(fBinkyNuke->isChecked());
 	gWin->fSettings->SetBlockDisconnected(fBlockDisconnected->isChecked());

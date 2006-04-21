@@ -8,6 +8,7 @@
 #include "winsharewindow.h"
 #include "version.h"
 #include "resolver.h"
+#include "settings.h"
 #include "tokenizer.h"
 #include "util.h"
 #include "wstring.h"
@@ -85,6 +86,11 @@ ServerClient::SessionConnected(const String & /* sessionID */)
 		cmd << UZ_MinorVersion();
 		cmd << "\nHost: ";
 		cmd << fHostName;
+		if (fHostPort != 80)
+		{
+			cmd << ":";
+			cmd << (long) fHostPort;
+		}
 		cmd << "\n\n";
 		msgref()->AddString(PR_NAME_TEXT_LINE, cmd);
 		qmtt->SendMessageToSessions(msgref);
@@ -119,7 +125,17 @@ status_t
 ServerClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
 {
 	fHostName = targetHostName;
-	return qmtt->AddNewConnectSession(ResolveAddress(targetHostName), port, optSessionRef);
+	fHostPort = port;
+	uint32 _port;
+	if ((_port = gWin->Settings()->GetHTTPPort()) == 0)
+	{
+		return qmtt->AddNewConnectSession(ResolveAddress(targetHostName), port, optSessionRef);
+	}
+	else
+	{
+		QString proxy = gWin->Settings()->GetHTTPProxy();
+		return qmtt->AddNewConnectSession(ResolveAddress(proxy), _port, optSessionRef);
+	}
 }
 
 void 

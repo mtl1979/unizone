@@ -6,6 +6,7 @@
 #include "version.h"
 #include "wsystemevent.h"
 #include "resolver.h"
+#include "settings.h"
 #include "util.h"
 #include "wstring.h"
 
@@ -69,6 +70,11 @@ UpdateClient::SessionConnected(const String & /* sessionID */)
 		cmd << UZ_MinorVersion();
 		cmd << "\nHost: ";
 		cmd << fHostName;
+		if (fHostPort != 80)
+		{
+			cmd << ":";
+			cmd << (long) fHostPort;
+		}
 		cmd << "\n\n";
 		ref()->AddString(PR_NAME_TEXT_LINE, cmd);
 		qmtt->SendMessageToSessions(ref);
@@ -160,7 +166,17 @@ status_t
 UpdateClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
 {
 	fHostName = targetHostName;
-	return qmtt->AddNewConnectSession(ResolveAddress(targetHostName), port, optSessionRef);
+	fHostPort = port;
+	uint32 _port;
+	if ((_port = gWin->Settings()->GetHTTPPort()) == 0)
+	{
+		return qmtt->AddNewConnectSession(ResolveAddress(targetHostName), port, optSessionRef);
+	}
+	else
+	{
+		QString proxy = gWin->Settings()->GetHTTPProxy();
+		return qmtt->AddNewConnectSession(ResolveAddress(proxy), _port, optSessionRef);
+	}
 }
 
 void 

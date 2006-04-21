@@ -39,6 +39,7 @@ private:
 
 	QMessageTransceiverThread *qmtt;
 	String fHostName;
+	uint32 fHostPort;
 };
 
 #endif

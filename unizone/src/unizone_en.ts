@@ -159,6 +159,17 @@ Version %1</translation>
     </message>
 </context>
 <context>
+    <name>AcronymClient</name>
+    <message>
+        <source>Too many queries!</source>
+        <translation>Too many queries!</translation>
+    </message>
+    <message>
+        <source>No matches found for "%1".</source>
+        <translation>No matches found for "%1".</translation>
+    </message>
+</context>
+<context>
     <name>Channel</name>
     <message>
         <source>Channel Window - %1</source>
@@ -2678,6 +2689,18 @@ Date: %4</translation>
         <source>Aqua</source>
         <translation>Aqua</translation>
     </message>
+    <message>
+        <source>HTTP Proxy:</source>
+        <translation>HTTP Proxy:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Port:</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -4602,11 +4625,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>/google [string] - open entry in Google</source>
-        <translation type='unfinished'></translation>
+        <translation>/google [string] - open entry in Google</translation>
     </message>
     <message>
         <source>/wiki [string] - open entry in Wikipedia</source>
-        <translation type='unfinished'></translation>
+        <translation>/wiki [string] - open entry in Wikipedia</translation>
+    </message>
+    <message>
+        <source>/acronym [acronym] - search for definitions of acronym</source>
+        <translation>/acronym [acronym] - search for definitions of acronym</translation>
     </message>
     <message>
         <source>/acronym [acronym] - search for definitions of acronym</source>

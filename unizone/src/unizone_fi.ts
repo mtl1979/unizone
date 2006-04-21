@@ -187,6 +187,17 @@ Versio %1</translation>
     </message>
 </context>
 <context>
+    <name>AcronymClient</name>
+    <message>
+        <source>Too many queries!</source>
+        <translation>Liian monta kyselyä!</translation>
+    </message>
+    <message>
+        <source>No matches found for "%1".</source>
+        <translation>Ei tuloksia kyselylle "%1".</translation>
+    </message>
+</context>
+<context>
     <name>Channel</name>
     <message>
         <source>Channel Window - %1</source>
@@ -2810,6 +2821,18 @@ Päiväys: %4</translation>
         <source>Aqua</source>
         <translation>Aqua</translation>
     </message>
+    <message>
+        <source>HTTP Proxy:</source>
+        <translation>HTTP Välityspalvelin:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Portti:</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -4750,11 +4773,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>/google [string] - open entry in Google</source>
-        <translation type='unfinished'></translation>
+        <translation>/google [teksti] - hae tekstiä Googlella</translation>
     </message>
     <message>
         <source>/wiki [string] - open entry in Wikipedia</source>
-        <translation type='unfinished'></translation>
+        <translation>/wiki [teksti] - Etsi teksti Wikipediasta</translation>
+    </message>
+    <message>
+        <source>/acronym [acronym] - search for definitions of acronym</source>
+        <translation>/acronym [akronyymi] - etsi akronyymin määritelmät</translation>
     </message>
     <message>
         <source>/acronym [acronym] - search for definitions of acronym</source>

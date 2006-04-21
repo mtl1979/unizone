@@ -38,6 +38,8 @@ using namespace muscle;
 #define AUTOCLEAR			"autoclear"
 #define MULTICOLOR			"multicolor"
 #define CONNECTION			"connection"
+#define HTTPPROXY           "httpproxy"
+#define HTTPPORT            "httpport"
 #define TIME_STAMPS			"timestamps"
 #define USER_EVENTS			"userevents"
 #define UPLOADS				"uploads"
@@ -233,6 +235,10 @@ public:
 
 	void SetConnection(const QString & str);
 	QString GetConnection() const;
+	void SetHTTPProxy(const QString & str);
+	QString GetHTTPProxy() const;
+	void SetHTTPPort(uint32 port);
+	uint32 GetHTTPPort() const;
 	void SetEncoding(const QString & server, uint16 port, uint32 encoding);
 	uint32 GetEncoding(const QString & server, uint16 port) const;
 	void SetMaxUsers(const QString & server, uint16 port, uint32 users);

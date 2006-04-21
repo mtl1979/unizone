@@ -27,7 +27,8 @@ public:
 	void Reset();
 	status_t StartInternalThread(); 
 	status_t AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef);
-
+	status_t AddNewConnectSession(const QString & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef);
+	
 private slots:
 
 	void SessionConnected(const String & sessionID);
@@ -35,12 +36,14 @@ private slots:
 	void MessageReceived(const MessageRef & msg, const String & sessionID);
 
 private:
+	status_t AddNewConnectSession(uint32 targetIP, uint16 port, AbstractReflectSessionRef optSessionRef);
 
 	void ParseLine(const QString &line);
 	QMessageTransceiverThread *qmtt;
 	QString fAcronym;
 	int fPage;
 	String fHostName;
+	uint32 fHostPort;
 };
 
 void QueryAcronym(const QString &q, int page = 1);

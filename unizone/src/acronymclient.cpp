@@ -6,6 +6,7 @@
 #include "version.h"
 #include "wsystemevent.h"
 #include "resolver.h"
+#include "settings.h"
 #include "util.h"
 #include "wstring.h"
 
@@ -92,6 +93,11 @@ AcronymClient::SessionConnected(const String & /* sessionID */)
 		cmd << UZ_MinorVersion();
 		cmd << "\nHost: ";
 		cmd << fHostName;
+		if (fHostPort != 80)
+		{
+			cmd << ":";
+			cmd << (long) fHostPort;
+		}
 		cmd << "\n\n";
 		ref()->AddString(PR_NAME_TEXT_LINE, cmd);
 		qmtt->SendMessageToSessions(ref);
@@ -129,7 +135,22 @@ status_t
 AcronymClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
 {
 	fHostName = targetHostName;
-	return qmtt->AddNewConnectSession(ResolveAddress(targetHostName), port, optSessionRef);
+	fHostPort = port;
+	return AddNewConnectSession(ResolveAddress(targetHostName), port, optSessionRef);
+}
+
+status_t 
+AcronymClient::AddNewConnectSession(const QString & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
+{
+	fHostName = targetHostName.local8Bit();
+	fHostPort = port;
+	return AddNewConnectSession(ResolveAddress(targetHostName), port, optSessionRef);
+}
+
+status_t
+AcronymClient::AddNewConnectSession(uint32 targetIP, uint16 port, AbstractReflectSessionRef optSessionRef)
+{
+	return qmtt->AddNewConnectSession(targetIP, port, optSessionRef);
 }
 
 void 
@@ -166,19 +187,36 @@ AcronymClient::ParseLine(const QString &line)
 				ParseLine(line.mid(np));
 			}
 		}
+	} else if (line.contains("HTTP/1.1 302"))
+	{
+		ErrorEvent(gWin, tr("Too many queries!"));
+	} else if (line.contains("no matches for"))
+	{
+		ErrorEvent(gWin, tr("No matches found for \"%1\".").arg(fAcronym));
 	}
 }
 
 void
 QueryAcronym(const QString &q, int page)
 {
+	static QString server = "www.acronymfinder.com";
+
 	AbstractReflectSessionRef acref(new ThreadWorkerSession());
 	acref()->SetGateway(AbstractMessageIOGatewayRef(new PlainTextMessageIOGateway));
 	AcronymClient *ac = GetAcronymFromPool();
 	ac->SetAcronym(q);
 	ac->SetPage(page);
 	ac->StartInternalThread();
-	ac->AddNewConnectSession("www.acronymfinder.com", 80, acref);
+	uint32 port;
+	if ((port = gWin->Settings()->GetHTTPPort()) == 0)
+	{
+		ac->AddNewConnectSession(server, 80, acref);
+	}
+	else
+	{
+		QString proxy = gWin->Settings()->GetHTTPProxy();
+		ac->AddNewConnectSession(proxy, port, acref);
+	}
 }
 
 Queue<AcronymClient *> AcronymPool;

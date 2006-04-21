@@ -609,6 +609,34 @@ WSettings::GetConnection() const
 	return str;
 }
 
+void
+WSettings::SetHTTPProxy(const QString &str)
+{
+	fSet()->ReplaceString(true, HTTPPROXY, (const char *)str.utf8());
+}
+
+QString
+WSettings::GetHTTPProxy() const
+{
+	QString str;
+	GetStringFromMessage(fSet, HTTPPROXY, str);
+	return str;
+}
+
+void
+WSettings::SetHTTPPort(uint32 port)
+{
+	fSet()->ReplaceInt32(true, HTTPPORT, port);
+}
+
+uint32
+WSettings::GetHTTPPort() const
+{
+	uint32 p = 0;
+	fSet()->FindInt32(HTTPPORT, (int32 *) &p);
+	return p;
+}
+
 void 
 WSettings::SetEncoding(const QString & server, uint16 port, uint32 encoding)
 {
