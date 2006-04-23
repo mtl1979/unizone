@@ -265,7 +265,7 @@ private:
 	friend class ResolverThread;
 
 	mutable NetClient * fNetClient;
-	mutable ServerClient * fServerThread;	// used to get latest servers from beshare.tycomsystems.com
+	mutable ServerClient * fServerThread;	// used to get latest servers from www.raasu.org
 	mutable UpdateClient * fUpdateThread;	// used to get latest version information from www.raasu.org
 
 	mutable QAcceptSocketsThread * fAccept;
