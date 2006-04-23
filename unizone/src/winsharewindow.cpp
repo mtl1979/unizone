@@ -210,7 +210,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 		if (fServerThread->StartInternalThread() == B_OK)
 		{
 			PRINT("Server check thread started\n");
-			if (fServerThread->AddNewConnectSession("beshare.tycomsystems.com", 80, scref) != B_OK)
+			if (fServerThread->AddNewConnectSession("www.raasu.org", 80, scref) != B_OK)
 			{
 				PRINT("Failed to add new session to server check thread\n");
 				fServerThread->Reset();
@@ -1003,7 +1003,7 @@ WinShareWindow::InitGUI()
 	// <postmaster@raasu.org> 20020924
 
 	fUserList->insertItem("Unizone Binky");
-	fServerList->insertItem("beshare.tycomsystems.com");
+	fServerList->insertItem("synthesis.dyndns.org");
 	fStatusList->insertItem("here");
 	fStatusList->insertItem("away");
 
