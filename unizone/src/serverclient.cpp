@@ -89,7 +89,7 @@ ServerClient::SessionConnected(const String & /* sessionID */)
 		if (fHostPort != 80)
 		{
 			cmd << ":";
-			cmd << (long) fHostPort;
+			cmd << (int) fHostPort;
 		}
 		cmd << "\n\n";
 		msgref()->AddString(PR_NAME_TEXT_LINE, cmd);
