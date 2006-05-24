@@ -288,10 +288,12 @@ WHTMLView::UpdateScrollState()
 	if (fScrollX > contentsX() || fScrollY > contentsY())
 	{
 		setContentsPos(fScrollX, QMIN(fScrollY, contentsHeight()));
+#if (QT_VERSION < 0x030000)
 		repaintContents(
 							contentsX(), contentsY(),
 							contentsWidth(), contentsHeight(),
 							false);
+#endif
 		if (fScrollY <= contentsHeight())
 			fScrollY = -1;
 	}
