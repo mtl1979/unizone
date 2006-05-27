@@ -259,7 +259,7 @@ SOURCE=..\..\..\src\wutil.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=..\..\src\isplitter.pro
+SOURCE=..\..\src\qt2\isplitter.pro
 # End Source File
 # Begin Source File
 

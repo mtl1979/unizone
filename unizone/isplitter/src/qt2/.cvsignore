@@ -1,0 +1,6 @@
+moc_menubar.cpp
+moc_previewimpl.cpp
+mainwindow.cpp
+mainwindow.h
+moc_mainwindow.cpp
+moc_mainwindowimpl.cpp
