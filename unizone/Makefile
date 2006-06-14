@@ -13,7 +13,7 @@ INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/unix -Isrc/muscle \
 	-Isrc/muscle/reflector -Isrc/muscle/regex -Isrc/muscle/util \
 	-Isrc/muscle/syslog -Isrc/muscle/system
 GCCOPTFLAGS = $(INCLUDES)  \
-	-DBETA -DQT_DLL -O2
+	-DBETA -DQT_DLL -O2 -fno-strict-aliasing
 KERNEL_NAME := $(shell uname -s || true)
 
 ifeq ($(KERNEL_NAME), Linux)
@@ -432,7 +432,7 @@ src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
 
 clean-aux:
 	@rm -f *.o *.a $(EXECUTABLES)
-	@find src -name \*.o | xargs rm
+	@find src -name \*.o | xargs -ifile rm file
 	@rm -f $(MOC_SRCFILES)
 	@rm -f $(MUSCLEMOC_SRCFILES)
 	@rm -f $(UIC_SRCFILES)

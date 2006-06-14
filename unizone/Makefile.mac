@@ -435,7 +435,7 @@ src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
 
 clean-aux:
 	@rm -f *.o *.a $(EXECUTABLES)
-	@find src -name \*.o | xargs rm
+	@find src -name \*.o | xargs rm -ifile file
 	@rm -f $(MOC_SRCFILES)
 	@rm -f $(MUSCLEMOC_SRCFILES)
 	@rm -f $(UIC_SRCFILES)
