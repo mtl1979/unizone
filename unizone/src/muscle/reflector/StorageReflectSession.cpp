@@ -525,9 +525,13 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
             {
                if (msg.HasName(PR_NAME_KEYS, B_STRING_TYPE)) 
                {
+                  int32 maxDepth = -1;  (void) msg.FindInt32(PR_NAME_MAXDEPTH, &maxDepth);
+
                   NodePathMatcher matcher;
                   matcher.PutPathsFromMessage(PR_NAME_KEYS, PR_NAME_FILTERS, msg, DEFAULT_PATH_PREFIX);
-                  matcher.DoTraversal((PathMatchCallback)GetSubtreesCallbackFunc, this, GetGlobalRoot(), true, reply());
+
+                  void * args[] = {reply(), (void *)maxDepth};
+                  matcher.DoTraversal((PathMatchCallback)GetSubtreesCallbackFunc, this, GetGlobalRoot(), true, args);
                }
                MessageReceivedFromSession(*this, reply, NULL);  // send the result back to our client
             }
@@ -1174,9 +1178,13 @@ KickClientCallback(DataNode & node, void * /*userData*/)
 
 int
 StorageReflectSession ::
-GetSubtreesCallback(DataNode & node, void * userData)
+GetSubtreesCallback(DataNode & node, void * ud)
 {
    TCHECKPOINT;
+
+   void ** args    = (void **)ud;
+   Message * reply = (Message *) args[0];
+   int32 maxDepth  = (int32) args[1];
 
    bool inMyOwnSubtree = false;  // default:  actual value will only be calculated if it makes a difference
    bool reflectToSelf = GetReflectToSelf();
@@ -1192,7 +1200,7 @@ GetSubtreesCallback(DataNode & node, void * userData)
    {
       MessageRef subMsg = GetMessageFromPool();
       String nodePath;
-      if ((subMsg() == NULL)||(node.GetNodePath(nodePath) != B_NO_ERROR)||(((Message*)userData)->AddMessage(nodePath, subMsg) != B_NO_ERROR)||(SaveNodeTreeToMessage(*subMsg(), &node, "", true) != B_NO_ERROR)) return 0;
+      if ((subMsg() == NULL)||(node.GetNodePath(nodePath) != B_NO_ERROR)||(reply->AddMessage(nodePath, subMsg) != B_NO_ERROR)||(SaveNodeTreeToMessage(*subMsg(), &node, "", true, (maxDepth>=0)?(uint32)maxDepth:MUSCLE_NO_LIMIT) != B_NO_ERROR)) return 0;
    }
    return node.GetDepth();  // continue traversal as usual
 }
@@ -1683,13 +1691,13 @@ StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const Strin
 
 // Recursive helper function
 status_t
-StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * node, const String & path, bool saveData) const
+StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * node, const String & path, bool saveData, uint32 maxDepth) const
 {
    TCHECKPOINT;
 
    if ((saveData)&&(msg.AddMessage(PR_NAME_NODEDATA, node->GetData()) != B_NO_ERROR)) return B_NO_ERROR;
    
-   if (node->CountChildren() > 0)
+   if ((node->CountChildren() > 0)&&(maxDepth > 0))
    {
       // Save the node-index, if there is one
       const Queue<const char *> * index = node->GetIndex();
@@ -1706,21 +1714,23 @@ StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * n
       }
 
       // Then save the children, recursing to each one as necessary
-      MessageRef childrenMsgRef(GetMessageFromPool());
-      if ((childrenMsgRef() == NULL)||(msg.AddMessage(PR_NAME_NODECHILDREN, childrenMsgRef) != B_NO_ERROR)) return B_ERROR;
-      DataNodeRefIterator childIter = node->GetChildIterator();
-      DataNodeRef nextChildRef;
-      while(childIter.GetNextValue(nextChildRef) == B_NO_ERROR) 
       {
-         DataNode * child = nextChildRef();
-         if (child)
+         MessageRef childrenMsgRef(GetMessageFromPool());
+         if ((childrenMsgRef() == NULL)||(msg.AddMessage(PR_NAME_NODECHILDREN, childrenMsgRef) != B_NO_ERROR)) return B_ERROR;
+         DataNodeRefIterator childIter = node->GetChildIterator();
+         DataNodeRef nextChildRef;
+         while(childIter.GetNextValue(nextChildRef) == B_NO_ERROR) 
          {
-            String childPath(path);
-            if (childPath.Length() > 0) childPath += '/';
-            childPath += child->GetNodeName();
+            DataNode * child = nextChildRef();
+            if (child)
+            {
+               String childPath(path);
+               if (childPath.Length() > 0) childPath += '/';
+               childPath += child->GetNodeName();
 
-            MessageRef childMsgRef(GetMessageFromPool());
-            if ((childMsgRef() == NULL)||(childrenMsgRef()->AddMessage(child->GetNodeName(), childMsgRef) != B_NO_ERROR)||(SaveNodeTreeToMessage(*childMsgRef(), child, childPath, true) != B_NO_ERROR)) return B_ERROR;
+               MessageRef childMsgRef(GetMessageFromPool());
+               if ((childMsgRef() == NULL)||(childrenMsgRef()->AddMessage(child->GetNodeName(), childMsgRef) != B_NO_ERROR)||(SaveNodeTreeToMessage(*childMsgRef(), child, childPath, true, maxDepth-1) != B_NO_ERROR)) return B_ERROR;
+            }
          }
       }
    }
@@ -1728,7 +1738,7 @@ StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * n
 }
 
 status_t
-StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex)
+StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex, uint32 maxDepth)
 {
    TCHECKPOINT;
 
@@ -1740,7 +1750,7 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
    }
 
    MessageRef childrenRef;
-   if ((msg.FindMessage(PR_NAME_NODECHILDREN, childrenRef) == B_NO_ERROR)&&(childrenRef()))
+   if ((maxDepth > 0)&&(msg.FindMessage(PR_NAME_NODECHILDREN, childrenRef) == B_NO_ERROR)&&(childrenRef()))
    {
       // First recurse to the indexed nodes, adding them as indexed children
       Hashtable<const char *, uint32> indexLookup;
@@ -1758,7 +1768,7 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
                   String childPath(path);
                   if (childPath.Length() > 0) childPath += '/';
                   childPath += nextFieldName;
-                  if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true, true) != B_NO_ERROR) return B_ERROR;
+                  if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true, true, maxDepth-1) != B_NO_ERROR) return B_ERROR;
                   if (indexLookup.Put(nextFieldName, i) != B_NO_ERROR) return B_ERROR;
                }
             }
@@ -1779,7 +1789,7 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
                   String childPath(path);
                   if (childPath.Length() > 0) childPath += '/';
                   childPath += nextFieldName;
-                  if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true) != B_NO_ERROR) return B_ERROR;
+                  if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true, false, maxDepth-1) != B_NO_ERROR) return B_ERROR;
                }
             }
          }

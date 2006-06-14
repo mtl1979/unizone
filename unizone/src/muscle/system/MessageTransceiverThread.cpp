@@ -77,7 +77,7 @@ status_t MessageTransceiverThread :: AddNewSession(int socket, const AbstractRef
    {
       AbstractReflectSessionRef sRef = sessionRef;
       if (sRef() == NULL) sRef.SetRef(CreateDefaultWorkerSession());
-      return (sRef()) ? (IsInternalThreadRunning() ? SendAddNewSessionMessage(sRef, socket, NULL, 0, 0) : _server->AddNewSession(sRef, socket)) : B_ERROR;
+      return (sRef()) ? (IsInternalThreadRunning() ? SendAddNewSessionMessage(sRef, socket, NULL, 0, 0, false) : _server->AddNewSession(sRef, socket)) : B_ERROR;
    }
    return B_ERROR;
 }
@@ -88,12 +88,12 @@ status_t MessageTransceiverThread :: AddNewConnectSession(uint32 targetIPAddress
    {
       AbstractReflectSessionRef sRef = sessionRef;
       if (sRef() == NULL) sRef.SetRef(CreateDefaultWorkerSession());
-      return (sRef()) ? (IsInternalThreadRunning() ? SendAddNewSessionMessage(sRef, -1, NULL, targetIPAddress, port) : _server->AddNewConnectSession(sRef, targetIPAddress, port)) : B_ERROR;
+      return (sRef()) ? (IsInternalThreadRunning() ? SendAddNewSessionMessage(sRef, -1, NULL, targetIPAddress, port, false) : _server->AddNewConnectSession(sRef, targetIPAddress, port)) : B_ERROR;
    }
    return B_ERROR;
 }
 
-status_t MessageTransceiverThread :: AddNewConnectSession(const String & targetHostName, uint16 port, const AbstractReflectSessionRef & sessionRef)
+status_t MessageTransceiverThread :: AddNewConnectSession(const String & targetHostName, uint16 port, const AbstractReflectSessionRef & sessionRef, bool expandLocalhost)
 {
    if (EnsureServerAllocated() == B_NO_ERROR)
    {
@@ -101,13 +101,10 @@ status_t MessageTransceiverThread :: AddNewConnectSession(const String & targetH
       if (sRef() == NULL) sRef.SetRef(CreateDefaultWorkerSession());
       if (sRef())
       {
-         if (IsInternalThreadRunning())
-         {
-            return SendAddNewSessionMessage(sRef, -1, targetHostName(), 0, port);
-         }
+         if (IsInternalThreadRunning()) return SendAddNewSessionMessage(sRef, -1, targetHostName(), 0, port, expandLocalhost);
          else
          {
-            uint32 ip = GetHostByName(targetHostName());
+            uint32 ip = GetHostByName(targetHostName(), expandLocalhost);
             return (ip > 0) ? _server->AddNewConnectSession(sRef, ip, port) : B_ERROR;
          }
       }
@@ -115,7 +112,7 @@ status_t MessageTransceiverThread :: AddNewConnectSession(const String & targetH
    return B_ERROR;
 }
 
-status_t MessageTransceiverThread :: SendAddNewSessionMessage(const AbstractReflectSessionRef & sessionRef, int socket, const char * hostName, uint32 hostIP, uint16 port)
+status_t MessageTransceiverThread :: SendAddNewSessionMessage(const AbstractReflectSessionRef & sessionRef, int socket, const char * hostName, uint32 hostIP, uint16 port, bool expandLocalhost)
 {
    MessageRef msgRef(GetMessageFromPool(MTT_COMMAND_ADD_NEW_SESSION));
    SocketHolderRef socketRef((socket >= 0) ? newnothrow SocketHolder(socket) : NULL);
@@ -125,6 +122,7 @@ status_t MessageTransceiverThread :: SendAddNewSessionMessage(const AbstractRefl
        ((hostName == NULL)||(msgRef()->AddString(MTT_NAME_HOSTNAME,  hostName)               == B_NO_ERROR))&&
        ((hostIP   == 0)   ||(msgRef()->AddInt32(MTT_NAME_IP_ADDRESS, hostIP)                 == B_NO_ERROR))&&
        ((port     == 0)   ||(msgRef()->AddInt16(MTT_NAME_PORT,       port)                   == B_NO_ERROR))&&
+       ((expandLocalhost == false)||(msgRef()->AddBool(MTT_NAME_EXPANDLOCALHOST, true)       == B_NO_ERROR))&&
        ((socket   < 0)    ||(msgRef()->AddTag(MTT_NAME_SOCKET,       socketRef.GetGeneric()) == B_NO_ERROR))&&
        (SendMessageToInternalThread(msgRef) == B_NO_ERROR)) return B_NO_ERROR;
 
@@ -597,6 +595,7 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
                   const char * hostName;
                   uint32 hostIP;
                   uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, (int16*) &port);
+                  bool expandLocalhost = false; (void) msg->FindBool(MTT_NAME_EXPANDLOCALHOST, &expandLocalhost);
 
                   GenericRef genericRef;
                   if (msg->FindTag(MTT_NAME_SOCKET, genericRef) == B_NO_ERROR)
@@ -610,7 +609,7 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
                      else LogTime(MUSCLE_LOG_ERROR, "ThreadSupervisorSession: Couldn't get SocketHolder!\n");
                   }
                   else if (msg->FindInt32(MTT_NAME_IP_ADDRESS, (int32*)&hostIP)  == B_NO_ERROR) (void) AddNewWorkerConnectSession(sessionRef, hostIP, port);
-                  else if (msg->FindString(MTT_NAME_HOSTNAME, &hostName)         == B_NO_ERROR) (void) AddNewWorkerConnectSession(sessionRef, GetHostByName(hostName), port);
+                  else if (msg->FindString(MTT_NAME_HOSTNAME, &hostName)         == B_NO_ERROR) (void) AddNewWorkerConnectSession(sessionRef, GetHostByName(hostName, expandLocalhost), port);
                }
                else LogTime(MUSCLE_LOG_ERROR, "ThreadSupervisorSession:  Couldn't get Session!\n");
             }

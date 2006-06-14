@@ -29,9 +29,13 @@ const uint32 broadcastIP = ((uint32)-1);
   * performs a hostname lookup and returns the 4-byte IP address that corresponds
   * with that name.
   * @param name ASCII IP address or hostname to look up.
+  * @param expandLocalhost If true, then if (name) corresponds to 127.0.0.1, this function
+  *                        will attempt to determine the host machine's actual primary IP
+  *                        address and return that instead.  Otherwise, 127.0.0.1 will be
+  *                        returned in this case.  Defaults to false.
   * @return The 4-byte IP address (local endianness), or 0 on failure.
   */
-uint32 GetHostByName(const char * name);
+uint32 GetHostByName(const char * name, bool expandLocalhost = false);
 
 /** Convenience function for connecting with TCP to a given hostName/port.
  * @param hostName The ASCII host name or ASCII IP address of the computer to connect to.
@@ -41,9 +45,13 @@ uint32 GetHostByName(const char * name);
  * @param maxConnectTime The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
  *                       (the default) then no particular time limit will be enforced, and it will be left up to the operating system
  *                       to decide when the attempt should time out.
+ * @param expandLocalhost If true, then if (name) corresponds to 127.0.0.1, this function
+ *                        will attempt to determine the host machine's actual primary IP
+ *                        address and return that instead.  Otherwise, 127.0.0.1 will be
+ *                        returned in this case.  Defaults to false.
  * @return the non-negative sockfd if the connection is successful, -1 if the connection attempt failed.
  */
-int Connect(const char * hostName, uint16 port, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectTime = MUSCLE_TIME_NEVER);
+int Connect(const char * hostName, uint16 port, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectTime = MUSCLE_TIME_NEVER, bool expandLocalhost = false);
 
 /** Mostly as above, only with the target IP address specified numerically, rather than as an ASCII string. 
  *  This version of connect will never do a DNS lookup.
@@ -184,9 +192,13 @@ uint32 Inet_AtoN(const char * buf);
 
 /** Reurns the IP address that the given socket is connected to.
  *  @param socket The socket descriptor to find out info about.
+ *  @param expandLocalhost If true, then if the peer's ip address is reported as 127.0.0.1, this 
+ *                         function will attempt to determine the host machine's actual primary IP
+ *                         address and return that instead.  Otherwise, 127.0.0.1 will be
+ *                         returned in this case.
  *  @return The IP address on success, or 0 on failure (such as if the socket isn't valid and connected).
  */
-uint32 GetPeerIPAddress(int socket);
+uint32 GetPeerIPAddress(int socket, bool expandLocalhost);
 
 /** Creates a pair of sockets that are connected to each other,
  *  so that any bytes you pass into one socket come out the other socket.
@@ -315,9 +327,13 @@ status_t SetUDPSocketBroadcastEnabled(int sock, bool broadcast);
  *  @param sock The UDP socket to send to (previously created by CreateUDPSocket()).
  *  @param remoteHostName Name of remote host (e.g. "www.mycomputer.com" or "132.239.50.8")
  *  @param remotePort Remote UDP port ID that data should be sent to.
+  * @param expandLocalhost If true, then if (name) corresponds to 127.0.0.1, this function
+  *                        will attempt to determine the host machine's actual primary IP
+  *                        address and return that instead.  Otherwise, 127.0.0.1 will be
+  *                        returned in this case.  Defaults to false.
  *  @returns B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t SetUDPSocketTarget(int sock, const char * remoteHostName, uint16 remotePort);
+status_t SetUDPSocketTarget(int sock, const char * remoteHostName, uint16 remotePort, bool expandLocalhost = false);
 
 END_NAMESPACE(muscle);
 

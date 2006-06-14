@@ -3127,7 +3127,7 @@ WinShareWindow::ConnectionAccepted(const SocketHolderRef &socketRef)
 	PRINT("\tWinShareWindow::ConnectionAccepted\n");
 	int socket = socketRef() ? (socketRef()->ReleaseSocket()) : -1;
 	uint32 ip;
-	if (socket >= 0 && (ip = GetPeerIPAddress(socket)) > 0)
+	if (socket >= 0 && (ip = GetPeerIPAddress(socket, true)) > 0)
 	{
 		OpenDownload();
 		fDLWindow->AddUpload(socket, ip, false);

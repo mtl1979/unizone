@@ -106,6 +106,11 @@ StringMatcherRef::ItemPool * GetStringMatcherPool();
  */
 void EscapeRegexTokens(String & str, const char * optTokens = NULL);
 
+/** This does essentially the opposite of EscapeRegexTokens():  It removes from the string
+  * and backslashes that are not immediately preceeded by another backslash.
+  */
+void RemoveEscapeChars(String & str);
+
 /** Returns true iff any "special" chars are found in (str).
  *  @param str The string to check for special regex chars.
  *  @return True iff any special regex chars were found in (str).

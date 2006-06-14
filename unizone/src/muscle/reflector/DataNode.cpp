@@ -313,7 +313,7 @@ status_t DataNode :: GetNodePath(String & retPath, uint32 startDepth) const
    return B_NO_ERROR;
 }
 
-status_t DataNode ::   RemoveChild(const char * key, StorageReflectSession * optNotifyWith, bool recurse, uint32 * optCurrentNodeCount)
+status_t DataNode :: RemoveChild(const char * key, StorageReflectSession * optNotifyWith, bool recurse, uint32 * optCurrentNodeCount)
 {
    TCHECKPOINT;
 

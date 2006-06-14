@@ -198,6 +198,54 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
 #endif
       }
       break;
+
+      case SYSTEM_PATH_USERHOME:  // user's home directory
+      {
+         const char * homeDir = getenv("HOME");
+#ifdef WIN32
+         if (homeDir == NULL) homeDir = getenv("USERPROFILE");
+#endif
+         if (homeDir)
+         {
+            found = true;
+            outStr = homeDir;
+         }
+      }
+      break;
+
+      case SYSTEM_PATH_DESKTOP:  // user's desktop directory
+         if (GetSystemPath(SYSTEM_PATH_USERHOME, outStr) == B_NO_ERROR)
+         {
+            found = true;
+            outStr += "Desktop";  // it's the same under WinXP, Linux, and OS/X, yay!
+         }
+      break;
+
+      case SYSTEM_PATH_DOCUMENTS:  // user's documents directory
+         if (GetSystemPath(SYSTEM_PATH_USERHOME, outStr) == B_NO_ERROR)
+         {
+            found = true;
+#ifndef WIN32
+            outStr += "Documents";  // For WinXP, it's the same as the home dir; for others, add Documents to the end
+#endif
+         }
+      break;
+
+      case SYSTEM_PATH_ROOT:  // the highest possible directory
+      {
+#ifdef WIN32
+         const char * homeDrive = getenv("HOMEDRIVE");
+         if (homeDrive)
+         {
+            outStr = homeDrive;
+            found = true;
+         }
+#else
+         outStr = "/";
+         found = true;
+#endif
+      }
+      break;
    }
 
    // Make sure the path name ends in a slash

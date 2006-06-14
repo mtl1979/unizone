@@ -110,10 +110,13 @@ protected:
     * @param msg the Message to save the subtree into.  This object can later be provided to RestoreNodeTreeFromMessage() to restore the subtree.
     * @param node The node to begin recursion from (i.e. the root of the subtree)
     * @param path The path to prepend to the paths of children of the node.  Used in the recursion; you typically want to pass in "" here.
-    * @param saveData Whether or not the payload Message of (node) should be saved.  The payload Messages of (node)'s children will always be saved no matter what.
+    * @param saveData Whether or not the payload Message of (node) should be saved.  The payload Messages of (node)'s children will always be saved no matter what, as long as (maxDepth) is greater than zero.
+    * @param maxDepth How many levels of children should be saved to the Message.  If left as MUSCLE_NO_LIMIT (the default),
+    *                 the entire subtree will be saved; otherwise the tree will be clipped to at most (maxDepth) levels.
+    *                 If (maxDepth) is zero, only (node) will be saved.
     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-   status_t SaveNodeTreeToMessage(Message & msg, const DataNode * node, const String & path, bool saveData) const;
+   status_t SaveNodeTreeToMessage(Message & msg, const DataNode * node, const String & path, bool saveData, uint32 maxDepth = MUSCLE_NO_LIMIT) const;
 
    /**
     * Recursively creates or updates a subtree of the node database from the given Message object.
@@ -122,9 +125,12 @@ protected:
     * @param path The relative path of the root node, e.g. "" is your home session node.
     * @param loadData Whether or not the payload Message of (node) should be restored.  The payload Messages of (node)'s children will always be restored no matter what.
     * @param appendToIndex Used in the recursion to handle restoring indexed nodes.  You will usually want to Leave it as false when you call this method.
+    * @param maxDepth How many levels of children should be restored from the Message.  If left as MUSCLE_NO_LIMIT (the default),
+    *                 the entire subtree will be restored; otherwise the tree will be clipped to at most (maxDepth) levels.
+    *                 If (maxDepth) is zero, only (node) will be restored.
     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-   status_t RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex = false);
+   status_t RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex = false, uint32 maxDepth = MUSCLE_NO_LIMIT);
 
    /** 
      * Create and insert a new node into one or more ordered child indices in the node tree.

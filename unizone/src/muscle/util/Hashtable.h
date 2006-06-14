@@ -556,6 +556,20 @@ public:
       return ret;
    }
 
+   /** Places the given (key, value) mapping into the table.  Any previous entry with a key of (key) will be replaced. 
+    *  (average O(1) insertion time, unless auto-sorting is enabled, in which case it becomes O(N) insertion time for
+    *  keys that are not already in the table)
+    *  @param key The key that the new value is to be associated with.
+    *  @param value The value to associate with the new key.  If not specified, a value object created using
+    *               the default constructor will be placed by default.
+    *  @return A pointer to the value object in the table on success, or NULL on failure (out of memory?)
+    */
+   ValueType * PutAndGet(const KeyType & key, const ValueType & value = ValueType()) 
+   { 
+       HashtableEntry * e = PutAux(ComputeHash(key), key, value, NULL, NULL);
+       return e ? &e->_value : NULL;
+   }
+
    /** Convenience method.  Returns a pointer to the first key in our iteration list, or NULL if the table is empty. */
    const KeyType * GetFirstKey() const {return _iterHead ? &_iterHead->_key : NULL;}
 

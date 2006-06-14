@@ -61,7 +61,7 @@ AddNewSession(const AbstractReflectSessionRef & ref, int s)
       int socket = GetSocketFor(newSession);
       if (socket >= 0)
       {
-         uint32 ip = GetPeerIPAddress(socket);
+         uint32 ip = GetPeerIPAddress(socket, true);
          const String * remapString = _remapIPs.Get(ip);
          char ipbuf[16]; Inet_NtoA(ip, ipbuf);
          newSession->_hostName = remapString ? *remapString : ((ip > 0) ? String(ipbuf) : newSession->GetDefaultHostName());
@@ -669,7 +669,7 @@ status_t ReflectServer :: DoAccept(uint16 port, int acceptSocket, ReflectSession
    int newSocket = Accept(acceptSocket);
    if (newSocket >= 0)
    {
-      uint32 remoteIP = GetPeerIPAddress(newSocket);
+      uint32 remoteIP = GetPeerIPAddress(newSocket, true);
       if (remoteIP > 0)
       {
          char ipbuf[16]; Inet_NtoA(remoteIP, ipbuf);

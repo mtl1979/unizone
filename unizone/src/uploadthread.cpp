@@ -134,7 +134,7 @@ WUploadThread::SetUpload(int socket, uint32 remoteIP, WFileThread * ft)
 	fSocket = socket;
 	fFileThread = ft;
 	// Set string ip too
-	uint32 _ip = GetPeerIPAddress(fSocket);
+	uint32 _ip = GetPeerIPAddress(fSocket, true);
 	Inet_NtoA(_ip, host);
 	fStrRemoteIP = host;
 }

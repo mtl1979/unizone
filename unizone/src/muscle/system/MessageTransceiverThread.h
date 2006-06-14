@@ -58,6 +58,7 @@ enum {
 #define MTT_NAME_DRAIN_TAG   "dtag"  // field containing a DrainTag reference
 #define MTT_NAME_POLICY_TAG  "ptag"  // field containing an IOPolicy reference
 #define MTT_NAME_ENCODING    "enco"  // field containing the MUSCLE_MESSAGE_ENCODING_* value
+#define MTT_NAME_EXPANDLOCALHOST "expl" // boolean field indicating whether localhost IP should be expanded to primary IP
 
 /** 
   * This is a class that holds a ReflectServer object in an internal thread, and mediates
@@ -145,13 +146,14 @@ public:
      *                      ThreadWorkerSession, a subclass of ThreadWorkerSession, or at least something that acts
      *                      like one, or things won't work correctly.
      *                      The referenced session becomes sole property of the MessageTransceiverThread on success.
+     * @param expandLocalhost Passed to GetHostByName().  See GetHostByName() documentation for details.  Defaults to false.
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t AddNewConnectSession(const String & targetHostName, uint16 port, const AbstractReflectSessionRef & optSessionRef);
+   virtual status_t AddNewConnectSession(const String & targetHostName, uint16 port, const AbstractReflectSessionRef & optSessionRef, bool expandLocalhost = false);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t AddNewConnectSession(const String & targetHostName, uint16 port) {return AddNewConnectSession(targetHostName, port, AbstractReflectSessionRef());}
+   status_t AddNewConnectSession(const String & targetHostName, uint16 port, bool expandLocalhost = false) {return AddNewConnectSession(targetHostName, port, AbstractReflectSessionRef(), expandLocalhost);}
 
    /** Installs a new ReflectSessionFactory onto the ReflectServer (or replaces an existing one) on the given port.
      * May be called at any time, but behaves slightly differently depending on whether the internal
@@ -328,7 +330,7 @@ protected:
 private:
    friend class ThreadSupervisorSession;
    status_t EnsureServerAllocated();
-   status_t SendAddNewSessionMessage(const AbstractReflectSessionRef & sessionRef, int socket, const char * hostName, uint32 hostIP, uint16 port);
+   status_t SendAddNewSessionMessage(const AbstractReflectSessionRef & sessionRef, int socket, const char * hostName, uint32 hostIP, uint16 port, bool expandLocalhost);
    status_t SetNewPolicyAux(uint32 what, const PolicyRef & pref, const char * optDistPath);
 
    ReflectServer * _server;

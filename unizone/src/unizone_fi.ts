@@ -4781,10 +4781,6 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>/acronym [acronym] - search for definitions of acronym</source>
-        <translation>/acronym [akronyymi] - etsi akronyymin määritelmät</translation>
-    </message>
-    <message>
-        <source>/acronym [acronym] - search for definitions of acronym</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

@@ -165,6 +165,21 @@ void EscapeRegexTokens(String & s, const char * optTokens)
    s = ret;
 }
 
+void RemoveEscapeChars(String & s)
+{
+   uint32 len = s.Length();
+   String ret; (void) ret.Prealloc(len);
+   bool lastWasEscape = false;
+   for (uint32 i=0; i<len; i++)
+   {
+      char c = s[i];
+      bool isEscape = (c == '\\');
+      if ((lastWasEscape)||(isEscape == false)) ret += c;
+      lastWasEscape = ((isEscape)&&(lastWasEscape == false));
+   }
+   s = ret;
+}
+
 bool HasRegexTokens(const char * str)
 {
    bool isFirst = true;

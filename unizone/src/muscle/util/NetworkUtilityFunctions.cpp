@@ -19,6 +19,8 @@
 # include <sys/socket.h>
 # include <netdb.h>
 # include <netinet/in.h>
+# include <net/if.h>
+# include <sys/ioctl.h>
 # ifdef BEOS_OLD_NETSERVER
 #  include <app/Roster.h>     // for the run-time bone check
 #  include <storage/Entry.h>  // for the backup run-time bone check
@@ -26,7 +28,6 @@
 #  include <arpa/inet.h>
 #  include <fcntl.h>
 #  include <netinet/tcp.h>
-#  include <netinet/in.h>
 # endif
 #endif
 
@@ -98,9 +99,9 @@ status_t SetUDPSocketTarget(int sock, uint32 remoteIP, uint16 remotePort)
    return (connect(sock, (struct sockaddr *) &saAddr, sizeof(saAddr)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
-status_t SetUDPSocketTarget(int sock, const char * remoteHostName, uint16 remotePort)
+status_t SetUDPSocketTarget(int sock, const char * remoteHostName, uint16 remotePort, bool expandLocalhost)
 {
-   uint32 hostIP = GetHostByName(remoteHostName);
+   uint32 hostIP = GetHostByName(remoteHostName, expandLocalhost);
    return (hostIP) ? SetUDPSocketTarget(sock, hostIP, remotePort) : B_ERROR;
 }
 
@@ -223,9 +224,9 @@ int Accept(int sock)
    return (sock >= 0) ? accept(sock, (struct sockaddr *)&saSocket, &nLen) : -1;
 }
 
-int Connect(const char * hostName, uint16 port, const char * debugTitle, bool errorsOnly, uint64 maxConnectTime) 
+int Connect(const char * hostName, uint16 port, const char * debugTitle, bool errorsOnly, uint64 maxConnectTime, bool expandLocalhost) 
 {
-   uint32 hostIP = GetHostByName(hostName);
+   uint32 hostIP = GetHostByName(hostName, expandLocalhost);
    if (hostIP > 0) return Connect(hostIP, port, hostName, debugTitle, errorsOnly, maxConnectTime);
    else 
    {
@@ -313,7 +314,7 @@ int Connect(uint32 hostIP, uint16 port, const char * optDebugHostName, const cha
    return -1;
 }
 
-uint32 GetHostByName(const char * name)
+uint32 GetHostByName(const char * name, bool expandLocalhost)
 {
    uint32 ret = inet_addr(name);  // first see if we can parse it as a numeric address
    if ((ret == 0)||(ret == ((uint32)-1)))
@@ -323,7 +324,7 @@ uint32 GetHostByName(const char * name)
    }
    else ret = ntohl(ret);
 
-   if (ret == localhostIP) 
+   if ((expandLocalhost)&&(ret == localhostIP))
    {
       uint32 altRet = (GetLocalHostIPOverride() > 0) ? GetLocalHostIPOverride() : GetLocalIPAddress();
       if (altRet > 0) ret = altRet;
@@ -360,7 +361,7 @@ int ConnectAsync(uint32 hostIP, uint16 port, bool & retIsReady)
    return -1;
 }
 
-uint32 GetPeerIPAddress(int sock)
+uint32 GetPeerIPAddress(int sock, bool expandLocalhost)
 {
    uint32 ipAddress = 0;
    if (sock >= 0)
@@ -370,7 +371,7 @@ uint32 GetPeerIPAddress(int sock)
       if (getpeername(sock, (struct sockaddr *)&saTempAdd, &length) == 0)
       {
          ipAddress = ntohl(saTempAdd.sin_addr.s_addr);
-         if (ipAddress == localhostIP) 
+         if ((expandLocalhost)&&(ipAddress == localhostIP))
          {
             uint32 altRet = (GetLocalHostIPOverride() > 0) ? GetLocalHostIPOverride() : GetLocalIPAddress();
             if (altRet > 0) ipAddress = altRet;
@@ -537,18 +538,59 @@ status_t SetSocketReceiveBufferSize(int sock, uint32 receiveBufferSizeBytes)
 
 uint32 GetLocalIPAddress(uint32 which)
 {
-   char ac[512];
-   if (gethostname(ac, sizeof(ac)) >= 0)
+#ifndef WIN32  // Dunno how to do this under Win32!
+# ifndef __BEOS__  // BeOS doesn't seem to support this either... not even with BONE installed
+   // First, we'll try it the fancy new way... I'm not sure how portable this is though
    {
-      struct hostent *phe = gethostbyname(ac);
-      if (phe)
+      uint32 ret = 0;
+      uint32 whichA = which;
+      int sock = socket(AF_INET, SOCK_DGRAM, 0);
+      if (sock >= 0)
       {
-         for (int i = 0; phe->h_addr_list[i] != 0; ++i)
+         struct if_nameindex * ifnames = if_nameindex();
+         if (ifnames)
          {
-            struct in_addr addr;
-            memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
-            uint32 ip = ntohl(addr.s_addr);
-            if ((ip != 0)&&(ip != localhostIP)&&(which-- == 0)) return ip;
+            for (struct if_nameindex * ifnm=ifnames; (ifnm!=NULL)&&(ifnm->if_name!=NULL)&&(ifnm->if_name[0]); ifnm++)
+            {
+               struct ifreq ifr;
+               strncpy (ifr.ifr_name, ifnm->if_name, IFNAMSIZ);
+               if (ioctl(sock, SIOCGIFADDR, &ifr) == 0) 
+               {
+                  struct sockaddr_in sin;
+                  memcpy (&sin, &(ifr.ifr_addr), sizeof(sin));
+                  uint32 ip = ntohl(sin.sin_addr.s_addr);
+                  if ((ip != 0)&&(ip != localhostIP)&&(whichA-- == 0))
+                  {
+                     ret = ip; 
+                     break;
+                  }
+               }
+            }
+            if_freenameindex(ifnames);
+         }
+         CloseSocket(sock);
+      }
+      if (ret != 0) return ret;
+   }
+# endif
+#endif
+
+   // If we got here, we fall back to doing things the old fashioned way
+   {
+      char ac[512];
+      if (gethostname(ac, sizeof(ac)) >= 0)
+      {
+         struct hostent *phe = gethostbyname(ac);
+         if (phe)
+         {
+            uint32 whichB = which;
+            for (int i = 0; phe->h_addr_list[i] != 0; ++i)
+            {
+               struct in_addr addr;
+               memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
+               uint32 ip = ntohl(addr.s_addr);
+               if ((ip != 0)&&(ip != localhostIP)&&(whichB-- == 0)) return ip;
+            }
          }
       }
    }
