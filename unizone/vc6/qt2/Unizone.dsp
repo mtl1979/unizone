@@ -2132,7 +2132,7 @@ SOURCE=..\..\src\unizone.ico
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\unizone.pro
+SOURCE=..\..\src\qt2\unizone.pro
 # End Source File
 # End Group
 # Begin Group "UI files"
