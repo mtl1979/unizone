@@ -38,6 +38,7 @@ MUSCLE_SRCFILES = \
 	$(MUSCLEDIR)/iogateway/MessageIOGateway.cpp \
 	$(MUSCLEDIR)/message/Message.cpp \
 	$(MUSCLEDIR)/reflector/AbstractReflectSession.cpp \
+	$(MUSCLEDIR)/reflector/DataNode.cpp \
 	$(MUSCLEDIR)/reflector/DumbReflectSession.cpp \
 	$(MUSCLEDIR)/reflector/RateLimitSessionIOPolicy.cpp \
 	$(MUSCLEDIR)/reflector/ReflectServer.cpp \
