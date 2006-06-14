@@ -1,12 +1,5 @@
-Debug
-Release
-MuscleCopy.ncb
-MuscleCopy.opt
-moc_genericthread.cpp moc_md5.cpp moc_status.cpp 
-moc_statusimpl.cpp
-status.h
-status.cpp
-MuscleCopy.plg
+moc_genericthread.cpp moc_md5.cpp moc_status.cpp moc_statusimpl.cpp
+status.h status.cpp
 .depends
 musclecopy
 MuscleCopy.app
