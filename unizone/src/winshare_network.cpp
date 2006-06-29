@@ -752,7 +752,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (fWhiteList.isEmpty())
 					PrintSystem(tr("Whitelist pattern cleared."));
 				else
-					PrintSystem(tr("Whitelist pattern set to: %1").arg(fBlackList));
+					PrintSystem(tr("Whitelist pattern set to: %1").arg(fWhiteList));
 			}
 		}
 		else if (CompareCommand(sendText, "/filter"))
