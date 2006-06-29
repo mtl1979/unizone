@@ -56,6 +56,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fStartTime = 0;
 	fPacket = 8.0f;
 	fIdles = 0;
+	fCompression = -1;
 
 	InitTransferRate();
 	InitTransferETA();
@@ -513,7 +514,7 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 			
 			if (!fTunneled && msg()->FindBool("unishare:supports_compression", &c) == B_OK)
 			{
-				qmtt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_ZLIB_9);
+				SetCompression(6);
 			}
 
 			double dpps = GetPacketSize() * 1024.0f;
@@ -1529,4 +1530,23 @@ WUploadThread::GetRemoteIP() const
 		return fStrRemoteIP;
 	else
 		return gWin->GetLocalIP();
+}
+
+int
+WUploadThread::GetCompression() const
+{
+	return fCompression;
+}
+
+void
+WUploadThread::SetCompression(int c)
+{
+	if (qmtt)
+	{
+		if (muscleInRange(c, 0, 9))
+		{
+			fCompression = c;
+			qmtt->SetOutgoingMessageEncoding(MUSCLE_MESSAGE_ENCODING_DEFAULT + c);
+		}
+	}
 }

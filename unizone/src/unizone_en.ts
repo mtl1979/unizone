@@ -1588,6 +1588,50 @@ Date: %4</translation>
         <source>%1 MB/s</source>
         <translation>%1 MB/s</translation>
     </message>
+    <message>
+        <source>None</source>
+        <translation>None</translation>
+    </message>
+    <message>
+        <source>Level 1</source>
+        <translation>Level 1</translation>
+    </message>
+    <message>
+        <source>Level 2</source>
+        <translation>Level 2</translation>
+    </message>
+    <message>
+        <source>Level 3</source>
+        <translation>Level 3</translation>
+    </message>
+    <message>
+        <source>Level 4</source>
+        <translation>Level 4</translation>
+    </message>
+    <message>
+        <source>Level 5</source>
+        <translation>Level 5</translation>
+    </message>
+    <message>
+        <source>Level 6</source>
+        <translation>Level 6</translation>
+    </message>
+    <message>
+        <source>Level 7</source>
+        <translation>Level 7</translation>
+    </message>
+    <message>
+        <source>Level 8</source>
+        <translation>Level 8</translation>
+    </message>
+    <message>
+        <source>Level 9</source>
+        <translation>Level 9</translation>
+    </message>
+    <message>
+        <source>Compression</source>
+        <translation>Compression</translation>
+    </message>
 </context>
 <context>
     <name>WDownloadThread</name>
@@ -4633,7 +4677,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>/acronym [acronym] - search for definitions of acronym</source>
-        <translation type='unfinished'></translation>
+        <translation>/acronym [acronym] - search for definitions of acronym</translation>
     </message>
 </context>
 </TS>

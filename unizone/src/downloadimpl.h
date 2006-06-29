@@ -125,10 +125,12 @@ private:
 	QPopupMenu * fDLRunMenu;
 	QPopupMenu * fULBanMenu;
 	QPopupMenu * fULPacketMenu;
+	QPopupMenu * fULCompressionMenu;
 
 	int fDLThrottle, fULThrottle;	// Current throttle selections
 	int fULBan;						// Current ban selection
 	int fULPacket;					// Current packet size selection
+	int fULCompression;				// Current compression selection
 
 	QListViewItem * fDLPopupItem;	// download item that was right clicked
 	QListViewItem * fULPopupItem;	//   upload item that was right clicked
@@ -198,6 +200,17 @@ private:
 		ID_PACKET256K,
 		ID_PACKET512K,
 		ID_PACKET1M,
+		ID_SETCOMPRESSION,
+		ID_LEVEL0,
+		ID_LEVEL1,
+		ID_LEVEL2,
+		ID_LEVEL3,
+		ID_LEVEL4,
+		ID_LEVEL5,
+		ID_LEVEL6,
+		ID_LEVEL7,
+		ID_LEVEL8,
+		ID_LEVEL9,
 		ID_MOVEUP,
 		ID_MOVEDOWN,
 		ID_IGNORE,

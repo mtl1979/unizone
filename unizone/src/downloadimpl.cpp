@@ -224,9 +224,6 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fULPacketMenu = new QPopupMenu(fULPopup, "Packet Size Menu");
 	CHECK_PTR(fULPacketMenu);
 	
-	fULPacketMenu->setItemChecked(ID_PACKET8K, true);
-	fULPacket = ID_PACKET8K;
-	
 	fULPacketMenu->insertItem(tr("%1 kB").arg(1), ID_PACKET1K);
 	fULPacketMenu->insertItem(tr("%1 kB").arg(2), ID_PACKET2K);
 	fULPacketMenu->insertItem(tr("%1 kB").arg(4), ID_PACKET4K);
@@ -239,6 +236,27 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fULPacketMenu->insertItem(tr("%1 kB").arg(512), ID_PACKET512K);
 	fULPacketMenu->insertItem(tr("%1 MB").arg(1), ID_PACKET1M);
 	
+	fULPacketMenu->setItemChecked(ID_PACKET8K, true);
+	fULPacket = ID_PACKET8K;
+
+	fULCompressionMenu = new QPopupMenu(fULPopup, "Compression Menu");
+	CHECK_PTR(fULCompressionMenu);
+	
+	fULCompressionMenu->insertItem(tr("None"), ID_LEVEL0);
+	fULCompressionMenu->insertItem(tr("Level 1"), ID_LEVEL1);
+	fULCompressionMenu->insertItem(tr("Level 2"), ID_LEVEL2);
+	fULCompressionMenu->insertItem(tr("Level 3"), ID_LEVEL3);
+	fULCompressionMenu->insertItem(tr("Level 4"), ID_LEVEL4);
+	fULCompressionMenu->insertItem(tr("Level 5"), ID_LEVEL5);
+	fULCompressionMenu->insertItem(tr("Level 6"), ID_LEVEL6);
+	fULCompressionMenu->insertItem(tr("Level 7"), ID_LEVEL7);
+	fULCompressionMenu->insertItem(tr("Level 8"), ID_LEVEL8);
+	fULCompressionMenu->insertItem(tr("Level 9"), ID_LEVEL9);
+
+	fULCompressionMenu->setItemChecked(ID_LEVEL0, true);
+	fULCompressionMenu->setEnabled(false); // Disabled by default
+	fULCompression = ID_LEVEL0;
+
 	fULPopup->insertItem(tr("Move Up"), ID_MOVEUP);
 	fULPopup->insertItem(tr("Move Down"), ID_MOVEDOWN);
 	fULPopup->insertItem(tr("Ban IP"), ID_IGNORE);
@@ -248,11 +266,13 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	fULPopup->insertItem(tr("Throttle"), fULThrottleMenu, ID_THROTTLE);
 	fULPopup->insertItem(tr("Block"), fULBanMenu, ID_BLOCK);
 	fULPopup->insertItem(tr("Packet Size"), fULPacketMenu, ID_SETPACKET);
+	fULPopup->insertItem(tr("Compression"), fULCompressionMenu, ID_SETCOMPRESSION);
 	
 	connect(fULPopup, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fULThrottleMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fULBanMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fULPacketMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
+	connect(fULCompressionMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fUploads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
 		this, SLOT(ULRightClicked(QListViewItem *, const QPoint &, int)));
 	
@@ -2276,6 +2296,66 @@ WDownload::ULPopupActivated(int id)
 			break;
 		}
 		
+	case ID_LEVEL0:
+		{
+			ut->SetCompression(0);
+			break;
+		}
+		
+	case ID_LEVEL1:
+		{
+			ut->SetCompression(1);
+			break;
+		}
+		
+	case ID_LEVEL2:
+		{
+			ut->SetCompression(2);
+			break;
+		}
+		
+	case ID_LEVEL3:
+		{
+			ut->SetCompression(3);
+			break;
+		}
+		
+	case ID_LEVEL4:
+		{
+			ut->SetCompression(4);
+			break;
+		}
+		
+	case ID_LEVEL5:
+		{
+			ut->SetCompression(5);
+			break;
+		}
+		
+	case ID_LEVEL6:
+		{
+			ut->SetCompression(6);
+			break;
+		}
+		
+	case ID_LEVEL7:
+		{
+			ut->SetCompression(7);
+			break;
+		}
+		
+	case ID_LEVEL8:
+		{
+			ut->SetCompression(8);
+			break;
+		}
+		
+	case ID_LEVEL9:
+		{
+			ut->SetCompression(9);
+			break;
+		}
+		
 	case ID_UNBAN:
 		{
 			ut->SetBlocked(false);
@@ -2751,6 +2831,69 @@ WDownload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			}
 			fULPacketMenu->setItemChecked(fULPacket, true);
 			
+			fULCompressionMenu->setItemChecked(fULCompression, false);
+			int fNewCompression = pair.thread->GetCompression();
+
+			if (fNewCompression == -1)
+				fULCompressionMenu->setEnabled(false);
+			else
+				fULCompressionMenu->setEnabled(true);
+
+			switch (fNewCompression)
+			{
+			case 0:
+				{
+					fULCompression = ID_LEVEL0;
+					break;
+				}
+			case 1:
+				{
+					fULCompression = ID_LEVEL1;
+					break;
+				}
+			case 2:
+				{
+					fULCompression = ID_LEVEL2;
+					break;
+				}
+			case 3:
+				{
+					fULCompression = ID_LEVEL3;
+					break;
+				}
+			case 4:
+				{
+					fULCompression = ID_LEVEL4;
+					break;
+				}
+			case 5:
+				{
+					fULCompression = ID_LEVEL5;
+					break;
+				}
+			case 6:
+				{
+					fULCompression = ID_LEVEL6;
+					break;
+				}
+			case 7:
+				{
+					fULCompression = ID_LEVEL7;
+					break;
+				}
+			case 8:
+				{
+					fULCompression = ID_LEVEL8;
+					break;
+				}
+			case 9:
+				{
+					fULCompression = ID_LEVEL9;
+					break;
+				}
+			}
+			fULCompressionMenu->setItemChecked(fULCompression, true);
+
 			fULPopup->popup(p);
 		}
 	}

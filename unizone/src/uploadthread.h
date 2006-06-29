@@ -102,6 +102,9 @@ public:
 
 	int GetBanTime();
 
+	int GetCompression() const; 
+	void SetCompression(int c);
+
 	// forwarders
 
 	void Reset();
@@ -180,6 +183,7 @@ private:
 	int64 fFileSize;
 	int64 fCurrentOffset;
 	int32 fMungeMode;
+	int32 fCompression;
 	QString fRemoteSessionID;
 	QString fRemoteUser;
 	QString fFileUl;

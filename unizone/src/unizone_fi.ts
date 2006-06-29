@@ -1704,6 +1704,50 @@ Päiväys: %4</translation>
         <source>%1 MB/s</source>
         <translation>%1 Mt/s</translation>
     </message>
+    <message>
+        <source>None</source>
+        <translation>Ei mitään</translation>
+    </message>
+    <message>
+        <source>Level 1</source>
+        <translation>Taso 1</translation>
+    </message>
+    <message>
+        <source>Level 2</source>
+        <translation>Taso 2</translation>
+    </message>
+    <message>
+        <source>Level 3</source>
+        <translation>Taso 3</translation>
+    </message>
+    <message>
+        <source>Level 4</source>
+        <translation>Taso 4</translation>
+    </message>
+    <message>
+        <source>Level 5</source>
+        <translation>Taso 5</translation>
+    </message>
+    <message>
+        <source>Level 6</source>
+        <translation>Taso 6</translation>
+    </message>
+    <message>
+        <source>Level 7</source>
+        <translation>Taso 7</translation>
+    </message>
+    <message>
+        <source>Level 8</source>
+        <translation>Taso 8</translation>
+    </message>
+    <message>
+        <source>Level 9</source>
+        <translation>Taso 9</translation>
+    </message>
+    <message>
+        <source>Compression</source>
+        <translation>Pakkaus</translation>
+    </message>
 </context>
 <context>
     <name>WDownloadThread</name>
@@ -4781,7 +4825,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>/acronym [acronym] - search for definitions of acronym</source>
-        <translation type='unfinished'></translation>
+        <translation>/acronym [akronyymi] - hae määritelmät akronyymille</translation>
     </message>
 </context>
 </TS>
