@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "3.21"
+#define MUSCLE_VERSION_STRING "3.22"
 
 #include <string.h>  /* for memcpy() */
 
@@ -82,7 +82,9 @@ DECLARE_NAMESPACE(muscle);
 /* VC++ can't handle this stuff, it's too lame */
 #ifdef WIN32
 # define UNISTD_H_NOT_AVAILABLE
-# define NEW_H_NOT_AVAILABLE
+# ifndef _MSC_VER  /* 7/3/2006: Mika's patch allows VC++ to use newnothrow */
+#  define NEW_H_NOT_AVAILABLE
+# endif
 #endif
 
 #ifndef UNISTD_H_NOT_AVAILABLE
@@ -96,8 +98,15 @@ DECLARE_NAMESPACE(muscle);
 using std::bad_alloc;
 using std::nothrow_t;
 using std::nothrow;
+#   if (defined(_MSC_VER))
+// VC++ 6.0 and earlier lack this definition
+#    if (_MSC_VER <= 1200)
+inline void __cdecl operator delete(void *p, const std::nothrow_t&) _THROW0() {delete(p);}
+#    endif
+#   else
 using std::new_handler;
 using std::set_new_handler;
+#   endif
 #  endif
 # endif
 #else
