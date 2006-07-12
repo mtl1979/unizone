@@ -4,8 +4,17 @@
 #define MuscleMutex_h
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
+
+#if defined(QT_CORE_LIB)  // is Qt4 available?
+# include <Qt>  // to bring in the proper value of QT_VERSION
+#endif
+
+#if defined(QT_THREAD_SUPPORT) || (QT_VERSION >= 0x040000)
+# define MUSCLE_QT_HAS_THREADS 1
+#endif
+
 # if defined(WIN32)
-#  if defined(QT_THREAD_SUPPORT) && defined(MUSCLE_PREFER_QT_OVER_WIN32)
+#  if defined(MUSCLE_QT_HAS_THREADS) && defined(MUSCLE_PREFER_QT_OVER_WIN32)
     /* empty - we don't have to do anything for this case. */
 #  else
 #   define MUSCLE_PREFER_WIN32_OVER_QT
@@ -15,8 +24,12 @@
 #  include <pthread.h>
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
 #  include <windows.h>
-# elif defined(QT_THREAD_SUPPORT)
-#  include <qthread.h>
+# elif defined(MUSCLE_QT_HAS_THREADS)
+#  if (QT_VERSION >= 0x040000)
+#   include <QMutex>
+#  else
+#   include <qthread.h>
+#  endif
 # elif defined(__BEOS__)
 #  include <support/Locker.h>
 # elif defined(__ATHEOS__)
@@ -50,7 +63,7 @@ public:
       // empty
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       , _locker(_isEnabled ? CreateMutex(NULL, false, NULL) : NULL)
-# elif defined(QT_THREAD_SUPPORT)
+# elif defined(MUSCLE_QT_HAS_THREADS)
       , _locker(true)
 # elif defined(__ATHEOS__)
       , _locker(NULL) 
@@ -92,7 +105,7 @@ public:
       return (pthread_mutex_lock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       return ((_locker)&&(WaitForSingleObject(_locker, INFINITE) == WAIT_FAILED)) ? B_ERROR : B_NO_ERROR;
-# elif defined(QT_THREAD_SUPPORT)
+# elif defined(MUSCLE_QT_HAS_THREADS)
       _locker.lock();
       return B_NO_ERROR;
 # elif defined(__BEOS__)
@@ -118,7 +131,7 @@ public:
       return (pthread_mutex_unlock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       return ((_locker)&&(ReleaseMutex(_locker))) ? B_NO_ERROR : B_ERROR;
-# elif defined(QT_THREAD_SUPPORT)
+# elif defined(MUSCLE_QT_HAS_THREADS)
       _locker.unlock();
       return B_NO_ERROR;
 # elif defined(__BEOS__)
@@ -143,7 +156,7 @@ private:
          pthread_mutex_destroy(&_locker);
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
          CloseHandle(_locker);
-# elif defined(QT_THREAD_SUPPORT)
+# elif defined(MUSCLE_QT_HAS_THREADS)
          // do nothing
 # endif
 
@@ -158,7 +171,7 @@ private:
    mutable pthread_mutex_t _locker;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
    mutable HANDLE _locker;
-# elif defined(QT_THREAD_SUPPORT)
+# elif defined(MUSCLE_QT_HAS_THREADS)
    mutable QMutex _locker;
 # elif defined(__BEOS__)
    mutable BLocker _locker;

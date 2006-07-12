@@ -21,6 +21,9 @@
 # include <netinet/in.h>
 # include <net/if.h>
 # include <sys/ioctl.h>
+# ifdef SunOS
+#  include <sys/sockio.h>     // for the SIOCGIFADDR definition on Solaris
+# endif
 # ifdef BEOS_OLD_NETSERVER
 #  include <app/Roster.h>     // for the run-time bone check
 #  include <storage/Entry.h>  // for the backup run-time bone check

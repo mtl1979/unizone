@@ -20,7 +20,7 @@ Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
    // do nothing
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
    // do nothing
-#elif defined(QT_THREAD_SUPPORT)
+#elif defined(MUSCLE_QT_HAS_THREADS)
    _thread.SetOwner(this);
 #endif
 }
@@ -87,7 +87,7 @@ status_t Thread :: StartInternalThreadAux()
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       typedef unsigned (__stdcall *PTHREAD_START) (void *);
       if ((_thread = (HANDLE)_beginthreadex(NULL, 0, (PTHREAD_START)InternalThreadEntryFunc, this, 0, (unsigned *)&_threadID)) != NULL) return B_NO_ERROR;
-#elif defined(QT_THREAD_SUPPORT)
+#elif defined(MUSCLE_QT_HAS_THREADS)
       QWaitCondition waitCondition;
       QMutex mutex; mutex.lock();
       _waitForHandleSet = &waitCondition;  // used as a temporary parameter only
@@ -126,8 +126,12 @@ bool Thread :: IsCallerInternalThread() const
    return pthread_equal(pthread_self(), _thread);
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
    return (_threadID == GetCurrentThreadId());
-#elif defined(QT_THREAD_SUPPORT)
+#elif defined(MUSCLE_QT_HAS_THREADS)
+# if QT_VERSION >= 0x040000
+   return (QThread::currentThreadId() == _internalThreadHandle);
+# else
    return (QThread::currentThread() == _internalThreadHandle);
+# endif
 #elif defined(__BEOS__)
    return (_thread == find_thread(NULL));
 #elif defined(__ATHEOS__)
@@ -308,7 +312,7 @@ status_t Thread :: WaitForInternalThreadToExit()
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       (void) WaitForSingleObject(_thread, INFINITE);
       ::CloseHandle(_thread);  // Raymond Dahlberg's fix for handle-leak problem
-#elif defined(QT_THREAD_SUPPORT)
+#elif defined(MUSCLE_QT_HAS_THREADS)
       (void) _thread.wait();
 #elif defined(__BEOS__)
       status_t junk;

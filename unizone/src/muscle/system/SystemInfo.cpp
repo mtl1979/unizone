@@ -169,8 +169,10 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
          // And it can't hurt to at least try it under other OS's, anyway...
          char linkName[64]; sprintf(linkName, "/proc/%i/exe", getpid());
          char linkVal[1024];
-         if (readlink(linkName, linkVal, sizeof(linkVal)) >= 0)
+         int rl = readlink(linkName, linkVal, sizeof(linkVal));
+         if ((rl >= 0)&&(rl < (int)sizeof(linkVal)))
          {
+            linkVal[rl] = '\0';  // gotta terminate the string!
             char * lastSlash = strrchr(linkVal, '/');  // cut out the executable name, we only want the dir
             if (lastSlash) *lastSlash = '\0';
             found = true;

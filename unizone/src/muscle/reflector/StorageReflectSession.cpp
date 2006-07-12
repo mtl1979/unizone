@@ -1184,7 +1184,7 @@ GetSubtreesCallback(DataNode & node, void * ud)
 
    void ** args    = (void **)ud;
    Message * reply = (Message *) args[0];
-   int32 maxDepth  = (int32) args[1];
+   int32 maxDepth  = (int32) ((long)args[1]);
 
    bool inMyOwnSubtree = false;  // default:  actual value will only be calculated if it makes a difference
    bool reflectToSelf = GetReflectToSelf();

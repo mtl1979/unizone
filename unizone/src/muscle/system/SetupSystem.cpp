@@ -182,7 +182,7 @@ uint64 GetRunTime64()
                uint64 qpcTimeElapsed = ret          - _lastCheckQPCTime;
                if ((muscleMax(getTimeElapsed, qpcTimeElapsed) - muscleMin(getTimeElapsed, qpcTimeElapsed)) > 500000)
                {
-                  LogTime(MUSCLE_LOG_WARNING, "QueryPerformanceCounter() is buggy, reverting to timeGetTime() method instead!\n");
+                  //LogTime(MUSCLE_LOG_DEBUG, "QueryPerformanceCounter() is buggy, reverting to timeGetTime() method instead!\n");
                   _brokenQPCOffset = (_lastCheckQPCTime-_lastCheckGetTime);
                   ret = (((uint64)timeGetTime())*1000) + _brokenQPCOffset;
                }

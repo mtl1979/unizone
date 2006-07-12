@@ -376,7 +376,7 @@ uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
    const char * minute = tok();
    const char * second = tok();
 
-#ifdef WIN32
+#if defined(WIN32) && defined(WINXP)
    SYSTEMTIME st; memset(&st, 0, sizeof(st));
    st.wYear      = (WORD) (year   ? atoi(year)   : 0);
    st.wMonth     = (WORD) (month  ? atoi(month)  : 0);
@@ -390,24 +390,24 @@ uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
       TIME_ZONE_INFORMATION tzi;
       if (GetTimeZoneInformation(&tzi) != TIME_ZONE_ID_INVALID) 
       {
-#if defined(__BORLANDC__) || (defined(_MSC_VER) && (_MSC_VER <= 1200))
+# if defined(__BORLANDC__) || (defined(_MSC_VER) && (_MSC_VER <= 1200))
          // Some compilers' headers don't have this call, so we have to do it the hard way
          HMODULE lib = LoadLibrary(TEXT("kernel32.dll"));
          if (lib)
          {
-#if defined(_MSC_VER)
+#  if defined(_MSC_VER)
             typedef BOOL (*TzSpecificLocalTimeToSystemTimeProc) (IN LPTIME_ZONE_INFORMATION lpTimeZoneInformation, IN LPSYSTEMTIME lpLocalTime, OUT LPSYSTEMTIME lpUniversalTime);
-#else
+#  else
             typedef WINBASEAPI BOOL WINAPI (*TzSpecificLocalTimeToSystemTimeProc) (IN LPTIME_ZONE_INFORMATION lpTimeZoneInformation, IN LPSYSTEMTIME lpLocalTime, OUT LPSYSTEMTIME lpUniversalTime);
-#endif
+#  endif
 
             TzSpecificLocalTimeToSystemTimeProc tzProc = (TzSpecificLocalTimeToSystemTimeProc) GetProcAddress(lib, "TzSpecificLocalTimeToSystemTime");
             if (tzProc) tzProc(&tzi, &st, &st);
             if (lib != NULL) FreeLibrary(lib);
          }
-#else
+# else
          (void) TzSpecificLocalTimeToSystemTime(&tzi, &st, &st);
-#endif
+# endif
       }
    }
 

@@ -12,12 +12,17 @@
 # include <pthread.h>
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
 # include <windows.h>
-#elif defined(QT_THREAD_SUPPORT)
-# include <qthread.h>
-# include <qmutex.h>
-# include <qwaitcondition.h>
-# if QT_VERSION >= 0x030200
+#elif defined(MUSCLE_QT_HAS_THREADS)
+# if QT_VERSION >= 0x040000
+#  include <QThread>
+#  include <QWaitCondition>
 #  define QT_HAS_THREAD_PRIORITIES
+# else
+#  include <qthread.h>
+#  include <qwaitcondition.h>
+#  if QT_VERSION >= 0x030200
+#   define QT_HAS_THREAD_PRIORITIES
+#  endif
 # endif
 #elif defined(__BEOS__)
 # include <kernel/OS.h>
@@ -359,7 +364,7 @@ private:
    HANDLE _thread;
    DWORD _threadID;
    static DWORD WINAPI InternalThreadEntryFunc(LPVOID This) {((Thread*)This)->InternalThreadEntryAux(); return 0;}
-#elif defined(QT_THREAD_SUPPORT)
+#elif defined(MUSCLE_QT_HAS_THREADS)
    class MuscleQThread : public QThread
    {
    public:
@@ -367,7 +372,11 @@ private:
 
       virtual void run() 
       {
+#if QT_VERSION >= 0x040000
+         _owner->_internalThreadHandle = QThread::currentThreadId(); // for use by IsCallerInternalThread()
+#else
          _owner->_internalThreadHandle = QThread::currentThread(); // for use by IsCallerInternalThread()
+#endif
          _owner->_waitForHandleMutex->lock();   // won't return until owner is inside wait()
          _owner->_waitForHandleSet->wakeOne();  // let main thread know we have set the _internalThreadHandle
          _owner->_waitForHandleMutex->unlock(); // clean up

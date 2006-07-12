@@ -5,7 +5,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
-static const uint32 QMTT_SIGNAL_EVENT = 8360447;  // why yes, this is a completely arbitrary number
+static const uint32 QMTT_SIGNAL_EVENT = QEvent::User+14837;  // why yes, this is a completely arbitrary number
 
 QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const char * name) : QObject(parent, name)
 {
