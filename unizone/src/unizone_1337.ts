@@ -1586,42 +1586,46 @@ Date: %4</translation>
     </message>
     <message>
         <source>Level 1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 2</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 3</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 4</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 5</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 6</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 7</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 8</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 9</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Compression</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Level %1</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

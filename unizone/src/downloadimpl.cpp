@@ -243,15 +243,15 @@ WDownload::WDownload(QWidget * parent, QString localID, WFileThread * ft)
 	CHECK_PTR(fULCompressionMenu);
 	
 	fULCompressionMenu->insertItem(tr("None"), ID_LEVEL0);
-	fULCompressionMenu->insertItem(tr("Level 1"), ID_LEVEL1);
-	fULCompressionMenu->insertItem(tr("Level 2"), ID_LEVEL2);
-	fULCompressionMenu->insertItem(tr("Level 3"), ID_LEVEL3);
-	fULCompressionMenu->insertItem(tr("Level 4"), ID_LEVEL4);
-	fULCompressionMenu->insertItem(tr("Level 5"), ID_LEVEL5);
-	fULCompressionMenu->insertItem(tr("Level 6"), ID_LEVEL6);
-	fULCompressionMenu->insertItem(tr("Level 7"), ID_LEVEL7);
-	fULCompressionMenu->insertItem(tr("Level 8"), ID_LEVEL8);
-	fULCompressionMenu->insertItem(tr("Level 9"), ID_LEVEL9);
+	fULCompressionMenu->insertItem(tr("Level %1").arg(1), ID_LEVEL1);
+	fULCompressionMenu->insertItem(tr("Level %1").arg(2), ID_LEVEL2);
+	fULCompressionMenu->insertItem(tr("Level %1").arg(3), ID_LEVEL3);
+	fULCompressionMenu->insertItem(tr("Level %1").arg(4), ID_LEVEL4);
+	fULCompressionMenu->insertItem(tr("Level %1").arg(5), ID_LEVEL5);
+	fULCompressionMenu->insertItem(tr("Level %1").arg(6), ID_LEVEL6);
+	fULCompressionMenu->insertItem(tr("Level %1").arg(7), ID_LEVEL7);
+	fULCompressionMenu->insertItem(tr("Level %1").arg(8), ID_LEVEL8);
+	fULCompressionMenu->insertItem(tr("Level %1").arg(9), ID_LEVEL9);
 
 	fULCompressionMenu->setItemChecked(ID_LEVEL0, true);
 	fULCompressionMenu->setEnabled(false); // Disabled by default
