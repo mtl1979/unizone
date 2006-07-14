@@ -232,15 +232,18 @@ WinShareWindow::GotUpdateCmd(const QString & key, const QString & value)
 	}
 	else if (key == "removeserver")
 	{
-		// try to find the server
-		for (int i = 0; i < fServerList->count(); i++)
+		if (server != fServer) // Don't try to remove current server
 		{
-			QString s = fServerList->text(i).lower().stripWhiteSpace();
-			if (s == server)
+			// try to find the server
+			for (int i = 0; i < fServerList->count(); i++)
 			{
-				// wipe the guy out
-				fServerList->removeItem(i);
-				i--;	// go down one...
+				QString s = fServerList->text(i).lower().stripWhiteSpace();
+				if (s == server)
+				{
+					// wipe the guy out
+					fServerList->removeItem(i);
+					i--;	// go down one...
+				}
 			}
 		}
 	}
