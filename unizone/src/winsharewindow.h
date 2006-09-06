@@ -315,6 +315,8 @@ private:
 	bool fAway;
 	bool fScanning;				// Is File Scan Thread active?
 
+	int  timerID;               // ID of timer to update timestamps
+
 	bool fDisconnect;			// true : disconnected prematurely
 	bool fDisconnectFlag;		// false: no disconnects
 								// true : user disconnection (for when file sharing disabled)

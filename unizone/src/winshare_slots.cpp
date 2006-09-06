@@ -345,6 +345,7 @@ WinShareWindow::Preferences()
 	bool oldSharing = fSettings->GetSharingEnabled();
 	bool oldLogging = fSettings->GetLogging();
 	bool oldFirewalled = fSettings->GetFirewalled();
+	bool oldStamps = fSettings->GetTimeStamps();
 
 	if (prefs->exec() == QDialog::Accepted)	// only do the below code if the dialog was ACCEPTED!
 	{
@@ -422,6 +423,17 @@ WinShareWindow::Preferences()
 			pLock.Unlock();
 
 			fChannels->StopLogging();
+		}
+
+		if (oldStamps && !fSettings->GetTimeStamps())
+		{
+			setStatus(QString::null, 3);
+			killTimer(timerID);
+			timerID = 0;
+		}
+		else if (!oldStamps && fSettings->GetTimeStamps())
+		{
+			timerID = startTimer(1000);
 		}
 	}
 }

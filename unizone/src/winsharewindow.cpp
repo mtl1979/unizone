@@ -133,6 +133,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fFileScanThread = NULL;
 	fFilesScanned = false;
 	fMaxUsers = 0;
+	timerID = 0;
 	fPicViewer = new WPicViewer(NULL);
 	CHECK_PTR(fPicViewer);
 
@@ -287,7 +288,8 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fResolverThread->start();
 
 	fFileShutdownFlag = false;
-	startTimer(1000);
+	if (fSettings->GetTimeStamps())
+		timerID = startTimer(1000);
 
 	if (fSettings->GetSharingEnabled())
 		ScanShares();
@@ -385,6 +387,12 @@ WinShareWindow::~WinShareWindow()
 void
 WinShareWindow::Cleanup()
 {
+	if (timerID != 0) 
+	{
+		killTimer(timerID);
+		timerID = 0;
+	}
+
 	if (_ttpFiles.GetNumItems() > 0)
 	{
 		TTPInfo * ttpInfo;
@@ -1672,7 +1680,6 @@ WinShareWindow::SaveSettings()
 	for ( unsigned int x = 0; x < fResumeMap.GetNumItems(); x++ )
 	{
 		fSettings->AddResumeItem(fResumeMap[x]);
-		i++;
 	}
 	rLock.Unlock();
 	fSettings->SetResumeCount(fResumeMap.GetNumItems());
@@ -2321,20 +2328,22 @@ WinShareWindow::UpdateShares()
 void
 WinShareWindow::timerEvent(QTimerEvent *)
 {
-	setStatus(GetTimeStamp2(), 3);
-	if (
-		fSettings->GetTimeStamps() && 
-		(fNetClient->IsLoggedIn() && fNetClient->LocalSessionID() != QString::null)
-		)
+	if (fSettings->GetTimeStamps())
 	{
-		uint64 fLoginTime = GetCurrentTime64() - fNetClient->LoginTime();
-		if (fLoginTime >= 1000000)
+		setStatus(GetTimeStamp2(), 3);
+		if ( 
+			(fNetClient->IsLoggedIn() && fNetClient->LocalSessionID() != QString::null)
+			)
 		{
-			QString tmp = tr("Unizone - User #%1 on %2").arg(fNetClient->LocalSessionID()).arg(fNetClient->GetServer());
-			tmp += " (";
-			tmp += tr("Logged In: %1").arg(MakeHumanDiffTime(fLoginTime));
-			tmp += ")";
-			setCaption(tmp);
+			uint64 fLoginTime = GetCurrentTime64() - fNetClient->LoginTime();
+			if (fLoginTime >= 1000000)
+			{
+				QString tmp = tr("Unizone - User #%1 on %2").arg(fNetClient->LocalSessionID()).arg(fNetClient->GetServer());
+				tmp += " (";
+				tmp += tr("Logged In: %1").arg(MakeHumanDiffTime(fLoginTime));
+				tmp += ")";
+				setCaption(tmp);
+			}
 		}
 	}
 }
