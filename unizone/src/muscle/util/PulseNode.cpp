@@ -67,7 +67,7 @@ void PulseNode :: GetPulseTimeAux(uint64 now, uint64 & minPulseTime)
          TCHECKPOINT;
 
          HashtableIterator<PulseNode *, bool> iter(_children);
-         PulseNode * nextKey;
+         PulseNode * nextKey=NULL;  // shut the compiler up
          while(iter.GetNextKey(nextKey) == B_NO_ERROR) 
          {
             TCHECKPOINT;
@@ -102,7 +102,7 @@ void PulseNode :: PulseAux(uint64 now)
       {
          TCHECKPOINT;
          HashtableIterator<PulseNode *, bool> iter(_children);
-         PulseNode * nextKey;
+         PulseNode * nextKey=NULL;  // shut the compiler up
          while(iter.GetNextKey(nextKey) == B_NO_ERROR) 
          {
             TCHECKPOINT;

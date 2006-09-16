@@ -175,7 +175,7 @@ ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _
 }
 
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
-static void SafeCloseHandle(HANDLE & h)
+static void SafeCloseHandle(::HANDLE & h)
 {
    if (h != INVALID_HANDLE_VALUE)
    {
@@ -232,14 +232,14 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
       saAttr.bInheritHandle = true;
    }
 
-   HANDLE childStdoutRead, childStdoutWrite;
+   ::HANDLE childStdoutRead, childStdoutWrite;
    if (CreatePipe(&childStdoutRead, &childStdoutWrite, &saAttr, 0))
    {
       if (DuplicateHandle(GetCurrentProcess(), childStdoutRead, GetCurrentProcess(), &_readFromStdout, 0, false, DUPLICATE_SAME_ACCESS))
       {
          SafeCloseHandle(childStdoutRead);  // we'll use the dup from now on
 
-         HANDLE childStdinRead, childStdinWrite;
+         ::HANDLE childStdinRead, childStdinWrite;
          if (CreatePipe(&childStdinRead, &childStdinWrite, &saAttr, 0))
          {
             if (DuplicateHandle(GetCurrentProcess(), childStdinWrite, GetCurrentProcess(), &_writeToStdin, 0, false, DUPLICATE_SAME_ACCESS))
@@ -286,7 +286,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
                      {
                         DWORD junkThreadID;
                         typedef unsigned (__stdcall *PTHREAD_START) (void *);
-                        if ((_ioThread = (HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != NULL) return B_NO_ERROR;
+                        if ((_ioThread = (::HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != NULL) return B_NO_ERROR;
                      }
                   }
                }
@@ -548,7 +548,7 @@ void ChildProcessDataIO :: IOThreadEntry()
    ChildProcessBuffer inBuf;  // bytes from the child process's stdout, waiting to go to the _slaveNotifySocket
    ChildProcessBuffer outBuf; // bytes from the _slaveNotifySocket, waiting to go to the child process's stdin
 
-   HANDLE events[] = {_wakeupSignal, _childProcess};
+   ::HANDLE events[] = {_wakeupSignal, _childProcess};
    while(_requestThreadExit == false)
    {
       // IOThread <-> UserThread i/o handling here

@@ -86,3 +86,9 @@ of your Makefile to alter muscle's behaviour:
 -DMUSCLE_AVOID_TTYDEFS
    Tells ChildProcessDataIO.cpp not to try to use the TTYDEF_* constants,
    since they are not defined in some environments (e.g. BeOS)
+
+-DMUSCLE_USE_QUERYPERFORMANCECOUNTER
+   Tells MUSCLE's GetRunTime64() to use the higher-resolution 
+   QueryPerformanceCounter() API instead of timeGetTime() when running under Windows.
+   Specifying this flag increases GetRunTime64()'s accuracy, but QueryPerformanceCounter()
+   is known not to work on some hardware.

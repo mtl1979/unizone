@@ -64,7 +64,11 @@ public:
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       , _locker(_isEnabled ? CreateMutex(NULL, false, NULL) : NULL)
 # elif defined(MUSCLE_QT_HAS_THREADS)
+#  if (QT_VERSION >= 0x040000)
+      , _locker(QMutex::Recursive)
+#  else
       , _locker(true)
+#  endif
 # elif defined(__ATHEOS__)
       , _locker(NULL) 
 # endif
@@ -170,7 +174,7 @@ private:
 # if defined(MUSCLE_USE_PTHREADS)
    mutable pthread_mutex_t _locker;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-   mutable HANDLE _locker;
+   mutable ::HANDLE _locker;
 # elif defined(MUSCLE_QT_HAS_THREADS)
    mutable QMutex _locker;
 # elif defined(__BEOS__)

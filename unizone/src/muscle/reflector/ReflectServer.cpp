@@ -261,7 +261,7 @@ ServerProcessLoop()
       {
          Log(MUSCLE_LOG_DEBUG, " and listening on port%s ", (numFuncs > 1) ? "s" : "");
          HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
-         uint16 port;
+         uint16 port=0;  // just to shut the compiler up
          int which=0;
          while(iter.GetNextKey(port) == B_NO_ERROR) Log(MUSCLE_LOG_DEBUG, "%u%s", port, (++which<numFuncs)?",":"");
       }
@@ -602,7 +602,7 @@ ServerProcessLoop()
       if ((_signalCaught == false)&&(_factories.GetNumItems() > 0))  // for some reason Accept() hangs once a signal is caught!?
       {
          HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
-         uint16 port;
+         uint16 port=0;  // just to shut the compiler up
          ReflectSessionFactoryRef * acc;
          while(iter.GetNextKeyAndValue(port, acc) == B_NO_ERROR)
          {

@@ -147,13 +147,14 @@ uint64 GetRunTime64()
 #ifdef WIN32
    TCHECKPOINT;
 
+   uint64 ret = 0;
    static Mutex _rtMutex;
    if (_rtMutex.Lock() == B_NO_ERROR)
    {
+#ifdef MUSCLE_USE_QUERYPERFORMANCECOUNTER
       TCHECKPOINT;
 
       static int64 _brokenQPCOffset = 0;
-      uint64 ret = 0;
       if (_brokenQPCOffset != 0) ret = (((uint64)timeGetTime())*1000) + _brokenQPCOffset;
       else
       {
@@ -191,15 +192,22 @@ uint64 GetRunTime64()
             _lastCheckQPCTime = ret;
          }
       }
+#endif
+      if (ret == 0)
+      {
+         static uint32 _prevVal    = 0;
+         static uint64 _wrapOffset = 0;
+         
+         uint32 newVal = (uint32) timeGetTime();
+         if (newVal < _prevVal) _wrapOffset += (((uint64)1)<<32); 
+         ret = (_wrapOffset+newVal)*1000;  // convert to microseconds
+         _prevVal = newVal;
+      }
       _rtMutex.Unlock();
-      if (ret > 0) return ret;
    }
-
-   // fallback method: convert milliseconds to microseconds -- will wrap after 49.7 days, doh!
-   TCHECKPOINT;
-   return (((uint64)timeGetTime())*1000);
+   return ret;
 #else
-# if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined (MUSCLE_POWERPC_TIMEBASE_HZ)
+# if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined(MUSCLE_POWERPC_TIMEBASE_HZ)
    TCHECKPOINT;
    while(1)
    {
@@ -216,14 +224,38 @@ uint64 GetRunTime64()
 # else
    TCHECKPOINT;
 
-   // default method:  use POSIX commands
+   // default implementation:  use POSIX API
    static clock_t _ticksPerSecond = 0;
-
    if (_ticksPerSecond <= 0) _ticksPerSecond = sysconf(_SC_CLK_TCK);
+   if (_ticksPerSecond > 0)
+   {
+      if (sizeof(clock_t) > 4) 
+      {
+         // Easy case:  with a wide clock_t, we don't need to worry about it wrapping
+         struct tms junk; clock_t newTicks = (clock_t) times(&junk);
+         return ((((uint64)newTicks)*1000000)/_ticksPerSecond);
+      }
+      else
+      {
+         // Oops, clock_t is skinny enough that it might wrap.  So we need to watch for that.
+         static Mutex _rtMutex;
+         if (_rtMutex.Lock() == B_NO_ERROR)
+         {
+            static uint32 _prevVal;
+            static uint64 _wrapOffset = 0;
+            
+            struct tms junk; clock_t newTicks = (clock_t) times(&junk);
+            uint32 newVal = (uint32) newTicks;
+            if (newVal < _prevVal) _wrapOffset += (((uint64)1)<<32);
+            uint64 ret = ((_wrapOffset+newVal)*1000000)/_ticksPerSecond;  // convert to microseconds
+            _prevVal = newTicks;
 
-   struct tms junk;
-   int64 curTicks = (int64) times(&junk);
-   return ((_ticksPerSecond > 0)&&(curTicks >= 0)) ? ((curTicks*1000000)/_ticksPerSecond) : 0;
+            _rtMutex.Unlock();
+            return ret;
+         }
+      }
+   }
+   return 0;  // Oops?
 # endif
 #endif
 }

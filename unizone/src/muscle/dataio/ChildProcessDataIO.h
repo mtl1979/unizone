@@ -109,12 +109,12 @@ private:
    void IOThreadEntry();
    void IOThreadAbort();
    static DWORD WINAPI IOThreadEntryFunc(LPVOID This) {((ChildProcessDataIO*)This)->IOThreadEntry(); return 0;}
-   HANDLE _readFromStdout;
-   HANDLE _writeToStdin;
-   HANDLE _ioThread;
-   HANDLE _wakeupSignal;
-   HANDLE _childProcess;
-   HANDLE _childThread;
+   ::HANDLE _readFromStdout;
+   ::HANDLE _writeToStdin;
+   ::HANDLE _ioThread;
+   ::HANDLE _wakeupSignal;
+   ::HANDLE _childProcess;
+   ::HANDLE _childThread;
    int _masterNotifySocket;
    int _slaveNotifySocket;
    volatile bool _requestThreadExit;

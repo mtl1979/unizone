@@ -73,12 +73,61 @@ status_t ParseArgs(const String & line, Message & addTo)
       lastCharWasBackslash = (c == '\\');
    }
    StringTokenizer tok(tokenizeThis()," \t\r\n");
-   const char * next;
-   while((next = tok()) != NULL)
+   const char * t = tok();
+   while(t)
    {
-      String n(next);
+      String n(t);
       n.Replace(GUNK_CHAR, ' ');
-      if (ParseArg(n, addTo) != B_NO_ERROR) return B_ERROR;
+
+      // Check to see if the next token is the equals sign...
+      const char * next = tok();
+      if ((next)&&(next[0] == '='))
+      {
+         if (next[1] != '\0')
+         {
+            // It's the "x =5" case (2 tokens)
+            String n2(next);
+            n2.Replace(GUNK_CHAR, ' ');
+            if (ParseArg(n+n2, addTo) != B_NO_ERROR) return B_ERROR;
+            t = tok();
+         }
+         else
+         {
+            // It's the "x = 5" case (3 tokens)
+            next = tok();  // find out what's after the equal sign
+            if (next)
+            {
+               String n3(next);
+               n3.Replace(GUNK_CHAR, ' ');
+               if (ParseArg(n+"="+n3, addTo) != B_NO_ERROR) return B_ERROR;
+               t = tok();
+            }
+            else 
+            {
+               if (ParseArg(n, addTo) != B_NO_ERROR) return B_ERROR;  // for the "x =" case, just parse x and ignore the equals
+               t = NULL;
+            }
+         }
+      }
+      else if (n.EndsWith('='))
+      {
+         // Try to attach the next keyword
+         t = tok();
+         if (t)
+         {
+            String n4(t);
+            n4.Replace(GUNK_CHAR, ' ');
+            if (ParseArg(n+n4, addTo) != B_NO_ERROR) return B_ERROR;
+            t = tok();
+         }
+         else if (ParseArg(n, addTo) != B_NO_ERROR) return B_ERROR;
+      }
+      else
+      {
+         // Nope, it's just the normal case
+         if (ParseArg(n, addTo) != B_NO_ERROR) return B_ERROR;
+         t = next;
+      }
    }
    return B_NO_ERROR;
 }
@@ -578,6 +627,24 @@ status_t DenybbleizeData(const String & nybbleizedText, ByteBuffer & retBuf)
       *b++ = ((c1-'A')<<0)|((c2-'A')<<4);
    }
    return B_NO_ERROR;
+}
+
+String NybbleizeString(const String & s)
+{
+   String retStr;
+   ByteBuffer inBuf; inBuf.AdoptBuffer(s.Length(), (uint8 *) s());
+
+   status_t ret = NybbleizeData(inBuf, retStr);
+   (void) inBuf.ReleaseBuffer();
+
+   if (ret != B_NO_ERROR) retStr.Clear();
+   return retStr;
+}
+
+String DenybbleizeString(const String & ns)
+{
+   ByteBuffer outBuf;
+   return (DenybbleizeData(ns, outBuf) == B_NO_ERROR) ? String((const char *) outBuf.GetBuffer(), outBuf.GetNumBytes()) : String();
 }
 
 String Inet_NtoA(uint32 ipAddress)

@@ -34,7 +34,7 @@ public:
     *                this String (not including the NUL terminator byte).
     *                Default is unlimited (i.e. scan the entire string no matter how long it is)
     */
-   String(const char * str = NULL, uint32 maxLen = ((uint32)-1)) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0) {if (str) (void) SetCstr(str, maxLen);}
+   String(const char * str = NULL, uint32 maxLen = ((uint32)-1)) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0) {if (str) (void) SetCstr(str, maxLen); else _smallBuffer[0] = '\0';}
 
    /** Copy Constructor. 
      * @param str String to become a copy of.

@@ -196,6 +196,25 @@ status_t NybbleizeData(const ByteBuffer & buf, String & retString);
   */
 status_t DenybbleizeData(const String & nybbleizedText, ByteBuffer & retBuf);
 
+/** Convenience function:  Returns a string which is a nybbleized representation of
+  * the passed-in string's contents (not including its NUL terminator byte)
+  * @param str A string to nybbleize
+  * @returns A nybbleized equivalent of (str), as described in NybbleizeData().
+  */
+String NybbleizeString(const String & str);
+
+/** Convenience function:  Returns a string which is the denybbleized 
+  * representation of the passed-in nybbleized string.  
+  * @param nybStr A string to denybbleize.  Note that not all nybbleized
+  *               strings can be de-nybblized correctly back into a 
+  *               String object:  in particular, if the de-nybbleized
+  *               data contains any NUL bytes, then the String
+  *               returned by this function will be truncated at the first NUL.
+  *               If you need to be able to decode any legal nybbleized string,
+  *               call NybbleizeData() instead of this function.
+  */
+String DenybbleizeString(const String & nybStr);
+
 /** A more convenient version of Inet_Ntoa().  Given an IP address, returns a String
   * representation of that address (e.g. "192.168.0.1").
   */

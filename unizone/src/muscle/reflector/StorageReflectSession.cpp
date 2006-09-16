@@ -827,9 +827,9 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
 
          case PR_COMMAND_REMOVEDATA:
          {
-               NodePathMatcher matcher;
-               matcher.PutPathsFromMessage(PR_NAME_KEYS, PR_NAME_FILTERS, msg, NULL);
-               DoRemoveData(matcher, msg.HasName(PR_NAME_REMOVE_QUIETLY));
+            NodePathMatcher matcher;
+            matcher.PutPathsFromMessage(PR_NAME_KEYS, PR_NAME_FILTERS, msg, NULL);
+            DoRemoveData(matcher, msg.HasName(PR_NAME_REMOVE_QUIETLY));
          }
          break;
 

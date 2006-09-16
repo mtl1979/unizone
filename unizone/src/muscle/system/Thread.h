@@ -361,7 +361,7 @@ private:
    pthread_t _thread;
    static void * InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return NULL;}
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-   HANDLE _thread;
+   ::HANDLE _thread;
    DWORD _threadID;
    static DWORD WINAPI InternalThreadEntryFunc(LPVOID This) {((Thread*)This)->InternalThreadEntryAux(); return 0;}
 #elif defined(MUSCLE_QT_HAS_THREADS)

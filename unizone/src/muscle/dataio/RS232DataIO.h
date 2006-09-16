@@ -68,9 +68,9 @@ private:
 #if defined(WIN32) || defined(CYGWIN)
    void IOThreadEntry();
    static DWORD WINAPI IOThreadEntryFunc(LPVOID This) {((RS232DataIO*)This)->IOThreadEntry(); return 0;}
-   HANDLE _handle;
-   HANDLE _ioThread;
-   HANDLE _wakeupSignal;
+   ::HANDLE _handle;
+   ::HANDLE _ioThread;
+   ::HANDLE _wakeupSignal;
    OVERLAPPED _ovWait;
    OVERLAPPED _ovRead;
    OVERLAPPED _ovWrite;

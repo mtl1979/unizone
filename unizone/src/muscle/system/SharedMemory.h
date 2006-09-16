@@ -110,9 +110,9 @@ private:
    status_t LockArea(bool readOnly);
 
 #ifdef WIN32
-   HANDLE _mutex;
-   HANDLE _file;
-   HANDLE _map;
+   ::HANDLE _mutex;
+   ::HANDLE _file;
+   ::HANDLE _map;
    String _fileName;
 #else
    status_t AdjustSemaphore(short delta);

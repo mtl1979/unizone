@@ -388,6 +388,14 @@ public:
     */
    status_t Put(const KeyType& key, const ValueType& value) {return (PutAux(ComputeHash(key), key, value, NULL, NULL) != NULL) ? B_NO_ERROR : B_ERROR;}
 
+   /** Convenience method:  For each key/value pair in the passed-in-table, Put()'s that
+     * key/value pair into this table.  Any existing items in this table with the same
+     * key as any in (pairs) will be overwritten.
+     * @param pairs A table full of items to Put() into this table.
+     * @returns B_NO_ERROR on success, or B_ERROR on failue (out of memory?)
+     */
+   status_t Put(const Hashtable<KeyType, ValueType, HashFunctorType> & pairs);
+
    /** Removes a mapping from the table.  (O(1) removal time)
     *  @param key The key of the key-value mapping to remove.
     *  @return B_NO_ERROR if a key was found and the mapping removed, or B_ERROR if the key wasn't found.
@@ -400,6 +408,14 @@ public:
     *  @return B_NO_ERROR if a key was found and the mapping removed, or B_ERROR if the key wasn't found.
     */
    status_t Remove(const KeyType& key, ValueType & setRemovedValue) {return RemoveAux(key, &setRemovedValue);}
+
+   /** Convenience method:  For each key/value pair in the passed-in-table, Remove()'s that
+     * key/value pair from this table.  Any existing items in this table with the same
+     * key as any in (pairs) will be overwritten.
+     * @param pairs A table full of items to Put() into this table.
+     * @returns the number of items removed from this table.
+     */
+   uint32 Remove(const Hashtable<KeyType, ValueType, HashFunctorType> & pairs);
 
    /** Removes all mappings from the hash table.  (O(N) clear time)
     *  @param releaseCachedData If set true, we will immediately free any buffers we may contain.  
@@ -1452,6 +1468,28 @@ Hashtable<KeyType,ValueType,HashFunctorType>::NextPrime(uint32 start) const
       for (i = 3; i * i <= start; i += 2) if (start % i == 0) break;
       if (i * i > start) return start;
    }
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+Hashtable<KeyType,ValueType,HashFunctorType>::Put(const Hashtable<KeyType,ValueType,HashFunctorType> & pairs)
+{
+   HashtableIterator<KeyType, ValueType> iter(pairs);
+   const KeyType * nextKey;
+   const ValueType * nextVal;
+   while(iter.GetNextKeyAndValue(nextKey, nextVal) == B_NO_ERROR) if (Put(*nextKey, *nextVal) != B_NO_ERROR) return B_ERROR;
+   return B_NO_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+uint32 
+Hashtable<KeyType,ValueType,HashFunctorType>::Remove(const Hashtable<KeyType,ValueType,HashFunctorType> & pairs)
+{
+   uint32 removeCount = 0;
+   HashtableIterator<KeyType, ValueType> iter(pairs);
+   const KeyType * nextKey;
+   while((HasItems())&&((nextKey = iter.GetNextKey()) != NULL)) if (Remove(*nextKey) == B_NO_ERROR) removeCount++;
+   return removeCount;
 }
 
 //===============================================================

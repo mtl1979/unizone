@@ -85,7 +85,7 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
                   {
                      DWORD junkThreadID;
                      typedef unsigned (__stdcall *PTHREAD_START) (void *);
-                     if ((_ioThread = (HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != NULL) okay = true;
+                     if ((_ioThread = (::HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != NULL) okay = true;
                   }
                }
                else okay = true;
@@ -299,7 +299,7 @@ status_t RS232DataIO :: GetAvailableSerialPortNames(Queue<String> & retList)
       {
          // Try to open the port
          char buf[128]; sprintf(buf, "COM%lu", i);
-         HANDLE hPort = CreateFileA(buf, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+         ::HANDLE hPort = CreateFileA(buf, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
          if (hPort == INVALID_HANDLE_VALUE)
          {
             DWORD err = GetLastError();
@@ -431,7 +431,7 @@ void RS232DataIO :: IOThreadEntry()
    uint32 pendingWriteBytes = 0;
    bool isWaiting = false;
    bool checkRead = false;
-   HANDLE events[] = {_ovWait.hEvent, _ovRead.hEvent, _ovWrite.hEvent, _wakeupSignal};  // order is important!!!
+   ::HANDLE events[] = {_ovWait.hEvent, _ovRead.hEvent, _ovWrite.hEvent, _wakeupSignal};  // order is important!!!
    while(_requestThreadExit == false)
    {
       if (isWaiting == false)

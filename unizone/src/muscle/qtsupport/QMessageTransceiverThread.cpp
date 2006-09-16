@@ -24,7 +24,11 @@ status_t QMessageTransceiverThread :: SendMessageToSessions(const MessageRef & m
 
 void QMessageTransceiverThread :: SignalOwner()
 {
+#if QT_VERSION >= 0x040000
+   QEvent * evt = newnothrow QEvent((QEvent::Type)QMTT_SIGNAL_EVENT);
+#else
    QCustomEvent * evt = newnothrow QCustomEvent(QMTT_SIGNAL_EVENT);
+#endif
    if (evt) QApplication::postEvent(this, evt);
        else WARN_OUT_OF_MEMORY;
 }

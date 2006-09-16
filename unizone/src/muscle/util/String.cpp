@@ -546,7 +546,8 @@ status_t String::EnsureBufferSize(uint32 requestedBufLen, bool retainValue)
             {
                // Oops, muscleRealloc() won't do.... we'll just have to copy the bytes over
                char * newBuf = (char *) muscleAlloc(newBufLen);
-               if (newBuf == NULL) 
+               if (newBuf) *newBuf = '\0';  // ensure NUL termination
+               else
                {
                   WARN_OUT_OF_MEMORY;
                   return B_ERROR;
@@ -562,7 +563,8 @@ status_t String::EnsureBufferSize(uint32 requestedBufLen, bool retainValue)
             // If the caller doesn't care about retaining the value, then it's
             // probably cheaper just to free our buffer and get a new one.
             char * newBuf = (char *) muscleAlloc(newBufLen);
-            if (newBuf == NULL) 
+            if (newBuf) *newBuf = '\0';  // ensure the new buffer is terminated
+            else
             {
                WARN_OUT_OF_MEMORY;
                return B_ERROR;
