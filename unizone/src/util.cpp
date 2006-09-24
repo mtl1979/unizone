@@ -588,26 +588,31 @@ MakeSizeString(uint64 s)
 {
 	QString result, postFix;
 	double n = (int64) s;
-	postFix = "B";
+	postFix = qApp->translate("MakeSizeString","B");
 	if (n > 1024.0f)	// > 1 kB?
 	{
 		n /= 1024.0f;
-		postFix = "kB"; // we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
+		postFix = qApp->translate("MakeSizeString","kB"); // we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
 		
 		if (n > 1024.0f)	// > 1 MB?
 		{
 			n /= 1024.0f;
-			postFix = "MB";
+			postFix = qApp->translate("MakeSizeString","MB");
 			
 			if (n > 1024.0f)	// > 1 GB?
 			{
 				n /= 1024.0f;
-				postFix = "GB";
+				postFix = qApp->translate("MakeSizeString","GB");
 			}
 		}
+		result.sprintf("%.2f ", n);
 	}
-	result.sprintf("%.2f ", n);
+	else
+	{
+		result.sprintf(UINT64_FORMAT_SPEC " ", s);
+	}
 	result += postFix;
+
 	return result;	
 }
 

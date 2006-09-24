@@ -705,6 +705,25 @@ Päiväys: %4</translation>
     </message>
 </context>
 <context>
+    <name>MakeSizeString</name>
+    <message>
+        <source>B</source>
+        <translation>t</translation>
+    </message>
+    <message>
+        <source>kB</source>
+        <translation>kt</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>Mt</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <translation>Gt</translation>
+    </message>
+</context>
+<context>
     <name>MenuBar</name>
     <message>
         <source>&amp;Connect</source>
@@ -4384,8 +4403,8 @@ Päiväys: %4</translation>
         <translation>Palvelimen juuri: %1</translation>
     </message>
     <message>
-        <source>Memory usage: %1 MB of %2 MB used</source>
-        <translation>Muistin kulutus: %1 Mt / %2 Mt käytetty</translation>
+        <source>Memory usage: %1 of %2 used</source>
+        <translation>Muistin kulutus: %1 / %2 käytetty</translation>
     </message>
     <message>
         <source>Watch pattern cleared.</source>
@@ -4604,8 +4623,8 @@ Päiväys: %4</translation>
         <translation>Jakojen tutkinta valmis.</translation>
     </message>
     <message>
-        <source>Memory used: %1 bytes</source>
-        <translation>Muistia käytössä: %1 tavua</translation>
+        <source>Memory used: %1</source>
+        <translation>Muistia käytössä: %1</translation>
     </message>
     <message>
         <source>/memory - show number of bytes Unizone is using memory</source>

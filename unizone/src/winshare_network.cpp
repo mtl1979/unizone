@@ -1165,7 +1165,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 #ifdef MUSCLE_ENABLE_MEMORY_TRACKING
 		else if (CompareCommand(sendText, "/memory"))
 		{
-			PrintSystem(tr("Memory used: %1 bytes").arg(GetNumAllocatedBytes()));
+			PrintSystem(tr("Memory used: %1").arg(MakeSizeString(GetNumAllocatedBytes())));
 		}
 #endif
 		else if (CompareCommand(sendText, "/search"))

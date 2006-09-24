@@ -270,10 +270,10 @@ WinShareWindow::ServerParametersReceived(MessageRef msg)
 		if ((msg()->FindInt64(PR_NAME_SERVER_MEM_AVAILABLE, &memA) == B_OK) &&
 			(msg()->FindInt64(PR_NAME_SERVER_MEM_USED, &memU) == B_OK))
 		{
-			const float one = 1024.0f * 1024.0f;
-			float ma = ((float)memA) / one;
-			float mu = ((float)memU) / one;
-			SendSystemEvent(tr("Memory usage: %1 MB of %2 MB used").arg(mu).arg(ma));
+			if (memU > 0)
+			{
+				SendSystemEvent(tr("Memory usage: %1 of %2 used").arg(MakeSizeString(memU)).arg(MakeSizeString(memA)));
+			}
 		}
 	}
 }

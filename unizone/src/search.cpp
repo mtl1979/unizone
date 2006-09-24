@@ -266,11 +266,7 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
 				CHECK_PTR(info->fiListItem);
 				
-#ifdef WIN32
-				PRINT("Setting key to %I64i\n", size);
-#else
-				PRINT("Setting key to %lli\n", size);
-#endif
+				PRINT("Setting key to " INT64_FORMAT_SPEC "\n", size);
 				
 				fFileList.Put(MakeKey(filename, sid), info);
 			}

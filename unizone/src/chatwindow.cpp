@@ -163,18 +163,16 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 
 		// yup... we've been mentioned...
 		temp = StripURL(gWin->GetUserName());
-		if (rlen >= temp.length()) 
+		if (rlen > temp.length()) 
 			rlen = temp.length();
 		temp.truncate(rlen);
-		QString itxt = msg;						// <postmaster@raasu.org> 20021005 -- Need to be in original case
-		QString itxt1 = itxt.left(sred);
-		QString itxt2 = itxt.mid(sred+rlen);
+		// <postmaster@raasu.org> 20021005 -- Need to be in original case
 		QString smsg;
 		if (sred > 0)
 			// <postmaster@raasu.org> 20021005 -- Don't use latin1 ()
-			smsg += itxt1;	
+			smsg += msg.left(sred);	
 		smsg += WFormat::NameSaid(temp);
-		smsg += itxt2;		// <postmaster@raasu.org> 20021005
+		smsg += msg.mid(sred+rlen);		// <postmaster@raasu.org> 20021005
 
 #ifdef _DEBUG
 		WString wmsg(smsg);

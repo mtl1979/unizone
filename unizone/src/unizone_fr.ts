@@ -628,6 +628,25 @@ Date: %4</translation>
     </message>
 </context>
 <context>
+    <name>MakeSizeString</name>
+    <message>
+        <source>B</source>
+        <translation type='unfinished'>o</translation>
+    </message>
+    <message>
+        <source>kB</source>
+        <translation type='unfinished'>ko</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation type='unfinished'>Mo</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <translation type='unfinished'>Go</translation>
+    </message>
+</context>
+<context>
     <name>MenuBar</name>
     <message>
         <source>&amp;Connect</source>
@@ -4085,8 +4104,8 @@ Date: %4</translation>
         <translation>Session root: %1</translation>
     </message>
     <message>
-        <source>Memory usage: %1 MB of %2 MB used</source>
-        <translation>Memory usage: %1 MB of %2 MB used</translation>
+        <source>Memory usage: %1 of %2 used</source>
+        <translation>Memory usage: %1 of %2 used</translation>
     </message>
     <message>
         <source>Watch pattern cleared.</source>
@@ -4289,8 +4308,8 @@ Date: %4</translation>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>Memory used: %1 bytes</source>
-        <translation>Memory used: %1 bytes</translation>
+        <source>Memory used: %1</source>
+        <translation>Memory used: %1</translation>
     </message>
     <message>
         <source>/memory - show number of bytes Unizone is using memory</source>
