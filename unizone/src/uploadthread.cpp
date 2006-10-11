@@ -485,7 +485,7 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 					if (msg()->FindString("beshare:FromUserName", &name) ==  B_OK)
 					{							
 						QString user = QString::fromUtf8(name);
-						if (user.isEmpty())
+						if ((user.isEmpty()) || (fRemoteUser == fRemoteSessionID))
 							fRemoteUser = GetUserName(fRemoteSessionID);
 						else
 							fRemoteUser = user; 
@@ -1061,10 +1061,10 @@ WUploadThread::TransferFileList(MessageRef msg)
 		
 		if (GetStringFromMessage(msg, "beshare:FromUserName", user) ==  B_OK)
 		{
-			if (!user.isEmpty())
+			if (!user.isEmpty() && (user != fRemoteSessionID))
 				fRemoteUser = user;
 		}
-		else if (fRemoteUser == QString::null)
+		if (fRemoteUser == QString::null)
 		{
 			fRemoteUser = GetUserName(fRemoteSessionID);
 		}

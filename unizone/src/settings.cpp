@@ -474,17 +474,18 @@ WSettings::Save()
 	WFile file;
 	if (file.Open(GetSettingsFile(), IO_Raw | IO_WriteOnly))
 	{
-		uint8 * buffer = new uint8[fSet()->FlattenedSize()];
+		uint32 s = fSet()->FlattenedSize();
+		uint8 * buffer = new uint8[s];
 		if (buffer)
 		{
 			fSet()->Flatten(buffer);
-			file.WriteBlock((const char *)buffer, fSet()->FlattenedSize());
+			if (file.WriteBlock((const char *)buffer, s) == s)
+				ret = true;
 			delete [] buffer;
-			ret = true;
 		}
 		file.Close();
 	}
-	else
+	if (ret == false)
 	{
 		QMessageBox::warning(NULL, qApp->translate( "WSettings", "Write Error" ), qApp->translate( "WSettings", "Couldn't save settings!" ), qApp->translate( "WSettings", "Bummer" ));
 	}

@@ -472,7 +472,7 @@ WinShareWindow::Cleanup()
 	if (fSettings)
 	{
 		PRINT("Saving settings\n");
-		SaveSettings();
+		(void) SaveSettings();
 		delete fSettings;
 		fSettings = NULL; // <postmaster@raasu.org> 20021027
 	}
@@ -1557,7 +1557,7 @@ WinShareWindow::InitToolbars()
 	}
 }
 
-void
+bool
 WinShareWindow::SaveSettings()
 {
 	// update our settings message (it's not updated until SaveSettings() is called
@@ -1712,7 +1712,7 @@ WinShareWindow::SaveSettings()
 
 	fSettings->SetInstallID(fInstallID);
 
-	fSettings->Save();
+	return fSettings->Save();
 }
 
 void

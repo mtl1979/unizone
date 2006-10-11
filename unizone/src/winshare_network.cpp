@@ -1010,8 +1010,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/save"))
 		{
 			PrintSystem(tr("Saving configuration..."));
-			SaveSettings();
-			PrintSystem(tr("Configuration saved."));
+			if (SaveSettings())
+				PrintSystem(tr("Configuration saved."));
 		}		
 		else if (CompareCommand(sendText, "/dns"))
 		{

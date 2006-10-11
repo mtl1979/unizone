@@ -444,7 +444,7 @@ private:
 	void ServerParametersReceived(MessageRef msg);
 
 	void LoadSettings();
-	void SaveSettings();
+	bool SaveSettings();
 	void EmptyUsers();
 	void SetAutoAwayTimer();
 	void WaitOnFileThread(bool);
