@@ -6,6 +6,11 @@
 #include <qfiledialog.h>
 #include <qregexp.h>
 
+#ifdef WIN32
+#include <windows.h>
+#include <shlwapi.h>
+#endif
+
 #if !defined(QT_NO_STYLE_PLATINUM)
 # include <qplatinumstyle.h>
 #endif
@@ -46,12 +51,77 @@ QString MakePath(const QString &dir, const QString &file)
 	return ret;
 }
 
+void
+#ifndef WIN32
+SetWorkingDirectory(const char *app)
+{
+	const char * wdir = strrchr(app, '/');
+
+	if (wdir)
+	{
+		char * chd = new char[wdir - app + 1]; // figure out length, and make a new string of that length
+		if (chd)
+		{
+			strncpy(chd, app, wdir - app);
+			chd[wdir - app] = 0;
+			PRINT("Setting working directory to: %s\n", chd);
+			chdir(chd);
+			delete [] chd;
+		}
+	}
+}
+#elif defined(UNICODE)
+SetWorkingDirectory()
+{
+	// we have to use some windows api to get our path...
+	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
+	CHECK_PTR(name);
+	if (GetModuleFileName(NULL,				/* current apps module */
+							name,			/* buffer */
+							MAX_PATH		/* buffer length */
+							) != 0)
+	{
+		PathRemoveFileSpec(name);
+		SetCurrentDirectory(name);
+	}
+	delete [] name;
+	name = NULL; // <postmaster@raasu.org> 20021027
+}
+#else
+SetWorkingDirectory()
+{
+	// we have to use some windows api to get our path...
+	char * name = new char[MAX_PATH];	// maximum size for Win32 filenames
+	CHECK_PTR(name);
+	if (GetModuleFileName(NULL,				/* current apps module */
+							name,			/* buffer */
+							MAX_PATH		/* buffer length */
+							) != 0)
+	{
+		PRINT("Module filename: %s\n", name);
+		PathRemoveFileSpec(name);
+		PRINT("Setting working directory to: %s\n", name);
+		SetCurrentDirectory(name);
+	}
+	delete [] name;
+	name = NULL; // <postmaster@raasu.org> 20021027
+}
+#endif
+
 int 
 main( int argc, char** argv )
 {
 	QApplication app( argc, argv );
 	QTranslator qtr( 0 );
 	QTranslator qtr2( 0 );
+
+	// Set our working directory
+
+#ifndef WIN32
+	SetWorkingDirectory(argv[0]);
+#else
+	SetWorkingDirectory();
+#endif
 
 	// Load language file
 	QFile lang("isplitter.lng");
@@ -136,6 +206,9 @@ main( int argc, char** argv )
 	app.setMainWidget(window);
 
 	window->show();
+
+	if (argc > 0)
+		window->Load(QString::fromLocal8Bit(argv[1]));
 
 	return app.exec();
 }
