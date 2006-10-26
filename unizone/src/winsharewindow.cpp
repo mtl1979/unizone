@@ -43,6 +43,7 @@
 #include "aboutdlgimpl.h"
 #include "downloadimpl.h"
 #include "downloadqueue.h"
+#include "uploadimpl.h"
 #include "winsharewindow.h"
 #include "events.h"
 #include "version.h"
@@ -129,6 +130,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	CreateDirectories();
 	gWin = this;
 	fDLWindow = NULL;
+	fULWindow = NULL;
 	fAccept = NULL;
 	fFileScanThread = NULL;
 	fFilesScanned = false;
@@ -534,9 +536,9 @@ WinShareWindow::customEvent(QCustomEvent * event)
 		case WListThread::ListDone:
 			{
 				fScanning = false;
-				if (fDLWindow)
+				if (fULWindow)
 				{
-					SignalDownload(WDownload::DequeueUploads);
+					SignalUpload(WUpload::DequeueUploads);
 				}
 				PRINT("Done sending file list\n");
 				return;
@@ -2139,7 +2141,7 @@ WinShareWindow::OpenDownload()
 	if (!fDLWindow)
 	{
 		PRINT("New DL Window\n");
-		fDLWindow = new WDownload(NULL, GetUserID(), fFileScanThread);
+		fDLWindow = new WDownload(NULL, GetUserID());
 		CHECK_PTR(fDLWindow);
 		
 		connect(fDLWindow, SIGNAL(FileFailed(const QString &, const QString &, const QString &)), 
@@ -2152,12 +2154,35 @@ WinShareWindow::OpenDownload()
 }
 
 void
+WinShareWindow::OpenUpload()
+{
+	if (!fULWindow)
+	{
+		PRINT("New UL Window\n");
+		fULWindow = new WUpload(NULL, fFileScanThread);
+		CHECK_PTR(fULWindow);
+		
+		connect(fULWindow, SIGNAL(Closed()), this, SLOT(UploadWindowClosed()));
+	}
+	fULWindow->show();
+}
+
+void
 WinShareWindow::OpenDownloads()
 {
 	if (fDLWindow && !fDLWindow->isHidden())
 		fDLWindow->hide();
 	else
 		OpenDownload();
+}
+
+void
+WinShareWindow::OpenUploads()
+{
+	if (fULWindow && fULWindow->isHidden())
+		fULWindow->hide();
+	else
+		OpenUpload();
 }
 
 void

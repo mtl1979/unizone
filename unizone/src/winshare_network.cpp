@@ -24,6 +24,8 @@
 #include "tokenizer.h"			// <postmaster@raasu.org> 20030902 -- for !remote
 #include "ulistview.h"
 #include "downloadimpl.h"
+#include "uploadimpl.h"
+#include "wtransfer.h"
 #include "filethread.h"
 #include "acronymclient.h"
 #include "netclient.h"
@@ -1881,7 +1883,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			}
 			break;
 		}
-	case WDownload::TransferNotifyRejected:
+	case WTransfer::TransferNotifyRejected:
 		{
 			QString from;
 			uint32 port;
@@ -1960,8 +1962,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				WUserRef user = fNetClient->FindUser(session);
 				if (user())
 				{
-					OpenDownload();
-					fDLWindow->AddUpload(user()->GetUserHostName(), port);
+					OpenUpload();
+					fULWindow->AddUpload(user()->GetUserHostName(), port);
 				}
 			}
 			break;
@@ -2057,8 +2059,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						acc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 						acc()->AddString(PR_NAME_SESSION, (const char *) fNetClient->LocalSessionID().utf8());
 						void * tunnelID = NULL;
-						OpenDownload();
-						if (fDLWindow->CreateTunnel(userID, hisID, tunnelID))
+						OpenUpload();
+						if (fULWindow->CreateTunnel(userID, hisID, tunnelID))
 						{
 							acc()->AddInt64("tunnel_id", (int64) hisID);
 							acc()->AddInt64("my_id", (int64) ConvertPtr(tunnelID));
@@ -2141,8 +2143,16 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				if (IsIgnored(uref()->GetUserID(), true))
 					return;
 
-				OpenDownload();
-				fDLWindow->TunnelMessage(myID, tmsg, upload); // His/her upload is our download
+				if (upload)
+				{
+					OpenDownload();
+					fDLWindow->TunnelMessage(myID, tmsg); // His/her upload is our download
+				}
+				else
+				{
+					OpenUpload();
+					fULWindow->TunnelMessage(myID, tmsg); // His/her download is our upload
+				}
 			}
 
 			break;
@@ -3129,8 +3139,8 @@ WinShareWindow::ConnectionAccepted(const SocketHolderRef &socketRef)
 	uint32 ip;
 	if (socket >= 0 && (ip = GetPeerIPAddress(socket, true)) > 0)
 	{
-		OpenDownload();
-		fDLWindow->AddUpload(socket, ip, false);
+		OpenUpload();
+		fULWindow->AddUpload(socket, ip, false);
 	}
 }
 

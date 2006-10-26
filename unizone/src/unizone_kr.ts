@@ -695,6 +695,14 @@ Date: %4</source>
         <source>Search...</source>
         <translation>찾아보기...</translation>
     </message>
+    <message>
+        <source>&amp;Uploads</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Shift+F11</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -1127,11 +1135,11 @@ Date: %4</source>
     </message>
     <message>
         <source>Sent</source>
-        <translation>보냄</translation>
+        <translation type='obsolete'>보냄</translation>
     </message>
     <message>
         <source>File Transfers</source>
-        <translation>파일 전송자</translation>
+        <translation type='obsolete'>파일 전송자</translation>
     </message>
     <message>
         <source>Queue</source>
@@ -1263,11 +1271,11 @@ Date: %4</source>
     </message>
     <message>
         <source>Unbanned</source>
-        <translation>추방 해제</translation>
+        <translation type='obsolete'>추방 해제</translation>
     </message>
     <message>
         <source>1 minute</source>
-        <translation>1 분</translation>
+        <translation type='obsolete'>1 분</translation>
     </message>
     <message>
         <source>2 minutes</source>
@@ -1291,19 +1299,19 @@ Date: %4</source>
     </message>
     <message>
         <source>1 hour</source>
-        <translation>1 시간</translation>
+        <translation type='obsolete'>1 시간</translation>
     </message>
     <message>
         <source>Infinite</source>
-        <translation>무한대</translation>
+        <translation type='obsolete'>무한대</translation>
     </message>
     <message>
         <source>Ban IP</source>
-        <translation>추방 IP</translation>
+        <translation type='obsolete'>추방 IP</translation>
     </message>
     <message>
         <source>Block</source>
-        <translation>차단</translation>
+        <translation type='obsolete'>차단</translation>
     </message>
     <message>
         <source>Invalid address! Download address for file %1 replaced with %2, it might fail!</source>
@@ -1319,7 +1327,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Queued.</source>
-        <translation>대기됨.</translation>
+        <translation type='obsolete'>대기됨.</translation>
     </message>
     <message>
         <source>Remotely Queued.</source>
@@ -1403,7 +1411,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Uploading: [%1%]</source>
-        <translation>업로드 중: [%1%]</translation>
+        <translation type='obsolete'>업로드 중: [%1%]</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
@@ -1423,7 +1431,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Packet Size</source>
-        <translation>Packet Size</translation>
+        <translation type='obsolete'>Packet Size</translation>
     </message>
     <message>
         <source>F11</source>
@@ -1439,15 +1447,15 @@ Date: %4</source>
     </message>
     <message>
         <source>%1 kB</source>
-        <translation>%1 kB</translation>
+        <translation type='obsolete'>%1 kB</translation>
     </message>
     <message>
         <source>%1 MB</source>
-        <translation>%1 MB</translation>
+        <translation type='obsolete'>%1 MB</translation>
     </message>
     <message>
         <source>%1 minutes</source>
-        <translation>%1 분</translation>
+        <translation type='obsolete'>%1 분</translation>
     </message>
     <message>
         <source>%1 B/s</source>
@@ -1463,7 +1471,7 @@ Date: %4</source>
     </message>
     <message>
         <source>None</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 1</source>
@@ -1503,11 +1511,15 @@ Date: %4</source>
     </message>
     <message>
         <source>Compression</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>Downloads</source>
+        <translation type='unfinished'>Downloads</translation>
     </message>
 </context>
 <context>
@@ -2809,6 +2821,209 @@ Date: %4</source>
     <message>
         <source>kB/s</source>
         <translation>kB/s</translation>
+    </message>
+</context>
+<context>
+    <name>WUpload</name>
+    <message>
+        <source>Status</source>
+        <translation type='unfinished'>상태</translation>
+    </message>
+    <message>
+        <source>Filename</source>
+        <translation type='unfinished'>파일명</translation>
+    </message>
+    <message>
+        <source>Sent</source>
+        <translation type='unfinished'>보냄</translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation type='unfinished'>전체</translation>
+    </message>
+    <message>
+        <source>Rate</source>
+        <translation type='unfinished'>비율</translation>
+    </message>
+    <message>
+        <source>ETA</source>
+        <translation type='unfinished'>ETA</translation>
+    </message>
+    <message>
+        <source>Elapsed</source>
+        <translation type='unfinished'>Elapsed</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type='unfinished'>사용자</translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <translation type='unfinished'>색인</translation>
+    </message>
+    <message>
+        <source>QR</source>
+        <translation type='unfinished'>QR</translation>
+    </message>
+    <message>
+        <source>Uploads</source>
+        <translation type='unfinished'>업로드</translation>
+    </message>
+    <message>
+        <source>Queue</source>
+        <translation type='unfinished'>대기열</translation>
+    </message>
+    <message>
+        <source>No Limit</source>
+        <translation type='unfinished'>제한 없음</translation>
+    </message>
+    <message>
+        <source>%1 B/s</source>
+        <translation type='unfinished'>%1 B/s</translation>
+    </message>
+    <message>
+        <source>%1 kB/s</source>
+        <translation type='unfinished'>%1 kB/s</translation>
+    </message>
+    <message>
+        <source>%1 MB/s</source>
+        <translation type='unfinished'>%1 MB/s</translation>
+    </message>
+    <message>
+        <source>Unbanned</source>
+        <translation type='unfinished'>추방 해제</translation>
+    </message>
+    <message>
+        <source>1 minute</source>
+        <translation type='unfinished'>1 분</translation>
+    </message>
+    <message>
+        <source>%1 minutes</source>
+        <translation type='unfinished'>%1 분</translation>
+    </message>
+    <message>
+        <source>1 hour</source>
+        <translation type='unfinished'>1 시간</translation>
+    </message>
+    <message>
+        <source>Infinite</source>
+        <translation type='unfinished'>무한대</translation>
+    </message>
+    <message>
+        <source>%1 kB</source>
+        <translation type='unfinished'>%1 kB</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation type='unfinished'>%1 MB</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Level %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Move Up</source>
+        <translation type='unfinished'>위로</translation>
+    </message>
+    <message>
+        <source>Move Down</source>
+        <translation type='unfinished'>아래로</translation>
+    </message>
+    <message>
+        <source>Ban IP</source>
+        <translation type='unfinished'>추방 IP</translation>
+    </message>
+    <message>
+        <source>Clear Finished</source>
+        <translation type='unfinished'>완료된 파일 목록에서 지우기</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type='unfinished'>취소</translation>
+    </message>
+    <message>
+        <source>Throttle</source>
+        <translation type='unfinished'>조절</translation>
+    </message>
+    <message>
+        <source>Block</source>
+        <translation type='unfinished'>차단</translation>
+    </message>
+    <message>
+        <source>Packet Size</source>
+        <translation type='unfinished'>Packet Size</translation>
+    </message>
+    <message>
+        <source>Compression</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Queued.</source>
+        <translation type='unfinished'>대기됨.</translation>
+    </message>
+    <message>
+        <source>Blocked.</source>
+        <translation type='unfinished'>차단됨.</translation>
+    </message>
+    <message>
+        <source>Blocked for %1 minute(s).</source>
+        <translation type='unfinished'>%1 분동안 차단됨.</translation>
+    </message>
+    <message>
+        <source>Examining for resume...</source>
+        <translation type='unfinished'>이어받기 검사중...</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type='unfinished'>연결 중...</translation>
+    </message>
+    <message>
+        <source>Connect failed: %1</source>
+        <translation type='unfinished'>연결 실패: %1</translation>
+    </message>
+    <message>
+        <source>Negotiating...</source>
+        <translation type='unfinished'>교섭중...</translation>
+    </message>
+    <message>
+        <source>Disconnected.</source>
+        <translation type='unfinished'>연결 해제됨.</translation>
+    </message>
+    <message>
+        <source>Finished.</source>
+        <translation type='unfinished'>완료.</translation>
+    </message>
+    <message>
+        <source>Waiting for stream...</source>
+        <translation type='unfinished'>스트림 대기중...</translation>
+    </message>
+    <message>
+        <source>Error: %1</source>
+        <translation type='unfinished'>오류: %1</translation>
+    </message>
+    <message>
+        <source>Uploading: [%1%]</source>
+        <translation type='unfinished'>업로드 중: [%1%]</translation>
+    </message>
+    <message>
+        <source>Shift+F11</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 (%2)</source>
+        <translation type='unfinished'>%1 (%2)</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation type='unfinished'>%2 중의 %1</translation>
+    </message>
+    <message>
+        <source>Canceled.</source>
+        <translation type='unfinished'>취소됨.</translation>
     </message>
 </context>
 <context>

@@ -37,6 +37,7 @@ using namespace muscle;
 #define UPDATE_FILE "/tools/windows/version.txt"
 
 class WDownload;
+class WUpload;
 class ChannelInfo;
 class WSearchListItem;
 class WFileThread;
@@ -161,6 +162,7 @@ public:
 
 	WSettings * fSettings;	// for use by prefs
 	WDownload * fDLWindow;
+	WUpload * fULWindow;
 	WSearch * fSearch;
 	Channels * fChannels;
 
@@ -211,6 +213,7 @@ public slots:
 	/*** Windows Menu ***/
 	void OpenChannels();
 	void OpenDownloads();
+	void OpenUploads();
 	void OpenViewer();
 
 	/*** Help Menu ***/
@@ -245,6 +248,7 @@ public slots:
 
 	void AboutToQuit();
 	void DownloadWindowClosed();
+	void UploadWindowClosed();
 
 	void FileFailed(const QString &, const QString &, const QString &); // from WDownload
 	void FileInterrupted(const QString &, const QString &, const QString &);
@@ -262,6 +266,7 @@ private slots:
 
 private:
 	friend class WDownload;
+	friend class WUpload;
 	friend class ResolverThread;
 
 	mutable NetClient * fNetClient;
@@ -389,6 +394,7 @@ private:
 
 
 	void SignalDownload(int);
+	void SignalUpload(int);
 
 	void UpdateUserCount();
 
@@ -465,6 +471,8 @@ private:
 
 	friend class DownloadQueue;
 	void OpenDownload();
+
+	void OpenUpload();
 
 	friend class WPrivateWindow;
 	friend class Channel;

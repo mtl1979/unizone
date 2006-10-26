@@ -132,7 +132,7 @@ private slots:
 
 protected:
 
-	friend class WDownload;
+	friend class WUpload;
 
 	void MessageReceived(MessageRef msg) { MessageReceived(msg, _sessionID); }
 

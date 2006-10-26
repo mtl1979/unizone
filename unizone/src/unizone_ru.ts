@@ -791,6 +791,14 @@ Date: %4</translation>
         <source>Search...</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>&amp;Uploads</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Shift+F11</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>NetClient</name>
@@ -1219,11 +1227,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Sent</source>
-        <translation>Sent</translation>
+        <translation type='obsolete'>Sent</translation>
     </message>
     <message>
         <source>File Transfers</source>
-        <translation>File Transfers</translation>
+        <translation type='obsolete'>File Transfers</translation>
     </message>
     <message>
         <source>Queue</source>
@@ -1351,11 +1359,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unbanned</source>
-        <translation>Unbanned</translation>
+        <translation type='obsolete'>Unbanned</translation>
     </message>
     <message>
         <source>1 minute</source>
-        <translation>1 minute</translation>
+        <translation type='obsolete'>1 minute</translation>
     </message>
     <message>
         <source>2 minutes</source>
@@ -1379,19 +1387,19 @@ Date: %4</translation>
     </message>
     <message>
         <source>1 hour</source>
-        <translation>1 hour</translation>
+        <translation type='obsolete'>1 hour</translation>
     </message>
     <message>
         <source>Infinite</source>
-        <translation>Infinite</translation>
+        <translation type='obsolete'>Infinite</translation>
     </message>
     <message>
         <source>Ban IP</source>
-        <translation>Ban IP</translation>
+        <translation type='obsolete'>Ban IP</translation>
     </message>
     <message>
         <source>Block</source>
-        <translation>Block</translation>
+        <translation type='obsolete'>Block</translation>
     </message>
     <message>
         <source>Invalid address! Download address for file %1 replaced with %2, it might fail!</source>
@@ -1431,7 +1439,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Uploading: [%1%]</source>
-        <translation>Uploading: [%1%]</translation>
+        <translation type='obsolete'>Uploading: [%1%]</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
@@ -1443,7 +1451,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Queued.</source>
-        <translation>Queued.</translation>
+        <translation type='obsolete'>Queued.</translation>
     </message>
     <message>
         <source>Remotely Queued.</source>
@@ -1507,7 +1515,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Packet Size</source>
-        <translation>Packet Size</translation>
+        <translation type='obsolete'>Packet Size</translation>
     </message>
     <message>
         <source>Elapsed</source>
@@ -1527,15 +1535,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>%1 kB</source>
-        <translation>%1 kB</translation>
+        <translation type='obsolete'>%1 kB</translation>
     </message>
     <message>
         <source>%1 MB</source>
-        <translation>%1 MB</translation>
+        <translation type='obsolete'>%1 MB</translation>
     </message>
     <message>
         <source>%1 minutes</source>
-        <translation>%1 minutes</translation>
+        <translation type='obsolete'>%1 minutes</translation>
     </message>
     <message>
         <source>%1 B/s</source>
@@ -1551,7 +1559,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level 1</source>
@@ -1591,11 +1599,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Compression</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Level %1</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>Downloads</source>
+        <translation type='unfinished'>Downloads</translation>
     </message>
 </context>
 <context>
@@ -2910,6 +2922,209 @@ Date: %4</translation>
     <message>
         <source>kB/s</source>
         <translation>kB/s</translation>
+    </message>
+</context>
+<context>
+    <name>WUpload</name>
+    <message>
+        <source>Status</source>
+        <translation type='unfinished'>Status</translation>
+    </message>
+    <message>
+        <source>Filename</source>
+        <translation type='unfinished'>Filename</translation>
+    </message>
+    <message>
+        <source>Sent</source>
+        <translation type='unfinished'>Sent</translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation type='unfinished'>Total</translation>
+    </message>
+    <message>
+        <source>Rate</source>
+        <translation type='unfinished'>Rate</translation>
+    </message>
+    <message>
+        <source>ETA</source>
+        <translation type='unfinished'>ETA</translation>
+    </message>
+    <message>
+        <source>Elapsed</source>
+        <translation type='unfinished'>Elapsed</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type='unfinished'>Пользователь</translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <translation type='unfinished'>Index</translation>
+    </message>
+    <message>
+        <source>QR</source>
+        <translation type='unfinished'>QR</translation>
+    </message>
+    <message>
+        <source>Uploads</source>
+        <translation type='unfinished'>Uploads</translation>
+    </message>
+    <message>
+        <source>Queue</source>
+        <translation type='unfinished'>Queue</translation>
+    </message>
+    <message>
+        <source>No Limit</source>
+        <translation type='unfinished'>No Limit</translation>
+    </message>
+    <message>
+        <source>%1 B/s</source>
+        <translation type='unfinished'>%1 B/s</translation>
+    </message>
+    <message>
+        <source>%1 kB/s</source>
+        <translation type='unfinished'>%1 kB/s</translation>
+    </message>
+    <message>
+        <source>%1 MB/s</source>
+        <translation type='unfinished'>%1 MB/s</translation>
+    </message>
+    <message>
+        <source>Unbanned</source>
+        <translation type='unfinished'>Unbanned</translation>
+    </message>
+    <message>
+        <source>1 minute</source>
+        <translation type='unfinished'>1 minute</translation>
+    </message>
+    <message>
+        <source>%1 minutes</source>
+        <translation type='unfinished'>%1 minutes</translation>
+    </message>
+    <message>
+        <source>1 hour</source>
+        <translation type='unfinished'>1 hour</translation>
+    </message>
+    <message>
+        <source>Infinite</source>
+        <translation type='unfinished'>Infinite</translation>
+    </message>
+    <message>
+        <source>%1 kB</source>
+        <translation type='unfinished'>%1 kB</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation type='unfinished'>%1 MB</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Level %1</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Move Up</source>
+        <translation type='unfinished'>Move Up</translation>
+    </message>
+    <message>
+        <source>Move Down</source>
+        <translation type='unfinished'>Move Down</translation>
+    </message>
+    <message>
+        <source>Ban IP</source>
+        <translation type='unfinished'>Ban IP</translation>
+    </message>
+    <message>
+        <source>Clear Finished</source>
+        <translation type='unfinished'>Clear Finished</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type='unfinished'>Cancel</translation>
+    </message>
+    <message>
+        <source>Throttle</source>
+        <translation type='unfinished'>Throttle</translation>
+    </message>
+    <message>
+        <source>Block</source>
+        <translation type='unfinished'>Block</translation>
+    </message>
+    <message>
+        <source>Packet Size</source>
+        <translation type='unfinished'>Packet Size</translation>
+    </message>
+    <message>
+        <source>Compression</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Queued.</source>
+        <translation type='unfinished'>Queued.</translation>
+    </message>
+    <message>
+        <source>Blocked.</source>
+        <translation type='unfinished'>Blocked.</translation>
+    </message>
+    <message>
+        <source>Blocked for %1 minute(s).</source>
+        <translation type='unfinished'>Blocked for %1 minute(s).</translation>
+    </message>
+    <message>
+        <source>Examining for resume...</source>
+        <translation type='unfinished'>Examining for resume...</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type='unfinished'>Connecting...</translation>
+    </message>
+    <message>
+        <source>Connect failed: %1</source>
+        <translation type='unfinished'>Connect failed: %1</translation>
+    </message>
+    <message>
+        <source>Negotiating...</source>
+        <translation type='unfinished'>Negotiating...</translation>
+    </message>
+    <message>
+        <source>Disconnected.</source>
+        <translation type='unfinished'>Disconnected.</translation>
+    </message>
+    <message>
+        <source>Finished.</source>
+        <translation type='unfinished'>Finished.</translation>
+    </message>
+    <message>
+        <source>Waiting for stream...</source>
+        <translation type='unfinished'>Waiting for stream...</translation>
+    </message>
+    <message>
+        <source>Error: %1</source>
+        <translation type='unfinished'>Error: %1</translation>
+    </message>
+    <message>
+        <source>Uploading: [%1%]</source>
+        <translation type='unfinished'>Uploading: [%1%]</translation>
+    </message>
+    <message>
+        <source>Shift+F11</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1 (%2)</source>
+        <translation type='unfinished'>%1 (%2)</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation type='unfinished'>%1 of %2</translation>
+    </message>
+    <message>
+        <source>Canceled.</source>
+        <translation type='unfinished'>Canceled.</translation>
     </message>
 </context>
 <context>

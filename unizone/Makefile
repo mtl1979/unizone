@@ -70,6 +70,7 @@ SRCFILES = \
 	src/uenv.cpp \
 	src/ulistview.cpp \
 	src/updateclient.cpp \
+	src/uploadimpl.cpp \
 	src/uploadthread.cpp \
 	src/user.cpp \
 	src/userlistitem.cpp \
@@ -128,6 +129,7 @@ MOC_SRCFILES = \
 	src/moc_serverclient.cpp \
 	src/moc_ulistview.cpp \
 	src/moc_updateclient.cpp \
+	src/moc_uploadimpl.cpp \
 	src/moc_uploadthread.cpp \
 	src/moc_winsharewindow.cpp
 
@@ -370,6 +372,10 @@ src/moc_ulistview.cpp: src/ulistview.h
 	@$(MOC) $< -o $@
 
 src/moc_formatting.cpp: src/formatting.h
+	@echo Creating $@ ...
+	@$(MOC) $< -o $@
+
+src/moc_uploadimpl.cpp: src/uploadimpl.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
 

@@ -20,6 +20,7 @@
 #include "util/StringTokenizer.h"
 #include "textevent.h"
 #include "downloadimpl.h"
+#include "uploadimpl.h"
 #include "util.h"
 #include "wstring.h"
 #include "filethread.h"
@@ -393,7 +394,11 @@ WinShareWindow::Preferences()
 		if (fDLWindow)
 		{
 			SignalDownload(WDownload::DequeueDownloads);
-			SignalDownload(WDownload::DequeueUploads);
+		}
+
+		if (fULWindow)
+		{
+			SignalUpload(WUpload::DequeueUploads);
 		}			
 
 		if (oldLogging && !fSettings->GetLogging())
@@ -485,6 +490,13 @@ WinShareWindow::DownloadWindowClosed()
 {
 	PRINT("Download window closed!\n");
 	fDLWindow = NULL;
+}
+
+void
+WinShareWindow::UploadWindowClosed()
+{
+	PRINT("Upload window closed!\n");
+	fULWindow = NULL;
 }
 
 /*
@@ -610,4 +622,12 @@ WinShareWindow::SignalDownload(int type)
 	QCustomEvent *qce = new QCustomEvent(type);
 	if (qce) 
 		QApplication::postEvent(fDLWindow, qce);
+}
+
+void
+WinShareWindow::SignalUpload(int type)
+{
+	QCustomEvent *qce = new QCustomEvent(type);
+	if (qce) 
+		QApplication::postEvent(fULWindow, qce);
 }

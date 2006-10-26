@@ -42,3 +42,4 @@ privatewindow.h
 scanprogress.cpp
 scanprogress.h
 aboutdlg.cpp
+moc_uploadimpl.cpp

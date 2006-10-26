@@ -355,6 +355,10 @@ SOURCE=..\..\src\updateclient.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\uploadimpl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\uploadthread.cpp
 # End Source File
 # Begin Source File
@@ -1884,6 +1888,65 @@ InputName=updateclient
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\uploadimpl.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\..\src\uploadimpl.h
+InputName=uploadimpl
+
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\..\src\uploadimpl.h
+InputName=uploadimpl
+
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\..\src\uploadimpl.h
+InputName=uploadimpl
+
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\src
+InputPath=..\..\src\uploadimpl.h
+InputName=uploadimpl
+
+"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\uploadthread.h
 
 !IF  "$(CFG)" == "Unizone - Win32 Release"
@@ -2059,6 +2122,10 @@ SOURCE=..\..\src\wstring.h
 # Begin Source File
 
 SOURCE=..\..\src\wsystemevent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\wtransfer.h
 # End Source File
 # Begin Source File
 
@@ -2949,6 +3016,10 @@ SOURCE=..\..\src\qt3\moc_ulistview.cpp
 # Begin Source File
 
 SOURCE=..\..\src\qt3\moc_updateclient.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\qt3\moc_uploadimpl.cpp
 # End Source File
 # Begin Source File
 

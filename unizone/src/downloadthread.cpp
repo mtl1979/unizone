@@ -18,6 +18,7 @@
 #include "util.h"
 #include "debugimpl.h"
 #include "resolver.h"
+#include "wtransfer.h"
 
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
@@ -418,7 +419,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 
 	switch (msg()->what)
 	{
-		case WDownload::TransferNotifyQueued:
+		case WTransfer::TransferNotifyQueued:
 		{
 			MessageRef q(GetMessageFromPool(WDownloadEvent::FileQueued));
 			if (q())
@@ -429,7 +430,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 			break;
 		}
 					
-		case WDownload::TransferNotifyRejected:
+		case WTransfer::TransferNotifyRejected:
 		{
 			MessageRef q(GetMessageFromPool(WDownloadEvent::FileBlocked));
 			uint64 timeleft = (uint64) -1;
@@ -446,7 +447,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 			break;
 		}
 					
-		case WDownload::TransferFileHeader:
+		case WTransfer::TransferFileHeader:
 		{
 			fNegotiating = false;
 			if (IsRemotelyQueued())
@@ -645,7 +646,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 			break;
 		}
 					
-		case WDownload::TransferFileData:
+		case WTransfer::TransferFileData:
 		{
 			PRINT("\tWDownload::TransferFileData\n");
 						
@@ -779,7 +780,7 @@ WDownloadThread::Accepted(int64 id)
 void
 WDownloadThread::Rejected()
 {
-	MessageRef rej(GetMessageFromPool(WDownload::TransferNotifyRejected));
+	MessageRef rej(GetMessageFromPool(WTransfer::TransferNotifyRejected));
 	if (rej())
 		MessageReceived(rej, _sessionID);
 }
@@ -801,7 +802,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 		SendReply(replyMsg);
 	}
 					
-	MessageRef comID(GetMessageFromPool(WDownload::TransferCommandPeerID));
+	MessageRef comID(GetMessageFromPool(WTransfer::TransferCommandPeerID));
 	if (comID())
 	{
 		comID()->AddString("beshare:FromUserName", (const char *) gWin->GetUserName().utf8());
@@ -811,7 +812,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 		SendMessageToSessions(comID);
 	}
 					
-	MessageRef neg(GetMessageFromPool(WDownload::TransferFileList));
+	MessageRef neg(GetMessageFromPool(WTransfer::TransferFileList));
 	if (neg())
 	{
 		for (int c = 0; c < fNumFiles; c++)

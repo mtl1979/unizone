@@ -342,6 +342,10 @@ SOURCE=..\..\src\updateclient.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\uploadimpl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\uploadthread.cpp
 # End Source File
 # Begin Source File
@@ -1923,6 +1927,10 @@ InputName=updateclient
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\uploadimpl.h
 # End Source File
 # Begin Source File
 

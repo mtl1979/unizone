@@ -55,7 +55,7 @@ MenuBar::MenuBar(QWidget * handler, QWidget * parent) : QMenuBar(parent)
 	fWindows->insertItem(tr("Picture Viewer"), handler, SLOT(OpenViewer()), QAccel::stringToKey(tr("F9")));
 	fWindows->insertItem(tr("C&hannels"), handler, SLOT(OpenChannels()), QAccel::stringToKey(tr("F10")));
 	fWindows->insertItem(tr("&Downloads"), handler, SLOT(OpenDownloads()), QAccel::stringToKey(tr("F11")));
-
+	fWindows->insertItem(tr("&Uploads"), handler, SLOT(OpenUploads()), QAccel::stringToKey(tr("Shift+F11")));
 	// help menu
 	fHelp = new QPopupMenu(this);
 	CHECK_PTR(fHelp);

@@ -27,6 +27,7 @@ SOURCES =			qt2\aboutdlg.cpp \
 				settings.cpp \
 				ulistview.cpp \
 				updateclient.cpp \
+				uploadimpl.cpp \
 				uploadthread.cpp \
 				user.cpp \
 				util.cpp \

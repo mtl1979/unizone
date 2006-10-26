@@ -1,5 +1,5 @@
-#ifndef DOWNLOADIMPL_H
-#define DOWNLOADIMPL_H
+#ifndef UPLOADIMPL_H
+#define UPLOADIMPL_H
 
 #ifdef WIN32
 #pragma warning(disable: 4786)
@@ -21,8 +21,6 @@ using namespace muscle;
 #include "transferlist.h"
 #include "debugimpl.h"
 
-class WDownloadEvent;
-class WDownloadThread;
 class WUploadEvent;
 class WUploadThread;
 class WFileThread;
@@ -33,39 +31,34 @@ class NetClient;
 typedef Ref<WUser> WUserRef;
 
 // This class needs to be able to handle downloads AND uploads
-class WDownload : public QDialog
+class WUpload : public QDialog
 {
 	Q_OBJECT
 public:
-	WDownload(QWidget * parent, QString localID);
-	virtual ~WDownload();
+	WUpload(QWidget * parent, WFileThread * sharedFiles);
+	virtual ~WUpload();
 
 	// Internal event codes
 	enum
 	{
-		DequeueDownloads = QEvent::User + 11000,
-		ClearDownloads,
-		DLRatings
+		DequeueUploads = QEvent::User + 11500,
+		ClearUploads,
+		ULRatings,
+		UpLoad
 	};
 
-	void AddDownload(QString * files, QString * lfiles, int32 numFiles, QString remoteSessionID, uint32 remotePort,
-						const QString & remoteIP, uint64 remoteInstallID, bool firewalled, bool partial);
-	void AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, const WUserRef & user);
+	void AddUpload(int socket, uint32 remoteIP, bool queued);
+	void AddUpload(const QString & remoteIP, uint32 port);
 
-
-	// Download tunnel
-	bool CreateTunnel(QString * files, QString * lfiles, int32 numFiles, const WUserRef & remoteUser);
-	void TunnelAccepted(int64 myID, int64 hisID);
-	void TunnelRejected(int64 myID);
+	// Upload tunnel
+	bool CreateTunnel(const QString & userID, int64 hisID, void * &myID);
 
 	void TunnelMessage(int64 myID, MessageRef tmsg);
 
-	void DequeueDLSessions();
+	void DequeueULSessions();
 	void KillLocalQueues();
 
 	void TransferCallBackRejected(const QString &qFrom, int64 timeLeft, uint32 port);
-
-	void SetLocalID(const QString &sid);
 
 	void EmptyLists();
 
@@ -74,30 +67,39 @@ public:
 protected:
 	virtual void customEvent(QCustomEvent *);
 	virtual void keyPressEvent(QKeyEvent * event);
-	virtual void downloadEvent(WDownloadEvent *);
+	virtual void uploadEvent(WUploadEvent *);
 
 	virtual void resizeEvent(QResizeEvent * e);
 
 private:
 		
-	DLList fDownloadList;
+	ULList fUploadList;
 
-	QSplitter * fMainSplit;
-	QListView * fDownloads;
-	QPopupMenu * fDLPopup;
-	QPopupMenu * fDLThrottleMenu;
-	QPopupMenu * fDLRunMenu;
+	QListView * fUploads;
+	QPopupMenu * fULPopup;
+	QPopupMenu * fULThrottleMenu;
+	QPopupMenu * fULBanMenu;
+	QPopupMenu * fULPacketMenu;
+	QPopupMenu * fULCompressionMenu;
 
-	int fDLThrottle;	// Current throttle selections
+	int fULThrottle;				// Current throttle selections
+	int fULBan;						// Current ban selection
+	int fULPacket;					// Current packet size selection
+	int fULCompression;				// Current compression selection
 
-	QListViewItem * fDLPopupItem;	// download item that was right clicked
+	QListViewItem * fULPopupItem;	//   upload item that was right clicked
 
-	QString fLocalSID;
+	WFileThread * fSharedFiles;
 
-	QString GetUserName(WDownloadThread *gt);
+	QString GetUserName(WUploadThread *gt);
 	QString FormatIndex(long cur, long num);
 
-	void EmptyDownloads();
+	// Simple method that is used to decrease the download/upload count
+	// when one is canceled or finished. Returns the count after everything
+	// has been done.
+	void UpdateLoad();
+
+	void EmptyUploads();
 
 	// Popup menu id's
 	enum
@@ -128,6 +130,16 @@ private:
 		ID_8MB,
 		ID_16MB,
 		ID_32MB,
+		ID_UNBAN,
+		ID_BAN1,
+		ID_BAN2,
+		ID_BAN5,
+		ID_BAN10,
+		ID_BAN15,
+		ID_BAN30,
+		ID_BAN1H,
+		ID_BANINF,
+		ID_SETPACKET,
 		ID_PACKET1K,
 		ID_PACKET2K,
 		ID_PACKET4K,
@@ -139,11 +151,24 @@ private:
 		ID_PACKET256K,
 		ID_PACKET512K,
 		ID_PACKET1M,
+		ID_SETCOMPRESSION,
+		ID_LEVEL0,
+		ID_LEVEL1,
+		ID_LEVEL2,
+		ID_LEVEL3,
+		ID_LEVEL4,
+		ID_LEVEL5,
+		ID_LEVEL6,
+		ID_LEVEL7,
+		ID_LEVEL8,
+		ID_LEVEL9,
 		ID_MOVEUP,
 		ID_MOVEDOWN,
+		ID_IGNORE,
 		ID_CLEAR,
 		ID_CANCEL,
-		ID_THROTTLE
+		ID_THROTTLE,
+		ID_BLOCK
 	};
 
 	enum
@@ -153,20 +178,24 @@ private:
 
 	// Find an item in the list that matches the list view item
 	// and return the index
-	bool FindDLItem(unsigned int &, QListViewItem *);
+	bool FindULItem(unsigned int &, QListViewItem *);
 
 	// Reorganize transfer queue
-	void DLMoveUp(unsigned int index);
-	void DLMoveDown(unsigned int index);
+
+	void ULMoveUp(unsigned int index);
+	void ULMoveDown(unsigned int index);
 
 	// Update Queue Ratings
-	void UpdateDLRatings();
+	void UpdateULRatings();
 
-	// Clear finished downloads from listview
-	void ClearFinishedDL();
+	// Clear finished uploads from listview
+	void ClearFinishedUL();
 
 	// Get number of active transfers
-	int GetNumDownloads();
+	int GetNumUploads();
+
+	// Get number of non-finished transfers (active or queued)
+	int GetUploadQueue();
 
 	void SendSignal(int signal);
 
@@ -176,18 +205,15 @@ private:
 
 private slots:
 
-	void DLPopupActivated(int);
+	void ULPopupActivated(int);
 
-	void DLRightClicked(QListViewItem *, const QPoint &, int);
+	void ULRightClicked(QListViewItem *, const QPoint &, int);
 
 public slots:
 	void UserDisconnected(const WUserRef &);
 
 signals:
-	// Parameter 1 = Remote File Name, Parameter 2 = Local File Name, Parameter 3 = User Name
-	void FileFailed(const QString &, const QString &, const QString &); 
-	void FileInterrupted(const QString &, const QString &, const QString &);
-	// the download window has been closed
+	// the upload window has been closed
 	void Closed();		
 
 };

@@ -21,6 +21,7 @@ SOURCES =			aboutdlgimpl.cpp \
 				settings.cpp \
 				ulistview.cpp \
 				updateclient.cpp \
+				uploadimpl.cpp \
 				uploadthread.cpp \
 				user.cpp \
 				util.cpp \

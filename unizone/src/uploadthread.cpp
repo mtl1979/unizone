@@ -8,7 +8,7 @@
 #include "wuploadevent.h"
 #include "wsystemevent.h"
 #include "global.h"
-#include "downloadimpl.h"
+#include "uploadimpl.h"
 #include "events.h"
 #include "settings.h"
 #include "netclient.h"
@@ -18,6 +18,7 @@
 #include "debugimpl.h"
 #include "util.h"
 #include "resolver.h"
+#include "wtransfer.h"
 
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag) 
@@ -471,9 +472,9 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 	PRINT("WUploadThread::MessageReceived\n");
 	switch (msg()->what)
 	{
-		case WDownload::TransferCommandPeerID:
+		case WTransfer::TransferCommandPeerID:
 		{
-			PRINT("WDownload::TransferCommandPeerID\n");
+			PRINT("WUpload::TransferCommandPeerID\n");
 			const char *id = NULL;
 			if (msg()->FindString("beshare:FromSession", &id) == B_OK)
 			{
@@ -525,7 +526,7 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 			break;
 		}
 	
-		case WDownload::TransferFileList:
+		case WTransfer::TransferFileList:
 		{
 			// TransferFileList(msg);
 			WUploadEvent *qce = new WUploadEvent(msg);
@@ -596,7 +597,7 @@ WUploadThread::OutputQueuesDrained(const MessageRef &/* msg */)
 void 
 WUploadThread::SendQueuedNotification()
 {
-	MessageRef q(GetMessageFromPool(WDownload::TransferNotifyQueued));
+	MessageRef q(GetMessageFromPool(WTransfer::TransferNotifyQueued));
 	if (q())
 	{
 		SendMessageToSessions(q);
@@ -612,7 +613,7 @@ WUploadThread::SendQueuedNotification()
 void
 WUploadThread::SendRejectedNotification(bool direct)
 {
-	MessageRef q(GetMessageFromPool(WDownload::TransferNotifyRejected));
+	MessageRef q(GetMessageFromPool(WTransfer::TransferNotifyRejected));
 	
 	if (q())
 	{
@@ -722,7 +723,7 @@ WUploadThread::DoUpload()
 
 	if (fFile)
 	{
-		MessageRef uref(GetMessageFromPool(WDownload::TransferFileData));
+		MessageRef uref(GetMessageFromPool(WTransfer::TransferFileData));
 		if (uref())
 		{
 			// think about doing this in a dynamic way (depending on connection)
@@ -737,12 +738,12 @@ WUploadThread::DoUpload()
 				if (numBytes > 0)
 				{
 					// munge mode
-					if (fMungeMode != WDownload::MungeModeNone)
+					if (fMungeMode != WTransfer::MungeModeNone)
 					{
 						bool unknown = false;
 						switch (fMungeMode)
 						{
-						case WDownload::MungeModeXOR:
+						case WTransfer::MungeModeXOR:
 							{
 								for (int32 x = 0; x < numBytes; x++)
 									scratchBuffer[x] ^= 0xFF;
@@ -866,7 +867,7 @@ WUploadThread::DoUpload()
 				MessageRef headRef( GetMessageFromPool(*msg) );
 				if (headRef())
 				{
-					headRef()->what = WDownload::TransferFileHeader;
+					headRef()->what = WTransfer::TransferFileHeader;
 					headRef()->AddInt64("beshare:StartOffset", fCurrentOffset);
 					SendMessageToSessions(headRef);
 				}
@@ -1055,7 +1056,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 		QString user;
 
 		if (GetInt32FromMessage(msg, "mm", fMungeMode) != B_OK)
-			fMungeMode = WDownload::MungeModeNone;
+			fMungeMode = WTransfer::MungeModeNone;
 		
 		GetStringFromMessage(msg, "beshare:FromSession", fRemoteSessionID);
 		
@@ -1430,7 +1431,7 @@ WUploadThread::SendMessageToSessions(const MessageRef & msgRef, const char * opt
 			msgRef()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 			msgRef()->AddString(PR_NAME_SESSION, "");
 			msgRef()->AddBool("upload", true);
-			return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(msgRef);
+			return static_cast<WUpload *>(fOwner)->netClient()->SendMessageToSessions(msgRef);
 		}
 		else
 		{		
@@ -1445,7 +1446,7 @@ WUploadThread::SendMessageToSessions(const MessageRef & msgRef, const char * opt
 				up()->AddMessage("message", msgRef);
 				up()->AddBool("upload", true);
 				up()->AddInt64("tunnel_id", hisID);
-				return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(up);
+				return static_cast<WUpload *>(fOwner)->netClient()->SendMessageToSessions(up);
 			}
 			else
 				return B_ERROR;

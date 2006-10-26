@@ -835,7 +835,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>&amp;Downloads</source>
-        <translation>&amp;Tiedostonsiirto</translation>
+        <translation>La&amp;taukset</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -888,6 +888,14 @@ Päiväys: %4</translation>
     <message>
         <source>About</source>
         <translation type='obsolete'>Tietoja</translation>
+    </message>
+    <message>
+        <source>&amp;Uploads</source>
+        <translation>&amp;Lähetykset</translation>
+    </message>
+    <message>
+        <source>Shift+F11</source>
+        <translation>Shift+F11</translation>
     </message>
 </context>
 <context>
@@ -1385,11 +1393,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Sent</source>
-        <translation>Lähetetty</translation>
+        <translation type='obsolete'>Lähetetty</translation>
     </message>
     <message>
         <source>File Transfers</source>
-        <translation>Tiedostonsiirto</translation>
+        <translation type='obsolete'>Tiedostonsiirto</translation>
     </message>
     <message>
         <source>Queue</source>
@@ -1521,11 +1529,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Unbanned</source>
-        <translation>Ei estetty</translation>
+        <translation type='obsolete'>Ei estetty</translation>
     </message>
     <message>
         <source>1 minute</source>
-        <translation>1 minuutti</translation>
+        <translation type='obsolete'>1 minuutti</translation>
     </message>
     <message>
         <source>2 minutes</source>
@@ -1549,19 +1557,19 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>1 hour</source>
-        <translation>1 tunti</translation>
+        <translation type='obsolete'>1 tunti</translation>
     </message>
     <message>
         <source>Infinite</source>
-        <translation>Loputon</translation>
+        <translation type='obsolete'>Loputon</translation>
     </message>
     <message>
         <source>Ban IP</source>
-        <translation>Bannaa IP</translation>
+        <translation type='obsolete'>Bannaa IP</translation>
     </message>
     <message>
         <source>Block</source>
-        <translation>Estä</translation>
+        <translation type='obsolete'>Estä</translation>
     </message>
     <message>
         <source>Invalid address! Download address for file %1 replaced with %2, it might fail!</source>
@@ -1601,7 +1609,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Uploading: [%1%]</source>
-        <translation>Lähetetään: [%1%]</translation>
+        <translation type='obsolete'>Lähetetään: [%1%]</translation>
     </message>
     <message>
         <source>%1 has finished downloading %2.</source>
@@ -1613,7 +1621,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Queued.</source>
-        <translation>Jonossa.</translation>
+        <translation type='obsolete'>Jonossa.</translation>
     </message>
     <message>
         <source>Remotely Queued.</source>
@@ -1677,7 +1685,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Packet Size</source>
-        <translation>Pakettikoko</translation>
+        <translation type='obsolete'>Pakettikoko</translation>
     </message>
     <message>
         <source>Downloading %1 from %2.</source>
@@ -1701,15 +1709,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 kB</source>
-        <translation>%1 kt</translation>
+        <translation type='obsolete'>%1 kt</translation>
     </message>
     <message>
         <source>%1 MB</source>
-        <translation>%1 Mt</translation>
+        <translation type='obsolete'>%1 Mt</translation>
     </message>
     <message>
         <source>%1 minutes</source>
-        <translation>%1 minuuttia</translation>
+        <translation type='obsolete'>%1 minuuttia</translation>
     </message>
     <message>
         <source>%1 B/s</source>
@@ -1725,7 +1733,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>None</source>
-        <translation>Ei mitään</translation>
+        <translation type='obsolete'>Ei mitään</translation>
     </message>
     <message>
         <source>Level 1</source>
@@ -1765,11 +1773,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Compression</source>
-        <translation>Pakkaus</translation>
+        <translation type='obsolete'>Pakkaus</translation>
     </message>
     <message>
         <source>Level %1</source>
-        <translation>Taso %1</translation>
+        <translation type='obsolete'>Taso %1</translation>
+    </message>
+    <message>
+        <source>Downloads</source>
+        <translation>Lataukset</translation>
     </message>
 </context>
 <context>
@@ -3192,6 +3204,209 @@ Päiväys: %4</translation>
     <message>
         <source>kB/s</source>
         <translation>kt/s</translation>
+    </message>
+</context>
+<context>
+    <name>WUpload</name>
+    <message>
+        <source>Status</source>
+        <translation>Tila</translation>
+    </message>
+    <message>
+        <source>Filename</source>
+        <translation>Tiedosto</translation>
+    </message>
+    <message>
+        <source>Sent</source>
+        <translation>Lähetetty</translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>Yhteensä</translation>
+    </message>
+    <message>
+        <source>Rate</source>
+        <translation>Nopeus</translation>
+    </message>
+    <message>
+        <source>ETA</source>
+        <translation>Jäljellä</translation>
+    </message>
+    <message>
+        <source>Elapsed</source>
+        <translation>Kulunut</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Käyttäjä</translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <translation>Indeksi</translation>
+    </message>
+    <message>
+        <source>QR</source>
+        <translation>Jono Nro</translation>
+    </message>
+    <message>
+        <source>Uploads</source>
+        <translation>Lähetykset</translation>
+    </message>
+    <message>
+        <source>Queue</source>
+        <translation>Jono</translation>
+    </message>
+    <message>
+        <source>No Limit</source>
+        <translation>Ei Rajaa</translation>
+    </message>
+    <message>
+        <source>%1 B/s</source>
+        <translation>%1 t/s</translation>
+    </message>
+    <message>
+        <source>%1 kB/s</source>
+        <translation>%1 kt/s</translation>
+    </message>
+    <message>
+        <source>%1 MB/s</source>
+        <translation>%1 Mt/s</translation>
+    </message>
+    <message>
+        <source>Unbanned</source>
+        <translation>Ei estetty</translation>
+    </message>
+    <message>
+        <source>1 minute</source>
+        <translation>1 minuutti</translation>
+    </message>
+    <message>
+        <source>%1 minutes</source>
+        <translation>%1 minuuttia</translation>
+    </message>
+    <message>
+        <source>1 hour</source>
+        <translation>1 tunti</translation>
+    </message>
+    <message>
+        <source>Infinite</source>
+        <translation>Loputon</translation>
+    </message>
+    <message>
+        <source>%1 kB</source>
+        <translation>%1 kt</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation>%1 Mt</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Ei mitään</translation>
+    </message>
+    <message>
+        <source>Level %1</source>
+        <translation>Taso %1</translation>
+    </message>
+    <message>
+        <source>Move Up</source>
+        <translation>Siirrä Ylös</translation>
+    </message>
+    <message>
+        <source>Move Down</source>
+        <translation>Siirrä Alas</translation>
+    </message>
+    <message>
+        <source>Ban IP</source>
+        <translation>Bannaa IP</translation>
+    </message>
+    <message>
+        <source>Clear Finished</source>
+        <translation>Poista Valmiit</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Peruuta</translation>
+    </message>
+    <message>
+        <source>Throttle</source>
+        <translation>Rajoitus</translation>
+    </message>
+    <message>
+        <source>Block</source>
+        <translation>Estä</translation>
+    </message>
+    <message>
+        <source>Packet Size</source>
+        <translation>Pakettikoko</translation>
+    </message>
+    <message>
+        <source>Compression</source>
+        <translation>Pakkaus</translation>
+    </message>
+    <message>
+        <source>Queued.</source>
+        <translation>Jonossa.</translation>
+    </message>
+    <message>
+        <source>Blocked.</source>
+        <translation>Estetty.</translation>
+    </message>
+    <message>
+        <source>Blocked for %1 minute(s).</source>
+        <translation>Estetty %1 minuutiksi.</translation>
+    </message>
+    <message>
+        <source>Examining for resume...</source>
+        <translation>Verrataan jatkamista varten...</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Yhdistetään...</translation>
+    </message>
+    <message>
+        <source>Connect failed: %1</source>
+        <translation>Yhdistäminen epäonnistui: %1</translation>
+    </message>
+    <message>
+        <source>Negotiating...</source>
+        <translation>Neuvotellaan...</translation>
+    </message>
+    <message>
+        <source>Disconnected.</source>
+        <translation>Yhteys katkennut.</translation>
+    </message>
+    <message>
+        <source>Finished.</source>
+        <translation>Valmis.</translation>
+    </message>
+    <message>
+        <source>Waiting for stream...</source>
+        <translation>Odotetaan tietoa...</translation>
+    </message>
+    <message>
+        <source>Error: %1</source>
+        <translation>Virhe: %1</translation>
+    </message>
+    <message>
+        <source>Uploading: [%1%]</source>
+        <translation>Lähetetään: [%1%]</translation>
+    </message>
+    <message>
+        <source>Shift+F11</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation>%1/%2 {1?}</translation>
+    </message>
+    <message>
+        <source>Canceled.</source>
+        <translation>Peruutettu.</translation>
     </message>
 </context>
 <context>
