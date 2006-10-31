@@ -3402,7 +3402,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation>%1/%2 {1?}</translation>
+        <translation>%1/%2</translation>
     </message>
     <message>
         <source>Canceled.</source>
