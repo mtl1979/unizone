@@ -260,31 +260,32 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fDLLimit->setCurrentItem(gWin->fSettings->GetDLLimit());
 	fBLLimit->setCurrentItem(gWin->fSettings->GetBLLimit());
 
-	switch (gWin->fSettings->GetPacketSize())
-	{
-	case 1:
-		fPacketSize->setCurrentItem(0); break;
-	case 2:
-		fPacketSize->setCurrentItem(1); break;
-	case 4:
-		fPacketSize->setCurrentItem(2); break;
-	case 8:
-		fPacketSize->setCurrentItem(3); break;
-	case 16:
-		fPacketSize->setCurrentItem(4); break;
-	case 32:
-		fPacketSize->setCurrentItem(5); break;
-	case 64:
-		fPacketSize->setCurrentItem(6); break;
-	case 128:
-		fPacketSize->setCurrentItem(7); break;
-	case 256:
-		fPacketSize->setCurrentItem(8); break;
-	case 512:
-		fPacketSize->setCurrentItem(9); break;
-	case 1024:
-		fPacketSize->setCurrentItem(10); break;
-	}
+	double ps = gWin->fSettings->GetPacketSize();
+	if (ps == 0.5)
+		fPacketSize->setCurrentItem(0); 
+	else if (ps == 1)
+		fPacketSize->setCurrentItem(1);
+	else if (ps == 2)
+		fPacketSize->setCurrentItem(2); 
+	else if (ps == 4)
+		fPacketSize->setCurrentItem(3);
+	else if (ps == 8)
+		fPacketSize->setCurrentItem(4);
+	else if (ps == 16)
+		fPacketSize->setCurrentItem(5);
+	else if (ps == 32)
+		fPacketSize->setCurrentItem(6);
+	else if (ps == 64)
+		fPacketSize->setCurrentItem(7);
+	else if (ps == 128)
+		fPacketSize->setCurrentItem(8);
+	else if (ps == 256)
+		fPacketSize->setCurrentItem(9);
+	else if (ps == 512)
+		fPacketSize->setCurrentItem(10);
+	else if (ps == 1024)
+		fPacketSize->setCurrentItem(11);
+
 	fMinQueued->setCurrentItem( gWin->fSettings->GetMinQueued() );
 	
 	fLogging->setChecked(gWin->fSettings->GetLogging());
@@ -405,26 +406,28 @@ WPrefs::OK()
 	switch (fPacketSize->currentItem())
 	{
 		case 0:
-			gWin->fSettings->SetPacketSize(1); break;
+			gWin->fSettings->SetPacketSize(0.5); break;
 		case 1:
-			gWin->fSettings->SetPacketSize(2); break;
+			gWin->fSettings->SetPacketSize(1); break;
 		case 2:
-			gWin->fSettings->SetPacketSize(4); break;
+			gWin->fSettings->SetPacketSize(2); break;
 		case 3:
-			gWin->fSettings->SetPacketSize(8); break;
+			gWin->fSettings->SetPacketSize(4); break;
 		case 4:
-			gWin->fSettings->SetPacketSize(16); break;
+			gWin->fSettings->SetPacketSize(8); break;
 		case 5:
-			gWin->fSettings->SetPacketSize(32); break;
+			gWin->fSettings->SetPacketSize(16); break;
 		case 6:
-			gWin->fSettings->SetPacketSize(64); break;
+			gWin->fSettings->SetPacketSize(32); break;
 		case 7:
-			gWin->fSettings->SetPacketSize(128); break;
+			gWin->fSettings->SetPacketSize(64); break;
 		case 8:
-			gWin->fSettings->SetPacketSize(256); break;
+			gWin->fSettings->SetPacketSize(128); break;
 		case 9:
-			gWin->fSettings->SetPacketSize(512); break;
+			gWin->fSettings->SetPacketSize(256); break;
 		case 10:
+			gWin->fSettings->SetPacketSize(512); break;
+		case 11:
 			gWin->fSettings->SetPacketSize(1024); break;
 	}
 

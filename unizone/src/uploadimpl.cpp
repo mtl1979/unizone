@@ -104,6 +104,7 @@ WUpload::WUpload(QWidget * parent, WFileThread * ft)
 	fULPacketMenu = new QPopupMenu(fULPopup, "Packet Size Menu");
 	CHECK_PTR(fULPacketMenu);
 	
+	fULPacketMenu->insertItem(tr("%1 B").arg(512), ID_PACKET512);
 	fULPacketMenu->insertItem(tr("%1 kB").arg(1), ID_PACKET1K);
 	fULPacketMenu->insertItem(tr("%1 kB").arg(2), ID_PACKET2K);
 	fULPacketMenu->insertItem(tr("%1 kB").arg(4), ID_PACKET4K);
@@ -1210,6 +1211,12 @@ WUpload::ULPopupActivated(int id)
 			break;
 		}
 		
+	case ID_PACKET512:
+		{
+			ut->SetPacketSize(0.5);
+			break;
+		}
+
 	case ID_PACKET1K:
 		{
 			ut->SetPacketSize(1);
@@ -1564,66 +1571,56 @@ WUpload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			}
 			fULBanMenu->setItemChecked(fULBan, true);
 			
-			int fNewPacket = lrint(pair.thread->GetPacketSize());
+			double fNewPacket = pair.thread->GetPacketSize();
 			fULPacketMenu->setItemChecked(fULPacket, false);
 			
-			switch (fNewPacket)
+			if (fNewPacket == 0.5)
 			{
-			case 1:
-				{
-					fULPacket = ID_PACKET1K;
-					break;
-				}
-			case 2:
-				{
-					fULPacket = ID_PACKET2K;
-					break;
-				}
-			case 4:
-				{
-					fULPacket = ID_PACKET4K;
-					break;
-				}
-			case 8:
-				{
-					fULPacket = ID_PACKET8K;
-					break;
-				}
-			case 16:
-				{
-					fULPacket = ID_PACKET16K;
-					break;
-				}
-			case 32:
-				{
-					fULPacket = ID_PACKET32K;
-					break;
-				}
-			case 64:
-				{
-					fULPacket = ID_PACKET64K;
-					break;
-				}
-			case 128:
-				{
-					fULPacket = ID_PACKET128K;
-					break;
-				}
-			case 256:
-				{
-					fULPacket = ID_PACKET256K;
-					break;
-				}
-			case 512:
-				{
-					fULPacket = ID_PACKET512K;
-					break;
-				}
-			case 1024:
-				{
-					fULPacket = ID_PACKET1M;
-					break;
-				}
+				fULPacket = ID_PACKET512;
+			}
+			else if (fNewPacket == 1)
+			{
+				fULPacket = ID_PACKET1K;
+			}
+			else if (fNewPacket == 2)
+			{
+				fULPacket = ID_PACKET2K;
+			}
+			else if (fNewPacket == 4)
+			{
+				fULPacket = ID_PACKET4K;
+			}
+			else if (fNewPacket == 8)
+			{
+				fULPacket = ID_PACKET8K;
+			}
+			else if (fNewPacket == 16)
+			{
+				fULPacket = ID_PACKET16K;
+			}
+			else if (fNewPacket == 32)
+			{
+				fULPacket = ID_PACKET32K;
+			}
+			else if (fNewPacket == 64)
+			{
+				fULPacket = ID_PACKET64K;
+			}
+			else if (fNewPacket == 128)
+			{
+				fULPacket = ID_PACKET128K;
+			}
+			else if (fNewPacket == 256)
+			{
+				fULPacket = ID_PACKET256K;
+			}
+			else if (fNewPacket == 512)
+			{
+				fULPacket = ID_PACKET512K;
+			}
+			else if (fNewPacket == 1024)
+			{
+				fULPacket = ID_PACKET1M;
 			}
 			fULPacketMenu->setItemChecked(fULPacket, true);
 			

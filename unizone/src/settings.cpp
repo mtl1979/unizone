@@ -1194,18 +1194,27 @@ WSettings::SetDLLimit(int32 l)
 	fSet()->ReplaceInt32(true, DL_LIMIT, l);
 }
 
-int32
+double
 WSettings::GetPacketSize() const
 {
-	int32 i = 8;
-	fSet()->FindInt32(PACKET_SIZE, &i);
-	return i;
+	double d = 8;
+	int32 i = 8; // old format
+	if (fSet()->FindInt32(PACKET_SIZE, &i) == B_OK)
+	{
+		d = i;
+	}
+	else
+	{
+		fSet()->FindDouble(PACKET_SIZE, &d);
+	}
+	return d;
 }
 
 void
-WSettings::SetPacketSize(int32 l)
+WSettings::SetPacketSize(double l)
 {
-	fSet()->ReplaceInt32(true, PACKET_SIZE, l);
+	fSet()->RemoveName(PACKET_SIZE);
+	fSet()->AddDouble(PACKET_SIZE, l);
 }
 
 int32

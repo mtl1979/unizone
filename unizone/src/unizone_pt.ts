@@ -2669,6 +2669,10 @@ Date: %4</translation>
         <source>0</source>
         <translation type='unfinished'>0</translation>
     </message>
+    <message>
+        <source>512 B</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -3156,6 +3160,10 @@ Date: %4</translation>
     <message>
         <source>Canceled.</source>
         <translation type='unfinished'>Canceled.</translation>
+    </message>
+    <message>
+        <source>%1 B</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

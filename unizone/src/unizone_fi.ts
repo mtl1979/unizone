@@ -2912,6 +2912,10 @@ Päiväys: %4</translation>
         <source>0</source>
         <translation>0</translation>
     </message>
+    <message>
+        <source>512 B</source>
+        <translation>512 t</translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>
@@ -3407,6 +3411,10 @@ Päiväys: %4</translation>
     <message>
         <source>Canceled.</source>
         <translation>Peruutettu.</translation>
+    </message>
+    <message>
+        <source>%1 B</source>
+        <translation>%1 t</translation>
     </message>
 </context>
 <context>

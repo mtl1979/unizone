@@ -2451,6 +2451,12 @@
                                         <item>
                                             <property>
                                                 <name>text</name>
+                                                <string>512 B</string>
+                                            </property>
+                                        </item>
+                                        <item>
+                                            <property>
+                                                <name>text</name>
                                                 <string>1 kB</string>
                                             </property>
                                         </item>

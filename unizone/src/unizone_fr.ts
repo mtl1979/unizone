@@ -2658,7 +2658,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type='unfinished'>0</translation>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>512 B</source>
+        <translation>512 o</translation>
     </message>
 </context>
 <context>
@@ -2950,95 +2954,95 @@ Date: %4</translation>
     <name>WUpload</name>
     <message>
         <source>Status</source>
-        <translation type='unfinished'>Statut</translation>
+        <translation>Statut</translation>
     </message>
     <message>
         <source>Filename</source>
-        <translation type='unfinished'>Nom du fichier</translation>
+        <translation>Nom du fichier</translation>
     </message>
     <message>
         <source>Sent</source>
-        <translation type='unfinished'>Envoyé</translation>
+        <translation>Envoyé</translation>
     </message>
     <message>
         <source>Total</source>
-        <translation type='unfinished'>Total</translation>
+        <translation>Total</translation>
     </message>
     <message>
         <source>Rate</source>
-        <translation type='unfinished'>Taux</translation>
+        <translation>Taux</translation>
     </message>
     <message>
         <source>ETA</source>
-        <translation type='unfinished'>ETA</translation>
+        <translation>ETA</translation>
     </message>
     <message>
         <source>Elapsed</source>
-        <translation type='unfinished'>Elapsed</translation>
+        <translation>Elapsed</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type='unfinished'>Utilisateur</translation>
+        <translation>Utilisateur</translation>
     </message>
     <message>
         <source>Index</source>
-        <translation type='unfinished'>Index</translation>
+        <translation>Index</translation>
     </message>
     <message>
         <source>QR</source>
-        <translation type='unfinished'>QR</translation>
+        <translation>QR</translation>
     </message>
     <message>
         <source>Uploads</source>
-        <translation type='unfinished'>Uploads</translation>
+        <translation>Uploads</translation>
     </message>
     <message>
         <source>Queue</source>
-        <translation type='unfinished'>Queue</translation>
+        <translation>Queue</translation>
     </message>
     <message>
         <source>No Limit</source>
-        <translation type='unfinished'>Pas de Limite</translation>
+        <translation>Pas de Limite</translation>
     </message>
     <message>
         <source>%1 B/s</source>
-        <translation type='unfinished'>%1 o/s</translation>
+        <translation>%1 o/s</translation>
     </message>
     <message>
         <source>%1 kB/s</source>
-        <translation type='unfinished'>%1 ko/s</translation>
+        <translation>%1 ko/s</translation>
     </message>
     <message>
         <source>%1 MB/s</source>
-        <translation type='unfinished'>%1 Mo/s</translation>
+        <translation>%1 Mo/s</translation>
     </message>
     <message>
         <source>Unbanned</source>
-        <translation type='unfinished'>Unbanned</translation>
+        <translation>Unbanned</translation>
     </message>
     <message>
         <source>1 minute</source>
-        <translation type='unfinished'>1 minute</translation>
+        <translation>1 minute</translation>
     </message>
     <message>
         <source>%1 minutes</source>
-        <translation type='unfinished'>%1 minutes</translation>
+        <translation>%1 minutes</translation>
     </message>
     <message>
         <source>1 hour</source>
-        <translation type='unfinished'>1 hour</translation>
+        <translation>1 hour</translation>
     </message>
     <message>
         <source>Infinite</source>
-        <translation type='unfinished'>Infinite</translation>
+        <translation>Infinite</translation>
     </message>
     <message>
         <source>%1 kB</source>
-        <translation type='unfinished'>%1 ko</translation>
+        <translation>%1 ko</translation>
     </message>
     <message>
         <source>%1 MB</source>
-        <translation type='unfinished'>%1 Mo</translation>
+        <translation>%1 Mo</translation>
     </message>
     <message>
         <source>None</source>
@@ -3050,35 +3054,35 @@ Date: %4</translation>
     </message>
     <message>
         <source>Move Up</source>
-        <translation type='unfinished'>Move Up</translation>
+        <translation>Move Up</translation>
     </message>
     <message>
         <source>Move Down</source>
-        <translation type='unfinished'>Move Down</translation>
+        <translation>Move Down</translation>
     </message>
     <message>
         <source>Ban IP</source>
-        <translation type='unfinished'>Ban IP</translation>
+        <translation>Ban IP</translation>
     </message>
     <message>
         <source>Clear Finished</source>
-        <translation type='unfinished'>Clear Finished</translation>
+        <translation>Clear Finished</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type='unfinished'>Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <source>Throttle</source>
-        <translation type='unfinished'>Throttle</translation>
+        <translation>Throttle</translation>
     </message>
     <message>
         <source>Block</source>
-        <translation type='unfinished'>Block</translation>
+        <translation>Block</translation>
     </message>
     <message>
         <source>Packet Size</source>
-        <translation type='unfinished'>Packet Size</translation>
+        <translation>Packet Size</translation>
     </message>
     <message>
         <source>Compression</source>
@@ -3086,67 +3090,71 @@ Date: %4</translation>
     </message>
     <message>
         <source>Queued.</source>
-        <translation type='unfinished'>Queued.</translation>
+        <translation>Queued.</translation>
     </message>
     <message>
         <source>Blocked.</source>
-        <translation type='unfinished'>Blocked.</translation>
+        <translation>Blocked.</translation>
     </message>
     <message>
         <source>Blocked for %1 minute(s).</source>
-        <translation type='unfinished'>Blocked for %1 minute(s).</translation>
+        <translation>Blocked for %1 minute(s).</translation>
     </message>
     <message>
         <source>Examining for resume...</source>
-        <translation type='unfinished'>Examining for resume...</translation>
+        <translation>Examining for resume...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type='unfinished'>Connecting...</translation>
+        <translation>Connecting...</translation>
     </message>
     <message>
         <source>Connect failed: %1</source>
-        <translation type='unfinished'>Connect failed: %1</translation>
+        <translation>Connect failed: %1</translation>
     </message>
     <message>
         <source>Negotiating...</source>
-        <translation type='unfinished'>Negotiating...</translation>
+        <translation>Negotiating...</translation>
     </message>
     <message>
         <source>Disconnected.</source>
-        <translation type='unfinished'>Disconnected.</translation>
+        <translation>Disconnected.</translation>
     </message>
     <message>
         <source>Finished.</source>
-        <translation type='unfinished'>Finished.</translation>
+        <translation>Finished.</translation>
     </message>
     <message>
         <source>Waiting for stream...</source>
-        <translation type='unfinished'>Waiting for stream...</translation>
+        <translation>Waiting for stream...</translation>
     </message>
     <message>
         <source>Error: %1</source>
-        <translation type='unfinished'>Erreur: %1</translation>
+        <translation>Erreur: %1</translation>
     </message>
     <message>
         <source>Uploading: [%1%]</source>
-        <translation type='unfinished'>Uploading: [%1%]</translation>
+        <translation>Uploading: [%1%]</translation>
     </message>
     <message>
         <source>Shift+F11</source>
-        <translation type='unfinished'></translation>
+        <translation>Shift+F11</translation>
     </message>
     <message>
         <source>%1 (%2)</source>
-        <translation type='unfinished'>%1 (%2)</translation>
+        <translation>%1 (%2)</translation>
     </message>
     <message>
         <source>%1 of %2</source>
-        <translation type='unfinished'>%1 of %2</translation>
+        <translation>%1 of %2</translation>
     </message>
     <message>
         <source>Canceled.</source>
-        <translation type='unfinished'>Canceled.</translation>
+        <translation>Canceled.</translation>
+    </message>
+    <message>
+        <source>%1 B</source>
+        <translation>%1 o</translation>
     </message>
 </context>
 <context>

@@ -4488,6 +4488,10 @@ SOURCE=..\..\src\qt2\moc_updateclient.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\qt2\moc_uploadimpl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\qt2\moc_uploadthread.cpp
 # End Source File
 # Begin Source File

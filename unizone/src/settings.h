@@ -407,8 +407,8 @@ public:
 	void SetDLLimit(int32);
 	int32 GetBLLimit() const;
 	void SetBLLimit(int32);
-	int32 GetPacketSize() const;
-	void SetPacketSize(int32);
+	double GetPacketSize() const;
+	void SetPacketSize(double);
 	int32 GetMinQueued() const;
 	int64 GetMinQueuedSize();
 	void SetMinQueued(int32);
