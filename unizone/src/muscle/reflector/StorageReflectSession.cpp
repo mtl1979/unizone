@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include <limits.h>
 #include "reflector/ReflectServer.h"
@@ -1651,7 +1651,7 @@ StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const Strin
    // First clone the given node, using optional message-payload-replacement callback
    {
       MessageRef payload = node.GetData();
-      if (optFunc) payload = optFunc(payload, funcArg);
+      if (optFunc) payload = optFunc(destPath, payload, funcArg);
       if ((payload() == NULL)||(SetDataNode(destPath, payload, allowOverwriteData, allowCreateNode, quiet, addToTargetIndex, optInsertBefore) != B_NO_ERROR)) return B_ERROR;
    }
 

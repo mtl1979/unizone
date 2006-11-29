@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleAbstractMessageIOGateway_h
 #define MuscleAbstractMessageIOGateway_h

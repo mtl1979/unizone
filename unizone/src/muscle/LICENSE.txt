@@ -1,6 +1,6 @@
 All source code in this archive (except for the "csharp", "regex/regex",
-"delphi", and "zlib/zlib" subfolders) is Copyright 2000-2005 Level 
-Control Systems.
+"delphi", and "zlib/zlib" subfolders) is Copyright 2000-2007
+Meyer Sound Laboratories Inc.
 
 The "csharp" subfolder was written by Wilson Yeung, and is included
 by permission.
@@ -22,7 +22,7 @@ The rest of the code in this archive is licensed under the
 BSD Open Source License, which is as follows:
 
 ----------------------------------------------------------------------
-Copyright (c) 2005, Level Control Systems.  All rights reserved.
+Copyright (c) 2007, Meyer Sound Laboratories Inc.  All rights reserved.
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ this list of conditions and the following disclaimer.
 Redistributions in binary form must reproduce the above copyright 
 notice, this list of conditions and the following disclaimer in the 
 documentation and/or other materials provided with the distribution.
-Neither the name of Level Control Systems, nor the names of its 
+Neither the name of Meyer Sound Laboratories Inc., nor the names of its 
 contributors may be used to endorse or promote products derived from 
 this software without specific prior written permission.
 
@@ -54,8 +54,9 @@ DAMAGE.
 
 If you make modifications to the source code that you 
 think would be generally useful, you are encouraged to 
-send them to LCS (at the email address below) for 
+send them to me (at the email address below) for 
 inclusion into subsequent releases of this distribution.
 
 Jeremy Friesner
 jaf@lcsaudio.com
+jaf@meyersound.com

@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleTCPSocketDataIO_h
 #define MuscleTCPSocketDataIO_h
@@ -11,7 +11,7 @@
 BEGIN_NAMESPACE(muscle);
 
 #ifndef MUSCLE_DEFAULT_TCP_STALL_TIMEOUT
-# define MUSCLE_DEFAULT_TCP_STALL_TIMEOUT (20*60*((uint64)1000000))  // 20 minutes is our default timeout period
+# define MUSCLE_DEFAULT_TCP_STALL_TIMEOUT (3*60*((uint64)1000000))  // 3 minutes is our default timeout period
 #endif
 
 /**

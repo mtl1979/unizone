@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "system/SetupSystem.h"
 #include "support/Flattenable.h"
@@ -32,6 +32,10 @@
 #if defined(__BORLANDC__)
 # include <math.h>
 # include <float.h>
+#endif
+
+#if defined(__APPLE__)
+# include <CoreServices/CoreServices.h>
 #endif
 
 BEGIN_NAMESPACE(muscle);
@@ -206,6 +210,9 @@ uint64 GetRunTime64()
       _rtMutex.Unlock();
    }
    return ret;
+#elif defined(__APPLE__)
+   UnsignedWide uw = AbsoluteToNanoseconds(UpTime());
+   return ((((uint64)uw.hi)<<32)|(uw.lo))/1000;
 #else
 # if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined(MUSCLE_POWERPC_TIMEBASE_HZ)
    TCHECKPOINT;

@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDataNode_h
 #define MuscleDataNode_h
@@ -153,6 +153,17 @@ public:
     */
    status_t RemoveIndexEntryAt(uint32 removeIndex, StorageReflectSession * optNotifyWith);
 
+   /** Returns the largest ID value that this node has seen in one of its children, since the
+     * time it was created or last cleared.  Note that child nodes' names are assumed to include
+     * their ID value in ASCII format, possible with a preceding letter "I" (for indexed nodes).
+     * Child nodes whose names aren't in this format will be counted having ID zero.
+     * This value can be useful as a hint for generating new IDs.
+     */
+   uint32 GetMaxKnownChildIDHint() const {return _maxChildIDHint;}
+
+   /** You can manually set the max-known-child-ID hint here if you want to. */
+   void SetMaxKnownChildID(uint32 maxID) {_maxChildIDHint = maxID;}
+
 private:
    /** Default Constructor.  Don't use this, use StorageReflectSession::GetNewDataNode() instead!  */
    DataNode();
@@ -175,6 +186,7 @@ private:
    uint32 _orderedCounter;
    String _nodeName;
    uint32 _depth;  // number of ancestors our node has (e.g. root's _depth is zero)
+   uint32 _maxChildIDHint;  // keep track of the largest child ID, for easier allocation of non-conflicting future child IDs
 
    Hashtable<const char *, uint32> _subscribers; 
 };

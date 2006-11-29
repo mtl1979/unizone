@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -66,11 +66,32 @@ public:
     */
    MessageFieldNameIterator() : _typeCode(B_ANY_TYPE) {/* empty */}
 
+   /** This form of the constructor creates an iterator that will iterate over field names in the given Message. 
+     * @param msg the Message whose field names we want to iterate over
+     * @param type Type of fields you wish to iterate over, or B_ANY_TYPE to iterate over all fields.
+     * @param flags Bit-chord of HTIT_FLAG_* flags you want to use to affect the iteration behaviour.
+     *              This bit-chord will get passed on to the underlying HashtableIterator.  Defaults
+     *              to zero, which provides the default behaviour.
+     */
+   MessageFieldNameIterator(const Message & msg, uint32 type = B_ANY_TYPE, uint32 flags = 0);
+
    /** Destructor. */
    ~MessageFieldNameIterator() {/* empty */}
 
+   /** Advances this iterator by one entry in the table.  Equivalent to calling GetNextFieldName() once. */
+   void operator++(int) {(void) GetNextFieldNameString();}
+
+   /** Retracts this iterator by one entry in the table. */
+   void operator--(int) {bool b = IsBackwards(); SetBackwards(!b); (void) GetNextFieldNameString(); SetBackwards(b);}
+
    /** Returns true iff there are more field names available to be traversed.  */
    bool HasMoreFieldNames() const {return (PeekNextFieldNameString() != NULL);}
+
+   /** Returns a reference to the current field name.  Note that this will return a NULL
+     * reference if there is no current field name, so be sure to call HasMoreFieldNames()
+     * first and only call this method if HasMoreFieldNames() returned true!
+     */
+   const String & GetFieldName() const {return *PeekNextFieldNameString();}
 
    /**
     *  Places the next field name into (name) and bumps the iterator position.
@@ -91,9 +112,6 @@ public:
     *  pointer may become invalid if the Message is modified)
     */
    const String * GetNextFieldNameString();
-
-   /** Convenience synonym for GetNextFieldNameString() */
-   const String * operator()() {return GetNextFieldNameString();}
 
    /** 
     *  Places the next field name into (name) without modifying the state of the traversal.
@@ -1013,8 +1031,8 @@ public:
     * message.  If (type) is B_ANY_TYPE, then all field names will be included
     * in the traversal.  Otherwise, only names of the given type will be included.
     * @param type Type of fields you wish to iterate over, or B_ANY_TYPE to iterate over all fields.
-    * @param flags Bitchord of HTIT_FLAG_* flags you want to use to affect the iteration behaviour.
-    *              This bitchord will get passed on to the underlying HashtableIterator.  Defaults
+    * @param flags Bit-chord of HTIT_FLAG_* flags you want to use to affect the iteration behaviour.
+    *              This bit-chord will get passed on to the underlying HashtableIterator.  Defaults
     *              to zero, which provides the default behaviour.
     */
    MessageFieldNameIterator GetFieldNameIterator(uint32 type = B_ANY_TYPE, uint32 flags = 0) const {return MessageFieldNameIterator(_entries.GetIterator(flags), type);}
@@ -1024,8 +1042,8 @@ public:
     * or end of the list of field names.
     * @param startFieldName the field name to start with.  If (startFieldName) isn't present, the iteration will be empty.
     * @param type Type of fields you wish to iterate over, or B_ANY_TYPE to iterate over all fields.
-    * @param flags Bitchord of HTIT_FLAG_* flags you want to use to affect the iteration behaviour.
-    *              This bitchord will get passed on to the underlying HashtableIterator.  Defaults
+    * @param flags Bit-chord of HTIT_FLAG_* flags you want to use to affect the iteration behaviour.
+    *              This bit-chord will get passed on to the underlying HashtableIterator.  Defaults
     *              to zero, which provides the default behaviour.
     */
    MessageFieldNameIterator GetFieldNameIteratorAt(const String & startFieldName, uint32 type = B_ANY_TYPE, uint32 flags = 0) const {return MessageFieldNameIterator(_entries.GetIteratorAt(startFieldName, flags), type);}
@@ -1062,6 +1080,8 @@ private:
    friend class MessageFieldNameIterator;
    Hashtable<String, GenericRef> _entries;   
 };
+
+inline MessageFieldNameIterator :: MessageFieldNameIterator(const Message & msg, uint32 type, uint32 flags) : HashtableIterator<String, GenericRef>(msg._entries.GetIterator(flags)), _typeCode(type) {/* empty */}
 
 END_NAMESPACE(muscle);
 

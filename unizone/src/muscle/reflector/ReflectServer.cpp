@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #if defined(__linux__) || defined(__APPLE__)
 # include <signal.h>
@@ -362,6 +362,7 @@ ServerProcessLoop()
                         {
                            FD_SET(sessionSocket, &writeSet);
                            if (session->_lastByteOutputAt == 0) session->_lastByteOutputAt = now;  // the bogged-session-clock starts ticking when we first want to write...
+                           if (session->_outputStallLimit != MUSCLE_TIME_NEVER) nextPulseAt = muscleMin(nextPulseAt, session->_lastByteOutputAt+session->_outputStallLimit);
                         }
                         else session->_lastByteOutputAt = 0;  // If we no longer want to write, then the bogged-session-clock-timeout is cancelled
 
@@ -552,7 +553,7 @@ ServerProcessLoop()
                           if ((wroteBytes > 0)||(session->_maxOutputChunk == 0)) session->_lastByteOutputAt = now;  // reset the moribundness-timer
                      else if (now-session->_lastByteOutputAt > session->_outputStallLimit)
                      {
-                        if (_doLogging) LogTime(MUSCLE_LOG_WARNING, "Connection for %s timed out (output stall).\n", session->GetSessionDescriptionString()());
+                        if (_doLogging) LogTime(MUSCLE_LOG_WARNING, "Connection for %s timed out (output stall, no data movement for %llu seconds).\n", session->GetSessionDescriptionString()(), (session->_outputStallLimit/1000000));
                         (void) DisconnectSession(session);
                      }
                   }

@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleHashtable_h
 #define MuscleHashtable_h
@@ -19,7 +19,7 @@ BEGIN_NAMESPACE(muscle);
 static const uint32 MUSCLE_HASHTABLE_INVALID_HASH_CODE = (uint32)-1;
 
 /** This hashing functor type handles the "easy" cases, where the KeyType is
- *  something that can be static_cast into a uint32 by the compiler.
+ *  something that can be static_cast<> into a uint32 by the compiler.
  *  For more complicated key types, you'll need to define your own 
  *  specialization of this functor template.  (See util/String.h for an example of this)
  */
@@ -55,6 +55,25 @@ enum {
  * iterating over the keys.  These two iterations can be done independently
  * of each other.
  *
+ * One useful form for doing an iteration is this:
+ *
+ * for (HashtableIterator<String, int> iter(table); iter.HasMoreKeys(); iter++)
+ * {
+ *    const String & nextKey = iter.GetKey(); 
+ *    int nextValue = iter.GetValue(); 
+ *    [...]
+ * }
+ *
+ * Another common form is this:
+ *
+ * String nextKey;
+ * int nextValue;
+ * HashtableIterator<String, int> iter(table);
+ * while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
+ * {
+ *    [...]
+ * }
+ * 
  * It is safe to modify or delete a hashtable during a traversal; the active iterators
  * will be automatically notified so that they do the right thing.
  */
@@ -74,7 +93,7 @@ public:
 
    /** Convenience Constructor -- makes an iterator equivalent to the value returned by table.GetIterator().  
      * @param table the Hashtable to iterate over.
-     * @param flags A bit-chord of HTIT_FLAG_* constants (see above).  Defaults to zero for default behaviour.
+     * @param flags A bit-chord of HTIT_FLAG_* constants (see above).  Defaults to zero for default behaviour.  
      */
    HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, uint32 flags = 0);
 
@@ -82,7 +101,7 @@ public:
      * @param table the Hashtable to iterate over.
      * @param startAt the first key that should be returned by the iteration.  If (startAt) is not in the table,
      *                the iterator will not return any results.
-     * @param flags A bit-chord of HTIT_FLAG_* constants (see above).  Defaults to zero for default behaviour.
+     * @param flags A bit-chord of HTIT_FLAG_* constants (see above).  Set to zero to get the default behaviour.
      */
    HashtableIterator(const Hashtable<KeyType, ValueType, HashFunctorType> & table, const KeyType & startAt, uint32 flags);
 
@@ -92,18 +111,44 @@ public:
    /** Assignment operator. */
    HashtableIterator<KeyType, ValueType, HashFunctorType> & operator=(const HashtableIterator<KeyType, ValueType, HashFunctorType> & rhs);
 
+   /** Advances this iterator by one entry in the table.  Equivalent to calling both GetNextKey() and GetNextValue(). */
+   void operator++(int) {(void) GetNextKey(); (void) GetNextValue();}
+
+   /** Retracts this iterator by one entry in the table.  The opposite of the ++ operator. */
+   void operator--(int) {bool b = IsBackwards(); SetBackwards(!b); (void) GetNextKey(); (void) GetNextValue(); SetBackwards(b);}
+
    /** Returns true iff there are more keys left in the key traversal.  */
-   bool HasMoreKeys() const {return (_nextKeyCookie != NULL);}
+   bool HasMoreKeys() const {return ((_nextKeyCookie != NULL)||((_owner)&&(_owner->HasItems())&&(_flags&HTIT_INTERNAL_FLAG_RESTARTKEY)));}
 
    /**
-    * Gets the next key in the key traversal.
+    * Returns a reference to the key this iterator is currently pointing at.  This method does not change the state of the iterator.
+    * @note Be careful with this method, if this iterator isn't currently pointing at any key,
+    *       it will return a NULL reference and your program will crash when you try to use it.
+    *       Typically you would want to call this function only after checking to see that
+    *       HasMoreKeys() returns true.
+    * @note The returned reference is only guaranteed to remain valid for as long as the Hashtable remains unchanged.
+    */
+   const KeyType & GetKey() const {return *PeekNextKey();}
+
+   /**
+    * Returns a reference to the value this iterator is currently pointing at.
+    * @note Be careful with this method, if this iterator isn't currently pointing at any value,
+    *       it will return a NULL reference and your program will crash when you try to use it.
+    *       Typically you would want to call this function only after checking to see that
+    *       HasMoreValues() returns true.
+    * @note The returned reference is only guaranteed to remain valid for as long as the Hashtable remains unchanged.
+    */
+   const ValueType & GetValue() const {return *PeekNextValue();}
+
+   /**
+    * Iterates to get the next key in the key traversal.
     * @param setNextKey On success, the next key is copied into this object.
     * @return B_NO_ERROR on success, B_ERROR if there are no more keys left.
     */
    status_t GetNextKey(KeyType & setNextKey);
 
    /**
-    * Gets a pointer to the next key in the key traversal.
+    * Iterates to get a pointer to the next key in the key traversal.
     * Note that the returned pointer is only guaranteed valid as long as the Hashtable remains unchanged.
     * @return A pointer to the next key in the key traversal, or NULL if there are no more keys left.
     */
@@ -124,17 +169,17 @@ public:
    const KeyType * PeekNextKey() const;
 
    /** Returns true iff there are more values left in the value traversal.  */
-   bool HasMoreValues() const {return (_nextValueCookie != NULL);}
+   bool HasMoreValues() const {return ((_nextValueCookie != NULL)||((_owner)&&(_owner->HasItems())&&(_flags & HTIT_INTERNAL_FLAG_RESTARTVALUE)));}
 
    /**
-    * Get the next value in the values traversal.
+    * Iterates to get the next value in the values traversal.
     * @param setNextValue On success, the next value in the traversal is copied into this object.
     * @return B_NO_ERROR on success, B_ERROR if there are no more values left in the value traversal.
     */
    status_t GetNextValue(ValueType & setNextValue);
 
    /**
-    * Get the next value in the values traversal.
+    * Iterates to get the next value in the values traversal.
     * Note that the returned pointer is only guaranteed valid as long as the Hashtable remains unchanged.
     * @return a pointer to the next value in the value traversal, or NULL if there are no values left.
     */
@@ -196,7 +241,26 @@ public:
      */
    status_t GetNextKeyAndValue(const KeyType * & setKeyPtr, const ValueType * & setValuePtr);
 
+   /** Returns this iterator's HTIT_FLAG_* bit-chord value. */
+   uint32 GetFlags() const {return _flags;}
+
+   /** Sets or unsets the HTIT_FLAG_BACWARDS flag on this iterator. 
+     * @param backwards If true, this iterator will be set to iterate backwards from wherever it is currently; 
+     *                  if false, this iterator will be set to iterate forwards from wherever it is currently.
+     */
+   void SetBackwards(bool backwards) {if (backwards) _flags |= HTIT_FLAG_BACKWARDS; else _flags &= ~HTIT_FLAG_BACKWARDS;}
+
+   /* Returns true iff this iterator is set to iterate in reverse order -- i.e. if HTIT_FLAG_BACKWARDS
+    * was passed in to the constructor, or if SetBackwards(true) was called.
+    */
+   bool IsBackwards() const {return ((_flags & HTIT_FLAG_BACKWARDS) != 0);}
+
 private:
+   enum {
+      HTIT_INTERNAL_FLAG_RESTARTKEY   = (1<<31), // tells GetNextKey() not to iterate on the next iteration
+      HTIT_INTERNAL_FLAG_RESTARTVALUE = (1<<30)  // tells GetNextValue() not to iterate on the next iteration
+   };
+
    /** The Hashtable class needs access to our internals to do the iteration operation */
    friend class Hashtable<KeyType, ValueType, HashFunctorType>;
 
@@ -289,7 +353,7 @@ public:
    bool HasItems() const {return (_count > 0);}
 
    /** Returns true iff the table contains a mapping with the given key.  (O(1) search time) */
-   bool ContainsKey(const KeyType& key) const {return ((_count>0)&&(GetEntry(ComputeHash(key), key) != NULL));}
+   bool ContainsKey(const KeyType& key) const {return ((HasItems())&&(GetEntry(ComputeHash(key), key) != NULL));}
 
    /** Returns true iff the table contains a mapping with the given value.  (O(n) search time) */
    bool ContainsValue(const ValueType& value) const;
@@ -622,13 +686,13 @@ private:
    void InitializeIterator(HashtableIterator<KeyType,ValueType,HashFunctorType> & iter) const
    {
       RegisterIterator(&iter);
-      iter._nextKeyCookie = iter._nextValueCookie = ((iter._flags & HTIT_FLAG_BACKWARDS) ? _iterTail : _iterHead);
+      iter._nextKeyCookie = iter._nextValueCookie = (iter._flags & HTIT_FLAG_BACKWARDS) ? _iterTail : _iterHead;
    }
 
    void InitializeIteratorAt(HashtableIterator<KeyType,ValueType,HashFunctorType> & iter, const KeyType & startAt) const
    {
       RegisterIterator(&iter);
-      iter._nextKeyCookie = iter._nextValueCookie = ((_count>0)?GetEntry(ComputeHash(startAt), startAt):NULL);
+      iter._nextKeyCookie = iter._nextValueCookie = (HasItems()?GetEntry(ComputeHash(startAt), startAt):NULL);
    }
 
    class HashtableEntry
@@ -768,10 +832,11 @@ private:
    KeyType * GetKeyFromCookie(void * c) const {return c ? &(((HashtableEntry *)c)->_key) : NULL;}
    ValueType * GetValueFromCookie(void * c) const  {return c ? &(((HashtableEntry *)c)->_value) : NULL;}
 
-   void IterateCookie(void ** c, uint32 flags) const 
+   HashtableEntry * GetInitialEntry(uint32 flags) const {return (flags & HTIT_FLAG_BACKWARDS) ? _iterTail : _iterHead;}
+   HashtableEntry * GetSubsequentEntry(void * entryPtr, uint32 flags) const 
    {
-      HashtableEntry * entry = *((HashtableEntry **)c);
-      *c = entry ? ((flags & HTIT_FLAG_BACKWARDS) ? entry->_iterPrev : entry->_iterNext) : NULL;
+      HashtableEntry * ep = static_cast<HashtableEntry *>(entryPtr);
+      return ep ? ((flags & HTIT_FLAG_BACKWARDS) ? ep->_iterPrev : ep->_iterNext) : NULL;
    }
 
    uint32 NextPrime(uint32 start) const;
@@ -873,7 +938,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 int32
 Hashtable<KeyType,ValueType,HashFunctorType>::IndexOfKey(const KeyType& key) const
 {
-   const HashtableEntry * entry = (_count>0)?GetEntry(ComputeHash(key), key):NULL;
+   const HashtableEntry * entry = HasItems()?GetEntry(ComputeHash(key), key):NULL;
    int32 count = -1;
    if (entry)
    {
@@ -928,7 +993,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 ValueType *
 Hashtable<KeyType,ValueType,HashFunctorType>::GetValue(const KeyType& key) const
 {
-   HashtableEntry * e = (_count>0)?GetEntry(ComputeHash(key), key):NULL;
+   HashtableEntry * e = HasItems()?GetEntry(ComputeHash(key), key):NULL;
    return e ? &e->_value : NULL;
 }
 
@@ -936,7 +1001,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 const KeyType * 
 Hashtable<KeyType,ValueType,HashFunctorType>::GetKey(const KeyType& lookupKey) const
 {
-   HashtableEntry * e = (_count>0)?GetEntry(ComputeHash(lookupKey), lookupKey):NULL;
+   HashtableEntry * e = HasItems()?GetEntry(ComputeHash(lookupKey), lookupKey):NULL;
    return e ? &e->_key : NULL;
 }
 
@@ -1073,6 +1138,7 @@ status_t
 Hashtable<KeyType,ValueType,HashFunctorType>::EnsureSize(uint32 requestedSize)
 {
    if (_tableSize >= requestedSize) return B_NO_ERROR;  // no need to do anything if we're already big enough!
+
    // 1. Initialize the scratch space for our active iterators.
    {
       HashtableIterator<KeyType,ValueType,HashFunctorType> * nextIter = _iterList;
@@ -1172,7 +1238,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 status_t 
 Hashtable<KeyType,ValueType,HashFunctorType>::MoveToFront(const KeyType & moveMe)
 {
-   HashtableEntry * e = (_count>0)?GetEntry(ComputeHash(moveMe), moveMe):NULL;
+   HashtableEntry * e = HasItems()?GetEntry(ComputeHash(moveMe), moveMe):NULL;
    if (e == NULL) return B_ERROR;
    if (e->_iterPrev)
    {
@@ -1186,7 +1252,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 status_t 
 Hashtable<KeyType,ValueType,HashFunctorType>::MoveToBack(const KeyType & moveMe)
 {
-   HashtableEntry * e = (_count>0)?GetEntry(ComputeHash(moveMe), moveMe):NULL;
+   HashtableEntry * e = HasItems()?GetEntry(ComputeHash(moveMe), moveMe):NULL;
    if (e == NULL) return B_ERROR;
    if (e->_iterNext)
    {
@@ -1200,7 +1266,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 status_t 
 Hashtable<KeyType,ValueType,HashFunctorType>::MoveToBefore(const KeyType & moveMe, const KeyType & toBeforeMe)
 {
-   if (_count > 0)
+   if (HasItems())
    {
       HashtableEntry * e = GetEntry(ComputeHash(moveMe),     moveMe);
       HashtableEntry * f = GetEntry(ComputeHash(toBeforeMe), toBeforeMe);
@@ -1219,7 +1285,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 status_t 
 Hashtable<KeyType,ValueType,HashFunctorType>::MoveToBehind(const KeyType & moveMe, const KeyType & toBehindMe)
 {
-   if (_count > 0)
+   if (HasItems())
    {
       HashtableEntry * d = GetEntry(ComputeHash(toBehindMe), toBehindMe);
       HashtableEntry * e = GetEntry(ComputeHash(moveMe),     moveMe);
@@ -1288,8 +1354,26 @@ Hashtable<KeyType,ValueType,HashFunctorType>::RemoveIterationEntry(HashtableEntr
    HashtableIterator<KeyType, ValueType, HashFunctorType> * next = _iterList;
    while(next)
    {
-      if (next->_nextKeyCookie   == e) (void) next->GetNextKey();
-      if (next->_nextValueCookie == e) (void) next->GetNextValue();
+      if (next->_nextKeyCookie == e) 
+      {
+         bool isBack = next->IsBackwards();
+         if (e == (isBack?_iterTail:_iterHead)) 
+         {
+            next->_flags |= HashtableIterator<KeyType,ValueType,HashFunctorType>::HTIT_INTERNAL_FLAG_RESTARTKEY;
+            next->_nextKeyCookie = NULL;
+         }
+         else next->_nextKeyCookie = GetSubsequentEntry(next->_nextKeyCookie, isBack?0:HTIT_FLAG_BACKWARDS);
+      }
+      if (next->_nextValueCookie == e) 
+      {
+         bool isBack = next->IsBackwards();
+         if (e == (isBack?_iterTail:_iterHead)) 
+         {
+            next->_flags |= HashtableIterator<KeyType,ValueType,HashFunctorType>::HTIT_INTERNAL_FLAG_RESTARTVALUE;
+            next->_nextValueCookie = NULL;
+         }
+         else next->_nextValueCookie = GetSubsequentEntry(next->_nextValueCookie, isBack?0:HTIT_FLAG_BACKWARDS);
+      }
       next = next->_nextIter;
    }
 
@@ -1389,7 +1473,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 status_t
 Hashtable<KeyType,ValueType,HashFunctorType>::RemoveAux(const KeyType& key, ValueType * optSetValue)
 {
-   HashtableEntry * e = (_count>0)?GetEntry(ComputeHash(key), key):NULL;
+   HashtableEntry * e = HasItems()?GetEntry(ComputeHash(key), key):NULL;
    if (e)
    {
       RemoveIterationEntry(e);
@@ -1430,7 +1514,7 @@ Hashtable<KeyType,ValueType,HashFunctorType>::Clear(bool releaseCachedBuffers)
       _iterList = next;
    }
 
-   if (_count > 0)
+   if (HasItems())
    {
       if (releaseCachedBuffers == false)
       {
@@ -1601,25 +1685,31 @@ ValueType *
 HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextValue()
 {
    ValueType * val = PeekNextValue();
-   if (val)
+
+        if (val) _nextValueCookie = _owner->GetSubsequentEntry(_nextValueCookie, _flags);
+   else if ((_owner)&&(_flags & HTIT_INTERNAL_FLAG_RESTARTVALUE))
    {
-      _owner->IterateCookie(&_nextValueCookie, _flags);
-      return val;
+      _nextValueCookie = _owner->GetInitialEntry(_flags);
+      val = PeekNextValue();
+      _flags &= ~HTIT_INTERNAL_FLAG_RESTARTVALUE;
    }
-   return NULL;
+   return val;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
 const KeyType *
 HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKey() 
 {
-   const KeyType * ret = PeekNextKey();
-   if (ret)
+   const KeyType * key = PeekNextKey();
+
+        if (key) _nextKeyCookie = _owner->GetSubsequentEntry(_nextKeyCookie, _flags);
+   else if ((_owner)&&(_flags & HTIT_INTERNAL_FLAG_RESTARTKEY))
    {
-      _owner->IterateCookie(&_nextKeyCookie, _flags);
-      return ret;
+      _nextKeyCookie = _owner->GetInitialEntry(_flags);
+      key = PeekNextKey();
+      _flags &= ~HTIT_INTERNAL_FLAG_RESTARTKEY;
    }
-   return NULL;
+   return key;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>

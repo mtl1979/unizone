@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 /* This class was derived from the String class written by Michael Olivero (mike95@mike95.com) */
  
 /* NOTE TO MACOS/X X-CODE USERS:  If you are trying to #include <string.h>

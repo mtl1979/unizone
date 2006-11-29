@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleStorageReflectSession_h
 #define MuscleStorageReflectSession_h
@@ -261,8 +261,14 @@ protected:
     */
     status_t SendMessageToMatchingSessions(const MessageRef & msgRef, const String & nodePath, const QueryFilterRef & filter, bool matchSelf);
 
-    /** This type is sometimes used when calling CloneDataNodeSubtree(). */
-    typedef MessageRef (*MessageReplaceFunc)(const MessageRef & oldRef, void *);
+    /** This type is sometimes used when calling CloneDataNodeSubtree(). 
+      * @param newPath The database node-path at which this new duplicate node will be created.
+      * @param oldRef A reference to a Message object that is the Message that will be placed at that node.
+      * @param userData The void pointer that was passed in to CloneDataNodeSubtree
+      * @returns The MessageRef to associate with the new duplicate node.  May be the same as (oldRef), or different.
+      *          Should not be a NULL reference.
+      */
+    typedef MessageRef (*MessageReplaceFunc)(const String & newPath, const MessageRef & oldRef, void * userData);
 
    /** Convenience method (used by some customized daemons) -- Given a source node and a destination path,
      * Make (path) a deep, recursive clone of (node).

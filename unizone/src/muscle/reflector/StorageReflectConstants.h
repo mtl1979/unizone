@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleStorageReflectConstants_h
 #define MuscleStorageReflectConstants_h
@@ -110,7 +110,7 @@ enum
 #define PR_NAME_MAX_UPDATE_MESSAGE_ITEMS "!MxUp"  // Int32 parameter; sets max # of items per PR_RESULT_DATAITEMS message
 #define PR_NAME_SESSION_ROOT         "!Root"  // String returned in parameter set; contains this sessions /host/sessionID
 #define PR_NAME_REJECTED_MESSAGE     "!Rjct"  // Message: In PR_RESULT_ERROR_* messages, returns the client's message that failed to execute.
-#define PR_NAME_PRIVILEGE_BITS       "!Priv"  // int32 bitchord of PR_PRIVILEGE_* bits.
+#define PR_NAME_PRIVILEGE_BITS       "!Priv"  // int32 bit-chord of PR_PRIVILEGE_* bits.
 #define PR_NAME_SERVER_MEM_AVAILABLE "!Mav"   // int64 indicating how many more bytes are available for MUSCLE server to use
 #define PR_NAME_SERVER_MEM_USED      "!Mus"   // int64 indicating how many bytes the MUSCLE server currently has allocated
 #define PR_NAME_SERVER_MEM_MAX       "!Mmx"   // uint64 indicating how the maximum number of bytes the MUSCLE server may have allocated at once.

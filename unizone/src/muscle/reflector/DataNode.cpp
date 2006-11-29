@@ -1,4 +1,4 @@
-/* This file is Copyright 2005 Level Control Systems.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/DataNode.h"
 #include "reflector/StorageReflectSession.h"
@@ -18,10 +18,11 @@ DataNode :: ~DataNode()
 
 void DataNode :: Init(const char * name, const MessageRef & initData)
 {
-   _nodeName = name;
-   _parent   = NULL;
-   _depth    = 0;
-   _data     = initData;
+   _nodeName       = name;
+   _parent         = NULL;
+   _depth          = 0;
+   _maxChildIDHint = 0;
+   _data           = initData;
 }
 
 void DataNode :: Reset()
@@ -31,8 +32,9 @@ void DataNode :: Reset()
    if (_children) _children->Clear();
    if (_orderedIndex) _orderedIndex->Clear();
    _subscribers.Clear();
-   _parent = NULL;
-   _depth = 0;
+   _parent         = NULL;
+   _depth          = 0;
+   _maxChildIDHint = 0;
    _data.Reset();
 }
 
@@ -226,7 +228,13 @@ void DataNode :: SetParent(DataNode * parent, StorageReflectSession * optNotifyW
 
    if ((_parent)&&(parent)) LogTime(MUSCLE_LOG_WARNING, "Warning, overwriting previous parent of node [%s]\n", GetNodeName()());
    _parent = parent;
-   if (_parent == NULL) _subscribers.Clear();
+   if (_parent) 
+   {
+      const char * nn = _nodeName();
+      uint32 id = atol(&nn[(*nn=='I')?1:0]);
+      _parent->_maxChildIDHint = muscleMax(_parent->_maxChildIDHint, id);
+   }
+   else _subscribers.Clear();
 
    // Calculate our node's depth into the tree
    _depth = 0;
