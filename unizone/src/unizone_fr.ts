@@ -802,7 +802,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Shift+F11</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>Shift+F11</translation>
     </message>
 </context>
 <context>
@@ -854,6 +854,10 @@ Date: %4</translation>
     <message>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
         <translation type='obsolete'>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
+    </message>
+    <message>
+        <source>Send Queue Overflow!</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>
@@ -1842,6 +1846,17 @@ Date: %4</translation>
     <message>
         <source>Sharing %1 file(s).</source>
         <translation>Partageant %1 file(s).</translation>
+    </message>
+</context>
+<context>
+    <name>WPicViewer</name>
+    <message>
+        <source>No File</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>%1/%2</source>
+        <translation type='unfinished'>%1/%2</translation>
     </message>
 </context>
 <context>

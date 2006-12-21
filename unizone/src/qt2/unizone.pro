@@ -15,6 +15,7 @@ SOURCES =			qt2\aboutdlg.cpp \
 				menubar.cpp \
 				netclient.cpp \
 				qt2\picviewer.cpp \
+				picviewerimpl.cpp \
 				platform.cpp \
 				qt2\prefs.cpp \
 				prefsimpl.cpp \

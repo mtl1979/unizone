@@ -896,6 +896,10 @@ Date: %4</translation>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
         <translation type='obsolete'>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
     </message>
+    <message>
+        <source>Send Queue Overflow!</source>
+        <translation>Send Queue Overflow!</translation>
+    </message>
 </context>
 <context>
     <name>QMenuBar</name>
@@ -1954,6 +1958,17 @@ Date: %4</translation>
     <message>
         <source>Sharing %1 file(s).</source>
         <translation>Sharing %1 file(s).</translation>
+    </message>
+</context>
+<context>
+    <name>WPicViewer</name>
+    <message>
+        <source>No File</source>
+        <translation>No File</translation>
+    </message>
+    <message>
+        <source>%1/%2</source>
+        <translation>%1/%2</translation>
     </message>
 </context>
 <context>

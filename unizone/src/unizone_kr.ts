@@ -754,6 +754,10 @@ Date: %4</source>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
         <translation type='obsolete'>We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
     </message>
+    <message>
+        <source>Send Queue Overflow!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>QMenuBar</name>
@@ -1773,6 +1777,17 @@ Date: %4</source>
     <message>
         <source>Sharing %1 file(s).</source>
         <translation>%1 개의 파일 공유 중.</translation>
+    </message>
+</context>
+<context>
+    <name>WPicViewer</name>
+    <message>
+        <source>No File</source>
+        <translation type='unfinished'>No File</translation>
+    </message>
+    <message>
+        <source>%1/%2</source>
+        <translation type='unfinished'>%1/%2</translation>
     </message>
 </context>
 <context>

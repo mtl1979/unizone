@@ -948,6 +948,10 @@ Päiväys: %4</translation>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
         <translation type='obsolete'>Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
     </message>
+    <message>
+        <source>Send Queue Overflow!</source>
+        <translation>Lähetyspuskurin ylivuoto!</translation>
+    </message>
 </context>
 <context>
     <name>QMenuBar</name>
@@ -2082,6 +2086,17 @@ Päiväys: %4</translation>
     <message>
         <source>Sharing %1 file(s).</source>
         <translation>%1 tiedosto(a) jaossa.</translation>
+    </message>
+</context>
+<context>
+    <name>WPicViewer</name>
+    <message>
+        <source>No File</source>
+        <translation>Ei Tiedostoa</translation>
+    </message>
+    <message>
+        <source>%1/%2</source>
+        <translation>%1/%2</translation>
     </message>
 </context>
 <context>

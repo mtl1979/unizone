@@ -12,6 +12,7 @@ SOURCES =			aboutdlgimpl.cpp \
 				main.cpp \
 				menubar.cpp \
 				netclient.cpp \
+				picviewerimpl.cpp \
 				platform.cpp \
 				prefsimpl.cpp \
 				privatewindowimpl.cpp \
