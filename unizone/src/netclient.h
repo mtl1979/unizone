@@ -205,6 +205,7 @@ private:
 	mutable Mutex fChannelLock;
 
 	int timerID;
+	uint32 fIdles;
 
 	QMessageTransceiverThread *qmtt;
 	Queue<NetPacket> packetbuf;

@@ -791,7 +791,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 	fConnecting = false;
 	CTimer->stop();
 
-	timerID = startTimer(10000);
+	timerID = startTimer(15000);
 
 	_sessionID = sessionID;
 	fNegotiating = true;
@@ -1061,21 +1061,18 @@ WDownloadThread::timerEvent(QTimerEvent * /* e */)
 			}
 			return;
 		}
-		else if (fIdles < 4) 		
+		// 1 minute maximum
+		fIdles++;
+		if (fIdles == 1)
 		{
-			// 1 minute maximum
-			fIdles++;
-			if (fIdles < 2)
+			MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
+			if ( nop() )
 			{
-				// 30 seconds to avoid postponing OutputQueuesDrained() message too far
-				MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
-				if ( nop() )
-				{
-					SendMessageToSessions(nop);
-				}
+				SendMessageToSessions(nop);
 			}
-			return;
 		}
+		if (fIdles < 3)
+			return;
 	}
 	// Manually queued files don't need any special handling
 	if (fManuallyQueued)

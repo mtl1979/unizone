@@ -38,6 +38,7 @@ NetClient::NetClient(QObject * owner)
 	hasmessages = false;
 	fLoggedIn = false;
 	fLoginTime = 0;
+	fIdles = 0;
 	fChannelLock.Lock();
 	fChannels = GetMessageFromPool();
 	fChannelLock.Unlock();
@@ -1123,7 +1124,7 @@ NetClient::SessionConnected(const String & /* sessionID */)
 {
 	PRINT("MTT_EVENT_SESSION_CONNECTED\n");
 
-	timerID = startTimer(10000);
+	timerID = startTimer(15000);
 
 	SendSignal(NetClient::SESSION_CONNECTED);
 	PRINT("Returning\n");
@@ -1166,6 +1167,7 @@ NetClient::OutputQueuesDrained(const MessageRef &/* ref */)
 {
  	PRINT2("MTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
 
+	fIdles = 0;
 	if (IsConnected())
 	{
 		NetPacket np;
@@ -1319,11 +1321,22 @@ NetClient::timerEvent(QTimerEvent * /* e */)
 {
 	if (IsConnected())
 	{
-		MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
-		if ( nop() )
+		// 1 minute maximum
+		fIdles++;
+		if (fIdles == 1)
 		{
-			SendMessageToSessions(nop);
+			MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
+			if ( nop() )
+			{
+				SendMessageToSessions(nop);
+			}
 		}
+		if (fIdles < 3)
+			return;
+
+		// fall through
+		ErrorEvent(parent(), tr("Send Queue Overflow!"));
+		Disconnect();
 	}
 }
 
