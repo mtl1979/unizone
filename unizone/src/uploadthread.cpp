@@ -1147,7 +1147,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 		
 		// also send a message along to our GUI telling it what the first file is
 		
-		if (fUploads.GetNumItems() == 0)
+		if (fUploads.IsEmpty())
 		{
 			PRINT("WUploadThread: No Files!!!\n");
 			Reset();

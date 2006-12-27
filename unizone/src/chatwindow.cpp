@@ -4,6 +4,7 @@
 
 #include <qapplication.h>
 #include <qdragobject.h>
+#include <qsound.h>
 
 #include "chatwindow.h"
 #include "nicklist.h"
@@ -13,6 +14,7 @@
 #include "winsharewindow.h"
 #include "settings.h"
 #include "colors.h"
+#include "wfile.h"
 #include "wstring.h"
 #include "formatting.h"
 
@@ -30,7 +32,7 @@ ChatWindow::FormatNameSaid(const QString &msg)
 {
 	QString message = EscapeHTML(msg);
 	if (NameSaid(message) && Settings()->GetSounds())
-		QApplication::beep();
+		beep();
 	return ParseString(ParseChatText(message));
 }
 
@@ -275,4 +277,22 @@ QString
 ChatWindow::tr(const char *s)
 {
 	return qApp->translate("ChatWindow", s);
+}
+
+void
+ChatWindow::beep()
+{
+	static QSound qs("beep.wav", NULL, "beep");
+	static bool checked = false, exists = false;
+	if (!checked)
+	{
+		exists = WFile::Exists(L"beep.wav");
+		checked = true;
+	}
+	if (QSound::available() && exists)
+	{
+		qs.play();
+	}
+	else
+		QApplication::beep();
 }

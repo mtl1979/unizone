@@ -190,7 +190,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 		startAt = backupStartAt;
 		matchString = backupMatchString;
 		if (fSettings->GetSounds())
-			QApplication::beep();
+			beep();
 	}
 	if (startAt != -1)
 	{

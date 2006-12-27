@@ -2284,7 +2284,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
-        <translation>전송이 완료되면 자동으로 비우시겠습니까?</translation>
+        <translation type='obsolete'>전송이 완료되면 자동으로 비우시겠습니까?</translation>
     </message>
     <message>
         <source>File Sharing</source>
@@ -2556,10 +2556,18 @@ Date: %4</source>
     </message>
     <message>
         <source>0</source>
-        <translation type='unfinished'>0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>512 B</source>
+        <translation>512 B</translation>
+    </message>
+    <message>
+        <source>Automatically clear finished transfers?</source>
+        <translation type='unfinished'>전송이 완료되면 자동으로 비우시겠습니까?</translation>
+    </message>
+    <message>
+        <source>Automatically close upload window?</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

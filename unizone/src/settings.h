@@ -36,6 +36,7 @@ using namespace muscle;
 #define BINKYNUKE			"binkynuke"
 #define BLOCKDISCONNECTED	"blockdisconnected"
 #define AUTOCLEAR			"autoclear"
+#define AUTOCLOSE           "autoclose"
 #define MULTICOLOR			"multicolor"
 #define CONNECTION			"connection"
 #define HTTPPROXY           "httpproxy"
@@ -230,6 +231,9 @@ public:
 	bool GetBlockDisconnected() const;
 	void SetAutoClear(bool b);
 	bool GetAutoClear() const;
+	void SetAutoClose(bool b);
+	bool GetAutoClose() const;
+
 	void SetMultiColor(bool m);
 	bool GetMultiColor() const;
 

@@ -2705,7 +2705,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
-        <translation>Poista automaattisesti valmiit siirrot?</translation>
+        <translation type='obsolete'>Poista automaattisesti valmiit siirrot?</translation>
     </message>
     <message>
         <source>DSL-256k</source>
@@ -2930,6 +2930,14 @@ Päiväys: %4</translation>
     <message>
         <source>512 B</source>
         <translation>512 t</translation>
+    </message>
+    <message>
+        <source>Automatically clear finished transfers?</source>
+        <translation>Poista automaattisesti valmiit siirrot?</translation>
+    </message>
+    <message>
+        <source>Automatically close upload window?</source>
+        <translation>Sulje automaattisesti lähetysikkuna?</translation>
     </message>
 </context>
 <context>

@@ -42,6 +42,8 @@ public:
 	void PrintError(const QString & error);
 	void PrintWarning(const QString & warning);
 
+	void beep();
+
 	QString FormatNameSaid(const QString & msg); // Check and format message for Name Said...
 
 protected:

@@ -583,6 +583,18 @@ WSettings::GetAutoClear() const
 }
 
 void
+WSettings::SetAutoClose(bool b)
+{
+	SET_BOOL(AUTOCLOSE, b);
+}
+
+bool
+WSettings::GetAutoClose() const
+{
+	GET_BOOL(AUTOCLOSE, false);
+}
+
+void
 WSettings::SetMultiColor(bool m)
 {
 	SET_BOOL(MULTICOLOR, m);

@@ -112,6 +112,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fBinkyNuke->setChecked(gWin->fSettings->GetBinkyNuke());
 	fBlockDisconnected->setChecked(gWin->fSettings->GetBlockDisconnected());
 	fAutoClear->setChecked(gWin->fSettings->GetAutoClear());
+	fAutoClose->setChecked(gWin->fSettings->GetAutoClose());
 	fMultiColor->setChecked(gWin->fSettings->GetMultiColor());
 	if (gWin->fSettings->GetConnection() != qApp->translate("Connection", "Unknown"))
 	{
@@ -324,6 +325,7 @@ WPrefs::OK()
 	gWin->fSettings->SetBinkyNuke(fBinkyNuke->isChecked());
 	gWin->fSettings->SetBlockDisconnected(fBlockDisconnected->isChecked());
 	gWin->fSettings->SetAutoClear(fAutoClear->isChecked());
+	gWin->fSettings->SetAutoClose(fAutoClose->isChecked());
 	gWin->fSettings->SetMultiColor(fMultiColor->isChecked());
 	gWin->fSettings->SetTimeStamps(fTimeStamps->isChecked());
 	gWin->fSettings->SetUserEvents(fUserEvents->isChecked());

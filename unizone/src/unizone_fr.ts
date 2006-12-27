@@ -2465,7 +2465,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
-        <translation>Auto Clear finished transfers?</translation>
+        <translation type='obsolete'>Auto Clear finished transfers?</translation>
     </message>
     <message>
         <source>DSL-256k</source>
@@ -2678,6 +2678,14 @@ Date: %4</translation>
     <message>
         <source>512 B</source>
         <translation>512 o</translation>
+    </message>
+    <message>
+        <source>Automatically clear finished transfers?</source>
+        <translation>Automatically clear finished transfers?</translation>
+    </message>
+    <message>
+        <source>Automatically close upload window?</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

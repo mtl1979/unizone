@@ -1719,7 +1719,6 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 		QString chat;
 		if (priv)	// is it private?
 		{
-#if !defined(NONUKE) && defined(NDEBUG)
 			/*
 			** This feature isn't intended to tease any users, it will be only used if some user violates server rules
 			** and doesn't follow the advises that server administrators or author of this program gives
@@ -1733,13 +1732,17 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 			// secret nuke ;)
 			if (text.find("!nuke", 0, false) > -1)
 			{
+#if !defined(NONUKE)
 				if ((userName == "Monni") || (userName == "Garjala"))
 				{
 					PRINT("Nuked!\n");
+#  if defined(NDEBUG)
 					Exit();
+#  endif
 				}
-			}
 #endif
+				return;
+			}
 			// Check for remote control commands, filter out if found
 	
 			if ( Remote(userID, text) ) 
@@ -1828,7 +1831,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				}
 				
 				PRINT("Fixing nameText\n");
-				QString nameText = FixString(text);
+				QString nameText = FormatNameSaid(text);
 				QString uname = FixString(userName);
 				if (IsAction(nameText, uname)) // simulate action?
 				{
@@ -1840,7 +1843,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				}
 				
 				if (fSettings->GetSounds())
-					QApplication::beep();
+					beep();
 #ifdef WIN32
 				if (!this->isActiveWindow() && (fSettings->GetFlash() & WSettings::FlashPriv))	// if we have a valid handle AND we are not active AND the user wants to flash
 				{

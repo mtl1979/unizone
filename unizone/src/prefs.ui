@@ -175,7 +175,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>558</width>
-                <height>284</height>
+                <height>290</height>
             </rect>
         </property>
         <widget>
@@ -1991,7 +1991,7 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout42</cstring>
+                    <cstring>Layout47</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
@@ -2015,7 +2015,7 @@
                         <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>Layout41</cstring>
+                            <cstring>Layout46</cstring>
                         </property>
                         <vbox>
                             <property stdset="1">
@@ -2235,7 +2235,18 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Auto Clear finished transfers?</string>
+                                    <string>Automatically clear finished transfers?</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fAutoClose</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Automatically close upload window?</string>
                                 </property>
                             </widget>
                         </vbox>

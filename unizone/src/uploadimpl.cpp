@@ -1842,6 +1842,11 @@ WUpload::ClearFinishedUL()
 				i++;
 			}
 		}
+		if ((fUploadList.IsEmpty()) && gWin->fSettings->GetAutoClose())
+		{
+			// Automatically hide if there is no more uploads
+			hide();
+		}
 		Unlock();
 	}
 	
