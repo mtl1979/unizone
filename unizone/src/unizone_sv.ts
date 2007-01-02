@@ -119,23 +119,23 @@ Version %1</translation>
     <name>AboutDlgBase</name>
     <message>
         <source>About Unizone</source>
-        <translation>Om Unizone</translation>
+        <translation type='unfinished'>Om Unizone</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <translation type='unfinished'>&amp;OK</translation>
     </message>
     <message>
         <source>Written by Mika T. Lindqvist</source>
-        <translation>Written by Mika T. Lindqvist</translation>
+        <translation type='unfinished'>Written by Mika T. Lindqvist</translation>
     </message>
     <message>
         <source>Based upon the Windows MUSCLE client Ozone</source>
-        <translation>Based upon the Windows MUSCLE client Ozone</translation>
+        <translation type='unfinished'>Based upon the Windows MUSCLE client Ozone</translation>
     </message>
     <message>
         <source>Which was written by Vitaliy Mikitchenko</source>
-        <translation>Which was written by Vitaliy Mikitchenko</translation>
+        <translation type='unfinished'>Which was written by Vitaliy Mikitchenko</translation>
     </message>
     <message>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
@@ -306,7 +306,7 @@ Version %1</translation>
     <name>ChannelBase</name>
     <message>
         <source>Channel Window</source>
-        <translation>Channel Window</translation>
+        <translation type='unfinished'>Channel Window</translation>
     </message>
 </context>
 <context>
@@ -1147,35 +1147,35 @@ Date: %4</translation>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
-        <translation>Scan Progress</translation>
+        <translation type='unfinished'>Scan Progress</translation>
     </message>
     <message>
         <source>Current directory:</source>
-        <translation>Current directory:</translation>
+        <translation type='unfinished'>Current directory:</translation>
     </message>
     <message>
         <source>-</source>
-        <translation>-</translation>
+        <translation type='unfinished'>-</translation>
     </message>
     <message>
         <source>Current file:</source>
-        <translation>Current file:</translation>
+        <translation type='unfinished'>Current file:</translation>
     </message>
     <message>
         <source>Files scanned:</source>
-        <translation>Files scanned:</translation>
+        <translation type='unfinished'>Files scanned:</translation>
     </message>
     <message>
         <source>0</source>
-        <translation>0</translation>
+        <translation type='unfinished'>0</translation>
     </message>
     <message>
         <source>Directories scanned:</source>
-        <translation>Directories scanned:</translation>
+        <translation type='unfinished'>Directories scanned:</translation>
     </message>
     <message>
         <source>Directories left:</source>
-        <translation>Directories left:</translation>
+        <translation type='unfinished'>Directories left:</translation>
     </message>
 </context>
 <context>
@@ -2001,111 +2001,111 @@ Date: %4</translation>
     <name>WPrefsBase</name>
     <message>
         <source>Preferences</source>
-        <translation>Inställningar</translation>
+        <translation type='unfinished'>Inställningar</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type='unfinished'>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Avbruta</translation>
+        <translation type='unfinished'>Avbruta</translation>
     </message>
     <message>
         <source>Auto Away:</source>
-        <translation>Auto Borta:</translation>
+        <translation type='unfinished'>Auto Borta:</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation>Avaktiverad</translation>
+        <translation type='unfinished'>Avaktiverad</translation>
     </message>
     <message>
         <source>2 Minutes</source>
-        <translation>2 Minuter</translation>
+        <translation type='unfinished'>2 Minuter</translation>
     </message>
     <message>
         <source>5 Minutes</source>
-        <translation>5 Minuter</translation>
+        <translation type='unfinished'>5 Minuter</translation>
     </message>
     <message>
         <source>10 Minutes</source>
-        <translation>10 Minuter</translation>
+        <translation type='unfinished'>10 Minuter</translation>
     </message>
     <message>
         <source>15 Minutes</source>
-        <translation>15 Minuter</translation>
+        <translation type='unfinished'>15 Minuter</translation>
     </message>
     <message>
         <source>20 Minutes</source>
-        <translation>20 Minuter</translation>
+        <translation type='unfinished'>20 Minuter</translation>
     </message>
     <message>
         <source>30 Minutes</source>
-        <translation>30 Minuter</translation>
+        <translation type='unfinished'>30 Minuter</translation>
     </message>
     <message>
         <source>1 Hour</source>
-        <translation>1 Timme</translation>
+        <translation type='unfinished'>1 Timme</translation>
     </message>
     <message>
         <source>2 Hours</source>
-        <translation>2 Timmar</translation>
+        <translation type='unfinished'>2 Timmar</translation>
     </message>
     <message>
         <source>Multi-color ListViews</source>
-        <translation>Mångfärgad ListView</translation>
+        <translation type='unfinished'>Mångfärgad ListView</translation>
     </message>
     <message>
         <source>Enable Logging</source>
-        <translation>Aktivera Loggning</translation>
+        <translation type='unfinished'>Aktivera Loggning</translation>
     </message>
     <message>
         <source>Login On Startup</source>
-        <translation>Logga in vid Uppstart</translation>
+        <translation type='unfinished'>Logga in vid Uppstart</translation>
     </message>
     <message>
         <source>Check For New Versions</source>
-        <translation>Checka för nya versioner</translation>
+        <translation type='unfinished'>Checka för nya versioner</translation>
     </message>
     <message>
         <source>Auto Update Server List</source>
-        <translation>Uppdatera Serverlistan Automatiskt</translation>
+        <translation type='unfinished'>Uppdatera Serverlistan Automatiskt</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>Allmän</translation>
+        <translation type='unfinished'>Allmän</translation>
     </message>
     <message>
         <source>Upload Bandwidth:</source>
-        <translation>Uppladdningsbandbredd:</translation>
+        <translation type='unfinished'>Uppladdningsbandbredd:</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation>300 baud</translation>
+        <translation type='unfinished'>300 baud</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation>14.4 kbps</translation>
+        <translation type='unfinished'>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation>28.8 kbps</translation>
+        <translation type='unfinished'>28.8 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation>36.6 kbps</translation>
+        <translation type='unfinished'>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation>57.6 kbps</translation>
+        <translation type='unfinished'>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation>ISDN-64k</translation>
+        <translation type='unfinished'>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation>ISDN-128k</translation>
+        <translation type='unfinished'>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
@@ -2113,251 +2113,251 @@ Date: %4</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation>Cable</translation>
+        <translation type='unfinished'>Kable</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation>T1</translation>
+        <translation type='unfinished'>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation>T3</translation>
+        <translation type='unfinished'>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation>OC-3</translation>
+        <translation type='unfinished'>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation>OC-12</translation>
+        <translation type='unfinished'>OC-12</translation>
     </message>
     <message>
         <source>I&apos;m Firewalled</source>
-        <translation>Jag är bakom en Brandvägg</translation>
+        <translation type='unfinished'>Jag är bakom en Brandvägg</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Anslutning</translation>
+        <translation type='unfinished'>Anslutning</translation>
     </message>
     <message>
         <source>Warning Messages</source>
-        <translation>Varningmeddelanden</translation>
+        <translation type='unfinished'>Varningmeddelanden</translation>
     </message>
     <message>
         <source>Error Messages</source>
-        <translation>Felmeddelanden</translation>
+        <translation type='unfinished'>Felmeddelanden</translation>
     </message>
     <message>
         <source>Private Messages</source>
-        <translation>Privata Meddelanden</translation>
+        <translation type='unfinished'>Privata Meddelanden</translation>
     </message>
     <message>
         <source>User Events</source>
-        <translation>Användarhändelser</translation>
+        <translation type='unfinished'>Användarhändelser</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation>Chatt</translation>
+        <translation type='unfinished'>Chatt</translation>
     </message>
     <message>
         <source>Info Messages</source>
-        <translation>Infomeddelanden</translation>
+        <translation type='unfinished'>Infomeddelanden</translation>
     </message>
     <message>
         <source>Uploads</source>
-        <translation>Uppladdnings</translation>
+        <translation type='unfinished'>Uppladdnings</translation>
     </message>
     <message>
         <source>Time Stamps</source>
-        <translation>Tidstämplar</translation>
+        <translation type='unfinished'>Tidstämplar</translation>
     </message>
     <message>
         <source>Flash Window When Mentioned</source>
-        <translation>Antyda Fönster När Nämnas</translation>
+        <translation type='unfinished'>Antyda Fönster När Nämnas</translation>
     </message>
     <message>
         <source>Flash Private Windows</source>
-        <translation>Antyda Privat Fönstrar</translation>
+        <translation type='unfinished'>Antyda Privat Fönstrar</translation>
     </message>
     <message>
         <source>Font Size</source>
-        <translation>Fontstorlek</translation>
+        <translation type='unfinished'>Fontstorlek</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation>Visning</translation>
+        <translation type='unfinished'>Visning</translation>
     </message>
     <message>
         <source>Local Name</source>
-        <translation>Egen Namn</translation>
+        <translation type='unfinished'>Egen Namn</translation>
     </message>
     <message>
         <source>Remote Name</source>
-        <translation>Andra Namner</translation>
+        <translation type='unfinished'>Andra Namner</translation>
     </message>
     <message>
         <source>Regular Text</source>
-        <translation>Ordinär Text</translation>
+        <translation type='unfinished'>Ordinär Text</translation>
     </message>
     <message>
         <source>System Text</source>
-        <translation>System Text</translation>
+        <translation type='unfinished'>System Text</translation>
     </message>
     <message>
         <source>Ping Text</source>
-        <translation>Ping Text</translation>
+        <translation type='unfinished'>Ping Text</translation>
     </message>
     <message>
         <source>Error Text</source>
-        <translation>Fel Text</translation>
+        <translation type='unfinished'>Fel Text</translation>
     </message>
     <message>
         <source>Error Message Text</source>
-        <translation>Fel Meddelande Text</translation>
+        <translation type='unfinished'>Fel Meddelande Text</translation>
     </message>
     <message>
         <source>Private Text</source>
-        <translation>Privat Text</translation>
+        <translation type='unfinished'>Privat Text</translation>
     </message>
     <message>
         <source>Action Text</source>
-        <translation>Händelse Text</translation>
+        <translation type='unfinished'>Händelse Text</translation>
     </message>
     <message>
         <source>URL Text</source>
-        <translation>URL Text</translation>
+        <translation type='unfinished'>URL Text</translation>
     </message>
     <message>
         <source>&apos;Name Said&apos; Text</source>
-        <translation>&apos;Namn Sade&apos; Text</translation>
+        <translation type='unfinished'>&apos;Namn Sade&apos; Text</translation>
     </message>
     <message>
         <source>Description:</source>
-        <translation>Beskrivning:</translation>
+        <translation type='unfinished'>Beskrivning:</translation>
     </message>
     <message>
         <source>Preview:</source>
-        <translation>Föröverse:</translation>
+        <translation type='unfinished'>Föröverse:</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation>Andra</translation>
+        <translation type='unfinished'>Andra</translation>
     </message>
     <message>
         <source>Colors</source>
-        <translation>Färger</translation>
+        <translation type='unfinished'>Färger</translation>
     </message>
     <message>
         <source>CDE</source>
-        <translation>CDE</translation>
+        <translation type='unfinished'>CDE</translation>
     </message>
     <message>
         <source>Motif</source>
-        <translation>Motif</translation>
+        <translation type='unfinished'>Motif</translation>
     </message>
     <message>
         <source>Motif Plus</source>
-        <translation>Motif Plus</translation>
+        <translation type='unfinished'>Motif Plus</translation>
     </message>
     <message>
         <source>Platinum</source>
-        <translation>Platinum</translation>
+        <translation type='unfinished'>Platinum</translation>
     </message>
     <message>
         <source>SGI</source>
-        <translation>SGI</translation>
+        <translation type='unfinished'>SGI</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation>Windows</translation>
+        <translation type='unfinished'>Windows</translation>
     </message>
     <message>
         <source>The selected style will be applied as soon as it is selected.</source>
-        <translation>Selekterat stil ska aktiveras när det har selekterad.</translation>
+        <translation type='unfinished'>Selekterat stil ska aktiveras när det har selekterad.</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation>Stil</translation>
+        <translation type='unfinished'>Stil</translation>
     </message>
     <message>
         <source>1</source>
-        <translation>1</translation>
+        <translation type='unfinished'>1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation>2</translation>
+        <translation type='unfinished'>2</translation>
     </message>
     <message>
         <source>3</source>
-        <translation>3</translation>
+        <translation type='unfinished'>3</translation>
     </message>
     <message>
         <source>4</source>
-        <translation>4</translation>
+        <translation type='unfinished'>4</translation>
     </message>
     <message>
         <source>5</source>
-        <translation>5</translation>
+        <translation type='unfinished'>5</translation>
     </message>
     <message>
         <source>10</source>
-        <translation>10</translation>
+        <translation type='unfinished'>10</translation>
     </message>
     <message>
         <source>15</source>
-        <translation>15</translation>
+        <translation type='unfinished'>15</translation>
     </message>
     <message>
         <source>20</source>
-        <translation>20</translation>
+        <translation type='unfinished'>20</translation>
     </message>
     <message>
         <source>30</source>
-        <translation>30</translation>
+        <translation type='unfinished'>30</translation>
     </message>
     <message>
         <source>Unlimited</source>
-        <translation>Obegränsat</translation>
+        <translation type='unfinished'>Obegränsat</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Downloads:</source>
-        <translation>Maximum Samtidiga Nerladdningar:</translation>
+        <translation type='unfinished'>Maximum Samtidiga Nerladdningar:</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Uploads:</source>
-        <translation>Maximum Samtidiga Uppladdningar:</translation>
+        <translation type='unfinished'>Maximum Samtidiga Uppladdningar:</translation>
     </message>
     <message>
         <source>File sharing enabled?</source>
-        <translation>Fildelning Aktiverad?</translation>
+        <translation type='unfinished'>Fildelning Aktiverad?</translation>
     </message>
     <message>
         <source>Block binkies?</source>
-        <translation>Blocka anonym användraren?</translation>
+        <translation type='unfinished'>Blocka anonym användraren?</translation>
     </message>
     <message>
         <source>Block disconnected users?</source>
-        <translation>Blocka nerkopplat användraren?</translation>
+        <translation type='unfinished'>Blocka nerkopplat användraren?</translation>
     </message>
     <message>
         <source>File Sharing</source>
-        <translation>Fildeladen</translation>
+        <translation type='unfinished'>Fildeladen</translation>
     </message>
     <message>
         <source>HTTP launcher:</source>
-        <translation>HTTP öppnaren:</translation>
+        <translation type='unfinished'>HTTP öppnaren:</translation>
     </message>
     <message>
         <source>FTP launcher:</source>
-        <translation>FTP öppnaren:</translation>
+        <translation type='unfinished'>FTP öppnaren:</translation>
     </message>
     <message>
         <source>Mailto: launcher:</source>
-        <translation>Mailto: öppnaren:</translation>
+        <translation type='unfinished'>Mailto: öppnaren:</translation>
     </message>
     <message>
         <source>URL Launching</source>
-        <translation>URL öppning</translation>
+        <translation type='unfinished'>URL öppning</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted)</source>
@@ -2365,7 +2365,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>No Limit</source>
-        <translation>Obegränsat</translation>
+        <translation type='unfinished'>Obegränsat</translation>
     </message>
     <message>
         <source>128 bytes</source>
@@ -2381,47 +2381,47 @@ Date: %4</translation>
     </message>
     <message>
         <source>1 kB</source>
-        <translation>1 kB</translation>
+        <translation type='unfinished'>1 kB</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation>2 kB</translation>
+        <translation type='unfinished'>2 kB</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation>4 kB</translation>
+        <translation type='unfinished'>4 kB</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation>8 kB</translation>
+        <translation type='unfinished'>8 kB</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation>16 kB</translation>
+        <translation type='unfinished'>16 kB</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation>32 kB</translation>
+        <translation type='unfinished'>32 kB</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation>64 kB</translation>
+        <translation type='unfinished'>64 kB</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation>128 kB</translation>
+        <translation type='unfinished'>128 kB</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation>256 kB</translation>
+        <translation type='unfinished'>256 kB</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation>512 kB</translation>
+        <translation type='unfinished'>512 kB</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation>1 MB</translation>
+        <translation type='unfinished'>1 MB</translation>
     </message>
     <message>
         <source>2 MB</source>
@@ -2445,7 +2445,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Chat:</source>
-        <translation>Chatt:</translation>
+        <translation type='unfinished'>Chatt:</translation>
     </message>
     <message>
         <source>Downloads (per download)</source>
@@ -2457,7 +2457,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Throttling</source>
-        <translation>Restriktioner</translation>
+        <translation type='unfinished'>Restriktioner</translation>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
@@ -2465,43 +2465,43 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation>DSL-256k</translation>
+        <translation type='unfinished'>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation>DSL-384k</translation>
+        <translation type='unfinished'>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation>DSL-512k</translation>
+        <translation type='unfinished'>DSL-512k</translation>
     </message>
     <message>
         <source>Uploads (per upload):</source>
-        <translation>Uppladdningar (per upladdning):</translation>
+        <translation type='unfinished'>Uppladdningar (per upladdning):</translation>
     </message>
     <message>
         <source>Downloads (per download):</source>
-        <translation>Nerladdningar (per nerladdning):</translation>
+        <translation type='unfinished'>Nerladdningar (per nerladdning):</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted):</source>
-        <translation>Uppladdningar (per blockad):</translation>
+        <translation type='unfinished'>Uppladdningar (per blockad):</translation>
     </message>
     <message>
         <source>Default launcher:</source>
-        <translation>Default launcher:</translation>
+        <translation type='unfinished'>Default launcher:</translation>
     </message>
     <message>
         <source>Upload Packet Size:</source>
-        <translation>Upload Packet Size:</translation>
+        <translation type='unfinished'>Upload Packet Size:</translation>
     </message>
     <message>
         <source>Enable Sound Effects</source>
-        <translation>Enable Sound Effects</translation>
+        <translation type='unfinished'>Enable Sound Effects</translation>
     </message>
     <message>
         <source>Downloads</source>
-        <translation>Downloads</translation>
+        <translation type='unfinished'>Downloads</translation>
     </message>
     <message>
         <source>5 kB</source>
@@ -2525,11 +2525,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Base Port:</source>
-        <translation>Base Port:</translation>
+        <translation type='unfinished'>Base Port:</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue:</source>
-        <translation>Minimum File Size to Queue:</translation>
+        <translation type='unfinished'>Minimum File Size to Queue:</translation>
     </message>
     <message>
         <source>200 kB</source>
@@ -2541,27 +2541,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>IP Addresses</source>
-        <translation>IP Addresses</translation>
+        <translation type='unfinished'>IP Addresses</translation>
     </message>
     <message>
         <source>Number of Ports:</source>
-        <translation>Number of Ports:</translation>
+        <translation type='unfinished'>Number of Ports:</translation>
     </message>
     <message>
         <source>Empty Windows:</source>
-        <translation>Empty Windows:</translation>
+        <translation type='unfinished'>Empty Windows:</translation>
     </message>
     <message>
         <source>Do Nothing</source>
-        <translation>Do Nothing</translation>
+        <translation type='unfinished'>Do Nothing</translation>
     </message>
     <message>
         <source>Prompt</source>
-        <translation>Prompt</translation>
+        <translation type='unfinished'>Prompt</translation>
     </message>
     <message>
         <source>Automatically Close</source>
-        <translation>Automatically Close</translation>
+        <translation type='unfinished'>Automatically Close</translation>
     </message>
     <message>
         <source>Warning Text</source>
@@ -2573,87 +2573,87 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation>DSL-1M</translation>
+        <translation type='unfinished'>DSL-1M</translation>
     </message>
     <message>
         <source>128 B/s</source>
-        <translation>128 B/s</translation>
+        <translation type='unfinished'>128 B/s</translation>
     </message>
     <message>
         <source>256 B/s</source>
-        <translation>256 B/s</translation>
+        <translation type='unfinished'>256 B/s</translation>
     </message>
     <message>
         <source>512 B/s</source>
-        <translation>512 B/s</translation>
+        <translation type='unfinished'>512 B/s</translation>
     </message>
     <message>
         <source>1 kB/s</source>
-        <translation>1 kB/s</translation>
+        <translation type='unfinished'>1 kB/s</translation>
     </message>
     <message>
         <source>2 kB/s</source>
-        <translation>2 kB/s</translation>
+        <translation type='unfinished'>2 kB/s</translation>
     </message>
     <message>
         <source>4 kB/s</source>
-        <translation>4 kB/s</translation>
+        <translation type='unfinished'>4 kB/s</translation>
     </message>
     <message>
         <source>8 kB/s</source>
-        <translation>8 kB/s</translation>
+        <translation type='unfinished'>8 kB/s</translation>
     </message>
     <message>
         <source>16 kB/s</source>
-        <translation>16 kB/s</translation>
+        <translation type='unfinished'>16 kB/s</translation>
     </message>
     <message>
         <source>32 kB/s</source>
-        <translation>32 kB/s</translation>
+        <translation type='unfinished'>32 kB/s</translation>
     </message>
     <message>
         <source>64 kB/s</source>
-        <translation>64 kB/s</translation>
+        <translation type='unfinished'>64 kB/s</translation>
     </message>
     <message>
         <source>128 kB/s</source>
-        <translation>128 kB/s</translation>
+        <translation type='unfinished'>128 kB/s</translation>
     </message>
     <message>
         <source>256 kB/s</source>
-        <translation>256 kB/s</translation>
+        <translation type='unfinished'>256 kB/s</translation>
     </message>
     <message>
         <source>512 kB/s</source>
-        <translation>512 kB/s</translation>
+        <translation type='unfinished'>512 kB/s</translation>
     </message>
     <message>
         <source>1 MB/s</source>
-        <translation>1 MB/s</translation>
+        <translation type='unfinished'>1 MB/s</translation>
     </message>
     <message>
         <source>2 MB/s</source>
-        <translation>2 MB/s</translation>
+        <translation type='unfinished'>2 MB/s</translation>
     </message>
     <message>
         <source>4 MB/s</source>
-        <translation>4 MB/s</translation>
+        <translation type='unfinished'>4 MB/s</translation>
     </message>
     <message>
         <source>8 MB/s</source>
-        <translation>8 MB/s</translation>
+        <translation type='unfinished'>8 MB/s</translation>
     </message>
     <message>
         <source>16 MB/s</source>
-        <translation>16 MB/s</translation>
+        <translation type='unfinished'>16 MB/s</translation>
     </message>
     <message>
         <source>32 MB/s</source>
-        <translation>32 MB/s</translation>
+        <translation type='unfinished'>32 MB/s</translation>
     </message>
     <message>
         <source>Aqua</source>
-        <translation>Aqua</translation>
+        <translation type='unfinished'>Aqua</translation>
     </message>
     <message>
         <source>HTTP Proxy:</source>
@@ -2673,10 +2673,22 @@ Date: %4</translation>
     </message>
     <message>
         <source>Automatically clear finished transfers?</source>
-        <translation>Automatically clear finished transfers?</translation>
+        <translation type='unfinished'>Automatically clear finished transfers?</translation>
     </message>
     <message>
         <source>Automatically close upload window?</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Sound File:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Reset</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -2801,7 +2813,7 @@ Date: %4</translation>
     <name>WPrivateWindowBase</name>
     <message>
         <source>Private</source>
-        <translation>Private</translation>
+        <translation type='unfinished'>Private</translation>
     </message>
 </context>
 <context>

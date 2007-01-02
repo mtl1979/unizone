@@ -21,6 +21,8 @@ private slots:
 	void StyleSelected(int index);
 	void ColorSelected(int index);
 	void ChangeColor();
+	void ChangeSound();
+	void ResetSound();
 	void AwaySelected(int index);
 
 private:

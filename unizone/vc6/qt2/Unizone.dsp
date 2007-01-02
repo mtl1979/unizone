@@ -436,7 +436,7 @@ SOURCE=..\..\src\aboutdlgimpl.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
@@ -449,7 +449,7 @@ InputName=aboutdlgimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
@@ -463,7 +463,7 @@ InputName=aboutdlgimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
@@ -477,7 +477,7 @@ InputName=aboutdlgimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
 
@@ -497,7 +497,7 @@ SOURCE=..\..\src\acronymclient.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\acronymclient.h
 InputName=acronymclient
 
@@ -510,7 +510,7 @@ InputName=acronymclient
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\acronymclient.h
 InputName=acronymclient
 
@@ -523,7 +523,7 @@ InputName=acronymclient
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\acronymclient.h
 InputName=acronymclient
 
@@ -536,7 +536,7 @@ InputName=acronymclient
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\acronymclient.h
 InputName=acronymclient
 
@@ -560,7 +560,7 @@ SOURCE=..\..\src\channelimpl.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
@@ -573,7 +573,7 @@ InputName=channelimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
@@ -587,7 +587,7 @@ InputName=channelimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
@@ -601,7 +601,7 @@ InputName=channelimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channelimpl.h
 InputName=channelimpl
 
@@ -625,7 +625,7 @@ SOURCE=..\..\src\channels.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channels.h
 InputName=channels
 
@@ -638,7 +638,7 @@ InputName=channels
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channels.h
 InputName=channels
 
@@ -651,7 +651,7 @@ InputName=channels
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channels.h
 InputName=channels
 
@@ -664,7 +664,7 @@ InputName=channels
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channels.h
 InputName=channels
 
@@ -688,7 +688,7 @@ SOURCE=..\..\src\chattext.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\chattext.h
 InputName=chattext
 
@@ -701,7 +701,7 @@ InputName=chattext
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\chattext.h
 InputName=chattext
 
@@ -715,7 +715,7 @@ InputName=chattext
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\chattext.h
 InputName=chattext
 
@@ -729,7 +729,7 @@ InputName=chattext
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\chattext.h
 InputName=chattext
 
@@ -757,7 +757,7 @@ SOURCE=..\..\src\combo.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\combo.h
 InputName=combo
 
@@ -770,7 +770,7 @@ InputName=combo
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\combo.h
 InputName=combo
 
@@ -784,7 +784,7 @@ InputName=combo
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\combo.h
 InputName=combo
 
@@ -798,7 +798,7 @@ InputName=combo
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\combo.h
 InputName=combo
 
@@ -822,7 +822,7 @@ SOURCE=..\..\src\downloadimpl.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
@@ -835,7 +835,7 @@ InputName=downloadimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
@@ -849,7 +849,7 @@ InputName=downloadimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
@@ -863,7 +863,7 @@ InputName=downloadimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\downloadimpl.h
 InputName=downloadimpl
 
@@ -887,7 +887,7 @@ SOURCE=..\..\src\downloadthread.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
@@ -900,7 +900,7 @@ InputName=downloadthread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
@@ -914,7 +914,7 @@ InputName=downloadthread
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
@@ -928,7 +928,7 @@ InputName=downloadthread
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\downloadthread.h
 InputName=downloadthread
 
@@ -960,7 +960,7 @@ SOURCE=..\..\src\filethread.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\filethread.h
 InputName=filethread
 
@@ -973,7 +973,7 @@ InputName=filethread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\filethread.h
 InputName=filethread
 
@@ -986,7 +986,7 @@ InputName=filethread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\filethread.h
 InputName=filethread
 
@@ -999,7 +999,7 @@ InputName=filethread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\filethread.h
 InputName=filethread
 
@@ -1019,7 +1019,7 @@ SOURCE=..\..\src\formatting.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\formatting.h
 InputName=formatting
 
@@ -1032,7 +1032,7 @@ InputName=formatting
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\formatting.h
 InputName=formatting
 
@@ -1046,7 +1046,7 @@ InputName=formatting
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\formatting.h
 InputName=formatting
 
@@ -1060,7 +1060,7 @@ InputName=formatting
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\formatting.h
 InputName=formatting
 
@@ -1088,7 +1088,7 @@ SOURCE=..\..\src\htmlview.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
@@ -1101,7 +1101,7 @@ InputName=htmlview
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
@@ -1115,7 +1115,7 @@ InputName=htmlview
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
@@ -1129,7 +1129,7 @@ InputName=htmlview
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\htmlview.h
 InputName=htmlview
 
@@ -1149,7 +1149,7 @@ SOURCE=..\..\src\listthread.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\listthread.h
 InputName=listthread
 
@@ -1162,7 +1162,7 @@ InputName=listthread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\listthread.h
 InputName=listthread
 
@@ -1175,7 +1175,7 @@ InputName=listthread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\listthread.h
 InputName=listthread
 
@@ -1188,7 +1188,7 @@ InputName=listthread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\listthread.h
 InputName=listthread
 
@@ -1216,7 +1216,7 @@ SOURCE=..\..\src\menubar.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
@@ -1229,7 +1229,7 @@ InputName=menubar
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
@@ -1243,7 +1243,7 @@ InputName=menubar
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
@@ -1257,7 +1257,7 @@ InputName=menubar
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
@@ -1277,7 +1277,7 @@ SOURCE=..\..\src\netclient.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\netclient.h
 InputName=netclient
 
@@ -1290,7 +1290,7 @@ InputName=netclient
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\netclient.h
 InputName=netclient
 
@@ -1304,7 +1304,7 @@ InputName=netclient
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\netclient.h
 InputName=netclient
 
@@ -1318,7 +1318,7 @@ InputName=netclient
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\netclient.h
 InputName=netclient
 
@@ -1346,7 +1346,7 @@ SOURCE=..\..\src\picviewerimpl.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
@@ -1359,7 +1359,7 @@ InputName=picviewerimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
@@ -1373,7 +1373,7 @@ InputName=picviewerimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
@@ -1386,7 +1386,7 @@ InputName=picviewerimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\picviewerimpl.h
 InputName=picviewerimpl
 
@@ -1410,7 +1410,7 @@ SOURCE=..\..\src\qt2\prefs.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\prefs.h
 InputName=prefs
 
@@ -1423,7 +1423,7 @@ InputName=prefs
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\prefs.h
 InputName=prefs
 
@@ -1436,7 +1436,7 @@ InputName=prefs
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\prefs.h
 InputName=prefs
 
@@ -1449,7 +1449,7 @@ InputName=prefs
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\prefs.h
 InputName=prefs
 
@@ -1469,7 +1469,7 @@ SOURCE=..\..\src\prefsimpl.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
@@ -1482,7 +1482,7 @@ InputName=prefsimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
@@ -1496,7 +1496,7 @@ InputName=prefsimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
@@ -1510,7 +1510,7 @@ InputName=prefsimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\prefsimpl.h
 InputName=prefsimpl
 
@@ -1530,7 +1530,7 @@ SOURCE=..\..\src\privatewindowimpl.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
@@ -1543,7 +1543,7 @@ InputName=privatewindowimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
@@ -1557,7 +1557,7 @@ InputName=privatewindowimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
@@ -1571,7 +1571,7 @@ InputName=privatewindowimpl
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\privatewindowimpl.h
 InputName=privatewindowimpl
 
@@ -1594,7 +1594,7 @@ SOURCE=..\..\src\resolverthread.h
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
@@ -1606,7 +1606,7 @@ InputName=resolverthread
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
@@ -1618,7 +1618,7 @@ InputName=resolverthread
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
@@ -1630,7 +1630,7 @@ InputName=resolverthread
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\resolverthread.h
 InputName=resolverthread
 
@@ -1662,7 +1662,7 @@ SOURCE=..\..\src\search.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\search.h
 InputName=search
 
@@ -1675,7 +1675,7 @@ InputName=search
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\search.h
 InputName=search
 
@@ -1688,7 +1688,7 @@ InputName=search
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\search.h
 InputName=search
 
@@ -1701,7 +1701,7 @@ InputName=search
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\search.h
 InputName=search
 
@@ -1725,7 +1725,7 @@ SOURCE=..\..\src\serverclient.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
@@ -1738,7 +1738,7 @@ InputName=serverclient
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
@@ -1752,7 +1752,7 @@ InputName=serverclient
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
@@ -1766,7 +1766,7 @@ InputName=serverclient
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\serverclient.h
 InputName=serverclient
 
@@ -1814,7 +1814,7 @@ SOURCE=..\..\src\ulistview.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
@@ -1827,7 +1827,7 @@ InputName=ulistview
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
@@ -1841,7 +1841,7 @@ InputName=ulistview
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
@@ -1855,7 +1855,7 @@ InputName=ulistview
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\ulistview.h
 InputName=ulistview
 
@@ -1875,7 +1875,7 @@ SOURCE=..\..\src\updateclient.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
@@ -1888,7 +1888,7 @@ InputName=updateclient
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
@@ -1902,7 +1902,7 @@ InputName=updateclient
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
@@ -1916,7 +1916,7 @@ InputName=updateclient
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\updateclient.h
 InputName=updateclient
 
@@ -1931,6 +1931,61 @@ InputName=updateclient
 # Begin Source File
 
 SOURCE=..\..\src\uploadimpl.h
+
+!IF  "$(CFG)" == "Unizone - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\trunk\unizone\src
+InputPath=..\..\src\uploadimpl.h
+InputName=uploadimpl
+
+"$(InputDir)\qt2\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	$(QTDIR)\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt2\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\trunk\unizone\src
+InputPath=..\..\src\uploadimpl.h
+InputName=uploadimpl
+
+"$(InputDir)\qt2\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	$(QTDIR)\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt2\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\trunk\unizone\src
+InputPath=..\..\src\uploadimpl.h
+InputName=uploadimpl
+
+"$(InputDir)\qt2\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	$(QTDIR)\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt2\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=\build\unizone\trunk\unizone\src
+InputPath=..\..\src\uploadimpl.h
+InputName=uploadimpl
+
+"$(InputDir)\qt2\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	$(QTDIR)\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt2\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1940,7 +1995,7 @@ SOURCE=..\..\src\uploadthread.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
@@ -1953,7 +2008,7 @@ InputName=uploadthread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
@@ -1967,7 +2022,7 @@ InputName=uploadthread
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
@@ -1981,7 +2036,7 @@ InputName=uploadthread
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\uploadthread.h
 InputName=uploadthread
 
@@ -2033,7 +2088,7 @@ SOURCE=..\..\src\winsharewindow.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
@@ -2046,7 +2101,7 @@ InputName=winsharewindow
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
@@ -2060,7 +2115,7 @@ InputName=winsharewindow
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
@@ -2074,7 +2129,7 @@ InputName=winsharewindow
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\winsharewindow.h
 InputName=winsharewindow
 
@@ -2154,7 +2209,7 @@ SOURCE=..\..\src\aboutdlg.ui
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
@@ -2174,7 +2229,7 @@ BuildCmds= \
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
@@ -2195,7 +2250,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
@@ -2216,7 +2271,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\aboutdlg.ui
 InputName=aboutdlg
 
@@ -2243,7 +2298,7 @@ SOURCE=..\..\src\channel.ui
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channel.ui
 InputName=channel
 
@@ -2263,7 +2318,7 @@ BuildCmds= \
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channel.ui
 InputName=channel
 
@@ -2284,7 +2339,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channel.ui
 InputName=channel
 
@@ -2305,7 +2360,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\channel.ui
 InputName=channel
 
@@ -2332,7 +2387,7 @@ SOURCE=..\..\src\picviewer.ui
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
@@ -2352,7 +2407,7 @@ BuildCmds= \
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
@@ -2373,7 +2428,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
@@ -2394,7 +2449,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\picviewer.ui
 InputName=picviewer
 
@@ -2421,7 +2476,7 @@ SOURCE=..\..\src\prefs.ui
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\prefs.ui
 InputName=prefs
 
@@ -2441,7 +2496,7 @@ BuildCmds= \
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\prefs.ui
 InputName=prefs
 
@@ -2462,7 +2517,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\prefs.ui
 InputName=prefs
 
@@ -2483,7 +2538,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\prefs.ui
 InputName=prefs
 
@@ -2510,7 +2565,7 @@ SOURCE=..\..\src\privatewindow.ui
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
@@ -2530,7 +2585,7 @@ BuildCmds= \
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
@@ -2551,7 +2606,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
@@ -2572,7 +2627,7 @@ BuildCmds= \
 # PROP BASE Ignore_Default_Tool 1
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\privatewindow.ui
 InputName=privatewindow
 
@@ -2598,7 +2653,7 @@ SOURCE=..\..\src\scanprogress.ui
 !IF  "$(CFG)" == "Unizone - Win32 Release"
 
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
@@ -2617,7 +2672,7 @@ BuildCmds= \
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
 
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
@@ -2636,7 +2691,7 @@ BuildCmds= \
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
 
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
@@ -2655,7 +2710,7 @@ BuildCmds= \
 !ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
 
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\src
+InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\scanprogress.ui
 InputName=scanprogress
 
@@ -3024,7 +3079,7 @@ SOURCE=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
+InputDir=\build\unizone\trunk\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
@@ -3037,7 +3092,7 @@ InputName=QAcceptSocketsThread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
+InputDir=\build\unizone\trunk\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
@@ -3050,7 +3105,7 @@ InputName=QAcceptSocketsThread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
+InputDir=\build\unizone\trunk\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
@@ -3063,7 +3118,7 @@ InputName=QAcceptSocketsThread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
+InputDir=\build\unizone\trunk\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QAcceptSocketsThread.h
 InputName=QAcceptSocketsThread
 
@@ -3083,7 +3138,7 @@ SOURCE=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
+InputDir=\build\unizone\trunk\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
@@ -3096,7 +3151,7 @@ InputName=QMessageTransceiverThread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
+InputDir=\build\unizone\trunk\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
@@ -3109,7 +3164,7 @@ InputName=QMessageTransceiverThread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
+InputDir=\build\unizone\trunk\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
@@ -3122,7 +3177,7 @@ InputName=QMessageTransceiverThread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\muscle\qtsupport
+InputDir=\build\unizone\trunk\unizone\src\muscle\qtsupport
 InputPath=..\..\src\muscle\qtsupport\QMessageTransceiverThread.h
 InputName=QMessageTransceiverThread
 
@@ -4083,7 +4138,7 @@ SOURCE=..\..\src\qt2\aboutdlg.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\aboutdlg.h
 InputName=aboutdlg
 
@@ -4096,7 +4151,7 @@ InputName=aboutdlg
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\aboutdlg.h
 InputName=aboutdlg
 
@@ -4109,7 +4164,7 @@ InputName=aboutdlg
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\aboutdlg.h
 InputName=aboutdlg
 
@@ -4122,7 +4177,7 @@ InputName=aboutdlg
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\aboutdlg.h
 InputName=aboutdlg
 
@@ -4142,7 +4197,7 @@ SOURCE=..\..\src\qt2\channel.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\channel.h
 InputName=channel
 
@@ -4155,7 +4210,7 @@ InputName=channel
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\channel.h
 InputName=channel
 
@@ -4168,7 +4223,7 @@ InputName=channel
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\channel.h
 InputName=channel
 
@@ -4181,7 +4236,7 @@ InputName=channel
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\channel.h
 InputName=channel
 
@@ -4201,7 +4256,7 @@ SOURCE=..\..\src\qt2\picviewer.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\picviewer.h
 InputName=picviewer
 
@@ -4214,7 +4269,7 @@ InputName=picviewer
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\picviewer.h
 InputName=picviewer
 
@@ -4227,7 +4282,7 @@ InputName=picviewer
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\picviewer.h
 InputName=picviewer
 
@@ -4240,7 +4295,7 @@ InputName=picviewer
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\picviewer.h
 InputName=picviewer
 
@@ -4260,7 +4315,7 @@ SOURCE=..\..\src\qt2\privatewindow.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\privatewindow.h
 InputName=privatewindow
 
@@ -4273,7 +4328,7 @@ InputName=privatewindow
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\privatewindow.h
 InputName=privatewindow
 
@@ -4286,7 +4341,7 @@ InputName=privatewindow
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\privatewindow.h
 InputName=privatewindow
 
@@ -4299,7 +4354,7 @@ InputName=privatewindow
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\privatewindow.h
 InputName=privatewindow
 
@@ -4319,7 +4374,7 @@ SOURCE=..\..\src\qt2\scanprogress.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\scanprogress.h
 InputName=scanprogress
 
@@ -4332,7 +4387,7 @@ InputName=scanprogress
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\scanprogress.h
 InputName=scanprogress
 
@@ -4345,7 +4400,7 @@ InputName=scanprogress
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\scanprogress.h
 InputName=scanprogress
 
@@ -4358,7 +4413,7 @@ InputName=scanprogress
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\src\qt2
+InputDir=\build\unizone\trunk\unizone\src\qt2
 InputPath=..\..\src\qt2\scanprogress.h
 InputName=scanprogress
 

@@ -28,23 +28,23 @@ Version %1</source>
     <name>AboutDlgBase</name>
     <message>
         <source>About Unizone</source>
-        <translation>Unizone에 대하여</translation>
+        <translation type='unfinished'>Unizone에 대하여</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>확인(&amp;O)</translation>
+        <translation type='unfinished'>확인(&amp;O)</translation>
     </message>
     <message>
         <source>Written by Mika T. Lindqvist</source>
-        <translation>작성 : Mika T. Lindqvist 님</translation>
+        <translation type='unfinished'>작성 : Mika T. Lindqvist 님</translation>
     </message>
     <message>
         <source>Based upon the Windows MUSCLE client Ozone</source>
-        <translation>윈도우즈용 MUSCLE 클라이언트 Ozone을 기본으로 하고있습니다</translation>
+        <translation type='unfinished'>윈도우즈용 MUSCLE 클라이언트 Ozone을 기본으로 하고있습니다</translation>
     </message>
     <message>
         <source>Which was written by Vitaliy Mikitchenko</source>
-        <translation></translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
@@ -205,7 +205,7 @@ Version %1</source>
     <name>ChannelBase</name>
     <message>
         <source>Channel Window</source>
-        <translation>채널 창</translation>
+        <translation type='unfinished'>채널 창</translation>
     </message>
 </context>
 <context>
@@ -1050,35 +1050,35 @@ Date: %4</source>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
-        <translation>Scan Progress</translation>
+        <translation type='unfinished'>Scan Progress</translation>
     </message>
     <message>
         <source>Current directory:</source>
-        <translation>Current directory:</translation>
+        <translation type='unfinished'>Current directory:</translation>
     </message>
     <message>
         <source>-</source>
-        <translation>-</translation>
+        <translation type='unfinished'>-</translation>
     </message>
     <message>
         <source>Current file:</source>
-        <translation>Current file:</translation>
+        <translation type='unfinished'>Current file:</translation>
     </message>
     <message>
         <source>Files scanned:</source>
-        <translation>Files scanned:</translation>
+        <translation type='unfinished'>Files scanned:</translation>
     </message>
     <message>
         <source>0</source>
-        <translation>0</translation>
+        <translation type='unfinished'>0</translation>
     </message>
     <message>
         <source>Directories scanned:</source>
-        <translation>Directories scanned:</translation>
+        <translation type='unfinished'>Directories scanned:</translation>
     </message>
     <message>
         <source>Directories left:</source>
-        <translation>Directories left:</translation>
+        <translation type='unfinished'>Directories left:</translation>
     </message>
 </context>
 <context>
@@ -1794,19 +1794,19 @@ Date: %4</source>
     <name>WPicViewerBase</name>
     <message>
         <source>Picture Viewer</source>
-        <translation>Picture Viewer</translation>
+        <translation type='unfinished'>Picture Viewer</translation>
     </message>
     <message>
         <source>No File</source>
-        <translation>No File</translation>
+        <translation type='unfinished'>No File</translation>
     </message>
     <message>
         <source>First</source>
-        <translation>First</translation>
+        <translation type='unfinished'>First</translation>
     </message>
     <message>
         <source>Previous</source>
-        <translation>Previous</translation>
+        <translation type='unfinished'>Previous</translation>
     </message>
     <message>
         <source>1/1</source>
@@ -1814,11 +1814,11 @@ Date: %4</source>
     </message>
     <message>
         <source>Next</source>
-        <translation>Next</translation>
+        <translation type='unfinished'>Next</translation>
     </message>
     <message>
         <source>Last</source>
-        <translation>Last</translation>
+        <translation type='unfinished'>Last</translation>
     </message>
     <message>
         <source>Open</source>
@@ -1936,351 +1936,351 @@ Date: %4</source>
     <name>WPrefsBase</name>
     <message>
         <source>Preferences</source>
-        <translation>설정</translation>
+        <translation type='unfinished'>설정</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>확인</translation>
+        <translation type='unfinished'>확인</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>취소</translation>
+        <translation type='unfinished'>취소</translation>
     </message>
     <message>
         <source>Auto Away:</source>
-        <translation>자동 자리비움:</translation>
+        <translation type='unfinished'>자동 자리비움:</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation>사용 안함</translation>
+        <translation type='unfinished'>사용 안함</translation>
     </message>
     <message>
         <source>2 Minutes</source>
-        <translation>2 분</translation>
+        <translation type='unfinished'>2 분</translation>
     </message>
     <message>
         <source>5 Minutes</source>
-        <translation>5 분</translation>
+        <translation type='unfinished'>5 분</translation>
     </message>
     <message>
         <source>10 Minutes</source>
-        <translation>10 분</translation>
+        <translation type='unfinished'>10 분</translation>
     </message>
     <message>
         <source>15 Minutes</source>
-        <translation>15 분</translation>
+        <translation type='unfinished'>15 분</translation>
     </message>
     <message>
         <source>20 Minutes</source>
-        <translation>20 분</translation>
+        <translation type='unfinished'>20 분</translation>
     </message>
     <message>
         <source>30 Minutes</source>
-        <translation>30 분</translation>
+        <translation type='unfinished'>30 분</translation>
     </message>
     <message>
         <source>1 Hour</source>
-        <translation>1 시간</translation>
+        <translation type='unfinished'>1 시간</translation>
     </message>
     <message>
         <source>2 Hours</source>
-        <translation>2 시간</translation>
+        <translation type='unfinished'>2 시간</translation>
     </message>
     <message>
         <source>Multi-color ListViews</source>
-        <translation>목록보기 다중 색상 사용</translation>
+        <translation type='unfinished'>목록보기 다중 색상 사용</translation>
     </message>
     <message>
         <source>Enable Logging</source>
-        <translation>로그 사용</translation>
+        <translation type='unfinished'>로그 사용</translation>
     </message>
     <message>
         <source>Login On Startup</source>
-        <translation>시작시 자동 로그인</translation>
+        <translation type='unfinished'>시작시 자동 로그인</translation>
     </message>
     <message>
         <source>Check For New Versions</source>
-        <translation>새로운 버전 확인</translation>
+        <translation type='unfinished'>새로운 버전 확인</translation>
     </message>
     <message>
         <source>Auto Update Server List</source>
-        <translation>서버 목록 자동 갱신</translation>
+        <translation type='unfinished'>서버 목록 자동 갱신</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>일반</translation>
+        <translation type='unfinished'>일반</translation>
     </message>
     <message>
         <source>Upload Bandwidth:</source>
-        <translation>업로드 대역폭:</translation>
+        <translation type='unfinished'>업로드 대역폭:</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation>300 baud</translation>
+        <translation type='unfinished'>300 baud</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation>14.4 kbps</translation>
+        <translation type='unfinished'>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation>28.8 kbps</translation>
+        <translation type='unfinished'>28.8 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation>36.6 kbps</translation>
+        <translation type='unfinished'>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation>57.6 kbps</translation>
+        <translation type='unfinished'>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation>ISDN-64k</translation>
+        <translation type='unfinished'>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation>ISDN-128k</translation>
+        <translation type='unfinished'>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation>DSL-256k</translation>
+        <translation type='unfinished'>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation>DSL-384k</translation>
+        <translation type='unfinished'>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation>DSL-512k</translation>
+        <translation type='unfinished'>DSL-512k</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation>Cable</translation>
+        <translation type='unfinished'>Cable</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation>T1</translation>
+        <translation type='unfinished'>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation>T3</translation>
+        <translation type='unfinished'>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation>OC-3</translation>
+        <translation type='unfinished'>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation>OC-12</translation>
+        <translation type='unfinished'>OC-12</translation>
     </message>
     <message>
         <source>I&apos;m Firewalled</source>
-        <translation>I&apos;m Firewalled</translation>
+        <translation type='unfinished'>I&apos;m Firewalled</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>연결</translation>
+        <translation type='unfinished'>연결</translation>
     </message>
     <message>
         <source>Warning Messages</source>
-        <translation>경고 메세지</translation>
+        <translation type='unfinished'>경고 메세지</translation>
     </message>
     <message>
         <source>Error Messages</source>
-        <translation>오류 메세지</translation>
+        <translation type='unfinished'>오류 메세지</translation>
     </message>
     <message>
         <source>Private Messages</source>
-        <translation>귓속말</translation>
+        <translation type='unfinished'>귓속말</translation>
     </message>
     <message>
         <source>User Events</source>
-        <translation>사용자 이벤트</translation>
+        <translation type='unfinished'>사용자 이벤트</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation>대화</translation>
+        <translation type='unfinished'>대화</translation>
     </message>
     <message>
         <source>Info Messages</source>
-        <translation>정보 메세지</translation>
+        <translation type='unfinished'>정보 메세지</translation>
     </message>
     <message>
         <source>Uploads</source>
-        <translation>업로드</translation>
+        <translation type='unfinished'>업로드</translation>
     </message>
     <message>
         <source>Time Stamps</source>
-        <translation>타임 스탬프</translation>
+        <translation type='unfinished'>타임 스탬프</translation>
     </message>
     <message>
         <source>Flash Window When Mentioned</source>
-        <translation>언급되었을때 깜빡거림</translation>
+        <translation type='unfinished'>언급되었을때 깜빡거림</translation>
     </message>
     <message>
         <source>Flash Private Windows</source>
-        <translation>귀속말 창 깜빡거림</translation>
+        <translation type='unfinished'>귀속말 창 깜빡거림</translation>
     </message>
     <message>
         <source>Font Size</source>
-        <translation>글꼴 크기</translation>
+        <translation type='unfinished'>글꼴 크기</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation>표시</translation>
+        <translation type='unfinished'>표시</translation>
     </message>
     <message>
         <source>Local Name</source>
-        <translation>로컬 이름</translation>
+        <translation type='unfinished'>로컬 이름</translation>
     </message>
     <message>
         <source>Remote Name</source>
-        <translation>원격 이름</translation>
+        <translation type='unfinished'>원격 이름</translation>
     </message>
     <message>
         <source>Regular Text</source>
-        <translation>일반 문구</translation>
+        <translation type='unfinished'>일반 문구</translation>
     </message>
     <message>
         <source>System Text</source>
-        <translation>시스템 문구</translation>
+        <translation type='unfinished'>시스템 문구</translation>
     </message>
     <message>
         <source>Ping Text</source>
-        <translation>Ping 문구</translation>
+        <translation type='unfinished'>Ping 문구</translation>
     </message>
     <message>
         <source>Error Text</source>
-        <translation>오류 문구</translation>
+        <translation type='unfinished'>오류 문구</translation>
     </message>
     <message>
         <source>Error Message Text</source>
-        <translation>에러 메세지 문구</translation>
+        <translation type='unfinished'>에러 메세지 문구</translation>
     </message>
     <message>
         <source>Private Text</source>
-        <translation>귓속말 문구</translation>
+        <translation type='unfinished'>귓속말 문구</translation>
     </message>
     <message>
         <source>Action Text</source>
-        <translation>행동 문구</translation>
+        <translation type='unfinished'>행동 문구</translation>
     </message>
     <message>
         <source>URL Text</source>
-        <translation>URL 문구</translation>
+        <translation type='unfinished'>URL 문구</translation>
     </message>
     <message>
         <source>&apos;Name Said&apos; Text</source>
-        <translation>&apos;자기 이름&apos; 문구</translation>
+        <translation type='unfinished'>&apos;자기 이름&apos; 문구</translation>
     </message>
     <message>
         <source>Description:</source>
-        <translation>설명:</translation>
+        <translation type='unfinished'>설명:</translation>
     </message>
     <message>
         <source>Preview:</source>
-        <translation>미리보기:</translation>
+        <translation type='unfinished'>미리보기:</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation>변경</translation>
+        <translation type='unfinished'>변경</translation>
     </message>
     <message>
         <source>Colors</source>
-        <translation>색상</translation>
+        <translation type='unfinished'>색상</translation>
     </message>
     <message>
         <source>CDE</source>
-        <translation>CDE</translation>
+        <translation type='unfinished'>CDE</translation>
     </message>
     <message>
         <source>Motif</source>
-        <translation>Motif</translation>
+        <translation type='unfinished'>Motif</translation>
     </message>
     <message>
         <source>Motif Plus</source>
-        <translation>Motif Plus</translation>
+        <translation type='unfinished'>Motif Plus</translation>
     </message>
     <message>
         <source>Platinum</source>
-        <translation>Platinum</translation>
+        <translation type='unfinished'>Platinum</translation>
     </message>
     <message>
         <source>SGI</source>
-        <translation>SGI</translation>
+        <translation type='unfinished'>SGI</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation>Windows</translation>
+        <translation type='unfinished'>윈도우즈</translation>
     </message>
     <message>
         <source>The selected style will be applied as soon as it is selected.</source>
-        <translation>The selected style will be applied as soon as it is selected.</translation>
+        <translation type='unfinished'>The selected style will be applied as soon as it is selected.</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation>스타일</translation>
+        <translation type='unfinished'>스타일</translation>
     </message>
     <message>
         <source>1</source>
-        <translation>1</translation>
+        <translation type='unfinished'>1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation>2</translation>
+        <translation type='unfinished'>2</translation>
     </message>
     <message>
         <source>3</source>
-        <translation>3</translation>
+        <translation type='unfinished'>3</translation>
     </message>
     <message>
         <source>4</source>
-        <translation>4</translation>
+        <translation type='unfinished'>4</translation>
     </message>
     <message>
         <source>5</source>
-        <translation>5</translation>
+        <translation type='unfinished'>5</translation>
     </message>
     <message>
         <source>10</source>
-        <translation>10</translation>
+        <translation type='unfinished'>10</translation>
     </message>
     <message>
         <source>15</source>
-        <translation>15</translation>
+        <translation type='unfinished'>15</translation>
     </message>
     <message>
         <source>20</source>
-        <translation>20</translation>
+        <translation type='unfinished'>20</translation>
     </message>
     <message>
         <source>30</source>
-        <translation>30</translation>
+        <translation type='unfinished'>30</translation>
     </message>
     <message>
         <source>Unlimited</source>
-        <translation>제한 없음</translation>
+        <translation type='unfinished'>제한 없음</translation>
     </message>
     <message>
         <source>Block binkies?</source>
-        <translation>Block binkies?</translation>
+        <translation type='unfinished'>Block binkies?</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Uploads:</source>
-        <translation>Maximum Simultaneous Uploads:</translation>
+        <translation type='unfinished'>Maximum Simultaneous Uploads:</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Downloads:</source>
-        <translation>Maximum Simultaneous Downloads:</translation>
+        <translation type='unfinished'>Maximum Simultaneous Downloads:</translation>
     </message>
     <message>
         <source>Block disconnected users?</source>
-        <translation>사용자를 차단하시겠습니까?</translation>
+        <translation type='unfinished'>사용자를 차단하시겠습니까?</translation>
     </message>
     <message>
         <source>File sharing enabled?</source>
-        <translation>파일 공유를 사용하시겠습니까?</translation>
+        <translation type='unfinished'>파일 공유를 사용하시겠습니까?</translation>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
@@ -2288,27 +2288,27 @@ Date: %4</source>
     </message>
     <message>
         <source>File Sharing</source>
-        <translation>파일 공유</translation>
+        <translation type='unfinished'>파일 공유</translation>
     </message>
     <message>
         <source>HTTP launcher:</source>
-        <translation>HTTP 실행기:</translation>
+        <translation type='unfinished'>HTTP 실행기:</translation>
     </message>
     <message>
         <source>FTP launcher:</source>
-        <translation>FTP 실행기:</translation>
+        <translation type='unfinished'>FTP 실행기:</translation>
     </message>
     <message>
         <source>Mailto: launcher:</source>
-        <translation>Mailto: 실행기:</translation>
+        <translation type='unfinished'>Mailto: 실행기:</translation>
     </message>
     <message>
         <source>URL Launching</source>
-        <translation>URL 실행</translation>
+        <translation type='unfinished'>URL 실행</translation>
     </message>
     <message>
         <source>No Limit</source>
-        <translation>제한 없음</translation>
+        <translation type='unfinished'>제한 없음</translation>
     </message>
     <message>
         <source>128 bytes</source>
@@ -2324,47 +2324,47 @@ Date: %4</source>
     </message>
     <message>
         <source>1 kB</source>
-        <translation>1 kB</translation>
+        <translation type='unfinished'>1 kB</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation>2 kB</translation>
+        <translation type='unfinished'>2 kB</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation>4 kB</translation>
+        <translation type='unfinished'>4 kB</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation>8 kB</translation>
+        <translation type='unfinished'>8 kB</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation>16 kB</translation>
+        <translation type='unfinished'>16 kB</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation>32 kB</translation>
+        <translation type='unfinished'>32 kB</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation>64 kB</translation>
+        <translation type='unfinished'>64 kB</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation>128 kB</translation>
+        <translation type='unfinished'>128 kB</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation>256 kB</translation>
+        <translation type='unfinished'>256 kB</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation>512 kB</translation>
+        <translation type='unfinished'>512 kB</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation>1 MB</translation>
+        <translation type='unfinished'>1 MB</translation>
     </message>
     <message>
         <source>2 MB</source>
@@ -2388,163 +2388,163 @@ Date: %4</source>
     </message>
     <message>
         <source>Chat:</source>
-        <translation>대화:</translation>
+        <translation type='unfinished'>대화:</translation>
     </message>
     <message>
         <source>Uploads (per upload):</source>
-        <translation>업로드 (per upload):</translation>
+        <translation type='unfinished'>업로드 (per upload):</translation>
     </message>
     <message>
         <source>Downloads (per download):</source>
-        <translation>다운로드 (per download):</translation>
+        <translation type='unfinished'>다운로드 (per download):</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted):</source>
-        <translation>업로드 (per blacklisted):</translation>
+        <translation type='unfinished'>업로드 (per blacklisted):</translation>
     </message>
     <message>
         <source>Throttling</source>
-        <translation>조절하기</translation>
+        <translation type='unfinished'>조절하기</translation>
     </message>
     <message>
         <source>Enable Sound Effects</source>
-        <translation>Enable Sound Effects</translation>
+        <translation type='unfinished'>Enable Sound Effects</translation>
     </message>
     <message>
         <source>Downloads</source>
-        <translation>Downloads</translation>
+        <translation type='unfinished'>Downloads</translation>
     </message>
     <message>
         <source>Base Port:</source>
-        <translation>Base Port:</translation>
+        <translation type='unfinished'>Base Port:</translation>
     </message>
     <message>
         <source>Upload Packet Size:</source>
-        <translation>Upload Packet Size:</translation>
+        <translation type='unfinished'>Upload Packet Size:</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue:</source>
-        <translation>Minimum File Size to Queue:</translation>
+        <translation type='unfinished'>Minimum File Size to Queue:</translation>
     </message>
     <message>
         <source>Default launcher:</source>
-        <translation>Default launcher:</translation>
+        <translation type='unfinished'>Default launcher:</translation>
     </message>
     <message>
         <source>IP Addresses</source>
-        <translation>IP Addresses</translation>
+        <translation type='unfinished'>IP Addresses</translation>
     </message>
     <message>
         <source>Number of Ports:</source>
-        <translation>Number of Ports:</translation>
+        <translation type='unfinished'>Number of Ports:</translation>
     </message>
     <message>
         <source>Empty Windows:</source>
-        <translation>Empty Windows:</translation>
+        <translation type='unfinished'>Empty Windows:</translation>
     </message>
     <message>
         <source>Do Nothing</source>
-        <translation>Do Nothing</translation>
+        <translation type='unfinished'>Do Nothing</translation>
     </message>
     <message>
         <source>Prompt</source>
-        <translation>Prompt</translation>
+        <translation type='unfinished'>Prompt</translation>
     </message>
     <message>
         <source>Automatically Close</source>
-        <translation>Automatically Close</translation>
+        <translation type='unfinished'>Automatically Close</translation>
     </message>
     <message>
         <source>Warning Text</source>
-        <translation></translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Warning Message Text</source>
-        <translation></translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation>DSL-1M</translation>
+        <translation type='unfinished'>DSL-1M</translation>
     </message>
     <message>
         <source>128 B/s</source>
-        <translation>128 B/s</translation>
+        <translation type='unfinished'>128 B/s</translation>
     </message>
     <message>
         <source>256 B/s</source>
-        <translation>256 B/s</translation>
+        <translation type='unfinished'>256 B/s</translation>
     </message>
     <message>
         <source>512 B/s</source>
-        <translation>512 B/s</translation>
+        <translation type='unfinished'>512 B/s</translation>
     </message>
     <message>
         <source>1 kB/s</source>
-        <translation>1 kB/s</translation>
+        <translation type='unfinished'>1 kB/s</translation>
     </message>
     <message>
         <source>2 kB/s</source>
-        <translation>2 kB/s</translation>
+        <translation type='unfinished'>2 kB/s</translation>
     </message>
     <message>
         <source>4 kB/s</source>
-        <translation>4 kB/s</translation>
+        <translation type='unfinished'>4 kB/s</translation>
     </message>
     <message>
         <source>8 kB/s</source>
-        <translation>8 kB/s</translation>
+        <translation type='unfinished'>8 kB/s</translation>
     </message>
     <message>
         <source>16 kB/s</source>
-        <translation>16 kB/s</translation>
+        <translation type='unfinished'>16 kB/s</translation>
     </message>
     <message>
         <source>32 kB/s</source>
-        <translation>32 kB/s</translation>
+        <translation type='unfinished'>32 kB/s</translation>
     </message>
     <message>
         <source>64 kB/s</source>
-        <translation>64 kB/s</translation>
+        <translation type='unfinished'>64 kB/s</translation>
     </message>
     <message>
         <source>128 kB/s</source>
-        <translation>128 kB/s</translation>
+        <translation type='unfinished'>128 kB/s</translation>
     </message>
     <message>
         <source>256 kB/s</source>
-        <translation>256 kB/s</translation>
+        <translation type='unfinished'>256 kB/s</translation>
     </message>
     <message>
         <source>512 kB/s</source>
-        <translation>512 kB/s</translation>
+        <translation type='unfinished'>512 kB/s</translation>
     </message>
     <message>
         <source>1 MB/s</source>
-        <translation>1 MB/s</translation>
+        <translation type='unfinished'>1 MB/s</translation>
     </message>
     <message>
         <source>2 MB/s</source>
-        <translation>2 MB/s</translation>
+        <translation type='unfinished'>2 MB/s</translation>
     </message>
     <message>
         <source>4 MB/s</source>
-        <translation>4 MB/s</translation>
+        <translation type='unfinished'>4 MB/s</translation>
     </message>
     <message>
         <source>8 MB/s</source>
-        <translation>8 MB/s</translation>
+        <translation type='unfinished'>8 MB/s</translation>
     </message>
     <message>
         <source>16 MB/s</source>
-        <translation>16 MB/s</translation>
+        <translation type='unfinished'>16 MB/s</translation>
     </message>
     <message>
         <source>32 MB/s</source>
-        <translation>32 MB/s</translation>
+        <translation type='unfinished'>32 MB/s</translation>
     </message>
     <message>
         <source>Aqua</source>
-        <translation>Aqua</translation>
+        <translation type='unfinished'>Aqua</translation>
     </message>
     <message>
         <source>HTTP Proxy:</source>
@@ -2556,11 +2556,11 @@ Date: %4</source>
     </message>
     <message>
         <source>0</source>
-        <translation>0</translation>
+        <translation type='unfinished'>0</translation>
     </message>
     <message>
         <source>512 B</source>
-        <translation>512 B</translation>
+        <translation type='unfinished'>512 B</translation>
     </message>
     <message>
         <source>Automatically clear finished transfers?</source>
@@ -2568,6 +2568,18 @@ Date: %4</source>
     </message>
     <message>
         <source>Automatically close upload window?</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Sound File:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Reset</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -2690,7 +2702,7 @@ Date: %4</source>
     <name>WPrivateWindowBase</name>
     <message>
         <source>Private</source>
-        <translation>비밀</translation>
+        <translation type='unfinished'>비밀</translation>
     </message>
 </context>
 <context>

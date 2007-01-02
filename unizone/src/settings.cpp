@@ -815,6 +815,18 @@ WSettings::GetSounds() const
 }
 
 void
+WSettings::SetSoundFile(const QString &fn)
+{
+	fSet()->ReplaceString(true, SOUND_FILE, (const char *) fn.utf8());
+}
+
+QString
+WSettings::GetSoundFile() const
+{
+	return GetStringItem(fSet(), SOUND_FILE);
+}
+
+void
 WSettings::SetAutoAway(int32 i)
 {
 	fSet()->ReplaceInt32(true, AUTO_AWAY, i);

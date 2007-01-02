@@ -94,6 +94,8 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	connect(fStyleList, SIGNAL(highlighted(int)), this, SLOT(StyleSelected(int)));
 	connect(fColorsList, SIGNAL(highlighted(int)), this, SLOT(ColorSelected(int)));
 	connect(fChange, SIGNAL(clicked()), this, SLOT(ChangeColor()));
+	connect(fSound, SIGNAL(clicked()), this, SLOT(ChangeSound()));
+	connect(fResetSound, SIGNAL(clicked()), this, SLOT(ResetSound()));
 	connect(fAutoAway, SIGNAL(highlighted(int)), this, SLOT(AwaySelected(int)));
 
 	fCurColorIndex = -1;
@@ -139,6 +141,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fWarning->setChecked(gWin->fSettings->GetWarning());
 	fError->setChecked(gWin->fSettings->GetError());
 	fSounds->setChecked(gWin->fSettings->GetSounds());
+	fSoundFile->setText(gWin->fSettings->GetSoundFile());
 	fIPAddresses->setChecked(gWin->fSettings->GetIPAddresses());
 	
 	switch (gWin->fSettings->GetStyle())
@@ -337,6 +340,7 @@ WPrefs::OK()
 	gWin->fSettings->SetWarning(fWarning->isChecked());
 	gWin->fSettings->SetError(fError->isChecked());
 	gWin->fSettings->SetSounds(fSounds->isChecked());
+	gWin->fSettings->SetSoundFile(fSoundFile->text());
 	gWin->fSettings->SetIPAddresses(fIPAddresses->isChecked());
 
 	// flash settings
@@ -552,6 +556,21 @@ WPrefs::ChangeColor()
 		UpdateDescription(fCurColorIndex);	// update the color (if changed)
 	}
 }
+
+void
+WPrefs::ChangeSound()
+{
+	QString fn = QFileDialog::getOpenFileName(QString::null, "*.wav", this);
+	if (!fn.isEmpty())
+		fSoundFile->setText(fn);
+}
+
+void
+WPrefs::ResetSound()
+{
+	fSoundFile->clear();
+}
+
 
 void
 WPrefs::AwaySelected(int index)

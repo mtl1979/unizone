@@ -117,6 +117,7 @@ using namespace muscle;
 #define RESUMEUSER "resumeuser"
 
 #define SOUNDS     "sounds"
+#define SOUND_FILE "soundfile"
 
 class WSettings
 {
@@ -271,6 +272,9 @@ public:
 	bool GetError() const;
 	bool GetSounds() const;
 	bool GetIPAddresses() const;
+
+	QString GetSoundFile() const;
+	void SetSoundFile(const QString &);
 
 	// auto away
 	void SetAutoAway(int32 i);	// index of time

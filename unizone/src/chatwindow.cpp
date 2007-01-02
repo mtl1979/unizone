@@ -282,17 +282,14 @@ ChatWindow::tr(const char *s)
 void
 ChatWindow::beep()
 {
-	static QSound qs("beep.wav", NULL, "beep");
-	static bool checked = false, exists = false;
-	if (!checked)
+	QString fn = Settings()->GetSoundFile();
+	if (QSound::available() && !fn.isEmpty())
 	{
-		exists = WFile::Exists(L"beep.wav");
-		checked = true;
+		if (WFile::Exists(fn))
+		{
+			QSound::play(fn);
+			return;
+		}
 	}
-	if (QSound::available() && exists)
-	{
-		qs.play();
-	}
-	else
-		QApplication::beep();
+	QApplication::beep();
 }

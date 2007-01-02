@@ -1,6 +1,0 @@
-moc_genericthread.cpp moc_md5.cpp moc_status.cpp moc_statusimpl.cpp
-status.h status.cpp
-.depends
-musclecopy
-MuscleCopy.app
-.DS_Store

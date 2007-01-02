@@ -135,23 +135,23 @@ Version %1</translation>
     <name>AboutDlgBase</name>
     <message>
         <source>About Unizone</source>
-        <translation>Gurus</translation>
+        <translation type='unfinished'>Gurus</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>&amp;Rulz</translation>
+        <translation type='unfinished'>&amp;Rulz</translation>
     </message>
     <message>
         <source>Written by Mika T. Lindqvist</source>
-        <translation>Rip-off by the great guru Mika T. Lindqvist</translation>
+        <translation type='unfinished'>Rip-off by the great guru Mika T. Lindqvist</translation>
     </message>
     <message>
         <source>Based upon the Windows MUSCLE client Ozone</source>
-        <translation>Some stuff ripped from Ozone</translation>
+        <translation type='unfinished'>Some stuff ripped from Ozone</translation>
     </message>
     <message>
         <source>Which was written by Vitaliy Mikitchenko</source>
-        <translation>Which was screwed up by Vitaliy Mikitchenko</translation>
+        <translation type='unfinished'>Which was screwed up by Vitaliy Mikitchenko</translation>
     </message>
     <message>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
@@ -339,7 +339,7 @@ Version %1</translation>
     <name>ChannelBase</name>
     <message>
         <source>Channel Window</source>
-        <translation>Channelz Windoze</translation>
+        <translation type='unfinished'>Channel Window</translation>
     </message>
 </context>
 <context>
@@ -1184,35 +1184,35 @@ Date: %4</translation>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
-        <translation>Scan Progress</translation>
+        <translation type='unfinished'>Scan Progress</translation>
     </message>
     <message>
         <source>Current directory:</source>
-        <translation>Current directory:</translation>
+        <translation type='unfinished'>Current directory:</translation>
     </message>
     <message>
         <source>-</source>
-        <translation>-</translation>
+        <translation type='unfinished'>-</translation>
     </message>
     <message>
         <source>Current file:</source>
-        <translation>Current file:</translation>
+        <translation type='unfinished'>Current file:</translation>
     </message>
     <message>
         <source>Files scanned:</source>
-        <translation>Filez scanned:</translation>
+        <translation type='unfinished'>Filez scanned:</translation>
     </message>
     <message>
         <source>0</source>
-        <translation>0</translation>
+        <translation type='unfinished'>0</translation>
     </message>
     <message>
         <source>Directories scanned:</source>
-        <translation>Directoriez scanned:</translation>
+        <translation type='unfinished'>Directoriez scanned:</translation>
     </message>
     <message>
         <source>Directories left:</source>
-        <translation>Directoriez left:</translation>
+        <translation type='unfinished'>Directoriez left:</translation>
     </message>
 </context>
 <context>
@@ -1908,7 +1908,7 @@ Date: %4</translation>
     <name>WPicViewerBase</name>
     <message>
         <source>Picture Viewer</source>
-        <translation>Pr0n Viewer</translation>
+        <translation type='unfinished'>Pr0n Viewer</translation>
     </message>
     <message>
         <source>No File</source>
@@ -1940,7 +1940,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Close</translation>
+        <translation type='unfinished'>Close</translation>
     </message>
 </context>
 <context>
@@ -2050,111 +2050,111 @@ Date: %4</translation>
     <name>WPrefsBase</name>
     <message>
         <source>Preferences</source>
-        <translation>Gurus Only</translation>
+        <translation type='unfinished'>Gurus Only</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>Rulz</translation>
+        <translation type='unfinished'>Rulz</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Give Up</translation>
+        <translation type='unfinished'>Give Up</translation>
     </message>
     <message>
         <source>Auto Away:</source>
-        <translation>Auto Away:</translation>
+        <translation type='unfinished'>Auto Away:</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation>Disabled</translation>
+        <translation type='unfinished'>Disabled</translation>
     </message>
     <message>
         <source>2 Minutes</source>
-        <translation>2 Minutez</translation>
+        <translation type='unfinished'>2 Minutez</translation>
     </message>
     <message>
         <source>5 Minutes</source>
-        <translation>5 Minutez</translation>
+        <translation type='unfinished'>5 Minutez</translation>
     </message>
     <message>
         <source>10 Minutes</source>
-        <translation>10 Minutez</translation>
+        <translation type='unfinished'>10 Minutez</translation>
     </message>
     <message>
         <source>15 Minutes</source>
-        <translation>15 Minutez</translation>
+        <translation type='unfinished'>15 Minutez</translation>
     </message>
     <message>
         <source>20 Minutes</source>
-        <translation>20 Minutez</translation>
+        <translation type='unfinished'>20 Minutez</translation>
     </message>
     <message>
         <source>30 Minutes</source>
-        <translation>30 Minutez</translation>
+        <translation type='unfinished'>30 Minutez</translation>
     </message>
     <message>
         <source>1 Hour</source>
-        <translation>1 Hour</translation>
+        <translation type='unfinished'>1 Hour</translation>
     </message>
     <message>
         <source>2 Hours</source>
-        <translation>2 Hours</translation>
+        <translation type='unfinished'>2 Hours</translation>
     </message>
     <message>
         <source>Multi-color ListViews</source>
-        <translation>Multi-color ListViews</translation>
+        <translation type='unfinished'>Multi-color ListViews</translation>
     </message>
     <message>
         <source>Enable Logging</source>
-        <translation>Enable Logging</translation>
+        <translation type='unfinished'>Enable Logging</translation>
     </message>
     <message>
         <source>Login On Startup</source>
-        <translation>Login On Startup</translation>
+        <translation type='unfinished'>Login On Startup</translation>
     </message>
     <message>
         <source>Check For New Versions</source>
-        <translation>Check For New Versionz</translation>
+        <translation type='unfinished'>Check For New Versionz</translation>
     </message>
     <message>
         <source>Auto Update Server List</source>
-        <translation>Auto Update Server List</translation>
+        <translation type='unfinished'>Auto Update Server List</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>General</translation>
+        <translation type='unfinished'>General</translation>
     </message>
     <message>
         <source>Upload Bandwidth:</source>
-        <translation>Upping Pipe:</translation>
+        <translation type='unfinished'>Upping Pipe:</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation>300 baud</translation>
+        <translation type='unfinished'>300 baud</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation>14.4 kbps</translation>
+        <translation type='unfinished'>14.4 kbps</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation>28.8 kbps</translation>
+        <translation type='unfinished'>28.8 kbps</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation>36.6 kbps</translation>
+        <translation type='unfinished'>36.6 kbps</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation>57.6 kbps</translation>
+        <translation type='unfinished'>57.6 kbps</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation>ISDN-64k</translation>
+        <translation type='unfinished'>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation>ISDN-128k</translation>
+        <translation type='unfinished'>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
@@ -2162,251 +2162,251 @@ Date: %4</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation>Cable</translation>
+        <translation type='unfinished'>Cable</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation>T1</translation>
+        <translation type='unfinished'>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation>T3</translation>
+        <translation type='unfinished'>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation>OC-3</translation>
+        <translation type='unfinished'>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation>OC-12</translation>
+        <translation type='unfinished'>OC-12</translation>
     </message>
     <message>
         <source>I&apos;m Firewalled</source>
-        <translation>I&apos;m Firewalled</translation>
+        <translation type='unfinished'>I&apos;m Firewalled</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation>Pipe</translation>
+        <translation type='unfinished'>Pipe</translation>
     </message>
     <message>
         <source>Warning Messages</source>
-        <translation>Warning Messages</translation>
+        <translation type='unfinished'>Warning Messages</translation>
     </message>
     <message>
         <source>Error Messages</source>
-        <translation>Error Messages</translation>
+        <translation type='unfinished'>Error Messages</translation>
     </message>
     <message>
         <source>Private Messages</source>
-        <translation>My Buziness Messages</translation>
+        <translation type='unfinished'>My Buziness Messages</translation>
     </message>
     <message>
         <source>User Events</source>
-        <translation>Loser Events</translation>
+        <translation type='unfinished'>Loser Events</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation>Chat</translation>
+        <translation type='unfinished'>Chat</translation>
     </message>
     <message>
         <source>Info Messages</source>
-        <translation>Info Messages</translation>
+        <translation type='unfinished'>Info Messages</translation>
     </message>
     <message>
         <source>Uploads</source>
-        <translation>Ups</translation>
+        <translation type='unfinished'>Ups</translation>
     </message>
     <message>
         <source>Time Stamps</source>
-        <translation>Time Stamps</translation>
+        <translation type='unfinished'>Time Stamps</translation>
     </message>
     <message>
         <source>Flash Window When Mentioned</source>
-        <translation>Flash Windoze When Mocked</translation>
+        <translation type='unfinished'>Flash Windoze When Mocked</translation>
     </message>
     <message>
         <source>Flash Private Windows</source>
-        <translation>Flash My Buziness Windoze</translation>
+        <translation type='unfinished'>Flash My Buziness Windoze</translation>
     </message>
     <message>
         <source>Font Size</source>
-        <translation>Font Size</translation>
+        <translation type='unfinished'>Font Size</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation>Display</translation>
+        <translation type='unfinished'>Display</translation>
     </message>
     <message>
         <source>Local Name</source>
-        <translation>Local Namez</translation>
+        <translation type='unfinished'>Local Namez</translation>
     </message>
     <message>
         <source>Remote Name</source>
-        <translation>Remote Namez</translation>
+        <translation type='unfinished'>Remote Namez</translation>
     </message>
     <message>
         <source>Regular Text</source>
-        <translation>Regular Text</translation>
+        <translation type='unfinished'>Regular Text</translation>
     </message>
     <message>
         <source>System Text</source>
-        <translation>System Text</translation>
+        <translation type='unfinished'>System Text</translation>
     </message>
     <message>
         <source>Ping Text</source>
-        <translation>Ping Pong Text</translation>
+        <translation type='unfinished'>Ping Pong Text</translation>
     </message>
     <message>
         <source>Error Text</source>
-        <translation>Error Text</translation>
+        <translation type='unfinished'>Error Text</translation>
     </message>
     <message>
         <source>Error Message Text</source>
-        <translation>Error Message Text</translation>
+        <translation type='unfinished'>Error Message Text</translation>
     </message>
     <message>
         <source>Private Text</source>
-        <translation>My Buziness Text</translation>
+        <translation type='unfinished'>My Buziness Text</translation>
     </message>
     <message>
         <source>Action Text</source>
-        <translation>Action Text</translation>
+        <translation type='unfinished'>Action Text</translation>
     </message>
     <message>
         <source>URL Text</source>
-        <translation>URL Text</translation>
+        <translation type='unfinished'>URL Text</translation>
     </message>
     <message>
         <source>&apos;Name Said&apos; Text</source>
-        <translation>&apos;Namez Said&apos; Text</translation>
+        <translation type='unfinished'>&apos;Namez Said&apos; Text</translation>
     </message>
     <message>
         <source>Description:</source>
-        <translation>Data:</translation>
+        <translation type='unfinished'>Data:</translation>
     </message>
     <message>
         <source>Preview:</source>
-        <translation>Preview:</translation>
+        <translation type='unfinished'>Preview:</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation>Change</translation>
+        <translation type='unfinished'>Change</translation>
     </message>
     <message>
         <source>Colors</source>
-        <translation>Colors</translation>
+        <translation type='unfinished'>Colors</translation>
     </message>
     <message>
         <source>CDE</source>
-        <translation>CDE</translation>
+        <translation type='unfinished'>CDE</translation>
     </message>
     <message>
         <source>Motif</source>
-        <translation>Motif</translation>
+        <translation type='unfinished'>Motif</translation>
     </message>
     <message>
         <source>Motif Plus</source>
-        <translation>Motif Plus</translation>
+        <translation type='unfinished'>Motif Plus</translation>
     </message>
     <message>
         <source>Platinum</source>
-        <translation>Platinum</translation>
+        <translation type='unfinished'>Platinum</translation>
     </message>
     <message>
         <source>SGI</source>
-        <translation>SGI</translation>
+        <translation type='unfinished'>SGI</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation>Windoze</translation>
+        <translation type='unfinished'>Windoze</translation>
     </message>
     <message>
         <source>The selected style will be applied as soon as it is selected.</source>
-        <translation>The selected style will be used asap. Chill out.</translation>
+        <translation type='unfinished'>The selected style will be used asap. Chill out.</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation>Stylez</translation>
+        <translation type='unfinished'>Stylez</translation>
     </message>
     <message>
         <source>1</source>
-        <translation>1</translation>
+        <translation type='unfinished'>1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation>2</translation>
+        <translation type='unfinished'>2</translation>
     </message>
     <message>
         <source>3</source>
-        <translation>3</translation>
+        <translation type='unfinished'>3</translation>
     </message>
     <message>
         <source>4</source>
-        <translation>4</translation>
+        <translation type='unfinished'>4</translation>
     </message>
     <message>
         <source>5</source>
-        <translation>5</translation>
+        <translation type='unfinished'>5</translation>
     </message>
     <message>
         <source>10</source>
-        <translation>10</translation>
+        <translation type='unfinished'>10</translation>
     </message>
     <message>
         <source>15</source>
-        <translation>15</translation>
+        <translation type='unfinished'>15</translation>
     </message>
     <message>
         <source>20</source>
-        <translation>20</translation>
+        <translation type='unfinished'>20</translation>
     </message>
     <message>
         <source>30</source>
-        <translation>30</translation>
+        <translation type='unfinished'>30</translation>
     </message>
     <message>
         <source>Unlimited</source>
-        <translation>Unlimited</translation>
+        <translation type='unfinished'>Unlimited</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Downloads:</source>
-        <translation>Maximum Simultaneous Leeches:</translation>
+        <translation type='unfinished'>Maximum Simultaneous Leeches:</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Uploads:</source>
-        <translation>Maximum Simultaneous Ups:</translation>
+        <translation type='unfinished'>Maximum Simultaneous Ups:</translation>
     </message>
     <message>
         <source>File sharing enabled?</source>
-        <translation>Warez sharing enabled?</translation>
+        <translation type='unfinished'>Warez sharing enabled?</translation>
     </message>
     <message>
         <source>Block binkies?</source>
-        <translation>Block losers (binkies)?</translation>
+        <translation type='unfinished'>Block losers (binkies)?</translation>
     </message>
     <message>
         <source>Block disconnected users?</source>
-        <translation>Block disconnected losers?</translation>
+        <translation type='unfinished'>Block disconnected losers?</translation>
     </message>
     <message>
         <source>File Sharing</source>
-        <translation>Warez Sharing</translation>
+        <translation type='unfinished'>Warez Sharing</translation>
     </message>
     <message>
         <source>HTTP launcher:</source>
-        <translation>HTTP launcher:</translation>
+        <translation type='unfinished'>HTTP launcher:</translation>
     </message>
     <message>
         <source>FTP launcher:</source>
-        <translation>FTP launcher:</translation>
+        <translation type='unfinished'>FTP launcher:</translation>
     </message>
     <message>
         <source>Mailto: launcher:</source>
-        <translation>Mailto: launcher:</translation>
+        <translation type='unfinished'>Mailto: launcher:</translation>
     </message>
     <message>
         <source>URL Launching</source>
-        <translation>URL Launching</translation>
+        <translation type='unfinished'>URL Launching</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted)</source>
@@ -2414,7 +2414,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>No Limit</source>
-        <translation>No Limitz</translation>
+        <translation type='unfinished'>No Limitz</translation>
     </message>
     <message>
         <source>128 bytes</source>
@@ -2430,47 +2430,47 @@ Date: %4</translation>
     </message>
     <message>
         <source>1 kB</source>
-        <translation>1 kB</translation>
+        <translation type='unfinished'>1 kB</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation>2 kB</translation>
+        <translation type='unfinished'>2 kB</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation>4 kB</translation>
+        <translation type='unfinished'>4 kB</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation>8 kB</translation>
+        <translation type='unfinished'>8 kB</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation>16 kB</translation>
+        <translation type='unfinished'>16 kB</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation>32 kB</translation>
+        <translation type='unfinished'>32 kB</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation>64 kB</translation>
+        <translation type='unfinished'>64 kB</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation>128 kB</translation>
+        <translation type='unfinished'>128 kB</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation>256 kB</translation>
+        <translation type='unfinished'>256 kB</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation>512 kB</translation>
+        <translation type='unfinished'>512 kB</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation>1 MB</translation>
+        <translation type='unfinished'>1 MB</translation>
     </message>
     <message>
         <source>2 MB</source>
@@ -2494,7 +2494,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Chat:</source>
-        <translation>Chat:</translation>
+        <translation type='unfinished'>Chat:</translation>
     </message>
     <message>
         <source>Downloads (per download)</source>
@@ -2506,7 +2506,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Throttling</source>
-        <translation>Strangling</translation>
+        <translation type='unfinished'>Strangling</translation>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
@@ -2514,31 +2514,31 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation>DSL-256k</translation>
+        <translation type='unfinished'>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation>DSL-384k</translation>
+        <translation type='unfinished'>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation>DSL-512k</translation>
+        <translation type='unfinished'>DSL-512k</translation>
     </message>
     <message>
         <source>Uploads (per upload):</source>
-        <translation>Ups (per up):</translation>
+        <translation type='unfinished'>Ups (per up):</translation>
     </message>
     <message>
         <source>Downloads (per download):</source>
-        <translation>Leeches (per leech):</translation>
+        <translation type='unfinished'>Leeches (per leech):</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted):</source>
-        <translation>Ups (per loser on blacklist):</translation>
+        <translation type='unfinished'>Ups (per loser on blacklist):</translation>
     </message>
     <message>
         <source>Default launcher:</source>
-        <translation>Default launcher:</translation>
+        <translation type='unfinished'>Default launcher:</translation>
     </message>
     <message>
         <source>Upload Packet Size</source>
@@ -2546,15 +2546,15 @@ Date: %4</translation>
     </message>
     <message>
         <source>Upload Packet Size:</source>
-        <translation>Ups Packet Size:</translation>
+        <translation type='unfinished'>Ups Packet Size:</translation>
     </message>
     <message>
         <source>Enable Sound Effects</source>
-        <translation>Use Sound</translation>
+        <translation type='unfinished'>Use Sound</translation>
     </message>
     <message>
         <source>Downloads</source>
-        <translation>Leeches</translation>
+        <translation type='unfinished'>Leeches</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue</source>
@@ -2582,11 +2582,11 @@ Date: %4</translation>
     </message>
     <message>
         <source>Base Port:</source>
-        <translation>Base Port:</translation>
+        <translation type='unfinished'>Base Port:</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue:</source>
-        <translation>Minimum Filez Size to Queue:</translation>
+        <translation type='unfinished'>Minimum Filez Size to Queue:</translation>
     </message>
     <message>
         <source>200 kB</source>
@@ -2602,27 +2602,27 @@ Date: %4</translation>
     </message>
     <message>
         <source>IP Addresses</source>
-        <translation>IP Addresses</translation>
+        <translation type='unfinished'>IP Addresses</translation>
     </message>
     <message>
         <source>Number of Ports:</source>
-        <translation>Number of Ports:</translation>
+        <translation type='unfinished'>Number of Ports:</translation>
     </message>
     <message>
         <source>Empty Windows:</source>
-        <translation>Empty Windowz:</translation>
+        <translation type='unfinished'>Empty Windowz:</translation>
     </message>
     <message>
         <source>Do Nothing</source>
-        <translation>Chill Out</translation>
+        <translation type='unfinished'>Chill Out</translation>
     </message>
     <message>
         <source>Prompt</source>
-        <translation>Whine</translation>
+        <translation type='unfinished'>Whine</translation>
     </message>
     <message>
         <source>Automatically Close</source>
-        <translation>Nuke Them</translation>
+        <translation type='unfinished'>Nuke Them</translation>
     </message>
     <message>
         <source>Warning Text</source>
@@ -2634,87 +2634,87 @@ Date: %4</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation>DSL-1M</translation>
+        <translation type='unfinished'>DSL-1M</translation>
     </message>
     <message>
         <source>128 B/s</source>
-        <translation>128 B/s</translation>
+        <translation type='unfinished'>128 B/s</translation>
     </message>
     <message>
         <source>256 B/s</source>
-        <translation>256 B/s</translation>
+        <translation type='unfinished'>256 B/s</translation>
     </message>
     <message>
         <source>512 B/s</source>
-        <translation>512 B/s</translation>
+        <translation type='unfinished'>512 B/s</translation>
     </message>
     <message>
         <source>1 kB/s</source>
-        <translation>1 kB/s</translation>
+        <translation type='unfinished'>1 kB/s</translation>
     </message>
     <message>
         <source>2 kB/s</source>
-        <translation>2 kB/s</translation>
+        <translation type='unfinished'>2 kB/s</translation>
     </message>
     <message>
         <source>4 kB/s</source>
-        <translation>4 kB/s</translation>
+        <translation type='unfinished'>4 kB/s</translation>
     </message>
     <message>
         <source>8 kB/s</source>
-        <translation>8 kB/s</translation>
+        <translation type='unfinished'>8 kB/s</translation>
     </message>
     <message>
         <source>16 kB/s</source>
-        <translation>16 kB/s</translation>
+        <translation type='unfinished'>16 kB/s</translation>
     </message>
     <message>
         <source>32 kB/s</source>
-        <translation>32 kB/s</translation>
+        <translation type='unfinished'>32 kB/s</translation>
     </message>
     <message>
         <source>64 kB/s</source>
-        <translation>64 kB/s</translation>
+        <translation type='unfinished'>64 kB/s</translation>
     </message>
     <message>
         <source>128 kB/s</source>
-        <translation>128 kB/s</translation>
+        <translation type='unfinished'>128 kB/s</translation>
     </message>
     <message>
         <source>256 kB/s</source>
-        <translation>256 kB/s</translation>
+        <translation type='unfinished'>256 kB/s</translation>
     </message>
     <message>
         <source>512 kB/s</source>
-        <translation>512 kB/s</translation>
+        <translation type='unfinished'>512 kB/s</translation>
     </message>
     <message>
         <source>1 MB/s</source>
-        <translation>1 MB/s</translation>
+        <translation type='unfinished'>1 MB/s</translation>
     </message>
     <message>
         <source>2 MB/s</source>
-        <translation>2 MB/s</translation>
+        <translation type='unfinished'>2 MB/s</translation>
     </message>
     <message>
         <source>4 MB/s</source>
-        <translation>4 MB/s</translation>
+        <translation type='unfinished'>4 MB/s</translation>
     </message>
     <message>
         <source>8 MB/s</source>
-        <translation>8 MB/s</translation>
+        <translation type='unfinished'>8 MB/s</translation>
     </message>
     <message>
         <source>16 MB/s</source>
-        <translation>16 MB/s</translation>
+        <translation type='unfinished'>16 MB/s</translation>
     </message>
     <message>
         <source>32 MB/s</source>
-        <translation>32 MB/s</translation>
+        <translation type='unfinished'>32 MB/s</translation>
     </message>
     <message>
         <source>Aqua</source>
-        <translation>Aqua</translation>
+        <translation type='unfinished'>Aqua</translation>
     </message>
     <message>
         <source>HTTP Proxy:</source>
@@ -2734,10 +2734,22 @@ Date: %4</translation>
     </message>
     <message>
         <source>Automatically clear finished transfers?</source>
-        <translation>Auto Clear finished leeches?</translation>
+        <translation type='unfinished'>Auto Clear finished leeches?</translation>
     </message>
     <message>
         <source>Automatically close upload window?</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Sound File:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Reset</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -2862,7 +2874,7 @@ Date: %4</translation>
     <name>WPrivateWindowBase</name>
     <message>
         <source>Private</source>
-        <translation>My Buziness</translation>
+        <translation type='unfinished'>My Buziness</translation>
     </message>
 </context>
 <context>
@@ -3078,7 +3090,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>No Limit</source>
-        <translation type='unfinished'>No Limitz</translation>
+        <translation type='unfinished'>No Limiz</translation>
     </message>
     <message>
         <source>%1 B/s</source>
@@ -3146,7 +3158,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type='unfinished'>Give Up</translation>
+        <translation type='unfinished'>Give up</translation>
     </message>
     <message>
         <source>Throttle</source>
