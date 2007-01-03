@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\..\..\unizone\src" /I "..\..\..\unizone\src\muscle" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "$(QTDIR)\include" /I "..\..\qt2" /I "..\..\..\unizone\src" /I "..\..\..\unizone\src\muscle" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40b /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\..\..\unizone\src" /I "..\..\..\unizone\src\muscle" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QTDIR)\include" /I "..\..\qt2" /I "..\..\..\unizone\src" /I "..\..\..\unizone\src\muscle" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /D "QT_NO_ASCII_CAST" /D "BETA" /D "UNICODE" /D "MUSCLE_USE_X86_INLINE_ASSEMBLY" /D "MUSCLE_ENABLE_ZLIB_ENCODING" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40b /d "_DEBUG"
@@ -120,7 +120,7 @@ SOURCE=..\..\qt2\moc_statusimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\status.cpp
+SOURCE=..\..\qt2\status.cpp
 # End Source File
 # Begin Source File
 
@@ -158,7 +158,7 @@ SOURCE=..\..\genericthread.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\musclecopy
+InputDir=\build\unizone\trunk\musclecopy
 InputPath=..\..\genericthread.h
 InputName=genericthread
 
@@ -171,7 +171,7 @@ InputName=genericthread
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\musclecopy
+InputDir=\build\unizone\trunk\musclecopy
 InputPath=..\..\genericthread.h
 InputName=genericthread
 
@@ -189,18 +189,18 @@ SOURCE=..\..\md5.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\status.h
+SOURCE=..\..\qt2\status.h
 
 !IF  "$(CFG)" == "MuscleCopy - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\musclecopy
-InputPath=..\..\status.h
+InputDir=\build\unizone\trunk\musclecopy\qt2
+InputPath=..\..\qt2\status.h
 InputName=status
 
-"$(InputDir)\qt2\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt2\moc_$(InputName).cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -208,12 +208,12 @@ InputName=status
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\musclecopy
-InputPath=..\..\status.h
+InputDir=\build\unizone\trunk\musclecopy\qt2
+InputPath=..\..\qt2\status.h
 InputName=status
 
-"$(InputDir)\qt2\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt2\moc_$(InputName).cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -228,7 +228,7 @@ SOURCE=..\..\statusimpl.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\musclecopy
+InputDir=\build\unizone\trunk\musclecopy
 InputPath=..\..\statusimpl.h
 InputName=statusimpl
 
@@ -241,7 +241,7 @@ InputName=statusimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\musclecopy
+InputDir=\build\unizone\trunk\musclecopy
 InputPath=..\..\statusimpl.h
 InputName=statusimpl
 
@@ -277,19 +277,19 @@ SOURCE=..\..\status.ui
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\musclecopy
+InputDir=\build\unizone\trunk\musclecopy
 InputPath=..\..\status.ui
 InputName=status
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\qt2\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt2\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt2\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt2\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -297,19 +297,19 @@ BuildCmds= \
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\musclecopy
+InputDir=\build\unizone\trunk\musclecopy
 InputPath=..\..\status.ui
 InputName=status
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\qt2\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt2\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt2\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt2\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
