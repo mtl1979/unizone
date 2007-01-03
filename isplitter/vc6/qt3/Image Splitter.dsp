@@ -274,14 +274,14 @@ InputPath=..\..\src\mainwindow.ui
 InputName=mainwindow
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\qt3\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\qt3\$(InputName).cpp \
 	
 
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\qt3\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
