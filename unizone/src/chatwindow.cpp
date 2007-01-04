@@ -283,13 +283,30 @@ void
 ChatWindow::beep()
 {
 	QString fn = Settings()->GetSoundFile();
-	if (QSound::available() && !fn.isEmpty())
-	{
-		if (WFile::Exists(fn))
+#ifdef _DEBUG
+        WString wfn(fn);
+	PRINT("Sound file: %S\n", wfn.getBuffer());
+#endif
+	if (QSound::available()) 
+        {
+		PRINT("Sound available\n");
+           	if (!fn.isEmpty())
 		{
-			QSound::play(fn);
-			return;
+			if (WFile::Exists(fn))
+			{
+				PRINT("Sound file exists.\n");
+				QSound::play(fn);
+				return;
+			}
+			else
+			{
+				PRINT("Sound file doesn't exist!\n");
+			}
 		}
+	}
+	else
+	{
+		PRINT("Sound services not available!\n");
 	}
 	QApplication::beep();
 }

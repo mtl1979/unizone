@@ -175,7 +175,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 		{
 #ifdef _DEBUG
 			WString wres(qres);
-			PRINT("Found multiple matches %S\n", qres);
+			PRINT("Found multiple matches %S\n", wres.getBuffer());
 #endif
 
 			backupMatchString = qres;		// found several matches; keep trying for a single

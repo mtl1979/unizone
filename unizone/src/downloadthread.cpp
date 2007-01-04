@@ -808,7 +808,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 		comID()->AddString("beshare:FromUserName", (const char *) gWin->GetUserName().utf8());
 		comID()->AddString("beshare:FromSession", (const char *) gWin->GetUserID().utf8());
 		comID()->AddBool("unishare:supports_compression", true);
-		comID()->AddInt32("unishare:preferred_packet_size", lrint(gWin->fSettings->GetPacketSize() * 1024.0));
+		comID()->AddInt32("unishare:preferred_packet_size", lrint((gWin->fSettings->GetPacketSize() * 1024.0)));
 		SendMessageToSessions(comID);
 	}
 					

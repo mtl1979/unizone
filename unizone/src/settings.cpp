@@ -1,13 +1,16 @@
 #include <qapplication.h>
 #include <qfile.h>
 #include <qmessagebox.h>
+#include <fcntl.h>
 
 #include "settings.h"
 #include "colors.h"
 #include "global.h"
 #include "wfile.h"
+#include "wstring.h"
 #include "util.h"
 #include "iogateway/MessageIOGateway.h"
+#include "debugimpl.h"
 
 const char * SettingsFile; // name of settings file, default depends on host os
 
@@ -446,7 +449,17 @@ WSettings::Load()
 {
 	bool ret = false;
 	WFile file;
-	if (file.Open(GetSettingsFile(), IO_Raw | IO_ReadOnly))
+	WString wf(GetSettingsFile());
+#ifdef _DEBUG
+	PRINT("Settings file: %S\n", wf.getBuffer());
+#endif
+	if (file.Open(wf, 
+#ifdef WIN32
+		O_RDONLY | O_BINARY
+#else
+		O_RDONLY
+#endif
+		))
 	{
 		ByteBufferRef buffer = GetByteBufferFromPool();
 		if (buffer()->SetNumBytes((uint32) file.Size(), false) == B_NO_ERROR)
@@ -464,6 +477,10 @@ WSettings::Load()
 		}
 		file.Close();
 	}
+	else
+	{
+		PRINT("Failed opening settings file.\n");
+	}
 	return ret;
 }
 
@@ -471,8 +488,18 @@ bool
 WSettings::Save()
 {
 	bool ret = false;;
+	WString wf(GetSettingsFile());
+#ifdef _DEBUG
+	PRINT("Settings file: %S\n", wf.getBuffer());
+#endif
 	WFile file;
-	if (file.Open(GetSettingsFile(), IO_Raw | IO_WriteOnly))
+	if (file.Open(wf, 
+#ifdef WIN32
+		O_WRONLY | O_CREAT | O_BINARY
+#else
+		O_WRONLY | O_CREAT
+#endif
+		))
 	{
 		uint32 s = fSet()->FlattenedSize();
 		uint8 * buffer = new uint8[s];

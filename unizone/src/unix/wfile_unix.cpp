@@ -24,7 +24,7 @@ WFile::Open(const WString &name, int mode)
 #ifdef __APPLE__
 		file = open((const char *) name, mode, (mode & O_CREAT) ? S_IRUSR | S_IWUSR : 0);
 #else
-		file = open64((const char *) name, mode);
+		file = open64((const char *) name, mode, (mode & O_CREAT) ? S_IRUSR | S_IWUSR : 0);
 #endif
 	return (file != -1);
 }
