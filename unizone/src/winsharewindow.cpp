@@ -1240,7 +1240,6 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				clauses.RemoveItemAt(j);
 			}
 		}
-
 		PRINT("Checking using tab stuff\n");
 		// still no items?
 		if (sendTo.IsEmpty())
@@ -1252,7 +1251,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				WUserRef user;
 				iter.GetNextValue(user);
 				QString uName = user()->GetUserName();
-				QString userName = StripURL(uName.stripWhiteSpace());
+				QString userName = StripURL(uName.stripWhiteSpace()) + " ";
 
 				if (!userName.isEmpty() && startsWith(restOfString2, userName))
 				{
