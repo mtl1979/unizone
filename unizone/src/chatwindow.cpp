@@ -284,13 +284,13 @@ ChatWindow::beep()
 {
 	QString fn = Settings()->GetSoundFile();
 #ifdef _DEBUG
-        WString wfn(fn);
+	WString wfn(fn);
 	PRINT("Sound file: %S\n", wfn.getBuffer());
 #endif
 	if (QSound::available()) 
-        {
+    {
 		PRINT("Sound available\n");
-           	if (!fn.isEmpty())
+       	if (!fn.isEmpty())
 		{
 			if (WFile::Exists(fn))
 			{
