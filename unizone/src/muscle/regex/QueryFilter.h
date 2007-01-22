@@ -584,8 +584,6 @@ public:
    };
 
 private:
-   const uint8 * Memmem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * lookFor, uint32 numLookForBytes) const;
-
    ByteBufferRef _value;
    uint8 _op;
    uint32 _typeCode;

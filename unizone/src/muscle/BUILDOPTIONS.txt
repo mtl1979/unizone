@@ -26,6 +26,9 @@ of your Makefile to alter muscle's behaviour:
 -DMUSCLE_AVOID_ASSERTIONS 
    makes MASSERT statements into no-ops
 
+-DMUSCLE_AVOID_INLINE_ASSEMBLY
+   tells muscle to use boring old C/C++ code and avoid using any clever assembly-language code
+
 -DMUSCLE_ENABLE_ZLIB_ENCODING 
    enables support for zlib compression of Messages
 

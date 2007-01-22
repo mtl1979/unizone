@@ -220,6 +220,17 @@ String DenybbleizeString(const String & nybStr);
   */
 String Inet_NtoA(uint32 ipAddress);
 
+/** This function is like strstr(), except that instead of searching for a substring
+  * within a string, it looks for a given binary pattern inside a binary buffer.
+  * @param lookIn The buffer to look for the sub-region inside
+  * @param numLookInBytes The number of bytes pointed to by (lookIn)
+  * @param lookFor The byte pattern to look for inside of (lookin)
+  * @param numLookForBytes The number of bytes pointed to by (lookFor) 
+  * @returns A pointer to the first instance of (lookFor) found inside of (lookIn), or NULL
+  *          if no such pattern was found inside of (lookIn).
+  */
+const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * lookFor, uint32 numLookForBytes);
+
 END_NAMESPACE(muscle);
 
 #endif

@@ -516,4 +516,18 @@ static uint32 _customLocalhostIP = 0;  // disabled by default
 void SetLocalHostIPOverride(uint32 ip) {_customLocalhostIP = ip;}
 uint32 GetLocalHostIPOverride() {return _customLocalhostIP;}
 
+/** These compare functions are useful for passing into Hashtables or Queues to keep them sorted */
+int IntCompareFunc(   const int    & i1, const int    & i2, void *) {return muscleCompare(i1, i2);}
+int Int8CompareFunc(  const int8   & i1, const int8   & i2, void *) {return muscleCompare(i1, i2);}
+int Int16CompareFunc( const int16  & i1, const int16  & i2, void *) {return muscleCompare(i1, i2);}
+int Int32CompareFunc( const int32  & i1, const int32  & i2, void *) {return muscleCompare(i1, i2);}
+int Int64CompareFunc( const int64  & i1, const int64  & i2, void *) {return muscleCompare(i1, i2);}
+int UIntCompareFunc(  const unsigned int & i1, const unsigned int & i2, void *) {return muscleCompare(i1, i2);}
+int UInt8CompareFunc( const uint8  & i1, const uint8  & i2, void *) {return muscleCompare(i1, i2);}
+int UInt16CompareFunc(const uint16 & i1, const uint16 & i2, void *) {return muscleCompare(i1, i2);}
+int UInt32CompareFunc(const uint32 & i1, const uint32 & i2, void *) {return muscleCompare(i1, i2);}
+int UInt64CompareFunc(const uint64 & i1, const uint64 & i2, void *) {return muscleCompare(i1, i2);}
+int FloatCompareFunc( const float  & i1, const float  & i2, void *) {return muscleCompare(i1, i2);}
+int DoubleCompareFunc(const double & i1, const double & i2, void *) {return muscleCompare(i1, i2);}
+
 END_NAMESPACE(muscle);

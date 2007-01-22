@@ -654,4 +654,25 @@ String Inet_NtoA(uint32 ipAddress)
    return String(buf);
 }
 
+const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * lookFor, uint32 numLookForBytes)
+{
+        if (numLookForBytes == 0)              return lookIn;  // hmm, existential questions here
+   else if (numLookForBytes == numLookInBytes) return (const uint8 *)memcmp(lookIn, lookFor, numLookInBytes);
+   else if (numLookForBytes < numLookInBytes)
+   {
+      const uint8 * startedAt = lookIn;
+      uint32 matchCount = 0;
+      for (uint32 i=0; i<numLookInBytes; i++)
+      {
+         if (lookIn[i] == lookFor[matchCount])
+         {
+            if (matchCount == 0) startedAt = &lookIn[i];
+            if (++matchCount == numLookForBytes) return startedAt;
+         }
+         else matchCount = 0;
+      }
+   }
+   return NULL;
+}
+
 END_NAMESPACE(muscle);

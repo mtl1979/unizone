@@ -398,7 +398,7 @@ void ThreadWorkerSession :: AboutToDetachFromServer()
 int32 ThreadWorkerSession :: DoOutput(uint32 maxBytes)
 {
    int32 ret = StorageReflectSession::DoOutput(maxBytes);
-   if (_drainedNotifiers.GetNumItems() > 0)
+   if (_drainedNotifiers.HasItems())
    {
       AbstractMessageIOGateway * gw = GetGateway();
       if ((gw == NULL)||(gw->HasBytesToOutput() == false)) _drainedNotifiers.Clear();
@@ -424,12 +424,24 @@ void ThreadWorkerSession :: MessageReceivedFromSession(AbstractReflectSession & 
          {
             case MTT_COMMAND_NOTIFY_ON_OUTPUT_DRAIN:
             {
-               // If we have any messages pending, we'll save this message reference until our
-               // outgoing message queue becomes empty.  That way the DrainTag item held by the 
-               // referenced message won't be deleted until the appropriate time, and hence
-               // the supervisor won't be notified until all the specified queues have drained.
-               AbstractMessageIOGateway * gw = GetGateway();
-               if ((gw)&&(gw->HasBytesToOutput())) _drainedNotifiers.AddTail(msgRef);
+               GenericRef genericRef;
+               if (msg->FindTag(MTT_NAME_DRAIN_TAG, genericRef) == B_NO_ERROR)
+               {
+                  DrainTagRef drainTagRef(genericRef, true);
+                  if (drainTagRef())
+                  {
+                     // Add our session ID so that the supervisor session will know we received the drain tag
+                     Message * rmsg = drainTagRef()->GetReplyMessage()();
+                     if (rmsg) rmsg->AddString(MTT_NAME_FROMSESSION, GetSessionRootPath());
+
+                     // If we have any messages pending, we'll save this message reference until our
+                     // outgoing message queue becomes empty.  That way the DrainTag item held by the 
+                     // referenced message won't be deleted until the appropriate time, and hence
+                     // the supervisor won't be notified until all the specified queues have drained.
+                     AbstractMessageIOGateway * gw = GetGateway();
+                     if ((gw)&&(gw->HasBytesToOutput())) _drainedNotifiers.AddTail(drainTagRef);
+                  }
+               }
             }
             break;
 
@@ -563,94 +575,105 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
    const Message * msg = msgRef();
    if (msg)
    {
-      switch(msg->what)
+      if (muscleInRange(msg->what, (uint32) MTT_COMMAND_SEND_USER_MESSAGE, (uint32) (MTT_LAST_COMMAND-1)))
       {
-         case MTT_COMMAND_SEND_USER_MESSAGE:
-            DistributeMessageToWorkers(msgRef);
-         break;
-
-         case MTT_COMMAND_NOTIFY_ON_OUTPUT_DRAIN:
+         switch(msg->what)
          {
-            GenericRef genericRef;
-            if (msg->FindTag(MTT_NAME_DRAIN_TAG, genericRef) == B_NO_ERROR)
+            case MTT_COMMAND_ADD_NEW_SESSION:
             {
-               DrainTagRef drainTagRef(genericRef, true);
-               if ((drainTagRef())&&(_drainTags.Put(drainTagRef(), true) == B_NO_ERROR))
+               GenericRef tagRef;
+               if (msg->FindTag(MTT_NAME_SESSION, tagRef) == B_NO_ERROR)
                {
-                  drainTagRef()->SetNotify(this);
-                  DistributeMessageToWorkers(msgRef);
-               }
-            }
-         }
-         break;
-
-         case MTT_COMMAND_ADD_NEW_SESSION:
-         {
-            GenericRef tagRef;
-            if (msg->FindTag(MTT_NAME_SESSION, tagRef) == B_NO_ERROR)
-            {
-               AbstractReflectSessionRef sessionRef(tagRef, true);
-               if (sessionRef())
-               {
-                  const char * hostName;
-                  uint32 hostIP;
-                  uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, (int16*) &port);
-                  bool expandLocalhost = false; (void) msg->FindBool(MTT_NAME_EXPANDLOCALHOST, &expandLocalhost);
-
-                  GenericRef genericRef;
-                  if (msg->FindTag(MTT_NAME_SOCKET, genericRef) == B_NO_ERROR)
+                  AbstractReflectSessionRef sessionRef(tagRef, true);
+                  if (sessionRef())
                   {
-                     SocketHolderRef socketRef(genericRef, true);
-                     if (socketRef())
+                     const char * hostName;
+                     uint32 hostIP;
+                     uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, (int16*) &port);
+                     bool expandLocalhost = false; (void) msg->FindBool(MTT_NAME_EXPANDLOCALHOST, &expandLocalhost);
+
+                     GenericRef genericRef;
+                     if (msg->FindTag(MTT_NAME_SOCKET, genericRef) == B_NO_ERROR)
                      {
-                        int fd = socketRef()->ReleaseSocket();
-                        if (AddNewSession(sessionRef, fd) != B_NO_ERROR) CloseSocket(fd);
+                        SocketHolderRef socketRef(genericRef, true);
+                        if (socketRef())
+                        {
+                           int fd = socketRef()->ReleaseSocket();
+                           if (AddNewSession(sessionRef, fd) != B_NO_ERROR) CloseSocket(fd);
+                        }
+                        else LogTime(MUSCLE_LOG_ERROR, "ThreadSupervisorSession: Couldn't get SocketHolder!\n");
                      }
-                     else LogTime(MUSCLE_LOG_ERROR, "ThreadSupervisorSession: Couldn't get SocketHolder!\n");
+                     else if (msg->FindInt32(MTT_NAME_IP_ADDRESS, (int32*)&hostIP)  == B_NO_ERROR) (void) AddNewWorkerConnectSession(sessionRef, hostIP, port);
+                     else if (msg->FindString(MTT_NAME_HOSTNAME, &hostName)         == B_NO_ERROR) (void) AddNewWorkerConnectSession(sessionRef, GetHostByName(hostName, expandLocalhost), port);
                   }
-                  else if (msg->FindInt32(MTT_NAME_IP_ADDRESS, (int32*)&hostIP)  == B_NO_ERROR) (void) AddNewWorkerConnectSession(sessionRef, hostIP, port);
-                  else if (msg->FindString(MTT_NAME_HOSTNAME, &hostName)         == B_NO_ERROR) (void) AddNewWorkerConnectSession(sessionRef, GetHostByName(hostName, expandLocalhost), port);
+                  else LogTime(MUSCLE_LOG_ERROR, "ThreadSupervisorSession:  Couldn't get Session!\n");
                }
-               else LogTime(MUSCLE_LOG_ERROR, "ThreadSupervisorSession:  Couldn't get Session!\n");
             }
-         }
-         break;
+            break;
 
-         case MTT_COMMAND_PUT_ACCEPT_FACTORY:
-         {
-            GenericRef tagRef;
-            if (msg->FindTag(MTT_NAME_FACTORY, tagRef) == B_NO_ERROR)
+            case MTT_COMMAND_PUT_ACCEPT_FACTORY:
             {
-               ReflectSessionFactoryRef factoryRef(tagRef, true);
-               if (factoryRef())
+               GenericRef tagRef;
+               if (msg->FindTag(MTT_NAME_FACTORY, tagRef) == B_NO_ERROR)
                {
-                  uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, (int16*)&port);
-                  (void) PutAcceptFactory(port, factoryRef);
+                  ReflectSessionFactoryRef factoryRef(tagRef, true);
+                  if (factoryRef())
+                  {
+                     uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, (int16*)&port);
+                     (void) PutAcceptFactory(port, factoryRef);
+                  }
+                  else LogTime(MUSCLE_LOG_ERROR, "ThreadSupervisorSession:  Couldn't get ReflectSessionFactory!\n");
                }
-               else LogTime(MUSCLE_LOG_ERROR, "ThreadSupervisorSession:  Couldn't get ReflectSessionFactory!\n");
             }
-         }
-         break;
+            break;
 
-         case MTT_COMMAND_REMOVE_ACCEPT_FACTORY:
-         {
-            uint16 port = 0; 
-            if (msg->FindInt16(MTT_NAME_PORT, (int16*)&port) == B_NO_ERROR) (void) RemoveAcceptFactory(port);
-         }
-         break;
+            case MTT_COMMAND_REMOVE_ACCEPT_FACTORY:
+            {
+               uint16 port = 0; 
+               if (msg->FindInt16(MTT_NAME_PORT, (int16*)&port) == B_NO_ERROR) (void) RemoveAcceptFactory(port);
+            }
+            break;
 
-         case MTT_COMMAND_SET_DEFAULT_PATH:
-         {
-            String dpath;
-            (void) msg->FindString(MTT_NAME_PATH, dpath);
-            SetDefaultDistributionPath(dpath);
-         }
-         break;
+            case MTT_COMMAND_SET_DEFAULT_PATH:
+            {
+               String dpath;
+               (void) msg->FindString(MTT_NAME_PATH, dpath);
+               SetDefaultDistributionPath(dpath);
+            }
+            break;
 
-         default:
-            StorageReflectSession::MessageReceivedFromGateway(msgRef, NULL);
-         break;
-      }
+            case MTT_COMMAND_NOTIFY_ON_OUTPUT_DRAIN:
+            {
+               GenericRef genericRef;
+               if (msg->FindTag(MTT_NAME_DRAIN_TAG, genericRef) == B_NO_ERROR)
+               {
+                  DrainTagRef drainTagRef(genericRef, true);
+                  if ((drainTagRef())&&(_drainTags.Put(drainTagRef(), true) == B_NO_ERROR))
+                  {
+                     drainTagRef()->SetNotify(this);
+                     DistributeMessageToWorkers(msgRef);
+
+                     // Check the tag to see if anyone got it.  If not, we'll add the
+                     // PR_NAME_KEY string to the reply field, to give the user thread
+                     // a hint about which handler the reply should be directed back to.
+                     Message * rmsg = drainTagRef()->GetReplyMessage()();
+                     if ((rmsg)&&(rmsg->HasName(MTT_NAME_FROMSESSION) == false))
+                     {
+                        String t;
+                        if (msg->FindString(MTT_NAME_PATH, t) == B_NO_ERROR) (void) rmsg->AddString(MTT_NAME_FROMSESSION, t);
+                     }
+                  }
+               }
+            }
+            break;
+
+            default:
+               DistributeMessageToWorkers(msgRef);
+            break;
+         }
+      } 
+      else StorageReflectSession::MessageReceivedFromGateway(msgRef, NULL);
+
       return B_NO_ERROR;
    }
    else return B_ERROR;

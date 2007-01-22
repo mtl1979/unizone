@@ -485,7 +485,7 @@ status_t FinalizeAsyncConnect(int sock)
 
    if (sock < 0) return B_ERROR;
 
-#ifdef BEOS_OLD_NETSERVER
+#if defined(BEOS_OLD_NETSERVER)
    // net_server and BONE behave COMPLETELY differently as far as finalizing async connects
    // go... so we have to do this horrible hack where we figure out whether we're in a 
    // true net_server or BONE environment at runtime.  Pretend you didn't see any of this, 
@@ -504,11 +504,18 @@ status_t FinalizeAsyncConnect(int sock)
       memset(&junk, 0, sizeof(junk));
       return (connect(sock, (struct sockaddr *) &junk, sizeof(junk)) == 0) ? B_NO_ERROR : B_ERROR;
    }
-#endif
-
+#elif defined(BSD)
+   // Nathan Whitehorn reports that send() doesn't do this trick under FreeBSD 7,
+   // so for BSD we'll call getpeername() instead.  -- jaf
+   struct sockaddr_in junk;
+   socklen_t length = sizeof(junk);
+   memset(&junk, 0, sizeof(junk));
+   return (getpeername(sock, (struct sockaddr *)&junk, &length) == 0) ? B_NO_ERROR : B_ERROR;
+#else
    // For most platforms (including BONE), the code below is all we need
    char junk;
    return (send(sock, &junk, 0, 0L) == 0) ? B_NO_ERROR : B_ERROR;
+#endif
 }
 
 status_t SetSocketSendBufferSize(int sock, uint32 sendBufferSizeBytes)

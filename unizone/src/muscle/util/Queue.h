@@ -18,10 +18,13 @@ BEGIN_NAMESPACE(muscle);
 template <class ItemType> class Queue
 {
 public:
+   /** Default constructor.  */
+   Queue();
+
    /** Constructor.
     *  @param initialSlots Specifies how many slots to pre-allocate.  Defaults to (SMALL_QUEUE_SIZE).
     */
-   Queue(uint32 initialSlots = SMALL_QUEUE_SIZE);
+   explicit Queue(uint32 initialSlots);
 
    /** Copy constructor. */
    Queue(const Queue& copyMe);
@@ -362,6 +365,13 @@ private:
    uint32 _tailIndex;  // index of the last filled slot (meaningless if _itemCount is zero)
    const uint32 _initialSize;  // as specified in ctor
 };
+
+template <class ItemType>
+Queue<ItemType>::Queue()
+   : _queue(NULL), _queueSize(0), _itemCount(0), _initialSize(SMALL_QUEUE_SIZE)
+{
+   // empty
+}
 
 template <class ItemType>
 Queue<ItemType>::Queue(uint32 initialSize)

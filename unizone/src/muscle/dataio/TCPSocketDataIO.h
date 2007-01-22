@@ -52,7 +52,7 @@ public:
    virtual int64 GetPosition() const {return -1;}
 
    /**
-    * Stall limit for TCP streams is 20*60*1000000 microseconds (20 minutes) by default.
+    * Stall limit for TCP streams is 3*60*1000000 microseconds (3 minutes) by default.
     * Or change it by calling SetOutputStallLimit().
     */
    virtual uint64 GetOutputStallLimit() const {return _stallLimit;}

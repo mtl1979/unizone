@@ -4,9 +4,9 @@
 
 BEGIN_NAMESPACE(muscle);
 
-PulseNode :: PulseNode() : _parent(NULL), _nextPulseAtValid(false), _nextPulseAt(MUSCLE_TIME_NEVER), _localPulseAtValid(false), _localPulseAt(MUSCLE_TIME_NEVER), _cycleStartedAt(0), _maxTimeSlice(MUSCLE_TIME_NEVER), _timeSlicingSuggested(false)
+PulseNode :: PulseNode() : _parent(NULL), _aggregatePulseTime(MUSCLE_TIME_NEVER), _myScheduledTime(MUSCLE_TIME_NEVER), _cycleStartedAt(0), _myScheduledTimeValid(false), _curList(-1), _prevSibling(NULL), _nextSibling(NULL), _maxTimeSlice(MUSCLE_TIME_NEVER), _timeSlicingSuggested(false)
 {
-   // empty
+   for (uint32 i=0; i<NUM_LINKED_LISTS; i++) _firstChild[i] = _lastChild[i] = NULL;
 }
 
 PulseNode :: ~PulseNode() 
@@ -26,110 +26,74 @@ void PulseNode ::Pulse(uint64, uint64)
    // empty
 }
 
-void PulseNode :: InvalidateGroupPulseTime()
-{
-   if (_nextPulseAtValid)
-   {
-      _nextPulseAtValid = false;
-      if (_parent) 
-      {
-         TCHECKPOINT;
-         _parent->InvalidateGroupPulseTime(); // tell our parent one of his kids has changed
-      }
-   }
-}
-
 void PulseNode :: InvalidatePulseTime(bool clearPrevResult)
 {
-   if (_localPulseAtValid) 
+   if (_myScheduledTimeValid)
    {
-      TCHECKPOINT;
-      _localPulseAtValid = false;
-      if (clearPrevResult) _localPulseAt = MUSCLE_TIME_NEVER;
-      InvalidateGroupPulseTime();
+      _myScheduledTimeValid = false;
+      if (clearPrevResult) _myScheduledTime = MUSCLE_TIME_NEVER;
+      if (_parent) _parent->ReschedulePulseChild(this, LINKED_LIST_NEEDSRECALC);
    }
 }
 
-void PulseNode :: GetPulseTimeAux(uint64 now, uint64 & minPulseTime)
+void PulseNode :: GetPulseTimeAux(uint64 now, uint64 & min)
 {
-   TCHECKPOINT;
-
-   if (_localPulseAtValid == false)
+   // First, update myself, if necessary...
+   if (_myScheduledTimeValid == false) 
    {
-      _localPulseAt = GetPulseTime(now, _localPulseAt);
-      _localPulseAtValid = true;
+      _myScheduledTimeValid = true;
+      _myScheduledTime = GetPulseTime(now, _myScheduledTime);
    }
-   if (_nextPulseAtValid == false)
-   {
-      _nextPulseAt = _localPulseAt;
-      if (_children.GetNumItems() > 0)
-      {
-         TCHECKPOINT;
 
-         HashtableIterator<PulseNode *, bool> iter(_children);
-         PulseNode * nextKey=NULL;  // shut the compiler up
-         while(iter.GetNextKey(nextKey) == B_NO_ERROR) 
-         {
-            TCHECKPOINT;
-            nextKey->GetPulseTimeAux(now, _nextPulseAt);
-            TCHECKPOINT;
-         }
+   // Then handle any of my kids who need to be recalculated also
+   PulseNode * & firstNeedy = _firstChild[LINKED_LIST_NEEDSRECALC];
+   if (firstNeedy) while(firstNeedy) firstNeedy->GetPulseTimeAux(now, min);  // guaranteed to move (firstNeedy) out of the recalc list!
 
-         TCHECKPOINT;
-      }
-      _nextPulseAtValid = true;
-   }
-   if (minPulseTime > _nextPulseAt) minPulseTime = _nextPulseAt;
+   // Recalculate our effective pulse time
+   uint64 oldAggregatePulseTime = _aggregatePulseTime;
+   _aggregatePulseTime = muscleMin(_myScheduledTime, GetFirstScheduledChildTime());
+   if ((_parent)&&((_curList == LINKED_LIST_NEEDSRECALC)||(_aggregatePulseTime != oldAggregatePulseTime))) _parent->ReschedulePulseChild(this, (_aggregatePulseTime==MUSCLE_TIME_NEVER)?LINKED_LIST_UNSCHEDULED:LINKED_LIST_SCHEDULED);
 
-   TCHECKPOINT;
+   // Update the caller's minimum time value
+   if (_aggregatePulseTime < min) min = _aggregatePulseTime;
 }
 
 void PulseNode :: PulseAux(uint64 now)
 {
-   TCHECKPOINT;
-
-   if (now >= _nextPulseAt)
+   if ((_myScheduledTimeValid)&&(now >= _myScheduledTime)) 
    {
-      if (now >= _localPulseAt)
-      {
-         TCHECKPOINT;
-         Pulse(now, _localPulseAt);
-         TCHECKPOINT;
-         InvalidatePulseTime(false);
-         TCHECKPOINT;
-      }
-      if (_children.GetNumItems() > 0)
-      {
-         TCHECKPOINT;
-         HashtableIterator<PulseNode *, bool> iter(_children);
-         PulseNode * nextKey=NULL;  // shut the compiler up
-         while(iter.GetNextKey(nextKey) == B_NO_ERROR) 
-         {
-            TCHECKPOINT;
-            nextKey->PulseAux(now);
-            TCHECKPOINT;
-         }
-      }
+      Pulse(now, _myScheduledTime);
+      _myScheduledTimeValid = false;
    }
 
-   TCHECKPOINT;
+   PulseNode * p = _firstChild[LINKED_LIST_SCHEDULED];
+   while((p)&&(now >= p->_aggregatePulseTime))
+   {
+      p->PulseAux(now);  // guaranteed to move (p) to our NEEDSRECALC list
+      p = _firstChild[LINKED_LIST_SCHEDULED];  // and move on to the next scheduled child
+   }
+
+   // Make sure we get recalculated no matter what (because we know something happened)
+   if (_parent) _parent->ReschedulePulseChild(this, LINKED_LIST_NEEDSRECALC);
 }
 
 status_t PulseNode :: PutPulseChild(PulseNode * child)
 {
-   MASSERT((child->_parent == NULL), "PulseNode::PutPulseChild(): new child already has a parent!\n");
-   if (_children.Put(child, true) != B_NO_ERROR) return B_ERROR;
-   InvalidateGroupPulseTime();  // new child may change our timing!
+   if (child->_parent) child->_parent->RemovePulseChild(child);
    child->_parent = this;
+   ReschedulePulseChild(child, LINKED_LIST_NEEDSRECALC);
    return B_NO_ERROR;
 }
 
 status_t PulseNode :: RemovePulseChild(PulseNode * child)
 {
-   if (_children.Remove(child) == B_NO_ERROR)
+   if (child->_parent == this)
    {
-      InvalidateGroupPulseTime();  // lack of a child may change our timing!
+      bool doResched = (child == _firstChild[LINKED_LIST_SCHEDULED]);
+      ReschedulePulseChild(child, -1);
       child->_parent = NULL;
+      child->_myScheduledTimeValid = false;
+      if ((doResched)&&(_parent)) _parent->ReschedulePulseChild(this, LINKED_LIST_NEEDSRECALC);
       return B_NO_ERROR;
    }
    else return B_ERROR;
@@ -137,13 +101,72 @@ status_t PulseNode :: RemovePulseChild(PulseNode * child)
 
 void PulseNode :: ClearPulseChildren()
 {
-   if (_children.GetNumItems() > 0) 
+   for (uint32 i=0; i<NUM_LINKED_LISTS; i++) while(_firstChild[i]) (void) RemovePulseChild(_firstChild[i]);
+}
+
+void PulseNode :: ReschedulePulseChild(PulseNode * child, int whichList)
+{
+   int cl = child->_curList;
+   if ((whichList != cl)||(cl == LINKED_LIST_SCHEDULED))  // since we may need to move within the scheduled list
    {
-      InvalidateGroupPulseTime();  // lack of children may change our timing!
-      HashtableIterator<PulseNode *, bool> iter(_children);
-      PulseNode * next;
-      while(iter.GetNextKey(next) == B_NO_ERROR) next->_parent = NULL;  // don't delete the kids!
-      _children.Clear();
+      // First, remove the child from any list he may currently be in
+      if (cl >= 0)
+      {
+         if (child->_prevSibling) child->_prevSibling->_nextSibling = child->_nextSibling;
+         if (child->_nextSibling) child->_nextSibling->_prevSibling = child->_prevSibling;
+         if (child == _firstChild[cl]) _firstChild[cl] = child->_nextSibling;
+         if (child == _lastChild[cl])  _lastChild[cl]  = child->_prevSibling;
+         child->_prevSibling = child->_nextSibling = NULL;
+      }
+
+      child->_curList = whichList;
+      switch(whichList)
+      {
+         case LINKED_LIST_SCHEDULED:
+         {
+            PulseNode * p = _firstChild[whichList];
+            if (p)
+            {
+               if (child->_aggregatePulseTime >= _lastChild[whichList]->_aggregatePulseTime)
+               {
+                  // Shortcut:  append to the tail of the list!
+                  child->_prevSibling = _lastChild[whichList];
+                  _lastChild[whichList]->_nextSibling = child;
+                  _lastChild[whichList] = child;
+               }
+               else
+               {
+                  // Worst case:  O(N) walk through the list to find the place to insert (child)
+                  while(p->_aggregatePulseTime < child->_aggregatePulseTime) p = p->_nextSibling;
+
+                  // insert (child) just before (p)
+                  child->_nextSibling = p;
+                  child->_prevSibling = p->_prevSibling;
+                  if (p->_prevSibling) p->_prevSibling->_nextSibling = child;
+                  p->_prevSibling = child;
+               }
+            }
+            else _firstChild[whichList] = _lastChild[whichList] = child;
+         }
+         break;
+
+         case LINKED_LIST_UNSCHEDULED: case LINKED_LIST_NEEDSRECALC:
+         {
+            // These lists are unsorted, so we can just quickly append the child to the head of the list
+            if (_firstChild[whichList])
+            {
+               child->_nextSibling = _firstChild[whichList];
+               _firstChild[whichList]->_prevSibling = child;
+               _firstChild[whichList] = child;
+            }
+            else _firstChild[whichList] = _lastChild[whichList] = child;
+         }
+         break;
+
+         default:
+            // do nothing
+         break;
+      }
    }
 }
 

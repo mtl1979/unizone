@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "3.24"
+#define MUSCLE_VERSION_STRING "3.30"
 
 #include <string.h>  /* for memcpy() */
 
@@ -26,16 +26,15 @@
 #endif
 
 /* If we are in an environment where known assembly is available, make a note of that fact */
-#if defined(__GNUC__)
-# if defined(__i386__)
-#  define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
-# elif (defined(__PPC__) || defined(__APPLE__))
-#  define MUSCLE_USE_POWERPC_INLINE_ASSEMBLY 1
+#ifndef MUSCLE_AVOID_INLINE_ASSEMBLY
+# if defined(__GNUC__)
+#  if defined(__i386__)
+#   define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
+#  elif defined(__PPC__) || defined(__POWERPC__)
+#   define MUSCLE_USE_POWERPC_INLINE_ASSEMBLY 1
+#  endif
 # endif
-#endif
-
-#if defined(_MSC_VER) 
-# if defined(_M_IX86)
+# if defined(_MSC_VER) && defined(_X86_)
 #  define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
 # endif
 #endif
@@ -79,12 +78,15 @@ DECLARE_NAMESPACE(muscle);
 # endif
 #endif
 
-/* VC++ can't handle this stuff, it's too lame */
+/* Win32 can't handle this stuff, it's too lame */
 #ifdef WIN32
+# define SELECT_ON_FILE_DESCRIPTORS_NOT_AVAILABLE
 # define UNISTD_H_NOT_AVAILABLE
 # ifndef _MSC_VER  /* 7/3/2006: Mika's patch allows VC++ to use newnothrow */
 #  define NEW_H_NOT_AVAILABLE
 # endif
+#elif __BEOS__
+# define SELECT_ON_FILE_DESCRIPTORS_NOT_AVAILABLE
 #endif
 
 #ifndef UNISTD_H_NOT_AVAILABLE
@@ -264,11 +266,13 @@ enum {
 /** A handy little method to swap the bytes of any int-style datatype around */
 template<typename T> inline T muscleSwapBytes(T swapMe)
 {
-   T retVal;
-   const uint8 * readFrom = (const uint8 *) &swapMe;
-   uint8 * writeTo  = ((uint8 *) &retVal)+sizeof(retVal);
-   for (uint32 i=0; i<sizeof(swapMe); i++) {*(--writeTo) = *(readFrom++);}
-   return retVal;
+   union {T _iWide; uint8 _i8[sizeof(T)];} u1, u2;
+   u1._iWide = swapMe; 
+
+   int i = 0;
+   int numBytes = sizeof(T);
+   while(numBytes>0) u2._i8[i++] = u1._i8[--numBytes];
+   return u2._iWide;
 }
 
 /* This template safely copies a value in from an untyped byte buffer to a typed value.
@@ -447,6 +451,46 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
 
 /* End replacement code from Sun/University of California */
 
+/***********************************************************************************************
+ * FLOAT_TROUBLE COMMENT
+ *
+ * NOTE: The *_FLOAT_* macros listed below are obsolete and must no longer be used, because
+ * they are inherently unsafe.  The reason is that on certain processors (read x86), the
+ * byte-swapped representation of certain floating point and double values can end up
+ * representing an invalid value (NaN)... in which case the x86 FPU feels free to munge
+ * some of the bits into a "standard NaN" bit-pattern... causing silent data corruption
+ * when the value is later swapped back into its native form and again interpreted as a
+ * float or double value.  Instead, you need to change your code to use the *_IFLOAT_*
+ * macros, which work similarly except that the externalized value is safely stored as 
+ * a int32 (for floats) or a int64 (for doubles).  --Jeremy 1/8/2007
+ **********************************************************************************************/
+
+#define B_HOST_TO_BENDIAN_FLOAT(arg) B_HOST_TO_BENDIAN_FLOAT_was_removed_use_B_HOST_TO_BENDIAN_IFLOAT_instead___See_the_FLOAT_TROUBLE_comment_in_support_MuscleSupport_h_for_details_
+#define B_HOST_TO_LENDIAN_FLOAT(arg) B_HOST_TO_LENDIAN_FLOAT_was_removed_use_B_HOST_TO_LENDIAN_IFLOAT_instead___See_the_FLOAT_TROUBLE_comment_in_support_MuscleSupport_h_for_details_
+#define B_BENDIAN_TO_HOST_FLOAT(arg) B_BENDIAN_TO_HOST_FLOAT_was_removed_use_B_BENDIAN_TO_HOST_IFLOAT_instead___See_the_FLOAT_TROUBLE_comment_in_support_MuscleSupport_h_for_details_
+#define B_LENDIAN_TO_HOST_FLOAT(arg) B_LENDIAN_TO_HOST_FLOAT_was_removed_use_B_LENDIAN_TO_HOST_IFLOAT_instead___See_the_FLOAT_TROUBLE_comment_in_support_MuscleSupport_h_for_details_
+#define B_SWAP_FLOAT(arg)            B_SWAP_FLOAT_was_removed___See_the_FLOAT_TROUBLE_comment_in_support_MuscleSupport_h_for_details.
+
+/***********************************************************************************************
+ * DOUBLE_TROUBLE COMMENT
+ *
+ * NOTE: The *_DOUBLE_* macros listed below are obsolete and must no longer be used, because 
+ * they are inherently unsafe.  The reason is that on certain processors (read x86), the 
+ * byte-swapped representation of certain floating point and double values can end up 
+ * representing an invalid value (NaN)... in which case the x86 FPU feels free to munge 
+ * some of the bits into a "standard NaN" bit-pattern... causing silent data corruption
+ * when the value is later swapped back into its native form and again interpreted as a
+ * float or double value.  Instead, you need to change your code to use the *_IDOUBLE_*
+ * macros, which work similarly except that the externalized value is safely stored as
+ * a int32 (for floats) or a int64 (for doubles).  --Jeremy 1/8/2007
+ **********************************************************************************************/
+
+#define B_HOST_TO_BENDIAN_DOUBLE(arg) B_HOST_TO_BENDIAN_DOUBLE_was_removed_use_B_HOST_TO_BENDIAN_IDOUBLE_instead___See_the_DOUBLE_TROUBLE_comment_in_support/MuscleSupport_h_for_details_
+#define B_HOST_TO_LENDIAN_DOUBLE(arg) B_HOST_TO_LENDIAN_DOUBLE_was_removed_use_B_HOST_TO_LENDIAN_IDOUBLE_instead___See_the_DOUBLE_TROUBLE_comment_in_support_MuscleSupport_h_for_details_
+#define B_BENDIAN_TO_HOST_DOUBLE(arg) B_BENDIAN_TO_HOST_DOUBLE_was_removed_use_B_BENDIAN_TO_HOST_IDOUBLE_instead___See_the_DOUBLE_TROUBLE_comment_in_support_MuscleSupport_h_for_details_
+#define B_LENDIAN_TO_HOST_DOUBLE(arg) B_LENDIAN_TO_HOST_DOUBLE_was_removed_use_B_LENDIAN_TO_HOST_IDOUBLE_instead___See_the_DOUBLE_TROUBLE_comment_in_support_MuscleSupport_h_for_details_
+#define B_SWAP_DOUBLE(arg)            B_SWAP_DOUBLE_was_removed___See_the_DOUBLE_TROUBLE_comment_in_support_MuscleSupport_h_for_details_
+
 # if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
 static inline uint16 MusclePowerPCSwapInt16(uint16 val)
 {
@@ -462,29 +506,10 @@ static inline uint32 MusclePowerPCSwapInt32(uint32 val)
    __asm__ ("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
    return a;
 }
-static inline float MusclePowerPCSwapFloat(float val)
-{
-   float a;
-   float * addr = &a;
-   __asm__ ("stwbrx %1,0,%2" : "=m" (*addr) : "r" (val), "r" (addr));
-   return a;
-}
 static inline uint64 MusclePowerPCSwapInt64(uint64 val)
 {
    return ((uint64)(MusclePowerPCSwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MusclePowerPCSwapInt32((uint32)(val&0xFFFFFFFF))))<<32);
 }
-static inline double MusclePowerPCSwapDouble(double val)
-{
-   union {
-      double _dv;
-      uint64 _iv;
-   } u;
-   u._dv = val;
-   u._iv = MusclePowerPCSwapInt64(u._iv);
-   return u._dv;
-}
-#  define B_SWAP_DOUBLE(arg)   MusclePowerPCSwapDouble((double)(arg))
-#  define B_SWAP_FLOAT(arg)    MusclePowerPCSwapFloat((float)(arg))
 #  define B_SWAP_INT64(arg)    MusclePowerPCSwapInt64((uint64)(arg))
 #  define B_SWAP_INT32(arg)    MusclePowerPCSwapInt32((uint32)(arg))
 #  define B_SWAP_INT16(arg)    MusclePowerPCSwapInt16((uint16)(arg))
@@ -532,27 +557,6 @@ static inline uint32 MuscleX86SwapInt32(uint32 val)
 #endif
 
 #ifdef _MSC_VER
-static inline __declspec(naked) float MuscleX86SwapFloat(float val)
-{
-   __asm {
-      push ebp;
-      mov ebp, esp;
-      mov eax, val;
-      bswap eax;
-      mov val, eax;
-      pop ebp;
-      ret;
-   };
-}
-#else
-static inline float MuscleX86SwapFloat(float val)
-{
-   __asm__ ("bswap %0" : "+r" (val));
-   return val;
-}
-#endif
-
-#ifdef _MSC_VER
 static inline __declspec(naked) uint64 MuscleX86SwapInt64(uint64 val)
 {
    __asm {
@@ -583,107 +587,120 @@ static inline uint64 MuscleX86SwapInt64(uint64 val)
 }
 #endif
 
-#ifdef _MSC_VER
-static inline __declspec(naked) double MuscleX86SwapDouble(double val)
-{
-   __asm {
-      push ebp;
-      mov ebp, esp;
-      mov eax, DWORD PTR val;
-      mov edx, DWORD PTR val + 4;
-      bswap eax;
-      bswap edx;
-      mov DWORD PTR val, edx;
-      mov DWORD PTR val + 4, eax;
-      xchg eax, edx;
-      pop ebp;
-      ret;
-   };
-}
-#else
-static inline double MuscleX86SwapDouble(double val)
-{
-   __asm__ __volatile__ (
-            "bswap %%eax\n"
-            "bswap %%edx\n"
-            "xchgl %%eax, %%edx\n"
-            : "=A" (val)
-            : "0" (val)
-   );
-   return val;
-}
-#endif
-#  define B_SWAP_DOUBLE(arg)   MuscleX86SwapDouble((double)(arg))
-#  define B_SWAP_FLOAT(arg)    MuscleX86SwapFloat((float)(arg))
 #  define B_SWAP_INT64(arg)    MuscleX86SwapInt64((uint64)(arg))
 #  define B_SWAP_INT32(arg)    MuscleX86SwapInt32((uint32)(arg))
 #  define B_SWAP_INT16(arg)    MuscleX86SwapInt16((uint16)(arg))
 # else
-#  define B_SWAP_DOUBLE(arg)   muscleSwapBytes((double)(arg))
-#  define B_SWAP_FLOAT(arg)    muscleSwapBytes((float)(arg))
-#  define B_SWAP_INT64(arg)    muscleSwapBytes((uint64)(arg))
-#  define B_SWAP_INT32(arg)    muscleSwapBytes((uint32)(arg))
-#  define B_SWAP_INT16(arg)    muscleSwapBytes((uint16)(arg))
+
+// No assembly language available... so we'll use inline C
+
+# if defined(__cplusplus)
+#  define MUSCLE_INLINE inline
+# else
+#  define MUSCLE_INLINE static inline
+# endif
+
+MUSCLE_INLINE int64 B_SWAP_INT64(int64 arg)
+{
+   union {int64 _i64; uint8 _i8[8];} u1, u2;
+   u1._i64   = arg; 
+   u2._i8[0] = u1._i8[7];
+   u2._i8[1] = u1._i8[6];
+   u2._i8[2] = u1._i8[5];
+   u2._i8[3] = u1._i8[4];
+   u2._i8[4] = u1._i8[3];
+   u2._i8[5] = u1._i8[2];
+   u2._i8[6] = u1._i8[1];
+   u2._i8[7] = u1._i8[0];
+   return u2._i64;
+}
+MUSCLE_INLINE int32 B_SWAP_INT32(int32 arg)
+{
+   union {int32 _i32; uint8 _i8[4];} u1, u2;
+   u1._i32   = arg; 
+   u2._i8[0] = u1._i8[3];
+   u2._i8[1] = u1._i8[2];
+   u2._i8[2] = u1._i8[1];
+   u2._i8[3] = u1._i8[0];
+   return u2._i32;
+}
+MUSCLE_INLINE int16 B_SWAP_INT16(int16 arg) 
+{
+   union {int16 _i16; uint8 _i8[2];} u1, u2;
+   u1._i16   = arg; 
+   u2._i8[0] = u1._i8[1];
+   u2._i8[1] = u1._i8[0];
+   return u2._i16;
+}
 # endif
 # if BYTE_ORDER == LITTLE_ENDIAN
 #  define B_HOST_IS_LENDIAN 1
 #  define B_HOST_IS_BENDIAN 0
-#  define B_HOST_TO_LENDIAN_DOUBLE(arg) ((double)(arg))
-#  define B_HOST_TO_LENDIAN_FLOAT(arg)  ((float)(arg))
 #  define B_HOST_TO_LENDIAN_INT64(arg)  ((uint64)(arg))
 #  define B_HOST_TO_LENDIAN_INT32(arg)  ((uint32)(arg))
 #  define B_HOST_TO_LENDIAN_INT16(arg)  ((uint16)(arg))
-#  define B_HOST_TO_BENDIAN_DOUBLE(arg) B_SWAP_DOUBLE(arg)
-#  define B_HOST_TO_BENDIAN_FLOAT(arg)  B_SWAP_FLOAT(arg)
 #  define B_HOST_TO_BENDIAN_INT64(arg)  B_SWAP_INT64(arg)
 #  define B_HOST_TO_BENDIAN_INT32(arg)  B_SWAP_INT32(arg)
 #  define B_HOST_TO_BENDIAN_INT16(arg)  B_SWAP_INT16(arg)
-#  define B_LENDIAN_TO_HOST_DOUBLE(arg) ((double)(arg))
-#  define B_LENDIAN_TO_HOST_FLOAT(arg)  ((float)(arg))
 #  define B_LENDIAN_TO_HOST_INT64(arg)  ((uint64)(arg))
 #  define B_LENDIAN_TO_HOST_INT32(arg)  ((uint32)(arg))
 #  define B_LENDIAN_TO_HOST_INT16(arg)  ((uint16)(arg))
-#  define B_BENDIAN_TO_HOST_DOUBLE(arg) B_SWAP_DOUBLE(arg)
-#  define B_BENDIAN_TO_HOST_FLOAT(arg)  B_SWAP_FLOAT(arg)
 #  define B_BENDIAN_TO_HOST_INT64(arg)  B_SWAP_INT64(arg)
 #  define B_BENDIAN_TO_HOST_INT32(arg)  B_SWAP_INT32(arg)
 #  define B_BENDIAN_TO_HOST_INT16(arg)  B_SWAP_INT16(arg)
-# else /* LITTLE_ENDIAN */
+# else
 #  define B_HOST_IS_LENDIAN 0
 #  define B_HOST_IS_BENDIAN 1
-#  define B_HOST_TO_LENDIAN_DOUBLE(arg) B_SWAP_DOUBLE(arg)
-#  define B_HOST_TO_LENDIAN_FLOAT(arg)  B_SWAP_FLOAT(arg)
 #  define B_HOST_TO_LENDIAN_INT64(arg)  B_SWAP_INT64(arg)
 #  define B_HOST_TO_LENDIAN_INT32(arg)  B_SWAP_INT32(arg)
 #  define B_HOST_TO_LENDIAN_INT16(arg)  B_SWAP_INT16(arg)
-#  define B_HOST_TO_BENDIAN_DOUBLE(arg) ((double)(arg))
-#  define B_HOST_TO_BENDIAN_FLOAT(arg)  ((float)(arg))
 #  define B_HOST_TO_BENDIAN_INT64(arg)  ((uint64)(arg))
 #  define B_HOST_TO_BENDIAN_INT32(arg)  ((uint32)(arg))
 #  define B_HOST_TO_BENDIAN_INT16(arg)  ((uint16)(arg))
-#  define B_LENDIAN_TO_HOST_DOUBLE(arg) B_SWAP_DOUBLE(arg)
-#  define B_LENDIAN_TO_HOST_FLOAT(arg)  B_SWAP_FLOAT(arg)
 #  define B_LENDIAN_TO_HOST_INT64(arg)  B_SWAP_INT64(arg)
 #  define B_LENDIAN_TO_HOST_INT32(arg)  B_SWAP_INT32(arg)
 #  define B_LENDIAN_TO_HOST_INT16(arg)  B_SWAP_INT16(arg)
-#  define B_BENDIAN_TO_HOST_DOUBLE(arg) ((double)(arg))
-#  define B_BENDIAN_TO_HOST_FLOAT(arg)  ((float)(arg))
 #  define B_BENDIAN_TO_HOST_INT64(arg)  ((uint64)(arg))
 #  define B_BENDIAN_TO_HOST_INT32(arg)  ((uint32)(arg))
 #  define B_BENDIAN_TO_HOST_INT16(arg)  ((uint16)(arg))
-# endif /* !LITTLE_ENDIAN */
+# endif
 #endif /* !__BEOS__ */
+
+/** Newer, architecture-safe float and double endian-ness swappers.  Note that for these
+  * macros, the externalized value is expected to be stored in an int32 (for floats) or
+  * in an int64 (for doubles).  See the FLOAT_TROUBLE and DOUBLE_TROUBLE comments elsewhere
+  * in this header file for an explanation as to why.  --Jeremy 01/08/2007
+  */
+
+/* Yes, the memcpy() is necessary... mere pointer-casting plus assignment operations don't cut it under x86 */
+static inline uint32 B_REINTERPRET_FLOAT_AS_INT32(float arg)   {uint32 r; memcpy(&r, &arg, sizeof(r)); return r;}
+static inline float  B_REINTERPRET_INT32_AS_FLOAT(uint32 arg)  {float  r; memcpy(&r, &arg, sizeof(r)); return r;} 
+static inline uint64 B_REINTERPRET_DOUBLE_AS_INT64(double arg) {uint64 r; memcpy(&r, &arg, sizeof(r)); return r;}
+static inline double B_REINTERPRET_INT64_AS_DOUBLE(uint64 arg) {double r; memcpy(&r, &arg, sizeof(r)); return r;}
+
+#define B_HOST_TO_BENDIAN_IFLOAT(arg)  B_HOST_TO_BENDIAN_INT32(B_REINTERPRET_FLOAT_AS_INT32(arg))
+#define B_BENDIAN_TO_HOST_IFLOAT(arg)  B_REINTERPRET_INT32_AS_FLOAT(B_BENDIAN_TO_HOST_INT32(arg))
+#define B_HOST_TO_LENDIAN_IFLOAT(arg)  B_HOST_TO_LENDIAN_INT32(B_REINTERPRET_FLOAT_AS_INT32(arg))
+#define B_LENDIAN_TO_HOST_IFLOAT(arg)  B_REINTERPRET_INT32_AS_FLOAT(B_LENDIAN_TO_HOST_INT32(arg))
+
+#define B_HOST_TO_BENDIAN_IDOUBLE(arg) B_HOST_TO_BENDIAN_INT64(B_REINTERPRET_DOUBLE_AS_INT64(arg))
+#define B_BENDIAN_TO_HOST_IDOUBLE(arg) B_REINTERPRET_INT64_AS_DOUBLE(B_BENDIAN_TO_HOST_INT64(arg))
+#define B_HOST_TO_LENDIAN_IDOUBLE(arg) B_HOST_TO_LENDIAN_INT64(B_REINTERPRET_DOUBLE_AS_INT64(arg))
+#define B_LENDIAN_TO_HOST_IDOUBLE(arg) B_REINTERPRET_INT64_AS_DOUBLE(B_LENDIAN_TO_HOST_INT64(arg))
 
 /* Macro to turn a type code into a string representation.
  * (typecode) is the type code to get the string for
  * (buf) is a (char *) to hold the output string; it must be >= 5 bytes long.
  */
-#define MakePrettyTypeCodeString(typecode, buf)                     \
-   {                                                                \
-      uint32 __bigEndian = B_HOST_TO_BENDIAN_INT32(typecode);       \
-      memcpy(buf, (const char *)&__bigEndian, sizeof(__bigEndian)); \
-      buf[sizeof(__bigEndian)] = '\0';                              \
-   }
+static inline void MakePrettyTypeCodeString(uint32 typecode, char *buf)
+{
+   uint32 i;  // keep separate, for C compatibility
+   uint32 bigEndian = B_HOST_TO_BENDIAN_INT32(typecode);
+
+   memcpy(buf, (const char *)&bigEndian, sizeof(bigEndian));
+   buf[sizeof(bigEndian)] = '\0';
+   for (i=0; i<sizeof(bigEndian); i++) if ((buf[i]<' ')||(buf[i]>'~')) buf[i] = '?';
+}
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -740,6 +757,22 @@ static inline int32 ConvertReturnValueToMuscleSemantics(int origRet, uint32 maxS
 }
 
 BEGIN_NAMESPACE(muscle);
+
+#ifdef __cplusplus
+/** These compare functions are useful for passing into Hashtables or Queues to keep them sorted */
+int IntCompareFunc  ( const int    & i1, const int8   & i2, void *);
+int Int8CompareFunc ( const int8   & i1, const int8   & i2, void *);
+int Int16CompareFunc( const int16  & i1, const int16  & i2, void *);
+int Int32CompareFunc( const int32  & i1, const int32  & i2, void *);
+int Int64CompareFunc( const int64  & i1, const int64  & i2, void *);
+int UIntCompareFunc  (const unsigned int & i1, const unsigned int & i2, void *);
+int UInt8CompareFunc (const uint8  & i1, const uint8  & i2, void *);
+int UInt16CompareFunc(const uint16 & i1, const uint16 & i2, void *);
+int UInt32CompareFunc(const uint32 & i1, const uint32 & i2, void *);
+int UInt64CompareFunc(const uint64 & i1, const uint64 & i2, void *);
+int FloatCompareFunc( const float  & i1, const float  & i2, void *);
+int DoubleCompareFunc(const double & i1, const double & i2, void *);
+#endif
 
 #if MUSCLE_TRACE_CHECKPOINTS > 0
 

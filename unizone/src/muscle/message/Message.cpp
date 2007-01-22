@@ -296,8 +296,28 @@ public:
    virtual void Flatten(uint8 *buffer) const
    {
       DataType * dBuf = (DataType *) buffer;
-      uint32 numItems = this->_data.GetNumItems(); 
-      for (uint32 i=0; i<numItems; i++) ConvertToNetworkByteOrder(&dBuf[i], this->_data.GetItemAt(i));
+      switch(this->_data.GetNumItems())
+      {
+         case 0:
+            // do nothing
+         break;
+
+         case 1:
+            ConvertToNetworkByteOrder(dBuf, this->_data.HeadPointer(), 1);
+         break;
+
+         default:
+         {
+            uint32 len0 = 0;
+            const DataType * array0 = this->_data.GetArrayPointer(0, len0);
+            if (array0) ConvertToNetworkByteOrder(dBuf, array0, len0);
+
+            uint32 len1;
+            const DataType * array1 = this->_data.GetArrayPointer(1, len1);
+            if (array1) ConvertToNetworkByteOrder(&dBuf[len0], array1, len1); 
+         }
+         break;
+      }
    }
 
    virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
@@ -306,15 +326,13 @@ public:
       if (numBytes % sizeof(DataType)) return B_ERROR;  // length must be an even multiple of item size, or something's wrong!
 
       uint32 numItems = numBytes / sizeof(DataType);
-      if (this->_data.EnsureSize(numItems) == B_NO_ERROR)
-      {
-         DataType * dBuf = (DataType *) buffer;
-         for (uint32 i=0; i<numItems; i++)
-         {
-            DataType next;
-            ConvertFromNetworkByteOrder(&next, &dBuf[i]);
-            if (this->_data.AddTail(next) != B_NO_ERROR) return B_ERROR;
-         }
+      if (this->_data.EnsureSize(numItems, true) == B_NO_ERROR)
+      {  
+         // Note that typically you can't rely on the contents of a Queue object to
+         // be stored in a single, contiguous array like this, but in this case we've
+         // called Clear() and then EnsureSize(), so we know that the array's headPointer
+         // is at the front of the array, and we are safe to do this.  --jaf
+         ConvertFromNetworkByteOrder(this->_data.HeadPointer(), (DataType *)buffer, numItems);
          return B_NO_ERROR;
       }
       else return B_ERROR;
@@ -324,8 +342,8 @@ public:
    virtual uint32 FlattenedSize() const {return this->_data.GetNumItems() * sizeof(DataType);}
 
 protected:
-   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere) const = 0;
-   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere) const = 0;
+   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const = 0;
+   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const = 0;
 
    virtual const char * GetFormatString() const = 0;
 
@@ -384,14 +402,14 @@ public:
    virtual GenericRef Clone() const;
 
 protected:
-   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      *((uint8*)writeToHere) = *((uint8*)readFromHere);  // no translation required, really
+      memcpy(writeToHere, readFromHere, numItems);  // no translation required, really
    }
 
-   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      *((uint8*)writeToHere) = *((uint8*)readFromHere);  // no translation required, really
+      memcpy(writeToHere, readFromHere, numItems);  // no translation required, really
    }
 };
 DECLAREFIELDTYPE(Int8DataArray);
@@ -432,14 +450,14 @@ public:
    virtual uint32 FlattenedSize() const {return _data.GetNumItems()*sizeof(uint8);}  /* bools are always flattened into 1 byte each */
 
 protected:
-   virtual void ConvertToNetworkByteOrder(void *, const void *) const
+   virtual void ConvertToNetworkByteOrder(void *, const void *, uint32) const
    {
       MCRASH("BoolDataArray::ConvertToNetworkByteOrder should never be called");
    }
 
-   virtual void ConvertFromNetworkByteOrder(void *, const void *) const
+   virtual void ConvertFromNetworkByteOrder(void *, const void *, uint32) const
    {
-      MCRASH("BoolDataArray::ConvertToNetworkByteOrder should never be called");
+      MCRASH("BoolDataArray::ConvertFromNetworkByteOrder should never be called");
    }
 };
 DECLAREFIELDTYPE(BoolDataArray);
@@ -457,18 +475,22 @@ public:
    virtual GenericRef Clone() const;
 
 protected:
-   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      int16 val; muscleCopyIn(val, readFromHere);
-      val = B_HOST_TO_LENDIAN_INT16(val); 
-      muscleCopyOut(writeToHere, val);
+      int16 * writeToHere16 = (int16 *) writeToHere;
+      const int16 * readFromHere16 = (const int16 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++) muscleCopyOut(&writeToHere16[i], B_HOST_TO_LENDIAN_INT16(readFromHere16[i]));
    }
 
-   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      int16 val; muscleCopyIn(val, readFromHere);
-      val = B_LENDIAN_TO_HOST_INT16(val); 
-      muscleCopyOut(writeToHere, val);
+      int16 * writeToHere16 = (int16 *) writeToHere;
+      const int16 * readFromHere16 = (const int16 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++)
+      {
+         int16 val; muscleCopyIn(val, &readFromHere16[i]);
+         writeToHere16[i] = B_LENDIAN_TO_HOST_INT16(val);
+      }
    }
 };
 DECLAREFIELDTYPE(Int16DataArray);
@@ -486,18 +508,22 @@ public:
    virtual GenericRef Clone() const;
 
 protected:
-   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      int32 val; muscleCopyIn(val, readFromHere);
-      val = B_HOST_TO_LENDIAN_INT32(val);
-      muscleCopyOut(writeToHere, val);
+      int32 * writeToHere32 = (int32 *) writeToHere;
+      const int32 * readFromHere32 = (const int32 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++) muscleCopyOut(&writeToHere32[i], B_HOST_TO_LENDIAN_INT32(readFromHere32[i]));
    }
 
-   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      int32 val; muscleCopyIn(val, readFromHere);
-      val = B_LENDIAN_TO_HOST_INT32(val);
-      muscleCopyOut(writeToHere, val);
+      int32 * writeToHere32 = (int32 *) writeToHere;
+      const int32 * readFromHere32 = (const int32 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++)
+      {
+         int32 val; muscleCopyIn(val, &readFromHere32[i]);
+         writeToHere32[i] = B_LENDIAN_TO_HOST_INT32(val);
+      }
    }
 };
 DECLAREFIELDTYPE(Int32DataArray);
@@ -515,18 +541,22 @@ public:
    virtual GenericRef Clone() const;
 
 protected:
-   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      int64 val; muscleCopyIn(val, readFromHere);
-      val = B_HOST_TO_LENDIAN_INT64(val);
-      muscleCopyOut(writeToHere, val);
+      int64 * writeToHere64 = (int64 *) writeToHere;
+      const int64 * readFromHere64 = (const int64 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++) muscleCopyOut(&writeToHere64[i], B_HOST_TO_LENDIAN_INT64(readFromHere64[i]));
    }
 
-   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      int64 val; muscleCopyIn(val, readFromHere);
-      val = B_LENDIAN_TO_HOST_INT64(val);
-      muscleCopyOut(writeToHere, val);
+      int64 * writeToHere64 = (int64 *) writeToHere;
+      const int64 * readFromHere64 = (const int64 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++)
+      {
+         int64 val; muscleCopyIn(val, &readFromHere64[i]);
+         writeToHere64[i] = B_LENDIAN_TO_HOST_INT64(val);
+      }
    }
 };
 DECLAREFIELDTYPE(Int64DataArray);
@@ -544,18 +574,22 @@ public:
    virtual GenericRef Clone() const;
 
 protected:
-   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      float val; muscleCopyIn(val, readFromHere);
-      val = B_HOST_TO_LENDIAN_FLOAT(val);
-      muscleCopyOut(writeToHere, val);
+      int32 * writeToHere32 = (int32 *) writeToHere;  // yeah, they're really floats, but no need to worry about that here
+      const int32 * readFromHere32 = (const int32 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++) muscleCopyOut(&writeToHere32[i], B_HOST_TO_LENDIAN_INT32(readFromHere32[i]));
    }
 
-   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      float val; muscleCopyIn(val, readFromHere);
-      val = B_LENDIAN_TO_HOST_FLOAT(val);
-      muscleCopyOut(writeToHere, val);
+      int32 * writeToHere32 = (int32 *) writeToHere;  // yeah, they're really floats, but no need to worry about that here
+      const int32 * readFromHere32 = (const int32 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++)
+      {
+         int32 val; muscleCopyIn(val, &readFromHere32[i]);
+         writeToHere32[i] = B_LENDIAN_TO_HOST_INT32(val);
+      }
    }
 };
 DECLAREFIELDTYPE(FloatDataArray);
@@ -573,18 +607,22 @@ public:
    virtual GenericRef Clone() const;
 
 protected:
-   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      double val;  muscleCopyIn(val, readFromHere);
-      val = B_HOST_TO_LENDIAN_DOUBLE(val);
-      muscleCopyOut(writeToHere, val);
+      int64 * writeToHere64 = (int64 *) writeToHere;  // yeah, they're really doubles, but no need to worry about that here
+      const int64 * readFromHere64 = (const int64 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++) muscleCopyOut(&writeToHere64[i], B_HOST_TO_LENDIAN_INT64(readFromHere64[i]));
    }
 
-   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
-      double val;  muscleCopyIn(val, readFromHere);
-      val = B_LENDIAN_TO_HOST_DOUBLE(val);
-      muscleCopyOut(writeToHere, val);
+      int64 * writeToHere64 = (int64 *) writeToHere;  // yeah, they're really doubles, but no need to worry about that here
+      const int64 * readFromHere64 = (const int64 *) readFromHere;
+      for (uint32 i=0; i<numItems; i++)
+      {
+         int64 val; muscleCopyIn(val, &readFromHere64[i]);
+         writeToHere64[i] = B_LENDIAN_TO_HOST_INT64(val);
+      }
    }
 };
 DECLAREFIELDTYPE(DoubleDataArray);
@@ -604,16 +642,14 @@ public:
    virtual GenericRef Clone() const;
 
 protected:
-   virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertToNetworkByteOrder(void *, const void *, uint32) const
    {
-      // Just a straight value copy, since pointers across CPU types don't make any sense anyway
-      void * val; muscleCopyIn(val, readFromHere); muscleCopyOut(writeToHere, val);
+      MCRASH("PointerDataArray::ConvertToNetworkByteOrder should never be called");
    }
 
-   virtual void ConvertFromNetworkByteOrder(void * writeToHere, const void * readFromHere) const
+   virtual void ConvertFromNetworkByteOrder(void *, const void *, uint32) const
    {
-      // Just a straight value copy, since pointers across CPU types don't make any sense anyway
-      void * val; muscleCopyIn(val, readFromHere); muscleCopyOut(writeToHere, val);
+      MCRASH("PointerDataArray::ConvertFromNetworkByteOrder should never be called");
    }
 };
 DECLAREFIELDTYPE(PointerDataArray);

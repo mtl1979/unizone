@@ -4,7 +4,6 @@
 #define MusclePulseNode_h
 
 #include "util/TimeUtilityFunctions.h"
-#include "util/Hashtable.h"
 
 BEGIN_NAMESPACE(muscle);
 
@@ -82,17 +81,12 @@ public:
    /** Returns true iff the given child is in our set of child PulseNodes. 
      * @param child the child to look for.
      */
-   bool ContainsPulseChild(PulseNode * child) const {return _children.ContainsKey(child);}
-
-   /** Returns an iterator that can be used to iterate over our set of child PulseNodes. */
-   HashtableIterator<PulseNode *, bool> GetPulseChildrenIterator() const {return _children.GetIterator();}
-
-   const Hashtable<PulseNode *, bool> & GetChildren() const {return _children;}
+   bool ContainsPulseChild(PulseNode * child) const {return ((child)&&(child->_parent == this));}
 
    /** Returns when this object wants its call to Pulse() scheduled next, or MUSCLE_TIME_NEVER 
     *  if it has no call to Pulse() currently scheduled. 
     */
-   uint64 GetScheduledPulseTime() const {return _localPulseAt;}
+   uint64 GetScheduledPulseTime() const {return _myScheduledTime;}
 
    /** Returns the run-time at which the PulseNodeManager started calling our callbacks.
     *  Useful for any object that wants to limit the maximum duration of its timeslice
@@ -118,7 +112,7 @@ public:
     *  clock (GetRunTime64()) indicates that our suggested time slice has expired.  
     *  This method is cheap to call often.
     */
-   bool IsSuggestedTimeSliceExpired() const {return _timeSlicingSuggested ? (GetRunTime64() >= _cycleStartedAt+_maxTimeSlice) : false;}
+   bool IsSuggestedTimeSliceExpired() const {return ((_timeSlicingSuggested)&&(GetRunTime64() >= (_cycleStartedAt+_maxTimeSlice)));}
 
 protected:
    /**
@@ -133,28 +127,36 @@ protected:
    void InvalidatePulseTime(bool clearPrevResult = true); 
 
 private:
-   // Called by a PulseNodeManager let us update our pulse times, as well as his (managerPulseTime)
-   void GetPulseTimeAux(uint64 now, uint64 & managerPulseTime);
-
-   // Called by a PulseNodeManager to tell us to call Pulse() on ourself and our children, as necessary.
+   void ReschedulePulseChild(PulseNode * child, int toList);
+   uint64 GetFirstScheduledChildTime() const {return _firstChild[LINKED_LIST_SCHEDULED] ? _firstChild[LINKED_LIST_SCHEDULED]->_aggregatePulseTime : MUSCLE_TIME_NEVER;}
+   void GetPulseTimeAux(uint64 now, uint64 & min);
    void PulseAux(uint64 now);
-
-   // Invalidates our cached cumulative pulse time, and recurses to our parent (if any).
-   void InvalidateGroupPulseTime();
 
    // Sets the cycle-started-at time for this object, as returned by GetCycleStartTime().
    void SetCycleStartTime(uint64 st) {_cycleStartedAt = st;}
 
    PulseNode * _parent;
 
-   bool _nextPulseAtValid;
-   uint64 _nextPulseAt;     // when we want to our next PulseAux() call
+   uint64 _aggregatePulseTime;  // time when we need PulseAux() to be called next
+   uint64 _myScheduledTime;     // time when our own personal Pulse() should be called next
+   uint64 _cycleStartedAt;      // time when the PulseNodeManager started serving us.
+   bool _myScheduledTimeValid;  // true iff _myScheduledTime doesn't need to be recalculated
 
-   bool _localPulseAtValid;
-   uint64 _localPulseAt;    // when this object wants its next Pulse() call
+   // Linked list that this node is in (or NULL if we're not in any linked list)
+   int _curList;                // index of the list we are part of, or -1 if we're not in any list
+   PulseNode * _prevSibling;
+   PulseNode * _nextSibling;
 
-   uint64 _cycleStartedAt;  // time when the PulseNodeManager started serving us.
-   Hashtable<PulseNode *, bool> _children;
+   enum {
+      LINKED_LIST_SCHEDULED = 0,  // list of children with known upcoming pulse-times (sorted)
+      LINKED_LIST_UNSCHEDULED,    // list of children with known MUSCLE_TIME_NEVER pulse-times (unsorted)
+      LINKED_LIST_NEEDSRECALC,    // list of children whose pulse-times need to be recalculated (unsorted)
+      NUM_LINKED_LISTS
+   };
+
+   // Linked list of child nodes with finite pulse times, sorted by their pulse times
+   PulseNode * _firstChild[NUM_LINKED_LISTS];
+   PulseNode * _lastChild[NUM_LINKED_LISTS];
 
    uint64 _maxTimeSlice;
    bool _timeSlicingSuggested;
@@ -177,10 +179,10 @@ public:
 
 protected:
    /** Passes the call on through to the given PulseNode */
-   inline void CallGetPulseTimeAux(PulseNode & p, uint64 now, uint64 & spt) const {p.GetPulseTimeAux(now, spt);}
+   inline void CallGetPulseTimeAux(PulseNode & p, uint64 now, uint64 & min) const {p.GetPulseTimeAux(now, min);}
 
    /** Passes the call on through to the given PulseNode */
-   inline void CallPulseAux(PulseNode & p, uint64 now) const {p.PulseAux(now);}
+   inline void CallPulseAux(PulseNode & p, uint64 now) const {if (now >= p._aggregatePulseTime) p.PulseAux(now);}
 
    /** Passes the call on through to the given PulseNode */
    inline void CallSetCycleStartTime(PulseNode & p, uint64 now) const {p.SetCycleStartTime(now);}

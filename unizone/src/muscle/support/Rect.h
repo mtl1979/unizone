@@ -198,10 +198,10 @@ public:
    virtual void Flatten(uint8 * buffer) const
    {
       float * buf = (float *) buffer;
-      float oL = B_HOST_TO_LENDIAN_FLOAT(left());   muscleCopyOut(&buf[0], oL);
-      float oT = B_HOST_TO_LENDIAN_FLOAT(top());    muscleCopyOut(&buf[1], oT);
-      float oR = B_HOST_TO_LENDIAN_FLOAT(right());  muscleCopyOut(&buf[2], oR);
-      float oB = B_HOST_TO_LENDIAN_FLOAT(bottom()); muscleCopyOut(&buf[3], oB);
+      uint32 oL = B_HOST_TO_LENDIAN_IFLOAT(left());   muscleCopyOut(&buf[0], oL);
+      uint32 oT = B_HOST_TO_LENDIAN_IFLOAT(top());    muscleCopyOut(&buf[1], oT);
+      uint32 oR = B_HOST_TO_LENDIAN_IFLOAT(right());  muscleCopyOut(&buf[2], oR);
+      uint32 oB = B_HOST_TO_LENDIAN_IFLOAT(bottom()); muscleCopyOut(&buf[3], oB);
    }
 
    /** Unflattens this rectangle from an endian-neutral byte buffer.
@@ -214,10 +214,10 @@ public:
       if (size >= FlattenedSize())
       {
          float * buf = (float *) buffer;
-         muscleCopyIn(left(),   &buf[0]); left()   = B_LENDIAN_TO_HOST_FLOAT(left());
-         muscleCopyIn(top(),    &buf[1]); top()    = B_LENDIAN_TO_HOST_FLOAT(top());
-         muscleCopyIn(right(),  &buf[2]); right()  = B_LENDIAN_TO_HOST_FLOAT(right());
-         muscleCopyIn(bottom(), &buf[3]); bottom() = B_LENDIAN_TO_HOST_FLOAT(bottom());
+         uint32 i0; muscleCopyIn(i0, &buf[0]); left()   = B_LENDIAN_TO_HOST_IFLOAT(i0);
+         uint32 i1; muscleCopyIn(i1, &buf[1]); top()    = B_LENDIAN_TO_HOST_IFLOAT(i1);
+         uint32 i2; muscleCopyIn(i2, &buf[2]); right()  = B_LENDIAN_TO_HOST_IFLOAT(i2);
+         uint32 i3; muscleCopyIn(i3, &buf[3]); bottom() = B_LENDIAN_TO_HOST_IFLOAT(i3);
          return B_NO_ERROR;
       }
       else return B_ERROR;

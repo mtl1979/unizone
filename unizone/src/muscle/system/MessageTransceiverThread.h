@@ -257,7 +257,7 @@ public:
    /**
      * Tells the specified worker session(s) to install a new input IOPolicy.
      * @param pref Reference to the new IOPolicy object.  Since IOPolicies are generally
-     *             not thread safe, the referenced IOPolicy should no be used after it has
+     *             not thread safe, the referenced IOPolicy should not be used after it has
      *             been successfully passed in via this call.  May be a NULL ref to remove
      *             the existing input policy.
      * @param optDistPath If non-NULL, only sessions matching this path will be affected.
@@ -269,7 +269,7 @@ public:
    /**
      * Tells the specified worker session(s) to install a new output IOPolicy.
      * @param pref Reference to the new IOPolicy object.  Since IOPolicies are generally
-     *             not thread safe, the referenced IOPolicy should no be used after it has
+     *             not thread safe, the referenced IOPolicy should not be used after it has
      *             been successfully passed in via this call.  May be a NULL ref to remove
      *             the existing output policy.
      * @param optDistPath If non-NULL, only sessions matching this path will be affected.
@@ -335,78 +335,6 @@ private:
 
    ReflectServer * _server;
    String _defaultDistributionPath;
-};
-
-/** This is a session that represents a connection to another computer or etc.
-  * ThreadWorkerSessions are added to a MessageTransceiverThread's held ReflectServer
-  * object by the ThreadSupervisorSession on demand.
-  */
-class ThreadWorkerSession : public StorageReflectSession
-{
-public:
-   /** Constructor */
-   ThreadWorkerSession();
-
-   /** Destructor */
-   virtual ~ThreadWorkerSession();
-
-   /** Overridden to send a message back to the user */
-   virtual status_t AttachedToServer();
-
-   /** Overridden to send a message back to the user */
-   virtual void AboutToDetachFromServer();
-
-   /** Overridden to send a message back to the user */
-   virtual bool ClientConnectionClosed();
-
-   /** Overridden to send a message back to the user to let him know the connection is ready */
-   virtual void AsyncConnectCompleted();
-
-   /** Overridden to wrap incoming messages and pass them along to our supervisor session */
-   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
-
-   /** Overriden to handle messages from our supervisor session */
-   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
-
-   /** Returns a human-readable label for this session type:  "ThreadWorker" */
-   virtual const char * GetTypeName() const {return "ThreadWorker";}
-
-   /** Overridden to clear our _drainNotifiers Queue when appropriate */
-   virtual int32 DoOutput(uint32 maxBytes);
-
-private:
-   friend class ThreadWorkerSessionFactory;
-   Queue<MessageRef> _drainedNotifiers;
-   bool _sendAcceptedMessage;
-};
-
-/** A factory class that returns new ThreadWorkerSession objects. */
-class ThreadWorkerSessionFactory : public StorageReflectSessionFactory
-{
-public:
-   /** Default Constructor.  */
-   ThreadWorkerSessionFactory();
-
-   /** Overridden to send a message back to the user */
-   virtual status_t AttachedToServer();
-
-   /** Overridden to send a message back to the user */
-   virtual void AboutToDetachFromServer();
-
-   /** Implemented to call CreateThreadWorkerSession() to create
-     * a new session, and on success to send a MTT_EVENT_SESSION_ACCEPTED
-     * Message back to the main thread.  Subclasses that wish to
-     * to have this factory class return a different type of
-     * session object should override CreateThreadWorkerSession(const String &)
-     * instead of this method.
-     */
-   virtual AbstractReflectSession * CreateSession(const String &);
-
-   /** Default implementation returns a new ThreadWorkerSession object.
-     * Subclasses may override this method to return a different type of
-     * object, as long as the returned object is a subclass of ThreadWorkerSession.
-     */
-   virtual ThreadWorkerSession * CreateThreadWorkerSession(const String &);
 };
 
 /** This is the session that acts as the main thread's agent inside the MessageTransceiverThread's
@@ -496,6 +424,7 @@ public:
 
 private:
    friend class ThreadSupervisorSession;
+   friend class ThreadWorkerSession;
    friend class MessageTransceiverThread;
 
    void SetNotify(ThreadSupervisorSession * notify) {_notify = notify;}
@@ -505,8 +434,79 @@ private:
    ThreadSupervisorSession * _notify;
    MessageRef _replyRef;
 };
-
 typedef Ref<DrainTag> DrainTagRef;
+
+/** This is a session that represents a connection to another computer or etc.
+  * ThreadWorkerSessions are added to a MessageTransceiverThread's held ReflectServer
+  * object by the ThreadSupervisorSession on demand.
+  */
+class ThreadWorkerSession : public StorageReflectSession
+{
+public:
+   /** Constructor */
+   ThreadWorkerSession();
+
+   /** Destructor */
+   virtual ~ThreadWorkerSession();
+
+   /** Overridden to send a message back to the user */
+   virtual status_t AttachedToServer();
+
+   /** Overridden to send a message back to the user */
+   virtual void AboutToDetachFromServer();
+
+   /** Overridden to send a message back to the user */
+   virtual bool ClientConnectionClosed();
+
+   /** Overridden to send a message back to the user to let him know the connection is ready */
+   virtual void AsyncConnectCompleted();
+
+   /** Overridden to wrap incoming messages and pass them along to our supervisor session */
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
+
+   /** Overriden to handle messages from our supervisor session */
+   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
+
+   /** Returns a human-readable label for this session type:  "ThreadWorker" */
+   virtual const char * GetTypeName() const {return "ThreadWorker";}
+
+   /** Overridden to clear our _drainNotifiers Queue when appropriate */
+   virtual int32 DoOutput(uint32 maxBytes);
+
+private:
+   friend class ThreadWorkerSessionFactory;
+   Queue<DrainTagRef> _drainedNotifiers;
+   bool _sendAcceptedMessage;
+};
+
+/** A factory class that returns new ThreadWorkerSession objects. */
+class ThreadWorkerSessionFactory : public StorageReflectSessionFactory
+{
+public:
+   /** Default Constructor.  */
+   ThreadWorkerSessionFactory();
+
+   /** Overridden to send a message back to the user */
+   virtual status_t AttachedToServer();
+
+   /** Overridden to send a message back to the user */
+   virtual void AboutToDetachFromServer();
+
+   /** Implemented to call CreateThreadWorkerSession() to create
+     * a new session, and on success to send a MTT_EVENT_SESSION_ACCEPTED
+     * Message back to the main thread.  Subclasses that wish to
+     * to have this factory class return a different type of
+     * session object should override CreateThreadWorkerSession(const String &)
+     * instead of this method.
+     */
+   virtual AbstractReflectSession * CreateSession(const String &);
+
+   /** Default implementation returns a new ThreadWorkerSession object.
+     * Subclasses may override this method to return a different type of
+     * object, as long as the returned object is a subclass of ThreadWorkerSession.
+     */
+   virtual ThreadWorkerSession * CreateThreadWorkerSession(const String &);
+};
 
 END_NAMESPACE(muscle);
 

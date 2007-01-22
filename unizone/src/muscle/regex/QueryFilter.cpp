@@ -2,6 +2,7 @@
 
 #include "regex/QueryFilter.h"
 #include "regex/StringMatcher.h"
+#include "util/MiscUtilityFunctions.h"  // for MemMem()
 
 BEGIN_NAMESPACE(muscle);
 
@@ -342,35 +343,14 @@ bool RawDataQueryFilter :: Matches(const Message & msg, const DataNode *) const
          case OP_NOT_EQUAL_TO: return ((hisNumBytes != myNumBytes)||(memcmp(myBytes, hisBytes, clen) != 0));
          case OP_STARTS_WITH:  return ((myNumBytes <= hisNumBytes)&&(memcmp(myBytes, hisBytes, clen) == 0));
          case OP_ENDS_WITH:    return ((myNumBytes <= hisNumBytes)&&(memcmp(&myBytes[myNumBytes-clen], &hisBytes[hisNumBytes-clen], clen) == 0));
-         case OP_CONTAINS:     return (Memmem(hisBytes, hisNumBytes, myBytes, myNumBytes) != NULL);
+         case OP_CONTAINS:     return (MemMem(hisBytes, hisNumBytes, myBytes, myNumBytes) != NULL);
          case OP_START_OF:     return ((hisNumBytes <= myNumBytes)&&(memcmp(hisBytes, myBytes, clen) == 0));
          case OP_END_OF:       return ((hisNumBytes <= myNumBytes)&&(memcmp(&hisBytes[hisNumBytes-clen], &myBytes[myNumBytes-clen], clen) == 0));
-         case OP_SUBSET_OF:    return (Memmem(myBytes, myNumBytes, hisBytes, hisNumBytes) != NULL);
+         case OP_SUBSET_OF:    return (MemMem(myBytes, myNumBytes, hisBytes, hisNumBytes) != NULL);
          default:              /* do nothing */  break;
       }
    }
    return false;
-}
-
-const uint8 * RawDataQueryFilter :: Memmem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * lookFor, uint32 numLookForBytes) const
-{
-        if (numLookForBytes == 0)              return lookIn;  // hmm, existential questions here
-   else if (numLookForBytes == numLookInBytes) return (const uint8 *)memcmp(lookIn, lookFor, numLookInBytes);
-   else if (numLookForBytes < numLookInBytes)
-   {
-      const uint8 * startedAt = lookIn;
-      uint32 matchCount = 0;
-      for (uint32 i=0; i<numLookInBytes; i++)
-      {
-         if (lookIn[i] == lookFor[matchCount])
-         {
-            if (matchCount == 0) startedAt = &lookIn[i];
-            if (++matchCount == numLookForBytes) return startedAt;
-         }
-         else matchCount = 0;
-      }
-   }
-   return NULL;
 }
 
 QueryFilterRef QueryFilterFactory :: CreateQueryFilter(const Message & msg) const

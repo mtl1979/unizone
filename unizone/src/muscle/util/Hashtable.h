@@ -321,10 +321,14 @@ public:
       AUTOSORT_BY_VALUE
    };
 
-   /** This constructor creates a standard, non-sorting Hashtable.
-    *  @param initialCapacity Specifies the number of table slots to initially pre-allocate.   Defaults to 7.
-    */
-   Hashtable(uint32 initialCapacity = MUSCLE_HASHTABLE_DEFAULT_CAPACITY);
+   /** Default constructor.  Creates a standard, non-sorting Hashtable.  */
+   Hashtable();
+
+   /** Explicit constructor.  Creates a standard, non-sorting Hashtable that will pre-allocate
+     * the specified number of key-value slots on its first call to Put().
+     * @param initialCapacity Specifies the number of table slots to initially pre-allocate when Put() is called.
+     */
+   explicit Hashtable(uint32 initialCapacity);
 
    /** Copy Constructor.  */
    Hashtable(const Hashtable<KeyType,ValueType,HashFunctorType> & rhs);
@@ -865,6 +869,14 @@ private:
 // Implementation of Hashtable
 // Necessary location for appropriate template instantiation.
 //===============================================================
+
+template <class KeyType, class ValueType, class HashFunctorType>
+Hashtable<KeyType,ValueType,HashFunctorType>::Hashtable()
+   : _initialCapacity(MUSCLE_HASHTABLE_DEFAULT_CAPACITY), _count(0), _tableSize(MUSCLE_HASHTABLE_DEFAULT_CAPACITY), _table(NULL), _iterHead(NULL), _iterTail(NULL), _freeHead(NULL), _userKeyCompareFunc(NULL), _userValueCompareFunc(NULL), _autoSortMode(AUTOSORT_DISABLED), _compareCookie(NULL), _iterList(NULL)
+{
+   // empty
+}
+
 template <class KeyType, class ValueType, class HashFunctorType>
 Hashtable<KeyType,ValueType,HashFunctorType>::Hashtable(uint32 initialCapacity)
    : _initialCapacity(initialCapacity), _count(0), _tableSize(initialCapacity), _table(NULL), _iterHead(NULL), _iterTail(NULL), _freeHead(NULL), _userKeyCompareFunc(NULL), _userValueCompareFunc(NULL), _autoSortMode(AUTOSORT_DISABLED), _compareCookie(NULL), _iterList(NULL)
