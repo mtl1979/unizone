@@ -90,7 +90,6 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	if ( !name ) 
 		setName( "WPrefs" );
 
-	resize( 600, 320);
 	connect(fOK, SIGNAL(clicked()), this, SLOT(OK()));
 	connect(fCancel, SIGNAL(clicked()), this, SLOT(Cancel()));
 	connect(fStyleList, SIGNAL(highlighted(int)), this, SLOT(StyleSelected(int)));

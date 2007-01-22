@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>560</width>
+            <width>600</width>
             <height>320</height>
         </rect>
     </property>
@@ -25,14 +25,14 @@
     <property stdset="1">
         <name>minimumSize</name>
         <size>
-            <width>560</width>
+            <width>600</width>
             <height>320</height>
         </size>
     </property>
     <property stdset="1">
         <name>maximumSize</name>
         <size>
-            <width>560</width>
+            <width>600</width>
             <height>320</height>
         </size>
     </property>
@@ -55,7 +55,7 @@
             <rect>
                 <x>1</x>
                 <y>291</y>
-                <width>558</width>
+                <width>598</width>
                 <height>28</height>
             </rect>
         </property>
@@ -174,7 +174,7 @@
             <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>558</width>
+                <width>598</width>
                 <height>290</height>
             </rect>
         </property>
@@ -197,9 +197,9 @@
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>1</x>
-                        <y>11</y>
-                        <width>550</width>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>590</width>
                         <height>240</height>
                     </rect>
                 </property>
@@ -614,9 +614,9 @@
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>1</x>
-                        <y>11</y>
-                        <width>550</width>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>590</width>
                         <height>240</height>
                     </rect>
                 </property>
@@ -1048,9 +1048,9 @@
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
-                        <x>1</x>
-                        <y>11</y>
-                        <width>550</width>
+                        <x>0</x>
+                        <y>10</y>
+                        <width>590</width>
                         <height>240</height>
                     </rect>
                 </property>
@@ -1550,7 +1550,7 @@
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>550</width>
+                        <width>590</width>
                         <height>240</height>
                     </rect>
                 </property>
@@ -1886,7 +1886,7 @@
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>550</width>
+                        <width>590</width>
                         <height>240</height>
                     </rect>
                 </property>
@@ -2087,7 +2087,7 @@
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>550</width>
+                        <width>590</width>
                         <height>240</height>
                     </rect>
                 </property>
@@ -2960,7 +2960,7 @@
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>550</width>
+                        <width>590</width>
                         <height>240</height>
                     </rect>
                 </property>
@@ -3186,7 +3186,7 @@
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>550</width>
+                        <width>590</width>
                         <height>240</height>
                     </rect>
                 </property>
