@@ -1,10 +1,5 @@
 #include <stdio.h>
-#ifdef WIN32
 #include <windows.h>
-#else
-#include <string.h>
-#define __int64 long long
-#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 

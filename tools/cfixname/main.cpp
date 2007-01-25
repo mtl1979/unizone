@@ -4,9 +4,7 @@
 #include <qtextcodec.h>
 #include <qfile.h>
 #include <qapplication.h>
-#ifndef WIN32
-#define __int64 long long
-#endif
+
 int main(int argc, char* argv[])
 {
 	QApplication app(argc, argv);
