@@ -6,6 +6,9 @@
 #include <qstring.h>
 #include <qfile.h>
 #include <qapplication.h>
+#ifndef WIN32
+#define __int64 long long
+#endif
 
 char
 hextochar(const QString &orig)

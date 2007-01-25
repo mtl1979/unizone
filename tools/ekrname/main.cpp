@@ -1,5 +1,10 @@
 #include <stdio.h>
+#ifdef WIN32
 #include <windows.h>
+#else
+#include <string.h>
+#define __int64 long long
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -82,8 +87,13 @@ main(int argc, char *argv[])
 				printf("Error opening output file!\n");
 				return -3;
 			}
+#ifdef WIN32
 			struct _stati64 s;
 			_stati64(argv[1], &s);
+#else
+			struct stat64 s;
+			stat64(argv[1], &s);
+#endif
 			sz = s.st_size;
 			int r;
 			__int64 numbytes = 0;
