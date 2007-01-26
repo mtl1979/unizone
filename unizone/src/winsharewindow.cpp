@@ -1982,7 +1982,7 @@ WinShareWindow::StartQueue(const QString &session)
 			{
 				if (ttpInfo->bot == session)
 				{
-					fQueue.addItem(ttpInfo->file, user);
+					fQueue.addItem(ttpInfo->file, QString::null, user);
 					_ttpFiles.RemoveItemAt(i);
 					SendSystemEvent(tr("Downloading file %1 from user #%2.").arg( ttpInfo->file ).arg(session));
 				}
@@ -2143,10 +2143,10 @@ WinShareWindow::OpenDownload()
 		fDLWindow = new WDownload(NULL, GetUserID());
 		CHECK_PTR(fDLWindow);
 		
-		connect(fDLWindow, SIGNAL(FileFailed(const QString &, const QString &, const QString &)), 
-				this, SLOT(FileFailed(const QString &, const QString &, const QString &)));
-		connect(fDLWindow, SIGNAL(FileInterrupted(const QString &, const QString &, const QString &)), 
-				this, SLOT(FileInterrupted(const QString &, const QString &, const QString &)));
+		connect(fDLWindow, SIGNAL(FileFailed(const QString &, const QString &, const QString &, const QString &)), 
+				this, SLOT(FileFailed(const QString &, const QString &, const QString &, const QString &)));
+		connect(fDLWindow, SIGNAL(FileInterrupted(const QString &, const QString &, const QString &, const QString &)), 
+				this, SLOT(FileInterrupted(const QString &, const QString &, const QString &, const QString &)));
 		connect(fDLWindow, SIGNAL(Closed()), this, SLOT(DownloadWindowClosed()));
 	}
 	fDLWindow->show();

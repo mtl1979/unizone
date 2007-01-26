@@ -163,23 +163,23 @@ Versio %1</translation>
     <name>AboutDlgBase</name>
     <message>
         <source>About Unizone</source>
-        <translation type='unfinished'>Tietoja Unizone (Suomi) -ohjelmasta</translation>
+        <translation>Tietoja Unizone (Suomi) -ohjelmasta</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type='unfinished'>&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>Written by Mika T. Lindqvist</source>
-        <translation type='unfinished'>Kirjoittanut Mika T. Lindqvist</translation>
+        <translation>Kirjoittanut Mika T. Lindqvist</translation>
     </message>
     <message>
         <source>Based upon the Windows MUSCLE client Ozone</source>
-        <translation type='unfinished'>Pohjautuu Windowsin MUSCLE-asiakkaaseen Ozone,</translation>
+        <translation>Pohjautuu Windowsin MUSCLE-asiakkaaseen Ozone,</translation>
     </message>
     <message>
         <source>Which was written by Vitaliy Mikitchenko</source>
-        <translation type='unfinished'>jonka kirjoitti Vitaliy Mikitchenko</translation>
+        <translation>jonka kirjoitti Vitaliy Mikitchenko</translation>
     </message>
     <message>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
@@ -383,7 +383,7 @@ Versio %1</translation>
     <name>ChannelBase</name>
     <message>
         <source>Channel Window</source>
-        <translation type='unfinished'>Kanavaikkuna</translation>
+        <translation>Kanavaikkuna</translation>
     </message>
 </context>
 <context>
@@ -1304,35 +1304,35 @@ Päiväys: %4</translation>
     <name>ScanProgressBase</name>
     <message>
         <source>Scan Progress</source>
-        <translation type='unfinished'>Haun Tilanne</translation>
+        <translation>Haun Tilanne</translation>
     </message>
     <message>
         <source>Current directory:</source>
-        <translation type='unfinished'>Nykyinen hakemisto:</translation>
+        <translation>Nykyinen hakemisto:</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type='unfinished'>-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>Current file:</source>
-        <translation type='unfinished'>Nykyinen tiedosto:</translation>
+        <translation>Nykyinen tiedosto:</translation>
     </message>
     <message>
         <source>Files scanned:</source>
-        <translation type='unfinished'>Tiedostoja löydetty:</translation>
+        <translation>Tiedostoja löydetty:</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type='unfinished'>0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Directories scanned:</source>
-        <translation type='unfinished'>Hakemistoja tutkittu:</translation>
+        <translation>Hakemistoja tutkittu:</translation>
     </message>
     <message>
         <source>Directories left:</source>
-        <translation type='unfinished'>Hakemistoja jäljellä:</translation>
+        <translation>Hakemistoja jäljellä:</translation>
     </message>
 </context>
 <context>
@@ -2103,19 +2103,19 @@ Päiväys: %4</translation>
     <name>WPicViewerBase</name>
     <message>
         <source>Picture Viewer</source>
-        <translation type='unfinished'>Kuvien Katselu</translation>
+        <translation>Kuvien Katselu</translation>
     </message>
     <message>
         <source>No File</source>
-        <translation type='unfinished'>Ei Tiedostoa</translation>
+        <translation>Ei Tiedostoa</translation>
     </message>
     <message>
         <source>First</source>
-        <translation type='unfinished'>Ensimmäinen</translation>
+        <translation>Ensimmäinen</translation>
     </message>
     <message>
         <source>Previous</source>
-        <translation type='unfinished'>Edellinen</translation>
+        <translation>Edellinen</translation>
     </message>
     <message>
         <source>1/1</source>
@@ -2123,19 +2123,19 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation type='unfinished'>Seuraava</translation>
+        <translation>Seuraava</translation>
     </message>
     <message>
         <source>Last</source>
-        <translation type='unfinished'>Viimeinen</translation>
+        <translation>Viimeinen</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type='unfinished'>Avaa</translation>
+        <translation>Avaa</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type='unfinished'>Sulje</translation>
+        <translation>Sulje</translation>
     </message>
 </context>
 <context>
@@ -2245,111 +2245,111 @@ Päiväys: %4</translation>
     <name>WPrefsBase</name>
     <message>
         <source>Preferences</source>
-        <translation type='unfinished'>Asetukset</translation>
+        <translation>Asetukset</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type='unfinished'>OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type='unfinished'>Peruuta</translation>
+        <translation>Peruuta</translation>
     </message>
     <message>
         <source>Auto Away:</source>
-        <translation type='unfinished'>Automaattisesti pois:</translation>
+        <translation>Automaattisesti pois:</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation type='unfinished'>Ei päällä</translation>
+        <translation>Ei päällä</translation>
     </message>
     <message>
         <source>2 Minutes</source>
-        <translation type='unfinished'>2 Minuuttia</translation>
+        <translation>2 Minuuttia</translation>
     </message>
     <message>
         <source>5 Minutes</source>
-        <translation type='unfinished'>5 Minuuttia</translation>
+        <translation>5 Minuuttia</translation>
     </message>
     <message>
         <source>10 Minutes</source>
-        <translation type='unfinished'>10 Minuuttia</translation>
+        <translation>10 Minuuttia</translation>
     </message>
     <message>
         <source>15 Minutes</source>
-        <translation type='unfinished'>15 Minuuttia</translation>
+        <translation>15 Minuuttia</translation>
     </message>
     <message>
         <source>20 Minutes</source>
-        <translation type='unfinished'>20 Minuuttia</translation>
+        <translation>20 Minuuttia</translation>
     </message>
     <message>
         <source>30 Minutes</source>
-        <translation type='unfinished'>30 Minuuttia</translation>
+        <translation>30 Minuuttia</translation>
     </message>
     <message>
         <source>1 Hour</source>
-        <translation type='unfinished'>1 Tunti</translation>
+        <translation>1 Tunti</translation>
     </message>
     <message>
         <source>2 Hours</source>
-        <translation type='unfinished'>2 Tuntia</translation>
+        <translation>2 Tuntia</translation>
     </message>
     <message>
         <source>Multi-color ListViews</source>
-        <translation type='unfinished'>Moniväriset Luettelonäkymät</translation>
+        <translation>Moniväriset Luettelonäkymät</translation>
     </message>
     <message>
         <source>Enable Logging</source>
-        <translation type='unfinished'>Loki päällä</translation>
+        <translation>Loki päällä</translation>
     </message>
     <message>
         <source>Login On Startup</source>
-        <translation type='unfinished'>Kirjaudu alussa</translation>
+        <translation>Kirjaudu alussa</translation>
     </message>
     <message>
         <source>Check For New Versions</source>
-        <translation type='unfinished'>Tarkista uusi versio</translation>
+        <translation>Tarkista uusi versio</translation>
     </message>
     <message>
         <source>Auto Update Server List</source>
-        <translation type='unfinished'>Palvelinlistan automaattipäivitys</translation>
+        <translation>Palvelinlistan automaattipäivitys</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type='unfinished'>Yleiset</translation>
+        <translation>Yleiset</translation>
     </message>
     <message>
         <source>Upload Bandwidth:</source>
-        <translation type='unfinished'>Lähetysten kaista:</translation>
+        <translation>Lähetysten kaista:</translation>
     </message>
     <message>
         <source>300 baud</source>
-        <translation type='unfinished'>300 baudia</translation>
+        <translation>300 baudia</translation>
     </message>
     <message>
         <source>14.4 kbps</source>
-        <translation type='unfinished'>14.4 kt/s</translation>
+        <translation>14.4 kt/s</translation>
     </message>
     <message>
         <source>28.8 kbps</source>
-        <translation type='unfinished'>28.8 kt/s</translation>
+        <translation>28.8 kt/s</translation>
     </message>
     <message>
         <source>36.6 kbps</source>
-        <translation type='unfinished'>36.6 kt/s</translation>
+        <translation>36.6 kt/s</translation>
     </message>
     <message>
         <source>57.6 kbps</source>
-        <translation type='unfinished'>57.6 kt/s</translation>
+        <translation>57.6 kt/s</translation>
     </message>
     <message>
         <source>ISDN-64k</source>
-        <translation type='unfinished'>ISDN-64k</translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <source>ISDN-128k</source>
-        <translation type='unfinished'>ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
@@ -2357,251 +2357,251 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Cable</source>
-        <translation type='unfinished'>Kaapeli</translation>
+        <translation>Kaapeli</translation>
     </message>
     <message>
         <source>T1</source>
-        <translation type='unfinished'>T1</translation>
+        <translation>T1</translation>
     </message>
     <message>
         <source>T3</source>
-        <translation type='unfinished'>T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <source>OC-3</source>
-        <translation type='unfinished'>OC-3</translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <source>OC-12</source>
-        <translation type='unfinished'>OC-12</translation>
+        <translation>OC-12</translation>
     </message>
     <message>
         <source>I&apos;m Firewalled</source>
-        <translation type='unfinished'>Palomuurin takana</translation>
+        <translation>Palomuurin takana</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type='unfinished'>Yhteys</translation>
+        <translation>Yhteys</translation>
     </message>
     <message>
         <source>Warning Messages</source>
-        <translation type='unfinished'>Varoitusviestit</translation>
+        <translation>Varoitusviestit</translation>
     </message>
     <message>
         <source>Error Messages</source>
-        <translation type='unfinished'>Virheviestit</translation>
+        <translation>Virheviestit</translation>
     </message>
     <message>
         <source>Private Messages</source>
-        <translation type='unfinished'>Yksityisviestit</translation>
+        <translation>Yksityisviestit</translation>
     </message>
     <message>
         <source>User Events</source>
-        <translation type='unfinished'>Käyttäjän tapahtumat</translation>
+        <translation>Käyttäjän tapahtumat</translation>
     </message>
     <message>
         <source>Chat</source>
-        <translation type='unfinished'>Keskustelu</translation>
+        <translation>Keskustelu</translation>
     </message>
     <message>
         <source>Info Messages</source>
-        <translation type='unfinished'>Tiedoitukset</translation>
+        <translation>Tiedoitukset</translation>
     </message>
     <message>
         <source>Uploads</source>
-        <translation type='unfinished'>Lähetykset</translation>
+        <translation>Lähetykset</translation>
     </message>
     <message>
         <source>Time Stamps</source>
-        <translation type='unfinished'>Aikaleimat</translation>
+        <translation>Aikaleimat</translation>
     </message>
     <message>
         <source>Flash Window When Mentioned</source>
-        <translation type='unfinished'>Väläytä ikkunaa mainittaessa</translation>
+        <translation>Väläytä ikkunaa mainittaessa</translation>
     </message>
     <message>
         <source>Flash Private Windows</source>
-        <translation type='unfinished'>Väläytä yksityisikkunoita</translation>
+        <translation>Väläytä yksityisikkunoita</translation>
     </message>
     <message>
         <source>Font Size</source>
-        <translation type='unfinished'>Kirjasinkoko</translation>
+        <translation>Kirjasinkoko</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type='unfinished'>Näyttö</translation>
+        <translation>Näyttö</translation>
     </message>
     <message>
         <source>Local Name</source>
-        <translation type='unfinished'>Oma nimi</translation>
+        <translation>Oma nimi</translation>
     </message>
     <message>
         <source>Remote Name</source>
-        <translation type='unfinished'>Muiden nimi</translation>
+        <translation>Muiden nimi</translation>
     </message>
     <message>
         <source>Regular Text</source>
-        <translation type='unfinished'>Tavallinen teksti</translation>
+        <translation>Tavallinen teksti</translation>
     </message>
     <message>
         <source>System Text</source>
-        <translation type='unfinished'>Järjestelmä-teksti</translation>
+        <translation>Järjestelmä-teksti</translation>
     </message>
     <message>
         <source>Ping Text</source>
-        <translation type='unfinished'>Ping-teksti</translation>
+        <translation>Ping-teksti</translation>
     </message>
     <message>
         <source>Error Text</source>
-        <translation type='unfinished'>Virhe-teksti</translation>
+        <translation>Virhe-teksti</translation>
     </message>
     <message>
         <source>Error Message Text</source>
-        <translation type='unfinished'>Virheviestin teksti</translation>
+        <translation>Virheviestin teksti</translation>
     </message>
     <message>
         <source>Private Text</source>
-        <translation type='unfinished'>Yksityinen-teksti</translation>
+        <translation>Yksityinen-teksti</translation>
     </message>
     <message>
         <source>Action Text</source>
-        <translation type='unfinished'>Toiminta Teksti</translation>
+        <translation>Toiminta Teksti</translation>
     </message>
     <message>
         <source>URL Text</source>
-        <translation type='unfinished'>URL-teksti</translation>
+        <translation>URL-teksti</translation>
     </message>
     <message>
         <source>&apos;Name Said&apos; Text</source>
-        <translation type='unfinished'>&apos;Nimi Sanottu&apos; Teksti</translation>
+        <translation>&apos;Nimi Sanottu&apos; Teksti</translation>
     </message>
     <message>
         <source>Description:</source>
-        <translation type='unfinished'>Kuvaus:</translation>
+        <translation>Kuvaus:</translation>
     </message>
     <message>
         <source>Preview:</source>
-        <translation type='unfinished'>Esikatselu:</translation>
+        <translation>Esikatselu:</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation type='unfinished'>Muuta</translation>
+        <translation>Muuta</translation>
     </message>
     <message>
         <source>Colors</source>
-        <translation type='unfinished'>Värit</translation>
+        <translation>Värit</translation>
     </message>
     <message>
         <source>CDE</source>
-        <translation type='unfinished'>CDE</translation>
+        <translation>CDE</translation>
     </message>
     <message>
         <source>Motif</source>
-        <translation type='unfinished'>Motif</translation>
+        <translation>Motif</translation>
     </message>
     <message>
         <source>Motif Plus</source>
-        <translation type='unfinished'>Motif Plus</translation>
+        <translation>Motif Plus</translation>
     </message>
     <message>
         <source>Platinum</source>
-        <translation type='unfinished'>Platinum</translation>
+        <translation>Platinum</translation>
     </message>
     <message>
         <source>SGI</source>
-        <translation type='unfinished'>SGI</translation>
+        <translation>SGI</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation type='unfinished'>Windows</translation>
+        <translation>Windows</translation>
     </message>
     <message>
         <source>The selected style will be applied as soon as it is selected.</source>
-        <translation type='unfinished'>Valittu tyyli otetaan käyttöön heti, kun se on valittu.</translation>
+        <translation>Valittu tyyli otetaan käyttöön heti, kun se on valittu.</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type='unfinished'>Tyyli</translation>
+        <translation>Tyyli</translation>
     </message>
     <message>
         <source>1</source>
-        <translation type='unfinished'>1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation type='unfinished'>2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <source>3</source>
-        <translation type='unfinished'>3</translation>
+        <translation>3</translation>
     </message>
     <message>
         <source>4</source>
-        <translation type='unfinished'>4</translation>
+        <translation>4</translation>
     </message>
     <message>
         <source>5</source>
-        <translation type='unfinished'>5</translation>
+        <translation>5</translation>
     </message>
     <message>
         <source>10</source>
-        <translation type='unfinished'>10</translation>
+        <translation>10</translation>
     </message>
     <message>
         <source>15</source>
-        <translation type='unfinished'>15</translation>
+        <translation>15</translation>
     </message>
     <message>
         <source>20</source>
-        <translation type='unfinished'>20</translation>
+        <translation>20</translation>
     </message>
     <message>
         <source>30</source>
-        <translation type='unfinished'>30</translation>
+        <translation>30</translation>
     </message>
     <message>
         <source>Unlimited</source>
-        <translation type='unfinished'>Rajaton</translation>
+        <translation>Rajaton</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Downloads:</source>
-        <translation type='unfinished'>Samanaikaisia vastaanottoja enintään:</translation>
+        <translation>Samanaikaisia vastaanottoja enintään:</translation>
     </message>
     <message>
         <source>Maximum Simultaneous Uploads:</source>
-        <translation type='unfinished'>Samanaikaisia lähetyksiä enintään:</translation>
+        <translation>Samanaikaisia lähetyksiä enintään:</translation>
     </message>
     <message>
         <source>File sharing enabled?</source>
-        <translation type='unfinished'>Tiedostojen jako päällä?</translation>
+        <translation>Tiedostojen jako päällä?</translation>
     </message>
     <message>
         <source>Block binkies?</source>
-        <translation type='unfinished'>Estä binkyjen imuroinnit?</translation>
+        <translation>Estä binkyjen imuroinnit?</translation>
     </message>
     <message>
         <source>Block disconnected users?</source>
-        <translation type='unfinished'>Estä poistuneiden imuroinnit?</translation>
+        <translation>Estä poistuneiden imuroinnit?</translation>
     </message>
     <message>
         <source>File Sharing</source>
-        <translation type='unfinished'>Tiedostojen jako</translation>
+        <translation>Tiedostojen jako</translation>
     </message>
     <message>
         <source>HTTP launcher:</source>
-        <translation type='unfinished'>HTTP-aukaisija:</translation>
+        <translation>HTTP-aukaisija:</translation>
     </message>
     <message>
         <source>FTP launcher:</source>
-        <translation type='unfinished'>FTP-aukaisija:</translation>
+        <translation>FTP-aukaisija:</translation>
     </message>
     <message>
         <source>Mailto: launcher:</source>
-        <translation type='unfinished'>Mailto:-aukaisija:</translation>
+        <translation>Mailto:-aukaisija:</translation>
     </message>
     <message>
         <source>URL Launching</source>
-        <translation type='unfinished'>URLien avaus</translation>
+        <translation>URLien avaus</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted)</source>
@@ -2609,7 +2609,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>No Limit</source>
-        <translation type='unfinished'>Ei Rajaa</translation>
+        <translation>Ei Rajaa</translation>
     </message>
     <message>
         <source>128 bytes</source>
@@ -2625,47 +2625,47 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>1 kB</source>
-        <translation type='unfinished'>1 kt</translation>
+        <translation>1 kt</translation>
     </message>
     <message>
         <source>2 kB</source>
-        <translation type='unfinished'>2 kt</translation>
+        <translation>2 kt</translation>
     </message>
     <message>
         <source>4 kB</source>
-        <translation type='unfinished'>4 kt</translation>
+        <translation>4 kt</translation>
     </message>
     <message>
         <source>8 kB</source>
-        <translation type='unfinished'>8 kt</translation>
+        <translation>8 kt</translation>
     </message>
     <message>
         <source>16 kB</source>
-        <translation type='unfinished'>16 kt</translation>
+        <translation>16 kt</translation>
     </message>
     <message>
         <source>32 kB</source>
-        <translation type='unfinished'>32 kt</translation>
+        <translation>32 kt</translation>
     </message>
     <message>
         <source>64 kB</source>
-        <translation type='unfinished'>64 kt</translation>
+        <translation>64 kt</translation>
     </message>
     <message>
         <source>128 kB</source>
-        <translation type='unfinished'>128 kt</translation>
+        <translation>128 kt</translation>
     </message>
     <message>
         <source>256 kB</source>
-        <translation type='unfinished'>256 kt</translation>
+        <translation>256 kt</translation>
     </message>
     <message>
         <source>512 kB</source>
-        <translation type='unfinished'>512 kt</translation>
+        <translation>512 kt</translation>
     </message>
     <message>
         <source>1 MB</source>
-        <translation type='unfinished'>1 Mt</translation>
+        <translation>1 Mt</translation>
     </message>
     <message>
         <source>2 MB</source>
@@ -2689,7 +2689,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Chat:</source>
-        <translation type='unfinished'>Keskustelu:</translation>
+        <translation>Keskustelu:</translation>
     </message>
     <message>
         <source>Downloads (per download)</source>
@@ -2701,7 +2701,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Throttling</source>
-        <translation type='unfinished'>Rajoitukset</translation>
+        <translation>Rajoitukset</translation>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
@@ -2709,31 +2709,31 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>DSL-256k</source>
-        <translation type='unfinished'>DSL-256k</translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <source>DSL-384k</source>
-        <translation type='unfinished'>DSL-384k</translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <source>DSL-512k</source>
-        <translation type='unfinished'>DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <source>Uploads (per upload):</source>
-        <translation type='unfinished'>Per lähetys:</translation>
+        <translation>Per lähetys:</translation>
     </message>
     <message>
         <source>Downloads (per download):</source>
-        <translation type='unfinished'>Per vastaanotto:</translation>
+        <translation>Per vastaanotto:</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted):</source>
-        <translation type='unfinished'>Per estetty:</translation>
+        <translation>Per estetty:</translation>
     </message>
     <message>
         <source>Default launcher:</source>
-        <translation type='unfinished'>Oletusaukaisija:</translation>
+        <translation>Oletusaukaisija:</translation>
     </message>
     <message>
         <source>Upload Packet Size</source>
@@ -2741,15 +2741,15 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Upload Packet Size:</source>
-        <translation type='unfinished'>Lähetyksen Pakettikoko:</translation>
+        <translation>Lähetyksen Pakettikoko:</translation>
     </message>
     <message>
         <source>Enable Sound Effects</source>
-        <translation type='unfinished'>Ääniefektit Päällä</translation>
+        <translation>Ääniefektit Päällä</translation>
     </message>
     <message>
         <source>Downloads</source>
-        <translation type='unfinished'>Lataukset</translation>
+        <translation>Lataukset</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue</source>
@@ -2781,11 +2781,11 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Base Port:</source>
-        <translation type='unfinished'>Perusportti:</translation>
+        <translation>Perusportti:</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue:</source>
-        <translation type='unfinished'>Minimikoko Tiedostolle Jonossa:</translation>
+        <translation>Minimikoko Tiedostolle Jonossa:</translation>
     </message>
     <message>
         <source>200 kB</source>
@@ -2801,155 +2801,159 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>IP Addresses</source>
-        <translation type='unfinished'>IP-osoitteet</translation>
+        <translation>IP-osoitteet</translation>
     </message>
     <message>
         <source>Number of Ports:</source>
-        <translation type='unfinished'>Porttien Määrä:</translation>
+        <translation>Porttien Määrä:</translation>
     </message>
     <message>
         <source>Empty Windows:</source>
-        <translation type='unfinished'>Tyhjät Ikkunat:</translation>
+        <translation>Tyhjät Ikkunat:</translation>
     </message>
     <message>
         <source>Do Nothing</source>
-        <translation type='unfinished'>Anna Olla</translation>
+        <translation>Anna Olla</translation>
     </message>
     <message>
         <source>Prompt</source>
-        <translation type='unfinished'>Kysy</translation>
+        <translation>Kysy</translation>
     </message>
     <message>
         <source>Automatically Close</source>
-        <translation type='unfinished'>Sulje Automaattisesti</translation>
+        <translation>Sulje Automaattisesti</translation>
     </message>
     <message>
         <source>Warning Text</source>
-        <translation type='unfinished'>Varoitusteksti</translation>
+        <translation>Varoitusteksti</translation>
     </message>
     <message>
         <source>Warning Message Text</source>
-        <translation type='unfinished'>Varoitusviestin teksti</translation>
+        <translation>Varoitusviestin teksti</translation>
     </message>
     <message>
         <source>DSL-1M</source>
-        <translation type='unfinished'>DSL-1M</translation>
+        <translation>DSL-1M</translation>
     </message>
     <message>
         <source>128 B/s</source>
-        <translation type='unfinished'>128 t/s</translation>
+        <translation>128 t/s</translation>
     </message>
     <message>
         <source>256 B/s</source>
-        <translation type='unfinished'>256 t/s</translation>
+        <translation>256 t/s</translation>
     </message>
     <message>
         <source>512 B/s</source>
-        <translation type='unfinished'>512 t/s</translation>
+        <translation>512 t/s</translation>
     </message>
     <message>
         <source>1 kB/s</source>
-        <translation type='unfinished'>1 kt/s</translation>
+        <translation>1 kt/s</translation>
     </message>
     <message>
         <source>2 kB/s</source>
-        <translation type='unfinished'>2 kt/s</translation>
+        <translation>2 kt/s</translation>
     </message>
     <message>
         <source>4 kB/s</source>
-        <translation type='unfinished'>4 kt/s</translation>
+        <translation>4 kt/s</translation>
     </message>
     <message>
         <source>8 kB/s</source>
-        <translation type='unfinished'>8 kt/s</translation>
+        <translation>8 kt/s</translation>
     </message>
     <message>
         <source>16 kB/s</source>
-        <translation type='unfinished'>16 kt/s</translation>
+        <translation>16 kt/s</translation>
     </message>
     <message>
         <source>32 kB/s</source>
-        <translation type='unfinished'>32 kt/s</translation>
+        <translation>32 kt/s</translation>
     </message>
     <message>
         <source>64 kB/s</source>
-        <translation type='unfinished'>64 kt/s</translation>
+        <translation>64 kt/s</translation>
     </message>
     <message>
         <source>128 kB/s</source>
-        <translation type='unfinished'>128 kt/s</translation>
+        <translation>128 kt/s</translation>
     </message>
     <message>
         <source>256 kB/s</source>
-        <translation type='unfinished'>256 kt/s</translation>
+        <translation>256 kt/s</translation>
     </message>
     <message>
         <source>512 kB/s</source>
-        <translation type='unfinished'>512 kt/s</translation>
+        <translation>512 kt/s</translation>
     </message>
     <message>
         <source>1 MB/s</source>
-        <translation type='unfinished'>1 Mt/s</translation>
+        <translation>1 Mt/s</translation>
     </message>
     <message>
         <source>2 MB/s</source>
-        <translation type='unfinished'>2 Mt/s</translation>
+        <translation>2 Mt/s</translation>
     </message>
     <message>
         <source>4 MB/s</source>
-        <translation type='unfinished'>4 Mt/s</translation>
+        <translation>4 Mt/s</translation>
     </message>
     <message>
         <source>8 MB/s</source>
-        <translation type='unfinished'>8 Mt/s</translation>
+        <translation>8 Mt/s</translation>
     </message>
     <message>
         <source>16 MB/s</source>
-        <translation type='unfinished'>16 Mt/s</translation>
+        <translation>16 Mt/s</translation>
     </message>
     <message>
         <source>32 MB/s</source>
-        <translation type='unfinished'>32 Mt/s</translation>
+        <translation>32 Mt/s</translation>
     </message>
     <message>
         <source>Aqua</source>
-        <translation type='unfinished'>Aqua</translation>
+        <translation>Aqua</translation>
     </message>
     <message>
         <source>HTTP Proxy:</source>
-        <translation type='unfinished'>HTTP Välityspalvelin:</translation>
+        <translation>HTTP Välityspalvelin:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation type='unfinished'>Portti:</translation>
+        <translation>Portti:</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type='unfinished'>0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>512 B</source>
-        <translation type='unfinished'>512 t</translation>
+        <translation>512 t</translation>
     </message>
     <message>
         <source>Automatically clear finished transfers?</source>
-        <translation type='unfinished'>Poista automaattisesti valmiit siirrot?</translation>
+        <translation>Poista automaattisesti valmiit siirrot?</translation>
     </message>
     <message>
         <source>Automatically close upload window?</source>
-        <translation type='unfinished'>Sulje automaattisesti lähetysikkuna?</translation>
+        <translation>Sulje automaattisesti lähetysikkuna?</translation>
     </message>
     <message>
         <source>Sound File:</source>
-        <translation type='unfinished'>Äänitiedosto:</translation>
+        <translation>Äänitiedosto:</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type='unfinished'>Valitse</translation>
+        <translation>Valitse</translation>
     </message>
     <message>
         <source>Reset</source>
-        <translation type='unfinished'>Nollaa</translation>
+        <translation>Nollaa</translation>
+    </message>
+    <message>
+        <source>Preserve paths?</source>
+        <translation>Säilytä tiedostopolut?</translation>
     </message>
 </context>
 <context>
@@ -3081,7 +3085,7 @@ Päiväys: %4</translation>
     <name>WPrivateWindowBase</name>
     <message>
         <source>Private</source>
-        <translation type='unfinished'>Yksityinen</translation>
+        <translation>Yksityinen</translation>
     </message>
 </context>
 <context>

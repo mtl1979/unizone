@@ -35,6 +35,7 @@ using namespace muscle;
 #define FIREWALLED			"firewalled"
 #define BINKYNUKE			"binkynuke"
 #define BLOCKDISCONNECTED	"blockdisconnected"
+#define PRESERVEPATHS		"preservepaths"
 #define AUTOCLEAR			"autoclear"
 #define AUTOCLOSE           "autoclose"
 #define MULTICOLOR			"multicolor"
@@ -114,6 +115,7 @@ using namespace muscle;
 #define RESUMELIST "resumelist"
 #define RESUMEFILE "resumefile"
 #define RESUMEFIL2 "resumefile2"
+#define RESUMEPATH "resumepath"
 #define RESUMEUSER "resumeuser"
 
 #define SOUNDS     "sounds"
@@ -230,6 +232,8 @@ public:
 	bool GetBinkyNuke() const;
 	void SetBlockDisconnected(bool b);
 	bool GetBlockDisconnected() const;
+	void SetPreservePaths(bool b);
+	bool GetPreservePaths() const;
 	void SetAutoClear(bool b);
 	bool GetAutoClear() const;
 	void SetAutoClose(bool b);

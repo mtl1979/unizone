@@ -598,6 +598,18 @@ WSettings::GetBlockDisconnected() const
 }
 
 void
+WSettings::SetPreservePaths(bool b)
+{
+	SET_BOOL(PRESERVEPATHS, b);
+}
+
+bool
+WSettings::GetPreservePaths() const
+{
+	GET_BOOL(PRESERVEPATHS, false);
+}
+
+void
 WSettings::SetAutoClear(bool b)
 {
 	SET_BOOL(AUTOCLEAR, b);
@@ -1534,27 +1546,33 @@ WSettings::AddResumeItem(WResumePair wrp)
 	fSet()->AddString(RESUMEUSER, (const char *) wrp.user.utf8());
 	fSet()->AddString(RESUMEFILE, (const char *) wrp.info.fRemoteName.utf8());
 	fSet()->AddString(RESUMEFIL2, (const char *) wrp.info.fLocalName.utf8());
+	fSet()->AddString(RESUMEPATH, (const char *) wrp.info.fPath.utf8());
 }
 
 bool 
 WSettings::GetResumeItem(int index, WResumePair & wrp) const
 {
-	QString file, user;
+	QString file, user, path;
 	if (
 		(GetStringFromMessage(fSet, RESUMEFILE, index, file) == B_OK) &&
-		(GetStringFromMessage(fSet, RESUMEUSER, index, user) == B_OK)
+		(GetStringFromMessage(fSet, RESUMEUSER, index, user) == B_OK) 
 		)
 	{
 		wrp.user = user;
 		wrp.info.fRemoteName = file;
 
-		// For backwards compatibility don't require entry for local file name
+		// For backwards compatibility don't require entry for local file name or remote path
 		//
 
 		if (GetStringFromMessage(fSet, RESUMEFIL2, index, file) == B_OK)
 			wrp.info.fLocalName = file;
 		else
 			wrp.info.fLocalName = QString::null;
+
+		if (GetStringFromMessage(fSet, RESUMEPATH, index, path) == B_OK)
+			wrp.info.fPath = path;
+		else
+			wrp.info.fPath = QString::null;
 
 		return true;
 	}

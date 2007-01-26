@@ -508,9 +508,9 @@ WinShareWindow::UploadWindowClosed()
  */
 
 void
-WinShareWindow::FileFailed(const QString &file, const QString &lfile, const QString &user)
+WinShareWindow::FileFailed(const QString &file, const QString &lfile, const QString &path, const QString &user)
 {
-	FileInterrupted(file, lfile, user);
+	FileInterrupted(file, lfile, path, user);
 
 	SendTextEvent(user, WTextEvent::ResumeType);
 }
@@ -519,11 +519,12 @@ WinShareWindow::FileFailed(const QString &file, const QString &lfile, const QStr
 //
 
 void
-WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const QString &user)
+WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const QString &path, const QString &user)
 {
 	WResumeInfo wri;
 	wri.fRemoteName = file;
 	wri.fLocalName = lfile;
+	wri.fPath = path;
 
 	WResumePair wrp;
 	wrp.user = user;
@@ -538,6 +539,7 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
 			if (
 				(fResumeMap[x].info.fRemoteName == file) &&
 				(fResumeMap[x].info.fLocalName == lfile) &&
+				(fResumeMap[x].info.fPath == path) &&
 				(fResumeMap[x].user == user)
 				)
 			{
@@ -577,6 +579,7 @@ WinShareWindow::CheckResumes(const QString &user)
 
 	Queue<QString> fFiles;
 	Queue<QString> fLFiles;
+	Queue<QString> fPaths;
 	QString out;
 	
 	unsigned int x = 0;
@@ -599,6 +602,7 @@ WinShareWindow::CheckResumes(const QString &user)
 			}
 			fFiles.AddTail(fResumeMap[x].info.fRemoteName);
 			fLFiles.AddTail(fResumeMap[x].info.fLocalName);
+			fPaths.AddTail(fResumeMap[x].info.fPath);
 			fResumeMap.RemoveItemAt(x);
 		}
 		else
@@ -612,7 +616,7 @@ WinShareWindow::CheckResumes(const QString &user)
 
 		OpenDownload(); 
 
-		fDLWindow->AddDownloadList(fFiles, fLFiles, u);
+		fDLWindow->AddDownloadList(fFiles, fLFiles, fPaths, u);
 	}
 }
 

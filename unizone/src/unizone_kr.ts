@@ -2534,6 +2534,10 @@ Date: %4</source>
         <source>Reset</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Preserve paths?</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WPrivateWindow</name>

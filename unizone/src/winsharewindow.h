@@ -58,6 +58,7 @@ struct WResumeInfo
 {
 	QString fRemoteName;
 	QString fLocalName;
+	QString fPath;
 };
 
 typedef struct WResumePair
@@ -250,8 +251,8 @@ public slots:
 	void DownloadWindowClosed();
 	void UploadWindowClosed();
 
-	void FileFailed(const QString &, const QString &, const QString &); // from WDownload
-	void FileInterrupted(const QString &, const QString &, const QString &);
+	void FileFailed(const QString &, const QString &, const QString &, const QString &); // from WDownload
+	void FileInterrupted(const QString &, const QString &, const QString &, const QString &);
 
 protected:
 	virtual void customEvent(QCustomEvent * event);

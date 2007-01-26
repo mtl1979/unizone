@@ -30,6 +30,7 @@ struct WFileInfo
 {
 	WUserRef fiUser;
 	QString fiFilename;
+	QString fiPath;
 	uint64 fiSize;
 	MessageRef fiRef;
 	bool fiFirewalled;

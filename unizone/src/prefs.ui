@@ -2080,15 +2080,15 @@
                 <class>QLayoutWidget</class>
                 <property stdset="1">
                     <name>name</name>
-                    <cstring>Layout47</cstring>
+                    <cstring>Layout49</cstring>
                 </property>
                 <property stdset="1">
                     <name>geometry</name>
                     <rect>
                         <x>0</x>
                         <y>10</y>
-                        <width>590</width>
-                        <height>240</height>
+                        <width>588</width>
+                        <height>242</height>
                     </rect>
                 </property>
                 <hbox>
@@ -2104,7 +2104,7 @@
                         <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>Layout46</cstring>
+                            <cstring>Layout47</cstring>
                         </property>
                         <vbox>
                             <property stdset="1">
@@ -2320,22 +2320,11 @@
                                 <class>QCheckBox</class>
                                 <property stdset="1">
                                     <name>name</name>
-                                    <cstring>fAutoClear</cstring>
+                                    <cstring>fPreservePaths</cstring>
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Automatically clear finished transfers?</string>
-                                </property>
-                            </widget>
-                            <widget>
-                                <class>QCheckBox</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>fAutoClose</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Automatically close upload window?</string>
+                                    <string>Preserve paths?</string>
                                 </property>
                             </widget>
                         </vbox>
@@ -2344,7 +2333,7 @@
                         <class>QLayoutWidget</class>
                         <property stdset="1">
                             <name>name</name>
-                            <cstring>Layout39</cstring>
+                            <cstring>Layout48</cstring>
                         </property>
                         <vbox>
                             <property stdset="1">
@@ -2934,6 +2923,28 @@
                                     </size>
                                 </property>
                             </spacer>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fAutoClear</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Automatically clear finished transfers?</string>
+                                </property>
+                            </widget>
+                            <widget>
+                                <class>QCheckBox</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>fAutoClose</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Automatically close upload window?</string>
+                                </property>
+                            </widget>
                         </vbox>
                     </widget>
                 </hbox>

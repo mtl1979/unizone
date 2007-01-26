@@ -48,13 +48,13 @@ public:
 		DLRatings
 	};
 
-	void AddDownload(QString * files, QString * lfiles, int32 numFiles, QString remoteSessionID, uint32 remotePort,
+	void AddDownload(QString * files, QString * lfiles, QString * paths, int32 numFiles, QString remoteSessionID, uint32 remotePort,
 						const QString & remoteIP, uint64 remoteInstallID, bool firewalled, bool partial);
-	void AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, const WUserRef & user);
+	void AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, Queue<QString> & fLPaths, const WUserRef & user);
 
 
 	// Download tunnel
-	bool CreateTunnel(QString * files, QString * lfiles, int32 numFiles, const WUserRef & remoteUser);
+	bool CreateTunnel(QString * files, QString * lfiles, QString * lpaths, int32 numFiles, const WUserRef & remoteUser);
 	void TunnelAccepted(int64 myID, int64 hisID);
 	void TunnelRejected(int64 myID);
 
@@ -173,9 +173,9 @@ public slots:
 	void UserDisconnected(const WUserRef &);
 
 signals:
-	// Parameter 1 = Remote File Name, Parameter 2 = Local File Name, Parameter 3 = User Name
-	void FileFailed(const QString &, const QString &, const QString &); 
-	void FileInterrupted(const QString &, const QString &, const QString &);
+	// Parameter 1 = Remote File Name, Parameter 2 = Local File Name, Parameter 3 = Remote Path, Parameter 4 = User Name
+	void FileFailed(const QString &, const QString &, const QString &, const QString &); 
+	void FileInterrupted(const QString &, const QString &, const QString &, const QString &);
 	// the download window has been closed
 	void Closed();		
 

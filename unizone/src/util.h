@@ -152,7 +152,7 @@ bool endsWith(const QString &str1, const QString &str2, bool cs = true);
 
 bool BinkyCheck(const QString &user);
 
-QString downloadDir();
+QString downloadDir(const QString & = QString::null);
 QString imageFormats();
 
 QString WikiEscape(const QString &page);

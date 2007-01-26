@@ -137,7 +137,7 @@ WDownloadThread::~WDownloadThread()
 }
 
 void 
-WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, const QString & fromIP, const QString & fromSession,
+WDownloadThread::SetFile(QString * files, QString * lfiles, QString * lpaths, int32 numFiles, const QString & fromIP, const QString & fromSession,
 						 const QString & localSession, uint32 remotePort, bool firewalled, bool partial)
 {
 	fFileDl = files;
@@ -152,6 +152,19 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, cons
 		for (int l = 0; l < numFiles; l++)
 		{
 			fLocalFileDl[l] = QString::null;
+		}
+	}
+	if (lpaths)
+	{
+		fPaths = lpaths;
+	}
+	else
+	{
+		fPaths = new QString[numFiles];
+		CHECK_PTR(fPaths);
+		for (int l = 0; l < numFiles; l++)
+		{
+			fPaths[l] = QString::null;
 		}
 	}
 	fNumFiles = numFiles;
@@ -176,7 +189,7 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, cons
 		QString dlFile;
 		if (fLocalFileDl[0] == QString::null)
 		{
-			fLocalFileDl[0] = MakePath(downloadDir(), FixFileName(fFileDl[0]));
+			fLocalFileDl[0] = MakePath(downloadDir(fPaths[0]), FixFileName(fFileDl[0]));
 		}
 
 		dlFile = fLocalFileDl[0];
@@ -188,7 +201,7 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, int32 numFiles, cons
 }
 
 void
-WDownloadThread::SetFile(QString *files, QString *lfiles, int32 numFiles, const WUserRef &user)
+WDownloadThread::SetFile(QString *files, QString *lfiles, QString *lpaths, int32 numFiles, const WUserRef &user)
 {
 	fTunneled = true;
 	fFileDl = files;
@@ -205,6 +218,19 @@ WDownloadThread::SetFile(QString *files, QString *lfiles, int32 numFiles, const 
 			fLocalFileDl[l] = QString::null;
 		}
 	}
+	if (lpaths)
+	{
+		fPaths = lpaths;
+	}
+	else
+	{
+		fPaths = new QString[numFiles];
+		CHECK_PTR(fPaths);
+		for (int l = 0; l < numFiles; l++)
+		{
+			fPaths[l] = QString::null;
+		}
+	}	
 	fNumFiles = numFiles;
 	fCurFile = 0;
 	fIP = user()->GetUserHostName();
@@ -224,7 +250,7 @@ WDownloadThread::SetFile(QString *files, QString *lfiles, int32 numFiles, const 
 		QString dlFile;
 		if (fLocalFileDl[0] == QString::null)
 		{
-			fLocalFileDl[0] = MakePath(downloadDir(), FixFileName(fFileDl[0]));
+			fLocalFileDl[0] = MakePath(downloadDir(fPaths[0]), FixFileName(fFileDl[0]));
 		}
 
 		dlFile = fLocalFileDl[0];
@@ -506,7 +532,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 				if (fLocalFileDl[fCurFile] == QString::null)
 				{
 					// we have a "fixed" filename that eliminates characters Windows does not support
-					fLocalFileDl[fCurFile] = MakePath(downloadDir(), FixFileName(fname));
+					fLocalFileDl[fCurFile] = MakePath(downloadDir(fPaths[fCurFile]), FixFileName(fname));
 				}
 
 				fixed = fLocalFileDl[fCurFile];
@@ -820,7 +846,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 			// check to see wether the file exists
 			if (fLocalFileDl[c] == QString:: null)
 			{
-				fLocalFileDl[c] = MakePath(downloadDir(), FixFileName(fFileDl[c]));
+				fLocalFileDl[c] = MakePath(downloadDir(fPaths[c]), FixFileName(fFileDl[c]));
 			}
 
 			// get an MD5 hash code out of it
@@ -1039,9 +1065,18 @@ WDownloadThread::GetFileName(int i) const
 
 QString
 WDownloadThread::GetLocalFileName(int i) const
- {
+{
 	if (i > -1 && i < fNumFiles)
 		return fLocalFileDl[i]; 
+	else
+		return QString::null;
+}
+
+QString
+WDownloadThread::GetPath(int i) const
+{
+	if (i > -1 && i < fNumFiles)
+		return fPaths[i]; 
 	else
 		return QString::null;
 }

@@ -1697,13 +1697,71 @@ bool BinkyCheck(const QString &user)
 	return false;
 }
 
-QString downloadDir()
+QString FixPath(const QString & fixMe)
+{
+	// bad characters in Windows:
+	//	/, :, *, ?, ", <, >, |
+#ifdef WIN32
+	QString ret(fixMe);
+	for (unsigned int i = 0; i < ret.length(); i++)
+	{
+		switch ((QChar) ret.at(i))
+		{
+		case '/':
+			ret.replace(i, 1, "\\");
+			break;
+		case ':':
+		case '*':
+		case '?':
+		case '\"':
+		case '<':
+		case '>':
+		case '|':
+			ret.replace(i, 1, "_");
+			break;
+		}
+	}
+	return ret;
+#else
+	return fixMe;
+#endif
+}
+
+QString downloadDir(const QString &subdir)
 {
 	static QString out;
 	if (out.isEmpty())
 	{
 		out = "downloads";
 		out += QDir::separator();
+	}
+	if (gWin->fSettings->GetPreservePaths())
+	{
+		if (!subdir.isEmpty())
+		{
+			QString d(subdir);
+			QDir dir(out);
+			if (d[0] == '/')
+				d = d.mid(1);
+			if (d[1] == ':')
+				d = d.mid(3);
+			d = FixPath(d);
+			QStringTokenizer tok(d, "/\\");
+			// traverse path to check every directory exists
+			QString t;
+			while ((t = tok.GetNextToken()) != QString::null)
+			{
+				if (!dir.exists(t))
+				{
+					dir.mkdir(t);
+				}
+				dir.cd(t);
+			}
+			d.prepend(out);
+			d += QDir::separator();
+			qDebug("Path: "+d.utf8());
+			return d;
+		}
 	}
 	return out;
 }

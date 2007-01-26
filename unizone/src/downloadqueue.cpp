@@ -17,7 +17,7 @@ DownloadQueue::~DownloadQueue()
 }
 
 void
-DownloadQueue::addItem(const QString & file, const WUserRef & user)
+DownloadQueue::addItem(const QString & file, const QString & path, const WUserRef & user)
 {
 	int32 i = 0;
 	String mUser = (const char *) user()->GetUserID().utf8();
@@ -27,6 +27,8 @@ DownloadQueue::addItem(const QString & file, const WUserRef & user)
 	fQueue()->AddInt32(mUser, ++i);
 	mUser = mUser.Prepend("_");
 	fQueue()->AddString(mUser, (const char *) file.utf8());
+	mUser = mUser.Prepend("path");
+	fQueue()->AddString(mUser, (const char *) path.utf8());
 	fLock.Unlock();
 }
 
@@ -36,6 +38,7 @@ DownloadQueue::run()
 	String mUser;
 	QString user;
 	QString * files;
+	QString * paths;
 	WUserRef u;
 	int32 numItems;
 	fLock.Lock();
@@ -46,19 +49,28 @@ DownloadQueue::run()
 		u = gWin->FindUser(user);
 		if (u() != NULL)
 		{
+			int32 i;
+
 			fQueue()->FindInt32(mUser, &numItems);
 			files = new QString[numItems];
 			CHECK_PTR(files);
+			paths = new QString[numItems];
+			CHECK_PTR(paths);
 			mUser = mUser.Prepend("_");
-			for (int32 i = 0; i < numItems; i++)
+			for (i = 0; i < numItems; i++)
 			{
 				GetStringFromMessage(fQueue, mUser, i, files[i]);
 			}
+			mUser = mUser.Prepend("path");
+			for (i = 0; i < numItems; i++)
+			{
+				GetStringFromMessage(fQueue, mUser, i, paths[i]);
+			}
 			gWin->OpenDownload();
 			if (u()->GetFirewalled() && u()->GetTunneling() && gWin->fSettings->GetFirewalled())
-				gWin->fDLWindow->CreateTunnel(files, NULL, numItems, u);
+				gWin->fDLWindow->CreateTunnel(files, NULL, paths, numItems, u);
 			else
-				gWin->fDLWindow->AddDownload(files, NULL, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
+				gWin->fDLWindow->AddDownload(files, NULL, paths, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
 		}
 	}
 	fQueue()->Clear();

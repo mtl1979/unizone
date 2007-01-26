@@ -114,6 +114,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	fFireWalled->setChecked(gWin->fSettings->GetFirewalled());
 	fBinkyNuke->setChecked(gWin->fSettings->GetBinkyNuke());
 	fBlockDisconnected->setChecked(gWin->fSettings->GetBlockDisconnected());
+	fPreservePaths->setChecked(gWin->fSettings->GetPreservePaths());
 	fAutoClear->setChecked(gWin->fSettings->GetAutoClear());
 	fAutoClose->setChecked(gWin->fSettings->GetAutoClose());
 	fMultiColor->setChecked(gWin->fSettings->GetMultiColor());
@@ -328,6 +329,7 @@ WPrefs::OK()
 	gWin->fSettings->SetFirewalled(fFireWalled->isChecked());
 	gWin->fSettings->SetBinkyNuke(fBinkyNuke->isChecked());
 	gWin->fSettings->SetBlockDisconnected(fBlockDisconnected->isChecked());
+	gWin->fSettings->SetPreservePaths(fPreservePaths->isChecked());
 	gWin->fSettings->SetAutoClear(fAutoClear->isChecked());
 	gWin->fSettings->SetAutoClose(fAutoClose->isChecked());
 	gWin->fSettings->SetMultiColor(fMultiColor->isChecked());

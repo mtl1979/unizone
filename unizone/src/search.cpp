@@ -253,6 +253,7 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 				CHECK_PTR(info);
 				info->fiUser = user;
 				info->fiFilename = filename;
+				info->fiPath = qpath;
 				info->fiSize = size;
 				info->fiRef = file;
 				info->fiFirewalled = firewalled;
@@ -665,7 +666,7 @@ WSearch::Download()
 			{
 				PRINT("DOWNLOAD: Found item\n");
 				
-				fQueue.addItem(fi->fiFilename, fi->fiUser);
+				fQueue.addItem(fi->fiFilename, fi->fiPath, fi->fiUser);
 			}					
 		}
 
@@ -695,7 +696,7 @@ WSearch::DownloadAll()
 			PRINT("Checking: %S, %S\n", w0.getBuffer(), w5.getBuffer());
 #endif
 
-			fQueue.addItem(fi->fiFilename, fi->fiUser);
+			fQueue.addItem(fi->fiFilename, fi->fiPath, fi->fiUser);
 
 		}
 
