@@ -817,8 +817,10 @@ void ConvertToRegex(String & s)
 
 void ConvertToRegex(QString & s, bool simple)
 {
-	unsigned int x = 0;	
-	QString ret("^");
+	unsigned int x = 0;
+	QString ret;
+	if (!simple)
+		ret = "^";
 	
 	bool isFirst = true;
 	while(x < s.length())
@@ -856,7 +858,8 @@ void ConvertToRegex(QString & s, bool simple)
 		if (isFirst)
 			isFirst = false;
 	}
-	ret += "$";
+	if (!simple)
+		ret += "$";
 	s = ret;
 }
 
