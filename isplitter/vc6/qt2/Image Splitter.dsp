@@ -263,6 +263,10 @@ SOURCE=..\..\src\qt2\isplitter.pro
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\isplitter.rc
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\mainwindow.ui
 
 !IF  "$(CFG)" == "Image Splitter - Win32 Release"

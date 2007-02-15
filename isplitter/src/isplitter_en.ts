@@ -11,39 +11,39 @@
     <name>ImageSplitterBase</name>
     <message>
         <source>Image Splitter</source>
-        <translation>Image Splitter</translation>
+        <translation type='obsolete'>Image Splitter</translation>
     </message>
     <message>
         <source>Collage Size:</source>
-        <translation>Collage Size:</translation>
+        <translation type='obsolete'>Collage Size:</translation>
     </message>
     <message>
         <source>X</source>
-        <translation>X</translation>
+        <translation type='obsolete'>X</translation>
     </message>
     <message>
         <source>0</source>
-        <translation>0</translation>
+        <translation type='obsolete'>0</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation>Y</translation>
+        <translation type='obsolete'>Y</translation>
     </message>
     <message>
         <source>Image Offset:</source>
-        <translation>Image Offset:</translation>
+        <translation type='obsolete'>Image Offset:</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation>Top</translation>
+        <translation type='obsolete'>Top</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Bottom</translation>
+        <translation type='obsolete'>Bottom</translation>
     </message>
     <message>
         <source>Image Index:</source>
-        <translation>Image Index:</translation>
+        <translation type='obsolete'>Image Index:</translation>
     </message>
     <message>
         <source>Preview</source>
@@ -55,35 +55,35 @@
     </message>
     <message>
         <source>Collage Offset:</source>
-        <translation>Collage Offset:</translation>
+        <translation type='obsolete'>Collage Offset:</translation>
     </message>
     <message>
         <source>Collage</source>
-        <translation>Collage</translation>
+        <translation type='obsolete'>Collage</translation>
     </message>
     <message>
         <source>Image</source>
-        <translation>Image</translation>
+        <translation type='obsolete'>Image</translation>
     </message>
     <message>
         <source>Rotate</source>
-        <translation>Rotate</translation>
+        <translation type='obsolete'>Rotate</translation>
     </message>
     <message>
         <source>Transform</source>
-        <translation>Transform</translation>
+        <translation type='obsolete'>Transform</translation>
     </message>
     <message>
         <source>%</source>
-        <translation>%</translation>
+        <translation type='obsolete'>%</translation>
     </message>
     <message>
         <source>100</source>
-        <translation>100</translation>
+        <translation type='obsolete'>100</translation>
     </message>
     <message>
         <source>Scale</source>
-        <translation>Scale</translation>
+        <translation type='obsolete'>Scale</translation>
     </message>
 </context>
 <context>
