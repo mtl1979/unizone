@@ -114,14 +114,14 @@ AddNewSession(const AbstractReflectSessionRef & ref)
       newSession->_owner = this;
       if (newSession->AttachedToServer() == B_NO_ERROR)
       {
-         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "New %s (%lu total)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems());
+         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "New %s ("UINT32_FORMAT_SPEC" total)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems());
          return B_NO_ERROR;
       }
       else 
       {
          newSession->AboutToDetachFromServer();  // well, it *was* attached, if only for a moment
          newSession->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
-         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "%s aborted startup (%lu left)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
+         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "%s aborted startup ("UINT32_FORMAT_SPEC" left)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
       }
       newSession->_owner = NULL;
       (void) _sessions.Remove(newSession->GetSessionIDString());
@@ -654,7 +654,7 @@ status_t ReflectServer :: ClearLameDucks()
          {
             duck->AboutToDetachFromServer();
             duck->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
-            if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "Closed %s (%lu left)\n", duck->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
+            if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "Closed %s ("UINT32_FORMAT_SPEC" left)\n", duck->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
             duck->_owner = NULL;
             (void) _sessions.Remove(id);
          }
@@ -770,8 +770,8 @@ ReplaceSession(const AbstractReflectSessionRef & newSessionRef, AbstractReflectS
    {
        // Oops, rollback changes and error out
        newSession->SetGateway(AbstractMessageIOGatewayRef());
-       newSession->_hostName = "";
-       newSession->_port     = 0; 
+       newSession->_hostName.Clear();
+       newSession->_port = 0; 
        return B_ERROR;
    }
 }

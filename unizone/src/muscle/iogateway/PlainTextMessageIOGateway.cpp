@@ -75,7 +75,7 @@ AddIncomingText(const MessageRef & inMsg, const char * s)
       if (_incomingText.Length() > 0)
       {
          (void) ret()->AddString(PR_NAME_TEXT_LINE, _incomingText.Append(s));
-         _incomingText = "";
+         _incomingText.Clear();
       }
       else (void) ret()->AddString(PR_NAME_TEXT_LINE, s);
    }
@@ -133,7 +133,7 @@ PlainTextMessageIOGateway :: FlushInput(AbstractGatewayMessageReceiver & receive
       MessageRef inMsg = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
       if ((inMsg())&&(inMsg()->AddString(PR_NAME_TEXT_LINE, _incomingText) == B_NO_ERROR))
       {
-         _incomingText = "";
+         _incomingText.Clear();
          receiver.CallMessageReceivedFromGateway(inMsg);
       }
    }
@@ -154,9 +154,9 @@ Reset()
 
    AbstractMessageIOGateway::Reset();
    _currentSendingMessage.Reset();
-   _currentSendText = "";
+   _currentSendText.Clear();
    _prevCharWasCarriageReturn = false;
-   _incomingText = "";
+   _incomingText.Clear();
 }
 
 END_NAMESPACE(muscle);

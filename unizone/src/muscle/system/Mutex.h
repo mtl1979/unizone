@@ -193,8 +193,8 @@ private:
 #define PUNLOCK(name,pointer) _PUNLOCKimp(name,pointer,__FILE__,__LINE__)
 
 // don't call these directly -- call the PLOCK() and PUNLOCK() macros instead!
-static inline void _PLOCKimp(const char * n, const void * p, const char * f, int ln) {printf("%li plock p=%p [%s] %s:%i\n", (int32)pthread_self(), p, n, f, ln);}
-static inline void _PUNLOCKimp(const char * n, const void * p, const char * f, int ln) {printf("%li punlock p=%p [%s] %s:%i\n", (int32)pthread_self(), p, n, f, ln);}
+static inline void _PLOCKimp(const char * n, const void * p, const char * f, int ln) {printf(INT32_FORMAT_SPEC" plock p=%p [%s] %s:%i\n", (int32)pthread_self(), p, n, f, ln);}
+static inline void _PUNLOCKimp(const char * n, const void * p, const char * f, int ln) {printf(INT32_FORMAT_SPEC" punlock p=%p [%s] %s:%i\n", (int32)pthread_self(), p, n, f, ln);}
 #endif
 
 END_NAMESPACE(muscle);

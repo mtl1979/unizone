@@ -21,13 +21,13 @@ AbstractReflectSession() : _port(0), _connectingAsync(false), _asyncConnectIP(0)
    MASSERT(ml, "Please instantiate a CompleteSetupSystem object on the stack before creating any session objects (at beginning of main() is preferred)\n");
    if (ml->Lock() == B_NO_ERROR) 
    {
-      sprintf(_idString, "%lu", _idCounter++);  
+      sprintf(_idString, UINT32_FORMAT_SPEC, _idCounter++);  
       ml->Unlock();
    }
    else
    {
       LogTime(MUSCLE_LOG_ERROR, "Couldn't lock counter lock for new session!!?!\n");
-      sprintf(_idString, "%lu", _idCounter++);   // do it anyway, I guess
+      sprintf(_idString, UINT32_FORMAT_SPEC, _idCounter++);   // do it anyway, I guess
    }
 }
 

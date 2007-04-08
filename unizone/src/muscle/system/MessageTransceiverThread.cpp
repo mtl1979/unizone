@@ -181,8 +181,8 @@ int32 MessageTransceiverThread :: GetNextEventFromInternalThread(uint32 & code, 
 {
    // First, default values for everyone
    if (optRetRef)      optRetRef->Reset();
-   if (optFromSession) *optFromSession = "";
-   if (optFromPort)    *optFromPort    = 0;
+   if (optFromSession) optFromSession->Clear();
+   if (optFromPort)    *optFromPort = 0;
 
    MessageRef msgRef;
    int32 ret = GetNextReplyFromInternalThread(msgRef);

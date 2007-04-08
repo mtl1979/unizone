@@ -3,6 +3,12 @@ if you feel like hacking around, here is a list of some
 compile-time constants that you can define in the CXXFLAGS variable
 of your Makefile to alter muscle's behaviour:
 
+-DMUSCLE_64_BIT_PLATFORM
+   Set this to indicate that compilation is being done on a 64-bit platform.
+   This flag will be set automatically in support/MuscleSupport.h if defines
+   indicating a known 64-bit platform are detected; if not, you can set it
+   yourself in the Makefile if necessary.
+
 -DMUSCLE_PREFER_QT_OVER_WIN32
    Tell the Muscle Thread/Mutex/etc classes to prefer to use Qt Threading APIs over Win32 calls
    when both are available.  (By default, Win32 calls are preferred)

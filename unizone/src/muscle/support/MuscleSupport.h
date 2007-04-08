@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "3.30"
+#define MUSCLE_VERSION_STRING "3.31"
 
 #include <string.h>  /* for memcpy() */
 
@@ -123,20 +123,6 @@ using std::set_new_handler;
 # endif
 #endif
 
-/* Unfortunately, the 64-bit printf() format specifier is different for different compilers :^P */
-#if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || defined(__BEOS__)
-# if (_MSC_VER == 1200)
-#  define  INT64_FORMAT_SPEC "%I64i"
-#  define UINT64_FORMAT_SPEC "%I64u"
-# else
-#  define  INT64_FORMAT_SPEC "%Li"
-#  define UINT64_FORMAT_SPEC "%Lu"
-# endif
-#else
-#  define  INT64_FORMAT_SPEC "%lli"
-#  define UINT64_FORMAT_SPEC "%llu"
-#endif
-
 #ifdef __BEOS__
 # include <kernel/debugger.h>
 # define MCRASH_IMPL debugger("muscle assertion failure")
@@ -198,12 +184,12 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
     typedef unsigned char           uint8;
     typedef short                   int16;
     typedef unsigned short          uint16;
-#   if defined(__osf__)     /* some 64bit systems will have long=64-bit, int=32-bit */
+#   if defined(MUSCLE_64_BIT_PLATFORM) || defined(__osf__) || defined(__amd64__)     /* some 64bit systems will have long=64-bit, int=32-bit */
      typedef int                    int32;
      typedef unsigned int           uint32;
-#   elif defined(__amd64__) /* some 64bit systems will have long=64-bit, int=32-bit */
-     typedef int                    int32;
-     typedef unsigned int           uint32;
+#    ifndef MUSCLE_64_BIT_PLATFORM
+#     define MUSCLE_64_BIT_PLATFORM 1  // auto-define it if it wasn't defined in the Makefile
+#    endif
 #   else
      typedef long                   int32;
      typedef unsigned long          uint32;
@@ -221,6 +207,31 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 #  endif  /* !MUSCLE_TYPES_PREDEFINED */
 # endif  /* !__ATHEOS__*/
 #endif  /* __BEOS__*/
+
+/** Ugly platform-neutral macros for problematic sprintf()-format-strings */
+#if defined(MUSCLE_64_BIT_PLATFORM)
+# define  INT32_FORMAT_SPEC "%i"
+# define XINT32_FORMAT_SPEC "%x"
+# define UINT32_FORMAT_SPEC "%u"
+# define  INT64_FORMAT_SPEC "%lli"
+# define UINT64_FORMAT_SPEC "%llu"
+#else
+# define  INT32_FORMAT_SPEC "%li"
+# define XINT32_FORMAT_SPEC "%lx"
+# define UINT32_FORMAT_SPEC "%lu"
+# if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || defined(__BEOS__)
+#  if (_MSC_VER == 1200)
+#   define  INT64_FORMAT_SPEC "%I64i"
+#   define UINT64_FORMAT_SPEC "%I64u"
+#  else
+#   define  INT64_FORMAT_SPEC "%Li"
+#   define UINT64_FORMAT_SPEC "%Lu"
+#  endif
+# else
+#   define  INT64_FORMAT_SPEC "%lli"
+#   define UINT64_FORMAT_SPEC "%llu"
+# endif
+#endif
 
 #define MAKETYPE(x) ((((unsigned long)(x[0])) << 24) | \
                      (((unsigned long)(x[1])) << 16) | \

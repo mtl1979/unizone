@@ -75,11 +75,16 @@ public:
     */
    status_t RemoveChild(const char * key, StorageReflectSession * optNotifyWith, bool recurse, uint32 * optCounter);
 
-   /** Returns an iterator that can be used for iterating over our set of children. */
-   DataNodeRefIterator GetChildIterator() const {return _children ? _children->GetIterator() : DataNodeRefIterator();}
+   /** Returns an iterator that can be used for iterating over our set of children.
+     * @param flags If specified, this is the set of HTIT_FLAG_* flags to pass to the Hashtable iterator constructor.
+     */
+   DataNodeRefIterator GetChildIterator(uint32 flags = 0) const {return _children ? _children->GetIterator(flags) : DataNodeRefIterator();}
 
    /** Returns the number of child nodes this node contains. */
    uint32 CountChildren() const {return _children ? _children->GetNumItems() : 0;}
+
+   /** Returns true iff this node contains any child nodes. */
+   bool HasChildren() const {return ((_children)&&(_children->HasItems()));}
 
    /** Returns the ASCII name of this node (e.g. "joe") */
    const String & GetNodeName() const {return _nodeName;}

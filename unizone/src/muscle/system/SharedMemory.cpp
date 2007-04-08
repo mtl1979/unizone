@@ -47,7 +47,7 @@ status_t SharedMemory :: SetArea(const char * keyString, uint32 createSize, bool
    char buf[64];
    if (keyString == NULL)
    {
-      sprintf(buf, "%li", GetTickCount());  // No user-supplied name?  We'll pick an arbitrary name then
+      sprintf(buf, INT32_FORMAT_SPEC, GetTickCount());  // No user-supplied name?  We'll pick an arbitrary name then
       keyString = buf;
    }
    _areaName = keyString;
@@ -224,7 +224,7 @@ void SharedMemory :: UnsetArea()
       CloseHandle(_mutex);
       _mutex = NULL;
    }
-   _fileName = "";
+   _fileName.Clear();
 #else
    if (_area) 
    {
@@ -236,7 +236,7 @@ void SharedMemory :: UnsetArea()
    _semID            = -1;
 #endif
 
-   _areaName         = "";
+   _areaName.Clear();
    _areaSize         = 0;
    _isCreatedLocally = false;
 }

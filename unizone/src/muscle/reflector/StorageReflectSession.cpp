@@ -209,14 +209,14 @@ Cleanup()
             hostNode->RemoveChild(GetSessionIDString(), this, true, NULL);
 
             // If our host node is now empty, it goes too
-            if (hostNode->CountChildren() == 0) GetGlobalRoot().RemoveChild(hostNode->GetNodeName()(), this, true, NULL);
+            if (hostNode->HasChildren() == false) GetGlobalRoot().RemoveChild(hostNode->GetNodeName()(), this, true, NULL);
          }
       
          PushSubscriptionMessages();
       }
 
       // If the global root is now empty, it goes too
-      if (GetGlobalRoot().CountChildren() == 0)
+      if (GetGlobalRoot().HasChildren() == false)
       {
          GetCentralState().RemoveName(SRS_SHARED_DATA);
          ReleaseDataNode(&GetGlobalRoot());  // do this first!
@@ -242,7 +242,7 @@ NotifySubscribersThatNodeChanged(DataNode & modifiedNode, const MessageRef & old
    TCHECKPOINT;
 
    HashtableIterator<const char *, uint32> subIter = modifiedNode.GetSubscribers();
-   const char * next;
+   const char * next = NULL;  // set just to shut the compiler up
    while(subIter.GetNextKey(next) == B_NO_ERROR)
    {
       AbstractReflectSessionRef nRef = GetSession(next);
@@ -260,7 +260,7 @@ NotifySubscribersThatNodeIndexChanged(DataNode & modifiedNode, char op, uint32 i
    TCHECKPOINT;
 
    HashtableIterator<const char *, uint32> subIter = modifiedNode.GetSubscribers();
-   const char * next;
+   const char * next = NULL;  // set just to shut the compiler up
    while(subIter.GetNextKey(next) == B_NO_ERROR) 
    {
       AbstractReflectSessionRef nRef = GetSession(next);
@@ -374,7 +374,7 @@ NodeIndexChanged(DataNode & modifiedNode, char op, uint32 index, const char * ke
       {
          _sharedData->_subsDirty = true;
          char temp[100];
-         sprintf(temp, "%c%lu:%s", op, index, key);
+         sprintf(temp, "%c"UINT32_FORMAT_SPEC":%s", op, index, key);
          _nextIndexSubscriptionMessage()->AddString(np, temp);
       }
       else WARN_OUT_OF_MEMORY;
@@ -530,7 +530,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                   NodePathMatcher matcher;
                   matcher.PutPathsFromMessage(PR_NAME_KEYS, PR_NAME_FILTERS, msg, DEFAULT_PATH_PREFIX);
 
-                  void * args[] = {reply(), (void *)maxDepth};
+                  void * args[] = {reply(), (void *)((long)maxDepth)};
                   matcher.DoTraversal((PathMatchCallback)GetSubtreesCallbackFunc, this, GetGlobalRoot(), true, args);
                }
                MessageReceivedFromSession(*this, reply, NULL);  // send the result back to our client
@@ -1280,7 +1280,7 @@ GetDataCallback(DataNode & node, void * userData)
             for (uint32 i=0; i<indexLen; i++) 
             {
                char temp[100];
-               sprintf(temp, "%c%lu:%s", INDEX_OP_ENTRYINSERTED, i, (*index)[i]);
+               sprintf(temp, "%c"UINT32_FORMAT_SPEC":%s", INDEX_OP_ENTRYINSERTED, i, (*index)[i]);
                (void) indexUpdateMsg()->AddString(np, temp);
             }
             if (indexUpdateMsg()->CountNames() >= _maxSubscriptionMessageItems) SendGetDataResults(messageArray[1]);
@@ -1697,7 +1697,7 @@ StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * n
 
    if ((saveData)&&(msg.AddMessage(PR_NAME_NODEDATA, node->GetData()) != B_NO_ERROR)) return B_NO_ERROR;
    
-   if ((node->CountChildren() > 0)&&(maxDepth > 0))
+   if ((node->HasChildren())&&(maxDepth > 0))
    {
       // Save the node-index, if there is one
       const Queue<const char *> * index = node->GetIndex();

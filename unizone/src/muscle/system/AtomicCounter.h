@@ -5,6 +5,10 @@
 
 #include "support/MuscleSupport.h"
 
+#ifdef QT_CORE_LIB
+# include <QAtomic>
+#endif
+
 #if defined(MUSCLE_CUSTOM_ATOMIC_TYPE)
  extern void MuscleCustomAtomicInitialize(volatile MUSCLE_CUSTOM_ATOMIC_TYPE * c);  // should set (*c) to zero
  extern void MuscleCustomAtomicDestroy(   volatile MUSCLE_CUSTOM_ATOMIC_TYPE * c);  // Called when the AtomicCounter is going away
@@ -20,6 +24,8 @@
 #   include <windows.h>
 #  elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) || defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
     // empty
+#  elif defined(QT_VERSION) && (QT_VERSION >= 0x40000)
+#   define MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS
 #  elif defined(MUSCLE_USE_PTHREADS) || defined(QT_THREAD_SUPPORT)
 #   define MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS 1
 BEGIN_NAMESPACE(muscle);
@@ -96,6 +102,8 @@ public:
          : // No outputs
          : "q" (p)
          : "cc", "memory");
+#elif defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
+      (void) q_atomic_increment(&_count);
 #elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
       (void) DoMutexAtomicIncrement(&_count, 1);
 #else
@@ -150,6 +158,8 @@ public:
          : "cc", "memory"
          );
       return isZero;
+#elif defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
+      return (q_atomic_decrement(&_count) == 0);
 #elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
       return (DoMutexAtomicIncrement(&_count, -1) == 0);
 #else
@@ -190,9 +200,7 @@ private:
 # else
    int32 _count;
 # endif
-#elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
-   volatile int _count;
-#elif defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
+#elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) || defined(MUSCLE_USE_X86_INLINE_ASSEMBLY) || defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
    volatile int _count;
 #else
    volatile int32 _count;

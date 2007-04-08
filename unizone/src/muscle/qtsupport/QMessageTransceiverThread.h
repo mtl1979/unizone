@@ -489,7 +489,7 @@ private:
    QMessageTransceiverThread * _mtt;     // _mtt and _master may or may not point to the same object
 
    int32 _sessionID;  // will be set by our _mtt when we register with it
-   String _sessionTargetString;  // cached for convenience... "/*/%li"%(_sessionID)
+   String _sessionTargetString;  // cached for convenience... "/*/[_sessionID]"
 
    QMessageTransceiverHandler * _nextSeen;  // used by _mtt for a quickie linked list
 };

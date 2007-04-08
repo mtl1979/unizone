@@ -286,7 +286,7 @@ status_t RawDataQueryFilter :: SaveToArchive(Message & archive) const
 status_t RawDataQueryFilter :: SetFromArchive(const Message & archive)
 {
    if ((ValueQueryFilter::SetFromArchive(archive) != B_NO_ERROR)||(archive.FindInt8("op", (int8*)&_op) != B_NO_ERROR)) return B_ERROR;
-   if (archive.FindInt32("type", (int32*)_typeCode) != B_NO_ERROR) _typeCode = B_ANY_TYPE;
+   if (archive.FindInt32("type", (int32*)&_typeCode) != B_NO_ERROR) _typeCode = B_ANY_TYPE;
 
    _value.Reset();
    const uint8 * data;

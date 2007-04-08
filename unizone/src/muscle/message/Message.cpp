@@ -46,6 +46,20 @@ MessageRef GetMessageFromPool(const Message & copyMe)
    return ref;
 }
 
+MessageRef GetMessageFromPool(ObjectPool<Message> & pool, uint32 what)
+{
+   MessageRef ref(pool.ObtainObject());
+   if (ref()) ref()->what = what;
+   return ref;
+}
+
+MessageRef GetMessageFromPool(ObjectPool<Message> & pool, const Message & copyMe)
+{
+   MessageRef ref(pool.ObtainObject());
+   if (ref()) *(ref()) = copyMe;
+   return ref;
+}
+
 /* This class is for the private use of the Message class only! 
  * It represents one "name" of the message, which can in turn represent 1 or more
  * data items of a single type. 
@@ -208,7 +222,7 @@ protected:
       {
          DoIndents(indent,s); 
          char buf[128]; 
-         sprintf(buf, "    %lu. %p\n", i, _data.GetItemAt(i)->GetItemPointer()); 
+         sprintf(buf, "    "UINT32_FORMAT_SPEC". %p\n", i, _data.GetItemAt(i)->GetItemPointer()); 
          s += buf;
       }
    }
@@ -273,7 +287,7 @@ protected:
       {
          DoIndents(indent,s); 
          char buf[64]; 
-         sprintf(buf, "    %lu. ", i);  
+         sprintf(buf, "    "UINT32_FORMAT_SPEC". ", i);  
          s += buf;
          AddItemToString(s, this->_data[i]);
       }
@@ -354,7 +368,7 @@ protected:
       {
          DoIndents(indent,s); 
          char temp1[100]; sprintf(temp1, GetFormatString(), this->ItemAt(i));
-         char temp2[150]; sprintf(temp2, "    %lu. [%s]\n", i, temp1);  s += temp2;
+         char temp2[150]; sprintf(temp2, "    "UINT32_FORMAT_SPEC". [%s]\n", i, temp1);  s += temp2;
       }
    }
 };
@@ -503,7 +517,7 @@ public:
 
    virtual uint32 TypeCode() const {return B_INT32_TYPE;}
 
-   virtual const char * GetFormatString() const {return "%li";}
+   virtual const char * GetFormatString() const {return INT32_FORMAT_SPEC;}
 
    virtual GenericRef Clone() const;
 
@@ -760,7 +774,7 @@ public:
          DoIndents(indent,s);
 
          char buf[100]; 
-         sprintf(buf, "    %lu. ", i);
+         sprintf(buf, "    "UINT32_FORMAT_SPEC". ", i);
          s += buf;
 
          FlatCountable * fc = ItemAt(i)();
@@ -778,7 +792,7 @@ public:
 
          if (bb)
          {
-            sprintf(buf, "[flattenedSize=%lu] ", bb->GetNumBytes()); 
+            sprintf(buf, "[flattenedSize="UINT32_FORMAT_SPEC"] ", bb->GetNumBytes()); 
             s += buf;
             uint32 printBytes = muscleMin(bb->GetNumBytes(), (uint32)10);
             if (printBytes > 0)
@@ -860,7 +874,7 @@ public:
          DoIndents(indent,s);  
 
          char buf[100]; 
-         sprintf(buf, "    %lu. ", i); 
+         sprintf(buf, "    "UINT32_FORMAT_SPEC". ", i); 
          s += buf;
 
          MessageRef * dataItem;
@@ -871,7 +885,7 @@ public:
             if (msg)
             {
                char tcbuf[5]; MakePrettyTypeCodeString(msg->what, tcbuf);
-               sprintf(buf, "[what='%s' (%li/0x%lx), flattenedSize=%lu, numFields=%lu]\n", tcbuf, msg->what, msg->what, itemSize, msg->CountNames());
+               sprintf(buf, "[what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), flattenedSize="UINT32_FORMAT_SPEC", numFields="UINT32_FORMAT_SPEC"]\n", tcbuf, msg->what, msg->what, itemSize, msg->CountNames());
                s += buf;
 
                if (recurse) msg->AddToString(s, recurse, indent+3);
@@ -987,7 +1001,7 @@ public:
       {
          DoIndents(indent,s); 
          char buf[50]; 
-         sprintf(buf,"    %lu. [", i); 
+         sprintf(buf,"    "UINT32_FORMAT_SPEC". [", i); 
          s += buf;
          s += ItemAt(i);
          s += "]\n";
@@ -1122,7 +1136,7 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
 
    char buf[150];
    DoIndents(indent,s); 
-   sprintf(buf, "Message:  this=%p, what='%s' (%li/0x%lx), entryCount=%li, flatSize=%lu\n", this, prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), (uint32)FlattenedSize()); 
+   sprintf(buf, "Message:  this=%p, what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), entryCount="INT32_FORMAT_SPEC", flatSize="UINT32_FORMAT_SPEC"\n", this, prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), (uint32)FlattenedSize()); 
    s += buf;
 
    HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
@@ -1133,7 +1147,7 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
        uint32 tc = nextValue->TypeCode();
        MakePrettyTypeCodeString(tc, prettyTypeCodeBuf);
        DoIndents(indent,s); 
-       sprintf(buf, "  Entry: Name=[%s], GetNumItems()=%li, TypeCode()='%s' (%li) flatSize=%lu\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, (uint32)nextValue->FlattenedSize()); 
+       sprintf(buf, "  Entry: Name=[%s], GetNumItems()="INT32_FORMAT_SPEC", TypeCode()='%s' ("INT32_FORMAT_SPEC") flatSize="UINT32_FORMAT_SPEC"\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, (uint32)nextValue->FlattenedSize()); 
        s += buf;
        nextValue->AddToString(s, recurse, indent);
    }

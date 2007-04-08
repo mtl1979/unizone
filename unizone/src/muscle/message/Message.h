@@ -46,11 +46,25 @@ MessageRef::ItemPool * GetMessagePool();
  */
 MessageRef GetMessageFromPool(uint32 what = 0L);
 
+/** As above, except that the Message is obtained from the specified pool instead of from the default Message pool.
+ *  @param pool the ObjectPool to allocate the Message from.
+ *  @param what The 'what' code to set in the returned Message.
+ *  @return Reference to a Message object, or a NULL ref on failure (out of memory).
+ */
+MessageRef GetMessageFromPool(ObjectPool<Message> & pool, uint32 what = 0L);
+
 /** Convenience method:  Gets a Message from the message pool, makes it equal to (copyMe), and returns a reference to it.
  *  @param copyMe A Message to clone.
  *  @return Reference to a Message object, or a NULL ref on failure (out of memory).
  */
 MessageRef GetMessageFromPool(const Message & copyMe);
+
+/** As above, except that the Message is obtained from the specified pool instead of from the default Message pool.
+ *  @param pool the ObjectPool to allocate the Message from.
+ *  @param copyMe A Message to clone.
+ *  @return Reference to a Message object, or a NULL ref on failure (out of memory).
+ */
+MessageRef GetMessageFromPool(ObjectPool<Message> & pool, const Message & copyMe);
 
 // this declaration is for internal use only
 class AbstractDataArray;

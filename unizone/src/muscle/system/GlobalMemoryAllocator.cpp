@@ -80,7 +80,7 @@ status_t MemoryParanoiaCheckBuffer(void * userPtr, bool crashIfInvalid)
          {
             foundCorruption = true;
             TCHECKPOINT;
-            printf("MEMORY GUARD CORRUPTION (%i words before front): buffer (%p,%lu) (userptr=%p,%lu) expected %p, got %p!\n", (MUSCLE_ENABLE_MEMORY_PARANOIA-i), internalPtr, (uint32)(*internalPtr), userPtr, (uint32)userBufLen, expectedFrontVal, frontRead[i]);
+            printf("MEMORY GUARD CORRUPTION (%i words before front): buffer (%p,"UINT32_FORMAT_SPEC") (userptr=%p,"UINT32_FORMAT_SPEC") expected %p, got %p!\n", (MUSCLE_ENABLE_MEMORY_PARANOIA-i), internalPtr, (uint32)(*internalPtr), userPtr, (uint32)userBufLen, expectedFrontVal, frontRead[i]);
          }
          if (rearRead[i] != expectedRearVal)
          {
@@ -163,7 +163,7 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
       {
          *internalPtr = internalSize;  // our little header tag so that muscleFree() will know how big the allocation was
          _currentlyAllocatedBytes += internalSize;
-//printf("+%lu = %lu\n", (uint32)internalSize, (uint32)_currentlyAllocatedBytes);
+//printf("+"UINT32_FORMAT_SPEC" = "UINT32_FORMAT_SPEC"\n", (uint32)internalSize, (uint32)_currentlyAllocatedBytes);
 
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
          MemoryParanoiaPrepareBuffer(internalPtr, 0);
@@ -174,7 +174,7 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
    }
    if ((ma)&&(userPtr == NULL)) 
    {
-      printf("muscleAlloc:  allocation failure (tried to allocate %lu internal bytes / %lu user bytes)\n", (uint32)internalSize, (uint32)userSize);
+      printf("muscleAlloc:  allocation failure (tried to allocate "UINT32_FORMAT_SPEC" internal bytes / "UINT32_FORMAT_SPEC" user bytes)\n", (uint32)internalSize, (uint32)userSize);
 
       ma->SetAllocationHasFailed(true);
       ma->AllocationFailed(_currentlyAllocatedBytes, internalSize);
@@ -237,7 +237,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
             _currentlyAllocatedBytes += growBy;  // only reflect the newly-allocated bytes
             *newInternalPtr = newInternalSize;  // our little header tag so that muscleFree() will know how big the allocation was
             newUserPtr = CONVERT_INTERNAL_TO_USER_POINTER(newInternalPtr);
-//printf("r+%lu(->%lu) = %lu\n", (uint32)growBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes);
+//printf("r+"UINT32_FORMAT_SPEC"(->"UINT32_FORMAT_SPEC") = "UINT32_FORMAT_SPEC"\n", (uint32)growBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes);
 
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
             MemoryParanoiaPrepareBuffer(newInternalPtr, oldUserSize);
@@ -247,7 +247,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
       }
       if ((ma)&&(newUserPtr == NULL)) 
       {
-         printf("muscleRealloc:  reallocation failure (tried to grow %lu->%lu internal bytes / %lu->%lu user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
+         printf("muscleRealloc:  reallocation failure (tried to grow "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" internal bytes / "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
          fflush(stdout);  // make sure this message gets out!
 
          ma->SetAllocationHasFailed(true);
@@ -267,7 +267,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
       {
          *newInternalPtr = newInternalSize;  // our little header tag so that muscleFree() will know how big the allocation is now
          _currentlyAllocatedBytes -= shrinkBy;
-//printf("r-%lu(->%lu) = %lu\n", (uint32)shrinkBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes);
+//printf("r-"UINT32_FORMAT_SPEC"(->"UINT32_FORMAT_SPEC") = "UINT32_FORMAT_SPEC"\n", (uint32)shrinkBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes);
 
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
          MemoryParanoiaPrepareBuffer(newInternalPtr, ((uint32)-1));
@@ -277,7 +277,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
       else 
       {
          newUserPtr = oldUserPtr;  // I guess the best thing to do is just send back the old pointer?  Not sure what to do here.
-         printf("muscleRealloc:  reallocation failure (tried to shrink %lu->%lu internal bytes / %lu->%lu user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
+         printf("muscleRealloc:  reallocation failure (tried to shrink "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" internal bytes / "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
          fflush(stdout);  // make sure this message gets out!
       }
    }
@@ -314,7 +314,7 @@ void muscleFree(void * userPtr)
       _currentlyAllocatedBytes -= *internalPtr;
 
       if (ma) ma->AboutToFree(_currentlyAllocatedBytes, *internalPtr);
-//printf("-%lu = %lu\n", (uint32)*internalPtr, (uint32)_currentlyAllocatedBytes);
+//printf("-"UINT32_FORMAT_SPEC" = "UINT32_FORMAT_SPEC"\n", (uint32)*internalPtr, (uint32)_currentlyAllocatedBytes);
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
       if (glock) (void) glock->Unlock();

@@ -49,7 +49,7 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
       dcb.DCBlength = sizeof(DCB);
       GetCommState((void *)_handle, &dcb);
       
-      char modebuf[128]; sprintf(modebuf, "%s baud=%lu parity=N data=8 stop=1", port, baudRate);
+      char modebuf[128]; sprintf(modebuf, "%s baud="UINT32_FORMAT_SPEC" parity=N data=8 stop=1", port, baudRate);
       if (BuildCommDCBA(modebuf, &dcb))
       {
          dcb.fBinary           = 1;
@@ -298,7 +298,7 @@ status_t RS232DataIO :: GetAvailableSerialPortNames(Queue<String> & retList)
       for (uint32 i=1; i<256; i++)
       {
          // Try to open the port
-         char buf[128]; sprintf(buf, "COM%lu", i);
+         char buf[128]; sprintf(buf, "COM"UINT32_FORMAT_SPEC, i);
          ::HANDLE hPort = CreateFileA(buf, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
          if (hPort == INVALID_HANDLE_VALUE)
          {
@@ -446,7 +446,7 @@ void RS232DataIO :: IOThreadEntry()
          {
             DWORD err = GetLastError();
             if (err == ERROR_IO_PENDING) isWaiting = true;
-                                    else LogTime(MUSCLE_LOG_ERROR, "WaitCommEvent() failed! errorCode=%li\n", err);
+                                    else LogTime(MUSCLE_LOG_ERROR, "WaitCommEvent() failed! errorCode="INT32_FORMAT_SPEC"\n", err);
          }
       }
 
@@ -557,7 +557,7 @@ void RS232DataIO :: IOThreadEntry()
                else 
                {
                   if (GetLastError() == ERROR_IO_PENDING) pendingWriteBytes = numBytesToWrite;
-                                                     else LogTime(MUSCLE_LOG_ERROR, "RS232SerialDataIO: WriteFile() failed!  err=%li\n", GetLastError());
+                                                     else LogTime(MUSCLE_LOG_ERROR, "RS232SerialDataIO: WriteFile() failed!  err="INT32_FORMAT_SPEC"\n", GetLastError());
                }
             }
             if (keepGoing == false) break;

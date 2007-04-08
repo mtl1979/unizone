@@ -102,7 +102,7 @@ ThreadSetupSystem :: ~ThreadSetupSystem()
 int32 DoMutexAtomicIncrement(volatile int32 * count, int32 delta)
 {
    MASSERT(_atomicMutexes, "Please declare a SetupSystem object before doing any atomic incrementing!");
-   Mutex & mutex = _atomicMutexes[(((uint32)count)/sizeof(int))%MUTEX_POOL_SIZE];
+   Mutex & mutex = _atomicMutexes[(((uint32)((unsigned long)count))/sizeof(int))%MUTEX_POOL_SIZE];  // double-cast for AMD64
    (void) mutex.Lock();
    int32 ret = *count = (*count + delta);
    (void) mutex.Unlock();
@@ -488,7 +488,7 @@ status_t Flattenable :: CopyFromImplementation(const Flattenable & copyFrom)
 
 void Inet_NtoA(uint32 addr, char * ipbuf)
 {
-   sprintf(ipbuf, "%li.%li.%li.%li", (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
+   sprintf(ipbuf, INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC, (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
 }
 
 uint32 Inet_AtoN(const char * buf)
