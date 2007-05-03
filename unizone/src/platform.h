@@ -32,6 +32,21 @@ void WFlashWindow(HWND fWinHandle);
 #endif
 
 #include	<math.h>
+#include	<time.h>
+
+#if defined(WIN32)
+inline struct tm * gmtime_r(const time_t *clock, struct tm *result)
+{
+	memcpy(result, gmtime(clock), sizeof(struct tm));
+	return result;
+}
+
+inline struct tm * localtime_r(const time_t *clock, struct tm *result)
+{
+	memcpy(result, localtime(clock), sizeof(struct tm));
+	return result;
+}
+#endif
 
 #if defined(lrint)
 #  define HAVE_LRINT

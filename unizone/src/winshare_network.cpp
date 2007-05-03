@@ -568,7 +568,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			QString command = GetParameterString(sendText).lower();
 			String lt;
 			time_t currentTime = time(NULL);
-			tm * myTime;
+			tm myTime;
 			char zone[64];
 			QString tuser = QString::null;
 
@@ -614,16 +614,16 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (tuser == QString::null)
 			{
 				if (command != "gmt")
-					myTime = localtime(&currentTime);
+					localtime_r(&currentTime, &myTime);
 				else
-					myTime = gmtime(&currentTime);
+					gmtime_r(&currentTime, &myTime);
 				
-				lt = asctime(myTime);
+				lt = asctime(&myTime);
 				lt = lt.Substring(0, "\n");
 				
 				if (command == "gmt")
 					strcpy(zone, "GMT");
-				else if (myTime->tm_isdst != 1) 
+				else if (myTime.tm_isdst != 1) 
 					strcpy(zone, tzname[0]);
 				else 
 					strcpy(zone, tzname[1]);
@@ -677,20 +677,20 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			QString command = GetParameterString(sendText).lower();
 			String lt;
 			time_t currentTime = time(NULL);
-			tm * myTime;
+			tm myTime;
 			char zone[64];
 
 			if (command != "gmt")
-				myTime = localtime(&currentTime);
+				localtime_r(&currentTime, &myTime);
 			else
-				myTime = gmtime(&currentTime);
+				gmtime_r(&currentTime, &myTime);
 
-			lt = asctime(myTime);
+			lt = asctime(&myTime);
 			lt = lt.Substring(0, "\n");
 
 			if (command == "gmt")
 				strcpy(zone, "GMT");
-			else if (myTime->tm_isdst != 1) 
+			else if (myTime.tm_isdst != 1) 
 				strcpy(zone, tzname[0]);
 			else 
 				strcpy(zone, tzname[1]);
@@ -2487,23 +2487,23 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					tostr += "/unishare";
 
 					time_t currentTime = time(NULL);
-					tm * myTime;
+					tm myTime;
 					char zone[64];
 					
 					bool g = false;
 					(void) msg()->FindBool("gmt",&g);
 
 					if (g)
-						myTime = gmtime(&currentTime);
+						gmtime_r(&currentTime, &myTime);
 					else
-						myTime = localtime(&currentTime);
+						localtime_r(&currentTime, &myTime);
 					
-					lt = asctime(myTime);
+					lt = asctime(&myTime);
 					lt = lt.Substring(0, "\n");
 					
 					if (g)
 						strcpy(zone, "GMT");
-					else if (myTime->tm_isdst != 1) 
+					else if (myTime.tm_isdst != 1) 
 						strcpy(zone, tzname[0]);
 					else 
 						strcpy(zone, tzname[1]);
