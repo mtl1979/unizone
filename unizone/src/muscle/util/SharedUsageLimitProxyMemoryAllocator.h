@@ -43,9 +43,6 @@ public:
    /** Overridden to record this amount of memory being freed */
    virtual void AboutToFree(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
 
-   /** Overridden to record that the given amount of memory wasn't really allocated after all */
-   virtual void AllocationFailed(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
-
    /** Overridden to return our total memory size as passed in to our ctor. */
    virtual size_t GetMaxNumBytes() const {return _maxBytes;}
 

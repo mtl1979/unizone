@@ -79,7 +79,7 @@ public:
    /** Returns the hostname of this client that is associated with this session.
      * May only be called if this session is currently attached to a ReflectServer.
      */
-   const char * GetHostName() const;
+   const String & GetHostName() const;
 
    /** Returns the server-side port that this session was accepted on, or 0 if 
      * we weren't accepted from a port (e.g. we were created locally) 

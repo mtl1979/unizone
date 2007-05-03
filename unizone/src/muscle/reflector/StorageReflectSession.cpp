@@ -111,7 +111,7 @@ AttachedToServer()
    if (_sharedData == NULL) return B_ERROR;
    
    Message & state = GetCentralState();
-   const char * hostname = GetHostName();
+   const char * hostname = GetHostName()();
    const char * sessionid = GetSessionIDString();
 
    // Is there already a node for our hostname?
@@ -200,7 +200,7 @@ Cleanup()
    if (_sharedData)
    {
       DataNodeRef hostNodeRef;
-      if (GetGlobalRoot().GetChild(GetHostName(), hostNodeRef) == B_NO_ERROR)
+      if (GetGlobalRoot().GetChild(GetHostName()(), hostNodeRef) == B_NO_ERROR)
       {
          DataNode * hostNode = hostNodeRef.GetItemPointer();
          if (hostNode)
@@ -836,7 +836,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
          case PR_RESULT_PARAMETERS:
             // fall-thru
          case PR_RESULT_DATAITEMS:
-            LogTime(MUSCLE_LOG_WARNING, "Warning, client at [%s] sent me a PR_RESULT_* code.  Bad client!\n", GetHostName());
+            LogTime(MUSCLE_LOG_WARNING, "Warning, client at [%s] sent me a PR_RESULT_* code.  Bad client!\n", GetHostName()());
          break;
 
          case PR_COMMAND_JETTISONRESULTS:
@@ -1170,7 +1170,7 @@ KickClientCallback(DataNode & node, void * /*userData*/)
    StorageReflectSession * next = (StorageReflectSession *)(sref.GetItemPointer());
    if ((next)&&(next != this)) 
    {
-      LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is kicking session [%s/%s] off the server.\n", GetHostName(), GetSessionIDString(), next->GetHostName(), next->GetSessionIDString());
+      LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is kicking session [%s/%s] off the server.\n", GetHostName()(), GetSessionIDString(), next->GetHostName()(), next->GetSessionIDString());
       next->EndSession();  // die!!
    }
    return 2; // This causes the traversal to immediately skip to the next session

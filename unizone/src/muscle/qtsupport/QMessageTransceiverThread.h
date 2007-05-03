@@ -45,8 +45,15 @@ protected:
    /** Must be implemented to detach (handler) from (thread)
      * @param thread the QMessageTransceiverThread to detach the handler from
      * @param handler the QMessageTransceiverHandler to detach from the thread
+     * @param emitEndMessageBatchIfNecessary If true, and (handler) is currently in the middle of
+     *                                       a message-batch, then this method will cause (handler) to emit an
+     *                                       EndMessageBatch() signal before dissasociating itself
+     *                                       from this IMessageTransceiverMaster.  That way the
+     *                                       un-registration won't break the rule that says that one 
+     *                                       EndMessageBatch() signal must always be emitted for
+     *                                       every one BeginMessageBatch() signal.
      */
-   virtual void UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler) = 0;
+   virtual void UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, bool emitEndMessageBatchIfNecessary) = 0;
 
 private:
    friend class QMessageTransceiverHandler;
@@ -184,11 +191,14 @@ protected:
 
    virtual QMessageTransceiverThread * ObtainThread() {return this;}
    virtual status_t RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const AbstractReflectSessionRef & sessionRef);
-   virtual void UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler);
+   virtual void UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, bool emitEndMessageBatchIfNecessary);
 
 private:
    friend class QMessageTransceiverHandler;
    friend class QMessageTransceiverThreadPool;
+
+   void FlushSeenHandlers(bool doEmit) {while(_firstSeenHandler) RemoveFromSeenList(_firstSeenHandler, doEmit);}
+   void RemoveFromSeenList(QMessageTransceiverHandler * h, bool doEmit);
 
    IMessageTransceiverMaster * RegisterHandler(QMessageTransceiverHandler * handler, const AbstractReflectSessionRef & sref);
    void UnregisterHandler(IMessageTransceiverMaster * handler);
@@ -196,7 +206,6 @@ private:
    Hashtable<uint32, QMessageTransceiverHandler *> _handlers;  // registered handlers, by ID
 
    QMessageTransceiverHandler * _firstSeenHandler;
-   QMessageTransceiverHandler * _nextSeenHandler;
    QMessageTransceiverHandler * _lastSeenHandler;
 };
 
@@ -233,7 +242,7 @@ public:
 protected:
    virtual QMessageTransceiverThread * ObtainThread();
    virtual status_t RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const AbstractReflectSessionRef & sessionRef);
-   virtual void UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler);
+   virtual void UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, bool emitEndMessageBatchIfNecessary);
 
    /** Should create and return a new QMessageTransceiverThread object.
      * Broken out into a virtual method so that subclasses may alter its behavior if necessary.
@@ -461,8 +470,15 @@ public slots:
    /** Reverts this handler to its default state (as if it had just been constructed).
      * If the handler was associated with any IMessageTransceiverMaster, this will cleanly
      * disassociate it from the thread and close any connection that it represented.
+     * @param emitEndMessageBatchIfNecessary If true, and we are currently in the middle of
+     *                                       a message-batch, then this method will emit an
+     *                                       EndMessageBatch() signal before dissasociating itself
+     *                                       from the IMessageTransceiverMaster.  That way the
+     *                                       Reset() call won't break the rule that says that one 
+     *                                       EndMessageBatch() signal must always be emitted for
+     *                                       every one BeginMessageBatch() signal.
      */
-   virtual void Reset();
+   virtual void Reset(bool emitEndMessageBatchIfNecessary = true);
 
 protected:
    /** Called when we need a worker session inside one of the SetupAs*() methods. (i.e. if the
@@ -491,6 +507,7 @@ private:
    int32 _sessionID;  // will be set by our _mtt when we register with it
    String _sessionTargetString;  // cached for convenience... "/*/[_sessionID]"
 
+   QMessageTransceiverHandler * _prevSeen;  // used by _mtt for a quickie linked list
    QMessageTransceiverHandler * _nextSeen;  // used by _mtt for a quickie linked list
 };
 

@@ -16,11 +16,7 @@ void ProxyMemoryAllocator :: AboutToFree(size_t currentlyAllocatedBytes, size_t 
 
 void ProxyMemoryAllocator :: AllocationFailed(size_t currentlyAllocatedBytes, size_t allocRequestBytes)
 {
-   if (_slaveRef()) 
-   {
-      _slaveRef()->SetAllocationHasFailed(true);
-      _slaveRef()->AllocationFailed(currentlyAllocatedBytes, allocRequestBytes);
-   }
+   if (_slaveRef()) _slaveRef()->AllocationFailed(currentlyAllocatedBytes, allocRequestBytes);
 }
 
 void ProxyMemoryAllocator :: SetAllocationHasFailed(bool hasFailed)
@@ -52,11 +48,12 @@ UsageLimitProxyMemoryAllocator :: ~UsageLimitProxyMemoryAllocator()
  
 status_t UsageLimitProxyMemoryAllocator :: AboutToAllocate(size_t currentlyAllocatedBytes, size_t allocRequestBytes)
 {
-   return ((allocRequestBytes < _maxBytes)&&(currentlyAllocatedBytes + allocRequestBytes <= _maxBytes)) ? ProxyMemoryAllocator::AboutToAllocate(currentlyAllocatedBytes, allocRequestBytes) : B_ERROR;
+   return ((allocRequestBytes <= _maxBytes)&&(currentlyAllocatedBytes + allocRequestBytes <= _maxBytes)) ? ProxyMemoryAllocator::AboutToAllocate(currentlyAllocatedBytes, allocRequestBytes) : B_ERROR;
 }
 
-void AutoCleanupProxyMemoryAllocator :: AllocationFailed(size_t, size_t)
+void AutoCleanupProxyMemoryAllocator :: AllocationFailed(size_t currentlyAllocatedBytes, size_t allocRequestBytes)
 {
+   ProxyMemoryAllocator::AllocationFailed(currentlyAllocatedBytes, allocRequestBytes);
    uint32 nc = _callbacks.GetNumItems();
    for (uint32 i=0; i<nc; i++) if (_callbacks[i]()) (_callbacks[i]())->OutOfMemory();
 }

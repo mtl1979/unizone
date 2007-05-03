@@ -93,6 +93,23 @@ public:
    int _consoleLogLevel;
 };
 
+// Win32 doesn't have localtime_r, so we have to roll our own
+#if defined(WIN32)
+static inline struct tm * muscle_localtime_r(time_t * clock, struct tm * result)
+{
+   // Note that in Win32, (ret) points to thread-local storage, so this really
+   // is thread-safe despite the fact that it looks like it isn't!
+   struct tm * ret = localtime(clock);
+   if (ret) *result = *ret;
+   return ret;
+}
+#else
+static inline struct tm * muscle_localtime_r(time_t * clock, struct tm * result) 
+{
+   return localtime_r(clock, result);
+}
+#endif
+
 class DefaultFileLogger : public LogCallback
 {
 public:
@@ -105,7 +122,8 @@ public:
    {
       if ((ll <= _fileLogLevel)&&(_logFile == NULL))
       {
-         struct tm * now = localtime(&when);
+         struct tm wtm;
+         struct tm * now = muscle_localtime_r(&when, &wtm);
          char tb[100];                           
          sprintf(tb, "%02i%02i%02i%02i.log", now->tm_mon+1, now->tm_mday, now->tm_hour, now->tm_min); 
          _logFile = fopen(tb, "w");              
@@ -321,7 +339,8 @@ status_t SetConsoleLogLevel(int loglevel)
 
 void GetStandardLogLinePreamble(char * buf, int logLevel, time_t when)
 {
-   struct tm * temp = localtime(&when);
+   struct tm ltm;
+   struct tm * temp = muscle_localtime_r(&when, &ltm);
    sprintf(buf, "[%c %02i/%02i %02i:%02i:%02i] ", GetLogLevelName(logLevel)[0], temp->tm_mon+1, temp->tm_mday, temp->tm_hour, temp->tm_min, temp->tm_sec);
 }
 

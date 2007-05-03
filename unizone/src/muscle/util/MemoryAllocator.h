@@ -40,11 +40,14 @@ public:
 
    /** Called if an allocation fails (either because AboutToAllocate() returned other than B_NO_ERROR, or
     *  because malloc() returned NULL).   This method does not need to call SetMallocHasFailed(),
-    *  because the system will have already called it.
+    *  because that will be called separately.
     *  @param currentlyAllocatedBytes How many bytes the system has allocated currently
     *  @param allocRequestBytes How many bytes the system wanted to allocate, but couldn't.
     *  @note Implementations of this method shall assume that calls to this method will
     *        be serialized, so they don't need to do any serialization themselves.
+    *  @note This method should NOT undo any side effects that were incurred by
+    *        a previous successful AboutToAllocate() method, as that will be done 
+    *        separately by a call to AboutToFree().
     */
    virtual void AllocationFailed(size_t currentlyAllocatedBytes, size_t allocRequestBytes) = 0;
 

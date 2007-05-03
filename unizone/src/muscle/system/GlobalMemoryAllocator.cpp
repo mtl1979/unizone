@@ -142,7 +142,6 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
    USING_NAMESPACE(muscle);
 
    size_t internalSize = CONVERT_USER_TO_INTERNAL_SIZE(userSize);
-   bool mallocFailed = false;
 
    void * userPtr = NULL;
    MemoryAllocator * ma = _globalAllocatorRef();
@@ -170,18 +169,24 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
 #endif
          userPtr = CONVERT_INTERNAL_TO_USER_POINTER(internalPtr);
       }
-      else mallocFailed = true;
+      else if (ma) ma->AboutToFree(_currentlyAllocatedBytes+internalSize, internalSize);  // FogBugz #4494:  roll back the call to AboutToAllocate()!
    }
+
    if ((ma)&&(userPtr == NULL)) 
    {
+      // I call printf() instead of LogTime() to avoid any chance of an infinite recursion
       printf("muscleAlloc:  allocation failure (tried to allocate "UINT32_FORMAT_SPEC" internal bytes / "UINT32_FORMAT_SPEC" user bytes)\n", (uint32)internalSize, (uint32)userSize);
+      fflush(stdout);  // make sure this message gets out!
 
-      ma->SetAllocationHasFailed(true);
-      ma->AllocationFailed(_currentlyAllocatedBytes, internalSize);
+      ma->AllocationFailed(_currentlyAllocatedBytes, internalSize);  // see if ma can free spare buffers up for us
 
       // Maybe the AllocationFailed() method was able to free up some memory; so we'll try it one more time
       // That way we might be able to recover without interrupting the operation that was in progress.
-      if ((mallocFailed)&&(retryOnFailure)) userPtr = muscleAlloc(userSize, false);
+      if (retryOnFailure) 
+      {
+         userPtr = muscleAlloc(userSize, false);
+         if (userPtr == NULL) ma->SetAllocationHasFailed(true);
+      }
    }
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
@@ -213,7 +218,6 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
    if (newInternalSize == oldInternalSize) return oldUserPtr;  // same size as before?  Then we are already done!
 
    void * newUserPtr = NULL;
-   bool reallocFailed = false;
    MemoryAllocator * ma = _globalAllocatorRef();
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
@@ -243,19 +247,24 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
             MemoryParanoiaPrepareBuffer(newInternalPtr, oldUserSize);
 #endif
          }
-         else reallocFailed = true;
+         else if (ma) ma->AboutToFree(_currentlyAllocatedBytes+growBy, growBy);  // FogBugz #4494:  roll back the call to AboutToAllocate()!
       }
+
       if ((ma)&&(newUserPtr == NULL)) 
       {
+         // I call printf() instead of LogTime() to avoid any chance of an infinite recursion
          printf("muscleRealloc:  reallocation failure (tried to grow "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" internal bytes / "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
          fflush(stdout);  // make sure this message gets out!
 
-         ma->SetAllocationHasFailed(true);
-         ma->AllocationFailed(_currentlyAllocatedBytes, growBy);
+         ma->AllocationFailed(_currentlyAllocatedBytes, growBy);  // see if ma can free spare buffers up for us
 
          // Maybe the AllocationFailed() method was able to free up some memory; so we'll try it one more time
          // That way we might be able to recover without interrupting the operation that was in progress.
-         if ((reallocFailed)&&(retryOnFailure)) newUserPtr = muscleRealloc(oldUserPtr, newUserSize, false);
+         if (retryOnFailure) 
+         {
+            newUserPtr = muscleRealloc(oldUserPtr, newUserSize, false);
+            if (newUserPtr == NULL) ma->SetAllocationHasFailed(true);
+         }
       }
    }
    else

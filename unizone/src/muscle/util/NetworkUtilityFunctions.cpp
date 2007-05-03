@@ -13,6 +13,7 @@
 #ifdef WIN32
 # include <windows.h>
 # include <winsock.h>
+# include <iphlpapi.h>
 # pragma warning(disable: 4800 4018)
 #else
 # include <unistd.h>
@@ -36,6 +37,13 @@
 
 #include <string.h>
 #include <sys/stat.h>
+
+#if defined(__FreeBSD__) || defined(BSD) || defined(__APPLE__) || defined(__linux__)
+# define USE_GETIFADDRS 1
+# include <ifaddrs.h>
+#endif
+
+#include "system/GlobalMemoryAllocator.h"  // for muscleAlloc()/muscleFree()
 
 // On some OS's, calls like accept() take an int* rather than a uint32*
 // So I define net_length_t to avoid having to #ifdef all my code
@@ -315,6 +323,30 @@ int Connect(uint32 hostIP, uint16 port, const char * optDebugHostName, const cha
                  else Log(MUSCLE_LOG_INFO, "socket() failed!\n");
    }
    return -1;
+}
+
+bool IsIPAddress(const char * s)
+{
+   int numDots     = 0;
+   int numDigits   = 0;
+   bool prevWasDot = true;  // an initial dot is illegal
+   while(*s)
+   {
+      if (*s == '.')
+      {
+         if ((prevWasDot)||(++numDots > 3)) return false;
+         numDigits  = 0;
+         prevWasDot = true;
+      }
+      else
+      {
+         if ((prevWasDot)&&(atoi(s) > 255)) return false;
+         prevWasDot = false;
+         if ((muscleInRange(*s, '0', '9') == false)||(++numDigits > 3)) return false;
+      } 
+      s++;
+   }
+   return (numDots == 3);
 }
 
 uint32 GetHostByName(const char * name, bool expandLocalhost)
@@ -605,6 +637,170 @@ uint32 GetLocalIPAddress(uint32 which)
       }
    }
    return 0;  // failure
+}
+
+NetworkInterfaceInfo :: NetworkInterfaceInfo() : _ip(0), _netmask(0), _broadcastIP(0)
+{
+   _name[0] = _desc[0] = '\0';
+}
+
+NetworkInterfaceInfo :: NetworkInterfaceInfo(const char * name, const char * desc, uint32 ip, uint32 netmask, uint32 remoteIP) : _ip(ip), _netmask(netmask), _broadcastIP(remoteIP)
+{
+   strncpy(_name, name, sizeof(_name)); _name[sizeof(_name)-1] = '\0';
+   strncpy(_desc, desc, sizeof(_desc)); _desc[sizeof(_desc)-1] = '\0';
+}
+
+#if defined(USE_GETIFADDRS)
+static inline uint32 SockAddrToUint32(struct sockaddr * a)
+{
+   return ((a)&&(a->sa_family == AF_INET)) ? ntohl(((struct sockaddr_in *)a)->sin_addr.s_addr) : 0;
+}
+#endif
+
+status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results)
+{
+#if defined(USE_GETIFADDRS)
+   /////////////////////////////////////////////////////////////////////////////////////////////
+   // "Apparently, getifaddrs() is gaining a lot of traction at becoming the One True Standard
+   //  way of getting at interface info, so you're likely to find support for it on most modern
+   //  Unix-like systems, at least..."
+   //
+   // http://www.developerweb.net/forum/showthread.php?t=5085
+   /////////////////////////////////////////////////////////////////////////////////////////////
+
+   struct ifaddrs * ifap;
+   if (getifaddrs(&ifap) == 0)
+   {
+      status_t ret = B_NO_ERROR;
+      {
+         struct ifaddrs * p = ifap;
+         while(p)
+         {
+            uint32 ifaAddr  = SockAddrToUint32(p->ifa_addr);
+            uint32 maskAddr = SockAddrToUint32(p->ifa_netmask);
+            uint32 dstAddr  = SockAddrToUint32(p->ifa_broadaddr);
+            if ((ifaAddr > 0)&&(results.AddTail(NetworkInterfaceInfo(p->ifa_name, "", ifaAddr, maskAddr, dstAddr)) != B_NO_ERROR))
+            {
+               ret = B_ERROR;  // out of memory!?
+               break;
+            }
+            else p = p->ifa_next;
+         }
+      }
+      freeifaddrs(ifap);
+      return ret;
+   }
+#elif defined(WIN32)
+   // Adapted from example code at http://msdn2.microsoft.com/en-us/library/aa365917.aspx
+   status_t ret = B_NO_ERROR;  // optimistic default
+
+   // Now get Windows' IPv4 addresses table.  We gotta call GetIpAddrTable()
+   // multiple times in order to deal with potential race conditions properly.
+   MIB_IPADDRTABLE * ipTable = NULL;
+   {
+      ULONG bufLen = 0;
+      for (int i=0; i<5; i++) 
+      {
+         DWORD ipRet = GetIpAddrTable(ipTable, &bufLen, false);
+         if (ipRet == ERROR_INSUFFICIENT_BUFFER)
+         {
+            muscleFree(ipTable);  // in case we had previously allocated it
+            ipTable = (MIB_IPADDRTABLE *) muscleAlloc(bufLen);
+            if (ipTable == NULL) {WARN_OUT_OF_MEMORY; break;}
+         }
+         else if (ipRet == NO_ERROR) break;
+         else 
+         {
+            muscleFree(ipTable);
+            ipTable = NULL;
+            break;
+         }
+      }
+   }
+
+   if (ipTable)
+   {
+      // Try to get the Adapters-info table, so we can given useful names to the IP 
+      // addresses we are returning.  Once again, we gotta call GetAdaptersInfo() up to 
+      // 5 times to handle the potential race condition between the size-query call and 
+      // the get-data call.  I love a well-designed API :^P
+      IP_ADAPTER_INFO * pAdapterInfo = NULL;
+      {
+         ULONG bufLen = 0;
+         for (int i=0; i<5; i++) 
+         {
+            DWORD apRet = GetAdaptersInfo(pAdapterInfo, &bufLen);
+            if (apRet == ERROR_BUFFER_OVERFLOW)
+            {
+               muscleFree(pAdapterInfo);  // in case we had previously allocated it
+               pAdapterInfo = (IP_ADAPTER_INFO *) muscleAlloc(bufLen);
+               if (pAdapterInfo == NULL) {WARN_OUT_OF_MEMORY; break;}
+            }
+            else if (apRet == ERROR_SUCCESS) break;
+            else 
+            {
+               muscleFree(pAdapterInfo);
+               pAdapterInfo = NULL;
+               break;
+            }
+         }
+      }
+
+      for (DWORD i=0; i<ipTable->dwNumEntries; i++)
+      {
+         const MIB_IPADDRROW & row = ipTable->table[i];
+         
+         // Now lookup the appropriate adaptor-name in the pAdaptorInfos, if we can find it
+         const char * name = NULL;
+         const char * desc = NULL;
+         if (pAdapterInfo)
+         {
+            IP_ADAPTER_INFO * next = pAdapterInfo;
+            while((next)&&(name==NULL))
+            {
+               IP_ADDR_STRING * ipAddr = &next->IpAddressList;
+               while(ipAddr)
+               {
+                  if (Inet_AtoN(ipAddr->IpAddress.String) == ntohl(row.dwAddr))
+                  {
+                     name = next->AdapterName;
+                     desc = next->Description;
+                     break;
+                  }
+                  ipAddr = ipAddr->Next;
+               }
+               next = next->Next;
+            }
+         }
+         char buf[128];
+         if (name == NULL) 
+         {
+            sprintf(buf, "unnamed-%i", i);
+            name = buf;
+         }
+
+         uint32 ipAddr  = ntohl(row.dwAddr);
+         uint32 netmask = ntohl(row.dwMask);
+         uint32 baddr   = ipAddr & netmask;
+         if (row.dwBCastAddr) baddr |= ~netmask;
+         if (results.AddTail(NetworkInterfaceInfo(name, desc?desc:"", ipAddr, netmask, baddr)) != B_NO_ERROR)
+         {
+            ret = B_ERROR;
+            break;
+         }
+      }
+
+      muscleFree(pAdapterInfo);
+      muscleFree(ipTable);
+   }
+   else ret = B_ERROR;
+
+   return ret;
+#else
+   (void) results;  // for other OS's, this function isn't implemented.
+#endif
+
+   return B_ERROR;
 }
 
 END_NAMESPACE(muscle);

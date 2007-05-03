@@ -187,8 +187,7 @@ status_t SharedMemory :: DeleteArea()
          if (_areaID >= 0) (void) shmctl(_areaID, IPC_RMID, NULL);  // bye bye shared memory!
          _areaID = -1;
 
-         DECLARE_SEMCTL_ARG(semopts);
-         (void) semctl(_semID, IPC_RMID, 0, semopts);  // bye bye semaphore!
+         (void) semctl(_semID, 0, IPC_RMID, 0);  // bye bye semaphore!
 
          _semID = -1;
          UnsetArea();

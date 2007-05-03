@@ -32,7 +32,7 @@ AbstractReflectSession * FilterSessionFactory:: CreateSession(const String & cli
       HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
       while(iter.GetNextValue(next) == B_NO_ERROR) 
       {
-         if ((next())&&(strcmp(next()->GetHostName(), clientHostIP()) == 0)&&(++count >= _maxSessionsPerHost))
+         if ((next())&&(strcmp(next()->GetHostName()(), clientHostIP()) == 0)&&(++count >= _maxSessionsPerHost))
          {
             LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] refused (host already has "UINT32_FORMAT_SPEC" sessions open).\n", clientHostIP(), _maxSessionsPerHost);
             return NULL;
@@ -121,7 +121,7 @@ status_t FilterSessionFactory :: PutBanPattern(const char * banPattern)
    {
       if (_bans.Put(banPattern, newMatcherRef) == B_NO_ERROR) 
       {
-         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is banning [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
+         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is banning [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
          return B_NO_ERROR;
       }
    }
@@ -140,7 +140,7 @@ status_t FilterSessionFactory :: PutRequirePattern(const char * requirePattern)
    {
       if (_requires.Put(requirePattern, newMatcherRef) == B_NO_ERROR) 
       {
-         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is requiring [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
+         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is requiring [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
          return B_NO_ERROR;
       }
    }
@@ -153,7 +153,7 @@ status_t FilterSessionFactory :: RemoveBanPattern(const char * banPattern)
 {
    if (_bans.Remove(banPattern) == B_NO_ERROR)
    {
-      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing ban [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
+      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing ban [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -163,7 +163,7 @@ status_t FilterSessionFactory :: RemoveRequirePattern(const char * requirePatter
 {
    if (_requires.Remove(requirePattern) == B_NO_ERROR)
    {
-      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing requirement [%s] on port %u\n", _tempLogFor->GetHostName(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
+      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing requirement [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
       return B_NO_ERROR;
    }
    return B_ERROR;

@@ -121,6 +121,7 @@ NetworkSetupSystem :: NetworkSetupSystem()
       WSADATA wsaData;
       int ret = WSAStartup(versionWanted, &wsaData);
       MASSERT((ret == 0), "NetworkSetupSystem:  Couldn't initialize Winsock!");
+      (void) ret;  // avoid compiler warning
 #else
       signal(SIGPIPE, SIG_IGN);  // avoid evil SIGPIPE signals from sending on a closed socket
 #endif
@@ -306,8 +307,13 @@ uint64 GetCurrentTime64(uint32 timeType)
    if (timeType == MUSCLE_TIMEZONE_LOCAL)
    {
       time_t now = time(NULL);
-      struct tm * tm = gmtime(&now);
-      if (tm) ret += ((int64)now-mktime(tm))*((int64)1000000);
+      struct tm gmtm;
+      struct tm * tm = gmtime_r(&now, &gmtm);
+      if (tm) 
+      {
+         ret += ((int64)now-mktime(tm))*((int64)1000000);
+         if (tm->tm_isdst>0) ret += 60*60*((int64)1000000);  // FogBugz #4498
+      }
    }
    return ret;
 #endif

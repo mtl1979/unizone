@@ -4,6 +4,7 @@
 #define MuscleNetworkUtilityFunctions_h
 
 #include "support/MuscleSupport.h"
+#include "util/Queue.h"
 #include "util/TimeUtilityFunctions.h"
 
 // These includes are here so that people can use select() without having to #include the proper
@@ -183,6 +184,13 @@ int CreateAcceptingSocket(uint16 port, int maxbacklog = 20, uint16 * optRetPort 
  */
 void Inet_NtoA(uint32 address, char * outBuf);
 
+/** Returns true iff (s) is a well-formed IP address (e.g. "192.168.0.1")
+  * @param (s) An ASCII string to check the formatting of
+  * @returns true iff there are exactly four dot-separated integers between 0 and 255
+  *               and no extraneous characters in the string.
+  */
+bool IsIPAddress(const char * s);
+
 /** Given a dotted-quad IP address in ASCII format (e.g. "192.168.0.1"), returns
   * the equivalent IP address in uint32 (packet binary) form. 
   * @param buf numeric IP address in ASCII.
@@ -334,6 +342,49 @@ status_t SetUDPSocketBroadcastEnabled(int sock, bool broadcast);
  *  @returns B_NO_ERROR on success, or B_ERROR on failure.
  */
 status_t SetUDPSocketTarget(int sock, const char * remoteHostName, uint16 remotePort, bool expandLocalhost = false);
+
+/** This little container class is used to return data from the GetNetworkInterfaceInfos() function, below */
+class NetworkInterfaceInfo
+{
+public:
+   NetworkInterfaceInfo();
+   NetworkInterfaceInfo(const char * name, const char * desc, uint32 ip, uint32 netmask, uint32 broadcastIP);
+
+   /** Returns the name of this interface, or "" if the name is not known. */
+   const char * GetName() const {return _name;}
+
+   /** Returns a (human-readable) description of this interface, or "" if a description is unavailable. */
+   const char * GetDescription() const {return _desc;}
+
+   /** Returns the IP address of this interface */
+   uint32 GetLocalAddress() const {return _ip;}
+
+   /** Returns the netmask of this interface */
+   uint32 GetNetmask() const {return _netmask;}
+
+   /** If this interface is a point-to-point interface, this method returns the IP
+     * address of the machine at the remote end of the interface.  Otherwise, this
+     * method returns the broadcast address for this interface.
+     */
+   uint32 GetBroadcastAddress() const {return _broadcastIP;}
+
+private:
+   char _name[128];
+   char _desc[128];
+   uint32 _ip;
+   uint32 _netmask;
+   uint32 _broadcastIP;
+};
+
+/** This function queries the local OS for information about all available network
+  * interfaces.  Note that this method is only implemented for some OS's (Linux,
+  * MacOS/X, Windows), and that on other OS's it may just always return B_ERROR.
+  * @param results On success, zero or more NetworkInterfaceInfo objects will
+  *                be added to this Queue for you to look at.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory,
+  *          call not implemented for the current OS, etc)
+  */
+status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results);
 
 END_NAMESPACE(muscle);
 

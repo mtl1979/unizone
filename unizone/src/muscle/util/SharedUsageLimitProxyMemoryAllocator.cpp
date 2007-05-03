@@ -73,6 +73,13 @@ status_t SharedUsageLimitProxyMemoryAllocator :: ChangeDaemonCounter(int32 byteD
    return B_NO_ERROR;
 }
 
+// FogBugz #4494:  Don't let the counters fall below zero, ever!
+static inline void AdjustValue(size_t & v, int32 byteDelta)
+{
+   if ((byteDelta >= 0)||(v >= ((size_t)(-byteDelta)))) v += byteDelta;
+                                                   else v = 0;
+}
+
 // Locks the shared memory region and adjusts our counter there.  This is a bit expensive,
 // so we try to minimize the number of times we do it.
 status_t SharedUsageLimitProxyMemoryAllocator :: ChangeDaemonCounterAux(int32 byteDelta)
@@ -86,9 +93,9 @@ status_t SharedUsageLimitProxyMemoryAllocator :: ChangeDaemonCounterAux(int32 by
          size_t gs = _shared.GetAreaSize() / sizeof(size_t);
          if (((size_t)(_memberID+1) < gs)&&((byteDelta <= 0)||(sa[0] + byteDelta <= _maxBytes)))
          {
-            sa[0]           += byteDelta;
-            sa[_memberID+1] += byteDelta;
-//printf("delta(%li): slot %li is now %u, total is now %u/%u\n", byteDelta, _memberID, sa[_memberID+1], sa[0], _maxBytes);
+            AdjustValue(sa[0],           byteDelta);
+            AdjustValue(sa[_memberID+1], byteDelta);
+//printf("delta("INT32_FORMAT_SPEC"): slot "INT32_FORMAT_SPEC" is now %u, total is now %u/%u\n", byteDelta, _memberID, sa[_memberID+1], sa[0], _maxBytes);
             ret = B_NO_ERROR;
          }
       }
@@ -106,12 +113,6 @@ status_t SharedUsageLimitProxyMemoryAllocator :: AboutToAllocate(size_t cab, siz
       if (ret != B_NO_ERROR) (void) ChangeDaemonCounter(-((int32)arb)); // roll back!
    }
    return ret;
-}
-
-void SharedUsageLimitProxyMemoryAllocator :: AllocationFailed(size_t cab, size_t arb)
-{
-   (void) ChangeDaemonCounter(-((int32)arb));
-   ProxyMemoryAllocator::AllocationFailed(cab, arb);
 }
 
 void SharedUsageLimitProxyMemoryAllocator :: AboutToFree(size_t cab, size_t arb)

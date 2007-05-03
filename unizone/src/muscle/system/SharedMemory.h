@@ -86,8 +86,8 @@ public:
    const String & GetAreaName() const {return _areaName;}
 
    /** Returns a pointer to shared memory area.  Note that this memory
-    *  may be acccessed or written to by other processes!  So you'll typically
-    *  want to call LockArea() before accessing the memory it points to.
+    *  may be accessed, written to, or even deleted by other processes!  So you'll typically
+    *  want to call one of the LockArea*() methods before accessing the memory it points to.
     *  @returns Pointer to the shared memory area, or NULL if there is no current area.
     */
    uint8 * GetAreaPointer() const {return (uint8 *) _area;}
@@ -97,7 +97,7 @@ public:
 
    /** Rudely deletes the current shared area.
     *  After this call returns, no processes will be able to SetArea() or LockArea()
-    *  our shared memory any more.  Note that this method will call LockArea(false)
+    *  our shared memory any more.  Note that this method will call LockAreaReadWrite()
     *  before deleting everything, so other processes who currently have the area
     *  locked will at least be able to finish their current transaction before everything
     *  goes away.

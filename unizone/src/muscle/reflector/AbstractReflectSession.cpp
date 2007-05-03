@@ -40,12 +40,12 @@ AbstractReflectSession ::
    SetOutputPolicy(PolicyRef());  // make sure the output policy knows we're going away
 }
 
-const char * 
+const String &
 AbstractReflectSession ::
 GetHostName() const 
 {
    MASSERT(IsAttachedToServer(), "Can't call GetHostName() while not attached to the server");
-   return _hostName.Cstr();
+   return _hostName;
 }
 
 uint16

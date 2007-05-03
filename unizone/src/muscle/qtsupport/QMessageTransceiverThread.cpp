@@ -8,12 +8,12 @@ BEGIN_NAMESPACE(muscle);
 static const uint32 QMTT_SIGNAL_EVENT = QEvent::User+14837;  // why yes, this is a completely arbitrary number
 
 #if QT_VERSION >= 0x040000
-QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const char * name) : QObject(parent), _firstSeenHandler(NULL), _nextSeenHandler(NULL), _lastSeenHandler(NULL)
+QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const char * name) : QObject(parent), _firstSeenHandler(NULL), _lastSeenHandler(NULL)
 {
    if (name) setObjectName(name);
 }
 #else
-QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const char * name) : QObject(parent, name), _firstSeenHandler(NULL), _nextSeenHandler(NULL), _lastSeenHandler(NULL)
+QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const char * name) : QObject(parent, name), _firstSeenHandler(NULL), _lastSeenHandler(NULL)
 {
    if (!name) setName("QMessageTransceiverThread");
 }
@@ -62,8 +62,6 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
    uint16 port;
    bool seenIncomingMessage = false;
 
-   _firstSeenHandler = _nextSeenHandler = _lastSeenHandler  = NULL; // paranoia
-
    // Check for any new messages from our internal thread
    while(GetNextEventFromInternalThread(code, &next, &sessionID, &port) >= 0)
    {
@@ -101,6 +99,7 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
                if (_firstSeenHandler == NULL) _firstSeenHandler = _lastSeenHandler = handler;
                else
                {
+                  _firstSeenHandler->_prevSeen = handler;
                   handler->_nextSeen = _firstSeenHandler;
                   _firstSeenHandler = handler;
                }
@@ -110,19 +109,28 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
          }
       }
    }
-   _lastSeenHandler = NULL;
-   while(_firstSeenHandler)
-   {
-      _nextSeenHandler = _firstSeenHandler->_nextSeen;
-      _firstSeenHandler->_nextSeen = NULL;
-      _firstSeenHandler->EmitEndMessageBatch();
-      _firstSeenHandler = _nextSeenHandler; 
-   }
+
+   FlushSeenHandlers(true);
+
    if (seenIncomingMessage) emit EndMessageBatch();
+}
+
+void QMessageTransceiverThread :: RemoveFromSeenList(QMessageTransceiverHandler * h, bool doEmit)
+{
+   if ((h == _lastSeenHandler)||(h->_nextSeen))  // make sure (h) is actually in the list
+   {
+      if (h->_prevSeen) h->_prevSeen->_nextSeen = h->_nextSeen;
+                   else _firstSeenHandler       = h->_nextSeen;
+      if (h->_nextSeen) h->_nextSeen->_prevSeen = h->_prevSeen;
+                   else _lastSeenHandler        = h->_prevSeen;
+      h->_prevSeen = h->_nextSeen = NULL;
+      if (doEmit) h->EmitEndMessageBatch();  // careful:  lots of interesting things could happen inside this call!
+   }
 }
 
 void QMessageTransceiverThread :: Reset()
 {
+   FlushSeenHandlers(true);
    for (HashtableIterator<uint32, QMessageTransceiverHandler *> iter(_handlers); iter.HasMoreKeys(); iter++) iter.GetValue()->ClearRegistrationFields();
    _handlers.Clear();
 
@@ -149,24 +157,16 @@ status_t QMessageTransceiverThread :: RegisterHandler(QMessageTransceiverThread 
    }
 }
 
-void QMessageTransceiverThread :: UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler)
+void QMessageTransceiverThread :: UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, bool emitEndMessageBatchIfNecessary)
 {
-   if (this != &thread) thread.UnregisterHandler(thread, handler);  // paranoia
+   if (this != &thread) thread.UnregisterHandler(thread, handler, emitEndMessageBatchIfNecessary);  // paranoia
    else
    {
       if (_handlers.Remove(handler->_sessionID) == B_NO_ERROR)
       {
          // paranoia:  in case we are doing this in the middle of our last-seen traversal, we need
          // to safely remove (handler) from the traversal so that the traversal doesn't break
-         if (handler == _firstSeenHandler) _firstSeenHandler = handler->_nextSeen;
-         if (handler == _nextSeenHandler)  _nextSeenHandler  = handler->_nextSeen;
-         if (handler == _lastSeenHandler)  _lastSeenHandler  = handler->_nextSeen;
-         QMessageTransceiverHandler * h = _firstSeenHandler;  // at this point it's guaranteed that (_firstSeenHandler != handler)
-         while(h) 
-         {
-            if (h->_nextSeen == handler) h->_nextSeen = handler->_nextSeen;
-            h = h->_nextSeen;
-         }
+         if ((emitEndMessageBatchIfNecessary)&&((handler->_nextSeen)||(handler == _lastSeenHandler))) RemoveFromSeenList(handler, emitEndMessageBatchIfNecessary);
 
          (void) RemoveSessions(handler->_sessionTargetString());
       }
@@ -232,19 +232,19 @@ status_t QMessageTransceiverThreadPool :: RegisterHandler(QMessageTransceiverThr
    return B_ERROR;
 }
 
-void QMessageTransceiverThreadPool :: UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler)
+void QMessageTransceiverThreadPool :: UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, bool emitEndMessageBatchIfNecessary)
 {
-   thread.UnregisterHandler(thread, handler);
+   thread.UnregisterHandler(thread, handler, emitEndMessageBatchIfNecessary);
    if (thread.GetHandlers().GetNumItems() < _maxSessionsPerThread) (void) _threads.MoveToBack(&thread);
 }
 
 #if QT_VERSION >= 0x040000
-QMessageTransceiverHandler :: QMessageTransceiverHandler(QObject * parent, const char * name) : QObject(parent), _master(NULL), _mtt(NULL), _nextSeen(NULL)
+QMessageTransceiverHandler :: QMessageTransceiverHandler(QObject * parent, const char * name) : QObject(parent), _master(NULL), _mtt(NULL), _prevSeen(NULL), _nextSeen(NULL)
 {
    if (name) setObjectName(name);
 }
 #else
-QMessageTransceiverHandler :: QMessageTransceiverHandler(QObject * parent, const char * name) : QObject(parent, name), _master(NULL), _mtt(NULL), _nextSeen(NULL)
+QMessageTransceiverHandler :: QMessageTransceiverHandler(QObject * parent, const char * name) : QObject(parent, name), _master(NULL), _mtt(NULL), _prevSeen(NULL), _nextSeen(NULL)
 {
    // empty
 }
@@ -252,7 +252,7 @@ QMessageTransceiverHandler :: QMessageTransceiverHandler(QObject * parent, const
 
 QMessageTransceiverHandler :: ~QMessageTransceiverHandler()
 {
-   (void) Reset();  // yes, it's virtual... but that's okay, it will just call our implementation
+   (void) Reset(false);  // yes, it's virtual... but that's okay, it will just call our implementation
 }
 
 status_t QMessageTransceiverHandler :: SetupAsNewSession(IMessageTransceiverMaster & master, int socket, const AbstractReflectSessionRef & optSessionRef)
@@ -266,7 +266,7 @@ status_t QMessageTransceiverHandler :: SetupAsNewSession(IMessageTransceiverMast
       if ((sRef())&&(master.RegisterHandler(*thread, this, sRef) == B_NO_ERROR))
       {
          if (thread->AddNewSession(socket, sRef) == B_NO_ERROR) return B_NO_ERROR;
-         master.UnregisterHandler(*thread, this);
+         master.UnregisterHandler(*thread, this, true);
       }
    }
    return B_ERROR;
@@ -283,7 +283,7 @@ status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTranscei
       if ((sRef())&&(master.RegisterHandler(*thread, this, sRef) == B_NO_ERROR)) 
       {
          if (thread->AddNewConnectSession(targetIPAddress, port, sRef) == B_NO_ERROR) return B_NO_ERROR;
-         master.UnregisterHandler(*thread, this);
+         master.UnregisterHandler(*thread, this, true);
       }
    }
    return B_ERROR;
@@ -300,7 +300,7 @@ status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTranscei
       if ((sRef())&&(master.RegisterHandler(*thread, this, sRef) == B_NO_ERROR))
       {
          if (thread->AddNewConnectSession(targetHostName, port, sRef, expandLocalhost) == B_NO_ERROR) return B_NO_ERROR;
-         master.UnregisterHandler(*thread, this);
+         master.UnregisterHandler(*thread, this, true);
       }
    }
    return B_ERROR;
@@ -331,12 +331,12 @@ status_t QMessageTransceiverHandler :: SendMessageToSession(const MessageRef & m
    return _mtt ? _mtt->SendMessageToSessions(msgRef, _sessionTargetString()) : B_ERROR;
 }
 
-void QMessageTransceiverHandler :: Reset()
+void QMessageTransceiverHandler :: Reset(bool emitEndBatchIfNecessary)
 {
    if (_mtt)
-   { 
+   {
       (void) _mtt->RemoveSessions(_sessionTargetString());
-      _master->UnregisterHandler(*_mtt, this);
+      _master->UnregisterHandler(*_mtt, this, emitEndBatchIfNecessary);
    }
 }
 
@@ -360,6 +360,7 @@ void QMessageTransceiverHandler :: ClearRegistrationFields()
    _mtt = NULL;
    _sessionID = -1;
    _sessionTargetString.Clear();
+   _prevSeen = _nextSeen = NULL;
 }
 
 AbstractReflectSession * QMessageTransceiverHandler :: CreateDefaultWorkerSession(QMessageTransceiverThread & thread)
