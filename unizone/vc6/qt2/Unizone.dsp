@@ -4595,7 +4595,7 @@ SOURCE=..\..\src\windows\_getbuf.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\windows\imports.c
+SOURCE=..\..\src\windows\resetstk.c
 # End Source File
 # Begin Source File
 
@@ -4609,10 +4609,6 @@ SOURCE=..\..\src\windows\vwsscanf.c
 # Begin Group "CRT Headers"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\windows\imports.h
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\src\windows\vsscanf.h
