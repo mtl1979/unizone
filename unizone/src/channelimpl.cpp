@@ -258,13 +258,11 @@ Channel::AddUser(const QString & user)
 	if (ok)
 	{
 		WUserRef uref;
-		if (fUsers.GetValue(uid, uref) == B_NO_ERROR)
+		uref = gWin->FindUser(user);
+		if (uref() && !uref()->IsBot())
 		{
-			if (uref() && !uref()->IsBot())
-			{
-				fUsers.Put(uid, uref);
-				uref()->AddToListView(fChannelUsers);
-			}
+			fUsers.Put(uid, uref);
+			uref()->AddToListView(fChannelUsers);
 		}
 	}
 }
