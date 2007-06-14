@@ -728,6 +728,7 @@ Channel::UserDisconnected(const WUserRef &user)
 			}
 			user()->RemoveFromListView(fChannelUsers);
 			fUsers.Remove(uid);
+			gWin->fChannels->PartChannel(fName, sid);
 		}
 	}
 }
