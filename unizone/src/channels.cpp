@@ -154,10 +154,10 @@ Channels::IsPublic(const QString & channel)
 void
 Channels::ChannelAdded(const QString &channel, const QString &sid, int64 timecreated)
 {
+	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(MakeKey(channel), info) != B_OK)
+	if (fChannels.GetValue(key, info) != B_OK)
 	{
-		String key = MakeKey(channel);
 		info = new ChannelInfo(channel, sid);
 		fChannels.Put(key, info);
 		// Create ListView Item
