@@ -307,8 +307,12 @@ uint64 GetCurrentTime64(uint32 timeType)
    if (timeType == MUSCLE_TIMEZONE_LOCAL)
    {
       time_t now = time(NULL);
+# if defined(__BEOS__) && !defined(HAIKU)
+      struct tm * tm = gmtime(&now);
+# else
       struct tm gmtm;
       struct tm * tm = gmtime_r(&now, &gmtm);
+# endif
       if (tm) 
       {
          ret += ((int64)now-mktime(tm))*((int64)1000000);

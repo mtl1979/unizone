@@ -275,7 +275,12 @@ status_t SharedMemory :: AdjustSemaphore(short delta)
    if (_semID >= 0)
    {
       struct sembuf sop = {0, delta, SEM_UNDO};
-      if (semop(_semID, &sop, 1) == 0) return B_NO_ERROR;
+
+      while(1)
+      {
+         if (semop(_semID, &sop, 1) == 0) return B_NO_ERROR;
+         if (errno != EINTR) break;  // on EINTR, we'll try again --jaf
+      }
    }
    return B_ERROR;
 }

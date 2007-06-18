@@ -116,7 +116,7 @@ public:
    IFailoverNotifyTarget * GetFailoverNotifyTarget() const {return _target;}
 
 private:
-   bool HasChild() const {return (_childIOs.GetNumItems() > 0);}
+   bool HasChild() const {return (_childIOs.HasItems());}
    DataIO * GetChild() const {return (_childIOs.Head()());}
 
    Queue<DataIORef> _childIOs;
