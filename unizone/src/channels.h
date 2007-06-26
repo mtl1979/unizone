@@ -10,6 +10,7 @@
 #include <qlistview.h>
 
 #include "util/String.h"
+#include "util/Hashtable.h"
 #include "qtsupport/QMuscleSupport.h"
 
 #include "channelinfo.h"
