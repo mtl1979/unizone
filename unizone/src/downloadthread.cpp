@@ -515,7 +515,6 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 			//	Int64		beshare:StartOffset
 						
 			// I only care to get the size and name
-			// String fname, session;
 			QString fname;
 			if ((msg()->FindInt64("beshare:File Size", (int64 *)&fFileSize) == B_OK) && 
 				(GetStringFromMessage(msg, "beshare:File Name", fname) == B_OK))

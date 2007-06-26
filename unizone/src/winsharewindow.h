@@ -22,9 +22,10 @@
 #include <qlayout.h>
 #include <qtabwidget.h>
 
-#include "privatewindowimpl.h"
-#include "qtsupport/QAcceptSocketsThread.h"
 #include "support/MuscleSupport.h"
+#include "qtsupport/QAcceptSocketsThread.h"
+
+#include "privatewindowimpl.h"
 #include "user.h"
 #include "chatwindow.h"
 #include "search.h"

@@ -1028,19 +1028,19 @@ Reverse(QString &text)
 	}
 }
 
-void MakeNodePath(String &file)
+void MakeNodePath(QString &file)
 {
 	if (gWin->fSettings)
 	{
 		if (gWin->fSettings->GetFirewalled())
 		{
-			file = file.Prepend("fires/");
+			file = file.prepend("fires/");
 		}
 		else
 		{
-			file = file.Prepend("files/");
+			file = file.prepend("files/");
 		}
-		file = file.Prepend("beshare/");
+		file = file.prepend("beshare/");
 	}
 }
 

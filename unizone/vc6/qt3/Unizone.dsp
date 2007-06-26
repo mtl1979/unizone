@@ -3277,6 +3277,10 @@ InputName=QMessageTransceiverThread
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\muscle\qtsupport\QMuscleSupport.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\muscle\regex\QueryFilter.h
 # End Source File
 # Begin Source File

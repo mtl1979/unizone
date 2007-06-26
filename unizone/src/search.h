@@ -12,15 +12,16 @@
 #include <qlayout.h>
 #include <qregexp.h>
 
+#include "message/Message.h"
+#include "qtsupport/QMuscleSupport.h"
+
 #include "user.h"
 #include "combo.h"
 #include "ulistview.h"
 #include "wstatusbar.h"
 #include "searchitem.h"
 #include "textevent.h"
-#include "message/Message.h"
-#include "support/MuscleSupport.h"
-#include "util/Hashtable.h"
+
 
 using namespace muscle;
 
@@ -95,7 +96,7 @@ private:
 	bool fFileRegExpNeg, fUserRegExpNeg;
 	QString fFileRegExpStr, fUserRegExpStr;
 
-	Hashtable<String, WFileInfo *> fFileList;
+	Hashtable<QString, WFileInfo *> fFileList;
 
 	NetClient * fNetClient;
 

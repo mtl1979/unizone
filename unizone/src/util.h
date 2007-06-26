@@ -90,7 +90,7 @@ QString ComputePercentString(int64 cur, int64 max);
 void Reverse(QString &text);
 
 // Convert file name to node path equivalent
-void MakeNodePath(String &file);
+void MakeNodePath(QString &file);
 
 // Return full filepath from 'dir' and 'file'
 String MakePath(const String &dir, const String &file);

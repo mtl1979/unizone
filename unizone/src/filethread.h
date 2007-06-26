@@ -16,6 +16,7 @@ using std::iterator;
 #include "util/Queue.h"
 #include "message/Message.h"
 #include "system/Thread.h"
+#include "qtsupport/QMuscleSupport.h"
 
 using namespace muscle;
 
@@ -39,10 +40,10 @@ public:
 
 	int GetNumFiles() const;
 
-	Hashtable<String, QString> & GetSharedFiles() { return fFiles; }
-	HashtableIterator<String, QString> GetSharedFilesIterator(uint32 flags) { return fFiles.GetIterator(flags); }
+	Hashtable<QString, QString> & GetSharedFiles() { return fFiles; }
+	HashtableIterator<QString, QString> GetSharedFilesIterator(uint32 flags) { return fFiles.GetIterator(flags); }
 	void GetSharedFile(unsigned int n, MessageRef & mref);
-	bool FindFile(const String & file, MessageRef & ref);
+	bool FindFile(const QString & file, MessageRef & ref);
 	void EmptyList();
 
 	enum { ScanDone = 'fTsD' };
@@ -58,8 +59,8 @@ private:
 	QObject * fOwner;
 	bool * fShutdownFlag;
 	Queue<QString> fPaths;
-	Hashtable<String, QString> fFiles;
-	Hashtable<String, String> fScannedDirs;
+	Hashtable<QString, QString> fFiles;
+	QStringList fScannedDirs;
 	Queue<QString> files;
 
 	bool CheckFile(const QString & file);	// checks whether this file has been found or not

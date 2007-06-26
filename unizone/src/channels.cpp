@@ -12,13 +12,6 @@
 #include <qmessagebox.h>
 #include <qpushbutton.h>
 
-String
-MakeKey(const QString &a)
-{
-	String out = (const char *) a.utf8();
-	return out;
-}
-
 Channels::Channels(QWidget *parent, NetClient *fNet)
 :QDialog(parent, "Channels", false, WStyle_SysMenu | WStyle_Minimize | WStyle_Maximize | WStyle_Title)
 {
@@ -108,7 +101,7 @@ void
 Channels::ChannelAdmins(const QString &channel, const QString &sid, const QString &admins)
 {
 	ChannelInfo * info;
-	if (fChannels.GetValue(MakeKey(channel), info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		if ( info->IsAdmin(sid) )
 		{
@@ -122,7 +115,7 @@ bool
 Channels::IsAdmin(const QString & channel, const QString & user)
 {
 	ChannelInfo * info;
-	if (fChannels.GetValue(MakeKey(channel), info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		return info->IsAdmin(user);
 	}
@@ -133,7 +126,7 @@ bool
 Channels::IsOwner(const QString & channel, const QString & user)
 {
 	ChannelInfo * info;
-	if (fChannels.GetValue(MakeKey(channel), info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		return info->IsOwner(user);
 	}
@@ -144,7 +137,7 @@ bool
 Channels::IsPublic(const QString & channel)
 {
 	ChannelInfo * info;
-	if (fChannels.GetValue(MakeKey(channel), info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		return info->GetPublic();
 	}
@@ -154,12 +147,11 @@ Channels::IsPublic(const QString & channel)
 void
 Channels::ChannelAdded(const QString &channel, const QString &sid, int64 timecreated)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) != B_OK)
+	if (fChannels.GetValue(channel, info) != B_OK)
 	{
 		info = new ChannelInfo(channel, sid);
-		fChannels.Put(key, info);
+		fChannels.Put(channel, info);
 		// Create ListView Item
 		QListViewItem * item = new QListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
 		info->SetItem(item);
@@ -239,12 +231,11 @@ Channels::CreateChannel()
 	if ( ok && !channel.isEmpty() )
 	{
 		// user entered something and pressed ok
-		String key = MakeKey(channel);
-		if (!fChannels.ContainsKey(key))
+		if (!fChannels.ContainsKey(channel))
 		{
 			// Create Channel
 			ChannelInfo * info = new ChannelInfo(channel, gWin->GetUserID());
-			fChannels.Put(key, info);
+			fChannels.Put(channel, info);
 
 			// Create ListView item
 			QListViewItem * item = new QListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
@@ -268,7 +259,7 @@ Channels::CreateChannel()
 				cc()->AddString(PR_NAME_KEYS, to);
 				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
 				cc()->AddInt64("when", (int64) GetCurrentTime64());
-				cc()->AddString("channel", key);
+				cc()->AddString("channel", (const char *) channel.utf8());
 				fNetClient->SendMessageToSessions(cc);
 			}
 		}
@@ -293,9 +284,8 @@ Channels::JoinChannel()
 void
 Channels::JoinChannel(const QString & channel)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		Channel * win;
 		if (info->GetWindow())
@@ -350,7 +340,7 @@ Channels::JoinChannel(const QString & channel)
 				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
 				cc()->AddString("who", (const char *) gWin->GetUserID().utf8());
 				cc()->AddInt64("when", (int64) GetCurrentTime64());
-				cc()->AddString("channel", key);
+				cc()->AddString("channel", (const char *) channel.utf8());
 				fNetClient->SendMessageToSessions(cc);
 			}
 		}	
@@ -360,9 +350,8 @@ Channels::JoinChannel(const QString & channel)
 void
 Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 timecreated)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		if (timecreated >= info->GetCreated())
 		{
@@ -376,7 +365,7 @@ Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 
 				cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
 				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
 				cc()->AddInt64("when", (int64) info->GetCreated());
-				cc()->AddString("channel", key);
+				cc()->AddString("channel", (const char *) channel.utf8());
 				fNetClient->SendMessageToSessions(cc);
 			}
 		}
@@ -390,7 +379,7 @@ Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 
 	{
 		// Create Channel
 		ChannelInfo *info = new ChannelInfo(channel, gWin->GetUserID());
-		fChannels.Put(key, info);
+		fChannels.Put(channel, info);
 
 		// Create ListView item
 		QListViewItem * item = new QListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
@@ -405,9 +394,8 @@ Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 
 void
 Channels::ChannelJoin(const QString & channel, const QString & user)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		info->AddUser(user);
 		UpdateUsers(info);
@@ -417,9 +405,8 @@ Channels::ChannelJoin(const QString & channel, const QString & user)
 void
 Channels::ChannelPart(const QString & channel, const QString & user)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		info->RemoveUser(user);
 		UpdateUsers(info);
@@ -429,7 +416,6 @@ Channels::ChannelPart(const QString & channel, const QString & user)
 void
 Channels::PartChannel(const QString & channel, const QString & user)
 {
-	String key = MakeKey(channel);
 	if (user == gWin->GetUserID())
 	{
 		MessageRef cc(GetMessageFromPool(NetClient::ChannelPart));
@@ -439,13 +425,13 @@ Channels::PartChannel(const QString & channel, const QString & user)
 			cc()->AddString(PR_NAME_KEYS, to);
 			cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
 			cc()->AddInt64("when", (int64) GetCurrentTime64());
-			cc()->AddString("channel", key);
+			cc()->AddString("channel", (const char *) channel.utf8());
 			fNetClient->SendMessageToSessions(cc);
 		}
 	}
 
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		// Make sure we don't have a stale window reference, so we can re-join later
 		if (user == gWin->GetUserID())
@@ -457,7 +443,7 @@ Channels::PartChannel(const QString & channel, const QString & user)
 		if (info->NumUsers() == 0)
 		{
 			delete info;
-			fChannels.Remove(key);
+			fChannels.Remove(channel);
 		}
 	}
 }
@@ -465,9 +451,8 @@ Channels::PartChannel(const QString & channel, const QString & user)
 void
 Channels::AddAdmin(const QString & channel, const QString & user)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		WUserRef uref = gWin->FindUser(user);
 		if (uref())
@@ -481,9 +466,8 @@ Channels::AddAdmin(const QString & channel, const QString & user)
 void
 Channels::RemoveAdmin(const QString & channel, const QString & user)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		WUserRef uref = gWin->FindUser(user);
 		if (uref())
@@ -498,9 +482,8 @@ QString
 Channels::GetAdmins(const QString & channel)
 {
 	QString adm = QString::null;
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		adm = info->GetAdmins();
 	}
@@ -510,9 +493,8 @@ Channels::GetAdmins(const QString & channel)
 void
 Channels::SetTopic(const QString & channel, const QString & topic)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		info->SetTopic(topic);
 		UpdateTopic(info);
@@ -522,9 +504,8 @@ Channels::SetTopic(const QString & channel, const QString & topic)
 void
 Channels::SetPublic(const QString & channel, bool pub)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		info->SetPublic(pub);
 		UpdatePublic(info);
@@ -534,9 +515,8 @@ Channels::SetPublic(const QString & channel, bool pub)
 void
 Channels::ChannelInvite(const QString & channel, const QString & user, const QString & who)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (!fChannels.ContainsKey(key))
+	if (!fChannels.ContainsKey(channel))
 	{
 		// We need to have existing channel to be able to check for admin status
 		if (who == gWin->GetUserID())
@@ -545,7 +525,7 @@ Channels::ChannelInvite(const QString & channel, const QString & user, const QSt
 		}
 	}
 
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		if (IsAdmin(channel, user))
 		{
@@ -587,9 +567,8 @@ Channels::ChannelInvite(const QString & channel, const QString & user, const QSt
 void
 Channels::ChannelKick(const QString &channel, const QString &user, const QString &who)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		if (IsAdmin(channel, user))
 		{
@@ -608,9 +587,8 @@ Channels::ChannelKick(const QString &channel, const QString &user, const QString
 void
 Channels::ChannelTopic(const QString &channel, const QString &user, const QString &topic)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		if (IsAdmin(channel, user))
 		{
@@ -631,9 +609,8 @@ Channels::ChannelTopic(const QString &channel, const QString &user, const QStrin
 void
 Channels::ChannelOwner(const QString &channel, const QString &user, const QString &owner)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		if (IsAdmin(channel, user))
 		{
@@ -653,9 +630,8 @@ Channels::ChannelOwner(const QString &channel, const QString &user, const QStrin
 void
 Channels::ChannelPublic(const QString &channel, const QString &user, bool pub)
 {
-	String key = MakeKey(channel);
 	ChannelInfo * info;
-	if (fChannels.GetValue(key, info) == B_OK)
+	if (fChannels.GetValue(channel, info) == B_OK)
 	{
 		if (IsAdmin(channel, user))
 		{
@@ -673,10 +649,9 @@ Channels::UserIDChanged(const QString &oldid, const QString &newid)
 {
 	WChannelIter iter = fChannels.GetIterator(HTIT_FLAG_NOREGISTER);
 	ChannelInfo *info;
-	String key;
-	while ((iter.GetNextKey(key) == B_OK) && (iter.GetNextValue(info) == B_OK))
+	QString channel;
+	while ((iter.GetNextKey(channel) == B_OK) && (iter.GetNextValue(info) == B_OK))
 	{
-		QString channel = QString::fromUtf8(key.Cstr());
 		if (IsOwner(channel, oldid))
 		{
 			// Owner changed

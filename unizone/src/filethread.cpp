@@ -47,7 +47,7 @@ WFileThread::InternalThreadEntry()
 	PRINT("Clearing list\n");
 	EmptyList();
 	Lock(); 
-	fScannedDirs.Clear(true);
+	fScannedDirs.clear();
 	fPaths.Clear();
 	Unlock(); 
 	int iScannedDirs = 0;
@@ -87,7 +87,7 @@ WFileThread::InternalThreadEntry()
 #endif
 
 	Lock();
-	fScannedDirs.Clear(true);
+	fScannedDirs.clear();
 	files.Clear(true);
 	Unlock();
 
@@ -148,13 +148,11 @@ WFileThread::ParseDirAux(QString &dir)
 			if (info->isDir()) // Directory?
 			{
 				dir = info->absFilePath();
-				String d = (const char *) dir.utf8();
 				
 				Lock();
 				
 				{
-					String path;
-					ret = fScannedDirs.Get(d, path);
+					ret = fScannedDirs.findIndex(dir) != -1;
 				}
 				
 				Unlock();
@@ -163,7 +161,7 @@ WFileThread::ParseDirAux(QString &dir)
 				{
 					// Add to checked dirs
 					Lock();
-					fScannedDirs.Put(d, d); 
+					fScannedDirs.append(dir); 
 					Unlock();
 				}
 			}
@@ -320,10 +318,9 @@ WFileThread::AddFile(const QString & filePath)
 					if (size > 0)
 					{
 						QString name = ufi->getName();
-						String file = (const char *) name.utf8();
 						
 						Lock(); 
-						fFiles.Put(file, filePath);
+						fFiles.Put(name, filePath);
 						Unlock(); 
 
 #ifdef WIN32
@@ -345,23 +342,18 @@ WFileThread::AddFile(const QString & filePath)
 bool
 WFileThread::CheckFile(const QString & file)
 {
+	bool ret;
+
 	Lock(); 
 
-	bool ret = false;
+	ret = fFiles.ContainsKey(file);
 
-	String key = (const char *) file.utf8();
-	QString qFile;
-
-	if (fFiles.Get(key, qFile) == B_NO_ERROR)
-	{
-		ret = true;
-	}
 	Unlock(); 
 	return ret;
 }
 
 bool
-WFileThread::FindFile(const String & file, MessageRef & ref)
+WFileThread::FindFile(const QString & file, MessageRef & ref)
 {
 	Lock();
 	bool ret = false;
@@ -401,7 +393,7 @@ WFileThread::GetSharedFile(unsigned int n, MessageRef & mref)
 	Lock();
 	if (n < fFiles.GetNumItems())
 	{
-		String key;
+		QString key;
 		QString qFile;
 		fFiles.GetKeyAt(n, key);
 		fFiles.Get(key, qFile);

@@ -45,14 +45,14 @@ WListThread::InternalThreadEntry()
 	if (refScan())
 	{
 		MessageRef mref;
-		HashtableIterator<String, QString> filesIter = fFileScanThread->GetSharedFilesIterator(HTIT_FLAG_NOREGISTER);
+		HashtableIterator<QString, QString> filesIter = fFileScanThread->GetSharedFilesIterator(HTIT_FLAG_NOREGISTER);
 		while (filesIter.HasMoreKeys())
 		{
 			// stop iterating if we are waiting for file scan thread to finish
 			if (fShutdownFlag && *fShutdownFlag)
 				break;
 			
-			String s;
+			QString s;
 			MessageRef mref;
 			filesIter.GetNextKey(s);
 			
@@ -60,25 +60,26 @@ WListThread::InternalThreadEntry()
 			{
 				MakeNodePath(s);
 				uint32 enc = win->Settings()->GetEncoding(GetServerName(win->CurrentServer()), GetServerPort(win->CurrentServer()));
+				String ms = (const char *) s.utf8();
 				// Use encoded file attributes?
 				if (enc != 0)
 				{
 					MessageRef packed = DeflateMessage(mref, enc, true);
 					if (packed())
 					{
-						refScan()->AddMessage(s, packed);
+						refScan()->AddMessage(ms, packed);
 						m++;
 					}
 					else	
 					{
 						// Failed to pack the message?
-						refScan()->AddMessage(s, mref);
+						refScan()->AddMessage(ms, mref);
 						m++;
 					}
 				}
 				else
 				{
-					refScan()->AddMessage(s, mref);
+					refScan()->AddMessage(ms, mref);
 					m++;
 				}
 				if (m == 20)

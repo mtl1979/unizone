@@ -17,14 +17,12 @@ const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
 // quick inline method to generate a pair
 
 inline
-String 
+QString 
 MakeKey(const QString & a, const QString &b)
 {
-	String out;
-	QString temp(a);
-	temp += "@";
-	temp += b;
-	out = (const char *) temp.utf8();
+	QString out(a);
+	out += "@";
+	out += b;
 	return out;
 }
 
@@ -293,7 +291,7 @@ WSearch::RemoveFile(const WUserRef &user, const QString &filename)
 	PRINT("Sid = %S, filename = %S\n", wsid.getBuffer(), wfile.getBuffer());
 #endif
 
-	String key = MakeKey(filename, sid);
+	QString key = MakeKey(filename, sid);
 	if (fFileList.GetValue(key, info) == B_OK)
 	{
 		fQueryBytes -= info->fiSize;
@@ -351,8 +349,8 @@ WSearch::ClearList()
 	fSearchLock.Lock();
 	// go through and empty the list
 	WFileInfo * info;
-	String key;
-	HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_BACKWARDS);
+	QString key;
+	HashtableIterator<QString, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_BACKWARDS);
 	while ((iter.GetNextKey(key) == B_OK) && (iter.GetNextValue(info) == B_OK))
 	{
 		// don't delete the list items here
@@ -652,7 +650,7 @@ WSearch::Download()
 
 		WFileInfo * fi;
 
-		HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
+		HashtableIterator<QString, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
 		
 		while (iter.GetNextValue(fi) == B_OK)
 		{
@@ -686,7 +684,7 @@ WSearch::DownloadAll()
 		DownloadQueue fQueue;
 
 		WFileInfo * fi;
-		HashtableIterator<String, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
+		HashtableIterator<QString, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
 		
 		while (iter.GetNextValue(fi) == B_OK)
 		{

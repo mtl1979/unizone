@@ -8,18 +8,18 @@
 #include <qdialog.h>
 #include <qlayout.h>
 #include <qlistview.h>
-#include <channelinfo.h>
 
-#include "support/MuscleSupport.h"
-#include "util/Hashtable.h"
 #include "util/String.h"
+#include "qtsupport/QMuscleSupport.h"
+
+#include "channelinfo.h"
 
 using namespace muscle;
 
 class NetClient;
 
-typedef Hashtable<String, ChannelInfo *> WChannelMap;
-typedef HashtableIterator<String, ChannelInfo *> WChannelIter;
+typedef Hashtable<QString, ChannelInfo *> WChannelMap;
+typedef HashtableIterator<QString, ChannelInfo *> WChannelIter;
 
 class Channels : public QDialog
 {
