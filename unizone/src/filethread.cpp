@@ -152,7 +152,7 @@ WFileThread::ParseDirAux(QString &dir)
 				Lock();
 				
 				{
-					ret = fScannedDirs.findIndex(dir) != -1;
+					ret = fScannedDirs.findIndex(dir) == -1 ? B_ERROR : B_NO_ERROR;
 				}
 				
 				Unlock();
