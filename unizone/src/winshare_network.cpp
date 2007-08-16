@@ -27,7 +27,6 @@
 #include "uploadimpl.h"
 #include "wtransfer.h"
 #include "filethread.h"
-#include "acronymclient.h"
 #include "netclient.h"
 #include "serverclient.h"
 #include "updateclient.h"
@@ -554,15 +553,6 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				RunCommand(address);
 			}
 		}
-		else if (CompareCommand(sendText, "/acronym"))
-		{
-			QString acronym = GetParameterString(sendText);
-			if (!acronym.isEmpty())
-			{
-				QueryAcronym(acronym);
-			}
-		}
-			
 		else if (CompareCommand(sendText, "/time"))
 		{
 			QString command = GetParameterString(sendText).lower();
@@ -2646,8 +2636,6 @@ WinShareWindow::ShowHelp(const QString & command)
 	QString helpText;
 	helpText			+=	tr("Unizone Command Reference");
 	helpText			+=	"\n";
-	helpText			+=	"\n\t\t\t\t"; 
-	helpText			+=	tr("/acronym [acronym] - search for definitions of acronym");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/action [action] - do something");
 	helpText			+=	"\n\t\t\t\t"; 

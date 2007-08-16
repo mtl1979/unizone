@@ -166,10 +166,6 @@ SOURCE=..\..\src\aboutdlgimpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\acronymclient.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\botitem.cpp
 # End Source File
 # Begin Source File
@@ -493,65 +489,6 @@ InputName=aboutdlgimpl
 InputDir=\build\unizone\trunk\unizone\src
 InputPath=..\..\src\aboutdlgimpl.h
 InputName=aboutdlgimpl
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\acronymclient.h
-
-!IF  "$(CFG)" == "Unizone - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\unizone\src
-InputPath=..\..\src\acronymclient.h
-InputName=acronymclient
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\unizone\src
-InputPath=..\..\src\acronymclient.h
-InputName=acronymclient
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Debug ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\unizone\src
-InputPath=..\..\src\acronymclient.h
-InputName=acronymclient
-
-"$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "Unizone - Win32 Release ANSI"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\unizone\src
-InputPath=..\..\src\acronymclient.h
-InputName=acronymclient
 
 "$(InputDir)\qt3\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	c:\qt3\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\qt3\moc_$(InputName).cpp
@@ -2912,10 +2849,6 @@ SOURCE=..\..\src\qt3\moc_aboutdlg.cpp
 # Begin Source File
 
 SOURCE=..\..\src\qt3\moc_aboutdlgimpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\qt3\moc_acronymclient.cpp
 # End Source File
 # Begin Source File
 

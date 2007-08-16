@@ -89,6 +89,8 @@ private:
 	ScanProgress * fScanProgress;
 #endif
 
+	void postEvent( QObject *,QEvent * );
+
 	mutable Mutex fLocker;
 };
 

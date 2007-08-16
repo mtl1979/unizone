@@ -95,15 +95,21 @@ WFileThread::InternalThreadEntry()
 		QCustomEvent *qce = new QCustomEvent(ScanDone);
 		if (qce)
 		{
+			postEvent(fOwner, qce);
+		}
+	}
+}
+
+void 
+WFileThread::postEvent( QObject *o,QEvent * e)
+{
 // Using QApplication::postEvent under Qt 2.3 NC
 // seems to cause crashes when sharing over 10.000 files
 #if (QT_VERSION < 0x030000)
-			QThread::postEvent(fOwner, qce);
+	QThread::postEvent(o, e);
 #else
-			QApplication::postEvent(fOwner, qce);
+	QApplication::postEvent(o, e);
 #endif
-		}
-	}
 }
 
 void
@@ -410,11 +416,7 @@ WFileThread::SendReset()
 
 	if (se)
 	{
-#if (QT_VERSION < 0x030000)
-		QThread::postEvent(fScanProgress, se);
-#else
-		QApplication::postEvent(fScanProgress, se);
-#endif
+		postEvent(fScanProgress, se);
 	}
 }
 
@@ -424,11 +426,7 @@ WFileThread::SendString(ScanEvent::Type t, const QString &str)
 	ScanEvent *se = new ScanEvent(t, str);
 	if (se)
 	{
-#if (QT_VERSION < 0x030000)
-		QThread::postEvent(fScanProgress, se);
-#else
-		QApplication::postEvent(fScanProgress, se);
-#endif
+		postEvent(fScanProgress, se);
 	}
 }
 
@@ -438,11 +436,7 @@ WFileThread::SendInt(ScanEvent::Type t, int i)
 	ScanEvent *se = new ScanEvent(t, i);
 	if (se)
 	{
-#if (QT_VERSION < 0x030000)
-		QThread::postEvent(fScanProgress, se);
-#else
-		QApplication::postEvent(fScanProgress, se);
-#endif
+		postEvent(fScanProgress, se);
 	}
 }
 
@@ -452,11 +446,7 @@ WFileThread::SendShow()
 	ScanEvent *se = new ScanEvent(SET::Show);
 	if (se)
 	{
-#if (QT_VERSION < 0x030000)
-		QThread::postEvent(fScanProgress, se);
-#else
-		QApplication::postEvent(fScanProgress, se);
-#endif
+		postEvent(fScanProgress, se);
 	}
 }
 
@@ -466,11 +456,7 @@ WFileThread::SendHide()
 	ScanEvent *se = new ScanEvent(SET::Hide);
 	if (se)
 	{
-#if (QT_VERSION < 0x030000)
-		QThread::postEvent(fScanProgress, se);
-#else
-		QApplication::postEvent(fScanProgress, se);
-#endif
+		postEvent(fScanProgress, se);
 	}
 }
 

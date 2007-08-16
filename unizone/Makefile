@@ -27,7 +27,6 @@ LIBS = -L$(QTDIR)/lib -lqt-mt
 EXECUTABLES = Unizone
 SRCFILES = \
 	src/aboutdlgimpl.cpp \
-	src/acronymclient.cpp \
 	src/botitem.cpp \
 	src/channelinfo.cpp \
 	src/channelimpl.cpp \
@@ -104,7 +103,6 @@ SRCFILES = \
 MOC_SRCFILES = \
 	src/moc_aboutdlg.cpp \
 	src/moc_aboutdlgimpl.cpp \
-	src/moc_acronymclient.cpp \
 	src/moc_channel.cpp \
 	src/moc_channelimpl.cpp \
 	src/moc_channels.cpp \
@@ -264,10 +262,6 @@ src/moc_aboutdlg.cpp: src/aboutdlg.h
 	@$(MOC) $< -o $@
 
 src/moc_aboutdlgimpl.cpp: src/aboutdlgimpl.h
-	@echo Creating $@ ...
-	@$(MOC) $< -o $@
-
-src/moc_acronymclient.cpp: src/acronymclient.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
 
