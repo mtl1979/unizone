@@ -146,11 +146,11 @@ Version %1</translation>
     <name>AcronymClient</name>
     <message>
         <source>Too many queries!</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>No matches found for "%1".</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
 </context>
 <context>
@@ -4735,7 +4735,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>/acronym [acronym] - search for definitions of acronym</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
 </context>
 </TS>

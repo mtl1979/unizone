@@ -1,6 +1,5 @@
 SOURCES =			qt2\aboutdlg.cpp \
 				aboutdlgimpl.cpp \
-				acronymclient.cpp \
 				qt2\channel.cpp \
 				channelimpl.cpp \
 				channels.cpp \

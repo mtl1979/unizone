@@ -190,11 +190,11 @@ Versio %1</translation>
     <name>AcronymClient</name>
     <message>
         <source>Too many queries!</source>
-        <translation>Liian monta kyselyä!</translation>
+        <translation type='obsolete'>Liian monta kyselyä!</translation>
     </message>
     <message>
         <source>No matches found for "%1".</source>
-        <translation>Ei tuloksia kyselylle "%1".</translation>
+        <translation type='obsolete'>Ei tuloksia kyselylle "%1".</translation>
     </message>
 </context>
 <context>
@@ -5110,7 +5110,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>/acronym [acronym] - search for definitions of acronym</source>
-        <translation>/acronym [akronyymi] - hae määritelmät akronyymille</translation>
+        <translation type='obsolete'>/acronym [akronyymi] - hae määritelmät akronyymille</translation>
     </message>
 </context>
 </TS>

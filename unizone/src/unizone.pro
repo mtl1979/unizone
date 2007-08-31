@@ -1,5 +1,4 @@
 SOURCES =			aboutdlgimpl.cpp \
-				acronymclient.cpp \
 				channelimpl.cpp \
 				channels.cpp \
 				chatwindow.cpp \
