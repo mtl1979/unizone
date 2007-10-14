@@ -25,7 +25,7 @@ ServerClient::ServerClient(QObject *owner)
 
 	// QMessageTransceiverThread
 
-	qmtt = new QMessageTransceiverThread(this);
+	qmtt = new QMessageTransceiverThread(this, "QMessageTransceiverThread");
 	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
@@ -122,7 +122,7 @@ ServerClient::StartInternalThread()
 }
 
 status_t 
-ServerClient::AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef)
+ServerClient::AddNewConnectSession(const String & targetHostName, uint16 port, ThreadWorkerSessionRef optSessionRef)
 {
 	fHostName = targetHostName;
 	fHostPort = port;

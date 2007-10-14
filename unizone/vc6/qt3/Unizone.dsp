@@ -3254,7 +3254,7 @@ SOURCE=..\..\src\muscle\iogateway\SignalMessageIOGateway.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\muscle\util\SocketHolder.h
+SOURCE=..\..\src\muscle\util\Socket.h
 # End Source File
 # Begin Source File
 

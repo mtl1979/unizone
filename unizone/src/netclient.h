@@ -223,13 +223,13 @@ private slots:
 	void SessionAttached(const String & sessionID);
 	void SessionDetached(const String & sessionID);
    
-	void SessionAccepted(const String & sessionID, uint16 port);
+	void SessionAccepted(const String & sessionID, uint32 port);
 
 	void SessionConnected(const String & sessionID);
 	void SessionDisconnected(const String & sessionID);
 
-	void FactoryAttached(uint16 port);
-	void FactoryDetached(uint16 port);
+	void FactoryAttached(uint32 port);
+	void FactoryDetached(uint32 port);
 
 	void ServerExited();
 

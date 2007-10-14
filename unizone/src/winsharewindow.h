@@ -264,7 +264,7 @@ protected:
 private slots:
 
 	// Accept Thread
-	void ConnectionAccepted(const SocketHolderRef &socketRef);
+	void ConnectionAccepted(const SocketRef &);
 
 private:
 	friend class WDownload;

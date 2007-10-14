@@ -6,13 +6,13 @@ WDownloadThreadWorkerSessionFactory::WDownloadThreadWorkerSessionFactory(int lim
 	fLimit = limit;
 }
 
-AbstractReflectSession *
-WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
+ThreadWorkerSessionRef
+WDownloadThreadWorkerSessionFactory::CreateThreadWorkerSession(const String &, const IPAddressAndPort &)
 {
-	AbstractReflectSession * ref = ThreadWorkerSessionFactory::CreateSession(s);
-	if (ref && fLimit != 0)
+	ThreadWorkerSessionRef ref(new ThreadWorkerSession());
+	if (ref() && fLimit != 0)
 	{
-		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(fLimit)));
+		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(fLimit)));
 	}
 	return ref;
 }

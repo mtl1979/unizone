@@ -23,7 +23,7 @@ public:
 	// forwarders
 
 	status_t StartInternalThread(); 
-	status_t AddNewConnectSession(const String & targetHostName, uint16 port, AbstractReflectSessionRef optSessionRef);
+	status_t AddNewConnectSession(const String & targetHostName, uint16 port, ThreadWorkerSessionRef optSessionRef);
 	void Reset();
 
 private:

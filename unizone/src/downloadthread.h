@@ -95,10 +95,10 @@ public:
 	uint32 GetRemotePort() const{ return fPort; }
 
 	int GetRate() const { return fTXRate; }
-	void SetRate(int rate, AbstractReflectSessionRef & ref);
+	void SetRate(int rate, ThreadWorkerSessionRef & ref);
 	void SetRate(int rate);
 	void ResetRate() { SetRate(fTXRate); }
-	void ResetRate(AbstractReflectSessionRef & ref) { SetRate(fTXRate, ref); }
+	void ResetRate(ThreadWorkerSessionRef & ref) { SetRate(fTXRate, ref); }
 
 	void SetPacketSize(double s);		// Set/get packet size in kB
 	double GetPacketSize();
@@ -115,7 +115,7 @@ private slots:
 
 	void MessageReceived(const MessageRef & msg, const String & sessionID);
 
-	void SessionAccepted(const String &sessionID, uint16 port);
+	void SessionAccepted(const String &sessionID, uint32 port);
 	void SessionDetached(const String &sessionID);
 	void SessionConnected(const String &sessionID);
 	void SessionDisconnected(const String &sessionID);

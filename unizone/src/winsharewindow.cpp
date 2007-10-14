@@ -208,7 +208,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	if (fSettings->GetAutoUpdateServers())
 	{
 		PrintSystem(tr("Updating server list..."));
-		AbstractReflectSessionRef scref(new ThreadWorkerSession());
+		ThreadWorkerSessionRef scref(new ThreadWorkerSession());
 		scref()->SetGateway(AbstractMessageIOGatewayRef(new PlainTextMessageIOGateway));
 		if (fServerThread->StartInternalThread() == B_OK)
 		{
@@ -227,7 +227,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	if (fSettings->GetCheckNewVersions())
 	{
 		PrintSystem(tr("Checking for updates..."));
-		AbstractReflectSessionRef psref(new ThreadWorkerSession());
+		ThreadWorkerSessionRef psref(new ThreadWorkerSession());
 		psref()->SetGateway(AbstractMessageIOGatewayRef(new PlainTextMessageIOGateway));
 		if (fUpdateThread->StartInternalThread() == B_OK)
 		{
@@ -320,8 +320,8 @@ WinShareWindow::StartAcceptThread()
 	fAccept = new QAcceptSocketsThread(this);
 	CHECK_PTR(fAccept);
 
-	connect(fAccept, SIGNAL(ConnectionAccepted(const SocketHolderRef &)), 
-			this, SLOT(ConnectionAccepted(const SocketHolderRef &)));
+	connect(fAccept, SIGNAL(ConnectionAccepted(const SocketRef &)), 
+			this, SLOT(ConnectionAccepted(const SocketRef &)));
 
 	uint32 pStart = (uint32) gWin->fSettings->GetBasePort();
 	uint32 pEnd = pStart + (uint32) gWin->fSettings->GetPortRange() - 1;

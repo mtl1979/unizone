@@ -77,7 +77,7 @@ NetClient::Connect(const QString & server, uint16 port)
 	PRINT("Creating thread\n");
 	// QMessageTransceiverThread
 
-	qmtt = new QMessageTransceiverThread(this);
+	qmtt = new QMessageTransceiverThread(this, "QMessageTransceiverThread");
 	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
@@ -89,8 +89,8 @@ NetClient::Connect(const QString & server, uint16 port)
 	connect(qmtt, SIGNAL(SessionDetached(const String &)),
 			this, SLOT(SessionDetached(const String &)));
    
-	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
-			this, SLOT(SessionAccepted(const String &, uint16)));
+	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint32)),
+			this, SLOT(SessionAccepted(const String &, uint32)));
 
 	connect(qmtt, SIGNAL(SessionConnected(const String &)),
 			this, SLOT(SessionConnected(const String &)));
@@ -98,11 +98,11 @@ NetClient::Connect(const QString & server, uint16 port)
 	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
 			this, SLOT(SessionDisconnected(const String &)));
 
-	connect(qmtt, SIGNAL(FactoryAttached(uint16)),
-			this, SLOT(FactoryAttached(uint16)));
+	connect(qmtt, SIGNAL(FactoryAttached(uint32)),
+			this, SLOT(FactoryAttached(uint32)));
 	
-	connect(qmtt, SIGNAL(FactoryDetached(uint16)),
-			this, SLOT(FactoryDetached(uint16)));
+	connect(qmtt, SIGNAL(FactoryDetached(uint32)),
+			this, SLOT(FactoryDetached(uint32)));
 
 	connect(qmtt, SIGNAL(ServerExited()),
 			this, SLOT(ServerExited()));
@@ -134,7 +134,7 @@ NetClient::Connect(const QString & server, uint16 port)
 		}
 		else
 		{
-			AbstractReflectSessionRef ref(new ThreadWorkerSession());
+			ThreadWorkerSessionRef ref(new ThreadWorkerSession());
 			ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
 			ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
 				win->fSettings->GetChatLimit()))));
@@ -1107,7 +1107,7 @@ NetClient::MessageReceived(const MessageRef &msg, const String & /* sessionID */
 }
 
 void
-NetClient::SessionAccepted(const String & /* sessionID */, uint16 /* port */)
+NetClient::SessionAccepted(const String & /* sessionID */, uint32 /* port */)
 {
 	PRINT("MTT_EVENT_SESSION_ACCEPTED\n");
 }
@@ -1151,13 +1151,13 @@ NetClient::SessionDetached(const String & /* sessionID */)
 }
 
 void
-NetClient::FactoryAttached(uint16 /* port */)
+NetClient::FactoryAttached(uint32 /* port */)
 {
 	PRINT("MTT_EVENT_FACTORY_ATTACHED\n");
 }
 
 void
-NetClient::FactoryDetached(uint16 /* port */)
+NetClient::FactoryDetached(uint32 /* port */)
 {
 	PRINT("MTT_EVENT_FACTORY_DETACHED\n");
 }

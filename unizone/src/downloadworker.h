@@ -10,7 +10,7 @@ class WDownloadThreadWorkerSessionFactory : public ThreadWorkerSessionFactory
 {
 public:
 	WDownloadThreadWorkerSessionFactory(int limit);
-	AbstractReflectSession * CreateSession(const String &);
+	ThreadWorkerSessionRef CreateThreadWorkerSession(const String &, const IPAddressAndPort &);
 	
 private:
 	int fLimit;

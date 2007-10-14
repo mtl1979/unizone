@@ -44,7 +44,7 @@ public:
 	WUploadThread(QObject * owner, bool * optShutdownFlag = NULL);
 	~WUploadThread();
 
-	void SetUpload(int socket, uint32 remoteIP, WFileThread * ft);
+	void SetUpload(const SocketRef & socket, uint32 remoteIP, WFileThread * ft);
 	void SetUpload(const QString & remoteIP, uint32 remotePort, WFileThread * ft);
 	void SetUpload(const QString & userID, int64 hisID, WFileThread * ft); // Tunneled
 
@@ -92,10 +92,10 @@ public:
 	bool IsTunneled() const { return fTunneled; }
 
 	int GetRate() { return fTXRate; }
-	virtual void SetRate(int rate, AbstractReflectSessionRef & ref); 
+	virtual void SetRate(int rate, ThreadWorkerSessionRef & ref); 
 	virtual void SetRate(int rate); 
 	virtual void ResetRate() { SetRate(fTXRate); }
-	virtual void ResetRate(AbstractReflectSessionRef & ref) { SetRate(fTXRate, ref); }
+	virtual void ResetRate(ThreadWorkerSessionRef & ref) { SetRate(fTXRate, ref); }
 
 	void SetPacketSize(double s);		// Set/get packet size in kB
 	double GetPacketSize();
@@ -179,7 +179,7 @@ private:
 	QString fStrRemoteIP;				// the accept version gets a string IP
 	uint32 fPort;						// port for accept version
 	uint32 fIdles;						// idle packets sent between real packets
-	int fSocket;
+	SocketRef fSocket;
 	int64 fFileSize;
 	int64 fCurrentOffset;
 	int32 fMungeMode;

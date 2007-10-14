@@ -74,7 +74,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 
 	// QMessageTransceiverThread
 
-	qmtt = new QMessageTransceiverThread(this);
+	qmtt = new QMessageTransceiverThread(this, "QMessageTransceiverThread");
 	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
@@ -128,7 +128,7 @@ WUploadThread::~WUploadThread()
 }
 
 void
-WUploadThread::SetUpload(int socket, uint32 remoteIP, WFileThread * ft)
+WUploadThread::SetUpload(const SocketRef &socket, uint32 remoteIP, WFileThread * ft)
 {
 	char host[16];
 	fAccept = false;
@@ -165,7 +165,7 @@ WUploadThread::InitSession()
 {
 	PRINT("WUploadThread::InitSession\n");
 
-	AbstractReflectSessionRef limit;
+	ThreadWorkerSessionRef limit(new ThreadWorkerSession());
 
 	// First check if IP is blacklisted or ignored
 	//
@@ -177,18 +177,13 @@ WUploadThread::InitSession()
 
 	if (gWin->IsBlackListedIP(fStrRemoteIP) && (gWin->fSettings->GetBLLimit() != WSettings::LimitNone))
 	{
-		AbstractReflectSessionRef ref(new ThreadWorkerSession);
-		ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
-		SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetBLLimit()), ref);
-
-		limit = ref;
+		limit()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
+		SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetBLLimit()), limit);
 	}
 	else if (gWin->fSettings->GetULLimit() != WSettings::LimitNone)
 	{
-		AbstractReflectSessionRef ref(new ThreadWorkerSession);
-		ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
-		SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetULLimit()), ref);
-		limit = ref;
+		limit()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
+		SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetULLimit()), limit);
 	}
 
 	if (fTunneled)
@@ -948,7 +943,7 @@ WUploadThread::SetRate(int rate)
 }
 
 void
-WUploadThread::SetRate(int rate, AbstractReflectSessionRef & ref)
+WUploadThread::SetRate(int rate, ThreadWorkerSessionRef & ref)
 {
 	fTXRate = rate;
 	if (rate != 0)

@@ -3123,15 +3123,14 @@ WinShareWindow::SendRejectedNotification(const MessageRef & rej)
 }
 
 void
-WinShareWindow::ConnectionAccepted(const SocketHolderRef &socketRef)
+WinShareWindow::ConnectionAccepted(const SocketRef &socketRef)
 {
 	PRINT("\tWinShareWindow::ConnectionAccepted\n");
-	int socket = socketRef() ? (socketRef()->ReleaseSocket()) : -1;
 	uint32 ip;
-	if (socket >= 0 && (ip = GetPeerIPAddress(socket, true)) > 0)
+	if (socketRef() && (ip = GetPeerIPAddress(socketRef, true)) > 0)
 	{
 		OpenUpload();
-		fULWindow->AddUpload(socket, ip, false);
+		fULWindow->AddUpload(socketRef, ip, false);
 	}
 }
 

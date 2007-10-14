@@ -79,14 +79,14 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 
 	// QMessageTransceiverThread
 
-	qmtt = new QMessageTransceiverThread(this);
+	qmtt = new QMessageTransceiverThread(this, "QMessageTransceiverThread");
 	CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
 			this, SLOT(MessageReceived(const MessageRef &, const String &)));
 
-	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint16)),
-			this, SLOT(SessionAccepted(const String &, uint16)));
+	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint32)),
+			this, SLOT(SessionAccepted(const String &, uint32)));
 
 	connect(qmtt, SIGNAL(SessionDetached(const String &)),
 			this, SLOT(SessionDetached(const String &)));
@@ -319,20 +319,20 @@ WDownloadThread::InitSession()
 		}
 		else
 		{
-			ReflectSessionFactoryRef factoryRef;
+			ThreadWorkerSessionFactoryRef factoryRef;
 			if (gWin->fSettings->GetDLLimit() != WSettings::LimitNone)	// throttling?
 			{
 				fTXRate = gWin->fSettings->ConvertToBytes( gWin->fSettings->GetDLLimit() );
-				factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(fTXRate));
+				factoryRef.SetRef(new WDownloadThreadWorkerSessionFactory(fTXRate));
 			}
 			else if (GetRate() != 0)
 			{
-				factoryRef = ReflectSessionFactoryRef(new WDownloadThreadWorkerSessionFactory(GetRate()));
+				factoryRef.SetRef(new WDownloadThreadWorkerSessionFactory(GetRate()));
 			}
 			else
 			{
 				fTXRate = 0;
-				factoryRef = ReflectSessionFactoryRef(new ThreadWorkerSessionFactory());
+				factoryRef.SetRef(new ThreadWorkerSessionFactory());
 			}
 			
 			status_t ret = B_OK;
@@ -345,7 +345,7 @@ WDownloadThread::InitSession()
 				{
 					if (qmtt->StartInternalThread() == B_OK)
 					{
-						fAcceptingOn = factoryRef()->GetPort();
+						fAcceptingOn = i;
 						InitSessionAux();
 						MessageRef cnt(GetMessageFromPool(WDownloadEvent::ConnectBackRequest));
 						if (cnt())
@@ -369,23 +369,17 @@ WDownloadThread::InitSession()
 		// the remote user is not firewalled?
 		if (qmtt->StartInternalThread() == B_OK)
 		{
-			AbstractReflectSessionRef connectRef;
+			ThreadWorkerSessionRef connectRef(new ThreadWorkerSession());
 			
 			if (gWin->fSettings->GetDLLimit() != WSettings::LimitNone)
 			{
-				AbstractReflectSessionRef ref(new ThreadWorkerSession());
-				ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
-				SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetDLLimit()), ref);
-				
-				connectRef = ref;
-			}
+				connectRef()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
+				SetRate(WSettings::ConvertToBytes(gWin->fSettings->GetDLLimit()), connectRef);
+ 			}
 			else if (GetRate() != 0) // Reset transfer throttling on resume
 			{
-				AbstractReflectSessionRef ref(new ThreadWorkerSession());
-				ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
-				ResetRate(ref);
-				
-				connectRef = ref;
+				connectRef()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
+				ResetRate(connectRef);
 			}
 			
 			uint32 sIP = ResolveAddress(fIP); // <postmaster@raasu.org> 20021026
@@ -788,7 +782,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 }
 
 void 
-WDownloadThread::SessionAccepted(const String &sessionID, uint16 /* port */)
+WDownloadThread::SessionAccepted(const String &sessionID, uint32 /* port */)
 {
 	// no need to accept anymore
 	qmtt->RemoveAcceptFactory(fAcceptingOn);
@@ -997,7 +991,7 @@ WDownloadThread::SetRate(int rate)
 }
 
 void
-WDownloadThread::SetRate(int rate, AbstractReflectSessionRef & ref)
+WDownloadThread::SetRate(int rate, ThreadWorkerSessionRef & ref)
 {
 	fTXRate = rate;
 	if (rate != 0)
