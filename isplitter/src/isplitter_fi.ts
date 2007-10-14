@@ -11,39 +11,39 @@
     <name>ImageSplitterBase</name>
     <message>
         <source>Image Splitter</source>
-        <translation type='obsolete'>Kuvanpilkkoja</translation>
+        <translation>Kuvanpilkkoja</translation>
     </message>
     <message>
         <source>Collage Size:</source>
-        <translation type='obsolete'>Kollaasin Koko:</translation>
+        <translation>Kollaasin Koko:</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type='obsolete'>X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type='obsolete'>0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type='obsolete'>Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Image Offset:</source>
-        <translation type='obsolete'>Kuvan Offset:</translation>
+        <translation>Kuvan Offset:</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type='obsolete'>Yläreuna</translation>
+        <translation>Yläreuna</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type='obsolete'>Alareuna</translation>
+        <translation>Alareuna</translation>
     </message>
     <message>
         <source>Image Index:</source>
-        <translation type='obsolete'>Kuvan Indeksi:</translation>
+        <translation>Kuvan Indeksi:</translation>
     </message>
     <message>
         <source>Preview</source>
@@ -55,35 +55,35 @@
     </message>
     <message>
         <source>Collage Offset:</source>
-        <translation type='obsolete'>Kollaasin Offset:</translation>
+        <translation>Kollaasin Offset:</translation>
     </message>
     <message>
         <source>Collage</source>
-        <translation type='obsolete'>Kollaasi</translation>
+        <translation>Kollaasi</translation>
     </message>
     <message>
         <source>Image</source>
-        <translation type='obsolete'>Kuva</translation>
+        <translation>Kuva</translation>
     </message>
     <message>
         <source>Rotate</source>
-        <translation type='obsolete'>Käännä</translation>
+        <translation>Käännä</translation>
     </message>
     <message>
         <source>Transform</source>
-        <translation type='obsolete'>Muunna</translation>
+        <translation>Muunna</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type='obsolete'>%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>100</source>
-        <translation type='obsolete'>100</translation>
+        <translation>100</translation>
     </message>
     <message>
         <source>Scale</source>
-        <translation type='obsolete'>Skaalaa</translation>
+        <translation>Skaalaa</translation>
     </message>
 </context>
 <context>
