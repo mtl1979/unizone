@@ -132,7 +132,7 @@ WDownloadThread::InitSession()
 	{
 		if (StartInternalThread() == B_OK)
 		{
-			AbstractReflectSessionRef connectRef;
+			ThreadWorkerSessionRef connectRef;
 						
 			String sIP = (const char *) fIP.utf8(); // <postmaster@raasu.org> 20021026
 			if (AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
@@ -180,7 +180,7 @@ WDownloadThread::SignalOwner()	// sent by the MTT when we have some data
 	MessageRef next;
 	uint32 code;
 	String sid;
-	uint16 port;
+	uint32 port;
 	bool disconnected = false;
 
 	CTimer->stop();
@@ -573,13 +573,13 @@ WDownloadThreadWorkerSessionFactory::WDownloadThreadWorkerSessionFactory(int lim
 	fLimit = limit;
 }
 
-AbstractReflectSession *
-WDownloadThreadWorkerSessionFactory::CreateSession(const String & s)
+ThreadWorkerSessionRef
+WDownloadThreadWorkerSessionFactory::CreateThreadWorkerSession(const String & s)
 {
-	AbstractReflectSession * ref = ThreadWorkerSessionFactory::CreateSession(s);
-	if (ref && fLimit != /*WSettings::LimitNone*/ 0)
+	ThreadWorkerSessionRef ref(new ThreadWorkerSession());
+	if (ref() && fLimit != 0)
 	{
-		ref->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(	fLimit )));
+		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy( fLimit )));
 	}
 	return ref;
 }

@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /pdb:none /machine:I386 /nodefaultlib:"msvcrtd" /libpath:"$(QTDIR)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib iphlpapi.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /pdb:none /machine:I386 /nodefaultlib:"msvcrtd" /libpath:"$(QTDIR)\lib"
 
 !ELSEIF  "$(CFG)" == "MuscleCopy - Win32 Debug"
 
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /pdbtype:sept /libpath:"$(QTDIR)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib shlwapi.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib iphlpapi.lib winmm.lib qt-mt230nc.lib qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt" /pdbtype:sept /libpath:"$(QTDIR)\lib"
 
 !ENDIF 
 
@@ -354,6 +354,10 @@ SOURCE=..\..\..\unizone\src\muscle\system\MessageTransceiverThread.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\unizone\src\muscle\util\MiscUtilityFunctions.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\unizone\src\muscle\util\NetworkUtilityFunctions.cpp
 # End Source File
 # Begin Source File
@@ -594,7 +598,7 @@ SOURCE=..\..\..\unizone\src\muscle\iogateway\SignalMessageIOGateway.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\unizone\src\muscle\util\SocketHolder.h
+SOURCE=..\..\..\unizone\src\muscle\util\Socket.h
 # End Source File
 # Begin Source File
 

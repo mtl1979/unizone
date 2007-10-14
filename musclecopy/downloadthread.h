@@ -73,7 +73,7 @@ class WDownloadThreadWorkerSessionFactory : public ThreadWorkerSessionFactory
 {
 public:
 	WDownloadThreadWorkerSessionFactory(int limit);
-	virtual AbstractReflectSession * CreateSession(const String &);
+	virtual ThreadWorkerSessionRef CreateThreadWorkerSession(const String &);
 	
 private:
 	int fLimit;
