@@ -3,6 +3,10 @@
 #ifndef MuscleSharedMemory_h
 #define MuscleSharedMemory_h
 
+#ifndef WIN32
+#include <sys/ipc.h>
+#endif
+
 #include "util/String.h"
 
 BEGIN_NAMESPACE(muscle);

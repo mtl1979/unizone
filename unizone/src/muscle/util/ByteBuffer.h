@@ -162,6 +162,15 @@ ByteBufferRef::ItemPool * GetByteBufferPool();
  */
 ByteBufferRef GetByteBufferFromPool(uint32 numBytes = 0, const uint8 * optBuffer = NULL);
 
+/** As above, except that the byte buffer is obtained from the specified pool instead of from the default ByteBuffer pool.
+ *  @param pool the ObjectPool to allocate the ByteBuffer from.
+ *  @param numBytes Number of bytes to copy in (or just allocate, if (optBuffer) is NULL).  Defaults to zero bytes (i.e. retrieve an empty buffer)
+ *  @param optBuffer If non-NULL, points to an array of (numBytes) bytes to copy in to our internal buffer. 
+ *                   If NULL, this ByteBuffer will contain (numBytes) uninitialized bytes.  Defaults to NULL.
+ *  @return Reference to a ByteBuffer object that has been initialized as specified, or a NULL ref on failure (out of memory).
+ */
+ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, uint32 numBytes = 0, const uint8 * optBuffer = NULL);
+
 /** Convenience method:  Gets a ByteBuffer from the ByteBuffer pool, makes it equal to (copyMe), and returns a reference to it.
  *  @param copyMe A ByteBuffer to clone.
  *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).

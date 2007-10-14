@@ -40,7 +40,7 @@ protected:
      * @param sessionRef the AbstractReflectSession that will represent the handler inside the thread.
      * @returns B_NO_ERROR on success, or B_ERROR on failure.
      */
-   virtual status_t RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const AbstractReflectSessionRef & sessionRef) = 0;
+   virtual status_t RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const ThreadWorkerSessionRef & sessionRef) = 0;
 
    /** Must be implemented to detach (handler) from (thread)
      * @param thread the QMessageTransceiverThread to detach the handler from
@@ -109,9 +109,9 @@ signals:
 
    /** Emitted when a new Session object is accepted by one of the factories being operated by our internal thread
      * @param sessionID Session ID string of the newly accepted Session object.
-     * @param port Port number that the accepting factory was listening to
+     * @param factoryID Factory ID of the ReflectSessionFactory that accepted the new session.
      */ 
-   void SessionAccepted(const String & sessionID, uint16 port);
+   void SessionAccepted(const String & sessionID, uint32 factoryID);
 
    /** Emitted when a session object is attached to the internal thread's ReflectServer */
    void SessionAttached(const String & sessionID);
@@ -133,14 +133,14 @@ signals:
    void SessionDetached(const String & sessionID);
 
    /** Emitted when a factory object is attached to the internal thread's ReflectServer.
-     * @param port Port ID that the factory object is attached on.
+     * @param factoryID Factory ID of the ReflectSessionFactory that accepted the new session.
      */
-   void FactoryAttached(uint16 port);
+   void FactoryAttached(uint32 factoryID);
 
    /** Emitted when a factory object is removed from the internal thread's ReflectServer.
-     * @param port Port ID that the factory object was removed from.
+     * @param factoryID Factory ID of the ReflectSessionFactory that accepted the new session.
      */
-   void FactoryDetached(uint16 port);
+   void FactoryDetached(uint32 factoryID);
 
    /** Emitted when the thread's internal ReflectServer object exits. */
    void ServerExited();
@@ -159,9 +159,9 @@ signals:
      * @param code the MTT_EVENT_* code of the new event.
      * @param optMsg If a Message is relevant, this will contain it; else it's a NULL reference.
      * @param optFromSession If a session ID is relevant, this is the session ID; else it will be "".
-     * @param optFromFactory If a factory is relevant, this will be the factory's port number; else it will be zero.
+     * @param optFromFactory If a factory is relevant, this will be the factory's ID number; else it will be zero.
      */
-   void InternalThreadEvent(uint32 code, const MessageRef & optMsg, const String & optFromSession, uint16 optFromFactory);
+   void InternalThreadEvent(uint32 code, const MessageRef & optMsg, const String & optFromSession, uint32 optFromFactory);
 
 public slots:
    /**
@@ -190,7 +190,7 @@ protected:
    virtual void SignalOwner();
 
    virtual QMessageTransceiverThread * ObtainThread() {return this;}
-   virtual status_t RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const AbstractReflectSessionRef & sessionRef);
+   virtual status_t RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const ThreadWorkerSessionRef & sessionRef);
    virtual void UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, bool emitEndMessageBatchIfNecessary);
 
 private:
@@ -200,7 +200,7 @@ private:
    void FlushSeenHandlers(bool doEmit) {while(_firstSeenHandler) RemoveFromSeenList(_firstSeenHandler, doEmit);}
    void RemoveFromSeenList(QMessageTransceiverHandler * h, bool doEmit);
 
-   IMessageTransceiverMaster * RegisterHandler(QMessageTransceiverHandler * handler, const AbstractReflectSessionRef & sref);
+   IMessageTransceiverMaster * RegisterHandler(QMessageTransceiverHandler * handler, const ThreadWorkerSessionRef & sref);
    void UnregisterHandler(IMessageTransceiverMaster * handler);
 
    Hashtable<uint32, QMessageTransceiverHandler *> _handlers;  // registered handlers, by ID
@@ -241,7 +241,7 @@ public:
 
 protected:
    virtual QMessageTransceiverThread * ObtainThread();
-   virtual status_t RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const AbstractReflectSessionRef & sessionRef);
+   virtual status_t RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const ThreadWorkerSessionRef & sessionRef);
    virtual void UnregisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, bool emitEndMessageBatchIfNecessary);
 
    /** Should create and return a new QMessageTransceiverThread object.
@@ -303,10 +303,10 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */  
-   virtual status_t SetupAsNewSession(IMessageTransceiverMaster & master, int socket, const AbstractReflectSessionRef & optSessionRef);
+   virtual status_t SetupAsNewSession(IMessageTransceiverMaster & master, const SocketRef & socket, const ThreadWorkerSessionRef & optSessionRef);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t SetupAsNewSession(IMessageTransceiverMaster & master, int socket) {return SetupAsNewSession(master, socket, AbstractReflectSessionRef());}
+   status_t SetupAsNewSession(IMessageTransceiverMaster & master, const SocketRef & socket) {return SetupAsNewSession(master, socket, ThreadWorkerSessionRef());}
 
    /**
      * Associates this handler with a specified IMessageTransceiverMaster, and tells it to connect to
@@ -323,13 +323,20 @@ public:
      *                      ThreadWorkerSession, a subclass of ThreadWorkerSession, or at least something that acts 
      *                      like one, or things won't work correctly.
      *                      The referenced session becomes sole property of the MessageTransceiverThread on success.
+     * @param autoReconnectDelay If specified, this is the number of microseconds after the
+     *                           connection is broken that an automatic reconnect should be
+     *                           attempted.  If not specified, an automatic reconnect will not
+     *                           be attempted, and the session will be removed when the
+     *                           connection breaks.  Specifying this is equivalent to calling
+     *                           SetAutoReconnectDelay() on (optSessionRef).
+
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, uint32 targetIPAddress, uint16 port, const AbstractReflectSessionRef & optSessionRef);
+   virtual status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const ip_address & targetIPAddress, uint16 port, const ThreadWorkerSessionRef & optSessionRef, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, uint32 targetIPAddress, uint16 port) {return SetupAsNewConnectSession(master, targetIPAddress, port, AbstractReflectSessionRef());}
+   status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER) {return SetupAsNewConnectSession(master, targetIPAddress, port, ThreadWorkerSessionRef(), autoReconnectDelay);}
 
    /**
      * Associates this handler with a specified IMessageTransceiverMaster, and tells it to connect to
@@ -347,13 +354,19 @@ public:
      *                      like one, or things won't work correctly.
      *                      The referenced session becomes sole property of the MessageTransceiverThread on success.
      * @param expandLocalhost Passed to GetHostByName().  See GetHostByName() documentation for details.  Defaults to false.
+     * @param autoReconnectDelay If specified, this is the number of microseconds after the
+     *                           connection is broken that an automatic reconnect should be
+     *                           attempted.  If not specified, an automatic reconnect will not
+     *                           be attempted, and the session will be removed when the
+     *                           connection breaks.  Specifying this is equivalent to calling
+     *                           SetAutoReconnectDelay() on (optSessionRef).
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, const AbstractReflectSessionRef & optSessionRef, bool expandLocalhost = false);
+   virtual status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, const ThreadWorkerSessionRef & optSessionRef, bool expandLocalhost = false, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, bool expandLocalhost = false) {return SetupAsNewConnectSession(master, targetHostName, port, AbstractReflectSessionRef(), expandLocalhost);}
+   status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, bool expandLocalhost = false, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER) {return SetupAsNewConnectSession(master, targetHostName, port, ThreadWorkerSessionRef(), expandLocalhost, autoReconnectDelay);}
 
    /**
      * This method is that Requests that the MessageTranceiverThread object send us a MTT_EVENT_OUTPUT_QUEUES_DRAINED event
@@ -488,7 +501,7 @@ protected:
      * @param thread the QMessageTransceiverThread object we are going to be associated with.
      * @returns a new AbstractReflectSession object on success, or NULL on failure.
      */
-   virtual AbstractReflectSession * CreateDefaultWorkerSession(QMessageTransceiverThread & thread);
+   virtual ThreadWorkerSessionRef CreateDefaultWorkerSession(QMessageTransceiverThread & thread);
 
 private:
    friend class QMessageTransceiverThread;

@@ -149,14 +149,7 @@ public:
    /** Returns the socket that the main thread may select() for read on for wakeup-notification bytes. 
      * This Thread object's thread-signalling sockets will be allocated by this method if they aren't already allocated.
      */
-   int GetOwnerWakeupSocket();
-
-   /** Call this to tell the Thread object whether it should call CloseSocket() on its owner-wakeup-socket
-     * when it is done with it.  Default state is that yes, it will call CloseSocket().
-     * The okay-to-close state will be automatically set back to true after the next call to CloseSockets().
-     * @param okayToClose New state for whether the Thread should call CloseSocket() to clean up the owner-wakeup-socket.
-     */
-   void SetOkayToCloseOwnerWakeupSocket(bool okayToClose);
+   const SocketRef & GetOwnerWakeupSocket();
 
    /** Enumeration of the socket sets that are available for blocking on; used in GetOwnerSocketSet()
     *  and GetInternalSocketSet() calls.
@@ -195,10 +188,10 @@ public:
     *  @param socketSet SOCKET_SET_* indicating which socket-set to return a reference to.
     *  @note This method should only be called from the main thread!
     */
-   Hashtable<int, bool> & GetOwnerSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_OWNER]._socketSets[socketSet];}
+   Hashtable<SocketRef, bool> & GetOwnerSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_OWNER]._socketSets[socketSet];}
 
    /** As above, but returns a read-only reference. */
-   const Hashtable<int, bool> & GetOwnerSocketSet(uint32 socketSet) const;
+   const Hashtable<SocketRef, bool> & GetOwnerSocketSet(uint32 socketSet) const;
 
 protected:
    /** If you are using the default implementation of InternalThreadEntry(), then this
@@ -260,16 +253,9 @@ protected:
 
    /** Returns the socket that the internal thread may select() for read on for wakeup-notification bytes.
      * This Thread object's thread-signalling sockets will be allocated by this method if they aren't already allocated.
-     * @returns The socket fd that the thread is to listen on, or -1 on error.
+     * @returns The socket fd that the thread is to listen on, or a NULL reference on error.
      */
-   int GetInternalThreadWakeupSocket();
-
-   /** Call this to tell the Thread object whether it should call CloseSocket() on its internal-thread-wakeup-socket
-     * when it is done with it.  Default state is that yes, it will call CloseSocket().
-     * The okay-to-close state will be automatically set back to true after the next call to CloseSockets().
-     * @param okayToClose New state for whether the Thread should call CloseSocket() to clean up the internal-thread-wakeup-socket.
-     */
-   void SetOkayToCloseInternalThreadWakeupSocket(bool okayToClose);
+   const SocketRef & GetInternalThreadWakeupSocket();
 
    /** Locks the lock we use to serialize calls to SignalInternalThread() and
      * SignalOwner().  Be sure to call UnlockSignallingLock() when you are done with the lock.
@@ -282,11 +268,7 @@ protected:
      */
    status_t UnlockSignalling() {return _signalLock.Unlock();}
 
-   /** Closes both threading sockets, if they are open. 
-     * If SetOkayToClose*WakeupSocket(false) was previously called on one or both of the sockets,
-     * those sockets will not be closed; merely forgotten.  However, calling this method causes
-     * the okay-to-close states to return to true for both sockets types.
-     */
+   /** Closes all of our threading sockets, if they are open. */
    void CloseSockets();
 
    /** This function returns a reference to one of the three socket-sets that
@@ -316,10 +298,10 @@ protected:
     *  @param socketSet SOCKET_SET_* indicating which socket-set to return a reference to.
     *  @note This method should only be called from the internal thread!
     */
-   Hashtable<int, bool> & GetInternalSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_INTERNAL]._socketSets[socketSet];}
+   Hashtable<SocketRef, bool> & GetInternalSocketSet(uint32 socketSet) {return _threadData[MESSAGE_THREAD_INTERNAL]._socketSets[socketSet];}
 
    /** As above, but returns a read-only reference. */
-   const Hashtable<int, bool> & GetInternalSocketSet(uint32 socketSet) const;
+   const Hashtable<SocketRef, bool> & GetInternalSocketSet(uint32 socketSet) const;
 
 private:
    /** This class encapsulates data that is used by one of our two threads (internal or owner).
@@ -328,17 +310,16 @@ private:
    class ThreadSpecificData 
    {
    public:
-      ThreadSpecificData() : _messageSocket(-1), _closeMessageSocket(true) {/* empty */}
+      ThreadSpecificData() {/* empty */}
 
       Mutex _queueLock;
-      int _messageSocket;
-      bool _closeMessageSocket;
+      SocketRef _messageSocket;
       Queue<MessageRef> _messages;
-      Hashtable<int, bool> _socketSets[NUM_SOCKET_SETS];
+      Hashtable<SocketRef, bool> _socketSets[NUM_SOCKET_SETS];
    };
 
    status_t StartInternalThreadAux();
-   int GetThreadWakeupSocketAux(ThreadSpecificData & tsd);
+   const SocketRef & GetThreadWakeupSocketAux(ThreadSpecificData & tsd);
    int32 WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref, uint64 wakeupTime = MUSCLE_TIME_NEVER);
    status_t SendMessageAux(int whichQueue, const MessageRef & ref);
    void SignalAux(int whichSocket);

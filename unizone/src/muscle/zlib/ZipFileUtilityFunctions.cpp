@@ -142,7 +142,7 @@ MessageRef ReadZipFile(const char * fileName)
    TCHECKPOINT;
 
    static const int NAME_BUF_LEN = 8*1024;  // names longer than 8KB are ridiculous anyway!
-   char * nameBuf = newnothrow char[NAME_BUF_LEN];
+   char * nameBuf = newnothrow_array(char, NAME_BUF_LEN);
    if (nameBuf)
    {
       MessageRef ret = GetMessageFromPool();

@@ -710,7 +710,7 @@ public:
 
       for (uint32 i=0; i<numItems; i++) 
       {
-         const FlatCountable * next = this->ItemAt(i).GetItemPointer();
+         const FlatCountable * next = this->ItemAt(i)();
          if (next)
          {
             uint32 fs = next->FlattenedSize();
@@ -1743,7 +1743,7 @@ status_t Message :: FindMessage(const String &name, uint32 index, Message &msg) 
    MessageRef msgRef;
    if (FindMessage(name, index, msgRef) == B_NO_ERROR)
    {
-      const Message * m = msgRef.GetItemPointer();
+      const Message * m = msgRef();
       if (m) 
       {
          msg = *m;

@@ -234,7 +234,7 @@ void HandleStandardDaemonArgs(const Message & args)
       if (BecomeDaemonProcess(NULL, n[0] ? n : "/dev/null") != B_NO_ERROR)
       {
          LogTime(MUSCLE_LOG_CRITICALERROR, "Couldn't spawn daemon-child process!\n");
-         exit(10);
+         ExitWithoutCleanup(10);
       }
    }
 
@@ -265,10 +265,10 @@ void HandleStandardDaemonArgs(const Message & args)
 
    if (args.FindString("localhost", &value) == B_NO_ERROR)
    {
-      uint32 ip = Inet_AtoN(value);
-      if (ip > 0)
+      ip_address ip = Inet_AtoN(value);
+      if (ip != invalidIP)
       {
-         char ipbuf[16]; Inet_NtoA(ip, ipbuf);
+         char ipbuf[64]; Inet_NtoA(ip, ipbuf);
          LogTime(MUSCLE_LOG_INFO, "IP address [%s] will be used as the localhost address.\n", ipbuf);
          SetLocalHostIPOverride(ip);
       }
@@ -288,7 +288,7 @@ void HandleStandardDaemonArgs(const Message & args)
       {
          errno = 0;  // the only reliable way to check for an error here :^P
          (void) nice(effectiveLevel);
-         if (errno != 0) LogTime(MUSCLE_LOG_WARNING, "Couldn't change process execution priority to %li.\n", effectiveLevel);
+         if (errno != 0) LogTime(MUSCLE_LOG_WARNING, "Couldn't change process execution priority to "INT32_FORMAT_SPEC".\n", effectiveLevel);
                     else LogTime(MUSCLE_LOG_INFO, "Process is now %s (niceLevel=%i)\n", (effectiveLevel<0)?"mean":"nice", effectiveLevel);
       }
    }
@@ -516,7 +516,7 @@ status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir, co
    signal(SIGHUP, SIG_IGN);
    pid = fork();
    if (pid < 0) return B_ERROR;
-   if (pid > 0) exit(0);
+   if (pid > 0) ExitWithoutCleanup(0);
 
    // 4. chdir("/") can ensure that our process doesn't keep any directory in use. Failure to do this
    //    could make it so that an administrator couldn't unmount a filesystem, because it was our
@@ -559,7 +559,7 @@ status_t BecomeDaemonProcess(const char * optNewDir, const char * optOutputTo, b
 {
    bool isParent;
    status_t ret = SpawnDaemonProcess(isParent, optNewDir, optOutputTo, createIfNecessary);
-   if ((ret == B_NO_ERROR)&&(isParent)) exit(0);
+   if ((ret == B_NO_ERROR)&&(isParent)) ExitWithoutCleanup(0);
    return ret;
 }
 
@@ -647,17 +647,10 @@ String DenybbleizeString(const String & ns)
    return (DenybbleizeData(ns, outBuf) == B_NO_ERROR) ? String((const char *) outBuf.GetBuffer(), outBuf.GetNumBytes()) : String();
 }
 
-String Inet_NtoA(uint32 ipAddress)
-{
-   char buf[16];
-   Inet_NtoA(ipAddress, buf);
-   return String(buf);
-}
-
 const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * lookFor, uint32 numLookForBytes)
 {
         if (numLookForBytes == 0)              return lookIn;  // hmm, existential questions here
-   else if (numLookForBytes == numLookInBytes) return (const uint8 *)memcmp(lookIn, lookFor, numLookInBytes);
+   else if (numLookForBytes == numLookInBytes) return (memcmp(lookIn, lookFor, numLookInBytes) == 0) ? lookIn : NULL;
    else if (numLookForBytes < numLookInBytes)
    {
       const uint8 * startedAt = lookIn;

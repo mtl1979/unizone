@@ -108,6 +108,13 @@ ByteBufferRef GetByteBufferFromPool(uint32 numBytes, const uint8 * optBuffer)
    return ref;
 }
 
+ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, uint32 numBytes, const uint8 * optBuffer)
+{
+   ByteBufferRef ref(pool.ObtainObject());
+   if ((ref())&&(ref()->SetBuffer(numBytes, optBuffer) != B_NO_ERROR)) ref.Reset();  // return NULL ref on out-of-memory
+   return ref;
+}
+
 ByteBufferRef GetByteBufferFromPool(const ByteBuffer & copyMe)
 {
    ByteBufferRef ref(_bufferPool.ObtainObject());

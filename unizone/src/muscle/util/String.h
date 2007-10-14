@@ -15,6 +15,7 @@
 #include <string.h> 
 #include <ctype.h> 
 #include "support/Flattenable.h"
+#include "system/GlobalMemoryAllocator.h"  // for muscleFree()
 
 BEGIN_NAMESPACE(muscle);
 
@@ -26,7 +27,8 @@ BEGIN_NAMESPACE(muscle);
 uint32 CStringHashFunc(const char * str); 
 
 /** A character string class.  Represents a dynamically resizable NUL-terminated string. */
-class String : public Flattenable {
+class String : public Flattenable
+{
 public:
    /** Constructor.
     *  @param str If non-NULL, the initial value for this String.
@@ -50,7 +52,7 @@ public:
    String(const String & str, uint32 beginIndex, uint32 endIndex=((uint32)-1)) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0) {(void) SetFromString(str, beginIndex, endIndex);}
 
    /** Destructor. */
-   virtual ~String();
+   virtual ~String() {if (_buffer != _smallBuffer) muscleFree(_buffer);}
 
    /** Assignment Operator.  Sets this string to be a one-character string
      * @param val The character that should be the sole character in this String.
@@ -247,6 +249,12 @@ public:
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
      */
    status_t SetFromString(const String & str, uint32 firstChar = 0, uint32 maxLen = ((uint32)-1));
+
+   /** Returns true iff this string is a zero-length string. */
+   bool IsEmpty() const {return (_length == 0);}
+
+   /** Returns true iff this string is not a zero-length string. */
+   bool HasChars() const {return (_length > 0);}
 
    /** Returns true iff this string starts with (prefix) 
      * @param c a character to check for at the end of this String.
@@ -595,13 +603,13 @@ public:
    String Arg(uint16 value, const char * fmt = "%u")   const;
 
    /** As above, but for int32 values. */
-   String Arg(int32 value,  const char * fmt = "%li")  const;
+   String Arg(int32 value,  const char * fmt = INT32_FORMAT_SPEC)  const;
 
    /** As above, but for uint32 values. */
-   String Arg(uint32 value, const char * fmt = "%lu")  const;
+   String Arg(uint32 value, const char * fmt = UINT32_FORMAT_SPEC) const;
 
    /** As above, but for int64 values. */
-   String Arg(int64 value,  const char * fmt = INT64_FORMAT_SPEC) const;
+   String Arg(int64 value,  const char * fmt = INT64_FORMAT_SPEC)  const;
 
    /** As above, but for uint64 values. */
    String Arg(uint64 value, const char * fmt = UINT64_FORMAT_SPEC) const;

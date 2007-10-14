@@ -17,27 +17,30 @@ SharedFilterSessionFactory :: ~SharedFilterSessionFactory()
    // empty
 }
 
-AbstractReflectSession * SharedFilterSessionFactory:: CreateSession(const String & clientHostIP)
+AbstractReflectSessionRef SharedFilterSessionFactory :: CreateSession(const String & clientIP, const IPAddressAndPort & iap)
 {
    TCHECKPOINT;
-   return ((_slaveRef())&&(IsAccessAllowedForIP(_sharedMemName, Inet_AtoN(clientHostIP()), _isGrantList, _defaultPass))) ? _slaveRef()->CreateSession(clientHostIP) : NULL;
+   return ((_slaveRef())&&(IsAccessAllowedForIP(_sharedMemName, Inet_AtoN(clientIP()), _isGrantList, _defaultPass))) ? _slaveRef()->CreateSession(clientIP, iap) : AbstractReflectSessionRef();
 }
 
-bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMemName, uint32 ip, bool isGrantList, bool defaultPass)
+bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMemName, const ip_address & ip, bool isGrantList, bool defaultPass)
 {
    bool allowAccess = defaultPass;
-   if (ip > 0)
+   if (ip != invalidIP)
    {
       SharedMemory sm;
       if (sm.SetArea(sharedMemName(), 0, true) == B_NO_ERROR)
       {
+         Queue<NetworkInterfaceInfo> ifs;
+         bool gotIFs = false;  // we'll demand-allocate them
+
          allowAccess = !isGrantList;  // if there is a list, you're off it unless you're on it!
 
-         const uint32 * ips = (const uint32 *) sm();
-         uint32 numIPs = sm.GetAreaSize()/sizeof(uint32);
+         const ip_address * ips = (const ip_address *) sm();
+         uint32 numIPs = sm.GetAreaSize()/sizeof(ip_address);
          for (uint32 i=0; i<numIPs; i++)
          {
-            uint32 nextIP = ips[i];
+            ip_address nextIP = ips[i];
             if (nextIP == ip)
             {
                allowAccess = isGrantList;
@@ -45,12 +48,17 @@ bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMem
             }
             else if (nextIP == localhostIP)
             {
+               if (gotIFs == false)
+               {
+                  (void) GetNetworkInterfaceInfos(ifs);
+                  gotIFs = true;
+               }
+
                // Special case for the localhost IP... see if it matches any of our localhost's known IP addresses
                bool matchedLocal = false;
-               uint32 nextLocalIP;
-               for (uint32 j=0; (nextLocalIP=GetLocalIPAddress(j))>0; j++)
+               for (uint32 j=0; j<ifs.GetNumItems(); j++)
                {
-                  if (nextLocalIP == ip)
+                  if (ifs[i].GetLocalAddress() == ip)
                   {
                      allowAccess = isGrantList;
                      matchedLocal = true;

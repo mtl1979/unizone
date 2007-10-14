@@ -5,8 +5,14 @@
 
 #include "support/MuscleSupport.h"
 
-#ifdef QT_CORE_LIB
-# include <QAtomic>
+#if defined(QT_CORE_LIB)
+# include <QtCore>  // for the QT_VERSION number
+# if (QT_VERSION < 0x040400)
+#  include <QAtomic>   // the old, undocumented Qt4 API
+#  define MUSCLE_USE_PRIVATE_QT4_ATOMIC_API
+# else
+#  include <QAtomicInt>  // the new, documented Qt4 API, available in Qt 4.4.0 and higher
+# endif
 #endif
 
 #if defined(MUSCLE_CUSTOM_ATOMIC_TYPE)
@@ -74,10 +80,10 @@ public:
       ++_count;
 #elif defined(WIN32) 
 # if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
-	  volatile int * p = &_count;
+      volatile int * p = &_count;
       __asm {
-            mov ecx, p;
-            lock inc DWORD PTR [ecx]; 
+              mov eax, p;
+              lock inc DWORD PTR [eax];
       };
 # else
       (void) InterlockedIncrement(&_count);
@@ -105,7 +111,11 @@ public:
          : "q" (p)
          : "cc", "memory");
 #elif defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
+#  ifdef MUSCLE_USE_PRIVATE_QT4_ATOMIC_API
       (void) q_atomic_increment(&_count);
+#  else
+      (void) _count.ref();
+#  endif
 #elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
       (void) DoMutexAtomicIncrement(&_count, 1);
 #else
@@ -125,10 +135,10 @@ public:
 #elif defined(WIN32) 
 # if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
       bool isZero;
-	  volatile int * p = &_count;
+      volatile int * p = &_count;
       __asm {
-         mov ecx, p;
-         lock dec DWORD PTR [ecx];	
+         mov eax, p;
+         lock dec DWORD PTR [eax];
          sete isZero;
       };
       return isZero;
@@ -163,7 +173,11 @@ public:
          );
       return isZero;
 #elif defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
+#  ifdef MUSCLE_USE_PRIVATE_QT4_ATOMIC_API
       return (q_atomic_decrement(&_count) == 0);
+#  else
+      return (_count.deref() == false);
+#  endif
 #elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
       return (DoMutexAtomicIncrement(&_count, -1) == 0);
 #else
@@ -204,8 +218,14 @@ private:
 # else
    int32 _count;
 # endif
-#elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) || defined(MUSCLE_USE_X86_INLINE_ASSEMBLY) || defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
+#elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) || defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
    volatile int _count;
+#elif defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
+# ifdef MUSCLE_USE_PRIVATE_QT4_ATOMIC_API
+   volatile int _count;
+# else
+   QAtomicInt _count;
+# endif
 #else
    volatile int32 _count;
 #endif

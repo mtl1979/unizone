@@ -50,7 +50,7 @@ protected:
    virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT)
    {
       char buf[256];
-      int32 bytesRead = GetDataIO()->Read(buf, muscleMin(maxBytes, (uint32)sizeof(buf)));
+      int32 bytesRead = GetDataIO()()->Read(buf, muscleMin(maxBytes, (uint32)sizeof(buf)));
       if (bytesRead > 0) receiver.CallMessageReceivedFromGateway(_signalMessage);
       return bytesRead;
    }

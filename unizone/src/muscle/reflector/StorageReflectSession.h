@@ -20,7 +20,7 @@ public:
    StorageReflectSessionFactory();
 
    /** Returns a new StorageReflectSession */
-   virtual AbstractReflectSession * CreateSession(const String &);
+   virtual AbstractReflectSessionRef CreateSession(const String & clientAddress, const IPAddressAndPort & factoryInfo);
 
    /** Sets the maximum-bytes-per-incoming-message limit that we will set on the StorageReflectSession
      * objects that we create.
@@ -382,9 +382,9 @@ protected:
     * Call this to get a new DataNode, instead of using the DataNode ctor directly.
     * @param nodeName The name to be given to the new DataNode that will be created.
     * @param initialValue The Message payload to be given to the new DataNode that will be created.
-    * @return A pointer to the new DataNode (caller assumes responsibility for it), or NULL if out of memory.
+    * @return A reference to the new DataNode or a NULL reference if out of memory.
     */
-   DataNode * GetNewDataNode(const char * nodeName, const MessageRef & initialValue);
+   DataNodeRef GetNewDataNode(const char * nodeName, const MessageRef & initialValue);
 
    /**
     * Call this when you are done with a DataNode, instead of the DataNode destructor.
@@ -421,7 +421,7 @@ protected:
    Message & GetParameters() {return _parameters;}
 
    /** Returns a reference to the global root node of the database */
-   DataNode & GetGlobalRoot() const {return *(_sharedData->_root);}
+   DataNode & GetGlobalRoot() const {return *(_sharedData->_root());}
 
    /** Macro to declare the proper callback declarations for the message-passing callback.  */
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, PassMessageCallback);    /** Matching nodes are sent the given message.  */
@@ -463,9 +463,9 @@ private:
    class StorageReflectSessionSharedData
    {
    public:
-      StorageReflectSessionSharedData(DataNode * root) : _root(root), _subsDirty(false) {/* empty */}
+      StorageReflectSessionSharedData(const DataNodeRef & root) : _root(root), _subsDirty(false) {/* empty */}
 
-      DataNode * _root;
+      DataNodeRef _root;
       bool _subsDirty;
    };
 

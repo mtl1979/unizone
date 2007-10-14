@@ -1,15 +1,9 @@
 /* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "util/String.h"
-#include "system/GlobalMemoryAllocator.h"
 #include <stdarg.h>
 
 BEGIN_NAMESPACE(muscle);
-
-String :: ~String() 
-{
-   if (_buffer != _smallBuffer) muscleFree(_buffer);
-}
 
 status_t
 String::SetFromString(const String & s, uint32 firstChar, uint32 afterLastChar)
@@ -97,7 +91,7 @@ String::operator+=(const char * other)
 String &
 String::operator-=(const String &other)
 {
-   if (*this == other) *this = "";
+   if (*this == other) Clear();
    else
    {
       int idx = LastIndexOf(other);
@@ -630,7 +624,7 @@ String String :: ArgAux(const char * buf) const
    if (lowestArg >= 0)
    {
       char token[64];
-      sprintf(token, "%%%li", lowestArg);
+      sprintf(token, "%%"INT32_FORMAT_SPEC, lowestArg);
       String ret(*this);
       (void) ret.Replace(token, buf);
       return ret;

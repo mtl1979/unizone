@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "3.33"
+#define MUSCLE_VERSION_STRING "4.00"
 
 #include <string.h>  /* for memcpy() */
 
@@ -162,18 +162,13 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 # include <support/ByteOrder.h>  /* might as well use the real thing (and avoid complaints about duplication) */
 # include <support/SupportDefs.h>
 # include <support/TypeConstants.h>
-# ifdef BONE
-#  define closesocket close
-# else
+# ifndef BONE
 #  define BEOS_OLD_NETSERVER
 # endif
 #else
 # define B_ERROR    -1
 # define B_NO_ERROR 0
 # define B_OK       B_NO_ERROR
-# ifndef WIN32
-#  define closesocket close
-# endif
 # ifdef __ATHEOS__
 #  include </ainc/atheos/types.h>
 # else
@@ -184,15 +179,21 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
     typedef unsigned char           uint8;
     typedef short                   int16;
     typedef unsigned short          uint16;
-#   if defined(MUSCLE_64_BIT_PLATFORM) || defined(__osf__) || defined(__amd64__)     /* some 64bit systems will have long=64-bit, int=32-bit */
+#   if defined(MUSCLE_64_BIT_PLATFORM) || defined(__osf__) || defined(__amd64__) || defined(__PPC64__)    /* some 64bit systems will have long=64-bit, int=32-bit */
      typedef int                    int32;
+#    ifndef _UINT32   // Avoid conflict with typedef in OS/X Leopard system header
      typedef unsigned int           uint32;
+#     define _UINT32  // Avoid conflict with typedef in OS/X Leopard system header
+#    endif
 #    ifndef MUSCLE_64_BIT_PLATFORM
 #     define MUSCLE_64_BIT_PLATFORM 1  // auto-define it if it wasn't defined in the Makefile
 #    endif
 #   else
      typedef long                   int32;
-     typedef unsigned long          uint32;
+#    ifndef _UINT32   // Avoid conflict with typedef in OS/X Leopard system header
+      typedef unsigned long          uint32;
+#     define _UINT32  // Avoid conflict with typedef in OS/X Leopard system header
+#    endif
 #   endif
 #   if defined(WIN32) && !defined(__GNUWIN32__)
      typedef __int64                int64;
@@ -420,6 +421,8 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
   #else
     #ifdef linux
       #include <endian.h>
+    #elif defined( __APPLE__ )
+      #include <machine/endian.h>
     #else
       #define LITTLE_ENDIAN   1234    /* least-significant byte first (vax, pc) */
       #define BIG_ENDIAN      4321    /* most-significant byte first (IBM, net) */
@@ -433,7 +436,7 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
         #define BYTE_ORDER      LITTLE_ENDIAN
       #endif
 
-      #if defined(sel) || defined(pyr) || defined(mc68000) || defined(sparc) || \
+      #if defined(__POWERPC__) || defined(sel) || defined(pyr) || defined(mc68000) || defined(sparc) || \
           defined(__sparc) || \
           defined(is68k) || defined(tahoe) || defined(ibm032) || defined(ibm370) || \
           defined(MIPSEB) || defined(_MIPSEB) || defined(_IBMR2) || defined(DGUX) ||\
@@ -525,79 +528,48 @@ static inline uint64 MusclePowerPCSwapInt64(uint64 val)
 #  define B_SWAP_INT32(arg)    MusclePowerPCSwapInt32((uint32)(arg))
 #  define B_SWAP_INT16(arg)    MusclePowerPCSwapInt16((uint16)(arg))
 # elif defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
-#ifdef _MSC_VER
-static __declspec(naked) inline uint16 MuscleX86SwapInt16(uint16 val)
+static inline uint16 MuscleX86SwapInt16(uint16 val)
 {
+#ifdef _MSC_VER
    __asm {
-      push ebp;
-      mov ebp, esp;
       mov ax, val;
       xchg al, ah;
       mov val, ax;
-      pop ebp;
-      ret;
    };
-}
 #else
-static inline uint16 MuscleX86SwapInt16(uint16 val)
-{
    __asm__ ("xchgb %b0,%h0" : "=q" (val) : "0" (val));
+#endif
    return val;
 }
-#endif
-
-#ifdef _MSC_VER
-static __declspec(naked) inline uint32 MuscleX86SwapInt32(uint32 val)
+static inline uint32 MuscleX86SwapInt32(uint32 val)
 {
+#ifdef _MSC_VER
    __asm {
-      push ebp;
-      mov ebp, esp;
       mov eax, val;
       bswap eax;
       mov val, eax;
-      pop ebp;
-      ret;
    };
-}
 #else
-static inline uint32 MuscleX86SwapInt32(uint32 val)
-{
    __asm__ ("bswap %0" : "+r" (val));
+#endif
    return val;
 }
-#endif
-
-#ifdef _MSC_VER
-static inline __declspec(naked) uint64 MuscleX86SwapInt64(uint64 val)
+static inline uint64 MuscleX86SwapInt64(uint64 val)
 {
+#ifdef _MSC_VER
    __asm {
-      push ebp;
-      mov ebp, esp;
       mov eax, DWORD PTR val;
       mov edx, DWORD PTR val + 4;
       bswap eax;
       bswap edx;
       mov DWORD PTR val, edx;
       mov DWORD PTR val + 4, eax;
-      xchg eax, edx;
-      pop ebp;
-      ret;
    };
-}
-#else
-static inline uint64 MuscleX86SwapInt64(uint64 val)
-{
-   __asm__ __volatile__ (
-            "bswap %%eax\n"
-            "bswap %%edx\n"
-            "xchgl %%eax, %%edx\n"
-            : "=A" (val)
-            : "0" (val)
-   );
    return val;
-}
+#else
+   return ((uint64)(MuscleX86SwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MuscleX86SwapInt32((uint32)(val&0xFFFFFFFF))))<<32);
 #endif
-
+}
 #  define B_SWAP_INT64(arg)    MuscleX86SwapInt64((uint64)(arg))
 #  define B_SWAP_INT32(arg)    MuscleX86SwapInt32((uint32)(arg))
 #  define B_SWAP_INT16(arg)    MuscleX86SwapInt16((uint16)(arg))

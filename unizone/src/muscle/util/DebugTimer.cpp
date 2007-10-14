@@ -27,8 +27,8 @@ DebugTimer :: ~DebugTimer()
       {
          if (nextTime >= _minLogTime)
          {
-            if (nextTime >= 1000) LogTime(_debugLevel, "%s: mode %lu: " UINT64_FORMAT_SPEC " milliseconds elapsed\n", _title(), nextMode, nextTime/1000);
-                             else LogTime(_debugLevel, "%s: mode %lu: " UINT64_FORMAT_SPEC " microseconds elapsed\n", _title(), nextMode, nextTime);
+            if (nextTime >= 1000) LogTime(_debugLevel, "%s: mode "UINT32_FORMAT_SPEC": " UINT64_FORMAT_SPEC " milliseconds elapsed\n", _title(), nextMode, nextTime/1000);
+                             else LogTime(_debugLevel, "%s: mode "UINT32_FORMAT_SPEC": " UINT64_FORMAT_SPEC " microseconds elapsed\n", _title(), nextMode, nextTime);
          }
       }
    }

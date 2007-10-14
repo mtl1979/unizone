@@ -3,33 +3,31 @@
 #include "dataio/TCPSocketDataIO.h"  // for the fd_set definition (BeOS/PPC)
 #include "system/AcceptSocketsThread.h"
 #include "util/NetworkUtilityFunctions.h"
-#include "util/SocketHolder.h"
 
 BEGIN_NAMESPACE(muscle);
 
-AcceptSocketsThread :: AcceptSocketsThread() : _acceptSocket(-1)
+AcceptSocketsThread :: AcceptSocketsThread()
 {
    // empty
 }
 
-AcceptSocketsThread :: AcceptSocketsThread(uint16 port, uint32 optFrom) : _acceptSocket(-1)
+AcceptSocketsThread :: AcceptSocketsThread(uint16 port, const ip_address & optInterfaceIP)
 {
-   (void) SetPort(port, optFrom);
+   (void) SetPort(port, optInterfaceIP);
 }
 
 AcceptSocketsThread :: ~AcceptSocketsThread()
 {
-   CloseSocket(_acceptSocket);
+   // empty
 }
 
-status_t AcceptSocketsThread :: SetPort(uint16 port, uint32 optFrom)
+status_t AcceptSocketsThread :: SetPort(uint16 port, const ip_address & optInterfaceIP)
 {
    if (IsInternalThreadRunning() == false)
    {
-      CloseSocket(_acceptSocket);
       _port = 0;
-      _acceptSocket = CreateAcceptingSocket(port, 20, &port, optFrom);
-      if (_acceptSocket >= 0)
+      _acceptSocket = CreateAcceptingSocket(port, 20, &port, optInterfaceIP);
+      if (_acceptSocket())
       {
          _port = port;
          return B_NO_ERROR;
@@ -40,10 +38,10 @@ status_t AcceptSocketsThread :: SetPort(uint16 port, uint32 optFrom)
 
 status_t AcceptSocketsThread :: StartInternalThread()
 {
-   if ((IsInternalThreadRunning() == false)&&(_acceptSocket >= 0))
+   if ((IsInternalThreadRunning() == false)&&(_acceptSocket()))
    {
       _notifySocket = GetInternalThreadWakeupSocket();
-      return (_notifySocket >= 0) ? Thread::StartInternalThread() : B_ERROR;
+      return (_notifySocket.GetFileDescriptor() >= 0) ? Thread::StartInternalThread() : B_ERROR;
    } 
    return B_ERROR;
 }
@@ -54,11 +52,14 @@ void AcceptSocketsThread :: InternalThreadEntry()
    bool keepGoing = true;
    while(keepGoing)
    {
+      int afd = _acceptSocket.GetFileDescriptor();
+      int nfd = _notifySocket.GetFileDescriptor();
+
       FD_ZERO(&readSet);
-      FD_SET(_acceptSocket, &readSet);
-      FD_SET(_notifySocket, &readSet);
-      if (select(muscleMax(_acceptSocket, _notifySocket)+1, &readSet, NULL, NULL, NULL) < 0) break;
-      if (FD_ISSET(_notifySocket, &readSet))
+      FD_SET(afd, &readSet);
+      FD_SET(nfd, &readSet);
+      if (select(muscleMax(afd, nfd)+1, &readSet, NULL, NULL, NULL) < 0) break;
+      if (FD_ISSET(nfd, &readSet))
       {
          MessageRef msgRef;
          int32 numLeft;
@@ -71,14 +72,13 @@ void AcceptSocketsThread :: InternalThreadEntry()
             }
          }
       }
-      if (FD_ISSET(_acceptSocket, &readSet))
+      if (FD_ISSET(afd, &readSet))
       {
-         int newSocket = Accept(_acceptSocket);
-         if (newSocket >= 0)
+         SocketRef newSocket = Accept(_acceptSocket);
+         if (newSocket())
          {
-            SocketHolderRef ref(newnothrow SocketHolder(newSocket));
             MessageRef msg(GetMessageFromPool(AST_EVENT_NEW_SOCKET_ACCEPTED));
-            msg()->AddTag(AST_NAME_SOCKET, ref.GetGeneric());
+            msg()->AddTag(AST_NAME_SOCKET, newSocket.GetGeneric());
             (void) SendMessageToOwner(msg);
          }
       }

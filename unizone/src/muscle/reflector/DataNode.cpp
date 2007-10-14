@@ -85,13 +85,12 @@ status_t DataNode :: InsertOrderedChild(const MessageRef & data, const char * op
       }
    }
 
-   DataNode * newNode = notifyWithOnSetParent->GetNewDataNode(optNodeName ? optNodeName : temp, data);
-   if (newNode == NULL)
+   DataNodeRef dref = notifyWithOnSetParent->GetNewDataNode(optNodeName ? optNodeName : temp, data);
+   if (dref() == NULL)
    {
       WARN_OUT_OF_MEMORY; 
       return B_ERROR;
    }
-   DataNodeRef dref(newNode);
 
    uint32 insertIndex = _orderedIndex->GetNumItems();  // default to end of index
    if ((optInsertBefore)&&(optInsertBefore[0] == 'I'))  // only 'I''s could be in our index!
@@ -109,13 +108,13 @@ status_t DataNode :: InsertOrderedChild(const MessageRef & data, const char * op
    // Update the index
    if (PutChild(dref, notifyWithOnSetParent, optNotifyChangedData) == B_NO_ERROR)
    {
-      if (_orderedIndex->InsertItemAt(insertIndex, newNode->GetNodeName()()) == B_NO_ERROR)
+      if (_orderedIndex->InsertItemAt(insertIndex, dref()->GetNodeName()()) == B_NO_ERROR)
       {
          String np;
-         if ((optRetAdded)&&(newNode->GetNodePath(np) == B_NO_ERROR)) (void) optRetAdded->Put(np, dref);
+         if ((optRetAdded)&&(dref()->GetNodePath(np) == B_NO_ERROR)) (void) optRetAdded->Put(np, dref);
 
          // Notify anyone monitoring this node that the ordered-index has been updated
-         notifyWithOnSetParent->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, insertIndex, newNode->GetNodeName()());
+         notifyWithOnSetParent->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, insertIndex, dref()->GetNodeName()());
          return B_NO_ERROR;
       }
       else RemoveChild(dref()->GetNodeName()(), notifyWithOnSetParent, false, NULL);  // undo!
@@ -328,7 +327,7 @@ status_t DataNode :: RemoveChild(const char * key, StorageReflectSession * optNo
    DataNodeRef childRef;
    if ((_children)&&(_children->Get(key, childRef) == B_NO_ERROR))
    {
-      DataNode * child = childRef.GetItemPointer();
+      DataNode * child = childRef();
       if (child)
       {
          if (recurse)

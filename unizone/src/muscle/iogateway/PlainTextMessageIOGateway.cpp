@@ -27,7 +27,7 @@ DoOutputImplementation(uint32 maxBytes)
    {
       // try to get the next message from our queue
       (void) GetOutgoingMessageQueue().RemoveHead(_currentSendingMessage);
-      msg = _currentSendingMessage.GetItemPointer();
+      msg = _currentSendingMessage();
       _currentSendLineIndex = _currentSendOffset = -1;
    }
 
@@ -51,7 +51,7 @@ DoOutputImplementation(uint32 maxBytes)
       {
          // Send as much as we can of the current text line
          const char * bytes = _currentSendText.Cstr() + _currentSendOffset;
-         int32 bytesWritten = GetDataIO()->Write(bytes, muscleMin(_currentSendText.Length()-_currentSendOffset, maxBytes));
+         int32 bytesWritten = GetDataIO()()->Write(bytes, muscleMin(_currentSendText.Length()-_currentSendOffset, maxBytes));
               if (bytesWritten < 0) return -1;
          else if (bytesWritten > 0)
          {
@@ -91,7 +91,7 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
    int32 ret = 0;
    const int tempBufSize = 2048;
    char buf[tempBufSize];
-   int32 bytesRead = GetDataIO()->Read(buf, muscleMin(maxBytes, (uint32)(sizeof(buf)-1)));
+   int32 bytesRead = GetDataIO()()->Read(buf, muscleMin(maxBytes, (uint32)(sizeof(buf)-1)));
    if (bytesRead < 0)
    {
       FlushInput(receiver);
@@ -143,7 +143,7 @@ bool
 PlainTextMessageIOGateway ::
 HasBytesToOutput() const
 {
-   return ((_currentSendingMessage() != NULL)||(GetOutgoingMessageQueue().GetNumItems() > 0));
+   return ((_currentSendingMessage() != NULL)||(GetOutgoingMessageQueue().HasItems()));
 }
 
 void

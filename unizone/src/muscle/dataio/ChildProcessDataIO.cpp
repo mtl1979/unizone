@@ -1,6 +1,8 @@
 /* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "dataio/ChildProcessDataIO.h"
+#include "util/MiscUtilityFunctions.h"     // for ExitWithoutCleanup()
+#include "util/NetworkUtilityFunctions.h"  // SendData() and ReceiveData()
 
 // BeOS doesn't include the tty default stuff
 #ifndef MUSCLE_AVOID_TTYDEFS
@@ -166,9 +168,9 @@ static pid_t pty_fork(int *ptrfdm, char *slave_name, const struct termios *slave
 
 ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true)
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
-   , _readFromStdout(INVALID_HANDLE_VALUE), _writeToStdin(INVALID_HANDLE_VALUE), _ioThread(NULL), _wakeupSignal(INVALID_HANDLE_VALUE), _childProcess(INVALID_HANDLE_VALUE), _childThread(INVALID_HANDLE_VALUE), _masterNotifySocket(-1), _slaveNotifySocket(-1), _requestThreadExit(false)
+   , _readFromStdout(INVALID_HANDLE_VALUE), _writeToStdin(INVALID_HANDLE_VALUE), _ioThread(NULL), _wakeupSignal(INVALID_HANDLE_VALUE), _childProcess(INVALID_HANDLE_VALUE), _childThread(INVALID_HANDLE_VALUE), _requestThreadExit(false)
 #else
-   , _handle(-1), _childPID(-1)
+   , _childPID(-1)
 #endif
 {
    // empty
@@ -358,7 +360,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
                delete [] newArgv;  // only executed if execvp() fails
             }
          }
-         _exit(ret);
+         ExitWithoutCleanup(ret);
       }
       else
       {
@@ -371,18 +373,18 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
             ChildProcessReadyToRun();
             int ret = execvp(argv[0], newArgv);
             delete [] newArgv;  // only executed if execvp() fails
-            _exit(ret);
+            ExitWithoutCleanup(ret);
          }
-	 else _exit(20);  // oopsie!
+	 else ExitWithoutCleanup(20);  // oopsie!
       }
    }
    else
    {
       // we are the parent process
       _childPID = pid;
-      SetSocketBlockingEnabled(ptySock, _blocking);
-      _handle = ptySock;
-      okay = (ptySock >= 0);
+      _handle = GetSocketRefFromPool(ptySock);
+      SetSocketBlockingEnabled(_handle, _blocking);
+      okay = (_handle() != NULL);
    }
    if (okay) return B_NO_ERROR;
    else
@@ -404,7 +406,7 @@ bool ChildProcessDataIO :: IsChildProcessAvailable() const
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    return (_readFromStdout != INVALID_HANDLE_VALUE);
 #else
-   return (_handle >= 0);
+   return (_handle.GetFileDescriptor() >= 0);
 #endif
 } 
 
@@ -420,8 +422,8 @@ void ChildProcessDataIO :: Close()
       WaitForSingleObject(_ioThread, INFINITE); // then wait for him to go away
       _ioThread = NULL;
    }
-   CloseSocket(_masterNotifySocket); _masterNotifySocket = -1;
-   CloseSocket(_slaveNotifySocket);  _slaveNotifySocket  = -1;
+   _masterNotifySocket.Reset();
+   _slaveNotifySocket.Reset();
    SafeCloseHandle(_wakeupSignal);
    SafeCloseHandle(_readFromStdout);
    SafeCloseHandle(_writeToStdin);
@@ -433,7 +435,7 @@ void ChildProcessDataIO :: Close()
    SafeCloseHandle(_childProcess);
    SafeCloseHandle(_childThread);
 #else
-   CloseSocket(_handle); _handle = -1;
+   _handle.Reset();
    if (_childPID >= 0)
    {
       if (_killChildOnClose)    (void) kill(_childPID, SIGKILL);
@@ -457,12 +459,12 @@ int32 ChildProcessDataIO :: Read(void *buf, uint32 len)
       }
       else 
       {
-         int32 ret = ConvertReturnValueToMuscleSemantics(recv(_masterNotifySocket, (char *)buf, len, 0L), len, _blocking);
+         int32 ret = ReceiveData(_masterNotifySocket, buf, len, _blocking);
          if (ret >= 0) SetEvent(_wakeupSignal);  // wake up the thread in case he has more data to give us
          return ret;
       }
 #else
-      int r = read(_handle, buf, len);
+      int r = read(_handle.GetFileDescriptor(), buf, len);
       return _blocking ? r : ConvertReturnValueToMuscleSemantics(r, len, _blocking);
 #endif
    }
@@ -483,12 +485,12 @@ int32 ChildProcessDataIO :: Write(const void *buf, uint32 len)
       }
       else 
       {
-         int32 ret = ConvertReturnValueToMuscleSemantics(send(_masterNotifySocket, (char *)buf, len, 0L), len, _blocking);
+         int32 ret = SendData(_masterNotifySocket, buf, len, _blocking);
          if (ret > 0) SetEvent(_wakeupSignal);  // wake up the thread so he'll check his socket for our new data
          return ret;
       }
 #else
-      return ConvertReturnValueToMuscleSemantics(write(_handle, buf, len), len, _blocking);
+      return ConvertReturnValueToMuscleSemantics(write(_handle.GetFileDescriptor(), buf, len), len, _blocking);
 #endif
    }
    return -1;
@@ -504,10 +506,10 @@ void ChildProcessDataIO :: ChildProcessReadyToRun()
    // empty
 }
 
-int ChildProcessDataIO :: GetSelectSocket() const
+const SocketRef & ChildProcessDataIO :: GetSelectSocket() const
 {
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
-   return _blocking ? -1 : _masterNotifySocket;
+   return _blocking ? GetNullSocket() : _masterNotifySocket;
 #else 
    return _handle;
 #endif
@@ -537,7 +539,7 @@ public:
 void ChildProcessDataIO :: IOThreadAbort()
 {
    // If we read zero bytes, that means EOF!  Child process has gone away!
-   CloseSocket(_slaveNotifySocket); _slaveNotifySocket = -1;
+   _slaveNotifySocket.Reset();
    _requestThreadExit = true;  // this will cause the I/O thread to go away now
 }
 
@@ -557,7 +559,7 @@ void ChildProcessDataIO :: IOThreadEntry()
          while(inBuf._index < inBuf._length)
          {
             int32 bytesToWrite = inBuf._length-inBuf._index;
-            int32 bytesWritten = (bytesToWrite > 0) ? ConvertReturnValueToMuscleSemantics(send(_slaveNotifySocket, &inBuf._buf[inBuf._index], bytesToWrite, 0L), bytesToWrite, false) : 0;
+            int32 bytesWritten = (bytesToWrite > 0) ? SendData(_slaveNotifySocket, &inBuf._buf[inBuf._index], bytesToWrite, false) : 0;
             if (bytesWritten > 0)
             {
                inBuf._index += bytesWritten;
@@ -574,7 +576,7 @@ void ChildProcessDataIO :: IOThreadEntry()
          while(outBuf._length < sizeof(outBuf._buf))
          {
             int32 maxLen = sizeof(outBuf._buf)-outBuf._length;
-            int32 ret = ConvertReturnValueToMuscleSemantics(recv(_slaveNotifySocket, &outBuf._buf[outBuf._length], maxLen, 0L), maxLen, false);
+            int32 ret = ReceiveData(_slaveNotifySocket, &outBuf._buf[outBuf._length], maxLen, false);
             if (ret > 0) outBuf._length += ret;
             else
             {

@@ -6,7 +6,6 @@
 #include <qobject.h>
 #include <qthread.h>
 #include "system/AcceptSocketsThread.h"
-#include "util/SocketHolder.h"
 
 #ifndef MUSCLE_AVOID_NAMESPACES
 namespace muscle {
@@ -41,10 +40,9 @@ public:
 
 signals:
    /** Emitted when a new TCP connection is accepted 
-     * @param socketRef Reference to the newly accepted socket.  You may assume ownership of
-     *                  the socket if you wish, or not.
+     * @param socketRef Reference to the newly accepted socket.
      */
-   void ConnectionAccepted(const SocketHolderRef & socketRef);
+   void ConnectionAccepted(const SocketRef & socketRef);
 
 protected:
    /** Overridden to send a QEvent */

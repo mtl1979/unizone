@@ -9,6 +9,7 @@
 #include <string.h>
 #include <errno.h>
 #include "dataio/DataIO.h"
+#include "util/NetworkUtilityFunctions.h"
 
 BEGIN_NAMESPACE(muscle);
 
@@ -25,7 +26,7 @@ public:
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
-   FileDescriptorDataIO(int fd, bool blocking);
+   FileDescriptorDataIO(const SocketRef & fd, bool blocking);
 
    /** Destructor.
     *  close()'s the held file descriptor.
@@ -55,14 +56,18 @@ public:
    virtual void FlushOutput();
    
    /**
-    * Enables or diables blocking I/O on this file descriptor.
+    * Enables or disables blocking I/O on this file descriptor.
     * If this object is to be used by an AbstractMessageIOGateway,
     * then non-blocking I/O is usually better to use.
     * @param blocking If true, file descriptor is set to blocking I/O mode.  Otherwise, non-blocking I/O.
     * @return B_NO_ERROR on success, B_ERROR on error.
     */
-   status_t SetBlockingIOEnabled(bool blocking);
+   virtual status_t SetBlockingIOEnabled(bool blocking);
 
+   /** Returns true iff this object is using blocking I/O mode. */
+   virtual bool IsBlockingIOEnabled() const {return _blocking;}
+
+   /** Clears our held SocketRef. */
    virtual void Shutdown();
 
    /** Seeks to the specified point in the file stream.
@@ -76,23 +81,10 @@ public:
    virtual int64 GetPosition() const;
 
    /** Returns our file descriptor */
-   virtual int GetSelectSocket() const {return _fd;}
-
-   /**
-    * Releases control of the contained file descriptor to the calling code.
-    * After this method returns, this object no longer owns or can
-    * use or close the file descriptor descriptor it once held.
-    */
-   void ReleaseFileDescriptor() {_fd = -1;}
-
-   /**
-    * Returns the file descriptor held by this object, or
-    * -1 if there is none.
-    */
-   int GetFileDescriptor() const {return _fd;}
+   virtual const SocketRef & GetSelectSocket() const {return _fd;}
 
 private:
-   int _fd;
+   SocketRef _fd;
    bool _blocking;
 };
 

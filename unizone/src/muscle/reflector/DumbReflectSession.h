@@ -13,7 +13,7 @@ BEGIN_NAMESPACE(muscle);
 class DumbReflectSessionFactory : public ReflectSessionFactory
 {
 public:
-   virtual AbstractReflectSession * CreateSession(const String & remoteIP);
+   virtual AbstractReflectSessionRef CreateSession(const String & clientAddress, const IPAddressAndPort & factoryInfo);
 };
 
 /** This class represents a single TCP connection between a muscled server and a client program.  

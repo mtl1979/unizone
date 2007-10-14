@@ -45,7 +45,7 @@ DoOutputImplementation(uint32 maxBytes)
       if ((_sendBufByteOffset >= 0)&&(_sendBufByteOffset < _sendBufLength))
       {
          // Send as much as we can of the current text line
-         int32 bytesWritten = GetDataIO()->Write(&((char *)_sendBuf)[_sendBufByteOffset], muscleMin(maxBytes, (uint32) (_sendBufLength-_sendBufByteOffset)));
+         int32 bytesWritten = GetDataIO()()->Write(&((char *)_sendBuf)[_sendBufByteOffset], muscleMin(maxBytes, (uint32) (_sendBufLength-_sendBufByteOffset)));
               if (bytesWritten < 0) return -1;
          else if (bytesWritten > 0)
          {
@@ -88,7 +88,7 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
       }
       if (inMsg)
       {
-         int32 bytesRead = GetDataIO()->Read(&((char*)_recvBuf)[_recvBufByteOffset], muscleMin(maxBytes, (uint32)(_recvBufLength-_recvBufByteOffset)));
+         int32 bytesRead = GetDataIO()()->Read(&((char*)_recvBuf)[_recvBufByteOffset], muscleMin(maxBytes, (uint32)(_recvBufLength-_recvBufByteOffset)));
               if (bytesRead < 0) return -1;
          else if (bytesRead > 0)
          {
@@ -121,7 +121,7 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
          }
       }
 
-      int32 bytesRead = GetDataIO()->Read(_recvScratchSpace, muscleMin(_recvScratchSpaceSize, maxBytes));
+      int32 bytesRead = GetDataIO()()->Read(_recvScratchSpace, muscleMin(_recvScratchSpaceSize, maxBytes));
            if (bytesRead < 0) return -1;
       else if (bytesRead > 0)
       {
@@ -138,7 +138,7 @@ bool
 RawDataMessageIOGateway ::
 HasBytesToOutput() const
 {
-   return ((_sendMsgRef())||(GetOutgoingMessageQueue().GetNumItems() > 0));
+   return ((_sendMsgRef())||(GetOutgoingMessageQueue().HasItems()));
 }
 
 void

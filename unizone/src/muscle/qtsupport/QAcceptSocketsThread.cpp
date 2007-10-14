@@ -7,10 +7,17 @@ BEGIN_NAMESPACE(muscle);
 
 static const uint32 QMTT_SIGNAL_EVENT = QEvent::User+14836;  // why yes, this is a completely arbitrary number
 
+#if QT_VERSION >= 0x040000
+QAcceptSocketsThread :: QAcceptSocketsThread(QObject * parent, const char * name) : QObject(parent)
+{
+   if (name) setObjectName(name);
+}
+#else
 QAcceptSocketsThread :: QAcceptSocketsThread(QObject * parent, const char * name) : QObject(parent, name)
 {
-   if (!name) setName("QAcceptSocketsThread");
+   // empty
 }
+#endif
 
 QAcceptSocketsThread :: ~QAcceptSocketsThread()
 {
@@ -44,7 +51,7 @@ bool QAcceptSocketsThread :: event(QEvent * event)
                GenericRef tag;
                if (next()->FindTag(AST_NAME_SOCKET, tag) == B_NO_ERROR)
                {
-                  SocketHolderRef sref(tag, false);
+                  SocketRef sref(tag, false);
                   if (sref()) emit ConnectionAccepted(sref);
                }
             }

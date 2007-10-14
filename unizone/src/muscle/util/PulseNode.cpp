@@ -143,6 +143,7 @@ void PulseNode :: ReschedulePulseChild(PulseNode * child, int whichList)
                   child->_nextSibling = p;
                   child->_prevSibling = p->_prevSibling;
                   if (p->_prevSibling) p->_prevSibling->_nextSibling = child;
+                                  else _firstChild[whichList] = child;  // FogBugz #4092(b)
                   p->_prevSibling = child;
                }
             }

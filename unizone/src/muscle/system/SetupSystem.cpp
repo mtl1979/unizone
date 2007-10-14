@@ -4,6 +4,7 @@
 #include "support/Flattenable.h"
 #include "dataio/DataIO.h"
 #include "util/ObjectPool.h"
+#include "util/MiscUtilityFunctions.h"  // for ExitWithoutCleanup()
 
 #ifdef WIN32
 # include <windows.h>
@@ -55,6 +56,161 @@ static Mutex * _atomicMutexes = NULL;
 #endif
 
 static uint32 _threadSetupCount = 0;
+
+static int swap_memcmp(const void * vp1, const void * vp2, uint32 numBytes)
+{
+   const uint8 * p1 = (const uint8 *) vp1;
+   const uint8 * p2 = (const uint8 *) vp2;
+   for (uint32 i=0; i<numBytes; i++)
+   {
+      int diff = p2[numBytes-(i+1)]-p1[i];
+      if (diff) return diff;
+   }
+   return 0;
+}
+
+static void GoInsane(const char * why, const char * why2 = NULL)
+{
+   printf("SanitySetupSystem:  MUSCLE COMPILATION RUNTIME SANITY CHECK FAILED!\n");
+   printf("REASON:  %s %s\n", why, why2?why2:"");
+   printf("PLEASE CHECK YOUR COMPILATION SETTINGS!  THIS PROGRAM WILL NOW EXIT.\n");
+   ExitWithoutCleanup(10);
+}
+
+static void CheckOp(uint32 numBytes, const void * orig, const void * swapOne, const void * swapTwo, const void * origOne, const void * origTwo, const char * why)
+{
+   if ((swapOne)&&(swap_memcmp(orig, swapOne, numBytes))) GoInsane(why, "(swapOne)");
+   if ((swapTwo)&&(swap_memcmp(orig, swapTwo, numBytes))) GoInsane(why, "(swapTwo)");
+   if ((origOne)&&(memcmp(orig, origOne, numBytes)))      GoInsane(why, "(origOne)");
+   if ((origTwo)&&(memcmp(orig, origTwo, numBytes)))      GoInsane(why, "(origTwo)");
+}
+
+SanitySetupSystem :: SanitySetupSystem()
+{
+   // Make sure our data type lengths are as expected
+   if (sizeof(uint8)  != 1) GoInsane("sizeof(uint8) !=1");
+   if (sizeof(int8)   != 1) GoInsane("sizeof(int8) !=1");
+   if (sizeof(uint16) != 2) GoInsane("sizeof(uint16) !=2");
+   if (sizeof(int16)  != 2) GoInsane("sizeof(int16) !=2");
+   if (sizeof(uint32) != 4) GoInsane("sizeof(uint32) !=4");
+   if (sizeof(int32)  != 4) GoInsane("sizeof(int32) !=4");
+   if (sizeof(uint64) != 8) GoInsane("sizeof(uint64) !=8");
+   if (sizeof(int64)  != 8) GoInsane("sizeof(int64) !=8");
+
+   // Make sure our endian-ness info is correct
+   static const uint32 one = 1;
+   bool testsLittleEndian =  (*((const uint8 *) &one) == 1);
+
+   // Make sure our endian-swap macros do what we expect them to
+#if B_HOST_IS_BENDIAN
+   if (testsLittleEndian) GoInsane("MUSCLE is compiled for a big-endian CPU, but host CPU is little-endian!?");
+   else
+   {
+      {
+         uint16 orig = 0x1234;
+         uint16 HtoL = B_HOST_TO_LENDIAN_INT16(orig);
+         uint16 LtoH = B_LENDIAN_TO_HOST_INT16(orig);
+         uint16 HtoB = B_HOST_TO_BENDIAN_INT16(orig);  // should be a no-op
+         uint16 BtoH = B_BENDIAN_TO_HOST_INT16(orig);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoL, &LtoH, &HtoB, &BtoH, "16-bit swap macro doesn't work!");
+      }
+
+      {
+         uint32 orig = 0x12345678;
+         uint32 HtoL = B_HOST_TO_LENDIAN_INT32(orig);
+         uint32 LtoH = B_LENDIAN_TO_HOST_INT32(orig);
+         uint32 HtoB = B_HOST_TO_BENDIAN_INT32(orig);  // should be a no-op
+         uint32 BtoH = B_BENDIAN_TO_HOST_INT32(orig);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoL, &LtoH, &HtoB, &BtoH, "32-bit swap macro doesn't work!");
+      }
+
+      {
+         uint64 orig = (((uint64)0x12345678)<<32)|(((uint64)0x12312312));
+         uint64 HtoL = B_HOST_TO_LENDIAN_INT64(orig);
+         uint64 LtoH = B_LENDIAN_TO_HOST_INT64(orig);
+         uint64 HtoB = B_HOST_TO_BENDIAN_INT64(orig);  // should be a no-op
+         uint64 BtoH = B_BENDIAN_TO_HOST_INT64(orig);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoL, &LtoH, &HtoB, &BtoH, "64-bit swap macro doesn't work!");
+      }
+
+      {
+         float orig  = -1234567.89012345f;
+         uint32 HtoL = B_HOST_TO_LENDIAN_IFLOAT(orig);
+         float  LtoH = B_LENDIAN_TO_HOST_IFLOAT(HtoL);
+         uint32 HtoB = B_HOST_TO_BENDIAN_IFLOAT(orig);  // should be a no-op
+         float  BtoH = B_BENDIAN_TO_HOST_IFLOAT(HtoB);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoL, NULL, &HtoB, &BtoH, "float swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, NULL,  NULL, &LtoH,  NULL, "float swap macro doesn't work!");
+      }
+
+      {
+         double orig = ((double)-1234567.89012345) * ((double)987654321.0987654321);
+         uint64 HtoL = B_HOST_TO_LENDIAN_IDOUBLE(orig);
+         double LtoH = B_LENDIAN_TO_HOST_IDOUBLE(HtoL);
+         uint64 HtoB = B_HOST_TO_BENDIAN_IDOUBLE(orig);  // should be a no-op
+         double BtoH = B_BENDIAN_TO_HOST_IDOUBLE(HtoB);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoL, NULL, &HtoB, &BtoH, "double swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig,  NULL, NULL, &LtoH,  NULL, "double swap macro doesn't work!");
+      }
+   }
+#else
+   if (testsLittleEndian)
+   {
+      {
+         uint16 orig = 0x1234;
+         uint16 HtoB = B_HOST_TO_BENDIAN_INT16(orig);
+         uint16 BtoH = B_BENDIAN_TO_HOST_INT16(orig);
+         uint16 HtoL = B_HOST_TO_LENDIAN_INT16(orig);  // should be a no-op
+         uint16 LtoH = B_LENDIAN_TO_HOST_INT16(orig);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoB, &BtoH, &HtoL, &LtoH, "16-bit swap macro doesn't work!");
+      }
+
+      {
+         uint32 orig = 0x12345678;
+         uint32 HtoB = B_HOST_TO_BENDIAN_INT32(orig);
+         uint32 BtoH = B_BENDIAN_TO_HOST_INT32(orig);
+         uint32 HtoL = B_HOST_TO_LENDIAN_INT32(orig);  // should be a no-op
+         uint32 LtoH = B_LENDIAN_TO_HOST_INT32(orig);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoB, &BtoH, &HtoL, &LtoH, "32-bit swap macro doesn't work!");
+      }
+
+      {
+         uint64 orig = (((uint64)0x12345678)<<32)|(((uint64)0x12312312));
+         uint64 HtoB = B_HOST_TO_BENDIAN_INT64(orig);
+         uint64 BtoH = B_BENDIAN_TO_HOST_INT64(orig);
+         uint64 HtoL = B_HOST_TO_LENDIAN_INT64(orig);  // should be a no-op
+         uint64 LtoH = B_LENDIAN_TO_HOST_INT64(orig);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoB, &BtoH, &HtoL, &LtoH, "64-bit swap macro doesn't work!");
+      }
+
+      {
+         float orig  = -1234567.89012345f;
+         uint32 HtoB = B_HOST_TO_BENDIAN_IFLOAT(orig);
+         float  BtoH = B_BENDIAN_TO_HOST_IFLOAT(HtoB);
+         uint32 HtoL = B_HOST_TO_LENDIAN_IFLOAT(orig);  // should be a no-op
+         float  LtoH = B_LENDIAN_TO_HOST_IFLOAT(HtoL);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoB, NULL, &HtoL, &LtoH, "float swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig,  NULL, NULL, &BtoH,  NULL, "float swap macro doesn't work!");
+      }
+
+      {
+         double orig = ((double)-1234567.89012345) * ((double)987654321.0987654321);
+         uint64 HtoB = B_HOST_TO_BENDIAN_IDOUBLE(orig);
+         double BtoH = B_BENDIAN_TO_HOST_IDOUBLE(HtoB);
+         uint64 HtoL = B_HOST_TO_LENDIAN_IDOUBLE(orig);  // should be a no-op
+         double LtoH = B_LENDIAN_TO_HOST_IDOUBLE(HtoL);  // should be a no-op
+         CheckOp(sizeof(orig), &orig, &HtoB, NULL, &HtoL, &LtoH, "double swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig,  NULL, NULL, &BtoH,  NULL, "double swap macro doesn't work!");
+      }
+   }
+   else GoInsane("MUSCLE is compiled for a little-endian CPU, but host CPU is big-endian!?");
+#endif
+}
+
+SanitySetupSystem :: ~SanitySetupSystem()
+{
+   // empty
+}
 
 MathSetupSystem :: MathSetupSystem()
 {
@@ -384,6 +540,13 @@ CompleteSetupSystem :: ~CompleteSetupSystem()
    AbstractObjectRecycler::GlobalFlushAllCachedObjects();
 }
 
+// Implemented here so that every program doesn't have to link
+// in MiscUtilityFunctions.cpp just for this function.
+void ExitWithoutCleanup(int exitCode)
+{
+   _exit(exitCode);
+}
+
 uint32 DataIO :: WriteFully(const void * buffer, uint32 size)
 {
    const uint8 * b = (const uint8 *)buffer;
@@ -496,35 +659,65 @@ status_t Flattenable :: CopyFromImplementation(const Flattenable & copyFrom)
    return ret;
 }
 
-void Inet_NtoA(uint32 addr, char * ipbuf)
+// This function is now a private one, since it should no longer be necessary to call it
+// from user code.  Instead, attach any socket file descriptors you create to SocketRef
+// objects by calling GetSocketRefFromPool(fd), and the file descriptors will be automatically
+// closed when the last SocketRef that references them is destroyed.
+static void CloseSocket(int fd)
 {
-   sprintf(ipbuf, INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC, (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
-}
-
-uint32 Inet_AtoN(const char * buf)
-{
-   // net_server inexplicably doesn't have this function; so I'll just fake it
-   uint32 ret = 0;
-   int shift = 24;  // fill out the MSB first
-   bool startQuad = true;
-   while((shift >= 0)&&(*buf))
+   if (fd >= 0)
    {
-      if (startQuad)
-      {
-         uint8 quad = (uint8) atoi(buf);
-         ret |= (((uint32)quad) << shift);
-         shift -= 8;
-      }
-      startQuad = (*buf == '.');
-      buf++;
+#if defined(WIN32) || defined(BEOS_OLD_NETSERVER)
+      closesocket(fd);
+#else
+      close(fd);
+#endif
    }
-   return ret;
 }
 
-static uint32 _customLocalhostIP = 0;  // disabled by default
+const SocketRef & GetNullSocket()
+{
+   static const SocketRef _null;
+   return _null;
+}
 
-void SetLocalHostIPOverride(uint32 ip) {_customLocalhostIP = ip;}
-uint32 GetLocalHostIPOverride() {return _customLocalhostIP;}
+const SocketRef & GetInvalidSocket()
+{
+   static Socket _invalidSocket;
+   static SocketRef _ref(&_invalidSocket, false);
+   return _ref;
+}
+
+// Our socket should be closed when we are recycled, not just when we are deleted!
+static void RecycleSocketFunc(Socket * s, void *) {s->SetFileDescriptor(-1, false);}
+
+static SocketRef::ItemPool _socketPool(100, RecycleSocketFunc);
+SocketRef GetSocketRefFromPool(int fd, bool okayToClose, bool returnNULLOnInvalidFD)
+{
+   if ((fd < 0)&&(returnNULLOnInvalidFD)) return SocketRef();
+   else
+   {
+      SocketRef ref(_socketPool.ObtainObject());
+      if (ref()) ref()->SetFileDescriptor(fd, okayToClose);
+            else if (okayToClose) CloseSocket(fd);
+      return ref;
+   }
+}
+
+Socket :: ~Socket()
+{
+   SetFileDescriptor(-1, false);
+}
+
+void Socket :: SetFileDescriptor(int newFD, bool okayToClose)
+{
+   if (newFD != _fd)
+   {
+      if ((_fd >= 0)&&(_okayToClose)) CloseSocket(_fd);
+      _fd = newFD; 
+   }
+   _okayToClose = okayToClose;
+}
 
 /** These compare functions are useful for passing into Hashtables or Queues to keep them sorted */
 int IntCompareFunc(   const int    & i1, const int    & i2, void *) {return muscleCompare(i1, i2);}

@@ -22,6 +22,12 @@ typedef HashtableIterator<const char *, DataNodeRef> DataNodeRefIterator;
 class DataNode : public RefCountable
 {
 public:
+   /** Default Constructor.  Don't create DataNode objects yourself though, call StorageReflectSession::GetNewDataNode() instead!  */
+   DataNode();
+
+   /** Destructor.   Don't delete DataNode objects yourself though, let the DataNodeRef objects do it for you */
+   ~DataNode();
+
    /**
     * Put a child without changing the ordering index
     * @param child Reference to the child to accept into our list of children
@@ -170,15 +176,7 @@ public:
    void SetMaxKnownChildID(uint32 maxID) {_maxChildIDHint = maxID;}
 
 private:
-   /** Default Constructor.  Don't use this, use StorageReflectSession::GetNewDataNode() instead!  */
-   DataNode();
-
-   /** Destructor.   Don't use this, use StorageReflectSession::ReleaseDataNode() instead!  */
-   ~DataNode();
-
    friend class StorageReflectSession;
-   friend class ObjectPool<DataNode>;
-   friend class Ref<DataNode>;
 
    void Init(const char * nodeName, const MessageRef & initialValue);
    void SetParent(DataNode * _parent, StorageReflectSession * optNotifyWith);

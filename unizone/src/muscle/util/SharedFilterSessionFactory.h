@@ -14,7 +14,7 @@ BEGIN_NAMESPACE(muscle);
   * SharedMemory class) and look in that area for IP addresses.  The decision about
   * whether to pass the CreateSession() call on to the slave ReflectSessionFactory
   * or just return NULL will be made based on whether the requesting client's IP
-  * address is present in that shared memory area (as a uint32).
+  * address is present in that shared memory area (as a ip_address).
   */
 class SharedFilterSessionFactory : public ReflectSessionFactory
 {
@@ -36,10 +36,11 @@ public:
 
    /** Checks the SharedMemory area to see if our client's IP address is acceptable.
      * If so, the call is passed through to our held factory;  if not, it's "access denied" time, and we return NULL.
-     * @param remoteIP IP address of the remote peer, in ASCII format.
-     * @returns A new session object on approval, or no on denial or error.
+     * @param clientAddress A string representing the remote peer's host, in ASCII format (e.g. "192.168.1.102")
+     * @param factoryInfo The IP address and port number of the local network interface on which this connection was received.
+     * @returns A reference to a new session object on approval, or a NULL reference on denial or error.
      */
-   virtual AbstractReflectSession * CreateSession(const String & remoteIP);
+   virtual AbstractReflectSessionRef CreateSession(const String & clientAddress, const IPAddressAndPort & factoryInfo);
 
    /** Returns the name of the shared memory area to consult for a list of IP addresses. */
    const String & GetSharedMemoryAreaName() const {return _sharedMemName;}
@@ -60,7 +61,7 @@ public:
    void SetDefaultPass(bool dp) {_defaultPass = dp;}
 
    /** Convenience method:  Returns true iff access should be allowed for the given settings and IP address. */
-   static bool IsAccessAllowedForIP(const String & sharedMemName, uint32 ip, bool isGrantList, bool defaultPass);
+   static bool IsAccessAllowedForIP(const String & sharedMemName, const ip_address & ip, bool isGrantList, bool defaultPass);
 
 private:
    ReflectSessionFactoryRef _slaveRef;

@@ -19,9 +19,9 @@
 
 #include "support/Point.h"
 #include "support/Rect.h"
+#include "util/ByteBuffer.h"
 #include "util/String.h"
 #include "util/Hashtable.h"
-#include "util/FlatCountable.h"
 
 BEGIN_NAMESPACE(muscle);
 
@@ -386,6 +386,18 @@ public:
     */
    status_t AddFlat(const String & name, const FlatCountableRef & ref);
 
+   /** Adds a reference to a ByteBuffer object to the Message.
+    *  @param name Name of the field to add (or add to)
+    *  @param ref The ByteBuffer reference to add
+    *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
+    */
+   status_t AddFlat(const String & name, const ByteBufferRef & ref)
+   {
+      FlatCountableRef fcRef;
+      fcRef.SetFromGenericUnchecked(ref.GetGeneric());
+      return AddFlat(name, fcRef);
+   }
+
    /** Adds a new ephemeral-tag-item to this Message.  Tags are references to arbitrary 
     *  ref-countable C++ objects;  They can be added to a Message as a matter of convenience 
     *  to the local program, but note that they are not persistent--they won't get 
@@ -526,6 +538,18 @@ public:
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
    status_t PrependFlat(const String & name, const FlatCountableRef & flatRef);
+
+   /** Prepends a reference to a ByteBuffer object to the Message.
+    *  @param name Name of the field to add (or prepend to)
+    *  @param ref The ByteBuffer reference to prepend
+    *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
+    */
+   status_t PrependFlat(const String & name, const ByteBufferRef & ref)
+   {
+      FlatCountableRef fcRef;
+      fcRef.SetFromGenericUnchecked(ref.GetGeneric());
+      return PrependFlat(name, fcRef);
+   }
 
    /** Prepends a new ephemeral-tag-item to this Message.  Tags are references to arbitrary 
     *  ref-countable C++ objects;  They can be added to a Message as a matter of convenience 
@@ -755,6 +779,18 @@ public:
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
    status_t FindFlat(const String & name, FlatCountableRef &ref) const {return FindFlat(name, 0, ref);}
 
+   /** Convenience method:  As above, only the result is placed into the given ByteBufferRef object.
+     * This saves you having to do the necessary FlatCountableRef->ByteBufferRef casting yourself.
+     */
+   status_t FindFlat(const String & name, uint32 index, ByteBufferRef & ref) const
+   {
+      FlatCountableRef fcRef;
+      return (FindFlat(name, index, fcRef) == B_NO_ERROR) ? ref.SetFromGeneric(fcRef.GetGeneric()) : B_ERROR;
+   }
+
+   /** As above, only (index) isn't specified.  It is assumed to be zero. */
+   status_t FindFlat(const String & name, ByteBufferRef &ref) const {return FindFlat(name, 0, ref);}
+
    /** Retrieve an ephemeral-tag-item from the Message.
     *  @param name Name of the field to look for the tag under.
     *  @param index The index of the tag item in its field entry.
@@ -972,6 +1008,17 @@ public:
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
    status_t ReplaceFlat(bool okayToAdd, const String & name, FlatCountableRef &ref) {return ReplaceFlat(okayToAdd, name, 0, ref);}
 
+   /** As above, only (ref) is specified as a ByteBufferRef, to save you having to do the necessary casting to FlatCountableRef yourself */
+   status_t ReplaceFlat(bool okayToAdd, const String & name, uint32 index, const ByteBufferRef & ref) 
+   {
+      FlatCountableRef fcRef;
+      fcRef.SetFromGenericUnchecked(ref.GetGeneric());
+      return ReplaceFlat(okayToAdd, name, index, fcRef);
+   }
+
+   /** As above, only (index) isn't specified.  It is assumed to be zero. */
+   status_t ReplaceFlat(bool okayToAdd, const String & name, ByteBufferRef &ref) {return ReplaceFlat(okayToAdd, name, 0, ref);}
+
    /** Replace a tag object in an existing Message field with a new tag object.
     *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
     *  @param name The field name of an existing field to modify
@@ -1000,6 +1047,22 @@ public:
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
    status_t ReplaceData(bool okayToAdd, const String & name, uint32 type, const void *data, uint32 numBytes) {return ReplaceData(okayToAdd, name, type, 0, data, numBytes);}
+
+   /** Convenience method:  Returns the first field name of the given type, or NULL if none is found.
+     * @param optTypeCode If specified, only field names with the specified type will be considered.
+     *                    If left as the default (B_ANY_TYPE), then the first field name of any type will be returned. 
+     * @returns a pointer to the returned field's name String on success, or NULL on failure.  Note that this pointer
+     *          is not guaranteed to remain valid if the Message is modified.
+     */
+   const String * GetFirstFieldNameString(uint32 optTypeCode = B_ANY_TYPE) const {return GetExtremeFieldNameStringAux(optTypeCode, false);}
+
+   /** Convenience method:  Returns the last field name of the given type, or NULL if none is found.
+     * @param optTypeCode If specified, only field names with the specified type will be considered.
+     *                    If left as the default (B_ANY_TYPE), then the last field name of any type will be returned. 
+     * @returns a pointer to the returned field's name String on success, or NULL on failure.  Note that this pointer
+     *          is not guaranteed to remain valid if the Message is modified.
+     */
+   const String * GetLastFieldNameString(uint32 optTypeCode = B_ANY_TYPE) const {return GetExtremeFieldNameStringAux(optTypeCode, true);}
 
    /** Returns true iff there is a field with the given name and type present in the Message.
     *  @param fieldName the field name to look for.
@@ -1089,6 +1152,12 @@ private:
    status_t ReplaceDataAux(bool okayToAdd, const String & name, uint32 index, void * dataBuf, uint32 bufSize, uint32 tc);
  
    bool FieldsAreSubsetOf(const Message & rhs, bool compareData) const;
+
+   const String * GetExtremeFieldNameStringAux(uint32 optTypeCode, bool isLast) const
+   {
+      return (optTypeCode == B_ANY_TYPE) ? (isLast ? _entries.GetLastKey() : _entries.GetFirstKey()) 
+                                         : MessageFieldNameIterator(*this, optTypeCode, HTIT_FLAG_NOREGISTER|(isLast?HTIT_FLAG_BACKWARDS:0)).GetNextFieldNameString();
+   }
 
    // Iterator support methods
    friend class MessageFieldNameIterator;

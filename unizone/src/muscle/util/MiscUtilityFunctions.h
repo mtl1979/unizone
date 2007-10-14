@@ -147,9 +147,17 @@ String GetHumanReadableTimeString(uint64 timeVal, uint32 timeType = MUSCLE_TIMEZ
   */
 uint64 ParseHumanReadableTimeString(const String & str, uint32 timeType = MUSCLE_TIMEZONE_UTC);
 
+/** Similar to the standard exit() call, except that no global object destructors will
+  * be called.  This is sometimes useful, e.g. in fork() situations where you want the
+  * parent process to just go away without any chance of a crash during cleanup.
+  * @param exitCode the exit code value that should be passed back to our parent process
+  *                 (i.e. the argument to pass to exit() or _exit())
+  */
+void ExitWithoutCleanup(int exitCode);
+
 /** Calls fork(), setsid(), chdir(), umask(), etc, to fork an independent daemon process.
  *  Also closes all open file descriptors.
- *  Note that this function will call exit() on the parent process if successful,
+ *  Note that this function will call ExitWithoutCleanup() on the parent process if successful,
  *  and thus won't ever return in that process. 
  *  @param optNewDir If specified, the daemon will chdir() to the directory specified here.
  *  @param optOutputTo Where to redirect stderr and stdout to.  Defaults to "/dev/null".
@@ -214,11 +222,6 @@ String NybbleizeString(const String & str);
   *               call NybbleizeData() instead of this function.
   */
 String DenybbleizeString(const String & nybStr);
-
-/** A more convenient version of Inet_Ntoa().  Given an IP address, returns a String
-  * representation of that address (e.g. "192.168.0.1").
-  */
-String Inet_NtoA(uint32 ipAddress);
 
 /** This function is like strstr(), except that instead of searching for a substring
   * within a string, it looks for a given binary pattern inside a binary buffer.

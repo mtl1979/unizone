@@ -212,11 +212,8 @@ public:
      */
    void SetDataIO(const DataIORef & ref) {_ioRef = ref;}
 
-   /** Accessor for our held DataIO object */
-   DataIO * GetDataIO() const {return _ioRef();}
-
    /** As above, but returns a reference instead of the raw pointer. */
-   DataIORef GetDataIORef() const {return _ioRef;}
+   const DataIORef & GetDataIO() const {return _ioRef;}
 
    /** Returns true iff we are hosed--that is, we've experienced an unrecoverable error. */
    bool IsHosed() const {return _hosed;}

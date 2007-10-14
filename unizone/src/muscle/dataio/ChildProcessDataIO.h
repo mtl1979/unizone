@@ -72,7 +72,7 @@ public:
     *  to make such a thing impossible :^P Note that you should only use this socket with select(); 
     *  to read or write to/from the child process, call Read() and Write() instead.
     */
-   virtual int GetSelectSocket() const;
+   virtual const SocketRef & GetSelectSocket() const;
 
    /** Returns true iff the child process is available (i.e. if startup succeeded). */
    bool IsChildProcessAvailable() const;
@@ -97,6 +97,11 @@ public:
      */
    virtual void ChildProcessReadyToRun();
 
+#if !defined(WIN32) && !defined(CYGWIN)
+   /** Returns the process ID of the child process.  Not available under Windows. */
+   pid_t GetChildProcessID() const {return _childPID;}
+#endif
+
 private:
    void Close();
    status_t LaunchChildProcessAux(int argc, const void * argv);
@@ -115,11 +120,11 @@ private:
    ::HANDLE _wakeupSignal;
    ::HANDLE _childProcess;
    ::HANDLE _childThread;
-   int _masterNotifySocket;
-   int _slaveNotifySocket;
+   SocketRef _masterNotifySocket;
+   SocketRef _slaveNotifySocket;
    volatile bool _requestThreadExit;
 #else
-   int _handle;
+   SocketRef _handle;
    pid_t _childPID;
 #endif
 };

@@ -32,10 +32,11 @@ public:
 
    /** Checks to see if the new session meets all our acceptance criteria.
      * If so, the call is passed through to our held factory;  if not, it's "access denied" time, and we return NULL.
-     * @param remoteIP IP address of the remote peer, in ASCII format.
-     * @returns A new session object on approval, or no on denial or error.
+     * @param clientAddress A string representing the connecting client's host (typically an IP address, e.g. "192.168.1.102")
+     * @param factoryInfo the IP address and port of the network interface that accepted the connection
+     * @returns A reference to a new session object on approval, or a NULL reference on denial or error.
      */
-   virtual AbstractReflectSession * CreateSession(const String & remoteIP);
+   virtual AbstractReflectSessionRef CreateSession(const String & clientAddress, const IPAddressAndPort & factoryInfo);
 
    /** Implemented to handle PR_COMMAND_(ADD/REMOVE)(BANS/REQUIRES) messages from our sessions */
    virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msgRef, void * userData);       

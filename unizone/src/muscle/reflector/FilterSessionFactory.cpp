@@ -15,36 +15,36 @@ FilterSessionFactory :: ~FilterSessionFactory()
    // empty
 }
 
-AbstractReflectSession * FilterSessionFactory:: CreateSession(const String & clientHostIP)
+AbstractReflectSessionRef FilterSessionFactory :: CreateSession(const String & clientHostIP, const IPAddressAndPort & iap)
 {
    TCHECKPOINT;
 
    if (GetNumSessions() >= _totalMaxSessions)
    {
       LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] refused (all "UINT32_FORMAT_SPEC" sessions slots are in use).\n", clientHostIP(), _totalMaxSessions);
-      return NULL;
+      return AbstractReflectSessionRef();
    }
       
    if (_maxSessionsPerHost != MUSCLE_NO_LIMIT)
    {
       uint32 count = 0;
       AbstractReflectSessionRef next;
-      HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
+      HashtableIterator<const char *, AbstractReflectSessionRef> iter(GetSessions());
       while(iter.GetNextValue(next) == B_NO_ERROR) 
       {
          if ((next())&&(strcmp(next()->GetHostName()(), clientHostIP()) == 0)&&(++count >= _maxSessionsPerHost))
          {
             LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] refused (host already has "UINT32_FORMAT_SPEC" sessions open).\n", clientHostIP(), _maxSessionsPerHost);
-            return NULL;
+            return AbstractReflectSessionRef();
          }
       }
    }
 
-   AbstractReflectSession * ret = NULL;
+   AbstractReflectSessionRef ret;
    if (_slaveRef())
    {
       // If we have any requires, then this IP must match at least one of them!
-      if (_requires.GetNumItems() > 0)
+      if (_requires.HasItems())
       {
          bool matched = false;
          HashtableIterator<String, StringMatcherRef> iter(_requires);
@@ -60,7 +60,7 @@ AbstractReflectSession * FilterSessionFactory:: CreateSession(const String & cli
          if (matched == false) 
          {
             LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] doesn't match any require pattern, access denied.\n", clientHostIP());
-            return NULL;
+            return AbstractReflectSessionRef();
          }
       }
 
@@ -73,16 +73,16 @@ AbstractReflectSession * FilterSessionFactory:: CreateSession(const String & cli
          if (next()->Match(clientHostIP()))
          {
             LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] matches ban pattern [%s], access denied.\n", clientHostIP(), key->Cstr());
-            return NULL;
+            return AbstractReflectSessionRef();
          }
       }
 
       // Okay, he passes.  We'll let our slave create a session for him.
-      ret = _slaveRef()->CreateSession(clientHostIP);
-      if (ret) 
+      ret = _slaveRef()->CreateSession(clientHostIP, iap);
+      if (ret())
       {
-         if (_inputPolicyRef())  ret->SetInputPolicy(_inputPolicyRef);
-         if (_outputPolicyRef()) ret->SetOutputPolicy(_outputPolicyRef);
+         if (_inputPolicyRef())  ret()->SetInputPolicy(_inputPolicyRef);
+         if (_outputPolicyRef()) ret()->SetOutputPolicy(_outputPolicyRef);
       }
    }
    return ret;
@@ -121,7 +121,7 @@ status_t FilterSessionFactory :: PutBanPattern(const char * banPattern)
    {
       if (_bans.Put(banPattern, newMatcherRef) == B_NO_ERROR) 
       {
-         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is banning [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
+         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is banning [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString()(), banPattern, _tempLogFor->GetPort());
          return B_NO_ERROR;
       }
    }
@@ -140,7 +140,7 @@ status_t FilterSessionFactory :: PutRequirePattern(const char * requirePattern)
    {
       if (_requires.Put(requirePattern, newMatcherRef) == B_NO_ERROR) 
       {
-         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is requiring [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
+         if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is requiring [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString()(), requirePattern, _tempLogFor->GetPort());
          return B_NO_ERROR;
       }
    }
@@ -153,7 +153,7 @@ status_t FilterSessionFactory :: RemoveBanPattern(const char * banPattern)
 {
    if (_bans.Remove(banPattern) == B_NO_ERROR)
    {
-      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing ban [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString(), banPattern, _tempLogFor->GetPort());
+      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing ban [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString()(), banPattern, _tempLogFor->GetPort());
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -163,7 +163,7 @@ status_t FilterSessionFactory :: RemoveRequirePattern(const char * requirePatter
 {
    if (_requires.Remove(requirePattern) == B_NO_ERROR)
    {
-      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing requirement [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString(), requirePattern, _tempLogFor->GetPort());
+      if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing requirement [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString()(), requirePattern, _tempLogFor->GetPort());
       return B_NO_ERROR;
    }
    return B_ERROR;

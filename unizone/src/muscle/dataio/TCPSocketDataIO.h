@@ -27,7 +27,7 @@ public:
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
-   TCPSocketDataIO(int sockfd, bool blocking) : _sockfd(sockfd), _blocking(true), _naglesEnabled(true), _stallLimit(MUSCLE_DEFAULT_TCP_STALL_TIMEOUT)
+   TCPSocketDataIO(const SocketRef & sock, bool blocking) : _sock(sock), _blocking(true), _naglesEnabled(true), _stallLimit(MUSCLE_DEFAULT_TCP_STALL_TIMEOUT)
    {
       (void) SetBlockingIOEnabled(blocking);
    }
@@ -37,11 +37,11 @@ public:
     */
    virtual ~TCPSocketDataIO() 
    {
-      if (_sockfd >= 0) Shutdown();
+      Shutdown();
    }
 
-   virtual int32 Read(void * buffer, uint32 size) {return ReceiveData(_sockfd, buffer, size, _blocking);}
-   virtual int32 Write(const void * buffer, uint32 size) {return SendData(_sockfd, buffer, size, _blocking);}
+   virtual int32 Read(void * buffer, uint32 size) {return ReceiveData(_sock, buffer, size, _blocking);}
+   virtual int32 Write(const void * buffer, uint32 size) {return SendData(_sock, buffer, size, _blocking);}
 
    /**
     *  This method implementation always returns B_ERROR, because you can't seek on a socket!
@@ -66,31 +66,23 @@ public:
     */
    virtual void FlushOutput()
    {
-      if ((_sockfd >= 0)&&(_naglesEnabled))
+      if ((_sock())&&(_naglesEnabled))
       {
-         SetSocketNaglesAlgorithmEnabled(_sockfd, false);
+         SetSocketNaglesAlgorithmEnabled(_sock, false);
 #ifndef __linux__
-         (void) SendData(_sockfd, NULL, 0, _blocking);  // Force immediate buffer flush (not necessary under Linux)
+         (void) SendData(_sock, NULL, 0, _blocking);  // Force immediate buffer flush (not necessary under Linux)
 #endif
-         SetSocketNaglesAlgorithmEnabled(_sockfd, true);
+         SetSocketNaglesAlgorithmEnabled(_sock, true);
       }
    }
    
    /**
     * Closes our socket connection
     */
-   virtual void Shutdown()
-   {
-      if (_sockfd >= 0)
-      { 
-         ShutdownSocket(_sockfd);  // go away right now, dammit
-         CloseSocket(_sockfd);
-         _sockfd = -1;
-      }
-   }
+   virtual void Shutdown() {_sock.Reset();}
 
    /** Returns our socket descriptor */
-   virtual int GetSelectSocket() const {return _sockfd;}
+   virtual const SocketRef & GetSelectSocket() const {return _sock;}
 
    /**
     * Enables or diables blocking I/O on this socket.
@@ -101,7 +93,7 @@ public:
     */
    status_t SetBlockingIOEnabled(bool blocking)
    {
-      status_t ret = SetSocketBlockingEnabled(_sockfd, blocking);
+      status_t ret = SetSocketBlockingEnabled(_sock, blocking);
       if (ret == B_NO_ERROR) _blocking = blocking;
       return ret;
    }
@@ -114,23 +106,10 @@ public:
     */
    status_t SetNaglesAlgorithmEnabled(bool enabled)
    {
-      status_t ret = SetSocketNaglesAlgorithmEnabled(_sockfd, enabled);
+      status_t ret = SetSocketNaglesAlgorithmEnabled(_sock, enabled);
       if (ret == B_NO_ERROR) _naglesEnabled = enabled;
       return ret;
    }
-
-   /**
-    * Releases control of the contained socket to the calling code.
-    * After this method returns, this object no longer owns or can
-    * use or close the socket descriptor it once held.
-    */
-   void ReleaseSocket() {_sockfd = -1;}
-
-   /**
-    * Returns the socket descriptor held by this object, or
-    * -1 if there is none.
-    */
-   int GetSocket() const {return _sockfd;}
 
    /** Returns true iff our socket is set to use blocking I/O (as specified in
     *  the constructor or in our SetBlockingIOEnabled() method)
@@ -143,7 +122,7 @@ public:
    bool IsNaglesAlgorithmEnabled() const {return _naglesEnabled;}
 
 private:
-   int _sockfd;
+   SocketRef _sock;
    bool _blocking;
    bool _naglesEnabled;
    uint64 _stallLimit;

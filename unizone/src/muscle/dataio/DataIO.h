@@ -3,7 +3,7 @@
 #ifndef MuscleDataIO_h
 #define MuscleDataIO_h
 
-#include "util/RefCount.h"
+#include "util/Socket.h"
 
 BEGIN_NAMESPACE(muscle);
  
@@ -74,7 +74,7 @@ public:
    /**
     * Flushes the output buffer, if possible.  For some implementations,
     * this is a no-op.  For others (e.g. TCPSocketDataIO) this can be
-    * called to improve latency of outgoing data blocks.
+    * called to reduced latency of outgoing data blocks.
     */
    virtual void FlushOutput() = 0;
 
@@ -86,8 +86,9 @@ public:
 
    /**
     * If this DataIO is usable with select(), this method should return
-    * the socket FD to select on to watch this DataIO.  If it isn't usable
-    * with select, then this method should return -1.
+    * the SocketRef object containing the file descriptor to select on 
+    * for this DataIO.  If this DataIO isn't usable with select(), then 
+    * this method should return GetNullSocket().
     *
     * Note that the only thing you are allowed to do with the returned file descriptor
     * is pass it to select().  For all other operations, use the appropriate
@@ -95,7 +96,7 @@ public:
     * on this file descriptor directly, the results are non-portable and undefined 
     * and will probably break your program.
     */
-   virtual int GetSelectSocket() const = 0;
+   virtual const SocketRef & GetSelectSocket() const = 0;
 
    /**
     * Optional interface for returning information on when a given byte

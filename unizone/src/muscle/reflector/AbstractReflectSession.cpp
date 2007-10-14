@@ -10,32 +10,46 @@
 
 BEGIN_NAMESPACE(muscle);
 
-static uint32 _idCounter = 0L;
+static uint32 _sessionIDCounter = 0L;
+static uint32 _factoryIDCounter = 0L;
 
-AbstractReflectSession ::
-AbstractReflectSession() : _port(0), _connectingAsync(false), _asyncConnectIP(0), _asyncConnectPort(0), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER)
+static uint32 GetNextGlobalID(uint32 & counter)
 {
-   TCHECKPOINT;
+   uint32 ret;
 
    Mutex * ml = GetGlobalMuscleLock();
-   MASSERT(ml, "Please instantiate a CompleteSetupSystem object on the stack before creating any session objects (at beginning of main() is preferred)\n");
+   MASSERT(ml, "Please instantiate a CompleteSetupSystem object on the stack before creating any session or session-factory objects (at beginning of main() is preferred)\n");
+
    if (ml->Lock() == B_NO_ERROR) 
    {
-      sprintf(_idString, UINT32_FORMAT_SPEC, _idCounter++);  
+      ret = counter++;
       ml->Unlock();
    }
    else
    {
-      LogTime(MUSCLE_LOG_ERROR, "Couldn't lock counter lock for new session!!?!\n");
-      sprintf(_idString, UINT32_FORMAT_SPEC, _idCounter++);   // do it anyway, I guess
+      LogTime(MUSCLE_LOG_CRITICALERROR, "Couldn't lock global muscle lock while assigning new ID!!?!\n");
+      ret = counter++;  // do it anyway, I guess
    }
+   return ret;
+}
+
+ReflectSessionFactory :: ReflectSessionFactory()
+{
+   TCHECKPOINT;
+   _id = GetNextGlobalID(_factoryIDCounter);
+}
+
+AbstractReflectSession ::
+AbstractReflectSession() : _sessionID(GetNextGlobalID(_sessionIDCounter)), _connectingAsync(false), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER), _autoReconnectDelay(MUSCLE_TIME_NEVER), _reconnectTime(MUSCLE_TIME_NEVER), _wasConnected(false)
+{
+   char buf[64]; sprintf(buf, UINT32_FORMAT_SPEC, _sessionID);
+   _idString = buf;
 }
 
 AbstractReflectSession ::
 ~AbstractReflectSession() 
 {
    TCHECKPOINT;
-
    SetInputPolicy(PolicyRef());   // make sure the input policy knows we're going away
    SetOutputPolicy(PolicyRef());  // make sure the output policy knows we're going away
 }
@@ -53,14 +67,15 @@ AbstractReflectSession ::
 GetPort() const 
 {
    MASSERT(IsAttachedToServer(), "Can't call GetPort() while not attached to the server");
-   return _port;
+   return _ipAddressAndPort.GetPort();
 }
 
-const char * 
+const ip_address &
 AbstractReflectSession ::
-GetSessionIDString() const 
+GetLocalInterfaceAddress() const 
 {
-   return _idString;
+   MASSERT(IsAttachedToServer(), "Can't call LocalInterfaceAddress() while not attached to the server");
+   return _ipAddressAndPort.GetIPAddress();
 }
 
 status_t 
@@ -78,54 +93,66 @@ Reconnect()
    TCHECKPOINT;
 
    MASSERT(IsAttachedToServer(), "Can't call Reconnect() while not attached to the server");
-   if ((_asyncConnectIP > 0)&&(_gateway()))
+   if ((_asyncConnectDest.GetIPAddress() != invalidIP)&&(_gateway()))
    {
       _gateway()->SetDataIO(DataIORef());  // get rid of any existing socket first
       _gateway()->Reset();                 // set gateway back to its virgin state
       _connectingAsync = false;  // paranoia
 
       bool isReady;
-      int socket = ConnectAsync(_asyncConnectIP, _asyncConnectPort, isReady);
-      if (socket >= 0)
+      SocketRef sock = ConnectAsync(_asyncConnectDest.GetIPAddress(), _asyncConnectDest.GetPort(), isReady);
+      if (sock())
       {
-         DataIO * io = CreateDataIO(socket);
-         if (io)
+         DataIORef io = CreateDataIO(sock);
+         if (io())
          {
-            _gateway()->SetDataIO(DataIORef(io));
+            _gateway()->SetDataIO(io);
             if (isReady) AsyncConnectCompleted();
                     else _connectingAsync = true;
             _scratchReconnected = true;   // tells ReflectServer() not to shut down our new IO!
             return B_NO_ERROR;
          }
-         else closesocket(socket);
       }
    }
    return B_ERROR;
 }
 
-AbstractMessageIOGateway * 
+SocketRef 
+AbstractReflectSession :: 
+CreateDefaultSocket()
+{
+   return SocketRef();  // NULL Ref means run clientless by default
+}
+
+DataIORef
+AbstractReflectSession ::
+CreateDataIO(const SocketRef & socket)
+{
+   DataIORef dio(newnothrow TCPSocketDataIO(socket, false));
+   if (dio() == NULL) WARN_OUT_OF_MEMORY;
+   return dio;
+}
+
+AbstractMessageIOGatewayRef
 AbstractReflectSession ::
 CreateGateway()
 {
    AbstractMessageIOGateway * gw = newnothrow MessageIOGateway();
    if (gw == NULL) WARN_OUT_OF_MEMORY;
-   return gw;
-}
-
-DataIO *
-AbstractReflectSession ::
-CreateDataIO(int socket)
-{
-   DataIO * dio = newnothrow TCPSocketDataIO(socket, false);
-   if (dio == NULL) WARN_OUT_OF_MEMORY;
-   return dio;
+   return AbstractMessageIOGatewayRef(gw);
 }
 
 bool
 AbstractReflectSession ::
 ClientConnectionClosed()
 {
-   return true;  // true == okay to remove this session
+   if (_autoReconnectDelay == MUSCLE_TIME_NEVER) return true;  // true == okay to remove this session
+   else
+   {
+      if (_wasConnected) LogTime(MUSCLE_LOG_DEBUG, "%s:  Connection severed, will auto-reconnect in %llums\n", GetSessionDescriptionString()(), _autoReconnectDelay);
+      PlanForReconnect();
+      return false;
+   }
 }
 
 void
@@ -149,7 +176,7 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData)
 {
    TCHECKPOINT;
 
-   HashtableIterator<uint16, ReflectSessionFactoryRef> iter = GetFactories();
+   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter = GetFactories();
    ReflectSessionFactoryRef * next;
    while((next = iter.GetNextValue()) != NULL)
    {
@@ -160,7 +187,7 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData)
 
 void AbstractReflectSession :: AsyncConnectCompleted()
 {
-   // empty
+   _wasConnected = true;
 }
 
 void AbstractReflectSession :: SetInputPolicy(const PolicyRef & newRef) {SetPolicyAux(_inputPolicyRef, _maxInputChunk, newRef, true);}
@@ -214,13 +241,15 @@ String
 AbstractReflectSession ::
 GetSessionDescriptionString() const
 {
+   uint16 port = _ipAddressAndPort.GetPort();
+
    String ret = GetTypeName();
    ret += " ";
    ret += GetSessionIDString();
-   ret += (_port>0)?" from [":" to [";
+   ret += (port>0)?" from [":" to [";
    ret += _hostName;
    ret += ':';
-   char buf[64]; sprintf(buf, "%u]", (_port>0)?_port:_asyncConnectPort); ret += buf;
+   char buf[64]; sprintf(buf, "%u]", (port>0)?port:_asyncConnectDest.GetPort()); ret += buf;
    return ret;
 }
 
@@ -255,18 +284,6 @@ DoOutput(uint32 maxBytes)
    return _gateway() ? _gateway()->DoOutput(maxBytes) : 0;
 }
 
-ReflectSessionFactory ::
-ReflectSessionFactory() : _port(0), _socket(-1)
-{
-   // empty
-}
-
-ReflectSessionFactory ::
-~ReflectSessionFactory()
-{
-   // empty
-}
-
 void
 ReflectSessionFactory ::
 BroadcastToAllSessions(const MessageRef & msgRef, void * userData)
@@ -288,7 +305,7 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData, bool toSelf)
 {
    TCHECKPOINT;
 
-   HashtableIterator<uint16, ReflectSessionFactoryRef> iter = GetFactories();
+   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter = GetFactories();
    ReflectSessionFactoryRef * next;
    while((next = iter.GetNextValue()) != NULL)
    {
@@ -297,16 +314,55 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData, bool toSelf)
    }
 }
 
-int 
-AbstractReflectSession :: GetSessionSelectSocket() const
+const SocketRef &
+AbstractReflectSession ::
+GetSessionSelectSocket() const
 {
-   const AbstractMessageIOGateway * gw = GetGateway();
+   const AbstractMessageIOGateway * gw = GetGateway()();
    if (gw)
    {
-      const DataIO * io = gw->GetDataIO();
-      if (io) return io->GetSelectSocket();
+      const DataIORef & io = gw->GetDataIO();
+      if (io()) return io()->GetSelectSocket();
    }
-   return -1;
+   return GetNullSocket();
 }
+
+void 
+AbstractReflectSession ::
+PlanForReconnect()
+{
+   _reconnectTime = (_autoReconnectDelay == MUSCLE_TIME_NEVER) ? _autoReconnectDelay : (GetRunTime64()+_autoReconnectDelay);
+   InvalidatePulseTime();
+}
+
+uint64 
+AbstractReflectSession :: 
+GetPulseTime(uint64 /*now*/, uint64 /*sched*/)
+{
+   return _reconnectTime;
+}
+
+void
+AbstractReflectSession :: 
+Pulse(uint64 now, uint64 sched)
+{
+   PulseNode::Pulse(now, sched);
+   if (now >= _reconnectTime)
+   {
+      if (_autoReconnectDelay == MUSCLE_TIME_NEVER) _reconnectTime = MUSCLE_TIME_NEVER;
+      else
+      {
+         // FogBugz #3810
+         if (_wasConnected) LogTime(MUSCLE_LOG_DEBUG, "%s is attempting to auto-reconnect...\n", GetSessionDescriptionString()());
+         _reconnectTime = MUSCLE_TIME_NEVER;
+         if (Reconnect() != B_NO_ERROR)
+         {
+            LogTime(MUSCLE_LOG_DEBUG, "%s: Couldn't auto-reconnect, will try again later...\n", GetSessionDescriptionString()());
+            PlanForReconnect();  // okay, we'll try again later!
+         }
+      }
+   }
+}
+
 
 END_NAMESPACE(muscle);

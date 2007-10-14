@@ -3,7 +3,6 @@
 #ifndef MuscleAbstractReflectSession_h
 #define MuscleAbstractReflectSession_h
 
-#include "dataio/TCPSocketDataIO.h"
 #include "iogateway/AbstractMessageIOGateway.h"
 #include "reflector/AbstractSessionIOPolicy.h"
 #include "reflector/ServerComponent.h"
@@ -19,22 +18,24 @@ BEGIN_NAMESPACE(muscle);
 class ReflectSessionFactory : public ServerComponent
 {
 public:
-   /** Constructor */
+   /** Constructor.  Our globally unique factory ID is assigned here. */
    ReflectSessionFactory();
 
    /** Destructor */
-   virtual ~ReflectSessionFactory();
+   virtual ~ReflectSessionFactory() {/* empty */}
 
    /** Should be overriden to return a new ReflectSession object, or NULL on failure.  
-    *  @param remoteIP The IP address of the remote peer, in ASCII format (e.g. "132.239.50.8")
-    *  @returns a freshly allocated AbstractReflectSession object on success, or NULL on failure.
+    *  @param clientAddress A string representing the connecting client's host (typically an IP address, e.g. "192.168.1.102")
+     * @param factoryInfo The IP address and port number of the local network interface on which this connection was received.
+    *  @returns a reference to a freshly allocated AbstractReflectSession object on success, or a NULL reference on failure.
     */
-   virtual AbstractReflectSession * CreateSession(const String & remoteIP) = 0;
+   virtual AbstractReflectSessionRef CreateSession(const String & clientAddress, const IPAddressAndPort & factoryInfo) = 0;
 
-   /** Returns the port we are attached to.  Result is only valid after this factory object has
-     * been added to a ReflectServer via PutAcceptFactory(); will return 0 at other times.
-     */
-   uint16 GetPort() const {return _port;}
+   /**
+    * Returns an auto-assigned ID value that represents this factory.
+    * The returned value is guaranteed to be unique across all factory in the server.
+    */
+   uint32 GetFactoryID() const {return _id;}
 
 protected:
    /** 
@@ -56,12 +57,9 @@ protected:
     */
    void BroadcastToAllFactories(const MessageRef & msgRef, void * userData = NULL, bool includeSelf = true);
 
-private:  
-   friend class ReflectServer;  // sets _port and _socket directly
-   uint16 _port;
-   int _socket;
+private:
+   uint32 _id;
 };
-
 
 /** This is the abstract base class that defines the server side logic for a single
  *  client-server connection.  This class contains no message routing logic of its own, 
@@ -87,12 +85,20 @@ public:
      */
    uint16 GetPort() const;
 
+   /** Returns the server-side network interface IP that this session was accepted on, 
+     * or 0 if we weren't created via accepting a network connection  (e.g. we were created locally) 
+     * May only be called if this session is currently attached to a ReflectServer.
+     */
+   const ip_address & GetLocalInterfaceAddress() const;
+
+   /** Returns a globally unique ID for this session. */
+   uint32 GetSessionID() const {return _sessionID;}
+
    /**
-    * Returns a ID string to represent this session with.
-    * The returned string is guaranteed to be unique across
-    * all sessions in the server.
+    * Returns an ID string to represent this session with.
+    * (This string is the ASCII representation of GetSessionID())
     */
-   virtual const char * GetSessionIDString() const;
+   const String & GetSessionIDString() const {return _idString;}
 
    /** Marks this session for immediate termination and removal from the server. */
    void EndSession();
@@ -118,7 +124,10 @@ public:
     * If this method returns true, then this session will be removed and
     * deleted. 
     * @return If it returns false, then this session will continue, even
-    *         though the client is no longer available.  Default implementation always returns true.
+    *         though the client is no longer available.  Default implementation 
+    *         always returns true, unless the automatic-reconnect feature has
+    *         been enabled (via SetAutoReconnectDelay()), in which case this
+    *         method will return false and try to Reconnect() again, instead.
     */
    virtual bool ClientConnectionClosed();
   
@@ -126,7 +135,9 @@ public:
     * For sessions that were added to the server with AddNewConnectSession(),
     * this method is called when the asynchronous connect process completes
     * successfully.  (if the asynchronous connect fails, ClientConnectionClosed()
-    * is called instead).  Default implementation does nothing.
+    * is called instead).  Default implementation just sets an internal flag
+    * that governs whether an error message should be printed when the session
+    * is disconnected later on.
     */
    virtual void AsyncConnectCompleted();
 
@@ -162,14 +173,11 @@ public:
    void SetGateway(const AbstractMessageIOGatewayRef & ref) {_gateway = ref; _outputStallLimit = _gateway()?_gateway()->GetOutputStallLimit():MUSCLE_TIME_NEVER;}
 
    /**
-    * Returns a pointer to our internally held message IO gateway object, 
+    * Returns a reference to our internally held message IO gateway object, 
     * or NULL reference if there is none.  The returned gateway remains 
     * the property of this session.
     */
-   AbstractMessageIOGateway * GetGateway() const {return _gateway();}
-
-   /** As above, only returns a reference to the gateway instead of the raw pointer. */
-   AbstractMessageIOGatewayRef GetGatewayRef() const {return _gateway;}
+   const AbstractMessageIOGatewayRef & GetGateway() const {return _gateway;}
 
    /** Should return true iff we have data pending for output.
     *  Default implementation calls HasBytesToOutput() on our installed AbstractDataIOGateway object, 
@@ -201,15 +209,14 @@ public:
      */
    virtual int32 DoOutput(uint32 maxBytes);
 
-   /**
-    * Gateway factory method.  Should return a new AbstractMessageIOGateway
-    * for this session to use for communicating with its remote peer.  
-    * Called by ReflectServer when this session object is added to the
-    * server, but doesn't already have a valid gateway installed.
-    * The default implementation returns a MessageIOGateway object.
-    * @return a new message IO gateway object, or NULL on failure.
-    */
-   virtual AbstractMessageIOGateway * CreateGateway();
+   /** Socket factory method.  This method is called by AddNewSession() when 
+    *  no valid Socket was supplied as an argument to the AddNewSession() call.  
+    *  This method should either create and supply a default Socket, or return
+    *  a NULL SocketRef.  In the latter case, the session will run without any 
+    *  connection to a client.
+    *  Default implementation always returns a NULL SocketRef.
+    */ 
+   virtual SocketRef CreateDefaultSocket();
 
    /** DataIO factory method.  Should return a new non-blocking DataIO 
     *  object for our gateway to use, or NULL on failure.  Called by 
@@ -220,7 +227,24 @@ public:
     *                On success, the DataIO object becomes owner of (socket).
     *  @return A newly allocated DataIO object, or NULL on failure.
     */
-   virtual DataIO * CreateDataIO(int socket);
+   virtual DataIORef CreateDataIO(const SocketRef & socket);
+
+   /**
+    * Gateway factory method.  Should return a reference to a new 
+    * AbstractMessageIOGateway for this session to use for communicating 
+    * with its remote peer.  
+    * Called by ReflectServer when this session object is added to the
+    * server, but doesn't already have a valid gateway installed.
+    * The default implementation returns a MessageIOGateway object.
+    * @return a new message IO gateway object, or a NULL reference on failure.
+    */
+   virtual AbstractMessageIOGatewayRef CreateGateway();
+
+   /** Overridden to support auto-reconnect via SetAutoReconnectDelay() */
+   virtual uint64 GetPulseTime(uint64 now, uint64 sched);
+
+   /** Overridden to support auto-reconnect via SetAutoReconnectDelay() */
+   virtual void Pulse(uint64 now, uint64 sched);
 
    /** Should return a pretty, human readable string identifying this class.  */
    virtual const char * GetTypeName() const = 0;
@@ -241,16 +265,30 @@ public:
     *  The returned value is meaningful only if we were added
     *  with AddNewConnectSession().
     */
-   uint32 GetAsyncConnectIP() const {return _asyncConnectIP;}
+   const ip_address & GetAsyncConnectIP() const {return _asyncConnectDest.GetIPAddress();}
 
    /** Returns the remote port we connected asynchronously to.
     *  The returned value is meaningful only if we were added
     *  with AddNewConnectSession().
     */
-   uint16 GetAsyncConnectPort() const {return _asyncConnectPort;}
+   uint16 GetAsyncConnectPort() const {return _asyncConnectDest.GetPort();}
 
    /** Returns the node path of the node representing this session (e.g. "/192.168.1.105/17") */
    virtual const String & GetSessionRootPath() const {return _sessionRootPath;}
+
+   /** Sets the amount of time that should pass between when this session loses its connection
+     * (that was previously set up using AddNewConnectSession()) and when it should automatically
+     * try to reconnect to that same destination (by calling Reconnect()).  Default setting is 
+     *MUSCLE_TIME_NEVER, meaning that automatic reconnection is disabled.
+     * @param delay The amount of time to delay before reconnecting, in microseconds.
+     */
+   void SetAutoReconnectDelay(uint64 delay) {_autoReconnectDelay = delay; InvalidatePulseTime();}
+
+   /** Returns the current automatic-reconnect delay period, as was previously set by
+     * SetAutoReconnectDelay().  Note that this setting is only relevant for sessions
+     * that were attached using AddNewConnectSession().
+     */
+   uint64 GetAutoReconnectDelay() const {return _autoReconnectDelay;}
 
 protected:
    /**
@@ -301,23 +339,24 @@ protected:
    bool IsConnectingAsync() const {return _connectingAsync;}
 
    /** Convenience method:  Returns the file descriptor associated with this session's
-     * DataIO class, or -1 if there is none.
+     * DataIO class, or a NULL reference if there is none.
      */
-   int GetSessionSelectSocket() const;
+   const SocketRef & GetSessionSelectSocket() const;
 
    /** Set by StorageReflectSession::AttachedToServer() */
    void SetSessionRootPath(const String & p) {_sessionRootPath = p;}
 
 private:
    void SetPolicyAux(PolicyRef & setRef, uint32 & setChunk, const PolicyRef & newRef, bool isInput);
+   void PlanForReconnect();
 
    friend class ReflectServer;
-   char _idString[32];
-   uint16 _port;
+   uint32 _sessionID;
+   String _idString;
+   IPAddressAndPort _ipAddressAndPort;
    bool _connectingAsync;
    String _hostName;
-   uint32 _asyncConnectIP;
-   uint16 _asyncConnectPort;
+   IPAddressAndPort _asyncConnectDest;
    AbstractMessageIOGatewayRef _gateway;
    uint64 _lastByteOutputAt;
    PolicyRef _inputPolicyRef;
@@ -327,6 +366,11 @@ private:
    uint64 _outputStallLimit;
    bool _scratchReconnected; // scratch, watched by ReflectServer() during ClientConnectionClosed() calls.
    String _sessionRootPath;
+
+   // auto-reconnect support
+   uint64 _autoReconnectDelay;
+   uint64 _reconnectTime;
+   bool _wasConnected;
 };
 
 // VC++ can't handle partial template specialization, so for VC++ we define this explicitely.

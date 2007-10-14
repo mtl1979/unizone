@@ -39,7 +39,7 @@ MessageIOGateway :: SendData(TransferBuffer & buf, int32 & sentBytes, uint32 & m
       if (bytes)
       {
          int32 attemptSize = muscleMin(maxBytes, bb->GetNumBytes()-buf._offset);
-         int32 numSent     = GetDataIO()->Write(&bytes[buf._offset], attemptSize);
+         int32 numSent     = GetDataIO()()->Write(&bytes[buf._offset], attemptSize);
 
          if (numSent >= 0)
          {
@@ -74,7 +74,7 @@ DoOutputImplementation(uint32 maxBytes)
             MessageRef nextRef;
             if (GetOutgoingMessageQueue().RemoveHead(nextRef) != B_NO_ERROR) 
             {
-               if ((GetFlushOnEmpty())&&(sentBytes > 0)) GetDataIO()->FlushOutput();
+               if ((GetFlushOnEmpty())&&(sentBytes > 0)) GetDataIO()()->FlushOutput();
                return sentBytes;  // nothing more to send, so we're done!
             }
 
@@ -176,7 +176,7 @@ MessageIOGateway :: ReadData(TransferBuffer & buf, int32 & readBytes, uint32 & m
       if (bytes)
       {
          int32 attemptSize = muscleMin(maxBytes, bb->GetNumBytes()-buf._offset);
-         int32 numRead     = GetDataIO()->Read(&bytes[buf._offset], attemptSize);
+         int32 numRead     = GetDataIO()()->Read(&bytes[buf._offset], attemptSize);
 
          if (numRead >= 0)
          {
@@ -271,7 +271,7 @@ UnflattenMessage(const ByteBufferRef & bufRef, const uint8 * headerBuf) const
       if (ret())
       {
          const uint32 * lhb = (const uint32 *) headerBuf;
-         if (B_LENDIAN_TO_HOST_INT32(lhb[0]) != bufRef()->GetNumBytes()) return MessageRef();
+         if ((uint32) B_LENDIAN_TO_HOST_INT32(lhb[0]) != bufRef()->GetNumBytes()) return MessageRef();
 
          int32 encoding = B_LENDIAN_TO_HOST_INT32(lhb[1]);
 
@@ -316,7 +316,7 @@ bool
 MessageIOGateway ::
 HasBytesToOutput() const
 {
-   return ((IsHosed() == false)&&((_sendBodyBuffer._buffer())||(GetOutgoingMessageQueue().GetNumItems() > 0)));
+   return ((IsHosed() == false)&&((_sendBodyBuffer._buffer())||(GetOutgoingMessageQueue().HasItems())));
 }
 
 void

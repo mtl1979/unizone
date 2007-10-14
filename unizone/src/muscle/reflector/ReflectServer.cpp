@@ -20,7 +20,7 @@ BEGIN_NAMESPACE(muscle);
 
 status_t
 ReflectServer ::
-AddNewSession(const AbstractReflectSessionRef & ref, int s)
+AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & ss)
 {
    TCHECKPOINT;
 
@@ -29,22 +29,24 @@ AddNewSession(const AbstractReflectSessionRef & ref, int s)
 
    newSession->_owner = this;  // in case CreateGateway() needs to use the owner
 
+   SocketRef s = ss;
+   if (s() == NULL) s = ref()->CreateDefaultSocket();
+
    // Create the gateway object for this session, if it isn't already set up
-   if (s >= 0)
+   if (s())
    {
-      AbstractMessageIOGatewayRef gatewayRef = newSession->GetGatewayRef();
-      if (gatewayRef() == NULL) gatewayRef.SetRef(newSession->CreateGateway());
+      AbstractMessageIOGatewayRef gatewayRef = newSession->GetGateway();
+      if (gatewayRef() == NULL) gatewayRef = newSession->CreateGateway();
       if (gatewayRef())  // don't combine these ifs!
       {
-         if (gatewayRef()->GetDataIO() == NULL)
+         if (gatewayRef()->GetDataIO()() == NULL)
          {
             // create the new DataIO for the gateway; this must always be done on the fly
             // since it depends on the socket being used.
-            DataIO * io = newSession->CreateDataIO(s);
-            if (io) 
+            DataIORef io = newSession->CreateDataIO(s);
+            if (io()) 
             {
-               // success!
-               gatewayRef()->SetDataIO(DataIORef(io));
+               gatewayRef()->SetDataIO(io);
                newSession->SetGateway(gatewayRef);
             }
             else {newSession->_owner = NULL; return B_ERROR;}
@@ -58,18 +60,18 @@ AddNewSession(const AbstractReflectSessionRef & ref, int s)
    // Set our hostname (IP address) string if it isn't already set
    if (newSession->_hostName.Length() == 0)
    {
-      int socket = GetSocketFor(newSession);
-      if (socket >= 0)
+      const SocketRef & sock = newSession->GetSessionSelectSocket();
+      if (sock.GetFileDescriptor() >= 0)
       {
-         uint32 ip = GetPeerIPAddress(socket, true);
+         ip_address ip = GetPeerIPAddress(sock, true);
          const String * remapString = _remapIPs.Get(ip);
-         char ipbuf[16]; Inet_NtoA(ip, ipbuf);
-         newSession->_hostName = remapString ? *remapString : ((ip > 0) ? String(ipbuf) : newSession->GetDefaultHostName());
+         char ipbuf[64]; Inet_NtoA(ip, ipbuf);
+         newSession->_hostName = remapString ? *remapString : ((ip != invalidIP) ? String(ipbuf) : newSession->GetDefaultHostName());
       }
       else newSession->_hostName = newSession->GetDefaultHostName();
    }
 
-        if (AddNewSession(ref) == B_NO_ERROR) return B_NO_ERROR;
+        if (AttachNewSession(ref) == B_NO_ERROR) return B_NO_ERROR;
    else if (newSession) newSession->_owner = NULL;
 
    TCHECKPOINT;
@@ -79,23 +81,23 @@ AddNewSession(const AbstractReflectSessionRef & ref, int s)
 
 status_t
 ReflectServer ::
-AddNewConnectSession(const AbstractReflectSessionRef & ref, uint32 destIP, uint16 port)
+AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & destIP, uint16 port, uint64 autoReconnectDelay)
 {
    AbstractReflectSession * session = ref();
    if (session)
    {
       bool isReady;
-      int socket = ConnectAsync(destIP, port, isReady);
-      if (socket >= 0)
+      SocketRef sock = ConnectAsync(destIP, port, isReady);
+      if (sock())
       {
-         session->_asyncConnectIP = destIP;
-         session->_asyncConnectPort = port;
-         char ipbuf[16]; Inet_NtoA(destIP, ipbuf);
-         session->_hostName = (destIP > 0) ? ipbuf : "<unknown>";
+         session->_asyncConnectDest = IPAddressAndPort(destIP, port);
+         char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
+         session->_hostName = (destIP != invalidIP) ? ipbuf : "<unknown>";
          session->_connectingAsync = (isReady == false);
-         status_t ret = AddNewSession(ref, socket);
+         status_t ret = AddNewSession(ref, sock);
          if (ret == B_NO_ERROR)
          {
+            if (autoReconnectDelay != MUSCLE_TIME_NEVER) session->SetAutoReconnectDelay(autoReconnectDelay);
             if (isReady) session->AsyncConnectCompleted();
             return B_NO_ERROR;
          }
@@ -106,10 +108,10 @@ AddNewConnectSession(const AbstractReflectSessionRef & ref, uint32 destIP, uint1
 
 status_t
 ReflectServer ::
-AddNewSession(const AbstractReflectSessionRef & ref)
+AttachNewSession(const AbstractReflectSessionRef & ref)
 {
    AbstractReflectSession * newSession = ref();
-   if ((newSession)&&(_sessions.Put(newSession->GetSessionIDString(), ref) == B_NO_ERROR))
+   if ((newSession)&&(_sessions.Put(newSession->GetSessionIDString()(), ref) == B_NO_ERROR))
    {
       newSession->_owner = this;
       if (newSession->AttachedToServer() == B_NO_ERROR)
@@ -124,7 +126,7 @@ AddNewSession(const AbstractReflectSessionRef & ref)
          if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "%s aborted startup ("UINT32_FORMAT_SPEC" left)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
       }
       newSession->_owner = NULL;
-      (void) _sessions.Remove(newSession->GetSessionIDString());
+      (void) _sessions.Remove(newSession->GetSessionIDString()());
    }
    return B_ERROR;
 }
@@ -234,7 +236,13 @@ ServerProcessLoop()
    if (_doLogging)
    {
       LogTime(MUSCLE_LOG_DEBUG, "This %s server was compiled on " __DATE__ " " __TIME__ "\n", GetServerName());
-      LogTime(MUSCLE_LOG_DEBUG, "The server was compiled with MUSCLE version %s\n", MUSCLE_VERSION_STRING);
+      LogTime(MUSCLE_LOG_DEBUG, "The server was compiled with MUSCLE version %s.  IPv6 support is %s.\n", MUSCLE_VERSION_STRING,
+#ifdef MUSCLE_USE_IPV6
+           "enabled"
+#else
+           "disabled"
+#endif
+      );
    }
 
    if (ReadyToRun() != B_NO_ERROR) 
@@ -248,25 +256,33 @@ ServerProcessLoop()
    // Print an informative startup message
    if (_doLogging)
    {
-      int numFuncs = _factories.GetNumItems();
-      uint32 myIP = GetLocalIPAddress();
-      if (myIP > 0)
+      if (_factories.HasItems())
       {
-         char bbuf[16]; Inet_NtoA(myIP, bbuf);
-         LogTime(MUSCLE_LOG_DEBUG, "%s Server is active on %s", GetServerName(), bbuf); 
-      }
-      else LogTime(MUSCLE_LOG_DEBUG, "%s Server is active", GetServerName()); 
+         bool listeningOnAll = false;
+         for (HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(_factories); iter.HasMoreKeys(); iter++)
+         {
+            const IPAddressAndPort & iap = iter.GetKey();
+            LogTime(MUSCLE_LOG_DEBUG, "%s is listening on port %u ", GetServerName(), iap.GetPort());
+            if (iap.GetIPAddress() == invalidIP) 
+            {
+               Log(MUSCLE_LOG_DEBUG, "on all network interfaces.\n");
+               listeningOnAll = true;
+            }
+            else Log(MUSCLE_LOG_DEBUG, "on network interface %s\n", Inet_NtoA(iap.GetIPAddress())()); 
+         }
 
-      if (numFuncs > 0)
-      {
-         Log(MUSCLE_LOG_DEBUG, " and listening on port%s ", (numFuncs > 1) ? "s" : "");
-         HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
-         uint16 port=0;  // just to shut the compiler up
-         int which=0;
-         while(iter.GetNextKey(port) == B_NO_ERROR) Log(MUSCLE_LOG_DEBUG, "%u%s", port, (++which<numFuncs)?",":"");
+         if (listeningOnAll)
+         {
+            Queue<NetworkInterfaceInfo> ifs;
+            if ((GetNetworkInterfaceInfos(ifs) == B_NO_ERROR)&&(ifs.HasItems()))
+            {
+               LogTime(MUSCLE_LOG_DEBUG, "This host's network interface addresses are as follows:\n");
+               for (uint32 i=0; i<ifs.GetNumItems(); i++) LogTime(MUSCLE_LOG_DEBUG, "- %s (%s)\n", Inet_NtoA(ifs[i].GetLocalAddress())(), ifs[i].GetName()());
+            }
+            else LogTime(MUSCLE_LOG_ERROR, "Couldn't retrieve this server's network interface addresses list.\n"); 
+         }
       }
-      else Log(MUSCLE_LOG_DEBUG, " but not listening to any ports");
-      Log(MUSCLE_LOG_DEBUG, ".\n");
+      else LogTime(MUSCLE_LOG_DEBUG, "Server is not listening on any ports.\n");
    }
 
    // The primary event loop for any MUSCLE-based server!
@@ -297,27 +313,28 @@ ServerProcessLoop()
          TCHECKPOINT;
 
          // Set up the session factories so we can be notified when a new connection is received
-         if (_factories.GetNumItems() > 0)
+         if (_factories.HasItems())
          {
-            HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
-            ReflectSessionFactoryRef * next; 
-            while((next = iter.GetNextValue()) != NULL)
+            HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(_factories);
+            const IPAddressAndPort * nextKey;
+            ReflectSessionFactoryRef * nextValue;
+            while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
             {
-               ReflectSessionFactory * factory = (*next)();
-               int nextAcceptSocket = factory->_socket;
-               if (nextAcceptSocket >= 0)
+               SocketRef * nextAcceptSocket = _factorySockets.Get(*nextKey);
+               int nfd = nextAcceptSocket ? nextAcceptSocket->GetFileDescriptor() : -1;
+               if (nfd >= 0)
                {
-                  FD_SET(nextAcceptSocket, &readSet);
-                  if (nextAcceptSocket > maxSocket) maxSocket = nextAcceptSocket;
+                  FD_SET(nfd, &readSet);
+                  if (nfd > maxSocket) maxSocket = nfd;
                }
-               CallGetPulseTimeAux(*factory, now, nextPulseAt);
+               CallGetPulseTimeAux(*nextValue->GetItemPointer(), now, nextPulseAt);
             }
          }
 
          TCHECKPOINT;
 
          // Set up the sessions, their associated IO-gateways, and their IOPolicies
-         if (_sessions.GetNumItems() > 0)
+         if (_sessions.HasItems())
          {
             AbstractReflectSessionRef * nextRef;
             HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
@@ -327,11 +344,11 @@ ServerProcessLoop()
                if (session)
                {
                   session->_maxInputChunk = session->_maxOutputChunk = 0;
-                  AbstractMessageIOGateway * g = session->GetGateway();
+                  AbstractMessageIOGateway * g = session->GetGateway()();
                   if (g)
                   {
-                     int sessionSocket = GetSocketFor(session);
-                     if (sessionSocket >= 0)
+                     int sfd = session->GetSessionSelectSocket().GetFileDescriptor();
+                     if (sfd >= 0)
                      {
                         bool in, out;
                         if (session->_connectingAsync) 
@@ -346,7 +363,7 @@ ServerProcessLoop()
                               FD_ZERO(&exceptionSet);
                               exceptionSetPtr = &exceptionSet;
                            }
-                           FD_SET(sessionSocket, &exceptionSet);
+                           FD_SET(sfd, &exceptionSet);
 #endif
                         }
                         else
@@ -354,19 +371,19 @@ ServerProcessLoop()
                            session->_maxInputChunk  = CheckPolicy(policies, session->GetInputPolicy(),  PolicyHolder(session->IsReadyForInput()  ? session : NULL, true),  now);
                            session->_maxOutputChunk = CheckPolicy(policies, session->GetOutputPolicy(), PolicyHolder(session->HasBytesToOutput() ? session : NULL, false), now);
                            in  = (session->_maxInputChunk  > 0);
-                           out = ((session->_maxOutputChunk > 0)||((g->GetDataIO())&&(g->GetDataIO()->HasBufferedOutput())));
+                           out = ((session->_maxOutputChunk > 0)||((g->GetDataIO()())&&(g->GetDataIO()()->HasBufferedOutput())));
                         }
 
-                        if (in) FD_SET(sessionSocket, &readSet);
+                        if (in) FD_SET(sfd, &readSet);
                         if (out) 
                         {
-                           FD_SET(sessionSocket, &writeSet);
+                           FD_SET(sfd, &writeSet);
                            if (session->_lastByteOutputAt == 0) session->_lastByteOutputAt = now;  // the bogged-session-clock starts ticking when we first want to write...
                            if (session->_outputStallLimit != MUSCLE_TIME_NEVER) nextPulseAt = muscleMin(nextPulseAt, session->_lastByteOutputAt+session->_outputStallLimit);
                         }
                         else session->_lastByteOutputAt = 0;  // If we no longer want to write, then the bogged-session-clock-timeout is cancelled
 
-                        if (((in)||(out))&&(sessionSocket > maxSocket)) maxSocket = sessionSocket;
+                        if (((in)||(out))&&(sfd > maxSocket)) maxSocket = sfd;
                      }
                      TCHECKPOINT;
                      CallGetPulseTimeAux(*g, now, nextPulseAt);
@@ -384,7 +401,7 @@ ServerProcessLoop()
          TCHECKPOINT;
 
          // Set up the Session IO Policies
-         if (policies.GetNumItems() > 0)
+         if (policies.HasItems())
          {
             // Now that the policies know *who* amongst their policyholders will be reading/writing,
             // let's ask each activated policy *how much* each policyholder should be allowed to read/write.
@@ -443,11 +460,22 @@ ServerProcessLoop()
             TCHECKPOINT;
 
             // We sleep here until the next I/O or pulse event becomes ready
-            if ((select(maxSocket+1, (maxSocket >= 0) ? &readSet : NULL, (maxSocket >= 0) ? &writeSet : NULL, exceptionSetPtr, (nextPulseAt == MUSCLE_TIME_NEVER) ? NULL : &waitTime) < 0)&&(PreviousOperationWasInterrupted() == false))
+            int selResult = select(maxSocket+1, (maxSocket >= 0) ? &readSet : NULL, (maxSocket >= 0) ? &writeSet : NULL, exceptionSetPtr, (nextPulseAt == MUSCLE_TIME_NEVER) ? NULL : &waitTime);
+            if (selResult < 0)
             {
-               if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "select() failed, aborting!\n");
-               ClearLameDucks();
-               return B_ERROR;
+               if (PreviousOperationWasInterrupted()) 
+               {
+                  // If select() was interrupted, then assume nothing is ready
+                  FD_ZERO(&readSet);
+                  FD_ZERO(&writeSet);
+                  if (exceptionSetPtr) FD_ZERO(exceptionSetPtr);
+               }
+               else 
+               {
+                  if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "select() failed, aborting!\n");
+                  ClearLameDucks();
+                  return B_ERROR;
+               }
             }
          }
       }
@@ -481,7 +509,7 @@ ServerProcessLoop()
                TCHECKPOINT;
                CallPulseAux(*session, session->GetCycleStartTime());
                {
-                  AbstractMessageIOGateway * gateway = session->GetGateway();
+                  AbstractMessageIOGateway * gateway = session->GetGateway()();
                   if (gateway) 
                   {
                      TCHECKPOINT;
@@ -493,11 +521,11 @@ ServerProcessLoop()
 
                TCHECKPOINT;
 
-               int socket = GetSocketFor(session);
-               if (socket >= 0)
+               int sock = session->GetSessionSelectSocket().GetFileDescriptor();
+               if (sock >= 0)
                {
                   int32 readBytes = 0, wroteBytes = 0;
-                  if (FD_ISSET(socket, &readSet))
+                  if (FD_ISSET(sock, &readSet))
                   {
                      readBytes = session->DoInput(*session, session->_maxInputChunk);  // session->MessageReceivedFromGateway() gets called here
                      AbstractSessionIOPolicy * p = session->GetInputPolicy()();
@@ -506,7 +534,7 @@ ServerProcessLoop()
 
                   TCHECKPOINT;
 
-                  if (FD_ISSET(socket, &writeSet))
+                  if (FD_ISSET(sock, &writeSet))
                   {
                      if (session->_connectingAsync) wroteBytes = (FinalizeAsyncConnect(sessionRef) == B_NO_ERROR) ? 0 : -1;
                      else
@@ -521,10 +549,10 @@ ServerProcessLoop()
                         
                         // if the session's DataIO object is still has bytes buffered for output, try to send them now
                         {
-                           AbstractMessageIOGateway * g = session->GetGateway();
+                           AbstractMessageIOGateway * g = session->GetGateway()();
                            if (g)
                            {
-                              DataIO * io = g->GetDataIO();
+                              DataIO * io = g->GetDataIO()();
                               if (io) io->WriteBufferedOutput();
                            }
                         }
@@ -536,7 +564,7 @@ ServerProcessLoop()
                      }
                   }
 #ifdef WIN32
-                  if ((exceptionSetPtr)&&(FD_ISSET(socket, exceptionSetPtr))) wroteBytes = -1;  // async connect() failed!
+                  if ((exceptionSetPtr)&&(FD_ISSET(sock, exceptionSetPtr))) wroteBytes = -1;  // async connect() failed!
 #endif
 
                   TCHECKPOINT;
@@ -569,7 +597,7 @@ ServerProcessLoop()
       // Pulse() our other PulseNode objects, as necessary
       {
          // Tell the session policies we're done doing I/O (for now)
-         if (policies.GetNumItems() > 0)
+         if (policies.HasItems())
          {
             const PolicyRef * next;
             HashtableIterator<PolicyRef, bool> iter(policies);
@@ -585,7 +613,7 @@ ServerProcessLoop()
          }
 
          // Pulse the Policies
-         if (policies.GetNumItems() > 0)
+         if (policies.HasItems())
          {
             const PolicyRef * next;
             HashtableIterator<PolicyRef, bool> iter(policies);
@@ -600,19 +628,20 @@ ServerProcessLoop()
       TCHECKPOINT;
 
       // Lastly, check our accepting ports to see if anyone is trying to connect...
-      if ((_signalCaught == false)&&(_factories.GetNumItems() > 0))  // for some reason Accept() hangs once a signal is caught!?
+      if (_factories.HasItems())
       {
-         HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
-         uint16 port=0;  // just to shut the compiler up
-         ReflectSessionFactoryRef * acc;
-         while(iter.GetNextKeyAndValue(port, acc) == B_NO_ERROR)
+         HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(_factories);
+         const IPAddressAndPort * iap;
+         ReflectSessionFactoryRef * fref;
+         while(iter.GetNextKeyAndValue(iap, fref) == B_NO_ERROR)
          {
-            ReflectSessionFactory * factory = acc->GetItemPointer();
+            ReflectSessionFactory * factory = fref->GetItemPointer();
             CallSetCycleStartTime(*factory, GetRunTime64());
             CallPulseAux(*factory, factory->GetCycleStartTime());
 
-            int acceptSocket = factory->_socket;
-            if (FD_ISSET(acceptSocket, &readSet)) (void) DoAccept(port, acceptSocket, factory);
+            SocketRef * as = _factorySockets.Get(*iap);
+            int fd = as ? as->GetFileDescriptor() : -1;
+            if ((fd >= 0)&&(FD_ISSET(fd, &readSet))) (void) DoAccept(*iap, *as, factory);
          }
       }
 
@@ -629,10 +658,10 @@ ServerProcessLoop()
 
 void ReflectServer :: ShutdownIOFor(AbstractReflectSession * session)
 {
-   AbstractMessageIOGateway * gw = session->GetGateway();
+   AbstractMessageIOGateway * gw = session->GetGateway()();
    if (gw) 
    {
-      DataIO * io = gw->GetDataIO();
+      DataIO * io = gw->GetDataIO()();
       if (io) io->Shutdown();  // so we won't try to do I/O on this one anymore
    }
 }
@@ -649,7 +678,7 @@ status_t ReflectServer :: ClearLameDucks()
       AbstractReflectSession * duck = duckRef();
       if (duck)
       {
-         const char * id = duck->GetSessionIDString();
+         const char * id = duck->GetSessionIDString()();
          if (_sessions.ContainsKey(id))
          {
             duck->AboutToDetachFromServer();
@@ -664,30 +693,37 @@ status_t ReflectServer :: ClearLameDucks()
    return _keepServerGoing ? B_NO_ERROR : B_ERROR;
 }
 
-status_t ReflectServer :: DoAccept(uint16 port, int acceptSocket, ReflectSessionFactory * optFactory)
+void ReflectServer :: LogAcceptFailed(int lvl, const char * desc, const char * ipbuf, const IPAddressAndPort & iap)
+{
+   if (_doLogging)
+   {
+      if (iap.GetIPAddress() == invalidIP) LogTime(lvl, "%s for [%s] on port %u.\n", desc, ipbuf?ipbuf:"???", iap.GetPort());
+                                      else LogTime(lvl, "%s for [%s] on port %u on interface %s.\n", desc, ipbuf?ipbuf:"???", iap.GetPort(), Inet_NtoA(iap.GetIPAddress())());
+   }
+}
+
+status_t ReflectServer :: DoAccept(const IPAddressAndPort & iap, const SocketRef & acceptSocket, ReflectSessionFactory * optFactory)
 {
    // Accept a new connection and try to start up a session for it
-   int newSocket = Accept(acceptSocket);
-   if (newSocket >= 0)
+   ip_address acceptedFromIP;
+   SocketRef newSocket = Accept(acceptSocket, &acceptedFromIP);
+   if (newSocket())
    {
-      uint32 remoteIP = GetPeerIPAddress(newSocket, true);
-      if (remoteIP > 0)
+      IPAddressAndPort nip(acceptedFromIP, iap.GetPort());
+      ip_address remoteIP = GetPeerIPAddress(newSocket, true);
+      if (remoteIP == invalidIP) LogAcceptFailed(MUSCLE_LOG_DEBUG, "GetPeerIPAddress() failed", NULL, nip);
+      else
       {
-         char ipbuf[16]; Inet_NtoA(remoteIP, ipbuf);
-         String remoteIPString = ipbuf;
-         AbstractReflectSessionRef newSessionRef(optFactory ? optFactory->CreateSession(remoteIPString) : NULL);
-         if (newSessionRef())
-         {
-            newSessionRef()->_port = port;
-            if (AddNewSession(newSessionRef, newSocket) == B_NO_ERROR) return B_NO_ERROR;  // success!
-         }
-         else if ((optFactory)&&(_doLogging)) LogTime(MUSCLE_LOG_DEBUG, "Session creation denied for [%s] on port %u.\n", remoteIPString(), port);
-      }
-      else if (_doLogging) LogTime(MUSCLE_LOG_ERROR, "Couldn't get peer IP address for new accept session!\n");
+         char ipbuf[64]; Inet_NtoA(remoteIP, ipbuf);
 
-      CloseSocket(newSocket);
+         AbstractReflectSessionRef newSessionRef;
+         if (optFactory) newSessionRef = optFactory->CreateSession(ipbuf, nip);
+
+              if ((newSessionRef())&&(AddNewSession(newSessionRef, newSocket) == B_NO_ERROR)) return B_NO_ERROR;  // success!
+         else if (optFactory) LogAcceptFailed(MUSCLE_LOG_DEBUG, "Session creation denied", ipbuf, nip);
+      }
    }
-   else if (_doLogging) LogTime(MUSCLE_LOG_ERROR, "Accept() failed on port %u (socket %i)\n", port, acceptSocket);
+   else LogAcceptFailed(MUSCLE_LOG_DEBUG, "Accept() failed", NULL, iap);
 
    return B_ERROR;
 }
@@ -708,7 +744,7 @@ void ReflectServer :: DumpBoggedSessions()
       AbstractReflectSession * asr = lRef->GetItemPointer();
       if (asr)
       {
-         AbstractMessageIOGateway * gw = asr->GetGateway();
+         AbstractMessageIOGateway * gw = asr->GetGateway()();
          if (gw)
          {
             uint32 qSize = 0;
@@ -739,10 +775,10 @@ GetSession(const char * name) const
 
 ReflectSessionFactoryRef
 ReflectServer ::
-GetFactory(uint16 port) const
+GetFactory(uint16 port, const ip_address & optInterfaceIP) const
 {
    ReflectSessionFactoryRef ref;
-   (void) _factories.Get(port, ref); 
+   (void) _factories.Get(IPAddressAndPort(optInterfaceIP, port), ref); 
    return ref;
 }
 
@@ -756,11 +792,11 @@ ReplaceSession(const AbstractReflectSessionRef & newSessionRef, AbstractReflectS
    AbstractReflectSession * newSession = newSessionRef();
    if (newSession == NULL) return B_ERROR;
 
-   newSession->SetGateway(oldSession->GetGatewayRef());
+   newSession->SetGateway(oldSession->GetGateway());
    newSession->_hostName = oldSession->_hostName;
-   newSession->_port     = oldSession->_port;
+   newSession->_ipAddressAndPort = oldSession->_ipAddressAndPort;
 
-   if (AddNewSession(newSessionRef) == B_NO_ERROR)
+   if (AttachNewSession(newSessionRef) == B_NO_ERROR)
    {
       oldSession->SetGateway(AbstractMessageIOGatewayRef());   /* gateway now belongs to newSession */
       EndSession(oldSession);
@@ -771,7 +807,7 @@ ReplaceSession(const AbstractReflectSessionRef & newSessionRef, AbstractReflectS
        // Oops, rollback changes and error out
        newSession->SetGateway(AbstractMessageIOGatewayRef());
        newSession->_hostName.Clear();
-       newSession->_port = 0; 
+       newSession->_ipAddressAndPort.Reset();
        return B_ERROR;
    }
 }
@@ -781,13 +817,13 @@ bool ReflectServer :: DisconnectSession(AbstractReflectSession * session)
    session->_connectingAsync    = false;  // he's not connecting anymore, by gum!
    session->_scratchReconnected = false;  // if the session calls Reconnect() this will be set to true below
 
-   AbstractMessageIOGateway * oldGW = session->GetGateway();
-   DataIO * oldIO = oldGW ? oldGW->GetDataIO() : NULL;
+   AbstractMessageIOGateway * oldGW = session->GetGateway()();
+   DataIO * oldIO = oldGW ? oldGW->GetDataIO()() : NULL;
 
    bool ret = session->ClientConnectionClosed(); 
 
-   AbstractMessageIOGateway * newGW = session->GetGateway();
-   DataIO * newIO = newGW ? newGW->GetDataIO() : NULL;
+   AbstractMessageIOGateway * newGW = session->GetGateway()();
+   DataIO * newIO = newGW ? newGW->GetDataIO()() : NULL;
 
         if (ret) AddLameDuckSession(session);
    else if ((session->_scratchReconnected == false)&&(newGW == oldGW)&&(newIO == oldIO)) ShutdownIOFor(session);
@@ -811,74 +847,72 @@ EndServer()
 
 status_t
 ReflectServer ::
-PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef)
+PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef, const ip_address & optInterfaceIP, uint16 * optRetPort)
 {
-   (void) RemoveAcceptFactory(port); // Get rid of any previous acceptor on this port...
+   if (port > 0) (void) RemoveAcceptFactory(port, optInterfaceIP); // Get rid of any previous acceptor on this port...
 
    ReflectSessionFactory * f = factoryRef();
    if (f)
    {
-      int acceptSocket = CreateAcceptingSocket(port, 20, &port);
-      if (acceptSocket >= 0)
+      SocketRef acceptSocket = CreateAcceptingSocket(port, 20, &port, optInterfaceIP);
+      if (acceptSocket())
       {
-         if (_factories.Put(port, factoryRef) == B_NO_ERROR)
+         IPAddressAndPort iap(optInterfaceIP, port);
+         if ((SetSocketBlockingEnabled(acceptSocket, false) == B_NO_ERROR)&&(_factories.Put(iap, factoryRef) == B_NO_ERROR))
          {
-            f->_owner  = this;
-            f->_socket = acceptSocket;
-            f->_port   = port;
-            if (f->AttachedToServer() == B_NO_ERROR) return B_NO_ERROR;
-            else
+            if (_factorySockets.Put(iap, acceptSocket) == B_NO_ERROR)
             {
-               (void) RemoveAcceptFactory(port);
-               return B_ERROR;
+               f->_owner = this;
+               if (optRetPort) *optRetPort = port;
+               if (f->AttachedToServer() == B_NO_ERROR) return B_NO_ERROR;
+               else
+               {
+                  (void) RemoveAcceptFactory(port, optInterfaceIP);
+                  return B_ERROR;
+               }
             }
+            else _factories.Remove(iap); // roll back!
          }
-         CloseSocket(acceptSocket);
       }
    }
    return B_ERROR;
 }
 
-void
+status_t
 ReflectServer ::
-RemoveAcceptFactoryAux(const ReflectSessionFactoryRef & ref)
+RemoveAcceptFactoryAux(const IPAddressAndPort & iap)
 {
-   ReflectSessionFactory * factory = ref();
-   if (factory) 
+   ReflectSessionFactoryRef ref;
+   if (_factories.Get(iap, ref) == B_NO_ERROR)  // don't remove it yet, in case AboutToDetachFromServer() calls a method on us
    {
-      factory->AboutToDetachFromServer();
-      CloseSocket(factory->_socket);
-      factory->_owner  = NULL;
-      factory->_port   = 0;
-      factory->_socket = -1;
+      ref()->AboutToDetachFromServer();
       _lameDuckFactories.AddTail(ref);  // we'll actually have (factory) deleted later on, since at the moment 
-   }                                    // we could be in the middle of (factory)'s own method call!
+                                        // we could be in the middle of one of (ref())'s own method calls!
+      (void) _factories.Remove(iap);  // must call this AFTER the AboutToDetachFromServer() call!
+
+      // See if there are any other instances of this factory still present.
+      // if there aren't, we'll clear the factory's _owner pointer so he can't access us anymore
+      if (_factories.IndexOfValue(ref) < 0) ref()->_owner = NULL;
+
+      (void) _factorySockets.Remove(iap);
+
+      return B_NO_ERROR;
+   }
+   else return B_ERROR;
 }
 
 status_t
 ReflectServer ::
-RemoveAcceptFactory(uint16 port)
+RemoveAcceptFactory(uint16 port, const ip_address & optInterfaceIP)
 {
-   if (port > 0)
-   {
-      ReflectSessionFactoryRef acc;
-      if (_factories.Get(port, acc) != B_NO_ERROR) return B_ERROR;
-
-      RemoveAcceptFactoryAux(acc);
-      (void) _factories.Remove(port);  // do this after the AboutToDetach callback
-   }
+   if (port > 0) return RemoveAcceptFactoryAux(IPAddressAndPort(optInterfaceIP, port));
    else
    {
-      HashtableIterator<uint16, ReflectSessionFactoryRef> iter(_factories);
-      uint16 nextKey;
-      ReflectSessionFactoryRef nextValue;
-      while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
-      {
-         RemoveAcceptFactoryAux(nextValue);
-         _factories.Remove(nextKey);  // make sure nobody accesses the factory after it is detached
-      }
+      HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(_factories);
+      const IPAddressAndPort * nextKey;
+      while(iter.GetNextKey(nextKey) == B_NO_ERROR) (void) RemoveAcceptFactoryAux(*nextKey);
+      return B_NO_ERROR;
    }
-   return B_NO_ERROR;
 }
 
 status_t 
@@ -887,9 +921,9 @@ FinalizeAsyncConnect(const AbstractReflectSessionRef & ref)
 {
    AbstractReflectSession * session = ref();
 #ifdef MUSCLE_AVOID_NAMESPACES
-   if ((session)&&(::FinalizeAsyncConnect(GetSocketFor(session)) == B_NO_ERROR))
+   if ((session)&&(::FinalizeAsyncConnect(session->GetSessionSelectSocket()) == B_NO_ERROR))
 #else
-   if ((session)&&(muscle::FinalizeAsyncConnect(GetSocketFor(session)) == B_NO_ERROR))
+   if ((session)&&(muscle::FinalizeAsyncConnect(session->GetSessionSelectSocket()) == B_NO_ERROR))
 #endif
    {
       session->_connectingAsync = false;  // we're legit now!  :^)
@@ -955,18 +989,6 @@ AddLameDuckSession(AbstractReflectSession * who)
          break;
       }
    }
-}
-
-int
-ReflectServer :: GetSocketFor(AbstractReflectSession * session) const
-{
-   AbstractMessageIOGateway * gw = session->GetGateway();
-   if (gw)
-   {
-      DataIO * io = gw->GetDataIO();
-      if (io) return io->GetSelectSocket();
-   }
-   return -1;         
 }
 
 class SignalHandler : public PulseNode

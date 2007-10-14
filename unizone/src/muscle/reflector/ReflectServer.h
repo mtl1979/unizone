@@ -15,7 +15,7 @@ class MemoryAllocator;
  *  This class can be used as-is, or subclassed if necessary.
  *  There is typically only one ReflectServer object present in a given MUSCLE server program.
  */
-class ReflectServer : public PulseNode, private PulseNodeManager
+class ReflectServer : public RefCountable, public PulseNode, private PulseNodeManager
 {
 public: 
    /** Constructor. 
@@ -44,15 +44,21 @@ public:
     *              If this port is the same as one specified in a previous call to PutAcceptFactory(),
     *              the old factory associated with that port will be replaced with this one.
     *  @param sessionFactoryRef Reference to a factory object that can generate new sessions when needed.
+    *  @param optInterfaceIP Optional local interface address to listen on.  If not specified, or if specified
+    *                        as (invalidIP), then connections will be accepted from all local network interfaces.
+    *  @param optRetPort If specified non-NULL, then on success the port that the factory was bound to will
+    *                    be placed into this parameter.
     *  @return B_NO_ERROR on success, B_ERROR on failure (couldn't bind to socket?)
     */
-   virtual status_t PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & sessionFactoryRef);
+   virtual status_t PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & sessionFactoryRef, const ip_address & optInterfaceIP = invalidIP, uint16 * optRetPort = NULL);
     
    /** Remove a listening port callback that was previously added by PutAcceptFactory().
     *  @param port whose callback should be removed.  If (port) is set to zero, all callbacks will be removed.
+    *  @param optInterfaceIP Interface(s) that the specified callbacks were assigned to in their PutAcceptFactory() call.
+    *                        This parameter is ignored when (port) is zero. 
     *  @returns B_NO_ERROR on success, or B_ERROR if a factory for the specified port was not found.
     */
-   virtual status_t RemoveAcceptFactory(uint16 port);
+   virtual status_t RemoveAcceptFactory(uint16 port, const ip_address & optInterfaceIP = invalidIP);
 
    /**
     * Called after the server is set up, but just before accepting any connections.
@@ -64,10 +70,15 @@ public:
    /**
     * Adds a new session that uses the given socket for I/O.
     * @param ref New session to add to the server.
-    * @param socket The TCP socket that the new session should use, or -1, if the new session is to have no client connection.  Note that if the session already has a gateway and DataIO installed, then the DataIO's existing socket will be used instead, and this socket will be ignored.
+    * @param socket The TCP socket that the new session should use, or a NULL reference, if the new session is to have no client connection (or use the default socket, if CreateDefaultSocket() has been overridden by the session's subclass).  Note that if the session already has a gateway and DataIO installed, then the DataIO's existing socket will be used instead, and this socket will be ignored.
     * @return B_NO_ERROR if the new session was added successfully, or B_ERROR if there was an error setting it up.
     */
-   virtual status_t AddNewSession(const AbstractReflectSessionRef & ref, int socket);
+   virtual status_t AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & socket);
+
+   /** Convenience method:  Calls AddNewSession() with a NULL Socket reference, so the session's default socket
+     * (obtained by calling ref()->CreateDefaultSocket()) will be used.
+     */
+   status_t AddNewSession(const AbstractReflectSessionRef & ref) {return AddNewSession(ref, SocketRef());}
 
    /**
     * Like AddNewSession(), only creates a session that connects asynchronously to
@@ -79,10 +90,16 @@ public:
     * @param ref New session to add to the server.
     * @param targetIPAddress IP address to connect to
     * @param port Port to connect to at that IP address.
+    * @param autoReconnectDelay If specified, this is the number of microseconds after the
+    *                           connection is broken that an automatic reconnect should be
+    *                           attempted.  If not specified, an automatic reconnect will not
+    *                           be attempted, and the session will be removed when the
+    *                           connection breaks.  Specifying this is equivalent to calling
+    *                           SetAutoReconnectDelay() on (ref).
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error
     *                    (out-of-memory, or the connect attempt failed immediately)
     */
-   status_t AddNewConnectSession(const AbstractReflectSessionRef & ref, uint32 targetIPAddress, uint16 port); 
+   status_t AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER); 
 
    /**
     * Should be called just before the ReflectServer is to be destroyed.
@@ -121,13 +138,18 @@ public:
    AbstractReflectSessionRef GetSession(const char * name) const;
 
    /** Returns an iterator that allows one to iterate over all the session factories currently attached to this server. */
-   HashtableIterator<uint16, ReflectSessionFactoryRef> GetFactories() const {return _factories.GetIterator();}
+   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> GetFactories() const {return _factories.GetIterator();}
 
    /** Returns the number of session factories currently attached to this server */
    uint32 GetNumFactories() const {return _factories.GetNumItems();}
 
-   /** Given a port number, returns a reference to the factory of that port, or a NULL reference if no such factory exists. */
-   ReflectSessionFactoryRef GetFactory(uint16 port) const;
+   /** Given a port number, returns a reference to the factory of that port, or a NULL reference if no such factory exists.
+     * @param port number to check
+     * @param optInterfaceIP If the factory was created to listen on a specific local interface address
+     *                       (when it was passed in to PutAcceptFactory()), then specify that address again here.
+     *                       Defaults to (invalidIP), indicating a factory that listens on all local network interfaces.
+     */
+   ReflectSessionFactoryRef GetFactory(uint16 port, const ip_address & optInterfaceIP = invalidIP) const;
 
    /** Call this and the server will quit ASAP */
    void EndServer();
@@ -156,10 +178,10 @@ public:
      * name.  If an entry is found, it will be used verbatim; otherwise, a name will
      * be created based on the peer's IP address.  Useful for e.g. NAT remapping...
      */
-   Hashtable<uint32, String> & GetAddressRemappingTable() {return _remapIPs;}
+   Hashtable<ip_address, String> & GetAddressRemappingTable() {return _remapIPs;}
 
    /** Read-only implementation of the above */
-   const Hashtable<uint32, String> & GetAddressRemappingTable() const {return _remapIPs;}
+   const Hashtable<ip_address, String> & GetAddressRemappingTable() const {return _remapIPs;}
 
    /** If you wish to have a Control-C cause your server to gracefully exit, instead of rudely just
      * killing your server process, you can call this method to enable a signal handler that
@@ -178,7 +200,7 @@ protected:
     * @param ref The new session to add.
     * @return B_NO_ERROR if the new session was added successfully, or B_ERROR if there was an error setting it up.
     */
-   virtual status_t AddNewSession(const AbstractReflectSessionRef & ref);
+   virtual status_t AttachNewSession(const AbstractReflectSessionRef & ref);
 
    /** Called by a session to send a message to its factory.  
      * @see AbstractReflectSession::SendMessageToFactory() for details.
@@ -209,20 +231,21 @@ protected:
 
 private:
    friend class AbstractReflectSession;
-   void CleanupSockets(Queue<int> & list);  // utility method
    void AddLameDuckSession(const AbstractReflectSessionRef & whoRef);
    void AddLameDuckSession(AbstractReflectSession * who);  // convenience method ... less efficient
    void ShutdownIOFor(AbstractReflectSession * session);
    status_t ClearLameDucks();  // returns B_NO_ERROR if the server should keep going, or B_ERROR otherwise
    void DumpBoggedSessions();
-   void RemoveAcceptFactoryAux(const ReflectSessionFactoryRef & ref);
+   status_t RemoveAcceptFactoryAux(const IPAddressAndPort & iap);
    status_t FinalizeAsyncConnect(const AbstractReflectSessionRef & ref);
-   status_t DoAccept(uint16 port, int acceptSocket, ReflectSessionFactory * optFactory);
+   status_t DoAccept(const IPAddressAndPort & iap, const SocketRef & acceptSocket, ReflectSessionFactory * optFactory);
+   void LogAcceptFailed(int lvl, const char * desc, const char * ipbuf, const IPAddressAndPort & iap);
    uint32 CheckPolicy(Hashtable<PolicyRef, bool> & policies, const PolicyRef & policyRef, const PolicyHolder & ph, uint64 now) const;
-   int GetSocketFor(AbstractReflectSession * session) const;
    void CheckForOutOfMemory(const AbstractReflectSessionRef & optSessionRef);
 
-   Hashtable<uint16, ReflectSessionFactoryRef> _factories;
+   Hashtable<IPAddressAndPort, ReflectSessionFactoryRef> _factories;
+   Hashtable<IPAddressAndPort, SocketRef> _factorySockets;
+
    Queue<ReflectSessionFactoryRef> _lameDuckFactories;  // for delayed-deletion of factories when they go away
 
    Message _centralState;
@@ -232,11 +255,11 @@ private:
    uint64 _serverStartedAt;
    bool _doLogging;
 
-
-   Hashtable<uint32, String> _remapIPs;  // for v2.20; custom strings for "special" IP addresses
+   Hashtable<ip_address, String> _remapIPs;  // for v2.20; custom strings for "special" IP addresses
 
    MemoryAllocator * _watchMemUsage; 
 };
+typedef Ref<ReflectServer> ReflectServerRef;
 
 /** Returns true iff any signals were caught by the signal handler since the last time
   * SetSignalHandlingEnabled() was called.  Will always return false if SetSignalHandlingEnabled()

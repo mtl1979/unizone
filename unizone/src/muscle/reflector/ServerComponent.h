@@ -6,6 +6,7 @@
 #include "message/Message.h"
 #include "util/RefCount.h"
 #include "util/PulseNode.h"
+#include "util/NetworkUtilityFunctions.h"  // for ip_address
 
 BEGIN_NAMESPACE(muscle);
 
@@ -93,10 +94,10 @@ protected:
    uint32 GetNumUsedBytes() const;
 
    /** Passes through to ReflectServer::PutAcceptFactory() */
-   status_t PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef);
+   status_t PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef, const ip_address & interfaceIP = invalidIP, uint16 * optRetPort = NULL);
 
    /** Passes through to ReflectServer::RemoveAcceptFactory() */
-   status_t RemoveAcceptFactory(uint16 port);
+   status_t RemoveAcceptFactory(uint16 port, const ip_address & interfaceIP = invalidIP);
 
    /** Tells the whole server process to quit ASAP.  */
    void EndServer();
@@ -116,10 +117,14 @@ protected:
     * If (socket) is less than zero, no TCP connection will be used,
     * and the session will be a pure server-side entity.
     * @param session A reference to the new session to add to the server.
-    * @param socket the socket descriptor associated with the new session, or -1.
+    * @param socket the socket descriptor associated with the new session, or a NULL reference.
+    *               If the socket descriptor argument is a NULL reference, the session's
+    *               CreateDefaultSocket() method will be called to supply the SocketRef.
+    *               If that also returns a NULL reference, then the client will run without
+    *               a connection to anything.
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error.
     */
-   status_t AddNewSession(const AbstractReflectSessionRef & session, int socket);
+   status_t AddNewSession(const AbstractReflectSessionRef & session, const SocketRef & socket = SocketRef());
 
    /**
     * Like AddNewSession(), only creates a session that connects asynchronously to
@@ -131,10 +136,16 @@ protected:
     * @param session A reference to the new session to add to the server.
     * @param targetIPAddress IP address to connect to
     * @param port port to connect to at that address
+    * @param autoReconnectDelay If specified, this is the number of microseconds after the
+    *                           connection is broken that an automatic reconnect should be
+    *                           attempted.  If not specified, an automatic reconnect will not
+    *                           be attempted, and the session will be removed when the
+    *                           connection breaks.  Specifying this is equivalent to calling
+    *                           SetAutoReconnectDelay() on (session).
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error 
     *                    (out-of-memory or the connect attempt failed immediately).
     */
-   status_t AddNewConnectSession(const AbstractReflectSessionRef & session, uint32 targetIPAddress, uint16 port);
+   status_t AddNewConnectSession(const AbstractReflectSessionRef & session, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
 
    /** Returns an object that can be used to iterate over all the sessions currently connected to our ReflectServer.  */
    HashtableIterator<const char *, AbstractReflectSessionRef> GetSessions() const;
@@ -150,7 +161,7 @@ protected:
    uint32 GetNumSessions() const;
 
    /** Returns an iterator that allows one to iterate over all the session factories currently attached to this server. */
-   HashtableIterator<uint16, ReflectSessionFactoryRef> GetFactories() const;
+   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> GetFactories() const;
 
    /** Returns the number of session factories currently attached to this server */
    uint32 GetNumFactories() const;

@@ -138,7 +138,7 @@ public:
     *       HasMoreValues() returns true.
     * @note The returned reference is only guaranteed to remain valid for as long as the Hashtable remains unchanged.
     */
-   const ValueType & GetValue() const {return *PeekNextValue();}
+   ValueType & GetValue() const {return *PeekNextValue();}
 
    /**
     * Iterates to get the next key in the key traversal.
@@ -146,6 +146,13 @@ public:
     * @return B_NO_ERROR on success, B_ERROR if there are no more keys left.
     */
    status_t GetNextKey(KeyType & setNextKey);
+
+   /**
+    * Iterates to get the next key in the key traversal.
+    * @param setNextKey On success, this pointer is set to point to the next key in the traversal.
+    * @return B_NO_ERROR on success, B_ERROR if there are no more keys left.
+    */
+   status_t GetNextKey(const KeyType * & setKeyPtr);
 
    /**
     * Iterates to get a pointer to the next key in the key traversal.
@@ -160,6 +167,13 @@ public:
     * @return B_NO_ERROR on success, or B_ERROR if there are no more keys left.
     */
    status_t PeekNextKey(KeyType & setKey) const;
+
+   /**
+    * Peek at the next key without modifying the state of the traversal.
+    * @param setKey On success, the next key is copied into this object.
+    * @return B_NO_ERROR on success, or B_ERROR if there are no more keys left.
+    */
+   status_t PeekNextKey(const KeyType * & setKey) const;
 
    /**
     * Peek at the next key without modifying the state of the traversal.
@@ -180,6 +194,20 @@ public:
 
    /**
     * Iterates to get the next value in the values traversal.
+    * @param setValuePtr On success, this pointer will be set to the next value in the traversal.
+    * @return B_NO_ERROR on success, B_ERROR if there are no more values left in the value traversal.
+    */
+   status_t GetNextValue(ValueType * & setValuePtr);
+
+   /**
+    * Iterates to get the next value in the values traversal.
+    * @param setValuePtr On success, this pointer will be set to the next value in the traversal.
+    * @return B_NO_ERROR on success, B_ERROR if there are no more values left in the value traversal.
+    */
+   status_t GetNextValue(const ValueType * & setValuePtr);
+
+   /**
+    * Iterates to get the next value in the values traversal.
     * Note that the returned pointer is only guaranteed valid as long as the Hashtable remains unchanged.
     * @return a pointer to the next value in the value traversal, or NULL if there are no values left.
     */
@@ -191,6 +219,20 @@ public:
     * @return B_NO_ERROR on success, or B_ERROR if there are no more values left.
     */
    status_t PeekNextValue(ValueType & setValue) const;
+
+   /**
+    * Peek at the next value without modifying the state of the traversal.
+    * @param setValue On success, this pointer is set to point to the next value in the traversal.
+    * @return B_NO_ERROR on success, or B_ERROR if there are no more values left.
+    */
+   status_t PeekNextValue(const ValueType * & setValue) const;
+
+   /**
+    * Peek at the next value without modifying the state of the traversal.
+    * @param setValue On success, this pointer is set to point to the next value in the traversal.
+    * @return B_NO_ERROR on success, or B_ERROR if there are no more values left.
+    */
+   status_t PeekNextValue(ValueType * & setValue) const;
 
    /**
     * Peek at the next value without modifying the state of the traversal.
@@ -365,6 +407,16 @@ public:
    /** Returns the given key's position in the hashtable's linked list, or -1 if the key wasn't found.  O(n) count time (if the key exists, O(1) if it doesn't) */
    int32 IndexOfKey(const KeyType& key) const;
 
+   /** Returns the index of the first (or last) occurrance of (value), or -1 if (value) does
+     * not exist in this Hashtable.  Note that the search is O(N).
+     * @param value The value to search for.
+     * @param searchBackwards If set to true, the table will be searched in reverse order.
+     *                        and the index returned (if valid) will be the index of the
+     *                        last instance of (value) in the table, rather than the first.
+     * @returns The index into the table, or -1 if (value) doesn't exist in the table's set of values.
+     */
+   int32 IndexOfValue(const ValueType& value, bool searchBackwards = false) const;
+
    /** Attempts to retrieve the associated value from the table for a given key.  (O(1) lookup time)
     *  @param key The key to use to look up a value.
     *  @param setValue On success, the associated value is copied into this object.
@@ -446,6 +498,20 @@ public:
     *  @return B_NO_ERROR If the operation succeeded, B_ERROR if it failed (out of memory?)
     */
    status_t Put(const KeyType& key, const ValueType& value, ValueType & setPreviousValue, bool * optSetReplaced = NULL) {return (PutAux(ComputeHash(key), key, value, &setPreviousValue, optSetReplaced) != NULL) ? B_NO_ERROR : B_ERROR;}
+
+   /** Moves the specified key/value pair so that it is in the correct position based on the
+     * current sort-by-value ordering.   The only time you would need to call this is if the
+     * Hashtable has been set to automatic-sort-by-value mode (see SetAutoSortMode()) and you
+     * have done an in-place modification of this key's value that might have affected the key's 
+     * correct position in the sort ordering.  If you are not using AUTOSORT_BY_VALUE mode,
+     * or if you are only doing Put()'s and Get()'s, and never modifying ValueType objects
+     * in-place within the table, then calling this method is not necessary and will have no
+     * effect.
+     * @param key The key object of the key/value pair that may need to be repositioned.
+     * @returns B_NO_ERROR on success, or B_ERROR if (key) was not found in the table, or
+     *          if the table is not in AUTOSORT_BY_VALUE mode with a valid value-compare function.
+     */
+   status_t Reposition(const KeyType & key);
 
    /** Places the given (key, value) mapping into the table.  Any previous entry with a key of (key) will be replaced. 
     *  (average O(1) insertion time, unless auto-sorting is enabled, in which case it becomes O(N) insertion time for
@@ -590,6 +656,24 @@ public:
      */
    status_t MoveToBehind(const KeyType & moveMe, const KeyType & toBehindMe);
 
+   /** Convenience method:  Moves an item from this table to another table.
+     * @param moveMe The key in this table of the item that should be moved.
+     * @param toTable The table that the item should be in when this operation completes.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory, or (moveMe)
+     *          was not found in this table.  Note that trying to move an item into its
+     *          own table will simply return B_NO_ERROR with no side effects.
+     */
+   status_t MoveToTable(const KeyType & moveMe, Hashtable<KeyType, ValueType> & toTable);
+
+   /** Convenience method:  Copies an item from this table to another table.
+     * @param copyMe The key in this table of the item that should be copied.
+     * @param toTable The table that the item should be in when this operation completes.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory, or (copyMe)
+     *          was not found in this table.  Note that trying to copy an item into its
+     *          own table will simply return B_NO_ERROR with no side effects.
+     */
+   status_t CopyToTable(const KeyType & moveMe, Hashtable<KeyType, ValueType> & toTable) const;
+
    /** Forcefully sorts the iteration traversal list of this table using the preferred sorting mode.
      * The preferred sorting mode will be determined as follows:
      * <ol>
@@ -617,9 +701,7 @@ public:
      */
    void SortByValue(ValueCompareFunc func, void * optCompareCookie = NULL) {(void) SortByAux(NULL, func, optCompareCookie);}
 
-   /** Synonym for GetValue(), retained for compatibility with old code.
-    *  @deprecated Use GetValue() instead
-    */
+   /** Convenience synonym for GetValue() */
    status_t Get(const KeyType& key, ValueType& setValue) const {return GetValue(key, setValue);}
 
    /** Convenience synonym for GetValue() */
@@ -789,6 +871,7 @@ private:
    HashtableEntry * PutAux(uint32 hash, const KeyType& key, const ValueType& value, ValueType * optSetPreviousValue, bool * optReplacedFlag);
    status_t RemoveAux(const KeyType& key, ValueType * setRemovedValue);
    status_t SortByAux(KeyCompareFunc optKeyFunc, ValueCompareFunc optValueFunc, void * cookie);
+   void RepositionAux(HashtableEntry * e);
 
    inline uint32 ComputeHash(const KeyType & key) const
    {
@@ -841,6 +924,42 @@ private:
    {
       HashtableEntry * ep = static_cast<HashtableEntry *>(entryPtr);
       return ep ? ((flags & HTIT_FLAG_BACKWARDS) ? ep->_iterPrev : ep->_iterNext) : NULL;
+   }
+
+   void MoveToBackAux(HashtableEntry * moveMe)
+   {
+      if (moveMe->_iterNext)
+      {
+         RemoveIterationEntry(moveMe);
+         InsertIterationEntry(moveMe, _iterTail);
+      }
+   }
+
+   void MoveToFrontAux(HashtableEntry * moveMe)
+   {
+      if (moveMe->_iterPrev)
+      {
+         RemoveIterationEntry(moveMe);
+         InsertIterationEntry(moveMe, NULL);
+      }
+   }
+
+   void MoveToBeforeAux(HashtableEntry * moveMe, HashtableEntry * toBeforeMe)
+   {
+      if (moveMe->_iterNext != toBeforeMe)
+      {
+         RemoveIterationEntry(moveMe);
+         InsertIterationEntry(moveMe, toBeforeMe->_iterPrev);
+      }
+   }
+
+   void MoveToBehindAux(HashtableEntry * moveMe, HashtableEntry * toBehindMe)
+   {
+      if (moveMe->_iterPrev != toBehindMe)
+      {
+         RemoveIterationEntry(moveMe);
+         InsertIterationEntry(moveMe, toBehindMe);
+      }
    }
 
    uint32 NextPrime(uint32 start) const;
@@ -902,7 +1021,7 @@ operator=(const Hashtable<KeyType, ValueType, HashFunctorType> & rhs)
       Clear();
       if (EnsureSize(rhs.GetNumItems()) == B_NO_ERROR)
       {
-         HashtableIterator<KeyType, ValueType, HashFunctorType> iter(rhs);
+         HashtableIterator<KeyType, ValueType, HashFunctorType> iter(rhs, HTIT_FLAG_NOREGISTER);
          const KeyType * nextKey;
          while((nextKey = iter.GetNextKey()) != NULL) (void) Put(*nextKey, *iter.GetNextValue());  // no good way to handle out-of-mem here?  
       }
@@ -918,7 +1037,7 @@ operator==(const Hashtable<KeyType, ValueType, HashFunctorType> & rhs) const
    if (this == &rhs) return true;
    if (GetNumItems() != rhs.GetNumItems()) return false;
 
-   HashtableIterator<KeyType, ValueType, HashFunctorType> iter(*this);
+   HashtableIterator<KeyType, ValueType, HashFunctorType> iter(*this, HTIT_FLAG_NOREGISTER);
    const KeyType * myNextKey;
    const ValueType * myNextValue;
    while(iter.GetNextKeyAndValue(myNextKey, myNextValue) == B_NO_ERROR)
@@ -940,7 +1059,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 bool
 Hashtable<KeyType,ValueType,HashFunctorType>::ContainsValue(const ValueType& value) const
 {
-   HashtableIterator<KeyType, ValueType, HashFunctorType> iter(*this);
+   HashtableIterator<KeyType, ValueType, HashFunctorType> iter(*this, HTIT_FLAG_NOREGISTER);
    ValueType * v;
    while((v = iter.GetNextValue()) != NULL) if (*v == value) return true;
    return false;
@@ -965,6 +1084,35 @@ Hashtable<KeyType,ValueType,HashFunctorType>::IndexOfKey(const KeyType& key) con
       }
    }
    return count;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+int32
+Hashtable<KeyType,ValueType,HashFunctorType>::IndexOfValue(const ValueType& value, bool searchBackwards) const
+{
+   if (searchBackwards)
+   {
+      int32 idx = GetNumItems();
+      const HashtableEntry * entry = _iterTail;
+      while(entry)
+      {
+         --idx;
+         if (entry->_value == value) return idx;
+         entry = entry->_iterPrev;
+      }
+   }
+   else
+   {
+      int32 idx = 0;
+      const HashtableEntry * entry = _iterHead;
+      while(entry)
+      {
+         if (entry->_value == value) return idx;
+         entry = entry->_iterNext;
+         idx++;
+      }
+   }
+   return -1;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
@@ -1248,15 +1396,37 @@ Hashtable<KeyType,ValueType,HashFunctorType>::SwapContents(Hashtable<KeyType,Val
 
 template <class KeyType, class ValueType, class HashFunctorType>
 status_t 
+Hashtable<KeyType,ValueType,HashFunctorType>::CopyToTable(const KeyType & copyMe, Hashtable<KeyType, ValueType> & toTable) const
+{
+   const ValueType * val = Get(copyMe);
+   if (val)
+   { 
+      if (this == &toTable) return B_NO_ERROR;  // it's already here!
+      return toTable.Put(copyMe, *val);
+   }
+   return B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+Hashtable<KeyType,ValueType,HashFunctorType>::MoveToTable(const KeyType & moveMe, Hashtable<KeyType, ValueType> & toTable)
+{
+   const ValueType * val = Get(moveMe);
+   if (val)
+   { 
+      if (this == &toTable) return B_NO_ERROR;  // it's already here!
+      if (toTable.Put(moveMe, *val) == B_NO_ERROR) return Remove(moveMe);
+   }
+   return B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
 Hashtable<KeyType,ValueType,HashFunctorType>::MoveToFront(const KeyType & moveMe)
 {
    HashtableEntry * e = HasItems()?GetEntry(ComputeHash(moveMe), moveMe):NULL;
    if (e == NULL) return B_ERROR;
-   if (e->_iterPrev)
-   {
-      RemoveIterationEntry(e);
-      InsertIterationEntry(e, NULL);
-   }
+   MoveToFrontAux(e);
    return B_NO_ERROR;
 }
 
@@ -1266,11 +1436,7 @@ Hashtable<KeyType,ValueType,HashFunctorType>::MoveToBack(const KeyType & moveMe)
 {
    HashtableEntry * e = HasItems()?GetEntry(ComputeHash(moveMe), moveMe):NULL;
    if (e == NULL) return B_ERROR;
-   if (e->_iterNext)
-   {
-      RemoveIterationEntry(e);
-      InsertIterationEntry(e, _iterTail);
-   }
+   MoveToBackAux(e);
    return B_NO_ERROR;
 }
 
@@ -1283,11 +1449,7 @@ Hashtable<KeyType,ValueType,HashFunctorType>::MoveToBefore(const KeyType & moveM
       HashtableEntry * e = GetEntry(ComputeHash(moveMe),     moveMe);
       HashtableEntry * f = GetEntry(ComputeHash(toBeforeMe), toBeforeMe);
       if ((e == NULL)||(f == NULL)||(e == f)) return B_ERROR;
-      if (e->_iterNext != f)
-      {
-         RemoveIterationEntry(e);
-         InsertIterationEntry(e, f->_iterPrev);
-      }
+      MoveToBeforeAux(e, f);
       return B_NO_ERROR;
    }
    else return B_ERROR;
@@ -1302,11 +1464,7 @@ Hashtable<KeyType,ValueType,HashFunctorType>::MoveToBehind(const KeyType & moveM
       HashtableEntry * d = GetEntry(ComputeHash(toBehindMe), toBehindMe);
       HashtableEntry * e = GetEntry(ComputeHash(moveMe),     moveMe);
       if ((d == NULL)||(e == NULL)||(d == e)) return B_ERROR;
-      if (e->_iterPrev != d)
-      {
-         RemoveIterationEntry(e);
-         InsertIterationEntry(e, d);
-      }
+      MoveToBehindAux(e, d);
       return B_NO_ERROR;
    }
    else return B_ERROR;
@@ -1397,6 +1555,49 @@ Hashtable<KeyType,ValueType,HashFunctorType>::RemoveIterationEntry(HashtableEntr
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+Hashtable<KeyType,ValueType,HashFunctorType>::Reposition(const KeyType & key)
+{
+   if ((_autoSortMode == AUTOSORT_BY_VALUE)&&(_userValueCompareFunc))
+   {
+      HashtableEntry * e = GetEntry(ComputeHash(key), key);
+      if (e)
+      {
+         RepositionAux(e);
+         return B_NO_ERROR;
+      }
+   }
+   return B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+void
+Hashtable<KeyType,ValueType,HashFunctorType>::RepositionAux(HashtableEntry * e)
+{
+   // If our new value has changed our position in the sort-order, then adjust the traversal list
+   if ((e->_iterPrev)&&(_userValueCompareFunc(e->_value, e->_iterPrev->_value, _compareCookie) < 0))
+   {
+      if (_userValueCompareFunc(e->_value, _iterHead->_value, _compareCookie) < 0) MoveToFrontAux(e);
+      else
+      {
+         HashtableEntry * moveToBefore = e->_iterPrev;
+         while((moveToBefore->_iterPrev)&&(_userValueCompareFunc(e->_value, moveToBefore->_iterPrev->_value, _compareCookie) < 0)) moveToBefore = moveToBefore->_iterPrev;
+         MoveToBeforeAux(e, moveToBefore);
+      }
+   }
+   else if ((e->_iterNext)&&(_userValueCompareFunc(e->_value, e->_iterNext->_value, _compareCookie) > 0))
+   {
+      if (_userValueCompareFunc(e->_value, _iterTail->_value, _compareCookie) > 0) MoveToBackAux(e);
+      else
+      {
+         HashtableEntry * moveToBehind = e->_iterNext;
+         while((moveToBehind->_iterNext)&&(_userValueCompareFunc(e->_value, moveToBehind->_iterNext->_value, _compareCookie) > 0)) moveToBehind = moveToBehind->_iterNext;
+         MoveToBehindAux(e, moveToBehind);
+      }
+   }
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
 typename Hashtable<KeyType,ValueType,HashFunctorType>::HashtableEntry *
 Hashtable<KeyType,ValueType,HashFunctorType>::PutAux(uint32 hash, const KeyType& key, const ValueType& value, ValueType * optSetPreviousValue, bool * optReplacedFlag)
 {
@@ -1415,22 +1616,7 @@ Hashtable<KeyType,ValueType,HashFunctorType>::PutAux(uint32 hash, const KeyType&
       if (optSetPreviousValue) *optSetPreviousValue = e->_value;
       if (optReplacedFlag)     *optReplacedFlag     = true;
       e->_value = value;
-      if ((_autoSortMode == AUTOSORT_BY_VALUE)&&(_userValueCompareFunc))
-      {
-         // If our new value has changed our position in the sort-order, then adjust the traversal list
-         if ((e->_iterPrev)&&(_userValueCompareFunc(e->_value, e->_iterPrev->_value, _compareCookie) < 0))
-         {
-            const HashtableEntry * moveToBefore = e->_iterPrev;
-            while((moveToBefore->_iterPrev)&&(_userValueCompareFunc(e->_value, moveToBefore->_iterPrev->_value, _compareCookie) < 0)) moveToBefore = moveToBefore->_iterPrev;
-            (void) MoveToBefore(e->_key, moveToBefore->_key);
-         }
-         else if ((e->_iterNext)&&(_userValueCompareFunc(e->_value, e->_iterNext->_value, _compareCookie) > 0))
-         {
-            const HashtableEntry * moveToBehind = e->_iterNext;
-            while((moveToBehind->_iterNext)&&(_userValueCompareFunc(e->_value, moveToBehind->_iterNext->_value, _compareCookie) > 0)) moveToBehind = moveToBehind->_iterNext;
-            (void) MoveToBehind(e->_key, moveToBehind->_key);
-         }
-      }
+      if ((_autoSortMode == AUTOSORT_BY_VALUE)&&(_userValueCompareFunc)) RepositionAux(e);
       return e;
    }
 
@@ -1570,7 +1756,7 @@ template <class KeyType, class ValueType, class HashFunctorType>
 status_t 
 Hashtable<KeyType,ValueType,HashFunctorType>::Put(const Hashtable<KeyType,ValueType,HashFunctorType> & pairs)
 {
-   HashtableIterator<KeyType, ValueType> iter(pairs);
+   HashtableIterator<KeyType, ValueType> iter(pairs, HTIT_FLAG_NOREGISTER);
    const KeyType * nextKey;
    const ValueType * nextVal;
    while(iter.GetNextKeyAndValue(nextKey, nextVal) == B_NO_ERROR) if (Put(*nextKey, *nextVal) != B_NO_ERROR) return B_ERROR;
@@ -1582,7 +1768,7 @@ uint32
 Hashtable<KeyType,ValueType,HashFunctorType>::Remove(const Hashtable<KeyType,ValueType,HashFunctorType> & pairs)
 {
    uint32 removeCount = 0;
-   HashtableIterator<KeyType, ValueType> iter(pairs);
+   HashtableIterator<KeyType, ValueType> iter(pairs, HTIT_FLAG_NOREGISTER);
    const KeyType * nextKey;
    while((HasItems())&&((nextKey = iter.GetNextKey()) != NULL)) if (Remove(*nextKey) == B_NO_ERROR) removeCount++;
    return removeCount;
@@ -1654,6 +1840,13 @@ HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKey(KeyType& key)
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKey(const KeyType * & setKeyPtr)
+{
+   return ((setKeyPtr = GetNextKey()) != NULL) ? B_NO_ERROR : B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
 status_t
 HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextValue(ValueType& val)
 {
@@ -1664,6 +1857,20 @@ HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextValue(ValueType& va
       return B_NO_ERROR;
    } 
    else return B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextValue(ValueType * & setValuePtr)
+{
+   return ((setValuePtr = GetNextValue()) != NULL) ? B_NO_ERROR : B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextValue(const ValueType * & setValuePtr)
+{
+   return ((setValuePtr = GetNextValue()) != NULL) ? B_NO_ERROR : B_ERROR;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
@@ -1680,6 +1887,13 @@ HashtableIterator<KeyType,ValueType,HashFunctorType>::PeekNextKey(KeyType& key) 
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::PeekNextKey(const KeyType * & setKeyPtr) const
+{
+   return ((setKeyPtr = PeekNextKey()) != NULL) ? B_NO_ERROR : B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
 status_t
 HashtableIterator<KeyType,ValueType,HashFunctorType>::PeekNextValue(ValueType& val) const
 {
@@ -1690,6 +1904,20 @@ HashtableIterator<KeyType,ValueType,HashFunctorType>::PeekNextValue(ValueType& v
       return B_NO_ERROR;
    }
    else return B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::PeekNextValue(const ValueType * & setValuePtr) const
+{
+   return ((setValuePtr = PeekNextValue()) != NULL) ? B_NO_ERROR : B_ERROR;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t 
+HashtableIterator<KeyType,ValueType,HashFunctorType>::PeekNextValue(ValueType * & setValuePtr) const
+{
+   return ((setValuePtr = PeekNextValue()) != NULL) ? B_NO_ERROR : B_ERROR;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>

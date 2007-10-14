@@ -5,13 +5,12 @@
 
 #include "system/Thread.h"
 #include "reflector/StorageReflectSession.h"
+#include "reflector/ReflectServer.h"
 
 BEGIN_NAMESPACE(muscle);
 
 class ThreadSupervisorSession;
-class ThreadWorkerSession;
-class ThreadWorkerSessionFactory;
-class DrainTag;
+class MessageTransceiverThread;
 
 /** These are reply codes returned by MessageTransceiverThread::GetNextEventFromInternalThread() 
   * @see MessageTransceiverThread::GetNextEventFromInternalThread()
@@ -52,6 +51,7 @@ enum {
 #define MTT_NAME_IP_ADDRESS  "addr"  // field containing an int32 IP address
 #define MTT_NAME_HOSTNAME    "host"  // field containing an ASCII hostname or IP address
 #define MTT_NAME_PORT        "port"  // field containing an int16 port number
+#define MTT_NAME_FACTORY_ID  "fcid"  // field containing a uint32 factory ID number (new for v3.40)
 #define MTT_NAME_SESSION     "sess"  // field containing an AbstractReflectSession tag
 #define MTT_NAME_FROMSESSION "sfrm"  // field containing the root path of the session this message is from (e.g. "192.168.1.103/17")
 #define MTT_NAME_FACTORY     "fact"  // field containing a ReflectSessionFactory tag
@@ -59,6 +59,181 @@ enum {
 #define MTT_NAME_POLICY_TAG  "ptag"  // field containing an IOPolicy reference
 #define MTT_NAME_ENCODING    "enco"  // field containing the MUSCLE_MESSAGE_ENCODING_* value
 #define MTT_NAME_EXPANDLOCALHOST "expl" // boolean field indicating whether localhost IP should be expanded to primary IP
+#define MTT_NAME_AUTORECONNECTDELAY "arcd" // int64 indicating how long after disconnect before an auto-reconnect should occur
+
+/** This little class is used to help us track when workers' output queues are empty.
+  * When it gets deleted (inside the internal thread), it triggers the supervisor session
+  * to send back an MTT_EVENT_OUTPUT_QUEUES_DRAINED event.
+  * It's exposed publically here only because certain (ahem) poorly written programs 
+  * need to subclass it in order to be able to safely block until it has gone away.
+  */
+class DrainTag : public RefCountable
+{
+public:
+   /** Constructor */
+   DrainTag() : _notify(NULL) {/* empty */}
+ 
+   /** Destructor.  Notifies our supervisor that we are being deleted. */
+   virtual ~DrainTag();
+
+private:
+   friend class ThreadSupervisorSession;
+   friend class ThreadWorkerSession;
+   friend class MessageTransceiverThread;
+
+   void SetNotify(ThreadSupervisorSession * notify) {_notify = notify;}
+   MessageRef GetReplyMessage() const {return _replyRef;}
+   void SetReplyMessage(const MessageRef & ref) {_replyRef = ref;}
+
+   ThreadSupervisorSession * _notify;
+   MessageRef _replyRef;
+};
+typedef Ref<DrainTag> DrainTagRef;
+
+/** This is a session that represents a connection to another computer or etc.
+  * ThreadWorkerSessions are added to a MessageTransceiverThread's held ReflectServer
+  * object by the ThreadSupervisorSession on demand.
+  */
+class ThreadWorkerSession : public StorageReflectSession
+{
+public:
+   /** Constructor */
+   ThreadWorkerSession();
+
+   /** Destructor */
+   virtual ~ThreadWorkerSession();
+
+   /** Overridden to send a message back to the user */
+   virtual status_t AttachedToServer();
+
+   /** Overridden to send a message back to the user */
+   virtual void AboutToDetachFromServer();
+
+   /** Overridden to send a message back to the user */
+   virtual bool ClientConnectionClosed();
+
+   /** Overridden to send a message back to the user to let him know the connection is ready */
+   virtual void AsyncConnectCompleted();
+
+   /** Overridden to wrap incoming messages and pass them along to our supervisor session */
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
+
+   /** Overriden to handle messages from our supervisor session */
+   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
+
+   /** Returns a human-readable label for this session type:  "ThreadWorker" */
+   virtual const char * GetTypeName() const {return "ThreadWorker";}
+
+   /** Overridden to clear our _drainNotifiers Queue when appropriate */
+   virtual int32 DoOutput(uint32 maxBytes);
+
+private:
+   friend class ThreadWorkerSessionFactory;
+   Queue<DrainTagRef> _drainedNotifiers;
+   bool _sendAcceptedMessage;
+};
+typedef Ref<ThreadWorkerSession> ThreadWorkerSessionRef;
+
+/** A factory class that returns new ThreadWorkerSession objects. */
+class ThreadWorkerSessionFactory : public StorageReflectSessionFactory
+{
+public:
+   /** Default Constructor.  */
+   ThreadWorkerSessionFactory();
+
+   /** Overridden to send a message back to the user */
+   virtual status_t AttachedToServer();
+
+   /** Overridden to send a message back to the user */
+   virtual void AboutToDetachFromServer();
+
+   /** Reimplemented to call CreateThreadWorkerSession() to create
+     * a new session, and on success to send a MTT_EVENT_SESSION_ACCEPTED
+     * Message back to the main thread.  Subclasses that wish to
+     * to have this factory class return a different type of
+     * session object should override CreateThreadWorkerSession(const String &, const IPAddressAndPort &);
+     * instead of this method.
+     */
+   virtual AbstractReflectSessionRef CreateSession(const String & clientAddress, const IPAddressAndPort & factoryInfo);
+
+   /** Default implementation returns a new ThreadWorkerSession object.
+     * Subclasses may override this method to return a different type of
+     * object, as long as the returned object is a subclass of ThreadWorkerSession.
+     */
+   virtual ThreadWorkerSessionRef CreateThreadWorkerSession(const String & clientAddress, const IPAddressAndPort & factoryInfo);
+};
+typedef Ref<ThreadWorkerSessionFactory> ThreadWorkerSessionFactoryRef;
+
+/** This is the session that acts as the main thread's agent inside the MessageTransceiverThread's
+  * held ReflectServer object.  It accepts commands from the MessageTransceiverThread object, and
+  * routes messages to and from the ThreadWorkerSessions.
+  */
+class ThreadSupervisorSession : public StorageReflectSession
+{
+public:
+   /** Default Constructor */
+   ThreadSupervisorSession();
+
+   /** Destructor */
+   virtual ~ThreadSupervisorSession();
+
+   /** Overridden to neutralize any outstanding DrainTag objects */
+   virtual void AboutToDetachFromServer();
+
+   /** Overridden to create a custom gateway for interacting with the MessageTransceiverThread */
+   virtual AbstractMessageIOGatewayRef CreateGateway();         
+
+   /** Overridden to deal with the MessageTransceiverThread.  If you are subclassing
+     * ThreadSupervisorSession, don't override this method; override MessageReceivedFromOwner() instead.
+     */
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
+
+   /** Overridden to handle messages coming from the ThreadWorkerSessions. */
+   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
+
+   /** Overriden to handle messages from factories */
+   virtual void MessageReceivedFromFactory(ReflectSessionFactory & from, const MessageRef & msg, void * userData);
+
+   /** Overridden to end the server (and hence, the thread) if our connection to the thread is broken. 
+     * (this shouldn't ever happen, but just in case...)
+     */
+   virtual bool ClientConnectionClosed();
+
+   /** Sets the default distribution path for this session.  This path, if set, determines which ThreadWorkerSessions
+     * are to receive outgoing data messages when the messages themselves contain no distribution path --
+     * only those sessions who match the path will get the user messages.  Setting the path to "" means
+     * to revert to sending all data messages to all ThreadWorkerSessions.
+     * @param path The new default distribution path.
+     */
+   void SetDefaultDistributionPath(const String & path) {_defaultDistributionPath = path;}
+
+   /** Returns the current default distribution path. */
+   const String & GetDefaultDistributionPath() const {return _defaultDistributionPath;}
+
+   /** Returns a human-readable label for this session type:  "ThreadSupervisor" */
+   virtual const char * GetTypeName() const {return "ThreadSupervisor";}
+
+protected:
+   /** Handles control messages received from the main thread. 
+     * @param msg Reference to the message from the owner.
+     * @param numLeft Number of messages still pending in the message queue
+     * @returns B_NO_ERROR on success, or B_ERROR if the thread should go away.
+     */
+   virtual status_t MessageReceivedFromOwner(const MessageRef & msg, uint32 numLeft);
+
+private:
+   friend class MessageTransceiverThread;
+   friend class DrainTag;
+
+   void DrainTagIsBeingDeleted(DrainTag * tag);
+   void DistributeMessageToWorkers(const MessageRef & distMsg);
+   status_t AddNewWorkerConnectSession(const ThreadWorkerSessionRef & sessionRef, const ip_address & hostIP, uint16 port, uint64 autoReconnectDelay);
+
+   Hashtable<DrainTag *, bool> _drainTags;
+   String _defaultDistributionPath;
+   MessageTransceiverThread * _mtt;
+};
+typedef Ref<ThreadSupervisorSession> ThreadSupervisorSessionRef;
 
 /** 
   * This is a class that holds a ReflectServer object in an internal thread, and mediates
@@ -99,7 +274,7 @@ public:
      * May be called at any time, but behaves slightly differently depending on whether the internal
      * thread is running or not.  If the internal thread is running, the session will be added asynchronously
      * to the server.  If not, the call is immediately passed on through to ReflectServer::AddNewSession(). 
-     * @param socket The TCP socket that the new session will be using, or -1, if the new session is to have no
+     * @param socket The TCP socket that the new session will be using, or a NULL SocketRef, if the new session is to have no
      *               associated TCP connection.  This socket becomes property of this object on success.
      * @param optSessionRef Optional reference for a session to add.  If it's a NULL reference, a default ThreadWorkerSession
      *                      will be created and used.  If you do specify a session here, you will want to use either a 
@@ -109,10 +284,13 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */  
-   virtual status_t AddNewSession(int socket, const AbstractReflectSessionRef & optSessionRef);
+   virtual status_t AddNewSession(const SocketRef & socket, const ThreadWorkerSessionRef & optSessionRef);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t AddNewSession(int socket) {return AddNewSession(socket, AbstractReflectSessionRef());}
+   status_t AddNewSession(const SocketRef & socket) {return AddNewSession(socket, ThreadWorkerSessionRef());}
+
+   /** Convenience method -- calls the above method with a NULL socket and NULL session reference. */
+   status_t AddNewSession() {return AddNewSession(SocketRef(), ThreadWorkerSessionRef());}
 
    /**
      * Adds a new session that will connect out to the given IP address and port.
@@ -126,13 +304,19 @@ public:
      *                      ThreadWorkerSession, a subclass of ThreadWorkerSession, or at least something that acts 
      *                      like one, or things won't work correctly.
      *                      The referenced session becomes sole property of the MessageTransceiverThread on success.
+     * @param autoReconnectDelay If specified, this is the number of microseconds after the
+     *                           connection is broken that an automatic reconnect should be
+     *                           attempted.  If not specified, an automatic reconnect will not
+     *                           be attempted, and the session will be removed when the
+     *                           connection breaks.  Specifying this is equivalent to calling
+     *                           SetAutoReconnectDelay() on (optSessionRef).
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t AddNewConnectSession(uint32 targetIPAddress, uint16 port, const AbstractReflectSessionRef & optSessionRef);
+   virtual status_t AddNewConnectSession(const ip_address & targetIPAddress, uint16 port, const ThreadWorkerSessionRef & optSessionRef, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t AddNewConnectSession(uint32 targetIPAddress, uint16 port) {return AddNewConnectSession(targetIPAddress, port, AbstractReflectSessionRef());}
+   status_t AddNewConnectSession(const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER) {return AddNewConnectSession(targetIPAddress, port, ThreadWorkerSessionRef(), autoReconnectDelay);}
 
    /**
      * Adds a new session that will connect out to the given hostname and port.
@@ -147,13 +331,19 @@ public:
      *                      like one, or things won't work correctly.
      *                      The referenced session becomes sole property of the MessageTransceiverThread on success.
      * @param expandLocalhost Passed to GetHostByName().  See GetHostByName() documentation for details.  Defaults to false.
+     * @param autoReconnectDelay If specified, this is the number of microseconds after the
+     *                           connection is broken that an automatic reconnect should be
+     *                           attempted.  If not specified, an automatic reconnect will not
+     *                           be attempted, and the session will be removed when the
+     *                           connection breaks.  Specifying this is equivalent to calling
+     *                           SetAutoReconnectDelay() on (optSessionRef).
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t AddNewConnectSession(const String & targetHostName, uint16 port, const AbstractReflectSessionRef & optSessionRef, bool expandLocalhost = false);
+   virtual status_t AddNewConnectSession(const String & targetHostName, uint16 port, const ThreadWorkerSessionRef & optSessionRef, bool expandLocalhost = false, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t AddNewConnectSession(const String & targetHostName, uint16 port, bool expandLocalhost = false) {return AddNewConnectSession(targetHostName, port, AbstractReflectSessionRef(), expandLocalhost);}
+   status_t AddNewConnectSession(const String & targetHostName, uint16 port, bool expandLocalhost = false, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER) {return AddNewConnectSession(targetHostName, port, ThreadWorkerSessionRef(), expandLocalhost, autoReconnectDelay);}
 
    /** Installs a new ReflectSessionFactory onto the ReflectServer (or replaces an existing one) on the given port.
      * May be called at any time, but behaves slightly differently depending on whether the internal
@@ -165,23 +355,27 @@ public:
      *                      only ThreadWorkerSessions (or sessions which are subclasses thereof)
      *                      If left as NULL (the default), a default ThreadWorkerFactory will be created and used.
      *                      The referenced factory becomes sole property of the MessageTransceiverThread on success.
+     *  @param optInterfaceIP Optional local interface address to listen on.  If not specified, or if specified
+     *                        as (invalidIP), then connections will be accepted from all local network interfaces.
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the put command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & optFactoryRef);
+   virtual status_t PutAcceptFactory(uint16 port, const ThreadWorkerSessionFactoryRef & optFactoryRef, const ip_address & interfaceIP = invalidIP);
 
    /** Convenience method -- calls the above method with a NULL factory reference. */
-   status_t PutAcceptFactory(uint16 port) {return PutAcceptFactory(port, ReflectSessionFactoryRef());}
+   status_t PutAcceptFactory(uint16 port) {return PutAcceptFactory(port, ThreadWorkerSessionFactoryRef());}
 
    /** Removes an existing ReflectSessionFactory from the held ReflectServer.
      * May be called at any time, but behaves slightly differently depending on whether the internal
      * thread is running or not.  If the internal thread is running, the factory will be removed from
      * the ReflectServer asynchronously; otherwise the call is passed directly through to ReflectServer::RemoveAcceptFactory().
      * @param port The port to remove the factory from, or zero to remove all factories.
+     *  @param optInterfaceIP Interface(s) that the specified callbacks were assigned to in their PutAcceptFactory() call.
+     *                        This parameter is ignored when (port) is zero. 
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the remove command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t RemoveAcceptFactory(uint16 port);
+   virtual status_t RemoveAcceptFactory(uint16 port, const ip_address & interfaceIP = invalidIP);
 
    /** Stops the internal thread if it is running, destroys internal the internal ReflectServer object, and more or
      * less make this MessageTransceiverThread look like it had just been constructed anew.
@@ -231,12 +425,12 @@ public:
      *                     it references a Message associated with the event.  This is mainly used with the 
      *                     MTT_EVENT_INCOMING_MESSAGE event code.
      * @param optFromSession If non-NULL, the string that this argument points to will be have the root node path of
-     *                       the relevant session written into it (e.g. "/192.168.1.105/17").
-     * @param optFromPort If non-NULL, the uint16 that this arguments points will have the port number of the 
-     *                    relevant factory written into it.
+     *                       the source AbstractReflectSession written into it (e.g. "/192.168.1.105/17").
+     * @param optFromFactoryID If non-NULL, the uint32 that this arguments points to will have the factory ID of the 
+     *                         source ReflectSessionFactory object written into it.
      * @returns The number of events left in the event queue (after our having removed one) on success, or -1 on failure.
      */
-   int32 GetNextEventFromInternalThread(uint32 & retEventCode, MessageRef * optRetMsgRef = NULL, String * optFromSession = NULL, uint16 * optFromPort = NULL);
+   int32 GetNextEventFromInternalThread(uint32 & retEventCode, MessageRef * optRetMsgRef = NULL, String * optFromSession = NULL, uint32 * optFromFactoryID = NULL);
 
    /**
      * Requests that the MessageTranceiverThread object send us a MTT_EVENT_OUTPUT_QUEUES_DRAINED event
@@ -308,204 +502,31 @@ protected:
      * May be overridden if you wish to use a customized subclass instead.
      * @returns a new ThreadSupervisorSession on success, or NULL on failure.
      */
-   virtual ThreadSupervisorSession * CreateSupervisorSession();
+   virtual ThreadSupervisorSessionRef CreateSupervisorSession();
 
    /** Creates and returns a ThreadWorkerSession object.  Called when a new
      * session is requested (e.g. in AddNewSession(), but no session is specified
      * by the call.  This method may be overridden to customize the type of session used.
      */
-   virtual AbstractReflectSession * CreateDefaultWorkerSession();
+   virtual ThreadWorkerSessionRef CreateDefaultWorkerSession();
 
    /** Creates and returns a ThreadWorkerSessionFactory object.  Called when a new
      * factory is requested (e.g. in PutAcceptFactory(), but none is specified.  
      * This method may be overridden to customize the type of factory used.
      */
-   virtual ReflectSessionFactory * CreateDefaultSessionFactory();
+   virtual ThreadWorkerSessionFactoryRef CreateDefaultSessionFactory();
 
-   /** Creates and returns a new ReflectServer object.  
-     * This method may be overridden if a custom ReflectServer is needed.
-     */
-   virtual ReflectServer * CreateReflectServer();
+   /** Creates a new ReflectServer object and returns a reference to it.  */
+   virtual ReflectServerRef CreateReflectServer();
 
 private:
    friend class ThreadSupervisorSession;
    status_t EnsureServerAllocated();
-   status_t SendAddNewSessionMessage(const AbstractReflectSessionRef & sessionRef, int socket, const char * hostName, uint32 hostIP, uint16 port, bool expandLocalhost);
+   status_t SendAddNewSessionMessage(const ThreadWorkerSessionRef & sessionRef, const SocketRef & socket, const char * hostName, const ip_address & hostIP, uint16 port, bool expandLocalhost, uint64 autoReconnectDelay);
    status_t SetNewPolicyAux(uint32 what, const PolicyRef & pref, const char * optDistPath);
 
-   ReflectServer * _server;
+   ReflectServerRef _server;
    String _defaultDistributionPath;
-};
-
-/** This is the session that acts as the main thread's agent inside the MessageTransceiverThread's
-  * held ReflectServer object.  It accepts commands from the MessageTransceiverThread object, and
-  * routes messages to and from the ThreadWorkerSessions.
-  */
-class ThreadSupervisorSession : public StorageReflectSession
-{
-public:
-   /** Default Constructor */
-   ThreadSupervisorSession();
-
-   /** Destructor */
-   virtual ~ThreadSupervisorSession();
-
-   /** Overridden to neutralize any outstanding DrainTag objects */
-   virtual void AboutToDetachFromServer();
-
-   /** Overridden to create a custom gateway for interacting with the MessageTransceiverThread */
-   virtual AbstractMessageIOGateway * CreateGateway();         
-
-   /** Overridden to deal with the MessageTransceiverThread.  If you are subclassing
-     * ThreadSupervisorSession, don't override this method; override MessageReceivedFromOwner() instead.
-     */
-   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
-
-   /** Overridden to handle messages coming from the ThreadWorkerSessions. */
-   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
-
-   /** Overriden to handle messages from factories */
-   virtual void MessageReceivedFromFactory(ReflectSessionFactory & from, const MessageRef & msg, void * userData);
-
-   /** Overridden to end the server (and hence, the thread) if our connection to the thread is broken. 
-     * (this shouldn't ever happen, but just in case...)
-     */
-   virtual bool ClientConnectionClosed();
-
-   /** Sets the default distribution path for this session.  This path, if set, determines which ThreadWorkerSessions
-     * are to receive outgoing data messages when the messages themselves contain no distribution path --
-     * only those sessions who match the path will get the user messages.  Setting the path to "" means
-     * to revert to sending all data messages to all ThreadWorkerSessions.
-     * @param path The new default distribution path.
-     */
-   void SetDefaultDistributionPath(const String & path) {_defaultDistributionPath = path;}
-
-   /** Returns the current default distribution path. */
-   const String & GetDefaultDistributionPath() const {return _defaultDistributionPath;}
-
-   /** Returns a human-readable label for this session type:  "ThreadSupervisor" */
-   virtual const char * GetTypeName() const {return "ThreadSupervisor";}
-
-protected:
-   /** Handles control messages received from the main thread. 
-     * @param msg Reference to the message from the owner.
-     * @param numLeft Number of messages still pending in the message queue
-     * @returns B_NO_ERROR on success, or B_ERROR if the thread should go away.
-     */
-   virtual status_t MessageReceivedFromOwner(const MessageRef & msg, uint32 numLeft);
-
-private:
-   friend class MessageTransceiverThread;
-   friend class DrainTag;
-
-   void DrainTagIsBeingDeleted(DrainTag * tag);
-   void DistributeMessageToWorkers(const MessageRef & distMsg);
-   status_t AddNewWorkerConnectSession(const AbstractReflectSessionRef & sessionRef, uint32 hostIP, uint16 port);
-
-   Hashtable<DrainTag *, bool> _drainTags;
-   String _defaultDistributionPath;
-   MessageTransceiverThread * _mtt;
-};
-
-/** This little class is used to help us track when workers' output queues are empty.
-  * When it gets deleted (inside the internal thread), it triggers the supervisor session
-  * to send back an MTT_EVENT_OUTPUT_QUEUES_DRAINED event.
-  * It's exposed publically here only because certain (ahem) poorly written programs 
-  * need to subclass it in order to be able to safely block until it has gone away.
-  */
-class DrainTag : public RefCountable
-{
-public:
-   /** Constructor */
-   DrainTag() : _notify(NULL) {/* empty */}
- 
-   /** Destructor.  Notifies our supervisor that we are being deleted. */
-   virtual ~DrainTag() {if (_notify) _notify->DrainTagIsBeingDeleted(this);}
-
-private:
-   friend class ThreadSupervisorSession;
-   friend class ThreadWorkerSession;
-   friend class MessageTransceiverThread;
-
-   void SetNotify(ThreadSupervisorSession * notify) {_notify = notify;}
-   MessageRef GetReplyMessage() const {return _replyRef;}
-   void SetReplyMessage(const MessageRef & ref) {_replyRef = ref;}
-
-   ThreadSupervisorSession * _notify;
-   MessageRef _replyRef;
-};
-typedef Ref<DrainTag> DrainTagRef;
-
-/** This is a session that represents a connection to another computer or etc.
-  * ThreadWorkerSessions are added to a MessageTransceiverThread's held ReflectServer
-  * object by the ThreadSupervisorSession on demand.
-  */
-class ThreadWorkerSession : public StorageReflectSession
-{
-public:
-   /** Constructor */
-   ThreadWorkerSession();
-
-   /** Destructor */
-   virtual ~ThreadWorkerSession();
-
-   /** Overridden to send a message back to the user */
-   virtual status_t AttachedToServer();
-
-   /** Overridden to send a message back to the user */
-   virtual void AboutToDetachFromServer();
-
-   /** Overridden to send a message back to the user */
-   virtual bool ClientConnectionClosed();
-
-   /** Overridden to send a message back to the user to let him know the connection is ready */
-   virtual void AsyncConnectCompleted();
-
-   /** Overridden to wrap incoming messages and pass them along to our supervisor session */
-   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData);
-
-   /** Overriden to handle messages from our supervisor session */
-   virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
-
-   /** Returns a human-readable label for this session type:  "ThreadWorker" */
-   virtual const char * GetTypeName() const {return "ThreadWorker";}
-
-   /** Overridden to clear our _drainNotifiers Queue when appropriate */
-   virtual int32 DoOutput(uint32 maxBytes);
-
-private:
-   friend class ThreadWorkerSessionFactory;
-   Queue<DrainTagRef> _drainedNotifiers;
-   bool _sendAcceptedMessage;
-};
-
-/** A factory class that returns new ThreadWorkerSession objects. */
-class ThreadWorkerSessionFactory : public StorageReflectSessionFactory
-{
-public:
-   /** Default Constructor.  */
-   ThreadWorkerSessionFactory();
-
-   /** Overridden to send a message back to the user */
-   virtual status_t AttachedToServer();
-
-   /** Overridden to send a message back to the user */
-   virtual void AboutToDetachFromServer();
-
-   /** Implemented to call CreateThreadWorkerSession() to create
-     * a new session, and on success to send a MTT_EVENT_SESSION_ACCEPTED
-     * Message back to the main thread.  Subclasses that wish to
-     * to have this factory class return a different type of
-     * session object should override CreateThreadWorkerSession(const String &)
-     * instead of this method.
-     */
-   virtual AbstractReflectSession * CreateSession(const String &);
-
-   /** Default implementation returns a new ThreadWorkerSession object.
-     * Subclasses may override this method to return a different type of
-     * object, as long as the returned object is a subclass of ThreadWorkerSession.
-     */
-   virtual ThreadWorkerSession * CreateThreadWorkerSession(const String &);
 };
 
 END_NAMESPACE(muscle);

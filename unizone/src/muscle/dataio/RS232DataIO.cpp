@@ -22,16 +22,12 @@
 
 BEGIN_NAMESPACE(muscle);
 
-RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : _blocking(blocking),
+RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : _blocking(blocking)
 #ifdef USE_WINDOWS_IMPLEMENTATION
-   _handle(INVALID_HANDLE_VALUE),
-   _ioThread(NULL),
-   _wakeupSignal(INVALID_HANDLE_VALUE),
-   _masterNotifySocket(-1),
-   _slaveNotifySocket(-1), 
-   _requestThreadExit(false)
-#else
-   _handle(-1)
+   , _handle(INVALID_HANDLE_VALUE)
+   , _ioThread(NULL)
+   , _wakeupSignal(INVALID_HANDLE_VALUE)
+   , _requestThreadExit(false)
 #endif
 {
    bool okay = false;
@@ -95,16 +91,18 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
    }
 #else
 #  if defined(__BEOS__)
-   _handle = open(port, O_RDWR | O_NONBLOCK);
+   _handle = GetSocketRefFromPool(open(port, O_RDWR | O_NONBLOCK));
 #  else
-   _handle = open(port, O_RDWR | O_NOCTTY);
+   _handle = GetSocketRefFromPool(open(port, O_RDWR | O_NOCTTY));
 #  endif
-   if ((_handle >= 0)&&(SetSocketBlockingEnabled(_handle, _blocking) == B_NO_ERROR))
+   if (SetSocketBlockingEnabled(_handle, _blocking) == B_NO_ERROR)
    {
       okay = true;
 
+      int fd = _handle.GetFileDescriptor();
+
       struct termios t;
-      tcgetattr(_handle, &t);
+      tcgetattr(fd, &t);
       switch(baudRate)
       {
          case 1200:
@@ -146,7 +144,7 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
          t.c_cflag &= ~(HUPCL | PARENB | CRTSCTS | CSIZE);
          t.c_cflag |= (CS8 | CLOCAL);
          t.c_oflag &= ~OPOST;
-         tcsetattr(_handle,TCSANOW, &t);
+         tcsetattr(fd, TCSANOW, &t);
       }
    }
 #endif
@@ -164,7 +162,7 @@ bool RS232DataIO :: IsPortAvailable() const
 #ifdef USE_WINDOWS_IMPLEMENTATION
    return (_handle != INVALID_HANDLE_VALUE);
 #else
-   return (_handle >= 0);
+   return (_handle.GetFileDescriptor() >= 0);
 #endif
 } 
 
@@ -178,15 +176,15 @@ void RS232DataIO :: Close()
       WaitForSingleObject(_ioThread, INFINITE); // then wait for him to go away
       _ioThread = NULL;
    }
-   CloseSocket(_masterNotifySocket); _masterNotifySocket = -1;
-   CloseSocket(_slaveNotifySocket);  _slaveNotifySocket  = -1;
+   _masterNotifySocket.Reset();
+   _slaveNotifySocket.Reset();
    if (_wakeupSignal   != INVALID_HANDLE_VALUE) {CloseHandle(_wakeupSignal);   _wakeupSignal   = INVALID_HANDLE_VALUE;}
    if (_handle         != INVALID_HANDLE_VALUE) {CloseHandle(_handle);         _handle         = INVALID_HANDLE_VALUE;}
    if (_ovWait.hEvent  != INVALID_HANDLE_VALUE) {CloseHandle(_ovWait.hEvent);  _ovWait.hEvent  = INVALID_HANDLE_VALUE;}
    if (_ovRead.hEvent  != INVALID_HANDLE_VALUE) {CloseHandle(_ovRead.hEvent);  _ovRead.hEvent  = INVALID_HANDLE_VALUE;}
    if (_ovWrite.hEvent != INVALID_HANDLE_VALUE) {CloseHandle(_ovWrite.hEvent); _ovWrite.hEvent = INVALID_HANDLE_VALUE;}
 #else
-   CloseSocket(_handle);             _handle             = -1;
+   _handle.Reset();
 #endif
 }
 
@@ -202,12 +200,12 @@ int32 RS232DataIO :: Read(void *buf, uint32 len)
       }
       else 
       {
-         int32 ret = ConvertReturnValueToMuscleSemantics(recv(_masterNotifySocket, (char *)buf, len, 0L), len, _blocking);
+         int32 ret = ReceiveData(_masterNotifySocket, buf, len, _blocking);
          if (ret >= 0) SetEvent(_wakeupSignal);  // wake up the thread in case he has more data to give us
          return ret;
       }
 #else
-      return ConvertReturnValueToMuscleSemantics(read(_handle, buf, len), len, _blocking);
+      return ReceiveData(_handle, buf, len, _blocking);
 #endif
    }
    return -1;
@@ -225,12 +223,12 @@ int32 RS232DataIO :: Write(const void *buf, uint32 len)
       }
       else 
       {
-         int32 ret = ConvertReturnValueToMuscleSemantics(send(_masterNotifySocket, (char *)buf, len, 0L), len, _blocking);
+         int32 ret = SendData(_masterNotifySocket, buf, len, _blocking);
          if (ret > 0) SetEvent(_wakeupSignal);  // wake up the thread so he'll check his socket for our new data
          return ret;
       }
 #else
-      return ConvertReturnValueToMuscleSemantics(write(_handle, buf, len), len, _blocking);
+      return SendData(_handle, buf, len, _blocking);
 #endif
    }
    return -1;
@@ -243,15 +241,16 @@ void RS232DataIO :: FlushOutput()
 #ifdef USE_WINDOWS_IMPLEMENTATION
       // not implemented yet!
 #else 
-      if (_handle >= 0) tcdrain(_handle);
+      int fd = _handle.GetFileDescriptor();
+      if (fd >= 0) tcdrain(fd);
 #endif
    }
 }
 
-int RS232DataIO :: GetSelectSocket() const
+const SocketRef & RS232DataIO :: GetSelectSocket() const
 {
 #ifdef USE_WINDOWS_IMPLEMENTATION
-   return _blocking ? -1 : _masterNotifySocket;
+   return _blocking ? GetNullSocket() : _masterNotifySocket;
 #else 
    return _handle;
 #endif
@@ -389,7 +388,7 @@ static void ProcessReadBytes(Queue<SerialBuffer *> & inQueue, const char * inByt
 {
    MASSERT(numBytesRead <= SERIAL_BUFFER_SIZE, "ProcessReadBytes: numBytesRead was too large!");
 
-   SerialBuffer * buf = (inQueue.GetNumItems() > 0) ? inQueue.Tail() : NULL;
+   SerialBuffer * buf = (inQueue.HasItems()) ? inQueue.Tail() : NULL;
    if ((buf)&&((sizeof(buf->_buf)-buf->_length) >= numBytesRead))
    {
       // this buffer has enough room left to just add the extra bytes into it.
@@ -512,11 +511,11 @@ void RS232DataIO :: IOThreadEntry()
       }
 
       // Dump inQueue into our slave socket as much as possible (this will signal the user thread, too)
-      while(inQueue.GetNumItems() > 0)
+      while(inQueue.HasItems())
       {
          SerialBuffer * buf = inQueue.Head();
          int32 bytesToWrite = buf->_length-buf->_index;
-         int32 bytesWritten = (bytesToWrite > 0) ? ConvertReturnValueToMuscleSemantics(send(_slaveNotifySocket, &buf->_buf[buf->_index], bytesToWrite, 0L), bytesToWrite, false) : 0;
+         int32 bytesWritten = (bytesToWrite > 0) ? SendData(_slaveNotifySocket, &buf->_buf[buf->_index], bytesToWrite, false) : 0;
          if (bytesWritten > 0)
          {
             buf->_index += bytesWritten;
@@ -538,7 +537,7 @@ void RS232DataIO :: IOThreadEntry()
 
             // fill up the outBuf with as many more bytes as possible...
             int32 numBytesToRead = sizeof(outBuf._buf)-outBuf._length;
-            int32 numBytesRead = (numBytesToRead > 0) ? ConvertReturnValueToMuscleSemantics(recv(_slaveNotifySocket, &outBuf._buf[outBuf._length], numBytesToRead, 0L), numBytesToRead, false) : 0;
+            int32 numBytesRead = (numBytesToRead > 0) ? ReceiveData(_slaveNotifySocket, &outBuf._buf[outBuf._length], numBytesToRead, false) : 0;
             if (numBytesRead > 0) outBuf._length += numBytesRead;
       
             // Try to write the bytes from outBuf to the serial port

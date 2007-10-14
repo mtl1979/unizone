@@ -6,11 +6,11 @@ BEGIN_NAMESPACE(muscle);
 
 // This is a callback function that may be passed to the ServerProcessLoop() function.
 // It creates and returns a new DumbReflectSession object.
-AbstractReflectSession * DumbReflectSessionFactory :: CreateSession(const String &)
+AbstractReflectSessionRef DumbReflectSessionFactory :: CreateSession(const String &, const IPAddressAndPort &)
 {
    AbstractReflectSession * ret = newnothrow DumbReflectSession;
    if (ret == NULL) WARN_OUT_OF_MEMORY;
-   return ret;  
+   return AbstractReflectSessionRef(ret);
 }
 
 DumbReflectSession :: 

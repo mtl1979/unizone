@@ -24,17 +24,18 @@ StorageReflectSessionFactory :: StorageReflectSessionFactory() : _maxIncomingMes
    // empty
 }
 
-AbstractReflectSession * StorageReflectSessionFactory :: CreateSession(const String &)
+AbstractReflectSessionRef StorageReflectSessionFactory :: CreateSession(const String &, const IPAddressAndPort &)
 {
    TCHECKPOINT;
 
-   AbstractReflectSession * ret = newnothrow StorageReflectSession;
-   if ((ret)&&(SetMaxIncomingMessageSizeFor(ret) == B_NO_ERROR)) return ret;
+   AbstractReflectSession * srs = newnothrow StorageReflectSession;
+   AbstractReflectSessionRef ret(srs);
+ 
+   if ((srs)&&(SetMaxIncomingMessageSizeFor(srs) == B_NO_ERROR)) return ret;
    else
    {
       WARN_OUT_OF_MEMORY;
-      delete ret;
-      return NULL;
+      return AbstractReflectSessionRef();
    }
 }
 
@@ -42,8 +43,8 @@ status_t StorageReflectSessionFactory :: SetMaxIncomingMessageSizeFor(AbstractRe
 {
    if (_maxIncomingMessageSize != MUSCLE_NO_LIMIT) 
    {
-      if (session->GetGateway() == NULL) session->SetGateway(AbstractMessageIOGatewayRef(session->CreateGateway()));
-      MessageIOGateway * gw = dynamic_cast<MessageIOGateway*>(session->GetGateway());
+      if (session->GetGateway()() == NULL) session->SetGateway(session->CreateGateway());
+      MessageIOGateway * gw = dynamic_cast<MessageIOGateway*>(session->GetGateway()());
       if (gw) gw->SetMaxIncomingMessageSize(_maxIncomingMessageSize);
          else return B_ERROR;
    }
@@ -83,8 +84,8 @@ InitSharedData()
    // oops, there's no shared data object!  We must be the first session.
    // So we'll create the root node and the shared data object, and
    // add it to the central-state Message ourself.
-   DataNode * globalRoot = GetNewDataNode("", _blankMessageRef);
-   if (globalRoot) 
+   DataNodeRef globalRoot = GetNewDataNode("", _blankMessageRef);
+   if (globalRoot()) 
    {
       sd = newnothrow StorageReflectSessionSharedData(globalRoot);
       if (sd)
@@ -93,8 +94,6 @@ InitSharedData()
          delete sd;
       }
       else WARN_OUT_OF_MEMORY;
-
-      ReleaseDataNode(globalRoot);
    }
    return NULL;
 }
@@ -112,32 +111,26 @@ AttachedToServer()
    
    Message & state = GetCentralState();
    const char * hostname = GetHostName()();
-   const char * sessionid = GetSessionIDString();
+   const String & sessionid = GetSessionIDString();
 
    // Is there already a node for our hostname?
    DataNodeRef hostDir;
    if (GetGlobalRoot().GetChild(hostname, hostDir) != B_NO_ERROR)
    {
       // nope.... we'll add one then
-      DataNode * hostNode = GetNewDataNode(hostname, _blankMessageRef);
-      if (hostNode)
-      {
-         hostDir = DataNodeRef(hostNode);
-         if (GetGlobalRoot().PutChild(hostDir, this, this) != B_NO_ERROR) {WARN_OUT_OF_MEMORY; Cleanup(); return B_ERROR;}
-      }
-      else {WARN_OUT_OF_MEMORY; Cleanup(); return B_ERROR;}
+      hostDir = GetNewDataNode(hostname, _blankMessageRef);
+      if ((hostDir() == NULL)||(GetGlobalRoot().PutChild(hostDir, this, this) != B_NO_ERROR)) {WARN_OUT_OF_MEMORY; Cleanup(); return B_ERROR;}
    }
 
    // Create a new node for our session (we assume no such
    // node already exists, as session id's are supposed to be unique)
-   DataNode * hostNode = hostDir.GetItemPointer();
-   if (hostNode == NULL) {Cleanup(); return B_ERROR;}
-   if (hostNode->HasChild(sessionid)) LogTime(MUSCLE_LOG_WARNING, "WARNING:  Non-unique session id [%s] being overwritten!\n", sessionid);
+   if (hostDir() == NULL) {Cleanup(); return B_ERROR;}
+   if (hostDir()->HasChild(sessionid())) LogTime(MUSCLE_LOG_WARNING, "WARNING:  Non-unique session id [%s] being overwritten!\n", sessionid());
 
    SetSessionRootPath(String(hostname).Prepend("/") + "/" + sessionid);
 
-   DataNode * sessionNode = GetNewDataNode(sessionid, _blankMessageRef);
-   if (sessionNode)
+   DataNodeRef sessionNode = GetNewDataNode(sessionid(), _blankMessageRef);
+   if (sessionNode())
    {
       // See if we get any special privileges
       int32 privBits = 0;
@@ -162,8 +155,8 @@ AttachedToServer()
          _parameters.AddInt32(PR_NAME_PRIVILEGE_BITS, privBits);
       }
 
-      _sessionDir = DataNodeRef(sessionNode);
-      if (hostNode->PutChild(_sessionDir, this, this) != B_NO_ERROR) {WARN_OUT_OF_MEMORY; Cleanup(); return B_ERROR;}
+      _sessionDir = sessionNode;
+      if (hostDir()->PutChild(_sessionDir, this, this) != B_NO_ERROR) {WARN_OUT_OF_MEMORY; Cleanup(); return B_ERROR;}
  
       // do subscription notifications here
       PushSubscriptionMessages();
@@ -202,11 +195,11 @@ Cleanup()
       DataNodeRef hostNodeRef;
       if (GetGlobalRoot().GetChild(GetHostName()(), hostNodeRef) == B_NO_ERROR)
       {
-         DataNode * hostNode = hostNodeRef.GetItemPointer();
+         DataNode * hostNode = hostNodeRef();
          if (hostNode)
          {
             // make sure our session node is gone
-            hostNode->RemoveChild(GetSessionIDString(), this, true, NULL);
+            hostNode->RemoveChild(GetSessionIDString()(), this, true, NULL);
 
             // If our host node is now empty, it goes too
             if (hostNode->HasChildren() == false) GetGlobalRoot().RemoveChild(hostNode->GetNodeName()(), this, true, NULL);
@@ -219,7 +212,7 @@ Cleanup()
       if (GetGlobalRoot().HasChildren() == false)
       {
          GetCentralState().RemoveName(SRS_SHARED_DATA);
-         ReleaseDataNode(&GetGlobalRoot());  // do this first!
+         _sharedData->_root.Reset(); // do this first!
          delete _sharedData;
       }
       else 
@@ -242,11 +235,10 @@ NotifySubscribersThatNodeChanged(DataNode & modifiedNode, const MessageRef & old
    TCHECKPOINT;
 
    HashtableIterator<const char *, uint32> subIter = modifiedNode.GetSubscribers();
-   const char * next = NULL;  // set just to shut the compiler up
-   while(subIter.GetNextKey(next) == B_NO_ERROR)
+   const char * nextKey = NULL;  // set just to shut the compiler up
+   while(subIter.GetNextKey(nextKey) == B_NO_ERROR)
    {
-      AbstractReflectSessionRef nRef = GetSession(next);
-      StorageReflectSession * next = (StorageReflectSession *)(nRef.GetItemPointer());
+      StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(GetSession(nextKey)());
       if ((next)&&((next != this)||(GetReflectToSelf()))) next->NodeChanged(modifiedNode, oldData, isBeingRemoved);
    }
 
@@ -264,7 +256,7 @@ NotifySubscribersThatNodeIndexChanged(DataNode & modifiedNode, char op, uint32 i
    while(subIter.GetNextKey(next) == B_NO_ERROR) 
    {
       AbstractReflectSessionRef nRef = GetSession(next);
-      StorageReflectSession * s = (StorageReflectSession *) nRef.GetItemPointer();
+      StorageReflectSession * s = dynamic_cast<StorageReflectSession *>(nRef());
       if (s) s->NodeIndexChanged(modifiedNode, op, index, key);
    }
 
@@ -281,7 +273,7 @@ NotifySubscribersOfNewNode(DataNode & newNode)
    AbstractReflectSessionRef * lRef;
    while((lRef = sessions.GetNextValue()) != NULL)
    {
-      StorageReflectSession * next = (StorageReflectSession *) (lRef->GetItemPointer());
+      StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(lRef->GetItemPointer());
       if (next) next->NodeCreated(newNode);  // always notify; !Self filtering will be done elsewhere
    }
 
@@ -292,7 +284,7 @@ void
 StorageReflectSession ::
 NodeCreated(DataNode & newNode)
 {
-   newNode.IncrementSubscriptionRefCount(GetSessionIDString(), _subscriptions.GetMatchCount(newNode, NULL, 0));
+   newNode.IncrementSubscriptionRefCount(GetSessionIDString()(), _subscriptions.GetMatchCount(newNode, NULL, 0));
 }
 
 void
@@ -402,15 +394,15 @@ SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwri
          slashPos = nodePath.IndexOf('/', lastSlashPos+1);
          nextClause = nodePath.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : nodePath.Length());
          const char * clause = nextClause();
-         DataNode * allocedNode = NULL;  // default:  we haven't alloced anybody
+         DataNodeRef allocedNode;
          if (node->GetChild(clause, childNodeRef) != B_NO_ERROR)
          {
             if ((create)&&(_currentNodeCount < _maxNodeCount))
             {
                allocedNode = GetNewDataNode(clause, ((slashPos < 0)&&(addToIndex == false)) ? dataMsgRef : _blankMessageRef);
-               if (allocedNode)
+               if (allocedNode())
                {
-                  childNodeRef = DataNodeRef(allocedNode);
+                  childNodeRef = allocedNode;
                   if ((slashPos < 0)&&(addToIndex))
                   {
                      if (node->InsertOrderedChild(dataMsgRef, optInsertBefore, clause[0]?clause:NULL, this, quiet?NULL:this, NULL) == B_NO_ERROR)
@@ -426,11 +418,11 @@ SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwri
             else return B_ERROR;
          }
 
-         node = childNodeRef.GetItemPointer();
+         node = childNodeRef();
          if ((slashPos < 0)&&(addToIndex == false))
          {
-            if ((node == NULL)||((overwrite == false)&&(node != allocedNode))) return B_ERROR;
-            node->SetData(dataMsgRef, quiet ? NULL : this, (node == allocedNode));  // do this to trigger the changed-notification
+            if ((node == NULL)||((overwrite == false)&&(node != allocedNode()))) return B_ERROR;
+            node->SetData(dataMsgRef, quiet ? NULL : this, (node == allocedNode()));  // do this to trigger the changed-notification
          }
          lastSlashPos = slashPos;
       }
@@ -445,7 +437,7 @@ GetDataNode(const String & nodePath) const
 {
    TCHECKPOINT;
 
-   DataNode * node = _sessionDir.GetItemPointer();
+   DataNode * node = _sessionDir();
    if (nodePath.Length() > 0)
    {
       int lastSlashPos = -1;
@@ -464,7 +456,7 @@ GetDataNode(const String & nodePath) const
          nextClause = nodePath.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : nodePath.Length());
          const char * clause = nextClause();
          if ((node == NULL)||(node->GetChild(clause, childNodeRef) != B_NO_ERROR)) return NULL;  // lookup failure (404)
-         node = childNodeRef.GetItemPointer();
+         node = childNodeRef();
          if (slashPos < 0) return node;
          lastSlashPos = slashPos;
       }
@@ -494,7 +486,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
 {
    TCHECKPOINT;
 
-   Message * msgp = msgRef.GetItemPointer();
+   Message * msgp = msgRef();
    if (msgp == NULL) return;
 
    Message & msg = *msgp;
@@ -662,7 +654,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                {
                   int32 enc;
                   if (msg.FindInt32(PR_NAME_REPLY_ENCODING, &enc) != B_NO_ERROR) enc = MUSCLE_MESSAGE_ENCODING_DEFAULT;
-                  MessageIOGateway * gw = dynamic_cast<MessageIOGateway *>(GetGateway());
+                  MessageIOGateway * gw = dynamic_cast<MessageIOGateway *>(GetGateway()());
                   if (gw) gw->SetOutgoingEncoding(enc);
                }
 
@@ -675,12 +667,11 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
 
          case PR_COMMAND_GETPARAMETERS:
          {
-            DataNode * sessionNode = _sessionDir.GetItemPointer();
-            if (sessionNode)
+            if (_sessionDir())
             {
                String np;
                MessageRef resultMessage = GetMessageFromPool(_parameters);
-               if ((resultMessage())&&(sessionNode->GetNodePath(np) == B_NO_ERROR))
+               if ((resultMessage())&&(_sessionDir()->GetNodePath(np) == B_NO_ERROR))
                {
                   // Add hard-coded params 
                   resultMessage()->RemoveName(PR_NAME_SESSION_ROOT);
@@ -764,7 +755,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                   }
                   else if (strcmp(paramName, PR_NAME_REPLY_ENCODING) == 0)
                   {
-                     MessageIOGateway * gw = dynamic_cast<MessageIOGateway *>(GetGateway());
+                     MessageIOGateway * gw = dynamic_cast<MessageIOGateway *>(GetGateway()());
                      if (gw) gw->SetOutgoingEncoding(MUSCLE_MESSAGE_ENCODING_DEFAULT);
                   }
                   else if ((strcmp(paramName, PR_NAME_KEYS) == 0)||(strcmp(paramName, PR_NAME_FILTERS) == 0))
@@ -798,8 +789,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
          case PR_COMMAND_REORDERDATA:
          {
             // Because REORDERDATA operates solely on pre-existing nodes, we can allow wildcards in our node paths.
-            DataNode * sessionNode = _sessionDir.GetItemPointer();
-            if (sessionNode)
+            if (_sessionDir())
             {
                // Do each field as a separate operation (so they won't mess each other up)
                MessageFieldNameIterator iter = msg.GetFieldNameIterator(B_STRING_TYPE);
@@ -814,7 +804,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
 
                      NodePathMatcher matcher;
                      matcher.PutPathsFromMessage(PR_NAME_KEYS, PR_NAME_FILTERS, temp, NULL);
-                     matcher.DoTraversal((PathMatchCallback)ReorderDataCallbackFunc, this, *sessionNode, true, (void *)value);
+                     matcher.DoTraversal((PathMatchCallback)ReorderDataCallbackFunc, this, *_sessionDir(), true, (void *)value);
                   }
                }
             }
@@ -945,7 +935,7 @@ status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, 
       while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR) if (retSessions.Put(nextKey, nextValue) != B_NO_ERROR) ret = B_ERROR;
    }
 
-   if (includeSelf == false) (void) retSessions.Remove(GetSessionIDString());
+   if (includeSelf == false) (void) retSessions.Remove(GetSessionIDString()());
    return ret;
 }
 
@@ -993,13 +983,12 @@ status_t StorageReflectSession :: InsertOrderedData(const MessageRef & msgRef, H
    TCHECKPOINT;
 
    // Because INSERTORDEREDDATA operates solely on pre-existing nodes, we can allow wildcards in our node paths.
-   DataNode * sessionNode = _sessionDir.GetItemPointer();
-   if ((sessionNode)&&(msgRef()))
+   if ((_sessionDir())&&(msgRef()))
    {
       void * args[2] = {msgRef(), optNewNodes};
       NodePathMatcher matcher;
       matcher.PutPathsFromMessage(PR_NAME_KEYS, PR_NAME_FILTERS, *msgRef(), NULL);
-      matcher.DoTraversal((PathMatchCallback)InsertOrderedDataCallbackFunc, this, *sessionNode, true, args);
+      matcher.DoTraversal((PathMatchCallback)InsertOrderedDataCallbackFunc, this, *_sessionDir(), true, args);
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -1052,14 +1041,13 @@ void StorageReflectSession :: DoRemoveData(NodePathMatcher & matcher, bool quiet
 {
    TCHECKPOINT;
 
-   DataNode * sessionNode = _sessionDir.GetItemPointer();
-   if (sessionNode)
+   if (_sessionDir())
    {
       Queue<DataNodeRef> removeSet;
-      matcher.DoTraversal((PathMatchCallback)RemoveDataCallbackFunc, this, *sessionNode, true, &removeSet);
+      matcher.DoTraversal((PathMatchCallback)RemoveDataCallbackFunc, this, *_sessionDir(), true, &removeSet);
       for (int i=removeSet.GetNumItems()-1; i>=0; i--)
       {
-         DataNode * next = removeSet[i].GetItemPointer();
+         DataNode * next = removeSet[i]();
          DataNode * parent = next->GetParent();
          if ((next)&&(parent)) parent->RemoveChild(next->GetNodeName()(), quiet ? NULL : this, true, &_currentNodeCount);
       }
@@ -1091,7 +1079,7 @@ PushSubscriptionMessages()
       AbstractReflectSessionRef * lRef;
       while((lRef = sessions.GetNextValue()) != NULL)
       {
-         StorageReflectSession * nextSession = (StorageReflectSession *) (lRef->GetItemPointer());
+         StorageReflectSession * nextSession = dynamic_cast<StorageReflectSession *>(lRef->GetItemPointer());
          if (nextSession)
          {
             nextSession->PushSubscriptionMessage(nextSession->_nextSubscriptionMessage);
@@ -1132,8 +1120,7 @@ PassMessageCallbackAux(DataNode & node, const MessageRef & msgRef, bool includeS
 
    DataNode * n = &node;
    while(n->GetDepth() > 2) n = n->GetParent();  // go up to session level...
-   AbstractReflectSessionRef sref = GetSession(n->GetNodeName()());
-   StorageReflectSession * next = (StorageReflectSession *)(sref());
+   StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(GetSession(n->GetNodeName()())());
    if ((next)&&((next != this)||(includeSelfOkay))) next->MessageReceivedFromSession(*this, msgRef, &node);
    return 2; // This causes the traversal to immediately skip to the next session
 }
@@ -1148,9 +1135,9 @@ FindSessionsCallback(DataNode & node, void * userData)
    while(n->GetDepth() > 2) n = n->GetParent();  // go up to session level...
    AbstractReflectSessionRef sref = GetSession(n->GetNodeName()());
 
-   StorageReflectSession * next = (StorageReflectSession *)(sref.GetItemPointer());
+   StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(sref());
    FindMatchingSessionsData * data = (FindMatchingSessionsData *) userData;
-   if ((next)&&(data->_results.Put(next->GetSessionIDString(), sref) != B_NO_ERROR))
+   if ((next)&&(data->_results.Put(next->GetSessionIDString()(), sref) != B_NO_ERROR))
    {
       data->_ret = B_ERROR;  // Oops, out of memory!
       return -1;  // abort now
@@ -1167,10 +1154,10 @@ KickClientCallback(DataNode & node, void * /*userData*/)
    DataNode * n = &node;
    while(n->GetDepth() > 2) n = n->GetParent();  // go up to session level...
    AbstractReflectSessionRef sref = GetSession(n->GetNodeName()());
-   StorageReflectSession * next = (StorageReflectSession *)(sref.GetItemPointer());
+   StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(sref());
    if ((next)&&(next != this)) 
    {
-      LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is kicking session [%s/%s] off the server.\n", GetHostName()(), GetSessionIDString(), next->GetHostName()(), next->GetSessionIDString());
+      LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is kicking session [%s/%s] off the server.\n", GetHostName()(), GetSessionIDString()(), next->GetHostName()(), next->GetSessionIDString()());
       next->EndSession();  // die!!
    }
    return 2; // This causes the traversal to immediately skip to the next session
@@ -1223,7 +1210,7 @@ int
 StorageReflectSession ::
 DoSubscribeRefCallback(DataNode & node, void * userData)
 {
-   node.IncrementSubscriptionRefCount(GetSessionIDString(), (long) userData);
+   node.IncrementSubscriptionRefCount(GetSessionIDString()(), (long) userData);
    return node.GetDepth();  // continue traversal as usual
 }
 
@@ -1546,20 +1533,13 @@ CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int 
    return false;
 }
 
-DataNode *
+DataNodeRef
 StorageReflectSession ::
 GetNewDataNode(const char * name, const MessageRef & initialValue)
 {
-   DataNode * n = _nodePool.ObtainObject();
-   if (n) n->Init(name, initialValue);
-   return n;
-}
-
-void
-StorageReflectSession ::
-ReleaseDataNode(DataNode * node)
-{
-   _nodePool.ReleaseObject(node);
+   DataNodeRef ret = _nodePool.ObtainObject();
+   if (ret()) ret()->Init(name, initialValue);
+   return ret;
 }
 
 void
@@ -1568,7 +1548,7 @@ JettisonOutgoingSubtrees(const char * optMatchString)
 {
    TCHECKPOINT;
 
-   AbstractMessageIOGateway * gw = GetGateway();
+   AbstractMessageIOGateway * gw = GetGateway()();
    if (gw)
    {
       StringMatcher sm(optMatchString?optMatchString:"");
@@ -1598,7 +1578,7 @@ JettisonOutgoingResults(const NodePathMatcher * matcher)
 {
    TCHECKPOINT;
 
-   AbstractMessageIOGateway * gw = GetGateway();
+   AbstractMessageIOGateway * gw = GetGateway()();
    if (gw)
    {
       Queue<MessageRef> & oq = gw->GetOutgoingMessageQueue();

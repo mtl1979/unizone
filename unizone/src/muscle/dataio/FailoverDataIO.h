@@ -82,7 +82,7 @@ public:
 
    virtual void Shutdown() {_childIOs.Clear();}
 
-   virtual int GetSelectSocket() const {return (HasChild()) ? GetChild()->GetSelectSocket() : -1;}
+   virtual const SocketRef & GetSelectSocket() const {return (HasChild()) ? GetChild()->GetSelectSocket() : GetNullSocket();}
 
    virtual status_t GetReadByteTimeStamp(int32 whichByte, uint64 & retStamp) const {return HasChild() ? GetChild()->GetReadByteTimeStamp(whichByte, retStamp) : B_ERROR;}
 

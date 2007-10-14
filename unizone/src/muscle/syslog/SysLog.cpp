@@ -6,6 +6,7 @@
 #include "syslog/LogCallback.h"
 #include "system/SetupSystem.h"
 #include "util/Hashtable.h"
+#include "util/MiscUtilityFunctions.h"  // for ExitWithoutCleanup()
 
 #ifdef __linux__
 # include <execinfo.h>
@@ -235,7 +236,7 @@ static status_t LockLog()
    if (ml == NULL)
    {
       printf("Please instantiate a CompleteSetupSystem object on the stack before doing any logging (at beginning of main() is preferred)\n");
-      exit(10);
+      ExitWithoutCleanup(10);
    }
    return ml->Lock();
 #endif

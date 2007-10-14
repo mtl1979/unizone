@@ -15,7 +15,7 @@ QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const c
 #else
 QMessageTransceiverThread :: QMessageTransceiverThread(QObject * parent, const char * name) : QObject(parent, name), _firstSeenHandler(NULL), _lastSeenHandler(NULL)
 {
-   if (!name) setName("QMessageTransceiverThread");
+   // empty
 }
 #endif
 
@@ -59,11 +59,11 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
    uint32 code;
    MessageRef next;
    String sessionID;
-   uint16 port;
+   uint32 factoryID;
    bool seenIncomingMessage = false;
 
    // Check for any new messages from our internal thread
-   while(GetNextEventFromInternalThread(code, &next, &sessionID, &port) >= 0)
+   while(GetNextEventFromInternalThread(code, &next, &sessionID, &factoryID) >= 0)
    {
       switch(code)
       {
@@ -75,17 +75,17 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
             }
             emit MessageReceived(next, sessionID); 
          break;
-         case MTT_EVENT_SESSION_ACCEPTED:      emit SessionAccepted(sessionID, port); break;
-         case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached(sessionID);       break;
-         case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(sessionID);      break;
-         case MTT_EVENT_SESSION_DISCONNECTED:  emit SessionDisconnected(sessionID);   break;
-         case MTT_EVENT_SESSION_DETACHED:      emit SessionDetached(sessionID);       break;
-         case MTT_EVENT_FACTORY_ATTACHED:      emit FactoryAttached(port);            break;
-         case MTT_EVENT_FACTORY_DETACHED:      emit FactoryDetached(port);            break;
-         case MTT_EVENT_OUTPUT_QUEUES_DRAINED: emit OutputQueuesDrained(next);        break;
-         case MTT_EVENT_SERVER_EXITED:         emit ServerExited();                   break;
+         case MTT_EVENT_SESSION_ACCEPTED:      emit SessionAccepted(sessionID, factoryID); break;
+         case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached(sessionID);            break;
+         case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(sessionID);           break;
+         case MTT_EVENT_SESSION_DISCONNECTED:  emit SessionDisconnected(sessionID);        break;
+         case MTT_EVENT_SESSION_DETACHED:      emit SessionDetached(sessionID);            break;
+         case MTT_EVENT_FACTORY_ATTACHED:      emit FactoryAttached(factoryID);            break;
+         case MTT_EVENT_FACTORY_DETACHED:      emit FactoryDetached(factoryID);            break;
+         case MTT_EVENT_OUTPUT_QUEUES_DRAINED: emit OutputQueuesDrained(next);             break;
+         case MTT_EVENT_SERVER_EXITED:         emit ServerExited();                        break;
       }
-      emit InternalThreadEvent(code, next, sessionID, port);  // these get emitted for any event
+      emit InternalThreadEvent(code, next, sessionID, factoryID);  // these get emitted for any event
 
       const char * id = _handlers.HasItems() ? strchr(sessionID()+1, '/') : NULL;
       if (id)
@@ -137,12 +137,12 @@ void QMessageTransceiverThread :: Reset()
    MessageTransceiverThread::Reset(); 
 }
 
-status_t QMessageTransceiverThread :: RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const AbstractReflectSessionRef & sessionRef)
+status_t QMessageTransceiverThread :: RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const ThreadWorkerSessionRef & sessionRef)
 {
    if (this != &thread) return thread.RegisterHandler(thread, handler, sessionRef);  // paranoia
    else
    {
-      int32 id = sessionRef() ? atoi(sessionRef()->GetSessionIDString()) : -1;
+      int32 id = sessionRef() ? (int32)sessionRef()->GetSessionID() : -1;
       if ((id >= 0)&&(_handlers.Put(id, handler) == B_NO_ERROR)) 
       {
          handler->_master    = this;
@@ -198,7 +198,7 @@ void QMessageTransceiverThreadPool :: ShutdownAllThreads()
  
 QMessageTransceiverThread * QMessageTransceiverThreadPool :: CreateThread()
 {
-   QMessageTransceiverThread * newThread = new QMessageTransceiverThread;
+   QMessageTransceiverThread * newThread = newnothrow QMessageTransceiverThread;
    if (newThread == NULL) WARN_OUT_OF_MEMORY;
    return newThread; 
 }
@@ -221,7 +221,7 @@ QMessageTransceiverThread * QMessageTransceiverThreadPool :: ObtainThread()
    return newThread;
 }
 
-status_t QMessageTransceiverThreadPool :: RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const AbstractReflectSessionRef & sessionRef)
+status_t QMessageTransceiverThreadPool :: RegisterHandler(QMessageTransceiverThread & thread, QMessageTransceiverHandler * handler, const ThreadWorkerSessionRef & sessionRef)
 {
    if (thread.RegisterHandler(thread, handler, sessionRef) == B_NO_ERROR)
    { 
@@ -255,51 +255,51 @@ QMessageTransceiverHandler :: ~QMessageTransceiverHandler()
    (void) Reset(false);  // yes, it's virtual... but that's okay, it will just call our implementation
 }
 
-status_t QMessageTransceiverHandler :: SetupAsNewSession(IMessageTransceiverMaster & master, int socket, const AbstractReflectSessionRef & optSessionRef)
+status_t QMessageTransceiverHandler :: SetupAsNewSession(IMessageTransceiverMaster & master, const SocketRef & sock, const ThreadWorkerSessionRef & optSessionRef)
 {
    Reset();
    QMessageTransceiverThread * thread = master.ObtainThread();
    if (thread)
    {
-      AbstractReflectSessionRef sRef = optSessionRef;
-      if (sRef() == NULL) sRef.SetRef(CreateDefaultWorkerSession(*thread));  // gotta do this now so we can know its ID
+      ThreadWorkerSessionRef sRef = optSessionRef;
+      if (sRef() == NULL) sRef = CreateDefaultWorkerSession(*thread);  // gotta do this now so we can know its ID
       if ((sRef())&&(master.RegisterHandler(*thread, this, sRef) == B_NO_ERROR))
       {
-         if (thread->AddNewSession(socket, sRef) == B_NO_ERROR) return B_NO_ERROR;
+         if (thread->AddNewSession(sock, sRef) == B_NO_ERROR) return B_NO_ERROR;
          master.UnregisterHandler(*thread, this, true);
       }
    }
    return B_ERROR;
 }
 
-status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTransceiverMaster & master, uint32 targetIPAddress, uint16 port, const AbstractReflectSessionRef & optSessionRef)
+status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTransceiverMaster & master, const ip_address & targetIPAddress, uint16 port, const ThreadWorkerSessionRef & optSessionRef, uint64 autoReconnectDelay)
 {
    Reset();
    QMessageTransceiverThread * thread = master.ObtainThread();
    if (thread)
    {
-      AbstractReflectSessionRef sRef = optSessionRef;
-      if (sRef() == NULL) sRef.SetRef(CreateDefaultWorkerSession(*thread));  // gotta do this now so we can know its ID
+      ThreadWorkerSessionRef sRef = optSessionRef;
+      if (sRef() == NULL) sRef = CreateDefaultWorkerSession(*thread);  // gotta do this now so we can know its ID
       if ((sRef())&&(master.RegisterHandler(*thread, this, sRef) == B_NO_ERROR)) 
       {
-         if (thread->AddNewConnectSession(targetIPAddress, port, sRef) == B_NO_ERROR) return B_NO_ERROR;
+         if (thread->AddNewConnectSession(targetIPAddress, port, sRef, autoReconnectDelay) == B_NO_ERROR) return B_NO_ERROR;
          master.UnregisterHandler(*thread, this, true);
       }
    }
    return B_ERROR;
 }
 
-status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, const AbstractReflectSessionRef & optSessionRef, bool expandLocalhost)
+status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, const ThreadWorkerSessionRef & optSessionRef, bool expandLocalhost, uint64 autoReconnectDelay)
 {
    Reset();
    QMessageTransceiverThread * thread = master.ObtainThread();
    if (thread)
    {
-      AbstractReflectSessionRef sRef = optSessionRef;
-      if (sRef() == NULL) sRef.SetRef(CreateDefaultWorkerSession(*thread));  // gotta do this now so we can know its ID
+      ThreadWorkerSessionRef sRef = optSessionRef;
+      if (sRef() == NULL) sRef = CreateDefaultWorkerSession(*thread);  // gotta do this now so we can know its ID
       if ((sRef())&&(master.RegisterHandler(*thread, this, sRef) == B_NO_ERROR))
       {
-         if (thread->AddNewConnectSession(targetHostName, port, sRef, expandLocalhost) == B_NO_ERROR) return B_NO_ERROR;
+         if (thread->AddNewConnectSession(targetHostName, port, sRef, expandLocalhost, autoReconnectDelay) == B_NO_ERROR) return B_NO_ERROR;
          master.UnregisterHandler(*thread, this, true);
       }
    }
@@ -363,7 +363,7 @@ void QMessageTransceiverHandler :: ClearRegistrationFields()
    _prevSeen = _nextSeen = NULL;
 }
 
-AbstractReflectSession * QMessageTransceiverHandler :: CreateDefaultWorkerSession(QMessageTransceiverThread & thread)
+ThreadWorkerSessionRef QMessageTransceiverHandler :: CreateDefaultWorkerSession(QMessageTransceiverThread & thread)
 {
    return thread.CreateDefaultWorkerSession();
 }

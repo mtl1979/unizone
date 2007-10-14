@@ -101,7 +101,7 @@ ByteBufferRef ZLibCodec :: Deflate(const ByteBuffer & rawData, bool independent)
 
             const uint32 rawLen = B_HOST_TO_LENDIAN_INT32(numRaw);
             muscleCopyOut(&compBytes[sizeof(magic)], rawLen); 
-//printf("Deflated %lu bytes to %lu bytes\n", numRaw, ret()->GetNumBytes());
+//printf("Deflated "UINT32_FORMAT_SPEC" bytes to "UINT32_FORMAT_SPEC" bytes\n", numRaw, ret()->GetNumBytes());
          }
          else ret.Reset();  // oops, something went wrong!
       }
@@ -156,7 +156,7 @@ ByteBufferRef ZLibCodec :: Inflate(const ByteBuffer & compressedData)
 
          int zRet = inflate(&_inflater, Z_SYNC_FLUSH);
          if (((zRet != Z_OK)&&(zRet != Z_STREAM_END))||((int32)_inflater.total_out != rawLen)) ret.Reset();  // oopsie!
-//printf("Inflated %lu bytes to %lu bytes\n", compressedData.GetNumBytes(), rawLen);
+//printf("Inflated "UINT32_FORMAT_SPEC" bytes to "UINT32_FORMAT_SPEC" bytes\n", compressedData.GetNumBytes(), rawLen);
       }
    }
    return ret;

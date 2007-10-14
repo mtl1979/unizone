@@ -4,6 +4,7 @@
 #define MuscleAcceptSocketsThread_h
 
 #include "system/Thread.h"
+#include "util/NetworkUtilityFunctions.h"
 
 BEGIN_NAMESPACE(muscle);
 
@@ -13,10 +14,10 @@ enum {
    AST_LAST_EVENT
 };
 
-#define AST_NAME_SOCKET "socket"  // field name where we store our SocketHolderRef in our reply Messages.
+#define AST_NAME_SOCKET "socket"  // field name where we store our SocketRef in our reply Messages.
 
 /** A thread that waits for TCP connections on a given port, and when it gets one, 
-  * it sends the socket to its owner via a SocketHolderRef.
+  * it sends the socket to its owner via a SocketRef.
   */
 class AcceptSocketsThread : public Thread
 {
@@ -30,7 +31,7 @@ public:
      * @param optFrom If specified, the IP address to accept connections from.  If left as zero,
      *                then connections will be accepted from any IP address.
      */
-   AcceptSocketsThread(uint16 port, uint32 optFrom = 0);
+   AcceptSocketsThread(uint16 port, const ip_address & optFrom = invalidIP);
 
    /** Destructor.  Closes the accept socket and frees the port */
    virtual ~AcceptSocketsThread();
@@ -46,18 +47,21 @@ public:
      * @param port Which port to allocate a socket to listen on, or zero if you wish for the system to choose.
      * @param optFrom If specified, the IP address to accept connections from.  If left as zero,
      *                then connections will be accepted from any IP address.
+     * @param optInterfaceIP if specified, this should be the IP address of a local network interface
+     *                       to listen for incoming connections on.  If left unspecified (or set to invalidIP)
+     *                       then we will accept connections on all network interfaces.
      * @returns B_NO_ERROR on success, or B_ERROR on failure (port couldn't be allocated, or internal
      *          thread was already running)
      */
-   status_t SetPort(uint16 port, uint32 optFrom = 0);
+   status_t SetPort(uint16 port, const ip_address & optInterfaceIP = invalidIP);
 
 protected:
    virtual void InternalThreadEntry();
 
 private:
    uint16 _port;
-   int _notifySocket;
-   int _acceptSocket;
+   SocketRef _notifySocket;
+   SocketRef _acceptSocket;
 };
 
 };

@@ -63,7 +63,7 @@ GetSession(const char * id) const
    return _owner->GetSession(id);
 }
 
-HashtableIterator<uint16, ReflectSessionFactoryRef> 
+HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> 
 ServerComponent ::
 GetFactories() const 
 {
@@ -87,10 +87,9 @@ GetFactory(uint16 port) const
    return _owner->GetFactory(port);
 }
 
-
 status_t
 ServerComponent ::
-AddNewSession(const AbstractReflectSessionRef & ref, int socket)
+AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & socket)
 {
    MASSERT(_owner, "Can't call AddNewSession() while not attached to the server");
    return _owner->AddNewSession(ref, socket);
@@ -98,10 +97,10 @@ AddNewSession(const AbstractReflectSessionRef & ref, int socket)
 
 status_t
 ServerComponent ::
-AddNewConnectSession(const AbstractReflectSessionRef & ref, uint32 ip, uint16 port)
+AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & ip, uint16 port, uint64 autoReconnectDelay)
 {
    MASSERT(_owner, "Can't call AddNewConnectSession() while not attached to the server");
-   return _owner->AddNewConnectSession(ref, ip, port);
+   return _owner->AddNewConnectSession(ref, ip, port, autoReconnectDelay);
 }
 
 void
@@ -146,18 +145,18 @@ GetNumUsedBytes() const
 
 status_t
 ServerComponent ::
-PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef) 
+PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef, const ip_address & optInterfaceIP, uint16 * optRetPort)
 {
    MASSERT(_owner, "Can't call PutAcceptFactory() while not attached to the server");
-   return _owner->PutAcceptFactory(port, factoryRef);
+   return _owner->PutAcceptFactory(port, factoryRef, optInterfaceIP, optRetPort);
 }
 
 status_t
 ServerComponent ::
-RemoveAcceptFactory(uint16 port)
+RemoveAcceptFactory(uint16 port, const ip_address & optInterfaceIP)
 {
    MASSERT(_owner, "Can't call RemoveAcceptFactory() while not attached to the server");
-   return _owner->RemoveAcceptFactory(port);
+   return _owner->RemoveAcceptFactory(port, optInterfaceIP);
 }
 
 void 

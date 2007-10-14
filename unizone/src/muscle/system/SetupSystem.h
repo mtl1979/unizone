@@ -114,6 +114,25 @@ public:
    virtual ~MathSetupSystem();
 };
 
+/** This SetupSystem just does some basic sanity checks
+  * to ensure that the code was compiled in a way that
+  * has some chance of working (e.g. it makes sure that
+  * sizeof(uint32)==4, etc)
+  */
+class SanitySetupSystem : public SetupSystem
+{
+public:
+   /** Constructor.  Under Borland C++, this constructor
+     * disables floating point exceptions so that if they
+     * occur, they won't crash the program.  It's a no-op
+     * for all other environments.
+     */
+   SanitySetupSystem();
+
+   /** Destructor.  A no-op.  */
+   virtual ~SanitySetupSystem();
+};
+
 /** This class is a global setup/tear-down class;
   * It contains one member variable of each of the
   * other SetupSystem classes, so that when you instantiate
@@ -147,6 +166,7 @@ private:
    NetworkSetupSystem _network;
    ThreadSetupSystem  _threads;
    MathSetupSystem    _math;
+   SanitySetupSystem  _sanity;
 };
 
 /** Returns a pointer to a process-wide Mutex, or NULL if that Mutex

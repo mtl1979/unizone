@@ -19,8 +19,8 @@ public:
    /** Default constructor.  Refcount begins at zero. */
    RefCountable() : _manager(NULL) {/* empty */}
 
-   /** Copy constructor -- ref count is deliberately not copied! */
-   RefCountable(const RefCountable & r) : _manager(r._manager) {/* empty */}
+   /** Copy constructor -- ref count and manager settings are deliberately not copied over! */
+   RefCountable(const RefCountable &) : _manager(NULL) {/* empty */}
 
    /** Virtual destructor, to keep C++ honest.  Don't remove this unless you like crashing */
    virtual ~RefCountable() {/* empty */}
@@ -39,8 +39,7 @@ public:
      * in use, so as to avoid the overhead of having to delete it and re-create it
      * later on.  The RefCountable class itself does nothing with this pointer.
      * Default value is NULL. 
-     * @param manager Pointer to the new recyler object to use, or NULL to use
-     *                no recyler.  No ownership relationship is implied!
+     * @param manager Pointer to the new manager object to use, or NULL to use no manager.
      */
    void SetManager(AbstractObjectManager * manager) {_manager = manager;}
 
@@ -214,6 +213,8 @@ public:
          if (typedItem == NULL) return B_ERROR;
          SetRef(typedItem, genericRef.IsRefCounting());
       }
+      else Reset();
+
       return B_NO_ERROR;
    }
 
@@ -251,10 +252,6 @@ public:
      * @returns B_NO_ERROR on success (i.e. the object was successfully copied,
      *                     or a copy turned out to be unnecessary), or B_ERROR
      *                     on failure (i.e. out of memory)
-     * @note Don't use this method with MessageRefs in a multi-threaded
-     *       application.  Currently copying of Message objects isn't
-     *       thread-safe, so using this method to copy Message objects in
-     *       a non-serialized manner will cause your app to occasionally crash.
      */
    status_t EnsureRefIsPrivate()
    {

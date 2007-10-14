@@ -1,17 +1,23 @@
 /* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
-#include "dataio/FileDescriptorDataIO.h"
+#if defined(__linux__)
+# ifndef _FILE_OFFSET_BITS
+#  define _FILE_OFFSET_BITS  64 //make sure it's using large file access
+# endif
+# include <sys/types.h>
+# include <unistd.h>
+# if !__GLIBC_PREREQ(2,2)
+#  define MUSCLE_USE_LLSEEK
+  _syscall5(int, _llseek, uint, fd, ulong, hi, ulong, lo, loff_t *, res, uint, wh);  // scary --jaf
+# endif
+#endif
 
-#ifdef __linux__
-#include <linux/unistd.h>
-#include <sys/types.h>
-_syscall5(int, _llseek, uint, fd, ulong, hi, ulong, lo, loff_t *, res, uint, wh);  // scary --jaf
-#endif  
+#include "dataio/StdinDataIO.h"  // which includes FileDescriptorDataIO.h
 
 BEGIN_NAMESPACE(muscle);
 
 FileDescriptorDataIO ::
-FileDescriptorDataIO(int fd, bool blocking) : _fd(fd)
+FileDescriptorDataIO(const SocketRef & fd, bool blocking) : _fd(fd)
 {
    SetBlockingIOEnabled(blocking);
 }
@@ -19,31 +25,29 @@ FileDescriptorDataIO(int fd, bool blocking) : _fd(fd)
 FileDescriptorDataIO ::
 ~FileDescriptorDataIO() 
 {
-   if (_fd >= 0) close(_fd);
+   // empty
 }
 
 int32 FileDescriptorDataIO :: Read(void * buffer, uint32 size)  
 {
-   if (_fd >= 0)
+   int fd = _fd.GetFileDescriptor();
+   if (fd >= 0)
    {
-      int r = read(_fd, buffer, size);
+      int r = read(fd, buffer, size);
       return _blocking ? r : ConvertReturnValueToMuscleSemantics(r, size, _blocking);
    }
    else return -1;
-
-   // old way:  return (_fd >= 0) ? ConvertReturnValueToMuscleSemantics(read(_fd, buffer, size), size, _blocking) : -1;
 }
 
 int32 FileDescriptorDataIO :: Write(const void * buffer, uint32 size)
 {
-   if (_fd >= 0) 
+   int fd = _fd.GetFileDescriptor();
+   if (fd >= 0)
    {
-      int w = write(_fd, buffer, size);
+      int w = write(fd, buffer, size);
       return _blocking ? w : ConvertReturnValueToMuscleSemantics(w, size, _blocking);
    }
    else return -1;
-
-   // old way: return (_fd >= 0) ? ConvertReturnValueToMuscleSemantics(write(_fd, buffer, size), size, _blocking) : -1;
 }
 
 void FileDescriptorDataIO :: FlushOutput()
@@ -53,9 +57,10 @@ void FileDescriptorDataIO :: FlushOutput()
 
 status_t FileDescriptorDataIO :: SetBlockingIOEnabled(bool blocking)
 {
-   if (_fd >= 0)
+   int fd = _fd.GetFileDescriptor();
+   if (fd >= 0)
    {
-      if (fcntl(_fd, F_SETFL, blocking ? 0 : O_NONBLOCK) == 0)
+      if (fcntl(fd, F_SETFL, blocking ? 0 : O_NONBLOCK) == 0)
       {
          _blocking = blocking;
          return B_NO_ERROR;
@@ -71,16 +76,13 @@ status_t FileDescriptorDataIO :: SetBlockingIOEnabled(bool blocking)
 
 void FileDescriptorDataIO :: Shutdown()
 {
-   if (_fd >= 0) 
-   {
-      close(_fd);
-      _fd = -1;
-   }
+   _fd.Reset();
 }
 
 status_t FileDescriptorDataIO :: Seek(int64 offset, int whence)
 {
-   if (_fd >= 0)
+   int fd = _fd.GetFileDescriptor();
+   if (fd >= 0)
    {
       switch(whence)
       {
@@ -89,11 +91,11 @@ status_t FileDescriptorDataIO :: Seek(int64 offset, int whence)
          case IO_SEEK_END:  whence = SEEK_END;  break;
          default:           return B_ERROR;
       }
-#ifdef __linux__
+#ifdef MUSCLE_USE_LLSEEK
       loff_t spot;
-      return (_llseek(_fd, (uint32)((offset >> 32) & 0xFFFFFFFF), (uint32)(offset & 0xFFFFFFFF), &spot, whence) >= 0) ? B_NO_ERROR : B_ERROR;   
+      return (_llseek(fd, (uint32)((offset >> 32) & 0xFFFFFFFF), (uint32)(offset & 0xFFFFFFFF), &spot, whence) >= 0) ? B_NO_ERROR : B_ERROR;   
 #else
-      return (lseek(_fd, (off_t) offset, whence) >= 0) ? B_NO_ERROR : B_ERROR; 
+      return (lseek(fd, (off_t) offset, whence) >= 0) ? B_NO_ERROR : B_ERROR; 
 #endif
    }
    return B_ERROR;
@@ -101,16 +103,33 @@ status_t FileDescriptorDataIO :: Seek(int64 offset, int whence)
 
 int64 FileDescriptorDataIO :: GetPosition() const
 {
-   if (_fd >= 0)
+   int fd = _fd.GetFileDescriptor();
+   if (fd >= 0)
    {
-#ifdef __linux__
+#ifdef MUSCLE_USE_LLSEEK
       loff_t spot;
-      return (_llseek(_fd, 0, 0, &spot, SEEK_CUR) == 0) ? spot : -1;
+      return (_llseek(fd, 0, 0, &spot, SEEK_CUR) == 0) ? spot : -1; 
 #else
-      return lseek(_fd, 0, SEEK_CUR);
+      return lseek(fd, 0, SEEK_CUR);
 #endif
    }
    return -1;
+}
+
+static Socket _stdinSocket(STDIN_FILENO, false);  // we generally don't want to close stdin
+
+StdinDataIO :: StdinDataIO(bool blocking) : FileDescriptorDataIO(SocketRef(&_stdinSocket, false), true), _blockingExceptDuringRead(blocking)
+{
+   // empty
+}
+
+int32 StdinDataIO :: Read(void * buffer, uint32 size)
+{
+   // Turn off stdin's blocking I/O mode only during the Read() call.
+   if (_blockingExceptDuringRead == false) (void) FileDescriptorDataIO::SetBlockingIOEnabled(false);
+   int32 ret = FileDescriptorDataIO::Read(buffer, size);
+   if (_blockingExceptDuringRead == false) (void) FileDescriptorDataIO::SetBlockingIOEnabled(true);
+   return ret;
 }
 
 END_NAMESPACE(muscle);

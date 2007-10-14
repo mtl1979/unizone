@@ -49,7 +49,7 @@ public:
     *  to make such a thing impossible :^P Note that you should only use this socket with select(); 
     *  to read or write to/from the serial port, call Read() and Write() instead.
     */
-   virtual int GetSelectSocket() const;
+   virtual const SocketRef & GetSelectSocket() const;
 
    /** Returns true iff we have a valid serial port to communicate through */
    bool IsPortAvailable() const;
@@ -74,11 +74,11 @@ private:
    OVERLAPPED _ovWait;
    OVERLAPPED _ovRead;
    OVERLAPPED _ovWrite;
-   int _masterNotifySocket;
-   int _slaveNotifySocket;
+   SocketRef _masterNotifySocket;
+   SocketRef _slaveNotifySocket;
    volatile bool _requestThreadExit;
 #else
-   int _handle;
+   SocketRef _handle;
 #endif
 };
 

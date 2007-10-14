@@ -3,15 +3,30 @@ if you feel like hacking around, here is a list of some
 compile-time constants that you can define in the CXXFLAGS variable
 of your Makefile to alter muscle's behaviour:
 
+-DMUSCLE_USE_IPV6
+   Set this to indicate that Muscle should be compiled to include IPv6
+   support.  The main difference with this flag is that the muscle_ip_address
+   typedef will be defined as a struct that holds 128 bits of data.  If
+   this flag isn't defined (the default), than muscle_ip_address will be
+   defined as a synonym for uint32 (for backwards compatibility with old code)
+
 -DMUSCLE_64_BIT_PLATFORM
    Set this to indicate that compilation is being done on a 64-bit platform.
    This flag will be set automatically in support/MuscleSupport.h if defines
    indicating a known 64-bit platform are detected; if not, you can set it
    yourself in the Makefile if necessary.
 
--DMUSCLE_PREFER_QT_OVER_WIN32
-   Tell the Muscle Thread/Mutex/etc classes to prefer to use Qt Threading APIs over Win32 calls
-   when both are available.  (By default, Win32 calls are preferred)
+-DMUSCLE_POOL_SLAB_SIZE
+   This can be set to a number indicating the number of bytes that should be
+   allocated in each "slab" of data malloc()'d by the ObjectPool class.  If left
+   unset, slabs of approximately 8 kilobytes will be used.  Large slabs mean
+   fewer memory allocations, but potentially more memory wasted if all the objects
+   in the slabs aren't needed.  This value should be specified in bytes.
+
+-DMUSCLE_USE_LLSEEK
+   Force the FileDescriptorDataIO class to use the non-standard _llseek() command
+   when compiled under Linux.  This should be done automatically in most cases
+   where it is necessary, but you can force it also.
 
 -DMUSCLE_PREFER_QT_OVER_WIN32
    Tell the Muscle Thread/Mutex/etc classes to prefer to use Qt Threading APIs over Win32 calls
@@ -21,13 +36,15 @@ of your Makefile to alter muscle's behaviour:
    Put N overwrite-guards before and after each malloc() buffer, watch them for memory corruption
 
 -DMUSCLE_SINGLE_THREAD_ONLY 
-   makes Mutexes be no-ops
+   Makes the Mutex class's methods compile down to no-ops.  Specify this if you can guarantee 
+   your program will be single-threaded.
 
 -DMUSCLE_NO_EXCEPTIONS 
-   tells muscle that exceptions won't be used
+   Tells muscle that exceptions won't be used.
 
 -DMUSCLE_ENABLE_MEMORY_TRACKING 
-   enables system memory usage management
+   Enables system memory usage tracking (wrappers for new and delete that allow muscled to
+   put an upper bound on the amount of memory it dynamically allocates, etc)
 
 -DMUSCLE_AVOID_ASSERTIONS 
    makes MASSERT statements into no-ops

@@ -68,7 +68,11 @@ status_t SharedUsageLimitProxyMemoryAllocator :: ChangeDaemonCounter(int32 byteD
    else
    {
       _localCachedBytes -= byteDelta;  // actually adds, since byteDelta is negative
-      if ((_localCachedBytes > 2*CACHE_BYTES)&&(ChangeDaemonCounterAux(-CACHE_BYTES) == B_NO_ERROR)) _localCachedBytes -= CACHE_BYTES;
+      if (_localCachedBytes > 2*CACHE_BYTES)
+      {
+         int32 diffBytes = _localCachedBytes-CACHE_BYTES;  // FogBugz #4569 -- reduce cache to our standard cache size
+         if (ChangeDaemonCounterAux(-diffBytes) == B_NO_ERROR) _localCachedBytes -= diffBytes;
+      }
    }
    return B_NO_ERROR;
 }

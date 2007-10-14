@@ -31,19 +31,19 @@ Thread :: ~Thread()
    CloseSockets();
 }
 
-int Thread :: GetInternalThreadWakeupSocket()
+const SocketRef & Thread :: GetInternalThreadWakeupSocket()
 {
    return GetThreadWakeupSocketAux(_threadData[MESSAGE_THREAD_INTERNAL]);
 }
 
-int Thread :: GetOwnerWakeupSocket()
+const SocketRef & Thread :: GetOwnerWakeupSocket()
 {
    return GetThreadWakeupSocketAux(_threadData[MESSAGE_THREAD_OWNER]);
 }
 
-int Thread :: GetThreadWakeupSocketAux(ThreadSpecificData & tsd)
+const SocketRef & Thread :: GetThreadWakeupSocketAux(ThreadSpecificData & tsd)
 {
-   if ((_messageSocketsAllocated == false)&&(CreateConnectedSocketPair(_threadData[MESSAGE_THREAD_INTERNAL]._messageSocket, _threadData[MESSAGE_THREAD_OWNER]._messageSocket) != B_NO_ERROR)) return -1;  
+   if ((_messageSocketsAllocated == false)&&(CreateConnectedSocketPair(_threadData[MESSAGE_THREAD_INTERNAL]._messageSocket, _threadData[MESSAGE_THREAD_OWNER]._messageSocket) != B_NO_ERROR)) return GetNullSocket();
 
    _messageSocketsAllocated = true;
    return tsd._messageSocket;
@@ -51,13 +51,7 @@ int Thread :: GetThreadWakeupSocketAux(ThreadSpecificData & tsd)
 
 void Thread :: CloseSockets()
 {
-   for (uint32 i=0; i<NUM_MESSAGE_THREADS; i++) 
-   {
-      ThreadSpecificData & tsd = _threadData[i];
-      if (tsd._closeMessageSocket) CloseSocket(tsd._messageSocket); 
-      tsd._messageSocket      = -1;
-      tsd._closeMessageSocket = true;
-   }
+   for (uint32 i=0; i<NUM_MESSAGE_THREADS; i++) _threadData[i]._messageSocket.Reset();
    _messageSocketsAllocated = false;
 }
 
@@ -65,7 +59,7 @@ status_t Thread :: StartInternalThread()
 {
    if (IsInternalThreadRunning() == false)
    {
-      bool needsInitialSignal = (_threadData[MESSAGE_THREAD_INTERNAL]._messages.GetNumItems() > 0);
+      bool needsInitialSignal = (_threadData[MESSAGE_THREAD_INTERNAL]._messages.HasItems());
       status_t ret = StartInternalThreadAux();
       if (ret == B_NO_ERROR)
       {
@@ -78,7 +72,7 @@ status_t Thread :: StartInternalThread()
 
 status_t Thread :: StartInternalThreadAux()
 {
-   if ((_messageSocketsAllocated)||(GetInternalThreadWakeupSocket() >= 0))
+   if ((_messageSocketsAllocated)||(GetInternalThreadWakeupSocket()()))
    {
       _threadRunning = true;  // set this first, to avoid a race condition with the thread's startup...
 
@@ -196,7 +190,7 @@ void Thread :: SignalAux(int whichSocket)
 {
    if (_messageSocketsAllocated)
    {
-      int fd = _threadData[whichSocket]._messageSocket;
+      int fd = _threadData[whichSocket]._messageSocket.GetFileDescriptor();
       if (fd >= 0) 
       {
          char junk = 'S';
@@ -223,64 +217,68 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
       if (tsd._messages.RemoveHead(ref) == B_NO_ERROR) ret = tsd._messages.GetNumItems();
       (void) tsd._queueLock.Unlock();
 
-      if ((ret < 0)&&(tsd._messageSocket >= 0))  // no Message available?  then we'll have to wait until there is one!
+      if ((ret < 0)&&(tsd._messageSocket()))  // no Message available?  then we'll have to wait until there is one!
       {
          uint64 now = GetRunTime64();
-         if (wakeupTime > now)
-         {
-            // block until either 
-            //   (a) a new-message-signal-byte wakes us, or 
-            //   (b) we reach our wakeup/timeout time, or 
-            //   (c) a user-specified socket in the socket set selects as ready-for-something
-            struct timeval timeout;
-            if (wakeupTime != MUSCLE_TIME_NEVER) Convert64ToTimeVal(wakeupTime-now, timeout);
+         if (wakeupTime < now) wakeupTime = now;
 
-            fd_set sets[NUM_SOCKET_SETS];
-            fd_set * psets[NUM_SOCKET_SETS] = {NULL, NULL, NULL};
-            int maxfd = tsd._messageSocket;
+         // block until either 
+         //   (a) a new-message-signal-byte wakes us, or 
+         //   (b) we reach our wakeup/timeout time, or 
+         //   (c) a user-specified socket in the socket set selects as ready-for-something
+         struct timeval timeout;
+         if (wakeupTime != MUSCLE_TIME_NEVER) Convert64ToTimeVal(wakeupTime-now, timeout);
+
+         fd_set sets[NUM_SOCKET_SETS];
+         fd_set * psets[NUM_SOCKET_SETS] = {NULL, NULL, NULL};
+         int msgfd = tsd._messageSocket.GetFileDescriptor();
+         int maxfd = msgfd;
+         {
+            for (uint32 i=0; i<ARRAYITEMS(sets); i++)
             {
-               for (uint32 i=0; i<ARRAYITEMS(sets); i++)
+               const Hashtable<SocketRef, bool> & t = tsd._socketSets[i];
+               if ((i == SOCKET_SET_READ)||(t.HasItems()))
                {
-                  const Hashtable<int, bool> & t = tsd._socketSets[i];
-                  if ((i == SOCKET_SET_READ)||(t.GetNumItems() > 0))
+                  psets[i] = &sets[i];
+                  FD_ZERO(psets[i]);
+                  if (t.HasItems())
                   {
-                     psets[i] = &sets[i];
-                     FD_ZERO(psets[i]);
-                     if (t.GetNumItems() > 0)
+                     HashtableIterator<SocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER);
+                     const SocketRef * nextSocket;
+                     while((nextSocket = iter.GetNextKey()) != NULL)
                      {
-                        HashtableIterator<int, bool> iter(t, HTIT_FLAG_NOREGISTER);
-                        int nextSocket;
-                        while(iter.GetNextKey(nextSocket) == B_NO_ERROR) 
+                        int nextFD = nextSocket->GetFileDescriptor();
+                        if (nextFD >= 0)
                         {
-                           FD_SET(nextSocket, psets[i]);
-                           maxfd = muscleMax(maxfd, nextSocket);
+                           FD_SET(nextFD, psets[i]);
+                           maxfd = muscleMax(maxfd, nextFD);
                         }
                      }
                   }
                }
             }
-            FD_SET(tsd._messageSocket, psets[SOCKET_SET_READ]);  // this pset is guaranteed to be non-NULL at this point
+         }
+         FD_SET(msgfd, psets[SOCKET_SET_READ]);  // this pset is guaranteed to be non-NULL at this point
 
-            if (select(maxfd+1, psets[SOCKET_SET_READ], psets[SOCKET_SET_WRITE], psets[SOCKET_SET_EXCEPTION], (wakeupTime == MUSCLE_TIME_NEVER)?NULL:&timeout) >= 0)
+         if (select(maxfd+1, psets[SOCKET_SET_READ], psets[SOCKET_SET_WRITE], psets[SOCKET_SET_EXCEPTION], (wakeupTime == MUSCLE_TIME_NEVER)?NULL:&timeout) >= 0)
+         {
+            for (uint32 j=0; j<ARRAYITEMS(psets); j++)
             {
-               for (uint32 j=0; j<ARRAYITEMS(psets); j++)
+               Hashtable<SocketRef, bool> & t = tsd._socketSets[j];
+               if ((psets[j])&&(t.HasItems()))
                {
-                  Hashtable<int, bool> & t = tsd._socketSets[j];
-                  if ((psets[j])&&(t.GetNumItems() > 0))
-                  {
-                     int nextSocket;
-                     bool * nextValue;
-                     HashtableIterator<int, bool> iter(t, HTIT_FLAG_NOREGISTER);
-                     while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket, psets[j]) ? true : false;  // ternary operator used to shut VC++ warnings up
-                  }
+                  const SocketRef * nextSocket;
+                  bool * nextValue;
+                  HashtableIterator<SocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER);
+                  while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket->GetFileDescriptor(), psets[j]) ? true : false;  // ternary operator used to shut VC++ warnings up
                }
+            }
 
-               if (FD_ISSET(tsd._messageSocket, psets[SOCKET_SET_READ]))  // any signals from the other thread?
-               {
-                  uint8 bytes[256];
-                  (void) recv(tsd._messageSocket, (char *)bytes, sizeof(bytes), 0);  // just clear them all out, we only need to wake up once...
-                  ret = WaitForNextMessageAux(tsd, ref, wakeupTime); // then recurse to get the message
-               }
+            if (FD_ISSET(msgfd, psets[SOCKET_SET_READ]))  // any signals from the other thread?
+            {
+               uint8 bytes[256];
+               (void) recv(msgfd, (char *)bytes, sizeof(bytes), 0);  // just clear them all out, we only need to wake up once...
+               ret = WaitForNextMessageAux(tsd, ref, wakeupTime); // then recurse to get the message
             }
          }
       }
@@ -352,18 +350,8 @@ status_t Thread :: UnlockReplyQueue()
 // This method is here to 'wrap' the internal thread's virtual method call with some standard setup/tear-down code of our own
 void Thread::InternalThreadEntryAux()
 {
-   if (_threadData[MESSAGE_THREAD_OWNER]._messages.GetNumItems() > 0) SignalOwner();
+   if (_threadData[MESSAGE_THREAD_OWNER]._messages.HasItems()) SignalOwner();
    InternalThreadEntry();
-}
-
-void Thread :: SetOkayToCloseOwnerWakeupSocket(bool okayToClose) 
-{
-   _threadData[MESSAGE_THREAD_OWNER]._closeMessageSocket = okayToClose;
-}
-
-void Thread :: SetOkayToCloseInternalThreadWakeupSocket(bool okayToClose)
-{
-   _threadData[MESSAGE_THREAD_INTERNAL]._closeMessageSocket = okayToClose;
 }
 
 END_NAMESPACE(muscle);

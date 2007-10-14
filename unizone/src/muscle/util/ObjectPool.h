@@ -5,6 +5,7 @@
 
 #include "util/Queue.h"
 #include "system/Mutex.h"
+#include "syslog/SysLog.h"  // TEMP REMOVE THIS
 
 BEGIN_NAMESPACE(muscle);
 
@@ -12,6 +13,10 @@ BEGIN_NAMESPACE(muscle);
 // fancy new/delete operators).  This is helpful if you are trying
 // to track down memory leaks.
 //#define DISABLE_OBJECT_POOLING 1
+
+#ifndef MUSCLE_POOL_SLAB_SIZE
+# define MUSCLE_POOL_SLAB_SIZE (8*1024)
+#endif
 
 /** An interface that must be implemented by all ObjectPool classes.
   * Used to support polymorphism in pool management.
@@ -103,24 +108,32 @@ public:
               ObjectCallback initCallback = NULL, void * initCallbackData = NULL) : 
       _initObjectFunc(initCallback), _initObjectUserData(initCallbackData),
       _recycleObjectFunc(recycleCallback), _recycleObjectUserData(recycleData),
-      _maxPoolSize(maxPoolSize)
+      _curPoolSize(0), _maxPoolSize(maxPoolSize), _firstSlab(NULL), _lastSlab(NULL)
    {
       // empty
    }
 
    /** 
-    *  Destructor.
-    *  Deletes all held "spare" objects in the pool.
+    *  Destructor.  Deletes all objects in the pool.
     */
    virtual ~ObjectPool()
    {
-      Drain();
+      while(_firstSlab)
+      {
+         ObjectSlab * nextSlab = _firstSlab;
+         if (_firstSlab->IsInUse()) 
+         {
+            LogTime(MUSCLE_LOG_CRITICALERROR, "~ObjectPool %p:  slab %p is still in use when we destroy it!\n", this, _firstSlab);
+            MCRASH("ObjectPool destroyed while its objects were still in use (Is a CompleteSetupSystem object declared at the top of main()?");
+         }
+         delete _firstSlab;
+         _firstSlab = nextSlab;
+      }
    }
 
    /** Returns a new Object for use (or NULL if no memory available).
     *  You are responsible for calling ReleaseObject() on this object
-    *  when you are done with it.  This method can be used interchangably
-    *  with 'new (nothrow) Object()'.
+    *  when you are done with it.
     *  This method is thread-safe.
     *  @return a new Object, or NULL if out of memory.
     */
@@ -128,19 +141,44 @@ public:
    {
 #ifdef DISABLE_OBJECT_POOLING
       Object * ret = newnothrow Object;
-      if (ret) ret->SetManager(this);
-          else WARN_OUT_OF_MEMORY;
+      if (ret) 
+      {
+         ret->SetManager(this);
+         if (_initObjectFunc) _initObjectFunc(ret, _initObjectUserData);
+      }
+      else WARN_OUT_OF_MEMORY;
       return ret;
 #else
       Object * ret = NULL;
-
       if (_mutex.Lock() == B_NO_ERROR)
       {
-         (void) _pool.RemoveTail(ret);
+         if ((_firstSlab)&&(_firstSlab->HasAvailableNodes()))
+         {
+            ret = _firstSlab->ObtainObjectNode();
+            if ((_firstSlab->HasAvailableNodes() == false)&&(_firstSlab != _lastSlab))
+            {
+               // Move _firstSlab out of the way (to the end of the slab list) for next time
+               ObjectSlab * tmp = _firstSlab;  // use temp var since _firstSlab will change
+               tmp->RemoveFromSlabList();
+               tmp->AppendToSlabList();
+            }
+         }
+         else
+         {
+            // Hmm, we must have run out out of non-full slabs.  Create a new slab and use it.
+            ObjectSlab * slab = newnothrow ObjectSlab(this);
+            if (slab)
+            {
+               ret = slab->ObtainObjectNode();  // guaranteed not to fail, since slab is new
+               if (slab->HasAvailableNodes()) slab->PrependToSlabList();
+                                         else slab->AppendToSlabList();  // could happen, if NUM_OBJECTS_PER_SLAB==1
+               _curPoolSize += NUM_OBJECTS_PER_SLAB;
+            }
+            // we'll do the WARN_OUT_OF_MEMORY below, outside the mutex lock
+         }
+         if (ret) --_curPoolSize;
          _mutex.Unlock();
       }
-
-      if (ret == NULL) ret = newnothrow Object;
       if (ret)
       {
          ret->SetManager(this);
@@ -155,25 +193,44 @@ public:
     *  deletes it if the "standby" list is already at its maximum size.
     *  This method is thread-safe.
     *  @param obj An Object to recycle or delete.  May be NULL.  
-    *             This method can be used interchangable with 'delete Object'.
     */
    void ReleaseObject(Object * obj)
    {
-#ifdef DISABLE_OBJECT_POOLING
-      delete obj;
-#else
       if (obj)
       {
+         MASSERT(obj->GetManager()==this, "ObjectPool::ReleaseObject was passed an object that it never allocated!");
          if (_recycleObjectFunc) _recycleObjectFunc(obj, _recycleObjectUserData);
-         bool deleteObject = true;
+         obj->SetManager(NULL);
+
+#ifdef DISABLE_OBJECT_POOLING
+         delete obj;
+#else
          if (_mutex.Lock() == B_NO_ERROR)
          {
-            if ((_pool.GetNumItems() < _maxPoolSize)&&(_pool.AddTail(obj) == B_NO_ERROR)) deleteObject = false;
+            ObjectSlab * slabToDelete = NULL;
+            ObjectNode * objNode = static_cast<ObjectNode *>(obj);
+            ObjectSlab * objSlab = objNode->GetSlab();
+
+            objSlab->ReleaseNode(objNode);  // guaranteed to work, since we know (obj) is in use in (objSlab)
+
+            if ((++_curPoolSize > (_maxPoolSize+NUM_OBJECTS_PER_SLAB))&&(objSlab->IsInUse() == false))
+            {
+               _curPoolSize -= NUM_OBJECTS_PER_SLAB;
+               objSlab->RemoveFromSlabList();
+               slabToDelete = objSlab;
+            }
+            else if (objSlab != _firstSlab) 
+            {
+               objSlab->RemoveFromSlabList();
+               objSlab->PrependToSlabList();
+            }
             _mutex.Unlock();
+
+            delete slabToDelete;  // do this outside the critical section, for better concurrency
          }
-         if (deleteObject) delete obj;
-      }
+         else WARN_OUT_OF_MEMORY;  // critical error -- not really out of memory but still
 #endif
+      }
    }
 
    /** AbstractObjectGenerator API:  Useful for polymorphism */
@@ -231,18 +288,46 @@ public:
    /** Removes all "spare" objects from the pool and deletes them. 
      * This method is thread-safe.
      * @param optSetNumDrained If non-NULL, this value will be set to the number of objects destroyed.
-     * @returns B_NO_ERROR on success, or B_ERROR if it couldn't lock it's lock for some reason.
+     * @returns B_NO_ERROR on success, or B_ERROR if it couldn't lock the lock for some reason.
      */
    status_t Drain(uint32 * optSetNumDrained = NULL)
    {
       if (_mutex.Lock() == B_NO_ERROR)
       {
-         if (optSetNumDrained) *optSetNumDrained = _pool.GetNumItems();
-         for (int i=_pool.GetNumItems()-1; i>=0; i--) delete _pool[i];
-         _pool.Clear();
+         // This will be our linked list of slabs to delete, later
+         ObjectSlab * toDelete = NULL;
+
+         // Pull out all the slabs that are not currently in use
+         ObjectSlab * slab = _firstSlab;
+         while(slab)
+         {
+            ObjectSlab * nextSlab = slab->GetNext();
+            if (slab->IsInUse() == false)
+            {
+               slab->RemoveFromSlabList();
+               slab->SetNext(toDelete);
+               toDelete = slab;
+            }
+            slab = nextSlab;
+         }
          (void) _mutex.Unlock();
+
+         // Do the actual slab deletions outside of the critical section, for better concurrency
+         uint32 numObjectsDeleted = 0;
+         while(toDelete)
+         {
+            ObjectSlab * nextSlab = toDelete->GetNext();
+
+            numObjectsDeleted += NUM_OBJECTS_PER_SLAB;
+            _curPoolSize -= NUM_OBJECTS_PER_SLAB;
+
+            delete toDelete;
+            toDelete = nextSlab;
+         }
+
+         if (optSetNumDrained) *optSetNumDrained = numObjectsDeleted;
          return B_NO_ERROR;
-      } 
+      }
       else return B_ERROR;
    }
 
@@ -267,9 +352,109 @@ private:
    
    ObjectCallback _recycleObjectFunc;
    void * _recycleObjectUserData;
+
+   class ObjectSlab;
+
+   class ObjectNode : public Object
+   {
+   public:
+      ObjectNode() : _slab(NULL), _next(NULL) {/* empty */}
+
+      void SetSlab(ObjectSlab * slab) {_slab = slab;}
+      ObjectSlab * GetSlab() const {return _slab;}
+
+      void SetNext(ObjectNode * next) {_next = next;}
+      ObjectNode * GetNext() const {return _next;}
+
+   private:
+      ObjectSlab * _slab;
+      ObjectNode * _next;  // only used when we are in the free list
+   };
+
+   friend class ObjectSlab;
+
+   // All the (int) casts are here so that it the user specifies a slab size of zero, we will get a negative
+   // number and not a very large positive number that crashes the compiler!
+   #define __POOL_OPS__ (((int)MUSCLE_POOL_SLAB_SIZE-(5*(int)sizeof(void *)))/(int)sizeof(ObjectNode))
+   enum {NUM_OBJECTS_PER_SLAB = ((__POOL_OPS__>0)?__POOL_OPS__:1)};
    
-   Queue<Object *> _pool;
-   uint32 _maxPoolSize;
+   class ObjectSlab
+   {
+   public:
+      // Note that _prev and _next are deliberately not set here... we don't use them until we are added to the list
+      ObjectSlab(ObjectPool * pool) : _pool(pool), _firstFreeNode(NULL), _numNodesInUse(0)
+      {
+//printf("ObjectSlab this=%p pool=%p NOPS=%u sizeof(obj)=%u sizeof(this)=%u\n", this, _pool, NUM_OBJECTS_PER_SLAB, sizeof(_nodes[0]), sizeof(*this));
+         for (int32 i=0; i<NUM_OBJECTS_PER_SLAB; i++)
+         {
+            ObjectNode * n = &_nodes[i];
+            n->SetSlab(this);
+            n->SetNext(_firstFreeNode);
+            _firstFreeNode = n;
+         }
+      }
+
+      /** Returns true iff there is at least one ObjectNode available in this slab. */
+      bool HasAvailableNodes() const {return (_firstFreeNode != NULL);}
+
+      /** Returns true iff there is at least one ObjectNode in use in this slab. */
+      bool IsInUse() const {return (_numNodesInUse > 0);}
+
+      // Note:  this method assumes a node is available!  Don't call it without
+      //        calling HasAvailableNodes() first to check, or you will crash!
+      ObjectNode * ObtainObjectNode()
+      {
+         ObjectNode * ret = _firstFreeNode;
+         _firstFreeNode = ret->GetNext();
+         ++_numNodesInUse;
+         return ret;
+      }
+
+      /** Adds the specified node back to our free-nodes list. */
+      void ReleaseNode(ObjectNode * node)
+      {
+         node->SetNext(_firstFreeNode);
+         _firstFreeNode = node; 
+         --_numNodesInUse;
+      }
+
+      void RemoveFromSlabList()
+      {
+         (_prev ? _prev->_next : _pool->_firstSlab) = _next;
+         (_next ? _next->_prev : _pool->_lastSlab)  = _prev;
+      }
+
+      void AppendToSlabList()
+      {
+         _prev = _pool->_lastSlab;
+         _next = NULL;
+         (_prev ? _prev->_next : _pool->_firstSlab) = _pool->_lastSlab = this;
+      }
+
+      void PrependToSlabList()
+      {
+         _prev = NULL;
+         _next = _pool->_firstSlab;
+         (_next ? _next->_prev : _pool->_lastSlab) = _pool->_firstSlab = this;
+      }
+
+      void SetNext(ObjectSlab * next) {_next = next;}
+      ObjectSlab * GetNext() const {return _next;}
+
+   private:
+      ObjectPool * _pool;
+      ObjectSlab * _prev;
+      ObjectSlab * _next;
+      ObjectNode * _firstFreeNode;
+      uint32 _numNodesInUse;
+      ObjectNode _nodes[NUM_OBJECTS_PER_SLAB];
+   };
+   friend class ObjectSlab;
+
+   uint32 _curPoolSize;  // tracks the current number of "available" objects
+   uint32 _maxPoolSize;  // the maximum desired number of "available" objects
+   ObjectSlab * _firstSlab;
+   ObjectSlab * _lastSlab;
 };
 
 END_NAMESPACE(muscle);

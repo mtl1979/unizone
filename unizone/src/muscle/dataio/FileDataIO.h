@@ -111,8 +111,8 @@ public:
     */
    FILE * GetFile() const {return _file;}
 
-   /** Returns -1;  (can't select on this one, sorry) */
-   virtual int GetSelectSocket() const {return -1;}
+   /** Returns a NULL reference;  (can't select on this one, sorry) */
+   virtual const SocketRef & GetSelectSocket() const {return GetNullSocket();}
 
 private:
    FILE * _file;
