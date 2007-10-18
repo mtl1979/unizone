@@ -59,7 +59,7 @@ MUSCLE_SRCFILES = \
 	$(MUSCLEDIR)/zlib/ZLibCodec.cpp
 
 LIBS = -L$(QTDIR)/lib -lqt-mt
-INCLUDES = -I$(QTDIR)/include -I$(MUSCLEDIR) -I. -I../src
+INCLUDES = -I$(QTDIR)/include -I$(MUSCLEDIR) -I. -I../unizone/src
 CXXFLAGS = $(INCLUDES) -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING -Wall -W -Wno-multichar -Wno-deprecated $(GCCOPTFLAGS)
 CFLAGS = $(INCLUDES) -Wall -W -Wno-multichar $(GCCOPTFLAGS)
 

@@ -574,7 +574,7 @@ WDownloadThreadWorkerSessionFactory::WDownloadThreadWorkerSessionFactory(int lim
 }
 
 ThreadWorkerSessionRef
-WDownloadThreadWorkerSessionFactory::CreateThreadWorkerSession(const String & s)
+WDownloadThreadWorkerSessionFactory::CreateThreadWorkerSession(const String &)
 {
 	ThreadWorkerSessionRef ref(new ThreadWorkerSession());
 	if (ref() && fLimit != 0)
