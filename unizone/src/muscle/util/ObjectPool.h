@@ -371,7 +371,9 @@ private:
       ObjectNode * _next;  // only used when we are in the free list
    };
 
+#ifdef _MSC_VER 
    friend class ObjectSlab;
+#endif
 
    // All the (int) casts are here so that it the user specifies a slab size of zero, we will get a negative
    // number and not a very large positive number that crashes the compiler!
@@ -449,7 +451,6 @@ private:
       uint32 _numNodesInUse;
       ObjectNode _nodes[NUM_OBJECTS_PER_SLAB];
    };
-   friend class ObjectSlab;
 
    uint32 _curPoolSize;  // tracks the current number of "available" objects
    uint32 _maxPoolSize;  // the maximum desired number of "available" objects
