@@ -1,3 +1,5 @@
+#include <qapplication.h>
+
 #include "channels.h"
 #include "winsharewindow.h"
 #include "channelinfo.h"
