@@ -3494,6 +3494,10 @@ Päiväys: %4</translation>
         <source>Could not start internal thread!</source>
         <translation>Ei voitu käynnistää sisäistä säiettä!</translation>
     </message>
+    <message>
+        <source>Critical error: Upload buffer allocation failed!</source>
+        <translation>Kriittinen virhe: Lähetyspuskurin varaus epäonnistui!</translation>
+    </message>
 </context>
 <context>
     <name>WUser</name>

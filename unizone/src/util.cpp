@@ -1129,6 +1129,12 @@ CheckIfEmpty(const QString & str, const QString & str2)
 	}
 }
 
+uint32 
+CalculateChecksum(const ByteBufferRef &buf)
+{
+   return CalculateChecksum(buf()->GetBuffer(), buf()->GetNumBytes());
+}
+
 uint32
 CalculateChecksum(const uint8 * data, size_t bufSize)
 {

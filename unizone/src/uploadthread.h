@@ -205,6 +205,8 @@ private:
 	int64 hisID;
 	bool fTunneled;
 
+	void _nobuffer();             // Failure of buffer allocation
+
 	void DoUpload();
 	void TransferFileList(MessageRef);
 	void NextFile();

@@ -851,7 +851,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
 			WString wfile(file);
-			PRINT("WGenericEvent::FileError: File %S\n", wfile.getBuffer()); 
+			PRINT("WDownloadEvent::FileError: File %S\n", wfile.getBuffer()); 
 #endif
 			break;
 		}
@@ -869,7 +869,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				(msg()->FindInt32("got", (int32 *)&got) == B_OK)
 				)
 			{
-				PRINT("\tWGenericEvent::FileDataReceived\n");
+				PRINT("\tWDownloadEvent::FileDataReceived\n");
 				PRINT2("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
 				PRINT2("\tSize  : " UINT64_FORMAT_SPEC "\n", size);
 				PRINT2("\tGot   : %lu\n", got);
@@ -939,7 +939,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 						dt->Reset();
 					}
 				}
-				PRINT("\tWGenericEvent::FileDataReceived OK\n");
+				PRINT("\tWDownloadEvent::FileDataReceived OK\n");
 			}
 			break;
 		}

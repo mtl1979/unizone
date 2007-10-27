@@ -697,7 +697,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
 			WString wfile(file);
-			PRINT("WGenericEvent::FileError: File %S\n", wfile.getBuffer()); 
+			PRINT("WUploadEvent::FileError: File %S\n", wfile.getBuffer()); 
 #endif
 			break;
 		}

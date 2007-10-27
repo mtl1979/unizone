@@ -655,6 +655,20 @@ WUploadThread::SendRejectedNotification(bool direct)
 	}
 }
 
+void
+WUploadThread::_nobuffer()
+{
+   MessageRef status(GetMessageFromPool(WUploadEvent::FileError));
+   if (status())
+   {
+      status()->AddString("file", (const char *) fFileUl.utf8());
+      status()->AddString("why", QT_TR_NOOP( "Critical error: Upload buffer allocation failed!" ));
+      SendReply(status);
+   }
+   
+   NextFile();
+}
+
 void 
 WUploadThread::DoUpload()
 {
@@ -724,90 +738,100 @@ WUploadThread::DoUpload()
 			// think about doing this in a dynamic way (depending on connection)
 			double dpps = GetPacketSize() * 1024.0f;
 			uint32 bufferSize = lrint(dpps);	
-			uint8 * scratchBuffer;
-			int32 numBytes;
-			if (uref()->AddData("data", B_RAW_TYPE, NULL, bufferSize) == B_OK &&
-				uref()->FindDataPointer("data", B_RAW_TYPE, (void **)&scratchBuffer, NULL) == B_OK)
-			{
-				numBytes = fFile->ReadBlock((char *)scratchBuffer, bufferSize);
-				if (numBytes > 0)
-				{
-					// munge mode
-					if (fMungeMode != WTransfer::MungeModeNone)
-					{
-						bool unknown = false;
-						switch (fMungeMode)
-						{
-						case WTransfer::MungeModeXOR:
-							{
-								for (int32 x = 0; x < numBytes; x++)
-									scratchBuffer[x] ^= 0xFF;
-								break;
-							}
-							
-						default:
-							unknown = true;
-							break;
-						}
-						if (!unknown)
-							uref()->AddInt32("mm", fMungeMode);
-					}
-					
-					// possibly do checksums here
-					uref()->AddInt32("chk", CalculateChecksum(scratchBuffer, numBytes));  // a little paranoioa, due to file-resumes not working.... (TCP should handle this BUT...)
+         ByteBufferRef buf = GetByteBufferFromPool(bufferSize);
 
-					if ((uint32)numBytes < bufferSize)
-					{
-						// aha, extra bytes must be removed!
-						uref()->AddData("temp", B_RAW_TYPE, scratchBuffer, numBytes);
-						uref()->Rename("temp", "data");
-					}
-					SendMessageToSessions(uref);
+         uint8 * scratchBuffer = buf()->GetBuffer();
+         if (scratchBuffer == NULL)
+         {
+            _nobuffer();
+            return;
+         }
 
-					// NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before
-					//       calling it!
-					fCurrentOffset += numBytes;
-					if (fTunneled)
-					{
-						SignalUpload();
-					}
-					else
-					{
-						MessageRef drain(GetMessageFromPool());
-						if (drain())
-							qmtt->RequestOutputQueuesDrainedNotification(drain);
-					}
+			int32 numBytes = 0;
+			numBytes = fFile->ReadBlock((char *)scratchBuffer, bufferSize);
+         if (numBytes > 0)
+         {
+            buf()->SetNumBytes(numBytes, true);
 
-					MessageRef update(GetMessageFromPool(WUploadEvent::FileDataSent));	
-					if (update())
-					{
-						update()->AddInt64("offset", fCurrentOffset);
-						update()->AddInt64("size", fFileSize);
-						update()->AddInt32("sent", numBytes);
-						
-						if (fCurrentOffset >= fFileSize)
-						{
-							update()->AddBool("done", true);	// file done!
-							update()->AddString("file", (const char *) fFileUl.utf8());
+            // munge mode
 
-							if (gWin->fSettings->GetUploads())
-							{
-								SystemEvent( gWin, tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( QDir::convertSeparators(fFileUl) ) );
-							}
-						}
-						SendReply(update);
-					}
-										
+            switch (fMungeMode)
+            {
+               case WTransfer::MungeModeNone:
+                  {
+                     uref()->AddInt32("mm", WTransfer::MungeModeNone);
+                     break;
+                  }
 
-					return;
-				}
+               case WTransfer::MungeModeXOR:
+                  {
+                     for (int32 x = 0; x < numBytes; x++)
+                        scratchBuffer[x] ^= 0xFF;
+                     uref()->AddInt32("mm", WTransfer::MungeModeXOR);
+                     break;
+                  }
+                  
+               default:
+                  {
+                     break;
+                  }
+            }
+
+            if (uref()->AddFlat("data", buf) == B_OK)
+            {
+               // possibly do checksums here
+               uref()->AddInt32("chk", CalculateChecksum(buf));  // a little paranoia, due to file-resumes not working.... (TCP should handle this BUT...)
+               
+               SendMessageToSessions(uref);
+               
+               // NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before
+               //       calling it!
+               fCurrentOffset += numBytes;
+               if (fTunneled)
+               {
+                  SignalUpload();
+               }
+               else
+               {
+                  MessageRef drain(GetMessageFromPool());
+                  if (drain())
+                     qmtt->RequestOutputQueuesDrainedNotification(drain);
+               }
+               
+               MessageRef update(GetMessageFromPool(WUploadEvent::FileDataSent));	
+               if (update())
+               {
+                  update()->AddInt64("offset", fCurrentOffset);
+                  update()->AddInt64("size", fFileSize);
+                  update()->AddInt32("sent", numBytes);
+                  
+                  if (fCurrentOffset >= fFileSize)
+                  {
+                     update()->AddBool("done", true);	// file done!
+                     update()->AddString("file", (const char *) fFileUl.utf8());
+                     
+                     if (gWin->fSettings->GetUploads())
+                     {
+                        SystemEvent( gWin, tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( QDir::convertSeparators(fFileUl) ) );
+                     }
+                  }
+                  SendReply(update);
+               }
+               
+               return;
+            }
+            else
+            {
+               _nobuffer();
+               return;
+            }
+			}
 				
-				if (numBytes <= 0)
-				{
-					NextFile();
-					SignalUpload();
-					return;
-				}
+			if (numBytes <= 0)
+			{
+				NextFile();
+				SignalUpload();
+				return;
 			}
 		}
 	}

@@ -690,7 +690,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 					uint32 checksum;
 					if (msg()->FindInt32("chk", (int32*)&checksum) == B_NO_ERROR)
 					{
-						uint32 myChecksum = CalculateChecksum(data, numBytes);  // a little paranoioa (people keep getting munged data -> download-resume failures, why?)
+						uint32 myChecksum = CalculateChecksum(data, numBytes);  // a little paranoia (people keep getting munged data -> download-resume failures, why?)
 						if (myChecksum != checksum)
 						{
 							QString errStr = tr("Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)").arg(fFileDl[fCurFile]).arg(myChecksum).arg(checksum).arg(numBytes);

@@ -3337,6 +3337,10 @@ Date: %4</translation>
         <source>Could not start internal thread!</source>
         <translation>Kann internen Thread nicht starten!</translation>
     </message>
+    <message>
+        <source>Critical error: Upload buffer allocation failed!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>WUser</name>
