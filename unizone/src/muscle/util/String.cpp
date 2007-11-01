@@ -667,4 +667,9 @@ int StringCompareFunc(const String & s1, const String & s2, void *)
    return muscleCompare(s1, s2);
 }
 
+int StringCompareFunc(const String * const & s1, const String * const & s2, void *)
+{
+   return muscleCompare(*s1, *s2);
+}
+
 END_NAMESPACE(muscle);

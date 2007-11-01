@@ -289,11 +289,11 @@ status_t RawDataQueryFilter :: SetFromArchive(const Message & archive)
    if (archive.FindInt32("type", (int32*)&_typeCode) != B_NO_ERROR) _typeCode = B_ANY_TYPE;
 
    _value.Reset();
-   const uint8 * data;
+   const void * data;
    uint32 numBytes;
-   if (archive.FindData("val", B_RAW_TYPE, (const void **)&data, &numBytes) == B_NO_ERROR)
+   if (archive.FindData("val", B_RAW_TYPE, &data, &numBytes) == B_NO_ERROR)
    {
-      _value = GetByteBufferFromPool(numBytes, data);
+      _value = GetByteBufferFromPool(numBytes, (const uint8 *) data);
       if (_value() == NULL) return B_ERROR;
    }
    return B_NO_ERROR;
@@ -301,10 +301,11 @@ status_t RawDataQueryFilter :: SetFromArchive(const Message & archive)
 
 bool RawDataQueryFilter :: Matches(const Message & msg, const DataNode *) const
 {
-   const uint8 * hisBytes;
+   const void * hb;
    uint32 hisNumBytes;
-   if (msg.FindData(GetFieldName(), _typeCode, (const void **) &hisBytes, &hisNumBytes) == B_NO_ERROR)
+   if (msg.FindData(GetFieldName(), _typeCode, &hb, &hisNumBytes) == B_NO_ERROR)
    {
+      const uint8 * hisBytes = (const uint8 *) hb;
       uint32 myNumBytes     = _value() ? _value()->GetNumBytes() : 0;
       const uint8 * myBytes = _value() ? _value()->GetBuffer()   : 0;
       uint32 clen           = muscleMin(myNumBytes, hisNumBytes);

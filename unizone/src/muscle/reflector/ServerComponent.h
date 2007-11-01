@@ -147,24 +147,25 @@ protected:
     */
    status_t AddNewConnectSession(const AbstractReflectSessionRef & session, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
 
-   /** Returns an object that can be used to iterate over all the sessions currently connected to our ReflectServer.  */
-   HashtableIterator<const char *, AbstractReflectSessionRef> GetSessions() const;
+   /** Returns our server's table of attached sessions. */
+   const Hashtable<const String *, AbstractReflectSessionRef> & GetSessions() const;
 
+   /**
+    * Looks up a session connected to our ReflectServer via its session ID string.
+    * @param id The ID of the session you are looking for.
+    * @return A reference to the session with the given session ID, or a NULL reference on failure.
+    */
+   AbstractReflectSessionRef GetSession(uint32 id) const;
+   
    /**
     * Looks up a session connected to our ReflectServer via its session ID string.
     * @param id The ID string of the session you are looking for.
     * @return A reference to the session with the given session ID, or a NULL reference on failure.
     */
-   AbstractReflectSessionRef GetSession(const char * id) const;
+   AbstractReflectSessionRef GetSession(const String & id) const;
    
-   /** Returns the number of sessions currently active on the server. */
-   uint32 GetNumSessions() const;
-
-   /** Returns an iterator that allows one to iterate over all the session factories currently attached to this server. */
-   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> GetFactories() const;
-
-   /** Returns the number of session factories currently attached to this server */
-   uint32 GetNumFactories() const;
+   /** Returns the table of session factories currently attached to the server. */
+   const Hashtable<IPAddressAndPort, ReflectSessionFactoryRef> & GetFactories() const;
 
    /** Given a port number, returns a reference to the factory of that port, or a NULL reference if no
 such factory exists. */

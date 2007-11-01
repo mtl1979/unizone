@@ -102,6 +102,11 @@ public:
    pid_t GetChildProcessID() const {return _childPID;}
 #endif
 
+   /** Tries to forcibly kill the child process immediately. 
+     * @returns B_NO_ERROR on success, or B_ERROR on failure.
+     */
+   status_t KillChildProcess();
+
 private:
    void Close();
    status_t LaunchChildProcessAux(int argc, const void * argv);

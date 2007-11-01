@@ -2,7 +2,6 @@
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
-#include <string.h>  // for memcpy()
 #include "zlib/ZLibDataIO.h"
 #include "system/GlobalMemoryAllocator.h"
 

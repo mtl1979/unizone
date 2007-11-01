@@ -371,9 +371,7 @@ private:
       ObjectNode * _next;  // only used when we are in the free list
    };
 
-#ifdef _MSC_VER 
-   friend class ObjectSlab;
-#endif
+   friend class ObjectSlab;  // for VC++ compatibility, this must be here
 
    // All the (int) casts are here so that it the user specifies a slab size of zero, we will get a negative
    // number and not a very large positive number that crashes the compiler!

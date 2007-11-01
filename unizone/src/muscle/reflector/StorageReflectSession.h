@@ -93,7 +93,7 @@ protected:
     *                        If NULL, the new node will be appended to the end of the index.  If (addToIndex) is false, this argument is ignored.
     * @return B_NO_ERROR on success, or B_ERROR on failure.
     */
-   virtual status_t SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToIndex=false, const char *optInsertBefore=NULL);
+   virtual status_t SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToIndex=false, const String *optInsertBefore=NULL);
 
    /** Remove all nodes that match (nodePath).
     *  @param nodePath A relative path indicating node(s) to remove.  Wildcarding is okay.
@@ -237,12 +237,12 @@ protected:
     *  @param filter If non-NULL, only nodes whose data Messages match this filter will have their sessions added 
     *                to the (retSessions) table.
     *  @param retSessions A table that will on return contain the set of matching sessions, keyed by their session ID strings.
-    *                     Make sure you have called SetKeyCompareFunction(CStringCompareFunc) on this table!
+    *                     Make sure you have called SetKeyCompareFunction(StringCompareFunc) on this table!
     *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
     *  @param maxResults Maximum number of matching sessions to returns.  Defaults to MUSCLE_NO_LIMIT.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-    status_t FindMatchingSessions(const String & nodePath, const QueryFilterRef & filter, Hashtable<const char *, AbstractReflectSessionRef> & retSessions, bool matchSelf, uint32 maxResults = MUSCLE_NO_LIMIT) const;
+    status_t FindMatchingSessions(const String & nodePath, const QueryFilterRef & filter, Hashtable<const String *, AbstractReflectSessionRef> & retSessions, bool matchSelf, uint32 maxResults = MUSCLE_NO_LIMIT) const;
 
     /** Convenience method:  Same as FindMatchingsession(), but finds only the first matching session.  
       * Returns a reference to the first matching session on success, or a NULL reference on failue.
@@ -290,7 +290,7 @@ protected:
      * @param optFuncArg This argument is passed to (optFunc) as its second argument.
      * @return B_NO_ERROR on success, or B_ERROR on failure (may leave a partially cloned subtree on failure)
      */
-   status_t CloneDataNodeSubtree(const DataNode & sourceNode, const String & destPath, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToTargetIndex=false, const char * optInsertBefore = NULL, MessageReplaceFunc optFunc = NULL, void * optFuncArg = NULL);
+   status_t CloneDataNodeSubtree(const DataNode & sourceNode, const String & destPath, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToTargetIndex=false, const String * optInsertBefore = NULL, MessageReplaceFunc optFunc = NULL, void * optFuncArg = NULL);
 
    /** Tells other sessions that we have modified (node) in our node subtree.
     *  @param node The node that has been modfied.
@@ -307,7 +307,7 @@ protected:
     *  @param index The index at which the operation took place (not defined for clear operations)
     *  @param key The key of the operation (aka the name of the associated node)
     */
-   virtual void NotifySubscribersThatNodeIndexChanged(DataNode & node, char op, uint32 index, const char * key);
+   virtual void NotifySubscribersThatNodeIndexChanged(DataNode & node, char op, uint32 index, const String & key);
 
    /** Called by NotifySubscribersThatNodeChanged(), to tell us that (node) has been 
     *  created, modified, or is about to be destroyed.
@@ -325,7 +325,7 @@ protected:
     *  @param index The index at which the operation took place (not defined for clear operations)
     *  @param key The key of the operation (aka the name of the associated node)
     */
-   virtual void NodeIndexChanged(DataNode & node, char op, uint32 index, const char * key);
+   virtual void NodeIndexChanged(DataNode & node, char op, uint32 index, const String & key);
 
    /**
     * Takes any messages that were created in the NodeChanged() callbacks and 
@@ -373,18 +373,13 @@ protected:
     */
    DataNode * GetDataNode(const String & path) const;
 
-   /** Returns a reference to an empty Message.
-    *  Note that it is an error to modify the Message contained in this reference!
-    */
-   MessageRef GetBlankMessage() const;
-
    /**
     * Call this to get a new DataNode, instead of using the DataNode ctor directly.
     * @param nodeName The name to be given to the new DataNode that will be created.
     * @param initialValue The Message payload to be given to the new DataNode that will be created.
     * @return A reference to the new DataNode or a NULL reference if out of memory.
     */
-   DataNodeRef GetNewDataNode(const char * nodeName, const MessageRef & initialValue);
+   DataNodeRef GetNewDataNode(const String & nodeName, const MessageRef & initialValue);
 
    /**
     * Call this when you are done with a DataNode, instead of the DataNode destructor.
@@ -412,7 +407,7 @@ protected:
     * @param optMatchString Optional pattern to match PR_NAME_REQUEST_TREE_ID strings against.  If
     *                       NULL, all PR_RESULT_SUBTREE Messages with no PR_NAME_TREE_REQUEST_ID field will match.
     */
-   void JettisonOutgoingSubtrees(const char * optMatchString);
+   void JettisonOutgoingSubtrees(const String * optMatchString);
 
    /** Returns a reference to our session node */
    DataNodeRef GetSessionNode() const {return _sessionDir;}
@@ -429,6 +424,7 @@ protected:
 private:
    void NodeChangedAux(DataNode & modifiedNode, bool isBeingRemoved);
    void UpdateDefaultMessageRoute();
+   status_t RemoveParameter(const String & paramName, bool & retUpdateDefaultMessageRoute);
    int PassMessageCallbackAux(DataNode & node, const MessageRef & msgRef, bool matchSelfOkay);
 
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, KickClientCallback);     /** Sessions of matching nodes are EndSession()'d  */

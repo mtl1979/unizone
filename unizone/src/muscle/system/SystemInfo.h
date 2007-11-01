@@ -36,6 +36,13 @@ enum {
   */
 status_t GetSystemPath(uint32 whichPath, String & outStr);
 
+/** Queries the number of CPU processing cores available on this computer.
+  * @param retNumProcessors On success, the number of cores is placed here
+  * @returns B_NO_ERROR on success, or B_ERROR if the number of processors
+  *          could not be determined (e.g. call is unimplemented on this OS)
+  */
+status_t GetNumberOfProcessors(uint32 & retNumProcessors);
+
 /** Returns the file-path-separator character to use for this operating
   * system:  i.e. backslash for Windows, and forward-slash for every
   * other operating system.

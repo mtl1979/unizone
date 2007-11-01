@@ -11,7 +11,6 @@
 #ifndef MuscleFlattenable_h
 #define MuscleFlattenable_h
 
-#include <string.h>
 #include "support/MuscleSupport.h"
 #include "dataio/DataIO.h"
 #include "util/RefCount.h"

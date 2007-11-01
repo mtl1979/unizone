@@ -16,7 +16,7 @@ class DataNode;
 typedef Ref<DataNode> DataNodeRef;
 
 /** Iterator type for our child objects */
-typedef HashtableIterator<const char *, DataNodeRef> DataNodeRefIterator;
+typedef HashtableIterator<const String *, DataNodeRef> DataNodeRefIterator;
 
 /** Each object of this class represents one node in the server-side data-storage tree.  */
 class DataNode : public RefCountable
@@ -47,7 +47,7 @@ public:
     * @param optAddNewChildren If non-NULL, any newly formed nodes will be added to this hashtable, keyed on their absolute node path.
     * @return B_NO_ERROR on success, B_ERROR if out of memory
     */
-   status_t InsertOrderedChild(const MessageRef & data, const char * optInsertBefore, const char * optNodeName, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyWithOnChangedData, Hashtable<String, DataNodeRef> * optAddNewChildren);
+   status_t InsertOrderedChild(const MessageRef & data, const String * optInsertBefore, const String * optNodeName, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyWithOnChangedData, Hashtable<String, DataNodeRef> * optAddNewChildren);
  
    /** 
     * Moves the given node (which must be a child of ours) to be just before the node named
@@ -60,17 +60,17 @@ public:
     *                      interested clients, notifying them of the change.
     * @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t ReorderChild(const DataNode & child, const char * moveToBeforeThis, StorageReflectSession * optNotifyWith);
+   status_t ReorderChild(const DataNode & child, const String * moveToBeforeThis, StorageReflectSession * optNotifyWith);
 
    /** Returns true iff we have a child with the given name */
-   bool HasChild(const char * key) const {return ((_children)&&(_children->ContainsKey(key)));}
+   bool HasChild(const String & key) const {return ((_children)&&(_children->ContainsKey(&key)));}
 
    /** Retrieves the child with the given name.
     *  @param key The name of the child we wish to retrieve
     *  @param returnChild On success, a reference to the retrieved child is written into this object.
     *  @return B_NO_ERROR if a child node was successfully retrieved, or B_ERROR if it was not found.
     */
-   status_t GetChild(const char * key, DataNodeRef & returnChild) const {return ((_children)&&(_children->Get(key, returnChild) == B_NO_ERROR)) ? B_NO_ERROR : B_ERROR;}
+   status_t GetChild(const String & key, DataNodeRef & returnChild) const {return ((_children)&&(_children->Get(&key, returnChild) == B_NO_ERROR)) ? B_NO_ERROR : B_ERROR;}
 
    /** Removes the child with the given name.
     *  @param key The name of the child we wish to remove.
@@ -79,7 +79,7 @@ public:
     *  @param optCounter if non-NULL, this value will be incremented whenever a child is removed (recursively)
     *  @return B_NO_ERROR if the given child is found and removed, or B_ERROR if it could not be found.
     */
-   status_t RemoveChild(const char * key, StorageReflectSession * optNotifyWith, bool recurse, uint32 * optCounter);
+   status_t RemoveChild(const String & key, StorageReflectSession * optNotifyWith, bool recurse, uint32 * optCounter);
 
    /** Returns an iterator that can be used for iterating over our set of children.
      * @param flags If specified, this is the set of HTIT_FLAG_* flags to pass to the Hashtable iterator constructor.
@@ -110,7 +110,7 @@ public:
      *              root node, 1 would return the name of the IP address node, etc.  If this number
      *              is greater than (depth), this method will return NULL.
      */
-   const char * GetPathClause(uint32 depth) const;
+   const String * GetPathClause(uint32 depth) const;
 
    /** Replaces this node's payload message with that of (data).
     *  @param data the new Message to associate with this node.
@@ -121,7 +121,7 @@ public:
    void SetData(const MessageRef & data, StorageReflectSession * optNotifyWith, bool isBeingCreated);
 
    /** Returns a reference to this node's Message payload. */
-   MessageRef GetData() const {return _data;}
+   const MessageRef & GetData() const {return _data;}
 
    /** Returns our node's parent, or NULL if this node doesn't have a parent node. */
    DataNode * GetParent() const {return _parent;}
@@ -138,13 +138,13 @@ public:
     * @param sessionID the sessionID whose reference count is to be modified
     * @param delta the amount to add to the reference count.
     */
-   void IncrementSubscriptionRefCount(const char * sessionID, long delta);
+   void IncrementSubscriptionRefCount(const String & sessionID, long delta);
 
    /** Returns an iterator that can be used to iterate over our list of active subscribers */
-   HashtableIterator<const char *, uint32> GetSubscribers() const {return _subscribers.GetIterator();}
+   HashtableIterator<const String *, uint32> GetSubscribers() const {return _subscribers.GetIterator();}
 
    /** Returns a pointer to our ordered-child index */
-   const Queue<const char *> * GetIndex() const {return _orderedIndex;}
+   const Queue<const String *> * GetIndex() const {return _orderedIndex;}
 
    /** Insert a new entry into our ordered-child list at the (nth) entry position.
     *  Don't call this function unless you really know what you are doing!
@@ -154,7 +154,7 @@ public:
     *             This child must not already be in the ordered-entry index!
     *  @return B_NO_ERROR on success, or B_ERROR on failure (bad index or unknown child).
     */
-   status_t InsertIndexEntryAt(uint32 insertIndex, StorageReflectSession * optNotifyWith, const char * key);
+   status_t InsertIndexEntryAt(uint32 insertIndex, StorageReflectSession * optNotifyWith, const String & key);
 
    /** Removes the (nth) entry from our ordered-child index, if possible.
     *  Don't call this function unless you really know what you are doing!
@@ -175,23 +175,61 @@ public:
    /** You can manually set the max-known-child-ID hint here if you want to. */
    void SetMaxKnownChildID(uint32 maxID) {_maxChildIDHint = maxID;}
 
+   /** Convenience method:  Returns true iff (ancestor) exists
+     * anywhere along the path between this node and the root node.
+     * (note that a node is not considered a descendant of itself)
+     * @param ancestor The node to check to see if we are a descendant of
+     */
+   bool IsDescendantOf(const DataNode & ancestor) const {const DataNode * n = GetParent(); while(n) {if (n == &ancestor) return true; else n = n->GetParent();} return false;}
+
+   /** Convenience method:  Returns true iff (this) exists
+     * anywhere along the path between (descendant) and the root node.
+     * (note that a node is not considered an ancestor of itself)
+     * @param ancestor The node to check to see if we are an ancestor of
+     */
+   bool IsAncestorOf(const DataNode & descendant) const {return descendant.IsDescendantOf(*this);}
+
+   /** Returns a checksum representing the state of this node and the nodes
+     * beneath it, up to the specified recursion depth.  Each node's checksum
+     * includes its nodename, its ordered-children-index (if any), and its payload Message.
+     * @param maxRecursionCount The maximum number of times to recurse.  Zero would
+     *                          result in a checksum for this node only; one for this
+     *                          node and its children only, etc.  Defaults to 
+     *                          MUSCLE_NO_LIMIT.
+     * @note This method can be CPU-intensive; it is meant primarily for debugging.
+     * @returns a 32-bit checksum value based on the contents of this node and
+     *          its descendants. 
+     */
+   uint32 CalculateChecksum(uint32 maxRecursionCount = MUSCLE_NO_LIMIT) const;
+
+   /** For debugging purposes; prints the current state of this node (and
+     * optionally its descendants) to stdout.
+     * @param maxRecursionCount The maximum number of times to recurse.  Zero would
+     *                          result in a checksum for this node only; one for this
+     *                          node and its children only, etc.  Defaults to 
+     *                          MUSCLE_NO_LIMIT.
+     * @param indentLevel how many spaces to indent the generated text
+     */
+   void PrintToStream(uint32 maxRecursionDepth = MUSCLE_NO_LIMIT, int indentLevel = 0) const;
+
 private:
    friend class StorageReflectSession;
 
-   void Init(const char * nodeName, const MessageRef & initialValue);
+   void Init(const String & nodeName, const MessageRef & initialValue);
    void SetParent(DataNode * _parent, StorageReflectSession * optNotifyWith);
-   status_t RemoveIndexEntry(const char * key, StorageReflectSession * optNotifyWith);
+   status_t RemoveIndexEntry(const String & key, StorageReflectSession * optNotifyWith);
 
    DataNode * _parent;
    MessageRef _data;
-   Hashtable<const char *, DataNodeRef> * _children;  // lazy-allocated
-   Queue<const char *> * _orderedIndex;  // only used when tracking the ordering of our children (lazy-allocated)
+   mutable uint32 _cachedDataChecksum;
+   Hashtable<const String *, DataNodeRef> * _children;  // lazy-allocated
+   Queue<const String *> * _orderedIndex;  // only used when tracking the ordering of our children (lazy-allocated)
    uint32 _orderedCounter;
    String _nodeName;
    uint32 _depth;  // number of ancestors our node has (e.g. root's _depth is zero)
    uint32 _maxChildIDHint;  // keep track of the largest child ID, for easier allocation of non-conflicting future child IDs
 
-   Hashtable<const char *, uint32> _subscribers; 
+   Hashtable<const String *, uint32> _subscribers; 
 };
 
 END_NAMESPACE(muscle);

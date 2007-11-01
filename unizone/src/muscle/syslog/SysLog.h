@@ -136,6 +136,23 @@ status_t LogTime(int logLevel, const char * fmt, ...);
  */
 status_t LogFlush();
 
+/** Attempts to lock the Mutex that is used to serialize LogCallback calls.
+  * Typically you won't need to call this function, as it is called for you
+  * before any LogCallback calls are made.
+  * @returns B_NO_ERROR on success or B_ERROR on failure.
+  * @note Be sure to call UnlockLog() when you are done!
+  */
+status_t LockLog();
+
+/** Unlocks the Mutex that is used to serialize LogCallback calls.
+  * Typically you won't need to call this function, as it is called for you
+  * after any LogCallback calls are made.  The only time you need to call it
+  * is after you've made a call to LockLog() and are now done with your critical
+  * section.
+  * @returns B_NO_ERROR on success or B_ERROR on failure.
+  */
+status_t UnlockLog();
+
 /** Logs out a stack trace, if possible.  Returns B_ERROR if not.
  *  @note Currently only works under Linux, and then only if -rdynamic is specified as a compile flag.
  *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.

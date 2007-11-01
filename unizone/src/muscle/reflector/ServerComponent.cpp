@@ -39,7 +39,7 @@ GetCentralState() const
    return _owner->GetCentralState();
 }
 
-HashtableIterator<const char *, AbstractReflectSessionRef>
+const Hashtable<const String *, AbstractReflectSessionRef> &
 ServerComponent ::
 GetSessions() const
 {
@@ -47,36 +47,28 @@ GetSessions() const
    return _owner->GetSessions(); 
 }
 
-uint32
-ServerComponent ::
-GetNumSessions() const
-{
-   MASSERT(_owner, "Can't call GetNumSessions() while not attached to the server");
-   return _owner->GetNumSessions(); 
-}
-
 AbstractReflectSessionRef 
 ServerComponent ::
-GetSession(const char * id) const
+GetSession(uint32 id) const
 {
    MASSERT(_owner, "Can't call GetSession() while not attached to the server");
    return _owner->GetSession(id);
 }
 
-HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> 
+AbstractReflectSessionRef 
+ServerComponent ::
+GetSession(const String & id) const
+{
+   MASSERT(_owner, "Can't call GetSession() while not attached to the server");
+   return _owner->GetSession(id);
+}
+
+const Hashtable<IPAddressAndPort, ReflectSessionFactoryRef> &
 ServerComponent ::
 GetFactories() const 
 {
    MASSERT(_owner, "Can't call GetFactories() while not attached to the server");
    return _owner->GetFactories(); 
-}
-
-uint32 
-ServerComponent ::
-GetNumFactories() const 
-{
-   MASSERT(_owner, "Can't call GetNumFactories() while not attached to the server");
-   return _owner->GetNumFactories(); 
 }
 
 ReflectSessionFactoryRef 

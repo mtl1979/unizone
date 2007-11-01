@@ -111,7 +111,7 @@ ReflectServer ::
 AttachNewSession(const AbstractReflectSessionRef & ref)
 {
    AbstractReflectSession * newSession = ref();
-   if ((newSession)&&(_sessions.Put(newSession->GetSessionIDString()(), ref) == B_NO_ERROR))
+   if ((newSession)&&(_sessions.Put(&newSession->GetSessionIDString(), ref) == B_NO_ERROR))
    {
       newSession->_owner = this;
       if (newSession->AttachedToServer() == B_NO_ERROR)
@@ -126,7 +126,7 @@ AttachNewSession(const AbstractReflectSessionRef & ref)
          if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "%s aborted startup ("UINT32_FORMAT_SPEC" left)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
       }
       newSession->_owner = NULL;
-      (void) _sessions.Remove(newSession->GetSessionIDString()());
+      (void) _sessions.Remove(&newSession->GetSessionIDString());
    }
    return B_ERROR;
 }
@@ -136,7 +136,7 @@ ReflectServer :: ReflectServer(MemoryAllocator * optMemoryUsageTracker) : _keepS
 {
    // make sure _lameDuckSessions has plenty of memory available in advance (we need might need it in a tight spot later!)
    _lameDuckSessions.EnsureSize(256);
-   _sessions.SetKeyCompareFunction(CStringCompareFunc);
+   _sessions.SetKeyCompareFunction(StringCompareFunc);
 }
 
 ReflectServer :: ~ReflectServer()
@@ -149,8 +149,8 @@ ReflectServer :: Cleanup()
 {
    // Detach all sessions
    {
-      HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
-      const char * nextKey;
+      HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
+      const String * nextKey;
       AbstractReflectSessionRef nextValue;
       while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
       {
@@ -337,7 +337,7 @@ ServerProcessLoop()
          if (_sessions.HasItems())
          {
             AbstractReflectSessionRef * nextRef;
-            HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
+            HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
             while((nextRef = iter.GetNextValue()) != NULL)
             {
                AbstractReflectSession * session = nextRef->GetItemPointer();
@@ -407,7 +407,7 @@ ServerProcessLoop()
             // let's ask each activated policy *how much* each policyholder should be allowed to read/write.
             {
                AbstractReflectSessionRef * nextRef;
-               HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
+               HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
                while((nextRef = iter.GetNextValue()) != NULL)
                {
                   AbstractReflectSession * session = nextRef->GetItemPointer();
@@ -493,7 +493,7 @@ ServerProcessLoop()
       // Do I/O for each of our attached sessions
       {
          AbstractReflectSessionRef sessionRef;
-         HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
+         HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
          while(iter.GetNextValue(sessionRef) == B_NO_ERROR)
          {
             TCHECKPOINT;
@@ -678,14 +678,14 @@ status_t ReflectServer :: ClearLameDucks()
       AbstractReflectSession * duck = duckRef();
       if (duck)
       {
-         const char * id = duck->GetSessionIDString()();
-         if (_sessions.ContainsKey(id))
+         const String & id = duck->GetSessionIDString();
+         if (_sessions.ContainsKey(&id))
          {
             duck->AboutToDetachFromServer();
             duck->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
             if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "Closed %s ("UINT32_FORMAT_SPEC" left)\n", duck->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
             duck->_owner = NULL;
-            (void) _sessions.Remove(id);
+            (void) _sessions.Remove(&id);
          }
       }
    }
@@ -738,7 +738,7 @@ void ReflectServer :: DumpBoggedSessions()
    // stop reading from their end indefinitely for some reason.
    const int MAX_MEGABYTES = 5;
    AbstractReflectSessionRef * lRef;
-   HashtableIterator<const char *, AbstractReflectSessionRef> xiter = GetSessions();
+   HashtableIterator<const String *, AbstractReflectSessionRef> xiter(GetSessions());
    while((lRef = xiter.GetNextValue()) != NULL)
    {
       AbstractReflectSession * asr = lRef->GetItemPointer();
@@ -766,11 +766,19 @@ void ReflectServer :: DumpBoggedSessions()
 
 AbstractReflectSessionRef
 ReflectServer ::
-GetSession(const char * name) const
+GetSession(const String & name) const
 {
    AbstractReflectSessionRef ref;
-   (void) _sessions.Get(name, ref); 
+   (void) _sessions.Get(&name, ref); 
    return ref;
+}
+
+AbstractReflectSessionRef
+ReflectServer ::
+GetSession(uint32 id) const
+{
+   char buf[64]; sprintf(buf, UINT32_FORMAT_SPEC, id);
+   return GetSession(buf);
 }
 
 ReflectSessionFactoryRef
@@ -979,7 +987,7 @@ AddLameDuckSession(AbstractReflectSession * who)
    TCHECKPOINT;
 
    AbstractReflectSessionRef * lRef; 
-   HashtableIterator<const char *, AbstractReflectSessionRef> xiter = GetSessions();
+   HashtableIterator<const String *, AbstractReflectSessionRef> xiter(GetSessions());
    while((lRef = xiter.GetNextValue()) != NULL)
    {
       AbstractReflectSession * session = lRef->GetItemPointer();

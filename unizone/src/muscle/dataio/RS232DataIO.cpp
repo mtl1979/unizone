@@ -25,7 +25,7 @@ BEGIN_NAMESPACE(muscle);
 RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : _blocking(blocking)
 #ifdef USE_WINDOWS_IMPLEMENTATION
    , _handle(INVALID_HANDLE_VALUE)
-   , _ioThread(NULL)
+   , _ioThread(INVALID_HANDLE_VALUE)
    , _wakeupSignal(INVALID_HANDLE_VALUE)
    , _requestThreadExit(false)
 #endif
@@ -81,7 +81,7 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
                   {
                      DWORD junkThreadID;
                      typedef unsigned (__stdcall *PTHREAD_START) (void *);
-                     if ((_ioThread = (::HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != NULL) okay = true;
+                     if ((_ioThread = (::HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != INVALID_HANDLE_VALUE) okay = true;
                   }
                }
                else okay = true;
@@ -169,12 +169,13 @@ bool RS232DataIO :: IsPortAvailable() const
 void RS232DataIO :: Close()
 {
 #ifdef USE_WINDOWS_IMPLEMENTATION
-   if (_ioThread != NULL)  // if this is valid, _wakeupSignal is guaranteed valid too
+   if (_ioThread != INVALID_HANDLE_VALUE)  // if this is valid, _wakeupSignal is guaranteed valid too
    {
       _requestThreadExit = true;                // set the "Please go away" flag
       SetEvent(_wakeupSignal);                  // wake the thread up so he'll check the bool
       WaitForSingleObject(_ioThread, INFINITE); // then wait for him to go away
-      _ioThread = NULL;
+      ::CloseHandle(_ioThread);                 // fix handle leak
+      _ioThread = INVALID_HANDLE_VALUE;
    }
    _masterNotifySocket.Reset();
    _slaveNotifySocket.Reset();

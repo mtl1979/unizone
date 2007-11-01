@@ -149,7 +149,7 @@ ClientConnectionClosed()
    if (_autoReconnectDelay == MUSCLE_TIME_NEVER) return true;  // true == okay to remove this session
    else
    {
-      if (_wasConnected) LogTime(MUSCLE_LOG_DEBUG, "%s:  Connection severed, will auto-reconnect in %llums\n", GetSessionDescriptionString()(), _autoReconnectDelay);
+      if (_wasConnected) LogTime(MUSCLE_LOG_DEBUG, "%s:  Connection severed, will auto-reconnect in " UINT64_FORMAT_SPEC "ms\n", GetSessionDescriptionString()(), _autoReconnectDelay);
       PlanForReconnect();
       return false;
    }
@@ -161,7 +161,7 @@ BroadcastToAllSessions(const MessageRef & msgRef, void * userData, bool toSelf)
 {
    TCHECKPOINT;
 
-   HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
+   HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
    AbstractReflectSessionRef * next;
    while((next = iter.GetNextValue()) != NULL)
    {
@@ -176,7 +176,7 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData)
 {
    TCHECKPOINT;
 
-   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter = GetFactories();
+   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(GetFactories());
    ReflectSessionFactoryRef * next;
    while((next = iter.GetNextValue()) != NULL)
    {
@@ -290,7 +290,7 @@ BroadcastToAllSessions(const MessageRef & msgRef, void * userData)
 {
    TCHECKPOINT;
 
-   HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
+   HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
    AbstractReflectSessionRef * next;
    while((next = iter.GetNextValue()) != NULL)
    {
@@ -305,7 +305,7 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData, bool toSelf)
 {
    TCHECKPOINT;
 
-   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter = GetFactories();
+   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(GetFactories());
    ReflectSessionFactoryRef * next;
    while((next = iter.GetNextValue()) != NULL)
    {

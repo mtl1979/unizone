@@ -8,7 +8,10 @@
 BEGIN_NAMESPACE(muscle);
 
 static Message _emptyMessage;
+static MessageRef _emptyMessageRef(&_emptyMessage, false);
+
 const Message & GetEmptyMessage() {return _emptyMessage;}
+const MessageRef & GetEmptyMessageRef() {return _emptyMessageRef;}
 
 static void DoIndents(uint32 num, String & s) {for (uint32 i=0; i<num; i++) s += ' ';}
 
@@ -91,6 +94,9 @@ public:
 
    // Returns the number of items currently in the array
    virtual uint32 GetNumItems() const = 0;
+
+   // Returns a 32-bit checksum for this array
+   virtual uint32 CalculateChecksum(bool countFieldOrder, bool countNonFlattenableFields) const = 0;
 
    // Returns true iff all elements in the array have the same size
    virtual bool ElementsAreFixedSize() const = 0;
@@ -213,6 +219,12 @@ public:
    virtual GenericRef Clone() const; 
 
    virtual bool IsFlattenable() const {return false;}
+
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      // This is the best we can do, since we don't know our elements' types
+      return TypeCode() + GetNumItems();
+   }
 
 protected:
    virtual void AddToString(String & s, bool, int indent) const
@@ -385,6 +397,13 @@ public:
       sprintf(buf, "Point: %f %f\n", p.x(), p.y());
       s += buf;
    }
+
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum()*i;
+      return ret;
+   }
 };
 DECLAREFIELDTYPE(PointDataArray);
 
@@ -400,6 +419,13 @@ public:
       sprintf(buf, "Rect: leftTop=(%f,%f) rightBottom=(%f,%f)\n", r.left(), r.top(), r.right(), r.bottom());
       s += buf;
    }
+
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum()*i;
+      return ret;
+   }
 };
 DECLAREFIELDTYPE(RectDataArray);
 
@@ -414,6 +440,13 @@ public:
    virtual const char * GetFormatString() const {return "%i";}
  
    virtual GenericRef Clone() const;
+
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((uint32)_data[i])*i;
+      return ret;
+   }
 
 protected:
    virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
@@ -463,6 +496,13 @@ public:
    // Flattenable interface
    virtual uint32 FlattenedSize() const {return _data.GetNumItems()*sizeof(uint8);}  /* bools are always flattened into 1 byte each */
 
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i] ? i : 0;
+      return ret;
+   }
+
 protected:
    virtual void ConvertToNetworkByteOrder(void *, const void *, uint32) const
    {
@@ -487,6 +527,13 @@ public:
    virtual const char * GetFormatString() const {return "%i";}
 
    virtual GenericRef Clone() const;
+
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((uint32)_data[i])*i;
+      return ret;
+   }
 
 protected:
    virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
@@ -521,6 +568,13 @@ public:
 
    virtual GenericRef Clone() const;
 
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((uint32)_data[i])*i;
+      return ret;
+   }
+
 protected:
    virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
@@ -553,6 +607,13 @@ public:
    virtual const char * GetFormatString() const {return INT64_FORMAT_SPEC;}
 
    virtual GenericRef Clone() const;
+
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += (((uint32)(_data[i] & 0xFFFFFFFF)) + ((uint32)((_data[i]>>32)&0xFFFFFFFF)))*i;
+      return ret;
+   }
 
 protected:
    virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
@@ -587,6 +648,13 @@ public:
 
    virtual GenericRef Clone() const;
 
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += B_HOST_TO_LENDIAN_IFLOAT(_data[i])*i;
+      return ret;
+   }
+
 protected:
    virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
    {
@@ -619,6 +687,17 @@ public:
    virtual const char * GetFormatString() const {return "%lf";}
 
    virtual GenericRef Clone() const;
+
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) 
+      {
+         uint64 idb = B_HOST_TO_LENDIAN_IFLOAT(_data[i]);
+         ret += (((uint32)(idb & 0xFFFFFFFF)) + ((uint32)((idb>>32)&0xFFFFFFFF)))*i;
+      }
+      return ret;
+   }
 
 protected:
    virtual void ConvertToNetworkByteOrder(void * writeToHere, const void * readFromHere, uint32 numItems) const
@@ -655,6 +734,11 @@ public:
 
    virtual GenericRef Clone() const;
 
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      return TypeCode() + GetNumItems();  // Best we can do, since pointer equivalence is not well defined
+   }
+
 protected:
    virtual void ConvertToNetworkByteOrder(void *, const void *, uint32) const
    {
@@ -667,7 +751,6 @@ protected:
    }
 };
 DECLAREFIELDTYPE(PointerDataArray);
-
 
 // An abstract array of FlatCountableRefs.
 template <class RefType> class FlatCountableRefDataArray : public FixedSizeDataArray<RefType>
@@ -815,6 +898,17 @@ public:
 
    virtual GenericRef Clone() const;
 
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--)
+      {
+         const ByteBuffer * buf = dynamic_cast<ByteBuffer *>(_data[i]());  // TODO: possibly make this a static cast?
+         if (buf) ret += buf->CalculateChecksum()*i;
+      }
+      return ret;
+   }
+
 protected:
    /** Overridden to compare objects instead of merely the pointers to them */
    virtual bool AreContentsEqual(const AbstractDataArray * rhs) const
@@ -831,7 +925,6 @@ protected:
       return true;
    }
 };
-
 DECLAREFIELDTYPE(ByteBufferDataArray);
 
 class MessageDataArray : public FlatCountableRefDataArray<MessageRef>
@@ -877,10 +970,11 @@ public:
          sprintf(buf, "    "UINT32_FORMAT_SPEC". ", i); 
          s += buf;
 
-         MessageRef * dataItem;
+         const void * vp;
          uint32 itemSize = GetItemSize(i);
-         if (FindDataItem(i, (const void **)&dataItem) == B_NO_ERROR)
+         if (FindDataItem(i, &vp) == B_NO_ERROR)
          {
+            MessageRef * dataItem = (MessageRef *) vp;
             Message * msg = dataItem->GetItemPointer();
             if (msg)
             {
@@ -897,6 +991,17 @@ public:
    }
 
    virtual GenericRef Clone() const;
+
+   virtual uint32 CalculateChecksum(bool countFieldOrder, bool countNonFlattenableFields) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--)
+      {
+         const MessageRef & msg = _data[i];
+         if (msg()) ret += msg()->CalculateChecksum(countFieldOrder, countNonFlattenableFields)*i;
+      }
+      return ret;
+   }
 
 protected:
    /** Overridden to compare objects instead of merely the pointers to them */
@@ -1006,6 +1111,13 @@ public:
          s += ItemAt(i);
          s += "]\n";
       }
+   }
+
+   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   {
+      uint32 ret = TypeCode() + GetNumItems();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum()*i;
+      return ret;
    }
 };
 DECLAREFIELDTYPE(StringDataArray);
@@ -1136,7 +1248,7 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
 
    char buf[150];
    DoIndents(indent,s); 
-   sprintf(buf, "Message:  this=%p, what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), entryCount="INT32_FORMAT_SPEC", flatSize="UINT32_FORMAT_SPEC"\n", this, prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), (uint32)FlattenedSize()); 
+   sprintf(buf, "Message:  this=%p, what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), entryCount="INT32_FORMAT_SPEC", flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", this, prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), FlattenedSize(), CalculateChecksum());
    s += buf;
 
    HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
@@ -1147,7 +1259,7 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
        uint32 tc = nextValue->TypeCode();
        MakePrettyTypeCodeString(tc, prettyTypeCodeBuf);
        DoIndents(indent,s); 
-       sprintf(buf, "  Entry: Name=[%s], GetNumItems()="INT32_FORMAT_SPEC", TypeCode()='%s' ("INT32_FORMAT_SPEC") flatSize="UINT32_FORMAT_SPEC"\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, (uint32)nextValue->FlattenedSize()); 
+       sprintf(buf, "  Entry: Name=[%s], GetNumItems()="INT32_FORMAT_SPEC", TypeCode()='%s' ("INT32_FORMAT_SPEC") flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, nextValue->FlattenedSize(), nextValue->CalculateChecksum(false,false));
        s += buf;
        nextValue->AddToString(s, recurse, indent);
    }
@@ -1231,6 +1343,26 @@ uint32 Message :: FlattenedSize() const
       if (nextValue->IsFlattenable()) sum += sizeof(uint32) + nextKey->FlattenedSize() + sizeof(uint32) + sizeof(uint32) + nextValue->FlattenedSize();
    }
    return sum;
+}
+
+uint32 Message :: CalculateChecksum(bool countFieldOrder, bool countNonFlattenableFields) const 
+{
+   uint32 ret = what;
+
+   // Calculate the number of flattenable entries (may be less than the total number of entries!)
+   uint32 fieldCount = 0;
+   const GenericRef * next;
+   HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
+   while((next = it.GetNextValue()) != NULL) 
+   {
+      const AbstractDataArray * a = static_cast<const AbstractDataArray *>(next->GetItemPointer());
+      if ((countNonFlattenableFields)||(a->IsFlattenable()))
+      {
+         if (countFieldOrder) ret += (++fieldCount);
+         ret += a->CalculateChecksum(countFieldOrder, countNonFlattenableFields);
+      }
+   }
+   return ret;
 }
 
 void Message :: Flatten(uint8 *buffer) const 
@@ -1576,6 +1708,17 @@ status_t Message :: FindString(const String &name, uint32 index, const char ** s
    else return B_ERROR;
 }
 
+status_t Message :: FindString(const String &name, uint32 index, const String ** setMe) const 
+{
+   const StringDataArray * ada = (const StringDataArray *)GetArray(name, B_STRING_TYPE);
+   if ((ada)&&(index < ada->GetNumItems()))
+   {
+      *setMe = &ada->ItemAt(index);
+      return B_NO_ERROR;
+   }
+   else return B_ERROR;
+}
+
 status_t Message :: FindString(const String &name, uint32 index, String & str) const 
 {
    const StringDataArray * ada = (const StringDataArray *)GetArray(name, B_STRING_TYPE);
@@ -1623,9 +1766,9 @@ status_t Message :: FindFlat(const String & name, uint32 index, Flattenable & fl
                }
                else
                {
-                  const uint8 * data;
-                  status_t ret = ada->FindDataItem(index, (const void **) &data);
-                  if (ret == B_NO_ERROR) return flat.Unflatten(data, ada->GetItemSize(index));
+                  const void * data;
+                  status_t ret = ada->FindDataItem(index, &data);
+                  if (ret == B_NO_ERROR) return flat.Unflatten((const uint8 *)data, ada->GetItemSize(index));
                }
             }
             break;

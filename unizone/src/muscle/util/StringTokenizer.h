@@ -3,7 +3,6 @@
 #ifndef MuscleStringTokenizer_h
 #define MuscleStringTokenizer_h
 
-#include <string.h>
 #include "support/MuscleSupport.h"
 
 BEGIN_NAMESPACE(muscle);

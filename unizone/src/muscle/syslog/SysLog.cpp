@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <string.h>
 #include "syslog/LogCallback.h"
 #include "system/SetupSystem.h"
 #include "util/Hashtable.h"
@@ -227,7 +226,7 @@ static Hashtable<LogCallbackRef, bool> _logCallbacks;
 static DefaultConsoleLogger _dcl;
 static DefaultFileLogger _dfl;
 
-static status_t LockLog()
+status_t LockLog()
 {
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
    return B_NO_ERROR;
@@ -242,7 +241,7 @@ static status_t LockLog()
 #endif
 }
 
-static status_t UnlockLog()
+status_t UnlockLog()
 {
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
    return B_NO_ERROR;

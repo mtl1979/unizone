@@ -37,7 +37,6 @@
 # endif
 #endif
 
-#include <string.h>
 #include <sys/stat.h>
 
 #if defined(__FreeBSD__) || defined(BSD) || defined(__APPLE__) || defined(__linux__)

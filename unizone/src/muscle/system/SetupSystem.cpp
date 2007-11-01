@@ -719,6 +719,21 @@ void Socket :: SetFileDescriptor(int newFD, bool okayToClose)
    _okayToClose = okayToClose;
 }
 
+uint32 CalculateChecksum(const uint8 * buffer, uint32 numBytes)
+{
+   uint32 ret      = numBytes;
+   uint32 numWords = numBytes/sizeof(uint32);
+   uint32 leftover = numBytes%sizeof(uint32);
+
+   const uint32 * words = (const uint32 *) buffer;
+   for (uint32 i=0; i<numWords; i++) ret += (words[i]*i);
+
+   const uint8 * bytes = (const uint8 *) (((const uint32 *)buffer)+numWords);
+   for (uint32 j=0; j<leftover; j++) ret += (((uint32)bytes[j])*j);
+
+   return ret; 
+}
+
 /** These compare functions are useful for passing into Hashtables or Queues to keep them sorted */
 int IntCompareFunc(   const int    & i1, const int    & i2, void *) {return muscleCompare(i1, i2);}
 int Int8CompareFunc(  const int8   & i1, const int8   & i2, void *) {return muscleCompare(i1, i2);}

@@ -3,8 +3,6 @@
 #ifndef QMuscleSupport_h
 #define QMuscleSupport_h
 
-#include <qstring.h>
-
 #if QT_VERSION >= 0x040000
 # include <qhash.h>
 #else

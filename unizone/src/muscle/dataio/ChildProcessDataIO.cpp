@@ -21,7 +21,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <signal.h>
-# include <string.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/types.h>
@@ -168,7 +167,7 @@ static pid_t pty_fork(int *ptrfdm, char *slave_name, const struct termios *slave
 
 ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true)
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
-   , _readFromStdout(INVALID_HANDLE_VALUE), _writeToStdin(INVALID_HANDLE_VALUE), _ioThread(NULL), _wakeupSignal(INVALID_HANDLE_VALUE), _childProcess(INVALID_HANDLE_VALUE), _childThread(INVALID_HANDLE_VALUE), _requestThreadExit(false)
+   , _readFromStdout(INVALID_HANDLE_VALUE), _writeToStdin(INVALID_HANDLE_VALUE), _ioThread(INVALID_HANDLE_VALUE), _wakeupSignal(INVALID_HANDLE_VALUE), _childProcess(INVALID_HANDLE_VALUE), _childThread(INVALID_HANDLE_VALUE), _requestThreadExit(false)
 #else
    , _childPID(-1)
 #endif
@@ -288,7 +287,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
                      {
                         DWORD junkThreadID;
                         typedef unsigned (__stdcall *PTHREAD_START) (void *);
-                        if ((_ioThread = (::HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != NULL) return B_NO_ERROR;
+                        if ((_ioThread = (::HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != INVALID_HANDLE_VALUE) return B_NO_ERROR;
                      }
                   }
                }
@@ -410,17 +409,36 @@ bool ChildProcessDataIO :: IsChildProcessAvailable() const
 #endif
 } 
 
+status_t ChildProcessDataIO :: KillChildProcess()
+{
+   TCHECKPOINT;
+
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
+   if ((_childProcess != INVALID_HANDLE_VALUE)&&(TerminateProcess(_childProcess, 0))) return B_NO_ERROR;
+#else
+   if ((_childPID >= 0)&&(kill(_childPID, SIGKILL) == 0))
+   {
+      (void) waitpid(_childPID, NULL, 0);  // avoid creating a zombie process
+      _childPID = -1;
+      return B_NO_ERROR;
+   }
+#endif
+
+   return B_ERROR;
+}
+
 void ChildProcessDataIO :: Close()
 {
    TCHECKPOINT;
 
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
-   if (_ioThread != NULL)  // if this is valid, _wakeupSignal is guaranteed valid too
+   if (_ioThread != INVALID_HANDLE_VALUE)  // if this is valid, _wakeupSignal is guaranteed valid too
    {
       _requestThreadExit = true;                // set the "Please go away" flag
       SetEvent(_wakeupSignal);                  // wake the thread up so he'll check the flag
       WaitForSingleObject(_ioThread, INFINITE); // then wait for him to go away
-      _ioThread = NULL;
+      ::CloseHandle(_ioThread);                 // fix handle leak
+      _ioThread = INVALID_HANDLE_VALUE;
    }
    _masterNotifySocket.Reset();
    _slaveNotifySocket.Reset();

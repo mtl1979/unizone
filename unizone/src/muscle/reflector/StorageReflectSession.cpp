@@ -10,9 +10,6 @@ BEGIN_NAMESPACE(muscle);
 #define DEFAULT_PATH_PREFIX "*/*"  // when we get a path name without a leading '/', prepend this
 #define DEFAULT_MAX_SUBSCRIPTION_MESSAGE_SIZE   50   // no more than 50 items/update message, please
 
-static Message _blankMessage;
-static MessageRef _blankMessageRef(&_blankMessage, false);
-
 static void ResetNodeFunc(DataNode * node, void * /*userData*/) {node->Reset();}
 static DataNodeRef::ItemPool _nodePool(100, ResetNodeFunc);
 
@@ -78,19 +75,20 @@ InitSharedData()
 
    Message & state = GetCentralState();
 
-   StorageReflectSession::StorageReflectSessionSharedData * sd;
-   if (state.FindPointer(SRS_SHARED_DATA, (void **) &sd) == B_NO_ERROR) return sd;
+   void * sp = NULL; (void) state.FindPointer(SRS_SHARED_DATA, &sp);
+   StorageReflectSession::StorageReflectSessionSharedData * sd = (StorageReflectSession::StorageReflectSessionSharedData *) sp;
+   if (sd) return sd;
   
    // oops, there's no shared data object!  We must be the first session.
    // So we'll create the root node and the shared data object, and
    // add it to the central-state Message ourself.
-   DataNodeRef globalRoot = GetNewDataNode("", _blankMessageRef);
+   DataNodeRef globalRoot = GetNewDataNode("", GetEmptyMessageRef());
    if (globalRoot()) 
    {
       sd = newnothrow StorageReflectSessionSharedData(globalRoot);
       if (sd)
       {
-         if (state.AddPointer(SRS_SHARED_DATA, sd) == B_NO_ERROR) return sd;
+         if (state.ReplacePointer(true, SRS_SHARED_DATA, sd) == B_NO_ERROR) return sd;
          delete sd;
       }
       else WARN_OUT_OF_MEMORY;
@@ -110,7 +108,7 @@ AttachedToServer()
    if (_sharedData == NULL) return B_ERROR;
    
    Message & state = GetCentralState();
-   const char * hostname = GetHostName()();
+   const String & hostname = GetHostName();
    const String & sessionid = GetSessionIDString();
 
    // Is there already a node for our hostname?
@@ -118,7 +116,7 @@ AttachedToServer()
    if (GetGlobalRoot().GetChild(hostname, hostDir) != B_NO_ERROR)
    {
       // nope.... we'll add one then
-      hostDir = GetNewDataNode(hostname, _blankMessageRef);
+      hostDir = GetNewDataNode(hostname, GetEmptyMessageRef());
       if ((hostDir() == NULL)||(GetGlobalRoot().PutChild(hostDir, this, this) != B_NO_ERROR)) {WARN_OUT_OF_MEMORY; Cleanup(); return B_ERROR;}
    }
 
@@ -127,9 +125,9 @@ AttachedToServer()
    if (hostDir() == NULL) {Cleanup(); return B_ERROR;}
    if (hostDir()->HasChild(sessionid())) LogTime(MUSCLE_LOG_WARNING, "WARNING:  Non-unique session id [%s] being overwritten!\n", sessionid());
 
-   SetSessionRootPath(String(hostname).Prepend("/") + "/" + sessionid);
+   SetSessionRootPath(hostname.Prepend("/") + "/" + sessionid);
 
-   DataNodeRef sessionNode = GetNewDataNode(sessionid(), _blankMessageRef);
+   DataNodeRef sessionNode = GetNewDataNode(sessionid, GetEmptyMessageRef());
    if (sessionNode())
    {
       // See if we get any special privileges
@@ -138,10 +136,10 @@ AttachedToServer()
       {
          char temp[32];
          sprintf(temp, "priv%i", p);
-         const char * privPattern;
+         const String * privPattern;
          for (int q=0; (state.FindString(temp, q, &privPattern) == B_NO_ERROR); q++)
          {
-            if (StringMatcher(privPattern).Match(hostname))
+            if (StringMatcher(*privPattern).Match(hostname()))
             {
                if (p == PR_NUM_PRIVILEGES) privBits = ~0;  // all privileges granted!
                                       else privBits |= (1L<<p);
@@ -193,16 +191,16 @@ Cleanup()
    if (_sharedData)
    {
       DataNodeRef hostNodeRef;
-      if (GetGlobalRoot().GetChild(GetHostName()(), hostNodeRef) == B_NO_ERROR)
+      if (GetGlobalRoot().GetChild(GetHostName(), hostNodeRef) == B_NO_ERROR)
       {
          DataNode * hostNode = hostNodeRef();
          if (hostNode)
          {
             // make sure our session node is gone
-            hostNode->RemoveChild(GetSessionIDString()(), this, true, NULL);
+            hostNode->RemoveChild(GetSessionIDString(), this, true, NULL);
 
             // If our host node is now empty, it goes too
-            if (hostNode->HasChildren() == false) GetGlobalRoot().RemoveChild(hostNode->GetNodeName()(), this, true, NULL);
+            if (hostNode->HasChildren() == false) GetGlobalRoot().RemoveChild(hostNode->GetNodeName(), this, true, NULL);
          }
       
          PushSubscriptionMessages();
@@ -234,11 +232,11 @@ NotifySubscribersThatNodeChanged(DataNode & modifiedNode, const MessageRef & old
 {
    TCHECKPOINT;
 
-   HashtableIterator<const char *, uint32> subIter = modifiedNode.GetSubscribers();
-   const char * nextKey = NULL;  // set just to shut the compiler up
+   HashtableIterator<const String *, uint32> subIter = modifiedNode.GetSubscribers();
+   const String * nextKey = NULL;  // set just to shut the compiler up
    while(subIter.GetNextKey(nextKey) == B_NO_ERROR)
    {
-      StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(GetSession(nextKey)());
+      StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(GetSession(*nextKey)());
       if ((next)&&((next != this)||(GetReflectToSelf()))) next->NodeChanged(modifiedNode, oldData, isBeingRemoved);
    }
 
@@ -247,15 +245,15 @@ NotifySubscribersThatNodeChanged(DataNode & modifiedNode, const MessageRef & old
 
 void 
 StorageReflectSession ::
-NotifySubscribersThatNodeIndexChanged(DataNode & modifiedNode, char op, uint32 index, const char * key)
+NotifySubscribersThatNodeIndexChanged(DataNode & modifiedNode, char op, uint32 index, const String & key)
 {
    TCHECKPOINT;
 
-   HashtableIterator<const char *, uint32> subIter = modifiedNode.GetSubscribers();
-   const char * next = NULL;  // set just to shut the compiler up
+   HashtableIterator<const String *, uint32> subIter = modifiedNode.GetSubscribers();
+   const String * next = NULL;  // set just to shut the compiler up
    while(subIter.GetNextKey(next) == B_NO_ERROR) 
    {
-      AbstractReflectSessionRef nRef = GetSession(next);
+      AbstractReflectSessionRef nRef = GetSession(*next);
       StorageReflectSession * s = dynamic_cast<StorageReflectSession *>(nRef());
       if (s) s->NodeIndexChanged(modifiedNode, op, index, key);
    }
@@ -269,7 +267,7 @@ NotifySubscribersOfNewNode(DataNode & newNode)
 {
    TCHECKPOINT;
 
-   HashtableIterator<const char *, AbstractReflectSessionRef> sessions = GetSessions();
+   HashtableIterator<const String *, AbstractReflectSessionRef> sessions(GetSessions());
    AbstractReflectSessionRef * lRef;
    while((lRef = sessions.GetNextValue()) != NULL)
    {
@@ -284,7 +282,7 @@ void
 StorageReflectSession ::
 NodeCreated(DataNode & newNode)
 {
-   newNode.IncrementSubscriptionRefCount(GetSessionIDString()(), _subscriptions.GetMatchCount(newNode, NULL, 0));
+   newNode.IncrementSubscriptionRefCount(GetSessionIDString(), _subscriptions.GetMatchCount(newNode, NULL, 0));
 }
 
 void
@@ -353,7 +351,7 @@ NodeChangedAux(DataNode & modifiedNode, bool isBeingRemoved)
 
 void
 StorageReflectSession ::
-NodeIndexChanged(DataNode & modifiedNode, char op, uint32 index, const char * key)
+NodeIndexChanged(DataNode & modifiedNode, char op, uint32 index, const String & key)
 {
    TCHECKPOINT;
 
@@ -366,7 +364,7 @@ NodeIndexChanged(DataNode & modifiedNode, char op, uint32 index, const char * ke
       {
          _sharedData->_subsDirty = true;
          char temp[100];
-         sprintf(temp, "%c"UINT32_FORMAT_SPEC":%s", op, index, key);
+         sprintf(temp, "%c"UINT32_FORMAT_SPEC":%s", op, index, key());
          _nextIndexSubscriptionMessage()->AddString(np, temp);
       }
       else WARN_OUT_OF_MEMORY;
@@ -376,7 +374,7 @@ NodeIndexChanged(DataNode & modifiedNode, char op, uint32 index, const char * ke
 
 status_t
 StorageReflectSession ::
-SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwrite, bool create, bool quiet, bool addToIndex, const char * optInsertBefore)
+SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwrite, bool create, bool quiet, bool addToIndex, const String * optInsertBefore)
 {
    TCHECKPOINT;
 
@@ -393,19 +391,18 @@ SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwri
       {
          slashPos = nodePath.IndexOf('/', lastSlashPos+1);
          nextClause = nodePath.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : nodePath.Length());
-         const char * clause = nextClause();
          DataNodeRef allocedNode;
-         if (node->GetChild(clause, childNodeRef) != B_NO_ERROR)
+         if (node->GetChild(nextClause, childNodeRef) != B_NO_ERROR)
          {
             if ((create)&&(_currentNodeCount < _maxNodeCount))
             {
-               allocedNode = GetNewDataNode(clause, ((slashPos < 0)&&(addToIndex == false)) ? dataMsgRef : _blankMessageRef);
+               allocedNode = GetNewDataNode(nextClause, ((slashPos < 0)&&(addToIndex == false)) ? dataMsgRef : GetEmptyMessageRef());
                if (allocedNode())
                {
                   childNodeRef = allocedNode;
                   if ((slashPos < 0)&&(addToIndex))
                   {
-                     if (node->InsertOrderedChild(dataMsgRef, optInsertBefore, clause[0]?clause:NULL, this, quiet?NULL:this, NULL) == B_NO_ERROR)
+                     if (node->InsertOrderedChild(dataMsgRef, optInsertBefore, (nextClause.Length()>0)?&nextClause:NULL, this, quiet?NULL:this, NULL) == B_NO_ERROR)
                      {
                         _currentNodeCount++;
                         _indexingPresent = true;
@@ -454,8 +451,7 @@ GetDataNode(const String & nodePath) const
       {
          slashPos = nodePath.IndexOf('/', lastSlashPos+1);
          nextClause = nodePath.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : nodePath.Length());
-         const char * clause = nextClause();
-         if ((node == NULL)||(node->GetChild(clause, childNodeRef) != B_NO_ERROR)) return NULL;  // lookup failure (404)
+         if ((node == NULL)||(node->GetChild(nextClause, childNodeRef) != B_NO_ERROR)) return NULL;  // lookup failure (404)
          node = childNodeRef();
          if (slashPos < 0) return node;
          lastSlashPos = slashPos;
@@ -498,7 +494,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
          {
             if (msg.HasName(PR_NAME_TREE_REQUEST_ID, B_STRING_TYPE)) 
             {
-               const char * str;
+               const String * str;
                for (int32 i=0; msg.FindString(PR_NAME_TREE_REQUEST_ID, i, &str) == B_NO_ERROR; i++) JettisonOutgoingSubtrees(str);
             }
             else JettisonOutgoingSubtrees(NULL);
@@ -511,9 +507,9 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
 
          case PR_COMMAND_GETDATATREES:
          {
-            const char * id = NULL; (void) msg.FindString(PR_NAME_TREE_REQUEST_ID, &id);
+            const String * id = NULL; (void) msg.FindString(PR_NAME_TREE_REQUEST_ID, &id);
             MessageRef reply = GetMessageFromPool(PR_RESULT_DATATREES);
-            if ((reply())&&((id==NULL)||(reply()->AddString(PR_NAME_TREE_REQUEST_ID, id) == B_NO_ERROR)))
+            if ((reply())&&((id==NULL)||(reply()->AddString(PR_NAME_TREE_REQUEST_ID, *id) == B_NO_ERROR)))
             {
                if (msg.HasName(PR_NAME_KEYS, B_STRING_TYPE)) 
                {
@@ -580,17 +576,17 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
             bool subscribeQuietly = msg.HasName(PR_NAME_SUBSCRIBE_QUIETLY);
             MessageFieldNameIterator it = msg.GetFieldNameIterator();
             Message getMsg(PR_COMMAND_GETDATA);
-            const char * fn;
-            while((fn = it.GetNextFieldName()) != NULL)
+            const String * fn;
+            while((fn = it.GetNextFieldNameString()) != NULL)
             {
                bool copyField = true;
-               if (strncmp(fn, "SUBSCRIBE:", 10) == 0)
+               if (strncmp(fn->Cstr(), "SUBSCRIBE:", 10) == 0)
                {
                   QueryFilterRef filter;
                   MessageRef filterMsgRef;
-                  if (msg.FindMessage(fn, filterMsgRef) == B_NO_ERROR) filter = GetGlobalQueryFilterFactory()()->CreateQueryFilter(*filterMsgRef());
+                  if (msg.FindMessage(*fn, filterMsgRef) == B_NO_ERROR) filter = GetGlobalQueryFilterFactory()()->CreateQueryFilter(*filterMsgRef());
                   
-                  const char * path = &fn[10];
+                  String path = fn->Substring(10);
                   String fixPath(path);
                   _subscriptions.AdjustStringPrefix(fixPath, DEFAULT_PATH_PREFIX);
                   const PathMatcherEntry * e = _subscriptions.GetEntries().Get(fixPath);
@@ -622,35 +618,35 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                      (void) getMsg.AddMessage(PR_NAME_FILTERS, filterMsgRef);
                   }
                }
-               else if (strcmp(fn, PR_NAME_REFLECT_TO_SELF) == 0)
+               else if (*fn == PR_NAME_REFLECT_TO_SELF)
                {
                   SetReflectToSelf(true);
                }
-               else if (strcmp(fn, PR_NAME_DISABLE_SUBSCRIPTIONS) == 0)
+               else if (*fn == PR_NAME_DISABLE_SUBSCRIPTIONS)
                {
                   SetSubscriptionsEnabled(false);
                }
-               else if ((strcmp(fn, PR_NAME_KEYS) == 0)||(strcmp(fn, PR_NAME_FILTERS) == 0))
+               else if ((*fn == PR_NAME_KEYS)||(*fn == PR_NAME_FILTERS))
                {
-                  msg.MoveName(fn, _defaultMessageRouteMessage);
+                  msg.MoveName(*fn, _defaultMessageRouteMessage);
                   updateDefaultMessageRoute = true;
                }
-               else if (strcmp(fn, PR_NAME_SUBSCRIBE_QUIETLY) == 0)
+               else if (*fn == PR_NAME_SUBSCRIBE_QUIETLY)
                {
                   // don't add this to the parameter set; it's just an "argument" for the SUBSCRIBE: fields.
                   copyField = false;
                }
-               else if (strcmp(fn, PR_NAME_MAX_UPDATE_MESSAGE_ITEMS) == 0)
+               else if (*fn == PR_NAME_MAX_UPDATE_MESSAGE_ITEMS)
                {
                   (void) msg.FindInt32(PR_NAME_MAX_UPDATE_MESSAGE_ITEMS, (int32*)&_maxSubscriptionMessageItems);
                }
-               else if (strcmp(fn, PR_NAME_PRIVILEGE_BITS) == 0)
+               else if (*fn == PR_NAME_PRIVILEGE_BITS)
                {
                   // don't add this to the parameter set; clients aren't allowed to change
                   // their privilege bits (maybe someday, for some clients, but not now)
                   copyField = false;
                }
-               else if (strcmp(fn, PR_NAME_REPLY_ENCODING) == 0)
+               else if (*fn == PR_NAME_REPLY_ENCODING)
                {
                   int32 enc;
                   if (msg.FindInt32(PR_NAME_REPLY_ENCODING, &enc) != B_NO_ERROR) enc = MUSCLE_MESSAGE_ENCODING_DEFAULT;
@@ -658,7 +654,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                   if (gw) gw->SetOutgoingEncoding(enc);
                }
 
-               if (copyField) msg.CopyName(fn, _parameters);
+               if (copyField) msg.CopyName(*fn, _parameters);
             }
             if (updateDefaultMessageRoute) UpdateDefaultMessageRoute();
             if (getMsg.HasName(PR_NAME_KEYS)) DoGetData(getMsg);  // return any data that matches the subscription
@@ -705,63 +701,19 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
          case PR_COMMAND_REMOVEPARAMETERS:
          {
             bool updateDefaultMessageRoute = false;
-            StringMatcher matcher;
-            const char * nextName;
-            Queue<String> toRemove;
-
-            // Compile a list of parameters whose names match any key in the PR_NAME_KEYS field
+            const String * nextName;
             for (int i=0; msg.FindString(PR_NAME_KEYS, i, &nextName) == B_NO_ERROR; i++) 
             {
                // Search the parameters message for all parameters that match (nextName)...
-               if (matcher.SetPattern(nextName) == B_NO_ERROR)
+               StringMatcher matcher;
+               if (matcher.SetPattern(*nextName) == B_NO_ERROR)
                {
-                  MessageFieldNameIterator it = _parameters.GetFieldNameIterator();
-                  const char * fn;
-                  while((fn = it.GetNextFieldName()) != NULL) if (matcher.Match(fn)) (void) toRemove.AddTail(fn);
-               }
-               else LogTime(MUSCLE_LOG_ERROR, "PR_COMMAND_REMOVEPARAMETERS:  Error, StringMatcher couldn't match on [%s]\n",nextName);
-            }
-
-            // Now remove them from our parameters list (and do any side effects that go with that)
-            for (int j=toRemove.GetNumItems()-1; j>=0; j--) 
-            {
-               const char * paramName = toRemove[j]();
-
-               if (_parameters.RemoveName(paramName) == B_NO_ERROR)
-               {
-                  if (strncmp(paramName, "SUBSCRIBE:", 10) == 0) 
+                  if (matcher.IsPatternUnique()) (void) RemoveParameter(*nextName, updateDefaultMessageRoute);
+                  else
                   {
-                     String str(&paramName[10]);
-                     _subscriptions.AdjustStringPrefix(str, DEFAULT_PATH_PREFIX);
-                     if (_subscriptions.RemovePathString(str) == B_NO_ERROR)
-                     {
-                        // Remove the references from this subscription from all nodes
-                        NodePathMatcher temp;
-                        temp.PutPathString(str, QueryFilterRef());
-                        temp.DoTraversal((PathMatchCallback)DoSubscribeRefCallbackFunc, this, GetGlobalRoot(), false, (void *)-1L);
-                     }
-                  }
-                  else if (strcmp(paramName, PR_NAME_REFLECT_TO_SELF) == 0)
-                  {
-                     SetReflectToSelf(false);
-                  }
-                  else if (strcmp(paramName, PR_NAME_DISABLE_SUBSCRIPTIONS) == 0)
-                  {
-                     SetSubscriptionsEnabled(true);
-                  }
-                  else if (strcmp(paramName, PR_NAME_MAX_UPDATE_MESSAGE_ITEMS) == 0)
-                  {
-                     _maxSubscriptionMessageItems = DEFAULT_MAX_SUBSCRIPTION_MESSAGE_SIZE;  // back to the default
-                  }
-                  else if (strcmp(paramName, PR_NAME_REPLY_ENCODING) == 0)
-                  {
-                     MessageIOGateway * gw = dynamic_cast<MessageIOGateway *>(GetGateway()());
-                     if (gw) gw->SetOutgoingEncoding(MUSCLE_MESSAGE_ENCODING_DEFAULT);
-                  }
-                  else if ((strcmp(paramName, PR_NAME_KEYS) == 0)||(strcmp(paramName, PR_NAME_FILTERS) == 0))
-                  {
-                     _defaultMessageRouteMessage.RemoveName(paramName);
-                     updateDefaultMessageRoute = true;
+                     MessageFieldNameIterator it = _parameters.GetFieldNameIterator();
+                     const String * fn;
+                     while((fn = it.GetNextFieldNameString()) != NULL) if (matcher.Match(fn->Cstr())) (void) RemoveParameter(*fn, updateDefaultMessageRoute);
                   }
                }
             }
@@ -796,7 +748,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                const String * nextFieldName;
                while((nextFieldName = iter.GetNextFieldNameString()) != NULL)
                {
-                  const char * value;
+                  const String * value;
                   if (msg.FindString(*nextFieldName, &value) == B_NO_ERROR)
                   {
                      Message temp;
@@ -886,9 +838,12 @@ void StorageReflectSession :: UpdateDefaultMessageRoute()
 class FindMatchingSessionsData
 {
 public:
-   FindMatchingSessionsData(Hashtable<const char *, AbstractReflectSessionRef> & results, uint32 maxResults) : _results(results), _ret(B_NO_ERROR), _maxResults(maxResults) {/* empty */}
+   FindMatchingSessionsData(Hashtable<const String *, AbstractReflectSessionRef> & results, uint32 maxResults) : _results(results), _ret(B_NO_ERROR), _maxResults(maxResults) 
+   {
+      // _results doesn't need to have SetKeyCompareFunction() called on it, since we know the pointers are unique anyway
+   }
 
-   Hashtable<const char *, AbstractReflectSessionRef> & _results;
+   Hashtable<const String *, AbstractReflectSessionRef> & _results;
    status_t _ret;
    uint32 _maxResults;
 };
@@ -896,12 +851,12 @@ public:
 AbstractReflectSessionRef StorageReflectSession :: FindMatchingSession(const String & nodePath, const QueryFilterRef & filter, bool matchSelf) const
 {
    AbstractReflectSessionRef ret;
-   Hashtable<const char *, AbstractReflectSessionRef> results;
+   Hashtable<const String *, AbstractReflectSessionRef> results;
    if (FindMatchingSessions(nodePath, filter, results, matchSelf, 1) == B_NO_ERROR) (void) results.GetIterator().GetNextValue(ret);
    return ret;
 }
 
-status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, const QueryFilterRef & filter, Hashtable<const char *, AbstractReflectSessionRef> & retSessions, bool includeSelf, uint32 maxResults) const
+status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, const QueryFilterRef & filter, Hashtable<const String *, AbstractReflectSessionRef> & retSessions, bool includeSelf, uint32 maxResults) const
 {
    TCHECKPOINT;
 
@@ -911,7 +866,7 @@ status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, 
    {
       const char * s;
       String temp;
-      if (nodePath.StartsWith("/")) s = nodePath()+1;
+      if (nodePath.StartsWith('/')) s = nodePath()+1;
       else
       {
          temp = nodePath.Prepend(DEFAULT_PATH_PREFIX "/");
@@ -929,13 +884,13 @@ status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, 
    }
    else
    {
-      HashtableIterator<const char *, AbstractReflectSessionRef> iter = GetSessions();
-      const char * nextKey;
+      HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
+      const String * nextKey;
       AbstractReflectSessionRef nextValue;
       while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR) if (retSessions.Put(nextKey, nextValue) != B_NO_ERROR) ret = B_ERROR;
    }
 
-   if (includeSelf == false) (void) retSessions.Remove(GetSessionIDString()());
+   if (includeSelf == false) (void) retSessions.Remove(&GetSessionIDString());
    return ret;
 }
 
@@ -1049,7 +1004,7 @@ void StorageReflectSession :: DoRemoveData(NodePathMatcher & matcher, bool quiet
       {
          DataNode * next = removeSet[i]();
          DataNode * parent = next->GetParent();
-         if ((next)&&(parent)) parent->RemoveChild(next->GetNodeName()(), quiet ? NULL : this, true, &_currentNodeCount);
+         if ((next)&&(parent)) parent->RemoveChild(next->GetNodeName(), quiet ? NULL : this, true, &_currentNodeCount);
       }
    }
 }
@@ -1075,7 +1030,7 @@ PushSubscriptionMessages()
       _sharedData->_subsDirty = false;
 
       // Send out any subscription results that were generated...
-      HashtableIterator<const char *, AbstractReflectSessionRef> sessions = GetSessions();
+      HashtableIterator<const String *, AbstractReflectSessionRef> sessions(GetSessions());
       AbstractReflectSessionRef * lRef;
       while((lRef = sessions.GetNextValue()) != NULL)
       {
@@ -1120,7 +1075,7 @@ PassMessageCallbackAux(DataNode & node, const MessageRef & msgRef, bool includeS
 
    DataNode * n = &node;
    while(n->GetDepth() > 2) n = n->GetParent();  // go up to session level...
-   StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(GetSession(n->GetNodeName()())());
+   StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(GetSession(n->GetNodeName())());
    if ((next)&&((next != this)||(includeSelfOkay))) next->MessageReceivedFromSession(*this, msgRef, &node);
    return 2; // This causes the traversal to immediately skip to the next session
 }
@@ -1133,11 +1088,11 @@ FindSessionsCallback(DataNode & node, void * userData)
 
    DataNode * n = &node;
    while(n->GetDepth() > 2) n = n->GetParent();  // go up to session level...
-   AbstractReflectSessionRef sref = GetSession(n->GetNodeName()());
+   AbstractReflectSessionRef sref = GetSession(n->GetNodeName());
 
    StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(sref());
    FindMatchingSessionsData * data = (FindMatchingSessionsData *) userData;
-   if ((next)&&(data->_results.Put(next->GetSessionIDString()(), sref) != B_NO_ERROR))
+   if ((next)&&(data->_results.Put(&next->GetSessionIDString(), sref) != B_NO_ERROR))
    {
       data->_ret = B_ERROR;  // Oops, out of memory!
       return -1;  // abort now
@@ -1153,7 +1108,7 @@ KickClientCallback(DataNode & node, void * /*userData*/)
 
    DataNode * n = &node;
    while(n->GetDepth() > 2) n = n->GetParent();  // go up to session level...
-   AbstractReflectSessionRef sref = GetSession(n->GetNodeName()());
+   AbstractReflectSessionRef sref = GetSession(n->GetNodeName());
    StorageReflectSession * next = dynamic_cast<StorageReflectSession *>(sref());
    if ((next)&&(next != this)) 
    {
@@ -1180,7 +1135,7 @@ GetSubtreesCallback(DataNode & node, void * ud)
       // Make sure (node) isn't part of our own tree!  If it is, move immediately to the next session
       const DataNode * n = &node;
       while(n->GetDepth() > 2) n = n->GetParent();
-      if ((_indexingPresent == false)&&(GetSession(n->GetNodeName()())() == this)) return 2;  // skip to next session node
+      if ((_indexingPresent == false)&&(GetSession(n->GetNodeName())() == this)) return 2;  // skip to next session node
    }
    // Don't send our own data to our own client; he already knows what we have, because he uploaded it!
    if ((inMyOwnSubtree == false)||(reflectToSelf))
@@ -1210,7 +1165,7 @@ int
 StorageReflectSession ::
 DoSubscribeRefCallback(DataNode & node, void * userData)
 {
-   node.IncrementSubscriptionRefCount(GetSessionIDString()(), (long) userData);
+   node.IncrementSubscriptionRefCount(GetSessionIDString(), (long) userData);
    return node.GetDepth();  // continue traversal as usual
 }
 
@@ -1229,7 +1184,7 @@ GetDataCallback(DataNode & node, void * userData)
       // Make sure (node) isn't part of our own tree!  If it is, move immediately to the next session
       const DataNode * n = &node;
       while(n->GetDepth() > 2) n = n->GetParent();
-      if ((_indexingPresent == false)&&(GetSession(n->GetNodeName()())() == this)) return 2;  // skip to next session node
+      if ((_indexingPresent == false)&&(GetSession(n->GetNodeName())() == this)) return 2;  // skip to next session node
    }
  
    // Don't send our own data to our own client; he already knows what we have, because he uploaded it!
@@ -1251,7 +1206,7 @@ GetDataCallback(DataNode & node, void * userData)
    }
 
    // But indices we need to send to ourself no matter what, as they are generated on the server side.
-   const Queue<const char *> * index = node.GetIndex();
+   const Queue<const String *> * index = node.GetIndex();
    if (index)
    {
       uint32 indexLen = index->GetNumItems();
@@ -1267,7 +1222,7 @@ GetDataCallback(DataNode & node, void * userData)
             for (uint32 i=0; i<indexLen; i++) 
             {
                char temp[100];
-               sprintf(temp, "%c"UINT32_FORMAT_SPEC":%s", INDEX_OP_ENTRYINSERTED, i, (*index)[i]);
+               sprintf(temp, "%c"UINT32_FORMAT_SPEC":%s", INDEX_OP_ENTRYINSERTED, i, (*index)[i]->Cstr());
                (void) indexUpdateMsg()->AddString(np, temp);
             }
             if (indexUpdateMsg()->CountNames() >= _maxSubscriptionMessageItems) SendGetDataResults(messageArray[1]);
@@ -1292,7 +1247,7 @@ RemoveDataCallback(DataNode & node, void * userData)
    if (node.GetDepth() > 2)  // ensure that we never remove host nodes or session nodes this way
    {
       DataNodeRef nodeRef;
-      if (node.GetParent()->GetChild(node.GetNodeName()(), nodeRef) == B_NO_ERROR) 
+      if (node.GetParent()->GetChild(node.GetNodeName(), nodeRef) == B_NO_ERROR) 
       {
          (void) ((Queue<DataNodeRef> *)userData)->AddTail(nodeRef);
          return node.GetDepth()-1;  // no sense in recursing down a node that we're going to delete anyway
@@ -1318,7 +1273,7 @@ InsertOrderedDataCallback(DataNode & node, void * userData)
       MessageRef nextRef;
       for (int i=0; (insertMsg->FindMessage(*next, i, nextRef) == B_NO_ERROR); i++)
       {
-         if ((_currentNodeCount < _maxNodeCount)&&(node.InsertOrderedChild(nextRef, (*next)(), NULL, this, this, optRetResults) == B_NO_ERROR))
+         if ((_currentNodeCount < _maxNodeCount)&&(node.InsertOrderedChild(nextRef, next, NULL, this, this, optRetResults) == B_NO_ERROR))
          {
             _indexingPresent = true;  // disable optimization in GetDataCallback()
             _currentNodeCount++;
@@ -1333,7 +1288,7 @@ StorageReflectSession ::
 ReorderDataCallback(DataNode & node, void * userData)
 {
    DataNode * indexNode = node.GetParent();
-   if (indexNode) indexNode->ReorderChild(node, (const char *) userData, this);
+   if (indexNode) indexNode->ReorderChild(node, (const String *) userData, this);
    return node.GetDepth();
 }
 
@@ -1439,7 +1394,7 @@ DoTraversalAux(const TraversalContext & data, DataNode & node)
          const StringMatcherQueue * nextQueue = nextValue->GetParser()();
          if ((nextQueue)&&((int)nextQueue->GetNumItems() > depth-data._rootDepth))
          {
-            const char * key = nextQueue->GetItemAt(depth-data._rootDepth)->GetItemPointer()->GetPattern()();
+            const String & key = nextQueue->GetItemAt(depth-data._rootDepth)->GetItemPointer()->GetPattern();
             DataNodeRef nextChildRef;
             if ((node.GetChild(key, nextChildRef) == B_NO_ERROR)&&(alreadyDid.IndexOf(nextChildRef()) == -1))
             {
@@ -1461,7 +1416,7 @@ CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int 
 
    if (nextChild)
    {
-      const char * nextChildName = nextChild->GetNodeName()();
+      const String & nextChildName = nextChild->GetNodeName();
       bool matched  = false;  // set if we have called the callback on this child already
       bool recursed = false;  // set if we have recursed to this child already
 
@@ -1477,7 +1432,7 @@ CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int 
             if (numClausesInParser > depth-data._rootDepth)
             {
                const StringMatcher * nextMatcher = nextQueue->GetItemAt(depth-data._rootDepth)->GetItemPointer();
-               if ((nextMatcher == NULL)||(nextMatcher->Match(nextChildName)))
+               if ((nextMatcher == NULL)||(nextMatcher->Match(nextChildName())))
                {
                   // A match!  Now, depending on whether this match is the
                   // last clause in the path or not, we either do the callback or descend.
@@ -1535,7 +1490,7 @@ CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int 
 
 DataNodeRef
 StorageReflectSession ::
-GetNewDataNode(const char * name, const MessageRef & initialValue)
+GetNewDataNode(const String & name, const MessageRef & initialValue)
 {
    DataNodeRef ret = _nodePool.ObtainObject();
    if (ret()) ret()->Init(name, initialValue);
@@ -1544,29 +1499,32 @@ GetNewDataNode(const char * name, const MessageRef & initialValue)
 
 void
 StorageReflectSession ::
-JettisonOutgoingSubtrees(const char * optMatchString)
+JettisonOutgoingSubtrees(const String * optMatchString)
 {
    TCHECKPOINT;
 
    AbstractMessageIOGateway * gw = GetGateway()();
    if (gw)
    {
-      StringMatcher sm(optMatchString?optMatchString:"");
-      Queue<MessageRef> & oq = gw->GetOutgoingMessageQueue();
-      for (int i=oq.GetNumItems()-1; i>=0; i--)  // must do this backwards!
+      StringMatcher sm;
+      if ((optMatchString == NULL)||(sm.SetPattern(*optMatchString) == B_NO_ERROR))
       {
-         Message * msg = oq.GetItemAt(i)->GetItemPointer();
-         if ((msg)&&(msg->what == PR_RESULT_DATATREES))
+         Queue<MessageRef> & oq = gw->GetOutgoingMessageQueue();
+         for (int i=oq.GetNumItems()-1; i>=0; i--)  // must do this backwards!
          {
-            bool removeIt = false;
-            const char * batchID = NULL; (void) msg->FindString(PR_NAME_TREE_REQUEST_ID, &batchID);
-            if (optMatchString)
+            Message * msg = oq.GetItemAt(i)->GetItemPointer();
+            if ((msg)&&(msg->what == PR_RESULT_DATATREES))
             {
-               if ((batchID)&&(sm.Match(batchID))) removeIt = true;
+               bool removeIt = false;
+               const char * batchID = NULL; (void) msg->FindString(PR_NAME_TREE_REQUEST_ID, &batchID);
+               if (optMatchString)
+               {
+                  if ((batchID)&&(sm.Match(batchID))) removeIt = true;
+               }
+               else if (batchID == NULL) removeIt = true;
+   
+               if (removeIt) oq.RemoveItemAt(i);
             }
-            else if (batchID == NULL) removeIt = true;
-
-            if (removeIt) oq.RemoveItemAt(i);
          }
       }
    }
@@ -1591,28 +1549,28 @@ JettisonOutgoingResults(const NodePathMatcher * matcher)
             {
                // Remove any PR_NAME_REMOVED_DATAITEMS entries that match... 
                int nextr = 0;
-               const char * rname;
+               const String * rname;
                while(msg->FindString(PR_NAME_REMOVED_DATAITEMS, nextr, &rname) == B_NO_ERROR)
                {
-                  if (matcher->MatchesPath(rname, NULL, NULL)) msg->RemoveData(PR_NAME_REMOVED_DATAITEMS, nextr);
-                                                          else nextr++;
+                  if (matcher->MatchesPath(rname->Cstr(), NULL, NULL)) msg->RemoveData(PR_NAME_REMOVED_DATAITEMS, nextr);
+                                                                  else nextr++;
                }
    
                // Remove all matching items from the Message.  (Yes, the iterator can handle this!  :^))
-               const char * nextFieldName;
+               const String * nextFieldName;
                MessageFieldNameIterator iter = msg->GetFieldNameIterator(B_MESSAGE_TYPE);
-               while((nextFieldName = iter.GetNextFieldName()) != NULL)
+               while((nextFieldName = iter.GetNextFieldNameString()) != NULL)
                {
                   if (matcher->GetNumFilters() > 0)
                   {
                      MessageRef nextSubMsgRef;
-                     for (uint32 j=0; msg->FindMessage(nextFieldName, j, nextSubMsgRef) == B_NO_ERROR; /* empty */)
+                     for (uint32 j=0; msg->FindMessage(*nextFieldName, j, nextSubMsgRef) == B_NO_ERROR; /* empty */)
                      {
-                        if (matcher->MatchesPath(nextFieldName, nextSubMsgRef(), NULL)) msg->RemoveData(nextFieldName, 0);
-                                                                                   else j++;
+                        if (matcher->MatchesPath(nextFieldName->Cstr(), nextSubMsgRef(), NULL)) msg->RemoveData(*nextFieldName, 0);
+                                                                                           else j++;
                      }
                   }
-                  else if (matcher->MatchesPath(nextFieldName, NULL, NULL)) msg->RemoveName(nextFieldName);
+                  else if (matcher->MatchesPath(nextFieldName->Cstr(), NULL, NULL)) msg->RemoveName(*nextFieldName);
                }
             }
             else msg->Clear();
@@ -1624,7 +1582,7 @@ JettisonOutgoingResults(const NodePathMatcher * matcher)
 }
 
 status_t
-StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const String & destPath, bool allowOverwriteData, bool allowCreateNode, bool quiet, bool addToTargetIndex, const char * optInsertBefore, MessageReplaceFunc optFunc, void * funcArg)
+StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const String & destPath, bool allowOverwriteData, bool allowCreateNode, bool quiet, bool addToTargetIndex, const String * optInsertBefore, MessageReplaceFunc optFunc, void * funcArg)
 {
    TCHECKPOINT;
 
@@ -1637,31 +1595,24 @@ StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const Strin
 
    // Then clone all of his children
    DataNodeRefIterator iter = node.GetChildIterator();
-   const char * nextChildName;
+   const String * nextChildName = NULL;  // set NULL just to shut the compiler up
    DataNodeRef nextChild; 
    while(iter.GetNextKeyAndValue(nextChildName, nextChild) == B_NO_ERROR)
    {
+      // Note that we don't deal with the index-cloning here; we do it separately (below) instead, for efficiency
       const DataNode * child = nextChild();
-      if (child)
-      {
-         String childPath = destPath;
-         childPath += '/';
-         childPath += nextChildName;
-
-         // Note that we don't deal with the index-cloning here; we do it separately (below) instead, for efficiency
-         if (CloneDataNodeSubtree(*child, childPath, false, true, quiet, false, NULL, optFunc, funcArg) != B_NO_ERROR) return B_ERROR;
-      }
+      if ((child)&&(CloneDataNodeSubtree(*child, destPath+'/'+(*nextChildName), false, true, quiet, false, NULL, optFunc, funcArg) != B_NO_ERROR)) return B_ERROR;
    }
 
    // Lastly, if he has an index, make sure the clone ends up with an equivalent index
-   const Queue<const char *> * index = node.GetIndex();
+   const Queue<const String *> * index = node.GetIndex();
    if (index)
    {
       DataNode * clone = GetDataNode(destPath);
       if (clone)
       {
          uint32 idxLen = index->GetNumItems();
-         for (uint32 i=0; i<idxLen; i++) if (clone->InsertIndexEntryAt(i, this, (*index)[i]) != B_NO_ERROR) return B_ERROR;
+         for (uint32 i=0; i<idxLen; i++) if (clone->InsertIndexEntryAt(i, this, *((*index)[i])) != B_NO_ERROR) return B_ERROR;
       }
       else return B_ERROR;
    }
@@ -1680,7 +1631,7 @@ StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * n
    if ((node->HasChildren())&&(maxDepth > 0))
    {
       // Save the node-index, if there is one
-      const Queue<const char *> * index = node->GetIndex();
+      const Queue<const String *> * index = node->GetIndex();
       if (index)
       {
          uint32 indexSize = index->GetNumItems();
@@ -1689,7 +1640,7 @@ StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * n
             MessageRef indexMsgRef(GetMessageFromPool());
             if ((indexMsgRef() == NULL)||(msg.AddMessage(PR_NAME_NODEINDEX, indexMsgRef) != B_NO_ERROR)) return B_ERROR;
             Message * indexMsg = indexMsgRef();
-            for (uint32 i=0; i<indexSize; i++) if (indexMsg->AddString(PR_NAME_KEYS, (*index)[i]) != B_NO_ERROR) return B_ERROR;
+            for (uint32 i=0; i<indexSize; i++) if (indexMsg->AddString(PR_NAME_KEYS, *((*index)[i])) != B_NO_ERROR) return B_ERROR;
          }
       }
 
@@ -1733,21 +1684,21 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
    if ((maxDepth > 0)&&(msg.FindMessage(PR_NAME_NODECHILDREN, childrenRef) == B_NO_ERROR)&&(childrenRef()))
    {
       // First recurse to the indexed nodes, adding them as indexed children
-      Hashtable<const char *, uint32> indexLookup;
-      indexLookup.SetKeyCompareFunction(CStringCompareFunc);
+      Hashtable<const String *, uint32> indexLookup;
+      indexLookup.SetKeyCompareFunction(StringCompareFunc);
       {
          MessageRef indexRef;
          if (msg.FindMessage(PR_NAME_NODEINDEX, indexRef) == B_NO_ERROR)
          {
-            const char * nextFieldName;
+            const String * nextFieldName;
             for (int i=0; indexRef()->FindString(PR_NAME_KEYS, i, &nextFieldName) == B_NO_ERROR; i++)
             {
                MessageRef nextChildRef;
-               if (childrenRef()->FindMessage(nextFieldName, nextChildRef) == B_NO_ERROR) 
+               if (childrenRef()->FindMessage(*nextFieldName, nextChildRef) == B_NO_ERROR) 
                {
                   String childPath(path);
                   if (childPath.Length() > 0) childPath += '/';
-                  childPath += nextFieldName;
+                  childPath += *nextFieldName;
                   if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true, true, maxDepth-1) != B_NO_ERROR) return B_ERROR;
                   if (indexLookup.Put(nextFieldName, i) != B_NO_ERROR) return B_ERROR;
                }
@@ -1758,17 +1709,17 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
       // Then recurse to the non-indexed child nodes 
       {
          MessageFieldNameIterator iter = childrenRef()->GetFieldNameIterator(B_MESSAGE_TYPE);
-         const char * nextFieldName;
-         while((nextFieldName = iter.GetNextFieldName()) != NULL)
+         const String * nextFieldName;
+         while((nextFieldName = iter.GetNextFieldNameString()) != NULL)
          {
             if (indexLookup.ContainsKey(nextFieldName) == false)
             {
                MessageRef nextChildRef;
-               if ((childrenRef()->FindMessage(nextFieldName, nextChildRef) == B_NO_ERROR)&&(nextChildRef()))
+               if ((childrenRef()->FindMessage(*nextFieldName, nextChildRef) == B_NO_ERROR)&&(nextChildRef()))
                {
                   String childPath(path);
                   if (childPath.Length() > 0) childPath += '/';
-                  childPath += nextFieldName;
+                  childPath += *nextFieldName;
                   if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true, false, maxDepth-1) != B_NO_ERROR) return B_ERROR;
                }
             }
@@ -1778,9 +1729,36 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
    return B_NO_ERROR;   
 }
 
-MessageRef StorageReflectSession :: GetBlankMessage() const
+status_t StorageReflectSession :: RemoveParameter(const String & paramName, bool & retUpdateDefaultMessageRoute)
 {
-   return _blankMessageRef;
+   if (_parameters.RemoveName(paramName) != B_NO_ERROR) return B_ERROR;
+
+   if (paramName.StartsWith("SUBSCRIBE:"))
+   {
+      String str = paramName.Substring(10);
+      _subscriptions.AdjustStringPrefix(str, DEFAULT_PATH_PREFIX);
+      if (_subscriptions.RemovePathString(str) == B_NO_ERROR)
+      {
+         // Remove the references from this subscription from all nodes
+         NodePathMatcher temp;
+         temp.PutPathString(str, QueryFilterRef());
+         temp.DoTraversal((PathMatchCallback)DoSubscribeRefCallbackFunc, this, GetGlobalRoot(), false, (void *)-1L);
+      }
+   }
+   else if (paramName == PR_NAME_REFLECT_TO_SELF)          SetReflectToSelf(false);
+   else if (paramName == PR_NAME_DISABLE_SUBSCRIPTIONS)    SetSubscriptionsEnabled(true);
+   else if (paramName == PR_NAME_MAX_UPDATE_MESSAGE_ITEMS) _maxSubscriptionMessageItems = DEFAULT_MAX_SUBSCRIPTION_MESSAGE_SIZE;  // back to the default
+   else if (paramName == PR_NAME_REPLY_ENCODING)
+   {
+      MessageIOGateway * gw = dynamic_cast<MessageIOGateway *>(GetGateway()());
+      if (gw) gw->SetOutgoingEncoding(MUSCLE_MESSAGE_ENCODING_DEFAULT);
+   }
+   else if ((paramName == PR_NAME_KEYS)||(paramName == PR_NAME_FILTERS))
+   {
+      _defaultMessageRouteMessage.RemoveName(paramName);
+      retUpdateDefaultMessageRoute = true;
+   }
+   return B_NO_ERROR;
 }
 
 END_NAMESPACE(muscle);

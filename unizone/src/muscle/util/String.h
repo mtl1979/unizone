@@ -12,7 +12,6 @@
 #ifndef MuscleString_h
 #define MuscleString_h
 
-#include <string.h> 
 #include <ctype.h> 
 #include "support/Flattenable.h"
 #include "system/GlobalMemoryAllocator.h"  // for muscleFree()
@@ -621,6 +620,15 @@ public:
    String Arg(const String & value) const;
    String Arg(const char * value) const;
 
+   /** Returns a 32-bit checksum corresponding to this String's contents.
+     * Note that this method method is O(N).
+     */
+#ifdef MUSCLE_AVOID_NAMESPACES
+   uint32 CalculateChecksum() const {return ::CalculateChecksum((const uint8 *) Cstr(), Length());}
+#else
+   uint32 CalculateChecksum() const {return muscle::CalculateChecksum((const uint8 *) Cstr(), Length());}
+#endif
+
 private:
    bool IsSpaceChar(char c) const {return ((c==' ')||(c=='\t')||(c=='\r')||(c=='\n'));}
    status_t EnsureBufferSize(uint32 newBufLen, bool retainValue);
@@ -654,14 +662,24 @@ public:
 };
 
 template <>
+class HashFunctor<const String *>
+{
+public:
+   uint32 operator () (const String * x) const {return x->HashCode();}
+};
+
+template <>
 class HashFunctor<const char *>
 {
 public:
    uint32 operator () (const char * x) const {return CStringHashFunc(x);}
 };
 
-/** A function for comparing (const String &)'s -- calls the String operators */
+/** A function for comparing (const String &)'s -- calls muscleCompare() on the two Strings. */
 int StringCompareFunc(const String &, const String &, void *);
+
+/** A function for comparing (const String *)'s -- calls muscleCompare() on the two Strings. */
+int StringCompareFunc(const String * const &, const String * const &, void *);
 
 /** A function for comparing (const char *)'s -- calls strcmp() */
 int CStringCompareFunc(const char * const &, const char * const &, void *);

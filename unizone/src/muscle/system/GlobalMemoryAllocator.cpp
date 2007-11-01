@@ -5,8 +5,6 @@
 # include <typeinfo>
 #endif
 
-#include <string.h>
-
 #include "system/GlobalMemoryAllocator.h"
 #include "system/SetupSystem.h"  // for GetGlobalMuscleLock()
 

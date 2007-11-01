@@ -61,11 +61,14 @@ public:
    bool IsPatternUnique() const {return (_hasRegexTokens == false)&&(_negate == false)&&(_rangeMin == MUSCLE_NO_LIMIT);}
 
    /** Returns true iff (string) is matched by the current expression.
-    * @param string a string to match against using our current expression.
-    * @return true iff (string) matches, false otherwise.
+    * @param matchString a string to match against using our current expression.
+    * @return true iff (matchString) matches, false otherwise.
     */
-   bool Match(const char * const string) const;
+   bool Match(const char * const matchString) const;
     
+   /** Conveneience method:  Same as above, but takes a String object instead of a (const char *). */
+   inline bool Match(const String & matchString) const {return Match(matchString());}
+
    /** If set true, Match() will return the logical opposite of what
      * it would otherwise return; e.g. it will return true only when
      * the given string doesn't match the pattern.
@@ -116,6 +119,9 @@ void RemoveEscapeChars(String & str);
  *  @return True iff any special regex chars were found in (str).
  */
 bool HasRegexTokens(const char * str);
+
+/** As above, but takes a String object instead of a (const char *) */
+inline bool HasRegexTokens(const String & str) {return HasRegexTokens(str());}
 
 /** Returns true iff (c) is a regular expression "special" char as far as StringMatchers are concerned.
  *  @param c an ASCII char

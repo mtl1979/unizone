@@ -199,13 +199,13 @@ public:
 
    virtual status_t SetFromArchive(const Message & archive)
    {
-      DataType * dt;
+      const void * dt;
       uint32 numBytes;
       if ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&
           (archive.FindInt8("op", (int8*)&_op)       == B_NO_ERROR)&&
-          (archive.FindData("val", DataTypeCode, (const void **)&dt, &numBytes) == B_NO_ERROR)&&(numBytes == sizeof(_value)))
+          (archive.FindData("val", DataTypeCode, &dt, &numBytes) == B_NO_ERROR)&&(numBytes == sizeof(_value)))
       {
-         _value = *dt;
+         _value = *((DataType *)dt);
          return B_NO_ERROR;
       }
       return B_ERROR;
@@ -216,18 +216,19 @@ public:
    virtual bool Matches(const Message & msg, const DataNode *) const
    {
       bool ret = false;
-      DataType * temp;
-      if (msg.FindData(GetFieldName(), DataTypeCode, GetIndex(), (const void **) &temp, NULL) == B_NO_ERROR)
+      const void * p;
+      if (msg.FindData(GetFieldName(), DataTypeCode, GetIndex(), &p, NULL) == B_NO_ERROR)
       {
+         const DataType & temp = *((const DataType *)p);
          switch(_op)
          {
-            case OP_EQUAL_TO:                 ret = (*temp == _value); break;
-            case OP_LESS_THAN:                ret = (*temp <  _value); break;
-            case OP_GREATER_THAN:             ret = (*temp >  _value); break;
-            case OP_LESS_THAN_OR_EQUAL_TO:    ret = (*temp <= _value); break;
-            case OP_GREATER_THAN_OR_EQUAL_TO: ret = (*temp >= _value); break;
-            case OP_NOT_EQUAL_TO:             ret = (*temp != _value); break;
-            default:                          /* do nothing */         break;
+            case OP_EQUAL_TO:                 ret = (temp == _value); break;
+            case OP_LESS_THAN:                ret = (temp <  _value); break;
+            case OP_GREATER_THAN:             ret = (temp >  _value); break;
+            case OP_LESS_THAN_OR_EQUAL_TO:    ret = (temp <= _value); break;
+            case OP_GREATER_THAN_OR_EQUAL_TO: ret = (temp >= _value); break;
+            case OP_NOT_EQUAL_TO:             ret = (temp != _value); break;
+            default:                          /* do nothing */        break;
          }
       }
       return ret;

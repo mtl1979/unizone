@@ -12,7 +12,7 @@
 # endif
 #endif
 
-#include "dataio/StdinDataIO.h"  // which includes FileDescriptorDataIO.h
+#include "dataio/FileDescriptorDataIO.h"
 
 BEGIN_NAMESPACE(muscle);
 
@@ -114,22 +114,6 @@ int64 FileDescriptorDataIO :: GetPosition() const
 #endif
    }
    return -1;
-}
-
-static Socket _stdinSocket(STDIN_FILENO, false);  // we generally don't want to close stdin
-
-StdinDataIO :: StdinDataIO(bool blocking) : FileDescriptorDataIO(SocketRef(&_stdinSocket, false), true), _blockingExceptDuringRead(blocking)
-{
-   // empty
-}
-
-int32 StdinDataIO :: Read(void * buffer, uint32 size)
-{
-   // Turn off stdin's blocking I/O mode only during the Read() call.
-   if (_blockingExceptDuringRead == false) (void) FileDescriptorDataIO::SetBlockingIOEnabled(false);
-   int32 ret = FileDescriptorDataIO::Read(buffer, size);
-   if (_blockingExceptDuringRead == false) (void) FileDescriptorDataIO::SetBlockingIOEnabled(true);
-   return ret;
 }
 
 END_NAMESPACE(muscle);

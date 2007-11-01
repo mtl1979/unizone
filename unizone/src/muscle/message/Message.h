@@ -34,6 +34,9 @@ typedef Ref<Message> MessageRef;
   */
 const Message & GetEmptyMessage();
 
+/** Same as GetEmptyMessage(), except it returns a MessageRef instead of a Message. */
+const MessageRef & GetEmptyMessageRef();
+
 /** This function returns a pointer to a singleton ObjectPool that can be 
  *  used to minimize the number of Message allocations and deletions by
  *  recycling the Message objects.  
@@ -602,6 +605,17 @@ public:
    /** Retrieve a string value from the Message.
     *  @param name The field name to look for the string value under.
     *  @param index The index of the string item in its field entry.
+    *  @param setMe On success, this pointer will be pointing to a String containing the result.
+    *  @return B_NO_ERROR if the string value was found, or B_ERROR if it wasn't.
+    */
+   status_t FindString(const String & name, uint32 index, const String ** setMe) const;
+
+   /** As above, only (index) isn't specified.  It is assumed to be zero. */
+   status_t FindString(const String & name, const String ** setMe) const {return FindString(name, 0, setMe);}
+
+   /** Retrieve a string value from the Message.
+    *  @param name The field name to look for the string value under.
+    *  @param index The index of the string item in its field entry.
     *  @param setMe On success, a pointer to the string value is written into this object.
     *  @return B_NO_ERROR if the string value was found, or B_ERROR if it wasn't.
     */
@@ -1102,6 +1116,22 @@ public:
     * @param swapWith Message whose contents should be swapped with this one.
     */
    void SwapContents(Message & swapWith);
+
+   /**
+    * Iterates over the contents of this Message to compute a checksum.
+    * Note that this method can be CPU-intensive, since it has to scan
+    * everything in the Message.  Don't call it often if you want good
+    * performance!
+    * @param countFieldOrder If true, the ordering of the fields within
+    *                        the Message will be taken into account when
+    *                        calculating the checksum.  If false (the default),
+    *                        then field-ordering won't affect the checksum.
+    * @param countNonFlattenableFields If true, non-flattenable fields (e.g.
+    *                        those added with AddTag() will be included in the
+    *                        checksum.  If false (the default), they will be
+    *                        ignored.
+    */
+   uint32 CalculateChecksum(bool countFieldOrder = false, bool countNonFlattenableFields = false) const;
 
    /**
     * Returns an iterator that iterates over the names of the fields in this

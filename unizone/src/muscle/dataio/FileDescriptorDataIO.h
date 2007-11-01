@@ -6,7 +6,6 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <string.h>
 #include <errno.h>
 #include "dataio/DataIO.h"
 #include "util/NetworkUtilityFunctions.h"
@@ -62,10 +61,10 @@ public:
     * @param blocking If true, file descriptor is set to blocking I/O mode.  Otherwise, non-blocking I/O.
     * @return B_NO_ERROR on success, B_ERROR on error.
     */
-   virtual status_t SetBlockingIOEnabled(bool blocking);
+   status_t SetBlockingIOEnabled(bool blocking);
 
    /** Returns true iff this object is using blocking I/O mode. */
-   virtual bool IsBlockingIOEnabled() const {return _blocking;}
+   bool IsBlockingIOEnabled() const {return _blocking;}
 
    /** Clears our held SocketRef. */
    virtual void Shutdown();

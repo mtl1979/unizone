@@ -4,8 +4,6 @@
 #include "regex/StringMatcher.h"
 #include "util/String.h"
 
-#include <string.h>
-
 BEGIN_NAMESPACE(muscle);
 
 static StringMatcherRef::ItemPool _stringMatcherPool;

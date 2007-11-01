@@ -128,22 +128,20 @@ public:
     */
    virtual const char * GetServerName() const;
 
-   /** Returns an iterator that allows one to iterate over all the sessions currently running on this server. */
-   HashtableIterator<const char *, AbstractReflectSessionRef> GetSessions() const {return _sessions.GetIterator();}
+   /** Returns a read-only reference to our table of sessions currently attached to this server. */
+   const Hashtable<const String *, AbstractReflectSessionRef> & GetSessions() const {return _sessions;}
 
-   /** Returns the number of sessions currently attached to this server */
-   uint32 GetNumSessions() const {return _sessions.GetNumItems();}
+   /** Convenience method:  Given a session ID string, returns a reference to the session, or a NULL reference if no such session exists. */
+   AbstractReflectSessionRef GetSession(const String & sessionName) const;
 
-   /** Given a session ID string, returns a reference to the session, or a NULL reference if no such session exists. */
-   AbstractReflectSessionRef GetSession(const char * name) const;
+   /** Convenience method:  Given a session ID number, returns a reference to the session, or a NULL reference if no such session exists. */
+   AbstractReflectSessionRef GetSession(uint32 sessionID) const;
 
    /** Returns an iterator that allows one to iterate over all the session factories currently attached to this server. */
-   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> GetFactories() const {return _factories.GetIterator();}
+   const Hashtable<IPAddressAndPort, ReflectSessionFactoryRef> & GetFactories() const {return _factories;}
 
-   /** Returns the number of session factories currently attached to this server */
-   uint32 GetNumFactories() const {return _factories.GetNumItems();}
-
-   /** Given a port number, returns a reference to the factory of that port, or a NULL reference if no such factory exists.
+   /** Convenience method: Given a port number, returns a reference to the factory of that port, or a 
+     *                     NULL reference if no such factory exists.
      * @param port number to check
      * @param optInterfaceIP If the factory was created to listen on a specific local interface address
      *                       (when it was passed in to PutAcceptFactory()), then specify that address again here.
@@ -249,7 +247,7 @@ private:
    Queue<ReflectSessionFactoryRef> _lameDuckFactories;  // for delayed-deletion of factories when they go away
 
    Message _centralState;
-   Hashtable<const char *, AbstractReflectSessionRef> _sessions;
+   Hashtable<const String *, AbstractReflectSessionRef> _sessions;
    Queue<AbstractReflectSessionRef> _lameDuckSessions;  // sessions that are due to be removed
    bool _keepServerGoing;
    uint64 _serverStartedAt;

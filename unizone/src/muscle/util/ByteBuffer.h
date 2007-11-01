@@ -3,7 +3,6 @@
 #ifndef MuscleByteBuffer_h
 #define MuscleByteBuffer_h
 
-#include <string.h>
 #include "util/FlatCountable.h"
 
 BEGIN_NAMESPACE(muscle);
@@ -126,6 +125,15 @@ public:
    virtual void Flatten(uint8 *buffer) const {memcpy(buffer, _buffer, _numValidBytes);}
    virtual bool AllowsTypeCode(uint32 /*code*/) const {return true;}
    virtual status_t Unflatten(const uint8 *buf, uint32 size) {return SetBuffer(size, buf);}
+
+   /** Returns a 32-bit checksum corresponding to this ByteBuffer's contetns.
+     * Note that this method is O(N).
+     */
+#ifdef MUSCLE_AVOID_NAMESPACES
+   uint32 CalculateChecksum() const {return ::CalculateChecksum(_buffer, _numValidBytes);}
+#else
+   uint32 CalculateChecksum() const {return muscle::CalculateChecksum(_buffer, _numValidBytes);}
+#endif
 
    /** Sets our allocation strategy pointer.  Note that you should be careful when you call this,
     *  as changing strategies can lead to allocation/deallocation method mismatches.

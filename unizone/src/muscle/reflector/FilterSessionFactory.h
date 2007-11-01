@@ -44,13 +44,13 @@ public:
      * @param banPattern Pattern to match against (e.g. "192.168.0.*")
      * @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
      */
-   status_t PutBanPattern(const char * banPattern);
+   status_t PutBanPattern(const String & banPattern);
 
    /** Add a new require pattern to our set of require patterns
      * @param requirePattern Pattern to match against (e.g. "192.168.0.*")
      * @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
      */
-   status_t PutRequirePattern(const char * requirePattern);
+   status_t PutRequirePattern(const String & requirePattern);
 
    /** Remove the first matching instance of (banPattern) from our set of ban patterns.
      * Note that we don't do any pattern matching here, we will remove exactly one ban
@@ -58,7 +58,7 @@ public:
      * @param requirePattern Pattern to remove from the set of ban patterns
      * @return B_NO_ERROR on success, or B_ERROR if the given pattern wasn't found in the set.
      */
-   status_t RemoveBanPattern(const char * requirePattern);
+   status_t RemoveBanPattern(const String & requirePattern);
 
    /** Remove the first matching instance of (requirePattern) from our set of require patterns.
      * Note that we don't do any pattern matching here, we will remove exactly one require
@@ -66,17 +66,17 @@ public:
      * @param requirePattern Pattern to remove from the set of require patterns
      * @return B_NO_ERROR on success, or B_ERROR if the given pattern wasn't found in the set.
      */
-   status_t RemoveRequirePattern(const char * requirePattern);
+   status_t RemoveRequirePattern(const String & requirePattern);
 
    /** Removes all ban patterns who match the given regular expression.
      * @param exp Expression to match on.
      */
-   void RemoveMatchingBanPatterns(const char * exp);
+   void RemoveMatchingBanPatterns(const String & exp);
 
    /** Removes all require patterns who match the given regular expression.
      * @param exp Expression to match on.
      */
-   void RemoveMatchingRequirePatterns(const char * exp);
+   void RemoveMatchingRequirePatterns(const String & exp);
 
    /** Sets the input-bandwidth-allocation policy to apply to sessions that we create */
    void SetInputPolicy(const PolicyRef & ref) {_inputPolicyRef = ref;}

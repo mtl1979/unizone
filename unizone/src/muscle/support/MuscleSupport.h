@@ -4,7 +4,7 @@
 /
 /     File:     MuscleSupport.h
 /
-/     Description:  Standard types, macros, etc, for MUSCLE.
+/     Description:  Standard types, macros, functions, etc, for MUSCLE.
 /                   Many of them are suspiciously BeOS-like.  ;^)
 /
 *******************************************************************************/
@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.00"
+#define MUSCLE_VERSION_STRING "4.10"
 
 #include <string.h>  /* for memcpy() */
 
@@ -812,6 +812,14 @@ static inline void SetTraceValuesLocation(volatile uint32 * location) {(void) lo
 static inline void StoreTraceValue(uint32 v) {(void) v;}  /* named param is necessary for C compatibility */
 #define TCHECKPOINT {/* empty */}
 #endif
+
+/** This is a convenience function that will read through the passed-in byte
+  * buffer and create a 32-bit checksum corresponding to its contents.
+  * @param buffer Pointer to the data to creata checksum for.
+  * @param numBytes Number of bytes that (buffer) points to.
+  * @returns A 32-bit number based on the contents of the buffer.
+  */
+uint32 CalculateChecksum(const uint8 * buffer, uint32 numBytes);
 
 END_NAMESPACE(muscle);
 

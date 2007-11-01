@@ -4,10 +4,12 @@
 
 #if defined(__APPLE__)
 # include <CoreFoundation/CoreFoundation.h>
+# include <CoreServices/CoreServices.h>
 #endif
 #ifdef WIN32
-#include "Shlwapi.h"
+# include "Shlwapi.h"
 #endif
+
 BEGIN_NAMESPACE(muscle);
 
 const char * GetOSName()
@@ -229,5 +231,41 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
 
    return found ? B_NO_ERROR : B_ERROR;
 };
+
+status_t GetNumberOfProcessors(uint32 & retNumProcessors)
+{
+#if defined(__BEOS__)
+   system_info info;
+   if (get_system_info(&info) == B_NO_ERROR)
+   {
+      retNumProcessors = info.cpu_count;
+      return B_NO_ERROR;  
+   }
+#elif defined(__APPLE__)
+   retNumProcessors = ::MPProcessors();
+   return B_NO_ERROR;
+#elif defined(WIN32)
+   SYSTEM_INFO info;
+   GetSystemInfo(&info);
+   retNumProcessors = info.dwNumberOfProcessors;
+   return B_NO_ERROR;
+#elif defined(__linux__)
+   FILE * f = fopen("/proc/cpuinfo", "r");
+   if (f) 
+   {
+      retNumProcessors = 0;
+      char line[256];
+      while(fgets(line, sizeof(line), f)) if (strncmp("processor", line, 9) == 0) retNumProcessors++;
+      fclose(f);
+      return B_NO_ERROR;
+   }
+#else
+   (void) retNumProcessors;  // dunno how to do it on this OS!
+#endif
+
+   return B_ERROR;
+}
+
+
 
 END_NAMESPACE(muscle);
