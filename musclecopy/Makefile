@@ -18,7 +18,8 @@ SRCFILES = \
 	genericthread.cpp \
 	main.cpp \
 	md5.cpp \
-	statusimpl.cpp
+	statusimpl.cpp \
+	util.cpp
 
 COMMON_SRCFILES = \
 	../unizone/src/unix/wcslwr.c \

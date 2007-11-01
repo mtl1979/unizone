@@ -128,6 +128,10 @@ SOURCE=..\..\statusimpl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\util.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\unizone\src\windows\wfile.cpp
 # End Source File
 # Begin Source File
@@ -252,6 +256,10 @@ InputName=statusimpl
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\util.h
 # End Source File
 # Begin Source File
 

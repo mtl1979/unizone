@@ -1,6 +1,7 @@
 #include "statusimpl.h"
 #include "wgenericevent.h"
 #include "downloadthread.h"
+#include "util.h"
 #include <qpushbutton.h>
 #include <qprogressbar.h>
 #include <qlineedit.h>
@@ -99,9 +100,9 @@ Status::customEvent(QCustomEvent *e)
 			
 		case WGenericEvent::ConnectFailed:
 			{
-				String why, mFile;
-				msg()->FindString("why", why);
-				setCaption(tr("Connect failed: %1").arg(why.Cstr()));
+				QString why;
+				GetStringFromMessage(msg,"why", why);
+				setCaption(tr("Connect failed: %1").arg(why));
 				gt->Reset();
 				delete gt;
 				gt = NULL;
@@ -196,22 +197,14 @@ Status::customEvent(QCustomEvent *e)
 			
 		case WGenericEvent::UpdateUI:
 			{
-				const char * id;
-				if (msg()->FindString("id", &id) == B_OK)
-				{
-				}
 				break;
 			}
 			
 		case WGenericEvent::FileError:
 			{
-				String why;
-				String file;
-				msg()->FindString("why", why);
-				if (msg()->FindString("file", file) == B_OK)
-				{
-				}
-				setCaption(tr("Error: %1").arg(why.Cstr()));
+				QString why;
+				GetStringFromMessage(msg, "why", why);
+				setCaption(tr("Error: %1").arg(why));
 				break;
 			}
 			
