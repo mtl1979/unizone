@@ -103,8 +103,7 @@ QString FixFileName(const QString & fixMe);
 const QString & CheckIfEmpty(const QString & str, const QString & str2);
 
 // Calculate Checksum for raw buffer (borrowed from BeShare)
-uint32 CalculateChecksum(const ByteBufferRef &buf);
-uint32 CalculateChecksum(const uint8 * data, size_t bufSize);
+uint32 CalculateFileChecksum(const ByteBufferRef &buf);
 
 // Return (first) IPv4 address from hostname
 uint32 GetHostByName(const QString &name);

@@ -564,9 +564,9 @@ WUpload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::ConnectFailed:
 		{
 			PRINT("\tWUploadEvent::ConnectFailed\n");
-			String why, mFile;
-			msg()->FindString("why", why);
-			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
+			QString why;
+			GetStringFromMessage(msg, "why", why);
+			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(why));
 
 			ut->Reset();
 			
@@ -684,15 +684,15 @@ WUpload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::FileError:
 		{
 			PRINT("\tWUploadEvent::FileError\n");
-			String why;
+			QString why;
 			QString file;
-			msg()->FindString("why", why);
+			GetStringFromMessage(msg, "why", why);
 			if (GetStringFromMessage(msg, "file", file) == B_OK)
 			{
 				file = QDir::convertSeparators(file);
 				item->setText(WTransferItem::Filename, file);
 			}
-			item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
+			item->setText(WTransferItem::Status, tr("Error: %1").arg(why));
 			item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message

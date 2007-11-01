@@ -849,7 +849,7 @@ NetClient::SendPicture(const QString & target, const ByteBufferRef &buffer, cons
 			pic()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
 			pic()->AddString(PR_NAME_SESSION, (const char *) fSessionID.utf8());
 			pic()->AddData("picture", B_RAW_TYPE, buffer()->GetBuffer(), buffer()->GetNumBytes());
-			pic()->AddInt32("chk", CalculateChecksum(buffer));
+			pic()->AddInt32("chk", CalculateFileChecksum(buffer));
 			pic()->AddString("name", (const char *) name.utf8());
 			if (target != "*")
 				pic()->AddBool("private", true);

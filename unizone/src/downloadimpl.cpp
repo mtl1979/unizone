@@ -645,9 +645,9 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::ConnectFailed:
 		{
 			PRINT("\tWDownloadEvent::ConnectFailed\n");
-			String why, mFile;
-			msg()->FindString("why", why);
-			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(tr(why.Cstr())));
+			QString why;
+			GetStringFromMessage(msg, "why", why);
+			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(why));
 			dt->SetFinished(true);
 			if (dt->GetCurrentNum() > -1)
 			{
@@ -838,15 +838,15 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::FileError:
 		{
 			PRINT("\tWDownloadEvent::FileError\n");
-			String why;
+			QString why;
 			QString file;
-			msg()->FindString("why", why);
+			GetStringFromMessage(msg, "why", why);
 			if (GetStringFromMessage(msg, "file", file) == B_OK)
 			{
 				file = QDir::convertSeparators(file);
 				item->setText(WTransferItem::Filename, file);
 			}
-			item->setText(WTransferItem::Status, tr("Error: %1").arg(tr(why.Cstr())));
+			item->setText(WTransferItem::Status, tr("Error: %1").arg(why));
 			item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message

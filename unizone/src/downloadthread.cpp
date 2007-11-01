@@ -680,20 +680,19 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 							
 			if (fDownloading && fFile)
 			{
-				uint8 * data;
-				ssize_t numBytes;
+				ByteBufferRef buf;
 
-				if (msg()->FindDataPointer("data", B_RAW_TYPE, (void **)&data, (uint32 *)&numBytes) == B_OK)
+				if (msg()->FindFlat("data", buf) == B_OK)
 				{
 					// paranoia!!!  This shouldn't be necessary, since TCP is supposed to handle this sort of thing. 
 					// But I want to check anyway, just in case.
 					uint32 checksum;
 					if (msg()->FindInt32("chk", (int32*)&checksum) == B_NO_ERROR)
 					{
-						uint32 myChecksum = CalculateChecksum(data, numBytes);  // a little paranoia (people keep getting munged data -> download-resume failures, why?)
+                  uint32 myChecksum = CalculateFileChecksum(buf);  // a little paranoia (people keep getting munged data -> download-resume failures, why?)
 						if (myChecksum != checksum)
 						{
-							QString errStr = tr("Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)").arg(fFileDl[fCurFile]).arg(myChecksum).arg(checksum).arg(numBytes);
+							QString errStr = tr("Data Checksum mismatch in file [%1] (mine=%2, his=%3, %4 bytes)").arg(fFileDl[fCurFile]).arg(myChecksum).arg(checksum).arg(buf()->GetNumBytes());
 							
 							if (gWin->fSettings->GetDownloads())
 								gWin->SendErrorEvent(errStr);
@@ -714,19 +713,19 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 
 
 					// check munge-mode here... not yet
-					if (fFile->WriteBlock((const char *)data, numBytes) == numBytes)
+					if (fFile->WriteBlock(buf()->GetBuffer(), buf()->GetNumBytes()) == buf()->GetNumBytes())
 					{
 						fFile->Flush();
-						fCurrentOffset += numBytes;
+						fCurrentOffset += buf()->GetNumBytes();
 
-						SetPacketSize((double) numBytes / 1024.0f);
+						SetPacketSize((double) buf()->GetNumBytes() / 1024.0f);
 
 						MessageRef update(GetMessageFromPool(WDownloadEvent::FileDataReceived));
 						if (update())
 						{
 							update()->AddInt64("offset", fCurrentOffset);
 							update()->AddInt64("size", fFileSize);
-							update()->AddInt32("got", numBytes);
+							update()->AddInt32("got", buf()->GetNumBytes());
 						}
 										
 						if ((fFileSize != 0) && (fCurrentOffset >= fFileSize))

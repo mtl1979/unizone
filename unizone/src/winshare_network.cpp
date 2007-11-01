@@ -1992,7 +1992,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						uint32 myChecksum, chk;
 						if (msg()->FindInt32("chk", (int32 *) &chk) == B_OK)
 						{
-							myChecksum = CalculateChecksum(buf);
+                     myChecksum = CalculateFileChecksum(buf);
 							if (myChecksum != chk)
 								return;
 						}

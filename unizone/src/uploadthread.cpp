@@ -780,7 +780,7 @@ WUploadThread::DoUpload()
             if (uref()->AddFlat("data", buf) == B_OK)
             {
                // possibly do checksums here
-               uref()->AddInt32("chk", CalculateChecksum(buf));  // a little paranoia, due to file-resumes not working.... (TCP should handle this BUT...)
+               uref()->AddInt32("chk", CalculateFileChecksum(buf));  // a little paranoia, due to file-resumes not working.... (TCP should handle this BUT...)
                
                SendMessageToSessions(uref);
                
