@@ -115,6 +115,30 @@
                         <class>QLabel</class>
                         <property stdset="1">
                             <name>name</name>
+                            <cstring>versionLabel</cstring>
+                        </property>
+                        <property stdset="1">
+                            <name>font</name>
+                            <font>
+                                <pointsize>12</pointsize>
+                            </font>
+                        </property>
+                        <property stdset="1">
+                            <name>text</name>
+                            <string></string>
+                        </property>
+                        <property stdset="1">
+                            <name>alignment</name>
+                            <set>AlignCenter</set>
+                        </property>
+                        <property>
+                            <name>hAlign</name>
+                        </property>
+                    </widget>
+                    <widget>
+                        <class>QLabel</class>
+                        <property stdset="1">
+                            <name>name</name>
                             <cstring>TextLabel2</cstring>
                         </property>
                         <property stdset="1">

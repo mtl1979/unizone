@@ -40,7 +40,6 @@
 #include <qtoolbar.h>
 #include <qregexp.h>
 
-#include "aboutdlgimpl.h"
 #include "downloadimpl.h"
 #include "downloadqueue.h"
 #include "uploadimpl.h"

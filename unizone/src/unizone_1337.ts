@@ -119,7 +119,7 @@
     <message>
         <source>Unizone (English)
 Version %1</source>
-        <translation>Unizone (31337 English)
+        <translation type='obsolete'>Unizone (31337 English)
 Version %1</translation>
     </message>
     <message>
@@ -129,6 +129,14 @@ Version %1</translation>
     <message>
         <source>Unizone is Copyright (C) %1 by Mika T. Lindqvist</source>
         <translation>Unizone owned (C) %1 by Mika T. Lindqvist</translation>
+    </message>
+    <message>
+        <source>Unizone (English)</source>
+        <translation type='unfinished'>Unizone (31337 English)</translation>
+    </message>
+    <message>
+        <source>Version %1</source>
+        <translation type='unfinished'></translation>
     </message>
 </context>
 <context>

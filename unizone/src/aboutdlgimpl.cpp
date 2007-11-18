@@ -23,8 +23,10 @@ AboutDlg::AboutDlg( QWidget* parent,  const char* name, bool modal, WFlags fl )
 	if ( !name ) 
 		setName("AboutDlg");
 	connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
-	QString about = tr("Unizone (English)\nVersion %1").arg(WinShareVersionString());
+	QString about = tr("Unizone (English)");
 	titleLabel->setProperty("text", about);
+   QString version = tr("Version %1").arg(WinShareVersionString());
+   versionLabel->setProperty("text", version);
 	setCaption(tr("About Unizone (English)"));
     TextLabel2_3_2->setText( tr( "Unizone is Copyright (C) %1 by Mika T. Lindqvist" ).arg(GetUnizoneYears()) );
 }
