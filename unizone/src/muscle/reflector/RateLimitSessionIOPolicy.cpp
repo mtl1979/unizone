@@ -69,11 +69,11 @@ UpdateTransferTally(uint64 now)
 {
    if (_maxRate > 0)
    {
-      uint32 newBytesAvailable = (_lastTransferAt > 0) ? ((uint32)(((now-_lastTransferAt)*_maxRate)/1000000)) : ((uint32)-1);
+      uint32 newBytesAvailable = (_lastTransferAt > 0) ? ((uint32)(((now-_lastTransferAt)*_maxRate)/1000000)) : MUSCLE_NO_LIMIT;
       if (_transferTally > newBytesAvailable) _transferTally -= newBytesAvailable;
                                          else _transferTally = 0;
    }
-   else _transferTally = ((uint32)-1);  // disable all writing by pretending we just wrote a whole lot
+   else _transferTally = MUSCLE_NO_LIMIT;  // disable all writing by pretending we just wrote a whole lot
 }
 
 bool 

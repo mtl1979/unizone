@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.10"
+#define MUSCLE_VERSION_STRING "4.11"
 
 #include <string.h>  /* for memcpy() */
 
@@ -779,7 +779,7 @@ static inline void StoreTraceValue(uint32 v)
 {
    _muscleTraceValues[_muscleNextTraceValueIndex] = v;  /* store the current value */
    _muscleNextTraceValueIndex                     = (_muscleNextTraceValueIndex+1)%MUSCLE_TRACE_CHECKPOINTS; /* move the pointer */
-   _muscleTraceValues[_muscleNextTraceValueIndex] = ((uint32)-1);  /* mark the next position with a special tag to show that it's next */
+   _muscleTraceValues[_muscleNextTraceValueIndex] = MUSCLE_NO_LIMIT;  /* mark the next position with a special tag to show that it's next */
 }
 
 /** Returns a pointer to the first value in the trace-values array. */
@@ -820,6 +820,15 @@ static inline void StoreTraceValue(uint32 v) {(void) v;}  /* named param is nece
   * @returns A 32-bit number based on the contents of the buffer.
   */
 uint32 CalculateChecksum(const uint8 * buffer, uint32 numBytes);
+
+/** Convenience method:  Given a uint64, returns a corresponding 32-bit checksum value */
+static inline uint32 CalculateChecksumForUint64(uint64 v) {return ((uint32)(v&0xFFFFFFFF)) + ((uint32)((v>>32)&0xFFFFFFFF));}
+
+/** Convenience method:  Given a float, returns a corresponding 32-bit checksum value */
+static inline uint32 CalculateChecksumForFloat(float v) {return B_HOST_TO_LENDIAN_IFLOAT(v);}
+
+/** Convenience method:  Given a double, returns a corresponding 32-bit checksum value */
+static inline uint32 CalculateChecksumForDouble(double v) {return CalculateChecksumForUint64(B_HOST_TO_LENDIAN_IDOUBLE(v));}
 
 END_NAMESPACE(muscle);
 

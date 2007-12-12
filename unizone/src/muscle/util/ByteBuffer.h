@@ -64,7 +64,7 @@ public:
    /** Sets our content using the given byte buffer.
      * @param numBytes Number of bytes to copy in (or just to allocate, if (optBuffer) is NULL).  Defaults to zero bytes (i.e., don't allocate a buffer)
      * @param optBuffer May be set to point to an array of bytes to copy into our internal buffer.
-     *                  If NULL, this ByteBuffer will contain (numBytess) uninitialized bytes.  Defaults to NULL.
+     *                  If NULL, this ByteBuffer will contain (numBytes) uninitialized bytes.  Defaults to NULL.
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory--there are no side effects if this occurs)
      */ 
    status_t SetBuffer(uint32 numBytes = 0, const uint8 * optBuffer = NULL);

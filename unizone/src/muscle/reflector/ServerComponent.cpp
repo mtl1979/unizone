@@ -95,6 +95,14 @@ AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & i
    return _owner->AddNewConnectSession(ref, ip, port, autoReconnectDelay);
 }
 
+status_t
+ServerComponent ::
+AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & ip, uint16 port, uint64 autoReconnectDelay)
+{
+   MASSERT(_owner, "Can't call AddNewDormantConnectSession() while not attached to the server");
+   return _owner->AddNewDormantConnectSession(ref, ip, port, autoReconnectDelay);
+}
+
 void
 ServerComponent ::
 EndServer()

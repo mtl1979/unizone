@@ -383,14 +383,14 @@ SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwri
  
    if ((nodePath.Length() > 0)&&(nodePath[0] != '/'))
    {
-      int lastSlashPos = -1;
+      int prevSlashPos = -1;
       int slashPos = 0;
       DataNodeRef childNodeRef;
       String nextClause;
       while(slashPos >= 0)
       {
-         slashPos = nodePath.IndexOf('/', lastSlashPos+1);
-         nextClause = nodePath.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : nodePath.Length());
+         slashPos = nodePath.IndexOf('/', prevSlashPos+1);
+         nextClause = nodePath.Substring(prevSlashPos+1, (slashPos >= 0) ? slashPos : nodePath.Length());
          DataNodeRef allocedNode;
          if (node->GetChild(nextClause, childNodeRef) != B_NO_ERROR)
          {
@@ -421,43 +421,11 @@ SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwri
             if ((node == NULL)||((overwrite == false)&&(node != allocedNode()))) return B_ERROR;
             node->SetData(dataMsgRef, quiet ? NULL : this, (node == allocedNode()));  // do this to trigger the changed-notification
          }
-         lastSlashPos = slashPos;
+         prevSlashPos = slashPos;
       }
    }
 
    return B_NO_ERROR;
-}
-
-DataNode *
-StorageReflectSession ::
-GetDataNode(const String & nodePath) const
-{
-   TCHECKPOINT;
-
-   DataNode * node = _sessionDir();
-   if (nodePath.Length() > 0)
-   {
-      int lastSlashPos = -1;
-      int slashPos = 0;
-      DataNodeRef childNodeRef;
-      String nextClause;
-
-      if (nodePath[0] == '/') 
-      {
-         node = &GetGlobalRoot();
-         lastSlashPos=0;
-      }
-      while(slashPos >= 0)
-      {
-         slashPos = nodePath.IndexOf('/', lastSlashPos+1);
-         nextClause = nodePath.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : nodePath.Length());
-         if ((node == NULL)||(node->GetChild(nextClause, childNodeRef) != B_NO_ERROR)) return NULL;  // lookup failure (404)
-         node = childNodeRef();
-         if (slashPos < 0) return node;
-         lastSlashPos = slashPos;
-      }
-   }
-   return node;
 }
 
 bool

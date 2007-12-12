@@ -147,6 +147,25 @@ protected:
     */
    status_t AddNewConnectSession(const AbstractReflectSessionRef & session, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
 
+   /**
+    * Like AddNewConnectSession(), except that the added session will not initiate
+    * a TCP connection to the specified address immediately.  Instead, it will just
+    * hang out and do nothing until you call Reconnect() on it.  Only then will it
+    * create the TCP connection to the address specified here.
+    * @param ref New session to add to the server.
+    * @param targetIPAddress IP address to connect to
+    * @param port Port to connect to at that IP address.
+    * @param autoReconnectDelay If specified, this is the number of microseconds after the
+    *                           connection is broken that an automatic reconnect should be
+    *                           attempted.  If not specified, an automatic reconnect will not
+    *                           be attempted, and the session will be removed when the
+    *                           connection breaks.  Specifying this is equivalent to calling
+    *                           SetAutoReconnectDelay() on (ref).
+    * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error
+    *                    (out-of-memory, or the connect attempt failed immediately)
+    */
+   status_t AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
+
    /** Returns our server's table of attached sessions. */
    const Hashtable<const String *, AbstractReflectSessionRef> & GetSessions() const;
 

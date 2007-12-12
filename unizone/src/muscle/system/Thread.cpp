@@ -217,7 +217,8 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
       if (tsd._messages.RemoveHead(ref) == B_NO_ERROR) ret = tsd._messages.GetNumItems();
       (void) tsd._queueLock.Unlock();
 
-      if ((ret < 0)&&(tsd._messageSocket()))  // no Message available?  then we'll have to wait until there is one!
+      int msgfd;
+      if ((ret < 0)&&((msgfd = tsd._messageSocket.GetFileDescriptor()) >= 0))  // no Message available?  then we'll have to wait until there is one!
       {
          uint64 now = GetRunTime64();
          if (wakeupTime < now) wakeupTime = now;
@@ -231,7 +232,6 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
 
          fd_set sets[NUM_SOCKET_SETS];
          fd_set * psets[NUM_SOCKET_SETS] = {NULL, NULL, NULL};
-         int msgfd = tsd._messageSocket.GetFileDescriptor();
          int maxfd = msgfd;
          {
             for (uint32 i=0; i<ARRAYITEMS(sets); i++)
@@ -352,6 +352,7 @@ void Thread::InternalThreadEntryAux()
 {
    if (_threadData[MESSAGE_THREAD_OWNER]._messages.HasItems()) SignalOwner();
    InternalThreadEntry();
+   _threadData[MESSAGE_THREAD_INTERNAL]._messageSocket.Reset();  // this will wake up the owner thread with EOF on socket
 }
 
 END_NAMESPACE(muscle);

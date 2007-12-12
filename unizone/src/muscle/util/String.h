@@ -35,7 +35,7 @@ public:
     *                this String (not including the NUL terminator byte).
     *                Default is unlimited (i.e. scan the entire string no matter how long it is)
     */
-   String(const char * str = NULL, uint32 maxLen = ((uint32)-1)) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0) {if (str) (void) SetCstr(str, maxLen); else _smallBuffer[0] = '\0';}
+   String(const char * str = NULL, uint32 maxLen = MUSCLE_NO_LIMIT) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0) {if (str) (void) SetCstr(str, maxLen); else _smallBuffer[0] = '\0';}
 
    /** Copy Constructor. 
      * @param str String to become a copy of.
@@ -48,7 +48,7 @@ public:
      * @param endIndex Index after the last character in (str) to include.  
      *                 Defaults to a very large number, so that by default the entire remainder of the string is included.
      */
-   String(const String & str, uint32 beginIndex, uint32 endIndex=((uint32)-1)) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0) {(void) SetFromString(str, beginIndex, endIndex);}
+   String(const String & str, uint32 beginIndex, uint32 endIndex=MUSCLE_NO_LIMIT) : Flattenable(), _buffer(NULL), _bufferLen(0), _length(0) {(void) SetFromString(str, beginIndex, endIndex);}
 
    /** Destructor. */
    virtual ~String() {if (_buffer != _smallBuffer) muscleFree(_buffer);}
@@ -236,7 +236,7 @@ public:
      *               terminator byte).  By default, the number of characters is determined
      *               automatically by scanning the string.
      */
-   status_t SetCstr(const char * str, uint32 maxLen = ((uint32)-1));
+   status_t SetCstr(const char * str, uint32 maxLen = MUSCLE_NO_LIMIT);
 
    /** Sets our state from the given String.  This is similar to the copy constructor, except
      * that it allows you to optionally specify a maximum length, and it allows you to detect
@@ -247,7 +247,7 @@ public:
      *                 Defaults to a very large number, so that by default the entire remainder of the string is included.
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
      */
-   status_t SetFromString(const String & str, uint32 firstChar = 0, uint32 maxLen = ((uint32)-1));
+   status_t SetFromString(const String & str, uint32 firstChar = 0, uint32 maxLen = MUSCLE_NO_LIMIT);
 
    /** Returns true iff this string is a zero-length string. */
    bool IsEmpty() const {return (_length == 0);}

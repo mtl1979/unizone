@@ -259,7 +259,7 @@ public:
     *         the number of items currently in the queue, this value will be clipped
     *         to be equal to that number.  Defaults to the largest possible uint32.
     */
-   void ReverseItemOrdering(uint32 from=0, uint32 to = ((uint32)-1)); 
+   void ReverseItemOrdering(uint32 from=0, uint32 to = MUSCLE_NO_LIMIT); 
 
    /**
     *  This is the signature of the type of callback function that you must pass 
@@ -286,7 +286,7 @@ public:
     *         the subrange will extend to the last item.  Defaults to the largest possible uint32.
     *  @param optCookie A user-defined value that will be passed to the (compareFunc).
     */
-   void Sort(ItemCompareFunc compareFunc, uint32 from=0, uint32 to = ((uint32)-1), void * optCookie = NULL);
+   void Sort(ItemCompareFunc compareFunc, uint32 from=0, uint32 to = MUSCLE_NO_LIMIT, void * optCookie = NULL);
 
    /**
     *  Swaps our contents with the contents of (that), in an efficient manner.
@@ -341,6 +341,14 @@ public:
 
    /** Read-only version of the above */
    const ItemType * GetArrayPointer(uint32 whichArray, uint32 & retLength) const {return GetArrayPointerAux(whichArray, retLength);}
+
+   /** Normalizes the layout of the items held in this Queue so that they are guaranteed to be contiguous 
+     * in memory.  This is useful if you want to pass pointers to items in this array in to functions
+     * that expect C arrays.  Note that the normalization only lasts until the Queue is next modified,
+     * and that normalization is an O(N) procedure if the array needs normalizing.  (It's a no-op
+     * if the array is already normalized, of course)
+     */ 
+   void Normalize();
 
 private:
    const ItemType * GetArrayPointerAux(uint32 whichArray, uint32 & retLength) const;
@@ -1065,7 +1073,57 @@ Queue<ItemType>::EndsWith(const Queue<ItemType> & suffixQueue) const
    return true;
 }
 
+template <class ItemType>
+void
+Queue<ItemType>::Normalize()
+{
+   if ((_itemCount > 0)&&(_headIndex > _tailIndex))
+   {
+      if (_itemCount*2 <= _queueSize)
+      {
+         // There's enough space in the middle of the
+         // array to just copy the items over, yay!  This
+         // is more efficient when there are just a few
+         // valid items in a large array.
+         uint32 startAt = _tailIndex+1;
+         for (uint32 i=0; i<_itemCount; i++) 
+         {
+            ItemType & from = (*this)[i];
+            _queue[startAt+i] = from;
+            from = ItemType();  // clear the old slot to avoid leaving extra Refs, etc
+         }
+         _headIndex = startAt;
+         _tailIndex = startAt+_itemCount-1; 
+      }
+      else
+      {
+         // There's not enough room to do a simple copy,
+         // so we'll rotate the entire array using this
+         // algorithm that was written by Paul Hsieh, taken
+         // from http://www.azillionmonkeys.com/qed/case8.html
+         uint32 c = 0;
+         for (uint32 v = 0; c<_queueSize; v++)
+         {
+             uint32 t  = v;
+             uint32 tp = v + _headIndex;
+             ItemType tmp = _queue[v];
+             c++;
+             while(tp != v) 
+             {
+                 _queue[t] = _queue[tp];
+                 t = tp;
+                 tp += _headIndex;
+                 if (tp >= _queueSize) tp -= _queueSize;
+                 c++;
+             }
+             _queue[t] = tmp;
+         }
+         _headIndex = 0;
+         _tailIndex = _itemCount-1;
+      }
+   }
+}
+
 END_NAMESPACE(muscle);
 
 #endif
-

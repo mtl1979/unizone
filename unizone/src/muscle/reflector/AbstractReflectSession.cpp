@@ -93,25 +93,32 @@ Reconnect()
    TCHECKPOINT;
 
    MASSERT(IsAttachedToServer(), "Can't call Reconnect() while not attached to the server");
-   if ((_asyncConnectDest.GetIPAddress() != invalidIP)&&(_gateway()))
+   if (_gateway())
    {
       _gateway()->SetDataIO(DataIORef());  // get rid of any existing socket first
       _gateway()->Reset();                 // set gateway back to its virgin state
-      _connectingAsync = false;  // paranoia
+   }
 
-      bool isReady;
-      SocketRef sock = ConnectAsync(_asyncConnectDest.GetIPAddress(), _asyncConnectDest.GetPort(), isReady);
-      if (sock())
+   _connectingAsync = false;  // paranoia
+
+   bool doTCPConnect = (_asyncConnectDest.GetIPAddress() != invalidIP);
+   bool isReady = false;
+   SocketRef sock = doTCPConnect ? ConnectAsync(_asyncConnectDest.GetIPAddress(), _asyncConnectDest.GetPort(), isReady) : CreateDefaultSocket();
+   if (sock())
+   {
+      DataIORef io = CreateDataIO(sock);
+      if (io())
       {
-         DataIORef io = CreateDataIO(sock);
-         if (io())
+         if (_gateway() == NULL)
          {
-            _gateway()->SetDataIO(io);
-            if (isReady) AsyncConnectCompleted();
-                    else _connectingAsync = true;
-            _scratchReconnected = true;   // tells ReflectServer() not to shut down our new IO!
-            return B_NO_ERROR;
+            _gateway = CreateGateway();
+            if (_gateway() == NULL) return B_ERROR;
          }
+         _gateway()->SetDataIO(io);
+         if (isReady) AsyncConnectCompleted();
+         _connectingAsync = ((doTCPConnect)&&(isReady == false));
+         _scratchReconnected = true;   // tells ReflectServer not to shut down our new IO!
+         return B_NO_ERROR;
       }
    }
    return B_ERROR;
@@ -331,7 +338,7 @@ void
 AbstractReflectSession ::
 PlanForReconnect()
 {
-   _reconnectTime = (_autoReconnectDelay == MUSCLE_TIME_NEVER) ? _autoReconnectDelay : (GetRunTime64()+_autoReconnectDelay);
+   _reconnectTime = (_autoReconnectDelay == MUSCLE_TIME_NEVER) ? MUSCLE_TIME_NEVER : (GetRunTime64()+_autoReconnectDelay);
    InvalidatePulseTime();
 }
 

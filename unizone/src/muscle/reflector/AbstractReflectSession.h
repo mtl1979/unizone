@@ -133,11 +133,11 @@ public:
   
    /**
     * For sessions that were added to the server with AddNewConnectSession(),
-    * this method is called when the asynchronous connect process completes
-    * successfully.  (if the asynchronous connect fails, ClientConnectionClosed()
-    * is called instead).  Default implementation just sets an internal flag
-    * that governs whether an error message should be printed when the session
-    * is disconnected later on.
+    * or AddNewDormantConnectSession(), this method is called when the asynchronous 
+    * connect process completes successfully.  (if the asynchronous connect fails, 
+    * ClientConnectionClosed() is called instead).  Default implementation just sets 
+    * an internal flag that governs whether an error message should be printed when 
+    * the session is disconnected later on.
     */
    virtual void AsyncConnectCompleted();
 
@@ -263,13 +263,13 @@ public:
 
    /** Returns the IP address we connected asynchronously to.
     *  The returned value is meaningful only if we were added
-    *  with AddNewConnectSession().
+    *  with AddNewConnectSession() or AddNewDormantConnectSession().
     */
    const ip_address & GetAsyncConnectIP() const {return _asyncConnectDest.GetIPAddress();}
 
    /** Returns the remote port we connected asynchronously to.
     *  The returned value is meaningful only if we were added
-    *  with AddNewConnectSession().
+    *  with AddNewConnectSession() or AddNewDormantConnectSession().
     */
    uint16 GetAsyncConnectPort() const {return _asyncConnectDest.GetPort();}
 
@@ -277,16 +277,16 @@ public:
    virtual const String & GetSessionRootPath() const {return _sessionRootPath;}
 
    /** Sets the amount of time that should pass between when this session loses its connection
-     * (that was previously set up using AddNewConnectSession()) and when it should automatically
-     * try to reconnect to that same destination (by calling Reconnect()).  Default setting is 
-     *MUSCLE_TIME_NEVER, meaning that automatic reconnection is disabled.
+     * (that was previously set up using AddNewConnectSession() or AddNewDormantConnectSession())
+     * and when it should automatically try to reconnect to that same destination (by calling Reconnect()).  
+     * Default setting is MUSCLE_TIME_NEVER, meaning that automatic reconnection is disabled.
      * @param delay The amount of time to delay before reconnecting, in microseconds.
      */
    void SetAutoReconnectDelay(uint64 delay) {_autoReconnectDelay = delay; InvalidatePulseTime();}
 
    /** Returns the current automatic-reconnect delay period, as was previously set by
      * SetAutoReconnectDelay().  Note that this setting is only relevant for sessions
-     * that were attached using AddNewConnectSession().
+     * that were attached using AddNewConnectSession() or AddNewDormantConnectSession().
      */
    uint64 GetAutoReconnectDelay() const {return _autoReconnectDelay;}
 
@@ -323,13 +323,13 @@ protected:
    /**
     * Closes this session's current TCP connection (if any), and creates a new
     * TCP socket that will then try to asynchronously connect back to the previous
-    * socket's host and port.  Note that this method is only useful for sessions
-    * that were added with AddNewConnectSession(); for other types of session,
-    * it will return B_ERROR with no side effects.
-    * @note This method will call CreateDataIO() to make a new DataIO object for
-    *       the newly created socket.
+    * socket's host and port.  Note that this method is primarily useful for sessions
+    * that were added with AddNewConnectSession() or AddNewDormantConnectSession(); 
+    * for other types of session, it will just destroy this session's DataIO and IOGateway 
+    * and then create new ones by calling CreateDefaultSocket() and CreateDataIO().
+    * @note This method will call CreateDataIO() to make a new DataIO object for the newly created socket.
     * @returns B_NO_ERROR on success, or B_ERROR on failure.
-    *          On success, the asynchronous connection result will be reported back
+    *          On success, the connection result will be reported back
     *          later, either via a call to AsyncConnectCompleted() (if the connection
     *          succeeds) or a call to ClientConnectionClosed() (if the connection fails)
     */

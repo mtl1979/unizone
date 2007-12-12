@@ -35,7 +35,7 @@ public:
     * @param optNotifyWithOnChangedData If non-NULL, a StorageReflectSession to use to notify subscribers when the node's data has been alterered
     * @return B_NO_ERROR on success, B_ERROR if out of memory
     */
-   status_t PutChild(DataNodeRef & child, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyWithOnChangedData);
+   status_t PutChild(const DataNodeRef & child, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyWithOnChangedData);
 
    /**
     * Create and add a new child node for (data), and put it into the ordering index
@@ -188,6 +188,31 @@ public:
      * @param ancestor The node to check to see if we are an ancestor of
      */
    bool IsAncestorOf(const DataNode & descendant) const {return descendant.IsDescendantOf(*this);}
+
+   /** Convenience method:  Parses (path) as a series of slash-separated 
+     * tokens (e.g. "some/node/names/here") which may contain regex chars 
+     * if you wish.  Returns the first DataNode whose path (relative to this 
+     * node) matches (path).  Returns NULL if no matching node is found.  
+     * If the path is empty (""), this function returns (this).
+     * @param path The path to match against.  May contain regex chars.
+     *             If the path starts with a slash ("/"), the search will
+     *             begin at the root node; otherwise the path is considered
+     *             to be relative to this node.
+     * @param maxDepth The maximum number of tokens in the path to parse.
+     *                 If left at MUSCLE_NO_LIMIT (the default), then the
+     *                 entire path will be parsed.  If set to zero, then
+     *                 this method will either return (this) or NULL.  If set
+     *                 to one, only the first token will be parsed, and the
+     *                 method will return either one of this node's children,
+     *                 or NULL.   Etc.
+     * @returns The first DataNode whose path matches (path), or NULL if no match is found.
+     */
+   DataNode * FindFirstMatchingNode(const char * path, uint32 maxDepth = MUSCLE_NO_LIMIT) const;
+
+   /** Convenience function:  returns the root node of the node tree (by 
+     * traversing parent links up to the top of the tree) 
+     */
+   DataNode * GetRootNode() const {DataNode * r = const_cast<DataNode *>(this); while(r->GetParent()) r = r->GetParent(); return r;}
 
    /** Returns a checksum representing the state of this node and the nodes
      * beneath it, up to the specified recursion depth.  Each node's checksum

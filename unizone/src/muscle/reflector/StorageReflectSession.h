@@ -365,13 +365,13 @@ protected:
 
    /**
     * Convenience method:  Uses the given path to lookup a single node in the node tree
-    * and return it.  (Note that wildcards are not supported by this method!)
-    * If (path) begins with a '/', the search will begin with the root
-    * node of the tree; if not, it will begin with this session's node.  Returns NULL on failure.
+    * and return it.  As of MUSCLE v4.11, wildcarding is supported in the path argument.
+    * If (path) begins with a '/', the search will begin with the root node of the tree; 
+    * if not, it will begin with this session's node.  Returns NULL on failure.
     * @param path The fully specified path to a single node in the database.
     * @return A pointer to the specified DataNode, or NULL if the node wasn't found.
     */
-   DataNode * GetDataNode(const String & path) const;
+   DataNode * GetDataNode(const String & path) const {return _sessionDir() ? _sessionDir()->FindFirstMatchingNode(path()) : NULL;}
 
    /**
     * Call this to get a new DataNode, instead of using the DataNode ctor directly.

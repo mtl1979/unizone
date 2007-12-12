@@ -108,6 +108,26 @@ AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & d
 
 status_t
 ReflectServer ::
+AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & destIP, uint16 port, uint64 autoReconnectDelay)
+{
+   AbstractReflectSession * session = ref();
+   if (session)
+   {
+      session->_asyncConnectDest = IPAddressAndPort(destIP, port);
+      char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
+      session->_hostName = (destIP != invalidIP) ? ipbuf : "<unknown>";
+      status_t ret = AddNewSession(ref, SocketRef());
+      if (ret == B_NO_ERROR)
+      {
+         if (autoReconnectDelay != MUSCLE_TIME_NEVER) session->SetAutoReconnectDelay(autoReconnectDelay);
+         return B_NO_ERROR;
+      }
+   }
+   return B_ERROR;
+}
+
+status_t
+ReflectServer ::
 AttachNewSession(const AbstractReflectSessionRef & ref)
 {
    AbstractReflectSession * newSession = ref();

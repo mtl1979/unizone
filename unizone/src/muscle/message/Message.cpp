@@ -96,7 +96,7 @@ public:
    virtual uint32 GetNumItems() const = 0;
 
    // Returns a 32-bit checksum for this array
-   virtual uint32 CalculateChecksum(bool countFieldOrder, bool countNonFlattenableFields) const = 0;
+   virtual uint32 CalculateChecksum(bool countNonFlattenableFields) const = 0;
 
    // Returns true iff all elements in the array have the same size
    virtual bool ElementsAreFixedSize() const = 0;
@@ -220,7 +220,7 @@ public:
 
    virtual bool IsFlattenable() const {return false;}
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       // This is the best we can do, since we don't know our elements' types
       return TypeCode() + GetNumItems();
@@ -398,10 +398,10 @@ public:
       s += buf;
    }
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum()*i;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum();
       return ret;
    }
 };
@@ -420,10 +420,10 @@ public:
       s += buf;
    }
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum()*i;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum();
       return ret;
    }
 };
@@ -441,10 +441,10 @@ public:
  
    virtual GenericRef Clone() const;
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((uint32)_data[i])*i;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += (uint32)_data[i];
       return ret;
    }
 
@@ -496,10 +496,10 @@ public:
    // Flattenable interface
    virtual uint32 FlattenedSize() const {return _data.GetNumItems()*sizeof(uint8);}  /* bools are always flattened into 1 byte each */
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i] ? i : 0;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i] ? 1 : 0;
       return ret;
    }
 
@@ -528,10 +528,10 @@ public:
 
    virtual GenericRef Clone() const;
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((uint32)_data[i])*i;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += (uint32)_data[i];
       return ret;
    }
 
@@ -568,10 +568,10 @@ public:
 
    virtual GenericRef Clone() const;
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((uint32)_data[i])*i;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += (uint32)_data[i];
       return ret;
    }
 
@@ -608,10 +608,10 @@ public:
 
    virtual GenericRef Clone() const;
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += (((uint32)(_data[i] & 0xFFFFFFFF)) + ((uint32)((_data[i]>>32)&0xFFFFFFFF)))*i;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += CalculateChecksumForUint64(_data[i]);
       return ret;
    }
 
@@ -648,10 +648,10 @@ public:
 
    virtual GenericRef Clone() const;
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += B_HOST_TO_LENDIAN_IFLOAT(_data[i])*i;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += CalculateChecksumForFloat(_data[i]);
       return ret;
    }
 
@@ -688,14 +688,10 @@ public:
 
    virtual GenericRef Clone() const;
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) 
-      {
-         uint64 idb = B_HOST_TO_LENDIAN_IFLOAT(_data[i]);
-         ret += (((uint32)(idb & 0xFFFFFFFF)) + ((uint32)((idb>>32)&0xFFFFFFFF)))*i;
-      }
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += CalculateChecksumForDouble(_data[i]);
       return ret;
    }
 
@@ -734,7 +730,7 @@ public:
 
    virtual GenericRef Clone() const;
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       return TypeCode() + GetNumItems();  // Best we can do, since pointer equivalence is not well defined
    }
@@ -898,13 +894,13 @@ public:
 
    virtual GenericRef Clone() const;
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
       for (int32 i=GetNumItems()-1; i>=0; i--)
       {
          const ByteBuffer * buf = dynamic_cast<ByteBuffer *>(_data[i]());  // TODO: possibly make this a static cast?
-         if (buf) ret += buf->CalculateChecksum()*i;
+         if (buf) ret += buf->CalculateChecksum();
       }
       return ret;
    }
@@ -992,13 +988,13 @@ public:
 
    virtual GenericRef Clone() const;
 
-   virtual uint32 CalculateChecksum(bool countFieldOrder, bool countNonFlattenableFields) const
+   virtual uint32 CalculateChecksum(bool countNonFlattenableFields) const
    {
       uint32 ret = TypeCode() + GetNumItems();
       for (int32 i=GetNumItems()-1; i>=0; i--)
       {
          const MessageRef & msg = _data[i];
-         if (msg()) ret += msg()->CalculateChecksum(countFieldOrder, countNonFlattenableFields)*i;
+         if (msg()) ret += msg()->CalculateChecksum(countNonFlattenableFields);
       }
       return ret;
    }
@@ -1113,10 +1109,10 @@ public:
       }
    }
 
-   virtual uint32 CalculateChecksum(bool /*countFieldOrder*/, bool /*countNonFlattenableFields*/) const
+   virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum()*i;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum();
       return ret;
    }
 };
@@ -1248,7 +1244,7 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
 
    char buf[150];
    DoIndents(indent,s); 
-   sprintf(buf, "Message:  this=%p, what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), entryCount="INT32_FORMAT_SPEC", flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", this, prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), FlattenedSize(), CalculateChecksum());
+   sprintf(buf, "Message:  what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), entryCount="INT32_FORMAT_SPEC", flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), FlattenedSize(), CalculateChecksum());
    s += buf;
 
    HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
@@ -1259,7 +1255,7 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
        uint32 tc = nextValue->TypeCode();
        MakePrettyTypeCodeString(tc, prettyTypeCodeBuf);
        DoIndents(indent,s); 
-       sprintf(buf, "  Entry: Name=[%s], GetNumItems()="INT32_FORMAT_SPEC", TypeCode()='%s' ("INT32_FORMAT_SPEC") flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, nextValue->FlattenedSize(), nextValue->CalculateChecksum(false,false));
+       sprintf(buf, "  Entry: Name=[%s], GetNumItems()="INT32_FORMAT_SPEC", TypeCode()='%s' ("INT32_FORMAT_SPEC") flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, nextValue->FlattenedSize(), nextValue->CalculateChecksum(false));
        s += buf;
        nextValue->AddToString(s, recurse, indent);
    }
@@ -1345,7 +1341,7 @@ uint32 Message :: FlattenedSize() const
    return sum;
 }
 
-uint32 Message :: CalculateChecksum(bool countFieldOrder, bool countNonFlattenableFields) const 
+uint32 Message :: CalculateChecksum(bool countNonFlattenableFields) const 
 {
    uint32 ret = what;
 
@@ -1356,11 +1352,7 @@ uint32 Message :: CalculateChecksum(bool countFieldOrder, bool countNonFlattenab
    while((next = it.GetNextValue()) != NULL) 
    {
       const AbstractDataArray * a = static_cast<const AbstractDataArray *>(next->GetItemPointer());
-      if ((countNonFlattenableFields)||(a->IsFlattenable()))
-      {
-         if (countFieldOrder) ret += (++fieldCount);
-         ret += a->CalculateChecksum(countFieldOrder, countNonFlattenableFields);
-      }
+      if ((countNonFlattenableFields)||(a->IsFlattenable())) ret += a->CalculateChecksum(countNonFlattenableFields);
    }
    return ret;
 }

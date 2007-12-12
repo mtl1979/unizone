@@ -122,10 +122,10 @@ public:
      * @param matchAgainst The Tuple to do a partial index value match against
      * @param startIndex The first index to match on.  Defaults to zero.
      * @param endIndex The last index to match on, plus one.  Values that are greater than the number of items in the tuple will
-     *                 be capped to (the number of items in the tuple).  Defaults to ((uint32)-1).
+     *                 be capped to (the number of items in the tuple).  Defaults to MUSCLE_NO_LIMIT.
      * @return true iff all indices in the range are equal, else false.
      */
-   bool MatchSubrange(const Tuple & matchAgainst, uint32 startIndex = 0, uint32 endIndex = ((uint32)-1)) const
+   bool MatchSubrange(const Tuple & matchAgainst, uint32 startIndex = 0, uint32 endIndex = MUSCLE_NO_LIMIT) const
    {
       if (endIndex > NumItems) endIndex = NumItems;
       for (uint32 i=startIndex; i<endIndex; i++) if (_items[i] != matchAgainst._items[i]) return false;
@@ -136,10 +136,10 @@ public:
      * @param value The value to set items to.
      * @param startIndex The first index to set.  Defaults to zero.
      * @param endIndex The last index to set, plus one.  Values that are greater than the number of items in the tuple will
-     *                 be capped to (the number of items in the tuple).  Defaults to ((uint32)-1).
+     *                 be capped to (the number of items in the tuple).  Defaults to MUSCLE_NO_LIMIT.
      * @return true iff all indices in the range are equal, else false.
      */
-   void FillSubrange(ItemType value, uint32 startIndex = 0, uint32 endIndex = ((uint32)-1))
+   void FillSubrange(ItemType value, uint32 startIndex = 0, uint32 endIndex = MUSCLE_NO_LIMIT)
    {
       if (endIndex > NumItems) endIndex = NumItems;
       for (uint32 i=startIndex; i<endIndex; i++) _items[i] = value;
@@ -150,10 +150,10 @@ public:
      * @param withMe Value to replace instances of (replaceMe) with.
      * @param startIndex The first index to process.  Defaults to zero.
      * @param endIndex The last index to process, plus one.  Values that are greater than the number of items in the tuple will
-     *                 be capped to (the number of items in the tuple).  Defaults to ((uint32)-1).
+     *                 be capped to (the number of items in the tuple).  Defaults to MUSCLE_NO_LIMIT.
      * @returns The number of substitutions that were made.
      */
-   uint32 Replace(const ItemType & replaceMe, const ItemType & withMe, uint32 startIndex = 0, uint32 endIndex = ((uint32)-1))
+   uint32 Replace(const ItemType & replaceMe, const ItemType & withMe, uint32 startIndex = 0, uint32 endIndex = MUSCLE_NO_LIMIT)
    {
       uint32 count = 0;
       if (endIndex > NumItems) endIndex = NumItems;
@@ -172,10 +172,10 @@ public:
      * @param rhs The tuple to copy from.
      * @param startIndex The first index to set.  Defaults to zero.
      * @param endIndex The last index to set, plus one.  Values that are greater than the number of items in the tuple will
-     *                 be capped to (the number of items in the tuple).  Defaults to ((uint32)-1).
+     *                 be capped to (the number of items in the tuple).  Defaults to MUSCLE_NO_LIMIT.
      * @return true iff all indices in the range are equal, else false.
      */
-   void CopySubrange(const Tuple & rhs, uint32 startIndex = 0, uint32 endIndex = ((uint32)-1))
+   void CopySubrange(const Tuple & rhs, uint32 startIndex = 0, uint32 endIndex = MUSCLE_NO_LIMIT)
    {
       if (endIndex > NumItems) endIndex = NumItems;
       for (uint32 i=startIndex; i<endIndex; i++) _items[i] = rhs[i];

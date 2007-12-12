@@ -85,7 +85,7 @@ public:
    virtual uint32 FlattenedSize() const {return 2*sizeof(float);}
 
    /** Returns a 32-bit checksum for this object. */
-   uint32 CalculateChecksum() const {return B_HOST_TO_LENDIAN_IFLOAT(x()) + (3*B_HOST_TO_LENDIAN_IFLOAT(y()));}
+   uint32 CalculateChecksum() const {return CalculateChecksumForFloat(x()) + (3*CalculateChecksumForFloat(y()));}
 
    /** Copies this point into an endian-neutral flattened buffer.
     *  @param buffer Points to an array of at least FlattenedSize() bytes.

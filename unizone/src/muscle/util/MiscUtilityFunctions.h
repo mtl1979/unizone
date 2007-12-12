@@ -234,6 +234,14 @@ String DenybbleizeString(const String & nybStr);
   */
 const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * lookFor, uint32 numLookForBytes);
 
+/** This is a convenience function for debugging.  It will print to stdout the
+  * specified array of bytes in human-readable hexadecimal format.
+  * @param bytes The bytes to print out
+  * @param numBytes How many bytes (bytes) points to
+  * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  */
+void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc = NULL);
+
 END_NAMESPACE(muscle);
 
 #endif

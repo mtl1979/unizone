@@ -1122,16 +1122,12 @@ public:
     * Note that this method can be CPU-intensive, since it has to scan
     * everything in the Message.  Don't call it often if you want good
     * performance!
-    * @param countFieldOrder If true, the ordering of the fields within
-    *                        the Message will be taken into account when
-    *                        calculating the checksum.  If false (the default),
-    *                        then field-ordering won't affect the checksum.
     * @param countNonFlattenableFields If true, non-flattenable fields (e.g.
     *                        those added with AddTag() will be included in the
     *                        checksum.  If false (the default), they will be
     *                        ignored.
     */
-   uint32 CalculateChecksum(bool countFieldOrder = false, bool countNonFlattenableFields = false) const;
+   uint32 CalculateChecksum(bool countNonFlattenableFields = false) const;
 
    /**
     * Returns an iterator that iterates over the names of the fields in this

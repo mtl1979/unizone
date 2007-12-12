@@ -304,16 +304,16 @@ class AndOrQueryFilter : public MultiQueryFilter
 public:
    /** Default constructor.  Creates an AND filter with no children. 
      * @param minMatches The minimum number of children that must match before this filter considers
-     *                   the match to be valid.  Default to ((uint32)-1), meaning all children must match.
+     *                   the match to be valid.  Default to MUSCLE_NO_LIMIT, meaning all children must match.
      */
-   AndOrQueryFilter(uint32 minMatches = ((uint32)-1)) : _minMatches(minMatches) {/* empty */}
+   AndOrQueryFilter(uint32 minMatches = MUSCLE_NO_LIMIT) : _minMatches(minMatches) {/* empty */}
 
    /** Convenience constructor for simple binary 'or' or 'and' operations.
      * @param child1 First argument to the operation
      * @param child2 Second argument to the operation
      * @param isAnd If true, the operation will be an 'and' operation.  Otherwise it will be an 'or' operation.
      */
-   AndOrQueryFilter(const QueryFilterRef & child1, const QueryFilterRef & child2, bool isAnd) : _minMatches(isAnd ? ((uint32)-1) : 1)
+   AndOrQueryFilter(const QueryFilterRef & child1, const QueryFilterRef & child2, bool isAnd) : _minMatches(isAnd ? MUSCLE_NO_LIMIT : 1)
    {
       GetChildren().AddTail(child1);
       GetChildren().AddTail(child2);

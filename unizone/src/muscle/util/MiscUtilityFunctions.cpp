@@ -351,6 +351,8 @@ status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth
 {
    TCHECKPOINT;
 
+   if (timeUS == MUSCLE_TIME_NEVER) return B_ERROR;
+
 #ifdef WIN32
    // Borland's localtime() function is buggy, so we'll use the Win32 API instead.
    static const uint64 diffTime = ((uint64)116444736)*((uint64)1000000000); // add (1970-1601) to convert to Windows time base
@@ -399,14 +401,18 @@ String GetHumanReadableTimeString(uint64 timeUS, uint32 timeType)
 {
    TCHECKPOINT;
 
-   int year, month, day, hour, minute, second;
-   if (GetHumanReadableTimeValues(timeUS, year, month, day, hour, minute, second, timeType) == B_NO_ERROR)
+   if (timeUS == MUSCLE_TIME_NEVER) return ("(never)");
+   else
    {
-      char buf[256];
-      sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", year, month+1, day+1, hour, minute, second);
-      return String(buf);
+      int year, month, day, hour, minute, second;
+      if (GetHumanReadableTimeValues(timeUS, year, month, day, hour, minute, second, timeType) == B_NO_ERROR)
+      {
+         char buf[256];
+         sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", year, month+1, day+1, hour, minute, second);
+         return String(buf);
+      }
+      return "";
    }
-   return "";
 }
  
 #ifdef WIN32
@@ -416,6 +422,8 @@ extern uint64 __Win32FileTimeToMuscleTime(const FILETIME & ft);  // from SetupSy
 uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
 {
    TCHECKPOINT;
+
+   if (s.IndexOfIgnoreCase("never") >= 0) return MUSCLE_TIME_NEVER;
 
    StringTokenizer tok(s(), "/: ");
    const char * year   = tok();
@@ -666,6 +674,14 @@ const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * 
       }
    }
    return NULL;
+}
+
+void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc)
+{
+   if (optDesc) printf("%s: ", optDesc);
+   const uint8 * b = (const uint8 *) bytes;
+   for (uint32 i=0; i<numBytes; i++) printf("%s%02x", (i==0)?"[":" ", b[i]);
+   printf("]\n");
 }
 
 END_NAMESPACE(muscle);

@@ -24,7 +24,7 @@ public:
      * @param minChunkSize Don't return any data in chunks smaller than this.  Defaults to zero.
      * @param maxChunkSize Don't return any data in chunks larger than this.  Defaults to the largest possible uint32 value.
      */
-   RawDataMessageIOGateway(uint32 minChunkSize=0, uint32 maxChunkSize=((uint32)-1));
+   RawDataMessageIOGateway(uint32 minChunkSize=0, uint32 maxChunkSize=MUSCLE_NO_LIMIT);
 
    /** Destructor */
    virtual ~RawDataMessageIOGateway();

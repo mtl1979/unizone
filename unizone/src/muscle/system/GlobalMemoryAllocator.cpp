@@ -277,7 +277,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
 //printf("r-"UINT32_FORMAT_SPEC"(->"UINT32_FORMAT_SPEC") = "UINT32_FORMAT_SPEC"\n", (uint32)shrinkBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes);
 
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
-         MemoryParanoiaPrepareBuffer(newInternalPtr, ((uint32)-1));
+         MemoryParanoiaPrepareBuffer(newInternalPtr, MUSCLE_NO_LIMIT);
 #endif
          newUserPtr = CONVERT_INTERNAL_TO_USER_POINTER(newInternalPtr);
       }

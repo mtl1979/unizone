@@ -97,13 +97,13 @@ status_t MultiQueryFilter :: SetFromArchive(const Message & archive)
 status_t AndOrQueryFilter :: SaveToArchive(Message & archive) const
 {
    return ((MultiQueryFilter::SaveToArchive(archive) == B_NO_ERROR)&&
-           ((_minMatches == ((uint32)-1))||(archive.AddInt32("min", _minMatches) == B_NO_ERROR))) ? B_NO_ERROR : B_ERROR;
+           ((_minMatches == MUSCLE_NO_LIMIT)||(archive.AddInt32("min", _minMatches) == B_NO_ERROR))) ? B_NO_ERROR : B_ERROR;
 }
 
 status_t AndOrQueryFilter :: SetFromArchive(const Message & archive)
 {
    if (MultiQueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
-   if (archive.FindInt32("min", (int32*)&_minMatches) != B_NO_ERROR) _minMatches = ((uint32)-1);
+   if (archive.FindInt32("min", (int32*)&_minMatches) != B_NO_ERROR) _minMatches = MUSCLE_NO_LIMIT;
    return B_NO_ERROR;
 }
 

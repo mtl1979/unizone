@@ -726,10 +726,10 @@ uint32 CalculateChecksum(const uint8 * buffer, uint32 numBytes)
    uint32 leftover = numBytes%sizeof(uint32);
 
    const uint32 * words = (const uint32 *) buffer;
-   for (uint32 i=0; i<numWords; i++) ret += (words[i]*i);
+   for (uint32 i=0; i<numWords; i++) ret += words[i];
 
    const uint8 * bytes = (const uint8 *) (((const uint32 *)buffer)+numWords);
-   for (uint32 j=0; j<leftover; j++) ret += (((uint32)bytes[j])*j);
+   for (uint32 j=0; j<leftover; j++) ret += (uint32)bytes[j];
 
    return ret; 
 }

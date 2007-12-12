@@ -84,7 +84,7 @@ status_t DataNode :: InsertOrderedChild(const MessageRef & data, const String * 
       {
          char buf[50];
          sprintf(buf, "I"UINT32_FORMAT_SPEC, _orderedCounter++);
-         if (HasChild(temp) == false) {temp = buf; break;}
+         if (HasChild(buf) == false) {temp = buf; break;}
       }
       optNodeName = &temp;
    }
@@ -199,7 +199,7 @@ status_t DataNode :: ReorderChild(const DataNode & child, const String * moveToB
    return B_ERROR;
 }
 
-status_t DataNode :: PutChild(DataNodeRef & node, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyChangedData)
+status_t DataNode :: PutChild(const DataNodeRef & node, StorageReflectSession * optNotifyWithOnSetParent, StorageReflectSession * optNotifyChangedData)
 {
    TCHECKPOINT;
 
@@ -381,7 +381,6 @@ uint32 DataNode :: CalculateChecksum(uint32 maxRecursionDepth) const
 {
    // demand-calculate the local checksum and cache the result, since it can be expensive if the Message is big
    if (_cachedDataChecksum == 0) _cachedDataChecksum = _nodeName.CalculateChecksum()+(_data()?_data()->CalculateChecksum():0);
-
    if (maxRecursionDepth == 0) return _cachedDataChecksum;
    else
    {
@@ -397,7 +396,8 @@ static void PrintIndent(int indentLevel) {for (int i=0; i<indentLevel; i++) putc
 void DataNode :: PrintToStream(uint32 maxRecursionDepth, int indentLevel) const
 {
    PrintIndent(indentLevel);
-   printf("DataNode %p:  name=[%s] numChildren="UINT32_FORMAT_SPEC" orderedIndex=%li checksum="UINT32_FORMAT_SPEC" msg=%p\n", this, _nodeName(), _children?_children->GetNumItems():0, _orderedIndex?(int32)_orderedIndex->GetNumItems():(int32)-1, CalculateChecksum(maxRecursionDepth), _data());
+   String np; (void) GetNodePath(np);
+   printf("DataNode [%s] numChildren="UINT32_FORMAT_SPEC" orderedIndex=%li checksum="UINT32_FORMAT_SPEC" msgChecksum="UINT32_FORMAT_SPEC"\n", np(), _children?_children->GetNumItems():0, _orderedIndex?(int32)_orderedIndex->GetNumItems():(int32)-1, CalculateChecksum(maxRecursionDepth), _data()?_data()->CalculateChecksum():0);
    if (_data()) _data()->PrintToStream(true, indentLevel+1);
    if (maxRecursionDepth > 0)
    {
@@ -406,14 +406,55 @@ void DataNode :: PrintToStream(uint32 maxRecursionDepth, int indentLevel) const
          for (uint32 i=0; i<_orderedIndex->GetNumItems(); i++)
          {
             PrintIndent(indentLevel);
-            printf("   DataNode %p index slot " UINT32_FORMAT_SPEC " = %s\n", this, i, (*_orderedIndex)[i]->Cstr());
+            printf("   Index slot " UINT32_FORMAT_SPEC " = %s\n", i, (*_orderedIndex)[i]->Cstr());
          }
       }
       if (_children)
       {
-         PrintIndent(indentLevel); printf("Children for node %p follow:\n", this);
+         PrintIndent(indentLevel); printf("Children for node [%s] follow:\n", np());
          for (HashtableIterator<const String *, DataNodeRef> iter(*_children); iter.HasMoreKeys(); iter++) iter.GetValue()()->PrintToStream(maxRecursionDepth-1, indentLevel+2);
       }
+   }
+}
+
+DataNode * DataNode :: FindFirstMatchingNode(const char * path, uint32 maxDepth) const
+{
+   switch(path[0])
+   {
+      case '\0': return const_cast<DataNode *>(this);
+      case '/':  return GetRootNode()->FindFirstMatchingNode(path+1, maxDepth);
+
+      default:
+      {
+         if ((_children == NULL)||(maxDepth == 0)) return NULL;
+
+         const char * nextSlash = strchr(path, '/');
+         String childKey(path, (nextSlash)?(nextSlash-path):MUSCLE_NO_LIMIT);
+         const char * recurseArg = nextSlash?(nextSlash+1):"";
+
+         if (HasRegexTokens(childKey()))
+         {
+            StringMatcher sm(childKey);
+            for (DataNodeRefIterator iter = GetChildIterator(); iter.HasMoreKeys(); iter++)
+            {
+               if (sm.Match(*iter.GetKey()))
+               {
+                  const DataNodeRef * childRef = _children->Get(iter.GetKey());
+                  if (childRef)
+                  {
+                     DataNode * ret = childRef->GetItemPointer()->FindFirstMatchingNode(recurseArg, maxDepth-1);
+                     if (ret) return ret;
+                  }
+               }
+            }
+         }
+         else
+         {
+            const DataNodeRef * childRef = _children->Get(&childKey);
+            if (childRef) return childRef->GetItemPointer()->FindFirstMatchingNode(recurseArg, maxDepth-1);
+         }
+      }
+      return NULL;
    }
 }
 
