@@ -282,7 +282,7 @@ WDownloadThread::InitSession()
 		QString * temp = new QString[fNumFiles-fCurFile];
 		QString * temp2 = new QString[fNumFiles-fCurFile];
 		QString * temp3 = new QString[fNumFiles-fCurFile];
-		if (temp)
+		if (temp && temp2 && temp3)
 		{
 			int n = 0;
 			for (int f = fCurFile; f < fNumFiles; f++)
@@ -302,7 +302,6 @@ WDownloadThread::InitSession()
 		}
 		// Start from beginning
 		fCurFile = 0;
-		}
 	}
 	
 	if (fFirewalled)	
