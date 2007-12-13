@@ -130,6 +130,12 @@ WDownloadThread::~WDownloadThread()
 		fLocalFileDl = NULL;
 	}
 
+   if (fPaths)
+   {
+      delete [] fPaths;
+      fPaths = NULL;
+   }
+
 	if (!fTunneled)
 		qmtt->ShutdownInternalThread();
 
@@ -275,6 +281,7 @@ WDownloadThread::InitSession()
 		// Reinitialize file list
 		QString * temp = new QString[fNumFiles-fCurFile];
 		QString * temp2 = new QString[fNumFiles-fCurFile];
+		QString * temp3 = new QString[fNumFiles-fCurFile];
 		if (temp)
 		{
 			int n = 0;
@@ -282,19 +289,19 @@ WDownloadThread::InitSession()
 			{
 				temp[n] = fFileDl[f];
 				temp2[n] = fLocalFileDl[f];
+				temp3[n] = fPaths[f];
 				n++;
 			}
 			fNumFiles = n;
-			fCurFile = 0;
 			delete [] fFileDl;
 			delete [] fLocalFileDl;
+			delete [] fPaths;
 			fFileDl = temp;
 			fLocalFileDl = temp2;
+			fPaths = temp3;
 		}
-		else
-		{
-			// Start from beginning
-			fCurFile = 0;
+		// Start from beginning
+		fCurFile = 0;
 		}
 	}
 	

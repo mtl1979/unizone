@@ -19,7 +19,7 @@ WTextEvent::WTextEvent(const QString & text, int type)
 	for (unsigned int i = 0; i < fText.length(); i++)
 	{
 		// go through the text and make sure it contains
-		// some data other then line feeds, etc
+		// some data other than line feeds, etc
 		switch ((QChar)fText.at(i))
 		{
 			case '\n':
