@@ -65,7 +65,7 @@ struct WResumeInfo
 typedef struct WResumePair
 {
 	QString user;
-	WResumeInfo info;
+	Queue<WResumeInfo> files;
 } WResumePair;
 
 typedef Queue<WResumePair> WResumeMap;

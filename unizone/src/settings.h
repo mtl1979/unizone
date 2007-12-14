@@ -165,8 +165,8 @@ public:
 	int32 GetCurrentQueryItem() const;
 
 	// resume list
-	void AddResumeItem(WResumePair wrp);
-	bool GetResumeItem(int index, WResumePair & wrp) const;
+	void AddResumeItem(const QString & user, const WResumeInfo & wri);
+	bool GetResumeItem(int index, QString & user, WResumeInfo & wrp) const;
 	int32 GetResumeCount() const;
 	void SetResumeCount(int32 c);
 	void EmptyResumeList();

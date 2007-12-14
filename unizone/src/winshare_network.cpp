@@ -3046,12 +3046,15 @@ WinShareWindow::ListResumes()
 	{
 		if (fResumeMap[x].user != QString::null)
 		{
-			out += "\n" + tr("File %1: (%2) from %3").arg(i).arg(fResumeMap[x].info.fRemoteName).arg(fResumeMap[x].user);
-			if (fResumeMap[x].info.fLocalName != QString::null)
-			{
-				out += "\n" + tr("- Local File: %1").arg(fResumeMap[x].info.fLocalName);
-			}
-			i++;
+         for (unsigned int y = 0; y < fResumeMap[x].files.GetNumItems(); y++)
+         {
+			   out += "\n" + tr("File %1: (%2) from %3").arg(i).arg(fResumeMap[x].files[y].fRemoteName).arg(fResumeMap[x].user);
+			   if (fResumeMap[x].files[y].fLocalName != QString::null)
+			   {
+				   out += "\n" + tr("- Local File: %1").arg(fResumeMap[x].files[y].fLocalName);
+			   }
+			   i++;
+         }
 		}
 	}
 	out += "\n";
@@ -3070,13 +3073,26 @@ void
 WinShareWindow::KillResume(uint32 index)
 {
 	rLock.Lock();
-	bool found = muscleInRange(index, 0UL, (fResumeMap.GetNumItems() - 1));
-	if (index < fResumeMap.GetNumItems())
+	bool found = false;
 	{
-		WResumePair p;
-		fResumeMap.GetItemAt(index, p);
-		PrintSystem(tr("Removed file '%1' from resume list.").arg(p.info.fRemoteName));
-		fResumeMap.RemoveItemAt(index);
+      uint32 i = 0;
+      for (unsigned int x = 0; x < fResumeMap.GetNumItems(); x++)
+      {
+         if (index < (i + fResumeMap[x].files.GetNumItems()))
+         {
+		      WResumeInfo p;
+            fResumeMap[x].files.GetItemAt( index - i, p );
+		      fResumeMap[x].files.RemoveItemAt( index - i );
+		      PrintSystem(tr("Removed file '%1' from resume list.").arg(p.fRemoteName));
+            if (fResumeMap[x].files.IsEmpty())
+            {
+               fResumeMap.RemoveItemAt(x);
+            }
+            found = true;
+            break;
+         }
+         i += fResumeMap[x].files.GetNumItems();
+      }
 	}
 	rLock.Unlock();
 	if (!found && fSettings->GetError())

@@ -1541,38 +1541,37 @@ WSettings::GetCurrentQueryItem() const
 }
 
 void 
-WSettings::AddResumeItem(WResumePair wrp)
+WSettings::AddResumeItem(const QString & user, const WResumeInfo & wri)
 {
-	fSet()->AddString(RESUMEUSER, (const char *) wrp.user.utf8());
-	fSet()->AddString(RESUMEFILE, (const char *) wrp.info.fRemoteName.utf8());
-	fSet()->AddString(RESUMEFIL2, (const char *) wrp.info.fLocalName.utf8());
-	fSet()->AddString(RESUMEPATH, (const char *) wrp.info.fPath.utf8());
+	fSet()->AddString(RESUMEUSER, (const char *) user.utf8());
+	fSet()->AddString(RESUMEFILE, (const char *) wri.fRemoteName.utf8());
+	fSet()->AddString(RESUMEFIL2, (const char *) wri.fLocalName.utf8());
+	fSet()->AddString(RESUMEPATH, (const char *) wri.fPath.utf8());
 }
 
 bool 
-WSettings::GetResumeItem(int index, WResumePair & wrp) const
+WSettings::GetResumeItem(int index, QString & user, WResumeInfo & wri) const
 {
-	QString file, user, path;
+	QString file, path;
 	if (
 		(GetStringFromMessage(fSet, RESUMEFILE, index, file) == B_OK) &&
 		(GetStringFromMessage(fSet, RESUMEUSER, index, user) == B_OK) 
 		)
 	{
-		wrp.user = user;
-		wrp.info.fRemoteName = file;
+		wri.fRemoteName = file;
 
 		// For backwards compatibility don't require entry for local file name or remote path
 		//
 
 		if (GetStringFromMessage(fSet, RESUMEFIL2, index, file) == B_OK)
-			wrp.info.fLocalName = file;
+			wri.fLocalName = file;
 		else
-			wrp.info.fLocalName = QString::null;
+			wri.fLocalName = QString::null;
 
 		if (GetStringFromMessage(fSet, RESUMEPATH, index, path) == B_OK)
-			wrp.info.fPath = path;
+			wri.fPath = path;
 		else
-			wrp.info.fPath = QString::null;
+			wri.fPath = QString::null;
 
 		return true;
 	}

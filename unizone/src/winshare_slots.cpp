@@ -526,30 +526,43 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
 	wri.fLocalName = lfile;
 	wri.fPath = path;
 
-	WResumePair wrp;
-	wrp.user = user;
-	wrp.info = wri;
-
 	rLock.Lock();
 	if (!fResumeMap.IsEmpty())
 	{
 		// Check if file is already in the resume list
 		for (unsigned int x = 0; x < fResumeMap.GetNumItems(); x++)
 		{
-			if (
-				(fResumeMap[x].info.fRemoteName == file) &&
-				(fResumeMap[x].info.fLocalName == lfile) &&
-				(fResumeMap[x].info.fPath == path) &&
-				(fResumeMap[x].user == user)
-				)
-			{
-				rLock.Unlock();
-				return;
-			}
+         if (fResumeMap[x].user == user)
+         {
+            for (unsigned int y = 0; y < fResumeMap[x].files.GetNumItems(); y++)
+            {
+               if (
+                  (fResumeMap[x].files[y].fRemoteName == file) &&
+                  (fResumeMap[x].files[y].fLocalName == lfile) &&
+                  (fResumeMap[x].files[y].fPath == path) 
+                  )
+               {
+                  rLock.Unlock();
+                  return;
+               }
+            }
+            fResumeMap[x].files.AddTail(wri);
+            rLock.Unlock();
+            return;
+         }
 		}
 	}
-	fResumeMap.AddTail(wrp);
-	rLock.Unlock();
+
+   // Create entry for user and then add file as initial entry
+   {
+      WResumePair wrp;
+      wrp.user = user;
+      wrp.files.AddTail(wri);
+      
+      fResumeMap.AddTail(wrp);
+   }
+
+   rLock.Unlock();
 }
 
 // Check username against resume list
@@ -582,8 +595,7 @@ WinShareWindow::CheckResumes(const QString &user)
 	Queue<QString> fPaths;
 	QString out;
 	
-	unsigned int x = 0;
-	while (x < fResumeMap.GetNumItems())
+	for (unsigned int x = 0; x < fResumeMap.GetNumItems(); x++)
 	{
 #ifdef _DEBUG
 		wuser = StripURL(fResumeMap[x].user);
@@ -594,19 +606,21 @@ WinShareWindow::CheckResumes(const QString &user)
 		{
 			// User name matches
 
-			if (fSettings->GetDownloads())
-			{
-				if (!out.isEmpty())
-					out += "\n";
-				out += tr("Trying to resume file %1 from user %2").arg(fResumeMap[x].info.fRemoteName).arg(user);
-			}
-			fFiles.AddTail(fResumeMap[x].info.fRemoteName);
-			fLFiles.AddTail(fResumeMap[x].info.fLocalName);
-			fPaths.AddTail(fResumeMap[x].info.fPath);
+         for (unsigned int y = 0; y < fResumeMap[x].files.GetNumItems(); y++)
+         {
+            if (fSettings->GetDownloads())
+            {
+               if (!out.isEmpty())
+                  out += "\n";
+               out += tr("Trying to resume file %1 from user %2").arg(fResumeMap[x].files[y].fRemoteName).arg(user);
+            }
+            fFiles.AddTail(fResumeMap[x].files[y].fRemoteName);
+            fLFiles.AddTail(fResumeMap[x].files[y].fLocalName);
+            fPaths.AddTail(fResumeMap[x].files[y].fPath);
+         }
 			fResumeMap.RemoveItemAt(x);
+         break;
 		}
-		else
-			x++;
 	}
 	rLock.Unlock();
 	if (fFiles.GetNumItems() > 0)

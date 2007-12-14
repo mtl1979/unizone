@@ -255,14 +255,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 
 	if (fSettings->GetInfo())
 	{
-		const char * osname = GetOSName();
-		QString out = tr("Welcome to Unizone (English)!");
-		if (strcmp(osname, "Unknown") != 0)
-		{
-			out += " ";
-			out += tr("<b>THE</b> MUSCLE client for %1!").arg(qApp->translate("WUser", osname));
-		}		
-		PrintSystem(out);
+		PrintSystem(tr("Welcome to Unizone (English)!"));
 		// <postmaster@raasu.org> 20030225
 		PrintSystem(tr("Copyright (C) %1 Mika T. Lindqvist.").arg(GetUnizoneYears()));
 		PrintSystem(tr("Original idea by Vitaliy Mikitchenko."));
@@ -1459,9 +1452,38 @@ WinShareWindow::LoadSettings()
 
 		for (i = 0; i <= fSettings->GetResumeCount(); i++)
 		{
-			WResumePair wrp;
-			if (fSettings->GetResumeItem(i, wrp))
-				fResumeMap.AddTail(wrp);
+         QString ruser, luser = QString::null;
+         int rind = -1;
+			WResumeInfo wri;
+			if (fSettings->GetResumeItem(i, ruser, wri))
+         {
+            if (luser != ruser)
+            {
+               for (unsigned int r = 0; r < fResumeMap.GetNumItems(); r++)
+               {
+                  if (fResumeMap[r].user == ruser)
+                  {
+                     rind = r;
+                     luser = ruser;
+                     fResumeMap[r].files.AddTail(wri);
+                     break;
+                  }
+               }
+               // No entry yet
+               {
+                  WResumePair wrp;
+                  wrp.user = ruser;
+                  wrp.files.AddTail(wri);
+                  fResumeMap.AddTail(wrp);
+                  rind = fResumeMap.GetNumItems() - 1;
+               }
+            }
+            else
+            {
+               // Same user as previous resume item
+               fResumeMap[rind].files.AddTail(wri);
+            }
+         }
 		}
 		rLock.Unlock();
 
@@ -1679,7 +1701,10 @@ WinShareWindow::SaveSettings()
 
 	for ( unsigned int x = 0; x < fResumeMap.GetNumItems(); x++ )
 	{
-		fSettings->AddResumeItem(fResumeMap[x]);
+      for ( unsigned int y = 0; y < fResumeMap[x].files.GetNumItems(); y++ )
+      {
+		   fSettings->AddResumeItem(fResumeMap[x].user, fResumeMap[x].files[y]);
+      }
 	}
 	rLock.Unlock();
 	fSettings->SetResumeCount(fResumeMap.GetNumItems());
