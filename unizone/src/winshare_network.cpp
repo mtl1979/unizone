@@ -413,7 +413,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else 
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_KICK));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) MapUsersToIDs(users).utf8());
+				AddStringToMessage(mrf, PR_NAME_KEYS, MapUsersToIDs(users));
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -429,7 +429,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_KICK));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(users).utf8());
+				AddStringToMessage(mrf, PR_NAME_KEYS, MapIPsToNodes(users));
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -445,7 +445,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDBANS));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) MapUsersToIDs(users).utf8());
+				AddStringToMessage(mrf, PR_NAME_KEYS, MapUsersToIDs(users));
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -461,7 +461,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDBANS));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(users).utf8());
+				AddStringToMessage(mrf, PR_NAME_KEYS, MapIPsToNodes(users));
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -477,7 +477,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEBANS));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) MapUsersToIDs(users).utf8());
+				AddStringToMessage(mrf, PR_NAME_KEYS, MapUsersToIDs(users));
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -493,7 +493,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEBANS));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(users).utf8());
+				AddStringToMessage(mrf, PR_NAME_KEYS, MapIPsToNodes(users));
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -504,7 +504,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (!mask.isEmpty())
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_ADDREQUIRES));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(mask).utf8());
+				AddStringToMessage(mrf, PR_NAME_KEYS, MapIPsToNodes(mask));
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -515,7 +515,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (!mask.isEmpty())
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_REMOVEREQUIRES));
-				mrf()->AddString(PR_NAME_KEYS, (const char *) MapIPsToNodes(mask).utf8());
+				AddStringToMessage(mrf, PR_NAME_KEYS, MapIPsToNodes(mask));
 				fNetClient->SendMessageToSessions(mrf);
 			}
 		}
@@ -631,15 +631,15 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					{
 						WUserRef tu;
 						iter.GetNextValue(tu);
-						String to("/*/");
-						to += (const char *) tu()->GetUserID().utf8();
+						QString to("/*/");
+						to += tu()->GetUserID();
 						to += "/unishare";
 
 						MessageRef tire(GetMessageFromPool(TimeRequest));
 						if (tire())
 						{
-							tire()->AddString(PR_NAME_KEYS, to);
-							tire()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
+							AddStringToMessage(tire, PR_NAME_KEYS, to);
+							AddStringToMessage(tire, PR_NAME_SESSION, GetUserID());
 							if (command == "gmt")
 							{
 								tire()->AddBool("gmt", true);
@@ -1328,6 +1328,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				QStringList::Iterator iter = files.begin();
 				bool ok = false;
+				OpenViewer();
 				while (iter != files.end())
 				{
 					if (fPicViewer->LoadImage(*iter))
@@ -1365,6 +1366,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			QWidget * desk = QApplication::desktop();
 			QPixmap pmap = QPixmap::grabWindow(desk->winId());
 			pmap.save(fname, "JPEG");
+			OpenViewer();
 			if (fPicViewer->LoadImage(fname))
 			{
 				fPicViewer->show();
@@ -1899,7 +1901,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		 */
 	case PR_RESULT_PONG:
 		{
-			if (fSearch->GotResults())
+			if (!fSearch || fSearch->GotResults())
 			{
 				UpdateUserCount();
 				// Execute OnConnect commands here, when all user information should be available
@@ -1997,6 +1999,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 								return;
 						}
 						SavePicture(file, buf);
+						OpenViewer();
 						if (fPicViewer->LoadImage(file))
 							fPicViewer->show();
 					}
@@ -2035,8 +2038,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						QString to("/*/");
 						to += userID;
 						to += "/beshare";
-						rej()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-						rej()->AddString(PR_NAME_SESSION, (const char *) fNetClient->LocalSessionID().utf8());
+						AddStringToMessage(rej, PR_NAME_KEYS, to);
+						AddStringToMessage(rej, PR_NAME_SESSION, fNetClient->LocalSessionID());
 						rej()->AddInt64("tunnel_id", (int64) hisID);
 						fNetClient->SendMessageToSessions(rej);
 					}
@@ -2049,8 +2052,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						QString to("/*/");
 						to += userID;
 						to += "/beshare";
-						acc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-						acc()->AddString(PR_NAME_SESSION, (const char *) fNetClient->LocalSessionID().utf8());
+						AddStringToMessage(acc, PR_NAME_KEYS, to);
+						AddStringToMessage(acc, PR_NAME_SESSION, fNetClient->LocalSessionID());
 						void * tunnelID = NULL;
 						OpenUpload();
 						if (fULWindow->CreateTunnel(userID, hisID, tunnelID))
@@ -2253,8 +2256,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						to += repto;
 						to += "/unishare";
 						col()->AddString(PR_NAME_KEYS, to);
-						col()->AddString("name", (const char *) GetUserName().utf8() );
-						col()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
+						AddStringToMessage(col, "name", GetUserName() );
+						AddStringToMessage(col, PR_NAME_SESSION, GetUserID());
 						col()->AddInt64("registertime", GetRegisterTime() );
 						
 						fNetClient->SendMessageToSessions(col);
@@ -2279,98 +2282,18 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				}
 				break;
 			}
+//
 		case NetClient::ChannelCreated:
-			{
-				QString qChan, qOwner;
-				uint64 rtime;
-				if (
-					(GetStringFromMessage(msg, PR_NAME_SESSION, qOwner) == B_OK) &&
-					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
-					(msg()->FindInt64("when", (int64 *) &rtime) == B_OK)
-					)
-				{
-					fChannels->ChannelCreated(qChan, qOwner, rtime);
-				}
-
-				break;
-			}
 		case NetClient::ChannelJoin:
-			{
-				QString qChan, qUser;
-				if (
-					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) && 
-					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
-					)
-				{
-					fChannels->ChannelJoin(qChan, qUser);
-				}
-				break;
-			}
 		case NetClient::ChannelPart:
-			{
-				QString qChan, qUser;
-				if (
-					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) && 
-					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
-					)
-				{
-					fChannels->ChannelPart(qChan, qUser);
-				}
-				break;
-			}
 		case NetClient::ChannelInvite:
-			{
-				QString qChan, qUser, qWho;
-				if (
-					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
-					(GetStringFromMessage(msg, "who", qWho) == B_OK) &&
-					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
-					)
-				{
-					fChannels->ChannelInvite(qChan, qUser, qWho);
-				}
-				break;
-			}
 		case NetClient::ChannelKick:
-			{
-				QString qChan, qUser, qWho;
-				if (
-					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
-					(GetStringFromMessage(msg, "who", qWho) == B_OK) &&
-					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
-					)
-				{
-					fChannels->ChannelKick(qChan, qUser, qWho);
-				}
-				break;
-			}
 		case NetClient::ChannelSetTopic:
-			{
-				QString qChan, qUser, qTopic;
-				if (
-					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
-					(GetStringFromMessage(msg, "topic", qTopic) == B_OK) && 
-					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
-					)
-				{
-					fChannels->ChannelTopic(qChan, qUser, qTopic);
-				}
-				break;
-			}
 		case NetClient::ChannelSetPublic:
 			{
-				QString qChan, qUser;
-				bool pub;
-				if (
-					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
-					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
-					(msg()->FindBool("public", &pub) == B_OK) 
-					)
-				{
-					fChannels->ChannelPublic(qChan, qUser, pub);
-				}
-				break;
+				fChannels->HandleMessage(msg);
 			}
+//
 		case NetClient::PING:
 			{
 				String repto;
@@ -2398,7 +2321,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						int64 currTime = GetCurrentTime64();
 					
 						rep()->AddString(PR_NAME_KEYS, tostr);
-						rep()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
+						AddStringToMessage(rep, PR_NAME_SESSION, GetUserID());
 						rep()->AddInt64("when", sent);
 					
 						QString version = tr("Unizone (English)");
@@ -2412,7 +2335,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						uint64 fUptime = GetUptime();
 						uint64 fLoginTime = fNetClient->LoginTime();
 						uint64 fOnlineTime = fLoginTime ? currTime - fLoginTime : 0;
-						rep()->AddString("version", (const char *) version.utf8());
+						AddStringToMessage(rep, "version", version);
 						rep()->AddInt64("uptime", (int64) fUptime);
 						rep()->AddInt64("onlinetime", (int64) fOnlineTime);
 					
@@ -2420,8 +2343,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					}
 				}
 				break;
-			}
-			
+			}			
 			// response to our ping
 		case NetClient::PONG:
 			{
@@ -2505,9 +2427,9 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						QString qlt = QString::fromLocal8Bit(lt.Cstr());
 						QString qzone = QString::fromLocal8Bit(zone);
 						tire()->AddString(PR_NAME_KEYS, tostr);
-						tire()->AddString(PR_NAME_SESSION, (const char *) GetUserID().utf8());
-						tire()->AddString("time", (const char *) qlt.utf8());
-						tire()->AddString("zone", (const char *) qzone.utf8());
+						AddStringToMessage(tire, PR_NAME_SESSION, GetUserID());
+						AddStringToMessage(tire, "time", qlt);
+						AddStringToMessage(tire, "zone", qzone);
 						fNetClient->SendMessageToSessions(tire);
 					}
 				}
@@ -2553,7 +2475,9 @@ WinShareWindow::Connect()
 		NameChanged(fUserName);
 
 	fGotParams = false;
-	fSearch->SetGotResults(true);
+	if (fSearch)
+		fSearch->SetGotResults(true);
+
 	if (fNetClient)
 	{
 		WaitOnFileThread(false);	// make sure our scan thread is dead

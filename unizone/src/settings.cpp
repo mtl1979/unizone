@@ -67,7 +67,7 @@ WSettings::~WSettings()
 void
 WSettings::AddServerItem(const QString & str)
 {
-	fSet()->AddString(SERVER_LIST, (const char *) str.utf8());
+	AddStringToMessage(fSet, SERVER_LIST, str);
 }
 
 QString
@@ -113,7 +113,7 @@ WSettings::GetCurrentServerItem() const
 void
 WSettings::AddUserItem(const QString & str)
 {
-	fSet()->AddString(USER_LIST, (const char *) str.utf8());
+	AddStringToMessage(fSet, USER_LIST, str);
 }
 
 QString
@@ -159,7 +159,7 @@ WSettings::GetCurrentUserItem() const
 void
 WSettings::AddStatusItem(const QString & str)
 {
-	fSet()->AddString(STATUS_LIST, (const char *) str.utf8());
+	AddStringToMessage(fSet, STATUS_LIST, str);
 }
 
 QString
@@ -353,13 +353,13 @@ WSettings::SetMainSizes(QValueList<int> & sizes)
 void
 WSettings::SetAwayMsg(const QString & away)
 {
-	fSet()->ReplaceString(true, AWAY_MSG, (const char *) away.utf8());
+	ReplaceStringInMessage(fSet, true, AWAY_MSG, away);
 }
 
 void
 WSettings::SetHereMsg(const QString & here)
 {
-	fSet()->ReplaceString(true, HERE_MSG, (const char *) here.utf8());
+	ReplaceStringInMessage(fSet, true, HERE_MSG, here);
 }
 
 QString
@@ -382,7 +382,7 @@ WSettings::GetHereMsg() const
 void
 WSettings::AddColorItem(const QString & c)
 {
-	fSet()->AddString(COLORS, (const char *) c.utf8());
+	AddStringToMessage(fSet, COLORS, c);
 }
 
 QString
@@ -648,7 +648,7 @@ WSettings::GetMultiColor() const
 void
 WSettings::SetConnection(const QString & str)
 {
-	fSet()->ReplaceString(true, CONNECTION, (const char *)str.utf8());
+	ReplaceStringInMessage(fSet, true, CONNECTION, str);
 }
 
 QString
@@ -664,7 +664,7 @@ WSettings::GetConnection() const
 void
 WSettings::SetHTTPProxy(const QString &str)
 {
-	fSet()->ReplaceString(true, HTTPPROXY, (const char *)str.utf8());
+	ReplaceStringInMessage(fSet, true, HTTPPROXY, str);
 }
 
 QString
@@ -856,7 +856,7 @@ WSettings::GetSounds() const
 void
 WSettings::SetSoundFile(const QString &fn)
 {
-	fSet()->ReplaceString(true, SOUND_FILE, (const char *) fn.utf8());
+	ReplaceStringInMessage(fSet, true, SOUND_FILE, fn);
 }
 
 QString
@@ -1032,7 +1032,7 @@ WSettings::GetWatchPattern() const
 void
 WSettings::SetWatchPattern(const QString & p)
 {
-	fSet()->ReplaceString(true, WATCH_PATTERN, (const char *) p.utf8());
+	ReplaceStringInMessage(fSet, true, WATCH_PATTERN, p);
 }
 
 QString
@@ -1044,7 +1044,7 @@ WSettings::GetIgnorePattern() const
 void
 WSettings::SetIgnorePattern(const QString & p)
 {
-	fSet()->ReplaceString(true, IGNORE_PATTERN, (const char *) p.utf8());
+	ReplaceStringInMessage(fSet(), true, IGNORE_PATTERN, p);
 }
 
 QString
@@ -1056,7 +1056,7 @@ WSettings::GetIPIgnorePattern() const
 void
 WSettings::SetIPIgnorePattern(const QString & p)
 {
-	fSet()->ReplaceString(true, IPIGNORE_PATTERN, (const char *) p.utf8());
+	ReplaceStringInMessage(fSet, true, IPIGNORE_PATTERN, p);
 }
 
 QString
@@ -1080,7 +1080,7 @@ WSettings::GetFilterListPattern() const
 void
 WSettings::SetAutoPrivatePattern(const QString & p)
 {
-	fSet()->ReplaceString(true, AUTOPRIV, (const char *) p.utf8());
+	ReplaceStringInMessage(fSet, true, AUTOPRIV, p);
 }
 	
 QString
@@ -1092,7 +1092,7 @@ WSettings::GetAutoPrivatePattern() const
 void
 WSettings::SetPMRedirect(const QString & p)
 {
-	fSet()->ReplaceString(true, PM_REDIRECT, (const char *) p.utf8());
+	ReplaceStringInMessage(fSet, true, PM_REDIRECT, p);
 }
 
 QString
@@ -1104,19 +1104,19 @@ WSettings::GetPMRedirect() const
 void
 WSettings::SetBlackListPattern(const QString & p)
 {
-	fSet()->ReplaceString(true,BLACKLIST, (const char *) p.utf8());
+	ReplaceStringInMessage(fSet, true, BLACKLIST, p);
 }
 
 void
 WSettings::SetWhiteListPattern(const QString & p)
 {
-	fSet()->ReplaceString(true, WHITELIST, (const char *) p.utf8());
+	ReplaceStringInMessage(fSet, true, WHITELIST, p);
 }
 
 void
 WSettings::SetFilterListPattern(const QString & p)
 {
-	fSet()->ReplaceString(true, FILTERLIST, (const char *) p.utf8());
+	ReplaceStringInMessage(fSet(), true, FILTERLIST, p);
 }
 
 QString
@@ -1128,7 +1128,7 @@ WSettings::GetOnConnect() const
 void
 WSettings::SetOnConnect(const QString & s)
 {
-	fSet()->ReplaceString(true, ONCONN, (const char *) s.utf8());
+	ReplaceStringInMessage(fSet, true, ONCONN, s);
 }
 
 QString
@@ -1140,32 +1140,32 @@ WSettings::GetOnConnect2() const
 void
 WSettings::SetOnConnect2(const QString & s)
 {
-	fSet()->ReplaceString(true, ONCONN2, (const char *) s.utf8());
+	ReplaceStringInMessage(fSet, true, ONCONN2, s);
 }
 
 #ifndef WIN32
 void
 WSettings::SetFTPLauncher(const QString & l)
 {
-	fSet()->ReplaceString(true, FTP_LAUNCHER, (const char *) l.utf8());
+	ReplaceStringInMessage(fSet, true, FTP_LAUNCHER, l);
 }
 
 void
 WSettings::SetMailLauncher(const QString & l)
 {
-	fSet()->ReplaceString(true, MAILTO_LAUNCHER, (const char *) l.utf8());
+	ReplaceStringInMessage(fSet, true, MAILTO_LAUNCHER, l);
 }
 
 void
 WSettings::SetHTTPLauncher(const QString & l)
 {
-	fSet()->ReplaceString(true, HTTP_LAUNCHER, (const char *) l.utf8());
+	ReplaceStringInMessage(fSet, true, HTTP_LAUNCHER, l);
 }
 
 void
 WSettings::SetDefaultLauncher(const QString & l)
 {
-	fSet()->ReplaceString(true, DEFAULT_LAUNCHER, (const char *) l.utf8());
+	ReplaceStringInMessage(fSet, true, DEFAULT_LAUNCHER, l);
 }
 
 QString
@@ -1499,7 +1499,7 @@ WSettings::SetSearchListSortAscending(bool a)
 void
 WSettings::SetRemotePassword(const QString & pw)
 {
-	fSet()->ReplaceString(true, REMOTEPASSWORD, (const char *) pw.utf8());
+	ReplaceStringInMessage(fSet, true, REMOTEPASSWORD, pw);
 }
 
 QString
@@ -1511,7 +1511,7 @@ WSettings::GetRemotePassword() const
 void
 WSettings::AddQueryItem(const QString & str)
 {
-	fSet()->AddString(QUERY_LIST, (const char *) str.utf8());
+	AddStringToMessage(fSet, QUERY_LIST, str);
 }
 
 QString
@@ -1543,10 +1543,10 @@ WSettings::GetCurrentQueryItem() const
 void 
 WSettings::AddResumeItem(const QString & user, const WResumeInfo & wri)
 {
-	fSet()->AddString(RESUMEUSER, (const char *) user.utf8());
-	fSet()->AddString(RESUMEFILE, (const char *) wri.fRemoteName.utf8());
-	fSet()->AddString(RESUMEFIL2, (const char *) wri.fLocalName.utf8());
-	fSet()->AddString(RESUMEPATH, (const char *) wri.fPath.utf8());
+	AddStringToMessage(fSet, RESUMEUSER, user);
+	AddStringToMessage(fSet, RESUMEFILE, wri.fRemoteName);
+	AddStringToMessage(fSet, RESUMEFIL2, wri.fLocalName);
+	AddStringToMessage(fSet, RESUMEPATH, wri.fPath);
 }
 
 bool 
@@ -1666,4 +1666,20 @@ void
 WSettings::SetInstallID(int64 iid)
 {
 	fSet()->ReplaceInt64(true, INSTALLID, iid);
+}
+
+void
+WSettings::SetLastImageDir(const QString &dir)
+{
+   ReplaceStringInMessage(fSet, true, IMAGEDIR, dir);
+}
+
+QString
+WSettings::GetLastImageDir() const
+{
+   QString dir = GetStringItem(fSet, IMAGEDIR);
+   if (dir.isEmpty())
+      return downloadDir();
+   else
+      return dir;
 }

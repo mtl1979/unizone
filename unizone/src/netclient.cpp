@@ -162,8 +162,10 @@ NetClient::Disconnect()
 	{
 		WinShareWindow *win = GetWindow(this);
 		if (win)
-			win->setCaption("Unizone");
-	
+		{
+         win->setCaption("Unizone");
+         win->setStatus(QString::null, 3);
+		}
 		// Reset() implies ShutdownInternalThread();
 		//
 		PRINT("RESETING\n");
@@ -223,7 +225,7 @@ NetClient::RemoveSubscription(const QString & str)
 	MessageRef ref(GetMessageFromPool(PR_COMMAND_REMOVEPARAMETERS));
 	if (ref())
 	{
-		ref()->AddString(PR_NAME_KEYS, (const char *) str.utf8());
+		AddStringToMessage(ref, PR_NAME_KEYS, str);
 		SendMessageToSessions(ref);
 	}
 }
@@ -449,7 +451,7 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 									to += sid;
 									to += "/unishare";
 									col()->AddString(PR_NAME_KEYS, to);
-									col()->AddString("name", (const char *) win->GetUserName().utf8() );
+									AddStringToMessage(col, "name", win->GetUserName() );
 									col()->AddInt64("registertime", win->GetRegisterTime() );
 									SendMessageToSessions(col);
 								}
@@ -771,12 +773,12 @@ NetClient::HandleParameters(const MessageRef & next)
 				if (uc())
 				{
 					uc()->AddInt64("registertime", win->GetRegisterTime(fUserName));
-					uc()->AddString(PR_NAME_SESSION, (const char *) fSessionID.utf8());
+					AddStringToMessage(uc, PR_NAME_SESSION, fSessionID);
 					if ((fOldID != QString::null) && (fOldID != fSessionID))
 					{
-						uc()->AddString("oldid", (const char *) fOldID.utf8());
+						AddStringToMessage(uc, "oldid", fOldID);
 					}
-					uc()->AddString("name", (const char *) fUserName.utf8());
+					AddStringToMessage(uc, "name", fUserName);
 					
 					SetNodeValue("unishare/serverinfo", uc);
 				}
@@ -819,15 +821,15 @@ NetClient::SendChatText(const QString & target, const QString & text, bool enc)
 			QString tostr = "/*/";
 			tostr += target;
 			tostr += "/beshare";
-			chat()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
-			chat()->AddString(PR_NAME_SESSION, (const char *) fSessionID.utf8());
+			AddStringToMessage(chat, PR_NAME_KEYS, tostr);
+			AddStringToMessage(chat, PR_NAME_SESSION, fSessionID);
 			if (enc)
 			{
 				QString tmp = wencrypt2(text);
-				chat()->AddString("enctext", (const char *) tmp.utf8());
+				AddStringToMessage(chat, "enctext", tmp);
 			}
 			else
-				chat()->AddString("text", (const char *) text.utf8());
+				AddStringToMessage(chat, "text", text);
 			if (target != "*")
 				chat()->AddBool("private", true);
 			SendMessageToSessions(chat);
@@ -846,11 +848,11 @@ NetClient::SendPicture(const QString & target, const ByteBufferRef &buffer, cons
 			QString tostr = "/*/";
 			tostr += target;
 			tostr += "/beshare";
-			pic()->AddString(PR_NAME_KEYS, (const char *) tostr.utf8());
-			pic()->AddString(PR_NAME_SESSION, (const char *) fSessionID.utf8());
+			AddStringToMessage(pic, PR_NAME_KEYS, tostr);
+			AddStringToMessage(pic, PR_NAME_SESSION, fSessionID);
 			pic()->AddData("picture", B_RAW_TYPE, buffer()->GetBuffer(), buffer()->GetNumBytes());
 			pic()->AddInt32("chk", CalculateFileChecksum(buffer));
-			pic()->AddString("name", (const char *) name.utf8());
+			AddStringToMessage(pic, "name", name);
 			if (target != "*")
 				pic()->AddBool("private", true);
 			SendMessageToSessions(pic);
@@ -869,8 +871,8 @@ NetClient::SendPing(const QString & target)
 			QString to("/*/");
 			to += target;
 			to += "/beshare";
-			ping()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-			ping()->AddString(PR_NAME_SESSION, (const char *) LocalSessionID().utf8());
+			AddStringToMessage(ping, PR_NAME_KEYS, to);
+			AddStringToMessage(ping, PR_NAME_SESSION, LocalSessionID());
 			ping()->AddInt64("when", (int64) GetCurrentTime64());
 			SendMessageToSessions(ping);
 		}
@@ -890,13 +892,11 @@ NetClient::SetUserName(const QString & user)
 			MessageRef ref(GetMessageFromPool());
 			if (ref())
 			{
-				QString version = tr("Unizone (English)");
-				QCString vstring = WinShareVersionString().utf8();
-				ref()->AddString("name", (const char *) user.utf8()); // <postmaster@raasu.org> 20021001
+				AddStringToMessage(ref, "name", user); // <postmaster@raasu.org> 20021001
 				ref()->AddInt32("port", fPort);
 				ref()->AddInt64("installid", win->fSettings->GetInstallID());
-				ref()->AddString("version_name", (const char *) version.utf8());	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
-				ref()->AddString("version_num", (const char *) vstring);
+				AddStringToMessage(ref, "version_name", tr("Unizone (English)"));	// "secret" WinShare version data (so I don't have to ping Win/LinShare users
+				AddStringToMessage(ref, "version_num", WinShareVersionString());
 				ref()->AddString("host_os", GetOSName());
 				ref()->AddBool("supports_partial_hashing", true);		// 64kB hash sizes
 #ifndef DISABLE_TUNNELING
@@ -918,7 +918,7 @@ NetClient::SetUserStatus(const QString & status)
 		MessageRef ref(GetMessageFromPool());
 		if (ref())
 		{
-			ref()->AddString("userstatus", (const char *) status.utf8()); // <postmaster@raasu.org> 20021001
+			AddStringToMessage(ref, "userstatus", status); // <postmaster@raasu.org> 20021001
 			SetNodeValue("beshare/userstatus", ref);
 		}
 	}
@@ -934,7 +934,7 @@ NetClient::SetConnection(const QString & connection)
 		{
 			int32 bps = BandwidthToBytes(connection);
 			
-			ref()->AddString("label", (const char *) connection.utf8());
+			AddStringToMessage(ref, "label", connection);
 			ref()->AddInt32("bps", bps);
 			
 			SetNodeValue("beshare/bandwidth", ref);

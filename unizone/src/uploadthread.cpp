@@ -554,7 +554,7 @@ WUploadThread::OutputQueuesDrained(const MessageRef &/* msg */)
 			if (msg())
 			{
 				msg()->AddBool("done", true);
-				msg()->AddString("file", (const char *) fFileUl.utf8());
+				AddStringToMessage(msg, "file", SimplifyPath(fFileUl));
 				PRINT("\t\tSending...\n");
 				SendReply(msg);
 				PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
@@ -622,22 +622,22 @@ WUploadThread::SendRejectedNotification(bool direct)
 		}
 		else
 		{
-			String node;
+			QString node;
 			if (fRemoteSessionID != QString::null)
 			{
 				node = "/*/";
-				node += (const char *) fRemoteSessionID.utf8();
+				node += fRemoteSessionID;
 			}
 			else
 			{
 				// use /<ip>/* instead of /*/<sessionid>, because session id isn't yet known at this point
 				node = "/";
-				node += (const char *) fStrRemoteIP.utf8();
+				node += fStrRemoteIP;
 				node += "/*";
 			}
 			if (
 				(q()->AddString(PR_NAME_SESSION, "") == B_NO_ERROR) &&
-				(q()->AddString(PR_NAME_KEYS, node) == B_NO_ERROR) &&
+				(AddStringToMessage(q, PR_NAME_KEYS, node) == B_NO_ERROR) &&
 				(q()->AddInt32("port", (int32) fPort) == B_NO_ERROR)
 				) 
 			{
@@ -661,12 +661,27 @@ WUploadThread::_nobuffer()
    MessageRef status(GetMessageFromPool(WUploadEvent::FileError));
    if (status())
    {
-      status()->AddString("file", (const char *) fFileUl.utf8());
+      AddStringToMessage(status, "file", SimplifyPath(fFileUl));
       status()->AddString("why", QT_TR_NOOP( "Critical error: Upload buffer allocation failed!" ));
       SendReply(status);
    }
    
    NextFile();
+}
+
+QString
+WUploadThread::MakeUploadPath(MessageRef ref)
+{
+	QString filename;
+	if (GetStringFromMessage(ref, "beshare:File Name", filename) == B_OK)
+	{
+		QString path;
+		if (GetStringFromMessage(ref, "winshare:Path", path) == B_OK)
+			return MakePath(path, filename);
+		if (GetStringFromMessage(ref, "beshare:Path", path) == B_OK)
+			return MakePath(path, filename);		
+	}
+	return QString::null;
 }
 
 void 
@@ -808,11 +823,11 @@ WUploadThread::DoUpload()
                   if (fCurrentOffset >= fFileSize)
                   {
                      update()->AddBool("done", true);	// file done!
-                     update()->AddString("file", (const char *) fFileUl.utf8());
+                     AddStringToMessage(update, "file", SimplifyPath(fFileUl));
                      
                      if (gWin->fSettings->GetUploads())
                      {
-                        SystemEvent( gWin, tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( QDir::convertSeparators(fFileUl) ) );
+                        SystemEvent( gWin, tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( SimplifyPath(fFileUl) ) );
                      }
                   }
                   SendReply(update);
@@ -843,17 +858,8 @@ WUploadThread::DoUpload()
 			{
 				// grab the ref and remove it from the list
 				fUploads.RemoveHead(fCurrentRef);
-				String file;
 				
-				{
-					String path, filename;
-					fCurrentRef()->FindString("beshare:Path", path);
-					fCurrentRef()->FindString("beshare:File Name", filename);
-
-					file = MakePath(path, filename);
-				}
-
-				fFileUl = QString::fromUtf8(file.Cstr());
+				fFileUl = MakeUploadPath(fCurrentRef);
 
 #ifdef _DEBUG
 				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
@@ -900,16 +906,16 @@ WUploadThread::DoUpload()
 				MessageRef mref(GetMessageFromPool(WUploadEvent::FileStarted));
 				if (mref())
 				{
-					mref()->AddString("file", file.Cstr());
+					AddStringToMessage(mref, "file", SimplifyPath(fFileUl));
 					mref()->AddInt64("start", fCurrentOffset);
 					mref()->AddInt64("size", fFileSize);
-					mref()->AddString("user", (const char *) fRemoteSessionID.utf8());
+					AddStringToMessage(mref, "user", fRemoteSessionID);
 					SendReply(mref);
 				}
 
 				if (gWin->fSettings->GetUploads())
 				{
-					SystemEvent( gWin, tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( QDir::convertSeparators(fFileUl) ) );
+					SystemEvent( gWin, tr("%1 is downloading %2.").arg( GetRemoteUser() ).arg( SimplifyPath(fFileUl) ) );
 				}
 
 				// nested call
@@ -1123,29 +1129,19 @@ WUploadThread::TransferFileList(MessageRef msg)
 						}
 						
 						// figure the path to our requested file
-						String file;
-
-						{
-							String path, filename;
-							fileRef()->FindString("beshare:Path", path);
-							fileRef()->FindString("beshare:File Name", filename);
-						
-							file = MakePath(path, filename);
-						}
+						QString file = MakeUploadPath(fileRef);
 						
 						// Notify window of our hashing
 						MessageRef m(GetMessageFromPool(WUploadEvent::FileHashing));
 						if (m())
 						{
-							m()->AddString("file", file);
+							AddStringToMessage(m, "file", SimplifyPath(file));
 							SendReply(m);
 						}
 						
 						// Hash
 						
-						QString qFile = QString::fromUtf8(file.Cstr());
-						
-						if (HashFileMD5(qFile, offset, readLen, NULL, myDigest, fShutdownFlag) == B_OK && 
+						if (HashFileMD5(file, offset, readLen, NULL, myDigest, fShutdownFlag) == B_OK && 
 							memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
 						{
 							// put this into our message ref
@@ -1173,17 +1169,17 @@ WUploadThread::TransferFileList(MessageRef msg)
 			return;
 		}
 		
-		MessageRef fref;
-		fUploads.GetItemAt(0, fref);
-		if (fref())
+		if (IsLocallyQueued())
 		{
-			String path, filename;
-			
-			if (fref()->FindString("beshare:Path", path) == B_OK &&
-				fref()->FindString("beshare:File Name", filename) == B_OK)
+			MessageRef fref;
+			fUploads.GetItemAt(0, fref);
+			if (fref())
 			{
-				if (IsLocallyQueued())
+				QString filename = MakeUploadPath(fref);
+				
+				if (!filename.isEmpty())
 				{
+					// Check file size if is smaller than minimum size wanted for queue
 					int64 filesize;
 					if (fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
 					{
@@ -1193,24 +1189,23 @@ WUploadThread::TransferFileList(MessageRef msg)
 							return;
 						}
 					}
-				}
-				else
-				{
-					SignalUpload();
-					return;
-				}
-				
-				String firstFile = MakePath(path, filename);
-				
-				MessageRef initmsg(GetMessageFromPool(WUploadEvent::Init));
-				if (initmsg())
-				{
-					initmsg()->AddString("file", firstFile);
-					initmsg()->AddString("user", (const char *) fRemoteSessionID.utf8());
-					SendReply(initmsg);
+					
+					MessageRef initmsg(GetMessageFromPool(WUploadEvent::Init));
+					if (initmsg())
+					{
+						AddStringToMessage(initmsg, "file", SimplifyPath(filename));
+						AddStringToMessage(initmsg, "user", fRemoteSessionID);
+						SendReply(initmsg);
+					}
 				}
 			}
 		}
+		else
+		{
+			SignalUpload();
+			return;
+		}
+		
 	}
 }
 
@@ -1444,7 +1439,7 @@ WUploadThread::SendMessageToSessions(const MessageRef & msgRef, const char * opt
 			QString to("/*/");
 			to += fRemoteSessionID;
 			to += "/beshare";
-			msgRef()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			AddStringToMessage(msgRef, PR_NAME_KEYS, to);
 			msgRef()->AddString(PR_NAME_SESSION, "");
 			msgRef()->AddBool("upload", true);
 			return static_cast<WUpload *>(fOwner)->netClient()->SendMessageToSessions(msgRef);
@@ -1457,7 +1452,7 @@ WUploadThread::SendMessageToSessions(const MessageRef & msgRef, const char * opt
 				QString to("/*/");
 				to += fRemoteSessionID;
 				to += "/beshare";
-				up()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+				AddStringToMessage(up, PR_NAME_KEYS, to);
 				up()->AddString(PR_NAME_SESSION, "");
 				up()->AddMessage("message", msgRef);
 				up()->AddBool("upload", true);

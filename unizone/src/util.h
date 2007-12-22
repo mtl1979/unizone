@@ -150,6 +150,9 @@ int64 ConvertPtr(void *);
 bool startsWith(const QString &str1, const QString &str2, bool cs = true);
 bool endsWith(const QString &str1, const QString &str2, bool cs = true);
 
+bool startsWith(const QString &str1, const QChar &str2, bool cs = true);
+bool endsWith(const QString &str1, const QChar &str2, bool cs = true);
+
 bool BinkyCheck(const QString &user);
 
 QString downloadDir(const QString & = QString::null);
@@ -162,4 +165,12 @@ status_t GetStringFromMessage(const MessageRef &msg, const String key, QString &
 status_t GetStringFromMessage(const MessageRef &msg, const String key, uint32 index, QString &value);
 status_t GetInt32FromMessage(const MessageRef &msg, const String key, int32 &value);
 status_t GetUInt32FromMessage(const MessageRef &msg, const String key, uint32 &value);
+
+status_t AddStringToMessage(const MessageRef &msg, const String key, const QString &value);
+
+status_t ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, const QString &value);
+status_t ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, uint32 index, const QString &value);
+
+QString SimplifyPath(const QString &path);
+
 #endif

@@ -37,6 +37,9 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *e);
 	bool eventFilter( QObject *o, QEvent *e );
 
+   friend class WinShareWindow;
+   void LoadSettings();
+   void SaveSettings();
 
 private:
 	bool LoadImage(const ByteBufferRef &buffer, const char *format, QImage &image);
@@ -53,6 +56,8 @@ private:
 
 	bool dragging;
 	QPoint startPos;
+
+   QString lastdir;
 };
 
 #endif

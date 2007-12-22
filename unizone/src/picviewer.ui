@@ -61,7 +61,7 @@
                 <name>spacing</name>
                 <number>6</number>
             </property>
-            <widget row="2"  column="4" >
+            <widget row="1"  column="4" >
                 <class>QPushButton</class>
                 <property stdset="1">
                     <name>name</name>
@@ -76,7 +76,7 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget row="2"  column="6" >
+            <widget row="1"  column="6" >
                 <class>QPushButton</class>
                 <property stdset="1">
                     <name>name</name>
@@ -91,7 +91,7 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget row="1"  column="0"  rowspan="1"  colspan="7" >
+            <widget row="0"  column="0"  rowspan="1"  colspan="7" >
                 <class>QLabel</class>
                 <property stdset="1">
                     <name>name</name>
@@ -133,7 +133,7 @@
                     <name>wordwrap</name>
                 </property>
             </widget>
-            <widget row="2"  column="0" >
+            <widget row="1"  column="0" >
                 <class>QPushButton</class>
                 <property stdset="1">
                     <name>name</name>
@@ -148,7 +148,7 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget row="2"  column="5" >
+            <widget row="1"  column="5" >
                 <class>QPushButton</class>
                 <property stdset="1">
                     <name>name</name>
@@ -163,7 +163,7 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget row="2"  column="1" >
+            <widget row="1"  column="1" >
                 <class>QPushButton</class>
                 <property stdset="1">
                     <name>name</name>
@@ -178,7 +178,7 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget row="2"  column="2" >
+            <widget row="1"  column="2" >
                 <class>QPushButton</class>
                 <property stdset="1">
                     <name>name</name>
@@ -193,39 +193,7 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget row="0"  column="0"  rowspan="1"  colspan="7" >
-                <class>QLabel</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>txtFile</cstring>
-                </property>
-                <property stdset="1">
-                    <name>sizePolicy</name>
-                    <sizepolicy>
-                        <hsizetype>5</hsizetype>
-                        <vsizetype>0</vsizetype>
-                    </sizepolicy>
-                </property>
-                <property stdset="1">
-                    <name>minimumSize</name>
-                    <size>
-                        <width>0</width>
-                        <height>32</height>
-                    </size>
-                </property>
-                <property stdset="1">
-                    <name>text</name>
-                    <string>No File</string>
-                </property>
-                <property stdset="1">
-                    <name>alignment</name>
-                    <set>AlignCenter</set>
-                </property>
-                <property>
-                    <name>hAlign</name>
-                </property>
-            </widget>
-            <widget row="2"  column="3" >
+            <widget row="1"  column="3" >
                 <class>QLabel</class>
                 <property stdset="1">
                     <name>name</name>

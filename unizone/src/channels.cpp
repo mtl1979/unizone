@@ -9,6 +9,7 @@
 #include "global.h"
 #include "wstring.h"
 #include "netclient.h"
+#include "util.h"
 
 #include <qinputdialog.h>
 #include <qmessagebox.h>
@@ -259,9 +260,9 @@ Channels::CreateChannel()
 			{
 				String to("/*/*/unishare");
 				cc()->AddString(PR_NAME_KEYS, to);
-				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
+				AddStringToMessage(cc, PR_NAME_SESSION, gWin->GetUserID());
 				cc()->AddInt64("when", (int64) GetCurrentTime64());
-				cc()->AddString("channel", (const char *) channel.utf8());
+				AddStringToMessage(cc, "channel", channel);
 				fNetClient->SendMessageToSessions(cc);
 			}
 		}
@@ -339,10 +340,10 @@ Channels::JoinChannel(const QString & channel)
 			{
 				String to("/*/*/unishare");
 				cc()->AddString(PR_NAME_KEYS, to);
-				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
-				cc()->AddString("who", (const char *) gWin->GetUserID().utf8());
+				AddStringToMessage(cc, PR_NAME_SESSION, gWin->GetUserID());
+				AddStringToMessage(cc, "who", gWin->GetUserID());
 				cc()->AddInt64("when", (int64) GetCurrentTime64());
-				cc()->AddString("channel", (const char *) channel.utf8());
+				AddStringToMessage(cc, "channel", channel);
 				fNetClient->SendMessageToSessions(cc);
 			}
 		}	
@@ -364,10 +365,10 @@ Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 
 				QString to("/*/");
 				to += owner;
 				to += "/unishare";
-				cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-				cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
+				AddStringToMessage(cc, PR_NAME_KEYS, to);
+				AddStringToMessage(cc, PR_NAME_SESSION, gWin->GetUserID());
 				cc()->AddInt64("when", (int64) info->GetCreated());
-				cc()->AddString("channel", (const char *) channel.utf8());
+				AddStringToMessage(cc, "channel", channel);
 				fNetClient->SendMessageToSessions(cc);
 			}
 		}
@@ -425,9 +426,9 @@ Channels::PartChannel(const QString & channel, const QString & user)
 		{
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
-			cc()->AddString(PR_NAME_SESSION, (const char *) gWin->GetUserID().utf8());
+			AddStringToMessage(cc, PR_NAME_SESSION, gWin->GetUserID());
 			cc()->AddInt64("when", (int64) GetCurrentTime64());
-			cc()->AddString("channel", (const char *) channel.utf8());
+			AddStringToMessage(cc, "channel", channel);
 			fNetClient->SendMessageToSessions(cc);
 		}
 	}
@@ -714,4 +715,104 @@ Channels::StopLogging()
 		if (chn)
 			chn->StopLogging();
 	}
+}
+
+void
+Channels::HandleMessage(MessageRef & msg)
+{
+   switch (msg()->what)
+   {
+         case NetClient::ChannelCreated:
+			{
+				QString qChan, qOwner;
+				uint64 rtime;
+				if (
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qOwner) == B_OK) &&
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
+					(msg()->FindInt64("when", (int64 *) &rtime) == B_OK)
+					)
+				{
+					ChannelCreated(qChan, qOwner, rtime);
+				}
+
+				break;
+			}
+		case NetClient::ChannelJoin:
+			{
+				QString qChan, qUser;
+				if (
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) && 
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
+					)
+				{
+					ChannelJoin(qChan, qUser);
+				}
+				break;
+			}
+		case NetClient::ChannelPart:
+			{
+				QString qChan, qUser;
+				if (
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) && 
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
+					)
+				{
+					ChannelPart(qChan, qUser);
+				}
+				break;
+			}
+		case NetClient::ChannelInvite:
+			{
+				QString qChan, qUser, qWho;
+				if (
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
+					(GetStringFromMessage(msg, "who", qWho) == B_OK) &&
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
+					)
+				{
+					ChannelInvite(qChan, qUser, qWho);
+				}
+				break;
+			}
+		case NetClient::ChannelKick:
+			{
+				QString qChan, qUser, qWho;
+				if (
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
+					(GetStringFromMessage(msg, "who", qWho) == B_OK) &&
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
+					)
+				{
+					ChannelKick(qChan, qUser, qWho);
+				}
+				break;
+			}
+		case NetClient::ChannelSetTopic:
+			{
+				QString qChan, qUser, qTopic;
+				if (
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
+					(GetStringFromMessage(msg, "topic", qTopic) == B_OK) && 
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
+					)
+				{
+					ChannelTopic(qChan, qUser, qTopic);
+				}
+				break;
+			}
+		case NetClient::ChannelSetPublic:
+			{
+				QString qChan, qUser;
+				bool pub;
+				if (
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
+					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
+					(msg()->FindBool("public", &pub) == B_OK) 
+					)
+				{
+					ChannelPublic(qChan, qUser, pub);
+				}
+				break;
+			}
+   }
 }

@@ -24,6 +24,10 @@
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "qtsupport/QMessageTransceiverThread.h"
 
+#ifdef _DEBUG
+#include "wstring.h"
+#endif
+
 using namespace muscle;
 
 WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
@@ -200,8 +204,8 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, QString * lpaths, in
 
 		dlFile = fLocalFileDl[0];
 
-		msg()->AddString("file", (const char *) dlFile.utf8());
-		msg()->AddString("user", (const char *) fromSession.utf8());
+		AddStringToMessage(msg, "file", dlFile);
+		AddStringToMessage(msg, "user", fromSession);
 		SendReply(msg);	// send the init message to our owner
 	}
 }
@@ -261,8 +265,8 @@ WDownloadThread::SetFile(QString *files, QString *lfiles, QString *lpaths, int32
 
 		dlFile = fLocalFileDl[0];
 
-		msg()->AddString("file", (const char *) dlFile.utf8());
-		msg()->AddString("user", (const char *) fFromSession.utf8());
+		AddStringToMessage(msg, "file", dlFile);
+		AddStringToMessage(msg, "user", fFromSession);
 		SendReply(msg);	// send the init message to our owner
 	}
 
@@ -356,7 +360,7 @@ WDownloadThread::InitSession()
 						MessageRef cnt(GetMessageFromPool(WDownloadEvent::ConnectBackRequest));
 						if (cnt())
 						{
-							cnt()->AddString(PR_NAME_SESSION, (const char *) fFromSession.utf8());
+							AddStringToMessage(cnt, PR_NAME_SESSION, fFromSession);
 							cnt()->AddInt32("port", fAcceptingOn);
 							SendReply(cnt);
 						}
@@ -611,10 +615,10 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 							status = GetMessageFromPool(WDownloadEvent::FileStarted);
 							if (status())
 							{
-								status()->AddString("file", (const char *) fixed.utf8());
+								AddStringToMessage(status, "file", fixed);
 								status()->AddInt64("start", fCurrentOffset);
 								status()->AddInt64("size", fFileSize);
-								status()->AddString("user", (const char *) fFromSession.utf8());
+								AddStringToMessage(status, "user", fFromSession);
 								SendReply(status);
 							}
 
@@ -636,7 +640,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 							if (status())
 							{
 								status()->AddBool("done", false);
-								status()->AddString("file", (const char *) fixed.utf8());
+								AddStringToMessage(status, "file", fixed);
 								SendReply(status);
 							}
 							NextFile();
@@ -652,7 +656,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 					status = GetMessageFromPool(WDownloadEvent::FileError);
 					if (status())
 					{
-						status()->AddString("file", (const char *) fixed.utf8());
+						AddStringToMessage(status, "file", fixed);
 						status()->AddString("why", QT_TR_NOOP( "Critical error: Could not create file!" ));
 						SendReply(status);
 					}
@@ -706,7 +710,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 							MessageRef error(GetMessageFromPool(WDownloadEvent::FileError));
 							if (error())
 							{
-								error()->AddString("why", (const char *) errStr.utf8());
+								AddStringToMessage(error, "why", errStr);
 								SendReply(error);
 							}
 							
@@ -741,7 +745,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 								update()->AddBool("done", true);	// file done!
 								if (fCurFile != -1)
 								{
-									update()->AddString("file", (const char *) fFileDl[fCurFile].utf8());
+									AddStringToMessage(update, "file", fFileDl[fCurFile]);
 								}
 							}
 
@@ -829,8 +833,8 @@ WDownloadThread::SessionConnected(const String &sessionID)
 	MessageRef comID(GetMessageFromPool(WTransfer::TransferCommandPeerID));
 	if (comID())
 	{
-		comID()->AddString("beshare:FromUserName", (const char *) gWin->GetUserName().utf8());
-		comID()->AddString("beshare:FromSession", (const char *) gWin->GetUserID().utf8());
+		AddStringToMessage(comID, "beshare:FromUserName", gWin->GetUserName());
+		AddStringToMessage(comID, "beshare:FromSession", gWin->GetUserID());
 		comID()->AddBool("unishare:supports_compression", true);
 		comID()->AddInt32("unishare:preferred_packet_size", lrint((gWin->fSettings->GetPacketSize() * 1024.0)));
 		SendMessageToSessions(comID);
@@ -858,7 +862,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 				MessageRef hashMsg(GetMessageFromPool(WDownloadEvent::FileHashing));
 				if (hashMsg())
 				{
-					hashMsg()->AddString("file", (const char *)fLocalFileDl[c].utf8());
+					AddStringToMessage(hashMsg, "file", fLocalFileDl[c]);
 					SendReply(hashMsg);
 				}
 								
@@ -873,7 +877,7 @@ WDownloadThread::SessionConnected(const String &sessionID)
 						MessageRef e(GetMessageFromPool(WDownloadEvent::FileError));
 						if (e())
 						{
-							e()->AddString("file", (const char *) fLocalFileDl[c].utf8());
+							AddStringToMessage(e, "file", fLocalFileDl[c]);
 							e()->AddString("why", QT_TR_NOOP( "MD5 hashing failed! Can't resume." ));
 							SendReply(e);
 						}
@@ -883,9 +887,9 @@ WDownloadThread::SessionConnected(const String &sessionID)
 			neg()->AddInt64("offsets", fileOffset);
 			neg()->AddInt64("numbytes", retBytesHashed);
 			neg()->AddData("md5", B_RAW_TYPE, digest, (fileOffset > 0) ? sizeof(digest) : 1);
-			neg()->AddString("files", (const char *) fFileDl[c].utf8());
+			AddStringToMessage(neg, "files", fFileDl[c]);
 		}
-		neg()->AddString("beshare:FromSession", (const char *) fLocalSession.utf8());
+		AddStringToMessage(neg, "beshare:FromSession", fLocalSession);
 		SendMessageToSessions(neg);
 	}
 }
@@ -933,7 +937,7 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 					if (dis())
 					{
 						dis()->AddBool("done", true);		
-						dis()->AddString("file", (const char *) fFileDl[fNumFiles - 1].utf8());
+						AddStringToMessage(dis, "file", fFileDl[fNumFiles - 1]);
 						SendReply(dis);
 					}
 				}
@@ -1375,10 +1379,13 @@ WDownloadThread::SendMessageToSessions(const MessageRef & msgRef, const char * o
 			QString to("/*/");
 			to += fFromSession;
 			to += "/beshare";
-			msgRef()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+			AddStringToMessage(msgRef, PR_NAME_KEYS, to);
 			msgRef()->AddString(PR_NAME_SESSION, "");
-			PRINT("Sending message to %s...\n", (const char *) to.utf8());
 			msgRef()->AddInt32("my_id", (int32) this);
+#ifdef _DEBUG
+			WString wto(to);
+			PRINT("Sending message to %S...\n", wto.getBuffer());
+#endif
 			return static_cast<WDownload *>(fOwner)->netClient()->SendMessageToSessions(msgRef);
 		}
 		else
@@ -1389,7 +1396,7 @@ WDownloadThread::SendMessageToSessions(const MessageRef & msgRef, const char * o
 				QString to("/*/");
 				to += fFromSession;
 				to += "/beshare";
-				down()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
+				AddStringToMessage(down, PR_NAME_KEYS, to);
 				down()->AddString(PR_NAME_SESSION, "");
 				down()->AddMessage("message", msgRef);
 				down()->AddInt64("tunnel_id", (int64) hisID);

@@ -28,8 +28,7 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fParent = parent;
 	if (fName != QString::null)
 	{
-		QString title = tr("Channel Window - %1").arg(fName);
-		setCaption( title );
+		setCaption( tr("Channel Window - %1").arg(fName) );
 		fActive = gWin->fChannels->IsPublic(fName);
 	}
 	fSplit = new QSplitter(Vertical, this);
@@ -130,9 +129,9 @@ Channel::SetOwner(const QString & owner)
 		{
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
-			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
+			AddStringToMessage(cc, PR_NAME_SESSION, fNet->LocalSessionID());
 			cc()->AddInt64("when", (int64) GetCurrentTime64());
-			cc()->AddString("channel", (const char *) fName.utf8());
+			AddStringToMessage(cc, "channel", fName);
 			fNet->SendMessageToSessions(cc);
 		}
 		UpdateNode();
@@ -150,10 +149,10 @@ Channel::SetTopic(const QString & topic)
 		{
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
-			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
+			AddStringToMessage(cc, PR_NAME_SESSION, fNet->LocalSessionID());
 			cc()->AddInt64("when", (int64) GetCurrentTime64());
-			cc()->AddString("channel", (const char *) fName.utf8());
-			cc()->AddString("topic", (const char *) topic.utf8());
+			AddStringToMessage(cc, "channel", fName);
+			AddStringToMessage(cc, "topic", topic);
 			fNet->SendMessageToSessions(cc);
 		}
 		fTopicEdit->setText(topic);
@@ -175,9 +174,9 @@ Channel::SetPublic(bool p)
 		{
 			String to("/*/*/unishare");
 			cc()->AddString(PR_NAME_KEYS, to);
-			cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
+			AddStringToMessage(cc, PR_NAME_SESSION, fNet->LocalSessionID());
 			cc()->AddInt64("when", (int64) GetCurrentTime64());
-			cc()->AddString("channel", (const char *) fName.utf8());
+			AddStringToMessage(cc, "channel", fName);
 			cc()->AddBool("public", p);
 			fNet->SendMessageToSessions(cc);
 			UpdateNode();
@@ -196,10 +195,10 @@ Channel::Invite(const QString & user)
 		QString to("/*/");
 		to += user;
 		to += "/unishare";
-		cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-		cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
+		AddStringToMessage(cc, PR_NAME_KEYS, to);
+		AddStringToMessage(cc, PR_NAME_SESSION, fNet->LocalSessionID());
 		cc()->AddInt64("when", (int64) GetCurrentTime64());
-		cc()->AddString("channel", (const char *) fName.utf8());
+		AddStringToMessage(cc, "channel", fName);
 		fNet->SendMessageToSessions(cc);
 	}
 }
@@ -213,10 +212,10 @@ Channel::Kick(const QString & user)
 		QString to("/*/");
 		to += user;
 		to += "/unishare";
-		cc()->AddString(PR_NAME_KEYS, (const char *) to.utf8());
-		cc()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
+		AddStringToMessage(cc, PR_NAME_KEYS, to);
+		AddStringToMessage(cc, PR_NAME_SESSION, fNet->LocalSessionID());
 		cc()->AddInt64("when", (int64) GetCurrentTime64());
-		cc()->AddString("channel", (const char *) fName.utf8());
+			AddStringToMessage(cc, "channel", fName);
 		fNet->SendMessageToSessions(cc);
 	}
 	gWin->fChannels->PartChannel(fName, user);
@@ -611,9 +610,9 @@ Channel::SendChannelText(const QString & message)
 		{
 			String tostr("/*/*/unishare");
 			chat()->AddString(PR_NAME_KEYS, tostr);
-			chat()->AddString(PR_NAME_SESSION, (const char *) fNet->LocalSessionID().utf8());
-			chat()->AddString("channel", (const char *) fName.utf8());
-			chat()->AddString("text", (const char *) message.utf8());
+			AddStringToMessage(chat, PR_NAME_SESSION, fNet->LocalSessionID());
+			AddStringToMessage(chat, "channel", fName);
+			AddStringToMessage(chat, "text", message);
 			fNet->SendMessageToSessions(chat);
 		}
 	}
@@ -690,9 +689,9 @@ Channel::UpdateNode()
 	if (cc())
 	{
 		QString admins = gWin->fChannels->GetAdmins(fName);
-		cc()->AddString("owner", (const char *) fOwner.utf8());
-		cc()->AddString("topic", (const char *) fTopic.utf8());
-		cc()->AddString("admins", (const char *) admins.utf8());
+		AddStringToMessage(cc, "owner", fOwner);
+		AddStringToMessage(cc, "topic", fTopic);
+		AddStringToMessage(cc, "admins", admins);
 		cc()->AddBool("public", fPublic);
 		QString node = "unishare/channeldata/";
 		node += fName;

@@ -9,6 +9,7 @@
 #include <qlayout.h>
 #include <qlistview.h>
 
+#include "message/Message.h"
 #include "util/String.h"
 #include "util/Hashtable.h"
 #include "qtsupport/QMuscleSupport.h"
@@ -48,11 +49,7 @@ public:
 protected:
 	friend class WinShareWindow;
 
-	void ChannelCreated(const QString &, const QString &, uint64);
-	void ChannelJoin(const QString &, const QString &);
-	void ChannelPart(const QString &, const QString &);
-	void ChannelInvite(const QString &, const QString &, const QString &);
-	void ChannelKick(const QString &, const QString &, const QString &);
+	void HandleMessage(MessageRef &);
 
 private:
 	NetClient * fNetClient;
@@ -67,6 +64,12 @@ private:
 
 
 	WChannelMap fChannels;
+
+   void ChannelCreated(const QString &, const QString &, uint64);
+	void ChannelJoin(const QString &, const QString &);
+	void ChannelPart(const QString &, const QString &);
+	void ChannelInvite(const QString &, const QString &, const QString &);
+	void ChannelKick(const QString &, const QString &, const QString &);
 
 	void UpdateAdmins(const QString &channel, ChannelInfo * info);
 	void UpdateUsers(ChannelInfo * info);

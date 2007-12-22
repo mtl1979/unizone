@@ -20,6 +20,9 @@
 #include "debugimpl.h"
 #include "wfile.h"
 #include "platform.h"
+#include "global.h"
+#include "settings.h"
+#include "winsharewindow.h"
 
 WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, WFlags fl)
 : WPicViewerBase(parent, name, modal, fl)
@@ -52,12 +55,26 @@ WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, WFlags fl)
 
 	cFile = 0;
 	nFiles = 0;
+
+	lastdir = downloadDir();
 }
 
 WPicViewer::~WPicViewer()
 {
 	fImages.Clear();
 	fFiles.Clear();
+}
+
+void
+WPicViewer::LoadSettings()
+{
+   lastdir = gWin->fSettings->GetLastImageDir();
+}
+
+void
+WPicViewer::SaveSettings()
+{
+   gWin->fSettings->SetLastImageDir(lastdir);
 }
 
 bool
@@ -200,6 +217,10 @@ WPicViewer::LoadImage(const QString &file)
 		}
 		f.Close();
 	}
+
+	QFileInfo info(file);
+	lastdir = info.dirPath();
+
 	return ret;
 }
 
@@ -218,42 +239,10 @@ WPicViewer::UpdateName()
 {
 	QString fFile, fName;
 
-	QFontMetrics qfm = txtFile->fontMetrics();
-	txtFile->setMinimumHeight(qfm.height());
-	
 	if ( fFiles.GetItemAt(cFile, fFile) == B_OK)
-	{
-		txtFile->setText(fFile);
-		
-		if (txtFile->width() < qfm.width(fFile))
-		{
-			int p = fFile.findRev(QDir::separator());
-			int p2 = fFile.findRev(QDir::separator(), p - 1);
-			if (p > -1 && p2 > -1)
-			{
-				while (p2 > -1)
-				{
-					fName = fFile.left(p2 + 1) + "..." + fFile.mid(p);
-					if (txtFile->width() >= qfm.width(fName))
-					{
-						txtFile->setText(fName);
-						break;
-					}
-					else
-						p2 = fFile.findRev(QDir::separator(), p2 - 1);
-				};
-			}
-			else
-			{
-				p = fFile.length() - 3;
-				while (qfm.width(fFile.left(p) + "...") > txtFile->width() && (p > 0))
-					p--;
-				txtFile->setText(fFile.left(p) + "...");
-			}
-		}
-	}
+		setCaption(tr("Picture Viewer") + " - " + SimplifyPath(fFile));
 	else
-		txtFile->setText(tr("No File"));
+		setCaption(tr("Picture Viewer"));
 }
 
 void
@@ -389,7 +378,7 @@ WPicViewer::CloseImage()
 void
 WPicViewer::OpenImage()
 {
-	QStringList files = QFileDialog::getOpenFileNames ( imageFormats(), downloadDir(), this);
+	QStringList files = QFileDialog::getOpenFileNames ( imageFormats(), lastdir, this);
 	if (!files.isEmpty())
 	{
 		QStringList::Iterator iter = files.begin();

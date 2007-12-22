@@ -469,19 +469,28 @@ WFileThread::GetInfo(const QString &file, MessageRef &mref) const
 	UFileInfo ufi(file);
 	if (ufi.isValid())
 	{
-		String _file = (const char *) ufi.getName().utf8();
-		String _path = (const char *) ufi.getPath().utf8();
+		QString upath = ufi.getPath();
+      QString qPath = SimplifyPath(upath);
+      if (qPath.isEmpty())
+         return false; // Don't return files from Unizone main directory
+      // strip "shared" from path
+      if (qPath == "shared")
+         qPath = ""; 
+      if (qPath.startsWith("shared" + QDir::separator()))
+         qPath = qPath.mid(7);
+      //
 		int64 size = ufi.getSize();
 		
 		mref = GetMessageFromPool();
 		if ( mref() )
 		{
 			mref()->AddInt32("beshare:Modification Time", ufi.getModificationTime());
-			mref()->AddString("beshare:Kind", (const char *) ufi.getMIMEType().utf8()); // give BeSharer's some relief
-			mref()->AddString("beshare:Path", _path);
+			AddStringToMessage(mref, "beshare:Kind", ufi.getMIMEType()); // give BeSharer's some relief
+			AddStringToMessage(mref, "beshare:Path", qPath);
+			AddStringToMessage(mref, "winshare:Path", upath);
 			mref()->AddInt64("beshare:File Size", size);
-			mref()->AddString("beshare:FromSession", (const char *) fNet->LocalSessionID().utf8());
-			mref()->AddString("beshare:File Name", _file);
+			AddStringToMessage(mref, "beshare:FromSession", fNet->LocalSessionID());
+			AddStringToMessage(mref, "beshare:File Name", ufi.getName());
 			ret = true;
 		}
 	}

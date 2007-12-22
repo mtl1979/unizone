@@ -131,7 +131,8 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 void
 WinShareWindow::DisconnectedFromServer()
 {
-	fSearch->StopSearch();
+	if (fSearch)
+		fSearch->StopSearch();
 	fDisconnectCount++;
 
 	setStatus(tr( "Not connected." ), 0);

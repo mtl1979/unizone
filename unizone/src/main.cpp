@@ -27,6 +27,8 @@
 
 int64 fStartTime;
 
+QString gAppDir;
+
 int64 GetStartTime()
 {
 	return fStartTime;
@@ -132,6 +134,7 @@ main( int argc, char** argv )
 #else
 	SetWorkingDirectory();
 #endif
+   gAppDir = QDir::currentDirPath();
 
 	// Load language file
 	WFile lang;

@@ -121,6 +121,8 @@ using namespace muscle;
 #define SOUNDS     "sounds"
 #define SOUND_FILE "soundfile"
 
+#define IMAGEDIR "imagedir"
+
 class WSettings
 {
 public:
@@ -470,6 +472,11 @@ public:
 	// Install ID
 	int64 GetInstallID();
 	void SetInstallID(int64 iid);
+
+   // PictureViewer
+   QString GetLastImageDir() const;
+   void SetLastImageDir(const QString & dir);
+
 private:
 	MessageRef fSet;
 	int fColor, fColumn, fStatus, fUser, fServer;	// iterators

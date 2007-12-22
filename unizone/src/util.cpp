@@ -1692,6 +1692,24 @@ endsWith(const QString &str1, const QString &str2, bool cs)
 #endif
 }
 
+bool
+startsWith(const QString &str, const QChar &c, bool cs)
+{
+   if (cs)
+      return (str.left(1) == c);
+   else
+      return (str.left(1).lower() == c.lower());
+}
+
+bool
+endsWith(const QString &str, const QChar &c, bool cs)
+{
+   if (cs)
+      return (str.right(1) == c);
+   else
+      return (str.right(1).lower() == c.lower());
+}
+
 bool BinkyCheck(const QString &user)
 {
 	if (user.find(QString("binky"), 0, false) >= 0)
@@ -1741,9 +1759,16 @@ QString downloadDir(const QString &subdir)
 	}
 	if (gWin->fSettings->GetPreservePaths())
 	{
-		if (!subdir.isEmpty())
+		// Make sure we don't get path starting with "downloads/downloads"
+		if (subdir == "downloads")
+			return out;
+		
+		QString d = QDir::convertSeparators(subdir);
+		if (startsWith(d, out))
+			d = d.mid(out.length());
+		
+		if (!d.isEmpty())
 		{
-			QString d(subdir);
 			QDir dir(out);
 			if (d[0] == '/')
 				d = d.mid(1);
@@ -1763,7 +1788,10 @@ QString downloadDir(const QString &subdir)
 			}
 			d.prepend(out);
 			d += QDir::separator();
-			qDebug("Path: "+d.utf8());
+#ifdef _DEBUG
+			WString wd(d);
+			PRINT("Path: %S", wd.getBuffer());
+#endif
 			return d;
 		}
 	}
@@ -1812,11 +1840,7 @@ QString URLEscape(const QString &page)
 status_t 
 GetStringFromMessage(const MessageRef &msg, const String key, QString &value)
 {
-	const char * val;
-	status_t ret = msg()->FindString(key, &val);
-	if (ret == B_OK)
-		value = QString::fromUtf8(val);
-	return ret;
+	return GetStringFromMessage(msg, key, 0, value);
 }
 
 status_t 
@@ -1827,6 +1851,26 @@ GetStringFromMessage(const MessageRef &msg, const String key, uint32 index, QStr
 	if (ret == B_OK)
 		value = QString::fromUtf8(val);
 	return ret;
+}
+
+status_t
+AddStringToMessage(const MessageRef &msg, const String key, const QString &value)
+{
+	QCString val = value.utf8();
+	return msg()->AddString(key, (const char *) val);
+}
+
+status_t
+ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, const QString &value)
+{
+	return ReplaceStringInMessage(msg, okayToAdd, key, 0, value);
+}
+
+status_t
+ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, uint32 index, const QString &value)
+{
+	QCString val = value.utf8();
+	return msg()->ReplaceString(okayToAdd, key, index, (const char *) val);
 }
 
 status_t 
@@ -1847,5 +1891,20 @@ GetUInt32FromMessage(const MessageRef &msg, const String key, uint32 &value)
 	if (ret == B_OK)
 		value = val;
 	return ret;
+}
+
+QString SimplifyPath(const QString &path)
+{
+	QString old = QDir::convertSeparators(path);
+	QString app = QDir::convertSeparators(gAppDir);
+	if (!endsWith(app, QDir::separator()))
+		app += QDir::separator();
+#ifdef WIN32
+	if (startsWith(old, app, false))
+#else
+	if (startsWith(old, app))
+#endif
+		old = old.mid(app.length());
+	return old;
 }
 

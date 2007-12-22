@@ -172,6 +172,9 @@ protected:
 	QTimer * fBlockTimer;				// Blocked timer
 
 private:
+
+	QString MakeUploadPath(MessageRef);
+
 	Queue<MessageRef> fUploads;
 	Queue<String> fNames;
 	WFile * fFile;

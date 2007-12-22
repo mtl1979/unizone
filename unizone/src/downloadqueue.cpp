@@ -26,9 +26,9 @@ DownloadQueue::addItem(const QString & file, const QString & path, const WUserRe
 		fQueue()->RemoveName(mUser);
 	fQueue()->AddInt32(mUser, ++i);
 	mUser = mUser.Prepend("_");
-	fQueue()->AddString(mUser, (const char *) file.utf8());
+	AddStringToMessage(fQueue, mUser, file);
 	mUser = mUser.Prepend("path");
-	fQueue()->AddString(mUser, (const char *) path.utf8());
+	AddStringToMessage(fQueue, mUser, path);
 	fLock.Unlock();
 }
 

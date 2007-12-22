@@ -328,7 +328,7 @@ WSearch::StopSearch()
 				int b = fCurrentSearchPattern.find("/", a + 1);
 				int c = fCurrentSearchPattern.find("/", b + 1);
 				tmp = fCurrentSearchPattern.mid(c + 1);
-				cancel()->AddString(PR_NAME_KEYS, (const char *) tmp.utf8());
+				AddStringToMessage(cancel, PR_NAME_KEYS, tmp);
 			}
 			fNetClient->SendMessageToSessions(cancel);
 		}

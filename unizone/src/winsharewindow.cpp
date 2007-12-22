@@ -30,7 +30,7 @@
 #endif
 #if defined(__APPLE__)
 # if !defined(QT_NO_STYLE_MAC)
-#  include <qmacstyle_mac.h>
+#	include <qmacstyle_mac.h>
 # endif
 #endif
 #include <qcstring.h>
@@ -130,13 +130,13 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	gWin = this;
 	fDLWindow = NULL;
 	fULWindow = NULL;
+	fSearch = NULL;
+	fPicViewer = NULL;
 	fAccept = NULL;
 	fFileScanThread = NULL;
 	fFilesScanned = false;
 	fMaxUsers = 0;
 	timerID = 0;
-	fPicViewer = new WPicViewer(NULL);
-	CHECK_PTR(fPicViewer);
 
 	InitLaunchThread();
 
@@ -144,7 +144,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	CHECK_PTR(fUpdateThread);
 
 	fDisconnectCount = 0;	// Initialize disconnection count
-	fDisconnect = false;	// No premature disconnection yet
+	fDisconnect = false; // No premature disconnection yet
 	fDisconnectFlag = false; // User hasn't disconnected manually yet.
 	fResumeEnabled = true;
 	
@@ -154,9 +154,6 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	fChannels = new Channels(NULL, fNetClient);
 	CHECK_PTR(fChannels);
 
-	fSearch = new WSearch(NULL, fNetClient);
-	CHECK_PTR(fSearch);
-	
 	fServerThread = new ServerClient(this);
 	CHECK_PTR(fServerThread);
 
@@ -187,7 +184,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, WFlags f)
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(AboutToQuit()));
 
 	// create popup menu
-	fPrivate = new QPopupMenu(this);	// have it deleted on destruction of window
+	fPrivate = new QPopupMenu(this); // have it deleted on destruction of window
 	CHECK_PTR(fPrivate);
 	connect(fPrivate, SIGNAL(activated(int)), this, SLOT(PopupActivated(int)));
 	connect(fUsers, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
@@ -333,7 +330,7 @@ WinShareWindow::StartAcceptThread()
 				// let the net client know our port
 				fNetClient->SetPort(fAccept->GetPort());	
 				// BUG FIX: Port not being set in certain occasions
-				fNetClient->SetUserName(fUserName);			
+				fNetClient->SetUserName(fUserName); 		
 
 				return true;
 			}
@@ -360,7 +357,7 @@ WinShareWindow::StopAcceptThread()
 	{
 		// Reset port number to 0, which means not accepting and
 		// let the net client know the change
-		fNetClient->SetPort(0);						
+		fNetClient->SetPort(0); 					
 		// BUG FIX: Port not being set in certain occasions
 		fNetClient->SetUserName(fUserName);
 		
@@ -585,7 +582,8 @@ WinShareWindow::customEvent(QCustomEvent * event)
 				
 
 				fGotParams = false; // set to false here :)
-				fSearch->SetGotResults(true); // fake that we got results, as there is no search yet.
+				if (fSearch)
+					fSearch->SetGotResults(true); // fake that we got results, as there is no search yet.
 				// send a message out to the server asking for our parameters
 				MessageRef askref(GetMessageFromPool(PR_COMMAND_GETPARAMETERS));
 				fNetClient->SendMessageToSessions(askref);
@@ -674,7 +672,7 @@ WinShareWindow::customEvent(QCustomEvent * event)
 #endif
 
 						SendChatText(&te, &rep);
-						if (rep)	// does this event WANT a reply
+						if (rep) // does this event WANT a reply
 						{
 							// send a reply to our friend
 							WPWEvent *wpw = new WPWEvent(WPWEvent::TextPosted, te.Text());
@@ -774,7 +772,7 @@ WinShareWindow::HandleComboEvent(WTextEvent * e)
 			if (txt.lower() != fAwayMsg.stripWhiteSpace().lower())
 			{
 				SetAutoAwayTimer();
-				fAway = false;	// in case away was true;
+				fAway = false; // in case away was true;
 			}
 		}
 		else if (sender == fServerList)
@@ -994,7 +992,7 @@ WinShareWindow::InitGUI()
 
 	// Main Status Bar
 
-	fStatusBar = new WStatusBar(fMainWidget, "fStatusBar", 4);
+	fStatusBar = new WStatusBar(fMainWidget, "fStatusBar", 5);
 	CHECK_PTR(fStatusBar);
 	fStatusBar->setSizeGripEnabled(false);
 	fMainTab->addMultiCellWidget(fStatusBar, 13, 13, 0, 9);
@@ -1026,7 +1024,8 @@ WinShareWindow::InitGUI()
 
 	fGotParams = false;
 
-	fSearch->SetGotResults(true);
+	if (fSearch)
+		fSearch->SetGotResults(true);
 
 	// setup autoaway timer
 	fAutoAway = new QTimer;
@@ -1067,7 +1066,7 @@ WinShareWindow::MakeHumanDiffTime(uint64 time)
 {
 	uint64 seconds = time / 1000000;
 	uint64 minutes = seconds / 60;  seconds = seconds % 60;
-	uint64 hours   = minutes / 60;  minutes = minutes % 60;
+	uint64 hours	= minutes / 60;  minutes = minutes % 60;
 
 	QString s;
 
@@ -1086,9 +1085,9 @@ WinShareWindow::MakeHumanTime(uint64 time)
 
 	uint64 seconds = time / 1000000;
 	uint64 minutes = seconds / 60;  seconds = seconds % 60;
-	uint64 hours   = minutes / 60;  minutes = minutes % 60;
-	uint64 days    = hours   / 24;  hours   = hours   % 24;
-	uint64 weeks   = days    /  7;  days    = days    % 7;
+	uint64 hours	= minutes / 60;  minutes = minutes % 60;
+	uint64 days 	= hours	 / 24;  hours	 = hours   % 24;
+	uint64 weeks	= days	 /  7;  days	 = days	  % 7;
 
 	QString s, qTime;
 
@@ -1288,8 +1287,11 @@ WinShareWindow::LoadSettings()
 		fServerList->clear();
 		fStatusList->clear();
 		fUserList->clear();
-		fSearch->LoadSettings();
+		if (fSearch)
+			fSearch->LoadSettings();
 
+		if (fPicViewer)
+			fPicViewer->LoadSettings();
 		int i;
 		int size;
 		QString str;
@@ -1313,7 +1315,7 @@ WinShareWindow::LoadSettings()
 		for (i = 0; (str = fSettings->GetStatusItem(i).stripWhiteSpace()) != QString::null; i++)
 		{
 			// Skip old 'testing' statuses
-			if (!startsWith(str, tr("Testing Unizone (English)")) &&	// new internationalized
+			if (!startsWith(str, tr("Testing Unizone (English)")) && // new internationalized
 				!startsWith(str, "Testing Unizone (")					// old format
 				)
 				fStatusList->insertItem(str);
@@ -1452,38 +1454,38 @@ WinShareWindow::LoadSettings()
 
 		for (i = 0; i <= fSettings->GetResumeCount(); i++)
 		{
-         QString ruser, luser = QString::null;
-         int rind = -1;
+			QString ruser, luser = QString::null;
+			int rind = -1;
 			WResumeInfo wri;
 			if (fSettings->GetResumeItem(i, ruser, wri))
-         {
-            if (luser != ruser)
-            {
-               for (unsigned int r = 0; r < fResumeMap.GetNumItems(); r++)
-               {
-                  if (fResumeMap[r].user == ruser)
-                  {
-                     rind = r;
-                     luser = ruser;
-                     fResumeMap[r].files.AddTail(wri);
-                     break;
-                  }
-               }
-               // No entry yet
-               {
-                  WResumePair wrp;
-                  wrp.user = ruser;
-                  wrp.files.AddTail(wri);
-                  fResumeMap.AddTail(wrp);
-                  rind = fResumeMap.GetNumItems() - 1;
-               }
-            }
-            else
-            {
-               // Same user as previous resume item
-               fResumeMap[rind].files.AddTail(wri);
-            }
-         }
+			{
+				if (luser != ruser)
+				{
+					for (unsigned int r = 0; r < fResumeMap.GetNumItems(); r++)
+					{
+						if (fResumeMap[r].user == ruser)
+						{
+							rind = r;
+							luser = ruser;
+							fResumeMap[r].files.AddTail(wri);
+							break;
+						}
+					}
+					// No entry yet
+					{
+						WResumePair wrp;
+						wrp.user = ruser;
+						wrp.files.AddTail(wri);
+						fResumeMap.AddTail(wrp);
+						rind = fResumeMap.GetNumItems() - 1;
+					}
+				}
+				else
+				{
+					// Same user as previous resume item
+					fResumeMap[rind].files.AddTail(wri);
+				}
+			}
 		}
 		rLock.Unlock();
 
@@ -1493,13 +1495,13 @@ WinShareWindow::LoadSettings()
 	{
 #ifndef DISABLE_STYLES
 # if defined(WIN32)
-#  if !defined(QT_NO_STYLE_WINDOWS)
+#	if !defined(QT_NO_STYLE_WINDOWS)
 		qApp->setStyle(new QWindowsStyle);
-#  endif // !QT_NO_STYLE_WINDOWS
+#	endif // !QT_NO_STYLE_WINDOWS
 # else
-#  if !defined(QT_NO_STYLE_MOTIF)
-		qApp->setStyle(new QMotifStyle);				
-#  endif // !QT_NO_STYLE_MOTIF
+#	if !defined(QT_NO_STYLE_MOTIF)
+		qApp->setStyle(new QMotifStyle); 			
+#	endif // !QT_NO_STYLE_MOTIF
 # endif // WIN32	
 #endif // DISABLE_STYLES
 
@@ -1556,9 +1558,9 @@ WinShareWindow::InitToolbars()
 	
 	for (int d1 = 0; d1 < 7; d1++)			// dock position
 	{
-		for (int ip = 0; ip < NUM_TOOLBARS; ip++)		// index position
+		for (int ip = 0; ip < NUM_TOOLBARS; ip++) 	// index position
 		{
-			for (int i1 = 0; i1 < NUM_TOOLBARS; i1++)	// layout index
+			for (int i1 = 0; i1 < NUM_TOOLBARS; i1++) // layout index
 			{
 				if ((_dock[i1] == d1) && (_index[i1] == ip))
 				{
@@ -1566,10 +1568,10 @@ WinShareWindow::InitToolbars()
 					switch (i1)
 					{
 #ifndef __APPLE__
-					case UID_MENUBAR:	tb = fTBMenu;
+					case UID_MENUBAR: tb = fTBMenu;
 #endif
 					case UID_SERVERBAR:	tb = fTBServer;
-					case UID_NICKBAR:	tb = fTBNick;
+					case UID_NICKBAR: tb = fTBNick;
 					case UID_STATUSBAR:	tb = fTBStatus;
 					}
 					moveToolBar(tb, (QMainWindow::ToolBarDock) _dock[i1], _nl[i1], 3, _extra[i1]);
@@ -1634,7 +1636,11 @@ WinShareWindow::SaveSettings()
 
 	// save query history
 
-	fSearch->SaveSettings();
+	if (fSearch)
+		fSearch->SaveSettings();
+
+	if (fPicViewer)
+		fPicViewer->SaveSettings();
 
 	// don't worry about style, Prefs does it for us
 	
@@ -1701,10 +1707,10 @@ WinShareWindow::SaveSettings()
 
 	for ( unsigned int x = 0; x < fResumeMap.GetNumItems(); x++ )
 	{
-      for ( unsigned int y = 0; y < fResumeMap[x].files.GetNumItems(); y++ )
-      {
-		   fSettings->AddResumeItem(fResumeMap[x].user, fResumeMap[x].files[y]);
-      }
+		for ( unsigned int y = 0; y < fResumeMap[x].files.GetNumItems(); y++ )
+		{
+			fSettings->AddResumeItem(fResumeMap[x].user, fResumeMap[x].files[y]);
+		}
 	}
 	rLock.Unlock();
 	fSettings->SetResumeCount(fResumeMap.GetNumItems());
@@ -1837,6 +1843,7 @@ WinShareWindow::WaitOnListThread(bool abort)
 void
 WinShareWindow::LaunchSearch(const QString & pattern)
 {
+	gWin->OpenSearch();
 	// (be)share://server/pattern
 	if (pattern.find("//") == 0)	
 	{
@@ -2027,7 +2034,7 @@ WinShareWindow::StartLogging()
 	if (!fMainLog.InitCheck())
 	{
 		if (fSettings->GetError())
-            SendErrorEvent( tr("Failed to create log file.") );
+				SendErrorEvent( tr("Failed to create log file.") );
 	}
 }
 
@@ -2211,6 +2218,14 @@ WinShareWindow::OpenUploads()
 void
 WinShareWindow::OpenSearch()
 {
+	if (!fSearch)
+	{
+		fSearch = new WSearch(NULL, fNetClient);
+		CHECK_PTR(fSearch);
+		fSearch->SetGotResults(true);
+		fSearch->LoadSettings();
+	}
+
 	if (fSearch->isHidden())
 		fSearch->show();
 	else
@@ -2252,6 +2267,13 @@ WinShareWindow::SearchImages()
 void
 WinShareWindow::OpenViewer()
 {
+	if (!fPicViewer)
+	{
+		fPicViewer = new WPicViewer(NULL);
+		CHECK_PTR(fPicViewer);
+		fPicViewer->LoadSettings();
+	}
+
 	if (fPicViewer->isHidden())
 		fPicViewer->show();
 	else
@@ -2378,19 +2400,14 @@ WinShareWindow::timerEvent(QTimerEvent *)
 {
 	if (fSettings->GetTimeStamps())
 	{
-		setStatus(GetTimeStamp2(), 3);
-		if ( 
-			(fNetClient->IsLoggedIn() && fNetClient->LocalSessionID() != QString::null)
-			)
+		setStatus(GetTimeStamp2(), 4);
+		if (fNetClient->IsLoggedIn())
 		{
 			uint64 fLoginTime = GetCurrentTime64() - fNetClient->LoginTime();
 			if (fLoginTime >= 1000000)
 			{
-				QString tmp = tr("Unizone - User #%1 on %2").arg(fNetClient->LocalSessionID()).arg(fNetClient->GetServer());
-				tmp += " (";
-				tmp += tr("Logged In: %1").arg(MakeHumanDiffTime(fLoginTime));
-				tmp += ")";
-				setCaption(tmp);
+				QString tmp = tr("Logged In: %1").arg(MakeHumanDiffTime(fLoginTime));
+				setStatus(tmp, 3);
 			}
 		}
 	}
