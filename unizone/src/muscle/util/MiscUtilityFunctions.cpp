@@ -222,6 +222,24 @@ status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
    return B_ERROR;
 }
 
+#if __linux__
+static void CrashSignalHandler(int sig)
+{
+   // Uninstall this handler, to avoid the possibility of an infinite loop
+   signal(SIGSEGV, SIG_DFL);
+   signal(SIGBUS,  SIG_DFL);
+   signal(SIGILL,  SIG_DFL);
+   signal(SIGABRT, SIG_DFL);
+   signal(SIGFPE,  SIG_DFL); 
+
+   printf("MUSCLE CrashSignalHandler called with signal %i... I'm going to print a stack trace, then kill the process.\n", sig);
+   PrintStackTrace();
+   printf("Crashed MUSCLE process aborting now.... bye!\n");
+   fflush(stdout);
+   abort();
+}
+#endif
+
 void HandleStandardDaemonArgs(const Message & args)
 {
    TCHECKPOINT;
@@ -274,6 +292,19 @@ void HandleStandardDaemonArgs(const Message & args)
       }
       else LogTime(MUSCLE_LOG_ERROR, "Error parsing localhost IP address [%s]!\n", value);
    }
+
+#if __linux__
+   if ((args.HasName("debugcrashes"))||(args.HasName("debugcrash")))
+   {
+      LogTime(MUSCLE_LOG_INFO, "Enabling stack-trace printing when a crash occurs.\n");
+
+      signal(SIGSEGV, CrashSignalHandler);
+      signal(SIGBUS,  CrashSignalHandler);
+      signal(SIGILL,  CrashSignalHandler);
+      signal(SIGABRT, CrashSignalHandler);
+      signal(SIGFPE,  CrashSignalHandler); 
+   }
+#endif
 
 #if __linux__ || __APPLE__
    {
@@ -676,12 +707,26 @@ const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * 
    return NULL;
 }
 
-void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc)
+ByteBufferRef ParseHexBytes(const char * buf)
 {
-   if (optDesc) printf("%s: ", optDesc);
-   const uint8 * b = (const uint8 *) bytes;
-   for (uint32 i=0; i<numBytes; i++) printf("%s%02x", (i==0)?"[":" ", b[i]);
-   printf("]\n");
+   ByteBufferRef bb = GetByteBufferFromPool(strlen(buf));
+   if (bb())
+   {
+      uint8 * b = bb()->GetBuffer();
+      uint32 count = 0;
+      StringTokenizer tok(buf, ", \t\r\n");
+      const char * next;
+      while((next = tok()) != NULL) 
+      {
+         if (strlen(next) > 0) 
+         {
+            if (next[0] == '/') b[count++] = next[1];
+                           else b[count++] = (uint8) strtol(next, NULL, 16);
+         }
+      }
+      bb()->SetNumBytes(count, true);
+   }
+   return bb;
 }
 
 END_NAMESPACE(muscle);

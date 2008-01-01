@@ -242,6 +242,17 @@ const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * 
   */
 void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc = NULL);
 
+/** Given a string with an ASCII representation of hexadecimal bytes,
+  * returns the corresponding binary data.
+  * @param buf A hexadecimal string.  Each hex byte should be expressed as
+  *            two ASCII characters (e.g. "f0 1f 7e f7"), or alternatively
+  *            you can enter chars in ASCII if you prepend each one with
+  *            a slash (e.g. "/h /e /l /l /o").
+  * @returns a ByteBufferRef containing the corresponding binary data,
+  *          or a NULL ByteBufferRef on failure (out of memory?)
+  */
+ByteBufferRef ParseHexBytes(const char * buf);
+
 END_NAMESPACE(muscle);
 
 #endif

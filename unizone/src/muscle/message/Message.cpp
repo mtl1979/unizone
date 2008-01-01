@@ -1345,6 +1345,7 @@ uint32 Message :: CalculateChecksum(bool countNonFlattenableFields) const
 {
    uint32 ret = what;
 
+   // Calculate the number of flattenable entries (may be less than the total number of entries!)
    const GenericRef * next;
    HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
    while((next = it.GetNextValue()) != NULL) 

@@ -617,7 +617,12 @@ status_t FinalizeAsyncConnect(const SocketRef & sock)
       userIsRunningBone = be_roster ? (!be_roster->IsRunning("application/x-vnd.Be-NETS")) : BEntry("/boot/beos/system/lib/libsocket.so").Exists();
       haveDoneRuntimeCheck = true;  // only do this check once, it's rather expensive!
    }
-   if (userIsRunningBone == false)
+   if (userIsRunningBone)
+   {
+      char junk;
+      return (send(fd, &junk, 0, 0L) == 0) ? B_NO_ERROR : B_ERROR;
+   }
+   else
    {
       // net_server just HAS to do things differently from everyone else :^P
       struct sockaddr_in junk;
@@ -632,7 +637,7 @@ status_t FinalizeAsyncConnect(const SocketRef & sock)
    memset(&junk, 0, sizeof(junk));
    return (getpeername(fd, (struct sockaddr *)&junk, &length) == 0) ? B_NO_ERROR : B_ERROR;
 #else
-   // For most platforms (including BONE), the code below is all we need
+   // For most platforms, the code below is all we need
    char junk;
    return (send(fd, &junk, 0, 0L) == 0) ? B_NO_ERROR : B_ERROR;
 #endif
@@ -972,5 +977,82 @@ String IPAddressAndPort :: ToString(bool includePort) const
 static ip_address _customLocalhostIP = invalidIP;  // disabled by default
 void SetLocalHostIPOverride(const ip_address & ip) {_customLocalhostIP = ip;}
 ip_address GetLocalHostIPOverride() {return _customLocalhostIP;}
+
+#ifdef MUSCLE_ENABLE_MULTICAST_API
+
+status_t SetSocketMulticastToSelf(const SocketRef & sock, bool multicastToSelf)
+{
+   uint8 toSelf = (uint8) multicastToSelf;
+   int fd = sock.GetFileDescriptor();
+   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (const char *) &toSelf, sizeof(toSelf)) == 0)) ? B_NO_ERROR : B_ERROR;
+}
+
+bool GetSocketMulticastToSelf(const SocketRef & sock)
+{
+   uint8 toSelf;
+   muscle_socklen_t size = sizeof(toSelf);
+   int fd = sock.GetFileDescriptor();
+   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (char *) &toSelf, &size) == 0)&&(size == sizeof(toSelf))&&(toSelf));
+}
+
+status_t SetSocketMulticastTimeToLive(const SocketRef & sock, uint8 ttl)
+{
+   int fd = sock.GetFileDescriptor();
+   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (const char *) &ttl, sizeof(ttl)) == 0)) ? B_NO_ERROR : B_ERROR;
+}
+
+uint8 GetSocketMulticastTimeToLive(const SocketRef & sock)
+{
+   uint8 ttl = 0;
+   muscle_socklen_t size = sizeof(ttl);
+   int fd = sock.GetFileDescriptor();
+   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (char *) &ttl, &size) == 0)&&(size == sizeof(ttl))) ? ttl : 0;
+}
+
+status_t SetSocketMulticastSendInterfaceAddress(const SocketRef & sock, const ip_address & address)
+{
+   int fd = sock.GetFileDescriptor();
+   if (fd < 0) return B_ERROR;
+
+   // TODO:  Add IPv6 support; in_addr only has a 32-bit address so it won't do
+   struct in_addr localInterface; memset(&localInterface, 0, sizeof(localInterface));
+   localInterface.s_addr = htonl(address);
+   return (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (const char *)&localInterface, sizeof(localInterface)) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+ip_address GetSocketMulticastSendInterfaceAddress(const SocketRef & sock)
+{
+   int fd = sock.GetFileDescriptor();
+   if (fd < 0) return invalidIP;
+   
+   // TODO:  Add IPv6 support; in_addr only has a 32-bit address so it won't do
+   struct in_addr localInterface; memset(&localInterface, 0, sizeof(localInterface));
+   muscle_socklen_t len = sizeof(localInterface);
+   return ((getsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, &len) == 0)&&(len == sizeof(localInterface))) ? ntohl(localInterface.s_addr) : invalidIP;
+}
+
+status_t AddSocketToMulticastGroup(const SocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
+{
+   int fd = sock.GetFileDescriptor();
+   if (fd < 0) return invalidIP;
+
+   struct ip_mreq req; memset(&req, 0, sizeof(req));
+   req.imr_multiaddr.s_addr = htonl(groupAddress);
+   req.imr_interface.s_addr = htonl(localInterfaceAddress);
+   return (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+status_t RemoveSocketFromMulticastGroup(const SocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
+{
+   int fd = sock.GetFileDescriptor();
+   if (fd < 0) return invalidIP;
+
+   struct ip_mreq req; memset(&req, 0, sizeof(req));
+   req.imr_multiaddr.s_addr = htonl(groupAddress);
+   req.imr_interface.s_addr = htonl(localInterfaceAddress);
+   return (setsockopt(fd, IPPROTO_IP, IP_DROP_MEMBERSHIP, &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+#endif  // MUSCLE_ENABLE_MULTICAST_API
 
 END_NAMESPACE(muscle);

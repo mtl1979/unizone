@@ -568,6 +568,77 @@ public:
    uint32 operator () (const IPAddressAndPort & x) const {return x.HashCode();}
 };
 
+#ifdef MUSCLE_ENABLE_MULTICAST_API
+
+/** Sets whether multicast data sent on this socket should be received by
+  * this socket or not (IP_MULTICAST_LOOP).  Default state is enabled/true.
+  * @param sock The socket to set the state of the IP_MULTICAST_LOOP flag on.
+  * @param multicastToSelf If true, enable loopback.  Otherwise, disable it.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t SetSocketMulticastToSelf(const SocketRef & sock, bool multicastToSelf);
+
+/** Returns true iff multicast packets sent by this socket should be received by this socket.
+  * Default state is enabled.
+  * @param sock The socket to query
+  * @returns true iff this socket has multicast-to-self (IP_MULTICAST_LOOP) enabled.
+  */
+bool GetSocketMulticastToSelf(const SocketRef & sock);
+
+/** Set the "time to live" flag for packets sent by this socket.
+  * Default state is 1, i.e. "local LAN segment only".
+  * Other possible values include 0 ("localhost only"), 2-31 ("local site only"),
+  * 32-63 ("local region only"), 64-127 ("local continent only"), or 128-255 ("global").
+  * @param sock The socket to set the TTL value for
+  * @param ttl The ttl value to set (see above).
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t SetSocketMulticastTimeToLive(const SocketRef & sock, uint8 ttl);
+
+/** Returns the "time to live" associated with multicast packets sent on
+  * this socket, or 0 on failure.
+  * @param sock The socket to query the TTL value of.
+  */
+uint8 GetSocketMulticastTimeToLive(const SocketRef & sock);
+
+/** Specify the address of the local interface that the given socket should
+  * send multicast packets on.  If this isn't called, the kernel will try to choose
+  * an appropriate default interface to send on.
+  * @param sock The socket to set the sending interface for.
+  * @param address The address of the local interface to send multicast packets on.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t SetSocketMulticastSendInterfaceAddress(const SocketRef & sock, const ip_address & address);
+
+/** Returns the address of the local interface that the given socket will
+  * try to send multicast packets on, or invalidIP on failure.
+  * @param sock The socket to query the sending interface of.
+  * @returns the interface's IP address, or invalidIP on error.
+  */
+ip_address GetSocketMulticastSendInterfaceAddress(const SocketRef & sock);
+
+/** Attempts to add the specified socket to the specified multicast group.
+  * @param sock The socket to add to the multicast group
+  * @param groupAddress The IP address of the multicast group.
+  * @param localInterfaceAddress Optional IP address of the local interface use for receiving
+  *                              data from this group.  If left as (invalidIP), an appropriate
+  *                              interface will be chosen automatically.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t AddSocketToMulticastGroup(const SocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress = invalidIP);
+
+/** Attempts to remove the specified socket from the specified multicast group
+  * that it was previously added to.
+  * @param sock The socket to add to the multicast group
+  * @param groupAddress The IP address of the multicast group.
+  * @param localInterfaceAddress Optional IP address of the local interface used for receiving
+  *                              data from this group.  If left as (invalidIP), the first matching
+  *                              group will be removed.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t RemoveSocketFromMulticastGroup(const SocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress = invalidIP);
+
+#endif  // MUSCLE_ENABLE_MULTICAST_API
 
 END_NAMESPACE(muscle);
 

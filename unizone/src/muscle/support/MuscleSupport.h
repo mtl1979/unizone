@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.11"
+#define MUSCLE_VERSION_STRING "4.20"
 
 #include <string.h>  /* for memcpy() */
 
@@ -162,7 +162,7 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 # include <support/ByteOrder.h>  /* might as well use the real thing (and avoid complaints about duplication) */
 # include <support/SupportDefs.h>
 # include <support/TypeConstants.h>
-# ifndef BONE
+# if !((defined(BONE))||(defined(BONE_VERSION)))
 #  define BEOS_OLD_NETSERVER
 # endif
 #else

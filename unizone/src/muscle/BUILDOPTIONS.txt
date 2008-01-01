@@ -10,6 +10,14 @@ of your Makefile to alter muscle's behaviour:
    this flag isn't defined (the default), than muscle_ip_address will be
    defined as a synonym for uint32 (for backwards compatibility with old code)
 
+-DMUSCLE_ENABLE_MULTICAST_API
+   Set this to make the multicast API calls in NetworkUtilityFunctions.h
+   available for use.  (it's disabled by default to make sure that the
+   multicast functions won't break the build on platforms that don't 
+   support multicast).  Note that muscled itself won't use multicast even 
+   if this constant is specified; the functions are a convenience for 
+   other MUSCLE-based applications to use if they wish.
+
 -DMUSCLE_64_BIT_PLATFORM
    Set this to indicate that compilation is being done on a 64-bit platform.
    This flag will be set automatically in support/MuscleSupport.h if defines

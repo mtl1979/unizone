@@ -668,7 +668,7 @@ static void CloseSocket(int fd)
    if (fd >= 0)
    {
 #if defined(WIN32) || defined(BEOS_OLD_NETSERVER)
-      closesocket(fd);
+      ::closesocket(fd);
 #else
       close(fd);
 #endif
@@ -747,5 +747,13 @@ int UInt32CompareFunc(const uint32 & i1, const uint32 & i2, void *) {return musc
 int UInt64CompareFunc(const uint64 & i1, const uint64 & i2, void *) {return muscleCompare(i1, i2);}
 int FloatCompareFunc( const float  & i1, const float  & i2, void *) {return muscleCompare(i1, i2);}
 int DoubleCompareFunc(const double & i1, const double & i2, void *) {return muscleCompare(i1, i2);}
+
+void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc)
+{
+   if (optDesc) printf("%s: ", optDesc);
+   const uint8 * b = (const uint8 *) bytes;
+   for (uint32 i=0; i<numBytes; i++) printf("%s%02x", (i==0)?"[":" ", b[i]);
+   printf("]\n");
+}
 
 END_NAMESPACE(muscle);

@@ -499,20 +499,6 @@ public:
     */
    status_t Put(const KeyType& key, const ValueType& value, ValueType & setPreviousValue, bool * optSetReplaced = NULL) {return (PutAux(ComputeHash(key), key, value, &setPreviousValue, optSetReplaced) != NULL) ? B_NO_ERROR : B_ERROR;}
 
-   /** Moves the specified key/value pair so that it is in the correct position based on the
-     * current sort-by-value ordering.   The only time you would need to call this is if the
-     * Hashtable has been set to automatic-sort-by-value mode (see SetAutoSortMode()) and you
-     * have done an in-place modification of this key's value that might have affected the key's 
-     * correct position in the sort ordering.  If you are not using AUTOSORT_BY_VALUE mode,
-     * or if you are only doing Put()'s and Get()'s, and never modifying ValueType objects
-     * in-place within the table, then calling this method is not necessary and will have no
-     * effect.
-     * @param key The key object of the key/value pair that may need to be repositioned.
-     * @returns B_NO_ERROR on success, or B_ERROR if (key) was not found in the table, or
-     *          if the table is not in AUTOSORT_BY_VALUE mode with a valid value-compare function.
-     */
-   status_t Reposition(const KeyType & key);
-
    /** Places the given (key, value) mapping into the table.  Any previous entry with a key of (key) will be replaced. 
     *  (average O(1) insertion time, unless auto-sorting is enabled, in which case it becomes O(N) insertion time for
     *  keys that are not already in the table)
@@ -543,19 +529,91 @@ public:
     */
    status_t Remove(const KeyType& key, ValueType & setRemovedValue) {return RemoveAux(key, &setRemovedValue);}
 
-   /** Convenience method:  For each key/value pair in the passed-in-table, Remove()'s that
-     * key/value pair from this table.  Any existing items in this table with the same
-     * key as any in (pairs) will be overwritten.
-     * @param pairs A table full of items to Put() into this table.
-     * @returns the number of items removed from this table.
+   /** Convenience method:  For each key in the passed-in-table, removes that key (and its associated value) from this table. 
+     * @param pairs A table containing keys that should be removed from this table.
+     * @returns the number of items actually removed from this table.
      */
    uint32 Remove(const Hashtable<KeyType, ValueType, HashFunctorType> & pairs);
+
+   /** Convenience method:  Removes the first key/value mapping in the table.  (O(1) removal time)
+    *  @return B_NO_ERROR if the first mapping was removed, or B_ERROR if this table was empty.
+    */
+   status_t RemoveFirst() {return _iterHead ? RemoveEntry(_iterHead, NULL) : B_ERROR;}
+
+   /** Convenience method:  Removes the first key/value mapping in the table and places the removed key
+    *  into (setRemovedKey).  (O(1) removal time)
+    *  @param setRemovedKey On success, the removed key is copied into this object.
+    *  @return B_NO_ERROR if the first mapping was removed and the key placed into (setRemovedKey), or B_ERROR if the table was empty.
+    */
+   status_t RemoveFirst(KeyType & setRemovedKey) 
+   {
+      if (_iterHead == NULL) return B_ERROR;
+      setRemovedKey = _iterHead->_key;
+      return RemoveEntry(_iterHead, NULL);
+   }
+
+   /** Convenience method:  Removes the first key/value mapping in the table and places its 
+    *  key into (setRemovedKey) and its value into (setRemovedValue).  (O(1) removal time)
+    *  @param setRemovedKey On success, the removed key is copied into this object.
+    *  @param setRemovedValue On success, the removed value is copied into this object.
+    *  @return B_NO_ERROR if the first mapping was removed and the key and value placed into the arguments, or B_ERROR if the table was empty.
+    */
+   status_t RemoveFirst(KeyType & setRemovedKey, ValueType & setRemovedValue) 
+   {
+      if (_iterHead == NULL) return B_ERROR;
+      setRemovedKey = _iterHead->_key;
+      return RemoveEntry(_iterHead, &setRemovedValue);
+   }
+
+   /** Convenience method:  Removes the last key/value mapping in the table.  (O(1) removal time)
+    *  @return B_NO_ERROR if the last mapping was removed, or B_ERROR if the table was empty.
+    */
+   status_t RemoveLast() {return _iterTail ? RemoveEntry(_iterTail, NULL) : B_ERROR;}
+
+   /** Convenience method:  Removes the last key/value mapping in the table and places the removed key
+    *  into (setRemovedKey).  (O(1) removal time)
+    *  @param setRemovedKey On success, the removed key is copied into this object.
+    *  @return B_NO_ERROR if the last mapping was removed and the key placed into (setRemovedKey), or B_ERROR if the table was empty.
+    */
+   status_t RemoveLast(KeyType & setRemovedKey) 
+   {
+      if (_iterTail == NULL) return B_ERROR;
+      setRemovedKey = _iterTail->_key;
+      return RemoveEntry(_iterTail, NULL);
+   }
+
+   /** Convenience method:  Removes the last key/value mapping in the table and places its 
+    *  key into (setRemovedKey) and its value into (setRemovedValue).  (O(1) removal time)
+    *  @param setRemovedKey On success, the removed key is copied into this object.
+    *  @param setRemovedValue On success, the removed value is copied into this object.
+    *  @return B_NO_ERROR if the last mapping was removed and the key and value placed into the arguments, or B_ERROR if the table was empty.
+    */
+   status_t RemoveLast(KeyType & setRemovedKey, ValueType & setRemovedValue) 
+   {
+      if (_iterTail == NULL) return B_ERROR;
+      setRemovedKey = _iterTail->_key;
+      return RemoveEntry(_iterTail, &setRemovedValue);
+   }
 
    /** Removes all mappings from the hash table.  (O(N) clear time)
     *  @param releaseCachedData If set true, we will immediately free any buffers we may contain.  
     *                           Otherwise, we'll keep them around in case they can be re-used later on.
    */
    void Clear(bool releaseCachedData = false);
+
+   /** Moves the specified key/value pair so that it is in the correct position based on the
+     * current sort-by-value ordering.   The only time you would need to call this is if the
+     * Hashtable has been set to automatic-sort-by-value mode (see SetAutoSortMode()) and you
+     * have done an in-place modification of this key's value that might have affected the key's 
+     * correct position in the sort ordering.  If you are not using AUTOSORT_BY_VALUE mode,
+     * or if you are only doing Put()'s and Get()'s, and never modifying ValueType objects
+     * in-place within the table, then calling this method is not necessary and will have no
+     * effect.
+     * @param key The key object of the key/value pair that may need to be repositioned.
+     * @returns B_NO_ERROR on success, or B_ERROR if (key) was not found in the table, or
+     *          if the table is not in AUTOSORT_BY_VALUE mode with a valid value-compare function.
+     */
+   status_t Reposition(const KeyType & key);
 
    /** This method can be used to activate or deactivate auto-sorting on this Hashtable.
      * If active, auto-sorting ensures that whenever Put() is called, the new/updated item is
@@ -869,7 +927,13 @@ private:
 private:
    // Auxilliary methods
    HashtableEntry * PutAux(uint32 hash, const KeyType& key, const ValueType& value, ValueType * optSetPreviousValue, bool * optReplacedFlag);
-   status_t RemoveAux(const KeyType& key, ValueType * setRemovedValue);
+   status_t RemoveAux(const KeyType& key, ValueType * optSetValue)
+   {
+      HashtableEntry * e = HasItems()?GetEntry(ComputeHash(key), key):NULL;
+      return e ? RemoveEntry(e, optSetValue) : B_ERROR;
+   }
+   status_t RemoveEntry(HashtableEntry * e, ValueType * optSetValue);
+
    status_t SortByAux(KeyCompareFunc optKeyFunc, ValueCompareFunc optValueFunc, void * cookie);
    void RepositionAux(HashtableEntry * e);
 
@@ -1669,33 +1733,28 @@ Hashtable<KeyType,ValueType,HashFunctorType>::PutAux(uint32 hash, const KeyType&
 
 template <class KeyType, class ValueType, class HashFunctorType>
 status_t
-Hashtable<KeyType,ValueType,HashFunctorType>::RemoveAux(const KeyType& key, ValueType * optSetValue)
+Hashtable<KeyType,ValueType,HashFunctorType>::RemoveEntry(HashtableEntry * e, ValueType * optSetValue)
 {
-   HashtableEntry * e = HasItems()?GetEntry(ComputeHash(key), key):NULL;
-   if (e)
+   RemoveIterationEntry(e);
+   if (optSetValue) *optSetValue = e->_value;
+
+   HashtableEntry * prev = e->_bucketPrev;
+   HashtableEntry * next = e->_bucketNext;
+   if (prev)
    {
-      RemoveIterationEntry(e);
-      if (optSetValue) *optSetValue = e->_value;
-
-      HashtableEntry * prev = e->_bucketPrev;
-      HashtableEntry * next = e->_bucketNext;
-      if (prev)
-      {
-         prev->_bucketNext = next;
-         if (next) next->_bucketPrev = prev;
-      }
-      else if (next) 
-      {
-         next->_bucketPrev = NULL;
-         e->GetMappedFrom()->SwapMaps(next->GetMappedFrom());
-      }
-
-      e->ReturnToFreeList(KeyType(), ValueType(), &_freeHead);
-
-      _count--;
-      return B_NO_ERROR;
+      prev->_bucketNext = next;
+      if (next) next->_bucketPrev = prev;
    }
-   return B_ERROR;
+   else if (next) 
+   {
+      next->_bucketPrev = NULL;
+      e->GetMappedFrom()->SwapMaps(next->GetMappedFrom());
+   }
+
+   e->ReturnToFreeList(KeyType(), ValueType(), &_freeHead);
+
+   _count--;
+   return B_NO_ERROR;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
