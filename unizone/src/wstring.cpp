@@ -1,7 +1,14 @@
 #include <qstring.h>
+#include <stdio.h>
 
 #include "wstring.h"
 #include "wutil.h"
+
+#ifdef WIN32
+#include "windows\vsscanf.h"
+#endif
+
+#define ARRAYITEMS(x) (sizeof(x)/sizeof(x[0]))  /* returns # of items in array */
 
 WString::WString()
 {
@@ -307,3 +314,70 @@ WString::replace(wchar_t in, wchar_t out)
 	wreplace(buffer, in, out);
 }
 
+int 
+WString::sscanf(const WString &fmt, ...)
+{
+	if (buffer)
+	{
+	va_list a;
+	va_start(a, fmt);
+#ifdef WIN32
+	return vwsscanf(buffer, fmt.getBuffer(), a);
+#else
+	return vswscanf(buffer, fmt.getBuffer(), a);
+#endif
+	}
+	else
+		return -1;
+}
+
+int 
+WString::sscanf(const wchar_t *fmt, ...)
+{
+	if (buffer)
+	{
+	va_list a;
+	va_start(a, fmt);
+#ifdef WIN32
+	return vwsscanf(buffer, fmt, a);
+#else
+	return vswscanf(buffer, fmt, a);
+#endif
+	}
+	else
+		return -1;
+}
+
+int
+WString::sprintf(const WString &fmt, ...)
+{
+	if (!buffer)
+	{
+		buffer = new wchar_t[255];
+	}
+	int len = ARRAYITEMS(buffer) - 1;
+	va_list a;
+	va_start(a, fmt);
+#ifdef WIN32
+	return _vsnwprintf(buffer, len, fmt.getBuffer(), a);
+#else
+	return vswprintf(buffer, len, fmt.getBuffer(), a);
+#endif
+}
+
+int
+WString::sprintf(const wchar_t *fmt, ...)
+{
+	if (!buffer)
+	{
+		buffer = new wchar_t[255];
+	}
+	int len = ARRAYITEMS(buffer) - 1;
+	va_list a;
+	va_start(a, fmt);
+#ifdef WIN32
+	return _vsnwprintf(buffer, len, fmt, a);
+#else
+	return vswprintf(buffer, len, fmt, a);
+#endif
+}

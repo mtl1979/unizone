@@ -5,11 +5,11 @@
 
 QString WinShareVersionString();
 
-QString GetUnizoneYears();
+const QString & GetUnizoneYears();
 
-int UZ_MajorVersion();
-int UZ_MinorVersion();
-int UZ_Patch();
-int UZ_Build();
+const int & UZ_MajorVersion();
+const int & UZ_MinorVersion();
+const int & UZ_Patch();
+const int & UZ_Build();
 
 #endif

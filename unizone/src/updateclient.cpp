@@ -10,10 +10,6 @@
 #include "util.h"
 #include "wstring.h"
 
-#ifdef WIN32
-#include "windows\vsscanf.h"
-#endif
-
 #include "iogateway/PlainTextMessageIOGateway.h"
 
 UpdateClient::UpdateClient(QObject *owner)
@@ -50,7 +46,7 @@ UpdateClient::MessageReceived(const MessageRef & msg, const String & /* sessionI
 	for (int i = 0; GetStringFromMessage(msg, PR_NAME_TEXT_LINE, i, str) == B_OK; i++)
 	{
 		QString s;
-		if (CheckVersion(str, &s))
+		if (CheckVersion(str, s))
 		{
 			SystemEvent(gWin, tr("Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.").arg(s));
 		}
@@ -100,20 +96,8 @@ UpdateClient::Disconnect()
 	}
 }
 
-int qscanf(const QString &str, const wchar_t *fmt, ...)
-{
-	WString w(str);
-	va_list a;
-	va_start(a, fmt);
-#ifdef WIN32
-	return vwsscanf(w.getBuffer(), fmt, a);
-#else
-	return vswscanf(w.getBuffer(), fmt, a);
-#endif
-}
-
 bool
-UpdateClient::CheckVersion(const QString & buf, QString * version)
+UpdateClient::CheckVersion(const QString & buf, QString & version)
 {
 	int maj, min, rev, build;
 	int kMajor, kMinor, kPatch, kBuild;
@@ -121,7 +105,10 @@ UpdateClient::CheckVersion(const QString & buf, QString * version)
 	kMinor = UZ_MinorVersion();
 	kPatch = UZ_Patch();
 	kBuild = UZ_Build();
-	int ret = qscanf(buf, L"%d,%d,%d,%d", &maj, &min, &rev, &build);
+	//
+	WString wbuf(buf);
+	int ret = wbuf.sscanf(L"%d,%d,%d,%d", &maj, &min, &rev, &build);
+	//
 	PRINT("CheckVersion: ret == %d\n", ret);
 	if (ret == 4)	// we want 4 return values
 	{
@@ -149,8 +136,8 @@ UpdateClient::CheckVersion(const QString & buf, QString * version)
 		{
 			return false;
 		}
-		if (version)
-			*version = tr("%1.%2.%3 build %4").arg(maj).arg(min).arg(rev).arg(build);
+		
+		version = tr("%1.%2.%3 build %4").arg(maj).arg(min).arg(rev).arg(build);
 		return true;
 	}
 	return false;
