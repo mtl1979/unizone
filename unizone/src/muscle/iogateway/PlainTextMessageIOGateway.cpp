@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 

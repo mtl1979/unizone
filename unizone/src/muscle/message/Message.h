@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -485,10 +485,9 @@ public:
     */
    status_t PrependDouble(const String & name, double val);
 
-   /** Prepends a new Message to the beginning of a field array in the Message..
-    *  Note that this method is less efficient than the
-    *  AddMessage(MessageRef) method, as this method
-    *  necessitates copying all the data in (msg).
+   /** Prepends a new Message to the beginning of a field array in the Message.
+    *  Note that this method is less efficient than the AddMessage(MessageRef) method, 
+    *  as this method necessitates making a copy of (msg) and all the data it contains.
     *  @param name Name of the field to add (or prepend to)
     *  @param msg The Message to add or prepend
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred

@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleTCPSocketDataIO_h
 #define MuscleTCPSocketDataIO_h
@@ -22,7 +22,7 @@ class TCPSocketDataIO : public DataIO
 public:
    /**
     *  Constructor.
-    *  @param sockfd The socket to use.  Becomes property of this TCPSocketDataIO object.
+    *  @param sock The SocketRef we should use for our I/O.
     *  @param blocking specifies whether to use blocking or non-blocking socket I/O.
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.

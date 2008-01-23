@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef ChildProcessDataIO_h
 #define ChildProcessDataIO_h
@@ -36,7 +36,7 @@ public:
    status_t LaunchChildProcess(int argc, char ** argv) {return LaunchChildProcessAux(muscleMax(0,argc), argv);}
 
    /** As above, but the program name and all arguments are specified as a single string.
-     * @param cmdline String to launch the child process with
+     * @param cmd String to launch the child process with
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
    status_t LaunchChildProcess(const char * cmd) {return LaunchChildProcessAux(-1, cmd);}
@@ -82,13 +82,24 @@ public:
      * is true.
      */
    void SetKillChildOnClose(bool kcoc) {_killChildOnClose = kcoc;}
+
+   /** Returns true iff we will kill our child process when this DataIO is 
+     * shut down or destroyed.  Default value is true.
+     */
    bool GetKillChildOnClose() const {return _killChildOnClose;}
 
    /** Set whether or not we should block (waiting until the child process
      * is gone) inside this DataIO object's destructor or Shutdown()
-     * call.  Default value is true.
+     * call.  Default value is true.  Note that this flag will be
+     * ignored if the kill-child-on-close flag is set to true.
      */
    void SetWaitForChildOnClose(bool wcoc) {_waitForChildOnClose = wcoc;}
+
+   /** Returns true iff we will wait for our child process to exit
+     * when this DataIO object is shut down or destroyed.  Default
+     * value is true.  Note that this flag will be ignored if the
+     * kill-child-on-close flag is set to true.
+     */
    bool GetWaitForChildOnClose() const {return _waitForChildOnClose;}
 
    /** Called within the child process, just before the child process's

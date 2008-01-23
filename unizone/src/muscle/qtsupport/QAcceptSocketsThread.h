@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleQAcceptSocketsThread_h
 #define MuscleQAcceptSocketsThread_h
@@ -12,7 +12,7 @@ namespace muscle {
 #endif
 
 /**
- *  This is a Qt-specified subclass of AcceptSocketsThread.
+ *  This is a Qt-specific subclass of AcceptSocketsThread.
  *  It will listen on a port, and emit a ConnectionAccepted signal 
  *  whenever a new TCP connection is received on that port.  In all 
  *  other respects it works like an AcceptSocketsThread object.

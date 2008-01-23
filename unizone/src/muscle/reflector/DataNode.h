@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDataNode_h
 #define MuscleDataNode_h
@@ -185,7 +185,7 @@ public:
    /** Convenience method:  Returns true iff (this) exists
      * anywhere along the path between (descendant) and the root node.
      * (note that a node is not considered an ancestor of itself)
-     * @param ancestor The node to check to see if we are an ancestor of
+     * @param descendant The node to check to see if we are a descendant of it
      */
    bool IsAncestorOf(const DataNode & descendant) const {return descendant.IsDescendantOf(*this);}
 
@@ -229,7 +229,7 @@ public:
 
    /** For debugging purposes; prints the current state of this node (and
      * optionally its descendants) to stdout.
-     * @param maxRecursionCount The maximum number of times to recurse.  Zero would
+     * @param maxRecursionDepth The maximum number of times to recurse.  Zero would
      *                          result in a checksum for this node only; one for this
      *                          node and its children only, etc.  Defaults to 
      *                          MUSCLE_NO_LIMIT.

@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -143,7 +143,7 @@ public:
    Ref<ByteBuffer> FlattenToByteBuffer() const;
 
    /** Convenience method.  Flattens this object to the given DataIO object.
-     * @param io The DataIO object to send our flattened data to.  This DataIO should be in blocking I/O mode; this method won't work reliably
+     * @param outputStream  The DataIO object to send our flattened data to.  This DataIO should be in blocking I/O mode; this method won't work reliably
      *                      if used with non-blocking I/O.
      * @param addSizeHeader If true, we will prefix our flattened data with a four-byte little-endian uint32 indicating the number of bytes
      *                      of flattened data that we are going to write.  If false, then the buffer size will need to be determined by

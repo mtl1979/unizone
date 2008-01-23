@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleQueryFilter_h
 #define MuscleQueryFilter_h
@@ -99,7 +99,7 @@ public:
 
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
-   virtual bool Matches(const Message & msg, const DataNode *) const {return muscleInRange(msg.what, _minWhatCode, _maxWhatCode);}
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const {(void) optNode; return muscleInRange(msg.what, _minWhatCode, _maxWhatCode);}
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_WHATCODE;}
 
 private:
@@ -159,7 +159,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_VALUEEXISTS;}
-   virtual bool Matches(const Message & msg, const DataNode *) const {const void * junk; return (msg.FindData(GetFieldName(), _typeCode, &junk, NULL) == B_NO_ERROR);}
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const {(void) optNode; const void * junk; return (msg.FindData(GetFieldName(), _typeCode, &junk, NULL) == B_NO_ERROR);}
 
    /** Sets the type code that we will look for in the target Message.
      * @param typeCode the type code to look for.  Use B_ANY_TYPE to indicate that you don't care what the type code is.
@@ -213,8 +213,10 @@ public:
 
    virtual uint32 TypeCode() const {return ClassTypeCode;}
 
-   virtual bool Matches(const Message & msg, const DataNode *) const
+   virtual bool Matches(const Message & msg, const DataNode * optNode) const
    {
+      (void) optNode;  // shut compiler and DOxygen up
+
       bool ret = false;
       const void * p;
       if (msg.FindData(GetFieldName(), DataTypeCode, GetIndex(), &p, NULL) == B_NO_ERROR)
@@ -252,13 +254,13 @@ public:
  
    /** Operators defined for our expressions */
    enum {
-      OP_EQUAL_TO = 0,
-      OP_LESS_THAN,
-      OP_GREATER_THAN,
-      OP_LESS_THAN_OR_EQUAL_TO,
-      OP_GREATER_THAN_OR_EQUAL_TO,
-      OP_NOT_EQUAL_TO,
-      NUM_NUMERIC_OPERATORS
+      OP_EQUAL_TO = 0,             /**< This operator represents '==' */
+      OP_LESS_THAN,                /**< This operator represents '<'  */
+      OP_GREATER_THAN,             /**< This operator represents '>'  */
+      OP_LESS_THAN_OR_EQUAL_TO,    /**< This operator represents '<=' */
+      OP_GREATER_THAN_OR_EQUAL_TO, /**< This operator represents '>=' */
+      OP_NOT_EQUAL_TO,             /**< This operator represents '!=' */
+      NUM_NUMERIC_OPERATORS        /**< This is a guard value         */
    };
 
 private:
@@ -483,33 +485,33 @@ public:
    const String & GetValue() const {return _value;}
  
    enum {
-      OP_EQUAL_TO = 0,
-      OP_LESS_THAN,
-      OP_GREATER_THAN,
-      OP_LESS_THAN_OR_EQUAL_TO,
-      OP_GREATER_THAN_OR_EQUAL_TO,
-      OP_NOT_EQUAL_TO,
-      OP_STARTS_WITH,
-      OP_ENDS_WITH,
-      OP_CONTAINS,
-      OP_START_OF,
-      OP_END_OF,
-      OP_SUBSTRING_OF,
-      OP_EQUAL_TO_IGNORECASE,
-      OP_LESS_THAN_IGNORECASE,
-      OP_GREATER_THAN_IGNORECASE,
-      OP_LESS_THAN_OR_EQUAL_TO_IGNORECASE,
-      OP_GREATER_THAN_OR_EQUAL_TO_IGNORECASE,
-      OP_NOT_EQUAL_TO_IGNORECASE,
-      OP_STARTS_WITH_IGNORECASE,
-      OP_ENDS_WITH_IGNORECASE,
-      OP_CONTAINS_IGNORECASE,
-      OP_START_OF_IGNORECASE,
-      OP_END_OF_IGNORECASE,
-      OP_SUBSTRING_OF_IGNORECASE,
-      OP_SIMPLE_WILDCARD_MATCH,
-      OP_REGULAR_EXPRESSION_MATCH,
-      NUM_STRING_OPERATORS
+      OP_EQUAL_TO = 0,                         /**< This token represents '==', e.g. nextValue==myValue (case sensitive) */
+      OP_LESS_THAN,                            /**< This token represents '<',  e.g. nextValue<myValue  (case sensitive) */
+      OP_GREATER_THAN,                         /**< This token represents '>',  e.g. nextValue>myValue  (case sensitive) */
+      OP_LESS_THAN_OR_EQUAL_TO,                /**< This token represents '<=', e.g. nextValue<=myValue (case sensitive) */
+      OP_GREATER_THAN_OR_EQUAL_TO,             /**< This token represents '>=', e.g. nextValue>=myValue (case sensitive) */
+      OP_NOT_EQUAL_TO,                         /**< This token represents '!=', e.g. nextValue!=myValue (case sensitive) */
+      OP_STARTS_WITH,                          /**< This token represents a prefix match, e.g. nextValue.StartsWith(myValue) (case sensitive) */
+      OP_ENDS_WITH,                            /**< This token represents a suffix match, e.g. nextValue.EndsWith(myValue) (case sensitive) */
+      OP_CONTAINS,                             /**< This token represents an infix match, e.g. (nextValue.IndexOf(myValue)>=0) (case sensitive) */
+      OP_START_OF,                             /**< This token represents an inverse prefix match, e.g. myValue.StartsWith(nextValue) (case sensitive) */
+      OP_END_OF,                               /**< This token represents an inverse suffix match, e.g. myValue.StartsWith(nextValue) (case sensitive) */
+      OP_SUBSTRING_OF,                         /**< This token represents an inverse infix match, e.g. myValue.StartsWith(nextValue) (case sensitive) */
+      OP_EQUAL_TO_IGNORECASE,                  /**< This token is the same as OP_EQUAL_TO, except it is case insensitive */
+      OP_LESS_THAN_IGNORECASE,                 /**< This token is the same as OP_LESS_THAN, except it is case insensitive */
+      OP_GREATER_THAN_IGNORECASE,              /**< This token is the same as OP_GREATER_THAN, except it is case insensitive */
+      OP_LESS_THAN_OR_EQUAL_TO_IGNORECASE,     /**< This token is the same as OP_LESS_THAN_OR_EQUAL_TO, except it is case insensitive */
+      OP_GREATER_THAN_OR_EQUAL_TO_IGNORECASE,  /**< This token is the same as OP_GREATER_THAN_OR_EQUAL_TO, except it is case insensitive */
+      OP_NOT_EQUAL_TO_IGNORECASE,              /**< This token is the same as OP_GREATER_THAN_OR_EQUAL_TO, except it is case insensitive */
+      OP_STARTS_WITH_IGNORECASE,               /**< This token is the same as OP_STARTS_WITH, except it is case insensitive */
+      OP_ENDS_WITH_IGNORECASE,                 /**< This token is the same as OP_ENDS_WITH, except it is case insensitive */
+      OP_CONTAINS_IGNORECASE,                  /**< This token is the same as OP_CONTAINS, except it is case insensitive */
+      OP_START_OF_IGNORECASE,                  /**< This token is the same as OP_START_OF, except it is case insensitive */
+      OP_END_OF_IGNORECASE,                    /**< This token is the same as OP_END_OF, except it is case insensitive */
+      OP_SUBSTRING_OF_IGNORECASE,              /**< This token is the same as OP_SUBSTRING_OF, except it is case insensitive */
+      OP_SIMPLE_WILDCARD_MATCH,                /**< This token represents a wildcard match, e.g. StringMatcher(myValue, true).Matches(nextValue) */
+      OP_REGULAR_EXPRESSION_MATCH,             /**< This token represents a proper regex match, e.g. StringMatcher(myValue, false).Matches(nextValue) */
+      NUM_STRING_OPERATORS                     /**< This is a guard token */
    };
 
 private:
@@ -569,19 +571,19 @@ public:
    ByteBufferRef GetValue() const {return _value;}
  
    enum {
-      OP_EQUAL_TO = 0,
-      OP_LESS_THAN,
-      OP_GREATER_THAN,
-      OP_LESS_THAN_OR_EQUAL_TO,
-      OP_GREATER_THAN_OR_EQUAL_TO,
-      OP_NOT_EQUAL_TO,
-      OP_STARTS_WITH,
-      OP_ENDS_WITH,
-      OP_CONTAINS,
-      OP_START_OF,
-      OP_END_OF,
-      OP_SUBSET_OF,
-      NUM_RAWDATA_OPERATORS
+      OP_EQUAL_TO = 0,              /**< This token represents '==' */
+      OP_LESS_THAN,                 /**< This token represents '<'  */
+      OP_GREATER_THAN,              /**< This token represents '>'  */
+      OP_LESS_THAN_OR_EQUAL_TO,     /**< This token represents '<=' */
+      OP_GREATER_THAN_OR_EQUAL_TO,  /**< This token represents '>=' */
+      OP_NOT_EQUAL_TO,              /**< This token represents '!=' */
+      OP_STARTS_WITH,               /**< This token represents a prefix match, e.g. nextValue.StartsWith(myValue) */
+      OP_ENDS_WITH,                 /**< This token represents a suffix match, e.g. nextValue.EndsWith(myValue)   */
+      OP_CONTAINS,                  /**< This token represents an infix match, e.g. (nextValue.IndexOf(myValue)>=0) */
+      OP_START_OF,                  /**< This token represents an inverse prefix match, e.g. myValue.StartsWith(nextValue) */
+      OP_END_OF,                    /**< This token represents an inverse suffix match, e.g. myValue.EndsWith(nextValue) */
+      OP_SUBSET_OF,                 /**< This token represents an inverse infix match,  e.g. (myValue.IndexOf(nextValue)>=0) */
+      NUM_RAWDATA_OPERATORS         /**< This is a guard value */
    };
 
 private:
@@ -594,7 +596,10 @@ private:
 class QueryFilterFactory : public RefCountable
 {
 public:
+   /** Default constructor */
    QueryFilterFactory() {/* empty */}
+
+   /** Destructor */
    virtual ~QueryFilterFactory() {/* empty */}
 
    /** Attempts to create and return a QueryFilter object from the given typeCode.
@@ -621,6 +626,7 @@ public:
 class MuscleQueryFilterFactory : public QueryFilterFactory
 {
 public:
+   /** Default ctor */
    MuscleQueryFilterFactory() {/* empty */}
 
    virtual QueryFilterRef CreateQueryFilter(uint32 typeCode) const;

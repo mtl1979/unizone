@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleQMessageTransceiverThread_h
 #define MuscleQMessageTransceiverThread_h
@@ -25,7 +25,10 @@ class QMessageTransceiverThreadPool;
 class IMessageTransceiverMaster
 {
 public:
+   /** Default constructor */
    IMessageTransceiverMaster() {/* empty */}
+
+   /** Destructor */
    virtual ~IMessageTransceiverMaster() {/* empty */}
 
 protected:

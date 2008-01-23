@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.20"
+#define MUSCLE_VERSION_STRING "4.21"
 
 #include <string.h>  /* for memcpy() */
 

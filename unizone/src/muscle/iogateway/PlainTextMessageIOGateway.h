@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MusclePlainTextMessageIOGateway_h
 #define MusclePlainTextMessageIOGateway_h
@@ -11,10 +11,10 @@ BEGIN_NAMESPACE(muscle);
 #define PR_NAME_TEXT_LINE "tl"
 
 /** The 'what' code that will be found in incoming Messages. */
-#define PR_COMMAND_TEXT_STRINGS 1886681204 // 'ptxt'
+#define PR_COMMAND_TEXT_STRINGS 1886681204  // 'ptxt'
 
-/** 
- * This gateway translates lines of text (separated by \r, \n, or \r\n) into
+/**
+ * This gateway translates lines of text (separated by "\r", "\n", or "\r\n") into
  * Messages.  It can be used for "telnet-style" net interactions.
  * Incoming and outgoing messages may have one or more strings in their PR_NAME_TEXT_LINE field.
  * Each of these strings represents a line of text (separator chars not included)

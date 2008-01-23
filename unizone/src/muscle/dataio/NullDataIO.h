@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNullDataIO_h
 #define MuscleNullDataIO_h
@@ -25,7 +25,7 @@ public:
     *  @param size Number of bytes in the buffer (ignored).
     *  @return zero.
     */
-   virtual int32 Read(void * /*buffer*/, uint32 /*size*/)  {return _shutdown ? -1 : 0;}
+   virtual int32 Read(void * buffer, uint32 size)  {(void) buffer; (void) size; return _shutdown ? -1 : 0;}
 
    /** 
     *  No-op method, always returns (size) (except if Shutdown() was called).
@@ -33,7 +33,7 @@ public:
     *  @param size Number of bytes in the buffer (ignored).
     *  @return (size).
     */
-   virtual int32 Write(const void * /*buffer*/, uint32 size) {return _shutdown ? -1 : (int32)size;}
+   virtual int32 Write(const void * buffer, uint32 size) {(void) buffer; return _shutdown ? -1 : (int32)size;}
 
    /**
     *  This method always returns B_ERROR.

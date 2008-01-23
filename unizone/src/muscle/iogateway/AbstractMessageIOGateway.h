@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleAbstractMessageIOGateway_h
 #define MuscleAbstractMessageIOGateway_h
@@ -50,13 +50,12 @@ protected:
    virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData) = 0;
 
    /** Called after each call to MessageReceivedFromGateway().  Useful when there
-    *  is something that needs to be done after the subclass has finished its
-    *  processing.
+    *  is something that needs to be done after the subclass has finished its processing.
     *  Default implementation is a no-op.
     *  @param msg MessageRef containing the Message that was just passed to MessageReceivedFromGateway()
     *  @param userData userData value that was just passed to MessageReceivedFromGateway()
     */
-   virtual void AfterMessageReceivedFromGateway(const MessageRef &, void * /*userData*/) {/* empty */}
+   virtual void AfterMessageReceivedFromGateway(const MessageRef & msg, void * userData) {(void) msg; (void) userData;}
 
    /** This method will be called just before MessageReceivedFromGateway() and AfterMessageReceivedFromGateway()
     *  are called one or more times.  Default implementation is a no-op.
@@ -97,7 +96,7 @@ public:
    QueueGatewayMessageReceiver() {/* empty */}
 
 protected:
-   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * /*userData*/) {(void) AddTail(msg);}
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData) {(void) userData; (void) AddTail(msg);}
 };
 
 /**

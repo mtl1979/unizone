@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDataIO_h
 #define MuscleDataIO_h
@@ -13,10 +13,10 @@ class DataIO : public RefCountable
 public:
    /** Values to pass in to DataIO::Seek()'s second parameter */
    enum {
-      IO_SEEK_SET = 0,
-      IO_SEEK_CUR,
-      IO_SEEK_END,
-      NUM_IO_SEEKS
+      IO_SEEK_SET = 0,  /**< Tells Seek that its value specifies bytes-after-beginning-of-stream */
+      IO_SEEK_CUR,      /**< Tells Seek that its value specifies bytes-after-current-stream-position */
+      IO_SEEK_END,      /**< Tells Seek that its value specifies bytes-after-end-of-stream (you'll usually specify a non-positive seek value with this) */
+      NUM_IO_SEEKS      /**< A guard value */
    };
 
    /** Default Constructor */
@@ -53,7 +53,7 @@ public:
     *               be relative to the start of the stream; or to 
     *               IO_SEEK_CUR if it should be relative to the current
     *               stream position, or IO_SEEK_END if it should be
-    *               backwards from the end of the stream.
+    *               relative to the end of the stream.
     * @return B_NO_ERROR on success, or B_ERROR on failure or if unsupported.
     */
    virtual status_t Seek(int64 offset, int whence) = 0;
@@ -111,7 +111,7 @@ public:
     *                    otherwise B_ERROR.  Default implementation
     *                    always returns B_ERROR.
     */
-   virtual status_t GetReadByteTimeStamp(int32 /*whichByte*/, uint64 & /*retStamp*/) const {return B_ERROR;}
+   virtual status_t GetReadByteTimeStamp(int32 whichByte, uint64 & retStamp) const {(void) whichByte; (void) retStamp; return B_ERROR;}
 
    /**
     * Optional:  If your DataIO subclass is holding buffered data that it wants

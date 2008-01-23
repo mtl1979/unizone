@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleThread_h
 #define MuscleThread_h
@@ -155,10 +155,10 @@ public:
     *  and GetInternalSocketSet() calls.
     */
    enum {
-      SOCKET_SET_READ = 0,  // set of sockets to watch for ready-to-read (i.e. incoming data available)
-      SOCKET_SET_WRITE,     // set of sockets to watch for ready-to-write (i.e. outgoing buffer space available)
-      SOCKET_SET_EXCEPTION, // set of sockets to watch for exceptional conditions (implementation defined)
-      NUM_SOCKET_SETS
+      SOCKET_SET_READ = 0,  /**< set of sockets to watch for ready-to-read (i.e. incoming data available)          */
+      SOCKET_SET_WRITE,     /**< set of sockets to watch for ready-to-write (i.e. outgoing buffer space available) */
+      SOCKET_SET_EXCEPTION, /**< set of sockets to watch for exceptional conditions (implementation defined)       */
+      NUM_SOCKET_SETS       /**< A guard value */
    };
 
    /** This function returns a reference to one of the three socket-sets that

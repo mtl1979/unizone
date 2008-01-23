@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMessageTransceiverThread_h
 #define MuscleMessageTransceiverThread_h
@@ -360,7 +360,7 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the put command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t PutAcceptFactory(uint16 port, const ThreadWorkerSessionFactoryRef & optFactoryRef, const ip_address & interfaceIP = invalidIP);
+   virtual status_t PutAcceptFactory(uint16 port, const ThreadWorkerSessionFactoryRef & optFactoryRef, const ip_address & optInterfaceIP = invalidIP);
 
    /** Convenience method -- calls the above method with a NULL factory reference. */
    status_t PutAcceptFactory(uint16 port) {return PutAcceptFactory(port, ThreadWorkerSessionFactoryRef());}
@@ -375,7 +375,7 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the remove command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t RemoveAcceptFactory(uint16 port, const ip_address & interfaceIP = invalidIP);
+   virtual status_t RemoveAcceptFactory(uint16 port, const ip_address & optInterfaceIP = invalidIP);
 
    /** Stops the internal thread if it is running, destroys internal the internal ReflectServer object, and more or
      * less make this MessageTransceiverThread look like it had just been constructed anew.

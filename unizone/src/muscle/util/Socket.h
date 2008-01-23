@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSocket_h
 #define MuscleSocket_h
@@ -54,13 +54,32 @@ private:
 class SocketRef : public Ref<Socket>
 {
 public:
+   /** Default constructor */
    SocketRef() : Ref<Socket>() {/* empty */}
+
+   /** This constructor takes ownership of the given Socket object.
+     * @param item The Socket object to take ownership of.  This will be recycled/deleted when this SocketRef is destroyed, unless (doRefCount) is specified as false.
+     * @param doRefCount If set false, we will not attempt to reference-count (item), and instead will only act like a dumb pointer.  Defaults to true.
+     */
    SocketRef(Socket * item, bool doRefCount = true) : Ref<Socket>(item, doRefCount) {/* empty */}
+
+   /** Copy constructor
+     * @param copyMe The SocketRef to become a copy of.  Note that this doesn't copy (copyMe)'s underlying Socket object, but instead
+     *               only adds one to its reference count.
+     */
    SocketRef(const SocketRef & copyMe) : Ref<Socket>(copyMe) {/* empty */}
+
+   /** Downcast constructor
+     * @param ref A GenericRef object that hopefully holds a Socket object
+     * @param junk This parameter doesn't mean anything; it is only here to differentiate this ctor from the other ctors.
+     */
    SocketRef(const GenericRef & ref, bool junk) : Ref<Socket>(ref, junk) {/* empty */}
 
-   inline bool operator ==(const SocketRef &rhs) const;
-   inline bool operator !=(const SocketRef &rhs) const;
+   /** Comparison operator.  Returns true iff (this) and (rhs) both contain the same file descriptor. */
+   inline bool operator ==(const SocketRef &rhs) const {return GetFileDescriptor() == rhs.GetFileDescriptor();}
+
+   /** Comparison operator.  Returns false iff (this) and (rhs) both contain the same file descriptor. */
+   inline bool operator !=(const SocketRef &rhs) const {return GetFileDescriptor() != rhs.GetFileDescriptor();}
 
    /** Convenience method.  Returns the file descriptor we are holding, or -1 if we are a NULL reference. */
    int GetFileDescriptor() const {const Socket * s = GetItemPointer(); return s?s->GetFileDescriptor():-1;}
@@ -81,9 +100,6 @@ template <class T> class HashFunctor;
   */
 SocketRef GetSocketRefFromPool(int fd, bool okayToClose = true, bool returnNULLIfInvalidSocket = true);
 
-bool SocketRef :: operator ==(const SocketRef &rhs) const {return GetFileDescriptor() == rhs.GetFileDescriptor();}
-bool SocketRef :: operator !=(const SocketRef &rhs) const {return GetFileDescriptor() != rhs.GetFileDescriptor();}
-
 /** Convenience method:  Returns a NULL socket reference. */
 const SocketRef & GetNullSocket();
 
@@ -95,7 +111,10 @@ template <>
 class HashFunctor<SocketRef>
 {
 public:
-   uint32 operator () (const SocketRef & x) const {return x.GetFileDescriptor();}
+   /** Returns a hash code for the given SocketRef object.
+     * @param sr The SocketRef object to return a hash code for.  The hash code is simply the associated file descriptor.
+     */
+   uint32 operator () (const SocketRef & sr) const {return sr.GetFileDescriptor();}
 };
 
 END_NAMESPACE(muscle);

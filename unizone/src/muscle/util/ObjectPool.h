@@ -1,11 +1,10 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleObjectPool_h
 #define MuscleObjectPool_h
 
 #include "util/Queue.h"
 #include "system/Mutex.h"
-#include "syslog/SysLog.h"  // TEMP REMOVE THIS
 
 BEGIN_NAMESPACE(muscle);
 
@@ -24,6 +23,7 @@ BEGIN_NAMESPACE(muscle);
 class AbstractObjectGenerator
 {
 public:
+   /** Default ctor */
    AbstractObjectGenerator() {/* empty */}
 
    /** Virtual dtor to keep C++ honest */
@@ -120,12 +120,12 @@ public:
    {
       while(_firstSlab)
       {
-         ObjectSlab * nextSlab = _firstSlab;
          if (_firstSlab->IsInUse()) 
          {
             LogTime(MUSCLE_LOG_CRITICALERROR, "~ObjectPool %p:  slab %p is still in use when we destroy it!\n", this, _firstSlab);
             MCRASH("ObjectPool destroyed while its objects were still in use (Is a CompleteSetupSystem object declared at the top of main()?");
          }
+         ObjectSlab * nextSlab = _firstSlab->GetNext();
          delete _firstSlab;
          _firstSlab = nextSlab;
       }

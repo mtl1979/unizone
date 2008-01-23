@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 /* This class was derived from the String class written by Michael Olivero (mike95@mike95.com) */
  
 /* NOTE TO MACOS/X X-CODE USERS:  If you are trying to #include <string.h>
@@ -81,7 +81,7 @@ public:
    /** Append Operator.
     *  @param ch A character to append to this string.
     */
-   String & operator += (const char ch)
+   String & operator += (char ch)
    {
       if (EnsureBufferSize(Length()+2, true) == B_NO_ERROR)
       {
@@ -242,12 +242,13 @@ public:
      * that it allows you to optionally specify a maximum length, and it allows you to detect
      * out-of-memory errors.
      * @param str The new string to copy from.
-     * @param beginIndex Index of the first character in (str) to include.
+     * @param beginIndex Index of the first character in (str) to include.  
+     *                   Defaults to zero, so that by default the entire string is included.
      * @param endIndex Index after the last character in (str) to include.  
      *                 Defaults to a very large number, so that by default the entire remainder of the string is included.
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
      */
-   status_t SetFromString(const String & str, uint32 firstChar = 0, uint32 maxLen = MUSCLE_NO_LIMIT);
+   status_t SetFromString(const String & str, uint32 beginIndex = 0, uint32 endIndex = MUSCLE_NO_LIMIT);
 
    /** Returns true iff this string is a zero-length string. */
    bool IsEmpty() const {return (_length == 0);}
@@ -332,7 +333,6 @@ public:
 
    /** Returns the last index of substring (str) in this string  
      * @param str A String to look for in this string.
-     * @param fromIndex Index of the first character to start searching at in this String.  Defaults to zero (i.e. start from the first character)
      */
    int LastIndexOf(const String &str) const {return (str.Length() <= Length()) ? LastIndexOf(str, Length()-str.Length()) : -1;}
 
@@ -361,23 +361,33 @@ public:
    /** Returns the number of characters in the string (not including the terminating NUL byte) */
    uint32 Length() const {return _length;}
 
-   /** Returns the number of instances of (c) in this string. */
+   /** Returns the number of instances of (c) in this string. 
+     * @param ch The character to count the number of instances of in this String.
+     */
    uint32 GetNumInstancesOf(char ch) const;
 
-   /** Returns the number of instances of (substring) in this string. */
+   /** Returns the number of instances of (substring) in this string. 
+     * @param substring String to count the number of instances of in this String.
+     */
    uint32 GetNumInstancesOf(const String & substring) const;
 
-   /** Returns the number of instances of (substring) in this string. */
+   /** Returns the number of instances of (substring) in this string. 
+     * @param substring C string to count the number of instances of in this String.
+     */
    uint32 GetNumInstancesOf(const char * substring) const;
 
-   /** Returns true iff this string starts with (prefix) */
+   /** Returns true iff this string starts with (c) 
+     * @param c The character to see if this string starts with or not
+     */
    bool StartsWith(char c) const {return (_length > 0)&&(_buffer[0] == c);}
 
-   /** Returns true iff this string starts with (prefix) */
-   bool StartsWith(const String &str) const {return ((Length() >= str.Length())&&(strncmp(Cstr(), str(), str.Length()) == 0));}
+   /** Returns true iff this string starts with (prefix) 
+     * @param prefix The prefix to see whether this string starts with or not
+     */
+   bool StartsWith(const String &prefix) const {return ((Length() >= prefix.Length())&&(strncmp(Cstr(), prefix(), prefix.Length()) == 0));}
 
    /** Returns true iff this string starts with (prefix)
-     * @param str Pointer to a C string to compare to.  NULL pointers are considered a synonym for "".
+     * @param prefix Pointer to a C string to compare to.  NULL pointers are considered a synonym for "".
      */
    bool StartsWith(const char * prefix) const
    {
@@ -390,7 +400,8 @@ public:
    bool StartsWith(const String &prefix, uint32 offset) const {return ((offset+prefix.Length()<=Length())&&(strncmp(Cstr()+offset, prefix.Cstr(), prefix.Length()) == 0));}
 
    /** Returns true iff this string starts with the first (offset) characters of (prefix) 
-     * @param str Pointer to a C string to compare to.  NULL pointers are considered a synonym for "".
+     * @param prefix Pointer to a C string to compare to.  NULL pointers are considered a synonym for "".
+     * @param offset An index into this string to begivn the comparison at.
      */
    bool StartsWith(const char * prefix, uint32 offset) const
    {
@@ -618,6 +629,8 @@ public:
 
    /** As above, but for string values. */
    String Arg(const String & value) const;
+
+   /** As above, but for C string values. */
    String Arg(const char * value) const;
 
    /** Returns a 32-bit checksum corresponding to this String's contents.
@@ -658,21 +671,30 @@ template <>
 class HashFunctor<String>
 {
 public:
-   uint32 operator () (const String & x) const {return CStringHashFunc(x());}
+   /** Returns a hash code for the given String.
+     * @param str Reference to the MUSCLE String object to compute a hash code for.
+     */
+   uint32 operator () (const String & str) const {return CStringHashFunc(str());}
 };
 
 template <>
 class HashFunctor<const String *>
 {
 public:
-   uint32 operator () (const String * x) const {return x->HashCode();}
+   /** Returns a hash code for the given String.
+     * @param str Pointer to the MUSCLE String object to compute a hash code for.
+     */
+   uint32 operator () (const String * str) const {return str->HashCode();}
 };
 
 template <>
 class HashFunctor<const char *>
 {
 public:
-   uint32 operator () (const char * x) const {return CStringHashFunc(x);}
+   /** Returns a hash code for the given C string.
+     * @param str The C string to compute a hash code for.
+     */
+   uint32 operator () (const char * str) const {return CStringHashFunc(str);}
 };
 
 /** A function for comparing (const String &)'s -- calls muscleCompare() on the two Strings. */

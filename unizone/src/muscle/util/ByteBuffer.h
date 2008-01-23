@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleByteBuffer_h
 #define MuscleByteBuffer_h
@@ -123,7 +123,7 @@ public:
    virtual uint32 TypeCode() const {return B_RAW_TYPE;}
    virtual uint32 FlattenedSize() const {return _numValidBytes;}
    virtual void Flatten(uint8 *buffer) const {memcpy(buffer, _buffer, _numValidBytes);}
-   virtual bool AllowsTypeCode(uint32 /*code*/) const {return true;}
+   virtual bool AllowsTypeCode(uint32 code) const {(void) code; return true;}
    virtual status_t Unflatten(const uint8 *buf, uint32 size) {return SetBuffer(size, buf);}
 
    /** Returns a 32-bit checksum corresponding to this ByteBuffer's contetns.

@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleAcceptSocketsThread_h
 #define MuscleAcceptSocketsThread_h
@@ -45,8 +45,6 @@ public:
    /** Tries to allocate a socket to listen on the given port.  Will close any previously existing
      * socket first.  Does not work if the internal thread is already running. 
      * @param port Which port to allocate a socket to listen on, or zero if you wish for the system to choose.
-     * @param optFrom If specified, the IP address to accept connections from.  If left as zero,
-     *                then connections will be accepted from any IP address.
      * @param optInterfaceIP if specified, this should be the IP address of a local network interface
      *                       to listen for incoming connections on.  If left unspecified (or set to invalidIP)
      *                       then we will accept connections on all network interfaces.

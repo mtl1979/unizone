@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleStringTokenizer_h
 #define MuscleStringTokenizer_h
@@ -16,7 +16,7 @@ public:
     *  of the characters specified in (separators)
     *  @param tokenizeMe the string to break up into 'words'.
     *  @param separators ASCII string representing a list of characters to interpret a word separators.
-    *                    Defaults to ", \t" (where \t is of course the tab character)
+    *                    Defaults to ", \t" (where "\t" is of course the tab character)
     */
    StringTokenizer(const char * tokenizeMe, const char * separators = ", \t")
    {
@@ -46,10 +46,11 @@ public:
     *  @param junk Ignored; it's only here to disambiguate the two constructors.
     *  @param tokenizeMe The string to tokenize.  This string will get munged!
     *  @param separators ASCII string representing a list of characters to interpret a word separators.
-    *                    Defaults to ", \t" (where \t is of course the tab character)
+    *                    Defaults to ", \t" (where "\t" is of course the tab character)
     */
-   StringTokenizer(bool /*junk*/, char * tokenizeMe, const char * separators = ", \t")
+   StringTokenizer(bool junk, char * tokenizeMe, const char * separators = ", \t")
    {
+      (void) junk;
       _next = tokenizeMe;
       _seps = separators;
       _alloced = false;

@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNetworkUtilityFunctions_h
 #define MuscleNetworkUtilityFunctions_h
@@ -439,7 +439,16 @@ status_t SetUDPSocketTarget(const SocketRef & sock, const char * remoteHostName,
 class NetworkInterfaceInfo
 {
 public:
+   /** Default constructor.  Sets all member variables to default values. */
    NetworkInterfaceInfo();
+
+   /** Constructor.  Sets all member variables to the values specified in the argument list.
+     * @param name The name of the interface, as it is known to the computer (e.g. "/dev/eth0").
+     * @param desc A human-readable description string describing the interface (e.g. "Ethernet Jack 0", or somesuch).
+     * @param ip The local IP address associated with the interface.
+     * @param netmask The netmask being used by this interface.
+     * @param broadcastIP The broadcast IP address associated with this interface.
+     */
    NetworkInterfaceInfo(const char * name, const char * desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP);
 
    /** Returns the name of this interface, or "" if the name is not known. */
@@ -504,12 +513,38 @@ public:
    /** Copy constructor */
    IPAddressAndPort(const IPAddressAndPort & rhs) : _ip(rhs._ip), _port(rhs._port) {/* empty */}
 
+   /** Comparison operator.  Returns true iff (rhs) is equal to this object. 
+     * @param rhs The IPAddressAndPort object to compare this object to. 
+     */
    bool operator == (const IPAddressAndPort & rhs) const {return (_ip == rhs._ip)&&(_port == rhs._port);}
+
+   /** Comparison operator.  Returns true iff (rhs) is not equal to this object. 
+     * @param rhs The IPAddressAndPort object to compare this object to. 
+     */
    bool operator != (const IPAddressAndPort & rhs) const {return !(*this==rhs);}
 
+   /** Comparison operator.  Returns true iff this object is "less than" (rhs).
+     * The comparison is done first on the IP address, and if that matches, a sub-comparison is done on the port field.
+     * @param rhs The IPAddressAndPort object to compare this object to. 
+     */
    bool operator < (const IPAddressAndPort & rhs) const {return ((_ip < rhs._ip)||((_ip == rhs._ip)&&(_port < rhs._port)));}
+
+   /** Comparison operator.  Returns true iff this object is "greater than" (rhs).
+     * The comparison is done first on the IP address, and if that matches, a sub-comparison is done on the port field.
+     * @param rhs The IPAddressAndPort object to compare this object to. 
+     */
    bool operator > (const IPAddressAndPort & rhs) const {return ((_ip > rhs._ip)||((_ip == rhs._ip)&&(_port > rhs._port)));}
+
+   /** Comparison operator.  Returns true iff this object is "less than or equal to" (rhs).
+     * The comparison is done first on the IP address, and if that matches, a sub-comparison is done on the port field.
+     * @param rhs The IPAddressAndPort object to compare this object to. 
+     */
    bool operator <= (const IPAddressAndPort & rhs) const {return !(*this>rhs);}
+
+   /** Comparison operator.  Returns true iff this object is "greater than or equal to" (rhs).
+     * The comparison is done first on the IP address, and if that matches, a sub-comparison is done on the port field.
+     * @param rhs The IPAddressAndPort object to compare this object to. 
+     */
    bool operator >= (const IPAddressAndPort & rhs) const {return !(*this<rhs);}
 
    /** HashCode returns a usable 32-bit hash code value for this object, based on its contents. */
@@ -565,7 +600,10 @@ template <>
 class HashFunctor<IPAddressAndPort>
 {
 public:
-   uint32 operator () (const IPAddressAndPort & x) const {return x.HashCode();}
+   /** Returns a hash code for the given IPAddressAndPort object.
+     * @param iaap The IPAddressAndPort object to return a hash code for.
+     */
+   uint32 operator () (const IPAddressAndPort & iaap) const {return iaap.HashCode();}
 };
 
 #ifdef MUSCLE_ENABLE_MULTICAST_API

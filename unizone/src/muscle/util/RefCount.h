@@ -1,4 +1,4 @@
-/* This file is Copyright 2007 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
+/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
 
 #ifndef MuscleRefCount_h 
 #define MuscleRefCount_h 
@@ -302,6 +302,9 @@ template <class Item>
 class HashFunctor<Ref<Item> >
 {
 public:
+   /** Returns a hash code for the given Ref object.
+     * @param ref The Ref object to return a hash code for.  The hash code is calculated simply by casting the pointer value to a uint32.
+     */
    uint32 operator()(const Ref<Item> & ref) const {return ((uint32)((unsigned long)ref()));}  // double-cast for AMD64
 };
 #endif
