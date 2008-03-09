@@ -1,5 +1,6 @@
 #include <qstring.h>
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "wstring.h"
 #include "wutil.h"
