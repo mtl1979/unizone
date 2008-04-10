@@ -15,6 +15,7 @@
 # include <sched.h>
 #endif
 
+#include "reflector/StorageReflectConstants.h"  // for PR_COMMAND_BATCH, PR_NAME_KEYS
 #include "util/ByteBuffer.h"
 #include "util/MiscUtilityFunctions.h"
 #include "util/NetworkUtilityFunctions.h"
@@ -37,7 +38,7 @@ status_t ParseArg(const String & a, Message & addTo)
       argValue = argName.Substring(equalsAt+1).Trim();  // this must be first!
       argName  = argName.Substring(0, equalsAt).Trim().ToLowerCase();
    }
-   if (argName.Length() > 0)
+   if (argName.HasChars())
    { 
       // Don't allow the parsing to fail just because the user specified a section name the same as a param name!
       uint32 tc;
@@ -45,6 +46,39 @@ status_t ParseArg(const String & a, Message & addTo)
       return addTo.AddString(argName, argValue);
    }
    else return B_NO_ERROR;
+}
+
+String UnparseArgs(const Message & argsMsg)
+{
+   String ret, next;
+   for (MessageFieldNameIterator it(argsMsg, B_STRING_TYPE); it.HasMoreFieldNames(); it++)
+   {
+      const String & fn = it.GetFieldName();
+      const String * s;
+      for (int32 i=0; argsMsg.FindString(fn, i, &s) == B_NO_ERROR; i++)
+      {
+         if (s->HasChars())
+         {
+            next = fn;
+            next += '=';
+            if ((s->IndexOf(' ') >= 0)||(s->IndexOf('\t') >= 0)||(s->IndexOf('\r') >= 0)||(s->IndexOf('\n') >= 0))
+            {
+               next += '\"';
+               next += *s;
+               next += '\"';
+            }
+            else next += *s;
+         }
+         else next = fn;
+      }
+      if (next.HasChars())
+      {
+         if (ret.HasChars()) ret += ' ';
+         ret += next;
+      }
+      next.Clear();
+   }
+   return ret;
 }
 
 status_t ParseArgs(const String & line, Message & addTo)
@@ -519,6 +553,9 @@ uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
 #endif
 }
 
+static bool _isDaemonProcess = false;
+bool IsDaemonProcess() {return _isDaemonProcess;}
+
 /* Source code stolen from UNIX Network Programming, Volume 1
  * Comments from the Unix FAQ
  */
@@ -590,6 +627,7 @@ status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir, co
    if (outfd >= 0) dup2(outfd, STDOUT_FILENO);
    if (outfd >= 0) dup2(outfd, STDERR_FILENO);
 
+   _isDaemonProcess = true;
    return B_NO_ERROR;
 }
 #endif
@@ -607,7 +645,7 @@ void RemoveANSISequences(String & s)
    TCHECKPOINT;
 
    static const char _escapeBuf[] = {0x1B, '[', '\0'};
-   static String _escape; if (_escape.Length() == 0) _escape = _escapeBuf;
+   static String _escape; if (_escape.IsEmpty()) _escape = _escapeBuf;
 
    while(true)
    {
@@ -727,6 +765,26 @@ ByteBufferRef ParseHexBytes(const char * buf)
       bb()->SetNumBytes(count, true);
    }
    return bb;
+}
+
+status_t AssembleBatchMessage(MessageRef & batchMsg, const MessageRef & newMsg)
+{
+   if (batchMsg() == NULL)
+   {
+      batchMsg = newMsg;
+      return B_NO_ERROR;
+   }
+   else if (batchMsg()->what == PR_COMMAND_BATCH) return batchMsg()->AddMessage(PR_NAME_KEYS, newMsg);
+   else
+   {
+      MessageRef newBatchMsg = GetMessageFromPool(PR_COMMAND_BATCH);
+      if ((newBatchMsg())&&(newBatchMsg()->AddMessage(PR_NAME_KEYS, batchMsg) == B_NO_ERROR)&&(newBatchMsg()->AddMessage(PR_NAME_KEYS, newMsg) == B_NO_ERROR))
+      {
+         batchMsg = newBatchMsg;
+         return B_NO_ERROR;
+      }
+   }
+   return B_ERROR;
 }
 
 END_NAMESPACE(muscle);

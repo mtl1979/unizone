@@ -27,7 +27,7 @@ AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & ss)
    AbstractReflectSession * newSession = ref();
    if (newSession == NULL) return B_ERROR;
 
-   newSession->_owner = this;  // in case CreateGateway() needs to use the owner
+   newSession->SetOwner(this);  // in case CreateGateway() needs to use the owner
 
    SocketRef s = ss;
    if (s() == NULL) s = ref()->CreateDefaultSocket();
@@ -49,16 +49,16 @@ AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & ss)
                gatewayRef()->SetDataIO(io);
                newSession->SetGateway(gatewayRef);
             }
-            else {newSession->_owner = NULL; return B_ERROR;}
+            else {newSession->SetOwner(NULL); return B_ERROR;}
          }
       }
-      else {newSession->_owner = NULL; return B_ERROR;}
+      else {newSession->SetOwner(NULL); return B_ERROR;}
    }
 
    TCHECKPOINT;
 
    // Set our hostname (IP address) string if it isn't already set
-   if (newSession->_hostName.Length() == 0)
+   if (newSession->_hostName.IsEmpty())
    {
       const SocketRef & sock = newSession->GetSessionSelectSocket();
       if (sock.GetFileDescriptor() >= 0)
@@ -72,7 +72,7 @@ AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & ss)
    }
 
         if (AttachNewSession(ref) == B_NO_ERROR) return B_NO_ERROR;
-   else if (newSession) newSession->_owner = NULL;
+   else if (newSession) newSession->SetOwner(NULL);
 
    TCHECKPOINT;
 
@@ -133,7 +133,7 @@ AttachNewSession(const AbstractReflectSessionRef & ref)
    AbstractReflectSession * newSession = ref();
    if ((newSession)&&(_sessions.Put(&newSession->GetSessionIDString(), ref) == B_NO_ERROR))
    {
-      newSession->_owner = this;
+      newSession->SetOwner(this);
       if (newSession->AttachedToServer() == B_NO_ERROR)
       {
          if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "New %s ("UINT32_FORMAT_SPEC" total)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems());
@@ -145,7 +145,7 @@ AttachNewSession(const AbstractReflectSessionRef & ref)
          newSession->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
          if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "%s aborted startup ("UINT32_FORMAT_SPEC" left)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
       }
-      newSession->_owner = NULL;
+      newSession->SetOwner(NULL);
       (void) _sessions.Remove(&newSession->GetSessionIDString());
    }
    return B_ERROR;
@@ -178,7 +178,7 @@ ReflectServer :: Cleanup()
          {
             nextValue()->AboutToDetachFromServer();
             nextValue()->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
-            nextValue()->_owner = NULL;
+            nextValue()->SetOwner(NULL);
             _lameDuckSessions.AddTail(nextValue);  // we'll delete it below
             _sessions.Remove(nextKey);  // but prevent other sessions from accessing it now that it's detached
          }
@@ -601,7 +601,7 @@ ServerProcessLoop()
                           if ((wroteBytes > 0)||(session->_maxOutputChunk == 0)) session->_lastByteOutputAt = now;  // reset the moribundness-timer
                      else if (now-session->_lastByteOutputAt > session->_outputStallLimit)
                      {
-                        if (_doLogging) LogTime(MUSCLE_LOG_WARNING, "Connection for %s timed out (output stall, no data movement for %llu seconds).\n", session->GetSessionDescriptionString()(), (session->_outputStallLimit/1000000));
+                        if (_doLogging) LogTime(MUSCLE_LOG_WARNING, "Connection for %s timed out (output stall, no data movement for "UINT64_FORMAT_SPEC" seconds).\n", session->GetSessionDescriptionString()(), (session->_outputStallLimit/1000000));
                         (void) DisconnectSession(session);
                      }
                   }
@@ -704,7 +704,7 @@ status_t ReflectServer :: ClearLameDucks()
             duck->AboutToDetachFromServer();
             duck->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
             if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "Closed %s ("UINT32_FORMAT_SPEC" left)\n", duck->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
-            duck->_owner = NULL;
+            duck->SetOwner(NULL);
             (void) _sessions.Remove(&id);
          }
       }
@@ -739,7 +739,12 @@ status_t ReflectServer :: DoAccept(const IPAddressAndPort & iap, const SocketRef
          AbstractReflectSessionRef newSessionRef;
          if (optFactory) newSessionRef = optFactory->CreateSession(ipbuf, nip);
 
-              if ((newSessionRef())&&(AddNewSession(newSessionRef, newSocket) == B_NO_ERROR)) return B_NO_ERROR;  // success!
+         if (newSessionRef()) 
+         {
+            newSessionRef()->_ipAddressAndPort = iap;
+            if (AddNewSession(newSessionRef, newSocket) == B_NO_ERROR) return B_NO_ERROR;  // success!
+            newSessionRef()->_ipAddressAndPort.Reset();
+         }
          else if (optFactory) LogAcceptFailed(MUSCLE_LOG_DEBUG, "Session creation denied", ipbuf, nip);
       }
    }
@@ -890,7 +895,7 @@ PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef, const
          {
             if (_factorySockets.Put(iap, acceptSocket) == B_NO_ERROR)
             {
-               f->_owner = this;
+               f->SetOwner(this);
                if (optRetPort) *optRetPort = port;
                if (f->AttachedToServer() == B_NO_ERROR) return B_NO_ERROR;
                else
@@ -919,8 +924,8 @@ RemoveAcceptFactoryAux(const IPAddressAndPort & iap)
       (void) _factories.Remove(iap);  // must call this AFTER the AboutToDetachFromServer() call!
 
       // See if there are any other instances of this factory still present.
-      // if there aren't, we'll clear the factory's _owner pointer so he can't access us anymore
-      if (_factories.IndexOfValue(ref) < 0) ref()->_owner = NULL;
+      // if there aren't, we'll clear the factory's owner-pointer so he can't access us anymore
+      if (_factories.IndexOfValue(ref) < 0) ref()->SetOwner(NULL);
 
       (void) _factorySockets.Remove(iap);
 

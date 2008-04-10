@@ -11,7 +11,7 @@ StringMatcherQueueRef::ItemPool * GetStringMatcherQueuePool() {return &_stringMa
 
 void PathMatcher :: AdjustStringPrefix(String & path, const char * optPrepend) const
 {
-   if (path.Length() > 0)
+   if (path.HasChars())
    {
            if (path[0] == '/') path = path.Substring(1);
       else if (optPrepend)     
@@ -39,7 +39,7 @@ status_t PathMatcher :: PutPathString(const String & path, const QueryFilterRef 
 {
    TCHECKPOINT;
 
-   if (path.Length() > 0) 
+   if (path.HasChars()) 
    {
       StringMatcherQueue * newQ = GetStringMatcherQueuePool()->ObtainObject();
       if (newQ)

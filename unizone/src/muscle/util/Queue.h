@@ -49,17 +49,17 @@ public:
    status_t AddTail(const ItemType & item = ItemType());
 
    /** Appends some or all items in (queue) to the end of our queue.  Queue size
-    *  grows by (queue.GetNumItems()).
+    *  grows by at most (queue.GetNumItems()).
     *  For example:
-    *    Queue a;   // contains 1, 2, 3, 4
-    *    Queue b;   // contains 5, 6, 7, 8
+    *    Queue<int> a;   // contains 1, 2, 3, 4
+    *    Queue<int> b;   // contains 5, 6, 7, 8
     *    a.AddTail(b);      // a now contains 1, 2, 3, 4, 5, 6, 7, 8
     *  @param queue The queue to append to our queue.
     *  @param startIndex Index in (queue) to start adding at.  Default to zero.
     *  @param numItems Number of items to add.  If this number is too large, it will be capped appropriately.  Default is to add all items.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddTail(const Queue<ItemType> & queue, uint32 startIndex = 0, uint32 numItems = (uint32)-1);
+   status_t AddTail(const Queue<ItemType> & queue, uint32 startIndex = 0, uint32 numItems = MUSCLE_NO_LIMIT);
 
    /** Adds the given array of items to the tail of the Queue.  Equivalent
     *  to adding them to the tail of the Queue one at a time, but somewhat
@@ -77,17 +77,17 @@ public:
    status_t AddHead(const ItemType &item = ItemType());
 
    /** Concatenates (queue) to the head of our queue.
-    *  Our queue size grows by (queue.GetNumItems()).
+    *  Our queue size grows by at most (queue.GetNumItems()).
     *  For example:
-    *    Queue a;      // contains 1, 2, 3, 4
-    *    Queue b;      // contains 5, 6, 7, 8
+    *    Queue<int> a;      // contains 1, 2, 3, 4
+    *    Queue<int> b;      // contains 5, 6, 7, 8
     *    a.AddHead(b); // a now contains 5, 6, 7, 8, 1, 2, 3, 4
     *  @param queue The queue to prepend to our queue.
     *  @param startIndex Index in (queue) to start adding at.  Default to zero.
     *  @param numItems Number of items to add.  If this number is too large, it will be capped appropriately.  Default is to add all items.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddHead(const Queue<ItemType> & queue, uint32 startIndex = 0, uint32 numItems = (uint32)-1);
+   status_t AddHead(const Queue<ItemType> & queue, uint32 startIndex = 0, uint32 numItems = MUSCLE_NO_LIMIT);
 
    /** Concatenates the given array of items to the head of the Queue.
     *  The semantics are the same as for AddHead(const Queue<ItemType> &).
@@ -169,6 +169,31 @@ public:
     */
    status_t InsertItemAt(uint32 index, const ItemType & newItem = ItemType());
    
+   /** Inserts some or all of the items in (queue) at the specified position in our queue.  
+    *  Queue size grows by at most (queue.GetNumItems()).
+    *  For example:
+    *    Queue<int> a;   // contains 1, 2, 3, 4
+    *    Queue<int> b;   // contains 5, 6, 7, 8
+    *    a.InsertItemsAt(2, b); // a now contains 1, 2, 5, 6, 7, 8, 3, 4
+    *  @param queue The queue whose items are to be inserted into this queue.
+    *  @param startIndex Index in (queue) to start reading items from.  Defaults to zero.
+    *  @param numNewItems Number of items to insert.  If this number is too large, it will be capped appropriately.  Default is to add all items.
+    *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
+    */
+   status_t InsertItemsAt(uint32 index, const Queue<ItemType> & queue, uint32 startIndex = 0, uint32 numNewItems = MUSCLE_NO_LIMIT);
+
+   /** Inserts the items pointed at by (items) at the specified position in our queue.  
+    *  Queue size grows (numNewItems).
+    *  For example:
+    *    Queue<int> a;       // contains 1, 2, 3, 4
+    *    const int b[] = {5, 6, 7};
+    *    a.InsertItemsAt(2, b, ARRAYITEMS(b));  // a now contains 1, 2, 5, 6, 7, 3, 4
+    *  @param items Pointer to the items to insert into this queue.
+    *  @param numNewItems Number of items to insert.
+    *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
+    */
+   status_t InsertItemsAt(uint32 index, const ItemType * items, uint32 numNewItems);
+
    /** Removes all items from the queue. 
     *  @param releaseCachedBuffers If true, we will immediately free any buffers that we may be holding.  Otherwise
     *                              we will keep them around so that they can be re-used in the future.
@@ -316,13 +341,13 @@ public:
    status_t RemoveLastInstanceOf(const ItemType & val);
 
    /** Returns true iff the first item in our queue is equal to (prefix). */
-   bool StartsWith(const ItemType & prefix) const {return ((GetNumItems()>0)&&(Head() == prefix));}
+   bool StartsWith(const ItemType & prefix) const {return ((HasItems())&&(Head() == prefix));}
 
    /** Returns true iff the (prefixQueue) is a prefix of this queue. */
    bool StartsWith(const Queue<ItemType> & prefixQueue) const;
 
    /** Returns true iff the last item in our queue is equal to (suffix). */
-   bool EndsWith(const ItemType & suffix) const {return ((GetNumItems()>0)&&(Tail() == suffix));}
+   bool EndsWith(const ItemType & suffix) const {return ((HasItems())&&(Tail() == suffix));}
 
    /** Returns true iff the (suffixQueue) is a suffix of this queue. */
    bool EndsWith(const Queue<ItemType> & suffixQueue) const;
@@ -668,6 +693,53 @@ InsertItemAt(uint32 index, const ItemType & newItem)
       for (int32 i=((int32)_itemCount)-1; i>((int32)index); i--) ReplaceItemAt(i, *GetItemAt(i-1));
    }
    return ReplaceItemAt(index, newItem);
+}
+
+template <class ItemType>
+status_t 
+Queue<ItemType>::
+InsertItemsAt(uint32 index, const Queue<ItemType> & queue, uint32 startIndex, uint32 numNewItems)
+{
+   uint32 hisSize = queue.GetNumItems();
+   numNewItems = muscleMin(numNewItems, (startIndex < hisSize) ? (hisSize-startIndex) : 0);
+   if (numNewItems == 0) return B_NO_ERROR;
+   if (index > _itemCount) return B_ERROR;
+   if (numNewItems == 1)
+   {
+      if (index == 0)          return AddHead(queue.Head());
+      if (index == _itemCount) return AddTail(queue.Head());
+   }
+
+   uint32 oldSize = GetNumItems();
+   uint32 newSize = oldSize+numNewItems;
+
+   if (EnsureSize(newSize, true) != B_NO_ERROR) return B_ERROR;
+   for (uint32 i=index; i<oldSize; i++)           (*this)[i+numNewItems] = (*this)[i];
+   for (uint32 i=index; i<index+numNewItems; i++) (*this)[i]             = queue[startIndex++];
+   return B_NO_ERROR;
+}
+
+template <class ItemType>
+status_t 
+Queue<ItemType>::
+InsertItemsAt(uint32 index, const ItemType * items, uint32 numNewItems)
+{
+   if (numNewItems == 0) return B_NO_ERROR;
+   if (index > _itemCount) return B_ERROR;
+   if (numNewItems == 1)
+   {
+      if (index == 0)          return AddHead(*items);
+      if (index == _itemCount) return AddTail(*items);
+   }
+
+   uint32 oldSize = GetNumItems();
+   uint32 newSize = oldSize+numNewItems;
+
+   if (EnsureSize(newSize, true) != B_NO_ERROR) return B_ERROR;
+   int32 si = 0;
+   for (uint32 i=index; i<oldSize; i++)           (*this)[i+numNewItems] = (*this)[i];
+   for (uint32 i=index; i<index+numNewItems; i++) (*this)[i]             = items[si++];
+   return B_NO_ERROR;
 }
 
 template <class ItemType>

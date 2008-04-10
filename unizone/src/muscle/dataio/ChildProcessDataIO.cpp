@@ -4,33 +4,18 @@
 #include "util/MiscUtilityFunctions.h"     // for ExitWithoutCleanup()
 #include "util/NetworkUtilityFunctions.h"  // SendData() and ReceiveData()
 
-// BeOS doesn't include the tty default stuff
-#ifndef MUSCLE_AVOID_TTYDEFS
-# if defined(__BEOS__)
-#  define MUSCLE_AVOID_TTYDEFS 1
-# endif
-#endif
-
 #if defined(WIN32) || defined(__CYGWIN__)
 # include <process.h>  // for _beginthreadex()
 # define USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
 #else
-# include <errno.h>
-# include <fcntl.h>
-# include <grp.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <signal.h>
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-#ifndef TTYDEFCHARS
-# define TTYDEFCHARS 1 // to enable declaration of ttydefchars array in sys/ttydefaults.h
-#endif
+# ifdef __linux__
+#  include <pty.h>     // for forkpty() on Linux
+# else
+#  include <util.h>    // for forkpty() on MacOS/X
+# endif
 # include <termios.h>
-# include <unistd.h>
-# include <sys/ioctl.h>
+# include <signal.h>  // for SIGHUP, etc
+# include <sys/wait.h>  // for waitpid()
 #endif
 
 #include "util/NetworkUtilityFunctions.h"
@@ -38,132 +23,6 @@
 #include "util/StringTokenizer.h"
 
 BEGIN_NAMESPACE(muscle);
-
-#ifndef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
-
-static int ptym_open(char *pts_name)
-{
-#ifdef __BEOS__
-   strcpy(pts_name, "/dev/pt/");
-#else
-   strcpy(pts_name, "/dev/pty");
-#endif
-
-   int base = strlen(pts_name);
-
-   /* array index: 0123456789 (for references in following code) */
-   for (const char * ptr1 = "pqrstuvwxyzPQRST"; *ptr1 != 0; ptr1++) 
-   {
-      pts_name[base] = *ptr1;
-      for (const char * ptr2 = "0123456789abcdef"; *ptr2 != 0; ptr2++) 
-      {
-         pts_name[base+1] = *ptr2;
-         pts_name[base+2] = '\0';
-
-         /* try to open master */
-         int fdm = open(pts_name, O_RDWR);
-         if (fdm < 0) 
-         {
-            if (errno == ENOENT) return -1; /* out of pty devices */
-                            else continue;  /* try next pty device */
-         }
-
-         pts_name[5] = 't';  /* change "pty" to "tty" */
-
-         // Make sure we have permission to open the associated tty also.  Note that we can't just 
-         // open(pts_name) to see if it works, and then close it again, since that seems to break
-         // the functionality.  Apparently the tty assumes it will only be opened once?
-         struct stat s;         
-         if (stat(pts_name, &s) == 0)
-         {
-            mode_t m = s.st_mode;
-            if ((                          (m & (S_IROTH|S_IWOTH)) == (S_IROTH|S_IWOTH))  || 
-                ((getegid() == s.st_gid)&&((m & (S_IRGRP|S_IWGRP)) == (S_IRGRP|S_IWGRP))) || 
-                ((geteuid() == s.st_uid)&&((m & (S_IRUSR|S_IWUSR)) == (S_IRUSR|S_IWUSR)))) return fdm;  // success!
-         }
-         
-         pts_name[5] = 'p';  /* oops!  Change it back */
-         close(fdm);
-      }
-   }
-   return -1;      /* out of pty devices */
-}
-
-static int ptys_open(int fdm, char *pts_name)
-{
-   struct group *grptr = getgrnam("tty");
-
-   /* following two functions don't work unless we're root */
-   chown(pts_name, getuid(), grptr?grptr->gr_gid:(gid_t)-1);
-   chmod(pts_name, S_IRUSR | S_IWUSR | S_IWGRP);
-
-   int fds = open(pts_name, O_RDWR);
-   if (fds < 0) 
-   {
-      close(fdm);
-      return -1;
-   }
-   return fds;
-}
-
-static pid_t pty_fork(int *ptrfdm, char *slave_name, const struct termios *slave_termios, const struct winsize *slave_winsize, bool & success)
-{
-   success = true;
-   char pts_name[20];
-
-   int fdm = ptym_open(pts_name);
-   if (fdm < 0) 
-   {
-      LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() can't open master pty %s: (%s)\n", pts_name, strerror(errno));
-      return -1;
-   }
-   if (slave_name) strcpy(slave_name, pts_name);   /* return name of slave */
-
-   pid_t pid = fork();
-   if (pid < 0) 
-   {
-      success = false;
-      return -1;
-   }
-   else if (pid == 0) 
-   {
-      /* child */
-      if (setsid() < 0) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() setsid error: %s\n", strerror(errno));
-
-      /* SVR4 acquires controlling terminal on open() */
-      int fds = ptys_open(fdm, pts_name);
-      close(fdm);      /* all done with master in child */
-      if (fds < 0)
-      {
-         LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() can't open slave pty: %s on [%i, %s]\n", strerror(errno), fdm, pts_name);
-         success = false;
-         return 0;   // gotta return zero to indicate we are the child process!  Failure is indicated via separate success param
-      }
-       
-#if defined(TIOCSCTTY) && !defined(CIBAUD)
-      /* 44BSD way to acquire controlling terminal */
-      /* !CIBAUD to avoid doing this under SunOS */
-      if (ioctl(fds, TIOCSCTTY, (char *) 0) < 0) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() TIOCSCTTY error: %s\n", strerror(errno));
-#endif
-
-      /* set slave's termios and window size */
-      if ((slave_termios)&&(tcsetattr(fds, TCSANOW, slave_termios) < 0)) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  pty_fork() tcsetattr error on slave pty: %s\n", strerror(errno));
-      if ((slave_winsize)&&(ioctl(fds, TIOCSWINSZ,  slave_winsize) < 0)) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  TIOCSWINSZ error on slave pty: %s\n", strerror(errno));
-
-      /* slave becomes stdin/stdout/stderr of child */
-      if (dup2(fds, STDIN_FILENO)  != STDIN_FILENO)  LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  dup2 error to stdin: %s\n", strerror(errno));
-      if (dup2(fds, STDOUT_FILENO) != STDOUT_FILENO) LogTime(MUSCLE_LOG_ERROR, "ChildProcessDataIO:  dup2 error to stdout: %s\n", strerror(errno));
-      if (fds > STDERR_FILENO) close(fds);
-      return 0;      /* child returns 0 just like fork() */
-   }
-   else 
-   {
-      /* parent */
-      *ptrfdm = fdm; /* return fd of master */
-      return pid;    /* parent returns pid of child */
-   }
-}
-#endif
 
 ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true)
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
@@ -268,7 +127,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
                   const char ** argv = (const char **) args;
                   for (int i=0; i<argc; i++)
                   {
-                     if ((cmd.Length() > 0)&&(cmd.EndsWith(" ") == false)) cmd += ' ';
+                     if ((cmd.HasChars())&&(cmd.EndsWith(" ") == false)) cmd += ' ';
                      cmd += argv[i];
                   }
                }
@@ -302,41 +161,28 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
    Close();  // free all allocated object state we may have
    return B_ERROR;
 #else
-   bool okay = false;
-
-   struct termios orig_termios;
-   struct winsize size;
-   if (tcgetattr(STDIN_FILENO, &orig_termios) < 0)
-   {  
-      // Fill in reasonable default values so that this can still work...
-      // Note that I got these values empirically by running wtrxd from the shell...
-      memset(&orig_termios, 0, sizeof(orig_termios));
-#ifndef MUSCLE_AVOID_TTYDEFS
-      orig_termios.c_iflag = TTYDEF_IFLAG;
-      orig_termios.c_oflag = TTYDEF_OFLAG;
-      orig_termios.c_lflag = TTYDEF_LFLAG;
-      orig_termios.c_cflag = TTYDEF_CFLAG;
-      for (uint32 i=0; i<ARRAYITEMS(orig_termios.c_cc); i++) orig_termios.c_cc[i] = 0;
-      for (uint32 j=0; j<ARRAYITEMS(ttydefchars); j++) orig_termios.c_cc[j] = ttydefchars[j];
-#endif
-   }
-   if (ioctl(STDIN_FILENO, TIOCGWINSZ, (char *) &size) < 0) memset(&size, 0, sizeof(size));
-
-   int ptySock;
-   bool success;
-   pid_t pid = pty_fork(&ptySock, NULL, &orig_termios, &size, success);
-        if (pid < 0) return -1;  // fork failure!
+   
+   int masterFD;
+   pid_t pid = forkpty(&masterFD, NULL, NULL, NULL);
+        if (pid < 0) return B_ERROR;  // fork failure!
    else if (pid == 0)
    {
+      // we are the child process
+      int ret = 20;
       (void) signal(SIGHUP, SIG_DFL);  // FogBugz #2918
 
-      // we are the child process -- turn off echo and execute the command
-      struct termios stermios; 
-      if (tcgetattr(STDIN_FILENO, &stermios) < 0) LogTime(MUSCLE_LOG_DEBUG, "tcgetattr error: %s\n", strerror(errno)); 
-      stermios.c_lflag &= ~(ECHO | ECHOE | ECHOK | ECHONL); 
-      stermios.c_oflag &= ~(ONLCR); /* also turn off NL to CR/NL mapping on output */ 
-      if (tcsetattr(STDIN_FILENO, TCSANOW, &stermios) < 0) LogTime(MUSCLE_LOG_DEBUG, "tcsetattr error: %s\n", strerror(errno));
-      if (dup2(STDOUT_FILENO, STDERR_FILENO) < 0) LogTime(MUSCLE_LOG_DEBUG, "dup2() error: %s\n", strerror(errno));
+      // Close any file descriptors leftover from the parent process
+      int fdlimit = sysconf(_SC_OPEN_MAX);
+      for (int i=STDERR_FILENO+1; i<fdlimit; i++) close(i);
+
+      // Turn off the echo, we don't want to see that back on stdout
+      struct termios tios;
+      if (tcgetattr(STDIN_FILENO, &tios) >= 0)
+      {
+         tios.c_lflag &= ~(ECHO | ECHOE | ECHOK | ECHONL);
+         tios.c_oflag &= ~(ONLCR); /* also turn off NL to CR/NL mapping on output */
+         (void) tcsetattr(STDIN_FILENO, TCSANOW, &tios);
+      }
 
       if (argc < 0) 
       {
@@ -344,7 +190,6 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
          // process, which means that the parent process tries
          // to kill the wrong _childPID.  We need to have it all
          // execute in _this_ process, which means we gotta use exec()!
-         int ret = 20;
          Queue<String> argv;
          if (ParseLine((const char *)args, argv) == B_NO_ERROR)
          {
@@ -359,7 +204,6 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
                delete [] newArgv;  // only executed if execvp() fails
             }
          }
-         ExitWithoutCleanup(ret);
       }
       else
       {
@@ -368,29 +212,28 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
          if (newArgv)
          {
             memcpy(newArgv, argv, argc*sizeof(char *));
-            newArgv[argc] = NULL;   // make sure it's terminated!
+            newArgv[argc] = NULL;   // make sure the array is terminated!
             ChildProcessReadyToRun();
-            int ret = execvp(argv[0], newArgv);
+            ret = execvp(argv[0], newArgv);
             delete [] newArgv;  // only executed if execvp() fails
-            ExitWithoutCleanup(ret);
          }
-	 else ExitWithoutCleanup(20);  // oopsie!
+         else ret = 20;
       }
+      ExitWithoutCleanup(ret);
    }
    else
    {
       // we are the parent process
       _childPID = pid;
-      _handle = GetSocketRefFromPool(ptySock);
-      SetSocketBlockingEnabled(_handle, _blocking);
-      okay = (_handle() != NULL);
+      _handle = GetSocketRefFromPool(masterFD);
+      if (_handle()) return SetSocketBlockingEnabled(_handle, _blocking);
+      else
+      {
+         close(masterFD);
+         Close();
+      }
    }
-   if (okay) return B_NO_ERROR;
-   else
-   {
-      Close();
-      return B_ERROR;
-   }
+   return B_ERROR;
 #endif
 }
 

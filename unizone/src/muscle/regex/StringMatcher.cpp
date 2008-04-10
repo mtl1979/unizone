@@ -101,7 +101,7 @@ status_t StringMatcher::SetPattern(const String & s, bool isSimple)
    // And compile the new one
    if (_rangeMin == MUSCLE_NO_LIMIT)
    {
-      _regExpValid = (regcomp(&_regExp, (regexPattern.Length() > 0) ? regexPattern.Cstr() : str, REG_EXTENDED) == 0);
+      _regExpValid = (regcomp(&_regExp, (regexPattern.HasChars()) ? regexPattern.Cstr() : str, REG_EXTENDED) == 0);
       return _regExpValid ? B_NO_ERROR : B_ERROR;
    }
    else return B_NO_ERROR;  // for range queries, we don't need a valid regex

@@ -39,6 +39,30 @@ ReflectSessionFactory :: ReflectSessionFactory()
    _id = GetNextGlobalID(_factoryIDCounter);
 }
 
+status_t ProxySessionFactory :: AttachedToServer()
+{
+   if (ReflectSessionFactory::AttachedToServer() != B_NO_ERROR) return B_ERROR;
+
+   status_t ret = B_NO_ERROR;
+   if (_slaveRef())
+   {
+      _slaveRef()->SetOwner(GetOwner());
+      ret = _slaveRef()->AttachedToServer();
+      if (ret != B_NO_ERROR) _slaveRef()->SetOwner(NULL);
+   }
+   return ret;
+}
+
+void ProxySessionFactory :: AboutToDetachFromServer()
+{
+   if (_slaveRef())
+   {
+      _slaveRef()->AboutToDetachFromServer();
+      _slaveRef()->SetOwner(NULL);
+   }
+   ReflectSessionFactory::AboutToDetachFromServer();
+}
+
 AbstractReflectSession ::
 AbstractReflectSession() : _sessionID(GetNextGlobalID(_sessionIDCounter)), _connectingAsync(false), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER), _autoReconnectDelay(MUSCLE_TIME_NEVER), _reconnectTime(MUSCLE_TIME_NEVER), _wasConnected(false)
 {
@@ -218,7 +242,7 @@ AbstractReflectSession ::
 ReplaceSession(const AbstractReflectSessionRef & replaceMeWithThis)
 {
    MASSERT(IsAttachedToServer(), "Can't call ReplaceSession() while not attached to the server");
-   return _owner->ReplaceSession(replaceMeWithThis, this);
+   return GetOwner()->ReplaceSession(replaceMeWithThis, this);
 }
 
 void
@@ -226,7 +250,7 @@ AbstractReflectSession ::
 EndSession()
 {
    MASSERT(IsAttachedToServer(), "Can't call EndSession() while not attached to the server");
-   _owner->EndSession(this);
+   GetOwner()->EndSession(this);
 }
 
 bool
@@ -234,7 +258,7 @@ AbstractReflectSession ::
 DisconnectSession()
 {
    MASSERT(IsAttachedToServer(), "Can't call DisconnectSession() while not attached to the server");
-   return _owner->DisconnectSession(this);
+   return GetOwner()->DisconnectSession(this);
 }
 
 String

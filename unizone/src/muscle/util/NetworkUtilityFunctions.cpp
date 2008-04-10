@@ -185,6 +185,16 @@ int32 ReceiveData(const SocketRef & sock, void * buffer, uint32 size, bool bm)
    return (fd >= 0) ? ConvertReturnValueToMuscleSemantics(recv(fd, (char *)buffer, size, 0L), size, bm) : -1;
 }
 
+int32 ReadData(const SocketRef & sock, void * buffer, uint32 size, bool bm)
+{
+#ifdef WIN32
+   return ReceiveData(sock, buffer, size, bm);  // Windows doesn't support read(), only recv()
+#else
+   int fd = sock.GetFileDescriptor();
+   return (fd >= 0) ? ConvertReturnValueToMuscleSemantics(read(fd, (char *)buffer, size), size, bm) : -1;
+#endif
+}
+
 int32 ReceiveDataUDP(const SocketRef & sock, void * buffer, uint32 size, bool bm, ip_address * optFromIP, uint16 * optFromPort)
 {
    int fd = sock.GetFileDescriptor();
@@ -214,6 +224,16 @@ int32 SendData(const SocketRef & sock, const void * buffer, uint32 size, bool bm
 {
    int fd = sock.GetFileDescriptor();
    return (fd >= 0) ? ConvertReturnValueToMuscleSemantics(send(fd, (const char *)buffer, size, 0L), size, bm) : -1;
+}
+
+int32 WriteData(const SocketRef & sock, const void * buffer, uint32 size, bool bm)
+{
+#ifdef WIN32
+   return SendData(sock, buffer, size, bm);  // Windows doesn't support write(), only send()
+#else
+   int fd = sock.GetFileDescriptor();
+   return (fd >= 0) ? ConvertReturnValueToMuscleSemantics(write(fd, (const char *)buffer, size), size, bm) : -1;
+#endif
 }
 
 int32 SendDataUDP(const SocketRef & sock, const void * buffer, uint32 size, bool bm, const ip_address & optToIP, uint16 optToPort)
@@ -706,7 +726,7 @@ static ip_address SockAddrToIPAddr(struct sockaddr * a)
 }
 #endif
 
-status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results)
+status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool includeLocalhost)
 {
 #if defined(USE_GETIFADDRS)
    /////////////////////////////////////////////////////////////////////////////////////////////
@@ -729,12 +749,15 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results)
             ip_address ifaAddr  = SockAddrToIPAddr(p->ifa_addr);
             ip_address maskAddr = SockAddrToIPAddr(p->ifa_netmask);
             ip_address dstAddr  = SockAddrToIPAddr(p->ifa_broadaddr);
-            if ((ifaAddr != invalidIP)&&(results.AddTail(NetworkInterfaceInfo(p->ifa_name, "", ifaAddr, maskAddr, dstAddr)) != B_NO_ERROR))
+            if ((ifaAddr != invalidIP)&&((includeLocalhost)||(ifaAddr != localhostIP)))
             {
-               ret = B_ERROR;  // out of memory!?
-               break;
+               if (results.AddTail(NetworkInterfaceInfo(p->ifa_name, "", ifaAddr, maskAddr, dstAddr)) != B_NO_ERROR)
+               {
+                  ret = B_ERROR;  // out of memory!?
+                  break;
+               }
             }
-            else p = p->ifa_next;
+            p = p->ifa_next;
          }
       }
       freeifaddrs(ifap);
@@ -833,10 +856,13 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results)
          uint32 netmask = ntohl(row.dwMask);
          uint32 baddr   = ipAddr & netmask;
          if (row.dwBCastAddr) baddr |= ~netmask;
-         if (results.AddTail(NetworkInterfaceInfo(name, desc?desc:"", ipAddr, netmask, baddr)) != B_NO_ERROR)
+         if ((includeLocalhost)||(ipAddr != localhostIP))
          {
-            ret = B_ERROR;
-            break;
+            if (results.AddTail(NetworkInterfaceInfo(name, desc?desc:"", ipAddr, netmask, baddr)) != B_NO_ERROR)
+            {
+               ret = B_ERROR;
+               break;
+            }
          }
       }
 

@@ -76,16 +76,16 @@ public:
    /** Returns true iff any indices in this object are not equal to their counterparts in (rhs). */
    bool operator !=(const Tuple & rhs) const {return !(*this == rhs);}
 
-   /** Comparison Operator.  Returns true if this string comes before (rhs) lexically. */
+   /** Comparison Operator.  Returns true if this tuple comes before (rhs) lexically. */
    bool operator < (const Tuple &rhs) const {if (this != &rhs) {for (int i=0; i<NumItems; i++) {if (_items[i] < rhs._items[i]) return true; if (_items[i] > rhs._items[i]) return false;}} return false;}
 
-   /** Comparison Operator.  Returns true if this string comes after (rhs) lexically. */
+   /** Comparison Operator.  Returns true if this tuple comes after (rhs) lexically. */
    bool operator > (const Tuple &rhs) const {if (this != &rhs) {for (int i=0; i<NumItems; i++) {if (_items[i] > rhs._items[i]) return true; if (_items[i] < rhs._items[i]) return false;}} return false;}
 
-   /** Comparison Operator.  Returns true if the two strings are equal, or this string comes before (rhs) lexically. */
+   /** Comparison Operator.  Returns true if the two tuple are equal, or this tuple comes before (rhs) lexically. */
    bool operator <=(const Tuple &rhs) const {return !(*this > rhs);}
 
-   /** Comparison Operator.  Returns true if the two strings are equal, or this string comes after (rhs) lexically. */
+   /** Comparison Operator.  Returns true if the two tuple are equal, or this tuple comes after (rhs) lexically. */
    bool operator >=(const Tuple &rhs) const {return !(*this < rhs);}
 
    /** Read-write array operator (not bounds-checked) */

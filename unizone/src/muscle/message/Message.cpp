@@ -95,6 +95,10 @@ public:
    // Returns the number of items currently in the array
    virtual uint32 GetNumItems() const = 0;
 
+   // Convenience methods
+   bool HasItems() const {return (GetNumItems()>0);}
+   bool IsEmpty() const {return (GetNumItems()==0);}
+
    // Returns a 32-bit checksum for this array
    virtual uint32 CalculateChecksum(bool countNonFlattenableFields) const = 0;
 
@@ -1683,7 +1687,7 @@ status_t Message :: RemoveData(const String &name, uint32 index)
    if (array) 
    {
       status_t ret = array->RemoveDataItem(index);
-      return (array->GetNumItems() == 0) ? RemoveName(name) : ret;
+      return (array->IsEmpty()) ? RemoveName(name) : ret;
    }
    else return B_ERROR;
 }

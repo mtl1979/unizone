@@ -24,7 +24,7 @@ static status_t WriteZipFileAux(zipFile zf, const String & baseName, const Messa
          case B_MESSAGE_TYPE:
          {
             String newBaseName = baseName;
-            if ((newBaseName.Length()>0)&&(newBaseName.EndsWith('/') == false)) newBaseName += '/';
+            if ((newBaseName.HasChars())&&(newBaseName.EndsWith('/') == false)) newBaseName += '/';
             newBaseName += *fn;
 
             // Message fields we treat as sub-directories   
@@ -36,7 +36,7 @@ static status_t WriteZipFileAux(zipFile zf, const String & baseName, const Messa
          case B_RAW_TYPE:
          {
             String fileName = baseName;
-            if ((fileName.Length()>0)&&(fileName.EndsWith('/') == false)) fileName += '/';
+            if ((fileName.HasChars())&&(fileName.EndsWith('/') == false)) fileName += '/';
             fileName += *fn;
 
             const void * data;

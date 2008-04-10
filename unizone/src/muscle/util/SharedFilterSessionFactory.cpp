@@ -7,7 +7,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
-SharedFilterSessionFactory :: SharedFilterSessionFactory(const ReflectSessionFactoryRef & slaveRef, const String & sharedMemName, bool isGrantList, bool defaultPass) : _slaveRef(slaveRef), _sharedMemName(sharedMemName), _isGrantList(isGrantList), _defaultPass(defaultPass)
+SharedFilterSessionFactory :: SharedFilterSessionFactory(const ReflectSessionFactoryRef & slaveRef, const String & sharedMemName, bool isGrantList, bool defaultPass) : ProxySessionFactory(slaveRef), _sharedMemName(sharedMemName), _isGrantList(isGrantList), _defaultPass(defaultPass)
 {
    // empty
 }
@@ -20,7 +20,7 @@ SharedFilterSessionFactory :: ~SharedFilterSessionFactory()
 AbstractReflectSessionRef SharedFilterSessionFactory :: CreateSession(const String & clientIP, const IPAddressAndPort & iap)
 {
    TCHECKPOINT;
-   return ((_slaveRef())&&(IsAccessAllowedForIP(_sharedMemName, Inet_AtoN(clientIP()), _isGrantList, _defaultPass))) ? _slaveRef()->CreateSession(clientIP, iap) : AbstractReflectSessionRef();
+   return ((GetSlave()())&&(IsAccessAllowedForIP(_sharedMemName, Inet_AtoN(clientIP()), _isGrantList, _defaultPass))) ? GetSlave()()->CreateSession(clientIP, iap) : AbstractReflectSessionRef();
 }
 
 bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMemName, const ip_address & ip, bool isGrantList, bool defaultPass)
@@ -58,7 +58,7 @@ bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMem
                bool matchedLocal = false;
                for (uint32 j=0; j<ifs.GetNumItems(); j++)
                {
-                  if (ifs[i].GetLocalAddress() == ip)
+                  if (ifs[j].GetLocalAddress() == ip)
                   {
                      allowAccess = isGrantList;
                      matchedLocal = true;

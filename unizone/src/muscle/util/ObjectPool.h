@@ -14,7 +14,7 @@ BEGIN_NAMESPACE(muscle);
 //#define DISABLE_OBJECT_POOLING 1
 
 #ifndef MUSCLE_POOL_SLAB_SIZE
-# define MUSCLE_POOL_SLAB_SIZE (8*1024)
+# define MUSCLE_POOL_SLAB_SIZE (4*1024)  // let's have each slab fit nicely into a 4KB page
 #endif
 
 /** An interface that must be implemented by all ObjectPool classes.
@@ -384,7 +384,6 @@ private:
       // Note that _prev and _next are deliberately not set here... we don't use them until we are added to the list
       ObjectSlab(ObjectPool * pool) : _pool(pool), _firstFreeNode(NULL), _numNodesInUse(0)
       {
-//printf("ObjectSlab this=%p pool=%p NOPS=%u sizeof(obj)=%u sizeof(this)=%u\n", this, _pool, NUM_OBJECTS_PER_SLAB, sizeof(_nodes[0]), sizeof(*this));
          for (int32 i=0; i<NUM_OBJECTS_PER_SLAB; i++)
          {
             ObjectNode * n = &_nodes[i];

@@ -397,7 +397,7 @@ void DataNode :: PrintToStream(uint32 maxRecursionDepth, int indentLevel) const
 {
    PrintIndent(indentLevel);
    String np; (void) GetNodePath(np);
-   printf("DataNode [%s] numChildren="UINT32_FORMAT_SPEC" orderedIndex=%li checksum="UINT32_FORMAT_SPEC" msgChecksum="UINT32_FORMAT_SPEC"\n", np(), _children?_children->GetNumItems():0, _orderedIndex?(int32)_orderedIndex->GetNumItems():(int32)-1, CalculateChecksum(maxRecursionDepth), _data()?_data()->CalculateChecksum():0);
+   printf("DataNode [%s] numChildren="UINT32_FORMAT_SPEC" orderedIndex="INT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC" msgChecksum="UINT32_FORMAT_SPEC"\n", np(), _children?_children->GetNumItems():0, _orderedIndex?(int32)_orderedIndex->GetNumItems():(int32)-1, CalculateChecksum(maxRecursionDepth), _data()?_data()->CalculateChecksum():0);
    if (_data()) _data()->PrintToStream(true, indentLevel+1);
    if (maxRecursionDepth > 0)
    {

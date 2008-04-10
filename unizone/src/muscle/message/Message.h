@@ -225,7 +225,7 @@ public:
    bool HasNames(uint32 type = B_ANY_TYPE) const {return (CountNames(type) > 0);}
 
    /** @return true iff there are no fields in this Message. */
-   bool IsEmpty() const {return (_entries.GetNumItems() == 0);}
+   bool IsEmpty() const {return (_entries.IsEmpty());}
 
    /** Prints debug info describing the contents of this Message to stdout. 
      * @param recursive if true, we will call PrintToStream() recursively on any held messages also.   Defaults to true.

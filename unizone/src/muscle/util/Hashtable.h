@@ -797,6 +797,34 @@ public:
       return e ? &e->_value : NULL;
    }
 
+   /** Similar to Get(), except that if the specified key is not found,
+     * the ValueType's default value is returned.  Note that this method
+     * returns its result by value, not by reference.
+     * @param key The key whose value should be returned.
+     * @returns (key)'s associated value, or the default ValueType value.
+     */
+   ValueType GetWithDefault(const KeyType & key) const
+   {
+      const ValueType * v = Get(key);
+      return v ? *v : ValueType();
+   }
+
+   /** Similar to Get(), except that if the specified key is not found,
+     * the specified default value is returned.  Note that this method
+     * returns its value by value, not by reference, to avoid any
+     * dangling-reference issues that might occur if (defaultValue)
+     * was a temporary.
+     * @param key The key whose value should be returned.
+     * @param defaultValue The value to return is (key) is not in the table.
+     *                     Defaults to a default-constructed item of the value type.
+     * @returns (key)'s associated value, or (defaultValue).
+     */
+   ValueType GetWithDefault(const KeyType & key, const ValueType & defaultValue) const
+   {
+      const ValueType * v = Get(key);
+      return v ? *v : defaultValue;
+   }
+
    /** Places the given (key, value) mapping into the table.  Any previous entry with a key of (key) will be replaced. 
     *  (average O(1) insertion time, unless auto-sorting is enabled, in which case it becomes O(N) insertion time for
     *  keys that are not already in the table)

@@ -206,7 +206,7 @@ int32 RS232DataIO :: Read(void *buf, uint32 len)
          return ret;
       }
 #else
-      return ReceiveData(_handle, buf, len, _blocking);
+      return ReadData(_handle, buf, len, _blocking);
 #endif
    }
    return -1;
@@ -229,7 +229,7 @@ int32 RS232DataIO :: Write(const void *buf, uint32 len)
          return ret;
       }
 #else
-      return SendData(_handle, buf, len, _blocking);
+      return WriteData(_handle, buf, len, _blocking);
 #endif
    }
    return -1;

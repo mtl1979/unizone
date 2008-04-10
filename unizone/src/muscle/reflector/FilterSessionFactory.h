@@ -15,7 +15,7 @@ BEGIN_NAMESPACE(muscle);
   * (if there are any require patterns)  For IP addresses that don't match a pattern, 
   * the request is passed through to the held factory.
   */
-class FilterSessionFactory : public ReflectSessionFactory
+class FilterSessionFactory : public ProxySessionFactory
 {
 public:
    /** Constructor.
@@ -99,7 +99,6 @@ public:
    uint32 GetTotalMaxSessions() const {return _totalMaxSessions;}
 
 private:
-   ReflectSessionFactoryRef _slaveRef;
    Hashtable<String, StringMatcherRef> _bans;
    Hashtable<String, StringMatcherRef> _requires;
    AbstractReflectSession * _tempLogFor;

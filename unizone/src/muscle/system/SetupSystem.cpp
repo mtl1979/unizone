@@ -535,6 +535,11 @@ void AbstractObjectRecycler :: GlobalFlushAllCachedObjects()
    if (m) m->Unlock();
 }
 
+CompleteSetupSystem :: CompleteSetupSystem(bool muscleSingleThreadOnly) : _threads(muscleSingleThreadOnly) 
+{
+   // empty
+}
+
 CompleteSetupSystem :: ~CompleteSetupSystem()
 {
    AbstractObjectRecycler::GlobalFlushAllCachedObjects();
@@ -748,12 +753,62 @@ int UInt64CompareFunc(const uint64 & i1, const uint64 & i2, void *) {return musc
 int FloatCompareFunc( const float  & i1, const float  & i2, void *) {return muscleCompare(i1, i2);}
 int DoubleCompareFunc(const double & i1, const double & i2, void *) {return muscleCompare(i1, i2);}
 
-void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc)
+static void FlushAsciiChars(int idx, char * ascBuf, char * hexBuf, uint32 count, uint32 numColumns)
 {
-   if (optDesc) printf("%s: ", optDesc);
-   const uint8 * b = (const uint8 *) bytes;
-   for (uint32 i=0; i<numBytes; i++) printf("%s%02x", (i==0)?"[":" ", b[i]);
-   printf("]\n");
+   while(count<numColumns) ascBuf[count++] = ' ';
+   ascBuf[count] = '\0';
+   printf("%04i: %s [%s]\n", idx, ascBuf, hexBuf);
+   hexBuf[0] = '\0';
 }
+
+void PrintHexBytes(const void * vbuf, uint32 numBytes, const char * optDesc, uint32 numColumns)
+{
+   const uint8 * buf = (const uint8 *) vbuf;
+
+   if (numColumns == 0)
+   {
+      // A simple, single-line format
+      if (optDesc) printf("%s: ", optDesc);
+      printf("[");
+      for (uint32 i=0; i<numBytes; i++) printf("%s%02x", (i==0)?"":" ", buf[i]);
+      printf("]\n");
+   }
+   else
+   {
+      // A more useful columnar format with ASCII sidebar
+      char headBuf[256]; 
+      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      printf("%s", headBuf);
+
+      const int hexBufSize = (numColumns*8)+1;
+      int numDashes = 8+(4*numColumns)-strlen(headBuf);
+      for (int i=0; i<numDashes; i++) putchar('-');
+      putchar('\n');
+      char * ascBuf = newnothrow_array(char, numColumns+1);
+      char * hexBuf = newnothrow_array(char, hexBufSize);
+      if ((ascBuf)&&(hexBuf))
+      {
+         ascBuf[0] = hexBuf[0] = '\0';
+
+         uint32 idx = 0;
+         while(idx<numBytes)
+         {
+            uint8 c = buf[idx];
+            ascBuf[idx%numColumns] = muscleInRange(c,(uint8)' ',(uint8)'~')?c:'.';
+            char temp[8]; sprintf(temp, "%s%02x", ((idx%numColumns)==0)?"":" ", (unsigned int)(((uint32)buf[idx])&0xFF));
+            strncat(hexBuf, temp, hexBufSize);
+            idx++;
+            if ((idx%numColumns) == 0) FlushAsciiChars(idx-numColumns, ascBuf, hexBuf, numColumns, numColumns);
+         }
+         uint32 leftovers = (numBytes%numColumns);
+         if (leftovers > 0) FlushAsciiChars(numBytes-leftovers, ascBuf, hexBuf, leftovers, numColumns);
+      }
+      else WARN_OUT_OF_MEMORY;
+
+      delete [] ascBuf;
+      delete [] hexBuf;
+   }
+}
+
 
 END_NAMESPACE(muscle);

@@ -16,7 +16,7 @@ BEGIN_NAMESPACE(muscle);
   * or just return NULL will be made based on whether the requesting client's IP
   * address is present in that shared memory area (as a ip_address).
   */
-class SharedFilterSessionFactory : public ReflectSessionFactory
+class SharedFilterSessionFactory : public ProxySessionFactory
 {
 public:
    /** Constructor.
@@ -64,7 +64,6 @@ public:
    static bool IsAccessAllowedForIP(const String & sharedMemName, const ip_address & ip, bool isGrantList, bool defaultPass);
 
 private:
-   ReflectSessionFactoryRef _slaveRef;
    String _sharedMemName;
    bool _isGrantList;
    bool _defaultPass;

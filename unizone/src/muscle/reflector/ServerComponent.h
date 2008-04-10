@@ -80,6 +80,12 @@ public:
    /** Returns true if we are attached to the ReflectServer object, false if we are not.  */
    bool IsAttachedToServer() const {return (_owner != NULL);}
 
+   /** Returns the ReflectServer we are currently attached to, or NULL if we aren't currently attached to a ReflectServer. */
+   ReflectServer * GetOwner() const {return _owner;}
+
+   /** Sets the ReflectServer we are currently attached to.  Don't call this if you don't know what you are doing. */
+   void SetOwner(ReflectServer * s) {_owner = s;}
+
 protected:
    /** Returns the number of milliseconds that the server has been running. */
    uint64 GetServerUptime() const;
@@ -191,9 +197,7 @@ such factory exists. */
    ReflectSessionFactoryRef GetFactory(uint16) const;         
 
 private:
-   friend class ReflectServer;
-   friend class AbstractReflectSession;
-   ReflectServer * _owner;  // set directly by the ReflectServer.
+   ReflectServer * _owner;
 };
 
 END_NAMESPACE(muscle);

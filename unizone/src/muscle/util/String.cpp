@@ -131,7 +131,7 @@ String::operator<<(bool rhs)
 void
 String::Reverse()
 {
-   if ((_buffer)&&(Length() > 0))
+   if ((_buffer)&&(HasChars()))
    {
       uint32 from = 0;
       uint32 to = Length()-1;
@@ -164,7 +164,7 @@ String::Replace(const String & replaceMe, const String & withMe)
 {
    TCHECKPOINT;
 
-   if (replaceMe.Length() == 0) return -1;  // can't replace an empty string, that's silly!
+   if (replaceMe.IsEmpty()) return -1;  // can't replace an empty string, that's silly!
    if (replaceMe == withMe) return GetNumInstancesOf(replaceMe);  // no changes necessary!
 
    String temp;
@@ -266,7 +266,7 @@ String::LastIndexOf(const String &s2, uint32 fromIndex) const
 {
    TCHECKPOINT;
 
-   if (s2.Length() == 0) return Length()-1;
+   if (s2.IsEmpty()) return Length()-1;
    if (fromIndex >= Length()) return -1;
    for (int i=fromIndex; i>=0; i--) if (strncmp(Cstr()+i, s2.Cstr(), s2.Length()) == 0) return i;
    return -1;
@@ -340,7 +340,7 @@ uint32 String :: GetNumInstancesOf(const String & substring) const
    TCHECKPOINT;
 
    uint32 ret = 0;
-   if (substring.Length() > 0)
+   if (substring.HasChars())
    {
       uint32 lastIdx = 0;
       int32 idx;
@@ -383,7 +383,7 @@ String String :: Prepend(const String & str, uint32 count) const
    {
       char * b = ret._buffer;
 
-      if (str.Length() > 0)
+      if (str.HasChars())
       {
          for (uint32 i=0; i<count; i++)
          {
@@ -391,7 +391,7 @@ String String :: Prepend(const String & str, uint32 count) const
             b += str.Length();
          }
       }
-      if (Length() > 0)
+      if (HasChars())
       {
          memcpy(b, Cstr(), Length()); 
          b += Length();
@@ -425,7 +425,7 @@ String String :: Prepend(const char * str, uint32 count) const
                b += sLen;
             }
          }
-         if (Length() > 0)
+         if (HasChars())
          {
             memcpy(b, Cstr(), Length()); 
             b += Length();
@@ -446,12 +446,12 @@ String String :: Append(const String & str, uint32 count) const
    if (ret.Prealloc(newLen) == B_NO_ERROR)
    {
       char * b = ret._buffer;
-      if (Length() > 0)
+      if (HasChars())
       {
          memcpy(b, Cstr(), Length()); 
          b += Length();
       }
-      if (str.Length() > 0)
+      if (str.HasChars())
       {
          for (uint32 i=0; i<count; i++)
          {
@@ -479,7 +479,7 @@ String String :: Append(const char * str, uint32 count) const
       if (ret.Prealloc(newLen) == B_NO_ERROR)
       {
          char * b = ret._buffer;
-         if (Length() > 0)
+         if (HasChars())
          {
             memcpy(b, Cstr(), Length()); 
             b += Length();

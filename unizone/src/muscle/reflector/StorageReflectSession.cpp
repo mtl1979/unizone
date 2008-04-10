@@ -381,7 +381,7 @@ SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwri
    DataNode * node = _sessionDir();
    if (node == NULL) return B_ERROR;
  
-   if ((nodePath.Length() > 0)&&(nodePath[0] != '/'))
+   if ((nodePath.HasChars())&&(nodePath[0] != '/'))
    {
       int prevSlashPos = -1;
       int slashPos = 0;
@@ -402,7 +402,7 @@ SetDataNode(const String & nodePath, const MessageRef & dataMsgRef, bool overwri
                   childNodeRef = allocedNode;
                   if ((slashPos < 0)&&(addToIndex))
                   {
-                     if (node->InsertOrderedChild(dataMsgRef, optInsertBefore, (nextClause.Length()>0)?&nextClause:NULL, this, quiet?NULL:this, NULL) == B_NO_ERROR)
+                     if (node->InsertOrderedChild(dataMsgRef, optInsertBefore, (nextClause.HasChars())?&nextClause:NULL, this, quiet?NULL:this, NULL) == B_NO_ERROR)
                      {
                         _currentNodeCount++;
                         _indexingPresent = true;
@@ -830,7 +830,7 @@ status_t StorageReflectSession :: FindMatchingSessions(const String & nodePath, 
 
    status_t ret = B_NO_ERROR;
 
-   if (nodePath.Length() > 0)
+   if (nodePath.HasChars())
    {
       const char * s;
       String temp;
@@ -866,7 +866,7 @@ status_t StorageReflectSession :: SendMessageToMatchingSessions(const MessageRef
 {
    TCHECKPOINT;
 
-   if (nodePath.Length() > 0)
+   if (nodePath.HasChars())
    {
       const char * s;
       String temp;
@@ -1110,7 +1110,7 @@ GetSubtreesCallback(DataNode & node, void * ud)
    {
       MessageRef subMsg = GetMessageFromPool();
       String nodePath;
-      if ((subMsg() == NULL)||(node.GetNodePath(nodePath) != B_NO_ERROR)||(reply->AddMessage(nodePath, subMsg) != B_NO_ERROR)||(SaveNodeTreeToMessage(*subMsg(), &node, "", true, (maxDepth>=0)?(uint32)maxDepth:MUSCLE_NO_LIMIT) != B_NO_ERROR)) return 0;
+      if ((subMsg() == NULL)||(node.GetNodePath(nodePath) != B_NO_ERROR)||(reply->AddMessage(nodePath, subMsg) != B_NO_ERROR)||(SaveNodeTreeToMessage(*subMsg(), &node, "", true, (maxDepth>=0)?(uint32)maxDepth:MUSCLE_NO_LIMIT, NULL) != B_NO_ERROR)) return 0;
    }
    return node.GetDepth();  // continue traversal as usual
 }
@@ -1550,14 +1550,13 @@ JettisonOutgoingResults(const NodePathMatcher * matcher)
 }
 
 status_t
-StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const String & destPath, bool allowOverwriteData, bool allowCreateNode, bool quiet, bool addToTargetIndex, const String * optInsertBefore, MessageReplaceFunc optFunc, void * funcArg)
+StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const String & destPath, bool allowOverwriteData, bool allowCreateNode, bool quiet, bool addToTargetIndex, const String * optInsertBefore, const ITraversalPruner * optPruner)
 {
    TCHECKPOINT;
 
-   // First clone the given node, using optional message-payload-replacement callback
    {
       MessageRef payload = node.GetData();
-      if (optFunc) payload = optFunc(destPath, payload, funcArg);
+      if ((optPruner)&&(optPruner->MatchPath(destPath, payload) == false)) return B_NO_ERROR;
       if ((payload() == NULL)||(SetDataNode(destPath, payload, allowOverwriteData, allowCreateNode, quiet, addToTargetIndex, optInsertBefore) != B_NO_ERROR)) return B_ERROR;
    }
 
@@ -1569,7 +1568,7 @@ StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const Strin
    {
       // Note that we don't deal with the index-cloning here; we do it separately (below) instead, for efficiency
       const DataNode * child = nextChild();
-      if ((child)&&(CloneDataNodeSubtree(*child, destPath+'/'+(*nextChildName), false, true, quiet, false, NULL, optFunc, funcArg) != B_NO_ERROR)) return B_ERROR;
+      if ((child)&&(CloneDataNodeSubtree(*child, destPath+'/'+(*nextChildName), false, true, quiet, false, NULL, optPruner) != B_NO_ERROR)) return B_ERROR;
    }
 
    // Lastly, if he has an index, make sure the clone ends up with an equivalent index
@@ -1590,11 +1589,15 @@ StorageReflectSession :: CloneDataNodeSubtree(const DataNode & node, const Strin
 
 // Recursive helper function
 status_t
-StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * node, const String & path, bool saveData, uint32 maxDepth) const
+StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * node, const String & path, bool saveData, uint32 maxDepth, const ITraversalPruner * optPruner) const
 {
    TCHECKPOINT;
 
-   if ((saveData)&&(msg.AddMessage(PR_NAME_NODEDATA, node->GetData()) != B_NO_ERROR)) return B_NO_ERROR;
+   {
+      MessageRef payload = node->GetData();
+      if ((optPruner)&&(optPruner->MatchPath(path, payload) == false)) return B_NO_ERROR;
+      if ((saveData)&&(msg.AddMessage(PR_NAME_NODEDATA, payload) != B_NO_ERROR)) return B_ERROR;
+   }
    
    if ((node->HasChildren())&&(maxDepth > 0))
    {
@@ -1624,11 +1627,11 @@ StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * n
             if (child)
             {
                String childPath(path);
-               if (childPath.Length() > 0) childPath += '/';
+               if (childPath.HasChars()) childPath += '/';
                childPath += child->GetNodeName();
 
                MessageRef childMsgRef(GetMessageFromPool());
-               if ((childMsgRef() == NULL)||(childrenMsgRef()->AddMessage(child->GetNodeName(), childMsgRef) != B_NO_ERROR)||(SaveNodeTreeToMessage(*childMsgRef(), child, childPath, true, maxDepth-1) != B_NO_ERROR)) return B_ERROR;
+               if ((childMsgRef() == NULL)||(childrenMsgRef()->AddMessage(child->GetNodeName(), childMsgRef) != B_NO_ERROR)||(SaveNodeTreeToMessage(*childMsgRef(), child, childPath, true, maxDepth-1, optPruner) != B_NO_ERROR)) return B_ERROR;
             }
          }
       }
@@ -1637,15 +1640,21 @@ StorageReflectSession :: SaveNodeTreeToMessage(Message & msg, const DataNode * n
 }
 
 status_t
-StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex, uint32 maxDepth)
+StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex, uint32 maxDepth, const ITraversalPruner * optPruner)
 {
    TCHECKPOINT;
 
    if (loadData)
    {
-      // Load in data payload for the current node
-      MessageRef dataRef;
-      if ((msg.FindMessage(PR_NAME_NODEDATA, dataRef) == B_NO_ERROR)&&(SetDataNode(path, dataRef, true, true, false, appendToIndex) != B_NO_ERROR)) return B_ERROR;
+      MessageRef payload;
+      if (msg.FindMessage(PR_NAME_NODEDATA, payload) != B_NO_ERROR) return B_ERROR;
+      if ((optPruner)&&(optPruner->MatchPath(path, payload) == false)) return B_NO_ERROR;
+      if (SetDataNode(path, payload, true, true, false, appendToIndex) != B_NO_ERROR) return B_ERROR;
+   }
+   else 
+   {
+      MessageRef junk = GetEmptyMessageRef();
+      if ((optPruner)&&(optPruner->MatchPath(path, junk) == false)) return B_NO_ERROR;
    }
 
    MessageRef childrenRef;
@@ -1665,9 +1674,9 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
                if (childrenRef()->FindMessage(*nextFieldName, nextChildRef) == B_NO_ERROR) 
                {
                   String childPath(path);
-                  if (childPath.Length() > 0) childPath += '/';
+                  if (childPath.HasChars()) childPath += '/';
                   childPath += *nextFieldName;
-                  if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true, true, maxDepth-1) != B_NO_ERROR) return B_ERROR;
+                  if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true, true, maxDepth-1, optPruner) != B_NO_ERROR) return B_ERROR;
                   if (indexLookup.Put(nextFieldName, i) != B_NO_ERROR) return B_ERROR;
                }
             }
@@ -1686,9 +1695,9 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
                if ((childrenRef()->FindMessage(*nextFieldName, nextChildRef) == B_NO_ERROR)&&(nextChildRef()))
                {
                   String childPath(path);
-                  if (childPath.Length() > 0) childPath += '/';
+                  if (childPath.HasChars()) childPath += '/';
                   childPath += *nextFieldName;
-                  if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true, false, maxDepth-1) != B_NO_ERROR) return B_ERROR;
+                  if (RestoreNodeTreeFromMessage(*nextChildRef(), childPath, true, false, maxDepth-1, optPruner) != B_NO_ERROR) return B_ERROR;
                }
             }
          }

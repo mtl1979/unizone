@@ -56,6 +56,18 @@ status_t ParseArg(const String & arg, Message & addTo);
  */
 status_t ParseArgs(const String & arg, Message & addTo);
 
+/** This does the inverse operation of ParseArgs().  That is to say, it
+  * takes a Message that was previously created via ParseArgs() and returns
+  * a String representing the same data.  Note that the returned String isn't
+  * guaranteed to be identical to the one that was previously passed in to 
+  * ParseArgs(); in particular, any comments will have been stripped out,
+  * and the order of the items may be different in some cases.
+  * @param argMsg A Message containing String field indicating the arguments
+  *               to add to the String
+  * @return The resulting String.
+  */
+String UnparseArgs(const Message & argMsg);
+
 /** Convenience method:  Looks for a given hostname or hostname:port string in 
  *  the given field of the args Message, and returns the appropriate parsed
  *  values if it is found.
@@ -169,6 +181,9 @@ void ExitWithoutCleanup(int exitCode);
  */
 status_t BecomeDaemonProcess(const char * optNewDir = NULL, const char * optOutputTo = "/dev/null", bool createOutputFileIfNecessary = true);
 
+/** Returns true iff we are a daemon process created via BecomeDaemonProcess() or SpawnDaemonProcess() */
+bool IsDaemonProcess();
+
 /** Same as BecomeDaemonProcess(), except that the parent process returns as well as the child process.  
  *  @param returningAsParent Set to true on return of the parent process, or false on return of the child process.
  *  @param optNewDir If specified, the child will chdir() to the directory specified here.
@@ -235,12 +250,17 @@ String DenybbleizeString(const String & nybStr);
 const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * lookFor, uint32 numLookForBytes);
 
 /** This is a convenience function for debugging.  It will print to stdout the
-  * specified array of bytes in human-readable hexadecimal format.
+  * specified array of bytes in human-readable hexadecimal format, along with
+  * an ASCII sidebar when possible.
   * @param bytes The bytes to print out
   * @param numBytes How many bytes (bytes) points to
   * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  * @param numColumns If specified non zero, then the bytes will be printed
+  *                   out with this many bytes per row.  Defaults to 16.
+  *                   If set to zero, then all the output will be placed
+  *                   on a single line, using a simpler hex-only format.
   */
-void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc = NULL);
+void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc = NULL, uint32 numColumns = 16);
 
 /** Given a string with an ASCII representation of hexadecimal bytes,
   * returns the corresponding binary data.
@@ -252,6 +272,22 @@ void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc = N
   *          or a NULL ByteBufferRef on failure (out of memory?)
   */
 ByteBufferRef ParseHexBytes(const char * buf);
+
+/** A convenience method, useful to optimally create a single PR_COMMAND_BATCH
+  * Message out of a set of zero or more other Messages.  Here's how it works:
+  * If (batchMsg) is a NULL ref, then (batchMsg) is set to reference the same
+  * Message as (newMsg).  If (batchMsg) is a PR_COMMAND_BATCH Message, then
+  * (newMsg) is appended to its PR_NAME_KEYS field.  Otherwise, a new 
+  * PR_COMMAND_BATCH Message is created, and both (batchMsg) and (newMsg) are
+  * added to it.
+  * @param batchMsg Reference to the Message that you will want to eventually
+  *                 send to the server.  This Reference will be modified.
+  *                 May be a NULL ref.
+  * @param newMsg Reference to the Message to add to (batchMsg).  May not
+  *                 be a NULL ref.
+  * @returns B_NO_ERROR on success, or B_ERROR on error (out of memory?)
+  */
+status_t AssembleBatchMessage(MessageRef & batchMsg, const MessageRef & newMsg);
 
 END_NAMESPACE(muscle);
 

@@ -61,6 +61,27 @@ private:
    uint32 _id;
 };
 
+/** This is a partially specialized factory that knows how to act as a facade for a "slave" factory.
+  * In particular, it contains implementations of AttachedToServer() and AboutToDetachFromServer()
+  * that set up and tear down the slave factory appropriately.  This way that logic doesn't have
+  * to be replicated in every ReflectSessionFactory subclass that wants to use the facade pattern.
+  */
+class ProxySessionFactory : public ReflectSessionFactory
+{
+public:
+   ProxySessionFactory(const ReflectSessionFactoryRef & slaveRef) : _slaveRef(slaveRef) {/* empty */}
+   virtual ~ProxySessionFactory() {/* empty */}
+
+   virtual status_t AttachedToServer();
+   virtual void AboutToDetachFromServer();
+
+   /** Returns the reference to the "slave" factory that was passed in to our constructor. */
+   const ReflectSessionFactoryRef & GetSlave() const {return _slaveRef;}
+
+private:
+   ReflectSessionFactoryRef _slaveRef;
+};
+
 /** This is the abstract base class that defines the server side logic for a single
  *  client-server connection.  This class contains no message routing logic of its own, 
  *  but defines the interface so that subclasses can do so.

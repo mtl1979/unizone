@@ -155,7 +155,7 @@ public:
      *                      See the ThreadSetupSystem documentation for details.
      *                      (If you don't know what this flag is, leave it set to false!)
      */
-   CompleteSetupSystem(bool muscleSingleThreadOnly = false) : _threads(muscleSingleThreadOnly) {/* empty */}
+   CompleteSetupSystem(bool muscleSingleThreadOnly = false);
 
    /** Destructor.  Calls AbstractObjectRecycler::GlobalFlushAllCachedObjects() to ensure
      * that objects don't get recycled after their object pools have been deleted.

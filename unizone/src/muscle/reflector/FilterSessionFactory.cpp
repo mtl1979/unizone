@@ -5,7 +5,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
-FilterSessionFactory :: FilterSessionFactory(const ReflectSessionFactoryRef & slaveRef, uint32 msph, uint32 tms) : _slaveRef(slaveRef), _tempLogFor(NULL), _maxSessionsPerHost(msph), _totalMaxSessions(tms)
+FilterSessionFactory :: FilterSessionFactory(const ReflectSessionFactoryRef & slaveRef, uint32 msph, uint32 tms) : ProxySessionFactory(slaveRef), _tempLogFor(NULL), _maxSessionsPerHost(msph), _totalMaxSessions(tms)
 {
    // empty
 }
@@ -41,7 +41,7 @@ AbstractReflectSessionRef FilterSessionFactory :: CreateSession(const String & c
    }
 
    AbstractReflectSessionRef ret;
-   if (_slaveRef())
+   if (GetSlave()())
    {
       // If we have any requires, then this IP must match at least one of them!
       if (_requires.HasItems())
@@ -78,7 +78,7 @@ AbstractReflectSessionRef FilterSessionFactory :: CreateSession(const String & c
       }
 
       // Okay, he passes.  We'll let our slave create a session for him.
-      ret = _slaveRef()->CreateSession(clientHostIP, iap);
+      ret = GetSlave()()->CreateSession(clientHostIP, iap);
       if (ret())
       {
          if (_inputPolicyRef())  ret()->SetInputPolicy(_inputPolicyRef);

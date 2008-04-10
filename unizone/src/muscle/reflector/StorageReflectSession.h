@@ -43,6 +43,31 @@ private:
    uint32 _maxIncomingMessageSize;
 };
 
+/** This class is an interface to an object that can prune the traversals used
+  * by RestoreNodeTreeFromMessage(), SaveNodeTreeToMessage(), and CloneDataNodeSubtree()
+  * so that only a subset of the traversal is done.
+  */
+class ITraversalPruner
+{
+public:
+   /** Default Constructor */
+   ITraversalPruner() {/* empty */}
+
+   /** Destructor */
+   virtual ~ITraversalPruner() {/* empty */}
+
+   /** Should be implemented to return true iff we should traverse the node specified by (path)
+     * and his descendants.  If this method returns false, the node specified by (path)
+     * will not be traversed, nor will any of his descendants.
+     * @param The relative path of the node that is about to be traversed.
+     * @param nodeData A reference to the Message to be associated with this node.
+     *                 If desired, this can be replaced with a different MessageRef instead
+     *                 (but be careful not to modify the Message that (nodeData) points to; 
+     *                 instead, allocate a new Message and set (nodeData) to point to it.
+     */
+   virtual bool MatchPath(const String & path, MessageRef & nodeData) const = 0;
+};
+
 #define DECLARE_MUSCLE_TRAVERSAL_CALLBACK(sessionClass, funcName) \
  int funcName(DataNode & node, void * userData); \
  static int funcName##Func(StorageReflectSession * This, DataNode & node, void * userData) {return ((sessionClass *)This)->funcName(node, userData);}
@@ -114,9 +139,11 @@ protected:
     * @param maxDepth How many levels of children should be saved to the Message.  If left as MUSCLE_NO_LIMIT (the default),
     *                 the entire subtree will be saved; otherwise the tree will be clipped to at most (maxDepth) levels.
     *                 If (maxDepth) is zero, only (node) will be saved.
+    * @param optPruner If set non-NULL, this object will be used as a callback to prune the traversal, and optionally
+    *                  to filter the data that gets saved into (msg).
     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-   status_t SaveNodeTreeToMessage(Message & msg, const DataNode * node, const String & path, bool saveData, uint32 maxDepth = MUSCLE_NO_LIMIT) const;
+   status_t SaveNodeTreeToMessage(Message & msg, const DataNode * node, const String & path, bool saveData, uint32 maxDepth = MUSCLE_NO_LIMIT, const ITraversalPruner * optPruner = NULL) const;
 
    /**
     * Recursively creates or updates a subtree of the node database from the given Message object.
@@ -128,9 +155,11 @@ protected:
     * @param maxDepth How many levels of children should be restored from the Message.  If left as MUSCLE_NO_LIMIT (the default),
     *                 the entire subtree will be restored; otherwise the tree will be clipped to at most (maxDepth) levels.
     *                 If (maxDepth) is zero, only (node) will be restored.
+    * @param optPruner If set non-NULL, this object will be used as a callback to prune the traversal, and optionally
+    *                  to filter the data that gets loaded from (msg).
     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-   status_t RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex = false, uint32 maxDepth = MUSCLE_NO_LIMIT);
+   status_t RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex = false, uint32 maxDepth = MUSCLE_NO_LIMIT, const ITraversalPruner * optPruner = NULL);
 
    /** 
      * Create and insert a new node into one or more ordered child indices in the node tree.
@@ -261,15 +290,6 @@ protected:
     */
     status_t SendMessageToMatchingSessions(const MessageRef & msgRef, const String & nodePath, const QueryFilterRef & filter, bool matchSelf);
 
-    /** This type is sometimes used when calling CloneDataNodeSubtree(). 
-      * @param newPath The database node-path at which this new duplicate node will be created.
-      * @param oldRef A reference to a Message object that is the Message that will be placed at that node.
-      * @param userData The void pointer that was passed in to CloneDataNodeSubtree
-      * @returns The MessageRef to associate with the new duplicate node.  May be the same as (oldRef), or different.
-      *          Should not be a NULL reference.
-      */
-    typedef MessageRef (*MessageReplaceFunc)(const String & newPath, const MessageRef & oldRef, void * userData);
-
    /** Convenience method (used by some customized daemons) -- Given a source node and a destination path,
      * Make (path) a deep, recursive clone of (node).
      * @param sourceNode Reference to a DataNode to clone.
@@ -283,14 +303,11 @@ protected:
      *                         If false, it will be added using PutChild().
      * @param optInsertBefore If (addToTargetIndex) is true, this argument will be passed on to InsertOrderedChild().
      *                        Otherwise, this argument is ignored.
-     * @param optFunc If specified as non-NULL, this callback function will be called as a hook to adjust the data payloads of
-     *                the newly created node(s).  Note that this function should NOT modify any Message in place; rather it should
-     *                return a MessageRef to be used in the newly created nodes, which may be the passed-in MessageRef of the existing
-     *                node, or a newly created one.
-     * @param optFuncArg This argument is passed to (optFunc) as its second argument.
+     * @param optPruner If non-NULL, this object can be used as a callback to prune the traversal or filter
+     *                  the MessageRefs cloned.
      * @return B_NO_ERROR on success, or B_ERROR on failure (may leave a partially cloned subtree on failure)
      */
-   status_t CloneDataNodeSubtree(const DataNode & sourceNode, const String & destPath, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToTargetIndex=false, const String * optInsertBefore = NULL, MessageReplaceFunc optFunc = NULL, void * optFuncArg = NULL);
+   status_t CloneDataNodeSubtree(const DataNode & sourceNode, const String & destPath, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToTargetIndex=false, const String * optInsertBefore = NULL, const ITraversalPruner * optPruner = NULL);
 
    /** Tells other sessions that we have modified (node) in our node subtree.
     *  @param node The node that has been modfied.

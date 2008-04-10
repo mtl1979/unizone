@@ -72,7 +72,7 @@ AddIncomingText(const MessageRef & inMsg, const char * s)
    if (ret() == NULL) ret = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
    if (ret())
    {
-      if (_incomingText.Length() > 0)
+      if (_incomingText.HasChars())
       {
          (void) ret()->AddString(PR_NAME_TEXT_LINE, _incomingText.Append(s));
          _incomingText.Clear();
@@ -128,7 +128,7 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
 void 
 PlainTextMessageIOGateway :: FlushInput(AbstractGatewayMessageReceiver & receiver)
 {
-   if (_incomingText.Length() > 0)
+   if (_incomingText.HasChars())
    {
       MessageRef inMsg = GetMessageFromPool(PR_COMMAND_TEXT_STRINGS);
       if ((inMsg())&&(inMsg()->AddString(PR_NAME_TEXT_LINE, _incomingText) == B_NO_ERROR))

@@ -145,7 +145,7 @@ ip_address GetHostByName(const char * name, bool expandLocalhost = false);
  *                        will attempt to determine the host machine's actual primary IP
  *                        address and return that instead.  Otherwise, 127.0.0.1 will be
  *                        returned in this case.  Defaults to false.
- * @return the non-negative sockfd if the connection is successful, -1 if the connection attempt failed.
+ * @return A non-NULL SocketRef if the connection is successful, or a NULL SocketRef if the connection failed.
  */
 SocketRef Connect(const char * hostName, uint16 port, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectTime = MUSCLE_TIME_NEVER, bool expandLocalhost = false);
 
@@ -159,7 +159,7 @@ SocketRef Connect(const char * hostName, uint16 port, const char * debugTitle = 
  * @param maxConnectTime The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
  *                       (the default) then no particular time limit will be enforced, and it will be left up to the operating system
  *                       to decide when the attempt should time out.
- * @return the non-negative sockfd if the connection is successful, -1 if the connection attempt failed.
+ * @return A non-NULL SocketRef if the connection is successful, or a NULL SocketRef if the connection failed.
  */
 SocketRef Connect(const ip_address & hostIP, uint16 port, const char * debugHostName = NULL, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectTime = MUSCLE_TIME_NEVER);
 
@@ -171,14 +171,14 @@ SocketRef Connect(const ip_address & hostIP, uint16 port, const char * debugHost
  *                        will return the IP address of the local network interface that the connection was
  *                        received on, and optRetLocalInfo()->GetPort() will return the port number that
  *                        the connection was received on.  Defaults to NULL.
- * @return the non-negative sockfd if the accept is successful, or -1 if the accept attempt failed.
+ * @return A non-NULL SocketRef if the accept was successful, or a NULL SocketRef if the accept failed.
  */
 SocketRef Accept(const SocketRef & socket, ip_address * optRetLocalInfo = NULL);
 
 /** Reads as many bytes as possible from the given socket and places them into (buffer).
  *  @param socket The socket to read from.
- *  @param buffer Buffer to write the bytes into.
- *  @param bufferSizeBytes Number of bytes in the buffer.
+ *  @param buffer Location to write the received bytes into.
+ *  @param bufferSizeBytes Number of bytes available at the location indicated by (buffer).
  *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
  *  @return The number of bytes read into (buffer), or a negative value if there was an error.
  *          Note that this value may be smaller than (bufferSizeBytes).
@@ -187,8 +187,8 @@ int32 ReceiveData(const SocketRef & socket, void * buffer, uint32 bufferSizeByte
 
 /** Identical to ReceiveData(), except that this function's logic is adjusted to handle UDP semantics properly. 
  *  @param socket The socket to read from.
- *  @param buffer Buffer to write the bytes into.
- *  @param bufferSizeBytes Number of bytes in the buffer.
+ *  @param buffer Location to place the received bytes into.
+ *  @param bufferSizeBytes Number of bytes available at the location indicated by (buffer).
  *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
  *  @param optRetFromIP If set to non-NULL, then on success the ip_address this parameter points to will be filled in
  *                      with the IP address that the received data came from.  Defaults to NULL.
@@ -198,6 +198,17 @@ int32 ReceiveData(const SocketRef & socket, void * buffer, uint32 bufferSizeByte
  *          Note that this value may be smaller than (bufferSizeBytes).
  */
 int32 ReceiveDataUDP(const SocketRef & socket, void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO, ip_address * optRetFromIP = NULL, uint16 * optRetFromPort = NULL);
+
+/** Similar to ReceiveData(), except that it will call read() instead of recv().
+ *  This is the function to use if (fd) is referencing a file descriptor instead of a socket.
+ *  @param fd The file descriptor to read from.
+ *  @param buffer Location to place the read bytes into.
+ *  @param bufferSizeBytes Number of bytes available at the location indicated by (buffer).
+ *  @param socketIsBlockingIO Pass in true if the given fd is set to use blocking I/O, or false otherwise.
+ *  @return The number of bytes read into (buffer), or a negative value if there was an error.
+ *          Note that this value may be smaller than (bufferSizeBytes).
+ */
+int32 ReadData(const SocketRef & fd, void * buffer, uint32 bufferSizeBytes, bool fdIsBlockingIO);
 
 /** Transmits as many bytes as possible from the given buffer over the given socket.
  *  @param socket The socket to transmit over.
@@ -223,6 +234,17 @@ int32 SendData(const SocketRef & socket, const void * buffer, uint32 bufferSizeB
  */
 int32 SendDataUDP(const SocketRef & socket, const void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO, const ip_address & optDestIP = invalidIP, uint16 destPort = 0);
 
+/** Similar to SendData(), except that the implementation calls write() instead of send().  This
+ *  is the function to use when (fd) refers to a file descriptor instead of a socket.
+ *  @param fd The file descriptor to write the data to.
+ *  @param buffer Buffer to read the outgoing bytes from.
+ *  @param bufferSizeBytes Number of bytes to write.
+ *  @param fdIsBlockingIO Pass in true if the given file descriptor is set to use blocking I/O, or false otherwise.
+ *  @return The number of bytes sent from (buffer), or a negative value if there was an error.
+ *          Note that this value may be smaller than (bufferSizeBytes).
+ */
+int32 WriteData(const SocketRef & fd, const void * buffer, uint32 bufferSizeBytes, bool fdIsBlockingIO);
+
 /** This function initiates a non-blocking connection to the given host IP address and port.
   * It will return the created socket, which may or may not be fully connected yet.
   * If it is connected, (retIsReady) will be to true, otherwise it will be set to false.
@@ -235,7 +257,7 @@ int32 SendDataUDP(const SocketRef & socket, const void * buffer, uint32 bufferSi
   * @param port Port to connect to.
   * @param retIsReady On success, this bool is set to true iff the socket is ready to use, or 
   *                   false to indicate that an asynchronous connection is now in progress.
-  * @return a non-negative sockfd which is in the process of connecting on success, or -1 on error.
+  * @return A non-NULL SocketRef (which is likely still in the process of connecting) on success, or a NULL SocketRef if the accept failed.
   */
 SocketRef ConnectAsync(const ip_address & hostIP, uint16 port, bool & retIsReady);
 
@@ -270,7 +292,7 @@ status_t ShutdownSocket(const SocketRef & socket, bool disableReception = true, 
  *  @param optRetPort If non-NULL, the uint16 this value points to will be set to the actual port bound to (useful when you want the system to choose a port for you)
  *  @param optInterfaceIP Optional IP address of the local network interface to listen on.  If left unspecified, or
  *                        if passed in as (invalidIP), then this socket will listen on all available network interfaces.
- *  @return the non-negative sockfd if the port was bound successfully, or -1 if the attempt failed.
+ * @return A non-NULL SocketRef if the port was bound successfully, or a NULL SocketRef if the accept failed.
  */
 SocketRef CreateAcceptingSocket(uint16 port, int maxbacklog = 20, uint16 * optRetPort = NULL, const ip_address & optInterface = invalidIP);
 
@@ -482,10 +504,13 @@ private:
   * MacOS/X, Windows), and that on other OS's it may just always return B_ERROR.
   * @param results On success, zero or more NetworkInterfaceInfo objects will
   *                be added to this Queue for you to look at.
+  * @param includeLocalhost If true (the default), then localhost/loopback interfaces
+  *                         will be included in this list.  If set false, then only
+  *                         "real" network interfaces will be included.
   * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory,
   *          call not implemented for the current OS, etc)
   */
-status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results);
+status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool includeLocalhost = true);
 
 /** This simple class holds an IP address and a port number, and lets you do
   * useful things on the two such as using them as key values in a hash table,
