@@ -1,6 +1,7 @@
 /* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "iogateway/MessageIOGateway.h"
+#include "reflector/StorageReflectConstants.h"  // for PR_COMMAND_PING, PR_RESULT_PONG
 
 BEGIN_NAMESPACE(muscle);
 
@@ -13,6 +14,7 @@ MessageIOGateway :: MessageIOGateway(int32 encoding) :
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
    , _sendCodec(NULL), _recvCodec(NULL)
 #endif
+   , _syncPingCounter(0)
 {
    /* empty */
 }
@@ -336,6 +338,26 @@ Reset()
    _sendBodyBuffer.Reset();
    _recvHeaderBuffer.Reset();
    _recvBodyBuffer.Reset();
+}
+
+status_t MessageIOGateway :: ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64 timeoutPeriod)
+{
+   if ((GetDataIO()() == NULL)||(GetDataIO()()->GetSelectSocket().GetFileDescriptor() < 0)) return B_ERROR;
+
+   char buf[64]; sprintf(buf, "mio-sp-"UINT32_FORMAT_SPEC, ++_syncPingCounter);
+   _syncPingKey = buf;
+
+   MessageRef pingMsg = GetMessageFromPool(PR_COMMAND_PING);
+   return ((pingMsg())&&(pingMsg()->AddBool(_syncPingKey, true) == B_NO_ERROR)&&(AddOutgoingMessage(pingMsg) == B_NO_ERROR)) ? AbstractMessageIOGateway::ExecuteSynchronousMessaging(optReceiver, timeoutPeriod) : B_ERROR;
+}
+
+void MessageIOGateway :: SynchronousMessageReceivedFromGateway(const MessageRef & msg, void * userData, AbstractGatewayMessageReceiver & r) 
+{
+   if ((msg())&&(msg()->what == PR_RESULT_PONG)&&(_syncPingKey.HasChars())&&(msg()->HasName(_syncPingKey, B_BOOL_TYPE)))
+   {
+      _syncPingKey.Clear();
+   }
+   else AbstractMessageIOGateway::SynchronousMessageReceivedFromGateway(msg, userData, r);
 }
 
 END_NAMESPACE(muscle);

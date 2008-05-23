@@ -375,7 +375,12 @@ public:
    /** Copy Constructor.  */
    Hashtable(const Hashtable<KeyType,ValueType,HashFunctorType> & rhs);
 
-   /** Assignment operator. */
+   /** Destructor. */
+   ~Hashtable();
+
+   /** Assignment operator.  Note that only the contents of (rhs) are copied into this Hashtable.
+     * Other things (such as the sort mode and key/value cookies) are not.
+     */
    Hashtable<KeyType,ValueType,HashFunctorType> & operator= (const Hashtable<KeyType,ValueType,HashFunctorType> & rhs);
 
    /** Equality operator.  Returns true iff both hash tables contains the same set of keys and values.
@@ -386,8 +391,12 @@ public:
    /** Returns the opposite of the equality operator. */
    bool operator!= (const Hashtable<KeyType,ValueType,HashFunctorType> & rhs) const {return !(*this == rhs);}
 
-   /** Destructor. */
-   ~Hashtable();
+   /** Similar to the assignment operator, except this method returns a status code.
+     * @param rhs The Hashtable to make this Hashtable a copy of.  Note that only (rhs)'s items are
+     *            copied in; other settings such as sort mode and key/value cookies are not copied in.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure.
+     */
+   status_t CopyFrom(const Hashtable<KeyType,ValueType,HashFunctorType> & rhs);
 
    /** Returns the number of items stored in the table. */
    uint32 GetNumItems() const {return _count;}
@@ -724,13 +733,13 @@ public:
    status_t MoveToTable(const KeyType & moveMe, Hashtable<KeyType, ValueType> & toTable);
 
    /** Convenience method:  Copies an item from this table to another table.
-     * @param moveMe The key in this table of the item that should be copied.
+     * @param copyMe The key in this table of the item that should be copied.
      * @param toTable The table that the item should be in when this operation completes.
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory, or (copyMe)
      *          was not found in this table.  Note that trying to copy an item into its
      *          own table will simply return B_NO_ERROR with no side effects.
      */
-   status_t CopyToTable(const KeyType & moveMe, Hashtable<KeyType, ValueType> & toTable) const;
+   status_t CopyToTable(const KeyType & copyMe, Hashtable<KeyType, ValueType> & toTable) const;
 
    /** Forcefully sorts the iteration traversal list of this table using the preferred sorting mode.
      * The preferred sorting mode will be determined as follows:
@@ -837,6 +846,46 @@ public:
    { 
        HashtableEntry * e = PutAux(ComputeHash(key), key, value, NULL, NULL);
        return e ? &e->_value : NULL;
+   }
+
+   /** Convenience method.  If the given key already exists in the Hashtable, this method returns NULL.
+    *  Otherwise, this method puts a copy of specified value into the table and returns a pointer to the 
+    *  just-placed value.
+    *  (average O(1) insertion time, unless auto-sorting is enabled, in which case it becomes O(N) insertion time)
+    *  @param key The key that the new value is to be associated with.
+    *  @param value The value to associate with the new key.
+    *  @return A pointer to the value object in the table on success, or NULL on failure (key already exists, out of memory)
+    */
+   ValueType * PutIfNotAlreadyPresent(const KeyType & key, const ValueType & value) 
+   {
+       uint32 hash = ComputeHash(key);
+       HashtableEntry * e = GetEntry(hash, key);
+       if (e) return NULL;
+       else
+       {
+          e = PutAux(hash, key, value, NULL, NULL);
+          return e ? &e->_value : NULL;
+       }
+   }
+
+   /** Convenience method.  If the given key already exists in the Hashtable, this method returns NULL.
+    *  Otherwise, this method puts a copy of specified value into the table and returns a pointer to the 
+    *  just-placed value.
+    *  (average O(1) insertion time, unless auto-sorting is enabled, in which case it becomes O(N) insertion time)
+    *  @param key The key that the new value is to be associated with.
+    *  @param value The value to associate with the new key.
+    *  @return A pointer to the value object in the table on success, or NULL on failure (key already exists, out of memory)
+    */
+   ValueType * PutIfNotAlreadyPresent(const KeyType & key) 
+   {
+       uint32 hash = ComputeHash(key);
+       HashtableEntry * e = GetEntry(hash, key);
+       if (e) return NULL;
+       else
+       {
+          e = PutAux(hash, key, ValueType(), NULL, NULL);
+          return e ? &e->_value : NULL;
+       }
    }
 
    /** Convenience method.  Returns a pointer to the first key in our iteration list, or NULL if the table is empty. */
@@ -1144,6 +1193,25 @@ operator=(const Hashtable<KeyType, ValueType, HashFunctorType> & rhs)
       }
    }
    return *this;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+status_t
+Hashtable<KeyType, ValueType, HashFunctorType> ::
+CopyFrom(const Hashtable<KeyType, ValueType, HashFunctorType> & rhs)
+{
+   if (this == &rhs) return B_NO_ERROR;
+
+   Clear();
+   if (EnsureSize(rhs.GetNumItems()) != B_NO_ERROR) return B_ERROR;
+
+   const HashtableEntry * e = rhs._iterHead;    // start of linked list to iterate through
+   while(e)
+   {
+      (void) PutAux(e->_hash, e->_key, e->_value, NULL, NULL);
+      e = e->_iterNext;
+   }
+   return B_NO_ERROR;
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>

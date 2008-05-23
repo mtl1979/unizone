@@ -15,7 +15,9 @@
 # include <winsock.h>
 # include <iphlpapi.h>
 # pragma warning(disable: 4800 4018)
+typedef char sockopt_arg;  // Windows setsockopt()/getsockopt() use char pointers
 #else
+typedef void sockopt_arg;  // Whereas sane operating systems use void pointers
 # include <unistd.h>
 # include <sys/socket.h>
 # include <netdb.h>
@@ -112,10 +114,10 @@ status_t BindUDPSocket(const SocketRef & sock, uint16 port, uint16 * optRetPort,
 
    if (allowShared)
    {
-      int one = 1;
-      setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const char *) &one, sizeof(one));
+      const int trueValue = 1;
+      setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const sockopt_arg *) &trueValue, sizeof(trueValue));
 #ifdef __APPLE__
-      setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, (const char *) &one, sizeof(one));
+      setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, (const sockopt_arg *) &trueValue, sizeof(trueValue));
 #endif
    }
 
@@ -161,8 +163,8 @@ SocketRef CreateAcceptingSocket(uint16 port, int maxbacklog, uint16 * optRetPort
 
 #ifndef WIN32
       // (Not necessary under windows -- it has the behaviour we want by default)
-      const long trueValue = 1;
-      (void) setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &trueValue, sizeof(long));
+      const int trueValue = 1;
+      (void) setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const sockopt_arg *) &trueValue, sizeof(long));
 #endif
 
       DECLARE_SOCKADDR(saSocket, &optInterfaceIP, port);
@@ -426,7 +428,7 @@ static void ExpandLocalhostAddress(ip_address & ipAddress)
       {
          // If not, try to grab one from the OS
          Queue<NetworkInterfaceInfo> ifs;
-         if ((GetNetworkInterfaceInfos(ifs) == B_NO_ERROR)&&(ifs.HasItems())) altRet = ifs.Head().GetLocalAddress();
+         if ((GetNetworkInterfaceInfos(ifs, false) == B_NO_ERROR)&&(ifs.HasItems())) altRet = ifs.Head().GetLocalAddress();
       }
       if (altRet != invalidIP) ipAddress = altRet;
    }
@@ -563,8 +565,8 @@ status_t SetSocketBlockingEnabled(const SocketRef & sock, bool blocking)
    return (ioctlsocket(fd, FIONBIO, &mode) == 0) ? B_NO_ERROR : B_ERROR;
 #else
 # ifdef BEOS_OLD_NETSERVER
-   long b = blocking ? 0 : 1; 
-   return (setsockopt(fd, SOL_SOCKET, SO_NONBLOCK, &b, sizeof(b)) == 0) ? B_NO_ERROR : B_ERROR;
+   int b = blocking ? 0 : 1; 
+   return (setsockopt(fd, SOL_SOCKET, SO_NONBLOCK, (const sockopt_arg *) &b, sizeof(b)) == 0) ? B_NO_ERROR : B_ERROR;
 # else
    int flags = fcntl(fd, F_GETFL, 0);
    if (flags < 0) return B_ERROR;
@@ -581,9 +583,9 @@ status_t SetUDPSocketBroadcastEnabled(const SocketRef & sock, bool broadcast)
 
    int val = (broadcast ? 1 : 0);
 #ifdef BEOS_OLD_NETSERVER
-   return (setsockopt(fd, SOL_SOCKET, INADDR_BROADCAST, (char *) &val, sizeof(val)) == 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(fd, SOL_SOCKET, INADDR_BROADCAST, (const sockopt_arg *) &val, sizeof(val)) == 0) ? B_NO_ERROR : B_ERROR;
 #else
-   return (setsockopt(fd, SOL_SOCKET, SO_BROADCAST,     (char *) &val, sizeof(val)) == 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(fd, SOL_SOCKET, SO_BROADCAST,     (const sockopt_arg *) &val, sizeof(val)) == 0) ? B_NO_ERROR : B_ERROR;
 #endif
 }
 
@@ -597,24 +599,7 @@ status_t SetSocketNaglesAlgorithmEnabled(const SocketRef & sock, bool enabled)
    return B_ERROR;  // old networking stack doesn't support this flag
 #else
    int enableNoDelay = enabled ? 0 : 1;
-   return (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *) &enableNoDelay, sizeof(enableNoDelay)) >= 0) ? B_NO_ERROR : B_ERROR;
-#endif
-}
-
-status_t Snooze64(uint64 micros)
-{
-#if __BEOS__
-   return snooze(micros);
-#elif __ATHEOS__
-   return (snooze(micros) >= 0) ? B_NO_ERROR : B_ERROR;
-#elif WIN32
-   Sleep((DWORD)((micros/1000)+(((micros%1000)!=0)?1:0)));
-   return B_NO_ERROR;
-#else
-   /** We can use select(), if nothing else */
-   struct timeval waitTime;
-   Convert64ToTimeVal(micros, waitTime);
-   return (select(0, NULL, NULL, NULL, &waitTime) >= 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const sockopt_arg *) &enableNoDelay, sizeof(enableNoDelay)) >= 0) ? B_NO_ERROR : B_ERROR;
 #endif
 }
 
@@ -674,7 +659,7 @@ status_t SetSocketSendBufferSize(const SocketRef & sock, uint32 sendBufferSizeBy
    if (fd < 0) return B_ERROR;
 
    int iSize = (int) sendBufferSizeBytes;
-   return (setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (char *)&iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (const sockopt_arg *) &iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
 #endif
 }
 
@@ -689,7 +674,7 @@ status_t SetSocketReceiveBufferSize(const SocketRef & sock, uint32 receiveBuffer
    if (fd < 0) return B_ERROR;
 
    int iSize = (int) receiveBufferSizeBytes;
-   return (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (char *)&iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (const sockopt_arg *) &iSize, sizeof(iSize)) >= 0) ? B_NO_ERROR : B_ERROR;
 #endif
 }
 
@@ -879,6 +864,15 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
    return B_ERROR;
 }
 
+status_t GetNetworkInterfaceAddresses(Queue<ip_address> & results, bool includeLocalhost)
+{
+   Queue<NetworkInterfaceInfo> infos;
+   if ((GetNetworkInterfaceInfos(infos, includeLocalhost) != B_NO_ERROR)||(results.EnsureSize(infos.GetNumItems()) != B_NO_ERROR)) return B_ERROR;
+
+   for (uint32 i=0; i<infos.GetNumItems(); i++) (void) results.AddTail(infos[i].GetLocalAddress());  // guaranteed not to fail
+   return B_NO_ERROR;
+}
+
 String Inet_NtoA(const ip_address & ipAddress)
 {
    char buf[64];
@@ -1010,7 +1004,7 @@ status_t SetSocketMulticastToSelf(const SocketRef & sock, bool multicastToSelf)
 {
    uint8 toSelf = (uint8) multicastToSelf;
    int fd = sock.GetFileDescriptor();
-   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (const char *) &toSelf, sizeof(toSelf)) == 0)) ? B_NO_ERROR : B_ERROR;
+   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (const sockopt_arg *) &toSelf, sizeof(toSelf)) == 0)) ? B_NO_ERROR : B_ERROR;
 }
 
 bool GetSocketMulticastToSelf(const SocketRef & sock)
@@ -1018,13 +1012,13 @@ bool GetSocketMulticastToSelf(const SocketRef & sock)
    uint8 toSelf;
    muscle_socklen_t size = sizeof(toSelf);
    int fd = sock.GetFileDescriptor();
-   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (char *) &toSelf, &size) == 0)&&(size == sizeof(toSelf))&&(toSelf));
+   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (sockopt_arg *) &toSelf, &size) == 0)&&(size == sizeof(toSelf))&&(toSelf));
 }
 
 status_t SetSocketMulticastTimeToLive(const SocketRef & sock, uint8 ttl)
 {
    int fd = sock.GetFileDescriptor();
-   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (const char *) &ttl, sizeof(ttl)) == 0)) ? B_NO_ERROR : B_ERROR;
+   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (const sockopt_arg *) &ttl, sizeof(ttl)) == 0)) ? B_NO_ERROR : B_ERROR;
 }
 
 uint8 GetSocketMulticastTimeToLive(const SocketRef & sock)
@@ -1032,7 +1026,7 @@ uint8 GetSocketMulticastTimeToLive(const SocketRef & sock)
    uint8 ttl = 0;
    muscle_socklen_t size = sizeof(ttl);
    int fd = sock.GetFileDescriptor();
-   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (char *) &ttl, &size) == 0)&&(size == sizeof(ttl))) ? ttl : 0;
+   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (sockopt_arg *) &ttl, &size) == 0)&&(size == sizeof(ttl))) ? ttl : 0;
 }
 
 status_t SetSocketMulticastSendInterfaceAddress(const SocketRef & sock, const ip_address & address)
@@ -1043,7 +1037,7 @@ status_t SetSocketMulticastSendInterfaceAddress(const SocketRef & sock, const ip
    // TODO:  Add IPv6 support; in_addr only has a 32-bit address so it won't do
    struct in_addr localInterface; memset(&localInterface, 0, sizeof(localInterface));
    localInterface.s_addr = htonl(address);
-   return (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (const char *)&localInterface, sizeof(localInterface)) == 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (const sockopt_arg *) &localInterface, sizeof(localInterface)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
 ip_address GetSocketMulticastSendInterfaceAddress(const SocketRef & sock)
@@ -1054,7 +1048,7 @@ ip_address GetSocketMulticastSendInterfaceAddress(const SocketRef & sock)
    // TODO:  Add IPv6 support; in_addr only has a 32-bit address so it won't do
    struct in_addr localInterface; memset(&localInterface, 0, sizeof(localInterface));
    muscle_socklen_t len = sizeof(localInterface);
-   return ((getsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, &len) == 0)&&(len == sizeof(localInterface))) ? ntohl(localInterface.s_addr) : invalidIP;
+   return ((getsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (sockopt_arg *) &localInterface, &len) == 0)&&(len == sizeof(localInterface))) ? ntohl(localInterface.s_addr) : invalidIP;
 }
 
 status_t AddSocketToMulticastGroup(const SocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
@@ -1065,7 +1059,7 @@ status_t AddSocketToMulticastGroup(const SocketRef & sock, const ip_address & gr
    struct ip_mreq req; memset(&req, 0, sizeof(req));
    req.imr_multiaddr.s_addr = htonl(groupAddress);
    req.imr_interface.s_addr = htonl(localInterfaceAddress);
-   return (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (const sockopt_arg *) &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
 status_t RemoveSocketFromMulticastGroup(const SocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
@@ -1076,7 +1070,7 @@ status_t RemoveSocketFromMulticastGroup(const SocketRef & sock, const ip_address
    struct ip_mreq req; memset(&req, 0, sizeof(req));
    req.imr_multiaddr.s_addr = htonl(groupAddress);
    req.imr_interface.s_addr = htonl(localInterfaceAddress);
-   return (setsockopt(fd, IPPROTO_IP, IP_DROP_MEMBERSHIP, &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
+   return (setsockopt(fd, IPPROTO_IP, IP_DROP_MEMBERSHIP, (const sockopt_arg *) &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
 #endif  // MUSCLE_ENABLE_MULTICAST_API

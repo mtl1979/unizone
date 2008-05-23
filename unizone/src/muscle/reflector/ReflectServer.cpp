@@ -86,20 +86,31 @@ AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & d
    AbstractReflectSession * session = ref();
    if (session)
    {
-      bool isReady;
-      SocketRef sock = ConnectAsync(destIP, port, isReady);
+      SocketRef sock = ConnectAsync(destIP, port, session->_isConnected);
       if (sock())
       {
          session->_asyncConnectDest = IPAddressAndPort(destIP, port);
+         session->_connectingAsync  = !session->_isConnected;
+
          char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
          session->_hostName = (destIP != invalidIP) ? ipbuf : "<unknown>";
-         session->_connectingAsync = (isReady == false);
+
          status_t ret = AddNewSession(ref, sock);
          if (ret == B_NO_ERROR)
          {
             if (autoReconnectDelay != MUSCLE_TIME_NEVER) session->SetAutoReconnectDelay(autoReconnectDelay);
-            if (isReady) session->AsyncConnectCompleted();
+            if (session->_isConnected) 
+            {
+               session->_wasConnected = true;
+               session->AsyncConnectCompleted();
+            }
             return B_NO_ERROR;
+         }
+         else
+         {
+            session->_asyncConnectDest.Reset();
+            session->_hostName.Clear();
+            session->_isConnected = session->_connectingAsync = false;
          }
       }
    }
@@ -121,6 +132,11 @@ AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_addr
       {
          if (autoReconnectDelay != MUSCLE_TIME_NEVER) session->SetAutoReconnectDelay(autoReconnectDelay);
          return B_NO_ERROR;
+      }
+      else
+      {
+         session->_asyncConnectDest.Reset();
+         session->_hostName.Clear();
       }
    }
    return B_ERROR;
@@ -340,7 +356,7 @@ ServerProcessLoop()
             ReflectSessionFactoryRef * nextValue;
             while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
             {
-               SocketRef * nextAcceptSocket = _factorySockets.Get(*nextKey);
+               SocketRef * nextAcceptSocket = nextValue->GetItemPointer()->IsReadyToAcceptSessions() ? _factorySockets.Get(*nextKey) : NULL;
                int nfd = nextAcceptSocket ? nextAcceptSocket->GetFileDescriptor() : -1;
                if (nfd >= 0)
                {
@@ -659,9 +675,12 @@ ServerProcessLoop()
             CallSetCycleStartTime(*factory, GetRunTime64());
             CallPulseAux(*factory, factory->GetCycleStartTime());
 
-            SocketRef * as = _factorySockets.Get(*iap);
-            int fd = as ? as->GetFileDescriptor() : -1;
-            if ((fd >= 0)&&(FD_ISSET(fd, &readSet))) (void) DoAccept(*iap, *as, factory);
+            if (factory->IsReadyToAcceptSessions())
+            {
+               SocketRef * as = _factorySockets.Get(*iap);
+               int fd = as ? as->GetFileDescriptor() : -1;
+               if ((fd >= 0)&&(FD_ISSET(fd, &readSet))) (void) DoAccept(*iap, *as, factory);
+            }
          }
       }
 
@@ -742,8 +761,17 @@ status_t ReflectServer :: DoAccept(const IPAddressAndPort & iap, const SocketRef
          if (newSessionRef()) 
          {
             newSessionRef()->_ipAddressAndPort = iap;
-            if (AddNewSession(newSessionRef, newSocket) == B_NO_ERROR) return B_NO_ERROR;  // success!
-            newSessionRef()->_ipAddressAndPort.Reset();
+            newSessionRef()->_isConnected      = true;
+            if (AddNewSession(newSessionRef, newSocket) == B_NO_ERROR) 
+            {
+               newSessionRef()->_wasConnected = true;   
+               return B_NO_ERROR;  // success!
+            }
+            else
+            {
+               newSessionRef()->_isConnected = false;   
+               newSessionRef()->_ipAddressAndPort.Reset();
+            }
          }
          else if (optFactory) LogAcceptFailed(MUSCLE_LOG_DEBUG, "Session creation denied", ipbuf, nip);
       }
@@ -847,7 +875,7 @@ ReplaceSession(const AbstractReflectSessionRef & newSessionRef, AbstractReflectS
 
 bool ReflectServer :: DisconnectSession(AbstractReflectSession * session)
 {
-   session->_connectingAsync    = false;  // he's not connecting anymore, by gum!
+   session->_isConnected = session->_connectingAsync = false;  // he's not connecting anymore, by gum!
    session->_scratchReconnected = false;  // if the session calls Reconnect() this will be set to true below
 
    AbstractMessageIOGateway * oldGW = session->GetGateway()();
@@ -960,6 +988,7 @@ FinalizeAsyncConnect(const AbstractReflectSessionRef & ref)
 #endif
    {
       session->_connectingAsync = false;  // we're legit now!  :^)
+      session->_isConnected = session->_wasConnected = true;
       session->AsyncConnectCompleted();
       return B_NO_ERROR;
    }

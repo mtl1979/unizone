@@ -181,24 +181,43 @@ class NumericQueryFilter : public ValueQueryFilter
 {
 public:
    /** Default constructor.  Sets our value to its default (usually zero), and the operator to OP_EQUAL_TO. */
-   NumericQueryFilter() : _value(), _op(OP_EQUAL_TO) {/* empty */}
+   NumericQueryFilter() : _value(), _op(OP_EQUAL_TO), _assumeDefault(false) {/* empty */}
 
-   /** Constructor.
+   /** Constructor.  This constructor will create a QueryFilter that only returns true from Match()
+     * If the matched Message has the field item with the specified value in it.
      * @param fieldName Field name to look under.
      * @param op The operator to use (should be one of the OP_* values enumerated below)
      * @param value The value to compare to the value found in the Message.
      * @param index Optional index of the item within the field.  Defaults to zero.
      */
-   NumericQueryFilter(const String & fieldName, uint8 op, DataType value, uint32 index = 0) : ValueQueryFilter(fieldName, index), _value(value), _op(op) {/* empty */}
+   NumericQueryFilter(const String & fieldName, uint8 op, DataType value, uint32 index = 0) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _assumeDefault(false) {/* empty */}
+
+   /** Constructor.  This constructor is similar to the constructor shown above,
+     * except that when this constructor is used, if the specified item does not exist in 
+     * the matched Message, this QueryFilter will act as if the Message contained the
+     * specified assumedValue.  This is useful when the Message has been encoded with
+     * the expectation that missing fields should be assumed equivalent to well known
+     * default values.
+     * @param fieldName Field name to look under.
+     * @param op The operator to use (should be one of the OP_* values enumerated below)
+     * @param value The value to compare to the value found in the Message.
+     * @param index Index of the item within the field.  Defaults to zero.
+     * @param assumedValue The value to pretend that the Message contained, if we don't find our value in the Message.
+     */
+   NumericQueryFilter(const String & fieldName, uint8 op, DataType value, uint32 index, const DataType & assumedValue) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _assumeDefault(true), _default(assumedValue) {/* empty */}
 
    virtual status_t SaveToArchive(Message & archive) const
    {
-      return ((ValueQueryFilter::SaveToArchive(archive) == B_NO_ERROR)&&
-              (archive.AddInt8("op", _op) == B_NO_ERROR)) ? archive.AddData("val", DataTypeCode, &_value, sizeof(_value)) : B_ERROR;
+      return ((ValueQueryFilter::SaveToArchive(archive)                                                      == B_NO_ERROR)&&
+              (archive.AddInt8("op", _op)                                                                    == B_NO_ERROR)&&
+              (archive.AddData("val", DataTypeCode, &_value, sizeof(_value))                                 == B_NO_ERROR)&&
+              ((_assumeDefault == false)||(archive.AddData("val", DataTypeCode, &_default, sizeof(_default)) == B_NO_ERROR))) ? B_NO_ERROR : B_ERROR;
    }
 
    virtual status_t SetFromArchive(const Message & archive)
    {
+      _assumeDefault = false;
+
       const void * dt;
       uint32 numBytes;
       if ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&
@@ -206,6 +225,11 @@ public:
           (archive.FindData("val", DataTypeCode, &dt, &numBytes) == B_NO_ERROR)&&(numBytes == sizeof(_value)))
       {
          _value = *((DataType *)dt);
+         if (archive.FindData("val", DataTypeCode, 1, &dt, &numBytes) == B_NO_ERROR)
+         {
+            _assumeDefault = true;
+            _default = *((DataType *)dt);
+         }
          return B_NO_ERROR;
       }
       return B_ERROR;
@@ -217,23 +241,25 @@ public:
    {
       (void) optNode;  // shut compiler and DOxygen up
 
-      bool ret = false;
+      const DataType * valueInMsg;
+     
       const void * p;
-      if (msg.FindData(GetFieldName(), DataTypeCode, GetIndex(), &p, NULL) == B_NO_ERROR)
+           if (msg.FindData(GetFieldName(), DataTypeCode, GetIndex(), &p, NULL) == B_NO_ERROR) valueInMsg = (const DataType *)p;
+      else if (_assumeDefault) valueInMsg = &_default;
+      else return false;
+
+      const DataType & temp = *valueInMsg;
+      switch(_op)
       {
-         const DataType & temp = *((const DataType *)p);
-         switch(_op)
-         {
-            case OP_EQUAL_TO:                 ret = (temp == _value); break;
-            case OP_LESS_THAN:                ret = (temp <  _value); break;
-            case OP_GREATER_THAN:             ret = (temp >  _value); break;
-            case OP_LESS_THAN_OR_EQUAL_TO:    ret = (temp <= _value); break;
-            case OP_GREATER_THAN_OR_EQUAL_TO: ret = (temp >= _value); break;
-            case OP_NOT_EQUAL_TO:             ret = (temp != _value); break;
-            default:                          /* do nothing */        break;
-         }
+         case OP_EQUAL_TO:                 return (temp == _value);
+         case OP_LESS_THAN:                return (temp <  _value);
+         case OP_GREATER_THAN:             return (temp >  _value);
+         case OP_LESS_THAN_OR_EQUAL_TO:    return (temp <= _value);
+         case OP_GREATER_THAN_OR_EQUAL_TO: return (temp >= _value);
+         case OP_NOT_EQUAL_TO:             return (temp != _value);
+         default:                          /* do nothing */  break;
       }
-      return ret;
+      return false;
    }
 
    /** Set the operator to use.  
@@ -263,9 +289,25 @@ public:
       NUM_NUMERIC_OPERATORS        /**< This is a guard value         */
    };
 
+   /** Returns true iff this filter will assume a default value if it can't find an actual value in the Message it tests. */
+   bool IsAssumedDefault() const {return _assumeDefault;}
+
+   /** Sets the assumed default value to the specified value.
+     * @param d The value to match against if we don't find a value in the Message.
+     */
+   void SetAssumedDefault(const DataType & d) {_default = d; _assumeDefault = true;}
+
+   /** Unsets the assumed default.  After calling this, our Match() method will simply always
+     * return false if the specified data item is not found in the Message.
+     */
+   void UnsetAssumedDefault() {_default = DataType(); _assumeDefault = false;}
+
 private:
    DataType _value;
    uint8 _op;
+
+   bool _assumeDefault;
+   DataType _default;
 };
 
 typedef NumericQueryFilter<bool,   B_BOOL_TYPE,   QUERY_FILTER_TYPE_BOOL>   BoolQueryFilter;
@@ -450,7 +492,7 @@ class StringQueryFilter : public ValueQueryFilter
 {
 public:
    /** Default constructor.  The string is set to "", and the operator is set to OP_EQUAL_TO. */
-   StringQueryFilter() : _op(OP_EQUAL_TO), _matcher(NULL) {/* Empty */}
+   StringQueryFilter() : _op(OP_EQUAL_TO), _assumeDefault(false), _matcher(NULL) {/* Empty */}
 
    /** Constructor.
      * @param fieldName Field name to look under.
@@ -458,7 +500,21 @@ public:
      * @param value The string to compare to the string found in the Message.
      * @param index Optional index of the item within the field.  Defaults to zero.
      */
-   StringQueryFilter(const String & fieldName, uint8 op, const String & value, uint32 index = 0) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _matcher(NULL) {/* empty */}
+   StringQueryFilter(const String & fieldName, uint8 op, const String & value, uint32 index = 0) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _assumeDefault(false), _matcher(NULL) {/* empty */}
+
+   /** Constructor.  This constructor is similar to the constructor shown above,
+     * except that when this constructor is used, if the specified item does not exist in 
+     * the matched Message, this QueryFilter will act as if the Message contained the
+     * specified assumedValue.  This is useful when the Message has been encoded with
+     * the expectation that missing fields should be assumed equivalent to well known
+     * default values.
+     * @param fieldName Field name to look under.
+     * @param op The operator to use (should be one of the OP_* values enumerated below)
+     * @param value The string to compare to the string found in the Message.
+     * @param index Optional index of the item within the field.  Defaults to zero.
+     * @param assumedValue The value to pretend that the Message contained, if we don't find our value in the Message.
+     */
+   StringQueryFilter(const String & fieldName, uint8 op, const String & value, uint32 index, const String & assumedValue) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _assumeDefault(true), _default(assumedValue), _matcher(NULL) {/* empty */}
 
    /** Destructor */
    ~StringQueryFilter() {FreeMatcher();}
@@ -514,12 +570,29 @@ public:
       NUM_STRING_OPERATORS                     /**< This is a guard token */
    };
 
+   /** Returns true iff this filter will assume a default value if it can't find an actual value in the Message it tests. */
+   bool IsAssumedDefault() const {return _assumeDefault;}
+
+   /** Sets the assumed default value to the specified value.
+     * @param d The value to match against if we don't find a value in the Message.
+     */
+   void SetAssumedDefault(const String & d) {_default = d; _assumeDefault = true;}
+
+   /** Unsets the assumed default.  After calling this, our Match() method will simply always
+     * return false if the specified data item is not found in the Message.
+     */
+   void UnsetAssumedDefault() {_default.Clear(); _assumeDefault = false;}
+
 private:
    void FreeMatcher();
    bool DoMatch(const String & s) const;
 
    String _value;
    uint8 _op;
+
+   bool _assumeDefault;
+   String _default;
+
    mutable StringMatcher * _matcher;
 };
 
@@ -538,6 +611,20 @@ public:
      * @param index Optional index of the item within the field.  Defaults to zero.
      */
    RawDataQueryFilter(const String & fieldName, uint8 op, const ByteBufferRef & value, uint32 typeCode = B_ANY_TYPE, uint32 index = 0) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _typeCode(typeCode) {/* empty */}
+
+   /** Constructor.  This constructor is similar to the constructor shown above,
+     * except that when this constructor is used, if the specified item does not exist in 
+     * the matched Message, this QueryFilter will act as if the Message contained the
+     * specified assumedValue.  This is useful when the Message has been encoded with
+     * the expectation that missing fields should be assumed equivalent to well known
+     * default values.
+     * @param fieldName Field name to look under.
+     * @param op The operator to use (should be one of the OP_* values enumerated below)
+     * @param value The string to compare to the string found in the Message.
+     * @param typeCode Typecode to look for in the target Message.  Default is B_ANY_TYPE, indicating that any type code is acceptable.
+     * @param index Optional index of the item within the field.  Defaults to zero.
+     */
+   RawDataQueryFilter(const String & fieldName, uint8 op, const ByteBufferRef & value, uint32 typeCode, uint32 index, const ByteBufferRef & assumedValue) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _typeCode(typeCode), _default(assumedValue) {/* empty */}
 
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
@@ -586,10 +673,20 @@ public:
       NUM_RAWDATA_OPERATORS         /**< This is a guard value */
    };
 
+   /** Call this to specify an assumed default value that should be used when the
+     * Message we are matching against doesn't have an actual value itself. 
+     * Call this with a NULL reference if you don't want to use an assumed default value.
+     */ 
+   void SetAssumedDefault(const ByteBufferRef & bufRef) {_default = bufRef;}
+
+   /** Returns the current assumed default value, or a NULL reference if there is none. */
+   const ByteBufferRef & GetAssumedDefault() const {return _default;}
+
 private:
    ByteBufferRef _value;
    uint8 _op;
    uint32 _typeCode;
+   ByteBufferRef _default;
 };
 
 /** Interface for any object that knows how to instantiate QueryFilter objects */

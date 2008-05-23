@@ -47,9 +47,9 @@ CFG=zlib - Win32 LIB Debug
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c /I"..\..\win32"
 # SUBTRACT BASE CPP /YX /Yc /Yu
-# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c /I"..\..\win32"
 # SUBTRACT CPP /YX /Yc /Yu
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -78,9 +78,9 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c /I"..\..\win32"
 # SUBTRACT BASE CPP /YX /Yc /Yu
-# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c /I"..\..\win32"
 # SUBTRACT CPP /YX /Yc /Yu
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -109,9 +109,9 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c /I"..\..\win32"
 # SUBTRACT BASE CPP /YX /Yc /Yu
-# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "ASMV" /D "ASMINF" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "ASMV" /D "ASMINF" /FD /c /I"..\..\win32"
 # SUBTRACT CPP /YX /Yc /Yu
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -140,9 +140,9 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c /I"..\..\win32"
 # SUBTRACT BASE CPP /YX /Yc /Yu
-# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /D "ASMV" /D "ASMINF" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /D "ASMV" /D "ASMINF" /FD /GZ /c /I"..\..\win32"
 # SUBTRACT CPP /YX /Yc /Yu
 MTL=midl.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -170,9 +170,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Win32_LIB_Release"
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c /I"..\..\win32"
 # SUBTRACT BASE CPP /YX /Yc /Yu
-# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c /I"..\..\win32"
 # SUBTRACT CPP /YX /Yc /Yu
 RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -197,9 +197,9 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Win32_LIB_Debug"
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c /I"..\..\win32"
 # SUBTRACT BASE CPP /YX /Yc /Yu
-# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c /I"..\..\win32"
 # SUBTRACT CPP /YX /Yc /Yu
 RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -224,9 +224,9 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Win32_LIB_ASM_Release"
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /FD /c /I"..\..\win32"
 # SUBTRACT BASE CPP /YX /Yc /Yu
-# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "ASMV" /D "ASMINF" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "ASMV" /D "ASMINF" /FD /c /I"..\..\win32"
 # SUBTRACT CPP /YX /Yc /Yu
 RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -251,9 +251,9 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Win32_LIB_ASM_Debug"
 # PROP Target_Dir ""
 CPP=cl.exe
-# ADD BASE CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /FD /GZ /c /I"..\..\win32"
 # SUBTRACT BASE CPP /YX /Yc /Yu
-# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /D "ASMV" /D "ASMINF" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /D "ASMV" /D "ASMINF" /FD /GZ /c /I"..\..\win32"
 # SUBTRACT CPP /YX /Yc /Yu
 RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -393,7 +393,7 @@ SOURCE=..\..\trees.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\zconf.h
+SOURCE=.\zconf.h
 # End Source File
 # Begin Source File
 
@@ -493,38 +493,38 @@ SOURCE=..\..\contrib\masmx86\gvmat32c.c
 !IF  "$(CFG)" == "zlib - Win32 DLL Release"
 
 # PROP Exclude_From_Build 1
-# ADD CPP /I "..\.."
+# ADD CPP /I "..\.." /I"..\..\win32"
 
 !ELSEIF  "$(CFG)" == "zlib - Win32 DLL Debug"
 
 # PROP Exclude_From_Build 1
-# ADD CPP /I "..\.."
+# ADD CPP /I "..\.." /I"..\..\win32"
 
 !ELSEIF  "$(CFG)" == "zlib - Win32 DLL ASM Release"
 
-# ADD CPP /I "..\.."
+# ADD CPP /I "..\.." /I"..\..\win32"
 
 !ELSEIF  "$(CFG)" == "zlib - Win32 DLL ASM Debug"
 
-# ADD CPP /I "..\.."
+# ADD CPP /I "..\.." /I"..\..\win32"
 
 !ELSEIF  "$(CFG)" == "zlib - Win32 LIB Release"
 
 # PROP Exclude_From_Build 1
-# ADD CPP /I "..\.."
+# ADD CPP /I "..\.." /I"..\..\win32"
 
 !ELSEIF  "$(CFG)" == "zlib - Win32 LIB Debug"
 
 # PROP Exclude_From_Build 1
-# ADD CPP /I "..\.."
+# ADD CPP /I "..\.." /I"..\..\win32"
 
 !ELSEIF  "$(CFG)" == "zlib - Win32 LIB ASM Release"
 
-# ADD CPP /I "..\.."
+# A /I"..\..\win32" /I"..\..\win32" /I"..\..\win32" /I"..\..\win32"DD CPP /I "..\.."
 
 !ELSEIF  "$(CFG)" == "zlib - Win32 LIB ASM Debug"
 
-# ADD CPP /I "..\.."
+# ADD CPP /I "..\.." /I"..\..\win32" /I"..\..\win32" /I"..\..\win32" /I"..\..\win32"
 
 !ENDIF 
 

@@ -267,7 +267,7 @@ SOURCE=..\..\minigzip.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\zconf.h
+SOURCE=.\zconf.h
 # End Source File
 # Begin Source File
 

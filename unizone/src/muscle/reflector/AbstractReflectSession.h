@@ -31,6 +31,16 @@ public:
     */
    virtual AbstractReflectSessionRef CreateSession(const String & clientAddress, const IPAddressAndPort & factoryInfo) = 0;
 
+   /** 
+    * Should return true iff this factory is currently ready to accept connections.
+    * This method is called each time through the event loop, and if this method 
+    * is overridden to return false, then this factory will not be included in the
+    * select() set and any incoming TCP connections on this factory's port will
+    * not be acted upon (i.e. they will be forced to wait).
+    * Default implementation always returns true.
+    */
+   virtual bool IsReadyToAcceptSessions() const {return true;}
+
    /**
     * Returns an auto-assigned ID value that represents this factory.
     * The returned value is guaranteed to be unique across all factory in the server.
@@ -311,6 +321,12 @@ public:
      */
    uint64 GetAutoReconnectDelay() const {return _autoReconnectDelay;}
 
+   /** Returns true iff we are currently in the middle of an asynchronous TCP connection */
+   bool IsConnectingAsync() const {return _connectingAsync;}
+
+   /** Returns true iff this session is currently connected to our remote counterpart. */
+   bool IsConnected() const {return _isConnected;}
+
 protected:
    /**
     * Adds a MessageRef to our gateway's outgoing message queue.
@@ -356,9 +372,6 @@ protected:
     */
    status_t Reconnect();
 
-   /** Returns true iff we are currently in the middle of an asynchronous TCP connection */
-   bool IsConnectingAsync() const {return _connectingAsync;}
-
    /** Convenience method:  Returns the file descriptor associated with this session's
      * DataIO class, or a NULL reference if there is none.
      */
@@ -376,6 +389,7 @@ private:
    String _idString;
    IPAddressAndPort _ipAddressAndPort;
    bool _connectingAsync;
+   bool _isConnected;
    String _hostName;
    IPAddressAndPort _asyncConnectDest;
    AbstractMessageIOGatewayRef _gateway;
@@ -396,11 +410,7 @@ private:
 
 // VC++ can't handle partial template specialization, so for VC++ we define this explicitely.
 #ifdef _MSC_VER
-template <> class HashFunctor<Ref<AbstractReflectSession> >
-{
-public:
-   uint32 operator() (const Ref<AbstractReflectSession> & x) const {return (uint32)x();}
-};
+DECLARE_HASHTABLE_KEY_CLASS(Ref<AbstractReflectSession>);
 #endif
 
 END_NAMESPACE(muscle);

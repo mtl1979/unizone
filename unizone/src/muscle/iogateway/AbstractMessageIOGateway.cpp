@@ -1,6 +1,7 @@
 /* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "iogateway/AbstractMessageIOGateway.h"
+#include "util/NetworkUtilityFunctions.h"
 
 BEGIN_NAMESPACE(muscle);
 
@@ -13,17 +14,6 @@ AbstractMessageIOGateway :: ~AbstractMessageIOGateway()
 {
    // empty
 }
-
-// Adds the given message reference to our list of outgoing messages
-// to send.  Never blocks.  Returns false iff for some reason
-// the message can't be queued (out of memory?)
-status_t 
-AbstractMessageIOGateway ::
-AddOutgoingMessage(const MessageRef & messageRef)
-{
-   return _hosed ? B_ERROR : _outgoingMessages.AddTail(messageRef);
-}
-
 
 // Handles buffer allocation and re-allocation
 status_t
@@ -93,6 +83,63 @@ Reset()
 {
    _outgoingMessages.Clear();
    _hosed = false;
+}
+
+/** Used to funnel callbacks from DoInput() back through the AbstractMessageIOGateway's own API, so that subclasses can insert their logic as necessary */
+class ScratchProxyReceiver : public AbstractGatewayMessageReceiver
+{
+public:
+   ScratchProxyReceiver(AbstractMessageIOGateway * gw, AbstractGatewayMessageReceiver * r) : _gw(gw), _r(r) {/* empty */}
+
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * userData) {_gw->SynchronousMessageReceivedFromGateway(msg, userData, *_r);}
+   virtual void AfterMessageReceivedFromGateway(const MessageRef & msg, void * userData) {_gw->SynchronousAfterMessageReceivedFromGateway(msg, userData, *_r);}
+   virtual void BeginMessageReceivedFromGatewayBatch() {_gw->SynchronousBeginMessageReceivedFromGatewayBatch(*_r);}
+   virtual void EndMessageReceivedFromGatewayBatch() {_gw->SynchronousEndMessageReceivedFromGatewayBatch(*_r);}
+
+private:
+   AbstractMessageIOGateway * _gw;
+   AbstractGatewayMessageReceiver * _r;
+};
+
+status_t 
+AbstractMessageIOGateway :: 
+ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64 timeoutPeriod)
+{
+   int fd = GetDataIO()() ? GetDataIO()()->GetSelectSocket().GetFileDescriptor() : -1;
+   if (fd < 0) return B_ERROR;  // no socket to transmit or receive on!
+
+   ScratchProxyReceiver scratchReceiver(this, optReceiver);
+   bool hasTimeout = (timeoutPeriod != MUSCLE_TIME_NEVER);
+   uint64 endTime = hasTimeout ? (GetRunTime64()+timeoutPeriod) : MUSCLE_TIME_NEVER;
+   fd_set readSet, writeSet;
+   while(IsStillAwaitingSynchronousMessagingReply())
+   {
+      uint64 now = GetRunTime64();
+      if (now >= endTime) return B_ERROR;
+
+      fd_set * rset = NULL;
+      if (optReceiver)
+      {
+         rset = &readSet;
+         FD_ZERO(rset);
+         FD_SET(fd, rset);
+      }
+
+      fd_set * wset = NULL;
+      if (HasBytesToOutput())
+      {
+         wset = &writeSet;
+         FD_ZERO(wset);
+         FD_SET(fd, wset);
+      }
+
+      struct timeval tv; 
+      if (hasTimeout) Convert64ToTimeVal(muscleMax((int64)0, (int64)(endTime-now)), tv);
+      if (select(fd+1, rset, wset, NULL, hasTimeout ? &tv : NULL) < 0)  return B_ERROR;
+      if ((wset)&&(FD_ISSET(fd, wset))&&(DoOutput() < 0))               return B_ERROR;
+      if ((rset)&&(FD_ISSET(fd, rset))&&(DoInput(scratchReceiver) < 0)) return B_ERROR;
+   }
+   return B_NO_ERROR;
 }
 
 END_NAMESPACE(muscle);

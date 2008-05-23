@@ -64,7 +64,7 @@ void ProxySessionFactory :: AboutToDetachFromServer()
 }
 
 AbstractReflectSession ::
-AbstractReflectSession() : _sessionID(GetNextGlobalID(_sessionIDCounter)), _connectingAsync(false), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER), _autoReconnectDelay(MUSCLE_TIME_NEVER), _reconnectTime(MUSCLE_TIME_NEVER), _wasConnected(false)
+AbstractReflectSession() : _sessionID(GetNextGlobalID(_sessionIDCounter)), _connectingAsync(false), _isConnected(false), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER), _autoReconnectDelay(MUSCLE_TIME_NEVER), _reconnectTime(MUSCLE_TIME_NEVER), _wasConnected(false)
 {
    char buf[64]; sprintf(buf, UINT32_FORMAT_SPEC, _sessionID);
    _idString = buf;
@@ -123,7 +123,7 @@ Reconnect()
       _gateway()->Reset();                 // set gateway back to its virgin state
    }
 
-   _connectingAsync = false;  // paranoia
+   _isConnected = _connectingAsync = false;  // paranoia
 
    bool doTCPConnect = (_asyncConnectDest.GetIPAddress() != invalidIP);
    bool isReady = false;
@@ -139,8 +139,17 @@ Reconnect()
             if (_gateway() == NULL) return B_ERROR;
          }
          _gateway()->SetDataIO(io);
-         if (isReady) AsyncConnectCompleted();
-         _connectingAsync = ((doTCPConnect)&&(isReady == false));
+         if (isReady) 
+         {
+            _isConnected = _wasConnected = true;
+            _connectingAsync = false;
+            AsyncConnectCompleted();
+         }
+         else 
+         {
+            _isConnected     = false;
+            _connectingAsync = doTCPConnect;
+         }
          _scratchReconnected = true;   // tells ReflectServer not to shut down our new IO!
          return B_NO_ERROR;
       }
@@ -218,7 +227,11 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData)
 
 void AbstractReflectSession :: AsyncConnectCompleted()
 {
-   _wasConnected = true;
+   // These sets are mostly redundant, since typically ReflectServer sets these variables
+   // directly before calling AsyncConnectCompleted()... but if third party code is calling
+   // AsyncConnectCompleted(), then we might as well make sure they are set from that context
+   // also.
+   _isConnected = _wasConnected = true;
 }
 
 void AbstractReflectSession :: SetInputPolicy(const PolicyRef & newRef) {SetPolicyAux(_inputPolicyRef, _maxInputChunk, newRef, true);}

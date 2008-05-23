@@ -113,11 +113,11 @@ public:
    virtual ~AbstractMessageIOGateway();
 
    /**
-    * Adds the given message reference to our list of outgoing messages to send.  Never blocks.  
+    * Appends the given message reference to the end of our list of outgoing messages to send.  Never blocks.  
     * @param messageRef A reference to the Message to send out through the gateway.
     * @return B_NO_ERROR on success, B_ERROR iff for some reason the message can't be queued (out of memory?)
     */
-   status_t AddOutgoingMessage(const MessageRef & messageRef);
+   status_t AddOutgoingMessage(const MessageRef & messageRef) {return _hosed ? B_ERROR : _outgoingMessages.AddTail(messageRef);}
 
    /**
     * Writes some of our outgoing message bytes to the wire.
@@ -217,6 +217,33 @@ public:
    /** Returns true iff we are hosed--that is, we've experienced an unrecoverable error. */
    bool IsHosed() const {return _hosed;}
 
+   /** This is a convenience method for when you want to do simple synchronous 
+     * (RPC-style) communications.  This method will run its own little event loop and not 
+     * return until all of this I/O gateway's outgoing Messages have been sent out.  
+     * Subclasses of the AbstractMessageIOGateway class that support doing so may augment 
+     * this method's logic so that this method does not return until the corresponding 
+     * reply Messages have been received and passed to (optReceiver) as well, but since that 
+     * functionality is dependent on the particulars of the gateway subclass's protocol, 
+     * this base method does not do that.
+     * @param optReceiver If non-NULL, then any Messages are received from the remote end 
+     *                 of the during the time that ExecuteSynchronousMessaging() is
+     *                 executing will be passed to (optReceiver)'s MessageReceivedFromGateway() 
+     *                 method.  If NULL, then no data will be read from the socket.
+     * @param timeoutPeriod A timeout period for this method.  If left as MUSCLE_TIME_NEVER
+     *                (the default), then no timeout is applied.  If set to another value,
+     *                then this method will return B_ERROR after (timeoutPeriod) microseconds
+     *                if the operation hasn't already completed by then.
+     * @returns B_NO_ERROR on success (all pending outgoing Messages were sent) or B_ERROR
+     *                     on failure (usually because the connection was severed while
+     *                     outgoing data was still pending)
+     * @see SynchronousMessageReceivedFromGateway(), SynchronousAfterMessageReceivedFromGateway(),
+     *      SynchronousBeginMessageReceivedFromGatewayBatch(), SynchronousEndMessageReceivedFromGatewayBatch(),
+     *      and IsStillAwaitingSynchronousMessagingReply().
+     * @note Even though this is a blocking call, you should still have the DataIO's socket
+     *       set to non-blocking mode, otherwise you risk this call never returning due to a blocking recv().
+     */
+   virtual status_t ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64 timeoutPeriod = MUSCLE_TIME_NEVER);
+
 protected:
    /**
     * Writes some of our outgoing message bytes to the wire.
@@ -269,7 +296,24 @@ protected:
    /** Call this method to flag this gateway as hosed--that is, to say that an unrecoverable error has occurred. */
    void SetHosed() {_hosed = true;}
   
+protected:
+   /** Called by ExecuteSynchronousMessaging() to see if we are still awaiting our reply Messages.  Default implementation calls HasBytesToOutput() and returns that value. */
+   virtual bool IsStillAwaitingSynchronousMessagingReply() const {return HasBytesToOutput();}
+
+   /** Called by ExecuteSynchronousMessaging() when a Message is received.  Default implementation just passes the call on to the like-named method in (r) */ 
+   virtual void SynchronousMessageReceivedFromGateway(const MessageRef & msg, void * userData, AbstractGatewayMessageReceiver & r) {r.MessageReceivedFromGateway(msg, userData);}
+
+   /** Called by ExecuteSynchronousMessaging() after a Message is received.  Default implementation just passes the call on to the like-named method in (r) */ 
+   virtual void SynchronousAfterMessageReceivedFromGateway(const MessageRef & msg, void * userData, AbstractGatewayMessageReceiver & r) {r.AfterMessageReceivedFromGateway(msg, userData);}
+
+   /** Called by ExecuteSynchronousMessaging() when a batch of Messages is about to be received.  Default implementation just passes the call on to the like-named method in (r) */ 
+   virtual void SynchronousBeginMessageReceivedFromGatewayBatch(AbstractGatewayMessageReceiver & r) {r.BeginMessageReceivedFromGatewayBatch();}
+
+   /** Called by ExecuteSynchronousMessaging() when all Messages in a batch have been received.  Default implementation just passes the call on to the like-named method in (r) */ 
+   virtual void SynchronousEndMessageReceivedFromGatewayBatch(AbstractGatewayMessageReceiver & r) {r.EndMessageReceivedFromGatewayBatch();}
+
 private:
+   friend class ScratchProxyReceiver;
    Queue<MessageRef> _outgoingMessages;
 
    DataIORef _ioRef;

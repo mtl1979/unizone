@@ -661,34 +661,10 @@ private:
 #endif
    }
 };
+DECLARE_HASHTABLE_KEY_CLASS(String);
 
-/** Convenience method:  returns a string with no characters in it (a.k.a. "") */
-const String & GetEmptyString();
-
-template <class T> class HashFunctor;
-
-template <>
-class HashFunctor<String>
-{
-public:
-   /** Returns a hash code for the given String.
-     * @param str Reference to the MUSCLE String object to compute a hash code for.
-     */
-   uint32 operator () (const String & str) const {return CStringHashFunc(str());}
-};
-
-template <>
-class HashFunctor<const String *>
-{
-public:
-   /** Returns a hash code for the given String.
-     * @param str Pointer to the MUSCLE String object to compute a hash code for.
-     */
-   uint32 operator () (const String * str) const {return str->HashCode();}
-};
-
-template <>
-class HashFunctor<const char *>
+// Also we want to allow C Strings to be used as keys in a Hashtable too
+template <> class HashFunctor<const char *>
 {
 public:
    /** Returns a hash code for the given C string.
@@ -696,6 +672,9 @@ public:
      */
    uint32 operator () (const char * str) const {return CStringHashFunc(str);}
 };
+
+/** Convenience method:  returns a string with no characters in it (a.k.a. "") */
+const String & GetEmptyString();
 
 /** A function for comparing (const String &)'s -- calls muscleCompare() on the two Strings. */
 int StringCompareFunc(const String &, const String &, void *);

@@ -85,6 +85,7 @@ private:
    uint64 _lowBits;
    uint64 _highBits;
 };
+DECLARE_HASHTABLE_KEY_CLASS(ip_address);
 
 /** IPv6 Numeric representation of a all-zeroes invalid/guard address */
 const ip_address invalidIP(0x00);
@@ -94,15 +95,6 @@ const ip_address localhostIP(0x01);
 
 /** IPv6 Numeric representation of link-local broadcast (ff02::1), for convenience */
 const ip_address broadcastIP(0x01, ((uint64)0xFF02)<<48);
-
-template <class T> class HashFunctor;
-
-template <>
-class HashFunctor<ip_address>
-{
-public:
-   uint32 operator () (const ip_address & x) const {return x.HashCode();}
-};
 
 #else
 
@@ -381,12 +373,6 @@ status_t SetSocketSendBufferSize(const SocketRef & socket, uint32 sendBufferSize
   */
 status_t SetSocketReceiveBufferSize(const SocketRef & socket, uint32 receiveBufferSizeBytes);
 
-/** Convenience function:  Won't return for a given number of microsends.
- *  @param micros The number of microseconds to wait for.
- *  @return B_NO_ERROR on success, or B_ERROR on failure.
- */
-status_t Snooze64(uint64 microseconds);
-
 /** Set a user-specified IP address to return from GetHostByName() and GetPeerIPAddress() instead of 127.0.0.1.
   * Note that this function <b>does not</b> change the computer's IP address -- it merely changes what
   * the aforementioned functions will report.
@@ -512,6 +498,20 @@ private:
   */
 status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool includeLocalhost = true);
 
+/** This is a more limited version of GetNetworkInterfaceInfos(), included for convenience.
+  * Instead of returning all information about the local host's network interfaces, this
+  * one returns only their IP addresses.  It is the same as calling GetNetworkInterfaceInfos()
+  * and then iterating the returned list to assemble a list only of the IP addresses returned
+  * by GetBroadcastAddress().
+  * @param results On success, zero or more ip_addresses will be added to this Queue for you to look at.
+  * @param includeLocalhost If true (the default), then localhost/loopback interfaces
+  *                         will be included in this list.  If set false, then only
+  *                         "real" network interfaces will be included.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory,
+  *          call not implemented for the current OS, etc)
+  */
+status_t GetNetworkInterfaceAddresses(Queue<ip_address> & retAddresses, bool includeLocalhost = true);
+
 /** This simple class holds an IP address and a port number, and lets you do
   * useful things on the two such as using them as key values in a hash table,
   * converting them to/from user-readable strings, etc.
@@ -620,16 +620,7 @@ private:
    ip_address _ip;
    uint16 _port;
 };
-
-template <>
-class HashFunctor<IPAddressAndPort>
-{
-public:
-   /** Returns a hash code for the given IPAddressAndPort object.
-     * @param iaap The IPAddressAndPort object to return a hash code for.
-     */
-   uint32 operator () (const IPAddressAndPort & iaap) const {return iaap.HashCode();}
-};
+DECLARE_HASHTABLE_KEY_CLASS(IPAddressAndPort);
 
 #ifdef MUSCLE_ENABLE_MULTICAST_API
 

@@ -386,8 +386,10 @@ uint64 GetRunTime64()
       }
    }
 # else
-   TCHECKPOINT;
-
+#  if defined(MUSCLE_USE_LIBRT) && defined(_POSIX_MONOTONIC_CLOCK)
+   struct timespec ts;
+   return (clock_gettime(CLOCK_MONOTONIC, &ts) == 0) ? ((((uint64)ts.tv_sec)*1000000)+(((uint64)ts.tv_nsec)/1000)) : 0; 
+#  else
    // default implementation:  use POSIX API
    static clock_t _ticksPerSecond = 0;
    if (_ticksPerSecond <= 0) _ticksPerSecond = sysconf(_SC_CLK_TCK);
@@ -420,9 +422,31 @@ uint64 GetRunTime64()
       }
    }
    return 0;  // Oops?
+#  endif
 # endif
 #endif
 }
+
+status_t Snooze64(uint64 micros)
+{
+#if __BEOS__
+   return snooze(micros);
+#elif __ATHEOS__
+   return (snooze(micros) >= 0) ? B_NO_ERROR : B_ERROR;
+#elif WIN32
+   Sleep((DWORD)((micros/1000)+(((micros%1000)!=0)?1:0)));
+   return B_NO_ERROR;
+#elif defined(MUSCLE_USE_LIBRT) && defined(_POSIX_MONOTONIC_CLOCK)
+   const struct timespec ts = {micros/1000000, (micros%1000000)*1000};
+   return (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL) == 0) ? B_NO_ERROR : B_ERROR;
+#else
+   /** We can use select(), if nothing else */
+   struct timeval waitTime;
+   Convert64ToTimeVal(micros, waitTime);
+   return (select(0, NULL, NULL, NULL, &waitTime) >= 0) ? B_NO_ERROR : B_ERROR;
+#endif
+}
+
 
 #ifdef WIN32
 // Broken out so ParseHumanReadableTimeValues() can use it also
@@ -613,7 +637,7 @@ status_t Flattenable :: FlattenToDataIO(DataIO & outputStream, bool addSizeHeade
    else Flatten(b);
 
    // And finally, write out the buffer
-   status_t ret = (outputStream.WriteFully(b, fs) == fs) ? B_NO_ERROR : B_ERROR;
+   status_t ret = (outputStream.WriteFully(b, bufSize) == bufSize) ? B_NO_ERROR : B_ERROR;
    delete [] bigBuf;
    return ret;
 }

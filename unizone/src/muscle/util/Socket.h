@@ -83,9 +83,11 @@ public:
 
    /** Convenience method.  Returns the file descriptor we are holding, or -1 if we are a NULL reference. */
    int GetFileDescriptor() const {const Socket * s = GetItemPointer(); return s?s->GetFileDescriptor():-1;}
-};
 
-template <class T> class HashFunctor;
+   /** When we're being used as a key in a Hashtable, key on the file descriptor we hold */
+   uint32 HashCode() const {return (uint32)GetFileDescriptor();}
+};
+DECLARE_HASHTABLE_KEY_CLASS(SocketRef);
 
 /** Returns a SocketRef from our SocketRef pool that references the passed in file descriptor.
   * @param fd The file descriptor that the returned SocketRef should be tracking.
@@ -105,17 +107,6 @@ const SocketRef & GetNullSocket();
 
 /** Convenience method:  Returns a reference to an invalid Socket (i.e. a Socket object with a negative file descriptor).  Note the difference between what this function returns and what GetNullSocket() returns!  If you're not sure which of these two functions to use, then GetNullSocket() is probably the one you want. */
 const SocketRef & GetInvalidSocket();
-
-/** This allows SocketRefs to be keys in a Hashtable, keyed to their underlying file descriptor. */
-template <>
-class HashFunctor<SocketRef>
-{
-public:
-   /** Returns a hash code for the given SocketRef object.
-     * @param sr The SocketRef object to return a hash code for.  The hash code is simply the associated file descriptor.
-     */
-   uint32 operator () (const SocketRef & sr) const {return sr.GetFileDescriptor();}
-};
 
 END_NAMESPACE(muscle);
 

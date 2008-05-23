@@ -132,7 +132,7 @@ public:
    /** Convenience method:  Calls Write() in a loop until the entire buffer is written, or
      * until an error occurs.  This method should only be used in conjunction with 
      * blocking I/O; it will not work reliably with non-blocking I/O.
-     * @param buffer Pointer to the first byte of the buffer to write.
+     * @param buffer Pointer to the first byte of the buffer to write data from.
      * @param size Number of bytes to write
      * @return The number of bytes that were actually written.  On success,
      *         This will be equal to (size).  On failure, it will be a smaller value.
@@ -142,7 +142,7 @@ public:
    /** Convenience method:  Calls Read() in a loop until the entire buffer is written, or
      * until an error occurs.  This method should only be used in conjunction with 
      * blocking I/O; it will not work reliably with non-blocking I/O.
-     * @param buffer Pointer to the first byte of the buffer to read.
+     * @param buffer Pointer to the first byte of the buffer to place the read data into.
      * @param size Number of bytes to read
      * @return The number of bytes that were actually read.  On success,
      *         This will be equal to (size).  On failure, it will be a smaller value.

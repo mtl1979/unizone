@@ -2,6 +2,7 @@
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
+#include "dataio/FileDataIO.h"
 #include "util/ByteBuffer.h"
 #include "util/MiscUtilityFunctions.h"
 #include "util/StringTokenizer.h"
@@ -10,6 +11,55 @@
 #include "zlib/zlib/contrib/minizip/unzip.h"
 
 BEGIN_NAMESPACE(muscle);
+
+static voidpf ZCALLBACK fopen_dataio_func (voidpf opaque, const char * /*filename*/, int /*mode*/)
+{
+   return opaque;
+}
+
+static uLong ZCALLBACK fread_dataio_func (voidpf /*opaque*/, voidpf stream, void *buf, uLong size)
+{
+   DataIO * dio = (DataIO *)stream;
+   return (uLong) (dio ? dio->ReadFully(buf, size) : 0);
+}
+
+static uLong ZCALLBACK fwrite_dataio_func (voidpf /*opaque*/, voidpf stream, const void * buf, uLong size)
+{
+   DataIO * dio = (DataIO *)stream;
+   return (uLong) (dio ? dio->WriteFully(buf, size) : 0);
+}
+
+static long ZCALLBACK ftell_dataio_func (voidpf /*opaque*/, voidpf stream)
+{
+   DataIO * dio = (DataIO *)stream;
+   return (long) (dio ? dio->GetPosition() : -1);
+}
+
+static long ZCALLBACK fseek_dataio_func (voidpf /*opaque*/, voidpf stream, uLong offset, int origin)
+{
+   int muscleSeekOrigin;
+   switch(origin)
+   {
+      case ZLIB_FILEFUNC_SEEK_CUR: muscleSeekOrigin = DataIO::IO_SEEK_CUR; break;
+      case ZLIB_FILEFUNC_SEEK_END: muscleSeekOrigin = DataIO::IO_SEEK_END; break;
+      case ZLIB_FILEFUNC_SEEK_SET: muscleSeekOrigin = DataIO::IO_SEEK_SET; break;
+      default:                     return -1;
+   }
+   DataIO * dio = (DataIO *)stream;
+   return (long) ((dio)&&(dio->Seek(offset, muscleSeekOrigin) == B_NO_ERROR)) ? 0 : -1;
+}
+
+static int ZCALLBACK fclose_dataio_func (voidpf /*opaque*/, voidpf /*stream*/)
+{
+   // empty
+   return 0;
+}
+
+static int ZCALLBACK ferror_dataio_func (voidpf /*opaque*/, voidpf /*stream*/)
+{
+   // empty
+   return -1;
+}
 
 static status_t WriteZipFileAux(zipFile zf, const String & baseName, const Message & msg, int compressionLevel, zip_fileinfo * fileInfo)
 {
@@ -66,9 +116,26 @@ static status_t WriteZipFileAux(zipFile zf, const String & baseName, const Messa
 
 status_t WriteZipFile(const char * fileName, const Message & msg, int compressionLevel, uint64 fileCreationTime)
 {
+   FileDataIO fio(fopen(fileName, "wb"));
+   return WriteZipFile(fio, msg, compressionLevel, fileCreationTime);
+}
+
+status_t WriteZipFile(DataIO & writeTo, const Message & msg, int compressionLevel, uint64 fileCreationTime)
+{
    TCHECKPOINT;
 
-   zipFile zf = zipOpen(fileName, 0);
+   zlib_filefunc_def zdefs = {
+      fopen_dataio_func,
+      fread_dataio_func,
+      fwrite_dataio_func,
+      ftell_dataio_func,
+      fseek_dataio_func,
+      fclose_dataio_func,
+      ferror_dataio_func,
+      &writeTo
+   };
+   const char * comment = "";
+   zipFile zf = zipOpen2(NULL, false, &comment, &zdefs);
    if (zf)
    {
       zip_fileinfo * fi = NULL;
@@ -95,7 +162,7 @@ status_t WriteZipFile(const char * fileName, const Message & msg, int compressio
    else return B_ERROR;
 }
 
-static status_t ReadZipFileAux(zipFile zf, Message & msg, char * nameBuf, uint32 nameBufLen)
+static status_t ReadZipFileAux(zipFile zf, Message & msg, char * nameBuf, uint32 nameBufLen, bool loadData)
 {
    while(unzOpenCurrentFile(zf) == UNZ_OK)
    {
@@ -124,10 +191,12 @@ static status_t ReadZipFileAux(zipFile zf, Message & msg, char * nameBuf, uint32
             }
             else
             {
-               ByteBufferRef bufRef = GetByteBufferFromPool(fileInfo.uncompressed_size);
-               if ((bufRef() == NULL)||(unzReadCurrentFile(zf, bufRef()->GetBuffer(), bufRef()->GetNumBytes()) != (int32)bufRef()->GetNumBytes())) return B_ERROR;
-
-               if (m->AddFlat(fn, FlatCountableRef(bufRef.GetGeneric(), true)) != B_NO_ERROR) return B_ERROR;
+               if (loadData)
+               {
+                  ByteBufferRef bufRef = GetByteBufferFromPool(fileInfo.uncompressed_size);
+                  if ((bufRef() == NULL)||(unzReadCurrentFile(zf, bufRef()->GetBuffer(), bufRef()->GetNumBytes()) != (int32)bufRef()->GetNumBytes())||(m->AddFlat(fn, bufRef) != B_NO_ERROR)) return B_ERROR;
+               }
+               else if (m->AddInt64(fn, fileInfo.uncompressed_size) != B_NO_ERROR) return B_ERROR;
             }
          }
       }
@@ -137,7 +206,13 @@ static status_t ReadZipFileAux(zipFile zf, Message & msg, char * nameBuf, uint32
    return B_NO_ERROR;
 }
 
-MessageRef ReadZipFile(const char * fileName)
+MessageRef ReadZipFile(const char * fileName, bool loadData)
+{
+   FileDataIO fio(fopen(fileName, "rb"));
+   return ReadZipFile(fio, loadData);
+}
+
+MessageRef ReadZipFile(DataIO & readFrom, bool loadData)
 {
    TCHECKPOINT;
 
@@ -148,10 +223,20 @@ MessageRef ReadZipFile(const char * fileName)
       MessageRef ret = GetMessageFromPool();
       if (ret())
       {
-         zipFile zf = unzOpen(fileName);
+         zlib_filefunc_def zdefs = {
+            fopen_dataio_func,
+            fread_dataio_func,
+            fwrite_dataio_func,
+            ftell_dataio_func,
+            fseek_dataio_func,
+            fclose_dataio_func,
+            ferror_dataio_func,
+            &readFrom
+         };
+         zipFile zf = unzOpen2(NULL, &zdefs);
          if (zf != NULL)
          {
-            if (ReadZipFileAux(zf, *ret(), nameBuf, NAME_BUF_LEN) != B_NO_ERROR) ret.Reset();
+            if (ReadZipFileAux(zf, *ret(), nameBuf, NAME_BUF_LEN, loadData) != B_NO_ERROR) ret.Reset();
             unzClose(zf);
          }
          else ret.Reset();  // failure!

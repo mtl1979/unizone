@@ -121,6 +121,17 @@ public:
      */
    void SetOutgoingEncoding(int32 ec) {_outgoingEncoding = ec;}
 
+   /** Overwritten to augment AbstractMessageIOGateway::ExecuteSynchronousMessaging()
+     * with some additional logic that prepends a PR_COMMAND_PING to the outgoing Message queue
+     * and then makes sure that ExecuteSynchronousMessaging() doesn't return until the
+     * corresponding PR_COMMAND_PONG is received.  That way we are guaranteed that
+     * the server's results are returned before this method returns.
+     * @param optReceiver optional object to call MessageReceivedFromGateway() on when a reply Message is received.
+     * @param timeoutPeriod Optional timeout period in microseconds, or MUSCLE_TIME_NEVER if no timeout is requested.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (timeout or network error)
+     */
+   virtual status_t ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64 timeoutPeriod = MUSCLE_TIME_NEVER);
+
 protected:
    virtual int32 DoOutputImplementation(uint32 maxBytes = MUSCLE_NO_LIMIT);
    virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT);
@@ -163,6 +174,13 @@ protected:
     *         or a negative value to indicate an error (invalid header, etc).
     */
    virtual int32 GetBodySize(const uint8 * header) const;
+
+protected:
+   /** Overridden to return true until our PONG Message is received back */
+   virtual bool IsStillAwaitingSynchronousMessagingReply() const {return _syncPingKey.HasChars();}
+
+   /** Overridden to filter out our PONG Message and pass everything else on to (r). */
+   virtual void SynchronousMessageReceivedFromGateway(const MessageRef & msg, void * userData, AbstractGatewayMessageReceiver & r);
 
 private:
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
@@ -209,6 +227,9 @@ private:
    mutable ZLibCodec * _sendCodec;
    mutable ZLibCodec * _recvCodec;
 #endif
+
+   uint32 _syncPingCounter;
+   String _syncPingKey;
 };
 
 //////////////////////////////////////////////////////////////////////////////////

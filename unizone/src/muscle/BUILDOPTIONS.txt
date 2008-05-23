@@ -3,6 +3,12 @@ if you feel like hacking around, here is a list of some
 compile-time constants that you can define in the CXXFLAGS variable
 of your Makefile to alter muscle's behaviour:
 
+-DMUSCLE_USE_LIBRT
+   If specified, GetRunTime64() and Snooze64() will use librt's
+   high-resolution timing functions instead of the low-resolution
+   ones supplied by older operating systems.  Note that if you 
+   specify this flag, you should link with librt as well (-lrt).
+
 -DMUSCLE_USE_IPV6
    Set this to indicate that Muscle should be compiled to include IPv6
    support.  The main difference with this flag is that the muscle_ip_address

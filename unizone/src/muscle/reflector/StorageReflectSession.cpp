@@ -557,7 +557,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                   String path = fn->Substring(10);
                   String fixPath(path);
                   _subscriptions.AdjustStringPrefix(fixPath, DEFAULT_PATH_PREFIX);
-                  const PathMatcherEntry * e = _subscriptions.GetEntries().Get(fixPath);
+                  PathMatcherEntry * e = _subscriptions.GetEntries().Get(fixPath);
                   if (e)
                   {
                      const QueryFilter * subscriptionFilter = e->GetFilter()();
@@ -570,6 +570,9 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                         NodePathMatcher temp;
                         if (temp.PutPathString(fixPath, QueryFilterRef()) == B_NO_ERROR) temp.DoTraversal((PathMatchCallback)ChangeQueryFilterCallbackFunc, this, GetGlobalRoot(), false, args);
                      }
+
+                     // And now, set e's filter to the new filter.
+                     e->SetFilter(filter);
                   }
                   else                  
                   {

@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.23"
+#define MUSCLE_VERSION_STRING "4.25"
 
 #include <string.h>  /* for memcpy() */
 
@@ -829,6 +829,32 @@ static inline uint32 CalculateChecksumForFloat(float v) {return B_HOST_TO_LENDIA
 
 /** Convenience method:  Given a double, returns a corresponding 32-bit checksum value */
 static inline uint32 CalculateChecksumForDouble(double v) {return CalculateChecksumForUint64(B_HOST_TO_LENDIAN_IDOUBLE(v));}
+
+// This macro makes the given class (that is not in any namespace)
+// usable as a Hashtable key.  Note that the class must have a method: 
+// uint32 HashCode() const that returns a hashcode for the object it is called on.
+#define DECLARE_HASHTABLE_KEY_CLASS(keyClass)                                   \
+   template <class T> class HashFunctor;                                        \
+   template <> class HashFunctor<keyClass >                                     \
+   {                                                                            \
+   public:                                                                      \
+      uint32 operator () (const keyClass & str) const {return str.HashCode();}  \
+   };                                                                           \
+   template <> class HashFunctor<const keyClass *>                              \
+   {                                                                            \
+   public:                                                                      \
+      uint32 operator () (const keyClass * str) const {return str->HashCode();} \
+   }
+
+
+// This macro is the same as DECLARE_HASHTABLE_KEY_CLASS, except it
+// is meant to be used from within namespaces other than the muscle
+// namespace.  It makes sure the HashFunctors are declared inside the
+// muscle namespace, as C++ requires.
+#define DECLARE_HASHTABLE_KEY_CLASS_IN_NAMESPACE(nameSpace, keyClass)    \
+   };                                                                    \
+   namespace muscle {DECLARE_HASHTABLE_KEY_CLASS(nameSpace::keyClass);}; \
+   namespace nameSpace {
 
 END_NAMESPACE(muscle);
 

@@ -109,6 +109,12 @@ inline uint64 GetRunTime64() {return system_time();}
 uint64 GetRunTime64();
 #endif
 
+/** Convenience function:  Won't return for a given number of microsends.
+ *  @param micros The number of microseconds to wait for.
+ *  @return B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t Snooze64(uint64 microseconds);
+
 /** Convenience function:  Returns true no more often than once every (interval).
  *  Useful if you are in a tight loop, but don't want e.g. more than one debug output line per second, or something like that.
  *  @param interval The minimum time that must elapse between two calls to this function returning true.

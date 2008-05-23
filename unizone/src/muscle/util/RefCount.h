@@ -168,6 +168,14 @@ public:
     */
    Item * GetItemPointer() const {return _item;}
 
+   /** This is the same as GetItemPointer(), except that it can be safely
+    *  called on a NULL Ref object, because it checks the (this) pointer
+    *  and returns NULL if (this) was NULL.
+    *  @note This function is unusual in that it safe to call this function on
+    *        a NULL Ref pointer!
+    */
+   Item * CheckedGetItemPointer() const {return this ? _item : NULL;}
+
    /** Convenience synonym for GetItemPointer(). */
    Item * operator()() const {return _item;}
 
@@ -273,6 +281,9 @@ public:
       return B_NO_ERROR;
    }
 
+   /** This method allows Refs to be keys in Hashtables. */
+   uint32 HashCode() const {return (uint32)((unsigned long)_item);}  // double-cast for AMD64
+
 private:
    void RefItem() {if ((_doRefCount)&&(_item)) _item->IncrementRefCount();}
    void UnrefItem()
@@ -293,19 +304,14 @@ private:
    bool _doRefCount;
 };
 
-template <class T> class HashFunctor;
-
 // VC++ can't handle partial template specialization, so don't let it see this
 // For VC++, you'll have to write an explicit HashFunctor.  Sucks, eh?
 #if _MSC_VER > 1200 || !defined(_MSC_VER)
-template <class Item>
-class HashFunctor<Ref<Item> >
+template <class T> class HashFunctor;
+template <class Item> class HashFunctor<Ref<Item> >
 {
 public:
-   /** Returns a hash code for the given Ref object.
-     * @param ref The Ref object to return a hash code for.  The hash code is calculated simply by casting the pointer value to a uint32.
-     */
-   uint32 operator()(const Ref<Item> & ref) const {return ((uint32)((unsigned long)ref()));}  // double-cast for AMD64
+   uint32 operator()(const Ref<Item> & ref) const {return ref.HashCode();}
 };
 #endif
 

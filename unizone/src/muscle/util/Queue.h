@@ -42,6 +42,12 @@ public:
    /** Returns the negation of the equality operator */
    bool operator!=(const Queue &rhs) const {return !(*this == rhs);}
 
+   /** Similar to the assignment operator, except this method returns a status code.
+     * @param rhs This Queue's contents will become a copy of (rhs)'s items.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?).
+     */
+   status_t CopyFrom(const Queue<ItemType> & rhs);
+
    /** Appends (item) to the end of the queue.  Queue size grows by one.
     *  @param item The item to append. 
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
@@ -432,7 +438,6 @@ Queue<ItemType>::operator ==(const Queue& rhs) const
    return true;
 }
 
-
 template <class ItemType>
 Queue<ItemType> &
 Queue<ItemType>::operator =(const Queue& rhs)
@@ -443,6 +448,21 @@ Queue<ItemType>::operator =(const Queue& rhs)
       if (EnsureSize(numItems, true) == B_NO_ERROR) for (uint32 i=0; i<numItems; i++) (*this)[i] = rhs[i];
    }
    return *this;
+}
+
+template <class ItemType>
+status_t 
+Queue<ItemType>::CopyFrom(const Queue & rhs)
+{
+   if (this == &rhs) return B_NO_ERROR;
+
+   uint32 numItems = rhs.GetNumItems();
+   if (EnsureSize(numItems, true) == B_NO_ERROR)
+   {
+      for (uint32 i=0; i<numItems; i++) (*this)[i] = rhs[i];
+      return B_NO_ERROR;
+   }
+   return B_ERROR;
 }
 
 template <class ItemType>

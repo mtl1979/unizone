@@ -185,6 +185,39 @@ private:
 #endif
 };
 
+/** This convenience class can be used to automatically lock/unlock a Mutex based on the MutexGuard's ctor/dtor */
+class MutexGuard
+{
+public:
+   /** Constructor.  Locks the specified Mutex.
+     * @param m The Mutex to lock. 
+     */
+   MutexGuard(Mutex & m) : _mutex(m)
+   {
+      if (_mutex.Lock() == B_NO_ERROR) _isMutexLocked = true;
+      else
+      {
+         _isMutexLocked = false;
+         printf("MutexGuard %p:  couldn't lock mutex %p!\n", this, &_mutex);
+      }
+   }
+
+   /** Destructor.  Unlocks the Mutex previously specified in the constructor. */
+   ~MutexGuard()
+   {
+      if ((_isMutexLocked)&&(_mutex.Unlock() != B_NO_ERROR)) printf("MutexGuard %p:  couldn't unlock mutex %p!\n", this, &_mutex);
+   }
+
+   /** Returns true iff we successfully locked our Mutex. */
+   bool IsMutexLocked() const {return _isMutexLocked;}
+
+private:
+   MutexGuard(const Mutex &);  // copy ctor, deliberately inaccessible
+
+   Mutex & _mutex;
+   bool _isMutexLocked;
+};
+
 #ifdef MUSCLE_USE_PTHREADS
 // These calls are useful in conjunction with tests/deadlockfinder.cpp, for tracking
 // down potential synchronization deadlocks in multithreaded code.  Note that they only

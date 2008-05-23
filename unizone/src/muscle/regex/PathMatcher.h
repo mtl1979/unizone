@@ -54,6 +54,9 @@ public:
    /** Returns a reference to our QueryFilter object.  May be a NULL reference. */
    QueryFilterRef GetFilter() const {return _filter;}
 
+   /** Sets our QueryFilter object to the specified reference.  Pass in a NULL reference to remove any existing QueryFilter. */
+   void SetFilter(const QueryFilterRef & filter) {_filter = filter;}
+
    /** Returns true iff we our filter matches the given Message, or if either (optMsg) or our filter is NULL. */
    bool FilterMatches(const Message * optMsg, const DataNode * optNode) const
    {

@@ -195,50 +195,58 @@ bool MessageQueryFilter :: Matches(const Message & msg, const DataNode * optNode
 
 status_t StringQueryFilter :: SaveToArchive(Message & archive) const
 {
-   return ((ValueQueryFilter::SaveToArchive(archive) == B_NO_ERROR)&&(archive.AddString("val", _value) == B_NO_ERROR)) ? archive.AddInt8("op", _op) : B_ERROR;
+   return ((ValueQueryFilter::SaveToArchive(archive) == B_NO_ERROR)&&
+           (archive.AddString("val", _value)         == B_NO_ERROR)&&
+           ((_assumeDefault == false)||(archive.AddString("val", _default) == B_NO_ERROR))) ? archive.AddInt8("op", _op) : B_ERROR;
 }
 
 status_t StringQueryFilter :: SetFromArchive(const Message & archive)
 {
    FreeMatcher();
+   _default.Clear();
+   _assumeDefault = (archive.FindString("val", 1, _default) == B_NO_ERROR);
    return ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&(archive.FindString("val", _value) == B_NO_ERROR)) ? archive.FindInt8("op", (int8*)&_op) : B_ERROR;
 }
 
 bool StringQueryFilter :: Matches(const Message & msg, const DataNode *) const
 {
-   String s;
-   if (msg.FindString(GetFieldName(), GetIndex(), s) == B_NO_ERROR)
+   const String * ps;
+   if (msg.FindString(GetFieldName(), GetIndex(), &ps) != B_NO_ERROR)
    {
-      switch(_op)
-      {
-         case OP_EQUAL_TO:                            return s == _value;
-         case OP_LESS_THAN:                           return s  < _value;
-         case OP_GREATER_THAN:                        return s  > _value;
-         case OP_LESS_THAN_OR_EQUAL_TO:               return s <= _value;
-         case OP_GREATER_THAN_OR_EQUAL_TO:            return s >= _value;
-         case OP_NOT_EQUAL_TO:                        return s != _value;
-         case OP_STARTS_WITH:                         return s.StartsWith(_value);
-         case OP_ENDS_WITH:                           return s.EndsWith(_value);
-         case OP_CONTAINS:                            return (s.IndexOf(_value) >= 0);
-         case OP_START_OF:                            return _value.StartsWith(s);
-         case OP_END_OF:                              return _value.EndsWith(s);
-         case OP_SUBSTRING_OF:                        return (_value.IndexOf(s) >= 0);
-         case OP_EQUAL_TO_IGNORECASE:                 return s.EqualsIgnoreCase(_value);
-         case OP_LESS_THAN_IGNORECASE:                return (s.CompareToIgnoreCase(_value) < 0);
-         case OP_GREATER_THAN_IGNORECASE:             return (s.CompareToIgnoreCase(_value) > 0);
-         case OP_LESS_THAN_OR_EQUAL_TO_IGNORECASE:    return (s.CompareToIgnoreCase(_value) <= 0);
-         case OP_GREATER_THAN_OR_EQUAL_TO_IGNORECASE: return (s.CompareToIgnoreCase(_value) >= 0);
-         case OP_NOT_EQUAL_TO_IGNORECASE:             return (s.EqualsIgnoreCase(_value) == false);
-         case OP_STARTS_WITH_IGNORECASE:              return s.StartsWithIgnoreCase(_value);
-         case OP_ENDS_WITH_IGNORECASE:                return s.EndsWithIgnoreCase(_value);
-         case OP_CONTAINS_IGNORECASE:                 return (s.IndexOfIgnoreCase(_value) >= 0);
-         case OP_START_OF_IGNORECASE:                 return _value.StartsWith(s);
-         case OP_END_OF_IGNORECASE:                   return _value.EndsWith(s);
-         case OP_SUBSTRING_OF_IGNORECASE:             return (_value.IndexOf(s) >= 0);
-         case OP_SIMPLE_WILDCARD_MATCH:               return DoMatch(s);
-         case OP_REGULAR_EXPRESSION_MATCH:            return DoMatch(s);
-         default:                                     /* do nothing */  break;
-      }
+      if (_assumeDefault) ps = &_default;
+                     else return false;
+   }
+
+   const String & s = *ps;
+   switch(_op)
+   {
+      case OP_EQUAL_TO:                            return s == _value;
+      case OP_LESS_THAN:                           return s  < _value;
+      case OP_GREATER_THAN:                        return s  > _value;
+      case OP_LESS_THAN_OR_EQUAL_TO:               return s <= _value;
+      case OP_GREATER_THAN_OR_EQUAL_TO:            return s >= _value;
+      case OP_NOT_EQUAL_TO:                        return s != _value;
+      case OP_STARTS_WITH:                         return s.StartsWith(_value);
+      case OP_ENDS_WITH:                           return s.EndsWith(_value);
+      case OP_CONTAINS:                            return (s.IndexOf(_value) >= 0);
+      case OP_START_OF:                            return _value.StartsWith(s);
+      case OP_END_OF:                              return _value.EndsWith(s);
+      case OP_SUBSTRING_OF:                        return (_value.IndexOf(s) >= 0);
+      case OP_EQUAL_TO_IGNORECASE:                 return s.EqualsIgnoreCase(_value);
+      case OP_LESS_THAN_IGNORECASE:                return (s.CompareToIgnoreCase(_value) < 0);
+      case OP_GREATER_THAN_IGNORECASE:             return (s.CompareToIgnoreCase(_value) > 0);
+      case OP_LESS_THAN_OR_EQUAL_TO_IGNORECASE:    return (s.CompareToIgnoreCase(_value) <= 0);
+      case OP_GREATER_THAN_OR_EQUAL_TO_IGNORECASE: return (s.CompareToIgnoreCase(_value) >= 0);
+      case OP_NOT_EQUAL_TO_IGNORECASE:             return (s.EqualsIgnoreCase(_value) == false);
+      case OP_STARTS_WITH_IGNORECASE:              return s.StartsWithIgnoreCase(_value);
+      case OP_ENDS_WITH_IGNORECASE:                return s.EndsWithIgnoreCase(_value);
+      case OP_CONTAINS_IGNORECASE:                 return (s.IndexOfIgnoreCase(_value) >= 0);
+      case OP_START_OF_IGNORECASE:                 return _value.StartsWith(s);
+      case OP_END_OF_IGNORECASE:                   return _value.EndsWith(s);
+      case OP_SUBSTRING_OF_IGNORECASE:             return (_value.IndexOf(s) >= 0);
+      case OP_SIMPLE_WILDCARD_MATCH:               return DoMatch(s);
+      case OP_REGULAR_EXPRESSION_MATCH:            return DoMatch(s);
+      default:                                     /* do nothing */  break;
    }
    return false;
 }
@@ -280,6 +288,15 @@ status_t RawDataQueryFilter :: SaveToArchive(Message & archive) const
       const uint8 * bytes = bb->GetBuffer();
       if ((bytes)&&(numBytes > 0)&&(archive.AddData("val", B_RAW_TYPE, bytes, numBytes) != B_NO_ERROR)) return B_ERROR;
    }
+
+   const ByteBuffer * dd = _default();
+   if (dd)
+   {
+      uint32 numBytes = dd->GetNumBytes();
+      const uint8 * bytes = dd->GetBuffer();
+      if ((bytes)&&(archive.AddData("def", B_RAW_TYPE, bytes, numBytes) != B_NO_ERROR)) return B_ERROR;  // I'm deliberately not checking (numBytes>0) here!
+   }
+
    return B_NO_ERROR;
 }
 
@@ -296,6 +313,14 @@ status_t RawDataQueryFilter :: SetFromArchive(const Message & archive)
       _value = GetByteBufferFromPool(numBytes, (const uint8 *) data);
       if (_value() == NULL) return B_ERROR;
    }
+
+   _default.Reset();
+   if (archive.FindData("def", B_RAW_TYPE, &data, &numBytes) == B_NO_ERROR)
+   {
+      _default = GetByteBufferFromPool(numBytes, (const uint8 *) data);
+      if (_default() == NULL) return B_ERROR;
+   }
+
    return B_NO_ERROR;
 }
 
@@ -303,53 +328,60 @@ bool RawDataQueryFilter :: Matches(const Message & msg, const DataNode *) const
 {
    const void * hb;
    uint32 hisNumBytes;
-   if (msg.FindData(GetFieldName(), _typeCode, &hb, &hisNumBytes) == B_NO_ERROR)
+   if (msg.FindData(GetFieldName(), _typeCode, &hb, &hisNumBytes) != B_NO_ERROR)
    {
-      const uint8 * hisBytes = (const uint8 *) hb;
-      uint32 myNumBytes     = _value() ? _value()->GetNumBytes() : 0;
-      const uint8 * myBytes = _value() ? _value()->GetBuffer()   : 0;
-      uint32 clen           = muscleMin(myNumBytes, hisNumBytes);
-      switch(_op)
+      if (_default())
       {
-         case OP_EQUAL_TO:     return ((hisNumBytes == myNumBytes)&&(memcmp(myBytes, hisBytes, clen) == 0));
-
-         case OP_LESS_THAN:                
-         {
-            int mret = memcmp(hisBytes, myBytes, clen);
-            if (mret < 0) return true;
-            return (mret == 0) ? (hisNumBytes < myNumBytes) : false;
-         }
-
-         case OP_GREATER_THAN:
-         {
-            int mret = memcmp(hisBytes, myBytes, clen);
-            if (mret > 0) return true;
-            return (mret == 0) ? (hisNumBytes > myNumBytes) : false;
-         }
-
-         case OP_LESS_THAN_OR_EQUAL_TO:
-         {
-            int mret = memcmp(hisBytes, myBytes, clen);
-            if (mret <= 0) return true;
-            return (mret == 0) ? (hisNumBytes <= myNumBytes) : false;
-         }
-
-         case OP_GREATER_THAN_OR_EQUAL_TO:
-         {
-            int mret = memcmp(hisBytes, myBytes, clen);
-            if (mret >= 0) return true;
-            return (mret == 0) ? (hisNumBytes >= myNumBytes) : false;
-         }
-
-         case OP_NOT_EQUAL_TO: return ((hisNumBytes != myNumBytes)||(memcmp(myBytes, hisBytes, clen) != 0));
-         case OP_STARTS_WITH:  return ((myNumBytes <= hisNumBytes)&&(memcmp(myBytes, hisBytes, clen) == 0));
-         case OP_ENDS_WITH:    return ((myNumBytes <= hisNumBytes)&&(memcmp(&myBytes[myNumBytes-clen], &hisBytes[hisNumBytes-clen], clen) == 0));
-         case OP_CONTAINS:     return (MemMem(hisBytes, hisNumBytes, myBytes, myNumBytes) != NULL);
-         case OP_START_OF:     return ((hisNumBytes <= myNumBytes)&&(memcmp(hisBytes, myBytes, clen) == 0));
-         case OP_END_OF:       return ((hisNumBytes <= myNumBytes)&&(memcmp(&hisBytes[hisNumBytes-clen], &myBytes[myNumBytes-clen], clen) == 0));
-         case OP_SUBSET_OF:    return (MemMem(myBytes, myNumBytes, hisBytes, hisNumBytes) != NULL);
-         default:              /* do nothing */  break;
+         hb = _default()->GetBuffer();
+         hisNumBytes = _default()->GetNumBytes();
       }
+      else return false;
+   }
+
+   const uint8 * hisBytes = (const uint8 *) hb;
+   uint32 myNumBytes     = _value() ? _value()->GetNumBytes() : 0;
+   const uint8 * myBytes = _value() ? _value()->GetBuffer()   : 0;
+   uint32 clen           = muscleMin(myNumBytes, hisNumBytes);
+   switch(_op)
+   {
+      case OP_EQUAL_TO:     return ((hisNumBytes == myNumBytes)&&(memcmp(myBytes, hisBytes, clen) == 0));
+
+      case OP_LESS_THAN:                
+      {
+         int mret = memcmp(hisBytes, myBytes, clen);
+         if (mret < 0) return true;
+         return (mret == 0) ? (hisNumBytes < myNumBytes) : false;
+      }
+
+      case OP_GREATER_THAN:
+      {
+         int mret = memcmp(hisBytes, myBytes, clen);
+         if (mret > 0) return true;
+         return (mret == 0) ? (hisNumBytes > myNumBytes) : false;
+      }
+
+      case OP_LESS_THAN_OR_EQUAL_TO:
+      {
+         int mret = memcmp(hisBytes, myBytes, clen);
+         if (mret <= 0) return true;
+         return (mret == 0) ? (hisNumBytes <= myNumBytes) : false;
+      }
+
+      case OP_GREATER_THAN_OR_EQUAL_TO:
+      {
+         int mret = memcmp(hisBytes, myBytes, clen);
+         if (mret >= 0) return true;
+         return (mret == 0) ? (hisNumBytes >= myNumBytes) : false;
+      }
+
+      case OP_NOT_EQUAL_TO: return ((hisNumBytes != myNumBytes)||(memcmp(myBytes, hisBytes, clen) != 0));
+      case OP_STARTS_WITH:  return ((myNumBytes <= hisNumBytes)&&(memcmp(myBytes, hisBytes, clen) == 0));
+      case OP_ENDS_WITH:    return ((myNumBytes <= hisNumBytes)&&(memcmp(&myBytes[myNumBytes-clen], &hisBytes[hisNumBytes-clen], clen) == 0));
+      case OP_CONTAINS:     return (MemMem(hisBytes, hisNumBytes, myBytes, myNumBytes) != NULL);
+      case OP_START_OF:     return ((hisNumBytes <= myNumBytes)&&(memcmp(hisBytes, myBytes, clen) == 0));
+      case OP_END_OF:       return ((hisNumBytes <= myNumBytes)&&(memcmp(&hisBytes[hisNumBytes-clen], &myBytes[myNumBytes-clen], clen) == 0));
+      case OP_SUBSET_OF:    return (MemMem(myBytes, myNumBytes, hisBytes, hisNumBytes) != NULL);
+      default:              /* do nothing */  break;
    }
    return false;
 }

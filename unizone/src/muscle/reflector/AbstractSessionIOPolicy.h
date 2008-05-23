@@ -150,11 +150,7 @@ typedef Ref<AbstractSessionIOPolicy> PolicyRef;
 
 // VC++ can't handle partial template specialization, so for VC++ we define them explicitely.
 #ifdef _MSC_VER
-template <> class HashFunctor<Ref<AbstractSessionIOPolicy> >
-{
-public:
-   uint32 operator() (const Ref<AbstractSessionIOPolicy> & x) const {return (uint32)x();}
-};
+DECLARE_HASHTABLE_KEY_CLASS(Ref<AbstractSessionIOPolicy>);
 #endif
 
 END_NAMESPACE(muscle);
