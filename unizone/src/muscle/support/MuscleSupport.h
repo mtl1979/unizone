@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.25"
+#define MUSCLE_VERSION_STRING "4.26"
 
 #include <string.h>  /* for memcpy() */
 
@@ -102,7 +102,7 @@ using std::nothrow_t;
 using std::nothrow;
 #   if (defined(_MSC_VER))
 // VC++ 6.0 and earlier lack this definition
-#    if (_MSC_VER <= 1200)
+#    if (_MSC_VER < 1300)
 inline void __cdecl operator delete(void *p, const std::nothrow_t&) _THROW0() {delete(p);}
 #    endif
 #   else
@@ -162,7 +162,7 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 # include <support/ByteOrder.h>  /* might as well use the real thing (and avoid complaints about duplication) */
 # include <support/SupportDefs.h>
 # include <support/TypeConstants.h>
-# if !((defined(BONE))||(defined(BONE_VERSION)))
+# if !((defined(BONE))||(defined(BONE_VERSION))||(defined(__HAIKU__)))
 #  define BEOS_OLD_NETSERVER
 # endif
 #else
@@ -221,7 +221,7 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 # define XINT32_FORMAT_SPEC "%lx"
 # define UINT32_FORMAT_SPEC "%lu"
 # if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || defined(__BEOS__)
-#  if (_MSC_VER == 1200)
+#  if (_MSC_VER < 1300)
 #   define  INT64_FORMAT_SPEC "%I64i"
 #   define UINT64_FORMAT_SPEC "%I64u"
 #  else
@@ -833,6 +833,8 @@ static inline uint32 CalculateChecksumForDouble(double v) {return CalculateCheck
 // This macro makes the given class (that is not in any namespace)
 // usable as a Hashtable key.  Note that the class must have a method: 
 // uint32 HashCode() const that returns a hashcode for the object it is called on.
+// (Note:  the space after keyClass in second line of the the macro below is 
+// necessary for MSVC to compile the macro properly!  Hmm....)
 #define DECLARE_HASHTABLE_KEY_CLASS(keyClass)                                   \
    template <class T> class HashFunctor;                                        \
    template <> class HashFunctor<keyClass >                                     \
@@ -846,6 +848,15 @@ static inline uint32 CalculateChecksumForDouble(double v) {return CalculateCheck
       uint32 operator () (const keyClass * str) const {return str->HashCode();} \
    }
 
+// VC++6 and ealier can't handle partial template specialization, so
+// they need some extra help at various places.  Lame....
+#if defined(_MSC_VER)
+# if (_MSC_VER < 1300)
+#  define MUSCLE_USING_OLD_MICROSOFT_COMPILER 1  // VC++6 and ealier
+# else
+#  define MUSCLE_USING_NEW_MICROSOFT_COMPILER 1  // VC.net2004 and later
+# endif
+#endif
 
 // This macro is the same as DECLARE_HASHTABLE_KEY_CLASS, except it
 // is meant to be used from within namespaces other than the muscle

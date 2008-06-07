@@ -304,14 +304,20 @@ private:
    bool _doRefCount;
 };
 
-// VC++ can't handle partial template specialization, so don't let it see this
-// For VC++, you'll have to write an explicit HashFunctor.  Sucks, eh?
-#if _MSC_VER > 1200 || !defined(_MSC_VER)
+// VC++6 and ealier can't handle partial template specialization, so don't let it see this
+// To compile using them, you'll have to write an explicit HashFunctor.  Sucks, eh?
+// At least you can use the DECLARE_HASHTABLE_KEY_CLASS macro to make it quicker for you.
+#ifndef MUSCLE_USING_OLD_MICROSOFT_COMPILER
 template <class T> class HashFunctor;
 template <class Item> class HashFunctor<Ref<Item> >
 {
 public:
    uint32 operator()(const Ref<Item> & ref) const {return ref.HashCode();}
+};
+template <class Item> class HashFunctor<const Ref<Item> * >
+{
+public:
+   uint32 operator()(const Ref<Item> * ref) const {return ref->HashCode();}
 };
 #endif
 

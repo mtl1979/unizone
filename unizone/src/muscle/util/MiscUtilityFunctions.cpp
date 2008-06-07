@@ -512,7 +512,7 @@ uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
       TIME_ZONE_INFORMATION tzi;
       if (GetTimeZoneInformation(&tzi) != TIME_ZONE_ID_INVALID) 
       {
-# if defined(__BORLANDC__) || (defined(_MSC_VER) && (_MSC_VER <= 1200))
+# if defined(__BORLANDC__) || defined(MUSCLE_USING_OLD_MICROSOFT_COMPILER)
          // Some compilers' headers don't have this call, so we have to do it the hard way
          HMODULE lib = LoadLibrary(TEXT("kernel32.dll"));
          if (lib)

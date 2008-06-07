@@ -24,16 +24,16 @@ public:
    /** Destructor */
    virtual ~ReflectSessionFactory() {/* empty */}
 
-   /** Should be overriden to return a new ReflectSession object, or NULL on failure.  
+   /** Should be overriden to return a new ReflectSession object, or NULL on failure.
     *  @param clientAddress A string representing the connecting client's host (typically an IP address, e.g. "192.168.1.102")
      * @param factoryInfo The IP address and port number of the local network interface on which this connection was received.
     *  @returns a reference to a freshly allocated AbstractReflectSession object on success, or a NULL reference on failure.
     */
    virtual AbstractReflectSessionRef CreateSession(const String & clientAddress, const IPAddressAndPort & factoryInfo) = 0;
 
-   /** 
+   /**
     * Should return true iff this factory is currently ready to accept connections.
-    * This method is called each time through the event loop, and if this method 
+    * This method is called each time through the event loop, and if this method
     * is overridden to return false, then this factory will not be included in the
     * select() set and any incoming TCP connections on this factory's port will
     * not be acted upon (i.e. they will be forced to wait).
@@ -48,7 +48,7 @@ public:
    uint32 GetFactoryID() const {return _id;}
 
 protected:
-   /** 
+   /**
     * Convenience method:  Calls MessageReceivedFromFactory() on all session
     * objects.  Saves you from having to do your own iteration every time you
     * want to broadcast something.
@@ -57,7 +57,7 @@ protected:
     */
    void BroadcastToAllSessions(const MessageRef & msgRef, void * userData = NULL);
 
-   /** 
+   /**
     * Convenience method:  Calls MessageReceivedFromFactory() on all session-factory
     * objects.  Saves you from having to do your own iteration every time you
     * want to broadcast something to the factories.
@@ -93,7 +93,7 @@ private:
 };
 
 /** This is the abstract base class that defines the server side logic for a single
- *  client-server connection.  This class contains no message routing logic of its own, 
+ *  client-server connection.  This class contains no message routing logic of its own,
  *  but defines the interface so that subclasses can do so.
  */
 class AbstractReflectSession : public ServerComponent, public AbstractGatewayMessageReceiver
@@ -110,14 +110,14 @@ public:
      */
    const String & GetHostName() const;
 
-   /** Returns the server-side port that this session was accepted on, or 0 if 
-     * we weren't accepted from a port (e.g. we were created locally) 
+   /** Returns the server-side port that this session was accepted on, or 0 if
+     * we weren't accepted from a port (e.g. we were created locally)
      * May only be called if this session is currently attached to a ReflectServer.
      */
    uint16 GetPort() const;
 
-   /** Returns the server-side network interface IP that this session was accepted on, 
-     * or 0 if we weren't created via accepting a network connection  (e.g. we were created locally) 
+   /** Returns the server-side network interface IP that this session was accepted on,
+     * or 0 if we weren't created via accepting a network connection  (e.g. we were created locally)
      * May only be called if this session is currently attached to a ReflectServer.
      */
    const ip_address & GetLocalInterfaceAddress() const;
@@ -142,9 +142,9 @@ public:
    bool DisconnectSession();
 
    /**
-    * Causes this session to be terminated (similar to EndSession(), 
-    * and the session specified in (newSessionRef) to take its 
-    * place using the same socket connection & message IO gateway.  
+    * Causes this session to be terminated (similar to EndSession(),
+    * and the session specified in (newSessionRef) to take its
+    * place using the same socket connection & message IO gateway.
     * @param newSession the new session object that is to take the place of this one.
     * @return B_NO_ERROR on success, B_ERROR if the new session refused to be attached.
     */
@@ -153,33 +153,33 @@ public:
    /**
     * Called when the TCP connection to our client is broken.
     * If this method returns true, then this session will be removed and
-    * deleted. 
+    * deleted.
     * @return If it returns false, then this session will continue, even
-    *         though the client is no longer available.  Default implementation 
+    *         though the client is no longer available.  Default implementation
     *         always returns true, unless the automatic-reconnect feature has
     *         been enabled (via SetAutoReconnectDelay()), in which case this
     *         method will return false and try to Reconnect() again, instead.
     */
    virtual bool ClientConnectionClosed();
-  
+
    /**
     * For sessions that were added to the server with AddNewConnectSession(),
-    * or AddNewDormantConnectSession(), this method is called when the asynchronous 
-    * connect process completes successfully.  (if the asynchronous connect fails, 
-    * ClientConnectionClosed() is called instead).  Default implementation just sets 
-    * an internal flag that governs whether an error message should be printed when 
+    * or AddNewDormantConnectSession(), this method is called when the asynchronous
+    * connect process completes successfully.  (if the asynchronous connect fails,
+    * ClientConnectionClosed() is called instead).  Default implementation just sets
+    * an internal flag that governs whether an error message should be printed when
     * the session is disconnected later on.
     */
    virtual void AsyncConnectCompleted();
 
-   /**  
+   /**
     * Set a new input I/O policy for this session.
     * @param newPolicy Reference to the new policy to use to control the incoming byte stream
     *                  for this session.  May be a NULL reference if you just want to remove the existing policy.
     */
    void SetInputPolicy(const PolicyRef & newPolicy);
-   
-   /** Returns a reference to the current input policy for this session.  
+
+   /** Returns a reference to the current input policy for this session.
      * May be a NULL reference, if there is no input policy installed (which is the default state)
      */
    PolicyRef GetInputPolicy() const {return _inputPolicyRef;}
@@ -190,8 +190,8 @@ public:
     *                 for this session.  May be a NULL reference if you just want to remove the existing policy.
     */
    void SetOutputPolicy(const PolicyRef & newPolicy);
-   
-   /** Returns a reference to the current output policy for this session.  May be a NULL reference. 
+
+   /** Returns a reference to the current output policy for this session.  May be a NULL reference.
      * May be a NULL reference, if there is no output policy installed (which is the default state)
      */
    PolicyRef GetOutputPolicy() const {return _outputPolicyRef;}
@@ -204,14 +204,14 @@ public:
    void SetGateway(const AbstractMessageIOGatewayRef & ref) {_gateway = ref; _outputStallLimit = _gateway()?_gateway()->GetOutputStallLimit():MUSCLE_TIME_NEVER;}
 
    /**
-    * Returns a reference to our internally held message IO gateway object, 
-    * or NULL reference if there is none.  The returned gateway remains 
+    * Returns a reference to our internally held message IO gateway object,
+    * or NULL reference if there is none.  The returned gateway remains
     * the property of this session.
     */
    const AbstractMessageIOGatewayRef & GetGateway() const {return _gateway;}
 
    /** Should return true iff we have data pending for output.
-    *  Default implementation calls HasBytesToOutput() on our installed AbstractDataIOGateway object, 
+    *  Default implementation calls HasBytesToOutput() on our installed AbstractDataIOGateway object,
     *  if we have one, or returns false if we don't.
     */
    virtual bool HasBytesToOutput() const;
@@ -219,9 +219,9 @@ public:
    /**
      * Should return true iff we are willing to read more bytes from our
      * client connection at this time.  Default implementation calls
-     * IsReadyForInput() on our install AbstractDataIOGateway object, if we 
+     * IsReadyForInput() on our install AbstractDataIOGateway object, if we
      * have one, or returns false if we don't.
-     * 
+     *
      */
    virtual bool IsReadyForInput() const;
 
@@ -240,18 +240,18 @@ public:
      */
    virtual int32 DoOutput(uint32 maxBytes);
 
-   /** Socket factory method.  This method is called by AddNewSession() when 
-    *  no valid Socket was supplied as an argument to the AddNewSession() call.  
+   /** Socket factory method.  This method is called by AddNewSession() when
+    *  no valid Socket was supplied as an argument to the AddNewSession() call.
     *  This method should either create and supply a default Socket, or return
-    *  a NULL SocketRef.  In the latter case, the session will run without any 
+    *  a NULL SocketRef.  In the latter case, the session will run without any
     *  connection to a client.
     *  Default implementation always returns a NULL SocketRef.
-    */ 
+    */
    virtual SocketRef CreateDefaultSocket();
 
-   /** DataIO factory method.  Should return a new non-blocking DataIO 
-    *  object for our gateway to use, or NULL on failure.  Called by 
-    *  ReflectServer when this session is added to the server. 
+   /** DataIO factory method.  Should return a new non-blocking DataIO
+    *  object for our gateway to use, or NULL on failure.  Called by
+    *  ReflectServer when this session is added to the server.
     *  The default implementation returns a non-blocking TCPSocketDataIO
     *  object, which is the correct behaviour 99% of the time.
     *  @param socket The socket to provide the DataIO object for.
@@ -261,9 +261,9 @@ public:
    virtual DataIORef CreateDataIO(const SocketRef & socket);
 
    /**
-    * Gateway factory method.  Should return a reference to a new 
-    * AbstractMessageIOGateway for this session to use for communicating 
-    * with its remote peer.  
+    * Gateway factory method.  Should return a reference to a new
+    * AbstractMessageIOGateway for this session to use for communicating
+    * with its remote peer.
     * Called by ReflectServer when this session object is added to the
     * server, but doesn't already have a valid gateway installed.
     * The default implementation returns a MessageIOGateway object.
@@ -309,7 +309,7 @@ public:
 
    /** Sets the amount of time that should pass between when this session loses its connection
      * (that was previously set up using AddNewConnectSession() or AddNewDormantConnectSession())
-     * and when it should automatically try to reconnect to that same destination (by calling Reconnect()).  
+     * and when it should automatically try to reconnect to that same destination (by calling Reconnect()).
      * Default setting is MUSCLE_TIME_NEVER, meaning that automatic reconnection is disabled.
      * @param delay The amount of time to delay before reconnecting, in microseconds.
      */
@@ -336,7 +336,7 @@ protected:
     */
    virtual status_t AddOutgoingMessage(const MessageRef & ref);
 
-   /** 
+   /**
     * Convenience method:  Calls MessageReceivedFromSession() on all session
     * objects.  Saves you from having to do your own iteration every time you
     * want to broadcast something.
@@ -347,9 +347,9 @@ protected:
     */
    void BroadcastToAllSessions(const MessageRef & msgRef, void * userData = NULL, bool includeSelf = true);
 
-   /** 
+   /**
     * Convenience method:  Calls MessageReceivedFromSession() on all installed
-    * session-factory objects.  Saves you from having to do your own iteration 
+    * session-factory objects.  Saves you from having to do your own iteration
     * every time you want to broadcast something to the factories.
     * @param msgRef a reference to the Message you wish to broadcast
     * @param userData any userData value you care to include.  Defaults to NULL.
@@ -361,8 +361,8 @@ protected:
     * Closes this session's current TCP connection (if any), and creates a new
     * TCP socket that will then try to asynchronously connect back to the previous
     * socket's host and port.  Note that this method is primarily useful for sessions
-    * that were added with AddNewConnectSession() or AddNewDormantConnectSession(); 
-    * for other types of session, it will just destroy this session's DataIO and IOGateway 
+    * that were added with AddNewConnectSession() or AddNewDormantConnectSession();
+    * for other types of session, it will just destroy this session's DataIO and IOGateway
     * and then create new ones by calling CreateDefaultSocket() and CreateDataIO().
     * @note This method will call CreateDataIO() to make a new DataIO object for the newly created socket.
     * @returns B_NO_ERROR on success, or B_ERROR on failure.
@@ -408,8 +408,8 @@ private:
    bool _wasConnected;
 };
 
-// VC++ can't handle partial template specialization, so for VC++ we define this explicitely.
-#ifdef _MSC_VER
+// VC++ (previous to .net) can't handle partial template specialization, so for them we define this explicitly.
+#ifdef MUSCLE_USING_OLD_MICROSOFT_COMPILER
 DECLARE_HASHTABLE_KEY_CLASS(Ref<AbstractReflectSession>);
 #endif
 

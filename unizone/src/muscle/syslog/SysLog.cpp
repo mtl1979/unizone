@@ -39,13 +39,9 @@ status_t PrintStackTrace(uint32 maxDepth)
 
 #ifndef MUSCLE_INLINE_LOGGING
 
-// VC++ can't handle partial template specialization, so we'll do it explicitly here
-#ifdef _MSC_VER
-template <> class HashFunctor<Ref<LogCallback> >
-{
-public:
-   uint32 operator() (const Ref<LogCallback> x) const {return (uint32)x();}
-};
+// VC++6 can't handle partial template specialization, so we'll do it explicitly here
+#ifdef MUSCLE_USING_OLD_MICROSOFT_COMPILER
+DECLARE_HASHTABLE_KEY_CLASS(Ref<LogCallback>);
 #endif
 
 static const char * const _logLevelNames[] = {

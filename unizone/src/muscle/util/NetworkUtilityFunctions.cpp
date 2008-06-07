@@ -51,7 +51,7 @@ typedef void sockopt_arg;  // Whereas sane operating systems use void pointers
 
 // Different OS's use different types for pass-by-reference in accept(), etc.
 // So I define my own muscle_socklen_t to avoid having to #ifdef all my code
-#if defined(__amd64__) || defined(__FreeBSD__) || defined(BSD) || defined(__PPC64__)
+#if defined(__amd64__) || defined(__FreeBSD__) || defined(BSD) || defined(__PPC64__) || defined(__HAIKU__)
 typedef socklen_t muscle_socklen_t;
 #elif defined(__BEOS__) || defined(__APPLE__) || defined(__CYGWIN__) || defined(WIN32) || defined(__QNX__) || defined(__osf__)
 # ifdef _SOCKLEN_T

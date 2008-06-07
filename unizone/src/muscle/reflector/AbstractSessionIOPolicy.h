@@ -41,12 +41,12 @@ private:
    bool _asInput;
 };
 
-/** 
- * This class is an interface for objects that can be used by a ReflectServer 
- * to control how and when I/O in a particular direction is performed for a 
+/**
+ * This class is an interface for objects that can be used by a ReflectServer
+ * to control how and when I/O in a particular direction is performed for a
  * session or group of sessions.  Its primary use is to implement aggregate
- * bandwidth limits for certain sessions or groups of sessions.  Each 
- * AbstractReflectSession can associate itself an IO policy for reading, 
+ * bandwidth limits for certain sessions or groups of sessions.  Each
+ * AbstractReflectSession can associate itself an IO policy for reading,
  * and an IO policy for writing, if it likes.
  * <p>
  * ReflectServer calls the methods in this API in the following sequence:
@@ -68,7 +68,7 @@ public:
    /** Destructor. */
    virtual ~AbstractSessionIOPolicy() {/* empty */}
 
-   /** Called whenever an AbstractReflectSession chooses us as one of his policies of choice. 
+   /** Called whenever an AbstractReflectSession chooses us as one of his policies of choice.
      * Guaranteed not be called between calls to BeginIO() and EndIO().
      * @param holder An object containing info on the AbstractReflectSession that
      *               is now using this policy.
@@ -79,33 +79,33 @@ public:
      * Guaranteed not be called between calls to BeginIO() and EndIO().
      * @param holder An object containing info on the AbstractReflectSession that
      *               is nolonger using this policy.  Note that the contained
-     *               session may be in the process of being destroyed, so while 
-     *               it is still a valid AbstractReflectSession, it may no longer 
+     *               session may be in the process of being destroyed, so while
+     *               it is still a valid AbstractReflectSession, it may no longer
      *               be a valid object of its original subclass.
      */
    virtual void PolicyHolderRemoved(const PolicyHolder & holder) = 0;
 
-   /** Called once at the beginning of each pass through our I/O event loop. 
+   /** Called once at the beginning of each pass through our I/O event loop.
      * @param now The time at which the loop is beginning, for convenience.
      */
    virtual void BeginIO(uint64 now) = 0;
 
    /** Should return true iff we want to allow the given session to be able to transfer
-     * bytes to/from its DataIO object.  
+     * bytes to/from its DataIO object.
      * Called after BeginIO() for each iteration. Only called for the sessions
      * that want to transfer data (i.e. whose gateway objects returned true from their
-     * IsReadyForInput() or HasBytesToOutput() methods), so you can determine the set 
+     * IsReadyForInput() or HasBytesToOutput() methods), so you can determine the set
      * of 'active' sessions based on what gets called here.
      * @param holder a session who wishes to transfer data.  Guaranteed to be one of
      *               our current PolicyHolders, and attached to the server.
      * @returns true iff we want to let the session transfer, false if not.
      *               (Returning false keeps the session's socket from being included
-     *                in the select() call, so the server won't be awoken even if the 
+     *                in the select() call, so the server won't be awoken even if the
      *                session's socket becomes ready)
      */
    virtual bool OkayToTransfer(const PolicyHolder & holder) = 0;
 
-   /** Should return the maximum number of bytes that the given session is allowed to  
+   /** Should return the maximum number of bytes that the given session is allowed to
      * transfer to/from its IOGateway's DataIO during the next I/O stage of our event loop.
      * Called after all the calls to OkayToTransfer() have been done.
      * Called once for each session that we previously returned true for from our
@@ -113,11 +113,11 @@ public:
      * You may return MUSCLE_NO_LIMIT if you want the session to be able to transfer as
      * much as it likes, or 0 if we want the session to not transfer anything at all (or
      * any number in between, of course).
-     * (If you are returning 0 here, it's usually better to just have 
-     *  OkayToTransfer() return false for this PolicyHolder instead... 
-     *  that way the server won't keep waking up to service a session that won't allowed 
+     * (If you are returning 0 here, it's usually better to just have
+     *  OkayToTransfer() return false for this PolicyHolder instead...
+     *  that way the server won't keep waking up to service a session that won't allowed
      *  to transfer anything anyway)
-     * @param holder A session to get a limit for.  Guaranteed to be one of our current 
+     * @param holder A session to get a limit for.  Guaranteed to be one of our current
      *               PolicyHolders, and attached to the server.
      * @returns The max number of bytes the session is allowed to transfer, for now.
      *          This value will be passed in to the session's gateway's DoInput()
@@ -125,7 +125,7 @@ public:
      */
    virtual uint32 GetMaxTransferChunkSize(const PolicyHolder & holder) = 0;
 
-   /** Called to notify you that the given session transferred the given 
+   /** Called to notify you that the given session transferred the given
      * number of bytes to/from its DataIO object.
      * @param holder A session which transferred some bytes.  Guaranteed to be one of our
      *               PolicyHolders, and attached to the server.
@@ -148,8 +148,8 @@ private:
 /** For convenience */
 typedef Ref<AbstractSessionIOPolicy> PolicyRef;
 
-// VC++ can't handle partial template specialization, so for VC++ we define them explicitely.
-#ifdef _MSC_VER
+// VC++ (previous to .net) can't handle partial template specialization, so for them we define this explicitly.
+#ifdef MUSCLE_USING_OLD_MICROSOFT_COMPILER
 DECLARE_HASHTABLE_KEY_CLASS(Ref<AbstractSessionIOPolicy>);
 #endif
 

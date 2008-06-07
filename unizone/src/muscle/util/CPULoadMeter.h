@@ -34,7 +34,7 @@ private:
    uint64 _previousIdleTicks;
 
 #ifdef WIN32
-# if (defined(_MSC_VER) && _MSC_VER >= 1300)
+# if defined(MUSCLE_USING_NEW_MICROSOFT_COMPILER)
 // we will use the statically linked version
 # else
 #  define USE_KERNEL32_DLL_FOR_GETSYSTEMTIMES 1

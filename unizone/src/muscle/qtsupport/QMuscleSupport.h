@@ -11,7 +11,7 @@
 
 #include "support/MuscleSupport.h"  // for uint32, etc
 
-#if (defined(_MSC_VER) && (_MSC_VER <= 1200))
+#ifdef MUSCLE_USING_OLD_MICROSOFT_COMPILER
 # include "util/Hashtable.h"
 #endif
 
@@ -19,7 +19,7 @@
 namespace muscle {
 #endif
 
-#if (!defined(_MSC_VER)) || (_MSC_VER >= 1300)
+#ifndef MUSCLE_USING_OLD_MICROSOFT_COMPILER
 template <class T> class HashFunctor;
 #endif
 
@@ -32,11 +32,13 @@ public:
      * @param str The QString to calculate a hash code for.
      */
    uint32 operator () (const QString & str) const 
+   {
 #if QT_VERSION >= 0x040000
-   {return qHash(str);}
+      return qHash(str);
 #else
-   {return CStringHashFunc(str.utf8().data());}
+      return CStringHashFunc(str.utf8().data());
 #endif
+   }
 };
 
 #ifndef MUSCLE_AVOID_NAMESPACES
