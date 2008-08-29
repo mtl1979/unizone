@@ -259,8 +259,9 @@ const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * 
   *                   out with this many bytes per row.  Defaults to 16.
   *                   If set to zero, then all the output will be placed
   *                   on a single line, using a simpler hex-only format.
+  * @param optFile Optional file to print the output to.  If left NULL, printing will go to stdout.
   */
-void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc = NULL, uint32 numColumns = 16);
+void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc = NULL, uint32 numColumns = 16, FILE * optFile = NULL);
 
 /** Given a string with an ASCII representation of hexadecimal bytes,
   * returns the corresponding binary data.

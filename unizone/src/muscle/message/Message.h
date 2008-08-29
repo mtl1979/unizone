@@ -166,7 +166,7 @@ private:
 
 /** 
  *  This class is similar to a BMessage, but portable.  
- *  It only acts as a serializable data container; it does not have
+ *  It only acts as a serializable data container; it does not
  *  include any threading capabilities.  Unless otherwise noted, all
  *  methods behave similarly to their BMessage counterparts.  (Exception:
  *  the only error codes returned are B_ERROR and B_NO_ERROR)
@@ -228,10 +228,11 @@ public:
    bool IsEmpty() const {return (_entries.IsEmpty());}
 
    /** Prints debug info describing the contents of this Message to stdout. 
+     * @param optFile If non-NULL, the text will be printed to this file.  If left as NULL, stdout will be used as a default.
      * @param recursive if true, we will call PrintToStream() recursively on any held messages also.   Defaults to true.
      * @param indentLevel Number of spaces to indent each printed line.  Used while recursing to format nested messages text nicely
      */
-   void PrintToStream(bool recursive = true, int indentLevel = 0) const;
+   void PrintToStream(FILE * optFile = NULL, bool recursive = true, int indentLevel = 0) const;
 
    /** Same as PrintToStream(), only the state of the Message is returned
     *  as a String instead of being printed to stdout.

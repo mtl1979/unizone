@@ -711,6 +711,10 @@ Rivi %2
 Tiedosto %3
 Päiväys: %4</translation>
     </message>
+    <message>
+        <source>Attempt to read file larger than maximum allocatable memory amount!</source>
+        <translation>Yritetty lukea tiedostoa, joka on isompi kuin muistin kokonaismäärä!</translation>
+    </message>
 </context>
 <context>
     <name>MakeSizeString</name>
@@ -2105,6 +2109,10 @@ Päiväys: %4</translation>
     <message>
         <source>%1/%2</source>
         <translation>%1/%2</translation>
+    </message>
+    <message>
+        <source>Picture Viewer</source>
+        <translation>Kuvien Katselu</translation>
     </message>
 </context>
 <context>
@@ -4982,7 +4990,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
-        <translation>MUSCLE-asiakas %1:lle!</translation>
+        <translation type='obsolete'>MUSCLE-asiakas %1:lle!</translation>
     </message>
     <message>
         <source>/bindecode - decode binary data and display it</source>
@@ -5034,7 +5042,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <source>Unizone - User #%1 on %2</source>
-        <translation>Unizone - Käyttäjä #%1 palvelimella %2</translation>
+        <translation type='obsolete'>Unizone - Käyttäjä #%1 palvelimella %2</translation>
     </message>
     <message>
         <source>Qt version: %1</source>

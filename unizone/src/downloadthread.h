@@ -27,6 +27,7 @@ using namespace muscle;
 
 #define PARTIAL_RESUME_SIZE (64 * 1024)
 
+class WDownloadEvent;
 
 class WDownloadThread : public QObject
 {
@@ -126,23 +127,25 @@ private slots:
 
 protected:
 
-	friend class WDownload;
+	bool event( QEvent * );
 
-	void MessageReceived(const MessageRef &msg) { MessageReceived(msg, _sessionID); }
+//	friend class WDownload;
+
+//	void MessageReceived(const MessageRef &msg) { MessageReceived(msg, _sessionID); }
 
 	mutable Mutex fLockFile;
-	WFile * fFile;			// file on the HD
+	WFile * fFile;				// file on the HD
 	QString * fFileDl;		// file to dl
 	QString * fLocalFileDl; // local filenames for downloaded files
 	QString * fPaths;       // remote paths for downloaded files
-	QString fIP;			// ip address of remote client
+	QString fIP;				// ip address of remote client
 	QString fFromSession;	// session ID of remote client
 	QString fFromUser;		// user name of remote client
 	QString fLocalSession;	// our session ID
-	uint32 fPort;			// port of the remote client (the one it's listening on)
+	uint32 fPort;				// port of the remote client (the one it's listening on)
 	int32 fAcceptingOn;		// port we're accepting on in case the user is firewalled
 	int64 fCurrentOffset;	// current offset in the file
-	int64 fFileSize;		// the file size
+	int64 fFileSize;			// the file size
 	time_t fCurrentFileStartTime;
 	bool fDownloading;
 	bool fFirewalled;
@@ -150,7 +153,7 @@ protected:
 	int32 fNumFiles, fCurFile;
 	uint32 fIdles;
 
-	void SendReply(MessageRef &m);
+	void SendReply(WDownloadEvent *);
 	void timerEvent(QTimerEvent *);
 
 	QObject * fOwner;

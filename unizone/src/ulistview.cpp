@@ -2,7 +2,7 @@
 // Released under Lesser GPL as in LGPL.TXT in source root folder
 
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qapplication.h>
@@ -132,7 +132,7 @@ WUniListItem::key(int c, bool /* asc */) const
 			m = toLongLong(q2, &ok2);
 			if (ok1 && ok2)
 			{
-				int o = 0;
+				int64 o = 0;
 				if (m == WSettings::Unlimited)
 					o = 0xFFFF0000 + n; 
 				else if (m == 0)
@@ -217,7 +217,7 @@ WUniListItem::key(int c, bool /* asc */) const
 // Returns numeric representation of requested item, can be used for sorting
 // If can't be converted to numeric value, returns -1
 
-long
+int64
 WUniListItem::item(int c)
 {
 	int64 n, m, o;

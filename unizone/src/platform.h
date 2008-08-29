@@ -1,11 +1,15 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
+#ifdef _WIN32
+# ifndef WIN32
+#  define WIN32
+# endif
 #endif
 
 #ifdef WIN32
+#pragma warning(disable: 4786)
+
 #include <windows.h>
 
 #if defined(BUILD_WIN98)
@@ -34,7 +38,7 @@ void WFlashWindow(HWND fWinHandle);
 #include	<math.h>
 #include	<time.h>
 
-#if defined(WIN32)
+#ifdef WIN32
 inline struct tm * gmtime_r(const time_t *clock, struct tm *result)
 {
 	memcpy(result, gmtime(clock), sizeof(struct tm));

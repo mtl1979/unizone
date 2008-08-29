@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "parser.h"
 #include "tokenizer.h"
 #include "util.h"							// for endsWith()
@@ -19,7 +23,7 @@ TrimBuffer(const QString &txt)
 	{
 		n2 = txt.length() - MAX_BUFFER_SIZE;		// Start of text
 		unsigned int n3 = n2;						// Position of next line break after buffer truncation
-		
+
 		// Find next line break
 		while (n3 < txt.length())
 		{
@@ -38,7 +42,7 @@ TrimBuffer(const QString &txt)
 	}
 
 	/*
-	 * 
+	 *
 	 * Remove any extra line breaks from the start of buffer
 	 *
 	 */

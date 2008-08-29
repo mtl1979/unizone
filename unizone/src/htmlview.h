@@ -4,8 +4,9 @@
 #include <qapplication.h>
 #include <qtextbrowser.h>
 
-#include "system/Mutex.h"
 #include "message/Message.h"
+
+class muscle::Mutex;
 
 using namespace muscle;
 

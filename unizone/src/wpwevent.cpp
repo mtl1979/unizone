@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qapplication.h>
 
 #include "wpwevent.h"

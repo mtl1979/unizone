@@ -187,8 +187,19 @@ typedef unsigned int JDIMENSION;
 /* a function referenced thru EXTERNs: */
 #define GLOBAL(type)		type
 /* a reference to a GLOBAL function: */
-#define EXTERN(type)		extern type
+#if defined(_WINDOWS) || defined(WINDOWS) || defined(_WIN32)
+#  if defined(_MSC_VER)
+#    if defined(JPEG_DLL)
+#      define EXTERN(type) __declspec(dllexport) type
+#    elif defined(JPEG_USEDLL)
+#      define EXTERN(type) __declspec(dllimport) type
+#    endif
+#  endif
+#endif
 
+#if !defined(EXTERN)
+# define EXTERN(type)		extern type
+#endif
 
 /* This macro is used to declare a "method", that is, a function pointer.
  * We want to supply prototype parameters if the compiler can cope.

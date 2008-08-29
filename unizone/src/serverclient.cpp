@@ -1,5 +1,5 @@
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include "serverclient.h"
@@ -134,7 +134,7 @@ ServerClient::AddNewConnectSession(const String & targetHostName, uint16 port, T
 	else
 	{
 		QString proxy = gWin->Settings()->GetHTTPProxy();
-		return qmtt->AddNewConnectSession(ResolveAddress(proxy), _port, optSessionRef);
+		return qmtt->AddNewConnectSession(ResolveAddress(proxy), (uint16) _port, optSessionRef);
 	}
 }
 

@@ -43,6 +43,7 @@ public:
 	void PrintWarning(const QString & warning);
 
 	void beep();
+	void Clear();
 
 	QString FormatNameSaid(const QString & msg); // Check and format message for Name Said...
 
@@ -60,6 +61,6 @@ private:
 	QString tr(const char *);
 
 	ChatType _type;
-
+	bool _inTable;
 };
 #endif

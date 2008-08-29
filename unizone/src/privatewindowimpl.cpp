@@ -1,6 +1,6 @@
 #ifdef WIN32
 #include <windows.h>
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qapplication.h>
@@ -416,7 +416,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 				}
 				else if (CompareCommand(stxt, "/clear"))
 				{
-					fChatText->clear();	// empty the text
+					Clear();	// empty the text
 				}
 				else if (CompareCommand(stxt, "/encryption"))
 				{

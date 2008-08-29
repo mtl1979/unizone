@@ -57,7 +57,7 @@ private:
 	bool dragging;
 	QPoint startPos;
 
-   QString lastdir;
+	QString lastdir;
 };
 
 #endif

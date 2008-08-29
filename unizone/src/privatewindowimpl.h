@@ -2,7 +2,6 @@
 #define PRIVATEWINDOW_H
 
 #ifdef WIN32
-#include <windows.h>
 #pragma warning(disable: 4786)
 #endif
 
@@ -45,8 +44,8 @@ public:
 	void Unlock() { fLock.Unlock(); }
 
 protected:
-	virtual void customEvent(QCustomEvent * event);
-	virtual void resizeEvent(QResizeEvent * e);
+	virtual void customEvent(QCustomEvent *);
+	virtual void resizeEvent(QResizeEvent *);
 
 private slots:
 	void URLClicked(const QString &);	// url clicked

@@ -113,7 +113,11 @@ uint64 GetRunTime64();
  *  @param micros The number of microseconds to wait for.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
+#ifdef __BEOS__
+inline status_t Snooze64(uint64 microseconds) {return snooze(microseconds);}
+#else
 status_t Snooze64(uint64 microseconds);
+#endif
 
 /** Convenience function:  Returns true no more often than once every (interval).
  *  Useful if you are in a tight loop, but don't want e.g. more than one debug output line per second, or something like that.
@@ -123,7 +127,6 @@ status_t Snooze64(uint64 microseconds);
  */
 inline bool OnceEvery(const struct timeval & interval, struct timeval & lastTime)
 {
-   // Print current state to stdout every so many seconds
    uint64 now64 = GetRunTime64();
    struct timeval now; 
    Convert64ToTimeVal(now64, now);

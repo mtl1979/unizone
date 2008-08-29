@@ -32,7 +32,7 @@ private:
 	void PrintAddressInfo(const WUserRef &user, bool verbose);
 	bool PrintAddressInfo(uint32 address, bool verbose);
 
-	Mutex fQueueLock;
+	mutable Mutex fQueueLock;
 	Queue<ResolverEntry> fQueue;
 	bool *fShutdownFlag;
 	QWaitCondition cond;

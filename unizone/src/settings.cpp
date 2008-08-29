@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qapplication.h>
 #include <qfile.h>
 #include <qmessagebox.h>
@@ -326,9 +330,8 @@ WSettings::GetChatSizes() const
 void
 WSettings::SetChatSizes(QValueList<int> & sizes)
 {
-	fSet()->RemoveName(CHAT_SIZES);
 	for (unsigned int i = 0; i < sizes.count(); i++)
-		fSet()->AddInt32(CHAT_SIZES, sizes[i]);
+		fSet()->ReplaceInt32(true, CHAT_SIZES, i, sizes[i]);
 }
 
 QValueList<int>
@@ -344,9 +347,8 @@ WSettings::GetMainSizes() const
 void
 WSettings::SetMainSizes(QValueList<int> & sizes)
 {
-	fSet()->RemoveName(USER_SIZES);
 	for (unsigned int i = 0; i < sizes.count(); i++)
-		fSet()->AddInt32(USER_SIZES, sizes[i]);
+		fSet()->ReplaceInt32(true, USER_SIZES, i, sizes[i]);
 }
 
 // status messages
@@ -454,7 +456,7 @@ WSettings::Load()
 	PRINT("Settings file: %S\n", wf.getBuffer());
 #endif
 	if (file.Open(wf, 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 		O_RDONLY | O_BINARY
 #else
 		O_RDONLY
@@ -464,15 +466,16 @@ WSettings::Load()
 		ByteBufferRef buffer = GetByteBufferFromPool();
 		if (buffer()->SetNumBytes((uint32) file.Size(), false) == B_NO_ERROR)
 		{
-			if (file.ReadBlock((char *)buffer()->GetBuffer(), file.Size()) < (int64) file.Size())
-			{
-				QMessageBox::warning(NULL, qApp->translate( "WSettings", "Read Error" ), qApp->translate( "WSettings", "Unable to read data from file!" ), qApp->translate( "WSettings", "Bummer" ));
-			}
-			else
+			CheckSize(file.Size());
+			if (file.ReadBlock32((char *)buffer()->GetBuffer(), (uint32) file.Size()) == (int32) file.Size())
 			{
 				// reload settings
 				fSet()->Unflatten(buffer()->GetBuffer(), (uint32) file.Size());
 				ret = true;
+			}
+			else
+			{
+				QMessageBox::warning(NULL, qApp->translate( "WSettings", "Read Error" ), qApp->translate( "WSettings", "Unable to read data from file!" ), qApp->translate( "WSettings", "Bummer" ));
 			}
 		}
 		file.Close();
@@ -1276,7 +1279,7 @@ WSettings::GetPacketSize() const
 void
 WSettings::SetPacketSize(double l)
 {
-	fSet()->RemoveName(PACKET_SIZE);
+	fSet()->RemoveName(PACKET_SIZE);	// For backwards compatibility
 	fSet()->AddDouble(PACKET_SIZE, l);
 }
 
@@ -1637,8 +1640,6 @@ WSettings::SetToolBarLayout(int toolbar, int32 dock, int32 index, bool nl, int32
 	String sToolBar = "toolbar";
 	sToolBar << toolbar;
 
-	fSet()->RemoveName(sToolBar);
-	
 	MessageRef mref(GetMessageFromPool());
 	if (mref())
 	{
@@ -1647,7 +1648,7 @@ WSettings::SetToolBarLayout(int toolbar, int32 dock, int32 index, bool nl, int32
 		mref()->AddBool("nl", nl);
 		mref()->AddInt32("extra", extra);
 
-		fSet()->AddMessage(sToolBar, mref);
+		fSet()->ReplaceMessage(true, sToolBar, mref);
 	}
 }
 

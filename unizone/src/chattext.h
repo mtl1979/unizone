@@ -35,7 +35,7 @@ protected:
 private:
 	Queue<QString> * fBuffer;	// line buffer
 	QObject * fTarget;
-	Mutex fLock;
+	mutable Mutex fLock;
 	unsigned int fCurLine;				// which line in the buffer?
 };
 

@@ -73,10 +73,10 @@ public:
 
 protected:
 	virtual void customEvent(QCustomEvent *);
-	virtual void keyPressEvent(QKeyEvent * event);
+	virtual void keyPressEvent(QKeyEvent *);
 	virtual void downloadEvent(WDownloadEvent *);
 
-	virtual void resizeEvent(QResizeEvent * e);
+	virtual void resizeEvent(QResizeEvent *);
 
 private:
 		

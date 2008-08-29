@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qtooltip.h>
 #include <qregexp.h>
 
@@ -96,7 +100,7 @@ WHTMLView::showEvent(QShowEvent * e)
 		if (!text().isEmpty())
 		{
 			txt = text();
-			txt += "<br>";
+//			txt += "<br>";
 		}
 #endif
 		txt += fBuffer;

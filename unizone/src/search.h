@@ -102,8 +102,8 @@ private:
 
 	bool fPending;
 
-	void HandleComboEvent(WTextEvent * e);
-	void customEvent(QCustomEvent * qce);
+	void HandleComboEvent(WTextEvent *);
+	void customEvent(QCustomEvent *);
 
 public slots:
 	void StopSearch();

@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qapplication.h>
 #if !defined(QT_NO_STYLE_MOTIF)
 #include <qmotifstyle.h>

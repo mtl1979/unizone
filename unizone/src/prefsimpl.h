@@ -12,7 +12,7 @@ class WPrefs : public WPrefsBase
     Q_OBJECT
 
 public:
-    WPrefs( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+	WPrefs( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~WPrefs();
 
 private slots:

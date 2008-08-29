@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4100 4512)
+#endif
+
 #include "netclient.h"
 #include "downloadimpl.h"
 #include "events.h"
@@ -85,10 +89,10 @@ NetClient::Connect(const QString & server, uint16 port)
 
 	connect(qmtt, SIGNAL(SessionAttached(const String &)),
 			this, SLOT(SessionAttached(const String &)));
-	
+
 	connect(qmtt, SIGNAL(SessionDetached(const String &)),
 			this, SLOT(SessionDetached(const String &)));
-   
+
 	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint32)),
 			this, SLOT(SessionAccepted(const String &, uint32)));
 
@@ -100,7 +104,7 @@ NetClient::Connect(const QString & server, uint16 port)
 
 	connect(qmtt, SIGNAL(FactoryAttached(uint32)),
 			this, SLOT(FactoryAttached(uint32)));
-	
+
 	connect(qmtt, SIGNAL(FactoryDetached(uint32)),
 			this, SLOT(FactoryDetached(uint32)));
 
@@ -158,7 +162,7 @@ NetClient::Disconnect()
 	fLoggedIn = false;
 	fLoginTime = 0;
 
-	if (IsConnected()) 
+	if (IsConnected())
 	{
 		WinShareWindow *win = GetWindow(this);
 		if (win)
@@ -169,7 +173,7 @@ NetClient::Disconnect()
 		// Reset() implies ShutdownInternalThread();
 		//
 		PRINT("RESETING\n");
-		Reset(); 
+		Reset();
 		PRINT("DELETING USERS\n");
 		WUserIter it = fUsers.GetIterator(HTIT_FLAG_BACKWARDS);
 		while (it.HasMoreValues())
@@ -259,7 +263,7 @@ NetClient::FindUser(const QString & sessionID)
 	return WUserRef(NULL);
 }
 
-void 
+void
 NetClient::FindUsersByIP(WUserMap & umap, const QString & ip)
 {
 	WUserIter iter = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
@@ -286,7 +290,7 @@ NetClient::FindUserByIPandPort(const QString & ip, uint32 port)
 		if (found()->GetUserHostName() == ip)
 		{
 			if (
-				(port == 0) || 
+				(port == 0) ||
 				(found()->GetPort() == port)
 			)
 			{
@@ -314,7 +318,7 @@ NetClient::CreateUser(const QString & sessionID)
 			return nref;
 		}
 	}
-	return WUserRef(NULL);	
+	return WUserRef(NULL);
 }
 
 void
@@ -381,7 +385,7 @@ NetClient::HandleUniRemoveMessage(const String & nodePath)
 	{
 		String sid = GetPathClauseString(SESSION_ID_DEPTH, nodePath.Cstr());
 		QString qsid(sid.Cstr());
-		
+
 		switch (pd)
 		{
 		case CHANNEL_DEPTH:
@@ -399,7 +403,7 @@ NetClient::HandleUniRemoveMessage(const String & nodePath)
 				}
 				break;
 			}
-			
+
 		}
 	}
 }
@@ -417,7 +421,7 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 		{
 			String sid = GetPathClauseString(SESSION_ID_DEPTH, nodePath.Cstr());
 			QString qsid(sid.Cstr());
-			
+
 			switch (pd)
 			{
 			case USER_NAME_DEPTH:
@@ -628,7 +632,7 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 			emit UserHostName(user, hostName);
 		}
 	}
-	
+
 	if (pd >= USER_NAME_DEPTH)
 	{
 		MessageRef tmpRef;
@@ -643,7 +647,7 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 					if (nodeName.EqualsIgnoreCase("name"))
 					{
 						QString oldname = user()->GetUserName();
-						user()->InitName(tmpRef); 
+						user()->InitName(tmpRef);
 						if (oldname != user()->GetUserName())
 							emit UserNameChanged(user, oldname, user()->GetUserName());
 					}
@@ -674,16 +678,16 @@ NetClient::HandleBeAddMessage(const String & nodePath, MessageRef ref)
 					{
 						user()->SetFirewalled(false);
 					}
-					
+
 					TextEvent(fOwner, qsid, WTextEvent::UserUpdateEvent);
 				}
 				break;
-				
+
 			case FILE_INFO_DEPTH:
 				{
 					String fileName = GetPathClauseString(FILE_INFO_DEPTH, nodePath.Cstr());
 					QString qfile = QString::fromUtf8(fileName.Cstr());
-					
+
 					MessageRef unpacked = InflateMessage(tmpRef);
 					if (unpacked())
 						emit AddFile(user, qfile, (GetPathClause(USER_NAME_DEPTH, nodePath.Cstr())[2] == 'r')? true : false, unpacked);
@@ -768,7 +772,7 @@ NetClient::HandleParameters(const MessageRef & next)
 					// Update Local Session ID in Download Window
 					win->fDLWindow->SetLocalID(fSessionID);
 				}
-				
+
 				MessageRef uc(GetMessageFromPool());
 				if (uc())
 				{
@@ -779,7 +783,7 @@ NetClient::HandleParameters(const MessageRef & next)
 						AddStringToMessage(uc, "oldid", fOldID);
 					}
 					AddStringToMessage(uc, "name", fUserName);
-					
+
 					SetNodeValue("unishare/serverinfo", uc);
 				}
 			}
@@ -903,7 +907,7 @@ NetClient::SetUserName(const QString & user)
 				ref()->AddBool("supports_transfer_tunneling", true);
 #endif
 				ref()->AddBool("firewalled", win->fSettings->GetFirewalled()); // is firewalled user, needed if no files shared
-				
+
 				SetNodeValue("beshare/name", ref);
 			}
 		}
@@ -933,10 +937,10 @@ NetClient::SetConnection(const QString & connection)
 		if (ref())
 		{
 			int32 bps = BandwidthToBytes(connection);
-			
+
 			AddStringToMessage(ref, "label", connection);
 			ref()->AddInt32("bps", bps);
-			
+
 			SetNodeValue("beshare/bandwidth", ref);
 		}
 	}
@@ -1016,7 +1020,7 @@ NetClient::MessageReceived(const MessageRef &msg, const String & /* sessionID */
 				if (win)
 				{
 					if (win->GotParams())
-					{	
+					{
 						// a /serverinfo was sent
 						::SendEvent(fOwner, WMessageEvent::ServerParametersMessage, msg);
 					}
@@ -1033,7 +1037,7 @@ NetClient::MessageReceived(const MessageRef &msg, const String & /* sessionID */
 			{
 				PRINT2("PR_RESULT_DATAITEMS\n");
 				HandleResultMessage(msg);
-				
+
 				break;
 			}
 
@@ -1054,37 +1058,37 @@ NetClient::MessageReceived(const MessageRef &msg, const String & /* sessionID */
 					{
 						switch(subMsg()->what)
 						{
-							case PR_COMMAND_KICK:			
+							case PR_COMMAND_KICK:
 							{
-								action = tr( "kick" );		
+								action = tr( "kick" );
 								break;
 							}
-					
-							case PR_COMMAND_ADDBANS:		
+
+							case PR_COMMAND_ADDBANS:
 							{
-								action = tr( "ban" );			
+								action = tr( "ban" );
 								break;
 							}
-							
-							case PR_COMMAND_REMOVEBANS:		
+
+							case PR_COMMAND_REMOVEBANS:
 							{
-								action = tr( "unban" );		
+								action = tr( "unban" );
 								break;
 							}
-							
-							case PR_COMMAND_ADDREQUIRES:    
+
+							case PR_COMMAND_ADDREQUIRES:
 							{
-								action = tr( "require" );		
+								action = tr( "require" );
 								break;
 							}
-							
-							case PR_COMMAND_REMOVEREQUIRES: 
+
+							case PR_COMMAND_REMOVEREQUIRES:
 							{
-								action = tr( "unrequire" );	
+								action = tr( "unrequire" );
 								break;
 							}
 						}
-					
+
 						if (GetStringFromMessage(subMsg, PR_NAME_KEYS, who) == B_NO_ERROR)
 						{
 							WinShareWindow *win = GetWindow(this);
@@ -1173,14 +1177,14 @@ NetClient::OutputQueuesDrained(const MessageRef &/* ref */)
 		NetPacket np;
 		const char * optDistPath = NULL;
 		bool found = false;
-		
+
 		if (packetbuf.GetNumItems() > 0)
 		{
 			fPacketLock.Lock();
 			PRINT2("Messages in High Priority Queue: %lu\n", packetbuf.GetNumItems());
 			packetbuf.RemoveHead(np);
 			fPacketLock.Unlock();
-			
+
 			found = true;
 		}
 		else if (lowpacketbuf.GetNumItems() > 0)
@@ -1191,10 +1195,10 @@ NetClient::OutputQueuesDrained(const MessageRef &/* ref */)
 			fLowPacketLock.Unlock();
 			found = true;
 		}
-		
+
 		if (np.path.Length() > 0)
 			optDistPath = np.path.Cstr();
-		
+
 		if (found)
 		{
 			qmtt->SendMessageToSessions(np.mref, optDistPath);
@@ -1222,7 +1226,7 @@ void
 NetClient::Cleanup()
 {
 	PRINT("NetClient::Cleanup()\n");
-	if (timerID != 0) 
+	if (timerID != 0)
 	{
 		killTimer(timerID);
 		timerID = 0;
@@ -1241,7 +1245,7 @@ NetClient::Cleanup()
 
 bool
 NetClient::IsConnected() const
-{ 
+{
 	return qmtt ? qmtt->IsInternalThreadRunning() : false;
 }
 
@@ -1262,7 +1266,7 @@ NetClient::Reset()
 	}
 }
 
-status_t 
+status_t
 NetClient::SendMessageToSessions(const MessageRef & msgRef, int priority, const char * optDistPath)
 {
 	status_t ret = B_ERROR;
@@ -1273,7 +1277,7 @@ NetClient::SendMessageToSessions(const MessageRef & msgRef, int priority, const 
 		np.mref = msgRef;
 		if (optDistPath)
 			np.path = optDistPath;
-		
+
 		if (priority == 0) // low
 		{
 			fLowPacketLock.Lock();
@@ -1286,23 +1290,23 @@ NetClient::SendMessageToSessions(const MessageRef & msgRef, int priority, const 
 			ret = packetbuf.AddTail(np);
 			fPacketLock.Unlock();
 		}
-		
+
 		if (!hasmessages)
 			qmtt->RequestOutputQueuesDrainedNotification(GetMessageFromPool());
-		
+
 		if (ret == B_OK)
 			hasmessages = true;
 	}
 	return ret;
 }
 
-status_t 
+status_t
 NetClient::SetOutgoingMessageEncoding(int32 encoding, const char * optDistPath)
 {
 	return qmtt ? qmtt->SetOutgoingMessageEncoding(encoding, optDistPath) : B_ERROR;
 }
 
-status_t 
+status_t
 NetClient::WaitForInternalThreadToExit()
 {
 	return qmtt ? qmtt->WaitForInternalThreadToExit() : B_ERROR;

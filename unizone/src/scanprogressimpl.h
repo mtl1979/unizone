@@ -3,7 +3,7 @@
 
 #include "scanprogress.h"
 
-#ifdef WIN32
+#if defined(WIN32) && (_MSC_VER < 1400)
 # define SET ScanEvent::Type
 #else
 # define SET ScanEvent

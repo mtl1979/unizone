@@ -7,31 +7,40 @@
 #include "util/Hashtable.h"
 #include "util/MiscUtilityFunctions.h"  // for ExitWithoutCleanup()
 
-#ifdef __linux__
+#if defined(__APPLE__)
+# include "AvailabilityMacros.h"  // so we can find out if this version of MacOS/X is new enough to include backtrace() and friends
+#endif
+
+#if defined(__linux__) || (defined(MAC_OS_X_VERSION_10_5) && defined(MAC_OS_X_VERSION_MAX_ALLOWED) && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5))
 # include <execinfo.h>
+# define MUSCLE_USE_BACKTRACE 1
 #endif
 
 BEGIN_NAMESPACE(muscle);
 
-status_t PrintStackTrace(uint32 maxDepth)
+status_t PrintStackTrace(FILE * optFile, uint32 maxDepth)
 {
    TCHECKPOINT;
 
-#ifdef __linux__
+   if (optFile == NULL) optFile = stdout;
+
+#if defined(MUSCLE_USE_BACKTRACE)
    const uint32 MAX_DEPTH = 256;
    void *array[MAX_DEPTH];
    size_t size = backtrace(array, muscleMin(maxDepth, MAX_DEPTH));
    char ** strings = backtrace_symbols(array, size);
    if (strings)
    {
-      printf("--Stack trace follows (%zd frames):\n", size);
-      for (size_t i = 0; i < size; i++) printf("  %s\n", strings[i]);
-      printf("--End Stack trace\n");
+      fprintf(optFile, "--Stack trace follows (%zd frames):\n", size);
+      for (size_t i = 0; i < size; i++) fprintf(optFile, "  %s\n", strings[i]);
+      fprintf(optFile, "--End Stack trace\n");
       free(strings);
       return B_NO_ERROR;
    }
+   else fprintf(optFile, "PrintStackTrace:  Error, couldn't generate stack trace!\n");
 #else
    (void) maxDepth;  // shut the compiler up
+   fprintf(optFile, "PrintStackTrace:  Error, stack trace printing not available on this platform!\n");
 #endif
 
    return B_ERROR;  // I don't know how to do this for other systems!
@@ -393,7 +402,7 @@ status_t LogStackTrace(int ll, uint32 maxDepth)
 {
    TCHECKPOINT;
 
-#ifdef __linux__
+#if defined(MUSCLE_USE_BACKTRACE)
    const uint32 MAX_DEPTH = 256;
    void *array[MAX_DEPTH];
    size_t size = backtrace(array, muscleMin(maxDepth, MAX_DEPTH));

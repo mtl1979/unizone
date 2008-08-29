@@ -667,6 +667,10 @@ Line %2
 File %3
 Date: %4</translation>
     </message>
+    <message>
+        <source>Attempt to read file larger than maximum allocatable memory amount!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>MakeSizeString</name>
@@ -1862,6 +1866,10 @@ Date: %4</translation>
     <message>
         <source>%1/%2</source>
         <translation type='unfinished'>%1/%2</translation>
+    </message>
+    <message>
+        <source>Picture Viewer</source>
+        <translation type='unfinished'>Pr0n Viewer</translation>
     </message>
 </context>
 <context>
@@ -4719,7 +4727,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
-        <translation>b&gt;THE&lt;/b&gt; MUSCLE client for %1!</translation>
+        <translation type='obsolete'>b&gt;THE&lt;/b&gt; MUSCLE client for %1!</translation>
     </message>
     <message>
         <source>/bindecode - decode binary data and display it</source>
@@ -4771,7 +4779,7 @@ Date: %4</translation>
     </message>
     <message>
         <source>Unizone - User #%1 on %2</source>
-        <translation>Unizone - Loser #%1 on %2</translation>
+        <translation type='obsolete'>Unizone - Loser #%1 on %2</translation>
     </message>
     <message>
         <source>Qt version: %1</source>

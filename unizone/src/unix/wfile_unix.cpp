@@ -63,7 +63,7 @@ WFile::Exists(const WString &name)
 }
 
 bool
-WFile::Seek(INT64 pos)
+WFile::Seek(int64 pos)
 {
 #ifdef __APPLE__
 	return (lseek(file, pos, SEEK_SET) == pos);
@@ -73,7 +73,7 @@ WFile::Seek(INT64 pos)
 }
 
 bool
-WFile::At(INT64 pos)
+WFile::At(int64 pos)
 {
 #ifdef __APPLE__
 	return (lseek(file, 0, SEEK_CUR) == pos);
@@ -82,16 +82,22 @@ WFile::At(INT64 pos)
 #endif
 }
 
-INT64
-WFile::ReadBlock(void *buf, UINT64 size)
+int32
+WFile::ReadBlock32(void *buf, uint32 size)
+{
+	return read(file, buf, size);
+}
+
+int64
+WFile::ReadBlock(void *buf, uint64 size)
 {
 	if (size > INT_MAX)
 	{
 		char * b = (char *) buf;
-		INT64 numbytes = 0;
+		int64 numbytes = 0;
 		while (size > 0)
 		{
-			int nb = read(file, b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
+			int nb = ReadBlock32(b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
 			if (nb == 0)
 				break;
 			numbytes += nb;
@@ -100,7 +106,7 @@ WFile::ReadBlock(void *buf, UINT64 size)
 		}
 		return numbytes;
 	}
-	return read(file, buf, (unsigned int) size);
+	return ReadBlock32(buf, (unsigned int) size);
 }
 
 int 
@@ -127,16 +133,22 @@ WFile::ReadLine(char *buf, int size)
 	return numbytes;
 }
 
-INT64
-WFile::WriteBlock(const void *buf, UINT64 size)
+int32
+WFile::WriteBlock32(const void *buf, uint32 size)
+{
+	return write(file, buf, (unsigned int) size);
+}
+
+int64
+WFile::WriteBlock(const void *buf, uint64 size)
 {
 	if (size > INT_MAX)
 	{
 		const char *b = (const char *) buf;
-		INT64 numbytes = 0;
+		int64 numbytes = 0;
 		while (size > 0)
 		{
-			int nb = write(file, b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
+			int nb = WriteBlock32(b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
 			if (nb == 0)
 				break;
 			numbytes += nb;
@@ -145,7 +157,7 @@ WFile::WriteBlock(const void *buf, UINT64 size)
 		}
 		return numbytes;
 	}
-	return write(file, buf, (unsigned int) size);
+	return WriteBlock32(buf, (unsigned int) size);
 }
 
 void
@@ -154,16 +166,16 @@ WFile::Flush()
 	(void) fsync(file);
 }
 
-INT64
+int64
 WFile::Size()
 {
 #ifdef __APPLE__
-	INT64 pos = lseek(file, 0, SEEK_CUR);
-	INT64 length = lseek(file, 0, SEEK_END);
+	int64 pos = lseek(file, 0, SEEK_CUR);
+	int64 length = lseek(file, 0, SEEK_END);
 	(void) lseek(file, pos, SEEK_SET);
 #else
-	INT64 pos = lseek64(file, 0, SEEK_CUR);
-	INT64 length = lseek64(file, 0, SEEK_END);
+	int64 pos = lseek64(file, 0, SEEK_CUR);
+	int64 length = lseek64(file, 0, SEEK_END);
 	(void) lseek64(file, pos, SEEK_SET);
 #endif
 	return length;

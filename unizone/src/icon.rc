@@ -7,17 +7,15 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
 
 /////////////////////////////////////////////////////////////////////////////
-#undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
 // English (U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+LANGUAGE 0x09, 0x01
 #pragma code_page(1252)
 #endif //_WIN32
 
@@ -55,7 +53,7 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FIN)
 #ifdef _WIN32
-LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+LANGUAGE 0x0b, 0x01
 #pragma code_page(1252)
 #endif //_WIN32
 
@@ -66,8 +64,8 @@ LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,23,23,0
- PRODUCTVERSION 1,23,0,0
+ FILEVERSION 1,24,1,0
+ PRODUCTVERSION 1,24,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -85,14 +83,14 @@ BEGIN
             VALUE "Comments", "Based on BeShare Client Ozone made by Vitaliy Mikitchenko\0"
             VALUE "CompanyName", "Suomen Raasuyhteisö\0"
             VALUE "FileDescription", "Unizone\0"
-            VALUE "FileVersion", "1, 23, 23, 0\0"
+            VALUE "FileVersion", "1, 24, 1, 0\0"
             VALUE "InternalName", "Unizone\0"
             VALUE "LegalCopyright", "Copyright © 2002-2008 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
             VALUE "LegalTrademarks", "Unizone is a trademark of Mika T. Lindqvist, Ozone is a trademark of Vitaliy Mikitchenko\0"
             VALUE "OriginalFilename", "Ozone.exe\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "UniZone\0"
-            VALUE "ProductVersion", "1, 23, 0, 0\0"
+            VALUE "ProductVersion", "1, 24, 1, 0\0"
             VALUE "SpecialBuild", "\0"
         END
         BLOCK "040b04b0"
@@ -100,14 +98,14 @@ BEGIN
             VALUE "Comments", "Perustuu BeShare-asiakasohjelmaan Ozone, jonka on tehnyt Vitaliy Mikitchenko\0"
             VALUE "CompanyName", "Suomen Raasuyhteisö\0"
             VALUE "FileDescription", "Unizone\0"
-            VALUE "FileVersion", "1, 23, 23, 0\0"
+            VALUE "FileVersion", "1, 24, 1, 0\0"
             VALUE "InternalName", "Unizone\0"
             VALUE "LegalCopyright", "Copyright © 2002-2008 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
             VALUE "LegalTrademarks", "Unizone on Mika T. Lindqvistin tavaramerkki, Ozone on Vitaliy Mikitchenkon tavaramerkki\0"
             VALUE "OriginalFilename", "Unizone.exe\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "UniZone\0"
-            VALUE "ProductVersion", "1, 23, 0, 0\0"
+            VALUE "ProductVersion", "1, 24, 1, 0\0"
             VALUE "SpecialBuild", "\0"
         END
     END

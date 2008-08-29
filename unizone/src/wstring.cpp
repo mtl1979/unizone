@@ -5,8 +5,9 @@
 #include "wstring.h"
 #include "wutil.h"
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_MSC_VER)
 #include "windows\vsscanf.h"
+#include <stdlib.h>
 #endif
 
 #define ARRAYITEMS(x) (sizeof(x)/sizeof(x[0]))  /* returns # of items in array */
@@ -38,7 +39,7 @@ WString::WString(const QString &str)
 WString::WString(const char * str)
 {
 	int len;
-#if defined(WIN32)
+#if defined(WIN32) || defined(_WIN32)
 	len = MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), NULL, 0);
 	buffer = new wchar_t[len+1];
 	(void) MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), buffer, len);
@@ -258,10 +259,18 @@ WString::upper() const
 	if (buffer)
 	{
 		wchar_t *buf2;
+#ifdef _MSC_VER
+		buf2 = _wcsdup(buffer);
+#else
 		buf2 = wcsdup(buffer);
+#endif
 		if (buf2)
 		{
+#ifdef _MSC_VER
+			buf2 = _wcsupr(buf2);
+#else
 			buf2 = wcsupr(buf2);
+#endif
 			s2.setBuffer(buf2);
 		}
 	}
@@ -275,10 +284,18 @@ WString::lower() const
 	if (buffer)
 	{
 		wchar_t *buf2;
+#ifdef _MSC_VER
+		buf2 = _wcsdup(buffer);
+#else
 		buf2 = wcsdup(buffer);
+#endif
 		if (buf2)
 		{
+#ifdef _MSC_VER
+			buf2 = _wcslwr(buf2);
+#else
 			buf2 = wcslwr(buf2);
+#endif
 			s2.setBuffer(buf2);
 		}
 	}
@@ -322,7 +339,7 @@ WString::sscanf(const WString &fmt, ...)
 	{
 	va_list a;
 	va_start(a, fmt);
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 	return vwsscanf(buffer, fmt.getBuffer(), a);
 #else
 	return vswscanf(buffer, fmt.getBuffer(), a);
@@ -339,7 +356,7 @@ WString::sscanf(const wchar_t *fmt, ...)
 	{
 	va_list a;
 	va_start(a, fmt);
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 	return vwsscanf(buffer, fmt, a);
 #else
 	return vswscanf(buffer, fmt, a);

@@ -1,5 +1,5 @@
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4100 4512 4786)
 #endif
 
 #include <qobject.h>
@@ -15,6 +15,9 @@ using std::list;
 using std::iterator;
 
 #include "message/Message.h"
+#include "iogateway/MessageIOGateway.h"
+#include "reflector/RateLimitSessionIOPolicy.h"
+
 #include "downloadimpl.h"
 #include "md5.h"
 #include "debugimpl.h"
@@ -23,9 +26,8 @@ using std::iterator;
 #include "settings.h"
 #include "downloadthread.h"
 #include "wdownloadevent.h"
+#include "wmessageevent.h"
 #include "wwarningevent.h"
-#include "iogateway/MessageIOGateway.h"
-#include "reflector/RateLimitSessionIOPolicy.h"
 #include "wstring.h"
 #include "transferitem.h"
 #include "gotourl.h"
@@ -397,7 +399,9 @@ WDownload::TunnelMessage(int64 myID, MessageRef tmsg)
 		fDownloadList.GetItemAt(i, p);
 		if (ConvertPtr(p.thread) == myID)
 		{
-			p.thread->MessageReceived(tmsg);
+			WMessageEvent *wme = new WMessageEvent(tmsg);
+			if (wme)
+				QApplication::postEvent(p.thread, wme);
 			break;
 		}
 	}
@@ -484,17 +488,19 @@ void
 WDownload::customEvent(QCustomEvent * e)
 {
 	int t = (int) e->type();
+	
+	if (t > WDownloadEvent::FirstEvent && t < WDownloadEvent::LastEvent)
+	{
+		WDownloadEvent * d = dynamic_cast<WDownloadEvent *>(e);
+		if (d)
+		{
+			downloadEvent(d);
+			return;
+		}
+	}
+
 	switch (t)
 	{
-	case WDownloadEvent::Type:
-		{
-			WDownloadEvent * d = dynamic_cast<WDownloadEvent *>(e);
-			if (d)
-			{
-				downloadEvent(d);
-			}
-			break;
-		}
 	case DequeueDownloads:
 		{
 			DequeueDLSessions();
@@ -516,16 +522,9 @@ WDownload::customEvent(QCustomEvent * e)
 void
 WDownload::downloadEvent(WDownloadEvent * d)
 {
-	MessageRef msg = d->Msg();
-	WDownloadThread * dt = NULL;
+	WDownloadThread * dt = d->Sender();
 	WTransferItem * item = NULL;
 	DLPair download;
-	
-	if (!msg())
-		return; // Invalid MessageRef!
-	
-	if (msg()->FindPointer("sender", (void **)&dt) != B_OK)
-		return;	// failed! ouch!
 	
 	if (!dt)
 		return;
@@ -551,17 +550,13 @@ WDownload::downloadEvent(WDownloadEvent * d)
 		return;	// failed to find a item
 	}
 	
-	switch (msg()->what)
+	switch ((int) d->type())
 	{
 	case WDownloadEvent::Init:
 		{
 			PRINT("\tWDownloadEvent::Init\n");
-			QString filename;
-			QString user;		// unused
-			if (
-				(GetStringFromMessage(msg, "file", filename) == B_OK) && 
-				(GetStringFromMessage(msg, "user", user) == B_OK)
-				)
+			QString filename = d->File();
+			if ( !filename.isEmpty() )
 			{
 				item->setText(WTransferItem::Filename, QDir::convertSeparators( filename ));
 				item->setText(WTransferItem::User, GetUserName(dt));
@@ -583,8 +578,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::FileBlocked:
 		{
 			PRINT("\tWDownloadEvent::FileBlocked\n");
-			uint64 timeLeft = (uint64) -1;
-			(void) msg()->FindInt64("timeleft", (int64 *) &timeLeft);
+			uint64 timeLeft = d->Time();
 			if (timeLeft == (uint64) -1)
 			{
 				item->setText(WTransferItem::Status, tr("Blocked."));
@@ -606,25 +600,20 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			MessageRef cb(GetMessageFromPool(NetClient::CONNECT_BACK_REQUEST));
 			if (cb())
 			{
-				String session;
-				int32 port;
-				if (
-					(msg()->FindInt32("port", &port) == B_OK) && 
-					(msg()->FindString(PR_NAME_SESSION, session) == B_OK)
-					)
-				{
-					item->setText(WTransferItem::Status, tr("Waiting for incoming connection..."));
-					String tostr = "/*/";
-					tostr += session;
-					tostr += "/beshare";
-					cb()->AddString(PR_NAME_KEYS, tostr);
-					cb()->AddString(PR_NAME_SESSION, "");
-					cb()->AddInt32("port", port);
-					netClient()->SendMessageToSessions(cb);
-					break;
-				}
+				QString session = d->Session();
+				int32 port = d->Port();
+
+				item->setText(WTransferItem::Status, tr("Waiting for incoming connection..."));
+				QString tostr = "/*/";
+				tostr += session;
+				tostr += "/beshare";
+				AddStringToMessage(cb, PR_NAME_KEYS, tostr);
+				cb()->AddString(PR_NAME_SESSION, "");
+				cb()->AddInt32("port", port);
+				netClient()->SendMessageToSessions(cb);
 			}
-			dt->Reset();	// failed...
+			else
+				dt->Reset();	// failed...
 			break;
 		}
 		
@@ -645,8 +634,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::ConnectFailed:
 		{
 			PRINT("\tWDownloadEvent::ConnectFailed\n");
-			QString why;
-			GetStringFromMessage(msg, "why", why);
+			QString why = d->Error();
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(why));
 			dt->SetFinished(true);
 			if (dt->GetCurrentNum() > -1)
@@ -693,8 +681,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 			{
 				dt->SetFinished(true);
 				// emit FileFailed signal(s), so we can record the filename and remote username for resuming later
-				bool f;
-				if ((msg()->FindBool("failed", &f) == B_OK) && f)
+				if (d->Failed())
 				{
 					// "failed" == true only, if the transfer has failed
 					if (dt->GetCurrentNum() > -1)
@@ -728,8 +715,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::FileDone:
 		{
 			PRINT("\tWDownloadEvent::FileDone\n");
-			bool d;
-			if (msg()->FindBool("done", &d) == B_OK)
+			if (d->Done())
 			{
 				PRINT("\tFound done\n");
 				if (dt->IsLastFile())
@@ -788,23 +774,16 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::FileStarted:
 		{
 			PRINT("\tWDownloadEvent::FileStarted\n");
-			QString file;
-			uint64 start;
-			uint64 size;
-			QString user;
+			QString file = d->File();
+			uint64 start = d->Start();
+			uint64 size = d->Size();
 			
-			if (
-				(GetStringFromMessage(msg, "file", file) == B_OK) && 
-				(GetStringFromMessage(msg, "user", user) == B_OK) &&
-				(msg()->FindInt64("start", (int64 *)&start) == B_OK) &&
-				(msg()->FindInt64("size", (int64 *)&size) == B_OK) 
-				)
 			{
 				file = QDir::convertSeparators(file);
 				QString uname = GetUserName(dt);
 				
 #ifdef _DEBUG
-				WString wuid(user);
+				WString wuid(d->Session());
 				WString wname(uname);
 				PRINT("USER ID  : %S\n", wuid.getBuffer());
 				PRINT("USER NAME: %S\n", wname.getBuffer());
@@ -827,25 +806,17 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	case WDownloadEvent::UpdateUI:
 		{
 			PRINT("\tWDownloadEvent::UpdateUI\n");
-			QString id;	// unused
-			if (GetStringFromMessage(msg, "id", id) == B_OK)
-			{
-				item->setText(WTransferItem::User, GetUserName(dt));
-			}
+			item->setText(WTransferItem::User, GetUserName(dt));
 			break;
 		}
 		
 	case WDownloadEvent::FileError:
 		{
 			PRINT("\tWDownloadEvent::FileError\n");
-			QString why;
-			QString file;
-			GetStringFromMessage(msg, "why", why);
-			if (GetStringFromMessage(msg, "file", file) == B_OK)
-			{
-				file = QDir::convertSeparators(file);
-				item->setText(WTransferItem::Filename, file);
-			}
+			QString why = d->Error();
+			QString file = d->File();
+			file = QDir::convertSeparators(file);
+			item->setText(WTransferItem::Filename, file);
 			item->setText(WTransferItem::Status, tr("Error: %1").arg(why));
 			item->setText(WTransferItem::Index, FormatIndex(dt->GetCurrentNum(), dt->GetNumFiles()));
 #ifdef _DEBUG
@@ -858,16 +829,10 @@ WDownload::downloadEvent(WDownloadEvent * d)
 		
 	case WDownloadEvent::FileDataReceived:
 		{
-			int64 offset, size;
-			bool done;
+			int64 offset = d->Offset(), size = d->Size();
 			String mFile;
-			uint32 got;
+			uint32 got = d->Received();
 			
-			if (
-				(msg()->FindInt64("offset", &offset) == B_OK) && 
-				(msg()->FindInt64("size", &size) == B_OK) &&
-				(msg()->FindInt32("got", (int32 *)&got) == B_OK)
-				)
 			{
 				PRINT("\tWDownloadEvent::FileDataReceived\n");
 				PRINT2("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
@@ -929,7 +894,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				
 				item->setText(WTransferItem::Rate, QString::number(gcr*1024.0f));
 				
-				if (msg()->FindBool("done", &done) == B_OK)
+				if (d->Done())
 				{
 					item->setText(WTransferItem::Status, tr("File finished."));
 					item->setText(WTransferItem::ETA, QString::null);

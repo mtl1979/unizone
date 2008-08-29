@@ -2,7 +2,7 @@
 // Released under Lesser GPL as in LGPL.TXT in source root folder
 
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qpainter.h>
@@ -26,84 +26,92 @@ WUserListItem::WUserListItem(
 	setText(Load,f);
 	setText(Client,g);
 	setText(HostOS,h);
-		
-	setRowBaseColor(0, Qt::white);			setRowTextColor(0, Qt::black);
-	setRowBaseColor(1, Qt::green);			setRowTextColor(1, Qt::black);
-	setRowBaseColor(2, Qt::yellow);			setRowTextColor(2, Qt::black);
-	setRowBaseColor(3, Qt::darkYellow);		setRowTextColor(3, Qt::white);
-	setRowBaseColor(4, Qt::red);			setRowTextColor(4, Qt::black);
-	setRowBaseColor(5, Qt::darkRed);		setRowTextColor(5, Qt::white);
-	setRowBaseColor(6, Qt::blue);			setRowTextColor(6, Qt::white);
+	
+	setRowBaseColor(0, Qt::white);
+	setRowBaseColor(1, Qt::green);
+	setRowBaseColor(2, Qt::yellow);
+	setRowBaseColor(3, Qt::darkYellow);
+	setRowBaseColor(4, Qt::red);
+	setRowBaseColor(5, Qt::darkRed);
+	setRowBaseColor(6, Qt::blue);
+	
+	setRowTextColor(0, Qt::black);
+	setRowTextColor(1, Qt::black);
+	setRowTextColor(2, Qt::black);
+	setRowTextColor(3, Qt::white);
+	setRowTextColor(4, Qt::black);
+	setRowTextColor(5, Qt::white);
+	setRowTextColor(6, Qt::white);
 }
 
 void
 WUserListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w, int alignment)
 {
-		QColorGroup _cg = cg;
+	QColorGroup _cg = cg;
+	
+	bool mc = false;
+	if (gWin->fSettings)
+	{
+		mc = gWin->fSettings->GetMultiColor();
+	}
+	
+	if (mc == true)
+	{
+		int64 tx = item(Load);
 		
-		bool mc = false;
-		if (gWin->fSettings)
+		if ((column == 0) || (column == 5))
 		{
-			mc = gWin->fSettings->GetMultiColor();
-		}
-
-		if (mc == true)
-		{
-			long tx = WUniListItem::item(Load);
+			if (tx > 999999)
+			{
+				_cg.setColor(QColorGroup::Base, rowBaseColor(5));	// Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(5));	// 
+			}
+			else if (tx > 749999 && tx < 1000000)
+			{
+				_cg.setColor(QColorGroup::Base, rowBaseColor(4));	// 3/4		- Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(4));	// 
+			}
+			else if (tx > 499999 && tx < 750000)
+			{
+				_cg.setColor(QColorGroup::Base, rowBaseColor(3));	// 1/2		- 3/4 Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(3));	// 
+			}
+			else if (tx > 249999 && tx < 500000)
+			{
+				_cg.setColor(QColorGroup::Base, rowBaseColor(2));	// 1/4		- 1/2 Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(2));	// 
+			}
+			else if (tx > -1 && tx < 250000)
+			{
+				_cg.setColor(QColorGroup::Base, rowBaseColor(1));	// Empty - 1/4 Full
+				_cg.setColor(QColorGroup::Text, rowTextColor(1));	// 
+			}
+			else if (tx == -1)
+			{
+				_cg.setColor(QColorGroup::Base, rowBaseColor(0));	// default
+				_cg.setColor(QColorGroup::Text, rowTextColor(0));	// 
+			}
+			else // tx < -1
+			{
+				_cg.setColor(QColorGroup::Base, rowBaseColor(6));	// Infinite slots 
+				_cg.setColor(QColorGroup::Text, rowTextColor(6));	//  
+			}
 			
-			if ((column == 0) || (column == 5))
-			{
-				if (tx > 999999)
-				{
-					_cg.setColor(QColorGroup::Base, rowBaseColor(5));	// Full
-					_cg.setColor(QColorGroup::Text, rowTextColor(5));	// 
-				}
-				else if (tx > 749999 && tx < 1000000)
-				{
-					_cg.setColor(QColorGroup::Base, rowBaseColor(4));	// 3/4		- Full
-					_cg.setColor(QColorGroup::Text, rowTextColor(4));	// 
-				}
-				else if (tx > 499999 && tx < 750000)
-				{
-					_cg.setColor(QColorGroup::Base, rowBaseColor(3));	// 1/2		- 3/4 Full
-					_cg.setColor(QColorGroup::Text, rowTextColor(3));	// 
-				}
-				else if (tx > 249999 && tx < 500000)
-				{
-					_cg.setColor(QColorGroup::Base, rowBaseColor(2));	// 1/4		- 1/2 Full
-					_cg.setColor(QColorGroup::Text, rowTextColor(2));	// 
-				}
-				else if (tx > -1 && tx < 250000)
-				{
-					_cg.setColor(QColorGroup::Base, rowBaseColor(1));	// Empty	- 1/4 Full
-					_cg.setColor(QColorGroup::Text, rowTextColor(1));	// 
-				}
-				else if (tx == -1)
-				{
-					_cg.setColor(QColorGroup::Base, rowBaseColor(0));	// default
-					_cg.setColor(QColorGroup::Text, rowTextColor(0));	// 
-				}
-				else // tx < -1
-				{
-					_cg.setColor(QColorGroup::Base, rowBaseColor(6));	// Infinite slots 
-					_cg.setColor(QColorGroup::Text, rowTextColor(6));	//  
-				}
-
-			}
-			else if (column == 3)
-			{
-				if (fFire)															// Firewalled?
-					_cg.setColor(QColorGroup::Text, rowBaseColor(4));
-			}
 		}
-		else
+		else if (column == 3)
 		{
-			if (fFire)
-			{
-				QFont font = p->font();
-				font.setBold(true);
-				p->setFont(font);
-			}
+			if (fFire)															// Firewalled?
+				_cg.setColor(QColorGroup::Text, rowBaseColor(4));
 		}
+	}
+	else
+	{
+		if (fFire)
+		{
+			QFont font = p->font();
+			font.setBold(true);
+			p->setFont(font);
+		}
+	}
 	WNickListItem::paintCell(p, _cg, column, w, alignment);
 }

@@ -1,8 +1,9 @@
 #include "wcrypt.h"
 #include "titanic.h"
 
-#if defined(WIN32)
-#  include <windows.h>
+// for htonl() & ntohl()
+#if defined(WIN32) || defined(_WIN32)
+#  include <winsock2.h>
 #else
 #  include <netinet/in.h>
 #endif
@@ -18,7 +19,7 @@ wencrypt2(const QString &in)
 	return out;
 }
 
-QByteArray 
+QByteArray
 wencrypt(const QString &in, unsigned long * outlen)
 {
 	unsigned long l,len;
@@ -26,7 +27,7 @@ wencrypt(const QString &in, unsigned long * outlen)
 	l = tmp.length();
 	len = htonl(l);
 	QByteArray out(l + 4);
-	
+
 	int n = 4;
 	memcpy(&out[0], &len, 4);
 	for (unsigned int i = 0; i < tmp.length(); i += 4)
@@ -54,13 +55,13 @@ wencrypt(const QString &in, unsigned long * outlen)
 			break;
 		}
 	}
-	
+
 	if (outlen)
 		*outlen = l + 4;
 	return out;
 }
 
-QString 
+QString
 wdecrypt2(const QString &in)
 {
 	unsigned long len;

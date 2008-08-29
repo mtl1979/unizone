@@ -3,8 +3,9 @@
 
 #include <io.h>
 #include <fcntl.h>
-#include <sys/stat.h>
 #include <limits.h>
+#include <stdio.h>
+#include <sys/stat.h>
 
 WFile::WFile()
 {
@@ -13,8 +14,7 @@ WFile::WFile()
 
 WFile::~WFile()
 {
-	if (file)
-		Close();
+	Close();
 }
 
 bool
@@ -36,8 +36,11 @@ WFile::Open(const QString &name, int mode)
 void
 WFile::Close()
 {
-	_close(file);
-	file = -1;
+	if (file != -1)
+	{
+		_close(file);
+		file = -1;
+	}
 }
 
 bool
@@ -65,27 +68,33 @@ WFile::Exists(const WString &name)
 }
 
 bool
-WFile::Seek(INT64 pos)
+WFile::Seek(int64 pos)
 {
 	return (_lseeki64(file, pos, SEEK_SET) == pos);
 }
 
 bool
-WFile::At(INT64 pos)
+WFile::At(int64 pos)
 {
 	return (_telli64(file) == pos);
 }
 
-INT64
-WFile::ReadBlock(void *buf, UINT64 size)
+int32
+WFile::ReadBlock32(void *buf, uint32 size)
+{
+	return _read(file, buf, size);
+}
+
+int64
+WFile::ReadBlock(void *buf, uint64 size)
 {
 	if (size > INT_MAX)
 	{
 		char * b = (char *) buf;
-		INT64 numbytes = 0;
+		int64 numbytes = 0;
 		while (size > 0)
 		{
-			int nb = read(file, b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
+			int nb = ReadBlock32(b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
 			if (nb == 0)
 				break;
 			numbytes += nb;
@@ -94,7 +103,7 @@ WFile::ReadBlock(void *buf, UINT64 size)
 		}
 		return numbytes;
 	}
-	return read(file, buf, (unsigned int) size);
+	return ReadBlock32(buf, (unsigned int) size);
 }
 
 int 
@@ -104,11 +113,11 @@ WFile::ReadLine(char *buf, int size)
 	while (size-- > 0)
 	{
 		char c;
-		if (read(file, &c, 1) == 1)
+		if (_read(file, &c, 1) == 1)
 		{
 			if (c == 13)
 			{
-				if (read(file, &c, 1) == 1)
+				if (_read(file, &c, 1) == 1)
 				{
 					if (c != 10)
 						_lseeki64(file, -1, SEEK_CUR); // Rewind one byte.
@@ -128,16 +137,22 @@ WFile::ReadLine(char *buf, int size)
 	return numbytes;
 }
 
-INT64
-WFile::WriteBlock(const void *buf, UINT64 size)
+int32
+WFile::WriteBlock32(const void *buf, uint32 size)
+{
+	return _write(file, buf, (unsigned int) size);
+}
+
+int64
+WFile::WriteBlock(const void *buf, uint64 size)
 {
 	if (size > INT_MAX)
 	{
 		const char *b = (const char *) buf;
-		INT64 numbytes = 0;
+		int64 numbytes = 0;
 		while (size > 0)
 		{
-			int nb = write(file, b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
+			int nb = WriteBlock32(b, (size > INT_MAX) ? INT_MAX : (unsigned int) size);
 			if (nb == 0)
 				break;
 			numbytes += nb;
@@ -146,7 +161,7 @@ WFile::WriteBlock(const void *buf, UINT64 size)
 		}
 		return numbytes;
 	}
-	return write(file, buf, (unsigned int) size);
+	return WriteBlock32(buf, (unsigned int) size);
 }
 
 void
@@ -155,7 +170,7 @@ WFile::Flush()
 	_commit(file);
 }
 
-INT64
+int64
 WFile::Size()
 {
 	return _filelengthi64(file);

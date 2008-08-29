@@ -26,7 +26,7 @@ class Channel : public ChannelBase, public ChatWindow
     Q_OBJECT
 
 public:
-    Channel( QWidget* parent = 0, NetClient * net = 0, QString cname = QString::null, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
+	Channel( QWidget* parent = 0, NetClient * net = 0, QString cname = QString::null, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
     ~Channel();
 	void SetOwner(const QString &);
 	void SetTopic(const QString &);
@@ -38,7 +38,7 @@ public:
 	void Kick(const QString & user);
 protected:
 	virtual void customEvent(QCustomEvent *);
-	virtual void resizeEvent(QResizeEvent * e);
+	virtual void resizeEvent(QResizeEvent *);
 
 	friend class Channels;
 	void StartLogging();

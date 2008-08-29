@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "channelimpl.h"
 #include "global.h"
 #include "wpwevent.h"
@@ -587,7 +591,7 @@ Channel::customEvent(QCustomEvent * event)
 				}
 				else if (CompareCommand(wte->Text(), "/clear"))
 				{
-					fChatText->clear();	// empty the text
+					Clear();	// empty the text
 				}
 				else
 				{

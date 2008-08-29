@@ -529,6 +529,10 @@ Date: %4</source>
 %3 파일
 날짜: %4</translation>
     </message>
+    <message>
+        <source>Attempt to read file larger than maximum allocatable memory amount!</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>MakeSizeString</name>
@@ -1748,6 +1752,10 @@ Date: %4</source>
     <message>
         <source>%1/%2</source>
         <translation type='unfinished'>%1/%2</translation>
+    </message>
+    <message>
+        <source>Picture Viewer</source>
+        <translation type='unfinished'>Picture Viewer</translation>
     </message>
 </context>
 <context>
@@ -4447,7 +4455,7 @@ Date: %4</source>
     </message>
     <message>
         <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
-        <translation>%1용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
+        <translation type='obsolete'>%1용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
     </message>
     <message>
         <source>/bindecode - decode binary data and display it</source>
@@ -4499,7 +4507,7 @@ Date: %4</source>
     </message>
     <message>
         <source>Unizone - User #%1 on %2</source>
-        <translation>Unizone - %2 의 사용자 #%1</translation>
+        <translation type='obsolete'>Unizone - %2 의 사용자 #%1</translation>
     </message>
     <message>
         <source>Qt version: %1</source>

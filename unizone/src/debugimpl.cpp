@@ -14,9 +14,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+#ifdef _DEBUG
+
 FILE * nfp = NULL;
 
-#ifdef _DEBUG
 void PRINT(const char *fmt, ...)
 {
 	if (nfp)
@@ -40,6 +41,7 @@ CleanupDebug()
 	if (nfp)
 		fclose(nfp);
 }
+
 #endif
 
 void WPopup(const QString &msg)
@@ -48,24 +50,37 @@ void WPopup(const QString &msg)
 }
 
 void WPopup(const char *msg)
-{ 
+{
 	WPopup(qApp->translate("Debug", msg));
 }
 
 void
 WAssert(bool test, const char *message, int line, const char *file, const char *date)
 {
-	if (!test) 
-	{ 
+	if (!test)
+	{
 		QString out = qApp->translate("Debug", "Send this message to postmaster@raasu.org! This message has also been dumped to 'assert.txt'." 
 			"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(qApp->translate("Debug", message)).arg(line).arg(file).arg(date); 
 		WFile f;
-		if (f.Open("assert.txt", IO_WriteOnly)) 
-		{ 
+		if (f.Open("assert.txt", IO_WriteOnly))
+		{
 			QCString tmp = out.utf8();
-			f.WriteBlock(tmp, tmp.length()); 
-			f.Close(); 
-		} 
+			f.WriteBlock(tmp, tmp.length());
+			f.Close();
+		}
 		WPopup(out);
 	}
 }
+
+#ifdef _DEBUG
+
+void
+CheckSize(int64 size)
+{
+	if (size > LONG_MAX)
+	{
+		WPopup( qApp->translate( "Debug", "Attempt to read file larger than maximum allocatable memory amount!") );
+	}
+}
+
+#endif

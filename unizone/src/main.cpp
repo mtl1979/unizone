@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qapplication.h>
 #include <qfile.h>
 #include <qfiledialog.h>
@@ -9,7 +13,7 @@
 #include <string.h>
 #include <fcntl.h>
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
 #include <shlwapi.h>
 #endif
@@ -162,7 +166,7 @@ main( int argc, char** argv )
 
 	// (Re-)load translator filename
 	if ( lang.Open(L"unizone.lng",
-#if defined(WIN32)
+#if defined(WIN32) || defined(_WIN32)
 		O_RDONLY | O_BINARY
 #else
 		O_RDONLY

@@ -6,6 +6,12 @@
 
 #include <qlistview.h>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
+#include "utypes.h"
+
 class WUniListItem : public QListViewItem
 {
 public:
@@ -72,7 +78,7 @@ public:
 	virtual QString key(int c, bool asc) const;
 
 	// returns numeric equivalent of key()
-	virtual long item(int c);
+	virtual int64 item(int c);
 
 	// set/get user colors
 	virtual void setRowBaseColor(int i, const QColor & color); 

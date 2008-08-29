@@ -1,8 +1,15 @@
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include "wmessageevent.h"
+
+WMessageEvent::WMessageEvent(MessageRef msg)
+: QCustomEvent(MessageEventType)
+{
+	msgtype = MessageEventType;
+	message = msg;
+}
 
 WMessageEvent::WMessageEvent(int mt, const String &from)
 : QCustomEvent(MessageEventType)

@@ -1,5 +1,5 @@
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qapplication.h>
@@ -587,7 +587,7 @@ QString
 MakeSizeString(uint64 s)
 {
 	QString result, postFix;
-	double n = (int64) s;
+	double n = (double) (int64) s;
 	postFix = qApp->translate("MakeSizeString","B");
 	if (n > 1024.0f)	// > 1 kB?
 	{
@@ -1134,7 +1134,8 @@ CalculateFileChecksum(const ByteBufferRef &buf)
 {
    uint32 sum = 0L;
    uint8 * data = buf()->GetBuffer();
-   for (size_t i=0; i<buf()->GetNumBytes(); i++) sum += (*(data++)<<(i%24));
+	size_t bufsize = buf()->GetNumBytes();
+   for (size_t i=0; i<bufsize; i++) sum += (*(data++)<<(i%24));
    return sum;
 }
 
@@ -1176,9 +1177,10 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 	WFile fFile;
 	if (fFile.Open(nf, IO_WriteOnly))
 	{
-		uint64 bytes = fFile.WriteBlock((char *) buf()->GetBuffer(), buf()->GetNumBytes());
+		size_t bufsize = buf()->GetNumBytes();
+		uint64 bytes = fFile.WriteBlock((char *) buf()->GetBuffer(), bufsize);
 		fFile.Close();
-		if (bytes == buf()->GetNumBytes())
+		if (bytes == bufsize)
 		{
 			file = nf;
 			return;
@@ -1222,7 +1224,6 @@ QString
 fromULongLong(const uint64 &in)
 {
 	uint64 tmp;
-	int n;
 	QString out;
 
 	if (in < 10)
@@ -1231,7 +1232,7 @@ fromULongLong(const uint64 &in)
 	tmp = in;
 	while (tmp > 0)
 	{
-		n = tmp % 10;
+		char n = (char) (tmp % 10);
 		out.prepend(QChar(n + '0'));
 		tmp /= 10;
 	}
@@ -1242,7 +1243,6 @@ QString
 hexFromULongLong(const uint64 &in, unsigned int length)
 {
 	uint64 tmp;
-	int n;
 	QString out;
 
 	if (in < 10)
@@ -1254,7 +1254,7 @@ hexFromULongLong(const uint64 &in, unsigned int length)
 		tmp = in;
 		while (tmp > 0)
 		{
-			n = tmp % 16;
+			char n = (char) (tmp % 16);
 			out.prepend(QChar(n + ((n < 10) ? '0' : 55)));
 			tmp /= 16;
 		}
@@ -1295,7 +1295,6 @@ int64 toLongLong(const QString &in, bool *ok)
 QString fromLongLong(const int64 &in)
 {
 	uint64 tmp;
-	int n;
 	bool negate = false;
 	QString out;
 
@@ -1311,7 +1310,7 @@ QString fromLongLong(const int64 &in)
 
 	while (tmp > 0)
 	{
-		n = tmp % 10;
+		char n = (char) (tmp % 10);
 		out.prepend(QChar(n + '0'));
 		tmp /= 10;
 	}
@@ -1593,7 +1592,7 @@ QString OCTEncode(const QString &in)
 		part = QString::null;
 		for (int xx = 0; xx < 3; xx++)
 		{
-			part.prepend('0' + (c % 7));
+			part.prepend((char) ('0' + (c % 7)));
 			c /= 7;
 		}
 		out += part;

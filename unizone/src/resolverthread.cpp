@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "resolverthread.h"
 #include "global.h"
 #include "winsharewindow.h" // For FillUserMap

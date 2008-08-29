@@ -5,6 +5,10 @@
 #pragma warning(disable: 4786)
 #endif
 
+#if defined(WIN32) || defined(_WIN32)
+#include <windows.h>
+#endif
+
 #include <qmainwindow.h>
 #include <qvbox.h>
 #include <qmenubar.h>
@@ -256,10 +260,10 @@ public slots:
 	void FileInterrupted(const QString &, const QString &, const QString &, const QString &);
 
 protected:
-	virtual void customEvent(QCustomEvent * event);
-	virtual void resizeEvent(QResizeEvent * event);
-	virtual void keyPressEvent(QKeyEvent *event);
-	virtual void timerEvent(QTimerEvent *event);
+	virtual void customEvent(QCustomEvent *);
+	virtual void resizeEvent(QResizeEvent *);
+	virtual void keyPressEvent(QKeyEvent *);
+	virtual void timerEvent(QTimerEvent *);
 
 private slots:
 

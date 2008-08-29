@@ -8,7 +8,7 @@
 
 #ifdef WIN32
 # include <windows.h>
-# include <winsock.h>
+# include <mmsystem.h>
 # include <signal.h>
 #else
 # if defined(__BEOS__)
@@ -74,6 +74,7 @@ static void GoInsane(const char * why, const char * why2 = NULL)
    printf("SanitySetupSystem:  MUSCLE COMPILATION RUNTIME SANITY CHECK FAILED!\n");
    printf("REASON:  %s %s\n", why, why2?why2:"");
    printf("PLEASE CHECK YOUR COMPILATION SETTINGS!  THIS PROGRAM WILL NOW EXIT.\n");
+   fflush(stdout);
    ExitWithoutCleanup(10);
 }
 
@@ -429,9 +430,7 @@ uint64 GetRunTime64()
 
 status_t Snooze64(uint64 micros)
 {
-#if __BEOS__
-   return snooze(micros);
-#elif __ATHEOS__
+#if __ATHEOS__
    return (snooze(micros) >= 0) ? B_NO_ERROR : B_ERROR;
 #elif WIN32
    Sleep((DWORD)((micros/1000)+(((micros%1000)!=0)?1:0)));
@@ -777,32 +776,34 @@ int UInt64CompareFunc(const uint64 & i1, const uint64 & i2, void *) {return musc
 int FloatCompareFunc( const float  & i1, const float  & i2, void *) {return muscleCompare(i1, i2);}
 int DoubleCompareFunc(const double & i1, const double & i2, void *) {return muscleCompare(i1, i2);}
 
-static void FlushAsciiChars(int idx, char * ascBuf, char * hexBuf, uint32 count, uint32 numColumns)
+static void FlushAsciiChars(FILE * file, int idx, char * ascBuf, char * hexBuf, uint32 count, uint32 numColumns)
 {
    while(count<numColumns) ascBuf[count++] = ' ';
    ascBuf[count] = '\0';
-   printf("%04i: %s [%s]\n", idx, ascBuf, hexBuf);
+   fprintf(file, "%04i: %s [%s]\n", idx, ascBuf, hexBuf);
    hexBuf[0] = '\0';
 }
 
-void PrintHexBytes(const void * vbuf, uint32 numBytes, const char * optDesc, uint32 numColumns)
+void PrintHexBytes(const void * vbuf, uint32 numBytes, const char * optDesc, uint32 numColumns, FILE * optFile)
 {
+   if (optFile == NULL) optFile = stdout;
+
    const uint8 * buf = (const uint8 *) vbuf;
 
    if (numColumns == 0)
    {
       // A simple, single-line format
-      if (optDesc) printf("%s: ", optDesc);
-      printf("[");
-      for (uint32 i=0; i<numBytes; i++) printf("%s%02x", (i==0)?"":" ", buf[i]);
-      printf("]\n");
+      if (optDesc) fprintf(optFile, "%s: ", optDesc);
+      fprintf(optFile, "[");
+      for (uint32 i=0; i<numBytes; i++) fprintf(optFile, "%s%02x", (i==0)?"":" ", buf[i]);
+      fprintf(optFile, "]\n");
    }
    else
    {
       // A more useful columnar format with ASCII sidebar
       char headBuf[256]; 
       sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
-      printf("%s", headBuf);
+      fprintf(optFile, "%s", headBuf);
 
       const int hexBufSize = (numColumns*8)+1;
       int numDashes = 8+(4*numColumns)-strlen(headBuf);
@@ -822,10 +823,10 @@ void PrintHexBytes(const void * vbuf, uint32 numBytes, const char * optDesc, uin
             char temp[8]; sprintf(temp, "%s%02x", ((idx%numColumns)==0)?"":" ", (unsigned int)(((uint32)buf[idx])&0xFF));
             strncat(hexBuf, temp, hexBufSize);
             idx++;
-            if ((idx%numColumns) == 0) FlushAsciiChars(idx-numColumns, ascBuf, hexBuf, numColumns, numColumns);
+            if ((idx%numColumns) == 0) FlushAsciiChars(optFile, idx-numColumns, ascBuf, hexBuf, numColumns, numColumns);
          }
          uint32 leftovers = (numBytes%numColumns);
-         if (leftovers > 0) FlushAsciiChars(numBytes-leftovers, ascBuf, hexBuf, leftovers, numColumns);
+         if (leftovers > 0) FlushAsciiChars(optFile, numBytes-leftovers, ascBuf, hexBuf, leftovers, numColumns);
       }
       else WARN_OUT_OF_MEMORY;
 

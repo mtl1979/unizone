@@ -1,7 +1,7 @@
+#include <windows.h>
 #include <qstring.h>
 
 #include "wutil.h"
-
 #if defined(_M_IX86)
 void __declspec(naked) 
 wcopy (wchar_t *dest, const wchar_t *src, size_t len)
@@ -114,7 +114,7 @@ se:		xor bx,bx;				// terminate dest
 }
 
 void __declspec(naked)
-wreverse(wchar_t *dest, const wchar_t *src, ssize_t len)
+wreverse(wchar_t *dest, const wchar_t *src, size_t len)
 {
 	_asm
 	{
@@ -146,16 +146,20 @@ re:		xor bx, bx				// dest[len] = 0;
 #endif
 
 /*
-*
-*  Conversion functions
-*
-*/
+ *
+ *  Conversion functions
+ *
+ */
 
 QString 
 wideCharToQString(const wchar_t *wide)
 {
     QString result;
-    result.setUnicodeCodes(wide, lstrlenW(wide));
+#if (QT_VERSION >= 0x030000)
+	result.setUnicodeCodes((const ushort *)wide, lstrlenW(wide));
+#else
+	result.setUnicodeCodes(wide, lstrlenW(wide));
+#endif
     return result;
 }
 
@@ -170,7 +174,11 @@ qStringToWideChar(const QString &str)
 	wchar_t *result = new wchar_t[str.length() + 1];
 	if (result)
 	{
+#if (QT_VERSION >= 0x030000)
+		wcopy(result, (const wchar_t *) str.unicode(), str.length());
+#else
 		wcopy(result, (unsigned short *) str.unicode(), str.length());
+#endif
 		return result;
 	}
 	else

@@ -22,6 +22,7 @@
 using namespace muscle;
 
 class WFileThread;
+class WUploadEvent;
 
 /*
  *
@@ -100,7 +101,7 @@ public:
 	void SetPacketSize(double s);		// Set/get packet size in kB
 	double GetPacketSize();
 
-	int GetBanTime();
+	int64 GetBanTime();
 
 	int GetCompression() const; 
 	void SetCompression(int c);
@@ -130,13 +131,19 @@ private slots:
 
 	void ServerExited();
 
+private:
+	void OutputQueuesDrained(); //Auxiliary function for tunneled transfers
+
 protected:
 
 	friend class WUpload;
+	enum
+	{
+		TunnelData = 'tuda'
+	};
+//	void MessageReceived(MessageRef msg) { MessageReceived(msg, _sessionID); }
 
-	void MessageReceived(MessageRef msg) { MessageReceived(msg, _sessionID); }
-
-	void SendReply(MessageRef &m);
+	void SendReply(WUploadEvent *);
 	void SendQueuedNotification();
 	void SendRejectedNotification(bool);
 	void timerEvent(QTimerEvent *);

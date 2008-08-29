@@ -2,7 +2,7 @@
 // Contains all the networking related methods
 
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4100 4127 4512 4786)
 #endif
 
 #include <qapplication.h>
@@ -340,7 +340,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		}
 		else if (CompareCommand(sendText, "/clear"))
 		{
-			fChatText->clear();	// empty the text
+			Clear();	// empty the text
 		}
 		else if (CompareCommand(sendText, "/watch"))
 		{
@@ -1358,11 +1358,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				base += lt;
 			}
 
-			QString fname = "shared/";
-			fname += base;
+			QString fname = base;
 			fname += ".jpg";
 			fname = FixFileName(fname);
-
+			fname.prepend("shared/");
 			QWidget * desk = QApplication::desktop();
 			QPixmap pmap = QPixmap::grabWindow(desk->winId());
 			pmap.save(fname, "JPEG");
@@ -1951,7 +1950,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			PRINT("\tCONNECT_BACK_REQUEST\n");
 			
 			const char * session;
-			int32 port;
+			int32 port = 0;
 			if ((msg()->FindString(PR_NAME_SESSION, &session) == B_OK) && (msg()->FindInt32("port", &port) == B_OK))
 			{
 				WUserRef user = fNetClient->FindUser(session);
@@ -1980,30 +1979,23 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					return;
 			}
 
-			uint8 * data;
-			size_t numBytes;
+			ByteBufferRef data;
 
-			if (msg()->FindDataPointer("picture", B_RAW_TYPE, (void **)&data, (uint32 *)&numBytes) == B_OK)
+			if (msg()->FindFlat("picture", data) == B_OK)
 			{
-				ByteBufferRef buf = GetByteBufferFromPool();
-				if (buf())
+				uint32 myChecksum, chk;
+				if (msg()->FindInt32("chk", (int32 *) &chk) == B_OK)
 				{
-					if (buf()->SetNumBytes(numBytes, false) == B_OK)
-					{
-						buf()->SetBuffer(numBytes, data);
-						uint32 myChecksum, chk;
-						if (msg()->FindInt32("chk", (int32 *) &chk) == B_OK)
-						{
-                     myChecksum = CalculateFileChecksum(buf);
-							if (myChecksum != chk)
-								return;
-						}
-						SavePicture(file, buf);
-						OpenViewer();
-						if (fPicViewer->LoadImage(file))
-							fPicViewer->show();
-					}
+					myChecksum = CalculateFileChecksum(data);
+					if (myChecksum != chk)
+						return;
 				}
+				SavePicture(file, data);
+				OpenViewer();
+				if (fPicViewer->LoadImage(file))
+					fPicViewer->show();
+				else
+					QFile::remove(file);	// Remove file if it is in unrecognized format
 			}
 				
 			break;
@@ -2242,7 +2234,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			{
 				String repto;
 				String repname;
-				int64 rtime;
+				int64 rtime = 0;
 				if (
 					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
 					(msg()->FindInt64("registertime", &rtime) == B_OK) &&
@@ -2269,7 +2261,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		case NetClient::RegisterFail:
 			{
 				String repto;
-				int64 rtime;
+				int64 rtime = 0;
 				if (
 					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) && 
 					(msg()->FindInt64("registertime", &rtime) == B_OK)
@@ -2292,6 +2284,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		case NetClient::ChannelSetPublic:
 			{
 				fChannels->HandleMessage(msg);
+				break;
 			}
 //
 		case NetClient::PING:
@@ -2368,13 +2361,13 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							else
 							{
 								QString pre = WFormat::RemoteName(session, FixString(user()->GetUserName()));
-								uint32 time = ((GetCurrentTime64() - when) / 10000L);
+								uint32 time = (uint32) ((GetCurrentTime64() - when) / 10000L);
 								
 								QString pong(pre);
 								pong += WFormat::PingText(time, versionString);
 								PrintText(pong);
 								
-								uint64 uptime, onlinetime;
+								uint64 uptime, onlinetime = 0;
 								if ((msg()->FindInt64("uptime", (int64 *) &uptime) == B_OK) && 
 									(msg()->FindInt64("onlinetime", (int64 *) &onlinetime) == B_OK))
 								{
@@ -3163,9 +3156,9 @@ WinShareWindow::SendPicture(const QString &target, const QString &file)
 		ByteBufferRef buf = GetByteBufferFromPool();
 		if (buf())
 		{
-			if (buf()->SetNumBytes(fFile.Size(), false) == B_OK)
+			if (buf()->SetNumBytes((uint32) fFile.Size(), false) == B_OK)
 			{
-				fFile.ReadBlock((char *) buf()->GetBuffer(), fFile.Size());
+				fFile.ReadBlock32((char *) buf()->GetBuffer(), (uint32) fFile.Size());
 				fFile.Close();
 				QFileInfo info(file);
 				fNetClient->SendPicture(target, buf, info.fileName());

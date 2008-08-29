@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "picviewerimpl.h"
 #include "support/MuscleSupport.h"
 
@@ -194,9 +198,10 @@ WPicViewer::LoadImage(const QString &file)
 	}
 	if (f.Open(file, IO_ReadOnly))
 	{
-		if (buf()->SetNumBytes(f.Size(), false) == B_OK)
+		if (buf()->SetNumBytes((uint32) f.Size(), false) == B_OK)
 		{
-			if (f.ReadBlock((char *) buf()->GetBuffer(), f.Size()) == f.Size())
+			CheckSize(f.Size());
+			if (f.ReadBlock32((char *) buf()->GetBuffer(), (uint32) f.Size()) == (int32) f.Size())
 			{
 				if (ret = LoadImage(buf, fmt, fImage))
 				{

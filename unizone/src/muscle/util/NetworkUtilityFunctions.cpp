@@ -11,9 +11,11 @@
 #endif
 
 #ifdef WIN32
-# include <windows.h>
-# include <winsock.h>
 # include <iphlpapi.h>
+# include <mswsock.h>  // for SIO_UDP_CONNRESET, etc
+# ifdef MUSCLE_ENABLE_MULTICAST_API
+#  include <ws2ipdef.h>  // for IP_MULTICAST_LOOP, etc
+# endif
 # pragma warning(disable: 4800 4018)
 typedef char sockopt_arg;  // Windows setsockopt()/getsockopt() use char pointers
 #else
@@ -104,7 +106,18 @@ static void InitializeSockAddr4(struct sockaddr_in & addr, const ip_address * op
 
 SocketRef CreateUDPSocket()
 {
-   return GetSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_DGRAM, 0));
+   SocketRef ret = GetSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_DGRAM, 0));
+#ifdef WIN32
+   if (ret())
+   {
+      // This setup code avoids the UDP WSAECONNRESET problem
+      // described at http://support.microsoft.com/kb/263823/en-us
+      DWORD dwBytesReturned = 0;
+      BOOL bNewBehavior = FALSE;
+      if (WSAIoctl(ret.GetFileDescriptor(), SIO_UDP_CONNRESET, &bNewBehavior, sizeof(bNewBehavior), NULL, 0, &dwBytesReturned, NULL, NULL) != 0) ret.Reset();
+   }
+#endif
+   return ret;
 }
 
 status_t BindUDPSocket(const SocketRef & sock, uint16 port, uint16 * optRetPort, const ip_address & optFrom, bool allowShared)

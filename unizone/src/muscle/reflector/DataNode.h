@@ -228,14 +228,15 @@ public:
    uint32 CalculateChecksum(uint32 maxRecursionCount = MUSCLE_NO_LIMIT) const;
 
    /** For debugging purposes; prints the current state of this node (and
-     * optionally its descendants) to stdout.
+     * optionally its descendants) to stdout or to another file you specify.
+     * @param optFile If non-NULL, the text will be printed to this file.  If left as NULL, stdout will be used as a default.
      * @param maxRecursionDepth The maximum number of times to recurse.  Zero would
      *                          result in a checksum for this node only; one for this
      *                          node and its children only, etc.  Defaults to 
      *                          MUSCLE_NO_LIMIT.
      * @param indentLevel how many spaces to indent the generated text
      */
-   void PrintToStream(uint32 maxRecursionDepth = MUSCLE_NO_LIMIT, int indentLevel = 0) const;
+   void PrintToStream(FILE * optFile = NULL, uint32 maxRecursionDepth = MUSCLE_NO_LIMIT, int indentLevel = 0) const;
 
 private:
    friend class StorageReflectSession;

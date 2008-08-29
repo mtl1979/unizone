@@ -1,10 +1,11 @@
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4100 4512 4786)
 #endif
 
 #include <qdir.h>
 
 #include "uploadthread.h"
+#include "wmessageevent.h"
 #include "wuploadevent.h"
 #include "wsystemevent.h"
 #include "global.h"
@@ -188,10 +189,10 @@ WUploadThread::InitSession()
 
 	if (fTunneled)
 	{
-		MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
-		if (mref())
+		WUploadEvent *wue = new WUploadEvent(WUploadEvent::ConnectInProgress);
+		if (wue)
 		{
-			SendReply(mref);
+			SendReply(wue);
 		}
 
 		return true;
@@ -202,10 +203,10 @@ WUploadThread::InitSession()
 		uint32 sRemoteIP = ResolveAddress(fStrRemoteIP); 
 		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) != B_OK)
 		{
-			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
-			if (fail())
+			WUploadEvent *fail = new WUploadEvent(WUploadEvent::ConnectFailed);
+			if (fail)
 			{
-				fail()->AddString("why", QT_TR_NOOP( "Couldn't create new connect session!" ));
+				fail->SetError( QT_TR_NOOP( "Couldn't create new connect session!" ) );
 				SendReply(fail);
 			}
 			return false;
@@ -215,10 +216,10 @@ WUploadThread::InitSession()
 	{
 		if (qmtt->AddNewSession(fSocket, limit) != B_OK)
 		{
-			MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
-			if (fail())
+			WUploadEvent *fail = new WUploadEvent(WUploadEvent::ConnectFailed);
+			if (fail)
 			{
-				fail()->AddString("why", QT_TR_NOOP( "Could not init session!" ));
+				fail->SetError( QT_TR_NOOP( "Could not init session!" ) );
 				SendReply(fail);
 			}
 			return false;
@@ -231,19 +232,19 @@ WUploadThread::InitSession()
 
 	if (qmtt->StartInternalThread() == B_OK)
 	{
-		MessageRef mref(GetMessageFromPool(WUploadEvent::ConnectInProgress));
-		if (mref())
+		WUploadEvent *wue = new WUploadEvent(WUploadEvent::ConnectInProgress);
+		if (wue)
 		{
-			SendReply(mref);
+			SendReply(wue);
 		}
 		CTimer->start(60000, true);
 		return true;
 	}
 
-	MessageRef fail(GetMessageFromPool(WUploadEvent::ConnectFailed));
-	if (fail())
+	WUploadEvent *fail = new WUploadEvent(WUploadEvent::ConnectFailed);
+	if (fail)
 	{
-		fail()->AddString("why", QT_TR_NOOP( "Could not start internal thread!" ));
+		fail->SetError( QT_TR_NOOP( "Could not start internal thread!" ) );
 		SendReply(fail);
 	}
 	return false;
@@ -280,9 +281,9 @@ WUploadThread::SetLocallyQueued(bool b)
 			{
 				MessageRef fFileList = fSavedFileList;
 				fSavedFileList.Reset();
-				WUploadEvent *wue = new WUploadEvent(fFileList);
-				if (wue) 
-					QApplication::postEvent(this, wue);
+				WMessageEvent *wme = new WMessageEvent(fFileList);
+				if (wme) 
+					QApplication::postEvent(this, wme);
 				return;
 			}
 			else if (IsInternalThreadRunning())  // Still connected?
@@ -296,8 +297,8 @@ WUploadThread::SetLocallyQueued(bool b)
 			}
 			else if (fConnecting)
 			{
-				MessageRef con(GetMessageFromPool(WUploadEvent::ConnectInProgress));
-				if (con())
+				WUploadEvent *con = new WUploadEvent(WUploadEvent::ConnectInProgress);
+				if (con)
 				{
 					SendReply(con);
 				}
@@ -322,7 +323,7 @@ WUploadThread::SetBlocked(bool b, int64 timeLeft)
 			fTimeLeft = timeLeft;
 			fStartTime = 0;
 			if (timeLeft != -1)
-				fBlockTimer->start(timeLeft/1000, true);
+				fBlockTimer->start((int32) (timeLeft/1000), true);
 			
 			// Send notification
 			
@@ -364,19 +365,17 @@ WUploadThread::SetManuallyQueued(bool b)
 
 
 void 
-WUploadThread::SendReply(MessageRef &m)
+WUploadThread::SendReply(WUploadEvent *wue)
 {
 	if (fShutdownFlag && *fShutdownFlag)
 	{
 		Reset();
 	}
 
-	if (m())
+	if (wue)
 	{
-		m()->AddPointer("sender", this);
-		WUploadEvent * wue = new WUploadEvent(m);
-		if (wue)
-			QApplication::postEvent(fOwner, wue);
+		wue->SetSender(this);
+		QApplication::postEvent(fOwner, wue);
 	}
 }
 
@@ -407,8 +406,8 @@ WUploadThread::SessionConnected(const String &sessionID)
 
 	timerID = startTimer(15000);
 
-	MessageRef con(GetMessageFromPool(WUploadEvent::Connected));
-	if (con())
+	WUploadEvent *con = new WUploadEvent(WUploadEvent::Connected);
+	if (con)
 	{
 		SendReply(con);
 	}
@@ -445,16 +444,12 @@ WUploadThread::SessionDisconnected(const String & /* sessionID */)
 		fConnecting = false;
 		fBlocked = false;
 		
-		MessageRef dis(GetMessageFromPool(WUploadEvent::Disconnected));
-		if (dis())
+		WUploadEvent *dis = new WUploadEvent(WUploadEvent::Disconnected);
+		if (dis)
 		{
 			if (fCurrentOffset < fFileSize || fUploads.GetNumItems() > 0)
 			{
-				dis()->AddBool("failed", true);
-			}
-			else
-			{
-				dis()->AddBool("failed", false);
+				dis->SetFailed(true);
 			}
 			SendReply(dis);
 		}
@@ -497,10 +492,10 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 					SetBlocked(true);
 				}
 				
-				MessageRef ui(GetMessageFromPool(WUploadEvent::UpdateUI));
-				if (ui())
+				WUploadEvent *ui = new WUploadEvent(WUploadEvent::UpdateUI);
+				if (ui)
 				{
-					ui()->AddString("id", id);
+//					ui->SetSession(id);
 					SendReply(ui);
 				}
 				
@@ -524,10 +519,10 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 		case WTransfer::TransferFileList:
 		{
 			// TransferFileList(msg);
-			WUploadEvent *qce = new WUploadEvent(msg);
-			if (qce) 
+			WMessageEvent *wme = new WMessageEvent(msg);
+			if (wme) 
 			{
-				QApplication::postEvent(this, qce);
+				QApplication::postEvent(this, wme);
 			}
 			break;
 		}
@@ -538,7 +533,12 @@ void
 WUploadThread::OutputQueuesDrained(const MessageRef &/* msg */)
 {
 	PRINT2("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
+	OutputQueuesDrained();
+}
 
+void
+WUploadThread::OutputQueuesDrained()
+{
 	fIdles = 0;
 
 	if (fWaitingForUploadToFinish)
@@ -550,13 +550,13 @@ WUploadThread::OutputQueuesDrained(const MessageRef &/* msg */)
 		PRINT("\t\tSending message\n");
 
 		{
-			MessageRef msg(GetMessageFromPool(WUploadEvent::FileDone));
-			if (msg())
+			WUploadEvent *wue = new WUploadEvent(WUploadEvent::FileDone);
+			if (wue)
 			{
-				msg()->AddBool("done", true);
-				AddStringToMessage(msg, "file", SimplifyPath(fFileUl));
+				wue->SetDone(true);
+				wue->SetFile(SimplifyPath(fFileUl));
 				PRINT("\t\tSending...\n");
-				SendReply(msg);
+				SendReply(wue);
 				PRINT("\t\tSent...\n"); // <postmaster@raasu.org> 20021023 -- Fixed typo
 			}
 			else
@@ -568,10 +568,10 @@ WUploadThread::OutputQueuesDrained(const MessageRef &/* msg */)
 		PRINT("\t\tDisconnecting...\n");
 		
 		{
-			MessageRef dis(GetMessageFromPool(WUploadEvent::Disconnected));
-			if (dis())
+			WUploadEvent *dis = new WUploadEvent(WUploadEvent::Disconnected);
+			if (dis)
 			{
-				dis()->AddBool("done", true);
+				dis->SetDone(true);
 				SendReply(dis);
 				PRINT("\t\tDisconnected...\n");
 			}
@@ -597,8 +597,8 @@ WUploadThread::SendQueuedNotification()
 	{
 		SendMessageToSessions(q);
 
-		MessageRef qf(GetMessageFromPool(WUploadEvent::FileQueued));
-		if (qf())
+		WUploadEvent *qf = new WUploadEvent(WUploadEvent::FileQueued);
+		if (qf)
 		{
 			SendReply(qf);
 		}
@@ -645,11 +645,11 @@ WUploadThread::SendRejectedNotification(bool direct)
 			}
 		}
 	}
-	MessageRef b(GetMessageFromPool(WUploadEvent::FileBlocked));
-	if (b())
+	WUploadEvent *b = new WUploadEvent(WUploadEvent::FileBlocked);
+	if (b)
 	{
 		if (fTimeLeft != -1)
-			b()->AddInt64("timeleft", fTimeLeft);
+			b->SetTime(fTimeLeft);
 
 		SendReply(b);
 	}
@@ -658,11 +658,11 @@ WUploadThread::SendRejectedNotification(bool direct)
 void
 WUploadThread::_nobuffer()
 {
-   MessageRef status(GetMessageFromPool(WUploadEvent::FileError));
-   if (status())
+   WUploadEvent *status = new WUploadEvent(WUploadEvent::FileError);
+   if (status)
    {
-      AddStringToMessage(status, "file", SimplifyPath(fFileUl));
-      status()->AddString("why", QT_TR_NOOP( "Critical error: Upload buffer allocation failed!" ));
+      status->SetFile(SimplifyPath(fFileUl));
+      status->SetError( QT_TR_NOOP( "Critical error: Upload buffer allocation failed!" ) );
       SendReply(status);
    }
    
@@ -712,8 +712,8 @@ WUploadThread::DoUpload()
 		{
 			// not yet
 			fForced = false;
-			MessageRef lq(GetMessageFromPool(WUploadEvent::FileQueued));
-			if (lq())
+			WUploadEvent *lq = new WUploadEvent(WUploadEvent::FileQueued);
+			if (lq)
 			{
 				SendReply(lq);
 			}
@@ -732,12 +732,12 @@ WUploadThread::DoUpload()
 
 	if (IsBlocked())
 	{
-		MessageRef msg(GetMessageFromPool(WUploadEvent::FileBlocked));
-		if (msg())
+		WUploadEvent *wue = new WUploadEvent(WUploadEvent::FileBlocked);
+		if (wue)
 		{
 			if (fTimeLeft != -1)
-				msg()->AddInt64("timeleft", fTimeLeft);
-			SendReply(msg);
+				wue->SetTime(fTimeLeft);
+			SendReply(wue);
 		}
 		return;
 	}
@@ -763,7 +763,7 @@ WUploadThread::DoUpload()
          }
 
 			int32 numBytes = 0;
-			numBytes = fFile->ReadBlock((char *)scratchBuffer, bufferSize);
+			numBytes = fFile->ReadBlock32((char *)scratchBuffer, bufferSize);
          if (numBytes > 0)
          {
             buf()->SetNumBytes(numBytes, true);
@@ -813,17 +813,17 @@ WUploadThread::DoUpload()
                      qmtt->RequestOutputQueuesDrainedNotification(drain);
                }
                
-               MessageRef update(GetMessageFromPool(WUploadEvent::FileDataSent));	
-               if (update())
+               WUploadEvent *update = new WUploadEvent(WUploadEvent::FileDataSent);	
+               if (update)
                {
-                  update()->AddInt64("offset", fCurrentOffset);
-                  update()->AddInt64("size", fFileSize);
-                  update()->AddInt32("sent", numBytes);
+                  update->SetOffset(fCurrentOffset);
+                  update->SetSize(fFileSize);
+                  update->SetSent(numBytes);
                   
                   if (fCurrentOffset >= fFileSize)
                   {
-                     update()->AddBool("done", true);	// file done!
-                     AddStringToMessage(update, "file", SimplifyPath(fFileUl));
+                     update->SetDone(true);	// file done!
+                     update->SetFile(SimplifyPath(fFileUl));
                      
                      if (gWin->fSettings->GetUploads())
                      {
@@ -888,9 +888,8 @@ WUploadThread::DoUpload()
 					}
 				}
 				// copy the message in our current file ref
-				Message * msg = fCurrentRef();
-				MessageRef headRef( GetMessageFromPool(*msg) );
-				if (headRef())
+				MessageRef headRef = fCurrentRef;
+				if (headRef.EnsureRefIsPrivate() == B_NO_ERROR)
 				{
 					headRef()->what = WTransfer::TransferFileHeader;
 					headRef()->AddInt64("beshare:StartOffset", fCurrentOffset);
@@ -903,14 +902,16 @@ WUploadThread::DoUpload()
 				InitTransferRate();
 				InitTransferETA();
 
-				MessageRef mref(GetMessageFromPool(WUploadEvent::FileStarted));
-				if (mref())
+				WUploadEvent *started = new WUploadEvent(WUploadEvent::FileStarted);
+				if (started)
 				{
-					AddStringToMessage(mref, "file", SimplifyPath(fFileUl));
-					mref()->AddInt64("start", fCurrentOffset);
-					mref()->AddInt64("size", fFileSize);
-					AddStringToMessage(mref, "user", fRemoteSessionID);
-					SendReply(mref);
+					started->SetFile(SimplifyPath(fFileUl));
+					started->SetStart(fCurrentOffset);
+					started->SetSize(fFileSize);
+#ifdef _DEBUG
+					started->SetSession(fRemoteSessionID);
+#endif
+					SendReply(started);
 				}
 
 				if (gWin->fSettings->GetUploads())
@@ -929,9 +930,7 @@ WUploadThread::DoUpload()
 				SetFinished(true);
 				if (fTunneled)
 				{
-					MessageRef drain(GetMessageFromPool());
-					if (drain())
-						OutputQueuesDrained(drain);
+					OutputQueuesDrained();
 				}
 				else
 				{
@@ -1029,12 +1028,15 @@ WUploadThread::event(QEvent *e)
 	int t = (int) e->type();
 	switch (t)
 	{
-	case WUploadEvent::Type:
+	case WMessageEvent::MessageEventType:
 		{
-			WUploadEvent * wue = dynamic_cast<WUploadEvent *>(e);
-			if (wue)
+			WMessageEvent * wme = dynamic_cast<WMessageEvent *>(e);
+			if (wme)
 			{
-				TransferFileList(wue->Msg());
+				if (wme->MessageType() == WUploadThread::TunnelData)
+					MessageReceived(wme->Message(), _sessionID);
+				else
+					TransferFileList(wme->Message());
 			}
 			return true;
 		}
@@ -1101,16 +1103,13 @@ WUploadThread::TransferFileList(MessageRef msg)
 			if (fFileThread->FindFile(file, fileRef))
 			{
 				if (fileRef()) // <postmaster@raasu.org> 20021023
-				{
-					// remove any previous offsets
-					fileRef()->RemoveName("secret:offset");
-					
+				{		
 					// see if we need to add them
 					int64 offset = 0L;
-					const uint8 * hisDigest = NULL;
+					ByteBufferRef hisDigest;
 					uint32 numBytes = 0L;
 					if (msg()->FindInt64("offsets", i, (int64 *) &offset) == B_OK &&
-						msg()->FindData("md5", B_RAW_TYPE, i, (const void **)&hisDigest, (uint32 *)&numBytes) == B_OK && 
+						msg()->FindFlat("md5", i, hisDigest) == B_OK && 
 						numBytes == MD5_DIGEST_SIZE)
 					{
 						uint8 myDigest[MD5_DIGEST_SIZE];
@@ -1132,19 +1131,20 @@ WUploadThread::TransferFileList(MessageRef msg)
 						QString file = MakeUploadPath(fileRef);
 						
 						// Notify window of our hashing
-						MessageRef m(GetMessageFromPool(WUploadEvent::FileHashing));
-						if (m())
+						WUploadEvent *hash = new WUploadEvent(WUploadEvent::FileHashing);
+						if (hash)
 						{
-							AddStringToMessage(m, "file", SimplifyPath(file));
-							SendReply(m);
+							hash->SetFile(SimplifyPath(file));
+							SendReply(hash);
 						}
 						
 						// Hash
 						
 						if (HashFileMD5(file, offset, readLen, NULL, myDigest, fShutdownFlag) == B_OK && 
-							memcmp(hisDigest, myDigest, sizeof(myDigest)) == 0)
+							memcmp((const uint8*) hisDigest()->GetBuffer(), myDigest, sizeof(myDigest)) == 0)
 						{
 							// put this into our message ref
+							fileRef.EnsureRefIsPrivate();
 							fileRef()->AddInt64("secret:offset", (int64) onSuccessOffset);
 						}
 					}
@@ -1190,12 +1190,12 @@ WUploadThread::TransferFileList(MessageRef msg)
 						}
 					}
 					
-					MessageRef initmsg(GetMessageFromPool(WUploadEvent::Init));
-					if (initmsg())
+					WUploadEvent *init = new WUploadEvent(WUploadEvent::Init);
+					if (init)
 					{
-						AddStringToMessage(initmsg, "file", SimplifyPath(filename));
-						AddStringToMessage(initmsg, "user", fRemoteSessionID);
-						SendReply(initmsg);
+						init->SetFile(SimplifyPath(filename));
+//						init->SetSession(fRemoteSessionID);
+						SendReply(init);
 					}
 				}
 			}
@@ -1392,7 +1392,7 @@ WUploadThread::GetPacketSize()
 	return fPacket;
 }
 
-int
+int64
 WUploadThread::GetBanTime()
 {
 	if (fTimeLeft == 0)
@@ -1512,11 +1512,11 @@ void
 WUploadThread::ConnectTimer()
 {
 	Reset();
-	MessageRef msg(GetMessageFromPool(WUploadEvent::ConnectFailed));
-	if (msg())
+	WUploadEvent *failed = new WUploadEvent(WUploadEvent::ConnectFailed);
+	if (failed)
 	{
-		msg()->AddString("why", QT_TR_NOOP( "Connection timed out!" ));
-		SendReply(msg);
+		failed->SetError( QT_TR_NOOP( "Connection timed out!" ) );
+		SendReply(failed);
 	}
 }
 

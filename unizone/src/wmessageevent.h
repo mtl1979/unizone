@@ -24,6 +24,7 @@ public:
 		UnknownRemoveMessage
 	};
 
+	WMessageEvent(MessageRef);
 	WMessageEvent(int, const String &);
 	WMessageEvent(int, const String &, MessageRef);
 	WMessageEvent(int, MessageRef);

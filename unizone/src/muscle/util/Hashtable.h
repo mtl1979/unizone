@@ -802,20 +802,19 @@ public:
    {
       uint32 hash = ComputeHash(key);
       HashtableEntry * e = GetEntry(hash, key);
-      if (e == NULL) e = PutAux(hash, key, ValueType(), NULL, NULL);
+      if (e == NULL) e = PutAux(hash, key, _defaultValue, NULL, NULL);
       return e ? &e->_value : NULL;
    }
 
    /** Similar to Get(), except that if the specified key is not found,
-     * the ValueType's default value is returned.  Note that this method
-     * returns its result by value, not by reference.
+     * the ValueType's default value is returned.
      * @param key The key whose value should be returned.
      * @returns (key)'s associated value, or the default ValueType value.
      */
-   ValueType GetWithDefault(const KeyType & key) const
+   const ValueType & GetWithDefault(const KeyType & key) const
    {
       const ValueType * v = Get(key);
-      return v ? *v : ValueType();
+      return v ? *v : _defaultValue;
    }
 
    /** Similar to Get(), except that if the specified key is not found,
@@ -842,11 +841,17 @@ public:
     *               the default constructor will be placed by default.
     *  @return A pointer to the value object in the table on success, or NULL on failure (out of memory?)
     */
-   ValueType * PutAndGet(const KeyType & key, const ValueType & value = ValueType()) 
+   ValueType * PutAndGet(const KeyType & key, const ValueType & value) 
    { 
        HashtableEntry * e = PutAux(ComputeHash(key), key, value, NULL, NULL);
        return e ? &e->_value : NULL;
    }
+
+   /** As above, except that a default value is placed into the table and returned. 
+     * @param key The key that the new value is to be associated with.
+     * @return A pointer to the value object in the table on success, or NULL on failure (out of memory?)
+     */
+   ValueType * PutAndGet(const KeyType & key) {return PutAndGet(key, _defaultValue);}
 
    /** Convenience method.  If the given key already exists in the Hashtable, this method returns NULL.
     *  Otherwise, this method puts a copy of specified value into the table and returns a pointer to the 
@@ -883,7 +888,7 @@ public:
        if (e) return NULL;
        else
        {
-          e = PutAux(hash, key, ValueType(), NULL, NULL);
+          e = PutAux(hash, key, _defaultValue, NULL, NULL);
           return e ? &e->_value : NULL;
        }
    }
@@ -950,24 +955,24 @@ private:
 
       ~HashtableEntry() {/* empty */}
 
-      // Frees up our memory and returns us to the free-list.
-      void ReturnToFreeList(const KeyType & defaultKey, const ValueType & defaultValue, HashtableEntry ** freeHead)
+      /** Returns this entry to the free-list, and resets its key and value to their default values. */
+      void PushToFreeList(const KeyType & defaultKey, const ValueType & defaultValue, HashtableEntry * & getRetFreeHead)
       {
-         _hash  = MUSCLE_HASHTABLE_INVALID_HASH_CODE;
-         _key   = defaultKey;
-         _value = defaultValue;
-
          _iterPrev = _iterNext = _bucketPrev = NULL;
-         _bucketNext = *freeHead; 
+         _bucketNext = getRetFreeHead; 
          if (_bucketNext) _bucketNext->_bucketPrev = this;
-         *freeHead = this;
+         getRetFreeHead = this;
+
+         _hash  = MUSCLE_HASHTABLE_INVALID_HASH_CODE;
+         _key   = defaultKey;    // NOTE:  These lines could have side-effects due to code in the templatized
+         _value = defaultValue;  //        classes!  So it's important that the Hashtable be in a consistent state here
       }
 
       /** Removes this entry from the free list, so that we are ready for use.
         * @param freeHead current head of the free list
         * @returns the new head of the free list
         */
-      HashtableEntry * RemoveFromFreeList(HashtableEntry * freeHead) 
+      HashtableEntry * PopFromFreeList(HashtableEntry * freeHead) 
       {
          if (_bucketNext) _bucketNext->_bucketPrev = _bucketPrev;
          if (_bucketPrev) _bucketPrev->_bucketNext = _bucketNext;
@@ -1145,6 +1150,11 @@ private:
    HashFunctorType _functor;  // used to compute hash codes for key objects
 
    mutable HashtableIterator<KeyType, ValueType, HashFunctorType> * _iterList;  // list of existing iterators for this table
+
+   // These always remain in their default state, and are kept around so that we can
+   // reset other objects with them, without having to construct or destroy any temporaries
+   const KeyType _defaultKey;
+   const ValueType _defaultValue;
 };
 
 //===============================================================
@@ -1152,16 +1162,25 @@ private:
 // Necessary location for appropriate template instantiation.
 //===============================================================
 
+// Monni says VC++6.0 can't handle empty initializer arguments, but I want to avoid a potential unnecessary item copy in newer compilers --jaf
+#ifdef MUSCLE_USING_OLD_MICROSOFT_COMPILER
+# define DEFAULT_MUSCLE_HASHTABLE_KEY_INITIALIZER   KeyType()
+# define DEFAULT_MUSCLE_HASHTABLE_VALUE_INITIALIZER ValueType()
+#else
+# define DEFAULT_MUSCLE_HASHTABLE_KEY_INITIALIZER
+# define DEFAULT_MUSCLE_HASHTABLE_VALUE_INITIALIZER
+#endif
+
 template <class KeyType, class ValueType, class HashFunctorType>
 Hashtable<KeyType,ValueType,HashFunctorType>::Hashtable()
-   : _initialCapacity(MUSCLE_HASHTABLE_DEFAULT_CAPACITY), _count(0), _tableSize(MUSCLE_HASHTABLE_DEFAULT_CAPACITY), _table(NULL), _iterHead(NULL), _iterTail(NULL), _freeHead(NULL), _userKeyCompareFunc(NULL), _userValueCompareFunc(NULL), _autoSortMode(AUTOSORT_DISABLED), _compareCookie(NULL), _iterList(NULL)
+   : _initialCapacity(MUSCLE_HASHTABLE_DEFAULT_CAPACITY), _count(0), _tableSize(MUSCLE_HASHTABLE_DEFAULT_CAPACITY), _table(NULL), _iterHead(NULL), _iterTail(NULL), _freeHead(NULL), _userKeyCompareFunc(NULL), _userValueCompareFunc(NULL), _autoSortMode(AUTOSORT_DISABLED), _compareCookie(NULL), _iterList(NULL), _defaultKey(DEFAULT_MUSCLE_HASHTABLE_KEY_INITIALIZER), _defaultValue(DEFAULT_MUSCLE_HASHTABLE_VALUE_INITIALIZER)
 {
    // empty
 }
 
 template <class KeyType, class ValueType, class HashFunctorType>
 Hashtable<KeyType,ValueType,HashFunctorType>::Hashtable(uint32 initialCapacity)
-   : _initialCapacity(initialCapacity), _count(0), _tableSize(initialCapacity), _table(NULL), _iterHead(NULL), _iterTail(NULL), _freeHead(NULL), _userKeyCompareFunc(NULL), _userValueCompareFunc(NULL), _autoSortMode(AUTOSORT_DISABLED), _compareCookie(NULL), _iterList(NULL)
+   : _initialCapacity(initialCapacity), _count(0), _tableSize(initialCapacity), _table(NULL), _iterHead(NULL), _iterTail(NULL), _freeHead(NULL), _userKeyCompareFunc(NULL), _userValueCompareFunc(NULL), _autoSortMode(AUTOSORT_DISABLED), _compareCookie(NULL), _iterList(NULL), _defaultKey(DEFAULT_MUSCLE_HASHTABLE_KEY_INITIALIZER), _defaultValue(DEFAULT_MUSCLE_HASHTABLE_VALUE_INITIALIZER)
 {
    // empty
 }
@@ -1169,7 +1188,7 @@ Hashtable<KeyType,ValueType,HashFunctorType>::Hashtable(uint32 initialCapacity)
 template <class KeyType, class ValueType, class HashFunctorType>
 Hashtable<KeyType,ValueType,HashFunctorType>::
 Hashtable(const Hashtable<KeyType,ValueType,HashFunctorType> & rhs)
-   : _initialCapacity(rhs._initialCapacity), _count(0), _tableSize(rhs._tableSize), _table(NULL), _iterHead(NULL), _iterTail(NULL), _freeHead(NULL), _userKeyCompareFunc(rhs._userKeyCompareFunc), _userValueCompareFunc(rhs._userValueCompareFunc), _autoSortMode(rhs._autoSortMode), _compareCookie(rhs._compareCookie), _iterList(NULL)
+   : _initialCapacity(rhs._initialCapacity), _count(0), _tableSize(rhs._tableSize), _table(NULL), _iterHead(NULL), _iterTail(NULL), _freeHead(NULL), _userKeyCompareFunc(rhs._userKeyCompareFunc), _userValueCompareFunc(rhs._userValueCompareFunc), _autoSortMode(rhs._autoSortMode), _compareCookie(rhs._compareCookie), _iterList(NULL), _defaultKey(DEFAULT_MUSCLE_HASHTABLE_KEY_INITIALIZER), _defaultValue(DEFAULT_MUSCLE_HASHTABLE_VALUE_INITIALIZER)
 {
    *this = rhs;
 }
@@ -1819,7 +1838,7 @@ Hashtable<KeyType,ValueType,HashFunctorType>::PutAux(uint32 hash, const KeyType&
    {
       // This slot's chain is already present -- so just create a new entry in the chain's linked list to hold our item
       e = _freeHead;
-      _freeHead = e->RemoveFromFreeList(_freeHead);
+      _freeHead = e->PopFromFreeList(_freeHead);
       e->_hash  = hash;
       e->_key   = key;
       e->_value = value;
@@ -1841,7 +1860,7 @@ Hashtable<KeyType,ValueType,HashFunctorType>::PutAux(uint32 hash, const KeyType&
          slot->GetMappedFrom()->SwapMaps(_freeHead->GetMappedFrom());
          slot = _freeHead;
       }
-      _freeHead = slot->RemoveFromFreeList(_freeHead);
+      _freeHead = slot->PopFromFreeList(_freeHead);
 
       // First entry in slot; just copy data over
       slot->_hash  = hash;
@@ -1878,9 +1897,9 @@ Hashtable<KeyType,ValueType,HashFunctorType>::RemoveEntry(HashtableEntry * e, Va
       e->GetMappedFrom()->SwapMaps(next->GetMappedFrom());
    }
 
-   e->ReturnToFreeList(KeyType(), ValueType(), &_freeHead);
-
    _count--;
+   e->PushToFreeList(_defaultKey, _defaultValue, _freeHead);
+
    return B_NO_ERROR;
 }
 
@@ -1898,30 +1917,19 @@ Hashtable<KeyType,ValueType,HashFunctorType>::Clear(bool releaseCachedBuffers)
       _iterList = next;
    }
 
-   if (HasItems())
-   {
-      if (releaseCachedBuffers == false)
-      {
-         // Go through our list of valid entries and reset them all to their default state
-         // This is important since sometimes they may be holding on to large allocated memory buffers, etc
-         KeyType   blankKey   = KeyType();
-         ValueType blankValue = ValueType();
-         while(_iterHead)
-         {
-            HashtableEntry * next = _iterHead->_iterNext;  // save for later
-            _iterHead->ReturnToFreeList(blankKey, blankValue, &_freeHead);
-            _iterHead = next;
-         }
-      }
-      _iterHead = _iterTail = NULL;
-      _count = 0;
-   }
+   // It's important to set each in-use HashtableEntry to its default state so
+   // that any held memory (e.g. RefCountables) will be freed, etc.
+   // Calling RemoveEntry() on each item is necessary to ensure correct behavior
+   // even when the templatized classes' assignment operations cause re-entrancies, etc.
+   while(_iterHead) (void) RemoveEntry(_iterHead, NULL);
+
    if (releaseCachedBuffers)
    {
-      delete [] _table;
+      HashtableEntry * oldTable = _table;
       _table     = NULL;
       _freeHead  = NULL;
       _tableSize = _initialCapacity;
+      delete [] oldTable;  // done after Hashtable state is updated, in case of re-entrancies in the dtors
    }
 }
 
@@ -1959,7 +1967,7 @@ uint32
 Hashtable<KeyType,ValueType,HashFunctorType>::Remove(const Hashtable<KeyType,ValueType,HashFunctorType> & pairs)
 {
    uint32 removeCount = 0;
-   if (pairs == &this)
+   if (&pairs == this)
    {
       removeCount = GetNumItems();
       Clear();

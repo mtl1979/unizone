@@ -310,3 +310,9 @@ ChatWindow::beep()
 	}
 	QApplication::beep();
 }
+
+void
+ChatWindow::Clear()
+{
+	fChatText->clear();
+}

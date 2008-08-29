@@ -1,4 +1,5 @@
 #ifdef WIN32		// <postmaster@raasu.org> 20021022 -- Fix to use platform.h, Fixed Window Flashing for older API's
+#pragma warning (disable: 4512)
 #include <windows.h>
 #endif
 
@@ -266,7 +267,7 @@ WinShareWindow::ServerParametersReceived(MessageRef msg)
 		if (GetStringFromMessage(msg, PR_NAME_SESSION_ROOT, serverVersion) == B_OK)
 			SendSystemEvent(tr("Session root: %1").arg(serverVersion));
 
-		int64 memA, memU;
+		int64 memA, memU = 0;
 		if ((msg()->FindInt64(PR_NAME_SERVER_MEM_AVAILABLE, &memA) == B_OK) &&
 			(msg()->FindInt64(PR_NAME_SERVER_MEM_USED, &memU) == B_OK))
 		{
