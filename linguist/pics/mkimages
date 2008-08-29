@@ -1,2 +1,0 @@
-#!/bin/sh
-qembed *.png {small,large}/*.xpm >images.h
