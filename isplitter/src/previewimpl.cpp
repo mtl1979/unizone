@@ -10,8 +10,16 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qmessagebox.h>
-#include <qwmatrix.h>
-#include <qdragobject.h>
+#include <qmatrix.h>
+#include <q3dragobject.h>
+//Added by qt3to4:
+#include <QDropEvent>
+#include <QResizeEvent>
+#include <Q3GridLayout>
+#include <QPixmap>
+#include <QMouseEvent>
+#include <QEvent>
+#include <QImageReader>
 
 static const unsigned char erase_xpm_data[] = {
     0x2f,0x2a,0x20,0x58,0x50,0x4d,0x20,0x2a,0x2f,0x0d,0x0a,0x73,0x74,0x61,
@@ -46,7 +54,7 @@ static const unsigned char erase_xpm_data[] = {
     0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x2e,0x22,0x7d,0x3b,0x0d,0x0a
 };
 
-Preview::Preview(QWidget* parent, const char* name, WFlags fl)
+Preview::Preview(QWidget* parent, const char* name, Qt::WFlags fl)
 :QWidget(parent, name, fl)
 {
     if ( !name )
@@ -54,7 +62,7 @@ Preview::Preview(QWidget* parent, const char* name, WFlags fl)
     resize( 596, 480 ); 
     setCaption( tr( "Preview" ) );
 
-    GridLayout = new QGridLayout( this ); 
+    GridLayout = new Q3GridLayout( this ); 
     GridLayout->setGeometry( QRect( 0, 0, 596, 480 ) ); 
     GridLayout->setSpacing( 0 );
     GridLayout->setMargin( 0 );
@@ -71,9 +79,9 @@ Preview::Preview(QWidget* parent, const char* name, WFlags fl)
     pxlPreview->setFrameShape( QLabel::NoFrame );
     pxlPreview->setMargin( 0 );
     pxlPreview->setScaledContents( FALSE );
-	pxlPreview->setAlignment(AlignVCenter | AlignHCenter);
+	pxlPreview->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
 	pxlPreview->installEventFilter(this);
-	pxlPreview->setBackgroundMode(NoBackground);
+	pxlPreview->setBackgroundMode(Qt::NoBackground);
 	pxlPreview->hide();
 
 	//
@@ -172,61 +180,61 @@ Preview::PreviewImage()
 	//
 	bool valid = false;
 
-	int collageSizeX = Splitter->CollageSizeX->text().toLong(&valid);
+	int collageSizeX = Splitter->ui->CollageSizeX->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	int collageSizeY = Splitter->CollageSizeY->text().toLong(&valid);
+	int collageSizeY = Splitter->ui->CollageSizeY->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	int collageIndexX = Splitter->OffsetIndexX->text().toLong(&valid);
+	int collageIndexX = Splitter->ui->OffsetIndexX->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	int collageIndexY = Splitter->OffsetIndexY->text().toLong(&valid);
+	int collageIndexY = Splitter->ui->OffsetIndexY->text().toLong(&valid);
 	if (!valid)
 		return;
 	//
 	//
 	//
-	int collageOffsetTopX = Splitter->CollageOffsetTopX->text().toLong(&valid);
+	int collageOffsetTopX = Splitter->ui->CollageOffsetTopX->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	int collageOffsetTopY = Splitter->CollageOffsetTopY->text().toLong(&valid);
+	int collageOffsetTopY = Splitter->ui->CollageOffsetTopY->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	int collageOffsetBottomX = Splitter->CollageOffsetBottomX->text().toLong(&valid);
+	int collageOffsetBottomX = Splitter->ui->CollageOffsetBottomX->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	int collageOffsetBottomY = Splitter->CollageOffsetBottomY->text().toLong(&valid);
+	int collageOffsetBottomY = Splitter->ui->CollageOffsetBottomY->text().toLong(&valid);
 	if (!valid)
 		return;
 //
-	int imageOffsetTopX = Splitter->ImageOffsetTopX->text().toLong(&valid);
+	int imageOffsetTopX = Splitter->ui->ImageOffsetTopX->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	int imageOffsetTopY = Splitter->ImageOffsetTopY->text().toLong(&valid);
+	int imageOffsetTopY = Splitter->ui->ImageOffsetTopY->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	int imageOffsetBottomX = Splitter->ImageOffsetBottomX->text().toLong(&valid);
+	int imageOffsetBottomX = Splitter->ui->ImageOffsetBottomX->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	int imageOffsetBottomY = Splitter->ImageOffsetBottomY->text().toLong(&valid);
+	int imageOffsetBottomY = Splitter->ui->ImageOffsetBottomY->text().toLong(&valid);
 	if (!valid)
 		return;
 
-	double imageRotate = Splitter->ImageRotate->text().toDouble(&valid);
+	double imageRotate = Splitter->ui->ImageRotate->text().toDouble(&valid);
 	if (!valid)
 		return;
 
-	double imageScale = Splitter->ImageScale->text().toDouble(&valid);
+	double imageScale = Splitter->ui->ImageScale->text().toDouble(&valid);
 	if (!valid)
 		return;
 
@@ -237,20 +245,20 @@ Preview::PreviewImage()
 	if (collageSizeX == 0) 
 	{ 
 		collageSizeX = 1;
-		Splitter->CollageSizeX->setText("1");
+		Splitter->ui->CollageSizeX->setText("1");
 	}
 		
 	if (collageSizeY == 0) 
 	{
 		collageSizeY = 1;
-		Splitter->CollageSizeY->setText("1");
+		Splitter->ui->CollageSizeY->setText("1");
 	}
 		
 	if (clamp(collageIndexX, 0, collageSizeX - 1))
-		Splitter->OffsetIndexX->setText(QString::number(collageIndexX));
+		Splitter->ui->OffsetIndexX->setText(QString::number(collageIndexX));
 		
 	if (clamp(collageIndexY, 0, collageSizeY - 1))
-		Splitter->OffsetIndexY->setText(QString::number(collageIndexY));
+		Splitter->ui->OffsetIndexY->setText(QString::number(collageIndexY));
 		
 	//
 	// Calculate subimage dimensions
@@ -277,7 +285,7 @@ Preview::PreviewImage()
 			if (pm)
 			{
 				pm->convertFromImage(*image);
-				QWMatrix wm;
+				QMatrix wm;
 				wm.rotate(imageRotate);
 				timg = pm->xForm(wm);
 			}
@@ -368,7 +376,7 @@ Preview::eventFilter( QObject *o, QEvent *e )
 void
 Preview::mousePressEvent(QMouseEvent *e)
 {
-	if (e->button() & LeftButton)
+	if (e->button() & Qt::LeftButton)
 	{
 		qDebug("Started dragging...\n");
 		dragging = true;
@@ -406,7 +414,7 @@ Preview::startDrag()
 	{
 		QImage img;
 		img = *pixPreview;
-		QImageDrag *d = new QImageDrag(img, this);
+		Q3ImageDrag *d = new Q3ImageDrag(img, this);
 		d->dragCopy();
 	}
 }
@@ -418,12 +426,12 @@ Preview::Save()
 
 	if (pixPreview)
 	{
-		const char * fmt = QImageIO::imageFormat(Splitter->filename());
+		const char * fmt = QImageReader(Splitter->filename()).format();
 		QFileInfo info(Splitter->filename());
 		QString path = info.dirPath();
 		QString base = info.baseName();
 		QString ext = info.extension();
-		QString newname = path + "/" + base + "_" + Splitter->OffsetIndexX->text() + "_" + Splitter->OffsetIndexY->text() + "." + ext;
+		QString newname = path + "/" + base + "_" + Splitter->ui->OffsetIndexX->text() + "_" + Splitter->ui->OffsetIndexY->text() + "." + ext;
 		if (!pixPreview->save(newname, fmt))
 		{
 			// If original plugin doesn't support writing, try jpeg plugin
@@ -432,7 +440,7 @@ Preview::Save()
 
 			if (strcmp(fmt, "JPEG") != 0)
 			{
-				newname = path + "/" + base + "_" + Splitter->OffsetIndexX->text() + "_" + Splitter->OffsetIndexY->text() + ".jpg";
+				newname = path + "/" + base + "_" + Splitter->ui->OffsetIndexX->text() + "_" + Splitter->ui->OffsetIndexY->text() + ".jpg";
 				ret = pixPreview->save(newname, "JPEG");
 			}
 

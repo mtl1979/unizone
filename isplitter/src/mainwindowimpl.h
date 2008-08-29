@@ -3,21 +3,32 @@
 
 #include "mainwindow.h"
 
+#include <Q3MainWindow>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QEvent>
+#include <QDropEvent>
+#include <QDragEnterEvent>
+#include <QPixmap>
+
 class MenuBar;
 class QImage;
 class QString;
 class Preview;
 class QPoint;
 
-class ImageSplitter : public ImageSplitterBase
+class ImageSplitter : public Q3MainWindow
 {
 	Q_OBJECT
 public:
-	ImageSplitter( QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+	ImageSplitter( QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
 	~ImageSplitter();
 	QImage *getImage() {return image;}
 	QString filename() {return fFilename;}
 	void Load(const QString &filename);
+
+	Ui_ImageSplitterBase * ui;
 
 protected slots:
 	void Load();

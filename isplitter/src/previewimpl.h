@@ -4,6 +4,12 @@
 #include <qwidget.h>
 #include <qlabel.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QEvent>
+#include <Q3GridLayout>
+#include <QPixmap>
 
 class QImage;
 class QString;
@@ -15,7 +21,7 @@ class Preview : public QWidget
 {
 	Q_OBJECT
 public:
-	Preview( QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+	Preview( QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
 	~Preview();
 	void setOwner(QWidget * owner);
 
@@ -42,7 +48,7 @@ protected:
 	bool dragging;
 	QPoint startPos;
 
-    QGridLayout* GridLayout;
+    Q3GridLayout* GridLayout;
 	QWidget* PreviewWidget;
 
 private:

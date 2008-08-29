@@ -6,38 +6,50 @@
 #include "jpegio.h"
 #endif
 
+#include <Q3MainWindow>
 #include <qimage.h>
-#include <qdragobject.h>
+#include <q3dragobject.h>
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qapplication.h>
 #include <qfile.h>
 #include <qstring.h>
 #include <qtabwidget.h>
+//Added by qt3to4:
+#include <Q3CString>
+#include <QDropEvent>
+#include <QResizeEvent>
+#include <QPixmap>
+#include <QMouseEvent>
+#include <QEvent>
+#include <QDragEnterEvent>
 
-ImageSplitter::ImageSplitter( QWidget* parent, const char* name, WFlags fl)
-: ImageSplitterBase(parent, name, fl | WMouseNoMask)
+ImageSplitter::ImageSplitter( QWidget* parent, const char* name, Qt::WFlags fl)
+: Q3MainWindow(parent, name, fl | Qt::WMouseNoMask)
 {
+	ui = new Ui_ImageSplitterBase();
+	ui->setupUi(this);
+
 	dragging = false;
 
 	image = NULL;
 
 	menuBar = new MenuBar(this);
-	CHECK_PTR(menuBar);
+	Q_CHECK_PTR(menuBar);
 
 	LoadSettings();
 
 	fPreview = new Preview(NULL);
-	CHECK_PTR(fPreview);
+	Q_CHECK_PTR(fPreview);
 	fPreview->setOwner(this);
 
 	setAcceptDrops(true);
-	pxlCollage->installEventFilter(this);
+	ui->pxlCollage->installEventFilter(this);
 
 	// Use our copy of JPEG IO if Qt doesn't have it ;)
-#if (QT_VERSION < 0x030000) || defined(QT_NO_IMAGEIO_JPEG)
+#if defined(QT_NO_IMAGEIO_JPEG)
 	InitJpegIO();
 #endif
 
@@ -47,14 +59,14 @@ ImageSplitter::ImageSplitter( QWidget* parent, const char* name, WFlags fl)
 void 
 ImageSplitter::dragEnterEvent(QDragEnterEvent* event)
 {
-    event->accept( QUriDrag::canDecode(event));
-	ImageSplitterBase::dragEnterEvent(event);
+    event->accept( Q3UriDrag::canDecode(event));
+	Q3MainWindow::dragEnterEvent(event);
 }
 
 bool
 ImageSplitter::eventFilter( QObject *o, QEvent *e )
 {
-	if (o == pxlCollage)
+	if (o == ui->pxlCollage)
 	{
 		switch(e->type())
 		{
@@ -80,7 +92,7 @@ ImageSplitter::dropEvent(QDropEvent* event)
 {
     QStringList list;
 	
-    if ( QUriDrag::decodeLocalFiles(event, list) ) {
+    if ( Q3UriDrag::decodeLocalFiles(event, list) ) {
 		QString filename = list[0];
 		Load(filename);
     }
@@ -89,12 +101,12 @@ ImageSplitter::dropEvent(QDropEvent* event)
 void
 ImageSplitter::mousePressEvent(QMouseEvent *e)
 {
-	if (e->button() & LeftButton)
+	if (e->button() & Qt::LeftButton)
 	{
 		qDebug("Started dragging...\n");
 		dragging = true;
 	}
-	ImageSplitterBase::mousePressEvent(e);
+	Q3MainWindow::mousePressEvent(e);
 }
 
 void
@@ -106,7 +118,7 @@ ImageSplitter::mouseMoveEvent(QMouseEvent *e)
 		if ( ( startPos - currPos ).manhattanLength() > QApplication::startDragDistance() )
 			startDrag();
 	}
-	ImageSplitterBase::mouseMoveEvent(e);
+	Q3MainWindow::mouseMoveEvent(e);
 }
 
 void
@@ -117,7 +129,7 @@ ImageSplitter::mouseReleaseEvent(QMouseEvent *e)
 		qDebug("Stopped dragging...\n");
 		dragging = false;
 	}
-	ImageSplitterBase::mouseReleaseEvent(e);
+	Q3MainWindow::mouseReleaseEvent(e);
 }
 
 void 
@@ -127,7 +139,7 @@ ImageSplitter::startDrag()
 	{
 		QStringList list;
 		list.append(fFilename);
-		QUriDrag *d = new QUriDrag(this);
+		Q3UriDrag *d = new Q3UriDrag(this);
 		d->setFilenames(list);
 		d->dragCopy();
 	}
@@ -139,7 +151,7 @@ ImageSplitter::LoadSettings()
 	QString filename = QString::null;
 	lastdir = QString::null;
 	QFile qf("isplitter.ini");
-	if (qf.open(IO_ReadOnly))
+	if (qf.open(QIODevice::ReadOnly))
 	{
 		QByteArray temp(256);
 		if (qf.readLine(temp.data(), 255) > 0)
@@ -152,9 +164,9 @@ void
 ImageSplitter::SaveSettings()
 {
 	QFile qf("isplitter.ini");
-	if (qf.open(IO_WriteOnly))
+	if (qf.open(QIODevice::WriteOnly))
 	{
-		QCString temp = lastdir.utf8();
+		Q3CString temp = lastdir.utf8();
 		qf.writeBlock(temp, temp.length()); 
 		qf.close();
 	}
@@ -168,7 +180,7 @@ ImageSplitter:: ~ImageSplitter()
 void
 ImageSplitter::Load()
 {
-	QString filename = QFileDialog::getOpenFileName ( lastdir, "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
+	QString filename = Q3FileDialog::getOpenFileName ( lastdir, "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
 	if (!filename.isEmpty())
 	{
 		Load(filename);
@@ -181,17 +193,17 @@ ImageSplitter::scalePixmap(const QPixmap * image, int &width, int &height)
 	int oldw = image->width();
 	int oldh = image->height();
 	double ratio = (double) oldw / (double) oldh;
-	double neww = pxlCollage->height() * ratio;
-	if (neww > pxlCollage->width())
+	double neww = ui->pxlCollage->height() * ratio;
+	if (neww > ui->pxlCollage->width())
 	{
-		width = pxlCollage->width();
-		double dh = pxlCollage->width() / ratio;
+		width = ui->pxlCollage->width();
+		double dh = ui->pxlCollage->width() / ratio;
 		height = lrint(dh);
 	}
 	else
 	{
 		width = lrint(neww);
-		height = pxlCollage->height();
+		height = ui->pxlCollage->height();
 	}
 }
 
@@ -201,17 +213,17 @@ ImageSplitter::scaleImage(const QImage * image, int &width, int &height)
 	int oldw = image->width();
 	int oldh = image->height();
 	double ratio = (double) oldw / (double) oldh;
-	double neww = pxlCollage->height() * ratio;
-	if (neww > pxlCollage->width())
+	double neww = ui->pxlCollage->height() * ratio;
+	if (neww > ui->pxlCollage->width())
 	{
-		width = pxlCollage->width();
-		double dh = pxlCollage->width() / ratio;
+		width = ui->pxlCollage->width();
+		double dh = ui->pxlCollage->width() / ratio;
 		height = lrint(dh);
 	}
 	else
 	{
 		width = lrint(neww);
-		height = pxlCollage->height();
+		height = ui->pxlCollage->height();
 	}
 }
 
@@ -232,7 +244,7 @@ ImageSplitter::Load(const QString &filename)
 		QPixmap pixCollage;
 		pixCollage.convertFromImage(nimg);
 
-		pxlCollage->setPixmap(pixCollage);
+		ui->pxlCollage->setPixmap(pixCollage);
 		fPreview->ShowImage(image);
 		fPreview->show();
 
@@ -241,7 +253,7 @@ ImageSplitter::Load(const QString &filename)
 
 		setCaption( tr("Image Splitter") + " - " + QDir::convertSeparators(fFilename) );
 
-		TabWidget2->showPage(tab);
+		ui->TabWidget2->showPage(ui->tab1);
 	}
 	else
 		delete img;
@@ -256,28 +268,28 @@ ImageSplitter::ClearImage()
 		image = NULL;
 	}
 
-	pxlCollage->clear();
+	ui->pxlCollage->clear();
 	
     setCaption( tr( "Image Splitter" ) );
 
 	// reset input boxes
-	CollageSizeX->setText("0");
-	CollageSizeY->setText("0");
-	CollageOffsetTopX->setText("0");
-	CollageOffsetTopY->setText("0");
-	CollageOffsetBottomX->setText("0");
-	CollageOffsetBottomY->setText("0");
+	ui->CollageSizeX->setText("0");
+	ui->CollageSizeY->setText("0");
+	ui->CollageOffsetTopX->setText("0");
+	ui->CollageOffsetTopY->setText("0");
+	ui->CollageOffsetBottomX->setText("0");
+	ui->CollageOffsetBottomY->setText("0");
 	//
-	OffsetIndexX->setText("0");
-	OffsetIndexY->setText("0");
+	ui->OffsetIndexX->setText("0");
+	ui->OffsetIndexY->setText("0");
 	//
-	ImageOffsetTopX->setText("0");
-	ImageOffsetTopY->setText("0");
-	ImageOffsetBottomX->setText("0");
-	ImageOffsetBottomY->setText("0");
+	ui->ImageOffsetTopX->setText("0");
+	ui->ImageOffsetTopY->setText("0");
+	ui->ImageOffsetBottomX->setText("0");
+	ui->ImageOffsetBottomY->setText("0");
 	//
-	ImageRotate->setText("0");
-	ImageScale->setText("100");
+	ui->ImageRotate->setText("0");
+	ui->ImageScale->setText("100");
 	//
 	fPreview->ClearPreview();
 	fPreview->hide();
@@ -293,5 +305,5 @@ ImageSplitter::Exit()
 void
 ImageSplitter::resizeEvent(QResizeEvent *e)
 {
-	ImageSplitterBase::resizeEvent(e);
+	Q3MainWindow::resizeEvent(e);
 }

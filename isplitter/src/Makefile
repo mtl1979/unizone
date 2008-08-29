@@ -12,10 +12,10 @@ isplitter.pro : $(SOURCES)
 %.ts : isplitter.pro
 
 %.ts2 : %.ts
-	sed -f ../../src/fixts.sed $< > $@
+	sed -f ../../unizone/src/fixts.sed $< > $@
 %.qm : %.ts2
 	mv -f $< $(addsuffix .ts,$(basename $<))
 	$(LRELEASE) $(addsuffix .ts,$(basename $<))
- 
+
 clean:
 	rm -f *.qm *.ts2
