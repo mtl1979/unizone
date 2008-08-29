@@ -380,6 +380,18 @@ src/scanprogress.h: src/scanprogress.ui
 	@echo Creating $@ ...
 	@$(UIC) -o src/scanprogress.h src/scanprogress.ui
 
+# uic dependencies
+src/aboutdlgimpl.cpp : src/aboutdlg.h
+
+src/channelimpl.cpp : src/channel.h
+
+src/picviewerimpl.cpp : src/picviewer.h
+
+src/prefsimpl.cpp : src/prefs.h
+
+src/privatewindowimpl.cpp : src/privatewindow.h
+
+# moc dependencies
 src/moc_aboutdlgimpl.cpp : src/aboutdlg.h
 
 src/moc_channelimpl.cpp : src/channel.h
