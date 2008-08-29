@@ -3,7 +3,7 @@
 #endif
 
 #include <qapplication.h>
-#include <qdragobject.h>
+#include <q3dragobject.h>
 #include <qsound.h>
 
 #include "chatwindow.h"
@@ -50,8 +50,11 @@ ChatWindow::NameSaid(QString & msg)
 		(sname.at(temp) == '_')||
 		(sname.at(temp).unicode() >= 0x80)
 		)
+	{
 		temp++;
-	
+		if (temp == sname.length())
+			break;
+	}
 	if (temp > 0)
 		sname.truncate(temp);
 	
@@ -111,7 +114,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 
 	if (sred >= 0)
 	{
-		unsigned int rlen = sname.length();
+		int rlen = sname.length();
 
 		// <postmaster@raasu.org> 20021005 -- don't use latin1 ()
 		QString temp = gWin->GetUserName().upper(); 
@@ -122,8 +125,8 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		PRINT("Comparing \"%S\" to \"%S\"\n", wtemp.getBuffer(), wtxt.getBuffer());
 #endif
 
-		unsigned int c1 = sred + rlen;	// itxt
-		unsigned int c2 = rlen;		// temp
+		int c1 = sred + rlen;	// itxt
+		int c2 = rlen;			// temp
 
 		if (c1 < itxt.length())
 		{
@@ -247,7 +250,7 @@ ChatWindow::Settings()
 }
 
 void
-ChatWindow::InitUserList(QListView *lv)
+ChatWindow::InitUserList(Q3ListView *lv)
 {
 	lv->addColumn(tr("Name"));
 	lv->addColumn(tr("ID"));
@@ -263,7 +266,7 @@ ChatWindow::InitUserList(QListView *lv)
 	lv->setColumnAlignment(WNickListItem::Load, Qt::AlignRight);	// <postmaster@raasu.org> 20021005
 
 	for (int column = 0; column < 7; column++)
-		lv->setColumnWidthMode(column, QListView::Manual);
+		lv->setColumnWidthMode(column, Q3ListView::Manual);
 
 	// set the sort indicator to show
 	lv->setShowSortIndicator(true);
@@ -309,4 +312,10 @@ ChatWindow::beep()
 		PRINT("Sound services not available!\n");
 	}
 	QApplication::beep();
+}
+
+void
+ChatWindow::Clear()
+{
+	fChatText->clear();
 }

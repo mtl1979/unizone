@@ -17,18 +17,21 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-AboutDlg::AboutDlg( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : AboutDlgBase( parent, name, modal, fl )
+AboutDlg::AboutDlg( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
+    : QDialog( parent, name, modal, fl )
 {
+	Ui_AboutDlgBase *ui = new Ui_AboutDlgBase();
+	ui->setupUi(this);
+
 	if ( !name ) 
 		setName("AboutDlg");
-	connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
+	connect(ui->buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
 	QString about = tr("Unizone (English)");
-	titleLabel->setProperty("text", about);
+	ui->titleLabel->setProperty("text", about);
    QString version = tr("Version %1").arg(WinShareVersionString());
-   versionLabel->setProperty("text", version);
+   ui->versionLabel->setProperty("text", version);
 	setCaption(tr("About Unizone (English)"));
-    TextLabel2_3_2->setText( tr( "Unizone is Copyright (C) %1 by Mika T. Lindqvist" ).arg(GetUnizoneYears()) );
+    ui->TextLabel2_3_2->setText( tr( "Unizone is Copyright (C) %1 by Mika T. Lindqvist" ).arg(GetUnizoneYears()) );
 }
 
 

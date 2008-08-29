@@ -46,7 +46,9 @@ public:
 	bool FindFile(const QString & file, MessageRef & ref);
 	void EmptyList();
 
-	enum { ScanDone = 'fTsD' };
+	enum { 
+		ScanDone = QEvent::User + 28000 
+	};
 
 	void Lock(); 
 	void Unlock(); 

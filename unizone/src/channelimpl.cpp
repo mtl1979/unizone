@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "channelimpl.h"
 #include "global.h"
 #include "wpwevent.h"
@@ -11,10 +15,15 @@
 #include "netclient.h"
 
 #include "reflector/StorageReflectConstants.h"
+//Added by qt3to4:
+#include <QCustomEvent>
+#include <QResizeEvent>
+#include <Q3ValueList>
+#include <QLabel>
 
-Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, WFlags /* fl */)
-: ChannelBase(/* parent */ NULL, name, modal, WDestructiveClose | WStyle_Minimize | 
-			  WStyle_Maximize | WStyle_Title | WStyle_SysMenu /* flags */),
+Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, Qt::WFlags /* fl */)
+: QDialog(/* parent */ NULL, name, modal, Qt::WDestructiveClose | Qt::WStyle_Minimize | 
+			  Qt::WStyle_Maximize | Qt::WStyle_Title | Qt::WStyle_SysMenu /* flags */),
 			  ChatWindow(PrivateType)
 {
 	if (!name)
@@ -26,55 +35,58 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fActive = false;
 	fStrAdmins = QString::null;
 	fParent = parent;
+	Ui_ChannelBase *ui = new Ui_ChannelBase();
+	ui->setupUi(this);
+
 	if (fName != QString::null)
 	{
 		setCaption( tr("Channel Window - %1").arg(fName) );
 		fActive = gWin->fChannels->IsPublic(fName);
 	}
-	fSplit = new QSplitter(Vertical, this);
-	CHECK_PTR(fSplit);
+	fSplit = new QSplitter(Qt::Vertical, this);
+	Q_CHECK_PTR(fSplit);
 
-	fTopicBox = new QHGroupBox(fSplit);
-	CHECK_PTR(fTopicBox);
+	fTopicBox = new Q3HGroupBox(fSplit);
+	Q_CHECK_PTR(fTopicBox);
 
 	fTopicLabel = new QLabel( tr( "Topic:" ), fTopicBox );
-	CHECK_PTR(fTopicLabel);
+	Q_CHECK_PTR(fTopicLabel);
 
 	fTopicEdit = new QLineEdit(fTopicBox);
-	CHECK_PTR(fTopicEdit);
+	Q_CHECK_PTR(fTopicEdit);
 
-	fSplitBottom = new QSplitter(Horizontal, fSplit);
-	CHECK_PTR(fSplitBottom);
+	fSplitBottom = new QSplitter(Qt::Horizontal, fSplit);
+	Q_CHECK_PTR(fSplitBottom);
 
-	fSplitChat = new QSplitter(Vertical, fSplitBottom);
-	CHECK_PTR(fSplitChat);
+	fSplitChat = new QSplitter(Qt::Vertical, fSplitBottom);
+	Q_CHECK_PTR(fSplitChat);
 
-	fChannelUsers = new QListView(fSplitBottom);
-	CHECK_PTR(fChannelUsers);
+	fChannelUsers = new Q3ListView(fSplitBottom);
+	Q_CHECK_PTR(fChannelUsers);
 
 	InitUserList(fChannelUsers);
 
 	fChatText = new WHTMLView(fSplitChat);
-	CHECK_PTR(fChatText);
+	Q_CHECK_PTR(fChatText);
 
 	fInputText = new WChatText(this, fSplitChat);
-	CHECK_PTR(fInputText);
+	Q_CHECK_PTR(fInputText);
 
 	// Set widget size relationships
 
-	QValueList<int> splitList1;
+	Q3ValueList<int> splitList1;
 	splitList1.append(1);
 	splitList1.append(10);
 
 	fSplit->setSizes(splitList1);
 
-	QValueList<int> splitList2;
+	Q3ValueList<int> splitList2;
 	splitList2.append(4);
 	splitList2.append(1);
 
 	fSplitBottom->setSizes(splitList2);
 
-	QValueList<int> splitList3;
+	Q3ValueList<int> splitList3;
 	splitList3.append(5);
 	splitList3.append(1);
 
@@ -287,7 +299,7 @@ Channel::RemUser(const QString & user)
 }
 
 void
-Channel::customEvent(QCustomEvent * event)
+Channel::customEvent(QEvent * event)
 {
 	PRINT("Channel::customEvent\n");
 	switch ((int) event->type())
@@ -587,7 +599,7 @@ Channel::customEvent(QCustomEvent * event)
 				}
 				else if (CompareCommand(wte->Text(), "/clear"))
 				{
-					fChatText->clear();	// empty the text
+					Clear();	// empty the text
 				}
 				else
 				{

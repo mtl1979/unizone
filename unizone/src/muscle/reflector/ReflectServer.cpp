@@ -14,7 +14,16 @@
 #endif
 
 static volatile bool _signalCaught = false;
+
+#if defined(WIN32)
+static BOOL Win32SignalHandlerCallbackFunc(DWORD /*ctlType*/)
+{
+   _signalCaught = true;
+   return true;
+}
+#else
 void MuscleSignalHandlerCallbackFunc(int /*signum*/) {_signalCaught = true;}
+#endif
 
 BEGIN_NAMESPACE(muscle);
 
@@ -1060,12 +1069,7 @@ public:
 
    virtual uint64 GetPulseTime(uint64 now, uint64)
    {
-#if defined(__linux__) || defined(__APPLE__)
       return _server ? (_signalCaught ? 0 : (now+1000000)) : MUSCLE_TIME_NEVER;
-#else
-      (void) now;
-      return MUSCLE_TIME_NEVER;
-#endif
    }
 
    virtual void Pulse(uint64, uint64)
@@ -1089,7 +1093,27 @@ status_t ReflectServer :: SetSignalHandlingEnabled(bool enabled)
 {
    _signalCaught = false;
 
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(WIN32)
+   if (enabled == (_signalHandler.GetServer() != NULL)) return B_NO_ERROR;
+   else
+   {
+      if (SetConsoleCtrlHandler( (PHANDLER_ROUTINE) Win32SignalHandlerCallbackFunc, enabled))
+      {
+         if (enabled)
+         {
+            _signalHandler.SetServer(this);
+            (void) PutPulseChild(&_signalHandler);
+         }
+         else
+         {
+            (void) RemovePulseChild(&_signalHandler);
+            _signalHandler.SetServer(NULL);
+         }
+         return B_NO_ERROR;
+      }
+      else return B_ERROR;
+   }
+#elif defined(__linux__) || defined(__APPLE__)
    struct sigaction newact;
    sigemptyset(&newact.sa_mask);           /*no other signals blocked*/
    newact.sa_flags=0;                      /*no special options*/
@@ -1104,11 +1128,11 @@ status_t ReflectServer :: SetSignalHandlingEnabled(bool enabled)
          if (sigaction(SIGHUP,  &newact, NULL) == -1) LogTime(MUSCLE_LOG_WARNING, "Couldn't install SIGHUP signal handler\n");
       }
       _signalHandler.SetServer(this);
-      PutPulseChild(&_signalHandler);
+      (void) PutPulseChild(&_signalHandler);
    }
    else
    {
-      RemovePulseChild(&_signalHandler);
+      (void) RemovePulseChild(&_signalHandler);
       if (_signalHandler.GetServer())
       {
          newact.sa_handler = NULL;

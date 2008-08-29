@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qapplication.h>
 #if !defined(QT_NO_STYLE_MOTIF)
 #include <qmotifstyle.h>
@@ -5,20 +9,11 @@
 #if !defined(QT_NO_STYLE_WINDOWS)
 #include <qwindowsstyle.h>
 #endif
-#if !defined(QT_NO_STYLE_PLATINUM)
-#include <qplatinumstyle.h>
+#if !defined(QT_NO_STYLE_WINDOWSXP)
+#include <qwindowsxpstyle.h>
 #endif
 #if !defined(QT_NO_STYLE_CDE)
 #include <qcdestyle.h>
-#endif
-#if !defined(QT_NO_STYLE_INTERLACE)
-#include <qinterlacestyle.h>
-#endif
-#if !defined(QT_NO_STYLE_MOTIF)
-#include <qmotifplusstyle.h>
-#endif
-#if !defined(QT_NO_STYLE_SGI)
-#include <qsgistyle.h>
 #endif
 #if defined(__APPLE__)
 # if !defined(QT_NO_STYLE_MAC)
@@ -27,10 +22,10 @@
 #endif
 #include <qcolordialog.h>
 #include <qpushbutton.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qspinbox.h>
 #include <qdir.h>
 #include <qstringlist.h>
@@ -45,8 +40,8 @@
 #include "debugimpl.h"
 
 
-const char * kColorDesc[13] = {	
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name." ), 
+const char * kColorDesc[13] = {
+					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name." ),
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of other users' names." ),
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of text sent by you and other users." ),
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"System\"." ),
@@ -61,7 +56,7 @@ const char * kColorDesc[13] = {
 					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in warning messages." )
 								};
 
-const char * kSampleText[13] = {	
+const char * kSampleText[13] = {
 									QT_TRANSLATE_NOOP( "WPrefs", "Username" ),
 									QT_TRANSLATE_NOOP( "WPrefs", "Remote User" ),
 									QT_TRANSLATE_NOOP( "WPrefs", "Sample text" ),
@@ -78,26 +73,29 @@ const char * kSampleText[13] = {
 								};
 
 /*
- *  Constructs a prefs which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
+ *  Constructs a prefs which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : WPrefsBase( parent, name, modal, fl )
+WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
+    : QDialog( parent, name, modal, fl )
 {
-	if ( !name ) 
+	ui = new Ui_WPrefsBase();
+	ui->setupUi(this);
+
+	if ( !name )
 		setName( "WPrefs" );
 
-	connect(fOK, SIGNAL(clicked()), this, SLOT(OK()));
-	connect(fCancel, SIGNAL(clicked()), this, SLOT(Cancel()));
-	connect(fStyleList, SIGNAL(highlighted(int)), this, SLOT(StyleSelected(int)));
-	connect(fColorsList, SIGNAL(highlighted(int)), this, SLOT(ColorSelected(int)));
-	connect(fChange, SIGNAL(clicked()), this, SLOT(ChangeColor()));
-	connect(fSound, SIGNAL(clicked()), this, SLOT(ChangeSound()));
-	connect(fResetSound, SIGNAL(clicked()), this, SLOT(ResetSound()));
-	connect(fAutoAway, SIGNAL(highlighted(int)), this, SLOT(AwaySelected(int)));
+	connect(ui->fOK, SIGNAL(clicked()), this, SLOT(OK()));
+	connect(ui->fCancel, SIGNAL(clicked()), this, SLOT(Cancel()));
+	connect(ui->fStyleList, SIGNAL(highlighted(int)), this, SLOT(StyleSelected(int)));
+	connect(ui->fColorsList, SIGNAL(highlighted(int)), this, SLOT(ColorSelected(int)));
+	connect(ui->fChange, SIGNAL(clicked()), this, SLOT(ChangeColor()));
+	connect(ui->fSound, SIGNAL(clicked()), this, SLOT(ChangeSound()));
+	connect(ui->fResetSound, SIGNAL(clicked()), this, SLOT(ResetSound()));
+	connect(ui->fAutoAway, SIGNAL(highlighted(int)), this, SLOT(AwaySelected(int)));
 
 	fCurColorIndex = -1;
 
@@ -107,198 +105,191 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, WFlags fl )
 		fColor[i] = gWin->fSettings->GetColorItem(i);
 	}
 
-	
-	fAutoUpdateServers->setChecked(gWin->fSettings->GetAutoUpdateServers());
-	fNewVersions->setChecked(gWin->fSettings->GetCheckNewVersions());
-	fLoginStartup->setChecked(gWin->fSettings->GetLoginOnStartup());
-	fFireWalled->setChecked(gWin->fSettings->GetFirewalled());
-	fBinkyNuke->setChecked(gWin->fSettings->GetBinkyNuke());
-	fBlockDisconnected->setChecked(gWin->fSettings->GetBlockDisconnected());
-	fPreservePaths->setChecked(gWin->fSettings->GetPreservePaths());
-	fAutoClear->setChecked(gWin->fSettings->GetAutoClear());
-	fAutoClose->setChecked(gWin->fSettings->GetAutoClose());
-	fMultiColor->setChecked(gWin->fSettings->GetMultiColor());
+
+	ui->fAutoUpdateServers->setChecked(gWin->fSettings->GetAutoUpdateServers());
+	ui->fNewVersions->setChecked(gWin->fSettings->GetCheckNewVersions());
+	ui->fLoginStartup->setChecked(gWin->fSettings->GetLoginOnStartup());
+	ui->fFireWalled->setChecked(gWin->fSettings->GetFirewalled());
+	ui->fBinkyNuke->setChecked(gWin->fSettings->GetBinkyNuke());
+	ui->fBlockDisconnected->setChecked(gWin->fSettings->GetBlockDisconnected());
+	ui->fPreservePaths->setChecked(gWin->fSettings->GetPreservePaths());
+	ui->fAutoClear->setChecked(gWin->fSettings->GetAutoClear());
+	ui->fAutoClose->setChecked(gWin->fSettings->GetAutoClose());
+	ui->fMultiColor->setChecked(gWin->fSettings->GetMultiColor());
 	if (gWin->fSettings->GetConnection() != qApp->translate("Connection", "Unknown"))
 	{
-		for (int i = 0; i < fBandwidth->count(); i++)
+		for (int i = 0; i < ui->fBandwidth->count(); i++)
 		{
-			if (fBandwidth->text(i) == gWin->fSettings->GetConnection())
+			if (ui->fBandwidth->text(i) == gWin->fSettings->GetConnection())
 			{
-				fBandwidth->setCurrentItem(i);
+				ui->fBandwidth->setCurrentItem(i);
 				break;
 			}
 		}
 	}
 
-	fHTTPproxy->setText(gWin->fSettings->GetHTTPProxy());
-	fHTTPport->setText(QString::number(gWin->fSettings->GetHTTPPort()));
+	ui->fHTTPproxy->setText(gWin->fSettings->GetHTTPProxy());
+	ui->fHTTPport->setText(QString::number(gWin->fSettings->GetHTTPPort()));
 
-	fTimeStamps->setChecked(gWin->fSettings->GetTimeStamps());
-	fUserEvents->setChecked(gWin->fSettings->GetUserEvents());
-	fUploads->setChecked(gWin->fSettings->GetUploads());
-	fDownloads->setChecked(gWin->fSettings->GetDownloads());
-	fChat->setChecked(gWin->fSettings->GetChat());
-	fPrivate->setChecked(gWin->fSettings->GetPrivate());
-	fInfo->setChecked(gWin->fSettings->GetInfo());
-	fWarning->setChecked(gWin->fSettings->GetWarning());
-	fError->setChecked(gWin->fSettings->GetError());
-	fSounds->setChecked(gWin->fSettings->GetSounds());
-	fSoundFile->setText(gWin->fSettings->GetSoundFile());
-	fIPAddresses->setChecked(gWin->fSettings->GetIPAddresses());
-	
+	ui->fTimeStamps->setChecked(gWin->fSettings->GetTimeStamps());
+	ui->fUserEvents->setChecked(gWin->fSettings->GetUserEvents());
+	ui->fUploads->setChecked(gWin->fSettings->GetUploads());
+	ui->fDownloads->setChecked(gWin->fSettings->GetDownloads());
+	ui->fChat->setChecked(gWin->fSettings->GetChat());
+	ui->fPrivate->setChecked(gWin->fSettings->GetPrivate());
+	ui->fInfo->setChecked(gWin->fSettings->GetInfo());
+	ui->fWarning->setChecked(gWin->fSettings->GetWarning());
+	ui->fError->setChecked(gWin->fSettings->GetError());
+	ui->fSounds->setChecked(gWin->fSettings->GetSounds());
+	ui->fSoundFile->setText(gWin->fSettings->GetSoundFile());
+	ui->fIPAddresses->setChecked(gWin->fSettings->GetIPAddresses());
+
 	switch (gWin->fSettings->GetStyle())
 	{
 		case WinShareWindow::CDE:
-			fStyleList->setCurrentItem(0);
+			ui->fStyleList->setCurrentItem(0);
 			break;
 
 		case WinShareWindow::Motif:
-			fStyleList->setCurrentItem(1);
+			ui->fStyleList->setCurrentItem(1);
 			break;
 
-		case WinShareWindow::MotifPlus:
-			fStyleList->setCurrentItem(2);
-
-		case WinShareWindow::Platinum:
-			fStyleList->setCurrentItem(3);
+		case WinShareWindow::WindowsXP:
+			ui->fStyleList->setCurrentItem(2);
 			break;
 
-		case WinShareWindow::SGI:
-			fStyleList->setCurrentItem(4);
-			break;
-
-		case WinShareWindow::WindowsStyle:
-			fStyleList->setCurrentItem(5);
+		case WinShareWindow::Windows:
+			ui->fStyleList->setCurrentItem(3);
 			break;
 
 		case WinShareWindow::Mac:
-			fStyleList->setCurrentItem(6);
+			ui->fStyleList->setCurrentItem(4);
 			break;
 	}
 
 	// init auto away
-	fAutoAway->setCurrentItem(gWin->fSettings->GetAutoAway());
+	ui->fAutoAway->setCurrentItem(gWin->fSettings->GetAutoAway());
 
 #ifdef WIN32
 	// init flash flags
 	if (gWin->fSettings->GetFlash() & WSettings::FlashMain)
-		fFlashMain->setChecked(true);
+		ui->fFlashMain->setChecked(true);
 	else
-		fFlashMain->setChecked(false);
+		ui->fFlashMain->setChecked(false);
 
 	if (gWin->fSettings->GetFlash() & WSettings::FlashPriv)
-		fFlashPrivate->setChecked(true);
+		ui->fFlashPrivate->setChecked(true);
 	else
-		fFlashPrivate->setChecked(false);
+		ui->fFlashPrivate->setChecked(false);
 #else
 	// Linux, FreeBSD, QNX and SunOS/Solaris don't get this nifty feature
-	fFlashMain->hide();
-	fFlashPrivate->hide();
+	ui->fFlashMain->hide();
+	ui->fFlashPrivate->hide();
 #endif
-	fEmptyWindows->setCurrentItem(gWin->fSettings->GetEmptyWindows());
+	ui->fEmptyWindows->setCurrentItem(gWin->fSettings->GetEmptyWindows());
 
 	switch (gWin->fSettings->GetMaxDownloads())
 	{
 		case WSettings::One:
-			fMaxDL->setCurrentItem(0); break;
+			ui->fMaxDL->setCurrentItem(0); break;
 		case WSettings::Two:
-			fMaxDL->setCurrentItem(1); break;
+			ui->fMaxDL->setCurrentItem(1); break;
 		case WSettings::Three:
-			fMaxDL->setCurrentItem(2); break;
+			ui->fMaxDL->setCurrentItem(2); break;
 		case WSettings::Four:
-			fMaxDL->setCurrentItem(3); break;
+			ui->fMaxDL->setCurrentItem(3); break;
 		case WSettings::Five:
-			fMaxDL->setCurrentItem(4); break;
+			ui->fMaxDL->setCurrentItem(4); break;
 		case WSettings::Ten:
-			fMaxDL->setCurrentItem(5); break;
+			ui->fMaxDL->setCurrentItem(5); break;
 		case WSettings::Fifteen:
-			fMaxDL->setCurrentItem(6); break;
+			ui->fMaxDL->setCurrentItem(6); break;
 		case WSettings::Twenty:
-			fMaxDL->setCurrentItem(7); break;
+			ui->fMaxDL->setCurrentItem(7); break;
 		case WSettings::Thirty:
-			fMaxDL->setCurrentItem(8); break;
+			ui->fMaxDL->setCurrentItem(8); break;
 		case WSettings::Unlimited:
-			fMaxDL->setCurrentItem(9); break;
+			ui->fMaxDL->setCurrentItem(9); break;
 	}
 
 	switch (gWin->fSettings->GetMaxUploads())
 	{
 		case WSettings::One:
-			fMaxUL->setCurrentItem(0); break;
+			ui->fMaxUL->setCurrentItem(0); break;
 		case WSettings::Two:
-			fMaxUL->setCurrentItem(1); break;
+			ui->fMaxUL->setCurrentItem(1); break;
 		case WSettings::Three:
-			fMaxUL->setCurrentItem(2); break;
+			ui->fMaxUL->setCurrentItem(2); break;
 		case WSettings::Four:
-			fMaxUL->setCurrentItem(3); break;
+			ui->fMaxUL->setCurrentItem(3); break;
 		case WSettings::Five:
-			fMaxUL->setCurrentItem(4); break;
+			ui->fMaxUL->setCurrentItem(4); break;
 		case WSettings::Ten:
-			fMaxUL->setCurrentItem(5); break;
+			ui->fMaxUL->setCurrentItem(5); break;
 		case WSettings::Fifteen:
-			fMaxUL->setCurrentItem(6); break;
+			ui->fMaxUL->setCurrentItem(6); break;
 		case WSettings::Twenty:
-			fMaxUL->setCurrentItem(7); break;
+			ui->fMaxUL->setCurrentItem(7); break;
 		case WSettings::Thirty:
-			fMaxUL->setCurrentItem(8); break;
+			ui->fMaxUL->setCurrentItem(8); break;
 		case WSettings::Unlimited:
-			fMaxUL->setCurrentItem(9); break;
+			ui->fMaxUL->setCurrentItem(9); break;
 	}
 
-	fFileSharingEnabled->setChecked(gWin->fSettings->GetSharingEnabled());
+	ui->fFileSharingEnabled->setChecked(gWin->fSettings->GetSharingEnabled());
 	PRINT("Setting font size\n");
-	fFontSize->setValue(gWin->fSettings->GetFontSize());
+	ui->fFontSize->setValue(gWin->fSettings->GetFontSize());
 
 #ifdef WIN32	// windows has a system based launcher
-	fTabs->setTabEnabled(fURLLaunching, false);
+	ui->fTabs->setTabEnabled(ui->fURLLaunching, false);
 #else
-	fMailtoLauncher->setText(gWin->fSettings->GetMailLauncher());
-	fHTTPLauncher->setText(gWin->fSettings->GetHTTPLauncher());
-	fFTPLauncher->setText(gWin->fSettings->GetFTPLauncher());
-	fDefaultLauncher->setText(gWin->fSettings->GetDefaultLauncher());
+	ui->fMailtoLauncher->setText(gWin->fSettings->GetMailLauncher());
+	ui->fHTTPLauncher->setText(gWin->fSettings->GetHTTPLauncher());
+	ui->fFTPLauncher->setText(gWin->fSettings->GetFTPLauncher());
+	ui->fDefaultLauncher->setText(gWin->fSettings->GetDefaultLauncher());
 #endif
 #if defined(QT_NO_STYLE) || defined(DISABLE_STYLES)
-	fTabs->setTabEnabled(fStyle, false);
+	ui->fTabs->setTabEnabled(fStyle, false);
 #endif
 
-	fChatLimit->setCurrentItem(gWin->fSettings->GetChatLimit());
-	fULLimit->setCurrentItem(gWin->fSettings->GetULLimit());
-	fDLLimit->setCurrentItem(gWin->fSettings->GetDLLimit());
-	fBLLimit->setCurrentItem(gWin->fSettings->GetBLLimit());
+	ui->fChatLimit->setCurrentItem(gWin->fSettings->GetChatLimit());
+	ui->fULLimit->setCurrentItem(gWin->fSettings->GetULLimit());
+	ui->fDLLimit->setCurrentItem(gWin->fSettings->GetDLLimit());
+	ui->fBLLimit->setCurrentItem(gWin->fSettings->GetBLLimit());
 
 	double ps = gWin->fSettings->GetPacketSize();
 	if (ps == 0.5)
-		fPacketSize->setCurrentItem(0); 
+		ui->fPacketSize->setCurrentItem(0);
 	else if (ps == 1)
-		fPacketSize->setCurrentItem(1);
+		ui->fPacketSize->setCurrentItem(1);
 	else if (ps == 2)
-		fPacketSize->setCurrentItem(2); 
+		ui->fPacketSize->setCurrentItem(2);
 	else if (ps == 4)
-		fPacketSize->setCurrentItem(3);
+		ui->fPacketSize->setCurrentItem(3);
 	else if (ps == 8)
-		fPacketSize->setCurrentItem(4);
+		ui->fPacketSize->setCurrentItem(4);
 	else if (ps == 16)
-		fPacketSize->setCurrentItem(5);
+		ui->fPacketSize->setCurrentItem(5);
 	else if (ps == 32)
-		fPacketSize->setCurrentItem(6);
+		ui->fPacketSize->setCurrentItem(6);
 	else if (ps == 64)
-		fPacketSize->setCurrentItem(7);
+		ui->fPacketSize->setCurrentItem(7);
 	else if (ps == 128)
-		fPacketSize->setCurrentItem(8);
+		ui->fPacketSize->setCurrentItem(8);
 	else if (ps == 256)
-		fPacketSize->setCurrentItem(9);
+		ui->fPacketSize->setCurrentItem(9);
 	else if (ps == 512)
-		fPacketSize->setCurrentItem(10);
+		ui->fPacketSize->setCurrentItem(10);
 	else if (ps == 1024)
-		fPacketSize->setCurrentItem(11);
+		ui->fPacketSize->setCurrentItem(11);
 
-	fMinQueued->setCurrentItem( gWin->fSettings->GetMinQueued() );
-	
-	fLogging->setChecked(gWin->fSettings->GetLogging());
+	ui->fMinQueued->setCurrentItem( gWin->fSettings->GetMinQueued() );
 
-	fBasePort->setText( QString::number( gWin->fSettings->GetBasePort() ) );
+	ui->fLogging->setChecked(gWin->fSettings->GetLogging());
 
-	fPortRange->setText ( QString::number( gWin->fSettings->GetPortRange() ) );
+	ui->fBasePort->setText( QString::number( gWin->fSettings->GetBasePort() ) );
+
+	ui->fPortRange->setText( QString::number( gWin->fSettings->GetPortRange() ) );
 }
 
 /*
@@ -320,51 +311,51 @@ WPrefs::OK()
 		gWin->fSettings->AddColorItem(fColor[i]);
 
 	// save all the other stuff
-	gWin->fSettings->SetAutoUpdateServers(fAutoUpdateServers->isChecked());
-	gWin->fSettings->SetCheckNewVersions(fNewVersions->isChecked());
-	gWin->fSettings->SetLoginOnStartup(fLoginStartup->isChecked());
-	gWin->fSettings->SetConnection(fBandwidth->currentText());
-	gWin->fSettings->SetHTTPProxy(fHTTPproxy->text());
-	gWin->fSettings->SetHTTPPort(fHTTPport->text().toUInt());
-	gWin->fSettings->SetFirewalled(fFireWalled->isChecked());
-	gWin->fSettings->SetBinkyNuke(fBinkyNuke->isChecked());
-	gWin->fSettings->SetBlockDisconnected(fBlockDisconnected->isChecked());
-	gWin->fSettings->SetPreservePaths(fPreservePaths->isChecked());
-	gWin->fSettings->SetAutoClear(fAutoClear->isChecked());
-	gWin->fSettings->SetAutoClose(fAutoClose->isChecked());
-	gWin->fSettings->SetMultiColor(fMultiColor->isChecked());
-	gWin->fSettings->SetTimeStamps(fTimeStamps->isChecked());
-	gWin->fSettings->SetUserEvents(fUserEvents->isChecked());
-	gWin->fSettings->SetUploads(fUploads->isChecked());
-	gWin->fSettings->SetDownloads(fDownloads->isChecked());
-	gWin->fSettings->SetChat(fChat->isChecked());
-	gWin->fSettings->SetPrivate(fPrivate->isChecked());
-	gWin->fSettings->SetInfo(fInfo->isChecked());
-	gWin->fSettings->SetWarning(fWarning->isChecked());
-	gWin->fSettings->SetError(fError->isChecked());
-	gWin->fSettings->SetSounds(fSounds->isChecked());
-	gWin->fSettings->SetSoundFile(fSoundFile->text());
-	gWin->fSettings->SetIPAddresses(fIPAddresses->isChecked());
+	gWin->fSettings->SetAutoUpdateServers(ui->fAutoUpdateServers->isChecked());
+	gWin->fSettings->SetCheckNewVersions(ui->fNewVersions->isChecked());
+	gWin->fSettings->SetLoginOnStartup(ui->fLoginStartup->isChecked());
+	gWin->fSettings->SetConnection(ui->fBandwidth->currentText());
+	gWin->fSettings->SetHTTPProxy(ui->fHTTPproxy->text());
+	gWin->fSettings->SetHTTPPort(ui->fHTTPport->text().toUInt());
+	gWin->fSettings->SetFirewalled(ui->fFireWalled->isChecked());
+	gWin->fSettings->SetBinkyNuke(ui->fBinkyNuke->isChecked());
+	gWin->fSettings->SetBlockDisconnected(ui->fBlockDisconnected->isChecked());
+	gWin->fSettings->SetPreservePaths(ui->fPreservePaths->isChecked());
+	gWin->fSettings->SetAutoClear(ui->fAutoClear->isChecked());
+	gWin->fSettings->SetAutoClose(ui->fAutoClose->isChecked());
+	gWin->fSettings->SetMultiColor(ui->fMultiColor->isChecked());
+	gWin->fSettings->SetTimeStamps(ui->fTimeStamps->isChecked());
+	gWin->fSettings->SetUserEvents(ui->fUserEvents->isChecked());
+	gWin->fSettings->SetUploads(ui->fUploads->isChecked());
+	gWin->fSettings->SetDownloads(ui->fDownloads->isChecked());
+	gWin->fSettings->SetChat(ui->fChat->isChecked());
+	gWin->fSettings->SetPrivate(ui->fPrivate->isChecked());
+	gWin->fSettings->SetInfo(ui->fInfo->isChecked());
+	gWin->fSettings->SetWarning(ui->fWarning->isChecked());
+	gWin->fSettings->SetError(ui->fError->isChecked());
+	gWin->fSettings->SetSounds(ui->fSounds->isChecked());
+	gWin->fSettings->SetSoundFile(ui->fSoundFile->text());
+	gWin->fSettings->SetIPAddresses(ui->fIPAddresses->isChecked());
 
 	// flash settings
 	int flags = WSettings::FlashNone;
-	if (fFlashMain->isChecked())
+	if (ui->fFlashMain->isChecked())
 		flags |= WSettings::FlashMain;
-	if (fFlashPrivate->isChecked())
+	if (ui->fFlashPrivate->isChecked())
 		flags |= WSettings::FlashPriv;
 	gWin->fSettings->SetFlash(flags);
-	gWin->fSettings->SetEmptyWindows(fEmptyWindows->currentItem());
+	gWin->fSettings->SetEmptyWindows(ui->fEmptyWindows->currentItem());
 
-	gWin->fSettings->SetSharingEnabled(fFileSharingEnabled->isChecked());
+	gWin->fSettings->SetSharingEnabled(ui->fFileSharingEnabled->isChecked());
 
-	switch (fMaxDL->currentItem())
+	switch (ui->fMaxDL->currentItem())
 	{
 		case 0:
 		case 1:
 		case 2:
 		case 3:
 		case 4:
-			gWin->fSettings->SetMaxDownloads(fMaxDL->currentItem() + 1); break;
+			gWin->fSettings->SetMaxDownloads(ui->fMaxDL->currentItem() + 1); break;
 		case 5:
 			gWin->fSettings->SetMaxDownloads(WSettings::Ten); break;
 		case 6:
@@ -377,14 +368,14 @@ WPrefs::OK()
 			gWin->fSettings->SetMaxDownloads(WSettings::Unlimited); break;
 	}
 
-	switch (fMaxUL->currentItem())
+	switch (ui->fMaxUL->currentItem())
 	{
 		case 0:
 		case 1:
 		case 2:
 		case 3:
 		case 4:
-			gWin->fSettings->SetMaxUploads(fMaxUL->currentItem() + 1); break;
+			gWin->fSettings->SetMaxUploads(ui->fMaxUL->currentItem() + 1); break;
 		case 5:
 			gWin->fSettings->SetMaxUploads(WSettings::Ten); break;
 		case 6:
@@ -397,22 +388,22 @@ WPrefs::OK()
 			gWin->fSettings->SetMaxUploads(WSettings::Unlimited); break;
 	}
 
-	gWin->fSettings->SetFontSize(fFontSize->value());
+	gWin->fSettings->SetFontSize(ui->fFontSize->value());
 
-#ifndef WIN32	
+#ifndef WIN32
 	// save our launcher settings
-	gWin->fSettings->SetMailLauncher(fMailtoLauncher->text());
-	gWin->fSettings->SetHTTPLauncher(fHTTPLauncher->text());
-	gWin->fSettings->SetFTPLauncher(fFTPLauncher->text());
-	gWin->fSettings->SetDefaultLauncher(fDefaultLauncher->text());
+	gWin->fSettings->SetMailLauncher(ui->fMailtoLauncher->text());
+	gWin->fSettings->SetHTTPLauncher(ui->fHTTPLauncher->text());
+	gWin->fSettings->SetFTPLauncher(ui->fFTPLauncher->text());
+	gWin->fSettings->SetDefaultLauncher(ui->fDefaultLauncher->text());
 #endif
-	
-	gWin->fSettings->SetULLimit(fULLimit->currentItem());
-	gWin->fSettings->SetDLLimit(fDLLimit->currentItem());
-	gWin->fSettings->SetBLLimit(fBLLimit->currentItem());
-	gWin->fSettings->SetChatLimit(fChatLimit->currentItem());
 
-	switch (fPacketSize->currentItem())
+	gWin->fSettings->SetULLimit(ui->fULLimit->currentItem());
+	gWin->fSettings->SetDLLimit(ui->fDLLimit->currentItem());
+	gWin->fSettings->SetBLLimit(ui->fBLLimit->currentItem());
+	gWin->fSettings->SetChatLimit(ui->fChatLimit->currentItem());
+
+	switch (ui->fPacketSize->currentItem())
 	{
 		case 0:
 			gWin->fSettings->SetPacketSize(0.5); break;
@@ -440,17 +431,17 @@ WPrefs::OK()
 			gWin->fSettings->SetPacketSize(1024); break;
 	}
 
-	gWin->fSettings->SetMinQueued( fMinQueued->currentItem() );
-	
-	gWin->fSettings->SetLogging(fLogging->isChecked());
+	gWin->fSettings->SetMinQueued(ui->fMinQueued->currentItem() );
+
+	gWin->fSettings->SetLogging(ui->fLogging->isChecked());
 
 	bool o;
 	unsigned long bp,pr;
 
-	bp = fBasePort->text().toULong(&o);
+	bp = ui->fBasePort->text().toULong(&o);
 	gWin->fSettings->SetBasePort(o ? bp : 7000);
 
-	pr = fPortRange->text().toULong(&o);
+	pr = ui->fPortRange->text().toULong(&o);
 	gWin->fSettings->SetPortRange(o ? pr : 100);
 
 	// ok
@@ -471,10 +462,9 @@ WPrefs::StyleSelected(int id)
 	 * 0 - CDE
 	 * 1 - Motif
 	 * 2 - Motif Plus
-	 * 3 - Platinum
-	 * 4 - SGI
-	 * 5 - Windows
-	 * 6 - Aqua
+	 * 3 - WindowsXP
+	 * 4 - Windows
+	 * 5 - Aqua
 	 */
 #ifndef DISABLE_STYLES
 	switch (id)
@@ -492,30 +482,20 @@ WPrefs::StyleSelected(int id)
 			gWin->fSettings->SetStyle(WinShareWindow::Motif);
 			break;
 		case 2:
-#if !defined(QT_NO_STYLE_MOTIFPLUS)
-			qApp->setStyle(new QMotifPlusStyle);
+#if defined(WIN32)
+# if !defined(QT_NO_STYLE_WINDOWSXP)
+			qApp->setStyle(new QWindowsXPStyle);
+# endif
 #endif
-			gWin->fSettings->SetStyle(WinShareWindow::MotifPlus);
+			gWin->fSettings->SetStyle(WinShareWindow::WindowsXP);
 			break;
 		case 3:
-#if !defined(QT_NO_STYLE_PLATINUM)
-			qApp->setStyle(new QPlatinumStyle);
-#endif
-			gWin->fSettings->SetStyle(WinShareWindow::Platinum);
-			break;
-		case 4:
-#if !defined(QT_NO_STYLE_SGI)
-			qApp->setStyle(new QSGIStyle);
-#endif
-			gWin->fSettings->SetStyle(WinShareWindow::SGI);
-			break;
-		case 5:
 #if !defined(QT_NO_STYLE_WINDOWS)
 			qApp->setStyle(new QWindowsStyle);
 #endif
 			gWin->fSettings->SetStyle(WinShareWindow::Windows);
 			break;
-		case 6:
+		case 4:
 #if defined(__APPLE__)
 # if !defined(QT_NO_STYLE_MAC)
 			qApp->setStyle(new QMacStyle);
@@ -543,8 +523,8 @@ WPrefs::UpdateDescription(int index)
 {
 	fCurColorIndex = index;
 
-	fPreview->setText(tr("<font color=\"%1\">%2</font>").arg(fColor[index]).arg(tr(kSampleText[index])));
-	fDesc->setText(tr(kColorDesc[index]));
+	ui->fPreview->setText(tr("<font color=\"%1\">%2</font>").arg(fColor[index]).arg(tr(kSampleText[index])));
+	ui->fDesc->setText(tr(kColorDesc[index]));
 }
 
 void
@@ -563,15 +543,15 @@ WPrefs::ChangeColor()
 void
 WPrefs::ChangeSound()
 {
-	QString fn = QFileDialog::getOpenFileName(QString::null, "*.wav", this);
+	QString fn = Q3FileDialog::getOpenFileName(QString::null, "*.wav", this);
 	if (!fn.isEmpty())
-		fSoundFile->setText(fn);
+		ui->fSoundFile->setText(fn);
 }
 
 void
 WPrefs::ResetSound()
 {
-	fSoundFile->clear();
+	ui->fSoundFile->clear();
 }
 
 

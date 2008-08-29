@@ -9,10 +9,12 @@
 # include <signal.h>
 #endif
 
-#include <sys/stat.h>
-
 #ifdef __linux__
 # include <sched.h>
+#endif
+
+#ifndef WIN32
+# include <sys/stat.h>  // for umask()
 #endif
 
 #include "reflector/StorageReflectConstants.h"  // for PR_COMMAND_BATCH, PR_NAME_KEYS

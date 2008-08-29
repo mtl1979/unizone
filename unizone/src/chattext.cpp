@@ -1,8 +1,12 @@
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
-#include <qdragobject.h>
+#include <q3dragobject.h>
+//Added by qt3to4:
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QKeyEvent>
 
 #include "chattext.h"
 #include "textevent.h"
@@ -16,7 +20,7 @@
 #define MAX_SIZE 100
 
 WChatText::WChatText(QObject * target, QWidget * parent)
-	: QMultiLineEdit(parent), fTarget(target) 
+	: Q3MultiLineEdit(parent), fTarget(target) 
 {
 	fBuffer = new Queue<QString>(DEFAULT_SIZE);
 	fCurLine = 0;
@@ -31,9 +35,10 @@ WChatText::~WChatText()
 void
 WChatText::keyPressEvent(QKeyEvent * event)
 {
-	if (event->key() == Key_Return || event->key() == Key_Enter)    // check for BOTH (they ARE different to Qt)
+	if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)    
+		// check for BOTH (they ARE different to Qt)
 	{
-		if ((event->state() & ShiftButton))
+		if ((event->state() & Qt::ShiftButton))
 		{
 			newLine();	// new line if SHIFT+ENTER is pressed
 		}
@@ -64,19 +69,19 @@ WChatText::keyPressEvent(QKeyEvent * event)
 			setText(QString::null);
 		}
 	}
-	else if (event->key() == Key_Tab)
+	else if (event->key() == Qt::Key_Tab)
 	{
 		PRINT("Emitting TAB\n");
 		// tab completion
 		emit TabPressed(text());
 	}	
-	else if (event->key() == Key_Up)
+	else if (event->key() == Qt::Key_Up)
 	{
-		if (event->state() & AltButton)
+		if (event->state() & Qt::AltButton)
 		{
-			QMultiLineEdit::keyPressEvent(event);
+			Q3MultiLineEdit::keyPressEvent(event);
 		}
-		else if (event->state() & ControlButton)				
+		else if (event->state() & Qt::ControlButton)				
 		{
 			// First line
 			if (fCurLine > 0)
@@ -101,13 +106,13 @@ WChatText::keyPressEvent(QKeyEvent * event)
 			}
 		}
 	}
-	else if (event->key() == Key_Down)
+	else if (event->key() == Qt::Key_Down)
 	{
-		if (event->state() & AltButton)
+		if (event->state() & Qt::AltButton)
 		{
-			QMultiLineEdit::keyPressEvent(event);
+			Q3MultiLineEdit::keyPressEvent(event);
 		}
-		else if (event->state() & ControlButton)					
+		else if (event->state() & Qt::ControlButton)					
 		{
 			// Last line
 			if (fCurLine < fBuffer->GetNumItems() - 2)
@@ -142,13 +147,13 @@ WChatText::keyPressEvent(QKeyEvent * event)
 			}
 		}
 	}
-	else if (event->key() == Key_Escape)
+	else if (event->key() == Qt::Key_Escape)
 	{
 		setText(QString::null);
 		fCurLine = fBuffer->GetNumItems();
 	}
 	else
-		QMultiLineEdit::keyPressEvent(event);
+		Q3MultiLineEdit::keyPressEvent(event);
 }
 
 void
@@ -213,7 +218,7 @@ WChatText::dropEvent(QDropEvent* event)
 	printf("in dropEvent()\n");
 	if (!uid.isEmpty())
 	{	
-		if ( QUriDrag::decodeLocalFiles(event, list) ) 
+		if ( Q3UriDrag::decodeLocalFiles(event, list) ) 
 		{
 			QStringList::Iterator iter = list.begin();
 			while (iter != list.end())
@@ -233,12 +238,12 @@ WChatText::dropEvent(QDropEvent* event)
 			return;
 		}
 	}
-	QMultiLineEdit::dropEvent(event);
+	Q3MultiLineEdit::dropEvent(event);
 }
 
 void 
 WChatText::dragEnterEvent(QDragEnterEvent* event)
 {
-    event->accept( QUriDrag::canDecode(event) || QTextDrag::canDecode(event));
+    event->accept( Q3UriDrag::canDecode(event) || Q3TextDrag::canDecode(event));
 }
 

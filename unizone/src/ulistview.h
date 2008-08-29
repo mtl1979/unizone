@@ -4,9 +4,16 @@
 #ifndef ULISTITEM_H
 #define ULISTITEM_H
 
-#include <qlistview.h>
+#include <qpalette.h>
+#include <q3listview.h>
 
-class WUniListItem : public QListViewItem
+#ifdef WIN32
+#include <windows.h>
+#endif
+
+#include "utypes.h"
+
+class WUniListItem : public Q3ListViewItem
 {
 public:
 
@@ -31,31 +38,31 @@ public:
 #define NUM_ROW_COLORS	10
 #define NUM_COLUMNS		10
 	
-	WUniListItem(QListView * parent) 
-		: QListViewItem(parent) 
+	WUniListItem(Q3ListView * parent) 
+		: Q3ListViewItem(parent) 
 	{
 		// empty
 	}
 
-	WUniListItem(QListViewItem * parent) 
-		: QListViewItem(parent) 
+	WUniListItem(Q3ListViewItem * parent) 
+		: Q3ListViewItem(parent) 
 	{
 		// empty
 	}
 
-	WUniListItem(QListView * parent, QListViewItem * after) 
-		: QListViewItem(parent, after) 
+	WUniListItem(Q3ListView * parent, Q3ListViewItem * after) 
+		: Q3ListViewItem(parent, after) 
 	{
 		// empty
 	}
 
-	WUniListItem(QListViewItem * parent, QListViewItem * after) 
-		: QListViewItem(parent, after) 
+	WUniListItem(Q3ListViewItem * parent, Q3ListViewItem * after) 
+		: Q3ListViewItem(parent, after) 
 	{
 		// empty
 	}
 
-	WUniListItem(QListView * parent, QString a, 
+	WUniListItem(Q3ListView * parent, QString a, 
 		QString b = QString::null, QString c = QString::null, 
 		QString d = QString::null, QString e = QString::null, 
 		QString f = QString::null, QString g = QString::null, 
@@ -72,7 +79,7 @@ public:
 	virtual QString key(int c, bool asc) const;
 
 	// returns numeric equivalent of key()
-	virtual long item(int c);
+	virtual int64 item(int c);
 
 	// set/get user colors
 	virtual void setRowBaseColor(int i, const QColor & color); 
@@ -96,19 +103,19 @@ private:
 
 };
 
-class WUniListView : public QListView
+class WUniListView : public Q3ListView
 {
 	Q_OBJECT
 public:
-	WUniListView( QWidget * parent, const char * name, WFlags f ) 
-		: QListView( parent, name, f )
+	WUniListView( QWidget * parent, const char * name, Qt::WindowFlags f ) 
+		: Q3ListView( parent, name, f )
 	{
 		if (!name)
 			setName("WUniListView");
 	}
 	
 	WUniListView( QWidget * parent = 0, const char * name = 0 ) 
-		: QListView( parent, name )
+		: Q3ListView( parent, name )
 	{
 		if (!name)
 			setName("WUniListView");
@@ -118,7 +125,7 @@ public:
 	{
 		_sortColumn = column;
 		_sortAscending = ascending;
-		QListView::setSorting(column, ascending);
+		Q3ListView::setSorting(column, ascending);
 	}
 	
 	virtual int sortColumn() 

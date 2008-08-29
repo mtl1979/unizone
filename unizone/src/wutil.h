@@ -36,7 +36,7 @@ void wcat(wchar_t *dest, const wchar_t *src, size_t pos);
 // Copy 'len' characters of 'src' to 'dest'
 void wcopy(wchar_t *dest, const wchar_t *src, size_t len);
 // Reverse 'len' characters of 'src' to 'dest'
-void wreverse(wchar_t *dest, const wchar_t *src, ssize_t len);
+void wreverse(wchar_t *dest, const wchar_t *src, size_t len);
 
 #ifdef __cplusplus
 }

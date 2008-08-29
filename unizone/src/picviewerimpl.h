@@ -10,11 +10,13 @@
 
 using namespace muscle;
 
-class WPicViewer : public WPicViewerBase
+class WPicViewer : public QDialog
 {
 	Q_OBJECT
 public:
-	WPicViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = QWidget::WStyle_Customize | QWidget::WStyle_NormalBorder | QWidget::WStyle_SysMenu | QWidget::WStyle_MinMax | QWidget::WStyle_Title);
+	WPicViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, 
+		Qt::WindowFlags fl = Qt::WStyle_Customize | Qt::WStyle_NormalBorder | 
+		Qt::WStyle_SysMenu | Qt::WStyle_MinMax | Qt::WStyle_Title );
 	~WPicViewer();
 
 	bool LoadImage(const QString &file);
@@ -57,7 +59,9 @@ private:
 	bool dragging;
 	QPoint startPos;
 
-   QString lastdir;
+	QString lastdir;
+
+	Ui_WPicViewerBase *ui;
 };
 
 #endif

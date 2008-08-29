@@ -1,5 +1,5 @@
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qapplication.h>

@@ -86,10 +86,6 @@ iii.  Distribution Restrictions.  You may not:
 #include <stdlib.h>
 #include <windows.h>
 
-#if (_MSC_VER == 1200)
-int _resetstkoflw( void );
-#endif
-
 #ifdef _MBCS
 #undef _MBCS
 #endif  /* _MBCS */

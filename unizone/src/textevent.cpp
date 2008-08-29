@@ -1,4 +1,7 @@
 #include "textevent.h"
+//Added by qt3to4:
+#include <QCustomEvent>
+#include <QString>
 
 WTextEvent::WTextEvent(int type)
 : QCustomEvent(type), fValid(false)
@@ -16,11 +19,11 @@ WTextEvent::WTextEvent(const QString & text, int type)
 	if (fText.isEmpty()) 
 		return; // empty string
 	
-	for (unsigned int i = 0; i < fText.length(); i++)
+	for (int i = 0; i < fText.length(); i++)
 	{
 		// go through the text and make sure it contains
 		// some data other than line feeds, etc
-		switch ((QChar)fText.at(i))
+		switch (fText.at(i).unicode())
 		{
 			case '\n':
 			case '\r':

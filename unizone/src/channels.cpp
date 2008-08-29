@@ -1,4 +1,10 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qapplication.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "channels.h"
 #include "winsharewindow.h"
@@ -16,7 +22,7 @@
 #include <qpushbutton.h>
 
 Channels::Channels(QWidget *parent, NetClient *fNet)
-:QDialog(parent, "Channels", false, WStyle_SysMenu | WStyle_Minimize | WStyle_Maximize | WStyle_Title)
+:QDialog(parent, "Channels", false, Qt::WStyle_SysMenu | Qt::WStyle_Minimize | Qt::WStyle_Maximize | Qt::WStyle_Title)
 {
 	setCaption(tr("Channels"));
 
@@ -24,8 +30,8 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 
 	// Create the Channels Pane
 
-	QGridLayout * fChannelsTab = new QGridLayout(this, 7, 5, 0, -1, "Channels Tab");
-	CHECK_PTR(fChannelsTab);
+	Q3GridLayout * fChannelsTab = new Q3GridLayout(this, 7, 5, 0, -1, "Channels Tab");
+	Q_CHECK_PTR(fChannelsTab);
 
 	fChannelsTab->addRowSpacing(5, 20);
 
@@ -41,8 +47,8 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 	fChannelsTab->addColSpacing(2, 20);
 	fChannelsTab->addColSpacing(4, 20);
 
-	ChannelList = new QListView( this, "ChannelList" );
-	CHECK_PTR(ChannelList);
+	ChannelList = new Q3ListView( this, "ChannelList" );
+	Q_CHECK_PTR(ChannelList);
 
 	ChannelList->addColumn( tr( "Name" ) );
 	ChannelList->addColumn( tr( "Topic" ) );
@@ -53,12 +59,12 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 	fChannelsTab->addMultiCellWidget(ChannelList, 0, 4, 0, 4);
 	
 	Create = new QPushButton( tr( "&Create" ), this, "Create" );
-	CHECK_PTR(Create);
+	Q_CHECK_PTR(Create);
 
 	fChannelsTab->addWidget(Create, 6, 1);
 
 	Join = new QPushButton( tr( "&Join" ), this, "Join" );
-	CHECK_PTR(Join);
+	Q_CHECK_PTR(Join);
 
 	fChannelsTab->addWidget(Join, 6, 3);
 
@@ -156,7 +162,7 @@ Channels::ChannelAdded(const QString &channel, const QString &sid, int64 timecre
 		info = new ChannelInfo(channel, sid);
 		fChannels.Put(channel, info);
 		// Create ListView Item
-		QListViewItem * item = new QListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
+		Q3ListViewItem * item = new Q3ListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
 		info->SetItem(item);
 		info->SetCreated(timecreated);
 	}
@@ -180,7 +186,7 @@ Channels::ChannelAdded(const QString &channel, const QString &sid, int64 timecre
 void
 Channels::UpdateAdmins(const QString &channel, ChannelInfo * info)
 {
-	QListViewItem *item = info->GetItem();
+	Q3ListViewItem *item = info->GetItem();
 	if (item)
 		item->setText(3, QString::number( info->NumAdmins() ));
 	emit ChannelAdminsChanged(channel, info->GetAdmins());
@@ -189,7 +195,7 @@ Channels::UpdateAdmins(const QString &channel, ChannelInfo * info)
 void
 Channels::UpdateUsers(ChannelInfo * info)
 {
-	QListViewItem *item = info->GetItem();
+	Q3ListViewItem *item = info->GetItem();
 	if (item)
 	{
 		int n = info->NumUsers();
@@ -200,7 +206,7 @@ Channels::UpdateUsers(ChannelInfo * info)
 void
 Channels::UpdateTopic(ChannelInfo * info)
 {
-	QListViewItem *item = info->GetItem();
+	Q3ListViewItem *item = info->GetItem();
 	if (item)
 		item->setText(1, info->GetTopic() );
 }
@@ -208,7 +214,7 @@ Channels::UpdateTopic(ChannelInfo * info)
 void
 Channels::UpdatePublic(ChannelInfo * info)
 {
-	QListViewItem *item = info->GetItem();
+	Q3ListViewItem *item = info->GetItem();
 	if (item)
 		item->setText(4, info->GetPublic() ? tr( "Yes" ) : tr( "No" ) );
 }
@@ -241,7 +247,7 @@ Channels::CreateChannel()
 			fChannels.Put(channel, info);
 
 			// Create ListView item
-			QListViewItem * item = new QListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
+			Q3ListViewItem * item = new Q3ListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
 			info->SetItem(item);
 			// Create Window item
 			Channel * win = new Channel(this, fNetClient, channel);
@@ -276,7 +282,7 @@ Channels::CreateChannel()
 void
 Channels::JoinChannel()
 {
-	QListViewItem *item = ChannelList->selectedItem();
+	Q3ListViewItem *item = ChannelList->selectedItem();
 	if (item)
 	{
 		QString text = item->text(0); // Get Channel name
@@ -385,7 +391,7 @@ Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 
 		fChannels.Put(channel, info);
 
 		// Create ListView item
-		QListViewItem * item = new QListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
+		Q3ListViewItem * item = new Q3ListViewItem(ChannelList, channel, QString::null, QString::null, QString::null, QString::null);
 		info->SetItem(item);
 		ChannelAdmins(owner, channel, owner);
 		ChannelJoin(channel, owner);

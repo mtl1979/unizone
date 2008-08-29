@@ -3,8 +3,8 @@
 
 #include <qstring.h>
 
-QByteArray wencrypt(const QString &, unsigned long * = NULL);
-QString wdecrypt(const QByteArray &, unsigned long);
+QByteArray wencrypt(const QString &, int * = NULL);
+QString wdecrypt(const QByteArray &, int);
 
 // Armoured versions
 QString wencrypt2(const QString &);

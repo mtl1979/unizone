@@ -5,16 +5,7 @@
 #include <windows.h>
 #endif
 
-#include <stdio.h>
-#ifndef INT64
-# ifdef WIN32
-#  define INT64 __int64
-#  define UINT64 unsigned __int64
-# else
-#  define INT64 long long
-#  define UINT64 unsigned long long
-# endif
-#endif
+#include "utypes.h"
 
 class WString;
 class QString;
@@ -32,15 +23,18 @@ public:
 	static bool Exists(const WString &);
 
 	void Flush();
-	INT64 ReadBlock(void *, UINT64);
-	INT64 WriteBlock(const void *, UINT64);
+	int64 ReadBlock(void *, uint64);
+	int64 WriteBlock(const void *, uint64);
+
+	int32 ReadBlock32(void *, uint32);	// For backwards compatibility with functions that can't handle 64-bit values
+	int32 WriteBlock32(const void *, uint32);
 
 	int ReadLine(char *, int);
 
-	bool Seek(INT64);
-	bool At(INT64);
+	bool Seek(int64);
+	bool At(int64);
 	bool AtEnd() {return At(Size());}
-	INT64 Size();
+	int64 Size();
 private:
 	int TranslateMode(int);
 	int file;

@@ -11,37 +11,38 @@
 #include "ulistview.h"
 #include "nicklist.h"
 
-#include <qlistview.h>
+#include <q3listview.h>
+#include <qpalette.h>
 
 class WUserListItem : public WNickListItem
 {
 public:
 
-	WUserListItem(QListView * parent) 
+	WUserListItem(Q3ListView * parent) 
 		: WNickListItem(parent) 
 	{
 		// empty
 	}
 	
-	WUserListItem(QListViewItem * parent) 
+	WUserListItem(Q3ListViewItem * parent) 
 		: WNickListItem(parent) 
 	{
 		// empty
 	}
 	
-	WUserListItem(QListView * parent, QListViewItem * after) 
+	WUserListItem(Q3ListView * parent, Q3ListViewItem * after) 
 		: WNickListItem(parent, after) 
 	{
 		// empty
 	}
 	
-	WUserListItem(QListViewItem * parent, QListViewItem * after)
+	WUserListItem(Q3ListViewItem * parent, Q3ListViewItem * after)
 		: WNickListItem(parent, after) 
 	{
 		// empty
 	}
 	
-	WUserListItem(QListView * parent, QString a, QString b = QString::null,
+	WUserListItem(Q3ListView * parent, QString a, QString b = QString::null,
 				QString c = QString::null, QString d = QString::null,
 				QString e = QString::null, QString f = QString::null,
 				QString g = QString::null, QString h = QString::null );

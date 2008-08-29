@@ -12,8 +12,8 @@ using namespace muscle;
 
 #include <qstring.h>
 
-class QListView;
-class QListViewItem;
+class Q3ListView;
+class Q3ListViewItem;
 
 /** A work in progress class
   *	As the user message becomes more revealed, add more
@@ -71,8 +71,8 @@ public:
 	void InitBandwidth(MessageRef msg);
 	void InitFileCount(MessageRef msg);
 	
-	void AddToListView(QListView * view);
-	void RemoveFromListView(QListView * view = NULL);	// if NULL, remove from all list views
+	void AddToListView(Q3ListView * view);
+	void RemoveFromListView(Q3ListView * view = NULL);	// if NULL, remove from all list views
 
 	bool NeedPing() const { return fNeedPing; }
 
@@ -117,7 +117,7 @@ private:
 
 	Queue<WLastLines> fLastLines;						// holds last lines for channels
 
-	Hashtable<QListView *, QListViewItem *> fLists;
+	Hashtable<Q3ListView *, Q3ListViewItem *> fLists;
 
 };
 

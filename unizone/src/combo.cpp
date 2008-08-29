@@ -3,13 +3,15 @@
 #include "textevent.h"
 
 #include <qapplication.h>
+//Added by qt3to4:
+#include <QFocusEvent>
 
 WComboBox::WComboBox(QObject * owner, QWidget * parent, const char * name)
 	: QComboBox(parent, name), fOwner(owner)
 {
 	if (!name)
 		setName("WComboBox");
-	setFocusPolicy(QWidget::StrongFocus);
+	setFocusPolicy(Qt::StrongFocus);
 	if (connect(this, SIGNAL(activated(const QString &)), this,
 				SLOT(SendEvent(const QString &))))
 		PRINT("WComboBox: Connected activated\n");

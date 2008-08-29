@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qstring.h>
 #include <qapplication.h>
 
@@ -58,7 +62,7 @@ void
 InitLaunchThread()
 {
 	fLaunchThread = new WLaunchThread();
-	CHECK_PTR(fLaunchThread);
+	Q_CHECK_PTR(fLaunchThread);
 }
 
 void

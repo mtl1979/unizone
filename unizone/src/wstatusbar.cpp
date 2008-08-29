@@ -1,24 +1,28 @@
 #include "wstatusbar.h"
+#include "qglobal.h"
 #include <qlayout.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QLabel>
 
 WStatusBar::WStatusBar(QWidget * parent, const char * name, unsigned int columns)
 : QStatusBar(parent, name), fColumns(columns)
 {
 	fText = new QLabel *[columns];
-	CHECK_PTR(fText);
+	Q_CHECK_PTR(fText);
 	for (unsigned int i = 0; i < columns; i++)
 	{
 		// Initialize array element
 		fText[i] = new QLabel(this);
-		CHECK_PTR(fText[i]);
-		fText[i]->setAlignment(AlignCenter);
+		Q_CHECK_PTR(fText[i]);
+		fText[i]->setAlignment(Qt::AlignCenter);
 		//
 		// Add elements to status bar
 		addWidget(fText[i], 1);
 	}
 
 	fLabels = new QString[columns];
-	CHECK_PTR(fLabels);
+	Q_CHECK_PTR(fLabels);
 
 	setMaximumHeight(32);
 }

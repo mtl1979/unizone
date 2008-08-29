@@ -5,17 +5,22 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <qmainwindow.h>
-#include <qvbox.h>
+#if defined(WIN32) || defined(_WIN32)
+#include <windows.h>
+#endif
+
+#include <q3hgroupbox.h>
+#include <q3listview.h>
+#include <q3mainwindow.h>
+#include <q3multilineedit.h>
+#include <q3textview.h>
+#include <q3vgroupbox.h>
+
+#include <qboxlayout.h>
 #include <qmenubar.h>
-#include <qmultilineedit.h>
-#include <qtextview.h>
 #include <qsplitter.h>
 #include <qlabel.h>
 #include <qcombobox.h>
-#include <qhgroupbox.h>
-#include <qvgroupbox.h>
-#include <qlistview.h>
 #include <qtextbrowser.h>
 #include <qtimer.h>
 #include <qevent.h>
@@ -75,21 +80,19 @@ class WChatText;
 class WSettings;
 class WStatusBar;
 
-class WinShareWindow : public QMainWindow, public ChatWindow
+class WinShareWindow : public Q3MainWindow, public ChatWindow
 {
 	Q_OBJECT
 public:
-	WinShareWindow( QWidget* parent = 0, const char* name = 0, WFlags f = WType_TopLevel );
+	WinShareWindow( QWidget* parent = 0, const char* name = 0, Qt::WindowFlags f = Qt::WType_TopLevel );
 	virtual ~WinShareWindow();
 
 	enum Style
 	{
 		Motif,
 		Windows,
-		Platinum,
+		WindowsXP,
 		CDE,
-		MotifPlus,
-		SGI,
 		Mac
 	};
 
@@ -236,8 +239,8 @@ public slots:
 	void URLClicked(const QString &);
 
 	// popup menu
-	void RightButtonClicked(QListViewItem *, const QPoint &, int);
-	void DoubleClicked(QListViewItem *);
+	void RightButtonClicked(Q3ListViewItem *, const QPoint &, int);
+	void DoubleClicked(Q3ListViewItem *);
 	void PopupActivated(int);
 
 	// auto away timer
@@ -256,10 +259,10 @@ public slots:
 	void FileInterrupted(const QString &, const QString &, const QString &, const QString &);
 
 protected:
-	virtual void customEvent(QCustomEvent * event);
-	virtual void resizeEvent(QResizeEvent * event);
-	virtual void keyPressEvent(QKeyEvent *event);
-	virtual void timerEvent(QTimerEvent *event);
+	virtual void customEvent(QEvent *);
+	virtual void resizeEvent(QResizeEvent *);
+	virtual void keyPressEvent(QKeyEvent *);
+	virtual void timerEvent(QTimerEvent *);
 
 private slots:
 
@@ -290,16 +293,16 @@ private:
 	// Toolbars
 
 #ifndef __APPLE__
-	QToolBar * fTBMenu;
+	Q3ToolBar * fTBMenu;
 #endif
-	QToolBar * fTBNick;
-	QToolBar * fTBServer;
-	QToolBar * fTBStatus;
+	Q3ToolBar * fTBNick;
+	Q3ToolBar * fTBServer;
+	Q3ToolBar * fTBStatus;
 
-	QHGroupBox * fUsersBox;		// frame around fUsers
+	Q3HGroupBox * fUsersBox;		// frame around fUsers
 	WUniListView * fUsers;
 
-	QVGroupBox * fLeftPane;
+	Q3VGroupBox * fLeftPane;
 
 	QComboBox * fServerList, * fUserList, * fStatusList;
 	QLabel * fServerLabel, * fUserLabel, * fStatusLabel;
@@ -310,7 +313,7 @@ private:
 
 	QString fUserName, fUserStatus, fServer;
 	QString fPopupUser;
-	QPopupMenu * fPrivate;		// private window popup
+	Q3PopupMenu * fPrivate;		// private window popup
 
 	Queue<WPrivateWindow *> fPrivateWindows;	// private windows;
 	mutable Mutex pLock;		// private window mutex

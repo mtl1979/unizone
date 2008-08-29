@@ -4,9 +4,9 @@
 
 const QString uzYears = "2002-2008";
 const int kMajor = 1;
-const int kMinor = 2;
-const int kPatch = 3;
-const int kBuild = 23;
+const int kMinor = 3;
+const int kPatch = 0;
+const int kBuild = 1;
 
 
 QString

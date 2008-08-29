@@ -1,5 +1,10 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "md5.h"
 
+#include <limits.h>
 #include <stdio.h>
 #include <string.h>
 #include <qstring.h>
@@ -11,7 +16,9 @@ using namespace muscle;
 
 #if BYTE_ORDER == LITTLE_ENDIAN
 #define byteSwap(buf, words)	// we're little endian (linux & windows on intel hardware)
-								// so we don't need this
+										// so we don't need this
+#define HIDWORD(a) *((unsigned int*)(&a)+1)
+#define LODWORD(a) *((unsigned int*)(&a))
 #else
 void byteSwap(UWORD32 *buf, unsigned int words)
 {
@@ -20,6 +27,8 @@ void byteSwap(UWORD32 *buf, unsigned int words)
 		buf[x] = B_SWAP_INT32(buf[x]);
 	}
 }
+#define HIDWORD(a) *((unsigned int*)(&a))
+#define LODWORD(a) *((unsigned int*)(&a)+1)
 #endif
 
 /*
@@ -213,6 +222,8 @@ MD5Transform(UWORD32 buf[4], UWORD32 const in[16])
    buf[3] += d;
 }
 
+/* safe and optimized comparing of minimum value between 32-bit and 64-bit unsigned integers */
+#define md_min(a, b) ( ((HIDWORD(b) == 0) && (LODWORD(b) < a)) ? LODWORD(b) : a )
 
 status_t 
 HashFileMD5(const QString & entry, int64 & len, int64 offset, uint64 * retBytesHashed,
@@ -220,7 +231,7 @@ HashFileMD5(const QString & entry, int64 & len, int64 offset, uint64 * retBytesH
 {
 	uint64 bytesHashed = 0;
 	WFile file; // UNICODE !!!
-	if (file.Open(entry, IO_ReadOnly))
+	if (file.Open(entry, QIODevice::ReadOnly))
 	{
 		int64 size = file.Size();
 		if (len > 0 && size < len)
@@ -253,8 +264,10 @@ HashFileMD5(const QString & entry, int64 & len, int64 offset, uint64 * retBytesH
 			}
 			
 			MD5Init(&ctx);
-			uint64 numRead;
-			while ((numRead = file.ReadBlock((char *)buf()->GetBuffer(), muscleMin(bytesLeft, (uint64) buf()->GetNumBytes()))) > 0)
+			uint32 numRead;
+			char * buffer = (char *) buf()->GetBuffer();
+			size_t bufsize = buf()->GetNumBytes();
+			while ((numRead = file.ReadBlock32(buffer, md_min(bufsize, bytesLeft))) > 0)
 			{
 				bytesHashed += numRead;
 				
@@ -264,7 +277,7 @@ HashFileMD5(const QString & entry, int64 & len, int64 offset, uint64 * retBytesH
 					return B_ERROR;
 				}
 				
-				MD5Update(&ctx, buf()->GetBuffer(), muscleMin(numRead, bytesLeft));
+				MD5Update(&ctx, buf()->GetBuffer(), md_min(numRead, bytesLeft));
 				
 				if (numRead < bytesLeft)
 				{

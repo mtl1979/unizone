@@ -1,15 +1,22 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qapplication.h>
 #include <qfile.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qmessagebox.h>
 #include <qfont.h>
+//Added by qt3to4:
+#include <Q3CString>
+#include <QTranslator>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
 #include <shlwapi.h>
 #endif
@@ -58,7 +65,7 @@ SetWorkingDirectory()
 {
 	// we have to use some windows api to get our path...
 	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
-	CHECK_PTR(name);
+	Q_CHECK_PTR(name);
 	if (GetModuleFileName(NULL,				/* current apps module */
 							name,			/* buffer */
 							MAX_PATH		/* buffer length */
@@ -77,7 +84,7 @@ SetWorkingDirectory()
 {
 	// we have to use some windows api to get our path...
 	char * name = new char[MAX_PATH];	// maximum size for Win32 filenames
-	CHECK_PTR(name);
+	Q_CHECK_PTR(name);
 	if (GetModuleFileName(NULL,				/* current apps module */
 							name,			/* buffer */
 							MAX_PATH		/* buffer length */
@@ -141,7 +148,7 @@ main( int argc, char** argv )
 	QString lfile;
 	if (!WFile::Exists(L"unizone.lng"))
 	{
-		lfile = QFileDialog::getOpenFileName( QString::null, "unizone_*.qm", NULL );
+		lfile = Q3FileDialog::getOpenFileName( QString::null, "unizone_*.qm", NULL );
 		if (!lfile.isEmpty())
 		{
 			// Save selected language's translator filename
@@ -153,7 +160,7 @@ main( int argc, char** argv )
 #endif 
 			   ) )
 			{
-				QCString clang = lfile.utf8();
+				Q3CString clang = lfile.utf8();
 				lang.WriteBlock(clang, clang.length());
 				lang.Close();
 			}
@@ -162,7 +169,7 @@ main( int argc, char** argv )
 
 	// (Re-)load translator filename
 	if ( lang.Open(L"unizone.lng",
-#if defined(WIN32)
+#if defined(WIN32) || defined(_WIN32)
 		O_RDONLY | O_BINARY
 #else
 		O_RDONLY
@@ -225,7 +232,7 @@ main( int argc, char** argv )
 	}
 	
 	WinShareWindow * window = new WinShareWindow(NULL);
-	CHECK_PTR(window);
+	Q_CHECK_PTR(window);
 
 	app.setMainWidget(window);
 

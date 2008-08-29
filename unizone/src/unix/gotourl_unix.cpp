@@ -63,7 +63,7 @@ GotoURL(const QString & url)
 	else
 	{
 		// unknown? use default launcher...
-		fLaunchThread->SetLauncher(gWin->fSettings->GetDefaultLauncher());	
+		fLaunchThread->SetLauncher(gWin->fSettings->GetDefaultLauncher());
 	}
 	fLaunchThread->StartInternalThread();
 	QApplication::restoreOverrideCursor();
@@ -86,7 +86,7 @@ void
 InitLaunchThread()
 {
 	fLaunchThread = new WLaunchThread();
-	CHECK_PTR(fLaunchThread);
+	Q_CHECK_PTR(fLaunchThread);
 }
 
 void

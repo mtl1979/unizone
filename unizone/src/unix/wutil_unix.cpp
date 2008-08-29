@@ -24,13 +24,13 @@ void wcat(wchar_t *dest, const wchar_t *src, size_t pos)
 	wcopy(dest, src, wcslen(src));
 }
 
-void wreverse(wchar_t *dest, const wchar_t *src, ssize_t len)
-{	
+void wreverse(wchar_t *dest, const wchar_t *src, size_t len)
+{
 	if (dest)
 	{
 		int dpos = 0;
 		int spos = len - 1;
-		while (spos >= 0) 
+		while (spos >= 0)
 			dest[dpos++] = src[spos--];
 		dest[len] = 0;
 	}
@@ -46,17 +46,17 @@ void wreplace(wchar_t *buffer, wchar_t in, wchar_t out)
 			if (*b == in)
 				*b = out;
 			b++;
-		}; 
+		};
 	}
 }
 
 /*
-*
-*  Conversion functions
-*
-*/
+ *
+ *  Conversion functions
+ *
+ */
 
-QString 
+QString
 wideCharToQString(const wchar_t *wide)
 {
     QString result;
@@ -67,15 +67,15 @@ wideCharToQString(const wchar_t *wide)
 wchar_t *
 qStringToWideChar(const QString &str)
 {
-   	if (str.isNull())
+	if (str.isNull())
 	{
-       	return NULL;
+		return NULL;
 	}
-	
+
 	wchar_t *result = new wchar_t[str.length() + 1];
 	if (result)
 	{
-		for (unsigned int i = 0; i < str.length(); ++i)
+		for (int i = 0; i < str.length(); ++i)
 			result[i] = str.at(i).unicode();
 		result[str.length()] = 0;
 		return result;

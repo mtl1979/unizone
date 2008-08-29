@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "channelinfo.h"
 #include "channelimpl.h"
 #include "tokenizer.h"
@@ -183,12 +187,12 @@ ChannelInfo::GetPublic() const
 }
 
 void 
-ChannelInfo::SetItem(QListViewItem * item) 
+ChannelInfo::SetItem(Q3ListViewItem * item) 
 {
 	fItem = item;
 }
 
-QListViewItem * 
+Q3ListViewItem * 
 ChannelInfo::GetItem() const
 { 
 	return fItem; 

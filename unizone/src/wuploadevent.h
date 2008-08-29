@@ -1,6 +1,7 @@
 #ifndef WUPLOADEVENT_H
 #define WUPLOADEVENT_H
 
+#include "wtransferevent.h"
 #include "message/Message.h"
 
 #include <qevent.h>
@@ -10,38 +11,42 @@
 #endif
 
 //------------------------------------------------------------------
-class WUploadEvent : public QCustomEvent
+class WUploadEvent : public WTransferEvent
 {
 public:
-	enum { Type = 'wUeE' };
+	WUploadEvent(int type)
+		: WTransferEvent(type) { fSender = NULL; fSent = 0; }
 
-	// This event stores a MessageRef
-	WUploadEvent(MessageRef msg) 
-		: QCustomEvent(Type) { fMsg = msg; }
 	virtual ~WUploadEvent() { }
 
-	MessageRef Msg() const { return fMsg; }
-	void SetMsg(MessageRef m) { fMsg = m; }
+	WUploadThread * Sender() const { return fSender; }
+	void SetSender(WUploadThread *sender) { fSender = sender; }
+
+	uint64 Sent() const { return fSent; }
+	void SetSent(const uint64 sent) { fSent = sent; }
 
 	enum
 	{
-		ConnectFailed = 'uEcF', // sent when the connection failed
-		ConnectInProgress,		// the connection is being established
-		Connected,				// session was connected, negotiating the connection with the remote client
-		Disconnected,			// we got disconnected from the peer before the file was completed
-		FileDone,				// file completed
-		FileStarted,			// started new file dl
-		FileError,				// critical error, file system error
-		FileDataSent,			// sent some data
-		FileHashing,			// we're md5'ing the file
-		FileQueued, 			// we're queued
-		Init,					// is sent to the GUI with the path of the file being downloaded/requested. This filename may change (also may include the user as well)
-		UpdateUI,				// this is sent to the GUI with a new session ID/name pair to update for the upload
-		FileBlocked 			// user has been banned for file transfers
+		FirstEvent = QEvent::User + 28250,	// Placeholder for start of event list
+		ConnectFailed,						// sent when the connection failed
+		ConnectInProgress,					// the connection is being established
+		Connected,							// session was connected, negotiating the connection with the remote client
+		Disconnected,						// we got disconnected from the peer before the file was completed
+		FileDone,							// file completed
+		FileStarted,						// started new file dl
+		FileError,							// critical error, file system error
+		FileDataSent,						// sent some data
+		FileHashing,						// we're md5'ing the file
+		FileQueued, 						// we're queued
+		Init,								// is sent to the GUI with the path of the file being downloaded/requested. This filename may change (also may include the user as well)
+		UpdateUI,							// this is sent to the GUI with a new session ID/name pair to update for the upload
+		FileBlocked, 						// user has been banned for file transfers
+		LastEvent							// Placeholder for end of event list
 	};
 
 private:
-	MessageRef fMsg;
+	WUploadThread * fSender;
+	uint64 fSent;
 };
 
 #endif

@@ -1,7 +1,8 @@
 #ifndef TEXTEVENT_H
 #define TEXTEVENT_H
 
-#include <qevent.h>
+#include <qcoreevent.h>
+#include <qstring.h>
 
 /** This event is sent when the user pressed enter in
   *	the text input area.
@@ -14,10 +15,10 @@ class WTextEvent : public QCustomEvent
 public:
 	enum Type
 	{
-		TextType = User + 5000,		// user sent text
-		ComboType,					// combo box alert that the text HAS changed
-		ResumeType,					// check if user has resumable files
-		ChatTextEvent,				// printable text
+		TextType = QEvent::User + 5000,		// user sent text
+		ComboType,							// combo box alert that the text HAS changed
+		ResumeType,							// check if user has resumable files
+		ChatTextEvent,						// printable text
 		UserUpdateEvent
 	};
 

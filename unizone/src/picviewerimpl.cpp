@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "picviewerimpl.h"
 #include "support/MuscleSupport.h"
 
@@ -8,11 +12,18 @@
 #include <qimage.h>
 #include <qlayout.h>
 #include <qfile.h>
-#include <qfiledialog.h>
-#include <qdragobject.h>
-#include <qurl.h>
+#include <q3filedialog.h>
+#include <q3dragobject.h>
+#include <q3url.h>
 #include <qdir.h>
-#if (QT_VERSION < 0x030000) || defined(QT_NO_IMAGEIO_JPEG)
+//Added by qt3to4:
+#include <QDropEvent>
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QEvent>
+#include <QDragEnterEvent>
+#include <QImageReader>
+#if defined(QT_NO_IMAGEIO_JPEG)
 #include "jpegio.h"
 #endif
 
@@ -24,34 +35,37 @@
 #include "settings.h"
 #include "winsharewindow.h"
 
-WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, WFlags fl)
-: WPicViewerBase(parent, name, modal, fl)
+WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
+: QDialog(parent, name, modal, fl)
 {
+	ui = new Ui_WPicViewerBase();
+	ui->setupUi(this);
+
 	if (!name)
 		setName("WPicViewer");
 
 	dragging = false;
 
-	connect(btnFirst, SIGNAL(clicked()), this, SLOT(FirstImage()));
-	connect(btnPrevious, SIGNAL(clicked()), this, SLOT(PreviousImage()));
-	connect(btnNext, SIGNAL(clicked()), this, SLOT(NextImage()));
-	connect(btnLast, SIGNAL(clicked()), this, SLOT(LastImage()));
-	connect(btnOpen, SIGNAL(clicked()), this, SLOT(OpenImage()));
-	connect(btnClose, SIGNAL(clicked()), this, SLOT(CloseImage()));
+	connect(ui->btnFirst, SIGNAL(clicked()), this, SLOT(FirstImage()));
+	connect(ui->btnPrevious, SIGNAL(clicked()), this, SLOT(PreviousImage()));
+	connect(ui->btnNext, SIGNAL(clicked()), this, SLOT(NextImage()));
+	connect(ui->btnLast, SIGNAL(clicked()), this, SLOT(LastImage()));
+	connect(ui->btnOpen, SIGNAL(clicked()), this, SLOT(OpenImage()));
+	connect(ui->btnClose, SIGNAL(clicked()), this, SLOT(CloseImage()));
 
-	btnFirst->setEnabled(false);
-	btnPrevious->setEnabled(false);
-	btnNext->setEnabled(false);
-	btnLast->setEnabled(false);
-	btnClose->setEnabled(false);
+	ui->btnFirst->setEnabled(false);
+	ui->btnPrevious->setEnabled(false);
+	ui->btnNext->setEnabled(false);
+	ui->btnLast->setEnabled(false);
+	ui->btnClose->setEnabled(false);
 
 	// Use our copy of JPEG IO if Qt doesn't have it ;)
-#if (QT_VERSION < 0x030000) || defined(QT_NO_IMAGEIO_JPEG)
+#if defined(QT_NO_IMAGEIO_JPEG)
 	InitJpegIO();
 #endif
 
 	setAcceptDrops(TRUE);
-	pxlPixmap->installEventFilter(this);
+	ui->pxlPixmap->installEventFilter(this);
 
 	cFile = 0;
 	nFiles = 0;
@@ -80,7 +94,7 @@ WPicViewer::SaveSettings()
 bool
 WPicViewer::eventFilter( QObject *o, QEvent *e )
 {
-	if (o == pxlPixmap)
+	if (o == ui->pxlPixmap)
 	{
 		switch(e->type())
 		{
@@ -106,12 +120,12 @@ WPicViewer::eventFilter( QObject *o, QEvent *e )
 void
 WPicViewer::mousePressEvent(QMouseEvent *e)
 {
-	if (e->button() & LeftButton)
+	if (e->button() & Qt::LeftButton)
 	{
 		PRINT("Started dragging...\n");
 		dragging = true;
 	}
-	WPicViewerBase::mousePressEvent(e);
+	QDialog::mousePressEvent(e);
 }
 
 void
@@ -123,7 +137,7 @@ WPicViewer::mouseMoveEvent(QMouseEvent *e)
 		if ( ( startPos - currPos ).manhattanLength() > QApplication::startDragDistance() )
 			startDrag();
 	}
-	WPicViewerBase::mouseMoveEvent(e);
+	QDialog::mouseMoveEvent(e);
 }
 
 void
@@ -134,13 +148,13 @@ WPicViewer::mouseReleaseEvent(QMouseEvent *e)
 		PRINT("Stopped dragging...\n");
 		dragging = false;
 	}
-	WPicViewerBase::mouseReleaseEvent(e);
+	QDialog::mouseReleaseEvent(e);
 }
 
 void 
 WPicViewer::dragEnterEvent(QDragEnterEvent* event)
 {
-    event->accept( QUriDrag::canDecode(event) );
+    event->accept( Q3UriDrag::canDecode(event) );
 }
 
 void 
@@ -150,7 +164,7 @@ WPicViewer::dropEvent(QDropEvent* event)
 	{
 		QStringList list;
 		
-		if ( QUriDrag::decodeLocalFiles(event, list) ) {
+		if ( Q3UriDrag::decodeLocalFiles(event, list) ) {
 			QStringList::Iterator it = list.begin();
 			while (it != list.end())
 			{
@@ -169,7 +183,7 @@ WPicViewer::startDrag()
 	{
 		QStringList list;
 		list.append(fFiles[cFile]);
-		QUriDrag *d = new QUriDrag(this);
+		Q3UriDrag *d = new Q3UriDrag(this);
 		d->setFilenames(list);
 		d->dragCopy();
 	}
@@ -180,7 +194,7 @@ WPicViewer::LoadImage(const QString &file)
 {
 	bool ret = false;
 	QImage fImage;
-	const char * fmt = QImageIO::imageFormat(file);
+	const char * fmt = QImageReader(file).format();
 	ByteBufferRef buf = GetByteBufferFromPool();
 	WFile f;
 	int oldpos = -1;
@@ -192,11 +206,12 @@ WPicViewer::LoadImage(const QString &file)
 			break;
 		}
 	}
-	if (f.Open(file, IO_ReadOnly))
+	if (f.Open(file, QIODevice::ReadOnly))
 	{
-		if (buf()->SetNumBytes(f.Size(), false) == B_OK)
+		if (buf()->SetNumBytes((uint32) f.Size(), false) == B_OK)
 		{
-			if (f.ReadBlock((char *) buf()->GetBuffer(), f.Size()) == f.Size())
+			CheckSize(f.Size());
+			if (f.ReadBlock32((char *) buf()->GetBuffer(), (uint32) f.Size()) == (int32) f.Size())
 			{
 				if (ret = LoadImage(buf, fmt, fImage))
 				{
@@ -250,16 +265,16 @@ WPicViewer::UpdatePosition(int pos)
 {
 	nFiles = fImages.GetNumItems();
 	cFile = muscleClamp(pos, 0, (int) (nFiles - 1));
-	btnFirst->setEnabled(pos == 0 ? false : true);
-	btnPrevious->setEnabled(pos == 0 ? false : true);
-	btnNext->setEnabled((cFile + 1) != nFiles ? true : false);
-	btnLast->setEnabled((cFile + 1) != nFiles ? true : false);
-	btnClose->setEnabled(nFiles == 0 ? false : true);
+	ui->btnFirst->setEnabled(pos == 0 ? false : true);
+	ui->btnPrevious->setEnabled(pos == 0 ? false : true);
+	ui->btnNext->setEnabled((cFile + 1) != nFiles ? true : false);
+	ui->btnLast->setEnabled((cFile + 1) != nFiles ? true : false);
+	ui->btnClose->setEnabled(nFiles == 0 ? false : true);
 
 	if (nFiles > 0)
-		txtItems->setText(tr("%1/%2").arg(cFile + 1).arg(nFiles));
+		ui->txtItems->setText(tr("%1/%2").arg(cFile + 1).arg(nFiles));
 	else
-		txtItems->setText(tr("No File"));
+		ui->txtItems->setText(tr("No File"));
 	UpdateName();
 }
 
@@ -308,16 +323,16 @@ WPicViewer::scaleImage(const QImage & image)
 	int oldw = image.width();
 	int oldh = image.height();
 	double ratio = (double) oldw / (double) oldh;
-	int neww = lrint((double) ((double) pxlPixmap->height() * ratio));
-	if (neww > pxlPixmap->width())
+	int neww = lrint((double) ((double) ui->pxlPixmap->height() * ratio));
+	if (neww > ui->pxlPixmap->width())
 	{
-		width = pxlPixmap->width();
-		height = lrint((double) ((double) pxlPixmap->width() / ratio));
+		width = ui->pxlPixmap->width();
+		height = lrint((double) ((double) ui->pxlPixmap->width() / ratio));
 	}
 	else
 	{
 		width = neww;
-		height = pxlPixmap->height();
+		height = ui->pxlPixmap->height();
 	}
 	return image.smoothScale(width, height);
 }
@@ -330,7 +345,7 @@ WPicViewer::DrawImage(const QImage &image)
 	QPixmap temp;
 	if (temp.convertFromImage(nimg))
 	{
-		pxlPixmap->setPixmap( temp );
+		ui->pxlPixmap->setPixmap( temp );
 		//
 		UpdateName();
 	}
@@ -339,11 +354,11 @@ WPicViewer::DrawImage(const QImage &image)
 void
 WPicViewer::resizeEvent(QResizeEvent *e)
 {
-	QWidget * lwidget = dynamic_cast<QWidget *>(Layout5->parent());
+	QWidget * lwidget = dynamic_cast<QWidget *>(ui->Layout5->parent());
 	if (lwidget)
 		lwidget->resize(e->size());
 	//
-	if (pxlPixmap->pixmap())
+	if (ui->pxlPixmap->pixmap())
 	{
 		QImage fImage;
 		if (fImages.GetItemAt(cFile, fImage) == B_OK)
@@ -352,7 +367,7 @@ WPicViewer::resizeEvent(QResizeEvent *e)
 		}
 	}
 	//
-	WPicViewerBase::resizeEvent(e);
+	QDialog::resizeEvent(e);
 }
 
 void
@@ -365,7 +380,7 @@ WPicViewer::CloseImage()
 		nFiles--;
 		if (nFiles == 0)
 		{
-			pxlPixmap->clear();
+			ui->pxlPixmap->clear();
 			UpdatePosition(0);
 		}
 		else
@@ -378,7 +393,7 @@ WPicViewer::CloseImage()
 void
 WPicViewer::OpenImage()
 {
-	QStringList files = QFileDialog::getOpenFileNames ( imageFormats(), lastdir, this);
+	QStringList files = Q3FileDialog::getOpenFileNames ( imageFormats(), lastdir, this);
 	if (!files.isEmpty())
 	{
 		QStringList::Iterator iter = files.begin();

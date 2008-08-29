@@ -5,9 +5,11 @@
 
 #include "user.h"
 #include "message/Message.h"
-#include "system/Mutex.h"
+// #include "system/Mutex.h"
 
 using namespace muscle;
+
+class muscle::Mutex;
 
 class QString;
 
@@ -21,6 +23,6 @@ public:
 	void run();
 private:
 	MessageRef fQueue;
-	Mutex fLock;
+	mutable Mutex fLock;
 };
 #endif

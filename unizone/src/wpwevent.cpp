@@ -1,4 +1,10 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qapplication.h>
+//Added by qt3to4:
+#include <QCustomEvent>
 
 #include "wpwevent.h"
 #include "user.h"

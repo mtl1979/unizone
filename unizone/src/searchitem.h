@@ -19,32 +19,32 @@ public:
 		NumColumns
 	};
 
-	WSearchListItem(QListView * parent) 
+	WSearchListItem(Q3ListView * parent) 
 		: WUniListItem(parent) 
 	{
 		// empty
 	}
 	
-	WSearchListItem(QListViewItem * parent) 
+	WSearchListItem(Q3ListViewItem * parent) 
 		: WUniListItem(parent) 
 	{
 		// empty
 	}
 	
-	WSearchListItem(QListView * parent, QListViewItem * after) 
+	WSearchListItem(Q3ListView * parent, Q3ListViewItem * after) 
 		: WUniListItem(parent, after) 
 	{
 		// empty
 	}
 	
-	WSearchListItem(QListViewItem * parent, QListViewItem * after) 
+	WSearchListItem(Q3ListViewItem * parent, Q3ListViewItem * after) 
 		: WUniListItem(parent, after) 
 	{
 		// empty
 	}
 	
 	WSearchListItem(
-		QListView * parent, QString a, 
+		Q3ListView * parent, QString a, 
 		QString b = QString::null, QString c = QString::null, QString d = QString::null,
 		QString e = QString::null, QString f = QString::null, QString g = QString::null, 
 		QString h = QString::null 

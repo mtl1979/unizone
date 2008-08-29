@@ -2,11 +2,15 @@
 // Released under Lesser GPL as in LGPL.TXT in source root folder
 
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qapplication.h>
-#include <qdragobject.h>
+#include <q3dragobject.h>
+//Added by qt3to4:
+#include <QDropEvent>
+#include <QDragEnterEvent>
+#include <QImageReader>
 
 #include "ulistview.h"
 #include "settings.h"
@@ -16,16 +20,16 @@
 #include "global.h"
 
 WUniListItem::WUniListItem(
-						   QListView * parent, 
-						   QString a, QString b, QString c, QString d, QString e, 
-						   QString f, QString g, QString h, QString i, QString j 
-						   ) 
-						   : QListViewItem(parent)
+						   Q3ListView * parent,
+						   QString a, QString b, QString c, QString d, QString e,
+						   QString f, QString g, QString h, QString i, QString j
+						   )
+						   : Q3ListViewItem(parent)
 {
-	
-	
+
+
 	// Store sort keys and initialize text property
-	
+
 	setText(0,a);
 	setText(1,b);
 	setText(2,c);
@@ -36,9 +40,9 @@ WUniListItem::WUniListItem(
 	setText(7,h);
 	setText(8,i);
 	setText(9,j);
-	
+
 	// Set default column types to 'Generic'
-	
+
 	setColumnType(0, Generic);
 	setColumnType(1, Generic);
 	setColumnType(2, Generic);
@@ -55,16 +59,16 @@ WUniListItem::WUniListItem(
 
 // Updates sort key for other functions
 
-void 
+void
 WUniListItem::setText(int col, const QString & text)
 {
 	fKey[col] = text;					// insensitive sort
-	QListViewItem::setText(col, text);	// pass it on
+	Q3ListViewItem::setText(col, text);	// pass it on
 }
 
 // Returns sort key by converting to hexadecimal numeric value or ten spaces
 
-QString 
+QString
 WUniListItem::key(int c, bool /* asc */) const
 {
 	int64 n, m;
@@ -132,9 +136,9 @@ WUniListItem::key(int c, bool /* asc */) const
 			m = toLongLong(q2, &ok2);
 			if (ok1 && ok2)
 			{
-				int o = 0;
+				int64 o = 0;
 				if (m == WSettings::Unlimited)
-					o = 0xFFFF0000 + n; 
+					o = 0xFFFF0000 + n;
 				else if (m == 0)
 					return "          ";
 				else if (n == 0)
@@ -144,7 +148,7 @@ WUniListItem::key(int c, bool /* asc */) const
 					o = lrint((double) ( (double) n / (double) m * 10000.0f ));
 					o = o * 100 + m;
 				}
-				result.sprintf("0x%08x", o);
+				result.sprintf("0x%08llx", o);
 			}
 			else
 			{
@@ -166,44 +170,44 @@ WUniListItem::key(int c, bool /* asc */) const
 		}
 	case ConnectionSpeed:
 		{
-			bw = BandwidthToBytes(QListViewItem::text(c));
+			bw = BandwidthToBytes(Q3ListViewItem::text(c));
 			switch (bw)
 			{
-			case 75:				
-			case 300:				
+			case 75:
+			case 300:
 				return "0x01";
-			case 14400: 			
+			case 14400:
 				return "0x02";
-			case 28800: 			
+			case 28800:
 				return "0x03";
-			case 33600: 			
+			case 33600:
 				return "0x04";
-			case 57600: 			
+			case 57600:
 				return "0x05";
-			case 64000: 			
+			case 64000:
 				return "0x06";
-			case 128000:			
+			case 128000:
 				return "0x07";
-			case 256000:			
+			case 256000:
 				return "0x08";
-			case 384000:			
+			case 384000:
 				return "0x09";
-			case 512000:			
+			case 512000:
 				return "0x0A";
-			case 768000:			
+			case 768000:
 				return "0x0B";
 			case 1000000:
-			case 1024000:	
+			case 1024000:
 				return "0x0C";
-			case 1500000:			
+			case 1500000:
 				return "0x0D";
-			case 4500000:			
+			case 4500000:
 				return "0x0E";
-			case 155520000:		
+			case 155520000:
 				return "0x0F";
-			case 622080000:		
+			case 622080000:
 				return "0x10";
-			default:		
+			default:
 				return "0x00";
 			}
 		}
@@ -217,7 +221,7 @@ WUniListItem::key(int c, bool /* asc */) const
 // Returns numeric representation of requested item, can be used for sorting
 // If can't be converted to numeric value, returns -1
 
-long
+int64
 WUniListItem::item(int c)
 {
 	int64 n, m, o;
@@ -275,44 +279,44 @@ WUniListItem::item(int c)
 		}
 	case ConnectionSpeed:
 		{
-			bw = BandwidthToBytes(QListViewItem::text(c));
+			bw = BandwidthToBytes(Q3ListViewItem::text(c));
 			switch (bw)
 			{
-			case 75:				
-			case 300:				
+			case 75:
+			case 300:
 				return 1;
-			case 14400: 			
+			case 14400:
 				return 2;
-			case 28800: 			
+			case 28800:
 				return 3;
-			case 33600: 			
+			case 33600:
 				return 4;
-			case 57600: 			
+			case 57600:
 				return 5;
-			case 64000: 			
+			case 64000:
 				return 6;
-			case 128000:			
+			case 128000:
 				return 7;
-			case 256000:			
+			case 256000:
 				return 8;
-			case 384000:			
+			case 384000:
 				return 9;
-			case 512000:			
+			case 512000:
 				return 10;
-			case 768000:			
+			case 768000:
 				return 11;
 			case 1000000:
-			case 1024000:	
+			case 1024000:
 				return 12;
-			case 1500000:			
+			case 1500000:
 				return 13;
-			case 4500000:			
+			case 4500000:
 				return 14;
-			case 155520000:		
+			case 155520000:
 				return 15;
-			case 622080000:		
+			case 622080000:
 				return 16;
-			default:				
+			default:
 				return 0;
 			}
 		}
@@ -323,7 +327,7 @@ WUniListItem::item(int c)
 	}
 }
 
-QString 
+QString
 WUniListItem::text(int c) const
 {
 	QString postFix, result, q1, q2;
@@ -343,11 +347,11 @@ WUniListItem::text(int c) const
 	case String_NoCase_Stripped:
 	case String_Cased_Stripped:
 		{
-		return StripURL(QListViewItem::text(c).stripWhiteSpace());
+		return StripURL(Q3ListViewItem::text(c).stripWhiteSpace());
 		}
 	case Percentage:
 		{
-		return QListViewItem::text(c)+" %";
+		return Q3ListViewItem::text(c)+" %";
 		}
 	case Size:
 		{
@@ -359,11 +363,11 @@ WUniListItem::text(int c) const
 			if (n >= 1024.0f)	// > 1 kB?
 			{
 				n /= 1024.0f;
-				
+
 				if (n >= 1024.0f)	// > 1 MB?
 				{
 					n /= 1024.0f;
-					
+
 					if (n >= 1024.0f)	// > 1 GB?
 					{
 						n /= 1024.0f;
@@ -387,7 +391,7 @@ WUniListItem::text(int c) const
 		}
 		else
 			n = 0.0f;
-		
+
 		if (n != 0.0f)
 		{
 			result.sprintf("%.2f ", n);
@@ -401,12 +405,12 @@ WUniListItem::text(int c) const
 		{
 			result = QString::null;
 		}
-		
+
 		return result;
 		}
 	case TransferSpeed:
 		{
-		result = QListViewItem::text(c);
+		result = Q3ListViewItem::text(c);
 		n = result.toDouble(&ok);
 		postFix = qApp->translate( "WUniListItem", "B/s" );
 		if (ok)
@@ -414,11 +418,11 @@ WUniListItem::text(int c) const
 			if (n >= 1024.0f)	// > 1 kB?
 			{
 				n /= 1024.0f;
-				
+
 				if (n >= 1024.0f)	// > 1 MB?
 				{
 					n /= 1024.0f;
-					
+
 					if (n >= 1024.0f)	// > 1 GB?
 					{
 						n /= 1024.0f;
@@ -441,7 +445,7 @@ WUniListItem::text(int c) const
 		}
 		else
 			n = 0.0f;
-		
+
 		if (n != 0.0f)
 		{
 			result.sprintf("%.2f ", n);
@@ -451,10 +455,10 @@ WUniListItem::text(int c) const
 		{
 			result = QString::null;
 		}
-		
+
 		return result;
 		}
-		
+
 	case TransferLoad:
 		{
 		q1 = fKey[c].left(fKey[c].find(","));
@@ -497,7 +501,7 @@ WUniListItem::text(int c) const
 		secs = lMod;
 		min = secs / 60; secs = secs % 60;
 		hours = min / 60; min = min % 60;
-		
+
 		if (lMod > 0)
 		{
 			result.sprintf("%lu:%.2lu:%.2lu", hours, min, secs);
@@ -507,7 +511,7 @@ WUniListItem::text(int c) const
 			// Don't show 0:00:00
 			result = QString::null;
 		}
-		
+
 		return result;
 		}
 	case ConnectionSpeed:
@@ -523,12 +527,12 @@ WUniListItem::text(int c) const
 		}
 	default:
 		{
-		return QListViewItem::text(c);
+		return Q3ListViewItem::text(c);
 		}
 	}
 }
 
-void 
+void
 WUniListItem::setColumnType(int c, WUniListItem::ColumnType ct)
 {
 	UColumnType[c] = ct;
@@ -541,13 +545,13 @@ WUniListItem::columnType(int c) const
 }
 
 // set/get user colors
-void 
-WUniListItem::setRowBaseColor(int i, const QColor & color) 
+void
+WUniListItem::setRowBaseColor(int i, const QColor & color)
 {
 	RowBaseColor[i] = color;
 }
 
-QColor 
+QColor
 WUniListItem::rowBaseColor(int i) const
 {
 	return RowBaseColor[i];
@@ -565,33 +569,33 @@ WUniListItem::rowTextColor(int i) const
 	return RowTextColor[i];
 }
 
-void 
+void
 WUniListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w, int alignment)
 {
-	QListViewItem::paintCell(p, cg, column, w, alignment);
+	Q3ListViewItem::paintCell(p, cg, column, w, alignment);
 }
 
 void
 WUniListView::dragEnterEvent(QDragEnterEvent* event)
 {
-    event->accept( QUriDrag::canDecode(event) );
+    event->accept( Q3UriDrag::canDecode(event) );
 }
 
 void
 WUniListView::dropEvent(QDropEvent* event)
 {
     QStringList list;
-	
-    if ( QUriDrag::decodeLocalFiles(event, list) ) 
+
+    if ( Q3UriDrag::decodeLocalFiles(event, list) )
 	{
 		QStringList::Iterator it = list.begin();
 		QPoint p = event->pos();
 		QPoint q = viewport()->mapFromParent(p);
-		QListViewItem *li = itemAt(q);
+		Q3ListViewItem *li = itemAt(q);
 		while (it != list.end())
 		{
 			QString filename = *it;
-			const char * fmt = QImageIO::imageFormat(filename);
+			const char * fmt = QImageReader(filename).format();
 			QImage img;
 			if (img.load(filename, fmt))
 			{

@@ -1,16 +1,20 @@
-#ifndef CHANNEL_H
-#define CHANNEL_H
+#ifndef CHANNELIMPL_H
+#define CHANNELIMPL_H
 
 #ifdef WIN32
 #pragma warning(disable: 4786)
 #endif
 
 #include <qapplication.h>
+#include <qcoreevent.h>
+#include <qdialog.h>
+#include <qevent.h>
 #include <qsplitter.h>
-#include <qhgroupbox.h>
+#include <q3hgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
-#include <qlistview.h>
+#include <qpalette.h>
+#include <q3listview.h>
 
 #include "channel.h"
 #include "chattext.h"
@@ -21,12 +25,12 @@
 
 class NetClient;
 
-class Channel : public ChannelBase, public ChatWindow
+class Channel : public QDialog, public ChatWindow
 { 
     Q_OBJECT
 
 public:
-    Channel( QWidget* parent = 0, NetClient * net = 0, QString cname = QString::null, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
+	Channel( QWidget* parent = 0, NetClient * net = 0, QString cname = QString::null, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0);
     ~Channel();
 	void SetOwner(const QString &);
 	void SetTopic(const QString &);
@@ -37,8 +41,8 @@ public:
 	void Invite(const QString & user);
 	void Kick(const QString & user);
 protected:
-	virtual void customEvent(QCustomEvent *);
-	virtual void resizeEvent(QResizeEvent * e);
+	virtual void customEvent(QEvent *);
+	virtual void resizeEvent(QResizeEvent *);
 
 	friend class Channels;
 	void StartLogging();
@@ -50,10 +54,10 @@ private:
 	QSplitter * fSplit;
 	QSplitter * fSplitBottom;
 	QSplitter * fSplitChat;
-	QHGroupBox * fTopicBox;
+	Q3HGroupBox * fTopicBox;
 	QLabel * fTopicLabel;
 	QLineEdit * fTopicEdit;
-	QListView * fChannelUsers;
+	Q3ListView * fChannelUsers;
 	WChatText * fInputText;
 	QWidget * fParent;
 

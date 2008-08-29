@@ -2,14 +2,15 @@
 #define HTMLVIEW_H
 
 #include <qapplication.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 
-#include "system/Mutex.h"
 #include "message/Message.h"
+
+class muscle::Mutex;
 
 using namespace muscle;
 
-class WHTMLView : public QTextBrowser
+class WHTMLView : public Q3TextBrowser
 {
 	Q_OBJECT
 public:

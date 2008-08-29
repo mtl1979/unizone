@@ -1,12 +1,14 @@
 #include "titanic.h"
 #include <stdio.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 QString
-TTPEncode(const QByteArray & orig, unsigned long len)
+TTPEncode(const QByteArray & orig, int len)
 {
-	QCString temp;
-	QCString c;
-	for (unsigned int x = 0; x < len; x++)
+	Q3CString temp;
+	Q3CString c;
+	for (int x = 0; x < len; x++)
 	{
 		c = chartohex(orig.at(x));
 		temp += c;
@@ -17,9 +19,9 @@ TTPEncode(const QByteArray & orig, unsigned long len)
 QString
 TTPEncode(const QString &orig)
 {
-	QCString temp = orig.utf8();
-	QCString out;
-	QCString c;
+	Q3CString temp = orig.utf8();
+	Q3CString out;
+	Q3CString c;
 	for (unsigned int x = 0; x < strlen(temp); x++)
 	{
 		c = chartohex(temp.at(x));
@@ -33,8 +35,8 @@ TTPDecode(const QString &orig)
 {
 	if ((orig.length() % 2) != 0)
 		return QString::null;
-	QCString temp;
-	for (unsigned int x = 0; x < orig.length(); x += 2)
+	Q3CString temp;
+	for (int x = 0; x < orig.length(); x += 2)
 	{
 		QString tmp = orig.mid(x,2);
 		QChar c = hextochar(tmp);
@@ -44,7 +46,7 @@ TTPDecode(const QString &orig)
 }
 
 QByteArray
-TTPDecode(const QString &orig, unsigned long * len)
+TTPDecode(const QString &orig, int * len)
 {
 	if ((orig.length() % 2) != 0)
 	{
@@ -54,10 +56,10 @@ TTPDecode(const QString &orig, unsigned long * len)
 	}
 	QByteArray temp(orig.length());
 	int n = 0;
-	for (unsigned int x = 0; x < orig.length(); x += 2)
+	for (int x = 0; x < orig.length(); x += 2)
 	{
 		QString tmp = orig.mid(x, 2);
-		QChar c = hextochar(tmp);
+		char c = hextochar(tmp);
 		temp[n++] = c;
 	}
 	if (len)
@@ -70,21 +72,12 @@ const char values[16] = {
 		'a', 'b', 'c', 'd', 'e', 'f'
 };
 
-QCString
-chartohex(const QChar &c)
+Q3CString
+chartohex(const char &c)
 {
-	if (c.unicode() < 256)
-	{
-		char h[3];	// Include NULL terminator ;)
-		sprintf(h,"%02x", (c.unicode() & 0xFF));
-		return QCString(h);
-	}
-	else
-	{
-		char h[5];
-		sprintf(h,"%04x", c.unicode());
-		return QCString(h);
-	}
+	char h[3];	// Include NULL terminator ;)
+	sprintf(h,"%02x", (c & 0xFF));
+	return Q3CString(h);
 }
 
 int
@@ -98,13 +91,12 @@ hfind(const QChar &c)
 	return -1;
 }
 
-QChar
+char
 hextochar(const QString &orig)
 {
 	if (orig.length() != 2) 
-		return (QChar) 0;
+		return 0;
 	
 	unsigned int l = hfind(orig.at(0)) * 16 + hfind(orig.at(1));
-	return (QChar) (l & 0xFF);
+	return (char) (l & 0xFF);
 }
-

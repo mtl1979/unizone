@@ -2,9 +2,10 @@
 #include <qdir.h>
 #include <windows.h>
 #include <shellapi.h>
-# ifdef VC7
+#ifdef VC7
 #  include <shldisp.h>	// hm... we only need this in VC7
-# endif
+#endif
+#include <oaidl.h>
 #include <shlguid.h>
 #include <shlobj.h>
 

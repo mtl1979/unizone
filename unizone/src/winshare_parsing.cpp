@@ -1,4 +1,5 @@
 #ifdef WIN32		// <postmaster@raasu.org> 20021022 -- Fix to use platform.h, Fixed Window Flashing for older API's
+#pragma warning (disable: 4512)
 #include <windows.h>
 #endif
 
@@ -48,7 +49,7 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 				// multiple matches
 				PRINT("WinShareWindow::MatchUserName: Multiple matches\n");
 
-				for (uint32 i = 0; i < result.length(); i++)
+				for (int32 i = 0; i < result.length(); i++)
 				{
 					if (result.at(i).lower() != userName.at(i).lower())
 					{
@@ -132,7 +133,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 	// Compile a list of indexes to beginnings-of-words in the user's chat string
 	Queue<int> words;
 	bool inSpace = true;
-	unsigned int next = 0;
+	int next = 0;
 	while(next < origText.length() )
 	{
 		if (inSpace)
@@ -266,7 +267,7 @@ WinShareWindow::ServerParametersReceived(MessageRef msg)
 		if (GetStringFromMessage(msg, PR_NAME_SESSION_ROOT, serverVersion) == B_OK)
 			SendSystemEvent(tr("Session root: %1").arg(serverVersion));
 
-		int64 memA, memU;
+		int64 memA, memU = 0;
 		if ((msg()->FindInt64(PR_NAME_SERVER_MEM_AVAILABLE, &memA) == B_OK) &&
 			(msg()->FindInt64(PR_NAME_SERVER_MEM_USED, &memU) == B_OK))
 		{

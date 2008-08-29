@@ -1,13 +1,15 @@
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qapplication.h>
 #include <qregexp.h>
-#include <qdns.h>
+#include <q3dns.h>
 #include <qfile.h>
 #include <qdir.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 #include "util.h"
 #include "tokenizer.h"
@@ -28,16 +30,16 @@ ParseChatText(const QString & str)
 	// <postmaster@raasu.org> 20021106,20021114 -- Added support for URL labels, uses QStringTokenizer now ;)
 	Queue<QString> qUrls;
 	Queue<QString> qLabels;  // in this list, null means no label
-	
+
 	QString qText = str;
 	bool lastWasURL = false, inLabel = false;
 	QStringTokenizer qTok(qText, " \t\n");
 	QString qToken;
-	
+
 	while ((qToken = qTok.GetNextToken()) != QString::null)
 	{
 		bool bInTag = false;	// <postmaster@raasu.org> 20021012,20021114
-		
+
 		if (inLabel)			// label contains space(s) ???
 		{
 			if (endsWith(qToken, "]"))
@@ -50,13 +52,13 @@ ParseChatText(const QString & str)
 				qLabels.Tail() += qToken.left(qToken.find("]") - 1);
 				inLabel = false;
 			}
-			else 
+			else
 				qLabels.Tail() += qToken + " ";
-		} 
+		}
 		else if (IsURL(qToken))
 		{
 			if (
-				(startsWith(qToken, "beshare:", false)) || 
+				(startsWith(qToken, "beshare:", false)) ||
 				(startsWith(qToken, "share:", false))
 				)
 			{
@@ -78,7 +80,7 @@ ParseChatText(const QString & str)
 				while (!qToken.isEmpty() && cont)
 				{
 					unsigned int pos = qToken.length() - 1;
-					switch ((QChar) qToken.at(pos))
+					switch (qToken.at(pos).unicode())
 					{
 					case '.':
 					case ',':
@@ -95,12 +97,12 @@ ParseChatText(const QString & str)
 			{
 				while (qToken.length() > 1)
 				{
-					QCharRef last = qToken.at(qToken.length() - 1);
-					
+					QChar last = qToken.at(qToken.length() - 1);
+
 					// <postmaster@raasu.org> 20021012,20021114,20030203
 					//
 
-					if (last == '>')					
+					if (last == '>')
 					{
 						bInTag = true;
 
@@ -112,7 +114,7 @@ ParseChatText(const QString & str)
 								bInTag = false;
 
 							qToken.truncate(qToken.length() - 1);
-							
+
 							// another tag?
 							if (endsWith(qToken, ">"))
 								bInTag = true;
@@ -121,7 +123,7 @@ ParseChatText(const QString & str)
 						last = qToken.at(qToken.length() - 1);
 					}
 
-					// <postmaster@raasu.org> Apr 11th 2004 
+					// <postmaster@raasu.org> Apr 11th 2004
 					// Make sure there is same amount of ( and ) characters
 					//
 
@@ -154,10 +156,10 @@ ParseChatText(const QString & str)
 		else if (lastWasURL)
 		{
 			lastWasURL = false; // clear in all cases, might contain trash between url and possible label
-			
+
 			if (startsWith(qToken, "[")) // Start of label?
 			{
-				if (endsWith(qToken, "]")) 
+				if (endsWith(qToken, "]"))
 					qLabels.Tail() = qToken.mid(1, qToken.length() - 2);
 				else if (qToken.find("]") >= 0)
 					qLabels.Tail() = qToken.mid(1, qToken.find("]") - 1);
@@ -169,27 +171,27 @@ ParseChatText(const QString & str)
 			}
 		}
 	}
-	
-	if (inLabel) 
+
+	if (inLabel)
 		qText += "]";
-	
+
 	if (qUrls.GetNumItems() > 0)
 	{
 		QString output = QString::null;
-		
+
 		QString qUrl;
 		QString qLabel;
-		
+
 		while ((qUrls.RemoveHead(qUrl) == B_OK) && (qLabels.RemoveHead(qLabel) == B_OK))
 		{
 			int urlIndex = qText.find(qUrl); // position in QString
-			
+
 			if (urlIndex > 0) // Not in start of string?
 			{
 				output += qText.left(urlIndex);
 				qText = qText.mid(urlIndex);
 			}
-			
+
 			// now the url...
 			QString urltmp = "<a href=\"";
 			if ( startsWith(qUrl, "www.") )		urltmp += "http://";
@@ -202,7 +204,7 @@ ParseChatText(const QString & str)
 			int lb = qText.find("\n"); // check for \n between url and label (Not allowed!!!)
 			int le = qText.find(qLabel);
 			if ( qLabel.isEmpty() || muscleInRange(lb, 0, le) )
-				urltmp += qUrl; 		
+				urltmp += qUrl;
 			else
 				urltmp += qLabel.stripWhiteSpace(); // remove surrounding spaces before adding
 			urltmp += "</a>";
@@ -222,16 +224,16 @@ ParseChatText(const QString & str)
 						qText = qText.mid(1);
 				}
 			}
-			
+
 		}
 		// Still text left?
 		if (!qText.isEmpty())
 			output += qText;
-		
+
 		return output;		// <postmaster@raasu.org> 20021107,20021114 -- Return modified string
 	}
 	else
-		return str; 		// <postmaster@raasu.org> 20021107 -- Return unmodified 
+		return str; 		// <postmaster@raasu.org> 20021107 -- Return unmodified
 }
 
 QString
@@ -255,7 +257,7 @@ ParseString(const QString & str)
 				// alternate inserting non-breaking space and real space
 				if (first)
 					s += " ";
-				else 
+				else
 					s += "&nbsp;";
 				first = !first;
 			}
@@ -311,9 +313,9 @@ ParseString(const QString & str)
 			// Do Nothing!
 		}
 		else
-		{	
+		{
 			// other character
-			first = true;	
+			first = true;
 			s += str[i];
 		}
 	}
@@ -324,7 +326,7 @@ QString
 EscapeHTML(const QString & str)
 {
 	QString s;
-	for (unsigned int i = 0; i < str.length(); i++)
+	for (int i = 0; i < str.length(); i++)
 	{
 		if (str[i] == '<')
 			s += "&lt;";
@@ -342,14 +344,14 @@ FixString(const QString & str)
 	return ParseString(ParseChatText(EscapeHTML(str.stripWhiteSpace())));
 }
 
-QString 
+QString
 GetParameterString(const QString & qCommand)
 {
 	QString qParameters;
 	int sPos = qCommand.find(" ")+1;
 	if (sPos > 0)
 	{
-		while (qCommand[sPos].unicode() == 10) 
+		while (qCommand[sPos].unicode() == 10)
 			sPos++;
 		qParameters = qCommand.mid(sPos);
 	}
@@ -359,7 +361,7 @@ GetParameterString(const QString & qCommand)
 // <postmaster@raasu.org> 20021103 -- Added GetCommandString() and CompareCommand()
 //
 
-QString 
+QString
 GetCommandString(const QString & qCommand)
 {
 	QString qCommand2 = qCommand.lower();
@@ -371,7 +373,7 @@ GetCommandString(const QString & qCommand)
 	return qCommand2;
 }
 
-bool 
+bool
 CompareCommand(const QString & qCommand, const QString & cCommand)
 {
 	QString com = GetCommandString(qCommand);
@@ -394,7 +396,7 @@ StripURL(const String & strip)
 
 		while (strip.Substring(sp + 1, sp + 2) == " ")
 			sp++;
-		
+
 		if (sp > 0)
 		{
 			int left = strip.IndexOf('[');	// see if it contains a label..
@@ -504,7 +506,7 @@ StripURL(const QString & u)
 		return u;	// not a url
 }
 
-String 
+String
 StripURL(const char * c)
 {
 	String s(c);
@@ -543,7 +545,7 @@ IsURL(const String & url)
 	return IsURL( u );
 }
 
-bool 
+bool
 IsURL(const char * url)
 {
 	QString u = QString::fromUtf8(url);
@@ -557,13 +559,13 @@ IsURL(const QString & url)
 
 	// Add default protocol prefixes
 
-	if (startsWith(u, "www.", false) && !startsWith(u, "www..", false))		
+	if (startsWith(u, "www.", false) && !startsWith(u, "www..", false))
 		u.prepend("http://");
-	if (startsWith(u, "ftp.", false) && !startsWith(u, "ftp..", false))		
+	if (startsWith(u, "ftp.", false) && !startsWith(u, "ftp..", false))
 		u.prepend("ftp://");
-	if ((startsWith(u, "beshare.", false) && !startsWith(u, "beshare..", false)) && u.length() > 12)	
+	if ((startsWith(u, "beshare.", false) && !startsWith(u, "beshare..", false)) && u.length() > 12)
 		u.prepend("server://");
-	if (startsWith(u, "irc.", false) && !startsWith(u, "irc..", false))		
+	if (startsWith(u, "irc.", false) && !startsWith(u, "irc..", false))
 		u.prepend("irc://");
 
 	if (u.length() > 9)
@@ -583,22 +585,22 @@ IsURL(const QString & url)
 	return false;
 }
 
-QString 
+QString
 MakeSizeString(uint64 s)
 {
 	QString result, postFix;
-	double n = (int64) s;
+	double n = (double) (int64) s;
 	postFix = qApp->translate("MakeSizeString","B");
 	if (n > 1024.0f)	// > 1 kB?
 	{
 		n /= 1024.0f;
 		postFix = qApp->translate("MakeSizeString","kB"); // we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
-		
+
 		if (n > 1024.0f)	// > 1 MB?
 		{
 			n /= 1024.0f;
 			postFix = qApp->translate("MakeSizeString","MB");
-			
+
 			if (n > 1024.0f)	// > 1 GB?
 			{
 				n /= 1024.0f;
@@ -613,7 +615,7 @@ MakeSizeString(uint64 s)
 	}
 	result += postFix;
 
-	return result;	
+	return result;
 }
 
 struct ConPair
@@ -668,7 +670,7 @@ BandwidthToBytes(const QString & connection)
 		while ((bw = Bandwidths[n++]).bw != ULONG_MAX)
 		{
 			if (
-				( conn == bw.id ) || 
+				( conn == bw.id ) ||
 				( conn == qApp->translate("Connection", bw.id) )
 				)
 			{
@@ -689,41 +691,41 @@ BandwidthToString(uint32 bps)
 {
 	switch (bps)
 	{
-	case 75:		
-	case 300:			
+	case 75:
+	case 300:
 		return qApp->translate("Connection", "300 baud");
-	case 14400: 		
+	case 14400:
 		return qApp->translate("Connection", "14.4 kbps");
-	case 28800: 		
+	case 28800:
 		return qApp->translate("Connection", "28.8 kbps");
-	case 33600: 		
+	case 33600:
 		return qApp->translate("Connection", "33.6 kbps");
-	case 57600: 		
+	case 57600:
 		return qApp->translate("Connection", "57.6 kbps");
-	case 64000: 		
+	case 64000:
 		return qApp->translate("Connection", "ISDN-64k");
-	case 128000:		
+	case 128000:
 		return qApp->translate("Connection", "ISDN-128k");
-	case 256000:		
+	case 256000:
 		return qApp->translate("Connection", "DSL-256k");
-	case 384000:		
+	case 384000:
 		return qApp->translate("Connection", "DSL-384k");
-	case 512000:		
+	case 512000:
 		return qApp->translate("Connection", "DSL-512k");
-	case 768000:		
+	case 768000:
 		return qApp->translate("Connection", "Cable");
-	case 1000000:		
-	case 1024000:		
+	case 1000000:
+	case 1024000:
 		return qApp->translate("Connection", "DSL-1M");
-	case 1500000:		
+	case 1500000:
 		return qApp->translate("Connection", "T1");
-	case 4500000:		
+	case 4500000:
 		return qApp->translate("Connection", "T3");
-	case 155520000:	
+	case 155520000:
 		return qApp->translate("Connection", "OC-3");
-	case 622080000: 
+	case 622080000:
 		return qApp->translate("Connection", "OC-12");
-	default:			
+	default:
 		return qApp->translate("Connection", "Unknown");
 	}
 }
@@ -760,15 +762,15 @@ GetServerPort(const QString & server)
 // Skip \ now, it's a special case
 bool IsRegexToken2(QChar c, bool isFirstCharInString)
 {
-   switch(c)
+   switch(c.unicode())
    {
-      case '[': case ']': case '|': case '(': case ')': case '=': case '^': case '+': case '$': case '{':  case '}': 
+      case '[': case ']': case '|': case '(': case ')': case '=': case '^': case '+': case '$': case '{':  case '}':
 	  case ':': case '-': case '.':
         return true;
 
       case '<': case '~':   // these chars are only special if they are the first character in the string
-         return isFirstCharInString; 
- 
+         return isFirstCharInString;
+
       default:
          return false;
    }
@@ -783,9 +785,9 @@ bool IsRegexToken2(char c, bool isFirstCharInString)
 void ConvertToRegex(String & s)
 {
 	const char * str = s.Cstr();
-	
+
 	String ret;
-	
+
 	bool isFirst = true;
 	while(*str)
 	{
@@ -817,11 +819,11 @@ void ConvertToRegex(String & s)
 
 void ConvertToRegex(QString & s, bool simple)
 {
-	unsigned int x = 0;
+	int x = 0;
 	QString ret;
 	if (!simple)
 		ret = "^";
-	
+
 	bool isFirst = true;
 	while(x < s.length())
 	{
@@ -866,13 +868,13 @@ void ConvertToRegex(QString & s, bool simple)
 bool HasRegexTokens(const QString & str)
 {
    bool isFirst = true;
-   unsigned int x = 0;
+   int x = 0;
    while(x < str.length())
    {
       if (IsRegexToken2(str[x], isFirst)) return true;
-	  else if (str[x] == "*") return true;
-	  else if (str[x] == "?") return true;
-      else 
+	  else if (str[x] == '*') return true;
+	  else if (str[x] == '?') return true;
+      else
       {
          x++;
          isFirst = false;
@@ -931,7 +933,7 @@ GetTimeStampAux(const QString &stamp)
 	qCurTime = stamp;
 	qCurTime = qCurTime.left(qCurTime.findRev(" ", -1));
 	qCurTime = qCurTime.mid(qCurTime.findRev(" ", -1) + 1);
-	
+
 	return qCurTime;
 }
 
@@ -943,17 +945,17 @@ GetDateStampAux(const QString &stamp)
 	// Strip off year
 	QString qYear = qCurTime.mid(qCurTime.findRev(" ") + 1);
 	qYear.truncate(4);
-	qCurTime.truncate(qCurTime.findRev(" "));			
-	
+	qCurTime.truncate(qCurTime.findRev(" "));
+
 	// ... and day of week
 	QString qDOW = qCurTime.left(qCurTime.find(" "));
 	qDOW = TranslateDay(qDOW);
-	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);	
-	
+	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);
+
 	// Strip Month and translate it
 	QString qMonth = qCurTime.left(qCurTime.find(" "));
 	qMonth = TranslateMonth(qMonth);
-	
+
 	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);
 
 	// Strip Day
@@ -974,7 +976,7 @@ QString
 GetTimeStamp()
 {
 	static QString _day = QString::null;
-	
+
 	QString ret;
 	QString qCurTime;
 	// Is this first time today?
@@ -989,7 +991,7 @@ GetTimeStamp()
 		ret = WFormat::TimeStamp(qDate);
 		ret += "<br>";
 	}
-	
+
 	qCurTime = GetTimeStampAux(stamp);
 	qCurTime.prepend("[").append("] ");
 
@@ -1002,12 +1004,12 @@ ComputePercentString(int64 cur, int64 max)
 {
 	QString ret;
 	double p = 0.0f;
-	
+
 	if ( (cur > 0) && (max > 0) )
 	{
 		p = ((double)cur / (double)max) * 100.0f;
 	}
-	
+
 	ret.sprintf("%.2f", p);
 	return ret;
 }
@@ -1049,10 +1051,10 @@ String MakePath(const String &dir, const String &file)
 	String ret(dir);
 	if (!ret.EndsWith("/"))
 		ret += "/";
-				
+
 	ret += file;
-	
-	return ret; 
+
+	return ret;
 }
 
 QString MakePath(const QString &dir, const QString &file)
@@ -1086,16 +1088,16 @@ IsAction(const QString &text, const QString &user)
 }
 
 
-QString 
+QString
 FixFileName(const QString & fixMe)
 {
 	// bad characters in Windows:
 	//	/, \, :, *, ?, ", <, >, |
 #ifdef WIN32
 	QString ret(fixMe);
-	for (unsigned int i = 0; i < ret.length(); i++)
+	for (int i = 0; i < ret.length(); i++)
 	{
-		switch ((QChar) ret.at(i))
+		switch (ret.at(i).unicode())
 		{
 		case '/':
 		case '\\':
@@ -1129,12 +1131,13 @@ CheckIfEmpty(const QString & str, const QString & str2)
 	}
 }
 
-uint32 
+uint32
 CalculateFileChecksum(const ByteBufferRef &buf)
 {
    uint32 sum = 0L;
    uint8 * data = buf()->GetBuffer();
-   for (size_t i=0; i<buf()->GetNumBytes(); i++) sum += (*(data++)<<(i%24));
+	size_t bufsize = buf()->GetNumBytes();
+   for (size_t i=0; i<bufsize; i++) sum += (*(data++)<<(i%24));
    return sum;
 }
 
@@ -1169,16 +1172,17 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 	int n = 1;
 	QString path = MakePath(downloadDir(), FixFileName(file));
 	QString nf(path);
-	while (WFile::Exists(nf)) 
+	while (WFile::Exists(nf))
 	{
 		nf = UniqueName(path, n++);
 	}
 	WFile fFile;
-	if (fFile.Open(nf, IO_WriteOnly))
+	if (fFile.Open(nf, QIODevice::WriteOnly))
 	{
-		uint64 bytes = fFile.WriteBlock((char *) buf()->GetBuffer(), buf()->GetNumBytes());
+		size_t bufsize = buf()->GetNumBytes();
+		uint64 bytes = fFile.WriteBlock((char *) buf()->GetBuffer(), bufsize);
 		fFile.Close();
-		if (bytes == buf()->GetNumBytes())
+		if (bytes == bufsize)
 		{
 			file = nf;
 			return;
@@ -1197,12 +1201,12 @@ void CloseFile(WFile * & file)
 	}
 }
 
-uint64 
+uint64
 toULongLong(const QString &in, bool *ok)
 {
 	uint64 out = 0;
 	bool o = true;
-	for (unsigned int x = 0; x < in.length(); x++)
+	for (int x = 0; x < in.length(); x++)
 	{
 		QChar c = in.at(x);
 		if (!muscleInRange(c.unicode(), (unichar) '0', (unichar) '9'))
@@ -1211,27 +1215,26 @@ toULongLong(const QString &in, bool *ok)
 			break;
 		}
 		out *= 10;
-		out += c - '0';
+		out += c.unicode() - '0';
 	}
 	if (ok)
 		*ok = o;
 	return out;
 }
 
-QString 
+QString
 fromULongLong(const uint64 &in)
 {
 	uint64 tmp;
-	int n;
 	QString out;
 
 	if (in < 10)
 		return QString(QChar(((int) in) + '0'));
-	
+
 	tmp = in;
 	while (tmp > 0)
 	{
-		n = tmp % 10;
+		char n = (char) (tmp % 10);
 		out.prepend(QChar(n + '0'));
 		tmp /= 10;
 	}
@@ -1239,10 +1242,9 @@ fromULongLong(const uint64 &in)
 }
 
 QString
-hexFromULongLong(const uint64 &in, unsigned int length)
+hexFromULongLong(const uint64 &in, int length)
 {
 	uint64 tmp;
-	int n;
 	QString out;
 
 	if (in < 10)
@@ -1254,12 +1256,12 @@ hexFromULongLong(const uint64 &in, unsigned int length)
 		tmp = in;
 		while (tmp > 0)
 		{
-			n = tmp % 16;
+			char n = (char) (tmp % 16);
 			out.prepend(QChar(n + ((n < 10) ? '0' : 55)));
 			tmp /= 16;
 		}
 	}
-	while (out.length() < length) 
+	while (out.length() < length)
 		out.prepend("0");
 	return out;
 }
@@ -1270,7 +1272,7 @@ int64 toLongLong(const QString &in, bool *ok)
 	bool o = true;
 	bool negate = false;
 
-	for (unsigned int x = 0; x < in.length(); x++)
+	for (int x = 0; x < in.length(); x++)
 	{
 		QChar c = in.at(x);
 		if ((x == 0) && (c.unicode() == '-'))
@@ -1281,7 +1283,7 @@ int64 toLongLong(const QString &in, bool *ok)
 			break;
 		}
 		out *= 10;
-		out += c - '0';
+		out += c.unicode() - '0';
 	}
 
 	if (negate)
@@ -1295,7 +1297,6 @@ int64 toLongLong(const QString &in, bool *ok)
 QString fromLongLong(const int64 &in)
 {
 	uint64 tmp;
-	int n;
 	bool negate = false;
 	QString out;
 
@@ -1311,18 +1312,18 @@ QString fromLongLong(const int64 &in)
 
 	while (tmp > 0)
 	{
-		n = tmp % 10;
+		char n = (char) (tmp % 10);
 		out.prepend(QChar(n + '0'));
 		tmp /= 10;
 	}
-	
+
 	if (negate)
 		out.prepend("-");
 
 	return out;
 }
 
-QString hexFromLongLong(const int64 &in, unsigned int length)
+QString hexFromLongLong(const int64 &in, int length)
 {
 	uint64 i;
 	memcpy(&i, &in, sizeof(int64));
@@ -1415,11 +1416,11 @@ Contains(const QString &slist, const QString &entry)
 void HEXClean(QString &in)
 {
 	QString tmp;
-	for (unsigned int x = 0; x < in.length(); x++)
+	for (int x = 0; x < in.length(); x++)
 	{
 		QChar c = in[x].lower();
 		if (
-			muscleInRange(c.unicode(), (unichar) '0', (unichar) '9') || 
+			muscleInRange(c.unicode(), (unichar) '0', (unichar) '9') ||
 			muscleInRange(c.unicode(), (unichar) 'a', (unichar) 'f')
 		   )
 			tmp += c;
@@ -1430,7 +1431,7 @@ void HEXClean(QString &in)
 void BINClean(QString &in)
 {
 	QString tmp, part;
-	unsigned int s = 0, p;
+	int s = 0, p;
 	while (s < in.length())
 	{
 		// Skip initial garbage
@@ -1440,7 +1441,7 @@ void BINClean(QString &in)
 			// avoid looping out of string...
 			if (s == in.length())
 			{
-				if (tmp.isEmpty()) 
+				if (tmp.isEmpty())
 				{
 					in = QString::null;
 					return;
@@ -1464,7 +1465,7 @@ void BINClean(QString &in)
 		}
 		if (p > 0)
 		{
-			while (part.length() < 8) 
+			while (part.length() < 8)
 				part.prepend("0");
 			tmp += part;
 		}
@@ -1475,7 +1476,7 @@ void BINClean(QString &in)
 void OCTClean(QString &in)
 {
 	QString tmp, part;
-	unsigned int s = 0, p;
+	int s = 0, p;
 	while (s < in.length())
 	{
 		// Skip initial garbage
@@ -1485,7 +1486,7 @@ void OCTClean(QString &in)
 			// avoid looping out of string...
 			if (s == in.length())
 			{
-				if (tmp.isEmpty()) 
+				if (tmp.isEmpty())
 				{
 					in = QString::null;
 					return;
@@ -1509,7 +1510,7 @@ void OCTClean(QString &in)
 		}
 		if (p > 0)
 		{
-			while (part.length() < 3) 
+			while (part.length() < 3)
 				part.prepend("0");
 			tmp += part;
 		}
@@ -1519,12 +1520,12 @@ void OCTClean(QString &in)
 
 QString BINDecode(const QString &in)
 {
-	QCString out;
+	Q3CString out;
 
 	if (in.length() % 8 != 0)
 		return QString::null;
 
-	for (unsigned int x = 0; x < in.length(); x += 8)
+	for (int x = 0; x < in.length(); x += 8)
 	{
 		QString part = in.mid(x, 8);
 		int xx = 1;
@@ -1542,9 +1543,9 @@ QString BINDecode(const QString &in)
 
 QString BINEncode(const QString &in)
 {
-	QCString temp = in.utf8();
+	Q3CString temp = in.utf8();
 	QString out, part;
-	for (unsigned int x = 0; x < temp.length(); x++)
+	for (int x = 0; x < temp.length(); x++)
 	{
 		unsigned char c = temp.at(x);
 		part = QString::null;
@@ -1563,12 +1564,12 @@ QString BINEncode(const QString &in)
 
 QString OCTDecode(const QString &in)
 {
-	QCString out;
+	Q3CString out;
 
 	if (in.length() % 3 != 0)
 		return QString::null;
 
-	for (unsigned int x = 0; x < in.length(); x += 3)
+	for (int x = 0; x < in.length(); x += 3)
 	{
 		QString part = in.mid(x, 3);
 		int xx = 1;
@@ -1585,15 +1586,15 @@ QString OCTDecode(const QString &in)
 
 QString OCTEncode(const QString &in)
 {
-	QCString temp = in.utf8();
+	Q3CString temp = in.utf8();
 	QString out, part;
-	for (unsigned int x = 0; x < temp.length(); x++)
+	for (int x = 0; x < temp.length(); x++)
 	{
 		unsigned char c = temp.at(x);
 		part = QString::null;
 		for (int xx = 0; xx < 3; xx++)
 		{
-			part.prepend('0' + (c % 7));
+			part.prepend((char) ('0' + (c % 7)));
 			c /= 7;
 		}
 		out += part;
@@ -1601,7 +1602,7 @@ QString OCTEncode(const QString &in)
 	return out;
 }
 
-int 
+int
 Match(const QString &string, const QRegExp &exp)
 {
 	if (string.isEmpty())
@@ -1619,21 +1620,6 @@ Match(const QString &string, const QRegExp &exp)
 		str = string.lower();
 		e.setPattern(exp.pattern().lower());
 	}
-#if (QT_VERSION < 0x030000)
-	if (e.pattern().contains("|"))
-	{
-		QStringTokenizer tok(e.pattern(), "|");
-		QString t;
-		while ((t = tok.GetNextToken()) != QString::null)
-		{
-			QRegExp r(t);
-			int ret = str.find(r);
-			if (ret >= 0)
-				return ret;
-		}
-		return -1;
-	}
-#endif
 	return str.find(e);
 }
 
@@ -1650,46 +1636,13 @@ ConvertPtr(void *ptr)
 bool
 startsWith(const QString &str1, const QString &str2, bool cs)
 {
-	if (cs)
-		return str1.startsWith(str2);
-	else
-#if (QT_VERSION >= 0x030200)
 		return str1.startsWith(str2, cs);
-#else
-	{
-		if (str1.length() < str2.length()) 
-			return false;
-		for (unsigned int p = 0; p < str2.length(); p++)
-			if (str1.at(p).lower() != str2.at(p).lower())
-				return false;
-		return true;
-	}
-#endif
 }
 
 bool
 endsWith(const QString &str1, const QString &str2, bool cs)
 {
-	if (cs)
-#if (QT_VERSION < 0x030000)
-		return (str1.right(str2.length()) == str2);
-#else
-		return str1.endsWith(str2);
-#endif
-	else
-#if (QT_VERSION < 0x030200)
-	{
-		int pos = str1.length() - str2.length();
-		if (pos < 0) 
-			return false;
-		for (unsigned int p = 0; p < str2.length(); p++)
-			if (str1.at(pos + p).lower() != str2.at(p).lower())
-				return false;
-		return true;
-	}
-#else
-		return str1.endsWith(str2, false);
-#endif
+		return str1.endsWith(str2, cs);
 }
 
 bool
@@ -1725,9 +1678,9 @@ QString FixPath(const QString & fixMe)
 	//	/, :, *, ?, ", <, >, |
 #ifdef WIN32
 	QString ret(fixMe);
-	for (unsigned int i = 0; i < ret.length(); i++)
+	for (int i = 0; i < ret.length(); i++)
 	{
-		switch ((QChar) ret.at(i))
+		switch (ret.at(i).unicode())
 		{
 		case '/':
 			ret.replace(i, 1, "\\");
@@ -1762,11 +1715,11 @@ QString downloadDir(const QString &subdir)
 		// Make sure we don't get path starting with "downloads/downloads"
 		if (subdir == "downloads")
 			return out;
-		
+
 		QString d = QDir::convertSeparators(subdir);
 		if (startsWith(d, out))
 			d = d.mid(out.length());
-		
+
 		if (!d.isEmpty())
 		{
 			QDir dir(out);
@@ -1807,11 +1760,11 @@ QString imageFormats()
 
 QString WikiEscape(const QString &page)
 {
-	QCString out;
-	QCString in = page.utf8();
-	for (unsigned x = 0; x < in.length(); x++)
+	Q3CString out;
+	Q3CString in = page.utf8();
+	for (int x = 0; x < in.length(); x++)
 	{
-		QChar c = in.at(x);
+		const char c = in.at(x);
 		     if ((c >= '0') && (c <= '9')) out += c;
 		else if ((c >= 'a') && (c <= 'z')) out += c;
 		else if ((c >= 'A') && (c <= 'Z')) out += c;
@@ -1823,11 +1776,11 @@ QString WikiEscape(const QString &page)
 
 QString URLEscape(const QString &page)
 {
-	QCString out;
-	QCString in = page.utf8();
-	for (unsigned x = 0; x < in.length(); x++)
+	Q3CString out;
+	Q3CString in = page.utf8();
+	for (int x = 0; x < in.length(); x++)
 	{
-		QChar c = in.at(x);
+		const char c = in.at(x);
 		     if ((c >= '0') && (c <= '9')) out += c;
 		else if ((c >= 'a') && (c <= 'z')) out += c;
 		else if ((c >= 'A') && (c <= 'Z')) out += c;
@@ -1837,13 +1790,13 @@ QString URLEscape(const QString &page)
 	return out;
 }
 
-status_t 
+status_t
 GetStringFromMessage(const MessageRef &msg, const String key, QString &value)
 {
 	return GetStringFromMessage(msg, key, 0, value);
 }
 
-status_t 
+status_t
 GetStringFromMessage(const MessageRef &msg, const String key, uint32 index, QString &value)
 {
 	const char * val;
@@ -1856,7 +1809,7 @@ GetStringFromMessage(const MessageRef &msg, const String key, uint32 index, QStr
 status_t
 AddStringToMessage(const MessageRef &msg, const String key, const QString &value)
 {
-	QCString val = value.utf8();
+	Q3CString val = value.utf8();
 	return msg()->AddString(key, (const char *) val);
 }
 
@@ -1869,11 +1822,11 @@ ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, 
 status_t
 ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, uint32 index, const QString &value)
 {
-	QCString val = value.utf8();
+	Q3CString val = value.utf8();
 	return msg()->ReplaceString(okayToAdd, key, index, (const char *) val);
 }
 
-status_t 
+status_t
 GetInt32FromMessage(const MessageRef &msg, const String key, int32 &value)
 {
 	int32 val;
@@ -1883,7 +1836,7 @@ GetInt32FromMessage(const MessageRef &msg, const String key, int32 &value)
 	return ret;
 }
 
-status_t 
+status_t
 GetUInt32FromMessage(const MessageRef &msg, const String key, uint32 &value)
 {
 	uint32 val;

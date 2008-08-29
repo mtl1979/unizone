@@ -13,7 +13,7 @@ class WMessageEvent : public QCustomEvent
 public:
 	enum
 	{
-		MessageEventType = 'wmse',
+		MessageEventType = QEvent::User + 28100,
 		HandleMessage,
 		ServerParametersMessage,
 		BeAddMessage,
@@ -24,6 +24,7 @@ public:
 		UnknownRemoveMessage
 	};
 
+	WMessageEvent(MessageRef);
 	WMessageEvent(int, const String &);
 	WMessageEvent(int, const String &, MessageRef);
 	WMessageEvent(int, MessageRef);

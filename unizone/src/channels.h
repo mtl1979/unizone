@@ -7,7 +7,7 @@
 
 #include <qdialog.h>
 #include <qlayout.h>
-#include <qlistview.h>
+#include <q3listview.h>
 
 #include "message/Message.h"
 #include "util/String.h"
@@ -56,7 +56,7 @@ private:
 
 //	QWidget * fChannelsWidget;
 	QGridLayout * fChannelsTab;
-	QListView * ChannelList;
+	Q3ListView * ChannelList;
 	QPushButton * Create;
 	QPushButton * Join;
 

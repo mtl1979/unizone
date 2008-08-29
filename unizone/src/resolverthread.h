@@ -5,6 +5,8 @@
 #include <qstring.h>
 #include <qobject.h>
 #include <qthread.h>
+#include <qwaitcondition.h>
+#include <qmutex.h>
 
 #include "user.h"
 
@@ -18,7 +20,7 @@ struct ResolverEntry
 	bool verbose;
 };
 
-class ResolverThread : public QObject, public QThread 
+class ResolverThread : public QThread 
 {
 	Q_OBJECT;
 public:
@@ -32,7 +34,8 @@ private:
 	void PrintAddressInfo(const WUserRef &user, bool verbose);
 	bool PrintAddressInfo(uint32 address, bool verbose);
 
-	Mutex fQueueLock;
+	mutable Mutex fQueueLock;
+	mutable QMutex fWaitLock;
 	Queue<ResolverEntry> fQueue;
 	bool *fShutdownFlag;
 	QWaitCondition cond;

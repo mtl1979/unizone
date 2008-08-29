@@ -1,10 +1,15 @@
 #ifdef WIN32
 #include <windows.h>
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qapplication.h>
 #include <qmessagebox.h>
+//Added by qt3to4:
+#include <QCustomEvent>
+#include <QResizeEvent>
+#include <Q3ValueList>
+#include <Q3PopupMenu>
 
 #include "privatewindowimpl.h"
 #include "gotourl.h"
@@ -28,52 +33,55 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent,  const char* name, bool modal, WFlags fl)
-    : WPrivateWindowBase(parent, name, modal, fl),
+WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent,  const char* name, bool modal, Qt::WFlags fl)
+    : QDialog(parent, name, modal, fl),
 	ChatWindow(PrivateType)
 {
 	fOwner = owner;
 	fNet = net;
 	fEncrypted = false;
 
+	Ui_WPrivateWindowBase *ui = new Ui_WPrivateWindowBase();
+	ui->setupUi(this);
+
 	if ( !name ) 
 		setName( "WPrivateWindow" );
 	// start GUI
 	fSplit = new QSplitter(this);
-	CHECK_PTR(fSplit);
+	Q_CHECK_PTR(fSplit);
 
 	// setup chat part
 	fSplitChat = new QSplitter(fSplit);
-	CHECK_PTR(fSplitChat);
+	Q_CHECK_PTR(fSplitChat);
 
 	fChatText = new WHTMLView(fSplitChat);
-	CHECK_PTR(fChatText);
+	Q_CHECK_PTR(fChatText);
 	// we still want to autocomplete ALL names, not just
 	// the one's with the ppl we talk to
 	fInputText = new WChatText(this, fSplitChat);
-	CHECK_PTR(fInputText);
+	Q_CHECK_PTR(fInputText);
 
 	// user list
-	fPrivateUsers = new QListView(fSplit);
-	CHECK_PTR(fPrivateUsers);
+	fPrivateUsers = new Q3ListView(fSplit);
+	Q_CHECK_PTR(fPrivateUsers);
 
 	InitUserList(fPrivateUsers);
 
-	QValueList<int> splitList;
+	Q3ValueList<int> splitList;
 	splitList.append(4);
 	splitList.append(1);
 
 	fSplit->setSizes(splitList);
 	fSplitChat->setSizes(splitList);
-	fSplitChat->setOrientation(QSplitter::Vertical);
+	fSplitChat->setOrientation(Qt::Vertical);
 
 	// create popup menu
-	fPopup = new QPopupMenu(this);	// have it deleted on destruction of window
-	CHECK_PTR(fPopup);
+	fPopup = new Q3PopupMenu(this);	// have it deleted on destruction of window
+	Q_CHECK_PTR(fPopup);
 
 	connect(fPopup, SIGNAL(activated(int)), this, SLOT(PopupActivated(int)));
-	connect(fPrivateUsers, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
-			this, SLOT(RightButtonClicked(QListViewItem *, const QPoint &, int)));
+	connect(fPrivateUsers, SIGNAL(rightButtonClicked(Q3ListViewItem *, const QPoint &, int)),
+			this, SLOT(RightButtonClicked(Q3ListViewItem *, const QPoint &, int)));
 
 	connect(fNet, SIGNAL(UserDisconnected(const WUserRef &)), 
 			this, SLOT(UserDisconnected(const WUserRef &)));
@@ -257,7 +265,7 @@ WPrivateWindow::TabPressed(const QString & /* str */)
 }
 
 void
-WPrivateWindow::customEvent(QCustomEvent * event)
+WPrivateWindow::customEvent(QEvent * event)
 {
 	PRINT("WPrivateWindow::customEvent\n");
 	switch ((int) event->type())
@@ -416,7 +424,7 @@ WPrivateWindow::customEvent(QCustomEvent * event)
 				}
 				else if (CompareCommand(stxt, "/clear"))
 				{
-					fChatText->clear();	// empty the text
+					Clear();	// empty the text
 				}
 				else if (CompareCommand(stxt, "/encryption"))
 				{
@@ -494,7 +502,7 @@ WPrivateWindow::StopLogging()
 }
 
 void
-WPrivateWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c */)
+WPrivateWindow::RightButtonClicked(Q3ListViewItem * i, const QPoint & p, int /* c */)
 {
 	// empty menu
 	while (fPopup->count() > 0)

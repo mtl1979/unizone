@@ -1,5 +1,5 @@
-#ifndef ABOUTDLG_H
-#define ABOUTDLG_H
+#ifndef ABOUTDLGIMPL_H
+#define ABOUTDLGIMPL_H
 
 #ifdef WIN32
 #pragma warning(disable: 4786)
@@ -7,12 +7,12 @@
 
 #include "aboutdlg.h"
 
-class AboutDlg : public AboutDlgBase
+class AboutDlg : public QDialog
 { 
     Q_OBJECT
 
 public:
-    AboutDlg( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+	AboutDlg( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
     ~AboutDlg();
 
 };

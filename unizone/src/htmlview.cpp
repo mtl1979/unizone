@@ -1,5 +1,14 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include <qtooltip.h>
 #include <qregexp.h>
+//Added by qt3to4:
+#include <QShowEvent>
+#include <QHideEvent>
+#include <QMouseEvent>
+#include <QTimerEvent>
 
 #include "htmlview.h"
 #include "tokenizer.h"
@@ -9,7 +18,7 @@
 #include "wmessageevent.h"
 
 WHTMLView::WHTMLView(QWidget * parent, const char * name)
-: QTextBrowser(parent, name)
+: Q3TextBrowser(parent, name)
 {
 	if (!name)
 		setName( "WHTMLView" );
@@ -24,14 +33,14 @@ void
 WHTMLView::viewportMousePressEvent(QMouseEvent * e)
 {
 	PRINT2("WHTMLView: Press\n");
-	QTextBrowser::viewportMousePressEvent(e);
+	Q3TextBrowser::viewportMousePressEvent(e);
 }
 
 void
 WHTMLView::viewportMouseReleaseEvent(QMouseEvent * e)
 {
 	PRINT2("WHTMLView: Release\n");
-	QTextBrowser::viewportMouseReleaseEvent(e);
+	Q3TextBrowser::viewportMouseReleaseEvent(e);
 }
 
 void
@@ -46,7 +55,7 @@ WHTMLView::viewportMouseMoveEvent(QMouseEvent * e)
 		if (fURL != QString::null)
 			QToolTip::add(this, fURL);
 	}
-	QTextBrowser::viewportMouseMoveEvent(e);
+	Q3TextBrowser::viewportMouseMoveEvent(e);
 }
 
 void
@@ -68,7 +77,7 @@ WHTMLView::hideEvent(QHideEvent * e)
 	fLock.Unlock();
 	
 #endif
-	QTextBrowser::hideEvent(e);
+	Q3TextBrowser::hideEvent(e);
 	PRINT("WHTMLView::hideEvent() OK\n");
 }
 
@@ -96,7 +105,7 @@ WHTMLView::showEvent(QShowEvent * e)
 		if (!text().isEmpty())
 		{
 			txt = text();
-			txt += "<br>";
+//			txt += "<br>";
 		}
 #endif
 		txt += fBuffer;
@@ -111,7 +120,7 @@ WHTMLView::showEvent(QShowEvent * e)
 
 	UpdateScrollState();
 #endif
-	QTextBrowser::showEvent(e);
+	Q3TextBrowser::showEvent(e);
 	PRINT("WHTMLView::showEvent() OK\n");
 }
 
@@ -133,7 +142,7 @@ WHTMLView::setSource( const QString & name )
 {
 	QString _URL = fContext;
 	fContext = name;
-	if (name.at(0) == "#")
+	if (name.at(0) == '#')
 	{
 		if (_URL.find("#") > 0)
 		{

@@ -52,7 +52,12 @@ public:
     *  @param item The item to append. 
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddTail(const ItemType & item = ItemType());
+   status_t AddTail(const ItemType & item);
+
+   /** As above, except that a default item is appended.
+    *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
+    */
+   status_t AddTail() {return AddTail(_defaultItem);}
 
    /** Appends some or all items in (queue) to the end of our queue.  Queue size
     *  grows by at most (queue.GetNumItems()).
@@ -80,7 +85,12 @@ public:
     *  @param item The item to prepend. 
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddHead(const ItemType &item = ItemType());
+   status_t AddHead(const ItemType & item);
+
+   /** As above, except a default item is prepended.
+    *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
+    */
+   status_t AddHead() {return AddHead(_defaultItem);}
 
    /** Concatenates (queue) to the head of our queue.
     *  Our queue size grows by at most (queue.GetNumItems()).
@@ -164,8 +174,15 @@ public:
     *  @param newItem The item to place into the queue at the (index)'th position.
     *  @return B_NO_ERROR on success, B_ERROR on failure (e.g. bad index)
     */
-   status_t ReplaceItemAt(uint32 index, const ItemType & newItem = ItemType());
+   status_t ReplaceItemAt(uint32 index, const ItemType & newItem);
  
+   /** As above, except the specified item is replaced with a default item.
+    *  @param index Which item to replace--can range from zero 
+    *               (head of the queue) to (GetNumItems()-1) (tail of the queue).
+    *  @return B_NO_ERROR on success, B_ERROR on failure (e.g. bad index)
+    */
+   status_t ReplaceItemAt(uint32 index) {return ReplaceItemAt(index, _defaultItem);}
+
    /** Inserts (item) into the (nth) slot in the array.  InsertItemAt(0)
     *  is the same as AddHead(item), InsertItemAt(GetNumItems()) is the same
     *  as AddTail(item).  Other positions will involve an O(n) shifting of contents.
@@ -173,8 +190,14 @@ public:
     *  @param newItem The item to insert into the queue.
     *  @return B_NO_ERROR on success, B_ERROR on failure (i.e. bad index).
     */
-   status_t InsertItemAt(uint32 index, const ItemType & newItem = ItemType());
+   status_t InsertItemAt(uint32 index, const ItemType & newItem);
    
+   /** As above, except that a default item is inserted.
+    *  @param index The position at which to insert the new item.
+    *  @return B_NO_ERROR on success, B_ERROR on failure (i.e. bad index).
+    */
+   status_t InsertItemAt(uint32 index) {return InsertItemAt(index, _defaultItem);}
+
    /** Inserts some or all of the items in (queue) at the specified position in our queue.  
     *  Queue size grows by at most (queue.GetNumItems()).
     *  For example:
@@ -403,25 +426,34 @@ private:
    uint32 _headIndex;  // index of the first filled slot (meaningless if _itemCount is zero)
    uint32 _tailIndex;  // index of the last filled slot (meaningless if _itemCount is zero)
    const uint32 _initialSize;  // as specified in ctor
+
+   const ItemType _defaultItem;  // use to reset items without having to create a temporary each time
 };
+
+// Monni says VC++6.0 can't handle empty initializer arguments, but I want to avoid a potential unnecessary item copy in newer compilers --jaf
+#ifdef MUSCLE_USING_OLD_MICROSOFT_COMPILER
+# define DEFAULT_MUSCLE_QUEUE_ITEM_INITIALIZER ItemType()
+#else
+# define DEFAULT_MUSCLE_QUEUE_ITEM_INITIALIZER
+#endif
 
 template <class ItemType>
 Queue<ItemType>::Queue()
-   : _queue(NULL), _queueSize(0), _itemCount(0), _initialSize(SMALL_QUEUE_SIZE)
+   : _queue(NULL), _queueSize(0), _itemCount(0), _initialSize(SMALL_QUEUE_SIZE), _defaultItem(DEFAULT_MUSCLE_QUEUE_ITEM_INITIALIZER)
 {
    // empty
 }
 
 template <class ItemType>
 Queue<ItemType>::Queue(uint32 initialSize)
-   : _queue(NULL), _queueSize(0), _itemCount(0), _initialSize(initialSize)
+   : _queue(NULL), _queueSize(0), _itemCount(0), _initialSize(initialSize), _defaultItem(DEFAULT_MUSCLE_QUEUE_ITEM_INITIALIZER)
 {
    // empty
 }
 
 template <class ItemType>
 Queue<ItemType>::Queue(const Queue& rhs)
-   : _queue(NULL), _queueSize(0), _itemCount(0), _initialSize(rhs._initialSize)
+   : _queue(NULL), _queueSize(0), _itemCount(0), _initialSize(rhs._initialSize), _defaultItem(DEFAULT_MUSCLE_QUEUE_ITEM_INITIALIZER)
 {
    *this = rhs;
 }
@@ -592,7 +624,7 @@ RemoveHead()
    int oldHeadIndex = _headIndex;
    _headIndex = NextIndex(_headIndex);
    _itemCount--;
-   _queue[oldHeadIndex] = ItemType();  // this must be done last, as queue state must be coherent when we do this
+   _queue[oldHeadIndex] = _defaultItem;  // this must be done last, as queue state must be coherent when we do this
    return B_NO_ERROR;
 }
 
@@ -615,7 +647,7 @@ RemoveTail()
    int removedItemIndex = _tailIndex;
    _tailIndex = PrevIndex(_tailIndex);
    _itemCount--;
-   _queue[removedItemIndex] = ItemType();  // this must be done last, as queue state must be coherent when we do this
+   _queue[removedItemIndex] = _defaultItem;  // this must be done last, as queue state must be coherent when we do this
    return B_NO_ERROR;
 }
 
@@ -675,7 +707,7 @@ RemoveItemAt(uint32 index)
    }
 
    _itemCount--;
-   _queue[indexToClear] = ItemType();  // this must be done last, as queue state must be coherent when we do this
+   _queue[indexToClear] = _defaultItem;  // this must be done last, as queue state must be coherent when we do this
    return B_NO_ERROR; 
 }
 
@@ -799,7 +831,7 @@ EnsureSize(uint32 size, bool setNumItems, uint32 extraPreallocs)
 
       if (_queue == _smallQueue) 
       {
-         ItemType blank = ItemType();
+         ItemType blank = _defaultItem;
          for (uint32 i=0; i<sqLen; i++) _smallQueue[i] = blank;
       }
       else delete [] _queue;
@@ -1182,7 +1214,7 @@ Queue<ItemType>::Normalize()
          {
             ItemType & from = (*this)[i];
             _queue[startAt+i] = from;
-            from = ItemType();  // clear the old slot to avoid leaving extra Refs, etc
+            from = _defaultItem;  // clear the old slot to avoid leaving extra Refs, etc
          }
          _headIndex = startAt;
          _tailIndex = startAt+_itemCount-1; 

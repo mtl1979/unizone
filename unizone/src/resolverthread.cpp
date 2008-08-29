@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "resolverthread.h"
 #include "global.h"
 #include "winsharewindow.h" // For FillUserMap
@@ -8,7 +12,7 @@
 #include "netclient.h"		// For FindUsersByIP
 
 ResolverThread::ResolverThread(bool * shutdownflag)
-: QObject(), QThread()
+: QThread()
 {
 	fShutdownFlag = shutdownflag;
 	if (*shutdownflag)
@@ -193,7 +197,9 @@ ResolverThread::run()
 {
 	while (*fShutdownFlag == false)
 	{
-		cond.wait();
+		fWaitLock.lock();
+		cond.wait(&fWaitLock);
+		fWaitLock.unlock();
 		ResolverEntry ent;
 		fQueueLock.Lock();
 		status_t ret = fQueue.RemoveHead(ent);
@@ -206,5 +212,7 @@ ResolverThread::run()
 void
 ResolverThread::wakeup()
 {
+//	fWaitLock.lock();
 	cond.wakeOne();
+//	fWaitLock.unlock();
 }

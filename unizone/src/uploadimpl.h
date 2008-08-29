@@ -8,11 +8,11 @@
 #include <qapplication.h>
 #include <qfile.h>
 #include <qdialog.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qsplitter.h>
 #include <qpushbutton.h>
-#include <qvbox.h>
-#include <qpopupmenu.h>
+#include <q3vbox.h>
+#include <q3popupmenu.h>
 
 #include <system/MessageTransceiverThread.h>
 #include <util/Queue.h>
@@ -65,7 +65,7 @@ public:
 	NetClient * netClient();
 
 protected:
-	virtual void customEvent(QCustomEvent *);
+	virtual void customEvent(QEvent *);
 	virtual void keyPressEvent(QKeyEvent * event);
 	virtual void uploadEvent(WUploadEvent *);
 
@@ -75,19 +75,19 @@ private:
 		
 	ULList fUploadList;
 
-	QListView * fUploads;
-	QPopupMenu * fULPopup;
-	QPopupMenu * fULThrottleMenu;
-	QPopupMenu * fULBanMenu;
-	QPopupMenu * fULPacketMenu;
-	QPopupMenu * fULCompressionMenu;
+	Q3ListView * fUploads;
+	Q3PopupMenu * fULPopup;
+	Q3PopupMenu * fULThrottleMenu;
+	Q3PopupMenu * fULBanMenu;
+	Q3PopupMenu * fULPacketMenu;
+	Q3PopupMenu * fULCompressionMenu;
 
 	int fULThrottle;				// Current throttle selections
 	int fULBan;						// Current ban selection
 	int fULPacket;					// Current packet size selection
 	int fULCompression;				// Current compression selection
 
-	QListViewItem * fULPopupItem;	//   upload item that was right clicked
+	Q3ListViewItem * fULPopupItem;	//   upload item that was right clicked
 
 	WFileThread * fSharedFiles;
 
@@ -179,7 +179,7 @@ private:
 
 	// Find an item in the list that matches the list view item
 	// and return the index
-	bool FindULItem(unsigned int &, QListViewItem *);
+	bool FindULItem(unsigned int &, Q3ListViewItem *);
 
 	// Reorganize transfer queue
 
@@ -208,7 +208,7 @@ private slots:
 
 	void ULPopupActivated(int);
 
-	void ULRightClicked(QListViewItem *, const QPoint &, int);
+	void ULRightClicked(Q3ListViewItem *, const QPoint &, int);
 
 public slots:
 	void UserDisconnected(const WUserRef &);

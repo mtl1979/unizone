@@ -19,7 +19,9 @@ public:
 
 	virtual ~WListThread();
 
-	enum { ListDone = 'lTlD' };
+	enum { 
+		ListDone = QEvent::User + 27000 
+	};
 
 protected:
 	virtual void InternalThreadEntry();

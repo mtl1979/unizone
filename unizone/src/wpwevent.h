@@ -1,10 +1,10 @@
 #ifndef WPWEVENT_H
 #define WPWEVENT_H
 
+#include <qcoreevent.h>
 #include "user.h"
 
-#include <qstring.h>
-#include <qevent.h>
+class QString;
 
 class WPWEvent : public QCustomEvent
 {

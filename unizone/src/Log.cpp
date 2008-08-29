@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "Log.h"
 #include "util.h"
 #include "debugimpl.h"
@@ -7,6 +11,8 @@
 #include <string.h>
 
 #include "util/String.h"
+//Added by qt3to4:
+#include <Q3CString>
 
 using muscle::String;
 
@@ -90,7 +96,7 @@ WLog::Create(LogType type, const QString &name)
 		fFile = new WFile();
 	if (fFile)
 	{
-		if (fFile->Open(fullPath, IO_WriteOnly))
+		if (fFile->Open(fullPath, QIODevice::WriteOnly))
 		{
 			LogString(prepend, false);
 		}
@@ -131,6 +137,6 @@ WLog::LogString(const char * txt, bool brk)
 void
 WLog::LogString(const QString & txt, bool brk)
 {
-	QCString ctxt = txt.utf8();
+	Q3CString ctxt = txt.utf8();
 	LogString((const char *) ctxt, brk);
 }

@@ -22,13 +22,15 @@ enum
 }; 
 
 /** This is similar to LogStackTrace(), except that the stack trace is printed directly
-  * to stdout instead of via calls to Log() and LogTime().  This call is handy when you
-  * need to print a stack trace in situations where the log isn't available.
+  * to stdout (or another file you specify) instead of via calls to Log() and LogTime().  
+  * This call is handy when you need to print a stack trace in situations where the log
+  * isn't available.
+  * @param optFile If non-NULL, the text will be printed to this file.  If left as NULL, stdout will be used as a default.
   * @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
   *                 64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.
   * @note This function is currently only implemented under Linux; for other OS's, this function is a no-op.
   */
-status_t PrintStackTrace(uint32 maxDepth = 64);
+status_t PrintStackTrace(FILE * optFile = NULL, uint32 maxDepth = 64);
 
 // Define this constant in your Makefile (i.e. -DMUSCLE_DISABLE_LOGGING) to turn all the
 // Log commands into no-ops.

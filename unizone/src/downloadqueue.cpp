@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4100 4512)
+#endif
+
 #include "downloadqueue.h"
 #include "global.h"
 #include "winsharewindow.h"
@@ -23,8 +27,9 @@ DownloadQueue::addItem(const QString & file, const QString & path, const WUserRe
 	String mUser = (const char *) user()->GetUserID().utf8();
 	fLock.Lock();
 	if (fQueue()->FindInt32(mUser, &i) == B_OK)
-		fQueue()->RemoveName(mUser);
-	fQueue()->AddInt32(mUser, ++i);
+		fQueue()->ReplaceInt32(false, mUser, ++i);
+	else
+		fQueue()->AddInt32(mUser, 1);
 	mUser = mUser.Prepend("_");
 	AddStringToMessage(fQueue, mUser, file);
 	mUser = mUser.Prepend("path");
@@ -53,9 +58,9 @@ DownloadQueue::run()
 
 			fQueue()->FindInt32(mUser, &numItems);
 			files = new QString[numItems];
-			CHECK_PTR(files);
+			Q_CHECK_PTR(files);
 			paths = new QString[numItems];
-			CHECK_PTR(paths);
+			Q_CHECK_PTR(paths);
 			mUser = mUser.Prepend("_");
 			for (i = 0; i < numItems; i++)
 			{

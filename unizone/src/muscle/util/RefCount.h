@@ -157,6 +157,17 @@ public:
     */
    inline Ref &operator=(const Ref & rhs) {if (this != &rhs) SetRef(rhs._item, rhs._doRefCount); return *this;}
 
+   /** Similar to the == operator, except that this version will also call the comparison operator
+     * on the objects themselves if necessary, to determine exact equality.  (Compare with the ==
+     * operator which only compares the pointers, not the objects themselves) 
+     */
+   bool IsDeeplyEqualTo(const Ref & rhs) const
+   {
+      if (_item == rhs._item) return true;
+      if ((_item != NULL) != (rhs._item != NULL)) return false;
+      return ((_item == NULL)||(*_item == *rhs._item));
+   }
+
    /** Returns true iff both Refs are referencing the same data. */
    bool operator ==(const Ref &rhs) const {return _item == rhs._item;}
  

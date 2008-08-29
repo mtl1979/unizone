@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.26"
+#define MUSCLE_VERSION_STRING "4.28b"
 
 #include <string.h>  /* for memcpy() */
 
@@ -85,7 +85,7 @@ DECLARE_NAMESPACE(muscle);
 # ifndef _MSC_VER  /* 7/3/2006: Mika's patch allows VC++ to use newnothrow */
 #  define NEW_H_NOT_AVAILABLE
 # endif
-#elif __BEOS__
+#elif defined(__BEOS__) && !defined(__HAIKU__)
 # define SELECT_ON_FILE_DESCRIPTORS_NOT_AVAILABLE
 #endif
 
@@ -220,7 +220,7 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 # define  INT32_FORMAT_SPEC "%li"
 # define XINT32_FORMAT_SPEC "%lx"
 # define UINT32_FORMAT_SPEC "%lu"
-# if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || defined(__BEOS__)
+# if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || (defined(__BEOS__) && !defined(__HAIKU__))
 #  if (_MSC_VER < 1300)
 #   define  INT64_FORMAT_SPEC "%I64i"
 #   define UINT64_FORMAT_SPEC "%I64u"
@@ -690,8 +690,7 @@ static inline void MakePrettyTypeCodeString(uint32 typecode, char *buf)
 #include <errno.h>     /* for errno */
 
 #ifdef WIN32
-# include <windows.h>
-# include <winsock.h>  /* for WSAGetLastError() */
+# include <winsock2.h>
 #endif
 
 #ifdef __cplusplus

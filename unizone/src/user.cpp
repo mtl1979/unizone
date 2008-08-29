@@ -1,9 +1,9 @@
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qapplication.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qstring.h>
 
 #include "user.h"
@@ -196,9 +196,9 @@ WUser::InitFileCount(MessageRef msg)
 }
 
 void
-WUser::AddToListView(QListView * view)
+WUser::AddToListView(Q3ListView * view)
 {
-	QListViewItem * item;
+	Q3ListViewItem * item;
 
 	QString qUpload;
 	AddToList(qUpload, QString::number(fCurUploads));
@@ -262,13 +262,13 @@ WUser::AddToListView(QListView * view)
 		{
 			item = new WBotItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
 								fBandwidthLabel, qUpload, fClient, fHostOS);
-			CHECK_PTR(item);
+			Q_CHECK_PTR(item);
 		}
 		else
 		{
 			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
 								fBandwidthLabel, qUpload, fClient, fHostOS);
-			CHECK_PTR(item);
+			Q_CHECK_PTR(item);
 			((WUserListItem *)(item))->SetFirewalled(fFirewalled);
 		}
 		fLists.Put(view,item);
@@ -278,8 +278,8 @@ WUser::AddToListView(QListView * view)
 void
 WUser::UpdateListViews()
 {
-	HashtableIterator<QListView *, QListViewItem *> iter = fLists.GetIterator(HTIT_FLAG_NOREGISTER);
-	QListView *view;
+	HashtableIterator<Q3ListView *, Q3ListViewItem *> iter = fLists.GetIterator(HTIT_FLAG_NOREGISTER);
+	Q3ListView *view;
 	while (iter.GetNextKey(view) == B_OK)
 	{
 		AddToListView(view);
@@ -287,9 +287,9 @@ WUser::UpdateListViews()
 }
 
 void
-WUser::RemoveFromListView(QListView * view)
+WUser::RemoveFromListView(Q3ListView * view)
 {
-	QListViewItem * item;
+	Q3ListViewItem * item;
 	if (view)		// remove from the passed view only
 	{
 		if (fLists.GetValue(view, item) == B_OK)
@@ -302,7 +302,7 @@ WUser::RemoveFromListView(QListView * view)
 	else
 	{
 		// remove from all views
-		HashtableIterator<QListView *, QListViewItem *> iter = fLists.GetIterator(HTIT_FLAG_BACKWARDS);
+		HashtableIterator<Q3ListView *, Q3ListViewItem *> iter = fLists.GetIterator(HTIT_FLAG_BACKWARDS);
 		while ((iter.GetNextKey(view) == B_OK) && (iter.GetNextValue(item) == B_OK))
 		{
 			PRINT("Deleting item\n");

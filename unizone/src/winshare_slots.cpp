@@ -1,11 +1,13 @@
 // An extension of the main WinShare class
 // Contains all the slots for menu messages (except Connect() and Disconnect())
 #ifdef WIN32
-#pragma warning(disable: 4786)
+#pragma warning(disable: 4100 4512 4786)
 #endif
 
 #include <qapplication.h>
 #include <qmessagebox.h>
+//Added by qt3to4:
+#include <QCustomEvent>
 
 #include "winsharewindow.h"
 #include "aboutdlgimpl.h"
@@ -65,7 +67,7 @@ void
 WinShareWindow::AboutWinShare()
 {
 	AboutDlg * win = new AboutDlg;
-	CHECK_PTR(win);
+	Q_CHECK_PTR(win);
 	win->show();
 }
 
@@ -246,14 +248,14 @@ WinShareWindow::URLClicked(const QString & url)
 }
 
 void
-WinShareWindow::DoubleClicked(QListViewItem * i)
+WinShareWindow::DoubleClicked(Q3ListViewItem * i)
 {
 	QString uid = i->text(1).stripWhiteSpace();
 	LaunchPrivate(uid);
 }
 
 void
-WinShareWindow::RightButtonClicked(QListViewItem * i, const QPoint & p, int /* c */)
+WinShareWindow::RightButtonClicked(Q3ListViewItem * i, const QPoint & p, int /* c */)
 {
 	// empty menu
 	while (fPrivate->count() > 0)
@@ -300,7 +302,7 @@ WinShareWindow::PopupActivated(int id)
 		case 1:
 			{
 				WPrivateWindow * window = new WPrivateWindow(this, fNetClient, NULL);
-				CHECK_PTR(window);
+				Q_CHECK_PTR(window);
 				window->AddUser(uref);
 				window->show();
 				pLock.Lock();
@@ -343,7 +345,7 @@ void
 WinShareWindow::Preferences()
 {
 	WPrefs * prefs = new WPrefs(NULL, NULL, true);
-	CHECK_PTR(prefs);
+	Q_CHECK_PTR(prefs);
 	bool oldSharing = fSettings->GetSharingEnabled();
 	bool oldLogging = fSettings->GetLogging();
 	bool oldFirewalled = fSettings->GetFirewalled();

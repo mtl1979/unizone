@@ -2,7 +2,7 @@
 #define CHATTEXT_H
 
 #include <qapplication.h>
-#include <qmultilineedit.h>
+#include <q3multilineedit.h>
 
 #include "util/Queue.h"
 #include "system/Thread.h"
@@ -11,7 +11,7 @@ using namespace muscle;
 /** This class will chat SHIFT+ENTER and ENTER keystrokes and
   * send the appropriate output to the text input
   */
-class WChatText : public QMultiLineEdit
+class WChatText : public Q3MultiLineEdit
 {
 	Q_OBJECT
 public:
@@ -35,7 +35,7 @@ protected:
 private:
 	Queue<QString> * fBuffer;	// line buffer
 	QObject * fTarget;
-	Mutex fLock;
+	mutable Mutex fLock;
 	unsigned int fCurLine;				// which line in the buffer?
 };
 

@@ -1,9 +1,12 @@
-#ifdef WIN32
-#pragma warning(disable: 4786)
+#if defined(WIN32) || defined(_WIN32)
+#include <objbase.h>
+#pragma warning(disable: 4100 4512 4786)
 #endif
 
 #include <qdir.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <QCustomEvent>
 #include <string.h>
 #include <qevent.h>
 
@@ -29,7 +32,7 @@ WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 
 #ifdef WIN32
 	fScanProgress = new ScanProgress(dynamic_cast<QWidget *>(owner));
-	CHECK_PTR(fScanProgress);
+	Q_CHECK_PTR(fScanProgress);
 #endif
 }
 
@@ -65,7 +68,7 @@ WFileThread::InternalThreadEntry()
 	{
 		Lock();
 #ifdef WIN32
-		SendInt(SET::DirsLeft, fPaths.GetNumItems());
+		SendInt(ScanEvent::DirsLeft, fPaths.GetNumItems());
 #endif
 		Unlock();
 		if (fShutdownFlag && *fShutdownFlag)
@@ -77,7 +80,7 @@ WFileThread::InternalThreadEntry()
 		ParseDir(path);
 		iScannedDirs++;
 #ifdef WIN32
-		SendInt(SET::ScannedDirs, iScannedDirs);
+		SendInt(ScanEvent::ScannedDirs, iScannedDirs);
 #endif
 	} 
 #ifdef WIN32
@@ -121,7 +124,7 @@ WFileThread::ParseDir(const QString & d)
 #endif
 
 #ifdef WIN32
-	SendString(SET::ScanDirectory, d);
+	SendString(ScanEvent::ScanDirectory, d);
 #endif
 
 	QString dir(d);
@@ -200,12 +203,12 @@ WFileThread::ScanFiles(const QString & directory)
 {
 	PRINT("Checking for directory existance\n");
 	QDir * dir = new QDir(directory);
-	CHECK_PTR(dir);
+	Q_CHECK_PTR(dir);
 	if (dir->exists())	// double check
 	{
 #ifdef WIN32
 		QString s = tr("Reading directory...");
-		SendString(SET::ScanFile, s);
+		SendString(ScanEvent::ScanFile, s);
 #endif
 
 		QStringList list = dir->entryList("*", (QDir::Dirs | QDir::Files) , QDir::DirsFirst);
@@ -221,7 +224,7 @@ WFileThread::ScanFiles(const QString & directory)
 					return;
 				}
 
-				QString ndata = i.node->data;
+				QString ndata = *i;
 
 				bool skip = false;
 
@@ -412,7 +415,7 @@ WFileThread::GetSharedFile(unsigned int n, MessageRef & mref)
 void
 WFileThread::SendReset()
 {
-	ScanEvent *se = new ScanEvent(SET::Reset);
+	ScanEvent *se = new ScanEvent(ScanEvent::Reset);
 
 	if (se)
 	{
@@ -443,7 +446,7 @@ WFileThread::SendInt(ScanEvent::Type t, int i)
 void
 WFileThread::SendShow()
 {
-	ScanEvent *se = new ScanEvent(SET::Show);
+	ScanEvent *se = new ScanEvent(ScanEvent::Show);
 	if (se)
 	{
 		postEvent(fScanProgress, se);
@@ -453,7 +456,7 @@ WFileThread::SendShow()
 void
 WFileThread::SendHide()
 {
-	ScanEvent *se = new ScanEvent(SET::Hide);
+	ScanEvent *se = new ScanEvent(ScanEvent::Hide);
 	if (se)
 	{
 		postEvent(fScanProgress, se);
@@ -476,7 +479,7 @@ WFileThread::GetInfo(const QString &file, MessageRef &mref) const
       // strip "shared" from path
       if (qPath == "shared")
          qPath = ""; 
-      if (qPath.startsWith("shared" + QDir::separator()))
+      if (qPath.startsWith(QString("shared") + QDir::separator()))
          qPath = qPath.mid(7);
       //
 		int64 size = ufi.getSize();
@@ -501,7 +504,7 @@ WFileThread::GetInfo(const QString &file, MessageRef &mref) const
 void
 WFileThread::UpdateFileName(const QString &file)
 {
-	SendString(SET::ScanFile, file);
+	SendString(ScanEvent::ScanFile, file);
 }
 
 void
@@ -509,7 +512,7 @@ WFileThread::UpdateFileCount()
 {
 	int n = fFiles.GetNumItems();
 	
-	SendInt(SET::ScannedFiles, n);
+	SendInt(ScanEvent::ScannedFiles, n);
 }
 #endif
 

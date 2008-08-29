@@ -78,5 +78,5 @@ private:
    QStringTokenizer & operator = (const QStringTokenizer &);  // unimplemented on purpose
 
    QString _seps, _tokenizeMe;
-   uint _next;
+   int _next;
 };

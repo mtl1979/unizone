@@ -26,31 +26,31 @@ public:
 		NumColumns
 	};
 
-	WTransferItem(QListView * parent) 
+	WTransferItem(Q3ListView * parent) 
 		: WUniListItem(parent) 
 	{
 		// empty
 	}
 
-	WTransferItem(QListViewItem * parent) 
+	WTransferItem(Q3ListViewItem * parent) 
 		: WUniListItem(parent) 
 	{
 		// empty
 	}
 	
-	WTransferItem(QListView * parent, QListViewItem * after) 
+	WTransferItem(Q3ListView * parent, Q3ListViewItem * after) 
 		: WUniListItem(parent, after) 
 	{
 		// empty
 	}
 	
-	WTransferItem(QListViewItem * parent, QListViewItem * after)
+	WTransferItem(Q3ListViewItem * parent, Q3ListViewItem * after)
 		: WUniListItem(parent, after) 
 	{
 		// empty
 	}
 	
-	WTransferItem(QListView * parent, QString a, 
+	WTransferItem(Q3ListView * parent, QString a, 
 				QString b = QString::null, QString c = QString::null, 
 				QString d = QString::null, QString e = QString::null, 
 				QString f = QString::null, QString g = QString::null, 

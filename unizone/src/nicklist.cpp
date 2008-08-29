@@ -4,7 +4,7 @@
 #include "nicklist.h"
 
 WNickListItem::WNickListItem(	
-				   QListView * parent,
+				   Q3ListView * parent,
 				   QString a, QString b, QString c, QString d,
 				   QString e, QString f, QString g, QString h 
 				   )

@@ -8,11 +8,11 @@
 #include <qapplication.h>
 #include <qfile.h>
 #include <qdialog.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qsplitter.h>
 #include <qpushbutton.h>
-#include <qvbox.h>
-#include <qpopupmenu.h>
+#include <q3vbox.h>
+#include <q3popupmenu.h>
 
 #include <system/MessageTransceiverThread.h>
 #include <util/Queue.h>
@@ -72,25 +72,25 @@ public:
 	NetClient * netClient();
 
 protected:
-	virtual void customEvent(QCustomEvent *);
-	virtual void keyPressEvent(QKeyEvent * event);
+	virtual void customEvent(QEvent *);
+	virtual void keyPressEvent(QKeyEvent *);
 	virtual void downloadEvent(WDownloadEvent *);
 
-	virtual void resizeEvent(QResizeEvent * e);
+	virtual void resizeEvent(QResizeEvent *);
 
 private:
 		
 	DLList fDownloadList;
 
 	QSplitter * fMainSplit;
-	QListView * fDownloads;
-	QPopupMenu * fDLPopup;
-	QPopupMenu * fDLThrottleMenu;
-	QPopupMenu * fDLRunMenu;
+	Q3ListView * fDownloads;
+	Q3PopupMenu * fDLPopup;
+	Q3PopupMenu * fDLThrottleMenu;
+	Q3PopupMenu * fDLRunMenu;
 
 	int fDLThrottle;	// Current throttle selections
 
-	QListViewItem * fDLPopupItem;	// download item that was right clicked
+	Q3ListViewItem * fDLPopupItem;	// download item that was right clicked
 
 	QString fLocalSID;
 
@@ -142,7 +142,7 @@ private:
 
 	// Find an item in the list that matches the list view item
 	// and return the index
-	bool FindDLItem(unsigned int &, QListViewItem *);
+	bool FindDLItem(unsigned int &, Q3ListViewItem *);
 
 	// Reorganize transfer queue
 	void DLMoveUp(unsigned int index);
@@ -167,7 +167,7 @@ private slots:
 
 	void DLPopupActivated(int);
 
-	void DLRightClicked(QListViewItem *, const QPoint &, int);
+	void DLRightClicked(Q3ListViewItem *, const QPoint &, int);
 
 public slots:
 	void UserDisconnected(const WUserRef &);

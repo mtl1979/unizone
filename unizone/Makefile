@@ -4,11 +4,14 @@ endif
 
 ifeq ($(DEBUG), 0)
   DEBUGCFLAGS = -DNDEBUG
-else 
-  DEBUGCFLAGS = -g -D_DEBUG 
+else
+  DEBUGCFLAGS = -g -D_DEBUG
 endif
 
-INCLUDES = -I$(QTDIR)/include -Isrc -Isrc/unix -Isrc/muscle \
+QTINC = $(QTDIR)/include
+QTLIB ?= /usr/lib
+INCLUDES = -I$(QTINC) -I$(QTINC)/QtCore -I$(QTINC)/QtGui -I$(QTINC)/Qt3Support \
+	-Isrc -Isrc/unix -Isrc/muscle \
 	-Isrc/muscle/message -Isrc/muscle/iogateway \
 	-Isrc/muscle/reflector -Isrc/muscle/regex -Isrc/muscle/util \
 	-Isrc/muscle/syslog -Isrc/muscle/system
@@ -21,9 +24,10 @@ GCCOPTFLAGS += -DLINUX -D__USE_LARGEFILE_64
 endif
 
 CFLAGS = $(DEBUGCFLAGS) -Wall -W -Wno-multichar  $(GCCOPTFLAGS)
-CXXFLAGS = $(CFLAGS) -Wno-deprecated -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING
+CXXFLAGS = $(CFLAGS) -Wno-deprecated -DQT_THREAD_SUPPORT -DMUSCLE_ENABLE_ZLIB_ENCODING \
+	-DQT3_SUPPORT -DQT_CORE_LIB
 LFLAGS =
-LIBS = -L$(QTDIR)/lib -lqt-mt
+	LIBS = -L$(QTLIB) -lQtCore -lQtGui -lQt3Support
 EXECUTABLES = Unizone
 SRCFILES = \
 	src/aboutdlgimpl.cpp \
@@ -52,7 +56,6 @@ SRCFILES = \
 	src/netclient.cpp \
 	src/nicklist.cpp \
 	src/parser.cpp \
-	src/picviewer.cpp \
 	src/picviewerimpl.cpp \
 	src/platform.cpp \
 	src/prefsimpl.cpp \
@@ -101,9 +104,7 @@ SRCFILES = \
 	src/unix/wutil_unix.cpp
 
 MOC_SRCFILES = \
-	src/moc_aboutdlg.cpp \
 	src/moc_aboutdlgimpl.cpp \
-	src/moc_channel.cpp \
 	src/moc_channelimpl.cpp \
 	src/moc_channels.cpp \
 	src/moc_chattext.cpp \
@@ -116,11 +117,8 @@ MOC_SRCFILES = \
 	src/moc_listthread.cpp \
 	src/moc_menubar.cpp \
 	src/moc_netclient.cpp \
-	src/moc_picviewer.cpp \
 	src/moc_picviewerimpl.cpp \
-	src/moc_prefs.cpp \
 	src/moc_prefsimpl.cpp \
-	src/moc_privatewindow.cpp \
 	src/moc_privatewindowimpl.cpp \
 	src/moc_resolverthread.cpp \
 	src/moc_search.cpp \
@@ -177,8 +175,6 @@ VPATH = src src/unix src/muscle/qtsupport src/muscle/message \
 
 UIC_FILES = aboutdlg.ui channel.ui picviewer.ui prefs.ui privatewindow.ui
 UIC_HEADERS  = $(addprefix src/,$(addsuffix .h,$(basename $(UIC_FILES))))
-UIC_SRCFILES = $(addprefix src/,$(addsuffix .cpp,$(basename $(UIC_FILES))))
-UIC_OBJFILES = $(addprefix src/,$(addsuffix .o,$(basename $(UIC_FILES))))
 
 OBJFILES =		$(addsuffix .o,$(basename $(SRCFILES)))
 MOC_OBJFILES =		$(addsuffix .o,$(basename $(MOC_SRCFILES)))
@@ -193,20 +189,20 @@ all : $(EXECUTABLES) translations
 
 .PHONY : translations depends qtcheck
 
-qtcheck : qtcheck.out 
+qtcheck : qtcheck.out
 
-qtcheck.out : $(QTDIR)/lib/libqt-mt.so 
+qtcheck.out : $(QTLIB)/libQtCore.so
 	@echo -n "Checking Qt version... "
 	@[ -f qtcheck.out ] || touch qtcheck.out
-	@ls -l $(QTDIR)/lib/libqt-mt.so > qtcheck.tmp
+	@ls -l $(QTLIB)/libQtCore.so > qtcheck.tmp
 	@cmp -s qtcheck.tmp qtcheck.out || \
-	(rm -f $(MOC_SRCFILES) $(MUSCLEMOC_SRCFILES) $(UIC_SRCFILES) $(UIC_HEADERS) )
+	(rm -f $(MOC_SRCFILES) $(MUSCLEMOC_SRCFILES) $(UIC_HEADERS) )
 	@mv -f qtcheck.tmp qtcheck.out
 	@sed -n 's/.*so\.\([[0-9]\.]*\)/\1/p' qtcheck.out
 
-$(MOC_SRCFILES) $(MUSCLEMOC_SRCFILES) $(UIC_SRCFILES) $(UIC_HEADERS) : qtcheck.out
+$(MOC_SRCFILES) $(MUSCLEMOC_SRCFILES) $(UIC_HEADERS) : qtcheck.out
 
-Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(MUSCLEMOC_OBJFILES) $(UIC_OBJFILES)
+Unizone : $(OBJFILES) $(MUSCLE_OBJFILES) $(MOC_OBJFILES) $(MUSCLEMOC_OBJFILES)
 	@echo Linking $@ ...
 	@$(CXX) $(LFLAGS) $(LIBS) -o $@ $^
 
@@ -223,43 +219,33 @@ translations : src/Makefile
 
 depends: .depends
 
-.depends: .depends1 .depends2 .depends3 .depends4 .depends5
+.depends: .depends1 .depends2 .depends3 .depends4
 	@cat .depends1 > .depends
 	@cat .depends2 >> .depends
 	@cat .depends3 >> .depends
 	@cat .depends4 >> .depends
-	@cat .depends5 >> .depends
- 
-.depends1: $(UIC_SRCFILES)
-	@echo Building dependencies \(1/5\) ...
+
+.depends1: $(SRCFILES)
+	@echo Building dependencies \(1/4\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends1
-	@for x in $(UIC_SRCFILES); do ./findfile.sh .depends1 $$x; done
+	@for x in $(SRCFILES); do ./findfile.sh .depends1 $$x; done
 
-.depends2: $(SRCFILES)
-	@echo Building dependencies \(2/5\) ...
+.depends2: $(MOC_SRCFILES)
+	@echo Building dependencies \(2/4\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends2
-	@for x in $(SRCFILES); do ./findfile.sh .depends2 $$x; done
+	@for x in $(MOC_SRCFILES); do ./findfile.sh .depends2 $$x; done
 
-.depends3: $(MOC_SRCFILES)
-	@echo Building dependencies \(3/5\) ...
+.depends3: $(MUSCLE_SRCFILES)
+	@echo Building dependencies \(3/4\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends3
-	@for x in $(MOC_SRCFILES); do ./findfile.sh .depends3 $$x; done
+	@for x in $(MUSCLE_SRCFILES); do ./findfile.sh .depends3 $$x; done
 
-.depends4: $(MUSCLE_SRCFILES)
-	@echo Building dependencies \(4/5\) ...
+.depends4: $(MUSCLEMOC_SRCFILES)
+	@echo Building dependencies \(4/4\) ...
 	@$(CXX) $(CXXFLAGS) -MM $^ > .depends4
-	@for x in $(MUSCLE_SRCFILES); do ./findfile.sh .depends4 $$x; done
-
-.depends5: $(MUSCLEMOC_SRCFILES)
-	@echo Building dependencies \(5/5\) ...
-	@$(CXX) $(CXXFLAGS) -MM $^ > .depends5
-	@for x in $(MUSCLEMOC_SRCFILES); do ./findfile.sh .depends5 $$x; done
+	@for x in $(MUSCLEMOC_SRCFILES); do ./findfile.sh .depends4 $$x; done
 
 # stuff for moc
-
-src/moc_aboutdlg.cpp: src/aboutdlg.h
-	@echo Creating $@ ...
-	@$(MOC) $< -o $@
 
 src/moc_aboutdlgimpl.cpp: src/aboutdlgimpl.h
 	@echo Creating $@ ...
@@ -305,23 +291,11 @@ src/moc_netclient.cpp: src/netclient.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
 
-src/moc_picviewer.cpp: src/picviewer.h
-	@echo Creating $@ ...
-	@$(MOC) $< -o $@
-
 src/moc_picviewerimpl.cpp: src/picviewerimpl.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
 
-src/moc_prefs.cpp: src/prefs.h
-	@echo Creating $@ ...
-	@$(MOC) $< -o $@
-
 src/moc_prefsimpl.cpp: src/prefsimpl.h
-	@echo Creating $@ ...
-	@$(MOC) $< -o $@
-
-src/moc_privatewindow.cpp: src/privatewindow.h
 	@echo Creating $@ ...
 	@$(MOC) $< -o $@
 
@@ -384,58 +358,43 @@ src/muscle/qtsupport/moc_QMessageTransceiverThread.cpp: src/muscle/qtsupport/QMe
 # stuff for uic
 src/picviewer.h: src/picviewer.ui
 	@echo Creating $@ ...
-	@$(UIC) src/picviewer.ui -o src/picviewer.h
-
-src/picviewer.cpp: src/picviewer.h src/picviewer.ui
-	@echo Creating $@ ...
-	@$(UIC) -impl picviewer.h src/picviewer.ui -o src/picviewer.cpp	
+	@$(UIC) -o src/picviewer.h src/picviewer.ui
 
 src/privatewindow.h: src/privatewindow.ui
 	@echo Creating $@ ...
-	@$(UIC) src/privatewindow.ui -o src/privatewindow.h
-
-src/privatewindow.cpp: src/privatewindow.h src/privatewindow.ui
-	@echo Creating $@ ...
-	@$(UIC) -impl privatewindow.h src/privatewindow.ui -o src/privatewindow.cpp
+	@$(UIC) -o src/privatewindow.h src/privatewindow.ui
 
 src/prefs.h: src/prefs.ui
 	@echo Creating $@ ...
-	@$(UIC) src/prefs.ui -o src/prefs.h
-
-src/prefs.cpp: src/prefs.h src/prefs.ui
-	@echo Creating $@ ...
-	@$(UIC) -impl prefs.h src/prefs.ui -o src/prefs.cpp
+	@$(UIC) -o src/prefs.h src/prefs.ui
 
 src/aboutdlg.h: src/aboutdlg.ui
 	@echo Creating $@ ...
-	@$(UIC) src/aboutdlg.ui -o src/aboutdlg.h
-
-src/aboutdlg.cpp: src/aboutdlg.h src/aboutdlg.ui
-	@echo Creating $@ ...
-	@$(UIC) -impl aboutdlg.h src/aboutdlg.ui -o src/aboutdlg.cpp
+	@$(UIC) -o src/aboutdlg.h src/aboutdlg.ui
 
 src/channel.h: src/channel.ui
 	@echo Creating $@ ...
-	@$(UIC) src/channel.ui -o src/channel.h
-
-src/channel.cpp: src/channel.h src/channel.ui
-	@echo Creating $@ ...
-	@$(UIC) -impl channel.h src/channel.ui -o src/channel.cpp
+	@$(UIC) -o src/channel.h src/channel.ui
 
 src/scanprogress.h: src/scanprogress.ui
 	@echo Creating $@ ...
-	@$(UIC) src/scanprogress.ui -o src/scanprogress.h
+	@$(UIC) -o src/scanprogress.h src/scanprogress.ui
 
-src/scanprogress.cpp: src/scanprogress.h src/scanprogress.ui
-	@echo Creating $@ ...
-	@$(UIC) -impl scanprogress.h src/scanprogress.ui -o src/scanprogress.cpp
+src/moc_aboutdlgimpl.cpp : src/aboutdlg.h
+
+src/moc_channelimpl.cpp : src/channel.h
+
+src/moc_picviewerimpl.cpp : src/picviewer.h
+
+src/moc_prefsimpl.cpp : src/prefs.h
+
+src/moc_privatewindowimpl.cpp : src/privatewindow.h
 
 clean-aux:
 	@rm -f *.o *.a $(EXECUTABLES)
 	@find src -name \*.o | xargs -ifile rm file
 	@rm -f $(MOC_SRCFILES)
 	@rm -f $(MUSCLEMOC_SRCFILES)
-	@rm -f $(UIC_SRCFILES)
 	@rm -f $(UIC_HEADERS)
 	@rm -f core.*
 clean :
@@ -445,7 +404,7 @@ clean :
 distclean :
 	@$(MAKE) -C src -f Makefile distclean
 	@$(MAKE) clean-aux
-	@rm -f .depends .depends[1-5] qtcheck.out
+	@rm -f .depends .depends[1-4] qtcheck.out
 
 # DO NOT DELETE
 

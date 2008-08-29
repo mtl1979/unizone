@@ -1,6 +1,7 @@
 #ifndef CHANNELINFO_H
 #define CHANNELINFO_H
 
+#include <q3listview.h>
 #include <qstring.h>
 
 #include "util/Queue.h"
@@ -11,7 +12,7 @@ typedef Queue<QString> WAdminList;
 typedef Queue<QString> WUserList;
 
 class Channel;
-class QListViewItem;
+class Q3ListViewItem;
 
 class ChannelInfo
 {
@@ -41,8 +42,8 @@ public:
 	void SetPublic(bool p); 
 	bool GetPublic() const; 
 	
-	void SetItem(QListViewItem * item); 
-	QListViewItem * GetItem() const; 
+	void SetItem(Q3ListViewItem * item); 
+	Q3ListViewItem * GetItem() const; 
 	
 	void SetWindow(Channel * win); 
 	Channel * GetWindow() const; 
@@ -58,7 +59,7 @@ private:
 	WAdminList fAdmins;
 	WUserList fUsers;
 	QString fOwner, fName;
-	QListViewItem * fItem;
+	Q3ListViewItem * fItem;
 	Channel * fWindow;
 	QString fTopic;
 	QString fStrAdmins;

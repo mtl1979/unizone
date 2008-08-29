@@ -9,7 +9,7 @@
 #include "muscle/message/Message.h"
 using namespace muscle;
 
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 #define SERVER_LIST		"serverlist"
 #define SERVER_ITEM		"serveritem"
@@ -195,12 +195,12 @@ public:
 	int32 GetWindowY() const;
 
 	// chat splitter sizes
-	QValueList<int> GetChatSizes() const;
-	void SetChatSizes(QValueList<int> & sizes);
+	Q3ValueList<int> GetChatSizes() const;
+	void SetChatSizes(Q3ValueList<int> & sizes);
 
 	// main splitter sizes
-	QValueList<int> GetMainSizes() const;
-	void SetMainSizes(QValueList<int> & sizes);
+	Q3ValueList<int> GetMainSizes() const;
+	void SetMainSizes(Q3ValueList<int> & sizes);
 
 	// status messages
 	void SetAwayMsg(const QString & away);

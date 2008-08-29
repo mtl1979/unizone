@@ -1223,11 +1223,10 @@ uint32 Message :: CountNames(uint32 type) const
    return total;
 }
 
-void Message :: PrintToStream(bool recurse, int indent) const 
+void Message :: PrintToStream(FILE * optFile, bool recurse, int indent) const 
 {
-   String s;  
-   AddToString(s, recurse, indent);
-   printf("%s", s());
+   String s; AddToString(s, recurse, indent);
+   fprintf(optFile?optFile:stdout, "%s", s());
 }
 
 String Message :: ToString(bool recurse, int indent) const 

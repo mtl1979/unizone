@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "updateclient.h"
 #include "debugimpl.h"
 #include "events.h"
@@ -20,7 +24,7 @@ UpdateClient::UpdateClient(QObject *owner)
 	// QMessageTransceiverThread
 
 	qmtt = new QMessageTransceiverThread(this, "QMessageTransceiverThread");
-	CHECK_PTR(qmtt);
+	Q_CHECK_PTR(qmtt);
 
 	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
 			this, SLOT(MessageReceived(const MessageRef &, const String &)));
@@ -154,15 +158,15 @@ UpdateClient::AddNewConnectSession(const String & targetHostName, uint16 port, T
 {
 	fHostName = targetHostName;
 	fHostPort = port;
-	uint32 _port;
-	if ((_port = gWin->Settings()->GetHTTPPort()) == 0)
+	uint32 _port = gWin->Settings()->GetHTTPPort();
+	if (_port == 0)
 	{
-		return qmtt->AddNewConnectSession(ResolveAddress(targetHostName), port, optSessionRef);
+		return qmtt->AddNewConnectSession(ResolveAddress(targetHostName), (uint16) port, optSessionRef);
 	}
 	else
 	{
 		QString proxy = gWin->Settings()->GetHTTPProxy();
-		return qmtt->AddNewConnectSession(ResolveAddress(proxy), _port, optSessionRef);
+		return qmtt->AddNewConnectSession(ResolveAddress(proxy), (uint16) _port, optSessionRef);
 	}
 }
 

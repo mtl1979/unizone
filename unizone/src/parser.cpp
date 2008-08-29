@@ -1,8 +1,12 @@
+#ifdef WIN32
+#pragma warning (disable: 4512)
+#endif
+
 #include "parser.h"
 #include "tokenizer.h"
 #include "util.h"							// for endsWith()
 
-static const unsigned int MAX_BUFFER_SIZE = 262144;	// 256 kB
+static const int MAX_BUFFER_SIZE = 262144;	// 256 kB
 
 unsigned int
 ParseBufferSize()
@@ -14,12 +18,12 @@ QString
 TrimBuffer(const QString &txt)
 {
 	// Check for too big text
-	unsigned int n2 = 0;
+	int n2 = 0;
 	if (txt.length() > MAX_BUFFER_SIZE)
 	{
 		n2 = txt.length() - MAX_BUFFER_SIZE;		// Start of text
-		unsigned int n3 = n2;						// Position of next line break after buffer truncation
-		
+		int n3 = n2;						// Position of next line break after buffer truncation
+
 		// Find next line break
 		while (n3 < txt.length())
 		{
@@ -28,7 +32,7 @@ TrimBuffer(const QString &txt)
 				n2 = n3 + 4;
 				break;
 			}
-			else if (txt[n3] == "\t")
+			else if (txt[n3] == '\t')
 			{
 				n2 = n3 + 1;
 				break;
@@ -38,7 +42,7 @@ TrimBuffer(const QString &txt)
 	}
 
 	/*
-	 * 
+	 *
 	 * Remove any extra line breaks from the start of buffer
 	 *
 	 */
@@ -49,7 +53,7 @@ TrimBuffer(const QString &txt)
 		{
 			n2 += 4;
 		}
-		else if (txt[n2] == "\t")
+		else if (txt[n2] == '\t')
 		{
 			n2++;
 		}

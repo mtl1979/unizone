@@ -1,6 +1,8 @@
 #ifndef DEBUGIMPL_H
 #define DEBUGIMPL_H
 
+#include "utypes.h"
+
 // Make sure _DEBUG is defined if DEBUG2 is
 #ifdef DEBUG2
 # ifndef _DEBUG
@@ -16,6 +18,7 @@ inline void PRINT2(const char *, ...) {}
 void PRINT(const char *, ...);
 void RedirectDebugOutput();
 void CleanupDebug();
+void CheckSize(int64);
 
 # define POPUP(X) WPopup(X)
 
@@ -25,6 +28,7 @@ void CleanupDebug();
 inline void PRINT(const char *, ...) {}
 # define RedirectDebugOutput()
 # define CleanupDebug()
+# define CheckSize(X)
 # define POPUP(X)
 
 #endif

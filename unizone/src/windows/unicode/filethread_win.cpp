@@ -1,10 +1,15 @@
+#ifdef WIN32
+#pragma warning (disable: 4100 4512)
+#endif
+
 #include <qstring.h>
 #include <qdir.h>
 #include <windows.h>
 #include <shellapi.h>
-# ifdef VC7
+#ifdef VC7
 #  include <shldisp.h>	// hm... we only need this in VC7
-# endif
+#endif
+#include <oaidl.h>
 #include <shlguid.h>
 #include <shlobj.h>
 
@@ -32,9 +37,9 @@ WFileThread::ResolveLink(const QString & lnk) const
 		
 		HRESULT hres;
 		// Unicode
-		IShellLink * psl;
+		IShellLinkW * psl;
 		wchar_t szFile[MAX_PATH];
-		WIN32_FIND_DATA wfd;
+		WIN32_FIND_DATAW wfd;
 		
 		hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *)&psl);
 		if (SUCCEEDED(hres))
@@ -59,14 +64,14 @@ WFileThread::ResolveLink(const QString & lnk) const
 					if (SUCCEEDED(hres))
 					{
 						PRINT("Resolved\n");
-						hres = psl->GetPath(szFile, MAX_PATH, (WIN32_FIND_DATA *)&wfd, SLGP_UNCPRIORITY);
+						hres = psl->GetPath(szFile, MAX_PATH, (WIN32_FIND_DATAW *)&wfd, SLGP_UNCPRIORITY);
 						if (SUCCEEDED(hres))
 						{
 							PRINT("GetPath() = %S\n", szFile);
 							ret = wideCharToQString(szFile);
 						}
 						else
-							MessageBox(gWin->winId(), L"GetPath() failed!", L"Error", MB_OK);
+							MessageBoxW(gWin->winId(), L"GetPath() failed!", L"Error", MB_OK);
 					}
 				}
 				

@@ -1,13 +1,19 @@
 #include <qlabel.h>
 #include <qdir.h>
+//Added by qt3to4:
+#include <QCustomEvent>
 
 #include "scanprogressimpl.h"
 #include "scanprogress.h"
 #include "scanevent.h"
+#include "debugimpl.h"
 
-ScanProgress::ScanProgress(QWidget* parent, const char* name, bool modal, WFlags fl)
-: ScanProgressBase(parent, name, modal, fl)
+ScanProgress::ScanProgress(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
+: QDialog(parent, name, modal, fl)
 {
+	ui = new Ui_ScanProgressBase();
+	ui->setupUi(this);
+
 	if (!name)
 		setName( "ScanProgress" );
 }
@@ -22,20 +28,20 @@ ScanProgress::SetDirsLeft(int dl)
 {
 	QString sdl;
 	sdl.setNum(dl);
-	fDirsLeft->setText(sdl);	
+	ui->fDirsLeft->setText(sdl);	
 }
 
 void
 ScanProgress::SetScanDirectory(const QString & dir)
 {
 	
-	fDirectory->setText(QDir::convertSeparators(dir));
+	ui->fDirectory->setText(QDir::convertSeparators(dir));
 }
 
 void
 ScanProgress::SetScanFile(const QString & file)
 {
-	fFile->setText(file);	
+	ui->fFile->setText(file);	
 }
 
 void
@@ -43,7 +49,7 @@ ScanProgress::SetScannedDirs(int sd)
 {
 	QString ssd;
 	ssd.setNum(sd); 
-	fDirsScanned->setText(ssd);
+	ui->fDirsScanned->setText(ssd);
 }
 
 void
@@ -51,7 +57,7 @@ ScanProgress::SetScannedFiles(int sf)
 {
 	QString ssf;
 	ssf.setNum(sf);
-	fFilesScanned->setText(ssf);
+	ui->fFilesScanned->setText(ssf);
 }
 
 void
@@ -65,49 +71,50 @@ ScanProgress::reset()
 }
 
 void
-ScanProgress::customEvent(QCustomEvent *e)
+ScanProgress::customEvent(QEvent *e)
 {
+	PRINT("\tScanProgress::customEvent %i\n", e->type());
 	ScanEvent * se = dynamic_cast<ScanEvent *>(e);
 	if (se)
 	{
 		switch ((int) se->type())
 		{
-		case SET::ScanDirectory:
+		case ScanEvent::ScanDirectory:
 			{
 				SetScanDirectory(se->text());
 				break;
 			}
-		case SET::ScanFile:
+		case ScanEvent::ScanFile:
 			{
 				SetScanFile(se->text());
 				break;
 			}
-		case SET::ScannedDirs:
+		case ScanEvent::ScannedDirs:
 			{
 				SetScannedDirs(se->number());
 				break;
 			}
-		case SET::ScannedFiles:
+		case ScanEvent::ScannedFiles:
 			{
 				SetScannedFiles(se->number());
 				break;
 			}
-		case SET::DirsLeft:
+		case ScanEvent::DirsLeft:
 			{
 				SetDirsLeft(se->number());
 				break;
 			}
-		case SET::Reset:
+		case ScanEvent::Reset:
 			{
 				reset();
 				break;
 			}
-		case SET::Show:
+		case ScanEvent::Show:
 			{
 				show();
 				break;
 			}
-		case SET::Hide:
+		case ScanEvent::Hide:
 			{
 				hide();
 				break;

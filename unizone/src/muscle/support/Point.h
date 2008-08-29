@@ -69,10 +69,13 @@ public:
       if (y() > bottomRight.y()) y() = bottomRight.y();
    }
 
-   /** Print debug information about the point to stdout */
-   void PrintToStream() const
+   /** Print debug information about the point to stdout or to a file you specify.
+     * @param optFile If non-NULL, the text will be printed to this file.  If left as NULL, stdout will be used as a default.
+     */
+   void PrintToStream(FILE * optFile = NULL) const
    {
-      printf("Point: %f %f\n", x(), y());
+      if (optFile == NULL) optFile = stdout;
+      fprintf(optFile, "Point: %f %f\n", x(), y());
    }
       
    /** Part of the Flattenable interface:  Returns true */

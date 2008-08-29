@@ -1,27 +1,21 @@
-#ifndef SCANPROGRESS_H
-#define SCANPROGRESS_H
+#ifndef SCANPROGRESSIMPL_H
+#define SCANPROGRESSIMPL_H
 
 #include "scanprogress.h"
 
-#ifdef WIN32
-# define SET ScanEvent::Type
-#else
-# define SET ScanEvent
-#endif
 
-
-
-class ScanProgress : public ScanProgressBase
+class ScanProgress : public QDialog
 {
 public:
 
     ScanProgress(QWidget* parent = 0, 	const char* name = 0, bool modal = false, 
-				WFlags fl = WStyle_Customize | WStyle_NormalBorder | WStyle_Title | 
-							WStyle_Minimize | WStyle_Maximize);
+		Qt::WindowFlags fl = Qt::WStyle_Customize | Qt::WStyle_NormalBorder |
+		Qt::WStyle_Title | Qt::WStyle_Minimize | Qt::WStyle_Maximize);
 	~ScanProgress();
 
 protected:
-	void customEvent(QCustomEvent *);
+	void customEvent(QEvent *);
+
 private:
 	void SetScanDirectory(const QString &dir);
 	void SetScanFile(const QString &file);
@@ -29,5 +23,7 @@ private:
 	void SetScannedFiles(int sf);
 	void SetDirsLeft(int dl);
 	void reset();
+
+	Ui_ScanProgressBase *ui;
 };
 #endif

@@ -1,4 +1,12 @@
+#ifdef WIN32
+#pragma warning (disable: 4100 4512)
+#endif
+
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <QLabel>
+#include <QCustomEvent>
+#include <Q3GridLayout>
 
 #include "search.h"
 #include "netclient.h"
@@ -27,7 +35,7 @@ MakeKey(const QString & a, const QString &b)
 }
 
 WSearch::WSearch(QWidget * parent, NetClient * fNet)
-:	QDialog(parent, "WSearch", false, WStyle_SysMenu | WStyle_Minimize | WStyle_Maximize | WStyle_Title)
+:	QDialog(parent, "WSearch", false, Qt::WStyle_SysMenu | Qt::WStyle_Minimize | Qt::WStyle_Maximize | Qt::WStyle_Title)
 {
 	setCaption(tr("Search"));
 
@@ -42,8 +50,8 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	
 	// Create the Search Pane
 	
-	fSearchTab = new QGridLayout(this, 14, 10, 0, -1, "Search Tab");
-	CHECK_PTR(fSearchTab);
+	fSearchTab = new Q3GridLayout(this, 14, 10, 0, -1, "Search Tab");
+	Q_CHECK_PTR(fSearchTab);
 
 	fSearchTab->addColSpacing(1, 20);
 	fSearchTab->addColSpacing(3, 20);
@@ -73,7 +81,7 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	// Results ListView
 	
 	fSearchList = new WUniListView(this);
-	CHECK_PTR(fSearchList);
+	Q_CHECK_PTR(fSearchList);
 
 	fSearchList->addColumn(tr("File Name"));
 	fSearchList->addColumn(tr("File Size"));
@@ -82,8 +90,8 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	fSearchList->addColumn(tr("Path"));
 	fSearchList->addColumn(tr("User"));
 
-	fSearchList->setColumnAlignment(WSearchListItem::FileSize, AlignRight); // <postmaster@raasu.org> 20021103
-	fSearchList->setColumnAlignment(WSearchListItem::Modified, AlignRight);
+	fSearchList->setColumnAlignment(WSearchListItem::FileSize, Qt::AlignRight); // <postmaster@raasu.org> 20021103
+	fSearchList->setColumnAlignment(WSearchListItem::Modified, Qt::AlignRight);
 
 	fSearchList->setShowSortIndicator(true);
 	fSearchList->setAllColumnsShowFocus(true);
@@ -92,18 +100,18 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 
 	for (i = 0; i < 6; i++)
 	{
-		fSearchList->setColumnWidthMode(i, QListView::Manual);
+		fSearchList->setColumnWidthMode(i, Q3ListView::Manual);
 		fSearchList->setColumnWidth(i, kListSizes[i]);
 	}
 
-	fSearchList->setSelectionMode(QListView::Extended);
+	fSearchList->setSelectionMode(Q3ListView::Extended);
 
 	fSearchTab->addMultiCellWidget(fSearchList, 3, 9, 0, 9);
 
 	// Status Bar
 
 	fStatus = new WStatusBar(this);
-	CHECK_PTR(fStatus);
+	Q_CHECK_PTR(fStatus);
 	fStatus->setSizeGripEnabled(false);
 
 	fSearchTab->addMultiCellWidget(fStatus, 13, 13, 0, 9);
@@ -111,14 +119,14 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	// Search Query Label
 
 	fSearchLabel = new QLabel(this);
-	CHECK_PTR(fSearchLabel);
+	Q_CHECK_PTR(fSearchLabel);
 
 	fSearchTab->addMultiCellWidget(fSearchLabel, 1, 1, 0, 3); 
 
 	// Search Query Combo Box
 
 	fSearchEdit = new WComboBox(this, this, "fSearchEdit");
-	CHECK_PTR(fSearchEdit);
+	Q_CHECK_PTR(fSearchEdit);
 
 	fSearchEdit->setEditable(true);
 	double dwidth = (double) this->width() * 0.75f;
@@ -134,35 +142,35 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	// Download Button
 
 	fDownload = new QPushButton(tr("Download"), this);
-	CHECK_PTR(fDownload);
+	Q_CHECK_PTR(fDownload);
 
 	fSearchTab->addMultiCellWidget(fDownload, 10, 10, 0, 2);
 
 	// Download All Button
 
 	fDownloadAll = new QPushButton(tr("Download All"), this);
-	CHECK_PTR(fDownloadAll);
+	Q_CHECK_PTR(fDownloadAll);
 
 	fSearchTab->addMultiCellWidget(fDownloadAll, 11, 11, 0, 2);
 
 	// Stop Button
 
 	fStop = new QPushButton(tr("Stop"), this);
-	CHECK_PTR(fStop);
+	Q_CHECK_PTR(fStop);
 
 	fSearchTab->addMultiCellWidget(fStop, 10, 10, 4, 6);
 
 	// Clear Button
 
 	fClear = new QPushButton(tr("Clear"), this);
-	CHECK_PTR(fClear);
+	Q_CHECK_PTR(fClear);
 
 	fSearchTab->addMultiCellWidget(fClear, 10, 10, 8, 9);
 
 	// Clear History Button
 
 	fClearHistory = new QPushButton(tr("Clear History"), this);
-	CHECK_PTR(fClearHistory);
+	Q_CHECK_PTR(fClearHistory);
 
 	fSearchTab->addMultiCellWidget(fClearHistory, 11, 11, 8, 9);
 
@@ -248,7 +256,7 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 				file()->FindInt64("beshare:File Size", (int64 *)&size);
 				
 				WFileInfo * info = new WFileInfo;
-				CHECK_PTR(info);
+				Q_CHECK_PTR(info);
 				info->fiUser = user;
 				info->fiFilename = filename;
 				info->fiPath = qpath;
@@ -263,7 +271,7 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 				QString quser	= user()->GetUserName();
 				
 				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
-				CHECK_PTR(info->fiListItem);
+				Q_CHECK_PTR(info->fiListItem);
 				
 				PRINT("Setting key to " INT64_FORMAT_SPEC "\n", size);
 				
@@ -463,14 +471,14 @@ WSearch::GoSearch()
 
 	if (atIndex > 0)
 	{
-		if ((uint32)atIndex < fileExp.length())
+		if (atIndex < fileExp.length())
 		{
 			userExp = fileExp.mid(atIndex + 1);
 
 			if (!HasRegexTokens(userExp))
 			{
 				bool nonNumericFound = false;
-				unsigned int x = 0;
+				int x = 0;
 				while (x < userExp.length())
 				{
 					if ((userExp[x] != ',') && !muscleInRange((QChar) userExp[x], (QChar) '0', (QChar) '9'))
@@ -539,10 +547,10 @@ QString
 Simplify(const QString &str)
 {
 	QString ret;
-	unsigned int x = 0;
+	int x = 0;
 	while (x < str.length())
 	{
-		if (str[x] == "\\")
+		if (str[x] == '\\')
 		{
 			ret += str.mid(x, 2);
 			x += 2;
@@ -552,12 +560,12 @@ Simplify(const QString &str)
 			ret += "*";
 			x += 2;
 		}
-		else if (str[x] == ".")
+		else if (str[x] == '.')
 		{
 			ret += "?";
 			x++;
 		}
-		else if (str[x] == "|")
+		else if (str[x] == '|')
 		{
 			ret += ",";
 			x++;
@@ -609,12 +617,12 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", wpattern.getBuffer(), wsid.getBuffer(), wfile.getBuffer());
 #endif
 
-	fUserRegExpNeg = sidRegExp[0] == "~";
+	fUserRegExpNeg = sidRegExp[0] == '~';
 	fUserRegExpStr = fUserRegExpNeg ? sidRegExp.mid(1) : sidRegExp;
 	fUserRegExpStr.replace(QRegExp(","), "|");
 	fUserRegExp.setPattern(fUserRegExpStr);
 	fUserRegExp.setCaseSensitive(false);
-	fFileRegExpNeg = fileRegExp[0] == "~";
+	fFileRegExpNeg = fileRegExp[0] == '~';
 	fFileRegExpStr = fFileRegExpNeg ? fileRegExp.mid(1) : fileRegExp;
 	fFileRegExp.setPattern(fFileRegExpStr);
 	fFileRegExp.setCaseSensitive(false);
@@ -760,7 +768,7 @@ WSearch::HandleComboEvent(WTextEvent * e)
 }
 
 void
-WSearch::customEvent(QCustomEvent *qce)
+WSearch::customEvent(QEvent *qce)
 {
 	if (fNetClient)		// do this to avoid bad crash
 	{

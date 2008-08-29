@@ -7,7 +7,8 @@
 #include "ulistview.h"
 #include "nicklist.h"
 
-#include <qlistview.h>
+#include <q3listview.h>
+#include <qpalette.h>
 
 class WNickListItem : public WUniListItem
 {
@@ -25,31 +26,31 @@ public:
 		NumColumns
 	};
 	
-	WNickListItem(QListView * parent) 
+	WNickListItem(Q3ListView * parent) 
 		: WUniListItem(parent) 
 	{
 		// empty
 	}
 	
-	WNickListItem(QListViewItem * parent) 
+	WNickListItem(Q3ListViewItem * parent) 
 		: WUniListItem(parent) 
 	{
 		// empty
 	}
 	
-	WNickListItem(QListView * parent, QListViewItem * after) 
+	WNickListItem(Q3ListView * parent, Q3ListViewItem * after) 
 		: WUniListItem(parent, after) 
 	{
 		// empty
 	}
 	
-	WNickListItem(QListViewItem * parent, QListViewItem * after)
+	WNickListItem(Q3ListViewItem * parent, Q3ListViewItem * after)
 		: WUniListItem(parent, after) 
 	{
 		// empty
 	}
 	
-	WNickListItem(QListView * parent, QString a, QString b = QString::null,
+	WNickListItem(Q3ListView * parent, QString a, QString b = QString::null,
 		QString c = QString::null, QString d = QString::null,
 		QString e = QString::null, QString f = QString::null,
 		QString g = QString::null, QString h = QString::null );

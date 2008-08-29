@@ -1,6 +1,7 @@
 #ifndef CHATWINDOW_H
 #define CHATWINDOW_H
 
+#include <q3listview.h>
 #include <qstring.h>
 #include <qwidget.h>
 
@@ -43,6 +44,7 @@ public:
 	void PrintWarning(const QString & warning);
 
 	void beep();
+	void Clear();
 
 	QString FormatNameSaid(const QString & msg); // Check and format message for Name Said...
 
@@ -50,7 +52,7 @@ protected:
 
 	WHTMLView * fChatText;
 
-	void InitUserList(QListView * lv);
+	void InitUserList(Q3ListView * lv);
 
 private:
 	// see if we were named...
@@ -60,6 +62,6 @@ private:
 	QString tr(const char *);
 
 	ChatType _type;
-
+	bool _inTable;
 };
 #endif

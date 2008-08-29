@@ -37,6 +37,10 @@ const char * GetOSName()
    ret = "BeOS";
 #endif
 
+#ifdef __HAIKU__
+   ret = "Haiku";
+#endif
+
 #ifdef __ATHEOS__
    ret = "AtheOS";
 #endif

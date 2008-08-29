@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4100 4512)
+#endif
+
 #include "listthread.h"
 #include "events.h"
 #include "filethread.h"
@@ -7,6 +11,8 @@
 #include "winsharewindow.h"
 
 #include "zlib/ZLibUtilityFunctions.h"
+//Added by qt3to4:
+#include <QCustomEvent>
 
 
 WListThread::WListThread(NetClient *net, WFileThread * ft, QObject *owner, bool *optShutdownFlag)

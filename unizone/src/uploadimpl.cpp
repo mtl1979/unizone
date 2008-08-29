@@ -1,3 +1,7 @@
+#ifdef WIN32
+#pragma warning (disable: 4100 4512)
+#endif
+
 #include "uploadimpl.h"
 #include "global.h"
 #include "netclient.h"
@@ -5,20 +9,26 @@
 #include "util.h"
 #include "winsharewindow.h"
 #include "wstring.h"
+#include "wmessageevent.h"
 #include "wuploadevent.h"
 
-#include <qaccel.h>
+#include <q3accel.h>
 #include <qdir.h>
+//Added by qt3to4:
+#include <QKeyEvent>
+#include <QCustomEvent>
+#include <QResizeEvent>
+#include <Q3PopupMenu>
 
 WUpload::WUpload(QWidget * parent, WFileThread * ft)
-: QDialog(parent, "WUpload", false, /* QWidget::WDestructiveClose |*/ QWidget::WStyle_Minimize |
-		  QWidget::WStyle_Maximize | QWidget::WStyle_Title | QWidget::WStyle_SysMenu)
+: QDialog(parent, "WUpload", false, /* QWidget::WDestructiveClose |*/ Qt::WStyle_Minimize |
+		  Qt::WStyle_Maximize | Qt::WStyle_Title | Qt::WStyle_SysMenu)
 {
 	resize(450, 265); // <postmaster@raasu.org> 20020927 Changed from 250 to 265
 	fSharedFiles = ft;
 
-	fUploads = new QListView(this);
-	CHECK_PTR(fUploads);
+	fUploads = new Q3ListView(this);
+	Q_CHECK_PTR(fUploads);
 	fUploads->addColumn(tr("Status"));
 	fUploads->addColumn(tr("Filename"));
 	fUploads->addColumn(tr("Sent"));
@@ -30,12 +40,12 @@ WUpload::WUpload(QWidget * parent, WFileThread * ft)
 	fUploads->addColumn(tr("Index"));
 	fUploads->addColumn(tr("QR"));
 	
-	fUploads->setColumnAlignment(WTransferItem::Received, AlignRight);	// <postmaster@raasu.org> 20021213
-	fUploads->setColumnAlignment(WTransferItem::Total, AlignRight);		// 
-	fUploads->setColumnAlignment(WTransferItem::Rate, AlignRight);		// 
-	fUploads->setColumnAlignment(WTransferItem::ETA, AlignRight);		//
-	fUploads->setColumnAlignment(WTransferItem::Elapsed, AlignRight);	// 20030729
-	fUploads->setColumnAlignment(WTransferItem::QR, AlignRight);		// 20030310
+	fUploads->setColumnAlignment(WTransferItem::Received, Qt::AlignRight);	// <postmaster@raasu.org> 20021213
+	fUploads->setColumnAlignment(WTransferItem::Total, Qt::AlignRight);		// 
+	fUploads->setColumnAlignment(WTransferItem::Rate, Qt::AlignRight);		// 
+	fUploads->setColumnAlignment(WTransferItem::ETA, Qt::AlignRight);		//
+	fUploads->setColumnAlignment(WTransferItem::Elapsed, Qt::AlignRight);	// 20030729
+	fUploads->setColumnAlignment(WTransferItem::QR, Qt::AlignRight);		// 20030310
 	
 	fUploads->setAllColumnsShowFocus(true);
 
@@ -44,15 +54,15 @@ WUpload::WUpload(QWidget * parent, WFileThread * ft)
 
 	setCaption(tr("Uploads"));
 
-	fULPopup = new QPopupMenu(this, "Upload Popup");
-	CHECK_PTR(fULPopup);
+	fULPopup = new Q3PopupMenu(this, "Upload Popup");
+	Q_CHECK_PTR(fULPopup);
 	
 	// Create the upload popup menu
 	fULPopup->insertItem(tr("Queue"), ID_QUEUE);
 	
 	// Create throttle sub menu
-	fULThrottleMenu = new QPopupMenu(fULPopup, "Throttle Popup");
-	CHECK_PTR(fULThrottleMenu);
+	fULThrottleMenu = new Q3PopupMenu(fULPopup, "Throttle Popup");
+	Q_CHECK_PTR(fULThrottleMenu);
 	
 	fULThrottleMenu->insertItem(tr( "No Limit" ), ID_NO_LIMIT);
 	
@@ -85,8 +95,8 @@ WUpload::WUpload(QWidget * parent, WFileThread * ft)
 	fULThrottleMenu->insertItem(tr( "%1 MB/s" ).arg(16), ID_16MB);
 	fULThrottleMenu->insertItem(tr( "%1 MB/s" ).arg(32), ID_32MB);
 	
-	fULBanMenu = new QPopupMenu(fULPopup, "Ban Popup");
-	CHECK_PTR(fULBanMenu);
+	fULBanMenu = new Q3PopupMenu(fULPopup, "Ban Popup");
+	Q_CHECK_PTR(fULBanMenu);
 	
 	fULBanMenu->insertItem(tr("Unbanned"), ID_UNBAN);
 	fULBanMenu->setItemChecked(ID_UNBAN, true);
@@ -101,8 +111,8 @@ WUpload::WUpload(QWidget * parent, WFileThread * ft)
 	fULBanMenu->insertItem(tr("1 hour"), ID_BAN1H);
 	fULBanMenu->insertItem(tr("Infinite"), ID_BANINF);
 	
-	fULPacketMenu = new QPopupMenu(fULPopup, "Packet Size Menu");
-	CHECK_PTR(fULPacketMenu);
+	fULPacketMenu = new Q3PopupMenu(fULPopup, "Packet Size Menu");
+	Q_CHECK_PTR(fULPacketMenu);
 	
 	fULPacketMenu->insertItem(tr("%1 B").arg(512), ID_PACKET512);
 	fULPacketMenu->insertItem(tr("%1 kB").arg(1), ID_PACKET1K);
@@ -120,8 +130,8 @@ WUpload::WUpload(QWidget * parent, WFileThread * ft)
 	fULPacketMenu->setItemChecked(ID_PACKET8K, true);
 	fULPacket = ID_PACKET8K;
 
-	fULCompressionMenu = new QPopupMenu(fULPopup, "Compression Menu");
-	CHECK_PTR(fULCompressionMenu);
+	fULCompressionMenu = new Q3PopupMenu(fULPopup, "Compression Menu");
+	Q_CHECK_PTR(fULCompressionMenu);
 	
 	fULCompressionMenu->insertItem(tr("None"), ID_LEVEL0);
 	fULCompressionMenu->insertItem(tr("Level %1").arg(1), ID_LEVEL1);
@@ -154,8 +164,8 @@ WUpload::WUpload(QWidget * parent, WFileThread * ft)
 	connect(fULBanMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fULPacketMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
 	connect(fULCompressionMenu, SIGNAL(activated(int)), this, SLOT(ULPopupActivated(int)));
-	connect(fUploads, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)),
-		this, SLOT(ULRightClicked(QListViewItem *, const QPoint &, int)));
+	connect(fUploads, SIGNAL(rightButtonClicked(Q3ListViewItem *, const QPoint &, int)),
+		this, SLOT(ULRightClicked(Q3ListViewItem *, const QPoint &, int)));
 	
 	fULPopupItem = NULL;
 
@@ -204,7 +214,7 @@ WUpload::CreateTunnel(const QString & userID, int64 hisID, void * & myID)
 {
 	PRINT("WUpload::CreateTunnel(QString, void *, void * &)\n");
 	WUploadThread * ut = new WUploadThread(this);
-	CHECK_PTR(ut);
+	Q_CHECK_PTR(ut);
 
 	myID = ut;
 	
@@ -228,7 +238,7 @@ WUpload::CreateTunnel(const QString & userID, int64 hisID, void * & myID)
 	ULPair p;
 	p.thread = ut;
 	p.item = new WTransferItem(fUploads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
-	CHECK_PTR(p.item);
+	Q_CHECK_PTR(p.item);
 	
 	if (ut->IsLocallyQueued())
 	{
@@ -256,7 +266,9 @@ WUpload::TunnelMessage(int64 myID, MessageRef tmsg)
 		fUploadList.GetItemAt(i, p);
 		if (ConvertPtr(p.thread) == myID)
 		{
-			p.thread->MessageReceived(tmsg);
+			WMessageEvent *wme = new WMessageEvent(WUploadThread::TunnelData, tmsg);
+			if (wme)
+				QApplication::postEvent(p.thread, wme);
 			break;
 		}
 	}
@@ -269,7 +281,7 @@ WUpload::AddUpload(const QString & remoteIP, uint32 port)
 {
 	PRINT("WUpload::AddUpload(QString, uint32)\n");
 	WUploadThread * ut = new WUploadThread(this);
-	CHECK_PTR(ut);
+	Q_CHECK_PTR(ut);
 	
 	PRINT("Setting upload\n");
 	ut->SetPacketSize(gWin->fSettings->GetPacketSize());
@@ -291,7 +303,7 @@ WUpload::AddUpload(const QString & remoteIP, uint32 port)
 	ULPair p;
 	p.thread = ut;
 	p.item = new WTransferItem(fUploads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
-	CHECK_PTR(p.item);
+	Q_CHECK_PTR(p.item);
 	
 	if (ut->IsLocallyQueued())
 	{
@@ -311,7 +323,7 @@ WUpload::AddUpload(const SocketRef & socket, uint32 remoteIP, bool /* queued */)
 {
 	PRINT("WUpload::AddUpload(int, uint32, bool)\n");
 	WUploadThread * ut = new WUploadThread(this);
-	CHECK_PTR(ut);
+	Q_CHECK_PTR(ut);
 	
 	PRINT("Setting upload\n");
 	ut->SetPacketSize(gWin->fSettings->GetPacketSize());
@@ -334,7 +346,7 @@ WUpload::AddUpload(const SocketRef & socket, uint32 remoteIP, bool /* queued */)
 	ULPair p;
 	p.thread = ut;
 	p.item = new WTransferItem(fUploads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
-	CHECK_PTR(p.item);
+	Q_CHECK_PTR(p.item);
 	
 	if (ut->IsLocallyQueued())
 	{
@@ -416,20 +428,22 @@ WUpload::DequeueULSessions()
 }
 
 void
-WUpload::customEvent(QCustomEvent * e)
+WUpload::customEvent(QEvent * e)
 {
 	int t = (int) e->type();
+
+	if (t > WUploadEvent::FirstEvent && t < WUploadEvent::LastEvent)
+	{
+		WUploadEvent * d = dynamic_cast<WUploadEvent *>(e);
+		if (d)
+		{
+			uploadEvent(d);
+			return;
+		}
+	}
+
 	switch (t)
 	{
-	case WUploadEvent::Type:
-		{
-			WUploadEvent * u = dynamic_cast<WUploadEvent *>(e);
-			if (u)
-			{
-				uploadEvent(u);
-			}
-			break;
-		}
 	case DequeueUploads:
 		{
 			DequeueULSessions();
@@ -456,16 +470,9 @@ WUpload::customEvent(QCustomEvent * e)
 void
 WUpload::uploadEvent(WUploadEvent *u)
 {
-	MessageRef msg = u->Msg();
-	WUploadThread * ut = NULL;
+	WUploadThread * ut = u->Sender();
 	WTransferItem * item = NULL;
 	ULPair upload;
-	
-	if (!msg())
-		return; // Invalid MessageRef!
-	
-	if (msg()->FindPointer("sender", (void **)&ut) != B_OK)
-		return;	// failed! ouch!
 	
 	if (!ut)
 		return;
@@ -491,22 +498,16 @@ WUpload::uploadEvent(WUploadEvent *u)
 		return;	// failed to find a item
 	}
 
-	switch (msg()->what)
+	switch ((int) u->type())
 	{
 	case WUploadEvent::Init:
 		{
 			PRINT("\tWUploadEvent::Init\n");
-			QString filename, user;
-			if (
-				(GetStringFromMessage(msg, "file", filename) == B_OK) && 
-				(GetStringFromMessage(msg, "user", user) == B_OK)
-				)
-			{
-				filename = QDir::convertSeparators(filename);
-				item->setText(WTransferItem::Filename, filename);
-				item->setText(WTransferItem::User, GetUserName(ut));
-				item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
-			}
+			QString filename = u->File();
+			filename = QDir::convertSeparators(filename);
+			item->setText(WTransferItem::Filename, filename);
+			item->setText(WTransferItem::User, GetUserName(ut));
+			item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 			break;
 		}
 		
@@ -523,8 +524,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::FileBlocked:
 		{
 			PRINT("\tWUploadEvent::FileBlocked\n");
-			uint64 timeLeft = (uint64) -1;
-			(void) msg()->FindInt64("timeleft", (int64 *) &timeLeft);
+			uint64 timeLeft = u->Time();
 			if (timeLeft == (uint64) -1)
 			{
 				item->setText(WTransferItem::Status, tr("Blocked."));
@@ -564,8 +564,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::ConnectFailed:
 		{
 			PRINT("\tWUploadEvent::ConnectFailed\n");
-			QString why;
-			GetStringFromMessage(msg, "why", why);
+			QString why = u->Error();
 			item->setText(WTransferItem::Status, tr("Connect failed: %1").arg(why));
 
 			ut->Reset();
@@ -591,8 +590,8 @@ WUpload::uploadEvent(WUploadEvent *u)
 			PRINT("\tWUploadEvent::Disconnected\n");
 			item->setText(WTransferItem::ETA, QString::null);
 		
-			bool f;
-			if ((msg()->FindBool("failed", &f) == B_OK) && f)
+			bool f = u->Failed();
+			if (f)
 			{
 				// "failed" == true only, if the transfer has failed
 				item->setText(WTransferItem::Status, tr("Disconnected."));
@@ -617,8 +616,8 @@ WUpload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::FileDone:
 		{
 			PRINT("\tWUploadEvent::FileDone\n");
-			bool d;
-			if (msg()->FindBool("done", &d) == B_OK)
+			bool d = u->Done();
+			if (d)
 			{
 				PRINT("\tFound done\n");
 				if (ut->IsLastFile())
@@ -635,22 +634,16 @@ WUpload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::FileStarted:
 		{
 			PRINT("\tWUploadEvent::FileStarted\n");
-			QString file, user;
-			uint64 start;
-			uint64 size;
+			QString file = u->File();
+			uint64 start = u->Start();
+			uint64 size = u->Size();
 			
-			if (
-				(GetStringFromMessage(msg, "file", file) == B_OK) && 
-				(GetStringFromMessage(msg, "user", user) == B_OK) &&
-				(msg()->FindInt64("start", (int64 *)&start) == B_OK) &&
-				(msg()->FindInt64("size", (int64 *)&size) == B_OK)
-				)
 			{
 				file = QDir::convertSeparators(file);
 				QString uname = GetUserName(ut);
 				
 #ifdef _DEBUG
-				WString wuid(user);
+				WString wuid(u->Session());
 				WString wname(uname);
 				PRINT("USER ID  : %S\n", wuid.getBuffer());
 				PRINT("USER NAME: %S\n", wname.getBuffer());
@@ -673,25 +666,17 @@ WUpload::uploadEvent(WUploadEvent *u)
 	case WUploadEvent::UpdateUI:
 		{
 			PRINT("\tWUploadEvent::UpdateUI\n");
-			QString id; // unused
-			if (GetStringFromMessage(msg, "id", id) == B_OK)
-			{
-				item->setText(WTransferItem::User, GetUserName(ut));
-			}
+			item->setText(WTransferItem::User, GetUserName(ut));
 			break;
 		}
 		
 	case WUploadEvent::FileError:
 		{
 			PRINT("\tWUploadEvent::FileError\n");
-			QString why;
-			QString file;
-			GetStringFromMessage(msg, "why", why);
-			if (GetStringFromMessage(msg, "file", file) == B_OK)
-			{
-				file = QDir::convertSeparators(file);
-				item->setText(WTransferItem::Filename, file);
-			}
+			QString why = u->Error();
+			QString file = u->File();
+			file = QDir::convertSeparators(file);
+			item->setText(WTransferItem::Filename, file);
 			item->setText(WTransferItem::Status, tr("Error: %1").arg(why));
 			item->setText(WTransferItem::Index, FormatIndex(ut->GetCurrentNum(), ut->GetNumFiles()));
 #ifdef _DEBUG
@@ -704,21 +689,16 @@ WUpload::uploadEvent(WUploadEvent *u)
 		
 	case WUploadEvent::FileDataSent:
 		{
-			int64 offset, size;
-			bool done;
+			int64 offset = u->Offset(), size = u->Size();
+			bool done = u->Done();
 			String mFile;
-			uint32 got;
+			uint64 got = u->Sent();
 			
-			if (
-				(msg()->FindInt64("offset", (int64 *)&offset) == B_OK) && 
-				(msg()->FindInt64("size", (int64 *)&size) == B_OK) &&
-				(msg()->FindInt32("sent", (int32 *)&got) == B_OK)
-				)
 			{
 				PRINT2("\tWUploadEvent::FileDataSent\n");
 				PRINT2("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
 				PRINT2("\tSize  : " UINT64_FORMAT_SPEC "\n", size);
-				PRINT2("\tSent  : %lu\n", got);
+				PRINT2("\tSent  : " UINT64_FORMAT_SPEC "\n", got);
 				gWin->UpdateTransmitStats(got);
 				
 				double secs = 0.0f;
@@ -732,7 +712,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 				
 				if (got > 0)
 				{
-					gotk = (double)((double)got / 1024.0f);
+					gotk = (double)((double)((int64)got) / 1024.0f);
 				}
 				
 				double kps = 0.0f;
@@ -777,7 +757,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 				
 				item->setText(WTransferItem::Rate, QString::number(gcr*1024.0f));
 				
-				if (msg()->FindBool("done", &done) == B_OK)
+				if (done)
 				{
 					item->setText(WTransferItem::Status, tr("Finished."));
 					item->setText(WTransferItem::ETA, QString::null);
@@ -792,7 +772,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 void 
 WUpload::keyPressEvent(QKeyEvent * event)
 {
-	if (event->key() == QAccel::stringToKey(tr("Shift+F11")))
+	if (event->key() == Q3Accel::stringToKey(tr("Shift+F11")))
 		hide();
 	else
 		QDialog::keyPressEvent(event);
@@ -1304,7 +1284,7 @@ WUpload::ULPopupActivated(int id)
 }
 
 void
-WUpload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
+WUpload::ULRightClicked(Q3ListViewItem * item, const QPoint & p, int)
 {
 	if (item)
 	{
@@ -1518,7 +1498,7 @@ WUpload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 			
 			fULThrottleMenu->setItemChecked(fULThrottle, true);
 			
-			int fNewBan = pair.thread->GetBanTime();
+			int64 fNewBan = pair.thread->GetBanTime();
 			fULBanMenu->setItemChecked(fULBan, false);
 			
 			switch (fNewBan)
@@ -1693,7 +1673,7 @@ WUpload::ULRightClicked(QListViewItem * item, const QPoint & p, int)
 }
 
 bool
-WUpload::FindULItem(unsigned int & index, QListViewItem * s)
+WUpload::FindULItem(unsigned int & index, Q3ListViewItem * s)
 {
 	PRINT("WUpload::FindULItem()\n");
 	bool success = false;

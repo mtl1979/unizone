@@ -24,7 +24,7 @@ UFileInfo::InitMIMEType()
 	if (RegOpenKey(HKEY_CLASSES_ROOT, tExt, &hkey) == ERROR_SUCCESS)
 	{
 		LONG ret;
-		if ((ret = RegQueryValueEx(hkey, L"Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
+		if ((ret = RegQueryValueExW(hkey, L"Content Type", NULL, &type, (LPBYTE)key, &dsize)) == ERROR_SUCCESS)
 		{
 			PRINT2("\tRead key: %S\n", key);
 			mt = wideCharToQString(key);
@@ -39,11 +39,11 @@ UFileInfo::InitMIMEType()
 	if (mt == QString::null)
 	{
 		HKEY hk1, hk2, hk3, hk4;
-		if (RegOpenKey(HKEY_CLASSES_ROOT, L"MIME", &hk1) == ERROR_SUCCESS)
+		if (RegOpenKeyW(HKEY_CLASSES_ROOT, L"MIME", &hk1) == ERROR_SUCCESS)
 		{
-			if (RegOpenKey(hk1, L"Database", &hk2) == ERROR_SUCCESS)
+			if (RegOpenKeyW(hk1, L"Database", &hk2) == ERROR_SUCCESS)
 			{
-				if (RegOpenKey(hk2, L"Content Type", &hk3) == ERROR_SUCCESS)
+				if (RegOpenKeyW(hk2, L"Content Type", &hk3) == ERROR_SUCCESS)
 				{
 					DWORD numkeys;
 					if (RegQueryInfoKey(hk3, NULL, NULL, NULL, &numkeys, NULL, NULL, NULL, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
@@ -53,13 +53,13 @@ UFileInfo::InitMIMEType()
 							bool found = false;
 							wchar_t lname[MAX_PATH];
 							dsize = MAX_PATH * 2;
-							if (RegEnumKey(hk3, keys, lname, dsize) == ERROR_SUCCESS)
+							if (RegEnumKeyW(hk3, keys, lname, dsize) == ERROR_SUCCESS)
 							{
-								if (RegOpenKey(hk3, lname, &hk4) == ERROR_SUCCESS)
+								if (RegOpenKeyW(hk3, lname, &hk4) == ERROR_SUCCESS)
 								{
 									wchar_t lext[MAX_PATH];
 									dsize = MAX_PATH * 2;
-									if (RegQueryValueEx(hk4, L"Extension", NULL, &type, (LPBYTE) lext, &dsize) == ERROR_SUCCESS)
+									if (RegQueryValueExW(hk4, L"Extension", NULL, &type, (LPBYTE) lext, &dsize) == ERROR_SUCCESS)
 									{
 										if (wcscmp(lext, tExt) == 0)
 										{
@@ -94,21 +94,21 @@ UFileInfo::InitModificationTime()
 		// Read the modification time
 		WString tFilePath(fFullName);
 		
+		fModificationTime = time(NULL);
+
 		struct _stat fst;
 		
 		int ret = -1;
 		wchar_t * wFilePath = tFilePath.getBuffer();
 
 		if (wFilePath)
+		{
 			ret = _wstat(wFilePath, &fst);
 		
-		if (ret == 0)
-		{
-			fModificationTime = fst.st_mtime;
-		}
-		else
-		{
-			fModificationTime = time(NULL);
+			if (ret == 0)
+			{
+				fModificationTime = fst.st_mtime;
+			}
 		}
 	}
 	else

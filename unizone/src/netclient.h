@@ -211,8 +211,8 @@ private:
 	Queue<NetPacket> packetbuf;
 	Queue<NetPacket> lowpacketbuf;
 
-	Mutex fPacketLock;
-	Mutex fLowPacketLock;
+	mutable Mutex fPacketLock;
+	mutable Mutex fLowPacketLock;
 	bool hasmessages, fLoggedIn;
 	uint64 fLoginTime;
 

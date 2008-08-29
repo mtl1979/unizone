@@ -1,8 +1,7 @@
-#ifndef PRIVATEWINDOW_H
-#define PRIVATEWINDOW_H
+#ifndef PRIVATEWINDOWIMPL_H
+#define PRIVATEWINDOWIMPL_H
 
 #ifdef WIN32
-#include <windows.h>
 #pragma warning(disable: 4786)
 #endif
 
@@ -14,20 +13,23 @@
 #include "chatwindow.h"
 
 #include <qlistview.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qsplitter.h>
-#include <qvgroupbox.h>
+#include <q3vgroupbox.h>
 
 
 class NetClient;
 
-class WPrivateWindow : public WPrivateWindowBase, public ChatWindow
+class WPrivateWindow : public QDialog, public ChatWindow
 { 
     Q_OBJECT
 
 public:
     WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent = 0, 
-		const char* name = 0, bool modal = false, WFlags fl = WDestructiveClose | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_Minimize | WStyle_Maximize | WStyle_SysMenu);
+		const char* name = 0, bool modal = false, 
+		Qt::WindowFlags fl = Qt::WDestructiveClose | Qt::WStyle_Customize | 
+		Qt::WStyle_NormalBorder | Qt::WStyle_Title | Qt::WStyle_Minimize | 
+		Qt::WStyle_Maximize | Qt::WStyle_SysMenu);
 		// the window will destroy itself when closed... and the destructor will throw a
 		// WPWTextEvent with itself as the "SendTo" target. Be aware, this pointer is invalid!
     virtual ~WPrivateWindow();
@@ -45,8 +47,8 @@ public:
 	void Unlock() { fLock.Unlock(); }
 
 protected:
-	virtual void customEvent(QCustomEvent * event);
-	virtual void resizeEvent(QResizeEvent * e);
+	virtual void customEvent(QEvent *);
+	virtual void resizeEvent(QResizeEvent *);
 
 private slots:
 	void URLClicked(const QString &);	// url clicked
@@ -55,7 +57,7 @@ private slots:
 	void TabPressed(const QString &);
 
 	// popup menu
-	void RightButtonClicked(QListViewItem *, const QPoint &, int);
+	void RightButtonClicked(Q3ListViewItem *, const QPoint &, int);
 	void PopupActivated(int);
 
 
@@ -63,11 +65,11 @@ private:
 	mutable Mutex fLock;
 	QObject * fOwner;
 	NetClient * fNet;
-	QListView * fPrivateUsers;
+	Q3ListView * fPrivateUsers;
 	WChatText * fInputText;	// input box;
 	QSplitter * fSplit;
 	QSplitter * fSplitChat;
-	QPopupMenu * fPopup;
+	Q3PopupMenu * fPopup;
 
 	QString fPopupUser;
 	WUserMap fUsers;	// users in list
