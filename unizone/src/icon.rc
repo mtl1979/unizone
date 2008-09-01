@@ -1,121 +1,63 @@
 //Microsoft Developer Studio generated resource script.
 //
+#include <windows.h>
 #include "resource.h"
 
-#define APSTUDIO_READONLY_SYMBOLS
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 2 resource.
-//
-
-/////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
-LANGUAGE 0x09, 0x01
-#pragma code_page(1252)
-#endif //_WIN32
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE MOVEABLE PURE 
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE MOVEABLE PURE 
-BEGIN
-    "#include ""afxres.h""\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE MOVEABLE PURE 
-BEGIN
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
-
-#endif    // English (U.S.) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Finnish resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FIN)
-#ifdef _WIN32
-LANGUAGE 0x0b, 0x01
-#pragma code_page(1252)
-#endif //_WIN32
-
-#ifndef _MAC
-/////////////////////////////////////////////////////////////////////////////
-//
-// Version
-//
-
-VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,30,1,0
- PRODUCTVERSION 1,30,0,0
- FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
- FILEFLAGS 0x1L
+#ifdef GCC_WINDRES
+VS_VERSION_INFO		VERSIONINFO
 #else
- FILEFLAGS 0x0L
+VS_VERSION_INFO		VERSIONINFO	MOVEABLE IMPURE LOADONCALL DISCARDABLE
 #endif
- FILEOS 0x40004L
- FILETYPE 0x1L
- FILESUBTYPE 0x0L
+  FILEVERSION 1,3,0,1
+  PRODUCTVERSION 1,3,0,0
+  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+  FILEFLAGS		1
+#else
+  FILEFLAGS		0
+#endif
+  FILEOS VOS_NT_WINDOWS32
+  FILETYPE VFT_APP
+  FILESUBTYPE VFT2_UNKNOWN
 BEGIN
-    BLOCK "StringFileInfo"
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
     BEGIN
-        BLOCK "040904b0"
-        BEGIN
-            VALUE "Comments", "Based on BeShare Client Ozone made by Vitaliy Mikitchenko\0"
-            VALUE "CompanyName", "Suomen Raasuyhteisö\0"
-            VALUE "FileDescription", "Unizone\0"
-            VALUE "FileVersion", "1, 30, 1, 0\0"
-            VALUE "InternalName", "Unizone\0"
-            VALUE "LegalCopyright", "Copyright © 2002-2008 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
-            VALUE "LegalTrademarks", "Unizone is a trademark of Mika T. Lindqvist, Ozone is a trademark of Vitaliy Mikitchenko\0"
-            VALUE "OriginalFilename", "Ozone.exe\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "UniZone\0"
-            VALUE "ProductVersion", "1, 30, 0, 0\0"
-            VALUE "SpecialBuild", "\0"
-        END
-        BLOCK "040b04b0"
-        BEGIN
-            VALUE "Comments", "Perustuu BeShare-asiakasohjelmaan Ozone, jonka on tehnyt Vitaliy Mikitchenko\0"
-            VALUE "CompanyName", "Suomen Raasuyhteisö\0"
-            VALUE "FileDescription", "Unizone\0"
-            VALUE "FileVersion", "1, 30, 1, 0\0"
-            VALUE "InternalName", "Unizone\0"
-            VALUE "LegalCopyright", "Copyright © 2002-2008 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
-            VALUE "LegalTrademarks", "Unizone on Mika T. Lindqvistin tavaramerkki, Ozone on Vitaliy Mikitchenkon tavaramerkki\0"
-            VALUE "OriginalFilename", "Unizone.exe\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "UniZone\0"
-            VALUE "ProductVersion", "1, 30, 0, 0\0"
-            VALUE "SpecialBuild", "\0"
-        END
+      VALUE "FileDescription", "Unizone\0"
+      VALUE "FileVersion", "1, 3, 0, 1\0"
+      VALUE "CompanyName", "Suomen Raasuyhteisö\0"
+      VALUE "InternalName", "Unizone\0"
+      VALUE "LegalCopyright", "Copyright © 2002-2008 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
+      VALUE "ProductName", "Unizone\0"
+      VALUE "ProductVersion", "1, 3, 0, 0\0"
+      VALUE "Comments", "Based on BeShare Client Ozone made by Vitaliy Mikitchenko\0"
+      VALUE "LegalTrademarks", "Unizone is a trademark of Mika T. Lindqvist, Ozone is a trademark of Vitaliy Mikitchenko\0"
+      VALUE "OriginalFilename", "Ozone.exe\0"
+      VALUE "PrivateBuild", "\0"
+      VALUE "SpecialBuild", "\0"
     END
-    BLOCK "VarFileInfo"
+    BLOCK "040b04b0"
     BEGIN
-        VALUE "Translation", 0x409, 1200, 0x40b, 1200
+      VALUE "FileDescription", "Unizone\0"
+      VALUE "FileVersion", "1, 3, 0, 1\0"
+      VALUE "CompanyName", "Suomen Raasuyhteisö\0"
+      VALUE "InternalName", "Unizone\0"
+      VALUE "ProductName", "Unizone\0"
+      VALUE "ProductVersion", "1, 3, 0, 0\0"
+      VALUE "Comments", "Perustuu BeShare-asiakasohjelmaan Ozone, jonka on tehnyt Vitaliy Mikitchenko\0"
+      VALUE "LegalCopyright", "Copyright © 2002-2008 Mika T. Lindqvist, Vitaliy Mikitchenko\0"
+      VALUE "LegalTrademarks", "Unizone on Mika T. Lindqvistin tavaramerkki, Ozone on Vitaliy Mikitchenkon tavaramerkki\0"
+      VALUE "OriginalFilename", "Unizone.exe\0"
+      VALUE "PrivateBuild", "\0"
+      VALUE "SpecialBuild", "\0"
     END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200, 0x40b, 1200
+  END
 END
-
-#endif    // !_MAC
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -126,18 +68,5 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON    DISCARDABLE     "unizone.ico"
-#endif    // Finnish resources
 /////////////////////////////////////////////////////////////////////////////
-
-
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-
-
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED
 
