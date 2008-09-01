@@ -1,108 +1,46 @@
 //Microsoft Developer Studio generated resource script.
 //
+#include <windows.h>
 #include "resource.h"
 
-#define APSTUDIO_READONLY_SYMBOLS
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 2 resource.
-//
-
-/////////////////////////////////////////////////////////////////////////////
-#undef APSTUDIO_READONLY_SYMBOLS
-
-/////////////////////////////////////////////////////////////////////////////
-// Finnish resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FIN)
-#ifdef _WIN32
-LANGUAGE 0x0b, 0x01
-#pragma code_page(1252)
-#endif //_WIN32
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE DISCARDABLE 
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE DISCARDABLE 
-BEGIN
-    "#include ""afxres.h""\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE DISCARDABLE 
-BEGIN
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
-
-
-#ifndef _MAC
-/////////////////////////////////////////////////////////////////////////////
-//
-// Version
-//
-
-VS_VERSION_INFO VERSIONINFO
+#ifdef GCC_WINDRES
+VS_VERSION_INFO		VERSIONINFO
+#else
+VS_VERSION_INFO		VERSIONINFO	MOVEABLE IMPURE LOADONCALL DISCARDABLE
+#endif
  FILEVERSION 1,0,0,1
  PRODUCTVERSION 1,0,0,1
- FILEFLAGSMASK 0x3fL
+ FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
- FILEFLAGS 0x1L
+  FILEFLAGS		1
 #else
- FILEFLAGS 0x0L
+  FILEFLAGS		0
 #endif
- FILEOS 0x40004L
- FILETYPE 0x1L
- FILESUBTYPE 0x0L
+  FILEOS VOS_NT_WINDOWS32
+  FILETYPE VFT_APP
+  FILESUBTYPE VFT2_UNKNOWN
 BEGIN
-    BLOCK "StringFileInfo"
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040b04b0"
     BEGIN
-        BLOCK "040b04b0"
-        BEGIN
-            VALUE "Comments", "\0"
-            VALUE "CompanyName", "Suomen Raasuyhteisö\0"
-            VALUE "FileDescription", "Image Splitter\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "Image Splitter\0"
-            VALUE "LegalCopyright", "Copyright © 2004-2007 Suomen Raasuyhteisö\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "Image Splitter.exe\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "Image Splitter\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
-            VALUE "SpecialBuild", "\0"
-        END
+      VALUE "FileDescription", "Image Splitter\0"
+      VALUE "FileVersion", "1, 0, 0, 1\0"
+      VALUE "CompanyName", "Suomen Raasuyhteisö\0"
+      VALUE "InternalName", "Image Splitter\0"
+      VALUE "ProductName", "Image Splitter\0"
+      VALUE "ProductVersion", "1, 0, 0, 1\0"
+      VALUE "Comments", "\0"
+      VALUE "LegalCopyright", "Copyright © 2004-2007 Suomen Raasuyhteisö\0"
+      VALUE "LegalTrademarks", "\0"
+      VALUE "OriginalFilename", "Image Splitter.exe\0"
+      VALUE "PrivateBuild", "\0"
+      VALUE "SpecialBuild", "\0"
     END
-    BLOCK "VarFileInfo"
-    BEGIN
-        VALUE "Translation", 0x40b, 1200
-    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x40b, 1200
+  END
 END
-
-#endif    // !_MAC
-
-#endif    // Finnish resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-
-
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED
 

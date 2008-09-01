@@ -286,28 +286,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\qt4\moc_mainwindow.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\qt4\moc_mainwindowimpl.cpp"
 				>
 				<FileConfiguration
@@ -655,9 +633,9 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="c:\qt4\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp&#x0D;&#x0A;"
-						Outputs="$(InputDir)moc_$(InputName).cpp"
+						Description=""
+						CommandLine=""
+						Outputs=""
 					/>
 				</FileConfiguration>
 				<FileConfiguration
