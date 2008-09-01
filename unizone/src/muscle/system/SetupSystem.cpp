@@ -7,9 +7,8 @@
 #include "util/MiscUtilityFunctions.h"  // for ExitWithoutCleanup()
 
 #ifdef WIN32
-# include <windows.h>
-# include <mmsystem.h>
 # include <signal.h>
+# include <mmsystem.h>
 #else
 # if defined(__BEOS__)
 #  include <signal.h>

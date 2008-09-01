@@ -31,15 +31,23 @@ public:
    /** Launch the child process.  Note that this method should only be called once!
      * @param argc The argc variable to be passed to the child process
      * @param argv The argv variable to be passed to the child process
+     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
+     *               If specified as false, ChildProcessDataIO will use good old fashioned fork() instead.
+     *               Pty's allow for better control of interactive child processes, but are not always well supported on all platforms.
+     *               Note that this argument is ignored when running under Windows.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t LaunchChildProcess(int argc, char ** argv) {return LaunchChildProcessAux(muscleMax(0,argc), argv);}
+   status_t LaunchChildProcess(int argc, char ** argv, bool usePty = true) {return LaunchChildProcessAux(muscleMax(0,argc), argv, usePty);}
 
    /** As above, but the program name and all arguments are specified as a single string.
      * @param cmd String to launch the child process with
+     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
+     *               If specified as false, ChildProcessDataIO will use good old fashioned fork() instead.
+     *               Pty's allow for better control of interactive child processes, but are not always well supported on all platforms.
+     *               Note that this argument is ignored when running under Windows.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t LaunchChildProcess(const char * cmd) {return LaunchChildProcessAux(-1, cmd);}
+   status_t LaunchChildProcess(const char * cmd, bool usePty = true) {return LaunchChildProcessAux(-1, cmd, usePty);}
 
    /** Read data from the child process's stdout stream. 
      * @param buffer The read bytes will be placed here
@@ -122,7 +130,7 @@ public:
 
 private:
    void Close();
-   status_t LaunchChildProcessAux(int argc, const void * argv);
+   status_t LaunchChildProcessAux(int argc, const void * argv, bool usePty);
 
    bool _blocking;
    bool _killChildOnClose;
@@ -142,6 +150,7 @@ private:
    SocketRef _slaveNotifySocket;
    volatile bool _requestThreadExit;
 #else
+   void RunChildProcess(int argc, const void * args);
    SocketRef _handle;
    pid_t _childPID;
 #endif

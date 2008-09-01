@@ -27,7 +27,7 @@
 #  elif defined(__BEOS__)
 #   include <kernel/OS.h>
 #  elif defined(WIN32)
-#   include <windows.h>
+    // empty
 #  elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) || defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
     // empty
 #  elif defined(QT_VERSION) && (QT_VERSION >= 0x40000)

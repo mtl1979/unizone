@@ -132,7 +132,7 @@ public:
    const String & GetSessionIDString() const {return _idString;}
 
    /** Marks this session for immediate termination and removal from the server. */
-   void EndSession();
+   virtual void EndSession();
 
    /** Forces the disconnection of this session's TCP connection to its client.
     *  Calling this will cause ClientConnectionClosed() to be called, as if the

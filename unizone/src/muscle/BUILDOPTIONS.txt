@@ -107,7 +107,10 @@ of your Makefile to alter muscle's behaviour:
    Tell muscle that this CPU can't handle non-aligned integer data reads/writes (e.g. Sparc)
 
 -DMUSCLE_AVOID_NEWNOTHROW 
-   Turns newnothrow into an equivalent for "new", instead of "new (nothrow)"
+   Turns newnothrow into a synonym for "new", instead of "new (nothrow)"
+
+-DMUSCLE_AVOID_FORKPTY 
+   Tells the ChildProcessDataIO class not to compile in calls to forkpty(); instead it will use fork() only
 
 -DMUSCLE_CUSTOM_ATOMIC_TYPE 
    Use custom callback functions to implement atomic inc/dec
@@ -122,10 +125,6 @@ of your Makefile to alter muscle's behaviour:
 
 -DSMALL_MUSCLE_STRING_LENGTH=N 
    strings <= this length will be stored inline in the String object to avoid a malloc()... default is 7
-
--DMUSCLE_AVOID_TTYDEFS
-   Tells ChildProcessDataIO.cpp not to try to use the TTYDEF_* constants,
-   since they are not defined in some environments (e.g. BeOS)
 
 -DMUSCLE_USE_QUERYPERFORMANCECOUNTER
    Tells MUSCLE's GetRunTime64() to use the higher-resolution 

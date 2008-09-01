@@ -2,7 +2,7 @@
 #define	_REGEX_H_	/* never again */
 
 // This block added by Monni to improve windows compatibility
-#if defined(_WINDOWS) || defined(WINDOWS) || defined(_WIN32)
+#if defined(_WINDOWS) || defined(WINDOWS) || defined(_WIN32) || defined(WIN32)
 #  include <windows.h>
 #  if defined(_MSC_VER)
 #    if defined(REGEX_DLL)

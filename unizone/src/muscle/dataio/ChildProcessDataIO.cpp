@@ -80,11 +80,19 @@ static status_t ParseLine(const String & line, Queue<String> & addTo)
    return B_NO_ERROR;
 }
 
-status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args)
+status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args, bool usePty)
 {
    TCHECKPOINT;
 
+   Close();  // paranoia
+
+#ifdef MUSCLE_AVOID_FORKPTY
+   usePty = false;   // no sense trying to use pseudo-terminals if they were forbidden at compile time
+#endif
+
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
+   (void) usePty;    // just to shut the compiler up
+
    SECURITY_ATTRIBUTES saAttr;
    {
       memset(&saAttr, 0, sizeof(saAttr));
@@ -161,78 +169,52 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
    Close();  // free all allocated object state we may have
    return B_ERROR;
 #else
-   
-   int masterFD;
-   pid_t pid = forkpty(&masterFD, NULL, NULL, NULL);
-        if (pid < 0) return B_ERROR;  // fork failure!
-   else if (pid == 0)
+   pid_t pid = (pid_t) -1;
+   if (usePty)
    {
-      // we are the child process
-      int ret = 20;
-      (void) signal(SIGHUP, SIG_DFL);  // FogBugz #2918
-
-      // Close any file descriptors leftover from the parent process
-      int fdlimit = sysconf(_SC_OPEN_MAX);
-      for (int i=STDERR_FILENO+1; i<fdlimit; i++) close(i);
-
-      // Turn off the echo, we don't want to see that back on stdout
-      struct termios tios;
-      if (tcgetattr(STDIN_FILENO, &tios) >= 0)
+# ifdef MUSCLE_AVOID_FORKPTY
+      return B_ERROR;  // this branch should never be taken, due to the ifdef at the top of this function... but just in case
+# else
+      // New-fangled forkpty() implementation
+      int masterFD = -1;
+      pid = forkpty(&masterFD, NULL, NULL, NULL);
+           if (pid > 0) _handle = GetSocketRefFromPool(masterFD); 
+      else if (pid == 0)
       {
-         tios.c_lflag &= ~(ECHO | ECHOE | ECHOK | ECHONL);
-         tios.c_oflag &= ~(ONLCR); /* also turn off NL to CR/NL mapping on output */
-         (void) tcsetattr(STDIN_FILENO, TCSANOW, &tios);
-      }
-
-      if (argc < 0) 
-      {
-         // I can't use system() here because it spawns an extra
-         // process, which means that the parent process tries
-         // to kill the wrong _childPID.  We need to have it all
-         // execute in _this_ process, which means we gotta use exec()!
-         Queue<String> argv;
-         if (ParseLine((const char *)args, argv) == B_NO_ERROR)
+         // Turn off the echo, we don't want to see that back on stdout
+         struct termios tios;
+         if (tcgetattr(STDIN_FILENO, &tios) >= 0)
          {
-            argc = argv.GetNumItems();
-            char ** newArgv = newnothrow_array(char *, argc+1);
-            if (newArgv)
-            {
-               for (int i=0; i<argc; i++) newArgv[i] = (char *) argv[i]();
-               newArgv[argc] = NULL;   // make sure it's terminated!
-               ChildProcessReadyToRun();
-               ret = execvp(argv[0](), newArgv);
-               delete [] newArgv;  // only executed if execvp() fails
-            }
+            tios.c_lflag &= ~(ECHO | ECHOE | ECHOK | ECHONL);
+            tios.c_oflag &= ~(ONLCR); /* also turn off NL to CR/NL mapping on output */
+            (void) tcsetattr(STDIN_FILENO, TCSANOW, &tios);
          }
       }
-      else
-      {
-         const char ** argv = (const char **) args;
-         char ** newArgv = newnothrow_array(char *, argc+1);
-         if (newArgv)
-         {
-            memcpy(newArgv, argv, argc*sizeof(char *));
-            newArgv[argc] = NULL;   // make sure the array is terminated!
-            ChildProcessReadyToRun();
-            ret = execvp(argv[0], newArgv);
-            delete [] newArgv;  // only executed if execvp() fails
-         }
-         else ret = 20;
-      }
-      ExitWithoutCleanup(ret);
+#endif
    }
    else
    {
-      // we are the parent process
-      _childPID = pid;
-      _handle = GetSocketRefFromPool(masterFD);
-      if (_handle()) return SetSocketBlockingEnabled(_handle, _blocking);
-      else
+      // Old-fashioned fork() implementation
+      SocketRef masterSock, slaveSock;
+      if (CreateConnectedSocketPair(masterSock, slaveSock, true) != B_NO_ERROR) return B_ERROR;
+      pid = fork();
+           if (pid > 0) _handle = masterSock;
+      else if (pid == 0)
       {
-         close(masterFD);
-         Close();
+         int fd = slaveSock()->GetFileDescriptor();
+         if ((dup2(fd, STDIN_FILENO) < 0)||(dup2(fd, STDOUT_FILENO) < 0)||(dup2(fd, STDERR_FILENO) < 0)) ExitWithoutCleanup(20);
       }
    }
+
+        if (pid < 0) return B_ERROR;      // fork failure!
+   else if (pid == 0) RunChildProcess(argc, args);  // we are the child process -- never returns
+   else if (_handle())   // if we got this far, we are the parent process
+   {
+      _childPID = pid;
+      if (SetSocketBlockingEnabled(_handle, _blocking) == B_NO_ERROR) return B_NO_ERROR;
+   }
+
+   Close();  // roll back!
    return B_ERROR;
 #endif
 }
@@ -251,6 +233,56 @@ bool ChildProcessDataIO :: IsChildProcessAvailable() const
    return (_handle.GetFileDescriptor() >= 0);
 #endif
 } 
+
+#ifndef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
+void ChildProcessDataIO :: RunChildProcess(int argc, const void * args)
+{
+   // we are the child process
+   int ret = 20;
+   (void) signal(SIGHUP, SIG_DFL);  // FogBugz #2918
+
+   // Close any file descriptors leftover from the parent process
+   int fdlimit = sysconf(_SC_OPEN_MAX);
+   for (int i=STDERR_FILENO+1; i<fdlimit; i++) close(i);
+
+   if (argc < 0) 
+   {
+      // I can't use system() here because it spawns an extra
+      // process, which means that the parent process tries
+      // to kill the wrong _childPID.  We need to have it all
+      // execute in _this_ process, which means we gotta use exec()!
+      Queue<String> argv;
+      if (ParseLine((const char *)args, argv) == B_NO_ERROR)
+      {
+         argc = argv.GetNumItems();
+         char ** newArgv = newnothrow_array(char *, argc+1);
+         if (newArgv)
+         {
+            for (int i=0; i<argc; i++) newArgv[i] = (char *) argv[i]();
+            newArgv[argc] = NULL;   // make sure it's terminated!
+            ChildProcessReadyToRun();
+            ret = execvp(argv[0](), newArgv);
+            delete [] newArgv;  // only executed if execvp() fails
+         }
+      }
+   }
+   else
+   {
+      const char ** argv = (const char **) args;
+      char ** newArgv = newnothrow_array(char *, argc+1);
+      if (newArgv)
+      {
+         memcpy(newArgv, argv, argc*sizeof(char *));
+         newArgv[argc] = NULL;   // make sure the array is terminated!
+         ChildProcessReadyToRun();
+         ret = execvp(argv[0], newArgv);
+         delete [] newArgv;  // only executed if execvp() fails
+      }
+      else ret = 20;
+   }
+   ExitWithoutCleanup(ret);
+}
+#endif
 
 status_t ChildProcessDataIO :: KillChildProcess()
 {

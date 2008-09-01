@@ -49,6 +49,13 @@ MessageRef GetMessageFromPool(const Message & copyMe)
    return ref;
 }
 
+MessageRef GetMessageFromPool(const uint8 * flatBytes, uint32 numBytes)
+{
+   MessageRef ref(_messagePool.ObtainObject());
+   if ((ref())&&(ref()->Unflatten(flatBytes, numBytes) != B_NO_ERROR)) ref.Reset();
+   return ref;
+}
+
 MessageRef GetMessageFromPool(ObjectPool<Message> & pool, uint32 what)
 {
    MessageRef ref(pool.ObtainObject());
@@ -60,6 +67,13 @@ MessageRef GetMessageFromPool(ObjectPool<Message> & pool, const Message & copyMe
 {
    MessageRef ref(pool.ObtainObject());
    if (ref()) *(ref()) = copyMe;
+   return ref;
+}
+
+MessageRef GetMessageFromPool(ObjectPool<Message> & pool, const uint8 * flatBytes, uint32 numBytes)
+{
+   MessageRef ref(pool.ObtainObject());
+   if ((ref())&&(ref()->Unflatten(flatBytes, numBytes) != B_NO_ERROR)) ref.Reset();
    return ref;
 }
 

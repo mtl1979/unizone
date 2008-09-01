@@ -23,7 +23,7 @@
 # if defined(MUSCLE_USE_PTHREADS)
 #  include <pthread.h>
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-#  include <windows.h>
+#  // empty
 # elif defined(MUSCLE_QT_HAS_THREADS)
 #  if (QT_VERSION >= 0x040000)
 #   include <QMutex>

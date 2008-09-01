@@ -69,6 +69,22 @@ MessageRef GetMessageFromPool(const Message & copyMe);
  */
 MessageRef GetMessageFromPool(ObjectPool<Message> & pool, const Message & copyMe);
 
+/** Convenience method:  Gets a Message from the message pool, populates it using the flattened Message
+ *  bytes at (flatBytes), and returns it.
+ *  @param flatBytes The flattened Message bytes (as previously produced by Message::Flatten()) to unflatten from
+ *  @param numBytes The number of bytes that (flatBytes) points to.
+ *  @return Reference to a Message object, or a NULL ref on failure (out of memory or unflattening error)
+ */
+MessageRef GetMessageFromPool(const uint8 * flatBytes, uint32 numBytes);
+
+/** As above, except that the Message is obtained from the specified pool instead of from the default Message pool.
+ *  @param pool the ObjectPool to allocate the Message from.
+ *  @param flatBytes The flattened Message bytes (as previously produced by Message::Flatten()) to unflatten from
+ *  @param numBytes The number of bytes that (flatBytes) points to.
+ *  @return Reference to a Message object, or a NULL ref on failure (out of memory or unflattening error)
+ */
+MessageRef GetMessageFromPool(ObjectPool<Message> & pool, const uint8 * flatBytes, uint32 numBytes);
+
 // this declaration is for internal use only
 class AbstractDataArray;
 

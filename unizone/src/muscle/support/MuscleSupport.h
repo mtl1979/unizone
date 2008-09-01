@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.28b"
+#define MUSCLE_VERSION_STRING "4.28"
 
 #include <string.h>  /* for memcpy() */
 
@@ -690,7 +690,7 @@ static inline void MakePrettyTypeCodeString(uint32 typecode, char *buf)
 #include <errno.h>     /* for errno */
 
 #ifdef WIN32
-# include <winsock2.h>
+# include <winsock2.h>  // this will bring in windows.h for us
 #endif
 
 #ifdef __cplusplus
