@@ -7,15 +7,17 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
+#include "afxres.h"
 
 /////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
 // English (U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
-LANGUAGE 0x09, 0x01
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 #endif //_WIN32
 
@@ -53,7 +55,7 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FIN)
 #ifdef _WIN32
-LANGUAGE 0x0b, 0x01
+LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
 #pragma code_page(1252)
 #endif //_WIN32
 
@@ -89,7 +91,7 @@ BEGIN
             VALUE "LegalTrademarks", "Unizone is a trademark of Mika T. Lindqvist, Ozone is a trademark of Vitaliy Mikitchenko\0"
             VALUE "OriginalFilename", "Ozone.exe\0"
             VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "UniZone\0"
+            VALUE "ProductName", "Unizone\0"
             VALUE "ProductVersion", "1, 24, 1, 0\0"
             VALUE "SpecialBuild", "\0"
         END
@@ -104,7 +106,7 @@ BEGIN
             VALUE "LegalTrademarks", "Unizone on Mika T. Lindqvistin tavaramerkki, Ozone on Vitaliy Mikitchenkon tavaramerkki\0"
             VALUE "OriginalFilename", "Unizone.exe\0"
             VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "UniZone\0"
+            VALUE "ProductName", "Unizone\0"
             VALUE "ProductVersion", "1, 24, 1, 0\0"
             VALUE "SpecialBuild", "\0"
         END
