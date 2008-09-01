@@ -5,7 +5,6 @@
 #include <qapplication.h>
 #include <qfile.h>
 #include <qmessagebox.h>
-//Added by qt3to4:
 #include <Q3ValueList>
 #include <fcntl.h>
 
@@ -1609,11 +1608,7 @@ WSettings::EmptyResumeList()
 void 
 WSettings::GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl, int32 & extra) const
 {
-#if (QT_VERSION < 0x030000)
-	dock = (int) Q3MainWindow::ToolBarDock::Top;
-#else
 	dock = (int) Qt::DockTop;
-#endif
 	index = toolbar;
 
 	if (toolbar == 1)

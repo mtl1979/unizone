@@ -6,8 +6,7 @@
 #  include <winsock2.h>
 #else
 #  include <netinet/in.h>
-//Added by qt3to4:
-#include <Q3CString>
+#  include <Q3CString>
 #endif
 
 const char mask[4] = {'5', '0', '3', '8'};

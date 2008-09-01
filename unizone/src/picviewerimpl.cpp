@@ -16,7 +16,6 @@
 #include <q3dragobject.h>
 #include <q3url.h>
 #include <qdir.h>
-//Added by qt3to4:
 #include <QDropEvent>
 #include <QResizeEvent>
 #include <QMouseEvent>

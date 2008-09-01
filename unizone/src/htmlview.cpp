@@ -4,7 +4,6 @@
 
 #include <qtooltip.h>
 #include <qregexp.h>
-//Added by qt3to4:
 #include <QShowEvent>
 #include <QHideEvent>
 #include <QMouseEvent>
@@ -62,21 +61,6 @@ void
 WHTMLView::hideEvent(QHideEvent * e)
 {
 	PRINT("WHTMLView::hideEvent()\n");
-#if (QT_VERSION < 0x030000) && defined(DEBUG2)
-
-	fLock.Lock();
-	
-	QString tmp;
-	
-	if (fBuffer.isEmpty())
-	{
-		fBuffer = TrimBuffer(text());
-		setText(QString::null);
-	}
-	
-	fLock.Unlock();
-	
-#endif
 	Q3TextBrowser::hideEvent(e);
 	PRINT("WHTMLView::hideEvent() OK\n");
 }
@@ -85,41 +69,6 @@ void
 WHTMLView::showEvent(QShowEvent * e)
 {
 	PRINT("WHTMLView::showEvent()\n");
-#if (QT_VERSION < 0x030000)
-
-	fLock.Lock();
-
-	QString txt;
-
-//	Force scrolling down...
-	fScrollDown = true;
-	fScrollY = 0;
-//  -----------------------
-	if (fBuffer.isEmpty())
-	{
-		txt = text();
-	}
-	else
-	{
-#ifndef DEBUG2
-		if (!text().isEmpty())
-		{
-			txt = text();
-//			txt += "<br>";
-		}
-#endif
-		txt += fBuffer;
-		fBuffer = QString::null;
-	}
-
-	txt = TrimBuffer(txt);
-	txt = ParseForShown(txt);
-	setText(txt);
-
-	fLock.Unlock();
-
-	UpdateScrollState();
-#endif
 	Q3TextBrowser::showEvent(e);
 	PRINT("WHTMLView::showEvent() OK\n");
 }
@@ -163,22 +112,7 @@ WHTMLView::_append(const QString &newtext)
 	PRINT("WHTMLView::_append()\n");
 	fLock.Lock();
 
-#if (QT_VERSION < 0x030000)
-	if (text().isEmpty())
-	{
-		PRINT("Calling setText()\n");
-		setText(TrimBuffer(newtext));
-	}
-	else
-	{
-		QString tmp("\t");
-		tmp += newtext;
-		PRINT("Calling append()\n");
-		append(tmp);
-	}
-#else
 	append(newtext);
-#endif
 
 	fLock.Unlock();
 	PRINT("WHTMLView::_append() OK\n");
@@ -297,12 +231,6 @@ WHTMLView::UpdateScrollState()
 	if (fScrollX > contentsX() || fScrollY > contentsY())
 	{
 		setContentsPos(fScrollX, QMIN(fScrollY, contentsHeight()));
-#if (QT_VERSION < 0x030000)
-		repaintContents(
-							contentsX(), contentsY(),
-							contentsWidth(), contentsHeight(),
-							false);
-#endif
 		if (fScrollY <= contentsHeight())
 			fScrollY = -1;
 	}

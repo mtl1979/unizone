@@ -3,7 +3,6 @@
 #include "textevent.h"
 
 #include <qapplication.h>
-//Added by qt3to4:
 #include <QFocusEvent>
 
 WComboBox::WComboBox(QObject * owner, QWidget * parent, const char * name)

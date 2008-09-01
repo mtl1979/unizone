@@ -1,6 +1,5 @@
 #include "titanic.h"
 #include <stdio.h>
-//Added by qt3to4:
 #include <Q3CString>
 
 QString

@@ -5,8 +5,7 @@
 #include <q3textbrowser.h>
 
 #include "message/Message.h"
-
-class muscle::Mutex;
+#include "system/Mutex.h"
 
 using namespace muscle;
 
@@ -17,9 +16,9 @@ public:
 	WHTMLView(QWidget * parent = NULL, const char * name = NULL);
 	virtual ~WHTMLView() {}
 
-	virtual void setSource( const QString & name );	
-	virtual void appendText( const QString & text);
-	virtual QString context() const { return fContext; }
+	virtual void setSource(const QString & name);	
+	virtual void appendText(const QString & text);
+	virtual QString context() const {return fContext;}
 	virtual void clear();
 
 signals:
@@ -30,10 +29,10 @@ protected:
 	virtual void viewportMouseReleaseEvent(QMouseEvent * e);
 	virtual void viewportMouseMoveEvent(QMouseEvent * e);
 
-	virtual void showEvent(QShowEvent * event);
-	virtual void hideEvent(QHideEvent * event);
+	virtual void showEvent(QShowEvent * e);
+	virtual void hideEvent(QHideEvent * e);
 
-	virtual void timerEvent(QTimerEvent * event);
+	virtual void timerEvent(QTimerEvent * e);
 
 private:
 	QString fOldURL, fURL, fContext;
@@ -46,7 +45,7 @@ private:
 	void CheckScrollState();
 	void UpdateScrollState();
 
-	void _append( const QString & text);
+	void _append(const QString & text);
 
 private slots:
 	void URLSelected(const QString & url);

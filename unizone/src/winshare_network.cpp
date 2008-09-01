@@ -8,7 +8,6 @@
 #include <qapplication.h>
 #include <q3filedialog.h>
 #include <qregexp.h>
-//Added by qt3to4:
 #include <QDesktopWidget>
 #include <QPixmap>
 

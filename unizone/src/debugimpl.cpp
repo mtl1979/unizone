@@ -8,7 +8,6 @@
 #include <q3multilineedit.h>
 #include <qmessagebox.h>
 #include <qstring.h>
-//Added by qt3to4:
 #include <Q3CString>
 #include "wfile.h"
 

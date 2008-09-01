@@ -31,7 +31,6 @@
 #include <qinputdialog.h>
 #include <q3toolbar.h>
 #include <qregexp.h>
-//Added by qt3to4:
 #include <QTimerEvent>
 #include <QResizeEvent>
 #include <QLabel>

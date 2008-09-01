@@ -11,7 +11,6 @@
 #include <string.h>
 
 #include "util/String.h"
-//Added by qt3to4:
 #include <Q3CString>
 
 using muscle::String;

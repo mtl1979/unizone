@@ -15,7 +15,6 @@
 #include "netclient.h"
 
 #include "reflector/StorageReflectConstants.h"
-//Added by qt3to4:
 #include <QCustomEvent>
 #include <QResizeEvent>
 #include <Q3ValueList>

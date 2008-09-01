@@ -3,7 +3,6 @@
 #endif
 
 #include <qapplication.h>
-//Added by qt3to4:
 #include <Q3GridLayout>
 
 #include "channels.h"
@@ -232,9 +231,7 @@ Channels::CreateChannel()
 	QString channel = QInputDialog::getText( 
 		tr( "Create Channel" ), 
 		tr( "Please enter channel name" ),
-#if (QT_VERSION >= 0x030000)
 		QLineEdit::Normal, 
-#endif
 		QString::null, &ok, this 
 		);
 	if ( ok && !channel.isEmpty() )

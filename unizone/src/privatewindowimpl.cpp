@@ -5,7 +5,6 @@
 
 #include <qapplication.h>
 #include <qmessagebox.h>
-//Added by qt3to4:
 #include <QCustomEvent>
 #include <QResizeEvent>
 #include <Q3ValueList>

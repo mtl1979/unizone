@@ -5,7 +5,6 @@
 
 #include <qdir.h>
 #include <qstringlist.h>
-//Added by qt3to4:
 #include <QCustomEvent>
 #include <string.h>
 #include <qevent.h>
@@ -106,13 +105,7 @@ WFileThread::InternalThreadEntry()
 void 
 WFileThread::postEvent( QObject *o,QEvent * e)
 {
-// Using QApplication::postEvent under Qt 2.3 NC
-// seems to cause crashes when sharing over 10.000 files
-#if (QT_VERSION < 0x030000)
-	QThread::postEvent(o, e);
-#else
 	QApplication::postEvent(o, e);
-#endif
 }
 
 void

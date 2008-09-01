@@ -1,7 +1,6 @@
 #include "wstatusbar.h"
 #include "qglobal.h"
 #include <qlayout.h>
-//Added by qt3to4:
 #include <QResizeEvent>
 #include <QLabel>
 

@@ -1,6 +1,5 @@
 #include <qlabel.h>
 #include <qdir.h>
-//Added by qt3to4:
 #include <QCustomEvent>
 
 #include "scanprogressimpl.h"

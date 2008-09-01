@@ -578,15 +578,3 @@ WFormat::PrivateRemoved(const QString &session, const QString &name)
 	temp += tr("was removed from the private chat window.");
 	return temp.stripWhiteSpace();
 }
-
-#if (QT_VERSION < 0x030000)
-//
-// Qt 2.x seems to miss this definition
-//
-#ifndef QT_NO_TRANSLATION
-QString WFormat::tr(const char* s, const char* c)
-{
-    return ((QNonBaseApplication*)qApp)->translate("WFormat",s,c);
-}
-#endif
-#endif

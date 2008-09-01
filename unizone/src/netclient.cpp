@@ -21,7 +21,6 @@
 #include "iogateway/MessageIOGateway.h"
 #include "system/SystemInfo.h"
 #include "zlib/ZLibUtilityFunctions.h"
-//Added by qt3to4:
 #include <QTimerEvent>
 #include <QCustomEvent>
 #include <QEvent>

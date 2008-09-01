@@ -3,7 +3,6 @@
 #endif
 
 #include "wmessageevent.h"
-//Added by qt3to4:
 #include <QCustomEvent>
 
 WMessageEvent::WMessageEvent(MessageRef msg)

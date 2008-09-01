@@ -7,7 +7,6 @@
 #include <q3filedialog.h>
 #include <qmessagebox.h>
 #include <qfont.h>
-//Added by qt3to4:
 #include <Q3CString>
 #include <QTranslator>
 

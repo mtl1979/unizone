@@ -11,7 +11,6 @@
 #include "winsharewindow.h"
 
 #include "zlib/ZLibUtilityFunctions.h"
-//Added by qt3to4:
 #include <QCustomEvent>
 
 

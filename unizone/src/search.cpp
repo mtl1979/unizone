@@ -3,7 +3,6 @@
 #endif
 
 #include <qpushbutton.h>
-//Added by qt3to4:
 #include <QLabel>
 #include <QCustomEvent>
 #include <Q3GridLayout>

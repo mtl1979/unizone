@@ -5,7 +5,6 @@
 #include <qobject.h>
 #include <qdir.h>
 #include <q3accel.h>
-//Added by qt3to4:
 #include <QKeyEvent>
 #include <QCustomEvent>
 #include <QResizeEvent>
