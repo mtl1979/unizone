@@ -146,7 +146,7 @@ SOURCE=..\..\src\mainwindowimpl.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\isplitter\src
+InputDir=\build\unizone\branches\1.2\isplitter\src
 InputPath=..\..\src\mainwindowimpl.h
 InputName=mainwindowimpl
 
@@ -159,7 +159,7 @@ InputName=mainwindowimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\isplitter\src
+InputDir=\build\unizone\branches\1.2\isplitter\src
 InputPath=..\..\src\mainwindowimpl.h
 InputName=mainwindowimpl
 
@@ -179,7 +179,7 @@ SOURCE=..\..\src\menubar.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\isplitter\src
+InputDir=\build\unizone\branches\1.2\isplitter\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
@@ -192,7 +192,7 @@ InputName=menubar
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\isplitter\src
+InputDir=\build\unizone\branches\1.2\isplitter\src
 InputPath=..\..\src\menubar.h
 InputName=menubar
 
@@ -216,7 +216,7 @@ SOURCE=..\..\src\previewimpl.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\isplitter\src
+InputDir=\build\unizone\branches\1.2\isplitter\src
 InputPath=..\..\src\previewimpl.h
 InputName=previewimpl
 
@@ -229,7 +229,7 @@ InputName=previewimpl
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\isplitter\src
+InputDir=\build\unizone\branches\1.2\isplitter\src
 InputPath=..\..\src\previewimpl.h
 InputName=previewimpl
 
@@ -259,6 +259,10 @@ SOURCE=..\..\..\unizone\src\wutil.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
+SOURCE=..\..\src\isplitter.ico
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\qt2\isplitter.pro
 # End Source File
 # Begin Source File
@@ -273,7 +277,7 @@ SOURCE=..\..\src\mainwindow.ui
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\trunk\isplitter\src
+InputDir=\build\unizone\branches\1.2\isplitter\src
 InputPath=..\..\src\mainwindow.ui
 InputName=mainwindow
 
@@ -293,7 +297,7 @@ BuildCmds= \
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Uic'ing $(InputName).ui ...
-InputDir=\build\unizone\trunk\isplitter\src
+InputDir=\build\unizone\branches\1.2\isplitter\src
 InputPath=..\..\src\mainwindow.ui
 InputName=mainwindow
 
@@ -584,7 +588,7 @@ SOURCE=..\..\src\qt2\mainwindow.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\isplitter\src\qt2
+InputDir=\build\unizone\branches\1.2\isplitter\src\qt2
 InputPath=..\..\src\qt2\mainwindow.h
 InputName=mainwindow
 
@@ -597,7 +601,7 @@ InputName=mainwindow
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=\build\unizone\trunk\isplitter\src\qt2
+InputDir=\build\unizone\branches\1.2\isplitter\src\qt2
 InputPath=..\..\src\qt2\mainwindow.h
 InputName=mainwindow
 
@@ -608,6 +612,26 @@ InputName=mainwindow
 
 !ENDIF 
 
+# End Source File
+# End Group
+# Begin Group "CRT Sources"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\unizone\src\windows\_filwbuf.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\unizone\src\windows\_getbuf.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\unizone\src\windows\resetstk.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\unizone\src\windows\vwsscanf.c
 # End Source File
 # End Group
 # End Target
