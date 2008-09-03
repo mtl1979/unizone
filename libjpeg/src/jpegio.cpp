@@ -41,7 +41,7 @@
 
 #include "qimage.h"
 
-#if (QT_VERSION < 0x030000) || defined(QT_NO_IMAGEIO_JPEG)
+#if defined(QT_NO_IMAGEIO_JPEG)
 
 #include "qiodevice.h"
 #include "qjpegio.h"
@@ -177,7 +177,6 @@ inline my_jpeg_source_mgr::my_jpeg_source_mgr(QImageIO* iioptr)
 }
 
 
-#if (QT_VERSION >= 0x030000)
 static
 void scaleSize( int &reqW, int &reqH, int imgW, int imgH, QImage::ScaleMode mode )
 {
@@ -190,19 +189,6 @@ void scaleSize( int &reqW, int &reqH, int imgW, int imgH, QImage::ScaleMode mode
     else
         reqW = t1 / imgH;
 }
-#else
-static
-void scaleSize( int &reqW, int &reqH, int imgW, int imgH)
-{
-    int t1 = imgW * reqH;
-    int t2 = reqW * imgH;
-    if (t1 > t2)
-		reqH = t2 / imgW;
-    else
-        reqW = t1 / imgH;
-}
-
-#endif
 
 static
 void read_jpeg_image(QImageIO* iio)
@@ -234,9 +220,7 @@ void read_jpeg_image(QImageIO* iio)
 	params.simplifyWhiteSpace();
 	int sWidth = 0, sHeight = 0;
 	char sModeStr[1024] = "";
-#if (QT_VERSION >= 0x030000)
 	QImage::ScaleMode sMode;
-#endif
 
 	if ( params.contains( "GetHeaderInformation" ) ) {
 
@@ -254,7 +238,6 @@ void read_jpeg_image(QImageIO* iio)
 	    sscanf( params.latin1(), "Scale( %i, %i, %1023s )",
 		    &sWidth, &sHeight, sModeStr );
 
-#if (QT_VERSION >= 0x030000)
 	    QString sModeQStr( sModeStr );
 	    if ( sModeQStr == "ScaleFree" ) {
 		sMode = QImage::ScaleFree;
@@ -270,9 +253,6 @@ void read_jpeg_image(QImageIO* iio)
 //	    qDebug( "Parameters ask to scale the image to %i x %i ScaleMode: %s", sWidth, sHeight, sModeStr );
 	    scaleSize( sWidth, sHeight, cinfo.output_width, cinfo.output_height, sMode );
 //	    qDebug( "Scaling the jpeg to %i x %i", sWidth, sHeight, sModeStr );
-#else
-		scaleSize( sWidth, sHeight, cinfo.output_width, cinfo.output_height);
-#endif
 	    if ( cinfo.output_components == 3 || cinfo.output_components == 4) {
 		image.create( sWidth, sHeight, 32 );
 	    } else if ( cinfo.output_components == 1 ) {
@@ -495,18 +475,12 @@ void write_jpeg_image(QImageIO* iio)
 	}
 
 	jpeg_set_defaults(&cinfo);
-#if (QT_VERSION >= 0x030000)
 	int quality = iio->quality() >= 0 ? QMIN(iio->quality(),100) : 75;
-#endif
 #if defined(Q_OS_UNIXWARE)
 	jpeg_set_quality(&cinfo, quality, B_TRUE /* limit to baseline-JPEG values */);
 	jpeg_start_compress(&cinfo, B_TRUE);
 #else
-#if (QT_VERSION >= 0x030000)
 	jpeg_set_quality(&cinfo, quality, TRUE /* limit to baseline-JPEG values */);
-#else
-	jpeg_set_quality(&cinfo, 75, TRUE);
-#endif
 	jpeg_start_compress(&cinfo, TRUE);
 #endif
 
