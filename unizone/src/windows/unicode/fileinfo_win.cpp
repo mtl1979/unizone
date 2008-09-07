@@ -1,8 +1,6 @@
 #include <windows.h>
 #include <wchar.h>
 
-#pragma warning(disable: 4786)
-
 #include "fileinfo.h"
 #include "debugimpl.h"
 #include "wstring.h"
