@@ -149,7 +149,7 @@ main( int argc, char** argv )
 	// Load language file
 	WFile lang;
 	QString lfile;
-	if (!WFile::Exists(wlangfile.getBuffer()))
+	if (!WFile::Exists(wlangfile))
 	{
 		lfile = Q3FileDialog::getOpenFileName( 
 #ifdef _WIN32
