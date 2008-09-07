@@ -1,5 +1,4 @@
-#ifdef WIN32		// <postmaster@raasu.org> 20021022 -- Fix to use platform.h, Fixed Window Flashing for older API's
-#pragma warning (disable: 4512)
+#ifdef _WIN32		// <postmaster@raasu.org> 20021022 -- Fix to use platform.h, Fixed Window Flashing for older API's
 #include <windows.h>
 #endif
 

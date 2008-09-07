@@ -5,10 +5,6 @@
 
 class WinShareWindow;
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 extern WinShareWindow * gWin;	// global window
 extern QString gAppDir; // global variable holding base directory of application
 

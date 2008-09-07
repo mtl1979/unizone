@@ -9,7 +9,9 @@
 #include <qmessagebox.h>
 #include <qstring.h>
 #include <Q3CString>
+#include "util.h"
 #include "wfile.h"
+#include "wstring.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,11 +31,22 @@ void PRINT(const char *fmt, ...)
 	}
 }
 
+#ifdef _WIN32
+extern QString gDataDir; // main.cpp
+#endif
+
 void
 RedirectDebugOutput()
 {
+#ifdef _WIN32
+	QString logfile = MakePath(gDataDir, "stdout.txt");
+	WString wlogfile(logfile);
+	nfp = _wfopen(wlogfile, L"w");
+	setbuf(nfp, NULL);
+#else
 	nfp = fopen("stdout.txt", "w");
 	setbuf(nfp, NULL);
+#endif
 }
 
 void
@@ -68,7 +81,7 @@ WAssert(bool test, const char *message, int line, const char *file, const char *
 			"\n\n%1\n\nLine %2\nFile %3\nDate: %4").arg(qApp->translate("Debug",
 				message)).arg(line).arg(file).arg(date);
 		WFile f;
-		if (f.Open("assert.txt", QIODevice::WriteOnly))
+		if (f.Open(L"assert.txt", QIODevice::WriteOnly))
 		{
 			Q3CString tmp = out.utf8();
 			f.WriteBlock(tmp, tmp.length());

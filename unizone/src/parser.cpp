@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4512)
-#endif
-
 #include "parser.h"
 #include "tokenizer.h"
 #include "util.h"							// for endsWith()

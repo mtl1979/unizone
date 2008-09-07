@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning(disable: 4100 4512 4786)
-#endif
-
 #include <qapplication.h>
 #include <q3mainwindow.h>
 #include <q3stylesheet.h>

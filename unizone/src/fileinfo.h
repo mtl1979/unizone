@@ -1,10 +1,6 @@
 #ifndef UFILEINFO_H
 #define UFILEINFO_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include <qfileinfo.h>
 #include <qstring.h>
 

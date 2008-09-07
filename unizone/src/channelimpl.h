@@ -1,10 +1,6 @@
 #ifndef CHANNELIMPL_H
 #define CHANNELIMPL_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include <qapplication.h>
 #include <qcoreevent.h>
 #include <qdialog.h>

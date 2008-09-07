@@ -1,10 +1,6 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include <qapplication.h>
 #include <qdialog.h>
 #include <qstring.h>

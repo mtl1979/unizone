@@ -1,10 +1,6 @@
 #ifndef USER_H
 #define USER_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include "message/Message.h"
 #include "util/RefCount.h"
 #include "util/Queue.h"

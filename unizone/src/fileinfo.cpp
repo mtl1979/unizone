@@ -1,10 +1,9 @@
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
-#pragma warning(disable: 4786)
 #endif
 
 #include <qfileinfo.h>
-#ifndef WIN32
+#ifndef _WIN32
 #include <qfile.h>
 #endif
 #include <qstring.h>

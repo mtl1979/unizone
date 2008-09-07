@@ -4,10 +4,6 @@
 #ifndef USERLISTITEM_H
 #define USERLISTITEM_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include "ulistview.h"
 #include "nicklist.h"
 

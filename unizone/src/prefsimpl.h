@@ -1,8 +1,5 @@
 #ifndef PREFSIMPL_H
 #define PREFSIMPL_H
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
 
 #include "prefs.h"
 #include "colors.h"

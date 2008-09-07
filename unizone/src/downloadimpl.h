@@ -1,10 +1,6 @@
 #ifndef DOWNLOADIMPL_H
 #define DOWNLOADIMPL_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include <qapplication.h>
 #include <qfile.h>
 #include <qdialog.h>

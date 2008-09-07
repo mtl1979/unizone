@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4512)
-#endif
-
 #include "picviewerimpl.h"
 #include "support/MuscleSupport.h"
 

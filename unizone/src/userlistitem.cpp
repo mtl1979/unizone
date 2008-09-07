@@ -1,10 +1,6 @@
 // Universal List View class (C) 2002 FieldNet Association / Team UniShare
 // Released under Lesser GPL as in LGPL.TXT in source root folder
 
-#ifdef WIN32
-#pragma warning(disable: 4512 4786)
-#endif
-
 #include <qpainter.h>
 
 #include "userlistitem.h"

@@ -9,10 +9,6 @@
 
 #include "htmlview.h"
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 using namespace muscle;
 
 class WSettings;

@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4512)
-#endif
-
 #include "resolver.h"
 #include "util.h"
 #include "tokenizer.h"
@@ -11,7 +7,7 @@
 
 using muscle::Queue;
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

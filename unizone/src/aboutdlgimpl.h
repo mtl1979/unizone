@@ -1,10 +1,6 @@
 #ifndef ABOUTDLGIMPL_H
 #define ABOUTDLGIMPL_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include "aboutdlg.h"
 
 class AboutDlg : public QDialog

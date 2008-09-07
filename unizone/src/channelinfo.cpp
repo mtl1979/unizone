@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4512)
-#endif
-
 #include "channelinfo.h"
 #include "channelimpl.h"
 #include "tokenizer.h"

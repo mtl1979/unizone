@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4100 4512)
-#endif
-
 #include "downloadqueue.h"
 #include "global.h"
 #include "winsharewindow.h"

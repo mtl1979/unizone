@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4512)
-#endif
-
 #include "winsharewindow.h"
 #include "debugimpl.h"
 #include "wstring.h"

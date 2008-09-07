@@ -1,9 +1,5 @@
 // An extension of the main WinShare class
 // Contains all the slots for menu messages (except Connect() and Disconnect())
-#ifdef WIN32
-#pragma warning(disable: 4100 4512 4786)
-#endif
-
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <QCustomEvent>

@@ -1,10 +1,6 @@
 #ifndef UPLOADTHREAD_H
 #define UPLOADTHREAD_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include <qapplication.h>
 #include <qobject.h>
 #include <qstring.h>

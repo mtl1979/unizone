@@ -1,10 +1,6 @@
 // An extension of the main WinShare class
 // Contains all the networking related methods
 
-#ifdef WIN32
-#pragma warning(disable: 4100 4127 4512 4786)
-#endif
-
 #include <qapplication.h>
 #include <q3filedialog.h>
 #include <qregexp.h>

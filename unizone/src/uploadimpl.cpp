@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4100 4512)
-#endif
-
 #include "uploadimpl.h"
 #include "global.h"
 #include "netclient.h"

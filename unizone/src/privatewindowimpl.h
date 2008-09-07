@@ -1,10 +1,6 @@
 #ifndef PRIVATEWINDOWIMPL_H
 #define PRIVATEWINDOWIMPL_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include "privatewindow.h"
 #include "chattext.h"
 #include "user.h"

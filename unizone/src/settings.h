@@ -1,10 +1,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include "winsharewindow.h"
 #include "muscle/message/Message.h"
 using namespace muscle;

@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include "aboutdlgimpl.h"
 #include "version.h"
 

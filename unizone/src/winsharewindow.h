@@ -1,10 +1,6 @@
 #ifndef WINSHAREWINDOW_H
 #define WINSHAREWINDOW_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
 #endif

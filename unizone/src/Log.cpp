@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4512)
-#endif
-
 #include "Log.h"
 #include "util.h"
 #include "debugimpl.h"

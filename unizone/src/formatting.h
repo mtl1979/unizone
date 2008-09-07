@@ -1,10 +1,6 @@
 #ifndef FORMATTING_H
 #define FORMATTING_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include <qstring.h>
 #include <qobject.h>
 

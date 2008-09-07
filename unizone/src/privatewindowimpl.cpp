@@ -1,6 +1,5 @@
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
-#pragma warning(disable: 4512 4786)
 #endif
 
 #include <qapplication.h>

@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4512)
-#endif
-
 #include <qapplication.h>
 #include <qfile.h>
 #include <q3filedialog.h>
@@ -34,14 +30,17 @@
 int64 fStartTime;
 
 QString gAppDir;
+#ifdef _WIN32
+QString gDataDir;
+#endif
 
 int64 GetStartTime()
 {
 	return fStartTime;
 }
 
+#ifndef _WIN32
 void
-#ifndef WIN32
 SetWorkingDirectory(const char *app)
 {
 	const char * wdir = strrchr(app, '/');
@@ -59,8 +58,9 @@ SetWorkingDirectory(const char *app)
 		}
 	}
 }
-#elif defined(UNICODE)
-SetWorkingDirectory()
+#else
+QString
+GetAppDirectory()
 {
 	// we have to use some windows api to get our path...
 	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
@@ -70,38 +70,35 @@ SetWorkingDirectory()
 							MAX_PATH		/* buffer length */
 							) != 0)
 	{
-		PRINT("Module filename: %S\n", name);
+		qDebug("Module filename: %S", name);
 		PathRemoveFileSpec(name);
-		PRINT("Setting working directory to: %S\n", name);
-		SetCurrentDirectory(name);
+		if (SetCurrentDirectory(name) == 0)
+		{
+			GetCurrentDirectory(MAX_PATH, name);
+			qDebug("Current directory: %S", name);
+		}
+		else
+			qDebug("Application directory: %S", name);
 	}
+	QString qname = QString::fromUcs2((const ushort *) name);
 	delete [] name;
 	name = NULL; // <postmaster@raasu.org> 20021027
-}
-#else
-SetWorkingDirectory()
-{
-	// we have to use some windows api to get our path...
-	char * name = new char[MAX_PATH];	// maximum size for Win32 filenames
-	Q_CHECK_PTR(name);
-	if (GetModuleFileName(NULL,				/* current apps module */
-							name,			/* buffer */
-							MAX_PATH		/* buffer length */
-							) != 0)
-	{
-		PRINT("Module filename: %s\n", name);
-		PathRemoveFileSpec(name);
-		PRINT("Setting working directory to: %s\n", name);
-		SetCurrentDirectory(name);
-	}
-	delete [] name;
-	name = NULL; // <postmaster@raasu.org> 20021027
+	return qname;
 }
 #endif
 
 int 
 main( int argc, char** argv )
 {
+#ifdef _WIN32
+	QString datadir = EnvironmentVariable("APPDATA");
+	QDir(datadir).mkdir("Unizone");
+	datadir = MakePath(datadir, "Unizone");
+	gDataDir = datadir;
+	gAppDir = GetAppDirectory();
+	// Set our working directory
+	QDir::setCurrent(gDataDir);
+#endif
 	RedirectDebugOutput();
 	muscle::CompleteSetupSystem fMuscle;
 
@@ -133,26 +130,39 @@ main( int argc, char** argv )
 		a++;
 	}
 
+	WString wlangfile;
+#ifndef _WIN32
+	wlangfile = L"unizone.lng";
 	// Set our working directory
-
-#ifndef WIN32
 	SetWorkingDirectory(argv[0]);
+	gAppDir = QDir::currentDirPath();
 #else
-	SetWorkingDirectory();
+	QString datafile = MakePath(gDataDir, "unizone.lng");	
+	wlangfile = datafile;
+   
+# ifdef _DEBUG
+	WString wDataDir(gDataDir);
+	PRINT("Data directory: %S\n", wDataDir.getBuffer());
+# endif
 #endif
-   gAppDir = QDir::currentDirPath();
 
 	// Load language file
 	WFile lang;
 	QString lfile;
-	if (!WFile::Exists(L"unizone.lng"))
+	if (!WFile::Exists(wlangfile.getBuffer()))
 	{
-		lfile = Q3FileDialog::getOpenFileName( QString::null, "unizone_*.qm", NULL );
+		lfile = Q3FileDialog::getOpenFileName( 
+#ifdef _WIN32
+			MakePath(gAppDir, "translations"),
+#else
+			gAppDir,
+#endif
+			"unizone_*.qm", NULL );
 		if (!lfile.isEmpty())
 		{
 			// Save selected language's translator filename
-			if ( lang.Open(L"unizone.lng", 
-#ifdef WIN32
+			if ( lang.Open(wlangfile, 
+#if defined(WIN32) || defined(_WIN32)
 				O_WRONLY | O_CREAT | O_BINARY
 #else
 				O_WRONLY | O_CREAT
@@ -167,7 +177,7 @@ main( int argc, char** argv )
 	}
 
 	// (Re-)load translator filename
-	if ( lang.Open(L"unizone.lng",
+	if ( lang.Open(wlangfile,
 #if defined(WIN32) || defined(_WIN32)
 		O_RDONLY | O_BINARY
 #else
@@ -189,9 +199,9 @@ main( int argc, char** argv )
 		{
 			if (qtr.load(lfile))
 			{
-#ifdef DEBUG
+#ifdef _DEBUG
 				WString wfile(QDir::convertSeparators(lfile));
-				PRINT("Loaded translation %S\n", wfile.getBuffer());
+				PRINT("Loaded translation: %S\n", wfile.getBuffer());
 #endif
 				app.installTranslator( &qtr );
 			}
@@ -220,9 +230,9 @@ main( int argc, char** argv )
 			{
 				if (qtr2.load(qt_lang))
 				{
-#ifdef DEBUG
+#ifdef _DEBUG
 					WString wfile(QDir::convertSeparators(qt_lang));
-					PRINT("Loaded translation %S\n", wfile.getBuffer());
+					PRINT("Loaded translation: %S\n", wfile.getBuffer());
 #endif
 					app.installTranslator( &qtr2 );
 				}

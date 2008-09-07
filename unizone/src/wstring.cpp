@@ -71,10 +71,11 @@ WString::operator=(const wchar_t *str)
 	free();
 	if (str)
 	{
-		int len = wcslen(str);
-		buffer = new wchar_t[len+1];
-		if (buffer)
-			wcopy(buffer, str, len);
+#ifdef _MSC_VER
+		buffer = _wcsdup(str);
+#else
+		buffer = wcsdup(str);
+#endif
 	}
 	return *this;
 }
@@ -85,10 +86,11 @@ WString::operator=(const WString &str)
 	free();
 	if (str.getBuffer())
 	{
-		int len = str.length();
-		buffer = new wchar_t[len+1];
-		if (buffer)
-			wcopy(buffer, str.getBuffer(), len);
+#ifdef _MSC_VER
+		buffer = _wcsdup(str.getBuffer());
+#else
+		buffer = wcsdup(str.getBuffer());
+#endif
 	}
 	return *this;
 }
@@ -118,10 +120,11 @@ WString::operator+=(const wchar_t *str)
 	}
 	else // No string to append to
 	{
-		int newlen = wcslen(str);
-		buffer = new wchar_t[newlen + 1];
-		if (buffer)
-			wcopy(buffer, str, newlen);
+#ifdef _MSC_VER
+		buffer = _wcsdup(str);
+#else
+		buffer = wcsdup(str);
+#endif
 	}
 	return *this;
 }

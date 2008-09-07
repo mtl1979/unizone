@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning (disable: 4512)
-#endif
-
 #include <qapplication.h>
 #include <qfile.h>
 #include <qmessagebox.h>
@@ -17,15 +13,19 @@
 #include "iogateway/MessageIOGateway.h"
 #include "debugimpl.h"
 
-const char * SettingsFile; // name of settings file, default depends on host os
+QString SettingsFile; // name of settings file, default depends on host os
+
+#ifdef _WIN32
+extern QString gDataDir; // main.cpp
+#endif
 
 const char *
 GetSettingsFile()
 {
-	if (SettingsFile == NULL)
+	if (SettingsFile.isEmpty())
 	{
-#ifdef WIN32
-		SettingsFile = "settings.ini";
+#ifdef _WIN32
+		SettingsFile = MakePath(gDataDir, "settings.ini");
 #elif defined(__APPLE__)
 		SettingsFile = "../../../.unizone_settings";
 #else
@@ -56,7 +56,7 @@ GetStringItem(const MessageRef &msg, const char * key)
 void
 SetSettingsFile(const char * sf)
 {
-	SettingsFile = sf;
+	SettingsFile = QString::fromLocal8Bit(sf);
 }
 
 WSettings::WSettings()

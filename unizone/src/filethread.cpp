@@ -1,6 +1,5 @@
 #if defined(WIN32) || defined(_WIN32)
 #include <objbase.h>
-#pragma warning(disable: 4100 4512 4786)
 #endif
 
 #include <qdir.h>

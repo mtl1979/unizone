@@ -1,10 +1,6 @@
 #ifndef MD5_H
 #define MD5_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include <qfile.h>
 #include <sys/types.h>
 #include <support/MuscleSupport.h>

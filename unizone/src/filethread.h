@@ -1,10 +1,6 @@
 #ifndef FILETHREAD_H
 #define FILETHREAD_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include <qapplication.h>
 #include <qstring.h>
 #include <qobject.h>

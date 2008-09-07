@@ -1,7 +1,3 @@
-#ifdef WIN32
-#pragma warning(disable: 4512 4786)
-#endif
-
 #include "serverclient.h"
 #include "debugimpl.h"
 #include "global.h"

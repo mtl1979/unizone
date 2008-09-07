@@ -1,10 +1,6 @@
 #ifndef CHANNELS_H
 #define CHANNELS_H
 
-#ifdef WIN32
-#pragma warning(disable: 4786)
-#endif
-
 #include <qdialog.h>
 #include <qlayout.h>
 #include <q3listview.h>
