@@ -122,6 +122,7 @@ NetClient::Connect(const QString & server, uint16 port)
 
 	PRINT("Adding new session\n");
 
+	fIdles = 0;
 	fServer = server;
 	fServerPort = port;
 

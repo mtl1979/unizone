@@ -998,7 +998,7 @@ WinShareWindow::InitGUI()
 	// <postmaster@raasu.org> 20020924
 
 	fUserList->insertItem("Unizone Binky");
-	fServerList->insertItem("synthesis.dyndns.org");
+	fServerList->insertItem("beshare.tycomsystems.com");
 	fStatusList->insertItem("here");
 	fStatusList->insertItem("away");
 
