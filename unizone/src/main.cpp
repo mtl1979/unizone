@@ -53,7 +53,8 @@ SetWorkingDirectory(const char *app)
 			strncpy(chd, app, wdir - app);
 			chd[wdir - app] = 0;
 			PRINT("Setting working directory to: %s\n", chd);
-			chdir(chd);
+			if (chdir(chd) != 0)
+				PRINT("Setting working directory failed!\n");
 			delete [] chd;
 		}
 	}

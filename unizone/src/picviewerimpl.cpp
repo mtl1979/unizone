@@ -208,7 +208,7 @@ WPicViewer::LoadImage(const QString &file)
 			CheckSize(f.Size());
 			if (f.ReadBlock32((char *) buf()->GetBuffer(), (uint32) f.Size()) == (int32) f.Size())
 			{
-				if (ret = LoadImage(buf, fmt, fImage))
+				if ((ret = LoadImage(buf, fmt, fImage)) == true)
 				{
 					if (oldpos == -1)
 					{

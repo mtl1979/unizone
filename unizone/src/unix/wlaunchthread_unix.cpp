@@ -31,6 +31,6 @@ WLaunchThread::GotoURL(const QString & url, const QString & browser)
 	PRINT("Launching %S\n", wlaunch.getBuffer());
 #endif
 
-	system(launch);
-	return true;
+	int ret = system(launch);
+	return (ret == 0) ? true : false;
 }
