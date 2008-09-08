@@ -279,6 +279,8 @@ WDownloadThread::InitSession()
 		return false;
 	}
 	
+	fIdles = 0;
+
 	if (fCurFile > 0) // Resuming
 	{
 		// Reinitialize file list
