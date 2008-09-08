@@ -50,7 +50,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="c:\qt4\include;c:\qt4\include\QtGui;c:\qt4\include\QtCore;c:\qt4\include\Qt3Support;..\..\src;..\..\src\qt4;..\..\src\muscle;..\..\src\muscle\regex\regex;..\..\..\libjpeg\src"
-				PreprocessorDefinitions="JPEG_USEDLL;REGEX_USEDLL;ZLIB_DLL;_CRT_SECURE_NO_WARNINGS;MUSCLE_ENABLE_ZLIB_ENCODING;QT_THREAD_SUPPORT;QT3_SUPPORT;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;BETA"
+				PreprocessorDefinitions="REGEX_USEDLL;ZLIB_DLL;_CRT_SECURE_NO_WARNINGS;MUSCLE_ENABLE_ZLIB_ENCODING;QT_THREAD_SUPPORT;QT3_SUPPORT;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;BETA"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -80,7 +80,7 @@
 				OutputFile="Debug\Unizoned.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="c:\qt4\lib,..\..\..\libjpeg\src\Debug,muscle___Win32_Debug,regex___Win32_Debug,zlib___Win32_Debug"
+				AdditionalLibraryDirectories="c:\qt4\lib"
 				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/Unizoned.pdb"
@@ -148,8 +148,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="c:\qt4\include;c:\qt4\include\QtCore;c:\qt4\include\QtGui;c:\qt4\include\Qt3Support;..\..\src;..\..\src\qt4;..\..\src\muscle;..\..\src\muscle\regex\regex;..\..\..\libjpeg\src"
-				PreprocessorDefinitions="JPEG_USEDLL;REGEX_USEDLL;ZLIB_DLL;_CRT_SECURE_NO_WARNINGS;MUSCLE_ENABLE_ZLIB_ENCODING;QT_THREAD_SUPPORT;QT3_SUPPORT;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;BETA"
+				AdditionalIncludeDirectories="c:\qt4\include;c:\qt4\include\QtCore;c:\qt4\include\QtGui;c:\qt4\include\Qt3Support;..\..\src;..\..\src\qt4;..\..\src\muscle;..\..\src\muscle\regex\regex"
+				PreprocessorDefinitions="REGEX_USEDLL;ZLIB_DLL;_CRT_SECURE_NO_WARNINGS;MUSCLE_ENABLE_ZLIB_ENCODING;QT_THREAD_SUPPORT;QT3_SUPPORT;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;BETA"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -180,7 +180,7 @@
 				OutputFile="Release\Unizone.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="c:\qt4\lib,..\..\..\libjpeg\src\Release,muscle___Win32_Release,regex___Win32_Release,zlib___Win32_Release"
+				AdditionalLibraryDirectories="c:\qt4\lib"
 				IgnoreDefaultLibraryNames="libc,libcd,msvcrtd.lib"
 				ProgramDatabaseFile=".\Release/Unizone.pdb"
 				SubSystem="2"
@@ -214,10 +214,6 @@
 		</Configuration>
 	</Configurations>
 	<References>
-		<ProjectReference
-			ReferencedProjectIdentifier="{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}"
-			RelativePathToProject="..\..\..\libjpeg\vc9\qt4\jpeg.vcproj"
-		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{074D52A8-24C1-4E67-831B-2B0891DE7A8C}"
 			RelativePathToProject=".\regex.vcproj"
@@ -2735,51 +2731,7 @@
 			Filter="cpp"
 			>
 			<File
-				RelativePath="..\..\src\qt4\moc_aboutdlg.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\qt4\moc_aboutdlgimpl.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\qt4\moc_channel.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -3065,28 +3017,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\qt4\moc_picviewer.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\qt4\moc_picviewerimpl.cpp"
 				>
 				<FileConfiguration
@@ -3109,51 +3039,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\qt4\moc_prefs.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\qt4\moc_prefsimpl.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\qt4\moc_privatewindow.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -3198,28 +3084,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\qt4\moc_resolverthread.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\qt4\moc_scanprogress.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -4476,40 +4340,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="qjpeg Sources"
-			>
-			<File
-				RelativePath="..\..\..\libjpeg\src\jpegio.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="qjpeg Headers"
-			>
-			<File
-				RelativePath="..\..\..\libjpeg\src\jpegio.h"
-				>
 			</File>
 		</Filter>
 		<Filter

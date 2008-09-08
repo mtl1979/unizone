@@ -4,7 +4,6 @@
 #include "mainwindow.h"
 
 #include <Q3MainWindow>
-//Added by qt3to4:
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QEvent>

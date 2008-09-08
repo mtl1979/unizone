@@ -2,9 +2,6 @@
 #include "previewimpl.h"
 #include "menubar.h"
 #include "platform.h"
-#ifdef WIN32
-#include "jpegio.h"
-#endif
 
 #include <Q3MainWindow>
 #include <qimage.h>
@@ -17,7 +14,6 @@
 #include <qfile.h>
 #include <qstring.h>
 #include <qtabwidget.h>
-//Added by qt3to4:
 #include <Q3CString>
 #include <QDropEvent>
 #include <QResizeEvent>
@@ -47,11 +43,6 @@ ImageSplitter::ImageSplitter( QWidget* parent, const char* name, Qt::WFlags fl)
 
 	setAcceptDrops(true);
 	ui->pxlCollage->installEventFilter(this);
-
-	// Use our copy of JPEG IO if Qt doesn't have it ;)
-#if defined(QT_NO_IMAGEIO_JPEG)
-	InitJpegIO();
-#endif
 
 	ClearImage();
 };

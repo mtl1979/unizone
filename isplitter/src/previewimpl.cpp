@@ -12,7 +12,6 @@
 #include <qmessagebox.h>
 #include <qmatrix.h>
 #include <q3dragobject.h>
-//Added by qt3to4:
 #include <QDropEvent>
 #include <QResizeEvent>
 #include <Q3GridLayout>

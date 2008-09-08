@@ -18,9 +18,6 @@
 #include <QEvent>
 #include <QDragEnterEvent>
 #include <QImageReader>
-#if defined(QT_NO_IMAGEIO_JPEG)
-#include "jpegio.h"
-#endif
 
 #include "util.h"
 #include "debugimpl.h"
@@ -53,11 +50,6 @@ WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, Qt::WFlags
 	ui->btnNext->setEnabled(false);
 	ui->btnLast->setEnabled(false);
 	ui->btnClose->setEnabled(false);
-
-	// Use our copy of JPEG IO if Qt doesn't have it ;)
-#if defined(QT_NO_IMAGEIO_JPEG)
-	InitJpegIO();
-#endif
 
 	setAcceptDrops(TRUE);
 	ui->pxlPixmap->installEventFilter(this);

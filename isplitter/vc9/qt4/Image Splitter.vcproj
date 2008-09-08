@@ -49,8 +49,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\src\qt4;..\..\src;..\..\src\qt4;c:\qt4\include;c:\qt4\include\QtCore;c:\qt4\include\QtGui;c:\qt4\include\Qt3Support;..\..\..\libjpeg\src;..\..\..\unizone\src;..\..\unizone\src\muscle"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;UNICODE;QT_DLL;QT3_SUPPORT;QJPEG_DLL;_CRT_SECURE_NO_WARNINGS"
+				AdditionalIncludeDirectories="..\..\src;..\..\src\qt4;..\..\..\unizone\src;c:\qt4\include;c:\qt4\include\QtCore;c:\qt4\include\QtGui;c:\qt4\include\Qt3Support"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;UNICODE;QT_DLL;QT3_SUPPORT;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -80,7 +80,7 @@
 				OutputFile=".\Release/Image Splitter.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="c:\qt4\lib,..\..\libjpeg\Release"
+				AdditionalLibraryDirectories="c:\qt4\lib"
 				IgnoreDefaultLibraryNames="msvcrtd.lib"
 				ProgramDatabaseFile=".\Release/Image Splitter.pdb"
 				SubSystem="2"
@@ -146,8 +146,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;..\..\src\qt4;c:\qt4\include;c:\qt4\include\QtCore;c:\qt4\include\QtGui;c:\qt4\include\Qt3Support;..\..\..\libjpeg\src;..\..\..\unizone\src;..\..\unizone\src\muscle"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;UNICODE;QT_DLL;QJPEG_DLL;QT3_SUPPORT;_CRT_SECURE_NO_WARNINGS"
+				AdditionalIncludeDirectories="..\..\src;..\..\src\qt4;..\..\..\unizone\src;c:\qt4\include;c:\qt4\include\QtCore;c:\qt4\include\QtGui;c:\qt4\include\Qt3Support"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;UNICODE;QT_DLL;QT3_SUPPORT;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -178,7 +178,7 @@
 				OutputFile=".\Debug/Image Splitter.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="c:\qt4\lib,..\..\libjpeg\Debug"
+				AdditionalLibraryDirectories="c:\qt4\lib"
 				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/Image Splitter.pdb"
@@ -586,40 +586,6 @@
 						Outputs="$(InputDir)qt4\$(InputName).h"
 					/>
 				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="qjpeg Source Files"
-			>
-			<File
-				RelativePath="..\..\..\libjpeg\src\qjpeg.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="qjpeg Header Files"
-			>
-			<File
-				RelativePath="..\..\..\libjpeg\src\qjpeg.h"
-				>
 			</File>
 		</Filter>
 		<Filter

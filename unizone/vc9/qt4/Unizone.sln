@@ -6,8 +6,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "regex", "regex.vcproj", "{0
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib.vcproj", "{6867AE77-F79B-49F8-830B-B79DA57D9E41}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "..\..\..\libjpeg\vc9\qt4\jpeg.vcproj", "{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -26,10 +24,6 @@ Global
 		{6867AE77-F79B-49F8-830B-B79DA57D9E41}.Debug|Win32.Build.0 = Debug|Win32
 		{6867AE77-F79B-49F8-830B-B79DA57D9E41}.Release|Win32.ActiveCfg = Release|Win32
 		{6867AE77-F79B-49F8-830B-B79DA57D9E41}.Release|Win32.Build.0 = Release|Win32
-		{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}.Debug|Win32.Build.0 = Debug|Win32
-		{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}.Release|Win32.ActiveCfg = Release|Win32
-		{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,6 @@
-
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Image Splitter", "Image Splitter.vcproj", "{1627461F-4C96-4D91-B78F-F0B3716101F0}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "..\..\..\libjpeg\vc9\qt4\jpeg.vcproj", "{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +12,6 @@ Global
 		{1627461F-4C96-4D91-B78F-F0B3716101F0}.Debug|Win32.Build.0 = Debug|Win32
 		{1627461F-4C96-4D91-B78F-F0B3716101F0}.Release|Win32.ActiveCfg = Release|Win32
 		{1627461F-4C96-4D91-B78F-F0B3716101F0}.Release|Win32.Build.0 = Release|Win32
-		{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}.Debug|Win32.Build.0 = Debug|Win32
-		{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}.Release|Win32.ActiveCfg = Release|Win32
-		{5D1438FE-9DBE-458F-8C60-3BAEEDF6D042}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
