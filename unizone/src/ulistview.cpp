@@ -573,23 +573,23 @@ WUniListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w,
 void
 WUniListView::dragEnterEvent(QDragEnterEvent* event)
 {
-    event->accept( Q3UriDrag::canDecode(event) );
+    if (event->mimeData()->hasUrls())
+         event->acceptProposedAction();
 }
 
 void
 WUniListView::dropEvent(QDropEvent* event)
 {
-    QStringList list;
-
-    if ( Q3UriDrag::decodeLocalFiles(event, list) )
+	if (event->mimeData()->hasUrls())
 	{
-		QStringList::Iterator it = list.begin();
+		QList<QUrl> urls = event->mimeData()->urls();
+		QList<QUrl>::iterator it = urls.begin();
 		QPoint p = event->pos();
 		QPoint q = viewport()->mapFromParent(p);
 		Q3ListViewItem *li = itemAt(q);
-		while (it != list.end())
+		while (it != urls.end())
 		{
-			QString filename = *it;
+			QString filename = (*it++).toLocalFile();
 			const char * fmt = QImageReader(filename).format();
 			QImage img;
 			if (img.load(filename, fmt))
@@ -601,7 +601,6 @@ WUniListView::dropEvent(QDropEvent* event)
 #endif
 				gWin->SendPicture(li->text(1), filename);
 			}
-			it++;
 		}
-    }
+	}
 }

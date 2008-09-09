@@ -101,6 +101,19 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
 		fColor[i] = gWin->fSettings->GetColorItem(i);
 	}
 
+	ui->fColorsList->insertItem(tr("Local Name"));
+	ui->fColorsList->insertItem(tr("Remote Name"));
+	ui->fColorsList->insertItem(tr("Regular Text"));
+	ui->fColorsList->insertItem(tr("System Text"));
+	ui->fColorsList->insertItem(tr("Ping Text"));
+	ui->fColorsList->insertItem(tr("Error Text"));
+	ui->fColorsList->insertItem(tr("Error Message Text"));
+	ui->fColorsList->insertItem(tr("Private Text"));
+	ui->fColorsList->insertItem(tr("Action Text"));
+	ui->fColorsList->insertItem(tr("URL Text"));
+	ui->fColorsList->insertItem(tr("'Name Said' Text"));
+	ui->fColorsList->insertItem(tr("Warning Text"));
+	ui->fColorsList->insertItem(tr("Warning Message Text"));
 
 	ui->fAutoUpdateServers->setChecked(gWin->fSettings->GetAutoUpdateServers());
 	ui->fNewVersions->setChecked(gWin->fSettings->GetCheckNewVersions());
@@ -140,6 +153,12 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
 	ui->fSoundFile->setText(gWin->fSettings->GetSoundFile());
 	ui->fIPAddresses->setChecked(gWin->fSettings->GetIPAddresses());
 
+	ui->fStyleList->insertItem(tr("CDE"));
+	ui->fStyleList->insertItem(tr("Motif"));
+	ui->fStyleList->insertItem(tr("WindowsXP"));
+	ui->fStyleList->insertItem(tr("Windows"));
+	ui->fStyleList->insertItem(tr("Mac"));
+
 	switch (gWin->fSettings->GetStyle())
 	{
 		case WinShareWindow::CDE:
@@ -166,7 +185,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
 	// init auto away
 	ui->fAutoAway->setCurrentItem(gWin->fSettings->GetAutoAway());
 
-#ifdef WIN32
+#ifdef _WIN32
 	// init flash flags
 	if (gWin->fSettings->GetFlash() & WSettings::FlashMain)
 		ui->fFlashMain->setChecked(true);
@@ -236,7 +255,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
 	PRINT("Setting font size\n");
 	ui->fFontSize->setValue(gWin->fSettings->GetFontSize());
 
-#ifdef WIN32	// windows has a system based launcher
+#ifdef _WIN32	// windows has a system based launcher
 	ui->fTabs->setTabEnabled(ui->fURLLaunching, false);
 #else
 	ui->fMailtoLauncher->setText(gWin->fSettings->GetMailLauncher());

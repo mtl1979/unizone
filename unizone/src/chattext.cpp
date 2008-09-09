@@ -206,22 +206,21 @@ WChatText::AddLine(const QString &line)
 void
 WChatText::dropEvent(QDropEvent* event)
 {
-    QStringList list;
 	QString files;
 	QString uid = gWin->GetUserID();
 
 	printf("in dropEvent()\n");
 	if (!uid.isEmpty())
 	{	
-		if ( Q3UriDrag::decodeLocalFiles(event, list) ) 
+		if (event->mimeData()->hasUrls())
 		{
-			QStringList::Iterator iter = list.begin();
-			while (iter != list.end())
+			QList<QUrl> urls = event->mimeData()->urls();
+			QList<QUrl>::iterator iter = urls.begin();
+			while (iter != urls.end())
 			{
-				QString filename = *iter;
+				QString filename = (*iter++).toLocalFile();
 				if (gWin->FindSharedFile(filename))
 					AddToList(files, filename);
-				iter++;
 			}
 			if (!files.isEmpty())
 			{
@@ -239,6 +238,7 @@ WChatText::dropEvent(QDropEvent* event)
 void 
 WChatText::dragEnterEvent(QDragEnterEvent* event)
 {
-    event->accept( Q3UriDrag::canDecode(event) || Q3TextDrag::canDecode(event));
+    if (event->mimeData()->hasUrls())
+         event->acceptProposedAction();
 }
 

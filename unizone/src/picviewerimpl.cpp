@@ -141,7 +141,8 @@ WPicViewer::mouseReleaseEvent(QMouseEvent *e)
 void 
 WPicViewer::dragEnterEvent(QDragEnterEvent* event)
 {
-    event->accept( Q3UriDrag::canDecode(event) );
+    if (event->mimeData()->hasUrls())
+         event->acceptProposedAction();
 }
 
 void 
@@ -149,15 +150,16 @@ WPicViewer::dropEvent(QDropEvent* event)
 {
 	if (event->source() != this)
 	{
-		QStringList list;
-		
-		if ( Q3UriDrag::decodeLocalFiles(event, list) ) {
-			QStringList::Iterator it = list.begin();
-			while (it != list.end())
+		if (event->mimeData()->hasUrls())
+		{
+			QList<QUrl> urls = event->mimeData()->urls();
+			QList<QUrl>::iterator it = urls.begin();
+			while (it != urls.end())
 			{
-				QString filename = *it;
-				LoadImage(filename);
-				it++;
+				QUrl u = *it++;
+				QString file = u.toLocalFile();
+				PRINT("Drop: %S\n", file.utf16());
+				LoadImage(file);
 			}
 		}
 	}
@@ -168,11 +170,16 @@ WPicViewer::startDrag()
 {
 	if (fFiles[cFile] != QString::null)
 	{
-		QStringList list;
-		list.append(fFiles[cFile]);
-		Q3UriDrag *d = new Q3UriDrag(this);
-		d->setFilenames(list);
-		d->dragCopy();
+         QDrag *drag = new QDrag(this);
+         QMimeData *mimeData = new QMimeData;
+
+		 QUrl u = QUrl::fromLocalFile(fFiles[cFile]);
+		 QList<QUrl> list;
+		 list.append(u);
+         mimeData->setUrls(list);
+         drag->setMimeData(mimeData);
+
+         Qt::DropAction dropAction = drag->exec();
 	}
 }
 
