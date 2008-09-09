@@ -10,6 +10,7 @@
 #include <Q3PopupMenu>
 
 #include "privatewindowimpl.h"
+#include "privatewindow.h"
 #include "gotourl.h"
 #include "formatting.h"
 #include "chatevent.h"

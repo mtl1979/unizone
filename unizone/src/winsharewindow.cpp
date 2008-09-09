@@ -21,11 +21,14 @@
 #	include <qmacstyle_mac.h>
 # endif
 #endif
+#if !defined(QT_NO_STYLE_PLASTIQUE)
+#include <qplastiquestyle.h>
+#endif
 #include <q3cstring.h>
 #include <qtextcodec.h>
 #include <qdir.h>
 #include <qinputdialog.h>
-#include <q3toolbar.h>
+#include <qtoolbar.h>
 #include <qregexp.h>
 #include <QTimerEvent>
 #include <QResizeEvent>
@@ -871,7 +874,7 @@ WinShareWindow::InitGUI()
 	/*
 	 * Setup combo/labels
 	 *
-	 * We define the combos as QComboBox, but use WComboBox for
+	 * We define the combos as Q3ComboBox, but use WComboBox for
 	 * messaging purposes :)
 	 *
 	 */
@@ -1353,7 +1356,7 @@ WinShareWindow::LoadSettings()
 #endif
 				break;
 			case WindowsXP:
-#if defined(WIN32)
+#if defined(_WIN32)
 # if !defined(QT_NO_STYLE_WINDOWSXP)
 				qApp->setStyle(new QWindowsXPStyle);
 # endif
@@ -1369,6 +1372,11 @@ WinShareWindow::LoadSettings()
 # if !defined(QT_NO_STYLE_MAC)
 				qApp->setStyle(new QMacStyle);
 # endif
+#endif
+				break;
+			case Plastique:
+#if !defined(QT_NO_STYLE_PLASTIQUE)
+				qApp->setStyle(new QPlastiqueStyle);
 #endif
 				break;
 		}

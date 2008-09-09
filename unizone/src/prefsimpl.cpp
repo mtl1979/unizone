@@ -16,6 +16,12 @@
 #  include <qmacstyle_mac.h>
 # endif
 #endif
+#if !defined(QT_NO_STYLE_PLASTIQUE)
+#include <qplastiquestyle.h>
+#endif
+#if !defined(QT_NO_STYLE_WINDOWSVISTA)
+#include <qwindowsvistastyle.h>
+#endif
 #include <qcolordialog.h>
 #include <qpushbutton.h>
 #include <q3listbox.h>
@@ -154,10 +160,33 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
 	ui->fIPAddresses->setChecked(gWin->fSettings->GetIPAddresses());
 
 	ui->fStyleList->insertItem(tr("CDE"));
+#if defined(QT_NO_STYLE_CDE)
+	ui->fStyleList->item(0)->setSelectable(false);
+#endif
 	ui->fStyleList->insertItem(tr("Motif"));
+#if defined(QT_NO_STYLE_MOTIF)
+	ui->fStyleList->item(1)->setSelectable(false);
+#endif
 	ui->fStyleList->insertItem(tr("WindowsXP"));
+#if !defined(_WIN32) || defined(QT_NO_STYLE_WINDOWSXP)
+	ui->fStyleList->item(2)->setSelectable(false);
+#endif
 	ui->fStyleList->insertItem(tr("Windows"));
+#if defined(QT_NO_STYLE_WINDOWS)
+	ui->fStyleList->item(3)->setSelectable(false);
+#endif
 	ui->fStyleList->insertItem(tr("Mac"));
+#if !defined(__APPLE__) || defined(QT_NO_STYLE_MAC)
+	ui->fStyleList->item(4)->setSelectable(false);
+#endif
+	ui->fStyleList->insertItem(tr("Plastique"));
+#if defined(QT_NO_STYLE_PLASTIQUE)
+	ui->fStyleList->item(5)->setSelectable(false);
+#endif
+	ui->fStyleList->insertItem(tr("WindowsVista"));
+#if !defined(_WIN32) || defined(QT_NO_STYLE_WINDOWSVISTA)
+	ui->fStyleList->item(6)->setSelectable(false);
+#endif
 
 	switch (gWin->fSettings->GetStyle())
 	{
@@ -179,6 +208,14 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
 
 		case WinShareWindow::Mac:
 			ui->fStyleList->setCurrentItem(4);
+			break;
+
+		case WinShareWindow::Plastique:
+			ui->fStyleList->setCurrentItem(5);
+			break;
+
+		case WinShareWindow::WindowsVista:
+			ui->fStyleList->setCurrentItem(6);
 			break;
 	}
 
@@ -480,6 +517,8 @@ WPrefs::StyleSelected(int id)
 	 * 3 - WindowsXP
 	 * 4 - Windows
 	 * 5 - Aqua
+	 * 6 - Plastique
+	 * 7 - WindowsVista
 	 */
 #ifndef DISABLE_STYLES
 	switch (id)
@@ -497,7 +536,7 @@ WPrefs::StyleSelected(int id)
 			gWin->fSettings->SetStyle(WinShareWindow::Motif);
 			break;
 		case 2:
-#if defined(WIN32)
+#if defined(_WIN32)
 # if !defined(QT_NO_STYLE_WINDOWSXP)
 			qApp->setStyle(new QWindowsXPStyle);
 # endif
@@ -517,6 +556,20 @@ WPrefs::StyleSelected(int id)
 # endif
 #endif
 			gWin->fSettings->SetStyle(WinShareWindow::Mac);
+			break;
+		case 5:
+#if !defined(QT_NO_STYLE_PLASTIQUE)
+			qApp->setStyle(new QPlastiqueStyle);
+#endif
+			gWin->fSettings->SetStyle(WinShareWindow::Plastique);
+			break;
+		case 6:
+#if defined(_WIN32)
+# if !defined(QT_NO_STYLE_WINDOWSVISTA)
+			qApp->setStyle(new QWindowsVistaStyle);
+# endif
+#endif
+			gWin->fSettings->SetStyle(WinShareWindow::WindowsVista);
 			break;
 		default:
 			break;		// unknown style

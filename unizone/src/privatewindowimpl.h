@@ -1,17 +1,17 @@
 #ifndef PRIVATEWINDOWIMPL_H
 #define PRIVATEWINDOWIMPL_H
 
-#include "privatewindow.h"
+#include <qdialog.h>
+#include <qlistview.h>
+#include <q3popupmenu.h>
+#include <qsplitter.h>
+#include <q3vgroupbox.h>
+
 #include "chattext.h"
 #include "user.h"
 #include "htmlview.h"
 #include "Log.h"
 #include "chatwindow.h"
-
-#include <qlistview.h>
-#include <q3popupmenu.h>
-#include <qsplitter.h>
-#include <q3vgroupbox.h>
 
 
 class NetClient;

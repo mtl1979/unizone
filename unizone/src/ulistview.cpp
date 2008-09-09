@@ -590,16 +590,19 @@ WUniListView::dropEvent(QDropEvent* event)
 		while (it != urls.end())
 		{
 			QString filename = (*it++).toLocalFile();
-			const char * fmt = QImageReader(filename).format();
-			QImage img;
-			if (img.load(filename, fmt))
+			QImageReader reader(filename);
+			if (reader.canRead())
 			{
+				QImage img;
+				if (reader.read(&img))
+				{
 #ifdef _DEBUG
-				WString wfile(filename);
-				WString wuser(li->text(1));
-				PRINT("Sending picture \"%S\" to \"%S\"...\n", wfile.getBuffer(), wuser.getBuffer());
+					WString wfile(filename);
+					WString wuser(li->text(1));
+					PRINT("Sending picture \"%S\" to \"%S\"...\n", wfile.getBuffer(), wuser.getBuffer());
 #endif
-				gWin->SendPicture(li->text(1), filename);
+					gWin->SendPicture(li->text(1), filename);
+				}
 			}
 		}
 	}

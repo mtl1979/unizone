@@ -6,7 +6,7 @@
 #include <QFocusEvent>
 
 WComboBox::WComboBox(QObject * owner, QWidget * parent, const char * name)
-	: QComboBox(parent, name), fOwner(owner)
+	: Q3ComboBox(parent, name), fOwner(owner)
 {
 	if (!name)
 		setName("WComboBox");

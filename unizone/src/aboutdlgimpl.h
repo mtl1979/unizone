@@ -1,7 +1,7 @@
 #ifndef ABOUTDLGIMPL_H
 #define ABOUTDLGIMPL_H
 
-#include "aboutdlg.h"
+#include <qdialog.h>
 
 class AboutDlg : public QDialog
 { 

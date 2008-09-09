@@ -1,4 +1,10 @@
+#include <QCustomEvent>
+#include <QResizeEvent>
+#include <Q3ValueList>
+#include <QLabel>
+
 #include "channelimpl.h"
+#include "channel.h"
 #include "global.h"
 #include "wpwevent.h"
 #include "gotourl.h"
@@ -11,10 +17,6 @@
 #include "netclient.h"
 
 #include "reflector/StorageReflectConstants.h"
-#include <QCustomEvent>
-#include <QResizeEvent>
-#include <Q3ValueList>
-#include <QLabel>
 
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, Qt::WFlags /* fl */)
 : QDialog(/* parent */ NULL, name, modal, Qt::WDestructiveClose | Qt::WStyle_Minimize | 

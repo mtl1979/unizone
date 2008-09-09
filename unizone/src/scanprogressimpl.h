@@ -1,14 +1,15 @@
 #ifndef SCANPROGRESSIMPL_H
 #define SCANPROGRESSIMPL_H
 
-#include "scanprogress.h"
+#include <qdialog.h>
 
+class Ui_ScanProgressBase;
 
 class ScanProgress : public QDialog
 {
 public:
 
-    ScanProgress(QWidget* parent = 0, 	const char* name = 0, bool modal = false, 
+    ScanProgress(QWidget* parent = 0, const char* name = 0, bool modal = false, 
 		Qt::WindowFlags fl = Qt::WStyle_Customize | Qt::WStyle_NormalBorder |
 		Qt::WStyle_Title | Qt::WStyle_Minimize | Qt::WStyle_Maximize);
 	~ScanProgress();

@@ -11,12 +11,12 @@
 #include <q3multilineedit.h>
 #include <q3textview.h>
 #include <q3vgroupbox.h>
+#include <q3combobox.h>
 
 #include <qboxlayout.h>
 #include <qmenubar.h>
 #include <qsplitter.h>
 #include <qlabel.h>
-#include <qcombobox.h>
 #include <qtextbrowser.h>
 #include <qtimer.h>
 #include <qevent.h>
@@ -89,7 +89,9 @@ public:
 		Windows,
 		WindowsXP,
 		CDE,
-		Mac
+		Mac,
+		Plastique,
+		WindowsVista
 	};
 
 	// Events
@@ -300,7 +302,7 @@ private:
 
 	Q3VGroupBox * fLeftPane;
 
-	QComboBox * fServerList, * fUserList, * fStatusList;
+	Q3ComboBox * fServerList, * fUserList, * fStatusList;
 	QLabel * fServerLabel, * fUserLabel, * fStatusLabel;
 	QSplitter * fChatSplitter;
 	WChatText * fInputText;

@@ -1,10 +1,10 @@
-#include "aboutdlgimpl.h"
-#include "version.h"
-
 #include <stdio.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
 
+#include "aboutdlgimpl.h"
+#include "aboutdlg.h"
+#include "version.h"
 
 /* 
  *  Constructs a AboutDlg which is a child of 'parent', with the 
@@ -24,10 +24,10 @@ AboutDlg::AboutDlg( QWidget* parent,  const char* name, bool modal, Qt::WFlags f
 	connect(ui->buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
 	QString about = tr("Unizone (English)");
 	ui->titleLabel->setProperty("text", about);
-   QString version = tr("Version %1").arg(WinShareVersionString());
-   ui->versionLabel->setProperty("text", version);
+	QString version = tr("Version %1").arg(WinShareVersionString());
+	ui->versionLabel->setProperty("text", version);
 	setCaption(tr("About Unizone (English)"));
-    ui->TextLabel2_3_2->setText( tr( "Unizone is Copyright (C) %1 by Mika T. Lindqvist" ).arg(GetUnizoneYears()) );
+	ui->TextLabel2_3_2->setText( tr( "Unizone is Copyright (C) %1 by Mika T. Lindqvist" ).arg(GetUnizoneYears()) );
 }
 
 

@@ -1,6 +1,3 @@
-#include "picviewerimpl.h"
-#include "support/MuscleSupport.h"
-
 #include <qapplication.h>
 #include <qpushbutton.h>
 #include <qpixmap.h>
@@ -19,6 +16,8 @@
 #include <QDragEnterEvent>
 #include <QImageReader>
 
+#include "picviewerimpl.h"
+#include "picviewer.h"
 #include "util.h"
 #include "debugimpl.h"
 #include "wfile.h"
@@ -26,6 +25,8 @@
 #include "global.h"
 #include "settings.h"
 #include "winsharewindow.h"
+
+#include "support/MuscleSupport.h"
 
 WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : QDialog(parent, name, modal, fl)
@@ -188,7 +189,11 @@ WPicViewer::LoadImage(const QString &file)
 {
 	bool ret = false;
 	QImage fImage;
-	const char * fmt = QImageReader(file).format();
+	
+	QImageReader reader(file);
+	if (!reader.canRead())
+		return false;
+	const char * fmt = reader.format();
 	ByteBufferRef buf = GetByteBufferFromPool();
 	WFile f;
 	int oldpos = -1;

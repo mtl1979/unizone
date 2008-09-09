@@ -1,13 +1,13 @@
 #ifndef COMBO_H
 #define COMBO_H
 
-#include <qcombobox.h>
+#include <q3combobox.h>
 
 /** This combo box will send an event to its owner signifying
   * that the text has been changed by an enter keypress or loss
   * of focus
   */
-class WComboBox : public QComboBox
+class WComboBox : public Q3ComboBox
 {
 	Q_OBJECT
 public:

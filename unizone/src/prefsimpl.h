@@ -1,8 +1,11 @@
 #ifndef PREFSIMPL_H
 #define PREFSIMPL_H
 
-#include "prefs.h"
+#include <qdialog.h>
+
 #include "colors.h"
+
+class Ui_WPrefsBase;
 
 class WPrefs : public QDialog
 { 

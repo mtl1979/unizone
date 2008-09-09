@@ -1,14 +1,15 @@
 #ifndef WPICVIEWERIMPL_H
 #define WPICVIEWERIMPL_H
 
+#include <qdialog.h>
 #include <qimage.h>
-
-#include "picviewer.h"
 
 #include "util/Queue.h"
 #include "util/ByteBuffer.h"
 
 using namespace muscle;
+
+class Ui_WPicViewerBase;
 
 class WPicViewer : public QDialog
 {

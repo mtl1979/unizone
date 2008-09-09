@@ -12,7 +12,6 @@
 #include <qpalette.h>
 #include <q3listview.h>
 
-#include "channel.h"
 #include "chattext.h"
 #include "chatwindow.h"
 #include "htmlview.h"
