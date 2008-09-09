@@ -20,7 +20,8 @@
 #include <QPixmap>
 #include <QMouseEvent>
 #include <QEvent>
-#include <QDragEnterEvent>
+#include <QDragEnterEvent> 
+#include <QUrl>
 
 ImageSplitter::ImageSplitter( QWidget* parent, const char* name, Qt::WFlags fl)
 : Q3MainWindow(parent, name, fl | Qt::WMouseNoMask)
@@ -50,7 +51,8 @@ ImageSplitter::ImageSplitter( QWidget* parent, const char* name, Qt::WFlags fl)
 void 
 ImageSplitter::dragEnterEvent(QDragEnterEvent* event)
 {
-    event->accept( Q3UriDrag::canDecode(event));
+    if (event->mimeData()->hasUrls())
+         event->acceptProposedAction();
 	Q3MainWindow::dragEnterEvent(event);
 }
 
@@ -81,12 +83,15 @@ ImageSplitter::eventFilter( QObject *o, QEvent *e )
 void 
 ImageSplitter::dropEvent(QDropEvent* event)
 {
-    QStringList list;
-	
-    if ( Q3UriDrag::decodeLocalFiles(event, list) ) {
-		QString filename = list[0];
-		Load(filename);
-    }
+	if (event->mimeData()->hasUrls())
+	{
+		QList<QUrl> urls = event->mimeData()->urls();
+		QUrl u = urls.takeFirst();
+		qDebug("Drop URL: %S", u.toString().utf16());
+		QString file = u.toLocalFile();
+		qDebug("Drop: %S", file.utf16());
+		Load(file);
+	}
 }
 
 void

@@ -4,7 +4,7 @@
 <context>
     <name>ImageSplitter</name>
     <message>
-        <location filename="mainwindowimpl.cpp" line="273"/>
+        <location filename="mainwindowimpl.cpp" line="269"/>
         <source>Image Splitter</source>
         <translation>Kuvanpilkkoja</translation>
     </message>
@@ -110,32 +110,32 @@
 <context>
     <name>MenuBar</name>
     <message>
-        <location filename="menubar.cpp" line="13"/>
+        <location filename="menubar.cpp" line="12"/>
         <source>&amp;Open</source>
         <translation>A&amp;vaa</translation>
     </message>
     <message>
-        <location filename="menubar.cpp" line="13"/>
+        <location filename="menubar.cpp" line="12"/>
         <source>CTRL+O</source>
         <translation>CTRL+O</translation>
     </message>
     <message>
-        <location filename="menubar.cpp" line="14"/>
+        <location filename="menubar.cpp" line="13"/>
         <source>&amp;Close</source>
         <translation>Sul&amp;je</translation>
     </message>
     <message>
-        <location filename="menubar.cpp" line="18"/>
+        <location filename="menubar.cpp" line="17"/>
         <source>E&amp;xit</source>
         <translation>Poist&amp;u</translation>
     </message>
     <message>
-        <location filename="menubar.cpp" line="18"/>
+        <location filename="menubar.cpp" line="17"/>
         <source>ALT+X</source>
         <translation>ALT+X</translation>
     </message>
     <message>
-        <location filename="menubar.cpp" line="21"/>
+        <location filename="menubar.cpp" line="20"/>
         <source>&amp;File</source>
         <translation>&amp;Tiedosto</translation>
     </message>
@@ -143,22 +143,22 @@
 <context>
     <name>Preview</name>
     <message>
-        <location filename="previewimpl.cpp" line="469"/>
+        <location filename="previewimpl.cpp" line="468"/>
         <source>Preview</source>
         <translation>Esikatselu</translation>
     </message>
     <message>
-        <location filename="previewimpl.cpp" line="448"/>
+        <location filename="previewimpl.cpp" line="447"/>
         <source>Save</source>
         <translation>Tallenna</translation>
     </message>
     <message>
-        <location filename="previewimpl.cpp" line="348"/>
+        <location filename="previewimpl.cpp" line="347"/>
         <source>%1 x %2</source>
         <translation>%1 x %2</translation>
     </message>
     <message>
-        <location filename="previewimpl.cpp" line="448"/>
+        <location filename="previewimpl.cpp" line="447"/>
         <source>Unable to save output!</source>
         <translation>Ei voitu tallentaa kuvaa!</translation>
     </message>
