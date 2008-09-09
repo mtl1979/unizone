@@ -1,5 +1,6 @@
 #include "previewimpl.h"
 #include "mainwindowimpl.h"
+#include "mainwindow.h"
 #include "platform.h"
 
 #include <qapplication.h>

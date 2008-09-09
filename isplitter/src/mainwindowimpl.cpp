@@ -1,4 +1,5 @@
 #include "mainwindowimpl.h"
+#include "mainwindow.h"
 #include "previewimpl.h"
 #include "menubar.h"
 #include "platform.h"

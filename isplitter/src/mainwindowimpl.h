@@ -1,7 +1,7 @@
 #ifndef IMAGESPLITTER_H
 #define IMAGESPLITTER_H
 
-#include "mainwindow.h"
+//#include "mainwindow.h"
 
 #include <Q3MainWindow>
 #include <QResizeEvent>
@@ -16,6 +16,7 @@ class QImage;
 class QString;
 class Preview;
 class QPoint;
+class Ui_ImageSplitterBase;
 
 class ImageSplitter : public Q3MainWindow
 {
