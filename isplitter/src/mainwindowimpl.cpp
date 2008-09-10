@@ -6,7 +6,6 @@
 
 #include <Q3MainWindow>
 #include <qimage.h>
-#include <q3dragobject.h>
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qlayout.h>
@@ -134,11 +133,15 @@ ImageSplitter::startDrag()
 {
 	if (fFilename != QString::null)
 	{
-		QStringList list;
-		list.append(fFilename);
-		Q3UriDrag *d = new Q3UriDrag(this);
-		d->setFilenames(list);
-		d->dragCopy();
+		QList<QUrl> list;
+		QUrl url = QUrl::fromLocalFile(fFilename);
+		list.append(url);
+		QDrag *drag = new QDrag(this);
+		QMimeData *mimeData = new QMimeData;
+		mimeData->setUrls(list);
+		drag->setMimeData(mimeData);
+
+		Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
 	}
 }
 

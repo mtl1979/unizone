@@ -6,7 +6,7 @@
 #include <qlayout.h>
 #include <qfile.h>
 #include <q3filedialog.h>
-#include <q3dragobject.h>
+//#include <q3dragobject.h>
 #include <q3url.h>
 #include <qdir.h>
 #include <QDropEvent>
@@ -142,7 +142,7 @@ WPicViewer::mouseReleaseEvent(QMouseEvent *e)
 void 
 WPicViewer::dragEnterEvent(QDragEnterEvent* event)
 {
-    if (event->mimeData()->hasUrls())
+    if (event->mimeData()->hasUrls() || event->mimeData()->hasImage())
          event->acceptProposedAction();
 }
 
@@ -163,6 +163,27 @@ WPicViewer::dropEvent(QDropEvent* event)
 				LoadImage(file);
 			}
 		}
+		else if (event->mimeData()->hasImage())
+		{
+			QVariant v = event->mimeData()->imageData();
+			if (v.canConvert(QVariant::Image))
+			{
+				QImage img = v.value<QImage>();
+				// Check for duplicates
+				for (unsigned int x = 0; x < fImages.GetNumItems(); x++)
+				{
+					if (img == fImages[x])
+					{
+						event->setAccepted(false);
+						return;
+					}
+				}
+				fFiles.AddTail(QString::null);
+				fImages.AddTail(img);
+				nFiles++;
+				LastImage();
+			} 
+		}
 	}
 }
 
@@ -180,7 +201,17 @@ WPicViewer::startDrag()
          mimeData->setUrls(list);
          drag->setMimeData(mimeData);
 
-         Qt::DropAction dropAction = drag->exec();
+         Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+	}
+	else if (!fImages[cFile].isNull())
+	{
+		QDrag *drag = new QDrag(this);
+		QMimeData *mimeData = new QMimeData;
+
+		mimeData->setImageData(fImages[cFile]);
+		drag->setMimeData(mimeData);
+
+		Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
 	}
 }
 
@@ -214,6 +245,13 @@ WPicViewer::LoadImage(const QString &file)
 			{
 				if ((ret = LoadImage(buf, fmt, fImage)) == true)
 				{
+					// Check duplicates
+					for (unsigned int x = 0; x < fImages.GetNumItems(); x++)
+					{
+						if (fImage == fImages[x])
+							oldpos = x;
+					}
+
 					if (oldpos == -1)
 					{
 						fImages.AddTail(fImage);
@@ -253,10 +291,15 @@ WPicViewer::UpdateName()
 {
 	QString fFile, fName;
 
-	if ( fFiles.GetItemAt(cFile, fFile) == B_OK)
-		setCaption(tr("Picture Viewer") + " - " + SimplifyPath(fFile));
-	else
-		setCaption(tr("Picture Viewer"));
+	if (fFiles.GetItemAt(cFile, fFile) == B_OK)
+	{
+		if (!fFile.isEmpty())
+		{
+			setCaption(tr("Picture Viewer") + " - " + SimplifyPath(fFile));
+			return;
+		}
+	}
+	setCaption(tr("Picture Viewer"));
 }
 
 void

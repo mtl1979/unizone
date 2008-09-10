@@ -12,7 +12,6 @@
 #include <qlayout.h>
 #include <qmessagebox.h>
 #include <qmatrix.h>
-#include <q3dragobject.h>
 #include <QDropEvent>
 #include <QResizeEvent>
 #include <Q3GridLayout>
@@ -412,10 +411,12 @@ Preview::startDrag()
 {
 	if (pixPreview)
 	{
-		QImage img;
-		img = *pixPreview;
-		Q3ImageDrag *d = new Q3ImageDrag(img, this);
-		d->dragCopy();
+		QDrag *drag = new QDrag(this);
+		QMimeData *mimeData = new QMimeData;
+		mimeData->setImageData(*pixPreview);
+		drag->setMimeData(mimeData);
+
+		Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
 	}
 }
 
