@@ -4,9 +4,14 @@
 <context>
     <name>ImageSplitter</name>
     <message>
-        <location filename="mainwindowimpl.cpp" line="269"/>
+        <location filename="mainwindowimpl.cpp" line="273"/>
         <source>Image Splitter</source>
         <translation>Kuvanpilkkoja</translation>
+    </message>
+    <message>
+        <location filename="mainwindowimpl.cpp" line="183"/>
+        <source>Open image...</source>
+        <translation>Avaa kuva...</translation>
     </message>
 </context>
 <context>
@@ -143,12 +148,12 @@
 <context>
     <name>Preview</name>
     <message>
-        <location filename="previewimpl.cpp" line="468"/>
+        <location filename="previewimpl.cpp" line="470"/>
         <source>Preview</source>
         <translation>Esikatselu</translation>
     </message>
     <message>
-        <location filename="previewimpl.cpp" line="447"/>
+        <location filename="previewimpl.cpp" line="449"/>
         <source>Save</source>
         <translation>Tallenna</translation>
     </message>
@@ -158,9 +163,17 @@
         <translation>%1 x %2</translation>
     </message>
     <message>
-        <location filename="previewimpl.cpp" line="447"/>
+        <location filename="previewimpl.cpp" line="449"/>
         <source>Unable to save output!</source>
         <translation>Ei voitu tallentaa kuvaa!</translation>
+    </message>
+</context>
+<context>
+    <name>main</name>
+    <message>
+        <location filename="main.cpp" line="115"/>
+        <source>Open translation file...</source>
+        <translation>Avaa käännöstiedosto...</translation>
     </message>
 </context>
 </TS>

@@ -4,7 +4,7 @@
 
 #include <qapplication.h>
 #include <qfile.h>
-#include <q3filedialog.h>
+#include <qfiledialog.h>
 #include <qregexp.h>
 //Added by qt3to4:
 #include <Q3CString>
@@ -22,16 +22,10 @@
 # endif
 #endif
 
-bool
-endsWith(const QString &str1, const QString &str2, bool cs = true)
-{
-	return str1.endsWith(str2, cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
-}
-
 QString MakePath(const QString &dir, const QString &file)
 {
 	QString ret = QDir::convertSeparators(dir);
-	if (!endsWith(ret, QChar(QDir::separator())))
+	if (!ret.endsWith(QDir::separator()))
 		ret += QDir::separator();
 
 	ret += file;
@@ -39,8 +33,8 @@ QString MakePath(const QString &dir, const QString &file)
 	return ret;
 }
 
+#ifndef _WIN32
 void
-#ifndef WIN32
 SetWorkingDirectory(const char *app)
 {
 	const char * wdir = strrchr(app, '/');
@@ -58,8 +52,9 @@ SetWorkingDirectory(const char *app)
 		}
 	}
 }
-#elif defined(UNICODE)
-SetWorkingDirectory()
+#else
+QString
+GetAppDirectory()
 {
 	// we have to use some windows api to get our path...
 	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
@@ -69,30 +64,20 @@ SetWorkingDirectory()
 							MAX_PATH		/* buffer length */
 							) != 0)
 	{
+		qDebug("Module filename: %S", name);
 		PathRemoveFileSpec(name);
-		SetCurrentDirectory(name);
+		if (SetCurrentDirectory(name) == 0)
+		{
+			GetCurrentDirectory(MAX_PATH, name);
+			qDebug("Current directory: %S", name);
+		}
+		else
+			qDebug("Application directory: %S", name);
 	}
+	QString qname = QString::fromUcs2((const ushort *) name);
 	delete [] name;
 	name = NULL; // <postmaster@raasu.org> 20021027
-}
-#else
-SetWorkingDirectory()
-{
-	// we have to use some windows api to get our path...
-	char * name = new char[MAX_PATH];	// maximum size for Win32 filenames
-	CHECK_PTR(name);
-	if (GetModuleFileName(NULL,				/* current apps module */
-							name,			/* buffer */
-							MAX_PATH		/* buffer length */
-							) != 0)
-	{
-		PRINT("Module filename: %s\n", name);
-		PathRemoveFileSpec(name);
-		PRINT("Setting working directory to: %s\n", name);
-		SetCurrentDirectory(name);
-	}
-	delete [] name;
-	name = NULL; // <postmaster@raasu.org> 20021027
+	return qname;
 }
 #endif
 
@@ -105,18 +90,35 @@ main( int argc, char** argv )
 
 	// Set our working directory
 
-#ifndef WIN32
+#ifndef _WIN32
 	SetWorkingDirectory(argv[0]);
 #else
-	SetWorkingDirectory();
+	QString appdir = GetAppDirectory();
+	QString datadir = EnvironmentVariable("APPDATA");
+	QDir dir(datadir);
+	dir.mkdir("Image Splitter");
+	datadir = MakePath(datadir, "Image Splitter");
+	QDir::setCurrent(datadir);
 #endif
 
 	// Load language file
-	QFile lang("isplitter.lng");
+	QString langfile;
+#ifdef _WIN32
+	langfile = MakePath(datadir, "isplitter.lng");
+#else
+	langfile = "isplitter.lng");
+#endif
+	QFile lang(langfile);
 	QString lfile;
 	if (!lang.exists())
 	{
-		lfile = Q3FileDialog::getOpenFileName(QString::null, "isplitter_*.qm");
+		lfile = QFileDialog::getOpenFileName(NULL, app.translate("main", "Open translation file..."), 
+#ifdef _WIN32
+			MakePath(appdir, "translations"),
+#else
+			QString::null,
+#endif		
+			"isplitter_*.qm");
 		if (!lfile.isEmpty())
 		{
 			// Save selected language's translator filename
@@ -177,7 +179,7 @@ main( int argc, char** argv )
 		}
 	}
 
-#ifdef WIN32
+#ifdef _WIN32
 # if !defined(QT_NO_STYLE_WINDOWSXP)
 	// Set style
 	app.setStyle(new QWindowsXPStyle);

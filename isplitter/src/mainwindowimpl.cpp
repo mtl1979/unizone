@@ -9,7 +9,7 @@
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <q3filedialog.h>
+#include <qfiledialog.h>
 #include <qapplication.h>
 #include <qfile.h>
 #include <qstring.h>
@@ -180,7 +180,7 @@ ImageSplitter:: ~ImageSplitter()
 void
 ImageSplitter::Load()
 {
-	QString filename = Q3FileDialog::getOpenFileName ( lastdir, "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif", this);
+	QString filename = QFileDialog::getOpenFileName ( this, tr("Open image..."), lastdir, "*.png;*.bmp;*.xbm;*.xpm;*.pbm;*.pgm;*.ppm;*.jpg;*.jpeg;*.mng;*.gif;*.tiff");
 	if (!filename.isEmpty())
 	{
 		Load(filename);
