@@ -10,8 +10,13 @@
 #if !defined(QT_NO_STYLE_WINDOWS)
 #include <qwindowsstyle.h>
 #endif
-#if !defined(QT_NO_STYLE_WINDOWSXP)
-#include <qwindowsxpstyle.h>
+#if defined(_WIN32)
+# if !defined(QT_NO_STYLE_WINDOWSXP)
+#  include <qwindowsxpstyle.h>
+# endif
+# if !defined(QT_NO_STYLE_WINDOWSVISTA)
+#  include <qwindowsvistastyle.h>
+# endif
 #endif
 #if !defined(QT_NO_STYLE_CDE)
 #include <qcdestyle.h>
@@ -24,7 +29,6 @@
 #if !defined(QT_NO_STYLE_PLASTIQUE)
 #include <qplastiquestyle.h>
 #endif
-#include <q3cstring.h>
 #include <qtextcodec.h>
 #include <qdir.h>
 #include <qinputdialog.h>
@@ -1379,6 +1383,12 @@ WinShareWindow::LoadSettings()
 				qApp->setStyle(new QPlastiqueStyle);
 #endif
 				break;
+			case WindowsVista:
+#if defined(_WIN32)
+# if !defined(QT_NO_STYLE_WINDOWSVISTA)
+				qApp->setStyle(new QWindowsVistaStyle);
+# endif
+#endif
 		}
 #endif
 
