@@ -11,11 +11,8 @@ isplitter.pro : $(SOURCES)
 	$(LUPDATE) isplitter.pro
 %.ts : isplitter.pro
 
-%.ts2 : %.ts
-	sed -f ../../unizone/src/fixts.sed $< > $@
-%.qm : %.ts2
-	mv -f $< $(addsuffix .ts,$(basename $<))
+%.qm : %.ts
 	$(LRELEASE) $(addsuffix .ts,$(basename $<))
 
 clean:
-	rm -f *.qm *.ts2
+	rm -f *.qm

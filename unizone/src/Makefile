@@ -34,15 +34,12 @@ unizone.pro : $(SOURCES) $(HEADERS)
  
 translations : $(QMFILES)
 
-%.ts2 : %.ts
-	@sed -f fixts.sed $< > $@
-
-%.qm : %.ts2
+%.qm : %.ts
 	@echo Creating $@ ... 
-	@mv -f $< $(addsuffix .ts,$(basename $<))
 	@$(LRELEASE) $(addsuffix .ts,$(basename $<))
+
 clean : 
-	@rm -f *.qm *.ts2
+	@rm -f *.qm
 
 distclean: clean
 	@rm -f unizone_unix.pro 
