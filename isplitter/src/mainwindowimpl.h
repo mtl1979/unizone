@@ -1,8 +1,6 @@
 #ifndef IMAGESPLITTER_H
 #define IMAGESPLITTER_H
 
-//#include "mainwindow.h"
-
 #include <Q3MainWindow>
 #include <QResizeEvent>
 #include <QMouseEvent>
