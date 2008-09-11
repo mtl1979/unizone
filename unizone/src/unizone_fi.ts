@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="fi">
-<defaultcodec>utf-8</defaultcodec>
+<defaultcodec>UTF-8</defaultcodec>
 <context>
     <name></name>
     <message>
@@ -256,12 +256,12 @@ Versio %1</translation>
 <context>
     <name>Channel</name>
     <message>
-        <location filename="channelimpl.cpp" line="38"/>
+        <location filename="channelimpl.cpp" line="40"/>
         <source>Channel Window - %1</source>
         <translation>Kanavaikkuna - %1</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="47"/>
+        <location filename="channelimpl.cpp" line="49"/>
         <source>Topic:</source>
         <translation>Aihe:</translation>
     </message>
@@ -301,22 +301,22 @@ Versio %1</translation>
         <translation type="obsolete">Ohjelma</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="167"/>
+        <location filename="channelimpl.cpp" line="169"/>
         <source>Topic set to %1.</source>
         <translation>Aihe on nyt %1.</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="192"/>
+        <location filename="channelimpl.cpp" line="194"/>
         <source>Channel is now %1.</source>
         <translation>Kanava on nyt %1.</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="192"/>
+        <location filename="channelimpl.cpp" line="194"/>
         <source>public</source>
         <translation>julkinen</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="192"/>
+        <location filename="channelimpl.cpp" line="194"/>
         <source>private</source>
         <translation>yksityinen</translation>
     </message>
@@ -374,27 +374,27 @@ Versio %1</translation>
         <translation type="obsolete">Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="488"/>
+        <location filename="channelimpl.cpp" line="490"/>
         <source>User #%1 (a.k.a %2) is already in this channel window!</source>
         <translation>Käyttäjä #%1, eli %2, on jo tällä kanavalla!</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="562"/>
+        <location filename="channelimpl.cpp" line="564"/>
         <source>Not allowed!</source>
         <translation>Ei sallittu!</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="554"/>
+        <location filename="channelimpl.cpp" line="556"/>
         <source>User(s) not found!</source>
         <translation>Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="520"/>
+        <location filename="channelimpl.cpp" line="522"/>
         <source>No users passed.</source>
         <translation>Käyttäjiä ei annettu.</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="352"/>
+        <location filename="channelimpl.cpp" line="354"/>
         <source>List of channel admins:</source>
         <translation>Kanavan valvojat:</translation>
     </message>
@@ -404,77 +404,77 @@ Versio %1</translation>
         <translation type="obsolete">%1 - %2</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="681"/>
+        <location filename="channelimpl.cpp" line="683"/>
         <source>You got kicked off from this channel!</source>
         <translation>Sinut potkaistiin ulos kanavalta!</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="322"/>
+        <location filename="channelimpl.cpp" line="324"/>
         <source>Channel command reference:</source>
         <translation>Kanavien komentoluettelo:</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="324"/>
+        <location filename="channelimpl.cpp" line="326"/>
         <source>/action [action] - do something</source>
         <translation>/action [toiminta] - tee jotain</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="326"/>
+        <location filename="channelimpl.cpp" line="328"/>
         <source>/clear - clear channel window</source>
         <translation>/clear - tyhjennä kanavaikkuna</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="328"/>
+        <location filename="channelimpl.cpp" line="330"/>
         <source>/deop [name or session id] - take admin status from other user</source>
         <translation>/deop [nimi tai session id] - poista käyttäjä valvojista</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="330"/>
+        <location filename="channelimpl.cpp" line="332"/>
         <source>/help - show command reference</source>
         <translation>/help - näytä komentoluettelo</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="332"/>
+        <location filename="channelimpl.cpp" line="334"/>
         <source>/invite [name or session id] - invite user to channel</source>
         <translation>/invite [nimi tai session id] - kutsu käyttäjä kanavalle</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="334"/>
+        <location filename="channelimpl.cpp" line="336"/>
         <source>/kick [name or session id] - kick user off the channel</source>
         <translation>/kick [nimi tai session id] - potkaise käyttäjä ulos kanavalta</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="336"/>
+        <location filename="channelimpl.cpp" line="338"/>
         <source>/listadmins - show channel admins</source>
         <translation>/listadmins - näytä kanavan valvojat</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="338"/>
+        <location filename="channelimpl.cpp" line="340"/>
         <source>/me [action] - same as /action</source>
         <translation>/me [toiminta] - sama kuin /action</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="340"/>
+        <location filename="channelimpl.cpp" line="342"/>
         <source>/op [name or session id] - give admin status to other user</source>
         <translation>/op [nimi tai session id] - lisää käyttäjä valvojiin</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="342"/>
+        <location filename="channelimpl.cpp" line="344"/>
         <source>/private - set channel to private mode</source>
         <translation>/private - aseta kanava yksityiseksi</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="344"/>
+        <location filename="channelimpl.cpp" line="346"/>
         <source>/public - set channel to public mode</source>
         <translation>/public - aseta kanava julkiseksi</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="346"/>
+        <location filename="channelimpl.cpp" line="348"/>
         <source>/topic [topic] - change the channel topic</source>
         <translation>/topic [aihe] - muuta kanavan keskustelun aihe</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="786"/>
+        <location filename="channelimpl.cpp" line="788"/>
         <source>Failed to create channel log.</source>
         <translation>Lokitiedoston luominen epäonnistui.</translation>
     </message>
@@ -2598,40 +2598,50 @@ Päiväys: %4</translation>
 <context>
     <name>WPicViewer</name>
     <message>
-        <location filename="picviewerimpl.cpp" line="271"/>
+        <location filename="picviewerimpl.cpp" line="323"/>
         <source>No File</source>
         <translation>Ei Tiedostoa</translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="269"/>
+        <location filename="picviewerimpl.cpp" line="321"/>
         <source>%1/%2</source>
         <translation>%1/%2</translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="254"/>
+        <location filename="picviewerimpl.cpp" line="306"/>
         <source>Picture Viewer</source>
         <translation>Kuvien Katselu</translation>
+    </message>
+    <message>
+        <location filename="picviewerimpl.cpp" line="438"/>
+        <source>Open image...</source>
+        <translation>Avaa kuva...</translation>
+    </message>
+    <message>
+        <location filename="picviewerimpl.cpp" line="454"/>
+        <source>Save image...</source>
+        <translation>Tallenna kuva...</translation>
     </message>
 </context>
 <context>
     <name>WPicViewerBase</name>
     <message>
-        <location filename="picviewer.ui" line="28"/>
+        <location filename="picviewer.ui" line="25"/>
         <source>Picture Viewer</source>
         <translation>Kuvien Katselu</translation>
     </message>
     <message>
-        <location filename="picviewer.ui" line="131"/>
+        <location filename="picviewer.ui" line="100"/>
         <source>No File</source>
         <translation>Ei Tiedostoa</translation>
     </message>
     <message>
-        <location filename="picviewer.ui" line="97"/>
+        <location filename="picviewer.ui" line="74"/>
         <source>First</source>
         <translation>Ensimmäinen</translation>
     </message>
     <message>
-        <location filename="picviewer.ui" line="111"/>
+        <location filename="picviewer.ui" line="81"/>
         <source>Previous</source>
         <translation>Edellinen</translation>
     </message>
@@ -2641,242 +2651,257 @@ Päiväys: %4</translation>
         <translation type="obsolete">1/1</translation>
     </message>
     <message>
-        <location filename="picviewer.ui" line="104"/>
+        <location filename="picviewer.ui" line="113"/>
         <source>Next</source>
         <translation>Seuraava</translation>
     </message>
     <message>
-        <location filename="picviewer.ui" line="59"/>
+        <location filename="picviewer.ui" line="120"/>
         <source>Last</source>
         <translation>Viimeinen</translation>
     </message>
     <message>
-        <location filename="picviewer.ui" line="52"/>
+        <location filename="picviewer.ui" line="127"/>
         <source>Open</source>
         <translation>Avaa</translation>
     </message>
     <message>
-        <location filename="picviewer.ui" line="118"/>
+        <location filename="picviewer.ui" line="141"/>
         <source>Close</source>
         <translation>Sulje</translation>
+    </message>
+    <message>
+        <location filename="picviewer.ui" line="134"/>
+        <source>Save</source>
+        <translation>Tallenna</translation>
     </message>
 </context>
 <context>
     <name>WPrefs</name>
     <message>
-        <location filename="prefsimpl.cpp" line="541"/>
+        <location filename="prefsimpl.cpp" line="594"/>
         <source>&lt;font color=&quot;%1&quot;&gt;%2&lt;/font&gt;</source>
         <translation>&lt;font color=&quot;%1&quot;&gt;%2&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="40"/>
+        <location filename="prefsimpl.cpp" line="46"/>
         <source>This is the color of your user name.</source>
         <translation>Oman käyttäjänimen väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="41"/>
+        <location filename="prefsimpl.cpp" line="47"/>
         <source>This is the color of other users&apos; names.</source>
         <translation>Muiden nimien väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="42"/>
+        <location filename="prefsimpl.cpp" line="48"/>
         <source>This is the color of text sent by you and other users.</source>
         <translation>Sinun ja muiden käyttäjien tekstin väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="43"/>
+        <location filename="prefsimpl.cpp" line="49"/>
         <source>This is the color of &quot;System&quot;.</source>
         <translation>Tämä on tekstin &quot;Järjestelmä&quot; väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="44"/>
+        <location filename="prefsimpl.cpp" line="50"/>
         <source>This is the color of the text in a ping response.</source>
         <translation>Ping-vastauksen väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="45"/>
+        <location filename="prefsimpl.cpp" line="51"/>
         <source>This is the color of &quot;Error&quot;.</source>
         <translation>Tekstin &quot;Virhe&quot; väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="46"/>
+        <location filename="prefsimpl.cpp" line="52"/>
         <source>This is the color of the text in error messages.</source>
         <translation>Virheviestien tekstin väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="47"/>
+        <location filename="prefsimpl.cpp" line="53"/>
         <source>This is the color of private text.</source>
         <translation>Yksityisen tekstin väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="48"/>
+        <location filename="prefsimpl.cpp" line="54"/>
         <source>This is the color of &quot;Action&quot;.</source>
         <translation>Tekstin &quot;Toiminta&quot; väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="49"/>
+        <location filename="prefsimpl.cpp" line="55"/>
         <source>This is the color of URLs.</source>
         <translation>URLien väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="50"/>
+        <location filename="prefsimpl.cpp" line="56"/>
         <source>This is the color of your user name in text when someone says your name in the main chat.</source>
         <translation>Tämä on sinun käyttäjänimesi väri, kun joku sanoo sen pääkeskustelussa.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="66"/>
+        <location filename="prefsimpl.cpp" line="72"/>
         <source>Username</source>
         <translation>Käyttäjänimi</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="57"/>
+        <location filename="prefsimpl.cpp" line="63"/>
         <source>Remote User</source>
         <translation>Etäkäyttäjän nimi</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="60"/>
+        <location filename="prefsimpl.cpp" line="66"/>
         <source>Sample text</source>
         <translation>Esimerkkiteksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="59"/>
+        <location filename="prefsimpl.cpp" line="65"/>
         <source>&lt;b&gt;System&lt;/b&gt; </source>
         <translation>&lt;b&gt;Järjestelmä&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="61"/>
+        <location filename="prefsimpl.cpp" line="67"/>
         <source>&lt;b&gt;Error&lt;/b&gt;</source>
         <translation>&lt;b&gt;Virhe&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="62"/>
+        <location filename="prefsimpl.cpp" line="68"/>
         <source>Error text</source>
         <translation>Virheteksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="63"/>
+        <location filename="prefsimpl.cpp" line="69"/>
         <source>Private text</source>
         <translation>Yksityinen teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="64"/>
+        <location filename="prefsimpl.cpp" line="70"/>
         <source>&lt;b&gt;Action&lt;/b&gt;</source>
         <translation>&lt;b&gt;Toiminta&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="65"/>
+        <location filename="prefsimpl.cpp" line="71"/>
         <source>&lt;u&gt;http://magep.com/&lt;/u&gt;</source>
         <translation>&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="51"/>
+        <location filename="prefsimpl.cpp" line="57"/>
         <source>This is the color of &quot;Warning&quot;.</source>
         <translation>Tekstin &quot;Varoitus&quot; väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="53"/>
+        <location filename="prefsimpl.cpp" line="59"/>
         <source>This is the color of the text in warning messages.</source>
         <translation>Varoitusviestien tekstin väri.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="67"/>
+        <location filename="prefsimpl.cpp" line="73"/>
         <source>&lt;b&gt;Warning&lt;/b&gt;</source>
         <translation>&lt;b&gt;Varoitus&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="69"/>
+        <location filename="prefsimpl.cpp" line="75"/>
         <source>Warning text</source>
         <translation>Varoitusteksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="104"/>
+        <location filename="prefsimpl.cpp" line="110"/>
         <source>Local Name</source>
         <translation>Oma nimi</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="105"/>
+        <location filename="prefsimpl.cpp" line="111"/>
         <source>Remote Name</source>
         <translation>Muiden nimi</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="106"/>
+        <location filename="prefsimpl.cpp" line="112"/>
         <source>Regular Text</source>
         <translation>Tavallinen teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="107"/>
+        <location filename="prefsimpl.cpp" line="113"/>
         <source>System Text</source>
         <translation>Järjestelmä-teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="108"/>
+        <location filename="prefsimpl.cpp" line="114"/>
         <source>Ping Text</source>
         <translation>Ping-teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="109"/>
+        <location filename="prefsimpl.cpp" line="115"/>
         <source>Error Text</source>
         <translation>Virhe-teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="110"/>
+        <location filename="prefsimpl.cpp" line="116"/>
         <source>Error Message Text</source>
         <translation>Virheviestin teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="111"/>
+        <location filename="prefsimpl.cpp" line="117"/>
         <source>Private Text</source>
         <translation>Yksityinen-teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="112"/>
+        <location filename="prefsimpl.cpp" line="118"/>
         <source>Action Text</source>
         <translation>Toiminta-teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="113"/>
+        <location filename="prefsimpl.cpp" line="119"/>
         <source>URL Text</source>
         <translation>URL-teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="114"/>
+        <location filename="prefsimpl.cpp" line="120"/>
         <source>&apos;Name Said&apos; Text</source>
         <translation>&apos;Nimi Sanottu&apos; Teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="115"/>
+        <location filename="prefsimpl.cpp" line="121"/>
         <source>Warning Text</source>
         <translation>Varoitus-teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="116"/>
+        <location filename="prefsimpl.cpp" line="122"/>
         <source>Warning Message Text</source>
         <translation>Varoitusviestin teksti</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="156"/>
+        <location filename="prefsimpl.cpp" line="162"/>
         <source>CDE</source>
         <translation>CDE</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="157"/>
+        <location filename="prefsimpl.cpp" line="166"/>
         <source>Motif</source>
         <translation>Motif</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="158"/>
+        <location filename="prefsimpl.cpp" line="170"/>
         <source>WindowsXP</source>
         <translation>WindowsXP</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="159"/>
+        <location filename="prefsimpl.cpp" line="174"/>
         <source>Windows</source>
         <translation>Windows</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="160"/>
+        <location filename="prefsimpl.cpp" line="178"/>
         <source>Mac</source>
         <translation>Mac</translation>
+    </message>
+    <message>
+        <location filename="prefsimpl.cpp" line="182"/>
+        <source>Plastique</source>
+        <translation>Platinum</translation>
+    </message>
+    <message>
+        <location filename="prefsimpl.cpp" line="186"/>
+        <source>WindowsVista</source>
+        <translation>WindowsVista</translation>
     </message>
 </context>
 <context>
@@ -3810,7 +3835,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Ohjelma</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="127"/>
+        <location filename="privatewindowimpl.cpp" line="128"/>
         <source>Disconnected from server.</source>
         <translation>Yhteys on katkennut.</translation>
     </message>
@@ -3821,7 +3846,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjä #%1, eli %2, on botti!</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="349"/>
+        <location filename="privatewindowimpl.cpp" line="350"/>
         <source>User #%1 (a.k.a %2) is already in this private window!</source>
         <translation>Käyttäjä #%1, eli %2, on jo tässä yksityisikkunassa!</translation>
     </message>
@@ -3831,17 +3856,17 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="520"/>
+        <location filename="privatewindowimpl.cpp" line="521"/>
         <source>Remove</source>
         <translation>Poista</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="522"/>
+        <location filename="privatewindowimpl.cpp" line="523"/>
         <source>List All Files</source>
         <translation>Näytä Kaikki Tiedostot</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="524"/>
+        <location filename="privatewindowimpl.cpp" line="525"/>
         <source>Get IP Address</source>
         <translation>Hae IP-osoite</translation>
     </message>
@@ -3856,22 +3881,22 @@ Päiväys: %4</translation>
         <translation type="obsolete">[Freeware] - Yksityinen</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="567"/>
+        <location filename="privatewindowimpl.cpp" line="568"/>
         <source>Private Chat</source>
         <translation>Yksityinen Keskustelu</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="568"/>
+        <location filename="privatewindowimpl.cpp" line="569"/>
         <source>There are no longer any users in this private chat window. Close window?</source>
         <translation>Kaikki käyttäjät ovat poistuneet keskusteluikkunasta. Suljetaanko ikkuna?</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="569"/>
+        <location filename="privatewindowimpl.cpp" line="570"/>
         <source>Yes</source>
         <translation>Kyllä</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="569"/>
+        <location filename="privatewindowimpl.cpp" line="570"/>
         <source>No</source>
         <translation>Ei</translation>
     </message>
@@ -3882,12 +3907,12 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="492"/>
+        <location filename="privatewindowimpl.cpp" line="493"/>
         <source>Failed to create private log.</source>
         <translation>Yksityislogin luonti epäonnistui.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="313"/>
+        <location filename="privatewindowimpl.cpp" line="314"/>
         <source>User(s) not found!</source>
         <translation>Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
@@ -3912,17 +3937,17 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="432"/>
+        <location filename="privatewindowimpl.cpp" line="433"/>
         <source>Encryption enabled.</source>
         <translation>Salakirjoitus päällä.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="438"/>
+        <location filename="privatewindowimpl.cpp" line="439"/>
         <source>Encryption disabled.</source>
         <translation>Salakirjoitus pois päältä.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="442"/>
+        <location filename="privatewindowimpl.cpp" line="443"/>
         <source>Encryption is %1.</source>
         <translation>Salakirjoitus on %1.</translation>
     </message>
@@ -4559,17 +4584,17 @@ Päiväys: %4</translation>
 <context>
     <name>WinShareWindow</name>
     <message>
-        <location filename="winsharewindow.cpp" line="2311"/>
+        <location filename="winsharewindow.cpp" line="2319"/>
         <source>Already scanning!</source>
         <translation>Tutkinta on jo käynnissä!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="995"/>
+        <location filename="winsharewindow.cpp" line="998"/>
         <source>Not connected.</source>
         <translation>Ei yhdistetty.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2299"/>
+        <location filename="winsharewindow.cpp" line="2307"/>
         <source>File sharing not enabled.</source>
         <translation>Tiedostojenjako ei ole päällä.</translation>
     </message>
@@ -4599,7 +4624,7 @@ Päiväys: %4</translation>
         <translation>Käynnissä: %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2396"/>
+        <location filename="winsharewindow.cpp" line="2404"/>
         <source>Logged In: %1</source>
         <translation>Kirjautuneena: %1</translation>
     </message>
@@ -4900,27 +4925,27 @@ Päiväys: %4</translation>
         <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas Linuxille!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="254"/>
+        <location filename="winsharewindow.cpp" line="257"/>
         <source>Original idea by Vitaliy Mikitchenko.</source>
         <translation>Alkuperäisen idean keksi Vitaliy Mikitchenko.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="255"/>
+        <location filename="winsharewindow.cpp" line="258"/>
         <source>Released to public use under LGPL.</source>
         <translation>Jaettu julkiseen käyttöön LGPL-lisenssillä.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="256"/>
+        <location filename="winsharewindow.cpp" line="259"/>
         <source>Type /help for a command reference.</source>
         <translation>Kirjoita /help saadaksesi komentoluettelon.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="323"/>
+        <location filename="winsharewindow.cpp" line="326"/>
         <source>Accept thread ready and listening on port %1.</source>
         <translation>Valmiina ottamaan vastaan yhteyksiä portissa %1.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="335"/>
+        <location filename="winsharewindow.cpp" line="338"/>
         <source>Failed to start accept thread!</source>
         <translation>Ei voitu käynnistää vastaanottosäiettä!</translation>
     </message>
@@ -4935,7 +4960,7 @@ Päiväys: %4</translation>
         <translation>Yhdistetty.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="543"/>
+        <location filename="winsharewindow.cpp" line="546"/>
         <source>Reconnect timer stopped</source>
         <translation>Uudelleenyhdistämisen ajastin pysäytetty</translation>
     </message>
@@ -4945,17 +4970,17 @@ Päiväys: %4</translation>
         <translation type="obsolete">Nimesi on nyt &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="886"/>
+        <location filename="winsharewindow.cpp" line="889"/>
         <source>Server:</source>
         <translation>Palvelin:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="902"/>
+        <location filename="winsharewindow.cpp" line="905"/>
         <source>Nick:</source>
         <translation>Nimi:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="918"/>
+        <location filename="winsharewindow.cpp" line="921"/>
         <source>Status:</source>
         <translation>Tila:</translation>
     </message>
@@ -5060,7 +5085,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1814"/>
+        <location filename="winsharewindow.cpp" line="1822"/>
         <source>Waiting for file scan thread to finish...</source>
         <translation>Odotetaan, että tiedostojenhakusäie on valmis...</translation>
     </message>
@@ -5070,37 +5095,37 @@ Päiväys: %4</translation>
         <translation type="obsolete">%1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2131"/>
+        <location filename="winsharewindow.cpp" line="2139"/>
         <source>here</source>
         <translation>täällä</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2132"/>
+        <location filename="winsharewindow.cpp" line="2140"/>
         <source>away</source>
         <translation>poissa</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2133"/>
+        <location filename="winsharewindow.cpp" line="2141"/>
         <source>idle</source>
         <translation>laiskottelemassa</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2134"/>
+        <location filename="winsharewindow.cpp" line="2142"/>
         <source>busy</source>
         <translation>kiireinen</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2135"/>
+        <location filename="winsharewindow.cpp" line="2143"/>
         <source>at work</source>
         <translation>töissä</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2136"/>
+        <location filename="winsharewindow.cpp" line="2144"/>
         <source>around</source>
         <translation>ympärillä</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2137"/>
+        <location filename="winsharewindow.cpp" line="2145"/>
         <source>sleeping</source>
         <translation>nukkumassa</translation>
     </message>
@@ -5110,12 +5135,12 @@ Päiväys: %4</translation>
         <translation type="obsolete">/search %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2322"/>
+        <location filename="winsharewindow.cpp" line="2330"/>
         <source>Rescanning shared files...</source>
         <translation>Tutkitaan uudelleen jaetut tiedostot...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2327"/>
+        <location filename="winsharewindow.cpp" line="2335"/>
         <source>Scanning shares...</source>
         <translation>Tutkitaan jaot...</translation>
     </message>
@@ -5260,57 +5285,57 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjää ei ole olemassa!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1091"/>
+        <location filename="winsharewindow.cpp" line="1094"/>
         <source>1 week</source>
         <translation>1 viikko</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1096"/>
+        <location filename="winsharewindow.cpp" line="1099"/>
         <source>%1 weeks</source>
         <translation>%1 viikkoa</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1102"/>
+        <location filename="winsharewindow.cpp" line="1105"/>
         <source>1 day</source>
         <translation>1 päivä</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1107"/>
+        <location filename="winsharewindow.cpp" line="1110"/>
         <source>%1 days</source>
         <translation>%1 päivää</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1113"/>
+        <location filename="winsharewindow.cpp" line="1116"/>
         <source>1 hour</source>
         <translation>1 tunti</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1118"/>
+        <location filename="winsharewindow.cpp" line="1121"/>
         <source>%1 hours</source>
         <translation>%1 tuntia</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1124"/>
+        <location filename="winsharewindow.cpp" line="1127"/>
         <source>1 minute</source>
         <translation>1 minuutti</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1129"/>
+        <location filename="winsharewindow.cpp" line="1132"/>
         <source>%1 minutes</source>
         <translation>%1 minuuttia</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1135"/>
+        <location filename="winsharewindow.cpp" line="1138"/>
         <source>1 second</source>
         <translation>1 sekunti</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1140"/>
+        <location filename="winsharewindow.cpp" line="1143"/>
         <source>%1 seconds</source>
         <translation>%1 sekuntia</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1153"/>
+        <location filename="winsharewindow.cpp" line="1156"/>
         <source>and</source>
         <translation>ja</translation>
     </message>
@@ -5325,7 +5350,7 @@ Päiväys: %4</translation>
         <translation>Unizone (Suomi)</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1322"/>
+        <location filename="winsharewindow.cpp" line="1325"/>
         <source>Testing Unizone (English)</source>
         <translation>Testaa Unizone (Suomi)</translation>
     </message>
@@ -5715,7 +5740,7 @@ Päiväys: %4</translation>
         <translation>Ohje komennolle %1:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="505"/>
+        <location filename="winsharewindow.cpp" line="508"/>
         <source>Reconnecting in 1 minute!</source>
         <translation>Yhdistetään uudelleen 1 minuutin kuluttua!</translation>
     </message>
@@ -5950,22 +5975,22 @@ Päiväys: %4</translation>
         <translation>- Paikallinen Tiedosto: %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="857"/>
+        <location filename="winsharewindow.cpp" line="860"/>
         <source>Menubar</source>
         <translation>Valikkopalkki</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="884"/>
+        <location filename="winsharewindow.cpp" line="887"/>
         <source>Server bar</source>
         <translation>Palvelinpalkki</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="900"/>
+        <location filename="winsharewindow.cpp" line="903"/>
         <source>Nickbar</source>
         <translation>Nimipalkki</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="916"/>
+        <location filename="winsharewindow.cpp" line="919"/>
         <source>Statusbar</source>
         <translation>Tilapalkki</translation>
     </message>
@@ -6015,12 +6040,12 @@ Päiväys: %4</translation>
         <translation>Yhdistäessä tee:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1978"/>
+        <location filename="winsharewindow.cpp" line="1986"/>
         <source>Queued file %1 from user #%2.</source>
         <translation>Lisättiin tiedosto %1 käyttäjältä #%2 jonoon.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2005"/>
+        <location filename="winsharewindow.cpp" line="2013"/>
         <source>Downloading file %1 from user #%2.</source>
         <translation>Ladataan tiedostoa %1 käyttäjältä #%2.</translation>
     </message>
@@ -6150,7 +6175,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas QNX Neutrinolle!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2138"/>
+        <location filename="winsharewindow.cpp" line="2146"/>
         <source>wandering</source>
         <translation>harhailemassa</translation>
     </message>
@@ -6170,12 +6195,12 @@ Päiväys: %4</translation>
         <translation>/view - näytä kuva omalta koneeltasi</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2024"/>
+        <location filename="winsharewindow.cpp" line="2032"/>
         <source>Failed to create log file.</source>
         <translation>Lokitiedoston luominen epäonnistui.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="515"/>
+        <location filename="winsharewindow.cpp" line="518"/>
         <source>Finished scanning shares.</source>
         <translation>Jakojen tutkinta valmis.</translation>
     </message>
@@ -6190,7 +6215,7 @@ Päiväys: %4</translation>
         <translation>/memory - näytä kuinka monta tavua muistia Unizone käyttää</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="253"/>
+        <location filename="winsharewindow.cpp" line="256"/>
         <source>Copyright (C) %1 Mika T. Lindqvist.</source>
         <translation>Copyright (C) %1 Mika T. Lindqvist.</translation>
     </message>
@@ -6280,7 +6305,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas %1:lle!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="251"/>
+        <location filename="winsharewindow.cpp" line="254"/>
         <source>Welcome to Unizone (English)!</source>
         <translation>Tervetuloa käyttämään ohjelmaa Unizone (Suomi)!</translation>
     </message>
@@ -6300,7 +6325,7 @@ Päiväys: %4</translation>
         <translation>/binencode - muunna teksti binäärimuotoon ja näytä se</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1825"/>
+        <location filename="winsharewindow.cpp" line="1833"/>
         <source>Waiting for file list thread to finish...</source>
         <translation>Odotetaan, että tiedostojenluettelointisäie on valmis...</translation>
     </message>
@@ -6325,7 +6350,7 @@ Päiväys: %4</translation>
         <translation>Kirjaudutaan...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="586"/>
+        <location filename="winsharewindow.cpp" line="589"/>
         <source>Negotiating...</source>
         <translation>Neuvotellaan...</translation>
     </message>
@@ -6385,12 +6410,12 @@ Päiväys: %4</translation>
         <translation>/hexsay [nimi]: [teksti] - sanoo tekstin heksadesimaalisena, mutta jättää nimen oikeinpäin eteen</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="202"/>
+        <location filename="winsharewindow.cpp" line="205"/>
         <source>Updating server list...</source>
         <translation>Päivitetään palvelinluettelo...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="221"/>
+        <location filename="winsharewindow.cpp" line="224"/>
         <source>Checking for updates...</source>
         <translation>Tarkistetaan päivityksiä...</translation>
     </message>

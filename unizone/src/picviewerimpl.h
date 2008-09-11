@@ -28,6 +28,7 @@ public slots:
 	void NextImage();
 	void LastImage();
 	void OpenImage();
+	void SaveImage();
 	void CloseImage();
 
 protected:

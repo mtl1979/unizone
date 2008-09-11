@@ -5,9 +5,7 @@
 #include <qimage.h>
 #include <qlayout.h>
 #include <qfile.h>
-#include <q3filedialog.h>
-//#include <q3dragobject.h>
-#include <q3url.h>
+#include <qfiledialog.h>
 #include <qdir.h>
 #include <QDropEvent>
 #include <QResizeEvent>
@@ -44,6 +42,7 @@ WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, Qt::WFlags
 	connect(ui->btnNext, SIGNAL(clicked()), this, SLOT(NextImage()));
 	connect(ui->btnLast, SIGNAL(clicked()), this, SLOT(LastImage()));
 	connect(ui->btnOpen, SIGNAL(clicked()), this, SLOT(OpenImage()));
+	connect(ui->btnSave, SIGNAL(clicked()), this, SLOT(SaveImage()));
 	connect(ui->btnClose, SIGNAL(clicked()), this, SLOT(CloseImage()));
 
 	ui->btnFirst->setEnabled(false);
@@ -51,6 +50,7 @@ WPicViewer::WPicViewer(QWidget* parent, const char* name, bool modal, Qt::WFlags
 	ui->btnNext->setEnabled(false);
 	ui->btnLast->setEnabled(false);
 	ui->btnClose->setEnabled(false);
+	ui->btnSave->setEnabled(false);
 
 	setAcceptDrops(TRUE);
 	ui->pxlPixmap->installEventFilter(this);
@@ -293,12 +293,16 @@ WPicViewer::UpdateName()
 
 	if (fFiles.GetItemAt(cFile, fFile) == B_OK)
 	{
+		ui->btnSave->setEnabled(true);
 		if (!fFile.isEmpty())
 		{
 			setCaption(tr("Picture Viewer") + " - " + SimplifyPath(fFile));
 			return;
 		}
 	}
+	else
+		ui->btnSave->setEnabled(false);
+
 	setCaption(tr("Picture Viewer"));
 }
 
@@ -396,10 +400,6 @@ WPicViewer::DrawImage(const QImage &image)
 void
 WPicViewer::resizeEvent(QResizeEvent *e)
 {
-	QWidget * lwidget = dynamic_cast<QWidget *>(ui->Layout5->parent());
-	if (lwidget)
-		lwidget->resize(e->size());
-	//
 	if (ui->pxlPixmap->pixmap())
 	{
 		QImage fImage;
@@ -435,11 +435,30 @@ WPicViewer::CloseImage()
 void
 WPicViewer::OpenImage()
 {
-	QStringList files = Q3FileDialog::getOpenFileNames ( imageFormats(), lastdir, this);
+	QStringList files = QFileDialog::getOpenFileNames ( this, tr("Open image..."), lastdir, imageFormats());
 	if (!files.isEmpty())
 	{
 		QStringList::Iterator iter = files.begin();
 		while (iter != files.end())
 			(void) LoadImage(*iter++);
+	}
+}
+
+void
+WPicViewer::SaveImage()
+{
+	QImage img;
+	QString oldfile;
+	if (fImages.GetItemAt(cFile, img) == B_OK && fFiles.GetItemAt(cFile, oldfile) == B_OK)
+	{
+		QString file = QFileDialog::getSaveFileName(this, tr("Save image..."), oldfile.isEmpty() ? lastdir : oldfile, "Images (*.bmp *.jpg *.jpeg *.png *.ppm *.pbm *.tiff *.xbm *.xpm)");
+		if (!file.isEmpty())
+		{
+			if (img.save(file))
+			{
+				fFiles.ReplaceItemAt(cFile, file);
+				UpdateName();
+			}
+		}
 	}
 }

@@ -1746,7 +1746,7 @@ QString downloadDir(const QString &subdir)
 	return out;
 }
 
-QString _imageFormats = "*.png;*.bmp;*.xbm;*.xpm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif";
+QString _imageFormats = "*.png;*.bmp;*.xbm;*.xpm;*.pbm;*.pgm;*.ppm;*.jpg;*.jpeg;*.mng;*.gif;*.tiff";
 
 QString imageFormats()
 {
