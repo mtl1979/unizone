@@ -4,7 +4,7 @@
 #include <qfile.h>
 #include <qdir.h>
 #include <qstringlist.h>
-#include <Q3CString>
+#include <QByteArray>
 
 #include "util.h"
 #include "tokenizer.h"
@@ -1515,7 +1515,7 @@ void OCTClean(QString &in)
 
 QString BINDecode(const QString &in)
 {
-	Q3CString out;
+	QByteArray out;
 
 	if (in.length() % 8 != 0)
 		return QString::null;
@@ -1538,7 +1538,7 @@ QString BINDecode(const QString &in)
 
 QString BINEncode(const QString &in)
 {
-	Q3CString temp = in.utf8();
+	QByteArray temp = in.utf8();
 	QString out, part;
 	for (int x = 0; x < temp.length(); x++)
 	{
@@ -1559,7 +1559,7 @@ QString BINEncode(const QString &in)
 
 QString OCTDecode(const QString &in)
 {
-	Q3CString out;
+	QByteArray out;
 
 	if (in.length() % 3 != 0)
 		return QString::null;
@@ -1581,7 +1581,7 @@ QString OCTDecode(const QString &in)
 
 QString OCTEncode(const QString &in)
 {
-	Q3CString temp = in.utf8();
+	QByteArray temp = in.utf8();
 	QString out, part;
 	for (int x = 0; x < temp.length(); x++)
 	{
@@ -1755,8 +1755,8 @@ QString imageFormats()
 
 QString WikiEscape(const QString &page)
 {
-	Q3CString out;
-	Q3CString in = page.utf8();
+	QByteArray out;
+	QByteArray in = page.utf8();
 	for (int x = 0; x < in.length(); x++)
 	{
 		const char c = in.at(x);
@@ -1771,8 +1771,8 @@ QString WikiEscape(const QString &page)
 
 QString URLEscape(const QString &page)
 {
-	Q3CString out;
-	Q3CString in = page.utf8();
+	QByteArray out;
+	QByteArray in = page.utf8();
 	for (int x = 0; x < in.length(); x++)
 	{
 		const char c = in.at(x);
@@ -1804,7 +1804,7 @@ GetStringFromMessage(const MessageRef &msg, const String key, uint32 index, QStr
 status_t
 AddStringToMessage(const MessageRef &msg, const String key, const QString &value)
 {
-	Q3CString val = value.utf8();
+	QByteArray val = value.utf8();
 	return msg()->AddString(key, (const char *) val);
 }
 
@@ -1817,7 +1817,7 @@ ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, 
 status_t
 ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, uint32 index, const QString &value)
 {
-	Q3CString val = value.utf8();
+	QByteArray val = value.utf8();
 	return msg()->ReplaceString(okayToAdd, key, index, (const char *) val);
 }
 

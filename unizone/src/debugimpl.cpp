@@ -8,7 +8,7 @@
 #include <q3multilineedit.h>
 #include <qmessagebox.h>
 #include <qstring.h>
-#include <Q3CString>
+#include <QByteArray>
 #include "util.h"
 #include "wfile.h"
 #include "wstring.h"
@@ -83,7 +83,7 @@ WAssert(bool test, const char *message, int line, const char *file, const char *
 		WFile f;
 		if (f.Open(L"assert.txt", QIODevice::WriteOnly))
 		{
-			Q3CString tmp = out.utf8();
+			QByteArray tmp = out.utf8();
 			f.WriteBlock(tmp, tmp.length());
 			f.Close();
 		}

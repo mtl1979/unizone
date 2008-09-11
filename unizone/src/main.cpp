@@ -3,7 +3,7 @@
 #include <q3filedialog.h>
 #include <qmessagebox.h>
 #include <qfont.h>
-#include <Q3CString>
+#include <QByteArray>
 #include <QTranslator>
 
 #include <stdio.h>
@@ -170,7 +170,7 @@ main( int argc, char** argv )
 #endif 
 			   ) )
 			{
-				Q3CString clang = lfile.utf8();
+				QByteArray clang = lfile.utf8();
 				lang.WriteBlock(clang, clang.length());
 				lang.Close();
 			}

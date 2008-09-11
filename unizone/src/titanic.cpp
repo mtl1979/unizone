@@ -1,16 +1,14 @@
 #include "titanic.h"
 #include <stdio.h>
-#include <Q3CString>
+#include <qbytearray.h>
 
 QString
 TTPEncode(const QByteArray & orig, int len)
 {
-	Q3CString temp;
-	Q3CString c;
+	QString temp;
 	for (int x = 0; x < len; x++)
 	{
-		c = chartohex(orig.at(x));
-		temp += c;
+		temp += chartohex(orig.at(x));
 	}
 	return QString::fromUtf8(temp);
 }
@@ -18,29 +16,14 @@ TTPEncode(const QByteArray & orig, int len)
 QString
 TTPEncode(const QString &orig)
 {
-	Q3CString temp = orig.utf8();
-	Q3CString out;
-	Q3CString c;
-	for (unsigned int x = 0; x < strlen(temp); x++)
-	{
-		c = chartohex(temp.at(x));
-		out += c;
-	}
-	return QString::fromUtf8(out);
+	QByteArray temp = orig.utf8();
+	return TTPEncode(temp, temp.length());
 }
 
 QString
 TTPDecode(const QString &orig)
 {
-	if ((orig.length() % 2) != 0)
-		return QString::null;
-	Q3CString temp;
-	for (int x = 0; x < orig.length(); x += 2)
-	{
-		QString tmp = orig.mid(x,2);
-		QChar c = hextochar(tmp);
-		temp += c;
-	}
+	QByteArray temp = TTPDecode(orig, NULL);
 	return QString::fromUtf8(temp);
 }
 
@@ -71,12 +54,12 @@ const char values[16] = {
 		'a', 'b', 'c', 'd', 'e', 'f'
 };
 
-Q3CString
+QString
 chartohex(const char &c)
 {
-	char h[3];	// Include NULL terminator ;)
-	sprintf(h,"%02x", (c & 0xFF));
-	return Q3CString(h);
+	QString out;
+	out.sprintf("%02x", (c & 0xFF));
+	return out;
 }
 
 int

@@ -4243,17 +4243,17 @@ Date: %4</translation>
 <context>
     <name>WinShareWindow</name>
     <message>
-        <location filename="winsharewindow.cpp" line="2319"/>
+        <location filename="winsharewindow.cpp" line="2329"/>
         <source>Already scanning!</source>
         <translation>Already scanning warez!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="998"/>
+        <location filename="winsharewindow.cpp" line="1002"/>
         <source>Not connected.</source>
         <translation>Pipe not open.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2307"/>
+        <location filename="winsharewindow.cpp" line="2317"/>
         <source>File sharing not enabled.</source>
         <translation>Warez sharing not enabled.</translation>
     </message>
@@ -4283,7 +4283,7 @@ Date: %4</translation>
         <translation>Uptimez: %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2404"/>
+        <location filename="winsharewindow.cpp" line="2414"/>
         <source>Logged In: %1</source>
         <translation>Logged In: %1</translation>
     </message>
@@ -4584,27 +4584,27 @@ Date: %4</translation>
         <translation type="obsolete">Welcome to Unizone (31337 English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linsux!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="257"/>
+        <location filename="winsharewindow.cpp" line="261"/>
         <source>Original idea by Vitaliy Mikitchenko.</source>
         <translation>The idea by Vitaliy Mikitchenko.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="258"/>
+        <location filename="winsharewindow.cpp" line="262"/>
         <source>Released to public use under LGPL.</source>
         <translation>Released to LGPL license.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="259"/>
+        <location filename="winsharewindow.cpp" line="263"/>
         <source>Type /help for a command reference.</source>
         <translation>Type /help for a n00b help.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="326"/>
+        <location filename="winsharewindow.cpp" line="330"/>
         <source>Accept thread ready and listening on port %1.</source>
         <translation>Accept thread ready and listening on port %1.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="338"/>
+        <location filename="winsharewindow.cpp" line="342"/>
         <source>Failed to start accept thread!</source>
         <translation>Failed to start accept thread!</translation>
     </message>
@@ -4619,7 +4619,7 @@ Date: %4</translation>
         <translation>Pipe Opened.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="546"/>
+        <location filename="winsharewindow.cpp" line="550"/>
         <source>Reconnect timer stopped</source>
         <translation>Pipe Re-opening timer stopped</translation>
     </message>
@@ -4629,17 +4629,17 @@ Date: %4</translation>
         <translation type="obsolete">Namez changed to &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="889"/>
+        <location filename="winsharewindow.cpp" line="893"/>
         <source>Server:</source>
         <translation>Server:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="905"/>
+        <location filename="winsharewindow.cpp" line="909"/>
         <source>Nick:</source>
         <translation>Nick:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="921"/>
+        <location filename="winsharewindow.cpp" line="925"/>
         <source>Status:</source>
         <translation>Stats:</translation>
     </message>
@@ -4744,7 +4744,7 @@ Date: %4</translation>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1822"/>
+        <location filename="winsharewindow.cpp" line="1832"/>
         <source>Waiting for file scan thread to finish...</source>
         <translation>Waiting for file scan thread to do something...</translation>
     </message>
@@ -4754,37 +4754,37 @@ Date: %4</translation>
         <translation type="obsolete">%1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2139"/>
+        <location filename="winsharewindow.cpp" line="2149"/>
         <source>here</source>
         <translation>here</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2140"/>
+        <location filename="winsharewindow.cpp" line="2150"/>
         <source>away</source>
         <translation>got lost</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2141"/>
+        <location filename="winsharewindow.cpp" line="2151"/>
         <source>idle</source>
         <translation>idling</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2142"/>
+        <location filename="winsharewindow.cpp" line="2152"/>
         <source>busy</source>
         <translation>buzy</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2143"/>
+        <location filename="winsharewindow.cpp" line="2153"/>
         <source>at work</source>
         <translation>at buziness</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2144"/>
+        <location filename="winsharewindow.cpp" line="2154"/>
         <source>around</source>
         <translation>hanging around</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2145"/>
+        <location filename="winsharewindow.cpp" line="2155"/>
         <source>sleeping</source>
         <translation>drunk</translation>
     </message>
@@ -4794,12 +4794,12 @@ Date: %4</translation>
         <translation type="obsolete">/search %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2330"/>
+        <location filename="winsharewindow.cpp" line="2340"/>
         <source>Rescanning shared files...</source>
         <translation>Rescanning warez shared...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2335"/>
+        <location filename="winsharewindow.cpp" line="2345"/>
         <source>Scanning shares...</source>
         <translation>Scanning warez shares...</translation>
     </message>
@@ -4944,57 +4944,57 @@ Date: %4</translation>
         <translation type="obsolete">Loser doesn&apos;t exist!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1094"/>
+        <location filename="winsharewindow.cpp" line="1098"/>
         <source>1 week</source>
         <translation>1 week</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1099"/>
+        <location filename="winsharewindow.cpp" line="1103"/>
         <source>%1 weeks</source>
         <translation>%1 weekz</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1105"/>
+        <location filename="winsharewindow.cpp" line="1109"/>
         <source>1 day</source>
         <translation>1 day</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1110"/>
+        <location filename="winsharewindow.cpp" line="1114"/>
         <source>%1 days</source>
         <translation>%1 dayz</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1116"/>
+        <location filename="winsharewindow.cpp" line="1120"/>
         <source>1 hour</source>
         <translation>1 hour</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1121"/>
+        <location filename="winsharewindow.cpp" line="1125"/>
         <source>%1 hours</source>
         <translation>%1 hourz</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1127"/>
+        <location filename="winsharewindow.cpp" line="1131"/>
         <source>1 minute</source>
         <translation>1 minutez</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1132"/>
+        <location filename="winsharewindow.cpp" line="1136"/>
         <source>%1 minutes</source>
         <translation>%1 minutez</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1138"/>
+        <location filename="winsharewindow.cpp" line="1142"/>
         <source>1 second</source>
         <translation>1 second</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1143"/>
+        <location filename="winsharewindow.cpp" line="1147"/>
         <source>%1 seconds</source>
         <translation>%1 secondz</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1156"/>
+        <location filename="winsharewindow.cpp" line="1160"/>
         <source>and</source>
         <translation>and</translation>
     </message>
@@ -5009,7 +5009,7 @@ Date: %4</translation>
         <translation>Unizone (31337 English)</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1325"/>
+        <location filename="winsharewindow.cpp" line="1329"/>
         <source>Testing Unizone (English)</source>
         <translation>Testing Unizone (31337 English)</translation>
     </message>
@@ -5399,7 +5399,7 @@ Date: %4</translation>
         <translation>Help for %1:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="508"/>
+        <location filename="winsharewindow.cpp" line="512"/>
         <source>Reconnecting in 1 minute!</source>
         <translation>Pipe Re-opening in 1 minute!</translation>
     </message>
@@ -5634,22 +5634,22 @@ Date: %4</translation>
         <translation>- Local File: %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="860"/>
+        <location filename="winsharewindow.cpp" line="864"/>
         <source>Menubar</source>
         <translation>Menubar</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="887"/>
+        <location filename="winsharewindow.cpp" line="891"/>
         <source>Server bar</source>
         <translation>Server bar</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="903"/>
+        <location filename="winsharewindow.cpp" line="907"/>
         <source>Nickbar</source>
         <translation>Nickbar</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="919"/>
+        <location filename="winsharewindow.cpp" line="923"/>
         <source>Statusbar</source>
         <translation>Statusbar</translation>
     </message>
@@ -5694,12 +5694,12 @@ Date: %4</translation>
         <translation>On Connect:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1986"/>
+        <location filename="winsharewindow.cpp" line="1996"/>
         <source>Queued file %1 from user #%2.</source>
         <translation>Queued file %1 from loser #%2.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2013"/>
+        <location filename="winsharewindow.cpp" line="2023"/>
         <source>Downloading file %1 from user #%2.</source>
         <translation>Leeching file %1 from loser #%2.</translation>
     </message>
@@ -5824,7 +5824,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2146"/>
+        <location filename="winsharewindow.cpp" line="2156"/>
         <source>wandering</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5844,12 +5844,12 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2032"/>
+        <location filename="winsharewindow.cpp" line="2042"/>
         <source>Failed to create log file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="518"/>
+        <location filename="winsharewindow.cpp" line="522"/>
         <source>Finished scanning shares.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5864,7 +5864,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="256"/>
+        <location filename="winsharewindow.cpp" line="260"/>
         <source>Copyright (C) %1 Mika T. Lindqvist.</source>
         <translation>You are owned by (C) %1 Mika T. Lindqvist.</translation>
     </message>
@@ -5954,7 +5954,7 @@ Date: %4</translation>
         <translation type="obsolete">Welcome to Unizone (31337 English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="254"/>
+        <location filename="winsharewindow.cpp" line="258"/>
         <source>Welcome to Unizone (English)!</source>
         <translation>Welcome to Unizone (31337 English)!</translation>
     </message>
@@ -5974,7 +5974,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1833"/>
+        <location filename="winsharewindow.cpp" line="1843"/>
         <source>Waiting for file list thread to finish...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5999,7 +5999,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="589"/>
+        <location filename="winsharewindow.cpp" line="593"/>
         <source>Negotiating...</source>
         <translation>Negotiating...</translation>
     </message>
@@ -6059,12 +6059,12 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="205"/>
+        <location filename="winsharewindow.cpp" line="209"/>
         <source>Updating server list...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="224"/>
+        <location filename="winsharewindow.cpp" line="228"/>
         <source>Checking for updates...</source>
         <translation type="unfinished"></translation>
     </message>

@@ -7,7 +7,7 @@ enum {
 };
 
 #include <qstring.h>
-#include <q3cstring.h>
+#include <qbytearray.h>
 
 struct TTPInfo
 {
@@ -27,6 +27,6 @@ QByteArray TTPDecode(const QString &, int *);
 char hextochar(const QString &);
 
 // convert character to hexadecimal code
-Q3CString chartohex(const char &);
+QString chartohex(const char &);
 
 #endif

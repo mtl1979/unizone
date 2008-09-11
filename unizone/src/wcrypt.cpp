@@ -6,7 +6,7 @@
 #  include <winsock2.h>
 #else
 #  include <netinet/in.h>
-#  include <Q3CString>
+#  include <QByteArray>
 #endif
 
 const char mask[4] = {'5', '0', '3', '8'};
@@ -24,7 +24,7 @@ QByteArray
 wencrypt(const QString &in, int * outlen)
 {
 	unsigned long l,len;
-	Q3CString tmp = in.utf8();
+	QByteArray tmp = in.utf8();
 	l = tmp.length();
 	len = htonl(l);
 	QByteArray out(l + 4);
@@ -33,7 +33,7 @@ wencrypt(const QString &in, int * outlen)
 	memcpy(out.data(), &len, 4);
 	for (int i = 0; i < tmp.length(); i += 4)
 	{
-		Q3CString buf = tmp.mid(i, 4);
+		QByteArray buf = tmp.mid(i, 4);
 		switch (buf.length())
 		{
 		case 4:

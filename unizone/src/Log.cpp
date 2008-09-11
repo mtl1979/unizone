@@ -7,7 +7,7 @@
 #include <string.h>
 
 #include "util/String.h"
-#include <Q3CString>
+#include <QByteArray>
 
 using muscle::String;
 
@@ -132,6 +132,6 @@ WLog::LogString(const char * txt, bool brk)
 void
 WLog::LogString(const QString & txt, bool brk)
 {
-	Q3CString ctxt = txt.utf8();
+	QByteArray ctxt = txt.utf8();
 	LogString((const char *) ctxt, brk);
 }
