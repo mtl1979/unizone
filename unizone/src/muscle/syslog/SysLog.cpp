@@ -6,6 +6,7 @@
 #include "system/SetupSystem.h"
 #include "util/Hashtable.h"
 #include "util/MiscUtilityFunctions.h"  // for ExitWithoutCleanup()
+#include "util/NestCount.h"
 
 #if defined(__APPLE__)
 # include "AvailabilityMacros.h"  // so we can find out if this version of MacOS/X is new enough to include backtrace() and friends
@@ -226,7 +227,7 @@ void LogLineCallback :: Flush()
    }
 }
 
-static bool _inLogCall = false; // to avoid re-entrancy during logcallback calls
+static NestCount _inLogCallNestCount; // to avoid re-entrancy during logcallback calls
 static Hashtable<LogCallbackRef, bool> _logCallbacks;
 static DefaultConsoleLogger _dcl;
 static DefaultFileLogger _dfl;
@@ -237,12 +238,7 @@ status_t LockLog()
    return B_NO_ERROR;
 #else
    Mutex * ml = GetGlobalMuscleLock();
-   if (ml == NULL)
-   {
-      printf("Please instantiate a CompleteSetupSystem object on the stack before doing any logging (at beginning of main() is preferred)\n");
-      ExitWithoutCleanup(10);
-   }
-   return ml->Lock();
+   return ml ? ml->Lock() : B_ERROR;
 #endif
 }
 
@@ -274,25 +270,19 @@ int ParseLogLevelKeyword(const char * keyword)
 
 int GetFileLogLevel()
 {
-   (void) LockLog();
-   int ret = _dfl._fileLogLevel;
-   (void) UnlockLog();
-   return ret;
+   return _dfl._fileLogLevel;
 }
 
 int GetConsoleLogLevel()
 {
-   (void) LockLog();
-   int ret = _dcl._consoleLogLevel;
-   (void) UnlockLog();
-   return ret;
+   return _dcl._consoleLogLevel;
 }
 
 int GetMaxLogLevel()
 {
-   (void) LockLog();
-   int ret = (_dcl._consoleLogLevel > _dfl._fileLogLevel) ? _dcl._consoleLogLevel : _dfl._fileLogLevel;
-   (void) UnlockLog();
+   bool isLogLocked = (LockLog() == B_NO_ERROR);
+   int ret = muscleMax(_dcl._consoleLogLevel, _dfl._fileLogLevel);
+   if (isLogLocked) (void) UnlockLog();
    return ret;
 }
 
@@ -320,26 +310,29 @@ status_t SetConsoleLogLevel(int loglevel)
    else return B_ERROR;
 }
 
-#define DO_LOGGING(when)                                         \
-{                                                                \
-   va_list argList;                                              \
-   va_start(argList, fmt);                                       \
-   _dfl.Log(when, ll, fmt, argList);                             \
-   va_end(argList);                                              \
-   va_start(argList, fmt);                                       \
-   _dcl.Log(when, ll, fmt, argList);                             \
-   va_end(argList);                                              \
-   HashtableIterator<LogCallbackRef, bool> iter(_logCallbacks);  \
-   const LogCallbackRef * nextKey;                               \
-   while((nextKey = iter.GetNextKey()) != NULL)                  \
-   {                                                             \
-      if (nextKey->GetItemPointer())                             \
-      {                                                          \
-         va_start(argList, fmt);                                 \
-         nextKey->GetItemPointer()->Log(when, ll, fmt, argList); \
-         va_end(argList);                                        \
-      }                                                          \
-   }                                                             \
+#define DO_LOGGING(when, doCallbacks)                               \
+{                                                                   \
+   va_list argList;                                                 \
+   va_start(argList, fmt);                                          \
+   _dfl.Log(when, ll, fmt, argList);                                \
+   va_end(argList);                                                 \
+   va_start(argList, fmt);                                          \
+   _dcl.Log(when, ll, fmt, argList);                                \
+   va_end(argList);                                                 \
+   if (doCallbacks)                                                 \
+   {                                                                \
+      HashtableIterator<LogCallbackRef, bool> iter(_logCallbacks);  \
+      const LogCallbackRef * nextKey;                               \
+      while((nextKey = iter.GetNextKey()) != NULL)                  \
+      {                                                             \
+         if (nextKey->GetItemPointer())                             \
+         {                                                          \
+            va_start(argList, fmt);                                 \
+            nextKey->GetItemPointer()->Log(when, ll, fmt, argList); \
+            va_end(argList);                                        \
+         }                                                          \
+      }                                                             \
+   }                                                                \
 }
 
 void GetStandardLogLinePreamble(char * buf, int logLevel, time_t when)
@@ -353,34 +346,31 @@ status_t LogTime(int ll, const char * fmt, ...)
 {
    TCHECKPOINT;
 
-   if (LockLog() == B_NO_ERROR)
+   status_t lockRet = LockLog();
+   if (_inLogCallNestCount.IsInBatch() == false)
    {
-      if (_inLogCall == false)
+      _inLogCallNestCount.Increment();
       {
-         _inLogCall = true;
-         {
-            time_t n = time(NULL);
-            char buf[128];
-            GetStandardLogLinePreamble(buf, ll, n);
+         time_t n = time(NULL);
+         char buf[128];
+         GetStandardLogLinePreamble(buf, ll, n);
 
-            va_list dummyList;
-            va_start(dummyList, fmt);  // not used
-            _dfl.Log(n, ll, buf, dummyList);
-            va_end(dummyList);
-            va_start(dummyList, fmt);  // not used
-            _dcl.Log(n, ll, buf, dummyList);
-            va_end(dummyList);
-         
-            // Log message to file/stdio and callbacks
-            DO_LOGGING(n);
-         }
-         _inLogCall = false;
+         va_list dummyList;
+         va_start(dummyList, fmt);  // not used
+         _dfl.Log(n, ll, buf, dummyList);
+         va_end(dummyList);
+         va_start(dummyList, fmt);  // not used
+         _dcl.Log(n, ll, buf, dummyList);
+         va_end(dummyList);
+      
+         // Log message to file/stdio and callbacks
+         DO_LOGGING(n, (lockRet==B_NO_ERROR));
       }
-      (void) UnlockLog();
-
-      return B_NO_ERROR;
+      _inLogCallNestCount.Decrement();
    }
-   else return B_ERROR;
+   if (lockRet == B_NO_ERROR) UnlockLog();
+
+   return lockRet;
 }
 
 status_t LogFlush()
@@ -427,21 +417,18 @@ status_t Log(int ll, const char * fmt, ...)
 {
    TCHECKPOINT;
 
-   if (LockLog() == B_NO_ERROR)
+   status_t lockRet = LockLog();
+   if (_inLogCallNestCount.IsInBatch() == false)
    {
-      if (_inLogCall == false)
+      _inLogCallNestCount.Increment();
       {
-         _inLogCall = true;
-         {
-            time_t n = time(NULL);  // don't inline this, ya dummy
-            DO_LOGGING(n);
-         }
-         _inLogCall = false;
+         time_t n = time(NULL);  // don't inline this, ya dummy
+         DO_LOGGING(n, (lockRet==B_NO_ERROR));
       }
-      (void) UnlockLog();
-      return B_NO_ERROR;
+      _inLogCallNestCount.Decrement();
    }
-   else return B_ERROR;
+   if (lockRet == B_NO_ERROR) (void) UnlockLog();
+   return lockRet;
 }
 
 status_t PutLogCallback(const LogCallbackRef & cb)

@@ -9,7 +9,6 @@
 #include "tokenizer.h"
 #include "wstring.h"
 #include "debugimpl.h"
-#include "parser.h"
 #include "wmessageevent.h"
 
 WHTMLView::WHTMLView(QWidget * parent, const char * name)
@@ -87,11 +86,12 @@ WHTMLView::setSource( const QString & name )
 {
 	QString _URL = fContext;
 	fContext = name;
-	if (name.at(0) == '#')
+	if (name.startsWith("#"))
 	{
-		if (_URL.find("#") > 0)
+		int pos = _URL.find("#");
+		if (pos > 0)
 		{
-			fContext = _URL.left(_URL.find("#"));
+			fContext = _URL.left(pos);
 			fContext += name;
 		}
 	}

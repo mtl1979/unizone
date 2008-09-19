@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.28"
+#define MUSCLE_VERSION_STRING "4.30"
 
 #include <string.h>  /* for memcpy() */
 

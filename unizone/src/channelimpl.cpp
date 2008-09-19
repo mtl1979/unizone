@@ -247,8 +247,7 @@ Channel::URLClicked(const QString & url)
 {
 	if (url != QString::null)
 	{
-		// <postmaster@raasu.org> 20021021 -- Use lower() to eliminate not matching because of mixed casing
-		if (startsWith(url, "beshare:", false) || startsWith(url,"share:", false))
+		if (url.startsWith("beshare:", false) || url.startsWith("share:", false))
 		{
 			QString surl = url.mid(url.find(":") + 1);
 			WinShareWindow::LaunchSearch(surl);

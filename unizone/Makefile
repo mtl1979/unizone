@@ -55,7 +55,6 @@ SRCFILES = \
 	src/menubar.cpp \
 	src/netclient.cpp \
 	src/nicklist.cpp \
-	src/parser.cpp \
 	src/picviewerimpl.cpp \
 	src/platform.cpp \
 	src/prefsimpl.cpp \

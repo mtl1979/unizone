@@ -381,17 +381,17 @@ PlanForReconnect()
 
 uint64 
 AbstractReflectSession :: 
-GetPulseTime(uint64 /*now*/, uint64 /*sched*/)
+GetPulseTime(const PulseArgs &)
 {
    return _reconnectTime;
 }
 
 void
 AbstractReflectSession :: 
-Pulse(uint64 now, uint64 sched)
+Pulse(const PulseArgs & args)
 {
-   PulseNode::Pulse(now, sched);
-   if (now >= _reconnectTime)
+   PulseNode::Pulse(args);
+   if (args.GetCallbackTime() >= _reconnectTime)
    {
       if (_autoReconnectDelay == MUSCLE_TIME_NEVER) _reconnectTime = MUSCLE_TIME_NEVER;
       else

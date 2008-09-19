@@ -44,7 +44,7 @@ QString
 FormatUserName(const QString &name, const QString &color)
 {
 	QString out;
-	if (startsWith(name, "<font"))
+	if (name.startsWith("<font"))
 	{
 		int e = name.find("</font>");
 		if (e == (int) name.length() - 7)

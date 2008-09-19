@@ -9,6 +9,12 @@
 
 BEGIN_NAMESPACE(muscle);
 
+/** Returns true iff the given MessageRef points to a deflated Message.
+  * Returns false iff the MessageRef is NULL or not deflated.
+  * @param msgRef The Message to determine the inflated/deflated status of.
+  */
+bool IsMessageDeflated(const MessageRef & msgRef);
+
 /** Examines the contents of the given Message, and creates and returns a new
  *  Message that represents the same data as the given Message, but in compressed form.
  *  If the passed-in Message is already in compressed form (i.e. it was created by

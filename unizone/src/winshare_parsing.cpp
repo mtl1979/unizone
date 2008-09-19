@@ -30,7 +30,7 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 		iter.GetNextValue(user);
 		QString userName = StripURL(user()->GetUserName().stripWhiteSpace());
 		if (((filter == QString::null) || (MatchUserFilter(user, filter))) &&
-			(startsWith(userName, un, false)))
+			(userName.startsWith(un, false)))
 		{
 			// Only count different nicks
 			if (oldName != userName)
@@ -181,7 +181,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 			backupMatchString = qres;		// found several matches; keep trying for a single
 			backupStartAt = matchAt;        // but we'll use this if nothing else
 		}
-		if (matchString[0] != ' ')
+		if (!matchString.startsWith(" "))
 			matchString.prepend(" ");
 	}
 
@@ -195,7 +195,7 @@ WinShareWindow::DoTabCompletion(const QString & origText, QString & result)
 	if (startAt != -1)
 	{
 		QString returnCompletedText(origText.left(startAt));
-		if (matchString[0] == ' ')
+		if (matchString.startsWith(" "))
 			returnCompletedText += matchString.mid(1);
 		else
 			returnCompletedText += matchString;

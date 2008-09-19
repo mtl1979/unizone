@@ -16,12 +16,12 @@ PulseNode :: ~PulseNode()
    ClearPulseChildren();
 }
 
-uint64 PulseNode :: GetPulseTime(uint64, uint64) 
+uint64 PulseNode :: GetPulseTime(const PulseArgs &) 
 {
    return MUSCLE_TIME_NEVER;
 }
 
-void PulseNode ::Pulse(uint64, uint64) 
+void PulseNode :: Pulse(const PulseArgs &) 
 {
    // empty
 }
@@ -42,7 +42,7 @@ void PulseNode :: GetPulseTimeAux(uint64 now, uint64 & min)
    if (_myScheduledTimeValid == false) 
    {
       _myScheduledTimeValid = true;
-      _myScheduledTime = GetPulseTime(now, _myScheduledTime);
+      _myScheduledTime = GetPulseTime(PulseArgs(now, _myScheduledTime));
    }
 
    // Then handle any of my kids who need to be recalculated also
@@ -62,7 +62,7 @@ void PulseNode :: PulseAux(uint64 now)
 {
    if ((_myScheduledTimeValid)&&(now >= _myScheduledTime)) 
    {
-      Pulse(now, _myScheduledTime);
+      Pulse(PulseArgs(now, _myScheduledTime));
       _myScheduledTimeValid = false;
    }
 

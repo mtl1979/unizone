@@ -110,6 +110,16 @@ public:
      */
    bool GetWaitForChildOnClose() const {return _waitForChildOnClose;}
 
+   /** Set whether or not the child process we spawn should inherit our
+     * open file descriptors.  Default value is false.
+     */
+   void SetChildProcessInheritFileDescriptors(bool cpifds) {_childProcessInheritFileDescriptors = cpifds;}
+
+   /** Returns true iff the child process we spawn will inherit our
+     * open file descriptors.  Default value is false.
+     */
+   bool GetChildProcessInheritFileDescriptors() const {return _childProcessInheritFileDescriptors;}
+
    /** Called within the child process, just before the child process's
      * executable image is loaded in.  Default implementation is a no-op.
      * @note This method is not called when running under Windows!
@@ -135,6 +145,7 @@ private:
    bool _blocking;
    bool _killChildOnClose;
    bool _waitForChildOnClose;
+   bool _childProcessInheritFileDescriptors;
 
 #if defined(WIN32) || defined(CYGWIN)
    void IOThreadEntry();

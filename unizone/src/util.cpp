@@ -19,6 +19,10 @@
 #include "util/StringTokenizer.h"
 using namespace muscle;
 
+#ifdef _WIN32
+extern QString gDataDir;
+#endif
+
 QString
 ParseChatText(const QString & str)
 {
@@ -37,7 +41,7 @@ ParseChatText(const QString & str)
 
 		if (inLabel)			// label contains space(s) ???
 		{
-			if (endsWith(qToken, "]"))
+			if (qToken.endsWith("]"))
 			{
 				qLabels.Tail() += qToken.left(qToken.length() - 1);
 				inLabel = false;
@@ -53,20 +57,20 @@ ParseChatText(const QString & str)
 		else if (IsURL(qToken))
 		{
 			if (
-				(startsWith(qToken, "beshare:", false)) ||
-				(startsWith(qToken, "share:", false))
+				(qToken.startsWith("beshare:", false)) ||
+				(qToken.startsWith("share:", false))
 				)
 			{
 				// Remove html tag after the url...
-				if (endsWith(qToken, ">"))
+				if (qToken.endsWith(">"))
 				{
 					bool bInTag = true;
 					while (bInTag)
 					{
-						if (endsWith(qToken, "<"))
+						if (qToken.endsWith("<"))
 							bInTag = false;
 						qToken.truncate(qToken.length() - 1);
-						if (endsWith(qToken, ">"))
+						if (qToken.endsWith(">"))
 							bInTag = true;
 					}
 				}
@@ -105,13 +109,13 @@ ParseChatText(const QString & str)
 						//
 						while (bInTag)
 						{
-							if (endsWith(qToken, "<"))
+							if (qToken.endsWith("<"))
 								bInTag = false;
 
 							qToken.truncate(qToken.length() - 1);
 
 							// another tag?
-							if (endsWith(qToken, ">"))
+							if (qToken.endsWith(">"))
 								bInTag = true;
 						}
 
@@ -122,7 +126,7 @@ ParseChatText(const QString & str)
 					// Make sure there is same amount of ( and ) characters
 					//
 
-					if (endsWith(qToken, ")"))
+					if (qToken.endsWith(")"))
 					{
 						if (qToken.contains("(") == qToken.contains(")"))
 							break;
@@ -152,9 +156,9 @@ ParseChatText(const QString & str)
 		{
 			lastWasURL = false; // clear in all cases, might contain trash between url and possible label
 
-			if (startsWith(qToken, "[")) // Start of label?
+			if (qToken.startsWith("[")) // Start of label?
 			{
-				if (endsWith(qToken, "]"))
+				if (qToken.endsWith("]"))
 					qLabels.Tail() = qToken.mid(1, qToken.length() - 2);
 				else if (qToken.find("]") >= 0)
 					qLabels.Tail() = qToken.mid(1, qToken.find("]") - 1);
@@ -189,10 +193,10 @@ ParseChatText(const QString & str)
 
 			// now the url...
 			QString urltmp = "<a href=\"";
-			if ( startsWith(qUrl, "www.") )		urltmp += "http://";
-			if ( startsWith(qUrl, "ftp.") )		urltmp += "ftp://";
-			if ( startsWith(qUrl, "beshare.") )	urltmp += "server://";
-			if ( startsWith(qUrl, "irc.") )		urltmp += "irc://";
+			if ( qUrl.startsWith("www.") )		urltmp += "http://";
+			if ( qUrl.startsWith("ftp.") )		urltmp += "ftp://";
+			if ( qUrl.startsWith("beshare.") )	urltmp += "server://";
+			if ( qUrl.startsWith("irc.") )		urltmp += "irc://";
 			urltmp += qUrl;
 			urltmp += "\">";
 			// Display URL label or link address, if label doesn't exist
@@ -215,7 +219,7 @@ ParseChatText(const QString & str)
 				if (!muscleInRange(lb, 0, le))
 				{
 					qText = qText.mid(le + 1);
-					if (startsWith(qText, "]"))	// Fix for ']' in end of label
+					if (qText.startsWith("]"))	// Fix for ']' in end of label
 						qText = qText.mid(1);
 				}
 			}
@@ -361,7 +365,7 @@ GetCommandString(const QString & qCommand)
 {
 	QString qCommand2 = qCommand.lower();
 	int sPos = qCommand2.find(" ");  // parameters should follow after <space> so they should be stripped off
-	if ((sPos > 0) && startsWith(qCommand2, "/")) // Is / first letter?
+	if ((sPos > 0) && qCommand2.startsWith("/")) // Is / first letter?
 	{
 		qCommand2.truncate(sPos);
 	}
@@ -465,7 +469,7 @@ StripURL(const QString & u)
 					if ((right + 1) < (int) u.length())
 					{
 						QString rest = u.mid(right + 1);
-						if (startsWith(rest, " "))
+						if (rest.startsWith(" "))
 						{
 							label += " ";
 							rest = rest.mid(1);
@@ -530,6 +534,7 @@ const char * urlPrefix[] = {
 	"magnet:",		// Magnet
 	"gnutella:",	// Gnutella
 	"mp2p:",		// Piolet
+	"mic://",		// Microsoft Comic Chat
 	NULL
 };
 
@@ -554,13 +559,13 @@ IsURL(const QString & url)
 
 	// Add default protocol prefixes
 
-	if (startsWith(u, "www.", false) && !startsWith(u, "www..", false))
+	if (u.startsWith("www.", false) && !u.startsWith("www..", false))
 		u.prepend("http://");
-	if (startsWith(u, "ftp.", false) && !startsWith(u, "ftp..", false))
+	if (u.startsWith("ftp.", false) && !u.startsWith("ftp..", false))
 		u.prepend("ftp://");
-	if ((startsWith(u, "beshare.", false) && !startsWith(u, "beshare..", false)) && u.length() > 12)
+	if ((u.startsWith("beshare.", false) && !u.startsWith("beshare..", false)) && u.length() > 12)
 		u.prepend("server://");
-	if (startsWith(u, "irc.", false) && !startsWith(u, "irc..", false))
+	if (u.startsWith("irc.", false) && !u.startsWith("irc..", false))
 		u.prepend("irc://");
 
 	if (u.length() > 9)
@@ -568,9 +573,9 @@ IsURL(const QString & url)
 		const char *prefix;
 		for (unsigned int i = 0; (prefix = urlPrefix[i]) != NULL; i++)
 		{
-			if (startsWith(u, prefix, false))
+			if (u.startsWith(prefix, false))
 			{
-				if (!endsWith(u, "://"))
+				if (!u.endsWith("://"))
 				{
 					return true;
 				}
@@ -954,7 +959,7 @@ GetDateStampAux(const QString &stamp)
 	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);
 
 	// Strip Day
-	if (qCurTime[0] == ' ')
+	if (qCurTime.startsWith(" "))
 		qCurTime = qCurTime.mid(1);
 	QString qDay = qCurTime.left(qCurTime.find(" "));
 	return qDOW + " " + qMonth + " " + qDay + " " + qYear;
@@ -1073,10 +1078,10 @@ IsAction(const QString &text, const QString &user)
 {
 	bool ret = false;
 
-	if (startsWith(text, user + " "))
+	if (text.startsWith(user + " "))
 		ret = true;
 
-	if (startsWith(text, user + "'s "))
+	if (text.startsWith(user + "'s "))
 		ret = true;
 
 	return ret;
@@ -1629,18 +1634,6 @@ ConvertPtr(void *ptr)
 }
 
 bool
-startsWith(const QString &str1, const QString &str2, bool cs)
-{
-		return str1.startsWith(str2, cs);
-}
-
-bool
-endsWith(const QString &str1, const QString &str2, bool cs)
-{
-		return str1.endsWith(str2, cs);
-}
-
-bool
 startsWith(const QString &str, const QChar &c, bool cs)
 {
    if (cs)
@@ -1712,13 +1705,13 @@ QString downloadDir(const QString &subdir)
 			return out;
 
 		QString d = QDir::convertSeparators(subdir);
-		if (startsWith(d, out))
+		if (d.startsWith(out))
 			d = d.mid(out.length());
 
 		if (!d.isEmpty())
 		{
 			QDir dir(out);
-			if (d[0] == '/')
+			if (d.startsWith("/"))
 				d = d.mid(1);
 			if (d[1] == ':')
 				d = d.mid(3);
@@ -1844,15 +1837,19 @@ GetUInt32FromMessage(const MessageRef &msg, const String key, uint32 &value)
 QString SimplifyPath(const QString &path)
 {
 	QString old = QDir::convertSeparators(path);
+#ifdef _WIN32
+	QString data = QDir::convertSeparators(gDataDir);
+	if (!endsWith(data, QDir::separator()))
+		data += QDir::separator();
+	if (old.startsWith(data, false))
+		old = old.mid(data.length());
+#else
 	QString app = QDir::convertSeparators(gAppDir);
 	if (!endsWith(app, QDir::separator()))
 		app += QDir::separator();
-#ifdef WIN32
-	if (startsWith(old, app, false))
-#else
-	if (startsWith(old, app))
-#endif
+	if (old.startsWith(app))
 		old = old.mid(app.length());
+#endif
 	return old;
 }
 

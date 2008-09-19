@@ -148,7 +148,7 @@ status_t MessageTransceiverThread :: SendAddNewSessionMessage(const ThreadWorker
        ? SendMessageToInternalThread(msgRef) : B_ERROR;
 }
 
-status_t MessageTransceiverThread :: PutAcceptFactory(uint16 port, const ThreadWorkerSessionFactoryRef & factoryRef, const ip_address & optInterfaceIP)
+status_t MessageTransceiverThread :: PutAcceptFactory(uint16 port, const ThreadWorkerSessionFactoryRef & factoryRef, const ip_address & optInterfaceIP, uint16 * optRetPort)
 {
    if (EnsureServerAllocated() == B_NO_ERROR)
    {
@@ -161,7 +161,7 @@ status_t MessageTransceiverThread :: PutAcceptFactory(uint16 port, const ThreadW
             MessageRef msgRef(GetMessageFromPool(MTT_COMMAND_PUT_ACCEPT_FACTORY));
             if ((msgRef())&&(msgRef()->AddInt16(MTT_NAME_PORT, port) == B_NO_ERROR)&&(msgRef()->AddTag(MTT_NAME_FACTORY, fRef.GetGeneric()) == B_NO_ERROR)&&(AddIPAddressToMessage(*msgRef(), MTT_NAME_IP_ADDRESS, optInterfaceIP) == B_NO_ERROR)&&(SendMessageToInternalThread(msgRef) == B_NO_ERROR)) return B_NO_ERROR;
          }
-         else if (_server()->PutAcceptFactory(port, ReflectSessionFactoryRef(fRef.GetGeneric(), true), optInterfaceIP) == B_NO_ERROR) return B_NO_ERROR;
+         else if (_server()->PutAcceptFactory(port, ReflectSessionFactoryRef(fRef.GetGeneric(), true), optInterfaceIP, optRetPort) == B_NO_ERROR) return B_NO_ERROR;
       }
    }
    return B_ERROR;

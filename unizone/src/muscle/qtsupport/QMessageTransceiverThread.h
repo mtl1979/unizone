@@ -416,7 +416,7 @@ public:
    status_t SetOutgoingMessageEncoding(int32 encoding);
 
    /** Returns this handler's current session ID, or -1 if this handler is not currently associated with a thread. */
-   const int32 GetSessionID() const {return _sessionID;}
+   int32 GetSessionID() const {return _sessionID;}
 
    /** Returns a pointer to this handler's associated QMessageTransceiverThread, or NULL if the handler
      * is not currently associated with any thread.

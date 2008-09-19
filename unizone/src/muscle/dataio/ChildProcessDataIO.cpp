@@ -24,7 +24,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
-ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true)
+ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true), _childProcessInheritFileDescriptors(false)
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    , _readFromStdout(INVALID_HANDLE_VALUE), _writeToStdin(INVALID_HANDLE_VALUE), _ioThread(INVALID_HANDLE_VALUE), _wakeupSignal(INVALID_HANDLE_VALUE), _childProcess(INVALID_HANDLE_VALUE), _childThread(INVALID_HANDLE_VALUE), _requestThreadExit(false)
 #else
@@ -242,8 +242,11 @@ void ChildProcessDataIO :: RunChildProcess(int argc, const void * args)
    (void) signal(SIGHUP, SIG_DFL);  // FogBugz #2918
 
    // Close any file descriptors leftover from the parent process
-   int fdlimit = sysconf(_SC_OPEN_MAX);
-   for (int i=STDERR_FILENO+1; i<fdlimit; i++) close(i);
+   if (_childProcessInheritFileDescriptors == false)
+   {
+      int fdlimit = sysconf(_SC_OPEN_MAX);
+      for (int i=STDERR_FILENO+1; i<fdlimit; i++) close(i);
+   }
 
    if (argc < 0) 
    {

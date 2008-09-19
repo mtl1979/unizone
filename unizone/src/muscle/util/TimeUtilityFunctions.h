@@ -17,7 +17,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
-/** Value to return from GetPulseTime() if you don't ever want to get Pulse()'d. */
+/** A value that GetPulseTime() can return to indicate that Pulse() should never be called. */
 #define MUSCLE_TIME_NEVER ((uint64)-1) // (9223372036854775807LL)
 
 /** Given a timeval struct, returns the equivalent uint64 value (in microseconds).

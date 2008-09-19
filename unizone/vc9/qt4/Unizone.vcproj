@@ -849,28 +849,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\parser.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\picviewerimpl.cpp"
 				>
 				<FileConfiguration
@@ -2125,10 +2103,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\nicklist.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\parser.h"
 				>
 			</File>
 			<File

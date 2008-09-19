@@ -231,15 +231,15 @@ WFileThread::ScanFiles(const QString & directory)
 
 				if (!skip && (ndata.length() > 4))
 				{
-					if (endsWith(ndata, ".md5"))
+					if (ndata.endsWith(".md5"))
 					{
 						skip = true;
 					}
 					else if (ndata.length() > 12)
 					{
 						if (
-							startsWith(ndata, "AlbumArt") &&
-							endsWith(ndata, ".jpg")
+							ndata.startsWith("AlbumArt") &&
+							ndata.endsWith(".jpg")
 							)
 						{
 							skip = true;

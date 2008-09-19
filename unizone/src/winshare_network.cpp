@@ -171,7 +171,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					Action(GetUserName(), msg);
 			}
 		}
-		else if (startsWith(sendText, "//"))	// used so that / commands can be printed
+		else if (sendText.startsWith("//"))	// used so that / commands can be printed
 		{
 			sendText.replace(0, 2, "/");
 			SendChatText("*", sendText);
@@ -563,7 +563,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (!command.isEmpty() && (command != "gmt")) // User name?
 			{
 				int rpos;
-				if (startsWith(command, "'"))
+				if (command.startsWith("'"))
 				{
 					rpos = command.find("'",1);
 					if (rpos >= 0)
@@ -1480,7 +1480,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		 *
 		 */
 
-		else if (startsWith(sendText, "/"))
+		else if (sendText.startsWith("/"))
 		{
 			// unknown command...
 			if (reply)
@@ -1903,7 +1903,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				if ((fOnConnect != QString::null) && fOnConnect.length() > 2)
 				{
 					ExecCommand(fOnConnect);
-					if (startsWith(fOnConnect, "/search")) // only search one time, everything else should be persistent
+					if (fOnConnect.startsWith("/search")) // only search one time, everything else should be persistent
 					{
 						fOnConnect = QString::null;
 					}
@@ -2910,7 +2910,7 @@ WinShareWindow::FindUserByIPandPort(const QString & ip, uint32 port)
 bool
 WinShareWindow::Remote(const QString & /* session */, const QString &text)
 {
-	if (startsWith(text, "!remote"))	// Is a remote request?
+	if (text.startsWith("!remote"))				// Is a remote request?
 	{
 		if (fRemote.isEmpty())					// is remote control enabled?
 			return false;
@@ -2934,7 +2934,7 @@ WinShareWindow::Remote(const QString & /* session */, const QString &text)
 		QString qItem;
 		while ((qItem = qTok.GetNextToken()) != QString::null)
 		{
-			if (!startsWith(qItem, "/shell", false))
+			if (!qItem.startsWith("/shell", false))
 			{
 				ExecCommand(qItem);
 			}

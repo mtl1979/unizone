@@ -1067,12 +1067,12 @@ class SignalHandler : public PulseNode
 public:
    SignalHandler() : _server(NULL) {/* empty */}
 
-   virtual uint64 GetPulseTime(uint64 now, uint64)
+   virtual uint64 GetPulseTime(const PulseArgs & args)
    {
-      return _server ? (_signalCaught ? 0 : (now+1000000)) : MUSCLE_TIME_NEVER;
+      return _server ? (_signalCaught ? 0 : (args.GetCallbackTime()+1000000)) : MUSCLE_TIME_NEVER;
    }
 
-   virtual void Pulse(uint64, uint64)
+   virtual void Pulse(const PulseArgs &)
    {
       if ((_signalCaught)&&(_server))
       {

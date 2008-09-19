@@ -799,7 +799,7 @@ void
 WinShareWindow::ServerChanged(const QString & newServer)
 {
 	fServer = newServer;
-	if (endsWith(fServer, ":2960"))
+	if (fServer.endsWith(":2960"))
 		fServer.truncate(fServer.length() - 5); // strip default port
 
 	if (fNetClient->IsConnected() || fReconnectTimer->isActive())
@@ -1148,7 +1148,7 @@ WinShareWindow::MakeHumanTime(uint64 time)
 		s += ", ";
 	}
 
-	if ((s.length() > 2) && endsWith(s, ", "))
+	if ((s.length() > 2) && s.endsWith(", "))
 	{
 		s.truncate(s.length() - 2);
 	}
@@ -1246,7 +1246,7 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 				QString uName = user()->GetUserName();
 				QString userName = StripURL(uName.stripWhiteSpace()) + " ";
 
-				if (!userName.isEmpty() && startsWith(restOfString2, userName))
+				if (!userName.isEmpty() && restOfString2.startsWith(userName))
 				{
 					PRINT("Found\n");
 					WUserSearchPair pair;
@@ -1317,8 +1317,8 @@ WinShareWindow::LoadSettings()
 		for (i = 0; (str = fSettings->GetStatusItem(i).stripWhiteSpace()) != QString::null; i++)
 		{
 			// Skip old 'testing' statuses
-			if (!startsWith(str, tr("Testing Unizone (English)")) && // new internationalized
-				!startsWith(str, "Testing Unizone (")					// old format
+			if (!str.startsWith(tr("Testing Unizone (English)")) && // new internationalized
+				!str.startsWith("Testing Unizone (")				// old format
 				)
 				fStatusList->insertItem(str);
 		}
@@ -1931,7 +1931,7 @@ void
 WinShareWindow::LaunchPrivate(const QString & pattern)
 {
 	QString users(pattern);
-	if (startsWith(users, "//"))
+	if (users.startsWith("//"))
 	{
 		users = users.mid(2);
 	}

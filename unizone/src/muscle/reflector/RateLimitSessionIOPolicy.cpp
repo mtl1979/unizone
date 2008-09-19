@@ -49,18 +49,18 @@ BeginIO(uint64 now)
 
 uint64
 RateLimitSessionIOPolicy ::
-GetPulseTime(uint64 now, uint64)
+GetPulseTime(const PulseArgs & args)
 {
    // Schedule a pulse for when we estimate _transferTally will sink back down to zero.  
-   return ((_maxRate > 0)&&(_transferTally>=CUTOFF))?(now+((_transferTally*1000000)/_maxRate)):MUSCLE_TIME_NEVER;
+   return ((_maxRate > 0)&&(_transferTally>=CUTOFF))?(args.GetCallbackTime()+((_transferTally*1000000)/_maxRate)):MUSCLE_TIME_NEVER;
 }
 
 void
 RateLimitSessionIOPolicy ::
-Pulse(uint64 now, uint64)
+Pulse(const PulseArgs & args)
 {
    TCHECKPOINT;
-   UpdateTransferTally(now);
+   UpdateTransferTally(args.GetCallbackTime());
 }
 
 void

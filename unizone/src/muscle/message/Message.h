@@ -208,7 +208,7 @@ public:
    virtual ~Message() {/* empty */}
 
    /** Assignment operator. */
-   Message &operator=(const Message &msg);
+   Message & operator=(const Message & msg);
 
    /** Comparison operator.  Two Message are considered equal iff their what codes are equal,
     *  and their sets of fields are equal.  Field ordering is not considered.  Note that this
@@ -397,7 +397,7 @@ public:
     *             resulting bytes are appended to the given field in this Message.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t AddFlat(const String & name, const Flattenable &obj);
+   status_t AddFlat(const String & name, const Flattenable & obj);
 
    /** Adds a reference to a FlatCountable object to the Message.
     *  @param name Name of the field to add (or add to)
@@ -549,7 +549,7 @@ public:
     *             bytes are prepended to the beginning of the given field in this Message.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t PrependFlat(const String & name, const Flattenable &obj);
+   status_t PrependFlat(const String & name, const Flattenable & obj);
 
    /** Prepends a reference to a FlatCountable object to the Message.
     *  @param name Name of the field to add (or prepend to)
@@ -736,10 +736,10 @@ public:
     *  @param msg On success, the value of the Message is written into this object.
     *  @return B_NO_ERROR if the Message value was found, or B_ERROR if it wasn't.
     */
-   status_t FindMessage(const String & name, uint32 index, Message &msg) const;
+   status_t FindMessage(const String & name, uint32 index, Message & msg) const;
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindMessage(const String & name, Message &msg) const {return FindMessage(name, 0, msg);}
+   status_t FindMessage(const String & name, Message & msg) const {return FindMessage(name, 0, msg);}
 
    /** Retrieve a Message value from the Message.
     *  Note that this method is more efficient than the FindMessage(MessageRef)
@@ -749,10 +749,10 @@ public:
     *  @param msgRef On success, the value of the Message is written into this object.
     *  @return B_NO_ERROR if the Message value was found, or B_ERROR if it wasn't.
     */
-   status_t FindMessage(const String & name, uint32 index, MessageRef &msgRef) const;
+   status_t FindMessage(const String & name, uint32 index, MessageRef & msgRef) const;
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindMessage(const String & name, MessageRef &msgRef) const {return FindMessage(name, 0, msgRef);}
+   status_t FindMessage(const String & name, MessageRef & msgRef) const {return FindMessage(name, 0, msgRef);}
 
    /** Retrieve a pointer value from the Message.
     *  @param name The field name to look for the pointer value under.
@@ -793,10 +793,10 @@ public:
     *  @param obj On success, the flattened object is copied into this object.
     *  @return B_NO_ERROR if the flattened object was found, or B_ERROR if it wasn't.
     */
-   status_t FindFlat(const String & name, uint32 index, Flattenable &obj) const;
+   status_t FindFlat(const String & name, uint32 index, Flattenable & obj) const;
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindFlat(const String & name, Flattenable &obj) const {return FindFlat(name, 0, obj);}
+   status_t FindFlat(const String & name, Flattenable & obj) const {return FindFlat(name, 0, obj);}
 
    /** Retrieve a FlatCountable reference from the Message.
     *  @param name The field name to look for the FlatCountable reference under.
@@ -807,7 +807,7 @@ public:
    status_t FindFlat(const String & name, uint32 index, FlatCountableRef & ref) const;
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindFlat(const String & name, FlatCountableRef &ref) const {return FindFlat(name, 0, ref);}
+   status_t FindFlat(const String & name, FlatCountableRef & ref) const {return FindFlat(name, 0, ref);}
 
    /** Convenience method:  As above, only the result is placed into the given ByteBufferRef object.
      * This saves you having to do the necessary FlatCountableRef->ByteBufferRef casting yourself.
@@ -819,7 +819,7 @@ public:
    }
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindFlat(const String & name, ByteBufferRef &ref) const {return FindFlat(name, 0, ref);}
+   status_t FindFlat(const String & name, ByteBufferRef & ref) const {return FindFlat(name, 0, ref);}
 
    /** Retrieve an ephemeral-tag-item from the Message.
     *  @param name Name of the field to look for the tag under.
@@ -830,7 +830,7 @@ public:
    status_t FindTag(const String & name, uint32 index, GenericRef & tagRef) const;
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindTag(const String & name, GenericRef &tagRef) const {return FindTag(name, 0, tagRef);}
+   status_t FindTag(const String & name, GenericRef & tagRef) const {return FindTag(name, 0, tagRef);}
 
    /** Retrieve a pointer to the raw data bytes of a stored message field of any type.
     *  @param name The field name to retrieve the pointer to
@@ -997,10 +997,10 @@ public:
     *  @param msg The new Message value to put overwrite the old Message with.
     *  @return B_NO_ERROR on success, or B_ERROR if the field wasn't found, or if (index) wasn't a valid index, or out of memory.
     */
-   status_t ReplaceMessage(bool okayToAdd, const String & name, uint32 index, const Message &msg) {return ReplaceMessage(okayToAdd, name, index, GetMessageFromPool(msg));}
+   status_t ReplaceMessage(bool okayToAdd, const String & name, uint32 index, const Message & msg) {return ReplaceMessage(okayToAdd, name, index, GetMessageFromPool(msg));}
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t ReplaceMessage(bool okayToAdd, const String & name, const Message &msg) {return ReplaceMessage(okayToAdd, name, 0, msg);}
+   status_t ReplaceMessage(bool okayToAdd, const String & name, const Message & msg) {return ReplaceMessage(okayToAdd, name, 0, msg);}
 
    /** Replace a Message value in an existing Message field with a new value.
     *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
@@ -1021,10 +1021,10 @@ public:
     *  @param obj The new flattened object value to put overwrite the old flattened object with.
     *  @return B_NO_ERROR on success, or B_ERROR if the field wasn't found, or if (index) wasn't a valid index, or out of memory.
     */
-   status_t ReplaceFlat(bool okayToAdd, const String & name, uint32 index, const Flattenable &obj);
+   status_t ReplaceFlat(bool okayToAdd, const String & name, uint32 index, const Flattenable & obj);
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t ReplaceFlat(bool okayToAdd, const String & name, const Flattenable &obj) {return ReplaceFlat(okayToAdd, name, 0, obj);}
+   status_t ReplaceFlat(bool okayToAdd, const String & name, const Flattenable & obj) {return ReplaceFlat(okayToAdd, name, 0, obj);}
 
    /** Replace a FlatCountable reference in an existing Message field with a new reference.
     *  @param okayToAdd If set true, attempting to replace an reference that doesn't exist will cause the new reference to be added to the end of the field array, instead.  If false, attempting to replace a non-existant reference will cause B_ERROR to be returned with no side effects.
@@ -1036,7 +1036,7 @@ public:
    status_t ReplaceFlat(bool okayToAdd, const String & name, uint32 index, const FlatCountableRef & ref);
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t ReplaceFlat(bool okayToAdd, const String & name, FlatCountableRef &ref) {return ReplaceFlat(okayToAdd, name, 0, ref);}
+   status_t ReplaceFlat(bool okayToAdd, const String & name, FlatCountableRef & ref) {return ReplaceFlat(okayToAdd, name, 0, ref);}
 
    /** As above, only (ref) is specified as a ByteBufferRef, to save you having to do the necessary casting to FlatCountableRef yourself */
    status_t ReplaceFlat(bool okayToAdd, const String & name, uint32 index, const ByteBufferRef & ref) 
@@ -1047,7 +1047,7 @@ public:
    }
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t ReplaceFlat(bool okayToAdd, const String & name, ByteBufferRef &ref) {return ReplaceFlat(okayToAdd, name, 0, ref);}
+   status_t ReplaceFlat(bool okayToAdd, const String & name, ByteBufferRef & ref) {return ReplaceFlat(okayToAdd, name, 0, ref);}
 
    /** Replace a tag object in an existing Message field with a new tag object.
     *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
@@ -1115,7 +1115,7 @@ public:
     *  @param moveTo A Message to move the field into.
     *  @result B_NO_ERROR on success, or B_ERROR if there is an error moving the field.
     */
-   status_t MoveName(const String & name, Message &moveTo);
+   status_t MoveName(const String & name, Message & moveTo);
 
    /**
     * Take the data under (name) in this message, and copies it into (moveTo). 
@@ -1124,7 +1124,21 @@ public:
     * @param copyTo A Message to copy the field into.
     * @result B_NO_ERROR on success, or B_ERROR if there is an error copying the field.
     */
-   status_t CopyName(const String & name, Message &copyTo) const;
+   status_t CopyName(const String & name, Message & copyTo) const;
+
+   /**
+    * Take the data under (name) in this message, and shares it into (shareTo). 
+    * Any data that was under (name) in (shareTo) will be replaced.
+    * This operation is similar to CopyName(), except that no copy of the field
+    * data is made:  instead, the field becomes shared between the two Messages,
+    * and changes to the field in one Message will be seen in the other.
+    * This method is more efficient than CopyName(), but you need to be careful
+    * when using it or you may get unexpected results...
+    * @param name Name of an existing field to be shared.
+    * @param shareTo A Message to share the field into.
+    * @result B_NO_ERROR on success, or B_ERROR if there is an error sharing the field.
+    */
+   status_t ShareName(const String & name, Message & shareTo) const;
 
    /** 
     * Swaps the contents and 'what' code of this Message with the specified Message.
@@ -1167,13 +1181,24 @@ public:
     */
    MessageFieldNameIterator GetFieldNameIteratorAt(const String & startFieldName, uint32 type = B_ANY_TYPE, uint32 flags = 0) const {return MessageFieldNameIterator(_entries.GetIteratorAt(startFieldName, flags), type);}
 
+   /** Makes this Message into a "light-weight" copy of (rhs).
+     * When this method returns, this object will look like a copy of (rhs), except that
+     * it will share the data in (rhs)'s fields such that modifying the data in (rhs)'s
+     * fields will modify the data in this Message, and vice versa.  Making a light-weight
+     * copy can be significantly cheaper than doing a full copy (e.g. with the assignment operator),
+     * but you need to be aware of the potential side effects if you then go on to modify
+     * the contents of either Message's fields.  Use with caution!
+     * @param rhs The Message to make this Message into a light-weight copy of. 
+     */ 
+   void BecomeLightweightCopyOf(const Message & rhs) {what = rhs.what; _entries = rhs._entries;}
+
 protected:
    /** Overridden to copy directly if (copyFrom) is a Message as well. */
    virtual status_t CopyFromImplementation(const Flattenable & copyFrom);
 
 private:
    // Helper functions
-   status_t AddDataAux(const String &name, uint32 type, const void *data, uint32 numBytes, bool prepend);
+   status_t AddDataAux(const String & name, uint32 type, const void *data, uint32 numBytes, bool prepend);
 
    // Given a known uint32, returns the size of an item of that type.
    // Returns zero if items of the given type are variable length.

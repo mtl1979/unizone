@@ -2113,37 +2113,37 @@ status_t Message :: ReplaceData(bool okayToAdd, const String &name, uint32 type,
    return B_NO_ERROR;
 }
 
-status_t Message :: MoveName(const String & name, Message &moveTo)
-{
-   GenericRef array = GetArrayRef(name, B_ANY_TYPE);
-   if (array())
-   {
-      (void) moveTo.RemoveName(name);  // clear out any previous data he had under that name
-      (void) _entries.Remove(name);
-      return moveTo._entries.Put(name, array);
-   }
-   return B_ERROR;
-}
-
 uint32 Message :: GetNumValuesInName(const String & name, uint32 type) const
 {
    const AbstractDataArray * array = GetArray(name, type);
    return array ? array->GetNumItems() : 0;
 }
 
-status_t Message :: CopyName(const String & name, Message &copyTo) const
+status_t Message :: CopyName(const String & name, Message & copyTo) const
 {
    const AbstractDataArray * array = GetArray(name, B_ANY_TYPE);
    if (array)
    {
       GenericRef clone = array->Clone();
-      if (clone())
-      {
-         (void) copyTo.RemoveName(name);  // clear out any previous data he had under that name
-         if (copyTo._entries.Put(name, clone) == B_NO_ERROR) return B_NO_ERROR;
-      }
+      if ((clone())&&(copyTo._entries.Put(name, clone) == B_NO_ERROR)) return B_NO_ERROR;
    }
    return B_ERROR;
+}
+
+status_t Message :: ShareName(const String & name, Message & shareTo) const
+{
+   const GenericRef * gRef = _entries.Get(name);
+   return gRef ? shareTo._entries.Put(name, *gRef) : B_ERROR;
+}
+
+status_t Message :: MoveName(const String & name, Message & moveTo)
+{
+   if (ShareName(name, moveTo) == B_NO_ERROR)
+   {
+      (void) _entries.Remove(name);
+      return B_NO_ERROR;
+   }
+   else return B_ERROR;
 }
 
 status_t Message :: PrependString(const String & name, const String & val) 

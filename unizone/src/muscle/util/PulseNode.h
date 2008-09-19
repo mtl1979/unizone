@@ -23,6 +23,26 @@ public:
    /** Destructor.  Does not delete any attached child PulseNodes. */
    virtual ~PulseNode();
 
+protected:
+   /** This class is used to encapsule the arguments to GetPulseTime() and Pulse(), so that
+     * there is less data to place on the stack in each callback call.
+     */
+   class PulseArgs
+   {
+   public:
+      uint64 GetCallbackTime() const {return _callTime;}
+      uint64 GetScheduledTime() const {return _prevTime;}
+
+   private:
+      friend class PulseNode;
+
+      PulseArgs(uint64 callTime, uint64 prevTime) : _callTime(callTime), _prevTime(prevTime) {/* empty */}
+
+      uint64 _callTime; 
+      uint64 _prevTime; 
+   };
+
+public:
    /**
     * This method can be overridden to tell the PulseNodeManager when we would like
     * to have our Pulse() method called.  This method is guaranteed to be called only
@@ -33,24 +53,36 @@ public:
     *   <li>Soon after InvalidatePulseTime() has been called one or more times 
     *       (InvalidatePulseTime() calls are merged together for efficiency)</li>
     * </ol>
-    * @param now The current wall-clock time in microseconds, for convenience.
-    * @param prevResult The value that this method returned the last time it was
-    *                   called.  The very first time this method is called, this value
-    *                   will be passed in as MUSCLE_TIME_NEVER.
+    * The default implementation always returns MUSCLE_TIME_NEVER.
+    *
+    * @param args Args is a reference to an object containing the following context
+    *             information regarding this call:
+    *
+    *           args.GetCallbackTime() The current wall-clock time-value, in microseconds.
+    *                                   This will be roughly the same value as returned by
+    *                                   GetRunTime64(), but it's cheaper to call this method.
+    *           args.GetScheduledTime() The value that this method returned the last time it was
+    *                                   called.  The very first time this method is called, this value
+    *                                   will be passed in as MUSCLE_TIME_NEVER.
     * @return Return MUSCLE_TIME_NEVER if you don't wish to schedule a future call to Pulse();
     *         or return the time at which you want Pulse() to be called.  Returning values less
     *         than or equal to (now) will cause Pulse() to be called as soon as possible.
-    *         The default implementation always returns MUSCLE_TIME_NEVER.
     */
-   virtual uint64 GetPulseTime(uint64 now, uint64 prevResult);
+   virtual uint64 GetPulseTime(const PulseArgs & args);
 
    /**
     * Will be called at the time specified previously by GetPulseTime().  GetPulseTime()
     * will be called again immediately after this call, to check if you want to schedule
     * another Pulse() call for later.
     * Default implementation is a no-op.
-    * @param now The current wall-clock time-value in microseconds, for convenience.
-    * @param scheduledTime The time this Pulse() call was scheduled to occur at, in
+    *
+    * @param args Args is a reference to an object containing the following context
+    *             information regarding this call:
+    *
+    *           args.GetCallbackTime() The current wall-clock time-value, in microseconds.
+    *                                   This will be roughly the same value as returned by
+    *                                   GetRunTime64(), but it's cheaper to call this method.
+    *           args.GetScheduledTime() The time this Pulse() call was scheduled to occur at, in
     *                      microseconds, as previously returned by GetPulseTime(). Note
     *                      that unless your computer is infinitely fast, this time will
     *                      always be at least a bit less than (now), since there is a delay 
@@ -58,7 +90,7 @@ public:
     *                      call, and when the call actually happens.  (you may be able to 
     *                      use this value to compensate for the slippage, if it bothers you)
     */
-   virtual void Pulse(uint64 now, uint64 scheduledTime);
+   virtual void Pulse(const PulseArgs & args);
 
    /** 
     *  Adds the given child into our set of child PulseNodes.  Any PulseNode in our

@@ -38,8 +38,8 @@ public:
    virtual void BytesTransferred(const PolicyHolder & holder, uint32 numBytes);
    virtual void EndIO(uint64 now);
 
-   virtual uint64 GetPulseTime(uint64 now, uint64 prevResult);
-   virtual void Pulse(uint64 now, uint64 scheduledTime);
+   virtual uint64 GetPulseTime(const PulseArgs & args);
+   virtual void Pulse(const PulseArgs & args);
 
 private:
    void UpdateTransferTally(uint64 now);

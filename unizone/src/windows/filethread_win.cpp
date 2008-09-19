@@ -26,7 +26,7 @@ WFileThread::ResolveLink(const QString & lnk) const
 	PRINT2("\tResolving %S\n", wlnk.getBuffer());
 #endif
 	
-	if (endsWith(lnk, ".lnk"))
+	if (lnk.endsWith(".lnk"))
 	{
 		// we've got a link...
 		PRINT("Is Link\n");

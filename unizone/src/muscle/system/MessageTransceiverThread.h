@@ -355,12 +355,18 @@ public:
      *                      only ThreadWorkerSessions (or sessions which are subclasses thereof)
      *                      If left as NULL (the default), a default ThreadWorkerFactory will be created and used.
      *                      The referenced factory becomes sole property of the MessageTransceiverThread on success.
-     *  @param optInterfaceIP Optional local interface address to listen on.  If not specified, or if specified
-     *                        as (invalidIP), then connections will be accepted from all local network interfaces.
+     * @param optInterfaceIP Optional local interface address to listen on.  If not specified, or if specified
+     *                       as (invalidIP), then connections will be accepted from all local network interfaces.
+     * @param optRetPort If specified non-NULL, then on success the port that the factory was bound to will
+     *                   be placed into this parameter.  NOTE:  This argument is only useful if you are adding the
+     *                   factory synchronously... i.e. if you are calling this method before the MessageTransceiverThread's
+     *                   internal thread has been started.  If the internal thread is running already, this argument
+     *                   will be ignored (because the socket binding will happen asynchronously and therefore the
+     *                   port chosen is not known in time to return it here).  Defaults to NULL.
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the put command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t PutAcceptFactory(uint16 port, const ThreadWorkerSessionFactoryRef & optFactoryRef, const ip_address & optInterfaceIP = invalidIP);
+   virtual status_t PutAcceptFactory(uint16 port, const ThreadWorkerSessionFactoryRef & optFactoryRef, const ip_address & optInterfaceIP = invalidIP, uint16 * optRetPort = NULL);
 
    /** Convenience method -- calls the above method with a NULL factory reference. */
    status_t PutAcceptFactory(uint16 port) {return PutAcceptFactory(port, ThreadWorkerSessionFactoryRef());}

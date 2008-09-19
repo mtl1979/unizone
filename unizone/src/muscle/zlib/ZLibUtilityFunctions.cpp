@@ -24,6 +24,11 @@ static ZLibCodec * GetZLibCodec(int level)
    return codecs[level];
 }
 
+bool IsMessageDeflated(const MessageRef & msgRef) 
+{
+   return ((msgRef())&&(msgRef()->HasName(MUSCLE_ZLIB_FIELD_NAME_STRING)));
+}
+
 MessageRef DeflateMessage(const MessageRef & msgRef, int compressionLevel, bool force)
 {
    TCHECKPOINT;

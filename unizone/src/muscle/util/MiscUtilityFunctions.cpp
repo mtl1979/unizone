@@ -600,11 +600,11 @@ status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir, co
    //    could make it so that an administrator couldn't unmount a filesystem, because it was our
    //    current directory. [Equivalently, we could change to any directory containing files important
    //    to the daemon's operation.]
-   if (optNewDir) chdir(optNewDir);
+   if (optNewDir) (void) chdir(optNewDir);
 
    // 5. umask(0) so that we have complete control over the permissions of anything we write.
    //    We don't know what umask we may have inherited. [This step is optional]
-   umask(0);
+   (void) umask(0);
 
    // 6. close() fds 0, 1, and 2. This releases the standard in, out, and error we inherited from our parent
    //    process. We have no way of knowing where these fds might have been redirected to. Note that many
@@ -626,8 +626,8 @@ status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir, co
       outfd = open(optOutputTo, O_WRONLY | (createIfNecessary ? O_CREAT : 0));
       if (outfd < 0) LogTime(MUSCLE_LOG_ERROR, "BecomeDaemonProcess():  Couldn't open %s to redirect stdout, stderr\n", optOutputTo);
    }
-   if (outfd >= 0) dup2(outfd, STDOUT_FILENO);
-   if (outfd >= 0) dup2(outfd, STDERR_FILENO);
+   if (outfd >= 0) (void) dup2(outfd, STDOUT_FILENO);
+   if (outfd >= 0) (void) dup2(outfd, STDERR_FILENO);
 
    _isDaemonProcess = true;
    return B_NO_ERROR;

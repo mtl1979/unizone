@@ -272,10 +272,10 @@ public:
    virtual AbstractMessageIOGatewayRef CreateGateway();
 
    /** Overridden to support auto-reconnect via SetAutoReconnectDelay() */
-   virtual uint64 GetPulseTime(uint64 now, uint64 sched);
+   virtual uint64 GetPulseTime(const PulseArgs &);
 
    /** Overridden to support auto-reconnect via SetAutoReconnectDelay() */
-   virtual void Pulse(uint64 now, uint64 sched);
+   virtual void Pulse(const PulseArgs &);
 
    /** Should return a pretty, human readable string identifying this class.  */
    virtual const char * GetTypeName() const = 0;

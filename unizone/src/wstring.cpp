@@ -379,7 +379,7 @@ WString::sprintf(const WString &fmt, ...)
 	int len = ARRAYITEMS(buffer) - 1;
 	va_list a;
 	va_start(a, fmt);
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 	return _vsnwprintf(buffer, len, fmt.getBuffer(), a);
 #else
 	return vswprintf(buffer, len, fmt.getBuffer(), a);
@@ -396,7 +396,7 @@ WString::sprintf(const wchar_t *fmt, ...)
 	int len = ARRAYITEMS(buffer) - 1;
 	va_list a;
 	va_start(a, fmt);
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 	return _vsnwprintf(buffer, len, fmt, a);
 #else
 	return vswprintf(buffer, len, fmt, a);

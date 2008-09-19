@@ -33,14 +33,14 @@ public:
    virtual ~Queue();
 
    /** Assigment operator. */
-   Queue &operator=(const Queue &from);
+   Queue & operator=(const Queue & from);
 
    /** Equality operator.  Queues are equal if they are the same length, and
      * every nth item in this queue is == to the corresponding item in (rhs). */
-   bool operator==(const Queue &rhs) const;
+   bool operator==(const Queue & rhs) const;
 
    /** Returns the negation of the equality operator */
-   bool operator!=(const Queue &rhs) const {return !(*this == rhs);}
+   bool operator!=(const Queue & rhs) const {return !(*this == rhs);}
 
    /** Similar to the assignment operator, except this method returns a status code.
      * @param rhs This Queue's contents will become a copy of (rhs)'s items.
@@ -52,19 +52,19 @@ public:
     *  @param item The item to append. 
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddTail(const ItemType & item);
+   status_t AddTail(const ItemType & item) {return (AddTailAndGet(item) != NULL) ? B_NO_ERROR : B_ERROR;}
 
    /** As above, except that a default item is appended.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddTail() {return AddTail(_defaultItem);}
+   status_t AddTail() {return (AddTailAndGet() != NULL) ? B_NO_ERROR : B_ERROR;}
 
    /** Appends some or all items in (queue) to the end of our queue.  Queue size
     *  grows by at most (queue.GetNumItems()).
     *  For example:
-    *    Queue<int> a;   // contains 1, 2, 3, 4
-    *    Queue<int> b;   // contains 5, 6, 7, 8
-    *    a.AddTail(b);      // a now contains 1, 2, 3, 4, 5, 6, 7, 8
+    *    Queue<int> a;  // contains 1, 2, 3, 4
+    *    Queue<int> b;  // contains 5, 6, 7, 8
+    *    a.AddTail(b);  // a now contains 1, 2, 3, 4, 5, 6, 7, 8
     *  @param queue The queue to append to our queue.
     *  @param startIndex Index in (queue) to start adding at.  Default to zero.
     *  @param numItems Number of items to add.  If this number is too large, it will be capped appropriately.  Default is to add all items.
@@ -81,23 +81,34 @@ public:
     */
    status_t AddTail(const ItemType * items, uint32 numItems);
 
+   /** Appends (item) to the end of the queue.  Queue size grows by one.
+    *  @param item The item to append. 
+    *  @return A pointer to the appended item on success, or a NULL pointer on failure.
+    */
+   ItemType * AddTailAndGet(const ItemType & item);
+
+   /** As above, except that a default item is appended.
+    *  @return A pointer to the appended item on success, or a NULL pointer on failure.
+    */
+   ItemType * AddTailAndGet();
+
    /** Prepends (item) to the head of the queue.  Queue size grows by one.
     *  @param item The item to prepend. 
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddHead(const ItemType & item);
+   status_t AddHead(const ItemType & item) {return (AddHeadAndGet(item) != NULL) ? B_NO_ERROR : B_ERROR;}
 
    /** As above, except a default item is prepended.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddHead() {return AddHead(_defaultItem);}
+   status_t AddHead() {return (AddHeadAndGet() != NULL) ? B_NO_ERROR : B_ERROR;}
 
    /** Concatenates (queue) to the head of our queue.
     *  Our queue size grows by at most (queue.GetNumItems()).
     *  For example:
-    *    Queue<int> a;      // contains 1, 2, 3, 4
-    *    Queue<int> b;      // contains 5, 6, 7, 8
-    *    a.AddHead(b); // a now contains 5, 6, 7, 8, 1, 2, 3, 4
+    *    Queue<int> a;  // contains 1, 2, 3, 4
+    *    Queue<int> b;  // contains 5, 6, 7, 8
+    *    a.AddHead(b);  // a now contains 5, 6, 7, 8, 1, 2, 3, 4
     *  @param queue The queue to prepend to our queue.
     *  @param startIndex Index in (queue) to start adding at.  Default to zero.
     *  @param numItems Number of items to add.  If this number is too large, it will be capped appropriately.  Default is to add all items.
@@ -112,6 +123,17 @@ public:
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory)
     */
    status_t AddHead(const ItemType * items, uint32 numItems);
+
+   /** Prepends (item) to the beginning of the queue.  Queue size grows by one.
+    *  @param item The item to prepend. 
+    *  @return A pointer to the prepend item on success, or a NULL pointer on failure.
+    */
+   ItemType * AddHeadAndGet(const ItemType & item);
+
+   /** As above, except that a default item is prepended.
+    *  @return A pointer to the prepend item on success, or a NULL pointer on failure.
+    */
+   ItemType * AddHeadAndGet();
 
    /** Removes the item at the head of the queue.
     *  @return B_NO_ERROR on success, B_ERROR if the queue was empty.
@@ -404,6 +426,12 @@ public:
      */ 
    void Normalize();
 
+   /** Returns true iff this Queue is currently normalized -- that is, if its contents are arranged
+     * in the normal C-array ordering.  Returns false otherwise.  Call Normalize() if you want to
+     * make sure that the data is normalized.
+     */
+   bool IsNormalized() const {return ((_itemCount == 0)||(_headIndex <= _tailIndex));}
+
 private:
    const ItemType * GetArrayPointerAux(uint32 whichArray, uint32 & retLength) const;
    void SwapContentsAux(Queue<ItemType> & that);
@@ -527,22 +555,35 @@ Queue<ItemType>::~Queue()
 }
 
 template <class ItemType>
-status_t 
+ItemType * 
 Queue<ItemType>::
-AddTail(const ItemType &item)
+AddTailAndGet(const ItemType & item)
 {
-   if (EnsureSize(_itemCount+1, false, _itemCount+1) == B_ERROR) return B_ERROR;
+   if (EnsureSize(_itemCount+1, false, _itemCount+1) == B_ERROR) return NULL;
    if (_itemCount == 0) _headIndex = _tailIndex = 0;
                    else _tailIndex = NextIndex(_tailIndex);
-   _queue[_tailIndex] = item;
    _itemCount++;
-   return B_NO_ERROR;
+   ItemType * ret = &_queue[_tailIndex]; 
+   *ret = item;
+   return ret;
+}
+
+template <class ItemType>
+ItemType * 
+Queue<ItemType>::
+AddTailAndGet()
+{
+   if (EnsureSize(_itemCount+1, false, _itemCount+1) == B_ERROR) return NULL;
+   if (_itemCount == 0) _headIndex = _tailIndex = 0;
+                   else _tailIndex = NextIndex(_tailIndex);
+   _itemCount++;
+   return &_queue[_tailIndex]; 
 }
 
 template <class ItemType>
 status_t 
 Queue<ItemType>::
-AddTail(const Queue<ItemType> &queue, uint32 startIndex, uint32 numNewItems)
+AddTail(const Queue<ItemType> & queue, uint32 startIndex, uint32 numNewItems)
 {
    uint32 hisSize = queue.GetNumItems();
    numNewItems = muscleMin(numNewItems, (startIndex < hisSize) ? (hisSize-startIndex) : 0);
@@ -570,22 +611,35 @@ AddTail(const ItemType * items, uint32 numItems)
 }
 
 template <class ItemType>
-status_t 
+ItemType *
 Queue<ItemType>::
-AddHead(const ItemType &item)
+AddHeadAndGet(const ItemType & item)
 {
-   if (EnsureSize(_itemCount+1, false, _itemCount+1) == B_ERROR) return B_ERROR;
+   if (EnsureSize(_itemCount+1, false, _itemCount+1) == B_ERROR) return NULL;
    if (_itemCount == 0) _headIndex = _tailIndex = 0;
                    else _headIndex = PrevIndex(_headIndex);
-   _queue[_headIndex] = item;
    _itemCount++;
-   return B_NO_ERROR;
+   ItemType * ret = &_queue[_headIndex];
+   *ret = item;
+   return ret;
+}
+
+template <class ItemType>
+ItemType *
+Queue<ItemType>::
+AddHeadAndGet()
+{
+   if (EnsureSize(_itemCount+1, false, _itemCount+1) == B_ERROR) return NULL;
+   if (_itemCount == 0) _headIndex = _tailIndex = 0;
+                   else _headIndex = PrevIndex(_headIndex);
+   _itemCount++;
+   return &_queue[_headIndex];
 }
 
 template <class ItemType>
 status_t 
 Queue<ItemType>::
-AddHead(const Queue<ItemType> &queue, uint32 startIndex, uint32 numNewItems)
+AddHead(const Queue<ItemType> & queue, uint32 startIndex, uint32 numNewItems)
 {
    uint32 hisSize = queue.GetNumItems();
    numNewItems = muscleMin(numNewItems, (startIndex < hisSize) ? (hisSize-startIndex) : 0);
@@ -831,8 +885,7 @@ EnsureSize(uint32 size, bool setNumItems, uint32 extraPreallocs)
 
       if (_queue == _smallQueue) 
       {
-         ItemType blank = _defaultItem;
-         for (uint32 i=0; i<sqLen; i++) _smallQueue[i] = blank;
+         for (uint32 i=0; i<sqLen; i++) _smallQueue[i] = _defaultItem;
       }
       else delete [] _queue;
 
@@ -1201,7 +1254,7 @@ template <class ItemType>
 void
 Queue<ItemType>::Normalize()
 {
-   if ((_itemCount > 0)&&(_headIndex > _tailIndex))
+   if (IsNormalized() == false)
    {
       if (_itemCount*2 <= _queueSize)
       {
