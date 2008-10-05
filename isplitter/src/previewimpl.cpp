@@ -439,23 +439,20 @@ Preview::Save()
 		{
 			if (QFile::exists(newname))
 				QFile::remove(newname);
+
 			// If original plugin doesn't support writing, try jpeg plugin
 			//
-			bool ret = false;
 
 			if (strcmp(fmt, "JPEG") != 0)
 			{
 				newname = MakePath(path, base + "_" + Splitter->ui->OffsetIndexX->text() + "_" + Splitter->ui->OffsetIndexY->text() + ".jpg");
-				ret = pixPreview->save(newname, "JPEG");
-			}
-
-			if (!ret)
-			{
-				if (QFile::exists(newname))
+				if (pixPreview->save(newname, "JPEG"))
+					return;
+				else if (QFile::exists(newname))
 					QFile::remove(newname);
-
-				QMessageBox::critical(this, tr("Save"), tr("Unable to save output!"));
 			}
+
+			QMessageBox::critical(this, tr("Save"), tr("Unable to save output!"));
 		}
 	}
 }
