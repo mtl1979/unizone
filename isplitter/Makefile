@@ -12,6 +12,7 @@ SRCFILES = \
 	src/mainwindowimpl.cpp \
 	src/menubar.cpp \
 	src/previewimpl.cpp \
+	src/util.cpp \
 	../unizone/src/uenv.cpp
 
 MOC_SRCFILES = \

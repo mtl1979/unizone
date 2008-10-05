@@ -1,37 +1,23 @@
 #include "uenv.h"
 #include "mainwindowimpl.h"
 #include "debugimpl.h"
+#include "util.h"
 
 #include <qapplication.h>
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qregexp.h>
-//Added by qt3to4:
-#include <Q3CString>
-
-#ifdef WIN32
-#include <windows.h>
-#include <shlwapi.h>
-#endif
-
+#include <QByteArray>
 #include <QTranslator>
 
-#ifdef WIN32
+
+#ifdef _WIN32
+#include <windows.h>
+#include <shlwapi.h>
 # if !defined(QT_NO_STYLE_WINDOWSXP)
 #  include <qwindowsxpstyle.h>
 # endif
 #endif
-
-QString MakePath(const QString &dir, const QString &file)
-{
-	QString ret = QDir::convertSeparators(dir);
-	if (!ret.endsWith(QDir::separator()))
-		ret += QDir::separator();
-
-	ret += file;
-
-	return ret;
-}
 
 #ifndef _WIN32
 void
@@ -124,7 +110,7 @@ main( int argc, char** argv )
 			// Save selected language's translator filename
 			if ( lang.open(QIODevice::WriteOnly) )
 			{
-				Q3CString clang = lfile.utf8();
+				QByteArray clang = lfile.utf8();
 				lang.writeBlock(clang, clang.length());
 				lang.close();
 			}

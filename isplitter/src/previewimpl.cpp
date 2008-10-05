@@ -2,8 +2,10 @@
 #include "mainwindowimpl.h"
 #include "mainwindow.h"
 #include "platform.h"
+#include "util.h"
 
 #include <qapplication.h>
+#include <qfile.h>
 #include <qpushbutton.h>
 #include <qfileinfo.h>
 #include <qimage.h>
@@ -432,21 +434,28 @@ Preview::Save()
 		QString path = info.dirPath();
 		QString base = info.baseName();
 		QString ext = info.extension();
-		QString newname = path + "/" + base + "_" + Splitter->ui->OffsetIndexX->text() + "_" + Splitter->ui->OffsetIndexY->text() + "." + ext;
+		QString newname = MakePath(path, base + "_" + Splitter->ui->OffsetIndexX->text() + "_" + Splitter->ui->OffsetIndexY->text() + "." + ext);
 		if (!pixPreview->save(newname, fmt))
 		{
+			if (QFile::exists(newname))
+				QFile::remove(newname);
 			// If original plugin doesn't support writing, try jpeg plugin
 			//
 			bool ret = false;
 
 			if (strcmp(fmt, "JPEG") != 0)
 			{
-				newname = path + "/" + base + "_" + Splitter->ui->OffsetIndexX->text() + "_" + Splitter->ui->OffsetIndexY->text() + ".jpg";
+				newname = MakePath(path, base + "_" + Splitter->ui->OffsetIndexX->text() + "_" + Splitter->ui->OffsetIndexY->text() + ".jpg");
 				ret = pixPreview->save(newname, "JPEG");
 			}
 
 			if (!ret)
+			{
+				if (QFile::exists(newname))
+					QFile::remove(newname);
+
 				QMessageBox::critical(this, tr("Save"), tr("Unable to save output!"));
+			}
 		}
 	}
 }

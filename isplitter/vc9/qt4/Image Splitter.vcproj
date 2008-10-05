@@ -396,6 +396,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\util.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\unizone\src\wstring.cpp"
 				>
 				<FileConfiguration
@@ -522,6 +526,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\unizone\src\uenv.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util.h"
 				>
 			</File>
 			<File

@@ -14,7 +14,7 @@
 #include <qfile.h>
 #include <qstring.h>
 #include <qtabwidget.h>
-#include <Q3CString>
+#include <QByteArray>
 #include <QDropEvent>
 #include <QResizeEvent>
 #include <QPixmap>
@@ -166,7 +166,7 @@ ImageSplitter::SaveSettings()
 	QFile qf("isplitter.ini");
 	if (qf.open(QIODevice::WriteOnly))
 	{
-		Q3CString temp = lastdir.utf8();
+		QByteArray temp = lastdir.utf8();
 		qf.writeBlock(temp, temp.length()); 
 		qf.close();
 	}
