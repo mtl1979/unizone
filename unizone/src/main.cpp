@@ -250,6 +250,8 @@ main( int argc, char** argv )
 
 	int ret = app.exec();
 
+	delete window;
+
 	CleanupDebug();
 
 	return ret;
