@@ -948,8 +948,7 @@ WUploadThread::GetFileName(unsigned int i) const
 {
 	if (i < fNames.GetNumItems())
 	{
-		QString file = QString::fromUtf8(fNames[i].Cstr());
-		return file;
+		return fNames[i];
 	}
 	else
 	{
@@ -1093,9 +1092,9 @@ WUploadThread::TransferFileList(MessageRef msg)
 			fRemoteUser = GetUserName(fRemoteSessionID);
 		}
 		
-		const char * file;
+		QString file;
 		
-		for (int i = 0; (msg()->FindString("files", i, &file) == B_OK); i++)
+		for (int i = 0; (GetStringFromMessage(msg, "files", i, file) == B_OK); i++)
 		{
 			MessageRef fileRef;
 			

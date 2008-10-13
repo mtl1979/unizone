@@ -270,102 +270,102 @@ Version %1</translation>
         <translation type="obsolete">¡ Usuario(s) no encontrado !</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="490"/>
+        <location filename="channelimpl.cpp" line="489"/>
         <source>User #%1 (a.k.a %2) is already in this channel window!</source>
         <translation>User #%1 (a.k.a %2) is already in this channel window!</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="564"/>
+        <location filename="channelimpl.cpp" line="563"/>
         <source>Not allowed!</source>
         <translation>Not allowed!</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="556"/>
+        <location filename="channelimpl.cpp" line="555"/>
         <source>User(s) not found!</source>
         <translation>¡ Usuario(s) no encontrado !</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="522"/>
+        <location filename="channelimpl.cpp" line="521"/>
         <source>No users passed.</source>
         <translation>Usuario no introducido.</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="354"/>
+        <location filename="channelimpl.cpp" line="353"/>
         <source>List of channel admins:</source>
         <translation>List of channel admins:</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="683"/>
+        <location filename="channelimpl.cpp" line="682"/>
         <source>You got kicked off from this channel!</source>
         <translation>You got kicked off from this channel!</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="324"/>
+        <location filename="channelimpl.cpp" line="323"/>
         <source>Channel command reference:</source>
         <translation>Channel command reference:</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="326"/>
+        <location filename="channelimpl.cpp" line="325"/>
         <source>/action [action] - do something</source>
         <translation>/action [action] - do something</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="328"/>
+        <location filename="channelimpl.cpp" line="327"/>
         <source>/clear - clear channel window</source>
         <translation>/clear - clear channel window</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="330"/>
+        <location filename="channelimpl.cpp" line="329"/>
         <source>/deop [name or session id] - take admin status from other user</source>
         <translation>/deop [name or session id] - take admin status from other user</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="332"/>
+        <location filename="channelimpl.cpp" line="331"/>
         <source>/help - show command reference</source>
         <translation>/help - show command reference</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="334"/>
+        <location filename="channelimpl.cpp" line="333"/>
         <source>/invite [name or session id] - invite user to channel</source>
         <translation>/invite [name or session id] - invite user to channel</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="336"/>
+        <location filename="channelimpl.cpp" line="335"/>
         <source>/kick [name or session id] - kick user off the channel</source>
         <translation>/kick [name or session id] - kick user off the channel</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="338"/>
+        <location filename="channelimpl.cpp" line="337"/>
         <source>/listadmins - show channel admins</source>
         <translation>/listadmins - show channel admins</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="340"/>
+        <location filename="channelimpl.cpp" line="339"/>
         <source>/me [action] - same as /action</source>
         <translation>/me [action] - same as /action</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="342"/>
+        <location filename="channelimpl.cpp" line="341"/>
         <source>/op [name or session id] - give admin status to other user</source>
         <translation>/op [name or session id] - give admin status to other user</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="344"/>
+        <location filename="channelimpl.cpp" line="343"/>
         <source>/private - set channel to private mode</source>
         <translation>/private - set channel to private mode</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="346"/>
+        <location filename="channelimpl.cpp" line="345"/>
         <source>/public - set channel to public mode</source>
         <translation>/public - set channel to public mode</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="348"/>
+        <location filename="channelimpl.cpp" line="347"/>
         <source>/topic [topic] - change the channel topic</source>
         <translation>/topic [topic] - change the channel topic</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="788"/>
+        <location filename="channelimpl.cpp" line="787"/>
         <source>Failed to create channel log.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -545,97 +545,97 @@ Version %1</translation>
 <context>
     <name>Connection</name>
     <message>
-        <location filename="util.cpp" line="691"/>
+        <location filename="util.cpp" line="696"/>
         <source>300 baud</source>
         <translation>300 baud</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="693"/>
+        <location filename="util.cpp" line="698"/>
         <source>14.4 kbps</source>
         <translation>14.4 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="695"/>
+        <location filename="util.cpp" line="700"/>
         <source>28.8 kbps</source>
         <translation>28.8 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="697"/>
+        <location filename="util.cpp" line="702"/>
         <source>33.6 kbps</source>
         <translation>33.6 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="627"/>
+        <location filename="util.cpp" line="632"/>
         <source>36.6 kbps</source>
         <translation>36.6 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="699"/>
+        <location filename="util.cpp" line="704"/>
         <source>57.6 kbps</source>
         <translation>57.6 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="701"/>
+        <location filename="util.cpp" line="706"/>
         <source>ISDN-64k</source>
         <translation>ISDN-64k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="703"/>
+        <location filename="util.cpp" line="708"/>
         <source>ISDN-128k</source>
         <translation>ISDN-128k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="705"/>
+        <location filename="util.cpp" line="710"/>
         <source>DSL-256k</source>
         <translation>DSL-256k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="632"/>
+        <location filename="util.cpp" line="637"/>
         <source>DSL</source>
         <translation>DSL</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="707"/>
+        <location filename="util.cpp" line="712"/>
         <source>DSL-384k</source>
         <translation>DSL-384k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="709"/>
+        <location filename="util.cpp" line="714"/>
         <source>DSL-512k</source>
         <translation>DSL-512k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="711"/>
+        <location filename="util.cpp" line="716"/>
         <source>Cable</source>
         <translation>Cable</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="714"/>
+        <location filename="util.cpp" line="719"/>
         <source>DSL-1M</source>
         <translation>DSL-1M</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="716"/>
+        <location filename="util.cpp" line="721"/>
         <source>T1</source>
         <translation>T1</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="718"/>
+        <location filename="util.cpp" line="723"/>
         <source>T3</source>
         <translation>T3</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="720"/>
+        <location filename="util.cpp" line="725"/>
         <source>OC-3</source>
         <translation>OC-3</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="722"/>
+        <location filename="util.cpp" line="727"/>
         <source>OC-12</source>
         <translation>OC-12</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="724"/>
+        <location filename="util.cpp" line="729"/>
         <source>Unknown</source>
         <translation>Desconocido</translation>
     </message>
@@ -643,102 +643,102 @@ Version %1</translation>
 <context>
     <name>Date</name>
     <message>
-        <location filename="util.cpp" line="882"/>
+        <location filename="util.cpp" line="887"/>
         <source>Jan</source>
         <translation>Ene</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="883"/>
+        <location filename="util.cpp" line="888"/>
         <source>Feb</source>
         <translation>Feb</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="884"/>
+        <location filename="util.cpp" line="889"/>
         <source>Mar</source>
         <translation>Mar</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="885"/>
+        <location filename="util.cpp" line="890"/>
         <source>Apr</source>
         <translation>Abr</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="886"/>
+        <location filename="util.cpp" line="891"/>
         <source>May</source>
         <translation>May</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="887"/>
+        <location filename="util.cpp" line="892"/>
         <source>Jun</source>
         <translation>Jun</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="888"/>
+        <location filename="util.cpp" line="893"/>
         <source>Jul</source>
         <translation>Jul</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="889"/>
+        <location filename="util.cpp" line="894"/>
         <source>Aug</source>
         <translation>Aug</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="890"/>
+        <location filename="util.cpp" line="895"/>
         <source>Sep</source>
         <translation>Sep</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="891"/>
+        <location filename="util.cpp" line="896"/>
         <source>Oct</source>
         <translation>Oct</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="892"/>
+        <location filename="util.cpp" line="897"/>
         <source>Nov</source>
         <translation>Nov</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="894"/>
+        <location filename="util.cpp" line="899"/>
         <source>Dec</source>
         <translation>Dic</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="902"/>
+        <location filename="util.cpp" line="907"/>
         <source>Mon</source>
         <translation>Lu</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="903"/>
+        <location filename="util.cpp" line="908"/>
         <source>Tue</source>
         <translation>Ma</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="904"/>
+        <location filename="util.cpp" line="909"/>
         <source>Wed</source>
         <translation>Mi</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="905"/>
+        <location filename="util.cpp" line="910"/>
         <source>Thu</source>
         <translation>Ju</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="906"/>
+        <location filename="util.cpp" line="911"/>
         <source>Fri</source>
         <translation>Vi</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="907"/>
+        <location filename="util.cpp" line="912"/>
         <source>Sat</source>
         <translation>Sá</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="909"/>
+        <location filename="util.cpp" line="914"/>
         <source>Sun</source>
         <translation>Do</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="985"/>
+        <location filename="util.cpp" line="990"/>
         <source>Date:</source>
         <translation>Date:</translation>
     </message>
@@ -776,22 +776,22 @@ Date: %4</translation>
 <context>
     <name>MakeSizeString</name>
     <message>
-        <location filename="util.cpp" line="588"/>
+        <location filename="util.cpp" line="593"/>
         <source>B</source>
         <translation type="unfinished">B</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="592"/>
+        <location filename="util.cpp" line="597"/>
         <source>kB</source>
         <translation type="unfinished">kB</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="597"/>
+        <location filename="util.cpp" line="602"/>
         <source>MB</source>
         <translation type="unfinished">MB</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="602"/>
+        <location filename="util.cpp" line="607"/>
         <source>GB</source>
         <translation type="unfinished">GB</translation>
     </message>
@@ -4024,7 +4024,7 @@ Date: %4</translation>
 <context>
     <name>WUploadThread</name>
     <message>
-        <location filename="uploadthread.cpp" line="987"/>
+        <location filename="uploadthread.cpp" line="986"/>
         <source>User #%1</source>
         <translation>User #%1</translation>
     </message>
@@ -4039,7 +4039,7 @@ Date: %4</translation>
         <translation>Couldn&apos;t create new connect session!</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="1517"/>
+        <location filename="uploadthread.cpp" line="1516"/>
         <source>Connection timed out!</source>
         <translation>Connection timed out!</translation>
     </message>

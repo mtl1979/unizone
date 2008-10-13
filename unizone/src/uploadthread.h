@@ -179,7 +179,7 @@ private:
 	QString MakeUploadPath(MessageRef);
 
 	Queue<MessageRef> fUploads;
-	Queue<String> fNames;
+	Queue<QString> fNames;
 	WFile * fFile;
 	uint32 fRemoteIP;
 	QString fStrRemoteIP;				// the accept version gets a string IP
