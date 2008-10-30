@@ -30,7 +30,16 @@ protected:
    class PulseArgs
    {
    public:
+      /** Returns the approximate time (in microseconds) at which our Pulse() method was called.  
+        * Calling this method is cheaper than calling GetRunTime64() directly.
+        */
       uint64 GetCallbackTime() const {return _callTime;}
+
+      /** Returns the time (in microseconds) at which our Pulse() method was supposed to be called at.  
+        * Note that the actual call time (as returned by GetCallbackTime() will generally be a bit larger
+        * than the value returned by GetScheduledTime(), as computers are not infinitely fast and therefore
+        * they will have some latency before scheduled calls are executed.
+        */
       uint64 GetScheduledTime() const {return _prevTime;}
 
    private:

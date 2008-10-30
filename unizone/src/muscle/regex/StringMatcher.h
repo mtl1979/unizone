@@ -90,8 +90,7 @@ private:
    uint32 _rangeMin;
    uint32 _rangeMax;   
 }; 
-
-typedef Ref<StringMatcher> StringMatcherRef;
+DECLARE_REFTYPES(StringMatcher);
 
 /** Returns a point to a singleton ObjectPool that can be used
  *  to minimize the number of StringMatcher allocations and deletions

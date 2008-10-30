@@ -19,6 +19,8 @@
 
 BEGIN_NAMESPACE(muscle);
 
+#define MAX_STACK_TRACE_DEPTH ((uint32)(256))
+
 status_t PrintStackTrace(FILE * optFile, uint32 maxDepth)
 {
    TCHECKPOINT;
@@ -26,9 +28,8 @@ status_t PrintStackTrace(FILE * optFile, uint32 maxDepth)
    if (optFile == NULL) optFile = stdout;
 
 #if defined(MUSCLE_USE_BACKTRACE)
-   const uint32 MAX_DEPTH = 256;
-   void *array[MAX_DEPTH];
-   size_t size = backtrace(array, muscleMin(maxDepth, MAX_DEPTH));
+   void *array[MAX_STACK_TRACE_DEPTH];
+   size_t size = backtrace(array, muscleMin(maxDepth, MAX_STACK_TRACE_DEPTH));
    char ** strings = backtrace_symbols(array, size);
    if (strings)
    {
@@ -45,6 +46,34 @@ status_t PrintStackTrace(FILE * optFile, uint32 maxDepth)
 #endif
 
    return B_ERROR;  // I don't know how to do this for other systems!
+}
+
+status_t GetStackTrace(String & retStr, uint32 maxDepth)
+{
+   TCHECKPOINT;
+
+#if defined(MUSCLE_USE_BACKTRACE)
+   void *array[MAX_STACK_TRACE_DEPTH];
+   size_t size = backtrace(array, muscleMin(maxDepth, MAX_STACK_TRACE_DEPTH));
+   char ** strings = backtrace_symbols(array, size);
+   if (strings)
+   {
+      char buf[128];
+      sprintf(buf, "--Stack trace follows (%zd frames):", size); retStr += buf;
+      for (size_t i = 0; i < size; i++) 
+      {
+         retStr += "\n  ";
+         retStr += strings[i];
+      }
+      retStr += "\n--End Stack trace\n";
+      free(strings);
+      return B_NO_ERROR;
+   }
+#else
+   (void) maxDepth;  // shut the compiler up
+#endif
+
+   return B_ERROR;
 }
 
 #ifndef MUSCLE_INLINE_LOGGING
@@ -393,9 +422,8 @@ status_t LogStackTrace(int ll, uint32 maxDepth)
    TCHECKPOINT;
 
 #if defined(MUSCLE_USE_BACKTRACE)
-   const uint32 MAX_DEPTH = 256;
-   void *array[MAX_DEPTH];
-   size_t size = backtrace(array, muscleMin(maxDepth, MAX_DEPTH));
+   void *array[MAX_STACK_TRACE_DEPTH];
+   size_t size = backtrace(array, muscleMin(maxDepth, MAX_STACK_TRACE_DEPTH));
    char ** strings = backtrace_symbols(array, size);
    if (strings)
    {

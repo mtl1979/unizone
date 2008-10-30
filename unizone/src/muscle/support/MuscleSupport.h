@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.30"
+#define MUSCLE_VERSION_STRING "4.40"
 
 #include <string.h>  /* for memcpy() */
 
@@ -173,8 +173,10 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 #  include </ainc/atheos/types.h>
 # else
 #  ifndef MUSCLE_TYPES_PREDEFINED  /* certain (ahem) projects already set these themselves... */
-#   define true                     1
-#   define false                    0
+#   ifndef __cplusplus
+#    define true                     1
+#    define false                    0
+#   endif
     typedef signed char             int8;
     typedef unsigned char           uint8;
     typedef short                   int16;
@@ -211,28 +213,34 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 
 /** Ugly platform-neutral macros for problematic sprintf()-format-strings */
 #if defined(MUSCLE_64_BIT_PLATFORM)
-# define  INT32_FORMAT_SPEC "%i"
-# define XINT32_FORMAT_SPEC "%x"
-# define UINT32_FORMAT_SPEC "%u"
-# define  INT64_FORMAT_SPEC "%lli"
-# define UINT64_FORMAT_SPEC "%llu"
+# define  INT32_FORMAT_SPEC_NOPERCENT "i"
+# define XINT32_FORMAT_SPEC_NOPERCENT "x"
+# define UINT32_FORMAT_SPEC_NOPERCENT "u"
+# define  INT64_FORMAT_SPEC_NOPERCENT "lli"
+# define UINT64_FORMAT_SPEC_NOPERCENT "llu"
 #else
-# define  INT32_FORMAT_SPEC "%li"
-# define XINT32_FORMAT_SPEC "%lx"
-# define UINT32_FORMAT_SPEC "%lu"
+# define  INT32_FORMAT_SPEC_NOPERCENT "li"
+# define XINT32_FORMAT_SPEC_NOPERCENT "lx"
+# define UINT32_FORMAT_SPEC_NOPERCENT "lu"
 # if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || (defined(__BEOS__) && !defined(__HAIKU__))
 #  if (_MSC_VER < 1300)
-#   define  INT64_FORMAT_SPEC "%I64i"
-#   define UINT64_FORMAT_SPEC "%I64u"
+#   define  INT64_FORMAT_SPEC_NOPERCENT "I64i"
+#   define UINT64_FORMAT_SPEC_NOPERCENT "I64u"
 #  else
-#   define  INT64_FORMAT_SPEC "%Li"
-#   define UINT64_FORMAT_SPEC "%Lu"
+#   define  INT64_FORMAT_SPEC_NOPERCENT "Li"
+#   define UINT64_FORMAT_SPEC_NOPERCENT "Lu"
 #  endif
 # else
-#   define  INT64_FORMAT_SPEC "%lli"
-#   define UINT64_FORMAT_SPEC "%llu"
+#   define  INT64_FORMAT_SPEC_NOPERCENT "lli"
+#   define UINT64_FORMAT_SPEC_NOPERCENT "llu"
 # endif
 #endif
+
+# define  INT32_FORMAT_SPEC "%" INT32_FORMAT_SPEC_NOPERCENT
+# define XINT32_FORMAT_SPEC "%" XINT32_FORMAT_SPEC_NOPERCENT
+# define UINT32_FORMAT_SPEC "%" UINT32_FORMAT_SPEC_NOPERCENT
+# define  INT64_FORMAT_SPEC "%" INT64_FORMAT_SPEC_NOPERCENT
+# define UINT64_FORMAT_SPEC "%" UINT64_FORMAT_SPEC_NOPERCENT
 
 #define MAKETYPE(x) ((((unsigned long)(x[0])) << 24) | \
                      (((unsigned long)(x[1])) << 16) | \
@@ -279,7 +287,7 @@ enum {
 template<typename T> inline T muscleSwapBytes(T swapMe)
 {
    union {T _iWide; uint8 _i8[sizeof(T)];} u1, u2;
-   u1._iWide = swapMe; 
+   u1._iWide = swapMe;
 
    int i = 0;
    int numBytes = sizeof(T);
@@ -313,8 +321,8 @@ template<typename T> inline void muscleCopyOut(void * dest, const T & source)
 #endif
 }
 
-/** This macro should be used instead of "newnothrow T[count]".  It works the 
-  * same, except that it hacks around an ugly bug in gcc 3.x where newnothrow 
+/** This macro should be used instead of "newnothrow T[count]".  It works the
+  * same, except that it hacks around an ugly bug in gcc 3.x where newnothrow
   * would return ((T*)0x4) on memory failure instead of NULL.
   * See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=10300
   */
@@ -453,7 +461,7 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
   #endif /* BSD */
 #endif /* BYTE_ORDER */
 
-#if !defined(BYTE_ORDER) || (BYTE_ORDER != BIG_ENDIAN && BYTE_ORDER != LITTLE_ENDIAN) 
+#if !defined(BYTE_ORDER) || (BYTE_ORDER != BIG_ENDIAN && BYTE_ORDER != LITTLE_ENDIAN)
         /*
          * you must determine what the correct bit order is for
          * your compiler - the next line is an intentional error
@@ -475,7 +483,7 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
  * some of the bits into a "standard NaN" bit-pattern... causing silent data corruption
  * when the value is later swapped back into its native form and again interpreted as a
  * float or double value.  Instead, you need to change your code to use the *_IFLOAT_*
- * macros, which work similarly except that the externalized value is safely stored as 
+ * macros, which work similarly except that the externalized value is safely stored as
  * a int32 (for floats) or a int64 (for doubles).  --Jeremy 1/8/2007
  **********************************************************************************************/
 
@@ -488,10 +496,10 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
 /***********************************************************************************************
  * DOUBLE_TROUBLE COMMENT
  *
- * NOTE: The *_DOUBLE_* macros listed below are obsolete and must no longer be used, because 
- * they are inherently unsafe.  The reason is that on certain processors (read x86), the 
- * byte-swapped representation of certain floating point and double values can end up 
- * representing an invalid value (NaN)... in which case the x86 FPU feels free to munge 
+ * NOTE: The *_DOUBLE_* macros listed below are obsolete and must no longer be used, because
+ * they are inherently unsafe.  The reason is that on certain processors (read x86), the
+ * byte-swapped representation of certain floating point and double values can end up
+ * representing an invalid value (NaN)... in which case the x86 FPU feels free to munge
  * some of the bits into a "standard NaN" bit-pattern... causing silent data corruption
  * when the value is later swapped back into its native form and again interpreted as a
  * float or double value.  Instead, you need to change your code to use the *_IDOUBLE_*
@@ -586,7 +594,7 @@ static inline uint64 MuscleX86SwapInt64(uint64 val)
 MUSCLE_INLINE int64 B_SWAP_INT64(int64 arg)
 {
    union {int64 _i64; uint8 _i8[8];} u1, u2;
-   u1._i64   = arg; 
+   u1._i64   = arg;
    u2._i8[0] = u1._i8[7];
    u2._i8[1] = u1._i8[6];
    u2._i8[2] = u1._i8[5];
@@ -600,17 +608,17 @@ MUSCLE_INLINE int64 B_SWAP_INT64(int64 arg)
 MUSCLE_INLINE int32 B_SWAP_INT32(int32 arg)
 {
    union {int32 _i32; uint8 _i8[4];} u1, u2;
-   u1._i32   = arg; 
+   u1._i32   = arg;
    u2._i8[0] = u1._i8[3];
    u2._i8[1] = u1._i8[2];
    u2._i8[2] = u1._i8[1];
    u2._i8[3] = u1._i8[0];
    return u2._i32;
 }
-MUSCLE_INLINE int16 B_SWAP_INT16(int16 arg) 
+MUSCLE_INLINE int16 B_SWAP_INT16(int16 arg)
 {
    union {int16 _i16; uint8 _i8[2];} u1, u2;
-   u1._i16   = arg; 
+   u1._i16   = arg;
    u2._i8[0] = u1._i8[1];
    u2._i8[1] = u1._i8[0];
    return u2._i16;
@@ -657,7 +665,7 @@ MUSCLE_INLINE int16 B_SWAP_INT16(int16 arg)
 
 /* Yes, the memcpy() is necessary... mere pointer-casting plus assignment operations don't cut it under x86 */
 static inline uint32 B_REINTERPRET_FLOAT_AS_INT32(float arg)   {uint32 r; memcpy(&r, &arg, sizeof(r)); return r;}
-static inline float  B_REINTERPRET_INT32_AS_FLOAT(uint32 arg)  {float  r; memcpy(&r, &arg, sizeof(r)); return r;} 
+static inline float  B_REINTERPRET_INT32_AS_FLOAT(uint32 arg)  {float  r; memcpy(&r, &arg, sizeof(r)); return r;}
 static inline uint64 B_REINTERPRET_DOUBLE_AS_INT64(double arg) {uint64 r; memcpy(&r, &arg, sizeof(r)); return r;}
 static inline double B_REINTERPRET_INT64_AS_DOUBLE(uint64 arg) {double r; memcpy(&r, &arg, sizeof(r)); return r;}
 
@@ -774,7 +782,7 @@ void SetTraceValuesLocation(volatile uint32 * location);
   * where this process was last seen executing -- useful for determining where the process is spinning at.
   * @note this function is a no-op if MUSCLE_TRACE_CHECKPOINTS is not defined to a value greater than zero.
   */
-static inline void StoreTraceValue(uint32 v) 
+static inline void StoreTraceValue(uint32 v)
 {
    _muscleTraceValues[_muscleNextTraceValueIndex] = v;  /* store the current value */
    _muscleNextTraceValueIndex                     = (_muscleNextTraceValueIndex+1)%MUSCLE_TRACE_CHECKPOINTS; /* move the pointer */
@@ -784,9 +792,9 @@ static inline void StoreTraceValue(uint32 v)
 /** Returns a pointer to the first value in the trace-values array. */
 static inline const volatile uint32 * GetTraceValues() {return _muscleTraceValues;}
 
-/** A macro for automatically setting a trace checkpoint value based on current code location. 
-  * The value will be the two characters of the function or file name, left-shifted by 16 bits, 
-  * and then OR'd together with the current line number.  This should give the debugging person a 
+/** A macro for automatically setting a trace checkpoint value based on current code location.
+  * The value will be the two characters of the function or file name, left-shifted by 16 bits,
+  * and then OR'd together with the current line number.  This should give the debugging person a
   * fairly good clue as to where the checkpoint was located, while still being very cheap to implement.
   *
   * @note This function will be a no-op unless MUSCLE_TRACE_CHECKPOINTS is defined to be greater than zero.
@@ -830,9 +838,9 @@ static inline uint32 CalculateChecksumForFloat(float v) {return B_HOST_TO_LENDIA
 static inline uint32 CalculateChecksumForDouble(double v) {return CalculateChecksumForUint64(B_HOST_TO_LENDIAN_IDOUBLE(v));}
 
 // This macro makes the given class (that is not in any namespace)
-// usable as a Hashtable key.  Note that the class must have a method: 
+// usable as a Hashtable key.  Note that the class must have a method:
 // uint32 HashCode() const that returns a hashcode for the object it is called on.
-// (Note:  the space after keyClass in second line of the the macro below is 
+// (Note:  the space after keyClass in second line of the the macro below is
 // necessary for MSVC to compile the macro properly!  Hmm....)
 #define DECLARE_HASHTABLE_KEY_CLASS(keyClass)                                   \
    template <class T> class HashFunctor;                                        \
@@ -847,11 +855,11 @@ static inline uint32 CalculateChecksumForDouble(double v) {return CalculateCheck
       uint32 operator () (const keyClass * str) const {return str->HashCode();} \
    }
 
-// VC++6 and ealier can't handle partial template specialization, so
+// VC++6 and earlier can't handle partial template specialization, so
 // they need some extra help at various places.  Lame....
 #if defined(_MSC_VER)
 # if (_MSC_VER < 1300)
-#  define MUSCLE_USING_OLD_MICROSOFT_COMPILER 1  // VC++6 and ealier
+#  define MUSCLE_USING_OLD_MICROSOFT_COMPILER 1  // VC++6 and earlier
 # else
 #  define MUSCLE_USING_NEW_MICROSOFT_COMPILER 1  // VC.net2004 and later
 # endif

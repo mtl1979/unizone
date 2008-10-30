@@ -74,8 +74,8 @@ AbstractReflectSession ::
 ~AbstractReflectSession() 
 {
    TCHECKPOINT;
-   SetInputPolicy(PolicyRef());   // make sure the input policy knows we're going away
-   SetOutputPolicy(PolicyRef());  // make sure the output policy knows we're going away
+   SetInputPolicy(AbstractSessionIOPolicyRef());   // make sure the input policy knows we're going away
+   SetOutputPolicy(AbstractSessionIOPolicyRef());  // make sure the output policy knows we're going away
 }
 
 const String &
@@ -127,7 +127,17 @@ Reconnect()
 
    bool doTCPConnect = (_asyncConnectDest.GetIPAddress() != invalidIP);
    bool isReady = false;
-   SocketRef sock = doTCPConnect ? ConnectAsync(_asyncConnectDest.GetIPAddress(), _asyncConnectDest.GetPort(), isReady) : CreateDefaultSocket();
+   ConstSocketRef sock = doTCPConnect ? ConnectAsync(_asyncConnectDest.GetIPAddress(), _asyncConnectDest.GetPort(), isReady) : CreateDefaultSocket();
+
+   // FogBugz #5256:  If ConnectAsync() fails, we want to act as if it succeeded, so that the calling
+   //                 code still uses its normal asynchronous-connect-failure code path.  That way the
+   //                 caller doesn't have to worry about synchronous failure as a separate case.
+   if ((doTCPConnect)&&(sock() == NULL))
+   {
+      ConstSocketRef tempSockRef;  // tempSockRef represents the closed remote end of the failed connection and is intentionally closed ASAP
+      if (CreateConnectedSocketPair(sock, tempSockRef) == B_NO_ERROR) doTCPConnect = false;
+   }
+
    if (sock())
    {
       DataIORef io = CreateDataIO(sock);
@@ -157,16 +167,16 @@ Reconnect()
    return B_ERROR;
 }
 
-SocketRef 
+ConstSocketRef 
 AbstractReflectSession :: 
 CreateDefaultSocket()
 {
-   return SocketRef();  // NULL Ref means run clientless by default
+   return ConstSocketRef();  // NULL Ref means run clientless by default
 }
 
 DataIORef
 AbstractReflectSession ::
-CreateDataIO(const SocketRef & socket)
+CreateDataIO(const ConstSocketRef & socket)
 {
    DataIORef dio(newnothrow TCPSocketDataIO(socket, false));
    if (dio() == NULL) WARN_OUT_OF_MEMORY;
@@ -234,9 +244,9 @@ void AbstractReflectSession :: AsyncConnectCompleted()
    _isConnected = _wasConnected = true;
 }
 
-void AbstractReflectSession :: SetInputPolicy(const PolicyRef & newRef) {SetPolicyAux(_inputPolicyRef, _maxInputChunk, newRef, true);}
-void AbstractReflectSession :: SetOutputPolicy(const PolicyRef & newRef) {SetPolicyAux(_outputPolicyRef, _maxOutputChunk, newRef, true);}
-void AbstractReflectSession :: SetPolicyAux(PolicyRef & myRef, uint32 & chunk, const PolicyRef & newRef, bool isInput)
+void AbstractReflectSession :: SetInputPolicy(const AbstractSessionIOPolicyRef & newRef) {SetPolicyAux(_inputPolicyRef, _maxInputChunk, newRef, true);}
+void AbstractReflectSession :: SetOutputPolicy(const AbstractSessionIOPolicyRef & newRef) {SetPolicyAux(_outputPolicyRef, _maxOutputChunk, newRef, true);}
+void AbstractReflectSession :: SetPolicyAux(AbstractSessionIOPolicyRef & myRef, uint32 & chunk, const AbstractSessionIOPolicyRef & newRef, bool isInput)
 {
    TCHECKPOINT;
 
@@ -358,7 +368,7 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData, bool toSelf)
    }
 }
 
-const SocketRef &
+const ConstSocketRef &
 AbstractReflectSession ::
 GetSessionSelectSocket() const
 {

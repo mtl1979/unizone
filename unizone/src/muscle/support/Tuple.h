@@ -23,7 +23,7 @@ public:
 
    /** Silly constructor -- This constructor does no initialization at all.  The arguments are here merely to differentiate it
     *  from the other constructors, and are ignored.  When this constructor is used, the items in this Tuple will be in an
-    *  undefined state and their state should be set to something definite before use.  (Exception:  if the items are 
+    *  undefined state and their state should be set to something definite before use.  (Exception:  if the items are
     *  class objects with constructors, those constructors will still be called)
     */
    Tuple(bool, bool) {/* empty */}
@@ -118,7 +118,7 @@ public:
    /** Returns the number of times (value) appears in this tuple */
    uint32 GetNumInstancesOf(const ItemType & value) const {uint32 count = 0; for (int i=0; i<NumItems; i++) if (_items[i] == value) count++; return count;}
 
-   /** Returns true iff the all index values in the given range match those of the given Tuple 
+   /** Returns true iff the all index values in the given range match those of the given Tuple
      * @param matchAgainst The Tuple to do a partial index value match against
      * @param startIndex The first index to match on.  Defaults to zero.
      * @param endIndex The last index to match on, plus one.  Values that are greater than the number of items in the tuple will
@@ -145,7 +145,7 @@ public:
       for (uint32 i=startIndex; i<endIndex; i++) _items[i] = value;
    }
 
-   /** Replaces all instances of (replaceMe) with (withMe) 
+   /** Replaces all instances of (replaceMe) with (withMe)
      * @param replaceMe Value to be replaced
      * @param withMe Value to replace instances of (replaceMe) with.
      * @param startIndex The first index to process.  Defaults to zero.
@@ -157,9 +157,9 @@ public:
    {
       uint32 count = 0;
       if (endIndex > NumItems) endIndex = NumItems;
-      for (uint32 i=startIndex; i<endIndex; i++) 
+      for (uint32 i=startIndex; i<endIndex; i++)
       {
-         if (_items[i] == replaceMe) 
+         if (_items[i] == replaceMe)
          {
             _items[i] = withMe;
             count++;
@@ -200,21 +200,25 @@ private:
    /** Shifts the values of the indices left (numPlaces) spaces.  Blanks are filled in on the right. */
    void ShiftValuesLeft(int numPlaces)
    {
-      if (numPlaces > 0) 
+      if (numPlaces > 0)
       {
-         ItemType def = ItemType();
-         for (int i=0; i<NumItems; i++) _items[i] = (i < NumItems-numPlaces) ? _items[i+numPlaces] : def;
+         const ItemType def = ItemType();
+         int i=0, j=numPlaces;
+         for (; j<NumItems; ++i, ++j) _items[i] = _items[j];
+         for (; i<NumItems; ++i)      _items[i] = def;
       }
       else if (numPlaces < 0) ShiftValuesRight(-numPlaces);
    }
 
    /** Shifts the values of the indices right (numPlaces) spaces.  Blanks are filled in on the left. */
-   void ShiftValuesRight(int numPlaces) 
+   void ShiftValuesRight(int numPlaces)
    {
-      if (numPlaces > 0) 
+      if (numPlaces > 0)
       {
-         ItemType def = ItemType();
-         for (int i=NumItems-1; i>=0; i--) _items[i] = (i >= numPlaces) ? _items[i-numPlaces] : def;
+         const ItemType def = ItemType();
+         int i=NumItems-1, j=(NumItems-numPlaces)-1;
+         for(; j>=0; --i, --j) _items[i] = _items[j];
+         for(; i>=0; --i)      _items[i] = def;
       }
       else if (numPlaces < 0) ShiftValuesLeft(-numPlaces);
    }
@@ -240,7 +244,7 @@ template <int N,class T> inline const Tuple<N,T> operator /  (const Tuple<N,T> &
 #define DECLARE_ADDITION_TUPLE_OPERATORS(C,I) \
   inline const C operator + (const C & lhs, const I & rhs) {C ret(lhs);                   ret += rhs;     return ret;} \
   inline const C operator + (const I & lhs, const C & rhs) {C ret; ret.FillSubrange(lhs); ret += rhs;     return ret;} \
-  inline const C operator + (const C & lhs, const C & rhs) {C ret(lhs);                   ret += rhs;     return ret;} 
+  inline const C operator + (const C & lhs, const C & rhs) {C ret(lhs);                   ret += rhs;     return ret;}
 
 #define DECLARE_SUBTRACTION_TUPLE_OPERATORS(C,I) \
   inline const C operator - (const C & lhs)                {C ret(lhs);                   ret -= lhs+lhs; return ret;} \
@@ -260,7 +264,7 @@ template <int N,class T> inline const Tuple<N,T> operator /  (const Tuple<N,T> &
 
 #define DECLARE_SHIFT_TUPLE_OPERATORS(C) \
   inline const C operator >> (const C & lhs, int rhs) {C ret(lhs);                        ret >>= rhs;    return ret;} \
-  inline const C operator << (const C & lhs, int rhs) {C ret(lhs);                        ret <<= rhs;    return ret;} 
+  inline const C operator << (const C & lhs, int rhs) {C ret(lhs);                        ret <<= rhs;    return ret;}
 
 // Classes sublassing a Tuple class can use this macro to get the all the standard operators without having to rewrite them.
 // If anyone knows how to accomplish this without resorting to preprocessor macro hacks, I'd love to hear about it...

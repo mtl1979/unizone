@@ -17,7 +17,7 @@
 BEGIN_NAMESPACE(muscle);
 
 FileDescriptorDataIO ::
-FileDescriptorDataIO(const SocketRef & fd, bool blocking) : _fd(fd)
+FileDescriptorDataIO(const ConstSocketRef & fd, bool blocking) : _fd(fd)
 {
    SetBlockingIOEnabled(blocking);
 }

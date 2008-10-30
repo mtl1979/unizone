@@ -226,6 +226,7 @@ public:
     *    Queue<int> a;   // contains 1, 2, 3, 4
     *    Queue<int> b;   // contains 5, 6, 7, 8
     *    a.InsertItemsAt(2, b); // a now contains 1, 2, 5, 6, 7, 8, 3, 4
+    *  @param index The index into this Queue that items from (queue) should be inserted at.
     *  @param queue The queue whose items are to be inserted into this queue.
     *  @param startIndex Index in (queue) to start reading items from.  Defaults to zero.
     *  @param numNewItems Number of items to insert.  If this number is too large, it will be capped appropriately.  Default is to add all items.
@@ -239,6 +240,7 @@ public:
     *    Queue<int> a;       // contains 1, 2, 3, 4
     *    const int b[] = {5, 6, 7};
     *    a.InsertItemsAt(2, b, ARRAYITEMS(b));  // a now contains 1, 2, 5, 6, 7, 3, 4
+    *  @param index The index into this Queue that items from (queue) should be inserted at.
     *  @param items Pointer to the items to insert into this queue.
     *  @param numNewItems Number of items to insert.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)

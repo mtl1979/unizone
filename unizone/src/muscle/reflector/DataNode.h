@@ -12,8 +12,7 @@ BEGIN_NAMESPACE(muscle);
 class StorageReflectSession;
 class DataNode;
 
-/** Type for a Reference to a DataNode object */
-typedef Ref<DataNode> DataNodeRef;
+DECLARE_REFTYPES(DataNode);
 
 /** Iterator type for our child objects */
 typedef HashtableIterator<const String *, DataNodeRef> DataNodeRefIterator;

@@ -22,8 +22,7 @@ public:
    /** Dtor */
    virtual ~FlatCountable() {/* empty */}
 };
-
-typedef Ref<FlatCountable> FlatCountableRef;
+DECLARE_REFTYPES(FlatCountable);
 
 END_NAMESPACE(muscle);
 

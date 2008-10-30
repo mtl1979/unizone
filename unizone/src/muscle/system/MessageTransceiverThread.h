@@ -88,7 +88,7 @@ private:
    ThreadSupervisorSession * _notify;
    MessageRef _replyRef;
 };
-typedef Ref<DrainTag> DrainTagRef;
+DECLARE_REFTYPES(DrainTag);
 
 /** This is a session that represents a connection to another computer or etc.
   * ThreadWorkerSessions are added to a MessageTransceiverThread's held ReflectServer
@@ -132,7 +132,7 @@ private:
    Queue<DrainTagRef> _drainedNotifiers;
    bool _sendAcceptedMessage;
 };
-typedef Ref<ThreadWorkerSession> ThreadWorkerSessionRef;
+DECLARE_REFTYPES(ThreadWorkerSession);
 
 /** A factory class that returns new ThreadWorkerSession objects. */
 class ThreadWorkerSessionFactory : public StorageReflectSessionFactory
@@ -162,7 +162,7 @@ public:
      */
    virtual ThreadWorkerSessionRef CreateThreadWorkerSession(const String & clientAddress, const IPAddressAndPort & factoryInfo);
 };
-typedef Ref<ThreadWorkerSessionFactory> ThreadWorkerSessionFactoryRef;
+DECLARE_REFTYPES(ThreadWorkerSessionFactory);
 
 /** This is the session that acts as the main thread's agent inside the MessageTransceiverThread's
   * held ReflectServer object.  It accepts commands from the MessageTransceiverThread object, and
@@ -233,7 +233,7 @@ private:
    String _defaultDistributionPath;
    MessageTransceiverThread * _mtt;
 };
-typedef Ref<ThreadSupervisorSession> ThreadSupervisorSessionRef;
+DECLARE_REFTYPES(ThreadSupervisorSession);
 
 /** 
   * This is a class that holds a ReflectServer object in an internal thread, and mediates
@@ -274,7 +274,7 @@ public:
      * May be called at any time, but behaves slightly differently depending on whether the internal
      * thread is running or not.  If the internal thread is running, the session will be added asynchronously
      * to the server.  If not, the call is immediately passed on through to ReflectServer::AddNewSession(). 
-     * @param socket The TCP socket that the new session will be using, or a NULL SocketRef, if the new session is to have no
+     * @param socket The TCP socket that the new session will be using, or a NULL ConstSocketRef, if the new session is to have no
      *               associated TCP connection.  This socket becomes property of this object on success.
      * @param optSessionRef Optional reference for a session to add.  If it's a NULL reference, a default ThreadWorkerSession
      *                      will be created and used.  If you do specify a session here, you will want to use either a 
@@ -284,13 +284,13 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */  
-   virtual status_t AddNewSession(const SocketRef & socket, const ThreadWorkerSessionRef & optSessionRef);
+   virtual status_t AddNewSession(const ConstSocketRef & socket, const ThreadWorkerSessionRef & optSessionRef);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t AddNewSession(const SocketRef & socket) {return AddNewSession(socket, ThreadWorkerSessionRef());}
+   status_t AddNewSession(const ConstSocketRef & socket) {return AddNewSession(socket, ThreadWorkerSessionRef());}
 
    /** Convenience method -- calls the above method with a NULL socket and NULL session reference. */
-   status_t AddNewSession() {return AddNewSession(SocketRef(), ThreadWorkerSessionRef());}
+   status_t AddNewSession() {return AddNewSession(ConstSocketRef(), ThreadWorkerSessionRef());}
 
    /**
      * Adds a new session that will connect out to the given IP address and port.
@@ -464,7 +464,7 @@ public:
      *                    A NULL path (the default) means affect all worker sessions.
      * @return B_NO_ERROR on success, or B_ERROR on failure.
      */
-   status_t SetNewInputPolicy(const PolicyRef & pref, const char * optDistPath = NULL);
+   status_t SetNewInputPolicy(const AbstractSessionIOPolicyRef & pref, const char * optDistPath = NULL);
 
    /**
      * Tells the specified worker session(s) to install a new output IOPolicy.
@@ -476,7 +476,7 @@ public:
      *                    A NULL path (the default) means affect all worker sessions.
      * @return B_NO_ERROR on success, or B_ERROR on failure.
      */
-   status_t SetNewOutputPolicy(const PolicyRef & pref, const char * optDistPath = NULL);
+   status_t SetNewOutputPolicy(const AbstractSessionIOPolicyRef & pref, const char * optDistPath = NULL);
 
    /**
      * Tells the specified worker session(s) to switch to a different message encoding 
@@ -528,8 +528,8 @@ protected:
 private:
    friend class ThreadSupervisorSession;
    status_t EnsureServerAllocated();
-   status_t SendAddNewSessionMessage(const ThreadWorkerSessionRef & sessionRef, const SocketRef & socket, const char * hostName, const ip_address & hostIP, uint16 port, bool expandLocalhost, uint64 autoReconnectDelay);
-   status_t SetNewPolicyAux(uint32 what, const PolicyRef & pref, const char * optDistPath);
+   status_t SendAddNewSessionMessage(const ThreadWorkerSessionRef & sessionRef, const ConstSocketRef & socket, const char * hostName, const ip_address & hostIP, uint16 port, bool expandLocalhost, uint64 autoReconnectDelay);
+   status_t SetNewPolicyAux(uint32 what, const AbstractSessionIOPolicyRef & pref, const char * optDistPath);
 
    ReflectServerRef _server;
    String _defaultDistributionPath;

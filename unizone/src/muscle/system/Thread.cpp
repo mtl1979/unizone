@@ -31,17 +31,17 @@ Thread :: ~Thread()
    CloseSockets();
 }
 
-const SocketRef & Thread :: GetInternalThreadWakeupSocket()
+const ConstSocketRef & Thread :: GetInternalThreadWakeupSocket()
 {
    return GetThreadWakeupSocketAux(_threadData[MESSAGE_THREAD_INTERNAL]);
 }
 
-const SocketRef & Thread :: GetOwnerWakeupSocket()
+const ConstSocketRef & Thread :: GetOwnerWakeupSocket()
 {
    return GetThreadWakeupSocketAux(_threadData[MESSAGE_THREAD_OWNER]);
 }
 
-const SocketRef & Thread :: GetThreadWakeupSocketAux(ThreadSpecificData & tsd)
+const ConstSocketRef & Thread :: GetThreadWakeupSocketAux(ThreadSpecificData & tsd)
 {
    if ((_messageSocketsAllocated == false)&&(CreateConnectedSocketPair(_threadData[MESSAGE_THREAD_INTERNAL]._messageSocket, _threadData[MESSAGE_THREAD_OWNER]._messageSocket) != B_NO_ERROR)) return GetNullSocket();
 
@@ -236,15 +236,15 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
          {
             for (uint32 i=0; i<ARRAYITEMS(sets); i++)
             {
-               const Hashtable<SocketRef, bool> & t = tsd._socketSets[i];
+               const Hashtable<ConstSocketRef, bool> & t = tsd._socketSets[i];
                if ((i == SOCKET_SET_READ)||(t.HasItems()))
                {
                   psets[i] = &sets[i];
                   FD_ZERO(psets[i]);
                   if (t.HasItems())
                   {
-                     HashtableIterator<SocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER);
-                     const SocketRef * nextSocket;
+                     HashtableIterator<ConstSocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER);
+                     const ConstSocketRef * nextSocket;
                      while((nextSocket = iter.GetNextKey()) != NULL)
                      {
                         int nextFD = nextSocket->GetFileDescriptor();
@@ -264,12 +264,12 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
          {
             for (uint32 j=0; j<ARRAYITEMS(psets); j++)
             {
-               Hashtable<SocketRef, bool> & t = tsd._socketSets[j];
+               Hashtable<ConstSocketRef, bool> & t = tsd._socketSets[j];
                if ((psets[j])&&(t.HasItems()))
                {
-                  const SocketRef * nextSocket;
+                  const ConstSocketRef * nextSocket;
                   bool * nextValue;
-                  HashtableIterator<SocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER);
+                  HashtableIterator<ConstSocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER);
                   while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket->GetFileDescriptor(), psets[j]) ? true : false;  // ternary operator used to shut VC++ warnings up
                }
             }

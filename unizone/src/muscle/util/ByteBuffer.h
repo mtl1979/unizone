@@ -154,8 +154,7 @@ private:
    uint32 _numAllocatedBytes;  // number of bytes we actually have
    IMemoryAllocationStrategy * _allocStrategy;
 };
-
-typedef Ref<ByteBuffer> ByteBufferRef;
+DECLARE_REFTYPES(ByteBuffer);
 
 /** This function returns a pointer to a singleton ObjectPool that can be used to minimize the number of 
  *  ByteBuffer allocations and frees by recycling the ByteBuffer objects.

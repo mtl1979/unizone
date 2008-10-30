@@ -323,8 +323,7 @@ private:
 
    friend class ReflectServer;
 };
-
-typedef Ref<AbstractMessageIOGateway> AbstractMessageIOGatewayRef;
+DECLARE_REFTYPES(AbstractMessageIOGateway);
 
 END_NAMESPACE(muscle);
 

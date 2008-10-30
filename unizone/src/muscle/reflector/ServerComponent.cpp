@@ -81,7 +81,7 @@ GetFactory(uint16 port) const
 
 status_t
 ServerComponent ::
-AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & socket)
+AddNewSession(const AbstractReflectSessionRef & ref, const ConstSocketRef & socket)
 {
    MASSERT(_owner, "Can't call AddNewSession() while not attached to the server");
    return _owner->AddNewSession(ref, socket);

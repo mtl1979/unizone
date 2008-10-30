@@ -14,11 +14,8 @@ class AbstractReflectSession;
 class ReflectServer;
 class ReflectSessionFactory;
 
-/** Type declaration for a reference-count-pointer to an AbstractReflectSession */
-typedef Ref<AbstractReflectSession> AbstractReflectSessionRef;
-
-/** Type declaration for a reference-count-pointer to a ReflectSessionFactory */
-typedef Ref<ReflectSessionFactory> ReflectSessionFactoryRef;   
+DECLARE_REFTYPES(AbstractReflectSession);
+DECLARE_REFTYPES(ReflectSessionFactory);
 
 /** 
  *  This class represents any object that can be added to a ReflectServer object
@@ -125,12 +122,12 @@ protected:
     * @param session A reference to the new session to add to the server.
     * @param socket the socket descriptor associated with the new session, or a NULL reference.
     *               If the socket descriptor argument is a NULL reference, the session's
-    *               CreateDefaultSocket() method will be called to supply the SocketRef.
+    *               CreateDefaultSocket() method will be called to supply the ConstSocketRef.
     *               If that also returns a NULL reference, then the client will run without
     *               a connection to anything.
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error.
     */
-   status_t AddNewSession(const AbstractReflectSessionRef & session, const SocketRef & socket = SocketRef());
+   status_t AddNewSession(const AbstractReflectSessionRef & session, const ConstSocketRef & socket = ConstSocketRef());
 
    /**
     * Like AddNewSession(), only creates a session that connects asynchronously to
@@ -189,6 +186,41 @@ protected:
     */
    AbstractReflectSessionRef GetSession(const String & id) const;
    
+   /** Convenience method:  Returns a pointer to the first session of the specified type.  Returns NULL if no session of the specified type is found.
+     * @note this method iterates over the session list, so it's not as efficient as one might hope.
+     */
+   template <class SessionPointerType> SessionPointerType FindFirstSessionOfType() const
+   {
+      for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasMoreKeys(); iter++)
+      {
+         SessionPointerType ret = dynamic_cast<SessionPointerType>(iter.GetValue()());
+         if (ret) return ret;
+      }
+      return NULL;
+   };
+
+   /** Convenience method:  Populates the specified table with sessions of the specified session type.
+     * @param results The list of matching sessions is returned here.
+     * @param maxSessionsToReturn No more than this many sessions will be placed into the table.  Defaults to MUSCLE_NO_LIMIT.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory)
+     */
+   template <class SessionPointerType> status_t FindSessionsOfType(Queue<AbstractReflectSessionRef> & results, uint32 maxSessionsToReturn = MUSCLE_NO_LIMIT) const
+   {
+      if (maxSessionsToReturn > 0)
+      {
+         for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasMoreKeys(); iter++)
+         {
+            SessionPointerType ret = dynamic_cast<SessionPointerType>(iter.GetValue()());
+            if (ret)
+            {
+               if (results.AddTail(iter.GetValue()) != B_NO_ERROR) return B_ERROR;
+               if (--maxSessionsToReturn == 0) break;
+            }
+         }
+      }
+      return B_NO_ERROR;
+   }
+
    /** Returns the table of session factories currently attached to the server. */
    const Hashtable<IPAddressAndPort, ReflectSessionFactoryRef> & GetFactories() const;
 

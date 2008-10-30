@@ -79,6 +79,9 @@ private:
 class ProxySessionFactory : public ReflectSessionFactory
 {
 public:
+   /** Constructor.  Makes this factory a facade for (slaveRef)
+     * @param slaveRef the child factor that we will pass our calls on to.
+     */
    ProxySessionFactory(const ReflectSessionFactoryRef & slaveRef) : _slaveRef(slaveRef) {/* empty */}
    virtual ~ProxySessionFactory() {/* empty */}
 
@@ -177,24 +180,24 @@ public:
     * @param newPolicy Reference to the new policy to use to control the incoming byte stream
     *                  for this session.  May be a NULL reference if you just want to remove the existing policy.
     */
-   void SetInputPolicy(const PolicyRef & newPolicy);
+   void SetInputPolicy(const AbstractSessionIOPolicyRef & newPolicy);
 
    /** Returns a reference to the current input policy for this session.
      * May be a NULL reference, if there is no input policy installed (which is the default state)
      */
-   PolicyRef GetInputPolicy() const {return _inputPolicyRef;}
+   AbstractSessionIOPolicyRef GetInputPolicy() const {return _inputPolicyRef;}
 
    /**
     * Set a new output I/O policy for this session.
     * @param newPolicy Reference to the new policy to use to control the outgoing byte stream
     *                 for this session.  May be a NULL reference if you just want to remove the existing policy.
     */
-   void SetOutputPolicy(const PolicyRef & newPolicy);
+   void SetOutputPolicy(const AbstractSessionIOPolicyRef & newPolicy);
 
    /** Returns a reference to the current output policy for this session.  May be a NULL reference.
      * May be a NULL reference, if there is no output policy installed (which is the default state)
      */
-   PolicyRef GetOutputPolicy() const {return _outputPolicyRef;}
+   AbstractSessionIOPolicyRef GetOutputPolicy() const {return _outputPolicyRef;}
 
    /** Installs the given AbstractMessageIOGateway as the gateway we should use for I/O.
      * If this method isn't called, the ReflectServer will call our CreateGateway() method
@@ -243,11 +246,11 @@ public:
    /** Socket factory method.  This method is called by AddNewSession() when
     *  no valid Socket was supplied as an argument to the AddNewSession() call.
     *  This method should either create and supply a default Socket, or return
-    *  a NULL SocketRef.  In the latter case, the session will run without any
+    *  a NULL ConstSocketRef.  In the latter case, the session will run without any
     *  connection to a client.
-    *  Default implementation always returns a NULL SocketRef.
+    *  Default implementation always returns a NULL ConstSocketRef.
     */
-   virtual SocketRef CreateDefaultSocket();
+   virtual ConstSocketRef CreateDefaultSocket();
 
    /** DataIO factory method.  Should return a new non-blocking DataIO
     *  object for our gateway to use, or NULL on failure.  Called by
@@ -258,7 +261,7 @@ public:
     *                On success, the DataIO object becomes owner of (socket).
     *  @return A newly allocated DataIO object, or NULL on failure.
     */
-   virtual DataIORef CreateDataIO(const SocketRef & socket);
+   virtual DataIORef CreateDataIO(const ConstSocketRef & socket);
 
    /**
     * Gateway factory method.  Should return a reference to a new
@@ -375,13 +378,13 @@ protected:
    /** Convenience method:  Returns the file descriptor associated with this session's
      * DataIO class, or a NULL reference if there is none.
      */
-   const SocketRef & GetSessionSelectSocket() const;
+   const ConstSocketRef & GetSessionSelectSocket() const;
 
    /** Set by StorageReflectSession::AttachedToServer() */
    void SetSessionRootPath(const String & p) {_sessionRootPath = p;}
 
 private:
-   void SetPolicyAux(PolicyRef & setRef, uint32 & setChunk, const PolicyRef & newRef, bool isInput);
+   void SetPolicyAux(AbstractSessionIOPolicyRef & setRef, uint32 & setChunk, const AbstractSessionIOPolicyRef & newRef, bool isInput);
    void PlanForReconnect();
 
    friend class ReflectServer;
@@ -394,8 +397,8 @@ private:
    IPAddressAndPort _asyncConnectDest;
    AbstractMessageIOGatewayRef _gateway;
    uint64 _lastByteOutputAt;
-   PolicyRef _inputPolicyRef;
-   PolicyRef _outputPolicyRef;
+   AbstractSessionIOPolicyRef _inputPolicyRef;
+   AbstractSessionIOPolicyRef _outputPolicyRef;
    uint32 _maxInputChunk;   // as determined by our Policy object
    uint32 _maxOutputChunk;  // and stored here for convenience
    uint64 _outputStallLimit;

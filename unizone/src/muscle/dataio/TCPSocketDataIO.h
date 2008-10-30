@@ -22,12 +22,12 @@ class TCPSocketDataIO : public DataIO
 public:
    /**
     *  Constructor.
-    *  @param sock The SocketRef we should use for our I/O.
+    *  @param sock The ConstSocketRef we should use for our I/O.
     *  @param blocking specifies whether to use blocking or non-blocking socket I/O.
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
-   TCPSocketDataIO(const SocketRef & sock, bool blocking) : _sock(sock), _blocking(true), _naglesEnabled(true), _stallLimit(MUSCLE_DEFAULT_TCP_STALL_TIMEOUT)
+   TCPSocketDataIO(const ConstSocketRef & sock, bool blocking) : _sock(sock), _blocking(true), _naglesEnabled(true), _stallLimit(MUSCLE_DEFAULT_TCP_STALL_TIMEOUT)
    {
       (void) SetBlockingIOEnabled(blocking);
    }
@@ -82,7 +82,7 @@ public:
    virtual void Shutdown() {_sock.Reset();}
 
    /** Returns our socket descriptor */
-   virtual const SocketRef & GetSelectSocket() const {return _sock;}
+   virtual const ConstSocketRef & GetSelectSocket() const {return _sock;}
 
    /**
     * Enables or diables blocking I/O on this socket.
@@ -122,7 +122,7 @@ public:
    bool IsNaglesAlgorithmEnabled() const {return _naglesEnabled;}
 
 private:
-   SocketRef _sock;
+   ConstSocketRef _sock;
    bool _blocking;
    bool _naglesEnabled;
    uint64 _stallLimit;

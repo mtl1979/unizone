@@ -48,7 +48,7 @@ MessageRef DeflateMessage(const MessageRef & msgRef, int compressionLevel, bool 
                   else buf.Reset();
             m->Unlock();
 
-            if ((buf())&&(defMsg()->AddFlat(MUSCLE_ZLIB_FIELD_NAME_STRING, FlatCountableRef(buf.GetGeneric(), false)) == B_NO_ERROR)) ret = ((force)||(defMsg()->FlattenedSize() < msgRef()->FlattenedSize())) ? defMsg : msgRef;
+            if ((buf())&&(defMsg()->AddFlat(MUSCLE_ZLIB_FIELD_NAME_STRING, FlatCountableRef(buf.GetRefCountableRef(), false)) == B_NO_ERROR)) ret = ((force)||(defMsg()->FlattenedSize() < msgRef()->FlattenedSize())) ? defMsg : msgRef;
          }
       }
    }
@@ -65,7 +65,7 @@ MessageRef InflateMessage(const MessageRef & msgRef)
    FlatCountableRef fcRef;
    if ((msgRef())&&(msgRef()->FindFlat(MUSCLE_ZLIB_FIELD_NAME_STRING, fcRef) == B_NO_ERROR))
    {
-      ByteBufferRef buf(fcRef.GetGeneric(), false);
+      ByteBufferRef buf(fcRef.GetRefCountableRef(), false);
       if (buf())
       {
          MessageRef infMsg = GetMessageFromPool();

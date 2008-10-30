@@ -687,9 +687,9 @@ status_t Flattenable :: CopyFromImplementation(const Flattenable & copyFrom)
 }
 
 // This function is now a private one, since it should no longer be necessary to call it
-// from user code.  Instead, attach any socket file descriptors you create to SocketRef
-// objects by calling GetSocketRefFromPool(fd), and the file descriptors will be automatically
-// closed when the last SocketRef that references them is destroyed.
+// from user code.  Instead, attach any socket file descriptors you create to ConstSocketRef
+// objects by calling GetConstSocketRefFromPool(fd), and the file descriptors will be automatically
+// closed when the last ConstSocketRef that references them is destroyed.
 static void CloseSocket(int fd)
 {
    if (fd >= 0)
@@ -702,32 +702,34 @@ static void CloseSocket(int fd)
    }
 }
 
-const SocketRef & GetNullSocket()
+const ConstSocketRef & GetNullSocket()
 {
-   static const SocketRef _null;
+   static const ConstSocketRef _null;
    return _null;
 }
 
-const SocketRef & GetInvalidSocket()
+const ConstSocketRef & GetInvalidSocket()
 {
    static Socket _invalidSocket;
-   static SocketRef _ref(&_invalidSocket, false);
+   static ConstSocketRef _ref(&_invalidSocket, false);
    return _ref;
 }
 
 // Our socket should be closed when we are recycled, not just when we are deleted!
 static void RecycleSocketFunc(Socket * s, void *) {s->SetFileDescriptor(-1, false);}
 
-static SocketRef::ItemPool _socketPool(100, RecycleSocketFunc);
-SocketRef GetSocketRefFromPool(int fd, bool okayToClose, bool returnNULLOnInvalidFD)
+static ConstSocketRef::ItemPool _socketPool(100, RecycleSocketFunc);
+ConstSocketRef GetConstSocketRefFromPool(int fd, bool okayToClose, bool returnNULLOnInvalidFD)
 {
-   if ((fd < 0)&&(returnNULLOnInvalidFD)) return SocketRef();
+   if ((fd < 0)&&(returnNULLOnInvalidFD)) return ConstSocketRef();
    else
    {
-      SocketRef ref(_socketPool.ObtainObject());
-      if (ref()) ref()->SetFileDescriptor(fd, okayToClose);
-            else if (okayToClose) CloseSocket(fd);
-      return ref;
+      Socket * s = _socketPool.ObtainObject();
+      ConstSocketRef ret(s);
+
+      if (s) s->SetFileDescriptor(fd, okayToClose);
+        else if (okayToClose) CloseSocket(fd);
+      return ret;
    }
 }
 

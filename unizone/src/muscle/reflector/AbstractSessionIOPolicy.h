@@ -144,9 +144,7 @@ private:
    friend class ReflectServer;
    bool _hasBegun;  // used by the ReflectServer
 };
-
-/** For convenience */
-typedef Ref<AbstractSessionIOPolicy> PolicyRef;
+DECLARE_REFTYPES(AbstractSessionIOPolicy);
 
 // VC++ (previous to .net) can't handle partial template specialization, so for them we define this explicitly.
 #ifdef MUSCLE_USING_OLD_MICROSOFT_COMPILER

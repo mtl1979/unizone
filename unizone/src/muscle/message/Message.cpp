@@ -19,12 +19,12 @@ static void ClearMsgFunc(Message * msg, void *) {msg->what = 0; msg->Clear();}
 static MessageRef::ItemPool _messagePool(100, ClearMsgFunc);
 MessageRef::ItemPool * GetMessagePool() {return &_messagePool;}
 
-#define DECLARECLONE(X)                \
-   GenericRef X :: Clone() const       \
-   {                                   \
-      GenericRef ref(NEWFIELD(X));     \
-      if (ref()) *((X*)ref()) = *this; \
-      return ref;                      \
+#define DECLARECLONE(X)                  \
+   RefCountableRef X :: Clone() const    \
+   {                                     \
+      RefCountableRef ref(NEWFIELD(X));  \
+      if (ref()) *((X*)ref()) = *this;   \
+      return ref;                        \
    }
 
 #ifdef MUSCLE_DISABLE_MESSAGE_FIELD_POOLS
@@ -77,6 +77,20 @@ MessageRef GetMessageFromPool(ObjectPool<Message> & pool, const uint8 * flatByte
    return ref;
 }
 
+MessageRef GetLightweightCopyOfMessageFromPool(const Message & copyMe)
+{
+   MessageRef ref(_messagePool.ObtainObject());
+   if (ref()) ref()->BecomeLightweightCopyOf(copyMe);
+   return ref;
+}
+
+MessageRef GetLightweightCopyOfMessageFromPool(ObjectPool<Message> & pool, const Message & copyMe)
+{
+   MessageRef ref(pool.ObtainObject());
+   if (ref()) ref()->BecomeLightweightCopyOf(copyMe);
+   return ref;
+}
+
 /* This class is for the private use of the Message class only! 
  * It represents one "name" of the message, which can in turn represent 1 or more
  * data items of a single type. 
@@ -123,7 +137,7 @@ public:
    virtual bool IsFixedSize() const {return false;}
 
    // returns a separate (deep) copy of this array
-   virtual GenericRef Clone() const = 0;
+   virtual RefCountableRef Clone() const = 0;
 
    // Returns true iff this array should be included when flattening. 
    virtual bool IsFlattenable() const = 0;
@@ -212,7 +226,7 @@ protected:
 };
 
 // An array of ephemeral objects that won't be flattened
-class TagDataArray : public FixedSizeDataArray<GenericRef>
+class TagDataArray : public FixedSizeDataArray<RefCountableRef>
 {
 public:
    TagDataArray() {/* empty */}
@@ -234,7 +248,7 @@ public:
 
    virtual uint32 TypeCode() const {return B_TAG_TYPE;}
 
-   virtual GenericRef Clone() const; 
+   virtual RefCountableRef Clone() const; 
 
    virtual bool IsFlattenable() const {return false;}
 
@@ -408,7 +422,7 @@ class PointDataArray : public FixedSizeFlatObjectArray<Point>
 public:
    PointDataArray() {/* empty */}
    virtual ~PointDataArray() {/* empty */}
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
    virtual void AddItemToString(String & s, const Point & p) const 
    {
       char buf[128]; 
@@ -430,7 +444,7 @@ class RectDataArray : public FixedSizeFlatObjectArray<Rect>
 public:
    RectDataArray() {/* empty */}
    virtual ~RectDataArray() {/* empty */}
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
    virtual void AddItemToString(String & s, const Rect & r) const 
    {
       char buf[256]; 
@@ -457,7 +471,7 @@ public:
 
    virtual const char * GetFormatString() const {return "%i";}
  
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
@@ -489,7 +503,7 @@ public:
 
    virtual const char * GetFormatString() const {return "%i";}
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual void Flatten(uint8 *buffer) const
    {
@@ -544,7 +558,7 @@ public:
 
    virtual const char * GetFormatString() const {return "%i";}
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
@@ -584,7 +598,7 @@ public:
 
    virtual const char * GetFormatString() const {return INT32_FORMAT_SPEC;}
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
@@ -624,7 +638,7 @@ public:
 
    virtual const char * GetFormatString() const {return INT64_FORMAT_SPEC;}
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
@@ -664,7 +678,7 @@ public:
 
    virtual const char * GetFormatString() const {return "%f";}
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
@@ -704,7 +718,7 @@ public:
 
    virtual const char * GetFormatString() const {return "%lf";}
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
@@ -746,7 +760,7 @@ public:
 
    virtual bool IsFlattenable() const {return false;}
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
@@ -856,7 +870,7 @@ public:
          if (ReadData(buffer, numBytes, &readOffset, &readFs, sizeof(readFs)) != B_NO_ERROR) return B_ERROR;
          readFs = B_LENDIAN_TO_HOST_INT32(readFs);
          if (readOffset + readFs > numBytes) return B_ERROR;  // message size too large for our buffer... corruption?
-         FlatCountableRef fcRef(GetByteBufferFromPool(readFs, &buffer[readOffset]).GetGeneric(), true);
+         FlatCountableRef fcRef(GetByteBufferFromPool(readFs, &buffer[readOffset]).GetRefCountableRef(), true);
          if ((fcRef())&&(AddDataItem(&fcRef, sizeof(fcRef)) == B_NO_ERROR)) readOffset += readFs;
                                                                        else return B_ERROR;
       }
@@ -910,7 +924,7 @@ public:
       }
    }
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
@@ -1004,7 +1018,7 @@ public:
       }
    }
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual uint32 CalculateChecksum(bool countNonFlattenableFields) const
    {
@@ -1111,7 +1125,7 @@ public:
 
    virtual uint32 TypeCode() const {return B_STRING_TYPE;}
 
-   virtual GenericRef Clone() const;
+   virtual RefCountableRef Clone() const;
 
    virtual void AddToString(String & s, bool, int indent) const
    {
@@ -1164,7 +1178,7 @@ const String * MessageFieldNameIterator :: GetNextFieldNameString()
    else
    {
       // Read until the array is of type (_typeCode)...
-      const GenericRef * array;
+      const RefCountableRef * array;
       while((array = GetNextValue()) != NULL)
       {
          const String * ret = GetNextKey();
@@ -1180,7 +1194,7 @@ const String * MessageFieldNameIterator :: PeekNextFieldNameString() const
    else
    {
       // Read until the next array to get is of type (_typeCode)...
-      const GenericRef * array;
+      const RefCountableRef * array;
       while((array = PeekNextValue()) != NULL)
       {
          if (((const AbstractDataArray *)array->GetItemPointer())->TypeCode() == _typeCode) return PeekNextKey();
@@ -1204,11 +1218,11 @@ Message & Message :: operator=(const Message &rhs)
       what = rhs.what;
 
       // Copy all his entries!
-      HashtableIterator<String, GenericRef> it(rhs._entries, HTIT_FLAG_NOREGISTER);
+      HashtableIterator<String, RefCountableRef> it(rhs._entries, HTIT_FLAG_NOREGISTER);
       const String * nextKey;
       while((nextKey = it.GetNextKey()) != NULL) 
       {
-         GenericRef clone = ((const AbstractDataArray *)(*it.GetNextValue())())->Clone();
+         RefCountableRef clone = ((const AbstractDataArray *)(*it.GetNextValue())())->Clone();
          if (clone()) (void) _entries.Put(*nextKey, clone);
       }
    }
@@ -1231,8 +1245,8 @@ uint32 Message :: CountNames(uint32 type) const
 
    // oops, gotta count just the entries of the given type
    uint32 total = 0;
-   HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
-   const GenericRef * nextValue;
+   HashtableIterator<String, RefCountableRef> it(_entries, HTIT_FLAG_NOREGISTER);
+   const RefCountableRef * nextValue;
    while((nextValue = it.GetNextValue()) != NULL) if (((const AbstractDataArray*)nextValue->GetItemPointer())->TypeCode() == type) total++;
    return total;
 }
@@ -1259,36 +1273,36 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
    char prettyTypeCodeBuf[5];
    MakePrettyTypeCodeString(what, prettyTypeCodeBuf);
 
-   char buf[150];
+   char buf[128];
    DoIndents(indent,s); 
    sprintf(buf, "Message:  what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), entryCount="INT32_FORMAT_SPEC", flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), FlattenedSize(), CalculateChecksum());
    s += buf;
 
-   HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
-   const String * nextKey;
-   while((nextKey = it.GetNextKey()) != NULL) 
+   for (HashtableIterator<String, RefCountableRef> iter(_entries, HTIT_FLAG_NOREGISTER); iter.HasMoreKeys(); iter++)
    {
-       const AbstractDataArray * nextValue = (const AbstractDataArray *)((*it.GetNextValue())());
-       uint32 tc = nextValue->TypeCode();
-       MakePrettyTypeCodeString(tc, prettyTypeCodeBuf);
-       DoIndents(indent,s); 
-       sprintf(buf, "  Entry: Name=[%s], GetNumItems()="INT32_FORMAT_SPEC", TypeCode()='%s' ("INT32_FORMAT_SPEC") flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", nextKey->Cstr(), nextValue->GetNumItems(), prettyTypeCodeBuf, tc, nextValue->FlattenedSize(), nextValue->CalculateChecksum(false));
-       s += buf;
-       nextValue->AddToString(s, recurse, indent);
+      const AbstractDataArray * nextValue = static_cast<const AbstractDataArray *>(iter.GetValue()());
+      uint32 tc = nextValue->TypeCode();
+      MakePrettyTypeCodeString(tc, prettyTypeCodeBuf);
+      DoIndents(indent,s); 
+      s += "  Entry: Name=[";
+      s += iter.GetKey();
+      sprintf(buf, "], GetNumItems()="INT32_FORMAT_SPEC", TypeCode()='%s' ("INT32_FORMAT_SPEC") flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", nextValue->GetNumItems(), prettyTypeCodeBuf, tc, nextValue->FlattenedSize(), nextValue->CalculateChecksum(false));
+      s += buf;
+      nextValue->AddToString(s, recurse, indent);
    }
 }
 
 // Returns an pointer to a held array of the given type, if it exists.  If (tc) is B_ANY_TYPE, then any type array is acceptable.
 AbstractDataArray * Message :: GetArray(const String & arrayName, uint32 tc) const
 {
-   GenericRef * array;
+   RefCountableRef * array;
    return (((array = _entries.Get(arrayName)) != NULL)&&((tc == B_ANY_TYPE)||(tc == ((const AbstractDataArray *)array->GetItemPointer())->TypeCode()))) ? ((AbstractDataArray *)array->GetItemPointer()) : NULL;
 }
 
 // Returns an pointer to a held array of the given type, if it exists.  If (tc) is B_ANY_TYPE, then any type array is acceptable.
-GenericRef Message :: GetArrayRef(const String & arrayName, uint32 tc) const
+RefCountableRef Message :: GetArrayRef(const String & arrayName, uint32 tc) const
 {
-   GenericRef array;
+   RefCountableRef array;
    if ((_entries.Get(arrayName, array) == B_NO_ERROR)&&(tc != B_ANY_TYPE)&&(tc != ((const AbstractDataArray *)array())->TypeCode())) array.Reset();
    return array;
 }
@@ -1307,7 +1321,7 @@ AbstractDataArray * Message :: GetOrCreateArray(const String & arrayName, uint32
    if (_entries.ContainsKey(arrayName)) return NULL;
 
    // Oops!  This array doesn't exist; better create it!
-   GenericRef newEntry;
+   RefCountableRef newEntry;
    switch(tc)
    {
       case B_BOOL_TYPE:    newEntry.SetRef(NEWFIELD(BoolDataArray));    break;
@@ -1333,7 +1347,7 @@ AbstractDataArray * Message :: GetOrCreateArray(const String & arrayName, uint32
 
 status_t Message :: Rename(const String & old_entry, const String & new_entry) 
 {
-   GenericRef oldArray = GetArrayRef(old_entry, B_ANY_TYPE);
+   RefCountableRef oldArray = GetArrayRef(old_entry, B_ANY_TYPE);
    if (oldArray()) 
    {
       (void) RemoveName(new_entry);             // destructive rename... remove anybody in our way
@@ -1348,7 +1362,7 @@ uint32 Message :: FlattenedSize() const
    uint32 sum = 3 * sizeof(uint32);  // For the message header:  4 bytes for the protocol revision #, 4 bytes for the number-of-entries field, 4 bytes for what code
 
    // For each flattenable field: 4 bytes for the name length, name data, 4 bytes for entry type code, 4 bytes for entry data length, entry data
-   HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
+   HashtableIterator<String, RefCountableRef> it(_entries, HTIT_FLAG_NOREGISTER);
    const String * nextKey;
    while((nextKey = it.GetNextKey()) != NULL)  
    {
@@ -1363,8 +1377,8 @@ uint32 Message :: CalculateChecksum(bool countNonFlattenableFields) const
    uint32 ret = what;
 
    // Calculate the number of flattenable entries (may be less than the total number of entries!)
-   const GenericRef * next;
-   HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
+   const RefCountableRef * next;
+   HashtableIterator<String, RefCountableRef> it(_entries, HTIT_FLAG_NOREGISTER);
    while((next = it.GetNextValue()) != NULL) 
    {
       const AbstractDataArray * a = static_cast<const AbstractDataArray *>(next->GetItemPointer());
@@ -1399,8 +1413,8 @@ void Message :: Flatten(uint8 *buffer) const
    // Calculate the number of flattenable entries (may be less than the total number of entries!)
    uint32 numFlattenableEntries = 0;
    {
-      const GenericRef * next;
-      HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
+      const RefCountableRef * next;
+      HashtableIterator<String, RefCountableRef> it(_entries, HTIT_FLAG_NOREGISTER);
       while((next = it.GetNextValue()) != NULL) if (((const AbstractDataArray *)next->GetItemPointer())->IsFlattenable()) numFlattenableEntries++;
    }
 
@@ -1409,7 +1423,7 @@ void Message :: Flatten(uint8 *buffer) const
    WriteData(buffer, &writeOffset, &networkByteOrder, sizeof(networkByteOrder));
 
    // Write entries
-   HashtableIterator<String, GenericRef> it(_entries, HTIT_FLAG_NOREGISTER);
+   HashtableIterator<String, RefCountableRef> it(_entries, HTIT_FLAG_NOREGISTER);
    const String * nextKey;
    while((nextKey = it.GetNextKey()) != NULL)
    {
@@ -1502,7 +1516,7 @@ status_t Message :: Unflatten(const uint8 *buffer, uint32 inputBufferBytes)
 
 status_t Message :: AddFlatBuffer(const String & name, const Flattenable & flat, uint32 tc, bool prepend)
 {
-   FlatCountableRef fcRef(GetByteBufferFromPool(flat.FlattenedSize()).GetGeneric(), true);
+   FlatCountableRef fcRef(GetByteBufferFromPool(flat.FlattenedSize()).GetRefCountableRef(), true);
    if ((fcRef())&&(fcRef()->CopyFrom(flat) == B_NO_ERROR))
    {
       AbstractDataArray * array = GetOrCreateArray(name, tc);
@@ -1585,7 +1599,7 @@ status_t Message :: AddRect(const String &name, const Rect & rect)
    return array ? array->AddDataItem(&rect, sizeof(rect)) : B_ERROR;
 }
 
-status_t Message :: AddTag(const String &name, const GenericRef & tag)
+status_t Message :: AddTag(const String &name, const RefCountableRef & tag)
 {
    if (tag() == NULL) return B_ERROR;
    AbstractDataArray * array = GetOrCreateArray(name, B_TAG_TYPE);
@@ -1617,7 +1631,7 @@ status_t Message :: AddFlat(const String &name, const FlatCountableRef & ref)
       uint32 tc = fc->TypeCode();
       switch(tc)
       {
-         case B_MESSAGE_TYPE: return AddMessage(name, MessageRef(ref.GetGeneric(), true));
+         case B_MESSAGE_TYPE: return AddMessage(name, MessageRef(ref.GetRefCountableRef(), true));
          case B_STRING_TYPE:  return B_ERROR;  // sorry, can't do that (Strings aren't FlatCountables)
          default:             return AddFlatRef(name, ref, tc, false);
       }
@@ -1680,7 +1694,7 @@ status_t Message :: AddDataAux(const String &name, const void *data, uint32 numB
       {
          ByteBufferRef bufRef = GetByteBufferFromPool(elementSize, (const uint8 *)dataToAdd);
          if (bufRef() == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
-         fcRef.SetFromGeneric(bufRef.GetGeneric());
+         fcRef.SetFromRefCountableRef(bufRef.GetRefCountableRef());
          dataToAdd = &fcRef;
          addSize = sizeof(fcRef);
       }
@@ -1800,7 +1814,7 @@ status_t Message :: FindFlat(const String &name, uint32 index, FlatCountableRef 
          return B_NO_ERROR;
       }
       const MessageDataArray * mda = dynamic_cast<const MessageDataArray *>(array);
-      if (mda) return ref.SetFromGeneric(mda->ItemAt(index).GetGeneric());
+      if (mda) return ref.SetFromRefCountableRef(mda->ItemAt(index).GetRefCountableRef());
    }
    return B_ERROR;
 }
@@ -1881,7 +1895,7 @@ status_t Message :: FindRect(const String &name, uint32 index, Rect & rect) cons
    return B_NO_ERROR;
 }
 
-status_t Message :: FindTag(const String &name, uint32 index, GenericRef & tag) const 
+status_t Message :: FindTag(const String &name, uint32 index, RefCountableRef & tag) const 
 {
    const TagDataArray * array = (const TagDataArray*)GetArray(name, B_TAG_TYPE);
    if ((array == NULL)||(index >= array->GetNumItems())) return B_ERROR;
@@ -2008,7 +2022,7 @@ status_t Message :: ReplaceRect(bool okayToAdd, const String &name, uint32 index
    return array ? array->ReplaceDataItem(index, &rect, sizeof(rect)) : B_ERROR;
 }
 
-status_t Message :: ReplaceTag(bool okayToAdd, const String &name, uint32 index, const GenericRef & tag) 
+status_t Message :: ReplaceTag(bool okayToAdd, const String &name, uint32 index, const RefCountableRef & tag) 
 {
    if (tag() == NULL) return B_ERROR;
    AbstractDataArray * array = GetArray(name, B_TAG_TYPE);
@@ -2035,7 +2049,7 @@ status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index
       case B_STRING_TYPE:  return (dynamic_cast<const String *>(&obj))  ? ReplaceString( okayToAdd, name, index, (const String &) obj) : B_ERROR;
       default:
       {
-         FlatCountableRef fcRef(GetByteBufferFromPool(obj.FlattenedSize()).GetGeneric(), true);
+         FlatCountableRef fcRef(GetByteBufferFromPool(obj.FlattenedSize()).GetRefCountableRef(), true);
          return ((fcRef())&&(fcRef()->CopyFrom(obj) == B_NO_ERROR)) ? ReplaceDataAux(okayToAdd, name, index, &fcRef, sizeof(fcRef), obj.TypeCode()) : B_ERROR;
       }
    }
@@ -2054,7 +2068,7 @@ status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index
          switch(tc)
          {
             case B_MESSAGE_TYPE:  
-               return (dynamic_cast<const Message *>(fc)) ? ReplaceMessage(okayToAdd, name, index, MessageRef(ref.GetGeneric(), true)) : B_ERROR;
+               return (dynamic_cast<const Message *>(fc)) ? ReplaceMessage(okayToAdd, name, index, MessageRef(ref.GetRefCountableRef(), true)) : B_ERROR;
 
             default:              
                if (GetElementSize(tc) == 0)
@@ -2103,7 +2117,7 @@ status_t Message :: ReplaceData(bool okayToAdd, const String &name, uint32 type,
       uint32 addSize = elementSize;
       if (isVariableSize)
       {
-         ref.SetFromGeneric(GetByteBufferFromPool(elementSize, (const uint8 *)dataToAdd).GetGeneric());
+         ref.SetFromRefCountableRef(GetByteBufferFromPool(elementSize, (const uint8 *)dataToAdd).GetRefCountableRef());
          if (ref() == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
          dataToAdd = &ref;
          addSize = sizeof(ref);
@@ -2124,7 +2138,7 @@ status_t Message :: CopyName(const String & name, Message & copyTo) const
    const AbstractDataArray * array = GetArray(name, B_ANY_TYPE);
    if (array)
    {
-      GenericRef clone = array->Clone();
+      RefCountableRef clone = array->Clone();
       if ((clone())&&(copyTo._entries.Put(name, clone) == B_NO_ERROR)) return B_NO_ERROR;
    }
    return B_ERROR;
@@ -2132,7 +2146,7 @@ status_t Message :: CopyName(const String & name, Message & copyTo) const
 
 status_t Message :: ShareName(const String & name, Message & shareTo) const
 {
-   const GenericRef * gRef = _entries.Get(name);
+   const RefCountableRef * gRef = _entries.Get(name);
    return gRef ? shareTo._entries.Put(name, *gRef) : B_ERROR;
 }
 
@@ -2212,7 +2226,7 @@ status_t Message :: PrependRect(const String &name, const Rect & rect)
    return array ? array->PrependDataItem(&rect, sizeof(rect)) : B_ERROR;
 }
 
-status_t Message :: PrependTag(const String &name, const GenericRef & tag) 
+status_t Message :: PrependTag(const String &name, const RefCountableRef & tag) 
 {
    if (tag() == NULL) return B_ERROR;
    AbstractDataArray * array = GetOrCreateArray(name, B_TAG_TYPE);
@@ -2245,7 +2259,7 @@ status_t Message :: PrependFlat(const String & name, const FlatCountableRef & re
       switch(tc)
       {
          case B_STRING_TYPE:  return B_ERROR;  // sorry, can't do that (Strings aren't FlatCountables)
-         case B_MESSAGE_TYPE: return PrependMessage(name, MessageRef(ref.GetGeneric(), true)); 
+         case B_MESSAGE_TYPE: return PrependMessage(name, MessageRef(ref.GetRefCountableRef(), true)); 
          default:             return AddFlatRef(name, ref, tc, true);
       }
    }
@@ -2273,12 +2287,12 @@ bool Message :: FieldsAreSubsetOf(const Message & rhs, bool compareContents) con
    TCHECKPOINT;
 
    // Returns true iff every one of our fields has a like-named, liked-typed, equal-length field in (rhs).
-   HashtableIterator<String, GenericRef> iter(_entries, HTIT_FLAG_NOREGISTER);
+   HashtableIterator<String, RefCountableRef> iter(_entries, HTIT_FLAG_NOREGISTER);
    const String * nextKey;
-   const GenericRef * myNextValue;
+   const RefCountableRef * myNextValue;
    while(iter.GetNextKeyAndValue(nextKey, myNextValue) == B_NO_ERROR)
    {
-      const GenericRef * hisNextValue = rhs._entries.Get(*nextKey);
+      const RefCountableRef * hisNextValue = rhs._entries.Get(*nextKey);
       if ((hisNextValue == NULL)||(((const AbstractDataArray*)myNextValue->GetItemPointer())->IsEqualTo((const AbstractDataArray*)(hisNextValue->GetItemPointer()), compareContents) == false)) return false;
    }
    return true;

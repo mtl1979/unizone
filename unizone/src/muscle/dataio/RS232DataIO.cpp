@@ -91,9 +91,9 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
    }
 #else
 #  if defined(__BEOS__)
-   _handle = GetSocketRefFromPool(open(port, O_RDWR | O_NONBLOCK));
+   _handle = GetConstSocketRefFromPool(open(port, O_RDWR | O_NONBLOCK));
 #  else
-   _handle = GetSocketRefFromPool(open(port, O_RDWR | O_NOCTTY));
+   _handle = GetConstSocketRefFromPool(open(port, O_RDWR | O_NOCTTY));
 #  endif
    if (SetSocketBlockingEnabled(_handle, _blocking) == B_NO_ERROR)
    {
@@ -248,7 +248,7 @@ void RS232DataIO :: FlushOutput()
    }
 }
 
-const SocketRef & RS232DataIO :: GetSelectSocket() const
+const ConstSocketRef & RS232DataIO :: GetSelectSocket() const
 {
 #ifdef USE_WINDOWS_IMPLEMENTATION
    return _blocking ? GetNullSocket() : _masterNotifySocket;

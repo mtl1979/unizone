@@ -42,7 +42,7 @@ signals:
    /** Emitted when a new TCP connection is accepted 
      * @param socketRef Reference to the newly accepted socket.
      */
-   void ConnectionAccepted(const SocketRef & socketRef);
+   void ConnectionAccepted(const ConstSocketRef & socketRef);
 
 protected:
    /** Overridden to send a QEvent */

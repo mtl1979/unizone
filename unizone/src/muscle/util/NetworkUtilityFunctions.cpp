@@ -104,9 +104,9 @@ static void InitializeSockAddr4(struct sockaddr_in & addr, const ip_address * op
 # define DECLARE_SOCKADDR(addr, ip, port) struct sockaddr_in addr; InitializeSockAddr4(addr, ip, port);
 #endif
 
-SocketRef CreateUDPSocket()
+ConstSocketRef CreateUDPSocket()
 {
-   SocketRef ret = GetSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_DGRAM, 0));
+   ConstSocketRef ret = GetConstSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_DGRAM, 0));
 #ifdef WIN32
    if (ret())
    {
@@ -120,7 +120,7 @@ SocketRef CreateUDPSocket()
    return ret;
 }
 
-status_t BindUDPSocket(const SocketRef & sock, uint16 port, uint16 * optRetPort, const ip_address & optFrom, bool allowShared)
+status_t BindUDPSocket(const ConstSocketRef & sock, uint16 port, uint16 * optRetPort, const ip_address & optFrom, bool allowShared)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return B_ERROR;
@@ -152,7 +152,7 @@ status_t BindUDPSocket(const SocketRef & sock, uint16 port, uint16 * optRetPort,
    else return B_ERROR;
 }
 
-status_t SetUDPSocketTarget(const SocketRef & sock, const ip_address & remoteIP, uint16 remotePort)
+status_t SetUDPSocketTarget(const ConstSocketRef & sock, const ip_address & remoteIP, uint16 remotePort)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return B_ERROR;
@@ -161,15 +161,15 @@ status_t SetUDPSocketTarget(const SocketRef & sock, const ip_address & remoteIP,
    return (connect(fd, (struct sockaddr *) &saAddr, sizeof(saAddr)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
-status_t SetUDPSocketTarget(const SocketRef & sock, const char * remoteHostName, uint16 remotePort, bool expandLocalhost)
+status_t SetUDPSocketTarget(const ConstSocketRef & sock, const char * remoteHostName, uint16 remotePort, bool expandLocalhost)
 {
    ip_address hostIP = GetHostByName(remoteHostName, expandLocalhost);
    return (hostIP != invalidIP) ? SetUDPSocketTarget(sock, hostIP, remotePort) : B_ERROR;
 }
 
-SocketRef CreateAcceptingSocket(uint16 port, int maxbacklog, uint16 * optRetPort, const ip_address & optInterfaceIP)
+ConstSocketRef CreateAcceptingSocket(uint16 port, int maxbacklog, uint16 * optRetPort, const ip_address & optInterfaceIP)
 {
-   SocketRef ret = GetSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_STREAM, 0));
+   ConstSocketRef ret = GetConstSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_STREAM, 0));
    if (ret())
    {
       int fd = ret.GetFileDescriptor();
@@ -177,7 +177,7 @@ SocketRef CreateAcceptingSocket(uint16 port, int maxbacklog, uint16 * optRetPort
 #ifndef WIN32
       // (Not necessary under windows -- it has the behaviour we want by default)
       const int trueValue = 1;
-      (void) setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const sockopt_arg *) &trueValue, sizeof(long));
+      (void) setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const sockopt_arg *) &trueValue, sizeof(trueValue));
 #endif
 
       DECLARE_SOCKADDR(saSocket, &optInterfaceIP, port);
@@ -191,16 +191,16 @@ SocketRef CreateAcceptingSocket(uint16 port, int maxbacklog, uint16 * optRetPort
          return ret;
       }
    }
-   return SocketRef();  // failure
+   return ConstSocketRef();  // failure
 }
 
-int32 ReceiveData(const SocketRef & sock, void * buffer, uint32 size, bool bm)
+int32 ReceiveData(const ConstSocketRef & sock, void * buffer, uint32 size, bool bm)
 {
    int fd = sock.GetFileDescriptor();
    return (fd >= 0) ? ConvertReturnValueToMuscleSemantics(recv(fd, (char *)buffer, size, 0L), size, bm) : -1;
 }
 
-int32 ReadData(const SocketRef & sock, void * buffer, uint32 size, bool bm)
+int32 ReadData(const ConstSocketRef & sock, void * buffer, uint32 size, bool bm)
 {
 #ifdef WIN32
    return ReceiveData(sock, buffer, size, bm);  // Windows doesn't support read(), only recv()
@@ -210,7 +210,7 @@ int32 ReadData(const SocketRef & sock, void * buffer, uint32 size, bool bm)
 #endif
 }
 
-int32 ReceiveDataUDP(const SocketRef & sock, void * buffer, uint32 size, bool bm, ip_address * optFromIP, uint16 * optFromPort)
+int32 ReceiveDataUDP(const ConstSocketRef & sock, void * buffer, uint32 size, bool bm, ip_address * optFromIP, uint16 * optFromPort)
 {
    int fd = sock.GetFileDescriptor();
    if (fd >= 0)
@@ -235,13 +235,13 @@ int32 ReceiveDataUDP(const SocketRef & sock, void * buffer, uint32 size, bool bm
    else return -1;
 }
 
-int32 SendData(const SocketRef & sock, const void * buffer, uint32 size, bool bm)
+int32 SendData(const ConstSocketRef & sock, const void * buffer, uint32 size, bool bm)
 {
    int fd = sock.GetFileDescriptor();
    return (fd >= 0) ? ConvertReturnValueToMuscleSemantics(send(fd, (const char *)buffer, size, 0L), size, bm) : -1;
 }
 
-int32 WriteData(const SocketRef & sock, const void * buffer, uint32 size, bool bm)
+int32 WriteData(const ConstSocketRef & sock, const void * buffer, uint32 size, bool bm)
 {
 #ifdef WIN32
    return SendData(sock, buffer, size, bm);  // Windows doesn't support write(), only send()
@@ -251,7 +251,7 @@ int32 WriteData(const SocketRef & sock, const void * buffer, uint32 size, bool b
 #endif
 }
 
-int32 SendDataUDP(const SocketRef & sock, const void * buffer, uint32 size, bool bm, const ip_address & optToIP, uint16 optToPort)
+int32 SendDataUDP(const ConstSocketRef & sock, const void * buffer, uint32 size, bool bm, const ip_address & optToIP, uint16 optToPort)
 {
    int fd = sock.GetFileDescriptor();
    if (fd >= 0)
@@ -278,7 +278,7 @@ int32 SendDataUDP(const SocketRef & sock, const void * buffer, uint32 size, bool
    else return -1;
 }
 
-status_t ShutdownSocket(const SocketRef & sock, bool dRecv, bool dSend)
+status_t ShutdownSocket(const ConstSocketRef & sock, bool dRecv, bool dSend)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return B_ERROR;
@@ -293,14 +293,14 @@ status_t ShutdownSocket(const SocketRef & sock, bool dRecv, bool dSend)
    return (shutdown(fd, dRecv?(dSend?MUSCLE_SHUT_RDWR:MUSCLE_SHUT_RD):MUSCLE_SHUT_WR) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
-SocketRef Accept(const SocketRef & sock, ip_address * optRetInterfaceIP)
+ConstSocketRef Accept(const ConstSocketRef & sock, ip_address * optRetInterfaceIP)
 {
    DECLARE_SOCKADDR(saSocket, NULL, 0);
    muscle_socklen_t nLen = sizeof(saSocket);
    int fd = sock.GetFileDescriptor();
    if (fd >= 0)
    {
-      SocketRef ret = GetSocketRefFromPool(accept(fd, (struct sockaddr *)&saSocket, &nLen));
+      ConstSocketRef ret = GetConstSocketRefFromPool(accept(fd, (struct sockaddr *)&saSocket, &nLen));
       if ((ret())&&(optRetInterfaceIP))
       {
          muscle_socklen_t len = sizeof(saSocket);
@@ -309,21 +309,21 @@ SocketRef Accept(const SocketRef & sock, ip_address * optRetInterfaceIP)
       }
       return ret;
    }
-   return SocketRef();  // failure
+   return ConstSocketRef();  // failure
 }
 
-SocketRef Connect(const char * hostName, uint16 port, const char * debugTitle, bool errorsOnly, uint64 maxConnectTime, bool expandLocalhost) 
+ConstSocketRef Connect(const char * hostName, uint16 port, const char * debugTitle, bool errorsOnly, uint64 maxConnectTime, bool expandLocalhost) 
 {
    ip_address hostIP = GetHostByName(hostName, expandLocalhost);
    if (hostIP != invalidIP) return Connect(hostIP, port, hostName, debugTitle, errorsOnly, maxConnectTime);
    else 
    {
       if (debugTitle) LogTime(MUSCLE_LOG_INFO, "%s: hostname lookup for [%s] failed!\n", debugTitle, hostName);
-      return SocketRef();
+      return ConstSocketRef();
    }
 }
 
-SocketRef Connect(const ip_address & hostIP, uint16 port, const char * optDebugHostName, const char * debugTitle, bool errorsOnly, uint64 maxConnectTime)
+ConstSocketRef Connect(const ip_address & hostIP, uint16 port, const char * optDebugHostName, const char * debugTitle, bool errorsOnly, uint64 maxConnectTime)
 {
    char ipbuf[64]; Inet_NtoA(hostIP, ipbuf);
 
@@ -334,7 +334,7 @@ SocketRef Connect(const ip_address & hostIP, uint16 port, const char * optDebugH
    }
 
    bool socketIsReady = false;
-   SocketRef s = (maxConnectTime == MUSCLE_TIME_NEVER) ? GetSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_STREAM, 0)) : ConnectAsync(hostIP, port, socketIsReady);
+   ConstSocketRef s = (maxConnectTime == MUSCLE_TIME_NEVER) ? GetConstSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_STREAM, 0)) : ConnectAsync(hostIP, port, socketIsReady);
    if (s())
    {
       int fd = s.GetFileDescriptor();
@@ -395,7 +395,7 @@ SocketRef Connect(const ip_address & hostIP, uint16 port, const char * optDebugH
       if (errorsOnly) LogTime(MUSCLE_LOG_INFO, "%s: socket() failed!\n", debugTitle);
                  else Log(MUSCLE_LOG_INFO, "socket() failed!\n");
    }
-   return SocketRef();
+   return ConstSocketRef();
 }
 
 static bool IsIP4Address(const char * s)
@@ -486,9 +486,9 @@ ip_address GetHostByName(const char * name, bool expandLocalhost)
    return ret;
 }
 
-SocketRef ConnectAsync(const ip_address & hostIP, uint16 port, bool & retIsReady)
+ConstSocketRef ConnectAsync(const ip_address & hostIP, uint16 port, bool & retIsReady)
 {
-   SocketRef s = GetSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_STREAM, 0));
+   ConstSocketRef s = GetConstSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_STREAM, 0));
    if (s())
    {
       if (SetSocketBlockingEnabled(s, false) == B_NO_ERROR)
@@ -507,10 +507,10 @@ SocketRef ConnectAsync(const ip_address & hostIP, uint16 port, bool & retIsReady
          }
       }
    }
-   return SocketRef();
+   return ConstSocketRef();
 }
 
-ip_address GetPeerIPAddress(const SocketRef & sock, bool expandLocalhost)
+ip_address GetPeerIPAddress(const ConstSocketRef & sock, bool expandLocalhost)
 {
    ip_address ipAddress = invalidIP;
    int fd = sock.GetFileDescriptor();
@@ -528,7 +528,7 @@ ip_address GetPeerIPAddress(const SocketRef & sock, bool expandLocalhost)
 }
 
 /* See the header file for description of what this does */
-status_t CreateConnectedSocketPair(SocketRef & socket1, SocketRef & socket2, bool blocking)
+status_t CreateConnectedSocketPair(ConstSocketRef & socket1, ConstSocketRef & socket2, bool blocking)
 {
    TCHECKPOINT;
 
@@ -536,8 +536,8 @@ status_t CreateConnectedSocketPair(SocketRef & socket1, SocketRef & socket2, boo
    int temp[2];
    if (socketpair(AF_UNIX, SOCK_STREAM, 0, temp) == 0)
    { 
-      socket1 = GetSocketRefFromPool(temp[0]);
-      socket2 = GetSocketRefFromPool(temp[1]);
+      socket1 = GetConstSocketRefFromPool(temp[0]);
+      socket2 = GetConstSocketRefFromPool(temp[1]);
       if ((SetSocketBlockingEnabled(socket1, blocking) == B_NO_ERROR)&&(SetSocketBlockingEnabled(socket2, blocking) == B_NO_ERROR)) return B_NO_ERROR;
    }
 #else
@@ -548,7 +548,7 @@ status_t CreateConnectedSocketPair(SocketRef & socket1, SocketRef & socket2, boo
       socket2 = Connect(localhostIP, port);
       if (socket2())
       {
-         SocketRef newfd = Accept(socket1);
+         ConstSocketRef newfd = Accept(socket1);
          if (newfd())
          {
             socket1 = newfd;
@@ -568,7 +568,7 @@ status_t CreateConnectedSocketPair(SocketRef & socket1, SocketRef & socket2, boo
    return B_ERROR;
 }
 
-status_t SetSocketBlockingEnabled(const SocketRef & sock, bool blocking)
+status_t SetSocketBlockingEnabled(const ConstSocketRef & sock, bool blocking)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return B_ERROR;
@@ -589,7 +589,7 @@ status_t SetSocketBlockingEnabled(const SocketRef & sock, bool blocking)
 #endif
 }
 
-status_t SetUDPSocketBroadcastEnabled(const SocketRef & sock, bool broadcast)
+status_t SetUDPSocketBroadcastEnabled(const ConstSocketRef & sock, bool broadcast)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return B_ERROR;
@@ -602,7 +602,7 @@ status_t SetUDPSocketBroadcastEnabled(const SocketRef & sock, bool broadcast)
 #endif
 }
 
-status_t SetSocketNaglesAlgorithmEnabled(const SocketRef & sock, bool enabled)
+status_t SetSocketNaglesAlgorithmEnabled(const ConstSocketRef & sock, bool enabled)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return B_ERROR;
@@ -616,7 +616,7 @@ status_t SetSocketNaglesAlgorithmEnabled(const SocketRef & sock, bool enabled)
 #endif
 }
 
-status_t FinalizeAsyncConnect(const SocketRef & sock)
+status_t FinalizeAsyncConnect(const ConstSocketRef & sock)
 {
    TCHECKPOINT;
 
@@ -661,7 +661,7 @@ status_t FinalizeAsyncConnect(const SocketRef & sock)
 #endif
 }
 
-status_t SetSocketSendBufferSize(const SocketRef & sock, uint32 sendBufferSizeBytes)
+status_t SetSocketSendBufferSize(const ConstSocketRef & sock, uint32 sendBufferSizeBytes)
 {
 #ifdef BEOS_OLD_NETSERVER
    (void) sock;
@@ -676,7 +676,7 @@ status_t SetSocketSendBufferSize(const SocketRef & sock, uint32 sendBufferSizeBy
 #endif
 }
 
-status_t SetSocketReceiveBufferSize(const SocketRef & sock, uint32 receiveBufferSizeBytes)
+status_t SetSocketReceiveBufferSize(const ConstSocketRef & sock, uint32 receiveBufferSizeBytes)
 {
 #ifdef BEOS_OLD_NETSERVER
    (void) sock;
@@ -1013,14 +1013,14 @@ ip_address GetLocalHostIPOverride() {return _customLocalhostIP;}
 
 #ifdef MUSCLE_ENABLE_MULTICAST_API
 
-status_t SetSocketMulticastToSelf(const SocketRef & sock, bool multicastToSelf)
+status_t SetSocketMulticastToSelf(const ConstSocketRef & sock, bool multicastToSelf)
 {
    uint8 toSelf = (uint8) multicastToSelf;
    int fd = sock.GetFileDescriptor();
    return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (const sockopt_arg *) &toSelf, sizeof(toSelf)) == 0)) ? B_NO_ERROR : B_ERROR;
 }
 
-bool GetSocketMulticastToSelf(const SocketRef & sock)
+bool GetSocketMulticastToSelf(const ConstSocketRef & sock)
 {
    uint8 toSelf;
    muscle_socklen_t size = sizeof(toSelf);
@@ -1028,13 +1028,13 @@ bool GetSocketMulticastToSelf(const SocketRef & sock)
    return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (sockopt_arg *) &toSelf, &size) == 0)&&(size == sizeof(toSelf))&&(toSelf));
 }
 
-status_t SetSocketMulticastTimeToLive(const SocketRef & sock, uint8 ttl)
+status_t SetSocketMulticastTimeToLive(const ConstSocketRef & sock, uint8 ttl)
 {
    int fd = sock.GetFileDescriptor();
    return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (const sockopt_arg *) &ttl, sizeof(ttl)) == 0)) ? B_NO_ERROR : B_ERROR;
 }
 
-uint8 GetSocketMulticastTimeToLive(const SocketRef & sock)
+uint8 GetSocketMulticastTimeToLive(const ConstSocketRef & sock)
 {
    uint8 ttl = 0;
    muscle_socklen_t size = sizeof(ttl);
@@ -1042,7 +1042,7 @@ uint8 GetSocketMulticastTimeToLive(const SocketRef & sock)
    return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (sockopt_arg *) &ttl, &size) == 0)&&(size == sizeof(ttl))) ? ttl : 0;
 }
 
-status_t SetSocketMulticastSendInterfaceAddress(const SocketRef & sock, const ip_address & address)
+status_t SetSocketMulticastSendInterfaceAddress(const ConstSocketRef & sock, const ip_address & address)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return B_ERROR;
@@ -1053,7 +1053,7 @@ status_t SetSocketMulticastSendInterfaceAddress(const SocketRef & sock, const ip
    return (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (const sockopt_arg *) &localInterface, sizeof(localInterface)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
-ip_address GetSocketMulticastSendInterfaceAddress(const SocketRef & sock)
+ip_address GetSocketMulticastSendInterfaceAddress(const ConstSocketRef & sock)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return invalidIP;
@@ -1064,7 +1064,7 @@ ip_address GetSocketMulticastSendInterfaceAddress(const SocketRef & sock)
    return ((getsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (sockopt_arg *) &localInterface, &len) == 0)&&(len == sizeof(localInterface))) ? ntohl(localInterface.s_addr) : invalidIP;
 }
 
-status_t AddSocketToMulticastGroup(const SocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
+status_t AddSocketToMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return invalidIP;
@@ -1075,7 +1075,7 @@ status_t AddSocketToMulticastGroup(const SocketRef & sock, const ip_address & gr
    return (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (const sockopt_arg *) &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
-status_t RemoveSocketFromMulticastGroup(const SocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
+status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return invalidIP;

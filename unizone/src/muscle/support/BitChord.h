@@ -112,7 +112,7 @@ public:
    }
 
    /** Returns the number of bits that are represented by this bit-chord, as specified in the template arguments */
-   const uint32 GetNumBitsInBitChord() const {return NumBits;}
+   uint32 GetNumBitsInBitChord() const {return NumBits;}
 
    /** Returns a hexadecimal representation of this bit-chord. */
    String ToHexString() const

@@ -23,7 +23,7 @@ public:
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
-   UDPSocketDataIO(const SocketRef & sock, bool blocking) : _sock(sock)
+   UDPSocketDataIO(const ConstSocketRef & sock, bool blocking) : _sock(sock)
    {
       (void) SetBlockingIOEnabled(blocking);
    }
@@ -65,7 +65,7 @@ public:
    virtual void Shutdown() {_sock.Reset();}
 
    /** Returns our socket descriptor */
-   virtual const SocketRef & GetSelectSocket() const {return _sock;}
+   virtual const ConstSocketRef & GetSelectSocket() const {return _sock;}
 
    /** Call this to make our Write() method use sendto() with the specified
      * destination address and port.  Calling this with (invalidIP, 0) will
@@ -103,7 +103,7 @@ public:
    const IPAddressAndPort & GetSourceOfLastReadPacket() const {return _recvFrom;}
 
 private:
-   SocketRef _sock;
+   ConstSocketRef _sock;
    bool _blocking;
 
    IPAddressAndPort _recvFrom;

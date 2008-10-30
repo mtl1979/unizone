@@ -59,7 +59,7 @@ public:
    /** Should be implemented to return true iff we should traverse the node specified by (path)
      * and his descendants.  If this method returns false, the node specified by (path)
      * will not be traversed, nor will any of his descendants.
-     * @param The relative path of the node that is about to be traversed.
+     * @param path The relative path of the node that is about to be traversed.
      * @param nodeData A reference to the Message to be associated with this node.
      *                 If desired, this can be replaced with a different MessageRef instead
      *                 (but be careful not to modify the Message that (nodeData) points to; 

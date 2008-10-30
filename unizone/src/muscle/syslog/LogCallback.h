@@ -35,8 +35,7 @@ public:
      */
    virtual void Flush() = 0;
 };
-
-typedef Ref<LogCallback> LogCallbackRef;
+DECLARE_REFTYPES(LogCallback);
 
 /** Specialization of LogCallback that parses the Log() calls
  *  into nicely formatted lines of text, then calls LogLine()

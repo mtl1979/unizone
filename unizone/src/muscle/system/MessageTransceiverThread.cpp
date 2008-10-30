@@ -51,7 +51,7 @@ status_t MessageTransceiverThread :: EnsureServerAllocated()
       if (server())
       {
          server()->SetDoLogging(false);
-         const SocketRef & socket = GetInternalThreadWakeupSocket();
+         const ConstSocketRef & socket = GetInternalThreadWakeupSocket();
          if (socket())
          {
             ThreadSupervisorSessionRef controlSession = CreateSupervisorSession();
@@ -59,7 +59,7 @@ status_t MessageTransceiverThread :: EnsureServerAllocated()
             {
                controlSession()->_mtt = this;
                controlSession()->SetDefaultDistributionPath(GetDefaultDistributionPath());
-               if (server()->AddNewSession(AbstractReflectSessionRef(controlSession.GetGeneric(), true), socket) == B_NO_ERROR)
+               if (server()->AddNewSession(AbstractReflectSessionRef(controlSession.GetRefCountableRef(), true), socket) == B_NO_ERROR)
                {
                   _server = server;
                   return B_NO_ERROR;
@@ -92,13 +92,13 @@ status_t MessageTransceiverThread :: SendMessageToSessions(const MessageRef & us
    return ((msgRef())&&(msgRef()->AddMessage(MTT_NAME_MESSAGE, userMsg) == B_NO_ERROR)&&((optPath==NULL)||(msgRef()->AddString(MTT_NAME_PATH, optPath) == B_NO_ERROR))) ? SendMessageToInternalThread(msgRef) : B_ERROR;
 }
 
-status_t MessageTransceiverThread :: AddNewSession(const SocketRef & socket, const ThreadWorkerSessionRef & sessionRef)
+status_t MessageTransceiverThread :: AddNewSession(const ConstSocketRef & socket, const ThreadWorkerSessionRef & sessionRef)
 {
    if (EnsureServerAllocated() == B_NO_ERROR)
    {
       ThreadWorkerSessionRef sRef = sessionRef;
       if (sRef() == NULL) sRef = CreateDefaultWorkerSession();
-      return (sRef()) ? (IsInternalThreadRunning() ? SendAddNewSessionMessage(sRef, socket, NULL, invalidIP, 0, false, MUSCLE_TIME_NEVER) : _server()->AddNewSession(AbstractReflectSessionRef(sRef.GetGeneric(), false), socket)) : B_ERROR;
+      return (sRef()) ? (IsInternalThreadRunning() ? SendAddNewSessionMessage(sRef, socket, NULL, invalidIP, 0, false, MUSCLE_TIME_NEVER) : _server()->AddNewSession(AbstractReflectSessionRef(sRef.GetRefCountableRef(), false), socket)) : B_ERROR;
    }
    return B_ERROR;
 }
@@ -109,7 +109,7 @@ status_t MessageTransceiverThread :: AddNewConnectSession(const ip_address & tar
    {
       ThreadWorkerSessionRef sRef = sessionRef;
       if (sRef() == NULL) sRef = CreateDefaultWorkerSession();
-      return (sRef()) ? (IsInternalThreadRunning() ? SendAddNewSessionMessage(sRef, SocketRef(), NULL, targetIPAddress, port, false, autoReconnectDelay) : _server()->AddNewConnectSession(AbstractReflectSessionRef(sRef.GetGeneric(), false), targetIPAddress, port, autoReconnectDelay)) : B_ERROR;
+      return (sRef()) ? (IsInternalThreadRunning() ? SendAddNewSessionMessage(sRef, ConstSocketRef(), NULL, targetIPAddress, port, false, autoReconnectDelay) : _server()->AddNewConnectSession(AbstractReflectSessionRef(sRef.GetRefCountableRef(), false), targetIPAddress, port, autoReconnectDelay)) : B_ERROR;
    }
    return B_ERROR;
 }
@@ -122,28 +122,28 @@ status_t MessageTransceiverThread :: AddNewConnectSession(const String & targetH
       if (sRef() == NULL) sRef = CreateDefaultWorkerSession();
       if (sRef())
       {
-         if (IsInternalThreadRunning()) return SendAddNewSessionMessage(sRef, SocketRef(), targetHostName(), 0, port, expandLocalhost, autoReconnectDelay);
+         if (IsInternalThreadRunning()) return SendAddNewSessionMessage(sRef, ConstSocketRef(), targetHostName(), 0, port, expandLocalhost, autoReconnectDelay);
          else
          {
             ip_address ip = GetHostByName(targetHostName(), expandLocalhost);
-            return (ip != invalidIP) ? _server()->AddNewConnectSession(AbstractReflectSessionRef(sRef.GetGeneric(), true), ip, port, autoReconnectDelay) : B_ERROR;
+            return (ip != invalidIP) ? _server()->AddNewConnectSession(AbstractReflectSessionRef(sRef.GetRefCountableRef(), true), ip, port, autoReconnectDelay) : B_ERROR;
          }
       }
    }
    return B_ERROR;
 }
 
-status_t MessageTransceiverThread :: SendAddNewSessionMessage(const ThreadWorkerSessionRef & sessionRef, const SocketRef & socket, const char * hostName, const ip_address & hostIP, uint16 port, bool expandLocalhost, uint64 autoReconnectDelay)
+status_t MessageTransceiverThread :: SendAddNewSessionMessage(const ThreadWorkerSessionRef & sessionRef, const ConstSocketRef & socket, const char * hostName, const ip_address & hostIP, uint16 port, bool expandLocalhost, uint64 autoReconnectDelay)
 {
    MessageRef msgRef(GetMessageFromPool(MTT_COMMAND_ADD_NEW_SESSION));
 
    return ((sessionRef())&&(msgRef())&&
-       (msgRef()->AddTag(MTT_NAME_SESSION, sessionRef.GetGeneric())                          == B_NO_ERROR) &&
-       ((hostName == NULL)||(msgRef()->AddString(MTT_NAME_HOSTNAME,  hostName)               == B_NO_ERROR))&&
-       ((hostIP   == invalidIP)||(AddIPAddressToMessage(*msgRef(), MTT_NAME_IP_ADDRESS, hostIP) == B_NO_ERROR))&&
-       ((port     == 0)   ||(msgRef()->AddInt16(MTT_NAME_PORT,       port)                   == B_NO_ERROR))&&
-       ((expandLocalhost == false)||(msgRef()->AddBool(MTT_NAME_EXPANDLOCALHOST, true)       == B_NO_ERROR))&&
-       ((socket() == NULL)||(msgRef()->AddTag(MTT_NAME_SOCKET,       socket.GetGeneric())    == B_NO_ERROR))&&
+       (msgRef()->AddTag(MTT_NAME_SESSION, sessionRef.GetRefCountableRef())                       == B_NO_ERROR) &&
+       ((hostName == NULL)||(msgRef()->AddString(MTT_NAME_HOSTNAME,  hostName)                    == B_NO_ERROR))&&
+       ((hostIP   == invalidIP)||(AddIPAddressToMessage(*msgRef(), MTT_NAME_IP_ADDRESS, hostIP)   == B_NO_ERROR))&&
+       ((port     == 0)   ||(msgRef()->AddInt16(MTT_NAME_PORT,       port)                        == B_NO_ERROR))&&
+       ((expandLocalhost == false)||(msgRef()->AddBool(MTT_NAME_EXPANDLOCALHOST, true)            == B_NO_ERROR))&&
+       ((socket() == NULL)||(msgRef()->AddTag(MTT_NAME_SOCKET,       CastAwayConstFromRef(socket.GetRefCountableRef())) == B_NO_ERROR))&&
        ((autoReconnectDelay == MUSCLE_TIME_NEVER)||(msgRef()->AddInt64(MTT_NAME_AUTORECONNECTDELAY, autoReconnectDelay) == B_NO_ERROR)))
        ? SendMessageToInternalThread(msgRef) : B_ERROR;
 }
@@ -159,9 +159,9 @@ status_t MessageTransceiverThread :: PutAcceptFactory(uint16 port, const ThreadW
          if (IsInternalThreadRunning())
          {
             MessageRef msgRef(GetMessageFromPool(MTT_COMMAND_PUT_ACCEPT_FACTORY));
-            if ((msgRef())&&(msgRef()->AddInt16(MTT_NAME_PORT, port) == B_NO_ERROR)&&(msgRef()->AddTag(MTT_NAME_FACTORY, fRef.GetGeneric()) == B_NO_ERROR)&&(AddIPAddressToMessage(*msgRef(), MTT_NAME_IP_ADDRESS, optInterfaceIP) == B_NO_ERROR)&&(SendMessageToInternalThread(msgRef) == B_NO_ERROR)) return B_NO_ERROR;
+            if ((msgRef())&&(msgRef()->AddInt16(MTT_NAME_PORT, port) == B_NO_ERROR)&&(msgRef()->AddTag(MTT_NAME_FACTORY, fRef.GetRefCountableRef()) == B_NO_ERROR)&&(AddIPAddressToMessage(*msgRef(), MTT_NAME_IP_ADDRESS, optInterfaceIP) == B_NO_ERROR)&&(SendMessageToInternalThread(msgRef) == B_NO_ERROR)) return B_NO_ERROR;
          }
-         else if (_server()->PutAcceptFactory(port, ReflectSessionFactoryRef(fRef.GetGeneric(), true), optInterfaceIP, optRetPort) == B_NO_ERROR) return B_NO_ERROR;
+         else if (_server()->PutAcceptFactory(port, ReflectSessionFactoryRef(fRef.GetRefCountableRef(), true), optInterfaceIP, optRetPort) == B_NO_ERROR) return B_NO_ERROR;
       }
    }
    return B_ERROR;
@@ -230,7 +230,7 @@ status_t MessageTransceiverThread :: RequestOutputQueuesDrainedNotification(cons
    {
       DrainTagRef drainTagRef(optDrainTag ? optDrainTag : newnothrow DrainTag);
       if (drainTagRef()) drainTagRef()->SetReplyMessage(replyRef);
-      GenericRef genericRef = drainTagRef.GetGeneric();
+      RefCountableRef genericRef = drainTagRef.GetRefCountableRef();
       if ((drainTagRef())&&
           ((optDistPath == NULL)||(commandRef()->AddString(MTT_NAME_PATH, optDistPath) == B_NO_ERROR))&&
           (commandRef()->AddTag(MTT_NAME_DRAIN_TAG, genericRef)                        == B_NO_ERROR)&&
@@ -247,22 +247,22 @@ status_t MessageTransceiverThread :: RequestOutputQueuesDrainedNotification(cons
    return B_ERROR;
 }
 
-status_t MessageTransceiverThread :: SetNewInputPolicy(const PolicyRef & pref, const char * optDistPath)
+status_t MessageTransceiverThread :: SetNewInputPolicy(const AbstractSessionIOPolicyRef & pref, const char * optDistPath)
 {
    return SetNewPolicyAux(MTT_COMMAND_SET_INPUT_POLICY, pref, optDistPath);
 }
 
-status_t MessageTransceiverThread :: SetNewOutputPolicy(const PolicyRef & pref, const char * optDistPath)
+status_t MessageTransceiverThread :: SetNewOutputPolicy(const AbstractSessionIOPolicyRef & pref, const char * optDistPath)
 {
    return SetNewPolicyAux(MTT_COMMAND_SET_OUTPUT_POLICY, pref, optDistPath);
 }
 
-status_t MessageTransceiverThread :: SetNewPolicyAux(uint32 what, const PolicyRef & pref, const char * optDistPath)    
+status_t MessageTransceiverThread :: SetNewPolicyAux(uint32 what, const AbstractSessionIOPolicyRef & pref, const char * optDistPath)    
 {
    MessageRef commandRef = GetMessageFromPool(what);
    return ((commandRef())&&
            ((optDistPath == NULL)||(commandRef()->AddString(MTT_NAME_PATH, optDistPath)     == B_NO_ERROR))&&
-           ((pref() == NULL)||(commandRef()->AddTag(MTT_NAME_POLICY_TAG, pref.GetGeneric()) == B_NO_ERROR)))
+           ((pref() == NULL)||(commandRef()->AddTag(MTT_NAME_POLICY_TAG, pref.GetRefCountableRef()) == B_NO_ERROR)))
            ? SendMessageToInternalThread(commandRef) : B_ERROR;
 }
 
@@ -351,7 +351,7 @@ AbstractReflectSessionRef ThreadWorkerSessionFactory :: CreateSession(const Stri
    if ((tws())&&(SetMaxIncomingMessageSizeFor(tws()) == B_NO_ERROR))
    {
       tws()->_sendAcceptedMessage = true;  // gotta send the MTT_EVENT_SESSION_ACCEPTED Message from within AttachedToServer()
-      return AbstractReflectSessionRef(tws.GetGeneric(), true);
+      return AbstractReflectSessionRef(tws.GetRefCountableRef(), true);
    }
    return AbstractReflectSessionRef();
 }
@@ -440,7 +440,7 @@ void ThreadWorkerSession :: MessageReceivedFromSession(AbstractReflectSession & 
          {
             case MTT_COMMAND_NOTIFY_ON_OUTPUT_DRAIN:
             {
-               GenericRef genericRef;
+               RefCountableRef genericRef;
                if (msg->FindTag(MTT_NAME_DRAIN_TAG, genericRef) == B_NO_ERROR)
                {
                   DrainTagRef drainTagRef(genericRef, true);
@@ -471,9 +471,9 @@ void ThreadWorkerSession :: MessageReceivedFromSession(AbstractReflectSession & 
             case MTT_COMMAND_SET_INPUT_POLICY:
             case MTT_COMMAND_SET_OUTPUT_POLICY:
             {
-               GenericRef tagRef;
+               RefCountableRef tagRef;
                (void) msg->FindTag(MTT_NAME_POLICY_TAG, tagRef);
-               PolicyRef pref(tagRef, true);
+               AbstractSessionIOPolicyRef pref(tagRef, true);
                if (msg->what == MTT_COMMAND_SET_INPUT_POLICY) SetInputPolicy(pref);
                                                          else SetOutputPolicy(pref);
             }
@@ -573,7 +573,7 @@ bool ThreadSupervisorSession :: ClientConnectionClosed()
 
 status_t ThreadSupervisorSession :: AddNewWorkerConnectSession(const ThreadWorkerSessionRef & sessionRef, const ip_address & hostIP, uint16 port, uint64 autoReconnectDelay)
 {
-   status_t ret = (hostIP != invalidIP) ? AddNewConnectSession(AbstractReflectSessionRef(sessionRef.GetGeneric(), true), hostIP, port, autoReconnectDelay) : B_ERROR;
+   status_t ret = (hostIP != invalidIP) ? AddNewConnectSession(AbstractReflectSessionRef(sessionRef.GetRefCountableRef(), true), hostIP, port, autoReconnectDelay) : B_ERROR;
 
    // For immediate failure: Since (sessionRef) never attached, we need to send the disconnect message ourself.
    if (ret != B_NO_ERROR) MessageReceivedFromSession(*sessionRef(), GetMessageFromPool(MTT_EVENT_SESSION_DISCONNECTED), NULL);
@@ -597,7 +597,7 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
          {
             case MTT_COMMAND_ADD_NEW_SESSION:
             {
-               GenericRef tagRef;
+               RefCountableRef tagRef;
                if (msg->FindTag(MTT_NAME_SESSION, tagRef) == B_NO_ERROR)
                {
                   ThreadWorkerSessionRef sessionRef(tagRef, true);
@@ -616,8 +616,8 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
                      }
                      else
                      {
-                        GenericRef genericRef; (void) msg->FindTag(MTT_NAME_SOCKET, genericRef);
-                        (void) AddNewSession(AbstractReflectSessionRef(sessionRef.GetGeneric(), true), SocketRef(genericRef, true));
+                        RefCountableRef genericRef; (void) msg->FindTag(MTT_NAME_SOCKET, genericRef);
+                        (void) AddNewSession(AbstractReflectSessionRef(sessionRef.GetRefCountableRef(), true), ConstSocketRef(genericRef, true));
                      }
                   }
                   else LogTime(MUSCLE_LOG_ERROR, "MTT_COMMAND_PUT_ACCEPT_FACTORY:  Couldn't get Session!\n");
@@ -627,7 +627,7 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
 
             case MTT_COMMAND_PUT_ACCEPT_FACTORY:
             {
-               GenericRef tagRef;
+               RefCountableRef tagRef;
                if (msg->FindTag(MTT_NAME_FACTORY, tagRef) == B_NO_ERROR)
                {
                   ThreadWorkerSessionFactoryRef factoryRef(tagRef, true);
@@ -635,7 +635,7 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
                   {
                      uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, (int16*)&port);
                      ip_address ip = invalidIP; (void) FindIPAddressInMessage(*msg, MTT_NAME_IP_ADDRESS, ip);
-                     (void) PutAcceptFactory(port, ReflectSessionFactoryRef(factoryRef.GetGeneric(), true), ip);
+                     (void) PutAcceptFactory(port, ReflectSessionFactoryRef(factoryRef.GetRefCountableRef(), true), ip);
                   }
                   else LogTime(MUSCLE_LOG_ERROR, "MTT_COMMAND_PUT_ACCEPT_FACTORY:  Couldn't get ReflectSessionFactory!\n");
                }
@@ -660,7 +660,7 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
 
             case MTT_COMMAND_NOTIFY_ON_OUTPUT_DRAIN:
             {
-               GenericRef genericRef;
+               RefCountableRef genericRef;
                if (msg->FindTag(MTT_NAME_DRAIN_TAG, genericRef) == B_NO_ERROR)
                {
                   DrainTagRef drainTagRef(genericRef, true);

@@ -86,7 +86,7 @@ public:
 
    /**
     * If this DataIO is usable with select(), this method should return
-    * the SocketRef object containing the file descriptor to select on 
+    * the ConstSocketRef object containing the file descriptor to select on 
     * for this DataIO.  If this DataIO isn't usable with select(), then 
     * this method should return GetNullSocket().
     *
@@ -96,7 +96,7 @@ public:
     * on this file descriptor directly, the results are non-portable and undefined 
     * and will probably break your program.
     */
-   virtual const SocketRef & GetSelectSocket() const = 0;
+   virtual const ConstSocketRef & GetSelectSocket() const = 0;
 
    /**
     * Optional interface for returning information on when a given byte
@@ -157,8 +157,7 @@ public:
      */
    virtual int64 GetLength();
 };
-
-typedef Ref<DataIO> DataIORef;
+DECLARE_REFTYPES(DataIO);
 
 END_NAMESPACE(muscle);
 

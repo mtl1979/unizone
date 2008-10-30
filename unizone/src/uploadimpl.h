@@ -43,7 +43,7 @@ public:
 		UpLoad
 	};
 
-	void AddUpload(const SocketRef & socket, uint32 remoteIP, bool queued);
+	void AddUpload(const ConstSocketRef & socket, uint32 remoteIP, bool queued);
 	void AddUpload(const QString & remoteIP, uint32 port);
 
 	// Upload tunnel

@@ -29,7 +29,7 @@ BEGIN_NAMESPACE(muscle);
 
 status_t
 ReflectServer ::
-AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & ss)
+AddNewSession(const AbstractReflectSessionRef & ref, const ConstSocketRef & ss)
 {
    TCHECKPOINT;
 
@@ -38,7 +38,7 @@ AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & ss)
 
    newSession->SetOwner(this);  // in case CreateGateway() needs to use the owner
 
-   SocketRef s = ss;
+   ConstSocketRef s = ss;
    if (s() == NULL) s = ref()->CreateDefaultSocket();
 
    // Create the gateway object for this session, if it isn't already set up
@@ -69,7 +69,7 @@ AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & ss)
    // Set our hostname (IP address) string if it isn't already set
    if (newSession->_hostName.IsEmpty())
    {
-      const SocketRef & sock = newSession->GetSessionSelectSocket();
+      const ConstSocketRef & sock = newSession->GetSessionSelectSocket();
       if (sock.GetFileDescriptor() >= 0)
       {
          ip_address ip = GetPeerIPAddress(sock, true);
@@ -95,11 +95,26 @@ AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & d
    AbstractReflectSession * session = ref();
    if (session)
    {
-      SocketRef sock = ConnectAsync(destIP, port, session->_isConnected);
+      ConstSocketRef sock = ConnectAsync(destIP, port, session->_isConnected);
+
+      // FogBugz #5256:  If ConnectAsync() fails, we want to act as if it succeeded, so that the calling
+      //                 code still uses its normal asynchronous-connect-failure code path.  That way the
+      //                 caller doesn't have to worry about synchronous failure as a separate case.
+      bool isHack = false;
+      if (sock() == NULL)
+      {
+         ConstSocketRef tempSockRef;  // tempSockRef represents the closed remote end of the failed connection and is intentionally closed ASAP
+         if (CreateConnectedSocketPair(sock, tempSockRef) == B_NO_ERROR) 
+         {
+            session->_isConnected = false;
+            isHack = true;
+         }
+      }
+
       if (sock())
       {
          session->_asyncConnectDest = IPAddressAndPort(destIP, port);
-         session->_connectingAsync  = !session->_isConnected;
+         session->_connectingAsync  = ((isHack == false)&&(session->_isConnected == false));
 
          char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
          session->_hostName = (destIP != invalidIP) ? ipbuf : "<unknown>";
@@ -136,7 +151,7 @@ AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_addr
       session->_asyncConnectDest = IPAddressAndPort(destIP, port);
       char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
       session->_hostName = (destIP != invalidIP) ? ipbuf : "<unknown>";
-      status_t ret = AddNewSession(ref, SocketRef());
+      status_t ret = AddNewSession(ref, ConstSocketRef());
       if (ret == B_NO_ERROR)
       {
          if (autoReconnectDelay != MUSCLE_TIME_NEVER) session->SetAutoReconnectDelay(autoReconnectDelay);
@@ -235,7 +250,7 @@ GetServerName() const
 /** Makes sure the given policy has its BeginIO() called, if necessary, and returns it */
 uint32
 ReflectServer :: 
-CheckPolicy(Hashtable<PolicyRef, bool> & policies, const PolicyRef & policyRef, const PolicyHolder & ph, uint64 now) const
+CheckPolicy(Hashtable<AbstractSessionIOPolicyRef, bool> & policies, const AbstractSessionIOPolicyRef & policyRef, const PolicyHolder & ph, uint64 now) const
 {
    AbstractSessionIOPolicy * p = policyRef();
    if (p)
@@ -332,7 +347,7 @@ ServerProcessLoop()
 
    // The primary event loop for any MUSCLE-based server!
    // These variables are used as scratch space, but are declared outside the loop to avoid having to reinitialize them all the time.
-   Hashtable<PolicyRef, bool> policies;
+   Hashtable<AbstractSessionIOPolicyRef, bool> policies;
    fd_set readSet;
    fd_set writeSet;
 #ifdef WIN32
@@ -365,7 +380,7 @@ ServerProcessLoop()
             ReflectSessionFactoryRef * nextValue;
             while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
             {
-               SocketRef * nextAcceptSocket = nextValue->GetItemPointer()->IsReadyToAcceptSessions() ? _factorySockets.Get(*nextKey) : NULL;
+               ConstSocketRef * nextAcceptSocket = nextValue->GetItemPointer()->IsReadyToAcceptSessions() ? _factorySockets.Get(*nextKey) : NULL;
                int nfd = nextAcceptSocket ? nextAcceptSocket->GetFileDescriptor() : -1;
                if (nfd >= 0)
                {
@@ -469,8 +484,8 @@ ServerProcessLoop()
             // Now that all is prepared, calculate all the policies' wakeup times
             {
                TCHECKPOINT;
-               HashtableIterator<PolicyRef, bool> iter(policies);
-               const PolicyRef * next;
+               HashtableIterator<AbstractSessionIOPolicyRef, bool> iter(policies);
+               const AbstractSessionIOPolicyRef * next;
                while((next = iter.GetNextKey()) != NULL) CallGetPulseTimeAux(*(next->GetItemPointer()), now, nextPulseAt);
                TCHECKPOINT;
             }
@@ -644,8 +659,8 @@ ServerProcessLoop()
          // Tell the session policies we're done doing I/O (for now)
          if (policies.HasItems())
          {
-            const PolicyRef * next;
-            HashtableIterator<PolicyRef, bool> iter(policies);
+            const AbstractSessionIOPolicyRef * next;
+            HashtableIterator<AbstractSessionIOPolicyRef, bool> iter(policies);
             while((next = iter.GetNextKey()) != NULL) 
             {
                AbstractSessionIOPolicy * p = next->GetItemPointer();
@@ -660,8 +675,8 @@ ServerProcessLoop()
          // Pulse the Policies
          if (policies.HasItems())
          {
-            const PolicyRef * next;
-            HashtableIterator<PolicyRef, bool> iter(policies);
+            const AbstractSessionIOPolicyRef * next;
+            HashtableIterator<AbstractSessionIOPolicyRef, bool> iter(policies);
             while((next = iter.GetNextKey()) != NULL) CallPulseAux(*(next->GetItemPointer()), GetRunTime64());
          }
 
@@ -686,7 +701,7 @@ ServerProcessLoop()
 
             if (factory->IsReadyToAcceptSessions())
             {
-               SocketRef * as = _factorySockets.Get(*iap);
+               ConstSocketRef * as = _factorySockets.Get(*iap);
                int fd = as ? as->GetFileDescriptor() : -1;
                if ((fd >= 0)&&(FD_ISSET(fd, &readSet))) (void) DoAccept(*iap, *as, factory);
             }
@@ -750,11 +765,11 @@ void ReflectServer :: LogAcceptFailed(int lvl, const char * desc, const char * i
    }
 }
 
-status_t ReflectServer :: DoAccept(const IPAddressAndPort & iap, const SocketRef & acceptSocket, ReflectSessionFactory * optFactory)
+status_t ReflectServer :: DoAccept(const IPAddressAndPort & iap, const ConstSocketRef & acceptSocket, ReflectSessionFactory * optFactory)
 {
    // Accept a new connection and try to start up a session for it
    ip_address acceptedFromIP;
-   SocketRef newSocket = Accept(acceptSocket, &acceptedFromIP);
+   ConstSocketRef newSocket = Accept(acceptSocket, &acceptedFromIP);
    if (newSocket())
    {
       IPAddressAndPort nip(acceptedFromIP, iap.GetPort());
@@ -924,7 +939,7 @@ PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef, const
    ReflectSessionFactory * f = factoryRef();
    if (f)
    {
-      SocketRef acceptSocket = CreateAcceptingSocket(port, 20, &port, optInterfaceIP);
+      ConstSocketRef acceptSocket = CreateAcceptingSocket(port, 20, &port, optInterfaceIP);
       if (acceptSocket())
       {
          IPAddressAndPort iap(optInterfaceIP, port);

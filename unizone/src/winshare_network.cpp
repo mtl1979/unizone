@@ -3051,7 +3051,7 @@ WinShareWindow::SendRejectedNotification(const MessageRef & rej)
 }
 
 void
-WinShareWindow::ConnectionAccepted(const SocketRef &socketRef)
+WinShareWindow::ConnectionAccepted(const ConstSocketRef &socketRef)
 {
 	PRINT("\tWinShareWindow::ConnectionAccepted\n");
 	uint32 ip;

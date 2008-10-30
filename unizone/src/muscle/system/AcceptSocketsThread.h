@@ -14,10 +14,10 @@ enum {
    AST_LAST_EVENT
 };
 
-#define AST_NAME_SOCKET "socket"  // field name where we store our SocketRef in our reply Messages.
+#define AST_NAME_SOCKET "socket"  // field name where we store our ConstSocketRef in our reply Messages.
 
 /** A thread that waits for TCP connections on a given port, and when it gets one, 
-  * it sends the socket to its owner via a SocketRef.
+  * it sends the socket to its owner via a ConstSocketRef.
   */
 class AcceptSocketsThread : public Thread
 {
@@ -58,8 +58,8 @@ protected:
 
 private:
    uint16 _port;
-   SocketRef _notifySocket;
-   SocketRef _acceptSocket;
+   ConstSocketRef _notifySocket;
+   ConstSocketRef _acceptSocket;
 };
 
 };

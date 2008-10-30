@@ -995,9 +995,9 @@ WDownloadThread::SetRate(int rate)
 {
 	fTXRate = rate;
 	if (rate != 0)
-		qmtt->SetNewInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
+		qmtt->SetNewInputPolicy(AbstractSessionIOPolicyRef(new RateLimitSessionIOPolicy(rate)));
 	else
-		qmtt->SetNewInputPolicy(PolicyRef(NULL));
+		qmtt->SetNewInputPolicy(AbstractSessionIOPolicyRef(NULL));
 }
 
 void
@@ -1005,9 +1005,9 @@ WDownloadThread::SetRate(int rate, ThreadWorkerSessionRef & ref)
 {
 	fTXRate = rate;
 	if (rate != 0)
-		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
+		ref()->SetInputPolicy(AbstractSessionIOPolicyRef(new RateLimitSessionIOPolicy(rate)));
 	else
-		ref()->SetInputPolicy(PolicyRef(NULL));
+		ref()->SetInputPolicy(AbstractSessionIOPolicyRef(NULL));
 }
 
 

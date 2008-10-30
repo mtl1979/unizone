@@ -663,7 +663,9 @@ private:
 };
 DECLARE_HASHTABLE_KEY_CLASS(String);
 
-// Also we want to allow C Strings to be used as keys in a Hashtable too
+/** This HashFunctor lets us use (const char *)'s as keys in a Hashtable.  They will be 
+  * hashed based on contents of the string they point to.
+  */
 template <> class HashFunctor<const char *>
 {
 public:

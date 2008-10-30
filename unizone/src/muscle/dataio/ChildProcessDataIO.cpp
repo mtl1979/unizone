@@ -178,7 +178,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
       // New-fangled forkpty() implementation
       int masterFD = -1;
       pid = forkpty(&masterFD, NULL, NULL, NULL);
-           if (pid > 0) _handle = GetSocketRefFromPool(masterFD); 
+           if (pid > 0) _handle = GetConstSocketRefFromPool(masterFD); 
       else if (pid == 0)
       {
          // Turn off the echo, we don't want to see that back on stdout
@@ -195,7 +195,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
    else
    {
       // Old-fashioned fork() implementation
-      SocketRef masterSock, slaveSock;
+      ConstSocketRef masterSock, slaveSock;
       if (CreateConnectedSocketPair(masterSock, slaveSock, true) != B_NO_ERROR) return B_ERROR;
       pid = fork();
            if (pid > 0) _handle = masterSock;
@@ -402,7 +402,7 @@ void ChildProcessDataIO :: ChildProcessReadyToRun()
    // empty
 }
 
-const SocketRef & ChildProcessDataIO :: GetSelectSocket() const
+const ConstSocketRef & ChildProcessDataIO :: GetSelectSocket() const
 {
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    return _blocking ? GetNullSocket() : _masterNotifySocket;

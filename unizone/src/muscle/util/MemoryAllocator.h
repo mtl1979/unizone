@@ -74,8 +74,7 @@ public:
 private:
    bool _hasAllocationFailed;
 };
-
-typedef Ref<MemoryAllocator> MemoryAllocatorRef;
+DECLARE_REFTYPES(MemoryAllocator);
 
 /** Convenience class, used for easy subclassing:  holds a slave MemoryAllocator and passes all method
   * calls on through to the slave.
@@ -153,9 +152,7 @@ public:
      */
    virtual void OutOfMemory() = 0;
 };
-
-/** Convenience type for referencing an OutOfMemoryCallback */
-typedef Ref<OutOfMemoryCallback> OutOfMemoryCallbackRef;
+DECLARE_REFTYPES(OutOfMemoryCallback);
 
 /** A handy little class--instead of having to subclass, it will call the function you specify */
 class FunctionOutOfMemoryCallback : public OutOfMemoryCallback

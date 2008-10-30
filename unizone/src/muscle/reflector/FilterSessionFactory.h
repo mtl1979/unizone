@@ -79,10 +79,10 @@ public:
    void RemoveMatchingRequirePatterns(const String & exp);
 
    /** Sets the input-bandwidth-allocation policy to apply to sessions that we create */
-   void SetInputPolicy(const PolicyRef & ref) {_inputPolicyRef = ref;}
+   void SetInputPolicy(const AbstractSessionIOPolicyRef & ref) {_inputPolicyRef = ref;}
 
    /** Sets the output-bandwidth-allocation policy to apply to sessions that we create */
-   void SetOutputPolicy(const PolicyRef & ref) {_outputPolicyRef = ref;}
+   void SetOutputPolicy(const AbstractSessionIOPolicyRef & ref) {_outputPolicyRef = ref;}
 
    /** Sets the new max-sessions-per-host limit -- i.e. how many sessions from any given IP address
      * may be connected to our server concurrently.
@@ -103,8 +103,8 @@ private:
    Hashtable<String, StringMatcherRef> _requires;
    AbstractReflectSession * _tempLogFor;
 
-   PolicyRef _inputPolicyRef;
-   PolicyRef _outputPolicyRef;
+   AbstractSessionIOPolicyRef _inputPolicyRef;
+   AbstractSessionIOPolicyRef _outputPolicyRef;
 
    uint32 _maxSessionsPerHost;
    uint32 _totalMaxSessions;

@@ -878,7 +878,6 @@ public:
     *  just-placed value.
     *  (average O(1) insertion time, unless auto-sorting is enabled, in which case it becomes O(N) insertion time)
     *  @param key The key that the new value is to be associated with.
-    *  @param value The value to associate with the new key.
     *  @return A pointer to the value object in the table on success, or NULL on failure (key already exists, out of memory)
     */
    ValueType * PutIfNotAlreadyPresent(const KeyType & key) 

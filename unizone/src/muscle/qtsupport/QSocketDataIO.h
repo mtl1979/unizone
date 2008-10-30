@@ -31,7 +31,7 @@ public:
    /** Class constructor.
     *  @param newSocket a QSocket object that was allocated off the heap.  This object becomes owner of newSocket.
     */
-   QSocketDataIO(QSocket * newSocket) : _socket(newSocket), _socketRef(newSocket?GetSocketRefFromPool(newSocket, false):SocketRef()) {/* empty */}
+   QSocketDataIO(QSocket * newSocket) : _socket(newSocket), _socketRef(newSocket?GetConstSocketRefFromPool(newSocket, false):ConstSocketRef()) {/* empty */}
 
    /** Destructor - deletes the held QSocket (if any) */
    virtual ~QSocketDataIO() {Shutdown();}
@@ -75,7 +75,7 @@ public:
    virtual void Shutdown() {if (_socket) _socket->close(); delete _socket; _socket = NULL; _socketRef.Reset();}
 
    /** Returns the fd of our QSocket, if any. */
-   virtual const SocketRef & GetSelectSocket() const {return _socket ? _socketRef : GetNullSocket();}
+   virtual const ConstSocketRef & GetSelectSocket() const {return _socket ? _socketRef : GetNullSocket();}
 
    /**
     * Returns the held QSocket object (in case you need to access it directly for some reason)
@@ -90,7 +90,7 @@ public:
    void ReleaseSocket() {_socket = NULL; _socketRef.Neutralize();}
 
 private:
-   SocketRef _socketRef;
+   ConstSocketRef _socketRef;
    QSocket * _socket;
 };
 

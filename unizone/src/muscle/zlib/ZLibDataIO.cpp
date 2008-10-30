@@ -218,7 +218,7 @@ void ZLibDataIO :: Shutdown()
    }
 }
 
-const SocketRef & ZLibDataIO :: GetSelectSocket() const
+const ConstSocketRef & ZLibDataIO :: GetSelectSocket() const
 {
    return (_slaveIO()) ? _slaveIO()->GetSelectSocket() : GetNullSocket();
 }

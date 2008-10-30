@@ -12,7 +12,7 @@ WDownloadThreadWorkerSessionFactory::CreateThreadWorkerSession(const String &, c
 	ThreadWorkerSessionRef ref(new ThreadWorkerSession());
 	if (ref() && fLimit != 0)
 	{
-		ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(fLimit)));
+		ref()->SetInputPolicy(AbstractSessionIOPolicyRef(new RateLimitSessionIOPolicy(fLimit)));
 	}
 	return ref;
 }

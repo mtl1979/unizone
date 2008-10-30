@@ -78,9 +78,7 @@ public:
      */
    virtual bool AcceptsTypeCode(uint32 what) const {return TypeCode() == what;}
 };
-
-/** Type for a reference to a queue of StringMatcher objects. */
-typedef Ref<QueryFilter> QueryFilterRef;
+DECLARE_REFTYPES(QueryFilter);
 
 /** This filter tests the 'what' value of the Message. */
 class WhatCodeQueryFilter : public QueryFilter
@@ -623,6 +621,7 @@ public:
      * @param value The string to compare to the string found in the Message.
      * @param typeCode Typecode to look for in the target Message.  Default is B_ANY_TYPE, indicating that any type code is acceptable.
      * @param index Optional index of the item within the field.  Defaults to zero.
+     * @param assumedValue The value to use if no actual value is found at the specified location in the Message we are filtering.
      */
    RawDataQueryFilter(const String & fieldName, uint8 op, const ByteBufferRef & value, uint32 typeCode, uint32 index, const ByteBufferRef & assumedValue) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _typeCode(typeCode), _default(assumedValue) {/* empty */}
 
@@ -715,6 +714,7 @@ public:
      */
    QueryFilterRef CreateQueryFilter(const Message & msg) const;
 };
+DECLARE_REFTYPES(QueryFilterFactory);
 
 /** This class is MUSCLE's built-in implementation of a QueryFilterFactory.
   * It knows how to create all of the filter types listed in the QUERY_FILTER_TYPE_*
@@ -728,9 +728,6 @@ public:
 
    virtual QueryFilterRef CreateQueryFilter(uint32 typeCode) const;
 };
-
-/** Type for a reference to a queue of StringMatcher objects. */
-typedef Ref<QueryFilterFactory> QueryFilterFactoryRef;
 
 /** Returns a reference to the globally installed QueryFilterFactory object
   * that is used to create QueryFilter objects.  This method is guaranteed

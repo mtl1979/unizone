@@ -10,8 +10,7 @@
 
 BEGIN_NAMESPACE(muscle);
 
-/** Type for a reference to a StringMatcher object. */
-typedef Ref<StringMatcher> StringMatcherRef;
+DECLARE_REFTYPES(StringMatcher);
  
 /** Just a reference-countable list of references to StringMatcher objects */
 class StringMatcherQueue : public Queue<StringMatcherRef>, public RefCountable
@@ -24,7 +23,7 @@ public:
 };
 
 /** Type for a reference to a queue of StringMatcher objects. */
-typedef Ref<StringMatcherQueue> StringMatcherQueueRef;
+DECLARE_REFTYPES(StringMatcherQueue);
 
 /** Returns a point to a singleton ObjectPool that can be used
  *  to minimize the number of StringMatcherQueue allocations and deletions
@@ -159,9 +158,7 @@ private:
    Hashtable<String, PathMatcherEntry> _entries;
    uint32 _numFilters;  // count how many filters are installed; so we can optimize when there are none
 };
-
-typedef Ref<PathMatcher> PathMatcherRef;
-
+DECLARE_REFTYPES(PathMatcher);
 
 /** Returns a pointer into (path) after the (depth)'th '/' char
  *  @param depth the depth in the path to search for (0 == root, 1 == first level, 2 == second, etc.)

@@ -128,7 +128,7 @@ WUploadThread::~WUploadThread()
 }
 
 void
-WUploadThread::SetUpload(const SocketRef &socket, uint32 remoteIP, WFileThread * ft)
+WUploadThread::SetUpload(const ConstSocketRef &socket, uint32 remoteIP, WFileThread * ft)
 {
 	char host[16];
 	fAccept = false;
@@ -963,9 +963,9 @@ WUploadThread::SetRate(int rate)
 	if (!fTunneled)
 	{
 		if (rate != 0)
-			qmtt->SetNewOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
+			qmtt->SetNewOutputPolicy(AbstractSessionIOPolicyRef(new RateLimitSessionIOPolicy(rate)));
 		else
-			qmtt->SetNewOutputPolicy(PolicyRef(NULL));
+			qmtt->SetNewOutputPolicy(AbstractSessionIOPolicyRef(NULL));
 	}
 }
 
@@ -974,9 +974,9 @@ WUploadThread::SetRate(int rate, ThreadWorkerSessionRef & ref)
 {
 	fTXRate = rate;
 	if (rate != 0)
-		ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(rate)));
+		ref()->SetOutputPolicy(AbstractSessionIOPolicyRef(new RateLimitSessionIOPolicy(rate)));
 	else
-		ref()->SetOutputPolicy(PolicyRef(NULL));
+		ref()->SetOutputPolicy(AbstractSessionIOPolicyRef(NULL));
 }
 
 QString

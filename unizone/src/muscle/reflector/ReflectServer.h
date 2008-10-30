@@ -73,12 +73,12 @@ public:
     * @param socket The TCP socket that the new session should use, or a NULL reference, if the new session is to have no client connection (or use the default socket, if CreateDefaultSocket() has been overridden by the session's subclass).  Note that if the session already has a gateway and DataIO installed, then the DataIO's existing socket will be used instead, and this socket will be ignored.
     * @return B_NO_ERROR if the new session was added successfully, or B_ERROR if there was an error setting it up.
     */
-   virtual status_t AddNewSession(const AbstractReflectSessionRef & ref, const SocketRef & socket);
+   virtual status_t AddNewSession(const AbstractReflectSessionRef & ref, const ConstSocketRef & socket);
 
    /** Convenience method:  Calls AddNewSession() with a NULL Socket reference, so the session's default socket
      * (obtained by calling ref()->CreateDefaultSocket()) will be used.
      */
-   status_t AddNewSession(const AbstractReflectSessionRef & ref) {return AddNewSession(ref, SocketRef());}
+   status_t AddNewSession(const AbstractReflectSessionRef & ref) {return AddNewSession(ref, ConstSocketRef());}
 
    /**
     * Like AddNewSession(), only creates a session that connects asynchronously to
@@ -96,8 +96,7 @@ public:
     *                           be attempted, and the session will be removed when the
     *                           connection breaks.  Specifying this is equivalent to calling
     *                           SetAutoReconnectDelay() on (ref).
-    * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error
-    *                    (out-of-memory, or the connect attempt failed immediately)
+    * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error (out-of-memory?)
     */
    status_t AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER); 
 
@@ -115,10 +114,9 @@ public:
     *                           be attempted, and the session will be removed when the
     *                           connection breaks.  Specifying this is equivalent to calling
     *                           SetAutoReconnectDelay() on (ref).
-    * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error
-    *                    (out-of-memory, or the connect attempt failed immediately)
+    * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error (out-of-memory?)
     */
-   status_t AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER); 
+   status_t AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
 
    /**
     * Should be called just before the ReflectServer is to be destroyed.
@@ -255,13 +253,13 @@ private:
    void DumpBoggedSessions();
    status_t RemoveAcceptFactoryAux(const IPAddressAndPort & iap);
    status_t FinalizeAsyncConnect(const AbstractReflectSessionRef & ref);
-   status_t DoAccept(const IPAddressAndPort & iap, const SocketRef & acceptSocket, ReflectSessionFactory * optFactory);
+   status_t DoAccept(const IPAddressAndPort & iap, const ConstSocketRef & acceptSocket, ReflectSessionFactory * optFactory);
    void LogAcceptFailed(int lvl, const char * desc, const char * ipbuf, const IPAddressAndPort & iap);
-   uint32 CheckPolicy(Hashtable<PolicyRef, bool> & policies, const PolicyRef & policyRef, const PolicyHolder & ph, uint64 now) const;
+   uint32 CheckPolicy(Hashtable<AbstractSessionIOPolicyRef, bool> & policies, const AbstractSessionIOPolicyRef & policyRef, const PolicyHolder & ph, uint64 now) const;
    void CheckForOutOfMemory(const AbstractReflectSessionRef & optSessionRef);
 
    Hashtable<IPAddressAndPort, ReflectSessionFactoryRef> _factories;
-   Hashtable<IPAddressAndPort, SocketRef> _factorySockets;
+   Hashtable<IPAddressAndPort, ConstSocketRef> _factorySockets;
 
    Queue<ReflectSessionFactoryRef> _lameDuckFactories;  // for delayed-deletion of factories when they go away
 
@@ -276,7 +274,7 @@ private:
 
    MemoryAllocator * _watchMemUsage; 
 };
-typedef Ref<ReflectServer> ReflectServerRef;
+DECLARE_REFTYPES(ReflectServer);
 
 /** Returns true iff any signals were caught by the signal handler since the last time
   * SetSignalHandlingEnabled() was called.  Will always return false if SetSignalHandlingEnabled()

@@ -255,7 +255,7 @@ QMessageTransceiverHandler :: ~QMessageTransceiverHandler()
    (void) Reset(false);  // yes, it's virtual... but that's okay, it will just call our implementation
 }
 
-status_t QMessageTransceiverHandler :: SetupAsNewSession(IMessageTransceiverMaster & master, const SocketRef & sock, const ThreadWorkerSessionRef & optSessionRef)
+status_t QMessageTransceiverHandler :: SetupAsNewSession(IMessageTransceiverMaster & master, const ConstSocketRef & sock, const ThreadWorkerSessionRef & optSessionRef)
 {
    Reset();
    QMessageTransceiverThread * thread = master.ObtainThread();
@@ -311,12 +311,12 @@ status_t QMessageTransceiverHandler :: RequestOutputQueueDrainedNotification(con
    return _mtt ? _mtt->RequestOutputQueuesDrainedNotification(notificationMsg, _sessionTargetString(), optDrainTag) : B_ERROR;
 }
 
-status_t QMessageTransceiverHandler :: SetNewInputPolicy(const PolicyRef & pref)
+status_t QMessageTransceiverHandler :: SetNewInputPolicy(const AbstractSessionIOPolicyRef & pref)
 {
    return _mtt ? _mtt->SetNewInputPolicy(pref, _sessionTargetString()) : B_ERROR;
 }
 
-status_t QMessageTransceiverHandler :: SetNewOutputPolicy(const PolicyRef & pref)
+status_t QMessageTransceiverHandler :: SetNewOutputPolicy(const AbstractSessionIOPolicyRef & pref)
 {
    return _mtt ? _mtt->SetNewOutputPolicy(pref, _sessionTargetString()) : B_ERROR;
 }

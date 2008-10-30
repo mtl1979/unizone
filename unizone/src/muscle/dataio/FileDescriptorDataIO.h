@@ -25,7 +25,7 @@ public:
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
-   FileDescriptorDataIO(const SocketRef & fd, bool blocking);
+   FileDescriptorDataIO(const ConstSocketRef & fd, bool blocking);
 
    /** Destructor.
     *  close()'s the held file descriptor.
@@ -66,7 +66,7 @@ public:
    /** Returns true iff this object is using blocking I/O mode. */
    bool IsBlockingIOEnabled() const {return _blocking;}
 
-   /** Clears our held SocketRef. */
+   /** Clears our held ConstSocketRef. */
    virtual void Shutdown();
 
    /** Seeks to the specified point in the file stream.
@@ -80,10 +80,10 @@ public:
    virtual int64 GetPosition() const;
 
    /** Returns our file descriptor */
-   virtual const SocketRef & GetSelectSocket() const {return _fd;}
+   virtual const ConstSocketRef & GetSelectSocket() const {return _fd;}
 
 private:
-   SocketRef _fd;
+   ConstSocketRef _fd;
    bool _blocking;
 };
 

@@ -55,7 +55,7 @@ public:
    virtual void Shutdown() {_shutdown = true;}
 
    /** Can't select on this one, sorry */
-   virtual const SocketRef & GetSelectSocket() const {return GetNullSocket();}
+   virtual const ConstSocketRef & GetSelectSocket() const {return GetNullSocket();}
 
 private:
    bool _shutdown;

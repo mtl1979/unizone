@@ -306,10 +306,10 @@ public:
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */  
-   virtual status_t SetupAsNewSession(IMessageTransceiverMaster & master, const SocketRef & socket, const ThreadWorkerSessionRef & optSessionRef);
+   virtual status_t SetupAsNewSession(IMessageTransceiverMaster & master, const ConstSocketRef & socket, const ThreadWorkerSessionRef & optSessionRef);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t SetupAsNewSession(IMessageTransceiverMaster & master, const SocketRef & socket) {return SetupAsNewSession(master, socket, ThreadWorkerSessionRef());}
+   status_t SetupAsNewSession(IMessageTransceiverMaster & master, const ConstSocketRef & socket) {return SetupAsNewSession(master, socket, ThreadWorkerSessionRef());}
 
    /**
      * Associates this handler with a specified IMessageTransceiverMaster, and tells it to connect to
@@ -392,7 +392,7 @@ public:
      *             the existing input policy.
      * @return B_NO_ERROR on success, or B_ERROR on failure.
      */
-   status_t SetNewInputPolicy(const PolicyRef & pref);
+   status_t SetNewInputPolicy(const AbstractSessionIOPolicyRef & pref);
 
    /**
      * Tells this handler's worker session to install a new output IOPolicy.
@@ -402,7 +402,7 @@ public:
      *             the existing output policy.
      * @return B_NO_ERROR on success, or B_ERROR on failure.
      */
-   status_t SetNewOutputPolicy(const PolicyRef & pref);
+   status_t SetNewOutputPolicy(const AbstractSessionIOPolicyRef & pref);
 
    /**
      * Tells this handler's worker session to switch to a different message encoding 

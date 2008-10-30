@@ -8,6 +8,8 @@
 
 BEGIN_NAMESPACE(muscle);
 
+class String;
+
 /** log level constants to use with SetLogLevel(), GetLogLevel() */
 enum
 {
@@ -28,9 +30,20 @@ enum
   * @param optFile If non-NULL, the text will be printed to this file.  If left as NULL, stdout will be used as a default.
   * @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
   *                 64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.
-  * @note This function is currently only implemented under Linux; for other OS's, this function is a no-op.
+  * @note This function is currently only implemented under Linux and MacOS/X Leopard; for other OS's, this function is a no-op.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
   */
 status_t PrintStackTrace(FILE * optFile = NULL, uint32 maxDepth = 64);
+
+/** Similar to LogStackTrace(), except that the current stack trace is returned as a String
+  * instead of being printed out anywhere.
+  * @param retStr On success, the stack trace is written to this String object.
+  * @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
+  *                 64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  * @note This function is currently only implemented under Linux and MacOS/X Leopard; for other OS's, this function is a no-op.
+  */
+status_t GetStackTrace(String & retStr, uint32 maxDepth = 64);
 
 // Define this constant in your Makefile (i.e. -DMUSCLE_DISABLE_LOGGING) to turn all the
 // Log commands into no-ops.
@@ -156,7 +169,7 @@ status_t LockLog();
 status_t UnlockLog();
 
 /** Logs out a stack trace, if possible.  Returns B_ERROR if not.
- *  @note Currently only works under Linux, and then only if -rdynamic is specified as a compile flag.
+ *  @note Currently only works under Linux and MacOS/X Leopard, and then only if -rdynamic is specified as a compile flag.
  *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
  *  @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
  *                  64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.

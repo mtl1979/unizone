@@ -26,7 +26,7 @@
 BEGIN_NAMESPACE(muscle);
 
 class Message;
-typedef Ref<Message> MessageRef;
+DECLARE_REFTYPES(Message);
 
 /** Very trivial function, just returns a reference to an empty/default Message object.
   * Useful in cases where you need to refer to an empty Message and don't wish to be
@@ -85,13 +85,27 @@ MessageRef GetMessageFromPool(const uint8 * flatBytes, uint32 numBytes);
  */
 MessageRef GetMessageFromPool(ObjectPool<Message> & pool, const uint8 * flatBytes, uint32 numBytes);
 
+/** Convenience method:  Gets a Message from the message pool, makes it a lightweight copy of (copyMe),
+ *  and returns a reference to it.  See Message::MakeLightweightCopyOf() for details.
+ *  @param copyMe A Message to make a lightweight copy of.
+ *  @return Reference to a Message object, or a NULL ref on failure (out of memory).
+ */
+MessageRef GetLightweightCopyOfMessageFromPool(const Message & copyMe);
+
+/** As above, except that the Message is obtained from the specified pool instead of from the default Message pool.
+ *  @param pool the ObjectPool to allocate the Message from.
+ *  @param copyMe A Message to make a lightweight copy of.
+ *  @return Reference to a Message object, or a NULL ref on failure (out of memory).
+ */
+MessageRef GetLightweightCopyOfMessageFromPool(ObjectPool<Message> & pool, const Message & copyMe);
+
 // this declaration is for internal use only
 class AbstractDataArray;
 
 /** This is an iterator that allows you to efficiently iterate over the field names in a Message. 
  *  It is typically allocated using the Message::GetFieldNameIterator() method.
  */
-class MessageFieldNameIterator : private HashtableIterator<String, GenericRef>
+class MessageFieldNameIterator : private HashtableIterator<String, RefCountableRef>
 {
 public:
    /** Default constructor.   
@@ -168,7 +182,7 @@ public:
 
 private:
    friend class Message;
-   MessageFieldNameIterator(const HashtableIterator<String, GenericRef> & iter, uint32 tc) : HashtableIterator<String, GenericRef>(iter), _typeCode(tc) {/* empty */}
+   MessageFieldNameIterator(const HashtableIterator<String, RefCountableRef> & iter, uint32 tc) : HashtableIterator<String, RefCountableRef>(iter), _typeCode(tc) {/* empty */}
 
    uint32 _typeCode;
 };
@@ -414,7 +428,7 @@ public:
    status_t AddFlat(const String & name, const ByteBufferRef & ref)
    {
       FlatCountableRef fcRef;
-      fcRef.SetFromGenericUnchecked(ref.GetGeneric());
+      fcRef.SetFromRefCountableRefUnchecked(ref.GetRefCountableRef());
       return AddFlat(name, fcRef);
    }
 
@@ -426,7 +440,7 @@ public:
     *  @param tagRef Reference to the tag object to add.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t AddTag(const String & name, const GenericRef & tagRef);
+   status_t AddTag(const String & name, const RefCountableRef & tagRef);
 
    /** Generic method, capable of adding any type of data to the Message.
     *  @param name Name of the field to add (or add to)
@@ -566,7 +580,7 @@ public:
    status_t PrependFlat(const String & name, const ByteBufferRef & ref)
    {
       FlatCountableRef fcRef;
-      fcRef.SetFromGenericUnchecked(ref.GetGeneric());
+      fcRef.SetFromRefCountableRefUnchecked(ref.GetRefCountableRef());
       return PrependFlat(name, fcRef);
    }
 
@@ -578,7 +592,7 @@ public:
     *  @param tagRef Reference to the tag object to add or prepend.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t PrependTag(const String & name, const GenericRef & tagRef);
+   status_t PrependTag(const String & name, const RefCountableRef & tagRef);
 
    /** Generic method, capable of prepending any type of data to the Message.
     *  @param name Name of the field to add (or add to)
@@ -815,7 +829,7 @@ public:
    status_t FindFlat(const String & name, uint32 index, ByteBufferRef & ref) const
    {
       FlatCountableRef fcRef;
-      return (FindFlat(name, index, fcRef) == B_NO_ERROR) ? ref.SetFromGeneric(fcRef.GetGeneric()) : B_ERROR;
+      return (FindFlat(name, index, fcRef) == B_NO_ERROR) ? ref.SetFromRefCountableRef(fcRef.GetRefCountableRef()) : B_ERROR;
    }
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
@@ -827,10 +841,10 @@ public:
     *  @param tagRef On success, this object becomes a reference to the found tag object.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t FindTag(const String & name, uint32 index, GenericRef & tagRef) const;
+   status_t FindTag(const String & name, uint32 index, RefCountableRef & tagRef) const;
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindTag(const String & name, GenericRef & tagRef) const {return FindTag(name, 0, tagRef);}
+   status_t FindTag(const String & name, RefCountableRef & tagRef) const {return FindTag(name, 0, tagRef);}
 
    /** Retrieve a pointer to the raw data bytes of a stored message field of any type.
     *  @param name The field name to retrieve the pointer to
@@ -1042,7 +1056,7 @@ public:
    status_t ReplaceFlat(bool okayToAdd, const String & name, uint32 index, const ByteBufferRef & ref) 
    {
       FlatCountableRef fcRef;
-      fcRef.SetFromGenericUnchecked(ref.GetGeneric());
+      fcRef.SetFromRefCountableRefUnchecked(ref.GetRefCountableRef());
       return ReplaceFlat(okayToAdd, name, index, fcRef);
    }
 
@@ -1056,10 +1070,10 @@ public:
     *  @param tag The new tag reference to overwrite the old tag reference with.
     *  @return B_NO_ERROR on success, or B_ERROR if the field wasn't found, or if (index) wasn't a valid index, or out of memory.
     */
-   status_t ReplaceTag(bool okayToAdd, const String & name, uint32 index, const GenericRef & tag);
+   status_t ReplaceTag(bool okayToAdd, const String & name, uint32 index, const RefCountableRef & tag);
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t ReplaceTag(bool okayToAdd, const String & name, const GenericRef & tag) {return ReplaceTag(okayToAdd, name, 0, tag);}
+   status_t ReplaceTag(bool okayToAdd, const String & name, const RefCountableRef & tag) {return ReplaceTag(okayToAdd, name, 0, tag);}
 
    /** Replace one entry in a field of any type.
     *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
@@ -1204,7 +1218,7 @@ private:
    // Returns zero if items of the given type are variable length.
    uint32 GetElementSize(uint32 type) const;
 
-   GenericRef GetArrayRef(const String & arrayName, uint32 etc) const;
+   RefCountableRef GetArrayRef(const String & arrayName, uint32 etc) const;
    AbstractDataArray * GetArray(const String & arrayName, uint32 etc) const;
    AbstractDataArray * GetOrCreateArray(const String & arrayName, uint32 tc);
 
@@ -1228,10 +1242,10 @@ private:
 
    // Iterator support methods
    friend class MessageFieldNameIterator;
-   Hashtable<String, GenericRef> _entries;   
+   Hashtable<String, RefCountableRef> _entries;   
 };
 
-inline MessageFieldNameIterator :: MessageFieldNameIterator(const Message & msg, uint32 type, uint32 flags) : HashtableIterator<String, GenericRef>(msg._entries.GetIterator(flags)), _typeCode(type) {/* empty */}
+inline MessageFieldNameIterator :: MessageFieldNameIterator(const Message & msg, uint32 type, uint32 flags) : HashtableIterator<String, RefCountableRef>(msg._entries.GetIterator(flags)), _typeCode(type) {/* empty */}
 
 END_NAMESPACE(muscle);
 

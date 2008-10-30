@@ -74,11 +74,11 @@ void AcceptSocketsThread :: InternalThreadEntry()
       }
       if (FD_ISSET(afd, &readSet))
       {
-         SocketRef newSocket = Accept(_acceptSocket);
+         ConstSocketRef newSocket = Accept(_acceptSocket);
          if (newSocket())
          {
             MessageRef msg(GetMessageFromPool(AST_EVENT_NEW_SOCKET_ACCEPTED));
-            msg()->AddTag(AST_NAME_SOCKET, newSocket.GetGeneric());
+            msg()->AddTag(AST_NAME_SOCKET, CastAwayConstFromRef(newSocket.GetRefCountableRef()));
             (void) SendMessageToOwner(msg);
          }
       }

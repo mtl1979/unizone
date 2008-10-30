@@ -140,9 +140,9 @@ NetClient::Connect(const QString & server, uint16 port)
 		{
 			ThreadWorkerSessionRef ref(new ThreadWorkerSession());
 			ref()->SetGateway(AbstractMessageIOGatewayRef(new MessageIOGateway()));
-			ref()->SetOutputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
+			ref()->SetOutputPolicy(AbstractSessionIOPolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
 				win->fSettings->GetChatLimit()))));
-			ref()->SetInputPolicy(PolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
+			ref()->SetInputPolicy(AbstractSessionIOPolicyRef(new RateLimitSessionIOPolicy(WSettings::ConvertToBytes(
 				win->fSettings->GetChatLimit()))));
 			if (qmtt->AddNewConnectSession(ResolveAddress(server), port, ref) != B_NO_ERROR)
 			{

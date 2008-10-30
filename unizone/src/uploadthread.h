@@ -41,7 +41,7 @@ public:
 	WUploadThread(QObject * owner, bool * optShutdownFlag = NULL);
 	~WUploadThread();
 
-	void SetUpload(const SocketRef & socket, uint32 remoteIP, WFileThread * ft);
+	void SetUpload(const ConstSocketRef & socket, uint32 remoteIP, WFileThread * ft);
 	void SetUpload(const QString & remoteIP, uint32 remotePort, WFileThread * ft);
 	void SetUpload(const QString & userID, int64 hisID, WFileThread * ft); // Tunneled
 
@@ -185,7 +185,7 @@ private:
 	QString fStrRemoteIP;				// the accept version gets a string IP
 	uint32 fPort;						// port for accept version
 	uint32 fIdles;						// idle packets sent between real packets
-	SocketRef fSocket;
+	ConstSocketRef fSocket;
 	int64 fFileSize;
 	int64 fCurrentOffset;
 	int32 fMungeMode;
