@@ -1382,7 +1382,7 @@ WDownloadThread::SendMessageToSessions(const MessageRef & msgRef, const char * o
 			to += "/beshare";
 			AddStringToMessage(msgRef, PR_NAME_KEYS, to);
 			msgRef()->AddString(PR_NAME_SESSION, "");
-			msgRef()->AddInt32("my_id", (int32) this);
+			msgRef()->AddInt64("my_id", ConvertPtr(this));
 #ifdef _DEBUG
 			WString wto(to);
 			PRINT("Sending message to %S...\n", wto.getBuffer());

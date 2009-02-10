@@ -19,7 +19,7 @@ typedef struct DLPair
 } DLPair;
 typedef Queue<DLPair> DLList;
 
-typedef struct ULPai
+typedef struct ULPair
 {
 	WUploadThread * thread;
 	WTransferItem * item;
