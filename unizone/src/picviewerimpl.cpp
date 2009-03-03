@@ -192,26 +192,22 @@ WPicViewer::startDrag()
 {
 	if (fFiles[cFile] != QString::null)
 	{
-         QDrag *drag = new QDrag(this);
-         QMimeData *mimeData = new QMimeData;
-
-		 QUrl u = QUrl::fromLocalFile(fFiles[cFile]);
-		 QList<QUrl> list;
-		 list.append(u);
-         mimeData->setUrls(list);
-         drag->setMimeData(mimeData);
-
-         Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+		QDrag *drag = new QDrag(this);
+		QMimeData *mimeData = new QMimeData;
+		QUrl u = QUrl::fromLocalFile(fFiles[cFile]);
+		QList<QUrl> list;
+		list.append(u);
+		mimeData->setUrls(list);
+		drag->setMimeData(mimeData);
+         	drag->exec(Qt::CopyAction);
 	}
 	else if (!fImages[cFile].isNull())
 	{
 		QDrag *drag = new QDrag(this);
 		QMimeData *mimeData = new QMimeData;
-
 		mimeData->setImageData(fImages[cFile]);
 		drag->setMimeData(mimeData);
-
-		Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+		drag->exec(Qt::CopyAction);
 	}
 }
 

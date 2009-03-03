@@ -21,20 +21,20 @@ GotoURL(const QString & url)
 	PRINT("GotoURL() called\n");
 	QString u = url;
 	QString address;
-	if (startsWith(u, "server://", false))
+	if (u.startsWith("server://", false))
 	{
 		address = url.mid(9);
-		if (endsWith(address, "/"))
+		if (address.endsWith("/"))
 		{
 			address.truncate(address.length() - 1);
 		}
 		gWin->Connect(address);
 		return;
 	}
-	else if (startsWith(u, "mailto:", false))
+	else if (u.startsWith("mailto:", false))
 	{
 		address = url.mid( url.find(":") + 1 );
-		if (endsWith(address, "/"))
+		if (address.endsWith("/"))
 		{
 			address.truncate(address.length() - 1);
 		}
@@ -48,15 +48,15 @@ GotoURL(const QString & url)
 	if (fLaunchThread->IsInternalThreadRunning())
 		fLaunchThread->WaitForInternalThreadToExit();
 	fLaunchThread->SetURL(address);
-	if (startsWith(u, "http", false))	// also includes 'https'
+	if (u.startsWith("http", false))	// also includes 'https'
 	{
 		fLaunchThread->SetLauncher(gWin->fSettings->GetHTTPLauncher());
 	}
-	else if (startsWith(u, "ftp", false))
+	else if (u.startsWith("ftp", false))
 	{
 		fLaunchThread->SetLauncher(gWin->fSettings->GetFTPLauncher());
 	}
-	else if (startsWith(u, "mailto:", false))
+	else if (u.startsWith("mailto:", false))
 	{
 		fLaunchThread->SetLauncher(gWin->fSettings->GetMailLauncher());
 	}

@@ -1389,6 +1389,7 @@ WinShareWindow::LoadSettings()
 				qApp->setStyle(new QWindowsVistaStyle);
 # endif
 #endif
+				break;
 		}
 #endif
 
