@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDirectory_h
 #define MuscleDirectory_h
@@ -49,9 +49,19 @@ public:
      * @param dirPath the directory's name (include path if desired) to create.
      * @param forceCreateParentDirsIfNecessary If true, we'll create directories above the new directory also if necessary.
      *                                         Otherwise we'll fail if the new directory's parent director doesn't exist.
+     * @note This method was originally called CreateDirectory() but that was causing namespace collisions with
+     *       some #defines in the Microsoft Windows system headers, so I've renamed it to MakeDirectory() to avoid that problem.
      * @return B_NO_ERROR on success, or B_ERROR on failure (directory already exists, or permission denied).
      */
-   static status_t CreateDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary);
+   static status_t MakeDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary);
+
+   /** This static method will delete a directory with the specified path.
+     * @param dirPath the directory's name (include path if desired) to delete.
+     * @param forceDeleteSubItemsIfNecessary If true, we'll recursively delete all the items in the directory as well.
+     *                                         Otherwise we'll fail if the directory to be deleted isn't empty.
+     * @return B_NO_ERROR on success, or B_ERROR on failure (directory wasn't empty, or permission denied).
+     */
+   static status_t DeleteDirectory(const char * dirPath, bool forceDeleteSubItemsIfNecessary);
 
 private:
    Directory(const Directory & rhs);  // deliberately private and unimplemented

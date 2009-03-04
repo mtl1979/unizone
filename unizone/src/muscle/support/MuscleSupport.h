@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.40"
+#define MUSCLE_VERSION_STRING "4.51"
 
 #include <string.h>  /* for memcpy() */
 
@@ -28,7 +28,7 @@
 /* If we are in an environment where known assembly is available, make a note of that fact */
 #ifndef MUSCLE_AVOID_INLINE_ASSEMBLY
 # if defined(__GNUC__)
-#  if defined(__i386__)
+#  if defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(__amd64__) || defined(__x86_64__) || defined(__x86__) || defined(__pentium__) || defined(__pentiumpro__) || defined(__k6__)
 #   define MUSCLE_USE_X86_INLINE_ASSEMBLY 1
 #  elif defined(__PPC__) || defined(__POWERPC__)
 #   define MUSCLE_USE_POWERPC_INLINE_ASSEMBLY 1
@@ -123,7 +123,7 @@ using std::set_new_handler;
 # endif
 #endif
 
-#ifdef __BEOS__
+#if defined(__BEOS__) || defined(__HAIKU__)
 # include <kernel/debugger.h>
 # define MCRASH_IMPL debugger("muscle assertion failure")
 #elif defined(WIN32)
@@ -134,6 +134,23 @@ using std::set_new_handler;
 # endif
 #else
 # define MCRASH_IMPL *((uint32*)NULL) = 0x666
+#endif
+
+// These macros are implementation details, please ignore them
+#define ___MUSCLE_UNIQUE_NAME_AUX1(name, line) name##line
+#define ___MUSCLE_UNIQUE_NAME_AUX2(name, line) ___MUSCLE_UNIQUE_NAME_AUX1(name, line)
+
+/** This macro expands to a variable name which is (per-file) unique and unreferenceable.
+  * This can be useful to help make sure the temporary variables in your macros don't
+  * collide with each other.
+  */
+#define MUSCLE_UNIQUE_NAME ___MUSCLE_UNIQUE_NAME_AUX2(__uniqueName, __LINE__)
+
+/** This macro declares an object on the stack with the specified argument. */
+#ifdef _MSC_VER
+# define DECLARE_ANONYMOUS_STACK_OBJECT(objType, ...) objType MUSCLE_UNIQUE_NAME = objType(__VA_ARGS__)
+#else
+# define DECLARE_ANONYMOUS_STACK_OBJECT(objType, args...) objType MUSCLE_UNIQUE_NAME = objType(args)
 #endif
 
 #ifdef MUSCLE_AVOID_ASSERTIONS
@@ -157,7 +174,7 @@ using std::set_new_handler;
 
 typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use this type than (void *) directly in some cases. */
 
-#ifdef __BEOS__
+#if defined(__BEOS__) || defined(__HAIKU__)
 # include <support/Errors.h>
 # include <support/ByteOrder.h>  /* might as well use the real thing (and avoid complaints about duplication) */
 # include <support/SupportDefs.h>
@@ -177,18 +194,20 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 #    define true                     1
 #    define false                    0
 #   endif
+    typedef unsigned char           uchar;
+    typedef unsigned short          unichar;
     typedef signed char             int8;
     typedef unsigned char           uint8;
     typedef short                   int16;
     typedef unsigned short          uint16;
 #   if defined(MUSCLE_64_BIT_PLATFORM) || defined(__osf__) || defined(__amd64__) || defined(__PPC64__)    /* some 64bit systems will have long=64-bit, int=32-bit */
-     typedef int                    int32;
-#    ifndef _UINT32   // Avoid conflict with typedef in OS/X Leopard system header
-     typedef unsigned int           uint32;
-#     define _UINT32  // Avoid conflict with typedef in OS/X Leopard system header
-#    endif
 #    ifndef MUSCLE_64_BIT_PLATFORM
 #     define MUSCLE_64_BIT_PLATFORM 1  // auto-define it if it wasn't defined in the Makefile
+#    endif
+     typedef int                    int32;
+#    ifndef _UINT32   // Avoid conflict with typedef in OS/X Leopard system header
+      typedef unsigned int           uint32;
+#     define _UINT32  // Avoid conflict with typedef in OS/X Leopard system header
 #    endif
 #   else
      typedef long                   int32;
@@ -200,39 +219,49 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 #   if defined(WIN32) && !defined(__GNUWIN32__)
      typedef __int64                int64;
      typedef unsigned __int64       uint64;
+#   elif __APPLE__
+#    ifndef _UINT64  // Avoid conflict with typedef in OS/X Leopard system header
+#     define _UINT64
+      typedef long long              int64;   // these are what's expected in MacOS/X land, in both
+      typedef unsigned long long     uint64;  // 32-bit and 64-bit flavors.  C'est la vie, non?
+#    endif
+#   elif defined(MUSCLE_64_BIT_PLATFORM)
+     typedef long                   int64;
+     typedef unsigned long          uint64;
 #   else
      typedef long long              int64;
      typedef unsigned long long     uint64;
 #   endif
-    typedef unsigned char           uchar;
-    typedef unsigned short          unichar;
-    typedef int32                   status_t;
+    typedef int32                     status_t;
 #  endif  /* !MUSCLE_TYPES_PREDEFINED */
 # endif  /* !__ATHEOS__*/
-#endif  /* __BEOS__*/
+#endif  /* __BEOS__ || __HAIKU__ */
 
 /** Ugly platform-neutral macros for problematic sprintf()-format-strings */
 #if defined(MUSCLE_64_BIT_PLATFORM)
 # define  INT32_FORMAT_SPEC_NOPERCENT "i"
 # define XINT32_FORMAT_SPEC_NOPERCENT "x"
 # define UINT32_FORMAT_SPEC_NOPERCENT "u"
-# define  INT64_FORMAT_SPEC_NOPERCENT "lli"
-# define UINT64_FORMAT_SPEC_NOPERCENT "llu"
+# ifdef __APPLE__
+#  define  INT64_FORMAT_SPEC_NOPERCENT "lli"
+#  define UINT64_FORMAT_SPEC_NOPERCENT "llu"
+# else
+#  define  INT64_FORMAT_SPEC_NOPERCENT "li"
+#  define UINT64_FORMAT_SPEC_NOPERCENT "lu"
+# endif
 #else
 # define  INT32_FORMAT_SPEC_NOPERCENT "li"
 # define XINT32_FORMAT_SPEC_NOPERCENT "lx"
 # define UINT32_FORMAT_SPEC_NOPERCENT "lu"
-# if defined(__MWERKS__) || defined(WIN32) || defined(__BORLANDC__) || (defined(__BEOS__) && !defined(__HAIKU__))
-#  if (_MSC_VER < 1300)
-#   define  INT64_FORMAT_SPEC_NOPERCENT "I64i"
-#   define UINT64_FORMAT_SPEC_NOPERCENT "I64u"
-#  else
-#   define  INT64_FORMAT_SPEC_NOPERCENT "Li"
-#   define UINT64_FORMAT_SPEC_NOPERCENT "Lu"
-#  endif
+# if defined(_MSC_VER)
+#  define  INT64_FORMAT_SPEC_NOPERCENT "I64i"
+#  define UINT64_FORMAT_SPEC_NOPERCENT "I64u"
+# elif (defined(__BEOS__) && !defined(__HAIKU__)) || defined(__MWERKS__) || defined(__BORLANDC__)
+#  define  INT64_FORMAT_SPEC_NOPERCENT "Li"
+#  define UINT64_FORMAT_SPEC_NOPERCENT "Lu"
 # else
-#   define  INT64_FORMAT_SPEC_NOPERCENT "lli"
-#   define UINT64_FORMAT_SPEC_NOPERCENT "llu"
+#  define  INT64_FORMAT_SPEC_NOPERCENT "lli"
+#  define UINT64_FORMAT_SPEC_NOPERCENT "llu"
 # endif
 #endif
 
@@ -247,7 +276,7 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
                      (((unsigned long)(x[2])) <<  8) | \
                      (((unsigned long)(x[3])) <<  0))
 
-#ifndef __BEOS__
+#if !defined(__BEOS__) && !defined(__HAIKU__)
 /* Be-style message-field type codes.
  * I've calculated the integer equivalents for these codes
  * because gcc whines like a little girl about the four-byte
@@ -384,7 +413,7 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
 
 #endif  /* __cplusplus */
 
-#ifndef __BEOS__
+#if !defined(__BEOS__) && !defined(__HAIKU__)
 
 /*
  * Copyright(c) 1983,   1989
@@ -655,7 +684,7 @@ MUSCLE_INLINE int16 B_SWAP_INT16(int16 arg)
 #  define B_BENDIAN_TO_HOST_INT32(arg)  ((uint32)(arg))
 #  define B_BENDIAN_TO_HOST_INT16(arg)  ((uint16)(arg))
 # endif
-#endif /* !__BEOS__ */
+#endif /* !__BEOS__ && !__HAIKU__*/
 
 /** Newer, architecture-safe float and double endian-ness swappers.  Note that for these
   * macros, the externalized value is expected to be stored in an int32 (for floats) or

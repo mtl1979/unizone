@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
 
 #include "util/MemoryAllocator.h"
 
@@ -55,7 +55,7 @@ void AutoCleanupProxyMemoryAllocator :: AllocationFailed(size_t currentlyAllocat
 {
    ProxyMemoryAllocator::AllocationFailed(currentlyAllocatedBytes, allocRequestBytes);
    uint32 nc = _callbacks.GetNumItems();
-   for (uint32 i=0; i<nc; i++) if (_callbacks[i]()) (_callbacks[i]())->OutOfMemory();
+   for (uint32 i=0; i<nc; i++) if (_callbacks[i]()) (void) (_callbacks[i]())->Callback(NULL);
 }
 
 END_NAMESPACE(muscle);

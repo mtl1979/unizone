@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #ifndef DebugTimer_h
 #define DebugTimer_h
@@ -7,7 +7,7 @@
 #include "util/String.h"
 
 #ifndef MUSCLE_DEBUG_TIMER_CLOCK
-# if defined(__BEOS__) || defined(__ATHEOS__) || defined(WIN32)
+# if defined(__BEOS__) || defined(__HAIKU__) || defined(__ATHEOS__) || defined(WIN32) || (defined(MUSCLE_USE_LIBRT) && defined(_POSIX_MONOTONIC_CLOCK))
 #  define MUSCLE_DEBUG_TIMER_CLOCK GetRunTime64()
 # else
 #  define MUSCLE_DEBUG_TIMER_CLOCK GetCurrentTime64()   /* POSIX API's run-time clock has crappy resolution :^( */
@@ -49,7 +49,7 @@ public:
    uint64 GetElapsedTime(uint32 whichMode) const 
    {
       uint64 * et = _modeToElapsedTime.Get(whichMode);
-      return (et ? *et : 0) + ((whichMode == _currentMode) ? (MUSCLE_DEBUG_TIMER_CLOCK-_startTime) : 0);  // SHOULD use GetRunTime64() but that is too coarse right now
+      return (et ? *et : 0) + ((whichMode == _currentMode) ? (MUSCLE_DEBUG_TIMER_CLOCK-_startTime) : 0);
    }
 
    /** Set whether or not the destructor should print results to the system log.  Default is true. */
@@ -74,6 +74,13 @@ private:
    int _debugLevel;
    bool _enableLog;
 };
+
+/** A macro for quickly declaring a DebugTimer object on the stack.  Usage example:  DECLARE_DEBUGTIMER("hi") */
+#ifdef _MSC_VER
+# define DECLARE_DEBUGTIMER(...) DECLARE_ANONYMOUS_STACK_OBJECT(DebugTimer, __VA_ARGS__)
+#else
+# define DECLARE_DEBUGTIMER(args...) DECLARE_ANONYMOUS_STACK_OBJECT(DebugTimer, args)
+#endif
 
 END_NAMESPACE(muscle);
 

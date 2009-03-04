@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #if defined(__linux__) || defined(__APPLE__)
 # include <signal.h>
@@ -192,7 +192,7 @@ AttachNewSession(const AbstractReflectSessionRef & ref)
 }
 
 
-ReflectServer :: ReflectServer(MemoryAllocator * optMemoryUsageTracker) : _keepServerGoing(true), _serverStartedAt(0), _doLogging(true), _watchMemUsage(optMemoryUsageTracker)
+ReflectServer :: ReflectServer(MemoryAllocator * optMemoryUsageTracker) : _keepServerGoing(true), _serverStartedAt(0), _doLogging(true), _setSignalHandlingEnabledWasCalled(false), _watchMemUsage(optMemoryUsageTracker)
 {
    // make sure _lameDuckSessions has plenty of memory available in advance (we need might need it in a tight spot later!)
    _lameDuckSessions.EnsureSize(256);
@@ -290,6 +290,10 @@ ReflectServer ::
 ServerProcessLoop()
 {
    TCHECKPOINT;
+
+#ifdef MUSCLE_CATCH_SIGNALS_BY_DEFAULT
+   if (_setSignalHandlingEnabledWasCalled == false) SetSignalHandlingEnabled(true);
+#endif
 
    _serverStartedAt = GetRunTime64();
 
@@ -1107,6 +1111,7 @@ static SignalHandler _signalHandler;
 status_t ReflectServer :: SetSignalHandlingEnabled(bool enabled)
 {
    _signalCaught = false;
+   _setSignalHandlingEnabledWasCalled = true;
 
 #if defined(WIN32)
    if (enabled == (_signalHandler.GetServer() != NULL)) return B_NO_ERROR;

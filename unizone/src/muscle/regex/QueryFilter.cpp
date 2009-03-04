@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "regex/QueryFilter.h"
 #include "regex/StringMatcher.h"
@@ -71,11 +71,7 @@ status_t MultiQueryFilter :: SaveToArchive(Message & archive) const
    for (uint32 i=0; i<numChildren; i++)
    {
       const QueryFilter * nextChild = _children[i]();
-      if (nextChild)
-      {
-         MessageRef nextMsg = GetMessageFromPool();
-         if ((nextMsg() == NULL)||(nextChild->SaveToArchive(*nextMsg()) != B_NO_ERROR)||(archive.AddMessage("kid", nextMsg) != B_NO_ERROR)) return B_ERROR;
-      }
+      if ((nextChild)&&(archive.AddArchiveMessage("kid", *nextChild) != B_NO_ERROR)) return B_ERROR;
    }
    return B_NO_ERROR;
 }
@@ -164,11 +160,7 @@ bool XorQueryFilter :: Matches(const Message & msg, const DataNode * optNode) co
 status_t MessageQueryFilter :: SaveToArchive(Message & archive) const
 {
    if (ValueQueryFilter::SaveToArchive(archive) != B_NO_ERROR) return B_NO_ERROR;
-   if (_childFilter())
-   {
-      MessageRef subMsg = GetMessageFromPool();
-      if ((subMsg() == NULL)||(_childFilter()->SaveToArchive(*subMsg()) != B_NO_ERROR)||(archive.AddMessage("kid", subMsg) != B_NO_ERROR)) return B_ERROR;
-   }
+   if ((_childFilter())&&(archive.AddArchiveMessage("kid", *_childFilter()) != B_NO_ERROR)) return B_ERROR;
    return B_NO_ERROR;
 }
 

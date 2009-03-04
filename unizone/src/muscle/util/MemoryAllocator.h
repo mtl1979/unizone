@@ -1,9 +1,10 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleMemoryAllocator_h
 #define MuscleMemoryAllocator_h
 
 #include "support/MuscleSupport.h"
+#include "util/GenericCallback.h"
 #include "util/Queue.h"
 #include "util/RefCount.h"
 
@@ -134,48 +135,9 @@ private:
    size_t _maxBytes;
 };
 
-/** Interface class representing an object that can be called by an AutoCleanupProxyMemoryAllocator
-  * in case of an out-of-memory emergency.
-  */
-class OutOfMemoryCallback : public RefCountable
-{
-public:
-   /** Constructor */
-   OutOfMemoryCallback() {/* empty */}
-
-   /** Virtual destructor, to keep C++ honest */
-   virtual ~OutOfMemoryCallback() {/* empty */}
-
-   /** Called by a MemoryAllocator when it is having trouble allocating memory.
-     * Typically this method would be implemented to free up some unimportant memory, so that
-     * the MemoryAllocator will have a better chance of being able to get memory when it tries again.
-     */
-   virtual void OutOfMemory() = 0;
-};
-DECLARE_REFTYPES(OutOfMemoryCallback);
-
-/** A handy little class--instead of having to subclass, it will call the function you specify */
-class FunctionOutOfMemoryCallback : public OutOfMemoryCallback
-{
-public:
-   /** Signature of the function type that we know how to call */
-   typedef void (*OutOfMemoryCallbackFunc)();   
-
-   /** Constructor.
-     * @param f The function to call if we run out of memory 
-     */
-   FunctionOutOfMemoryCallback(OutOfMemoryCallbackFunc f) : _func(f) {/* empty */}
-
-   /** Calls the function specified in the header */
-   virtual void OutOfMemory() {if (_func) _func();}
-
-private:
-   OutOfMemoryCallbackFunc _func;
-};
-
 /** This MemoryAllocator decorates its slave MemoryAllocator to call a list of
-  * OutOfMemoryCallback objects when the slave's memory allocation fails.  These
-  * OutOfMemoryCallback calls should try to free up some memory if possible;
+  * GenericCallback objects when the slave's memory allocation fails.  These
+  * GenericCallback calls should try to free up some memory if possible;
   * then this MemoryAllocator will call the slave again and see if the memory
   * allocation can now succeed.
   */
@@ -194,13 +156,13 @@ public:
    virtual void AllocationFailed(size_t currentlyAllocatedBytes, size_t allocRequestBytes);
 
    /** Read-write access to our list of out-of-memory callbacks. */
-   Queue<OutOfMemoryCallbackRef> & GetCallbacksQueue() {return _callbacks;}
+   Queue<GenericCallbackRef> & GetCallbacksQueue() {return _callbacks;}
 
    /** Write-only access to our list of out-of-memory callbacks. */
-   const Queue<OutOfMemoryCallbackRef> & GetCallbacksQueue() const {return _callbacks;}
+   const Queue<GenericCallbackRef> & GetCallbacksQueue() const {return _callbacks;}
 
 private:
-   Queue<OutOfMemoryCallbackRef> _callbacks;
+   Queue<GenericCallbackRef> _callbacks;
 };
 
 END_NAMESPACE(muscle);

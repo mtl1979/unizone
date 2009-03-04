@@ -887,8 +887,8 @@ WUploadThread::DoUpload()
 					}
 				}
 				// copy the message in our current file ref
-				MessageRef headRef = fCurrentRef;
-				if (headRef.EnsureRefIsPrivate() == B_NO_ERROR)
+				MessageRef headRef = fCurrentRef.Clone();
+				if (headRef())
 				{
 					headRef()->what = WTransfer::TransferFileHeader;
 					headRef()->AddInt64("beshare:StartOffset", fCurrentOffset);

@@ -199,7 +199,7 @@ WPicViewer::startDrag()
 		list.append(u);
 		mimeData->setUrls(list);
 		drag->setMimeData(mimeData);
-         	drag->exec(Qt::CopyAction);
+		drag->exec(Qt::CopyAction);
 	}
 	else if (!fImages[cFile].isNull())
 	{

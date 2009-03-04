@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef ChildProcessDataIO_h
 #define ChildProcessDataIO_h
@@ -37,7 +37,7 @@ public:
      *               Note that this argument is ignored when running under Windows.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t LaunchChildProcess(int argc, char ** argv, bool usePty = true) {return LaunchChildProcessAux(muscleMax(0,argc), argv, usePty);}
+   status_t LaunchChildProcess(int argc, const char * argv[], bool usePty = true) {return LaunchChildProcessAux(muscleMax(0,argc), argv, usePty);}
 
    /** As above, but the program name and all arguments are specified as a single string.
      * @param cmd String to launch the child process with
@@ -137,6 +137,35 @@ public:
      * @returns B_NO_ERROR on success, or B_ERROR on failure.
      */
    status_t KillChildProcess();
+
+   /** Will not return until our child process has exited.
+     * If the child process is not currently running, returns immediately.
+     */
+   void WaitForChildProcessToExit();
+
+   /** Convenience method:  acts similar to the POSIX system() call, but
+     * implemented internally via a ChildProcessDataIO object.  In particular,
+     * this static method will launch the specified process and not return
+     * until that process has completed.
+     * @param argc Number of items in the (argv) array
+     * @param argv A standard argv array for the child process to use
+     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
+     * @returns B_NO_ERROR if the child process was launched, or B_ERROR
+     *          if the child process could not be launched.
+     */
+   static status_t System(int argc, const char * argv[], bool usePty=true);
+
+
+   /** Convenience method:  acts similar to the POSIX system() call, but
+     * implemented internally via a ChildProcessDataIO object.  In particular,
+     * this static method will launch the specified process and not return
+     * until that process has completed.
+     * @param cmdLine The command string to launch (as if typed into a shell)
+     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
+     * @returns B_NO_ERROR if the child process was launched, or B_ERROR
+     *          if the child process could not be launched.
+     */
+   static status_t System(const char * cmdLine, bool usePty=true);
 
 private:
    void Close();

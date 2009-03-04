@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleQueue_h
 #define MuscleQueue_h
@@ -422,9 +422,9 @@ public:
 
    /** Normalizes the layout of the items held in this Queue so that they are guaranteed to be contiguous 
      * in memory.  This is useful if you want to pass pointers to items in this array in to functions
-     * that expect C arrays.  Note that the normalization only lasts until the Queue is next modified,
-     * and that normalization is an O(N) procedure if the array needs normalizing.  (It's a no-op
-     * if the array is already normalized, of course)
+     * that expect C arrays.  Note that prepending items to this Queue may de-normalize it again.
+     * Note also that this method is O(N) if the array needs normalizing.  
+     * (It's a no-op if the Queue is already normalized, of course)
      */ 
    void Normalize();
 

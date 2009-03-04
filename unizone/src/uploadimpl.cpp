@@ -259,7 +259,7 @@ WUpload::TunnelMessage(int64 myID, MessageRef tmsg)
 	{
 		ULPair p;
 		fUploadList.GetItemAt(i, p);
-		if (ConvertPtr(p.thread) == myID)
+		if (((int64) (intptr_t) p.thread) == myID)
 		{
 			WMessageEvent *wme = new WMessageEvent(WUploadThread::TunnelData, tmsg);
 			if (wme)

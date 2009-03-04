@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleByteBuffer_h
 #define MuscleByteBuffer_h
@@ -178,11 +178,20 @@ ByteBufferRef GetByteBufferFromPool(uint32 numBytes = 0, const uint8 * optBuffer
  */
 ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, uint32 numBytes = 0, const uint8 * optBuffer = NULL);
 
-/** Convenience method:  Gets a ByteBuffer from the ByteBuffer pool, makes it equal to (copyMe), and returns a reference to it.
- *  @param copyMe A ByteBuffer to clone.
+/** Convenience method:  Gets a ByteBuffer from the default ByteBuffer pool, flattens (flattenMe) into the byte buffer, and 
+ *  returns a reference to the new ByteBuffer.
+ *  @param flattenMe A Flattenable object to flatten.
  *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).
  */
-ByteBufferRef GetByteBufferFromPool(const ByteBuffer & copyMe);               
+ByteBufferRef GetByteBufferFromPool(const Flattenable & flattenMe);               
+
+/** Convenience method:  Gets a ByteBuffer from the specified ByteBuffer pool, flattens (flattenMe) into the byte buffer, and 
+ *  returns a reference to the new ByteBuffer.
+ *  @param pool The ObjectPool to retrieve the new ByteBuffer object from.
+ *  @param flattenMe A Flattenable object to flatten.
+ *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).
+ */
+ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, const Flattenable & flattenMe);
 
 /** This interface is used to represent any object that knows how to allocate, reallocate, and free memory in a special way. */
 class IMemoryAllocationStrategy 

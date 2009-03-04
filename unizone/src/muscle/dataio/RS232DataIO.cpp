@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "dataio/RS232DataIO.h"
 
@@ -90,7 +90,7 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
       }
    }
 #else
-#  if defined(__BEOS__)
+#  if defined(__BEOS__) || defined(__HAIKU__)
    _handle = GetConstSocketRefFromPool(open(port, O_RDWR | O_NONBLOCK));
 #  else
    _handle = GetConstSocketRefFromPool(open(port, O_RDWR | O_NOCTTY));
@@ -137,7 +137,7 @@ RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : 
       {
          t.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL | ISIG | IEXTEN);
          t.c_iflag &= ~(INPCK | ISTRIP | IGNCR | ICRNL | INLCR | IXOFF | IXON);
-#ifndef __BEOS__
+#if !defined(__BEOS__) && !defined(__HAIKU__)
          t.c_iflag &= ~(IMAXBEL);
 #endif
          t.c_iflag |= (IGNBRK);
@@ -347,7 +347,7 @@ status_t RS232DataIO :: GetAvailableSerialPortNames(Queue<String> & retList)
    for (int i=0; /*empty*/; i++)
    {
       char buf[64]; 
-#  if defined(__BEOS__)
+#  if defined(__BEOS__) || defined(__HAIKU__)
       sprintf(buf, "/dev/ports/serial%i", i+1);
       int temp = open(buf, O_RDWR | O_NONBLOCK);
 #  else

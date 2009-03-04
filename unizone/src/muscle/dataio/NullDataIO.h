@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNullDataIO_h
 #define MuscleNullDataIO_h
@@ -13,8 +13,10 @@ BEGIN_NAMESPACE(muscle);
 class NullDataIO : public DataIO
 {
 public:
-   /** Default Constructor. */
-   NullDataIO() : _shutdown(false) {/* empty */}
+   /** Constructor. 
+     * @param selectSocket Optional ConstSocketRef to return in GetSelectSocket().  Defaults to a NULL ref.
+     */
+   NullDataIO(const ConstSocketRef & selectSocket = ConstSocketRef()) : _selectSocket(selectSocket), _shutdown(false) {/* empty */}
 
    /** Virtual Destructor, to keep C++ honest */
    virtual ~NullDataIO() {/* empty */}
@@ -54,10 +56,11 @@ public:
    /** Disable us! */ 
    virtual void Shutdown() {_shutdown = true;}
 
-   /** Can't select on this one, sorry */
-   virtual const ConstSocketRef & GetSelectSocket() const {return GetNullSocket();}
+   /** Returns the socket specified in our constructor (if any) */
+   virtual const ConstSocketRef & GetSelectSocket() const {return _selectSocket;}
 
 private:
+   ConstSocketRef _selectSocket;
    bool _shutdown;
 };
 

@@ -3,6 +3,13 @@ if you feel like hacking around, here is a list of some
 compile-time constants that you can define in the CXXFLAGS variable
 of your Makefile to alter muscle's behaviour:
 
+-DMUSCLE_CATCH_SIGNALS_BY_DEFAULT
+   If specified, ReflectServer will by default set up a signal 
+   handler to catch signals (e.g. Control-C), and gracefully 
+   exit its event loop when they are detected.  (Without this
+   flag, that only happens if you call SetSignalHandlingEnabled(true)
+   somewhere in your code)
+ 
 -DMUSCLE_USE_LIBRT
    If specified, GetRunTime64() and Snooze64() will use librt's
    high-resolution timing functions instead of the low-resolution

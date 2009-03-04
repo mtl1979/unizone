@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.TXT file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.TXT file for details. */
 
 #ifndef MuscleSysLog_h
 #define MuscleSysLog_h
@@ -87,9 +87,11 @@ inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO, uint32 maxDepth = 64)
 #ifdef MUSCLE_INLINE_LOGGING
 inline int ParseLogLevelKeyword(const char *) {return MUSCLE_LOG_NONE;}
 inline int GetFileLogLevel() {return MUSCLE_LOG_NONE;}
+inline String GetFileLogName() {return "";}
 inline int GetConsoleLogLevel() {return MUSCLE_LOG_NONE;}
 inline int GetMaxLogLevel() {return MUSCLE_LOG_NONE;}
 inline status_t SetFileLogLevel(int) {return B_NO_ERROR;}
+inline status_t SetFileLogName(const String &) {return B_NO_ERROR;}
 inline status_t SetConsoleLogLevel(int) {return B_NO_ERROR;}
 #else
 
@@ -103,6 +105,15 @@ int ParseLogLevelKeyword(const char * keyword);
  *  @return a MUSCLE_LOG_* value.
  */
 int GetFileLogLevel();
+
+/** Returns the user-specified name for the file to log to.
+ *  (note that this may be different from the log file name actually used,
+ *  since the logging mechanism will choose a name when the log is first opened
+ *  if no manually specified name was chosen)
+ *  @return a file name or file path representing where the user would like the 
+ *          log file to be written.
+ */
+String GetFileLogName();
 
 /** Returns the current log level for logging to stdout.
  *  @return a MUSCLE_LOG_* value.
@@ -121,6 +132,13 @@ int GetMaxLogLevel();
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */
 status_t SetFileLogLevel(int loglevel);
+
+/** Sets a user-specified name/path for the log file.  This name will
+ *  be used if/when the log file is opened, instead of the default log file name.
+ *  @param logName The string to use, or "" if you'd prefer a log file name be automatically generated.
+ *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
+ */
+status_t SetFileLogName(const String &);
 
 /** Sets the log filter level for logging to stdout.
  *  Any calls to Log*() that specify a log level greater than (loglevel)

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifdef WIN32
 # include <errno.h>
@@ -142,7 +142,7 @@ status_t Directory :: SetDir(const char * dirPath)
    else return B_ERROR;
 }
 
-status_t Directory :: CreateDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary)
+status_t Directory :: MakeDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary)
 {
    if (forceCreateParentDirsIfNecessary)
    {
@@ -158,7 +158,7 @@ status_t Directory :: CreateDirectory(const char * dirPath, bool forceCreatePare
          temp[subLen] = '\0';
 
          Directory pd(temp);
-         if ((pd.IsValid() == false)&&(Directory::CreateDirectory(temp, forceCreateParentDirsIfNecessary) != B_NO_ERROR))
+         if ((pd.IsValid() == false)&&(Directory::MakeDirectory(temp, forceCreateParentDirsIfNecessary) != B_NO_ERROR))
          {
             delete [] temp;
             return B_ERROR;
@@ -174,4 +174,51 @@ status_t Directory :: CreateDirectory(const char * dirPath, bool forceCreatePare
    return (mkdir(dirPath, S_IRWXU|S_IRWXG|S_IRWXO) == 0) ? B_NO_ERROR : B_ERROR;
 #endif
 }
+
+status_t Directory :: DeleteDirectory(const char * dirPath, bool forceDeleteSubItemsIfNecessary)
+{
+   if (forceDeleteSubItemsIfNecessary)
+   {
+      Directory d;
+      if (d.SetDir(dirPath) != B_NO_ERROR) return B_ERROR;
+
+      const char * sep = GetFilePathSeparator();
+      int sepLen       = strlen(sep);
+      int dirPathLen   = strlen(dirPath);
+
+      // No point in including a separator if (dirPath) already ends in one
+      if ((dirPathLen >= sepLen)&&(strcmp(&dirPath[dirPathLen-sepLen], sep) == 0)) {sep = ""; sepLen=0;}
+
+      for (const char * fn; (fn = d.GetCurrentFileName()) != NULL; d++)
+      {
+         if ((strcmp(fn, ".") != 0)&&(strcmp(fn, "..") != 0))
+         {
+            int fnLen = strlen(fn);
+            char * catStr = newnothrow_array(char, dirPathLen+sepLen+fnLen+1);
+            if (catStr == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
+
+            // Compose the sub-item's full path
+            strcpy(catStr,                   dirPath);
+            strcpy(catStr+dirPathLen,        sep);
+            strcpy(catStr+dirPathLen+sepLen, fn);
+
+            // First, try to delete the sub-item as a file; if not, as a directory
+#ifdef MSC_VER
+            int unlinkRet = _unlink(catStr);  // stupid MSVC!
+#else
+            int unlinkRet = unlink(catStr);
+#endif
+            status_t ret = (unlinkRet == 0) ? B_NO_ERROR : Directory::DeleteDirectory(catStr, true);
+            delete [] catStr;
+            if (ret != B_NO_ERROR) return ret;
+         }
+      }
+   }
+#ifdef WIN32
+   return RemoveDirectoryA(dirPath) ? B_NO_ERROR : B_ERROR;
+#else
+   return (rmdir(dirPath) == 0) ? B_NO_ERROR : B_ERROR;
+#endif
+}
+
 END_NAMESPACE(muscle);

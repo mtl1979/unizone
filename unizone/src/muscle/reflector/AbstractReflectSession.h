@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleAbstractReflectSession_h
 #define MuscleAbstractReflectSession_h
@@ -87,6 +87,7 @@ public:
 
    virtual status_t AttachedToServer();
    virtual void AboutToDetachFromServer();
+   virtual bool IsReadyToAcceptSessions() const {return _slaveRef() ? _slaveRef()->IsReadyToAcceptSessions() : true;}
 
    /** Returns the reference to the "slave" factory that was passed in to our constructor. */
    const ReflectSessionFactoryRef & GetSlave() const {return _slaveRef;}

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include <stdio.h>
 #include "util/ByteBuffer.h"
@@ -110,6 +110,9 @@ public:
    // Clears the array
    virtual void Clear(bool releaseDataBuffers) = 0;
 
+   // Normalizes the array
+   virtual void Normalize() = 0;
+
    // Sets (setDataLoc) to point to the (index)'th item in our array.
    // Result is not guaranteed to remain valid after this object is modified.
    virtual status_t FindDataItem(uint32 index, const void ** setDataLoc) const = 0;
@@ -170,6 +173,7 @@ public:
    virtual uint32 GetNumItems() const {return _data.GetNumItems();}
 
    virtual void Clear(bool releaseDataBuffers) {_data.Clear(releaseDataBuffers);}
+   virtual void Normalize() {_data.Normalize();}
 
    virtual status_t AddDataItem(const void * item, uint32 size)
    {
@@ -190,6 +194,7 @@ public:
       if (index < _data.GetNumItems())
       {
          *setDataLoc = _data.GetItemAt(index);
+          
          return (*setDataLoc) ? B_NO_ERROR : B_ERROR;
       }
       return B_ERROR;
@@ -206,7 +211,7 @@ public:
 
    const DataType & ItemAt(int i) const {return *_data.GetItemAt(i);}
 
-   FixedSizeDataArray<DataType> & operator=(const FixedSizeDataArray<DataType> &rhs) 
+   FixedSizeDataArray<DataType> & operator=(const FixedSizeDataArray<DataType> & rhs) 
    {
       if (this != &rhs) _data = rhs._data;
       return *this;
@@ -289,7 +294,7 @@ public:
       // empty
    }
 
-   virtual void Flatten(uint8 *buffer) const
+   virtual void Flatten(uint8 * buffer) const
    {
       uint32 numItems = this->_data.GetNumItems(); 
       for (uint32 i=0; i<numItems; i++) 
@@ -302,7 +307,7 @@ public:
    // Flattenable interface
    virtual uint32 FlattenedSize() const {return this->_data.GetNumItems() * _flatItemSize;}
 
-   virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
+   virtual status_t Unflatten(const uint8 * buffer, uint32 numBytes)
    {
       this->_data.Clear();
       if (numBytes % _flatItemSize) return B_ERROR;  // length must be an even multiple of item size, or something's wrong!
@@ -351,7 +356,7 @@ public:
    PrimitiveTypeDataArray() {/* empty */}
    virtual ~PrimitiveTypeDataArray() {/* empty */}
 
-   virtual void Flatten(uint8 *buffer) const
+   virtual void Flatten(uint8 * buffer) const
    {
       DataType * dBuf = (DataType *) buffer;
       switch(this->_data.GetNumItems())
@@ -378,7 +383,7 @@ public:
       }
    }
 
-   virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
+   virtual status_t Unflatten(const uint8 * buffer, uint32 numBytes)
    {
       this->_data.Clear();
       if (numBytes % sizeof(DataType)) return B_ERROR;  // length must be an even multiple of item size, or something's wrong!
@@ -505,14 +510,14 @@ public:
 
    virtual RefCountableRef Clone() const;
 
-   virtual void Flatten(uint8 *buffer) const
+   virtual void Flatten(uint8 * buffer) const
    {
       uint8 * dBuf = (uint8 *) buffer;
       uint32 numItems = _data.GetNumItems(); 
       for (uint32 i=0; i<numItems; i++) dBuf[i] = (uint8) (_data[i] ? 1 : 0);
    }
 
-   virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
+   virtual status_t Unflatten(const uint8 * buffer, uint32 numBytes)
    {
       _data.Clear();
 
@@ -807,7 +812,7 @@ public:
      */
    virtual bool ShouldWriteNumItems() const {return true;}
 
-   virtual void Flatten(uint8 *buffer) const
+   virtual void Flatten(uint8 * buffer) const
    {
       uint32 writeOffset = 0;
       uint32 numItems = this->_data.GetNumItems(); 
@@ -854,7 +859,7 @@ public:
    ByteBufferDataArray(uint32 tc) : FlatCountableRefDataArray<FlatCountableRef>(tc) {/* empty */}
    virtual ~ByteBufferDataArray() {/* empty */}
 
-   virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
+   virtual status_t Unflatten(const uint8 * buffer, uint32 numBytes)
    {
       Clear(false);
 
@@ -964,7 +969,7 @@ public:
    /** For backwards compatibility with older muscle streams */
    virtual bool ShouldWriteNumItems() const {return false;}
 
-   virtual status_t Unflatten(const uint8 *buffer, uint32 numBytes)
+   virtual status_t Unflatten(const uint8 * buffer, uint32 numBytes)
    {
       Clear(false);
 
@@ -1059,7 +1064,7 @@ public:
    virtual uint32 GetItemSize(uint32 index) const {return this->ItemAt(index).FlattenedSize();}
    virtual bool ElementsAreFixedSize() const {return false;}
 
-   virtual void Flatten(uint8 *buffer) const
+   virtual void Flatten(uint8 * buffer) const
    {
       // Format:  0. number of entries (4 bytes)
       //          1. entry size in bytes (4 bytes)
@@ -1093,7 +1098,7 @@ public:
       return sum;
    }
 
-   virtual status_t Unflatten(const uint8 *buffer, uint32 inputBufferBytes)
+   virtual status_t Unflatten(const uint8 * buffer, uint32 inputBufferBytes)
    {
       this->Clear(false);
 
@@ -1150,23 +1155,23 @@ public:
 };
 DECLAREFIELDTYPE(StringDataArray);
 
-status_t MessageFieldNameIterator :: GetNextFieldName(String & name)
+status_t MessageFieldNameIterator :: GetNextFieldName(String & fieldName)
 {
    const String * ret = GetNextFieldNameString();
    if (ret)
    {
-      name = *ret;
+      fieldName = *ret;
       return B_NO_ERROR;
    }
    return B_ERROR;
 }
 
-status_t MessageFieldNameIterator :: PeekNextFieldName(String & name) const
+status_t MessageFieldNameIterator :: PeekNextFieldName(String & fieldName) const
 {
    const String * ret = PeekNextFieldNameString();
    if (ret)
    {
-      name = *ret;
+      fieldName = *ret;
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -1208,7 +1213,7 @@ const String * MessageFieldNameIterator :: PeekNextFieldNameString() const
    }
 }
 
-Message & Message :: operator=(const Message &rhs) 
+Message & Message :: operator=(const Message & rhs) 
 {
    TCHECKPOINT;
 
@@ -1229,9 +1234,9 @@ Message & Message :: operator=(const Message &rhs)
    return *this;
 }
 
-status_t Message :: GetInfo(const String & name, uint32 * type, uint32 * c, bool * fixedSize) const
+status_t Message :: GetInfo(const String & fieldName, uint32 * type, uint32 * c, bool * fixedSize) const
 {
-   const AbstractDataArray * array = GetArray(name, B_ANY_TYPE);
+   const AbstractDataArray * array = GetArray(fieldName, B_ANY_TYPE);
    if (array == NULL) return B_ERROR;
    if (type)      *type      = array->TypeCode();
    if (c)         *c         = array->GetNumItems();
@@ -1345,14 +1350,14 @@ AbstractDataArray * Message :: GetOrCreateArray(const String & arrayName, uint32
    return ((newEntry())&&(_entries.Put(arrayName, newEntry) == B_NO_ERROR)) ? (AbstractDataArray*)newEntry() : NULL;
 }
 
-status_t Message :: Rename(const String & old_entry, const String & new_entry) 
+status_t Message :: Rename(const String & oldFieldName, const String & newFieldName) 
 {
-   RefCountableRef oldArray = GetArrayRef(old_entry, B_ANY_TYPE);
+   RefCountableRef oldArray = GetArrayRef(oldFieldName, B_ANY_TYPE);
    if (oldArray()) 
    {
-      (void) RemoveName(new_entry);             // destructive rename... remove anybody in our way
-      (void) _entries.Remove(old_entry);        // remove from under old name
-      return _entries.Put(new_entry, oldArray); // add to under new name
+      (void) RemoveName(newFieldName);             // destructive rename... remove anybody in our way
+      (void) _entries.Remove(oldFieldName);        // remove from under old name
+      return _entries.Put(newFieldName, oldArray); // add to under new name
    }
    return B_ERROR;
 }
@@ -1387,7 +1392,7 @@ uint32 Message :: CalculateChecksum(bool countNonFlattenableFields) const
    return ret;
 }
 
-void Message :: Flatten(uint8 *buffer) const 
+void Message :: Flatten(uint8 * buffer) const 
 {
    TCHECKPOINT;
 
@@ -1455,7 +1460,7 @@ void Message :: Flatten(uint8 *buffer) const
    }
 }
 
-status_t Message :: Unflatten(const uint8 *buffer, uint32 inputBufferBytes) 
+status_t Message :: Unflatten(const uint8 * buffer, uint32 inputBufferBytes) 
 {
    TCHECKPOINT;
 
@@ -1514,116 +1519,116 @@ status_t Message :: Unflatten(const uint8 *buffer, uint32 inputBufferBytes)
    return B_NO_ERROR;
 }
 
-status_t Message :: AddFlatBuffer(const String & name, const Flattenable & flat, uint32 tc, bool prepend)
+status_t Message :: AddFlatBuffer(const String & fieldName, const Flattenable & flat, uint32 tc, bool prepend)
 {
    FlatCountableRef fcRef(GetByteBufferFromPool(flat.FlattenedSize()).GetRefCountableRef(), true);
    if ((fcRef())&&(fcRef()->CopyFrom(flat) == B_NO_ERROR))
    {
-      AbstractDataArray * array = GetOrCreateArray(name, tc);
+      AbstractDataArray * array = GetOrCreateArray(fieldName, tc);
       return (array) ? (prepend ? array->PrependDataItem(&fcRef, sizeof(fcRef)) : array->AddDataItem(&fcRef, sizeof(fcRef))) : B_ERROR;
    }
    return B_ERROR;
 }
 
-status_t Message :: AddFlatRef(const String & name, const FlatCountableRef & ref, uint32 tc, bool prepend)
+status_t Message :: AddFlatRef(const String & fieldName, const FlatCountableRef & ref, uint32 tc, bool prepend)
 {
-   AbstractDataArray * array = GetOrCreateArray(name, tc);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, tc);
    return (array) ? (prepend ? array->PrependDataItem(&ref, sizeof(ref)) : array->AddDataItem(&ref, sizeof(ref))) : B_ERROR;
 }
 
-status_t Message :: AddString(const String &name, const String & val) 
+status_t Message :: AddString(const String & fieldName, const String & val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_STRING_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_STRING_TYPE);
    status_t ret = array ? array->AddDataItem(&val, sizeof(val)) : B_ERROR;
    return ret;
 }
 
-status_t Message :: AddInt8(const String &name, int8 val) 
+status_t Message :: AddInt8(const String & fieldName, int8 val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_INT8_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_INT8_TYPE);
    return array ? array->AddDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: AddInt16(const String &name, int16 val) 
+status_t Message :: AddInt16(const String & fieldName, int16 val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_INT16_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_INT16_TYPE);
    return array ? array->AddDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: AddInt32(const String &name, int32 val) 
+status_t Message :: AddInt32(const String & fieldName, int32 val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_INT32_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_INT32_TYPE);
    return array ? array->AddDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: AddInt64(const String &name, int64 val) 
+status_t Message :: AddInt64(const String & fieldName, int64 val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_INT64_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_INT64_TYPE);
    return array ? array->AddDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: AddBool(const String &name, bool val) 
+status_t Message :: AddBool(const String & fieldName, bool val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_BOOL_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_BOOL_TYPE);
    status_t ret = array ? array->AddDataItem(&val, sizeof(val)) : B_ERROR;
    return ret;
 }
 
-status_t Message :: AddFloat(const String &name, float val) 
+status_t Message :: AddFloat(const String & fieldName, float val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_FLOAT_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_FLOAT_TYPE);
    return array ? array->AddDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: AddDouble(const String &name, double val) 
+status_t Message :: AddDouble(const String & fieldName, double val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_DOUBLE_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_DOUBLE_TYPE);
    return array ? array->AddDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: AddPointer(const String &name, const void * ptr) 
+status_t Message :: AddPointer(const String & fieldName, const void * ptr) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_POINTER_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_POINTER_TYPE);
    return array ? array->AddDataItem(&ptr, sizeof(ptr)) : B_ERROR;
 }
 
-status_t Message :: AddPoint(const String &name, const Point & point) 
+status_t Message :: AddPoint(const String & fieldName, const Point & point) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_POINT_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_POINT_TYPE);
    return array ? array->AddDataItem(&point, sizeof(point)) : B_ERROR;
 }
 
-status_t Message :: AddRect(const String &name, const Rect & rect) 
+status_t Message :: AddRect(const String & fieldName, const Rect & rect) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_RECT_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_RECT_TYPE);
    return array ? array->AddDataItem(&rect, sizeof(rect)) : B_ERROR;
 }
 
-status_t Message :: AddTag(const String &name, const RefCountableRef & tag)
+status_t Message :: AddTag(const String & fieldName, const RefCountableRef & tag)
 {
    if (tag() == NULL) return B_ERROR;
-   AbstractDataArray * array = GetOrCreateArray(name, B_TAG_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_TAG_TYPE);
    return array ? array->AddDataItem(&tag, sizeof(tag)) : B_ERROR;
 }
 
-status_t Message :: AddMessage(const String & name, const MessageRef & ref)
+status_t Message :: AddMessage(const String & fieldName, const MessageRef & ref)
 {
    if (ref() == NULL) return B_ERROR;
-   AbstractDataArray * array = GetOrCreateArray(name, B_MESSAGE_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_MESSAGE_TYPE);
    return (array) ? array->AddDataItem(&ref, sizeof(ref)) : B_ERROR;
 }
 
-status_t Message :: AddFlat(const String &name, const Flattenable &obj) 
+status_t Message :: AddFlat(const String & fieldName, const Flattenable &obj) 
 {
    switch(obj.TypeCode())
    {
-      case B_STRING_TYPE:  return (dynamic_cast<const String *>(&obj))  ? AddString(name,  (const String  &)obj) : B_ERROR;
-      case B_MESSAGE_TYPE: return (dynamic_cast<const Message *>(&obj)) ? AddMessage(name, (const Message &)obj) : B_ERROR;
-      default:             return AddFlatBuffer(name, obj, obj.TypeCode(), false);
+      case B_STRING_TYPE:  return (dynamic_cast<const String *>(&obj))  ? AddString(fieldName,  (const String  &)obj) : B_ERROR;
+      case B_MESSAGE_TYPE: return (dynamic_cast<const Message *>(&obj)) ? AddMessage(fieldName, (const Message &)obj) : B_ERROR;
+      default:             return AddFlatBuffer(fieldName, obj, obj.TypeCode(), false);
    }
 }
 
-status_t Message :: AddFlat(const String &name, const FlatCountableRef & ref) 
+status_t Message :: AddFlat(const String & fieldName, const FlatCountableRef & ref) 
 {
    FlatCountable * fc = ref();
    if (fc)
@@ -1631,9 +1636,9 @@ status_t Message :: AddFlat(const String &name, const FlatCountableRef & ref)
       uint32 tc = fc->TypeCode();
       switch(tc)
       {
-         case B_MESSAGE_TYPE: return AddMessage(name, MessageRef(ref.GetRefCountableRef(), true));
+         case B_MESSAGE_TYPE: return AddMessage(fieldName, MessageRef(ref.GetRefCountableRef(), true));
          case B_STRING_TYPE:  return B_ERROR;  // sorry, can't do that (Strings aren't FlatCountables)
-         default:             return AddFlatRef(name, ref, tc, false);
+         default:             return AddFlatRef(fieldName, ref, tc, false);
       }
    }
    return B_ERROR;   
@@ -1659,13 +1664,13 @@ uint32 Message :: GetElementSize(uint32 type) const
    }
 }
 
-status_t Message :: AddDataAux(const String &name, const void *data, uint32 numBytes, uint32 tc, bool prepend)
+status_t Message :: AddDataAux(const String & fieldName, const void * data, uint32 numBytes, uint32 tc, bool prepend)
 {
    if (numBytes == 0) return B_ERROR;   // can't add 0 bytes, that's silly
    if (tc == B_STRING_TYPE) 
    {
       String temp((const char *)data);  // kept separate to avoid BeOS gcc optimizer bug (otherwise -O3 crashes here)
-      return prepend ? PrependString(name, temp) : AddString(name, temp);
+      return prepend ? PrependString(fieldName, temp) : AddString(fieldName, temp);
    }
 
    // for primitive types, we do this:
@@ -1680,7 +1685,7 @@ status_t Message :: AddDataAux(const String &name, const void *data, uint32 numB
    }
    if (numBytes % elementSize) return B_ERROR;  // Can't add half an element, silly!
 
-   AbstractDataArray * array = GetOrCreateArray(name, tc);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, tc);
    if (array == NULL) return B_ERROR;
 
    uint32 numElements = numBytes/elementSize;
@@ -1703,25 +1708,52 @@ status_t Message :: AddDataAux(const String &name, const void *data, uint32 numB
    return B_NO_ERROR;
 }
 
-status_t Message :: RemoveName(const String & name) 
+void * Message :: GetPointerToNormalizedFieldData(const String & fieldName, uint32 * retNumItems, uint32 typeCode) 
 {
-   return _entries.Remove(name);
+   RefCountableRef * e = _entries.Get(fieldName);
+   if (e)
+   {
+      AbstractDataArray * a = static_cast<AbstractDataArray *>(e->GetItemPointer());
+      if ((typeCode == B_ANY_TYPE)||(typeCode == a->TypeCode()))
+      {
+         a->Normalize();
+
+         const void * ptr;
+         if (a->FindDataItem(0, &ptr) == B_NO_ERROR)  // must be called AFTER a->Normalize()
+         {
+            if (retNumItems) *retNumItems = a->GetNumItems();
+            return const_cast<void *>(ptr);
+         }
+      }
+   }
+   return NULL;
 }
 
-status_t Message :: RemoveData(const String &name, uint32 index) 
+status_t Message :: EnsureFieldIsPrivate(const String & fieldName) 
 {
-   AbstractDataArray * array = GetArray(name, B_ANY_TYPE);
+   RefCountableRef * e = _entries.Get(fieldName);
+   return e ? (e->IsRefPrivate() ? B_NO_ERROR : CopyName(fieldName, *this)) : B_ERROR;  // Copying the field to ourself replaces the field with an unshared clone
+}
+
+status_t Message :: RemoveName(const String & fieldName) 
+{
+   return _entries.Remove(fieldName);
+}
+
+status_t Message :: RemoveData(const String & fieldName, uint32 index) 
+{
+   AbstractDataArray * array = GetArray(fieldName, B_ANY_TYPE);
    if (array) 
    {
       status_t ret = array->RemoveDataItem(index);
-      return (array->IsEmpty()) ? RemoveName(name) : ret;
+      return (array->IsEmpty()) ? RemoveName(fieldName) : ret;
    }
    else return B_ERROR;
 }
 
-status_t Message :: FindString(const String &name, uint32 index, const char ** setMe) const 
+status_t Message :: FindString(const String & fieldName, uint32 index, const char ** setMe) const 
 {
-   const StringDataArray * ada = (const StringDataArray *)GetArray(name, B_STRING_TYPE);
+   const StringDataArray * ada = (const StringDataArray *)GetArray(fieldName, B_STRING_TYPE);
    if ((ada)&&(index < ada->GetNumItems()))
    {
       *setMe = ada->ItemAt(index)();
@@ -1730,9 +1762,9 @@ status_t Message :: FindString(const String &name, uint32 index, const char ** s
    else return B_ERROR;
 }
 
-status_t Message :: FindString(const String &name, uint32 index, const String ** setMe) const 
+status_t Message :: FindString(const String & fieldName, uint32 index, const String ** setMe) const 
 {
-   const StringDataArray * ada = (const StringDataArray *)GetArray(name, B_STRING_TYPE);
+   const StringDataArray * ada = (const StringDataArray *)GetArray(fieldName, B_STRING_TYPE);
    if ((ada)&&(index < ada->GetNumItems()))
    {
       *setMe = &ada->ItemAt(index);
@@ -1741,9 +1773,9 @@ status_t Message :: FindString(const String &name, uint32 index, const String **
    else return B_ERROR;
 }
 
-status_t Message :: FindString(const String &name, uint32 index, String & str) const 
+status_t Message :: FindString(const String & fieldName, uint32 index, String & str) const 
 {
-   const StringDataArray * ada = (const StringDataArray *)GetArray(name, B_STRING_TYPE);
+   const StringDataArray * ada = (const StringDataArray *)GetArray(fieldName, B_STRING_TYPE);
    if ((ada)&&(index < ada->GetNumItems()))
    {
       str = ada->ItemAt(index);
@@ -1752,11 +1784,11 @@ status_t Message :: FindString(const String &name, uint32 index, String & str) c
    else return B_ERROR;
 }
 
-status_t Message :: FindFlat(const String & name, uint32 index, Flattenable & flat) const
+status_t Message :: FindFlat(const String & fieldName, uint32 index, Flattenable & flat) const
 {
    TCHECKPOINT;
 
-   const AbstractDataArray * ada = GetArray(name, B_ANY_TYPE);
+   const AbstractDataArray * ada = GetArray(fieldName, B_ANY_TYPE);
    if ((ada)&&(index < ada->GetNumItems()))
    {
       uint32 arrayType = ada->TypeCode();
@@ -1800,11 +1832,11 @@ status_t Message :: FindFlat(const String & name, uint32 index, Flattenable & fl
    return B_ERROR;
 }
 
-status_t Message :: FindFlat(const String &name, uint32 index, FlatCountableRef & ref) const
+status_t Message :: FindFlat(const String & fieldName, uint32 index, FlatCountableRef & ref) const
 {
    TCHECKPOINT;
 
-   const AbstractDataArray * array = GetArray(name, B_ANY_TYPE);
+   const AbstractDataArray * array = GetArray(fieldName, B_ANY_TYPE);
    if ((array)&&(index < array->GetNumItems()))
    {
       const ByteBufferDataArray * bbda = dynamic_cast<const ByteBufferDataArray *>(array);
@@ -1819,11 +1851,11 @@ status_t Message :: FindFlat(const String &name, uint32 index, FlatCountableRef 
    return B_ERROR;
 }
 
-status_t Message :: FindData(const String & name, uint32 tc, uint32 index, const void ** data, uint32 * setSize) const
+status_t Message :: FindData(const String & fieldName, uint32 tc, uint32 index, const void ** data, uint32 * setSize) const
 {
    TCHECKPOINT;
 
-   const AbstractDataArray * array = GetArray(name, tc);
+   const AbstractDataArray * array = GetArray(fieldName, tc);
    if ((array)&&(array->FindDataItem(index, data) == B_NO_ERROR))
    {
       switch(tc)
@@ -1868,9 +1900,9 @@ status_t Message :: FindData(const String & name, uint32 tc, uint32 index, const
    else return B_ERROR;
 }
 
-status_t Message :: FindDataItemAux(const String & name, uint32 index, uint32 tc, void * setValue, uint32 valueSize) const
+status_t Message :: FindDataItemAux(const String & fieldName, uint32 index, uint32 tc, void * setValue, uint32 valueSize) const
 {
-   const AbstractDataArray * array = GetArray(name, tc);
+   const AbstractDataArray * array = GetArray(fieldName, tc);
    if (array == NULL) return B_ERROR;
    const void * addressOfValue;
    status_t ret = array->FindDataItem(index, &addressOfValue);
@@ -1879,34 +1911,34 @@ status_t Message :: FindDataItemAux(const String & name, uint32 index, uint32 tc
    return B_NO_ERROR;
 }
 
-status_t Message :: FindPoint(const String &name, uint32 index, Point & point) const 
+status_t Message :: FindPoint(const String & fieldName, uint32 index, Point & point) const 
 {
-   const PointDataArray * array = (const PointDataArray *)GetArray(name, B_POINT_TYPE);
+   const PointDataArray * array = (const PointDataArray *)GetArray(fieldName, B_POINT_TYPE);
    if ((array == NULL)||(index >= array->GetNumItems())) return B_ERROR;
    point = array->ItemAt(index);
    return B_NO_ERROR;
 }
 
-status_t Message :: FindRect(const String &name, uint32 index, Rect & rect) const 
+status_t Message :: FindRect(const String & fieldName, uint32 index, Rect & rect) const 
 {
-   const RectDataArray * array = (const RectDataArray *)GetArray(name, B_RECT_TYPE);
+   const RectDataArray * array = (const RectDataArray *)GetArray(fieldName, B_RECT_TYPE);
    if ((array == NULL)||(index >= array->GetNumItems())) return B_ERROR;
    rect = array->ItemAt(index);
    return B_NO_ERROR;
 }
 
-status_t Message :: FindTag(const String &name, uint32 index, RefCountableRef & tag) const 
+status_t Message :: FindTag(const String & fieldName, uint32 index, RefCountableRef & tag) const 
 {
-   const TagDataArray * array = (const TagDataArray*)GetArray(name, B_TAG_TYPE);
+   const TagDataArray * array = (const TagDataArray*)GetArray(fieldName, B_TAG_TYPE);
    if ((array == NULL)||(index >= array->GetNumItems())) return B_ERROR;
    tag = array->ItemAt(index);
    return B_NO_ERROR;
 }
 
-status_t Message :: FindMessage(const String &name, uint32 index, Message &msg) const 
+status_t Message :: FindMessage(const String & fieldName, uint32 index, Message & msg) const 
 {
    MessageRef msgRef;
-   if (FindMessage(name, index, msgRef) == B_NO_ERROR)
+   if (FindMessage(fieldName, index, msgRef) == B_NO_ERROR)
    {
       const Message * m = msgRef();
       if (m) 
@@ -1918,18 +1950,18 @@ status_t Message :: FindMessage(const String &name, uint32 index, Message &msg) 
    return B_ERROR;
 }
 
-status_t Message :: FindMessage(const String & name, uint32 index, MessageRef & ref) const
+status_t Message :: FindMessage(const String & fieldName, uint32 index, MessageRef & ref) const
 {
-   const MessageDataArray * array = (const MessageDataArray *) GetArray(name, B_MESSAGE_TYPE);
+   const MessageDataArray * array = (const MessageDataArray *) GetArray(fieldName, B_MESSAGE_TYPE);
    if ((array == NULL)||(index >= array->GetNumItems())) return B_ERROR;
    ref = array->ItemAt(index);
    return B_NO_ERROR;
 }
 
-status_t Message :: FindDataPointer(const String &name, uint32 tc, uint32 index, void **data, uint32 *setSize) const 
+status_t Message :: FindDataPointer(const String & fieldName, uint32 tc, uint32 index, void ** data, uint32 * setSize) const 
 {
    const void * dataLoc;
-   status_t ret = FindData(name, tc, index, &dataLoc, setSize);
+   status_t ret = FindData(fieldName, tc, index, &dataLoc, setSize);
    if (ret == B_NO_ERROR)
    {
       *data = (void *) dataLoc;  // breaks const correctness, but oh well
@@ -1938,137 +1970,137 @@ status_t Message :: FindDataPointer(const String &name, uint32 tc, uint32 index,
    else return B_ERROR;
 }
 
-status_t Message :: ReplaceString(bool okayToAdd, const String &name, uint32 index, const String & string) 
+status_t Message :: ReplaceString(bool okayToAdd, const String & fieldName, uint32 index, const String & string) 
 {
-   AbstractDataArray * array = GetArray(name, B_STRING_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddString(name, string);
+   AbstractDataArray * array = GetArray(fieldName, B_STRING_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddString(fieldName, string);
    return array ? array->ReplaceDataItem(index, &string, sizeof(string)) : B_ERROR;
 }
 
-status_t Message :: ReplaceDataAux(bool okayToAdd, const String & name, uint32 index, void * dataBuf, uint32 bufSize, uint32 tc)
+status_t Message :: ReplaceDataAux(bool okayToAdd, const String & fieldName, uint32 index, void * dataBuf, uint32 bufSize, uint32 tc)
 {
-   AbstractDataArray * array = GetArray(name, tc);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddDataAux(name, dataBuf, bufSize, tc, false);
+   AbstractDataArray * array = GetArray(fieldName, tc);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddDataAux(fieldName, dataBuf, bufSize, tc, false);
    return array ? array->ReplaceDataItem(index, dataBuf, bufSize) : B_ERROR;
 }
 
-status_t Message :: ReplaceInt8(bool okayToAdd, const String &name, uint32 index, int8 val) 
+status_t Message :: ReplaceInt8(bool okayToAdd, const String & fieldName, uint32 index, int8 val) 
 {
-   AbstractDataArray * array = GetArray(name, B_INT8_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddInt8(name, val);
+   AbstractDataArray * array = GetArray(fieldName, B_INT8_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddInt8(fieldName, val);
    return array ? array->ReplaceDataItem(index, &val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: ReplaceInt16(bool okayToAdd, const String &name, uint32 index, int16 val) 
+status_t Message :: ReplaceInt16(bool okayToAdd, const String & fieldName, uint32 index, int16 val) 
 {
-   AbstractDataArray * array = GetArray(name, B_INT16_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddInt16(name, val);
+   AbstractDataArray * array = GetArray(fieldName, B_INT16_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddInt16(fieldName, val);
    return array ? array->ReplaceDataItem(index, &val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: ReplaceInt32(bool okayToAdd, const String &name, uint32 index, int32 val) 
+status_t Message :: ReplaceInt32(bool okayToAdd, const String & fieldName, uint32 index, int32 val) 
 {
-   AbstractDataArray * array = GetArray(name, B_INT32_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddInt32(name, val);
+   AbstractDataArray * array = GetArray(fieldName, B_INT32_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddInt32(fieldName, val);
    return array ? array->ReplaceDataItem(index, &val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: ReplaceInt64(bool okayToAdd, const String &name, uint32 index, int64 val) 
+status_t Message :: ReplaceInt64(bool okayToAdd, const String & fieldName, uint32 index, int64 val) 
 {
-   AbstractDataArray * array = GetArray(name, B_INT64_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddInt64(name, val);
+   AbstractDataArray * array = GetArray(fieldName, B_INT64_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddInt64(fieldName, val);
    return array ? array->ReplaceDataItem(index, &val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: ReplaceBool(bool okayToAdd, const String &name, uint32 index, bool val) 
+status_t Message :: ReplaceBool(bool okayToAdd, const String & fieldName, uint32 index, bool val) 
 {
-   AbstractDataArray * array = GetArray(name, B_BOOL_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddBool(name, val);
+   AbstractDataArray * array = GetArray(fieldName, B_BOOL_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddBool(fieldName, val);
    return array ? array->ReplaceDataItem(index, &val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: ReplaceFloat(bool okayToAdd, const String &name, uint32 index, float val) 
+status_t Message :: ReplaceFloat(bool okayToAdd, const String & fieldName, uint32 index, float val) 
 {
-   AbstractDataArray * array = GetArray(name, B_FLOAT_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddFloat(name, val);
+   AbstractDataArray * array = GetArray(fieldName, B_FLOAT_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddFloat(fieldName, val);
    return array ? array->ReplaceDataItem(index, &val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: ReplaceDouble(bool okayToAdd, const String &name, uint32 index, double val) 
+status_t Message :: ReplaceDouble(bool okayToAdd, const String & fieldName, uint32 index, double val) 
 {
-   AbstractDataArray * array = GetArray(name, B_DOUBLE_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddDouble(name, val);
+   AbstractDataArray * array = GetArray(fieldName, B_DOUBLE_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddDouble(fieldName, val);
    return array ? array->ReplaceDataItem(index, &val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: ReplacePointer(bool okayToAdd, const String &name, uint32 index, const void * ptr) 
+status_t Message :: ReplacePointer(bool okayToAdd, const String & fieldName, uint32 index, const void * ptr) 
 {
-   AbstractDataArray * array = GetArray(name, B_POINTER_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddPointer(name, ptr);
+   AbstractDataArray * array = GetArray(fieldName, B_POINTER_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddPointer(fieldName, ptr);
    return array ? array->ReplaceDataItem(index, &ptr, sizeof(ptr)) : B_ERROR;
 }
 
-status_t Message :: ReplacePoint(bool okayToAdd, const String &name, uint32 index, const Point &point) 
+status_t Message :: ReplacePoint(bool okayToAdd, const String & fieldName, uint32 index, const Point &point) 
 {
-   AbstractDataArray * array = GetArray(name, B_POINT_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddPoint(name, point);
+   AbstractDataArray * array = GetArray(fieldName, B_POINT_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddPoint(fieldName, point);
    return array ? array->ReplaceDataItem(index, &point, sizeof(point)) : B_ERROR;
 }
 
-status_t Message :: ReplaceRect(bool okayToAdd, const String &name, uint32 index, const Rect &rect) 
+status_t Message :: ReplaceRect(bool okayToAdd, const String & fieldName, uint32 index, const Rect &rect) 
 {
-   AbstractDataArray * array = GetArray(name, B_RECT_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddRect(name, rect);
+   AbstractDataArray * array = GetArray(fieldName, B_RECT_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddRect(fieldName, rect);
    return array ? array->ReplaceDataItem(index, &rect, sizeof(rect)) : B_ERROR;
 }
 
-status_t Message :: ReplaceTag(bool okayToAdd, const String &name, uint32 index, const RefCountableRef & tag) 
+status_t Message :: ReplaceTag(bool okayToAdd, const String & fieldName, uint32 index, const RefCountableRef & tag) 
 {
    if (tag() == NULL) return B_ERROR;
-   AbstractDataArray * array = GetArray(name, B_TAG_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddTag(name, tag);
+   AbstractDataArray * array = GetArray(fieldName, B_TAG_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddTag(fieldName, tag);
    return array ? array->ReplaceDataItem(index, &tag, sizeof(tag)) : B_ERROR;
 }
 
-status_t Message :: ReplaceMessage(bool okayToAdd, const String & name, uint32 index, const MessageRef & msgRef)
+status_t Message :: ReplaceMessage(bool okayToAdd, const String & fieldName, uint32 index, const MessageRef & msgRef)
 {
    if (msgRef() == NULL) return B_ERROR;
-   AbstractDataArray * array = GetArray(name, B_MESSAGE_TYPE);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddMessage(name, msgRef);
+   AbstractDataArray * array = GetArray(fieldName, B_MESSAGE_TYPE);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddMessage(fieldName, msgRef);
    if (array) return array->ReplaceDataItem(index, &msgRef, sizeof(msgRef));
    return B_ERROR;
 }
 
-status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index, const Flattenable &obj) 
+status_t Message :: ReplaceFlat(bool okayToAdd, const String & fieldName, uint32 index, const Flattenable &obj) 
 {
    switch(obj.TypeCode())
    {
-      case B_MESSAGE_TYPE: return (dynamic_cast<const Message *>(&obj)) ? ReplaceMessage(okayToAdd, name, index, (const Message &)obj) : B_ERROR;
-      case B_POINT_TYPE:   return (dynamic_cast<const Point *>(&obj))   ? ReplacePoint(  okayToAdd, name, index, (const Point &)  obj) : B_ERROR;
-      case B_RECT_TYPE:    return (dynamic_cast<const Rect *>(&obj))    ? ReplaceRect(   okayToAdd, name, index, (const Rect &)   obj) : B_ERROR;
-      case B_STRING_TYPE:  return (dynamic_cast<const String *>(&obj))  ? ReplaceString( okayToAdd, name, index, (const String &) obj) : B_ERROR;
+      case B_MESSAGE_TYPE: return (dynamic_cast<const Message *>(&obj)) ? ReplaceMessage(okayToAdd, fieldName, index, (const Message &)obj) : B_ERROR;
+      case B_POINT_TYPE:   return (dynamic_cast<const Point *>(&obj))   ? ReplacePoint(  okayToAdd, fieldName, index, (const Point &)  obj) : B_ERROR;
+      case B_RECT_TYPE:    return (dynamic_cast<const Rect *>(&obj))    ? ReplaceRect(   okayToAdd, fieldName, index, (const Rect &)   obj) : B_ERROR;
+      case B_STRING_TYPE:  return (dynamic_cast<const String *>(&obj))  ? ReplaceString( okayToAdd, fieldName, index, (const String &) obj) : B_ERROR;
       default:
       {
          FlatCountableRef fcRef(GetByteBufferFromPool(obj.FlattenedSize()).GetRefCountableRef(), true);
-         return ((fcRef())&&(fcRef()->CopyFrom(obj) == B_NO_ERROR)) ? ReplaceDataAux(okayToAdd, name, index, &fcRef, sizeof(fcRef), obj.TypeCode()) : B_ERROR;
+         return ((fcRef())&&(fcRef()->CopyFrom(obj) == B_NO_ERROR)) ? ReplaceDataAux(okayToAdd, fieldName, index, &fcRef, sizeof(fcRef), obj.TypeCode()) : B_ERROR;
       }
    }
 }
 
-status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index, const FlatCountableRef & ref) 
+status_t Message :: ReplaceFlat(bool okayToAdd, const String & fieldName, uint32 index, const FlatCountableRef & ref) 
 {
    const FlatCountable * fc = ref();
    if (fc)
    {
       uint32 tc = fc->TypeCode();
-      AbstractDataArray * array = GetArray(name, tc);
-      if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddFlat(name, ref);
+      AbstractDataArray * array = GetArray(fieldName, tc);
+      if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddFlat(fieldName, ref);
       if (array)
       { 
          switch(tc)
          {
             case B_MESSAGE_TYPE:  
-               return (dynamic_cast<const Message *>(fc)) ? ReplaceMessage(okayToAdd, name, index, MessageRef(ref.GetRefCountableRef(), true)) : B_ERROR;
+               return (dynamic_cast<const Message *>(fc)) ? ReplaceMessage(okayToAdd, fieldName, index, MessageRef(ref.GetRefCountableRef(), true)) : B_ERROR;
 
             default:              
                if (GetElementSize(tc) == 0)
@@ -2083,17 +2115,17 @@ status_t Message :: ReplaceFlat(bool okayToAdd, const String &name, uint32 index
    return B_ERROR;
 }
 
-status_t Message :: ReplaceData(bool okayToAdd, const String &name, uint32 type, uint32 index, const void *data, uint32 numBytes) 
+status_t Message :: ReplaceData(bool okayToAdd, const String & fieldName, uint32 type, uint32 index, const void * data, uint32 numBytes) 
 {
    TCHECKPOINT;
 
    if (type == B_STRING_TYPE) 
    {   
       String temp((const char *)data);  // temp to avoid gcc optimizer bug
-      return ReplaceString(okayToAdd, name, index, temp);
+      return ReplaceString(okayToAdd, fieldName, index, temp);
    }
-   AbstractDataArray * array = GetArray(name, type);
-   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddDataAux(name, data, numBytes, type, false);
+   AbstractDataArray * array = GetArray(fieldName, type);
+   if ((okayToAdd)&&((array == NULL)||(index >= array->GetNumItems()))) return AddDataAux(fieldName, data, numBytes, type, false);
    if (array == NULL) return B_ERROR;
    
    // for primitive types, we do this:
@@ -2127,130 +2159,130 @@ status_t Message :: ReplaceData(bool okayToAdd, const String &name, uint32 type,
    return B_NO_ERROR;
 }
 
-uint32 Message :: GetNumValuesInName(const String & name, uint32 type) const
+uint32 Message :: GetNumValuesInName(const String & fieldName, uint32 type) const
 {
-   const AbstractDataArray * array = GetArray(name, type);
+   const AbstractDataArray * array = GetArray(fieldName, type);
    return array ? array->GetNumItems() : 0;
 }
 
-status_t Message :: CopyName(const String & name, Message & copyTo) const
+status_t Message :: CopyName(const String & oldFieldName, Message & copyTo, const String & newFieldName) const
 {
-   const AbstractDataArray * array = GetArray(name, B_ANY_TYPE);
+   const AbstractDataArray * array = GetArray(oldFieldName, B_ANY_TYPE);
    if (array)
    {
       RefCountableRef clone = array->Clone();
-      if ((clone())&&(copyTo._entries.Put(name, clone) == B_NO_ERROR)) return B_NO_ERROR;
+      if ((clone())&&(copyTo._entries.Put(newFieldName, clone) == B_NO_ERROR)) return B_NO_ERROR;
    }
    return B_ERROR;
 }
 
-status_t Message :: ShareName(const String & name, Message & shareTo) const
+status_t Message :: ShareName(const String & oldFieldName, Message & shareTo, const String & newFieldName) const
 {
-   const RefCountableRef * gRef = _entries.Get(name);
-   return gRef ? shareTo._entries.Put(name, *gRef) : B_ERROR;
+   const RefCountableRef * gRef = _entries.Get(oldFieldName);
+   return gRef ? shareTo._entries.Put(newFieldName, *gRef) : B_ERROR;
 }
 
-status_t Message :: MoveName(const String & name, Message & moveTo)
+status_t Message :: MoveName(const String & oldFieldName, Message & moveTo, const String & newFieldName)
 {
-   if (ShareName(name, moveTo) == B_NO_ERROR)
+   if (ShareName(oldFieldName, moveTo) == B_NO_ERROR)
    {
-      (void) _entries.Remove(name);
+      (void) _entries.Remove(newFieldName);
       return B_NO_ERROR;
    }
    else return B_ERROR;
 }
 
-status_t Message :: PrependString(const String & name, const String & val) 
+status_t Message :: PrependString(const String & fieldName, const String & val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_STRING_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_STRING_TYPE);
    return array ? array->PrependDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: PrependInt8(const String &name, int8 val) 
+status_t Message :: PrependInt8(const String & fieldName, int8 val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_INT8_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_INT8_TYPE);
    return array ? array->PrependDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: PrependInt16(const String &name, int16 val) 
+status_t Message :: PrependInt16(const String & fieldName, int16 val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_INT16_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_INT16_TYPE);
    return array ? array->PrependDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: PrependInt32(const String &name, int32 val) 
+status_t Message :: PrependInt32(const String & fieldName, int32 val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_INT32_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_INT32_TYPE);
    return array ? array->PrependDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: PrependInt64(const String &name, int64 val) 
+status_t Message :: PrependInt64(const String & fieldName, int64 val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_INT64_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_INT64_TYPE);
    return array ? array->PrependDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: PrependBool(const String &name, bool val) 
+status_t Message :: PrependBool(const String & fieldName, bool val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_BOOL_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_BOOL_TYPE);
    return array ? array->PrependDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: PrependFloat(const String &name, float val) 
+status_t Message :: PrependFloat(const String & fieldName, float val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_FLOAT_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_FLOAT_TYPE);
    return array ? array->PrependDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: PrependDouble(const String &name, double val) 
+status_t Message :: PrependDouble(const String & fieldName, double val) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_DOUBLE_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_DOUBLE_TYPE);
    return array ? array->PrependDataItem(&val, sizeof(val)) : B_ERROR;
 }
 
-status_t Message :: PrependPointer(const String &name, const void * ptr) 
+status_t Message :: PrependPointer(const String & fieldName, const void * ptr) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_POINTER_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_POINTER_TYPE);
    return array ? array->PrependDataItem(&ptr, sizeof(ptr)) : B_ERROR;
 }
 
-status_t Message :: PrependPoint(const String &name, const Point & point) 
+status_t Message :: PrependPoint(const String & fieldName, const Point & point) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_POINT_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_POINT_TYPE);
    return array ? array->PrependDataItem(&point, sizeof(point)) : B_ERROR;
 }
 
-status_t Message :: PrependRect(const String &name, const Rect & rect) 
+status_t Message :: PrependRect(const String & fieldName, const Rect & rect) 
 {
-   AbstractDataArray * array = GetOrCreateArray(name, B_RECT_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_RECT_TYPE);
    return array ? array->PrependDataItem(&rect, sizeof(rect)) : B_ERROR;
 }
 
-status_t Message :: PrependTag(const String &name, const RefCountableRef & tag) 
+status_t Message :: PrependTag(const String & fieldName, const RefCountableRef & tag) 
 {
    if (tag() == NULL) return B_ERROR;
-   AbstractDataArray * array = GetOrCreateArray(name, B_TAG_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_TAG_TYPE);
    return array ? array->PrependDataItem(&tag, sizeof(tag)) : B_ERROR;
 }
 
-status_t Message :: PrependMessage(const String & name, const MessageRef & ref)
+status_t Message :: PrependMessage(const String & fieldName, const MessageRef & ref)
 {
    if (ref() == NULL) return B_ERROR;
-   AbstractDataArray * array = GetOrCreateArray(name, B_MESSAGE_TYPE);
+   AbstractDataArray * array = GetOrCreateArray(fieldName, B_MESSAGE_TYPE);
    return (array) ? array->PrependDataItem(&ref, sizeof(ref)) : B_ERROR;
 }
 
-status_t Message :: PrependFlat(const String &name, const Flattenable &obj) 
+status_t Message :: PrependFlat(const String & fieldName, const Flattenable & obj) 
 {
    switch(obj.TypeCode())
    {
-      case B_STRING_TYPE:  return (dynamic_cast<const String *>(&obj))  ? PrependString(name,  (const String &) obj) : B_ERROR;
-      case B_MESSAGE_TYPE: return (dynamic_cast<const Message *>(&obj)) ? PrependMessage(name, (const Message &)obj) : B_ERROR;
-      default:             return AddFlatBuffer(name, obj, obj.TypeCode(), true);
+      case B_STRING_TYPE:  return (dynamic_cast<const String *>(&obj))  ? PrependString(fieldName,  (const String &) obj) : B_ERROR;
+      case B_MESSAGE_TYPE: return (dynamic_cast<const Message *>(&obj)) ? PrependMessage(fieldName, (const Message &)obj) : B_ERROR;
+      default:             return AddFlatBuffer(fieldName, obj, obj.TypeCode(), true);
    }
 }
 
-status_t Message :: PrependFlat(const String & name, const FlatCountableRef & ref)
+status_t Message :: PrependFlat(const String & fieldName, const FlatCountableRef & ref)
 {
    FlatCountable * fc = ref();
    if (fc)
@@ -2259,8 +2291,8 @@ status_t Message :: PrependFlat(const String & name, const FlatCountableRef & re
       switch(tc)
       {
          case B_STRING_TYPE:  return B_ERROR;  // sorry, can't do that (Strings aren't FlatCountables)
-         case B_MESSAGE_TYPE: return PrependMessage(name, MessageRef(ref.GetRefCountableRef(), true)); 
-         default:             return AddFlatRef(name, ref, tc, true);
+         case B_MESSAGE_TYPE: return PrependMessage(fieldName, MessageRef(ref.GetRefCountableRef(), true)); 
+         default:             return AddFlatRef(fieldName, ref, tc, true);
       }
    }
    return B_ERROR;   

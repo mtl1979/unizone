@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
 
 #ifndef MuscleAtomicCounter_h 
 #define MuscleAtomicCounter_h 
@@ -24,7 +24,7 @@
 # ifndef MUSCLE_SINGLE_THREAD_ONLY
 #  if defined(__ATHEOS__)
 #   include <atheos/atomic.h>
-#  elif defined(__BEOS__)
+#  elif defined(__BEOS__) || defined(__HAIKU__)
 #   include <kernel/OS.h>
 #  elif defined(WIN32)
     // empty
@@ -90,7 +90,7 @@ public:
 # endif
 #elif defined(__ATHEOS__) 
       (void) atomic_add(&_count,1);
-#elif defined(__BEOS__) 
+#elif defined(__BEOS__) || defined(__HAIKU__)
       (void) atomic_add(&_count,1);
 #elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
       volatile int * p = &_count;
@@ -147,7 +147,7 @@ public:
 # endif
 #elif defined(__ATHEOS__) 
       return (atomic_add(&_count,-1)==1);
-#elif defined(__BEOS__) 
+#elif defined(__BEOS__) || defined(__HAIKU__)
       return (atomic_add(&_count,-1)==1);
 #elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
       volatile int * p = &_count;
@@ -212,7 +212,7 @@ private:
 # else
    long _count;
 # endif
-#elif defined(__BEOS__)
+#elif defined(__BEOS__) || defined(__HAIKU__)
 # if defined(B_BEOS_VERSION_5)
    vint32 _count;
 # else

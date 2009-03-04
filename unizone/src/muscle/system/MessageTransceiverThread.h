@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMessageTransceiverThread_h
 #define MuscleMessageTransceiverThread_h
@@ -288,6 +288,9 @@ public:
 
    /** Convenience method -- calls the above method with a NULL session reference. */
    status_t AddNewSession(const ConstSocketRef & socket) {return AddNewSession(socket, ThreadWorkerSessionRef());}
+
+   /** Convenience method -- calls the above method with a NULL socket reference. */
+   status_t AddNewSession(const ThreadWorkerSessionRef & optSessionRef) {return AddNewSession(ConstSocketRef(), optSessionRef);}
 
    /** Convenience method -- calls the above method with a NULL socket and NULL session reference. */
    status_t AddNewSession() {return AddNewSession(ConstSocketRef(), ThreadWorkerSessionRef());}

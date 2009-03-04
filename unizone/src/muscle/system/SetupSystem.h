@@ -1,10 +1,11 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSetupSystem_h
 #define MuscleSetupSystem_h
 
 #include "system/AtomicCounter.h"
 #include "system/Mutex.h"
+#include "util/GenericCallback.h"
 
 BEGIN_NAMESPACE(muscle);
 
@@ -148,25 +149,42 @@ public:
 class CompleteSetupSystem : public SetupSystem
 {
 public:
-   /** Constructor.  No-op, but at this point both
-     * a NetworkSetupSystem and ThreadSetupSystem
-     * will be created. 
+   /** Constructor.  No-op, all the other *SetupSystem objects are created at this point.
      * @param muscleSingleThreadOnly Passed to the ThreadSetupSystem constructor.  
      *                      See the ThreadSetupSystem documentation for details.
      *                      (If you don't know what this flag is, leave it set to false!)
      */
    CompleteSetupSystem(bool muscleSingleThreadOnly = false);
 
-   /** Destructor.  Calls AbstractObjectRecycler::GlobalFlushAllCachedObjects() to ensure
+   /** Destructor.  Calls the Callback() method of any items that were previously added
+     * to our cleanup-callbacks list (in the opposite order from how they were added), then
+     * calls AbstractObjectRecycler::GlobalFlushAllCachedObjects() to ensure
      * that objects don't get recycled after their object pools have been deleted.
      */
    ~CompleteSetupSystem();
+
+   /** Returns a reference to a list of cleanup callback items that will be called by
+     * the CompleteSetupSystem destructor.  You can add items to this list if you want
+     * things to happen on program exit.
+     */
+   Queue<GenericCallbackRef> & GetCleanupCallbacks() {return _cleanupCallbacks;}
+
+   /** As above, but read-only.  */
+   const Queue<GenericCallbackRef> & GetCleanupCallbacks() const {return _cleanupCallbacks;}
+
+   /** If there are any CompleteSetupSystems anywhere on the stack, this method will
+     * return a pointer to the current (most recently created) CompleteSetupSystem object. 
+     * Otherwise, returns NULL.
+     */ 
+   static CompleteSetupSystem * GetCurrentCompleteSetupSystem();
 
 private: 
    NetworkSetupSystem _network;
    ThreadSetupSystem  _threads;
    MathSetupSystem    _math;
    SanitySetupSystem  _sanity;
+   Queue<GenericCallbackRef> _cleanupCallbacks;
+   CompleteSetupSystem * _prevInstance;  // stack (via linked list) so that nested scopes are handled appropriately
 };
 
 /** Returns a pointer to a process-wide Mutex, or NULL if that Mutex

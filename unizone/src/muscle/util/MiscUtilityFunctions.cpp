@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include <fcntl.h>
 
@@ -223,7 +223,7 @@ status_t ParseFile(FILE * fpIn, Message & addTo)
    }
 }
 
-status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort)
+status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort, bool portRequired)
 {
    TCHECKPOINT;
 
@@ -236,6 +236,8 @@ status_t ParseConnectArg(const Message & args, const String & fn, String & retHo
          if (p > 0) retPort = p;
          retHost = retHost.Substring(0, colIdx);
       }
+      else if (portRequired) return B_ERROR;
+
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -303,18 +305,25 @@ void HandleStandardDaemonArgs(const Message & args)
 #endif
 
    const char * value;
-   if (args.FindString("display", &value) == B_NO_ERROR)
+   if (args.FindString("displaylevel", &value) == B_NO_ERROR)
    {
       int ll = ParseLogLevelKeyword(value);
       if (ll >= 0) SetConsoleLogLevel(ll);
               else LogTime(MUSCLE_LOG_INFO, "Error, unknown display log level type [%s]\n", value);
    }
 
-   if (args.FindString("log", &value) == B_NO_ERROR)
+   if (args.FindString("filelevel", &value) == B_NO_ERROR)
    {
       int ll = ParseLogLevelKeyword(value);
       if (ll >= 0) SetFileLogLevel(ll);
               else LogTime(MUSCLE_LOG_INFO, "Error, unknown file log level type [%s]\n", value);
+   }
+
+   if (args.FindString("logfile", &value) == B_NO_ERROR)
+   {
+      SetFileLogName(value);
+      LogTime(MUSCLE_LOG_INFO, "Set log file to [%s]\n", value);
+      if (GetFileLogLevel() == MUSCLE_LOG_NONE) SetFileLogLevel(MUSCLE_LOG_INFO); // no sense specifying a name and then not logging anything!
    }
 
    if (args.FindString("localhost", &value) == B_NO_ERROR)
@@ -414,11 +423,13 @@ int64 Atoll(const char * str)
 }
 
 
-status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth, int & retDay, int & retHour, int & retMinute, int & retSecond, uint32 timeType)
+status_t GetHumanReadableTimeValues(uint64 timeUS, HumanReadableTimeValues & v, uint32 timeType)
 {
    TCHECKPOINT;
 
    if (timeUS == MUSCLE_TIME_NEVER) return B_ERROR;
+
+   int microsLeft = (int)(timeUS%1000000);
 
 #ifdef WIN32
    // Borland's localtime() function is buggy, so we'll use the Win32 API instead.
@@ -437,13 +448,7 @@ status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth
          TIME_ZONE_INFORMATION tzi;
          if ((GetTimeZoneInformation(&tzi) == TIME_ZONE_ID_INVALID)||(SystemTimeToTzSpecificLocalTime(&tzi, &st, &st) == false)) return B_ERROR;
       }
-
-      retYear   = st.wYear;
-      retMonth  = st.wMonth-1;  // convert to zero-based units
-      retDay    = st.wDay-1;    // covnert to zero-based units
-      retHour   = st.wHour;
-      retMinute = st.wMinute;
-      retSecond = st.wSecond;
+      v = HumanReadableTimeValues(st.wYear, st.wMonth-1, st.wDay-1, st.wDayOfWeek, st.wHour, st.wMinute, st.wSecond, microsLeft);
       return B_NO_ERROR;
    }
 #else
@@ -451,17 +456,46 @@ status_t GetHumanReadableTimeValues(uint64 timeUS, int & retYear, int & retMonth
    struct tm * ts = (timeType == MUSCLE_TIMEZONE_UTC) ? localtime(&timeS) : gmtime(&timeS);  // only convert if it isn't already local
    if (ts) 
    {
-      retYear   = ts->tm_year+1900;
-      retMonth  = ts->tm_mon;
-      retDay    = ts->tm_mday-1;
-      retHour   = ts->tm_hour;
-      retMinute = ts->tm_min;
-      retSecond = ts->tm_sec;
+      v = HumanReadableTimeValues(ts->tm_year+1900, ts->tm_mon, ts->tm_mday-1, ts->tm_wday, ts->tm_hour, ts->tm_min, ts->tm_sec, microsLeft);
       return B_NO_ERROR;
    }
 #endif
 
    return B_ERROR;
+}
+
+String HumanReadableTimeValues :: ExpandTokens(const String & origString) const
+{
+   if (origString.IndexOf('%') < 0) return origString;
+
+   String newString = origString;
+   (void) newString.Replace("%%", "%");  // do this first!
+   (void) newString.Replace("%T", "%Q %D %Y %h:%m:%s");
+   (void) newString.Replace("%t", "%Y/%M/%D %h:%m:%s");
+   (void) newString.Replace("%f", "%Y-%M-%D_%hh%mm%s");
+
+   static const char * _daysOfWeek[]   = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+   static const char * _monthsOfYear[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+   (void) newString.Replace("%Y", String("%1").Arg((int32)GetYear()));
+   (void) newString.Replace("%M", String("%1").Arg((int32)(GetMonth()+1),      "%02i"));
+   (void) newString.Replace("%Q", String("%1").Arg(_monthsOfYear[muscleClamp(GetMonth(), 0, (int)(ARRAYITEMS(_monthsOfYear)-1))]));
+   (void) newString.Replace("%D", String("%1").Arg((int32)(GetDayOfMonth()+1), "%02i"));
+   (void) newString.Replace("%d", String("%1").Arg((int32)(GetDayOfMonth()+1), "%02i"));
+   (void) newString.Replace("%W", String("%1").Arg((int32)(GetDayOfWeek()+1),  "%02i"));
+   (void) newString.Replace("%w", String("%1").Arg((int32)(GetDayOfWeek()+1),  "%02i"));
+   (void) newString.Replace("%q", String("%1").Arg(_daysOfWeek[muscleClamp(GetDayOfWeek(), 0, (int)(ARRAYITEMS(_daysOfWeek)-1))]));
+   (void) newString.Replace("%h", String("%1").Arg((int32)GetHour(),           "%02i"));
+   (void) newString.Replace("%m", String("%1").Arg((int32)GetMinute(),         "%02i"));
+   (void) newString.Replace("%s", String("%1").Arg((int32)GetSecond(),         "%02i"));
+   (void) newString.Replace("%x", String("%1").Arg((int32)GetMicrosecond(),    "%06i"));
+
+   uint32 r1 = rand();
+   uint32 r2 = rand();
+   char buf[64]; sprintf(buf, UINT64_FORMAT_SPEC, (((uint64)r1)<<32)|((uint64)r2));
+   (void) newString.Replace("%r", buf);
+
+   return newString;
 }
 
 String GetHumanReadableTimeString(uint64 timeUS, uint32 timeType)
@@ -471,11 +505,11 @@ String GetHumanReadableTimeString(uint64 timeUS, uint32 timeType)
    if (timeUS == MUSCLE_TIME_NEVER) return ("(never)");
    else
    {
-      int year, month, day, hour, minute, second;
-      if (GetHumanReadableTimeValues(timeUS, year, month, day, hour, minute, second, timeType) == B_NO_ERROR)
+      HumanReadableTimeValues v;
+      if (GetHumanReadableTimeValues(timeUS, v, timeType) == B_NO_ERROR)
       {
          char buf[256];
-         sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", year, month+1, day+1, hour, minute, second);
+         sprintf(buf, "%02i/%02i/%02i %02i:%02i:%02i", v.GetYear(), v.GetMonth()+1, v.GetDayOfMonth()+1, v.GetHour(), v.GetMinute(), v.GetSecond());
          return String(buf);
       }
       return "";
@@ -617,13 +651,14 @@ status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir, co
    //    if you have a logfile, for example, you might wish to open it as stdout or stderr, and open `/dev/null'
    //    as stdin; alternatively, you could open `/dev/console' as stderr and/or stdout, and `/dev/null' as stdin,
    //    or any other combination that makes sense for your particular daemon.
-   int nullfd = open("/dev/null", O_RDWR);
+   mode_t mode = S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH;
+   int nullfd = open("/dev/null", O_RDWR, mode);
    if (nullfd >= 0) dup2(nullfd, STDIN_FILENO);
 
    int outfd = -1;
    if (optOutputTo) 
    {
-      outfd = open(optOutputTo, O_WRONLY | (createIfNecessary ? O_CREAT : 0));
+      outfd = open(optOutputTo, O_WRONLY | (createIfNecessary ? O_CREAT : 0), mode);
       if (outfd < 0) LogTime(MUSCLE_LOG_ERROR, "BecomeDaemonProcess():  Couldn't open %s to redirect stdout, stderr\n", optOutputTo);
    }
    if (outfd >= 0) (void) dup2(outfd, STDOUT_FILENO);

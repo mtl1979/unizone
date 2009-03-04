@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleTimeUtilityFunctions_h
 #define MuscleTimeUtilityFunctions_h
@@ -11,7 +11,7 @@
 # include <sys/time.h>
 #endif
 
-#ifdef __BEOS__
+#if defined(__BEOS__) || defined(__HAIKU__)
 # include <kernel/OS.h>
 #endif
 
@@ -103,7 +103,7 @@ uint64 GetCurrentTime64(uint32 timeType=MUSCLE_TIMEZONE_UTC);
  *  (i.e. how much time has passed between two events).  For a "wall clock" type of result with
  *  a well-defined time-base, you can call GetCurrentTime64() instead.
  */
-#ifdef __BEOS__
+#if defined(__BEOS__) || defined(__HAIKU__)
 inline uint64 GetRunTime64() {return system_time();}
 #else
 uint64 GetRunTime64();
@@ -113,7 +113,7 @@ uint64 GetRunTime64();
  *  @param micros The number of microseconds to wait for.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-#ifdef __BEOS__
+#if defined(__BEOS__) || defined(__HAIKU__)
 inline status_t Snooze64(uint64 microseconds) {return snooze(microseconds);}
 #else
 status_t Snooze64(uint64 microseconds);

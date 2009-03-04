@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "dataio/ChildProcessDataIO.h"
 #include "util/MiscUtilityFunctions.h"     // for ExitWithoutCleanup()
@@ -140,7 +140,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
                   }
                }
 
-               if (CreateProcessA(NULL, (char *)cmd(), NULL, NULL, TRUE, 0, NULL, NULL, &siStartInfo, &piProcInfo))
+               if (CreateProcessA((argc>=0)?(((const char **)args)[0]):NULL, (char *)cmd(), NULL, NULL, TRUE, 0, NULL, NULL, &siStartInfo, &piProcInfo))
                {
                   _childProcess   = piProcInfo.hProcess;
                   _childThread    = piProcInfo.hThread;
@@ -326,7 +326,7 @@ void ChildProcessDataIO :: Close()
    if (_childProcess != INVALID_HANDLE_VALUE)
    {
       if (_killChildOnClose)    (void) TerminateProcess(_childProcess, 0);
-      if (_waitForChildOnClose) (void) WaitForSingleObject(_childProcess, INFINITE);
+      if (_waitForChildOnClose) WaitForChildProcessToExit();
    }
    SafeCloseHandle(_childProcess);
    SafeCloseHandle(_childThread);
@@ -335,9 +335,18 @@ void ChildProcessDataIO :: Close()
    if (_childPID >= 0)
    {
       if (_killChildOnClose)    (void) kill(_childPID, SIGKILL);
-      if (_waitForChildOnClose) (void) waitpid(_childPID, NULL, 0);
+      if (_waitForChildOnClose) WaitForChildProcessToExit();
       _childPID = -1;
    }
+#endif
+}
+
+void ChildProcessDataIO :: WaitForChildProcessToExit()
+{
+#ifdef WIN32
+   if (_childProcess != INVALID_HANDLE_VALUE) (void) WaitForSingleObject(_childProcess, INFINITE);
+#else
+   if (_childPID >= 0) (void) waitpid(_childPID, NULL, 0);
 #endif
 }
 
@@ -545,5 +554,27 @@ void ChildProcessDataIO :: IOThreadEntry()
    }
 }
 #endif
+
+status_t ChildProcessDataIO :: System(int argc, const char * argv[], bool usePty)
+{
+   ChildProcessDataIO cpdio(false);
+   if (cpdio.LaunchChildProcess(argc, argv, usePty) == B_NO_ERROR)
+   {
+      cpdio.WaitForChildProcessToExit();
+      return B_NO_ERROR;
+   }
+   else return B_ERROR;
+}
+
+status_t ChildProcessDataIO :: System(const char * cmdLine, bool usePty)
+{
+   ChildProcessDataIO cpdio(false);
+   if (cpdio.LaunchChildProcess(cmdLine, usePty) == B_NO_ERROR)
+   {
+      cpdio.WaitForChildProcessToExit();
+      return B_NO_ERROR;
+   }
+   else return B_ERROR;
+}
 
 END_NAMESPACE(muscle);

@@ -1,12 +1,12 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include <stdio.h>
 #include <stdarg.h>
 #include "syslog/LogCallback.h"
 #include "system/SetupSystem.h"
 #include "util/Hashtable.h"
-#include "util/MiscUtilityFunctions.h"  // for ExitWithoutCleanup()
 #include "util/NestCount.h"
+#include "util/String.h"
 
 #if defined(__APPLE__)
 # include "AvailabilityMacros.h"  // so we can find out if this version of MacOS/X is new enough to include backtrace() and friends
@@ -159,10 +159,10 @@ public:
       {
          struct tm wtm;
          struct tm * now = muscle_localtime_r(&when, &wtm);
-         char tb[100];                           
-         sprintf(tb, "%02i%02i%02i%02i.log", now->tm_mon+1, now->tm_mday, now->tm_hour, now->tm_min); 
-         _logFile = fopen(tb, "w");              
-         if (_logFile) LogTime(MUSCLE_LOG_INFO, "Created log file %s\n", tb);
+         char tb[100]; sprintf(tb, "%02i%02i%02i%02i.log", now->tm_mon+1, now->tm_mday, now->tm_hour, now->tm_min); 
+         const char * fn = _fileLogName.HasChars() ? _fileLogName() : tb;
+         _logFile = fopen(fn, "w");              
+         if (_logFile) LogTime(MUSCLE_LOG_INFO, "Created log file %s\n", fn);
       }                                          
       if ((ll <= _fileLogLevel)&&(_logFile))
       {                                         
@@ -177,6 +177,7 @@ public:
    }
 
    int _fileLogLevel;
+   String _fileLogName;
    FILE * _logFile;
 };
 
@@ -302,6 +303,11 @@ int GetFileLogLevel()
    return _dfl._fileLogLevel;
 }
 
+String GetFileLogName()
+{
+   return _dfl._fileLogName;
+}
+
 int GetConsoleLogLevel()
 {
    return _dcl._consoleLogLevel;
@@ -313,6 +319,18 @@ int GetMaxLogLevel()
    int ret = muscleMax(_dcl._consoleLogLevel, _dfl._fileLogLevel);
    if (isLogLocked) (void) UnlockLog();
    return ret;
+}
+
+status_t SetFileLogName(const String & logName)
+{
+   if (LockLog() == B_NO_ERROR)
+   {
+      _dfl._fileLogName = logName;
+      LogTime(MUSCLE_LOG_DEBUG, "File log name set to: %s\n", logName());
+      (void) UnlockLog();
+      return B_NO_ERROR;
+   }
+   else return B_ERROR;
 }
 
 status_t SetFileLogLevel(int loglevel)

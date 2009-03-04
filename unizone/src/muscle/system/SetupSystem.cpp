@@ -1,16 +1,17 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "system/SetupSystem.h"
 #include "support/Flattenable.h"
 #include "dataio/DataIO.h"
 #include "util/ObjectPool.h"
 #include "util/MiscUtilityFunctions.h"  // for ExitWithoutCleanup()
+#include "util/DebugTimer.h"
 
 #ifdef WIN32
 # include <signal.h>
 # include <mmsystem.h>
 #else
-# if defined(__BEOS__)
+# if defined(__BEOS__) || defined(__HAIKU__)
 #  include <signal.h>
 # elif defined(__CYGWIN__)
 #  include <signal.h>
@@ -300,7 +301,7 @@ static inline uint32 get_tbu() {uint32 tbu; asm volatile("mftbu %0" : "=r" (tbu)
 #endif
 
 // For BeOS, this is an in-line function, defined in util/TimeUtilityFunctions.h
-#ifndef __BEOS__
+#if !defined(__BEOS__) && !defined(__HAIKU__)
 
 /** Defined here since every MUSCLE program will have to include this file anyway... */
 uint64 GetRunTime64()
@@ -464,7 +465,7 @@ uint64 __Win32FileTimeToMuscleTime(const FILETIME & ft)
 }
 #endif
 
-#endif  /* !__BEOS__ */
+#endif  /* !__BEOS__ && !__HAIKU__ */
 
 /** Defined here since every MUSCLE program will have to include this file anyway... */
 uint64 GetCurrentTime64(uint32 timeType)
@@ -475,7 +476,7 @@ uint64 GetCurrentTime64(uint32 timeType)
    if (timeType == MUSCLE_TIMEZONE_LOCAL) (void) FileTimeToLocalFileTime(&ft, &ft);
    return __Win32FileTimeToMuscleTime(ft);
 #else
-# ifdef __BEOS__
+# if defined(__BEOS__) || defined(__HAIKU__)
    uint64 ret = real_time_clock_usecs();
 # else
    struct timeval tv;
@@ -485,7 +486,7 @@ uint64 GetCurrentTime64(uint32 timeType)
    if (timeType == MUSCLE_TIMEZONE_LOCAL)
    {
       time_t now = time(NULL);
-# if defined(__BEOS__) && !defined(HAIKU)
+# if defined(__BEOS__) && !defined(__HAIKU__)
       struct tm * tm = gmtime(&now);
 # else
       struct tm gmtm;
@@ -557,14 +558,22 @@ void AbstractObjectRecycler :: GlobalFlushAllCachedObjects()
    if (m) m->Unlock();
 }
 
-CompleteSetupSystem :: CompleteSetupSystem(bool muscleSingleThreadOnly) : _threads(muscleSingleThreadOnly) 
+static CompleteSetupSystem * _activeCSS = NULL;
+CompleteSetupSystem * CompleteSetupSystem :: GetCurrentCompleteSetupSystem() {return _activeCSS;}
+
+CompleteSetupSystem :: CompleteSetupSystem(bool muscleSingleThreadOnly) : _threads(muscleSingleThreadOnly), _prevInstance(_activeCSS)
 {
-   // empty
+   _activeCSS = this;  // push us onto the stack
 }
 
 CompleteSetupSystem :: ~CompleteSetupSystem()
 {
+   GenericCallbackRef r;
+   while(_cleanupCallbacks.RemoveTail(r) == B_NO_ERROR) (void) r()->Callback(NULL);
+
    AbstractObjectRecycler::GlobalFlushAllCachedObjects();
+
+   _activeCSS = _prevInstance;  // pop us off the stack
 }
 
 // Implemented here so that every program doesn't have to link
@@ -785,6 +794,14 @@ static void FlushAsciiChars(FILE * file, int idx, char * ascBuf, char * hexBuf, 
    hexBuf[0] = '\0';
 }
 
+static void FlushLogAsciiChars(int lvl, int idx, char * ascBuf, char * hexBuf, uint32 count, uint32 numColumns)
+{
+   while(count<numColumns) ascBuf[count++] = ' ';
+   ascBuf[count] = '\0';
+   LogTime(lvl, "%04i: %s [%s]\n", idx, ascBuf, hexBuf);
+   hexBuf[0] = '\0';
+}
+
 void PrintHexBytes(const void * vbuf, uint32 numBytes, const char * optDesc, uint32 numColumns, FILE * optFile)
 {
    if (optFile == NULL) optFile = stdout;
@@ -836,5 +853,192 @@ void PrintHexBytes(const void * vbuf, uint32 numBytes, const char * optDesc, uin
    }
 }
 
+void PrintHexBytes(const Queue<uint8> & buf, const char * optDesc, uint32 numColumns, FILE * optFile)
+{
+   if (optFile == NULL) optFile = stdout;
+
+   uint32 numBytes = buf.GetNumItems();
+   if (numColumns == 0)
+   {
+      // A simple, single-line format
+      if (optDesc) fprintf(optFile, "%s: ", optDesc);
+      fprintf(optFile, "[");
+      for (uint32 i=0; i<numBytes; i++) fprintf(optFile, "%s%02x", (i==0)?"":" ", buf[i]);
+      fprintf(optFile, "]\n");
+   }
+   else
+   {
+      // A more useful columnar format with ASCII sidebar
+      char headBuf[256]; 
+      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      fprintf(optFile, "%s", headBuf);
+
+      const int hexBufSize = (numColumns*8)+1;
+      int numDashes = 8+(4*numColumns)-strlen(headBuf);
+      for (int i=0; i<numDashes; i++) putchar('-');
+      putchar('\n');
+      char * ascBuf = newnothrow_array(char, numColumns+1);
+      char * hexBuf = newnothrow_array(char, hexBufSize);
+      if ((ascBuf)&&(hexBuf))
+      {
+         ascBuf[0] = hexBuf[0] = '\0';
+
+         uint32 idx = 0;
+         while(idx<numBytes)
+         {
+            uint8 c = buf[idx];
+            ascBuf[idx%numColumns] = muscleInRange(c,(uint8)' ',(uint8)'~')?c:'.';
+            char temp[8]; sprintf(temp, "%s%02x", ((idx%numColumns)==0)?"":" ", (unsigned int)(((uint32)buf[idx])&0xFF));
+            strncat(hexBuf, temp, hexBufSize);
+            idx++;
+            if ((idx%numColumns) == 0) FlushAsciiChars(optFile, idx-numColumns, ascBuf, hexBuf, numColumns, numColumns);
+         }
+         uint32 leftovers = (numBytes%numColumns);
+         if (leftovers > 0) FlushAsciiChars(optFile, numBytes-leftovers, ascBuf, hexBuf, leftovers, numColumns);
+      }
+      else WARN_OUT_OF_MEMORY;
+
+      delete [] ascBuf;
+      delete [] hexBuf;
+   }
+}
+
+void LogHexBytes(int logLevel, const void * vbuf, uint32 numBytes, const char * optDesc, uint32 numColumns)
+{
+   const uint8 * buf = (const uint8 *) vbuf;
+
+   if (numColumns == 0)
+   {
+      // A simple, single-line format
+      if (optDesc) LogTime(logLevel, "%s: ", optDesc);
+      Log(logLevel, "[");
+      for (uint32 i=0; i<numBytes; i++) Log(logLevel, "%s%02x", (i==0)?"":" ", buf[i]);
+      Log(logLevel, "]\n");
+   }
+   else
+   {
+      // A more useful columnar format with ASCII sidebar
+      char headBuf[256]; 
+      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      LogTime(logLevel, "%s", headBuf);
+
+      const int hexBufSize = (numColumns*8)+1;
+      int numDashes = 8+(4*numColumns)-strlen(headBuf);
+      for (int i=0; i<numDashes; i++) Log(logLevel, "-");
+      Log(logLevel, "\n");
+      char * ascBuf = newnothrow_array(char, numColumns+1);
+      char * hexBuf = newnothrow_array(char, hexBufSize);
+      if ((ascBuf)&&(hexBuf))
+      {
+         ascBuf[0] = hexBuf[0] = '\0';
+
+         uint32 idx = 0;
+         while(idx<numBytes)
+         {
+            uint8 c = buf[idx];
+            ascBuf[idx%numColumns] = muscleInRange(c,(uint8)' ',(uint8)'~')?c:'.';
+            char temp[8]; sprintf(temp, "%s%02x", ((idx%numColumns)==0)?"":" ", (unsigned int)(((uint32)buf[idx])&0xFF));
+            strncat(hexBuf, temp, hexBufSize);
+            idx++;
+            if ((idx%numColumns) == 0) FlushLogAsciiChars(logLevel, idx-numColumns, ascBuf, hexBuf, numColumns, numColumns);
+         }
+         uint32 leftovers = (numBytes%numColumns);
+         if (leftovers > 0) FlushLogAsciiChars(logLevel, numBytes-leftovers, ascBuf, hexBuf, leftovers, numColumns);
+      }
+      else WARN_OUT_OF_MEMORY;
+
+      delete [] ascBuf;
+      delete [] hexBuf;
+   }
+}
+
+void LogHexBytes(int logLevel, const Queue<uint8> & buf, const char * optDesc, uint32 numColumns)
+{
+   uint32 numBytes = buf.GetNumItems();
+   if (numColumns == 0)
+   {
+      // A simple, single-line format
+      if (optDesc) LogTime(logLevel, "%s: ", optDesc);
+      Log(logLevel, "[");
+      for (uint32 i=0; i<numBytes; i++) Log(logLevel, "%s%02x", (i==0)?"":" ", buf[i]);
+      Log(logLevel, "]\n");
+   }
+   else
+   {
+      // A more useful columnar format with ASCII sidebar
+      char headBuf[256]; 
+      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      Log(logLevel, "%s", headBuf);
+
+      const int hexBufSize = (numColumns*8)+1;
+      int numDashes = 8+(4*numColumns)-strlen(headBuf);
+      for (int i=0; i<numDashes; i++) Log(logLevel, "-");
+      Log(logLevel, "\n");
+      char * ascBuf = newnothrow_array(char, numColumns+1);
+      char * hexBuf = newnothrow_array(char, hexBufSize);
+      if ((ascBuf)&&(hexBuf))
+      {
+         ascBuf[0] = hexBuf[0] = '\0';
+
+         uint32 idx = 0;
+         while(idx<numBytes)
+         {
+            uint8 c = buf[idx];
+            ascBuf[idx%numColumns] = muscleInRange(c,(uint8)' ',(uint8)'~')?c:'.';
+            char temp[8]; sprintf(temp, "%s%02x", ((idx%numColumns)==0)?"":" ", (unsigned int)(((uint32)buf[idx])&0xFF));
+            strncat(hexBuf, temp, hexBufSize);
+            idx++;
+            if ((idx%numColumns) == 0) FlushLogAsciiChars(logLevel, idx-numColumns, ascBuf, hexBuf, numColumns, numColumns);
+         }
+         uint32 leftovers = (numBytes%numColumns);
+         if (leftovers > 0) FlushLogAsciiChars(logLevel, numBytes-leftovers, ascBuf, hexBuf, leftovers, numColumns);
+      }
+      else WARN_OUT_OF_MEMORY;
+
+      delete [] ascBuf;
+      delete [] hexBuf;
+   }
+}
+
+DebugTimer :: DebugTimer(const String & title, uint64 mlt, uint32 startMode, int debugLevel) : _currentMode(startMode+1), _title(title), _minLogTime(mlt), _debugLevel(debugLevel), _enableLog(true)
+{
+   SetMode(startMode);
+   _startTime = MUSCLE_DEBUG_TIMER_CLOCK;  // re-set it here so that we don't count the Hashtable initialization!
+}
+
+DebugTimer :: ~DebugTimer() 
+{
+   if (_enableLog)
+   {
+      // Finish off the current mode
+      uint64 * curElapsed = _modeToElapsedTime.Get(_currentMode);
+      if (curElapsed) *curElapsed += MUSCLE_DEBUG_TIMER_CLOCK-_startTime;
+
+      // And print out our stats
+      for (HashtableIterator<uint32, uint64> iter(_modeToElapsedTime); iter.HasMoreKeys(); iter++)
+      {
+         uint64 nextTime = iter.GetValue();
+         if (nextTime >= _minLogTime)
+         {
+            if (nextTime >= 1000) LogTime(_debugLevel, "%s: mode "UINT32_FORMAT_SPEC": " UINT64_FORMAT_SPEC " milliseconds elapsed\n", _title(), iter.GetKey(), nextTime/1000);
+                             else LogTime(_debugLevel, "%s: mode "UINT32_FORMAT_SPEC": " UINT64_FORMAT_SPEC " microseconds elapsed\n", _title(), iter.GetKey(), nextTime);
+         }
+      }
+   }
+}
+
+/** Set the timer to record elapsed time to a different mode. */
+void DebugTimer :: SetMode(uint32 newMode)
+{
+   if (newMode != _currentMode)
+   {
+      uint64 * curElapsed = _modeToElapsedTime.Get(_currentMode);
+      if (curElapsed) *curElapsed += MUSCLE_DEBUG_TIMER_CLOCK-_startTime;
+
+      _currentMode = newMode;
+      (void) _modeToElapsedTime.GetOrPut(_currentMode, 0);
+      _startTime = MUSCLE_DEBUG_TIMER_CLOCK;
+   }
+}
 
 END_NAMESPACE(muscle);

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleReflectServer_h
 #define MuscleReflectServer_h
@@ -269,6 +269,7 @@ private:
    bool _keepServerGoing;
    uint64 _serverStartedAt;
    bool _doLogging;
+   bool _setSignalHandlingEnabledWasCalled;
 
    Hashtable<ip_address, String> _remapIPs;  // for v2.20; custom strings for "special" IP addresses
 

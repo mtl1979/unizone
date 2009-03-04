@@ -1,8 +1,9 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
 
 #ifndef MuscleRefCount_h 
 #define MuscleRefCount_h 
 
+#include "util/Cloneable.h" 
 #include "util/ObjectPool.h" 
 #include "system/AtomicCounter.h"
 
@@ -184,7 +185,6 @@ public:
    /** Returns the ref-counted data item.  The returned data item
     *  is only guaranteed valid for as long as this RefCount object exists.
     */
-   //const Item * GetItemPointerConst() const {return _item;}
    const Item * GetItemPointer() const {return _item;}
 
    /** This is the same as GetItemPointer(), except that it can be safely
@@ -193,14 +193,13 @@ public:
     *  @note This function is unusual in that it safe to call this function on
     *        a NULL ConstRef pointer!
     */
-   //const Item * CheckedGetItemPointerConst() const {return this ? _item : NULL;}
    const Item * CheckedGetItemPointer() const {return this ? _item : NULL;}
 
    /** Convenience synonym for GetItemPointerConst(). */
    const Item * operator()() const {return _item;}
 
    /** Unreferences our held data item (if any), and turns this object back into a NULL reference.  
-    *  (equivalent to *this = Ref();)
+    *  (equivalent to *this = ConstRef();)
     */
    void Reset() {UnrefItem();}
 
@@ -209,7 +208,7 @@ public:
      */
    void Neutralize() {if ((_doRefCount)&&(_item)) (void) _item->DecrementRefCount(); _item = NULL;}
 
-   /** Swaps this Ref's contents with those of the specified Ref.
+   /** Swaps this ConstRef's contents with those of the specified ConstRef.
      * @param swapWith ConstRef to swap state with.
      */
    void SwapContents(ConstRef & swapWith)
@@ -285,20 +284,26 @@ public:
    {
       if (IsRefPrivate() == false)
       {
-         AbstractObjectManager * m = _item->GetManager();
-         Item * newItem = m ? static_cast<Item *>(m->ObtainObjectGeneric()) : newnothrow Item;
-         if (newItem) 
-         {
-            *newItem = *_item;
-            SetRef(newItem);
-         }
-         else 
-         { 
-            WARN_OUT_OF_MEMORY;
-            return B_ERROR;
-         }
+         Ref<Item> copyRef = this->Clone();
+         if (copyRef() == NULL) return B_ERROR;
+         SetRef(copyRef());
       }
       return B_NO_ERROR;
+   }
+
+   /** Makes a copy of our held Item and returns it in a non-const Ref object,
+     * or returns a NULL Ref on out-of-memory (or if we aren't holding an Item).
+     */
+   Ref<Item> Clone()
+   {
+      if (_item)
+      {
+         AbstractObjectManager * m = _item->GetManager();
+         Item * newItem = m ? static_cast<Item *>(m->ObtainObjectGeneric()) : static_cast<Item *>(CloneObject(*_item));
+         if (newItem) return Ref<Item>(newItem);
+                 else WARN_OUT_OF_MEMORY;
+      }
+      return Ref<Item>();
    }
 
    /** This method allows Refs to be keys in Hashtables. */

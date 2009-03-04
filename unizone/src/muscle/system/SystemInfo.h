@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleSystemInfos_h
 #define MuscleSystemInfos_h
@@ -10,8 +10,9 @@ BEGIN_NAMESPACE(muscle);
 /** Returns a human-readable name for the operating system that the code has 
   * been compiled on.  For example, "Windows", "MacOS/X", or "Linux".  If the 
   * operating system's name is unknown, returns "Unknown".
+  * @param defaultString What to return if we don't know what the host OS is.  Defaults to "Unknown".
   */
-const char * GetOSName();
+const char * GetOSName(const char * defaultString = "Unknown");
 
 enum {
    SYSTEM_PATH_CURRENT = 0, // our current working directory

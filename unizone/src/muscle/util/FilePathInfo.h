@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleFilePathInfo_h
 #define MuscleFilePathInfo_h
@@ -78,25 +78,25 @@ public:
          }
 #else
 # ifdef MUSCLE_64_BIT_PLATFORM
-         struct stat statInfo;
-         if (stat(filePath, &statInfo) == 0)
-# else
          struct stat64 statInfo;
          if (stat64(filePath, &statInfo) == 0)
+# else
+         struct stat statInfo;
+         if (stat(filePath, &statInfo) == 0)
 # endif
          {
             _flags |= (1L<<FPI_FLAG_EXISTS);
             if (S_ISDIR(statInfo.st_mode)) _flags |= (1L<<FPI_FLAG_ISDIRECTORY);
             if (S_ISREG(statInfo.st_mode)) _flags |= (1L<<FPI_FLAG_ISREGULARFILE);
             _size = statInfo.st_size;
-# ifdef _POSIX_SOURCE
+# if defined(MUSCLE_64_BIT_PLATFORM) && !defined(_POSIX_SOURCE)
+            _atime = InternalizeTimeSpec(statInfo.st_atimespec);
+            _ctime = InternalizeTimeSpec(statInfo.st_birthtimespec);
+            _mtime = InternalizeTimeSpec(statInfo.st_mtimespec);
+# else
             _atime = InternalizeTimeT(statInfo.st_atime);
             _ctime = InternalizeTimeT(statInfo.st_ctime);
             _mtime = InternalizeTimeT(statInfo.st_mtime);
-# else
-            _atime = InternalizeTimeStamp(statInfo.st_atimespec);
-            _ctime = InternalizeTimeStamp(statInfo.st_birthtimespec);
-            _mtime = InternalizeTimeStamp(statInfo.st_mtimespec);
 # endif
          }
 #endif
@@ -124,7 +124,7 @@ private:
       return ((wft-diffTime)/10);  // convert to MUSCLE-style microseconds
    }
 #else
-   uint64 InternalizeTimeStamp(const struct timespec & ts) const {return ((((uint64)ts.tv_sec)*1000000)+(((uint64)ts.tv_nsec)/1000));}
+   uint64 InternalizeTimeSpec(const struct timespec & ts) const {return ((((uint64)ts.tv_sec)*1000000)+(((uint64)ts.tv_nsec)/1000));}
    uint64 InternalizeTimeT(time_t t) const {return (t==((time_t)-1)) ? 0 : (((uint64)t)*1000000);}
 #endif
 

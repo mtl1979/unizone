@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "system/Thread.h"
 #include "util/NetworkUtilityFunctions.h"
@@ -94,7 +94,7 @@ status_t Thread :: StartInternalThreadAux()
       waitCondition.wait(&mutex);  // wait until the internal thread signal us that it's okay to continue
       mutex.unlock();
       return B_NO_ERROR;
-#elif defined(__BEOS__)
+#elif defined(__BEOS__) || defined(__HAIKU__)
       if ((_thread = spawn_thread(InternalThreadEntryFunc, "MUSCLE Thread", B_NORMAL_PRIORITY, this)) >= 0)
       {
          if (resume_thread(_thread) == B_NO_ERROR) return B_NO_ERROR;
@@ -126,7 +126,7 @@ bool Thread :: IsCallerInternalThread() const
 # else
    return (QThread::currentThread() == _internalThreadHandle);
 # endif
-#elif defined(__BEOS__)
+#elif defined(__BEOS__) || defined(__HAIKU__)
    return (_thread == find_thread(NULL));
 #elif defined(__ATHEOS__)
    return (_thread == find_thread(NULL));
@@ -270,15 +270,18 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
                   const ConstSocketRef * nextSocket;
                   bool * nextValue;
                   HashtableIterator<ConstSocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER);
-                  while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) *nextValue = FD_ISSET(nextSocket->GetFileDescriptor(), psets[j]) ? true : false;  // ternary operator used to shut VC++ warnings up
+                  while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) 
+                  {
+                     int fd = nextSocket->GetFileDescriptor();  // keep separate to avoid warning from g++ 4.3.1 under Ubuntu/64
+                     *nextValue = FD_ISSET(fd, psets[j]) ? true : false;  // ternary operator used to shut VC++ warnings up
+                  }
                }
             }
 
             if (FD_ISSET(msgfd, psets[SOCKET_SET_READ]))  // any signals from the other thread?
             {
                uint8 bytes[256];
-               (void) recv(msgfd, (char *)bytes, sizeof(bytes), 0);  // just clear them all out, we only need to wake up once...
-               ret = WaitForNextMessageAux(tsd, ref, wakeupTime); // then recurse to get the message
+               if (ConvertReturnValueToMuscleSemantics(recv(msgfd, (char *)bytes, sizeof(bytes), 0), sizeof(bytes), false) > 0) ret = WaitForNextMessageAux(tsd, ref, wakeupTime);
             }
          }
       }
@@ -312,7 +315,7 @@ status_t Thread :: WaitForInternalThreadToExit()
       ::CloseHandle(_thread);  // Raymond Dahlberg's fix for handle-leak problem
 #elif defined(MUSCLE_QT_HAS_THREADS)
       (void) _thread.wait();
-#elif defined(__BEOS__)
+#elif defined(__BEOS__) || defined(__HAIKU__)
       status_t junk;
       (void) wait_for_thread(_thread, &junk);
 #elif defined(__ATHEOS__)

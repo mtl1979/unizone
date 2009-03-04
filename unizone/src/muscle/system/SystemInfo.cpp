@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "system/SystemInfo.h"
 
@@ -12,9 +12,9 @@
 
 BEGIN_NAMESPACE(muscle);
 
-const char * GetOSName()
+const char * GetOSName(const char * defStr)
 {
-   const char * ret = "Unknown";
+   const char * ret = defStr;
    (void) ret;  // just to shut the Borland compiler up
 
 #ifdef WIN32
@@ -238,7 +238,7 @@ status_t GetSystemPath(uint32 whichPath, String & outStr)
 
 status_t GetNumberOfProcessors(uint32 & retNumProcessors)
 {
-#if defined(__BEOS__)
+#if defined(__BEOS__) || defined(__HAIKU__)
    system_info info;
    if (get_system_info(&info) == B_NO_ERROR)
    {

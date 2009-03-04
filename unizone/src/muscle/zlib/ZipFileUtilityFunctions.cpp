@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
@@ -142,16 +142,16 @@ status_t WriteZipFile(DataIO & writeTo, const Message & msg, int compressionLeve
       zip_fileinfo fileInfo;  
       {
          memset(&fileInfo, 0, sizeof(fileInfo));
-         int year, month, day, hour, minute, second;
-         if (GetHumanReadableTimeValues((fileCreationTime==MUSCLE_TIME_NEVER)?GetCurrentTime64(MUSCLE_TIMEZONE_LOCAL):fileCreationTime, year, month, day, hour, minute, second, MUSCLE_TIMEZONE_LOCAL) == B_NO_ERROR)
+         HumanReadableTimeValues v;
+         if (GetHumanReadableTimeValues((fileCreationTime==MUSCLE_TIME_NEVER)?GetCurrentTime64(MUSCLE_TIMEZONE_LOCAL):fileCreationTime, v, MUSCLE_TIMEZONE_LOCAL) == B_NO_ERROR)
          {
             fi = &fileInfo;
-            fileInfo.tmz_date.tm_sec  = second;
-            fileInfo.tmz_date.tm_min  = minute;
-            fileInfo.tmz_date.tm_hour = hour;
-            fileInfo.tmz_date.tm_mday = day+1;
-            fileInfo.tmz_date.tm_mon  = month;
-            fileInfo.tmz_date.tm_year = year;
+            fileInfo.tmz_date.tm_sec  = v.GetSecond();
+            fileInfo.tmz_date.tm_min  = v.GetMinute();
+            fileInfo.tmz_date.tm_hour = v.GetHour();
+            fileInfo.tmz_date.tm_mday = v.GetDayOfMonth()+1;
+            fileInfo.tmz_date.tm_mon  = v.GetMonth();
+            fileInfo.tmz_date.tm_year = v.GetYear();
          }
       }
       

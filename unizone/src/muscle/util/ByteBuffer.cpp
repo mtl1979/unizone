@@ -101,13 +101,7 @@ static void ClearBufferFunc(ByteBuffer * buf, void *) {buf->Clear(buf->GetNumByt
 static ByteBufferRef::ItemPool _bufferPool(100, ClearBufferFunc);
 ByteBufferRef::ItemPool * GetByteBufferPool() {return &_bufferPool;}
 
-ByteBufferRef GetByteBufferFromPool(uint32 numBytes, const uint8 * optBuffer)
-{
-   ByteBufferRef ref(_bufferPool.ObtainObject());
-   if ((ref())&&(ref()->SetBuffer(numBytes, optBuffer) != B_NO_ERROR)) ref.Reset();  // return NULL ref on out-of-memory
-   return ref;
-}
-
+ByteBufferRef GetByteBufferFromPool(uint32 numBytes, const uint8 * optBuffer) {return GetByteBufferFromPool(_bufferPool, numBytes, optBuffer);}
 ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, uint32 numBytes, const uint8 * optBuffer)
 {
    ByteBufferRef ref(pool.ObtainObject());
@@ -115,14 +109,12 @@ ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, uint32 numByt
    return ref;
 }
 
-ByteBufferRef GetByteBufferFromPool(const ByteBuffer & copyMe)
+ByteBufferRef GetByteBufferFromPool(const Flattenable & flattenMe) {return GetByteBufferFromPool(_bufferPool, flattenMe);}
+ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, const Flattenable & flattenMe)
 {
-   ByteBufferRef ref(_bufferPool.ObtainObject());
-   if (ref())
-   {
-      *(ref()) = copyMe;
-      if ((copyMe())&&((*ref())() == NULL)) ref.Reset();  // return NULL ref on out-of-memory
-   }
+   ByteBufferRef ref(pool.ObtainObject());
+   if ((ref() == NULL)||(ref()->SetNumBytes(flattenMe.FlattenedSize(), false) != B_NO_ERROR)) return ByteBufferRef();
+   flattenMe.FlattenToByteBuffer(*ref());
    return ref;
 }
 

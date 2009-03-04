@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNestCount_h
 #define MuscleNestCount_h
@@ -14,7 +14,7 @@ BEGIN_NAMESPACE(muscle);
 class NestCount
 {
 public:
-   /** Default constructor.  Sets the nest coutn to zero. */
+   /** Default constructor.  Sets the nest count to zero. */
    NestCount() : _count(0) {/* empty */}
 
    /** Increments our value, and returns true iff the new value is one. */

@@ -1626,11 +1626,7 @@ Match(const QString &string, const QRegExp &exp)
 int64
 ConvertPtr(void *ptr)
 {
-#if defined(WIN64) || defined(__osf__) || defined(__amd64__)
-		return (int64) ptr;
-#else
-		return (int64) (int32) ptr;
-#endif
+		return (int64) ((intptr_t) ptr);
 }
 
 bool

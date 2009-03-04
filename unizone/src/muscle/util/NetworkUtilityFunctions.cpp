@@ -1,10 +1,10 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include <stdio.h>
 
 #include "util/NetworkUtilityFunctions.h"
 
-#if __BEOS__
+#if defined(__BEOS__) || defined(__HAIKU__)
 # include <kernel/OS.h>     // for snooze()
 #elif __ATHEOS__
 # include <atheos/kernel.h> // for snooze()
@@ -55,7 +55,7 @@ typedef void sockopt_arg;  // Whereas sane operating systems use void pointers
 // So I define my own muscle_socklen_t to avoid having to #ifdef all my code
 #if defined(__amd64__) || defined(__FreeBSD__) || defined(BSD) || defined(__PPC64__) || defined(__HAIKU__)
 typedef socklen_t muscle_socklen_t;
-#elif defined(__BEOS__) || defined(__APPLE__) || defined(__CYGWIN__) || defined(WIN32) || defined(__QNX__) || defined(__osf__)
+#elif defined(__BEOS__) || defined(__HAIKU__) || defined(__APPLE__) || defined(__CYGWIN__) || defined(WIN32) || defined(__QNX__) || defined(__osf__)
 # ifdef _SOCKLEN_T
 typedef socklen_t muscle_socklen_t;
 # else

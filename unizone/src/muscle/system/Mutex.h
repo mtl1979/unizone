@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2008 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMutex_h
 #define MuscleMutex_h
@@ -30,7 +30,7 @@
 #  else
 #   include <qthread.h>
 #  endif
-# elif defined(__BEOS__)
+# elif defined(__BEOS__) || defined(__HAIKU__)
 #  include <support/Locker.h>
 # elif defined(__ATHEOS__)
 #  include <util/locker.h>
@@ -112,7 +112,7 @@ public:
 # elif defined(MUSCLE_QT_HAS_THREADS)
       _locker.lock();
       return B_NO_ERROR;
-# elif defined(__BEOS__)
+# elif defined(__BEOS__) || defined(__HAIKU__)
       return _locker.Lock() ? B_NO_ERROR : B_ERROR;
 # elif defined(__ATHEOS__)
       return _locker.Lock() ? B_ERROR : B_NO_ERROR;  // Is this correct?  Kurt's documentation sucks
@@ -138,7 +138,7 @@ public:
 # elif defined(MUSCLE_QT_HAS_THREADS)
       _locker.unlock();
       return B_NO_ERROR;
-# elif defined(__BEOS__)
+# elif defined(__BEOS__) || defined(__HAIKU__)
       _locker.Unlock();
       return B_NO_ERROR;
 # elif defined(__ATHEOS__)
@@ -177,7 +177,7 @@ private:
    mutable ::HANDLE _locker;
 # elif defined(MUSCLE_QT_HAS_THREADS)
    mutable QMutex _locker;
-# elif defined(__BEOS__)
+# elif defined(__BEOS__) || defined(__HAIKU__)
    mutable BLocker _locker;
 # elif defined(__ATHEOS__)
    mutable os::Locker _locker;
@@ -218,6 +218,9 @@ private:
    bool _isMutexLocked;
 };
 
+/** A macro to quickly and safely put a MutexGuard on the stack for the given Mutex. */
+#define DECLARE_MUTEXGUARD(mutex) MutexGuard MUSCLE_UNIQUE_NAME(mutex)
+ 
 #ifdef MUSCLE_USE_PTHREADS
 // These calls are useful in conjunction with tests/deadlockfinder.cpp, for tracking
 // down potential synchronization deadlocks in multithreaded code.  Note that they only
@@ -226,8 +229,8 @@ private:
 #define PUNLOCK(name,pointer) _PUNLOCKimp(name,pointer,__FILE__,__LINE__)
 
 // don't call these directly -- call the PLOCK() and PUNLOCK() macros instead!
-static inline void _PLOCKimp(const char * n, const void * p, const char * f, int ln) {printf(INT32_FORMAT_SPEC" plock p=%p [%s] %s:%i\n", (int32)pthread_self(), p, n, f, ln);}
-static inline void _PUNLOCKimp(const char * n, const void * p, const char * f, int ln) {printf(INT32_FORMAT_SPEC" punlock p=%p [%s] %s:%i\n", (int32)pthread_self(), p, n, f, ln);}
+static inline void _PLOCKimp(  const char * n, const void * p, const char * f, int ln) {printf(INT64_FORMAT_SPEC" plock   p=%p [%s] %s:%i\n", (int64)((long)pthread_self()), p, n, f, ln);}
+static inline void _PUNLOCKimp(const char * n, const void * p, const char * f, int ln) {printf(INT64_FORMAT_SPEC" punlock p=%p [%s] %s:%i\n", (int64)((long)pthread_self()), p, n, f, ln);}
 #endif
 
 END_NAMESPACE(muscle);

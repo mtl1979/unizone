@@ -2027,7 +2027,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						to += "/beshare";
 						AddStringToMessage(rej, PR_NAME_KEYS, to);
 						AddStringToMessage(rej, PR_NAME_SESSION, fNetClient->LocalSessionID());
-						rej()->AddInt64("tunnel_id", (int64) hisID);
+						rej()->AddInt64("tunnel_id", hisID);
 						fNetClient->SendMessageToSessions(rej);
 					}
 				}
@@ -2045,8 +2045,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						OpenUpload();
 						if (fULWindow->CreateTunnel(userID, hisID, tunnelID))
 						{
-							acc()->AddInt64("tunnel_id", (int64) hisID);
-							acc()->AddInt64("my_id", (int64) ConvertPtr(tunnelID));
+							acc()->AddInt64("tunnel_id", hisID);
+							acc()->AddInt64("my_id", ConvertPtr(tunnelID));
 							fNetClient->SendMessageToSessions(acc);
 						}
 					}
