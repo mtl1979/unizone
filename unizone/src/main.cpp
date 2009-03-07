@@ -71,24 +71,24 @@ GetAppDirectory()
 							MAX_PATH		/* buffer length */
 							) != 0)
 	{
-		qDebug("Module filename: %S", name);
+		qDebug("Module filename: %ls", name);
 		PathRemoveFileSpec(name);
 		if (SetCurrentDirectory(name) == 0)
 		{
 			GetCurrentDirectory(MAX_PATH, name);
-			qDebug("Current directory: %S", name);
+			qDebug("Current directory: %ls", name);
 		}
 		else
-			qDebug("Application directory: %S", name);
+			qDebug("Application directory: %ls", name);
 	}
-	QString qname = QString::fromUcs2((const ushort *) name);
+	QString qname = QString::fromUtf16((const ushort *) name);
 	delete [] name;
 	name = NULL; // <postmaster@raasu.org> 20021027
 	return qname;
 }
 #endif
 
-int 
+int
 main( int argc, char** argv )
 {
 #ifdef _WIN32
@@ -140,7 +140,7 @@ main( int argc, char** argv )
 #else
 	QString datafile = MakePath(gDataDir, "unizone.lng");	
 	wlangfile = datafile;
-   
+
 # ifdef _DEBUG
 	WString wDataDir(gDataDir);
 	PRINT("Data directory: %S\n", wDataDir.getBuffer());
@@ -185,13 +185,13 @@ main( int argc, char** argv )
 		O_RDONLY
 #endif
 		) )
-	{    
+	{
 		// file opened successfully
 		QByteArray plang(256);
 		lang.ReadLine(plang.data(), 255);
 		lfile = QString::fromUtf8(plang.data());
 		lang.Close();
-    }
+	}
 
 	// Install translator ;)
 	if (!lfile.isEmpty())
