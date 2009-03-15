@@ -339,8 +339,6 @@ Preview::PreviewImage()
 		}
 		pxlPreview->resize(w, h);
 		// Center
-		int ww = PreviewWidget->width();
-		int wh = PreviewWidget->height();
 		int pw = (PreviewWidget->width() - pxlPreview->width()) / 2;
 		int ph = (PreviewWidget->height() - pxlPreview->height()) / 2;
 		pxlPreview->move(pw, ph);
@@ -418,7 +416,7 @@ Preview::startDrag()
 		mimeData->setImageData(*pixPreview);
 		drag->setMimeData(mimeData);
 
-		Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+                drag->exec(Qt::CopyAction);
 	}
 }
 

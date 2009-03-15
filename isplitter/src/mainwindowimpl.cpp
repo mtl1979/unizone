@@ -141,7 +141,7 @@ ImageSplitter::startDrag()
 		mimeData->setUrls(list);
 		drag->setMimeData(mimeData);
 
-		Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+                drag->exec(Qt::CopyAction);
 	}
 }
 

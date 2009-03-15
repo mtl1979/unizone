@@ -19,6 +19,11 @@
 # endif
 #endif
 
+QString gAppDir;
+#ifdef _WIN32
+QString gDataDir;
+#endif
+
 #ifndef _WIN32
 void
 SetWorkingDirectory(const char *app)
@@ -50,15 +55,15 @@ GetAppDirectory()
 							MAX_PATH		/* buffer length */
 							) != 0)
 	{
-		qDebug("Module filename: %S", name);
+                qDebug("Module filename: %ls", name);
 		PathRemoveFileSpec(name);
 		if (SetCurrentDirectory(name) == 0)
 		{
 			GetCurrentDirectory(MAX_PATH, name);
-			qDebug("Current directory: %S", name);
+                        qDebug("Current directory: %ls", name);
 		}
 		else
-			qDebug("Application directory: %S", name);
+                        qDebug("Application directory: %ls", name);
 	}
 	QString qname = QString::fromUcs2((const ushort *) name);
 	delete [] name;
@@ -76,23 +81,27 @@ main( int argc, char** argv )
 
 	// Set our working directory
 
-#ifndef _WIN32
-	SetWorkingDirectory(argv[0]);
-#else
+#ifdef _WIN32
 	QString appdir = GetAppDirectory();
 	QString datadir = EnvironmentVariable("APPDATA");
 	QDir dir(datadir);
 	dir.mkdir("Image Splitter");
 	datadir = MakePath(datadir, "Image Splitter");
+	gDataDir = datadir;
+	gAppDir = GetAppDirectory();
+	// Set our working directory
 	QDir::setCurrent(datadir);
 #endif
 
 	// Load language file
 	QString langfile;
-#ifdef _WIN32
-	langfile = MakePath(datadir, "isplitter.lng");
-#else
+#ifndef _WIN32
 	langfile = "isplitter.lng");
+	// Set our working directory
+	SetWorkingDirectory(argv[0]);
+	gAppDir = QDir::currentDirPath();
+#else
+	langfile = MakePath(gDataDir, "isplitter.lng");
 #endif
 	QFile lang(langfile);
 	QString lfile;
@@ -100,7 +109,7 @@ main( int argc, char** argv )
 	{
 		lfile = QFileDialog::getOpenFileName(NULL, app.translate("main", "Open translation file..."), 
 #ifdef _WIN32
-			MakePath(appdir, "translations"),
+			MakePath(gAppDir, "translations"),
 #else
 			QString::null,
 #endif		
