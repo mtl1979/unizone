@@ -71,7 +71,7 @@ WListThread::InternalThreadEntry()
 						refScan()->AddMessage(ms, packed);
 						m++;
 					}
-					else	
+					else
 					{
 						// Failed to pack the message?
 						refScan()->AddMessage(ms, mref);

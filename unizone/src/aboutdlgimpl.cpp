@@ -3,7 +3,7 @@
 #include <qpushbutton.h>
 
 #include "aboutdlgimpl.h"
-#include "aboutdlg.h"
+#include "ui_aboutdlg.h"
 #include "version.h"
 
 /* 

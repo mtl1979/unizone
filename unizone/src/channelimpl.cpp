@@ -4,7 +4,7 @@
 #include <QLabel>
 
 #include "channelimpl.h"
-#include "channel.h"
+#include "ui_channel.h"
 #include "global.h"
 #include "wpwevent.h"
 #include "gotourl.h"

@@ -3,7 +3,7 @@
 #include <QCustomEvent>
 
 #include "scanprogressimpl.h"
-#include "scanprogress.h"
+#include "ui_scanprogress.h"
 #include "scanevent.h"
 #include "debugimpl.h"
 

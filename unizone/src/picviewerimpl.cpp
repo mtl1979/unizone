@@ -15,7 +15,7 @@
 #include <QImageReader>
 
 #include "picviewerimpl.h"
-#include "picviewer.h"
+#include "ui_picviewer.h"
 #include "util.h"
 #include "debugimpl.h"
 #include "wfile.h"

@@ -14,11 +14,7 @@
 #  include <regex.h>
 # endif
 #else
-# ifdef WIN32
-#  include "regex/regex/regex.h"
-# else
-#  include <regex.h>
-# endif
+# include <regex.h>
 #endif
 
 BEGIN_NAMESPACE(muscle);

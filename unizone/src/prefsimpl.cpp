@@ -35,7 +35,7 @@
 #include <qlineedit.h>
 
 #include "prefsimpl.h"
-#include "prefs.h"
+#include "ui_prefs.h"
 #include "global.h"
 #include "settings.h"
 #include "colors.h"
