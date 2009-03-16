@@ -17,7 +17,7 @@ HEADERS += menubar.h \
     previewimpl.h
 
 win32 {
-	OTHER_FILES +=	isplitter.rc
+	RC_FILE =	isplitter.rc
 	SOURCES +=		windows/wfile.cpp \
 				windows/wfile_win.cpp \
 				windows/wutil_msvc.cpp \
