@@ -1,3 +1,5 @@
+unix:TARGET = ../Unizone
+
 SOURCES =	aboutdlgimpl.cpp \
                 botitem.cpp \
                 channelimpl.cpp \
