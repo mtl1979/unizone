@@ -146,13 +146,20 @@ DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING _CRT_SECURE_NO_WARNINGS
 CONFIG(debug, debug|release) {
     DEFINES += _DEBUG
     SOURCES += debugimpl.cpp
-    win32:LIBS += -L../regex/debug
+    win32 {
+	LIBS += -L../regex/debug 
+      !contains(CONFIG, zlib):LIBS += -L../zlib/debug
+    }
 } else {
-    win32:LIBS += -L../regex/release
+    win32 {
+      LIBS += -L../regex/release 
+      !contains(CONFIG, zlib):LIBS += -L../zlib/release
+    }
 }
 win32 {
-    DEFINES += WIN32_LEAN_AND_MEAN UNICODE
+    DEFINES += WIN32_LEAN_AND_MEAN UNICODE REGEX_USEDLL
     LIBS += ole32.lib shlwapi.lib user32.lib ws2_32.lib winmm.lib iphlpapi.lib shell32.lib advapi32.lib regex.lib
+    !contains(CONFIG, zlib):LIBS += zdll.lib
     SOURCES +=   scanprogressimpl.cpp \
                  windows/_filwbuf.c \
                  windows/_getbuf.c \
@@ -178,8 +185,9 @@ unix {
                   unix/wfile_unix.cpp \
                   unix/wlaunchthread_unix.cpp \
                   unix/wutil_unix.cpp
+    !contains(CONFIG, zlib):LIBS += -lz
 }
 
 QT += qt3support
 
-INCLUDEPATH += muscle ../regex
+INCLUDEPATH += muscle ../regex ../zlib
