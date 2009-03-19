@@ -1,3 +1,6 @@
+unix:TARGET=../isplitter
+win32:TARGET="Image Splitter"
+
 SOURCES = main.cpp \
     mainwindowimpl.cpp \
     menubar.cpp \
