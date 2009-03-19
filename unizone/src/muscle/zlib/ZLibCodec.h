@@ -6,7 +6,7 @@
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
 # include "util/ByteBuffer.h"
-# include "zlib/zlib/zlib.h"
+# include "zlib.h"
 
 BEGIN_NAMESPACE(muscle);
  
