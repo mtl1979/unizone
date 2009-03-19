@@ -1,4 +1,5 @@
 unix:TARGET = ../Unizone
+win32:TARGET = Unizone
 
 SOURCES =	aboutdlgimpl.cpp \
                 botitem.cpp \
