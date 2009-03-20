@@ -25,30 +25,36 @@
 
 BEGIN_NAMESPACE(muscle);
 
-status_t ParseArg(const String & a, Message & addTo)
+static status_t ParseArgAux(const String & a, Message * optAddToMsg, Queue<String> * optAddToQueue)
 {
-   TCHECKPOINT;
-
    // Remove any initial dashes
    String argName = a.Trim();
-   while(argName.StartsWith("-")) argName = argName.Substring(1);
+   const char * s = argName();
+   while(*s == '-') s++;
+   if (s > argName()) argName = argName.Substring(s-argName);
 
-   int equalsAt = argName.IndexOf('=');
-   String argValue;
-   if (equalsAt >= 0)
+   if (optAddToQueue) return optAddToQueue->AddTail(argName);
+   else
    {
-      argValue = argName.Substring(equalsAt+1).Trim();  // this must be first!
-      argName  = argName.Substring(0, equalsAt).Trim().ToLowerCase();
+      int equalsAt = argName.IndexOf('=');
+      String argValue;
+      if (equalsAt >= 0)
+      {
+         argValue = argName.Substring(equalsAt+1).Trim();  // this must be first!
+         argName  = argName.Substring(0, equalsAt).Trim().ToLowerCase();
+      }
+      if (argName.HasChars())
+      { 
+         // Don't allow the parsing to fail just because the user specified a section name the same as a param name!
+         uint32 tc;
+         if ((optAddToMsg->GetInfo(argName, &tc) == B_NO_ERROR)&&(tc != B_STRING_TYPE)) (void) optAddToMsg->RemoveName(argName);
+         return optAddToMsg->AddString(argName, argValue);
+      }
+      else return B_NO_ERROR;
    }
-   if (argName.HasChars())
-   { 
-      // Don't allow the parsing to fail just because the user specified a section name the same as a param name!
-      uint32 tc;
-      if ((addTo.GetInfo(argName, &tc) == B_NO_ERROR)&&(tc != B_STRING_TYPE)) (void) addTo.RemoveName(argName);
-      return addTo.AddString(argName, argValue);
-   }
-   else return B_NO_ERROR;
 }
+status_t ParseArg(const String & a, Message & addTo)       {return ParseArgAux(a, &addTo, NULL);}
+status_t ParseArg(const String & a, Queue<String> & addTo) {return ParseArgAux(a, NULL, &addTo);}
 
 String UnparseArgs(const Message & argsMsg)
 {
@@ -83,7 +89,21 @@ String UnparseArgs(const Message & argsMsg)
    return ret;
 }
 
-status_t ParseArgs(const String & line, Message & addTo)
+String UnparseArgs(const Queue<String> & args)
+{
+   String ret;
+   for (uint32 i=0; i<args.GetNumItems(); i++)
+   {
+      String subRet = args[i];
+      subRet.Replace("\"", "\\\"");
+      if (subRet.IndexOf(' ') >= 0) subRet = subRet.Append("\"").Prepend("\"");
+      if (ret.HasChars()) ret += ' ';
+      ret += subRet;
+   }
+   return ret;
+}
+
+static status_t ParseArgsAux(const String & line, Message * optAddToMsg, Queue<String> * optAddToQueue)
 {
    TCHECKPOINT;
 
@@ -124,7 +144,7 @@ status_t ParseArgs(const String & line, Message & addTo)
             // It's the "x =5" case (2 tokens)
             String n2(next);
             n2.Replace(GUNK_CHAR, ' ');
-            if (ParseArg(n+n2, addTo) != B_NO_ERROR) return B_ERROR;
+            if (ParseArgAux(n+n2, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
             t = tok();
          }
          else
@@ -135,12 +155,12 @@ status_t ParseArgs(const String & line, Message & addTo)
             {
                String n3(next);
                n3.Replace(GUNK_CHAR, ' ');
-               if (ParseArg(n+"="+n3, addTo) != B_NO_ERROR) return B_ERROR;
+               if (ParseArgAux(n+"="+n3, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
                t = tok();
             }
             else 
             {
-               if (ParseArg(n, addTo) != B_NO_ERROR) return B_ERROR;  // for the "x =" case, just parse x and ignore the equals
+               if (ParseArgAux(n, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;  // for the "x =" case, just parse x and ignore the equals
                t = NULL;
             }
          }
@@ -153,20 +173,22 @@ status_t ParseArgs(const String & line, Message & addTo)
          {
             String n4(t);
             n4.Replace(GUNK_CHAR, ' ');
-            if (ParseArg(n+n4, addTo) != B_NO_ERROR) return B_ERROR;
+            if (ParseArgAux(n+n4, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
             t = tok();
          }
-         else if (ParseArg(n, addTo) != B_NO_ERROR) return B_ERROR;
+         else if (ParseArgAux(n, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
       }
       else
       {
          // Nope, it's just the normal case
-         if (ParseArg(n, addTo) != B_NO_ERROR) return B_ERROR;
+         if (ParseArgAux(n, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
          t = next;
       }
    }
    return B_NO_ERROR;
 }
+status_t ParseArgs(const String & line, Message & addTo)       {return ParseArgsAux(line, &addTo, NULL);}
+status_t ParseArgs(const String & line, Queue<String> & addTo) {return ParseArgsAux(line, NULL, &addTo);}
 
 status_t ParseArgs(int argc, char ** argv, Message & addTo)
 {
@@ -174,13 +196,19 @@ status_t ParseArgs(int argc, char ** argv, Message & addTo)
    return B_NO_ERROR;
 }
 
-static status_t ParseFileAux(FILE * fpIn, Message & addTo, char * buf, uint32 bufSize)
+status_t ParseArgs(int argc, char ** argv, Queue<String> & addTo)
+{
+   for (int i=0; i<argc; i++) if (ParseArg(argv[i], addTo) != B_NO_ERROR) return B_ERROR;
+   return B_NO_ERROR;
+}
+
+static status_t ParseFileAux(FILE * fpIn, Message * optAddToMsg, Queue<String> * optAddToQueue, char * buf, uint32 bufSize)
 {
    status_t ret = B_NO_ERROR;
    while(fgets(buf, bufSize, fpIn))
    {
       String checkForSection(buf);
-      checkForSection = checkForSection.Trim().ToLowerCase();
+      checkForSection = optAddToMsg ? checkForSection.Trim().ToLowerCase() : "";  // sections are only supported for Messages, not Queue<String>'s
       if ((checkForSection == "begin")||(checkForSection.StartsWith("begin ")))
       {
          checkForSection = checkForSection.Substring(6).Trim();
@@ -189,13 +217,13 @@ static status_t ParseFileAux(FILE * fpIn, Message & addTo, char * buf, uint32 bu
          
          // Don't allow the parsing to fail just because the user specified a section name the same as a param name!
          uint32 tc;
-         if ((addTo.GetInfo(checkForSection, &tc) == B_NO_ERROR)&&(tc != B_MESSAGE_TYPE)) (void) addTo.RemoveName(checkForSection);
+         if ((optAddToMsg->GetInfo(checkForSection, &tc) == B_NO_ERROR)&&(tc != B_MESSAGE_TYPE)) (void) optAddToMsg->RemoveName(checkForSection);
 
          MessageRef subMsg = GetMessageFromPool();
-         if ((subMsg() == NULL)||(addTo.AddMessage(checkForSection, subMsg) != B_NO_ERROR)||(ParseFileAux(fpIn, *subMsg(), buf, bufSize) != B_NO_ERROR)) return B_ERROR;
+         if ((subMsg() == NULL)||(optAddToMsg->AddMessage(checkForSection, subMsg) != B_NO_ERROR)||(ParseFileAux(fpIn, subMsg(), optAddToQueue, buf, bufSize) != B_NO_ERROR)) return B_ERROR;
       }
       else if ((checkForSection == "end")||(checkForSection.StartsWith("end "))) return B_NO_ERROR;
-      else if (ParseArgs(buf, addTo) != B_NO_ERROR)
+      else if (ParseArgsAux(buf, optAddToMsg, optAddToQueue) != B_NO_ERROR)
       {
          ret = B_ERROR;
          break;
@@ -204,7 +232,7 @@ static status_t ParseFileAux(FILE * fpIn, Message & addTo, char * buf, uint32 bu
    return ret;
 }
 
-status_t ParseFile(FILE * fpIn, Message & addTo)
+static status_t ParseFileAux(FILE * fpIn, Message * optAddToMsg, Queue<String> * optAddToQueue)
 {
    TCHECKPOINT;
 
@@ -212,7 +240,7 @@ status_t ParseFile(FILE * fpIn, Message & addTo)
    char * buf = newnothrow_array(char, bufSize);
    if (buf)
    {
-      status_t ret = ParseFileAux(fpIn, addTo, buf, bufSize);
+      status_t ret = ParseFileAux(fpIn, optAddToMsg, optAddToQueue, buf, bufSize);
       delete [] buf;
       return ret;
    }
@@ -222,6 +250,8 @@ status_t ParseFile(FILE * fpIn, Message & addTo)
       return B_ERROR;
    }
 }
+status_t ParseFile(FILE * fpIn, Message & addTo)       {return ParseFileAux(fpIn, &addTo, NULL);}
+status_t ParseFile(FILE * fpIn, Queue<String> & addTo) {return ParseFileAux(fpIn, NULL, &addTo);}
 
 status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort, bool portRequired)
 {
@@ -780,6 +810,21 @@ const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * 
       }
    }
    return NULL;
+}
+
+String HexBytesToString(const uint8 * buf, uint32 numBytes)
+{
+   String ret;
+   if (ret.Prealloc(numBytes*3) == B_NO_ERROR)
+   {
+      for (uint32 i=0; i<numBytes; i++)
+      {
+         if (i > 0) ret += ' ';
+         char b[32]; sprintf(b, "%02x", buf[i]);
+         ret += b;
+      }
+   }
+   return ret;
 }
 
 ByteBufferRef ParseHexBytes(const char * buf)

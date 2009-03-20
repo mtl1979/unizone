@@ -9,6 +9,15 @@ BEGIN_NAMESPACE(muscle);
 static StringMatcherRef::ItemPool _stringMatcherPool;
 StringMatcherRef::ItemPool * GetStringMatcherPool() {return &_stringMatcherPool;}
 
+StringMatcherRef GetStringMatcherFromPool() {return StringMatcherRef(_stringMatcherPool.ObtainObject());}
+
+StringMatcherRef GetStringMatcherFromPool(const String & matchString, bool isSimpleFormat)
+{
+   StringMatcherRef ret = _stringMatcherPool.ObtainObject();
+   if ((ret())&&(ret()->SetPattern(matchString, isSimpleFormat) != B_NO_ERROR)) ret.Reset();
+   return ret;
+}
+
 StringMatcher::StringMatcher() : _regExpValid(false), _negate(false), _hasRegexTokens(false), _rangeMin(MUSCLE_NO_LIMIT), _rangeMax(MUSCLE_NO_LIMIT)
 {
    // empty
@@ -16,7 +25,7 @@ StringMatcher::StringMatcher() : _regExpValid(false), _negate(false), _hasRegexT
 
 StringMatcher :: StringMatcher(const String & str, bool simple) : _regExpValid(false), _negate(false)
 {
-   SetPattern(str, simple);
+   (void) SetPattern(str, simple);
 }
 
 StringMatcher :: ~StringMatcher()
@@ -144,14 +153,13 @@ bool IsRegexToken(char c, bool isFirstCharInString)
    }
 }
 
-void EscapeRegexTokens(String & s, const char * optTokens)
+String EscapeRegexTokens(const String & s, const char * optTokens)
 {
    TCHECKPOINT;
 
    const char * str = s.Cstr();
 
    String ret;
-
    bool isFirst = true;
    while(*str)
    {
@@ -160,10 +168,10 @@ void EscapeRegexTokens(String & s, const char * optTokens)
      ret += *str;
      str++;
    }
-   s = ret;
+   return ret;
 }
 
-void RemoveEscapeChars(String & s)
+String RemoveEscapeChars(const String & s)
 {
    uint32 len = s.Length();
    String ret; (void) ret.Prealloc(len);
@@ -175,7 +183,7 @@ void RemoveEscapeChars(String & s)
       if ((lastWasEscape)||(isEscape == false)) ret += c;
       lastWasEscape = ((isEscape)&&(lastWasEscape == false));
    }
-   s = ret;
+   return ret;
 }
 
 bool HasRegexTokens(const char * str)

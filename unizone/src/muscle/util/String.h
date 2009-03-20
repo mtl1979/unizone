@@ -687,6 +687,15 @@ int StringCompareFunc(const String * const &, const String * const &, void *);
 /** A function for comparing (const char *)'s -- calls strcmp() */
 int CStringCompareFunc(const char * const &, const char * const &, void *);
 
+/** Same as StringCompareFunc(), except that it will sort numbers within the string numerically. */
+int NumericAwareStringCompareFunc(const String &, const String &, void *);
+
+/** Same as StringCompareFunc(), except that it will sort numbers within the string numerically. */
+int NumericAwareStringCompareFunc(const String * const &, const String * const &, void *);
+
+/** Same as CStringCompareFunc(), except that it will sort numbers within the string numerically. */
+int NumericAwareCStringCompareFunc(const char * const &, const char * const &, void *);
+
 inline String operator+(const String & lhs, const String &rhs)  {String ret(lhs); ret += rhs; return ret;}
 inline String operator+(const String & lhs, const char *rhs)    {String ret(lhs); ret += rhs; return ret;}
 inline String operator+(const char * lhs,   const String & rhs) {String ret(lhs); ret += rhs; return ret;}

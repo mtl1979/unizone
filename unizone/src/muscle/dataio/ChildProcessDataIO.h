@@ -49,6 +49,17 @@ public:
      */
    status_t LaunchChildProcess(const char * cmd, bool usePty = true) {return LaunchChildProcessAux(-1, cmd, usePty);}
 
+   /** Convenience method.  Launches a child process using an (argc,argv) that is constructed from the passed in argument list.
+     * @param argv A list of strings to construct the (argc,argv) from.  The first string should be the executable name, the second string
+     *             should be the first argument to the executable, and so on.
+     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
+     *               If specified as false, ChildProcessDataIO will use good old fashioned fork() instead.
+     *               Pty's allow for better control of interactive child processes, but are not always well supported on all platforms.
+     *               Note that this argument is ignored when running under Windows.
+     * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
+     */
+   status_t LaunchChildProcess(const Queue<String> & argv, bool usePty = true);
+
    /** Read data from the child process's stdout stream. 
      * @param buffer The read bytes will be placed here
      * @param size Maximum number of bytes that may be placed into (buffer).
@@ -155,6 +166,19 @@ public:
      */
    static status_t System(int argc, const char * argv[], bool usePty=true);
 
+   /** Convenience method:  acts similar to the POSIX system() call, but
+     * implemented internally via a ChildProcessDataIO object.  In particular,
+     * this static method will launch the specified process and not return
+     * until that process has completed.
+     * @param argv A list of strings to construct the (argc,argv) from.  The first string should be the executable name, the second string
+     *             should be the first argument to the executable, and so on.
+     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
+     *               If specified as false, ChildProcessDataIO will use good old fashioned fork() instead.
+     *               Pty's allow for better control of interactive child processes, but are not always well supported on all platforms.
+     *               Note that this argument is ignored when running under Windows.
+     * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
+     */
+   status_t System(const Queue<String> & argv, bool usePty = true);
 
    /** Convenience method:  acts similar to the POSIX system() call, but
      * implemented internally via a ChildProcessDataIO object.  In particular,

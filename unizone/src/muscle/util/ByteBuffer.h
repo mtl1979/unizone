@@ -61,6 +61,16 @@ public:
    /** Returns true iff the data (rhs) is holding is different from our own (byte-for-byte). */
    bool operator !=(const ByteBuffer &rhs) const {return !(*this == rhs);}
 
+   /** Prints the contents of this ByteBuffer to stdout, or to the specified file.  Useful for quick debugging.
+     * @param maxBytesToPrint The maximum number of bytes we should actually print.  Defaults to MUSCLE_NO_LIMIT, meaning
+     *                        that by default we will always print every byte held by this ByteBuffer.
+     * @param numColumns The number of columns to format the bytes into.  Defaults to 16.  See the documentation for
+     *                   the PrintHexBytes() function for further details.
+     * @param optFile If specified, the bytes will be printed to this file.  Defaults to NULL, meaning that the bytes
+     *                will be printed to stdout.
+     */
+   void PrintToStream(uint32 maxBytesToPrint = MUSCLE_NO_LIMIT, uint32 numColumns = 16, FILE * optFile = NULL) const;
+
    /** Sets our content using the given byte buffer.
      * @param numBytes Number of bytes to copy in (or just to allocate, if (optBuffer) is NULL).  Defaults to zero bytes (i.e., don't allocate a buffer)
      * @param optBuffer May be set to point to an array of bytes to copy into our internal buffer.

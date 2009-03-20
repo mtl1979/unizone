@@ -1,4 +1,5 @@
 #include "util/ByteBuffer.h"
+#include "util/MiscUtilityFunctions.h"
 #include "system/GlobalMemoryAllocator.h"
 
 BEGIN_NAMESPACE(muscle);
@@ -95,6 +96,11 @@ void ByteBuffer :: Clear(bool releaseBuffers)
       _numValidBytes = _numAllocatedBytes = 0;
    }
    else SetNumBytes(0, false);
+}
+
+void ByteBuffer :: PrintToStream(uint32 maxBytesToPrint, uint32 numColumns, FILE * optFile) const
+{
+   PrintHexBytes(GetBuffer(), muscleMin(maxBytesToPrint, GetNumBytes()), "ByteBuffer", numColumns, optFile);
 }
 
 static void ClearBufferFunc(ByteBuffer * buf, void *) {buf->Clear(buf->GetNumBytes() > 100);}

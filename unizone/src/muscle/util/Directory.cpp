@@ -175,6 +175,20 @@ status_t Directory :: MakeDirectory(const char * dirPath, bool forceCreateParent
 #endif
 }
 
+status_t Directory :: MakeDirectoryForFile(const char * filePath)
+{
+   int slen = strlen(filePath);
+   char * p = newnothrow_array(char,slen+1);
+   if (p == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
+
+   strcpy(p, filePath);
+   char * lastSep = strrchr(p, GetFilePathSeparator()[0]);
+   if (lastSep) *lastSep = '\0';  // truncate the file name 
+   status_t ret = lastSep ? MakeDirectory(p, true) : B_NO_ERROR;  // No directory clauses?  then there's nothing for us to do.
+   delete [] p;
+   return ret;
+}
+
 status_t Directory :: DeleteDirectory(const char * dirPath, bool forceDeleteSubItemsIfNecessary)
 {
    if (forceDeleteSubItemsIfNecessary)

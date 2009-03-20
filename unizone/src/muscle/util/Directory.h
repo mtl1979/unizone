@@ -63,6 +63,13 @@ public:
      */
    static status_t DeleteDirectory(const char * dirPath, bool forceDeleteSubItemsIfNecessary);
 
+   /** Convenience method.  Given a path to a file, this method will create any missing directories
+     * along that path, so that the file can be created.
+     * @param a path to a file, including the filename itself (the filename part will be ignored)
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory or permission denied?)
+     */
+   static status_t MakeDirectoryForFile(const char * filePath);
+
 private:
    Directory(const Directory & rhs);  // deliberately private and unimplemented
 

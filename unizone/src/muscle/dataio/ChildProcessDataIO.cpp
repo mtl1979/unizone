@@ -45,39 +45,18 @@ static void SafeCloseHandle(::HANDLE & h)
 }
 #endif
 
-// Parses a command line into a list of argv-style tokens
-static status_t ParseLine(const String & line, Queue<String> & addTo)
+status_t ChildProcessDataIO :: LaunchChildProcess(const Queue<String> & argq, bool usePty)
 {
-   TCHECKPOINT;
+   uint32 numItems = argq.GetNumItems();
+   if (numItems == 0) return B_ERROR;
 
-   const String trimmed = line.Trim();
-   uint32 len = trimmed.Length();
+   const char ** argv = newnothrow_array(const char *, numItems);
+   if (argv == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
 
-   // First, we'll pre-process the string into a StringTokenizer-friendly
-   // form, by replacing all quoted spaces with gunk and removing the quotes
-   String tokenizeThis;
-   if (tokenizeThis.Prealloc(len) != B_NO_ERROR) return B_ERROR;
-
-   const char GUNK_CHAR      = (char) 0x01;
-   bool lastCharWasBackslash = false;
-   bool inQuotes = false;
-   for (uint32 i=0; i<len; i++)
-   {
-      char c = trimmed[i];
-      if ((lastCharWasBackslash == false)&&(c == '\"')) inQuotes = !inQuotes;
-                                                   else tokenizeThis += ((inQuotes)&&(c == ' ')) ? GUNK_CHAR : c;
-      lastCharWasBackslash = (c == '\\');
-   }
-
-   StringTokenizer tok(tokenizeThis()," ");
-   const char * next;
-   while((next = tok()) != NULL)
-   {
-      String n(next);
-      n.Replace(GUNK_CHAR, ' ');
-      if (addTo.AddTail(n) != B_NO_ERROR) return B_ERROR;
-   }
-   return B_NO_ERROR;
+   for (uint32 i=0; i<numItems; i++) argv[i] = argq[i]();
+   status_t ret = LaunchChildProcess(numItems, argv, usePty);
+   delete [] argv;
+   return ret;
 }
 
 status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args, bool usePty)
@@ -131,13 +110,10 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
                if (argc < 0) cmd = (const char *) args;
                else
                {
-                  // TODO:  find a less hackish way to do this
                   const char ** argv = (const char **) args;
-                  for (int i=0; i<argc; i++)
-                  {
-                     if ((cmd.HasChars())&&(cmd.EndsWith(" ") == false)) cmd += ' ';
-                     cmd += argv[i];
-                  }
+                  Queue<String> tmpQ; (void) tmpQ.EnsureSize(argc);
+                  for (int i=0; i<argc; i++) (void) tmpQ.AddTail(argv[i]);
+                  cmd = UnparseArgs(tmpQ);
                }
 
                if (CreateProcessA((argc>=0)?(((const char **)args)[0]):NULL, (char *)cmd(), NULL, NULL, TRUE, 0, NULL, NULL, &siStartInfo, &piProcInfo))
@@ -255,7 +231,7 @@ void ChildProcessDataIO :: RunChildProcess(int argc, const void * args)
       // to kill the wrong _childPID.  We need to have it all
       // execute in _this_ process, which means we gotta use exec()!
       Queue<String> argv;
-      if (ParseLine((const char *)args, argv) == B_NO_ERROR)
+      if (ParseArgs(String((const char *)args), argv) == B_NO_ERROR)
       {
          argc = argv.GetNumItems();
          char ** newArgv = newnothrow_array(char *, argc+1);
@@ -564,6 +540,20 @@ status_t ChildProcessDataIO :: System(int argc, const char * argv[], bool usePty
       return B_NO_ERROR;
    }
    else return B_ERROR;
+}
+
+status_t ChildProcessDataIO :: System(const Queue<String> & argq, bool usePty)
+{
+   uint32 numItems = argq.GetNumItems();
+   if (numItems == 0) return B_ERROR;
+
+   const char ** argv = newnothrow_array(const char *, numItems);
+   if (argv == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
+
+   for (uint32 i=0; i<numItems; i++) argv[i] = argq[i]();
+   status_t ret = System(numItems, argv, usePty);
+   delete [] argv;
+   return ret;
 }
 
 status_t ChildProcessDataIO :: System(const char * cmdLine, bool usePty)

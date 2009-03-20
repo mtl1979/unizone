@@ -69,6 +69,55 @@ status_t ParseArgs(const String & arg, Message & addTo);
   */
 String UnparseArgs(const Message & argMsg);
 
+/** Parses the given arguments into a Queue of Strings.
+  * Any prefixed dashes will be stripped/ignored.
+  * All argument names will be forced to lower case.
+  * @param argc As passed in to main()
+  * @param argv As passed in to main
+  * @param addTo The Queue to add the arguments to
+  * @returns B_NO_ERROR on success, B_ERROR on failure (out of memory)
+  */
+status_t ParseArgs(int argc, char ** argv, Queue<String> & addTo);
+
+/** Parses settings from the given file.  Works similarly to
+ *  ParseArgs() (above), only the values are read from a file
+ *  instead of from the arguments vector.  The file may contain
+ *  comments that are prepended with a hash symbol (#); these
+ *  will be safely ignored.
+ *
+ *  @param file File pointer to read from.  This file must be
+ *              opened for reading, and will not be fclosed() by this function.
+  * @param addTo The Queue to add the arguments to
+ *  @return B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t ParseFile(FILE * file, Queue<String> & addTo);
+
+/** Parses the single string argument (arg) and adds the results to (addTo).
+ *  Formatting rules for the string are described above in the ParseArgs() documentation.
+ *  @param argument string to parse.
+ *  @return B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t ParseArg(const String & arg, Queue<String> & addTo);
+
+/** Scans a line for multiple arguments and calls ParseArg() on each one found.
+ *  Quotation marks will be used to group tokens if necessary.
+ *  @param arg A line of text, e.g.  arg1=blah arg2=borf arg3="quoted borf"
+ *  @param addTo Queue to add the argument results to.
+ *  @return B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t ParseArgs(const String & arg, Queue<String> & addTo);
+
+/** This does the inverse operation of ParseArgs().  That is to say, it
+  * takes a Queue that was previously created via ParseArgs() and returns
+  * a String representing the same data.  Note that the returned String isn't
+  * guaranteed to be identical to the one that was previously passed in to 
+  * ParseArgs(); in particular, any comments will have been stripped out.
+  * @param argMsg A Queue containing String field indicating the arguments
+  *               to add to the String
+  * @return The resulting String.
+  */
+String UnparseArgs(const Queue<String> & argMsg);
+
 /** Convenience method:  Looks for a given hostname or hostname:port string in 
  *  the given field of the args Message, and returns the appropriate parsed
  *  values if it is found.
@@ -428,6 +477,13 @@ void LogHexBytes(int logLevel, const Queue<uint8> & bytes, const char * optDesc 
   *          or a NULL ByteBufferRef on failure (out of memory?)
   */
 ByteBufferRef ParseHexBytes(const char * buf);
+
+/** Given a byte buffer, returns an ASCII representation of it.
+  * @param buf A buffer of bytes
+  * @param numBytes The number of bytes that (buf) points to.
+  * @returns a String with human-readable contents:  e.g. "5F A3 A2"...
+  */
+String HexBytesToString(const uint8 * buf, uint32 numBytes);
 
 /** A convenience method, useful to optimally create a single PR_COMMAND_BATCH
   * Message out of a set of zero or more other Messages.  Here's how it works:

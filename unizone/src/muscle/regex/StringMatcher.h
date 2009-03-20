@@ -62,7 +62,7 @@ public:
     */
    bool Match(const char * const matchString) const;
     
-   /** Conveneience method:  Same as above, but takes a String object instead of a (const char *). */
+   /** Convenience method:  Same as above, but takes a String object instead of a (const char *). */
    inline bool Match(const String & matchString) const {return Match(matchString());}
 
    /** If set true, Match() will return the logical opposite of what
@@ -94,20 +94,32 @@ DECLARE_REFTYPES(StringMatcher);
  */
 StringMatcherRef::ItemPool * GetStringMatcherPool();
 
+/** Convenience method.  Returns a StringMatcher object from the default StringMatcher pool,
+  * or a NULL reference on failure (out of memory?)
+  */
+StringMatcherRef GetStringMatcherFromPool();
+
+/** Convenience method.  Obtains a StringMatcher object from the default StringMatcher pool, calls SetPattern() on it
+  * with the given arguments, and returns it, or a NULL reference on failure (out of memory, or a parse error?)
+  */
+StringMatcherRef GetStringMatcherFromPool(const String & matchString, bool isSimpleFormat = true);
+
 // Some regular expression utility functions
 
-/** Puts a backslash in front of any char in (str) that is "special" to the regex pattern matching.
- *  @param str The string to check for special regex chars and possibly modify to escape them.
+/** Returns (str), except the returned string has a backslash inserted in front of any char in (str) 
+ *  that is "special" to the regex pattern matching.
+ *  @param str The string to check for special regex chars.
  *  @param optTokens If non-NULL, only characters in this string will be treated as regex tokens
  *                   and escaped.  If left as NULL (the default), then the standard set of regex
  *                   tokens will be escaped.
+ *  @returns the modified String with escaped regex chars
  */
-void EscapeRegexTokens(String & str, const char * optTokens = NULL);
+String EscapeRegexTokens(const String & str, const char * optTokens = NULL);
 
 /** This does essentially the opposite of EscapeRegexTokens():  It removes from the string
   * and backslashes that are not immediately preceeded by another backslash.
   */
-void RemoveEscapeChars(String & str);
+String RemoveEscapeChars(const String & str);
 
 /** Returns true iff any "special" chars are found in (str).
  *  @param str The string to check for special regex chars.
