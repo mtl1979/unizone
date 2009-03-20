@@ -221,9 +221,6 @@ public:
    /** Destructor. */
    virtual ~Message() {/* empty */}
 
-   /** Cloneable interface */
-   DECLARE_STANDARD_CLONE_METHOD(Message)
-
    /** Assignment operator. */
    Message & operator=(const Message & msg);
 
@@ -1342,6 +1339,9 @@ public:
      * @param rhs The Message to make this Message into a light-weight copy of. 
      */ 
    void BecomeLightweightCopyOf(const Message & rhs) {what = rhs.what; _entries = rhs._entries;}
+
+   /** Allocates new Message object, makes it equivalent to this one, and returns it. */
+   virtual Cloneable * Clone() const;
 
 protected:
    /** Overridden to copy directly if (copyFrom) is a Message as well. */

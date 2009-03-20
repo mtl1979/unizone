@@ -2336,4 +2336,11 @@ void Message :: SwapContents(Message & swapWith)
    _entries.SwapContents(swapWith._entries);
 }
 
+Cloneable * Message :: Clone() const
+{
+       Message * ret = newnothrow Message(*this);
+       if (ret == NULL) WARN_OUT_OF_MEMORY;
+       return ret;
+}
+
 END_NAMESPACE(muscle);
