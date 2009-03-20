@@ -286,7 +286,7 @@ public:
       {
          Ref<Item> copyRef = this->Clone();
          if (copyRef() == NULL) return B_ERROR;
-         SetRef(copyRef());
+         *this = copyRef;
       }
       return B_NO_ERROR;
    }
