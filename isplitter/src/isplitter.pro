@@ -35,9 +35,9 @@ unix {
 	SOURCES +=	unix/wfile.cpp \
 			unix/wfile_unix.cpp \
 			unix/wutil_unix.cpp \
-			unix/wcsdup.cpp \
-    			unix/wcslwr.cpp \
-    			unix/wcsupr.cpp
+			unix/wcsdup.c \
+    			unix/wcslwr.c \
+    			unix/wcsupr.c
 }
 
 CONFIG(debug, debug|release) {

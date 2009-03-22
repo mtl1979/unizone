@@ -38,7 +38,8 @@ SetWorkingDirectory(const char *app)
 			strncpy(chd, app, wdir - app);
 			chd[wdir - app] = 0;
 			PRINT("Setting working directory to: %s\n", chd);
-			chdir(chd);
+			if (chdir(chd) != 0)
+				PRINT("Setting working directory failed!\n");
 			delete [] chd;
 		}
 	}
@@ -96,7 +97,7 @@ main( int argc, char** argv )
 	// Load language file
 	QString langfile;
 #ifndef _WIN32
-	langfile = "isplitter.lng");
+	langfile = "isplitter.lng";
 	// Set our working directory
 	SetWorkingDirectory(argv[0]);
 	gAppDir = QDir::currentDirPath();
