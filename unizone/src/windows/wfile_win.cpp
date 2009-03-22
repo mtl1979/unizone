@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
+#include <QByteArray>
+
 WFile::WFile()
 {
 	file = -1;
@@ -96,7 +98,7 @@ WFile::ReadBlock(uint8 *buf, uint64 size)
 {
 	if (size > INT_MAX)
 	{
-		char * b = (char *) buf;
+		uint8 * b = buf;
 		int64 numbytes = 0;
 		while (size > 0)
 		{
@@ -152,7 +154,7 @@ WFile::WriteBlock32(const uint8 *buf, uint32 size)
 int64
 WFile::WriteBlock(const QByteArray &buf, uint64 size)
 {
-	return WriteBlock(buf.data(), size);
+	return WriteBlock((const uint8 *) buf.data(), size);
 }
 
 int64
@@ -160,7 +162,7 @@ WFile::WriteBlock(const uint8 *buf, uint64 size)
 {
 	if (size > INT_MAX)
 	{
-		const char *b = (const char *) buf;
+		const uint8 *b = buf;
 		int64 numbytes = 0;
 		while (size > 0)
 		{
