@@ -150,7 +150,7 @@ WFile::WriteBlock32(const uint8 *buf, uint32 size)
 int64
 WFile::WriteBlock(const QByteArray &buf, uint64 size)
 {
-	return WriteBlock(buf.data(), size);
+	return WriteBlock((const uint8 *)buf.data(), size);
 }
 
 int64
