@@ -312,8 +312,8 @@ WinShareWindow::StartAcceptThread()
 	fAccept = new QAcceptSocketsThread(this);
 	Q_CHECK_PTR(fAccept);
 
-	connect(fAccept, SIGNAL(ConnectionAccepted(const SocketRef &)),
-			this, SLOT(ConnectionAccepted(const SocketRef &)));
+	connect(fAccept, SIGNAL(ConnectionAccepted(const ConstSocketRef &)),
+			this, SLOT(ConnectionAccepted(const ConstSocketRef &)));
 
 	uint32 pStart = gWin->fSettings->GetBasePort();
 	uint32 pEnd = pStart + gWin->fSettings->GetPortRange() - 1;
