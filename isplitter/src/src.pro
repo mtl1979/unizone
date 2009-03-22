@@ -12,7 +12,7 @@ SOURCES = main.cpp \
 FORMS = mainwindow.ui
 TRANSLATIONS = isplitter_en.ts \
     isplitter_fi.ts
-CODEC = utf-8
+CODEC = UTF-8
 QT += qt3support
 
 HEADERS += menubar.h \

@@ -1,7 +1,6 @@
 #include <qstring.h>
 
 #include "wutil.h"
-#include "support/MuscleSupport.h"
 
 #if defined(wcsncpy)
 void wcopy(wchar_t *dest, const wchar_t *src, size_t len)

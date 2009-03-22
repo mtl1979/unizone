@@ -5,6 +5,8 @@
 #include <fcntl.h>
 #include <limits.h>
 
+#include <QByteArray>
+
 WFile::WFile()
 {
 	file = -1;
@@ -83,17 +85,23 @@ WFile::At(int64 pos)
 }
 
 int32
-WFile::ReadBlock32(void *buf, uint32 size)
+WFile::ReadBlock32(uint8 *buf, uint32 size)
 {
 	return read(file, buf, size);
 }
 
 int64
-WFile::ReadBlock(void *buf, uint64 size)
+WFile::ReadBlock(QByteArray &buf, uint64 size)
+{
+	return ReadBlock((uint8 *) buf.data(), size);
+}
+
+int64
+WFile::ReadBlock(uint8 *buf, uint64 size)
 {
 	if (size > INT_MAX)
 	{
-		char * b = (char *) buf;
+		uint8 *b = buf;
 		int64 numbytes = 0;
 		while (size > 0)
 		{
@@ -134,17 +142,23 @@ WFile::ReadLine(char *buf, int size)
 }
 
 int32
-WFile::WriteBlock32(const void *buf, uint32 size)
+WFile::WriteBlock32(const uint8 *buf, uint32 size)
 {
 	return write(file, buf, (unsigned int) size);
 }
 
 int64
-WFile::WriteBlock(const void *buf, uint64 size)
+WFile::WriteBlock(const QByteArray &buf, uint64 size)
+{
+	return WriteBlock(buf.data(), size);
+}
+
+int64
+WFile::WriteBlock(const uint8 *buf, uint64 size)
 {
 	if (size > INT_MAX)
 	{
-		const char *b = (const char *) buf;
+		const uint8 *b = buf;
 		int64 numbytes = 0;
 		while (size > 0)
 		{

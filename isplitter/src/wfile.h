@@ -9,6 +9,7 @@
 
 class WString;
 class QString;
+class QByteArray;
 
 class WFile
 {
@@ -23,11 +24,13 @@ public:
 	static bool Exists(const WString &);
 
 	void Flush();
-	int64 ReadBlock(void *, uint64);
-	int64 WriteBlock(const void *, uint64);
+	int64 ReadBlock(uint8 *, uint64);
+	int64 ReadBlock(QByteArray &, uint64);
+	int64 WriteBlock(const uint8 *, uint64);
+	int64 WriteBlock(const QByteArray &, uint64);
 
-	int32 ReadBlock32(void *, uint32);	// For backwards compatibility with functions that can't handle 64-bit values
-	int32 WriteBlock32(const void *, uint32);
+	int32 ReadBlock32(uint8 *, uint32);	// For backwards compatibility with functions that can't handle 64-bit values
+	int32 WriteBlock32(const uint8 *, uint32);
 
 	int ReadLine(char *, int);
 
